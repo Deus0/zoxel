@@ -1,4 +1,3 @@
-
 void player_state_crosshair(ecs* world, entity player, byte state) {
     byte dbg_log = 0;
     byte is_spawn = state == zox_player_state_play_begin;

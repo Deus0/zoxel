@@ -154,6 +154,7 @@ entity game_start_player_load(
 }
 
 // NOTE: Player Spawns Player Character
+// TODO: Remove terrain load checks out this, and just change player from game when terrain is loaded
 zox_sys2(PlayerBeginSystem) {
     byte dbg_log = 0;
     zox_sys_world();
@@ -180,7 +181,10 @@ zox_sys2(PlayerBeginSystem) {
             continue;
         }
 #endif
-        entity terrain = zox_get_child_by_id(world, realm, zox_id(Terrain));
+        entity terrain = zox_get_child_by_id(
+            world,
+            realm,
+            zox_id(Terrain));
 #ifdef zox_safety_checks
         if (!zox_valid(terrain)) {
             zox_loge("Player has Invalid Terrain");

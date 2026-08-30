@@ -145,8 +145,7 @@ void on_boot_game_ui(
         // spawns a render texture ui and links to camera
         if (!zox_disable_post_processing) {
             // material_render_texture_rgba
-            byte is_alpha = 1;
-            entity material = is_alpha ?
+            entity material = zox_game_render_texture_alpha ?
                 material_render_texture_rgba :
                 material_render_texture_rgb;
             zox_setv(game_camera, MaterialLink, material);
@@ -161,7 +160,7 @@ void on_boot_game_ui(
                 0,
                 game_camera,
                 material);
-            if (!is_alpha) {
+            if (!zox_game_render_texture_alpha) {
                 zox_add(texture, TextureRGB);
             }
         }

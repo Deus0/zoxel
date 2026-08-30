@@ -31,7 +31,7 @@ void define_systems_bodys(ecs* world) {
         [in] parts.BodySize,
         [in] blocks.BlockScale,
         [out] parts.BodyDirty,
-        [out] bones.BoneLinks,
+        [out] rendering3.BoneLinks,
         [out] bones.SkeletonDirty,
         [none] bones.Skeleton
     );

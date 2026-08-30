@@ -1,3 +1,8 @@
+entity material_bone;
+entity material_bonet;
+
+#include "clones.c"
+
 void catch_basic3D_errors(char* function_name) {
 #ifdef is_catch_basic3D_errors
     check_opengl_error(function_name);
@@ -13,4 +18,6 @@ void spawn_shaders_basics3D(ecs *world) {
 #ifndef zox_disable_rendering_instances
     spawn_material_vox_instance(world);
 #endif
+    material_bone = spawn_material_bone(world, 0);
+    material_bonet = spawn_material_bone(world, 1);
 }

@@ -30,12 +30,12 @@
 #include "cameras/_.c"
 #include "rendering/_.c"
 #include "sounds/_.c"
+#include "animations/_.c"
 #include "raycasts/_.c"
 #include "shapes/_.c"
 #include "textures/_.c"
 #include "geometry/_.c"
 #include "musics/_.c"
-#include "animations/_.c"
 #include "bones/_.c"
 #include "ui/_.c"
 

@@ -1,3 +1,4 @@
+byte transparent_meshes = 0;
 
 #include "dat/_.c"
 #include "mat/_.c"

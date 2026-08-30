@@ -16,13 +16,12 @@
 #define inc_nexus_game(x) str_macro(../gam/x/_.c)
 #define zox_nexus_game inc_nexus_game(zox_game)
 
-#ifndef zox_debug
-    // Release
-    #define zox_disable_names
-    // #define zox_disable_logs
-#else
-    // Debug
+#ifdef zox_logs
+    #define zox_names
+#endif
+#ifdef zox_debug
     #define zox_debug_settings
+    // #define zox_disable_logs
 #endif
 
 // Temp

@@ -7,6 +7,8 @@
  * +----------------------------------------------------------+
  */
 byte zox_huds3D = 0;
+// NOTE: For some reason non alpha breaks it
+byte zox_game_render_texture_alpha = 1;
 const byte huds_max_list_elements = 128;
 const byte zox_huds_header_font_size = 22;
 const byte zox_huds_element_font_size = 10;

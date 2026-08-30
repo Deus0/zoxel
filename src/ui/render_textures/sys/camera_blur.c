@@ -11,17 +11,24 @@ zox_sys2(CameraMaterialSystem) {
         zox_sys_i(MaterialLink, material);
         zox_sys_i(CameraBlur, blur);
         zox_sys_i(CameraVignette, vignette);
-        if (!zox_valid(material->value) ||
-            !zox_has(material->value, MaterialBlur))
-        {
-            zox_logw("(CameraBlurSystem) Camera has invalid Material [%s]",
-                zox_getn(e));
+        if (!zox_valid(material->value)) {
+            zox_logw("[CameraBlurSystem] Invalid [MaterialLink] [%s]", zox_getn(e));
             continue;
         }
+        /*if (!zox_has(material->value, MaterialBlur))
+        {
+            zox_logw("[CameraBlurSystem] Invalid Components [MaterialLink] [%s] [%s]",
+                zox_getn(e),
+                zox_getn(material->value));
+            continue;
+        }*/
         zox_setv(material->value, CameraBlur, blur->value);
         zox_setv(material->value, CameraVignette, vignette->value);
         if (dbg_log) {
-            zox_log("Camera [%s] Set Material [%s] to [%fx%f]", zox_getn(e), zox_getn(material->value), blur->value, vignette->value);
+            zox_log("Camera [%s] Set Material [%s] to [%fx%f]",
+                zox_getn(e),
+                zox_getn(material->value),
+                blur->value, vignette->value);
         }
     }
 } zox_sys_end(CameraMaterialSystem);

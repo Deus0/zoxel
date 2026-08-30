@@ -1,5 +1,15 @@
 // Spawns a bone for the item part, and children
-entity spawn_part_bones(ecs* world, entity skeleton, BoneLinks* bones, float3 half_bounds, float bscale, entity parent, float3 parent_position, entity slot, entity part) {
+entity spawn_part_bones(
+    ecs* world,
+    entity skeleton,
+    BoneLinks* bones,
+    float3 half_bounds,
+    float bscale,
+    entity parent,
+    float3 parent_position,
+    entity slot,
+    entity part)
+{
     byte dbg_log = 0;
     if (!zox_valid(slot)) {
         zox_logw("Invalid Slot for Bones");

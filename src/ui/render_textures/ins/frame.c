@@ -7,14 +7,23 @@ entity spawn_render_frame(
     int2 size,
     entity target,
     float3 camera_position,
-    float4 camera_rotation)
+    float4 camera_rotation,
+    float downscale,    // 2/4
+    float alpha)
 {
     byte is_camera_filtering = 1;
-    float downscale = 4;
-    color background = (color) { 155, 155, 155, 0 };
+    byte is_alpha = alpha != 1;
+    color background = (color) {
+        155,
+        155,
+        155,
+        is_alpha ? 0 : 255
+    };
     byte layer = 0; // max_layers2D - 10;
+    float fov = 45;
     int2 texture_size = int2_scale1(size, 1 / downscale);
-    entity material = spawn_material_render_texture(world, 1);
+    entity material = spawn_material_render_texture(world, is_alpha);
+    zox_set_unique_name(material, "render_frame_material");
     // TODO: spawn_render_camera instead
     entity camera = spawn_camera(
         world,
@@ -22,11 +31,11 @@ entity spawn_render_frame(
         camera_position,
         camera_rotation,
         0,
-        45,
+        fov,
         int2_zero,
         texture_size,
         single_screen_to_canvas);
-    zox_set_unique_name(camera, "dbg_render_texture_camera");
+    zox_set_unique_name(camera, "render_frame_camera");
     zox_add(camera, RenderCamera);
     zox_setv(camera, Color, background);
     zox_setv(camera, CameraVignette, 0);
@@ -43,12 +52,12 @@ entity spawn_render_frame(
         layer,
         camera,
         material);
-    zox_set_unique_name(ui, "dbg_render_texture");
-    zox_set_parent(world, material, ui);
-    zox_setv(ui, Alpha, 1);
+    zox_set_unique_name(ui, "render_frame_texture");
+    zox_setv(ui, Alpha, alpha);
     zox_add(ui, RenderTextureAlpha);
     // NOTE: Spawns material for unique properties
     // Links
+    zox_set_parent(world, material, ui);
     zox_setv(ui, MaterialLink, material);
     zox_setv(camera, MaterialLink, material);
     // Set down tree?
@@ -59,6 +68,7 @@ entity spawn_render_frame(
     return ui;
 }
 
+// NOTE: Pass in position as [target] might of just spawned
 entity spawn_render_frame_at(
     ecs *world,
     entity parent,
@@ -66,11 +76,16 @@ entity spawn_render_frame_at(
     int2 position,
     int2 size,
     entity target,
-    float3 target_position)
+    float3 target_position,
+    float downscale,
+    float alpha)
 {
     float4 camera_rotation = float4_identity;
-    // float3 target_position = zox_getv(target, Position3D);
-    float3 camera_position = float3_add(target_position, quaternion_rotate_vector(camera_rotation, (float3) { 0, 0, 1.5f }));
+    float3 camera_position = float3_add(
+        target_position,
+        quaternion_rotate_vector(
+            camera_rotation,
+            (float3) { 0, 0, 1.5f }));
     return spawn_render_frame(
         world,
         parent,
@@ -79,5 +94,7 @@ entity spawn_render_frame_at(
         size,
         target,
         camera_position,
-        camera_rotation);
+        camera_rotation,
+        downscale,
+        alpha);
 }

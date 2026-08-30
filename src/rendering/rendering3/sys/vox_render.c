@@ -20,15 +20,15 @@ zox_sys2(VoxRenderSystem) {
     camera_filtering_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(RenderDisabled, disabled);
-        zox_sys_i(MeshIndicies, meshIndicies);
-        zox_sys_i(MeshGPULink, meshGPULink);
-        zox_sys_i(ColorsGPULink, colorsGPULink);
+        zox_sys_i(MeshIndicies, indicies);
+        zox_sys_i(MeshGPULink, mesh);
+        zox_sys_i(ColorsGPULink, colors);
         zox_sys_i(TransformMatrix, transformMatrix);
         if (disabled->value ||
-            !meshIndicies->length ||
-            !meshGPULink->value.x ||
-            !meshGPULink->value.y ||
-            !colorsGPULink->value)
+            !indicies->length ||
+            !mesh->value.x ||
+            !mesh->value.y ||
+            !colors->value)
         {
             continue;
         }
@@ -40,17 +40,31 @@ zox_sys2(VoxRenderSystem) {
             zox_gpu_disable_culling();
 #endif*/
             zox_gpu_material(material_link);
-            zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
-            zox_gpu_float4(material_attributes->fog_data, get_fog_value());
-            zox_gpu_float(material_attributes->brightness, 1);
+            zox_gpu_float4x4(
+                material_attributes->camera_matrix,
+                render_camera_matrix);
+            zox_gpu_float4(
+                material_attributes->fog_data,
+                get_fog_value());
+            zox_gpu_float(
+                material_attributes->brightness,
+                1);
         }
-        zox_gpu_bind_buffer_element(meshGPULink->value.x);
-        opengl_enable_vertex_buffer(material_attributes->vertex_position, meshGPULink->value.y);
-        opengl_enable_color_buffer(material_attributes->vertex_color, colorsGPULink->value);
-        zox_gpu_float4x4(material_attributes->transform_matrix, transformMatrix->value);
-        zox_gpu_render3(meshIndicies->length);
+        zox_gpu_bind_buffer_element(mesh->value.x);
+        opengl_enable_vertex_buffer(
+            material_attributes->vertex_position,
+            mesh->value.y);
+        opengl_enable_color_buffer(
+            material_attributes->vertex_color,
+            colors->value);
+        zox_gpu_float4x4(
+            material_attributes->transform_matrix,
+            transformMatrix->value);
+        zox_gpu_render3(indicies->length);
         if (dbg_log) {
-            zox_log("Rendering Vox Mesh [%s] - Tris [%i]", zox_sys_e_name, meshIndicies->length / 3);
+            zox_log("Rendering Vox Mesh [%s] - Tris [%i]",
+                zox_sys_e_name,
+                indicies->length / 3);
         }
     }
     if (has_set_material) {

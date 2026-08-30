@@ -8,8 +8,10 @@
             ecs_get_name(it->world, e) : "Invalid"
 
 #else
-    #define zox_get_name(e) ecs_get_name(world, e)
-    #define zox_sys_get_name(e) ecs_get_name(it->world, e)
+    #define zox_get_name(e) \
+        ecs_get_name(world, e)
+    #define zox_sys_get_name(e) \
+        ecs_get_name(it->world, e)
 #endif
 
 #define zox_sys_e_name zox_sys_get_name(it->entities[i])
@@ -52,7 +54,7 @@ void zox_set_entity_name(
 }
 
 void zox_set_name_spawned(ecs *world, entity e, const char* name) {
-#ifndef zox_disable_names
+#ifdef zox_names
     zox_set_entity_name(world, e, name);
 #endif
 }

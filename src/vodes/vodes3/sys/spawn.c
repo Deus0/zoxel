@@ -167,13 +167,13 @@ zox_sys2(VodesSpawnSystem) {
         zox_sys_i(Position3D, position);
         zox_sys_o(VoxelNode, voxel_octree);
         zox_sys_o(BlocksSpawned, spawned);
-        // either voxel voxel_octree is dirty, or we are spawning for first time based on distance changes
-        byte is_dirty = zox_has(e, VoxelNodeDirty); // voxels_dirty->value == zox_dirty_active;
-        // byte generated = (!spawned->value && render_distance_dirty->value == zox_dirty_active);
+        byte is_dirty = zox_has(e, VoxelNodePostDirty);
         byte is_lod_dirty = zox_has(e, ChunkLodDirty) && zox_getv(e, ChunkLodDirty);
         if (!is_dirty && !is_lod_dirty) { // && !generated) {
             continue;
         }
+        // either voxel voxel_octree is dirty, or we are spawning for first time based on distance changes
+        // byte generated = (!spawned->value && render_distance_dirty->value == zox_dirty_active);
         entity terrain = zox_get_parent(world, e);
         entity realm = zox_get_parent(world, terrain);
         if (!zox_valid(realm)) {
@@ -212,7 +212,17 @@ zox_sys2(VodesSpawnSystem) {
             .render_depth = block_depth,
             .render_disabled = render_disabled->value,
         };
-        spawn_vodes_dive(world, &data, e, blocks->length, is_vode, blocks->value, voxel_octree, byte3_zero, 0, depth->value);
+        spawn_vodes_dive(
+            world,
+            &data,
+            e,
+            blocks->length,
+            is_vode,
+            blocks->value,
+            voxel_octree,
+            byte3_zero,
+            0,
+            depth->value);
         spawned->value = 1;
     }
 } zox_sys_end(VodesSpawnSystem);

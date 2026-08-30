@@ -1,4 +1,3 @@
-
 typedef struct {
     gint vertex_position;
     gint vertex_color;
@@ -25,27 +24,6 @@ MaterialBone create_MaterialBone(guint material) {
         zox_gpu_get_material_property(material, "fog_data")
     };
 }
-
-/*entity spawn_shader_bone(ecs *world) {
-    const byte shader_index = get_new_shader_source_index();
-
-    char* vert = get_shader_source(world, "bone.vert");
-    char* frag = get_shader_source(world, "bone.frag");
-
-    shader_verts[shader_index] = vert;
-    shader_frags[shader_index] = frag;
-
-    entity e = spawn_shader(world, shader_index);
-
-    if (!e) {
-        zox_log_error("[shader_bone] failed to spawn")
-        return 0;
-    }
-
-    zox_name("shader_bone");
-
-    return e;
-}*/
 
 entity spawn_material_bone(ecs *world, byte transparent) {
     // entity shader = spawn_shader_bone(world);
