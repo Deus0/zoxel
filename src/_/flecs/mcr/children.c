@@ -36,19 +36,30 @@ byte is_warn_capacity = 1;
 uint zox_children_capacity = 256;
 
 // Returns the direct parent (ChildOf target), or 0 if none
-static inline entity zox_get_parent(ecs *world, entity child) {
+static inline entity zox_get_parent(
+    ecs *world,
+    entity child)
+{
     if (!ecs_is_alive(world, child)) {
         return 0;
     }
     return ecs_get_parent(world, child);
 }
 
-static inline byte zox_is_parent(ecs* world, entity child, entity parent) {
+static inline byte zox_is_parent(
+    ecs* world,
+    entity child,
+    entity parent)
+{
     return ecs_has_pair(world, child, EcsChildOf, parent);
 }
 
 // Returns 1 if sets parent
-static inline byte zox_set_parent(ecs *world, entity child, entity parent) {
+static inline byte zox_set_parent(
+    ecs *world,
+    entity child,
+    entity parent)
+{
     if (!ecs_is_alive(world, child)) {
         zox_logw("Trying to set parent from invalid child");
         return 0;
@@ -73,7 +84,10 @@ static inline byte zox_set_parent(ecs *world, entity child, entity parent) {
     return 1;
 }
 
-static inline uint zox_get_children_count(ecs* world, entity parent) {
+static inline uint zox_get_children_count(
+    ecs* world,
+    entity parent)
+{
     if (!ecs_is_alive(world, parent)) {
         return 0;
     }
@@ -85,7 +99,11 @@ static inline uint zox_get_children_count(ecs* world, entity parent) {
     return count;
 }
 
-static inline uint zox_get_children_count_by_id(ecs* world, entity parent, entity id) {
+static inline uint zox_get_children_count_by_id(
+    ecs* world,
+    entity parent,
+    entity id)
+{
     if (!ecs_is_alive(world, parent)) {
         return 0;
     }
@@ -103,7 +121,12 @@ static inline uint zox_get_children_count_by_id(ecs* world, entity parent, entit
 }
 
 // Fills the buffer with the found children from the flecs query
-static inline uint zox_get_children(ecs *world, entity parent, entity* entities, uint capacity) {
+static inline uint zox_get_children(
+    ecs *world,
+    entity parent,
+    entity* entities,
+    uint capacity)
+{
     if (!ecs_is_alive(world, parent)) {
         return 0;
     }
@@ -131,7 +154,13 @@ static inline uint zox_get_children(ecs *world, entity parent, entity* entities,
 }
 
 // Fills the buffer with the found children from the flecs query
-static inline uint zox_get_children_by_id(ecs *world, entity parent, entity* entities, uint capacity, entity id) {
+static inline uint zox_get_children_by_id(
+    ecs *world,
+    entity parent,
+    entity* entities,
+    uint capacity,
+    entity id)
+{
     if (!zox_alive(parent)) {
         return 0;
     }
@@ -160,15 +189,20 @@ static inline uint zox_get_children_by_id(ecs *world, entity parent, entity* ent
     return count;
 }
 
-static inline entity zox_get_child_by_id(ecs* world, entity parent, entity id) {
+static inline entity zox_get_child_by_id(
+    ecs* world,
+    entity parent,
+    entity id)
+{
     if (!ecs_is_alive(world, parent)) {
-        zox_loge("Cannot get children from invalid parent [%s]", zox_get_name(id));
+        zox_loge("Cannot get children from invalid parent [%s]",
+            zox_getn(id));
         return 0;
     }
     ecs_iter_t it = ecs_children(world, parent);
     while (ecs_children_next(&it)) {
         for (int i = 0; i < it.count; i++) {
-            entity e =  it.entities[i];;
+            entity e = it.entities[i];
             if (zox_has_id(e, id)) {
                 return e;
             }
@@ -178,7 +212,11 @@ static inline entity zox_get_child_by_id(ecs* world, entity parent, entity id) {
 }
 
 
-static inline entity zox_get_child_by_index(ecs* world, entity parent, uint index) {
+static inline entity zox_get_child_by_index(
+    ecs* world,
+    entity parent,
+    uint index)
+{
     if (!ecs_is_alive(world, parent)) {
         zox_loge("Cannot get children from invalid parent of index [%i]", index);
         return 0;
@@ -198,7 +236,11 @@ static inline entity zox_get_child_by_index(ecs* world, entity parent, uint inde
 }
 
 
-static inline entity zox_get_parent_root_recursive(ecs *world, entity parent, entity child) {
+static inline entity zox_get_parent_root_recursive(
+    ecs *world,
+    entity parent,
+    entity child)
+{
     if (!parent || !ecs_is_alive(world, parent)) {
         return child;
     }
@@ -206,11 +248,21 @@ static inline entity zox_get_parent_root_recursive(ecs *world, entity parent, en
 }
 
 
-static inline entity zox_get_parent_root(ecs* world, entity e) {
-    return zox_get_parent_root_recursive(world, zox_get_parent(world, e), e);
+static inline entity zox_get_parent_root(
+    ecs* world,
+    entity e)
+{
+    return zox_get_parent_root_recursive(
+        world,
+        zox_get_parent(world, e),
+                                         e);
 }
 
-static inline entity zox_get_parent_by_id(ecs* world, entity e, entity id) {
+static inline entity zox_get_parent_by_id(
+    ecs* world,
+    entity e,
+    entity id)
+{
     if (!ecs_is_alive(world, e)) {
         return 0;
     }
@@ -227,7 +279,10 @@ static inline entity zox_get_parent_by_id(ecs* world, entity e, entity id) {
 
 // Removes the parent relationship from `child`
 // Returns 1 if a parent was removed, 0 otherwise
-byte zox_remove_parent(ecs *world, entity child) {
+byte zox_remove_parent(
+    ecs *world,
+    entity child)
+{
     if (!ecs_is_alive(world, child)) {
         zox_logw("Trying to remove parent from invalid child");
         return 0;
@@ -239,7 +294,11 @@ byte zox_remove_parent(ecs *world, entity child) {
     return 1;
 }
 
-entity zox_get_child_by_id_recursive(ecs* world, entity parent, entity id) {
+entity zox_get_child_by_id_recursive(
+    ecs* world,
+    entity parent,
+    entity id)
+{
     if (!ecs_is_alive(world, parent)) {
         zox_loge("Cannot get children from invalid parent [%s]", zox_get_name(id));
         return 0;
@@ -261,7 +320,14 @@ entity zox_get_child_by_id_recursive(ecs* world, entity parent, entity id) {
 }
 
 // Fills the buffer with the found children from the flecs query
-uint zox_get_children_by_id_recursive(ecs* world, entity parent, entity* entities, uint capacity, entity id, uint count) {
+uint zox_get_children_by_id_recursive(
+    ecs* world,
+    entity parent,
+    entity* entities,
+    uint capacity,
+    entity id,
+    uint count)
+{
     if (!zox_alive(parent)) {
         return 0;
     }

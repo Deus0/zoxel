@@ -51,7 +51,9 @@ entity spawn_header(
             font_size,
             padding.y,
             0,
-            (ClickEvent) { close_event });
+            (ClickEvent) {
+                close_event
+            });
     }
     return e;
 }

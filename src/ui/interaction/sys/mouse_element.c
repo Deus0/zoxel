@@ -36,7 +36,7 @@ zox_sys2(MouseElementSystem) {
             e,
             zox_id(Canvas));
         if (!zox_valid(canvas)) {
-            zox_loge("Invalid Canvas for Layout %s", zox_get_name(e));
+            zox_loge("[MouseElementSystem] Invalid [canvas]: %s", zox_getn(e));
             continue;
         }
         int2 canvas_size = zox_getv(canvas, LayoutSize);

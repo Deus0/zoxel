@@ -16,10 +16,10 @@
 zox_begin_module(ItemsUI) {
     define_components_items_ui(world);
     define_systems_items_ui(world);
-    add_taskbar_button((hook_taskbar) {
+    add_taskbar_button(world, (TaskbarData) {
         .index = 3,
         .spawn = &spawn_menu_inventory,
-        .component_id = MenuItems,
+        .component_id = zox_id(MenuItems),
         .texture_name = "taskbar_items",
         .tooltip_text = "Inventory"
     });

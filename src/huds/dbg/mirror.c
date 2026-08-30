@@ -78,7 +78,7 @@ entity zox_tst_render_texture_character(
     entity e = e2.x;
     entity body = e2.z;
     zox_add(e, MenuMirror);
-    spawn_render_frame_at(
+    entity ui = spawn_render_frame_at(
         world,
         body,
         float2_centre,
@@ -88,6 +88,7 @@ entity zox_tst_render_texture_character(
         renderer_position,
         downscale,
         alpha);
+    zox_set_parent(world, mesh_clone, ui);
     dbg_render_texture_character = e;
     return e;
 }

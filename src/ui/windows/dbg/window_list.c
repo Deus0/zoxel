@@ -5,7 +5,10 @@ void zox_tst_window_list_button(ecs *world, ClickEventData event) {
     zox_dbg_window_list = 0;
 }
 
-void zox_tst_spawn_window_list(ecs *world, ClickEventData data) {
+void zox_tst_spawn_window_list(
+    ecs *world,
+    ClickEventData data)
+{
     entity player = dbg_player;
     if (zox_dbg_window_list) {
         zox_log("Disposing Test: Spawn [WindowList] - [%s]", zox_get_name(zox_dbg_window_list));

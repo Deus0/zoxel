@@ -3,18 +3,16 @@ zox_sys2(QuestsRealmSpawnSystem) {
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
     zox_sys_in(CharacterLinks);
-    // zox_sys_out(QuestLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateRealm, state);
         zox_sys_i(CharacterLinks, characters);
-        //zox_sys_o(QuestLinks, quests);
         if (state->value != zox_generate_realm_quests) {
             continue;
         }
         // slay them dirty slems
         {
-            entity quest = spawn_realm_quest(
+            spawn_realm_quest(
                 world,
                 e,
                 prefab_quest,

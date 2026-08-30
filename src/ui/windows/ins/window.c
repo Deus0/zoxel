@@ -1,5 +1,17 @@
 // NOTE: Spawns window with flat inputs and easy to edit
-entity3 spawn_window(ecs* world, entity prefab, entity prefab_body, const char* header, entity parent, int2 position, int2 body_size, float2 anchor, byte header_font_size, byte2 header_padding, void* on_closed) {
+entity3 spawn_window(
+    ecs* world,
+    entity prefab,
+    entity prefab_body,
+    const char* header,
+    entity parent,
+    int2 position,
+    int2 body_size,
+    float2 anchor,
+    byte header_font_size,
+    byte2 header_padding,
+    void* on_closed)
+{
     entity3 output;
     color fill = window_fill;
     color outline = window_outline;

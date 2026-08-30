@@ -14,9 +14,9 @@ zox_tag(LoadUI);
 zox_tag(MenuMirror);
 zoxc_byte(HitType);
 // Taskbar
+#include "taskbar.c"
 zox_tag(Taskbar);
 zoxc_entity(TaskbarWindowID);
-zoxc_entity(TaskbarToggleLink);
 zoxc_entity(IconOverlayLink);
 
 void define_components_game_ui(ecs *world) {
@@ -33,11 +33,13 @@ void define_components_game_ui(ecs *world) {
     zoxd_nf_tag(Crosshair);
     zoxd_nf_tag(RespawnUI);
     zoxd_nf_tag(LoadUI);
-    zoxd_nf_tag(Taskbar);
     zoxd_nf_tag(MenuMirror);
     // Others
     zoxd_byte(HitType);
     zoxd_entity(IconOverlayLink);
+    // taskbar
+    zoxd(TaskbarData);
+    zoxd(SpawnWindowEvent);
+    zoxd_nf_tag(Taskbar);
     zoxd_entity(TaskbarWindowID);
-    zoxd_entity(TaskbarToggleLink);
 }

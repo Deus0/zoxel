@@ -34,26 +34,28 @@ byte zox_disable_screen_fader = 0;
 
 void import_huds(ecs* world) {
     zox_module(huds);
-    zox_module_dispose(dispose_gameui);
+    // zox_module_dispose(dispose_gameui);
     add_hook_spawn_prefabs(spawn_prefabs_game_ui);
-    initialize_hook_taskbar();
+    // initialize_TaskbarData();
     define_components_game_ui(world);
     define_systems_game_ui(world);
     add_hook_spawn_prefabs(spawn_prefabs_game_ui);
+    // add_hook_spawn_prefabs(spawn_taskbar_manager);
     add_hook_spawn_prefabs(zox_events_huds);
     add_hook_on_boot(on_boot_game_ui);
-    add_taskbar_button((hook_taskbar) {
+    spawn_taskbar_manager(world);
+    add_taskbar_button(world, (TaskbarData) {
         .index = 0,
         .spawn = &spawn_menu_paused,
-        .component_id = MenuPaused,
+        .component_id = zox_id(MenuPaused),
         .texture_name = "taskbar_paused",
         .tooltip_text = "Pause Menu"
     });
-    add_taskbar_button((hook_taskbar) {
-        .index = 9,
+    add_taskbar_button(world, (TaskbarData) {
+        .index = 10,
         .spawn = &zox_tst_render_texture_character,
-        .component_id = MenuMirror,
+        .component_id = zox_id(MenuMirror),
         .texture_name = "taskbar_mirror",
-        .tooltip_text = "Mirror, Mirror"
+        .tooltip_text = "Mirror"
     });
 }

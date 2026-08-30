@@ -19,13 +19,36 @@ entity spawn_menu_paused(ecs *world, entity player) {
         .text = pause_label_exit,
         .on_click = { &button_event_end_game },
     };
-    entity e = spawn_window_list(world, prefab_window, player, menu_paused_header_label, header_font_size, list_font_size, (ClickEvent) { &on_closed_taskbar_window }, 1, 0, 0, window_alignment, window_anchor, list_padding, NULL, elements, elements_count, elements_count).x;
+    entity e = spawn_window_list(
+        world,
+        prefab_window,
+        player,
+        menu_paused_header_label,
+        header_font_size,
+        list_font_size,
+        (ClickEvent) {
+            &on_closed_taskbar_window
+        },
+        1,
+        0,
+        0,
+        window_alignment,
+        window_anchor,
+        list_padding,
+        NULL,
+        elements,
+        elements_count,
+        elements_count).x;
     zox_name("menu_paused");
     zox_add(e, MenuPaused);
     zox_add(e, NavigationWindow);
-    zox_set(e, TaskbarToggleLink, { 0 });
+    // zox_setv(e, TaskbarToggleLink, 0);
     entity canvas = zox_getv(player, CanvasLink);
-    link_window_to_taskbar(world, e, canvas, zox_id(MenuPaused));
+    link_window_to_taskbar(
+        world,
+        e,
+        canvas,
+        zox_id(MenuPaused));
     zox_add(e, PreInitialize);
     return e;
 }

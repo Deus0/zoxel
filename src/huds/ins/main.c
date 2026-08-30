@@ -70,7 +70,24 @@ entity spawn_main_menu(ecs *world, entity player, const char* base_header) {
     }
     ClickEvent close_event = { NULL };
     entity spawned[elements_count];
-    entity3 e3 = spawn_window_list(world, prefab_window, player, header_text, header_font_size, list_font_size, close_event, 0, 0, 0, window_alignment, window_anchor, padding, spawned, elements, elements_count, elements_count);
+    entity3 e3 = spawn_window_list(
+        world,
+        prefab_window,
+        player,
+        header_text,
+        header_font_size,
+        list_font_size,
+        close_event,
+        0,
+        0,
+        0,
+        window_alignment,
+        window_anchor,
+        padding,
+        spawned,
+        elements,
+        elements_count,
+        elements_count);
     entity e = e3.x;
     zox_set_unique_name(e, "main_menu");
     zox_add(e, MenuMain);

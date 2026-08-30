@@ -11,9 +11,9 @@ void define_systems_game_ui(ecs *world) {
         [in] players.PlayerLink
     );
     zox_system(
-        MenuGameBeginSystem,
+        TaskbarBeginSystem,
         zoxp_initialize,
-        [out] huds.TaskbarToggleLink,
+        [none] windows.Window,
         [none] core.Initialize,
     );
      // NOTE: must update before ??

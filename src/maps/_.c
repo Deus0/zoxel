@@ -45,10 +45,10 @@ void import_maps(ecs* world) {
     zox_define_systems_maps(world);
     add_hook_spawn_prefabs(spawn_prefabs_maps);
     add_hook_spawn_prefabs(zox_events_maps);
-    add_taskbar_button((hook_taskbar) {
+    add_taskbar_button(world, (TaskbarData) {
         .index = 8,
         .spawn = &spawn_player_menu_map,
-        .component_id = MenuMap,
+        .component_id = zox_id(MenuMap),
         .texture_name = "taskbar_map",
         .tooltip_text = "Map"
     });

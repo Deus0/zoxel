@@ -45,7 +45,7 @@ entity3 spawn_window_list(
     byte list_font_size,
     ClickEvent close_event,
     byte can_close,
-    byte window_type,
+    byte window_type,   // TODO: Remove this
     int min_width,
     byte alignment,
     float2 position_anchor,
@@ -143,7 +143,9 @@ entity3 spawn_window_list(
     entity list = spawn_list(
         world,
         canvas_data,
-        (LayoutParentData) { .e = scrollview },
+        (LayoutParentData) {
+            .e = scrollview
+        },
         list_element_data,
         list_data,
         alignment,
@@ -154,7 +156,11 @@ entity3 spawn_window_list(
         zox_setv(list, LayoutPosition, ((int2) { -scrollbar_width, 0 }));
     }
     // NOTE: Returns Window, List, Header
-    return (entity3) { e, list, e2.y };
+    return (entity3) {
+        e,
+        list,
+        e2.y
+    };
 }
 
 // NOTE: This is for size position set window lists
@@ -195,7 +201,18 @@ entity4 spawn_window_list_at(
     // NOTE: Calculates visible count from size itself
     list_data.visible_count = (list_size.y - list_margins.y * 2) / (list_font_size + button_padding.y * 2 + padding.y);
     // Spawn our Window
-    entity3 e2 = spawn_window(world, prefab, prefab_body, header, canvas, position, body_size, anchor, header_font_size, header_padding, close_event.value);
+    entity3 e2 = spawn_window(
+        world,
+        prefab,
+        prefab_body,
+        header,
+        canvas,
+        position,
+        body_size,
+        anchor,
+        header_font_size,
+        header_padding,
+        close_event.value);
     entity e = e2.x;
     entity body = e2.z;
     // NOTE: Scrollview Has: 1: Scrollbar, 2: ListUI
@@ -217,7 +234,16 @@ entity4 spawn_window_list_at(
         .size = list_size,
         .anchor = float2_half,
     };
-    entity list = spawn_list(world, canvas_data, (LayoutParentData) { .e = scrollview }, list_element_data, list_data, alignment, NULL);
+    entity list = spawn_list(
+        world,
+        canvas_data,
+        (LayoutParentData) {
+            .e = scrollview
+        },
+        list_element_data,
+        list_data,
+        alignment,
+        NULL);
     // make sure to link them together
     zox_set(list, ScrollviewLink, { scrollview });
     zox_set(scrollview, ListUILink, { list });

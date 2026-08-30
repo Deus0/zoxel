@@ -39,10 +39,10 @@ void import_parts(ecs* world) {
     define_systems_bodys(world);
     add_hook_spawn_prefabs(spawn_prefabs_bodys);
     // initialize_settings_models(world);
-    add_taskbar_button((hook_taskbar) {
+    add_taskbar_button(world, (TaskbarData) {
         .index = 6,
         .spawn = &spawn_player_menu_body,
-        .component_id = MenuBody,
+        .component_id = zox_id(MenuBody),
         .texture_name = "taskbar_body",
         .tooltip_text = "Body"
     });

@@ -8,3 +8,5 @@
 #include "ctx2.c"
 #include "component_states.c"
 #include "stats.c"
+
+typedef entity (*entity_fun)(ecs *, entity);

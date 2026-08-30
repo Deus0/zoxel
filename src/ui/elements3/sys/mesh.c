@@ -31,7 +31,7 @@ zox_sys2(Layout3MeshUpdateSystem) {
         }
         entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas3));
         if (!zox_valid(canvas)) {
-            zox_loge("Invalid Canvas for Layout %s", zox_get_name(e));
+            zox_loge("[Layout3MeshUpdateSystem] Invalid [canvas]: %s", zox_getn(e));
             continue;
         }
         float2 canvas_size = int2_to_float2(zox_getv(canvas, LayoutSize));

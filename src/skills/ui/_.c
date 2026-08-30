@@ -11,10 +11,10 @@ zox_begin_module(UISkills) {
     zox_define_components_skills_ui(world);
     zox_define_systems_skills_ui(world);
     // add_hook_spawn_prefabs(spawn_prefabs_ui_skills);
-    add_taskbar_button((hook_taskbar) {
+    add_taskbar_button(world, (TaskbarData) {
         .index = 4,
         .spawn = &spawn_player_menu_skills,
-        .component_id = MenuSkills,
+        .component_id = zox_id(MenuSkills),
         .texture_name = "taskbar_skills",
         .tooltip_text = "Skillbook"
     });

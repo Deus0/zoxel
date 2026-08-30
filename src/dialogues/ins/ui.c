@@ -9,7 +9,18 @@ entity spawn_dialogue_ui(ecs* world, entity canvas, entity character, entity tar
     float2 position_anchor = (float2) { 0.5f, 0.84f };
     const char* header_text = zox_valid(target) ? zox_getv(target, ZoxName) : zox_getv(character, ZoxName);
     byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
-    entity3 e3 = spawn_window(world, prefab_window, prefab_body, header_text, canvas, int2_zero, size, position_anchor, header_font_size, header_padding, &on_closed_dialogue_ui);
+    entity3 e3 = spawn_window(
+        world,
+        prefab_window,
+        prefab_body,
+        header_text,
+        canvas,
+        int2_zero,
+        size,
+        position_anchor,
+        header_font_size,
+        header_padding,
+        &on_closed_dialogue_ui);
     entity e = e3.x;
     entity body = e3.z;
     zox_add(e, DialogueUI);
