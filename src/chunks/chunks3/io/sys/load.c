@@ -101,7 +101,8 @@ zox_sys2(Chunk3LoadSystem) {
             zox_add(e, VoxelNodeDirty);
             if (dbg_log) {
                 zox_log("Loaded Chunk [%s] with Depth [%i]",
-                    zox_sys_e_name, depth->value);
+                    zox_sys_e_name,
+                    depth->value);
             }
         }
     }

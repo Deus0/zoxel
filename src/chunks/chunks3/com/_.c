@@ -8,9 +8,7 @@ zox_tag(VoxelNodePostDirty);
 zoxc_int3(ChunkPosition);
 zoxc_int3(ChunkSize);
 zoxc_byte(ChunkLodDirty);
-// (BuildChunkMesh);
 zoxc_byte(BlocksSpawned);
-// zoxc_byte(VoxelNodeEdited);
 zoxc_state(ChunkDirty);
 zoxc_entities(ChunkEntities);
 zoxc_link(ChunkLink, entity, ChunkEntities)
@@ -41,11 +39,6 @@ zoxc_arrayd(CombinePositions, byte3);
 #define zox_chunk_lod_dirty_toggle 4
 #define zox_chunk_lod_dirty_end 0
 
-// BuildChunkMesh
-//#define zox_build_chunk_mesh_run 1
-//#define zox_build_chunk_mesh_lights 2
-//#define zox_build_chunk_mesh_end 0
-
 void define_components_chunks3(ecs* world) {
     zoxd_nf_tag(Chunk3);
     zoxd_nf_tag(ColorChunk);
@@ -56,7 +49,6 @@ void define_components_chunks3(ecs* world) {
     zoxd_nf_tag(VoxelNodePostDirty);
     // Data
     zoxd_byte(ChunkLodDirty);
-    // zoxd_byte(VoxelNodeEdited); // Marks if Dirty from Users
     zoxd_byte(BlocksSpawned);
     zoxd_state(ChunkDirty);
     zoxd_int3(ChunkPosition);

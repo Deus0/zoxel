@@ -64,9 +64,13 @@ zox_sys2(TerrainItemDropSystem) {
             float3_add_float3_p(&positionf, position->value); // chunk
             float3_add_float3_p(&positionf, float3_single(scale->value * 0.5f));
             // get positionf from local position and depth
-            entity pickup = spawn_pickup_block(world, positionf, block, item_pickup_scale);
+            entity pickup = spawn_pickup_block(
+                world,
+                positionf,
+                block,
+                item_pickup_scale);
             if (pickup) {
-                zox_set(pickup, ItemLink, { block_item });
+                zox_setv(pickup, ItemLink, block_item);
             }
             if (dbg_log) {
                 zox_log("Spawned block pickup at [%fx%fx%f] scale [%f]", positionf.x, positionf.y, positionf.z, scale->value);

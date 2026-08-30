@@ -10,10 +10,3 @@ typedef struct {
 
 zoxc_queue(VoxelNodeQueue, VoxelNodeUpdate, 1);
 zoxc_queue_remove_at(VoxelNodeQueue, VoxelNodeUpdate);
-
-/*typedef struct {
-    byte value;
-    byte3 pos;
-} VoxelDropElement;
-zoxc_queue(VoxelDropQueue, VoxelDropElement, 1);
-*/

@@ -12,10 +12,9 @@ zox_sys2(ItemActivateSystem) {
         zox_sys_i(BlockLink, block_link);
         zox_sys_o(Quantity, quantity);
         zox_sys_o(QuantityDirty, dirty);
-        if (activate->value != zox_dirty_active) {
-            continue;
-        }
-        if (!quantity->value) {
+        if (activate->value != zox_dirty_active ||
+            !quantity->value)
+        {
             continue;
         }
         entity user = zox_get_parent(world, e);
@@ -23,11 +22,15 @@ zox_sys2(ItemActivateSystem) {
         zox_geter(user, RaycastRange, range);
         byte hit_block = raycast_data->result == rayhit_terrain;
         byte in_range = raycast_data->distance <= range->value;
-        if (!hit_block || !in_range) {
+        if (!hit_block ||
+            !in_range)
+        {
             continue;
         }
         entity block = block_link->value;
-        if (!zox_valid(block) || !zox_has(block, BlockIndex)) {
+        if (!zox_valid(block) ||
+            !zox_has(block, BlockIndex))
+        {
             zox_loge("invalid block [%s]", zox_get_name(block));
             continue;
         }
@@ -36,7 +39,8 @@ zox_sys2(ItemActivateSystem) {
         byte3 positionl = raycast_data->positionl_last;
         entity chunk = raycast_data->chunk_last;
         if (!zox_valid(chunk) || !zox_has(chunk, VoxelNodeQueue)) {
-            zox_loge("Invalid rayhit chunk on user [%s]", zox_getn(user));
+            zox_loge("Invalid rayhit chunk on user [%s]",
+                zox_getn(user));
             continue;
         }
         zox_muter(chunk, VoxelNodeQueue, queue);
@@ -46,7 +50,13 @@ zox_sys2(ItemActivateSystem) {
         });
         quantity->value--;
         // place block sound
-        spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[30 + rand() % 6], 0.6, 1.4f * get_volume_sfx());
+        spawn_sound_generated(
+            world,
+            prefab_sound_generated,
+            instrument_violin,
+            note_frequencies[30 + rand() % 6],
+            0.6,
+            1.4f * get_volume_sfx());
         dirty->value = zox_dirty_trigger;
         if (zox_has(user, SwingStart)) {
             float swing_time = zox_getv(e, WarmupTime) + zox_getv(e, CooldownTime);

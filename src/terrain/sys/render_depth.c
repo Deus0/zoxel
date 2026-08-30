@@ -29,7 +29,9 @@ zox_sys2(ChunkLodSystem) {
             // Set New Depth
             octree_depth->value = render_depth->value;
             if (dbg_log) {
-                zox_log("Chunk [%s] Depth Increased -> %i", zox_get_name(e), render_depth->value);
+                zox_log("Chunk [%s] Depth Increased -> %i",
+                    zox_get_name(e),
+                    render_depth->value);
             }
             // Set to Generate as Depth Increased
             if (!zox_has(e, Loaded)) {

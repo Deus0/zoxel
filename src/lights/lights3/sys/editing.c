@@ -3,6 +3,7 @@
 // TODO: Convert local position to terrain position (positionv)
 // Shouuld we use VoxelNodeDepth here? since we are removing/adding at that depth
 zox_sys2(VoxelLightSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(BlockManagerLink);
@@ -17,9 +18,7 @@ zox_sys2(VoxelLightSystem) {
     zox_sys_out(LightNodeDirty);
     entity realm = 0;
     byte solidity[255];
-    for (int j = 0; j < 255; j++) {
-        solidity[j] = 1;
-    }
+    memset(solidity, 1, 255);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(BlockManagerLink, manager);
         zox_sys_i(VoxelNodeQueue, input_queue);
@@ -40,7 +39,10 @@ zox_sys2(VoxelLightSystem) {
             zox_geter(realm, BlockLinks, blocks);
             for (int j = 0; j < blocks->length; j++) {
                 entity block = blocks->value[j];
-                solidity[j] = zox_valid(block) && zox_has(block, BlockLightPass) ? !zox_getv(block, BlockLightPass) : 1;
+                solidity[j] = zox_valid(block) &&
+                    zox_has(block, BlockLightPass) ?
+                        !zox_getv(block, BlockLightPass) :
+                        1;
             }
         }
         const LightNode* nnodesl[6];
@@ -58,12 +60,14 @@ zox_sys2(VoxelLightSystem) {
                         .light = sunlight,
                         .depth = depth->value
                     });
-                    zox_logv("[%s] Removed Block: + Sunbeam at [%ix%ix%i] sunlight [%i]",
-                        zox_get_name(it->entities[i]),
-                        update.position.x,
-                        update.position.y,
-                        update.position.z,
-                        sunlight);
+                    if (dbg_log) {
+                        zox_log("[%s] Removed Block: + Sunbeam at [%ix%ix%i] sunlight [%i]",
+                            zox_sys_e_name,
+                            update.position.x,
+                            update.position.y,
+                            update.position.z,
+                            sunlight);
+                    }
                     // set dark light, as it was filled up
                     // set_LightNode(root_lnode, depth->value, update.position, sunlight, 0);
                 } else {
@@ -85,12 +89,14 @@ zox_sys2(VoxelLightSystem) {
                         }
                     }
                     byte decayed_light = (max_nlight > light_air_decay) ? (byte) (max_nlight - light_air_decay) : darklight;
-                    zox_logv("[%s] Removed Block: + Light Flood at [%ix%ix%i] max nlight [%i]",
-                        zox_getn(it->entities[i]),
-                        update.position.x,
-                        update.position.y,
-                        update.position.z,
-                        max_nlight);
+                    if (dbg_log) {
+                        zox_log("[%s] Removed Block: + Light Flood at [%ix%ix%i] max nlight [%i]",
+                            zox_sys_e_name,
+                            update.position.x,
+                            update.position.y,
+                            update.position.z,
+                            max_nlight);
+                    }
                     a_LightQueue(
                         light_queue,
                         (LightUpdate) {
@@ -114,12 +120,14 @@ zox_sys2(VoxelLightSystem) {
                 const LightNode* removed_lnode = get_LightNode(root_lnode, depth->value, update.position);
                 byte removed_light = removed_lnode ? removed_lnode->value : 0;
                 if (removed_light > darklight) {
-                    zox_logv("[%s] Placed Block: + Dark Flood at [%ix%ix%i] removed light [%i]",
-                        zox_getn(it->entities[i]),
-                        update.position.x,
-                        update.position.y,
-                        update.position.z,
-                        removed_light);
+                    if (dbg_log) {
+                        zox_log("[%s] Placed Block: + Dark Flood at [%ix%ix%i] removed light [%i]",
+                            zox_sys_e_name,
+                            update.position.x,
+                            update.position.y,
+                            update.position.z,
+                            removed_light);
+                    }
                     a_DarkQueue(dark_queue,
                         (DarkUpdate) {
                             .type = zox_light_type_flood,
@@ -140,12 +148,14 @@ zox_sys2(VoxelLightSystem) {
                 byte light_above = above ? above->value : 0;
                 if (light_above == sunlight) {
                     // if y, we do y + 1
-                    zox_logv("[%s] Placed Block: + Darkbeam [%ix%ix%i] l[%i]",
-                        zox_getn(it->entities[i]),
-                        update.position.x,
-                        update.position.y,
-                        update.position.z,
-                        darklight);
+                    if (dbg_log) {
+                        zox_log("[%s] Placed Block: + Darkbeam [%ix%ix%i] l[%i]",
+                            zox_sys_e_name,
+                            update.position.x,
+                            update.position.y,
+                            update.position.z,
+                            darklight);
+                    }
                     a_DarkQueue(dark_queue,
                         (DarkUpdate) {
                             .type = zox_light_type_beam_start,
@@ -156,14 +166,10 @@ zox_sys2(VoxelLightSystem) {
                 }
                 // set dark light, as it was filled up
                 // TODO: Move this to the light system itself
-                if (locks_enabled) {
-                    spin_lock(&lightlock->value);
-                }
+                /*spin_lock(&lightlock->value);
                 set_LightNode(root_lnode, depth->value, update.position, darklight);
-                if (locks_enabled) {
-                    spin_unlock(&lightlock->value);
-                }
-                light_node_dirty->value = zox_dirty_trigger;
+                spin_unlock(&lightlock->value);
+                light_node_dirty->value = zox_dirty_trigger;*/
             }
         }
     }

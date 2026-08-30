@@ -35,7 +35,8 @@ void define_systems_terrain(ecs *world) {
         [in] rendering.RenderDepth,
         [out] chunks3.ChunkLodDirty,
         [out] chunks.NodeDepth,
-        [none] terrains.TerrainChunk
+        [none] terrains.TerrainChunk,
+        [none] !core.Initialize,
     );
     // Lighting
     zox_system(

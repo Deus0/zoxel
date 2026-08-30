@@ -14,9 +14,7 @@ void on_closed_taskbar_window(
     }
     entity toggle = zox_get_link(world, window, Toggle);
     if (zox_valid(toggle)) {
-        zox_log("[on_closed_taskbar_window] Window [%s] has [Toggle] %s",
-            zox_getn(window),
-            zox_getn(toggle));
+        /*zox_log("[on_closed_taskbar_window] Window [%s] has [Toggle] %s", zox_getn(window), zox_getn(toggle));*/
         zox_setv(toggle, ActiveState, 0);
         zox_setv(toggle, ActiveStateDirty, zox_dirty_trigger);
     } else {
