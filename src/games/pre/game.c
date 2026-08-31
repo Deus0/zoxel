@@ -8,7 +8,7 @@ entity spawn_prefab_game(ecs* world) {
     // Remove these and just use dirty
     zox_setv(e, GameStateTarget, zox_game_start);
     zox_setv(e, LastGameState, zox_game_start);
-    zox_add(e, GameStateEvent);
+    zox_set(e, GameStateEvent, { .count = 0 });
     // dont need anymore
     zox_setv(e, RealmLink, 0);
     return e;

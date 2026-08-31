@@ -15,6 +15,7 @@ zoxc_state(Generate);
 // zoxc_byte(Initialize);
 zox_tag(PreInitialize);
 zox_tag(Initialize);
+zoxc_listener(InitializeEvent, 32, ecs*, entity);
 // identitys
 zoxc_int(ID);
 zoxc_lint(Seed);
@@ -55,6 +56,8 @@ void zox_components_core(ecs* world) {
     zoxd_nf_tag(DebugEntity);
     zoxd_nf_tag(Initialize);
     zoxd_nf_tag(PreInitialize);
+    zoxd(InitializeEvent);
+    zoxd_inherited(InitializeEvent);
     // Data
     zoxd_double(DeactivateDelay);
     zoxd_byte(GenericEvent);

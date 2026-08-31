@@ -16,7 +16,12 @@ zox_sys2(BiomesRealmSpawnSystem) {
         uint seed_offset = 999 + seed_shift;
         {
             lint biome_seed = seed->value + (seed_offset+=seed_shift);
-            entity e2 = spawn_biome(world, prefab_biome, e, "grasslands", biome_seed);
+            entity e2 = spawn_biome(
+                world,
+                prefab_biome,
+                e,
+                "grasslands",
+                biome_seed);
             zox_set_parent(world, e2, e);
             add_to_BiomeLinks(biomes, e2);
             zox_set(e2, DirtChance, { 0.3f });
@@ -28,7 +33,12 @@ zox_sys2(BiomesRealmSpawnSystem) {
         }
         {
             lint biome_seed = seed->value + (seed_offset+=seed_shift);
-            entity e2 = spawn_biome(world, prefab_biome, e, "desert", biome_seed);
+            entity e2 = spawn_biome(
+                world,
+                prefab_biome,
+                e,
+                "desert",
+                biome_seed);
             zox_set_parent(world, e2, e);
             add_to_BiomeLinks(biomes, e2);
             zox_set(e2, DirtChance, { 0.56f });
@@ -40,7 +50,12 @@ zox_sys2(BiomesRealmSpawnSystem) {
         }
         {
             lint biome_seed = seed->value + (seed_offset+=seed_shift);
-            entity e2 = spawn_biome(world, prefab_biome, e, "jungle", biome_seed);
+            entity e2 = spawn_biome(
+                world,
+                prefab_biome,
+                e,
+                "jungle",
+                biome_seed);
             zox_set_parent(world, e2, e);
             add_to_BiomeLinks(biomes, e2);
             zox_set(e2, DirtChance, { 0.1f });
@@ -50,6 +65,6 @@ zox_sys2(BiomesRealmSpawnSystem) {
             zox_set(e2, TreeChance, { 0.54f });
             zox_set(e2, BiomeHeightFrequency, { 0.369f });
         }
-        zox_logv("At [%f] Realm [Biomes] [%i] spawned.", zox_current_time, biomes->length);
+        zox_logv("Realm [Biomes] [%i] spawned", biomes->length);
     }
 } zox_sys_end(BiomesRealmSpawnSystem);

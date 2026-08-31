@@ -14,6 +14,10 @@ zox_sys2(PlayerStateEventSystem) {
         if (dirty->value != zox_dirty_active) {
             continue;
         }
+        /*if (event->value == NULL) {
+            zox_loge("PlayerStateEvent is null");
+            continue;
+        }*/
         for (int j = 0; j < event->count; j++) {
             if (event->value[j].fun == NULL) {
                 zox_loge("Player [%s] StateEvent Null [%i]",

@@ -7,19 +7,20 @@ entity spawn_prefab_app(
     zox_prefab_name("app");
     zox_add(e, App);
     // this should be refactored as viewport
-    zox_prefab_set(e, WindowPosition, { position });
-    zox_prefab_set(e, WindowSize, { size });
-    zox_prefab_set(e, WindowFullscreen, { 0 });
-    zox_prefab_set(e, WindowMaximized, { 0 });
-    zox_prefab_set(e, WindowSizeRestore, { int2_zero });
-    zox_prefab_set(e, WindowPositionRestore, { int2_zero });
-    zox_prefab_set(e, WindowMonitor, { 0 });
+    zox_setv(e, WindowPosition, position);
+    zox_setv(e, WindowSize, size);
+    zox_setv(e, WindowFullscreen, 0);
+    zox_setv(e, WindowMaximized, 0);
+    zox_setv(e, WindowSizeRestore, int2_zero);
+    zox_setv(e, WindowPositionRestore, int2_zero);
+    zox_setv(e, WindowMonitor, 0);
     // UI
     zox_add(e, CanvasLink);
     // Settings
-    zox_prefab_set(e, ZoxName, { });
-    zox_prefab_set(e, LoadSettings, { zox_load_settings_start });
+    zox_setv(e, ZoxName, 0);
+    zox_setv(e, LoadSettings, zox_load_settings_start);
     // Events
+    zox_set(e, InitializeEvent, { .count = 0 });
     zox_add(e, WindowSizeDirty);
     zox_add(e, PreInitialize);
     return e;

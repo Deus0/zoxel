@@ -13,6 +13,8 @@ void define_systems_settings(ecs* world) {
         SettingsLoadSystem,
         zoxp_update,
         [in] core.ZoxName,
-        [out] settings.LoadSettings
+        [out] settings.LoadSettings,
+        [none] !core.PreInitialize,
+        [none] !core.Initialize,
     );
 }

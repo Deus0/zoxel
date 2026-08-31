@@ -12,10 +12,12 @@ void player_state_respawn_ui(ecs* world, entity player, byte state) {
     if (!is_destroy && !is_spawn) {
         return;
     }
+    if (!zox_has(player, CanvasLink) || !zox_has(player, CameraLink)) {
+        zox_loge("[player_state_respawn_ui] Invalid [player]");
+        return;
+    }
     entity canvas = zox_getv(player, CanvasLink);
-    entity camera = zox_has(player, CameraLink) ?
-        zox_getv(player, CameraLink) :
-        0;
+    entity camera = zox_getv(player, CameraLink);
     if (!zox_valid(canvas) || !zox_valid(camera)) {
         // zox_logw("Canvas is missing from Player [PlayerUIGamePauseSystem]");
         return;
@@ -25,20 +27,6 @@ void player_state_respawn_ui(ecs* world, entity player, byte state) {
         canvas,
         zox_id(RespawnUI));
     if (is_spawn && !zox_valid(respawn_ui)) {
-        // Fade out on death
-        trigger_canvas_half_fade(
-            world,
-            canvas,
-            respawn_fade_in_time,
-            respawn_fade_alpha,
-            1);
-        zox_setv(camera, CameraBlur, death_blur);
-        spawn_respawn_ui(
-            world,
-            canvas);
-        if (dbg_log) {
-            zox_log("[RespawnBegin] Begin: Disposing Game UIs");
-        }
         // Incase it was paused
         // TODO: Move these to their own event functions
         entity pause_menu = zox_get_child_by_id(
@@ -61,6 +49,20 @@ void player_state_respawn_ui(ecs* world, entity player, byte state) {
             zox_id(MenuPlayTouch));
         if (zox_valid(touch_ui)) {
             zox_delete(touch_ui);
+        }
+        // Fade out on death
+        trigger_canvas_half_fade(
+            world,
+            canvas,
+            respawn_fade_in_time,
+            respawn_fade_alpha,
+            1);
+        zox_setv(camera, CameraBlur, death_blur);
+        spawn_respawn_ui(
+            world,
+            canvas);
+        if (dbg_log) {
+            zox_log("[RespawnBegin] Begin: Disposing Game UIs");
         }
     } else if (is_destroy && zox_valid(respawn_ui)) {
         if (dbg_log) {

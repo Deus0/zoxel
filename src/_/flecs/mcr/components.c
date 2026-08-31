@@ -61,3 +61,5 @@ byte add_to_##T(T* component, void (*fun)(__VA_ARGS__)) { \
 \
 zoxc_custom(T)
 
+#define zoxd_inherited(T) \
+    ecs_add_pair(world, ecs_id(T), EcsOnInstantiate, EcsInherit)

@@ -1,7 +1,7 @@
 extern entity main_app;
 
 // NOTE: Add bone settings to our App!
-zox_sys2(AppsSettingsSystem) {
+/*zox_sys2(AppsSettingsSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LoadSettings);
@@ -14,7 +14,7 @@ zox_sys2(AppsSettingsSystem) {
         spawn_setting_byte(world, e, "Fullscreen", fullscreen);
         spawn_setting_byte(world, e, "VSync", vsync);
     }
-} zox_sys_end(AppsSettingsSystem);
+} zox_sys_end(AppsSettingsSystem);*/
 
 zox_sys2(AppsSettingsDirtySystem) {
     byte dbg_log = 0;

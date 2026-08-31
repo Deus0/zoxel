@@ -1,4 +1,9 @@
 void clear_animation_sequence(ecs *world, entity e) {
+    if (!zox_has(e, AnimationSequence)) {
+        zox_loge("Entity [%s] has no AnimationSequence",
+            zox_getn(e));
+        return;
+    }
     zox_muter(e, AnimationSequence, animationSequence);
     if (animationSequence->value) {
         clear_memory_component(AnimationSequence, animationSequence);
@@ -73,30 +78,36 @@ void trigger_canvas_fade_transition(ecs* world, entity canvas, double fade_time,
     animationTargets->value[2] = 0;
 }
 
-void trigger_canvas_half_fade(ecs *world, entity canvas, float time_length, float alpha, byte direction) {
+void trigger_canvas_half_fade(
+    ecs *world,
+    entity canvas,
+    float time_length,
+    float alpha,
+    byte direction)
+{
     byte layer = 2;
     float canvas_fade_delay = 0.02f;
-    entity e = zox_get_child_by_id(world, canvas, zox_id(CanvasOverlay));
-    if (!e) {
-        zox_log_error("Failed to find canvas_overlay on canvas");
+    entity overlay = zox_get_child_by_id(world, canvas, zox_id(CanvasOverlay));
+    if (!zox_valid(overlay)) {
+        zox_loge("Failed to find canvas_overlay on canvas");
         return;
     }
     // zox_log(" + [%lu] triggering half fade for canvas_overlay [%lu]\n", canvas, e)
-    zox_set(e, Layer, { layer });
-    zox_set(e, RenderDisabled, { 0 });
+    zox_set(overlay, Layer, { layer });
+    zox_set(overlay, RenderDisabled, { 0 });
     // i should add multiple animationions as children or something
-    clear_animation_sequence(world, e);
+    clear_animation_sequence(world, overlay);
     // set start animation
-    zox_set(e, AnimationStart, { zox_current_time });
-    zox_set(e, AnimationState, { zox_animate_alpha });
-    zox_set(e, AnimationLength, { time_length - canvas_fade_delay });
-    zox_set(e, AnimationDelay, { canvas_fade_delay });
+    zox_set(overlay, AnimationStart, { zox_current_time });
+    zox_set(overlay, AnimationState, { zox_animate_alpha });
+    zox_set(overlay, AnimationLength, { time_length - canvas_fade_delay });
+    zox_set(overlay, AnimationDelay, { canvas_fade_delay });
     if (direction) {
-        zox_set(e, RenderDisabled, { 0 });
-        zox_set(e, AnimateSourceFloat, { 0 });
-        zox_set(e, AnimateTargetFloat, { alpha });
+        zox_set(overlay, RenderDisabled, { 0 });
+        zox_set(overlay, AnimateSourceFloat, { 0 });
+        zox_set(overlay, AnimateTargetFloat, { alpha });
     } else {
-        zox_set(e, AnimateSourceFloat, { alpha });
-        zox_set(e, AnimateTargetFloat, { 0 });
+        zox_set(overlay, AnimateSourceFloat, { alpha });
+        zox_set(overlay, AnimateTargetFloat, { 0 });
     }
 }

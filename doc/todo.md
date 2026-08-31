@@ -1,5 +1,6 @@
 # Todo
 
+- Refactor all 'SettingsSystem)' into events on prefab_app
 - doesnt spawn new chunk mesh ... again
 - Dungeon placement also gets stuck in infiinite loop
 	- i think its the placement queue

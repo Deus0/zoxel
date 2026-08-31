@@ -12,4 +12,10 @@ void zox_systems_core(ecs* world) {
         zoxp_initialize, // zoxp_remove,
         [none] core.Initialize,
     );
+    zox_system_1(
+        initialize_event_system,
+        zoxp_spawn,
+        [in] core.InitializeEvent,
+        [none] core.Initialize,
+    );
 }
