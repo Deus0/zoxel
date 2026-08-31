@@ -1,5 +1,34 @@
 # Done
 
+-x Landfill LOD issues
+	- When loading map?
+	- missmatch of tunk / chunk
+-x GenerateChunk not running when increasing depths
+-x fix prior refactor bugs...!
+    -x issue is initialize needs time to process
+    -x i tried spawn at start of ppipeline but it breaks
+-x VoxelDirty made into tag
+-x used links for chunks active mesh instead of children
+- Also lag spikes, huge
+-x Now... chunk meshses lag the game
+    - disable meshes - normal fps
+    - enabled meshes - 40 fps... ffujckc
+-x Lod Increase - Generation isnt triggering
+    - probably state not detected
+-x placing crashes / freezes it
+-x Write test to spawn realm
+-x Write test to spawn streamer + terrain
+-x Test to spawn query and print the tables
+-x if theres multiple streamers with different levels
+    -x idk... why this breaks for new game
+    -x oh i think it uses position for has, we should remove previous position if level is higher then
+    -x we clear atm which is fine for now
+-x Fix Depth Invalid issues - when i added queue
+	-x perhaps its due to lod setting earlier
+-x Add listener component on Game
+    -x GameStateEvent
+    -x Passes in game event with function
+-x Add loading screen event
 -x Vodes spawning / grass placement broken
 -x Also placing block bricked game - infinite loop
 Removing Links

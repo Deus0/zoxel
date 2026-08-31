@@ -1,10 +1,21 @@
-# Optimizations #
+# Optimizations
+
+Unsorted
+- Streaming gets 20ms spikes atm...
+	- debug with mangohud
+- Lower FPS, investigate the chunk meshes tables
+    - we can see by debugging pipelines
+- Add VoxelNodeLock for Octree Safety
+	- Crashed on load...!
+
+## Regression again
+Target: 230fps at the current position
+- Make MeshDirty + and other bytes tags
+- keep testing against old builds
 
 ## Fix Lag Spikes
 - LightFloodSystem [7ms]
 - ChunkSidesSystem [5ms]
-
-- Remove GenerateTexture too
 
 -> Use the flecs profiler to make sure chunk components are reduced properly
 -> Focus on terrain chunks for now

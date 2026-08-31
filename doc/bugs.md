@@ -1,5 +1,8 @@
-# Bugs #
-- Sometimes crashes still
+# Bugs
+
+Unsorted
+- doesnt spawn new chunk mesh ... again
+	- test by building upwards generating, the chunk initialization issue
 
 ## Rendering
 - Cube mesh doesnt restore on alt tab

@@ -1,5 +1,77 @@
 # Refactoring
 
+Unsorted
+- Add custom Phases -> EcsOnUpdate -> zoxp_update
+- Add links back for active mesh, fuck the rules
+- Refactor all 'SettingsSystem)' into events on prefab_app
+- Refactor ([in] players.PlayerState,) with new PlayerStateEvent listener
+- Move the key events out of the test functions
+    - just add to a KeyListener component
+- Refactor GenerateChunk to Generate, Generating, etc
+	- GenerateModel
+- Make chunk datas more self contained
+    - dont use terraindepth, just use maxdepth property
+- Remove state components and just use tags + dontfrag
+- Refactor our timings from on system entities
+    - spawn a profile entity (dataset)
+    
+## Refactor Events (To Tags)
+	- LayoutPositionDirty
+	- LayoutSizeDirty
+	- TextDirty
+	- GenerateTexture
+	- RenderLodDirty
+	- Refactor RenderDisabled to DF Tag
+	
+## Refactor Reactionary Systems to Events
+	- Tooltip Systems
+	- Restore/Dispose -> Query Functions
+	- Settings Spawning - InitializeEvent on App
+
+
+## Custom Phases
+- Make custom phases
+    - input
+    - state
+    - physics
+        - forces
+        - apply
+        - collision
+    - transforms
+    - cameras
+    - rendering
+- remove pre/post loops and just use systems as functions
+
+UIs
+- Centralize different uis
+    - atm theyre a bit spread through different state events
+    - For example screen fader is in 3 events
+    
+## Remove old links
+	- CanvasLink (mostly done)
+	- CharacterLink
+	- CameraLink
+	- EntityLinks
+	- BlockLinks
+	- BiomeLinks
+	- ModelLinks (half done)
+	- CharacterLinks
+	- PlaylistLinks
+	- Remove clear systems realm_clear_system
+
+Input Refactor
+- Make input actions events instead of systems
+    - Pause key - PlayerPauseSystem
+	
+## Remove old structs
+	- CanvasData
+	- LayoutParentData
+	- ElementSpawnData
+
+## Character Refactors
+- Refactor character mesh out of character - as child
+- Add character CombatState
+
 ## Tags / Events
 - Use a generic Dirty tag, use for stats
 - Refactor LayoutDirty

@@ -1,133 +1,24 @@
 # Todo
 
-- Refactor all 'SettingsSystem)' into events on prefab_app
-- doesnt spawn new chunk mesh ... again
-	- test by building upwards generating, the chunk initialization issue
-- Refactor Restore/Dispose into Query Functions
-- Refactor Settings to an event - InitializeEvent on App
-- Refactor ([in] players.PlayerState,) with new PlayerStateEvent listener
-- Fix Depth Invalid issues - when i added queue
-	- perhaps its due to lod setting earlier
-- Make chunk datas more self contained
-    - dont use terraindepth, just use maxdepth property
-
-Refactor Events
-	- LayoutPositionDirty
-	- LayoutSizeDirty
-	- TextDirty
-	- Refactor RenderDisabled to DF Tag
-
-UIs
-- Centralize different uis
-    - atm theyre a bit spread through different state events
-    - For example screen fader is in 3 events
-- Make tooltip an event instead of systems
-- Remove old links
-	- CanvasLink (mostly done)
-	- CharacterLink
-	- CameraLink
-	- EntityLinks
-	- BlockLinks
-	- BiomeLinks
-	- ModelLinks (half done)
-	- CharacterLinks
-	- PlaylistLinks
-	- Remove clear systems realm_clear_system
-- Remove old structs
-	- CanvasData
-	- LayoutParentData
-	- ElementSpawnData
-
-Input Refactor
-- Make input actions events instead of systems
-    - Pause key - PlayerPauseSystem
-
-Character Refactors
-- Refactor character mesh out of character - as child
-- Add character CombatState
-
--x Add listener component on Game
-    -x GameStateEvent
-    -x Passes in game event with function
-- Add loading screen event
-- Move the key events out of the test functions
-    - just add to a KeyListener component
-
-- Refactor Events to tags
-	- GenerateTexture
-	- RenderLodDirty
-- Refactor GenerateChunk to Generate, Generating, etc
-	- GenerateModel
-- Fix destruction material
+Unsorted
 - Add quest on npc - 5% chance
+- Fix destruction material
 - When remove body part
 	- remove the associated item slots
 	- refresh the body ui
-    
-- Add links back for active mesh, fuck the rules
 
-- Streaming gets 20ms spikes atm...
-	- debug with mangohud
-
-- if theres multiple streamers with different levels
-    - idk... why this breaks for new game
-    - oh i think it uses position for has, we should remove previous position if level is higher then
-    - we clear atm which is fine for now
-- Remove state components and just use tags + dontfrag
-- Refactor our timings
-    - spawn a profile entity (dataset)
-- GenerateChunk not running when increasing depths
-- Landfill LOD issues
-	- When loading map?
-	- missmatch of tunk / chunk
-- Add VoxelNodeLock for Octree Safety
-	- Crashed on load...!
-- Write test to spawn realm
-- Write test to spawn streamer + terrain
-- Test to spawn query and print the tables
-
-## Regression again
-- Lower FPS, investigate the chunk meshes tables
-    - we can see by debugging pipelines
-
-Target: 230fps at the current position
-- Make MeshDirty + and other bytes tags
-- keep testing against old builds
+## Whimsy
+- Add cracked bricks, a weaker version of bricks, 1 / 8 chance to spawn on wall
+- Why cant i touch and drag two windows at once???
+- Make a mushroom we can throw on ground - does disease damage once it hits an npc
+- Create jingle, a bunch of sounds that play in sequence, can be spawned from events like sounds, when a new ui opens etc
+- Stress test mode - add a multiplying slime that dies fast
 
 ## After
 - add min, max to fps display
 - We should not have restore/dispose systems
     - just use query
     - as systems cache their results per frame
-
-Maybe we just keep refactoring stuff
-- fix prior refactor bugs...!
-    - issue is initialize needs time to process
-    - i tried spawn at start of ppipeline but it breaks
-
-Did
-- VoxelDirty made into tag
-- used links for chunks active mesh instead of children
-- Also lag spikes, huge
-- Now... chunk meshses lag the game
-    - disable meshes - normal fps
-    - enabled meshes - 40 fps... ffujckc
-- Lod Increase - Generation isnt triggering
-    - probably state not detected
-- placing crashes / freezes it
-
-## Custom Phases
-- Make custom phases
-    - input
-    - state
-    - physics
-        - forces
-        - apply
-        - collision
-    - transforms
-    - cameras
-    - rendering
-- remove pre/post loops and just use systems as functions
 
 ## --------------------
 ## TOP PRIORITY
@@ -272,14 +163,6 @@ Did
     - so we dont get shuffling between cubes when camera shakes
     - like squarecast
 - Check when spawning if we are inside blocks
-
-## Whimsy
-- Add cracked bricks, a weaker version of bricks, 1 / 8 chance to spawn on wall
-- Why cant i touch and drag two windows at once???
-- Make a mushroom we can throw on ground - does disease damage once it hits an npc
-- Create jingle, a bunch of sounds that play in sequence, can be spawned from events like sounds, when a new ui opens etc
-- Stress test mode - add a multiplying slime that dies fast
-
 
 
 ## Game UI
