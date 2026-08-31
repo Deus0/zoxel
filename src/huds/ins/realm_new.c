@@ -64,7 +64,7 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
     byte2 button_padding = (byte2) { 6 * ui_scale, 4 * ui_scale };
     byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
     // more data
-    zox_geter_value(player, CanvasLink, entity, canvas);
+    entity canvas = zox_get_link(world, player, Canvas);
     const char* header_label = "Where"; // "New Realm";
     int max_labels = huds_max_list_elements;
     // # Window #

@@ -30,8 +30,25 @@ void zox_tst_spawn_window_list(
         .text = "Testing",
         .on_click = { &zox_tst_window_list_button },
     };
-    zox_geter_value(player, CanvasLink, entity, canvas);
-    entity e = spawn_window_list(world, prefab_window, player, header_label, header_font_size, list_font_size, close_event, can_close, menu_type, 0, alignment, float2_half, byte2_single(4), NULL, elements, visible_count, elements_count).x;
+    entity canvas = zox_get_link(world, player, Canvas);
+    entity e = spawn_window_list(
+        world,
+        prefab_window,
+        player,
+        header_label,
+        header_font_size,
+        list_font_size,
+        close_event,
+        can_close,
+        menu_type,
+        0,
+        alignment,
+        float2_half,
+        byte2_single(4),
+        NULL,
+        elements,
+        visible_count,
+        elements_count).x;
     zox_dbg_window_list = e;
     zox_log("Running Test: Spawn [WindowList]");
     zox_log("   - Player [%s]", zox_get_name(player));

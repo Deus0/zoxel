@@ -23,7 +23,7 @@ byte is_data_body_part(ecs* world, entity data) {
 entity spawn_player_menu_body(ecs* world, entity player) {
     color frame_equip_fill = { 63, 43, 33, frame_alpha };
     color frame_equip_outline = { 63, 43, 33, frame_alpha };
-    zox_geter_value(player, CanvasLink, entity, canvas);
+    entity canvas = zox_get_link(world, player, Canvas);
     zox_geter_value(player, CharacterLink, entity, character);
     byte label_font_size = 5 * ui_scale;
     // int frame_size = ((default_frame_size / 4) * ui_scale);

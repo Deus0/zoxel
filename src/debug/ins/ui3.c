@@ -11,7 +11,7 @@ void zox_dbg_test_window_uis3(ecs* world, int32_t keycode) {
         return;
     }
     entity player = dbg_player;
-    zox_geter_value(player, CanvasLink, entity, canvas);
+    entity canvas = zox_get_link(world, player, Canvas);
     if (!zox_valid(canvas)) {
         return;
     }

@@ -3,10 +3,10 @@
 #include "animate.c"
 #include "animate_end.c"
 #include "sound.c"
-realm_clear_system(DialoguetreeLinks);
+// realm_clear_system(DialoguetreeLinks);
 
 void define_systems_dialogues(ecs* world) {
-    realm_clear_systemd(dialogues, DialoguetreeLinks);
+    // realm_clear_systemd(dialogues, DialoguetreeLinks);
     zox_system(
         DialogueSpeechSystem,
         zoxp_update,

@@ -8,7 +8,7 @@
          zox_dbg_element_canvas = 0;
          return;
      }
-     zox_geter_value(player, CanvasLink, entity, canvas);
+     entity canvas = zox_get_link(world, player, Canvas);
      if (!zox_valid(canvas)) {
          return;
      }

@@ -2,41 +2,41 @@
 
 - Refactor all 'SettingsSystem)' into events on prefab_app
 - doesnt spawn new chunk mesh ... again
-- Dungeon placement also gets stuck in infiinite loop
-	- i think its the placement queue
-- Fix Chunk Generate LOD issues
-	- TunkLod is behind Chunks
-- Fix Dialogue font character flickering
-- Refactor RenderDisabled to DF Tag
+	- test by building upwards generating, the chunk initialization issue
 - Refactor Restore/Dispose into Query Functions
 - Refactor Settings to an event - InitializeEvent on App
 - Refactor ([in] players.PlayerState,) with new PlayerStateEvent listener
 - Fix Depth Invalid issues - when i added queue
 	- perhaps its due to lod setting earlier
--x Vodes spawning / grass placement broken
-- Also placing block bricked game - infinite loop
 - Make chunk datas more self contained
     - dont use terraindepth, just use maxdepth property
+
+Refactor Events
+	- LayoutPositionDirty
+	- LayoutSizeDirty
+	- TextDirty
+	- Refactor RenderDisabled to DF Tag
 
 UIs
 - Centralize different uis
     - atm theyre a bit spread through different state events
--x Loading UI
--x Fix Taskbar events on close
--x Refactor add_taskbar_button - just spawn as children of taskbar prefab
--x Add mirror ui - player render texture
+    - For example screen fader is in 3 events
 - Make tooltip an event instead of systems
-- Remove old UI structs (CanvasData, ParentData, etc)
 - Remove old links
-	- CharacterLinks
-	- ModelLinks
-	- DialoguetreeLinks
+	- CanvasLink (mostly done)
+	- CharacterLink
+	- CameraLink
+	- EntityLinks
 	- BlockLinks
 	- BiomeLinks
+	- ModelLinks (half done)
+	- CharacterLinks
 	- PlaylistLinks
-	- NodegraphLinks
 	- Remove clear systems realm_clear_system
-	-x just use children by tags
+- Remove old structs
+	- CanvasData
+	- LayoutParentData
+	- ElementSpawnData
 
 Input Refactor
 - Make input actions events instead of systems

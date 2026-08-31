@@ -9,9 +9,9 @@ zox_sys2(HealthbarSpawnerSystem) {
     };
     color fill = (color) { 0, 0, 0, 88 };
     color outline = (color) { 22, 22, 22, 88 };
-    color fill2 = (color) { 66, 5, 5, 155 };
+    color fill2 = (color) { 166, 5, 5, 195 };
     color outline2 = (color) { 33, 33, 33, 155 };
-    color font_fill = (color) { 200, 255, 255, 255 };
+    color font_fill = (color) { 120, 255, 255, 255 };
     color font_outline = (color) { 77, 122, 122, 255 };
     zox_sys_world();
     zox_sys_begin();

@@ -24,7 +24,8 @@ void button_event_exit_app(ecs *world, ClickEventData event) {
     zox_geter(game, PlayerLinks, players);
     for (int i = 0; i < players->length; i++) {
         entity e = players->value[i];
-        zox_geter_value(e, CanvasLink, entity, canvas);
+        entity canvas = zox_get_link(world, e, Canvas);
+        // zox_geter_value(e, CanvasLink, entity, canvas);
         if (!zox_valid(canvas)) {
             continue;
         }

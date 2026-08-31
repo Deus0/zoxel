@@ -1,7 +1,12 @@
 // extern entity spawn_dialogue_tree(ecs*, entity, char*);
 extern entity spawn_dialogue_node(ecs*, entity, char*);
 
-entity spawn_dialogue_tree_texts(ecs* world, entity prefab, entity parent, char** texts, byte count) {
+entity spawn_dialogue_tree_texts(
+    ecs* world,
+    entity prefab,
+    entity parent,
+    char** texts, byte count)
+{
     if (!count) {
         zox_log_error("Cannot have 0 texts.");
         return 0;
@@ -18,7 +23,7 @@ entity spawn_dialogue_tree_texts(ecs* world, entity prefab, entity parent, char*
         }
         last_node = e2;
     }
-    zox_set_parent(world, e, parent);
     zox_add(e, Dialogue);
+    zox_set_parent(world, e, parent);
     return e;
 }

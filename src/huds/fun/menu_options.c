@@ -1,7 +1,8 @@
 entity spawn_main_menu(ecs*, entity, const char*);
 
 void button_event_menu_main(ecs *world, ClickEventData event) {
-    zox_geter_value(event.clicker, CanvasLink, entity, canvas);
+    entity player = event.clicker;
+    entity canvas = zox_get_link(world, player, Canvas);
     if (!zox_valid(canvas)) {
         return;
     }

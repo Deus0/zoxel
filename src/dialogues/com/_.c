@@ -9,7 +9,7 @@ zoxc_entity(DialogueProcessLink);
 zoxc_entity(DialoguetreeLink);
 zoxc_entity(DialogueTextLink);
 zoxc_fixed_string(DialogueText, 512);
-zoxc_entities(DialoguetreeLinks);
+// zoxc_entities(DialoguetreeLinks);
 #define zox_speakers_max 2
 zoxc_array(SpeakerLinks, entity, zox_speakers_max);
 // Move to texts
@@ -32,7 +32,7 @@ void define_components_dialogues(ecs* world) {
     zoxd_entity(DialoguetreeLink);
     zoxd_entity(DialogueTextLink);
     zoxd_fixed_string(DialogueText);
-    zoxd_entities(DialoguetreeLinks);
+    // zoxd_entities(DialoguetreeLinks);
     zoxd(SpeakerLinks);
     // Move to texts
     zoxd_fixed_string(TargetText);

@@ -41,7 +41,7 @@ void zox_tst_spawn_character3_npc_skeleton(ecs *world, ClickEventData data) {
     entity e = spawn_character3(world, prefab, realm, terrain, seed, 0, 0, sposition, srotation, "Boney");
     zox_tst_character3_npc_skeleton = e;
     if (dbg_inspector) {
-        zox_geter_value(player, CanvasLink, entity, canvas);
+        entity canvas = zox_get_link(world, player, Canvas);
         spawn_inspector(world, canvas, player, e);
     }
 }

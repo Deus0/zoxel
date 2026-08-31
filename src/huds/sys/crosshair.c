@@ -40,7 +40,7 @@ zox_sys2(RaycastCrosshairSystem) {
             zox_loge("Player has no canvas");
             continue;
         }
-        zox_geter_value(player->value, CanvasLink, entity, canvas);
+        entity canvas = zox_get_link(world, player->value, Canvas);
         if (!zox_valid(canvas)) {
             continue;
         }

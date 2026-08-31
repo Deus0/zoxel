@@ -62,7 +62,9 @@ void on_boot_game_ui(
             app);
         zox_set_unique_name(canvas, "game_canvas");
         zox_setv(player, CanvasLink, canvas);
+        zox_link(world, player, Canvas, canvas);
         zox_setv(canvas, PlayerLink, player);
+        zox_link(world, canvas, Player, player);
         entity mouse_pointer = 0;
         if (zox_valid(local_mouse)) {
             mouse_pointer = zox_get_child_by_id(
@@ -167,11 +169,3 @@ void on_boot_game_ui(
 #endif
     }
 }
-
-/*void on_boot_game_ui(ecs* world, entity app) {
-    spawn_all_players_cameras_canvases(
-        world,
-        players_playing,
-        app);
-    spawn_all_players_start_ui(world);
-}*/

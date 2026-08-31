@@ -22,19 +22,6 @@ entity spawn_ui_line2(
     // const int2 canvas_size = zox_getv(canvas, LayoutSize)
     entity e = life_time ? zox_ins(world, prefab_temporary_ui_line2D) : zox_ins(world, prefab_ui_line2D);
     zox_name("ui_line2D");
-    // zox_set(e, CanvasLink, { canvas });
-    /*float4 line_anchor = (float4) {
-        anchor_a.x,
-        anchor_a.y,
-        anchor_b.x,
-        anchor_b.y
-    };
-    int4 points = (int4) {
-        point_a.x,
-        point_a.y,
-        point_b.x,
-        point_b.y
-    };*/
     zox_set_parent(world, e, parent);
     zox_set(e, LayoutLinePoints, { point_a, point_b });
     zox_set(e, Layer, { layer });

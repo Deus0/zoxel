@@ -1,10 +1,10 @@
 #include "start.c"
 #include "next.c"
 #include "end.c"
-realm_clear_system(NodegraphLinks);
+// realm_clear_system(NodegraphLinks);
 
 void define_systems_nodes(ecs* world) {
-    realm_clear_systemd(nodes, NodegraphLinks);
+    // realm_clear_systemd(nodes, NodegraphLinks);
     zox_system(
         NodetreeBeginSystem,
         zoxp_update,

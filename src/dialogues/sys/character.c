@@ -1,3 +1,4 @@
+// Links a npc to a dialogue!
 zox_sys2(CharacterDialogueSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -12,7 +13,19 @@ zox_sys2(CharacterDialogueSystem) {
         if (state->value != zox_dirty_active) {
             continue;
         }
-        zox_geter(realm->value, DialoguetreeLinks, trees);
-        tree->value = trees->value[rand() % trees->length];
+        uint capacity = 256;
+        entity trees[capacity];
+        uint length = zox_get_children_by_id(
+            world,
+            realm->value,
+            trees,
+            capacity,
+            zox_id(Dialogue));
+        if (!length) {
+            zox_loge("No dialogue found on realm [%s]",
+                zox_getn(realm->value));
+            continue;
+        }
+        tree->value = trees[rand() % length];
     }
 } zox_sys_end(CharacterDialogueSystem);

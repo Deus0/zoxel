@@ -9,17 +9,18 @@ zox_sys2(BodysRealmSpawnSystem) {
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
     zox_sys_in(Seed);
-    zox_sys_out(ModelLinks);
-    zox_sys_out(NodegraphLinks);
+    // zox_sys_out(ModelLinks);
+    // zox_sys_out(NodegraphLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateRealm, state);
         zox_sys_i(Seed, seed);
-        zox_sys_o(ModelLinks, models);
-        zox_sys_o(NodegraphLinks, graphs);
+        // zox_sys_o(ModelLinks, models);
+        // zox_sys_o(NodegraphLinks, graphs);
         if (state->value != zox_generate_realm_items) {
             continue;
         }
+        lint spawn_count = 0;
         // byte variants = 1;
         byte max_part_depth = block_depth + 2;
         byte blueprint_depth = nodegraph_max_depth;
@@ -31,7 +32,20 @@ zox_sys2(BodysRealmSpawnSystem) {
             continue;
         }
         lint body_seed = 666 * seed->value;
-        color_rgb skin_color_rgb = seed_to_color_rgb_range(body_seed, (float2) { 0, 360 }, (float2) { 22, 66 }, (float2) { 22, 66 });
+        color_rgb skin_color_rgb = seed_to_color_rgb_range(
+            body_seed,
+            (float2) {
+                0,
+                360
+            },
+            (float2) {
+                22,
+                66
+            },
+            (float2) {
+                22,
+                66
+            });
         float3 skin_hsv = color_rgb_to_hsv(skin_color_rgb);
         color skin_color = color_rgb_to_color(skin_color_rgb);
         float3 eye_hsv = (float3) {
@@ -42,7 +56,11 @@ zox_sys2(BodysRealmSpawnSystem) {
         color eye_color = hsv_to_color(eye_hsv);
         // Chest
         {
-            float3 blueprint_scale = (float3) { 0.5f, 0.54f, 0.56f };
+            float3 blueprint_scale = (float3) {
+                0.5f,
+                0.54f,
+                0.56f
+            };
             // Our Chest Blueprint involving Shapes + other nodes
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
             entity blueprint = spawn_blueprint_chest(
@@ -50,9 +68,9 @@ zox_sys2(BodysRealmSpawnSystem) {
                 blueprint_size,
                 blueprint_depth,
                 skin_color);
-            add_to_NodegraphLinks(graphs, blueprint);
+            // add_to_NodegraphLinks(graphs, blueprint);
             // Model Data
-            lint seed = 888 * (i * models->length);
+            lint seed = 888 * (i * spawn_count++);
             byte model_depth = max_part_depth - 1 < 0 ? 0 : max_part_depth - 1;
             entity2 e2 = spawn_realm_body_part2(
                 world,
@@ -65,12 +83,12 @@ zox_sys2(BodysRealmSpawnSystem) {
                 blueprint_scale,
                 dbg_log);
             // add_to_ItemLinks(items, e2.x);
-            add_to_ModelLinks(models, e2.y);
+            // add_to_ModelLinks(models, e2.y);
         }
         // Head
         {
             float3 blueprint_scale = float3_single(0.88f);
-            lint seed = 16663 * (i * models->length);
+            lint seed = 16663 * (i * spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
@@ -80,7 +98,7 @@ zox_sys2(BodysRealmSpawnSystem) {
                 blueprint_depth,
                 skin_color,
                 eye_color);
-            add_to_NodegraphLinks(graphs, blueprint);
+            // add_to_NodegraphLinks(graphs, blueprint);
             // Model Data
             entity2 e2 = spawn_realm_body_part2(
                 world,
@@ -93,13 +111,13 @@ zox_sys2(BodysRealmSpawnSystem) {
                 blueprint_scale,
                 dbg_log);
             // add_to_ItemLinks(items, e2.x);
-            add_to_ModelLinks(models, e2.y);
+            // add_to_ModelLinks(models, e2.y);
             zox_add(e2.x, Head);
         }
         // Hips
         {
             float3 blueprint_scale = (float3) { 0.92f, 0.4f, 0.6f };
-            lint seed = 3363 * (i * models->length);
+            lint seed = 3363 * (i * spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
@@ -108,7 +126,7 @@ zox_sys2(BodysRealmSpawnSystem) {
                 blueprint_size,
                 blueprint_depth,
                 skin_color);
-            add_to_NodegraphLinks(graphs, blueprint);
+            // add_to_NodegraphLinks(graphs, blueprint);
             // Spawn Model Item
             entity2 e2 = spawn_realm_body_part2(
                 world,
@@ -121,12 +139,12 @@ zox_sys2(BodysRealmSpawnSystem) {
                 blueprint_scale,
                 dbg_log);
             // add_to_ItemLinks(items, e2.x);
-            add_to_ModelLinks(models, e2.y);
+            // add_to_ModelLinks(models, e2.y);
         }
         // Thigh
         {
             float3 blueprint_scale = (float3) { 0.42f, 0.76f, 0.42f };
-            lint seed = 3363 * (i * models->length);
+            lint seed = 3363 * (i * spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
@@ -135,7 +153,7 @@ zox_sys2(BodysRealmSpawnSystem) {
                 blueprint_size,
                 blueprint_depth,
                 skin_color);
-            add_to_NodegraphLinks(graphs, blueprint);
+            // add_to_NodegraphLinks(graphs, blueprint);
             // Spawn Model Item
             entity2 e2 = spawn_realm_body_part2(
                 world,
@@ -148,91 +166,156 @@ zox_sys2(BodysRealmSpawnSystem) {
                 blueprint_scale,
                 dbg_log);
             // add_to_ItemLinks(items, e2.x);
-            add_to_ModelLinks(models, e2.y);
+            // add_to_ModelLinks(models, e2.y);
         }
         // Calf
         {
             float3 blueprint_scale = (float3) { 0.34f, 0.92f, 0.34f };
-            lint seed = 3363 * (i * models->length);
+            lint seed = 3363 * (i * spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
-            entity blueprint = spawn_blueprint_flesh_part(world, blueprint_size, blueprint_depth, skin_color);
-            add_to_NodegraphLinks(graphs, blueprint);
+            entity blueprint = spawn_blueprint_flesh_part(
+                world,
+                blueprint_size,
+                blueprint_depth,
+                skin_color);
+            // add_to_NodegraphLinks(graphs, blueprint);
             // Spawn Model Item
-            entity2 e2 = spawn_realm_body_part2(world, e, seed, model_depth, "Calf", zox_slot_lcalf, blueprint, blueprint_scale, dbg_log);
+            entity2 e2 = spawn_realm_body_part2(
+                world,
+                e,
+                seed,
+                model_depth,
+                "Calf",
+                zox_slot_lcalf,
+                blueprint,
+                blueprint_scale,
+                dbg_log);
             // add_to_ItemLinks(items, e2.x);
-            add_to_ModelLinks(models, e2.y);
+            // add_to_ModelLinks(models, e2.y);
         }
         // Feet
         {
             float3 blueprint_scale = (float3) { 0.36f, 0.42f, 0.86f };
-            lint seed = 3363 * (i * models->length);
+            lint seed = 3363 * (i * spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
-            entity blueprint = spawn_blueprint_flesh_part(world, blueprint_size, blueprint_depth, skin_color);
-            add_to_NodegraphLinks(graphs, blueprint);
+            entity blueprint = spawn_blueprint_flesh_part(
+                world,
+                blueprint_size,
+                blueprint_depth,
+                skin_color);
+            // add_to_NodegraphLinks(graphs, blueprint);
             // Spawn Model Item
-            entity2 e2 = spawn_realm_body_part2(world, e, seed, model_depth, "Foot", zox_slot_lfoot, blueprint, blueprint_scale, dbg_log);
+            entity2 e2 = spawn_realm_body_part2(
+                world,
+                e,
+                seed,
+                model_depth,
+                "Foot",
+                zox_slot_lfoot,
+                blueprint,
+                blueprint_scale,
+                dbg_log);
             // add_to_ItemLinks(items, e2.x);
-            add_to_ModelLinks(models, e2.y);
+            // add_to_ModelLinks(models, e2.y);
         }
         // Shoulder
         {
             float3 blueprint_scale = (float3) { 0.6f, 0.4f, 0.4f };
-            lint seed = 3363 * (i * models->length);
+            lint seed = 3363 * (i * spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
-            entity blueprint = spawn_blueprint_flesh_part(world, blueprint_size, blueprint_depth, skin_color);
-            add_to_NodegraphLinks(graphs, blueprint);
+            entity blueprint = spawn_blueprint_flesh_part(
+                world,
+                blueprint_size,
+                blueprint_depth,
+                skin_color);
+            // add_to_NodegraphLinks(graphs, blueprint);
             // Spawn Model Item
-            entity2 e2 = spawn_realm_body_part2(world, e, seed, model_depth, "Shoulder", zox_slot_lshoulder, blueprint, blueprint_scale, dbg_log);
+            entity2 e2 = spawn_realm_body_part2(
+                world,
+                e,
+                seed,
+                model_depth,
+                "Shoulder",
+                zox_slot_lshoulder,
+                blueprint,
+                blueprint_scale,
+                dbg_log);
             // add_to_ItemLinks(items, e2.x);
-            add_to_ModelLinks(models, e2.y);
+            // add_to_ModelLinks(models, e2.y);
         }
         // Bicep
         {
             float3 blueprint_scale = (float3) { 0.36f, 0.52f, 0.36f };
-            lint seed = 3363 * (i * models->length);
+            lint seed = 3363 * (i * spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
-            entity blueprint = spawn_blueprint_flesh_part(world, blueprint_size, blueprint_depth, skin_color);
-            add_to_NodegraphLinks(graphs, blueprint);
+            entity blueprint = spawn_blueprint_flesh_part(
+                world,
+                blueprint_size,
+                blueprint_depth,
+                skin_color);
+            // add_to_NodegraphLinks(graphs, blueprint);
             // Spawn Model Item
             entity2 e2 = spawn_realm_body_part2(world, e, seed, model_depth, "Bicep", zox_slot_lbicep, blueprint, blueprint_scale, dbg_log);
             // add_to_ItemLinks(items, e2.x);
-            add_to_ModelLinks(models, e2.y);
+            // add_to_ModelLinks(models, e2.y);
         }
         // Forearms
         {
             float3 blueprint_scale = (float3) { 0.36f, 0.62f, 0.36f };
-            lint seed = 3363 * (i * models->length);
+            lint seed = 3363 * (i * spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
-            entity blueprint = spawn_blueprint_flesh_part(world, blueprint_size, blueprint_depth, skin_color);
-            add_to_NodegraphLinks(graphs, blueprint);
+            entity blueprint = spawn_blueprint_flesh_part(
+                world,
+                blueprint_size,
+                blueprint_depth,
+                skin_color);
+            // add_to_NodegraphLinks(graphs, blueprint);
             // Spawn Model Item
-            entity2 e2 = spawn_realm_body_part2(world, e, seed, model_depth, "Forearm", zox_slot_lforearm, blueprint, blueprint_scale, dbg_log);
+            entity2 e2 = spawn_realm_body_part2(
+                world,
+                e,
+                seed,
+                model_depth,
+                "Forearm",
+                zox_slot_lforearm,
+                blueprint,
+                blueprint_scale,
+                dbg_log);
             // add_to_ItemLinks(items, e2.x);
-            add_to_ModelLinks(models, e2.y);
+            // add_to_ModelLinks(models, e2.y);
         }
         // Hands
         {
             float3 blueprint_scale = (float3) { 0.32f, 0.42f, 0.18f };
-            lint seed = 3363 * (i * models->length);
+            lint seed = 3363 * (i * spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
             entity blueprint = spawn_blueprint_flesh_part(world, blueprint_size, blueprint_depth, skin_color);
-            add_to_NodegraphLinks(graphs, blueprint);
+            // add_to_NodegraphLinks(graphs, blueprint);
             // Spawn Model Item
-            entity2 e2 = spawn_realm_body_part2(world, e, seed, model_depth, "Hand", zox_slot_lhand, blueprint, blueprint_scale, dbg_log);
+            entity2 e2 = spawn_realm_body_part2(
+                world,
+                e,
+                seed,
+                model_depth,
+                "Hand",
+                zox_slot_lhand,
+                blueprint,
+                blueprint_scale,
+                dbg_log);
             // add_to_ItemLinks(items, e2.x);
-            add_to_ModelLinks(models, e2.y);
+            // add_to_ModelLinks(models, e2.y);
         }
         float3 skin_hsv2 = (float3) {
             frand_range(0, 360),
@@ -251,28 +334,41 @@ zox_sys2(BodysRealmSpawnSystem) {
             float3 blueprint_scale = (float3) { 0.54f, 0.46f, 0.46f };
             // Our Chest Blueprint involving Shapes + other nodes
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
-            entity blueprint = spawn_blueprint_chest(world, blueprint_size, blueprint_depth, skin_color2);
-            add_to_NodegraphLinks(graphs, blueprint);
+            entity blueprint = spawn_blueprint_chest(
+                world,
+                blueprint_size,
+                blueprint_depth,
+                skin_color2);
+            // add_to_NodegraphLinks(graphs, blueprint);
             // Model Data
-            lint seed = 888 * (i * models->length);
+            lint seed = 888 * (i * spawn_count++);
             byte model_depth = max_part_depth - 1 < 0 ? 0 : max_part_depth - 1;
-            entity2 e2 = spawn_realm_body_part2(world, e, seed, model_depth, "Chest2", zox_slot_core, blueprint, blueprint_scale, dbg_log);
+            entity2 e2 = spawn_realm_body_part2(
+                world,
+                e,
+                seed,
+                model_depth,
+                "Chest2",
+                zox_slot_core,
+                blueprint,
+                blueprint_scale,
+                dbg_log);
             // add_to_ItemLinks(items, e2.x);
-            add_to_ModelLinks(models, e2.y);
+            // add_to_ModelLinks(models, e2.y);
         }
         // Head_2
         {
             float3 blueprint_scale = float3_single(0.76f);
-            lint seed = 16663 * (i * models->length);
+            lint seed = 16663 * (i * spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
             entity blueprint = spawn_blueprint_head(world, blueprint_size, blueprint_depth, skin_color2, eye_color2);
-            add_to_NodegraphLinks(graphs, blueprint);
+            // add_to_NodegraphLinks(graphs, blueprint);
             // Model Data
             entity2 e2 = spawn_realm_body_part2(world, e, seed, model_depth, "Head2", zox_slot_head, blueprint, blueprint_scale, dbg_log);
             // add_to_ItemLinks(items, e2.x);
-            add_to_ModelLinks(models, e2.y);
+            // add_to_ModelLinks(models, e2.y);
             zox_add(e2.x, Head);
         }
         zox_logv("At [%f] Realm [bodys] [%i] spawned.", zox_current_time, items->length);

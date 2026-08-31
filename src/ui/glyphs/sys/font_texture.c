@@ -67,11 +67,11 @@ void generate_splotches_lines(
         int2 pointB = font_point_to_pixel(points[i + 1], size, padding);
         int distance = int2_distance(pointA, pointB);
         float2 direction = float2_normalize(float2_sub(int2_to_float2(pointB), int2_to_float2(pointA)));
-        #ifdef debug_font_texture
+#ifdef debug_font_texture
         zox_log("Font Data %i %ix%i > %ix%i\n", i, pointA.x, pointA.y, pointB.x, pointB.y)
         zox_log("    - %ix%i > %ix%i\n", pointA.x, pointA.y, pointB.x, pointB.y);
         zox_log("    - distance %i direction %fx%f\n", distance, direction.x, direction.y);
-        #endif
+#endif
         int2 splash_point = pointA;
         for (int j = 0; j <= distance; j++) {
             int2 splash_point_check = int2_add(float2_to_int2(float2_multiply_float(direction, (float) j)), pointA);
@@ -733,7 +733,6 @@ void generate_font_texture(
     int points_length,
     color line_color,
     color fill_color,
-    // byte is_shapes,
     byte fill_thickness,
     byte outline_thickness,
     float2 point_padding,
@@ -792,7 +791,6 @@ zox_sys2(FontTextureSystem) {
     color clear_color = nothing_font_color;
     float2 point_padding = font_point_padding;
     entity zox_font_style;
-    // byte is_use_shapes;
     uint fonts_length = 0;
     uint font_children_capacity = 256;
     entity font_children[font_children_capacity];
@@ -826,8 +824,6 @@ zox_sys2(FontTextureSystem) {
                 zox_loge("[zox_font_style] is NULL");
                 return;
             }
-            // is_use_shapes = zox_has(zox_font_style, TTFFontStyle);
-            // uint fonts_length = zox_get_children_count(world, zox_font_style);
             fonts_length = zox_get_children(world, zox_font_style, font_children, font_children_capacity);
             if (!fonts_length) {
                 zox_loge("[font_style_children] is NULL");
@@ -840,12 +836,16 @@ zox_sys2(FontTextureSystem) {
         }
         // get font based on zigel index
         entity font = font_children[zindex->value];
-        if (!zox_valid(font) || !zox_has(font, FontData)) {
+        if (!zox_valid(font) ||
+            !zox_has(font, FontData))
+        {
             resize_TextureData(data, 0);
             zox_add(e, TextureDirty);
             continue;
         }
-        if (font_texture_min_size && size->value.x < font_texture_min_size) {
+        if (font_texture_min_size &&
+            size->value.x < font_texture_min_size)
+        {
             zox_setv(e, TextureSize, int2_single(font_texture_min_size));
             continue;
         }
@@ -856,9 +856,8 @@ zox_sys2(FontTextureSystem) {
             continue;
         }
         const FontData* raw_font_data = zox_get(font, FontData);
-        const byte2 *font_data = (const byte2 *) raw_font_data->value;
+        const byte2 *font_data = (const byte2*) raw_font_data->value;
         byte2 centred_font_data[raw_font_data->length];
-        // byte2 font_data[raw_font_data->length];
         if (zox_has(e, CentredZigel)) {
             // its a byte* array with range [0, 255]
             centre_font_data(
@@ -880,7 +879,6 @@ zox_sys2(FontTextureSystem) {
             raw_font_data->length,
             outline->value,
             fill->value,
-            // is_use_shapes,
             thickness->value,
             outline_thickness->value,
             point_padding,
@@ -895,7 +893,18 @@ zox_sys2(FontTextureSystem) {
                 checksum += data->value[j].b;
                 checksum += data->value[j].a;
             }
-            zox_log("[%s] Generated Zigel [%i] Font: F [%ix%ix%ix%i] O [%ix%ix%ix%i] checksum=%u", zox_getn(e), zindex->value, fill->value.r, fill->value.g, fill->value.b, fill->value.a, outline->value.r, outline->value.b, outline->value.g, outline->value.a, checksum);
+            zox_log("[%s] Generated Zigel [%i] Font: F [%ix%ix%ix%i] O [%ix%ix%ix%i] checksum=%u",
+                zox_getn(e),
+                zindex->value,
+                fill->value.r,
+                fill->value.g,
+                fill->value.b,
+                fill->value.a,
+                outline->value.r,
+                outline->value.b,
+                outline->value.g,
+                outline->value.a,
+                checksum);
         }
     }
 } zox_sys_end(FontTextureSystem);

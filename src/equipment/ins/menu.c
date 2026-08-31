@@ -13,7 +13,7 @@ void fetch_equip_slots_parts(ecs *world, entity_array_d* entities, entity e) {
 entity spawn_player_menu_equipment(ecs* world, entity player) {
     color frame_equip_fill = { 63, 43, 33, frame_alpha };
     color frame_equip_outline = { 63, 43, 33, frame_alpha };
-    zox_geter_value(player, CanvasLink, entity, canvas);
+    entity canvas = zox_get_link(world, player, Canvas);
     zox_geter_value(player, CharacterLink, entity, character);
     byte label_font_size = 5 * ui_scale;
     // int frame_size = ((default_frame_size / 4) * ui_scale);
@@ -30,7 +30,24 @@ entity spawn_player_menu_equipment(ecs* world, entity player) {
     }
     byte2 cells_size = byte2_single(grid_length);
     // Spawn our window
-    entity e = spawn_datagrid_slots2(world, prefab_window, prefab_frame, prefab_icon, prefab_label2, label_font_size, canvas, character, cells_size, "Gear", frame_equip_fill, frame_equip_outline, position_anchor, position, frame_id, parts->data, parts->size);
+    entity e = spawn_datagrid_slots2(
+        world,
+        prefab_window,
+        prefab_frame,
+        prefab_icon,
+        prefab_label2,
+        label_font_size,
+        canvas,
+        character,
+        cells_size,
+        "Gear",
+        frame_equip_fill,
+        frame_equip_outline,
+        position_anchor,
+        position,
+        frame_id,
+        parts->data,
+        parts->size);
     zox_add(e, MenuEquipment);
     dispose_entity_array_d(parts);
     return e;

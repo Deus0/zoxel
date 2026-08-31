@@ -7,7 +7,7 @@ void toggle_inspector(ecs *world, int32_t keycode) {
     if (!zox_valid(player)) {
         return;
     }
-    zox_geter_value(player, CanvasLink, entity, canvas);
+    entity canvas = zox_get_link(world, player, Canvas);
     entity e = zox_get_child_by_id(world, canvas, zox_id(InspectorUI));
     // entity e = get_canvas_window(world, canvas, zox_window_inspector);
     if (e) {
@@ -22,7 +22,7 @@ void toggle_inspector(ecs *world, int32_t keycode) {
 }
 
 void toggle_inspector_target(ecs* world, entity player, entity target) {
-    zox_geter_value(player, CanvasLink, entity, canvas);
+    entity canvas = zox_get_link(world, player, Canvas);
     if (!zox_valid(target)) {
         return;
     }

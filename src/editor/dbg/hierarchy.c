@@ -7,7 +7,7 @@ void toggle_hierarchy(ecs *world, int32_t keycode) {
     if (!zox_valid(player)) {
         return;
     }
-    zox_geter_value(player, CanvasLink, entity, canvas);
+    entity canvas = zox_get_link(world, player, Canvas);
     entity e = zox_get_child_by_id(world, canvas, zox_id(HierarchyUI));
     // entity e = get_canvas_window(world, canvas, zox_window_hierarchy);
     if (e) {

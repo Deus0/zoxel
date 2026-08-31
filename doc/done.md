@@ -1,5 +1,21 @@
 # Done
 
+-x Vodes spawning / grass placement broken
+-x Also placing block bricked game - infinite loop
+Removing Links
+	-x DialoguetreeLinks
+	-x NodegraphLinks
+	-x just use children by tags
+-x Loading UI
+-x Fix Taskbar events on close
+-x Refactor add_taskbar_button - just spawn as children of taskbar prefab
+-x Add mirror ui - player render texture
+-x Fix Dialogue font character flickering
+-x Dungeon placement also gets stuck in infiinite loop
+	-x i think its the placement queue
+-x Fix Chunk Generate LOD issues
+	-x TunkLod is behind Chunks
+	-x i think this waas due to loading then
 -x Remove SkillLinks, StatLinks, QuestLinks
 -x statbar2D isnt changing now too
 -x Statsbar isnt shrinking

@@ -21,6 +21,10 @@ int get_zigels_count(ecs *world) {
 
 void zox_spawn_prefabs_zigels(ecs *world) {
     prefab_font = spawn_font_prefab(world);
-    prefab_font_style = spawn_prefab_font_style(world, prefab_font);
-    prefab_zigel = spawn_prefab_glyph(world, prefab_element);
+    prefab_font_style = spawn_prefab_font_style(
+        world,
+        prefab_font);
+    prefab_zigel = spawn_prefab_glyph(
+        world,
+        prefab_element);
 }

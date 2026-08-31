@@ -13,7 +13,7 @@ zoxc_entity(NodeNext);
 zoxc_entity(NodeStartLink);
 zoxc_entity(NodeLink);
 zoxc_entities(NodeLinks)
-zoxc_entities(NodegraphLinks)
+// zoxc_entities(NodegraphLinks)
 
 void define_components_nodes(ecs* world) {
     zoxd_tag(Node);
@@ -31,5 +31,5 @@ void define_components_nodes(ecs* world) {
     zoxd_entity(NodeStartLink);
     zoxd_entity(NodeLink);
     zoxd_entities(NodeLinks);
-    zoxd_entities(NodegraphLinks);
+    // zoxd_entities(NodegraphLinks);
 }

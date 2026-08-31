@@ -41,7 +41,7 @@ void toggle_fps_viewer(ecs *world, int32_t keycode) {
     if (!zox_valid(player)) {
         return;
     }
-    zox_geter_value(player, CanvasLink, entity, canvas);
+    entity canvas = zox_get_link(world, player, Canvas);
     if (!zox_valid(canvas)) {
         return;
     }
