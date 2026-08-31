@@ -7,14 +7,17 @@ sdl_url="https://github.com/libsdl-org/SDL/archive/refs/tags/release-2.32.8.zip"
 sdl_image_url="https://github.com/libsdl-org/SDL_image/archive/refs/tags/release-2.8.10.zip"
 sdl_mixer_url="https://github.com/libsdl-org/SDL_mixer/archive/refs/tags/release-2.8.1.zip"
 sdl3_mixer_url="https://github.com/libsdl-org/SDL_mixer/archive/refs/tags/release-3.2.4.zip"
+mesa_url="https://archive.mesa3d.org/mesa-26.1.8.tar.xz"
 
 sdl_filepath="ext/sdl2.zip"
 sdl3_filepath="ext/sdl3.zip"
+mesa_filepath="ext/mesa.tar.xz"
 
 USE_SDL3=0
 USE_GLEW=0
 USE_SDL_IMAGE=0
 USE_SDL_MIXER=0
+USE_MESA=0
 
 for arg in "$@"; do
     case "$arg" in
@@ -30,10 +33,14 @@ for arg in "$@"; do
         --sdl-mixer)
             USE_SDL_MIXER=1
             ;;
+        --mesa)
+            USE_MESA=1
+            ;;
     esac
 done
 
 echo "Downloading Libraries: SDL3 [$USE_SDL3], Glew [$USE_GLEW], Image [$USE_SDL_IMAGE], Mixer [$USE_SDL_MIXER]"
+echo "  - Mesa [$USE_MESA]"
 
 mkdir -p ext
 
@@ -70,6 +77,36 @@ download_and_extract() {
 
         cp -a "$source_dir"/. "$dir"/
 
+        rm -rf "$temp_dir"
+    else
+        echo "+ Found extracted source [$dir]"
+    fi
+}
+
+download_and_extract_tar() {
+    local url="$1"
+    local archive="$2"
+    local dir="$3"
+    if [[ -f "$archive" ]]; then
+        echo "+ Found [$archive]"
+    else
+        echo "-> Downloading [$archive] from [$url]"
+        curl -L "$url" -o "$archive"
+    fi
+    if [[ ! -f "$dir/meson.build" ]]; then
+        echo "-> Extracting [$archive] to [$dir]"
+        mkdir -p "$dir"
+        local temp_dir
+        temp_dir="$(mktemp -d)"
+        tar -xf "$archive" -C "$temp_dir"
+        local source_dir
+        source_dir="$(find "$temp_dir" -mindepth 1 -maxdepth 1 -type d | head -n 1)"
+        if [[ -z "$source_dir" ]]; then
+            echo "Could not find source directory in $archive"
+            rm -rf "$temp_dir"
+            exit 1
+        fi
+        cp -a "$source_dir"/. "$dir"/
         rm -rf "$temp_dir"
     else
         echo "+ Found extracted source [$dir]"
@@ -122,4 +159,13 @@ if [[ "$USE_SDL_IMAGE" -eq 1 ]]; then
         "$sdl_image_url" \
         "ext/sdl2_image.zip" \
         "ext/sdl2_image"
+fi
+
+# Mesa
+
+if [[ "$USE_MESA" -eq 1 ]]; then
+    download_and_extract_tar \
+        "$mesa_url" \
+        "$mesa_filepath" \
+        "ext/mesa"
 fi

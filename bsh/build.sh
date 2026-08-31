@@ -2,6 +2,7 @@
 set -euo pipefail
 
 # NOTE: Converts the shell flags into flags for our game code
+source bsh/get-compiler.sh
 
 # settings
 game_name="zoxel"
@@ -13,7 +14,7 @@ elif [[ ${on_arc} == "x86_64" ]]; then
     on_arc="x64"
 fi
 arc="${on_arc}"         # x64 or arm
-compiler="gcc"
+# compiler="gcc"
 cflags="-std=gnu99 -fPIC"
 dflags="-Dflecssource"
 debug="0"
@@ -37,6 +38,7 @@ is_sdl3="1"                 # sdl2, sdl3
 sdl_mixer="1"
 is_glew="0"
 is_desktop_gl="1"           # Use GL libs instead of EGL on desktop
+native="0"                  # Fastest
 
 # Paths
 sources="src/main.c inc/flecs/flecs.c"
@@ -58,6 +60,7 @@ fi
 # Architecture
 [[ " $* " == *" --x64 "* ]] && arc="x64"
 [[ " $* " == *" --arm "* ]] && arc="arm"
+[[ " $* " == *" --native "* ]] && native="1"
 
 # Libraries
 [[ " $* " == *" --nomixer "* ]] && sdl_mixer="0"
@@ -107,13 +110,14 @@ fi
 bin_path="${output_folder}/${bin_filename}.${output_extension}"
 
 # Set our compiler variables #
+compiler="$(get_compiler "$on_arc" "$arc" "$os")"
 
 if [[ "${os}" == "linux" ]]; then
     dflags+=" -Dzox_linux"
     libs+=" -lm -ldl"
 elif [[ "${os}" == "windows" ]]; then
     is_glew="1"
-    compiler="x86_64-w64-mingw32-gcc"
+    # compiler="x86_64-w64-mingw32-gcc"
     dflags+=" -Dzox_windows"
     libs+=" -lws2_32 -ldbghelp"
     if ! command -v x86_64-w64-mingw32-gcc >/dev/null 2>&1; then
@@ -158,6 +162,10 @@ if [[ ${debug} == "1" ]]; then
 else
     # Release Builds
     cflags+=" -O3 -flto=auto -DNDEBUG"
+fi
+
+if [[ ${native} == "1" ]]; then
+    cflags+=" -march=native"
 fi
 
 if [[ ${is_profiler} == "1" ]]; then
@@ -259,7 +267,12 @@ if [[ ${graphics_lib} == "opengl" ]]; then
     if [[ ${os} == "windows" ]]; then
         libs+=" -lopengl32"
     elif [[ ${is_desktop_gl} == "1" ]]; then
-        libs+=" -lGL"
+        # Special case when compiling from arm to x64
+        if [[ ${arc} == "x64" && ${on_arc} == "arm" ]]; then
+            libs+=" -lEGL -lGLESv2"
+        else
+            libs+=" -lGL"
+        fi
     else
         libs+=" -lEGL -lGLESv2"
     fi
@@ -316,7 +329,7 @@ if [[ "${window_lib}" == "sdl" && ${is_static} == "1" ]]; then
     [[ ${docker} == "1" ]] && lib_args+=" --docker"
     bsh/libs-download.sh ${lib_args}
     echo "--------------------------------------------"
-    bsh/libs-compile.sh ${os} ${arc} ${lib_args}
+    bsh/libs-compile.sh ${os} --${arc} ${lib_args}
     echo "--------------------------------------------"
     echo ""
 fi

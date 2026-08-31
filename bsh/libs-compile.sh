@@ -1,15 +1,42 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TARGET="${1:-linux}"
-ARCH="${2:-x86_64}"
-library="lib/${TARGET}_${ARCH}"
+source bsh/get-compiler.sh
 
+TARGET="${1:-linux}"
+
+# Detect host architecture.
+HOST_ARCH="$(uname -m)"
+case "$HOST_ARCH" in
+    x86_64)
+        HOST_ARCH="x64"
+        ;;
+    aarch64|arm64)
+        HOST_ARCH="arm"
+        ;;
+    *)
+        echo "Unsupported host architecture: $(uname -m)"
+        exit 1
+        ;;
+esac
+
+arc="$HOST_ARCH"
+
+
+# Pass in args
+
+# Architecture
+[[ " $* " == *" --x64 "* ]] && arc="x64"
+[[ " $* " == *" --arm "* ]] && arc="arm"
+
+# Others
+library="lib/${TARGET}_${arc}"
 [[ " $* " == *" --docker "* ]] && library="${library}_docker"
 
-echo "Compiling Libraries [$TARGET]:[$ARCH]"
-echo " To [${library}]"
-
+echo "Host architecture: $HOST_ARCH"
+echo "  Target architecture [${arc}]"
+echo "  Target platform [$TARGET]"
+echo "  Target [${library}]"
 mkdir -p ${library}
 
 USE_SDL3=0
@@ -39,39 +66,19 @@ CC=""
 CXX=""
 SYSROOT=""
 PKG_CONFIG_LIBDIR=""
-
 SDL_LIB_NAME=""
 SDL_LIB_IMPORT_NAME=""
 SDL_IMAGE_LIB_NAME=""
 SDL_MIXER_LIB_NAME=""
-
 SDL_SRC_DIR=""
-
-# Detect host architecture.
-HOST_ARCH="$(uname -m)"
-
-case "$HOST_ARCH" in
-    x86_64)
-        HOST_ARCH="x86_64"
-        ;;
-    aarch64|arm64)
-        HOST_ARCH="arm64"
-        ;;
-    *)
-        echo "Unsupported host architecture: $(uname -m)"
-        exit 1
-        ;;
-esac
-
-echo "Host architecture: $HOST_ARCH"
 
 case "$TARGET" in
     windows)
         SYSTEM_NAME="Windows"
 
-        case "$ARCH" in
+        case "${arc}" in
             x64) # x86_64)
-                CC="x86_64-w64-mingw32-gcc"
+                # CC="x86_64-w64-mingw32-gcc"
                 CXX="x86_64-w64-mingw32-g++"
                 ;;
             *)
@@ -96,23 +103,29 @@ case "$TARGET" in
     linux)
         SYSTEM_NAME="Linux"
 
-        case "$ARCH" in
-            x64) # x86_64)
-                CC="x86_64-linux-gnu-gcc"
-
-                if [[ "$HOST_ARCH" == "x86_64" ]]; then
+        case "${arc}" in
+            x64)
+                # CC="x86_64-linux-gnu-gcc"
+                if [[ "$HOST_ARCH" == "x64" ]]; then
+                    # Native x64
+                    CC="gcc"
+                    CXX="g++"
                     SYSROOT=""
                     PKG_CONFIG_LIBDIR=""
                 else
-                    SYSROOT="/usr/x86_64-linux-gnu"
-                    PKG_CONFIG_LIBDIR="$SYSROOT/lib/pkgconfig:$SYSROOT/share/pkgconfig:$SYSROOT/usr/lib/pkgconfig"
+                    CC="x86_64-linux-gnu-gcc"
+                    CXX="x86_64-linux-gnu-g++"
+                    SYSROOT=""
+                    PKG_CONFIG_LIBDIR="/usr/lib/x86_64-linux-gnu/pkgconfig"
+                    # SYSROOT="/usr/x86_64-linux-gnu"
+                    # PKG_CONFIG_LIBDIR="$SYSROOT/lib/pkgconfig:$SYSROOT/share/pkgconfig:$SYSROOT/usr/lib/pkgconfig"
                 fi
                 ;;
 
             arm) # arm64)
-                CC="aarch64-linux-gnu-gcc"
+                # CC="aarch64-linux-gnu-gcc"
 
-                if [[ "$HOST_ARCH" == "arm64" ]]; then
+                if [[ "$HOST_ARCH" == "arm" ]]; then
                     SYSROOT=""
                     PKG_CONFIG_LIBDIR=""
                 else
@@ -122,7 +135,7 @@ case "$TARGET" in
                 ;;
 
             *)
-                echo "Unsupported Linux arch: $ARCH"
+                echo "Unsupported Linux arch: ${arc}"
                 exit 1
                 ;;
         esac
@@ -147,13 +160,15 @@ case "$TARGET" in
         ;;
 esac
 
+CC="$(get_compiler "$HOST_ARCH" "$arc" "$TARGET")"
+
 if [[ "$USE_SDL3" -eq 1 ]]; then
     SDL_SRC_DIR="ext/sdl3"
 else
     SDL_SRC_DIR="ext/sdl2"
 fi
 
-BUILD_SUFFIX="${TARGET}-${ARCH}"
+BUILD_SUFFIX="${TARGET}-${arc}"
 
 if [[ " $* " == *" --docker "* ]]; then
     BUILD_SUFFIX="${BUILD_SUFFIX}-docker"
@@ -164,6 +179,7 @@ sdl_build_directory="$SDL_SRC_DIR/build-$BUILD_SUFFIX"
 # mkdir -p ${sdl_build_directory}
 
 echo "Compiler: $CC"
+echo "  C++ $CXX"
 
 if [[ -n "$SYSROOT" ]]; then
     echo "Sysroot: $SYSROOT"
@@ -201,7 +217,7 @@ build_if_missing() {
         return
     fi
 
-    echo "-> Building $OUTPUT_NAME for $TARGET/$ARCH"
+    echo "-> Building $OUTPUT_NAME for $TARGET/${arc}"
 
     #if ! artifact_exists "$BUILD_DIR" "$OUTPUT_GLOB"; then
     #    echo "-> Building $OUTPUT_NAME for $TARGET/$ARCH"
@@ -257,7 +273,8 @@ build_if_missing \
     "$SDL_SRC_DIR/build-$BUILD_SUFFIX" \
     "$SDL_LIB_NAME" \
     "${SDL_LIB_NAME%.*}*.${SDL_LIB_NAME##*.}" \
-    -DSDL_X11_XTEST=OFF
+    -DSDL_X11_XTEST=OFF \
+    -DSDL_TESTS=OFF
 
 # SDL Mixer
 
@@ -352,4 +369,4 @@ if [[ "$USE_SDL_IMAGE" -eq 1 ]]; then
     fi
 fi
 
-echo "Build complete for target: $TARGET/$ARCH"
+echo "Build complete for target: $TARGET/${arc}"
