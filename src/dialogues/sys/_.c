@@ -3,16 +3,14 @@
 #include "animate.c"
 #include "animate_end.c"
 #include "sound.c"
-// realm_clear_system(DialoguetreeLinks);
 
 void define_systems_dialogues(ecs* world) {
-    // realm_clear_systemd(dialogues, DialoguetreeLinks);
     zox_system(
         DialogueSpeechSystem,
         zoxp_update,
         [in] nodes.NodeBegin,
         [in] nodes.NodeLink,
-        [in] dialogues.DialogueUILink
+        [none] dialogues.DialogueProcess
     );
     zox_system(
         AnimateTextSystem,
@@ -37,7 +35,7 @@ void define_systems_dialogues(ecs* world) {
         zoxp_update,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
-        [out] dialogues.DialoguetreeLink
+        [none] characters.Character,
     );
     zox_system_1(
         DialogueSoundSystem,

@@ -3,18 +3,18 @@ zox_sys2(DialogueEndSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NodetreeEnd);
-    zox_sys_in(DialogueUILink);
     zox_sys_in(SpeakerLinks);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(NodetreeEnd, state);
-        zox_sys_i(DialogueUILink, ui);
         zox_sys_i(SpeakerLinks, speakers);
         // Process on completed tree
         if (state->value != zox_dirty_active) {
             continue;
         }
-        if (zox_valid(ui->value)) {
-            zox_delete(ui->value);
+        entity ui = zox_get_link(world, e, DialogueUI);
+        if (zox_valid(ui)) {
+            zox_delete(ui);
         }
         if (zox_valid(speakers->value[1])) {
             unfollow(world, speakers->value[1]);

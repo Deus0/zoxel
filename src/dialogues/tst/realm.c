@@ -38,12 +38,7 @@ void zox_tst_spawn_dialogue(ecs *world, ClickEventData data) {
         zox_logw("Invalid [tree] on Realm");
         return;
     }
-    /*zox_geter(realm, DialoguetreeLinks, dialogues);
-    if (!dialogues->length) {
-        zox_logw("No Dialoguetrees yet.");
-        return;
-    }*/
-    entity canvas = zox_getv(player, CanvasLink);
+    entity canvas = zox_get_link(world, player, Canvas);
     entity character = zox_getv(player, CharacterLink);
     if (!zox_valid(character)) {
         zox_logw("Player has no character.");
@@ -65,6 +60,16 @@ void zox_tst_spawn_dialogue(ecs *world, ClickEventData data) {
         world,
         test_dialogue_run,
         test_dialogue_ui);
-    zox_setv(test_dialogue_ui, DialogueProcessLink, test_dialogue_run);
-    zox_setv(character, DialogueProcessLink, test_dialogue_run);
+    zox_link(
+        world,
+        test_dialogue_ui,
+        DialogueProcess,
+        test_dialogue_run);
+    zox_link(
+        world,
+        character,
+        DialogueProcess,
+        test_dialogue_run);
+    // zox_setv(test_dialogue_ui, DialogueProcessLink, test_dialogue_run);
+    // zox_setv(character, DialogueProcessLink, test_dialogue_run);
 }

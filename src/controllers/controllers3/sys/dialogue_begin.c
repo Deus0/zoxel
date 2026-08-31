@@ -1,25 +1,26 @@
 // left click - destroy
 zox_sys2(DialogueBeginSystem) {
+    byte dbg_log = 0;
     float dialogue_follow_distance = 0.9f;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TriggerActionB);
     zox_sys_in(RaycastVoxelData);
     zox_sys_in(PlayerLink);
-    zox_sys_out(DialogueProcessLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TriggerActionB, state);
         zox_sys_i(RaycastVoxelData, raycast);
         zox_sys_i(PlayerLink, player);
-        zox_sys_o(DialogueProcessLink, run);
         if (state->value != zox_dirty_active) {
             continue;
         }
-        if (raycast->result != rayhit_character || !zox_valid(raycast->chunk)) {
+        if (raycast->result != rayhit_character ||
+            !zox_valid(raycast->chunk))
+        {
             continue;
         }
-        zox_geter_value(player->value, PlayerState, byte, player_state);
+        byte player_state = zox_getv(player->value, PlayerState);
         // zox_player_state_dialogue_active
         if (player_state != zox_player_state_playing) {
             continue;
@@ -40,25 +41,56 @@ zox_sys2(DialogueBeginSystem) {
             zox_log("Cannot talk in combat with: %s", zox_get_name(npc));
             continue;
         }
-        zox_geter_value(npc, DialoguetreeLink, entity, tree);
+        entity tree = zox_get_link(world, npc, Dialogue);
+        // zox_geter_value(npc, DialoguetreeLink, entity, tree);
         if (!zox_valid(tree)) {
-            zox_log("NPC has no speech: %s", zox_get_name(npc));
+            zox_log("NPC has no speech: %s",
+                zox_getn(npc));
             continue;
         }
         // zox_log("Begin talking to: %s", zox_get_name(npc));
         // remove other windows - just hide them for now
         entity windows[zox_children_capacity];
-        uint length = zox_get_children_by_id(world, canvas, windows, zox_children_capacity, zox_id(Window));
+        uint length = zox_get_children_by_id(
+            world,
+            canvas,
+            windows,
+            zox_children_capacity,
+            zox_id(Window));
         for (int j = 0; j < length; j++) {
             entity window = windows[j];
-            set_children_by_id_byte(world, window, zox_id(RenderDisabled), 1);
+            set_children_by_id_byte(
+                world,
+                window,
+                zox_id(RenderDisabled),
+                1);
         }
-        run->value = spawn_process_dialogue(world, prefab_process_dialogue, tree, e, npc);
-        entity dialogue_ui = spawn_dialogue_ui(world, canvas, character, npc);
-        link_dialogue_run_to_ui(world, run->value, dialogue_ui);
-        zox_set(player->value, PlayerState, { zox_player_state_dialogue_begin });
-        follow_target(world, npc, e, dialogue_follow_distance);
-        // zox_log("Character [%s] spawned dialogue_run [%lu]", zox_get_name(e), run->value);
-
+        entity dialogue_process = spawn_process_dialogue(
+            world,
+            prefab_process_dialogue,
+            tree,
+            e,
+            npc);
+        zox_link(world, e, DialogueProcess, dialogue_process);
+        entity dialogue_ui = spawn_dialogue_ui(
+            world,
+            canvas,
+            character,
+            npc);
+        link_dialogue_run_to_ui(
+            world,
+            dialogue_process,
+            dialogue_ui);
+        zox_setv(player->value, PlayerState, zox_player_state_dialogue_begin);
+        follow_target(
+            world,
+            npc,
+            e,
+            dialogue_follow_distance);
+        if (dbg_log) {
+            zox_log("Character [%s] spawned dialogue_run [%lu]",
+                zox_getn(e),
+                dialogue_process);
+        }
     }
 } zox_sys_end(DialogueBeginSystem);

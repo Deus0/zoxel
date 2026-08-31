@@ -33,7 +33,9 @@ zox_sys2(AnimateTextSystem) {
         }
         if (passed < rate->value) {
             if (dbg_log >= 2) {
-                zox_log("AnimateTextBegin Still Waiting %f < %f", passed, rate->value);
+                zox_log("AnimateTextBegin Waiting %f < %f",
+                    passed,
+                    rate->value);
             }
             continue;
         }
@@ -47,7 +49,10 @@ zox_sys2(AnimateTextSystem) {
         }
         rate->value = frand_range(new_time->value.x, new_time->value.y);
         if (dbg_log) {
-            zox_log("Next Update Rate [%f] from [%f,%f]", rate->value, new_time->value.x, new_time->value.y);
+            zox_log("Next Update Rate [%f] from [%f,%f]",
+                rate->value,
+                new_time->value.x,
+                new_time->value.y);
         }
         uint new_length = data->length + 1;
         // size_t animated_length = (passed / time->value) * length;
@@ -60,19 +65,25 @@ zox_sys2(AnimateTextSystem) {
                 begin->value = 0;
                 ended->value = zox_dirty_trigger;
                 if (dbg_log) {
-                    zox_log("Text Ended [%s] : Length [%i]", target->value, new_length);
+                    zox_log("Text Ended [%s] : Length [%i]",
+                        target->value,
+                        new_length);
                 }
             } else {
                 // NOTE: Continue Animating
                 begin->value = zox_current_time;
                 if (dbg_log) {
-                    zox_log("Text Updated [%s] : Length [%i]", target->value, new_length);
+                    zox_log("Text Updated [%s] : Length [%i]",
+                        target->value,
+                        new_length);
                 }
             }
         } else {
             begin->value = 0;
             if (dbg_log >= 2) {
-                zox_log("Text Not Updated [%s] : Length [%i]", target->value, new_length);
+                zox_log("Text Not Updated [%s] : Length [%i]",
+                    target->value,
+                    new_length);
             }
         }
     }

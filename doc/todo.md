@@ -1,11 +1,31 @@
 # Todo
 
-Unsorted
-- Add quest on npc - 5% chance
+## Gameplay
+- Tag quests, some will be Greetings, others Quester?
+- Add dialoguenode for giving me quest
+
+- Add quest (GiveQuest) on npc - 5% chance
+- Add dialoguenode for handing in quest
+- Give me the rare hat when handing in
+- Make projectile collide with Terrain
+- Make projectil collide with npc
+- Add skillpoints when level up
+- add a simple skilltree
+	- with a skill to unlock button
+	- click and hold it to unlock
+	- screen shake and particles when unlock
+- add a simple log, with the entry line fade out
+	- log at bottom left
+	- when level up add a line about it
 - Fix destruction material
-- When remove body part
+	- use the depth offset instead
+	- reduce z offset to 0
+- When Add/Remove body part
 	- remove the associated item slots
 	- refresh the body ui
+
+## Projectiles
+- Projectiles get destroyed on hit characters (use same system as pickups)
 
 ## Whimsy
 - Add cracked bricks, a weaker version of bricks, 1 / 8 chance to spawn on wall
@@ -19,37 +39,8 @@ Unsorted
 - We should not have restore/dispose systems
     - just use query
     - as systems cache their results per frame
-
-## --------------------
-## TOP PRIORITY
-    - Glitchy Ass Terrain Meshes
-        - Fix Chunks from mesh updating before their neighbors do
-            - use Ready systems and timers
-        - Fix Chunks Lights flashing when updating
-    - Loading screen now that we've slowed systems down
-        - Add events for game state
-        - Add loading screen spawn/destroy on those
-    
-## --------------------
-
-- Link chunk to active mesh
 - fix docker build and test onsteamdeck
     - uses new pathing
-        
-## RareBugs
-- Placing twice in a row can crash it still
-- Sometimes block item textures dont load for vox items
-    - flowers, grass, etc
-- new game loaded chunks... check that
-    - broke the selections
-- Sometimes flying around we see missing faces now in chunks
-    - probably didnt trigger neighbors..
-- placed block texture stayed in actionbar
-- bug - place block, alt tab at same time
-- Fix physics clipping - falling through terrain
-- Voxel Sides
-	- They arnt being culled between lods, perhaps this is a trigger issue
-
 
 - Profiler should show exact frames
     - a second graph over top can show max system times
@@ -70,13 +61,12 @@ Unsorted
 - remove StatLinks just use children and queries
 
 - Fix overlay of destruction materials for block destruction
-- Fix taskbar linking
 - Make lines in plotgraph use a set value of the graph
     - set the graph based on max value in that frame, but use multiple curves
     - display frame time behind, and system time in front
+    
+## Settings
 - Add ui scale to settings
-- Im getting neighbor updates not triggering at map edges
-- Fall through map - fix unstuck - or make sure collision checks deltas
 
 ## Important Refactor
 - Why is player state 'playing' when i exit game..
@@ -87,10 +77,7 @@ Unsorted
     - single state machine for games
     - Remove GameStateTarget
     - Use a listener event for modules
-- game state where is thou
 - do 2D uis get restored? missing any 2D vert data?
-- Remove the mandatory arguments on ./bsh/android.sh
-- Make sure to tag docker libs properly as release
 - When low on damage - add more downscale on the camera
     - make it a camera property too
 - Vox item textures... broken again... only sometimes
@@ -171,27 +158,11 @@ Unsorted
     - Sort latest to top
     - Add Realm Names as labels instead of seed
 
-## Android
-- Terrain Material doesnt restore on minimize + restore
-- Post Processing Broken
-- Screen Rotation event not working
-
-## Windows
-- SDL3Mixer not compiling for windows
-
-## Mirror UI
-- Make it so camera can filter an object itself, instead of just the object filtering camera?
-    - Make a renderer clone that just copies another entities mesh.. somehow
-- Destroy Render Camera when the ui dies - just parent it?
-
 ## Body
-- arm doesnt swing when not selected
+- right arm doesnt swing when not selected
 
 ## Weather
 - Fix the fog, make look nicer
-
-## Projectiles
-- Projectiles get destroyed on hit characters (use same system as pickups)
 
 ## Models
 - Node (Runner) Process Entity should shift the seed its using

@@ -21,7 +21,7 @@ void zox_dbg_toggle_main_menu(ecs* world, ClickEventData data) {
 }
 
 void zox_dbg_test_window_uis(ecs* world, int32_t keycode) {
-    if (keycode != zox_key_h) {
+    if (keycode != zox_key_j) {
         return;
     }
     zox_log("Toggling Debug UI [Tests]: %s", dbg_test_window_uis ? zox_getn(dbg_test_window_uis) : "None");
@@ -48,6 +48,10 @@ void zox_dbg_test_window_uis(ecs* world, int32_t keycode) {
     elements[elements_count++] = (SpawnListElement) {
         .text = "Main Menu",
         .on_click = { &zox_dbg_toggle_main_menu },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Dialogue",
+        .on_click = { &zox_tst_spawn_dialogue },
     };
     // 2D UI
     elements[elements_count++] = (SpawnListElement) {
@@ -100,13 +104,12 @@ void zox_dbg_test_window_uis(ecs* world, int32_t keycode) {
         0,
         0,
         alignment,
-        dbg_ui_alignment, // float2_top_right,
+        dbg_ui_alignment,
         list_padding,
         spawned,
         elements,
         elements_count,
         visible_count);
-    // entity3 e3 = spawn_window_list(world, prefab_window, player, "UI Tests", header_font_size, list_font_size, (ClickEvent) { NULL }, can_close, 0, 0, alignment, float2_top_left, list_padding, spawned, elements, elements_count, visible_count);
     zox_set_unique_name(e3.x, "dbg_test_window_uis");
     zox_add(e3.x, NavigationWindow);
     dbg_test_window_uis = e3.x;

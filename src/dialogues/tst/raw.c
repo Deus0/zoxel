@@ -61,7 +61,8 @@ void zox_tst_spawn_dialogue(ecs *world, ClickEventData data) {
         world,
         test_dialogue_run,
         test_dialogue_ui);
-    zox_setv(test_dialogue_ui, DialogueProcessLink, test_dialogue_run);
+    // zox_setv(test_dialogue_ui, DialogueProcessLink, test_dialogue_run);
+    zox_link(world, test_dialogue_ui, DialogueProcess, test_dialogue_run);
     //  zox_setv(character, DialogueProcessLink, test_dialogue_run);
     test_dialogue_tree = tree;
 }

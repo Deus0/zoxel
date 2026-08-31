@@ -79,7 +79,6 @@
 #include "equipment/_.c"
 #include "lores/_.c"
 #include "achievements/_.c"
-#include "dialogues/_.c"
 
 // depth 6: gameplay
 #include "actions/_.c"
@@ -88,6 +87,7 @@
 #include "races/_.c"
 #include "clans/_.c"
 #include "quests/_.c"
+#include "dialogues/_.c"
 #include "pickups/_.c"
 #include "crafting/_.c"
 #include "farming/_.c"
@@ -196,8 +196,8 @@ void import_zox(ecs* world) {
         zox_add_module(parts);
         zox_add_module(equipment);
         zox_add_module(actions);
-        zox_add_module(dialogues);
         zox_add_module(quests);
+        zox_add_module(dialogues);
         zox_import_module(Classes);
         zox_import_module(Jobs);
         zox_import_module(Races);

@@ -50,6 +50,8 @@ UIs
 ## Remove old links
 	- CanvasLink (mostly done)
 	- CharacterLink
+	- SpeakerLinks
+	- PlayerLink
 	- CameraLink
 	- EntityLinks
 	- BlockLinks

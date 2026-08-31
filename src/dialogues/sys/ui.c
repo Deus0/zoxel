@@ -5,26 +5,25 @@ zox_sys2(DialogueSpeechSystem) {
     zox_sys_begin();
     zox_sys_in(NodeBegin);
     zox_sys_in(NodeLink);
-    zox_sys_in(DialogueUILink);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(NodeBegin, state);
         zox_sys_i(NodeLink, node);
-        zox_sys_i(DialogueUILink, ui);
         if (state->value != zox_dirty_active) {
             continue;
         }
-        if (!zox_valid(ui->value) ||
-            !zox_has(ui->value, DialogueTextLink))
+        entity ui = zox_get_link(world, e, DialogueUI);
+        if (!zox_valid(ui))
         {
             zox_loge("Dialogue Runner [%s] Invalid UI [%s]",
                 zox_sys_e_name,
-                zox_getn(ui->value));
+                zox_getn(ui));
             continue;
         }
-        entity text_ui = zox_getv(ui->value, DialogueTextLink);
+        entity text_ui = zox_get_link(world, ui, DialogueLabel);
         entity next_button = zox_get_child_by_id_recursive(
             world,
-            ui->value,
+            ui,
             zox_id(DialogueButton));
         if (!zox_valid(text_ui) || !zox_valid(next_button)) {
             zox_loge("Dialogue Missing Text or Buttons");

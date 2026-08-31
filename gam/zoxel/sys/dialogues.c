@@ -2,13 +2,27 @@ zox_sys2(DialogueRealmSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
-    //zox_sys_out(DialoguetreeLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateRealm, state);
-        //zox_sys_o(DialoguetreeLinks, dialogues);
         if (state->value != zox_generate_realm_dialoguetrees) {
             continue;
+        }
+        {
+            byte texts_count = 4;
+            char* texts[] = {
+                "Welcome Traveler",
+                "I have a quest you may like.",
+                "I require cookies!",
+                "But I have yet to implement them",
+            };
+            entity dialogue = spawn_dialogue_tree_texts(
+                world,
+                prefab_dialogue_node,
+                e,
+                texts,
+                texts_count);
+            zox_add(dialogue, QuestDialogue);
         }
         {
             byte texts_count = 3;
@@ -17,13 +31,13 @@ zox_sys2(DialogueRealmSpawnSystem) {
                 "Cajeet Greets you.",
                 "May the Sun God bless thee.",
             };
-            entity e2 = spawn_dialogue_tree_texts(
+            entity dialogue = spawn_dialogue_tree_texts(
                 world,
                 prefab_dialogue_node,
                 e,
                 texts,
                 texts_count);
-            // add_to_DialoguetreeLinks(dialogues, e2);
+            zox_add(dialogue, Greetings);
         }
         {
             byte texts_count = 5;
@@ -34,13 +48,13 @@ zox_sys2(DialogueRealmSpawnSystem) {
                 "...",
                 "Well.. get going then."
             };
-            entity e2 = spawn_dialogue_tree_texts(
+            entity dialogue = spawn_dialogue_tree_texts(
                 world,
                 prefab_dialogue_node,
                 e,
                 texts,
                 texts_count);
-            // add_to_DialoguetreeLinks(dialogues, e2);
+            zox_add(dialogue, Greetings);
         }
         {
             byte texts_count = 4;
@@ -50,13 +64,13 @@ zox_sys2(DialogueRealmSpawnSystem) {
                 "Leave me be mortal.",
                 "Come back with cookies.",
             };
-            entity e2 = spawn_dialogue_tree_texts(
+            entity dialogue = spawn_dialogue_tree_texts(
                 world,
                 prefab_dialogue_node,
                 e,
                 texts,
                 texts_count);
-            // add_to_DialoguetreeLinks(dialogues, e2);
+            zox_add(dialogue, Greetings);
         }
         {
             byte texts_count = 2;
@@ -64,13 +78,13 @@ zox_sys2(DialogueRealmSpawnSystem) {
                 "Hail Penguin",
                 "Mr Penguin Watches you.",
             };
-            entity e2 = spawn_dialogue_tree_texts(
+            entity dialogue = spawn_dialogue_tree_texts(
                 world,
                 prefab_dialogue_node,
                 e,
                 texts,
                 texts_count);
-            // add_to_DialoguetreeLinks(dialogues, e2);
+            zox_add(dialogue, Greetings);
         }
         {
             byte texts_count = 3;
@@ -79,15 +93,33 @@ zox_sys2(DialogueRealmSpawnSystem) {
                 "....",
                 "We all should be",
             };
-            entity e2 = spawn_dialogue_tree_texts(
+            entity dialogue = spawn_dialogue_tree_texts(
                 world,
                 prefab_dialogue_node,
                 e,
                 texts,
                 texts_count);
-            // add_to_DialoguetreeLinks(dialogues, e2);
+            zox_add(dialogue, Greetings);
         }
-        // zox_set_ptr(realm, DialoguetreeLinks, trees);
+        {
+            byte texts_count = 7;
+            char* texts[] = {
+                "Hell",
+                "oooo",
+                "I...",
+                "Go...",
+                "...by...",
+                "...by",
+                "......bye",
+            };
+            entity dialogue = spawn_dialogue_tree_texts(
+                world,
+                prefab_dialogue_node,
+                e,
+                texts,
+                texts_count);
+            zox_add(dialogue, Greetings);
+        }
         zox_logv("Realm [dialogues] [X] spawned.");
     }
 } zox_sys_end(DialogueRealmSpawnSystem);

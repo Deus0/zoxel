@@ -3,6 +3,26 @@
 Unsorted
 - doesnt spawn new chunk mesh ... again
 	- test by building upwards generating, the chunk initialization issue
+- Lighting flashes when chunks update
+	- stop mesh updating until its finished building lights
+        
+## RareBugs
+- Placing twice in a row can crash it still
+- Sometimes block item textures dont load for vox items
+    - flowers, grass, etc
+- new game loaded chunks... check that
+    - broke the selections
+- Sometimes flying around we see missing faces now in chunks
+    - probably didnt trigger neighbors..
+- placed block texture stayed in actionbar
+- bug - place block, alt tab at same time
+- Fix physics clipping - falling through terrain
+- Voxel Sides
+	- They arnt being culled between lods, perhaps this is a trigger issue
+- Im getting neighbor updates not triggering at map edges
+- Fall through map
+	- fix unstuck - 
+	- Make sure collision checks deltas
 
 ## Rendering
 - Cube mesh doesnt restore on alt tab

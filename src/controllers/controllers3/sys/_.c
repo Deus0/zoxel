@@ -100,7 +100,6 @@ void define_systems_controllers3(ecs *world) {
         [in] core.TriggerActionB,
         [in] vrays.RaycastVoxelData,
         [in] players.PlayerLink,
-        [out] dialogues.DialogueProcessLink
     );
     // Spawns animation events
     zox_system_1(
@@ -124,14 +123,13 @@ void define_systems_controllers3(ecs *world) {
         zoxp_update,
         [in] core.TriggerActionE,
         [in] players.PlayerLink,
-        [out] dialogues.DialogueProcessLink
     );
     zox_system(
         DialogueEndSystem,
         zoxp_update,
         [in] nodes.NodetreeEnd,
-        [in] dialogues.DialogueUILink,
-        [out] dialogues.SpeakerLinks
+        [out] dialogues.SpeakerLinks,
+        [none] dialogues.DialogueProcess
     );
     zox_system(
         WalkStateSystem,

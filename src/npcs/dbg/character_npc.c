@@ -7,8 +7,11 @@ extern entity spawn_inspector(ecs*, entity, entity, entity);
 // TODO: Remove InstanceLink, just use ModelLink and RendererInstance Tag
 // TODO: ChunkLink didn't seem to update, create an initial ChunkLinked state so it makes sure to update, remove -666, -666, -666 thingo
 
-void zox_tst_spawn_character3_npc(ecs *world, ClickEventData data) {
-    byte dbg_inspector = 1;
+void zox_tst_spawn_character3_npc(
+    ecs *world,
+    ClickEventData data)
+{
+    byte dbg_inspector = 0;
     if (zox_valid(zox_tst_character3_npc)) {
         zox_log("Cleaning Test [zox_tst_character3_npc]");
         zox_delete(zox_tst_character3_npc);

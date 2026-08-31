@@ -38,8 +38,6 @@ entity spawn_dialogue_ui(
     entity body = e3.z;
     zox_add(e, DialogueUI);
     zox_add(e, NavigationWindow);
-    zox_setv(e, DialogueProcessLink, 0);
-    zox_setv(e, DialogueTextLink, 0);
     // Speech Text
     {
         // TODO: Can we enable 2 lines here?
@@ -77,8 +75,7 @@ entity spawn_dialogue_ui(
             button_font_outline);
         zox_set_unique_name(text_ui, "dialogue_text");
         zox_setv(text_ui, LayoutSize, size);
-        zox_setv(e, DialogueTextLink, text_ui);
-        // zox_set(e2, TextureSize, { size });
+        zox_link(world, e, DialogueLabel, text_ui);
     }
     // NOTE: A Confirm button at bottom right
     // Spawn a small button per choice, for max choices, then enable disable them after text finishes animating

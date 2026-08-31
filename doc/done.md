@@ -1,5 +1,13 @@
 # Done
 
+## Mirror UI
+-x Make it so camera can filter an object itself, instead of just the object filtering camera?
+    -x Make a renderer clone that just copies another entities mesh.. somehow
+-x Destroy Render Camera when the ui dies - just parent it?
+-x Fix taskbar linking
+-x Loading screen now that we've slowed systems down
+	-x Add events for game state
+	-x Add loading screen spawn/destroy on those
 -x Landfill LOD issues
 	- When loading map?
 	- missmatch of tunk / chunk

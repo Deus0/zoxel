@@ -8,6 +8,14 @@ Unsorted
 - Add VoxelNodeLock for Octree Safety
 	- Crashed on load...!
 
+## --------------------
+## TOP PRIORITY
+    - Glitchy Ass Terrain Meshes
+        - Fix Chunks from mesh updating before their neighbors do
+            - use Ready systems and timers
+        - Fix Chunks Lights flashing when updating
+## --------------------
+
 ## Regression again
 Target: 230fps at the current position
 - Make MeshDirty + and other bytes tags

@@ -88,7 +88,6 @@ void define_systems_zoxel(ecs *world) {
         DialogueRealmSpawnSystem,
         zoxp_spawn,
         [in] realms.GenerateRealm,
-        // [out] dialogues.DialoguetreeLinks,
         [none] realms.Realm
     );
     zox_system_1(
