@@ -1,5 +1,6 @@
 # Devops
 
+- we should put zoxel.bin in a sub folder with the right lib files
 - Fix x86 on arm builds
 	- add ext/mesa compile to libs-compile.sh
 		- builds libEGL.so and libGLESv2.so
