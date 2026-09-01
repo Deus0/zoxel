@@ -123,7 +123,17 @@ zox_sys2(TerrainCharactersSpawnSystem) {
             float3_add_float3_p(&position, positionf->value); // chunk
             float3_add_float3_p(&position, float3_single(cscale->value * 0.5f));
             float4 rotation = quaternion_from_euler((float3) { 0, (rand() % 361) * degreesToRadians, 0 });
-            entity e2 = spawn_character3_npc(world, meta, realm, terrain, npc_seed, render_distance->value, render_disabled->value, position, rotation, NULL);
+            entity e2 = spawn_character3_npc(
+                world,
+                meta,
+                realm,
+                terrain,
+                npc_seed,
+                render_distance->value,
+                render_disabled->value,
+                position,
+                rotation,
+                NULL);
             if (!e2) {
                 zox_loge("Spawning NPC Failed");
                 continue;
@@ -132,10 +142,26 @@ zox_sys2(TerrainCharactersSpawnSystem) {
             characters->value[spawned->value] = e2;
             spawned->value++;
             if (dbg_length) {
-                spawn_arrow3D(world, position, (float3) { 0, cscale->value * dbg_length, 0 }, 0.1f, 6, 20);
+                spawn_arrow3D(
+                    world,
+                    position,
+                    (float3) {
+                        0,
+                        cscale->value * dbg_length,
+                        0
+                    },
+                    0.1f,
+                    6,
+                    20);
             }
             if (dbg_log) {
-                zox_log("Chunk %s Spawned NPC [%i / %i] at [%fx%fx%f]", zox_getn(e), spawned_count, total_spawned_npcs_count, position.x, position.y, position.z);
+                zox_log("Chunk %s Spawned NPC [%i / %i] at [%fx%fx%f]",
+                    zox_getn(e),
+                    spawned_count,
+                    total_spawned_npcs_count,
+                    position.x,
+                    position.y,
+                    position.z);
             }
             spawned_count++;
             total_spawned_npcs_count++;

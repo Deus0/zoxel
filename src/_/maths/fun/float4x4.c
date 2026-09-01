@@ -22,7 +22,7 @@ static inline float3 float4x4_forward(const float4x4 matrix) {
     return (float3) { matrix.z.x, matrix.z.y, matrix.z.z };
 }
 
-void log_float4x4(char *label, const float4x4 matrix) {
+/*void log_float4x4(char *label, const float4x4 matrix) {
     const float* matrix2 = (float*) &matrix;
     zox_log(" [%s];\n\t[%f\t%f\t%f\t%f]\n\t[%f\t%f\t%f\t%f]\n\t[%f\t%f\t%f\t%f]\n\t[%f\t%f\t%f\t%f]\n",
         label,
@@ -30,7 +30,7 @@ void log_float4x4(char *label, const float4x4 matrix) {
         matrix2[4], matrix2[5], matrix2[6], matrix2[7],
         matrix2[8], matrix2[9], matrix2[10], matrix2[11],
         matrix2[12], matrix2[13], matrix2[14], matrix2[15]);
-}
+}*/
 
 
 float4x4 float4x4_inverse_safe(const float4x4 m) {

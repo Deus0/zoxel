@@ -8,11 +8,17 @@ entity prefab_character3_skeleton_npc;
     zox_prefab_set(prefab_character3_instanced, T, __VA_ARG)
 
 void spawn_prefabs_npcs(ecs *world) {
-    prefab_character3_npc = spawn_prefab_character3_npc(world, prefab_character3);
-    prefab_character3_instanced_npc = spawn_prefab_character3_npc(world, prefab_character3_instanced);
+    prefab_character3_npc = spawn_prefab_character3_npc(
+        world,
+        prefab_character3);
+    prefab_character3_instanced_npc = spawn_prefab_character3_npc(
+        world,
+        prefab_character3_instanced);
     {
         // Disabled on NPCs for now
-        prefab_character3_skeleton_npc = spawn_prefab_character3_npc(world, prefab_character3_skeleton);
+        prefab_character3_skeleton_npc = spawn_prefab_character3_npc(
+            world,
+            prefab_character3_skeleton);
         zox_add(prefab_character3_skeleton_npc, NoSplitChunk);
     }
     // add to character list

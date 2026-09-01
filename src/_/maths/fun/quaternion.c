@@ -181,10 +181,10 @@ void print_quadrant(float4 q) {
     }
 }
 
-void float4_print_euler(float4 input) {
+/*void float4_print_euler(float4 input) {
     float3 euler = float3_divide_float(quaternion_to_euler(input), degreesToRadians);
     zox_log("-> Euler [x:%f y:%f z:%f]\n", euler.x, euler.y, euler.z);
-}
+}*/
 
 static inline byte quaternion_equal(float4 a, float4 b) {
     return ((a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w) ||

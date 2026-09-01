@@ -49,7 +49,6 @@
 #include "physics/_.c"
 #include "lights/_.c"
 #include "models/_.c"
-#include "voxes/_.c"
 
 // depth 4: environment
 #include "weathers/_.c"

@@ -49,6 +49,7 @@ void zox_tst_spawn_quest_giver_npc(
         sposition,
         srotation,
         "Quester");
+    zox_setv(e, DefaultBehaviour, zox_behaviour_idle);
     // Quest Dialogue
     entity dialogues[capacity];
     uint length = zox_get_children_by_id(

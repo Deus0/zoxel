@@ -1,5 +1,6 @@
 // NOTE: Sunlight now just creates queue entries
-zox_sys2(SunlightSystem) {
+void sunlight_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -32,4 +33,5 @@ zox_sys2(SunlightSystem) {
         }
         zox_remove(e, GenerateSunlight);
     }
-} zox_sys_end(SunlightSystem);
+    zox_sys_on_end();
+} zoxd_system(sunlight_system);

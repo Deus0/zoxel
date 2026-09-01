@@ -1,12 +1,12 @@
 extern entity prefab_vox;
 entity dbg_chunk3;
-extern entity spawn_inspector(ecs*, entity, entity, entity);
 
 entity spawn_test_vox_at(
     ecs* world,
     float3 position,
     float4 rotation)
 {
+    // byte dbg_inspector = 0;
     float distance = frand_range(2.6f, 3.4f);
     float3 spawn_position = move_along_direction(
         position,
@@ -16,12 +16,23 @@ entity spawn_test_vox_at(
     float block_scale = 1.0f / 16.0f;
     byte depth = block_depth_limits.y;
     float spin = rand_range(2, 8);
-    float3 euler = (float3) { rand() % 100 > 50 ? spin : -spin, rand() % 100 > 50 ? spin : -spin, rand() % 100 > 50 ? spin : -spin };
+    float3 euler = (float3) {
+        rand() % 100 > 50 ? spin : -spin,
+        rand() % 100 > 50 ? spin : -spin,
+        rand() % 100 > 50 ? spin : -spin
+    };
     int3 size = int3_single(powers_of_two[depth]);
     // spawn chunk3s
-    entity e = spawn_chunk3(world, prefab_vox, spawn_position, scale, depth, block_scale, size);
+    entity e = spawn_chunk3(
+        world,
+        prefab_vox,
+        spawn_position,
+        scale,
+        depth,
+        block_scale,
+        size);
     zox_add(e, VoxMesh);
-    zox_set(e, GenerateModel, { zox_generate_model_run });
+    zox_setv(e, GenerateModel, zox_generate_model_run);
     add_eternal_euler(world, e, euler);
     return e;
 }
@@ -53,14 +64,19 @@ entity zox_dbg_spawn_chunk3(ecs* world, byte dbg_inspector) {
     entity e = spawn_test_vox(world, player);
     zox_set_unique_name(e, "dbg_chunk3");
     if (dbg_inspector) {
-        entity canvas = zox_getv(player, CanvasLink);
-        spawn_inspector(world, canvas, player, e);
+        // entity canvas = zox_getv(player, CanvasLink);
+        entity canvas = zox_get_link(world, player, Canvas);
+        spawn_inspector(
+            world,
+            canvas,
+            player,
+            e);
     }
     dbg_chunk3 = e;
     return e;
 }
 
 void zox_dbg_spawn_chunk3_button(ecs* world, ClickEventData data) {
-    byte dbg_inspector = 1;
+    byte dbg_inspector = 0;
     zox_dbg_spawn_chunk3(world, dbg_inspector);
 }

@@ -13,47 +13,38 @@
 #include "entities_lod.c"
 #include "move_bounds.c"
 #include "vox_texture.c"
+// colored
+#include "build_colored.c"
 // textured
-#include "build.c"
+#include "build_textured.c"
 #include "wait.c"
 #include "mesh_spawn.c"
 #include "trigger.c"
 #include "transition.c"
-// colored
-#include "build_colored.c"
 
 void define_systems_chunks3(ecs *world) {
+    zox_system(
+        BakeVoxSystem,
+        zoxp_update,
+        [in] rendering.ModelLink,
+        [in] textures.TextureLinks
+    );
+    zox_system(
+        VoxTextureSystem,
+        zoxp_update,
+        [in] rendering.TextureSize,
+        [in] blocks.VoxBakeSide,
+        [in] rendering.ModelLink,
+        [out] textures.GenerateTexture,
+        [out] textures.TextureData,
+        [none] textures.VoxTexture
+    );
     // ColoredChunk, triggers mesh to update
     zox_system(
         ColoredChunkMeshTriggerSystem,
         zoxp_update,
         [none] chunks.Chunk,
         [none] chunks3.ColorChunk,
-        [none] chunks3.VoxelNodePostDirty,
-    );
-    zox_system(
-        VoxelUpdateQueueSystem,
-        zoxp_queue_pre_clear,
-        [in] chunks.NodeDepth,
-        [out] chunks3.VoxelNodeQueue,
-        [out] chunks3.VoxelNode,
-        [none] chunks.Chunk,
-        [none] chunks3.Chunk3,
-    );
-    // NOTE: Removes Dirty at end of frame
-    zox_system(
-        VoxelOctreeOptimizeSystem,
-        zoxp_remove,
-        [out] chunks3.VoxelNode,
-        [none] chunks.Chunk,
-        [none] chunks3.Chunk3,
-        [none] chunks3.VoxelNodeDirty,
-    );
-    zox_system(
-        VoxelNodePostDirtySystem,
-        zoxp_remove,
-        [none] chunks.Chunk,
-        [none] chunks3.Chunk3,
         [none] chunks3.VoxelNodePostDirty,
     );
     // NOTE: Writes to VoxelNode
@@ -80,11 +71,22 @@ void define_systems_chunks3(ecs *world) {
         [out] chunks3.VoxelNode,
         [out] colorz.ColorRGBs,
     );
+    // Colored
     zox_system(
-        BakeVoxSystem,
-        zoxp_update,
-        [in] rendering.ModelLink,
-        [in] textures.TextureLinks
+        ChunkColorsBuildSystem,
+        zoxp_voxels_mesh,
+        [in] chunks3.VoxelNode,
+        [in] chunks.NodeDepth,
+        [in] rendering.RenderDepth,
+        [in] chunks3.ChunkNeighbors,
+        [in] colorz.ColorRGBs,
+        [in] chunks3.ChunkSize,
+        [in] blocks.BlockScale,
+        [out] rendering.MeshIndicies,
+        [out] rendering.MeshVertices,
+        [out] rendering.MeshColorRGBs,
+        [none] chunks3.ColorChunk,
+        [none] rendering.BuildMesh,
     );
     // Move to Voxes Module
     zox_system(
@@ -110,18 +112,6 @@ void define_systems_chunks3(ecs *world) {
         [in] rendering.RenderDistance,
         [in] chunks3.ChunkEntities
     );
-    zox_system(
-        VoxTextureSystem,
-        zoxp_update,
-        [in] rendering.TextureSize,
-        [in] blocks.VoxBakeSide,
-        [in] rendering.ModelLink,
-        [out] textures.GenerateTexture,
-        [out] textures.TextureData,
-        [none] textures.VoxTexture
-    );
-    // Textured
-
     zox_system(
         ChunkSidesTriggerSystem,
         zoxp_update,
@@ -182,8 +172,30 @@ void define_systems_chunks3(ecs *world) {
         [none] !chunks.GenerateChunk,
         [none] !chunks.BuildChunkSides,
     );
-    zox_system_1(
-        ChunkTexturedBuildSystem,
+    zox_system(
+        VoxelOctreeOptimizeSystem,
+        zoxp_remove,
+        [out] chunks3.VoxelNodeLock,
+        [out] chunks3.VoxelNode,
+        [none] chunks.Chunk,
+        [none] chunks3.VoxelNodeDirty,
+    );
+    zox_system(
+        VoxelNodePostDirtySystem,
+        zoxp_remove,
+        [none] chunks.Chunk,
+        [none] chunks3.VoxelNodePostDirty,
+    );
+    zox_system(
+        VoxelUpdateQueueSystem,
+        zoxp_queue_pre_clear,
+        [in] chunks.NodeDepth,
+        [out] chunks3.VoxelNodeQueue,
+        [out] chunks3.VoxelNode,
+        [none] chunks.Chunk,
+    );
+    zox_system(
+        chunk_textured_build_system,
         zoxp_update, // zoxp_voxels_mesh zoxp_update
         [in] rendering.RenderDepth,
         [out] rendering.MeshIndicies,
@@ -193,22 +205,5 @@ void define_systems_chunks3(ecs *world) {
         [none] chunks.ChunkMesh,
         [none] rendering.BuildMesh,
         [none] !core.BuildDisabled,
-    );
-    // Colored
-    zox_system(
-        ChunkColorsBuildSystem,
-        zoxp_voxels_mesh,
-        [in] chunks3.VoxelNode,
-        [in] chunks.NodeDepth,
-        [in] rendering.RenderDepth,
-        [in] chunks3.ChunkNeighbors,
-        [in] colorz.ColorRGBs,
-        [in] chunks3.ChunkSize,
-        [in] blocks.BlockScale,
-        [out] rendering.MeshIndicies,
-        [out] rendering.MeshVertices,
-        [out] rendering.MeshColorRGBs,
-        [none] chunks3.ColorChunk,
-        [none] rendering.BuildMesh,
     );
 }

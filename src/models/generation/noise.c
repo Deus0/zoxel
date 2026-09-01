@@ -1,4 +1,7 @@
-void random_fill_octree(VoxelNode* node, byte voxel, byte depth) {
+void random_fill_octree(
+    VoxelNode* node,
+    byte voxel,
+    byte depth) {
     node->value = voxel;
     if (depth > 0) {
         depth--;

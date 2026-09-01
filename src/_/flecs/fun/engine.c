@@ -13,7 +13,8 @@ void engine_end() {
 }
 
 void handle_segfault(int sig) {
-    zox_log_error("segfault detected [%i], exiting..", sig)
+    zox_loge("Segfault Detected [%i]", sig);
+    zox_loge("Exiting...");
     exit(0);
 }
 

@@ -11,14 +11,14 @@
 
 // Toggle the light systems
 void set_light_systems(ecs* world, byte is_lights) {
-    zox_set_enabled(SunlightSystem, is_lights);
+    zox_set_enabled(sunlight_system, is_lights);
     zox_set_enabled(LightBeamSystem, is_lights);
     zox_set_enabled(LightFloodSystem, is_lights);
     zox_set_enabled(DarkLightSystem, is_lights);
     zox_set_enabled(VoxelLightSystem, is_lights);
     zox_set_enabled(ChunkColorsTriggerSystem, is_lights);
     zox_set_enabled(ChunkNeighborLightTriggerSystem, is_lights);
-    zox_set_enabled(SmoothLightsBuildSystem, is_lights);
+    zox_set_enabled(build_smooth_lights_system, is_lights);
 }
 
 #include "settings.c"
@@ -39,7 +39,7 @@ void define_systems_lights3(ecs* world) {
         [in] settings.Setting
     );
     zox_system(
-        SunlightSystem,
+        sunlight_system,
         zoxp_update,
         [in] chunks.NodeDepth,
         [out] lights3.SunlightQueue,
@@ -143,7 +143,7 @@ void define_systems_lights3(ecs* world) {
     // Mesh
     // Wait until after mesh has built
     zox_system(
-        SmoothLightsBuildSystem,
+        build_smooth_lights_system,
         zoxp_voxels_lights,
         [in] rendering.RenderDepth,
         [in] rendering.MeshColorRGBs,

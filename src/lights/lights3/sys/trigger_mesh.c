@@ -6,7 +6,7 @@
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_remove(e, BuildMesh);
-        if (!disable_lights) {
+        if (!zox_no_lights) {
             zox_add(e, BuildMeshColors);
         }
         if (dbg_log) {

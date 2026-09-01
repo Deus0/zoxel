@@ -2,13 +2,4 @@
 #include "noise.c"
 
 void zox_define_systems_chunks3_noise(ecs* world) {
-    zox_system(
-        NoiseVoxelNodeSystem,
-        zoxp_update,
-        [in] chunks.NodeDepth,
-        [out] chunks.GenerateModel,
-        [out] chunks3.VoxelNode,
-        [out] colorz.ColorRGBs,
-        [none] chunks3.NoiseChunk
-    );
 }

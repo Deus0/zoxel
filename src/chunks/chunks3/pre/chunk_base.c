@@ -12,6 +12,7 @@ entity spawn_prefab_chunk_base(ecs *world) {
     zox_setv(e, RenderDepth, 0);
     // allocations
     zox_setv(e, VoxelNode, 0);
+    zox_setv(e, VoxelNodeLock, 0);
     zox_setv(e, SidesOctree, 0);
     return e;
 }

@@ -30,7 +30,7 @@ void set_vox_file(
     float bscale)
 {
     if (!is_vox_valid(vox)) {
-        zox_log_error("error reading voxfile");
+        zox_loge("error reading voxfile");
         set_as_debug_vox(world, e);
         return;
     }
@@ -60,9 +60,9 @@ void set_vox_file(
     zox_log("   - size(og) [%ix%ix%i]", ogsize.x, ogsize.y, ogsize.z);
     zox_log("   - size(reduced) [%ix%ix%i]", rsize.x, rsize.y, rsize.z);
     zox_log("   - offset [%ix%ix%i]", offset.x, offset.y, offset.z);*/
-    zox_set(e, BlockScale, { bscale });
-    zox_set(e, NodeDepth, { node_depth });
-    zox_set(e, ChunkSize, { rsize });
+    zox_setv(e, BlockScale, bscale);
+    zox_setv(e, NodeDepth, node_depth);
+    zox_setv(e, ChunkSize, rsize);
     zox_muter(e, VoxelNode, node);
     // wheres our offset for our vox model into a new grid??
     byte3 position;
@@ -115,7 +115,7 @@ entity spawn_vox_file(
         zox_set_unique_name(model, name);
     }
     byte mdepth = pick_node_depth(data->chunks[0].size.xyz);
-    zox_set(model, MaxRenderDepth, { mdepth });
+    zox_setv(model, MaxRenderDepth, mdepth);
     ModelLods model_lods;
     for (byte rdepth = 0; rdepth <= mdepth; rdepth++) {
         byte reducer = mdepth - rdepth;
@@ -127,10 +127,16 @@ entity spawn_vox_file(
             sprintf(name, "vox_file_lod_%s", filename);
             zox_set_unique_name(e2, name);
         }
-        set_vox_file(world, e2, data, reducer, bscale);
+        set_vox_file(
+            world,
+            e2,
+            data,
+            reducer,
+            bscale);
+        initialize_voxel_lock(world, e2);
         zox_add(e2, BuildMesh);
-        zox_set(e2, RenderDepth, { rdepth });
-        zox_set(e2, MaxRenderDepth, { mdepth });
+        zox_setv(e2, RenderDepth, rdepth);
+        zox_setv(e2, MaxRenderDepth, mdepth);
         model_lods.value[rdepth] = e2;
     }
     zox_set_ptr(model, ModelLods, model_lods);

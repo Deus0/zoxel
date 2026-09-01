@@ -22,3 +22,9 @@ static inline float get_chunk_scale(
         return terrain_scale * octree_size(ddepth);
     }
 }
+
+static inline void initialize_voxel_lock(ecs* world, entity e) {
+    spinlock vlock;
+    spinlock_init(&vlock);
+    zox_setv(e, VoxelNodeLock, vlock);
+}

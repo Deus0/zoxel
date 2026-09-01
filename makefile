@@ -152,7 +152,9 @@ runw:
 	wine bin/$(GAME).exe
 
 runwd:
-	echo "Remember to enter continue"
+	echo "##########################"
+	echo "Enter CONTINUE [continue]"
+	echo "##########################"
 	winedbg --gdb bin/$(GAME)-dev.exe
 
 # Run

@@ -30,9 +30,9 @@ void define_systems_dialogues(ecs* world) {
         [in] AnimateTextEnded,
         [none] dialogues.DialogueLabel
     );
-    zox_system(
+    zox_system_1(
         CharacterDialogueSystem,
-        zoxp_update,
+        zoxp_spawn,
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
         [none] characters.Character,

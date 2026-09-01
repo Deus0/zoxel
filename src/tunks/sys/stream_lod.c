@@ -130,7 +130,7 @@ zox_sys2(TunkLodSystem) {
                     tunk_render_depth);
             }
             // NOTE: Clears the light if depth is set to increase
-            if (disable_lights) {
+            if (zox_no_lights) {
                 continue;
             }
             byte node_depth = zox_getv(chunk, NodeDepth);

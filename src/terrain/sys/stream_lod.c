@@ -100,7 +100,7 @@
         depth_dirty->value = zox_dirty_trigger;
         busy->value = 1;
         // if new_depth > node_depth
-        if (!disable_lights) {
+        if (!zox_no_lights) {
             if (new_depth > zox_getv(e, NodeDepth)) {
                 zox_muter(e, LightNode, lights);
                 lights->value = darklight;

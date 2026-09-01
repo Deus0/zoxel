@@ -7,18 +7,14 @@ static inline byte optimize_reduce_octree_node(
     if (!node) {
         return 0;
     }
-
     void** ptr = (void**) node;
-
     if (type_offset) {
         byte type = *(byte*)((char*) node + type_offset);
         if (type == node_type_instance) {
             return 0;
         }
     }
-
     void* kids = *ptr;
-
     // Leaf
     if (!kids) {
         return 1;
@@ -121,15 +117,19 @@ static inline byte optimize_reduce_octree_node(
 zox_sys2(VoxelOctreeOptimizeSystem) {
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_out(VoxelNodeLock);
     zox_sys_out(VoxelNode);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
+        zox_sys_o(VoxelNodeLock, lock);
         zox_sys_o(VoxelNode, voxels);
+        spin_lock(&lock->value);
         optimize_reduce_octree_node(
             voxels,
             sizeof(VoxelNode),
             offsetof(VoxelNode, value),
             offsetof(VoxelNode, type));
+        spin_unlock(&lock->value);
         zox_add(e, VoxelNodePostDirty);
         zox_remove(e, VoxelNodeDirty);
     }

@@ -132,11 +132,16 @@ zox_sys2(Character3RealmSpawnSystem) {
         entity rsoul = zox_get_child_by_id(world, e, zox_id(StatSoul));
         entity rhealth = zox_get_child_by_id(world, e, zox_id(StatHealth));
         // add our skeleton prefab
-        if (!zox_no_humanoids)
-        {
+        if (!zox_no_humanoids) {
             byte chance = 2;
-            entity e2 = spawn_character3_meta(world, prefab_character3_skeleton_npc, character_seed, "Boney", chance);
-            zox_set_parent(world, e2, e);
+            entity e2 = spawn_character3_meta(
+                world,
+                prefab_character3_skeleton_npc,
+                e,
+                character_seed,
+                "Boney",
+                chance);
+            // zox_set_parent(world, e2, e);
             spawn_stat_level(world, e2, rsoul, 5);
             spawn_stat_state(world, e2, rhealth, 21, 21);
             chance_max += chance;
@@ -172,7 +177,13 @@ zox_sys2(Character3RealmSpawnSystem) {
             }
             zox_add(model, ModelCharacter);
             byte chance = generated_chance;
-            entity e2 = spawn_character3_meta(world, prefab_character, character_seed, "character", chance);
+            entity e2 = spawn_character3_meta(
+                world,
+                prefab_character,
+                e,
+                character_seed,
+                "character",
+                chance);
             zox_setv(e2, ModelLink, model);
             zox_add(e2, CharacterGeneric);
             zox_set_parent(world, e2, e);
@@ -201,7 +212,13 @@ zox_sys2(Character3RealmSpawnSystem) {
             }
             // can choose here properties for spawning
             byte chance = chances[j];
-            entity e2 = spawn_character3_meta(world, prefab_character, character_seed, name, chance);
+            entity e2 = spawn_character3_meta(
+                world,
+                prefab_character,
+                e,
+                character_seed,
+                name,
+                chance);
             zox_set_name(e2, name); // assuming name is unique to the ecs world
             zox_setv(e2, ModelLink, model);
             chance_max += chance;

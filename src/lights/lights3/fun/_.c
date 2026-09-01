@@ -4,7 +4,7 @@
 #include "nearby.c"
 
 byte zox_chunk_mesh_lighting_busy(ecs* world, entity e) {
-    if (disable_lights) {
+    if (zox_no_lights) {
         return 0;
     }
     return zox_has(e, BuildMeshColors); // ||
@@ -12,7 +12,7 @@ byte zox_chunk_mesh_lighting_busy(ecs* world, entity e) {
 }
 
 byte zox_chunk_lighting_busy(ecs* world, entity e) {
-    if (disable_lights) {
+    if (zox_no_lights) {
         return 0;
     }
     return

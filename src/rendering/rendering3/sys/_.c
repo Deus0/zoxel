@@ -146,7 +146,7 @@ void zox_define_systems_basics3(ecs* world) {
     );
     // Uploads Terrain Chunks, Items, Skybox
     zox_system_1(
-        TexturedMeshUploadSystem,
+        textured_mesh_update_system,
         zoxp_gpu_upload,
         [in] rendering.MeshGPULink,
         [in] rendering.UvsGPULink,

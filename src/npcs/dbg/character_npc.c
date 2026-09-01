@@ -1,7 +1,5 @@
 // todo: pass player entity through here
-extern entity prefab_character3_npc;
 entity zox_tst_character3_npc;
-extern entity spawn_inspector(ecs*, entity, entity, entity);
 
 // TODO: Debug inspector for placement chunk, just to check its added to entities there
 // TODO: Remove InstanceLink, just use ModelLink and RendererInstance Tag
@@ -33,7 +31,9 @@ void zox_tst_spawn_character3_npc(
         return;
     }
     // NOTE: Non instanced is broken atm?
-    entity prefab = is_characters_instanced ? prefab_character3_instanced_npc : prefab_character3_npc;
+    entity prefab = is_characters_instanced ?
+        prefab_character3_instanced_npc :
+        prefab_character3_npc;
     zox_geter_value(pcharacter, Position3D, float3, sposition);
     zox_geter_value(pcharacter, Rotation3D, float4, srotation);
     // zox_geter_value(pcharacter, RenderDepth, byte, render_depth);
@@ -47,7 +47,17 @@ void zox_tst_spawn_character3_npc(
     // char* name = generate_name();
     zox_log("Running Test: Spawn [character3_npc]");
     zox_log("   - Meta [%s:%i]:[%lu]", zox_get_name(meta), mindex, seed);
-    entity e = spawn_character3(world, prefab, realm, terrain, seed, 0, 0, sposition, srotation, NULL);
+    entity e = spawn_character3(
+        world,
+        prefab,
+        realm,
+        terrain,
+        seed,
+        0,
+        0,
+        sposition,
+        srotation,
+        NULL);
     zox_tst_character3_npc = e;
     if (dbg_inspector) {
         entity canvas = zox_get_link(world, player, Canvas);

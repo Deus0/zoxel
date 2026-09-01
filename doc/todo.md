@@ -1,10 +1,9 @@
 # Todo
 
 ## Gameplay
-- Tag quests, some will be Greetings, others Quester?
 - Add dialoguenode for giving me quest
-
-- Add quest (GiveQuest) on npc - 5% chance
+-x Tag quests, some will be Greetings, others Quester?
+-x Add quest (GiveQuest) on npc - 5% chance
 - Add dialoguenode for handing in quest
 - Give me the rare hat when handing in
 - Make projectile collide with Terrain

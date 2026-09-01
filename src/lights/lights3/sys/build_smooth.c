@@ -1,7 +1,16 @@
 // hmmm issue seems to be about faces
 // maybe we redo our mesh builder system
 
-static inline void zox_apply_smooth_lights(const LightNode** lights, const VoxelNode* voxels, const SidesOctree* sides, const MeshColorRGBs* colors, byte3 position, uint* ccount, byte target_depth, byte depth) {
+static inline void zox_apply_smooth_lights(
+    const LightNode** lights,
+    const VoxelNode* voxels,
+    const SidesOctree* sides,
+    const MeshColorRGBs* colors,
+    byte3 position,
+    uint* ccount,
+    byte target_depth,
+    byte depth)
+{
     // Dig Deeper
     if (depth < target_depth && sides->ptr) {
         const SidesOctree* sides_kids = (const SidesOctree*) sides->ptr;
@@ -12,7 +21,15 @@ static inline void zox_apply_smooth_lights(const LightNode** lights, const Voxel
         for (byte i = 0; i < 8; i++) {
             const VoxelNode* cvoxels = has_vkids ? &vkids[i] : voxels;
             byte3 child_position = byte3_add(position, octree_positions[i]);
-            zox_apply_smooth_lights(lights, cvoxels, &sides_kids[i], colors, child_position, ccount, target_depth, depth);
+            zox_apply_smooth_lights(
+                lights,
+                cvoxels,
+                &sides_kids[i],
+                colors,
+                child_position,
+                ccount,
+                target_depth,
+                depth);
 //#ifdef zox_safety_checks
             if (*ccount + voxel_face_vertices_length > colors->length) {
                 break;
@@ -44,7 +61,12 @@ static inline void zox_apply_smooth_lights(const LightNode** lights, const Voxel
 //#endif
         const byte oob_values[] = { darklight, darklight, darklight, sunlight, darklight, darklight };
         byte oob_value = oob_values[direction];
-        byte adjacent_light = getv_nearby_LightNode(lights, position, depth, neighbor_offsets[direction], oob_value);
+        byte adjacent_light = getv_nearby_LightNode(
+            lights,
+            position,
+            depth,
+            neighbor_offsets[direction],
+            oob_value);
         byte light_n1_0 = 0;
         byte light_1_0 = 0;
         byte light_0_n1 = 0;
@@ -142,7 +164,8 @@ static inline void zox_apply_smooth_lights(const LightNode** lights, const Voxel
 }
 
 // NOTE: Rebuilds Lights only when BuildMeshColors is dirty
-zox_sys2(SmoothLightsBuildSystem) {
+void build_smooth_lights_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     byte max_process = !zox_disable_process_skips ? 1 : 0;
     if (!zox_smooth_lighting) {
@@ -192,15 +215,21 @@ zox_sys2(SmoothLightsBuildSystem) {
         fetch_nearby_chunks(world, e, neighbors->value, nearby_chunks);
         fetch_nearby_lights(world, lights, nearby_chunks, nearby_lights);
         uint ccount = 0;
-        zox_apply_smooth_lights(nearby_lights, voxels, sides, colors, byte3_zero, &ccount, depth->value, 0);
-        // generate->value = 0;
-        // upload->value = 1;
-        // zox_setv(e, MeshColorsDirty, 1);
-        zox_add(e, MeshColorsDirty);
+        zox_apply_smooth_lights(
+            nearby_lights,
+            voxels,
+            sides,
+            colors,
+            byte3_zero,
+            &ccount,
+            depth->value,
+            0);
         zox_remove(e, BuildMeshColors);
+        zox_add(e, MeshColorsDirty);
         /*if (ccount > colors->length) {
             zox_logw("Color Verts Missmatch: [%s] Found [%i] Colors [%i]", zox_get_name(e), ccount, colors->length);
         }*/
         zox_sys_increment();
     }
-} zox_sys_end(SmoothLightsBuildSystem);
+    zox_sys_on_end();
+} zoxd_system(build_smooth_lights_system);

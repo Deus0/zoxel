@@ -38,9 +38,19 @@ byte load_chunk(
     get_chunk_filename(filename, position);
     // sprintf(filename, "chunk_%i_%i_%i.dat", position.x, position.y, position.z);
     zox_geter(savegame, FolderPath, game_path);
+    if (!game_path) {
+        zox_loge("[load_chunk] Invalid FolderPath [%s]",
+            zox_getn(savegame));
+        return 0;
+    }
     char* path = join_path(game_path->value, filename);
-    // char path[io_path_size];
-    // get_save_filepath(game_name, filename, path, sizeof(path));
+    if (!path) {
+        zox_loge("[load_chunk] join_path failed [%s] folder=[%s] filename=[%s]",
+            zox_getn(savegame),
+            game_path->value,
+            filename);
+        return 0;
+    }
     if (!file_exists(path)) {
         free(path);
         return 0;
@@ -48,7 +58,7 @@ byte load_chunk(
     // check if file exist
     FILE* file = fopen(path, "rb");
     if (!file) {
-        zox_log_error("Failed to open filepath [%s]", path);
+        zox_loge("Failed to open filepath [%s]", path);
         free(path);
         return 0;
     }
@@ -91,6 +101,10 @@ zox_sys2(Chunk3LoadSystem) {
 #ifdef zox_safety_checks
         if (!zox_valid(realm)) {
             zox_loge("[Chunk3LoadSystem] Invalid Realm");
+            continue;
+        }
+        if (!zox_has(realm, FolderPath)) {
+            zox_loge("[Chunk3LoadSystem] Realm [%s] has no FolderPath", zox_getn(realm));
             continue;
         }
 #endif

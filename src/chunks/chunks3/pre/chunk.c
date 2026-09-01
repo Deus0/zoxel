@@ -32,7 +32,6 @@ entity spawn_chunk3(
     zox_instance(prefab);
     zox_name("chunk3")
     zox_setv(e, Position3D, position);
-    // zox_setv(e, Scale1, scale );
     zox_setv(e, BlockScale, block_scale);
     zox_setv(e, ChunkSize, size);
     zox_setv(e, NodeDepth, depth);
@@ -40,6 +39,7 @@ entity spawn_chunk3(
     zox_add(e, NoiseChunk);
     return e;
 }
+
 entity spawn_prefab_chunk_textured(ecs* world, entity prefab) {
     entity e = zox_prefab_from_parent(world, prefab);
     zox_set_unique_name(e, "chunk_textured");

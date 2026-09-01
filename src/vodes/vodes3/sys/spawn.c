@@ -168,12 +168,12 @@ zox_sys2(VodesSpawnSystem) {
         zox_sys_o(VoxelNode, voxel_octree);
         zox_sys_o(BlocksSpawned, spawned);
         byte is_dirty = zox_has(e, VoxelNodePostDirty);
-        byte is_lod_dirty = zox_has(e, ChunkLodDirty) && zox_getv(e, ChunkLodDirty);
-        if (!is_dirty && !is_lod_dirty) { // && !generated) {
+        byte is_lod_dirty = zox_has(e, ChunkLodDirty) &&
+            zox_getv(e, ChunkLodDirty);
+        if (!(is_dirty || is_lod_dirty)) {
             continue;
         }
         // either voxel voxel_octree is dirty, or we are spawning for first time based on distance changes
-        // byte generated = (!spawned->value && render_distance_dirty->value == zox_dirty_active);
         entity terrain = zox_get_parent(world, e);
         entity realm = zox_get_parent(world, terrain);
         if (!zox_valid(realm)) {

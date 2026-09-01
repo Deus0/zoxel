@@ -1,4 +1,4 @@
-int test_quadrants() {
+/*int test_quadrants() {
     float x1 = 0;
     float x2 = 90;
     float x3 = 180;
@@ -29,4 +29,4 @@ int test_quadrants() {
     printf("Angle: %f, Quadrant: %i\n", x4, quadrant4);
     printf("Angle: %f, Quadrant: %i\n", x5, quadrant5);
     return 0;
-}
+}*/

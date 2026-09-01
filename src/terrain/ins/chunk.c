@@ -17,7 +17,10 @@ entity spawn_terrain_chunk(
     int3 size = int3_single(length);
     // scale needs to be based on chunk itself
     lint seed = position_seed(terrain_seed, position);
-    float chunk_scalev = get_chunk_scale(render_depth, terrain_depth, terrain_scalev);
+    float chunk_scalev = get_chunk_scale(
+        render_depth,
+        terrain_depth,
+        terrain_scalev);
     // we should just pass in positionf - local position of parent!
     float3 bounds = calculate_vox_bounds(size, chunk_scalev);
     float3 positionf = float3_scale(
@@ -48,9 +51,10 @@ entity spawn_terrain_chunk(
     zox_setv(e, RenderDepth, render_depth);
     zox_setv(e, Bounds3D, bounds);
     // Initialize our spinlocks
-    spinlock lock;
-    spinlock_init(&lock);
-    zox_setv(e, LightNodeLock, lock);
+    initialize_voxel_lock(world, e);
+    spinlock llock;
+    spinlock_init(&llock);
+    zox_setv(e, LightNodeLock, llock);
     // Events
     // zox_setv(e, ChunkLodDirty, zox_chunk_lod_dirty_start);
     return e;

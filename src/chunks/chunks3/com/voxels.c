@@ -6,6 +6,7 @@ typedef struct {
 
 zoxc_octree_linked(VoxelNode, byte, 0);
 // zoxc_octree_fun1(VoxelNode, byte, 0);
+zoxc(VoxelNodeLock, spinlock);
 
 create_octree_setters(VoxelNode);
 create_octree_accessors(VoxelNode);

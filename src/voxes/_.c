@@ -13,5 +13,3 @@
  *      - colored vox models
  *
  * */
-#include "dbg/_.c"
-#include "tst/_.c"

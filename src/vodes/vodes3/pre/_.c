@@ -9,6 +9,6 @@ entity spawn_prefab_block_health(ecs* world) {
 
 entity prefab_block_health;
 
-void zox_define_prefabs_vodes3(ecs* world) {
+void zox_prefabs_vodes3(ecs* world) {
     prefab_block_health = spawn_prefab_block_health(world);
 }

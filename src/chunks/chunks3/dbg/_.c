@@ -1,3 +1,5 @@
+extern entity spawn_inspector(ecs*, entity, entity, entity);
+
 #include "label.c"
 #include "memory.c"
 #include "lines.c"

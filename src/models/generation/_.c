@@ -7,8 +7,18 @@
 #include "flowers.c"
 #include "rubble.c"
 #include "wood.c"
+#include "noise.c"
 
 void define_systems_models_generation(ecs* world) {
+    zox_system(
+        NoiseVoxelNodeSystem,
+        zoxp_update,
+        [in] chunks.NodeDepth,
+        [out] chunks.GenerateModel,
+        [out] chunks3.VoxelNode,
+        [out] colorz.ColorRGBs,
+        [none] chunks3.NoiseChunk
+    );
     zox_system(
         DecayedModelGenerationSystem,
         zoxp_update,

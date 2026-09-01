@@ -58,6 +58,7 @@ void define_components_chunks3(ecs* world) {
     zoxd_links(ChunkLink);
     // Pointers
     zoxd_octree(VoxelNode);
+    zoxd(VoxelNodeLock);
     zoxd_octree(SidesOctree);
     zoxd_entities(ChunkEntities);
     zoxd_queue(VoxelNodeQueue);
