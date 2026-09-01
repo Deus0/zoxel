@@ -1,5 +1,10 @@
 # Todo
 
+## Observers
+- We can add a On Tag observer for dirty tags
+- we can use filter ecs on add for the tag
+- the issue is how do we add this per entity prefab?
+
 ## Gameplay
 - Add dialoguenode for giving me quest
 	-x add NodeListener
@@ -7,7 +12,8 @@
 	-x Add prefab event for giving quest
 	-x Link the NodeProcess (dialogue) to character (if not)
 	- The event can check node process's current node and grab its quest
-	- 
+- Add conditional node, and link it to two speech nodes
+	- condition is if the speaker A has the quest
 -x Tag quests, some will be Greetings, others Quester?
 -x Add quest (GiveQuest) on npc - 5% chance
 - Add dialoguenode for handing in quest

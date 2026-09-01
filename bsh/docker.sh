@@ -2,21 +2,50 @@
 
 set -e
 
-docker_image="ubuntu:24.04" # ubuntu:20.04
+docker_image="ubuntu:24.04"
 CONTAINER_NAME="zox24"
-
 ARGS=("$@")
-# echo "Args: ${ARGS[*]}"
 
-
-if [[ " $* " == *" --ubuntu20 "* ]]; then
-    echo "Enabling [ubuntu:20.04]"
-    docker_image="ubuntu:20.04"
-    CONTAINER_NAME="zox20"
+# x64 Docker build on ARM
+DOCKER_PLATFORM=()
+DOCKER_PLATFORM_NAME="native"
+if [[ " ${ARGS[*]} " == *" --x64 "* ]] && [[ "$(uname -m)" == "aarch64" || "$(uname -m)" == "arm64" ]]; then
+    DOCKER_PLATFORM=(--platform linux/amd64)
+    DOCKER_PLATFORM_NAME="x64"
 fi
 
+if [[ " $* " == *" --ubuntu20 "* ]]; then
+    docker_image="ubuntu:20.04"
+    CONTAINER_NAME="zox20"
+    echo "Enabling [${docker_image}]"
+fi
+
+if [[ " $* " == *" --ubuntu22 "* ]]; then
+    docker_image="ubuntu:22.04"
+    CONTAINER_NAME="zox22"
+    echo "Enabling [${docker_image}]"
+fi
+
+if [[ " $* " == *" --ubuntu24 "* ]]; then
+    docker_image="ubuntu:24.04"
+    CONTAINER_NAME="zox24"
+    echo "Enabling [${docker_image}]"
+fi
+
+CONTAINER_NAME="${CONTAINER_NAME}_${DOCKER_PLATFORM_NAME}"
+echo "Docker Container Name [${CONTAINER_NAME}]"
+
 # Uncomment to reset
-# docker rm -f ${CONTAINER_NAME}
+if [[ " $* " == *" --reset "* ]]; then
+    echo "Removing Container [${CONTAINER_NAME}]"
+    docker rm -f "${CONTAINER_NAME}" 2>/dev/null || true
+fi
+
+if [[ " $* " == *" --remove "* ]]; then
+    echo "Removing Container [${CONTAINER_NAME}]"
+    docker rm -f "${CONTAINER_NAME}" 2>/dev/null || true
+    exit
+fi
 
 # Uncomment to remove libs
 # rm -f "$PROJECT_DIR"/lib/linux_x64/*.so
@@ -122,12 +151,6 @@ if ! docker info >/dev/null 2>&1; then
 fi
 
 echo "🐳 Docker ready."
-
-# x64 Docker build on ARM
-DOCKER_PLATFORM=()
-if [[ " ${ARGS[*]} " == *" --x64 "* ]] && [[ "$(uname -m)" == "aarch64" || "$(uname -m)" == "arm64" ]]; then
-    DOCKER_PLATFORM=(--platform linux/amd64)
-fi
 
 if ! docker container inspect "$CONTAINER_NAME" >/dev/null 2>&1; then
     echo "📦 Creating ${docker_image} build container..."
