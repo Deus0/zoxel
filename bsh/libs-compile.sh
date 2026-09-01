@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Required:
+#   - SDL:              cmake
+#   - Mesa:             meson python3-mako
+#   - arm-to-x86_64     g++-x86-64-linux-gnu
+
 source bsh/get-compiler.sh
 
 TARGET="${1:-linux}"
@@ -39,12 +44,16 @@ echo "  Target platform [$TARGET]"
 echo "  Target [${library}]"
 mkdir -p ${library}
 
-USE_SDL3=0
+USE_SDL3=1
 USE_SDL_IMAGE=0
 USE_SDL_MIXER=0
+USE_MESA=0
 
 for arg in "$@"; do
     case "$arg" in
+        --sdl2)
+            USE_SDL3=0
+            ;;
         --sdl3)
             echo "+ Using SDL3"
             USE_SDL3=1
@@ -54,6 +63,9 @@ for arg in "$@"; do
             ;;
         --sdl-mixer)
             USE_SDL_MIXER=1
+            ;;
+        --mesa)
+            USE_MESA=1
             ;;
     esac
 done
@@ -369,4 +381,56 @@ if [[ "$USE_SDL_IMAGE" -eq 1 ]]; then
     fi
 fi
 
-echo "Build complete for target: $TARGET/${arc}"
+# Mesa
+
+build_mesa_if_missing() {
+    local SRC_DIR="$1"
+    local BUILD_DIR="$2"
+    local CROSS_FILE="$BUILD_DIR/cross.ini"
+
+    if [[ -f "$BUILD_DIR/build.ninja" ]]; then
+        echo "+ Found Mesa build [$BUILD_DIR]"
+        return
+    fi
+
+    echo "-> Configuring Mesa for $TARGET/${arc}"
+
+    mkdir -p "$BUILD_DIR"
+
+    cat > "$CROSS_FILE" <<EOF
+[binaries]
+c = '$CC'
+cpp = '$CXX'
+ar = '${CC%-gcc}-ar'
+strip = '${CC%-gcc}-strip'
+pkg-config = 'pkg-config'
+
+[host_machine]
+system = 'linux'
+cpu_family = 'x86_64'
+cpu = 'x86_64'
+endian = 'little'
+EOF
+
+    meson setup "$BUILD_DIR" "$SRC_DIR" \
+        --cross-file "$CROSS_FILE" \
+        --buildtype=release \
+        -Dbuild-tests=false \
+        -Dgallium-drivers=llvmpipe \
+        -Dvulkan-drivers=[]
+
+    meson compile -C "$BUILD_DIR"
+}
+
+if [[ "$USE_MESA" -eq 1 ]]; then
+    if [[ "$TARGET" != "linux" ]]; then
+        echo "Mesa is currently only enabled for Linux builds"
+        exit 1
+    fi
+    mesa_build_directory="ext/mesa/build-$BUILD_SUFFIX"
+    build_mesa_if_missing \
+        "ext/mesa" \
+        "$mesa_build_directory"
+fi
+
+echo "Libraries Build Completed [$TARGET/${arc}]"

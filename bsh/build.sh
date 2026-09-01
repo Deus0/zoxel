@@ -26,6 +26,7 @@ logs="0"
 verbose="0"
 package="0"
 server="0"
+is_mesa="0"
 docker="0"
 is_time_systems="0"
 
@@ -91,6 +92,7 @@ fi
 [[ " $* " == *" --profile "* ]] && is_profiler="1"
 [[ " $* " == *" --verbose "* ]] && verbose="1"
 [[ " $* " == *" --server "* ]] && server="1"
+[[ " $* " == *" --mesa "* ]] && is_mesa="1"
 [[ " $* " == *" --docker "* ]] && docker="1"
 
 
@@ -327,6 +329,7 @@ if [[ "${window_lib}" == "sdl" && ${is_static} == "1" ]]; then
     [[ ${is_sdl3} == "1" ]] && lib_args+=" --sdl3"
     [[ ${sdl_mixer} == "1" ]] && lib_args+=" --sdl-mixer"
     [[ ${docker} == "1" ]] && lib_args+=" --docker"
+    [[ ${is_mesa} == "1" ]] && lib_args+=" --mesa"
     bsh/libs-download.sh ${lib_args}
     echo "--------------------------------------------"
     bsh/libs-compile.sh ${os} --${arc} ${lib_args}
@@ -334,7 +337,7 @@ if [[ "${window_lib}" == "sdl" && ${is_static} == "1" ]]; then
     echo ""
 fi
 
-clear
+clear 2>/dev/null || true
 echo ""
 echo "============================================================"
 echo "                         Z O X E L"
@@ -347,16 +350,13 @@ echo "  Window   : ${window_lib}"
 echo "  SDL      : $(if [[ ${is_sdl3} == "1" ]]; then echo "SDL3"; else echo "SDL2"; fi)"
 echo "  Build    : $(if [[ ${debug} == "1" ]]; then echo "Debug"; else echo "Release"; fi)"
 echo "  Compiler : ${compiler}"
+
 [[ ${is_run} == "1" ]] && echo "  Run      : enabled"
 [[ ${logs} == "1" ]] && echo "  Logs     : enabled"
+[[ ${docker} == "1" ]] && echo "  Docker   : enabled"
 [[ ${is_profiler} == "1" ]] && echo "  Profiler : enabled"
 [[ ${is_time_systems} == "1" ]] && echo "  Timed    : enabled"
 
-# echo "  CFlags   : ${cflags}"
-# echo "  DFlags   : ${dflags}"
-# echo "  Libs   : ${libs}"
-# echo "  Includes   : ${includes}"
-# echo ""
 echo "============================================================"
 echo ""
 

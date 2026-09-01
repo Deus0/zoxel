@@ -44,7 +44,7 @@ void zox_tst_spawn_dialogue(ecs *world, ClickEventData data) {
             prefab_dialogue_node,
             0,
             texts,
-            texts_count);
+            texts_count).x;
     }
     test_dialogue_run = spawn_process_dialogue(
         world,

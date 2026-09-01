@@ -29,8 +29,12 @@ zox_sys2(DialogueSpeechSystem) {
             zox_loge("Dialogue Missing Text or Buttons");
             continue;
         }
-        zox_geter(node->value, DialogueText, text);
-        set_TargetText(world, text_ui, text->value);
+        const char* text =
+            zox_has(node->value, DialogueText) ?
+                zox_getv(node->value, DialogueText) :
+                "Here.";
+        // zox_geter(node->value, DialogueText, text);
+        set_TargetText(world, text_ui, text);
         zox_muter(text_ui, TextData, text_data);
         resize_TextData(text_data, 0);
         zox_setv(text_ui, TextDirty, zox_dirty_trigger);
@@ -45,7 +49,7 @@ zox_sys2(DialogueSpeechSystem) {
                 zox_getn(node->value),
                 zox_getn(text_ui),
                 zox_getn(next_button),
-                text->value);
+                text);
         }
     }
 } zox_sys_end(DialogueSpeechSystem);

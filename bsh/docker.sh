@@ -2,7 +2,18 @@
 
 set -e
 
-CONTAINER_NAME="zoxel-linux20"
+docker_image="ubuntu:24.04" # ubuntu:20.04
+CONTAINER_NAME="zox24"
+
+ARGS=("$@")
+# echo "Args: ${ARGS[*]}"
+
+
+if [[ " $* " == *" --ubuntu20 "* ]]; then
+    echo "Enabling [ubuntu:20.04]"
+    docker_image="ubuntu:20.04"
+    CONTAINER_NAME="zox20"
+fi
 
 # Uncomment to reset
 # docker rm -f ${CONTAINER_NAME}
@@ -107,23 +118,29 @@ if ! docker info >/dev/null 2>&1; then
 
     # If docker group membership was just added, execute the
     # remainder of this script inside a docker-group shell.
-    exec newgrp docker <<< "$0"
+    exec newgrp docker <<< "$0 ${ARGS[*]}"
 fi
 
 echo "🐳 Docker ready."
 
+# x64 Docker build on ARM
+DOCKER_PLATFORM=()
+if [[ " ${ARGS[*]} " == *" --x64 "* ]] && [[ "$(uname -m)" == "aarch64" || "$(uname -m)" == "arm64" ]]; then
+    DOCKER_PLATFORM=(--platform linux/amd64)
+fi
+
 if ! docker container inspect "$CONTAINER_NAME" >/dev/null 2>&1; then
-    echo "📦 Creating Ubuntu 20.04 build container..."
+    echo "📦 Creating ${docker_image} build container..."
 
     docker run -dit \
+        "${DOCKER_PLATFORM[@]}" \
         --name "$CONTAINER_NAME" \
-        --user "$(id -u):$(id -g)" \
         -v "$PROJECT_DIR:/zoxel" \
         -w /zoxel \
-        ubuntu:20.04 \
+        ${docker_image} \
         bash
 else
-    echo "📦 Reusing Ubuntu 20.04 build container."
+    echo "📦 Reusing ${docker_image} build container."
 fi
 
 if ! docker container inspect -f '{{.State.Running}}' "$CONTAINER_NAME" 2>/dev/null | grep -q true; then
@@ -146,11 +163,14 @@ docker exec \
 
 echo
 echo "🔨 Building Zoxel..."
+echo "  - Args [${ARGS[@]}] -"
 echo
 
 docker exec \
+    -u "$(id -u):$(id -g)" \
     "$CONTAINER_NAME" \
-    bash -c 'cd /zoxel && bash bsh/build.sh --package --docker'
+    bash -c 'cd /zoxel && bash bsh/build.sh --package --docker "$@"' \
+    bash "${ARGS[@]}"
 
 echo
 echo "✅ Zoxel build complete."

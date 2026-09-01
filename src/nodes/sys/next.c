@@ -2,6 +2,7 @@
 
 // System handles the next node process
 zox_sys2(NextNodeSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NodeEnd);
@@ -13,7 +14,9 @@ zox_sys2(NextNodeSystem) {
         zox_sys_o(NodeLink, current);
         zox_sys_o(NodetreeEnd, complete);
         // Process on completed single node
-        if (!zox_valid(current->value) || state->value != zox_dirty_active) {
+        if (!zox_valid(current->value) ||
+            state->value != zox_dirty_active)
+        {
             continue;
         }
         // Gets next node - First one for now

@@ -1,6 +1,12 @@
-#include "quest.c"
 entity prefab_quest;
+entity prefab_node_give_quest;
 
-void spawn_prefabs_quests(ecs *world) {
+#include "quest.c"
+#include "nodes.c"
+
+void zox_prefabs_quests(ecs *world) {
     prefab_quest = spawn_prefab_quest(world);
+    prefab_node_give_quest = spawn_prefab_node_give_quest(
+        world,
+        prefab_node);
 }

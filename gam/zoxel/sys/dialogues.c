@@ -16,13 +16,25 @@ zox_sys2(DialogueRealmSpawnSystem) {
                 "I require cookies!",
                 "But I have yet to implement them",
             };
-            entity dialogue = spawn_dialogue_tree_texts(
+            entity2 dialogue_nodes = spawn_dialogue_tree_texts(
                 world,
                 prefab_dialogue_node,
                 e,
                 texts,
                 texts_count);
-            zox_add(dialogue, QuestDialogue);
+            // Spawn quests here, linked to dialogue
+            entity dialogue_quest = spawn_realm_quest(
+                world,
+                e,
+                prefab_quest,
+                "Cookies Gett",
+                "discord");
+            zox_add(dialogue_nodes.x, QuestDialogue);
+            // Link quest node to dialogues
+            entity give_quest_node = spawn_node_give_quest(
+                world,
+                dialogue_quest);
+            new_link_single_node(world, dialogue_nodes.y, give_quest_node);
         }
         {
             byte texts_count = 3;
@@ -36,7 +48,7 @@ zox_sys2(DialogueRealmSpawnSystem) {
                 prefab_dialogue_node,
                 e,
                 texts,
-                texts_count);
+                texts_count).x;
             zox_add(dialogue, Greetings);
         }
         {
@@ -53,7 +65,7 @@ zox_sys2(DialogueRealmSpawnSystem) {
                 prefab_dialogue_node,
                 e,
                 texts,
-                texts_count);
+                texts_count).x;
             zox_add(dialogue, Greetings);
         }
         {
@@ -69,7 +81,7 @@ zox_sys2(DialogueRealmSpawnSystem) {
                 prefab_dialogue_node,
                 e,
                 texts,
-                texts_count);
+                texts_count).x;
             zox_add(dialogue, Greetings);
         }
         {
@@ -83,7 +95,7 @@ zox_sys2(DialogueRealmSpawnSystem) {
                 prefab_dialogue_node,
                 e,
                 texts,
-                texts_count);
+                texts_count).x;
             zox_add(dialogue, Greetings);
         }
         {
@@ -98,7 +110,7 @@ zox_sys2(DialogueRealmSpawnSystem) {
                 prefab_dialogue_node,
                 e,
                 texts,
-                texts_count);
+                texts_count).x;
             zox_add(dialogue, Greetings);
         }
         {
@@ -117,7 +129,7 @@ zox_sys2(DialogueRealmSpawnSystem) {
                 prefab_dialogue_node,
                 e,
                 texts,
-                texts_count);
+                texts_count).x;
             zox_add(dialogue, Greetings);
         }
         zox_logv("Realm [dialogues] [X] spawned.");

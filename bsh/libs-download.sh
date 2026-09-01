@@ -7,13 +7,15 @@ sdl_url="https://github.com/libsdl-org/SDL/archive/refs/tags/release-2.32.8.zip"
 sdl_image_url="https://github.com/libsdl-org/SDL_image/archive/refs/tags/release-2.8.10.zip"
 sdl_mixer_url="https://github.com/libsdl-org/SDL_mixer/archive/refs/tags/release-2.8.1.zip"
 sdl3_mixer_url="https://github.com/libsdl-org/SDL_mixer/archive/refs/tags/release-3.2.4.zip"
-mesa_url="https://archive.mesa3d.org/mesa-26.1.8.tar.xz"
+# as khadas as mason 1.3.2 only
+# mesa_url="https://archive.mesa3d.org/mesa-26.1.8.tar.xz"
+mesa_url="https://archive.mesa3d.org/mesa-25.1.9.tar.xz"
 
 sdl_filepath="ext/sdl2.zip"
 sdl3_filepath="ext/sdl3.zip"
 mesa_filepath="ext/mesa.tar.xz"
 
-USE_SDL3=0
+USE_SDL3=1
 USE_GLEW=0
 USE_SDL_IMAGE=0
 USE_SDL_MIXER=0
@@ -21,6 +23,9 @@ USE_MESA=0
 
 for arg in "$@"; do
     case "$arg" in
+        --sdl2)
+            USE_SDL3=0
+            ;;
         --sdl3)
             USE_SDL3=1
             ;;
