@@ -77,11 +77,12 @@ void spawn_devices_on_app(ecs* world, entity app) {
     zox_set_parent(world, local_keyboard, app);
     local_mouse = spawn_mouse(world);
     zox_set_parent(world, local_mouse, app);
-    zox_setv(local_mouse, AppLink, app);
     local_touchscreen = spawn_touchscreen(
         world,
         prefab_touchscreen);
     zox_set_parent(world, local_touchscreen, app);
-    zox_setv(local_touchscreen, AppLink, app);
     initialize_sdl_gamepads(world, app);
+    zox_link(world, local_keyboard, App, app);
+    zox_link(world, local_mouse, App, app);
+    zox_link(world, local_touchscreen, App, app);
 }

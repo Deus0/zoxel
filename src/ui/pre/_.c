@@ -17,7 +17,6 @@ void prefabs_add_to_player_inputs(ecs *world, entity e) {
 void prefabs_add_to_player_uis(ecs *world, entity e) {
     // Player -> UI Links
     zox_prefab_set(e, ElementLinks, { 0 });
-    zox_prefab_set(e, CanvasLink, { 0 });
 }
 
 // this is all UI interaction

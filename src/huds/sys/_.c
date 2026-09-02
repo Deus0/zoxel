@@ -24,12 +24,10 @@ void define_systems_game_ui(ecs *world) {
         [in] inputs.LastDeviceMode,
         [in] inputs.DeviceMode,
         [in] games.GameLink,
-        [in] layouts.CanvasLink
     );
     zox_system_1(
         PlayerTerminalSystem,
         zoxp_spawn,
-        [in] layouts.CanvasLink,
         [in] inputs.DeviceMode,
         [none] players.Player
     );

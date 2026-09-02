@@ -50,6 +50,7 @@ output_extension="bin"
 
 # Parse our Arguments #
 
+# if not a -- we set our game name
 if [[ $# -gt 0 && ${1} != --* ]]; then
     game_name="$1"
 fi
@@ -344,6 +345,7 @@ echo "============================================================"
 echo "                         Z O X E L"
 echo "                    Universal Build System"
 echo "------------------------------------------------------------"
+echo "  Game     : ${game_name}"
 echo "  Platform : ${os}"
 echo "  Arch     : ${arc}"
 echo "  Graphics : ${graphics_lib}"

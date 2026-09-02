@@ -67,7 +67,6 @@ void define_systems_controllers3(ecs *world) {
         [in] players.PlayerState,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
-        [in] layouts.CanvasLink,
         [none] players.Player
     );
     zox_system_1(
@@ -107,7 +106,6 @@ void define_systems_controllers3(ecs *world) {
         zoxp_spawn, // zoxp_update,
         [in] characters.CharacterLink,
         [in] cameras.CameraLink,
-        [in] layouts.CanvasLink,
         [out] players.PlayerState
     );
     // NOTE: Spawns animation events

@@ -1,9 +1,8 @@
 // re upload gpu data
-void zox_dbg_refresh_uis(ecs *world, int32_t keycode) {
-    /*if (keycode != zox_key_l) {
+/*void zox_dbg_refresh_uis(ecs *world, int32_t keycode) {
+    if (keycode != zox_key_l) {
         return;
     }
-    entity canvas = zox_getv(dbg_player, CanvasLink);
     // for all children and sub children, refresh the
     entity test_id = zox_id(Glyph); // zox_id(MeshDirty);
     entity uis[64];
@@ -16,5 +15,5 @@ void zox_dbg_refresh_uis(ecs *world, int32_t keycode) {
         // zox_setv(ui, Initialize, 1);
         // zox_setv(ui, GenerateTexture, 1);
         // zox_setv(ui, MeshDirty, 1);
-    }*/
-}
+    }
+}*/

@@ -42,11 +42,10 @@ void import_ui(ecs* world) {
     zox_add_module(interaction);
     zox_import_module(Tooltips);
     zox_add_module(elements2);
-    zox_import_module(Elements3);
-    zox_import_module(Windows);
+    zox_add_module(elements3);
+    zox_add_module(windows);
     zox_import_module(Navigation);
     zox_import_module(Touch);
     zox_import_module(RenderTextures);
     zox_import_module(UIContainers);
-    add_hook_key_down(zox_dbg_refresh_uis);
 }

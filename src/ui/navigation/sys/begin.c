@@ -50,8 +50,7 @@ zox_sys2(ElementNavigationBeginSystem) {
         }
         entity player = zox_get_parent(world, e);
         if (!zox_valid(player) ||
-            !zox_has(player, DeviceMode) ||
-            !zox_has(player, CanvasLink)
+            !zox_has(player, DeviceMode)
         ) {
             zox_loge("Invalid Player on [Navigator]");
             continue;
@@ -63,7 +62,7 @@ zox_sys2(ElementNavigationBeginSystem) {
         if (device_mode != zox_device_mode_gamepad) {
             continue;
         }
-        entity canvas = zox_getv(player, CanvasLink);
+        entity canvas = zox_get_link(world, player, Canvas);
         if (!zox_valid(canvas)) {
             // zox_logw("Canvas is missing from Player");
             continue;

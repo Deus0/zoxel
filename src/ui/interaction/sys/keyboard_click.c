@@ -22,10 +22,10 @@ zox_sys2(KeyboardClickSystem) {
         if (disabled->value) {
             continue;
         }
-        if (!zox_valid(player->value) || !zox_has(player->value, CanvasLink)) {
+        if (!zox_valid(player->value)) {
             continue;
         }
-        entity canvas = zox_getv(player->value, CanvasLink);
+        entity canvas = zox_get_link(world, player->value, Canvas);
         if (!zox_valid(canvas)) {
             continue;
         }

@@ -21,7 +21,6 @@ entity spawn_prefab_layout2(ecs *world) {
     // zox_prefab_set(e, Rotation2, { 0 });
     zox_prefab_set(e, Scale1, { 1 });
     zox_prefab_set(e, LocalPosition2, { float2_zero });
-    // zox_prefab_set(e, LocalRotation2, { 0 });
     // Local
     zox_prefab_set(e, LayoutPosition, { int2_zero });
     zox_prefab_set(e, LayoutSize, { int2_zero });
@@ -30,7 +29,5 @@ entity spawn_prefab_layout2(ecs *world) {
     // Canvas
     zox_prefab_set(e, Anchor, { float2_zero });
     zox_prefab_set(e, Layer, { 0 });
-    // zox_prefab_set(e, CanvasPosition, { int2_zero });
-    // zox_prefab_set(e, CanvasLink, { 0 });
     return e;
 }

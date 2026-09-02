@@ -1,5 +1,6 @@
 # Todo
 
+- "[Landfill] Depth Invalid:" bug
 - Add npc that dies when you talk to it
 	- death node in dialogue
 - spawn dialogue inside character spawning for realm, so its in one spot

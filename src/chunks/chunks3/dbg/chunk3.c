@@ -64,7 +64,6 @@ entity zox_dbg_spawn_chunk3(ecs* world, byte dbg_inspector) {
     entity e = spawn_test_vox(world, player);
     zox_set_unique_name(e, "dbg_chunk3");
     if (dbg_inspector) {
-        // entity canvas = zox_getv(player, CanvasLink);
         entity canvas = zox_get_link(world, player, Canvas);
         spawn_inspector(
             world,

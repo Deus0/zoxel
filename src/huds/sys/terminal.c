@@ -1,11 +1,9 @@
 zox_sys2(PlayerTerminalSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(CanvasLink);
     zox_sys_in(DeviceMode);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(CanvasLink, canvas);
         zox_sys_i(DeviceMode, device_mode);
         if (device_mode->value != zox_device_mode_keyboardmouse) {
             continue;
@@ -30,11 +28,12 @@ zox_sys2(PlayerTerminalSystem) {
         if (!is_toggle_terminal) {
             continue;
         }
-        entity menu = zox_get_child_by_id(world, canvas->value, zox_id(MenuTerminal));
+        entity canvas = zox_get_link(world, e, Canvas);
+        entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuTerminal));
         if (zox_valid(menu)) {
             zox_delete(menu);
         } else {
-            spawn_menu_terminal(world, canvas->value);
+            spawn_menu_terminal(world, canvas);
         }
     }
 } zox_sys_end(PlayerTerminalSystem);

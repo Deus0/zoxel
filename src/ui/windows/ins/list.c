@@ -24,7 +24,10 @@ byte calculate_list_max_characters(const SpawnList data) {
     return max_list_characters;
 }
 
-static inline int2 calculate_list_size(byte max_characters, SpawnList data) {
+static inline int2 calculate_list_size(
+    byte max_characters,
+    SpawnList data)
+{
     int list_element_height = data.font_size + data.button_padding.y * 2;
     return (int2) {
         max_characters * data.font_size +
@@ -55,7 +58,7 @@ entity3 spawn_window_list(
     byte elements_count,
     byte visible_count)
 {
-    entity canvas = zox_getv(player, CanvasLink);
+    entity canvas = zox_get_link(world, player, Canvas);
     if (!zox_valid(canvas)) {
         zox_loge("Invalid canvas in [spawn_window_list]");
         return (entity3) { 0, 0, 0 };

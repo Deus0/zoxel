@@ -12,10 +12,7 @@ void game_state_load(ecs* world, entity game, byte state) {
             if (!zox_has(player, Player)) {
                 continue;
             }
-            if (!zox_has(player, CanvasLink)) {
-                continue;
-            }
-            entity canvas = zox_getv(player, CanvasLink);
+            entity canvas = zox_get_link(world, player, Canvas);
             if (!zox_valid(canvas)) {
                 continue;
             }

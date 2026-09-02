@@ -1,7 +1,8 @@
 extern entity spawn_menu_options(ecs*, entity, entity, int2, float2);
 
 void button_event_menu_options(ecs *world, ClickEventData event) {
-    entity canvas = zox_getv(event.clicker, CanvasLink);
+    entity player = event.clicker;
+    entity canvas = zox_get_link(world, player, Canvas);
     if (!zox_valid(canvas)) {
         return;
     }
@@ -25,7 +26,6 @@ void button_event_exit_app(ecs *world, ClickEventData event) {
     for (int i = 0; i < players->length; i++) {
         entity e = players->value[i];
         entity canvas = zox_get_link(world, e, Canvas);
-        // zox_geter_value(e, CanvasLink, entity, canvas);
         if (!zox_valid(canvas)) {
             continue;
         }

@@ -152,17 +152,23 @@ zox_sys2(TouchscreenExtractSystem) {
     touch_devices_count = sdl_get_touch_device_count();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(AppLink);
     zox_sys_out(PixelSize);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(AppLink, app);
         zox_sys_o(PixelSize, screen_size);
-        screen_size->value = zox_getv(app->value, WindowSize);
+        entity app = zox_get_link(world, e, App);
+        if (!zox_valid(app) || !zox_has(app, WindowSize)) {
+            continue;
+        }
+        screen_size->value = zox_getv(app, WindowSize);
         // For all Zevices
         uint children_capacity = zox_children_capacity;
         entity children[children_capacity];
-        uint children_length = zox_get_children(world, e, children, children_capacity);
+        uint children_length = zox_get_children(
+            world,
+            e,
+            children,
+            children_capacity);
         for (uint j = 0; j < children_length; j++) {
             entity e2 = children[j];
             // NOTE: Virtual joystick zevice has no finger
@@ -177,11 +183,23 @@ zox_sys2(TouchscreenExtractSystem) {
 #endif
             // When disabled check for new finger
             if (zox_getv(e2, ZeviceDisabled)) {
-                if (link_sdl_new_finger(world, screen_size->value, children, children_length, e2, dbg_log)) {
+                if (link_sdl_new_finger(
+                    world,
+                    screen_size->value,
+                    children,
+                    children_length,
+                    e2,
+                    dbg_log))
+                {
                     global_any_fingers_down = 1;
                 }
             } else {
-                if (sdl_extract_finger(world, screen_size->value, e2, dbg_log)) {
+                if (sdl_extract_finger(
+                    world,
+                    screen_size->value,
+                    e2,
+                    dbg_log))
+                {
                     global_any_fingers_down = 1;
                 }
             }

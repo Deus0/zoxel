@@ -46,17 +46,16 @@ zox_sys2(DeviceModeUISystem) {
     zox_sys_in(LastDeviceMode);
     zox_sys_in(DeviceMode);
     zox_sys_in(GameLink);
-    zox_sys_in(CanvasLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(DeviceModeDirty, dirty);
         zox_sys_i(LastDeviceMode, old);
         zox_sys_i(DeviceMode, new);
         zox_sys_i(GameLink, game);
-        zox_sys_i(CanvasLink, canvas);
         if (!dirty->value) {
             return;
         }
+        entity canvas = zox_get_link(world, e, Canvas);
         byte mouse_visible = 1;
         byte game_state = 0;
         if (game->value) {
@@ -74,15 +73,18 @@ zox_sys2(DeviceModeUISystem) {
             mouse_visible = 0;
         } else if (new->value == zox_device_mode_touchscreen) {
             if (game_state == zox_game_state_playing) {
-                spawn_in_game_ui_touch(world, e, canvas->value);
+                spawn_in_game_ui_touch(world, e, canvas);
             }
             mouse_visible = 0;
         }
         set_mouse_visible(mouse_visible);
-        spawn_device_gizmo(world, canvas->value, new->value);
-        menu_start_triggered(world, e, canvas->value);
+        spawn_device_gizmo(world, canvas, new->value);
+        menu_start_triggered(world, e, canvas);
         if (dbg_log) {
-            zox_log("New Device Mode Detected [%i] -> [%i], mouse_visible [%i]", old->value, new->value, mouse_visible);
+            zox_log("New Device Mode Detected [%i] -> [%i], mouse_visible [%i]",
+                old->value,
+                new->value,
+                mouse_visible);
         }
     }
 } zox_sys_end(DeviceModeUISystem);

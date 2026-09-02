@@ -38,7 +38,7 @@ entity spawn_map(ecs* world, entity canvas, entity player, entity terrain) {
 }
 
 entity spawn_player_menu_map(ecs* world, entity player) {
-    entity canvas = zox_getv(player, CanvasLink);
+    entity canvas = zox_get_link(world, player, Canvas);
     entity game = zox_get_parent(world, player);
     entity realm = zox_getv(game, RealmLink);
     entity terrain = zox_getv(realm, TerrainLink);

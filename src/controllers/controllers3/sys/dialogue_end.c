@@ -23,7 +23,7 @@ zox_sys2(DialogueEndSystem) {
             zox_geter_value(speakers->value[0], PlayerLink, entity, player);
             if (zox_valid(player)) {
                 zox_set(player, PlayerState, { zox_player_state_dialogue_end });
-                entity canvas = zox_getv(player, CanvasLink);
+                entity canvas = zox_get_link(world, player, Canvas);
                 entity windows[zox_children_capacity];
                 uint length = zox_get_children_by_id(world, canvas, windows, zox_children_capacity, zox_id(Window));
                 for (int j = 0; j < length; j++) {

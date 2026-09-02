@@ -4,23 +4,33 @@ zox_sys2(PlayerDialogueSystem) {
     zox_sys_begin();
     zox_sys_in(CharacterLink);
     zox_sys_in(CameraLink);
-    zox_sys_in(CanvasLink);
     zox_sys_out(PlayerState);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(CharacterLink, character);
         zox_sys_i(CameraLink, camera);
-        zox_sys_i(CanvasLink, canvas);
         zox_sys_o(PlayerState, state);
-        if (!zox_valid(canvas->value)) {
+        /*entity canvas = zox_get_link(world, e, Canvas);
+        if (!zox_valid(canvas)) {
             // zox_logw("Canvas is missing from Player");
             continue;
-        }
+        }*/
         if (state->value == zox_player_state_dialogue_begin) {
             state->value = zox_player_state_dialogue_active;
-            zox_lerp_float(camera->value, CameraVignette, dialogue_vignette, 2.5f);
-            zox_lerp_float(camera->value, CameraBlur, dialogue_blur, 2.5f);
-            entity mouse = zox_get_child_by_id(world, e, zox_id(Mouse));
+            zox_lerp_float(
+                camera->value,
+                CameraVignette,
+                dialogue_vignette,
+                2.5f);
+            zox_lerp_float(
+                camera->value,
+                CameraBlur,
+                dialogue_blur,
+                2.5f);
+            entity mouse = zox_get_child_by_id(
+                world,
+                e,
+                zox_id(Mouse));
             if (mouse) {
                 zox_setv(mouse, MouseLock, 0);
             }

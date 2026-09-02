@@ -222,7 +222,8 @@ uint debug_ui_seeds(ecs *world, entity e, char *buffer, uint size, uint index) {
 }
 
 void refresh_debug_label(ecs* world) {
-    entity canvas = zox_getv(dbg_player, CanvasLink);
+    entity player = dbg_player;
+    entity canvas = zox_get_link(world, player, Canvas);
     entity label = zox_get_child_by_id(world, canvas, zox_id(GameDebugLabel));
     if (label) {
         zox_delete(label);

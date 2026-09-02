@@ -1,6 +1,6 @@
 void button_event_load_cancel(ecs *world, ClickEventData event) {
     entity player = event.clicker;
-    entity canvas = zox_getv(player, CanvasLink);
+    entity canvas = zox_get_link(world, player, Canvas);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuLoad));
     if (!menu) {
         zox_logw("MenuLoad menu not found");
@@ -22,7 +22,7 @@ void button_event_load_confirm(ecs *world, ClickEventData event) {
     entity clicked = event.clicked;
     zox_geter_value(player, GameLink, entity, game);
     zox_geter(clicked, FolderPath, path);
-    entity canvas = zox_getv(player, CanvasLink);
+    entity canvas = zox_get_link(world, player, Canvas);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuLoad));
     if (!menu) {
         zox_log_error("UI [MenuLoad] Not Found");

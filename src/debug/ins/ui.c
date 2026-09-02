@@ -1,7 +1,8 @@
 entity dbg_test_window_uis;
 
 void zox_dbg_toggle_main_menu(ecs* world, ClickEventData data) {
-    entity canvas = zox_getv(dbg_player, CanvasLink);
+    entity player = data.clicker;
+    entity canvas = zox_get_link(world, player, Canvas);
     if (!zox_valid(canvas)) {
         return;
     }

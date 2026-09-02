@@ -18,8 +18,9 @@ void zox_dbg_spawn_ui_bar(ecs *world, ClickEventData data) {
         return;
     }
     zox_log("+ Testing [dbg_bar2]");
-    entity camera = zox_getv(dbg_player, CameraLink);
-    entity canvas = zox_getv(dbg_player, CanvasLink);
+    entity player = dbg_player;
+    entity camera = zox_getv(player, CameraLink);
+    entity canvas = zox_get_link(world, player, Canvas);
     if (!zox_valid(camera)) {
         return;
     }

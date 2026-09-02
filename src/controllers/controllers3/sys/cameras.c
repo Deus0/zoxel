@@ -17,13 +17,11 @@ zox_sys2(PlayerToggleCameraSystem) {
     zox_sys_in(PlayerState);
     zox_sys_in(CharacterLink);
     zox_sys_in(CameraLink);
-    zox_sys_in(CanvasLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
         zox_sys_i(CharacterLink, character);
         zox_sys_i(CameraLink, camera);
-        zox_sys_i(CanvasLink, canvas);
         if (state->value != zox_player_state_playing) {
             continue;
         }
@@ -43,7 +41,11 @@ zox_sys2(PlayerToggleCameraSystem) {
             }
             uint children_capacity = zox_children_capacity;
             entity children[children_capacity];
-            uint children_length = zox_get_children(world, e2, children, children_capacity);
+            uint children_length = zox_get_children(
+                world,
+                e2,
+                children,
+                children_capacity);
             for (uint k = 0; k < children_length; k++) {
                 entity e3 = children[k];
                 if (!zox_valid(e3)) {
@@ -73,11 +75,15 @@ zox_sys2(PlayerToggleCameraSystem) {
             }
         }
         if (is_toggle) {
+            entity canvas = zox_get_link(world, e, Canvas);
             byte mode = toggle_camera_mode(world, camera->value);
             byte is_first_person = mode == zox_camera_state_first_person;
-            entity crosshair = zox_get_child_by_id(world, canvas->value, zox_id(Crosshair));
+            entity crosshair = zox_get_child_by_id(
+                world,
+                canvas,
+                zox_id(Crosshair));
             if (zox_valid(crosshair)) {
-                zox_set(crosshair, RenderDisabled, { !is_first_person });
+                zox_setv(crosshair, RenderDisabled, !is_first_person);
             }
         }
     }

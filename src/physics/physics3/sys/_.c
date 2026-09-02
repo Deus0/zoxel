@@ -11,20 +11,20 @@
 void zox_systems_physics3(ecs *world) {
     // Force
     zox_system(
-        Acceleration3System,
+        acceleration3_system,
         zoxp_physics_apply,
         [out] physics3.Acceleration3D,
         [out] physics3.Velocity3D
     );
     zox_system(
-        Alpha3System,
+        alpha3_system,
         zoxp_physics_apply,
         [out] Alpha3D,
         [out] Omega3D
     );
     // core
     zox_system(
-        Velocity3System,
+        velocity3_system,
         zoxp_physics,
         [in] physics3.Velocity3D,
         [out] transforms3.Position3D
@@ -37,7 +37,7 @@ void zox_systems_physics3(ecs *world) {
     );
     // Friction
     zox_system(
-        Friction3DSystem,
+        friction3_system,
         zoxp_physics,
         [in] physics.Grounded,
         [in] physics3.Velocity3D,
@@ -52,18 +52,18 @@ void zox_systems_physics3(ecs *world) {
     );
     // others
     zox_system(
+        gravity3_system,
+        zoxp_physics,
+        [in] physics3.Gravity3D,
+        [out] physics3.Acceleration3D,
+        [none] !physics.DisableGravity
+    );
+    zox_system(
         Physics3DDisableSystem,
         zoxp_physics,
         [out] InitializePhysics3D,
         [out] transforms3.Position3D,
         [out] physics3.Velocity3D
-    );
-    zox_system(
-        Gravity3DSystem,
-        zoxp_physics,
-        [in] physics3.Gravity3D,
-        [out] physics3.Acceleration3D,
-        [none] !physics.DisableGravity
     );
     zox_system(
         Position3DBoundsSystem,

@@ -9,7 +9,6 @@ void zox_define_systems_elements(ecs *world) {
         CanvasResizeSystem,
         zoxp_update,
         [in] cameras.ScreenToCanvas,
-        [in] apps.AppLink,
         [out] layouts.LayoutPosition,
         [out] layouts.LayoutSize,
         [none] layouts.Canvas

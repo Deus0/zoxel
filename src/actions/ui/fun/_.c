@@ -8,7 +8,7 @@ void set_character_action(ecs *world, entity character, byte index) {
     if (!zox_valid(player)) {
         return;
     }
-    entity canvas = zox_getv(player, CanvasLink);
+    entity canvas = zox_get_link(world, player, Canvas);
     entity actionbar = zox_get_child_by_id(world, canvas, zox_id(MenuActions));
     if (!actionbar) {
         return;

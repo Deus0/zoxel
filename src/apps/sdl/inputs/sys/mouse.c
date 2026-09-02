@@ -4,6 +4,7 @@
 zox_sys2(MouseExtractSystem) {
     byte dbg_log = 0;
     zox_sys_world();
+    //TODO: Move this into system logic
     if (!zox_valid(main_app) || !zox_has(main_app, WindowSize)) {
         return;
     }
@@ -26,10 +27,12 @@ zox_sys2(MouseExtractSystem) {
         button_pressed_right = 1;
     }
     zox_sys_begin();
-    zox_sys_in(AppLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(AppLink, app);
+        entity app = zox_get_link(world, e, App);
+        if (!zox_valid(app) || !zox_has(app, SDLWindow)) {
+            continue;
+        }
         // using button_pressed_left
         uint children_capacity = zox_children_capacity;
         entity children[children_capacity];
@@ -44,7 +47,7 @@ zox_sys2(MouseExtractSystem) {
                     zox_geter(e2, ZevicePointerPosition, position);
                     int2 position2 = position->value;
                     int2_flip_y(&position2, screen_size);
-                    SDL_Window* sdl_window = zox_getv(app->value, SDLWindow);
+                    SDL_Window* sdl_window = zox_getv(app, SDLWindow);
                     SDL_WarpMouseInWindow(sdl_window, position2.x, position2.y);
                 } else {
                     zox_muter(e2, ZevicePointerPosition, position);

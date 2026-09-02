@@ -9,7 +9,7 @@ void player_state_touch_ui(ecs* world, entity player, byte state) {
     if (!is_destroy && !is_spawn) {
         return;
     }
-    entity canvas = zox_getv(player, CanvasLink);
+    entity canvas = zox_get_link(world, player, Canvas);
     if (!zox_valid(canvas)) {
         return;
     }
@@ -42,13 +42,11 @@ void player_state_touch_ui(ecs* world, entity player, byte state) {
     zox_sys_begin();
     zox_sys_in(PlayerState);
     zox_sys_in(PlayerStateDirty);
-    zox_sys_in(CanvasLink);
     zox_sys_in(DeviceMode);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
         zox_sys_i(PlayerStateDirty, dirty);
-        zox_sys_i(CanvasLink, canvas);
         zox_sys_i(DeviceMode, device_mode);
         if (state->value == zox_player_state_play_begin && dirty->value == zox_dirty_active) {
             if (device_mode->value == zox_device_mode_touchscreen || zox_dbg_touch_with_mouse) {

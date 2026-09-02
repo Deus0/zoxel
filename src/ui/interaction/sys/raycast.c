@@ -42,15 +42,15 @@ zox_sys2(ElementRaycastSystem) {
         if (!raycaster_mode) {
             continue;
         }
-        entity player_canvas = zox_getv(player, CanvasLink);
-        if (!zox_valid(player_canvas)) {
+        entity canvas = zox_get_link(world, player, Canvas);
+        if (!zox_valid(canvas)) {
             continue;
         }
-        entity camera = zox_getv(player_canvas, CameraLink);
+        entity camera = zox_getv(canvas, CameraLink);
         if (!zox_valid(camera)) {
             continue;
         }
-        float2 canvas_sizef = int2_to_float2(zox_getv(player_canvas, LayoutSize));
+        float2 canvas_sizef = int2_to_float2(zox_getv(canvas, LayoutSize));
         float aspect_ratio = canvas_sizef.x / canvas_sizef.y;
         // NOTE: Now it only works for one canvas hmmm
         int2 canvas_position = zox_getv(camera, ScreenPosition);
@@ -86,7 +86,7 @@ zox_sys2(ElementRaycastSystem) {
                 }
                 entity e2 = it2.entities[j];
                 entity rcanvas = zox_get_parent_by_id(world, e2, zox_id(Canvas));
-                if (player_canvas != rcanvas) {
+                if (canvas != rcanvas) {
                     continue;
                 }
                 int2 lsize = lsize2->value;

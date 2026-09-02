@@ -52,7 +52,6 @@ void define_systems_editor(ecs *world) {
     zox_system_1(
         EditorInputSystem,
         zoxp_spawn,
-        [in] layouts.CanvasLink,
         [none] players.Player
     );
 #ifdef zox_time_systems

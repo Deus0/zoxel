@@ -43,7 +43,7 @@ void game_state_end_huds(ecs* world, entity game, byte state) {
             if (!zox_has(player, Player)) {
                 continue;
             }
-            entity canvas = zox_getv(player, CanvasLink);
+            entity canvas = zox_get_link(world, player, Canvas);
             destroy_canvas_game_uis(world, canvas, dbg_log);
             // FadeOut
             if (delay_end) {
@@ -61,46 +61,3 @@ void game_state_end_huds(ecs* world, entity game, byte state) {
         }
     }
 }
-
-// TODO: Realm is missing at this point, need a main menu realm
-// music - attach to game from music module
-/*zox_sys2(PlayerUIGame3EndSystem) {
-    byte dbg_log = 0;
-    byte delay_end = is_end_game_delays;
-    zox_sys_world();
-    zox_sys_begin();
-    zox_sys_in(GameState);
-    zox_sys_in(GameStateDirty);
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
-        zox_sys_i(GameState, state);
-        zox_sys_i(GameStateDirty, dirty);
-        if (!(dirty->value == zox_dirty_active && state->value == zox_game_state_the_end)) {
-            continue;
-        }
-        entity realm = zox_get_child_by_id(world, e, zox_id(Realm));
-        // zox_geter_value(e, RealmLink, entity, realm);
-        play_playlist(world, realm, 0);
-        // Delayed Spawn Main Menu
-        iter it2 = zox_children(world, e);
-        while (zox_children_next(it2)) {
-            for (int j = 0; j < it2.count; j++) {
-                entity e2 = it2.entities[j];
-                if (!zox_has(e2, Player)) {
-                    continue;
-                }
-                entity canvas = zox_getv(e2, CanvasLink);
-                destroy_canvas_game_uis(world, canvas, dbg_log);
-                // FadeOut
-                if (delay_end) {
-                    trigger_canvas_fade_transition(
-                        world,
-                        canvas,
-                        end_game_delay_fade,
-                        0.8);
-                }
-                delay_event(world, &main_menu_event_delay, e2, 2);
-            }
-        }
-    }
-} zox_sys_end(PlayerUIGame3EndSystem);*/

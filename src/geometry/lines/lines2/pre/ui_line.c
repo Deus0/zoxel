@@ -8,9 +8,7 @@ entity spawn_prefab_ui_line2D(ecs* world) {
     zox_setv(e, LayoutLinePoints, 0);
     zox_setv(e, LineAnchor, 0);
     zox_setv(e, LineThickness, 1);
-    // zox_setv(e, CanvasLink, 0);
     zox_setv(e, Layer, 0);    // use to render in order during ui render process
     zox_set(e, Color, {{ 255, 0, 0, 255 }});
-    // zox_prefab_set(e, ChildIndex, { 0);
     return e;
 }

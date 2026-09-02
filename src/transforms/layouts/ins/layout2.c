@@ -4,12 +4,6 @@ void initialize_layout2(ecs *world, entity e, entity parent, int2 position, int2
     zox_set(e, Layer, { layer });
     zox_set(e, LayoutSize, { size });
     zox_set(e, LayoutPosition, { position });
-    // zox_set(e, CanvasLink, { canvas });
-    // zox_set(e, ParentLink, { parent });
-    // Where we link to canvas children
-    /*if (canvas == parent) {
-        zox_set(canvas, WindowToTop, { e });
-    }*/
 }
 
 entity spawn_layout2(ecs *world, entity prefab, entity parent, int2 position, int2 size, float2 anchor, byte layer) {

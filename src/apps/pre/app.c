@@ -14,8 +14,6 @@ entity spawn_prefab_app(
     zox_setv(e, WindowSizeRestore, int2_zero);
     zox_setv(e, WindowPositionRestore, int2_zero);
     zox_setv(e, WindowMonitor, 0);
-    // UI
-    zox_add(e, CanvasLink);
     // Settings
     zox_setv(e, ZoxName, 0);
     zox_setv(e, LoadSettings, zox_load_settings_start);

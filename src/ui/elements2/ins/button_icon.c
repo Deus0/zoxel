@@ -20,11 +20,8 @@ entity spawn_button_icon(
     zox_set(e, LayoutSize, { size });
     zox_set(e, Anchor, { panchor });
     zox_set(e, Layer, { layer });
-    // zox_set(e, ParentLink, { parent });
-    // zox_set(e, CanvasLink, { canvas });
     zox_set_parent(world, e, parent);
     if (canvas == parent) {
-        // on_child_added(world, canvas, e);
         zox_set(canvas, WindowToTop, { e });
     }
     zox_set(e, RenderDisabled, { rdisabled });

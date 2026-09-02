@@ -8,7 +8,6 @@ void zox_define_systems_sdl_inputs(ecs* world) {
     zox_system_1(
         MouseExtractSystem,
         zoxp_inputs_extract,
-        [in] apps.AppLink,
         [none] inputs.Mouse
     );
     // NOTE: We must constrain after extracting
@@ -17,7 +16,6 @@ void zox_define_systems_sdl_inputs(ecs* world) {
         zoxp_inputs_extract,
         [in] inputs.DeviceDisabled,
         [in] inputs.MouseLock,
-        [in] apps.AppLink,
         [none] inputs.Mouse
     );
     zox_system_1(
@@ -29,7 +27,6 @@ void zox_define_systems_sdl_inputs(ecs* world) {
     zox_system_1(
         TouchscreenExtractSystem,
         zoxp_inputs_extract,
-        [in] apps.AppLink,
         [out] core.PixelSize,
         [none] inputs.Touchscreen
     );

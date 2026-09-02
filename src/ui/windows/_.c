@@ -1,5 +1,3 @@
-#ifndef zoxm_windows
-#define zoxm_windows
 
 // TODO: HeaderSpawnSystem, HeaderResizeSystem (when window is dirty)
 byte window_corner_size = 0;
@@ -17,10 +15,9 @@ byte close_button_outline_size = 0;
 #include "sys/_.c"
 #include "dbg/_.c"
 
-zox_begin_module(Windows) {
+void import_windows(ecs* world) {
+    zox_module(windows);
     define_components_windows(world);
     define_systems_windows(world);
     add_hook_spawn_prefabs(spawn_prefabs_windows);
-} zox_end_module(Windows);
-
-#endif
+}

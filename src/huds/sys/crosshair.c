@@ -36,7 +36,7 @@ zox_sys2(RaycastCrosshairSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(RaycastVoxelData, data);
         zox_sys_i(PlayerLink, player);
-        if (!zox_valid(player->value) || !zox_has(player->value, CanvasLink)) {
+        if (!zox_valid(player->value)) {
             zox_loge("Player has no canvas");
             continue;
         }

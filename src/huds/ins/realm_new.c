@@ -1,6 +1,6 @@
 void on_confirmed_new_realm(ecs *world, ClickEventData event) {
     entity player = event.clicker;
-    entity canvas = zox_getv(player, CanvasLink);
+    entity canvas = zox_get_link(world, player, Canvas);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuNewRealm));
     if (menu) {
         zox_delete(menu);
@@ -36,7 +36,7 @@ void on_confirmed_new_realm(ecs *world, ClickEventData event) {
 
 void on_cancelled_new_realm(ecs *world, ClickEventData event) {
     entity player = event.clicker;
-    entity canvas = zox_getv(player, CanvasLink);
+    entity canvas = zox_get_link(world, player, Canvas);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuNewRealm));
     if (menu) {
         zox_delete(menu);

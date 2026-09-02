@@ -17,10 +17,8 @@ entity spawn_image(
     zox_set(e, Anchor, { panchor });
     zox_set(e, Layer, { layer });
     zox_set_parent(world, e, parent);
-    // zox_set(e, CanvasLink, { canvas });
     zox_set(e, RenderDisabled, { rdisabled });
     if (canvas == parent) {
-        // on_child_added(world, canvas, e);
         zox_set(canvas, WindowToTop, { e });
     }
     clone_texture_data(world, e, texture);

@@ -3,7 +3,7 @@ void button_event_menu_realm_cancel(
     ClickEventData event)
 {
     entity player = event.clicker;
-    entity canvas = zox_getv(player, CanvasLink);
+    entity canvas = zox_get_link(world, player, Canvas);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuRealm));
     if (!menu) {
         zox_loge("MenuRealm not found");
@@ -23,7 +23,7 @@ void button_event_menu_realm_delete(
     ClickEventData event)
 {
     entity player = event.clicker;
-    entity canvas = zox_getv(player, CanvasLink);
+    entity canvas = zox_get_link(world, player, Canvas);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuRealm));
     if (!menu) {
         zox_log_error("main menu not found");
@@ -51,8 +51,7 @@ void button_event_menu_realm_confirm(
     ClickEventData event)
 {
     entity player = event.clicker;
-    // zox_geter(player, ElementLinks, elements);
-    entity canvas = zox_getv(player, CanvasLink);
+    entity canvas = zox_get_link(world, player, Canvas);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuRealm));
     zox_geter_value(player, GameLink, entity, game);
     // find_array_element_with_tag(elements, MenuRealm, menu);
