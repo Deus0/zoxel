@@ -1,13 +1,13 @@
-// NOTE: Spawns / Destroys Zigels of the Text
+// NOTE: Spawns / Destroys Glyphs of the Text
 // #define zoxel_debug_zext_updates
 // Dynamically keeps the text characters the right length using entities
-zox_sys2(ZigelSpawnSystem) {
+zox_sys2(GlyphSpawnSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextDirty);
     zox_sys_in(TextData);
-    zox_sys_in(ZigelPrefab);
+    zox_sys_in(GlyphPrefab);
     zox_sys_in(TextFontSize);
     zox_sys_in(FontOutlineColor);
     zox_sys_in(FontFillColor);
@@ -20,7 +20,7 @@ zox_sys2(ZigelSpawnSystem) {
         zox_sys_e();
         zox_sys_i(TextDirty, text_dirty);
         zox_sys_i(TextData, text_data);
-        zox_sys_i(ZigelPrefab, prefab);
+        zox_sys_i(GlyphPrefab, prefab);
         zox_sys_i(TextFontSize, textSize);
         zox_sys_i(FontOutlineColor, fontOutlineColor);
         zox_sys_i(FontFillColor, fontFillColor);
@@ -40,7 +40,7 @@ zox_sys2(ZigelSpawnSystem) {
         }
 #endif
         uint new_length = (uint) calculate_total_zigels(text_data->value, text_data->length);
-        if (zox_has(e, ZextRenderEnabler)) {
+        if (zox_has(e, TextRenderEnabler)) {
             render_disabled->value = new_length == 0;
         }
         float2 position_anchor = float2_half;
@@ -50,7 +50,7 @@ zox_sys2(ZigelSpawnSystem) {
         byte othickness = fontOutlineThickness->value;
         color fill = fontFillColor->value;
         color outline = fontOutlineColor->value;
-        uint old_length = zox_get_children_count_by_id(world, e, zox_id(Zigel));
+        uint old_length = zox_get_children_count_by_id(world, e, zox_id(Glyph));
         if (dbg_log) {
             zox_log("Updating Text [%s] [%i -> %i]", zox_get_name(e), old_length, new_length);
         }
@@ -67,8 +67,8 @@ zox_sys2(ZigelSpawnSystem) {
                 for (int j = 0; j < it2.count && deleted_count < deleted_target; j++) {
                     entity e2 = it2.entities[j];
 #ifdef zox_safety_checks
-                    if (!zox_has(e2, Zigel)) {
-                        zox_loge("Zigel [%s] is Invalid", zox_get_name(e2));
+                    if (!zox_has(e2, Glyph)) {
+                        zox_loge("Glyph [%s] is Invalid", zox_get_name(e2));
                         continue;
                     }
 #endif
@@ -76,7 +76,7 @@ zox_sys2(ZigelSpawnSystem) {
                     zox_delete(e2);
                     deleted_count++;
                     if (dbg_log) {
-                        zox_log("   - Deleted Zigel [%s]", zox_get_name(e2));
+                        zox_log("   - Deleted Glyph [%s]", zox_get_name(e2));
                     }
                 }
             }
@@ -85,23 +85,23 @@ zox_sys2(ZigelSpawnSystem) {
                 zox_log(" + Growing Text!");
             }
             byte zigel_layer = layer->value + 1;
-            // NOTE: Zigel Data Index just removes new lines out of the data
-            byte centred = zox_has(e, CentredZigel);
+            // NOTE: Glyph Data Index just removes new lines out of the data
+            byte centred = zox_has(e, CentredGlyph);
             for (uint j = old_length; j < new_length; j++) {
                 byte zigel = calculate_zigel_index(text_data->value, text_data->length, j);
                 uint child_index = j;
                 entity e2 = spawn_zigel(world, prefab->value, e, position_anchor, size, texture_size, thickness, othickness, fill, outline, zigel, child_index, zigel_layer);
                 zox_setv(e2, RenderDisabled, render_disabled->value);
                 if (centred) {
-                    zox_add(e2, CentredZigel);
+                    zox_add(e2, CentredGlyph);
                 }
                 if (dbg_log) {
-                    zox_log("Spawn Zigel [%i:%c] - Layer [%i]", zigel, convert_to_ascii(zigel), zigel_layer);
+                    zox_log("Spawn Glyph [%i:%c] - Layer [%i]", zigel, convert_to_ascii(zigel), zigel_layer);
                 }
             }
         }
     }
-} zox_sys_end(ZigelSpawnSystem);
+} zox_sys_end(GlyphSpawnSystem);
 
 
         /*int child_index = 0;
@@ -110,19 +110,19 @@ zox_sys2(ZigelSpawnSystem) {
             for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
 #ifdef zox_safety_checks
-                if (!zox_has(e2, Zigel)) {
-                    zox_loge("Zigel [%s] is Invalid", zox_get_name(e2));
+                if (!zox_has(e2, Glyph)) {
+                    zox_loge("Glyph [%s] is Invalid", zox_get_name(e2));
                     continue;
                 }
 #endif
                 // NOTE: When shrinking the children we need to adjust the child indexes
                 if (child_index < new_length) {
                     if (new_length == old_length) {
-                        zox_setv(e2, ZigelDirty, zox_zigel_dirty_update);
+                        zox_setv(e2, GlyphDirty, zox_zigel_dirty_update);
                     } else {
-                        zox_setv(e2, ZigelDirty, zox_zigel_dirty_position);
+                        zox_setv(e2, GlyphDirty, zox_zigel_dirty_position);
                     }
-                    // zox_set(e2, ZigelDirty, { zox_zigel_dirty_position });
+                    // zox_set(e2, GlyphDirty, { zox_zigel_dirty_position });
                     // child_index++;
                 }
             }

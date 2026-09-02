@@ -2,6 +2,9 @@
 // General
 zox_tag(ZoxSystem);
 zox_tag(Disabled);
+zox_tag(Dead);
+zox_tag(PreDeath);
+zox_tag(DeathDirty);
 zox_tag(BuildDisabled);
 zox_tag(DebugEntity);
 // zoxc_byte(Active);
@@ -12,7 +15,7 @@ zoxc_byte(Busy);
 zoxc_byte(Ready);
 zoxc_entity(SystemLink);
 zoxc_state(Generate);
-// zoxc_byte(Initialize);
+zoxc_double(DiedTime);
 zox_tag(PreInitialize);
 zox_tag(Initialize);
 zoxc_listener(InitializeEvent, 32, ecs*, entity);
@@ -52,6 +55,9 @@ void zox_components_core(ecs* world) {
     // General
     zoxd_nf_tag(ZoxSystem);
     zoxd_nf_tag(Disabled);
+    zoxd_nf_tag(Dead);
+    zoxd_nf_tag(PreDeath);
+    zoxd_nf_tag(DeathDirty);
     zoxd_nf_tag(BuildDisabled);
     zoxd_nf_tag(DebugEntity);
     zoxd_nf_tag(Initialize);
@@ -66,6 +72,7 @@ void zox_components_core(ecs* world) {
     zoxd_byte(Ready);
     zoxd_state(Generate);
     zoxd_entity(SystemLink);
+    zoxd_double(DiedTime);
     // ids
     zoxd_int(ID);
     zoxd_lint(Seed);

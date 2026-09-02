@@ -1,4 +1,4 @@
-// when spawning Zext
+// when spawning Text
 typedef struct {
     const char* text;
     byte font_resolution;           // texture resolution
@@ -16,4 +16,4 @@ typedef struct {
     LayoutParentData parent;
     ElementSpawnData element;
     SpawnTextData zext;
-} SpawnZext;
+} SpawnText;

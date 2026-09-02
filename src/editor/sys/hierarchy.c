@@ -92,7 +92,7 @@ void editor_fetch_children(
         zox_logw("Hierarchy past limits [%i]", hierarchy_max_elements);
         return;
     }
-    if (!zox_valid(e) || zox_has(e, Zigel)) {
+    if (!zox_valid(e) || zox_has(e, Glyph)) {
         return;
     }
     add_entity_to_labels(world, e, labels, entities, tree_level);

@@ -5,7 +5,7 @@ void zox_dbg_refresh_uis(ecs *world, int32_t keycode) {
     }
     entity canvas = zox_getv(dbg_player, CanvasLink);
     // for all children and sub children, refresh the
-    entity test_id = zox_id(Zigel); // zox_id(MeshDirty);
+    entity test_id = zox_id(Glyph); // zox_id(MeshDirty);
     entity uis[64];
     uint length = zox_get_children_by_id_recursive(world, canvas, uis, 64, test_id, 0);
     for (uint j = 0; j < length; j++) {

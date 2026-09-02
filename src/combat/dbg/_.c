@@ -1,4 +1,7 @@
-void zox_tst_player_character_death(ecs *world, ClickEventData data) {
+void zox_tst_player_character_death(
+    ecs *world,
+    ClickEventData data)
+{
     entity player = dbg_player;
     zox_geter(player, CharacterLink, character);
     if (!zox_valid(character->value)) {
@@ -7,9 +10,14 @@ void zox_tst_player_character_death(ecs *world, ClickEventData data) {
     }
     zox_log("=> Testing Player Deaths");
     zox_log("   -> Hopefully they respawn.");
-    zox_log("- killing player character [%s]", zox_get_name(character->value));
+    zox_log("- killing player character [%s]",
+            zox_getn(character->value));
+    zox_add(character->value, PreDeath);
+    /*zox_add(character->value, Dead);
+    zox_add(character->value, DeathDirty);
+    zox_setv(character->value, DiedTime, zox_current_time);*/
     // needs this so camera is removed
-    zox_set(character->value, Dead, { zox_dirty_trigger });
+    // zox_set(character->value, Dead, { zox_dirty_trigger });
     // zox_delete(character->value);
     /* else {
         zox_log("+ spawning player character");

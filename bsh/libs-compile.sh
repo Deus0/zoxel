@@ -239,6 +239,7 @@ build_if_missing() {
         cmake -S "$SRC_DIR" -B "$BUILD_DIR" \
             -DCMAKE_SYSTEM_NAME="$SYSTEM_NAME" \
             -DCMAKE_C_COMPILER="$CC" \
+            -DCMAKE_CXX_COMPILER="$CXX" \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_SYSROOT="$SYSROOT" \
             -DCMAKE_FIND_ROOT_PATH="$SYSROOT" \
@@ -286,7 +287,8 @@ build_if_missing \
     "$SDL_LIB_NAME" \
     "${SDL_LIB_NAME%.*}*.${SDL_LIB_NAME##*.}" \
     -DSDL_X11_XTEST=OFF \
-    -DSDL_TESTS=OFF
+    -DSDL_TESTS=OFF \
+    -DCMAKE_INSTALL_OLDINCLUDEDIR=
 
 # SDL Mixer
 
@@ -309,7 +311,8 @@ if [[ "$USE_SDL_MIXER" -eq 1 ]]; then
             -DSDLMIXER_OPUS=OFF \
             -DSDLMIXER_SAMPLES=OFF \
             -DSDLMIXER_BUILD_TESTS=OFF \
-            -DSDLMIXER_FLAC_LIBFLAC=OFF
+            -DSDLMIXER_FLAC_LIBFLAC=OFF \
+            -DSDLMIXER_VORBIS_VORBISFILE=OFF
     else
         sdl2_lib="${library}/$SDL_LIB_NAME"
         echo "  - sdl2 [$sdl2_lib]"

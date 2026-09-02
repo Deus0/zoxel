@@ -10,7 +10,7 @@ void zox_define_systems_zigels(ecs* world) {
         FontTextureSystem,
         zoxp_update,
         fonts,
-        [in] ZigelIndex,
+        [in] GlyphIndex,
         [in] textures.FillColor,
         [in] textures.OutlineColor,
         [in] rendering.TextureSize,

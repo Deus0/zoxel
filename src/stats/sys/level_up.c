@@ -1,6 +1,7 @@
 // purely for detecting level up
 // using level up state, we spawn sound and particles
-zox_sys2(LevelUpSystem) {
+void level_up_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(StatValue);
@@ -50,13 +51,25 @@ zox_sys2(LevelUpSystem) {
         for (uint j = 0; j < stats_length; j++) {
             entity stat = stats[j];*/
         // level up sound
-        spawn_sound_generated(world, prefab_sound_generated, instrument_piano, note_frequencies[32 + rand() % 4], 3.4, 1.4f * get_volume_sfx());
+        spawn_sound_generated(
+            world,
+            prefab_sound_generated,
+            instrument_piano,
+            note_frequencies[32 + rand() % 4],
+            3.4,
+            1.4f * get_volume_sfx());
         // spawn particle system
         float3 bounds = zox_getv(parent, Bounds3D);
         // Spawns level up particles
-        entity e2 = spawn_particle3D_emitter(world, parent, 10, float3_scale(bounds, 3), (color) { 255, 255, 0, 55 });
-        zox_set(e2, DestroyInTime, { 3 + level->value });
+        entity e2 = spawn_particle3D_emitter(
+            world,
+            parent,
+            16,
+            float3_scale(bounds, 3),
+            (color) { 255, 255, 0, 55 });
+        zox_setv(e2, DestroyInTime, 3 + level->value);
         // dirty
         dirty->value = zox_dirty_trigger;
     }
-} zox_sys_end(LevelUpSystem);
+    zox_sys_on_end();
+} zoxd_system(level_up_system);

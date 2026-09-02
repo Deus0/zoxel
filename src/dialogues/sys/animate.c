@@ -9,7 +9,7 @@ zox_sys2(AnimateTextSystem) {
     zox_sys_out(AnimateTextTime);
     zox_sys_out(TextData);
     zox_sys_out(TextDirty);
-    zox_sys_out(ZigelSpawnedDirty);
+    zox_sys_out(GlyphSpawnedDirty);
     zox_sys_out(AnimateTextEnded);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(TargetText, target);
@@ -18,7 +18,7 @@ zox_sys2(AnimateTextSystem) {
         zox_sys_o(AnimateTextTime, rate);
         zox_sys_o(TextData, data);
         zox_sys_o(TextDirty, text_dirty);
-        zox_sys_o(ZigelSpawnedDirty, spawned_dirty);
+        zox_sys_o(GlyphSpawnedDirty, spawned_dirty);
         zox_sys_o(AnimateTextEnded, ended);
         if (!begin->value) {
             if (dbg_log >= 2) {

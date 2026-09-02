@@ -1,5 +1,22 @@
 # Todo
 
+- Add npc that dies when you talk to it
+	- death node in dialogue
+- spawn dialogue inside character spawning for realm, so its in one spot
+
+## Next
+- Fix Font imports for "?"
+	- test marker change with quest
+- dialogue conditional node
+	- if you have quest, npc laughs at you
+	- make it a function pointer byte node_condition_event
+- Add death event for character
+	- xp gain
+	- sound spawn
+- Refactor character mesh from its prefab
+	- vox / vox instance will be child
+	- test function to set it as unique when decaying its mesh
+	
 ## Observers
 - We can add a On Tag observer for dirty tags
 - we can use filter ecs on add for the tag

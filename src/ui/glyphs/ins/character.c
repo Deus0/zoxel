@@ -6,7 +6,7 @@ entity spawn_zigel(ecs* world, entity prefab, entity parent, float2 position_anc
         zox_name(name);
     }
     zox_set_parent(world, e, parent);
-    zox_set(e, ZigelIndex, { zigel });
+    zox_set(e, GlyphIndex, { zigel });
     zox_set(e, ChildIndex, { child_index });
     zox_set(e, Anchor, { position_anchor });
     zox_set(e, LayoutSize, { size });

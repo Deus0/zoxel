@@ -7,9 +7,9 @@
 void zox_define_systems_auras(ecs* world) {
     zox_filter(
         characters,
-        [in] combat.Dead,
         [in] transforms3.Position3D,
-        [none] characters.Character
+        [none] characters.Character,
+        [none] !core.Dead,
     );
     zox_system_ctx_1(
         AuraDotSystem,

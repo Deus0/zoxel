@@ -5,4 +5,4 @@
     byte font_outline_thickness;
     byte text_alignment;
     byte2 text_padding;
-} ZigelZextSpawnData;*/
+} GlyphTextSpawnData;*/

@@ -18,7 +18,7 @@
 - Long pause breaks physics - test big frame times
 - Refactor spawn_block_vox_meta and remove structs
 - Add Tooltips to Empty Slot Frames
-- Selected Text option - update the Zigel Colors
+- Selected Text option - update the Glyph Colors
 - Refactor OverlapEvent to Overlapped state with a system in items
 - Add instancing to lines so we can test it easier t he lights
 - Debug Town Gizmo

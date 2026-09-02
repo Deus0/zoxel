@@ -36,9 +36,10 @@ zox_sys2(MeleeSystem) {
             zox_loge("Skill has Invalid User [%s]", zox_get_name(e));
             continue;
         }
-        if (zox_getv(user, Dead)) {
+        if (zox_has(user, Dead)) {
             if (dbg_log) {
-                zox_logw("User [%s] is Dead, Cannot Attack.", zox_get_name(user));
+                zox_logw("User [%s] is Dead, Cannot Attack.",
+                    zox_get_name(user));
             }
             continue;
         }

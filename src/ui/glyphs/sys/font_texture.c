@@ -796,7 +796,7 @@ zox_sys2(FontTextureSystem) {
     entity font_children[font_children_capacity];
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ZigelIndex);
+    zox_sys_in(GlyphIndex);
     zox_sys_in(FillColor);
     zox_sys_in(OutlineColor);
     zox_sys_in(TextureSize);
@@ -806,7 +806,7 @@ zox_sys2(FontTextureSystem) {
     zox_sys_out(TextureData);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(ZigelIndex, zindex);
+        zox_sys_i(GlyphIndex, zindex);
         zox_sys_i(TextureSize, size);
         zox_sys_i(FillColor, fill);
         zox_sys_i(OutlineColor, outline);
@@ -858,7 +858,7 @@ zox_sys2(FontTextureSystem) {
         const FontData* raw_font_data = zox_get(font, FontData);
         const byte2 *font_data = (const byte2*) raw_font_data->value;
         byte2 centred_font_data[raw_font_data->length];
-        if (zox_has(e, CentredZigel)) {
+        if (zox_has(e, CentredGlyph)) {
             // its a byte* array with range [0, 255]
             centre_font_data(
                 raw_font_data->value,
@@ -893,7 +893,7 @@ zox_sys2(FontTextureSystem) {
                 checksum += data->value[j].b;
                 checksum += data->value[j].a;
             }
-            zox_log("[%s] Generated Zigel [%i] Font: F [%ix%ix%ix%i] O [%ix%ix%ix%i] checksum=%u",
+            zox_log("[%s] Generated Glyph [%i] Font: F [%ix%ix%ix%i] O [%ix%ix%ix%i] checksum=%u",
                 zox_getn(e),
                 zindex->value,
                 fill->value.r,

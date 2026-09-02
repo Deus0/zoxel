@@ -55,7 +55,7 @@ entity spawn_list(
             if (child_data.on_click.value) {
                 zox_setv(child, ClickEvent, child_data.on_click.value);
             }
-            zox_add(child, ZextLabel);
+            zox_add(child, TextLabel);
             if (child_data.save_path) {
                 FolderPath path = { };
                 size_t len = strlen(child_data.save_path);

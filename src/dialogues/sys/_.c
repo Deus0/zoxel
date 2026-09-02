@@ -21,7 +21,7 @@ void define_systems_dialogues(ecs* world) {
         [out] AnimateTextTime,
         [out] texts.TextData,
         [out] texts.TextDirty,
-        [out] ZigelSpawnedDirty,
+        [out] GlyphSpawnedDirty,
         [out] AnimateTextEnded
     );
     zox_system(
@@ -40,7 +40,7 @@ void define_systems_dialogues(ecs* world) {
     zox_system_1(
         DialogueSoundSystem,
         zoxp_spawn,
-        [in] ZigelSpawnedDirty,
+        [in] GlyphSpawnedDirty,
         [in] AnimateTextEnded,
         [none] dialogues.DialogueLabel
     );

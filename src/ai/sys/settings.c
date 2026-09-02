@@ -11,7 +11,7 @@ zox_sys2(AiSettingsSystem) {
         }
         spawn_setting_byte(world, e, "No Humans", zox_no_humanoids);
 #ifdef zox_debug_settings
-        spawn_setting_byte(world, e, "No Npcs", disable_npcs);
+        // spawn_setting_byte(world, e, "No Npcs", disable_npcs);
 #endif
     }
 } zox_sys_end(AiSettingsSystem);
@@ -34,9 +34,10 @@ zox_sys2(AiSettingsDirtySystem) {
             if (dbg_log) {
                 zox_log("SettingByte [%s] Set [%f]", name->value, value);
             }
-            if (!strcmp(name->value, "No Npcs")) {
+            /*if (!strcmp(name->value, "No Npcs")) {
                 disable_npcs = value;
-            } else if (!strcmp(name->value, "No Humans")) {
+            } else */
+            if (!strcmp(name->value, "No Humans")) {
                 zox_no_humanoids = value;
             }
         }

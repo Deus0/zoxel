@@ -12,14 +12,18 @@ zox_sys2(DotsSystem) {
         zox_sys_i(SkillDamage, damage);
         zox_sys_i(SpawnerLink, spawner);
         entity defender = zox_get_parent(world, e);
-        if (!zox_valid(defender) || zox_getv(defender, Dead) || !damage->value) {
+        if (!zox_valid(defender) ||
+            zox_has(defender, Dead) ||
+            !damage->value) {
             continue;
         }
         float apply_damage = damage->value;
         // Modify Damage by Attackers Buffs
         // TODO: We should apply this when adding Debuffs
         entity attacker = spawner->value;
-        if (zox_valid(attacker) && !zox_getv(attacker, Dead)) {
+        if (zox_valid(attacker) &&
+            !zox_has(attacker, Dead))
+        {
             // todo: influence stat link for auras -> to determine strengthing stats
             // entity attacker_stats[stats_children_capacity];
             // uint attacker_stats_length = zox_get_children(world, attacker, attacker_stats, stats_children_capacity);

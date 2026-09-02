@@ -1,6 +1,6 @@
 // #define zox_debug_aoe_damage_system
 #ifdef zox_debug_aoe_damage_system
-    extern entity spawn_line3(ecs *world, float3 pointA, float3 pointB, float thickness, double life_time);
+extern entity spawn_line3(ecs*, float3, float3, float, double);
 #endif
 
 // NOTE: This adds Dots to nearby characters!
@@ -33,19 +33,24 @@ zox_sys2(AuraDotSystem) {
         zox_sys_query_begin();
         while (zox_sys_query_loop()) {
             zox_sys_begin_2();
-            zox_sys_in_2(Dead);
             zox_sys_in_2(Position3D);
             for (int j = 0; j < it2.count; j++) {
                 zox_sys_e_2();
                 zox_sys_i_2(Position3D, position2);
-                zox_sys_i_2(Dead, dead);
-                if (dead->value || user == e2) {
+                if (user == e2) {
                     continue;
                 }
-                float distance = float3_distance(position, position2->value);
+                float distance = float3_distance(
+                    position,
+                    position2->value);
                 // NOTE: Checks if dot was already added to character!
                 entity dots[zox_children_capacity];
-                uint dots_length = zox_get_children_by_id(world, e2, dots, zox_children_capacity, zox_id(Dot));
+                uint dots_length = zox_get_children_by_id(
+                    world,
+                    e2,
+                    dots,
+                    zox_children_capacity,
+                    zox_id(Dot));
                 byte was_poisoned = 0;
                 for (uint k = 0; k < dots_length; k++) {
                     entity dot = dots[k];
@@ -64,7 +69,13 @@ zox_sys2(AuraDotSystem) {
                 // makes sure to check the debuff is linked to same character
                 // makes it so t two players can damage a character at once
                 if (distance <= range->value) {
-                    entity e3 = spawn_poison(world, e2, prefab_poison, user, e, damage->value);
+                    entity e3 = spawn_poison(
+                        world,
+                        e2,
+                        prefab_poison,
+                        user,
+                        e,
+                        damage->value);
                     zox_add(e3, AuraDot);
                     zox_set_parent(world, e3, e2);
                     if (dbg_log) {
@@ -72,11 +83,21 @@ zox_sys2(AuraDotSystem) {
                     }
                     // spawn particle system
                     float3 bounds = zox_getv(e2, Bounds3D);
-                    entity particles = spawn_particle3D_emitter(world, e2, 4, float3_scale(bounds, 2), colorr->value);
-                    zox_set(particles, SkillLink, { e });
-                    zox_set(e3, ParticlesEmitterLink, { particles });
+                    entity particles = spawn_particle3D_emitter(
+                        world,
+                        e2,
+                        4,
+                        float3_scale(bounds, 2),
+                        colorr->value);
+                    zox_setv(particles, SkillLink, e);
+                    zox_setv(e3, ParticlesEmitterLink, particles);
 #ifdef zox_debug_aoe_damage_system
-                    spawn_line3(world, position3, position3D2->value, 0.5f, 0.1);
+                    spawn_line3(
+                        world,
+                        position3,
+                        position3D2->value,
+                        0.5f,
+                        0.1);
 #endif
                 }
             }

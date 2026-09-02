@@ -13,7 +13,7 @@ zoxc_fixed_string(TargetText, 512);
 zoxc_double(AnimateTextBegin);
 zoxc_float(AnimateTextTime);
 zoxc_float2(AnimateTextTimeLimits);
-zoxc_state(ZigelSpawnedDirty);
+zoxc_state(GlyphSpawnedDirty);
 zoxc_state(AnimateTextEnded);
 // Use Links
 #define zox_speakers_max 2
@@ -35,7 +35,7 @@ void define_components_dialogues(ecs* world) {
     zoxd_double(AnimateTextBegin);
     zoxd_float(AnimateTextTime);
     zoxd_float2(AnimateTextTimeLimits);
-    zoxd_state(ZigelSpawnedDirty);
+    zoxd_state(GlyphSpawnedDirty);
     zoxd_state(AnimateTextEnded);
     // Use Links
     zoxd(SpeakerLinks);

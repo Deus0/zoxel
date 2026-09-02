@@ -1,16 +1,16 @@
-/*zox_sys2(ZigelUpdateSystem) {
+/*zox_sys2(GlyphUpdateSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChildIndex);
-    zox_sys_out(ZigelDirty);
-    zox_sys_out(ZigelIndex);
+    zox_sys_out(GlyphDirty);
+    zox_sys_out(GlyphIndex);
     zox_sys_out(GenerateTexture);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ChildIndex, child_index);
-        zox_sys_o(ZigelDirty, dirty);
-        zox_sys_o(ZigelIndex, zigel_index);
+        zox_sys_o(GlyphDirty, dirty);
+        zox_sys_o(GlyphIndex, zigel_index);
         zox_sys_o(GenerateTexture, generate);
         if (dirty->value != zox_zigel_dirty_update) {
             continue;
@@ -18,7 +18,7 @@
         entity parent = zox_get_parent(world, e);
 #ifdef zox_safety_checks
         if (!zox_valid(parent)) {
-            zox_loge("Zigel has no parent [%s]", zox_get_name(e));
+            zox_loge("Glyph has no parent [%s]", zox_get_name(e));
             continue;
         }
 #endif
@@ -37,12 +37,12 @@
         }
         dirty->value = zox_zigel_dirty_end;
     }
-} zox_sys_end(ZigelUpdateSystem);*/
+} zox_sys_end(GlyphUpdateSystem);*/
 
 
 // NOTE: Updates previous zigels to new data
-// TODO: Can we move this to Zigels instead of working at Text
-// NOTE: Needs to run on end, a frame after ZigelSpawnSystem shrinks the children
+// TODO: Can we move this to Glyphs instead of working at Text
+// NOTE: Needs to run on end, a frame after GlyphSpawnSystem shrinks the children
 zox_sys2(TextUpdateSystem) {
     byte dbg_log = 0;
     zox_sys_world();
@@ -65,19 +65,19 @@ zox_sys2(TextUpdateSystem) {
                 if (!zox_valid(e2)) {
                     continue;
                 }
-                if (!zox_has(e2, ZigelIndex)) {
-                    zox_loge("Zigel [%s] does not have [ZigelIndex]", zox_get_name(e2));
+                if (!zox_has(e2, GlyphIndex)) {
+                    zox_loge("Glyph [%s] does not have [GlyphIndex]", zox_get_name(e2));
                     continue;
                 }
                 if (!zox_has(e2, DataIndex)) {
-                    zox_loge("Zigel [%s] does not have [DataIndex]", zox_get_name(e2));
+                    zox_loge("Glyph [%s] does not have [DataIndex]", zox_get_name(e2));
                     continue;
                 }
 #endif
                 zox_mut_begin(e2, DataIndex, data_index);
                 uint new_data_index = child_index_to_text_array_index(text->value, text->length, child_index);
                 data_index->value = new_data_index;
-                zox_mut_begin(e2, ZigelIndex, zigel_index);
+                zox_mut_begin(e2, GlyphIndex, zigel_index);
                 byte new_index = text->value[new_data_index];
                 if (zigel_index->value != new_index) {
                     zigel_index->value = new_index;

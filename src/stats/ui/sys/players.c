@@ -7,7 +7,7 @@ entity spawn_stats_panel(
         zox_loge("Invalid canvas in [spawn_game_ui_stats]");
         return 0;
     }
-    if (!zox_valid(character) || zox_getv(character, Dead)) {
+    if (!zox_valid(character) || zox_has(character, Dead)) {
         zox_loge("Invalid Character in [spawn_game_ui_stats]");
         return 0;
     }

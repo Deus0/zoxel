@@ -2,7 +2,7 @@
 
 void app_initialize_vodes(ecs* world, entity app) {
 #ifdef zox_debug_settings
-    spawn_setting_byte(world, app, "No Vodes", !zox_disable_vodes);
+    spawn_setting_byte(world, app, "No Vodes", zox_disable_vodes);
 #endif
 }
 

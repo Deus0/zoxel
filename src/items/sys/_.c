@@ -16,8 +16,8 @@ void define_systems_items(ecs* world) {
     zox_system_1(
         ItemDropSystem,
         zoxp_spawn,
-        [in] combat.Dead,
         [in] transforms3.Position3D,
+        [none] core.DeathDirty,
         [none] characters.Character
     );
     zox_system_1(

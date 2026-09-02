@@ -1,19 +1,17 @@
 #include "death_cleanup.c"
 #include "combat_states.c"
-zox_increment_system(Dead, zox_dirty_end);
 
 void define_systems_combat(ecs* world) {
-    zoxd_system_increment(Dead);
     zox_system(
         CombatStateSystem,
-        zoxp_update, // EcsOnLoad,
+        zoxp_update,
         [in] combat.LastCombatTime,
         [out] combat.CombatState
     );
     zox_system(
         DeathCleanSystem,
         zoxp_destroy,
-        [in] combat.Dead,
-        [in] DiedTime
+        [in] core.DiedTime,
+        [none] core.Dead,
     );
 }

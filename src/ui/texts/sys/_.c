@@ -14,7 +14,7 @@ void define_systems_texts(ecs *world) {
         [in] texts.TextData,
         [in] texts.TextFontSize,
         [in] TextPadding,
-        [none] texts.Zext
+        [none] texts.Text
     );
     zox_system(
         TextBackgroundSystem,
@@ -25,14 +25,14 @@ void define_systems_texts(ecs *world) {
         [in] TextPadding,
         [out] layouts.LayoutSize,
         [out] layouts.LayoutSizeDirty,
-        [none] texts.Zext
+        [none] texts.Text
     );
     zox_system_1(
-        ZigelSpawnSystem,
+        GlyphSpawnSystem,
         zoxp_spawn,
         [in] texts.TextDirty,
         [in] texts.TextData,
-        [in] texts.ZigelPrefab,
+        [in] texts.GlyphPrefab,
         [in] texts.TextFontSize,
         [in] glyphs.FontOutlineColor,
         [in] glyphs.FontFillColor,
@@ -41,14 +41,14 @@ void define_systems_texts(ecs *world) {
         [in] texts.TextResolution,
         [in] layouts.Layer,
         [out] rendering.RenderDisabled,
-        [none] texts.Zext,
+        [none] texts.Text,
     );
     zox_system(
         TextUpdateSystem,
         zoxp_update,
         [in] texts.TextDirty,
         [in] texts.TextData,
-        [none] texts.Zext,
+        [none] texts.Text,
     );
     zox_system(
         TextsPositionSystem,
@@ -58,26 +58,26 @@ void define_systems_texts(ecs *world) {
         [in] texts.TextFontSize,
         [in] texts.TextAlignment,
         [in] texts.TextPadding,
-        [none] texts.Zext,
+        [none] texts.Text,
     );
 }
     /*
     zox_system(
-        ZigelPositionSystem,
+        GlyphPositionSystem,
         zoxp_update,
         [in] hierarchys.ChildIndex,
-        [out] glyphs.ZigelDirty,
+        [out] glyphs.GlyphDirty,
         [out] layouts.LayoutPosition,
         [out] layouts.LayoutPositionDirty,
-        [none] glyphs.Zigel
+        [none] glyphs.Glyph
     );
     zox_system(
-        ZigelUpdateSystem,
+        GlyphUpdateSystem,
         zoxp_update,
         [in] hierarchys.ChildIndex,
-        [out] glyphs.ZigelDirty,
-        [out] glyphs.ZigelIndex,
+        [out] glyphs.GlyphDirty,
+        [out] glyphs.GlyphIndex,
         [out] textures.GenerateTexture,
-        [none] glyphs.Zigel
+        [none] glyphs.Glyph
     );*/
 

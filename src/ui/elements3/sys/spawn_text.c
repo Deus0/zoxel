@@ -28,20 +28,20 @@
             continue;
         }
         uint new_length = calculate_total_zigels(text->value, text->length);
-        uint old_length = zox_get_children_count_by_id(world, e, zox_id(Zigel));
+        uint old_length = zox_get_children_count_by_id(world, e, zox_id(Glyph));
         int child_index = 0;
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count && child_index < new_length; j++, child_index++) {
                 entity e2 = it2.entities[j];
 #ifdef zox_safety_checks
-                if (!zox_has(e2, Zigel)) {
-                    zox_loge("Zigel [%s] is Invalid", zox_get_name(e2));
+                if (!zox_has(e2, Glyph)) {
+                    zox_loge("Glyph [%s] is Invalid", zox_get_name(e2));
                     continue;
                 }
 #endif
-                // zox_log("Set Zigel3D to dirty! %s:%i", zox_getn(e), child_index);
-                zox_setv(e2, ZigelDirty, zox_zigel_dirty_update);
+                // zox_log("Set Glyph3D to dirty! %s:%i", zox_getn(e), child_index);
+                zox_setv(e2, GlyphDirty, zox_zigel_dirty_update);
             }
         }
         if (old_length == new_length) {
@@ -61,8 +61,8 @@
                 for (int j = 0; j < it2.count; j++) {
                     entity e2 = it2.entities[j];
 #ifdef zox_safety_checks
-                    if (!zox_has(e2, Zigel)) {
-                        zox_loge("Zigel [%s] is Invalid", zox_get_name(e2));
+                    if (!zox_has(e2, Glyph)) {
+                        zox_loge("Glyph [%s] is Invalid", zox_get_name(e2));
                         continue;
                     }
 #endif
@@ -75,14 +75,14 @@
                         float3 position = calculate_zigel3D_position(zigel3D_size, index, new_length, scale->value);
                         zox_set(e2, LocalPosition3D, { position });
                         if (dbg_log) {
-                            zox_log("Spawned Zigel [%i]", child_index);
+                            zox_log("Spawned Glyph [%i]", child_index);
                             zox_log("[%s] Updated [%i] zigel3 [%lu] child_index[%i] index [%i]", zox_getn(e), i, (e2), child_index, index);
                         }
                         child_index--;
                         continue;
                     }
                     if (dbg_log) {
-                        zox_log("   - Deleted Zigel [%s]", zox_get_name(e2));
+                        zox_log("   - Deleted Glyph [%s]", zox_get_name(e2));
                     }
                     // keep deleting until we arrive at new length;
                     zox_delete(e2);
@@ -103,7 +103,7 @@
             while (zox_children_next(it2)) {
                 for (int j = 0; j < it2.count; j++) {
                     entity e2 = it2.entities[j];
-                    if (!zox_has(e2, Zigel)) {
+                    if (!zox_has(e2, Glyph)) {
                         continue;
                     }
                     zox_setv(e2, ChildIndex, child_index);
@@ -113,15 +113,15 @@
                     child_index++;
                 }
             }
-            // NOTE: Zigel Data Index just removes new lines out of the data
+            // NOTE: Glyph Data Index just removes new lines out of the data
             for (uint j = old_length; j < new_length; j++) {
                 uint child_index = j;
                 uint index = child_index_to_text_array_index(text->value, text->length, child_index);
                 byte zigel_index = calculate_zigel_index(text->value, text->length, j);
                 float3 position = calculate_zigel3D_position(zigel3D_size, index, new_length, scale->value);
                 entity e2 = spawn_zigel3(world, prefab_zigel3, e, child_index, zigel_index, position, scale->value, render_disabled->value, thickness->value, outline_thickness->value, resolution->value, fill->value, outline->value);
-                if (zox_has(e, CentredZigel)) {
-                    zox_add(e2, CentredZigel);
+                if (zox_has(e, CentredGlyph)) {
+                    zox_add(e2, CentredGlyph);
                 }
                 if (dbg_log) {
                     zox_log("[%s] Spawned [%i] zigel3 [%lu] child_index[%i] index [%i] zigel [%i] at [%fx%fx%f]", zox_getn(e), i, (e2), child_index, index, zigel_index, position.x, position.y, position.z);

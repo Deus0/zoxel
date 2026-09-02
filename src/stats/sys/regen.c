@@ -1,7 +1,7 @@
 // todo: rework from regen stat, and impact stat value
 // do I need a velocity for stats? then regen will add to it? or just add directly..? :O hmm
-zox_sys2(StatRegenSystem) {
-    init_delta_time();
+void stat_regen_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(StatValueMax);
@@ -13,17 +13,20 @@ zox_sys2(StatRegenSystem) {
         zox_sys_o(StatValue, value);
         zox_sys_o(StatDirty, dirty);
         entity user = zox_get_parent(world, e);
-        if (!zox_valid(user) || !zox_has(user, Dead)) {
+        if (!zox_valid(user) ||
+            zox_has(user, Dead) ||
+            value->value >= max->value)
+        {
             continue;
         }
-        byte dead = zox_getv(user, Dead);
-        if (dead) {
+        if (value->value < 0) {
+            value->value = 0;
+        }
+        // PreDeath will be added in other system
+        if (value->value == 0) {
             continue;
         }
-        if (value->value >= max->value) {
-            continue;
-        }
-        value->value += delta_time * regen_rate;
+        value->value += zox_delta_time * regen_rate;
         if (value->value > max->value) {
             value->value = max->value;
         }
@@ -32,4 +35,5 @@ zox_sys2(StatRegenSystem) {
             dirty->value = zox_dirty_trigger;
         }
     }
-} zox_sys_end(StatRegenSystem);
+    zox_sys_on_end();
+} zoxd_system(stat_regen_system);

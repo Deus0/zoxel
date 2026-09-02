@@ -59,8 +59,8 @@ byte on_overlap_pickup(ecs *world, entity e, entity user) {
     if (zox_getv(e, PickedUp) || !zox_has(user, PickUpperer)) {
         return 0;
     }
-    if (zox_getv(user, Dead)) {
-        zox_set(e, PickedUp, { pickup_state_none });
+    if (zox_has(user, Dead)) {
+        zox_setv(e, PickedUp, pickup_state_none);
         return 0;
     }
     // animate + picked up state

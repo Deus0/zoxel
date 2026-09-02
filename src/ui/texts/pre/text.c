@@ -6,8 +6,8 @@ entity spawn_prefab_text(
     zox_prefab_child(prefab);
     zox_prefab_name("text");
     // text
-    zox_add(e, Zext);
-    zox_setv(e, ZigelPrefab, prefab_glyph);
+    zox_add(e, Text);
+    zox_setv(e, GlyphPrefab, prefab_glyph);
     zox_setv(e, TextData, 0);
     // used for font
     zox_setv(e, TextAlignment, 0);

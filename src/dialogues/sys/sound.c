@@ -6,10 +6,10 @@ zox_sys2(DialogueSoundSystem) {
     float2 final_time_range = (float2) { 1.1f, 2.2f };
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ZigelSpawnedDirty);
+    zox_sys_in(GlyphSpawnedDirty);
     zox_sys_in(AnimateTextEnded);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ZigelSpawnedDirty, state);
+        zox_sys_i(GlyphSpawnedDirty, state);
         zox_sys_i(AnimateTextEnded, state2);
         if (state->value != zox_dirty_active && state2->value != zox_dirty_active) {
             continue;

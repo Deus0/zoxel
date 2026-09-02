@@ -12,13 +12,7 @@ void zox_systems_stats(ecs *world) {
     // realm_clear_systemd(stats, StatLinks);
     // debuff system here, skills will add debuffs
     zox_system(
-        DeathSystem,
-        zoxp_update,
-        [in] stats.StatValue,
-        [none] stats.StatHealth
-    );
-    zox_system(
-        StatRegenSystem,
+        stat_regen_system,
         zoxp_update,
         [in] stats.StatValueMax,
         [out] stats.StatValue,
@@ -26,21 +20,38 @@ void zox_systems_stats(ecs *world) {
         [none] stats.StatState
     );
     zox_system(
+        pre_death_system,
+        zoxp_update,
+        [in] stats.StatValue,
+        [none] stats.StatHealth,
+    );
+    zox_system(
+        death_system,
+        zoxp_update,
+        [none] core.PreDeath
+    );
+    zox_system(
+        post_death_system,
+        zoxp_update,
+        [none] core.DeathDirty
+    );
+    zox_system(
         DeathAnimationSystem,
         zoxp_update,
-        [in] combat.Dead,
-        [out] combat.DiedTime,
         [out] animations.AnimationState,
-        [out] animations.AnimationStart
+        [out] animations.AnimationStart,
+        [none] core.DeathDirty,
     );
     zox_system_1(
         ExperienceSystem,
         zoxp_spawn,
-        [in] combat.Dead,
-        [in] combat.LastDamager
+        // [in] combat.Dead,
+        [in] combat.LastDamager,
+        [none] core.Dead,
+        [none] core.DeathDirty,
     );
     zox_system_1(
-        LevelUpSystem,
+        level_up_system,
         zoxp_spawn,
         [out] stats.StatValue,
         [out] stats.ExperienceValue,

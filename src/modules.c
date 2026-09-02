@@ -67,6 +67,7 @@
 #include "pets/_.c"
 #include "huds/_.c"
 #include "space/_.c"
+#include "markers/_.c"
 
 // depth 5: user data
 #include "combat/_.c"
@@ -95,7 +96,6 @@
 #include "ai/_.c"
 
 // depth 7: placement / top-level
-#include "markers/_.c"
 #include "vodes/_.c"
 #include "dungeons/_.c"
 #include "npcs/_.c"
@@ -185,6 +185,7 @@ void import_zox(ecs* world) {
     zox_add_module(huds);
     zox_add_module(space);
     zox_add_module(projectiles);
+    zox_add_module(markers);
 
     // depth 5: character data
     if (!dbg_disable) {
@@ -213,7 +214,6 @@ void import_zox(ecs* world) {
         zox_import_module(Pets);
 
         // depth 7: world placement / AI
-        zox_add_module(markers);
         zox_add_module(ai);
         zox_add_module(vodes);
         zox_add_module(dungeons);

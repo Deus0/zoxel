@@ -1,12 +1,13 @@
 #include "character.c"
 #include "slay.c"
+#include "marker.c"
 
 void define_systems_quests(ecs* world) {
     zox_system(
         SlaySystem,
         zoxp_update,
-        [in] combat.Dead,
-        [in] combat.LastDamager
+        [in] combat.LastDamager,
+        [none] core.DeathDirty,
     );
     zox_system_1(
         CharacterPlayerQuestsSystem,
@@ -15,5 +16,11 @@ void define_systems_quests(ecs* world) {
         [in] realms.RealmLink,
         [none] characters.Character,
         [none] players.PlayerLink
+    );
+    zox_system_1(
+        MarkerSpawnSystem,
+        zoxp_spawn,
+        [in] characters.GenerateCharacter,
+        [out] ui.ElementLinks
     );
 }
