@@ -41,9 +41,11 @@ int2 get_sdl_screen_size() {
     }
 }*/
 
-void zox_app_set_fullscreen(SDL_Window* window, byte monitor, byte fullscreen) {
-    byte flag = fullscreen ? SDL_WINDOW_FULLSCREEN : 0;
-    // zox_log("# fullscreen flag [%i]", flag)
+void zox_app_set_fullscreen(
+    SDL_Window* window,
+    byte monitor,
+    byte fullscreen)
+{
     if (fullscreen) {
         int max_monitors = zox_sdl_get_num_displays();
         if (monitor >= max_monitors) {
@@ -64,9 +66,19 @@ void zox_app_set_fullscreen(SDL_Window* window, byte monitor, byte fullscreen) {
             zox_sdl_set_window_display_mode(window, &display_mode);
         }
     }
-    SDL_SetWindowFullscreen(window, flag);
+    byte flag = fullscreen ?
+        SDL_WINDOW_FULLSCREEN :
+        0;
+    if (!SDL_SetWindowFullscreen(window, fullscreen)) {
+        zox_loge("SDL Fullscreen error: %s",
+            SDL_GetError());
+    }
     if (!fullscreen) {
         SDL_SetWindowBordered(window, 1);
+    }
+    if (!SDL_SyncWindow(window)) {
+        zox_loge("SDL Sync error: %s",
+            SDL_GetError());
     }
 }
 

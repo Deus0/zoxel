@@ -326,6 +326,7 @@ if [[ "${window_lib}" == "sdl" && ${is_static} == "1" ]]; then
     echo ""
     echo "--------------------------------------------"
     lib_args=""
+    [[ ${is_sdl3} == "0" ]] && lib_args+=" --sdl2"
     [[ ${is_sdl3} == "1" ]] && lib_args+=" --sdl3"
     [[ ${sdl_mixer} == "1" ]] && lib_args+=" --sdl-mixer"
     [[ ${docker} == "1" ]] && lib_args+=" --docker"

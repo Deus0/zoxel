@@ -59,7 +59,11 @@ void on_sdl_window_restored(ecs *world, entity e) {
     zox_logv(" > setting to window: position [%ix%i] size [%ix%i]", position.x, position.y, size.x, size.y);
 }
 
-void zox_set_app_fullscreen(ecs* world, entity e, byte fullscreen) {
+void zox_set_app_fullscreen(
+    ecs* world,
+    entity e,
+    byte fullscreen)
+{
     if (!zox_valid(e) || !zox_has(e, WindowFullscreen)) {
         zox_loge("invalid app in [zox_set_app_fullscreen]");
         return;
@@ -70,7 +74,10 @@ void zox_set_app_fullscreen(ecs* world, entity e, byte fullscreen) {
         return;
     }
     const SDLWindow* window = zox_get(e, SDLWindow);
-    zox_app_set_fullscreen(window->value, monitor, fullscreen);
+    zox_app_set_fullscreen(
+        window->value,
+        monitor,
+        fullscreen);
 }
 
 // sdl implementation for maximized state

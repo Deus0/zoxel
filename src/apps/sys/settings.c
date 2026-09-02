@@ -32,12 +32,24 @@ zox_sys2(AppsSettingsDirtySystem) {
         if (zox_has(e, SettingByte)) {
             byte value = zox_getv(e, SettingByte);
             if (dbg_log) {
-                zox_log("Byte Setting [%s] Set [%i]", name->value, value);
+                zox_log("Byte Setting [%s] Set [%i]",
+                    name->value,
+                    value);
             }
             if (!strcmp(name->value, "Fullscreen")) {
                 fullscreen = value;
-                if (zox_valid(main_app)) {
-                    zox_set_app_fullscreen(world, main_app, fullscreen);
+                if (fullscreen_override) {
+                    fullscreen = 1;
+                    fullscreen_override = 0;
+                }
+                entity app = zox_get_parent(world, e);
+                if (zox_valid(app)) {
+                    zox_set_app_fullscreen(
+                        world,
+                        app,
+                        fullscreen);
+                } else {
+                    zox_loge("App parent not found");
                 }
             } else if (!strcmp(name->value, "VSync")) {
                 vsync = value;

@@ -1,4 +1,5 @@
 byte fullscreen = 1;
+byte fullscreen_override = 0;
 byte vsync = 1;
 byte is_log_monitors = 1;
 byte monitor = 0;

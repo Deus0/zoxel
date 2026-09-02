@@ -1,4 +1,10 @@
-uint get_debug_label_app(ecs *world, entity player, char *buffer, uint size, uint index) {
+uint get_debug_label_app(
+    ecs *world,
+    entity player,
+    char *buffer,
+    uint size,
+    uint index)
+{
     byte fullscreen = zox_getv(main_app, WindowFullscreen);
     byte maximized = zox_getv(main_app, WindowMaximized);
     int2 window_size = zox_getv(main_app, WindowSize);

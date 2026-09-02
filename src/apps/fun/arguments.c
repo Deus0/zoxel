@@ -7,6 +7,7 @@ void process_arguments_apps(ecs *world, char* args[], int count) {
             fullscreen = 0;
         } else if (strcmp(args[i], "-f") == 0 || strcmp(args[i], "--fullscreen") == 0) {
             fullscreen = 1;
+            fullscreen_override = 1;
         } else if (strcmp(args[i], "-g") == 0 || strcmp(args[i], "--halfscreen") == 0) {
             halfscreen = 1;
         } else if (strcmp(args[i], "-s") == 0 || strcmp(args[i], "--splitscreen") == 0) {

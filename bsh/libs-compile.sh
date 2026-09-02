@@ -293,13 +293,8 @@ build_if_missing \
 if [[ "$USE_SDL_MIXER" -eq 1 ]]; then
     echo "Compiling SDL_Mixer with Import Library [$SDL_LIB_IMPORT_NAME]"
     if [[ "$USE_SDL3" -eq 1 ]]; then
-        # -DCMAKE_PREFIX_PATH="$SDL_SRC_DIR/build-$BUILD_SUFFIX" \
         sdl3_lib="${library}/$SDL_LIB_NAME"
         echo "  - sdl3 [$sdl3_lib]"
-        # -DCMAKE_PREFIX_PATH="$PWD/$SDL_SRC_DIR/build-$BUILD_SUFFIX" \
-        # -DSDL3_LIBRARY="${sdl3_lib}" \
-        # -DCMAKE_DISABLE_FIND_PACKAGE_SDL3=FALSE \
-        # -DSDL3_INCLUDE_DIR="$SDL_SRC_DIR/include" \
         build_if_missing \
             "SDL3_mixer" \
             "ext/sdl3_mixer" \
@@ -308,13 +303,13 @@ if [[ "$USE_SDL_MIXER" -eq 1 ]]; then
             "${SDL_MIXER_LIB_NAME%.*}*.${SDL_MIXER_LIB_NAME##*.}" \
             -DSDL3_DIR="$PWD/$SDL_SRC_DIR/build-$BUILD_SUFFIX" \
             -DCMAKE_INSTALL_OLDINCLUDEDIR= \
-            -DSDL3MIXER_MOD=OFF \
-            -DSDL3MIXER_MIDI_FLUIDSYNTH=OFF \
-            -DSDL3MIXER_WAVPACK=OFF \
-            -DSDL3MIXER_OPUS=OFF \
-            -DSDL3MIXER_SAMPLES=OFF \
-            -DSDL3MIXER_BUILD_TESTS=OFF \
-            -DSDL3MIXER_FLAC_LIBFLAC=OFF
+            -DSDLMIXER_MOD=OFF \
+            -DSDLMIXER_MIDI_FLUIDSYNTH=OFF \
+            -DSDLMIXER_WAVPACK=OFF \
+            -DSDLMIXER_OPUS=OFF \
+            -DSDLMIXER_SAMPLES=OFF \
+            -DSDLMIXER_BUILD_TESTS=OFF \
+            -DSDLMIXER_FLAC_LIBFLAC=OFF
     else
         sdl2_lib="${library}/$SDL_LIB_NAME"
         echo "  - sdl2 [$sdl2_lib]"

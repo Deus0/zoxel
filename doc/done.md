@@ -1,5 +1,13 @@
 # Done
 
+-x Tag quests, some will be Greetings, others Quester?
+-x Add quest (GiveQuest) on npc - 5% chance
+-x Add dialoguenode for giving me quest
+    -x add NodeListener
+    -x Add NodeGiveQuest tag
+    -x Add prefab event for giving quest
+    -x Link the NodeProcess (dialogue) to character (if not)
+    -x The event can check node process's current node and grab its quest
 ## Mirror UI
 -x Make it so camera can filter an object itself, instead of just the object filtering camera?
     -x Make a renderer clone that just copies another entities mesh.. somehow
