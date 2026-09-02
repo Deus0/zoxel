@@ -26,7 +26,10 @@ entity spawn_prefab_app(
     return e;
 }
 
-entity spawn_app(ecs* world, const char* name) {
+entity spawn_app(
+    ecs* world,
+    const char* name)
+{
     zox_instance(prefab_app);
     zox_name("app_sdl");
     set_ZoxName(world, e, name);

@@ -1,16 +1,23 @@
 extern entity dbg_player;
 
-entity spawn_gamepad_sdl_controller(ecs* world, entity app, zox_sdl_gamepad* controller) {
-    //entity game = zox_get_child_by_id(world, parent, zox_id(Game));
-    //entity player = zox_get_child_by_id(world, game, zox_id(Player));
-    // entity game = zox_get_child_by_index(world, app, 0);
-    // entity player = zox_get_child_by_index(world, game, 0);
+entity spawn_gamepad_sdl_controller(
+    ecs* world,
+    entity parent,
+    zox_sdl_gamepad* controller)
+{
+    // TODO: Refactor our devices to by children of App
+    //      - Device switching should then attach to player when equiped!
     const char* name = zox_sdl_gamepad_name(controller);
-    entity e = spawn_gamepad_new(world, app);
+    entity e = spawn_gamepad_new(
+        world,
+        parent);
     zox_name(name);
+    // TODO: Remove this until its enabled and active
     // zox_set_parent(world, e, player);
-    zox_set(e, SdlGameController, { controller });
-    zox_log("New Gamepad [%s] added to [%s]", name, zox_get_name(app));
+    zox_setv(e, SdlGameController, controller);
+    zox_log("New Gamepad [%s] added to [%s]",
+        name,
+        zox_getn(parent));
     // zox_set_parent(world, e, parent);
     return e;
 }

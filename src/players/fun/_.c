@@ -6,7 +6,12 @@ void add_player(ecs *world, entity e, entity player) {
 
 entity dbg_player;
 
-int spawn_players(ecs *world, entity game, byte zox_game_type) {
+int spawn_players(
+    ecs *world,
+    entity app,
+    entity game,
+    byte zox_game_type)
+{
     int players = 0;
     if (is_split_screen) {
         players = 2;
@@ -15,7 +20,11 @@ int spawn_players(ecs *world, entity game, byte zox_game_type) {
         players = 1;
     }
     for (int i = 0; i < players; i++) {
-        entity e = spawn_player(world, prefab_player, game);
+        entity e = spawn_player(
+            world,
+            prefab_player,
+            game,
+            app);
         if (i == 0) {
             dbg_player = e;
         }
@@ -30,28 +39,17 @@ int spawn_players(ecs *world, entity game, byte zox_game_type) {
         zox_players[i] = e;
         if (players == 2) {
             if (i == 0) {
-                zox_set(e, DeviceMode, { zox_device_mode_keyboardmouse });
+                zox_setv(e, DeviceMode, zox_device_mode_keyboardmouse);
             } else if (i == 1) {
-                zox_set(e, DeviceMode, { zox_device_mode_gamepad });
+                zox_setv(e, DeviceMode, zox_device_mode_gamepad);
             }
-            zox_set(e, DeviceModeDirty, { 1 });
+            zox_setv(e, DeviceModeDirty, 1);
         }
     }
     return players;
 }
 
-void spawn_connected_devices(ecs *world, entity e) {
-    local_keyboard = spawn_keyboard(world, prefab_keyboard);
-    zox_set_parent(world, local_keyboard, e);
-    local_mouse = spawn_mouse(world);
-    zox_set(local_mouse, AppLink, { e });
-    zox_set_parent(world, local_mouse, e);
-    local_touchscreen = spawn_touchscreen(world, prefab_touchscreen);
-    zox_set(local_touchscreen, AppLink, { e });
-    zox_set_parent(world, local_touchscreen, e);
-}
-
-void on_boot_players(ecs *world, entity app) {
+void on_boot_players(ecs* world, entity app) {
     if (!zox_valid(app)) {
         zox_logw("App is invalid.");
         return;
@@ -61,6 +59,29 @@ void on_boot_players(ecs *world, entity app) {
         return;
     }
     entity game = zox_getv(app, GameLink);
-    spawn_connected_devices(world, app);
-    players_playing = spawn_players(world, game, zox_game_type);
+    /*spawn_devices_on_app(
+        world,
+        app);*/
+    players_playing = spawn_players(
+        world,
+        app,
+        game,
+        zox_game_type);
+}
+
+
+void spawn_devices_on_app(ecs* world, entity app) {
+    local_keyboard = spawn_keyboard(
+        world,
+        prefab_keyboard);
+    zox_set_parent(world, local_keyboard, app);
+    local_mouse = spawn_mouse(world);
+    zox_set_parent(world, local_mouse, app);
+    zox_setv(local_mouse, AppLink, app);
+    local_touchscreen = spawn_touchscreen(
+        world,
+        prefab_touchscreen);
+    zox_set_parent(world, local_touchscreen, app);
+    zox_setv(local_touchscreen, AppLink, app);
+    initialize_sdl_gamepads(world, app);
 }

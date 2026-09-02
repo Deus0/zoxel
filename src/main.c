@@ -82,6 +82,8 @@ int main(int argc, char* argv[]) {
     }
 #endif
 #ifndef zox_headless
+    zox_logv("Initializing Devices");
+    spawn_devices_on_app(world, app);
     zox_logv("Initializing Rendering");
     initialize_rendering(render_backend);
     zox_logv("Loading (Processing) Shaders");

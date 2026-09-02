@@ -27,7 +27,10 @@ void initialize_sdl_gamepads(ecs *world, entity app) {
                 if (dbg_log) {
                     zox_log("   - Startup Gamepad [%s]", zox_sdl_gamepad_name(controller));
                 }
-                spawn_gamepad_sdl_controller(world, app, controller);
+                spawn_gamepad_sdl_controller(
+                    world,
+                    app,
+                    controller);
             }
         }
     }

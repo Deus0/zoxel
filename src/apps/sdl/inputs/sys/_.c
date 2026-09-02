@@ -34,9 +34,10 @@ void zox_define_systems_sdl_inputs(ecs* world) {
         [none] inputs.Touchscreen
     );
     zox_system_1(
-        SdlControllerFetchSystem,
+        gamepad_extract_system,
         zoxp_inputs_extract,
-        [in] SdlGameController,
+        [out] SdlGameController,
+        [out] inputs.DeviceHasInput,
         [none] inputs.Gamepad
     );
 }

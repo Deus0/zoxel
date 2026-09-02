@@ -26,13 +26,8 @@ void import_apps(ecs* world) {
     add_hook_terminal_command(process_arguments_apps);
     add_hook_spawn_prefabs(zox_prefabs_apps);
     add_hook_spawn_prefabs(zox_apps_events);
-    if (is_on_phosh()) {
-        zox_log("Phosh Detected. Disabling Decor.");
-        disable_apps_decor = 1;
-        fullscreen = 1;
-    }
 #ifdef zox_sdl
-    zox_import_module(Sdl);
+    zox_add_module(sdl);
 #elif zox_glut
     zox_import_module(Glut);
 #endif

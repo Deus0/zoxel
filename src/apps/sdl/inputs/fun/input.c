@@ -17,8 +17,13 @@ byte update_sdl_input(ecs *world, entity app, SDL_Event event) {
         if (event.type == ZOX_CONTROLLERDEVICEADDED) {
             int device_index = event.cdevice.which;
             zox_sdl_gamepad* controller = zox_sdl_gamepad_open(device_index);
-            zox_log("Controller Connected [%i]:[%s]", device_index, zox_sdl_gamepad_name(controller));
-            spawn_gamepad_sdl_controller(world, app, controller);
+            zox_log("Controller Connected [%i]:[%s]",
+                device_index,
+                zox_sdl_gamepad_name(controller));
+            spawn_gamepad_sdl_controller(
+                world,
+                app,
+                controller);
             return 1;
         } else if (event.type == ZOX_CONTROLLERDEVICEREMOVED) {
             SDL_JoystickID id = event.cdevice.which;

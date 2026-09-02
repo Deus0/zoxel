@@ -1,10 +1,11 @@
 // NOTE: System responsible for device switching for a DeviceUser
 // TODO: Grab not used devices from DeviceManager instead of local ones
+// TODO: It goes through devices 3 times... thats bad!
 zox_sys2(DeviceSwitchSystem) {
+    byte dbg_log = 0;
     if (!auto_switch_device) {
         return;
     }
-    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(DeviceModeDirty);
@@ -23,103 +24,108 @@ zox_sys2(DeviceSwitchSystem) {
             continue;
         }
         // first check if currently using selected inputs
-        byte using_current_inputs = 0;
-        entity devices[zox_children_capacity];
-        uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
-        for (uint j = 0; j < length; j++) {
-            entity e2 = devices[j];
-            if (mode->value == zox_device_mode_keyboardmouse) {
-                if (zox_has(e2, Keyboard)) {
-                    zox_geter(e2, Keyboard, keyboard);
-                    if (keyboard_is_any_input(keyboard)) {
-                        // zox_log(" > using current keyboard\n")
-                        using_current_inputs = 1;
-                        break;
-                    }
-                } else if (zox_has(e2, Mouse)) {
-                    if (mouse_is_any_input(world, e2)) {
-                        using_current_inputs = 1;
-                        // zox_log(" > using current mouse\n")
-                        break;
-                    }
+        byte using_current = 0;
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2) && !using_current) {
+            for (int j = 0; j < it2.count && !using_current; j++) {
+                entity e2 = it2.entities[j];
+                if (!zox_has(e2, Device)) {
+                    continue;
                 }
-            } else if (mode->value == zox_device_mode_gamepad) {
-                if (zox_has(e2, Gamepad)) {
-                    if (gamepad_is_any_input(world, e2)) {
-                        using_current_inputs = 1;
-                        break;
+                if (mode->value == zox_device_mode_keyboardmouse) {
+                    if (zox_has(e2, Keyboard)) {
+                        zox_geter(e2, Keyboard, keyboard);
+                        if (keyboard_is_any_input(keyboard)) {
+                            using_current = 1;
+                        }
+                    } else if (zox_has(e2, Mouse)) {
+                        if (mouse_is_any_input(world, e2)) {
+                            using_current = 1;
+                        }
                     }
-                }
-            } else if (mode->value == zox_device_mode_touchscreen) {
-                if (zox_has(e2, Touchscreen)) {
-                    if (touchscreen_is_any_input(world, e2)) {
-                        using_current_inputs = 1;
-                        // zox_log(" > using current touchscreen\n")
-                        break;
+                } else if (mode->value == zox_device_mode_gamepad) {
+                    if (zox_has(e2, Gamepad) && zox_getv(e2, DeviceHasInput)) {
+                        using_current = 1;
+                    }
+                } else if (mode->value == zox_device_mode_touchscreen) {
+                    if (zox_has(e2, Touchscreen)) {
+                        if (touchscreen_is_any_input(world, e2)) {
+                            using_current = 1;
+                        }
                     }
                 }
             }
         }
-        if (using_current_inputs) {
+        if (using_current) {
             if (dbg_log >= 2) {
-                zox_log("Using Current Device [%i]", mode->value);
+                zox_log("Using Current Device [%i]",
+                    mode->value);
             }
             continue;
         }
         if (dbg_log >= 2) {
-            zox_log("Devices %i; Mode [%i]", length, mode->value);
+            uint devices_length = zox_get_children_count_by_id(
+                world,
+                e,
+                zox_id(Device));
+            zox_log("Devices %i; Mode [%i]",
+                devices_length,
+                mode->value);
         }
         byte new_mode = 0;
-        for (uint j = 0; j < length; j++) {
-            entity e2 = devices[j];
-            if (dbg_log >= 2) {
-                zox_log("   Device %i: %s", j, zox_get_name(e2));
-            }
-            if (mode->value != zox_device_mode_keyboardmouse) {
-                if (zox_has(e2, Keyboard)) {
-                    zox_geter(e2, Keyboard, keyboard);
-                    if (keyboard_is_any_input(keyboard)) {
-                        new_mode = zox_device_mode_keyboardmouse;
-                    }
-                } else if (zox_has(e2, Mouse)) {
-                    if (mouse_is_any_input(world, e2)) {
-                        new_mode = zox_device_mode_keyboardmouse;
+        it2 = zox_children(world, e);
+        while (zox_children_next(it2) && !new_mode) {
+            for (int j = 0; j < it2.count && !new_mode; j++) {
+                entity e2 = it2.entities[j];
+                if (dbg_log >= 2) {
+                    zox_log("   Device %i: %s", j, zox_get_name(e2));
+                }
+                if (mode->value != zox_device_mode_keyboardmouse) {
+                    if (zox_has(e2, Keyboard)) {
+                        zox_geter(e2, Keyboard, keyboard);
+                        if (keyboard_is_any_input(keyboard)) {
+                            new_mode = zox_device_mode_keyboardmouse;
+                        }
+                    } else if (zox_has(e2, Mouse)) {
+                        if (mouse_is_any_input(world, e2)) {
+                            new_mode = zox_device_mode_keyboardmouse;
+                        }
                     }
                 }
-            }
-            if (mode->value != zox_device_mode_gamepad) {
-                if (zox_has(e2, Gamepad)) {
-                    if (gamepad_is_any_input(world, e2)) {
+                if (mode->value != zox_device_mode_gamepad) {
+                    if (zox_has(e2, Gamepad) && zox_getv(e2, DeviceHasInput)) {
                         new_mode = zox_device_mode_gamepad;
                     }
                 }
-            }
-            if (mode->value != zox_device_mode_touchscreen) {
-                if (zox_has(e2, Touchscreen)) {
-                    if (touchscreen_is_any_input(world, e2)) {
-                        new_mode = zox_device_mode_touchscreen;
+                if (mode->value != zox_device_mode_touchscreen) {
+                    if (zox_has(e2, Touchscreen)) {
+                        if (touchscreen_is_any_input(world, e2)) {
+                            new_mode = zox_device_mode_touchscreen;
+                        }
                     }
                 }
-            }
-            if (new_mode) {
-                break;
             }
         }
         if (!new_mode) {
             continue;
         }
         // set player links here if dirty
-        for (uint j = 0; j < length; j++) {
-            entity e2 = devices[j];
-            if (new_mode == zox_device_mode_keyboardmouse) {
-                byte enabled = zox_has(e2, Keyboard) || zox_has(e2, Mouse);
-                zox_set(e2, DeviceDisabled, { !enabled });
-            } else if (new_mode == zox_device_mode_gamepad) {
-                byte enabled = zox_has(e2, Gamepad);
-                zox_set(e2, DeviceDisabled, { !enabled });
-            } else if (new_mode == zox_device_mode_touchscreen) {
-                byte enabled = zox_has(e2, Touchscreen);
-                zox_set(e2, DeviceDisabled ,{ !enabled });
+        it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                entity e2 = it2.entities[j];
+                if (new_mode == zox_device_mode_keyboardmouse) {
+                    byte enabled =
+                        zox_has(e2, Keyboard) ||
+                        zox_has(e2, Mouse);
+                    zox_setv(e2, DeviceDisabled, !enabled);
+                } else if (new_mode == zox_device_mode_gamepad) {
+                    byte enabled = zox_has(e2, Gamepad);
+                    zox_setv(e2, DeviceDisabled, !enabled);
+                } else if (new_mode == zox_device_mode_touchscreen) {
+                    byte enabled = zox_has(e2, Touchscreen);
+                    zox_setv(e2, DeviceDisabled, !enabled);
+                }
             }
         }
         last->value = mode->value;

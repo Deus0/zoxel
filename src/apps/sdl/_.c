@@ -1,5 +1,3 @@
-#ifndef zoxm_sdl
-#define zoxm_sdl
 
 byte use_sdl_audio = 0;
 byte channels_count = 2;
@@ -25,7 +23,8 @@ void initialize_sounds() {
     }
 }
 
-zox_begin_module(Sdl) {
+void import_sdl(ecs* world) {
+    zox_module(sdl);
     define_components_sdl(world);
     define_systems_sdl(world);
     zox_module_dispose(dispose_apps_sdl);
@@ -33,10 +32,13 @@ zox_begin_module(Sdl) {
     add_hook_terminal_command(process_terminal_sdl);
     add_hook_spawn_prefabs(spawn_prefabs_sdl);
     initialize_sounds();
-    zox_import_module(SdlInputs);
     add_to_update_loop(update_sdl);
+    zox_add_module(sdl_inputs);
     // Setting idk
     // SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
-} zox_end_module(Sdl);
-
-#endif
+    if (is_on_phosh()) {
+        zox_log("Phosh Detected. Disabling Decor.");
+        disable_apps_decor = 1;
+        fullscreen = 1;
+    }
+}

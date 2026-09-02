@@ -105,7 +105,10 @@ zox_sys2(VirtualJoystickSystem) {
             continue;
         }
         entity player = zox_get_parent(world, device->value);
-        if (!zox_valid(player)) {
+        if (!zox_valid(player) || !zox_has(player, Player)) {
+            zox_loge("Device not attached to player [%s] > [%s]",
+                zox_getn(device->value),
+                zox_getn(player));
             continue;
         }
         // entity game = zox_getv(player, GameLink);
@@ -135,7 +138,13 @@ zox_sys2(VirtualJoystickSystem) {
             } else {
                 button_type = zox_device_stick_left;
             }
-            joystick_ui->value = spawn_virtual_joystick(world, canvas, position->value, e, joystick->value, button_type);
+            joystick_ui->value = spawn_virtual_joystick(
+                world,
+                canvas,
+                position->value,
+                e,
+                joystick->value,
+                button_type);
             zox_setv(e, DeviceButtonType, button_type);
             // zox_log("Spawning Virtual Joystick [%i]", button_type);
         }

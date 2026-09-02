@@ -52,7 +52,12 @@ entity spawn_engine_app(ecs* world, const char* name) {
     }
     // Window creates and binds OpenGL Context too!
     zox_logv("Spawning SDL Window [%s]", name);
-    entity app = spawn_app_sdl_opengl(world, name, fullscreen, maximized, monitor);
+    entity app = spawn_app_sdl_opengl(
+        world,
+        name,
+        fullscreen,
+        maximized,
+        monitor);
     if (!app) {
         zox_loge("[engine_spawn_window] failed");
         return 0;
