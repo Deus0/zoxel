@@ -60,9 +60,16 @@ static inline byte initialize_pathing(const char* game_name) {
         decompress_android_resources(resources_path);
     }
 #else
-    pathing_success = initialize_pathing_native(game_name);
+    pathing_success = initialize_pathing_native(
+        game_name,
+        &data_path,
+        &resources_path,
+        &resources_path_game);
 #endif
-    zox_logv("Threads Support [%s]", supports_threads() ? "YES" : "NO");
+    zox_logv("Threads Support [%s]",
+        supports_threads() ?
+            "YES" :
+            "NO");
     return pathing_success;
 }
 

@@ -24,6 +24,7 @@ void load_files_voxes(ecs *world) {
         zox_log("Loading Vox Files  [%s]", load_directory);
     }
     FileList files = get_files(load_directory, 0);
+    free(load_directory);
     files_voxes_count = files.count;
     files_voxes = malloc(sizeof(entity) * files_voxes_count);
     files_hashmap_voxes = create_string_hashmap(files_voxes_count);

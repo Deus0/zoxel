@@ -393,6 +393,14 @@ if [[ ${package} == "1" ]]; then
     zip -j "${zip_name}" "${bin_path}"
     zip -q -r "${zip_name}" res
 
+    if [[ -d "gam/${game_name}/res" ]]; then
+        echo "> Using Game Resources [gam/${game_name}/res]"
+        (
+            cd "gam/${game_name}"
+            zip -q -r "${OLDPWD}/${zip_name}" res
+        )
+    fi
+
     if [[ ${window_lib} == "sdl" ]]; then
         if [[ "${is_static}" == "1" ]]; then
             zip -j "${zip_name}" "${sdl_runtime}"

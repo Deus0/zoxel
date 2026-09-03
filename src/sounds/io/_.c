@@ -18,6 +18,7 @@ void load_files_sounds(ecs *world) {
         zox_logv("Loading Files Sounds [%s]", load_directory);
     }
     FileList files = get_files(load_directory, 0);
+    free(load_directory);
     sound_files_count = files.count;
     files_sounds = malloc(sizeof(entity) * files.count);
     files_hashmap_sounds = create_string_hashmap(files.count);

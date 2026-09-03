@@ -4,7 +4,8 @@ entity dbg_chunk3;
 entity spawn_test_vox_at(
     ecs* world,
     float3 position,
-    float4 rotation)
+    float4 rotation,
+    float2 scales)
 {
     // byte dbg_inspector = 0;
     float distance = frand_range(2.6f, 3.4f);
@@ -12,7 +13,7 @@ entity spawn_test_vox_at(
         position,
         rotation,
         -distance);
-    float scale = frand_range(0.8f, 1.2f);
+    float scale = frand_range(scales.x, scales.y);
     float block_scale = 1.0f / 16.0f;
     byte depth = block_depth_limits.y;
     float spin = rand_range(2, 8);
@@ -37,7 +38,6 @@ entity spawn_test_vox_at(
     return e;
 }
 
-
 entity spawn_test_vox(
     ecs* world,
     entity player)
@@ -49,7 +49,8 @@ entity spawn_test_vox(
     return spawn_test_vox_at(
         world,
         zox_getv(camera, Position3D),
-        zox_getv(camera, Rotation3D)
+        zox_getv(camera, Rotation3D),
+        (float2) { 0.1f, 0.3f }
     );
 }
 

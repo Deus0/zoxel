@@ -46,6 +46,7 @@ void load_files_shaders(ecs *world) {
     char* load_directory = concat_file_path(resources_path, directory_shaders);
     zox_logv("  - Loading Files Shaders [%s]", load_directory);
     FileList files = get_files(load_directory, 1);
+    free(load_directory);
     files_shaders = malloc(sizeof(entity) * files.count);
     files_hashmap_shaders = create_string_hashmap(files.count);
     zox_logv(" + io loaded [shaders] [%i]", files.count);

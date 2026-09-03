@@ -165,12 +165,14 @@ void traverse_directory(FileList* fileList, const char* directory, byte keep_ext
     closedir(dp);
 }
 
-FileList get_files(char *directory, byte keep_extension) {
+FileList get_files(
+    char* directory,
+    byte keep_extension)
+{
     FileList fileList;
     fileList.count = 0;
     fileList.files = NULL;
     fileList.filenames = NULL;
-    // size_t len = strlen(directory);
 #ifndef zox_windows
     traverse_directory(&fileList, directory, keep_extension);
 #else
@@ -184,7 +186,6 @@ FileList get_files(char *directory, byte keep_extension) {
         traverse_directory(&fileList, directory_non_slash, keep_extension);
     }
 #endif
-    free(directory);
     return fileList;
 }
 
