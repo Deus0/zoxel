@@ -7,7 +7,7 @@ void zox_dbg_spawn_streamer(ecs* world, ClickEventData data) {
         dbg_tst_streamer = 0;
         return;
     }
-    entity camera = zox_getv(player, CameraLink);
+    entity camera = zox_get_link(world, player, Camera);
     entity terrain = local_terrain; // zox_getv(camera, StreamLink);
     if (!zox_valid(terrain)) {
         zox_loge("Invalid terrain for [dbg_tst_streamer]");

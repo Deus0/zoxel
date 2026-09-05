@@ -9,7 +9,7 @@ void delayed_spawn_menu_paused(ecs* world, entity e) {
 void player_state_pause_ui(ecs* world, entity player, byte state) {
     byte dbg_log = 0;
     entity canvas = zox_get_link(world, player, Canvas);
-    entity camera = zox_getv(player, CameraLink);
+    entity camera = zox_get_link(world, player, Camera);
     if (!zox_valid(canvas)) {
         zox_loge("Canvas is missing for Player [%s]", zox_getn(player));
         return;

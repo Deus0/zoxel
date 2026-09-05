@@ -3,23 +3,20 @@ zox_sys2(PlayerTownFinderSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(CameraLink);
     zox_sys_out(PlayerState);
     zox_sys_out(PlayerStateDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(CameraLink, camera);
         zox_sys_o(PlayerState, state);
         zox_sys_o(PlayerStateDirty, dirty);
         if (state->value != zox_player_state_new) {
             continue;
         }
-#ifdef zox_safety_checks
-        if (!zox_valid(camera->value)) {
-            zox_loge("Invalid Terrain on Realm");
+        entity camera = zox_get_link(world, e, Camera);
+        if (!zox_valid(camera)) {
+            zox_loge("Invalid Camera on Player");
             continue;
         }
-#endif
         entity game = zox_get_parent(world, e);
 #ifdef zox_safety_checks
         if (!zox_valid(game)) {
@@ -105,9 +102,9 @@ zox_sys2(PlayerTownFinderSystem) {
         // NOTE: Make sure it updates even if position the same
         state->value = zox_player_state_starting;
         dirty->value = zox_dirty_trigger;
-        zox_setv(camera->value, Position3D, spawn_position);
-        zox_setv(camera->value, StreamDirty, zox_dirty_trigger);
-        zox_setv(camera->value, StreamerLevel, 1);
+        zox_setv(camera, Position3D, spawn_position);
+        zox_setv(camera, StreamDirty, zox_dirty_trigger);
+        zox_setv(camera, StreamerLevel, 1);
         // Clear spawn queue
         zox_muter(terrain, TerrainSpawnQueue, queue);
         queue->count = 0;
@@ -115,8 +112,16 @@ zox_sys2(PlayerTownFinderSystem) {
         if (dbg_log) {
             byte2 town_size2 = town ? zox_getv(town, TownSize) : byte2_zero;
             zox_log("Player Now State: [Starting]");
-            zox_log("   - Town [%s] Position [%ix%i] Size [%ix%i]", zox_get_name(town), town_position.x, town_position.z, town_size2.x, town_size2.y);
-            zox_log("   - Player Spawn Position [%fx%fx%f]", spawn_position.x, spawn_position.y, spawn_position.z);
+            zox_log("   - Town [%s] Position [%ix%i] Size [%ix%i]",
+                zox_get_name(town),
+                town_position.x,
+                town_position.z,
+                town_size2.x,
+                town_size2.y);
+            zox_log("   - Player Spawn Position [%fx%fx%f]",
+                spawn_position.x,
+                spawn_position.y,
+                spawn_position.z);
         }
     }
 } zox_sys_end(PlayerTownFinderSystem);

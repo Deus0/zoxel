@@ -12,12 +12,8 @@ void player_state_respawn_ui(ecs* world, entity player, byte state) {
     if (!is_destroy && !is_spawn) {
         return;
     }
-    if (!zox_has(player, CameraLink)) {
-        zox_loge("[player_state_respawn_ui] Invalid [player]");
-        return;
-    }
     entity canvas = zox_get_link(world, player, Canvas);
-    entity camera = zox_getv(player, CameraLink);
+    entity camera = zox_get_link(world, player, Camera);
     if (!zox_valid(canvas) || !zox_valid(camera)) {
         // zox_logw("Canvas is missing from Player [PlayerUIGamePauseSystem]");
         return;

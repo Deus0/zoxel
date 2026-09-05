@@ -52,7 +52,7 @@ UIs
 	- CharacterLink
 	- SpeakerLinks
 	- PlayerLink
-	- CameraLink
+	-x CameraLink
 	- EntityLinks
 	- BlockLinks
 	- BiomeLinks

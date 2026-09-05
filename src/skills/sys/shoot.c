@@ -48,16 +48,15 @@ zox_sys2(ShootSystem) {
             rotation = zox_getv(hand, Rotation3D);
             // NOTE: Hand is facing down atm, just make go up a bit more
             rotation = quaternion_rotate(rotation, euler_to_quaternion((float3) { -90 * degrees_to_radians, 0, 0 }));
-        } else if (zox_has(user, CameraLink)) {
-            entity camera = zox_getv(user, CameraLink);
-            if (!zox_valid(camera)) {
-                continue;
-            }
-            position = zox_getv(camera, Position3D);
-            rotation = zox_getv(camera, Rotation3D);
         } else {
-            position = zox_getv(user, Position3D);
-            rotation = zox_getv(user, Rotation3D);
+            entity camera = zox_get_link(world, user, Camera);
+            if (zox_valid(camera)) {
+                position = zox_getv(camera, Position3D);
+                rotation = zox_getv(camera, Rotation3D);
+            } else {
+                position = zox_getv(user, Position3D);
+                rotation = zox_getv(user, Rotation3D);
+            }
         }
         float damage = randf_range(damage_min->value, damage_max->value);
         spawn_projectile(world, prefab_projectile, position, rotation, 0.1f, default_power * range->value, damage);

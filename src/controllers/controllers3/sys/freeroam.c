@@ -2,12 +2,10 @@ void set_camera_free(
     ecs *world,
     entity e)
 {
-    // zox_set(e, CharacterLink, { 0 });
     float4 rotation = zox_getv(e, Rotation3D);
     float3 euler = quaternion_to_euler(rotation);
     zox_add(e, EulerOverride);
     zox_set(e, Euler, { euler });
-    // zox_set(e, ParentLink, { 0 });
     zox_set_parent(world, e, 0);
     if (camera_follow_mode == zox_camera_follow_mode_follow_xz) {
         zox_setv(e, CameraFollowLink, 0)
@@ -33,7 +31,7 @@ void attach_camera_to_character(
     float3 euler = (float3) { 0, 180, 0 };
     // Initial Linking
     zox_setv(e, CharacterLink, character);
-    zox_setv(character, CameraLink, e);
+    zox_link(world, character, Camera, e);
     // reset using head bone
     zox_remove(e, EulerOverride);
     zox_setv(e, CameraState, zox_camera_state_first_person);
@@ -54,16 +52,15 @@ zox_sys2(FreeRoamToggleSystem) {
     zox_sys_begin();
     zox_sys_in(PlayerState);
     zox_sys_in(CharacterLink);
-    zox_sys_in(CameraLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
         zox_sys_i(CharacterLink, character);
-        zox_sys_i(CameraLink, camera);
         if (state->value != zox_player_state_playing) {
             // continue;
         }
-        if (!zox_valid(camera->value)) {
+        entity camera = zox_get_link(world, e, Camera);
+        if (!zox_valid(camera)) {
             continue;
         }
         byte is_toggle = 0;
@@ -109,22 +106,22 @@ zox_sys2(FreeRoamToggleSystem) {
             }
         }
         if (is_toggle) {
-            byte old = zox_getv(camera->value, CameraState);
+            byte old = zox_getv(camera, CameraState);
             byte new = old;
             if (old == zox_camera_state_free) {
                 new = zox_camera_state_first_person;
-                zox_remove(camera->value, Roaming);
+                zox_remove(camera, Roaming);
                 attach_camera_to_character(
                     world,
-                    camera->value,
+                    camera,
                     character->value);
             } else {
                 new = zox_camera_state_free;
                 set_camera_free(
                     world,
-                    camera->value);
+                    camera);
             }
-            zox_setv(camera->value, CameraState, new);
+            zox_setv(camera, CameraState, new);
             // zox_log("= toggling free roam - old: [%i] -> new: [%i]", old, state->value);
         }
     }

@@ -26,9 +26,9 @@ void zox_tst_render_texture(ecs *world, ClickEventData data) {
         return;
     }
     entity canvas = get_linked_canvas(world, player);
-    entity player_camera = zox_getv(player, CameraLink);
-    float3 cposition = zox_getv(player_camera, Position3D);
-    float4 crotation = zox_getv(player_camera, Rotation3D);
+    entity camera = zox_get_link(world, player, Camera);
+    float3 cposition = zox_getv(camera, Position3D);
+    float4 crotation = zox_getv(camera, Rotation3D);
     int padding = 40;
     int2 lsize = int2_single(256);
     int2 tsize = int2_scale1(lsize, 1 / downscale);
@@ -36,18 +36,25 @@ void zox_tst_render_texture(ecs *world, ClickEventData data) {
     position.x -= padding;
     position.y -= padding;
     float2 anchor = (float2) { 1, 1 };
-    entity camera;
     // TODO: spawn_render_camera instead
-    camera = spawn_camera(world, prefab_camera3, cposition, crotation, 0, 45, int2_zero, tsize, single_screen_to_canvas);
-    zox_set_unique_name(camera, "dbg_render_texture_camera");
-    zox_add(camera, RenderCamera);
-    zox_setv(camera, Color, clear);
-    zox_setv(camera, CameraBlur, 0);
-    zox_setv(camera, CameraVignette, 2.5f);
-    dbg_render_camera = camera;
+    entity render_camera = spawn_camera(
+        world,
+        prefab_camera3,
+        cposition,
+        crotation,
+        0, 45,
+        int2_zero,
+        tsize,
+        single_screen_to_canvas);
+    zox_set_unique_name(render_camera, "dbg_render_texture_camera");
+    zox_add(render_camera, RenderCamera);
+    zox_setv(render_camera, Color, clear);
+    zox_setv(render_camera, CameraBlur, 0);
+    zox_setv(render_camera, CameraVignette, 2.5f);
     if (is_camera_filtering) {
-        zox_add(camera, CameraFilter);
+        zox_add(render_camera, CameraFilter);
     }
+    dbg_render_camera = render_camera;
     entity material = spawn_material_render_texture(world, 1);
     // Create Render Texture
     entity ui = spawn_render_texture(

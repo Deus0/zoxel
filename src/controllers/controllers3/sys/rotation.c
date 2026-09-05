@@ -6,12 +6,10 @@ zox_sys2(Player3RotateSystem) {
     zox_sys_begin();
     zox_sys_in(PlayerState);
     zox_sys_in(CharacterLink);
-    zox_sys_in(CameraLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
         zox_sys_i(CharacterLink, characterLink);
-        zox_sys_i(CameraLink, cameraLink);
         if (state->value != zox_player_state_playing) {
             continue;
         }
@@ -36,8 +34,13 @@ zox_sys2(Player3RotateSystem) {
         if (zox_has(character, DisableMovement)) {
             continue;
         }
-        byte camera_mode = zox_valid(cameraLink->value) ? zox_getv(cameraLink->value, CameraState) : zox_camera_state_first_person;
-        if (camera_mode != zox_camera_state_first_person && camera_mode != zox_camera_state_third_person) {
+        entity camera = zox_get_link(world, e, Camera);
+        byte camera_mode = zox_valid(camera) ?
+            zox_getv(camera, CameraState) :
+            zox_camera_state_first_person;
+        if (camera_mode != zox_camera_state_first_person &&
+            camera_mode != zox_camera_state_third_person)
+        {
             continue;
         }
         float2 right_stick = float2_zero;

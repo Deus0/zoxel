@@ -5,13 +5,11 @@ zox_sys2(RenderTextureSizeSystem) {
     zox_sys_in(LayoutSizeDirty);
     zox_sys_in(TextureSize);
     zox_sys_in(TextureGPULink);
-    zox_sys_in(CameraLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(LayoutSizeDirty, dirty);
         zox_sys_i(TextureSize, size);
         zox_sys_i(TextureGPULink, texture_gpu);
-        zox_sys_i(CameraLink, camera);
         if (dirty->value != zox_dirty_active) {
             continue;
         }
@@ -19,15 +17,17 @@ zox_sys2(RenderTextureSizeSystem) {
             zox_loge("[RenderTextureSizeSystem] [%s] Invalid [TextureGPULink]", zox_getn(e));
             continue;
         }
-        if (!zox_valid(camera->value)) {
-            zox_loge("[RenderTextureSizeSystem] Invalid Render Camera [%lu]", camera->value);
+        entity camera = zox_get_link(world, e, Camera);
+        if (!zox_valid(camera)) {
+            zox_loge("[RenderTextureSizeSystem] Invalid Render Camera [%lu]",
+                camera);
             continue;
         }
-        if (!zox_has(camera->value, RenderBufferLink)) {
-            zox_loge("[RenderTextureSizeSystem] Invalid Render Camera: No RenderBufferLink [%s]", zox_getn(camera->value));
+        if (!zox_has(camera, RenderBufferLink)) {
+            zox_loge("[RenderTextureSizeSystem] Invalid Render Camera: No RenderBufferLink [%s]", zox_getn(camera));
             continue;
         }
-        guint rbo = zox_getv(camera->value, RenderBufferLink);
+        guint rbo = zox_getv(camera, RenderBufferLink);
         int2 scaled_size = scale_viewport(size->value);
         set_render_texture_gpu(
             texture_gpu->value,

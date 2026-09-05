@@ -9,12 +9,11 @@ zox_sys2(FreeCameraRotateSystem) {
 #endif
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(CameraLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(CameraLink, camera);
-        if (!zox_valid(camera->value) ||
-            !zox_has(camera->value, Roaming)
+        entity camera = zox_get_link(world, e, Camera);
+        if (!zox_valid(camera) ||
+            !zox_has(camera, Roaming)
         ) {
             continue;
         }
@@ -46,7 +45,7 @@ zox_sys2(FreeCameraRotateSystem) {
                     if (int_absf(delta.x) + int_absf(delta.y) >= max_mouse_delta || (delta.x == 0 &&delta.y == 0)) {
                         continue;
                     }
-                    zox_muter(camera->value, Euler, euler);
+                    zox_muter(camera, Euler, euler);
                     float3 eulerAddition = { delta.y * rotate_power, -delta.x * rotate_power, 0 };
                     euler->value = float3_add(euler->value, eulerAddition);
                 }

@@ -46,7 +46,7 @@ zox_sys2(ElementRaycastSystem) {
         if (!zox_valid(canvas)) {
             continue;
         }
-        entity camera = zox_getv(canvas, CameraLink);
+        entity camera = zox_get_link(world, canvas, Camera);
         if (!zox_valid(camera)) {
             continue;
         }

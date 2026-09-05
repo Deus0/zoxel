@@ -10,8 +10,6 @@ void zox_dbg_spawn_canvas(ecs* world, ClickEventData data) {
         zox_loge("Invalid Prefab [prefab_canvas]");
         return;
     }
-    // entity player = dbg_player;
-    // zox_geter_value(player, CameraLink, entity, camera);
     entity app = main_app;
     entity camera = ui_cameras[0];
     int2 screen_size = get_screen_size();

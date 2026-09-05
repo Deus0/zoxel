@@ -1,4 +1,7 @@
-entity spawn_prefab_character3_player(ecs *world, entity prefab) {
+entity spawn_prefab_character3_player(
+    ecs *world,
+    entity prefab)
+{
     zox_prefab_child(prefab);
     zox_prefab_name("character3_player");
     zox_add(e, PlayerCharacter);
@@ -10,7 +13,6 @@ entity spawn_prefab_character3_player(ecs *world, entity prefab) {
     zox_add(e, BlockSoundTrigger);
     // Controller
     zox_setv(e, Movement3, float3_zero);
-    zox_setv(e, CameraLink, 0);
     zox_setv(e, PlayerLink, 0);
     // Raycasting
     zox_setv(e, GizmoLink, 0);

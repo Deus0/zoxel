@@ -11,7 +11,10 @@ entity spawn_menu_start(
     char* text = "Cube is End";
     byte layer = 1;
     byte font_size = 18 * ui_scale;
-    byte2 padding = (byte2) { 8 * ui_scale, 4 * ui_scale };
+    byte2 padding = (byte2) {
+        8 * ui_scale,
+        4 * ui_scale
+    };
     color fill = button_fill;
     fill.a = 177;
     color outline = button_outline;
@@ -19,11 +22,7 @@ entity spawn_menu_start(
     color font_outline = button_font_outline;
     entity e;
     if (zox_huds3D) {
-        if (!zox_has(player, CameraLink)) {
-            zox_loge("Player Invalid Components in [spawn_menu_start]");
-            return 0;
-        }
-        entity camera = zox_getv(player, CameraLink);
+        entity camera = zox_get_link(world, player, Camera);
         if (!zox_valid(camera) ||
             !zox_has(camera, Position3D) ||
             !zox_has(camera, Rotation3D)

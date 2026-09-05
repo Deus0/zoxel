@@ -1,12 +1,11 @@
 zox_sys2(FreeCameraToggleSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(CameraLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(CameraLink, camera);
-        if (!zox_valid(camera->value) ||
-            !zox_has(camera->value, CanRoam))
+        entity camera = zox_get_link(world, e, Camera);
+        if (!zox_valid(camera) ||
+            !zox_has(camera, CanRoam))
         {
             continue;
         }
@@ -48,13 +47,13 @@ zox_sys2(FreeCameraToggleSystem) {
             }
         }
         if (is_triggered && mouse) {
-            byte roaming = zox_has(camera->value, Roaming);
+            byte roaming = zox_has(camera, Roaming);
             roaming = !roaming;
             zox_set(mouse, MouseLock, { roaming });
             if (roaming) {
-                zox_add(camera->value, Roaming);
+                zox_add(camera, Roaming);
             } else {
-                zox_remove(camera->value, Roaming);
+                zox_remove(camera, Roaming);
             }
         }
     }

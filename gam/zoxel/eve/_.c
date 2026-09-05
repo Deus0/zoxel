@@ -5,7 +5,7 @@ void app_initialize_zoxel(ecs* world, entity app) {
         world,
         float3_zero,
         quaternion_identity,
-        (float2) { 2, 4 });
+        (float2) { 1.6f, 2.6f });
     zox_set_parent(world, e2, app);
 }
 

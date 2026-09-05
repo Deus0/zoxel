@@ -7,7 +7,7 @@ void zox_dbg_spawn_popup3(ecs *world, ClickEventData data) {
         // delete?
     }
     zox_log("+ Testing [popup3]");
-    entity camera = zox_getv(dbg_player, CameraLink);
+    entity camera = zox_get_link(world, dbg_player, Camera);
     if (!zox_valid(camera)) {
         return;
     }

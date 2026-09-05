@@ -6,13 +6,11 @@ zox_sys2(Player3RespawnSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(CameraLink);
     zox_sys_out(PlayerStateDirty);
     zox_sys_out(PlayerState);
     zox_sys_out(CharacterLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(CameraLink, camera);
         zox_sys_o(PlayerStateDirty, dirty);
         zox_sys_o(PlayerState, state);
         zox_sys_o(CharacterLink, character);
@@ -55,12 +53,39 @@ zox_sys2(Player3RespawnSystem) {
                 dirty->value = zox_dirty_trigger;
                 entity game = zox_get_parent(world, e);
                 entity realm = zox_getv(game, RealmLink);
-                entity terrain = zox_get_child_by_id(world, realm, zox_id(Terrain));
+                entity terrain = zox_get_child_by_id(
+                    world,
+                    realm,
+                    zox_id(Terrain));
+                entity camera = zox_get_link(
+                    world,
+                    e,
+                    Camera);
                 float3 spawned;
-                character->value = game_start_player_new(world, e, realm, terrain, camera->value, &spawned, dbg_log);
-                spawn_arrow3D(world, spawned, (float3) { 0, 1, 0}, 0.2f, 6, 15);
+                character->value = game_start_player_new(
+                    world,
+                    e,
+                    realm,
+                    terrain,
+                    camera,
+                    &spawned,
+                    dbg_log);
+                spawn_arrow3D(
+                    world,
+                    spawned,
+                    (float3) {
+                        0,
+                        1,
+                        0
+                    },
+                    0.2f,
+                    6,
+                    15);
                 if (dbg_log) {
-                    zox_log("Player Respawned at [%fx%fx%f]", spawned.x, spawned.y, spawned.z);
+                    zox_log("Player Respawned at [%fx%fx%f]",
+                        spawned.x,
+                        spawned.y,
+                        spawned.z);
                 }
             }
         }

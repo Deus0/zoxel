@@ -16,16 +16,17 @@ zox_sys2(PlayerToggleCameraSystem) {
     zox_sys_begin();
     zox_sys_in(PlayerState);
     zox_sys_in(CharacterLink);
-    zox_sys_in(CameraLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
         zox_sys_i(CharacterLink, character);
-        zox_sys_i(CameraLink, camera);
         if (state->value != zox_player_state_playing) {
             continue;
         }
-        if (!zox_valid(camera->value) || !zox_valid(character->value)) {
+        entity camera = zox_get_link(world, e, Camera);
+        if (!zox_valid(camera) ||
+            !zox_valid(character->value))
+        {
             continue;
         }
         byte is_toggle = 0;
@@ -76,7 +77,7 @@ zox_sys2(PlayerToggleCameraSystem) {
         }
         if (is_toggle) {
             entity canvas = zox_get_link(world, e, Canvas);
-            byte mode = toggle_camera_mode(world, camera->value);
+            byte mode = toggle_camera_mode(world, camera);
             byte is_first_person = mode == zox_camera_state_first_person;
             entity crosshair = zox_get_child_by_id(
                 world,

@@ -6,12 +6,11 @@ zox_sys2(FreeCameraMoveSystem) {
 #endif
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(CameraLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(CameraLink, camera);
-        if (!zox_valid(camera->value) ||
-            !zox_has(camera->value, Roaming)
+        entity camera = zox_get_link(world, e, Camera);
+        if (!zox_valid(camera) ||
+            !zox_has(camera, Roaming)
         ) {
             continue;
         }
@@ -46,8 +45,8 @@ zox_sys2(FreeCameraMoveSystem) {
             continue;
         }
         movement = float3_scale(movement, movement_power);
-        float4 rotation = zox_getv(camera->value, Rotation3D);
-        zox_muter(camera->value, Position3D, position);
+        float4 rotation = zox_getv(camera, Rotation3D);
+        zox_muter(camera, Position3D, position);
         position->value =
             float3_add(position->value,
                 float4_rotate_float3(rotation, movement));

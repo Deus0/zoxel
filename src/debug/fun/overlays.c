@@ -8,14 +8,14 @@ uint zox_dbg_ui_camera(
     uint size,
     uint index)
 {
-    if (!zox_valid(e) || !zox_has(e, CameraLink)) {
+    if (!zox_valid(e)) {
         return index;
     }
     index += snprintf(buffer + index, size - index, "Player Cameras [%s]  \n", zox_getn(e));
     if (!zox_valid(e)) {
         return index;
     }
-    entity camera = zox_getv(e, CameraLink);
+    entity camera = zox_get_link(world, e, Camera);
     index += snprintf(buffer + index, size - index, "   - Camera [%s]\n", zox_getn(camera));
     if (!zox_valid(camera)) {
         return index;

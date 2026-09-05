@@ -62,10 +62,10 @@ zox_sys2(BiomeLinkSystem) {
             game_sky_bottom_color = sky_color;
             // Set cameras Fog
             if (zox_has(e, FogColor)) {
-                zox_set(e, FogColor, { sky_color });
-            } else if (zox_has(e, CameraLink)) {
-                entity camera = zox_getv(e, CameraLink);
-                zox_set(camera, FogColor, { sky_color });
+                zox_setv(e, FogColor, sky_color);
+            } else {
+                entity camera = zox_get_link(world, e, Camera);
+                zox_setv(camera, FogColor, sky_color);
             }
             entity game = zox_get_parent_by_id(world, terrain->value, zox_id(Game));
             if (!zox_valid(game)) {

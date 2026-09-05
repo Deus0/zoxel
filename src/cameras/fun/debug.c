@@ -1,5 +1,11 @@
-int get_label_camera_euler(ecs *world, entity player, char buffer[], int buffer_size, int buffer_index) {
-    entity camera = zox_getv(player, CameraLink);
+int get_label_camera_euler(
+    ecs *world,
+    entity player,
+    char buffer[],
+    int buffer_size,
+    int buffer_index)
+{
+    entity camera = zox_get_link(world, player, Camera);
     if (!camera) return buffer_index;
     float4 rotation3D = zox_getv(camera, Rotation3D);
     float3 euler = quaternion_to_euler_360(rotation3D);
@@ -7,17 +13,31 @@ int get_label_camera_euler(ecs *world, entity player, char buffer[], int buffer_
     return buffer_index;
 }
 
-int get_label_camera_position(ecs *world, entity player, char buffer[], int buffer_size, int buffer_index) {
-    entity camera = zox_getv(player, CameraLink);
+int get_label_camera_position(
+    ecs *world,
+    entity player,
+    char buffer[],
+    int buffer_size,
+    int buffer_index)
+{
+    entity camera = zox_get_link(world, player, Camera);
     if (!camera) return buffer_index;
     float3 position3D = zox_getv(camera, Position3D);
     buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "camera_pos [%ix%ix%i]\n", (int) position3D.x, (int) position3D.y, (int) position3D.z);
     return buffer_index;
 }
 
-int get_label_camera_planes(ecs *world, entity player, char buffer[], int buffer_size, int buffer_index) {
-    entity camera = zox_getv(player, CameraLink);
-    if (!camera || !zox_has(camera, CameraPlanes)) return buffer_index;
+int get_label_camera_planes(
+    ecs *world,
+    entity player,
+    char buffer[],
+    int buffer_size,
+    int buffer_index)
+{
+    entity camera = zox_get_link(world, player, Camera);
+    if (!camera || !zox_has(camera, CameraPlanes)) {
+        return buffer_index;
+    }
     const CameraPlanes *planes = zox_get(camera, CameraPlanes);
     buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "frustum planes [6]\n");
     for (int i = 0; i < CameraPlanes_length; i++) {
@@ -29,8 +49,14 @@ int get_label_camera_planes(ecs *world, entity player, char buffer[], int buffer
 }
 
 
-int get_label_camera_frustum(ecs *world, entity player, char buffer[], int buffer_size, int buffer_index) {
-    const entity camera = zox_getv(player, CameraLink);
+int get_label_camera_frustum(
+    ecs *world,
+    entity player,
+    char buffer[],
+    int buffer_size,
+    int buffer_index)
+{
+    entity camera = zox_get_link(world, player, Camera);
     if (!camera || !zox_has(camera, FrustumCorners)){
          buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "invalid camera\n");
         return buffer_index;

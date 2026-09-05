@@ -11,10 +11,10 @@ zox_sys2(MapPositionSystem) {
         zox_sys_i(PlayerLink, player);
         zox_sys_i(TerrainLink, terrain);
         zox_sys_o(MapPosition, position);
-        if (!zox_valid(player->value) || !zox_has(player->value, CameraLink)) {
+        if (!zox_valid(player->value)) {
             continue;
         }
-        entity camera = zox_getv(player->value, CameraLink);
+        entity camera = zox_get_link(world, player->value, Camera);
         if (!zox_valid(camera) || !zox_has(camera, StreamPosition2)) {
             continue;
         }

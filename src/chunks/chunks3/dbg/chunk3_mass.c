@@ -10,7 +10,7 @@ void zox_dbg_spawn_chunk3_mass(ecs* world, ClickEventData data) {
     // byte dbg_inspector = 1;
     zox_log("Running Test: Mass Spawn [Chunk3]");
     entity player = dbg_player;
-    entity camera = zox_getv(player, CameraLink);
+    entity camera = zox_get_link(world, player, Camera);
     if (!zox_valid(camera)) {
         return;
     }

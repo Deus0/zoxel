@@ -159,13 +159,11 @@ zox_sys2(PlayerBeginSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(CameraLink);
     zox_sys_out(CharacterLink);
     zox_sys_out(PlayerState);
     zox_sys_out(PlayerStateDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(CameraLink, camera);
         zox_sys_o(CharacterLink, character);
         zox_sys_o(PlayerState, state);
         zox_sys_o(PlayerStateDirty, dirty);
@@ -227,12 +225,13 @@ zox_sys2(PlayerBeginSystem) {
                 continue;
             }
         } else {
+            entity camera = zox_get_link(world, e, Camera);
             character->value = game_start_player_new(
                 world,
                 e,
                 realm,
                 terrain,
-                camera->value,
+                camera,
                 &spawn_position,
                 dbg_log);
             if (!character->value) {

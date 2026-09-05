@@ -1,6 +1,6 @@
 entity spawn_map(ecs* world, entity canvas, entity player, entity terrain) {
     int2 tunk_position = int2_zero;
-    entity camera = zox_getv(player, CameraLink);
+    entity camera = zox_get_link(world, player, Camera);
     if (zox_valid(camera)) {
         tunk_position = zox_getv(camera, StreamPosition2);
     }

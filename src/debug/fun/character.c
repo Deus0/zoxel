@@ -25,7 +25,7 @@ uint zox_dbg_label_character_links(
     }
     float3 position = zox_getv(e, Position3D);
     float3 euler = zox_getv(e, Euler);
-    entity camera = zox_getv(e, CameraLink);
+    entity camera = zox_get_link(world, e, Camera);
     entity chunk = zox_getv(e, ChunkLink);
     entity tunk = zox_valid(chunk) ? zox_getv(chunk, TunkLink) : 0;
     entity region = zox_valid(tunk) ? zox_getv(tunk, RegionLink) : 0;
@@ -140,7 +140,7 @@ uint zox_dbg_label_inside_chunk(
     if (!zox_valid(terrain)) {
         return index;
     }
-    entity camera = zox_getv(player, CameraLink);
+    entity camera = zox_get_link(world, player, Camera);
     if (!zox_valid(camera)) {
         return index;
     }

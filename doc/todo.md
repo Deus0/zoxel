@@ -1,8 +1,6 @@
 # Todo
 
 - "[Landfill] Depth Invalid:" bug
-- Add npc that dies when you talk to it
-	- death node in dialogue
 - spawn dialogue inside character spawning for realm, so its in one spot
 
 ## Next
@@ -49,6 +47,8 @@
 - Projectiles get destroyed on hit characters (use same system as pickups)
 
 ## Whimsy
+- Add npc that dies when you talk to it
+	- death node in dialogue
 - Add cracked bricks, a weaker version of bricks, 1 / 8 chance to spawn on wall
 - Why cant i touch and drag two windows at once???
 - Make a mushroom we can throw on ground - does disease damage once it hits an npc

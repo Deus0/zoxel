@@ -10,7 +10,6 @@ zoxc_byte(CameraViewing);
 zoxc_float(FieldOfView);
 zoxc_float(CameraNearDistance);
 zoxc_float(CameraFarDistance);
-zoxc_entity(CameraLink);
 zoxc_entity(CameraTarget);
 zoxc_entity(CameraFollowLink);
 zoxc_int2(ScreenPosition);
@@ -51,7 +50,6 @@ void define_components_cameras(ecs *world) {
     zoxd_float(CameraNearDistance);
     zoxd_float(CameraFarDistance);
     zoxd_int2(ScreenPosition);
-    zoxd_entity(CameraLink);
     zoxd_entity(CameraTarget);
     zoxd_entity(CameraFollowLink);
     zoxd(ProjectionMatrix);

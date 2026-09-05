@@ -26,10 +26,6 @@ void define_systems_rendering_cameras(ecs *world) {
         RenderTextureRestoreSystem,
         [none] cameras.RenderTexture,
         [none] !rendering.RenderTextureDirty,
-        // [in] rendering.TextureGPULink,
-        // [in] rendering.TextureSize,
-        // [in] cameras.CameraLink,
-        // [none] cameras.RenderTexture
     );
     zox_gpu_dispose_system(
         FrameBufferDisposeSystem,

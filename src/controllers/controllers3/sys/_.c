@@ -36,7 +36,6 @@ void define_systems_controllers3(ecs *world) {
         zoxp_update,
         [in] players.PlayerState,
         [in] characters.CharacterLink,
-        [in] cameras.CameraLink,
         [none] players.Player
     );
     zox_system(
@@ -58,7 +57,6 @@ void define_systems_controllers3(ecs *world) {
         zoxp_update,
         [in] players.PlayerState,
         [in] characters.CharacterLink,
-        [in] cameras.CameraLink,
         [none] players.Player
     );
     zox_system_1(
@@ -66,7 +64,6 @@ void define_systems_controllers3(ecs *world) {
         zoxp_spawn,
         [in] players.PlayerState,
         [in] characters.CharacterLink,
-        [in] cameras.CameraLink,
         [none] players.Player
     );
     zox_system_1(
@@ -74,7 +71,6 @@ void define_systems_controllers3(ecs *world) {
         zoxp_spawn,
         [in] players.PlayerState,
         [in] characters.CharacterLink,
-        [in] cameras.CameraLink,
         [none] players.Player
     );
     zox_system(
@@ -82,7 +78,6 @@ void define_systems_controllers3(ecs *world) {
         zoxp_update,
         [in] bones.SkeletonDirty,
         [in] bones.HeadBoneLink,
-        [in] cameras.CameraLink,
         [in] blocks.BlockScale,
         [none] bones.Skeleton
     );
@@ -105,14 +100,12 @@ void define_systems_controllers3(ecs *world) {
         PlayerDialogueSystem,
         zoxp_spawn, // zoxp_update,
         [in] characters.CharacterLink,
-        [in] cameras.CameraLink,
         [out] players.PlayerState
     );
     // NOTE: Spawns animation events
     zox_system_1(
         CameraPlayerStateSystem,
         zoxp_spawn, // zoxp_update,
-        [in] cameras.CameraLink,
         [in] players.PlayerStateDirty,
         [out] players.PlayerState
     );

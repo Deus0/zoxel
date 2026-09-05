@@ -9,7 +9,7 @@ entity spawn_character3_player(
     float4 rotation,
     const char* name)
 {
-    entity camera = zox_getv(player, CameraLink);
+    entity camera = zox_get_link(world, player, Camera);
     byte render_disabled = 0;
     byte render_distance = 0;
     entity e = spawn_character3(
@@ -29,7 +29,7 @@ entity spawn_character3_player(
     zox_setv(e, PlayerLink, player);
     zox_setv(player, CharacterLink, e);
     // camera
-    zox_setv(e, CameraLink, camera);
+    zox_link(world, e, Camera, camera);
     zox_setv(camera, CharacterLink, e);
     zox_setv(camera, EntityTarget, e);
     zox_setv(camera, AttachDirty, zox_dirty_trigger);

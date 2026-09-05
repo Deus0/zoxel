@@ -45,8 +45,10 @@ zox_sys2(Player3DMoveSystem) {
         if (zox_has(character, DisableMovement)) {
             continue;
         }
-        zox_geter_value(character, CameraLink, entity, camera);
-        byte camera_mode = zox_valid(camera) ? zox_getv(camera, CameraState) : zox_camera_state_first_person;
+        entity camera = zox_get_link(world, character, Camera);
+        byte camera_mode = zox_valid(camera) ?
+            zox_getv(camera, CameraState) :
+            zox_camera_state_first_person;
         if (camera_mode == zox_camera_state_free) {
             continue;
         }
@@ -124,31 +126,25 @@ zox_sys2(Player3DMoveSystem) {
         float4 character_rotation = zox_getv(character, Rotation3D);
         zox_geter(character, Velocity3D, velocity3D);
         zox_muter(character, Acceleration3D, acceleration);
-        if (camera_mode == zox_camera_state_topdown || camera_mode == zox_camera_state_ortho) {
-            if (zox_has(character, CameraLink)) {
-                if (camera) {
-                    float4 camera_rotation = zox_getv(camera, Rotation3D);
-                    float3 camera_euler = quaternion_to_euler(camera_rotation);
-                    camera_euler.x = 0;
-                    camera_euler.z = 0;
-                    movement_rotation = euler_to_quaternion(camera_euler);
-                    // Align Character to new move rotation!
-                    zox_muter(character, Rotation3D, character_rotation_mut);
-                    character_rotation_mut->value = movement_rotation;
-                    /*const float4 camera_rotation2 = quaternion_from_euler((float3) { 0, -quaternion_to_euler_y(camera_rotation->value), 0 });
-                    if (movement.z == -movement.x) {
-                        movement.x *= 0.999f; // this hack fixes the rotation
-                    }
-                    movement_rotation = camera_rotation2;
-                    float4 face_direction = quaternion_from_between_vectors(float3_forward, movement);*/
+        if (camera_mode == zox_camera_state_topdown ||
+            camera_mode == zox_camera_state_ortho)
+        {
+            if (zox_valid(camera)) {
+                float4 camera_rotation = zox_getv(camera, Rotation3D);
+                float3 camera_euler = quaternion_to_euler(camera_rotation);
+                camera_euler.x = 0;
+                camera_euler.z = 0;
+                movement_rotation = euler_to_quaternion(camera_euler);
+                // Align Character to new move rotation!
+                zox_muter(character, Rotation3D, character_rotation_mut);
+                character_rotation_mut->value = movement_rotation;
 #ifdef zox_debug_player_movement_direction
-                    const Position3D *position3D = zox_get(character, Position3D)
-                    spawn_line3(world, position3D->value, float3_add(position3D->value, movement), debug_thickness, 34.0);
-                    float3 movement2 = float4_rotate_float3(face_direction, (float3) { 0, 0, -1 });
-                    spawn_line3(world, position3D->value, float3_add(position3D->value, movement2), debug_thickness, 34.0);
-                    zox_log(" > face_direction %fx%fx%fx%f\n", face_direction.x, face_direction.y, face_direction.z, face_direction.w);
+                const Position3D *position3D = zox_get(character, Position3D)
+                spawn_line3(world, position3D->value, float3_add(position3D->value, movement), debug_thickness, 34.0);
+                float3 movement2 = float4_rotate_float3(face_direction, (float3) { 0, 0, -1 });
+                spawn_line3(world, position3D->value, float3_add(position3D->value, movement2), debug_thickness, 34.0);
+                zox_log(" > face_direction %fx%fx%fx%f\n", face_direction.x, face_direction.y, face_direction.z, face_direction.w);
 #endif
-                }
             }
         } else {
             movement_rotation = character_rotation;

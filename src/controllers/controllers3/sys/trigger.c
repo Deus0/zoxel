@@ -12,22 +12,21 @@ zox_sys2(Player3DTriggerSystem) {
     zox_sys_begin();
     zox_sys_in(PlayerState);
     zox_sys_in(CharacterLink);
-    zox_sys_in(CameraLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
-        zox_sys_i(CharacterLink, character);
-        zox_sys_i(CameraLink, camera);
+        zox_sys_i(CharacterLink, character)
         if (state->value != zox_player_state_playing) {
             continue;
         }
-        if (!zox_valid(character->value) || !zox_has(character->value, Character3) || !zox_valid(camera->value)) {
+        entity camera = zox_get_link(world, e, Camera);
+        if (!zox_valid(character->value) || !zox_has(character->value, Character3) || !zox_valid(camera)) {
             continue;
         }
         if (zox_has(character->value, DisableMovement)) {
             continue;
         }
-        byte camera_state = zox_getv(camera->value, CameraState);
+        byte camera_state = zox_getv(camera, CameraState);
         if (camera_state != zox_camera_state_first_person) {
             continue;
         }

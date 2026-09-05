@@ -432,12 +432,8 @@ zox_sys2(Chunk3RaycastSystem) {
         }
         float3 ray_origin;
         float3 ray_normal;
-        byte has_camera = zox_has(e, CameraLink);
-        if (has_camera) {
-            zox_geter_value(e, CameraLink, entity, camera);
-            if (!zox_valid(camera)) {
-                continue;
-            }
+        entity camera = zox_get_link(world, e, Camera);
+        if (zox_valid(camera)) {
             ray_origin = zox_getv(camera, RaycastOrigin);
             ray_normal = zox_getv(camera, RaycastNormal);
         } else {
@@ -457,14 +453,26 @@ zox_sys2(Chunk3RaycastSystem) {
         data->depth = terrain_depth;
         if (dbg_log == 1) {
             if (data->result) {
-                zox_log("[%s] User Raycasted, Range [%f], Result [%i]", zox_getn(e), range, data->result);
+                zox_log("[%s] User Raycasted, Range [%f], Result [%i]",
+                    zox_getn(e),
+                    range,
+                    data->result);
             }
         }
         if (dbg_log == 2) {
             if (!data->result) {
-                zox_log("[%s] User Raycast Missed, Range [%f] has_camera [%i]", zox_getn(e), range, has_camera);
-                zox_log(" at [%fx%fx%f]", ray_origin.x, ray_origin.y, ray_origin.z);
-                zox_log(" to [%fx%fx%f]", ray_normal.x, ray_normal.y, ray_normal.z);
+                zox_log("[%s] User Raycast Missed, Range [%f] Camera [%s]",
+                    zox_getn(e),
+                    range,
+                    zox_getn(camera));
+                zox_log(" at [%fx%fx%f]",
+                    ray_origin.x,
+                    ray_origin.y,
+                    ray_origin.z);
+                zox_log(" to [%fx%fx%f]",
+                    ray_normal.x,
+                    ray_normal.y,
+                    ray_normal.z);
             }
         }
     }

@@ -18,7 +18,6 @@ void define_systems_render_textures(ecs* world) {
         [in] layouts.LayoutSizeDirty,
         [in] rendering.TextureSize,
         [in] rendering.TextureGPULink,
-        [in] cameras.CameraLink,
         [none] cameras.RenderTexture,
         [none] !core.Initialize
     );
@@ -26,7 +25,6 @@ void define_systems_render_textures(ecs* world) {
         RenderTextureInitializeSystem,
         zoxp_gpu_upload,
         [in] rendering.TextureSize,
-        [in] cameras.CameraLink,
         [in] rendering.TextureGPULink,
         [none] cameras.RenderTexture,
         [none] rendering.RenderTextureDirty,

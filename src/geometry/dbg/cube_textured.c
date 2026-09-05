@@ -16,7 +16,7 @@ void zox_dbg_spawn_cube_textured(ecs *world) {
         dbg_cube_textured = 0;
         return;
     }
-    entity camera = zox_getv(dbg_player, CameraLink);
+    entity camera = zox_get_link(world, dbg_player, Camera);
     if (!zox_valid(camera)) {
         return;
     }

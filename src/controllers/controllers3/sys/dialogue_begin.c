@@ -26,9 +26,12 @@ zox_sys2(DialogueBeginSystem) {
             continue;
         }
         zox_geter_value(player->value, CharacterLink, entity, character);
-        zox_geter_value(player->value, CameraLink, entity, camera);
+        entity camera = zox_get_link(world, player->value, Camera);
         entity canvas = zox_get_link(world, player->value, Canvas);
-        if (!zox_valid(character) || !zox_valid(camera) || !zox_valid(canvas)) {
+        if (!zox_valid(character) ||
+            !zox_valid(camera) ||
+            !zox_valid(canvas))
+        {
             continue;
         }
         zox_geter_value(camera, CameraState, byte, camera_state);
