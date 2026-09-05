@@ -54,11 +54,8 @@ zox_sys2(AuraDotSystem) {
                 byte was_poisoned = 0;
                 for (uint k = 0; k < dots_length; k++) {
                     entity dot = dots[k];
-                    if (!zox_has(dot, SkillLink)) {
-                        continue;
-                    }
-                    entity spawner = zox_getv(dot, SkillLink);
-                    if (spawner == e) {
+                    entity skill = zox_get_link(world, dot, Skill);
+                    if (skill == e) {
                         was_poisoned = 1;
                         break;
                     }
@@ -89,7 +86,7 @@ zox_sys2(AuraDotSystem) {
                         4,
                         float3_scale(bounds, 2),
                         colorr->value);
-                    zox_setv(particles, SkillLink, e);
+                    zox_link(world, particles, Skill, e);
                     zox_setv(e3, ParticlesEmitterLink, particles);
 #ifdef zox_debug_aoe_damage_system
                     spawn_line3(

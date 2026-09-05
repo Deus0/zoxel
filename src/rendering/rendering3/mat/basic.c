@@ -1,6 +1,3 @@
-entity shader_basic3D;
-entity material_basic3D;
-
 typedef struct {
     gint vertex_position;
     gint transform_matrix;
@@ -20,7 +17,7 @@ MaterialBasic3D create_MaterialBasic3D(guint material) {
     };
 }
 
-entity spawn_shader_basic3D(ecs *world) {
+entity spawn_shader_basic3(ecs *world) {
     byte shader_index = get_new_shader_source_index();
     char* vert = get_shader_source(world, "basic3D.vert");
     char* frag = get_shader_source(world, "basic3D.frag");
@@ -28,25 +25,40 @@ entity spawn_shader_basic3D(ecs *world) {
     shader_frags[shader_index] = frag;
     entity e = spawn_shader(world, shader_index);
     if (!e) {
-        zox_log_error("[shader_basic3D] failed to spawn");
+        zox_log_error("[shader_basic3] failed to spawn");
         return 0;
     }
-    zox_name("shader_basic3D");
+    zox_name("shader_basic3");
     return e;
 }
 
-entity spawn_material_basic3D(ecs *world) {
-    entity shader = spawn_shader_basic3D(world);
+entity spawn_material_basic3D(
+    ecs* world,
+    entity shader)
+{
     if (!shader) {
         return 0;
     }
     guint material;
     entity e = spawn_material(world, shader, &material);
     zox_name("material_basic3D");
-    zox_set(e, ShaderLink, { shader });
+    zox_setv(e, ShaderLink, shader);
     MaterialBasic3D attributes = create_MaterialBasic3D(material);
     zox_set_data(e, MaterialBasic3D, attributes);
-    shader_basic3D = shader;
-    material_basic3D = e;
+    return e;
+}
+
+entity spawn_shader_basic3_overlay(ecs *world) {
+    byte shader_index = get_new_shader_source_index();
+    char* vert = get_shader_source(world, "basic3D.vert");
+    char* frag = get_shader_source(world, "basic3_overlay.frag");
+    shader_verts[shader_index] = vert;
+    shader_frags[shader_index] = frag;
+    entity e = spawn_shader(world, shader_index);
+    if (!e) {
+        zox_loge("[shader_basic3_overlay] failed to spawn");
+        return 0;
+    }
+    zox_name("shader_basic3_overlay");
     return e;
 }

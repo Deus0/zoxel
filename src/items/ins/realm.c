@@ -1,4 +1,10 @@
-entity spawn_realm_item(ecs* world, entity parent, entity prefab, const char* name, const char* tname) {
+entity spawn_realm_item(
+    ecs* world,
+    entity parent,
+    entity prefab,
+    const char* name,
+    const char* tname)
+{
     entity e = zox_ins_named(world, prefab);
     zox_make_prefab(e);
     if (name) {
@@ -15,7 +21,11 @@ entity spawn_realm_item(ecs* world, entity parent, entity prefab, const char* na
     return e;
 }
 
-entity spawn_realm_item2(ecs* world, entity prefab, const char* name) {
+entity spawn_realm_item2(
+    ecs* world,
+    entity prefab,
+    const char* name)
+{
     entity e = zox_ins_named(world, prefab);
     zox_make_prefab(e);
     if (name) {

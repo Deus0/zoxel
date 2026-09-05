@@ -78,7 +78,11 @@ void zox_tst_render_texture(ecs *world, ClickEventData data) {
     // our scene
     {
         float3 cube_position = float3_add(cposition, quaternion_rotate_vector(crotation, spawn_position));
-        entity cube = spawn_cube(world, prefab_cube, cube_position, cube_scale);
+        entity cube = spawn_cube(
+            world,
+            prefab_cube,
+            cube_position,
+            cube_scale);
         zox_set_unique_name(cube, "dbg_render_texture_cube");
         add_eternal_euler(world, cube, (float3) { 24, 24, 0 });
         zox_setv(cube, Color, color_green);
@@ -87,7 +91,11 @@ void zox_tst_render_texture(ecs *world, ClickEventData data) {
         }
         dbg_render_cube = cube;
         {
-            entity cube = spawn_cube(world, prefab_cube, float3_zero, 0.09f);
+            entity cube = spawn_cube(
+                world,
+                prefab_cube,
+                float3_zero,
+                0.09f);
             add_eternal_euler(world, cube, (float3) { -4, -12, 0 });
             zox_set(cube, LocalPosition3D, {{ orbit_range, 0, 0 }});
             zox_setv(cube, LocalScale1, 0.5f);
@@ -98,7 +106,11 @@ void zox_tst_render_texture(ecs *world, ClickEventData data) {
             }
         }
         {
-            entity cube = spawn_cube(world, prefab_cube, float3_zero, 0.1f);
+            entity cube = spawn_cube(
+                world,
+                prefab_cube,
+                float3_zero,
+                0.1f);
             add_eternal_euler(world, cube, (float3) { 4, 16, 0 });
             zox_set(cube, LocalPosition3D, {{ 0, orbit_range, 0 }});
             zox_setv(cube, LocalScale1, 0.3f);

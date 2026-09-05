@@ -8,11 +8,14 @@ void toggle_autoroam(ecs *world) {
     if (!zox_valid(player)) {
         return;
     }
-    zox_geter_value(player, CharacterLink, entity, c);
-    if (!zox_valid(c)) {
+    entity character = zox_get_link(world, player, Character);
+    if (!zox_valid(character)) {
         return;
     }
-    byte autoplayer = !zox_has(c, Behaviour); // flips mode
-    zox_log("Character Auto [%s]", autoplayer ? "Enabled" : "Disabled");
-    set_character3_npc(world, c, autoplayer);
+    byte autoplayer = !zox_has(character, Behaviour); // flips mode
+    zox_log("Character Auto [%s]",
+        autoplayer ?
+            "Enabled" :
+            "Disabled");
+    set_character3_npc(world, character, autoplayer);
 }

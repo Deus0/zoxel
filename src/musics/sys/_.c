@@ -1,9 +1,7 @@
 #include "play.c"
 #include "generate.c"
-realm_clear_system(PlaylistLinks);
 
 void zox_systems_music(ecs* world) {
-    realm_clear_systemd(musics, PlaylistLinks);
     zox_system_1(
         MusicGenerateSystem,
         zoxp_spawn,

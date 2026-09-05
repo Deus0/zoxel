@@ -9,7 +9,6 @@ entity spawn_prefab_chunk_terrain(
     zox_add(e, StreamedChunk);
     zox_add(e, DisableTransform);
     zox_setv(e, Seed, 0);
-    zox_setv(e, TunkLink, 0);
     zox_set(e, ChunkEntities, { 0 });
     prefab_add_lights3(world, e, 0);
     // Events

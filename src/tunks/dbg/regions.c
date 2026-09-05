@@ -3,21 +3,22 @@ zox_sys2(RegionTextureSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TunkLink);
     zox_sys_out(GenerateTexture);
     zox_sys_out(TextureData);
     zox_sys_out(TextureSize);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(TunkLink, tunk);
         zox_sys_o(GenerateTexture, generate);
         zox_sys_o(TextureData, data);
         zox_sys_o(TextureSize, size);
         if (generate->value != zox_generate_texture_run) {
             continue;
         }
+        entity tunk = zox_get_link(world, e, Tunk);
 #ifdef zox_safety_checks
-        if (!zox_valid(tunk->value) || !zox_has(tunk->value, GenerateTunk) || !zox_has(tunk->value, RegionLink)) {
+        if (!zox_valid(tunk) ||
+            !zox_has(tunk, GenerateTunk))
+        {
             zox_loge("Invalid Tunk in Region Maps");
             size->value = int2_single(0);
             resize_TextureData(data, size->value.x * size->value.y);
@@ -25,14 +26,14 @@ zox_sys2(RegionTextureSystem) {
             continue;
         }
 #endif
-        entity region = zox_getv(tunk->value, RegionLink);
+        entity region = zox_get_link(world, tunk, Region);
 #ifdef zox_safety_checks
         if (!zox_valid(region) || !zox_has(region, Seed)) {
             zox_loge("Invalid [Region] for Texture [%s]", zox_get_name(e));
             continue;
         }
 #endif
-        byte lod = zox_getv(tunk->value, TunkLod);
+        byte lod = zox_getv(tunk, TunkLod);
         byte length = octree_size(lod);
         size->value = int2_single(length);
         lint region_seed = zox_getv(region, Seed);

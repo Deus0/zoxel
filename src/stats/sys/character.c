@@ -5,7 +5,6 @@ void spawn_base_stats(
     ecs* world,
     entity e,
     entity realm)
-    // const StatLinks* stats)
 {
     entity realm_soul = 0;
     entity realm_health = 0;
@@ -97,7 +96,6 @@ zox_sys2(CharacterStatsSystem) {
             continue;
         }
         // Collect Realm Stats
-        // zox_geter(realm->value, StatLinks, stats);
         spawn_base_stats(world, e, realm->value);
     }
 } zox_sys_end(CharacterStatsSystem);

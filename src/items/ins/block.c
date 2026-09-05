@@ -25,7 +25,7 @@ entity spawn_block_item(
     // Links
     zox_set_parent(world, e, parent);
     // actually for grass we want to set itemLink differently
-    zox_setv(block, ItemLink, e);
+    // zox_link(world, block, Item, e);
     entity texture = 0;
     if (zox_has(block, TextureLinks)) {
         zox_geter(block, TextureLinks, textures);
@@ -45,12 +45,13 @@ entity spawn_block_item(
     }
     zox_setv(e, TextureLink, texture);
     // zox_set_name(item, zox_get_name(block));
-    const char* meta_name = zox_get_name(block);
+    const char* meta_name = zox_getn(block);
     zox_set_unique_name(e, meta_name);
     if (dbg_log) {
-        zox_log("+ New Block Item [%s] Texture [%s] Meta [%s]", voxel_name->value, zox_get_name(texture), meta_name);
-        // convert_zext_to_text(voxel_name->value, voxel_name->length), textures->length)
+        zox_log("+ New Block Item [%s] Texture [%s] Meta [%s]",
+            voxel_name->value,
+            zox_getn(texture),
+            meta_name);
     }
-    // zox_log(" + block item [%s] [%s]\n", zox_get_name(block), zox_get_name(e))
     return e;
 }

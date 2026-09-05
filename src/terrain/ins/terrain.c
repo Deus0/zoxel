@@ -49,8 +49,7 @@ entity spawn_terrain(
     zox_setv(realm, TerrainLink, e);
     if (tilemap) {
         zox_setv(e, TilemapLink, tilemap);
-        // did tilemap have a voxlink previously
-        zox_setv(tilemap, VoxLink, e)    // link tilemap to terrain
+        zox_link(world, tilemap, Terrain, e);
     }
     local_terrain = e;
     return e;

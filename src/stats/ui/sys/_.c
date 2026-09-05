@@ -9,14 +9,12 @@ void define_systems_stats_ui(ecs *world) {
     zox_system(
         StatbarSystem,
         zoxp_update,
-        [in] StatLink,
         [out] ui.BarLevel,
         [none] Statbar
     );
     zox_system(
         StatTextSystem,
         zoxp_update,
-        [in] StatLink,
         [out] texts.TextData,
         [out] texts.TextDirty,
         [none] StatsLabel

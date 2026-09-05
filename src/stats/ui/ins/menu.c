@@ -1,6 +1,6 @@
 entity spawn_player_menu_stats(ecs* world, entity player) {
     entity canvas = zox_get_link(world, player, Canvas);
-    zox_geter_value(player, CharacterLink, entity, character);
+    entity character = zox_get_link(world, player, Character);
     byte label_font_size = 5 * ui_scale;
     entity e = spawn_datagrid(
         world,

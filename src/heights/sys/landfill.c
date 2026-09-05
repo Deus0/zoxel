@@ -19,14 +19,12 @@ zox_sys2(LandfillChunkSystem) {
     short stone_height = terrain_stone_height * render_distance_y;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TunkLink);
     zox_sys_in(ChunkPosition);
     zox_sys_in(NodeDepth);
     zox_sys_out(GenerateChunk);
     zox_sys_out(VoxelNode);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(TunkLink, tunk);
         zox_sys_i(ChunkPosition, chunk_position);
         zox_sys_i(NodeDepth, depth);
         zox_sys_o(GenerateChunk, generate);
@@ -53,12 +51,13 @@ zox_sys2(LandfillChunkSystem) {
         }
 #endif
         zox_geter(realm, BiomeLinks, realm_biomes);
+        entity tunk = zox_get_link(world, e, Tunk);
 #ifdef zox_safety_checks
         if (!realm_biomes->length) {
             zox_loge("No Biomes on Realm");
             continue;
         }
-        if (!zox_valid(tunk->value)) {
+        if (!zox_valid(tunk)) {
             zox_loge("[Landfill] ]nvalid [Tunk] at [%ix%ix%i]",
                 chunk_position->value.x,
                 chunk_position->value.y,
@@ -67,10 +66,10 @@ zox_sys2(LandfillChunkSystem) {
         }
 #endif
         // If still generating, we wait
-        if (zox_getv(tunk->value, GenerateTunk)) {
+        if (zox_getv(tunk, GenerateTunk)) {
             continue;
         }
-        byte tunk_lod = zox_getv(tunk->value, TunkLod);
+        byte tunk_lod = zox_getv(tunk, TunkLod);
         byte build_depth = depth->value;
         if (depth->value != tunk_lod) {
             build_depth = tunk_lod;
@@ -84,14 +83,14 @@ zox_sys2(LandfillChunkSystem) {
             // continue;
         }
         // zox_log("Chunk Depth IS Tunk Lod [%i] != [%i]", depth->value, tunk_lod);
-        zox_geter(tunk->value, BiomeMap, biome_map);
+        zox_geter(tunk, BiomeMap, biome_map);
 #ifdef zox_safety_checks
         if (!zox_disable_biomes && !biome_map->length) {
             zox_loge("Invalid [Tunk] [biome_map] at [%ix%ix%i]", chunk_position->value.x, chunk_position->value.y, chunk_position->value.z);
             continue;
         }
 #endif
-        zox_geter(tunk->value, HeightMap, height_map);
+        zox_geter(tunk, HeightMap, height_map);
 #ifdef zox_safety_checks
         if (!height_map->length) {
             zox_loge("Invalid [Tunk] [height_map] at [%ix%ix%i]", chunk_position->value.x, chunk_position->value.y, chunk_position->value.z);

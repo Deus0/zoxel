@@ -47,7 +47,7 @@ zox_sys2(ItemDropSystem) {
                     world,
                     position->value);
             }
-            zox_set(e2, ItemLink, { meta });
+            zox_link(world, e2, Item, meta);
             if (zox_has(user_item, Quantity)) {
                 byte quantity = zox_getv(user_item, Quantity);
                 zox_setv(e2, Quantity, quantity);

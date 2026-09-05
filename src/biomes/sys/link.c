@@ -10,27 +10,28 @@ zox_sys2(BiomeLinkSystem) {
     zox_sys_in(StreamDirty2);
     zox_sys_in(StreamPosition2);
     zox_sys_in(StreamLink);
-    zox_sys_out(TunkLink);
     zox_sys_out(BiomeLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(StreamDirty2, dirty);
         zox_sys_i(StreamPosition2, position);
         zox_sys_i(StreamLink, terrain);
-        zox_sys_o(TunkLink, tunk_link);
         zox_sys_o(BiomeLink, blink);
-        if (dirty->value != zox_dirty_active && zox_valid(tunk_link->value)) {
+        if (dirty->value != zox_dirty_active) {
             continue;
         }
+        /*if (zox_valid(tunk)) {
+            continue;
+        }*/
         if (!zox_valid(terrain->value)) {
             continue;
         }
-        #ifdef zox_safety_checks
+#ifdef zox_safety_checks
         if (!zox_has(terrain->value, TunkLinks)) {
             zox_loge("Terrain [%s] has no TunkLinks", zox_getn(terrain->value));
             continue;
         }
-        #endif
+#endif
         zox_geter(terrain->value, TunkLinks, tunks);
         entity tunk = int2_hashmap_get(tunks->value, position->value);
         if (!zox_valid(tunk)) {
@@ -41,21 +42,29 @@ zox_sys2(BiomeLinkSystem) {
             zox_loge("Tunk [%s] has no [BiomeLink]", zox_getn(tunk));
             continue;
         }
-        #endif
-        if (tunk != tunk_link->value) {
+#endif
+        entity old_tunk = zox_get_link(world, e, Tunk);
+        if (tunk != old_tunk) {
             entity biome = zox_getv(tunk, BiomeLink);
             if (!zox_valid(biome)) {
                 continue;
             }
-            #ifdef zox_safety_checks
+#ifdef zox_safety_checks
             if (!zox_has(biome, BiomeSkyColor)) {
                 zox_loge("Biome [%s] has no [BiomeSkyColor]", zox_getn(biome));
                 continue;
             }
-            #endif
-            tunk_link->value = tunk;
+#endif
+            if (zox_valid(old_tunk)) {
+                zox_unlink(world, e, Tunk, old_tunk);
+            }
+            zox_link(world, e, Tunk, tunk);
+            // tunk_link->value = tunk;
             blink->value = biome;
-            zox_logv("Inside new Biome [%s]", blink->value ? zox_get_name(blink->value) : "None");
+            zox_logv("Inside new Biome [%s]",
+                blink->value ?
+                    zox_getn(blink->value) :
+                    "None");
             // Set Sky Colors
             color_rgb sky_color = zox_getv(biome, BiomeSkyColor);
             game_sky_color = sky_color;

@@ -2,11 +2,9 @@ zox_sys2(StatsRealmSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
-    //zox_sys_out(StatLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateRealm, state);
-        //zox_sys_o(StatLinks, stats);
         if (state->value != zox_generate_realm_stats) {
             continue;
         }
@@ -48,22 +46,6 @@ zox_sys2(StatsRealmSpawnSystem) {
             "luck",
             "luck",
             color_rgb_white);
-        /*add_to_StatLinks(stats, soul);
-        add_to_StatLinks(stats, health);
-        add_to_StatLinks(stats, energy);
-        add_to_StatLinks(stats, mana);
-        add_to_StatLinks(stats, health_regen);
-        add_to_StatLinks(stats, energy_regen);
-        add_to_StatLinks(stats, mana_regen);
-        add_to_StatLinks(stats, strength);
-        add_to_StatLinks(stats, vitality);
-        add_to_StatLinks(stats, endurance);
-        add_to_StatLinks(stats, intelligence);
-        add_to_StatLinks(stats, wisdom);
-        add_to_StatLinks(stats, agility);
-        add_to_StatLinks(stats, dexterity);
-        add_to_StatLinks(stats, charm);
-        add_to_StatLinks(stats, luck);*/
         // Jobs
         // create regen stat
         // stats.value[i++] = spawn_stat_level_t(world, "farming", "farming", color_rgb_gray);

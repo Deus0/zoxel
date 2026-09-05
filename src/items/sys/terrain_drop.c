@@ -48,14 +48,11 @@ zox_sys2(TerrainItemDropSystem) {
             }
             entity block = blocks->value[voxel - 1];
             if (!zox_valid(block)) {
-                zox_loge("TerrainDrop: Block Invalid [%i]", voxel - 1);
+                zox_loge("TerrainDrop: Block Invalid [%i]",
+                    voxel - 1);
                 continue;
             }
-            if (!zox_has(block, ItemLink)) {
-                zox_log_error("block [%s] has no ItemLink", zox_getn(block));
-                continue;
-            }
-            entity block_item = zox_getv(block, ItemLink);
+            entity block_item = zox_get_link(world, block, Item);
             if (!zox_valid(block_item)) {
                 zox_loge("block [%s] has no valid item", zox_get_name(block));
             }
@@ -70,7 +67,7 @@ zox_sys2(TerrainItemDropSystem) {
                 block,
                 item_pickup_scale);
             if (pickup) {
-                zox_setv(pickup, ItemLink, block_item);
+                zox_link(world, pickup, Item, block_item);
             }
             if (dbg_log) {
                 zox_log("Spawned block pickup at [%fx%fx%f] scale [%f]", positionf.x, positionf.y, positionf.z, scale->value);

@@ -29,7 +29,6 @@ zox_sys2(CharacterBodySpawnSystem) {
             realm_items,
             256,
             zox_id(Item));
-        // zox_geter(realm->value, ItemLinks, realm_items);
         // pick core
         //bsize->value = byte3_zero;
         // We can add first to the character then set body dirty
@@ -97,7 +96,10 @@ zox_sys2(CharacterBodySpawnSystem) {
             zox_set(eslot_head, DataLink, { head });
             // Sub Slots
             byte hat_position_y = chest_width / 5;
-            entity eslot_hat = spawn_equip_slot(world, eslot_head, body_anchor_top);
+            entity eslot_hat = spawn_equip_slot(
+                world,
+                eslot_head,
+                body_anchor_top);
             zox_set(eslot_hat, PartOffset, {{ 0, -hat_position_y, 0 }});
             add_tag_hat_slot(world, eslot_hat);
         }

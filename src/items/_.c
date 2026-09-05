@@ -20,5 +20,5 @@ void import_items(ecs* world) {
     define_components_items(world);
     define_systems_items(world);
     zox_import_module(ItemsUI);
-    add_hook_spawn_prefabs(spawn_prefabs_items);
+    add_hook_spawn_prefabs(zox_prefabs_items);
 }

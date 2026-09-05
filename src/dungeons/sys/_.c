@@ -28,7 +28,6 @@ void zox_systems_dungeons(ecs* world) {
         DungeonMapSystem,
         zoxp_update,
         [in] tunks.TunkLod,
-        [in] regions.RegionLink,
         [in] tunks.TunkPosition,
         [in] tunks.BiomeMap,
         [out] tunks.GenerateTunk,
@@ -43,7 +42,6 @@ void zox_systems_dungeons(ecs* world) {
         zoxp_update,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkPosition,
-        [in] tunks.TunkLink,
         [out] chunks.GenerateChunk,
         [out] chunks3.VoxelNode,
         [none] terrains.TerrainChunk

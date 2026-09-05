@@ -1,6 +1,5 @@
 // Vodes3 are our Voxel Entities in the World!
 
-float block_damage_overlay_buffer = 1.08f;
 byte block_vox_render_at_lod = 0;
 #include "com/_.c"
 #include "hok/_.c"

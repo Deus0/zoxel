@@ -4,12 +4,10 @@ zox_sys2(ItemsRealmSpawnSystem) {
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
     zox_sys_in(BlockLinks);
-    // zox_sys_out(ItemLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateRealm, state);
         zox_sys_i(BlockLinks, blocks);
-        // zox_sys_o(ItemLinks, items);
         if (state->value != zox_generate_realm_items) {
             continue;
         }
@@ -20,7 +18,7 @@ zox_sys2(ItemsRealmSpawnSystem) {
         if (dbg_log) {
             zox_log("Spawning [%i] Block Items on Realm", blocks->length);
         }
-        entity soil_item = 0;
+        entity previous_soil_item = 0;
         for (int j = 0; j < blocks->length; j++) {
             entity block = blocks->value[j];
             if (!zox_valid(block)) {
@@ -32,12 +30,15 @@ zox_sys2(ItemsRealmSpawnSystem) {
                 e,
                 block,
                 dbg_log);
-            // add_to_ItemLinks(items, item);
             // NOTE: If soil grass, just use last soil item in list (should be before it)
+            entity drop_item = item;
+            if (zox_has(block, BlockSoilGrass)) {
+                drop_item = previous_soil_item;
+            }
+            // link to drop item
+            zox_link(world, block, Item, drop_item);
             if (zox_has(block, BlockSoil)) {
-                soil_item = item;
-            } else if (zox_has(block, BlockSoilGrass)) {
-                zox_set(block, ItemLink, { soil_item });
+                previous_soil_item = item;
             }
         }
         zox_logv("Realm [items] spawned");

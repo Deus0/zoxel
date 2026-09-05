@@ -1,4 +1,4 @@
-#define realm_clear_system(T)\
+/*#define realm_clear_system(T)\
 zox_sys2(T##RealmClearSystem) {\
     zox_sys_world();\
     zox_sys_begin();\
@@ -30,4 +30,4 @@ zox_system(\
     [in] realms.GenerateRealm,\
     [out] M.T,\
     [none] realms.Realm\
-)
+)*/

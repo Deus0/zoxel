@@ -39,7 +39,6 @@ zox_sys2(CharacterPlayerEquipsSystem) {
             realm_items,
             256,
             zox_id(Item));
-        //zox_geter(realm->value, ItemLinks, realm_items);
         entity chest_slot = zox_get_child_by_id(
             world,
             e,

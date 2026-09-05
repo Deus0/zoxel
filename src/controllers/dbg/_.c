@@ -5,7 +5,7 @@ uint zox_dbg_ui_player_character(ecs *world, entity player, char *buffer, uint s
         index += snprintf(buffer + index, size - index, "Invalid player\n");
         return index;
     }
-    entity character = zox_getv(player, CharacterLink);
+    entity character = zox_get_link(world, player, Character);
     if (zox_valid(character)) {
         index += snprintf(buffer + index, size - index, "Player [%s] Canvas [%s]\n", zox_get_name(player), zox_get_name(character));
         return zox_dbg_ui_hierarchy(world, character, buffer, size, index, 0);

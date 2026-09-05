@@ -19,7 +19,7 @@ uint zox_dbg_label_character_links(
     uint size,
     uint index)
 {
-    entity e = zox_getv(player, CharacterLink);
+    entity e = zox_get_link(world, player, Character);
     if (!zox_valid(e)) {
         return index;
     }
@@ -27,8 +27,12 @@ uint zox_dbg_label_character_links(
     float3 euler = zox_getv(e, Euler);
     entity camera = zox_get_link(world, e, Camera);
     entity chunk = zox_getv(e, ChunkLink);
-    entity tunk = zox_valid(chunk) ? zox_getv(chunk, TunkLink) : 0;
-    entity region = zox_valid(tunk) ? zox_getv(tunk, RegionLink) : 0;
+    entity tunk = zox_valid(chunk) ?
+        zox_get_link(world, chunk, Tunk) :
+        0;
+    entity region = zox_valid(tunk) ?
+        zox_get_link(world, tunk, Region) :
+        0;
     // Character
     index += snprintf(buffer + index, size - index,
         "Character [%s]\n", zox_get_name(e));
@@ -156,10 +160,10 @@ uint zox_dbg_label_inside_chunk(
         return index;
     }
     entity tunk = zox_valid(chunk) ?
-        zox_getv(chunk, TunkLink) :
+        zox_get_link(world, chunk, Tunk) :
         0;
     entity region = zox_valid(tunk) ?
-        zox_getv(tunk, RegionLink) :
+        zox_get_link(world, tunk, Region) :
         0;
     index += snprintf(buffer + index, size - index,
         "Inside Chunk [%s]\n",
@@ -248,7 +252,7 @@ uint zox_dbg_label_towns(
     uint size,
     uint index)
 {
-    entity character = zox_getv(player, CharacterLink);
+    entity character = zox_get_link(world, player, Character);
     if (!zox_valid(character)) {
         return index;
     }
@@ -256,8 +260,12 @@ uint zox_dbg_label_towns(
     if (!zox_valid(chunk)) {
         return index;
     }
-    entity tunk = zox_valid(chunk) ? zox_getv(chunk, TunkLink) : 0;
-    entity region = zox_valid(tunk) ? zox_getv(tunk, RegionLink) : 0;
+    entity tunk = zox_valid(chunk) ?
+        zox_get_link(world, chunk, Tunk) :
+        0;
+    entity region = zox_valid(tunk) ?
+        zox_get_link(world, tunk, Region) :
+        0;
     entity terrain = zox_get_parent(world, chunk);
     // Character
     float3 position = zox_getv(character, Position3D);

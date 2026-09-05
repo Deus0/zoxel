@@ -9,7 +9,7 @@ entity spawn_prefab_cube_textured(ecs *world, entity prefab) {
     // zox_prefab_set(e, Seed, { 666 });
     // zox_prefab_set(e, GenerateTexture, { zox_generate_texture_run });
     // add_noise_texture(world, e);
-    zox_remove(e, MeshBasic3D);
+    zox_remove(e, MeshBasic3);
     zox_prefab_set(e, MaterialTextured3D, { 0 });
     // Texture
     zox_add(e, Texture);

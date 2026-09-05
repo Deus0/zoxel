@@ -7,14 +7,12 @@ zox_sys2(TownWallsSystem) {
     zox_sys_begin();
     zox_sys_in(NodeDepth);
     zox_sys_in(ChunkPosition);
-    zox_sys_in(TunkLink);
     zox_sys_out(GenerateChunk);
     zox_sys_out(VoxelNode);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(ChunkPosition, cposition);
-        zox_sys_i(TunkLink, tunk);
         zox_sys_o(GenerateChunk, generate);
         zox_sys_o(VoxelNode, voctree);
         if (generate->value != zox_generate_terrain_towns) {
@@ -39,8 +37,15 @@ zox_sys2(TownWallsSystem) {
             continue;
         }
 #endif
+        entity tunk = zox_get_link(world, e, Tunk);
+#ifdef zox_safety_checks
+        if (!zox_valid(tunk)) {
+            zox_loge("[Towns] Invalid [Tunk] at [%ix%ix%i]", cposition->value.x, cposition->value.y, cposition->value.z);
+            continue;
+        }
+#endif
+        byte tunk_lod = zox_getv(tunk, TunkLod);
         byte terrain_depth = zox_getv(terrain, NodeDepth);
-        byte tunk_lod = zox_getv(tunk->value, TunkLod);
         byte build_depth = depth->value;
         if (depth->value != tunk_lod) {
             build_depth = tunk_lod;
@@ -78,15 +83,9 @@ zox_sys2(TownWallsSystem) {
         byte gate_height = 6; // rand_range(4, 8);
         byte wall_height = 8; // rand_range(4, 8);
         byte home_height = 6; // rand_range(4, 8);
-#ifdef zox_safety_checks
-        if (!zox_valid(tunk->value)) {
-            zox_loge("[Towns] Invalid [Tunk] at [%ix%ix%i]", cposition->value.x, cposition->value.y, cposition->value.z);
-            continue;
-        }
-#endif
-        zox_geter(tunk->value, BiomeMap, biome_map);
-        zox_geter(tunk->value, HeightMap, height_map);
-        zox_geter(tunk->value, TownMap, town_map);
+        zox_geter(tunk, BiomeMap, biome_map);
+        zox_geter(tunk, HeightMap, height_map);
+        zox_geter(tunk, TownMap, town_map);
 #ifdef zox_safety_checks
         if (!town_map->length) {
             zox_log_error("Invalid [Tunk] [town_map] at [%ix%ix%i]", cposition->value.x, cposition->value.y, cposition->value.z);

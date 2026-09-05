@@ -2,17 +2,16 @@
 zox_sys2(PlayerDialogueSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(CharacterLink);
     zox_sys_out(PlayerState);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(CharacterLink, character);
         zox_sys_o(PlayerState, state);
         /*entity canvas = zox_get_link(world, e, Canvas);
         if (!zox_valid(canvas)) {
             // zox_logw("Canvas is missing from Player");
             continue;
         }*/
+        entity character = zox_get_link(world, e, Character);
         if (state->value == zox_player_state_dialogue_begin) {
             entity camera = zox_get_link(world, e, Camera);
             state->value = zox_player_state_dialogue_active;
@@ -33,7 +32,7 @@ zox_sys2(PlayerDialogueSystem) {
             if (mouse) {
                 zox_setv(mouse, MouseLock, 0);
             }
-            zox_add(character->value, DisableMovement);
+            zox_add(character, DisableMovement);
         } else if (state->value == zox_player_state_dialogue_end) {
             state->value = zox_player_state_play_trigger; // zox_player_state_playing;
             zox_setv(e, PlayerStateDirty, 1);
@@ -43,7 +42,7 @@ zox_sys2(PlayerDialogueSystem) {
             if (mouse) {
                 zox_setv(mouse, MouseLock, 1);
             }
-            zox_remove(character->value, DisableMovement);
+            zox_remove(character, DisableMovement);
         }
     }
 } zox_sys_end(PlayerDialogueSystem);

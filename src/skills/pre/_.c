@@ -11,13 +11,10 @@ entity prefab_skill_shoot;
 void spawn_prefabs_skills(ecs* world) {
     prefab_skill = spawn_prefab_skill(world);
     prefab_poison = spawn_prefab_poison(world);
-    prefab_skill_melee = spawn_prefab_melee(world, prefab_skill);
-    prefab_skill_shoot = spawn_prefab_shoot(world, prefab_skill);
-    // Link to Prior Modules
-    /*if (prefab_realm) {
-        zox_prefab_add(prefab_realm, SkillLinks);
-    }*/
-    /*if (prefab_character3) {
-        zox_prefab_character_add(SkillLinks);
-    }*/
+    prefab_skill_melee = spawn_prefab_melee(
+        world,
+        prefab_skill);
+    prefab_skill_shoot = spawn_prefab_shoot(
+        world,
+        prefab_skill);
 }

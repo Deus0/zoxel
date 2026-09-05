@@ -9,7 +9,7 @@
         index += snprintf(buffer + index, size - index, "! invalid player\n");
         return index;
     }
-    zox_geter(player, CharacterLink, characterLink)
+    entity character = zox_get_link(world, player, Character);
     if (!zox_valid(characterLink->value)) {
         index += snprintf(buffer + index, size - index, "[%s] has no character\n", zox_get_name(player));
         return index;

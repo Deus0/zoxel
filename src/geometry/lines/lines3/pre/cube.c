@@ -41,7 +41,14 @@ entity spawn_cube_lines(ecs *world, float3 position, float3 extents, float thick
     return e;
 }
 
-entity spawn_cube_lines_rgba(ecs* world, float3 position, float3 extents, float thickness, color fill, double life_time) {
+entity spawn_cube_lines_rgba(
+    ecs* world,
+    float3 position,
+    float3 extents,
+    float thickness,
+    color fill,
+    double life_time)
+{
     zox_instance(prefab_cube_lines);
     // zox_name("cube_lines")
     zox_set(e, Position3D, { position });

@@ -1,9 +1,14 @@
-void quest_on_slay(ecs* world, entity e, entity killer, entity slayed) {
+void quest_on_slay(
+    ecs* world,
+    entity e,
+    entity killer,
+    entity slayed)
+{
     if (!zox_has(e, SlayQuest)) {
         zox_logv("Quest not a SlayQuest [%s]", zox_get_name(e));
         return;
     }
-    zox_geter_value(e, CharacterLink, entity, target);
+    entity target = zox_get_link(world, e, Character);
     entity meta = zox_getp(world, slayed);
     if (target == meta) {
         zox_muter(e, QuestValue, value);
@@ -43,7 +48,6 @@ zox_sys2(SlaySystem) {
             enemy_quests,
             zox_children_capacity,
             zox_id(Quest));
-        // zox_geter(enemy->value, QuestLinks, enemy_quests);
         for (uint j = 0; j < enemy_quests_length; j++) {
             entity quest = enemy_quests[j];
             quest_on_slay(

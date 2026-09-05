@@ -51,3 +51,13 @@ static inline void zox_gpu_disable_polyoffset() {
 static inline void zox_gpu_polyoffset(float a, float b) {
     glPolygonOffset(a, b);
 }
+
+static inline void zox_gpu_enable_polyoffset_lines() {
+    glEnable(GL_POLYGON_OFFSET_LINE);
+    // GLenum error = glGetError();
+    // printf("polygon offset line error: 0x%x\n", error);
+}
+
+static inline void zox_gpu_disable_polyoffset_lines() {
+    glDisable(GL_POLYGON_OFFSET_LINE);
+}

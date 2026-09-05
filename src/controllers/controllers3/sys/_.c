@@ -20,7 +20,6 @@ void define_systems_controllers3(ecs *world) {
         Player3DMoveSystem,
         zoxp_update,
         [in] players.PlayerState,
-        [in] characters.CharacterLink,
         [none] players.Player
     );
     zox_system(
@@ -28,14 +27,12 @@ void define_systems_controllers3(ecs *world) {
         zoxp_update,
         [in] players.PlayerState,
         [in] inputs.DeviceMode,
-        [in] characters.CharacterLink,
         [none] players.Player
     );
     zox_system(
         Player3RotateSystem,
         zoxp_update,
         [in] players.PlayerState,
-        [in] characters.CharacterLink,
         [none] players.Player
     );
     zox_system(
@@ -43,7 +40,6 @@ void define_systems_controllers3(ecs *world) {
         zoxp_update,
         [in] players.PlayerState,
         [in] inputs.DeviceMode,
-        [in] characters.CharacterLink,
         [none] players.Player
     );
     zox_system_1(
@@ -56,21 +52,18 @@ void define_systems_controllers3(ecs *world) {
         Player3DTriggerSystem,
         zoxp_update,
         [in] players.PlayerState,
-        [in] characters.CharacterLink,
         [none] players.Player
     );
     zox_system_1(
         PlayerToggleCameraSystem,
         zoxp_spawn,
         [in] players.PlayerState,
-        [in] characters.CharacterLink,
         [none] players.Player
     );
     zox_system_1(
         FreeRoamToggleSystem,
         zoxp_spawn,
         [in] players.PlayerState,
-        [in] characters.CharacterLink,
         [none] players.Player
     );
     zox_system(
@@ -99,7 +92,6 @@ void define_systems_controllers3(ecs *world) {
     zox_system_1(
         PlayerDialogueSystem,
         zoxp_spawn, // zoxp_update,
-        [in] characters.CharacterLink,
         [out] players.PlayerState
     );
     // NOTE: Spawns animation events

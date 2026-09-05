@@ -39,36 +39,3 @@ zox_sys2(StatIconLabelSystem) {
         }
     }
 } zox_sys_end(StatIconLabelSystem);
-
-/*zox_sys2(StatIconLabelSystem) {
-    int label_text_count = 64;
-    zox_sys_world();
-    zox_sys_begin();
-    zox_sys_in(StatLink);
-    zox_sys_out(TextData);
-    zox_sys_out(TextDirty);
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_i(StatLink, stat);
-        zox_sys_o(TextData, data);
-        zox_sys_o(TextDirty, dirty);
-
-        if (!zox_valid(e2)) {
-            continue;
-        }
-
-        zox_geter_value(e2, StatDirty, byte, stat_dirty);
-
-        if (data->length && stat_dirty != zox_dirty_active) {
-            continue;
-        }
-
-        zox_geter(e2, StatValue, statValue);
-        int value = floor(statValue->value);
-
-        // set text of stat label
-        if (!is_zext(data, text)) {
-            set_zext(data, text);
-            dirty->value = zox_dirty_trigger;
-        }
-    }
-} zox_sys_end(StatIconLabelSystem);*/

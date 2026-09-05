@@ -6,18 +6,17 @@ zox_sys2(FlatlandSystem) {
     zox_sys_begin();
     zox_sys_in(Generate);
     zox_sys_in(ChunkPosition);
-    zox_sys_in(VoxLink);
     zox_sys_out(VoxelNode);
     zox_sys_out(NodeDepth);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Generate, generate);
         zox_sys_i(ChunkPosition, positionc);
-        zox_sys_i(VoxLink, terrain);
         zox_sys_o(VoxelNode, node);
         zox_sys_o(NodeDepth, node_depth);
         if (generate->value != zox_dirty_active) {
             continue;
         }
+        entity terrain = zox_get_parent(world, e);
         node_depth->value = target_depth;
         float3 chunk_positionc_float3 = float3_from_int3(positionc->value);
         int chunk_positionc_y = (int) (chunk_positionc_float3.y * chunk_voxel_length);

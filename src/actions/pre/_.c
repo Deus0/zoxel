@@ -7,6 +7,5 @@ void spawn_prefabs_actions(ecs *world) {
         zox_prefab_character_set(ActionIndex, { 0 });
         zox_prefab_character_set(ActiveAction, { 0 });
         zox_prefab_character_set(ActiveActionDirty, { 0 });
-        // zox_prefab_character_set(ActionLinks, { 0 });
     }
 }

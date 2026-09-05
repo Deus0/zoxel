@@ -29,11 +29,6 @@ zox_sys2(CharacterPlayerQuestsSystem) {
                 }
             }
         }
-        /*zox_geter(realm->value, QuestLinks, realm_quests);
-        if (!realm_quests->length) {
-            continue;
-        }
-        entity player_start_quest = realm_quests->value[1];*/
         if (!zox_valid(player_start_quest)) {
             return;
         }
@@ -44,8 +39,6 @@ zox_sys2(CharacterPlayerQuestsSystem) {
                 world,
                 e,
                 player_start_quest);
-            // entity quest = spawn_user_quest(world, player_start_quest, e);
-            // add_to_QuestLinks(quests, quest);
         }
     }
 } zox_sys_end(CharacterPlayerQuestsSystem);

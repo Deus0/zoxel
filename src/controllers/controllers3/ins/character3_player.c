@@ -27,16 +27,14 @@ entity spawn_character3_player(
     zox_add(e, DisableMovement);
     // Player
     zox_setv(e, PlayerLink, player);
-    zox_setv(player, CharacterLink, e);
     // camera
     zox_link(world, e, Camera, camera);
-    zox_setv(camera, CharacterLink, e);
     zox_setv(camera, EntityTarget, e);
     zox_setv(camera, AttachDirty, zox_dirty_trigger);
     // New links
     zox_link(world, e, Player, player);
-    zox_link(world, player,  Character, e);
-    zox_link(world, e,  Camera, camera);
-    zox_link(world, camera,  Character, e);
+    zox_link(world, e, Camera, camera);
+    zox_link(world, player, Character, e);
+    zox_link(world, camera, Character, e);
     return e;
 }

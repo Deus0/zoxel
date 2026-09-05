@@ -26,11 +26,6 @@ void zox_tst_spawn_dialogue(ecs *world, ClickEventData data) {
     }
     zox_log("Testing Realm Dialogue Run [0]");
     entity canvas = zox_get_link(world, player, Canvas);
-    /* entity character = zox_getv(player, CharacterLink);
-    if (!zox_valid(character)) {
-        zox_logw("Player has no character.");
-        return;
-    }*/
     entity tree;
     {
         byte texts_count = 3;

@@ -3,16 +3,16 @@ void zox_tst_player_character_death(
     ClickEventData data)
 {
     entity player = dbg_player;
-    zox_geter(player, CharacterLink, character);
-    if (!zox_valid(character->value)) {
+    entity character = zox_get_link(world, player, Character);
+    if (!zox_valid(character)) {
         zox_log("No player character to kill.");
         return;
     }
     zox_log("=> Testing Player Deaths");
     zox_log("   -> Hopefully they respawn.");
     zox_log("- killing player character [%s]",
-            zox_getn(character->value));
-    zox_add(character->value, PreDeath);
+            zox_getn(character));
+    zox_add(character, PreDeath);
     /*zox_add(character->value, Dead);
     zox_add(character->value, DeathDirty);
     zox_setv(character->value, DiedTime, zox_current_time);*/

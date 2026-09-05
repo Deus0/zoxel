@@ -30,7 +30,7 @@ void attach_camera_to_character(
     }
     float3 euler = (float3) { 0, 180, 0 };
     // Initial Linking
-    zox_setv(e, CharacterLink, character);
+    zox_link(world, e, Character, character);
     zox_link(world, character, Camera, e);
     // reset using head bone
     zox_remove(e, EulerOverride);
@@ -51,11 +51,9 @@ zox_sys2(FreeRoamToggleSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
-    zox_sys_in(CharacterLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
-        zox_sys_i(CharacterLink, character);
         if (state->value != zox_player_state_playing) {
             // continue;
         }
@@ -106,6 +104,7 @@ zox_sys2(FreeRoamToggleSystem) {
             }
         }
         if (is_toggle) {
+            entity character = zox_get_link(world, e, Character);
             byte old = zox_getv(camera, CameraState);
             byte new = old;
             if (old == zox_camera_state_free) {
@@ -114,7 +113,7 @@ zox_sys2(FreeRoamToggleSystem) {
                 attach_camera_to_character(
                     world,
                     camera,
-                    character->value);
+                    character);
             } else {
                 new = zox_camera_state_free;
                 set_camera_free(

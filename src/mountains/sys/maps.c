@@ -4,7 +4,6 @@ zox_sys2(MountainMapSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TunkLod);
-    zox_sys_in(RegionLink);
     zox_sys_in(TunkPosition);
     zox_sys_out(GenerateTunk);
     zox_sys_out(VegetationMap);
@@ -12,7 +11,6 @@ zox_sys2(MountainMapSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TunkLod, lod);
-        zox_sys_i(RegionLink, region);
         zox_sys_i(TunkPosition, tunk_position);
         zox_sys_o(GenerateTunk, generate);
         zox_sys_o(VegetationMap, vegetation_map);
@@ -24,14 +22,19 @@ zox_sys2(MountainMapSystem) {
             generate->value = zox_generate_tunk_towns;
             continue;
         }
+        entity region = zox_get_link(world, e, Region);
 #ifdef zox_safety_checks
-        if (!zox_valid(region->value)) {
-            zox_loge("[%s] Tunk has invalid region at [%ix%i]: %lu in MountainMaps", zox_get_name(e), tunk_position->value.x, tunk_position->value.y, region->value);
+        if (!zox_valid(region)) {
+            zox_loge("[%s] Tunk has invalid region at [%ix%i]: %lu in MountainMaps",
+                zox_get_name(e),
+                tunk_position->value.x,
+                tunk_position->value.y,
+                region);
             continue;
         }
 #endif
         // NOTE: Skip if still Generating Region
-        if (zox_getv(region->value, GenerateRegion)) {
+        if (zox_getv(region, GenerateRegion)) {
             continue;
         }
 #ifdef zox_safety_checks
@@ -55,9 +58,17 @@ zox_sys2(MountainMapSystem) {
             tunk_position->value.y * terrain_length
         };
         entity mountains[zox_children_capacity];
-        uint mountains_length = zox_get_children_by_id(world, region->value, mountains, zox_children_capacity, zox_id(Mountain));
+        uint mountains_length = zox_get_children_by_id(
+            world,
+            region,
+            mountains,
+            zox_children_capacity,
+            zox_id(Mountain));
         if (dbg_log >= 2) {
-            zox_log("Towns found in Tunk [%ix%i]: [%i]", tunk_position->value.x, tunk_position->value.y, mountains_length);
+            zox_log("Towns found in Tunk [%ix%i]: [%i]",
+                tunk_position->value.x,
+                tunk_position->value.y,
+                mountains_length);
         }
         for (int j = 0; j < mountains_length; j++) {
             entity e2 = mountains[j];

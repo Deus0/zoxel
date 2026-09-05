@@ -10,3 +10,6 @@ static inline void zox_gpu_disable_blend() { }
 static inline void zox_gpu_enable_polyoffset() { }
 static inline void zox_gpu_disable_polyoffset() { }
 static inline void zox_gpu_polyoffset(float a, float b) { }
+static inline void zox_gpu_enable_polyoffset_lines() { }
+static inline void zox_gpu_disable_polyoffset_lines() { }
+

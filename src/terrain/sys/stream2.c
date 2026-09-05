@@ -157,7 +157,7 @@ zox_sys2(TerrainQueueSystem) {
                     update.distance,
                     new_depth);
                 int3_hashmap_add(chunks->value, chunk_position, chunk);
-                zox_setv(chunk, TunkLink, tunk);
+                zox_link(world, chunk, Tunk, tunk);
                 if (y == render_distance_y) {
                     zox_add(chunk, SunnyChunk);
                 } else if (y == -render_distance_y) {

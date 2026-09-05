@@ -44,24 +44,18 @@ void zox_apply_debug_colors(const byte* solidity,
 zox_sys2(Light3BuildSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(VoxLink);
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxelNode);
     zox_sys_in(LightNode);
     zox_sys_in(RenderDepth);
     zox_sys_in(MeshColorRGBs);
-    // ox_sys_out(MeshColorsDirty);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(VoxLink, vox_link);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_i(VoxelNode, nodev);
         zox_sys_i(LightNode, nodel);
         zox_sys_i(RenderDepth, depth);
         zox_sys_i(MeshColorRGBs, colors);
-        // zox_sys_o(MeshColorsDirty, upload);
-        /*if (!upload->value) {
-            continue;
-        }*/
+        entity terrain = zox_get_parent(world, e);
         const LightNode *nnodesl[6];
         fetch_neightbor_light_nodes(world, neighbors, nnodesl);
         zox_geter_value(vox_link->value, RealmLink, entity, realm);

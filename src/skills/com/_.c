@@ -13,7 +13,6 @@ zoxc_float(SkillRange);
 zoxc_float(SkillCost);
 zoxc_entity(SkillResourceLink);
 zoxc_entity(SpawnerLink);
-zoxc_entity(SkillLink);
 
 void zox_components_skills(ecs* world) {
     zoxd_tag(Skill);
@@ -31,5 +30,4 @@ void zox_components_skills(ecs* world) {
     zoxd_byte(SkillActive);
     zoxd_entity(SkillResourceLink);
     zoxd_entity(SpawnerLink);
-    zoxd_entity(SkillLink);
 }

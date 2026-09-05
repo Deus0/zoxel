@@ -8,7 +8,6 @@ void zox_define_systems_towns(ecs* world) {
         TownMapSystem,
         zoxp_update,
         [in] tunks.TunkLod,
-        [in] regions.RegionLink,
         [in] tunks.TunkPosition,
         [in] tunks.BiomeMap,
         [out] tunks.GenerateTunk,
@@ -23,7 +22,6 @@ void zox_define_systems_towns(ecs* world) {
         zoxp_update,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkPosition,
-        [in] tunks.TunkLink,
         [out] chunks.GenerateChunk,
         [out] chunks3.VoxelNode,
         [none] terrains.TerrainChunk

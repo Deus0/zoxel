@@ -15,7 +15,7 @@ entity spawn_skybox(
     zox_setv(e, Scale1, skybox_size);
     zox_setv(e, LocalScale1, skybox_size);
     if (shader) {
-        zox_add(e, MeshBasic3D);
+        zox_add(e, MeshBasic3);
         // spawn_gpu_mesh(world, e);
         zox_set(e, ShaderLink, { shader });
         guint2 shader_value = zox_getv(shader, ShaderGPULink);

@@ -24,7 +24,6 @@ void zox_define_systems_auras(ecs* world) {
     zox_system(
         AuraDotRemoveSystem,
         zoxp_update,
-        [in] skills.SkillLink,
         [in] skills.SpawnerLink,
         [in] particles.ParticlesEmitterLink,
         [none] skills.AuraDot

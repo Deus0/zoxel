@@ -5,10 +5,8 @@
 #include "size.c"
 #include "end.c"
 #include "settings.c"
-// realm_clear_system(ModelLinks);
 
 void define_systems_models(ecs* world) {
-    // realm_clear_systemd(rendering, ModelLinks);
     zox_system(
         ModelSizeNodeSystem,
         zoxp_update,

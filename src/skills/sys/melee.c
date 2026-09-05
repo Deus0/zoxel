@@ -52,7 +52,6 @@ zox_sys2(MeleeSystem) {
         entity resource = 0;
         // entity strength = 0;
         zox_geter(user, RaycastVoxelData, raycast);
-        // zox_geter(user, StatLinks, stats);
         entity boost_stat = 0;
         iter it2 = zox_children(world, user);
         while (zox_children_next(it2)) {

@@ -6,7 +6,6 @@ void define_systems_controllers2(ecs *world) {
     zox_system(
         Controller2MoveSystem,
         zoxp_update,
-        [in] characters.CharacterLink,
         [none] players.Player
     );
     zox_system_1(
@@ -21,7 +20,6 @@ void define_systems_controllers2(ecs *world) {
         zoxp_spawn,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,
-        [out] characters.CharacterLink,
         [none] players.Player2
     );
 }

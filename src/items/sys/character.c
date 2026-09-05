@@ -17,18 +17,24 @@ zox_sys2(CharacterItemsSpawnSystem) {
         // NOTE: Grabs a random block item and gives it to character
         zox_geter(realm->value, BlockLinks, blocks);
         entity block = blocks->value[rand() % blocks->length];
-        if (zox_valid(block) && zox_has(block, ItemLink)) {
-            zox_geter_value(block, ItemLink, entity, prefab);
-            if (zox_valid(prefab)) {
-                byte quantity = rand_range(1, 3); // 1 + rand() % 3;
-                entity e2 = spawn_user_item(world, e, prefab);
-                zox_set(e2, Quantity, { quantity });
-                if (zox_valid(inventory)) {
-                    entity slot = zox_get_empty_slot(world, inventory);
-                    if (zox_valid(slot)) {
-                        zox_muter(slot, DataLink, slot_data);
-                        slot_data->value = e2;
-                    }
+        if (!zox_valid(block)) {
+            continue;
+        }
+        entity prefab_item = zox_get_link(world, block, Item);
+        if (zox_valid(prefab_item)) {
+            byte quantity = rand_range(1, 3);
+            entity e2 = spawn_user_item(
+                world,
+                e,
+                prefab_item);
+            zox_setv(e2, Quantity, quantity);
+            if (zox_valid(inventory)) {
+                entity slot = zox_get_empty_slot(
+                    world,
+                    inventory);
+                if (zox_valid(slot)) {
+                    zox_muter(slot, DataLink, slot_data);
+                    slot_data->value = e2;
                 }
             }
         }

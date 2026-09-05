@@ -23,7 +23,11 @@ void zox_dbg_spawn_cube(ecs *world) {
     float3 position = zox_getv(camera, Position3D);
     float4 rotation = zox_getv(camera, Rotation3D);
     float3 spawn_position = move_along_direction(position, rotation, -distance);
-    entity cube = spawn_cube(world, prefab_cube, spawn_position, scale);
+    entity cube = spawn_cube(
+        world,
+        prefab_cube,
+        spawn_position,
+        scale);
     add_eternal_euler(world, cube, (float3) { 24, 24, 0 });
     if (dbg_inspector) {
         entity player = dbg_player;

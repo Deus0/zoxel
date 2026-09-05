@@ -449,7 +449,23 @@ zox_sys2(Chunk3RaycastSystem) {
         zox_geter(terrain->value, ChunkLinks, chunks);
         CharacterRaycast character_raycast = { 0 };
         float range = !debug_ray_big_range ? raycast_range->value : 128;
-        data->result = raycast_voxel_node(world, e, voxels, chunks, int3_zero, float3_zero, terrain_depth, size, 0, ray_origin, ray_normal, int3_zero, block_scale, range, data, &character_raycast);
+        data->result = raycast_voxel_node(
+            world,
+            e,
+            voxels,
+            chunks,
+            int3_zero,
+            float3_zero,
+            terrain_depth,
+            size,
+            0,
+            ray_origin,
+            ray_normal,
+            int3_zero,
+            block_scale,
+            range,
+            data,
+            &character_raycast);
         data->depth = terrain_depth;
         if (dbg_log == 1) {
             if (data->result) {

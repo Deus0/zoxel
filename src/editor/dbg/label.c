@@ -1,4 +1,11 @@
-uint zox_dbg_ui_hierarchy(ecs *world, entity e, char *buffer, uint size, uint index, byte dig) {
+uint zox_dbg_ui_hierarchy(
+    ecs *world,
+    entity e,
+    char *buffer,
+    uint size,
+    uint index,
+    byte dig)
+{
     byte estimated_line = 64;
     dig++;
     entity children[layouts2_children_capacity];
@@ -18,12 +25,24 @@ uint zox_dbg_ui_hierarchy(ecs *world, entity e, char *buffer, uint size, uint in
         if (index + estimated_line >= size) {
             return index;
         }
-        index = zox_dbg_ui_hierarchy(world, e2, buffer, size, index, dig);
+        index = zox_dbg_ui_hierarchy(
+            world,
+            e2,
+            buffer,
+            size,
+            index,
+            dig);
     }
     return index;
 }
 
-uint zox_dbg_ui_canvas(ecs *world, entity player, char *buffer, uint size, uint index) {
+uint zox_dbg_ui_canvas(
+    ecs *world,
+    entity player,
+    char *buffer,
+    uint size,
+    uint index)
+{
     if (!player) {
         index += snprintf(buffer + index, size - index, "Invalid player\n");
         return index;
@@ -31,7 +50,13 @@ uint zox_dbg_ui_canvas(ecs *world, entity player, char *buffer, uint size, uint 
     entity canvas = zox_get_link(world, player, Canvas);
     if (zox_valid(canvas)) {
         index += snprintf(buffer + index, size - index, "Player [%s Canvas [%s]\n", zox_get_name(player), zox_get_name(canvas));
-        return zox_dbg_ui_hierarchy(world, canvas, buffer, size, index, 0);
+        return zox_dbg_ui_hierarchy(
+            world,
+            canvas,
+            buffer,
+            size,
+            index,
+            0);
     } else {
         index += snprintf(buffer + index, size - index, "Invalid Player Canvas\n");
         return index;

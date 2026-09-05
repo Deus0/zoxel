@@ -159,12 +159,10 @@ zox_sys2(PlayerBeginSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_out(CharacterLink);
     zox_sys_out(PlayerState);
     zox_sys_out(PlayerStateDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_o(CharacterLink, character);
         zox_sys_o(PlayerState, state);
         zox_sys_o(PlayerStateDirty, dirty);
         // Now Spawning Character
@@ -199,7 +197,8 @@ zox_sys2(PlayerBeginSystem) {
             dirty->value = zox_dirty_trigger;
             continue;
         }
-        if (zox_valid(character->value)) {
+        entity old_character = zox_get_link(world, e, Character);
+        if (zox_valid(old_character)) {
             zox_loge("Trying to load character twice [zox_player_state_starting]");
             state->value = zox_player_state_play_trigger; // zox_player_state_play_begin;
             dirty->value = zox_dirty_trigger;
@@ -208,17 +207,20 @@ zox_sys2(PlayerBeginSystem) {
         // actually we need to do this on loaded player model for bounds
         // if character
         zox_geter(realm, FolderPath, path);
-        byte is_new_game = !has_save_game_file(path->value, "player.dat");
+        byte is_new_game = !has_save_game_file(
+            path->value,
+            "player.dat");
+        entity character;
         float3 spawn_position;
         if (!is_new_game) {
-            character->value = game_start_player_load(
+            character = game_start_player_load(
                 world,
                 e,
                 realm,
                 terrain,
                 &spawn_position,
                 dbg_log);
-            if (!character->value) {
+            if (!character) {
                 if (dbg_log) {
                     zox_log("[%s] Terrain Position not ready for load game", zox_getn(e));
                 }
@@ -226,7 +228,7 @@ zox_sys2(PlayerBeginSystem) {
             }
         } else {
             entity camera = zox_get_link(world, e, Camera);
-            character->value = game_start_player_new(
+            character = game_start_player_new(
                 world,
                 e,
                 realm,
@@ -234,13 +236,14 @@ zox_sys2(PlayerBeginSystem) {
                 camera,
                 &spawn_position,
                 dbg_log);
-            if (!character->value) {
+            if (!character) {
                 if (dbg_log) {
                     zox_log("[%s] Terrain Position not found for new game", zox_getn(e));
                 }
                 continue;
             }
         }
+        zox_link(world, e, Character, character);
         if (dbg_log) {
             zox_log("[%s] Player Character Spawned at [%fx%fx%f]",
                 is_new_game ? "New" : "Load",

@@ -21,7 +21,6 @@ zoxc_float(RaycastRange);
 #include "damage.c"
 // Voxes
 zox_tag(Vox);
-zoxc_entity(VoxLink);
 zoxc_byte(ChunkLod);    // we using this??!?!
 zoxc_hashmap(ChunkLinks, int3)
 // operations
@@ -64,7 +63,6 @@ void define_components_chunks3(ecs* world) {
     zoxd_queue(VoxelNodeQueue);
     // Voxes
     zoxd_tag(Vox);
-    zoxd_entity(VoxLink);
     zoxd_byte(ChunkLod);
     zoxd_hashmap(ChunkLinks);
     // operations

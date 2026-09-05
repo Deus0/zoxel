@@ -14,7 +14,6 @@ zoxc_float3(LocalScale3);
 zoxc_float3(Bounds3D);
 zoxc_state(Bounds3Dirty);
 zoxc_float6(Position3DBounds);
-zoxc_entity(ShadowLink);
 zoxc_byte(Transform3Dirty);
 
 void define_components_transforms3(ecs* world) {
@@ -34,6 +33,5 @@ void define_components_transforms3(ecs* world) {
     zoxd_float3(Bounds3D);
     zoxd_state(Bounds3Dirty);
     zoxd_float6(Position3DBounds);
-    zoxd_entity(ShadowLink);
     zoxd_byte(Transform3Dirty);
 }

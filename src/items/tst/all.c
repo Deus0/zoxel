@@ -13,7 +13,6 @@ void give_character_all_items(ecs* world, entity e) {
         zox_loge("Character has no Inventory");
         return;
     }
-    // zox_geter(realm, ItemLinks, realm_items);
     zox_log("Giving [%s] [X] Items.",
         zox_getn(e));
     iter it2 = zox_children(world, realm);
@@ -23,12 +22,6 @@ void give_character_all_items(ecs* world, entity e) {
             if (!zox_has(realm_item, Item)) {
                 continue;
             }
-    /*for (int j = 0; j < realm_items->length; j++) {
-        entity realm_item = realm_items->value[j];
-        if (!zox_valid(realm_item)) {
-            zox_log_error("Item invalid [%i]", j);
-            continue;
-        }*/
             entity slot = zox_get_empty_slot(world, inventory);
             if (!zox_valid(slot)) {
                 zox_logw("[Inventory] Out of empty slots.");
@@ -60,7 +53,7 @@ void zox_tst_all_items(ecs* world, ClickEventData data) {
     if (!zox_valid(player)) {
         return;
     }
-    zox_geter_value(player, CharacterLink, entity, character);
+    entity character = zox_get_link(world, player, Character);
     if (!zox_valid(character)) {
         return;
     }

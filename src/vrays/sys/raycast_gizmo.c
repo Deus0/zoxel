@@ -1,12 +1,12 @@
 zox_sys2(RaycastGizmoSystem) {
     byte dbg_log = 0;
     byte gizmo_type = 1;
-    byte disable_depth = 1;
-    float3 hide_position = (float3) { 0, -666, 0 };
-    float extrude = 0.0001f;
-    float shrink = 0.999f;
-    float raycaster_quad_thickness = 6;
-    color hit_terrain_color = { 255, 255, 255, 33 };
+    byte disable_depth = 0; // 1;
+    float3 hide_position = (float3) { 0, -999, 0 };
+    color hit_terrain_color = { 0, 0, 0, 255 };
+    float extrude = 0.01f;  // 0.0001f;
+    float shrink = 1;       // 0.99f;
+    float raycaster_quad_thickness = 4;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RaycastVoxelData);
@@ -35,12 +35,25 @@ zox_sys2(RaycastGizmoSystem) {
             float quad_scale = data->voxel_scale * (0.5f - quad_depth_buffer);
             if (!zox_valid(link->value)) {
                 if (gizmo_type == 0) {
-                    link->value = spawn_quad_lines(world, prefab_quad_lines, hit_terrain_color, position, quad_rotation, raycaster_quad_thickness, quad_scale, 0);
+                    link->value = spawn_quad_lines(
+                        world,
+                        prefab_quad_lines,
+                        hit_terrain_color,
+                        position,
+                        quad_rotation, raycaster_quad_thickness,
+                        quad_scale,
+                        0);
                 } else {
-                    link->value = spawn_cube_lines_rgba(world, data->positionf, float3_single(0.5f * data->voxel_scale), raycaster_quad_thickness, hit_terrain_color, 0);
-                    zox_set(link->value, CubeLineShrink, { shrink });
-                    zox_set(link->value, CubeLineExtrude, { extrude });
-                    zox_set(link->value, CubeLineSides, { sides });
+                    link->value = spawn_cube_lines_rgba(
+                        world,
+                        data->positionf,
+                        float3_single(0.5f * data->voxel_scale),
+                        raycaster_quad_thickness,
+                        hit_terrain_color,
+                        0);
+                    zox_setv(link->value, CubeLineShrink, shrink);
+                    zox_setv(link->value, CubeLineExtrude, extrude);
+                    zox_setv(link->value, CubeLineSides, sides);
                     if (disable_depth) {
                         zox_add(link->value, DisableDepthTest);
                     }
@@ -53,7 +66,10 @@ zox_sys2(RaycastGizmoSystem) {
                 if (!float3_equals(position3->value, position)) {
                     position3->value = position;
                     if (dbg_log) {
-                        zox_log("Placing Gizmo [%.01fx%.01fx%.01f]", position.x, position.y, position.z);
+                        zox_log("Placing Gizmo [%.01fx%.01fx%.01f]",
+                            position.x,
+                            position.y,
+                            position.z);
                     }
                 }
                 if (gizmo_type == 0) {
@@ -69,7 +85,15 @@ zox_sys2(RaycastGizmoSystem) {
             // Debug Line
             if (is_debug_rayhit_point) {
                 float3 hit_out = float3_add(data->hit, float3_scale(data->normal, raygizmo_line_length * data->voxel_scale));
-                spawn_line3_alpha(world, data->hit, hit_out, raycast_thickness, is_slow_gizmos ? 30 : 0.5f, hit_block_vox_color);
+                spawn_line3_alpha(
+                    world,
+                    data->hit,
+                    hit_out,
+                    raycast_thickness,
+                    is_slow_gizmos ?
+                        30 :
+                        0.5f,
+                    hit_block_vox_color);
             }
         }
         else if (ray_hit == rayhit_character) {
@@ -79,7 +103,15 @@ zox_sys2(RaycastGizmoSystem) {
             // zox_log("hit character alpha %i", hit_character_color.a);
         } else if (ray_hit == rayhit_block_vox) {
             float3 hit_out = float3_add(data->hit, float3_scale(data->normal, hit_block_vox_line_up));
-            spawn_line3_alpha(world, data->hit, hit_out, raycast_thickness,  is_slow_gizmos ? 30 : 0.2f, hit_block_vox_color);
+            spawn_line3_alpha(
+                world,
+                data->hit,
+                hit_out,
+                raycast_thickness,
+                is_slow_gizmos ?
+                    30 :
+                    0.2f,
+                hit_block_vox_color);
         }
         if (ray_hit != rayhit_terrain) {
             if (zox_valid(link->value)) {
@@ -87,7 +119,7 @@ zox_sys2(RaycastGizmoSystem) {
                 if (!float3_equals(position->value, hide_position)) {
                     position->value = hide_position;
                     if (dbg_log) {
-                        zox_log("Hiding Gizmo");
+                        zox_log("Hiding Gizmo Hit Type [%i]", ray_hit);
                     }
                 }
             }

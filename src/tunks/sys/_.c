@@ -54,7 +54,6 @@ void define_systems_tunks(ecs* world) {
     zox_system(
         TunkTextureSystem,
         zoxp_update,
-        [in] tunks.TunkLink,
         [out] textures.GenerateTexture,
         [out] textures.TextureData,
         [out] rendering.TextureSize,
@@ -64,7 +63,6 @@ void define_systems_tunks(ecs* world) {
         HeightmapTextureSystem,
         zoxp_update,
         [in] core.Generate,
-        [in] tunks.TunkLink,
         [out] textures.TextureData,
         [out] rendering.TextureSize,
         [none] tunks.HeightsTexture

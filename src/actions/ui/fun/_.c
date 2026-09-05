@@ -46,12 +46,12 @@ void set_character_action(ecs *world, entity character, byte index) {
 
 
 void set_player_action(ecs *world, entity player, byte index) {
-    zox_geter_value(player, CharacterLink, entity, character);
+    entity character = zox_get_link(world, player, Character);
     set_character_action(world, character, index);
 }
 
 void player_action_ui_move(ecs *world, entity player, sbyte direction) {
-    zox_geter_value(player, CharacterLink, entity, character);
+    entity character = zox_get_link(world, player, Character);
     if (!zox_valid(character) || !zox_has(character, ActionIndex)) {
         return;
     }

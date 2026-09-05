@@ -1,5 +1,8 @@
 entity material_bone;
 entity material_bonet;
+entity shader_basic3;
+entity shader_basic3_overlay;
+entity material_basic3D;
 
 #include "clones.c"
 
@@ -12,7 +15,9 @@ void catch_basic3D_errors(char* function_name) {
 }
 
 void spawn_shaders_basics3D(ecs *world) {
-    spawn_material_basic3D(world);
+    shader_basic3 = spawn_shader_basic3(world);
+    material_basic3D = spawn_material_basic3D(world, shader_basic3);
+    shader_basic3_overlay = spawn_shader_basic3_overlay(world);
     spawn_material_colored3D(world);
     spawn_material_textured3D(world);
 #ifndef zox_disable_rendering_instances

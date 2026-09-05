@@ -5,7 +5,6 @@ zox_sys2(TownMapSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TunkLod);
-    zox_sys_in(RegionLink);
     zox_sys_in(TunkPosition);
     zox_sys_in(BiomeMap);
     zox_sys_out(GenerateTunk);
@@ -15,7 +14,6 @@ zox_sys2(TownMapSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TunkLod, lod);
-        zox_sys_i(RegionLink, region);
         zox_sys_i(TunkPosition, tunk_position);
         zox_sys_i(BiomeMap, biome_map);
         zox_sys_o(GenerateTunk, generate);
@@ -30,9 +28,10 @@ zox_sys2(TownMapSystem) {
             generate->value = zox_generate_tunk_end;
             continue;
         }
+        entity region = zox_get_link(world, e, Region);
 #ifdef zox_safety_checks
-        if (!zox_valid(region->value)) {
-            zox_loge("[%s] Tunk has invalid region at [%ix%i]: %lu in TownMaps", zox_get_name(e), tunk_position->value.x, tunk_position->value.y, region->value);
+        if (!zox_valid(region)) {
+            zox_loge("[%s] Tunk has invalid region at [%ix%i]: %lu in TownMaps", zox_get_name(e), tunk_position->value.x, tunk_position->value.y, region);
             continue;
         }
         if (!zox_disable_biomes && !biome_map->length) {
@@ -62,9 +61,17 @@ zox_sys2(TownMapSystem) {
         resize_TownMap(town_map, length * length);
         memset(town_map->value, 0, length * length);
         entity towns[zox_children_capacity];
-        uint towns_length = zox_get_children_by_id(world, region->value, towns, zox_children_capacity, zox_id(Town));
+        uint towns_length = zox_get_children_by_id(
+            world,
+            region,
+            towns,
+            zox_children_capacity,
+            zox_id(Town));
         if (dbg_log >= 2) {
-            zox_log("Towns found in Tunk [%ix%i]: [%i]", tunk_position->value.x, tunk_position->value.y, towns_length);
+            zox_log("Towns found in Tunk [%ix%i]: [%i]",
+                tunk_position->value.x,
+                tunk_position->value.y,
+                towns_length);
         }
         if (!towns_length) {
             continue;

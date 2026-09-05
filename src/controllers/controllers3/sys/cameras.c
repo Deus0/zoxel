@@ -15,17 +15,16 @@ zox_sys2(PlayerToggleCameraSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
-    zox_sys_in(CharacterLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
-        zox_sys_i(CharacterLink, character);
         if (state->value != zox_player_state_playing) {
             continue;
         }
         entity camera = zox_get_link(world, e, Camera);
-        if (!zox_valid(camera) ||
-            !zox_valid(character->value))
+        // entity character = zox_get_link(world, e, Character);
+        if (!zox_valid(camera))
+            // !zox_valid(character))
         {
             continue;
         }

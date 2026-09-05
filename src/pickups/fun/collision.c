@@ -65,13 +65,10 @@ byte on_overlap_pickup(ecs *world, entity e, entity user) {
     }
     // animate + picked up state
     lerp_to_entity(world, e, user, 0.1f, 0.6f);
-    zox_set(e, PickedUp, { pickup_state_trigger });
-    zox_set(e, CollisionDisabled, { 1 });
-    zox_set(e, DestroyInTime, { 1 });
-    if (!zox_has(e, ItemLink)) {
-        return 0;
-    }
-    entity base_item = zox_getv(e, ItemLink);
+    zox_setv(e, PickedUp, pickup_state_trigger);
+    zox_setv(e, CollisionDisabled, 1);
+    zox_setv(e, DestroyInTime, 1);
+    entity base_item = zox_get_link(world, e, Item);
     if (!zox_valid(base_item)) {
         zox_loge("Pickup item is invalid");
         return 0;

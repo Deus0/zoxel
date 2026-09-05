@@ -5,15 +5,13 @@ zox_sys2(Player3RotateSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
-    zox_sys_in(CharacterLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
-        zox_sys_i(CharacterLink, characterLink);
         if (state->value != zox_player_state_playing) {
             continue;
         }
-        entity character = characterLink->value;
+        entity character = zox_get_link(world, e, Character);
         if (!zox_valid(character)) {
             continue;
         }

@@ -8,14 +8,12 @@ zox_sys2(VegetationChunk3System) {
     zox_sys_begin();
     zox_sys_in(NodeDepth);
     zox_sys_in(ChunkPosition);
-    zox_sys_in(TunkLink);
     zox_sys_out(GenerateChunk);
     zox_sys_out(VoxelNode);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(ChunkPosition, chunk_position);
-        zox_sys_i(TunkLink, tunk);
         zox_sys_o(GenerateChunk, generate);
         zox_sys_o(VoxelNode, voctree);
         if (generate->value != zox_generate_terrain_vegetation) {
@@ -43,7 +41,14 @@ zox_sys2(VegetationChunk3System) {
             continue;
         }
 #endif
-        byte tunk_lod = zox_getv(tunk->value, TunkLod);
+        entity tunk = zox_get_link(world, e, Tunk);
+#ifdef zox_safety_checks
+        if (!zox_valid(tunk)) {
+            zox_loge("[Vegetation] Invalid [Tunk] at [%ix%ix%i]", chunk_position->value.x, chunk_position->value.y, chunk_position->value.z);
+            continue;
+        }
+#endif
+        byte tunk_lod = zox_getv(tunk, TunkLod);
         byte build_depth = depth->value;
         if (depth->value != tunk_lod) {
             build_depth = tunk_lod;
@@ -58,15 +63,9 @@ zox_sys2(VegetationChunk3System) {
         int3 chunk_block_position = chunk_position_to_block_position(chunk_position->value, terrain_depth);
         int2 map_size = int2_single(length);
         byte hmultiplier = powers_of_two[terrain_depth - build_depth];
-#ifdef zox_safety_checks
-        if (!zox_valid(tunk->value)) {
-            zox_loge("[Vegetation] Invalid [Tunk] at [%ix%ix%i]", chunk_position->value.x, chunk_position->value.y, chunk_position->value.z);
-            continue;
-        }
-#endif
-        zox_geter(tunk->value, BiomeMap, biome_map);
-        zox_geter(tunk->value, HeightMap, height_map);
-        zox_geter(tunk->value, VegetationMap, vegetation_map);
+        zox_geter(tunk, BiomeMap, biome_map);
+        zox_geter(tunk, HeightMap, height_map);
+        zox_geter(tunk, VegetationMap, vegetation_map);
 #ifdef zox_safety_checks
         if (!vegetation_map->length) {
             zox_loge("Invalid [Tunk] [vegetation_map] at [%ix%ix%i]", chunk_position->value.x, chunk_position->value.y, chunk_position->value.z);

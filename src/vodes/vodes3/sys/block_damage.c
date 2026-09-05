@@ -2,6 +2,7 @@
 // TODO: Refactor Health to remove from chunk instead of here
 zox_sys2(BlockDamageQueueSystem) {
     byte dbg_log = 0;
+    float block_damage_overlay_buffer = 1; //  1.08f;
     color popup_color = (color) { 255, 0, 0, 255 };
     zox_sys_world();
     zox_sys_begin();
@@ -58,14 +59,24 @@ zox_sys2(BlockDamageQueueSystem) {
             entity terrain = zox_get_parent(world, e);
             byte terrain_depth = zox_getv(terrain, NodeDepth);
             float terrain_block_scale = zox_getv(terrain, BlockScale);
-            float3 positionf = local_block_position_to_real_position(update.position, chunk_position->value, terrain_depth, terrain_block_scale);
+            float3 positionf = local_block_position_to_real_position(
+                update.position,
+                chunk_position->value,
+                terrain_depth,
+                terrain_block_scale);
             // TODO: Refactor this damage into a damage system against blocks
             byte did_destroy_block = 0;
             // Create new block health
             float block_health;
             float start_health = 0;
             if (!zox_valid(world_block) || !zox_has(world_block, StatValue)) {
-                float2 health_start_range = zox_has(meta, BlockHealth) ? zox_getv(meta, BlockHealth) : (float2) { 1, 1 };
+                float2 health_start_range =
+                    zox_has(meta, BlockHealth) ?
+                        zox_getv(meta, BlockHealth) :
+                        (float2) {
+                            1,
+                            1
+                        };
                 start_health = randf_range(health_start_range.x, health_start_range.y);
                 block_health = start_health;
                 // TODO: Add Destruction Overlay for Voxes
@@ -80,7 +91,10 @@ zox_sys2(BlockDamageQueueSystem) {
                         zox_log("Disposing of Block [%s]", zox_get_name(world_block));
                     }
                     // Detatch overlay first and fadeout destroy
-                    entity overlay = zox_get_child_by_id(world, world_block, zox_id(Cube));
+                    entity overlay = zox_get_child_by_id(
+                        world,
+                        world_block,
+                        zox_id(Cube));
                     if (zox_valid(overlay)) {
                         zox_set_parent(world, overlay, 0);
                         zox_set(overlay, AnimationStart, { zox_current_time });
@@ -95,7 +109,10 @@ zox_sys2(BlockDamageQueueSystem) {
                     zox_mut_end(chunk, VoxelNode);
                 } else {
                     if (dbg_log) {
-                        zox_log("Chunk has no Block for [%ix%ix%i]", update.position.x, update.position.y, update.position.z);
+                        zox_log("Chunk has no Block for [%ix%ix%i]",
+                            update.position.x,
+                            update.position.y,
+                            update.position.z);
                     }
                 }
                 // finally remove from chunk
@@ -112,11 +129,16 @@ zox_sys2(BlockDamageQueueSystem) {
                     // create health entity
                     // TODO: Get health off meta or use prefab
                     world_block = zox_ins(world, prefab_block_health);
-                    zox_set(world_block, StatValue, { block_health });
-                    zox_set(world_block, StatValueMax, { start_health });
+                    zox_setv(world_block, StatValue, block_health);
+                    zox_setv(world_block, StatValueMax, start_health);
                     // world_block = zox_new();
                     // zox_set_unique_name(world_block, "block_health");
-                    entity overlay = spawn_cube(world, prefab_cube, positionf, terrain_block_scale * block_damage_overlay_buffer);
+                    entity overlay = spawn_cube_with_shader(
+                        world,
+                        prefab_cube,
+                        positionf,
+                        terrain_block_scale * block_damage_overlay_buffer,
+                        shader_basic3_overlay);
                     zox_set_parent(world, overlay, world_block);
                     // TODO: Get this to work
                     // zox_set(overlay, Alpha, { 0.3f });
@@ -141,9 +163,19 @@ zox_sys2(BlockDamageQueueSystem) {
             // add health to block child
             // destroy voxel sound
             if (did_destroy_block) {
-                spawn_sound_generated(world, prefab_sound_generated, instrument_piano, note_frequencies[rand_range(28, 36)], 0.7, 1.4f * get_volume_sfx());
+                spawn_sound_generated(
+                    world,
+                    prefab_sound_generated,
+                    instrument_piano,
+                    note_frequencies[rand_range(28, 36)],
+                    0.7, 1.4f * get_volume_sfx());
             } else {
-                spawn_sound_generated(world, prefab_sound_generated, instrument_piano, note_frequencies[rand_range(20, 26)], 0.4, 1.1f * get_volume_sfx());
+                spawn_sound_generated(
+                    world,
+                    prefab_sound_generated,
+                    instrument_piano,
+                    note_frequencies[rand_range(20, 26)],
+                    0.4, 1.1f * get_volume_sfx());
             }
             // hit block popup
             // float3 positionf = raycast->positionf;
@@ -153,7 +185,13 @@ zox_sys2(BlockDamageQueueSystem) {
             positionf.y += randf_range(terrain_block_scale / 2.0f, terrain_block_scale);
             char popup_text[64];
             sprintf(popup_text, "%i", (int) floor(update.damage));
-            spawn_popup3_easy(world, popup_text, popup_color, positionf, zox_popup_scale, randf_range(4, 8));
+            spawn_popup3_easy(
+                world,
+                popup_text,
+                popup_color,
+                positionf,
+                zox_popup_scale,
+                randf_range(4, 8));
             if (dbg_log) {
                 // zox_log("User [%s] hit block at []", zox_get_name(user));
             }

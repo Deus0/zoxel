@@ -12,14 +12,14 @@ void zox_tst_spawn_character3_npc_skeleton(
         return;
     }
     entity player = dbg_player;
-    entity pcharacter = zox_getv(player, CharacterLink);
-    if (!zox_valid(pcharacter)) {
+    entity character = zox_get_link(world, player, Character);
+    if (!zox_valid(character)) {
         zox_logw("No Player Character.");
         return;
     }
-    float3 sposition = zox_getv(pcharacter, Position3D);
-    float4 srotation = zox_getv(pcharacter, Rotation3D);
-    entity terrain = zox_getv(pcharacter, TerrainLink);
+    float3 sposition = zox_getv(character, Position3D);
+    float4 srotation = zox_getv(character, Rotation3D);
+    entity terrain = zox_getv(character, TerrainLink);
     if (!zox_valid(terrain)) {
         return;
     }

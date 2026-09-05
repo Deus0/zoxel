@@ -90,7 +90,7 @@ void player_state_stats_ui(ecs* world, entity player, byte state) {
         return;
     }
     entity canvas = zox_get_link(world, player, Canvas);
-    entity character = zox_getv(player, CharacterLink);
+    entity character = zox_get_link(world, player, Character);
     if (!zox_valid(canvas)) {
         return;
     }

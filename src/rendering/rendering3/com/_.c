@@ -1,5 +1,5 @@
 zox_tag(Mesh3);
-zox_tag(MeshBasic3D);
+zox_tag(MeshBasic3);
 zox_tag(TexturedMesh3);
 zox_tag(SkeletonMesh);
 #include "bone_index.c"
@@ -10,7 +10,7 @@ zoxc_arrayd(BoneLinks, entity);
 
 void zox_components_rendering3(ecs* world) {
     zoxd_nf_tag(Mesh3);
-    zoxd_nf_tag(MeshBasic3D);
+    zoxd_nf_tag(MeshBasic3);
     zoxd_nf_tag(TexturedMesh3);
     zoxd_nf_tag(SkeletonMesh);
     zoxd(MaterialTextured3D);

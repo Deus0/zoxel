@@ -3,21 +3,22 @@ zox_sys2(TownTextureSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TunkLink);
     zox_sys_out(GenerateTexture);
     zox_sys_out(TextureData);
     zox_sys_out(TextureSize);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(TunkLink, tunk);
         zox_sys_o(GenerateTexture, generate);
         zox_sys_o(TextureData, data);
         zox_sys_o(TextureSize, size);
         if (generate->value != zox_generate_texture_run) {
             continue;
         }
+        entity tunk = zox_get_link(world, e, Tunk);
 #ifdef zox_safety_checks
-        if (!zox_valid(tunk->value) || !zox_has(tunk->value, GenerateTunk) || !zox_has(tunk->value, HeightMap)) {
+        if (!zox_valid(tunk) ||
+            !zox_has(tunk, GenerateTunk) ||
+            !zox_has(tunk, HeightMap)) {
             zox_loge("Invalid [Tunk] for Texture [%s]", zox_get_name(e));
             size->value = int2_single(0);
             resize_TextureData(data, size->value.x * size->value.y);
@@ -25,7 +26,7 @@ zox_sys2(TownTextureSystem) {
             continue;
         }
 #endif
-        entity terrain = zox_get_parent(world, tunk->value);
+        entity terrain = zox_get_parent(world, tunk);
 #ifdef zox_safety_checks
         if (!zox_valid(terrain) || !zox_has(terrain, NodeDepth)) {
             zox_loge("Invalid [Terrain] for Texture [%s]", zox_get_name(e));
@@ -33,18 +34,21 @@ zox_sys2(TownTextureSystem) {
         }
 #endif
         // NOTE: Generation Delay for Tunks
-        if (zox_getv(tunk->value, GenerateTunk)) {
+        if (zox_getv(tunk, GenerateTunk)) {
             if (dbg_log) {
-                zox_logw("Tunk Still Generating [%s]", zox_get_name(tunk->value));
+                zox_logw("Tunk Still Generating [%s]", zox_get_name(tunk));
             }
             continue;
         }
-        const TownMap* town_map = zox_get(tunk->value, TownMap);
-        byte lod = zox_getv(tunk->value, TunkLod);
+        const TownMap* town_map = zox_get(tunk, TownMap);
+        byte lod = zox_getv(tunk, TunkLod);
         byte length = octree_size(lod);
 #ifdef zox_safety_checks
         if (length * length != town_map->length) {
-            zox_loge("Invalid [Tunk %s] [TownMap] Texture [%s] Size [%i]", zox_get_name(tunk->value), zox_get_name(e), town_map->length);
+            zox_loge("Invalid [Tunk %s] [TownMap] Texture [%s] Size [%i]",
+                zox_get_name(tunk),
+                zox_get_name(e),
+                town_map->length);
             continue;
         }
 #endif

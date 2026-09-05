@@ -197,7 +197,7 @@ uint debug_ui_seeds(ecs *world, entity e, char *buffer, uint size, uint index) {
         lint realm_seed = zox_getv(realm, Seed);
         index += snprintf(buffer + index, size - index, " - Realm [%s] [%lu]\n", zox_get_name(realm), realm_seed);
     }
-    entity character = zox_getv(e, CharacterLink);
+    entity character = zox_get_link(world, e, Character);
     if (zox_valid(character)) {
         lint character_seed = zox_getv(character, Seed);
         const char* character_name = zox_has(character, ZoxName) ? zox_getv(character, ZoxName) : "None";

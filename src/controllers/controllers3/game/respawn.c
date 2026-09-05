@@ -8,17 +8,16 @@ zox_sys2(Player3RespawnSystem) {
     zox_sys_begin();
     zox_sys_out(PlayerStateDirty);
     zox_sys_out(PlayerState);
-    zox_sys_out(CharacterLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_o(PlayerStateDirty, dirty);
         zox_sys_o(PlayerState, state);
-        zox_sys_o(CharacterLink, character);
         // Playing happily!
+        entity character = zox_get_link(world, e, Character);
         if (state->value == zox_player_state_playing || state->value == zox_player_state_paused) {
             byte is_character_dead =
-                zox_valid(character->value) &&
-                zox_has(character->value, Dead);
+                zox_valid(character) &&
+                zox_has(character, Dead);
             if (is_character_dead) {
                 // start respawn timer!
                 //  + active red overlay
@@ -31,9 +30,12 @@ zox_sys2(Player3RespawnSystem) {
                 // zox_set(camera->value, Position3D, { float3_single(4) });
             }
         } else if (state->value == zox_player_state_respawning) {
-            byte is_character_alive = zox_valid(character->value) && !zox_has(character->value, Dead);
+            byte is_character_alive =
+                zox_valid(character) &&
+                !zox_has(character, Dead);
             if (is_character_alive) {
-                zox_loge("Respawn [cancel] as character alive??? [%s]", zox_get_name(character->value));
+                zox_loge("Respawn [cancel] as character alive??? [%s]",
+                    zox_getn(character));
                 state->value = zox_player_state_play_trigger;
                 dirty->value = zox_dirty_trigger;
             }
@@ -46,8 +48,8 @@ zox_sys2(Player3RespawnSystem) {
         // What happens after death??
         if (state->value == zox_player_state_respawn) {
             byte is_character_dead_or_gone =
-                !zox_valid(character->value) ||
-                zox_has(character->value, Dead);
+                !zox_valid(character) ||
+                zox_has(character, Dead);
             if (is_character_dead_or_gone) {
                 state->value = zox_player_state_play_trigger;
                 dirty->value = zox_dirty_trigger;
@@ -62,7 +64,7 @@ zox_sys2(Player3RespawnSystem) {
                     e,
                     Camera);
                 float3 spawned;
-                character->value = game_start_player_new(
+                character = game_start_player_new(
                     world,
                     e,
                     realm,
@@ -70,6 +72,11 @@ zox_sys2(Player3RespawnSystem) {
                     camera,
                     &spawned,
                     dbg_log);
+                if (!zox_valid(character)) {
+                    zox_loge("Respawn character failed");
+                    continue;
+                }
+                zox_link(world, e, Character, character);
                 spawn_arrow3D(
                     world,
                     spawned,

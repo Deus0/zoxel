@@ -3,10 +3,8 @@
 #include "maps.c"
 #include "link.c"
 #include "average.c"
-realm_clear_system(BiomeLinks);
 
 void define_systems_biomes(ecs *world) {
-    realm_clear_systemd(biomes, BiomeLinks);
     zox_system(
         BiomeBlocksDirtySystem,
         zoxp_update,
@@ -39,7 +37,6 @@ void define_systems_biomes(ecs *world) {
         [in] streaming.StreamDirty2,
         [in] streaming.StreamPosition2,
         [in] streaming.StreamLink,
-        [out] tunks.TunkLink,
         [out] biomes.BiomeLink,
         [none] streaming.Streamer
     );

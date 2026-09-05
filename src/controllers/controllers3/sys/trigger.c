@@ -11,19 +11,21 @@ zox_sys2(Player3DTriggerSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
-    zox_sys_in(CharacterLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
-        zox_sys_i(CharacterLink, character)
         if (state->value != zox_player_state_playing) {
             continue;
         }
+        entity character = zox_get_link(world, e, Character);
         entity camera = zox_get_link(world, e, Camera);
-        if (!zox_valid(character->value) || !zox_has(character->value, Character3) || !zox_valid(camera)) {
+        if (!zox_valid(character) ||
+            !zox_has(character, Character3) ||
+            !zox_valid(camera))
+        {
             continue;
         }
-        if (zox_has(character->value, DisableMovement)) {
+        if (zox_has(character, DisableMovement)) {
             continue;
         }
         byte camera_state = zox_getv(camera, CameraState);
@@ -85,15 +87,15 @@ zox_sys2(Player3DTriggerSystem) {
                 }
             }
         }
-        if (is_triggered_e && !zox_getv(character->value, TriggerActionE)) {
-            zox_setv(character->value, TriggerActionE, 1);
+        if (is_triggered_e && !zox_getv(character, TriggerActionE)) {
+            zox_setv(character, TriggerActionE, 1);
         }
         // used to be here, whats trigger e? idk
-        if (is_triggered_a && !zox_getv(character->value, TriggerActionA)) {
-            zox_setv(character->value, TriggerActionA, 1);
+        if (is_triggered_a && !zox_getv(character, TriggerActionA)) {
+            zox_setv(character, TriggerActionA, 1);
         }
-        if (is_triggered_b && !zox_getv(character->value, TriggerActionB)) {
-            zox_setv(character->value, TriggerActionB, 1);
+        if (is_triggered_b && !zox_getv(character, TriggerActionB)) {
+            zox_setv(character, TriggerActionB, 1);
         }
     }
 } zox_sys_end(Player3DTriggerSystem);

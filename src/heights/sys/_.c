@@ -15,7 +15,6 @@ void zox_systems_heights(ecs* world) {
     zox_system(
         LandfillChunkSystem,
         zoxp_update,
-        [in] tunks.TunkLink,
         [in] chunks3.ChunkPosition,
         [in] chunks.NodeDepth,
         [out] chunks.GenerateChunk,

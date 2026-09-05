@@ -14,10 +14,10 @@ zox_sys2(AuraRemoveSystem) {
         for (uint j = 0; j < dots_length; j++) {
         // for (int j = dotLinks->length - 1; j >= 0; j--) {
             entity dot = dots[j];
-            if (!zox_valid(dot) || !zox_has(dot, SkillLink)) {
+            if (!zox_valid(dot)) {
                 continue;
             }
-            zox_geter_value(dot, SkillLink, entity, aura)
+            entity aura = zox_get_link(world, dot, Skill);
             zox_geter_value(dot, SpawnerLink, entity, user)
             if (!zox_valid(aura) || !zox_valid(user)) {
                 // todo: remove dots when aura dies too

@@ -18,7 +18,6 @@ void zox_define_systems_vegetation(ecs* world) {
         zoxp_update,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkPosition,
-        [in] tunks.TunkLink,
         [out] chunks.GenerateChunk,
         [out] chunks3.VoxelNode,
         [none] terrains.TerrainChunk

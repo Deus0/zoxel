@@ -10,7 +10,7 @@ void player_state_game_end(
         return;
     }
     entity camera = zox_get_link(world, player, Camera);
-    entity character = zox_getv(player, CharacterLink);
+    entity character = zox_get_link(world, player, Character);
     if (dbg_log) {
         zox_log("Player [GameEnd] Camera [%s]\n - Destroying Character [%s]",
             zox_getn(camera),
@@ -26,13 +26,14 @@ void player_state_game_end(
         if (zox_has(camera, LocalRotation3D)) {
             zox_remove(camera, LocalRotation3D);
         }
-        zox_setv(camera, CharacterLink, 0);
+        // zox_unlink(world, camera, Character, character);
+        // zox_setv(camera, CharacterLink, 0);
     } else {
         zox_loge("[zox_player_state_the_end] Invalid [camera]");
     }
     if (zox_valid(character)) {
         zox_delete(character);
-        zox_setv(player, CharacterLink, 0);
+        // zox_setv(player, CharacterLink, 0);
     } else {
         zox_loge("[zox_player_state_the_end] Invalid [character]");
     }

@@ -53,7 +53,6 @@ zox_sys2(SkillsRealmSpawnSystem) {
                 1,
                 0.25f,
                 0.25f);
-            // add_to_SkillLinks(skills, e2);
             meta_skill_punch = e2;
         }
         // Shoot
@@ -75,7 +74,6 @@ zox_sys2(SkillsRealmSpawnSystem) {
                 1,
                 0.5f,
                 0.5f);
-            // add_to_SkillLinks(skills, e2);
         }
         // Aura Skill
         {
@@ -93,7 +91,6 @@ zox_sys2(SkillsRealmSpawnSystem) {
                 range,
                 0.5f,
                 0.5f);
-            // add_to_SkillLinks(skills, e2);
             meta_skill_aura_death = e2;
         }
 
@@ -110,7 +107,6 @@ zox_sys2(SkillsRealmSpawnSystem) {
                 "punch",
                 1,
                 2);
-            add_to_SkillLinks(skills, mana_punch);
         }*/
 
         /*meta_skill_aura_life = spawn_skill_aura_t(world,
@@ -122,7 +118,6 @@ zox_sys2(SkillsRealmSpawnSystem) {
             0.5f,
             0.5f
         );
-        // add_to_SkillLinks(skills, meta_skill_aura_life);
         meta_skill_aura_fire = spawn_skill_aura_t(world,
             "fire aura",
             -base_death_aura_damage * 0.5f,
@@ -131,8 +126,7 @@ zox_sys2(SkillsRealmSpawnSystem) {
             "aura_fire",
             0.5f,
             0.5f
-        );
-        // add_to_SkillLinks(skills, meta_skill_aura_fire);*/
+        );*/
         zox_logv("Realm [skills] [X] spawned.");
     }
 } zox_sys_end(SkillsRealmSpawnSystem);

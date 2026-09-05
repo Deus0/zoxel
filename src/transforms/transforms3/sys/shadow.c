@@ -1,4 +1,4 @@
-zox_sys2(ShadowPositionSystem) {
+/*zox_sys2(ShadowPositionSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ShadowLink);
@@ -6,15 +6,11 @@ zox_sys2(ShadowPositionSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ShadowLink, link);
         zox_sys_o(Position3D, position);
-
         if (!zox_valid(link->value)) {
             // zox_logw("link is invalid in Shadow Position System");
             continue;
         }
-
         set_position_from_parents(world, link->value, &position->value, float3_zero);
-
-        /*zox_sys_e();
-        zox_log("Shadowing from [%s] to [%s] at [%fx%fx%f]", zox_get_name(e), zox_get_name(link->value), position->value.x, position->value.y, position->value.z);*/
     }
 } zox_sys_end(ShadowPositionSystem);
+*/

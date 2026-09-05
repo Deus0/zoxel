@@ -13,10 +13,6 @@ zox_tag(Playlist);
 zoxc_byte(PlaylistEnabled);
 zoxc_byte(MusicPlaying);
 zoxc_entities(MusicLinks)
-// realm
-zoxc_byte(PlaylistPlaying);
-zoxc_entities(PlaylistLinks)
-zoxc_entity(PlaylistLink);
 // playlist mode
 zoxc_byte(PlaylistMode);
 // zoxc_arrayd(MusicData, int);
@@ -40,8 +36,5 @@ void zox_components_musics(ecs* world) {
     zoxd_byte(MusicPlaying);
     zoxd_entities(MusicLinks);
     // realm
-    zoxd_byte(PlaylistPlaying);
     zoxd_byte(PlaylistMode);
-    zoxd_entities(PlaylistLinks);
-    zoxd_entity(PlaylistLink);
 }

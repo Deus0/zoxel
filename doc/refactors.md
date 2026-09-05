@@ -48,18 +48,25 @@ UIs
     - For example screen fader is in 3 events
     
 ## Remove old links
-	- CanvasLink (mostly done)
-	- CharacterLink
+	- TextureLink
+	- TilemapLink
+	- SpawnerLink
+ 	- SkillResourceLink
+	- ParticlesEmitterLink
+	- NoteLinks
+	- RealmLink
+	- TerrainLink
+	- BiomeLink
+	- ChunkLink
 	- SpeakerLinks
-	- PlayerLink
-	-x CameraLink
 	- EntityLinks
 	- BlockLinks
 	- BiomeLinks
 	- ModelLinks (half done)
 	- CharacterLinks
-	- PlaylistLinks
-	- Remove clear systems realm_clear_system
+	- GizmoLink
+	- DeviceLink
+	- ZeviceLink
 
 Input Refactor
 - Make input actions events instead of systems

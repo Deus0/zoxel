@@ -28,7 +28,6 @@ zoxc_byte(MaxRenderDepth);
 zoxc_byte(RenderDistance);
 zoxc_byte(RenderDisabled);
 // Links
-zoxc_entity(MeshLink);
 zoxc_entity(MaterialLink);
 zoxc_byte(ShaderSourceIndex);
 zoxc_entity(ShaderLink); // links to a shader entity
@@ -95,7 +94,6 @@ void define_components_rendering(ecs *world) {
     // Properties
     zoxd_int2(TextureSize);
     zoxd_byte(MeshAlignment);
-    zoxd_entity(MeshLink);
     zoxd_byte(RenderDepth);
     zoxd_byte(MaxRenderDepth);
     zoxd_byte(RenderDistance);

@@ -12,7 +12,6 @@ zox_sys2(PlayerCharacterStatsSystem) {
         if (state->value != zox_dirty_active) {
             continue;
         }
-        // zox_geter(realm->value, StatLinks, stats);
         spawn_base_stats(world, e, realm->value);
         // add all attributes as 0
         iter it2 = zox_children(world, realm->value);

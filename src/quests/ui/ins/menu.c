@@ -1,6 +1,6 @@
 entity spawn_player_menu_quests(ecs* world, entity player) {
     entity canvas = zox_get_link(world, player, Canvas);
-    zox_geter_value(player, CharacterLink, entity, character);
+    entity character = zox_get_link(world, player, Character);
     color frame_fill = { 33, 33, 33, frame_alpha };
     color frame_outline = { 222, 222, 222, frame_alpha };
     byte label_font_size = 3 * ui_scale;

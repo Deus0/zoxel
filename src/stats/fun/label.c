@@ -56,28 +56,27 @@ uint get_label_player_stats(
         index += snprintf(buffer + index, size - index, "! invalid player\n");
         return index;
     }
-    zox_geter(player, CharacterLink, characterLink);
-    if (!zox_valid(characterLink->value)) {
+    entity character = zox_get_link(world, player, Character);
+    if (!zox_valid(character)) {
         index += snprintf(buffer + index, size - index, "[%s] has no character\n", zox_get_name(player));
         return index;
     }
-    // zox_geter(characterLink->value, StatLinks, stats);
-    // index = add_label_stat_level(world, characterLink->value, stats, StatSoul, buffer, size, index);
+    // index = add_label_stat_level(world, character, stats, StatSoul, buffer, size, index);
     /*for (int i = 0; i < stats->length; i++) {
         const entity stat = stats->value[i];
         if (!zox_valid(stat)) {
             continue;
         }
         if (zox_has(stat, StatState)) {
-            index = add_label_stat_state(world, characterLink->value, stat, buffer, size, index);
+            index = add_label_stat_state(world, character, stat, buffer, size, index);
         } else if (zox_has(stat, StatRegen)) {
-            index = add_label_stat_value(world, characterLink->value, stat, buffer, size, index);
+            index = add_label_stat_value(world, character, stat, buffer, size, index);
         } else if (zox_has(stat, StatAttribute)) {
-            index = add_label_stat_value(world, characterLink->value, stat, buffer, size, index);
+            index = add_label_stat_value(world, character, stat, buffer, size, index);
         }
     }*/
 
-    /*zox_geter(characterLink->value, DotLinks, dots);
+    /*zox_geter(character, DotLinks, dots);
     for (int i = 0; i < dots->length; i++) {
         const entity dot = dots->value[i];
         if (!zox_valid(dot)) {
@@ -93,13 +92,13 @@ uint get_label_player_element_links(ecs *world, const entity player, char *buffe
         index += snprintf(buffer + index, size - index, "! invalid player\n");
         return index;
     }
-    zox_geter(player, CharacterLink, characterLink);
-    if (!zox_valid(characterLink->value) || !zox_has(characterLink->value, ElementLinks)) {
+    entity character = zox_get_link(world, player, Character);
+    if (!zox_valid(character) || !zox_has(character, ElementLinks)) {
         index += snprintf(buffer + index, size - index, "[%s] has invalid character\n", zox_get_name(player));
         return index;
     }
-    zox_geter(characterLink->value, ElementLinks, elements);
-    index += snprintf(buffer + index, size - index, "[%s]'s elements [%i]\n", zox_get_name(characterLink->value), elements->length);
+    zox_geter(character, ElementLinks, elements);
+    index += snprintf(buffer + index, size - index, "[%s]'s elements [%i]\n", zox_get_name(character), elements->length);
     for (int i = 0; i < elements->length; i++) {
         index += snprintf(buffer + index, size - index, " - [%i] %s\n", i, zox_get_name(elements->value[i]));
     }
@@ -116,49 +115,3 @@ int debug_can_jump(ecs *world, entity character, char buffer[], int buffer_size,
     buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, " grounded [%i] jump [%i ms]", can_jump, is_jump);
     return buffer_index;
 }
-
-/*int get_label_local_character_level(ecs *world, const entity character, char buffer[], int buffer_size, int buffer_index) {
- *    if (!character) return buffer_index;
- *    const StatLinks *stats = zox_get(character, StatLinks)
- *    find_array_element_with_tag(stats, StatSoul, soul_stat)
- *    if (!zox_has(soul_stat, StatValue)) return buffer_index;
- *    float level = zox_getv(soul_stat, StatValue)
- *    float experience_value = zox_getv(soul_stat, ExperienceValue)
- *    float experience_max = zox_getv(soul_stat, ExperienceMax)
- *    buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "lvl %i [%i/%i]\n", (int) level, (int) experience_value, (int) experience_max);
- *    return buffer_index;
- * }
- *
- *
- * int get_label_children(ecs *world, const entity e, char buffer[], int buffer_size, int buffer_index) {
- *    if (!e || !zox_has(e, Children)) return buffer_index;
- *    const Children *children = zox_get(e, Children)
- *    buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "[%s]'s children [%i]\n", zox_get_name(e), children->length);
- *    for (int i = 0; i < children->length; i++) {
- *        buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "  [%i] %s\n", i, zox_get_name(children->value[i]));
- *    }
- *    return buffer_index;
- * }
- *
- * int get_label_local_character_health(ecs *world, const entity character, char buffer[], int buffer_size, int buffer_index) {
- *    if (character) {
- *        const StatLinks *statLinks = zox_get(character, StatLinks)
- *        find_array_element_with_tag(statLinks, StatHealth, health_stat)
- *
- *        if (!zox_has(health_stat, StatValue)) return buffer_index;
- *
- *        float health_value = zox_getv(health_stat, StatValue)
- *        float health_value_max = zox_getv(health_stat, StatValueMax)
- *
- *        //if (!zox_has(meta_stat_health, ZoxName)) zox_log(" ! meta_stat_health has no ZoxName\n")
- *        //if (!zox_has(health_stat, ZoxName)) zox_log(" ! health_stat has no ZoxName\n")
- *        if (!zox_has(health_stat, ZoxName)) return buffer_index;
- *
- *        const ZoxName *health_name = zox_get(health_stat, ZoxName)
- *        char *name_string = convert_zext_to_text(health_name->value, health_name->length);
- *        // snprintf(text, hierarchy_max_line_characters, "%s", health_name_string);
- *        buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, " %s [%i/%i] ", name_string, (int) health_value, (int) health_value_max);
- *        free(name_string);
- *    }
- *    return buffer_index;
- * }*/

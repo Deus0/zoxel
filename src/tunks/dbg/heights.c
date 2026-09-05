@@ -6,13 +6,11 @@ zox_sys2(HeightsTextureSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TunkLink);
     zox_sys_out(GenerateTexture);
     zox_sys_out(TextureData);
     zox_sys_out(TextureSize);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(TunkLink, tunk);
         zox_sys_o(GenerateTexture, generate);
         zox_sys_o(TextureData, data);
         zox_sys_o(TextureSize, size);
@@ -20,15 +18,19 @@ zox_sys2(HeightsTextureSystem) {
             continue;
         }
         // NOTE: Validate Tunks
+        entity tunk = zox_get_link(world, e, Tunk);
 #ifdef zox_safety_checks
-        if (!zox_valid(tunk->value) || !zox_has(tunk->value, GenerateTunk) || !zox_has(tunk->value, HeightMap)) {
+        if (!zox_valid(tunk) ||
+            !zox_has(tunk, GenerateTunk) ||
+            !zox_has(tunk, HeightMap))
+        {
             size->value = int2_single(0);
             resize_TextureData(data, size->value.x * size->value.y);
             zox_add(e, TextureDirty);
             continue;
         }
 #endif
-        entity terrain = zox_get_parent(world, tunk->value);
+        entity terrain = zox_get_parent(world, tunk);
 #ifdef zox_safety_checks
         if (!zox_valid(terrain)) {
             zox_loge("Invalid [Terrain] for Texture [%s]", zox_get_name(e));
@@ -36,16 +38,16 @@ zox_sys2(HeightsTextureSystem) {
         }
 #endif
         // NOTE: Generation Delay for Tunks
-        if (zox_getv(tunk->value, GenerateTunk)) {
+        if (zox_getv(tunk, GenerateTunk)) {
             if (dbg_log) {
-                zox_logw("Tunk Still Generating [%s]", zox_get_name(tunk->value));
+                zox_logw("Tunk Still Generating [%s]", zox_get_name(tunk));
             }
             continue;
         }
-        byte lod = zox_getv(tunk->value, TunkLod);
+        byte lod = zox_getv(tunk, TunkLod);
         byte length = octree_size(lod);
         size->value = int2_single(length);
-        const HeightMap* height_map = zox_get(tunk->value, HeightMap);
+        const HeightMap* height_map = zox_get(tunk, HeightMap);
         if (length * length != height_map->length) {
             zox_loge("Invalid [Tunk] [Heightmap] for Texture [%s]", zox_get_name(e));
             continue;

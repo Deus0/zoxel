@@ -42,12 +42,4 @@ void zox_systems_skills(ecs *world) {
         [in] skills.SkillDamageMax,
         [none] skills.Shoot
     );
-    /*zox_system_1(
-        CharacterSkillsSpawnSystem,
-        zoxp_spawn,
-        [in] characters.GenerateCharacter,
-        [in] realms.RealmLink,
-        [out] skills.SkillLinks
-        // [none] !players.PlayerLink
-    );*/
 }

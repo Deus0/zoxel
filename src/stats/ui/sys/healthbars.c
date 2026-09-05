@@ -64,9 +64,9 @@ zox_sys2(HealthbarSpawnerSystem) {
         // Statbar stuff
         entity bar = spawns.y;
         zox_add(bar, Statbar);
-        zox_setv(bar, StatLink, health);
+        zox_link(world, bar, Stat, health);
         // Text
-        zox_setv(spawns.z, StatLink, health);
+        zox_link(world, spawns.z, Stat, health);
         zox_add(spawns.z, StatsLabel);
     }
 } zox_sys_end(HealthbarSpawnerSystem);

@@ -1,5 +1,23 @@
 # Done
 
+-x Block Damage Overlay
+	-x use custom material
+	-x prefab_cube_overlay
+-x Block Overlay to use depth change instead
+	-x set depth at 0
+	-x use depth offset in render system for it
+-x MeshLink
+-x VoxLink
+-x Remove clear systems realm_clear_system
+-x SkillLink
+-x PlaylistLink/PlaylistLinks
+-x AppLink
+-x CanvasLink
+-x CharacterLink
+-x RegionLink
+-x TunkLink
+-x PlayerLink
+-x CameraLink
 -x Tag quests, some will be Greetings, others Quester?
 -x Add quest (GiveQuest) on npc - 5% chance
 -x Add dialoguenode for giving me quest

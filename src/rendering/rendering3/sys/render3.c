@@ -58,7 +58,6 @@ zox_sys2(Basic3RenderSystem) {
             zox_log("   - At [%fx%fx%f]", position.x, position.y, position.z);
             zox_log("   - GPU: Mesh [%ix%i]", mesh->value.x, mesh->value.y);
             zox_log("   - Attributes: %i %i %i", attributes->vertex_position, attributes->transform_matrix, attributes->color);
-            // zox_log("Rendering Basic3D Mesh [%s] [%i]: %s, Brightness [%f], Alpha [%f]", zox_get_name(e), indicies->length, alpha->value < 1 ? "Transparent" : "Opaque", brightness->value, alpha->value);
         }
         zox_gpu_disable_attribute(attributes->vertex_position);
         zox_gpu_reset_mesh();

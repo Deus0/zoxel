@@ -58,9 +58,18 @@ zox_sys2(ActiveActionHoldSystem) {
         }
         entity texture = zox_getv(aaction->value, TextureLink);
         if (zox_valid(texture)) {
-            e2 = spawn_cube_textured(world, prefab_cube_textured, texture, float3_zero, scale);
+            e2 = spawn_cube_textured(
+                world,
+                prefab_cube_textured,
+                texture,
+                float3_zero,
+                scale);
         } else {
-            e2 = spawn_cube(world, prefab_cube, float3_zero, scale);
+            e2 = spawn_cube(
+                world,
+                prefab_cube,
+                float3_zero,
+                scale);
         }
         zox_set_parent(world, e2, bone_parent);
         zox_add(e2, HeldAction);

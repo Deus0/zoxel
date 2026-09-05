@@ -72,11 +72,4 @@ void zox_define_systems_transforms3(ecs *world) {
         [out] transforms.TransformMatrix,
         [none] !transforms.DisableTransform
     );
-    // TODO: Add Lerp Slower Follow
-    /*zox_system(
-        ShadowPositionSystem,
-        zoxp_transforms,
-        [in] transforms3.ShadowLink,
-        [out] transforms3.Position3D
-    );*/
 }

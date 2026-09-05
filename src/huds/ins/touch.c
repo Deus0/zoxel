@@ -70,11 +70,6 @@ entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas)
         );
         zox_set_parent(world, b, e);
     }
-    // link to character
-    /*zox_geter(player, CharacterLink, characterLink);
-    zox_muter(characterLink->value, ElementLinks, elementLinks);
-    add_to_ElementLinks(elementLinks, e);
-    zox_set(e, ElementHolder, { characterLink->value });*/
     return e;
 }
 

@@ -5,9 +5,11 @@ void player_start_game2D_delayed(ecs *world, entity player) {
     zox_set(player, PlayerState, { zox_player_state_starting });
     zox_set(player, PlayerStateDirty, { zox_dirty_trigger });
     // spawn character
-    entity character = spawn_character2_player(world, prefab_game2_player);
+    entity character = spawn_character2_player(
+        world,
+        prefab_game2_player);
     zox_set(character, PlayerLink, { player });
-    zox_set(player, CharacterLink, { character });
+    zox_link(world, player, Character, character);
     entity camera = zox_get_link(world, player, Camera);
     if (!zox_valid(camera)) {
         zox_log_error("Camera is gone from player.");
@@ -21,9 +23,9 @@ void player_start_game2D_delayed(ecs *world, entity player) {
     zox_set(camera, EternalRotation, { float4_identity });
     // character-camera
     zox_link(world, character, Camera, camera);
-    zox_set(camera, CharacterLink, { character });
-    zox_set(camera, CameraTarget, { character });
-    zox_set(camera, Character2DLink, { character });
+    zox_link(world, camera, Character, character);
+    zox_setv(camera, CameraTarget, character);
+    zox_setv(camera, Character2DLink, character);
 }
 
 zox_sys2(PlayerGame2StartSystem) {

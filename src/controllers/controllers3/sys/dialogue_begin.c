@@ -25,7 +25,7 @@ zox_sys2(DialogueBeginSystem) {
         if (player_state != zox_player_state_playing) {
             continue;
         }
-        zox_geter_value(player->value, CharacterLink, entity, character);
+        entity character = zox_get_link(world, player->value, Character);
         entity camera = zox_get_link(world, player->value, Camera);
         entity canvas = zox_get_link(world, player->value, Canvas);
         if (!zox_valid(character) ||

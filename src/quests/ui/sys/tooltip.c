@@ -28,7 +28,7 @@ zox_sys2(QuestIconTooltipSystem) {
         char result[128];
         // TODO: Get Objectives
         if (zox_has(e2, SlayQuest)) {
-            zox_geter_value(e2, CharacterLink, entity, character);
+            entity character = zox_get_link(world, e2, Character);
             // zox_geter_value(e2, QuestValue, byte, value);
             zox_geter_value(e2, QuestTarget, byte, target);
             sprintf(result, "%s\n- slay %s x%i", name, zox_get_name(character), target);

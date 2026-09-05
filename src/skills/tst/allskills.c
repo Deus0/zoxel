@@ -10,7 +10,7 @@ void zox_tst_all_skills(ecs* world, ClickEventData data) {
     if (!zox_valid(player)) {
         return;
     }
-    entity character = zox_getv(player, CharacterLink);
+    entity character = zox_get_link(world, player, Character);
     if (!zox_valid(character)) {
         return;
     }
@@ -23,7 +23,6 @@ void zox_tst_all_skills(ecs* world, ClickEventData data) {
         world,
         character,
         zox_id(Skillbook));
-    // zox_geter(realm, SkillLinks, rskills);
     zox_log("Giving [%s] [X] Skills.",
             zox_getn(character)); //,
             //rskills->length);

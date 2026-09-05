@@ -6,10 +6,8 @@
 #include "character.c"
 #include "world_labels.c"
 #include "character_player.c"
-// realm_clear_system(StatLinks);
 
 void zox_systems_stats(ecs *world) {
-    // realm_clear_systemd(stats, StatLinks);
     // debuff system here, skills will add debuffs
     zox_system(
         stat_regen_system,

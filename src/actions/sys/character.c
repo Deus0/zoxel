@@ -23,32 +23,5 @@ zox_sys2(CharacterActionsSpawnSystem) {
                 }
             }
         }
-        // If Player, Fill with Blank!
-        /*if (zox_has(e, PlayerLink)) {
-            for (int j = actions->length; j < 8; j++) {
-                add_to_ActionLinks(actions, 0);
-            }
-        }*/
-
-        /*if (test_actions_skills) {
-            if (meta_skill_aura_death) {
-                actions->value[place_index++] = spawn_user_skill(world, meta_skill_aura_death, data->e);
-            }
-            if (meta_skill_aura_life) {
-                actions->value[place_index++] = spawn_user_skill(world, meta_skill_aura_life, data->e);
-            }
-            if (meta_skill_aura_fire) {
-                actions->value[place_index++] = spawn_user_skill(world, meta_skill_aura_fire, data->e);
-            }
-        }
-        if (test_actions_blocks) {
-            if (meta_item_block_dungeon_core) {
-                actions->value[place_index++] = spawn_user_item(world, meta_item_block_dungeon_core, data->e);
-            }
-            if (meta_item_block_dark) {
-                actions->value[place_index++] = spawn_user_item(world, meta_item_block_dark, data->e);
-                zox_set(actions->value[place_index - 1], Quantity, { 12 })
-            }
-        }*/
     }
 } zox_sys_end(CharacterActionsSpawnSystem);

@@ -1,5 +1,5 @@
 entity spawn_player_menu_skills(ecs* world, entity player) {
-    zox_geter_value(player, CharacterLink, entity, character);
+    entity character = zox_get_link(world, player, Character);
     if (!zox_valid(character)) {
         zox_loge("Player has no Character", zox_get_name(player));
         return 0;

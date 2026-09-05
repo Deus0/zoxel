@@ -139,14 +139,15 @@ entity2 spawn_realm_body_part2(
         seed,
         texture_size,
         slot_type);
-    // zox_set_parent(world, e.x, realm);
-    // zox_set_parent(world, e.y, realm);
-    // add_to_ItemLinks(items, spawn.x);
-    // add_to_ModelLinks(models, spawn.y);
     if (dbg_log) {
         zox_log("Model [%s]:", name);
-        zox_log("   Depth [%i] Length [%i]", model_depth, model_length);
-        zox_log("   Size [%ix%ix%i]", model_size.x, model_size.y, model_size.z);
+        zox_log("   Depth [%i] Length [%i]",
+            model_depth,
+            model_length);
+        zox_log("   Size [%ix%ix%i]",
+            model_size.x,
+            model_size.y,
+            model_size.z);
     }
     return e;
 }

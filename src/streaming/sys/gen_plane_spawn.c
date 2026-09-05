@@ -28,14 +28,12 @@
 
     zox_sys_begin();
     zox_sys_in(ChunkPosition);
-    zox_sys_in(VoxLink);
     zox_sys_in(RenderDistance);
     zox_sys_out(ChunkNeighbors);
 
     for (int i = 0; i < it->count; i++) {
 
         // zox_sys_e();
-        zox_sys_i(VoxLink, voxLink);
         zox_sys_i(RenderDistance, renderDistance);
         zox_sys_i(ChunkPosition, chunkPosition);
         zox_sys_o(ChunkNeighbors, chunkNeighbors);

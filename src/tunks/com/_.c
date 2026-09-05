@@ -4,7 +4,6 @@ zox_tag(RegionTexture);
 zox_tag(HeightsTexture);
 zoxc_byte(GenerateTunk);
 zoxc_byte(TunkLod);
-zoxc_entity(TunkLink);
 zoxc_int2(TunkPosition);
 zoxc_arrayd(BiomeMap, byte);
 zoxc_arrayd(HeightMap, byte);
@@ -21,7 +20,6 @@ void define_components_tunks(ecs *world) {
     zoxd_tag(HeightsTexture);
     zoxd_byte(GenerateTunk);
     zoxd_byte(TunkLod);
-    zoxd_entity(TunkLink);
     zoxd_int2(TunkPosition);
     zoxd_arrayd(BiomeMap);
     zoxd_arrayd(HeightMap);

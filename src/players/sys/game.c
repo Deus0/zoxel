@@ -29,11 +29,6 @@ zox_sys2(PlayerGameStateSystem) {
                     zox_log("Game Setting player [%s] to [The End]", zox_getn(e2));
                 }
                 zox_setv(e2, PlayerState, zox_player_state_the_end);
-                // zox_set(camera, CameraBlur, { 0 });
-                /*entity character = zox_getv(e2, CharacterLink);
-                if (zox_valid(character)) {
-                    zox_delete(character);
-                }*/
             } else if (state->value == zox_game_terrain_spawn) {
                 if (dbg_log) {
                     zox_log("Game Setting player [%s] to Loading", zox_get_name(e2));

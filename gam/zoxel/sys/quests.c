@@ -18,7 +18,6 @@ zox_sys2(QuestsRealmSpawnSystem) {
                 prefab_quest,
                 "find bob",
                 "discord");
-            // add_to_QuestLinks(quests, quest);
         }
         if (!characters->length) {
             zox_logw("no characters to spawn realm quests with");
@@ -36,8 +35,7 @@ zox_sys2(QuestsRealmSpawnSystem) {
             zox_set(quest, QuestValue, { 0 });
             zox_set(quest, QuestTarget, { 10 });
             entity slime = characters->value[0];
-            zox_set(quest, CharacterLink, { slime });
-            // add_to_QuestLinks(quests, quest);
+            zox_link(world, quest, Character, slime);
         }
         zox_logv("Realm [quests] [X] spawned.");
     }

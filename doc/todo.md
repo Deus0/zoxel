@@ -1,8 +1,5 @@
 # Todo
 
-- "[Landfill] Depth Invalid:" bug
-- spawn dialogue inside character spawning for realm, so its in one spot
-
 ## Next
 - Fix Font imports for "?"
 	- test marker change with quest
@@ -15,6 +12,8 @@
 - Refactor character mesh from its prefab
 	- vox / vox instance will be child
 	- test function to set it as unique when decaying its mesh
+- "[Landfill] Depth Invalid:" bug
+- spawn dialogue inside character spawning for realm, so its in one spot
 	
 ## Observers
 - We can add a On Tag observer for dirty tags

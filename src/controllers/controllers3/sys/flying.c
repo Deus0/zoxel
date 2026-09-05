@@ -4,16 +4,14 @@ zox_sys2(PlayerFlySystem) {
     zox_sys_begin();
     zox_sys_in(PlayerState);
     zox_sys_in(DeviceMode);
-    zox_sys_in(CharacterLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
-        zox_sys_i(CharacterLink, character_link);
         zox_sys_i(DeviceMode, mode);
         if (state->value != zox_player_state_playing) {
             continue;
         }
-        entity character = character_link->value;
+        entity character = zox_get_link(world, e, Character);
         if (!zox_valid(character) || !zox_has(character, Character3)) {
             continue;
         }

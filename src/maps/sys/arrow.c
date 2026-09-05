@@ -11,7 +11,7 @@ zox_sys2(MapArrowSystem) {
         if (!zox_valid(player->value)) {
             continue;
         }
-        entity character = zox_getv(player->value, CharacterLink);
+        entity character = zox_get_link(world, player->value, Character);
         if (!zox_valid(character)) {
             continue;
         }
