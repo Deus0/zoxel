@@ -7,7 +7,6 @@ zox_sys2(BricksModelGenerationSystem) {
     zox_sys_in(VoxType);
     zox_sys_out(GenerateModel);
     zox_sys_out(VoxelNode);
-    // zox_sys_out(VoxelNodeDirty);
     zox_sys_out(NodeDepth);
     zox_sys_out(ColorRGBs);
     for (int i = 0; i < it->count; i++) {
@@ -17,7 +16,6 @@ zox_sys2(BricksModelGenerationSystem) {
         zox_sys_i(VoxType, gentype);
         zox_sys_o(GenerateModel, generate);
         zox_sys_o(VoxelNode, node);
-        // zox_sys_o(VoxelNodeDirty, dirty);
         zox_sys_o(NodeDepth, depth);
         zox_sys_o(ColorRGBs, colors);
         if (generate->value != zox_generate_model_run) {
@@ -30,9 +28,16 @@ zox_sys2(BricksModelGenerationSystem) {
             zox_loge("[%s] has no SecondaryColor", zox_getn(e));
             continue;
         }
-        byte unique_colors = zox_has(e, VoxUniqueColors) ? zox_getv(e, VoxUniqueColors) : default_unique_colors;
-        float color_rr = zox_has(e, VoxColorRange) ? zox_getv(e, VoxColorRange) : default_color_range;
-        float2 color_r = (float2) { 1 - color_rr, 1 + color_rr };
+        byte unique_colors = zox_has(e, VoxUniqueColors) ?
+            zox_getv(e, VoxUniqueColors) :
+            default_unique_colors;
+        float color_rr = zox_has(e, VoxColorRange) ?
+            zox_getv(e, VoxColorRange) :
+            default_color_range;
+        float2 color_r = (float2) {
+            1 - color_rr,
+            1 + color_rr
+        };
         byte node_depth = depth->value;
         // byte colors_count = unique_colors + zox_block_outlines;
         resize_ColorRGBs(colors, 0);
@@ -60,8 +65,9 @@ zox_sys2(BricksModelGenerationSystem) {
             vox_outlines(node, depth->value, black_voxel);
         }
         // write_unlock_VoxelNode(node);
-        generate->value = zox_has(e, BakeModel) ? zox_generate_model_bake : zox_generate_model_end;
-        // dirty->value = zox_dirty_trigger;
+        generate->value = zox_has(e, BakeModel) ?
+            zox_generate_model_bake :
+            zox_generate_model_end;
         zox_add(e, VoxelNodeDirty);
         if (dbg_log) {
             zox_log("Generated Vox [%s] Type [%i] Depth [%i]", zox_get_name(e), gentype->value, depth->value);

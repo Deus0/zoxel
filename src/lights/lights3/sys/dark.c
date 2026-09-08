@@ -280,7 +280,7 @@ zox_sys2(DarkLightSystem) {
     zox_sys_in(BlockManagerLink);
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxelNode);
-    zox_sys_out(LightNodeLock);
+    zox_sys_out(LightLock);
     zox_sys_out(LightNodeDepth);
     zox_sys_out(LightNode);
     zox_sys_out(DarkQueue);
@@ -293,7 +293,7 @@ zox_sys2(DarkLightSystem) {
         zox_sys_i(BlockManagerLink, manager);
         zox_sys_i(VoxelNode, root_vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
-        zox_sys_o(LightNodeLock, lightlock);
+        zox_sys_o(LightLock, lightlock);
         zox_sys_o(LightNodeDepth, depthl);
         zox_sys_o(LightNode, root_lnode);
         zox_sys_o(DarkQueue, dark_queue);

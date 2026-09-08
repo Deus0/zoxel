@@ -11,12 +11,10 @@ zox_tag(MeshColorsDirty);
 zox_tag(RenderTextureDirty);
 zox_tag(MeshBuilt);
 zox_tag(MeshColorsBuilt);
-
-zoxc_entity(PreparingMesh);
-zoxc_entity(ActiveMesh);
-// zox_tag(PreparingMesh);
-// zox_tag(ActiveMesh);
-
+// zoxc_entity(PreparingMesh);
+// zoxc_entity(ActiveMesh);
+zox_tag(PreparingMesh);
+zox_tag(ActiveMesh);
 // Properties
 zoxc_int2(TextureSize);
 zoxc_float(Brightness);

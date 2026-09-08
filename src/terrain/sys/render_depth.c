@@ -15,7 +15,8 @@ zox_sys2(ChunkLodSystem) {
         // Delays our lod changes until generation finishes
         if (render_depth_dirty->value == zox_chunk_lod_dirty_generating) {
             if (!zox_has(e, GenerateChunk) &&
-                !zox_has(e, VoxelNodeDirty)) {
+                !zox_has(e, VoxelNodeDirty))
+            {
                 render_depth_dirty->value = zox_chunk_lod_dirty_spawn;
             }
             continue;
@@ -42,5 +43,9 @@ zox_sys2(ChunkLodSystem) {
             }
         }
         render_depth_dirty->value = zox_chunk_lod_dirty_generating;
+        if (dbg_log) {
+            zox_log("Chunk Lod [%s] -> dirty_generating",
+                zox_getn(e));
+        }
     }
 } zox_sys_end(ChunkLodSystem);

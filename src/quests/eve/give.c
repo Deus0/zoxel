@@ -6,7 +6,7 @@ void zox_node_give_quest(
     entity process,
     entity node)
 {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     if (!zox_valid(node)) {
         zox_loge("[zox_node_give_quest] Invalid [node]");
         return;

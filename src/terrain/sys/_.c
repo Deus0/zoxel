@@ -14,8 +14,6 @@
 #include "spawn_queue.c"
 // generation
 #include "render_depth.c"
-#include "landfill.c"
-#include "vegetation.c"
 
 // Note: Updates on VoxelNode has to be done in PostLoad, away from use of Voxels, due to the cleaning step
 void define_systems_terrain(ecs *world) {

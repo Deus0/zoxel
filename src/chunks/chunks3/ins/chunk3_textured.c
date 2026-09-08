@@ -1,5 +1,7 @@
+extern void initialize_light_lock(ecs*, entity);
+
 // NOTE: Somethings here can be calculated at terrain level
-entity spawn_terrain_chunk(
+entity spawn_chunk3_textured(
     ecs* world,
     entity prefab,
     entity realm,
@@ -37,6 +39,8 @@ entity spawn_terrain_chunk(
     }
     // Links
     zox_set_parent(world, e, terrain);
+    zox_link(world, e, Tilemap, tilemap);
+    zox_link(world, e, Realm, realm);
     zox_setv(e, TilemapLink, tilemap);
     zox_setv(e, RealmLink, realm);
     zox_setv(e, BlockManagerLink, realm);
@@ -52,10 +56,6 @@ entity spawn_terrain_chunk(
     zox_setv(e, Bounds3D, bounds);
     // Initialize our spinlocks
     initialize_voxel_lock(world, e);
-    spinlock llock;
-    spinlock_init(&llock);
-    zox_setv(e, LightNodeLock, llock);
-    // Events
-    // zox_setv(e, ChunkLodDirty, zox_chunk_lod_dirty_start);
+    initialize_light_lock(world, e);
     return e;
 }

@@ -12,7 +12,9 @@ static inline byte is_node_solid(
     if (!value) {
         return 0;
     }
-    return solidity ? solidity[value - 1] : 1;
+    return solidity ?
+        solidity[value - 1] :
+        1;
 }
 
 // delves down a voxel node, but only one one side
@@ -81,13 +83,21 @@ static inline byte build_voxel_sides(
     byte direction)
 {
     int3 positioni = byte3_to_int3(position);
-    const VoxelNode* adjacent_node = get_adjacentn_VoxelNode(neighbor_voxels, root, positioni, depth, direction);
+    const VoxelNode* adjacent_node = get_adjacentn_VoxelNode(
+        neighbor_voxels,
+        root,
+        positioni,
+        depth,
+        direction);
+    // NOTE: Edge of World Voxels
     if (!adjacent_node) {
         // NOTE: Adds rendered facefor top of world
         if (direction == direction_up) {
             return 1;
         }
-        return 0;
+        // Temp show sides
+        return 1;
+        // return 0;
     }
     if (zox_dbg_render_all_sides) {
         return 1;

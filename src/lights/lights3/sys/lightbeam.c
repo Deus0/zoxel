@@ -96,7 +96,7 @@ zox_sys2(LightBeamSystem) {
     zox_sys_in(BlockManagerLink);
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkNeighbors);
-    zox_sys_out(LightNodeLock);
+    zox_sys_out(LightLock);
     zox_sys_out(SunlightQueue);
     zox_sys_out(LightQueue);
     zox_sys_out(LightNode);
@@ -109,7 +109,7 @@ zox_sys2(LightBeamSystem) {
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_i(BlockManagerLink, manager);
         zox_sys_i(VoxelNode, root_vnode);
-        zox_sys_o(LightNodeLock, lightlock);
+        zox_sys_o(LightLock, lightlock);
         zox_sys_o(SunlightQueue, sunlight_queue);
         zox_sys_o(LightQueue, floodlight_queue);
         zox_sys_o(LightNode, root_lights);

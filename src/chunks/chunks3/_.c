@@ -1,28 +1,27 @@
 /*
- * +------------------------------------------------------------------+
- * | Zox Module: Chunks3                                              |
- * |                                                                  |
- * |  Generation - Octrees - Meshing - Spatial - Chunk State          |
- * |                                                                  |
- * +------------------------------------------------------------------+
+ * +------------------------------------------------------+
+ * | Zox Module: Chunks3                                  |
+ * |                                                      |
+ * |  Generation - Octrees - Meshing - Spatial - Chunk    |
+ * |                                                      |
+ * +------------------------------------------------------+
  *
  *      - core voxel code
  *      - octree node, goes down n levels
  *      - can be rendered as cubes and optimized triangles
  *
  * */
-
 #include "set/_.c"
 #include "mcr/_.c"
 #include "com/_.c"
 #include "dat/_.c"
 #include "fun/_.c"
 #include "pre/_.c"
+#include "ins/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
 #include "tst/_.c"
 #include "io/_.c"
-// #include "animations/_.c"
 
 void import_chunks3(ecs* world) {
     zox_module(chunks3);

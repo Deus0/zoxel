@@ -117,8 +117,8 @@ zox_sys2(TunkLodSystem) {
             zox_setv(chunk, RenderDepth, tunk_render_depth);
             zox_setv(chunk, ChunkLodDirty, zox_chunk_lod_dirty_start);
             // Stop the active building
-            entity active_mesh = zox_getv(chunk, ActiveMesh);
-            // entity active_mesh = zox_get_link(world, chunk, ActiveMesh);
+            // entity active_mesh = zox_getv(chunk, ActiveMesh);
+            entity active_mesh = zox_get_link(world, chunk, ActiveMesh);
             if (zox_valid(active_mesh) &&
                 !zox_has(active_mesh, BuildDisabled))
             {

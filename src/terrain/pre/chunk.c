@@ -4,11 +4,11 @@ entity spawn_prefab_chunk_terrain(
 {
     zox_prefab_child(prefab);
     zox_prefab_name("chunk_terrain");
+    zox_setv(e, Seed, 0);
     zox_add(e, TerrainChunk);
     zox_add(e, Saver);
     zox_add(e, StreamedChunk);
     zox_add(e, DisableTransform);
-    zox_setv(e, Seed, 0);
     zox_set(e, ChunkEntities, { 0 });
     prefab_add_lights3(world, e, 0);
     // Events

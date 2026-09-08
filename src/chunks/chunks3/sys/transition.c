@@ -10,14 +10,14 @@ zox_sys2(ChunkMeshTransitionSystem) {
     zox_sys_begin();
     zox_sys_in(ChunkLodDirty);
     zox_sys_out(ChunkMeshTimer);
-    zox_sys_out(ActiveMesh);
-    zox_sys_out(PreparingMesh);
+    // zox_sys_out(ActiveMesh);
+    // zox_sys_out(PreparingMesh);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ChunkLodDirty, dirty);
         zox_sys_o(ChunkMeshTimer, timer);
-        zox_sys_o(ActiveMesh, active);
-        zox_sys_o(PreparingMesh, preparing);
+        // zox_sys_o(ActiveMesh, active);
+        // zox_sys_o(PreparingMesh, preparing);
         if (dirty->value != zox_chunk_lod_dirty_toggle) {
             continue;
         }
@@ -25,7 +25,8 @@ zox_sys2(ChunkMeshTransitionSystem) {
             zox_current_time - timer->value < transition_speed) {
             continue;
         }
-        entity preparing_mesh = preparing->value; //  zox_get_link(world, e, PreparingMesh);
+        // entity preparing_mesh = preparing->value; //  zox_get_link(world, e, PreparingMesh);
+        entity preparing_mesh = zox_get_link(world, e, PreparingMesh);
         // Enable to make sure it starts updating!
         if (!zox_valid(preparing_mesh)) {
             // zox_loge("No Preparing Mesh %s", zox_sys_e_name);
@@ -38,9 +39,10 @@ zox_sys2(ChunkMeshTransitionSystem) {
             timer->value = zox_current_time;
             continue;
         }
-        entity active_mesh = zox_valid(active->value) ?
+        /*entity active_mesh = zox_valid(active->value) ?
             active->value :
-            0;
+            0;*/
+        entity active_mesh = zox_get_link(world, e, ActiveMesh);
         // zox_get_link(world, e, ActiveMesh);
         // Make sure old mesh is not building
         // It actually tries to update lighting of it and flickers dark
@@ -80,11 +82,12 @@ zox_sys2(ChunkMeshTransitionSystem) {
         }
         if (active_mesh) {
             // active->value = 0;
-            // zox_unlink(world, e, ActiveMesh, active_mesh);
+            zox_unlink(world, e, ActiveMesh, active_mesh);
         }
-        active->value = preparing_mesh;
-        preparing->value = 0;
-        // zox_link(world, e, ActiveMesh, preparing_mesh);
+        // active->value = preparing_mesh;
+        // preparing->value = 0;
+        zox_unlink(world, e, PreparingMesh, preparing_mesh);
+        zox_link(world, e, ActiveMesh, preparing_mesh);
         if (zox_has(preparing_mesh, Disabled)) {
             zox_remove(preparing_mesh, Disabled);
         }

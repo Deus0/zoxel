@@ -1,7 +1,10 @@
-extern entity prefab_vox;
 entity dbg_chunk3_mass;
 
-void zox_dbg_spawn_chunk3_mass(ecs* world, ClickEventData data) {
+void zox_dbg_spawn_chunk3_mass(
+    ecs* world,
+    ClickEventData data)
+{
+    entity player = data.clicker;
     if (zox_valid(dbg_chunk3_mass)) {
         zox_log("+ Deleting: Mass Spawn [Chunk3]");
         zox_delete(dbg_chunk3_mass);
@@ -9,12 +12,11 @@ void zox_dbg_spawn_chunk3_mass(ecs* world, ClickEventData data) {
     }
     // byte dbg_inspector = 1;
     zox_log("Running Test: Mass Spawn [Chunk3]");
-    entity player = dbg_player;
     entity camera = zox_get_link(world, player, Camera);
     if (!zox_valid(camera)) {
         return;
     }
-    entity prefab = prefab_vox; // prefab_chunk
+    entity prefab = prefab_vox;
     float scale = 1;
     byte depth = block_depth;
     float block_scale = 1.0f / 32.0f;
@@ -36,11 +38,11 @@ void zox_dbg_spawn_chunk3_mass(ecs* world, ClickEventData data) {
         e2_position.z += frand_range(-test_range, test_range);
         entity e2 = spawn_chunk3(world, prefab, e2_position, scale, depth, block_scale, size);
         zox_set(e, Seed, { i * 10000 });
-        zox_set(e2, GenerateModel, { zox_generate_model_run });
         zox_add(e2, VoxMesh);
+        zox_add(e, NoiseChunk);
+        zox_set(e2, GenerateModel, { zox_generate_model_run });
         add_eternal_euler(world, e2, (float3) { 25, 25, 0 });
         zox_set_unique_name(e2, "dbg_chunk3_mass");
         zox_set_parent(world, e2, e);
     }
-
 }

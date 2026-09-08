@@ -220,8 +220,10 @@ uint zox_dbg_label_inside_chunk(
                 generate);
     }
     // Chunk Meshes
-    entity active_mesh = zox_getv(chunk, ActiveMesh);
-    entity preparing_mesh = zox_getv(chunk, PreparingMesh);
+    // entity active_mesh = zox_getv(chunk, ActiveMesh);
+    // entity preparing_mesh = zox_getv(chunk, PreparingMesh);
+    entity active_mesh = zox_get_link(world, chunk, ActiveMesh);
+    entity preparing_mesh = zox_get_link(world, chunk, PreparingMesh);
     index += snprintf(buffer + index, size - index,
         "+ Active [%s]\n",
         zox_getn(active_mesh));

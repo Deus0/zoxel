@@ -144,7 +144,7 @@ zox_sys2(TerrainQueueSystem) {
                     y,
                     update.position.y
                 };
-                entity chunk = spawn_terrain_chunk(
+                entity chunk = spawn_chunk3_textured(
                     world,
                     prefab_chunk_terrain,
                     realm,

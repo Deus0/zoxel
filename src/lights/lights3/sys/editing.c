@@ -10,7 +10,7 @@ zox_sys2(VoxelLightSystem) {
     zox_sys_in(VoxelNodeQueue);
     zox_sys_in(NodeDepth);
     zox_sys_in(ChunkNeighbors);
-    zox_sys_out(LightNodeLock);
+    zox_sys_out(LightLock);
     zox_sys_out(SunlightQueue);
     zox_sys_out(LightQueue);
     zox_sys_out(DarkQueue);
@@ -24,7 +24,7 @@ zox_sys2(VoxelLightSystem) {
         zox_sys_i(VoxelNodeQueue, input_queue);
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(ChunkNeighbors, neighbors);
-        zox_sys_o(LightNodeLock, lightlock);
+        zox_sys_o(LightLock, lightlock);
         zox_sys_o(LightNode, root_lnode);
         zox_sys_o(SunlightQueue, sun_queue);
         zox_sys_o(LightQueue, light_queue);

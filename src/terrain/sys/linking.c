@@ -1,17 +1,41 @@
 // #define zox_debug_chunk_link_system
 static inline byte can_have_characters(ecs*, entity);
 
-void zox_log_chunk_removed(ecs *world, entity e, entity e2) {
+void zox_log_chunk_removed(
+    ecs *world,
+    entity e,
+    entity e2)
+{
     int3 position = zox_getv(e, ChunkPosition);
-    zox_log("- chunk [%s] removed e [%s] [%ix%ix%i]", zox_get_name(e), zox_get_name(e2), position.x, position.y, position.z);
+    zox_log("- chunk [%s] removed e [%s] [%ix%ix%i]",
+        zox_get_name(e),
+        zox_get_name(e2),
+        position.x,
+        position.y,
+        position.z);
 }
 
-void zox_log_chunk_added(ecs *world, entity e, entity e2) {
+void zox_log_chunk_added(
+    ecs *world,
+    entity e,
+    entity e2)
+{
     int3 position = zox_getv(e, ChunkPosition);
-    zox_log("+ chunk [%s] added e [%s] [%ix%ix%i]", zox_get_name(e), zox_get_name(e2), position.x, position.y, position.z);
+    zox_log("+ chunk [%s] added e [%s] [%ix%ix%i]",
+        zox_get_name(e),
+        zox_get_name(e2),
+        position.x,
+        position.y,
+        position.z);
 }
 
-byte set_entity_chunk(ecs* world, entity e, ChunkLink* link, entity new_chunk, byte dbg_log) {
+byte set_entity_chunk(
+    ecs* world,
+    entity e,
+    ChunkLink* link,
+    entity new_chunk,
+    byte dbg_log)
+{
     entity old_chunk = link->value;
     if (!zox_valid(new_chunk) || !zox_has(new_chunk, ChunkEntities) || old_chunk == new_chunk) {
         return 0;
@@ -44,7 +68,7 @@ byte set_entity_chunk(ecs* world, entity e, ChunkLink* link, entity new_chunk, b
     const VoxelNode* new_voxel_octree = zox_get(new_chunk, VoxelNode);
     byte is_air_chunk = !new_voxel_octree->value && !new_voxel_octree->ptr;
     if (!is_air_chunk && character_render_disabled != chunk_render_disabled) {
-        zox_set(e, RenderDisabled, { chunk_render_disabled });
+        zox_setv(e, RenderDisabled, chunk_render_disabled);
     }
     // now lod
     // calculate_lods
@@ -53,7 +77,9 @@ byte set_entity_chunk(ecs* world, entity e, ChunkLink* link, entity new_chunk, b
     if (zox_has(e, RenderDepth) && zox_has(e, MaxRenderDepth)) {
         zox_geter_value(e, RenderDepth, byte, old);
         zox_geter_value(e, MaxRenderDepth, byte, max_depth);
-        byte render_depth = camera_distance_to_npc_render_depth(chunk_render_distance, max_depth);
+        byte render_depth = camera_distance_to_npc_render_depth(
+            chunk_render_distance,
+            max_depth);
         if (old != render_depth) {
             zox_setv(e, RenderDepth, render_depth);
             zox_setv(e, RenderDepthDirty, zox_dirty_trigger );
@@ -79,7 +105,8 @@ zox_sys2(ChunkLinkSystem) {
         zox_sys_o(ChunkLink, link);
         if (!zox_valid(terrain->value)) {
             if (dbg_log) {
-                zox_loge("Character [%s] has no Terrain linked", zox_get_name(e));
+                zox_loge("Character [%s] has no Terrain linked",
+                    zox_get_name(e));
             }
             continue; // these shouldn't be here
         }
@@ -98,7 +125,12 @@ zox_sys2(ChunkLinkSystem) {
             zox_log("Character [%s] Linking Chunk [%ix%ix%i]:[%s]", zox_get_name(e), new_chunk_position.x, new_chunk_position.y, new_chunk_position.z, zox_get_name(chunk));
         }
         // NOTE: Disables if not set
-        set_entity_chunk(world, e, link, chunk, dbg_log);
+        set_entity_chunk(
+            world,
+            e,
+            link,
+            chunk,
+            dbg_log);
         if (zox_valid(link->value) && zox_has(e, DisableMovement)) {
             zox_remove(e, DisableMovement);
         } else if (!zox_valid(link->value) && !zox_has(e, DisableMovement)) {

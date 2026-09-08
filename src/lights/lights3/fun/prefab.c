@@ -7,7 +7,7 @@ void prefab_add_lights3(ecs* world, entity e, byte depth) {
     zox_setv(e, DarkQueue, 0);
     // Events
     zox_setv(e, LightNodeDirty, 0);
-    zox_setv(e, LightNodeLock, 0);
+    zox_setv(e, LightLock, 0);
 }
 
 byte is_chunk_lights_busy(ecs* world, entity e) {

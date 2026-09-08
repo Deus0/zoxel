@@ -33,6 +33,7 @@ entity spawn_test_vox_at(
         block_scale,
         size);
     zox_add(e, VoxMesh);
+    zox_add(e, NoiseChunk);
     zox_setv(e, GenerateModel, zox_generate_model_run);
     add_eternal_euler(world, e, euler);
     return e;
@@ -54,14 +55,20 @@ entity spawn_test_vox(
     );
 }
 
-entity zox_dbg_spawn_chunk3(ecs* world, byte dbg_inspector) {
+entity zox_dbg_spawn_chunk3(
+    ecs* world,
+    entity player2,
+    byte dbg_inspector)
+{
     if (zox_valid(dbg_chunk3)) {
         zox_log("Deleting Test: Spawn [Chunk3]");
         zox_delete(dbg_chunk3);
         return 0;
     }
     zox_log("Running Test: Spawn [Chunk3]");
-    entity player = dbg_player;
+    entity player = player2 ?
+        player2 :
+        dbg_player;
     entity e = spawn_test_vox(world, player);
     zox_set_unique_name(e, "dbg_chunk3");
     if (dbg_inspector) {
@@ -76,7 +83,11 @@ entity zox_dbg_spawn_chunk3(ecs* world, byte dbg_inspector) {
     return e;
 }
 
-void zox_dbg_spawn_chunk3_button(ecs* world, ClickEventData data) {
+void zox_dbg_spawn_chunk3_button(
+    ecs* world,
+    ClickEventData data)
+{
+    entity player = data.clicker;
     byte dbg_inspector = 0;
-    zox_dbg_spawn_chunk3(world, dbg_inspector);
+    zox_dbg_spawn_chunk3(world, player, dbg_inspector);
 }

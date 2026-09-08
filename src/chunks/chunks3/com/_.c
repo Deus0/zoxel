@@ -31,6 +31,9 @@ zoxc_entitiesw(CombineList);
 zoxc_arrayd(CombinePositions, byte3);
 
 // ChunkLodDirty
+// - ChunkLodSystem
+// - ChunkMeshSpawn2System
+// - ChunkMeshTransitionSystem
 #define zox_chunk_lod_dirty_start 1
 #define zox_chunk_lod_dirty_generate 1
 #define zox_chunk_lod_dirty_generating 2

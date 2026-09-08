@@ -6,7 +6,7 @@
 
 // Call for each dirty flag
 // NOTE: We could just check if meshes needed to spawn first?
-static inline byte spawn_chunk_meshes(
+static inline entity spawn_chunk_meshes(
     ecs* world,
     entity e,
     const VoxelNode* voxels,
@@ -30,16 +30,16 @@ static inline byte spawn_chunk_meshes(
         return 0;
     }
     // If already preparing and at target depth
-    entity preparing_mesh = zox_getv(e, PreparingMesh);
-    // zox_get_link(world, e, PreparingMesh);
+    // entity preparing_mesh = zox_getv(e, PreparingMesh);
+    entity preparing_mesh = zox_get_link(world, e, PreparingMesh);
     if (zox_valid(preparing_mesh)) {
         if (zox_getv(preparing_mesh, RenderDepth) == depth) {
             return 0;
         } else {
             // Preparation for Spawning new Mesh!
             // if already preparing, and not at depth we seek
-            zox_setv(e, PreparingMesh, 0);
-            // zox_unlink(world, e, PreparingMesh, preparing_mesh);
+            // zox_setv(e, PreparingMesh, 0);
+            zox_unlink(world, e, PreparingMesh, preparing_mesh);
         }
     }
     // See if we have required LOD mesh
@@ -62,14 +62,15 @@ static inline byte spawn_chunk_meshes(
     }
     // If we already have required LOD mesh
     if (lod_mesh) {
-        zox_setv(e, PreparingMesh, lod_mesh);
-        // zox_link(world, e, PreparingMesh, lod_mesh);
+        // zox_setv(e, PreparingMesh, lod_mesh);
+        zox_link(world, e, PreparingMesh, lod_mesh);
         if (dbg_log) {
             zox_log(" - Chunk Mesh Existed for [%s] at depth [%i]", zox_getn(e), depth);
         }
         return 0;
     }
-    entity terrain = zox_get_parent(world, e);
+    entity tilemap = zox_get_link(world, e, Tilemap);
+    /*entity terrain = zox_get_parent(world, e);
 #ifdef zox_safety_checks
     if (!zox_valid(terrain)) {
         zox_loge("ChunkMeshs Terrain Invalid [%s]",
@@ -83,13 +84,14 @@ static inline byte spawn_chunk_meshes(
         return 0;
     }
 #endif
-    entity material = zox_getv(terrain, TilemapLink);
-    if (!zox_valid(material)) {
+    entity tilemap = zox_getv(terrain, TilemapLink);*/
+    if (!zox_valid(tilemap)) {
         zox_loge("Tilemap Material is Invalid");
         return 0;
     }
     // Make sure old one isnt building
-    entity active_mesh = zox_getv(e, ActiveMesh); // zox_get_link(world, e, ActiveMesh);
+    // entity active_mesh = zox_getv(e, ActiveMesh); // zox_get_link(world, e, ActiveMesh);
+    entity active_mesh = zox_get_link(world, e, ActiveMesh);
     if (zox_valid(active_mesh) && !zox_has(active_mesh, BuildDisabled)) {
         zox_add(active_mesh, BuildDisabled);
     }
@@ -99,15 +101,17 @@ static inline byte spawn_chunk_meshes(
     zox_setv(e2, TransformMatrix, matrix);
     zox_setv(e2, RenderDepth, depth);
     zox_setv(e2, RenderDisabled, render_disabled);
-    zox_setv(e2, MaterialLink, material);
+    zox_setv(e2, MaterialLink, tilemap);
     // Hmmm
     zox_set_parent(world, e2, e);
-    zox_setv(e, PreparingMesh, e2);
-    // zox_link(world, e, PreparingMesh, e2);
+    // zox_setv(e, PreparingMesh, e2);
+    zox_link(world, e, PreparingMesh, e2);
     if (dbg_log) {
-        zox_log(" - New Chunk Mesh for [%s] at depth [%i]", zox_getn(e), depth);
+        zox_log(" - New Chunk Mesh for [%s] at depth [%i]",
+            zox_getn(e),
+            depth);
     }
-    return 1;
+    return e2;
 }
 
 // TODO: Keep a list of materials per chunk
@@ -130,7 +134,7 @@ zox_sys2(ChunkMeshSpawnSystem) {
         zox_sys_i(RenderDepth, depth);
         zox_sys_i(VoxelNode, voxels);
         zox_sys_o(ChunkMeshTimer, timer);
-        byte updated = spawn_chunk_meshes(
+        entity new_mesh = spawn_chunk_meshes(
             world,
             e,
             voxels,
@@ -138,8 +142,10 @@ zox_sys2(ChunkMeshSpawnSystem) {
             matrix->value,
             render_disabled->value,
             dbg_log);
-        if (updated) {
+        if (new_mesh) {
             timer->value = zox_current_time;
+            // NOTE: As this is not spawned for lod reasons
+            zox_remove(new_mesh, Disabled);
         }
         if (dbg_log) {
             zox_log("Spawned Chunk Mesh on [%s] Depth [%i] Disabled [%i]", zox_getn(e), depth->value, render_disabled->value);
@@ -168,7 +174,7 @@ zox_sys2(ChunkMeshSpawn2System) {
         if (dirty->value != zox_chunk_lod_dirty_spawn) {
             continue;
         }
-        byte updated = spawn_chunk_meshes(
+        entity new_mesh = spawn_chunk_meshes(
             world,
             e,
             voxels,
@@ -176,7 +182,7 @@ zox_sys2(ChunkMeshSpawn2System) {
             matrix->value,
             render_disabled->value,
             dbg_log);
-        if (updated) {
+        if (new_mesh) {
             timer->value = zox_current_time;
         }
         dirty->value = zox_chunk_lod_dirty_toggle;

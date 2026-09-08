@@ -54,8 +54,12 @@ static inline void zox_build_voxel_face(
         float3_scale3p(&vert, scale);
         float3_add_float3_p(&vert, position);
         float3_array_d_add(mesh->vertices, vert);
-        float2_array_d_add(mesh->uvs, face_uvs[i]);
-        color_rgb_array_d_add(mesh->color_rgbs, color_rgb_white);
+        float2_array_d_add(
+            mesh->uvs,
+            face_uvs[i]);
+        color_rgb_array_d_add(
+            mesh->color_rgbs,
+            color_rgb_white);
     }
 }
 
@@ -154,7 +158,7 @@ void chunk_textured_build_system(iter* it) {
     byte dbg_log = 0;
     byte max_process = !zox_disable_process_skips ? 1 : 0;
     // zox_log("Chunk Texture Builds [%i]", it->count);
-    entity terrain_cache = 0;
+    entity cached_blocks_parent = 0;
     byte solidity[255];
     memset(solidity, 1, 255);
     entity tilemap_cache = 0;
@@ -204,36 +208,50 @@ void chunk_textured_build_system(iter* it) {
                 chunk_depth);
             continue;
         }
-        entity manager = zox_getv(chunk, BlockManagerLink);
         entity terrain = zox_get_parent(world, chunk);
 #ifdef zox_safety_checks
-        if (!zox_valid(terrain) || !zox_valid(manager)) {
-            zox_loge("Terrain Invalid for [%s]", zox_getn(chunk));
-            continue;
-        }
-        if (!zox_has(terrain, NodeDepth) ||
-            !zox_has(terrain, BlockScale)) {
+        if (!zox_valid(terrain)) {
+            zox_logw("Terrain Invalid for [%s]",
+                zox_getn(chunk));
+            // continue;
+        } else if (!zox_has(terrain, NodeDepth) ||
+            !zox_has(terrain, BlockScale))
+        {
             zox_loge("Terrain Invalid Components [%s]",
-                     zox_getn(chunk));
+                zox_getn(chunk));
             continue;
         }
 #endif
-        byte terrain_depth = zox_getv(terrain, NodeDepth);
-        float terrain_scale = zox_getv(terrain, BlockScale);
-        if (manager != terrain_cache) {
+        byte terrain_depth;
+        float terrain_scale;
+        if (zox_valid(terrain)) {
+            terrain_depth = zox_getv(terrain, NodeDepth);
+            terrain_scale = zox_getv(terrain, BlockScale);
+        } else {
+            terrain_depth = chunk_depth;
+            terrain_scale = zox_getv(chunk, BlockScale);
+        }
+        entity blocks_parent = zox_getv(chunk, BlockManagerLink);
 #ifdef zox_safety_checks
-            if (!manager) {
+        if (!zox_valid(blocks_parent)) {
+            zox_loge("Blocks Manager Invalid for [%s]", zox_getn(chunk));
+            continue;
+        }
+#endif
+        if (blocks_parent != cached_blocks_parent) {
+#ifdef zox_safety_checks
+            if (!blocks_parent) {
                 zox_loge("Failed to find BlockManagerLink on Chunk from ChunkMeshes");
                 continue;
             }
 #endif
-            zox_geter(manager, BlockLinks, blocks);
+            zox_geter(blocks_parent, BlockLinks, blocks);
 #ifdef zox_safety_checks
             if (!blocks->length) {
                 continue; // if failed to find terrain parents
             }
 #endif
-            terrain_cache = manager;
+            cached_blocks_parent = blocks_parent;
             memset(solidity, 1, blocks->length);
             for (int j = 0; j < blocks->length; j++) {
                 entity block = blocks->value[j];

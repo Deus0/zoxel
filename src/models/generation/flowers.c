@@ -75,8 +75,9 @@ zox_sys2(FlowersModelGenerationSystem) {
             vox_outlines(node, depth->value, black_voxel);
         }
         // write_unlock_VoxelNode(node);
-        generate->value = zox_has(e, BakeModel) ? zox_generate_model_bake : zox_generate_model_end;
-        // dirty->value = zox_dirty_trigger;
+        generate->value = zox_has(e, BakeModel) ?
+            zox_generate_model_bake :
+            zox_generate_model_end;
         zox_add(e, VoxelNodeDirty);
         if (dbg_log) {
             zox_log("Generated Vox [%s] Type [%i] Depth [%i]", zox_get_name(e), gentype->value, depth->value);
