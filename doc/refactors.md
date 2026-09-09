@@ -14,19 +14,6 @@ Unsorted
 - Remove state components and just use tags + dontfrag
 - Refactor our timings from on system entities
     - spawn a profile entity (dataset)
-    
-## Refactor Events (To Tags)
-	- LayoutPositionDirty
-	- LayoutSizeDirty
-	- TextDirty
-	- GenerateTexture
-	- RenderLodDirty
-	- Refactor RenderDisabled to DF Tag
-	
-## Refactor Reactionary Systems to Events
-	- Tooltip Systems
-	- Restore/Dispose -> Query Functions
-	- Settings Spawning - InitializeEvent on App
 
 
 ## Custom Phases
@@ -46,6 +33,19 @@ UIs
 - Centralize different uis
     - atm theyre a bit spread through different state events
     - For example screen fader is in 3 events
+    
+## Refactor Events (To Tags)
+	- LayoutPositionDirty
+	- LayoutSizeDirty
+	- TextDirty
+	- GenerateTexture
+	- RenderLodDirty
+	- Refactor RenderDisabled to DF Tag
+	
+## Refactor Reactionary Systems to Events
+	- Tooltip Systems
+	- Restore/Dispose -> Query Functions
+	- Settings Spawning - InitializeEvent on App
     
 ## Remove old links
 	- RealmLink
