@@ -46,9 +46,7 @@ entity spawn_dbg_chunk3_textured(
         float terrain_scalev,
         byte render_distance,
         byte render_depth)*/
-    entity tilemap = zox_valid(realm) ?
-        zox_getv(realm, TilemapLink) :
-        0;
+    entity tilemap = zox_get_link(world, realm, Tilemap);
     entity e = spawn_chunk3_textured(
         world,
         prefab_chunk_textured,

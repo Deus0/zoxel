@@ -39,9 +39,8 @@ entity spawn_chunk3_textured(
     }
     // Links
     zox_set_parent(world, e, terrain);
-    zox_link(world, e, Tilemap, tilemap);
     zox_link(world, e, Realm, realm);
-    zox_setv(e, TilemapLink, tilemap);
+    zox_link(world, e, Tilemap, tilemap);
     zox_setv(e, RealmLink, realm);
     zox_setv(e, BlockManagerLink, realm);
     // Data

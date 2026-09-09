@@ -33,9 +33,9 @@ entity spawn_minimap(
     zox_add(e, Map);
     zox_add(e, Minimap);
     zox_set(e, PlayerLink, { player });
-    zox_set(e, TerrainLink, { terrain });
     zox_set(e, MapPosition, { tunk_position });
     zox_set(e, MapZoom, { minimap_zoom });
     zox_set(e, Alpha, { minimap_alpha });
+    zox_link(world, e, Terrain, terrain);
     return e;
 }

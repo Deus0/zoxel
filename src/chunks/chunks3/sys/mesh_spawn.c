@@ -70,21 +70,6 @@ static inline entity spawn_chunk_meshes(
         return 0;
     }
     entity tilemap = zox_get_link(world, e, Tilemap);
-    /*entity terrain = zox_get_parent(world, e);
-#ifdef zox_safety_checks
-    if (!zox_valid(terrain)) {
-        zox_loge("ChunkMeshs Terrain Invalid [%s]",
-            zox_getn(e));
-        return 0;
-    }
-    if (!zox_has(terrain, TilemapLink)) {
-        zox_loge("e [%s] terrain has no TilemapLink %s",
-            zox_getn(e),
-            zox_getn(terrain));
-        return 0;
-    }
-#endif
-    entity tilemap = zox_getv(terrain, TilemapLink);*/
     if (!zox_valid(tilemap)) {
         zox_loge("Tilemap Material is Invalid");
         return 0;

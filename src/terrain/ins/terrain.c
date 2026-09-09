@@ -25,11 +25,11 @@ entity spawn_terrain(
     entity realm,
     lint seed)
 {
-    if (!zox_valid(realm) || !zox_has(realm, TilemapLink)) {
-        zox_loge("Realm has no TilemapLink [%lu]", realm);
+    if (!zox_valid(realm)) {
+        zox_loge("Realm Invalid [%lu]", realm);
         return 0;
     }
-    entity tilemap = zox_getv(realm, TilemapLink);
+    entity tilemap = zox_get_link(world, realm, Tilemap);
     byte depth = terrain_depth;
     float3 position = float3_zero;
     float scale = 0.5f; // 0.5f | 1
@@ -46,9 +46,9 @@ entity spawn_terrain(
     // Link them link this for now
     zox_set_parent(world, e, realm);
     zox_setv(e, RealmLink, realm);
-    zox_setv(realm, TerrainLink, e);
+    zox_link(world, realm, Terrain, e);
     if (tilemap) {
-        zox_setv(e, TilemapLink, tilemap);
+        zox_link(world, e, Tilemap, tilemap);
         zox_link(world, tilemap, Terrain, e);
     }
     local_terrain = e;

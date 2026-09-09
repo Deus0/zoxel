@@ -6,9 +6,9 @@ void on_terrain_settings_changed(ecs *world, const entity realm) {
         const entity voxel = voxels->value[k];
         zox_geter(voxel, TextureLinks, textures);
         for (int l = 0; l < textures->length; l++) {
-            zox_set(textures->value[l], GenerateTexture, { 1 });
+            zox_setv(textures->value[l], GenerateTexture, 1);
         }
     }
-    zox_geter(realm, TilemapLink, tilemapLink);
-    zox_set(tilemapLink->value, GenerateTexture, { zox_dirty_trigger });
+    entity tilemap = zox_get_link(world, realm, Tilemap);
+    zox_setv(tilemap, GenerateTexture, zox_dirty_trigger);
 }

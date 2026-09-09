@@ -132,23 +132,3 @@ zox_sys2(Chunk3TexturedRenderSystem) {
     }
 } zox_sys_end(Chunk3TexturedRenderSystem);
 
-
-            /*entity chunk = zox_get_parent(world, e);
-#ifdef zox_safety_checks
-            if (!zox_valid(chunk)) {
-                zox_loge("Chunk Invalid for ChunkMesh %s", zox_getn(e));
-                continue;
-            }
-#endif
-            entity terrain = zox_get_parent(world, chunk);
-#ifdef zox_safety_checks
-            if (!zox_valid(terrain)) {
-                zox_loge("terrain Invalid for ChunkMesh %s", zox_getn(e));
-                continue;
-            }
-            if (!zox_has(terrain, TilemapLink)) {
-                zox_loge("e [%s] terrain has no TilemapLink %s", zox_getn(e), zox_getn(terrain));
-                continue;
-            }
-#endif
-            entity material = zox_getv(terrain, TilemapLink);*/

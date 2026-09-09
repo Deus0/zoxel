@@ -5,6 +5,7 @@ entity spawn_prefab_character3_player(
     zox_prefab_child(prefab);
     zox_prefab_name("character3_player");
     zox_add(e, PlayerCharacter);
+    zox_add(e, GizmoOwner); // raycast gizmos
     // Transform
     zox_setv(e, Euler, float3_zero);
     // disable until loaded terrain
@@ -14,8 +15,6 @@ entity spawn_prefab_character3_player(
     // Controller
     zox_setv(e, Movement3, float3_zero);
     zox_setv(e, PlayerLink, 0);
-    // Raycasting
-    zox_setv(e, GizmoLink, 0);
     // Input Triggers
     zox_setv(e, TriggerActionB, 0);
     zox_setv(e, TriggerActionE, 0);

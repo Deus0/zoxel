@@ -4,16 +4,12 @@ zox_sys2(ShootSystem) {
     float default_power = 64;
     zox_sys_world();
     zox_sys_begin();
-    // zox_sys_in(SkillResourceLink);
-    // zox_sys_in(SkillCost);
     zox_sys_in(Activate);
     zox_sys_in(SkillRange);
     zox_sys_in(SkillDamage);
     zox_sys_in(SkillDamageMax);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e()
-        // zox_sys_i(SkillResourceLink, rresource);
-        // zox_sys_i(SkillCost, cost);
         zox_sys_i(Activate, active);
         zox_sys_i(SkillRange, range);
         zox_sys_i(SkillDamage, damage_min);
@@ -36,6 +32,7 @@ zox_sys2(ShootSystem) {
             }
             continue;
         }
+        // entity rresource = zox_get_link(world, e, SkillResource);
         zox_log("SHooting");
         float3 position;
         float4 rotation;

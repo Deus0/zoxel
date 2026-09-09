@@ -2,11 +2,10 @@ zox_sys2(InsideBlockSoundSystem) {
     double spawn_rate = 0.2;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TerrainLink);
     // cache voxels and colliders for speed
-    const BlockLinks* blocks = get_first_terrain_voxels(world, TerrainLink_, it->count);
+    const BlockLinks* blocks = get_first_terrain_voxels(it);
     if (!blocks) {
-        zox_log_error("InsideBlockSoundSystem: No BlockLinks");
+        zox_loge("InsideBlockSoundSystem: No BlockLinks");
         return;
     }
     entity sounds[blocks->length];

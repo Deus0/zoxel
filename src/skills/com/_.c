@@ -6,16 +6,17 @@ zox_tag(Melee);
 zox_tag(Shoot);
 zox_tag(AuraDot);
 zox_tag(Poison);
+zox_tag(Spawner);
+zox_tag(SkillResource);
 zoxc_byte(SkillActive);
 zoxc_float(SkillDamage);
 zoxc_float(SkillDamageMax);
 zoxc_float(SkillRange);
 zoxc_float(SkillCost);
-zoxc_entity(SkillResourceLink);
-zoxc_entity(SpawnerLink);
 
 void zox_components_skills(ecs* world) {
     zoxd_tag(Skill);
+    zoxd_tag(SkillResource);
     zoxd_tag(Dot);
     zoxd_tag(Poison);
     zoxd_tag(SkillToggleable);
@@ -23,11 +24,10 @@ void zox_components_skills(ecs* world) {
     zoxd_tag(Melee);
     zoxd_tag(Shoot);
     zoxd_tag(AuraDot);
+    zoxd_tag(Spawner);
     zoxd_float(SkillDamage);
     zoxd_float(SkillDamageMax);
     zoxd_float(SkillRange);
     zoxd_float(SkillCost);
     zoxd_byte(SkillActive);
-    zoxd_entity(SkillResourceLink);
-    zoxd_entity(SpawnerLink);
 }

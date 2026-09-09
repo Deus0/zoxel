@@ -4,21 +4,20 @@ zox_sys2(RealmTilemapSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(BlockLinks);
-    zox_sys_in(TilemapLink);
     zox_sys_out(BlocksDirty);
     for (int i = 0; i < it->count; i++) {
-        // zox_sys_e();
+        zox_sys_e();
         zox_sys_i(BlockLinks, blocks);
-        zox_sys_i(TilemapLink, tilemap);
         zox_sys_o(BlocksDirty, dirty);
         if (dirty->value != zox_blocks_dirty_tilemaps) {
             continue;
         }
-        if (!zox_valid(tilemap->value)) {
+        entity tilemap = zox_get_link(world, e, Tilemap);
+        if (!zox_valid(tilemap)) {
             continue;
         }
-        if (!zox_has(tilemap->value, TextureLinks)) {
-            zox_loge("Tilemap has no textures [%s]", zox_get_name(tilemap->value));
+        if (!zox_has(tilemap, TextureLinks)) {
+            zox_loge("Tilemap has no textures [%s]", zox_get_name(tilemap));
             continue;
         }
         byte generating = 0;
@@ -44,7 +43,7 @@ zox_sys2(RealmTilemapSystem) {
         if (generating) {
             continue;
         }
-        zox_muter(tilemap->value, TextureLinks, tilemap_textures);
+        zox_muter(tilemap, TextureLinks, tilemap_textures);
         resize_TextureLinks(tilemap_textures, 0);
         for (int j = 0; j < blocks->length; j++) {
             entity block = blocks->value[j];
@@ -62,7 +61,7 @@ zox_sys2(RealmTilemapSystem) {
         }
         int length = next_power_of_two_root(tilemap_textures->length);
         dirty->value = zox_blocks_dirty_end;
-        zox_set(tilemap->value, TilemapSize, { int2_single(length) });
-        zox_setv(tilemap->value, GenerateTexture, zox_generate_texture_run);
+        zox_setv(tilemap, TilemapSize, int2_single(length));
+        zox_setv(tilemap, GenerateTexture, zox_generate_texture_run);
     }
 } zox_sys_end(RealmTilemapSystem);

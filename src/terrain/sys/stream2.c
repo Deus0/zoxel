@@ -92,8 +92,7 @@ zox_sys2(TerrainQueueSystem) {
             );
         }
         entity realm = zox_get_parent(world, e);
-        entity tilemap = zox_getv(e, TilemapLink);
-        // entity realm = zox_getv(e, RealmLink);
+        entity tilemap = zox_get_link(world, e, Tilemap);
         uint processed = 0;
         byte chunk_length = octree_size(depth->value);
         while (queue->count && processed < max_process) {

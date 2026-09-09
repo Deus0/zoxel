@@ -20,7 +20,6 @@ void define_systems_terrain(ecs *world) {
     zox_system(
         ChunkLinkSystem,
         zoxp_update,
-        [in] terrains.TerrainLink,
         [in] transforms3.Position3D,
         [out] chunks3.ChunkPosition,
         [out] chunks3.ChunkLink,

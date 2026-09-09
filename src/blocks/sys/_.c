@@ -8,14 +8,12 @@ void zox_define_systems_blocks(ecs* world) {
         RealmTilemapSystem,
         zoxp_update,
         [in] blocks.BlockLinks,
-        [in] textures.TilemapLink,
         [out] blocks.BlocksDirty,
         [none] realms.Realm
     );
     zox_system_1(
         TilemapRealmSpawnSystem,
         zoxp_spawn,
-        [out] textures.TilemapLink,
         [none] realms.Realm
     );
     zox_system(

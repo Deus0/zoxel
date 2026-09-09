@@ -22,7 +22,7 @@ void zox_tst_spawn_character3_npc(
         zox_logw("No Player Character.");
         return;
     }
-    zox_geter_value(character, TerrainLink, entity, terrain);
+    entity terrain = zox_get_link(world, character, Terrain);
     if (!zox_valid(terrain)) {
         return;
     }

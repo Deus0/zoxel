@@ -188,8 +188,7 @@ void chunk_textured_build_system(iter* it) {
             zox_loge("Chunk Parent Invalid for [%s]", zox_sys_e_name);
             continue;
         }
-        if (!zox_has(chunk, TilemapLink) ||
-            !zox_has(chunk, NodeDepth) ||
+        if (!zox_has(chunk, NodeDepth) ||
             !zox_has(chunk, BlockManagerLink) ||
             !zox_has(chunk, VoxelNode) ||
             !zox_has(chunk, SidesOctree) ||
@@ -264,7 +263,7 @@ void chunk_textured_build_system(iter* it) {
                     zox_getv(block, BlockModel) == zox_block_solid;
             }
         }
-        entity tilemap = zox_getv(chunk, TilemapLink);
+        entity tilemap = zox_get_link(world, chunk, Tilemap);
         if (!zox_valid(tilemap)) {
             continue;
         }

@@ -4,7 +4,6 @@ zox_tag(FlatlandChunk);
 zox_tag(TerrainWorld);
 zox_tag(TerrainChunk);
 zox_tag(ChunkTerrain);
-zoxc_entity(TerrainLink);
 // Vegetation
 zox_tag(BlockWood);
 zox_tag(BlockSoil);
@@ -19,7 +18,7 @@ zox_tag(BlockRoad);
 #include "spawn2.c"
 
 entity get_linked_terrain(ecs* world, entity e) {
-    return zox_valid(e) && zox_has(e, TerrainLink) ? zox_getv(e, TerrainLink) : 0;
+    return zox_get_link(world, e, Terrain);
 }
 
 void define_components_terrain(ecs *world) {
@@ -29,7 +28,6 @@ void define_components_terrain(ecs *world) {
     zoxd_tag(TerrainWorld);
     zoxd_tag(TerrainChunk);
     zoxd_tag(ChunkTerrain);
-    zoxd_entity(TerrainLink);
     // Vegetation
     zoxd_tag(BlockWood);
     zoxd_tag(BlockSoil);

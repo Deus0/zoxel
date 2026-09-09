@@ -7,12 +7,10 @@ zox_sys2(BiomeMapAvgSystem) {
     zox_sys_begin();
     zox_sys_in(GenerateTunk);
     zox_sys_in(BiomeMap);
-    zox_sys_out(BiomeLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateTunk, generate);
         zox_sys_i(BiomeMap, biome_map);
-        zox_sys_o(BiomeLink, link);
         if (generate->value != zox_generate_tunk_heights) {
             continue;
         }
@@ -48,7 +46,17 @@ zox_sys2(BiomeMapAvgSystem) {
         }
         // NOTE: Links a chunk to a biome
         byte popular_biome = used_0 > used_1 ? 0 : 1;
-        link->value = biomes->value[popular_biome];
+        // link->value =
+        entity new_biome = biomes->value[popular_biome];
+        entity old_biome = zox_get_link(world, e, Biome);
+        if (old_biome != new_biome) {
+            if (zox_valid(old_biome)) {
+                zox_unlink(world, e, Biome, old_biome);
+            }
+            if (zox_valid(new_biome)) {
+                zox_link(world, e, Biome, new_biome);
+            }
+        }
         // zox_log("popular_biome is [%i] [%s]", popular_biome, zox_get_name(link->value));
     }
 } zox_sys_end(BiomeMapAvgSystem);

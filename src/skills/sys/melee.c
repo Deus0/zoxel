@@ -13,7 +13,6 @@ zox_sys2(MeleeSystem) {
     float knockback_max = 3.5f;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(SkillResourceLink);
     zox_sys_in(SkillCost);
     zox_sys_in(SkillDamage);
     zox_sys_in(SkillDamageMax);
@@ -21,7 +20,6 @@ zox_sys2(MeleeSystem) {
     zox_sys_in(Activate);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e()
-        zox_sys_i(SkillResourceLink, rresource);
         zox_sys_i(SkillCost, cost);
         zox_sys_i(SkillDamage, damage);
         zox_sys_i(SkillDamageMax, damage_max);
@@ -53,6 +51,7 @@ zox_sys2(MeleeSystem) {
         // entity strength = 0;
         zox_geter(user, RaycastVoxelData, raycast);
         entity boost_stat = 0;
+        entity rresource = zox_get_link(world, e, SkillResource);
         iter it2 = zox_children(world, user);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
@@ -61,7 +60,7 @@ zox_sys2(MeleeSystem) {
                     continue;
                 }
                 entity meta = zox_get_prefab(world, stat);
-                if (rresource->value == meta) {
+                if (rresource == meta) {
                     resource = stat;
                 }
                 // Assuming strength is first attribute

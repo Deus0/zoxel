@@ -53,7 +53,6 @@ void zox_tst_spawn_tilemap(ecs *world) {
         return;
     }*/
     entity canvas = get_linked_canvas(world, player);
-    // zox_geter_value(terrain, TilemapLink, entity, tilemap);
     int2 size = int2_single(512);
     int2 position = int2_single(0);
     float2 anchor = float2_half;

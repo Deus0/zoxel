@@ -19,7 +19,7 @@ void zox_tst_spawn_character3_npc_skeleton(
     }
     float3 sposition = zox_getv(character, Position3D);
     float4 srotation = zox_getv(character, Rotation3D);
-    entity terrain = zox_getv(character, TerrainLink);
+    entity terrain = zox_get_link(world, character, Terrain);
     if (!zox_valid(terrain)) {
         return;
     }

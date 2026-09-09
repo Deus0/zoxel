@@ -77,7 +77,6 @@ entity spawn_character3(
         zox_loge("No Realm in character spawn");
     }
     if (terrain) {
-        zox_setv(e, TerrainLink, terrain);
         zox_link(world, e, Terrain, terrain);
     }
     if (name) {

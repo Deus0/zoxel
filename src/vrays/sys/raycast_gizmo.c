@@ -11,12 +11,12 @@ zox_sys2(RaycastGizmoSystem) {
     zox_sys_begin();
     zox_sys_in(RaycastVoxelData);
     zox_sys_in(RaycastType);
-    zox_sys_out(GizmoLink);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(RaycastVoxelData, data);
         zox_sys_i(RaycastType, rtype);
-        zox_sys_o(GizmoLink, link);
         byte ray_hit = data->result;
+        entity gizmo = zox_get_link(world, e, Gizmo);
         if (ray_hit == rayhit_terrain) {
             float3 position = data->positionf;
             if (gizmo_type == 0) {
@@ -33,9 +33,9 @@ zox_sys2(RaycastGizmoSystem) {
             }
             float4 quad_rotation = quaternion_from_to(float3_up, data->normal);
             float quad_scale = data->voxel_scale * (0.5f - quad_depth_buffer);
-            if (!zox_valid(link->value)) {
+            if (!zox_valid(gizmo)) {
                 if (gizmo_type == 0) {
-                    link->value = spawn_quad_lines(
+                    gizmo = spawn_quad_lines(
                         world,
                         prefab_quad_lines,
                         hit_terrain_color,
@@ -44,25 +44,26 @@ zox_sys2(RaycastGizmoSystem) {
                         quad_scale,
                         0);
                 } else {
-                    link->value = spawn_cube_lines_rgba(
+                    gizmo = spawn_cube_lines_rgba(
                         world,
                         data->positionf,
                         float3_single(0.5f * data->voxel_scale),
                         raycaster_quad_thickness,
                         hit_terrain_color,
                         0);
-                    zox_setv(link->value, CubeLineShrink, shrink);
-                    zox_setv(link->value, CubeLineExtrude, extrude);
-                    zox_setv(link->value, CubeLineSides, sides);
+                    zox_setv(gizmo, CubeLineShrink, shrink);
+                    zox_setv(gizmo, CubeLineExtrude, extrude);
+                    zox_setv(gizmo, CubeLineSides, sides);
                     if (disable_depth) {
-                        zox_add(link->value, DisableDepthTest);
+                        zox_add(gizmo, DisableDepthTest);
                     }
                     if (dbg_log) {
                         zox_log("Spawned Gizmo");
                     }
                 }
+                zox_link(world, e, Gizmo, gizmo);
             } else {
-                zox_muter(link->value, Position3D, position3);
+                zox_muter(gizmo, Position3D, position3);
                 if (!float3_equals(position3->value, position)) {
                     position3->value = position;
                     if (dbg_log) {
@@ -73,13 +74,13 @@ zox_sys2(RaycastGizmoSystem) {
                     }
                 }
                 if (gizmo_type == 0) {
-                    zox_muter(link->value, Rotation3D, rotation);
+                    zox_muter(gizmo, Rotation3D, rotation);
                     rotation->value = quad_rotation;
-                    zox_muter(link->value, QuadLineSize, scale);
+                    zox_muter(gizmo, QuadLineSize, scale);
                     scale->value = quad_scale;
                 } else {
                     // CubeLineSides
-                    zox_set(link->value, CubeLineSides, { sides });
+                    zox_set(gizmo, CubeLineSides, { sides });
                 }
             }
             // Debug Line
@@ -114,8 +115,8 @@ zox_sys2(RaycastGizmoSystem) {
                 hit_block_vox_color);
         }
         if (ray_hit != rayhit_terrain) {
-            if (zox_valid(link->value)) {
-                zox_muter(link->value, Position3D, position);
+            if (zox_valid(gizmo)) {
+                zox_muter(gizmo, Position3D, position);
                 if (!float3_equals(position->value, hide_position)) {
                     position->value = hide_position;
                     if (dbg_log) {

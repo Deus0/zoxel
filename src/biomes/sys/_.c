@@ -28,7 +28,6 @@ void define_systems_biomes(ecs *world) {
         zoxp_update,
         [in] tunks.GenerateTunk,
         [in] tunks.BiomeMap,
-        [out] biomes.BiomeLink,
         [none] tunks.Tunk
     );
     zox_system(
@@ -37,7 +36,7 @@ void define_systems_biomes(ecs *world) {
         [in] streaming.StreamDirty2,
         [in] streaming.StreamPosition2,
         [in] streaming.StreamLink,
-        [out] biomes.BiomeLink,
-        [none] streaming.Streamer
+        [none] streaming.Streamer,
+        [none] biomes.BiomeLinker,
     );
 }

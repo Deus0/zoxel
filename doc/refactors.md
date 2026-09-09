@@ -48,25 +48,58 @@ UIs
     - For example screen fader is in 3 events
     
 ## Remove old links
-	- TextureLink
-	- TilemapLink
-	- SpawnerLink
- 	- SkillResourceLink
-	- ParticlesEmitterLink
-	- NoteLinks
 	- RealmLink
-	- TerrainLink
-	- BiomeLink
+	- GameLink
+	- PlayerLink
+	- PlayerLinks
+	- TextureLink
+	- NoteLinks
+	- ElementLink
+	- UIHolderLink
+	- ElementLinks
+	- LabelPrefabLink
+	- FramePrefabLink
+	- ScrollviewLink
+	- ListUILink
+	- FontLink
+	- DraggerLink
+	- DraggedLink
+	- TooltipLink
+	- TooltipeeLink
+	- IconOverlayLink
+	- PlotDataLink
+	- DeviceLink
+	- ZeviceLink
+	- MouseLink
+	- VirtualZeviceLink
 	- ChunkLink
 	- SpeakerLinks
 	- EntityLinks
+	- CharacterLinks
 	- BlockLinks
 	- BiomeLinks
+	- ModelLink
 	- ModelLinks (half done)
-	- CharacterLinks
-	- GizmoLink
-	- DeviceLink
-	- ZeviceLink
+	- MaterialLink
+	- ShaderLink
+	- SkeletonLink
+	- HeadBoneLink
+	- HandBoneLink
+	- ShoulderBoneLink
+	- CameraFollowLink
+	- Character2DLink
+	- CloneVoxLink
+	- ChunkPrefabLink
+	- ChunkMeshPrefabLink
+	- SystemLink
+	- BrainLink
+	- NodeStartLink
+	- NodeLink
+	- FolderPathLink
+	- SlotLink
+	- DataLink
+	- StreamLink
+
 
 Input Refactor
 - Make input actions events instead of systems

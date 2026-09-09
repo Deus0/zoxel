@@ -5,7 +5,6 @@ void define_systems_vrays(ecs* world) {
     zox_system(
         Chunk3RaycastSystem,
         zoxp_update,
-        [in] terrains.TerrainLink,
         [in] vrays.RaycastRange,
         [out] vrays.RaycastVoxelData
     );
@@ -14,6 +13,6 @@ void define_systems_vrays(ecs* world) {
         zoxp_spawn,
         [in] vrays.RaycastVoxelData,
         [in] vrays.RaycastType,
-        [out] vrays.GizmoLink
+        [none] vrays.GizmoOwner,
     );
 }

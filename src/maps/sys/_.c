@@ -11,7 +11,6 @@ void zox_define_systems_maps(ecs* world) {
         [in] maps.MapZoom,
         [in] rendering.Alpha,
         [in] players.PlayerLink,
-        [in] terrains.TerrainLink,
         [in] maps.MapPosition,
         [none] core.Initialize,
         [none] maps.Map
@@ -20,7 +19,6 @@ void zox_define_systems_maps(ecs* world) {
         MapPositionSystem,
         zoxp_spawn,
         [in] players.PlayerLink,
-        [in] terrains.TerrainLink,
         [out] maps.MapPosition,
         [none] maps.Map
         // [none] maps.Minimap

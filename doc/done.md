@@ -1,5 +1,12 @@
 # Done
 
+-x GizmoLink
+-x SkillResourceLink
+-x ParticlesEmitterLink
+-x SpawnerLink
+-x TilemapLink
+-x TerrainLink
+-x BiomeLink
 -x Block Damage Overlay
 	-x use custom material
 	-x prefab_cube_overlay

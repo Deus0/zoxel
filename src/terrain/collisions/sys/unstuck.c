@@ -10,12 +10,11 @@ extern entity spawn_line3c(ecs*, float3, float3, float, double, color_rgb);
 zox_sys2(UnstuckSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TerrainLink);
     zox_sys_in(Bounds3D);
     zox_sys_out(LastUnstuck3);
     zox_sys_out(Position3D);
     // cache voxels and colliders for speed
-    const BlockLinks *voxels = get_first_terrain_voxels(world, TerrainLink_, it->count);
+    const BlockLinks *voxels = get_first_terrain_voxels(it);
     if (!voxels) {
         zox_log_error("UnstuckSystem: No BlockLinks on Realm");
         return;
@@ -23,16 +22,17 @@ zox_sys2(UnstuckSystem) {
     byte colliders[voxels->length + 1];
     get_block_collisions(world, voxels, colliders);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(TerrainLink, link);
+        zox_sys_e();
         zox_sys_i(Bounds3D, bounds);
         zox_sys_o(LastUnstuck3, last);
         zox_sys_o(Position3D, position);
-        if (!zox_valid(link->value) || !zox_has(link->value, ChunkLinks)) {
+        entity terrain = zox_get_link(world, e, Terrain);
+        if (!zox_valid(terrain) || !zox_has(terrain, ChunkLinks)) {
             continue;
         }
-        zox_geter(link->value, ChunkLinks, chunks);
-        zox_geter_value(link->value, BlockScale, float, terrain_scale);
-        zox_geter_value(link->value, NodeDepth, byte, terrain_depth);
+        zox_geter(terrain, ChunkLinks, chunks);
+        zox_geter_value(terrain, BlockScale, float, terrain_scale);
+        zox_geter_value(terrain, NodeDepth, byte, terrain_depth);
         // float3 unstuck_push = (float3) { 0, terrain_scale, 0 };
         float3 poffset = (float3) { 0, - bounds->value.y / 2.0f, 0 };
         float3 pointf = float3_add(position->value, poffset);
@@ -43,13 +43,12 @@ zox_sys2(UnstuckSystem) {
         // int3 lastv = real_position_to_block_position(lastf, terrain_scale);
         entity chunk = int3_hashmap_get(chunks->value, pointc);
         if (!zox_valid(chunk)) {
-            // zox_sys_e();
             // zox_log_error("[%s] Chunk Not Found [%lu] v[%ix%ix%i] c[%ix%ix%i]", zox_get_name(e), chunk, pointv.x, pointv.y, pointv.z, pointc.x, pointc.y, pointc.z);
             if (position->value.y < 0) {
                 if (!float3_equals(last->value, float3_zero)) {
                     position->value.y = 100;
-                    zox_sys_e();
-                    zox_logw("Character [%s] Fell through map", zox_get_name(e));
+                    zox_logw("Character [%s] Fell through map",
+                             zox_get_name(e));
                     // position->value = float3_add(last->value, unstuck_push);
                     // zox_log_error("[%s] Chunk Not Found [%lu] v[%ix%ix%i] c[%ix%ix%i]", zox_get_name(e), chunk, pointv.x, pointv.y, pointv.z, pointc.x, pointc.y, pointc.z);
                 }
@@ -98,7 +97,6 @@ zox_sys2(UnstuckSystem) {
         float buffer_up = 0.01f;
         position->value.y += distance_to_above_ground + buffer_up;
         // reverse vel down
-        zox_sys_e();
         if (zox_has(e, Velocity3D)) {
             zox_geter_value(e, Velocity3D, float3, vel);
             position->value.y -= vel.y;

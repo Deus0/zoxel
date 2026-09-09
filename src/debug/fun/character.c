@@ -140,7 +140,7 @@ uint zox_dbg_label_inside_chunk(
     if (!zox_valid(realm)) {
         return index;
     }
-    entity terrain = zox_getv(realm, TerrainLink);
+    entity terrain = zox_get_link(world, realm, Terrain);
     if (!zox_valid(terrain)) {
         return index;
     }

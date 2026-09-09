@@ -14,15 +14,11 @@ byte get_player_linked_things(
         return 0;
     }
     zox_geter_value(game, RealmLink, entity, realm);
-    if (!zox_valid(realm) || !zox_has(realm, TerrainLink)) {
-        if (!zox_valid(realm)) {
-            zox_log_error("Invalid [realm]");
-        } else {
-            zox_log_error("[realm] has No TerrainLink");
-        }
+    if (!zox_valid(realm)) {
+        zox_loge("Invalid [realm]");
         return 0;
     }
-    zox_geter_value(realm, TerrainLink, entity, terrain);
+    entity terrain = zox_get_link(world, realm, Terrain);
     if (!zox_valid(terrain)) {
         zox_log_error("Invalid [terrain]");
         return 0;

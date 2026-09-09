@@ -23,7 +23,6 @@ zoxc_double(AnimateTexture);
 zoxc_int2(TilemapSize);
 zoxc_color(FillColor);
 zoxc_color(OutlineColor);
-zoxc_entity(TilemapLink);
 zoxc_entity(TextureLink);
 zoxc_arrayd(TextureData, color)
 zoxc_arrayd(TilemapUVs, float2)
@@ -51,7 +50,6 @@ void define_components_textures(ecs* world) {
     zoxd_int2(TilemapSize);
     zoxd_color(FillColor);
     zoxd_color(OutlineColor);
-    zoxd_entity(TilemapLink);
     zoxd_entity(TextureLink);
     zoxd_arrayd(TextureData);
     zoxd_arrayd(TilemapUVs);

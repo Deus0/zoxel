@@ -4,12 +4,10 @@ zox_sys2(MapPositionSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerLink);
-    zox_sys_in(TerrainLink);
     zox_sys_out(MapPosition);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerLink, player);
-        zox_sys_i(TerrainLink, terrain);
         zox_sys_o(MapPosition, position);
         if (!zox_valid(player->value)) {
             continue;
@@ -26,7 +24,8 @@ zox_sys2(MapPositionSystem) {
         if (dbg_log) {
             zox_log("Map Position Updated [%ix%i]", new_position.x, new_position.y);
         }
-        zox_geter(terrain->value, TunkLinks, tunks);
+        entity terrain = zox_get_link(world, e, Terrain);
+        zox_geter(terrain, TunkLinks, tunks);
         // for all textures
         entity body = zox_get_child_by_id(world, e, zox_id(WindowBody));
         if (!zox_valid(body)) {

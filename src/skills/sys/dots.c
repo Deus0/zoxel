@@ -5,12 +5,10 @@ zox_sys2(DotsSystem) {
     init_delta_time();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(SpawnerLink);
     zox_sys_in(SkillDamage);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(SkillDamage, damage);
-        zox_sys_i(SpawnerLink, spawner);
         entity defender = zox_get_parent(world, e);
         if (!zox_valid(defender) ||
             zox_has(defender, Dead) ||
@@ -20,7 +18,7 @@ zox_sys2(DotsSystem) {
         float apply_damage = damage->value;
         // Modify Damage by Attackers Buffs
         // TODO: We should apply this when adding Debuffs
-        entity attacker = spawner->value;
+        entity attacker = zox_get_link(world, e, Spawner);
         if (zox_valid(attacker) &&
             !zox_has(attacker, Dead))
         {

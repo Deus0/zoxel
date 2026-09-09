@@ -1,6 +1,6 @@
 // Handles AABB to Voxel Chunk Collisions
 // todo: support multiple realms - use a hashmap for realms, and cache their data per terrain here
-
+/*
 static inline float get_distance_to_voxel_grid(float v, float direction, float scale) {
     float face = v;
     if (direction == 1) {
@@ -193,7 +193,6 @@ void collide_with_chunk_d2(
                 *collided_d2,
                 terrain_scale);
         }
-        /*zox_log(" > detecting axis2 collision [%i:%i] negative [%i:%i] offsets [%f:%f] deltas [%f:%f]\n", axis_d1, axis_d2, is_negative1, is_negative2, offset_d1, offset_d2, delta_d1, delta_d2)*/
     }
 }
 
@@ -293,9 +292,6 @@ void collide_with_chunk(ecs* world,
     zox_geter_value(chunk, NodeDepth, byte, chunk_depth);
     // account for node depth differences
     byte ddepth = terrain_depth - chunk_depth + 1;  // depth difference
-    /*zox_log("terrain_depth: %i", terrain_depth);
-    zox_log("   chunk_depth: %i", chunk_depth);
-    zox_log("   ddepth: %i", ddepth);*/
     int3 voxel_position2 = int3_div1(voxel_position, (int) ddepth);
     byte3 chunk_size = byte3_single(powers_of_two[chunk_depth]);
     byte3 voxel_positionl = get_positionl_byte3(voxel_position2, chunk_size);
@@ -374,7 +370,6 @@ zox_sys2(CollisionDetectSystem) {
         // new detection
         byte3 did_collide = byte3_zero;
         float3 collision_distance;
-        /* single axis collision, two sides per axis*/
         handle_collision_axis(x, bounds_left, 1);
         handle_collision_axis(x, bounds_right, 0);
         handle_collision_axis(y, bounds_left, 1);
@@ -417,4 +412,4 @@ zox_sys2(CollisionDetectSystem) {
             collision->value = ( did_collide.x & 0x3) << 0 | (did_collide.y & 0x3) << 2  | (did_collide.z & 0x3) << 4;
         }
     }
-} zox_sys_end(CollisionDetectSystem);
+} zox_sys_end(CollisionDetectSystem);*/

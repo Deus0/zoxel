@@ -51,7 +51,7 @@ zox_sys2(PlayerTownFinderSystem) {
             }
             continue;
         }
-        entity terrain = zox_getv(realm, TerrainLink);
+        entity terrain = zox_get_link(world, realm, Terrain);
 #ifdef zox_safety_checks
         if (!zox_valid(terrain)) {
             zox_loge("Invalid Terrain on Player");

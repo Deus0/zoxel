@@ -93,25 +93,24 @@ zox_sys2(ChunkLinkSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TerrainLink);
     zox_sys_out(Position3D);
     zox_sys_out(ChunkPosition);
     zox_sys_out(ChunkLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(TerrainLink, terrain);
         zox_sys_i(Position3D, position);
         zox_sys_o(ChunkPosition, chunk_position);
         zox_sys_o(ChunkLink, link);
-        if (!zox_valid(terrain->value)) {
+        entity terrain = zox_get_link(world, e, Terrain);
+        if (!zox_valid(terrain)) {
             if (dbg_log) {
                 zox_loge("Character [%s] has no Terrain linked",
                     zox_get_name(e));
             }
             continue; // these shouldn't be here
         }
-        float terrain_scale = zox_getv(terrain->value, BlockScale);
-        byte node_depth = zox_getv(terrain->value, NodeDepth);
+        float terrain_scale = zox_getv(terrain, BlockScale);
+        byte node_depth = zox_getv(terrain, NodeDepth);
         short length = octree_size(node_depth);
         int3 new_chunk_position = real_position_to_chunk_position(position->value, length, terrain_scale);
         // If already set and position has not changed
@@ -119,7 +118,7 @@ zox_sys2(ChunkLinkSystem) {
             continue;
         }
         chunk_position->value = new_chunk_position;
-        zox_geter(terrain->value, ChunkLinks, chunks);
+        zox_geter(terrain, ChunkLinks, chunks);
         entity chunk = int3_hashmap_get(chunks->value, new_chunk_position);
         if (dbg_log) {
             zox_log("Character [%s] Linking Chunk [%ix%ix%i]:[%s]", zox_get_name(e), new_chunk_position.x, new_chunk_position.y, new_chunk_position.z, zox_get_name(chunk));

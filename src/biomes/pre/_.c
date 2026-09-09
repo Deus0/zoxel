@@ -7,10 +7,9 @@ void spawn_prefabs_biomes(ecs *world) {
     }
     if (prefab_tunk2) {
         zox_setv(prefab_tunk2, BiomeMap, 0);
-        zox_setv(prefab_tunk2, BiomeLink, 0);
     }
     if (prefab_camera_game) {
-        zox_set(prefab_camera_game, BiomeLink, { 0 });
+        zox_add(prefab_camera_game, BiomeLinker);
     }
     prefab_biome = spawn_prefab_biome(world);
 }

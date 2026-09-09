@@ -414,19 +414,19 @@ zox_sys2(Chunk3RaycastSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TerrainLink);
     zox_sys_in(RaycastRange);
     zox_sys_out(RaycastVoxelData);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(TerrainLink, terrain);
         zox_sys_i(RaycastRange, raycast_range);
         zox_sys_o(RaycastVoxelData, data);
-        if (!zox_valid(terrain->value)) {
-            zox_loge("No Terrain Linked to [%s]", zox_getn(e));
+        entity terrain = zox_get_link(world, e, Terrain);
+        if (!zox_valid(terrain)) {
+            zox_loge("No Terrain Linked to [%s]",
+                zox_getn(e));
             continue;
         }
-        entity realm = zox_get_parent(world, terrain->value);
+        entity realm = zox_get_parent(world, terrain);
         if (!zox_valid(realm)) {
             continue;
         }
@@ -442,11 +442,11 @@ zox_sys2(Chunk3RaycastSystem) {
             ray_normal = quaternion_to_normal(rotation);
         }
         zox_geter(realm, BlockLinks, voxels);
-        float block_scale = zox_getv(terrain->value, BlockScale);
-        byte terrain_depth = zox_getv(terrain->value, NodeDepth);
+        float block_scale = zox_getv(terrain, BlockScale);
+        byte terrain_depth = zox_getv(terrain, NodeDepth);
         byte length = octree_size(terrain_depth);
         int3 size = int3_single(length);
-        zox_geter(terrain->value, ChunkLinks, chunks);
+        zox_geter(terrain, ChunkLinks, chunks);
         CharacterRaycast character_raycast = { 0 };
         float range = !debug_ray_big_range ? raycast_range->value : 128;
         data->result = raycast_voxel_node(

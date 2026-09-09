@@ -1,6 +1,20 @@
-entity spawn_realm_skill_melee(ecs* world, entity parent, entity prefab, const char* name, const char* tname, color ecolor, float value, float vmax, float range, entity resource, float cost, float warmup, float cooldown) {
+entity spawn_realm_skill_melee(
+    ecs* world,
+    entity parent,
+    entity prefab,
+    const char* name,
+    const char* tname,
+    color ecolor,
+    float value,
+    float vmax,
+    float range,
+    entity resource,
+    float cost,
+    float warmup,
+    float cooldown)
+{
     entity e = spawn_realm_skill(world, parent, prefab, name, tname, ecolor);
-    zox_set(e, SkillResourceLink, { resource });
+    zox_link(world, e, SkillResource, resource);
     zox_set(e, SkillCost, { cost });
     zox_set(e, SkillDamage, { value });
     zox_set(e, SkillDamageMax, { vmax });

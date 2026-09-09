@@ -18,22 +18,22 @@ zox_sys2(AuraRemoveSystem) {
                 continue;
             }
             entity aura = zox_get_link(world, dot, Skill);
-            zox_geter_value(dot, SpawnerLink, entity, user)
+            entity user = zox_get_link(world, dot, Spawner);
             if (!zox_valid(aura) || !zox_valid(user)) {
                 // todo: remove dots when aura dies too
                 continue;
             }
-            zox_geter_value(aura, SkillRange, float, radius)
-            zox_geter_value(aura, SkillActive, byte, active)
+            zox_geter_value(aura, SkillRange, float, radius);
+            zox_geter_value(aura, SkillActive, byte, active);
             byte is_still_in_aura = 0;
             if (active) { // if user exists and skill is active
-                zox_geter_value(user, Position3D, float3, aura_position)
+                zox_geter_value(user, Position3D, float3, aura_position);
                 float distance = float3_distance(position->value, aura_position);
                 is_still_in_aura = distance <= radius;
             }
             if (!is_still_in_aura) {
                 // zox_log(" + no longer within aura [%i]\n", j)
-                zox_geter_value(dot, ParticlesEmitterLink, entity, particles);
+                entity particles = zox_get_link(world, dot, ParticlesEmitter);
                 if (zox_valid(particles)) {
                     zox_delete(particles);
                 }

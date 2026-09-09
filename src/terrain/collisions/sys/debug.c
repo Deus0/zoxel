@@ -15,29 +15,29 @@ zox_sys2(TerrainIntersectDebugSystem) {
     color dbg_color_solid = (color) { 155, 25, 25, 125 };
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TerrainLink);
     zox_sys_in(Position3D);
     zox_sys_in(Rotation3D);
     zox_sys_in(Bounds3D);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(TerrainLink, terrain);
+        zox_sys_e();
         zox_sys_i(Position3D, position);
         zox_sys_i(Rotation3D, rotation);
         zox_sys_i(Bounds3D, bounds);
-        if (!zox_valid(terrain->value) || !zox_has(terrain->value, ChunkLinks) || !zox_has(terrain->value, BlockScale)) {
+        entity terrain = zox_get_link(world, e, Terrain);
+        if (!zox_valid(terrain) || !zox_has(terrain, ChunkLinks) || !zox_has(terrain, BlockScale)) {
             zox_logw("Terrain Invalid");
             continue; // these shouldn't be here
         }
         // find realm first
-        entity realm = zox_getv(terrain->value, RealmLink);
+        entity realm = zox_getv(terrain, RealmLink);
         if (!zox_valid(realm) || !zox_has(realm, BlockLinks)) {
             continue;
         }
         const BlockLinks* blocks = zox_get(realm, BlockLinks);
-        byte terrain_depth = zox_getv(terrain->value, NodeDepth);
-        float terrain_block_scale = zox_getv(terrain->value, BlockScale);
+        byte terrain_depth = zox_getv(terrain, NodeDepth);
+        float terrain_block_scale = zox_getv(terrain, BlockScale);
         float3 block_size = float3_single(terrain_block_scale * 0.5f);
-        zox_geter(terrain->value, ChunkLinks, chunks);
+        zox_geter(terrain, ChunkLinks, chunks);
         // For each block position in bounds, check if collides with chunk
         float3 bounds_rotated = float4_rotate_bounds(rotation->value, bounds->value);
         float3 lower_bounds = float3_subtract(position->value, bounds_rotated);

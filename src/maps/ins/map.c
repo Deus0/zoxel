@@ -26,8 +26,9 @@ entity spawn_map(ecs* world, entity canvas, entity player, entity terrain) {
     entity e = e3.x;
     zox_add(e, MenuMap);
     zox_add(e, Map);
-    zox_set(e, PlayerLink, { player });
-    zox_set(e, TerrainLink, { terrain });
+    zox_setv(e, PlayerLink, player);
+    zox_link(world, e, Player, player);
+    zox_link(world, e, Terrain, terrain);
     zox_set(e, MapPosition, { tunk_position });
     // int zoom = int_min(bigmap_zoom, terrain_lod_far);
     // zox_log("Map Zoom [%i] from [%i, %i]", zoom, bigmap_zoom, terrain_lod_far);
@@ -41,6 +42,6 @@ entity spawn_player_menu_map(ecs* world, entity player) {
     entity canvas = zox_get_link(world, player, Canvas);
     entity game = zox_get_parent(world, player);
     entity realm = zox_getv(game, RealmLink);
-    entity terrain = zox_getv(realm, TerrainLink);
+    entity terrain = zox_get_link(world, realm, Terrain);
     return spawn_map(world, canvas, player, terrain);
 }

@@ -29,13 +29,13 @@ void player_state_game_begin(
             zox_getn(game));
         return;
     }
-    if (!zox_has(realm, FolderPath) || !zox_has(realm, TerrainLink)) {
+    if (!zox_has(realm, FolderPath)) {
         zox_loge("Realm [%s] has invalid Components.",
             zox_getn(realm));
         return;
     }
 #endif
-    entity terrain = zox_getv(realm, TerrainLink);
+    entity terrain = zox_get_link(world, realm, Terrain);
 #ifdef zox_safety_checks
     if (!zox_valid(terrain)) {
         return;

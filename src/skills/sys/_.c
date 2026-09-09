@@ -16,7 +16,6 @@ void zox_systems_skills(ecs *world) {
     zox_system(
         DotsSystem,
         zoxp_update,
-        [in] skills.SpawnerLink,
         [in] skills.SkillDamage,
         [none] skills.Dot
     );
@@ -24,7 +23,6 @@ void zox_systems_skills(ecs *world) {
     zox_system_1(
         MeleeSystem,
         zoxp_spawn,
-        [in] skills.SkillResourceLink,
         [in] skills.SkillCost,
         [in] skills.SkillDamage,
         [in] skills.SkillDamageMax,

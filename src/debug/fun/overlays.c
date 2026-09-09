@@ -204,7 +204,7 @@ uint debug_ui_seeds(ecs *world, entity e, char *buffer, uint size, uint index) {
         index += snprintf(buffer + index, size - index, " - Character [%s]-[%s]: [%lu]\n", zox_get_name(character), character_name, character_seed);
     }
     if (zox_valid(realm)) {
-        entity terrain = zox_getv(realm, TerrainLink);
+        entity terrain = zox_get_link(world, realm, Terrain);
         if (zox_valid(terrain)) {
             lint terrain_seed = zox_getv(terrain, Seed);
             index += snprintf(buffer + index, size - index, " - Terrain [%s] [%lu]\n", zox_get_name(terrain), terrain_seed);

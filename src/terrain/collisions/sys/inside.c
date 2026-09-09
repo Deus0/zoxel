@@ -1,7 +1,6 @@
 zox_sys2(InsideBlockSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TerrainLink);
     zox_sys_in(Position3D);
     zox_sys_in(Bounds3D);
     zox_sys_out(InsideBlock);
@@ -9,19 +8,19 @@ zox_sys2(InsideBlockSystem) {
     zox_sys_out(InsideBlockDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(TerrainLink, terrain);
         zox_sys_i(Position3D, position);
         zox_sys_i(Bounds3D, bounds);
         zox_sys_o(InsideBlock, inside);
         zox_sys_o(InsideBlockPosition, iposition);
         zox_sys_o(InsideBlockDirty, idirty);
-        if (!zox_valid(terrain->value)) {
+        entity terrain = zox_get_link(world, e, Terrain);
+        if (!zox_valid(terrain)) {
             zox_loge("Terrain invalid in character [%s]", zox_get_name(e));
             continue;
         }
-        zox_geter(terrain->value, ChunkLinks, chunks);
-        zox_geter_value(terrain->value, BlockScale, float, terrain_scale);
-        zox_geter_value(terrain->value, NodeDepth, byte, terrain_depth);
+        zox_geter(terrain, ChunkLinks, chunks);
+        zox_geter_value(terrain, BlockScale, float, terrain_scale);
+        zox_geter_value(terrain, NodeDepth, byte, terrain_depth);
         float3 positionf = float3_add(position->value,
             (float3) { 0, - bounds->value.y / 4.0f, 0 });
         int3 positionv = real_position_to_block_position(positionf, terrain_scale);

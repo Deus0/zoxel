@@ -2,7 +2,7 @@
 // Kept compatible with the existing inputs and outputs, but simplified.
 // The actual system now tests one axis at a time against the moving face of the AABB.
 
-static inline float get_axis_f3(const float3 v, const byte axis) {
+/*static inline float get_axis_f3(const float3 v, const byte axis) {
     switch (axis) {
         case zox_axis_x: return v.x;
         case zox_axis_y: return v.y;
@@ -414,3 +414,4 @@ zox_sys2(CollisionDetectSystem) {
         }
     }
 } zox_sys_end(CollisionDetectSystem);
+*/

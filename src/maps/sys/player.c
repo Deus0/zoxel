@@ -21,12 +21,12 @@ void player_state_minimaps(ecs* world, entity player, byte state) {
             return;
         }
         entity realm = zox_getv(game, RealmLink);
-        if (!zox_valid(realm) || !zox_has(realm, TerrainLink)) {
+        if (!zox_valid(realm)) {
             zox_loge("Game [%s] has invalid Realm.",
                 zox_getn(game));
             return;
         }
-        entity terrain = zox_getv(realm, TerrainLink);
+        entity terrain = zox_get_link(world, realm, Terrain);
         spawn_minimap(
             world,
             canvas,

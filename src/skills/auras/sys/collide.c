@@ -87,7 +87,7 @@ zox_sys2(AuraDotSystem) {
                         float3_scale(bounds, 2),
                         colorr->value);
                     zox_link(world, particles, Skill, e);
-                    zox_setv(e3, ParticlesEmitterLink, particles);
+                    zox_link(world, e3, ParticlesEmitter, particles);
 #ifdef zox_debug_aoe_damage_system
                     spawn_line3(
                         world,
