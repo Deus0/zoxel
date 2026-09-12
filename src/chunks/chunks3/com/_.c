@@ -8,8 +8,7 @@ zox_tag(VoxelNodePostDirty);
 zoxc_int3(ChunkPosition);
 zoxc_int3(ChunkSize);
 zoxc_byte(ChunkLodDirty);
-zoxc_byte(BlocksSpawned);
-zoxc_state(ChunkDirty);
+zox_tag(BlocksSpawned);
 zoxc_entities(ChunkEntities);
 zoxc_link(ChunkLink, entity, ChunkEntities)
 #define chunk_neighbors_length 6
@@ -42,17 +41,20 @@ zoxc_arrayd(CombinePositions, byte3);
 #define zox_chunk_lod_dirty_end 0
 
 void define_components_chunks3(ecs* world) {
-    zoxd_nf_tag(Chunk3);
-    zoxd_nf_tag(ColorChunk);
-    zoxd_nf_tag(LinkChunk);
-    zoxd_nf_tag(ChunkDebugger);
-    zoxd_nf_tag(NoiseChunk);
-    zoxd_nf_tag(VoxelNodeDirty);
-    zoxd_nf_tag(VoxelNodePostDirty);
+    // zoxd_nf_tag
+    // Types
+    zoxd_tag(Chunk3);
+    zoxd_tag(ColorChunk);
+    zoxd_tag(LinkChunk);
+    zoxd_tag(ChunkDebugger);
+    zoxd_tag(NoiseChunk);
+    zoxd_tag(Vox);
+    // Events
+    zoxd_tag(VoxelNodeDirty);
+    zoxd_tag(VoxelNodePostDirty);
     // Data
     zoxd_byte(ChunkLodDirty);
-    zoxd_byte(BlocksSpawned);
-    zoxd_state(ChunkDirty);
+    zoxd_tag(BlocksSpawned);
     zoxd_int3(ChunkPosition);
     zoxd_int3(ChunkSize);
     // Links
@@ -65,7 +67,6 @@ void define_components_chunks3(ecs* world) {
     zoxd_entities(ChunkEntities);
     zoxd_queue(VoxelNodeQueue);
     // Voxes
-    zoxd_tag(Vox);
     zoxd_byte(ChunkLod);
     zoxd_hashmap(ChunkLinks);
     // operations

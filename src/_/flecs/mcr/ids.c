@@ -59,9 +59,14 @@
 
 //#define zox_dont_fragment(T) { }
 
+// NOTE: Avoid for system queries, use for zox_has checks
 #define zoxd_nf_tag(T)\
     zoxd_tag(T); \
     zox_dont_fragment(T)
+
+// so we can change fragmentation rules here
+#define zoxd_tag_event(T)\
+    zoxd_tag(T)
 
 
 typedef struct {

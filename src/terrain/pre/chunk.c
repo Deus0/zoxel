@@ -14,7 +14,6 @@ entity spawn_prefab_chunk_terrain(
     // Events
     zox_setv(e, RenderDistanceDirty, zox_dirty_trigger);
     zox_setv(e, ChunkLodDirty, zox_chunk_lod_dirty_start);
-    zox_setv(e, BlocksSpawned, 0);
     zox_add(e, FindNeighbors);
     // Debug
 /*#ifdef zox_debug

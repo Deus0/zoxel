@@ -19,6 +19,8 @@ void set_light_systems(ecs* world, byte is_lights) {
     zox_set_enabled(ChunkColorsTriggerSystem, is_lights);
     zox_set_enabled(ChunkNeighborLightTriggerSystem, is_lights);
     zox_set_enabled(build_smooth_lights_system, is_lights);
+    zox_set_enabled(LightNodeDirtyIncrementSystem, is_lights);
+    zox_set_enabled(LightNodeReduceSystem, is_lights);
 }
 
 #include "settings.c"
@@ -43,9 +45,9 @@ void define_systems_lights3(ecs* world) {
         zoxp_update,
         [in] chunks.NodeDepth,
         [out] lights3.SunlightQueue,
-        [none] lights.GenerateSunlight,
+        [none] chunks3.Chunk3,
         [none] lights3.SunnyChunk,
-        [none] chunks.Chunk,
+        [none] lights.GenerateSunlight,
     );
     zox_system(
         LightBeamSystem,
@@ -58,8 +60,8 @@ void define_systems_lights3(ecs* world) {
         [out] lights3.LightQueue,
         [out] lights3.LightNode,
         [out] lights3.LightNodeDirty,
-        [none] chunks.Chunk,
-        [none] !chunks.GenerateChunk,
+        [none] chunks3.Chunk3,
+        // [none] !chunks.GenerateChunk,
     );
     zox_system(
         LightFloodSystem,
@@ -71,8 +73,8 @@ void define_systems_lights3(ecs* world) {
         [out] lights3.LightQueue,
         [out] lights3.LightNode,
         [out] lights3.LightNodeDirty,
-        [none] chunks.Chunk,
-        [none] !chunks.GenerateChunk,
+        [none] chunks3.Chunk3,
+        // [none] !chunks.GenerateChunk,
     );
     zox_system(
         DarkLightSystem,
@@ -86,8 +88,8 @@ void define_systems_lights3(ecs* world) {
         [out] lights3.DarkQueue,
         [out] lights3.LightQueue,
         [out] lights3.LightNodeDirty,
-        [none] chunks.Chunk,
-        [none] !chunks.GenerateChunk,
+        [none] chunks3.Chunk3,
+        // [none] !chunks.GenerateChunk,
     );
     // NOTE: This needs to be queue dependent
     zox_system(
@@ -104,7 +106,7 @@ void define_systems_lights3(ecs* world) {
         [out] lights3.LightNode,
         [out] lights3.LightNodeDirty,
         [none] chunks3.Chunk3,
-        [none] !chunks.GenerateChunk,
+        // [none] !chunks.GenerateChunk,
     );
     // this kinda has issues atm hmm
     zox_system(
@@ -113,32 +115,20 @@ void define_systems_lights3(ecs* world) {
         [in] lights3.LightNodeDirty,
         [out] lights.LightLock,
         [out] lights3.LightNode,
-        [none] chunks.Chunk
+        [none] chunks3.Chunk3,
     );
     zox_system(
         ChunkColorsTriggerSystem,
         zoxp_update,
         [in] lights3.LightNodeDirty,
-        [none] chunks.Chunk,
+        [none] chunks3.Chunk3,
     );
     zox_system(
         ChunkNeighborLightTriggerSystem,
         zoxp_update,
         [in] lights3.LightNodeDirty,
         [in] chunks3.ChunkNeighbors,
-        [none] chunks.Chunk
-    );
-    zox_system_1(
-        LightNodeDebugSystem,
-        zoxp_spawn,
-        [in] transforms3.Position3D,
-        [in] blocks.BlockScale,
-        [in] rendering.RenderDistance,
-        [in] chunks3.ChunkPosition,
-        [in] chunks3.VoxelNode,
-        [in] lights3.LightNode,
-        [in] rendering.RenderDepth,
-        [none] chunks.Chunk,
+        [none] chunks3.Chunk3,
     );
     // Mesh
     // Wait until after mesh has built

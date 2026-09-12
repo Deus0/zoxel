@@ -9,10 +9,11 @@ zoxc_arrayd(BoneIndexes, byte);
 zoxc_arrayd(BoneLinks, entity);
 
 void zox_components_rendering3(ecs* world) {
-    zoxd_nf_tag(Mesh3);
-    zoxd_nf_tag(MeshBasic3);
-    zoxd_nf_tag(TexturedMesh3);
-    zoxd_nf_tag(SkeletonMesh);
+    // Types
+    zoxd_tag(Mesh3);
+    zoxd_tag(MeshBasic3);
+    zoxd_tag(TexturedMesh3);
+    zoxd_tag(SkeletonMesh);
     zoxd(MaterialTextured3D);
     zoxd(MaterialColored3D);
     zoxd(MaterialVoxInstance);

@@ -34,9 +34,9 @@ zox_sys2(BiomeLinkSystem) {
         if (!zox_valid(tunk)) {
             continue;
         }
-        entity old_tunk = zox_get_link(world, e, Tunk);
+        entity old_tunk = zox_get_link(world, e, TunkLink);
         if (tunk != old_tunk) {
-            entity biome = zox_get_link(world, tunk, Biome);
+            entity biome = zox_get_link(world, tunk, BiomeLink);
             if (!zox_valid(biome)) {
                 continue;
             }
@@ -47,16 +47,16 @@ zox_sys2(BiomeLinkSystem) {
             }
 #endif
             if (zox_valid(old_tunk)) {
-                zox_unlink(world, e, Tunk, old_tunk);
+                zox_unlink(world, e, TunkLink, old_tunk);
             }
-            zox_link(world, e, Tunk, tunk);
-            entity old_biome = zox_get_link(world, e, Biome);
+            zox_link(world, e, TunkLink, tunk);
+            entity old_biome = zox_get_link(world, e, BiomeLink);
             if (old_biome != biome) {
                 if (zox_valid(old_biome)) {
-                    zox_unlink(world, e, Biome, old_biome);
+                    zox_unlink(world, e, BiomeLink, old_biome);
                 }
                 if (zox_valid(biome)) {
-                    zox_link(world, e, Biome, biome);
+                    zox_link(world, e, BiomeLink, biome);
                 }
             }
             zox_logv("Inside new Biome [%s]",
@@ -72,7 +72,10 @@ zox_sys2(BiomeLinkSystem) {
                 entity camera = zox_get_link(world, e, Camera);
                 zox_setv(camera, FogColor, sky_color);
             }
-            entity game = zox_get_parent_by_id(world, terrain->value, zox_id(Game));
+            entity game = zox_get_parent_by_id(
+                world,
+                terrain->value,
+                zox_id(Game));
             if (!zox_valid(game)) {
                 zox_loge("No Game parent on Camera %s", zox_getn(terrain->value));
                 continue;

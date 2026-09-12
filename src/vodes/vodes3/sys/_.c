@@ -13,15 +13,15 @@ void define_systems_vodes3(ecs* world) {
         [in] rendering.RenderDistanceDirty,
         [in] rendering.RenderDepth,
         [out] chunks3.VoxelNode,
-        [out] chunks3.BlocksSpawned
+        [none] chunks3.BlocksSpawned,
     );
     // NOTE: Writes to VoxelNode
     zox_system(
         VodesRemoveSystem,
         zoxp_update,
-        // [in] chunks3.VoxelNodeDirty,
-        [in] chunks3.BlocksSpawned,
         [out] chunks3.VoxelNode,
+        [none] chunks3.BlocksSpawned,
+        [none] chunks3.VoxelNodeDirty,
     );
     zox_system(
         VodesLodSystem,
@@ -29,7 +29,7 @@ void define_systems_vodes3(ecs* world) {
         [in] rendering.RenderDistanceDirty,
         [in] rendering.RenderDistance,
         [in] chunks3.VoxelNode,
-        [in] chunks3.BlocksSpawned
+        [none] chunks3.BlocksSpawned,
     );
     zox_system(
         BlockHealthOverlaySystem,
@@ -41,14 +41,13 @@ void define_systems_vodes3(ecs* world) {
     zox_system_1(
         VodesSpawnSystem,
         zoxp_spawn,
-        // [in] chunks3.VoxelNodeDirty,
         [in] chunks.NodeDepth,
         [in] rendering.RenderDisabled,
         [in] rendering.RenderDepth,
         [in] rendering.RenderDistance,
         [in] transforms3.Position3D,
         [out] chunks3.VoxelNode,
-        [out] chunks3.BlocksSpawned,
+        [none] terrains.TerrainChunk,
     );
     zox_system_1(
         BlockDamageQueueSystem,

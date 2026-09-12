@@ -34,13 +34,20 @@ UIs
     - atm theyre a bit spread through different state events
     - For example screen fader is in 3 events
     
-## Refactor Events (To Tags)
+## Refactor Restore/Dispose GPU Systems
+    - just make one big function that uses queries and calls those functions
+    
+## Refactor Events/Properties To Tags
 	- LayoutPositionDirty
 	- LayoutSizeDirty
 	- TextDirty
 	- GenerateTexture
 	- RenderLodDirty
-	- Refactor RenderDisabled to DF Tag
+	- NpcSpawnZoneDirty
+	
+## Refactor Properties
+	- RenderDisabled
+	- BlocksSpawned
 	
 ## Refactor Reactionary Systems to Events
 	- Tooltip Systems

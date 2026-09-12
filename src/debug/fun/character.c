@@ -28,10 +28,10 @@ uint zox_dbg_label_character_links(
     entity camera = zox_get_link(world, e, Camera);
     entity chunk = zox_getv(e, ChunkLink);
     entity tunk = zox_valid(chunk) ?
-        zox_get_link(world, chunk, Tunk) :
+        zox_get_link(world, chunk, TunkLink) :
         0;
     entity region = zox_valid(tunk) ?
-        zox_get_link(world, tunk, Region) :
+        zox_get_link(world, tunk, RegionLink) :
         0;
     // Character
     index += snprintf(buffer + index, size - index,
@@ -160,10 +160,10 @@ uint zox_dbg_label_inside_chunk(
         return index;
     }
     entity tunk = zox_valid(chunk) ?
-        zox_get_link(world, chunk, Tunk) :
+        zox_get_link(world, chunk, TunkLink) :
         0;
     entity region = zox_valid(tunk) ?
-        zox_get_link(world, tunk, Region) :
+        zox_get_link(world, tunk, RegionLink) :
         0;
     index += snprintf(buffer + index, size - index,
         "Inside Chunk [%s]\n",
@@ -263,10 +263,10 @@ uint zox_dbg_label_towns(
         return index;
     }
     entity tunk = zox_valid(chunk) ?
-        zox_get_link(world, chunk, Tunk) :
+        zox_get_link(world, chunk, TunkLink) :
         0;
     entity region = zox_valid(tunk) ?
-        zox_get_link(world, tunk, Region) :
+        zox_get_link(world, tunk, RegionLink) :
         0;
     entity terrain = zox_get_parent(world, chunk);
     // Character

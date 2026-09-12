@@ -22,7 +22,9 @@ zoxc_queue_remove(LightQueue, LightUpdate);
 zoxc_queue_remove(DarkQueue, DarkUpdate);
 
 void define_components_lights3(ecs *world) {
-    zoxd_nf_tag(SunnyChunk);
+    // NOTE: Sunny used in system filter
+    zoxd_tag(SunnyChunk);
+    // Property
     zoxd_nf_tag(BottomChunk);
     zoxd_octree(LightNode); // zoxd_node
     zoxd_byte(LightNodeDepth);

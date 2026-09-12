@@ -1,7 +1,11 @@
 // NOTE: uses zox_set here for children setting
 // NOTE: I may need to thread lock/unlock ChunkEntities when reading
 // block spawn delve function
-void set_chunk_block_spawns_render_disabled(ecs *world, const VoxelNode *node, byte state) {
+void set_chunk_block_spawns_render_disabled(
+    ecs *world,
+    const VoxelNode *node,
+    byte state)
+{
     if (is_closed_VoxelNode(node)) {
         return;
     } else if (is_linked_VoxelNode(node)) {
@@ -18,12 +22,19 @@ void set_chunk_block_spawns_render_disabled(ecs *world, const VoxelNode *node, b
     } else if (has_children_VoxelNode(node)) {
         VoxelNode* kids = (VoxelNode*) node->ptr;
         for (int i = 0; i < octree_length; i++) {
-            set_chunk_block_spawns_render_disabled(world, &kids[i], state);
+            set_chunk_block_spawns_render_disabled(
+                world,
+                &kids[i],
+                state);
         }
     }
 }
 
-void set_entity_render_disabled(ecs* world, entity e, byte disabled) {
+void set_entity_render_disabled(
+    ecs* world,
+    entity e,
+    byte disabled)
+{
     if (!zox_valid(e)) {
         return;
     }
@@ -58,9 +69,17 @@ void set_entity_render_disabled(ecs* world, entity e, byte disabled) {
 
 }
 
-byte is_sphere_in_frustum(const plane* planes, float3 center, float radius) {
+byte is_sphere_in_frustum(
+    const plane* planes,
+    float3 center,
+    float radius)
+{
     for (int i = 0; i < 6; i++) {
-        float dist = float3_dot(planes[i].normal, center) - planes[i].distance;
+        float dist =
+            float3_dot(
+                planes[i].normal,
+                center)
+            - planes[i].distance;
         if (dist < -radius) {
             return 0; // sphere is completely outside
         }
@@ -88,7 +107,7 @@ byte aabb_in_frustum_fast(const plane *planes, bounds b, float eps) {
 zox_sys2(ChunkFrustumSystem) {
     // TODO: We can cache the cameras here
     byte dbg_log = 0;
-    byte ignore_low_lods = 2;
+    byte ignore_low_lods = 0;
     byte frustum_inwards = 1; // we just using this for safety
     // cache camera positions first
     float6_array_d* camera_bounds = create_float6_array_d(1);
@@ -105,7 +124,9 @@ zox_sys2(ChunkFrustumSystem) {
             zox_sys_i_2(CameraPlanes, camera_planes2);
             float6_array_d_add(camera_bounds, frustum_bounds->value);
             for (int k = 0; k < zox_camera_planes; k++) {
-                plane_array_d_add(camera_planes, camera_planes2->value[k]);
+                plane_array_d_add(
+                    camera_planes,
+                    camera_planes2->value[k]);
             }
         }
     }
@@ -122,7 +143,6 @@ zox_sys2(ChunkFrustumSystem) {
     zox_sys_in(Position3D);
     zox_sys_in(Bounds3D);
     zox_sys_in(VoxelNode);
-    zox_sys_in(BlocksSpawned);
     zox_sys_in(ChunkEntities);
     zox_sys_out(RenderDisabled);
     for (int i = 0; i < it->count; i++) {
@@ -130,7 +150,6 @@ zox_sys2(ChunkFrustumSystem) {
         zox_sys_i(Position3D, position);
         zox_sys_i(Bounds3D, bounds3);
         zox_sys_i(VoxelNode, voxels);
-        zox_sys_i(BlocksSpawned, spawned);
         zox_sys_i(ChunkEntities, entities);
         zox_sys_o(RenderDisabled, render_disabled);
         // NOTE: Some quick skips for largest voxelss
@@ -140,11 +159,14 @@ zox_sys2(ChunkFrustumSystem) {
         }
         // our bounds3D isn't centred, terrain chunks corner offset!
         bounds chunk_bounds = {
-            .center = float3_add(position->value, bounds3->value),
+            .center = float3_add(
+                position->value,
+                bounds3->value),
             .extents = bounds3->value
         };
-        float3_scale_p(&chunk_bounds.extents, fudge_frustum_extents);
-        // zox_sys_query_begin();
+        float3_scale_p(
+            &chunk_bounds.extents,
+            fudge_frustum_extents);
         byte is_viewed = disable_frustum_culling;
         if (ignore_low_lods && voxels->value && !voxels->ptr) {
             is_viewed = 1;
@@ -156,7 +178,15 @@ zox_sys2(ChunkFrustumSystem) {
             plane* planes = &camera_planes->data[j * zox_camera_planes];
             // our normals appear to be flipped
             byte inside_sphere = is_sphere_in_frustum(planes, chunk_bounds.center, radius);
-            is_viewed = inside_sphere &&  is_bounds_in_position_bounds(frustum_bounds, chunk_bounds) &&  is_in_frustum(planes, chunk_bounds, frustum_inwards);
+            is_viewed =
+                inside_sphere &&
+                is_bounds_in_position_bounds(
+                    frustum_bounds,
+                    chunk_bounds) &&
+                is_in_frustum(
+                    planes,
+                    chunk_bounds,
+                    frustum_inwards);
             if (dbg_log >= 2) {
                 zox_log("Checking for Camera [%s]", zox_get_name(it2.entities[j]));
             }
@@ -168,18 +198,27 @@ zox_sys2(ChunkFrustumSystem) {
             while (zox_children_next(it2)) {
                 for (int j = 0; j < it2.count; j++) {
                     entity e3 = it2.entities[j];
+                    // if (zox_has(e3, RenderDisabled)) {
                     if (zox_has(e3, ChunkMesh)) {
                         zox_setm(e3, RenderDisabled, render_disabled->value);
                     }
                 }
             }
             if (dbg_log >= 2) {
-                zox_log("Chunk [%s] now Visible? [%s]", zox_get_name(e), is_viewed ? "Visible" : "Invisible");
+                zox_log("Chunk [%s] now Visible? [%s]",
+                    zox_get_name(e),
+                        is_viewed ?
+                            "Visible" :
+                            "Invisible");
             }
+            // NOTE: Assuming this was toggled by children now??
             // Also set objects inside our terrain chunks!
             // -=- World Blocks -=-
-            if (spawned->value) {
-                set_chunk_block_spawns_render_disabled(world, voxels, render_disabled->value);
+            if (zox_has(e, BlocksSpawned)) {
+                set_chunk_block_spawns_render_disabled(
+                    world,
+                    voxels,
+                    render_disabled->value);
             }
             // -=- -=- -=- -=- -=- -=-
             // NOTE: For characters

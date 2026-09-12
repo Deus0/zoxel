@@ -51,7 +51,7 @@ zox_sys2(LandfillChunkSystem) {
         }
 #endif
         zox_geter(realm, BiomeLinks, realm_biomes);
-        entity tunk = zox_get_link(world, e, Tunk);
+        entity tunk = zox_get_link(world, e, TunkLink);
 #ifdef zox_safety_checks
         if (!realm_biomes->length) {
             zox_loge("No Biomes on Realm");

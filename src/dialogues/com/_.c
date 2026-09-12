@@ -20,11 +20,11 @@ zoxc_state(AnimateTextEnded);
 zoxc_array(SpeakerLinks, entity, zox_speakers_max);
 
 void define_components_dialogues(ecs* world) {
-    zoxd_nf_tag(DialogueNode);
-    zoxd_nf_tag(Dialogue);
-    zoxd_nf_tag(DialogueProcess);
+    zoxd_tag(DialogueNode);
+    zoxd_tag(Dialogue);
+    zoxd_tag(DialogueProcess);
     zoxd_nf_tag(DialogueUI);
-    zoxd_nf_tag(DialogueLabel);
+    zoxd_tag(DialogueLabel);
     zoxd_nf_tag(DialogueButton);
     // Dialogue Types
     zoxd_nf_tag(Greetings);

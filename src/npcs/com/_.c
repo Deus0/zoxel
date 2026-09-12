@@ -1,4 +1,4 @@
-zoxc_byte(CharactersSpawned);
+zox_tag(CharactersSpawned);
 zoxc_byte(CharactersEverSpawned);
 zoxc_byte(NpcSpawnZone);
 zoxc_state(NpcSpawnZoneDirty);
@@ -6,7 +6,7 @@ zoxc_state(NpcSpawnZoneDirty);
 zoxc_array(ChunkCharacters, entity, chunk_characters_max);
 
 void define_components_characters3_terrain(ecs* world) {
-    zoxd_byte(CharactersSpawned);
+    zoxd_tag(CharactersSpawned);
     zoxd_byte(CharactersEverSpawned);
     zoxd_byte(NpcSpawnZone);
     zoxd_state(NpcSpawnZoneDirty);

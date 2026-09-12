@@ -35,13 +35,6 @@ void define_systems_terrain_collisions(ecs* world) {
         [out] physics.Grounded,
         [none] !physics.NoClip
     );
-    zox_system_1(
-        TerrainIntersectDebugSystem,
-        zoxp_spawn,
-        [in] transforms3.Position3D,
-        [in] transforms3.Rotation3D,
-        [in] transforms3.Bounds3D,
-    );
     zox_system(
         UnstuckSystem,
         zoxp_physics + 1,
@@ -50,6 +43,14 @@ void define_systems_terrain_collisions(ecs* world) {
         [out] transforms3.Position3D,
         [none] !physics.NoClip
     );
+    zox_system_1(
+        TerrainIntersectDebugSystem,
+        zoxp_spawn,
+        [in] transforms3.Position3D,
+        [in] transforms3.Rotation3D,
+        [in] transforms3.Bounds3D,
+    );
+    zox_set_enabled(TerrainIntersectDebugSystem, zox_dbg_intersect);
     /*byte use_old_collisions = 0;
     if (use_old_collisions) {
         zox_system(

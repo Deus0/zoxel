@@ -23,7 +23,6 @@ zox_sys2(TerrainCharactersSpawnSystem) {
     zox_sys_in(Position3D);
     zox_sys_in(BlockScale);
     zox_sys_out(ChunkCharacters);
-    zox_sys_out(CharactersSpawned);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(NpcSpawnZoneDirty, dirty);
@@ -38,7 +37,6 @@ zox_sys2(TerrainCharactersSpawnSystem) {
         zox_sys_i(Position3D, positionf);
         zox_sys_i(BlockScale, cscale);
         zox_sys_o(ChunkCharacters, characters);
-        zox_sys_o(CharactersSpawned, spawned);
         // Only spawn if fully loaded
         if (!active->value || dirty->value) {
             continue;
@@ -58,10 +56,6 @@ zox_sys2(TerrainCharactersSpawnSystem) {
             continue;
         }
 #endif
-        if (spawned->value) {
-            // if (spawned->value) zox_log("- already_spawned [%i]", entities->length)
-            continue;
-        }
         // NOTE: If has No children or all air, we avoid
         if (!has_children_VoxelNode(voctree) || !voctree->value) {
             continue;
@@ -69,10 +63,14 @@ zox_sys2(TerrainCharactersSpawnSystem) {
         zox_geter(realm, CharacterLinks, realm_characters);
         zox_geter_value(realm, CharactersChanceMax, byte, max_chance);
         entity chunk_above = neighbors->value[direction_up];
-        const VoxelNode* voctree_above = zox_valid(chunk_above) ? zox_get(chunk_above, VoxelNode) : NULL;
+        const VoxelNode* voctree_above =
+            zox_valid(chunk_above) ?
+                zox_get(chunk_above, VoxelNode) :
+                NULL;
         // calcs
         byte character_spawn_rate = seed_range(seed->value, character_spawn_rate_min, character_spawn_rate_max);
         srand(seed->value);
+        byte spawned = 0;
         for (byte j = 0; j < character_spawn_rate; j++) {
             // Find Position First
             byte3 in_chunk_position;
@@ -99,24 +97,6 @@ zox_sys2(TerrainCharactersSpawnSystem) {
                 zox_loge("failed to find a spawn character_meta");
                 continue;
             }
-            // entity model = zox_getv(meta, ModelLink);
-            /*if (!model || !meta) {
-                zox_loge("failed to find a spawn character_meta");
-                continue;
-            }
-            // if model group
-            if (zox_has(model, ModelLinks)) {
-                zox_geter(model, ModelLinks, models);
-                if (models->length) {
-                    model = models->value[rand() % models->length];
-                }
-            }
-            if (!zox_valid(model) || !zox_has(model, MaxRenderDepth)) {
-                zox_loge("Model Invalid [%s]", zox_get_name(model));
-                continue;
-            }*/
-            // byte max_depth = zox_valid(model) && zox_has(model, MaxRenderDepth) ? zox_getv(model, MaxRenderDepth) : 0;
-            // byte render_depth = camera_distance_to_npc_render_depth(render_distance->value, max_depth);
             lint npc_seed = rand_range(0, 10000);
             float3 position = byte3_to_float3(in_chunk_position);
             float3_scale_p(&position, cscale->value);
@@ -139,8 +119,8 @@ zox_sys2(TerrainCharactersSpawnSystem) {
                 continue;
             }
             zox_add(e2, DisableMovement);
-            characters->value[spawned->value] = e2;
-            spawned->value++;
+            characters->value[spawned] = e2;
+            spawned++;
             if (dbg_length) {
                 spawn_arrow3D(
                     world,
@@ -166,5 +146,6 @@ zox_sys2(TerrainCharactersSpawnSystem) {
             spawned_count++;
             total_spawned_npcs_count++;
         }
+        zox_add(e, CharactersSpawned);
     }
 } zox_sys_end(TerrainCharactersSpawnSystem);

@@ -28,7 +28,7 @@ zox_sys2(TownMapSystem) {
             generate->value = zox_generate_tunk_end;
             continue;
         }
-        entity region = zox_get_link(world, e, Region);
+        entity region = zox_get_link(world, e, RegionLink);
 #ifdef zox_safety_checks
         if (!zox_valid(region)) {
             zox_loge("[%s] Tunk has invalid region at [%ix%i]: %lu in TownMaps", zox_get_name(e), tunk_position->value.x, tunk_position->value.y, region);

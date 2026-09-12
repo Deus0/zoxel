@@ -18,6 +18,6 @@ entity spawn_tunk(
     zox_setv(e, TunkPosition, position);
     zox_setv(e, RenderDistance, distance);
     zox_setv(e, TunkLod, lod);
-    zox_link(world, e, Region, region);
+    zox_link(world, e, RegionLink, region);
     return e;
 }

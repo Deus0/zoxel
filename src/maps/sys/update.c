@@ -45,7 +45,7 @@ zox_sys2(MapPositionSystem) {
                 if (!zox_valid(tunk)) {
                     zox_logw("MapPositionSystem: Tunk Invalid at [%ix%i]", tunk_position.x, tunk_position.y);
                 }
-                zox_link(world, e2, Tunk, tunk);
+                zox_link(world, e2, TunkLink, tunk);
                 zox_set(e2, GenerateTexture, { zox_generate_texture_run });
                 if (dbg_log >= 2) {
                     zox_log(" - Map Piece [%ix%i] Updated [%ix%i]", grid_postion.x, grid_postion.y, tunk_position.x, tunk_position.y);

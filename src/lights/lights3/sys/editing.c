@@ -166,10 +166,10 @@ zox_sys2(VoxelLightSystem) {
                 }
                 // set dark light, as it was filled up
                 // TODO: Move this to the light system itself
-                /*spin_lock(&lightlock->value);
+                spin_lock(&lightlock->value);
                 set_LightNode(root_lnode, depth->value, update.position, darklight);
                 spin_unlock(&lightlock->value);
-                light_node_dirty->value = zox_dirty_trigger;*/
+                light_node_dirty->value = zox_dirty_trigger;
             }
         }
     }

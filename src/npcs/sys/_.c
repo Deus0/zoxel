@@ -5,14 +5,14 @@
 
 void define_systems_characters3_terrain(ecs* world) {
     zox_system(
-        Characters3SpawnZoneSystem,
+        CharactersCanSpawnSystem,
         zoxp_update,
-        // [in] chunks3.ChunkLodDirty,
+        [in] rendering.RenderDepthDirty,
         [in] rendering.RenderDepth,
         [in] rendering.RenderDistance,
         [out] npcs.NpcSpawnZone,
         [out] npcs.NpcSpawnZoneDirty,
-        [none] terrains.TerrainChunk
+        [none] terrains.TerrainChunk,
     );
     zox_system(
         TerrainCharactersDespawnSystem,
@@ -20,8 +20,8 @@ void define_systems_characters3_terrain(ecs* world) {
         [in] npcs.NpcSpawnZoneDirty,
         [in] npcs.NpcSpawnZone,
         [out] npcs.ChunkCharacters,
-        [out] npcs.CharactersSpawned,
-        [none] terrains.TerrainChunk
+        [none] terrains.TerrainChunk,
+        [none] npcs.CharactersSpawned,
     );
     // NOTE: Writes to VoxelNode
     zox_system_1(
@@ -39,8 +39,8 @@ void define_systems_characters3_terrain(ecs* world) {
         [in] transforms3.Position3D,
         [in] blocks.BlockScale,
         [out] npcs.ChunkCharacters,
-        [out] npcs.CharactersSpawned,
-        [none] terrains.TerrainChunk
+        [none] terrains.TerrainChunk,
+        [none] !npcs.CharactersSpawned,
     );
     zox_system_1(
         NpcsSettingsSystem,

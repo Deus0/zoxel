@@ -88,14 +88,13 @@ void define_systems_chunks3(ecs *world) {
         [none] chunks3.ColorChunk,
         [none] rendering.BuildMesh,
     );
-    // Move to Voxes Module
     zox_system(
         ChunkFindNeighborSystem,
         zoxp_update,
         [in] chunks3.ChunkPosition,
         [out] chunks3.ChunkNeighbors,
+        [none] chunks.ChunkTextured,
         [none] chunks.FindNeighbors,
-        [none] chunks.ChunkTextured,    // we should just check if parent has chunk links here
     );
     // NOTE: Syncs Terrain Chunk Scales
     zox_system(
@@ -134,8 +133,8 @@ void define_systems_chunks3(ecs *world) {
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
         [out] chunks3.SidesOctree,
-        [none] chunks.BuildChunkSides,
         [none] chunks.ChunkTextured,
+        [none] chunks.BuildChunkSides,
         [none] !chunks3.VoxelNodeDirty,
     );
     zox_system_1(

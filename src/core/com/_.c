@@ -7,6 +7,8 @@ zox_tag(PreDeath);
 zox_tag(DeathDirty);
 zox_tag(BuildDisabled);
 zox_tag(DebugEntity);
+zox_tag(PreInitialize);
+zox_tag(Initialize);
 // zoxc_byte(Active);
 zoxc_double(DeactivateDelay);
 zoxc_byte(GenericEvent);
@@ -16,8 +18,6 @@ zoxc_byte(Ready);
 zoxc_entity(SystemLink);
 zoxc_state(Generate);
 zoxc_double(DiedTime);
-zox_tag(PreInitialize);
-zox_tag(Initialize);
 zoxc_listener(InitializeEvent, 32, ecs*, entity);
 // identitys
 zoxc_int(ID);
@@ -52,16 +52,16 @@ zoxc_state(TriggerActionB);
 zoxc_state(TriggerActionE);
 
 void zox_components_core(ecs* world) {
-    // General
-    zoxd_nf_tag(ZoxSystem);
-    zoxd_nf_tag(Disabled);
-    zoxd_nf_tag(Dead);
-    zoxd_nf_tag(PreDeath);
-    zoxd_nf_tag(DeathDirty);
-    zoxd_nf_tag(BuildDisabled);
-    zoxd_nf_tag(DebugEntity);
-    zoxd_nf_tag(Initialize);
-    zoxd_nf_tag(PreInitialize);
+    // General - zoxd_nf_tag
+    zoxd_tag(ZoxSystem);
+    zoxd_tag_event(Disabled);
+    zoxd_tag_event(Dead);
+    zoxd_tag_event(PreDeath);
+    zoxd_tag_event(DeathDirty);
+    zoxd_tag_event(BuildDisabled);
+    zoxd_tag(DebugEntity);
+    zoxd_tag_event(Initialize);
+    zoxd_tag_event(PreInitialize);
     zoxd(InitializeEvent);
     zoxd_inherited(InitializeEvent);
     // Data

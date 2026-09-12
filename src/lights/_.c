@@ -9,5 +9,5 @@ byte zox_smooth_lighting = 1;
 void import_lights(ecs* world) {
     zox_module(lights);
     zoxd_components_lights(world);
-    zox_import_module(Lights3);
+    zox_add_module(lights3);
 }

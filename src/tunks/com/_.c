@@ -12,6 +12,8 @@ zoxc_hashmap(TunkLinks, int2);
 #define chunk3_stack_length render_distance_y_max * 2 + 1
 zoxc_array(Chunk3Stack, entity, chunk3_stack_length);
 zoxc_byte(Chunk3Stacked);
+// Links
+zox_tag(TunkLink);
 
 void define_components_tunks(ecs *world) {
     zoxd_tag(Tunk);
@@ -26,4 +28,6 @@ void define_components_tunks(ecs *world) {
     zoxd(Chunk3Stack);
     zoxd_byte(Chunk3Stacked);
     zoxd_hashmap(TunkLinks);
+    // Links
+    zoxd_nf_tag(TunkLink);
 }

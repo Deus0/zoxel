@@ -9,7 +9,7 @@ zoxc_int2(WindowSizeRestore);
 zoxc_int2(WindowPositionRestore);
 
 void define_components_apps(ecs *world) {
-    zoxd_nf_tag(App);
+    zoxd_tag(App);
     zoxd_state(WindowSizeDirty);
     zoxd_byte(WindowFullscreen);
     zoxd_byte(WindowMaximized);

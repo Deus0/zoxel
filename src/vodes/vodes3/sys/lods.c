@@ -25,15 +25,16 @@ zox_sys2(VodesLodSystem) {
     zox_sys_in(RenderDistanceDirty);
     zox_sys_in(RenderDistance);
     zox_sys_in(VoxelNode);
-    zox_sys_in(BlocksSpawned);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(RenderDistanceDirty, dirty);
         zox_sys_i(RenderDistance, distance);
-        zox_sys_i(BlocksSpawned, spawned);
         zox_sys_i(VoxelNode, node);
-        if (dirty->value == zox_dirty_active && spawned->value) {
+        if (dirty->value == zox_dirty_active) {
             byte render_depth = camera_distance_to_block_depth(distance->value);
-            set_vode_lods(world, node, render_depth);
+            set_vode_lods(
+                world,
+                node,
+                render_depth);
         }
     }
 } zox_sys_end(VodesLodSystem);

@@ -20,16 +20,16 @@ zox_sys2(VodesDespawnSystem) {
     zox_sys_in(RenderDistanceDirty)
     zox_sys_in(RenderDepth)
     zox_sys_out(VoxelNode)
-    zox_sys_out(BlocksSpawned)
+    // zox_sys_out(BlocksSpawned)
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RenderDistanceDirty, distance_dirty);
         zox_sys_i(RenderDepth, depth);
         zox_sys_o(VoxelNode, node);
-        zox_sys_o(BlocksSpawned, spawned);
-        if (!spawned->value) {
+        // zox_sys_o(BlocksSpawned, spawned);
+        /*if (!spawned->value) {
             continue;
-        }
+        }*/
         /*if (voxels_dirty->value) {
             continue;
         }*/
@@ -46,6 +46,7 @@ zox_sys2(VodesDespawnSystem) {
         // write_lock_VoxelNode(node);
         destroy_vodes(world, node);
         // write_unlock_VoxelNode(node);
-        spawned->value = 0;
+        zox_remove(e, BlocksSpawned);
+        // spawned->value = 0;
     }
 } zox_sys_end(VodesDespawnSystem);

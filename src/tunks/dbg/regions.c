@@ -14,7 +14,7 @@ zox_sys2(RegionTextureSystem) {
         if (generate->value != zox_generate_texture_run) {
             continue;
         }
-        entity tunk = zox_get_link(world, e, Tunk);
+        entity tunk = zox_get_link(world, e, TunkLink);
 #ifdef zox_safety_checks
         if (!zox_valid(tunk) ||
             !zox_has(tunk, GenerateTunk))
@@ -26,7 +26,7 @@ zox_sys2(RegionTextureSystem) {
             continue;
         }
 #endif
-        entity region = zox_get_link(world, tunk, Region);
+        entity region = zox_get_link(world, tunk, RegionLink);
 #ifdef zox_safety_checks
         if (!zox_valid(region) || !zox_has(region, Seed)) {
             zox_loge("Invalid [Region] for Texture [%s]", zox_get_name(e));

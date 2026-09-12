@@ -145,28 +145,26 @@ void spawn_vodes_dive(ecs *world,
     run_hook_spawned_block(world, &spawned_data);
 }
 
+// TODO: Break this up into two systems:
+//      - Triggered by VoxelNodePostDirty or ChunkLodDirty
 // Triggers: [VoxelNodeDirty] + [RenderDistanceDirty]
 zox_sys2(VodesSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
-    // zox_sys_in(VoxelNodeDirty);
     zox_sys_in(NodeDepth);
     zox_sys_in(RenderDisabled);
     zox_sys_in(RenderDepth);
     zox_sys_in(RenderDistance);
     zox_sys_in(Position3D);
     zox_sys_out(VoxelNode);
-    zox_sys_out(BlocksSpawned);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        // zox_sys_i(VoxelNodeDirty, voxels_dirty);
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(RenderDisabled, render_disabled);
         zox_sys_i(RenderDepth, render_depth);
         zox_sys_i(RenderDistance, render_distance);
         zox_sys_i(Position3D, position);
         zox_sys_o(VoxelNode, voxel_octree);
-        zox_sys_o(BlocksSpawned, spawned);
         byte is_dirty = zox_has(e, VoxelNodePostDirty);
         byte is_lod_dirty = zox_has(e, ChunkLodDirty) &&
             zox_getv(e, ChunkLodDirty);
@@ -175,6 +173,9 @@ zox_sys2(VodesSpawnSystem) {
         }
         // either voxel voxel_octree is dirty, or we are spawning for first time based on distance changes
         entity terrain = zox_get_parent(world, e);
+        if (!zox_valid(terrain)) {
+            continue;
+        }
         entity realm = zox_get_parent(world, terrain);
         if (!zox_valid(realm)) {
             continue;
@@ -200,7 +201,8 @@ zox_sys2(VodesSpawnSystem) {
             if (!zox_valid(block)) {
                 continue;
             }
-            is_vode[j] = zox_has(block, BlockPrefabLink) && zox_valid(zox_getv(block, BlockPrefabLink));
+            is_vode[j] = zox_has(block, BlockPrefabLink) &&
+                zox_valid(zox_getv(block, BlockPrefabLink));
         }
         float block_scale = get_chunk_scale(depth->value, terrain_depth, terrain_scale);
         // why we do this?
@@ -223,6 +225,8 @@ zox_sys2(VodesSpawnSystem) {
             byte3_zero,
             0,
             depth->value);
-        spawned->value = 1;
+        if (!zox_has(e, BlocksSpawned)) {
+            zox_add(e, BlocksSpawned);
+        }
     }
 } zox_sys_end(VodesSpawnSystem);

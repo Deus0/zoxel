@@ -37,7 +37,7 @@ zox_sys2(TownWallsSystem) {
             continue;
         }
 #endif
-        entity tunk = zox_get_link(world, e, Tunk);
+        entity tunk = zox_get_link(world, e, TunkLink);
 #ifdef zox_safety_checks
         if (!zox_valid(tunk)) {
             zox_loge("[Towns] Invalid [Tunk] at [%ix%ix%i]", cposition->value.x, cposition->value.y, cposition->value.z);

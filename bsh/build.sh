@@ -68,8 +68,8 @@ fi
 # Libraries
 [[ " $* " == *" --nomixer "* ]] && sdl_mixer="0"
 [[ " $* " == *" --system "* ]] && is_static="0"
-[[ " $* " == *" --package "* ]] && package="1"
 [[ " $* " == *" --static "* ]] && is_static="1"
+[[ " $* " == *" --package "* ]] && package="1"
 
 # window_lib
 [[ " $* " == *" --headless "* ]] && window_lib="headless"
@@ -92,7 +92,7 @@ fi
 [[ " $* " == *" --logs "* ]] && logs="1"
 [[ " $* " == *" --untimed "* ]] && is_time_systems="0"
 [[ " $* " == *" --timings "* ]] && is_time_systems="1"
-[[ " $* " == *" --profile "* ]] && is_profiler="1"
+[[ " $* " == *" --profiler "* ]] && is_profiler="1"
 [[ " $* " == *" --verbose "* ]] && verbose="1"
 [[ " $* " == *" --server "* ]] && server="1"
 [[ " $* " == *" --mesa "* ]] && is_mesa="1"

@@ -41,7 +41,7 @@ zox_sys2(VegetationChunk3System) {
             continue;
         }
 #endif
-        entity tunk = zox_get_link(world, e, Tunk);
+        entity tunk = zox_get_link(world, e, TunkLink);
 #ifdef zox_safety_checks
         if (!zox_valid(tunk)) {
             zox_loge("[Vegetation] Invalid [Tunk] at [%ix%ix%i]", chunk_position->value.x, chunk_position->value.y, chunk_position->value.z);

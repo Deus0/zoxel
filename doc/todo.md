@@ -1,5 +1,12 @@
 # Todo
 
+# NOTE: Relationships fragment by default (including ChildOf)
+- Refactor ChunkMesh to use Non fragment parenting
+    - atm creates 4000 tables
+- Optimize CharactersCanSpawnSystem
+    - check only when depth changes
+- Bug: Map UI doesnt initially generate
+
 ## Next
 - Fix Font imports for "?"
 	- test marker change with quest

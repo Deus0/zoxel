@@ -18,7 +18,7 @@ zox_sys2(HeightsTextureSystem) {
             continue;
         }
         // NOTE: Validate Tunks
-        entity tunk = zox_get_link(world, e, Tunk);
+        entity tunk = zox_get_link(world, e, TunkLink);
 #ifdef zox_safety_checks
         if (!zox_valid(tunk) ||
             !zox_has(tunk, GenerateTunk) ||

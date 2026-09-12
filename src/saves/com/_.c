@@ -23,9 +23,9 @@ void zox_define_components_saves(ecs* world) {
     zoxd_tag(Saver);
     // Events
     zoxd_nf_tag(Loaded);
-    zoxd_nf_tag(Loading);
-    zoxd_nf_tag(Edited);
-    zoxd_nf_tag(SaveDirty);
+    zoxd_tag(Loading);
+    zoxd_tag(Edited);
+    zoxd_tag(SaveDirty);
     zoxd_nf_tag(Saving);
     zoxd_ulong(SaveHash);
     zoxd_entity(FolderPathLink);

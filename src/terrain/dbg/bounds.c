@@ -29,8 +29,7 @@ void zox_dbg_toggle_gizmos_vodes(ecs *world, ClickEventData data) {
         while (pair != NULL && checks < max_safety_checks_hashmap) {
             entity chunk = pair->value;
             if (zox_valid(chunk)) {
-                zox_geter_value(chunk, BlocksSpawned, byte, blocks_spawned);
-                if (blocks_spawned) {
+                if (zox_has(chunk, BlocksSpawned)) {
                     zox_geter(chunk, VoxelNode, node);
                     toggle_debug_bounds_delve(world, node, mode);
                 }

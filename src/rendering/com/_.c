@@ -11,8 +11,6 @@ zox_tag(MeshColorsDirty);
 zox_tag(RenderTextureDirty);
 zox_tag(MeshBuilt);
 zox_tag(MeshColorsBuilt);
-// zoxc_entity(PreparingMesh);
-// zoxc_entity(ActiveMesh);
 zox_tag(PreparingMesh);
 zox_tag(ActiveMesh);
 // Properties
@@ -57,8 +55,9 @@ zox_tag(BuildMesh);
 zox_tag(BuildMeshWeights);
 zox_tag(MeshDirty);
 zox_tag(SkeletonMeshDirty);
-zoxc_state_remove(RenderDepthDirty);
-zoxc_state_remove(RenderDistanceDirty);
+// zoxc_state_remove
+zoxc_state(RenderDepthDirty);
+zoxc_state(RenderDistanceDirty);
 
 static inline int2 get_texture_size(ecs* world, entity e) {
     return zox_getv(e, TextureSize);
@@ -73,17 +72,20 @@ void define_components_rendering(ecs *world) {
     zoxd_tag(VoxMesh);
     zoxd_tag(DisableDepthTest);
     zoxd_tag(MeshClearCache);
-    //zoxd_tag(PreparingMesh);
-    //zoxd_tag(ActiveMesh);
-    zoxd_entity(PreparingMesh);
-    zoxd_entity(ActiveMesh);
-    zoxd_nf_tag(BuildMesh);
-    zoxd_nf_tag(BuildMeshColors);
-    zoxd_nf_tag(BuildMeshWeights);
-    zoxd_nf_tag(MeshColorsDirty);
-    zoxd_nf_tag(RenderTextureDirty);
-    zoxd_nf_tag(MeshDirty);
-    zoxd_nf_tag(SkeletonMeshDirty);
+    zoxd_nf_tag(PreparingMesh);
+    zoxd_nf_tag(ActiveMesh);
+    // zoxd_nf_tag
+    // Events
+    zoxd_tag_event(BuildMesh);
+    zoxd_tag_event(BuildMeshColors);
+    zoxd_tag_event(BuildMeshWeights);
+    zoxd_tag_event(MeshColorsDirty);
+    zoxd_tag_event(RenderTextureDirty);
+    zoxd_tag_event(MeshDirty);
+    zoxd_tag_event(SkeletonMeshDirty);
+    zoxd_state(RenderDistanceDirty);
+    zoxd_state(RenderDepthDirty);
+    // Properties (Not used in system queries)
     zoxd_nf_tag(MeshBuilt);
     zoxd_nf_tag(MeshColorsBuilt);
     // zox_dont_fragment(RenderDepthDirty);
@@ -126,8 +128,4 @@ void define_components_rendering(ecs *world) {
     zoxd_guint_dest(ColorsGPULink);
     zoxd_guint_dest(UboGPULink);
     zoxd_guint_dest(ShaderGPULink);
-    // Events
-    zoxd_state(RenderDistanceDirty);
-    zoxd_state(RenderDepthDirty);
-    // zox_dont_fragment(RenderDistanceDirty);
 }

@@ -12,14 +12,15 @@ zoxc_entity(ChunkMeshPrefabLink);
 zoxc_double(ChunkMeshTimer);
 
 void define_components_chunks(ecs* world) {
-    // Types
+    // Types zoxd_nf_tag
     zoxd_tag(Chunk);
     zoxd_tag(ChunkMesh);
-    zoxd_nf_tag(ChunkTextured);
+    zoxd_tag(ChunkTextured);
     // Events
-    zoxd_nf_tag(BuildChunkSides);
+    zoxd_tag_event(BuildChunkSides);
+    zoxd_tag_event(FindNeighbors);
+    // Properties
     zoxd_nf_tag(NoSplitChunk);
-    zoxd_nf_tag(FindNeighbors);
     // States
     zoxd_byte(GenerateChunk);
     zoxd_byte(GenerateModel);

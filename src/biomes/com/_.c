@@ -1,4 +1,5 @@
 zox_tag(Biome);
+zox_tag(BiomeLink);
 zox_tag(BiomeLinker);
 zoxc_entities(BiomeLinks);
 zoxc_float(DirtChance);
@@ -11,6 +12,7 @@ zoxc_color_rgb(BiomeSkyColor);
 
 void define_components_biomes(ecs *world) {
     zoxd_tag(Biome);
+    zoxd_nf_tag(BiomeLink);
     zoxd_tag(BiomeLinker);
     zoxd_entities(BiomeLinks)
     zoxd_float(DirtChance);

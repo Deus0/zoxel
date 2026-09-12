@@ -28,7 +28,7 @@ void zox_define_systems_basics3(ecs* world) {
         [in] rendering.MeshRenderCount,
         [none] rendering3.TexturedMesh3,
         [none] !core.Disabled,
-        [none] !core.Initialize,
+        // [none] !core.Initialize,
     );
     add_system_process_counter(world, zox_id(Chunk3TexturedRenderSystem));
     // skybox, block damage overlay!

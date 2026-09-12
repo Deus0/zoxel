@@ -25,17 +25,35 @@
 
 */
 
+// #define zox_non_fragment_parent
+
+#ifdef zox_non_fragment_parent
+    #define zox_parent_id zox_id(EcsParent)
+    #define zox_parent_query_id EcsChildOf
+#else
+    #define zox_parent_id EcsChildOf
+    #define zox_parent_query_id EcsChildOf
+#endif
+
 #define zox_children(world, e) ecs_children(world, e)
 #define zox_children_next(it) ecs_children_next(&it)
 
-#define zox_children_by_id(e, T) ecs_query_iter(world, ecs_query(world, { .terms = { { ecs_pair(EcsChildOf, e) }, { ecs_id(T) } } }))
-#define zox_query_next(it) ecs_query_next(&it)
+#define zox_children_by_id(e, T) \
+    ecs_query_iter(world, ecs_query(world, { \
+        .terms = { \
+            { ecs_pair(zox_parent_query_id, e) }, \
+            { ecs_id(T) } \
+        } \
+    }))
+
+#define zox_query_next(it) \
+    ecs_query_next(&it)
 
 // TODO: Make use wrapped flecs children query instead for many
 byte is_warn_capacity = 1;
 uint zox_children_capacity = 256;
 
-// Returns the direct parent (ChildOf target), or 0 if none
+// Returns the direct parent (zox_parent_id target), or 0 if none
 static inline entity zox_get_parent(
     ecs *world,
     entity child)
@@ -51,7 +69,12 @@ static inline byte zox_is_parent(
     entity child,
     entity parent)
 {
+#ifdef zox_non_fragment_parent
+    const EcsParent* p = ecs_get(world, child, EcsParent);
+    return p && p->value == parent;
+#else
     return ecs_has_pair(world, child, EcsChildOf, parent);
+#endif
 }
 
 // Returns 1 if sets parent
@@ -64,23 +87,38 @@ static inline byte zox_set_parent(
         zox_logw("Trying to set parent from invalid child");
         return 0;
     }
-    // Special case for removing parents
+    if (parent && !ecs_is_alive(world, parent)) {
+        zox_logw("Trying to set parent from invalid parent");
+        return 0;
+    }
+    // Removes previous parent pair
+#ifdef zox_non_fragment_parent
+    const EcsParent *current = ecs_get(world, child, EcsParent);
+    if (parent == 0) {
+        if (current->value) {
+            ecs_remove(world, child, EcsParent);
+        }
+        return 1;
+    }
+    if (current && current->value == parent) {
+        return 1;
+    }
+    ecs_set(world, child, EcsParent, { parent });
+#else
     if (parent == 0) {
         if (ecs_has_pair(world, child, EcsChildOf, EcsWildcard)) {
             ecs_remove_pair(world, child, EcsChildOf, EcsWildcard);
         }
         return 1;
     }
-    if (!ecs_is_alive(world, parent)) {
-        zox_logw("Trying to set parent from invalid parent");
-        return 0;
+    if (ecs_has_pair(world, child, EcsChildOf, parent)) {
+        return 1;
     }
-    // Removes previous parent pair
     if (ecs_has_pair(world, child, EcsChildOf, EcsWildcard)) {
         ecs_remove_pair(world, child, EcsChildOf, EcsWildcard);
     }
-    // zox_log("Setting [%s] new Parent [%s]", zox_get_name(child), zox_get_name(parent));
     ecs_add_pair(world, child, EcsChildOf, parent);
+#endif
     return 1;
 }
 
@@ -287,10 +325,17 @@ byte zox_remove_parent(
         zox_logw("Trying to remove parent from invalid child");
         return 0;
     }
+#ifdef zox_non_fragment_parent
+    if (!ecs_has_id(world, child, zox_id(EcsParent))) {
+        return 0;
+    }
+    ecs_remove(world, child, EcsParent);
+#else
     if (!ecs_has_pair(world, child, EcsChildOf, EcsWildcard)) {
-        return 0; // no parent to remove
+        return 0;
     }
     ecs_remove_pair(world, child, EcsChildOf, EcsWildcard);
+#endif
     return 1;
 }
 

@@ -40,7 +40,7 @@ void define_components_textures(ecs* world) {
     // Properties
     zoxd_tag(FixToLayout);
     // Events
-    zoxd_nf_tag(TextureDirty);
+    zoxd_tag(TextureDirty);
     zoxd_byte(GenerateTexture);
     // Data
     zoxd_byte(OutlineThickness);

@@ -1,10 +1,5 @@
 byte zox_dbg_intersect = 0;
 
-void toggle_dbg_intersect(ecs* world, ClickEventData data) {
-    zox_dbg_intersect = !zox_dbg_intersect;
-    zox_log("Debugging Intersects [%s]", zox_dbg_intersect ? "Enabled" : "Disabled");
-}
-
 // NOTE:Purely show the intersections
 zox_sys2(TerrainIntersectDebugSystem) {
     if (!zox_dbg_intersect) {
@@ -191,3 +186,12 @@ zox_sys2(TerrainIntersectDebugSystem) {
         }
     }
 } zox_sys_end(TerrainIntersectDebugSystem);
+
+void toggle_dbg_intersect(ecs* world, ClickEventData data) {
+    zox_dbg_intersect = !zox_dbg_intersect;
+    zox_log("Debugging Intersects [%s]",
+        zox_dbg_intersect ?
+            "Enabled" :
+            "Disabled");
+    zox_set_enabled(TerrainIntersectDebugSystem, zox_dbg_intersect);
+}
