@@ -27,9 +27,6 @@ entity spawn_character3(
         }
         if (zox_has(model, MaxRenderDepth)) {
             max_depth = zox_getv(model, MaxRenderDepth);
-            /*if (render_depth > max_depth) {
-                render_depth = max_depth;
-            }*/
         }
     }
     byte render_depth = camera_distance_to_npc_render_depth(
@@ -45,14 +42,20 @@ entity spawn_character3(
     }
     // zox_log("Spawning Character [%s] with Model [%s] of render type [%i]", name, zox_get_name(model), type);
     if (dbg_log) {
-        zox_log("Character [%s] At [%fx%fx%f]", zox_get_name(prefab), position.x, position.y, position.z);
+        zox_log("Character [%s] At [%fx%fx%f]",
+            zox_getn(prefab),
+            position.x,
+            position.y,
+            position.z);
         if (zox_valid(model)) {
-            zox_log("Model [%s]", zox_get_name(model));
+            zox_log("Model [%s]",
+                zox_get_name(model));
         } else {
             zox_log("No Model");
         }
         if (zox_valid(vox)) {
-            zox_log("Vox [%s]", zox_get_name(vox));
+            zox_log("Vox [%s]",
+                zox_get_name(vox));
         } else {
             zox_log(" No Vox");
         }
@@ -60,24 +63,19 @@ entity spawn_character3(
     zox_instance(prefab);
     zox_name("character3");
     zox_remove(e, RealmCharacter);
-    //zox_log("Spawned Character %s",
-    //    zox_getn(prefab));
     if (zox_has(prefab, VoxelNodeLock)) {
-        //zox_log("INitialize VoxelLock %s",
-        //    zox_getn(prefab));
         initialize_voxel_lock(world, e);
     }
     // TODO: SPawn mesh as sub entity here
     // new links
     if (realm) {
         zox_set_parent(world, e, realm);
-        zox_setv(e, RealmLink, realm);
-        zox_link(world, e, Realm, realm);
+        zox_link(world, e, RealmLink, realm);
     } else {
         zox_loge("No Realm in character spawn");
     }
     if (terrain) {
-        zox_link(world, e, Terrain, terrain);
+        zox_link(world, e, TerrainLink, terrain);
     }
     if (name) {
         set_ZoxName(world, e, name);

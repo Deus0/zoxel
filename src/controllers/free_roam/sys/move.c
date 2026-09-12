@@ -8,7 +8,7 @@ zox_sys2(FreeCameraMoveSystem) {
     zox_sys_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        entity camera = zox_get_link(world, e, Camera);
+        entity camera = zox_get_link(world, e, CameraLink);
         if (!zox_valid(camera) ||
             !zox_has(camera, Roaming)
         ) {

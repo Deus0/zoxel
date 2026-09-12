@@ -34,7 +34,6 @@ void define_systems_dialogues(ecs* world) {
         CharacterDialogueSystem,
         zoxp_spawn,
         [in] characters.GenerateCharacter,
-        [in] realms.RealmLink,
         [none] characters.Character,
     );
     zox_system_1(

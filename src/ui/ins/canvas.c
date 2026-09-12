@@ -10,11 +10,11 @@ entity spawn_canvas(
     zox_name("canvas");
     // NOTE: I removed this before, I think it caused a bug...
     zox_set_parent(world, e, app);
-    zox_set(e, LayoutPosition, { int2_half(size) });
-    zox_set(e, LayoutSize, { size });
-    zox_set(e, ScreenToCanvas, { screen_to_canvas });
+    zox_setv(e, LayoutPosition, int2_half(size));
+    zox_setv(e, LayoutSize, size);
+    zox_setv(e, ScreenToCanvas, screen_to_canvas);
     zox_link(world, e, App, app);
     zox_link(world, app, Canvas, e);
-    zox_link(world, e, Camera, camera);
+    zox_link(world, e, CameraLink, camera);
     return e;
 }

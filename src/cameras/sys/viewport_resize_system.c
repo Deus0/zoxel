@@ -30,21 +30,12 @@ zox_sys2(ViewportResizeSystem) {
             zox_setv(camera, ScreenPosition, position);
             zox_setv(camera, PixelSize, new_size);
             if (dbg_log) {
-                zox_log("+ Viewport Resize [%s] size [%ix%i] render camera? %i", zox_get_name(camera), new_size.x, new_size.y, zox_has(camera, RenderCamera));
+                zox_log("+ Viewport Resize [%s] size [%ix%i] render camera? %i",
+                    zox_get_name(camera),
+                    new_size.x,
+                    new_size.y,
+                    zox_has(camera, RenderCamera));
             }
         }
     }
 } zox_sys_end(ViewportResizeSystem);
-
-// iter it2 = zox_children_by_id(e, Camera);
-//while (zox_query_next(it2)) {
-//   for (int i = 0; i < it2.count; i++) {
-//       entity camera = it2.entities[i];
-
-//for (int j = 0;; j++) {
-/*    entity camera = ecs_get_target(
-        world,
-        e,
-        zox_id(ViewportCamera),
-        j
-);*/

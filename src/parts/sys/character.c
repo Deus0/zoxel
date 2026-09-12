@@ -11,21 +11,20 @@ zox_sys2(CharacterBodySpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
-    zox_sys_in(RealmLink);
     zox_sys_out(BodyDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateCharacter, state);
-        zox_sys_i(RealmLink, realm);
         zox_sys_o(BodyDirty, body_dirty);
         if (state->value != zox_dirty_active) {
             continue;
         }
         // flatten children items into array
+        entity realm = zox_get_link(world, e, RealmLink);
         entity realm_items[256];
         uint realm_items_length = zox_get_children_by_id(
             world,
-            realm->value,
+            realm,
             realm_items,
             256,
             zox_id(Item));

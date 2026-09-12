@@ -39,7 +39,7 @@ void game_state_terrain(ecs* world, entity game, byte state) {
         if (!(state->value == zox_game_state_play_begin && dirty->value == zox_dirty_active)) {
             continue;
         }
-        lint realm_seed = zox_getv(realm->value, Seed);
+        lint realm_seed = zox_getv(realm, Seed);
         // for now just do this
         lint terrain_seed = realm_seed;
         if (zox_game_type == zox_game_mode_3D) {
@@ -47,7 +47,7 @@ void game_state_terrain(ecs* world, entity game, byte state) {
             // delay_event(world, &game_start_terrain3D, game, game_spawn_terrain_delay);
             entity terrain = spawn_terrain(
                 world,
-                realm->value,
+                realm,
                 terrain_seed);
         } else if (zox_game_type == zox_game_mode_2D) {
             // delay_event(world, &game_start_terrain2D, game, game_spawn_terrain_delay);

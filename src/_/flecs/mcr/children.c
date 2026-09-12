@@ -25,7 +25,7 @@
 
 */
 
-// #define zox_non_fragment_parent
+#define zox_non_fragment_parent
 
 #ifdef zox_non_fragment_parent
     #define zox_parent_id zox_id(EcsParent)
@@ -35,8 +35,10 @@
     #define zox_parent_query_id EcsChildOf
 #endif
 
-#define zox_children(world, e) ecs_children(world, e)
-#define zox_children_next(it) ecs_children_next(&it)
+#define zox_children(world, e) \
+    ecs_children(world, e)
+#define zox_children_next(it) \
+    ecs_children_next(&it)
 
 #define zox_children_by_id(e, T) \
     ecs_query_iter(world, ecs_query(world, { \
@@ -58,7 +60,7 @@ static inline entity zox_get_parent(
     ecs *world,
     entity child)
 {
-    if (!ecs_is_alive(world, child)) {
+    if (!zox_alive(child)) {
         return 0;
     }
     return ecs_get_parent(world, child);
@@ -70,8 +72,9 @@ static inline byte zox_is_parent(
     entity parent)
 {
 #ifdef zox_non_fragment_parent
-    const EcsParent* p = ecs_get(world, child, EcsParent);
-    return p && p->value == parent;
+    const EcsParent* current = zox_get(child, EcsParent);
+    return (current && current->value == parent)
+        || (!current && !parent);
 #else
     return ecs_has_pair(world, child, EcsChildOf, parent);
 #endif
@@ -93,17 +96,17 @@ static inline byte zox_set_parent(
     }
     // Removes previous parent pair
 #ifdef zox_non_fragment_parent
-    const EcsParent *current = ecs_get(world, child, EcsParent);
+    const EcsParent* current = ecs_get(world, child, EcsParent);
     if (parent == 0) {
-        if (current->value) {
-            ecs_remove(world, child, EcsParent);
+        if (current && current->value) {
+            zox_remove(child, EcsParent);
         }
         return 1;
     }
     if (current && current->value == parent) {
         return 1;
     }
-    ecs_set(world, child, EcsParent, { parent });
+    zox_setv(child, EcsParent, parent);
 #else
     if (parent == 0) {
         if (ecs_has_pair(world, child, EcsChildOf, EcsWildcard)) {

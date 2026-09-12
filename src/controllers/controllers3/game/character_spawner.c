@@ -170,7 +170,7 @@ zox_sys2(PlayerBeginSystem) {
             continue;
         }
         entity game = zox_get_parent(world, e);
-        entity realm = zox_getv(game, RealmLink);
+        entity realm = zox_get_link(world, game, RealmLink);
 #ifdef zox_safety_checks
         if (!zox_valid(realm)) {
             zox_loge("Player has Invalid Realm");
@@ -227,7 +227,7 @@ zox_sys2(PlayerBeginSystem) {
                 continue;
             }
         } else {
-            entity camera = zox_get_link(world, e, Camera);
+            entity camera = zox_get_link(world, e, CameraLink);
             character = game_start_player_new(
                 world,
                 e,

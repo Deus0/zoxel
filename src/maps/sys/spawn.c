@@ -21,7 +21,7 @@ zox_sys2(MapInitializeSystem) {
         zox_sys_i(Alpha, alpha);
         zox_sys_i(PlayerLink, player);
         zox_sys_i(MapPosition, position);
-        entity terrain = zox_get_link(world, e, Terrain);
+        entity terrain = zox_get_link(world, e, TerrainLink);
         if (dbg_log) {
             zox_log("Map Initialized. Terrain [%s]. Center [%ix%i]. Zoom [%i].",
                 zox_get_name(terrain),

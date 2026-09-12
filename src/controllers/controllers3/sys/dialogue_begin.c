@@ -26,7 +26,7 @@ zox_sys2(DialogueBeginSystem) {
             continue;
         }
         entity character = zox_get_link(world, player->value, Character);
-        entity camera = zox_get_link(world, player->value, Camera);
+        entity camera = zox_get_link(world, player->value, CameraLink);
         entity canvas = zox_get_link(world, player->value, Canvas);
         if (!zox_valid(character) ||
             !zox_valid(camera) ||

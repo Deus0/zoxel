@@ -119,7 +119,7 @@ zox_sys2(GameStateSystem) {
                 zox_log("Game Set To [Start] [%s]",
                     zox_getn(e));
             }
-            zox_setv(e, RealmLink, 0);
+            // zox_setv(e, RealmLink, 0);
             if (!zox_valid(realm)) {
                 zox_loge("Realm Invalid in end game");
             } else {

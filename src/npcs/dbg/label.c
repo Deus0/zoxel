@@ -15,7 +15,7 @@ uint debug_ui_character_position(
     index += snprintf(buffer + index, size - index, "Name [%s]\n", zox_get_name(character));
     zox_geter_value(character, Position3D, float3, position);
     index += snprintf(buffer + index, size - index, "Position [%f.1x%f.1x%f.1]\n", position.x, position.y, position.z);
-    entity terrain = zox_get_link(world, character, Terrain);
+    entity terrain = zox_get_link(world, character, TerrainLink);
     index += snprintf(buffer + index, size - index, "Terrain [%s]\n", zox_get_name(terrain));
     zox_geter_value(terrain, BlockScale, float, terrain_scale);
     zox_geter_value(terrain, NodeDepth, byte, terrain_depth);

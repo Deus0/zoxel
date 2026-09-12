@@ -97,14 +97,22 @@ zox_sys2(Chunk3LoadSystem) {
             continue;
         }
 #endif
-        entity realm = zox_get_parent(world, terrain);
+        /*entity game = zox_get_parent(world, e);
+        if (!zox_valid(game)) {
+            zox_loge("[Chunk3LoadSystem] Invalid [game]");
+            continue;
+        }*/
+        entity realm = zox_get_link(world, terrain, RealmLink);
 #ifdef zox_safety_checks
         if (!zox_valid(realm)) {
-            zox_loge("[Chunk3LoadSystem] Invalid Realm");
+            zox_loge("[Chunk3LoadSystem] [%s] Invalid [realm] on %s",
+                zox_getn(e),
+                zox_getn(terrain));
             continue;
         }
         if (!zox_has(realm, FolderPath)) {
-            zox_loge("[Chunk3LoadSystem] Realm [%s] has no FolderPath", zox_getn(realm));
+            zox_loge("[Chunk3LoadSystem] Realm [%s] has no FolderPath",
+                zox_getn(realm));
             continue;
         }
 #endif

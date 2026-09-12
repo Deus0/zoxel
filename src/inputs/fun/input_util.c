@@ -48,8 +48,6 @@ void disable_inputs_until_release(ecs *world, entity player, byte device_mode) {
             }
             if (has_input) {
                 zeviceDisabled->value = 1;
-                zox_mut_end(e3, ZeviceDisabled);
-                zox_modified(e3, ZeviceDisabled);
                 zox_logv("  = button disabled [%lu] at %f", e3, zox_current_time);
             }
         }

@@ -30,7 +30,6 @@ static inline entity spawn_chunk_meshes(
         return 0;
     }
     // If already preparing and at target depth
-    // entity preparing_mesh = zox_getv(e, PreparingMesh);
     entity preparing_mesh = zox_get_link(world, e, PreparingMesh);
     if (zox_valid(preparing_mesh)) {
         if (zox_getv(preparing_mesh, RenderDepth) == depth) {
@@ -38,7 +37,6 @@ static inline entity spawn_chunk_meshes(
         } else {
             // Preparation for Spawning new Mesh!
             // if already preparing, and not at depth we seek
-            // zox_setv(e, PreparingMesh, 0);
             zox_unlink(world, e, PreparingMesh, preparing_mesh);
         }
     }
@@ -62,7 +60,6 @@ static inline entity spawn_chunk_meshes(
     }
     // If we already have required LOD mesh
     if (lod_mesh) {
-        // zox_setv(e, PreparingMesh, lod_mesh);
         zox_link(world, e, PreparingMesh, lod_mesh);
         if (dbg_log) {
             zox_log(" - Chunk Mesh Existed for [%s] at depth [%i]", zox_getn(e), depth);
@@ -75,7 +72,6 @@ static inline entity spawn_chunk_meshes(
         return 0;
     }
     // Make sure old one isnt building
-    // entity active_mesh = zox_getv(e, ActiveMesh); // zox_get_link(world, e, ActiveMesh);
     entity active_mesh = zox_get_link(world, e, ActiveMesh);
     if (zox_valid(active_mesh) && !zox_has(active_mesh, BuildDisabled)) {
         zox_add(active_mesh, BuildDisabled);
@@ -89,7 +85,6 @@ static inline entity spawn_chunk_meshes(
     zox_setv(e2, MaterialLink, tilemap);
     // Hmmm
     zox_set_parent(world, e2, e);
-    // zox_setv(e, PreparingMesh, e2);
     zox_link(world, e, PreparingMesh, e2);
     if (dbg_log) {
         zox_log(" - New Chunk Mesh for [%s] at depth [%i]",

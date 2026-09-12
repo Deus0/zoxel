@@ -1,6 +1,6 @@
 entity spawn_map(ecs* world, entity canvas, entity player, entity terrain) {
     int2 tunk_position = int2_zero;
-    entity camera = zox_get_link(world, player, Camera);
+    entity camera = zox_get_link(world, player, CameraLink);
     if (zox_valid(camera)) {
         tunk_position = zox_getv(camera, StreamPosition2);
     }
@@ -28,7 +28,7 @@ entity spawn_map(ecs* world, entity canvas, entity player, entity terrain) {
     zox_add(e, Map);
     zox_setv(e, PlayerLink, player);
     zox_link(world, e, Player, player);
-    zox_link(world, e, Terrain, terrain);
+    zox_link(world, e, TerrainLink, terrain);
     zox_set(e, MapPosition, { tunk_position });
     // int zoom = int_min(bigmap_zoom, terrain_lod_far);
     // zox_log("Map Zoom [%i] from [%i, %i]", zoom, bigmap_zoom, terrain_lod_far);
@@ -41,7 +41,7 @@ entity spawn_map(ecs* world, entity canvas, entity player, entity terrain) {
 entity spawn_player_menu_map(ecs* world, entity player) {
     entity canvas = zox_get_link(world, player, Canvas);
     entity game = zox_get_parent(world, player);
-    entity realm = zox_getv(game, RealmLink);
-    entity terrain = zox_get_link(world, realm, Terrain);
+    entity realm = zox_get_link(world, game, RealmLink);
+    entity terrain = zox_get_link(world, realm, TerrainLink);
     return spawn_map(world, canvas, player, terrain);
 }

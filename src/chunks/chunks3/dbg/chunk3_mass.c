@@ -12,7 +12,7 @@ void zox_dbg_spawn_chunk3_mass(
     }
     // byte dbg_inspector = 1;
     zox_log("Running Test: Mass Spawn [Chunk3]");
-    entity camera = zox_get_link(world, player, Camera);
+    entity camera = zox_get_link(world, player, CameraLink);
     if (!zox_valid(camera)) {
         return;
     }

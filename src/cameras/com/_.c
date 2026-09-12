@@ -1,4 +1,5 @@
 zox_tag(Camera);
+zox_tag(CameraLink);
 zox_tag(Camera2);
 zox_tag(Camera3);
 zox_tag(CameraUI);
@@ -37,6 +38,7 @@ zox_tag(Roaming);
 
 void define_components_cameras(ecs *world) {
     zoxd_tag(Camera);
+    zoxd_nf_tag(CameraLink);
     zoxd_tag(Camera2);
     zoxd_tag(Camera3);
     zoxd_tag(CameraUI);

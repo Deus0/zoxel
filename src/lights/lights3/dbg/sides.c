@@ -58,7 +58,7 @@ zox_sys2(Light3BuildSystem) {
         entity terrain = zox_get_parent(world, e);
         const LightNode *nnodesl[6];
         fetch_neightbor_light_nodes(world, neighbors, nnodesl);
-        zox_geter_value(vox_link->value, RealmLink, entity, realm);
+        entity realm = zox_get_link(world, vox_link->value, RealmLink);
         zox_geter(realm, BlockLinks, blocks);
         byte solidity[blocks->length];
         for (int j = 0; j < blocks->length; j++) {

@@ -9,7 +9,6 @@ void define_systems_biomes(ecs *world) {
         BiomeBlocksDirtySystem,
         zoxp_update,
         [in] core.Generate,
-        [in] realms.RealmLink,
         [none] biomes.Biome
     );
     // Move to Biomes
@@ -33,8 +32,8 @@ void define_systems_biomes(ecs *world) {
     zox_system(
         BiomeLinkSystem,
         zoxp_update,
-        [in] streaming.StreamDirty2,
-        [in] streaming.StreamPosition2,
+        [in] streaming.StreamDirty,
+        [in] streaming.StreamPosition,
         [in] streaming.StreamLink,
         [none] streaming.Streamer,
         [none] biomes.BiomeLinker,

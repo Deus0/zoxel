@@ -62,7 +62,11 @@ zox_sys2(TerrainStreamSystem) {
 zox_sys2(TerrainQueueSystem) {
     byte dbg_log = 0;
     uint max_process = 1; // NOTE How to scale this better per cpu power
-    int3 size = (int3) { terrain_lod_far, render_distance_y, terrain_lod_far };
+    int3 size = (int3) {
+        terrain_lod_far,
+        render_distance_y,
+        terrain_lod_far
+    };
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Seed);

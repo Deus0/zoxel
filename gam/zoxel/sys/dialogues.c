@@ -37,6 +37,35 @@ zox_sys2(DialogueRealmSpawnSystem) {
             new_link_single_node(world, dialogue_nodes.y, give_quest_node);
         }
         {
+            byte texts_count = 2;
+            char* texts[] = {
+                "...",
+                "... I was not programmed to be here",
+            };
+            entity dialogue = spawn_dialogue_tree_texts(
+                world,
+                prefab_dialogue_node,
+                e,
+                texts,
+                texts_count).x;
+            zox_add(dialogue, Greetings);
+        }
+        {
+            byte texts_count = 3;
+            char* texts[] = {
+                "Have you considered buying Zoxel?",
+                "...",
+                "...I am literally already here",
+            };
+            entity dialogue = spawn_dialogue_tree_texts(
+                world,
+                prefab_dialogue_node,
+                e,
+                texts,
+                texts_count).x;
+            zox_add(dialogue, Greetings);
+        }
+        {
             byte texts_count = 3;
             char* texts[] = {
                 "Welcome Traveler",

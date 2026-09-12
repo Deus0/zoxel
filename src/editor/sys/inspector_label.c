@@ -32,10 +32,13 @@ zox_sys2(InspectorLabelSystem) {
         // zox_geter_id(target->value, id->value, float2, value);
         char* ntext = fetch_compoent_label(world, target->value, id->value);
         if (set_text_component(text_data, ntext)) {
-            zox_modified(text, TextData);
             zox_muter(text, TextDirty, dirty);
             dirty->value = zox_dirty_trigger;
-            zox_logv("> Component [%s] Label Updated [%s]", id->value ? zox_get_name(id->value) : "None", ntext);
+            zox_logv("> Component [%s] Label Updated [%s]",
+                id->value ?
+                zox_get_name(id->value) :
+                "None",
+                ntext);
         } else if (ntext) {
             // zox_log("> Component [%s] Label Same [%s]", id->value ? zox_get_name(id->value) : "None", ntext);
             free(ntext);

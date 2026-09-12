@@ -32,7 +32,7 @@ zox_sys2(Player3RotateSystem) {
         if (zox_has(character, DisableMovement)) {
             continue;
         }
-        entity camera = zox_get_link(world, e, Camera);
+        entity camera = zox_get_link(world, e, CameraLink);
         byte camera_mode = zox_valid(camera) ?
             zox_getv(camera, CameraState) :
             zox_camera_state_first_person;

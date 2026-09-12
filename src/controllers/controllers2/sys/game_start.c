@@ -10,7 +10,7 @@ void player_start_game2D_delayed(ecs *world, entity player) {
         prefab_game2_player);
     zox_set(character, PlayerLink, { player });
     zox_link(world, player, Character, character);
-    entity camera = zox_get_link(world, player, Camera);
+    entity camera = zox_get_link(world, player, CameraLink);
     if (!zox_valid(camera)) {
         zox_log_error("Camera is gone from player.");
         return;
@@ -22,7 +22,7 @@ void player_start_game2D_delayed(ecs *world, entity player) {
     zox_set(camera, Euler, { { 0, 0 * degreesToRadians, 0 } });
     zox_set(camera, EternalRotation, { float4_identity });
     // character-camera
-    zox_link(world, character, Camera, camera);
+    zox_link(world, character, CameraLink, camera);
     zox_link(world, camera, Character, character);
     zox_setv(camera, CameraTarget, character);
     zox_setv(camera, Character2DLink, character);

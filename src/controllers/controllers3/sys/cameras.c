@@ -21,7 +21,7 @@ zox_sys2(PlayerToggleCameraSystem) {
         if (state->value != zox_player_state_playing) {
             continue;
         }
-        entity camera = zox_get_link(world, e, Camera);
+        entity camera = zox_get_link(world, e, CameraLink);
         // entity character = zox_get_link(world, e, Character);
         if (!zox_valid(camera))
             // !zox_valid(character))

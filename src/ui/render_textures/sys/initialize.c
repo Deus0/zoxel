@@ -12,7 +12,7 @@ zox_sys2(RenderTextureInitializeSystem) {
             zox_loge("[RenderTextureInitializeSystem] Invalid [TextureGPULink] on [%s]", zox_sys_e_name);
             continue;
         }
-        entity camera = zox_get_link(world, e, Camera);
+        entity camera = zox_get_link(world, e, CameraLink);
         if (!zox_valid(camera)) {
             zox_loge("Invalid Render Camera on [%s]", zox_getn(e));
             continue;

@@ -30,20 +30,32 @@ zox_sys_untimed(Camera3RenderSystem) {
         render_camera_position = position->value;
         renderer_fog_color = fog->value;
         // set render objects
-        uint fbo = zox_has(e, FrameBufferLink) ? zox_getv(e, FrameBufferLink) : 0;
+        uint fbo = zox_has(e, FrameBufferLink) ?
+            zox_getv(e, FrameBufferLink) :
+            0;
         if (fbo) {
             // rendering to texture
-            zox_gpu_set_viewport(float2_zero, int2_to_float2(screen_size->value));
+            zox_gpu_set_viewport(
+                float2_zero,
+                int2_to_float2(screen_size->value));
             zox_gpu_bind_fbo(fbo);
         } else {
-            zox_gpu_set_viewport(int2_to_float2(screen_position->value),  int2_to_float2(screen_size->value));
+            zox_gpu_set_viewport(
+                int2_to_float2(screen_position->value),
+                int2_to_float2(screen_size->value));
         }
-        color clear_color = zox_has(e, Color) ? zox_getv(e, Color) : color_black;
+        color clear_color = zox_has(e, Color) ?
+            zox_getv(e, Color) :
+            color_black;
         zox_gpu_set_clear_color(color_to_float4(clear_color));
         zox_gpu_clear_viewport();
         if (dbg_log) {
             // zox_log("Camera [%s] Viewport Color is [%ix%ix%ix%i]", zox_getn(e), clear_color.r, clear_color.g, clear_color.b, clear_color.a);
-            zox_log("Rendering 3D [%s]: [%ix%i] Buffer? [%i]",  zox_getn(e), screen_size->value.x, screen_size->value.y, fbo);
+            zox_log("Rendering 3D [%s]: [%ix%i] Buffer? [%i]",
+                zox_getn(e),
+                screen_size->value.x,
+                screen_size->value.y,
+                fbo);
         }
         // TODO: Tag systems as Render2D systems and use tag here
         for (byte j = 0; j < max_render_loop_orders; j++) {
@@ -59,7 +71,10 @@ zox_sys_untimed(Camera3RenderSystem) {
                         0;
                 if (order == j) {
                     if (dbg_log >= 2) {
-                        zox_log(" - %i [%s] (%i)", k, zox_getn(system), j);
+                        zox_log(" - %i [%s] (%i)",
+                            k,
+                            zox_getn(system),
+                            j);
                     }
                     ecs_run(world, system, 0, NULL);
                 }

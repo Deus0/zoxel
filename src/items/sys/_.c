@@ -23,7 +23,6 @@ void define_systems_items(ecs* world) {
         CharacterItemsSpawnSystem,
         zoxp_spawn,
         [in] characters.GenerateCharacter,
-        [in] realms.RealmLink,
         [none] characters.Character,
     );
     // NOTE: Timing issues due to Queue Clearing

@@ -1,11 +1,17 @@
-entity spawn_model_nodegraph_cookie(ecs* world, entity parent) {
+entity spawn_model_nodegraph_cookie(
+    ecs* world,
+    entity parent)
+{
     byte3 size = get_scaled_size(nodegraph_max_depth, float3_one);
     entity prefab = prefab_node_model;
     byte3 center = byte3_half(size);
     // Set random cookie size
     float3 size_min = (float3) { 0.55f, 0.18f, 0.55f };
     float3 size_max = (float3) { 0.95f, 0.32f, 0.95f };
-    entity root_node = spawn_node_model_size(world, size_min, size_max);
+    entity root_node = spawn_node_model_size(
+        world,
+        size_min,
+        size_max);
     // Dough color
     entity dough_color = spawn_node_model_colors_seed(world, 1);
     new_link_single_node(world, root_node, dough_color);
@@ -20,7 +26,10 @@ entity spawn_model_nodegraph_cookie(ecs* world, entity parent) {
     new_link_single_node(world, dough_color, cookie_fill);
     // Chocolate chip color
     entity chocolate_color = spawn_node_model_colors_seed(world, 2);
-    new_link_single_node(world, cookie_fill, chocolate_color);
+    new_link_single_node(
+        world,
+        cookie_fill,
+        chocolate_color);
     // A few authored chip positions for now
     byte chip_size_value = size.x / 8;
     byte3 chip_size = byte3_single(chip_size_value);
@@ -127,7 +136,9 @@ zox_sys2(Character3RealmSpawnSystem) {
         }
         uint character_seed = seed->value + seed_shift;
         byte chance_max = 0;
-        entity prefab_character = is_characters_instanced ? prefab_character3_instanced_npc : prefab_character3_npc;
+        entity prefab_character = is_characters_instanced ?
+            prefab_character3_instanced_npc :
+            prefab_character3_npc;
         // add files
         entity rsoul = zox_get_child_by_id(world, e, zox_id(StatSoul));
         entity rhealth = zox_get_child_by_id(world, e, zox_id(StatHealth));
@@ -141,9 +152,8 @@ zox_sys2(Character3RealmSpawnSystem) {
                 character_seed,
                 "Boney",
                 chance);
-            // zox_set_parent(world, e2, e);
-            spawn_stat_level(world, e2, rsoul, 5);
-            spawn_stat_state(world, e2, rhealth, 21, 21);
+            // spawn_stat_level(world, e2, rsoul, 5);
+            // spawn_stat_state(world, e2, rhealth, 21, 21);
             chance_max += chance;
             add_to_CharacterLinks(characters, e2);
             character_seed += seed_shift;
@@ -189,8 +199,8 @@ zox_sys2(Character3RealmSpawnSystem) {
             zox_set_parent(world, e2, e);
             add_to_CharacterLinks(characters, e2);
             chance_max += chance;
-            spawn_stat_level(world, e2, rsoul, 2);
-            spawn_stat_state(world, e2, rhealth, 8, 8);
+            // spawn_stat_level(world, e2, rsoul, 2);
+            // spawn_stat_state(world, e2, rhealth, 8, 8);
             character_seed += seed_shift;
         }
         // Spawn our Vox Files
@@ -224,12 +234,12 @@ zox_sys2(Character3RealmSpawnSystem) {
             chance_max += chance;
             float soul_value = (float)(souls[j]);
             float health = (float)(healths[j]);
-            spawn_stat_level(world, e2, rsoul, soul_value);
-            spawn_stat_state(world, e2, rhealth, health, health);
+            // spawn_stat_level(world, e2, rsoul, soul_value);
+            // spawn_stat_state(world, e2, rhealth, health, health);
             add_to_CharacterLinks(characters, e2);
             character_seed += seed_shift;
         }
         chance->value = chance_max;
-        zox_logv("At [%f] Realm [characters] [%i] spawned.", zox_current_time, characters->length);
+        zox_logv("Realm [characters] [X] spawned");
     }
 } zox_sys_end(Character3RealmSpawnSystem);

@@ -17,8 +17,8 @@ void define_systems_chunksio(ecs* world) {
         [in] chunks3.ChunkPosition,
         [out] chunks.NodeDepth,
         [out] chunks3.VoxelNode,
+        [none] chunks.ChunkTextured,
         [none] saves.Saver,
-        [none] chunks3.Chunk3,
         [none] core.Initialize,
     );
 }

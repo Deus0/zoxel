@@ -22,6 +22,6 @@ entity spawn_render_texture(
     zox_setv(e, Layer, layer);
     zox_setv(e, MaterialLink, material);
     zox_setv(camera, RenderTextureLink, e);
-    zox_link(world, e, Camera, camera);
+    zox_link(world, e, CameraLink, camera);
     return e;
 }

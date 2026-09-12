@@ -12,9 +12,9 @@ void button_event_menu_realm_cancel(
     zox_delete(menu);
     // Delete Realm
     zox_geter_value(player, GameLink, entity, game);
-    zox_geter_value(game, RealmLink, entity, realm);
+    entity realm = zox_get_link(world, game, RealmLink);
     zox_delete(realm);
-    zox_set(game, RealmLink, { 0 });
+    // zox_set(game, RealmLink, { 0 });
     spawn_menu_load(world, player);
 }
 
@@ -32,7 +32,7 @@ void button_event_menu_realm_delete(
     zox_delete(menu);
     // TODO: Confirm Screen
     zox_geter_value(player, GameLink, entity, game);
-    zox_geter_value(game, RealmLink, entity, realm);
+    entity realm = zox_get_link(world, game, RealmLink);
     zox_geter(realm, FolderPath, realm_path);
     // zox_log("Deleting Realm (%s: %s", zox_get_name(realm), realm_path);
     if (delete_dir(realm_path->value)) {
@@ -42,7 +42,7 @@ void button_event_menu_realm_delete(
     }
     // Destroys Realm
     zox_delete(realm);
-    zox_set(game, RealmLink, { 0 });
+    // zox_set(game, RealmLink, { 0 });
     spawn_menu_load(world, player);
 }
 

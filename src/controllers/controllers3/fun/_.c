@@ -13,17 +13,17 @@ byte get_player_linked_things(
         zox_log_error("Invalid [game]");
         return 0;
     }
-    zox_geter_value(game, RealmLink, entity, realm);
+    entity realm = zox_get_link(world, game, RealmLink);
     if (!zox_valid(realm)) {
         zox_loge("Invalid [realm]");
         return 0;
     }
-    entity terrain = zox_get_link(world, realm, Terrain);
+    entity terrain = zox_get_link(world, realm, TerrainLink);
     if (!zox_valid(terrain)) {
         zox_log_error("Invalid [terrain]");
         return 0;
     }
-    entity camera = zox_get_link(world, player, Camera);
+    entity camera = zox_get_link(world, player, CameraLink);
     if (!zox_valid(camera)) {
         zox_log_error("Invalid [camera]");
         return 0;

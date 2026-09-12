@@ -5,17 +5,16 @@ zox_sys2(CharacterItemsSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
-    zox_sys_in(RealmLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateCharacter, state);
-        zox_sys_i(RealmLink, realm);
         if (state->value != zox_dirty_active) {
             continue;
         }
+        entity realm = zox_get_link(world, e, RealmLink);
         entity inventory = zox_get_child_by_id(world, e, zox_id(Inventory));
         // NOTE: Grabs a random block item and gives it to character
-        zox_geter(realm->value, BlockLinks, blocks);
+        zox_geter(realm, BlockLinks, blocks);
         entity block = blocks->value[rand() % blocks->length];
         if (!zox_valid(block)) {
             continue;

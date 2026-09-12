@@ -22,7 +22,7 @@ entity spawn_menu_start(
     color font_outline = button_font_outline;
     entity e;
     if (zox_huds3D) {
-        entity camera = zox_get_link(world, player, Camera);
+        entity camera = zox_get_link(world, player, CameraLink);
         if (!zox_valid(camera) ||
             !zox_has(camera, Position3D) ||
             !zox_has(camera, Rotation3D)

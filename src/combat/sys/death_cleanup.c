@@ -10,7 +10,7 @@ zox_sys2(DeathCleanSystem) {
         zox_sys_e();
         zox_sys_i(DiedTime, time);
         if (zox_current_time - time->value >= cleanup_time) {
-            entity camera = zox_get_link(world, e, Camera);
+            entity camera = zox_get_link(world, e, CameraLink);
             if (zox_valid(camera)) {
                 zox_set_parent(world, camera, 0);
             }

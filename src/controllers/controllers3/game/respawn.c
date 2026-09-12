@@ -54,7 +54,7 @@ zox_sys2(Player3RespawnSystem) {
                 state->value = zox_player_state_play_trigger;
                 dirty->value = zox_dirty_trigger;
                 entity game = zox_get_parent(world, e);
-                entity realm = zox_getv(game, RealmLink);
+                entity realm = zox_get_link(world, game, RealmLink);
                 entity terrain = zox_get_child_by_id(
                     world,
                     realm,

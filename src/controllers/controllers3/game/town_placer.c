@@ -12,7 +12,7 @@ zox_sys2(PlayerTownFinderSystem) {
         if (state->value != zox_player_state_new) {
             continue;
         }
-        entity camera = zox_get_link(world, e, Camera);
+        entity camera = zox_get_link(world, e, CameraLink);
         if (!zox_valid(camera)) {
             zox_loge("Invalid Camera on Player");
             continue;
@@ -24,7 +24,7 @@ zox_sys2(PlayerTownFinderSystem) {
             continue;
         }
 #endif
-        entity realm = zox_getv(game, RealmLink);
+        entity realm = zox_get_link(world, game, RealmLink);
 #ifdef zox_safety_checks
         if (!zox_valid(realm)) {
             zox_loge("Invalid realm on Player");
@@ -51,7 +51,7 @@ zox_sys2(PlayerTownFinderSystem) {
             }
             continue;
         }
-        entity terrain = zox_get_link(world, realm, Terrain);
+        entity terrain = zox_get_link(world, realm, TerrainLink);
 #ifdef zox_safety_checks
         if (!zox_valid(terrain)) {
             zox_loge("Invalid Terrain on Player");

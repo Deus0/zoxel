@@ -26,7 +26,7 @@ void zox_tst_render_texture(ecs *world, ClickEventData data) {
         return;
     }
     entity canvas = get_linked_canvas(world, player);
-    entity camera = zox_get_link(world, player, Camera);
+    entity camera = zox_get_link(world, player, CameraLink);
     float3 cposition = zox_getv(camera, Position3D);
     float4 crotation = zox_getv(camera, Rotation3D);
     int padding = 40;

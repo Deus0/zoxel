@@ -22,7 +22,6 @@ void zox_define_systems_blocks(ecs* world) {
         [in] textures.TextureLinks,
         [in] textures.TilemapSize,
         [in] rendering.TextureSize,
-        [in] realms.RealmLink,
         [out] textures.GenerateTexture,
         [out] textures.TilemapUVs,
         [none] textures.Tilemap

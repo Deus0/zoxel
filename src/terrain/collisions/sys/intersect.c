@@ -24,14 +24,13 @@ zox_sys2(TerrainIntersectSystem) {
         zox_sys_o(Position3D, position);
         zox_sys_o(Velocity3D, velocity);
         zox_sys_o(Grounded, grounded);
-        entity terrain = zox_get_link(world, e, Terrain);
+        entity terrain = zox_get_link(world, e, TerrainLink);
         if (!zox_valid(terrain) || !zox_has(terrain, ChunkLinks) || !zox_has(terrain, BlockScale)) {
             zox_logw("Terrain Invalid");
             continue; // these shouldn't be here
         }
         // find realm first
-        entity realm = zox_get_parent(world, terrain);
-        // entity realm = zox_getv(terrain, RealmLink);
+        entity realm = zox_get_link(world, terrain, RealmLink);
         if (!zox_valid(realm) || !zox_has(realm, BlockLinks)) {
             zox_loge("Blocks Manager missing Terrain [%s]",
                 zox_getn(terrain));

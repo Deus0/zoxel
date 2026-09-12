@@ -25,7 +25,7 @@ uint zox_dbg_label_character_links(
     }
     float3 position = zox_getv(e, Position3D);
     float3 euler = zox_getv(e, Euler);
-    entity camera = zox_get_link(world, e, Camera);
+    entity camera = zox_get_link(world, e, CameraLink);
     entity chunk = zox_getv(e, ChunkLink);
     entity tunk = zox_valid(chunk) ?
         zox_get_link(world, chunk, TunkLink) :
@@ -136,15 +136,15 @@ uint zox_dbg_label_inside_chunk(
     uint index)
 {
     entity game = zox_get_parent(world, player);
-    entity realm = zox_getv(game, RealmLink);
+    entity realm = zox_get_link(world, game, RealmLink);
     if (!zox_valid(realm)) {
         return index;
     }
-    entity terrain = zox_get_link(world, realm, Terrain);
+    entity terrain = zox_get_link(world, realm, TerrainLink);
     if (!zox_valid(terrain)) {
         return index;
     }
-    entity camera = zox_get_link(world, player, Camera);
+    entity camera = zox_get_link(world, player, CameraLink);
     if (!zox_valid(camera)) {
         return index;
     }

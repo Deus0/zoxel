@@ -9,7 +9,7 @@ void player_state_game_end(
     if (state != zox_player_state_the_end) {
         return;
     }
-    entity camera = zox_get_link(world, player, Camera);
+    entity camera = zox_get_link(world, player, CameraLink);
     entity character = zox_get_link(world, player, Character);
     if (dbg_log) {
         zox_log("Player [GameEnd] Camera [%s]\n - Destroying Character [%s]",

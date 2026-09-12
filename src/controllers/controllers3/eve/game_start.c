@@ -7,7 +7,7 @@ void player_state_game_begin(
     if (state != zox_player_state_loading) {
         return;
     }
-    entity camera = zox_get_link(world, player, Camera);
+    entity camera = zox_get_link(world, player, CameraLink);
 #ifdef zox_safety_checks
     if (!zox_valid(camera)) {
         zox_loge("Player has no Camera");
@@ -22,7 +22,7 @@ void player_state_game_begin(
         return;
     }
 #endif
-    entity realm = zox_getv(game, RealmLink);
+    entity realm = zox_get_link(world, game, RealmLink);
 #ifdef zox_safety_checks
     if (!zox_valid(realm)) {
         zox_loge("Game [%s] has invalid Realm.",
@@ -35,7 +35,7 @@ void player_state_game_begin(
         return;
     }
 #endif
-    entity terrain = zox_get_link(world, realm, Terrain);
+    entity terrain = zox_get_link(world, realm, TerrainLink);
 #ifdef zox_safety_checks
     if (!zox_valid(terrain)) {
         return;

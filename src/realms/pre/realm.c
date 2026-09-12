@@ -16,7 +16,7 @@ entity spawn_realm(
     zox_name("realm");
     zox_setv(e, Seed, seed);
     zox_set_parent(world, e, game);
-    zox_setv(game, RealmLink, e);
+    zox_link(world, game, RealmLink, e);
     local_realm = e;
     set_noise_seed(seed);
     return e;

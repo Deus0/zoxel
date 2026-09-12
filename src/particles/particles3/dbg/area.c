@@ -11,7 +11,7 @@ void zox_dbg_spawn_particle_emitter(
         big_old_particle_zone = 0;
         return;
     }
-    entity camera = zox_get_link(world, dbg_player, Camera);
+    entity camera = zox_get_link(world, dbg_player, CameraLink);
     zox_geter_value(camera, Position3D, float3, cposition);
     int spawn_rate = 100;
     float3 bounds = float3_single(4);

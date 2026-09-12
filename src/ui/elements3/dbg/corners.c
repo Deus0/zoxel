@@ -11,7 +11,7 @@ void zox_dbg_spawn_element3_corners(ecs *world, ClickEventData data) {
         dbg_element3_corners = 0;
         return;
     }
-    entity camera = zox_get_link(world, dbg_player, Camera);
+    entity camera = zox_get_link(world, dbg_player, CameraLink);
     if (!zox_valid(camera)) {
         return;
     }

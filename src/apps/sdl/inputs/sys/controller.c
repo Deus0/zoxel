@@ -123,15 +123,12 @@ void sdl_controller_extract_button(
             x = ZOX_GAMEPAD_AXIS_RIGHTX;
             y = ZOX_GAMEPAD_AXIS_RIGHTY;
         }
-        byte changed = get_gamepad_axis(
+        get_gamepad_axis(
             controller,
             stick,
             x,
             y,
             dbg_log);
-        if (changed) {
-            zox_modified(e, ZeviceStick);
-        }
     } else if (zox_has(e, ZeviceButton)) {
         ZeviceButton* button = zox_mut(e, ZeviceButton);
         byte value = get_controller_button(

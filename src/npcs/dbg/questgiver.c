@@ -20,11 +20,11 @@ void zox_tst_spawn_quest_giver_npc(
     }
     float3 sposition = zox_getv(character, Position3D);
     float4 srotation = zox_getv(character, Rotation3D);
-    entity terrain = zox_get_link(world, character, Terrain);
+    entity terrain = zox_get_link(world, character, TerrainLink);
     if (!zox_valid(terrain)) {
         return;
     }
-    entity realm = zox_getv(terrain, RealmLink);
+    entity realm = zox_get_link(world, terrain, RealmLink);
     if (!zox_valid(realm)) {
         return;
     }

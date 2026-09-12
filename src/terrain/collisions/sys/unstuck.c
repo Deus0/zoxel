@@ -26,7 +26,7 @@ zox_sys2(UnstuckSystem) {
         zox_sys_i(Bounds3D, bounds);
         zox_sys_o(LastUnstuck3, last);
         zox_sys_o(Position3D, position);
-        entity terrain = zox_get_link(world, e, Terrain);
+        entity terrain = zox_get_link(world, e, TerrainLink);
         if (!zox_valid(terrain) || !zox_has(terrain, ChunkLinks)) {
             continue;
         }

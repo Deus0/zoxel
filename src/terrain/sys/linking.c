@@ -101,7 +101,7 @@ zox_sys2(ChunkLinkSystem) {
         zox_sys_i(Position3D, position);
         zox_sys_o(ChunkPosition, chunk_position);
         zox_sys_o(ChunkLink, link);
-        entity terrain = zox_get_link(world, e, Terrain);
+        entity terrain = zox_get_link(world, e, TerrainLink);
         if (!zox_valid(terrain)) {
             if (dbg_log) {
                 zox_loge("Character [%s] has no Terrain linked",

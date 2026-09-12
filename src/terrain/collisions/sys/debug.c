@@ -18,13 +18,13 @@ zox_sys2(TerrainIntersectDebugSystem) {
         zox_sys_i(Position3D, position);
         zox_sys_i(Rotation3D, rotation);
         zox_sys_i(Bounds3D, bounds);
-        entity terrain = zox_get_link(world, e, Terrain);
+        entity terrain = zox_get_link(world, e, TerrainLink);
         if (!zox_valid(terrain) || !zox_has(terrain, ChunkLinks) || !zox_has(terrain, BlockScale)) {
             zox_logw("Terrain Invalid");
             continue; // these shouldn't be here
         }
         // find realm first
-        entity realm = zox_getv(terrain, RealmLink);
+        entity realm = zox_get_link(world, terrain, RealmLink);
         if (!zox_valid(realm) || !zox_has(realm, BlockLinks)) {
             continue;
         }

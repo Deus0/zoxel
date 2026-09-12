@@ -10,7 +10,6 @@ zox_sys2(TilemapUVSystem) {
     zox_sys_in(TextureLinks);
     zox_sys_in(TilemapSize);
     zox_sys_in(TextureSize);
-    zox_sys_in(RealmLink);
     zox_sys_out(GenerateTexture);
     zox_sys_out(TilemapUVs);
     for (int i = 0; i < it->count; i++) {
@@ -18,7 +17,6 @@ zox_sys2(TilemapUVSystem) {
         zox_sys_i(TextureLinks, textures);
         zox_sys_i(TilemapSize, map_size);
         zox_sys_i(TextureSize, size);
-        zox_sys_i(RealmLink, realm);
         zox_sys_o(GenerateTexture, generate);
         zox_sys_o(TilemapUVs, uvs);
         if (generate->value != zox_generate_texture_uvs) {
@@ -49,11 +47,12 @@ zox_sys2(TilemapUVSystem) {
             zox_loge("Invalid [first_texture] for Tilemap");
             continue;
         }
-        if (!zox_valid(realm->value)) {
+        entity realm = zox_get_link(world, e, RealmLink);
+        if (!zox_valid(realm)) {
             zox_loge("Invalid [realm] for Tilemap");
             continue;
         }
-        zox_geter(realm->value, BlockLinks, blocks);
+        zox_geter(realm, BlockLinks, blocks);
         int2 unit_size = zox_getv(first_texture, TextureSize);
         uint uvs_length = blocks->length * 6 * 4;
         resize_TilemapUVs(uvs, uvs_length);

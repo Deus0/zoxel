@@ -46,7 +46,7 @@ zox_sys2(ShootSystem) {
             // NOTE: Hand is facing down atm, just make go up a bit more
             rotation = quaternion_rotate(rotation, euler_to_quaternion((float3) { -90 * degrees_to_radians, 0, 0 }));
         } else {
-            entity camera = zox_get_link(world, user, Camera);
+            entity camera = zox_get_link(world, user, CameraLink);
             if (zox_valid(camera)) {
                 position = zox_getv(camera, Position3D);
                 rotation = zox_getv(camera, Rotation3D);

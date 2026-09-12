@@ -14,6 +14,6 @@ entity zox_get_mesh2_camera(ecs *world, entity e) {
     if (!zox_valid(canvas)) {
         return 0;
     }
-    entity camera = zox_get_link(world, canvas, Camera);
+    entity camera = zox_get_link(world, canvas, CameraLink);
     return camera;
 }

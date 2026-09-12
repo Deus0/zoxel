@@ -6,7 +6,7 @@ void on_confirmed_new_realm(ecs *world, ClickEventData event) {
         zox_delete(menu);
     }
     zox_geter_value(player, GameLink, entity, game);
-    zox_geter_value(game, RealmLink, entity, realm);
+    entity realm = zox_get_link(world, game, RealmLink);
     zox_geter_value(realm, Seed, lint, seed);
     char home_path[max_path_characters];
     get_home_directory(home_path, sizeof(home_path));
@@ -43,15 +43,15 @@ void on_cancelled_new_realm(ecs *world, ClickEventData event) {
     }
     // Delete Realm
     zox_geter_value(player, GameLink, entity, game);
-    zox_geter_value(game, RealmLink, entity, realm);
+    entity realm = zox_get_link(world, game, RealmLink);
     zox_delete(realm);
-    zox_setv(game, RealmLink, 0);
+    // zox_setv(game, RealmLink, 0);
     spawn_main_menu(world, player, game_name);
 }
 
 entity spawn_menu_new_realm(ecs *world, entity player) {
     zox_geter_value(player, GameLink, entity, game);
-    zox_geter_value(game, RealmLink, entity, realm);
+    entity realm = zox_get_link(world, game, RealmLink);
     if (!zox_valid(realm)) {
         return 0;
     }

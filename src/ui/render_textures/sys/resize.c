@@ -17,7 +17,7 @@ zox_sys2(RenderTextureSizeSystem) {
             zox_loge("[RenderTextureSizeSystem] [%s] Invalid [TextureGPULink]", zox_getn(e));
             continue;
         }
-        entity camera = zox_get_link(world, e, Camera);
+        entity camera = zox_get_link(world, e, CameraLink);
         if (!zox_valid(camera)) {
             zox_loge("[RenderTextureSizeSystem] Invalid Render Camera [%lu]",
                 camera);

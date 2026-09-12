@@ -6,9 +6,9 @@ entity spawn_biome(
     lint seed
 ) {
     zox_instance(prefab);
-    zox_set(e, RealmLink, { realm });
+    zox_link(world, e, RealmLink, realm);
     zox_name(name);
     set_ZoxName(world, e, name);
-    zox_set(e, Seed, { seed });
+    zox_setv(e, Seed, seed);
     return e;
 }

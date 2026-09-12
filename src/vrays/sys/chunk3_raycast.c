@@ -420,7 +420,7 @@ zox_sys2(Chunk3RaycastSystem) {
         zox_sys_e();
         zox_sys_i(RaycastRange, raycast_range);
         zox_sys_o(RaycastVoxelData, data);
-        entity terrain = zox_get_link(world, e, Terrain);
+        entity terrain = zox_get_link(world, e, TerrainLink);
         if (!zox_valid(terrain)) {
             zox_loge("No Terrain Linked to [%s]",
                 zox_getn(e));
@@ -432,7 +432,7 @@ zox_sys2(Chunk3RaycastSystem) {
         }
         float3 ray_origin;
         float3 ray_normal;
-        entity camera = zox_get_link(world, e, Camera);
+        entity camera = zox_get_link(world, e, CameraLink);
         if (zox_valid(camera)) {
             ray_origin = zox_getv(camera, RaycastOrigin);
             ray_normal = zox_getv(camera, RaycastNormal);

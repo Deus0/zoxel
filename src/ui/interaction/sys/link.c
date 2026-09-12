@@ -26,6 +26,5 @@ zox_sys2(ElementActiveLinkSystem) {
         }
         // Link our active to our list
         active->value = e;
-        zox_modified(parent, ActiveLink);
     }
 } zox_sys_end(ElementActiveLinkSystem);

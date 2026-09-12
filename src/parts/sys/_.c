@@ -21,7 +21,6 @@ void define_systems_bodys(ecs* world) {
         CharacterBodySpawnSystem,
         zoxp_spawn,
         [in] characters.GenerateCharacter,
-        [in] realms.RealmLink,
         [out] parts.BodyDirty,
         [none] bones.Skeleton
     );

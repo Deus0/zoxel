@@ -18,11 +18,11 @@ zox_sys2(BiomeMapAvgSystem) {
             continue;
         }
         entity terrain = zox_get_parent(world, e);
-        if (!zox_valid(terrain) || !zox_has(terrain, RealmLink)) {
+        if (!zox_valid(terrain)) {
             zox_logw("Invalid [Terrain] in Tunks [%s]", zox_get_name(terrain));
             continue;
         }
-        zox_geter_value(terrain, RealmLink, entity, realm);
+        entity realm = zox_get_link(world, terrain, RealmLink);
         if (!zox_valid(realm) || !zox_has(realm, BiomeLinks)) {
             zox_logw("Invalid [Realm] in Tunks");
             continue;
@@ -48,13 +48,13 @@ zox_sys2(BiomeMapAvgSystem) {
         byte popular_biome = used_0 > used_1 ? 0 : 1;
         // link->value =
         entity new_biome = biomes->value[popular_biome];
-        entity old_biome = zox_get_link(world, e, Biome);
+        entity old_biome = zox_get_link(world, e, BiomeLink);
         if (old_biome != new_biome) {
             if (zox_valid(old_biome)) {
-                zox_unlink(world, e, Biome, old_biome);
+                zox_unlink(world, e, BiomeLink, old_biome);
             }
             if (zox_valid(new_biome)) {
-                zox_link(world, e, Biome, new_biome);
+                zox_link(world, e, BiomeLink, new_biome);
             }
         }
         // zox_log("popular_biome is [%i] [%s]", popular_biome, zox_get_name(link->value));

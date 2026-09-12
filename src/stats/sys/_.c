@@ -61,14 +61,12 @@ void zox_systems_stats(ecs *world) {
         CharacterStatsSystem,
         zoxp_spawn,
         [in] characters.GenerateCharacter,
-        [in] realms.RealmLink,
         [none] !players.PlayerLink
     );
     zox_system_1(
         PlayerCharacterStatsSystem,
         zoxp_spawn,
         [in] characters.GenerateCharacter,
-        [in] realms.RealmLink,
         [none] players.PlayerLink
     );
     zox_system_1(

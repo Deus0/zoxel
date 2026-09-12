@@ -15,20 +15,6 @@
 #include "biome_blocks.c"
 
 void define_systems_zoxel(ecs *world) {
-    // TODO: Move this towards end content
-    /*zox_system_1(
-        ModelsRealmSpawnSystem,
-        zoxp_spawn,
-        [in] realms.GenerateRealm,
-        [out] rendering.ModelLinks,
-        [out] nodes.NodegraphLinks,
-        [none] realms.Realm
-    );*/
-    // NOTE: Didnt work for Module Detection
-    /*if (!ecs_lookup(world, "Stats")) {
-        zox_logw("NO Stats Module");
-        return;
-    }*/
     zox_system_1(
         StatsRealmSpawnSystem,
         zoxp_spawn,
@@ -43,28 +29,6 @@ void define_systems_zoxel(ecs *world) {
     );
     zox_system_1(
         SkillsRealmSpawnSystem,
-        zoxp_spawn,
-        [in] realms.GenerateRealm,
-        [none] realms.Realm
-    );
-    // NOTE: Blocks must be set before items spawn if this is the case!
-    // TODO: Spawn Block Items when the Realm BlocksDirty is flagged
-    zox_system_1(
-        ItemsRealmSpawnSystem,
-        zoxp_spawn,
-        [in] realms.GenerateRealm,
-        [in] blocks.BlockLinks,
-        [none] realms.Realm
-    );
-    zox_system_1(
-        BodysRealmSpawnSystem,
-        zoxp_spawn,
-        [in] realms.GenerateRealm,
-        [in] core.Seed,
-        [none] realms.Realm
-    );
-    zox_system_1(
-        EquipsRealmSpawnSystem,
         zoxp_spawn,
         [in] realms.GenerateRealm,
         [none] realms.Realm
@@ -94,16 +58,6 @@ void define_systems_zoxel(ecs *world) {
         [in] realms.GenerateRealm,
         [none] realms.Realm
     );
-    // Worlds
-    zox_system_1(
-        Character3RealmSpawnSystem,
-        zoxp_spawn,
-        [in] realms.GenerateRealm,
-        [in] core.Seed,
-        [out] characters.CharacterLinks,
-        [out] characters3.CharactersChanceMax,
-        [none] realms.Realm
-    );
     zox_system_1(
         BiomesRealmSpawnSystem,
         zoxp_spawn,
@@ -127,5 +81,38 @@ void define_systems_zoxel(ecs *world) {
         [in] core.Seed,
         [out] biomes.BiomeSkyColor,
         [none] biomes.Biome
+    );
+    // NOTE: Blocks must be set before items spawn if this is the case!
+    // TODO: Spawn Block Items when the Realm BlocksDirty is flagged
+    zox_system_1(
+        ItemsRealmSpawnSystem,
+        zoxp_spawn,
+        [in] realms.GenerateRealm,
+        [in] blocks.BlockLinks,
+        [none] realms.Realm
+    );
+    zox_system_1(
+        BodysRealmSpawnSystem,
+        zoxp_spawn,
+        [in] realms.GenerateRealm,
+        [in] core.Seed,
+        [none] realms.Realm
+    );
+    zox_system_1(
+        EquipsRealmSpawnSystem,
+        zoxp_spawn,
+        [in] realms.GenerateRealm,
+        [none] realms.Realm
+    );
+    // Confirmed Crashes
+    // Worlds
+    zox_system_1(
+        Character3RealmSpawnSystem,
+        zoxp_spawn,
+        [in] realms.GenerateRealm,
+        [in] core.Seed,
+        [out] characters.CharacterLinks,
+        [out] characters3.CharactersChanceMax,
+        [none] realms.Realm
     );
 }

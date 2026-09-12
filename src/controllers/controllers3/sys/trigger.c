@@ -18,7 +18,7 @@ zox_sys2(Player3DTriggerSystem) {
             continue;
         }
         entity character = zox_get_link(world, e, Character);
-        entity camera = zox_get_link(world, e, Camera);
+        entity camera = zox_get_link(world, e, CameraLink);
         if (!zox_valid(character) ||
             !zox_has(character, Character3) ||
             !zox_valid(camera))

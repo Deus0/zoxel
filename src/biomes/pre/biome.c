@@ -4,7 +4,6 @@ entity spawn_prefab_biome(ecs* world) {
     zox_add(e, Biome);
     zox_prefab_set(e, ZoxName, { 0 });
     zox_prefab_set(e, Seed, { 0 });
-    zox_prefab_set(e, RealmLink, { 0 });
     zox_prefab_set(e, BiomeSkyColor, { color_rgb_cyan });
     zox_prefab_set(e, DirtChance, { 0 });
     zox_prefab_set(e, GrassChance, { 1 });

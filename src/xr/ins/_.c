@@ -22,7 +22,7 @@ void xr_spawn_camera(ecs* world, entity app) {
         viewport_position,
         scaled_viewport_size,
         screen_to_canvas);
-    zox_link(world, player, Camera, xr_camera);
+    zox_link(world, player, CameraLink, xr_camera);
     main_cameras[0] = xr_camera;
     zox_log("[XR] Spawned camera at [%fx%fx%f]",
         camera_position.x,

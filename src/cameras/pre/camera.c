@@ -4,25 +4,25 @@ entity spawn_prefab_camera(ecs *world) {
     zox_prefab_name("camera");
     zox_add(e, Camera);
     zox_add(e, PreInitialize);
-    zox_prefab_set(e, Position3D, { float3_zero });
-    zox_prefab_set(e, Rotation3D, { float4_identity });
-    zox_prefab_set(e, LocalPosition3D, { float3_zero });
-    zox_prefab_set(e, Euler, { euler });
-    zox_prefab_set(e, LocalRotation3D, { quaternion_from_euler(float3_scale(euler, degreesToRadians)) });
+    zox_setv(e, Position3D, float3_zero);
+    zox_setv(e, Rotation3D, float4_identity);
+    zox_setv(e, LocalPosition3D, float3_zero);
+    zox_setv(e, Euler, euler);
+    zox_setv(e, LocalRotation3D, quaternion_from_euler(float3_scale(euler, degreesToRadians)));
     // Camera
-    zox_prefab_set(e, CameraState, { 0 });
-    zox_prefab_set(e, ProjectionMatrix, { float4x4_identity });
-    zox_prefab_set(e, TransformMatrix, { float4x4_identity });
-    zox_prefab_set(e, ViewProjectionMatrix, { float4x4_identity });
-    zox_prefab_set(e, ScreenPosition, { int2_zero });
-    zox_prefab_set(e, PixelSize, { int2_zero });
-    zox_prefab_set(e, FieldOfView, { 0 });
-    zox_prefab_set(e, CameraNearDistance, { camera_near_distance });
-    zox_prefab_set(e, ScreenToCanvas, { float4_zero });
-    zox_prefab_set(e, FogColor, { color_rgb_green });
+    zox_setv(e, CameraState, 0);
+    zox_setv(e, ProjectionMatrix, float4x4_identity);
+    zox_setv(e, TransformMatrix, float4x4_identity);
+    zox_setv(e, ViewProjectionMatrix, float4x4_identity);
+    zox_setv(e, ScreenPosition, int2_zero);
+    zox_setv(e, PixelSize, int2_zero);
+    zox_setv(e, FieldOfView, 0);
+    zox_setv(e, CameraNearDistance, camera_near_distance);
+    zox_setv(e, ScreenToCanvas, float4_zero);
+    zox_setv(e, FogColor, color_rgb_green);
     // culling
-    zox_prefab_set(e, Position3DBounds, { float6_zero });
-    zox_prefab_add(e, CameraPlanes);
-    zox_prefab_add(e, FrustumCorners);
+    zox_setv(e, Position3DBounds, float6_zero);
+    zox_add(e, CameraPlanes);
+    zox_add(e, FrustumCorners);
     return e;
 }

@@ -19,11 +19,11 @@ void zox_tst_spawn_character3_npc_skeleton(
     }
     float3 sposition = zox_getv(character, Position3D);
     float4 srotation = zox_getv(character, Rotation3D);
-    entity terrain = zox_get_link(world, character, Terrain);
+    entity terrain = zox_get_link(world, character, TerrainLink);
     if (!zox_valid(terrain)) {
         return;
     }
-    entity realm = zox_getv(terrain, RealmLink);
+    entity realm = zox_get_link(world, terrain, RealmLink);
     if (!zox_valid(realm)) {
         return;
     }
@@ -48,7 +48,7 @@ void zox_tst_spawn_character3_npc_skeleton(
         0,
         sposition,
         srotation,
-        "Boney");
+        "Testyman");
     zox_tst_character3_npc_skeleton = e;
     if (dbg_inspector) {
         entity canvas = zox_get_link(world, player, Canvas);

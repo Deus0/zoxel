@@ -19,9 +19,10 @@ zox_sys2(HeadCameraSystem) {
             zox_loge("Invalid Head on Character");
             continue;
         }
-        entity camera = zox_get_link(world, e, Camera);
+        entity camera = zox_get_link(world, e, CameraLink);
         if (!zox_valid(camera)) {
-            zox_loge("Invalid Camera on Character");
+            zox_loge("Invalid Camera on Character %s",
+                zox_getn(e));
             continue;
         }
         byte camera_state = zox_getv(camera, CameraState);

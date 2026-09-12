@@ -15,7 +15,7 @@ uint zox_dbg_ui_camera(
     if (!zox_valid(e)) {
         return index;
     }
-    entity camera = zox_get_link(world, e, Camera);
+    entity camera = zox_get_link(world, e, CameraLink);
     index += snprintf(buffer + index, size - index, "   - Camera [%s]\n", zox_getn(camera));
     if (!zox_valid(camera)) {
         return index;
@@ -61,16 +61,22 @@ uint zox_dbg_ui_chunk_busy(ecs* world, entity e, char *buffer, uint size, uint i
     return index;
 }
 
-uint zox_dbg_ui_terrain(ecs* world, entity e, char *buffer, uint size, uint index) {
+uint zox_dbg_ui_terrain(
+    ecs* world,
+    entity e,
+    char *buffer,
+    uint size,
+    uint index)
+{
     if (!zox_valid(e)) {
         return index;
     }
     entity game = zox_get_parent(world, e);
-    if (!zox_valid(game) || !zox_has(game, RealmLink)) {
+    if (!zox_valid(game)) {
         index += snprintf(buffer + index, size - index, "Player [%s]'s Invalid Game\n", zox_get_name(e));
         return index;
     }
-    entity realm = zox_getv(game, RealmLink);
+    entity realm = zox_get_link(world, game, RealmLink);
     if (!zox_valid(realm)) {
         index += snprintf(buffer + index, size - index, "Player [%s] has no Realm\n", zox_get_name(e));
         return index;
@@ -104,11 +110,11 @@ uint zox_dbg_ui_meshes(ecs* world, entity e, char* buffer, uint size, uint index
         return index;
     }
     entity game = zox_get_parent(world, e);
-    if (!zox_valid(game) || !zox_has(game, RealmLink)) {
+    if (!zox_valid(game)) {
         index += snprintf(buffer + index, size - index, "Player [%s]'s Invalid Game\n", zox_get_name(e));
         return index;
     }
-    entity realm = zox_getv(game, RealmLink);
+    entity realm = zox_get_link(world, game, RealmLink);
     if (!zox_valid(realm)) {
         index += snprintf(buffer + index, size - index, "Player [%s] has no Realm\n", zox_get_name(e));
         return index;
@@ -192,7 +198,7 @@ uint debug_ui_seeds(ecs *world, entity e, char *buffer, uint size, uint index) {
     index += snprintf(buffer + index, size - index, "Seeds\n");
     index += snprintf(buffer + index, size - index, " - Player [%s]\n", zox_get_name(e));
     entity game = zox_getv(e, GameLink);
-    entity realm = zox_getv(game, RealmLink);
+    entity realm = zox_get_link(world, game, RealmLink);
     if (zox_valid(realm)) {
         lint realm_seed = zox_getv(realm, Seed);
         index += snprintf(buffer + index, size - index, " - Realm [%s] [%lu]\n", zox_get_name(realm), realm_seed);
@@ -204,7 +210,7 @@ uint debug_ui_seeds(ecs *world, entity e, char *buffer, uint size, uint index) {
         index += snprintf(buffer + index, size - index, " - Character [%s]-[%s]: [%lu]\n", zox_get_name(character), character_name, character_seed);
     }
     if (zox_valid(realm)) {
-        entity terrain = zox_get_link(world, realm, Terrain);
+        entity terrain = zox_get_link(world, realm, TerrainLink);
         if (zox_valid(terrain)) {
             lint terrain_seed = zox_getv(terrain, Seed);
             index += snprintf(buffer + index, size - index, " - Terrain [%s] [%lu]\n", zox_get_name(terrain), terrain_seed);

@@ -29,9 +29,14 @@ zox_sys_untimed(CameraRenderUISystem) {
         render_camera_matrix = matrix->value;
         render_camera_position = position->value;
         renderer_fog_color = fog->value;
-        zox_gpu_set_viewport(int2_to_float2(screen_position->value),  int2_to_float2(screen_size->value));
+        zox_gpu_set_viewport(
+            int2_to_float2(screen_position->value),
+            int2_to_float2(screen_size->value));
         if (dbg_log) {
-            zox_log("[%s] Rendering 2D [%s]: [%ix%i] Buffer? [%i]", zox_getn(e), screen_size->value.x, screen_size->value.y);
+            zox_log("[%s] Rendering 2D [%s]: [%ix%i] Buffer? [%i]",
+                zox_getn(e),
+                screen_size->value.x,
+                screen_size->value.y);
         }
         clear_ui_layers();
         for (size_t j = 0; j < render2D_systems->size; j++) {

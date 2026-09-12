@@ -1,5 +1,13 @@
 # Done
 
+-x RealmLink
+-x Bug: Fog Color of camera not set
+-x Fix skybox, make sure fog color blends properly though
+-x Refactor ChunkMesh to use Non fragment parenting
+    -x atm creates 4000 tables
+-x Optimize CharactersCanSpawnSystem
+    x- check only when depth changes
+-x Bug: Fog color not sky color
 -x GizmoLink
 -x SkillResourceLink
 -x ParticlesEmitterLink

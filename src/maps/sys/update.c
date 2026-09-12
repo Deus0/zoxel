@@ -12,7 +12,7 @@ zox_sys2(MapPositionSystem) {
         if (!zox_valid(player->value)) {
             continue;
         }
-        entity camera = zox_get_link(world, player->value, Camera);
+        entity camera = zox_get_link(world, player->value, CameraLink);
         if (!zox_valid(camera) || !zox_has(camera, StreamPosition2)) {
             continue;
         }
@@ -24,7 +24,7 @@ zox_sys2(MapPositionSystem) {
         if (dbg_log) {
             zox_log("Map Position Updated [%ix%i]", new_position.x, new_position.y);
         }
-        entity terrain = zox_get_link(world, e, Terrain);
+        entity terrain = zox_get_link(world, e, TerrainLink);
         zox_geter(terrain, TunkLinks, tunks);
         // for all textures
         entity body = zox_get_child_by_id(world, e, zox_id(WindowBody));
@@ -43,10 +43,12 @@ zox_sys2(MapPositionSystem) {
                 int2 tunk_position = int2_add(position->value, grid_postion);
                 entity tunk = int2_hashmap_get(tunks->value, tunk_position);
                 if (!zox_valid(tunk)) {
-                    zox_logw("MapPositionSystem: Tunk Invalid at [%ix%i]", tunk_position.x, tunk_position.y);
+                    zox_logw("MapPositionSystem: Tunk Invalid at [%ix%i]",
+                        tunk_position.x,
+                        tunk_position.y);
                 }
                 zox_link(world, e2, TunkLink, tunk);
-                zox_set(e2, GenerateTexture, { zox_generate_texture_run });
+                zox_setv(e2, GenerateTexture, zox_generate_texture_run);
                 if (dbg_log >= 2) {
                     zox_log(" - Map Piece [%ix%i] Updated [%ix%i]", grid_postion.x, grid_postion.y, tunk_position.x, tunk_position.y);
                 }

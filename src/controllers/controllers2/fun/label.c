@@ -28,7 +28,7 @@ uint get_label_character2_player(
         index += snprintf(buffer + index, size - index, "[%s] has no character\n", zox_get_name(player));
         return index;
     }
-    entity camera = zox_get_link(world, player, Camera);
+    entity camera = zox_get_link(world, player, CameraLink);
     zox_geter_value(character, Position2, float2, position2);
     zox_geter_value(camera, Position3D, float3, camera_position3);
     index += snprintf(buffer + index, size - index, "player [%s]:\n", zox_get_name(player));

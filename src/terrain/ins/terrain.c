@@ -40,16 +40,22 @@ entity spawn_terrain(
     zox_setv(e, BlockScale, scale);
     zox_setv(e, NodeDepth, depth);
     // Initialize Hashmaps
-    zox_set_ptr(e, RegionLinks, (RegionLinks) { .value = create_int2_hashmap(32) });
-    zox_set_ptr(e, TunkLinks, (TunkLinks) { .value = create_int2_hashmap(32) });
-    zox_set_ptr(e, ChunkLinks, (ChunkLinks) { .value = create_int3_hashmap(32 * 32) });
+    zox_set_ptr(e, RegionLinks, (RegionLinks) {
+        .value = create_int2_hashmap(32)
+    });
+    zox_set_ptr(e, TunkLinks, (TunkLinks) {
+        .value = create_int2_hashmap(32)
+    });
+    zox_set_ptr(e, ChunkLinks, (ChunkLinks) {
+        .value = create_int3_hashmap(32 * 32)
+    });
     // Link them link this for now
     zox_set_parent(world, e, realm);
-    zox_setv(e, RealmLink, realm);
-    zox_link(world, realm, Terrain, e);
+    zox_link(world, e, RealmLink, realm);
+    zox_link(world, realm, TerrainLink, e);
     if (tilemap) {
         zox_link(world, e, Tilemap, tilemap);
-        zox_link(world, tilemap, Terrain, e);
+        zox_link(world, tilemap, TerrainLink, e);
     }
     local_terrain = e;
     return e;

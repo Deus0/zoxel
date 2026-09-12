@@ -25,7 +25,7 @@ void zox_tst_spawn_dialogue(ecs *world, ClickEventData data) {
     zox_log("Testing Realm Dialogue Run [0]");
     // Here is our test run!
     entity game = zox_getv(player, GameLink);
-    entity realm = zox_getv(game, RealmLink);
+    entity realm = zox_get_link(world, game, RealmLink);
     if (!zox_valid(realm)) {
         zox_logw("No realm yet.");
         return;

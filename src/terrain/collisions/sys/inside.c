@@ -13,7 +13,7 @@ zox_sys2(InsideBlockSystem) {
         zox_sys_o(InsideBlock, inside);
         zox_sys_o(InsideBlockPosition, iposition);
         zox_sys_o(InsideBlockDirty, idirty);
-        entity terrain = zox_get_link(world, e, Terrain);
+        entity terrain = zox_get_link(world, e, TerrainLink);
         if (!zox_valid(terrain)) {
             zox_loge("Terrain invalid in character [%s]", zox_get_name(e));
             continue;

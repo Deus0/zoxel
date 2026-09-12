@@ -1,4 +1,5 @@
 zox_tag(Terrain);
+zox_tag(TerrainLink);
 zox_tag(FlatTerrain);
 zox_tag(FlatlandChunk);
 zox_tag(TerrainWorld);
@@ -18,11 +19,12 @@ zox_tag(BlockRoad);
 #include "spawn2.c"
 
 entity get_linked_terrain(ecs* world, entity e) {
-    return zox_get_link(world, e, Terrain);
+    return zox_get_link(world, e, TerrainLink);
 }
 
 void define_components_terrain(ecs *world) {
     zoxd_tag(Terrain);
+    zoxd_nf_tag(TerrainLink);
     zoxd_tag(FlatTerrain);
     zoxd_tag(FlatlandChunk);
     zoxd_tag(TerrainWorld);

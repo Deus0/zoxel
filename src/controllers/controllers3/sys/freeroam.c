@@ -31,7 +31,7 @@ void attach_camera_to_character(
     float3 euler = (float3) { 0, 180, 0 };
     // Initial Linking
     zox_link(world, e, Character, character);
-    zox_link(world, character, Camera, e);
+    zox_link(world, character, CameraLink, e);
     // reset using head bone
     zox_remove(e, EulerOverride);
     zox_setv(e, CameraState, zox_camera_state_first_person);
@@ -57,7 +57,7 @@ zox_sys2(FreeRoamToggleSystem) {
         if (state->value != zox_player_state_playing) {
             // continue;
         }
-        entity camera = zox_get_link(world, e, Camera);
+        entity camera = zox_get_link(world, e, CameraLink);
         if (!zox_valid(camera)) {
             continue;
         }

@@ -15,7 +15,7 @@ void zox_dbg_spawn_cube(ecs *world) {
         dbg_cube = 0;
         return;
     }
-    entity camera = zox_get_link(world, dbg_player, Camera);
+    entity camera = zox_get_link(world, dbg_player, CameraLink);
     if (!zox_valid(camera)) {
         return;
     }

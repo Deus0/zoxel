@@ -5,7 +5,7 @@ int get_label_camera_euler(
     int buffer_size,
     int buffer_index)
 {
-    entity camera = zox_get_link(world, player, Camera);
+    entity camera = zox_get_link(world, player, CameraLink);
     if (!camera) return buffer_index;
     float4 rotation3D = zox_getv(camera, Rotation3D);
     float3 euler = quaternion_to_euler_360(rotation3D);
@@ -20,7 +20,7 @@ int get_label_camera_position(
     int buffer_size,
     int buffer_index)
 {
-    entity camera = zox_get_link(world, player, Camera);
+    entity camera = zox_get_link(world, player, CameraLink);
     if (!camera) return buffer_index;
     float3 position3D = zox_getv(camera, Position3D);
     buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "camera_pos [%ix%ix%i]\n", (int) position3D.x, (int) position3D.y, (int) position3D.z);
@@ -34,7 +34,7 @@ int get_label_camera_planes(
     int buffer_size,
     int buffer_index)
 {
-    entity camera = zox_get_link(world, player, Camera);
+    entity camera = zox_get_link(world, player, CameraLink);
     if (!camera || !zox_has(camera, CameraPlanes)) {
         return buffer_index;
     }
@@ -56,7 +56,7 @@ int get_label_camera_frustum(
     int buffer_size,
     int buffer_index)
 {
-    entity camera = zox_get_link(world, player, Camera);
+    entity camera = zox_get_link(world, player, CameraLink);
     if (!camera || !zox_has(camera, FrustumCorners)){
          buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "invalid camera\n");
         return buffer_index;

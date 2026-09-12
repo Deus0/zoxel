@@ -11,7 +11,7 @@ entity spawn_dbg_chunk3_textured(
     }
     // byte dbg_inspector = 0;
     lint seed = 666;
-    entity camera = zox_get_link(world, player, Camera);
+    entity camera = zox_get_link(world, player, CameraLink);
     if (!zox_valid(camera)) {
         return 0;
     }

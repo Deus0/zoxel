@@ -43,7 +43,7 @@ entity spawn_test_vox(
     ecs* world,
     entity player)
 {
-    entity camera = zox_get_link(world, player, Camera);
+    entity camera = zox_get_link(world, player, CameraLink);
     if (!zox_valid(camera)) {
         return 0;
     }

@@ -38,12 +38,11 @@ zox_sys2(CharacterSaveSystem) {
     float precision_level = 100.0f;    // 100
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(RealmLink);
     zox_sys_in(Position3D);
     zox_sys_in(Euler);
     zox_sys_out(SaveHash);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(RealmLink, realm);
+        zox_sys_e();
         zox_sys_i(Position3D, position);
         zox_sys_i(Euler, euler);
         zox_sys_o(SaveHash, hash);
@@ -63,11 +62,12 @@ zox_sys2(CharacterSaveSystem) {
         if (new_hash == hash->value) {
             continue;
         }
-        if (!zox_valid(realm->value) || !zox_has(realm->value, FolderPath)) {
+        entity realm = zox_get_link(world, e, RealmLink);
+        if (!zox_valid(realm) || !zox_has(realm, FolderPath)) {
             zox_logw("Realm Invalid for Saving.");
             continue;
         }
-        zox_geter(realm->value, FolderPath, path);
+        zox_geter(realm, FolderPath, path);
         if (save_file_struct(path->value, "player.dat", &data, sizeof(SaveDataCharacter))) {
             hash->value = new_hash;
         }

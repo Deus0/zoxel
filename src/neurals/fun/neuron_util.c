@@ -48,9 +48,6 @@ byte send_signals_from_neuron(ecs *world, const entity neuron, float value) {
         if (!zox_valid(e)) continue;
         const ConnectionData *connectionData = zox_get(e, ConnectionData);
         if (connectionData->value.x == neuron) {
-            /*Signal *signal = zox_get_mut(e, Signal)
-            signal->value = combine_signals(signal->value, value);
-            zox_modified(e, Signal)*/
             zox_set(e, Signal, { value });
             has_outputs = 1;
         }

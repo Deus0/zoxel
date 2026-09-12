@@ -17,8 +17,7 @@ void process_arguments_musics(ecs *world, char* args[], int count) {
         return;
     }
     zox_geter_value(app, GameLink, entity, game);
-
-    zox_geter_value(game, RealmLink, entity, realm);
+    entity realm = zox_get_link(world, gamee, RealmLink);
     if (!zox_valid(realm)) {
         zox_logw("No realm for musics.");
         return;

@@ -3,7 +3,6 @@ entity spawn_prefab_tilemap(ecs *world) {
     zox_prefab_name("tilemap");
     zox_add(e, Tilemap);
     zox_add(e, Texture);
-    zox_setv(e, RealmLink, 0);
     zox_setv(e, TilemapSize, int2_one);
     zox_setv(e, TextureData, 0);
     zox_setv(e, TextureSize, int2_zero);
@@ -25,7 +24,7 @@ entity spawn_tilemap(
     zox_instance(prefab);
     zox_name("tilemap");
     zox_set_parent(world, e, realm);
-    zox_setv(e, RealmLink, realm);
+    zox_link(world, e, RealmLink, realm);
     if (!shader_textured3D) {
         return e;
     }

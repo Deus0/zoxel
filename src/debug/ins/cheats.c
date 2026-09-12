@@ -6,7 +6,7 @@ void zox_dbg_toggle_free_roam(ecs* world, ClickEventData data) {
         return;
     }
     entity character = zox_get_link(world, player, Character);
-    entity camera = zox_get_link(world, player, Camera);
+    entity camera = zox_get_link(world, player, CameraLink);
     if (!zox_valid(camera)) {
         zox_loge("[zox_dbg_toggle_free_roam] No Camera on Player");
         return;

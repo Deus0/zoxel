@@ -2,21 +2,20 @@ zox_sys2(CharacterPlayerQuestsSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
-    zox_sys_in(RealmLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateCharacter, state);
-        zox_sys_i(RealmLink, realm);
         if (state->value != zox_dirty_active) {
             continue;
         }
-        if (!zox_valid(realm->value)) {
+        entity realm = zox_get_link(world, e, RealmLink);
+        if (!zox_valid(realm)) {
             zox_loge("[player_quests] Invalid [realm]");
             continue;
         }
         // Give Random Quest
         entity player_start_quest = 0;
-        iter it2 = zox_children(world, realm->value);
+        iter it2 = zox_children(world, realm);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
                 entity quest = it2.entities[j];

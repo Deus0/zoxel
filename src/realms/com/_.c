@@ -1,9 +1,9 @@
 zox_tag(Realm);
+zox_tag(RealmLink);
 zoxc_byte(GenerateRealm);
-zoxc_entity(RealmLink);
 
 void define_components_realms(ecs* world) {
     zoxd_tag(Realm);
+    zoxd_nf_tag(RealmLink);
     zoxd_byte(GenerateRealm);
-    zoxd_entity(RealmLink);
 }

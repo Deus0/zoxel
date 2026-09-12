@@ -5,7 +5,7 @@ entity spawn_minimap(
     entity terrain)
 {
     int2 tunk_position = int2_zero;
-    entity camera = zox_get_link(world, player, Camera);
+    entity camera = zox_get_link(world, player, CameraLink);
     if (zox_valid(camera)) {
         tunk_position = zox_getv(camera, StreamPosition2);
     }
@@ -36,6 +36,6 @@ entity spawn_minimap(
     zox_set(e, MapPosition, { tunk_position });
     zox_set(e, MapZoom, { minimap_zoom });
     zox_set(e, Alpha, { minimap_alpha });
-    zox_link(world, e, Terrain, terrain);
+    zox_link(world, e, TerrainLink, terrain);
     return e;
 }

@@ -87,15 +87,14 @@ zox_sys2(CharacterStatsSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
-    zox_sys_in(RealmLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateCharacter, state);
-        zox_sys_i(RealmLink, realm);
         if (state->value != zox_dirty_active) {
             continue;
         }
         // Collect Realm Stats
-        spawn_base_stats(world, e, realm->value);
+        entity realm = zox_get_link(world, e, RealmLink);
+        spawn_base_stats(world, e, realm);
     }
 } zox_sys_end(CharacterStatsSystem);

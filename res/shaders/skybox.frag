@@ -31,15 +31,25 @@ vec3 sky_gradient(vec3 color) {
 }
 
 void main() {
-    vec3 sky_top_color2 = sky_top_color;
-    float gradient = clamp((mesh_pos.y + 0.0) * 1.0, 0.0, 1.0);
-    frag_color = vec3(mix(sky_bottom_color, sky_top_color2, gradient));
-    frag_color.x = frag_color.x * color.x;
-    frag_color.z = frag_color.y * color.y;
-    frag_color.z = frag_color.x * color.z;
-    // * brightness;
+    // Main vertical sky gradient.
+    // Keeps the horizon close to the terrain colour while becoming
+    // substantially lighter toward the top.
+    float gradient = smoothstep(0.0, 1.0, mesh_pos.y);
+    frag_color = mix(
+        sky_bottom_color,
+        sky_top_color,
+        gradient * 0.7
+    );
+
+    // Extra lift toward the upper sky so the gradient is actually visible.
+    float upper_gradient = smoothstep(0.35, 1.0, mesh_pos.y);
+    frag_color += vec3(upper_gradient * 0.08);
+
+    // Existing sky/sun shaping.
     frag_color = sky_gradient(frag_color);
-    frag_color -= vec3(1) * 0.05;
+
+    // Small animated variation.
     float noise = rand(time * mesh_pos.xy);
-    frag_color += vec3(noise) * 0.1;
+    frag_color += vec3((noise * 0.2) - 0.1);
+
 }

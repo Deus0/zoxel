@@ -24,8 +24,8 @@ zox_sys2(FlatlandSystem) {
             fill_octree(node, 0, 0);
             continue;
         }
-        zox_geter(terrain->value, RealmLink, realm);
-        zox_geter(realm->value, BiomeLinks, biomes);
+        entity realm = zox_get_link(world, terrain->value, RealmLink);
+        zox_geter(realm, BiomeLinks, biomes);
         if (!biomes->length) {
             zox_log_error("No Biomes");
             continue;

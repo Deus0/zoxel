@@ -13,7 +13,7 @@ zox_sys2(PlayerDialogueSystem) {
         }*/
         entity character = zox_get_link(world, e, Character);
         if (state->value == zox_player_state_dialogue_begin) {
-            entity camera = zox_get_link(world, e, Camera);
+            entity camera = zox_get_link(world, e, CameraLink);
             state->value = zox_player_state_dialogue_active;
             zox_lerp_float(
                 camera,
@@ -60,7 +60,7 @@ zox_sys2(CameraPlayerStateSystem) {
         if (dirty->value != zox_dirty_active) {
             continue;
         }
-        entity camera = zox_get_link(world, e, Camera);
+        entity camera = zox_get_link(world, e, CameraLink);
         if (!zox_valid(camera)) {
             zox_loge("Player's camera is invalid [%s]", zox_sys_e_name);
             continue;

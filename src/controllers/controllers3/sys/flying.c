@@ -22,7 +22,7 @@ zox_sys2(PlayerFlySystem) {
         if (!flying) {
             continue;
         }
-        entity camera = zox_get_link(world, character, Camera);
+        entity camera = zox_get_link(world, character, CameraLink);
         byte camera_mode = zox_valid(camera) ?
             zox_getv(camera, CameraState) :
             zox_camera_state_first_person;

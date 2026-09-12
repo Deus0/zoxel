@@ -1,11 +1,15 @@
 # Todo
 
+- Crashes when opens inventory (after allitems)
+- Crashes on end game (sometimes)
+- Bug: flecs.c: 20794: abort(): cannot change children of prefab 'app_sdl_2647.game_2646.realm_8589938051.Boney_4096' after it has been instantiated (INVALID_OPERATION)
+
 # NOTE: Relationships fragment by default (including ChildOf)
-- Refactor ChunkMesh to use Non fragment parenting
-    - atm creates 4000 tables
-- Optimize CharactersCanSpawnSystem
-    - check only when depth changes
+- Bug: Spawning health on realm character errors
+    - with the non fragmenting parenting set
 - Bug: Map UI doesnt initially generate
+- Lag: When streaming it spikes 30-50ms
+
 
 ## Next
 - Fix Font imports for "?"
