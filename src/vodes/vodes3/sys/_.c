@@ -4,6 +4,7 @@
 #include "lods.c"
 #include "block_damage.c"
 #include "block_health_overlay.c"
+#include "can.c"
 
 void define_systems_vodes3(ecs* world) {
     // NOTE: Writes to VoxelNode
@@ -14,6 +15,7 @@ void define_systems_vodes3(ecs* world) {
         [in] rendering.RenderDepth,
         [out] chunks3.VoxelNode,
         [none] chunks3.BlocksSpawned,
+        [none] !vodes.CanVodes,
     );
     // NOTE: Writes to VoxelNode
     zox_system(
@@ -38,6 +40,13 @@ void define_systems_vodes3(ecs* world) {
         [in] stats.StatValueMax,
         [none] vodes3.WorldBlock
     );
+    zox_system(
+        can_have_vodes_system,
+        zoxp_update,
+        [in] chunks3.ChunkLodDirty,
+        [in] rendering.RenderDepth,
+        [none] terrains.TerrainChunk,
+    );
     zox_system_1(
         VodesSpawnSystem,
         zoxp_spawn,
@@ -48,6 +57,7 @@ void define_systems_vodes3(ecs* world) {
         [in] transforms3.Position3D,
         [out] chunks3.VoxelNode,
         [none] terrains.TerrainChunk,
+        [none] vodes.CanVodes,
     );
     zox_system_1(
         BlockDamageQueueSystem,

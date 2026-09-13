@@ -4,7 +4,7 @@ void spawned_block_vox(ecs *world, spawned_block_data* data) {
         return;
     }
     if (!data->octree) {
-        zox_log_error("null voxel_octree in [spawned_block_vox]")
+        zox_loge("null voxel_octree in [spawned_block_vox]")
         return;
     }
     // gett block data
@@ -166,9 +166,10 @@ zox_sys2(VodesSpawnSystem) {
         zox_sys_i(Position3D, position);
         zox_sys_o(VoxelNode, voxel_octree);
         byte is_dirty = zox_has(e, VoxelNodePostDirty);
-        byte is_lod_dirty = zox_has(e, ChunkLodDirty) &&
-            zox_getv(e, ChunkLodDirty);
-        if (!(is_dirty || is_lod_dirty)) {
+        //byte is_lod_dirty = zox_has(e, ChunkLodDirty) &&
+        //    zox_getv(e, ChunkLodDirty);
+        byte has_vodes = zox_has(e, BlocksSpawned);
+        if (!(is_dirty || !has_vodes)) {
             continue;
         }
         // either voxel voxel_octree is dirty, or we are spawning for first time based on distance changes
@@ -183,10 +184,10 @@ zox_sys2(VodesSpawnSystem) {
         //  base off render distance
         byte terrain_depth = zox_getv(terrain, NodeDepth);
         float terrain_scale = zox_getv(terrain, BlockScale);
-        byte can_spawn_vodes = render_depth->value == terrain_depth;
+        /*byte can_spawn_vodes = render_depth->value == terrain_depth;
         if (!can_spawn_vodes) {
             continue;
-        }
+        }*/
         byte block_depth = camera_distance_to_block_depth(render_distance->value);
         // write_lock_VoxelNode(voxel_octree);
         // TODO: Cache these
@@ -225,7 +226,7 @@ zox_sys2(VodesSpawnSystem) {
             byte3_zero,
             0,
             depth->value);
-        if (!zox_has(e, BlocksSpawned)) {
+        if (!has_vodes) {
             zox_add(e, BlocksSpawned);
         }
     }

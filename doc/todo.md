@@ -10,7 +10,6 @@
 - Bug: Map UI doesnt initially generate
 - Lag: When streaming it spikes 30-50ms
 
-
 ## Next
 - Fix Font imports for "?"
 	- test marker change with quest
