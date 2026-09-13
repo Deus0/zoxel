@@ -17,7 +17,6 @@ void prefab_add_mesh_basic(ecs *world, entity e) {
 #include "mesh.c"
 #include "chunk.c"
 #include "chunk_base.c"
-#include "chunk_invisible.c"
 #include "chunk3_textured.c"
 #include "static_chunk.c"
 

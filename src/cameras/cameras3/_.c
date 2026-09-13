@@ -9,7 +9,8 @@ float pause_vignette = 2.2f;
 #include "pre/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Cameras3) {
+void import_cameras3(ecs* world) {
+    zox_module(cameras3);
     add_hook_spawn_prefabs(spawn_prefabs_cameras3);
     define_systems_cameras3(world);
-} zox_end_module(Cameras3);
+}

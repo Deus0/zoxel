@@ -165,8 +165,8 @@ static inline void zox_apply_smooth_lights(
 
 // NOTE: Rebuilds Lights only when BuildMeshColors is dirty
 void build_smooth_lights_system(iter* it) {
-    zox_sys_on_begin();
     byte dbg_log = 0;
+    zox_sys_on_begin();
     byte max_process = !zox_disable_process_skips ? 1 : 0;
     if (!zox_smooth_lighting) {
         return;

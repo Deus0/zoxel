@@ -18,7 +18,6 @@ zox_sys2(RefreshLightsSystem) {
     // byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(BlockManagerLink);
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkNeighbors);
     zox_sys_out(RefreshLights);
@@ -31,7 +30,6 @@ zox_sys2(RefreshLightsSystem) {
     }
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(BlockManagerLink, manager);
         zox_sys_i(VoxelNode, voxels);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_o(RefreshLights, refresh);

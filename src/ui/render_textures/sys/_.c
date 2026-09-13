@@ -33,7 +33,7 @@ void define_systems_render_textures(ecs* world) {
     zox_system_1(
         CameraMaterialSystem,
         zoxp_gpu_upload,
-        [in] rendering.MaterialLink,
+        // [in] rendering.MaterialLink,
         [in] cameras.CameraBlur,
         [in] cameras.CameraVignette,
         [none] cameras.Camera

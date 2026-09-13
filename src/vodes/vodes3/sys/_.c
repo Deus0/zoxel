@@ -5,6 +5,7 @@
 #include "block_damage.c"
 #include "block_health_overlay.c"
 #include "can.c"
+#include "settings.c"
 
 void define_systems_vodes3(ecs* world) {
     // NOTE: Writes to VoxelNode
@@ -65,8 +66,14 @@ void define_systems_vodes3(ecs* world) {
         [in] chunks3.ChunkPosition,
         [in] chunks3.VoxelNode,
         [in] chunks.NodeDepth,
-        [in] blocks.BlockManagerLink,
         [out] blocks.BlockDamageQueue,
         [none] chunks3.Chunk3
+    );
+    zox_system(
+        VodesSettingsDirtySystem,
+        zoxp_update,
+        [in] settings.SettingDirty,
+        [in] core.ZoxName,
+        [in] settings.Setting
     );
 }

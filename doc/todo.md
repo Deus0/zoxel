@@ -1,13 +1,28 @@
 # Todo
 
+- Lag spike between streaming
+    - the remove/add for events is failing
+    - it works to reduce querying though
+    - we can just add a generic Spawning state
+        - initialize can be first state
+        - can we add generic callbacks for initializing
+            - replace the gpu initialization with callbacks on mesh
+        - this creates 1 component per chunk/mesh that removes when down
+        - as they process at different speeds, this will be removed at end of their processing
+- Fix: Camera lags behind body one frame
+    - ...? easiest way to test is to fly up and drop
 - Crashes when opens inventory (after allitems)
 - Crashes on end game (sometimes)
 - Bug: flecs.c: 20794: abort(): cannot change children of prefab 'app_sdl_2647.game_2646.realm_8589938051.Boney_4096' after it has been instantiated (INVALID_OPERATION)
 
+- Refactor DoubleDataMax - system timings - use a seperate entity
+    - with system link
+    
+    
+
 # NOTE: Relationships fragment by default (including ChildOf)
 - Bug: Spawning health on realm character errors
     - with the non fragmenting parenting set
-- Bug: Map UI doesnt initially generate
 - Lag: When streaming it spikes 30-50ms
 
 ## Next

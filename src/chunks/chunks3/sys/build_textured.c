@@ -154,15 +154,14 @@ static inline void zox_terrain_building_dig(
 // TODO: Cache Multiple Voxel Managers, not just single
 // NOTE: Rebuilds Chunk when BuildChunkMesh is dirty
 void chunk_textured_build_system(iter* it) {
-    zox_sys_on_begin();
     byte dbg_log = 0;
     byte max_process = !zox_disable_process_skips ? 1 : 0;
-    // zox_log("Chunk Texture Builds [%i]", it->count);
     entity cached_blocks_parent = 0;
     byte solidity[255];
     memset(solidity, 1, 255);
     entity tilemap_cache = 0;
     const TilemapUVs* tilemap_uvs = NULL;
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RenderDepth);
@@ -189,7 +188,6 @@ void chunk_textured_build_system(iter* it) {
             continue;
         }
         if (!zox_has(chunk, NodeDepth) ||
-            !zox_has(chunk, BlockManagerLink) ||
             !zox_has(chunk, VoxelNode) ||
             !zox_has(chunk, SidesOctree) ||
             !zox_has(chunk, VoxelNodeLock)
@@ -230,7 +228,7 @@ void chunk_textured_build_system(iter* it) {
             terrain_depth = chunk_depth;
             terrain_scale = zox_getv(chunk, BlockScale);
         }
-        entity blocks_parent = zox_getv(chunk, BlockManagerLink);
+        entity blocks_parent = zox_get_link(world, chunk, BlockManagerLink);
 #ifdef zox_safety_checks
         if (!zox_valid(blocks_parent)) {
             zox_loge("Blocks Manager Invalid for [%s]", zox_getn(chunk));

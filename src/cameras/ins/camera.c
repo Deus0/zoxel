@@ -18,5 +18,6 @@ entity spawn_camera(
     zox_setv(e, ScreenPosition, screen_position);
     zox_setv(e, PixelSize, size);
     zox_setv(e, ScreenToCanvas, screen_to_canvas);
+    zox_setv(e, FogColor, menu_sky_color);
     return e;
 }

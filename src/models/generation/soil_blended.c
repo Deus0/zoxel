@@ -26,11 +26,24 @@ zox_sys2(BlendedSoilGenerationSystem) {
         if (gentype->value != vox_type_blended) {
             continue;
         }
+        uint random_state = seed->value ^ 0x9e3779b9u;
         resize_ColorRGBs(colors, 0);
-        byte unique_colors = zox_has(e, VoxUniqueColors) ? zox_getv(e, VoxUniqueColors) : default_unique_colors;
-        byte vregions = zox_has(e, VRegions) ? zox_getv(e, VRegions) :  16;
-        float color_rr = zox_has(e, VoxColorRange) ? zox_getv(e, VoxColorRange) : default_color_range;
-        float2 color_r = (float2) { 1 - color_rr, 1 + color_rr };
+        byte unique_colors =
+            zox_has(e, VoxUniqueColors) ?
+                zox_getv(e, VoxUniqueColors) :
+                default_unique_colors;
+        byte vregions =
+            zox_has(e, VRegions) ?
+                zox_getv(e, VRegions) :
+                16;
+        float color_rr =
+            zox_has(e, VoxColorRange) ?
+                zox_getv(e, VoxColorRange) :
+                default_color_range;
+        float2 color_r = (float2) {
+            1 - color_rr,
+            1 + color_rr
+        };
         byte node_depth = depth->value;
         color_rgb color_rgb_2 = color_to_color_rgb(fill->value);
         byte2 vrange = (byte2) { 1, unique_colors - 1 };
@@ -49,7 +62,10 @@ zox_sys2(BlendedSoilGenerationSystem) {
             color_rgb_multiply_float(&new_color, m);
             add_to_ColorRGBs(colors, new_color);
         }
-        byte2 vrange_2 = (byte2) { index_start, colors->length };
+        byte2 vrange_2 = (byte2) {
+            index_start,
+            colors->length
+        };
         color_rgb dirt_dark_voxel = color_to_color_rgb(under_color);
         color_rgb_multiply_float(&dirt_dark_voxel, fracture_dark_multiplier);
         add_to_ColorRGBs(colors, dirt_dark_voxel);
@@ -64,15 +80,30 @@ zox_sys2(BlendedSoilGenerationSystem) {
         // Write Locks node
         // write_lock_VoxelNode(node);
         // put indexes here
-        build_vox_blended(node, node_depth, black_voxel_2, black_voxel_3, vrange, vrange_2, range_blend_1, range_blend_2, vregions);
+        build_vox_blended(
+            node,
+            node_depth,
+            black_voxel_2,
+            black_voxel_3,
+            vrange,
+            vrange_2,
+            range_blend_1,
+            range_blend_2,
+            vregions,
+            &random_state);
         if (zox_block_outlines) {
             add_to_ColorRGBs(colors, color_rgb_black);
             byte black_voxel = colors->length;
-            vox_outlines(node, depth->value, black_voxel);
+            vox_outlines(
+                node,
+                depth->value,
+                black_voxel);
         }
         // write_unlock_VoxelNode(node);
-        generate->value = zox_has(e, BakeModel) ? zox_generate_model_bake : zox_generate_model_end;
-        // dirty->value = zox_dirty_trigger;
+        generate->value =
+            zox_has(e, BakeModel) ?
+                zox_generate_model_bake :
+                zox_generate_model_end;
         zox_add(e, VoxelNodeDirty);
         if (dbg_log) {
             zox_log("Generated Vox [%s] Type [%i] Depth [%i]", zox_get_name(e), gentype->value, depth->value);

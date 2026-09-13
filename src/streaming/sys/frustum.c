@@ -88,7 +88,11 @@ byte is_sphere_in_frustum(
 }
 
 // Fast AABB cull using positive-vertex trick (drop-in replacement)
-byte aabb_in_frustum_fast(const plane *planes, bounds b, float eps) {
+byte aabb_in_frustum_fast(
+    const plane *planes,
+    bounds b,
+    float eps)
+{
     for (int i = 0; i < 6; ++i) {
         const plane p = planes[i];
         // choose farthest vertex in direction of plane normal
@@ -104,9 +108,10 @@ byte aabb_in_frustum_fast(const plane *planes, bounds b, float eps) {
 
 // TODO: Optimize this, perhaps with MegaChunks? Need to reduce the overall calls for >= 10k chunks
 // this sets RenderDisabled for chunks and their children
-zox_sys2(ChunkFrustumSystem) {
+void chunk_frustum_system(iter* it) {
     // TODO: We can cache the cameras here
     byte dbg_log = 0;
+    zox_sys_on_begin();
     byte ignore_low_lods = 0;
     byte frustum_inwards = 1; // we just using this for safety
     // cache camera positions first
@@ -133,6 +138,8 @@ zox_sys2(ChunkFrustumSystem) {
     zox_sys_query_end();
     if (!camera_bounds->size) {
         zox_loge("No Cameras in [BillboardSystem]");
+        dispose_float6_array_d(camera_bounds);
+        dispose_plane_array_d(camera_planes);
         return;
     }
     // Sanity check
@@ -152,7 +159,7 @@ zox_sys2(ChunkFrustumSystem) {
         zox_sys_i(VoxelNode, voxels);
         zox_sys_i(ChunkEntities, entities);
         zox_sys_o(RenderDisabled, render_disabled);
-        // NOTE: Some quick skips for largest voxelss
+        // NOTE: Some quick skips for largest voxels
         if (ignore_low_lods == 2 && !voxels->value && !voxels->ptr) {
             // render_disabled->value = 0;
             continue;
@@ -177,7 +184,10 @@ zox_sys2(ChunkFrustumSystem) {
             float6 frustum_bounds = camera_bounds->data[j];
             plane* planes = &camera_planes->data[j * zox_camera_planes];
             // our normals appear to be flipped
-            byte inside_sphere = is_sphere_in_frustum(planes, chunk_bounds.center, radius);
+            byte inside_sphere = is_sphere_in_frustum(
+                planes,
+                chunk_bounds.center,
+                radius);
             is_viewed =
                 inside_sphere &&
                 is_bounds_in_position_bounds(
@@ -188,48 +198,53 @@ zox_sys2(ChunkFrustumSystem) {
                     chunk_bounds,
                     frustum_inwards);
             if (dbg_log >= 2) {
-                zox_log("Checking for Camera [%s]", zox_get_name(it2.entities[j]));
+                zox_log("Checking for Camera [%s]",
+                    zox_getn(it2.entities[j]));
             }
-        }
-        if (render_disabled->value != !is_viewed) {
-            render_disabled->value = !is_viewed;
-            // -=- Chunk Meshes -=-
-            iter it2 = zox_children(world, e);
-            while (zox_children_next(it2)) {
-                for (int j = 0; j < it2.count; j++) {
-                    entity e3 = it2.entities[j];
-                    // if (zox_has(e3, RenderDisabled)) {
-                    if (zox_has(e3, ChunkMesh)) {
-                        zox_setm(e3, RenderDisabled, render_disabled->value);
-                    }
-                }
-            }
-            if (dbg_log >= 2) {
-                zox_log("Chunk [%s] now Visible? [%s]",
-                    zox_get_name(e),
-                        is_viewed ?
-                            "Visible" :
-                            "Invisible");
-            }
-            // NOTE: Assuming this was toggled by children now??
-            // Also set objects inside our terrain chunks!
-            // -=- World Blocks -=-
-            if (zox_has(e, BlocksSpawned)) {
-                set_chunk_block_spawns_render_disabled(
-                    world,
-                    voxels,
-                    render_disabled->value);
-            }
-            // -=- -=- -=- -=- -=- -=-
-            // NOTE: For characters
-            for (int j = 0; j < entities->length; j++) {
-                entity e2 = entities->value[j];
-                set_entity_render_disabled(world, e2, render_disabled->value);
-            }
-            // -=- -=- -=- -=- -=- -=-
         }
         zox_sys_increment();
+        if (render_disabled->value == !is_viewed) {
+            continue;
+        }
+        render_disabled->value = !is_viewed;
+        // -=- Chunk Meshes -=-
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                entity e3 = it2.entities[j];
+                if (zox_has(e3, ChunkMesh)) {
+                    zox_setm(e3, RenderDisabled, render_disabled->value);
+                }
+            }
+        }
+        if (dbg_log >= 2) {
+            zox_log("Chunk [%s] now Visible? [%s]",
+                zox_getn(e),
+                    is_viewed ?
+                        "Visible" :
+                        "Invisible");
+        }
+        // NOTE: Assuming this was toggled by children now??
+        // Also set objects inside our terrain chunks!
+        // -=- World Blocks -=-
+        if (zox_has(e, BlocksSpawned)) {
+            set_chunk_block_spawns_render_disabled(
+                world,
+                voxels,
+                render_disabled->value);
+        }
+        // -=- -=- -=- -=- -=- -=-
+        // NOTE: For characters
+        for (int j = 0; j < entities->length; j++) {
+            entity e2 = entities->value[j];
+            set_entity_render_disabled(
+                world,
+                e2,
+                render_disabled->value);
+        }
+        // -=- -=- -=- -=- -=- -=-
     }
     dispose_float6_array_d(camera_bounds);
     dispose_plane_array_d(camera_planes);
-} zox_sys_end(ChunkFrustumSystem);
+    zox_sys_on_end();
+} zoxd_system(chunk_frustum_system);

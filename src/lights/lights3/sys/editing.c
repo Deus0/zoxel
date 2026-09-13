@@ -6,7 +6,6 @@ zox_sys2(VoxelLightSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(BlockManagerLink);
     zox_sys_in(VoxelNodeQueue);
     zox_sys_in(NodeDepth);
     zox_sys_in(ChunkNeighbors);
@@ -20,7 +19,7 @@ zox_sys2(VoxelLightSystem) {
     byte solidity[255];
     memset(solidity, 1, 255);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(BlockManagerLink, manager);
+        zox_sys_e();
         zox_sys_i(VoxelNodeQueue, input_queue);
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(ChunkNeighbors, neighbors);
@@ -34,8 +33,9 @@ zox_sys2(VoxelLightSystem) {
             continue;
         }
         // NOTE: Check Blocks Caches
-        if (realm != manager->value) {
-            realm = manager->value;
+        entity manager = zox_get_link(world, e, BlockManagerLink);
+        if (realm != manager) {
+            realm = manager;
             zox_geter(realm, BlockLinks, blocks);
             for (int j = 0; j < blocks->length; j++) {
                 entity block = blocks->value[j];

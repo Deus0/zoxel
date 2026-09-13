@@ -52,7 +52,7 @@ zox_sys2(StreamingSettingsDirtySystem) {
                 render_distance_y = value;
             } else if (!strcmp(name->value, "No Frustums")) {
                 disable_frustum_culling = value;
-                zox_set_enabled(ChunkFrustumSystem, !disable_frustum_culling);
+                zox_set_enabled(chunk_frustum_system, !disable_frustum_culling);
             }
         }
     }

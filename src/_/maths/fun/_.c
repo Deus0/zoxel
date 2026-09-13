@@ -27,6 +27,7 @@
 #include "math.c"
 #include "closest_point.c"
 #include "randf.c"
+#include "rand.c"
 #include "fmod.c"
 #include "pow.c"
 #include "seed.c"

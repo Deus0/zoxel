@@ -72,8 +72,8 @@ void zox_tst_render_texture(ecs *world, ClickEventData data) {
     zox_set_parent(world, material, ui);
     zox_add(ui, RenderTextureAlpha);
     zox_setv(ui, Alpha, 0.8f);
-    zox_setv(ui, MaterialLink, material);
-    zox_setv(camera, MaterialLink, material);
+    zox_link(world, ui, MaterialLink, material);
+    zox_link(world, camera, MaterialLink, material);
     dbg_render_texture = ui;
     // our scene
     {

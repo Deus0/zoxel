@@ -21,7 +21,7 @@ void zox_define_systems_basics3(ecs* world) {
         Chunk3TexturedRenderSystem,
         [in] rendering.RenderDisabled,
         [in] transforms.TransformMatrix,
-        [in] rendering.MaterialLink,
+        // [in] rendering.MaterialLink,
         [in] rendering.MeshGPULink,
         [in] rendering.UvsGPULink,
         [in] rendering.ColorsGPULink,

@@ -9,7 +9,10 @@ void spawned_block_vox(ecs *world, spawned_block_data* data) {
     }
     // gett block data
     entity prefab = zox_getv(data->block, BlockPrefabLink);
-    entity vox = zox_has(data->block, ModelLink) ? zox_getv(data->block, ModelLink) : 0;
+    entity vox =
+        zox_has(data->block, ModelLink) ?
+            zox_getv(data->block, ModelLink) :
+            0;
     SpawnBlockVox spawn_data = {
         .prefab = prefab,
         .vox = vox,
@@ -149,6 +152,9 @@ void spawn_vodes_dive(ecs *world,
 //      - Triggered by VoxelNodePostDirty or ChunkLodDirty
 // Triggers: [VoxelNodeDirty] + [RenderDistanceDirty]
 zox_sys2(VodesSpawnSystem) {
+    if (zox_disable_vodes) {
+        return;
+    }
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NodeDepth);
@@ -205,7 +211,10 @@ zox_sys2(VodesSpawnSystem) {
             is_vode[j] = zox_has(block, BlockPrefabLink) &&
                 zox_valid(zox_getv(block, BlockPrefabLink));
         }
-        float block_scale = get_chunk_scale(depth->value, terrain_depth, terrain_scale);
+        float block_scale = get_chunk_scale(
+            depth->value,
+            terrain_depth,
+            terrain_scale);
         // why we do this?
         float3 positionf = float3_add(position->value, float3_single(terrain_scale));
         UpdateBlockEntities data = {

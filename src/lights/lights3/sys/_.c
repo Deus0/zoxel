@@ -28,11 +28,11 @@ void set_light_systems(ecs* world, byte is_lights) {
 
 void define_systems_lights3(ecs* world) {
     // Settings
-    zox_system_1(
+    /*zox_system_1(
         LightsSettingsSystem,
         zoxp_spawn,
         [in] settings.LoadSettings
-    );
+    );*/
     zox_system(
         LightsSettingsDirtySystem,
         zoxp_update,
@@ -52,7 +52,6 @@ void define_systems_lights3(ecs* world) {
     zox_system(
         LightBeamSystem,
         zoxp_update,
-        [in] blocks.BlockManagerLink,
         [in] chunks3.VoxelNode,
         [in] chunks3.ChunkNeighbors,
         [out] lights.LightLock,
@@ -66,7 +65,6 @@ void define_systems_lights3(ecs* world) {
     zox_system(
         LightFloodSystem,
         zoxp_update,
-        [in] blocks.BlockManagerLink,
         [in] chunks3.VoxelNode,
         [in] chunks3.ChunkNeighbors,
         [out] lights.LightLock,
@@ -79,7 +77,6 @@ void define_systems_lights3(ecs* world) {
     zox_system(
         DarkLightSystem,
         zoxp_update,
-        [in] blocks.BlockManagerLink,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
         [out] lights.LightLock,
@@ -95,7 +92,6 @@ void define_systems_lights3(ecs* world) {
     zox_system(
         VoxelLightSystem,
         zoxp_queue_process,
-        [in] blocks.BlockManagerLink,
         [in] chunks3.VoxelNodeQueue,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkNeighbors,
@@ -164,7 +160,6 @@ void define_systems_lights3(ecs* world) {
 /*zox_system(
     RefreshLightsSystem,
     zoxp_update,
-    [in] blocks.BlockManagerLink,
     [in] chunks3.VoxelNode,
     [in] chunks3.ChunkNeighbors,
     [out] lights3.RefreshLights,

@@ -76,16 +76,18 @@ static inline entity spawn_chunk_meshes(
     if (zox_valid(active_mesh) && !zox_has(active_mesh, BuildDisabled)) {
         zox_add(active_mesh, BuildDisabled);
     }
+    // remove for now
+    // return 0;
     // NOTE: When Depth changes or Voxels Generate, if mesh doesnt exist we spawn new
     entity e2 = zox_ins(world, prefab_chunk_mesh_textured);
     zox_set_unique_name(e2, "chunk_mesh");
     zox_setv(e2, TransformMatrix, matrix);
     zox_setv(e2, RenderDepth, depth);
     zox_setv(e2, RenderDisabled, render_disabled);
-    zox_setv(e2, MaterialLink, tilemap);
     // Hmmm
-    zox_set_parent(world, e2, e);
+    zox_link(world, e2, MaterialLink, tilemap);
     zox_link(world, e, PreparingMesh, e2);
+    zox_set_parent(world, e2, e);
     if (dbg_log) {
         zox_log(" - New Chunk Mesh for [%s] at depth [%i]",
             zox_getn(e),

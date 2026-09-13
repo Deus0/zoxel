@@ -46,6 +46,7 @@ void define_systems_chunks3(ecs *world) {
         [none] chunks.Chunk,
         [none] chunks3.ColorChunk,
         [none] chunks3.VoxelNodePostDirty,
+        [none] !rendering.BuildMesh,
     );
     // NOTE: Writes to VoxelNode
     zox_system(

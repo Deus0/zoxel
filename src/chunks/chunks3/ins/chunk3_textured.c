@@ -41,7 +41,7 @@ entity spawn_chunk3_textured(
     zox_set_parent(world, e, terrain);
     zox_link(world, e, RealmLink, realm);
     zox_link(world, e, Tilemap, tilemap);
-    zox_setv(e, BlockManagerLink, realm);
+    zox_link(world, e, BlockManagerLink, realm);
     // Data
     zox_setv(e, Seed, seed);
     zox_setv(e, ChunkPosition, position);

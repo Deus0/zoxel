@@ -1,5 +1,6 @@
 # Done
 
+-x Bug: Map UI doesnt initially generate
 -x RealmLink
 -x Bug: Fog Color of camera not set
 -x Fix skybox, make sure fog color blends properly though

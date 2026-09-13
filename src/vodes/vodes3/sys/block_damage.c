@@ -9,22 +9,21 @@ zox_sys2(BlockDamageQueueSystem) {
     zox_sys_in(ChunkPosition);
     zox_sys_in(VoxelNode);
     zox_sys_in(NodeDepth);
-    zox_sys_in(BlockManagerLink);
     zox_sys_out(BlockDamageQueue);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e()
         zox_sys_i(ChunkPosition, chunk_position);
         zox_sys_i(VoxelNode, voxel_octree);
         zox_sys_i(NodeDepth, depth);
-        zox_sys_i(BlockManagerLink, manager);
         zox_sys_o(BlockDamageQueue, queue);
         if (!queue->count) {
             continue;
         }
-        if (!zox_valid(manager->value)) {
+        entity manager = zox_get_link(world, e, BlockManagerLink);
+        if (!zox_valid(manager)) {
             continue;
         }
-        zox_geter(manager->value, BlockLinks, blocks);
+        zox_geter(manager, BlockLinks, blocks);
         while (queue->count) {
             BlockDamageUpdate update = remove_BlockDamageQueue(queue);
             byte index = getv_VoxelNode(voxel_octree, depth->value, update.position);
@@ -36,7 +35,13 @@ zox_sys2(BlockDamageQueueSystem) {
             // TODO: Grab meta again here using lookup table, reduce cache
             if (zox_has(meta, BlockInvinsible)) {
                 // cannot destroy voxel sound
-                spawn_sound_generated(world, prefab_sound_generated,  instrument_violin, note_frequencies[42 + rand() % 6], 0.26, 1.4f * get_volume_sfx());
+                spawn_sound_generated(
+                    world,
+                    prefab_sound_generated,
+                    instrument_violin,
+                    note_frequencies[42 + rand() % 6],
+                    0.26,
+                    1.4f * get_volume_sfx());
                 continue;
             }
             // effect our terrain here

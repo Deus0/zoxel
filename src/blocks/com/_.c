@@ -20,7 +20,7 @@ zoxc_float(BlockScale);
 zoxc_entity(BlockLink);
 zoxc_entity(BlockPrefabLink);
 zoxc_entities(BlockLinks)
-zoxc_entity(BlockManagerLink);
+zox_tag(BlockManagerLink);
 zoxc_byte(InsideBlock);
 zoxc_int3(InsideBlockPosition);
 zoxc_state(InsideBlockDirty);
@@ -61,7 +61,7 @@ void zox_define_components_blocks(ecs *world) {
     zoxd_float2(BlockHealth);
     zoxd_entity(BlockLink);
     zoxd_entity(BlockPrefabLink);
-    zoxd_entity(BlockManagerLink);
+    zoxd_nf_tag(BlockManagerLink);
     zoxd_entity(BlockSound);
     zoxd_state(InsideBlockDirty);
     zoxd_entities(BlockLinks);

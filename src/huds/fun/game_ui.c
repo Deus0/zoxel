@@ -149,7 +149,7 @@ void on_boot_game_ui(
             entity material = zox_game_render_texture_alpha ?
                 material_render_texture_rgba :
                 material_render_texture_rgb;
-            zox_setv(game_camera, MaterialLink, material);
+            zox_link(world, game_camera, MaterialLink, material);
             entity texture = spawn_render_texture(
                 world,
                 prefab_render_texture_screen,

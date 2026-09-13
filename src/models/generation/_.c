@@ -20,7 +20,7 @@ void define_systems_models_generation(ecs* world) {
         [none] chunks3.NoiseChunk
     );
     zox_system(
-        DecayedModelGenerationSystem,
+        decayed_model_system,
         zoxp_update,
         [in] core.Seed,
         [in] colorz.Color,
@@ -42,7 +42,7 @@ void define_systems_models_generation(ecs* world) {
         [out] colorz.ColorRGBs
     );
     zox_system(
-        SoilGenerationSystem,
+        soil_model_system,
         zoxp_update,
         [in] core.Seed,
         [in] colorz.Color,
@@ -97,7 +97,7 @@ void define_systems_models_generation(ecs* world) {
         [out] colorz.ColorRGBs
     );
     zox_system(
-        RubbleModelGenerationSystem,
+        rubble_model_system,
         zoxp_update,
         [in] core.Seed,
         [in] colorz.Color,

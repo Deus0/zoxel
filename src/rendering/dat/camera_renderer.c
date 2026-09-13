@@ -11,18 +11,20 @@ byte is_render_fog = 1;
 float fog_density = 0.03f; // 0326f;
 
 static inline float get_fog_density() {
-    return is_render_fog ? fog_density * fog_density : 0;
+    return is_render_fog ?
+        fog_density * fog_density :
+        0;
 }
 
 static inline float4 get_fog_value() {
     return float4_from_float3(color_rgb_to_float3(renderer_fog_color), get_fog_density());
 }
 
-void set_camera_fog_color(ecs* world, color_rgb c) {
+void set_camera_fog_color(ecs* world, color_rgb fog) {
     for (int i = 0; i < main_cameras_count; i++) {
         entity camera = main_cameras[i];
         if (zox_valid(camera)) {
-            zox_set(camera, FogColor, { c })
+            zox_setv(camera, FogColor, fog);
         } else {
             zox_logw("Main Camera Invalid at [%i]", i)
         }

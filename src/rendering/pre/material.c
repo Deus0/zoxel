@@ -10,7 +10,11 @@ entity spawn_prefab_material(ecs *world) {
     return e;
 }
 
-entity spawn_material(ecs *world, entity shader, guint* output_material) {
+entity spawn_material(
+    ecs *world,
+    entity shader,
+    guint* output_material)
+{
     zox_instance(prefab_material);
     zox_name("material");
     zox_set(e, ShaderLink, { shader });
@@ -31,7 +35,12 @@ entity spawn_material(ecs *world, entity shader, guint* output_material) {
     return e;
 }
 
-entity spawn_material_from_ids(ecs *world, entity shader, guint2 shader_ids, guint* gpu_material) {
+entity spawn_material_from_ids(
+    ecs *world,
+    entity shader,
+    guint2 shader_ids,
+    guint* gpu_material)
+{
     zox_instance(prefab_material);
     zox_name("material");
     zox_set(e, ShaderLink, { shader });

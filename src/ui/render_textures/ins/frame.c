@@ -58,8 +58,8 @@ entity spawn_render_frame(
     // NOTE: Spawns material for unique properties
     // Links
     zox_set_parent(world, material, ui);
-    zox_setv(ui, MaterialLink, material);
-    zox_setv(camera, MaterialLink, material);
+    zox_link(world, ui, MaterialLink, material);
+    zox_link(world, camera, MaterialLink, material);
     zox_set_parent(world, camera, ui);
     // Set down tree?
     if (is_camera_filtering) {

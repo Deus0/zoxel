@@ -3,6 +3,9 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     zox_prefab_name("character3");
     zox_add(e, Character);
     zox_add(e, Character3);
+#ifdef zox_non_fragment_parent
+    zox_add(e, EcsParent);
+#endif
     // generation
     zox_prefab_set(e, Seed, { 0 });
     // name
@@ -58,7 +61,7 @@ entity spawn_prefab_character3(ecs *world, entity prefab, byte type) {
     // prefab_add_cube_lines(world, e, color_white, 0);
     // Unique Character
     if (type != zox_character_type_instanced) {
-        zox_prefab_set(e, ChunkLod, { 255 });
+        // zox_prefab_set(e, ChunkLod, { 255 });
         zox_prefab_set(e, CloneVox, { 0 });
         zox_prefab_set(e, CloneVoxLink, { 0 });
     }

@@ -238,8 +238,13 @@ const char *sdl_event_text(SDL_Event *event) {
 
 void on_set_vsync(byte value) {
     if (!SDL_GL_SetSwapInterval(value)) {
-        zox_logw("Unable to disable VSync: [%s] - Value [%i]", SDL_GetError(), value);
+        zox_logw("Unable to disable VSync: [%s] - Value [%i]",
+            SDL_GetError(),
+            value);
     } else {
-        zox_logv("VSync [%s]", vsync ? "Enabled" : "Disabled");
+        zox_logv("VSync [%s]",
+            vsync ?
+                "Enabled" :
+                "Disabled");
     }
 }

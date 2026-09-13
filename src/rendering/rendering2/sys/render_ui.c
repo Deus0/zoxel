@@ -203,7 +203,11 @@ zox_sys2(ElementRenderSystem) {
             zox_loge("UI Render Layer Over Max [%i]", layer->value);
             continue;
         }
-        entity material = zox_has(e, MaterialLink) ? zox_getv(e, MaterialLink) : base_material;
+        entity material = zox_get_link(world, e, MaterialLink);
+        if (!material) {
+            material = base_material;
+        }
+        // entity material = zox_has(e, MaterialLink) ? zox_getv(e, MaterialLink) : base_material;
         if (!zox_valid(material)) {
             continue;
         }

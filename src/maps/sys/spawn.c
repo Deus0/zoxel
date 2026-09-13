@@ -45,7 +45,9 @@ zox_sys2(MapInitializeSystem) {
             for (int y = -zoom->value; y <= zoom->value; y++) {
                 int2 grid_position = (int2) { x, y };
                 int2 tunk_position = int2_add(position->value, grid_position);
-                entity tunk = int2_hashmap_get(tunks->value, tunk_position);
+                entity tunk = int2_hashmap_get(
+                    tunks->value,
+                    tunk_position);
                 // TODO: Calculate the map position here
                 int2 piece_position = int2_multiply(grid_position, piece_size);
                 if (zox_maps_flip_x) {
@@ -55,16 +57,32 @@ zox_sys2(MapInitializeSystem) {
                     piece_position.y *= -1;
                 }
                 // Spawn our map piece
-                entity e2 = spawn_ui(world, prefab_element, body, float2_half, piece_position, piece_size, int2_zero);
+                entity e2 = spawn_ui(
+                    world,
+                    prefab_element,
+                    body,
+                    float2_half,
+                    piece_position,
+                    piece_size,
+                    int2_zero);
                 zox_set_unique_name(e2, "map_piece");
-                zox_link(world, e2, Tunk, tunk);
-                zox_set(e2, GenerateTexture, { zox_generate_texture_run });
-                zox_set(e2, MapPiecePosition, { grid_position });
-                if (dbg_log) {
-                    zox_log("   - Piece [%ix%i], Tunk [%ix%i]: %s", grid_position.x, grid_position.y, tunk_position.x, tunk_position.y, zox_valid(tunk) ? "Valid" : "Invalid");
+                if (tunk) {
+                    zox_link(world, e2, TunkLink, tunk);
                 }
-                zox_set(e2, Layer, { layer + 1 });
-                zox_set(e2, Alpha, { alpha->value });
+                zox_setv(e2, GenerateTexture, zox_generate_texture_run);
+                zox_setv(e2, MapPiecePosition, grid_position);
+                if (dbg_log) {
+                    zox_log("   - Piece [%ix%i], Tunk [%ix%i]: %s",
+                        grid_position.x,
+                        grid_position.y,
+                        tunk_position.x,
+                        tunk_position.y,
+                        zox_valid(tunk) ?
+                            "Valid" :
+                            "Invalid");
+                }
+                zox_setv(e2, Layer, layer + 1);
+                zox_setv(e2, Alpha, alpha->value);
                 if (zox_dbg_maps == zox_dbg_maps_regions) {
                     zox_add(e2, RegionTexture);
                 } else if (zox_dbg_maps == zox_dbg_maps_heights) {
@@ -78,7 +96,16 @@ zox_sys2(MapInitializeSystem) {
         }
         // NOTE: Spawns a simple arrow for player direction
         {
-            entity e3 = spawn_uic(world, prefab_element, body, float2_half, int2_zero, arrow_size, arrow_size, arrow_fill, arrow_outline);
+            entity e3 = spawn_uic(
+                world,
+                prefab_element,
+                body,
+                float2_half,
+                int2_zero,
+                arrow_size,
+                arrow_size,
+                arrow_fill,
+                arrow_outline);
             zox_set_unique_name(e3, "map_player_arrow");
             zox_add(e3, MapArrow);
             zox_add(e3, ArrowTexture);

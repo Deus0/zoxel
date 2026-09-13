@@ -304,26 +304,19 @@ Example:
 void coffee_cool_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
-
-    zox_sys_in(CoffeeTemperature);
+    zox_sys_in(CoffeeVolume);
     zox_sys_out(CoffeeTemperature);
-
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(CoffeeTemperature, temperature);
-
+        zox_sys_i(CoffeeVolume, volume);
+        zox_sys_o(CoffeeTemperature, temperature);
         if (temperature->value > 20.0f) {
-            temperature->value -= zox_delta_time * 2.0f;
-        }
-
-        if (temperature->value < 20.0f) {
+            temperature->value -= zox_delta_time * 2.0f * volume->value;
+        } else if (temperature->value < 20.0f) {
             temperature->value = 20.0f;
         }
     }
-
     zox_sys_on_end();
-}
-
-zoxd_system(coffee_cool_system);
+} zoxd_system(coffee_cool_system);
 ```
 
 Do not use Flecs-style PascalCase system function names merely because Flecs can derive a system name from the C function name.

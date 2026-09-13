@@ -1,6 +1,6 @@
 #include "camera2_follow_system.c"
 
-void define_systems_cameras2(ecs *world) {
+void zoxd_systems_cameras2(ecs *world) {
     zox_system(
         Camera2FollowSystem,
         zoxp_update,

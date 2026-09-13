@@ -1,21 +1,3 @@
-zox_sys2(LightsSettingsSystem) {
-    zox_sys_world();
-    zox_sys_begin();
-    zox_sys_in(LoadSettings);
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
-        zox_sys_i(LoadSettings, load);
-        if (load->value != zox_load_settings_spawn) {
-            continue;
-        }
-        spawn_setting_byte(world, e, "No Lights", zox_no_lights);
-        spawn_setting_byte(world, e, "No AO", !zox_ambient_occlusion);
-#ifdef zox_debug_settings
-        spawn_setting_byte(world, e, "Smooth Lighting", zox_smooth_lighting);
-#endif
-    }
-} zox_sys_end(LightsSettingsSystem);
-
 zox_sys2(LightsSettingsDirtySystem) {
     byte dbg_log = 0;
     zox_sys_world();
@@ -45,3 +27,21 @@ zox_sys2(LightsSettingsDirtySystem) {
         }
     }
 } zox_sys_end(LightsSettingsDirtySystem);
+
+/*zox_sys2(LightsSettingsSystem) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(LoadSettings);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(LoadSettings, load);
+        if (load->value != zox_load_settings_spawn) {
+            continue;
+        }
+        spawn_setting_byte(world, e, "No Lights", zox_no_lights);
+        spawn_setting_byte(world, e, "No AO", !zox_ambient_occlusion);
+#ifdef zox_debug_settings
+        spawn_setting_byte(world, e, "Smooth Lighting", zox_smooth_lighting);
+#endif
+    }
+} zox_sys_end(LightsSettingsSystem);*/

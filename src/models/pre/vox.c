@@ -34,7 +34,6 @@ entity spawn_prefab_vox(
     zox_setv(e, MeshRenderCount, 0);
     zox_setv(e, MeshVertices, 0);
     zox_setv(e, MeshGPULink, guint2_zero);
-    // zox_prefab_set(e, BuildMesh, { 0 });
     // vox
     zox_setv(e, BlockScale, 0); // vox_model_scale });
     zox_setv(e, NodeDepth, 0); // depth
@@ -44,7 +43,6 @@ entity spawn_prefab_vox(
     zox_setv(e, ColorsGPULink, 0);
     // Events
     zox_add(e, PreInitialize);
-    // zox_setv(e, MeshDirty, 0);
     return e;
 }
 

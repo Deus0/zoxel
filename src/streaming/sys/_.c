@@ -22,7 +22,7 @@ void define_systems_streaming(ecs* world) {
         [none] streaming.Streamer
     );
     zox_system_ctx(
-        ChunkFrustumSystem,
+        chunk_frustum_system,
         zoxp_update,
         frustum_cameras,
         [in] transforms3.Position3D,
@@ -32,6 +32,8 @@ void define_systems_streaming(ecs* world) {
         [out] rendering.RenderDisabled,
         [none] streaming.StreamedChunk
     );
+    // add_system_process_counter(world, zox_id(chunk_frustum_system));
+    // zox_set(zox_id(chunk_frustum_system), SystemDeltaMax, {  zox_lag_cutoff * 2 });
     // streams
     // main thread
     zox_system_1(
@@ -55,6 +57,4 @@ void define_systems_streaming(ecs* world) {
         [in] core.ZoxName,
         [in] settings.Setting
     );
-    add_system_process_counter(world, zox_id(ChunkFrustumSystem));
-    zox_set(zox_id(ChunkFrustumSystem), SystemDeltaMax, {  zox_lag_cutoff * 2 });
 }

@@ -33,14 +33,28 @@ void spawn_prefabs_models(ecs *world) {
     // Level 1
     prefab_block_vox_meta = spawn_prefab_block_vox_meta(world, prefab_block);
     prefab_vox_file = spawn_prefab_vox_file(world, prefab_chunk_base);
-    prefab_vox_instanced = spawn_prefab_vox_instanced(world, prefab_renderer_instance);
-    prefab_static_vox = spawn_prefab_static_vox(world, prefab_static_chunk);
-    prefab_invisible_vox = spawn_prefab_static_vox(world, prefab_static_chunk);
-    prefab_static_vox_instanced = spawn_prefab_vox_instanced(world, prefab_static_instance_mesh);
+    prefab_vox_instanced = spawn_prefab_vox_instanced(
+        world,
+        prefab_renderer_instance);
+    prefab_static_vox = spawn_prefab_static_vox(
+        world,
+        prefab_static_chunk);
+    prefab_invisible_vox = spawn_prefab_static_vox(
+        world,
+        prefab_static_chunk);
+    prefab_static_vox_instanced = spawn_prefab_vox_instanced(
+        world,
+        prefab_static_instance_mesh);
     // Level 2
-    prefab_block_vox = spawn_prefab_block_vox(world, prefab_static_vox);
-    prefab_vox_generated = spawn_prefab_vox_generated(world, prefab_static_vox);
-    prefab_block_vox_instanced = spawn_prefab_block_vox_instanced(world, prefab_static_vox_instanced);
+    prefab_block_vox = spawn_prefab_block_vox(
+        world,
+        prefab_static_vox);
+    prefab_vox_generated = spawn_prefab_vox_generated(
+        world,
+        prefab_static_vox);
+    prefab_block_vox_instanced = spawn_prefab_block_vox_instanced(
+        world,
+        prefab_static_vox_instanced);
     /*if (prefab_vox_texture) {
         zox_prefab_set(prefab_vox_texture, VoxLink, { 0 });
     }*/

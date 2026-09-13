@@ -239,7 +239,7 @@ zox_sys2(ChunkSidesSystem) {
         // fetch here instead
         if (!solids) {
             // entity chunk = zox_get_parent(world, e);
-            entity manager = zox_getv(e, BlockManagerLink);
+            entity manager = zox_get_link(world, e, BlockManagerLink);
             zox_geter(manager, BlockLinks, blocks);
             solids = malloc(blocks->length * sizeof(byte));
             for (int i = 0; i < blocks->length; i++) {
@@ -292,7 +292,9 @@ zox_sys2(ChunkSidesSystem) {
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
-                if (zox_has(e2, ChunkMesh)) {
+                if (zox_has(e2, ChunkMesh) &&
+                    !zox_has(e2, BuildMesh)
+                ) {
                     zox_add(e2, BuildMesh);
                     if (dbg_log) {
                         zox_log("Chunk Triggered Build [%s]:[%s]", zox_getn(e), zox_getn(e2));

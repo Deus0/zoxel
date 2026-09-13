@@ -9,7 +9,7 @@ zox_sys2(Chunk3TexturedRenderSystem) {
     zox_sys_begin();
     zox_sys_in(RenderDisabled);
     zox_sys_in(TransformMatrix);
-    zox_sys_in(MaterialLink);
+    // zox_sys_in(MaterialLink);
     zox_sys_in(MeshGPULink);
     zox_sys_in(UvsGPULink);
     zox_sys_in(ColorsGPULink);
@@ -18,7 +18,7 @@ zox_sys2(Chunk3TexturedRenderSystem) {
         zox_sys_e();
         zox_sys_i(RenderDisabled, disabled);
         zox_sys_i(TransformMatrix, matrix);
-        zox_sys_i(MaterialLink, material);
+        // zox_sys_i(MaterialLink, material);
         zox_sys_i(MeshGPULink, mesh);
         zox_sys_i(UvsGPULink, gpu_uvs);
         zox_sys_i(ColorsGPULink, gpu_colors);
@@ -55,20 +55,21 @@ zox_sys2(Chunk3TexturedRenderSystem) {
         camera_filtering_check();
         // TODO: Swapping / Grouping Tilemaps
         if (!initialized_material) {
+            entity material = zox_get_link(world, e, MaterialLink);
 #ifdef zox_safety_checks
-            if (!zox_valid(material->value)) {
+            if (!zox_valid(material)) {
                 zox_loge("Tilemap (material) Invalid for Chunk %s",
                     zox_getn(e));
                 continue;
             }
 #endif
-            guint material_id = zox_getv(material->value, MaterialGPULink);
-            guint texture_id = zox_getv(material->value, TextureGPULink);
-            attributes = zox_get(material->value, MaterialTextured3D);
+            guint material_id = zox_getv(material, MaterialGPULink);
+            guint texture_id = zox_getv(material, TextureGPULink);
+            attributes = zox_get(material, MaterialTextured3D);
             if (!material_id || !texture_id || !attributes) {
                 if (dbg_log) {
                     zox_loge("Invalid Tilemap [%s] in Terrain Renderer",
-                        zox_getn(material->value));
+                        zox_getn(material));
                 }
                 continue;
             }

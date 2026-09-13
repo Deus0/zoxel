@@ -111,15 +111,6 @@ zox_sys2(BasicLightsBuildSystem) {
         zox_sys_i(LightNode, light_octree);
         zox_sys_i(RenderDepth, render_depth);
         zox_sys_i(MeshColorRGBs, colors);
-        // zox_sys_o(MeshReady, ready);
-        /*if (zox_getv(e, BuildMesh)) {
-            // if still building, it will update the verts again
-            // zox_setv(e, BuildMeshColors, 1);
-            if (dbg_log) {
-                zox_log("Chunk is still Generating new Mesh, while building Lights [%s]", zox_get_name(e));
-            }
-            continue;
-        }*/
         if (zox_disable_low_res_lights) {
             entity terrain = zox_get_parent(world, e);
             byte terrain_depth = zox_getv(terrain, NodeDepth);

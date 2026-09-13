@@ -10,14 +10,10 @@ zox_sys2(ChunkMeshTransitionSystem) {
     zox_sys_begin();
     zox_sys_in(ChunkLodDirty);
     zox_sys_out(ChunkMeshTimer);
-    // zox_sys_out(ActiveMesh);
-    // zox_sys_out(PreparingMesh);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ChunkLodDirty, dirty);
         zox_sys_o(ChunkMeshTimer, timer);
-        // zox_sys_o(ActiveMesh, active);
-        // zox_sys_o(PreparingMesh, preparing);
         if (dirty->value != zox_chunk_lod_dirty_toggle) {
             continue;
         }
@@ -25,7 +21,6 @@ zox_sys2(ChunkMeshTransitionSystem) {
             zox_current_time - timer->value < transition_speed) {
             continue;
         }
-        // entity preparing_mesh = preparing->value; //  zox_get_link(world, e, PreparingMesh);
         entity preparing_mesh = zox_get_link(world, e, PreparingMesh);
         // Enable to make sure it starts updating!
         if (!zox_valid(preparing_mesh)) {
@@ -39,11 +34,7 @@ zox_sys2(ChunkMeshTransitionSystem) {
             timer->value = zox_current_time;
             continue;
         }
-        /*entity active_mesh = zox_valid(active->value) ?
-            active->value :
-            0;*/
         entity active_mesh = zox_get_link(world, e, ActiveMesh);
-        // zox_get_link(world, e, ActiveMesh);
         // Make sure old mesh is not building
         // It actually tries to update lighting of it and flickers dark
         if (active_mesh &&
@@ -81,11 +72,8 @@ zox_sys2(ChunkMeshTransitionSystem) {
             continue;
         }
         if (active_mesh) {
-            // active->value = 0;
             zox_unlink(world, e, ActiveMesh, active_mesh);
         }
-        // active->value = preparing_mesh;
-        // preparing->value = 0;
         zox_unlink(world, e, PreparingMesh, preparing_mesh);
         zox_link(world, e, ActiveMesh, preparing_mesh);
         if (zox_has(preparing_mesh, Disabled)) {
@@ -102,31 +90,6 @@ zox_sys2(ChunkMeshTransitionSystem) {
             }
         }
         // Minimal
-        /*if (zox_valid(preparing->value)) {
-            zox_remove(preparing->value, Disabled);
-        }*/
         zox_remove(e, ChunkLodDirty);
     }
 } zox_sys_end(ChunkMeshTransitionSystem);
-
-        // Test old Code
-        /*entity active_mesh = 0;
-        entity preparing_mesh = 0;
-        iter it2 = zox_children(world, e);
-        while (zox_children_next(it2)) {
-            for (int j = 0; j < it2.count; j++) {
-                entity mesh = it2.entities[j];
-                if (zox_has(mesh, ChunkMesh)) {
-                    byte mesh_depth = zox_getv(mesh, RenderDepth);
-                    if (mesh_depth == depth->value) {
-                        preparing_mesh = mesh;
-                    } else if (!zox_has(mesh, Disabled)) {
-                        // NOTE: This happens if it switches lods too fast
-                        if (active_mesh) {
-                            zox_add(active_mesh, Disabled);
-                        }
-                        active_mesh = mesh;
-                    }
-                }
-            }
-        }*/
