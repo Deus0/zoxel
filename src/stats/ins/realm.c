@@ -12,18 +12,19 @@ entity spawn_realm_stat(
     if (!zox_valid(texture)) {
         zox_loge("Stat Texture not found [%s]", texture_name);
     }
-    entity e = zox_ins_named(world, prefab);
-    zox_make_prefab(e);
-    zox_add(e, RealmStat);
+    entity e = zox_prefab_from_parent(world, prefab);
+    // entity e = zox_ins_named(world, prefab);
+    // zox_make_prefab(e);
+    // zox_add(e, RealmStat);
     if (name) {
         zox_set_unique_name(e, name);
         set_ZoxName(world, e, name);
     }
     if (texture) {
-        zox_set(e, TextureLink, { texture });
+        zox_setv(e, TextureLink, texture);
     }
     if (!color_rgb_equals(ecolor, color_rgb_white)) {
-        zox_set(e, ColorRGB, { ecolor });
+        zox_setv(e, ColorRGB, ecolor);
     }
     if (parent) {
         zox_set_parent(world, e, parent);

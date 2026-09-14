@@ -1,5 +1,5 @@
 zox_tag(Chunk);
-zox_tag(ChunkMesh);
+// zox_tag(ChunkMesh);
 zox_tag(NoSplitChunk);
 zox_tag(BuildChunkSides);
 zox_tag(ChunkTextured);
@@ -14,7 +14,7 @@ zoxc_double(ChunkMeshTimer);
 void define_components_chunks(ecs* world) {
     // Types zoxd_nf_tag
     zoxd_tag(Chunk);
-    zoxd_tag(ChunkMesh);
+    // zoxd_tag(ChunkMesh);
     zoxd_tag(ChunkTextured);
     // Events
     zoxd_tag_event(BuildChunkSides);

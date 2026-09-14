@@ -152,6 +152,10 @@ zox_sys2(Character3RealmSpawnSystem) {
                 character_seed,
                 "Boney",
                 chance);
+            if (!e2) {
+                zox_loge("Boney failed to spawn");
+                continue;
+            }
             // spawn_stat_level(world, e2, rsoul, 5);
             // spawn_stat_state(world, e2, rhealth, 21, 21);
             chance_max += chance;
@@ -182,7 +186,8 @@ zox_sys2(Character3RealmSpawnSystem) {
                 character_depth,
                 variants);
             if (!zox_valid(model)) {
-                zox_loge("realm has invalid model [%i]", j);
+                zox_loge("realm has invalid model [%i]",
+                    j);
                 continue;
             }
             zox_add(model, ModelCharacter);

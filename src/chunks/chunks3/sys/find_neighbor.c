@@ -1,5 +1,7 @@
 // NOTE: New chunks will find neighbors, and set themselves on  their neighbors
-zox_sys2(ChunkFindNeighborSystem) {
+void chunk_neighbors_system(iter* it) {
+    byte dbg_log = 0;
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkPosition);
@@ -14,11 +16,12 @@ zox_sys2(ChunkFindNeighborSystem) {
             zox_loge("Terrain invalid in finding neighbors");
             continue;
         }
+#endif
         if (!zox_has(terrain, ChunkLinks)) {
-            zox_loge("Terrain has no ChunkLinks in FindNeighbors");
+            zox_loge("Vox [%s] has no ChunkLinks in FindNeighbors",
+                zox_getn(terrain));
             continue;
         }
-#endif
         // link up neighbors if they need to be
         zox_muter(terrain, ChunkLinks, chunks);
         // Just reversing directions
@@ -31,24 +34,29 @@ zox_sys2(ChunkFindNeighborSystem) {
             entity neighbor = int3_hashmap_get(chunks->value, neighbor_position);
             // Edge of map
             if (!zox_valid(neighbor)) {
+                if (dbg_log) {
+                    zox_log("[%s]'s Neighbor [%i] Not Found",
+                        zox_sys_e_name,
+                        j);
+                }
                 continue;
             }
             neighbors->value[j] = neighbor;
-/*#ifdef zox_safety_checks
-            if (!zox_has(neighbor, FindNeighbors)) {
-                zox_loge("Chunk Neighbor [%s] has no [FindNeighbors]", zox_getn(neighbor));
-                continue;
-            }
-#*/
-            // No need to set twice
-            /*if (zox_has(neighbor, FindNeighbors)) {
-                continue;
-            }*/
             // we can add ourself to the neighbor here
-            byte neighbor_index = neighbor_indexes[j];
-            zox_muter(neighbor, ChunkNeighbors, neighbor_neighbors);
-            neighbor_neighbors->value[neighbor_index] = e;
+            byte neighbor_index = neighbor_indexes[j];zox_muter(neighbor, ChunkNeighbors, neighbor_neighbors);
+            entity old_neighbors_neighbor =
+                neighbor_neighbors->value[neighbor_index];
+            if (!zox_valid(old_neighbors_neighbor)) {
+                neighbor_neighbors->value[neighbor_index] = e;
+            }
+            if (dbg_log) {
+                zox_log("[%s]'s Neighbor [%i] Set [%s]",
+                    zox_sys_e_name,
+                    j,
+                    zox_getn(neighbor));
+            }
         }
         zox_remove(e, FindNeighbors);
     }
-} zox_sys_end(ChunkFindNeighborSystem);
+    zox_sys_on_end();
+} zoxd_system(chunk_neighbors_system);

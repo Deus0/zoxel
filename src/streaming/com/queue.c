@@ -1,8 +1,10 @@
 // NOTE: Assume Max Depth
 typedef struct {
-    byte level;
-    int2 position;
-    int distance;
+    int2 position;  // grid2 position
+    int distance;   // streamer distance
+    entity tunk;    // update tunks
+    byte level;     // streamer level
+    double time;    // time added to queue
 } TerrainSpawnUpdate;
 zoxc_custom(TerrainSpawnQueue);
 
@@ -425,4 +427,60 @@ ECS_COPY(
 
 void define_terrain_spawn_queue(ecs* world) {
     zoxd_queue(TerrainSpawnQueue);
+}
+
+static TerrainSpawnUpdate* get_TerrainSpawnQueue(
+    TerrainSpawnQueue* q,
+    int2 position)
+{
+    if (!q->hash_capacity) {
+        return NULL;
+    }
+    const size_t mask = q->hash_capacity - 1;
+    size_t index =
+    hash_terrain_spawn_position(position) & mask;
+    while (q->hash_state[index] != 0) {
+        if (q->hash_state[index] == 1 &&
+            terrain_spawn_position_equal(
+                q->hash_keys[index],
+                position))
+        {
+            for (size_t i = 0; i < q->count; i++) {
+                if (terrain_spawn_position_equal(
+                    q->ptr[i].position,
+                    position))
+                {
+                    return &q->ptr[i];
+                }
+            }
+            return NULL;
+        }
+
+        index = (index + 1) & mask;
+    }
+
+    return NULL;
+}
+
+static byte add_or_set_TerrainSpawnQueue(
+    TerrainSpawnQueue* q,
+    TerrainSpawnUpdate item)
+{
+    TerrainSpawnUpdate* existing =
+    get_TerrainSpawnQueue(q, item.position);
+    if (existing) {
+        // NOTE: Higher levels win so region-only updates cannot overwrite Tunk spawn updates.
+        if (item.level < existing->level) {
+            return 0;
+        }
+        // NOTE: Keep the closest distance update from the same update frame
+        if (item.time == existing->time &&
+            item.distance >= existing->distance)
+        {
+            return 0;
+        }
+        *existing = item;
+        return 0;
+    }
+    return add_TerrainSpawnQueue(q, item);
 }

@@ -66,9 +66,9 @@ void zox_app_set_fullscreen(
             zox_sdl_set_window_display_mode(window, &display_mode);
         }
     }
-    byte flag = fullscreen ?
+    /*byte flag = fullscreen ?
         SDL_WINDOW_FULLSCREEN :
-        0;
+        0;*/
     if (!SDL_SetWindowFullscreen(window, fullscreen)) {
         zox_loge("SDL Fullscreen error: %s",
             SDL_GetError());

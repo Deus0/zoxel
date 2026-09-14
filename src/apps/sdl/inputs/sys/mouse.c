@@ -5,7 +5,9 @@ zox_sys2(MouseExtractSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     //TODO: Move this into system logic
-    if (!zox_valid(main_app) || !zox_has(main_app, WindowSize)) {
+    if (!zox_valid(main_app) ||
+        !zox_has(main_app, WindowSize))
+    {
         return;
     }
     int2 screen_size = zox_getv(main_app, WindowSize);
@@ -26,7 +28,7 @@ zox_sys2(MouseExtractSystem) {
     if (sdl_mouse_button_pressed(buttons, SDL_BUTTON_RIGHT)) {
         button_pressed_right = 1;
     }
-    zox_sys_begin();
+    // zox_sys_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         entity app = zox_get_link(world, e, App);

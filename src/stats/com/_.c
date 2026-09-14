@@ -1,5 +1,5 @@
 zox_tag(Stat);
-zox_tag(RealmStat);
+// zox_tag(RealmStat);
 // Types
 zox_tag(StatBase);
 zox_tag(StatState);
@@ -20,7 +20,7 @@ zox_tag(SpawnNameLabel);
 
 void zox_components_stats(ecs *world) {
     zoxd_tag(Stat);
-    zoxd_tag(RealmStat);
+    // zoxd_tag(RealmStat);
     zoxd_tag(SpawnNameLabel);
     // Types
     zoxd_tag(StatBase);

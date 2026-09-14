@@ -133,13 +133,12 @@ void define_systems_lights3(ecs* world) {
         zoxp_voxels_lights,
         [in] rendering.RenderDepth,
         [in] rendering.MeshColorRGBs,
-        [none] chunks.ChunkMesh,
+        [none] rendering.ChunkMesh,
         [none] rendering.BuildMeshColors,
         [none] !core.BuildDisabled,
         [none] !rendering.MeshDirty,
         [none] !rendering.BuildMesh,
     );
-
     /*zox_system(
         BasicLightsBuildSystem,
         zoxp_voxels_lights,

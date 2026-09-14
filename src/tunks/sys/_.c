@@ -31,7 +31,7 @@ void define_systems_tunks(ecs* world) {
         [none] tunks.Tunk
     );
     // For now leave here
-    zox_filter(
+    /*zox_filter(
         streamers_lod,
         [in] streaming.StreamDirty2,
         [in] streaming.StreamerLevel,
@@ -49,7 +49,7 @@ void define_systems_tunks(ecs* world) {
         [out] tunks.TunkLod,
         [out] tunks.GenerateTunk,
         [none] streaming.StreamedChunk
-    );
+    );*/
     // Texture
     zox_system(
         TunkTextureSystem,

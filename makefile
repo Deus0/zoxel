@@ -132,8 +132,8 @@ $(TARGET_DEV): $(SRCS)
 
 dev: $(TARGET_DEV)
 
-profile: $(SRCS)
-	bash bsh/build.sh $(GAME) ${build_args} --debug --logs --timings --profile
+profiler: $(SRCS)
+	bash bsh/build.sh $(GAME) ${build_args} --debug --logs --timings --profiler
 
 #dever: $(SRCS)
 #	@ mkdir -p bin

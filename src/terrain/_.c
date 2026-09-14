@@ -1,10 +1,10 @@
 /*
- * +------------------------------------------------------------------+
- * | Zox Module: Terrain                                              |
- * |                                                                  |
- * |  Generation - Chunks - Biomes - Heightmaps - Terrain State       |
- * |                                                                  |
- * +------------------------------------------------------------------+
+ * +------------------------------------------------------+
+ * | Zox Module: Terrain                                  |
+ * |                                                      |
+ * |  Generation - Chunks - Biomes - Heightmaps - State   |
+ * |                                                      |
+ * +------------------------------------------------------+
  *
  *      - colored vox models
  *      - todo: don't generate mesh until render is enabled!
@@ -13,6 +13,7 @@
  *
  * */
 byte zox_terrain_chunk_lod_system = 0;
+byte stream_update_rate = 4;
 // Initial core
 #include "set/_.c"
 #include "com/_.c"

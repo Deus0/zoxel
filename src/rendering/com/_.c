@@ -1,16 +1,21 @@
+// Types
 zox_tag(Mesh);
 zox_tag(Shader);
 zox_tag(Material);
 zox_tag(SingleMaterial);
 zox_tag(RendererInstance);
 zox_tag(VoxMesh);
+zox_tag(ChunkMesh);
+// Events
 zox_tag(DisableDepthTest);
 zox_tag(MeshClearCache);
 zox_tag(BuildMeshColors);
 zox_tag(MeshColorsDirty);
 zox_tag(RenderTextureDirty);
+// Properties
 zox_tag(MeshBuilt);
 zox_tag(MeshColorsBuilt);
+// Links
 zox_tag(PreparingMesh);
 zox_tag(ActiveMesh);
 // Properties
@@ -70,8 +75,11 @@ void define_components_rendering(ecs *world) {
     zoxd_tag(SingleMaterial);
     zoxd_tag(RendererInstance);
     zoxd_tag(VoxMesh);
+    zoxd_tag(ChunkMesh);
+    // Properties
     zoxd_tag(DisableDepthTest);
     zoxd_tag(MeshClearCache);
+    // Links
     zoxd_nf_tag(PreparingMesh);
     zoxd_nf_tag(ActiveMesh);
     // zoxd_nf_tag

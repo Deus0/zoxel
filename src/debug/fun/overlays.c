@@ -161,7 +161,7 @@ uint zox_dbg_ui_statistics(ecs *world, entity e, char *buffer, uint size, uint i
     index += snprintf(buffer + index, size - index, " - Components [%i]\n", zox_count_ids(zox_id(EcsComponent)));
     index += snprintf(buffer + index, size - index, "Realm\n");
     index += snprintf(buffer + index, size - index, " - Blocks [%i]\n", zox_count_ids(Block));
-    index += snprintf(buffer + index, size - index, " - Stats [%i]\n", zox_count_ids(RealmStat));
+    // index += snprintf(buffer + index, size - index, " - Stats [%i]\n", zox_count_ids(RealmStat));
     index += snprintf(buffer + index, size - index, " - Items [%i]\n", zox_count_ids(Item));
     index += snprintf(buffer + index, size - index, " - Skills [%i]\n", zox_count_ids(Skill));
     index += snprintf(buffer + index, size - index, " - Dialogues [%i]\n", zox_count_ids(Dialogue));

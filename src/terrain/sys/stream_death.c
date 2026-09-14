@@ -1,6 +1,7 @@
 // NOTE: On chunk death we remove it from the hashmap of parent
 // NOTE: We are lucky they die by stream so there is a single point for their deaths
-zox_sys2(Chunk3DeathSystem) {
+/*zox_sys2(Chunk3DeathSystem) {
+    return;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RenderDistanceDirty);
@@ -31,4 +32,4 @@ zox_sys2(Chunk3DeathSystem) {
         int3_hashmap_remove(chunks->value, position->value);
         zox_delete(e);
     }
-} zox_sys_end(Chunk3DeathSystem);
+} zox_sys_end(Chunk3DeathSystem);*/

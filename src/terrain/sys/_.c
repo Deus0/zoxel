@@ -5,15 +5,11 @@
 #include "linking.c"
 // Lights (Move to lights)
 #include "generated.c"
-// Streaming
-#include "stream_first.c"
-#include "stream_grow.c"
-#include "stream_lod.c"
-#include "stream_death.c"
-#include "stream2.c"
-#include "spawn_queue.c"
 // generation
 #include "render_depth.c"
+// Streaming
+// #include "stream_death.c"
+#include "stream.c"
 
 // Note: Updates on VoxelNode has to be done in PostLoad, away from use of Voxels, due to the cleaning step
 void define_systems_terrain(ecs *world) {
@@ -62,7 +58,7 @@ void define_systems_terrain(ecs *world) {
         [none] streaming.Streamer
     );
     zox_system_ctx(
-        TerrainStreamSystem,
+        terrain_stream_system,
         zoxp_update,
         streamers,
         [in] tunks.TunkLinks,
@@ -70,7 +66,7 @@ void define_systems_terrain(ecs *world) {
         [none] terrains.Terrain
     );
     zox_system_1(
-        TerrainQueueSystem,
+        terrain_stream_queue_system,
         zoxp_spawn,
         [in] core.Seed,
         [in] blocks.BlockScale,
@@ -82,7 +78,7 @@ void define_systems_terrain(ecs *world) {
         [none] terrains.Terrain,
     );
     // Debug Terrains
-    #ifdef zox_debug_chunk_bounds
+#ifdef zox_debug_chunk_bounds
     zox_system_1(
         ChunkBoundsDrawSystem,
         zoxp_spawn,
@@ -91,7 +87,7 @@ void define_systems_terrain(ecs *world) {
         [in] rendering.RenderDisabled,
         [none] terrains.TerrainChunk
     );
-    #endif
+#endif
 }
 
 void zox_events_terrain(ecs *world) {

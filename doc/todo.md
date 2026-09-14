@@ -1,14 +1,18 @@
 # Todo
 
+- Remove trigger system for lods
+	- just update neighbor of updating chunks inside stream systems
+	- atm the faces stay sometimes between lods
+
 Plan:
-- make a lod update queue
-    - TunkLodSystem
+-x make a lod update queue
+    -x TunkLodSystem
         - we can just add in stream system
         - can we get an update from hashmap
         - we will need to override previous entries in lod update queue
-    - update them over time from terrain
-    - this solves the issue of NxM complexity on terrain updates vs frames
-    - main issue isnt system timings, its table update rates on chunks
+    -x update them over time from terrain
+    -x this solves the issue of NxM complexity on terrain updates vs frames
+    -x main issue isnt system timings, its table update rates on chunks
 
 - Debugging lagspike
     - removed BuildMesh
@@ -85,15 +89,6 @@ Plan:
 
 ## Projectiles
 - Projectiles get destroyed on hit characters (use same system as pickups)
-
-## Whimsy
-- Add npc that dies when you talk to it
-	- death node in dialogue
-- Add cracked bricks, a weaker version of bricks, 1 / 8 chance to spawn on wall
-- Why cant i touch and drag two windows at once???
-- Make a mushroom we can throw on ground - does disease damage once it hits an npc
-- Create jingle, a bunch of sounds that play in sequence, can be spawned from events like sounds, when a new ui opens etc
-- Stress test mode - add a multiplying slime that dies fast
 
 ## After
 - add min, max to fps display

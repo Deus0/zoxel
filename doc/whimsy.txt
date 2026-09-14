@@ -1,0 +1,15 @@
+# Whimsy
+- everyone needs more
+
+- An npc should shift resolutions, when they have a debuff called unknown
+- An npc thats from the void dimension
+	- when its dying, its death animation is lowering its resolution
+- Add npc that dies when you talk to it
+	- death node in dialogue
+- Add cracked bricks, a weaker version of bricks, 1 / 8 chance to spawn on wall
+- Why cant i touch and drag two windows at once???
+	- with multiple fingers
+- Make a mushroom we can throw on ground
+	- does disease damage once it hits an npc
+- Create jingle, a bunch of sounds that play in sequence, can be spawned from events like sounds, when a new ui opens etc
+- Stress test mode - add a multiplying slime that dies fast

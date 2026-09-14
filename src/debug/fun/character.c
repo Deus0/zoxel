@@ -213,6 +213,16 @@ uint zox_dbg_label_inside_chunk(
     index += snprintf(buffer + index, size - index,
         " - Build Sides [%i]\n",
             build);
+    const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
+    index += snprintf(buffer + index, size - index,
+        " - Neighbors\n - [%s]\n - [%s]\n - [%s]\n - [%s]\n - [%s]\n - [%s]\n",
+        zox_getn(neighbors->value[0]),
+        zox_getn(neighbors->value[1]),
+        zox_getn(neighbors->value[2]),
+        zox_getn(neighbors->value[3]),
+        zox_getn(neighbors->value[4]),
+        zox_getn(neighbors->value[5])
+    );
     if (zox_has(chunk, GenerateChunk)) {
         byte generate = zox_getv(chunk, GenerateChunk);
         index += snprintf(buffer + index, size - index,

@@ -5,10 +5,11 @@ entity spawn_stat(
     entity parent)
 {
     entity e = zox_ins_named(world, prefab);
-    zox_remove(e, RealmStat);
-    if (parent) {
-        zox_set_parent(world, e, parent);
-    }
+    // zox_remove(e, RealmStat);
+    zox_set_parent(
+        world,
+        e,
+        parent);
     return e;
 }
 
@@ -18,7 +19,10 @@ entity spawn_stat_attribute(
     entity prefab,
     float value)
 {
-    entity e = spawn_stat(world, prefab, parent);
+    entity e = spawn_stat(
+        world,
+        prefab,
+        parent);
     zox_setv(e, StatValue, value);
     return e;
 }
@@ -30,7 +34,10 @@ entity spawn_stat_state(
     float value,
     float max)
 {
-    entity e = spawn_stat(world, prefab, parent);
+    entity e = spawn_stat(
+        world,
+        prefab,
+        parent);
     zox_setv(e, StatValue, value);
     zox_setv(e, StatValueMax, max);
     return e;
@@ -43,7 +50,10 @@ entity spawn_stat_regen(
     entity prefab,
     float value)
 {
-    entity e = spawn_stat(world, prefab, parent);
+    entity e = spawn_stat(
+        world,
+        prefab,
+        parent);
     zox_setv(e, StatValue, value);
     return e;
 }
@@ -54,7 +64,10 @@ entity spawn_stat_level(
     entity prefab,
     float value)
 {
-    entity e = spawn_stat(world, prefab, parent);
+    entity e = spawn_stat(
+        world,
+        prefab,
+        parent);
     zox_setv(e, StatValue, value);
     return e;
 }

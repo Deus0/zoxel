@@ -54,8 +54,15 @@ static inline void zox_apply_smooth_lights(
             continue;
         }
 //#ifdef zox_safety_checks
-        if (*ccount + voxel_face_vertices_length > colors->length) {
-            zox_loge("  - Colors Past Limits [%i] - Face [%i] at Pos [%ix%ix%i] Depth [%i] of [%i]", *ccount, direction, position.x, position.y, position.z, depth, target_depth);
+        if (*ccount + voxel_face_vertices_length> colors->length) {
+            zox_loge("  - Colors Past Limits [%i] - Face [%i] at Pos [%ix%ix%i] Depth [%i] of [%i]",
+                *ccount,
+                direction,
+                position.x,
+                position.y,
+                position.z,
+                depth,
+                target_depth);
             return;
         }
 //#endif
@@ -212,8 +219,16 @@ void build_smooth_lights_system(iter* it) {
         const LightNode* lights = zox_get(chunk, LightNode);
         entity nearby_chunks[27];
         const LightNode* nearby_lights[27];
-        fetch_nearby_chunks(world, e, neighbors->value, nearby_chunks);
-        fetch_nearby_lights(world, lights, nearby_chunks, nearby_lights);
+        fetch_nearby_chunks(
+            world,
+            e,
+            neighbors->value,
+            nearby_chunks);
+        fetch_nearby_lights(
+            world,
+            lights,
+            nearby_chunks,
+            nearby_lights);
         uint ccount = 0;
         zox_apply_smooth_lights(
             nearby_lights,

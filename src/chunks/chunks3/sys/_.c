@@ -90,11 +90,10 @@ void define_systems_chunks3(ecs *world) {
         [none] rendering.BuildMesh,
     );
     zox_system(
-        ChunkFindNeighborSystem,
+        chunk_neighbors_system,
         zoxp_update,
         [in] chunks3.ChunkPosition,
         [out] chunks3.ChunkNeighbors,
-        [none] chunks.ChunkTextured,
         [none] chunks.FindNeighbors,
     );
     // NOTE: Syncs Terrain Chunk Scales
@@ -202,7 +201,7 @@ void define_systems_chunks3(ecs *world) {
         [out] rendering.MeshVertices,
         [out] rendering.MeshUVs,
         [out] rendering.MeshColorRGBs,
-        [none] chunks.ChunkMesh,
+        [none] rendering.ChunkMesh,
         [none] rendering.BuildMesh,
         [none] !core.BuildDisabled,
     );
