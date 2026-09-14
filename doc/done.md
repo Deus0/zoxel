@@ -1,5 +1,28 @@
 # Done
 
+-x Lag: When streaming it spikes 30-50ms
+-x Debugging lagspike
+    - removed BuildMesh
+    - removed PreInitialize
+        - spawn_prefab_mesh3
+        - spawn_prefab_chunk_textured
+-x make a lod update queue
+    -x TunkLodSystem
+        - we can just add in stream system
+        - can we get an update from hashmap
+        - we will need to override previous entries in lod update queue
+    -x update them over time from terrain
+    -x this solves the issue of NxM complexity on terrain updates vs frames
+    -x main issue isnt system timings, its table update rates on chunks
+-x Lag spike between streaming
+    - the remove/add for events is failing
+    - it works to reduce querying though
+    - we can just add a generic Spawning state
+        - initialize can be first state
+        - can we add generic callbacks for initializing
+            - replace the gpu initialization with callbacks on mesh
+        - this creates 1 component per chunk/mesh that removes when down
+        - as they process at different speeds, this will be removed at end of their processing
 -x Bug: Map UI doesnt initially generate
 -x RealmLink
 -x Bug: Fog Color of camera not set

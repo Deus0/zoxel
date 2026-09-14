@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Test
-#    bash bsh/android.sh zoxel opengl sdl --debug --install
+#    bash bsh/android.sh zoxel --opengl --sdl --debug --install
 # Debug
 #    bash bsh/android.sh zoxel opengl sdl --debug --install --log --verbose
 # Debug
@@ -47,7 +47,8 @@ set -euo pipefail
 # ============================================================
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "${root}"
+host_arch="$(uname -m)"
+
 apk_dir="${root}/zip"           # Output Directory
 date_str=$(date +%Y_%m_%d)      # Date tag
 
@@ -67,6 +68,9 @@ gfx="opengl"    # opengl, vulkan, headless
 is_xr="0"
 testsdl="0"
 testxr="0"
+
+# set directory
+cd "${root}"
 
 # Validation
 if [[ " $* " == *" --debug "* ]] &&
@@ -110,6 +114,7 @@ and_path="${root}/and"
 sdk_path="${and_path}/sdk"
 ndk_path="${and_path}/ndk"
 staging_path="${and_path}/${game_name}"
+aapt2_path="${and_path}/tools/aapt2"
 jni_path="${staging_path}/app/jni"
 sdl_jni_path="${jni_path}/SDL"
 src_path="${root}/src"
@@ -154,9 +159,37 @@ sdl_mixer_flags=(
 # JDK 17
 # ============================================================
 
-java17_path="/usr/lib/jvm/java-17-openjdk"
+java17_path=""
 
-if [[ ! -x "${java17_path}/bin/java" ]]; then
+# Prefer the currently installed Java if it is JDK 17.
+
+if command -v java >/dev/null 2>&1; then
+    java_bin="$(readlink -f "$(command -v java)")"
+
+    java_major="$("${java_bin}" -version 2>&1 | \
+        sed -n 's/.*version "\([0-9]*\).*/\1/p' | head -n 1)"
+
+    if [[ "${java_major}" == "17" ]]; then
+        java17_path="$(dirname "$(dirname "${java_bin}")")"
+    fi
+fi
+
+# Fallback to known JDK 17 locations.
+
+if [[ -z "${java17_path}" ]]; then
+    for candidate in \
+        "/usr/lib/jvm/java-17-openjdk" \
+        "/usr/lib/jvm/java-17-openjdk-arm64"
+    do
+        if [[ -x "${candidate}/bin/java" ]] && \
+           [[ -x "${candidate}/bin/javac" ]]; then
+            java17_path="${candidate}"
+            break
+        fi
+    done
+fi
+
+if [[ -z "${java17_path}" ]]; then
     echo ""
     echo "ERROR: JDK 17 not found."
     echo ""
@@ -166,13 +199,17 @@ if [[ ! -x "${java17_path}/bin/java" ]]; then
     exit 1
 fi
 
+if [[ ! -x "${java17_path}/bin/java" ]]; then
+    echo ""
+    echo "ERROR: JDK 17 java not found:"
+    echo "  ${java17_path}/bin/java"
+    exit 1
+fi
+
 if [[ ! -x "${java17_path}/bin/javac" ]]; then
     echo ""
-    echo "ERROR: JDK 17 javac not found."
-    echo ""
-    echo "Run:"
-    echo "  bash bsh/android_prepare.sh"
-    echo ""
+    echo "ERROR: JDK 17 javac not found:"
+    echo "  ${java17_path}/bin/javac"
     exit 1
 fi
 
@@ -762,6 +799,29 @@ else
 fi
 
 echo "- Gradle JDK: ${java17_path}"
+
+if [[ "${host_arch}" == "aarch64" ]]; then
+    if [[ ! -x "${aapt2_path}" ]]; then
+        echo ""
+        echo "ERROR: ARM64 AAPT2 not found:"
+        echo "  ${aapt2_path}"
+        echo ""
+        echo "Run:"
+        echo "  bash bsh/android_prepare.sh"
+        exit 1
+    fi
+    if grep -q '^android.aapt2FromMavenOverride=' "${gradle_properties}"; then
+        sed -i \
+            "s|^android.aapt2FromMavenOverride=.*|android.aapt2FromMavenOverride=${aapt2_path}|" \
+            "${gradle_properties}"
+    else
+        printf 'android.aapt2FromMavenOverride=%s\n' \
+            "${aapt2_path}" \
+            >> "${gradle_properties}"
+    fi
+
+    echo "- ARM64 AAPT2: ${aapt2_path}"
+fi
 
 # ============================================================
 # Native build information

@@ -24,6 +24,8 @@ set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
+host_arch="$(uname -m)"
+
 and_path="${root}/and"
 sdk_path="${and_path}/sdk"
 ndk_path="${and_path}/ndk"
@@ -49,6 +51,7 @@ gradle_zip="gradle-${gradle_version}-bin.zip"
 gradle_url="https://services.gradle.org/distributions/${gradle_zip}"
 
 tmp_path="${and_path}/tmp"
+aapt2_path="${and_path}/tools/aapt2"
 
 echo ""
 echo "> Preparing Android build environment"
@@ -86,20 +89,35 @@ fi
 java17_path=""
 
 # First look for an already installed Java 17.
+#
+# Prefer the system java and resolve its real path. This works
+# across Ubuntu, Debian, Arch, ARM64, etc.
 
-for candidate in \
-    "/usr/lib/jvm/java-17-openjdk" \
-    "/usr/lib/jvm/java-17-openjdk/bin/java"
-do
-    if [[ -x "$candidate" ]]; then
-        if [[ -x "$candidate/bin/java" ]]; then
-            java17_path="$candidate"
-        elif [[ "$(basename "$candidate")" == "java" ]]; then
-            java17_path="$(dirname "$(dirname "$candidate")")"
-        fi
-        break
+if command -v java >/dev/null 2>&1; then
+    java_bin="$(readlink -f "$(command -v java)")"
+
+    java_major="$("${java_bin}" -version 2>&1 | \
+        sed -n 's/.*version "\([0-9]*\).*/\1/p' | head -n 1)"
+
+    if [[ "${java_major}" == "${java_major_required}" ]]; then
+        java17_path="$(dirname "$(dirname "${java_bin}")")"
     fi
-done
+fi
+
+# Also check common JDK 17 locations explicitly.
+
+if [[ -z "${java17_path}" ]]; then
+    for candidate in \
+        "/usr/lib/jvm/java-17-openjdk" \
+        "/usr/lib/jvm/java-17-openjdk-arm64"
+    do
+        if [[ -x "${candidate}/bin/java" ]] && \
+           [[ -x "${candidate}/bin/javac" ]]; then
+            java17_path="${candidate}"
+            break
+        fi
+    done
+fi
 
 # If Java 17 was not found, install it.
 
@@ -171,6 +189,7 @@ mkdir -p "${sdk_path}"
 mkdir -p "${ndk_path}"
 mkdir -p "${gradle_path}"
 mkdir -p "${tmp_path}"
+mkdir -p "${and_path}/tools"
 
 # ============================================================
 # Android command-line tools
@@ -249,8 +268,36 @@ ndk_manager_path="${sdk_path}/ndk/${android_ndk_version}"
 if [[ ! -d "${ndk_manager_path}" ]]; then
     echo "> Installing Android NDK ${android_ndk_version}"
 
-    "${sdkmanager_path}" \
-        "ndk;${android_ndk_version}"
+    if [[ "${host_arch}" == "aarch64" ]]; then
+        ndk_url="https://github.com/HomuHomu833/android-ndk-custom/releases/download/r28/android-ndk-r28c-aarch64-linux-musl.tar.xz"
+        ndk_archive="${tmp_path}/android-ndk-r28c-aarch64-linux-musl.tar.xz"
+
+        echo "> Downloading ARM64-hosted Android NDK"
+        echo "  ${ndk_url}"
+
+        curl -L \
+            --fail \
+            --progress-bar \
+            "${ndk_url}" \
+            -o "${ndk_archive}"
+
+        echo "> Installing ARM64-hosted Android NDK"
+
+        rm -rf "${sdk_path}/ndk/${android_ndk_version}"
+
+        mkdir -p "${sdk_path}/ndk"
+
+        tar -xJf \
+            "${ndk_archive}" \
+            -C "${sdk_path}/ndk"
+
+        mv \
+            "${sdk_path}/ndk/android-ndk-r28c" \
+            "${ndk_manager_path}"
+    else
+        "${sdkmanager_path}" \
+            "ndk;${android_ndk_version}"
+    fi
 else
     echo "+ Android NDK already installed"
 fi
@@ -275,6 +322,25 @@ echo ""
 echo "> Android NDK"
 echo "  ${ANDROID_NDK_HOME}"
 echo ""
+
+# ============================================================
+# ARM64 AAPT2
+# ============================================================
+
+if [[ "${host_arch}" == "aarch64" ]]; then
+    if [[ ! -x "${aapt2_path}" ]]; then
+        echo "> Downloading ARM64 AAPT2"
+        curl -L \
+            --fail \
+            --progress-bar \
+            "https://github.com/ReVanced/aapt2/releases/latest/download/aapt2-arm64-v8a" \
+            -o "${aapt2_path}"
+        chmod +x "${aapt2_path}"
+    else
+        echo "+ ARM64 AAPT2 already installed"
+    fi
+    echo "- AAPT2 ${aapt2_path}"
+fi
 
 # ============================================================
 # Gradle

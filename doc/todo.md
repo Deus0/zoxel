@@ -1,49 +1,40 @@
 # Todo
 
+- Water Blocks / Chunk Materials
+	- seperate out subchunks by material (with sides per material)
+	- keep a list of materials when blocks update - refresh this list
+	- move meshes underneath Subchunk's
+	- generate sides if block is linked to water or not
+- Underwater
+	- change filter of camera - add block - sky darkened
+	- add splash when entering water
+	- reduce gravity
+	- allow jumping inside water
+	- Dampen music sounds
+
+- Add a text speed option - 1, 2, 3 (default 2)
+	- add sounds per syllabal too instead of sound
+- humanoids seem missing
+- Fix: Camera lags behind body one frame
+    - ...? easiest way to test is to fly up and drop
+
+Fix Crashes: (Infrequent)
+- On Player death
+- On load
+- Crashes when opens inventory (after allitems)
+- Crashes on end game (sometimes)
+- Crashes when i spawn stat onto character
+	- Bug: flecs.c: 20794: abort(): cannot change children of prefab 'app_sdl_2647.game_2646.realm_8589938051.Boney_4096' after it has been instantiated (INVALID_OPERATION)
+	
 - Remove trigger system for lods
 	- just update neighbor of updating chunks inside stream systems
 	- atm the faces stay sometimes between lods
-
-Plan:
--x make a lod update queue
-    -x TunkLodSystem
-        - we can just add in stream system
-        - can we get an update from hashmap
-        - we will need to override previous entries in lod update queue
-    -x update them over time from terrain
-    -x this solves the issue of NxM complexity on terrain updates vs frames
-    -x main issue isnt system timings, its table update rates on chunks
-
-- Debugging lagspike
-    - removed BuildMesh
-    - removed PreInitialize
-        - spawn_prefab_mesh3
-        - spawn_prefab_chunk_textured
-
-- Lag spike between streaming
-    - the remove/add for events is failing
-    - it works to reduce querying though
-    - we can just add a generic Spawning state
-        - initialize can be first state
-        - can we add generic callbacks for initializing
-            - replace the gpu initialization with callbacks on mesh
-        - this creates 1 component per chunk/mesh that removes when down
-        - as they process at different speeds, this will be removed at end of their processing
-- Fix: Camera lags behind body one frame
-    - ...? easiest way to test is to fly up and drop
-- Crashes when opens inventory (after allitems)
-- Crashes on end game (sometimes)
-- Bug: flecs.c: 20794: abort(): cannot change children of prefab 'app_sdl_2647.game_2646.realm_8589938051.Boney_4096' after it has been instantiated (INVALID_OPERATION)
-
 - Refactor DoubleDataMax - system timings - use a seperate entity
     - with system link
     
-    
-
 # NOTE: Relationships fragment by default (including ChildOf)
 - Bug: Spawning health on realm character errors
     - with the non fragmenting parenting set
-- Lag: When streaming it spikes 30-50ms
 
 ## Next
 - Fix Font imports for "?"
