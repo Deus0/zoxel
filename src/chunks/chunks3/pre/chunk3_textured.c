@@ -18,7 +18,7 @@ entity spawn_prefab_chunk_invisible(ecs *world) {
     zox_setv(e, RenderDisabled, 0);
     zox_setv(e, ChunkNeighbors, { 0 });
 #ifdef zox_non_fragment_parent
-    zox_add(e, EcsParent);
+    // zox_add(e, EcsParent);
 #endif
     return e;
 }
@@ -35,6 +35,7 @@ entity spawn_prefab_chunk_textured(
     zox_setv(e, VoxelNodeQueue, 0);
     zox_setv(e, BlockDamageQueue, 0);
     // Events
+    zox_add(e, FindNeighbors);
     zox_add(e, PreInitialize);
     return e;
 }

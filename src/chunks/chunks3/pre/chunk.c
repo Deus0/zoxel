@@ -9,7 +9,7 @@ entity spawn_prefab_chunk(
     zox_setv(e, Rotation3D, float4_identity);
     zox_setv(e, TransformMatrix, float4x4_identity);
 #ifdef zox_non_fragment_parent
-    zox_add(e, EcsParent);
+    // zox_add(e, EcsParent);
 #endif
     // Rendering
     zox_add(e, Mesh);

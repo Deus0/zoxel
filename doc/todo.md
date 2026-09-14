@@ -1,5 +1,21 @@
 # Todo
 
+Plan:
+- make a lod update queue
+    - TunkLodSystem
+        - we can just add in stream system
+        - can we get an update from hashmap
+        - we will need to override previous entries in lod update queue
+    - update them over time from terrain
+    - this solves the issue of NxM complexity on terrain updates vs frames
+    - main issue isnt system timings, its table update rates on chunks
+
+- Debugging lagspike
+    - removed BuildMesh
+    - removed PreInitialize
+        - spawn_prefab_mesh3
+        - spawn_prefab_chunk_textured
+
 - Lag spike between streaming
     - the remove/add for events is failing
     - it works to reduce querying though

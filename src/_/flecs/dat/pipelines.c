@@ -26,6 +26,7 @@
 #define zoxp_post_update EcsOnValidate
 #define zoxp_gpu_upload EcsPreStore     // zoxp_cameras +
 #define zoxp_rendering EcsPreStore      // zoxp_cameras +
+#define zoxp_rendering_end EcsOnStore
 #define zoxp_load EcsOnValidate
 #define zoxp_save EcsOnValidate
 // Core

@@ -9,3 +9,4 @@
 #include "init.c"
 #include "engine.c"
 #include "find.c"
+#include "phases.c"

@@ -19,10 +19,13 @@ void update_ecs(ecs *world) {
     }*/
     byte dbg_log = 0;
     run_update_loop(world);
+#ifdef zox_logs
     static double last_merge = 0;
     static double last_rematch = 0;
     double t0 = current_time_in_seconds();
+#endif
     ecs_progress(world, 0);
+#ifdef zox_logs
     double t1 = current_time_in_seconds();
     const ecs_world_info_t *info = ecs_get_world_info(world);
     double merge = info->merge_time_total - last_merge;
@@ -37,7 +40,8 @@ void update_ecs(ecs *world) {
             rematch * 1000.0
         );
     }
-    run_post_update_loop(world);
+#endif
+    // run_post_update_loop(world);
     ecs_run_count++;
 #ifdef FLECS_STATS
     debug_ecs_stats(world);

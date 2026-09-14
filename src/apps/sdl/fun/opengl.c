@@ -1,5 +1,6 @@
 // wrapper for SDL GL Swap Window
-void app_update_gpu(ecs *world) {
+void app_gpu_end_system(iter* it) {
+    zox_sys_world();
     if (!zox_valid(main_app)) {
         zox_loge("[main_app] is missing");
         return;
@@ -13,4 +14,4 @@ void app_update_gpu(ecs *world) {
         return;
     }
     SDL_GL_SwapWindow(window->value);
-}
+} zoxd_system(app_gpu_end_system);

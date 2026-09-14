@@ -115,6 +115,7 @@ zox_sys2(TunkLodSystem) {
                 continue;
             }
             zox_setv(chunk, RenderDepth, tunk_render_depth);
+            // NOTE: New component
             zox_setv(chunk, ChunkLodDirty, zox_chunk_lod_dirty_start);
             // Stop the active building
             // entity active_mesh = zox_getv(chunk, ActiveMesh);

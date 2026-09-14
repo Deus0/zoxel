@@ -297,7 +297,9 @@ zox_sys2(ChunkSidesSystem) {
                 ) {
                     zox_add(e2, BuildMesh);
                     if (dbg_log) {
-                        zox_log("Chunk Triggered Build [%s]:[%s]", zox_getn(e), zox_getn(e2));
+                        zox_log("Chunk Triggered Build [%s]:[%s]",
+                            zox_getn(e),
+                            zox_getn(e2));
                     }
                 }
             }

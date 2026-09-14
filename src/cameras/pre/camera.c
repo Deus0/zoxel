@@ -10,7 +10,7 @@ entity spawn_prefab_camera(ecs* world) {
     zox_setv(e, Euler, euler);
     zox_setv(e, LocalRotation3D, quaternion_from_euler(float3_scale(euler, degreesToRadians)));
 #ifdef zox_non_fragment_parent
-    zox_add(e, EcsParent);
+    // zox_add(e, EcsParent);
 #endif
     // Camera
     zox_setv(e, CameraState, 0);

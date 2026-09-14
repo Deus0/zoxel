@@ -1,4 +1,4 @@
-general_fun_array_d* post_update_functions;
+/*general_fun_array_d* post_update_functions;
 
 void initialize_post_update_loop() {
     post_update_functions = create_general_fun_array_d(initial_dynamic_array_size);
@@ -19,4 +19,4 @@ void run_post_update_loop(ecs *world) {
             (*post_update_functions->data[i].value)(world);
         }
     }
-}
+}*/

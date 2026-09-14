@@ -15,7 +15,7 @@ entity spawn_prefab_chunk_base(ecs *world) {
     zox_setv(e, VoxelNodeLock, 0);
     zox_setv(e, SidesOctree, 0);
 #ifdef zox_non_fragment_parent
-    zox_add(e, EcsParent);
+    // zox_add(e, EcsParent);
 #endif
     return e;
 }

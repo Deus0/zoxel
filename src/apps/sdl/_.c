@@ -28,7 +28,7 @@ void import_sdl(ecs* world) {
     define_components_sdl(world);
     define_systems_sdl(world);
     zox_module_dispose(dispose_apps_sdl);
-    add_to_post_update_loop(app_update_gpu);
+    // add_to_post_update_loop(app_update_gpu);
     add_hook_terminal_command(process_terminal_sdl);
     add_hook_spawn_prefabs(spawn_prefabs_sdl);
     initialize_sounds();

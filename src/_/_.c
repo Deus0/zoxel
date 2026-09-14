@@ -104,7 +104,7 @@ void initialize_zox(ecs* world) {
     zox_module_dispose(module_dispose_zox);
     clear_logs();
     initialize_update_loop();
-    initialize_post_update_loop();
+    // initialize_post_update_loop();
     initialize_hook_terminal_command();
     initialize_hook_files_load();
     initialize_hook_spawn_prefabs();

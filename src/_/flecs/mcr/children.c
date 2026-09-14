@@ -82,22 +82,27 @@ static inline byte zox_is_parent(
 
 // Returns 1 if sets parent
 static inline byte zox_set_parent(
-    ecs *world,
+    ecs* world,
     entity child,
     entity parent)
 {
-    if (!ecs_is_alive(world, child)) {
+    if (!zox_alive(child) ||
+        !zox_valid(child))
+    {
         zox_logw("Trying to set parent from invalid child");
         return 0;
     }
-    if (parent && !ecs_is_alive(world, parent)) {
+    if (parent &&
+        (!zox_alive(parent) ||
+        !zox_valid(parent)))
+    {
         zox_logw("Trying to set parent from invalid parent");
         return 0;
     }
     // Removes previous parent pair
 #ifdef zox_non_fragment_parent
-    const EcsParent* current = ecs_get(world, child, EcsParent);
-    if (parent == 0) {
+    const EcsParent* current = zox_get(child, EcsParent);
+    if (!parent) {
         if (current && current->value) {
             zox_remove(child, EcsParent);
         }
@@ -129,11 +134,11 @@ static inline uint zox_get_children_count(
     ecs* world,
     entity parent)
 {
-    if (!ecs_is_alive(world, parent)) {
+    if (!zox_alive(parent)) {
         return 0;
     }
     uint count = 0;
-    ecs_iter_t it = ecs_children(world, parent);
+    iter it = ecs_children(world, parent);
     while (ecs_children_next(&it)) {
         count += it.count;
     }

@@ -11,4 +11,9 @@ void define_systems_sdl(ecs* world) {
         zoxp_update,
         [in] inputs.Keyboard
     );
+    zox_system_1(
+        app_gpu_end_system,
+        zoxp_rendering_end,
+        0
+    );
 }

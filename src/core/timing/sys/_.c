@@ -34,4 +34,9 @@ void zox_systems_timing(ecs* world) {
         zoxp_update,
         0
     );
+    zox_system_1(
+        iterate_time_system,
+        zoxp_rendering_end,
+        0
+    );
 }
