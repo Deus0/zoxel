@@ -63,22 +63,22 @@ entity spawn_material_vox_instance(ecs *world) {
     char* frag = get_shader_source(world, "vox_instance.frag");
     shader_verts[shader_index] = vert;
     shader_frags[shader_index] = frag;
-    const entity shader = spawn_shader(world, shader_index);
+    entity shader = spawn_shader(world, shader_index);
     if (!shader) {
         zox_log_error("[shader_vox_instance] failed to spawn")
         return 0;
     }
-    uint material;
-    const entity e = spawn_material(world, shader, &material);
-    zox_set(e, ShaderLink, { shader });
+    guint material;
+    entity e = spawn_material(world, shader, &material);
+    zox_link(world, e, ShaderLink, shader);
     if (!material) {
         zox_log_error("vox instance material failed to initialize")
         return 0;
     }
     const MaterialVoxInstance materialVoxInstance =  create_MaterialVoxInstance(material);
     zox_set_data(e, MaterialVoxInstance, materialVoxInstance)
-    uint ubo = generate_ubo(materialVoxInstance.matrices);
-    zox_set(e, UboGPULink, { ubo })
+    guint ubo = generate_ubo(materialVoxInstance.matrices);
+    zox_setv(e, UboGPULink, ubo);
     material_vox_instance = e;
     shader_vox_instance = shader;
     return e;

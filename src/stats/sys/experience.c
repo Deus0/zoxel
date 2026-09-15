@@ -2,20 +2,17 @@
 zox_sys2(ExperienceSystem) {
     const float popup_spawn_y = 0.34f;
     zox_sys_world();
-    zox_sys_begin();
-    // zox_sys_in(Dead);
-    zox_sys_in(LastDamager);
+    // zox_sys_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        // zox_sys_i(Dead, dead);
-        zox_sys_i(LastDamager, enemy);
+        entity attacker = zox_get_link(world, e, LastDamager);
         // proces if i die
         /*if (dead->value != zox_dirty_active) {
             continue;
         }*/
         // if enemy invalid or dead, continue
-        if (!zox_valid(enemy->value) ||
-            !zox_has(enemy->value, Dead))
+        if (!zox_valid(attacker) ||
+            !zox_has(attacker, Dead))
         {
             continue;
         }
@@ -28,7 +25,7 @@ zox_sys2(ExperienceSystem) {
         }
         entity enemy_soul = zox_get_child_by_id(
             world,
-            enemy->value,
+            attacker,
             zox_id(StatSoul));
         if (!zox_valid(enemy_soul)) {
             continue;
@@ -57,6 +54,6 @@ zox_sys2(ExperienceSystem) {
             popup_position,
             zox_popup_scale * 2,
             7 + rand() % 3);
-        // zox_log(" + [%s] has gained [%f] xp", zox_get_name(enemy->value), experience_gain)
+        // zox_log(" + [%s] has gained [%f] xp", zox_get_name(attacker), experience_gain)
     }
 } zox_sys_end(ExperienceSystem);

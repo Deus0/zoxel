@@ -60,7 +60,7 @@ zox_sys2(Element3RenderSystem) {
             zox_gpu_float4(attributes->fog_data, get_fog_value());
             zox_gpu_float(attributes->brightness, 1);
             if (dbg_log >= 2) {
-                entity shader = zox_getv(material, ShaderLink);
+                entity shader = zox_get_link(world, material, ShaderLink);
                 zox_log("Rendering Element3 Material [%s]: %i - Shader [%s]", zox_getn(material), material_link, zox_getn(shader));
             }
         }

@@ -1,5 +1,10 @@
 # Done
 
+-x GameLink
+-x PlayerLink
+-x MaterialLink
+-x ShaderLink
+-x LastDamager
 -x Lag: When streaming it spikes 30-50ms
 -x Debugging lagspike
     - removed BuildMesh

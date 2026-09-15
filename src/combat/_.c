@@ -1,13 +1,13 @@
 zoxc_byte(CombatState);
 zoxc_float(Damage);
 zoxc_double(LastCombatTime);
-zoxc_entity(LastDamager);
+zox_tag(LastDamager);
 
 void zox_define_components_combat(ecs* world) {
     zoxd_byte(CombatState);
     zoxd_float(Damage);
     zoxd_double(LastCombatTime);
-    zoxd_entity(LastDamager);
+    zoxd_nf_tag(LastDamager);
 }
 
 #include "sta/_.c"

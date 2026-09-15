@@ -44,7 +44,7 @@ entity spawn_material_colored3D(ecs *world) {
     }
     uint material;
     entity e = spawn_material(world, shader, &material);
-    zox_set(e, ShaderLink, { shader })
+    zox_link(world, e, ShaderLink, shader);
     const MaterialColored3D attributes = create_MaterialColored3D(material);
     zox_set_data(e, MaterialColored3D, attributes)
     material_colored3D = e;

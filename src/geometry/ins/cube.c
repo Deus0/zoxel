@@ -20,7 +20,7 @@ entity spawn_cube_with_shader(
     zox_setv(e, Position3D, position);
     zox_setv(e, Scale1, scale1);
     zox_add(e, MeshBasic3);
-    zox_setv(e, ShaderLink, shader);
+    zox_link(world, e, ShaderLink, shader);
     zox_setv(e, MaterialGPULink, gpu_material);
     MaterialBasic3D attributes = create_MaterialBasic3D(gpu_material);
     zox_set_data(e, MaterialBasic3D, attributes);

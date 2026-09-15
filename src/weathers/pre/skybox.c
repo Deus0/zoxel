@@ -14,9 +14,7 @@ entity spawn_prefab_skybox(ecs *world) {
     zox_add(e, MeshIndicies);
     zox_add(e, MeshVertices);
     zox_prefab_set(e, MeshGPULink, { { 0, 0 } });
-    zox_prefab_set(e, ShaderLink, { 0 });
     zox_prefab_set(e, MaterialGPULink, { 0 });
-    zox_prefab_set(e, ShaderLink, { 0 });
     zox_prefab_set(e, Color, { color_white });
     zox_prefab_set(e, ColorRGB, { color_rgb_white });
     zox_add(e, SecondaryColorRGB);

@@ -8,7 +8,6 @@ entity spawn_prefab_tilemap(ecs *world) {
     zox_setv(e, TextureSize, int2_zero);
     zox_setv(e, TextureGPULink, 0);
     zox_setv(e, MaterialGPULink, 0);
-    zox_setv(e, ShaderLink, 0);
     zox_setv(e, TextureLinks, 0);
     zox_setv(e, TilemapUVs, 0);
     zox_setv(e, GenerateTexture, 0);
@@ -21,16 +20,17 @@ entity spawn_tilemap(
     entity prefab,
     entity realm)
 {
+    entity shader = shader_textured3D;
     zox_instance(prefab);
     zox_name("tilemap");
     zox_set_parent(world, e, realm);
     zox_link(world, e, RealmLink, realm);
-    if (!shader_textured3D) {
+    if (!shader) {
         return e;
     }
-    zox_setv(e, ShaderLink, shader_textured3D);
-    guint2 shader = zox_getv(shader_textured3D, ShaderGPULink);
-    guint gpu_material = spawn_gpu_material_program(shader);
+    zox_link(world, e, ShaderLink, shader);
+    guint2 gpu_shader = zox_getv(shader, ShaderGPULink);
+    guint gpu_material = spawn_gpu_material_program(gpu_shader);
     if (gpu_material) {
         MaterialTextured3D attributes = create_MaterialTextured3D(gpu_material);
         zox_setv(e, MaterialGPULink, gpu_material);

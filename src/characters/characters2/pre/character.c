@@ -13,7 +13,6 @@ entity spawn_prefab_character2(ecs *world) {
     // GPU
     zox_setv(e, Brightness, 1);
     zox_setv(e, MaterialGPULink, 0);
-    zox_setv(e, ShaderLink, 0);
     zox_setv(e, TextureGPULink, 0);
     zox_setv(e, ElementLinks, 0);
     return e;

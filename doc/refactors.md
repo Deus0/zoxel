@@ -59,13 +59,13 @@ UIs
 	- Settings Spawning - InitializeEvent on App
     
 ## Remove old links
-	-x GameLink
-	-x PlayerLink
-	-x MaterialLink
-	- ShaderLink
+	- SkeletonLink
+	- HeadBoneLink
+	- HandBoneLink
+	- ShoulderBoneLink
 	- ChunkLink
 	- TextureLink
-	- LastDamager
+	- TextureLinks
 	- ElementLink
 	- DeviceLink
 	- ZeviceLink
@@ -93,10 +93,6 @@ UIs
 	- BlockLinks
 	- BiomeLinks
 	- ModelLinks (half done)
-	- SkeletonLink
-	- HeadBoneLink
-	- HandBoneLink
-	- ShoulderBoneLink
 	- CameraFollowLink
 	- Character2DLink
 	- CloneVoxLink

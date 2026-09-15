@@ -34,7 +34,6 @@ void define_systems_npcs(ecs *world) {
     zox_system_m(
         ThreatPositionSystem,
         !is_debug_target,
-        [in] combat.LastDamager,
         [out] ai.ThreatPosition,
         [none] ai.Npc
     );

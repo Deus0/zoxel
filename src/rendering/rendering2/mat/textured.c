@@ -27,7 +27,7 @@ entity spawn_material_textured2D(ecs *world) {
     if (!e) {
         return 0;
     }
-    zox_set(e, ShaderLink, { shader });
+    zox_link(world, e, ShaderLink, shader);
     MaterialTextured2D attributes = create_MaterialTextured2D(material);
     zox_set_data(e, MaterialTextured2D, attributes);
     material_textured2D = e;

@@ -42,7 +42,7 @@ entity spawn_material_basic3D(
     guint material;
     entity e = spawn_material(world, shader, &material);
     zox_name("material_basic3D");
-    zox_setv(e, ShaderLink, shader);
+    zox_link(world, e, ShaderLink, shader);
     MaterialBasic3D attributes = create_MaterialBasic3D(material);
     zox_set_data(e, MaterialBasic3D, attributes);
     return e;

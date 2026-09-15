@@ -12,7 +12,7 @@ entity spawn_cube_textured(ecs* world, entity prefab, entity texture, float3 pos
         return e;
     }
     guint2 shader = zox_getv(shader_textured3D, ShaderGPULink);
-    zox_set(e, ShaderLink, { shader_textured3D });
+    zox_link(world, e, ShaderLink, shader_textured3D);
     guint gpu_material = spawn_gpu_material_program(shader);
     if (gpu_material) {
         zox_setv(e, MaterialGPULink, gpu_material);

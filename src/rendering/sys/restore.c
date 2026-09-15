@@ -57,25 +57,29 @@ zox_sys2(UvsGPULinkRestoreSystem) {
 zox_sys2(MaterialRestoreSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ShaderLink);
     zox_sys_out(MaterialGPULink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ShaderLink, shaderLink);
-        zox_sys_o(MaterialGPULink, materialGPULink);
+        zox_sys_e();
+        zox_sys_o(MaterialGPULink, material);
+        entity shader = zox_get_link(world, e, ShaderLink);
+        if (!shader) {
 #ifdef zox_log_gpu_management
-        if (!shaderLink->value) zox_log(" ! no shader_link [%s]\n", zox_get_name(it->entities[i]));
+            zox_logw("No shader [%s]",
+                zox_get_name(it->entities[i]));
 #endif
-        if (!shaderLink->value) {
             continue;
         }
-        guint2 shader = zox_getv(shaderLink->value, ShaderGPULink);
+        guint2 gpu_shader = zox_getv(shader, ShaderGPULink);
 #ifdef zox_log_gpu_management
-        zox_log(" > restoring [%s] - shader [%ix%i]\n", zox_get_name(it->entities[i]), shader.x, shader.y)
+        zox_log(" > restoring [%s] - shader [%ix%i]\n",
+            zox_get_name(it->entities[i]),
+                gpu_shader.x,
+                gpu_shader.y)
 #endif
-        if (!shader.x || !shader.y) {
+        if (!gpu_shader.x || !gpu_shader.y) {
             continue;
         }
-        materialGPULink->value = spawn_gpu_material_program(shader);
+        material->value = spawn_gpu_material_program(gpu_shader);
     }
 } zox_sys_end(MaterialRestoreSystem);
 
@@ -91,7 +95,7 @@ zox_sys2(ColorsGPULinkRestoreSystem) {
 void zox_systems_rendering_restore(ecs* world) {
     zox_gpu_restore_system(
         MeshGPURestoreSystem,
-        [out] MeshGPULink
+        [out] rendering.MeshGPULink
     );
     zox_gpu_restore_system(
         UvsGPULinkRestoreSystem,
@@ -103,17 +107,17 @@ void zox_systems_rendering_restore(ecs* world) {
     );
     zox_gpu_restore_system(
         TextureRestoreSystem,
-        [out] TextureGPULink
+        [out] rendering.TextureGPULink
     );
     zox_gpu_restore_system(
         ShaderRestoreSystem,
-        [in] ShaderSourceIndex,
-        [out] ShaderGPULink
+        [in] rendering.ShaderSourceIndex,
+        [out] rendering.ShaderGPULink
     );
     zox_gpu_restore_system(
         MaterialRestoreSystem,
-        [in] ShaderLink,
-        [out] MaterialGPULink
+        [out] rendering.MaterialGPULink,
+        // [none] rendering.Material
     );
     zox_gpu_restore_system(
         MeshDirtyRestoreSystem,

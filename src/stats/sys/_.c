@@ -43,8 +43,6 @@ void zox_systems_stats(ecs *world) {
     zox_system_1(
         ExperienceSystem,
         zoxp_spawn,
-        // [in] combat.Dead,
-        [in] combat.LastDamager,
         [none] core.Dead,
         [none] core.DeathDirty,
     );

@@ -6,14 +6,13 @@ void define_systems_quests(ecs* world) {
     zox_system(
         SlaySystem,
         zoxp_update,
-        [in] combat.LastDamager,
+        [none] characters.Character,
         [none] core.DeathDirty,
     );
     zox_system_1(
         CharacterPlayerQuestsSystem,
         zoxp_spawn,
         [in] characters.GenerateCharacter,
-        [in] realms.RealmLink,
         [none] characters.Character,
         [none] players.PlayerCharacter
     );
@@ -21,6 +20,7 @@ void define_systems_quests(ecs* world) {
         MarkerSpawnSystem,
         zoxp_spawn,
         [in] characters.GenerateCharacter,
-        [out] ui.ElementLinks
+        [out] ui.ElementLinks,
+        [none] characters.Character,
     );
 }

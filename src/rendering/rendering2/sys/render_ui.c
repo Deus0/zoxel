@@ -55,7 +55,7 @@ entity spawn_material_matrixui(ecs *world) {
         zox_loge("Material [matrixui] Failed");
         return 0;
     }
-    zox_set(e, ShaderLink, { shader });
+    zox_link(world, e, ShaderLink, shader);
     attributes_matrixui base_attributes = create_attributes_matrixui(material);
     zox_set_data(e, attributes_matrixui, base_attributes);
     return e;

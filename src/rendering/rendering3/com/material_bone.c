@@ -38,7 +38,7 @@ entity spawn_material_bone(ecs *world, byte transparent) {
         zox_log(" ! failed spawning bone material")
         return 0;
     }
-    zox_set(e, ShaderLink, { shader });
+    zox_link(world, e, ShaderLink, shader);
     const MaterialBone attributes = create_MaterialBone(material);
     zox_set_data(e, MaterialBone, attributes);
     return e;

@@ -29,13 +29,12 @@ void quest_on_slay(
 zox_sys2(SlaySystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(LastDamager);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(LastDamager, enemy);
         // if enemy invalid or dead, continue
-        if (!zox_valid(enemy->value) ||
-            zox_has(enemy->value, Dead))
+        entity attacker = zox_get_link(world, e, LastDamager);
+        if (!zox_valid(attacker) ||
+            zox_has(attacker, Dead))
         {
             continue;
         }
@@ -44,7 +43,7 @@ zox_sys2(SlaySystem) {
         entity enemy_quests[zox_children_capacity];
         uint enemy_quests_length = zox_get_children_by_id(
             world,
-            enemy->value,
+            attacker,
             enemy_quests,
             zox_children_capacity,
             zox_id(Quest));
@@ -53,7 +52,7 @@ zox_sys2(SlaySystem) {
             quest_on_slay(
                 world,
                 quest,
-                enemy->value,
+                attacker,
                 e);
         }
     }

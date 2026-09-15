@@ -18,7 +18,6 @@ entity spawn_prefab_cube(ecs *world) {
     prefab_set_mesh_indicies(world, e, cube2_indicies, cube2_indicies_length);
     prefab_set_mesh_vertices_float3(world, e, cube2_vertices, cube2_vertices_length);
     // Material
-    zox_prefab_set(e, ShaderLink, { 0 });
     zox_prefab_set(e, MaterialGPULink, { 0 });
     // zox_prefab_set(e, MeshRenderCount, { 0 });
     zox_add(e, PreInitialize);

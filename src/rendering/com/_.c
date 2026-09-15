@@ -31,7 +31,7 @@ zoxc_byte(RenderDisabled);
 // Links
 zox_tag(MaterialLink);
 zoxc_byte(ShaderSourceIndex);
-zoxc_entity(ShaderLink); // links to a shader entity
+zox_tag(ShaderLink); // links to a shader entity
 zoxc_entity(InstanceLink); // links to a instance parent
 // Models
 zoxc_entities(ModelLinks)
@@ -112,7 +112,7 @@ void define_components_rendering(ecs *world) {
     zoxd_byte(ShaderSourceIndex);
     zoxd_nf_tag(MaterialLink);
     zoxd_entity(InstanceLink);
-    zoxd_entity(ShaderLink);
+    zoxd_nf_tag(ShaderLink);
     zoxd_entity(ModelLink);
     zoxd_entities(ModelLinks);
     zox_define_component_array(ModelLods);

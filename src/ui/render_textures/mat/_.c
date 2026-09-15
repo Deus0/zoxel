@@ -26,7 +26,7 @@ entity spawn_material_render_texture(ecs* world, byte is_alpha) {
     }
     zox_set_unique_name(e, "material_render_texture");
     zox_set_parent(world, shader, material_id);
-    zox_setv(e, ShaderLink, shader);
+    zox_link(world, e, ShaderLink, shader);
     zox_setv(e, CameraBlur, 0);
     // Set material properties
     attributes_matrixui base_attributes = create_attributes_matrixui(material_id);
