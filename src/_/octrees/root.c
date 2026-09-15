@@ -217,15 +217,17 @@ static inline byte3 byte3_offset_wrap(
 }
 
 // NOTE: Gets voxel from neighbouring chunk if position crosses boundary
-static inline const void* octree_get_nearby(
+static inline byte octree_getv_nearby(
     const void** octrees,
+    spinlock** locks,
     byte3 position,
     byte depth,
     sbyte3 offset,
-    size_t stride)
+    size_t stride,
+    byte oob_value)
 {
     if (!octrees || depth >= 7) {
-        return NULL;
+        return oob_value;
     }
     sbyte3 chunk_offset;
     byte3 local_position = byte3_offset_wrap(
@@ -240,15 +242,26 @@ static inline const void* octree_get_nearby(
         chunk_offset.z
     );
     const void* root = octrees[index];
+    spinlock* lock = locks[index];
     if (!root) {
-        return NULL;
+        return oob_value;
     }
-    return get_octree(
+    if (!lock) {
+        zox_loge("LOCK INVALID [%i]", index);
+        return oob_value;
+    }
+    spin_lock(lock);
+    const void* octree = get_octree(
         root,
         depth,
         local_position,
         stride
     );
+    const byte value = octree ?
+        ((OctreeBasic*)octree)->value :
+        oob_value;
+    spin_unlock(lock);
+    return value;
 }
 
 // dir ordering:

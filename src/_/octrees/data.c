@@ -5,6 +5,11 @@
 byte dbg_log_octree_errors = 1;
 
 typedef struct {
+    void* ptr;
+    byte value;
+} OctreeBasic;
+
+typedef struct {
     entity value;
 } OctreeLink;
 

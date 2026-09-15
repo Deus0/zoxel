@@ -70,13 +70,13 @@ void fetch_neightbor_dark_queues(
 void fetch_neighbors_light_locks(
     ecs* world,
     const entity* neighbors,
-    LightLock** locks
+    spinlock** locks
 ) {
     for (int i = 0; i < 6; i++) {
         entity e = neighbors[i];
         locks[i] = zox_valid(e) &&
             zox_has(e, LightLock) ?
-                zox_gett_mut(e, LightLock) :
+                &(zox_mut(e, LightLock)->value) :
                 NULL;
     }
 }

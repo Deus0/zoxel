@@ -3,6 +3,7 @@
 
 static inline void zox_apply_smooth_lights(
     const LightNode** lights,
+    spinlock** locks,
     const VoxelNode* voxels,
     const SidesOctree* sides,
     const MeshColorRGBs* colors,
@@ -23,6 +24,7 @@ static inline void zox_apply_smooth_lights(
             byte3 child_position = byte3_add(position, octree_positions[i]);
             zox_apply_smooth_lights(
                 lights,
+                locks,
                 cvoxels,
                 &sides_kids[i],
                 colors,
@@ -70,6 +72,7 @@ static inline void zox_apply_smooth_lights(
         byte oob_value = oob_values[direction];
         byte adjacent_light = getv_nearby_LightNode(
             lights,
+            locks,
             position,
             depth,
             neighbor_offsets[direction],
@@ -86,62 +89,122 @@ static inline void zox_apply_smooth_lights(
             // Adjacents
             light_n1_0 = getv_nearby_LightNode(
                 lights,
+                locks,
                 position,
                 depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { -1, 0, 0 }),
+                sbyte3_add(
+                    neighbor_offsets[direction],
+                    (sbyte3) { -1, 0, 0 }
+                ),
                 oob_value);
-            light_1_0 = getv_nearby_LightNode(lights, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 1, 0, 0 }), oob_value);
-            light_0_n1 = getv_nearby_LightNode(lights, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 0, -1 }), oob_value);
-            light_0_1 = getv_nearby_LightNode(lights, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 0, 1 }), oob_value);
+            light_1_0 = getv_nearby_LightNode(
+                lights,
+                locks,
+                position,
+                depth,
+                sbyte3_add(
+                    neighbor_offsets[direction],
+                    (sbyte3) { 1, 0, 0 }
+                ),
+                oob_value);
+            light_0_n1 = getv_nearby_LightNode(
+                lights,
+                locks,
+                position,
+                depth,
+                sbyte3_add(
+                    neighbor_offsets[direction],
+                    (sbyte3) { 0, 0, -1 }
+                ),
+                oob_value);
+            light_0_1 = getv_nearby_LightNode(
+                lights,
+                locks,
+                position,
+                depth,
+                sbyte3_add(
+                    neighbor_offsets[direction],
+                    (sbyte3) { 0, 0, 1 }
+                ),
+                oob_value);
             // Corners
-            light_n1_n1 = getv_nearby_LightNode(lights, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { -1, 0, -1 }), oob_value);
-            light_1_1 = getv_nearby_LightNode(lights, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 1, 0, 1 }), oob_value);
-            light_n1_1 = getv_nearby_LightNode(lights, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { -1, 0, 1 }), oob_value);
-            light_1_n1 = getv_nearby_LightNode(lights, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 1, 0, -1 }), oob_value);
+            light_n1_n1 = getv_nearby_LightNode(
+                lights,
+                locks,
+                position,
+                depth,
+                sbyte3_add(
+                    neighbor_offsets[direction],
+                    (sbyte3) { -1, 0, -1 }
+                ),
+                oob_value);
+            light_1_1 = getv_nearby_LightNode(
+                lights,
+                locks,
+                position,
+                depth,
+                sbyte3_add(
+                    neighbor_offsets[direction],
+                    (sbyte3) { 1, 0, 1 }
+                ),
+                oob_value);
+            light_n1_1 = getv_nearby_LightNode(
+                lights,
+                locks,
+                position,
+                depth,
+                sbyte3_add(
+                    neighbor_offsets[direction],
+                    (sbyte3) { -1, 0, 1 }
+                ),
+                oob_value);
+            light_1_n1 = getv_nearby_LightNode(
+                lights,
+                locks,
+                position,
+                depth,
+                sbyte3_add(
+                    neighbor_offsets[direction],
+                    (sbyte3) { 1, 0, -1 }
+                ),
+                oob_value);
         } else if (direction == direction_front || direction == direction_back) {
             // Adjacents
-            light_n1_0 = getv_nearby_LightNode(lights, position, depth,
+            light_n1_0 = getv_nearby_LightNode(lights, locks, position, depth,
                 sbyte3_add(neighbor_offsets[direction], (sbyte3) { -1, 0, 0 }), oob_value);
-            light_1_0 = getv_nearby_LightNode(lights, position, depth,
+            light_1_0 = getv_nearby_LightNode(lights, locks, position, depth,
                 sbyte3_add(neighbor_offsets[direction], (sbyte3) { 1, 0, 0 }), oob_value);
-            light_0_n1 = getv_nearby_LightNode(lights, position, depth,
+            light_0_n1 = getv_nearby_LightNode(lights, locks, position, depth,
                 sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, -1, 0 }), oob_value);
-            light_0_1 = getv_nearby_LightNode(lights, position, depth,
+            light_0_1 = getv_nearby_LightNode(lights, locks, position, depth,
                 sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 1, 0 }), oob_value);
             // Corners
-            light_n1_n1 = getv_nearby_LightNode(lights, position, depth,
+            light_n1_n1 = getv_nearby_LightNode(lights, locks, position, depth,
                 sbyte3_add(neighbor_offsets[direction], (sbyte3) { -1, -1, 0 }), oob_value);
-            light_1_1 = getv_nearby_LightNode(lights, position, depth,
+            light_1_1 = getv_nearby_LightNode(lights, locks, position, depth,
                 sbyte3_add(neighbor_offsets[direction], (sbyte3) { 1, 1, 0 }), oob_value);
-            light_n1_1 = getv_nearby_LightNode(lights, position, depth,
+            light_n1_1 = getv_nearby_LightNode(lights, locks, position, depth,
                 sbyte3_add(neighbor_offsets[direction], (sbyte3) { -1, 1, 0 }), oob_value);;
-            light_1_n1 = getv_nearby_LightNode(lights, position, depth,
+            light_1_n1 = getv_nearby_LightNode(lights, locks, position, depth,
                 sbyte3_add(neighbor_offsets[direction], (sbyte3) { 1, -1, 0 }), oob_value);
         } else if (direction == direction_left || direction == direction_right) {
             // Adjacents
-            light_n1_0 = getv_nearby_LightNode(lights, position, depth,
+            light_n1_0 = getv_nearby_LightNode(lights, locks, position, depth,
                 sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, -1, 0 }), oob_value);
-            light_1_0 = getv_nearby_LightNode(lights, position, depth,
+            light_1_0 = getv_nearby_LightNode(lights, locks, position, depth,
                 sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 1, 0 }), oob_value);
-            light_0_n1 = getv_nearby_LightNode(lights, position, depth,
+            light_0_n1 = getv_nearby_LightNode(lights, locks, position, depth,
                 sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 0, -1 }), oob_value);
-            light_0_1 = getv_nearby_LightNode(lights, position, depth,
+            light_0_1 = getv_nearby_LightNode(lights, locks, position, depth,
                 sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 0, 1 }), oob_value);
             // Corners
-            light_n1_n1 = getv_nearby_LightNode(lights, position, depth,
+            light_n1_n1 = getv_nearby_LightNode(lights, locks, position, depth,
                 sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, -1, -1 }), oob_value);
-            light_1_1 = getv_nearby_LightNode(lights, position, depth,
+            light_1_1 = getv_nearby_LightNode(lights, locks, position, depth,
                 sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 1, 1 }), oob_value);
-            light_n1_1 = getv_nearby_LightNode(lights, position, depth,
+            light_n1_1 = getv_nearby_LightNode(lights, locks, position, depth,
                 sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, -1, 1 }), oob_value);
-            light_1_n1 = getv_nearby_LightNode(lights, position, depth,
+            light_1_n1 = getv_nearby_LightNode(lights, locks, position, depth,
                 sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 1, -1 }), oob_value);
         }
         for (byte v = 0; v < voxel_face_vertices_length; v++) {
@@ -216,22 +279,23 @@ void build_smooth_lights_system(iter* it) {
         const SidesOctree* sides = zox_get(chunk, SidesOctree);
         const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
         const VoxelNode* voxels = zox_get(chunk, VoxelNode);
-        const LightNode* lights = zox_get(chunk, LightNode);
         entity nearby_chunks[27];
-        const LightNode* nearby_lights[27];
+        const LightNode* lights[27];
+        spinlock* locks[27];
         fetch_nearby_chunks(
             world,
-            e,
+            chunk,
             neighbors->value,
             nearby_chunks);
         fetch_nearby_lights(
             world,
-            lights,
             nearby_chunks,
-            nearby_lights);
+            lights,
+            locks);
         uint ccount = 0;
         zox_apply_smooth_lights(
-            nearby_lights,
+            lights,
+            locks,
             voxels,
             sides,
             colors,

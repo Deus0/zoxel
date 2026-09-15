@@ -1,14 +1,6 @@
 # Todo
 
-- Add LightLock in build_smooth_lights_system
-
-- ChunkLodDirty stuck
-    - vodes_spawn_system shows active
-    - chunk showed preparing and active mesh as same
-    - timer showed constant reset
-
 - Look into plain data types of flecs
-
 - Water Blocks / Chunk Materials
 	- seperate out subchunks by material (with sides per material)
 	- keep a list of materials when blocks update - refresh this list
@@ -20,13 +12,9 @@
 	- reduce gravity
 	- allow jumping inside water
 	- Dampen music sounds
-
 - Add a text speed option - 1, 2, 3 (default 2)
 	- add sounds per syllabal too instead of sound
 - humanoids seem missing
-- Fix: Camera lags behind body one frame
-    - ...? easiest way to test is to fly up and drop
-
 Fix Crashes: (Infrequent)
 - On Player death
 - On load

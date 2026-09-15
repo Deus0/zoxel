@@ -70,7 +70,12 @@ static inline void set_position_rotation_scale_recursive(
     while (zox_children_next(it)) {
         for (int i = 0; i < it.count; i++) {
             entity e2 = it.entities[i];
-            set_position_rotation_scale_recursive(world, e2, world_position, world_rotation, world_scale);
+            set_position_rotation_scale_recursive(
+                world,
+                e2,
+                world_position,
+                world_rotation,
+                world_scale);
         }
     }
 }

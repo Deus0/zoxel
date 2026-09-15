@@ -1,6 +1,11 @@
 // NOTE: Grabs neighbors and corners
-void fetch_nearby_chunks(ecs* world, entity e, const entity* neighbors, entity* chunks) {
-    memset(chunks, 0, sizeof(entity*) * 27);
+static inline void fetch_nearby_chunks(
+    ecs* world,
+    entity e,
+    const entity* neighbors,
+    entity* chunks)
+{
+    memset(chunks, 0, sizeof(entity) * 27);
     if (!zox_valid(e)) {
         return;
     }
@@ -35,33 +40,42 @@ void fetch_nearby_chunks(ecs* world, entity e, const entity* neighbors, entity* 
     }
 }
 
-
-void fetch_nearby_lights(ecs* world, const LightNode* root, const entity* chunks, const LightNode** lights) {
-    // memset(lights, 0, sizeof(const LightNode*) * 27);
-    byte root_index = OCTREE_INDEX3(sbyte3_zero);
-    lights[root_index] = root;
+static inline void fetch_nearby_lights(
+    ecs* world,
+    const entity* chunks,
+    const LightNode** lights,
+    spinlock** locks)
+{
     for (byte i = 0; i < 27; i++) {
-        if (i == root_index) {
+        entity chunk = chunks[i];
+        if (!zox_valid(chunk)) {
+            lights[i] = NULL;
+            locks[i] = NULL;
             continue;
         }
-        entity e = chunks[i];
-        if (zox_valid(e)) {
-            lights[i] = zox_get(e, LightNode);
-        } else {
-            lights[i] = NULL;
-        }
+        lights[i] = zox_get(chunk, LightNode);
+        LightLock* lock = zox_mut(chunk, LightLock);
+        locks[i] = &(lock->value);
     }
 }
 
 // NOTE: Grabs neighbors and corners
-void fetch_neightbor_lights(ecs* world, const LightNode* root, const entity* neighbors, const LightNode** lights) {
+/*void fetch_neightbor_lights(
+    ecs* world,
+    const LightNode* root,
+    const entity* neighbors,
+    const LightNode** lights)
+{
     lights[OCTREE_INDEX(0, 0, 0)] = root;
     for (byte i = 0; i < 6; i++) {
         entity adjacent = neighbors[i];
         if (!zox_valid(adjacent)) {
             continue;
         }
-        const LightNode* nlights = zox_valid(adjacent) && zox_has(adjacent, LightNode) ? zox_get(adjacent, LightNode) : NULL;
+        const LightNode* nlights =
+            zox_valid(adjacent) ?
+                zox_get(adjacent, LightNode) :
+                NULL;
         sbyte3 position1 = neighbor_offsets[i];
         byte index = OCTREE_INDEX3(position1);
         lights[index] = nlights;
@@ -91,4 +105,4 @@ void fetch_neightbor_lights(ecs* world, const LightNode* root, const entity* nei
             lights[index2] = nlights;
         }
     }
-}
+}*/

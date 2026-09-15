@@ -35,14 +35,15 @@ void define_systems_terrain_collisions(ecs* world) {
         [out] physics.Grounded,
         [none] !physics.NoClip
     );
-    zox_system(
+    /*zox_system(
         UnstuckSystem,
         zoxp_physics + 1,
         [in] transforms3.Bounds3D,
         [out] physics3.LastUnstuck3,
         [out] transforms3.Position3D,
         [none] !physics.NoClip
-    );
+    );*/
+#ifdef zox_debug
     zox_system_1(
         TerrainIntersectDebugSystem,
         zoxp_spawn,
@@ -51,6 +52,7 @@ void define_systems_terrain_collisions(ecs* world) {
         [in] transforms3.Bounds3D,
     );
     zox_set_enabled(TerrainIntersectDebugSystem, zox_dbg_intersect);
+#endif
     /*byte use_old_collisions = 0;
     if (use_old_collisions) {
         zox_system(
@@ -73,18 +75,6 @@ void define_systems_terrain_collisions(ecs* world) {
             [out] physics3.LastPosition3D,
             [out] collisions3.Collision,
             [out] physics.Grounded
-        );
-        #ifdef zox_dbg_lines_unstuck
-        zox_system_1(
-        #else
-        zox_system(
-        #endif
-            UnstuckSystem,
-            zoxp_physics + 1,
-            [in] transforms3.Bounds3D,
-            [out] physics3.LastUnstuck3,
-            [out] transforms3.Position3D,
-            [none] !physics.NoClip
         );
     } else {*/
     //}

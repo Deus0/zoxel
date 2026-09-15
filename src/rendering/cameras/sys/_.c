@@ -1,5 +1,5 @@
 #include "camera_renderer.c"
-#include "camera_render3D_system.c"
+#include "render3.c"
 #include "camera_render_ui_system.c"
 #include "init.c"
 #include "gpu.c"
@@ -37,7 +37,7 @@ void define_systems_rendering_cameras(ecs *world) {
     );
     // rendering
     zox_system_1(
-        Camera3RenderSystem,
+        camera_render3_system,
         zoxp_rendering,
         [in] cameras.ViewProjectionMatrix,
         [in] transforms3.Position3D,

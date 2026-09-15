@@ -72,8 +72,6 @@ void zox_define_systems_basics3(ecs* world) {
         [in] rendering.RenderDisabled,
         [in] rendering3.BoneLinks,
         [none] rendering3.SkeletonMesh,
-        // [none] rendering.MeshColorRGBs,
-        // [none] !rendering.UvsGPULink,
         [none] !core.Initialize,
     );
     // unique textured meshes - Items

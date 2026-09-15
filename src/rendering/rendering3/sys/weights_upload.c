@@ -17,7 +17,9 @@ zox_sys2(BoneIndexUploadSystem) {
             continue;
         }
         zox_gpu_bind_buffer_array(gpu->value);
-        zox_gpu_set_buffer_array(weights->value, weights->length * sizeof(byte));
+        zox_gpu_set_buffer_array(
+            weights->value,
+            weights->length * sizeof(byte));
         zox_gpu_bind_buffer_array(0);
         zox_remove(e, SkeletonMeshDirty);
         zox_add(e, MeshDirty);

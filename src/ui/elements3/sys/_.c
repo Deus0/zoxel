@@ -24,7 +24,7 @@ void define_systems_elements3D(ecs *world) {
     );
     zox_system(
         UITrailSystem,
-        zoxp_transforms, //  + 1,
+        zoxp_transforms,
         [in] ui.UIHolderLink,
         [in] UITrail,
         [out] transforms3.Position3D

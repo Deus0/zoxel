@@ -1,4 +1,7 @@
-void calculate_frustum_corners_d3(const float4x4 view_projection_matrix, double3 *frustum) {
+void calculate_frustum_corners_d3(
+    const float4x4 view_projection_matrix,
+    double3 *frustum)
+{
     frustum[0] = (double3) { -1, -1, -1 };
     frustum[1] = (double3) { 1, -1, -1 };
     frustum[2] = (double3) { 1, 1, -1 };
@@ -16,7 +19,10 @@ void calculate_frustum_corners_d3(const float4x4 view_projection_matrix, double3
     }
 }
 
-void calculate_frustum_bounds_d3(const double3 *corners, float6 *bounds) {
+void calculate_frustum_bounds_d3(
+    const double3 *corners,
+    float6 *bounds)
+{
     bounds->x = bounds->z = bounds->u = FLT_MAX;
     bounds->y = bounds->w = bounds->v = -FLT_MAX;
     for (int i = 0; i < 8; i++) {
@@ -29,7 +35,10 @@ void calculate_frustum_bounds_d3(const double3 *corners, float6 *bounds) {
     }
 }
 
-void frustum_to_planes_d3(double3 *frustum, plane *planes) {
+void frustum_to_planes_d3(
+    double3 *frustum,
+    plane *planes)
+{
     // Left (swap 3 and 4)
     planes[0] = calculate_plane_from_points_d3(frustum[0], frustum[4], frustum[3]);
     // Right (swap 2 and 1)
@@ -44,7 +53,7 @@ void frustum_to_planes_d3(double3 *frustum, plane *planes) {
     planes[5] = calculate_plane_from_points_d3(frustum[7], frustum[5], frustum[6]);
 }
 
-zox_sys2(CameraFrustumSystem) {
+/*zox_sys2(CameraFrustumSystem) {
     if (zox_cameras_disable_streaming) {
         return;
     }
@@ -62,4 +71,29 @@ zox_sys2(CameraFrustumSystem) {
         calculate_frustum_bounds_d3(corners->value, &bounds->value);
         frustum_to_planes_d3(corners->value, planes->value);
     }
-} zox_sys_end(CameraFrustumSystem);
+} zox_sys_end(CameraFrustumSystem);*/
+
+
+// Calculates our camera to world matrix
+zox_sys2(ViewProjectionMatrixSystem) {
+    zox_sys_begin();
+    zox_sys_in(TransformMatrix);
+    zox_sys_in(ProjectionMatrix);
+    zox_sys_out(ViewProjectionMatrix);
+    zox_sys_out(FrustumCorners);
+    zox_sys_out(Position3DBounds);
+    zox_sys_out(CameraPlanes);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_i(TransformMatrix, transform);
+        zox_sys_i(ProjectionMatrix, projection);
+        zox_sys_o(ViewProjectionMatrix, vp_matrix);
+        zox_sys_o(CameraPlanes, planes);
+        zox_sys_o(FrustumCorners, corners);
+        zox_sys_o(Position3DBounds, bounds);
+        const float4x4 view_matrix = float4x4_inverse(transform->value);
+        vp_matrix->value = float4x4_multiply(view_matrix, projection->value);
+        calculate_frustum_corners_d3(vp_matrix->value, corners->value);
+        calculate_frustum_bounds_d3(corners->value, &bounds->value);
+        frustum_to_planes_d3(corners->value, planes->value);
+    }
+} zox_sys_end(ViewProjectionMatrixSystem);

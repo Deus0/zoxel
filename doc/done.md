@@ -1,5 +1,12 @@
 # Done
 
+-x ChunkLodDirty stuck
+    -x vodes_spawn_system shows active
+    -x chunk showed preparing and active mesh as same
+    -x timer showed constant reset
+-x Add LightLock in build_smooth_lights_system
+-x Fix: Camera lags behind body one frame
+    -x ...? easiest way to test is to fly up and drop
 -x GameLink
 -x PlayerLink
 -x MaterialLink

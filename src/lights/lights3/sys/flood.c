@@ -9,7 +9,7 @@
 // NOTE: Stop setting neighbor data, thats const, you are literally corrupting memory
 static inline byte flood_light(
     spinlock* lightlock,
-    LightLock** neighbor_locks,
+    spinlock** neighbor_locks,
     const VoxelNode* voxels,
     LightNode* lights,
     const VoxelNode* neighbor_voxels[6],
@@ -46,7 +46,7 @@ static inline byte flood_light(
             // Cross Chunk: READ neighbor if present, never write it
             const VoxelNode* neighbor_voxels2 = neighbor_voxels[dir];
             const LightNode* neighbor_lights2 = neighbor_lights[dir];
-            LightLock* neighbor_lock = neighbor_locks[dir];
+            spinlock* neighbor_lock = neighbor_locks[dir];
             LightQueue* nqueue = n_queues[dir];
             if (!neighbor_voxels2 ||
                 !neighbor_lights2 ||
@@ -69,12 +69,12 @@ static inline byte flood_light(
                 continue;
             }
             // only queue if it improves neighbor
-            spin_lock(&neighbor_lock->value);
+            spin_lock(neighbor_lock);
             byte current_light = getv_LightNode(
                 neighbor_lights2,
                 depth,
                 pos);
-            spin_unlock(&neighbor_lock->value);
+            spin_unlock(neighbor_lock);
             if (decayed_light <= current_light) {
                 continue;
             }
@@ -178,7 +178,7 @@ zox_sys2(LightFloodSystem) {
         }
         const VoxelNode* neighbor_voxels[6];
         const LightNode* neighbor_lights[6];
-        LightLock* neighbor_locks[6];
+        spinlock* neighbor_locks[6];
         fetch_neightbor_voxel_nodes(
             world,
             neighbors,
