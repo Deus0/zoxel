@@ -36,11 +36,25 @@ void spawn_base_stats(
         return;
     }
     // generate numbers here
-    float soul_value = zox_has(e, PlayerLink) ? 1 : randf_range(1, 3);
-    float2 health = (float2) { health_base, health_base + soul_value * health_level_increase };
+    byte is_player_character = zox_has(e, PlayerCharacter);
+    float soul_value =
+        is_player_character ?
+            1 :
+            randf_range(1, 3);
+    float2 health = (float2) {
+        health_base,
+        health_base + soul_value * health_level_increase
+    };
     health.x = randf_range(health_base, health.y);
-    float2 energy = (float2) { energy_base, energy_base + soul_value * energy_level_increase };
-    float2 mana = (float2) { mana_base, mana_base + soul_value * mana_level_increase };
+    float2 energy = (float2) {
+        energy_base,
+        energy_base + soul_value * energy_level_increase
+    };
+    float2 mana = (float2) {
+        mana_base,
+        mana_base + soul_value * mana_level_increase
+
+    };
     // Soul
     entity soule = zox_get_child_by_id(world, e, zox_id(StatSoul));
     if (!zox_valid(soule)) {

@@ -7,25 +7,23 @@ zox_sys2(KeyboardClickSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DeviceDisabled);
-    zox_sys_in(PlayerLink);
     zox_sys_in(EntityTarget);
     zox_sys_in(Keyboard);
     zox_sys_out(ClickingEntity);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(DeviceDisabled, disabled);
-        zox_sys_i(PlayerLink, player);
         zox_sys_i(EntityTarget, target);
-        // zox_sys_i(WindowRaycasted, swindow);
         zox_sys_i(Keyboard, keyboard);
         zox_sys_o(ClickingEntity, clickee);
-        // zox_sys_o(WindowTarget, twindow);
         if (disabled->value) {
             continue;
         }
-        if (!zox_valid(player->value)) {
+        entity player = zox_get_link(world, e, PlayerLink);
+        if (!zox_valid(player)) {
             continue;
         }
-        entity canvas = zox_get_link(world, player->value, Canvas);
+        entity canvas = zox_get_link(world, player, CanvasLink);
         if (!zox_valid(canvas)) {
             continue;
         }
@@ -44,7 +42,10 @@ zox_sys2(KeyboardClickSystem) {
         // released
         if (input_type == 1) {
             clickee->value = target->value;
-            on_element_clicked(world, player->value, clickee->value);
+            on_element_clicked(
+                world,
+                player,
+                clickee->value);
         }
         // Initial Down
         if (input_type == 1) {
@@ -55,14 +56,21 @@ zox_sys2(KeyboardClickSystem) {
 
             if (zox_valid(target->value) && zox_has(target->value, Dragable)) {
                 byte drag_mode = zox_drag_mode_none;
-                set_element_dragged(world, player->value, target->value, drag_mode);
+                set_element_dragged(
+                    world,
+                    player,
+                    target->value,
+                    drag_mode);
             }
 
         }
         // Released
         else if (input_type == 2) {
             if (target->value == clickee->value) {
-                on_element_released(world, player->value, target->value);
+                on_element_released(
+                    world,
+                    player,
+                    target->value);
             }
             clickee->value = 0;
         }

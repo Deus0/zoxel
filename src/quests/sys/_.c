@@ -15,7 +15,7 @@ void define_systems_quests(ecs* world) {
         [in] characters.GenerateCharacter,
         [in] realms.RealmLink,
         [none] characters.Character,
-        [none] players.PlayerLink
+        [none] players.PlayerCharacter
     );
     zox_system_1(
         MarkerSpawnSystem,

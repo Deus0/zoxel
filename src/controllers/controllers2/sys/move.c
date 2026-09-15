@@ -4,7 +4,6 @@ zox_sys2(Controller2MoveSystem) {
     max_delta_velocity.x *= delta_time;
     max_delta_velocity.y *= delta_time;
     zox_sys_world();
-    zox_sys_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         entity character = zox_get_link(world, e, Character);

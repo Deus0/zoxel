@@ -8,7 +8,7 @@ void define_systems_game_ui(ecs *world) {
         RaycastCrosshairSystem,
         zoxp_update,
         [in] vrays.RaycastVoxelData,
-        [in] players.PlayerLink
+        [none] players.PlayerCharacter
     );
     zox_system(
         TaskbarBeginSystem,
@@ -23,7 +23,7 @@ void define_systems_game_ui(ecs *world) {
         [in] inputs.DeviceModeDirty,
         [in] inputs.LastDeviceMode,
         [in] inputs.DeviceMode,
-        [in] games.GameLink,
+        [none] players.Player,
     );
     zox_system_1(
         PlayerTerminalSystem,

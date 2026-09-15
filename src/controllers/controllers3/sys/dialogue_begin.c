@@ -6,12 +6,10 @@ zox_sys2(DialogueBeginSystem) {
     zox_sys_begin();
     zox_sys_in(TriggerActionB);
     zox_sys_in(RaycastVoxelData);
-    zox_sys_in(PlayerLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TriggerActionB, state);
         zox_sys_i(RaycastVoxelData, raycast);
-        zox_sys_i(PlayerLink, player);
         if (state->value != zox_dirty_active) {
             continue;
         }
@@ -20,14 +18,15 @@ zox_sys2(DialogueBeginSystem) {
         {
             continue;
         }
-        byte player_state = zox_getv(player->value, PlayerState);
+        entity player = zox_get_link(world, e, PlayerLink);
+        byte player_state = zox_getv(player, PlayerState);
         // zox_player_state_dialogue_active
         if (player_state != zox_player_state_playing) {
             continue;
         }
-        entity character = zox_get_link(world, player->value, Character);
-        entity camera = zox_get_link(world, player->value, CameraLink);
-        entity canvas = zox_get_link(world, player->value, Canvas);
+        entity character = zox_get_link(world, player, Character);
+        entity camera = zox_get_link(world, player, CameraLink);
+        entity canvas = zox_get_link(world, player, CanvasLink);
         if (!zox_valid(character) ||
             !zox_valid(camera) ||
             !zox_valid(canvas))
@@ -84,7 +83,7 @@ zox_sys2(DialogueBeginSystem) {
             world,
             dialogue_process,
             dialogue_ui);
-        zox_setv(player->value, PlayerState, zox_player_state_dialogue_begin);
+        zox_setv(player, PlayerState, zox_player_state_dialogue_begin);
         follow_target(
             world,
             npc,

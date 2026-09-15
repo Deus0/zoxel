@@ -45,7 +45,6 @@ void zox_define_systems_interaction(ecs* world) {
         KeyboardClickSystem,
         zoxp_update,
         [in] inputs.DeviceDisabled,
-        [in] players.PlayerLink,
         [in] core.EntityTarget,
         [in] inputs.Keyboard,
         [out] interaction.ClickingEntity,

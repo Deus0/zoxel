@@ -1,5 +1,12 @@
 # Todo
 
+- ChunkLodDirty stuck
+    - vodes_spawn_system shows active
+    - chunk showed preparing and active mesh as same
+    - timer showed constant reset
+
+- Look into plain data types of flecs
+
 - Water Blocks / Chunk Materials
 	- seperate out subchunks by material (with sides per material)
 	- keep a list of materials when blocks update - refresh this list

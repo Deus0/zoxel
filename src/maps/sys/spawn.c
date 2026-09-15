@@ -13,13 +13,11 @@ zox_sys2(MapInitializeSystem) {
     zox_sys_begin();
     zox_sys_in(MapZoom);
     zox_sys_in(Alpha);
-    zox_sys_in(PlayerLink);
     zox_sys_in(MapPosition);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(MapZoom, zoom);
         zox_sys_i(Alpha, alpha);
-        zox_sys_i(PlayerLink, player);
         zox_sys_i(MapPosition, position);
         entity terrain = zox_get_link(world, e, TerrainLink);
         if (dbg_log) {
@@ -94,6 +92,7 @@ zox_sys2(MapInitializeSystem) {
                 }
             }
         }
+        entity player = zox_get_link(world, e, PlayerLink);
         // NOTE: Spawns a simple arrow for player direction
         {
             entity e3 = spawn_uic(
@@ -113,7 +112,7 @@ zox_sys2(MapInitializeSystem) {
             zox_setv(e3, Rotation2, 0);
             zox_setv(e3, LocalRotation2, 0);
             zox_setv(e3, BonusLayer, 1);
-            zox_setv(e3, PlayerLink, player->value);
+            zox_link(world, e3, PlayerLink, player);
             zox_setv(e3, Generate, zox_dirty_trigger);
             zox_setv(e3, OutlineThickness, arrow_thickness);
         }

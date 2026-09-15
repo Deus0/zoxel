@@ -61,8 +61,8 @@ void on_boot_game_ui(
             screen_to_canvas,
             app);
         zox_set_unique_name(canvas, "game_canvas");
-        zox_link(world, player, Canvas, canvas);
-        zox_setv(canvas, PlayerLink, player);
+        zox_link(world, player, CanvasLink, canvas);
+        zox_link(world, canvas, PlayerLink, player);
         zox_link(world, canvas, Player, player);
         entity mouse_pointer = 0;
         if (zox_valid(local_mouse)) {

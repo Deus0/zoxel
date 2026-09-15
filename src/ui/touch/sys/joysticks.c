@@ -111,8 +111,7 @@ zox_sys2(VirtualJoystickSystem) {
                 zox_getn(player));
             continue;
         }
-        // entity game = zox_getv(player, GameLink);
-        entity canvas = zox_get_link(world, player, Canvas);
+        entity canvas = zox_get_link(world, player, CanvasLink);
         if (!zox_valid(canvas)) {
             continue;
         }

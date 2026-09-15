@@ -13,7 +13,7 @@ void game_state_fader(ecs* world, entity game, byte state) {
             if (!zox_has(player, Player)) {
                 continue;
             }
-            entity canvas = zox_get_link(world, player, Canvas);
+            entity canvas = zox_get_link(world, player, CanvasLink);
             if (!zox_valid(canvas)) {
                 continue;
             }
@@ -46,7 +46,7 @@ void game_state_fader(ecs* world, entity game, byte state) {
         }
         for (int j = 0; j < players->length; j++) {
             entity player = players->value[j];
-            entity canvas = zox_get_link(world, player, Canvas);
+            entity canvas = zox_get_link(world, player, CanvasLink);
             if (state->value == zox_game_load_start) {
                 trigger_canvas_fade_in(world, canvas, 0, game_load_fade_transition_time);
             }

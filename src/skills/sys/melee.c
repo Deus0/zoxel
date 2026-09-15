@@ -140,7 +140,7 @@ zox_sys2(MeleeSystem) {
         if (boost_stat) {
             skill_damage += strength_damage_multiplier * zox_getv(boost_stat, StatValue);
         }
-        if (!zox_has(user, PlayerLink)) {
+        if (!zox_has(user, PlayerCharacter)) {
             skill_damage *= npc_nerf_multiplier; // EASY MODE
         }
         // Hitting NPC

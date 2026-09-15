@@ -5,7 +5,6 @@ zox_sys2(FreeCameraMoveSystem) {
     movement_power *= 10.0f;
 #endif
     zox_sys_world();
-    zox_sys_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         entity camera = zox_get_link(world, e, CameraLink);

@@ -1,9 +1,10 @@
-#define zoxc_float4(name) \
-    zoxc(name, float4)
+#define zoxc_float4(T) \
+    zoxc(T, float4)
 
-#define zoxd_float4(name)\
-    zoxd(name)\
-    entity_array_d_add(component_ids_float4, ecs_id(name));
+#define zoxd_float4(T)\
+    zoxd(T);\
+    entity_array_d_add(component_ids_float4, ecs_id(T)); \
+    zoxd_reflect_4(T, ecs_f32_t)
 
 #define zox_component_string_float4(component) \
     " f4 [%.1fx%.1fx%.1fx%.1f]", component->value.x, component->value.y, component->value.z, component->value.w

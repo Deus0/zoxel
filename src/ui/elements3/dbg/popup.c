@@ -30,7 +30,7 @@ void zox_dbg_spawn_popup3(ecs *world, ClickEventData data) {
     dbg_popup3 = e;
     if (dbg_inspector) {
         entity player = dbg_player;
-        entity canvas = zox_get_link(world, player, Canvas);
+        entity canvas = zox_get_link(world, player, CanvasLink);
         spawn_inspector(
             world,
             canvas,

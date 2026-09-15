@@ -1,11 +1,11 @@
 void on_confirmed_new_realm(ecs *world, ClickEventData event) {
     entity player = event.clicker;
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuNewRealm));
     if (menu) {
         zox_delete(menu);
     }
-    zox_geter_value(player, GameLink, entity, game);
+    entity game = zox_get_link(world, player, GameLink);
     entity realm = zox_get_link(world, game, RealmLink);
     zox_geter_value(realm, Seed, lint, seed);
     char home_path[max_path_characters];
@@ -36,13 +36,13 @@ void on_confirmed_new_realm(ecs *world, ClickEventData event) {
 
 void on_cancelled_new_realm(ecs *world, ClickEventData event) {
     entity player = event.clicker;
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuNewRealm));
     if (menu) {
         zox_delete(menu);
     }
     // Delete Realm
-    zox_geter_value(player, GameLink, entity, game);
+    entity game = zox_get_link(world, player, GameLink);
     entity realm = zox_get_link(world, game, RealmLink);
     zox_delete(realm);
     // zox_setv(game, RealmLink, 0);
@@ -50,7 +50,7 @@ void on_cancelled_new_realm(ecs *world, ClickEventData event) {
 }
 
 entity spawn_menu_new_realm(ecs *world, entity player) {
-    zox_geter_value(player, GameLink, entity, game);
+    entity game = zox_get_link(world, player, GameLink);
     entity realm = zox_get_link(world, game, RealmLink);
     if (!zox_valid(realm)) {
         return 0;
@@ -64,7 +64,7 @@ entity spawn_menu_new_realm(ecs *world, entity player) {
     byte2 button_padding = (byte2) { 6 * ui_scale, 4 * ui_scale };
     byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
     // more data
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     const char* header_label = "Where"; // "New Realm";
     int max_labels = huds_max_list_elements;
     // # Window #

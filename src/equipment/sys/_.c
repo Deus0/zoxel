@@ -6,6 +6,6 @@ void define_systems_equipment(ecs* world) {
         zoxp_spawn,
         [in] characters.GenerateCharacter,
         [out] parts.BodyDirty,
-        [none] players.PlayerLink
+        [none] players.PlayerCharacter
     );
 }

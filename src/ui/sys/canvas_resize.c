@@ -32,7 +32,7 @@ zox_sys2(CanvasResizeSystem) {
         zox_sys_i(ScreenToCanvas, ratio);
         zox_sys_o(LayoutPosition, position);
         zox_sys_o(LayoutSize, size);
-        entity app = zox_get_link(world, e, App);
+        entity app = zox_get_link(world, e, AppLink);
         if (!zox_valid(app) || !zox_has(app, WindowSize)) {
             continue;
         }

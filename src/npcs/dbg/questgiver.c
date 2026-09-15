@@ -84,7 +84,7 @@ void zox_tst_spawn_quest_giver_npc(
     zox_log("   + Quest To Give [%s]",
         zox_getn(player_start_quest));
     if (dbg_inspector) {
-        entity canvas = zox_get_link(world, player, Canvas);
+        entity canvas = zox_get_link(world, player, CanvasLink);
         spawn_inspector(world, canvas, player, e);
     }
 }

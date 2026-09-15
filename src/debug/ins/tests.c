@@ -47,7 +47,7 @@ void zox_dbg_ui_manual_tests(
         return;
     }
     entity player = dbg_player;
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     if (!zox_valid(canvas)) {
         return;
     }

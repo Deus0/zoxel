@@ -1,5 +1,5 @@
 entity spawn_menu_inventory(ecs* world, entity player) {
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     entity character = zox_get_link(world, player, Character);
     entity inventory = zox_get_child_by_id(world, character, zox_id(Inventory));
     byte label_font_size = 5 * ui_scale;

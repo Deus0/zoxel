@@ -91,9 +91,9 @@ zox_sys2(CubeLineRenderSystem) {
             float4_rotate_float3_p(rotation->value, &bottom_left);
             float4_rotate_float3_p(rotation->value, &bottom_right2);
             float4_rotate_float3_p(rotation->value, &bottom_left2);
-            float depth_bias = zox_has(e, CubeLineExtrude) ?
+            /*float depth_bias = zox_has(e, CubeLineExtrude) ?
                 zox_getv(e, CubeLineExtrude) :
-                0;
+                0;*/
             float extrude = 0;
             /*if (depth_bias) {
                 zox_gpu_polyoffset(

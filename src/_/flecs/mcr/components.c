@@ -1,15 +1,15 @@
-#define zoxc_custom(name) \
-    ECS_COMPONENT_DECLARE(name)
+#define zoxc_custom(T) \
+    ECS_COMPONENT_DECLARE(T)
 
-#define zoxc(name, type)\
+#define zoxc(T, type)\
     typedef struct {\
         type value;\
-    } name;\
-    zoxc_custom(name)
+    } T;\
+    zoxc_custom(T)
 
-#define zoxd(name)\
-    ECS_COMPONENT_DEFINE(world, name);\
-    zox_statistics_components++;
+// zox_statistics_components++;
+#define zoxd(T) \
+    ECS_COMPONENT_DEFINE(world, T)
 
 #define zox_event_type(name, return_type, ...)\
     typedef struct {\

@@ -97,7 +97,7 @@ void dispose_menu_game_touch(ecs *world, entity player) {
     if (!zox_valid(player)) {
         return;
     }
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     if (!zox_valid(canvas)) {
         return;
     }

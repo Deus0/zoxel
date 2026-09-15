@@ -3,9 +3,9 @@ uint get_label_realm_colors(ecs *world, const entity player, char *buffer, const
         index += snprintf(buffer + index, size - index, "! invalid player\n");
         return index;
     }
-    zox_geter(player, GameLink, game);
+    entity game = zox_get_link(world, player, GameLink);
     // zox_geter(gameLink->value, RealmLink, realmLink);
-    entity realm = zox_get_link(world, game->value, RealmLink);
+    entity realm = zox_get_link(world, game, RealmLink);
     if (!zox_valid(realm) || !zox_has(realm, Colors)) {
         index += snprintf(buffer + index, size - index, "[%s] has invalid realm\n", zox_get_name(player));
         return index;

@@ -2,16 +2,15 @@ zox_sys2(MapArrowSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(PlayerLink);
     zox_sys_out(LocalRotation2);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(PlayerLink, player);
         zox_sys_o(LocalRotation2, rotation);
-        if (!zox_valid(player->value)) {
+        entity player = zox_get_link(world, e, PlayerLink);
+        if (!zox_valid(player)) {
             continue;
         }
-        entity character = zox_get_link(world, player->value, Character);
+        entity character = zox_get_link(world, player, Character);
         if (!zox_valid(character)) {
             continue;
         }

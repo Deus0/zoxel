@@ -1,5 +1,5 @@
 entity spawn_game_debug_label(ecs* world, entity canvas) {
-    if (!canvas || !zox_has(canvas, PlayerLink)) {
+    if (!canvas) {
         zox_loge("[spawn_game_debug_label] error: invalid canvas, or no player found on canvas");
         return 0;
     }
@@ -41,6 +41,7 @@ entity spawn_game_debug_label(ecs* world, entity canvas) {
     zox_add(e, GameDebugLabel);
     zox_setv(e, FrameCorner, 0);
     zox_setv(e, DebugLabelData, local_debug_label);
-    zox_setv(e, PlayerLink, zox_getv(canvas, PlayerLink));
+    entity canvas_player = zox_get_link(world, canvas, PlayerLink);
+    zox_link(world, e, PlayerLink, canvas_player);
     return e;
 }

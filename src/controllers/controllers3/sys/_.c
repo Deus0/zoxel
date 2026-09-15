@@ -86,7 +86,6 @@ void define_systems_controllers3(ecs *world) {
         zoxp_spawn,
         [in] core.TriggerActionB,
         [in] vrays.RaycastVoxelData,
-        [in] players.PlayerLink,
     );
     // Spawns animation events
     zox_system_1(
@@ -105,7 +104,6 @@ void define_systems_controllers3(ecs *world) {
         DialogueExitSystem,
         zoxp_update,
         [in] core.TriggerActionE,
-        [in] players.PlayerLink,
     );
     zox_system(
         DialogueEndSystem,

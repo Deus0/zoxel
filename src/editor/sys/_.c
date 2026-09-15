@@ -18,7 +18,6 @@ void define_systems_editor(ecs *world) {
     zox_system(
         DebugLabelSystem,
         zoxp_update,
-        [in] players.PlayerLink,
         [in] editor.DebugLabelData,
         [out] texts.TextDirty,
         [out] texts.TextData,

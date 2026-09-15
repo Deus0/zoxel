@@ -60,7 +60,7 @@ void zox_tst_spawn_character3_npc(
         NULL);
     zox_tst_character3_npc = e;
     if (dbg_inspector) {
-        entity canvas = zox_get_link(world, player, Canvas);
+        entity canvas = zox_get_link(world, player, CanvasLink);
         spawn_inspector(
             world,
             canvas,

@@ -1,6 +1,7 @@
 # Bugs
 
 Unsorted
+- top hat doesn't scale up when imported to depth of 5!
 - doesnt spawn new chunk mesh ... again
 	- test by building upwards generating, the chunk initialization issue
 - Lighting flashes when chunks update

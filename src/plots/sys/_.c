@@ -4,12 +4,11 @@
 
 void define_systems_plots(ecs* world) {
     zox_system(
-        PlotLineSystem,
+        plot_line_system,
         zoxp_update,
         [in] plots.PlotLineIndex,
         [out] layouts.LayoutLinePoints,
-        // [out] lines2.LineLocalPositionDirty,
-        [none] plots.PlotLine
+        [none] plots.PlotLine,
     );
     zox_system(
         PlotLabelSystem,

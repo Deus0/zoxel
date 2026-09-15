@@ -7,7 +7,7 @@ void on_set_viewport_scale(ecs* world, entity app) {
     }
 #endif
     zox_setv(app, WindowSizeDirty, zox_dirty_trigger);
-    entity canvas = zox_get_link(world, app, Canvas);
+    entity canvas = zox_get_link(world, app, CanvasLink);
     if (!zox_valid(canvas)) {
         zox_logw("App has no Canvas in RenderSettings");
         return;

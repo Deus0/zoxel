@@ -1,6 +1,7 @@
 void button_event_end_game(ecs *world, ClickEventData event) {
     // TODO: Make this a game state change to end game
-    entity game = zox_getv(event.clicker, GameLink);
+    entity player = event.clicker;
+    entity game = zox_get_link(world, player, GameLink);
     if (!zox_valid(game)) {
         zox_loge("Game Invalid in end game");
         return;
@@ -10,7 +11,7 @@ void button_event_end_game(ecs *world, ClickEventData event) {
 }
 
 void pause_resume(ecs *world, entity player) {
-    entity game = zox_getv(player, GameLink);
+    entity game = zox_get_link(world, player, GameLink);
     byte game_state = zox_getv(game, GameState);
     if (!(game_state == zox_game_state_playing || game_state == zox_game_state_paused)) {
         return;

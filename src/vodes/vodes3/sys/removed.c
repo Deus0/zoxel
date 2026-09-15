@@ -21,7 +21,7 @@ zox_sys2(VodesRemoveSystem) {
     zox_sys_begin();
     zox_sys_out(VoxelNode);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_o(VoxelNode, node);
         // write_lock_VoxelNode(node);
         remove_vodes(world, node);

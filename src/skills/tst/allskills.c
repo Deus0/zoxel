@@ -14,7 +14,7 @@ void zox_tst_all_skills(ecs* world, ClickEventData data) {
     if (!zox_valid(character)) {
         return;
     }
-    zox_geter_value(player, GameLink, entity, game);
+    entity game = zox_get_link(world, player, GameLink);
     entity realm = zox_get_link(world, game, RealmLink);
     if (!zox_valid(realm)) {
         return;

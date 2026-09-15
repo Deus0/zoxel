@@ -1,4 +1,5 @@
 zox_tag(App);
+zox_tag(AppLink);
 zoxc_state(WindowSizeDirty);
 zoxc_byte(WindowFullscreen);
 zoxc_byte(WindowMaximized);
@@ -10,6 +11,7 @@ zoxc_int2(WindowPositionRestore);
 
 void define_components_apps(ecs *world) {
     zoxd_tag(App);
+    zoxd_nf_tag(AppLink);
     zoxd_state(WindowSizeDirty);
     zoxd_byte(WindowFullscreen);
     zoxd_byte(WindowMaximized);

@@ -1,6 +1,6 @@
 void button_event_new_game(ecs *world, ClickEventData event) {
     entity player = event.clicker;
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     if (!zox_valid(canvas)) {
         return;
     }

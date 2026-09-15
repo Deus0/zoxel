@@ -8,7 +8,7 @@ byte get_player_linked_things(
     entity* terrain_out,
     entity* camera_out)
 {
-    zox_geter_value(player, GameLink, entity, game);
+    entity game = zox_get_link(world, player, GameLink);
     if (!zox_valid(game)) {
         zox_log_error("Invalid [game]");
         return 0;

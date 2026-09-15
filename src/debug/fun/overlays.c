@@ -197,7 +197,7 @@ uint debug_ui_seeds(ecs *world, entity e, char *buffer, uint size, uint index) {
     }
     index += snprintf(buffer + index, size - index, "Seeds\n");
     index += snprintf(buffer + index, size - index, " - Player [%s]\n", zox_get_name(e));
-    entity game = zox_getv(e, GameLink);
+    entity game = zox_get_link(world, e, GameLink);
     entity realm = zox_get_link(world, game, RealmLink);
     if (zox_valid(realm)) {
         lint realm_seed = zox_getv(realm, Seed);
@@ -229,7 +229,7 @@ uint debug_ui_seeds(ecs *world, entity e, char *buffer, uint size, uint index) {
 
 void refresh_debug_label(ecs* world) {
     entity player = dbg_player;
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     entity label = zox_get_child_by_id(world, canvas, zox_id(GameDebugLabel));
     if (label) {
         zox_delete(label);

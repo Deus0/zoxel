@@ -13,8 +13,8 @@ entity spawn_canvas(
     zox_setv(e, LayoutPosition, int2_half(size));
     zox_setv(e, LayoutSize, size);
     zox_setv(e, ScreenToCanvas, screen_to_canvas);
-    zox_link(world, e, App, app);
-    zox_link(world, app, Canvas, e);
+    zox_link(world, e, AppLink, app);
+    zox_link(world, app, CanvasLink, e);
     zox_link(world, e, CameraLink, camera);
     return e;
 }

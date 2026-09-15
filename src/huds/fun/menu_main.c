@@ -2,7 +2,7 @@ extern entity spawn_menu_options(ecs*, entity, entity, int2, float2);
 
 void button_event_menu_options(ecs *world, ClickEventData event) {
     entity player = event.clicker;
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     if (!zox_valid(canvas)) {
         return;
     }
@@ -21,11 +21,12 @@ void engine_end_delayed(ecs* world, entity e) {
 void button_event_exit_app(ecs *world, ClickEventData event) {
     disable_time_pausing();
     // close on all players
-    entity game = zox_getv(event.clicker, GameLink);
+    entity player = event.clicker;
+    entity game = zox_get_link(world, player, GameLink);
     zox_geter(game, PlayerLinks, players);
     for (int i = 0; i < players->length; i++) {
         entity e = players->value[i];
-        entity canvas = zox_get_link(world, e, Canvas);
+        entity canvas = zox_get_link(world, e, CanvasLink);
         if (!zox_valid(canvas)) {
             continue;
         }

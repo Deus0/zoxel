@@ -1,5 +1,5 @@
 entity spawn_player_menu_crafting(ecs* world, entity player) {
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     entity character = zox_get_link(world, player, Character);
     entity craftspace = zox_get_child_by_id(world, character, zox_id(Craftspace));
     byte2 cells_size = byte2_single(3);
@@ -30,7 +30,7 @@ entity spawn_player_menu_crafting(ecs* world, entity player) {
 
 
 /*entity spawn_player_menu_crafting(ecs* world, entity player) {
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     entity character = zox_get_link(world, player, Character);
     zox_geter_value(canvas, LayoutSize, int2, canvas_size);
     if (!zox_has(character, CraftLinks)) {

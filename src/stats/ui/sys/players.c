@@ -89,7 +89,7 @@ void player_state_stats_ui(ecs* world, entity player, byte state) {
     if (!is_destroy && !is_spawn) {
         return;
     }
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     entity character = zox_get_link(world, player, Character);
     if (!zox_valid(canvas)) {
         return;

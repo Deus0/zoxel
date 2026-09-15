@@ -28,7 +28,7 @@ zox_sys2(PlayerTerminalSystem) {
         if (!is_toggle_terminal) {
             continue;
         }
-        entity canvas = zox_get_link(world, e, Canvas);
+        entity canvas = zox_get_link(world, e, CanvasLink);
         entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuTerminal));
         if (zox_valid(menu)) {
             zox_delete(menu);

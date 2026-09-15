@@ -31,7 +31,7 @@ zox_sys2(ChunkMeshTransitionSystem) {
         // Make sure new mesh is building
         if (zox_has(preparing_mesh, BuildDisabled)) {
             zox_remove(preparing_mesh, BuildDisabled);
-            timer->value = zox_current_time;
+            // timer->value = zox_current_time;
             continue;
         }
         entity active_mesh = zox_get_link(world, e, ActiveMesh);
@@ -53,10 +53,10 @@ zox_sys2(ChunkMeshTransitionSystem) {
         }
         byte busy = disable_busy ? 0 : (
             // NOTE: Checks queues
-            zox_chunk_lighting_busy(world, e) ||
             zox_has(preparing_mesh, BuildMesh) ||
             zox_has(preparing_mesh, MeshDirty) ||
             !zox_has(preparing_mesh, MeshBuilt) ||
+            zox_chunk_lighting_busy(world, e) ||
             zox_chunk_mesh_lighting_busy(world, preparing_mesh)
         );
         if (busy) {

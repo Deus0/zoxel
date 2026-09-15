@@ -4,11 +4,11 @@ void set_character_action(ecs *world, entity character, byte index) {
     }
     zox_set(character, ActionIndex, { index });
     spawn_sound_from_file_name(world, prefab_sound, "swap_action", 0, get_volume_sfx());
-    entity player = zox_getv(character, PlayerLink);
+    entity player = zox_get_link(world, character, PlayerLink);
     if (!zox_valid(player)) {
         return;
     }
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     entity actionbar = zox_get_child_by_id(world, canvas, zox_id(MenuActions));
     if (!actionbar) {
         return;

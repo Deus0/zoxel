@@ -9,7 +9,7 @@ entity spawn_player_menu_skills(ecs* world, entity player) {
         zox_loge("Player Character has no Skillbook [%s]", zox_get_name(character));
         return 0;
     }
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     byte2 cells_size = byte2_single(4);
     byte label_font_size = 5 * ui_scale;
     float2 position_anchor = float2_half;

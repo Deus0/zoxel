@@ -8,7 +8,7 @@ void zox_dbg_spawn_element(ecs *world, ClickEventData data) {
         zox_dbg_element = 0;
         return;
     }
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     if (!zox_valid(canvas)) {
         return;
     }

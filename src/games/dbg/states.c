@@ -1,7 +1,8 @@
 extern entity dbg_player;
 
 void test_game_end(ecs *world) {
-    zox_geter_value(dbg_player, GameLink, entity, game);
+    entity player = dbg_player;
+    entity game = zox_get_link(world, player, GameLink);
     if (!zox_valid(game)) {
         return;
     }

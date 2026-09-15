@@ -28,7 +28,7 @@ void define_components_transforms3(ecs* world) {
     zoxd_float2(EulerLimitZ);
     zoxd_float3(LocalPosition3D);
     zoxd_float4(LocalRotation3D);
-    zoxd_float3(LocalScale3)
+    zoxd_float3(LocalScale3);
     // Others
     zoxd_float3(Bounds3D);
     zoxd_state(Bounds3Dirty);

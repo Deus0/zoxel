@@ -98,7 +98,7 @@ int main(int argc, char* argv[]) {
 #endif
     if (app) {
         zox_set_parent(world, game, app);
-        zox_setv(app, GameLink, game);
+        zox_link(world, app, GameLink, game);
     }
     // Resource Loading
     run_hook_files_load(world);

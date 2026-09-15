@@ -58,7 +58,7 @@ entity3 spawn_window_list(
     byte elements_count,
     byte visible_count)
 {
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     if (!zox_valid(canvas)) {
         zox_loge("Invalid canvas in [spawn_window_list]");
         return (entity3) { 0, 0, 0 };

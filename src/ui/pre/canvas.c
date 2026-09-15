@@ -4,7 +4,5 @@ entity spawn_prefab_canvas(ecs *world, entity prefab) {
     zox_add(e, Canvas);
     // Canvas Rendering
     zox_prefab_set(e, ScreenToCanvas, { float4_zero });
-    // Links
-    zox_prefab_set(e, PlayerLink, { 0 });
     return e;
 }

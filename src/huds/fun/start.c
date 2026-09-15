@@ -23,6 +23,6 @@ void menu_start_triggered(
 
 void button_event_menu_start(ecs *world, ClickEventData event) {
     entity player = event.clicker;
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     menu_start_triggered(world, event.clicker, canvas);
 }

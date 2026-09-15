@@ -1,7 +1,7 @@
 void add_player(ecs *world, entity e, entity player) {
     zox_muter(e, PlayerLinks, players);
     add_to_PlayerLinks(players, player);
-    zox_set(player, GameLink, { e });
+    zox_link(world, player, GameLink, e);
 }
 
 entity dbg_player;
@@ -58,10 +58,7 @@ void on_boot_players(ecs* world, entity app) {
         zox_logw("Players are not present.");
         return;
     }
-    entity game = zox_getv(app, GameLink);
-    /*spawn_devices_on_app(
-        world,
-        app);*/
+    entity game = zox_get_link(world, app, GameLink);
     players_playing = spawn_players(
         world,
         app,
@@ -82,7 +79,7 @@ void spawn_devices_on_app(ecs* world, entity app) {
         prefab_touchscreen);
     zox_set_parent(world, local_touchscreen, app);
     initialize_sdl_gamepads(world, app);
-    zox_link(world, local_keyboard, App, app);
-    zox_link(world, local_mouse, App, app);
-    zox_link(world, local_touchscreen, App, app);
+    zox_link(world, local_keyboard, AppLink, app);
+    zox_link(world, local_mouse, AppLink, app);
+    zox_link(world, local_touchscreen, AppLink, app);
 }

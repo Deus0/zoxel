@@ -13,7 +13,7 @@ void fetch_equip_slots_parts(ecs *world, entity_array_d* entities, entity e) {
 entity spawn_player_menu_equipment(ecs* world, entity player) {
     color frame_equip_fill = { 63, 43, 33, frame_alpha };
     color frame_equip_outline = { 63, 43, 33, frame_alpha };
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     entity character = zox_get_link(world, player, Character);
     byte label_font_size = 5 * ui_scale;
     // int frame_size = ((default_frame_size / 4) * ui_scale);

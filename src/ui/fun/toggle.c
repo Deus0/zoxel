@@ -29,7 +29,7 @@ entity toggle_ui_with_id(
     entity id,
     entity player)
 {
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     entity ui = zox_get_child_by_id(world, canvas, id);
     // find_child_with_id(canvas, id, ui)
     return player_toggle_ui(world, player, ui, spawn_ui);

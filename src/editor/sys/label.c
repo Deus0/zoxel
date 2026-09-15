@@ -14,25 +14,25 @@ zox_sys2(DebugLabelSystem) {
     }
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(PlayerLink);
     zox_sys_in(DebugLabelData);
     zox_sys_out(TextDirty);
     zox_sys_out(TextData);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(PlayerLink, player);
+        zox_sys_e();
         zox_sys_i(DebugLabelData, debugger);
         zox_sys_o(TextData, data);
         zox_sys_o(TextDirty, dirty);
         if (dirty->value) {
             continue;
         }
-        if (!zox_valid(player->value)) {
+        entity player = zox_get_link(world, e, PlayerLink);
+        if (!zox_valid(player)) {
             continue;
         }
         uint index = 0;
         char buffer[size];
         if (debugger->value) {
-            index += debugger->value(world, player->value, buffer, size, index);
+            index += debugger->value(world, player, buffer, size, index);
         } else {
             index += snprintf(buffer + index, size - index, "%s [v0.0.1]\n", game_name);
         }

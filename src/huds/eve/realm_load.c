@@ -3,7 +3,7 @@ void button_event_menu_realm_cancel(
     ClickEventData event)
 {
     entity player = event.clicker;
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuRealm));
     if (!menu) {
         zox_loge("MenuRealm not found");
@@ -11,7 +11,7 @@ void button_event_menu_realm_cancel(
     }
     zox_delete(menu);
     // Delete Realm
-    zox_geter_value(player, GameLink, entity, game);
+    entity game = zox_get_link(world, player, GameLink);
     entity realm = zox_get_link(world, game, RealmLink);
     zox_delete(realm);
     // zox_set(game, RealmLink, { 0 });
@@ -23,7 +23,7 @@ void button_event_menu_realm_delete(
     ClickEventData event)
 {
     entity player = event.clicker;
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuRealm));
     if (!menu) {
         zox_log_error("main menu not found");
@@ -31,7 +31,7 @@ void button_event_menu_realm_delete(
     }
     zox_delete(menu);
     // TODO: Confirm Screen
-    zox_geter_value(player, GameLink, entity, game);
+    entity game = zox_get_link(world, player, GameLink);
     entity realm = zox_get_link(world, game, RealmLink);
     zox_geter(realm, FolderPath, realm_path);
     // zox_log("Deleting Realm (%s: %s", zox_get_name(realm), realm_path);
@@ -51,9 +51,9 @@ void button_event_menu_realm_confirm(
     ClickEventData event)
 {
     entity player = event.clicker;
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuRealm));
-    zox_geter_value(player, GameLink, entity, game);
+    entity game = zox_get_link(world, player, GameLink);
     // find_array_element_with_tag(elements, MenuRealm, menu);
     if (!menu) {
         zox_log_error("main menu not found");

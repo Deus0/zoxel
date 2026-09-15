@@ -6,7 +6,7 @@ void player_state_actionbar(ecs* world, entity player, byte state) {
     if (!is_destroy && !is_spawn) {
         return;
     }
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     if (!zox_valid(canvas)) {
         return;
     }

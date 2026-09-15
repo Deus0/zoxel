@@ -1,13 +1,20 @@
 extern entity get_linked_character(ecs*, entity);
 extern entity get_linked_realm(ecs*, entity);
+extern entity get_linked_game(ecs*, entity);
 
-uint zox_dbg_ui_filepaths(ecs *world, entity e, char *buffer, uint size, uint index) {
+uint zox_dbg_ui_filepaths(
+    ecs *world,
+    entity e,
+    char *buffer,
+    uint size,
+    uint index)
+{
     if (!e) {
         index += snprintf(buffer + index, size - index, "Invalid Player\n");
         return index;
     }
     index += snprintf(buffer + index, size - index, "Filepaths Debugger\n");
-    entity game = zox_get_parent(world, e); // zox_getv(e, GameLink);
+    entity game = get_linked_game(world, e);
     entity realm = get_linked_realm(world, game);
     if (!zox_valid(realm)) {
         return index;

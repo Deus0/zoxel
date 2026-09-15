@@ -24,7 +24,7 @@ void zox_tst_spawn_dialogue(ecs *world, ClickEventData data) {
     }
     zox_log("Testing Realm Dialogue Run [0]");
     // Here is our test run!
-    entity game = zox_getv(player, GameLink);
+    entity game = zox_get_link(world, player, GameLink);
     entity realm = zox_get_link(world, game, RealmLink);
     if (!zox_valid(realm)) {
         zox_logw("No realm yet.");
@@ -38,7 +38,7 @@ void zox_tst_spawn_dialogue(ecs *world, ClickEventData data) {
         zox_logw("Invalid [tree] on Realm");
         return;
     }
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     entity character = zox_get_link(world, player, Character);
     if (!zox_valid(character)) {
         zox_logw("Player has no character.");

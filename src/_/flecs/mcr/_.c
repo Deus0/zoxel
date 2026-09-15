@@ -1,4 +1,5 @@
 #include "memory.c"
+#include "reflect.c"
 #include "ids.c"
 #include "get.c"
 #include "set.c"

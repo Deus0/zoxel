@@ -4,7 +4,7 @@ void button_event_pause_game(
     const ClickEventData event
 ) {
     entity player = event.clicker;
-    zox_geter_value(player, GameLink, entity, game);
+    entity game = zox_get_link(world, player, GameLink);
     zox_geter_value(game, GameState, byte, game_state);
     if (!(game_state == zox_game_state_playing || game_state == zox_game_state_paused)) {
         return;

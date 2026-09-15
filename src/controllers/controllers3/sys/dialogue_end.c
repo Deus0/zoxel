@@ -19,16 +19,26 @@ zox_sys2(DialogueEndSystem) {
         if (zox_valid(speakers->value[1])) {
             unfollow(world, speakers->value[1]);
         }
-        if (zox_valid(speakers->value[0])) {
-            zox_geter_value(speakers->value[0], PlayerLink, entity, player);
+        entity speaker_a = speakers->value[0];
+        if (zox_valid(speaker_a)) {
+            entity player = zox_get_link(world, speaker_a, PlayerLink);
             if (zox_valid(player)) {
                 zox_set(player, PlayerState, { zox_player_state_dialogue_end });
-                entity canvas = zox_get_link(world, player, Canvas);
+                entity canvas = zox_get_link(world, player, CanvasLink);
                 entity windows[zox_children_capacity];
-                uint length = zox_get_children_by_id(world, canvas, windows, zox_children_capacity, zox_id(Window));
+                uint length = zox_get_children_by_id(
+                    world,
+                    canvas,
+                    windows,
+                    zox_children_capacity,
+                    zox_id(Window));
                 for (int j = 0; j < length; j++) {
                     entity window = windows[j];
-                    set_children_by_id_byte(world, window, zox_id(RenderDisabled), 0);
+                    set_children_by_id_byte(
+                        world,
+                        window,
+                        zox_id(RenderDisabled),
+                                            0);
                 }
             }
         }

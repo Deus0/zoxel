@@ -1,13 +1,17 @@
+extern char* convert_zext_to_text(const byte*, byte);
+
 #define zoxc_text(T) \
     zoxc_arrayd(T, byte)
 
 #define zoxd_text(T)\
-    zoxd_arrayd(T)\
-    entity_array_d_add(component_ids_text, ecs_id(T));
-
-extern char* convert_zext_to_text(const byte *zext, byte length);
+    zoxd_arrayd(T);\
+    entity_array_d_add(component_ids_text, ecs_id(T));\
+    zoxd_text_reflect(T)
 
 #define zox_component_string_text(c) \
-    " [%s]", convert_zext_to_text(c->value.value, c->value.length)
+    " [%s]", \
+    convert_zext_to_text(\
+        c->value.value, \
+        c->value.length)
 
 zox_base_type(text)

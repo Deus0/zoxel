@@ -151,7 +151,7 @@ void spawn_vodes_dive(ecs *world,
 // TODO: Break this up into two systems:
 //      - Triggered by VoxelNodePostDirty or ChunkLodDirty
 // Triggers: [VoxelNodeDirty] + [RenderDistanceDirty]
-zox_sys2(VodesSpawnSystem) {
+void vodes_spawn_system(iter* it) {
     if (zox_disable_vodes) {
         return;
     }
@@ -159,7 +159,6 @@ zox_sys2(VodesSpawnSystem) {
     zox_sys_begin();
     zox_sys_in(NodeDepth);
     zox_sys_in(RenderDisabled);
-    zox_sys_in(RenderDepth);
     zox_sys_in(RenderDistance);
     zox_sys_in(Position3D);
     zox_sys_out(VoxelNode);
@@ -167,7 +166,6 @@ zox_sys2(VodesSpawnSystem) {
         zox_sys_e();
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(RenderDisabled, render_disabled);
-        zox_sys_i(RenderDepth, render_depth);
         zox_sys_i(RenderDistance, render_distance);
         zox_sys_i(Position3D, position);
         zox_sys_o(VoxelNode, voxel_octree);
@@ -239,4 +237,4 @@ zox_sys2(VodesSpawnSystem) {
             zox_add(e, BlocksSpawned);
         }
     }
-} zox_sys_end(VodesSpawnSystem);
+} zoxd_system(vodes_spawn_system);

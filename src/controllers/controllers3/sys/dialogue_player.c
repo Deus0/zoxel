@@ -6,7 +6,7 @@ zox_sys2(PlayerDialogueSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_o(PlayerState, state);
-        /*entity canvas = zox_get_link(world, e, Canvas);
+        /*entity canvas = zox_get_link(world, e, CanvasLink);
         if (!zox_valid(canvas)) {
             // zox_logw("Canvas is missing from Player");
             continue;

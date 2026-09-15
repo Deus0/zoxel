@@ -68,7 +68,7 @@ entity spawn_menu_start(
     }
     zox_set_unique_name(e, "menu_start_label");
     zox_add(e, MenuStart);
-    zox_setv(e, PlayerLink, player);
+    zox_link(world, e, PlayerLink, player);
     zox_link(world, player, MenuStart, e);
     {
         // entity e2 = spawn_test_vox(world, player);

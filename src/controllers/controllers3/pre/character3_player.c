@@ -14,7 +14,6 @@ entity spawn_prefab_character3_player(
     zox_add(e, BlockSoundTrigger);
     // Controller
     zox_setv(e, Movement3, float3_zero);
-    zox_setv(e, PlayerLink, 0);
     // Input Triggers
     zox_setv(e, TriggerActionB, 0);
     zox_setv(e, TriggerActionE, 0);

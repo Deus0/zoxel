@@ -1,7 +1,7 @@
 void player_state_fader(ecs* world, entity player, byte state) {
     double game_load_fade_transition_time = 0.5;
     double game_spawn_terrain_fade_delay = 1.4;
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     if (!zox_valid(canvas)) {
         return;
     }

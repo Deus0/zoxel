@@ -156,7 +156,7 @@ zox_sys2(TouchscreenExtractSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_o(PixelSize, screen_size);
-        entity app = zox_get_link(world, e, App);
+        entity app = zox_get_link(world, e, AppLink);
         if (!zox_valid(app) || !zox_has(app, WindowSize)) {
             continue;
         }

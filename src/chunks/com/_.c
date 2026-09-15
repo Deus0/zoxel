@@ -27,5 +27,5 @@ void define_components_chunks(ecs* world) {
     zoxd_byte(NodeDepth);
     zoxd_double(ChunkMeshTimer);
     zoxd_entity(ChunkPrefabLink);
-    zoxd_entity(ChunkMeshPrefabLink)
+    zoxd_entity(ChunkMeshPrefabLink);
 }

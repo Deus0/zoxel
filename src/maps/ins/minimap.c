@@ -32,10 +32,10 @@ entity spawn_minimap(
     zox_set_unique_name(e, "minimap");
     zox_add(e, Map);
     zox_add(e, Minimap);
-    zox_set(e, PlayerLink, { player });
     zox_set(e, MapPosition, { tunk_position });
     zox_set(e, MapZoom, { minimap_zoom });
     zox_set(e, Alpha, { minimap_alpha });
+    zox_link(world, e, PlayerLink, player);
     zox_link(world, e, TerrainLink, terrain);
     return e;
 }

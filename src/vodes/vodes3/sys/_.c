@@ -44,16 +44,15 @@ void define_systems_vodes3(ecs* world) {
     zox_system(
         can_have_vodes_system,
         zoxp_update,
-        [in] chunks3.ChunkLodDirty,
         [in] rendering.RenderDepth,
+        [in] chunks3.ChunkLodDirty,
         [none] terrains.TerrainChunk,
     );
     zox_system_1(
-        VodesSpawnSystem,
+        vodes_spawn_system,
         zoxp_spawn,
         [in] chunks.NodeDepth,
         [in] rendering.RenderDisabled,
-        [in] rendering.RenderDepth,
         [in] rendering.RenderDistance,
         [in] transforms3.Position3D,
         [out] chunks3.VoxelNode,

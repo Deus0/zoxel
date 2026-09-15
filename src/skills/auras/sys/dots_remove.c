@@ -4,7 +4,6 @@
 zox_sys2(AuraDotRemoveSystem) {
     byte dbg_log = 0;
     zox_sys_world();
-    zox_sys_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         // if user exists and skill is active

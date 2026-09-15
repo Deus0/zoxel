@@ -26,7 +26,7 @@ entity spawn_character3_player(
     zox_name("character3_player");
     zox_add(e, DisableMovement);
     // Player
-    zox_setv(e, PlayerLink, player);
+    zox_link(world, e, PlayerLink, player);
     // camera
     zox_setv(camera, EntityTarget, e);
     zox_setv(camera, AttachDirty, zox_dirty_trigger);

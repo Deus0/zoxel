@@ -1,6 +1,6 @@
 // TODO: Just spawn tthis when player character first loads, add new state for that
 entity spawn_menu_actions(ecs* world, entity player) {
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     entity character = zox_get_link(world, player, Character);
     if (!zox_valid(canvas)) {
         zox_loge("Character not found on canvas");

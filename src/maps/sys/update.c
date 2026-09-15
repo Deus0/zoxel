@@ -3,16 +3,15 @@ zox_sys2(MapPositionSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(PlayerLink);
     zox_sys_out(MapPosition);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(PlayerLink, player);
         zox_sys_o(MapPosition, position);
-        if (!zox_valid(player->value)) {
+        entity player = zox_get_link(world, e, PlayerLink);
+        if (!zox_valid(player)) {
             continue;
         }
-        entity camera = zox_get_link(world, player->value, CameraLink);
+        entity camera = zox_get_link(world, player, CameraLink);
         if (!zox_valid(camera) || !zox_has(camera, StreamPosition2)) {
             continue;
         }

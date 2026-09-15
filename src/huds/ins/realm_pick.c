@@ -1,6 +1,6 @@
 void button_event_load_cancel(ecs *world, ClickEventData event) {
     entity player = event.clicker;
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuLoad));
     if (!menu) {
         zox_logw("MenuLoad menu not found");
@@ -20,9 +20,9 @@ void delay_spawn_menu_realm(ecs* world, entity player) {
 void button_event_load_confirm(ecs *world, ClickEventData event) {
     entity player = event.clicker;
     entity clicked = event.clicked;
-    zox_geter_value(player, GameLink, entity, game);
+    entity game = zox_get_link(world, player, GameLink);
     zox_geter(clicked, FolderPath, path);
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuLoad));
     if (!menu) {
         zox_log_error("UI [MenuLoad] Not Found");

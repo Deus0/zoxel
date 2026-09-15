@@ -75,7 +75,7 @@ zox_sys2(PlayerToggleCameraSystem) {
             }
         }
         if (is_toggle) {
-            entity canvas = zox_get_link(world, e, Canvas);
+            entity canvas = zox_get_link(world, e, CanvasLink);
             byte mode = toggle_camera_mode(world, camera);
             byte is_first_person = mode == zox_camera_state_first_person;
             entity crosshair = zox_get_child_by_id(

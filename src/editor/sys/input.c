@@ -11,10 +11,9 @@ entity canvas_toggle_ui(ecs *world, entity canvas, entity e, entity (*spawn_ui)(
 
 zox_sys2(EditorInputSystem) {
     zox_sys_world();
-    zox_sys_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        entity canvas = zox_get_link(world, e, Canvas);
+        entity canvas = zox_get_link(world, e, CanvasLink);
         if (!zox_valid(canvas)) {
             continue;
         }

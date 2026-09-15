@@ -42,7 +42,7 @@ zox_sys2(ElementRaycastSystem) {
         if (!raycaster_mode) {
             continue;
         }
-        entity canvas = zox_get_link(world, player, Canvas);
+        entity canvas = zox_get_link(world, player, CanvasLink);
         if (!zox_valid(canvas)) {
             continue;
         }

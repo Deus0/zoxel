@@ -143,9 +143,16 @@ void chunk_frustum_system(iter* it) {
         return;
     }
     // Sanity check
-    #ifdef zox_debug
-    assert(camera_planes->size == camera_bounds->size * zox_camera_planes);
-    #endif
+#ifdef zox_debug
+    if (camera_planes->size != camera_bounds->size * zox_camera_planes) {
+        zox_log("Camera Planes Size [%i] != Added [%i] [%ix%i]",
+            camera_planes->size,
+            camera_bounds->size * zox_camera_planes,
+            camera_bounds->size,
+            zox_camera_planes);
+        return;
+    }
+#endif
     zox_sys_begin();
     zox_sys_in(Position3D);
     zox_sys_in(Bounds3D);

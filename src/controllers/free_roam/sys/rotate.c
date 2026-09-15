@@ -8,7 +8,6 @@ zox_sys2(FreeCameraRotateSystem) {
     rotate_power *= 10.0;
 #endif
     zox_sys_world();
-    zox_sys_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         entity camera = zox_get_link(world, e, CameraLink);

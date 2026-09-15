@@ -6,17 +6,17 @@
     zoxc_custom(name)
 
 // placeholder for later
-#define zox_define_component_array(name)\
-    zoxd(name)
+#define zox_define_component_array(T)\
+    zoxd(T)
 
-#define zoxc_array_l(name, type, capacity) \
-    const ulong name##_length = capacity; \
+#define zoxc_array_l(T, type, capacity) \
+    const ulong T##_length = capacity; \
     typedef struct { \
         ulong length; \
         type value[capacity]; \
-    } name; \
-    zoxc_custom(name)
+    } T; \
+    zoxc_custom(T)
 
 // placeholder for later
-#define zox_define_component_array_l(name)\
-    zoxd(name)
+#define zox_define_component_array_l(T)\
+    zoxd(T)

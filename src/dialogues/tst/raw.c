@@ -25,7 +25,7 @@ void zox_tst_spawn_dialogue(ecs *world, ClickEventData data) {
         return;
     }
     zox_log("Testing Realm Dialogue Run [0]");
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     entity tree;
     {
         byte texts_count = 3;

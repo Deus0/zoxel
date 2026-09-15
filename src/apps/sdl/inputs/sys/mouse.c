@@ -31,7 +31,7 @@ zox_sys2(MouseExtractSystem) {
     // zox_sys_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        entity app = zox_get_link(world, e, App);
+        entity app = zox_get_link(world, e, AppLink);
         if (!zox_valid(app) || !zox_has(app, SDLWindow)) {
             continue;
         }

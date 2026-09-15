@@ -18,6 +18,6 @@ double chunk_mesh_deactivate_delay = 0.5;
 void import_chunks(ecs* world) {
     zox_module(chunks);
     define_components_chunks(world);
-    zox_import_module(Chunks2);
+    zox_add_module(chunks2);
     zox_add_module(chunks3);
 }

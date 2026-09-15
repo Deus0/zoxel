@@ -10,7 +10,6 @@ void zox_define_systems_maps(ecs* world) {
         zoxp_spawn,
         [in] maps.MapZoom,
         [in] rendering.Alpha,
-        [in] players.PlayerLink,
         [in] maps.MapPosition,
         [none] core.Initialize,
         [none] maps.Map
@@ -18,7 +17,6 @@ void zox_define_systems_maps(ecs* world) {
     zox_system_1(
         MapPositionSystem,
         zoxp_spawn,
-        [in] players.PlayerLink,
         [out] maps.MapPosition,
         [none] maps.Map
         // [none] maps.Minimap
@@ -26,7 +24,6 @@ void zox_define_systems_maps(ecs* world) {
     zox_system(
         MapArrowSystem,
         zoxp_update,
-        [in] players.PlayerLink,
         [out] transforms2.LocalRotation2,
         [none] maps.MapArrow
     );

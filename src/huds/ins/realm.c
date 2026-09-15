@@ -7,7 +7,7 @@ entity spawn_menu_realm(
     ecs *world,
     entity player)
 {
-    zox_geter_value(player, GameLink, entity, game);
+    entity game = zox_get_link(world, player, GameLink);
     entity realm = zox_get_link(world, game, RealmLink);
     // Sizing
     float2 window_anchor = zox_huds_window_anchor;

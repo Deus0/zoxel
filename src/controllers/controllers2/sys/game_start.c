@@ -8,7 +8,7 @@ void player_start_game2D_delayed(ecs *world, entity player) {
     entity character = spawn_character2_player(
         world,
         prefab_game2_player);
-    zox_set(character, PlayerLink, { player });
+    zox_link(world, character, PlayerLink, player);
     zox_link(world, player, Character, character);
     entity camera = zox_get_link(world, player, CameraLink);
     if (!zox_valid(camera)) {
@@ -38,13 +38,16 @@ zox_sys2(PlayerGame2StartSystem) {
         zox_sys_e();
         zox_sys_i(PlayerStateDirty, dirty);
         zox_sys_i(PlayerState, state);
-        if (!(dirty->value == zox_dirty_active && state->value == zox_player_state_loading)) {
+        if (!(dirty->value == zox_dirty_active &&
+            state->value == zox_player_state_loading))
+        {
             continue;
         }
-        // zox_geter_value(game->value, RealmLink, entity, realm);
-        // zox_geter(realm, FolderPath, path);
-        // disable_inputs_until_release(world, e, zox_device_mode_none, 1);
-        double delay = game_load_player_delay + game_load_fade_transition_time;   // 1.4f
-        delay_event(world, &player_start_game2D_delayed, e, delay);
+        double delay = game_load_player_delay + game_load_fade_transition_time;
+        delay_event(
+            world,
+            &player_start_game2D_delayed,
+            e,
+            delay);
     }
 } zox_sys_end(PlayerGame2StartSystem);

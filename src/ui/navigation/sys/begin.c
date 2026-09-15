@@ -62,7 +62,7 @@ zox_sys2(ElementNavigationBeginSystem) {
         if (device_mode != zox_device_mode_gamepad) {
             continue;
         }
-        entity canvas = zox_get_link(world, player, Canvas);
+        entity canvas = zox_get_link(world, player, CanvasLink);
         if (!zox_valid(canvas)) {
             // zox_logw("Canvas is missing from Player");
             continue;

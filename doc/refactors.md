@@ -1,6 +1,10 @@
 # Refactoring
 
 Unsorted
+- Make initialize systems just use an event / observer
+    - moving them to callbacks
+- make realm / game / app seperate, all should have no parent, since our links are better now
+- make pickup collider a sub entity on player
 - Add custom Phases -> EcsOnUpdate -> zoxp_update
 - Add links back for active mesh, fuck the rules
 - Refactor all 'SettingsSystem)' into events on prefab_app
@@ -55,12 +59,19 @@ UIs
 	- Settings Spawning - InitializeEvent on App
     
 ## Remove old links
-	- GameLink
-	- PlayerLink
-	- PlayerLinks
+	-x GameLink
+	-x PlayerLink
+	-x MaterialLink
+	- ShaderLink
+	- ChunkLink
 	- TextureLink
-	- NoteLinks
+	- LastDamager
 	- ElementLink
+	- DeviceLink
+	- ZeviceLink
+	- ModelLink
+	- PlayerLinks
+	- NoteLinks
 	- UIHolderLink
 	- ElementLinks
 	- LabelPrefabLink
@@ -74,20 +85,14 @@ UIs
 	- TooltipeeLink
 	- IconOverlayLink
 	- PlotDataLink
-	- DeviceLink
-	- ZeviceLink
 	- MouseLink
 	- VirtualZeviceLink
-	- ChunkLink
 	- SpeakerLinks
 	- EntityLinks
 	- CharacterLinks
 	- BlockLinks
 	- BiomeLinks
-	- ModelLink
 	- ModelLinks (half done)
-	-x MaterialLink
-	- ShaderLink
 	- SkeletonLink
 	- HeadBoneLink
 	- HandBoneLink

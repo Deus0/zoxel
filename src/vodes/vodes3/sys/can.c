@@ -2,12 +2,12 @@ void can_have_vodes_system(iter* it) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ChunkLodDirty);
     zox_sys_in(RenderDepth);
+    zox_sys_in(ChunkLodDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(ChunkLodDirty, dirty);
         zox_sys_i(RenderDepth, render_depth);
+        zox_sys_i(ChunkLodDirty, dirty);
         if (!dirty->value) {
             continue;
         }

@@ -32,15 +32,15 @@ zox_sys2(RaycastCrosshairSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RaycastVoxelData);
-    zox_sys_in(PlayerLink);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(RaycastVoxelData, data);
-        zox_sys_i(PlayerLink, player);
-        if (!zox_valid(player->value)) {
+        entity player = zox_get_link(world, e, PlayerLink);
+        if (!zox_valid(player)) {
             zox_loge("Player has no canvas");
             continue;
         }
-        entity canvas = zox_get_link(world, player->value, Canvas);
+        entity canvas = zox_get_link(world, player, CanvasLink);
         if (!zox_valid(canvas)) {
             continue;
         }

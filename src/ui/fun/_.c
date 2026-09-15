@@ -11,7 +11,7 @@
 // move to hlp sub folder
 entity get_linked_canvas(ecs* world, entity e) {
     return zox_valid(e) ?
-        zox_get_link(world, e, Canvas) :
+        zox_get_link(world, e, CanvasLink) :
         0;
 }
 

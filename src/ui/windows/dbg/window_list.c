@@ -30,7 +30,7 @@ void zox_tst_spawn_window_list(
         .text = "Testing",
         .on_click = { &zox_tst_window_list_button },
     };
-    entity canvas = zox_get_link(world, player, Canvas);
+    entity canvas = zox_get_link(world, player, CanvasLink);
     entity e = spawn_window_list(
         world,
         prefab_window,

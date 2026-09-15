@@ -190,7 +190,7 @@ static inline void read_unlock_##T(const T *node) { (void) node; }\
 /*
 
 #define zoxd_octree_linked(T)\
-    zoxd(T)\
+    zoxd(T);\
     ecs_set_hooks(world, T, {\
         .ctor = ecs_ctor(T),\
         .move = ecs_move(T),\
