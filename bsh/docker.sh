@@ -2,9 +2,18 @@
 
 set -e
 
+game_name="zoxel"
 docker_image="ubuntu:24.04"
 CONTAINER_NAME="zox24"
 ARGS=("$@")
+
+# if not a -- we set our game name
+if [[ $# -gt 0 && ${1} != --* ]]; then
+    game_name="$1"
+fi
+# ${game_name}
+# change later to zox
+mount_point="/zoxel"
 
 # x64 Docker build on ARM
 DOCKER_PLATFORM=()
@@ -158,8 +167,8 @@ if ! docker container inspect "$CONTAINER_NAME" >/dev/null 2>&1; then
     docker run -dit \
         "${DOCKER_PLATFORM[@]}" \
         --name "$CONTAINER_NAME" \
-        -v "$PROJECT_DIR:/zoxel" \
-        -w /zoxel \
+        -v "$PROJECT_DIR:${mount_point}" \
+        -w "${mount_point}" \
         ${docker_image} \
         bash
 else
@@ -185,15 +194,18 @@ docker exec \
     apt install -y "${packages[@]}"
 
 echo
-echo "🔨 Building Zoxel..."
+echo "🔨 Building ${game_name}..."
 echo "  - Args [${ARGS[@]}] -"
 echo
 
 docker exec \
     -u "$(id -u):$(id -g)" \
     "$CONTAINER_NAME" \
-    bash -c 'cd /zoxel && bash bsh/build.sh --package --docker "$@"' \
+    bash -c "cd '${mount_point}' && bash bsh/build.sh \"\$@\" --package --docker" \
     bash "${ARGS[@]}"
 
+    #bash -c 'cd ${mount_point} && bash bsh/build.sh "$@" --package --docker' \
+    #bash "${ARGS[@]}"
+
 echo
-echo "✅ Zoxel build complete."
+echo "✅ Build [${game_name}] complete."
