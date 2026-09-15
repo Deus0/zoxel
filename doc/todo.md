@@ -1,5 +1,7 @@
 # Todo
 
+- Add LightLock in build_smooth_lights_system
+
 - ChunkLodDirty stuck
     - vodes_spawn_system shows active
     - chunk showed preparing and active mesh as same

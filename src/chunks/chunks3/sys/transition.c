@@ -71,10 +71,10 @@ zox_sys2(ChunkMeshTransitionSystem) {
             }
             continue;
         }
+        zox_unlink(world, e, PreparingMesh, preparing_mesh);
         if (active_mesh) {
             zox_unlink(world, e, ActiveMesh, active_mesh);
         }
-        zox_unlink(world, e, PreparingMesh, preparing_mesh);
         zox_link(world, e, ActiveMesh, preparing_mesh);
         if (zox_has(preparing_mesh, Disabled)) {
             zox_remove(preparing_mesh, Disabled);

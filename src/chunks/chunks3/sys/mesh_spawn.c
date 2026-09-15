@@ -29,6 +29,12 @@ static inline entity spawn_chunk_meshes(
         }
         return 0;
     }
+    entity active_mesh = zox_get_link(world, e, ActiveMesh);
+    if (zox_valid(active_mesh) &&
+        zox_getv(active_mesh, RenderDepth) == depth)
+    {
+        return 0;
+    }
     // If already preparing and at target depth
     entity preparing_mesh = zox_get_link(world, e, PreparingMesh);
     if (zox_valid(preparing_mesh)) {
@@ -72,7 +78,6 @@ static inline entity spawn_chunk_meshes(
         return 0;
     }
     // Make sure old one isnt building
-    entity active_mesh = zox_get_link(world, e, ActiveMesh);
     if (zox_valid(active_mesh) && !zox_has(active_mesh, BuildDisabled)) {
         zox_add(active_mesh, BuildDisabled);
     }

@@ -4,7 +4,6 @@
 // NOTE: For a Game Menu it checks and activates Taskbar Toggle
 zox_sys2(TaskbarBeginSystem) {
     zox_sys_world();
-    zox_sys_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
