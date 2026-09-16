@@ -25,28 +25,17 @@ entity spawn_dbg_chunk3_textured(
     // float scale = frand_range(scales.x, scales.y);
     float block_scale = 1.0f / 16.0f;
     byte depth = block_depth_limits.y;
-    ushort length = octree_size(depth);
-    int3 size = int3_single(length);
+    // ushort length = octree_size(depth);
+    // int3 size = int3_single(length);
     float spin = rand_range(2, 8);
     float3 euler = (float3) {
         rand() % 100 > 50 ? spin : -spin,
         rand() % 100 > 50 ? spin : -spin,
         rand() % 100 > 50 ? spin : -spin
     };
-    // spawn chunk3s
-    /*entity spawn_chunk3_textured(
-        ecs* world,
-        entity prefab,
-        entity realm,
-        entity terrain,
-        entity tilemap,
-        lint terrain_seed,
-        int3 position,
-        byte terrain_depth,
-        float terrain_scalev,
-        byte render_distance,
-        byte render_depth)*/
-    entity tilemap = zox_get_link(world, realm, Tilemap);
+    entity tilemap = zox_valid(realm) ?
+        zox_get_link(world, realm, Tilemap) :
+        0;
     entity e = spawn_chunk3_textured(
         world,
         prefab_chunk_textured,
@@ -60,10 +49,10 @@ entity spawn_dbg_chunk3_textured(
         0,
         depth
     );
-    zox_setv(e, NodeDepth, depth);
     zox_add(e, NoiseChunk);
-    zox_setv(e, GenerateModel, zox_generate_model_run);
     zox_add(e, ColorRGBs);  // temp, for system
+    zox_setv(e, NodeDepth, depth);
+    zox_setv(e, GenerateModel, zox_generate_model_run);
     zox_setv(e, Position3D, spawn_position);
     zox_setv(e, Scale1, 1);
     add_eternal_euler(world, e, euler);

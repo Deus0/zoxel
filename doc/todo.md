@@ -1,6 +1,24 @@
 # Todo
 
-- Fix - Npcs not spawning atm
+## Main MVP Bugs
+- Integral test on falling through map
+- Crashes - wrap all octrees
+- Characters -npcs not despawning now
+    - changed recently the states
+- Body lagging behind camera
+    - make sure phases there.. seperate timings
+- Main Menu music missing
+
+## New
+- Collect 5 cookies for quest
+- Hand in Quest Node - linked to two answer
+    - Dialogue Nodes: QuestDoneLink - QuestActiveLink
+- Quest Rewards - More Cookies - Particles - Sounds (Yay)
+
+## Refactors
+- Turn quest slayer into an event
+    - Make observer function for callbacks
+-o Fix - Npcs not spawning atm
     - maybe the ordering i did change that
 
 - Loops endless - when exiting game now
@@ -8,9 +26,6 @@
     - i disabled mesh, vodes, npcs, lights, still stuck on dispose terrain
     - I disabled chunks.. its tunks or regions
     - by Elimination, we find its hashmap disposal hanging
-- Fix queue for chunk updates - block placement broken again
-    - Block isnt placing after killed npc
--x Crashed on open Inventory again
 - Add spinlock onto all ChunkSides access
 - Add VoxelNodeLocks onto any read/wrists
     - ChunkSidesSystem - needs to use neighbors, and push spinlocks into octree functions
@@ -277,7 +292,7 @@ Polish
 - item ++ shhould occur after it reaches you (the world item)
 - Add loading screen
 
-# Note we need to use pipelines to isolate reading from voxels / writing to
+# Note we need to use s to isolate reading from voxels / writing to
 
 - Make a easy way to add hotkey functionality
 	- zox_on_key_pressed(key_z, test_thingo);

@@ -140,8 +140,14 @@ zox_sys2(Character3RealmSpawnSystem) {
             prefab_character3_instanced_npc :
             prefab_character3_npc;
         // add files
-        entity rsoul = zox_get_child_by_id(world, e, zox_id(StatSoul));
-        entity rhealth = zox_get_child_by_id(world, e, zox_id(StatHealth));
+        entity rsoul = zox_get_child_by_id(
+            world,
+            e,
+            zox_id(StatSoul));
+        entity rhealth = zox_get_child_by_id(
+            world,
+            e,
+            zox_id(StatHealth));
         // add our skeleton prefab
         if (!zox_no_humanoids) {
             byte chance = 2;

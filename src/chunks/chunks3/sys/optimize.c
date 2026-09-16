@@ -116,12 +116,12 @@ static inline byte optimize_reduce_octree_node(
 // NOTE: We might need a post optimize tag - for mesh updates etc
 void voxel_octree_optimize_system(iter* it) {
     zox_sys_on_begin();
-    zox_sys_world();
+    // zox_sys_world();
     zox_sys_begin();
     zox_sys_out(VoxelNode);
     zox_sys_out(VoxelNodeLock);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
+        // zox_sys_e();
         zox_sys_o(VoxelNode, voxels);
         zox_sys_o(VoxelNodeLock, lock);
         spin_lock(&lock->value);
@@ -131,16 +131,8 @@ void voxel_octree_optimize_system(iter* it) {
             offsetof(VoxelNode, value),
             offsetof(VoxelNode, type));
         spin_unlock(&lock->value);
-        zox_add(e, VoxelNodePostDirty);
-        zox_remove(e, VoxelNodeDirty);
+        // zox_add(e, VoxelNodePostDirty);
+        // zox_remove(e, VoxelNodeDirty);
     }
     zox_sys_on_end();
 } zoxd_system(voxel_octree_optimize_system);
-
-zox_sys2(VoxelNodePostDirtySystem) {
-    zox_sys_world();
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
-        zox_remove(e, VoxelNodePostDirty);
-    }
-} zox_sys_end(VoxelNodePostDirtySystem);

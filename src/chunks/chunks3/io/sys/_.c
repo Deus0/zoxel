@@ -3,16 +3,7 @@
 
 void define_systems_chunksio(ecs* world) {
     zox_system(
-        Chunk3SaveSystem,
-        zoxp_save,
-        [in] chunks3.VoxelNode,
-        [in] chunks3.ChunkPosition,
-        [none] saves.Saver,
-        [none] saves.Edited,
-        [none] chunks3.VoxelNodePostDirty,
-    );
-    zox_system(
-        Chunk3LoadSystem,
+        chunk3_load_system,
         zoxp_load,
         [in] chunks3.ChunkPosition,
         [out] chunks.NodeDepth,
@@ -20,5 +11,16 @@ void define_systems_chunksio(ecs* world) {
         [none] chunks.ChunkTextured,
         [none] saves.Saver,
         [none] core.Initialize,
+    );
+    zox_system(
+        chunk3_save_system,
+        zoxp_save,
+        [in] chunks3.VoxelNode,
+        [in] chunks3.ChunkPosition,
+        [out] chunks3.VoxelNodeLock,
+        [none] chunks.ChunkTextured,
+        [none] saves.Saver,
+        [none] saves.Edited,
+        [none] chunks3.VoxelNodePostDirty,
     );
 }

@@ -21,17 +21,7 @@ Unsorted
 
 
 ## Custom Phases
-- Make custom phases
-    - input
-    - state
-    - physics
-        - forces
-        - apply
-        - collision
-    - transforms
-    - cameras
-    - rendering
-- remove pre/post loops and just use systems as functions
+- remove update loops and just use systems as functions
 
 UIs
 - Centralize different uis

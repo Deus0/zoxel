@@ -19,27 +19,120 @@ zox_sys2(StatsRealmSpawnSystem) {
         energy_c = color_rgb_darken(color_rgb_saturate(energy_c, sat), dark);
         mana_c = color_rgb_darken(color_rgb_saturate(mana_c, sat), dark);
         // levels
-        entity soul = spawn_realm_stat(world, e, prefab_stat_level, "soul", "soul", soul_c);
+        entity soul = spawn_realm_stat(
+            world,
+            e,
+            prefab_stat_level,
+            "soul",
+            "soul",
+            soul_c);
         zox_add(soul, StatSoul);
         // states
-        entity health = spawn_realm_stat(world, e, prefab_stat_state, "health", "health", health_c);
+        entity health = spawn_realm_stat(
+            world,
+            e,
+            prefab_stat_state,
+            "health",
+            "health",
+            health_c);
         zox_add(health, StatHealth);
-        entity energy = spawn_realm_stat(world, e, prefab_stat_state, "energy", "energy", energy_c);
-        entity mana = spawn_realm_stat(world, e, prefab_stat_state, "mana", "mana", mana_c);
+        entity energy = spawn_realm_stat(
+            world,
+            e,
+            prefab_stat_state,
+            "energy",
+            "energy",
+            energy_c);
+        entity mana = spawn_realm_stat(
+            world,
+            e,
+            prefab_stat_state,
+            "mana",
+            "mana",
+            mana_c);
         // Regens
-        entity health_regen = spawn_realm_stat(world, e, prefab_stat_regen, "health regen", "healthregen", health_c);
-        entity energy_regen = spawn_realm_stat(world, e, prefab_stat_regen, "energy regen", "energyregen", energy_c);
-        entity mana_regen = spawn_realm_stat(world, e, prefab_stat_regen, "mana regen", "manaregen", mana_c);
+        spawn_realm_stat_regen(
+            world,
+            e,
+            prefab_stat_regen,
+            "health regen",
+            "healthregen",
+            health_c,
+            health);
+        spawn_realm_stat_regen(
+            world,
+            e,
+            prefab_stat_regen,
+            "energy regen",
+            "energyregen",
+            energy_c,
+            energy);
+        spawn_realm_stat_regen(
+            world,
+            e,
+            prefab_stat_regen,
+            "mana regen",
+            "manaregen",
+            mana_c,
+            mana);
         // Attributes
-        entity strength = spawn_realm_stat(world, e, prefab_stat_attribute, "strength", "strength", color_rgb_white);
-        entity vitality = spawn_realm_stat(world, e, prefab_stat_attribute, "vitality", "vitality", color_rgb_white);
-        entity endurance = spawn_realm_stat(world, e, prefab_stat_attribute, "endurance", "endurance", color_rgb_white);
-        entity intelligence = spawn_realm_stat(world, e, prefab_stat_attribute, "intelligence", "intelligence", color_rgb_white);
-        entity wisdom = spawn_realm_stat(world, e, prefab_stat_attribute, "wisdom", "wisdom", color_rgb_white);
-        entity agility = spawn_realm_stat(world, e, prefab_stat_attribute, "agility", "agility", color_rgb_white);
-        entity dexterity = spawn_realm_stat(world, e, prefab_stat_attribute, "dexterity", "dexterity", color_rgb_white);
-        entity charm = spawn_realm_stat(world, e, prefab_stat_attribute, "charm", "charm", color_rgb_white);
-        entity luck = spawn_realm_stat(
+        spawn_realm_stat(
+            world,
+            e,
+            prefab_stat_attribute,
+            "strength",
+            "strength",
+            color_rgb_white);
+        spawn_realm_stat(
+            world,
+            e,
+            prefab_stat_attribute,
+            "vitality",
+            "vitality",
+            color_rgb_white);
+        spawn_realm_stat(
+            world,
+            e,
+            prefab_stat_attribute,
+            "endurance",
+            "endurance",
+            color_rgb_white);
+        spawn_realm_stat(
+            world,
+            e,
+            prefab_stat_attribute,
+            "intelligence",
+            "intelligence",
+            color_rgb_white);
+        spawn_realm_stat(
+            world,
+            e,
+            prefab_stat_attribute,
+            "wisdom",
+            "wisdom",
+            color_rgb_white);
+        spawn_realm_stat(
+            world,
+            e,
+            prefab_stat_attribute,
+            "agility",
+            "agility",
+            color_rgb_white);
+        spawn_realm_stat(
+            world,
+            e,
+            prefab_stat_attribute,
+            "dexterity",
+            "dexterity",
+            color_rgb_white);
+        spawn_realm_stat(
+            world,
+            e,
+            prefab_stat_attribute,
+            "charm",
+            "charm",
+            color_rgb_white);
+        spawn_realm_stat(
             world,
             e,
             prefab_stat_attribute,

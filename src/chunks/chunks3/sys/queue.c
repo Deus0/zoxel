@@ -7,11 +7,13 @@ zox_sys2(VoxelUpdateQueueSystem) {
     zox_sys_in(NodeDepth);
     zox_sys_out(VoxelNodeQueue);
     zox_sys_out(VoxelNode);
+    zox_sys_out(VoxelNodeLock);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(NodeDepth, depth);
         zox_sys_o(VoxelNodeQueue, queue);
         zox_sys_o(VoxelNode, voxels);
+        zox_sys_o(VoxelNodeLock, lock);
         byte updated = 0;
         for (int j = queue->count - 1; j >= 0; j--) {
             VoxelNodeUpdate* update = &queue->ptr[j];
@@ -22,8 +24,11 @@ zox_sys2(VoxelUpdateQueueSystem) {
                 remove_at_VoxelNodeQueue(queue, j);
                 continue;
             }
-            update->old_value = getv_VoxelNode(voxels, depth->value, update->position);
-            // write_lock_VoxelNode(voxels);
+            spin_lock(&lock->value);
+            update->old_value = getv_VoxelNode(
+                voxels,
+                depth->value,
+                update->position);
             // TODO: Grab the value when setting instead
             if (set_VoxelNode(
                 voxels,
@@ -37,7 +42,7 @@ zox_sys2(VoxelUpdateQueueSystem) {
                 }*/
                 // zox_log("edited voxel: %ix%ix%i", update.positionl.x, update.positionl.y, update.positionl.z);
             }
-            // write_unlock_VoxelNode(voxels);
+            spin_unlock(&lock->value);
             update->state = zox_voxel_queue_post;
         }
         if (updated) {

@@ -29,8 +29,8 @@ ecs* open_ecs(int argc, char* argv[]) {
 }
 
 ecs* initialize_ecs(int argc, char* argv[]) {
-    ecs* new_world = open_ecs(argc, argv);
-    local_world = new_world;
-    initialize_zox_phases(new_world);
-    return new_world;
+    ecs* world = open_ecs(argc, argv);
+    initialize_zox_phases(world);
+    local_world = world;
+    return world;
 }

@@ -41,7 +41,7 @@ zox_sys2(CharacterDialogueSystem) {
                 zox_id(Quest));
             // Add our test quest to our test character
             entity dialogue_quest = quests[rand() % quests_length];
-            entity user_quest = spawn_user_quest(
+            spawn_user_quest(
                 world,
                 e,
                 dialogue_quest);

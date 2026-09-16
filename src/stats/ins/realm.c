@@ -31,3 +31,23 @@ entity spawn_realm_stat(
     }
     return e;
 }
+
+entity spawn_realm_stat_regen(
+    ecs* world,
+    entity parent,
+    entity prefab,
+    const char* name,
+    char* texture_name,
+    color_rgb ecolor,
+    entity target_stat)
+{
+    entity e = spawn_realm_stat(
+        world,
+        parent,
+        prefab,
+        name,
+        texture_name,
+        ecolor);
+    zox_link(world, e, StatLink, target_stat);
+    return e;
+}

@@ -60,7 +60,7 @@ zox_sys2(SkillsRealmSpawnSystem) {
             color ecolor = (color) { 125, 175, 175, 255 };
             float range = 1.5f;
             float2 damage = (float2) { 1, 2 };
-            entity e2 = spawn_realm_skill_shoot(
+            spawn_realm_skill_shoot(
                 world,
                 e,
                 prefab_skill_shoot,

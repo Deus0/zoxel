@@ -28,7 +28,6 @@ void quest_on_slay(
 
 zox_sys2(SlaySystem) {
     zox_sys_world();
-    zox_sys_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         // if enemy invalid or dead, continue

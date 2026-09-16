@@ -1,5 +1,5 @@
 zox_sys2(DeathAnimationSystem) {
-    zox_sys_world();
+    // zox_sys_world();
     zox_sys_begin();
     zox_sys_out(AnimationState);
     zox_sys_out(AnimationStart);

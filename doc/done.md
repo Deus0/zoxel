@@ -1,5 +1,19 @@
 # Done
 
+-x Fix queue for chunk updates - block placement broken again
+    -x Block isnt placing after killed npc
+-x Crashed on open Inventory again
+-x Humanoid NPCs not spawning
+-x Make custom phases
+    - input
+    - state
+    - physics
+        - forces
+        - apply
+        - collision
+    - transforms
+    - cameras
+    - rendering
 -x ChunkLodDirty stuck
     -x vodes_spawn_system shows active
     -x chunk showed preparing and active mesh as same

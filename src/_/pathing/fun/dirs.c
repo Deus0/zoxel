@@ -8,18 +8,39 @@
 
 // --- internal helpers -------------------------------------------------------
 
-char* join_path(const char *base, const char *name) {
-    if (!base || !name) return NULL;
-    size_t bl = strlen(base), nl = strlen(name);
-    int need_sep = (bl > 0 && base[bl-1] != '/' && base[bl-1] != '\\');
-    size_t total = bl + (need_sep ? 1 : 0) + nl + 1;
-
-    char *out = (char*)malloc(total);
-    if (!out) return NULL;
-
+char* join_path(
+    const char *base,
+    const char *name)
+{
+    if (!base || !name) {
+        return NULL;
+    }
+    size_t bl = strlen(base);
+    size_t nl = strlen(name);
+    size_t extra = (bl > 0 &&
+        base[bl - 1] != '/' &&
+        base[bl - 1] != '\\') ? 1 : 0;
+    if (bl > SIZE_MAX - extra) {
+        return NULL;
+    }
+    size_t total = bl + extra;
+    if (total > SIZE_MAX - nl) {
+        return NULL;
+    }
+    total += nl;
+    if (total == SIZE_MAX) {
+        return NULL;
+    }
+    total += 1;
+    char* out = malloc(total);
+    if (!out) {
+        return NULL;
+    }
     memcpy(out, base, bl);
     size_t i = bl;
-    if (need_sep) out[i++] = char_slash;
+    if (extra) {
+        out[i++] = char_slash;
+    }
     memcpy(out + i, name, nl);
     out[i + nl] = '\0';
     return out;

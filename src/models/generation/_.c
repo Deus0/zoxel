@@ -11,11 +11,12 @@
 
 void define_systems_models_generation(ecs* world) {
     zox_system(
-        NoiseVoxelNodeSystem,
+        noise_model_system,
         zoxp_octree_write,
         [in] chunks.NodeDepth,
         [out] chunks.GenerateModel,
         [out] chunks3.VoxelNode,
+        [out] chunks3.VoxelNodeLock,
         [out] colorz.ColorRGBs,
         [none] chunks3.NoiseChunk
     );

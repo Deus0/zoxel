@@ -1,6 +1,6 @@
 #include "node.c"
 #include "arrayd.c"
-#include "thread.c"
+#include "safety.c"
 
 void zox_tests_chunks3(ecs* world) {
     // test_nodes(world, 1000, 5);
@@ -8,5 +8,8 @@ void zox_tests_chunks3(ecs* world) {
     // test_arrayds(world, 2, 2);
     // TODO: Make test crash it without safety locks
     // TODO: Detect corruption properly
-    // zox_tst_chunks3_safety(world);
+    // A/B Testing for VoxelNodeLocks
+#ifdef zox_tests
+    zox_tst_chunks3_safety(world);
+#endif
 }

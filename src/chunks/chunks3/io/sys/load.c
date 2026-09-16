@@ -38,7 +38,7 @@ byte load_chunk(
     get_chunk_filename(filename, position);
     // sprintf(filename, "chunk_%i_%i_%i.dat", position.x, position.y, position.z);
     zox_geter(savegame, FolderPath, game_path);
-    if (!game_path || !game_path->value) {
+    if (!game_path) {
         zox_loge("[load_chunk] Invalid FolderPath [%s]",
             zox_getn(savegame));
         return 0;
@@ -67,7 +67,7 @@ byte load_chunk(
     byte success = load_voxel_node(world, file, node);
     // write_unlock_VoxelNode(node);
     if (fclose(file) != 0) {
-        zox_log_error("Failed to close file: %s", path);
+        zox_loge("Failed to close file: %s", path);
     }
     free(path);
     return success;
@@ -78,8 +78,9 @@ byte load_chunk(
 // TODO: Load at a LOD Level
 //      - Initialize just flags as Saved
 //      - We can then grab the file contents at higher depths when LOD updates
-zox_sys2(Chunk3LoadSystem) {
+void chunk3_load_system(iter* it) {
     byte dbg_log = 0;
+    zox_sys_on_begin();
     zox_sys_world();    // used when closing possible nodes
     zox_sys_begin();
     zox_sys_in(ChunkPosition);
@@ -97,11 +98,6 @@ zox_sys2(Chunk3LoadSystem) {
             continue;
         }
 #endif
-        /*entity game = zox_get_parent(world, e);
-        if (!zox_valid(game)) {
-            zox_loge("[Chunk3LoadSystem] Invalid [game]");
-            continue;
-        }*/
         entity realm = zox_get_link(world, terrain, RealmLink);
 #ifdef zox_safety_checks
         if (!zox_valid(realm)) {
@@ -116,7 +112,12 @@ zox_sys2(Chunk3LoadSystem) {
             continue;
         }
 #endif
-        if (load_chunk(world, realm, position->value, voxels)) {
+        if (load_chunk(
+            world,
+            realm,
+            position->value,
+            voxels))
+        {
             depth->value = terrain_depth;
             zox_add(e, Loaded);
             zox_setv(e, GenerateChunk, zox_generate_terrain_sunlight);
@@ -128,4 +129,5 @@ zox_sys2(Chunk3LoadSystem) {
             }
         }
     }
-} zox_sys_end(Chunk3LoadSystem);
+    zox_sys_on_end();
+} zoxd_system(chunk3_load_system);

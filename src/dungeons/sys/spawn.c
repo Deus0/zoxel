@@ -45,19 +45,43 @@ zox_sys2(DungeonsSpawnSystem) {
             mountain_positions[j] = zox_getv(e2, BlockPosition2);
             mountain_radii[j] = zox_getv(e2, Radius);
             if (dbg_log) {
-                zox_log(" - Mountain [%ix%i] Size [%i]", mountain_positions[j].x, mountain_positions[j].y, mountain_radii[j]);
+                zox_log(" - Mountain [%ix%i] Size [%i]",
+                    mountain_positions[j].x,
+                    mountain_positions[j].y,
+                    mountain_radii[j]);
             }
         }
         int2 positions[spawn_count];
         byte2 sizes[spawn_count];
         for (int j = 0; j < spawn_count; j++) {
-            if (!get_place_position(seed->value, block_position->value, block_size->value, margins, min_size, max_size, padding, positions, sizes, j, mountain_positions, mountain_radii, mountains_length, max_attempts)) {
+            if (!get_place_position(
+                seed->value,
+                block_position->value,
+                block_size->value,
+                margins,
+                min_size,
+                max_size,
+                padding,
+                positions,
+                sizes,
+                j,
+                mountain_positions,
+                mountain_radii,
+                mountains_length,
+                max_attempts))
+            {
                 continue;
             }
             int2 position = positions[j];
             byte2 size = sizes[j];
             lint dungeon_seed = position_seed2(seed->value, position);
-            spawn_dungeon(world, prefab_dungeon, e, dungeon_seed, position, size);
+            spawn_dungeon(
+                world,
+                prefab_dungeon,
+                e,
+                dungeon_seed,
+                position,
+                size);
             if (dbg_log) {
                 zox_log(" + Dungeon [%ix%i] Size [%ix%i]", position.x, position.y, size.x, size.y);
             }

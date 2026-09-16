@@ -39,10 +39,15 @@ entity spawn_chunk3_textured(
     }
     // Links
     zox_set_parent(world, e, terrain);
-    zox_link(world, e, RealmLink, realm);
-    zox_link(world, e, Tilemap, tilemap);
-    zox_link(world, e, BlockManagerLink, realm);
+    if (zox_valid(realm)) {
+        zox_link(world, e, RealmLink, realm);
+        zox_link(world, e, BlockManagerLink, realm);
+        if (zox_valid(tilemap)) {
+            zox_link(world, e, Tilemap, tilemap);
+        }
+    }
     // Data
+    zox_setv(e, Seed, seed);
     zox_setv(e, ChunkPosition, position);
     zox_setv(e, ChunkSize, size);
     zox_setv(e, BlockScale, chunk_scalev);    // set from parent

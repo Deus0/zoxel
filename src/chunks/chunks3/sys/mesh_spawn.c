@@ -10,6 +10,7 @@ static inline entity spawn_chunk_meshes(
     ecs* world,
     entity e,
     const VoxelNode* voxels,
+    spinlock* lock,
     byte depth,
     float4x4 matrix,
     byte render_disabled,
@@ -23,7 +24,10 @@ static inline entity spawn_chunk_meshes(
     // check any solids
     // TODO: Only spawn mesh if sides exist!
     // TODO: If now air, and active mesh, we can destroy that mesh here
-    if (is_cull_air && !voxels->value) {
+    spin_lock(lock);
+    byte is_empty_space = !voxels->value;
+    spin_unlock(lock);
+    if (is_cull_air && is_empty_space) {
         if (dbg_log) {
             zox_log(" - Chunk is Air for [%s] Depth [%i]", zox_getn(e), depth);
         }
@@ -114,6 +118,7 @@ zox_sys2(ChunkMeshSpawnSystem) {
     zox_sys_in(RenderDisabled);
     zox_sys_in(RenderDepth);
     zox_sys_in(VoxelNode);
+    zox_sys_out(VoxelNodeLock);
     zox_sys_out(ChunkMeshTimer);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
@@ -121,11 +126,13 @@ zox_sys2(ChunkMeshSpawnSystem) {
         zox_sys_i(RenderDisabled, render_disabled);
         zox_sys_i(RenderDepth, depth);
         zox_sys_i(VoxelNode, voxels);
+        zox_sys_o(VoxelNodeLock, lock);
         zox_sys_o(ChunkMeshTimer, timer);
         entity new_mesh = spawn_chunk_meshes(
             world,
             e,
             voxels,
+            &lock->value,
             depth->value,
             matrix->value,
             render_disabled->value,
@@ -149,6 +156,7 @@ zox_sys2(ChunkMeshSpawn2System) {
     zox_sys_in(RenderDisabled);
     zox_sys_in(RenderDepth);
     zox_sys_in(VoxelNode);
+    zox_sys_out(VoxelNodeLock);
     zox_sys_out(ChunkLodDirty);
     zox_sys_out(ChunkMeshTimer);
     for (int i = 0; i < it->count; i++) {
@@ -157,6 +165,7 @@ zox_sys2(ChunkMeshSpawn2System) {
         zox_sys_i(RenderDisabled, render_disabled);
         zox_sys_i(RenderDepth, depth);
         zox_sys_i(VoxelNode, voxels);
+        zox_sys_o(VoxelNodeLock, lock);
         zox_sys_o(ChunkLodDirty, dirty);
         zox_sys_o(ChunkMeshTimer, timer);
         if (dirty->value != zox_chunk_lod_dirty_spawn) {
@@ -166,6 +175,7 @@ zox_sys2(ChunkMeshSpawn2System) {
             world,
             e,
             voxels,
+            &lock->value,
             depth->value,
             matrix->value,
             render_disabled->value,
