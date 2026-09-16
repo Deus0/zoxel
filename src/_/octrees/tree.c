@@ -69,7 +69,11 @@ static inline byte reduce_octree_node(void* node, size_t stride, size_t value_of
     return 0;
 }
 
-static inline byte collapse_octree_branch(void* node, size_t stride, size_t value_offset) {
+static inline byte collapse_octree_branch(
+    void* node,
+    size_t stride,
+    size_t value_offset)
+{
     if (!node) {
         return 0;
     }
@@ -95,7 +99,12 @@ static inline byte collapse_octree_branch(void* node, size_t stride, size_t valu
     return 1;
 }
 
-static inline byte is_in_octree(const void* node, size_t stride, size_t value_offset, byte check) {
+static inline byte is_in_octree(
+    const void* node,
+    size_t stride,
+    size_t value_offset,
+    byte check)
+{
     if (!node) {
         return 0;
     }
@@ -118,7 +127,12 @@ static inline byte is_in_octree(const void* node, size_t stride, size_t value_of
 }
 
 // NOTE: Optimizes octree by picking most popular value
-static inline void optimize_octree_node(void* node, size_t stride, size_t value_offset, size_t type_offset) {
+static inline void optimize_octree_node(
+    void* node,
+    size_t stride,
+    size_t value_offset,
+    size_t type_offset)
+{
     if (!node) {
         return;
     }

@@ -102,16 +102,6 @@ int main(int argc, char* argv[]) {
     }
     // Resource Loading
     run_hook_files_load(world);
-    // Yet another Hook
-    // zox_logv("Running our Boot Hook");
-    // run_hook_on_boot(world, app);
-// #ifdef zox_xr
-    /*entity e2 = spawn_test_vox_at(world, float3_zero, quaternion_identity);
-    // zox_set(e2, GenerateModel, { zox_generate_model_run });
-    zox_set_parent(world, e2, app);*/
-    // Test cube
-    // spawn_cube(world, prefab_cube, (float3) { 0, 0, -1 }, 0.25f);
-// #endif
     zox_logv("Running Main Loop [%s]", game_name);
     main_loop(world);
     zox_logv("Ended Main Loop [%s]", game_name);
@@ -120,3 +110,14 @@ int main(int argc, char* argv[]) {
 #endif
     return EXIT_SUCCESS;
 }
+
+// Yet another Hook
+// zox_logv("Running our Boot Hook");
+// run_hook_on_boot(world, app);
+// #ifdef zox_xr
+/*entity e2 = spawn_test_vox_at(world, float3_zero, quaternion_identity);
+ / / zo*x_set(e2, GenerateModel, { zox_generate_model_run });
+ zox_set_parent(world, e2, app);*/
+// Test cube
+// spawn_cube(world, prefab_cube, (float3) { 0, 0, -1 }, 0.25f);
+// #endif

@@ -30,8 +30,7 @@ void import_chunks3(ecs* world) {
     define_systems_chunksio(world);
     define_systems_chunks3_debug(world);
     add_hook_spawn_prefabs(spawn_prefabs_chunks);
-    test_chunks3(world);
-    // zox_import_module(VoxelsAnimations);
+    add_hook_files_load(zox_tests_chunks3);
 }
 
 

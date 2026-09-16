@@ -100,7 +100,10 @@ const VoxelNode* get_adjacentn_VoxelNode2(
 
     spin_lock(lock);
     const VoxelNode* result =
-        get_VoxelNode(vnode, depth, int3_to_byte3(position));
+        get_VoxelNode(
+            vnode,
+            depth,
+            int3_to_byte3(position));
     spin_unlock(lock);
 
     return result;

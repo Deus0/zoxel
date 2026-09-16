@@ -9,7 +9,8 @@ short terrain_stone_height = 18; // 32;
 //       terrain or material boundaries require it.
 
 // NOTE: Fills land with Soils based on biomes
-zox_sys2(LandfillChunkSystem) {
+void landfill_chunk_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     byte dbg_log_errors = 1;
     byte disable_biome_changes = 1;
@@ -84,18 +85,23 @@ zox_sys2(LandfillChunkSystem) {
             }
             // continue;
         }
-        // zox_log("Chunk Depth IS Tunk Lod [%i] != [%i]", depth->value, tunk_lod);
         zox_geter(tunk, BiomeMap, biome_map);
 #ifdef zox_safety_checks
         if (!zox_disable_biomes && !biome_map->length) {
-            zox_loge("Invalid [Tunk] [biome_map] at [%ix%ix%i]", chunk_position->value.x, chunk_position->value.y, chunk_position->value.z);
+            zox_loge("Invalid [Tunk] [biome_map] at [%ix%ix%i]",
+                chunk_position->value.x,
+                chunk_position->value.y,
+                chunk_position->value.z);
             continue;
         }
 #endif
         zox_geter(tunk, HeightMap, height_map);
 #ifdef zox_safety_checks
         if (!height_map->length) {
-            zox_loge("Invalid [Tunk] [height_map] at [%ix%ix%i]", chunk_position->value.x, chunk_position->value.y, chunk_position->value.z);
+            zox_loge("Invalid [Tunk] [height_map] at [%ix%ix%i]",
+                chunk_position->value.x,
+                chunk_position->value.y,
+                chunk_position->value.z);
             continue;
         }
 #endif
@@ -111,8 +117,14 @@ zox_sys2(LandfillChunkSystem) {
         // We using lod depths now
         byte stone_dig = 4 >> shift;
         // Get realm blocks first
-        entity obsidian = zox_get_child_by_id(world, realm, zox_id(BlockObsidian));
-        byte obsidian_id = zox_valid(obsidian) ? zox_getv(obsidian, BlockIndex) : 0;
+        entity obsidian = zox_get_child_by_id(
+            world,
+            realm,
+            zox_id(BlockObsidian));
+        byte obsidian_id =
+            zox_valid(obsidian) ?
+                zox_getv(obsidian, BlockIndex) :
+                0;
 #ifdef zox_safety_checks
         if (!obsidian_id) {
             zox_logw("Realm [%s] Has no Obsidian Block.",
@@ -134,7 +146,13 @@ zox_sys2(LandfillChunkSystem) {
                 // int map_index = int2_array_index(map_position, map_size);
 #ifdef zox_safety_checks
                 if (!zox_disable_biomes && map_index >= biome_map->length) {
-                    zox_loge("Landfill: Map Index OOB [%i] : [%i].. Pos [%ix%i] Size [%ix%i]", map_index, biome_map->length, position.x, position.y, map_size.x, map_size.y);
+                    zox_loge("Landfill: Map Index OOB [%i] : [%i].. Pos [%ix%i] Size [%ix%i]",
+                        map_index,
+                        biome_map->length,
+                        position.x,
+                        position.y,
+                        map_size.x,
+                        map_size.y);
                     continue;
                 }
 #endif
@@ -143,15 +161,18 @@ zox_sys2(LandfillChunkSystem) {
                 if (height < chunk_block_position.y) {
                     continue;
                 }
-                byte biome_id = !zox_disable_biomes ?
-                    biome_map->value[map_index] :
-                    0;
+                byte biome_id =
+                    !zox_disable_biomes ?
+                        biome_map->value[map_index] :
+                        0;
                 // Get Top Positions from Height Map
                 byte local_height = (height - chunk_block_position.y) >> shift;
                 local_height = int_clamp(local_height, 0, length - 1);
 #ifdef zox_safety_checks
                 if (biome_id >= realm_biomes->length) {
-                    zox_loge("[Landfill] Biome ID OOB [%i] of [%i]", biome_id, realm_biomes->length);
+                    zox_loge("[Landfill] Biome ID OOB [%i] of [%i]",
+                        biome_id,
+                        realm_biomes->length);
                     continue;
                 }
 #endif
@@ -261,4 +282,5 @@ zox_sys2(LandfillChunkSystem) {
         generate->value = zox_generate_terrain_vegetation;
         pcount += build_depth;
     }
-} zox_sys_end(LandfillChunkSystem);
+    zox_sys_on_end();
+} zoxd_system(landfill_chunk_system);

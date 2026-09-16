@@ -25,7 +25,12 @@ zox_sys2(VoxelUpdateQueueSystem) {
             update->old_value = getv_VoxelNode(voxels, depth->value, update->position);
             // write_lock_VoxelNode(voxels);
             // TODO: Grab the value when setting instead
-            if (set_VoxelNode(voxels, depth->value, update->position, update->value)) {
+            if (set_VoxelNode(
+                voxels,
+                depth->value,
+                update->position,
+                update->value))
+            {
                 updated = 1;
                 /*if (old_value) {
                     a_VoxelDropQueue(drops, (VoxelDropElement) { .value = old_value, .pos = update.pos });

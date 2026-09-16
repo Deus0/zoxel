@@ -13,7 +13,7 @@ void zox_systems_heights(ecs* world) {
         [none] tunks.Tunk
     );
     zox_system(
-        LandfillChunkSystem,
+        landfill_chunk_system,
         zoxp_octree_write,
         [in] chunks3.ChunkPosition,
         [in] chunks.NodeDepth,
@@ -22,5 +22,5 @@ void zox_systems_heights(ecs* world) {
         [out] chunks3.VoxelNodeLock,
         [none] terrains.TerrainChunk
     );
-    add_system_process_counter(world, zox_id(LandfillChunkSystem));
+    add_system_process_counter(world, zox_id(landfill_chunk_system));
 }
