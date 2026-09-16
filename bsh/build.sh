@@ -21,6 +21,7 @@ debug="0"
 is_safety_checks="1"    # lets stay safe for now
 is_profiler="0"         # https://www.flecs.dev/explorer/?host=localhost
 is_fast_dev="0"         # -O3
+is_dev_memory="0"
 is_dev_syntax="0"
 is_run="0"
 logs="0"
@@ -85,6 +86,7 @@ fi
 
 # Misc
 [[ " $* " == *" --debug "* ]] && debug="1"
+[[ " $* " == *" --memory "* ]] && is_dev_memory="1"
 [[ " $* " == *" --syntax "* ]] && is_dev_syntax="1"
 [[ " $* " == *" --release "* ]] && debug="0"
 [[ " $* " == *" --run "* ]] && is_run="1"
@@ -157,15 +159,18 @@ if [[ ${debug} == "1" ]]; then
     if [[ ${is_fast_dev} == "1" ]]; then
         echo "+ Added [fast_debug]"
         cflags+=" -O3 -g"
+    elif [[ ${is_dev_memory} == "1" ]]; then
+        echo "+ Added [memory_checks]"
+        cflags+=" -O0 -g3"
+        cflags+=" -Wall -Wextra -ggdb3"
+        cflags+=" -fno-omit-frame-pointer"
+        cflags+=" -fsanitize=address,undefined"
     elif [[ ${is_dev_syntax} == "1" ]]; then
         cflags+=" -fsyntax-only -fmax-errors=1"
     else
         cflags+=" -O0 -g3"
         cflags+=" -Wall -ggdb3"
     fi
-    # Memory Leaks Full Debug
-    # cflags+=" -fno-omit-frame-pointer""
-    # cflags+=" -fsanitize=address"
 else
     # Release Builds
     cflags+=" -O3 -flto=auto -DNDEBUG"

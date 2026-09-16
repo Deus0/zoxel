@@ -16,7 +16,7 @@ void define_systems_layouts2(ecs* world) {
     // For Canvas basically
     zox_system(
         LayoutSystem,
-        zoxp_transforms - 1,
+        zoxp_layouts,
         [in] layouts.LayoutSize,
         [none] layouts.Canvas,
         [none] !transforms2.LocalPosition2,
@@ -24,7 +24,7 @@ void define_systems_layouts2(ecs* world) {
     );
     zox_system(
         Layout3System,
-        zoxp_transforms - 1,
+        zoxp_layouts,
         [in] layouts.LayoutSize,
         [none] layouts.Canvas3,
         [none] !transforms3.LocalPosition3D

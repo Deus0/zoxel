@@ -34,7 +34,12 @@ void game_state_end_huds(ecs* world, entity game, byte state) {
     if (state != zox_game_state_the_end) {
         return;
     }
-    entity realm = zox_get_child_by_id(world, game, zox_id(Realm));
+    entity realm = zox_get_link(world, game, RealmLink);
+    if (!zox_valid(realm)) {
+        zox_loge("[game_state_end_huds] Invalid [realm]");
+        return;
+    }
+    // entity realm = zox_get_child_by_id(world, game, zox_id(Realm));
     play_playlist(world, realm, 0);
     iter it2 = zox_children(world, game);
     while (zox_children_next(it2)) {

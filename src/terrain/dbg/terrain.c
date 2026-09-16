@@ -1,6 +1,6 @@
 entity zox_dbg_terrain;
 
-entity test_spawn_terrain(ecs* world) {
+entity zox_dbg_spawn_terrain(ecs* world) {
     if (zox_dbg_terrain) {
         zox_delete(zox_dbg_terrain);
         zox_dbg_terrain = 0;

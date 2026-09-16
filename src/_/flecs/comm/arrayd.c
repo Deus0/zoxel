@@ -15,21 +15,19 @@ ECS_CTOR(T, ptr, { \
     spinlock_init(&ptr->lock); \
 }) \
 \
-ECS_DTOR(T, ptr, { \
-    if (ptr->value) { \
-        zox_free(ptr->value); \
-        ptr->value = NULL; \
-    } \
-    ptr->length = 0; \
-})\
-\
-void dispose_##T(T *ptr) { \
+void dispose_##T(T* ptr) { \
+    spin_lock(&ptr->lock); \
     if (ptr->value) { \
         zox_free(ptr->value); \
         ptr->value = NULL; \
     }\
     ptr->length = 0;\
+    spin_unlock(&ptr->lock); \
 }\
+\
+ECS_DTOR(T, ptr, { \
+    dispose_##T(ptr); \
+})\
 \
 ECS_MOVE(T, dst, src, { \
     dst->value = src->value; \
@@ -40,23 +38,31 @@ ECS_MOVE(T, dst, src, { \
 }) \
 \
 void clone_##T(T* dst, const T* src) {\
+    if (dst == src) {\
+        return;\
+    }\
+    spin_lock(&dst->lock); \
+    spin_lock((spinlock*)&src->lock); \
     if (dst->value) { \
         zox_free(dst->value); \
         dst->value = NULL; \
         dst->length = 0;\
     }\
-    spinlock_init(&dst->lock); \
     if (src->value) {\
         int memory_length = src->length * sizeof(type);\
-        type *value = zox_malloc(memory_length);\
-        if (!value) {\
-            zox_log_error("malloc failed clone_" #T);\
+        type* ptr = zox_malloc(memory_length);\
+        if (!ptr) {\
+            zox_loge("malloc failed clone_" #T);\
+            spin_unlock((spinlock*)&src->lock); \
+            spin_unlock(&dst->lock); \
             return;\
         }\
-        memcpy(value, src->value, memory_length);\
-        dst->value = value;\
+        memcpy(ptr, src->value, memory_length);\
+        dst->value = ptr;\
         dst->length = src->length;\
     }\
+    spin_unlock((spinlock*)&src->lock); \
+    spin_unlock(&dst->lock); \
 }\
 \
 ECS_COPY(T, dst, src, { \
@@ -64,33 +70,47 @@ ECS_COPY(T, dst, src, { \
 }) \
 \
 void initialize_##T(T* ptr, int length) {\
+    spin_lock(&ptr->lock); \
     if (length > 0) {\
         type *new_memory = zox_malloc(length * sizeof(type));\
         if (!new_memory) {\
-            zox_log_error("malloc failure " #T);\
+            zox_loge("malloc failure " #T);\
         } else {\
             ptr->value = new_memory;\
             ptr->length = length;\
         }\
     } \
+    spin_unlock(&ptr->lock); \
 } \
 \
 void resize_##T(T* ptr, int length) {\
+    spin_lock(&ptr->lock); \
     if (ptr->length != length) {\
         if (!length) {\
-            dispose_##T(ptr);\
+            if (ptr->value) { \
+                zox_free(ptr->value); \
+                ptr->value = NULL; \
+            } \
+            ptr->length = 0; \
         } else if (!ptr->value) {\
-            initialize_##T(ptr, length);\
+            type* new_memory = zox_malloc(length * sizeof(type)); \
+            if (!new_memory) { \
+                zox_loge("malloc failure " #T); \
+            } else { \
+                ptr->value = new_memory; \
+                ptr->length = length; \
+            } \
         } else {\
             type* new_memory = zox_realloc(ptr->value, length * sizeof(type));\
             if (!new_memory) {\
-                zox_log_error("Failure with realloc");\
+                zox_loge("Failure with realloc");\
             } else {\
                 ptr->value = new_memory;\
                 ptr->length = length;\
             }\
         }\
     }\
+    spin_unlock(&ptr->lock); \
 } \
 \
 byte add_to_##T(T *ptr, type data) { \
@@ -100,7 +120,7 @@ byte add_to_##T(T *ptr, type data) { \
         ? zox_realloc(ptr->value, new_length * sizeof(type)) \
         : zox_malloc(new_length * sizeof(type)); \
     if (!new_value) { \
-        zox_log_error("malloc failed in add_to_" #T); \
+        zox_loge("malloc failed in add_to_" #T); \
         spin_unlock(&ptr->lock); \
         return 0; \
     } \

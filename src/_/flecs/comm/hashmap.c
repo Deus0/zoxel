@@ -3,18 +3,7 @@
     zoxc(T, key##_hashmap*); \
     \
     void dispose_hashmap_##T(ecs *world, key##_hashmap* hashmap) {\
-        for (size_t j = 0; j < hashmap->size; j++) {\
-            key##_hashmap_pair *pair = hashmap->data[j];\
-            while (pair) {\
-                entity e = pair->value;\
-                if (zox_valid(e)) {\
-                    /*zox_log("Disposing Chunk: %s", zox_get_name(e));*/ \
-                    zox_delete(e); \
-                }\
-                pair = pair->next;\
-            }\
-        }\
-        key##_##hashmap_dispose(hashmap);\
+        key##_hashmap_dispose(hashmap);\
     }\
     \
     void on_destroyed_##T(iter *it) {\
@@ -40,3 +29,17 @@
 
 #define zoxd_hashmap(T)\
     zoxd_hashmap2(T, [out] T)
+
+/*
+for (size_t j = 0; j < hashmap->size; j++) {\
+    key##_hashmap_pair *pair = hashmap->data[j];\
+    while (pair) {\
+        entity e = pair->value;\
+        if (zox_valid(e)) {\
+            // zox_log("Disposing Chunk: %s", zox_get_name(e));\
+            zox_delete(e); \
+        }\
+        pair = pair->next;\
+    }\
+}
+*/

@@ -14,11 +14,15 @@ static void i_##T(T* q) { \
     spinlock_init(&q->lock); \
 } \
 \
-static void d_##T(T* q) { \
-    if (q->ptr) zox_free(q->ptr); \
+static void dispose_##T(T* q) { \
+    spin_lock(&q->lock); \
+    if (q->ptr) {\
+        zox_free(q->ptr); \
+    } \
     q->ptr = NULL; \
     q->count = 0; \
     q->capacity = 0; \
+    spin_unlock(&q->lock); \
 } \
 \
 static void a_##T(T* q, T2 item) { \
@@ -32,25 +36,40 @@ static void a_##T(T* q, T2 item) { \
 } \
 \
 ECS_CTOR(T, ptr, { i_##T(ptr); }) \
-ECS_DTOR(T, ptr, { d_##T(ptr); }) \
+\
+ECS_DTOR(T, ptr, { dispose_##T(ptr); }) \
+\
 ECS_MOVE(T, dst, src, { \
-    *dst = *src; \
+    dst->ptr = src->ptr; \
+    dst->count = src->count; \
+    dst->capacity = src->capacity; \
+    spinlock_init(&dst->lock); \
     src->ptr = NULL; \
     src->count = 0; \
     src->capacity = 0; \
 }) \
+\
 ECS_COPY(T, dst, src, { \
+    spin_lock((spinlock*)&src->lock); \
+    spin_lock(&dst->lock); \
     if (dst->ptr) zox_free(dst->ptr); \
     if (src->ptr) { \
         dst->ptr = zox_malloc(src->capacity * sizeof(T2)); \
-        memcpy(dst->ptr, src->ptr, src->count * sizeof(T2)); \
-        dst->count = src->count; \
-        dst->capacity = src->capacity; \
+        if (dst->ptr) { \
+            memcpy(dst->ptr, src->ptr, src->count * sizeof(T2)); \
+            dst->count = src->count; \
+            dst->capacity = src->capacity; \
+        } else { \
+            dst->count = 0; \
+            dst->capacity = 0; \
+        } \
     } else { \
         dst->ptr = NULL; \
         dst->count = 0; \
         dst->capacity = 0; \
     } \
+    spin_unlock(&dst->lock); \
+    spin_unlock((spinlock*)&src->lock); \
 })
 
 #define zoxc_queue_remove(T, T2) \

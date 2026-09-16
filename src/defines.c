@@ -16,8 +16,10 @@
 #define inc_nexus_game(x) str_macro(../gam/x/_.c)
 #define zox_nexus_game inc_nexus_game(zox_game)
 
-#ifdef zox_logs
-    #define zox_names
+#ifndef zox_names
+    #if defined(zox_logs) || defined(zox_profiler)
+        #define zox_names
+    #endif
 #endif
 #ifdef zox_debug
     #define zox_debug_settings

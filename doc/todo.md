@@ -1,5 +1,22 @@
 # Todo
 
+- Fix - Npcs not spawning atm
+    - maybe the ordering i did change that
+
+- Loops endless - when exiting game now
+    - can test by spawning/destroying terrain in main menu
+    - i disabled mesh, vodes, npcs, lights, still stuck on dispose terrain
+    - I disabled chunks.. its tunks or regions
+    - by Elimination, we find its hashmap disposal hanging
+- Fix queue for chunk updates - block placement broken again
+    - Block isnt placing after killed npc
+-x Crashed on open Inventory again
+- Add spinlock onto all ChunkSides access
+- Add VoxelNodeLocks onto any read/wrists
+    - ChunkSidesSystem - needs to use neighbors, and push spinlocks into octree functions
+- Maybe we just build spinlock into the octree types root
+    - would be a massive refactor tho
+
 - Look into plain data types of flecs
 - Water Blocks / Chunk Materials
 	- seperate out subchunks by material (with sides per material)

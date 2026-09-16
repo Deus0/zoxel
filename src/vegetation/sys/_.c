@@ -15,7 +15,7 @@ void zox_define_systems_vegetation(ecs* world) {
     );
     zox_system(
         VegetationChunk3System,
-        zoxp_update,
+        zoxp_octree_write,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkPosition,
         [out] chunks.GenerateChunk,

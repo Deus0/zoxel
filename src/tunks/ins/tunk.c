@@ -14,10 +14,10 @@ entity spawn_tunk(
         sprintf(name, "tunk_%ix%i", position.x, position.y);
         zox_name(name);
     }
-    zox_set_parent(world, e, terrain);
     zox_setv(e, TunkPosition, position);
     zox_setv(e, RenderDistance, distance);
     zox_setv(e, TunkLod, lod);
+    zox_set_parent(world, e, terrain);
     zox_link(world, e, RegionLink, region);
     return e;
 }

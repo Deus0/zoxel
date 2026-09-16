@@ -1,4 +1,6 @@
 entity dbg_tst_streamer;
+extern entity zox_dbg_terrain;
+extern entity zox_dbg_spawn_terrain(ecs*);
 
 void zox_dbg_spawn_streamer(ecs* world, ClickEventData data) {
     entity player = dbg_player;
@@ -8,7 +10,10 @@ void zox_dbg_spawn_streamer(ecs* world, ClickEventData data) {
         return;
     }
     entity camera = zox_get_link(world, player, CameraLink);
-    entity terrain = local_terrain; // zox_getv(camera, StreamLink);
+    entity terrain = zox_dbg_terrain; // zox_getv(camera, StreamLink);
+    if (!zox_valid(terrain)) {
+        terrain = zox_dbg_spawn_terrain(world);
+    }
     if (!zox_valid(terrain)) {
         zox_loge("Invalid terrain for [dbg_tst_streamer]");
         return;
@@ -25,5 +30,6 @@ void zox_dbg_spawn_streamer(ecs* world, ClickEventData data) {
         position);
     zox_set_unique_name(e, "dbg_tst_streamer");
     zox_setv(e, StreamerLevel, 1);
+    zox_setv(e, StreamDirty, zox_dirty_trigger);
     dbg_tst_streamer = e;
 }

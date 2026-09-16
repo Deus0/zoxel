@@ -51,7 +51,7 @@ void define_systems_lights3(ecs* world) {
     );
     zox_system(
         LightBeamSystem,
-        zoxp_update,
+        zoxp_octree_write,
         [in] chunks3.VoxelNode,
         [in] chunks3.ChunkNeighbors,
         [out] lights.LightLock,
@@ -64,7 +64,7 @@ void define_systems_lights3(ecs* world) {
     );
     zox_system(
         LightFloodSystem,
-        zoxp_update,
+        zoxp_octree_write,
         [in] chunks3.VoxelNode,
         [in] chunks3.ChunkNeighbors,
         [out] lights.LightLock,
@@ -91,7 +91,7 @@ void define_systems_lights3(ecs* world) {
     // NOTE: This needs to be queue dependent
     zox_system(
         VoxelLightSystem,
-        zoxp_queue_process,
+        zoxp_queue_process, // zoxp_octree_write
         [in] chunks3.VoxelNodeQueue,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkNeighbors,
@@ -107,7 +107,7 @@ void define_systems_lights3(ecs* world) {
     // this kinda has issues atm hmm
     zox_system(
         LightNodeReduceSystem,
-        zoxp_update,
+        zoxp_octree_write,
         [in] lights3.LightNodeDirty,
         [out] lights.LightLock,
         [out] lights3.LightNode,
@@ -130,7 +130,7 @@ void define_systems_lights3(ecs* world) {
     // Wait until after mesh has built
     zox_system(
         build_smooth_lights_system,
-        zoxp_voxels_lights,
+        zoxp_octree_read, // zoxp_voxels_lights,
         [in] rendering.RenderDepth,
         [in] rendering.MeshColorRGBs,
         [none] rendering.ChunkMesh,

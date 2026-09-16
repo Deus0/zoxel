@@ -11,7 +11,7 @@ entity spawn_prefab_chunk_terrain(
     zox_add(e, DisableTransform);
     prefab_add_lights3(world, e, 0);
     // Links
-    zox_set(e, ChunkEntities, { 0 });
+    zox_setv(e, ChunkEntities, 0);
     // Events
     zox_setv(e, RenderDistanceDirty, zox_dirty_trigger);
     zox_setv(e, ChunkLodDirty, zox_chunk_lod_dirty_start);

@@ -36,7 +36,12 @@ byte is_adjacent_all_solid(
     byte direction,
     byte depth)
 {
-    const VoxelNode* adjacent_node = get_adjacentn_VoxelNode(neighbors, node, position, depth, direction);
+    const VoxelNode* adjacent_node = get_adjacentn_VoxelNode(
+        neighbors,
+        node,
+        position,
+        depth,
+        direction);
     if (!adjacent_node) {
         return edge;
     }

@@ -149,7 +149,13 @@ const T* get_adjacent_##T(const T** neighbors, const T* root, int3 position, byt
     }\
 }\
 \
-const T* get_adjacentn_##T(const T** neighbors, const T* vnode, int3 position, byte depth, byte direction) {\
+const T* get_adjacentn_##T(\
+    const T** neighbors, \
+    const T* vnode, \
+    int3 position, \
+    byte depth,\
+    byte direction) \
+{\
     if (!vnode) { \
         return NULL; \
     } \

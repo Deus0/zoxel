@@ -24,7 +24,7 @@ void define_systems_elements3D(ecs *world) {
     );
     zox_system(
         UITrailSystem,
-        zoxp_transforms,
+        zoxp_trails, // zoxp_transforms,
         [in] ui.UIHolderLink,
         [in] UITrail,
         [out] transforms3.Position3D
@@ -40,8 +40,8 @@ void define_systems_elements3D(ecs *world) {
 #else
     zox_system_ctx(
 #endif
-        BillboardSystem,
-        zoxp_transforms,
+        billboard_system,
+        zoxp_trails,
         billboard_cameras,
         [in] rendering.RenderDisabled,
         [in] transforms3.Position3D,

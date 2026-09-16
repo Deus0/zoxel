@@ -13,7 +13,7 @@ void test_spawn_realm2(ecs* world, ClickEventData data) {
 }
 
 void test_spawn_terrain2(ecs* world, ClickEventData data) {
-    test_spawn_terrain(world);
+    zox_dbg_spawn_terrain(world);
 }
 
 void zox_tst_spawn_tilemap2(ecs* world, ClickEventData data) {

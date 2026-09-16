@@ -30,7 +30,12 @@ void zox_tst_spawn_tilemap(ecs *world) {
             zox_getn(player));
         return;
     }
-    entity realm = zox_get_child_by_id(
+    entity realm = zox_get_link(world, game, RealmLink);
+    if (!zox_valid(realm)) {
+        zox_loge("[zox_tst_spawn_tilemap] Invalid [realm]");
+        return;
+    }
+    /*entity realm = zox_get_child_by_id(
         world,
         game,
         zox_id(Realm));
@@ -38,7 +43,7 @@ void zox_tst_spawn_tilemap(ecs *world) {
         zox_loge("[Tilemap] Invalid Realm on (%s)",
             zox_getn(player));
         return;
-    }
+    }*/
     entity tilemap = zox_get_child_by_id(
         world,
         realm,

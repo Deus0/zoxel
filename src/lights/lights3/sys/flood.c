@@ -160,7 +160,10 @@ zox_sys2(LightFloodSystem) {
         zox_sys_o(LightQueue, light_queue);
         zox_sys_o(LightNode, root_lnode);
         zox_sys_o(LightNodeDirty, light_node_dirty);
-        if (!light_queue->count) {
+        spin_lock(&light_queue->lock);
+        byte has_light = light_queue->count != 0;
+        spin_unlock(&light_queue->lock);
+        if (!has_light) {
             continue;
         }
         // NOTE: Check Blocks Caches
@@ -195,8 +198,14 @@ zox_sys2(LightFloodSystem) {
         fetch_neightbor_propogation_queues(world, neighbors, n_light_queues);
         byte dirty = 0;
         byte voxel_octree_depth = zox_getv(e, NodeDepth);
-        while (light_queue->count && flooded < max_flooding) {
+        while (flooded < max_flooding) {
+            spin_lock(&light_queue->lock);
+            if (!light_queue->count) {
+                spin_unlock(&light_queue->lock);
+                break;
+            }
             LightUpdate update = remove_LightQueue(light_queue);
+            spin_unlock(&light_queue->lock);
             if (zox_disable_flood_fill) {
                 continue;
             }
@@ -213,14 +222,20 @@ zox_sys2(LightFloodSystem) {
             byte voxel = getv_VoxelNode(root_vnode, update.depth, update.pos);
             if (voxel && solidity[voxel - 1]) {
                 if (dbg_log) {
-                    zox_log("[%s]: Light Flood Canceled at [%ix%ix%i] l[%i] q [%i]", zox_get_name(e), update.pos.x, update.pos.y, update.pos.z, update.light,  light_queue->count);
+                    zox_log("[%s]: Light Flood Canceled at [%ix%ix%i] l[%i] flooded [%i]",
+                        zox_get_name(e),
+                        update.pos.x,
+                        update.pos.y,
+                        update.pos.z,
+                        update.light,
+                        flooded);
                 }
                 continue;
             }
             byte current_light = getv_LightNode(root_lnode, update.depth, update.pos);
             byte spread_light = update.light;
             if (dbg_log) {
-                zox_log("[%s]: [%s] ^ Light Flooding at [%ix%ix%i] l[%i] spread [%i] q [%i]",
+                zox_log("[%s]: [%s] ^ Light Flooding at [%ix%ix%i] l[%i] spread [%i] flooded [%i]",
                     current_light > spread_light ? "Skip" : "Run",
                     zox_sys_e_name,
                     update.pos.x,
@@ -228,7 +243,7 @@ zox_sys2(LightFloodSystem) {
                     update.pos.z,
                     current_light,
                     spread_light,
-                    light_queue->count);
+                    flooded);
             }
             if (current_light > spread_light) {
                 spread_light = current_light;

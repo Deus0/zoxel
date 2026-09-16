@@ -24,10 +24,11 @@ zox_sys2(GameStateSystem) {
         ) {
             continue;
         }
-        entity realm = zox_get_child_by_id(
-            world,
-            e,
-            zox_id(Realm));
+        entity realm = zox_get_link(world, e, RealmLink);
+        if (!zox_valid(realm)) {
+            zox_loge("[GameStateSystem] Invalid [realm]");
+            return;
+        }
         // NOTE: Handles Game State Transition Checks
         byte is_update = 0;
         if (target->value == zox_game_load_fading) {

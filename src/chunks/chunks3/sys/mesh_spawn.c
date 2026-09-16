@@ -81,8 +81,9 @@ static inline entity spawn_chunk_meshes(
     if (zox_valid(active_mesh) && !zox_has(active_mesh, BuildDisabled)) {
         zox_add(active_mesh, BuildDisabled);
     }
-    // remove for now
+
     // return 0;
+
     // NOTE: When Depth changes or Voxels Generate, if mesh doesnt exist we spawn new
     entity e2 = zox_ins(world, prefab_chunk_mesh_textured);
     zox_set_unique_name(e2, "chunk_mesh");

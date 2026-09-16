@@ -1,10 +1,10 @@
 /*
- * +------------------------------------------------------------------+
- * | Zox Module: _                           -The Lowest of the Lows- |
- * |                                                                  |
- * |  Flecs - Maths - Data Types - Strings                            |
- * |                                                                  |
- * +------------------------------------------------------------------+
+ * +----------------------------------------------------------+
+ * | Zox Module: _                   -The Lowest of the Lows- |
+ * |                                                          |
+ * |  Flecs - Maths - Data Types - Strings                    |
+ * |                                                          |
+ * +----------------------------------------------------------+
  *
  *  Notes
  *
@@ -42,9 +42,9 @@ byte zox_disable_process_skips = 0;
 // Datasets
 zoxel_dynamic_array(plane);
 zox_hashmap(byte3_hashmap, entity, 0, byte3, uint, get_byte3_hash)
-zox_hashmap(int3_hashmap, entity, 0, int3, uint, get_int3_hash)
 zox_hashmap(int_hashmap, entity, 0, int, uint,  get_int_hash)
 zox_hashmap(int2_hashmap, entity, 0, int2, uint, get_int2_hash)
+zox_hashmap(int3_hashmap, entity, 0, int3, uint, get_int3_hash)
 
 // Hooks
 zox_hook(files_load, (ecs* world), (world))
@@ -104,7 +104,6 @@ void initialize_zox(ecs* world) {
     zox_module_dispose(module_dispose_zox);
     clear_logs();
     initialize_update_loop();
-    // initialize_post_update_loop();
     initialize_hook_terminal_command();
     initialize_hook_files_load();
     initialize_hook_spawn_prefabs();

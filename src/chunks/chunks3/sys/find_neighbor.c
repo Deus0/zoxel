@@ -11,15 +11,17 @@ void chunk_neighbors_system(iter* it) {
         zox_sys_i(ChunkPosition, position);
         zox_sys_o(ChunkNeighbors, neighbors);
         entity terrain = zox_get_parent(world, e);
-#ifdef zox_safety_checks
+// #ifdef zox_safety_checks
         if (!zox_valid(terrain)) {
-            zox_loge("Terrain invalid in finding neighbors");
+            zox_logw("Terrain invalid in finding neighbors");
+            zox_remove(e, FindNeighbors);
             continue;
         }
-#endif
+// #endif
         if (!zox_has(terrain, ChunkLinks)) {
             zox_loge("Vox [%s] has no ChunkLinks in FindNeighbors",
                 zox_getn(terrain));
+            zox_remove(e, FindNeighbors);
             continue;
         }
         // link up neighbors if they need to be

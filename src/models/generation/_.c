@@ -12,7 +12,7 @@
 void define_systems_models_generation(ecs* world) {
     zox_system(
         NoiseVoxelNodeSystem,
-        zoxp_update,
+        zoxp_octree_write,
         [in] chunks.NodeDepth,
         [out] chunks.GenerateModel,
         [out] chunks3.VoxelNode,
@@ -21,7 +21,7 @@ void define_systems_models_generation(ecs* world) {
     );
     zox_system(
         decayed_model_system,
-        zoxp_update,
+        zoxp_octree_write,
         [in] core.Seed,
         [in] colorz.Color,
         [in] models.VoxType,
@@ -32,7 +32,7 @@ void define_systems_models_generation(ecs* world) {
     );
     zox_system(
         BlendedSoilGenerationSystem,
-        zoxp_update,
+        zoxp_octree_write,
         [in] core.Seed,
         [in] colorz.Color,
         [in] models.VoxType,
@@ -43,7 +43,7 @@ void define_systems_models_generation(ecs* world) {
     );
     zox_system(
         soil_model_system,
-        zoxp_update,
+        zoxp_octree_write,
         [in] core.Seed,
         [in] colorz.Color,
         [in] models.VoxType,
@@ -54,7 +54,7 @@ void define_systems_models_generation(ecs* world) {
     );
     zox_system(
         RoadModelGenerationSystem,
-        zoxp_update,
+        zoxp_octree_write,
         [in] core.Seed,
         [in] colorz.Color,
         [in] models.VoxType,
@@ -65,7 +65,7 @@ void define_systems_models_generation(ecs* world) {
     );
     zox_system(
         SandModelGenerationSystem,
-        zoxp_update,
+        zoxp_octree_write,
         [in] core.Seed,
         [in] colorz.Color,
         [in] models.VoxType,
@@ -76,7 +76,7 @@ void define_systems_models_generation(ecs* world) {
     );
     zox_system(
         BricksModelGenerationSystem,
-        zoxp_update,
+        zoxp_octree_write,
         [in] core.Seed,
         [in] colorz.Color,
         [in] models.VoxType,
@@ -87,7 +87,7 @@ void define_systems_models_generation(ecs* world) {
     );
     zox_system(
         FlowersModelGenerationSystem,
-        zoxp_update,
+        zoxp_octree_write,
         [in] core.Seed,
         [in] colorz.Color,
         [in] models.VoxType,
@@ -98,7 +98,7 @@ void define_systems_models_generation(ecs* world) {
     );
     zox_system(
         rubble_model_system,
-        zoxp_update,
+        zoxp_octree_write,
         [in] core.Seed,
         [in] colorz.Color,
         [in] models.VoxType,
@@ -109,7 +109,7 @@ void define_systems_models_generation(ecs* world) {
     );
     zox_system(
         WoodModelGenerationSystem,
-        zoxp_update,
+        zoxp_octree_write,
         [in] core.Seed,
         [in] colorz.Color,
         [in] models.VoxType,

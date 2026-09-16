@@ -12,13 +12,13 @@ void zox_systems_physics3(ecs *world) {
     // Force
     zox_system(
         acceleration3_system,
-        zoxp_physics_apply,
+        zoxp_pre_physics,
         [out] physics3.Acceleration3D,
         [out] physics3.Velocity3D
     );
     zox_system(
         alpha3_system,
-        zoxp_physics_apply,
+        zoxp_pre_physics,
         [out] Alpha3D,
         [out] Omega3D
     );

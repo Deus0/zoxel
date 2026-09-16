@@ -13,7 +13,7 @@ void define_systems_sdl(ecs* world) {
     );
     zox_system_1(
         app_gpu_end_system,
-        zoxp_rendering_end,
+        zoxp_render_end,
         0
     );
 }

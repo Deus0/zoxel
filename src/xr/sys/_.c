@@ -17,7 +17,7 @@ void zox_systems_xr(ecs* world) {
     );*/
     zox_system_1(
         xr_camera_render_system,
-        zoxp_rendering,
+        zoxp_render,
         0
         /*[in] cameras.ViewProjectionMatrix,
         [in] transforms3.Position3D,

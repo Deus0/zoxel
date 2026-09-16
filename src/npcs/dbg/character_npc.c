@@ -34,9 +34,8 @@ void zox_tst_spawn_character3_npc(
     entity prefab = is_characters_instanced ?
         prefab_character3_instanced_npc :
         prefab_character3_npc;
-    zox_geter_value(character, Position3D, float3, sposition);
-    zox_geter_value(character, Rotation3D, float4, srotation);
-    // zox_geter_value(character, RenderDepth, byte, render_depth);
+    float3 sposition = zox_getv(character, Position3D);
+    float4 srotation = zox_getv(character, Rotation3D);
     zox_geter(realm, CharacterLinks, characters);
     lint seed = rand_range(0, 10000);
     uint mindex = rand_range(0, characters->length - 1);
@@ -46,7 +45,10 @@ void zox_tst_spawn_character3_npc(
     // csprintf(name, "TS-G%lu", seed);
     // char* name = generate_name();
     zox_log("Running Test: Spawn [character3_npc]");
-    zox_log("   - Meta [%s:%i]:[%lu]", zox_get_name(meta), mindex, seed);
+    zox_log("   - Meta [%s:%i]:[%lu]",
+        zox_get_name(meta),
+            mindex,
+            seed);
     entity e = spawn_character3(
         world,
         prefab,

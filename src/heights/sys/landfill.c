@@ -23,12 +23,14 @@ zox_sys2(LandfillChunkSystem) {
     zox_sys_in(NodeDepth);
     zox_sys_out(GenerateChunk);
     zox_sys_out(VoxelNode);
+    zox_sys_out(VoxelNodeLock);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ChunkPosition, chunk_position);
         zox_sys_i(NodeDepth, depth);
         zox_sys_o(GenerateChunk, generate);
         zox_sys_o(VoxelNode, voctree);
+        zox_sys_o(VoxelNodeLock, lock);
         if (generate->value != zox_generate_terrain_landfill) {
             continue;
         }
@@ -113,7 +115,8 @@ zox_sys2(LandfillChunkSystem) {
         byte obsidian_id = zox_valid(obsidian) ? zox_getv(obsidian, BlockIndex) : 0;
 #ifdef zox_safety_checks
         if (!obsidian_id) {
-            zox_logw("Realm [%s] Has no Obsidian Block.", zox_get_name(realm));
+            zox_logw("Realm [%s] Has no Obsidian Block.",
+                zox_get_name(realm));
         }
 #endif
         // set our variables for our loop
@@ -188,31 +191,37 @@ zox_sys2(LandfillChunkSystem) {
                 position.y = 0;
                 // Bottom obsidian layer.
                 if (is_bottom_chunk) {
+                    spin_lock(&lock->value);
                     set_clean_VoxelNode(
                         voctree,
                         build_depth,
                         position,
                         obsidian_id ? obsidian_id : soil_id
                     );
+                    spin_unlock(&lock->value);
                     position.y = 1;
                 }
                 // Fill all stone.
                 for (; position.y <= stone_end; position.y++) {
+                    spin_lock(&lock->value);
                     set_clean_VoxelNode(
                         voctree,
                         build_depth,
                         position,
                         stone_id
                     );
+                    spin_unlock(&lock->value);
                 }
                 // Fill top material.
                 for (; position.y <= local_height; position.y++) {
+                    spin_lock(&lock->value);
                     set_clean_VoxelNode(
                         voctree,
                         build_depth,
                         position,
                         top_material
                     );
+                    spin_unlock(&lock->value);
                 }
                 // We fill the ground up here
                 /*int terrain_position_y = chunk_block_position.y;
@@ -237,7 +246,13 @@ zox_sys2(LandfillChunkSystem) {
                     set_clean_VoxelNode(voctree, depth->value, position, value);
                 }*/
                 if (dbg_log) {
-                    zox_log("[%s]:Landfill [%ix%i] -> H [%i] : GH [%i] L [%i]", zox_getn(e), position.x, position.z, local_height, height, length);
+                    zox_log("[%s]:Landfill [%ix%i] -> H [%i] : GH [%i] L [%i]",
+                        zox_getn(e),
+                        position.x,
+                        position.z,
+                        local_height,
+                        height,
+                        length);
                 }
             }
         }

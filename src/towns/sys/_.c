@@ -19,7 +19,7 @@ void zox_define_systems_towns(ecs* world) {
     // NOTE: Before vegetation atm
     zox_system(
         TownWallsSystem,
-        zoxp_update,
+        zoxp_octree_write,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkPosition,
         [out] chunks.GenerateChunk,

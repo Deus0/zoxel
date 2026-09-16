@@ -90,7 +90,7 @@ void zox_dbg_spawn_chunk3_textured(
         entity canvas = zox_get_link(
             world,
             player,
-            Canvas);
+            CanvasLink);
         spawn_inspector(
             world,
             canvas,

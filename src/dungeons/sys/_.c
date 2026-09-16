@@ -39,7 +39,7 @@ void zox_systems_dungeons(ecs* world) {
     // NOTE: Before vegetation atm
     zox_system(
         TownWallsSystem,
-        zoxp_update,
+        zoxp_octree_write,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkPosition,
         [out] chunks.GenerateChunk,

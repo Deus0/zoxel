@@ -115,13 +115,19 @@ zox_sys2(BiomeLinkSystem) {
                     zox_getn(camera));
             }
         }
-        entity game = zox_get_parent_by_id(
+        entity realm = zox_get_parent_by_id(
             world,
             terrain->value,
-            zox_id(Game));
-        if (!zox_valid(game)) {
-            zox_loge("No Game parent on Camera %s",
+            zox_id(Realm));
+        if (!zox_valid(realm)) {
+            zox_loge("Invalid [realm] parent on terrain %s",
                 zox_getn(terrain->value));
+            continue;
+        }
+        entity game = zox_get_link(world, realm, GameLink);
+        if (!zox_valid(game)) {
+            zox_loge("No GameLink on realm %s",
+                zox_getn(realm));
             continue;
         }
         entity skybox = zox_get_link(world, game, Skybox);

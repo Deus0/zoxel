@@ -51,7 +51,7 @@ void define_systems_chunks3(ecs *world) {
     // NOTE: Writes to VoxelNode
     zox_system(
         CloneVoxSystem,
-        zoxp_update,
+        zoxp_octree_write,
         [in] CloneVoxLink,
         [out] CloneVox,
         [out] chunks3.VoxelNode,
@@ -62,7 +62,7 @@ void define_systems_chunks3(ecs *world) {
     );
     zox_system(
         CombineVoxSystem,
-        zoxp_update,
+        zoxp_octree_write,
         [in] chunks3.CombineVox,
         [in] chunks3.CombineList,
         [in] chunks3.CombinePositions,
@@ -127,11 +127,12 @@ void define_systems_chunks3(ecs *world) {
     // Builds our Terrain Chunk Mesh
     // NOTE: Requires reading voxel data
     zox_system(
-        ChunkSidesSystem,
-        zoxp_voxels_sides,
+        chunk_sides_system,
+        zoxp_octree_read,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
+        [out] chunks3.VoxelNodeLock,
         [out] chunks3.SidesOctree,
         [none] chunks.ChunkTextured,
         [none] chunks.BuildChunkSides,
@@ -165,17 +166,15 @@ void define_systems_chunks3(ecs *world) {
         zoxp_update,
         [in] chunks3.ChunkLodDirty,
         [out] chunks.ChunkMeshTimer,
-        // [out] rendering.ActiveMesh,
-        // [out] rendering.PreparingMesh,
         [none] chunks.ChunkTextured,
         [none] !chunks.GenerateChunk,
         [none] !chunks.BuildChunkSides,
     );
     zox_system(
-        VoxelOctreeOptimizeSystem,
-        zoxp_remove,
-        [out] chunks3.VoxelNodeLock,
+        voxel_octree_optimize_system,
+        zoxp_octree_write,
         [out] chunks3.VoxelNode,
+        [out] chunks3.VoxelNodeLock,
         [none] chunks.Chunk,
         [none] chunks3.VoxelNodeDirty,
     );
@@ -187,7 +186,7 @@ void define_systems_chunks3(ecs *world) {
     );
     zox_system(
         VoxelUpdateQueueSystem,
-        zoxp_queue_pre_clear,
+        zoxp_queue_clear,
         [in] chunks.NodeDepth,
         [out] chunks3.VoxelNodeQueue,
         [out] chunks3.VoxelNode,
@@ -195,7 +194,7 @@ void define_systems_chunks3(ecs *world) {
     );
     zox_system(
         chunk_textured_build_system,
-        zoxp_update, // zoxp_voxels_mesh zoxp_update
+        zoxp_voxels_mesh,
         [in] rendering.RenderDepth,
         [out] rendering.MeshIndicies,
         [out] rendering.MeshVertices,

@@ -181,14 +181,8 @@ void terrain_stream_queue_system(iter* it) {
                         continue;
                     }
 #endif
-                    /*byte old_distance3 = zox_getv(chunk, RenderDistance);
-                    if (old_distance3 == new_distance) {
-                        continue;
-                    }*/
                     zox_setm(chunk, RenderDistance, new_distance);
                     zox_setv(chunk, RenderDistanceDirty, zox_dirty_trigger);
-                    // If same depth, continue
-                    // byte old_depth = zox_getv(chunk, RenderDepth);
                     if (!tunk_render_depth_dirty) {
                         continue;
                     }
@@ -196,7 +190,6 @@ void terrain_stream_queue_system(iter* it) {
                     // NOTE: New component
                     zox_setv(chunk, ChunkLodDirty, zox_chunk_lod_dirty_start);
                     // Stop the active building
-                    // entity active_mesh = zox_getv(chunk, ActiveMesh);
                     entity active_mesh = zox_get_link(world, chunk, ActiveMesh);
                     if (zox_valid(active_mesh) &&
                         !zox_has(active_mesh, BuildDisabled))
@@ -236,9 +229,18 @@ void terrain_stream_queue_system(iter* it) {
             entity region = int2_hashmap_get(regions->value, region_position);
             if (!zox_valid(region)) {
                 // Generate Seed from Terrain Seed
-                lint region_seed = position_seed2(seed->value, region_position);
-                int2 block_position = region_position_to_block_position(region_position, depth->value);
-                int2 block_size = (int2) { region_dividor * chunk_length, region_dividor * chunk_length };
+                lint region_seed =
+                    position_seed2(
+                        seed->value,
+                        region_position);
+                int2 block_position =
+                    region_position_to_block_position(
+                        region_position,
+                        depth->value);
+                int2 block_size = (int2) {
+                    region_dividor * chunk_length,
+                    region_dividor * chunk_length
+                };
                 region = spawn_region(
                     world,
                     prefab_region,
@@ -282,8 +284,11 @@ void terrain_stream_queue_system(iter* it) {
             int2_hashmap_add(tunks->value, update.position, tunk);
             if (dbg_log) {
                 zox_log("New Tunk: [%ix%i] dist [%i]",
-                    update.position.x, update.position.y, update.distance);
+                    update.position.x,
+                    update.position.y,
+                    update.distance);
             }
+            // continue;
             // Spawn chunks per Tunk, if new!
             Chunk3Stack stack = (Chunk3Stack) { 0 };
             byte stack_i = 0;
@@ -305,18 +310,18 @@ void terrain_stream_queue_system(iter* it) {
                     block_scale->value,
                     update.distance,
                     new_depth);
-                int3_hashmap_add(chunks->value, chunk_position, chunk);
                 zox_link(world, chunk, TunkLink, tunk);
                 if (y == render_distance_y) {
                     zox_add(chunk, SunnyChunk);
                 } else if (y == -render_distance_y) {
                     zox_add(chunk, BottomChunk);
                 }
+                int3_hashmap_add(chunks->value, chunk_position, chunk);
+                stack.value[stack_i] = chunk;
                 if (dbg_log) {
                     zox_log("New Chunk: [%ix%ix%i] dist [%i]",
                         chunk_position.x, chunk_position.y, chunk_position.z, update.distance);
                 }
-                stack.value[stack_i] = chunk;
             }
             zox_set_ptr(tunk, Chunk3Stack, stack);
             processed++;

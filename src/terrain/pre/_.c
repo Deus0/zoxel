@@ -5,10 +5,12 @@ entity prefab_terrain;
 entity prefab_chunk_terrain;
 
 void spawn_prefabs_terrain(ecs *world) {
-    prefab_chunk_terrain = spawn_prefab_chunk_terrain(world, prefab_chunk_textured);
+    prefab_chunk_terrain = spawn_prefab_chunk_terrain(
+        world,
+        prefab_chunk_textured);
     prefab_terrain = spawn_prefab_terrain(world);
     if (prefab_realm) {
-        zox_prefab_set(prefab_realm, BlockLinks, { 0 });
-        zox_prefab_set(prefab_realm, BlocksDirty, { 0 });
+        zox_setv(prefab_realm, BlockLinks, 0);
+        zox_setv(prefab_realm, BlocksDirty, 0);
     }
 }

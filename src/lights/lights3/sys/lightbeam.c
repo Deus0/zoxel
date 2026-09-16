@@ -35,13 +35,13 @@ byte sunbeam(
             break;
         }
         // set light in LightNode
-        if (locks_enabled) {
-            spin_lock(lightlock);
-        }
-        set_LightNode(root_lights, depth, pos, light);
-        if (locks_enabled) {
-            spin_unlock(lightlock);
-        }
+        spin_lock(lightlock);
+        set_LightNode(
+            root_lights,
+            depth,
+            pos,
+            light);
+        spin_unlock(lightlock);
         dirty = 1;
         beam_started = 1;
         if (y == 0) {
@@ -147,8 +147,15 @@ zox_sys2(LightBeamSystem) {
             zox_log("[%s] Extended Sunbeams l[%i]", zox_get_name(e), sunlight);
         }
         uint beams = 0;
-        while (sunlight_queue->count && beams < max_beams) {
+        // sunlight_queue->count &&
+        while (beams < max_beams) {
+            spin_lock(&sunlight_queue->lock);
+            if (!sunlight_queue->count) {
+                spin_unlock(&sunlight_queue->lock);
+                break;
+            }
             SunlightUpdate update = remove_SunlightQueue(sunlight_queue);
+            spin_unlock(&sunlight_queue->lock);
             // NOTE: For bottom chunk we just remove queue for beaming to bottom of earth
             byte3 pos = update.pos;
             short length = octree_size(update.depth);

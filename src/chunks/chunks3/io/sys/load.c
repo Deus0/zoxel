@@ -29,7 +29,7 @@ byte load_voxel_node(ecs* world, FILE* in, VoxelNode* node) {
 
 // returns 1 if loaded
 byte load_chunk(
-    ecs *world,
+    ecs* world,
     entity savegame,
     int3 position,
     VoxelNode* node)
@@ -38,7 +38,7 @@ byte load_chunk(
     get_chunk_filename(filename, position);
     // sprintf(filename, "chunk_%i_%i_%i.dat", position.x, position.y, position.z);
     zox_geter(savegame, FolderPath, game_path);
-    if (!game_path) {
+    if (!game_path || !game_path->value) {
         zox_loge("[load_chunk] Invalid FolderPath [%s]",
             zox_getn(savegame));
         return 0;
@@ -111,7 +111,7 @@ zox_sys2(Chunk3LoadSystem) {
             continue;
         }
         if (!zox_has(realm, FolderPath)) {
-            zox_loge("[Chunk3LoadSystem] Realm [%s] has no FolderPath",
+            zox_logw("[Chunk3LoadSystem] Realm [%s] has no FolderPath",
                 zox_getn(realm));
             continue;
         }

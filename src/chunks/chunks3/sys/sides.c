@@ -69,12 +69,51 @@ byte get_adjacent_depth(
     }
 }
 
+const VoxelNode* get_adjacentn_VoxelNode2(
+    spinlock* voxel_lock,
+    spinlock** neighbor_locks,
+    const VoxelNode** neighbors,
+    const VoxelNode* vnode,
+    int3 position,
+    byte depth,
+    byte direction)
+{
+    if (!vnode) {
+        return NULL;
+    }
+
+    spinlock* lock = voxel_lock;
+    short length = octree_size(depth);
+
+    position = move_position(position, direction);
+
+    if (position.x < 0 || position.x >= length ||
+        position.y < 0 || position.y >= length ||
+        position.z < 0 || position.z >= length) {
+        position = reverse_position(position, direction, length);
+        vnode = neighbors[direction];
+        if (!vnode) {
+            return NULL;
+        }
+        lock = neighbor_locks[direction];
+    }
+
+    spin_lock(lock);
+    const VoxelNode* result =
+        get_VoxelNode(vnode, depth, int3_to_byte3(position));
+    spin_unlock(lock);
+
+    return result;
+}
+
 // this function accounts for size of drawing voxels
 // NOTE: Returns 1 to build the side
 static inline byte build_voxel_sides(
     const byte* solids,
     const VoxelNode* root,
+    spinlock* voxels_lock,
     const VoxelNode** neighbor_voxels,
+    spinlock** neighbor_locks,
     const byte* neighbor_depths,
     const VoxelNode* voxels,
     SidesOctree* sides,
@@ -83,7 +122,10 @@ static inline byte build_voxel_sides(
     byte direction)
 {
     int3 positioni = byte3_to_int3(position);
-    const VoxelNode* adjacent_node = get_adjacentn_VoxelNode(
+    // spin_lock(voxels_lock);
+    const VoxelNode* adjacent_node = get_adjacentn_VoxelNode2(
+        voxels_lock,
+        neighbor_locks,
         neighbor_voxels,
         root,
         positioni,
@@ -91,6 +133,7 @@ static inline byte build_voxel_sides(
         direction);
     // NOTE: Edge of World Voxels
     if (!adjacent_node) {
+        // spin_unlock(voxels_lock);
         // NOTE: Adds rendered facefor top of world
         if (direction == direction_up) {
             return 1;
@@ -100,6 +143,7 @@ static inline byte build_voxel_sides(
         // return 0;
     }
     if (zox_dbg_render_all_sides) {
+        spin_unlock(voxels_lock);
         return 1;
     }
     // Accounts for Dig vs Render Difference
@@ -126,6 +170,7 @@ static inline byte build_voxel_sides(
             (!solids || (solids && solids[value - 1]));
     }
     // Debug These
+    spin_unlock(voxels_lock);
     return !adjacent_solid;
 }
 
@@ -133,7 +178,9 @@ static inline byte build_voxel_sides(
 static inline byte build_sides_dig(
     const byte* solids,
     const VoxelNode* root,
+    spinlock* voxels_lock,
     const VoxelNode** neighbor_voxels,
+    spinlock** neighbor_locks,
     const byte* neighbor_depths,
     const VoxelNode* voxels,
     SidesOctree* sides,
@@ -156,7 +203,11 @@ static inline byte build_sides_dig(
     // We should keep digging even when it's closed
     // NOTE: Dig down voxel + sides octree
     byte has_vkids = !is_closed_VoxelNode(voxels);
-    if (depth < target_depth && (zox_split_textured_quads || (!zox_split_textured_quads && has_vkids))) {
+    if (depth < target_depth &&
+        (zox_split_textured_quads ||
+            (!zox_split_textured_quads &&
+            has_vkids)))
+    {
         if (!sides->ptr) {
             open_one_SidesOctree(sides);
             // NOTE: If fails malloc
@@ -171,14 +222,34 @@ static inline byte build_sides_dig(
             position.z << 1
         };
         SidesOctree* sides_kids = (SidesOctree*) sides->ptr;
-        const VoxelNode* kids = has_vkids ? (const VoxelNode*) voxels->ptr : NULL;
+        const VoxelNode* kids =
+            has_vkids ?
+                (const VoxelNode*) voxels->ptr :
+                NULL;
         // byte did_build = 0;
         byte child_depth = depth + 1;
         for (byte i = 0; i < 8; i++) {
             SidesOctree* sides_kid = &sides_kids[i];
-            const VoxelNode* child_voxel = has_vkids ? &kids[i] : voxels;
-            byte3 nposition = byte3_add(child_position, octree_positions[i]);
-            build_sides_dig(solids, root, neighbor_voxels, neighbor_depths, child_voxel, sides_kid, target_depth, child_depth, nposition, dbg_log);
+            const VoxelNode* child_voxel =
+                has_vkids ?
+                    &kids[i] :
+                    voxels;
+            byte3 nposition = byte3_add(
+                child_position,
+                octree_positions[i]);
+            build_sides_dig(
+                solids,
+                root,
+                voxels_lock,
+                neighbor_voxels,
+                neighbor_locks,
+                neighbor_depths,
+                child_voxel,
+                sides_kid,
+                target_depth,
+                child_depth,
+                nposition,
+                dbg_log);
         }
         if (zox_sides_only_target_depth && depth < target_depth) {
             return 0;
@@ -189,9 +260,30 @@ static inline byte build_sides_dig(
     // NOTE: if solid, check all sides, Set side 1 if Air
     if (value && (!solids || solids[value - 1])) {
         for (byte direction = 0; direction < 6; direction++) {
-            if (build_voxel_sides(solids, root, neighbor_voxels, neighbor_depths, voxels, sides, depth, position, direction)) {
+            // voxels_lock,
+            // spin_lock(voxels_lock);
+            //for (int a = 0; a < 6; a++)
+            //    if (neighbor_locks[a])
+            //        spin_lock(neighbor_locks[a]);
+            if (build_voxel_sides(
+                solids,
+                root,
+                voxels_lock,
+                neighbor_voxels,
+                neighbor_locks,
+                neighbor_depths,
+                voxels,
+                sides,
+                depth,
+                position,
+                direction))
+            {
                 sides->value |= (1 << (direction + 1));
             }
+            //for (int a = 0; a < 6; a++)
+            //    if (neighbor_locks[a])
+            //        spin_unlock(neighbor_locks[a]);
+            // spin_unlock(voxels_lock);
         }
     }
     if (dbg_log && sides->value) {
@@ -215,8 +307,9 @@ static inline byte build_sides_dig(
 
 // NOTE: Keeps updated when voxels octree changes
 // NOTE: Calculates the solid sides of a voxel octree per material
-zox_sys2(ChunkSidesSystem) {
+void chunk_sides_system(iter* it) {
     byte dbg_log = 0;
+    zox_sys_on_begin();
     init_side_child_indices();
     byte max_process = !zox_disable_process_skips ? 1 : 0;
     byte* solids = NULL;
@@ -225,12 +318,14 @@ zox_sys2(ChunkSidesSystem) {
     zox_sys_in(NodeDepth);
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxelNode);
+    zox_sys_out(VoxelNodeLock);
     zox_sys_out(SidesOctree);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_i(VoxelNode, voxels);
+        zox_sys_o(VoxelNodeLock, voxels_lock);
         zox_sys_o(SidesOctree, sides);
         // NOTE: Delay if past limit [max_process]
         if (max_process && process_count > max_process) {
@@ -256,12 +351,16 @@ zox_sys2(ChunkSidesSystem) {
             return;
         }
         const VoxelNode* neighbor_voxels[6];
+        spinlock* neighbor_locks[6];
         byte neighbor_depths[6];
-        memset(neighbor_voxels, 0, 6 * sizeof(const VoxelNode*));
-        memset(neighbor_depths, 0, 6 * sizeof(byte));
+        // memset(neighbor_voxels, 0, 6 * sizeof(const VoxelNode*));
+        // memset(neighbor_depths, 0, 6 * sizeof(byte));
         for (byte j = 0; j < 6; j++) {
             entity e = neighbors->value[j];
             if (!zox_valid(e)) {
+                neighbor_depths[j] = 0;
+                neighbor_voxels[j] = NULL;
+                neighbor_locks[j] = NULL;
                 continue;
             }
 #ifdef zox_safety_checks
@@ -270,13 +369,16 @@ zox_sys2(ChunkSidesSystem) {
                 continue;
             }
 #endif
-            neighbor_voxels[j] = zox_get(e, VoxelNode);
             neighbor_depths[j] = zox_getv(e, NodeDepth);
+            neighbor_voxels[j] = zox_get(e, VoxelNode);
+            neighbor_locks[j] = &(zox_mut(e, VoxelNodeLock)->value);
         }
         build_sides_dig(
             solids,
             voxels,
+            &voxels_lock->value,
             neighbor_voxels,
+            neighbor_locks,
             neighbor_depths,
             voxels,
             sides,
@@ -311,4 +413,5 @@ zox_sys2(ChunkSidesSystem) {
     if (solids) {
         free(solids);
     }
-} zox_sys_end(ChunkSidesSystem);
+    zox_sys_on_end();
+} zoxd_system(chunk_sides_system);

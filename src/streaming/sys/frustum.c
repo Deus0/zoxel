@@ -115,11 +115,21 @@ void chunk_frustum_system(iter* it) {
     byte ignore_low_lods = 0;
     byte frustum_inwards = 1; // we just using this for safety
     // cache camera positions first
-    float6_array_d* camera_bounds = create_float6_array_d(1);
-    plane_array_d* camera_planes = create_plane_array_d(6);
+    //  float6_array_d* camera_bounds = create_float6_array_d(1);
+    // plane_array_d* camera_planes = create_plane_array_d(6);
+    uint cameras_count = 0;
     zox_sys_world();
     zox_sys_query();
     zox_sys_query_begin();
+    while (zox_sys_query_loop()) {
+        cameras_count += it2.count;
+    }
+    float6 camera_bounds[cameras_count];
+    plane camera_planes[cameras_count * zox_camera_planes];
+    int camera_count = 0;
+    // recreate query
+    //zox_sys_query_begin();
+    it2 = ecs_query_iter(world, query);
     while (zox_sys_query_loop()) {
         zox_sys_begin_2();
         zox_sys_in_2(Position3DBounds);
@@ -127,32 +137,35 @@ void chunk_frustum_system(iter* it) {
         for (int j = 0; j < it2.count; j++) {
             zox_sys_i_2(Position3DBounds, frustum_bounds);
             zox_sys_i_2(CameraPlanes, camera_planes2);
-            float6_array_d_add(camera_bounds, frustum_bounds->value);
+            // float6_array_d_add(camera_bounds, frustum_bounds->value);
+            camera_bounds[camera_count] = frustum_bounds->value;
             for (int k = 0; k < zox_camera_planes; k++) {
-                plane_array_d_add(
+                camera_planes[camera_count * zox_camera_planes + k] =
+                    camera_planes2->value[k];
+                /*plane_array_d_add(
                     camera_planes,
-                    camera_planes2->value[k]);
+                    camera_planes2->value[k]);*/
             }
+            camera_count++;
         }
     }
     zox_sys_query_end();
-    if (!camera_bounds->size) {
-        zox_loge("No Cameras in [BillboardSystem]");
-        dispose_float6_array_d(camera_bounds);
-        dispose_plane_array_d(camera_planes);
+    if (!cameras_count) {
+        zox_loge("No Cameras in [chunk_frustum_system]");
+        //dispose_float6_array_d(camera_bounds);
+        //dispose_plane_array_d(camera_planes);
         return;
     }
     // Sanity check
-#ifdef zox_debug
-    if (camera_planes->size != camera_bounds->size * zox_camera_planes) {
+/*#ifdef zox_debug
+    if (camera_planes->size != cameras_count * zox_camera_planes) {
         zox_log("Camera Planes Size [%i] != Added [%i] [%ix%i]",
-            camera_planes->size,
-            camera_bounds->size * zox_camera_planes,
-            camera_bounds->size,
+            cameras_count,
+            cameras_count * zox_camera_planes,
             zox_camera_planes);
         return;
     }
-#endif
+#endif*/
     zox_sys_begin();
     zox_sys_in(Position3D);
     zox_sys_in(Bounds3D);
@@ -187,9 +200,11 @@ void chunk_frustum_system(iter* it) {
         }
         // For each Camera
         float radius = float3_length(chunk_bounds.extents);
-        for (int j = 0; j < camera_bounds->size && !is_viewed; j++) {
-            float6 frustum_bounds = camera_bounds->data[j];
-            plane* planes = &camera_planes->data[j * zox_camera_planes];
+        for (int j = 0; j < camera_count && !is_viewed; j++) {
+            // float6 frustum_bounds = camera_bounds->data[j];
+            //plane* planes = &camera_planes->data[j * zox_camera_planes];
+            float6 frustum_bounds = camera_bounds[j];
+            plane* planes = &camera_planes[j * zox_camera_planes];
             // our normals appear to be flipped
             byte inside_sphere = is_sphere_in_frustum(
                 planes,
@@ -251,7 +266,7 @@ void chunk_frustum_system(iter* it) {
         }
         // -=- -=- -=- -=- -=- -=-
     }
-    dispose_float6_array_d(camera_bounds);
-    dispose_plane_array_d(camera_planes);
+    // dispose_float6_array_d(camera_bounds);
+    // dispose_plane_array_d(camera_planes);
     zox_sys_on_end();
 } zoxd_system(chunk_frustum_system);

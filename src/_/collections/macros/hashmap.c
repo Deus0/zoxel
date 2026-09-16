@@ -165,7 +165,7 @@ void name##_dispose(name* map) {\
     if (!map || map->size == 0 || !map->data) {\
         return;\
     }\
-    write_lock_##name(map);\
+    /*write_lock_##name(map);*/\
     for (size_t i = 0; i < map->size; i++) {\
         name##_pair* pair = map->data[i];\
         uint checks = 0;\
@@ -177,7 +177,7 @@ void name##_dispose(name* map) {\
         }\
     }\
     zox_free(map->data);\
-    write_unlock_##name(map);\
+    /*write_unlock_##name(map);*/\
     destroy_lock_##name(map);\
     zox_free(map);\
 }\

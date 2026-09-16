@@ -8,8 +8,6 @@ entity spawn_prefab_chunk_invisible(ecs *world) {
     zox_setv(e, ChunkSize, int3_zero);
     zox_setv(e, BlockScale, default_vox_scale);
     zox_setv(e, NodeDepth, 0);
-    zox_setv(e, VoxelNode, 0);
-    zox_setv(e, SidesOctree, 0);
     zox_setv(e, Position3D, float3_zero);
     zox_setv(e, Rotation3D, float4_identity);
     zox_setv(e, TransformMatrix, float4x4_identity);
@@ -17,9 +15,8 @@ entity spawn_prefab_chunk_invisible(ecs *world) {
     zox_setv(e, RenderDepth, 0);
     zox_setv(e, RenderDisabled, 0);
     zox_setv(e, ChunkNeighbors, { 0 });
-#ifdef zox_non_fragment_parent
-    // zox_add(e, EcsParent);
-#endif
+    zox_setv(e, VoxelNode, 0);
+    zox_setv(e, SidesOctree, 0);
     return e;
 }
 

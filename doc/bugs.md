@@ -1,6 +1,15 @@
 # Bugs
 
 Unsorted
+- Body lagging still behind camera
+    - Only sometimes?
+    - Suddenly, body lagging again
+    - pipelines should be fine though
+- Big Terrain Disposal Bug
+    - terrain very big, and delete, it causes it to hang
+    - actually it did end up working
+    - also deleting while its spawning, causes crash
+    - I think we can just add a destroy tag, and then move destroy to another phase
 - top hat doesn't scale up when imported to depth of 5!
 - doesnt spawn new chunk mesh ... again
 	- test by building upwards generating, the chunk initialization issue
