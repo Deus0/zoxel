@@ -1,14 +1,34 @@
 # Refactoring
 
+Next
+- Make the tooltip systems into observer / events
+- Add locks onto all VoxelNode setters and getters
+-x Add observer function, when Dirty is added to setting, replace SettingsDirtySystem's
+- Replace rest of SettingDirtySystems with observer zox_on_add
+
+Modules
+- Move AnimateTextSystem from dialogue to ui/texts
+
+Events
+- Refactor all 'SettingsSystem' into events on prefab_app
+	- StreamingSettingsSystem
+	- SoundsSettingsSystem
+	- RenderingSettingsSystem
+	- NpcsSettingsSystem
+	- ModelsSettingsSystem
+	- BonesSettingsSystem
+	- AiSettingsSystem
+- Refactor ([in] players.PlayerState) with new PlayerStateEvent listener
+- Refactor games.GameState systems into listener events GameStateEvent
+
 Unsorted
+- Make MeshDirty + and other bytes tags
 - Make initialize systems just use an event / observer
     - moving them to callbacks
-- make realm / game / app seperate, all should have no parent, since our links are better now
+-x make realm / game / app seperate, all should have no parent, since our links are better now
 - make pickup collider a sub entity on player
-- Add custom Phases -> EcsOnUpdate -> zoxp_update
-- Add links back for active mesh, fuck the rules
-- Refactor all 'SettingsSystem)' into events on prefab_app
-- Refactor ([in] players.PlayerState,) with new PlayerStateEvent listener
+-x Add custom Phases -> EcsOnUpdate -> zoxp_update
+-x Add links back for active mesh, fuck the rules
 - Move the key events out of the test functions
     - just add to a KeyListener component
 - Refactor GenerateChunk to Generate, Generating, etc

@@ -16,39 +16,28 @@ void define_systems_cameras(ecs *world) {
         ProjectionMatrixSystem,
         zoxp_update,
         [in] core.PixelSize,
-        [in] FieldOfView,
-        [in] CameraNearDistance,
-        [out] ProjectionMatrix,
-        [none] Perspective
+        [in] cameras.FieldOfView,
+        [in] cameras.CameraNearDistance,
+        [out] cameras.ProjectionMatrix,
+        [none] cameras.Perspective
     );
     zox_system(
-        OrthographicMatrixSystem,
+        orthographic_matrix_system,
         zoxp_update,
         [in] core.PixelSize,
-        //[in] FieldOfView,
-        //[in] CameraNearDistance,
-        [out] ProjectionMatrix,
-        [none] Orthographic
+        [out] cameras.ProjectionMatrix,
+        [none] cameras.Orthographic
     );
     // Combine with transform
     zox_system(
         view_projection_matrix_system,
         zoxp_cameras,
         [in] transforms.TransformMatrix,
-        [in] ProjectionMatrix,
-        [out] ViewProjectionMatrix,
-        [out] FrustumCorners,
+        [in] cameras.ProjectionMatrix,
+        [out] cameras.ViewProjectionMatrix,
+        [out] cameras.FrustumCorners,
         [out] transforms3.Position3DBounds,
-        [out] CameraPlanes,
-        [none] Camera
+        [out] cameras.CameraPlanes,
+        [none] cameras.Camera,
     );
-    /*zox_system(
-        CameraFrustumSystem,
-        zoxp_cameras,
-        [in] ViewProjectionMatrix,
-        [out] FrustumCorners,
-        [out] transforms3.Position3DBounds,
-        [out] CameraPlanes,
-        [none] Camera
-    );*/
 }

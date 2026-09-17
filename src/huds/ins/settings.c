@@ -1,6 +1,7 @@
-
-
-void on_new_settings_toggle_toggled(ecs* world, const ToggleEventData* data) {
+void on_new_settings_toggle_toggled(
+    ecs* world,
+    const ToggleEventData* data)
+{
     if (!zox_valid(data->e)) {
         zox_log_error("Invalid [e] on_new_settings_toggle_toggled");
         return;
@@ -12,10 +13,14 @@ void on_new_settings_toggle_toggled(ecs* world, const ToggleEventData* data) {
     }
     zox_set(e2, SettingByte, { data->value });
     zox_set(e2, SettingDirty, { zox_dirty_trigger });
+    zox_add(e2, Dirty);
     // zoxs_set_byte(world, name, data->value);
 }
 
-void on_settings_slide(ecs* world, const SlideEventData* data) {
+void on_settings_slide(
+    ecs* world,
+    const SlideEventData* data)
+{
     byte dbg_log = 0;
     entity slider = zox_get_parent(world, data->dragged);
     entity text = zox_get_child_by_id(world, slider, zox_id(Text));
@@ -42,12 +47,11 @@ void on_settings_slide(ecs* world, const SlideEventData* data) {
         snprintf(new_text, 128, "%s [%.2f]", name->value, data->value);
     }
     zox_set(e2, SettingDirty, { zox_dirty_trigger });
+    zox_add(e2, Dirty);
     zox_muter(text, TextData, text_data);
     if (!is_zext(text_data, new_text)) {
         set_zext(text_data, new_text);
-        zox_setm(text, TextDirty, zox_dirty_trigger);
-        // zox_muter(text, TextDirty, dirty);
-        // dirty->value = zox_dirty_trigger;
+        zox_add(text, Dirty);
     }
     // zox_log("Slider [%s] and Setting [%s]: %f", zox_get_name(slider), zox_get_name(e2), data->value);
 }

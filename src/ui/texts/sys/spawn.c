@@ -5,7 +5,6 @@ zox_sys2(GlyphSpawnSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TextDirty);
     zox_sys_in(TextData);
     zox_sys_in(GlyphPrefab);
     zox_sys_in(TextFontSize);
@@ -18,7 +17,6 @@ zox_sys2(GlyphSpawnSystem) {
     zox_sys_out(RenderDisabled);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(TextDirty, text_dirty);
         zox_sys_i(TextData, text_data);
         zox_sys_i(GlyphPrefab, prefab);
         zox_sys_i(TextFontSize, textSize);
@@ -29,9 +27,9 @@ zox_sys2(GlyphSpawnSystem) {
         zox_sys_i(TextResolution, textResolution);
         zox_sys_i(Layer, layer);
         zox_sys_o(RenderDisabled, render_disabled);
-        if (text_dirty->value != zox_dirty_active) {
+        /*if (text_dirty->value != zox_dirty_active) {
             continue;
-        }
+        }*/
         entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
 #ifdef zox_safety_checks
         if (!zox_valid(canvas)) {

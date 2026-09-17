@@ -20,7 +20,6 @@ entity spawn_prefab_text(
     zox_setv(e, FontThickness, 1);
     zox_setv(e, OutlineThickness, 0); // 1);
     zox_setv(e, RenderDisabled, 0);
-    zox_setv(e, TextDirty, 0);
     zox_setv(e, TextSizeDirty, 0);
     return e;
 }

@@ -11,16 +11,16 @@ void define_systems_editor(ecs *world) {
         FpsDisplaySystem,
         zoxp_update,
         [out] texts.TextData,
-        [out] texts.TextDirty,
         [out] editor.FPSDisplayTicker,
-        [none] editor.FPSDisplay
+        [none] texts.Text,
+        [none] editor.FPSDisplay,
     );
     zox_system(
         DebugLabelSystem,
         zoxp_update,
         [in] editor.DebugLabelData,
-        [out] texts.TextDirty,
         [out] texts.TextData,
+        [none] texts.Text,
         [none] editor.GameDebugLabel
     );
     zox_system(
@@ -58,7 +58,7 @@ void define_systems_editor(ecs *world) {
         MaxSystemTimeLabelSystem,
         zoxp_update,
         [out] texts.TextData,
-        [out] texts.TextDirty,
+        [none] texts.Text,
         [none] editor.MaxSystemTimeLabel
     );
 #endif

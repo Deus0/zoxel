@@ -62,7 +62,6 @@ entity spawn_character3(
     }
     zox_instance(prefab);
     zox_name("character3");
-    zox_remove(e, RealmCharacter);
     if (zox_has(prefab, VoxelNodeLock)) {
         initialize_voxel_lock(world, e);
     }

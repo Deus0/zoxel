@@ -1,5 +1,9 @@
 # Bugs
 
+## Next
+- NPC stat spawning crashes in character
+	- doesnt crash when gdb on khadas, just rund	
+	
 Unsorted
 - Body lagging still behind camera
     - Only sometimes?
@@ -17,6 +21,9 @@ Unsorted
 - Lighting flashes when chunks update
 	- stop mesh updating until its finished building lights
         
+- Add VoxelNodeLock for Octree Safety
+	- Crashed on load...!
+	
 ## RareBugs
 - Placing twice in a row can crash it still
 - Sometimes block item textures dont load for vox items

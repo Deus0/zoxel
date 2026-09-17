@@ -81,15 +81,37 @@ static inline byte zox_is_parent(
 #endif
 }
 
+// Removes the parent relationship from `child`
+// Returns 1 if a parent was removed, 0 otherwise
+byte zox_remove_parent(
+    ecs *world,
+    entity child)
+{
+    if (!zox_valid(child)) {
+        zox_logw("Trying to remove parent from invalid child");
+        return 0;
+    }
+#ifdef zox_non_fragment_parent
+    if (ecs_has_id(world, child, zox_id(EcsParent))) {
+        zox_remove(child, EcsParent);
+        return 1;
+    }
+#else
+    if (ecs_has_pair(world, child, EcsChildOf, EcsWildcard)) {
+        ecs_remove_pair(world, child, EcsChildOf, EcsWildcard);
+        return 1;
+    }
+#endif
+    return 0;
+}
+
 // Returns 1 if sets parent
 static inline byte zox_set_parent(
     ecs* world,
     entity child,
     entity parent)
 {
-    if (!zox_alive(child) ||
-        !zox_valid(child))
-    {
+    if (!zox_valid(child)) {
         zox_logw("Trying to set parent from invalid child");
         return 0;
     }
@@ -102,23 +124,21 @@ static inline byte zox_set_parent(
     }
     // Removes previous parent pair
 #ifdef zox_non_fragment_parent
-    const EcsParent* current = zox_get(child, EcsParent);
-    if (!parent) {
-        if (current && current->value) {
+    if (!parent || !zox_valid(parent)) {
+        return zox_remove_parent(world, child);
+        /*if (current && current->value) {
             zox_remove(child, EcsParent);
-        }
-        return 1;
+        }*/
+        // return 1;
     }
+    const EcsParent* current = zox_get(child, EcsParent);
     if (current && current->value == parent) {
         return 1;
     }
     zox_setv(child, EcsParent, parent);
 #else
-    if (parent == 0) {
-        if (ecs_has_pair(world, child, EcsChildOf, EcsWildcard)) {
-            ecs_remove_pair(world, child, EcsChildOf, EcsWildcard);
-        }
-        return 1;
+    if (!parent) {
+        return zox_remove_parent(world, child);
     }
     if (ecs_has_pair(world, child, EcsChildOf, parent)) {
         return 1;
@@ -302,7 +322,7 @@ static inline entity zox_get_parent_root(
     return zox_get_parent_root_recursive(
         world,
         zox_get_parent(world, e),
-                                         e);
+        e);
 }
 
 static inline entity zox_get_parent_by_id(
@@ -322,30 +342,6 @@ static inline entity zox_get_parent_by_id(
     } else {
         return zox_get_parent_by_id(world, parent, id);
     }
-}
-
-// Removes the parent relationship from `child`
-// Returns 1 if a parent was removed, 0 otherwise
-byte zox_remove_parent(
-    ecs *world,
-    entity child)
-{
-    if (!ecs_is_alive(world, child)) {
-        zox_logw("Trying to remove parent from invalid child");
-        return 0;
-    }
-#ifdef zox_non_fragment_parent
-    if (!ecs_has_id(world, child, zox_id(EcsParent))) {
-        return 0;
-    }
-    ecs_remove(world, child, EcsParent);
-#else
-    if (!ecs_has_pair(world, child, EcsChildOf, EcsWildcard)) {
-        return 0;
-    }
-    ecs_remove_pair(world, child, EcsChildOf, EcsWildcard);
-#endif
-    return 1;
 }
 
 entity zox_get_child_by_id_recursive(

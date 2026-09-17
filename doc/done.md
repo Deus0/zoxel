@@ -1,6 +1,5 @@
 # Done
 
--x NPC stat spawning crashes in character
 -x HandBoneLink
 -x ShoulderBoneLink
 -x HeadBoneLink

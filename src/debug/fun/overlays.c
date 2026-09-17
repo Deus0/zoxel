@@ -166,7 +166,7 @@ uint zox_dbg_ui_statistics(ecs *world, entity e, char *buffer, uint size, uint i
     index += snprintf(buffer + index, size - index, " - Skills [%i]\n", zox_count_ids(Skill));
     index += snprintf(buffer + index, size - index, " - Dialogues [%i]\n", zox_count_ids(Dialogue));
     index += snprintf(buffer + index, size - index, " - Quests [%i]\n", zox_count_ids(Quest));
-    index += snprintf(buffer + index, size - index, " - Characters [%i]\n", zox_count_ids(RealmCharacter));
+    // index += snprintf(buffer + index, size - index, " - Characters [%i]\n", zox_count_ids(RealmCharacter));
     index += snprintf(buffer + index, size - index, "World\n");
     index += snprintf(buffer + index, size - index, " - Regions [%i]\n", zox_count_ids(Region));
     index += snprintf(buffer + index, size - index, " - Tunks [%i]\n", zox_count_ids(Tunk));

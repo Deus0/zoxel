@@ -1,14 +1,28 @@
 # Todo
 
 ## Main MVP Bugs
+- Crashes - wrap all octrees
+- Crash on start
+	- loaded game
+	- crashed
+- Crash on exit game
+- fatal: flecs.c: 20794: abort(): cannot change children of prefab 'realm_8589938080.Boney_4124' after it has been instantiated (INVALID_OPERATION)
+
+- Integral test on falling through map
+	- fly up
+	- fall
+	- lag spike
+	- wham into ground
+- Block (regular) didnt remove/add
+	- loaded game
+	- removed block
+	- it didnt dissapear
 - Body lagging behind camera
     - make sure phases there.. seperate timings
     - write a simple cube append test
         - cube will move forward, camera will ride it
-- Crashes - wrap all octrees
 - When streaming terrain - flag neighbor of updated chunks dirty
     - the outside chunks have missing faces now
-- Integral test on falling through map
 - Characters - npcs not despawning now
     - changed recently the states
 - Main Menu music missing

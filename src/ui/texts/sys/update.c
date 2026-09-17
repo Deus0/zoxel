@@ -47,13 +47,12 @@ zox_sys2(TextUpdateSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TextDirty);
     zox_sys_in(TextData);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(TextDirty, dirty);
         zox_sys_i(TextData, text);
-        if (dirty->value != zox_dirty_end || !text->length) {
+        // dirty->value != zox_dirty_end ||
+        if (!text->length) {
             continue;
         }
         uint child_index = 0;

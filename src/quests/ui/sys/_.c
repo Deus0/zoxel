@@ -14,7 +14,6 @@ void zox_define_systems_quests_ui(ecs* world) {
         zoxp_update,
         [in] slots.DataLink,
         [out] texts.TextData,
-        [out] texts.TextDirty,
         [none] elements2.Label
     );
 }

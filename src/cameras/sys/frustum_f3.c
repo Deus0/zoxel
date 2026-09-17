@@ -1,4 +1,4 @@
-void calculate_frustum_corners_f3(const float4x4 view_projection_matrix, float3 *frustum) {
+/*void calculate_frustum_corners_f3(const float4x4 view_projection_matrix, float3 *frustum) {
     frustum[0] = (float3) { -1, -1, -1 };
     frustum[1] = (float3) { 1, -1, -1 };
     frustum[2] = (float3) { 1, 1, -1 };
@@ -64,4 +64,4 @@ zox_sys2(CameraFrustumSystem) {
         calculate_frustum_bounds_f3(corners->value, &bounds->value);
         frustum_to_planes_f3(corners->value, planes->value);
     }
-} zox_sys_end(CameraFrustumSystem);
+} zox_sys_end(CameraFrustumSystem);*/

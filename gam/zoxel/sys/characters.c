@@ -79,7 +79,10 @@ entity spawn_model_nodegraph_cookie(
     return root_node;
 }
 
-entity spawn_model_nodegraph_slime(ecs* world, entity parent) {
+entity spawn_model_nodegraph_slime(
+    ecs* world,
+    entity parent)
+{
     byte3 size = get_scaled_size(nodegraph_max_depth, float3_one);
     entity prefab = prefab_node_model;
     float eye_spacing = 5.6f;
@@ -116,6 +119,7 @@ entity spawn_model_nodegraph_slime(ecs* world, entity parent) {
 
 // TODO: Just spawn characters here linked to realm, used as prefabs later
 zox_sys2(Character3RealmSpawnSystem) {
+    byte is_add_stats = 0;
     byte character_depth = block_depth_limits.y;
     uint seed_shift = 36936;
     // uint inner_seed_shift = 33;
@@ -162,8 +166,10 @@ zox_sys2(Character3RealmSpawnSystem) {
                 zox_loge("Boney failed to spawn");
                 continue;
             }
-            spawn_stat_level(world, e2, base_soul, 5);
-            spawn_stat_state(world, e2, base_health, 21, 21);
+            if (is_add_stats) {
+                spawn_stat_level(world, e2, base_soul, 5);
+                spawn_stat_state(world, e2, base_health, 21, 21);
+            }
             chance_max += chance;
             add_to_CharacterLinks(characters, e2);
             character_seed += seed_shift;
@@ -216,8 +222,10 @@ zox_sys2(Character3RealmSpawnSystem) {
             chance_max += chance;
             // NOTE: This crashes it
             // ecs_defer_end(world);
-            spawn_stat_level(world, e2, base_soul, 2);
-            spawn_stat_state(world, e2, base_health, 8, 8);
+            if (is_add_stats) {
+                spawn_stat_level(world, e2, base_soul, 2);
+                spawn_stat_state(world, e2, base_health, 8, 8);
+            }
             // ecs_defer_begin(world);
             character_seed += seed_shift;
         }
@@ -258,8 +266,10 @@ zox_sys2(Character3RealmSpawnSystem) {
             chance_max += chance;
             float soul_value = (float)(souls[j]);
             float health = (float)(healths[j]);
-            spawn_stat_level(world, e2, base_soul, soul_value);
-            spawn_stat_state(world, e2, base_health, health, health);
+            if (is_add_stats) {
+                spawn_stat_level(world, e2, base_soul, soul_value);
+                spawn_stat_state(world, e2, base_health, health, health);
+            }
             add_to_CharacterLinks(characters, e2);
             character_seed += seed_shift;
         }

@@ -13,8 +13,8 @@ void define_systems_plots(ecs* world) {
     zox_system(
         PlotLabelSystem,
         zoxp_update,
-        [out] texts.TextDirty,
         [out] texts.TextData,
+        [none] texts.Text,
         [none] plots.PlotLabel
     );
     zox_system(

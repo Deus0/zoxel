@@ -8,8 +8,8 @@ void zox_define_systems_tooltips(ecs* world) {
         TooltipDeselectSystem,
         zoxp_update,
         [out] texts.TextData,
-        [out] texts.TextDirty,
-        [none] tooltips.Tooltip
+        [none] texts.Text,
+        [none] tooltips.Tooltip,
     );
     // We can use later to clean hierarchys
     zox_system(

@@ -5,13 +5,16 @@ zox_sys2(StatIconLabelSystem) {
     zox_sys_begin();
     zox_sys_in(DataLink);
     zox_sys_out(TextData);
-    zox_sys_out(TextDirty);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(DataLink, data);
         zox_sys_o(TextData, text);
-        zox_sys_o(TextDirty, dirty);
         entity e2 = data->value;
-        if (!zox_valid(e2) || !zox_has(e2, Stat) || !zox_has(e2, StatDirty) || !zox_has(e2, StatValue)) {
+        if (!zox_valid(e2) ||
+            !zox_has(e2, Stat) ||
+            !zox_has(e2, StatDirty) ||
+            !zox_has(e2, StatValue))
+        {
             continue;
         }
         zox_geter_value(e2, StatDirty, byte, stat_dirty);
@@ -35,7 +38,7 @@ zox_sys2(StatIconLabelSystem) {
         // set text of quantity label
         if (!is_zext(text, result)) {
             set_zext(text, result);
-            dirty->value = zox_dirty_trigger;
+            zox_add(e, Dirty);
         }
     }
 } zox_sys_end(StatIconLabelSystem);

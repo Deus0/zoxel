@@ -25,15 +25,15 @@ zox_sys2(InspectorLabelSystem) {
         }
         entity text = children[0];
         // if invalid or dirty, skip
-        if (!zox_valid(text) || !zox_has(text, TextData) || !zox_has(text, TextDirty) || zox_getv(text, TextDirty)) {
+        if (!zox_valid(text) ||
+            !zox_has(text, TextData)) {
             continue;
         }
         zox_mut_begin(text, TextData, text_data);
         // zox_geter_id(target->value, id->value, float2, value);
         char* ntext = fetch_compoent_label(world, target->value, id->value);
         if (set_text_component(text_data, ntext)) {
-            zox_muter(text, TextDirty, dirty);
-            dirty->value = zox_dirty_trigger;
+            zox_add(text, Dirty);
             zox_logv("> Component [%s] Label Updated [%s]",
                 id->value ?
                 zox_get_name(id->value) :

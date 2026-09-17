@@ -41,7 +41,7 @@ void zox_define_systems_ui_containers(ecs* world) {
         [in] slots.DataDirty,
         [in] slots.SlotLink,
         [out] texts.TextData,
-        [out] texts.TextDirty,
+        [none] texts.Text,
         [none] elements2.Label
     );
 }

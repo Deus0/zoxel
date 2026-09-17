@@ -2,17 +2,14 @@ zox_sys2(FpsDisplaySystem) {
     byte dbg_log = 0;
     double frame_rate_update_speed = 1.0;
     init_delta_time();
+    zox_sys_world();
     zox_sys_begin();
     zox_sys_out(TextData);
-    zox_sys_out(TextDirty);
     zox_sys_out(FPSDisplayTicker);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_o(TextDirty, dirty);
+        zox_sys_e();
         zox_sys_o(FPSDisplayTicker, tick);
         zox_sys_o(TextData, data);
-        if (dirty->value) {
-            continue;
-        }
         tick->value -= delta_time;
         if (tick->value > 0) {
             continue;
@@ -25,7 +22,7 @@ zox_sys2(FpsDisplaySystem) {
         snprintf(buffer, 8, "%i\n", frames_per_second);
         if (!is_zext(data, buffer)) {
             set_zext(data, buffer);
-            dirty->value = zox_dirty_trigger;
+            zox_add(e, Dirty);
             if (dbg_log) {
                 zox_log("FPS updated [%s]", buffer);
             }

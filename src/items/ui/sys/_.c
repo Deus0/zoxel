@@ -15,7 +15,7 @@ void define_systems_items_ui(ecs *world) {
         [in] slots.DataDirty,
         [in] slots.SlotLink,
         [out] texts.TextData,
-        [out] texts.TextDirty,
+        [none] texts.Text,
         [none] elements2.Label
     );
 }

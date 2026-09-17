@@ -5,20 +5,15 @@ zox_sys2(StatTextSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(TextData);
-    zox_sys_out(TextDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_o(TextData, data);
-        zox_sys_o(TextDirty, dirty);
-        if (dirty->value) {
-            continue;
-        }
         entity stat = zox_get_link(world, e, Stat);
         if (!zox_valid(stat)) {
             const char* text = "-";
             if (!is_zext(data, text)) {
                 set_zext(data, text);
-                dirty->value = zox_dirty_trigger;
+                zox_add(e, Dirty);
             }
             if (dbg_log) {
                 zox_loge("[%s] has invalid stat linked", zox_get_name(e));
@@ -83,7 +78,7 @@ zox_sys2(StatTextSystem) {
         }
         if (!is_zext(data, text)) {
             set_zext(data, text);
-            dirty->value = zox_dirty_trigger;
+            zox_add(e, Dirty);
             if (dbg_log) {
                 entity holder = zox_get_parent(world, stat);
                 zox_log("[%s]'s Stat Text [%s]",

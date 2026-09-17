@@ -2,11 +2,6 @@
 #include "settings.c"
 
 void zox_define_systems_apps(ecs *world) {
-    /*zox_system_1(
-        AppsSettingsSystem,
-        zoxp_spawn,
-        [in] settings.LoadSettings
-    );*/
     // NOTE: Needs mainthread for GPU settings
     zox_system_1(
         AppsSettingsDirtySystem,

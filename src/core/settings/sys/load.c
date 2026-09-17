@@ -1,6 +1,11 @@
 #define MAX_SETTINGS_LINES 1024
 
-byte set_app_setting_byte(ecs* world, entity e, const char* name, byte value) {
+byte set_app_setting_byte(
+    ecs* world,
+    entity e,
+    const char* name,
+    byte value)
+{
     iter it2 = zox_children(world, e);
     while (zox_children_next(it2)) {
         for (int i = 0; i < it2.count; i++) {
@@ -12,6 +17,7 @@ byte set_app_setting_byte(ecs* world, entity e, const char* name, byte value) {
             if (!strcmp(setting_name->value, name)) {
                 zox_setm(e2, SettingByte, value);
                 zox_set(e2, SettingDirty, { zox_dirty_trigger });
+                zox_add(e2, Dirty);
                 return 1;
             }
         }
@@ -19,7 +25,12 @@ byte set_app_setting_byte(ecs* world, entity e, const char* name, byte value) {
     return 0;
 }
 
-byte set_app_setting_int(ecs* world, entity e, const char* name, int value) {
+byte set_app_setting_int(
+    ecs* world,
+    entity e,
+    const char* name,
+    int value)
+{
     iter it2 = zox_children(world, e);
     while (zox_children_next(it2)) {
         for (int i = 0; i < it2.count; i++) {
@@ -31,6 +42,7 @@ byte set_app_setting_int(ecs* world, entity e, const char* name, int value) {
             if (!strcmp(setting_name->value, name)) {
                 zox_setm(e2, SettingInt, value);
                 zox_set(e2, SettingDirty, { zox_dirty_trigger });
+                zox_add(e2, Dirty);
                 return 1;
             }
         }
@@ -38,7 +50,12 @@ byte set_app_setting_int(ecs* world, entity e, const char* name, int value) {
     return 0;
 }
 
-byte set_app_setting_float(ecs* world, entity e, const char* name, float value) {
+byte set_app_setting_float(
+    ecs* world,
+    entity e,
+    const char* name,
+    float value)
+{
     iter it2 = zox_children(world, e);
     while (zox_children_next(it2)) {
         for (int i = 0; i < it2.count; i++) {
@@ -50,6 +67,7 @@ byte set_app_setting_float(ecs* world, entity e, const char* name, float value) 
             if (!strcmp(setting_name->value, name)) {
                 zox_setm(e2, SettingFloat, value);
                 zox_set(e2, SettingDirty, { zox_dirty_trigger });
+                zox_add(e2, Dirty);
                 return 1;
             }
         }

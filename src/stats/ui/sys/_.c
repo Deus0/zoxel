@@ -16,16 +16,16 @@ void define_systems_stats_ui(ecs *world) {
         StatTextSystem,
         zoxp_update,
         [out] texts.TextData,
-        [out] texts.TextDirty,
-        [none] StatsLabel
+        [none] texts.Text,
+        [none] StatsLabel,
     );
     zox_system(
         StatIconLabelSystem,
         zoxp_update,
         [in] slots.DataLink,
         [out] texts.TextData,
-        [out] texts.TextDirty,
-        [none] elements2.Label
+        [none] texts.Text,
+        [none] elements2.Label,
     );
     zox_system(
         StatIconTooltipSystem,

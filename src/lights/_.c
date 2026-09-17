@@ -4,8 +4,8 @@
 byte zox_smooth_lighting = 1;
 #include "com/_.c"
 #include "fun/_.c"
-#include "eve/_.c"
 #include "lights3/_.c"
+#include "eve/_.c"
 
 void import_lights(ecs* world) {
     zox_module(lights);

@@ -69,7 +69,6 @@ int2 calculate_position(const byte *data, int length, int data_index, byte font_
             continue;
         }
 #endif
-        byte text_dirty = zox_getv(parent, TextDirty);
         if (text_dirty != zox_dirty_end) {
             continue;
         }
@@ -100,21 +99,19 @@ zox_sys2(TextsPositionSystem) {
     byte is_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TextDirty);
     zox_sys_in(TextData);
     zox_sys_in(TextFontSize);
     zox_sys_in(TextAlignment);
     zox_sys_in(TextPadding);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(TextDirty, dirty);
         zox_sys_i(TextData, text_data);
         zox_sys_i(TextFontSize, size);
         zox_sys_i(TextAlignment, alignment);
         zox_sys_i(TextPadding, padding);
-        if (dirty->value != zox_dirty_end) {
+        /*if (dirty->value != zox_dirty_end) {
             continue;
-        }
+        }*/
         uint child_index = 0;
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {

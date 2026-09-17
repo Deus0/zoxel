@@ -86,6 +86,7 @@ fi
 
 # Misc
 [[ " $* " == *" --debug "* ]] && debug="1"
+[[ " $* " == *" --fast_dev "* ]] && is_fast_dev="1"
 [[ " $* " == *" --memory "* ]] && is_dev_memory="1"
 [[ " $* " == *" --syntax "* ]] && is_dev_syntax="1"
 [[ " $* " == *" --release "* ]] && debug="0"
@@ -368,6 +369,7 @@ echo "  Compiler : ${compiler}"
 [[ ${docker} == "1" ]] && echo "  Docker   : enabled"
 [[ ${is_profiler} == "1" ]] && echo "  Profiler : enabled"
 [[ ${is_time_systems} == "1" ]] && echo "  Timed    : enabled"
+[[ ${is_fast_dev} == "1" ]] && echo "  FastDev  : enabled"
 
 echo "============================================================"
 echo ""

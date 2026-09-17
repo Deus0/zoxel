@@ -14,8 +14,7 @@ void link_as_new_item(
         zox_link(world, frame.z, Item, element);
         // Clear Label
         zox_muter(frame.z, TextData, text_data);
-        zox_muter(frame.z, TextDirty, text_dirty);
         dispose_TextData(text_data);
-        text_dirty->value = zox_dirty_trigger;
+        zox_add(frame.z, Dirty);
     }
 }

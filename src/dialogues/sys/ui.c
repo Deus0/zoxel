@@ -37,7 +37,7 @@ zox_sys2(DialogueSpeechSystem) {
         set_TargetText(world, text_ui, text);
         zox_muter(text_ui, TextData, text_data);
         resize_TextData(text_data, 0);
-        zox_setv(text_ui, TextDirty, zox_dirty_trigger);
+        zox_add(text_ui, Dirty);
         zox_setv(text_ui, AnimateTextBegin, zox_current_time);
         set_children_by_id_byte(
             world,

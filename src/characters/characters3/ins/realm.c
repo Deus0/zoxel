@@ -19,7 +19,6 @@ entity spawn_character3_meta(
         name);
     zox_make_prefab(e);
     zox_name(name);
-    zox_add(e, RealmCharacter);
     zox_setv(e, SpawnChance, chance);
     return e;
 }

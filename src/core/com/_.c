@@ -9,6 +9,8 @@ zox_tag(BuildDisabled);
 zox_tag(DebugEntity);
 zox_tag(PreInitialize);
 zox_tag(Initialize);
+zox_tag(Dirty);
+zox_tag(Update);
 // zoxc_byte(Active);
 zoxc_double(DeactivateDelay);
 zoxc_byte(GenericEvent);
@@ -62,6 +64,8 @@ void zox_components_core(ecs* world) {
     zoxd_tag(DebugEntity);
     zoxd_tag_event(Initialize);
     zoxd_tag_event(PreInitialize);
+    zoxd_tag_event(Dirty);
+    zoxd_tag_event(Update);
     zoxd(InitializeEvent);
     zoxd_inherited(InitializeEvent);
     // Data

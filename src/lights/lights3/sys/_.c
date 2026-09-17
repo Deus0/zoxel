@@ -23,23 +23,9 @@ void set_light_systems(ecs* world, byte is_lights) {
     zox_set_enabled(LightNodeReduceSystem, is_lights);
 }
 
-#include "settings.c"
 // TODO: Rename NodeDepth to OctreeDepth
 
 void define_systems_lights3(ecs* world) {
-    // Settings
-    /*zox_system_1(
-        LightsSettingsSystem,
-        zoxp_spawn,
-        [in] settings.LoadSettings
-    );*/
-    zox_system(
-        LightsSettingsDirtySystem,
-        zoxp_update,
-        [in] settings.SettingDirty,
-        [in] core.ZoxName,
-        [in] settings.Setting
-    );
     zox_system(
         sunlight_system,
         zoxp_update,

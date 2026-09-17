@@ -23,7 +23,7 @@
     ecs_get_name(it->world, it->system)
 
 #define zox_set_name(e, name)\
-    ecs_set_name(world, e, name);
+    ecs_set_name(world, e, name)
 
 #define zox_get_name_type(type)\
     zox_get_name(ecs_id(type))

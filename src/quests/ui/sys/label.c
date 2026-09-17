@@ -4,11 +4,10 @@ zox_sys2(QuestIconLabelSystem) {
     zox_sys_begin();
     zox_sys_in(DataLink);
     zox_sys_out(TextData);
-    zox_sys_out(TextDirty);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(DataLink, data);
         zox_sys_o(TextData, text);
-        zox_sys_o(TextDirty, dirty);
         if (!zox_valid(data->value)) {
             continue;
         }
@@ -30,7 +29,7 @@ zox_sys2(QuestIconLabelSystem) {
         }
         if (!is_zext(text, result)) {
             set_zext(text, result);
-            dirty->value = zox_dirty_trigger;
+            zox_add(e, Dirty);
         }
     }
 } zox_sys_end(QuestIconLabelSystem);

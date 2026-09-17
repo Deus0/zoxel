@@ -53,27 +53,6 @@ void frustum_to_planes_d3(
     planes[5] = calculate_plane_from_points_d3(frustum[7], frustum[5], frustum[6]);
 }
 
-/*zox_sys2(CameraFrustumSystem) {
-    if (zox_cameras_disable_streaming) {
-        return;
-    }
-    zox_sys_begin();
-    zox_sys_in(ViewProjectionMatrix);
-    zox_sys_out(FrustumCorners);
-    zox_sys_out(Position3DBounds);
-    zox_sys_out(CameraPlanes);
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ViewProjectionMatrix, vp_matrix);
-        zox_sys_o(CameraPlanes, planes);
-        zox_sys_o(FrustumCorners, corners);
-        zox_sys_o(Position3DBounds, bounds);
-        calculate_frustum_corners_d3(vp_matrix->value, corners->value);
-        calculate_frustum_bounds_d3(corners->value, &bounds->value);
-        frustum_to_planes_d3(corners->value, planes->value);
-    }
-} zox_sys_end(CameraFrustumSystem);*/
-
-
 // Calculates our camera to world matrix
 void view_projection_matrix_system(iter* it) {
     zox_sys_on_begin();

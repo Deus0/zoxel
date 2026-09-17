@@ -15,19 +15,19 @@ void define_systems_dialogues(ecs* world) {
     zox_system(
         AnimateTextSystem,
         zoxp_update,
-        [in] TargetText,
-        [in] AnimateTextTimeLimits,
-        [out] AnimateTextBegin,
-        [out] AnimateTextTime,
+        [in] dialogues.TargetText,
+        [in] dialogues.AnimateTextTimeLimits,
+        [out] dialogues.AnimateTextBegin,
+        [out] dialogues.AnimateTextTime,
         [out] texts.TextData,
-        [out] texts.TextDirty,
-        [out] GlyphSpawnedDirty,
-        [out] AnimateTextEnded
+        [out] dialogues.GlyphSpawnedDirty,
+        [out] dialogues.AnimateTextEnded,
+        [none] texts.Text,
     );
     zox_system(
         AnimateTextEndSystem,
         zoxp_update,
-        [in] AnimateTextEnded,
+        [in] dialogues.AnimateTextEnded,
         [none] dialogues.DialogueLabel
     );
     zox_system_1(
@@ -39,8 +39,8 @@ void define_systems_dialogues(ecs* world) {
     zox_system_1(
         DialogueSoundSystem,
         zoxp_spawn,
-        [in] GlyphSpawnedDirty,
-        [in] AnimateTextEnded,
+        [in] dialogues.GlyphSpawnedDirty,
+        [in] dialogues.AnimateTextEnded,
         [none] dialogues.DialogueLabel
     );
 }
