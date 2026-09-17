@@ -12,9 +12,6 @@ entity spawn_prefab_character3_skeleton(ecs *world, entity prefab) {
     zox_setv(e, BoneLinks, 0);
     zox_setv(e, BoneIndexes, 0);
     zox_setv(e, BoneIndexGPULink, 0);
-    zox_setv(e, HeadBoneLink, 0);
-    zox_setv(e, HandBoneLink, 0);
-    zox_setv(e, ShoulderBoneLink, 0);
     zox_setv(e, RaiseShoulder, 0);
     zox_setv(e, WalkState, 0);
     zox_setv(e, SwingStart, 0);

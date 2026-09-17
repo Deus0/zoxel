@@ -75,7 +75,8 @@ void frustum_to_planes_d3(
 
 
 // Calculates our camera to world matrix
-zox_sys2(ViewProjectionMatrixSystem) {
+void view_projection_matrix_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(TransformMatrix);
     zox_sys_in(ProjectionMatrix);
@@ -91,9 +92,18 @@ zox_sys2(ViewProjectionMatrixSystem) {
         zox_sys_o(FrustumCorners, corners);
         zox_sys_o(Position3DBounds, bounds);
         const float4x4 view_matrix = float4x4_inverse(transform->value);
-        vp_matrix->value = float4x4_multiply(view_matrix, projection->value);
-        calculate_frustum_corners_d3(vp_matrix->value, corners->value);
-        calculate_frustum_bounds_d3(corners->value, &bounds->value);
-        frustum_to_planes_d3(corners->value, planes->value);
+        vp_matrix->value = float4x4_multiply(
+            view_matrix,
+            projection->value);
+        calculate_frustum_corners_d3(
+            vp_matrix->value,
+            corners->value);
+        calculate_frustum_bounds_d3(
+            corners->value,
+            &bounds->value);
+        frustum_to_planes_d3(
+            corners->value,
+            planes->value);
     }
-} zox_sys_end(ViewProjectionMatrixSystem);
+    zox_sys_on_end();
+} zoxd_system(view_projection_matrix_system);

@@ -37,26 +37,26 @@ static inline void set_position_rotation_scale_recursive(
     float3 world_scale = zox_has(e, DisableParentScale) ?
         local_scale :
         float3_multiply(parent_scale, local_scale);
-    zox_mut_begin(e, Position3D, old_position);
+    Position3D* old_position = zox_getm(e, Position3D);
     if (!float3_equals(world_position, old_position->value))
     {
         old_position->value = world_position;
         updated = 1;
     }
-    zox_mut_begin(e, Rotation3D, old_rotation);
+    Rotation3D* old_rotation = zox_getm(e, Rotation3D);
     if (!float4_equals(world_rotation, old_rotation->value))
     {
         old_rotation->value = world_rotation;
         updated = 1;
     }
     if (zox_has(e, Scale3)) {
-        zox_mut_begin(e, Scale3, scale);
+        Scale3* scale = zox_getm(e, Scale3);
         if (!float3_equals(scale->value, world_scale)) {
             scale->value = world_scale;
             updated = 1;
         }
     } else if (zox_has(e, Scale1)) {
-        zox_mut_begin(e, Scale1, scale);
+        Scale1* scale = zox_getm(e, Scale1);
         if (scale->value != world_scale.y) {
             scale->value = world_scale.y;
             updated = 1;
@@ -81,7 +81,8 @@ static inline void set_position_rotation_scale_recursive(
 }
 
 // Uses flecs children parenting for recursively transformingthings
-zox_sys2(TransformChildrenSystem) {
+void transform3_children_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Position3D);
@@ -91,16 +92,23 @@ zox_sys2(TransformChildrenSystem) {
         zox_sys_i(Position3D, position);
         zox_sys_i(Rotation3D, rotation);
         float3 world_scale = zox_has(e, Scale3) ?
-            zox_getv(e, Scale3) : (zox_has(e, Scale1) ?
-                float3_single(zox_getv(e, Scale1)) :
-                float3_one);
+            zox_getv(e, Scale3) :
+                (zox_has(e, Scale1) ?
+                    float3_single(zox_getv(e, Scale1)) :
+                    float3_one);
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
-                set_position_rotation_scale_recursive(world, e2, position->value, rotation->value, world_scale);
+                set_position_rotation_scale_recursive(
+                    world,
+                    e2,
+                    position->value,
+                    rotation->value,
+                    world_scale);
             }
         }
         zox_sys_increment();
     }
-} zox_sys_end(TransformChildrenSystem);
+    zox_sys_on_end();
+} zoxd_system(transform3_children_system);

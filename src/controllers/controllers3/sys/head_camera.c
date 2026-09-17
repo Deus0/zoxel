@@ -1,21 +1,23 @@
 // NOTE: Sets camera position when body updates
 // NOTE: We will use a camera negative Z from now on
-zox_sys2(HeadCameraSystem) {
+void place_camera_head_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SkeletonDirty);
-    zox_sys_in(HeadBoneLink);
+    // zox_sys_in(HeadBoneLink);
     zox_sys_in(BlockScale);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(SkeletonDirty, state);
-        zox_sys_i(HeadBoneLink, head);
+        // zox_sys_i(HeadBoneLink, head);
         zox_sys_i(BlockScale, bscale);
         if (state->value != zox_dirty_active) {
             continue;
         }
-        if (!zox_valid(head->value)) {
+        entity head_bone = zox_get_link(world, e, HeadBoneLink);
+        if (!zox_valid(head_bone)) {
             zox_loge("Invalid Head on Character");
             continue;
         }
@@ -29,7 +31,7 @@ zox_sys2(HeadCameraSystem) {
         if (camera_state != zox_camera_state_first_person) {
             continue;
         }
-        zox_geter_value(head->value, BoneSize, float3, head_size);
+        float3 head_size = zox_getv(head_bone, BoneSize);
         float3 camera_offset = (float3) {
             0,
             0,
@@ -49,12 +51,13 @@ zox_sys2(HeadCameraSystem) {
                 float3_scale(
                     euler,
                     degrees_to_radians)));
-        zox_set_parent(world, camera, head->value);
+        zox_set_parent(world, camera, head_bone);
         if (dbg_log) {
             zox_log("Set Camera on Head (%s) at [%f]",
-                zox_getn(head->value),
+                zox_getn(head_bone),
                 camera_offset.z);
         }
     }
-} zox_sys_end(HeadCameraSystem);
+    zox_sys_on_end();
+} zoxd_system(place_camera_head_system);
 

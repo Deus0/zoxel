@@ -1,22 +1,11 @@
-extern double current_time_in_seconds();
+#ifdef zox_logs
+    extern double current_time_in_seconds();
+#endif
 
 void update_ecs(ecs *world) {
-    /*byte dbg_log = 0;
-    double pre_1 = current_time_in_seconds();
-    run_update_loop(world);
-    double time_1 = current_time_in_seconds() - pre_1;
     if (flecs_log_level) {
         ecs_log_set_level(flecs_log_level);
     }
-    double pre_2 = current_time_in_seconds();
-    ecs_progress(world, 0);
-    double time_2 = current_time_in_seconds() - pre_2;
-    double pre_3 = current_time_in_seconds();
-    run_post_update_loop(world);
-    double time_3 = current_time_in_seconds() - pre_3;
-    if (dbg_log) {
-        zox_log("Time 1[%fms] 2[%fms] 3[%fms]", time_1 * 1000, time_2 * 1000, time_3 * 1000);
-    }*/
     byte dbg_log = 0;
     run_update_loop(world);
 #ifdef zox_logs
@@ -41,14 +30,15 @@ void update_ecs(ecs *world) {
         );
     }
 #endif
-    // run_post_update_loop(world);
-    ecs_run_count++;
-#ifdef FLECS_STATS
-    debug_ecs_stats(world);
+#ifdef flecs_profiler
+    if (zox_log_system_stats) {
+        log_system_stats(world);
+    }
+    if (zox_log_pipelines) {
+        log_pipelines(world, zox_log_pipelines);
+    }
 #endif
-/*#ifdef FLECS_PROFILER
-    debug_print_ecs_frame(world);
-#endif*/
+    ecs_run_count++;
 }
 
 void update_ecs_local() {

@@ -47,7 +47,7 @@ entity spawn_part_bones(
     byte is_right_side = position.x < 0;
     if (zox_has(part, Head)) {
         zox_add(bone, HeadBone);
-        zox_set(skeleton, HeadBoneLink, { bone });
+        zox_link(world, skeleton, HeadBoneLink, bone);
     }
     if (zox_has(part, ArmPart)) {
         zox_add(bone, ArmBone);
@@ -57,18 +57,18 @@ entity spawn_part_bones(
     }
     if (zox_has(part, Shoulder)) {
         zox_add(bone, ShoulderBone);
-        zox_set(bone, SwingState, { 1 });
-        zox_set(bone, SwingAngle, { 110 });
+        zox_setv(bone, SwingState, 1);
+        zox_setv(bone, SwingAngle, 110);
         // NOTE: For Right Shoulder
         if (is_right_side) {
-            zox_set(skeleton, ShoulderBoneLink, { bone });
+            zox_link(world, skeleton, ShoulderBoneLink, bone);
         }
     }
     if (zox_has(part, Hand)) {
         zox_add(bone, HandBone);
         // NOTE: For Right Hand
         if (is_right_side) {
-            zox_set(skeleton, HandBoneLink, { bone });
+            zox_link(world, skeleton, HandBoneLink, bone);
             // zox_log("Added RightHandBone to Part's Bone [%s]", zox_get_name(part));
         }
     }

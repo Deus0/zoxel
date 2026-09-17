@@ -7,9 +7,16 @@
 #include "shadow.c"
 #include "children.c"
 
+void transform_sync_system(iter* it) { }
+zoxd_system(transform_sync_system);
+
 void zox_define_systems_transforms3(ecs *world) {
+    zox_system_1(
+        transform_sync_system,
+        zoxp_transform_sync
+    );
     zox_system(
-        TransformChildrenSystem,
+        transform3_children_system,
         zoxp_transform_hierarchy,
         [in] transforms3.Position3D,
         [in] transforms3.Rotation3D,
@@ -19,8 +26,9 @@ void zox_define_systems_transforms3(ecs *world) {
         [none] !transforms3.LocalScale3,
         [none] !transforms.DisableTransform
     );
-    add_system_process_counter(world, zox_id(TransformChildrenSystem));
+    add_system_process_counter(world, zox_id(transform3_children_system));
     // TODO: Merge these limits, EulerLimits float4
+    // TODO: Put this in a new zoxp_transform_limit phase
     zox_system(
         EulerLimitXSystem,
         zoxp_update,

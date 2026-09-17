@@ -1,13 +1,25 @@
 # Todo
 
 ## Main MVP Bugs
-- Integral test on falling through map
-- Crashes - wrap all octrees
-- Characters -npcs not despawning now
-    - changed recently the states
 - Body lagging behind camera
     - make sure phases there.. seperate timings
+    - write a simple cube append test
+        - cube will move forward, camera will ride it
+- Crashes - wrap all octrees
+- When streaming terrain - flag neighbor of updated chunks dirty
+    - the outside chunks have missing faces now
+- Integral test on falling through map
+- Characters - npcs not despawning now
+    - changed recently the states
 - Main Menu music missing
+- Block didnt update again... this was mesh not spawning issue
+    - when spawning on top of world
+
+## Refactors
+- Turn quest slayer into an event
+    - Make observer function for callbacks
+-o Fix - Npcs not spawning atm
+    - maybe the ordering i did change that
 
 ## New
 - Collect 5 cookies for quest
@@ -15,11 +27,14 @@
     - Dialogue Nodes: QuestDoneLink - QuestActiveLink
 - Quest Rewards - More Cookies - Particles - Sounds (Yay)
 
-## Refactors
-- Turn quest slayer into an event
-    - Make observer function for callbacks
--o Fix - Npcs not spawning atm
-    - maybe the ordering i did change that
+
+-----------
+## Backlog
+-----------
+
+# Dialogues
+- Add a text speed option - 1, 2, 3 (default 2)
+	- add sounds per syllabal too instead of sound
 
 - Loops endless - when exiting game now
     - can test by spawning/destroying terrain in main menu
@@ -44,8 +59,6 @@
 	- reduce gravity
 	- allow jumping inside water
 	- Dampen music sounds
-- Add a text speed option - 1, 2, 3 (default 2)
-	- add sounds per syllabal too instead of sound
 - humanoids seem missing
 Fix Crashes: (Infrequent)
 - On Player death

@@ -1,3 +1,4 @@
+// Type Renames
 typedef ecs_entity_t entity;
 typedef ecs_world_t ecs;
 typedef ecs_iter_t iter;
@@ -5,15 +6,16 @@ typedef ecs_query_t query;
 // Globals
 byte running = 1;
 byte cores_count = 1;
-ecs *local_world;
 byte target_fps = 0;
 uint ecs_run_count = 0;
+ecs* local_world;
 // Testing
 byte profiler = 1;
 byte zox_disable_threads = 0;
-byte zox_log_pipelines = 0;     // 1 for big frames, 2 for all
+// Logs
+byte zox_log_pipelines = 0;         // 1 for big frames, 2 for all
 byte zox_log_system_stats = 0;
-byte flecs_log_level = 0;   // 1 for debug_pipelines
+byte flecs_log_level = 0;           // 1 for debug_pipelines
 
 #include "fun/spinlock.c"
 #include "mcr/_.c"

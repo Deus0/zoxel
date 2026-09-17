@@ -59,8 +59,8 @@ ifeq ($(origin game), undefined)
 else
     GAME := $(game)
 endif
-TARGET  	:= bin/$(GAME).bin
-TARGET_DEV 	:= bin/$(GAME)-dev.bin
+target_release  	:= bin/$(GAME).bin
+target_dev 	:= bin/$(GAME)-dev.bin
 DFLAGS 		+= -Dzox_game=$(GAME)
 
 # Add SDL
@@ -90,7 +90,7 @@ endif
 
 # Build
 
-$(TARGET): $(SRCS)
+$(target_release): $(SRCS)
 	@ echo "> Building [$(GAME)]"
 	@ bash bsh/build.sh $(GAME) ${build_args} --release
 
@@ -106,7 +106,7 @@ package-windows: flecs
 	@ echo "> Building + Packaging [$(GAME)]"
 	@ bash bsh/windows.sh $(GAME) opengl sdl windows --release --package
 
-build: flecs $(TARGET)
+build: flecs $(target_release)
 
 # Extra
 
@@ -126,11 +126,11 @@ flecs:
 
 # Dev
 
-$(TARGET_DEV): $(SRCS)
-	bash bsh/build.sh $(GAME) ${build_args} --debug --logs
+$(target_dev): $(SRCS)
+	bash bsh/build.sh $(GAME) ${build_args} --debug --logs --profiler --timings
 
 
-dev: $(TARGET_DEV)
+dev: $(target_dev)
 
 profiler: $(SRCS)
 	bash bsh/build.sh $(GAME) ${build_args} --debug --logs --timings --profiler
@@ -144,7 +144,7 @@ profiler: $(SRCS)
 #	$(CC) $(cflags_devmem) $(SRC) -o $@ $(LIBS) $(DFLAGS)
 
 #gdbmem: devmem
-#	gdb -ex "set debuginfod enabled off" -ex run --args ./$(TARGET_DEV)
+#	gdb -ex "set debuginfod enabled off" -ex run --args ./$(target_dev)
 
 # Run with windows (and debug)
 runw:
@@ -163,29 +163,29 @@ run: flecs prerelease
 	@ echo "> Running [$(GAME)]"
 	@ sleep 1
 	@ echo "-------------------"
-	@ ./$(TARGET)
+	@ ./$(target_release)
 
-run-release: flecs $(TARGET)
+run-release: flecs $(target_release)
 	@ echo "> Running [$(GAME)]"
 	@ sleep 1
 	@ echo "-------------------"
-	@ ./$(TARGET)
+	@ ./$(target_release)
 
 run-gdb: build
 	@ echo "> Running [$(GAME)]"
 	@ sleep 1
 	@ echo "-------------------"
-	gdb -ex "set debuginfod enabled off" -ex run --args ./$(TARGET)
+	gdb -ex "set debuginfod enabled off" -ex run --args ./$(target_release)
 
 rund: dev
-	./$(TARGET_DEV)
+	./$(target_dev)
 
 # flecs profiler
 runfp: devfp
-	./$(TARGET_DEV)
+	./$(target_dev)
 
 runv: dev
-	./$(TARGET_DEV) --verbose
+	./$(target_dev) --verbose
 
 # we can test using software rendering
 run-gles2: build-gles2
@@ -195,17 +195,17 @@ run-gles2: build-gles2
 	make run
 
 gdb:
-	gdb -ex "set debuginfod enabled off" -ex run --args ./$(TARGET_DEV)
+	gdb -ex "set debuginfod enabled off" -ex run --args ./$(target_dev)
 
 gdbv:
-	gdb -ex "set debuginfod enabled off" -ex run --args ./$(TARGET_DEV) --verbose -su
+	gdb -ex "set debuginfod enabled off" -ex run --args ./$(target_dev) --verbose -su
 
 val: dev
-	valgrind --track-origins=yes ./$(TARGET_DEV)
+	valgrind --track-origins=yes ./$(target_dev)
 
 # Track memory leaks
 valt: dev
-	valgrind --track-origins=yes ./$(TARGET_DEV)
+	valgrind --track-origins=yes ./$(target_dev)
 
 gdbp:
 	$(MAKE) pick ACTION=gdb

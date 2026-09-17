@@ -32,7 +32,7 @@ void define_systems_cameras(ecs *world) {
     );
     // Combine with transform
     zox_system(
-        ViewProjectionMatrixSystem,
+        view_projection_matrix_system,
         zoxp_cameras,
         [in] transforms.TransformMatrix,
         [in] ProjectionMatrix,

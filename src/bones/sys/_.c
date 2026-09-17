@@ -13,7 +13,7 @@ void define_systems_bones(ecs *world) {
         HeadAnimateSystem,
         zoxp_update,
         [in] bones.SkeletonDirty,
-        [in] bones.HeadBoneLink,
+        // [in] bones.HeadBoneLink,
         [none] bones.Skeleton
     );
     zox_system(
@@ -70,8 +70,6 @@ void define_systems_bones(ecs *world) {
         ShoulderRaiseSystem,
         zoxp_update,
         [in] bones.RaiseShoulder,
-        [in] bones.ShoulderBoneLink,
-        [in] bones.HeadBoneLink,
         [none] bones.Skeleton
     );
     zox_system_1(

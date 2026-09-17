@@ -140,11 +140,11 @@ zox_sys2(Character3RealmSpawnSystem) {
             prefab_character3_instanced_npc :
             prefab_character3_npc;
         // add files
-        entity rsoul = zox_get_child_by_id(
+        entity base_soul = zox_get_child_by_id(
             world,
             e,
             zox_id(StatSoul));
-        entity rhealth = zox_get_child_by_id(
+        entity base_health = zox_get_child_by_id(
             world,
             e,
             zox_id(StatHealth));
@@ -162,8 +162,8 @@ zox_sys2(Character3RealmSpawnSystem) {
                 zox_loge("Boney failed to spawn");
                 continue;
             }
-            // spawn_stat_level(world, e2, rsoul, 5);
-            // spawn_stat_state(world, e2, rhealth, 21, 21);
+            spawn_stat_level(world, e2, base_soul, 5);
+            spawn_stat_state(world, e2, base_health, 21, 21);
             chance_max += chance;
             add_to_CharacterLinks(characters, e2);
             character_seed += seed_shift;
@@ -205,18 +205,31 @@ zox_sys2(Character3RealmSpawnSystem) {
                 character_seed,
                 "character",
                 chance);
+            if (!e2) {
+                zox_loge("Generated Character Failed");
+                continue;
+            }
             zox_setv(e2, ModelLink, model);
             zox_add(e2, CharacterGeneric);
             zox_set_parent(world, e2, e);
             add_to_CharacterLinks(characters, e2);
             chance_max += chance;
-            // spawn_stat_level(world, e2, rsoul, 2);
-            // spawn_stat_state(world, e2, rhealth, 8, 8);
+            // NOTE: This crashes it
+            // ecs_defer_end(world);
+            spawn_stat_level(world, e2, base_soul, 2);
+            spawn_stat_state(world, e2, base_health, 8, 8);
+            // ecs_defer_begin(world);
             character_seed += seed_shift;
         }
         // Spawn our Vox Files
         int count = 5; // count of below array
-        char* vox_names[] = { "slime", "chicken", "mrpenguin", "bob", "bigmrpenguin" };
+        char* vox_names[] = {
+            "slime",
+            "chicken",
+            "mrpenguin",
+            "bob",
+            "bigmrpenguin"
+        };
         // 30% are premades
         byte chances[] = { 10, 10, 4, 4, 2 };
         byte souls[] = { 1, 1, 2, 1, 3 };
@@ -245,8 +258,8 @@ zox_sys2(Character3RealmSpawnSystem) {
             chance_max += chance;
             float soul_value = (float)(souls[j]);
             float health = (float)(healths[j]);
-            // spawn_stat_level(world, e2, rsoul, soul_value);
-            // spawn_stat_state(world, e2, rhealth, health, health);
+            spawn_stat_level(world, e2, base_soul, soul_value);
+            spawn_stat_state(world, e2, base_health, health, health);
             add_to_CharacterLinks(characters, e2);
             character_seed += seed_shift;
         }

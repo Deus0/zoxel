@@ -38,6 +38,7 @@ entity zoxp_layouts;
 entity zoxp_transform_hierarchy;
 // World Space -> Transform Matrix
 entity zoxp_transform_end;
+entity zoxp_transform_sync;
 // Transform + Projection -> ViewProjection
 entity zoxp_cameras;
 entity zoxp_gpu_upload;
@@ -48,7 +49,12 @@ entity zoxp_post_end;
 
 // Custom Phases / Pipeline
 void initialize_zox_phases(ecs* world) {
+    // NOTE: Keep in regular flecs phases for profiler
+#ifdef flecs_profiler
+    zox_phase_after(zoxp_dbg_begin, EcsOnStore);
+#else
     zoxp_dbg_begin = zox_phase(world, "zoxp_dbg_begin");
+#endif
     zox_phase_after(zoxp_pre_spawn, zoxp_dbg_begin);
     zox_phase_after(zoxp_spawn, zoxp_pre_spawn);
     zox_phase_after(zoxp_gpu_upload, zoxp_spawn);
@@ -60,7 +66,8 @@ void initialize_zox_phases(ecs* world) {
     zox_phase_after(zoxp_layouts, zoxp_trails);
     zox_phase_after(zoxp_transform_hierarchy, zoxp_layouts);
     zox_phase_after(zoxp_transform_end, zoxp_transform_hierarchy);
-    zox_phase_after(zoxp_cameras, zoxp_transform_end);
+    zox_phase_after(zoxp_transform_sync, zoxp_transform_end);
+    zox_phase_after(zoxp_cameras, zoxp_transform_sync);
     zox_phase_after(zoxp_render, zoxp_cameras);
     zox_phase_after(zoxp_pre_end, zoxp_render);
     zox_phase_after(zoxp_end, zoxp_pre_end);
@@ -71,7 +78,7 @@ void initialize_zox_phases(ecs* world) {
 // States
 #define zoxp_state zoxp_pre_physics
 #define zoxp_post_update zoxp_physics
-#define zoxp_update zoxp_state
+#define zoxp_update zoxp_pre_physics
 #define zoxp_initialize zoxp_state
 #define zoxp_reset zoxp_pre_end
 // Creation
@@ -97,23 +104,12 @@ void initialize_zox_phases(ecs* world) {
 #define zoxp_voxels_mesh zoxp_octree_read
 // Write to mesh from voxels
 #define zoxp_voxels_lights zoxp_octree_read
-// QUeues
-// #define zoxp_queue_add zoxp_update
+// Queues
 #define zoxp_queue_process zoxp_physics
-// #define zoxp_queue_pre_clear zoxp_post_update
-// #define zoxp_queue_pre_post_clear zoxp_post_update
 #define zoxp_queue_clear zoxp_octree_write
 
 // Old: EcsOnUpdate
 
-// 1) Spawn
-// 2) Main - Multithreaded
-// 3) GPU Uploads + Rendering
-// regular sync points
-// #define zoxp_spawn EcsPreUpdate
-// doesnt seem to mind if its in same frame as zoxp_cameras
-// (VoxelNode) Queue
-// TODO: Process Queue for Octree in frame a fter, perhaps a second stack?
 /* EcsOnLoad
  * EcsPostLoad
  * EcsPreUpdate

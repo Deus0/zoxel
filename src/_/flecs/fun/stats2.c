@@ -1,4 +1,4 @@
-#ifdef FLECS_STATS
+#ifdef flecs_profiler
 
 typedef struct {
     const char *name;
@@ -66,8 +66,7 @@ static void set_previous_system_time(
     previous_system_count++;
 }
 
-void log_pipelines(ecs_world_t *world, byte dbg_level)
-{
+void log_pipelines(ecs_world_t *world, byte dbg_level) {
     ecs_entity_t pipeline_id = ecs_get_pipeline(world);
     ecs_pipeline_stats_t p = {0};
 
@@ -286,17 +285,6 @@ void log_system_stats(ecs *world)
     free(entries);
 
     ecs_pipeline_stats_fini(&p);
-}
-
-void debug_ecs_stats(ecs *world)
-{
-    if (zox_log_system_stats) {
-        log_system_stats(world);
-    }
-
-    if (zox_log_pipelines) {
-        log_pipelines(world, zox_log_pipelines);
-    }
 }
 
 #endif

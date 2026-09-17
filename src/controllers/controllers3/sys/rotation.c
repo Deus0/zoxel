@@ -109,7 +109,7 @@ zox_sys2(Player3RotateSystem) {
         character_euler->value.y += euler.y;
         character_rotation->value = quaternion_from_euler(character_euler->value);
         // Set Rotation
-        entity head_bone = zox_getv(character, HeadBoneLink);
+        entity head_bone = zox_get_link(world, character, HeadBoneLink);
         if (!zox_valid(head_bone)) {
             continue;
         }

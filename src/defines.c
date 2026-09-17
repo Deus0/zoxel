@@ -17,7 +17,7 @@
 #define zox_nexus_game inc_nexus_game(zox_game)
 
 #ifndef zox_names
-    #if defined(zox_logs) || defined(zox_profiler)
+    #if defined(zox_logs) || defined(flecs_profiler)
         #define zox_names
     #endif
 #endif

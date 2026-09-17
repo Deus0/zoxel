@@ -1,4 +1,4 @@
-#ifdef FLECS_STATS
+/*#ifdef FLECS_STATS
 
 typedef struct {
     const char *name;
@@ -149,3 +149,4 @@ void debug_ecs_stats(ecs *world) {
 }
 
 #endif
+*/

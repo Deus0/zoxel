@@ -9,13 +9,11 @@ zox_sys2(ActiveActionHoldSystem) {
     zox_sys_begin();
     zox_sys_in(ActiveActionDirty);
     zox_sys_in(ActiveAction);
-    zox_sys_in(HandBoneLink);
     zox_sys_out(RaiseShoulder);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ActiveActionDirty, dirty);
         zox_sys_i(ActiveAction, aaction);
-        zox_sys_i(HandBoneLink, hand_bone);
         zox_sys_o(RaiseShoulder, raise);
         if (dirty->value != zox_dirty_active) {
             continue;
@@ -27,15 +25,22 @@ zox_sys2(ActiveActionHoldSystem) {
                 zox_log("[%s] is Raising their arm for [%s]", zox_getn(e), zox_getn(aaction->value));
             }
         }
-        byte spawn_held = zox_valid(aaction->value) && zox_has(aaction->value, Item);
+        byte spawn_held =
+            zox_valid(aaction->value) &&
+            zox_has(aaction->value, Item);
+        entity hand = zox_get_link(world, e, HandBoneLink);
         entity bone_parent;
-        if (zox_valid(hand_bone->value)) {
-            bone_parent = hand_bone->value;
+        if (zox_valid(hand)) {
+            bone_parent = hand;
         } else {
             bone_parent = e;
-            zox_logw("Character [%s] Missing Hand", zox_get_name(e));
+            zox_logw("Character [%s] Missing Hand",
+                zox_getn(e));
         }
-        entity e2 = zox_get_child_by_id(world, bone_parent, zox_id(HeldAction));
+        entity e2 = zox_get_child_by_id(
+            world,
+            bone_parent,
+            zox_id(HeldAction));
         if (zox_valid(e2)) {
             if (dbg_log) {
                 zox_log("Removing Held Item [%s]", zox_get_name(e2));
@@ -50,12 +55,9 @@ zox_sys2(ActiveActionHoldSystem) {
             continue;
         }
         // TODO: Spawn based on hand bone
-        float3 position;
-        if (hand_bone->value) {
-            position = hand_position;
-        } else {
-            position = body_position;
-        }
+        float3 position = zox_valid(hand) ?
+            hand_position :
+            body_position;
         entity texture = zox_getv(aaction->value, TextureLink);
         if (zox_valid(texture)) {
             e2 = spawn_cube_textured(

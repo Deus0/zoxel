@@ -7,21 +7,18 @@ zox_sys2(ShoulderRaiseSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RaiseShoulder);
-    zox_sys_in(ShoulderBoneLink);
-    zox_sys_in(HeadBoneLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RaiseShoulder, state);
-        zox_sys_i(ShoulderBoneLink, shoulder);
-        zox_sys_i(HeadBoneLink, head);
-        if (!zox_valid(shoulder->value)) {
+        entity shoulder = zox_get_link(world, e, ShoulderBoneLink);
+        if (!zox_valid(shoulder)) {
             if (dbg_log) {
                 zox_logw("Should is invalid on [%s]", zox_getn(e));
             }
             continue;
         }
-        zox_muter(shoulder->value, LocalRotation3D, rotation);
-        zox_muter(shoulder->value, SwingState, swing);
+        zox_muter(shoulder, LocalRotation3D, rotation);
+        zox_muter(shoulder, SwingState, swing);
         if (!state->value) {
             rotation->value = quaternion_identity;  // set to original
             if (!swing->value) {
@@ -29,11 +26,11 @@ zox_sys2(ShoulderRaiseSystem) {
             }
             continue;
         }
-        entity head_bone = head->value;
+        entity head_bone = zox_get_link(world, e, HeadBoneLink);
         if (!zox_valid(head_bone)) {
             continue;
         }
-        entity camera = zox_get_child_by_id(world, head->value, zox_id(Camera));
+        entity camera = zox_get_child_by_id(world, head_bone, zox_id(Camera));
         if (zox_valid(camera)) {
             head_bone = camera;
         }
@@ -51,7 +48,11 @@ zox_sys2(ShoulderRaiseSystem) {
                 target.y += swing_angle_y * swing_bonus * degrees_to_radians;
                 target.z += swing_angle_z * swing_bonus * degrees_to_radians;
                 if (dbg_log) {
-                    zox_log("Swinging: Time Passed [%f], Angle [%fx%f], Speed [%f]", time_passed, swing_angle_x * swing_bonus, swing_angle_y * swing_bonus, swing_speed);
+                    zox_log("Swinging: Time Passed [%f], Angle [%fx%f], Speed [%f]",
+                        time_passed,
+                        swing_angle_x * swing_bonus,
+                        swing_angle_y * swing_bonus,
+                        swing_speed);
                 }
             }
         }

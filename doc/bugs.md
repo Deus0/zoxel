@@ -6,6 +6,7 @@ Unsorted
     - Suddenly, body lagging again
     - pipelines should be fine though
 - Big Terrain Disposal Bug
+    - set render distance to 32
     - terrain very big, and delete, it causes it to hang
     - actually it did end up working
     - also deleting while its spawning, causes crash

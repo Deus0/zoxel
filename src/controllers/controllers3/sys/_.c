@@ -67,10 +67,10 @@ void define_systems_controllers3(ecs *world) {
         [none] players.Player
     );
     zox_system(
-        HeadCameraSystem,
+        place_camera_head_system,
         zoxp_update,
         [in] bones.SkeletonDirty,
-        [in] bones.HeadBoneLink,
+        // [in] bones.HeadBoneLink,
         [in] blocks.BlockScale,
         [none] bones.Skeleton
     );

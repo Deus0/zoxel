@@ -1,5 +1,9 @@
 # Done
 
+-x NPC stat spawning crashes in character
+-x HandBoneLink
+-x ShoulderBoneLink
+-x HeadBoneLink
 -x Fix queue for chunk updates - block placement broken again
     -x Block isnt placing after killed npc
 -x Crashed on open Inventory again

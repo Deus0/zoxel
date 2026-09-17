@@ -1,17 +1,3 @@
-void initialize_flecs_profiler(ecs* world) {
-    //if (is_using_flecs_stats) {
-/*#ifdef zox_use_flecs_profiler
-        zox_log("Flecs Profiler Enabled");
-        zox_import_module(FlecsStats);
-
-        //ECS_IMPORT(world, FlecsMonitor);
-        // ecs_tracing_enable(1);
-        // ecs_log_set_level(0);
-#else
-    zox_logw("Profiler Define Missing.");
-#endif*/
-}
-
 #ifdef FLECS_PROFILER
 
 #define DEBUG_MAX_SYSTEMS 4096

@@ -50,9 +50,6 @@ UIs
     
 ## Remove old links
 	- SkeletonLink
-	- HeadBoneLink
-	- HandBoneLink
-	- ShoulderBoneLink
 	- ChunkLink
 	- TextureLink
 	- TextureLinks
