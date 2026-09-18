@@ -1,3 +1,19 @@
+void set_rotation_recursive(ecs* world, entity e, float4 rotation) {
+    if (!zox_valid(e)) {
+        return;
+    }
+    if (zox_has(e, Rotation3D)) {
+        zox_setm(e, Rotation3D, rotation);
+    }
+    iter it = zox_children(world, e);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count; i++) {
+            entity e2 = it.entities[i];
+            set_rotation_recursive(world, e2, rotation);
+        }
+    }
+}
+
 // NOTE: Makes UIs look at the cameras
 void billboard_system(iter* it) {
     zox_sys_on_begin();
@@ -50,14 +66,39 @@ void billboard_system(iter* it) {
         for (size_t j = 0; j < cameras_count; j++) {
             float3 camera_position = camera_positions[j];
             float4 camera_rotation = camera_rotations[j];
-            float distance = float3_distance_squared(position->value, camera_position);
+            float distance = float3_distance_squared(
+                position->value,
+                camera_position);
             if (closest_distance == -1 || distance < closest_distance) {
                 closest_distance = distance;
                 closest_rotation = camera_rotation;
                 closest_camera = cameras[j];
             }
         }
+        /*float4 billboard_rotation =
+            quaternion_rotate(
+                closest_rotation,
+                euler_to_quaternion((float3) {
+                    0,
+                    degrees_to_radians * 180,
+                    0
+                }));*/
         rotation->value = closest_rotation;
+        zox_sys_e();
+        // set_rotation_recursive(world, e, closest_rotation);
+
+        float3 world_scale = zox_has(e, Scale3) ?
+            zox_getv(e, Scale3) :
+                (zox_has(e, Scale1) ?
+                    float3_single(zox_getv(e, Scale1)) :
+                    float3_one);
+        set_position_rotation_scale_recursive(
+            world,
+            e,
+            zox_getv(e, Position3D),
+            rotation->value,
+            world_scale);
+
         zox_sys_increment();
         if (dbg_log) {
             zox_sys_e();

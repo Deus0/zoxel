@@ -1,4 +1,9 @@
-void set_mesh_vertices_scale3(MeshVertices* verts, const float2* new_verts, int length, float2 scale) {
+void set_mesh_vertices_scale3(
+    MeshVertices* verts,
+    const float2* new_verts,
+    int length,
+    float2 scale)
+{
     resize_MeshVertices(verts, length);
     for (int i = 0; i < length; i++) {
         verts->value[i] = (float3) {
@@ -18,14 +23,12 @@ zox_sys2(Layout3MeshUpdateSystem) {
     zox_sys_in(LayoutSize);
     zox_sys_in(MeshAlignment);
     zox_sys_out(MeshVertices);
-    // zox_sys_out(MeshDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(LayoutSizeDirty, dirty);
         zox_sys_i(LayoutSize, size);
         zox_sys_i(MeshAlignment, alignment);
         zox_sys_o(MeshVertices, verts);
-        // zox_sys_o(MeshDirty, mesh_dirty);
         if (dirty->value != zox_dirty_active) {
             continue;
         }
@@ -39,17 +42,25 @@ zox_sys2(Layout3MeshUpdateSystem) {
             (size->value.x / canvas_size.y), // * 0.5f,
             (size->value.y / canvas_size.y) // * 0.5f
         };
-        float3 world_scale = zox_has(canvas, Scale3) ?
-            zox_getv(canvas, Scale3) : (zox_has(canvas, Scale1) ?
-                float3_single(zox_getv(canvas, Scale1)) :
-                float3_one);
+        float3 world_scale =
+            zox_has(canvas, Scale3) ?
+                zox_getv(canvas, Scale3) :
+                (zox_has(canvas, Scale1) ?
+                    float3_single(zox_getv(canvas, Scale1)) :
+                    float3_one);
         scale.x *= world_scale.x;
         scale.y *= world_scale.y;
-        set_mesh_vertices_scale3(verts, get_aligned_mesh2D(alignment->value), 4, scale);
-        // mesh_dirty->value = mesh_state_upload;
-        zox_add(e, MeshDirty); // , mesh_state_upload);
+        set_mesh_vertices_scale3(
+            verts,
+            get_aligned_mesh2D(alignment->value),
+            4,
+            scale);
+        zox_add(e, MeshDirty);
         if (dbg_log) {
-            zox_log("Layout3MeshUpdateSystem Mesh 3D Updated [%s] Size [%fx%f]", zox_getn(e), scale.x, scale.y);
+            zox_log("Layout3MeshUpdateSystem Mesh 3D Updated [%s] Size [%fx%f]",
+                zox_getn(e),
+                scale.x,
+                scale.y);
         }
     }
 } zox_sys_end(Layout3MeshUpdateSystem);

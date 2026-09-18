@@ -7,12 +7,12 @@
 #include "shadow.c"
 #include "children.c"
 
-void transform_sync_system(iter* it) { }
+/*void transform_sync_system(iter* it) { }
 zoxd_system(transform_sync_system);
 void transform_sync2_system(iter* it) { }
 zoxd_system(transform_sync2_system);
 void transform_sync3_system(iter* it) { }
-zoxd_system(transform_sync3_system);
+zoxd_system(transform_sync3_system);*/
 
 void zox_define_systems_transforms3(ecs *world) {
     /*zox_system_1(

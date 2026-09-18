@@ -39,7 +39,7 @@ void define_systems_elements3D(ecs *world) {
     // to sync it
     zox_system_ctx_1(
         billboard_system,
-        zoxp_trails,
+        zoxp_billboards,
         billboard_cameras,
         [in] rendering.RenderDisabled,
         [in] transforms3.Position3D,

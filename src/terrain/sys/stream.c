@@ -116,7 +116,10 @@ void terrain_stream_queue_system(iter* it) {
         uint processed = 0;
         byte chunk_length = octree_size(depth->value);
         while (queue->count && processed < max_process) {
-            TerrainSpawnUpdate update = remove_TerrainSpawnQueue(queue);
+
+            // TerrainSpawnUpdate update = remove_TerrainSpawnQueue(queue);
+            TerrainSpawnUpdate update = remove_closest_TerrainSpawnQueue(queue);
+
             int2 position2 = update.position;
             byte new_distance = update.distance;
             byte is_kill = new_distance > terrain_lod_far;

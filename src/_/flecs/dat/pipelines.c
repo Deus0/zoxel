@@ -33,14 +33,14 @@ entity zoxp_physics;
 // trail, billboards
 entity zoxp_trails;
 // Layout -> Local Space
-entity zoxp_transform_sync;
+//entity zoxp_transform_sync;
 entity zoxp_layouts;
 // Hierarchy, Local -> World Space
-entity zoxp_transform_sync3;
+//entity zoxp_transform_sync3;
 entity zoxp_transform_hierarchy;
+entity zoxp_billboards;
 // World Space -> Transform Matrix
 entity zoxp_transform_end;
-entity zoxp_transform_sync2;
 // Transform + Projection -> ViewProjection
 entity zoxp_cameras;
 entity zoxp_gpu_upload;
@@ -65,13 +65,11 @@ void initialize_zox_phases(ecs* world) {
     zox_phase_after(zoxp_pre_physics, zoxp_octree_read);
     zox_phase_after(zoxp_physics, zoxp_pre_physics);
     zox_phase_after(zoxp_trails, zoxp_physics);
-    zox_phase_after(zoxp_transform_sync, zoxp_trails);
-    zox_phase_after(zoxp_layouts, zoxp_transform_sync);
-    zox_phase_after(zoxp_transform_sync3, zoxp_layouts);
-    zox_phase_after(zoxp_transform_hierarchy, zoxp_transform_sync3);
-    zox_phase_after(zoxp_transform_end, zoxp_transform_hierarchy);
-    zox_phase_after(zoxp_transform_sync2, zoxp_transform_end);
-    zox_phase_after(zoxp_cameras, zoxp_transform_sync2);
+    zox_phase_after(zoxp_layouts, zoxp_trails);
+    zox_phase_after(zoxp_transform_hierarchy, zoxp_layouts);
+    zox_phase_after(zoxp_billboards, zoxp_transform_hierarchy);
+    zox_phase_after(zoxp_transform_end, zoxp_billboards);
+    zox_phase_after(zoxp_cameras, zoxp_transform_end);
     zox_phase_after(zoxp_render, zoxp_cameras);
     zox_phase_after(zoxp_pre_end, zoxp_render);
     zox_phase_after(zoxp_end, zoxp_pre_end);

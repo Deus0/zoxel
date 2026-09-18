@@ -13,7 +13,7 @@
  *
  * */
 byte zox_terrain_chunk_lod_system = 0;
-byte stream_update_rate = 4;
+byte stream_update_rate = 1;
 // Initial core
 #include "set/_.c"
 #include "com/_.c"

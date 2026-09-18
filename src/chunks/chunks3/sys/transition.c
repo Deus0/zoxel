@@ -5,7 +5,7 @@ extern byte zox_chunk_mesh_lighting_busy(ecs*, entity);
 zox_sys2(ChunkMeshTransitionSystem) {
     byte dbg_log = 0;
     byte disable_busy = 0;
-    double transition_speed = 1;
+    double transition_speed = 0.1;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkLodDirty);

@@ -5,7 +5,7 @@
 	- doesnt crash when gdb on khadas, just rund	
 	
 Unsorted
-- Body lagging still behind camera
+-x Body lagging still behind camera
     - Only sometimes?
     - Suddenly, body lagging again
     - pipelines should be fine though

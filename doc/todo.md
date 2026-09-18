@@ -1,6 +1,12 @@
 # Todo
 
 ## Main MVP Bugs
+-x Billboard lags a frame as it needs position/rotation off cameras
+    - then it will impact all children of it 
+    - for now we can just recursively set Rotation3D
+    - tried this, needs to reposition though
+- we shouldn't update mesh when terrain updates until lighting does
+    - atm it flashes white during updates
 - When streaming terrain - flag neighbor of updated chunks dirty
     - the outside chunks have missing faces now
     - move a little around chunks

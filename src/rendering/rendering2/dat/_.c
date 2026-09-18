@@ -5,6 +5,8 @@ guint global_mesh_uvs;
 const int square_indicies[] = {
     2, 1, 0,
     0, 3, 2
+    //0, 1, 2,
+    //2, 3, 0
 };
 
 const float square_mesh_verts2[] = {

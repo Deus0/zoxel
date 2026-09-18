@@ -12,13 +12,11 @@ typedef struct {
     TerrainSpawnUpdate* ptr;
     size_t count;
     size_t capacity;
-
     // Open-addressed hash set of positions currently in the queue.
     int2* hash_keys;
     byte* hash_state; // 0 = empty, 1 = used, 2 = tombstone
     size_t hash_capacity;
     size_t hash_count;
-
     spinlock lock;
 } TerrainSpawnQueue;
 
@@ -483,4 +481,55 @@ static byte add_or_set_TerrainSpawnQueue(
         return 0;
     }
     return add_TerrainSpawnQueue(q, item);
+}
+
+static int get_closest_TerrainSpawnQueue_distance(
+    TerrainSpawnQueue* q)
+{
+    if (!q->count) {
+        return terrain_lod_far + 1;
+    }
+    int closest = q->ptr[0].distance;
+    for (size_t i = 1; i < q->count; i++) {
+        if (q->ptr[i].distance < closest) {
+            closest = q->ptr[i].distance;
+        }
+    }
+    return closest;
+}
+
+static TerrainSpawnUpdate remove_closest_TerrainSpawnQueue(
+    TerrainSpawnQueue* q)
+{
+    if (q->count == 0) {
+        TerrainSpawnUpdate empty = {0};
+        return empty;
+    }
+
+    int closest_distance =
+        get_closest_TerrainSpawnQueue_distance(q);
+
+    for (size_t i = 0; i < q->count; i++) {
+        if (q->ptr[i].distance != closest_distance) {
+            continue;
+        }
+
+        TerrainSpawnUpdate item = q->ptr[i];
+        size_t last = q->count - 1;
+
+        if (i != last) {
+            q->ptr[i] = q->ptr[last];
+        }
+
+        q->count--;
+
+        remove_TerrainSpawnQueueHash(
+            q,
+            item.position);
+
+        return item;
+    }
+
+    TerrainSpawnUpdate empty = {0};
+    return empty;
 }

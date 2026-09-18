@@ -22,7 +22,7 @@ void define_systems_layouts2(ecs* world) {
         [none] !transforms2.LocalPosition2,
         [none] !layouts.Canvas3,
     );
-    zox_system(
+    zox_system_1(
         Layout3System,
         zoxp_layouts,
         [in] layouts.LayoutSize,
