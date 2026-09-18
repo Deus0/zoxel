@@ -1,6 +1,10 @@
 # Todo
 
 ## Main MVP Bugs
+- camera position off - can see through walls
+- add a function to turn off gpu disposal if non android
+- Windows sdl3 window mode - it dissapears
+    - windowed mode bug
 -x Billboard lags a frame as it needs position/rotation off cameras
     - then it will impact all children of it 
     - for now we can just recursively set Rotation3D

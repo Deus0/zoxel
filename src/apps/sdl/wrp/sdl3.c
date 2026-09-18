@@ -248,3 +248,42 @@ void on_set_vsync(byte value) {
                 "Disabled");
     }
 }
+
+
+// Screen
+
+
+void zox_app_set_fullscreen(
+    SDL_Window* window,
+    byte monitor,
+    byte fullscreen)
+{
+    if (fullscreen) {
+        SDL_SetWindowFullscreenMode(window, NULL);
+
+        if (!SDL_SetWindowFullscreen(window, true)) {
+            zox_loge("SDL fullscreen error: %s", SDL_GetError());
+        }
+    } else {
+        if (!SDL_SetWindowFullscreen(window, false)) {
+            zox_loge("SDL windowed error: %s", SDL_GetError());
+            return;
+        }
+
+        SDL_SyncWindow(window);
+
+        SDL_SetWindowBordered(window, true);
+        SDL_ShowWindow(window);
+        SDL_RaiseWindow(window);
+    }
+
+    int w, h;
+    SDL_GetWindowSize(window, &w, &h);
+
+    int x, y;
+    SDL_GetWindowPosition(window, &x, &y);
+
+    zox_log(
+        "window fullscreen=%i size=%ix%i position=%i,%i",
+        fullscreen, w, h, x, y);
+}
