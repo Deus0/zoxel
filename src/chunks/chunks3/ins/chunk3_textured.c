@@ -38,7 +38,7 @@ entity spawn_chunk3_textured(
         zox_set_unique_name(e, name);
     }
     // Links
-    zox_set_parent(world, e, terrain);
+    zox_set_parent_non_fragment(world, e, terrain);
     if (zox_valid(realm)) {
         zox_link(world, e, RealmLink, realm);
         zox_link(world, e, BlockManagerLink, realm);
@@ -58,6 +58,7 @@ entity spawn_chunk3_textured(
     zox_setv(e, Bounds3D, bounds);
     // Initialize our spinlocks
     initialize_voxel_lock(world, e);
+    initialize_sides_lock(world, e);
     initialize_light_lock(world, e);
     return e;
 }

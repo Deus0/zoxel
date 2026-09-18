@@ -26,7 +26,7 @@
 */
 
 // NOTE: Broken
-#define zox_non_fragment_parent
+// #define zox_non_fragment_parent
 
 #ifdef zox_non_fragment_parent
     #define zox_parent_id zox_id(EcsParent)
@@ -404,4 +404,51 @@ uint zox_get_children_by_id_recursive(
         }
     }
     return count;
+}
+
+
+
+// Removes the parent relationship from `child`
+// Returns 1 if a parent was removed, 0 otherwise
+byte zox_remove_parent_non_fragment(
+    ecs *world,
+    entity child)
+{
+    if (!zox_valid(child)) {
+        zox_logw("Trying to remove parent from invalid child");
+        return 0;
+    }
+    if (ecs_has_id(world, child, zox_id(EcsParent))) {
+        zox_remove(child, EcsParent);
+        return 1;
+    }
+    return 0;
+}
+
+// Returns 1 if sets parent
+static inline byte zox_set_parent_non_fragment(
+    ecs* world,
+    entity child,
+    entity parent)
+{
+    if (!zox_valid(child)) {
+        zox_logw("Trying to set parent from invalid child");
+        return 0;
+    }
+    if (parent &&
+        (!zox_alive(parent) ||
+        !zox_valid(parent)))
+    {
+        zox_logw("Trying to set parent from invalid parent");
+        return 0;
+    }
+    if (!parent || !zox_valid(parent)) {
+        return zox_remove_parent(world, child);
+    }
+    const EcsParent* current = zox_get(child, EcsParent);
+    if (current && current->value == parent) {
+        return 1;
+    }
+    zox_setv(child, EcsParent, parent);
+    return 1;
 }

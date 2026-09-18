@@ -68,23 +68,3 @@ void define_systems_texts(ecs *world) {
         [none] core.Update,
     );
 }
-    /*
-    zox_system(
-        GlyphPositionSystem,
-        zoxp_update,
-        [in] hierarchys.ChildIndex,
-        [out] glyphs.GlyphDirty,
-        [out] layouts.LayoutPosition,
-        [out] layouts.LayoutPositionDirty,
-        [none] glyphs.Glyph
-    );
-    zox_system(
-        GlyphUpdateSystem,
-        zoxp_update,
-        [in] hierarchys.ChildIndex,
-        [out] glyphs.GlyphDirty,
-        [out] glyphs.GlyphIndex,
-        [out] textures.GenerateTexture,
-        [none] glyphs.Glyph
-    );*/
-

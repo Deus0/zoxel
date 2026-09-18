@@ -16,7 +16,9 @@ entity spawn_prefab_chunk_invisible(ecs *world) {
     zox_setv(e, RenderDisabled, 0);
     zox_setv(e, ChunkNeighbors, { 0 });
     zox_setv(e, VoxelNode, 0);
+    zox_setv(e, VoxelNodeLock, 0);
     zox_setv(e, SidesOctree, 0);
+    zox_setv(e, SidesOctreeLock, 0);
     return e;
 }
 

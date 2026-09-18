@@ -31,3 +31,12 @@ static inline void initialize_voxel_lock(
     spinlock_init(&vlock);
     zox_setv(e, VoxelNodeLock, vlock);
 }
+
+static inline void initialize_sides_lock(
+    ecs* world,
+    entity e)
+{
+    spinlock lock;
+    spinlock_init(&lock);
+    zox_setv(e, SidesOctreeLock, lock);
+}

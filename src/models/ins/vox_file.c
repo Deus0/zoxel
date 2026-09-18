@@ -134,6 +134,7 @@ entity spawn_vox_file(
             reducer,
             bscale);
         initialize_voxel_lock(world, e2);
+        initialize_sides_lock(world, e2);
         zox_add(e2, BuildMesh);
         zox_setv(e2, RenderDepth, rdepth);
         zox_setv(e2, MaxRenderDepth, mdepth);

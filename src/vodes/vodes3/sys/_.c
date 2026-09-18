@@ -24,7 +24,7 @@ void define_systems_vodes3(ecs* world) {
         zoxp_octree_write,
         [out] chunks3.VoxelNode,
         [none] chunks3.BlocksSpawned,
-        [none] chunks3.VoxelNodeDirty,
+        [none] chunks3.VoxelNodePostDirty,
     );
     zox_system(
         VodesLodSystem,

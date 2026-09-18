@@ -27,6 +27,7 @@ void define_systems_layouts2(ecs* world) {
         zoxp_layouts,
         [in] layouts.LayoutSize,
         [none] layouts.Canvas3,
-        [none] !transforms3.LocalPosition3D
+        [none] transforms3.Position3D,  // for our syncing
+        [none] !transforms3.LocalPosition3D,
     );
 }

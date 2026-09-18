@@ -116,7 +116,7 @@ void define_systems_lights3(ecs* world) {
     // Wait until after mesh has built
     zox_system(
         build_smooth_lights_system,
-        zoxp_octree_read, // zoxp_voxels_lights,
+        zoxp_octree_read,
         [in] rendering.RenderDepth,
         [in] rendering.MeshColorRGBs,
         [none] rendering.ChunkMesh,

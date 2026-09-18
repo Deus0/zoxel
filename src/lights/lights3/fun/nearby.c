@@ -40,6 +40,25 @@ static inline void fetch_nearby_chunks(
     }
 }
 
+static inline void fetch_nearby_voxels(
+    ecs* world,
+    const entity* chunks,
+    const VoxelNode** voxels,
+    spinlock** locks)
+{
+    for (byte i = 0; i < 27; i++) {
+        entity chunk = chunks[i];
+        if (!zox_valid(chunk)) {
+            voxels[i] = NULL;
+            locks[i] = NULL;
+            continue;
+        }
+        voxels[i] = zox_get(chunk, VoxelNode);
+        VoxelNodeLock* lock = zox_mut(chunk, VoxelNodeLock);
+        locks[i] = &(lock->value);
+    }
+}
+
 static inline void fetch_nearby_lights(
     ecs* world,
     const entity* chunks,

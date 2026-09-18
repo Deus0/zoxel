@@ -64,6 +64,7 @@ entity spawn_character3(
     zox_name("character3");
     if (zox_has(prefab, VoxelNodeLock)) {
         initialize_voxel_lock(world, e);
+        initialize_sides_lock(world, e);
     }
     // TODO: SPawn mesh as sub entity here
     // new links

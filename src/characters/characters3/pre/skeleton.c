@@ -1,5 +1,8 @@
 // NOTE: The character3 version with a skeleton
-entity spawn_prefab_character3_skeleton(ecs *world, entity prefab) {
+entity spawn_prefab_character3_skeleton(
+    ecs *world,
+    entity prefab)
+{
     entity e = spawn_prefab_character3(
         world,
         prefab,

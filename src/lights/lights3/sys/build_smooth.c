@@ -1,10 +1,24 @@
 // hmmm issue seems to be about faces
 // maybe we redo our mesh builder system
 
+// if corner light AND two adjacents are solid voxels, return 0
+#define zox_get_nearby_light(x, y, z) \
+    getv_nearby_LightNode( \
+        lights, \
+        lights_locks, \
+        position, \
+        depth, \
+        sbyte3_add( \
+            neighbor_offsets[direction], \
+            (sbyte3) { x, y, z } \
+        ), \
+        oob_value)
+
 static inline void zox_apply_smooth_lights(
+    spinlock** lights_locks,
+    spinlock** voxels_locks,
     const LightNode** lights,
-    spinlock** locks,
-    const VoxelNode* voxels,
+    const VoxelNode** voxels,
     const SidesOctree* sides,
     const MeshColorRGBs* colors,
     byte3 position,
@@ -12,20 +26,33 @@ static inline void zox_apply_smooth_lights(
     byte target_depth,
     byte depth)
 {
+    const SidesOctree* sides_kids =
+        (const SidesOctree*) sides->ptr;
+    byte has_sides_kids = sides_kids != NULL;
+    // NOTE: Voxels passed in for later adjacent checks
+    // spinlock* root_lights_lock = lights_locks[OCTREE_INDEX(0, 0, 0)];
+    // spinlock* root_voxels_lock = voxels_locks[OCTREE_INDEX(0, 0, 0)];
     // Dig Deeper
-    if (depth < target_depth && sides->ptr) {
-        const SidesOctree* sides_kids = (const SidesOctree*) sides->ptr;
+    if (depth < target_depth && has_sides_kids) {
+        /*spin_lock(root_voxels_lock);
         byte has_vkids = !is_closed_VoxelNode(voxels);
-        const VoxelNode* vkids = has_vkids ? (const VoxelNode*) voxels->ptr : NULL;
+        spin_unlock(root_voxels_lock);*/
         byte3_multiply_byte(&position, 2);
         depth++;
         for (byte i = 0; i < 8; i++) {
-            const VoxelNode* cvoxels = has_vkids ? &vkids[i] : voxels;
-            byte3 child_position = byte3_add(position, octree_positions[i]);
+            /*spin_lock(root_voxels_lock);
+            const VoxelNode* child_voxels = has_vkids ?
+                &((const VoxelNode*) voxels->ptr)[i] :
+                voxels;
+            spin_unlock(root_voxels_lock);*/
+            byte3 child_position = byte3_add(
+                position,
+                octree_positions[i]);
             zox_apply_smooth_lights(
+                lights_locks,
+                voxels_locks,
                 lights,
-                locks,
-                cvoxels,
+                voxels, // child_voxels,
                 &sides_kids[i],
                 colors,
                 child_position,
@@ -41,23 +68,28 @@ static inline void zox_apply_smooth_lights(
         return;
     }
     // NOTE: If no sides were rendered
-    if (!sides->value) {
+    byte sides_visible = sides->value;
+    if (!sides_visible) {
         return;
     }
+    /*spin_lock(root_lock);
+    byte is_air = !voxels->value;
+    spin_unlock(root_lock);
     if (!voxels->value) {
         return;
-    }
+    }*/
     // TODO: Handle Corners Properly:
     //      - If two adjacent voxels solid, dont use corner light as it will be blocked
     // for each face that is visible according to node->sides
     for (byte direction = 0; direction < 6; direction++) {
         // skip hidden face
-        if (!(sides->value & (1 << (direction + 1)))) {
+        byte side_visible = (sides->value & (1 << (direction + 1)));
+        if (!side_visible) {
             continue;
         }
 //#ifdef zox_safety_checks
-        if (*ccount + voxel_face_vertices_length> colors->length) {
-            zox_loge("  - Colors Past Limits [%i] - Face [%i] at Pos [%ix%ix%i] Depth [%i] of [%i]",
+        if (*ccount + voxel_face_vertices_length > colors->length) {
+            zox_loge("Smooth Lights Error: Colors Past Limits [%i] - Face [%i] at Pos [%ix%ix%i] Depth [%i] of [%i]",
                 *ccount,
                 direction,
                 position.x,
@@ -68,15 +100,16 @@ static inline void zox_apply_smooth_lights(
             return;
         }
 //#endif
-        const byte oob_values[] = { darklight, darklight, darklight, sunlight, darklight, darklight };
+        const byte oob_values[] = {
+            darklight,
+            darklight,
+            darklight,
+            sunlight,
+            darklight,
+            darklight
+        };
         byte oob_value = oob_values[direction];
-        byte adjacent_light = getv_nearby_LightNode(
-            lights,
-            locks,
-            position,
-            depth,
-            neighbor_offsets[direction],
-            oob_value);
+        byte adjacent_light = zox_get_nearby_light(0, 0, 0);
         byte light_n1_0 = 0;
         byte light_1_0 = 0;
         byte light_0_n1 = 0;
@@ -85,127 +118,44 @@ static inline void zox_apply_smooth_lights(
         byte light_1_1 = 0;
         byte light_n1_1 = 0;
         byte light_1_n1 = 0;
-        if (direction == direction_down || direction == direction_up) {
+        if (direction == direction_down ||
+            direction == direction_up)
+        {
             // Adjacents
-            light_n1_0 = getv_nearby_LightNode(
-                lights,
-                locks,
-                position,
-                depth,
-                sbyte3_add(
-                    neighbor_offsets[direction],
-                    (sbyte3) { -1, 0, 0 }
-                ),
-                oob_value);
-            light_1_0 = getv_nearby_LightNode(
-                lights,
-                locks,
-                position,
-                depth,
-                sbyte3_add(
-                    neighbor_offsets[direction],
-                    (sbyte3) { 1, 0, 0 }
-                ),
-                oob_value);
-            light_0_n1 = getv_nearby_LightNode(
-                lights,
-                locks,
-                position,
-                depth,
-                sbyte3_add(
-                    neighbor_offsets[direction],
-                    (sbyte3) { 0, 0, -1 }
-                ),
-                oob_value);
-            light_0_1 = getv_nearby_LightNode(
-                lights,
-                locks,
-                position,
-                depth,
-                sbyte3_add(
-                    neighbor_offsets[direction],
-                    (sbyte3) { 0, 0, 1 }
-                ),
-                oob_value);
-            // Corners
-            light_n1_n1 = getv_nearby_LightNode(
-                lights,
-                locks,
-                position,
-                depth,
-                sbyte3_add(
-                    neighbor_offsets[direction],
-                    (sbyte3) { -1, 0, -1 }
-                ),
-                oob_value);
-            light_1_1 = getv_nearby_LightNode(
-                lights,
-                locks,
-                position,
-                depth,
-                sbyte3_add(
-                    neighbor_offsets[direction],
-                    (sbyte3) { 1, 0, 1 }
-                ),
-                oob_value);
-            light_n1_1 = getv_nearby_LightNode(
-                lights,
-                locks,
-                position,
-                depth,
-                sbyte3_add(
-                    neighbor_offsets[direction],
-                    (sbyte3) { -1, 0, 1 }
-                ),
-                oob_value);
-            light_1_n1 = getv_nearby_LightNode(
-                lights,
-                locks,
-                position,
-                depth,
-                sbyte3_add(
-                    neighbor_offsets[direction],
-                    (sbyte3) { 1, 0, -1 }
-                ),
-                oob_value);
-        } else if (direction == direction_front || direction == direction_back) {
+            light_n1_0 = zox_get_nearby_light(-1, 0, 0);
+            light_1_0 = zox_get_nearby_light(1, 0, 0);
+            light_0_n1 = zox_get_nearby_light(0, 0, -1);
+            light_0_1 = zox_get_nearby_light(0, 0, 1);
+            light_n1_n1 = zox_get_nearby_light(-1, 0, -1);
+            light_1_1 = zox_get_nearby_light(1, 0, 1);
+            light_n1_1 = zox_get_nearby_light(-1, 0, 1);
+            light_1_n1 = zox_get_nearby_light(1, 0, -1);
+        } else if (direction == direction_back ||
+            direction == direction_front)
+        {
             // Adjacents
-            light_n1_0 = getv_nearby_LightNode(lights, locks, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { -1, 0, 0 }), oob_value);
-            light_1_0 = getv_nearby_LightNode(lights, locks, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 1, 0, 0 }), oob_value);
-            light_0_n1 = getv_nearby_LightNode(lights, locks, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, -1, 0 }), oob_value);
-            light_0_1 = getv_nearby_LightNode(lights, locks, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 1, 0 }), oob_value);
+            light_n1_0 = zox_get_nearby_light(-1, 0, 0);
+            light_1_0 = zox_get_nearby_light(1, 0, 0);
+            light_0_n1 = zox_get_nearby_light(0, -1, 0);
+            light_0_1 = zox_get_nearby_light(0, 1, 0);
             // Corners
-            light_n1_n1 = getv_nearby_LightNode(lights, locks, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { -1, -1, 0 }), oob_value);
-            light_1_1 = getv_nearby_LightNode(lights, locks, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 1, 1, 0 }), oob_value);
-            light_n1_1 = getv_nearby_LightNode(lights, locks, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { -1, 1, 0 }), oob_value);;
-            light_1_n1 = getv_nearby_LightNode(lights, locks, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 1, -1, 0 }), oob_value);
-        } else if (direction == direction_left || direction == direction_right) {
+            light_n1_n1 = zox_get_nearby_light(-1, -1, 0);
+            light_1_1 = zox_get_nearby_light(1, 1, 0);
+            light_n1_1 = zox_get_nearby_light(-1, 1, 0);
+            light_1_n1 = zox_get_nearby_light(1, -1, 0);
+        } else if (direction == direction_left ||
+            direction == direction_right)
+        {
             // Adjacents
-            light_n1_0 = getv_nearby_LightNode(lights, locks, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, -1, 0 }), oob_value);
-            light_1_0 = getv_nearby_LightNode(lights, locks, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 1, 0 }), oob_value);
-            light_0_n1 = getv_nearby_LightNode(lights, locks, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 0, -1 }), oob_value);
-            light_0_1 = getv_nearby_LightNode(lights, locks, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 0, 1 }), oob_value);
+            light_n1_0 = zox_get_nearby_light(0, -1, 0);
+            light_1_0 = zox_get_nearby_light(0, 1, 0);
+            light_0_n1 = zox_get_nearby_light(0, 0, -1);
+            light_0_1 = zox_get_nearby_light(0, 0, 1);
             // Corners
-            light_n1_n1 = getv_nearby_LightNode(lights, locks, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, -1, -1 }), oob_value);
-            light_1_1 = getv_nearby_LightNode(lights, locks, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 1, 1 }), oob_value);
-            light_n1_1 = getv_nearby_LightNode(lights, locks, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, -1, 1 }), oob_value);
-            light_1_n1 = getv_nearby_LightNode(lights, locks, position, depth,
-                sbyte3_add(neighbor_offsets[direction], (sbyte3) { 0, 1, -1 }), oob_value);
+            light_n1_n1 = zox_get_nearby_light(0, -1, -1);
+            light_1_1 = zox_get_nearby_light(0, 1, 1);
+            light_n1_1 = zox_get_nearby_light(0, -1, 1);
+            light_1_n1 = zox_get_nearby_light(0, 1, -1);
         }
         for (byte v = 0; v < voxel_face_vertices_length; v++) {
             // Get other lights per vertex
@@ -233,6 +183,7 @@ static inline void zox_apply_smooth_lights(
     }
 }
 
+// TODO: Add spinlock for SidesOctreeLock
 // NOTE: Rebuilds Lights only when BuildMeshColors is dirty
 void build_smooth_lights_system(iter* it) {
     byte dbg_log = 0;
@@ -272,16 +223,20 @@ void build_smooth_lights_system(iter* it) {
         // If chunk building we wait
         if (zox_has(chunk, BuildChunkSides)) {
             if (dbg_log) {
-                zox_log("Chunk [%s] is still Building Sides", zox_get_name(e));
+                zox_log("Chunk [%s] is still Building Sides",
+                    zox_getn(chunk));
             }
             continue;
         }
         const SidesOctree* sides = zox_get(chunk, SidesOctree);
+        SidesOctreeLock* sides_lock = zox_mut(chunk, SidesOctreeLock);
         const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
-        const VoxelNode* voxels = zox_get(chunk, VoxelNode);
+        // const VoxelNode* root_voxels = zox_get(chunk, VoxelNode);
         entity nearby_chunks[27];
         const LightNode* lights[27];
-        spinlock* locks[27];
+        const VoxelNode* voxels[27];
+        spinlock* lights_locks[27];
+        spinlock* voxels_locks[27];
         fetch_nearby_chunks(
             world,
             chunk,
@@ -291,11 +246,18 @@ void build_smooth_lights_system(iter* it) {
             world,
             nearby_chunks,
             lights,
-            locks);
+            lights_locks);
+        fetch_nearby_voxels(
+            world,
+            nearby_chunks,
+            voxels,
+            voxels_locks);
         uint ccount = 0;
+        spin_lock(&sides_lock->value);
         zox_apply_smooth_lights(
+            lights_locks,
+            voxels_locks,
             lights,
-            locks,
             voxels,
             sides,
             colors,
@@ -303,6 +265,7 @@ void build_smooth_lights_system(iter* it) {
             &ccount,
             depth->value,
             0);
+        spin_unlock(&sides_lock->value);
         zox_remove(e, BuildMeshColors);
         zox_add(e, MeshColorsDirty);
         /*if (ccount > colors->length) {

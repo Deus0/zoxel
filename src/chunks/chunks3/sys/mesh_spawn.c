@@ -44,11 +44,11 @@ static inline entity spawn_chunk_meshes(
     if (zox_valid(preparing_mesh)) {
         if (zox_getv(preparing_mesh, RenderDepth) == depth) {
             return 0;
-        } else {
+        } //else {
             // Preparation for Spawning new Mesh!
             // if already preparing, and not at depth we seek
-            zox_unlink(world, e, PreparingMesh, preparing_mesh);
-        }
+            // zox_unlink(world, e, PreparingMesh, preparing_mesh);
+        //}
     }
     // See if we have required LOD mesh
     entity lod_mesh = 0;
@@ -70,9 +70,11 @@ static inline entity spawn_chunk_meshes(
     }
     // If we already have required LOD mesh
     if (lod_mesh) {
-        zox_link(world, e, PreparingMesh, lod_mesh);
+        // zox_link(world, e, PreparingMesh, lod_mesh);
         if (dbg_log) {
-            zox_log(" - Chunk Mesh Existed for [%s] at depth [%i]", zox_getn(e), depth);
+            zox_log(" - Chunk Mesh Existed for [%s] at depth [%i]",
+                zox_getn(e),
+                depth);
         }
         return 0;
     }
@@ -85,19 +87,14 @@ static inline entity spawn_chunk_meshes(
     if (zox_valid(active_mesh) && !zox_has(active_mesh, BuildDisabled)) {
         zox_add(active_mesh, BuildDisabled);
     }
-
-    // return 0;
-
     // NOTE: When Depth changes or Voxels Generate, if mesh doesnt exist we spawn new
-    entity e2 = zox_ins(world, prefab_chunk_mesh_textured);
-    zox_set_unique_name(e2, "chunk_mesh");
-    zox_setv(e2, TransformMatrix, matrix);
-    zox_setv(e2, RenderDepth, depth);
-    zox_setv(e2, RenderDisabled, render_disabled);
-    // Hmmm
-    zox_link(world, e2, MaterialLink, tilemap);
-    zox_link(world, e, PreparingMesh, e2);
-    zox_set_parent(world, e2, e);
+    entity e2 = spawn_chunk_mesh_textured(
+        world,
+        e,
+        matrix,
+        depth,
+        render_disabled,
+        tilemap);
     if (dbg_log) {
         zox_log(" - New Chunk Mesh for [%s] at depth [%i]",
             zox_getn(e),
@@ -143,7 +140,10 @@ zox_sys2(ChunkMeshSpawnSystem) {
             zox_remove(new_mesh, Disabled);
         }
         if (dbg_log) {
-            zox_log("Spawned Chunk Mesh on [%s] Depth [%i] Disabled [%i]", zox_getn(e), depth->value, render_disabled->value);
+            zox_log("Spawned Chunk Mesh on [%s] Depth [%i] Disabled [%i]",
+                zox_sys_e_name,
+                depth->value,
+                render_disabled->value);
         }
     }
 } zox_sys_end(ChunkMeshSpawnSystem);

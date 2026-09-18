@@ -13,6 +13,7 @@ entity spawn_model(
     zox_setv(e, BlockScale, bscale);
     zox_setv(e, ChunkSize, byte3_to_int3(rsize));
     initialize_voxel_lock(world, e);
+    initialize_sides_lock(world, e);
     return e;
 }
 

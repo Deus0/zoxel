@@ -119,7 +119,7 @@ entity spawn_model_nodegraph_slime(
 
 // TODO: Just spawn characters here linked to realm, used as prefabs later
 zox_sys2(Character3RealmSpawnSystem) {
-    byte is_add_stats = 0;
+    byte is_add_stats = 1;
     byte character_depth = block_depth_limits.y;
     uint seed_shift = 36936;
     // uint inner_seed_shift = 33;

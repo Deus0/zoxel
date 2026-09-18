@@ -187,8 +187,9 @@ uint zox_dbg_label_inside_chunk(
     byte render_depth = zox_getv(chunk, RenderDepth);
     const VoxelNode* voxels = zox_get(chunk, VoxelNode);
     const SidesOctree* sides = zox_get(chunk, SidesOctree);
-    byte lod_dirty = zox_has(chunk, ChunkLodDirty) &&
-        zox_getv(chunk, ChunkLodDirty);
+    byte lod_dirty = zox_has(chunk, ChunkLodDirty) ?
+        zox_getv(chunk, ChunkLodDirty) :
+        0;
     byte voxels_dirty = zox_has(chunk, VoxelNodeDirty);
     byte build = zox_has(chunk, BuildChunkSides);
     index += snprintf(buffer + index, size - index,
@@ -197,22 +198,32 @@ uint zox_dbg_label_inside_chunk(
             position.y,
             position.z);
     index += snprintf(buffer + index, size - index,
-        " - Octree Depth [%i] Render Depth [%i]\n",
+        " - Depths: Octree [%i], Render [%i]\n",
             depth,
             render_depth);
-    index += snprintf(buffer + index, size - index,
-        " - Voxels [%i] Sides [%i]\n",
-            voxels->value,
-            sides->value);
-    index += snprintf(buffer + index, size - index,
-        " - Lod Dirty [%i]\n",
-            lod_dirty);
-    index += snprintf(buffer + index, size - index,
-        " - Voxels Dirty [%i]\n",
-            voxels_dirty);
-    index += snprintf(buffer + index, size - index,
-        " - Build Sides [%i]\n",
-            build);
+    if (voxels->value) {
+        index += snprintf(buffer + index, size - index,
+            " - Voxels [%i]\n",
+                voxels->value);
+        index += snprintf(buffer + index, size - index,
+            " - Sides [%i]\n",
+                sides->value);
+    }
+    if (lod_dirty) {
+        index += snprintf(buffer + index, size - index,
+            " - Lod Dirty [%i]\n",
+                lod_dirty);
+    }
+    if (voxels_dirty) {
+        index += snprintf(buffer + index, size - index,
+            " - Voxels Dirty [%i]\n",
+                voxels_dirty);
+    }
+    if (build) {
+        index += snprintf(buffer + index, size - index,
+            " - Build Sides [%i]\n",
+                build);
+    }
     const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
     index += snprintf(buffer + index, size - index,
         " - Neighbors\n - [%s]\n - [%s]\n - [%s]\n - [%s]\n - [%s]\n - [%s]\n",
@@ -234,14 +245,23 @@ uint zox_dbg_label_inside_chunk(
     // entity preparing_mesh = zox_getv(chunk, PreparingMesh);
     entity active_mesh = zox_get_link(world, chunk, ActiveMesh);
     entity preparing_mesh = zox_get_link(world, chunk, PreparingMesh);
-    index += snprintf(buffer + index, size - index,
-        "+ Active [%s]\n",
-        zox_getn(active_mesh));
-    index += snprintf(buffer + index, size - index,
-        "- Preparing [%s]\n",
-        zox_getn(preparing_mesh));
+    if (zox_valid(active_mesh)) {
+        index += snprintf(buffer + index, size - index,
+            "+ Active [%s]\n",
+            zox_getn(active_mesh));
+    }
+    if (zox_valid(preparing_mesh)) {
+        index += snprintf(buffer + index, size - index,
+            "- Preparing [%s]\n",
+            zox_getn(preparing_mesh));
+    }
     entity meshes[8];
-    uint meshes_length = zox_get_children_by_id(world, chunk, meshes, 8, zox_id(ChunkMesh));
+    uint meshes_length = zox_get_children_by_id(
+        world,
+        chunk,
+        meshes,
+        8,
+        zox_id(ChunkMesh));
     index += snprintf(buffer + index, size - index,
         "Meshes [%i]\n",
         meshes_length);

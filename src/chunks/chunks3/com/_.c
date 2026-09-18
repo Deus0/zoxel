@@ -5,6 +5,7 @@ zox_tag(ColorChunk);
 zox_tag(LinkChunk);
 zox_tag(VoxelNodeDirty);
 zox_tag(VoxelNodePostDirty);
+zox_tag(ChunkUpdate);
 zoxc_int3(ChunkPosition);
 zoxc_int3(ChunkSize);
 zoxc_byte(ChunkLodDirty);
@@ -52,6 +53,7 @@ void define_components_chunks3(ecs* world) {
     // Events
     zoxd_tag(VoxelNodeDirty);
     zoxd_tag(VoxelNodePostDirty);
+    zoxd_tag(ChunkUpdate);
     // Data
     zoxd_byte(ChunkLodDirty);
     zoxd_tag(BlocksSpawned);
@@ -64,6 +66,7 @@ void define_components_chunks3(ecs* world) {
     zoxd_octree(VoxelNode);
     zoxd(VoxelNodeLock);
     zoxd_octree(SidesOctree);
+    zoxd(SidesOctreeLock);
     zoxd_entities(ChunkEntities);
     zoxd_queue(VoxelNodeQueue);
     // Voxes

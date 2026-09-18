@@ -4,7 +4,8 @@
 #endif
 
 // NOTE: Assumes that target is a root transform
-zox_sys2(UITrailSystem) {
+void trail_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(UIHolderLink);
@@ -17,7 +18,7 @@ zox_sys2(UITrailSystem) {
         zox_sys_o(Position3D, position);
         if (!zox_valid(holder->value)) {
             zox_loge("CharacterUI [%s] Not Destroyed.",
-                zox_get_name(e));
+                zox_getn(e));
             zox_delete(e);
             continue;
         }
@@ -42,4 +43,5 @@ zox_sys2(UITrailSystem) {
 #endif
 
     }
-} zox_sys_end(UITrailSystem);
+    zox_sys_on_end();
+} zoxd_system(trail_system);

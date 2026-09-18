@@ -21,6 +21,6 @@ void define_systems_chunksio(ecs* world) {
         [none] chunks.ChunkTextured,
         [none] saves.Saver,
         [none] saves.Edited,
-        [none] chunks3.VoxelNodePostDirty,
+        [none] chunks3.ChunkUpdate,
     );
 }

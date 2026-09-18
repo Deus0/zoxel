@@ -9,7 +9,7 @@
 // TODO: Fix updating of maps
 // - black textures appear
 // - need to not regenerate them all, reuse them
-
+byte zox_no_minimap = 0;
 byte zox_maps_flip_x = 0;
 byte zox_maps_flip_z = 1;
 #define zox_dbg_maps_regions 1

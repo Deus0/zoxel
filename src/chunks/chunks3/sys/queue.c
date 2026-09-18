@@ -24,6 +24,7 @@ zox_sys2(VoxelUpdateQueueSystem) {
                 remove_at_VoxelNodeQueue(queue, j);
                 continue;
             }
+            // zox_voxel_queue_process
             spin_lock(&lock->value);
             update->old_value = getv_VoxelNode(
                 voxels,
@@ -46,7 +47,6 @@ zox_sys2(VoxelUpdateQueueSystem) {
             update->state = zox_voxel_queue_post;
         }
         if (updated) {
-            // dirty->value = zox_dirty_trigger;
             zox_add(e, VoxelNodeDirty);
             if (!zox_has(e, Edited)) {
                 zox_add(e, Edited);

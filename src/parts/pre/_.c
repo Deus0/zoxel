@@ -12,7 +12,10 @@ void spawn_prefabs_bodys(ecs* world) {
     // Body is after Characters
     if (prefab_character3_skeleton) {
         entity e = prefab_character3_skeleton;
-        entity body_slot = spawn_body_slot(world, e, body_anchor_core);
+        entity body_slot = spawn_body_slot(
+            world,
+            e,
+            body_anchor_core);
         zox_add(body_slot, Body);
     }
 }

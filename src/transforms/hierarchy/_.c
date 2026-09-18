@@ -1,6 +1,3 @@
-#ifndef zoxm_hierarchy
-#define zoxm_hierarchy
-
 uint hierarhys_children_capacity = 254;
 #include "com/_.c"
 #include "fun/_.c"
@@ -9,6 +6,4 @@ uint hierarhys_children_capacity = 254;
 zox_begin_module(Hierarchys)
     define_components_hierarchy(world);
     define_systems_hierarchy(world);
-zox_end_module(Hierarchys)
-
-#endif
+zox_end_module(Hierarchys);

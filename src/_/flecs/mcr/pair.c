@@ -1,9 +1,27 @@
+// #define zoxl_links
+
 static inline void zox_link_internal(
     ecs* world,
     entity e,
     entity relation,
     entity target)
 {
+#ifdef zox_safety_checks
+    if (!zox_valid(e) || !zox_valid(target)) {
+        zox_loge(
+            "Invalid Link [%llu] Target [%llu]",
+                (unsigned long long) e,
+                (unsigned long long) target);
+        return;
+    }
+#endif
+#ifdef zoxl_links
+    zox_log(
+        "LINK [%s:%lu] [%s] -> [%s:%lu]",
+        zox_getn(e), e,
+        zox_getn(relation),
+        zox_getn(target), target);
+#endif
     ecs_add_pair(world, e, relation, target);
 }
 
@@ -13,6 +31,22 @@ static inline void zox_unlink_internal(
     entity relation,
     entity target)
 {
+#ifdef zox_safety_checks
+    if (!zox_valid(e) || !zox_valid(target)) {
+        zox_loge(
+            "Invalid Unlink [%llu] Target [%llu]",
+                (unsigned long long) e,
+                (unsigned long long) target);
+        return;
+    }
+#endif
+#ifdef zoxl_links
+    zox_log(
+        "UNLINK [%s:%lu] [%s] -> [%s:%lu]",
+        zox_getn(e), e,
+        zox_getn(relation),
+        zox_getn(target), target);
+#endif
     ecs_remove_pair(world, e, relation, target);
 }
 

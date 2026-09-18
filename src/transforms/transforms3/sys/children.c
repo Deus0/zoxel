@@ -82,6 +82,7 @@ static inline void set_position_rotation_scale_recursive(
 
 // Uses flecs children parenting for recursively transformingthings
 void transform3_children_system(iter* it) {
+    byte dbg_log = 0;
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -107,6 +108,10 @@ void transform3_children_system(iter* it) {
                     rotation->value,
                     world_scale);
             }
+        }
+        if (dbg_log) {
+            zox_log("Parent Transform3 [%s]",
+                zox_sys_e_name);
         }
         zox_sys_increment();
     }

@@ -47,7 +47,9 @@ zox_sys2(MapInitializeSystem) {
                     tunks->value,
                     tunk_position);
                 // TODO: Calculate the map position here
-                int2 piece_position = int2_multiply(grid_position, piece_size);
+                int2 piece_position = int2_multiply(
+                    grid_position,
+                    piece_size);
                 if (zox_maps_flip_x) {
                     piece_position.x *= -1;
                 }
@@ -64,7 +66,7 @@ zox_sys2(MapInitializeSystem) {
                     piece_size,
                     int2_zero);
                 zox_set_unique_name(e2, "map_piece");
-                if (tunk) {
+                if (zox_valid(tunk)) {
                     zox_link(world, e2, TunkLink, tunk);
                 }
                 zox_setv(e2, GenerateTexture, zox_generate_texture_run);

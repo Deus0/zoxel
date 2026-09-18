@@ -197,6 +197,9 @@ run-gles2: build-gles2
 gdb:
 	gdb -ex "set debuginfod enabled off" -ex run --args ./$(target_dev)
 
+rund-gdb: dev
+	@ make gdb
+
 gdbv:
 	gdb -ex "set debuginfod enabled off" -ex run --args ./$(target_dev) --verbose -su
 

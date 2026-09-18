@@ -10,18 +10,20 @@ zox_sys2(ChunkLodSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RenderDepth, render_depth);
-        zox_sys_o(ChunkLodDirty, render_depth_dirty);
+        zox_sys_o(ChunkLodDirty, dirty);
         zox_sys_o(NodeDepth, octree_depth);
         // Delays our lod changes until generation finishes
-        if (render_depth_dirty->value == zox_chunk_lod_dirty_generating) {
+        if (dirty->value == zox_chunk_lod_dirty_generating) {
             if (!zox_has(e, GenerateChunk) &&
-                !zox_has(e, VoxelNodeDirty))
+                !zox_has(e, VoxelNodeDirty) &&
+                !zox_has(e, VoxelNodePostDirty) &&
+                !zox_has(e, ChunkUpdate))
             {
-                render_depth_dirty->value = zox_chunk_lod_dirty_spawn;
+                dirty->value = zox_chunk_lod_dirty_spawn;
             }
             continue;
         }
-        if (render_depth_dirty->value != zox_chunk_lod_dirty_generate) {
+        if (dirty->value != zox_chunk_lod_dirty_generate) {
             continue;
         }
         // NOTE: This just updates the mesh
@@ -42,7 +44,7 @@ zox_sys2(ChunkLodSystem) {
                 zox_setv(e, GenerateChunk, zox_generate_terrain_sunlight);
             }
         }
-        render_depth_dirty->value = zox_chunk_lod_dirty_generating;
+        dirty->value = zox_chunk_lod_dirty_generating;
         if (dbg_log) {
             zox_log("Chunk Lod [%s] -> dirty_generating",
                 zox_getn(e));

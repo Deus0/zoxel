@@ -22,9 +22,10 @@ void define_systems_elements3D(ecs *world) {
         [out] rendering.MeshVertices,
         [none] !core.Initialize,
     );
-    zox_system(
-        UITrailSystem,
-        zoxp_trails, // zoxp_transforms,
+    // m ainthread to sync point it
+    zox_system_1(
+        trail_system,
+        zoxp_trails,
         [in] ui.UIHolderLink,
         [in] UITrail,
         [out] transforms3.Position3D
@@ -35,11 +36,8 @@ void define_systems_elements3D(ecs *world) {
         [in] transforms3.Rotation3D,
         [none] cameras.Camera3
     );
-#ifdef zox_debug_billboard_system
+    // to sync it
     zox_system_ctx_1(
-#else
-    zox_system_ctx(
-#endif
         billboard_system,
         zoxp_trails,
         billboard_cameras,

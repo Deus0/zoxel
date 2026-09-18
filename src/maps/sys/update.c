@@ -38,15 +38,25 @@ zox_sys2(MapPositionSystem) {
                 if (!zox_valid(e2) || !zox_has(e2, MapPiecePosition)) {
                     continue;
                 }
+                // Unlink first
+                entity old_tunk = zox_get_link(world, e2, TunkLink);
+                if (zox_valid(old_tunk)) {
+                    zox_unlink(world, e2, TunkLink, old_tunk);
+                }
                 int2 grid_postion = zox_getv(e2, MapPiecePosition);
-                int2 tunk_position = int2_add(position->value, grid_postion);
-                entity tunk = int2_hashmap_get(tunks->value, tunk_position);
+                int2 tunk_position = int2_add(
+                    position->value,
+                    grid_postion);
+                entity tunk = int2_hashmap_get(
+                    tunks->value,
+                    tunk_position);
                 if (!zox_valid(tunk)) {
                     zox_logw("MapPositionSystem: Tunk Invalid at [%ix%i]",
                         tunk_position.x,
                         tunk_position.y);
+                } else {
+                    zox_link(world, e2, TunkLink, tunk);
                 }
-                zox_link(world, e2, TunkLink, tunk);
                 zox_setv(e2, GenerateTexture, zox_generate_texture_run);
                 if (dbg_log >= 2) {
                     zox_log(" - Map Piece [%ix%i] Updated [%ix%i]", grid_postion.x, grid_postion.y, tunk_position.x, tunk_position.y);
