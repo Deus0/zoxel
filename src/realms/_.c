@@ -9,7 +9,7 @@ zox_increment_system_with_reset(GenerateRealm, zox_generate_realm_end);
 
 void import_realms(ecs* world) {
     zox_module(realms);
-    define_components_realms(world);
+    zox_components_realms(world);
     zoxd_system_increment(
         GenerateRealm,
         [none] Realm

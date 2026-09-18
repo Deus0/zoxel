@@ -1,4 +1,3 @@
-
 byte using_sdl_gamecontrollers = 1;
 int2 static_mouse_wheel;
 #include "wrp/_.c"
@@ -10,21 +9,20 @@ int2 static_mouse_wheel;
 #include "sys/_.c"
 #include "dbg/_.c"
 
-void update_sdl_inputs() {
+void reset_sdl_inputs() {
     static_mouse_wheel = int2_zero;
 }
 
-void dispose_sdl_inputs(ecs *world, void *ctx) {
+void dispose_sdl_inputs(ecs* world, void* ctx) {
     close_sdl_input();
 }
 
 void import_sdl_inputs(ecs* world) {
     zox_module(sdl_inputs);
     zox_module_dispose(dispose_sdl_inputs);
-    zox_define_components_sdl_inputs(world);
-    add_to_update_loop(update_sdl_inputs);
+    zox_components_sdl_inputs(world);
     add_hook_spawn_prefabs(spawn_prefabs_sdl_input);
-    zox_define_systems_sdl_inputs(world);
+    zox_systems_sdl_inputs(world);
     disable_virtual_keyboard();
     initialize_sdl_input();
     // add_hook_on_boot(initialize_sdl_gamepads);

@@ -3,7 +3,7 @@
 #include "cubes.c"
 #include "render_depths.c"
 
-void define_systems_lines3(ecs* world) {
+void zox_systems_lines3(ecs* world) {
     zox_render3_system(2,
         Line3DRenderSystem,
         [in] lines3.LineData3D,

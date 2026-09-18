@@ -1,4 +1,8 @@
-void add_player(ecs *world, entity e, entity player) {
+void add_player(
+    ecs* world,
+    entity e,
+    entity player)
+{
     zox_muter(e, PlayerLinks, players);
     add_to_PlayerLinks(players, player);
     zox_link(world, player, GameLink, e);
@@ -71,15 +75,15 @@ void spawn_devices_on_app(ecs* world, entity app) {
     local_keyboard = spawn_keyboard(
         world,
         prefab_keyboard);
-    zox_set_parent(world, local_keyboard, app);
     local_mouse = spawn_mouse(world);
-    zox_set_parent(world, local_mouse, app);
     local_touchscreen = spawn_touchscreen(
         world,
         prefab_touchscreen);
+    zox_set_parent(world, local_keyboard, app);
+    zox_set_parent(world, local_mouse, app);
     zox_set_parent(world, local_touchscreen, app);
-    initialize_sdl_gamepads(world, app);
     zox_link(world, local_keyboard, AppLink, app);
     zox_link(world, local_mouse, AppLink, app);
     zox_link(world, local_touchscreen, AppLink, app);
+    initialize_sdl_gamepads(world, app);
 }

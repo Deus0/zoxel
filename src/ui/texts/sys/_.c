@@ -6,7 +6,7 @@
 #include "update.c"
 // #include "animate.c"
 
-void define_systems_texts(ecs *world) {
+void zox_systems_texts(ecs *world) {
     /*zox_system(
         text_dirty_system,
         zoxp_remove,

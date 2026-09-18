@@ -36,7 +36,7 @@ zoxc_float(CameraVignette);
 zox_tag(CanRoam);
 zox_tag(Roaming);
 
-void define_components_cameras(ecs *world) {
+void zox_components_cameras(ecs *world) {
     zoxd_tag(Camera);
     zoxd_nf_tag(CameraLink);
     zoxd_tag(Camera2);

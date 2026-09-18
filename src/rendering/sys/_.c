@@ -4,7 +4,7 @@
 #include "lod_instance_system.c"
 #include "settings.c"
 
-void define_systems_rendering(ecs *world) {
+void zox_systems_rendering(ecs *world) {
     zox_systems_rendering_dispose(world);
     zox_systems_rendering_restore(world);
     // other

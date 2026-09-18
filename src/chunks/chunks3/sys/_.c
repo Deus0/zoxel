@@ -23,7 +23,7 @@
 #include "trigger.c"
 #include "transition.c"
 
-void define_systems_chunks3(ecs *world) {
+void zox_systems_chunks3(ecs *world) {
     zox_system(
         BakeVoxSystem,
         zoxp_update,

@@ -4,7 +4,7 @@
 #include "canvas_resize.c"
 #include "element_begin.c"
 
-void zox_define_systems_elements(ecs *world) {
+void zox_systems_elements(ecs *world) {
     zox_system(
         CanvasResizeSystem,
         zoxp_update,

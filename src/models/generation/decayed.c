@@ -257,6 +257,9 @@ void decayed_model_system(iter* it) {
         // Write Locks node
         // write_lock_VoxelNode(node);
         for (int j = 0; j < 6; j++) {
+            if (j == direction_down) {
+                continue;
+            }
             vnoise3_spray_side(
                 node,
                 node_depth,

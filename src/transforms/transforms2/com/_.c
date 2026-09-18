@@ -16,7 +16,7 @@ typedef struct {
 } LocalLinePoints2;
 zoxc_custom(LocalLinePoints2);
 
-void zox_define_components_transforms2(ecs* world) {
+void zox_components_transforms2(ecs* world) {
     zoxd_float2(Position2);
     zoxd_float2(LocalPosition2);
     zoxd_float2(Scale2);

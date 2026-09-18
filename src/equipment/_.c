@@ -14,8 +14,8 @@
 // Equipment includes Gear and Body parts in one
 void import_equipment(ecs* world) {
     zox_module(equipment);
-    define_components_equipment(world);
-    define_systems_equipment(world);
+    zox_components_equipment(world);
+    zox_systems_equipment(world);
     add_hook_spawn_prefabs(spawn_prefabs_equipment);
     add_taskbar_button(world, (TaskbarData) {
         .index = 7,

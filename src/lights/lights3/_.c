@@ -13,8 +13,8 @@
 
 void import_lights3(ecs* world) {
     zox_module(lights3);
-    define_components_lights3(world);
-    define_systems_lights3(world);
+    zox_components_lights3(world);
+    zox_systems_lights3(world);
     zoxd_systems_light3_debug(world);
     // initialize_settings_lights3(world);
 }

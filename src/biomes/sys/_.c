@@ -4,7 +4,7 @@
 #include "link.c"
 #include "average.c"
 
-void define_systems_biomes(ecs *world) {
+void zox_systems_biomes(ecs *world) {
     zox_system(
         BiomeBlocksDirtySystem,
         zoxp_update,

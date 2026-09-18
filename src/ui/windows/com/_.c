@@ -11,7 +11,7 @@ zoxc_entity(WindowTarget);
 zoxc_byte(WindowsLayers);
 zoxc_byte(WindowsCount);
 
-void define_components_windows(ecs* world) {
+void zox_components_windows(ecs* world) {
     zoxd_tag(Window);
     zoxd_tag(WindowBody);
     zoxd_tag(Header);

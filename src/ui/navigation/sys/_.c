@@ -2,7 +2,7 @@
 #include "navigation.c"
 #include "click.c"
 
-void define_systems_navigation(ecs* world) {
+void zox_systems_navigation(ecs* world) {
     zox_system(
         ElementNavigationBeginSystem,
         zoxp_update,

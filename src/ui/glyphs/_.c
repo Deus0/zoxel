@@ -11,8 +11,8 @@ byte font_texture_min_size = 16;
 
 void import_glyphs(ecs* world) {
     zox_module(glyphs);
-    zox_define_components_zigels(world);
-    zox_define_systems_zigels(world);
+    zox_components_zigels(world);
+    zox_systems_zigels(world);
     add_hook_files_load(load_files_fonts);
     add_hook_spawn_prefabs(zox_spawn_prefabs_zigels);
 }

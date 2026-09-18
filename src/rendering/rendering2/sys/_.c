@@ -4,7 +4,7 @@
 #include "render_instance.c"
 #include "render_ui.c"
 
-void define_systems_basics2D(ecs *world) {
+void zox_systems_basics2D(ecs *world) {
     zox_system_1(
         Mesh2DUpdateSystem,
         zoxp_gpu_upload,

@@ -3,7 +3,7 @@
 #include "children.c"
 
 // TODO: Add ANgle
-void zox_define_systems_transforms2(ecs* world) {
+void zox_systems_transforms2(ecs* world) {
     zox_system(
         Transform2ChildrenSystem,
         zoxp_transform_hierarchy,

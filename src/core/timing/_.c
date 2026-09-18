@@ -21,8 +21,7 @@ void import_timing(ecs* world) {
     zox_components_timing(world);
     zox_systems_timing(world);
     initialize_time();
-    // add_to_post_update_loop(iterate_time);
-    define_systems_timing_debug(world);
+    zox_systems_timing_debug(world);
     zox_import_module(Timers);
     // this for profiler data
     {

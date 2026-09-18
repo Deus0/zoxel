@@ -1,5 +1,38 @@
 # Done
 
+-x QuantityDirty
+-x Block didnt update again... this was mesh not spawning issue
+-x Block (regular) didnt remove/add
+	- loaded game
+	- removed block
+	- it didnt dissapeart
+-x Crashes - wrap all octrees - might be more
+-x lag spikes now that its wrapped
+    - i think the wraps stopped bugs though
+    - but lag spikes are back damn it
+-x Crash on exit game
+    -x fatal: flecs.c: 20794: abort(): cannot change children of prefab 'realm_8589938080.Boney_4124' after it has been instantiated (INVALID_OPERATION)
+    - I think we fixed this by reverting most transforms back to relationships
+-x Crash on start
+	-x loaded game
+	-x crashed
+-x action selection didnt work
+    - press 2
+    - observe no selection ui switch
+-x Fix scrollwheels
+-x Fix actionbar ui setting
+    - frames are missing off button?
+-x make realm / game / app seperate, all should have no parent, since our links are better now
+-x Add custom Phases -> EcsOnUpdate -> zoxp_update
+-x Add links back for active mesh, fuck the rules
+-x Body lagging still behind camera
+    - Only sometimes?
+    - Suddenly, body lagging again
+    - pipelines should be fine though
+-x Billboard lags a frame as it needs position/rotation off cameras
+    - then it will impact all children of it 
+    - for now we can just recursively set Rotation3D
+    - tried this, needs to reposition though
 -x HandBoneLink
 -x ShoulderBoneLink
 -x HeadBoneLink

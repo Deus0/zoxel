@@ -2,7 +2,7 @@
 #include "plot_labels.c"
 #include "plot_limits.c"
 
-void define_systems_plots(ecs* world) {
+void zox_systems_plots(ecs* world) {
     zox_system(
         plot_line_system,
         zoxp_update,

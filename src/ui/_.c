@@ -32,8 +32,8 @@ byte is_log_dragging = 0;
 
 void import_ui(ecs* world) {
     zox_module(ui);
-    zox_define_components_elements(world);
-    zox_define_systems_elements(world);
+    zox_components_elements(world);
+    zox_systems_elements(world);
     add_hook_terminal_command(arguments_ui);
     add_hook_spawn_prefabs(initialize_settings_elements);
     add_hook_spawn_prefabs(spawn_prefabs_elements);

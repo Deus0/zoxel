@@ -2,7 +2,7 @@
 #include "grid.c"
 #include "list_element.c"
 
-void define_systems_containers(ecs* world) {
+void zox_systems_containers(ecs* world) {
     zox_system(
         ListSystem,
         zoxp_update,

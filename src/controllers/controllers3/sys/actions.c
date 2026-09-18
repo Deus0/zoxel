@@ -66,13 +66,25 @@ zox_sys2(ActionsShortcutSystem) {
                 zox_geter(e2, Keyboard, keyboard);
                 if (keyboard->_1.pressed_this_frame) {
                     set_player_action(world, e, 0);
-                } else if (keyboard->_2.pressed_this_frame) set_player_action(world, e, 1);
-                else if (keyboard->_3.pressed_this_frame) set_player_action(world, e, 2);
-                else if (keyboard->_4.pressed_this_frame) set_player_action(world, e, 3);
-                else if (keyboard->_5.pressed_this_frame) set_player_action(world, e, 4);
-                else if (keyboard->_6.pressed_this_frame) set_player_action(world, e, 5);
-                else if (keyboard->_7.pressed_this_frame) set_player_action(world, e, 6);
-                else if (keyboard->_8.pressed_this_frame) set_player_action(world, e, 7);
+                } else if (keyboard->_2.pressed_this_frame) {
+                    set_player_action(world, e, 1);
+                } else if (keyboard->_3.pressed_this_frame) {
+                    set_player_action(world, e, 2);
+                } else if (keyboard->_4.pressed_this_frame) {
+                    set_player_action(world, e, 3);
+                } else if (keyboard->_5.pressed_this_frame) {
+                    set_player_action(world, e, 4);
+                } else if (keyboard->_6.pressed_this_frame) {
+                    set_player_action(world, e, 5);
+                } else if (keyboard->_7.pressed_this_frame) {
+                    set_player_action(world, e, 6);
+                } else if (keyboard->_8.pressed_this_frame) {
+                    set_player_action(world, e, 7);
+                } else if (keyboard->_9.pressed_this_frame) {
+                    set_player_action(world, e, 8);
+                } else if (keyboard->_0.pressed_this_frame) {
+                    set_player_action(world, e, 9);
+                }
             }
         }
         if (is_shift_action_left) {

@@ -33,11 +33,11 @@ byte add_item_to_slot_manager(ecs* world, entity smanager, entity user, entity b
         }
     }
     if (stack_slot) {
-        zox_set(stack_slot, DataDirty, { zox_dirty_trigger });
+        zox_setv(stack_slot, DataDirty, zox_dirty_trigger);
         entity e3 = zox_getv(stack_slot, DataLink);
         zox_geter_value(e3, Quantity, byte, quantity);
-        zox_set(e3, Quantity, { quantity + value });
-        zox_set(e3, QuantityDirty, { zox_dirty_trigger });
+        zox_setv(e3, Quantity, quantity + value);
+        zox_add(e3, QuantityDirty);
         return 1;
     }
     entity add_slot = zox_get_empty_slot(world, smanager);

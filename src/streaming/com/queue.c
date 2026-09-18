@@ -298,7 +298,7 @@ static byte add_TerrainSpawnQueue(
     return 1;
 }
 
-static TerrainSpawnUpdate remove_TerrainSpawnQueue(
+/*static TerrainSpawnUpdate remove_TerrainSpawnQueue(
     TerrainSpawnQueue* q)
 {
     if (q->count == 0) {
@@ -314,7 +314,7 @@ static TerrainSpawnUpdate remove_TerrainSpawnQueue(
         item.position);
 
     return item;
-}
+}*/
 
 ECS_CTOR(
     TerrainSpawnQueue,

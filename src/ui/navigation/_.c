@@ -8,7 +8,7 @@
 #include "sys/_.c"
 
 zox_begin_module(Navigation) {
-    define_systems_navigation(world);
+    zox_systems_navigation(world);
 } zox_end_module(Navigation);
 
 #endif

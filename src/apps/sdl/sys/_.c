@@ -1,6 +1,12 @@
 #include "hide_vk.c"
+#include "events.c"
 
-void define_systems_sdl(ecs* world) {
+void zox_systems_sdl(ecs* world) {
+    zox_system_1(
+        sdl_events_system,
+        zoxp_begin,
+        0 // [none] SDLWindow
+    );
     zox_system(
         HideVirtualKeyboardSystem,
         zoxp_update,

@@ -14,7 +14,7 @@ zoxc_byte(LoadSettings);
 #define zox_load_settings_run 3
 #define zox_load_settings_end 0
 
-void zox_define_components_settings(ecs* world) {
+void zox_components_settings(ecs* world) {
     zoxd_tag(Setting);
     zoxd_tag(SettingSlider);
     zoxd_state(SettingDirty);

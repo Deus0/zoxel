@@ -22,8 +22,8 @@ void zox_set_app_maximized(ecs* world, entity e, byte maximized) { }
 
 zox_begin_module(Glut)
 
-    // define_components_sdl(world);
-    // define_systems_sdl(world);
+    // zox_components_sdl(world);
+    // zox_systems_sdl(world);
 
 zox_end_module(Glut)
 

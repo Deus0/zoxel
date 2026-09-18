@@ -20,8 +20,7 @@ entity zox_phase_after_internal(
 
 // Debugs
 entity zoxp_dbg_begin;
-entity zoxp_dbg_end;
-entity zoxp_pre_spawn;
+entity zoxp_begin;
 // Who knows what this one does
 entity zoxp_spawn;
 entity zoxp_octree_write;
@@ -48,6 +47,8 @@ entity zoxp_render;
 entity zoxp_pre_end;
 entity zoxp_end;
 entity zoxp_post_end;
+// End Debug
+entity zoxp_dbg_end;
 
 // Custom Phases / Pipeline
 void initialize_zox_phases(ecs* world) {
@@ -57,8 +58,8 @@ void initialize_zox_phases(ecs* world) {
 #else
     zoxp_dbg_begin = zox_phase(world, "zoxp_dbg_begin");
 #endif
-    zox_phase_after(zoxp_pre_spawn, zoxp_dbg_begin);
-    zox_phase_after(zoxp_spawn, zoxp_pre_spawn);
+    zox_phase_after(zoxp_begin, zoxp_dbg_begin);
+    zox_phase_after(zoxp_spawn, zoxp_begin);
     zox_phase_after(zoxp_gpu_upload, zoxp_spawn);
     zox_phase_after(zoxp_octree_write, zoxp_gpu_upload);
     zox_phase_after(zoxp_octree_read, zoxp_octree_write);
@@ -90,7 +91,7 @@ void initialize_zox_phases(ecs* world) {
 // Push rendering to SDL Window
 #define zoxp_render_end zoxp_end
 // NOTE: Remove (Components) before spawn so it lasts a frame
-#define zoxp_remove zoxp_reset // zoxp_pre_spawn
+#define zoxp_remove zoxp_reset // zoxp_begin
 // Inputs
 #define zoxp_inputs_extract zoxp_spawn
 #define zoxp_inputs_reset zoxp_reset

@@ -4,9 +4,9 @@
 #include "touchscreen.c"
 #include "controller.c"
 
-void zox_define_systems_sdl_inputs(ecs* world) {
+void zox_systems_sdl_inputs(ecs* world) {
     zox_system_1(
-        MouseExtractSystem,
+        mouse_input_system,
         zoxp_inputs_extract,
         [none] inputs.Mouse
     );

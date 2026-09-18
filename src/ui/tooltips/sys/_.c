@@ -3,7 +3,7 @@
 #include "link.c"
 #include "unlink.c"
 
-void zox_define_systems_tooltips(ecs* world) {
+void zox_systems_tooltips(ecs* world) {
     zox_system(
         TooltipDeselectSystem,
         zoxp_update,

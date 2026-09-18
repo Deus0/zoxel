@@ -5,7 +5,7 @@ zoxc_guint(MaterialVignette);
 #include "matrix.c"
 #include "textured.c"
 
-void zox_define_components_basics2(ecs* world) {
+void zox_components_basics2(ecs* world) {
     zoxd_tag(BasicMesh2);
     zoxd_tag(TexturedMesh2);
     zoxd_guint(MaterialBlur);

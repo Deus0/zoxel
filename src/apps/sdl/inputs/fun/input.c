@@ -9,7 +9,11 @@ void initialize_sdl_input() {
     }
 }
 
-byte update_sdl_input(ecs *world, entity app, SDL_Event event) {
+byte update_sdl_input(
+    ecs* world,
+    entity app,
+    SDL_Event event)
+{
     // sdl_extract_keyboard(world, event);
     sdl_extract_mouse_wheel(event);
     // Handle Added Controllers

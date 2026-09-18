@@ -27,6 +27,6 @@
 
 void import_saves(ecs* world) {
     zox_module(saves);
-    zox_define_components_saves(world);
-    zox_define_systems_saves(world);
+    zox_components_saves(world);
+    zox_systems_saves(world);
 }

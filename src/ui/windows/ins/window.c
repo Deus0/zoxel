@@ -29,9 +29,18 @@ entity3 spawn_window(
             header_font_size = 0;
         }
         header_height = header_font_size + header_padding.y * 2;
-        float2 header_anchor = (float2) { 0.5f, 1 };
-        int2 header_size = (int2) { body_size.x, header_height };
-        int2 header_position = (int2) { 0, -header_height / 2 };
+        float2 header_anchor = (float2) {
+            0.5f,
+            1
+        };
+        int2 header_size = (int2) {
+            body_size.x,
+            header_height
+        };
+        int2 header_position = (int2) {
+            0,
+            -header_height / 2
+        };
         entity e2 = spawn_header(
             world,
             e,
@@ -47,10 +56,26 @@ entity3 spawn_window(
     }
     // NOTE: Body Anchored to Bottom of window
     {
-        int2 body_position = (int2) { 0, body_size.y / 2 }; //  + 4
-        float2 body_anchor = (float2) { 0.5f, 0 };
-        entity e2 = spawn_uic(world, prefab_body, e, body_anchor, body_position, body_size, body_size, fill, outline);
-        output.z = e2;
+        int2 body_position = (int2) {
+            0,
+            body_size.y / 2
+        }; //  + 4
+        float2 body_anchor = (float2) {
+            0.5f,
+            0
+        };
+        entity body = spawn_uic(
+            world,
+            prefab_body,
+            e,
+            body_anchor,
+            body_position,
+            body_size,
+            body_size,
+            fill,
+            outline);
+        zox_set_unique_name(body, "body");
+        output.z = body;
     }
     // finish setting window
     int2 size = body_size;
@@ -59,17 +84,24 @@ entity3 spawn_window(
     float2 anchor_shift = float2_sub(anchor, float2_half);
     position.x -= anchor_shift.x * size.x;
     position.y -= anchor_shift.y * size.y;
-    zox_set(e, LayoutPosition, { position });
-    zox_set(e, LayoutSize, { size });
-    zox_set(e, Anchor, { anchor });
+    zox_setv(e, LayoutPosition, position);
+    zox_setv(e, LayoutSize, size);
+    zox_setv(e, Anchor, anchor);
     // TODO: Fix WindowToTop by just checking reset WindowLayers when CanvasDirty is flagged - Flag CanvasDirty when new window Initializes
-    zox_set(parent, WindowToTop, { e });
+    zox_setv(parent, WindowToTop, e);
     return output;
 }
 
 // OBSOLETE REMOVE
 entity2 spawn_window_old(
-    ecs *world, LayoutParentData canvas_data, LayoutParentData parent_data, ElementSpawnData element_data, SpawnWindow2 window_data, ClickEvent on_click, byte is_close_button, byte type)
+    ecs *world,
+    LayoutParentData canvas_data,
+    LayoutParentData parent_data,
+    ElementSpawnData element_data,
+    SpawnWindow2 window_data,
+    ClickEvent on_click,
+    byte is_close_button,
+    byte type)
 {
     byte header_height = window_data.header_font_size + window_data.header_padding.y * 2;
     byte header_font_thickness_s = header_font_thickness * ui_scale;

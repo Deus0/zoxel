@@ -18,7 +18,7 @@ zoxc_byte(GlyphDirty);
 #define zox_zigel_dirty_update 2
 #define zox_zigel_dirty_end 0
 
-void zox_define_components_zigels(ecs *world) {
+void zox_components_zigels(ecs *world) {
     zoxd_tag(FontStyle);
     zoxd_tag(TTFFontStyle);
     zoxd_tag(Font);

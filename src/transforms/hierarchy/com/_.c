@@ -3,7 +3,7 @@ zoxc_entities(Children)
 zoxc_child(ParentLink, Children);
 zoxc_entity(OldParentLink);
 
-void define_components_hierarchy(ecs* world) {
+void zox_components_hierarchy(ecs* world) {
     zoxd_uint(ChildIndex);
     zoxd_entities(Children);
     zoxd_child(ParentLink);

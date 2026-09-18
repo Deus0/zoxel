@@ -23,8 +23,8 @@ byte is_camera_positive_z = 1;
 
 void import_cameras(ecs* world) {
     zox_module(cameras);
-    define_components_cameras(world);
-    define_systems_cameras(world);
+    zox_components_cameras(world);
+    zox_systems_cameras(world);
     add_hook_spawn_prefabs(spawn_prefabs_cameras);
     zox_add_module(cameras2);
     zox_add_module(cameras3);

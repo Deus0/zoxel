@@ -3,7 +3,8 @@ uint hierarhys_children_capacity = 254;
 #include "fun/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Hierarchys)
-    define_components_hierarchy(world);
-    define_systems_hierarchy(world);
-zox_end_module(Hierarchys);
+void import_hierarchys(ecs* world) {
+    zox_module(hierarchys);
+    zox_components_hierarchy(world);
+    zox_systems_hierarchy(world);
+}

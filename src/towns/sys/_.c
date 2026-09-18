@@ -3,7 +3,7 @@
 #include "walls.c"
 #include "homes.c"
 
-void zox_define_systems_towns(ecs* world) {
+void zox_systems_towns(ecs* world) {
     zox_system(
         TownMapSystem,
         zoxp_update,

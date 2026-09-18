@@ -36,7 +36,7 @@ void import_inputs(ecs* world) {
     zox_module(inputs);
     zox_module_dispose(module_dispose_inputs);
     initialize_hook_key_down();
-    define_components_inputs(world);
-    define_systems_input(world);
+    zox_components_inputs(world);
+    zox_systems_input(world);
     add_hook_spawn_prefabs(spawn_prefabs_inputs);
 }

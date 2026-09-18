@@ -47,7 +47,7 @@ zoxc_function(ClickEvent, void, ecs*, ClickEventData);
 zoxc_function(SlideEvent, void, ecs*, const SlideEventData*);
 zoxc_function(ToggleEvent, void, ecs*, const ToggleEventData*);
 
-void zox_define_components_interaction(ecs* world) {
+void zox_components_interaction(ecs* world) {
     // Selecting
     zoxd_tag(Selectable);
     zoxd_tag(SelectedBrighter);

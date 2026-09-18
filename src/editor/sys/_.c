@@ -6,7 +6,7 @@
 #include "fps.c"
 #include "label.c"
 
-void define_systems_editor(ecs *world) {
+void zox_systems_editor(ecs *world) {
     zox_system(
         FpsDisplaySystem,
         zoxp_update,

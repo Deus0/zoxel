@@ -5,7 +5,7 @@ zoxc_state(NpcSpawnZoneDirty);
 #define chunk_characters_max 8
 zoxc_array(ChunkCharacters, entity, chunk_characters_max);
 
-void define_components_characters3_terrain(ecs* world) {
+void zox_components_characters3_terrain(ecs* world) {
     zoxd_tag(CharactersSpawned);
     zoxd_byte(CharactersEverSpawned);
     zoxd_byte(NpcSpawnZone);

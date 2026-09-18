@@ -6,7 +6,7 @@
 // zox_increment_system_with_reset(JumpState, zox_dirty_end);
 // zox_increment_system_with_reset(LandState, zox_dirty_end);
 
-void define_systems_jump(ecs* world) {
+void zox_systems_jump(ecs* world) {
     // zoxd_system_increment(JumpState);
     // zoxd_system_increment(LandState);
     // jump

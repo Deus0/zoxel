@@ -1,4 +1,4 @@
 
-void define_systems_crafting(ecs* world) {
+void zox_systems_crafting(ecs* world) {
 
 }

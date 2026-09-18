@@ -11,6 +11,6 @@
 
 void import_vrays(ecs* world) {
     zox_module(vrays);
-    define_components_vrays(world);
-    define_systems_vrays(world);
+    zox_components_vrays(world);
+    zox_systems_vrays(world);
 }

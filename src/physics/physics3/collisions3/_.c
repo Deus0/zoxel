@@ -8,6 +8,6 @@
 
 void import_collisions3(ecs* world) {
     zox_module(collisions3);
-    define_components_collisions3(world);
+    zox_components_collisions3(world);
     zox_systems_collisions3(world);
 }

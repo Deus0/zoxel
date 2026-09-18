@@ -126,70 +126,6 @@ void zox_sdl_dispose_surface(SDL_Surface *surface) {
 
 // ----------------------------------------
 
-byte sdl_event_quit(SDL_Event *event) {
-    return event->type == SDL_QUIT;
-}
-
-byte sdl_event_window_resized(SDL_Event *event) {
-    return event->type == SDL_WINDOWEVENT &&
-        (event->window.event == SDL_WINDOWEVENT_RESIZED ||
-         event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED);
-}
-
-byte sdl_event_display_orientation(SDL_Event *event) {
-    return event->type == SDL_DISPLAYEVENT &&
-        event->display.event == SDL_DISPLAYEVENT_ORIENTATION;
-}
-
-byte sdl_event_window_moved(SDL_Event *event) {
-    return event->type == SDL_WINDOWEVENT &&
-        event->window.event == SDL_WINDOWEVENT_MOVED;
-}
-
-byte sdl_event_window_maximized(SDL_Event *event) {
-    return event->type == SDL_WINDOWEVENT &&
-        event->window.event == SDL_WINDOWEVENT_MAXIMIZED;
-}
-
-byte sdl_event_window_restored(SDL_Event *event) {
-    return event->type == SDL_WINDOWEVENT &&
-        event->window.event == SDL_WINDOWEVENT_RESTORED;
-}
-
-byte sdl_event_window_minimized(SDL_Event *event) {
-    return event->type == SDL_WINDOWEVENT &&
-        event->window.event == SDL_WINDOWEVENT_MINIMIZED;
-}
-
-byte sdl_event_window_focus_lost(SDL_Event *event) {
-    return event->type == SDL_WINDOWEVENT &&
-        event->window.event == SDL_WINDOWEVENT_FOCUS_LOST;
-}
-
-byte sdl_event_window_focus_gained(SDL_Event *event) {
-    return event->type == SDL_WINDOWEVENT &&
-        event->window.event == SDL_WINDOWEVENT_FOCUS_GAINED;
-}
-
-byte sdl_event_text_input(SDL_Event *event) {
-    return event->type == SDL_TEXTINPUT;
-}
-
-int2 sdl_event_window_size(SDL_Event *event) {
-    return (int2) {
-        event->window.data1,
-        event->window.data2
-    };
-}
-
-sbyte sdl_event_get_monitor(SDL_Event *event) {
-    return (sbyte) event->display.display;
-}
-
-const char *sdl_event_text(SDL_Event *event) {
-    return event->text.text;
-}
-
 void on_set_vsync(byte value) {
     if (SDL_GL_SetSwapInterval(value)) {
         zox_logw("Unable to disable VSync: [%s] - Value [%i]", SDL_GetError(), value);
@@ -199,33 +135,6 @@ void on_set_vsync(byte value) {
 }
 
 // Screen
-
-
-/*void zox_app_set_fullscreen(SDL_Window* window, byte monitor, byte fullscreen) {
-    SDL_SetWindowFullscreen(window, fullscreen ? sdl_fullscreen_byte : 0);
-    // This was to restore monitor position
-    if (fullscreen) {
-        int display_count = zox_sdl_get_num_displays();
-        if (monitor >= display_count) {
-            zox_loge("Invalid monitor index %i, using primary (0)", monitor);
-            monitor = 0;
-        }
-        int monitor_current = zox_sdl_get_window_display(window);
-        if (monitor_current >= 0 && monitor != monitor_current) {
-            zox_log("Window moved monitors [%i] => [%i]", monitor, monitor_current);
-            monitor = monitor_current;
-        }
-        SDL_DisplayMode display_mode;
-        if (zox_sdl_get_current_display_mode(monitor, &display_mode)) {
-            zox_loge("Failed getting display mode in [zox_app_set_fullscreen]");
-        } else {
-            zox_sdl_set_window_display_mode(window, &display_mode);
-        }
-    } else {
-        SDL_ShowWindow(window);
-        SDL_RaiseWindow(window);
-    }
-}*/
 
 void zox_app_set_fullscreen(
     SDL_Window* window,
@@ -255,7 +164,6 @@ void zox_app_set_fullscreen(
     /*byte flag = fullscreen ?
         SDL_WINDOW_FULLSCREEN :
         0;*/
-
     Uint32 flags = fullscreen
         ? SDL_WINDOW_FULLSCREEN_DESKTOP
         : 0;
@@ -270,4 +178,8 @@ void zox_app_set_fullscreen(
         zox_loge("SDL Sync error: %s",
             SDL_GetError());
     }*/
+}
+
+byte sdl_window_is_minimized(SDL_Window* window) {
+    return (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED) != 0;
 }

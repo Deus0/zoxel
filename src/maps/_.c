@@ -41,8 +41,8 @@ float minimap_alpha = 0.46f;
 
 void import_maps(ecs* world) {
     zox_module(maps);
-    define_components_maps(world);
-    zox_define_systems_maps(world);
+    zox_components_maps(world);
+    zox_systems_maps(world);
     add_hook_spawn_prefabs(spawn_prefabs_maps);
     add_hook_spawn_prefabs(zox_events_maps);
     add_taskbar_button(world, (TaskbarData) {

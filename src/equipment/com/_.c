@@ -13,7 +13,7 @@ void add_tag_hat_slot(ecs* world, entity e) {
     zox_add(e, HatSlot);
 }
 
-void define_components_equipment(ecs* world) {
+void zox_components_equipment(ecs* world) {
     zoxd_tag(EquipItem);
     zoxd_tag(EquipSlot);
     zoxd_tag(HatSlot);

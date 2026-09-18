@@ -3,7 +3,7 @@ zox_tag(Shape3);
 zoxc_byte3(Shape3Position);
 zoxc_byte3(Shape3Size);
 
-void define_components_shapes3(ecs* world) {
+void zox_components_shapes3(ecs* world) {
     zoxd_tag(Shape3);
     // zoxd_tag(Cube);
     zoxd_byte3(Shape3Position);

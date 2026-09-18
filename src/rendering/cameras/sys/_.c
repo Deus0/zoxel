@@ -4,7 +4,7 @@
 #include "init.c"
 #include "gpu.c"
 
-void define_systems_rendering_cameras(ecs *world) {
+void zox_systems_rendering_cameras(ecs *world) {
     // restore
     zox_system_1(
         RenderCameraInitializeSystem,

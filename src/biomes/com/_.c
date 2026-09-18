@@ -10,7 +10,7 @@ zoxc_float(FlowerChance);
 zoxc_float(BiomeHeightFrequency);
 zoxc_color_rgb(BiomeSkyColor);
 
-void define_components_biomes(ecs *world) {
+void zox_components_biomes(ecs *world) {
     zoxd_tag(Biome);
     zoxd_nf_tag(BiomeLink);
     zoxd_tag(BiomeLinker);

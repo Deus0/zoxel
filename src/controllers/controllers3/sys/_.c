@@ -15,7 +15,7 @@
 #include "walk.c"
 #include "freeroam.c"
 
-void define_systems_controllers3(ecs *world) {
+void zox_systems_controllers3(ecs *world) {
     zox_system(
         Player3DMoveSystem,
         zoxp_update,

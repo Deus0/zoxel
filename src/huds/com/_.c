@@ -19,7 +19,7 @@ zox_tag(Taskbar);
 zoxc_entity(TaskbarWindowID);
 zoxc_entity(IconOverlayLink);
 
-void define_components_game_ui(ecs *world) {
+void zox_components_game_ui(ecs *world) {
     zoxd_nf_tag(MenuMain);
     zoxd_nf_tag(MenuOptions);
     zoxd_nf_tag(MenuPaused);

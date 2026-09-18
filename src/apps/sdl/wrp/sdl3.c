@@ -184,58 +184,6 @@ void zox_sdl_dispose_surface(SDL_Surface *surface) {
     SDL_DestroySurface(surface);
 }
 
-byte sdl_event_quit(SDL_Event *event) {
-    return event->type == SDL_EVENT_QUIT;
-}
-
-byte sdl_event_window_resized(SDL_Event *event) {
-    return event->type == SDL_EVENT_WINDOW_RESIZED
-        || event->type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
-}
-
-byte sdl_event_display_orientation(SDL_Event *event) {
-    return event->type == SDL_EVENT_DISPLAY_ORIENTATION;
-}
-
-byte sdl_event_window_moved(SDL_Event *event) {
-    return event->type == SDL_EVENT_WINDOW_MOVED;
-}
-
-byte sdl_event_window_maximized(SDL_Event *event) {
-    return event->type == SDL_EVENT_WINDOW_MAXIMIZED;
-}
-
-byte sdl_event_window_restored(SDL_Event *event) {
-    return event->type == SDL_EVENT_WINDOW_RESTORED;
-}
-
-byte sdl_event_window_minimized(SDL_Event *event) {
-    return event->type == SDL_EVENT_WINDOW_MINIMIZED;
-}
-
-byte sdl_event_window_focus_lost(SDL_Event *event) {
-    return event->type == SDL_EVENT_WINDOW_FOCUS_LOST;
-}
-
-byte sdl_event_window_focus_gained(SDL_Event *event) {
-    return event->type == SDL_EVENT_WINDOW_FOCUS_GAINED;
-}
-
-byte sdl_event_text_input(SDL_Event *event) {
-    return event->type == SDL_EVENT_TEXT_INPUT;
-}
-
-int2 sdl_event_window_size(SDL_Event *event) {
-    return (int2) {
-        event->window.data1,
-        event->window.data2
-    };
-}
-
-const char *sdl_event_text(SDL_Event *event) {
-    return event->text.text;
-}
-
 void on_set_vsync(byte value) {
     if (!SDL_GL_SetSwapInterval(value)) {
         zox_logw("Unable to disable VSync: [%s] - Value [%i]",
@@ -252,7 +200,6 @@ void on_set_vsync(byte value) {
 
 // Screen
 
-
 void zox_app_set_fullscreen(
     SDL_Window* window,
     byte monitor,
@@ -260,7 +207,6 @@ void zox_app_set_fullscreen(
 {
     if (fullscreen) {
         SDL_SetWindowFullscreenMode(window, NULL);
-
         if (!SDL_SetWindowFullscreen(window, true)) {
             zox_loge("SDL fullscreen error: %s", SDL_GetError());
         }
@@ -269,21 +215,20 @@ void zox_app_set_fullscreen(
             zox_loge("SDL windowed error: %s", SDL_GetError());
             return;
         }
-
         SDL_SyncWindow(window);
-
-        SDL_SetWindowBordered(window, true);
+        SDL_SetWindowBordered(window, 1);
         SDL_ShowWindow(window);
         SDL_RaiseWindow(window);
     }
-
     int w, h;
     SDL_GetWindowSize(window, &w, &h);
-
     int x, y;
     SDL_GetWindowPosition(window, &x, &y);
-
     zox_log(
         "window fullscreen=%i size=%ix%i position=%i,%i",
         fullscreen, w, h, x, y);
+}
+
+byte sdl_window_is_minimized(SDL_Window *window) {
+    return SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED;
 }

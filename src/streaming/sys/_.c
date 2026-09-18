@@ -3,7 +3,7 @@
 #include "stream_end.c"
 #include "settings.c"
 
-void define_systems_streaming(ecs* world) {
+void zox_systems_streaming(ecs* world) {
     zox_system(
         StreamPositionSystem,
         zoxp_update,

@@ -2,7 +2,7 @@
 #include "activate.c"
 #include "cooldown.c"
 
-void zox_define_systems_timers(ecs* world) {
+void zox_systems_timers(ecs* world) {
     zox_system(
         WarmupSystem,
         zoxp_update,

@@ -4,7 +4,7 @@ Next
 - Make the tooltip systems into observer / events
 - Add locks onto all VoxelNode setters and getters
 -x Add observer function, when Dirty is added to setting, replace SettingsDirtySystem's
-- Replace rest of SettingDirtySystems with observer zox_on_add
+- Replace rest of [SettingsDirtySystem] with observer zox_on_add
 
 Modules
 - Move AnimateTextSystem from dialogue to ui/texts
@@ -25,10 +25,7 @@ Unsorted
 - Make MeshDirty + and other bytes tags
 - Make initialize systems just use an event / observer
     - moving them to callbacks
--x make realm / game / app seperate, all should have no parent, since our links are better now
 - make pickup collider a sub entity on player
--x Add custom Phases -> EcsOnUpdate -> zoxp_update
--x Add links back for active mesh, fuck the rules
 - Move the key events out of the test functions
     - just add to a KeyListener component
 - Refactor GenerateChunk to Generate, Generating, etc
@@ -52,12 +49,28 @@ UIs
     - just make one big function that uses queries and calls those functions
     
 ## Refactor Events/Properties To Tags
+    - DataDirty
 	- LayoutPositionDirty
 	- LayoutSizeDirty
 	- TextDirty
 	- GenerateTexture
+	- GlyphDirty
+	- PlayerStateDirty
 	- RenderLodDirty
 	- NpcSpawnZoneDirty
+	- BlocksDirty
+	- ActiveActionDirty
+	- WindowSizeDirty
+	- StreamDirty
+	- InsideBlockDirty
+	- SkeletonDirty
+	- SkeletonMeshDirty
+	- AttachDirty
+	- RenderDepthDirty
+	- ChunkLodDirty
+	- RenderDistanceDirty
+	- GlyphSpawnedDirty
+	- WindowLayerDirty
 	
 ## Refactor Properties
 	- RenderDisabled

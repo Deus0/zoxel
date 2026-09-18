@@ -201,7 +201,7 @@ void import_zox(ecs* world) {
         zox_import_module(Classes);
         zox_import_module(Jobs);
         zox_import_module(Races);
-        zox_import_module(Clans);
+        zox_add_module(clans);
         zox_import_module(Lores);
         zox_add_module(achievements);
 

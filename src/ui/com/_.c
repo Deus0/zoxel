@@ -22,7 +22,7 @@ zoxc_byte(ElementFontSize);
 // Misc
 zox_tag(MouseElement);
 
-void zox_define_components_elements(ecs *world) {
+void zox_components_elements(ecs *world) {
     zoxd_tag(Element);
     zoxd_tag(Element2D);
     zoxd_entity(ElementLink);

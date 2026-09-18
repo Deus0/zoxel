@@ -16,8 +16,8 @@ void zox_prefab_addc_user_timings(ecs* world, entity e) {
 }
 
 zox_begin_module(Timers) {
-    zox_define_components_timers(world);
-    zox_define_systems_timers(world);
+    zox_components_timers(world);
+    zox_systems_timers(world);
 } zox_end_module(Timers)
 
 #endif

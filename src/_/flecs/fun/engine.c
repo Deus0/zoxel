@@ -39,7 +39,7 @@ void main_loop(ecs *world) {
 }
 
 void dispose_zox(ecs *world) {
-    dispose_update_loop();
+    // dispose_update_loop();
     // dispose_post_update_loop();
     ecs_fini(world);
 }

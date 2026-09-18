@@ -4,7 +4,7 @@ zoxc_byte(CharactersChanceMax);
 zoxc_entity(Character3Link);
 zoxc_entity(CharacterMetaLink);
 
-void define_components_characters3(ecs* world) {
+void zox_components_characters3(ecs* world) {
     zoxd_tag(Character3);
     zoxd_byte(CharactersChanceMax);
     // zoxd_byte(Character3Type);

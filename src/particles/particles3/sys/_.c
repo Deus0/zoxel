@@ -1,7 +1,7 @@
 #include "emit.c"
 #include "render.c"
 
-void define_systems_particles3(ecs* world) {
+void zox_systems_particles3(ecs* world) {
     zox_system_1(
         Particle3DEmitSystem,
         zoxp_spawn,

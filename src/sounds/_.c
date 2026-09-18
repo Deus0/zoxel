@@ -21,8 +21,8 @@
 
 void import_sounds(ecs* world) {
     zox_module(sounds);
-    define_components_sounds(world);
-    define_systems_sounds(world);
+    zox_components_sounds(world);
+    zox_systems_sounds(world);
     zox_module_dispose(dispose_sounds)
     add_hook_terminal_command(process_arguments_sounds);
     add_hook_files_load(load_files_sounds);

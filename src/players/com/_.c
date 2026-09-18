@@ -11,7 +11,7 @@ zoxc_entity(PlayerPauseEvent);
 zoxc_listener(PlayerStateEvent, 32, ecs*, entity, byte);
 zox_tag(PlayerLink);
 
-void zox_define_components_players(ecs* world) {
+void zox_components_players(ecs* world) {
     zoxd_tag(Player);
     zoxd_tag(Player2);
     zoxd_tag(Player3);

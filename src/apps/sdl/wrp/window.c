@@ -2,8 +2,19 @@ void zox_sdl_window_size( SDL_Window* sdl_window, int2 size) {
     SDL_SetWindowSize(sdl_window, size.x, size.y);
 }
 
-SDL_Window* create_sdl_window(int2 position, int2 size, const char *name, SDL_WindowFlags flags) {
-    SDL_Window *window = zox_sdl_create_window(name, position.x, position.y, size.x, size.y, flags);
+SDL_Window* create_sdl_window(
+    int2 position,
+    int2 size,
+    const char *name,
+    SDL_WindowFlags flags)
+{
+    SDL_Window *window = zox_sdl_create_window(
+        name,
+        position.x,
+        position.y,
+        size.x,
+        size.y,
+        flags);
     if (!window) {
         zox_loge(" CreateWindowError [%s] - flags [%i]]\n", SDL_GetError(), flags);
         return NULL;

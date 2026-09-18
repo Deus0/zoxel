@@ -10,7 +10,7 @@ zoxc_float(CubeLineExtrude);
 zoxc_float(CubeLineShrink);
 zoxc_byte(CubeLineSides);
 
-void define_components_lines3(ecs* world) {
+void zox_components_lines3(ecs* world) {
     zoxd_tag(Line3D);
     zoxd_tag(CubeLines);
     zoxd_tag(DebugCubeCorner);

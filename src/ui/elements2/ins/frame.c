@@ -53,5 +53,9 @@ entity3 spawn_frame(
         zox_set_unique_name(text, "icon_text");
         zox_setv(text, OutlineThickness, 1);
     }
-    return (entity3) { e, icon, text };
+    return (entity3) {
+        e,
+        icon,
+        text
+    };
 }

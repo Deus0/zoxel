@@ -11,7 +11,7 @@ zoxc_entity(ChunkPrefabLink);
 zoxc_entity(ChunkMeshPrefabLink);
 zoxc_double(ChunkMeshTimer);
 
-void define_components_chunks(ecs* world) {
+void zox_components_chunks(ecs* world) {
     // Types zoxd_nf_tag
     zoxd_tag(Chunk);
     // zoxd_tag(ChunkMesh);

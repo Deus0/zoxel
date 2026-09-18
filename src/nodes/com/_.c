@@ -16,7 +16,7 @@ zoxc_entities(NodeLinks);
 // NOTE: Passes in the node process
 zoxc_listener(NodeBeginEvent, 4, ecs*, entity, entity);
 
-void define_components_nodes(ecs* world) {
+void zox_components_nodes(ecs* world) {
     zoxd_tag(Node);
     zoxd_tag(Nodelink);
     zoxd_tag(Nodeleaf);

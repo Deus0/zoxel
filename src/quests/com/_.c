@@ -7,7 +7,7 @@ zoxc_byte(QuestTarget);
 zoxc_state(QuestDirty);
 zoxc_state(QuestsDirty);
 
-void define_components_quests(ecs* world) {
+void zox_components_quests(ecs* world) {
     zoxd_tag(Quest);
     zoxd_tag(QuestGiven);
     zoxd_tag(SlayQuest);

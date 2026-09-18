@@ -3,10 +3,12 @@
     #include "sdl3.c"
     #include "sdl3_input.c"
     #include "sdl3_sound.c"
+    #include "sdl3_events.c"
 #else
     #include "sdl2.c"
     #include "sdl2_input.c"
     #include "sounds.c"
+    #include "sdl2_events.c"
 #endif
 #ifdef zox_sdl_mixer
     #ifdef zox_sdl3

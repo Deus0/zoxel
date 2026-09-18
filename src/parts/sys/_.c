@@ -3,7 +3,7 @@
 #include "bones.c"
 #include "tooltip.c"
 
-void define_systems_bodys(ecs* world) {
+void zox_systems_bodys(ecs* world) {
     zox_system(
         BodyCombineSystem,
         zoxp_update,

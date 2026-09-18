@@ -10,7 +10,7 @@
 #include "position.c"
 #include "lerp.c"
 
-void define_systems_animations(ecs* world) {
+void zox_systems_animations(ecs* world) {
     zox_system(
         EternalRotationSystem,
         zoxp_update,

@@ -1,6 +1,6 @@
 #include "character.c"
 
-void define_systems_equipment(ecs* world) {
+void zox_systems_equipment(ecs* world) {
     zox_system_1(
         CharacterPlayerEquipsSystem,
         zoxp_spawn,

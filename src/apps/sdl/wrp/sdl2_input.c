@@ -27,5 +27,7 @@ const byte* sdl_get_keyboard_state() {
 }
 
 uint zox_sdl_get_mouse_state(int2* position) {
-    return SDL_GetMouseState(&position->x, &position->y);
+    return SDL_GetMouseState(
+        &position->x,
+        &position->y);
 }

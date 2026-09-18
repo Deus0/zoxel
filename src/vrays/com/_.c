@@ -5,7 +5,7 @@ zox_tag(GizmoOwner);
 zoxc_custom(RaycastVoxelData);
 zoxc_byte(RaycastType);
 
-void define_components_vrays(ecs *world) {
+void zox_components_vrays(ecs *world) {
     zoxd_tag(Gizmo);
     zoxd_tag(GizmoOwner);
     zoxd(RaycastVoxelData);

@@ -12,7 +12,7 @@ byte zox_no_humanoids = 0;
 
 void import_characters(ecs* world) {
     zox_module(characters);
-    define_components_characters(world);
+    zox_components_characters(world);
     add_hook_terminal_command(process_arguments_characters);
     add_hook_spawn_prefabs(spawn_prefabs_characters);
     zox_import_module(Jumps);

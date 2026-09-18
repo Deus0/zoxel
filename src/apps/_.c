@@ -21,8 +21,8 @@
 
 void import_apps(ecs* world) {
     zox_module(apps);
-    define_components_apps(world);
-    zox_define_systems_apps(world);
+    zox_components_apps(world);
+    zox_systems_apps(world);
     add_hook_terminal_command(process_arguments_apps);
     add_hook_spawn_prefabs(zox_prefabs_apps);
     add_hook_spawn_prefabs(zox_apps_events);

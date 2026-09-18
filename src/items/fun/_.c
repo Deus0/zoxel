@@ -27,11 +27,9 @@ byte stack_items(ecs* world, entity a, entity b) {
     byte quantity = zox_getv(a, Quantity) + zox_getv(b, Quantity);
     zox_muter(a, Quantity, a_quantity);
     a_quantity->value = quantity;
-    zox_muter(a, QuantityDirty, adirty);
-    adirty->value = zox_dirty_trigger;
     zox_muter(b, Quantity, b_quantity);
     b_quantity->value = 0;
-    zox_muter(b, QuantityDirty, bdirty);
-    bdirty->value = zox_dirty_trigger;
+    zox_add(a, QuantityDirty);
+    zox_add(b, QuantityDirty);
     return 1;
 }

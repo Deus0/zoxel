@@ -25,7 +25,7 @@ byte zoxs_limit_byte(ecs* world, const char *name, byte min, byte max) {
             }
         }
     }
-    zox_log_error("? [byte] setting [%s]", name)
+    zox_loge("? [byte] setting [%s]", name)
     return 0;
 }
 

@@ -14,8 +14,8 @@
 #include "ins/_.c"
 
 zox_begin_module(ItemsUI) {
-    define_components_items_ui(world);
-    define_systems_items_ui(world);
+    zox_components_items_ui(world);
+    zox_systems_items_ui(world);
     add_taskbar_button(world, (TaskbarData) {
         .index = 3,
         .spawn = &spawn_menu_inventory,

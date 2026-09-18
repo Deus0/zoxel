@@ -3,7 +3,7 @@ zoxc_float(Damage);
 zoxc_double(LastCombatTime);
 zox_tag(LastDamager);
 
-void zox_define_components_combat(ecs* world) {
+void zox_components_combat(ecs* world) {
     zoxd_byte(CombatState);
     zoxd_float(Damage);
     zoxd_double(LastCombatTime);
@@ -18,7 +18,7 @@ void zox_define_components_combat(ecs* world) {
 
 void import_combat(ecs* world) {
     zox_module(combat);
-    zox_define_components_combat(world);
-    define_systems_combat(world);
+    zox_components_combat(world);
+    zox_systems_combat(world);
     add_hook_spawn_prefabs(spawn_prefabs_combat);
 }

@@ -29,7 +29,7 @@ byte zox_disable_mountains = 0;
 
 void import_mountains(ecs* world) {
     zox_module(mountains);
-    zox_define_components_mountains(world);
-    zox_define_systems_mountains(world);
+    zox_components_mountains(world);
+    zox_systems_mountains(world);
     add_hook_spawn_prefabs(zox_define_prefabs_mountains);
 }

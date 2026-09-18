@@ -41,7 +41,7 @@ zoxc_arrayd(CombinePositions, byte3);
 #define zox_chunk_lod_dirty_toggle 4
 #define zox_chunk_lod_dirty_end 0
 
-void define_components_chunks3(ecs* world) {
+void zox_components_chunks3(ecs* world) {
     // zoxd_nf_tag
     // Types
     zoxd_tag(Chunk3);

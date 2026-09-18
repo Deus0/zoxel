@@ -13,8 +13,8 @@ uint layouts2_children_capacity = 255;  // for big ass text
 
 void import_layouts(ecs* world) {
     zox_module(layouts);
-    define_components_layouts2(world);
-    define_systems_layouts2(world);
+    zox_components_layouts2(world);
+    zox_systems_layouts2(world);
     add_hook_spawn_prefabs(spawn_prefabs_layouts2);
     zox_import_module(Containers);
 }

@@ -115,7 +115,12 @@ fi
 
 [[ "${graphics_lib}" == "headless" ]] && bin_filename="${bin_filename}-headless"
 [[ "${debug}" == "1" ]] && bin_filename="${bin_filename}-dev"
-bin_path="${output_folder}/${bin_filename}.${output_extension}"
+
+bin_folder="${output_folder}/${game_name}_${os}_${arc}_${graphics_lib}_${window_lib}"
+[[ "${window_lib}" == "headless" ]] && bin_folder="${bin_folder}_headless"
+[[ "${debug}" == "1" ]] && bin_folder="${bin_folder}_dev"
+
+bin_path="${bin_folder}/${bin_filename}.${output_extension}"
 
 # Set our compiler variables #
 compiler="$(get_compiler "$on_arc" "$arc" "$os")"
@@ -374,17 +379,27 @@ echo "  Compiler : ${compiler}"
 echo "============================================================"
 echo ""
 
-# echo ""
-# echo "Building [${bin_path}]"
-# echo "  - Compiler [${compiler}]"
-# echo "  - CFlags [${cflags}]"
-# echo "  - DFlags [${dflags}]"
-#echo "  - Libs [${libs}]"
-#echo "  - Includes [${includes}]"
+# Setup our bin folder
+mkdir -p "${bin_folder}"
+# Link our resources
+ln -sfn "../../res" "${bin_folder}/res"
+# Link our libraries
+if [[ "${window_lib}" == "sdl" && "${is_static}" == "1" ]]; then
+    ln -sfn "../../${sdl_runtime}" \
+        "${bin_folder}/$(basename "${sdl_runtime}")"
+    if [[ "${sdl_mixer}" == "1" ]]; then
+        ln -sfn "../../${sdl_mixer_runtime}" \
+            "${bin_folder}/$(basename "${sdl_mixer_runtime}")"
+    fi
+fi
 
-mkdir -p ${output_folder}
+
 ${compiler} ${cflags} ${sources} -o "${bin_path}" ${includes} ${dflags} ${libs}
 echo "+ Completed Build [${bin_path}]"
+
+# link to bin/
+ln -sfn "${bin_folder#${output_folder}/}/$(basename "${bin_path}")" \
+    "${output_folder}/${bin_filename}.${output_extension}"
 
 # ---- Packaging ----
 if [[ ${package} == "1" ]]; then
@@ -392,6 +407,7 @@ if [[ ${package} == "1" ]]; then
     date_str=$(date +%Y_%m_%d)
     zip_name="${package_path}/${game_name}_${os}_${arc}_${graphics_lib}_${window_lib}"
     [[ ${window_lib} == "headless" ]] && zip_name="${zip_name}_headless"
+    [[ ${debug} == "1" ]] && zip_name="${zip_name}_dev"
     zip_name="${zip_name}_${date_str}.zip"
 
     echo ""
@@ -415,7 +431,6 @@ if [[ ${package} == "1" ]]; then
     if [[ ${window_lib} == "sdl" ]]; then
         if [[ "${is_static}" == "1" ]]; then
             zip -j "${zip_name}" "${sdl_runtime}"
-
             if [[ "${sdl_mixer}" == "1" ]]; then
                 zip -j "${zip_name}" "${sdl_mixer_runtime}"
             fi

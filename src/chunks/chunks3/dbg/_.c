@@ -8,7 +8,7 @@ extern entity spawn_inspector(ecs*, entity, entity, entity);
 #include "chunk3_textured.c"
 #include "refresh.c"
 
-void define_systems_chunks3_debug(ecs *world) {
+void zox_systems_chunks3_debug(ecs *world) {
     // main thread
     /*zox_system_1(
         ChunkDebugSystem,

@@ -24,8 +24,8 @@
 
 void import_quests(ecs* world) {
     zox_module(quests);
-    define_components_quests(world);
-    define_systems_quests(world);
+    zox_components_quests(world);
+    zox_systems_quests(world);
     add_hook_spawn_prefabs(zox_prefabs_quests);
     add_hook_spawn_prefabs(zox_events_quests);
     zox_import_module(QuestsUI);

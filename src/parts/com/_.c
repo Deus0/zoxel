@@ -23,7 +23,7 @@ zoxc_int3(PartOffset); // for now
 #define zox_generate_body_bones 2
 #define zox_generate_body_end 0
 
-void define_components_bodys(ecs* world) {
+void zox_components_bodys(ecs* world) {
     zoxd_tag(MenuBody);
     zoxd_tag(BodyFrame);
     zoxd_tag(Body);

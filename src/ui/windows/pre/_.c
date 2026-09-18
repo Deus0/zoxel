@@ -10,16 +10,26 @@ entity prefab_body;
 entity prefab_close_button;
 
 void prefabs_add_windows_raycaster(ecs *world, entity e) {
-    zox_prefab_set(e, WindowRaycasted, { 0 });
-    zox_prefab_set(e, WindowTarget, { 0 });
+    zox_setv(e, WindowRaycasted, 0);
+    zox_setv(e, WindowTarget, 0);
 }
 
 void spawn_prefabs_windows(ecs* world) {
-    prefab_window = spawn_prefab_window(world, prefab_layout2);
-    prefab_window_textured = spawn_prefab_window_textured(world, prefab_element_frame);
-    prefab_header = spawn_prefab_header(world, prefab_clickable);
-    prefab_body = spawn_prefab_body(world, prefab_element_frame);
-    prefab_close_button = spawn_prefab_button_close(world, prefab_clickable);
+    prefab_window = spawn_prefab_window(
+        world,
+        prefab_layout2);
+    prefab_window_textured = spawn_prefab_window_textured(
+        world,
+        prefab_element_frame);
+    prefab_header = spawn_prefab_header(
+        world,
+        prefab_clickable);
+    prefab_body = spawn_prefab_body(
+        world,
+        prefab_element_frame);
+    prefab_close_button = spawn_prefab_button_close(
+        world,
+        prefab_clickable);
     // linking
     if (prefab_player) {
         prefabs_add_windows_raycaster(world, prefab_player);
@@ -32,9 +42,11 @@ void spawn_prefabs_windows(ecs* world) {
     }
     // Canvas Stack
     // TODO: Remove WindowToTop - Use CanvasDirty and just find a window without a layer (or at 0 layer) and add that to top of stack
-    zox_prefab_set(prefab_canvas, WindowToTop, { 0 });
-    zox_prefab_set(prefab_canvas, WindowsLayers, { 0 });
-    zox_prefab_set(prefab_canvas, WindowsCount, { 0 });
+    zox_setv(prefab_canvas, WindowToTop, 0);
+    zox_setv(prefab_canvas, WindowsLayers, 0);
+    zox_setv(prefab_canvas, WindowsCount, 0);
     // panel
-    prefab_grid = spawn_prefab_grid(world, prefab_body); // prefab_layout2);
+    prefab_grid = spawn_prefab_grid(
+        world,
+        prefab_body);
 }

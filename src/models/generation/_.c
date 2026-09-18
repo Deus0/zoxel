@@ -9,7 +9,7 @@
 #include "wood.c"
 #include "noise.c"
 
-void define_systems_models_generation(ecs* world) {
+void zox_systems_models_generation(ecs* world) {
     zox_system(
         noise_model_system,
         zoxp_octree_write,

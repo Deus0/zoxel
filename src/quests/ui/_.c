@@ -9,7 +9,7 @@ zox_tag(MenuQuests);
 
 zox_begin_module(QuestsUI) {
     zoxd_tag(MenuQuests);
-    zox_define_systems_quests_ui(world);
+    zox_systems_quests_ui(world);
     // add_hook_spawn_prefabs(spawn_prefabs_ui_quests);
     add_taskbar_button(world, (TaskbarData) {
         .index = 5,

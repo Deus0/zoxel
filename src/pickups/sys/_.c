@@ -1,6 +1,6 @@
 #include "sounds.c"
 
-void zox_define_systems_pickups(ecs* world) {
+void zox_systems_pickups(ecs* world) {
     zox_system_1(
         PickupSoundSystem,
         zoxp_spawn,

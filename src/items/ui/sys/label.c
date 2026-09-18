@@ -21,12 +21,14 @@ zox_sys2(ItemIconLabelSystem) {
             continue;
         }
         byte dirty2 = zox_getv(slot->value, DataDirty) == zox_dirty_active;
-        dirty2 |= zox_has(e2, QuantityDirty) && zox_getv(e2, QuantityDirty) == zox_dirty_active;
+        // dirty2 |= zox_has(e2, QuantityDirty) && zox_getv(e2, QuantityDirty) == zox_dirty_active;
         dirty2 |= state->value == zox_dirty_active;
         if (!dirty2) {
             continue;
         }
-        byte quantity = zox_has(e2, Quantity) ?  zox_getv(e2, Quantity) : 0;
+        byte quantity = zox_has(e2, Quantity) ?
+            zox_getv(e2, Quantity) :
+            0;
         char result[label_text_capacity];
         if (quantity > 1) {
             snprintf(result, label_text_capacity, "x%i", quantity);

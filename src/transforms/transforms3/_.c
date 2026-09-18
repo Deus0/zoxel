@@ -4,7 +4,8 @@ uint transforms3_children_capacity = 251;
 #include "fun/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Transforms3) {
-    define_components_transforms3(world);
-    zox_define_systems_transforms3(world);
-} zox_end_module(Transforms3);
+void import_transforms3(ecs* world) {
+    zox_module(transforms3);
+    zox_components_transforms3(world);
+    zox_systems_transforms3(world);
+}

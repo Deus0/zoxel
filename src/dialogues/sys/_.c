@@ -4,7 +4,7 @@
 #include "animate_end.c"
 #include "sound.c"
 
-void define_systems_dialogues(ecs* world) {
+void zox_systems_dialogues(ecs* world) {
     zox_system(
         DialogueSpeechSystem,
         zoxp_update,

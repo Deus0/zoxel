@@ -12,8 +12,8 @@ void spawn_materials_elements(ecs *world) {
 
 void import_rendering2(ecs* world) {
     zox_module(rendering2);
-    zox_define_components_basics2(world);
-    define_systems_basics2D(world);
+    zox_components_basics2(world);
+    zox_systems_basics2D(world);
     add_hook_load_shader(&spawn_shaders_basics2D);
     add_hook_load_shader(&spawn_materials_elements);
 }

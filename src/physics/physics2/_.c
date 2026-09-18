@@ -12,5 +12,5 @@ void import_physics2(ecs* world) {
     zoxd(Torque2D);
     zoxd(Acceleration2D);
     zoxd(Bounds2D);
-    define_systems_physics2(world);
+    zox_systems_physics2(world);
 }

@@ -8,7 +8,7 @@
 #include "arm_swing.c"
 #include "arm_raise.c"
 
-void define_systems_bones(ecs *world) {
+void zox_systems_bones(ecs *world) {
     zox_system(
         HeadAnimateSystem,
         zoxp_update,
@@ -71,18 +71,6 @@ void define_systems_bones(ecs *world) {
         zoxp_update,
         [in] bones.RaiseShoulder,
         [none] bones.Skeleton
-    );
-    zox_system_1(
-        BonesSettingsSystem,
-        zoxp_spawn,
-        [in] settings.LoadSettings,
-    );
-    zox_system(
-        BonesSettingsDirtySystem,
-        zoxp_update,
-        [in] settings.SettingDirty,
-        [in] core.ZoxName,
-        [in] settings.Setting
     );
     zox_system_1(
         BoneGizmoSystem,

@@ -10,7 +10,7 @@ void add_system_process_counter(ecs* world, entity e) {
     zox_add(e, SystemProcessedCache);
 }
 
-void define_systems_timing_debug(ecs* world) {
+void zox_systems_timing_debug(ecs* world) {
     zox_system(
         SystemProcessedResetSystem,
         zoxp_reset,

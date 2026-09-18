@@ -13,7 +13,6 @@ zox_sys2(HideVirtualKeyboardSystem) {
     }
 } zox_sys_end(HideVirtualKeyboardSystem);
 
-
 zox_sys2(ToggleVirtualKeyboardSystem) {
     zox_sys_world();
     if (!zox_valid(main_app) || !zox_has(main_app, SDLWindow)) {

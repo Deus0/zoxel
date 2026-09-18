@@ -1,7 +1,7 @@
 #include "overlay.c"
 #include "tooltip.c"
 
-void zox_define_systems_skills_ui(ecs *world) {
+void zox_systems_skills_ui(ecs *world) {
     zox_system(
         SkillOverlaySystem,
         zoxp_update,

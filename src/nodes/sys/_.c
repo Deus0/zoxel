@@ -3,7 +3,7 @@
 #include "end.c"
 #include "events.c"
 
-void define_systems_nodes(ecs* world) {
+void zox_systems_nodes(ecs* world) {
     zox_system(
         NodetreeBeginSystem,
         zoxp_update,

@@ -28,7 +28,7 @@ float block_place_range = 2;
 
 void import_blocks(ecs* world) {
     zox_module(blocks);
-    zox_define_components_blocks(world);
-    zox_define_systems_blocks(world);
+    zox_components_blocks(world);
+    zox_systems_blocks(world);
     add_hook_spawn_prefabs(spawn_prefabs_blocks);
 }

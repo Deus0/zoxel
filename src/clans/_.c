@@ -1,16 +1,15 @@
 /*
- * +------------------------------------------------------------------+
- * | Zox Module: Clans                                                |
- * |                                                                  |
- * |  Groups - Members - Ranks - Alliances - Clan State               |
- * |                                                                  |
- * +------------------------------------------------------------------+
+ * +------------------------------------------------------+
+ * | Zox Module: Clans                                    |
+ * |                                                      |
+ * |  Groups - Members - Ranks - Alliances - Clan State   |
+ * |                                                      |
+ * +------------------------------------------------------+
  */
-#if !defined(zoxm_clans)
-#define zoxm_clans
+#include "com/_.c"
 
-zox_begin_module(Clans) {
-    // TODO: CLans!
-} zox_end_module(Clans);
+void import_clans(ecs* world) {
+    zox_module(clans);
+    zox_components_clans(world);
+}
 
-#endif

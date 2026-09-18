@@ -10,7 +10,7 @@ zoxc_byte2(HomeSize);
 zoxc_byte(HomeHeight);
 #include "types.c"
 
-void zox_define_components_towns(ecs* world) {
+void zox_components_towns(ecs* world) {
     zoxd_tag(Town);
     zoxd_arrayd(TownMap);
     zoxd_byte(GenerateTown);

@@ -13,7 +13,7 @@ zoxc_text(TextData)
 zoxc_state(TextSizeDirty);
 zoxc_entity(GlyphPrefab);
 
-void define_components_texts(ecs *world) {
+void zox_components_texts(ecs *world) {
     zoxd_tag(Text);
     zoxd_tag(TextLabel);
     zoxd_tag(TextResizer);

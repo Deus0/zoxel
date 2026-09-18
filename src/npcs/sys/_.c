@@ -3,7 +3,7 @@
 #include "can_spawn.c"
 #include "settings.c"
 
-void define_systems_characters3_terrain(ecs* world) {
+void zox_systems_characters3_terrain(ecs* world) {
     zox_system(
         CharactersCanSpawnSystem,
         zoxp_update,

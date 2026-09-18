@@ -4,7 +4,7 @@
 #include "cancel.c"
 #include "constraints.c"
 
-void define_systems_windows(ecs* world) {
+void zox_systems_windows(ecs* world) {
     zox_system(
         CanvasStackSystem,
         zoxp_update,

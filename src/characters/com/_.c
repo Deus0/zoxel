@@ -4,7 +4,7 @@ zox_tag(CharacterUnique);
 zoxc_state(GenerateCharacter);
 zoxc_entities(CharacterLinks);
 
-void define_components_characters(ecs* world) {
+void zox_components_characters(ecs* world) {
     zoxd_tag(Character);
     zoxd_tag(CharacterGeneric);
     zoxd_tag(CharacterUnique);

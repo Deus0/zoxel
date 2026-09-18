@@ -56,9 +56,9 @@ void dispose_models(ecs *world, void *ctx) {
 void import_models(ecs* world) {
     zox_module(models);
     zox_module_dispose(dispose_models);
-    define_components_models(world);
-    define_systems_models(world);
-    define_systems_models_generation(world);
+    zox_components_models(world);
+    zox_systems_models(world);
+    zox_systems_models_generation(world);
     add_hook_spawn_prefabs(spawn_prefabs_models);
     add_hook_terminal_command(process_arguments_voxes);
     add_hook_files_load(load_files_voxes);

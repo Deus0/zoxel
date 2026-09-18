@@ -17,7 +17,7 @@ zoxc_int(RubbleCount);
 zoxc_byte(VRegions);
 zoxc_float(VoxColorRange);
 
-void define_components_models(ecs* world) {
+void zox_components_models(ecs* world) {
     zoxd_tag(Model);
     zoxd_tag(ModelGroup);
     zoxd_tag(ModelCharacter);

@@ -19,7 +19,7 @@ ECS_DTOR(FileLink, ptr, {
     }
 })
 
-void zox_define_components_saves(ecs* world) {
+void zox_components_saves(ecs* world) {
     zoxd_tag(Saver);
     // Events
     zoxd_nf_tag(Loaded);

@@ -1,6 +1,6 @@
 #include "generate.c"
 
-void zox_define_systems_names(ecs* world) {
+void zox_systems_names(ecs* world) {
     zox_system(
         GenerateNameSystem,
         zoxp_update,

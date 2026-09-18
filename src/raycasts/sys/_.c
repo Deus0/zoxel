@@ -1,7 +1,7 @@
 #include "camera_rays.c"
 #include "debug_rays.c"
 
-void zox_define_systems_raycasts(ecs* world) {
+void zox_systems_raycasts(ecs* world) {
     zox_system(
         CameraRaySystem,
         zoxp_update,

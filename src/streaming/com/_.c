@@ -9,7 +9,7 @@ zoxc_state(StreamDirty2);
 zoxc_function(StreamEndEvent, void, ecs*, const entity);
 #include "queue.c"
 
-void define_components_streaming(ecs *world) {
+void zox_components_streaming(ecs *world) {
     zoxd_tag(Streamer);
     zoxd_tag(StreamedChunk);
     zoxd_byte(StreamerLevel);

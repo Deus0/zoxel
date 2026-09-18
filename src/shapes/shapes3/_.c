@@ -11,7 +11,7 @@
 #include "com/_.c"
 
 zox_begin_module(Shapes3)
-    define_components_shapes3(world);
+    zox_components_shapes3(world);
 zox_end_module(Shapes3)
 
 #endif

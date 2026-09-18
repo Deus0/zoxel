@@ -19,14 +19,16 @@ entity spawn_datagrid(
     }
     // This just uses children data directly for a grid
     entity datas[layouts2_children_capacity];
-    uint dlength = zox_get_children_by_id(world, character, datas, layouts2_children_capacity, id);
+    uint dlength = zox_get_children_by_id(
+        world,
+        character,
+        datas,
+        layouts2_children_capacity,
+        id);
     int2 position = int2_zero;
     float2 position_anchor = float2_half;
     // our window info
     byte2 cells_size = byte2_single(4);
-    // zox_geter_value(canvas, LayoutSize, int2, canvas_size);
-    // color grid_fill = window_fill;
-    // color grid_outline = window_outline;
     byte2 grid_padding = byte2_single(2 * ui_scale);
     byte2 grid_margins = byte2_single(4 * ui_scale);
     int2 icon_size = int2_single((default_icon_size / 4) * ui_scale);
@@ -36,7 +38,10 @@ entity spawn_datagrid(
     byte selected = 0;
     // Spawns Window here!!
     byte header_font_size = 8 * ui_scale;
-    byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
+    byte2 header_padding = (byte2) {
+        10 * ui_scale,
+        4 * ui_scale
+    };
     entity3 e2 = spawn_window(
         world, prefab,
         prefab_grid,
@@ -50,10 +55,10 @@ entity spawn_datagrid(
         on_closed_taskbar_window);
     entity e = e2.x;
     entity grid = e2.z;
-    zox_set_unique_name(grid, "window_gridg");
-    zox_set(grid, GridSize, { cells_size });
-    zox_set(grid, GridPadding, { grid_padding });
-    zox_set(grid, GridMargins, { grid_margins });
+    // zox_set_unique_name(grid, "window");
+    zox_setv(grid, GridSize, cells_size);
+    zox_setv(grid, GridPadding, grid_padding);
+    zox_setv(grid, GridMargins, grid_margins);
     // Spawn our data frames!
     uint array_index = 0;
     for (int j = cells_size.y - 1; j >= 0; j--) {
@@ -71,17 +76,17 @@ entity spawn_datagrid(
                 label_font_size,
                 array_index);
             // NOTE: Atm this is what connects user data textures
-            zox_set(spawn.y, DataLink, { dat });
-            zox_set(spawn.y, DataDirty, { zox_dirty_trigger });
+            zox_setv(spawn.y, DataLink, dat);
+            zox_setv(spawn.y, DataDirty, zox_dirty_trigger);
             if (spawn.z) {
-                zox_set(spawn.z, DataLink, { dat });
-                zox_set(spawn.z, DataDirty, { zox_dirty_trigger });
+                zox_setv(spawn.z, DataLink, dat);
+                zox_setv(spawn.z, DataDirty, zox_dirty_trigger);
             }
             // set_frame_texture_from_data(world, spawn.x, spawn.y, dat);
             if (active_states) {
                 if (array_index == selected) {
-                    zox_set(spawn.x, ActiveState, { 1 });
-                    zox_set(spawn.x, ActiveStateDirty, { zox_dirty_trigger });
+                    zox_setv(spawn.x, ActiveState, 1);
+                    zox_setv(spawn.x, ActiveStateDirty, zox_dirty_trigger);
                 }
             }
             array_index++;
@@ -93,11 +98,5 @@ entity spawn_datagrid(
             break;
         }
     }
-    // add to characters element links and link to character
-    /*if (zox_has(character, ElementLinks)) {
-        zox_muter(character, ElementLinks, elementLinks);
-        add_to_ElementLinks(elementLinks, e);
-        zox_set(e, ElementHolder, { character });
-    }*/
     return e;
 }

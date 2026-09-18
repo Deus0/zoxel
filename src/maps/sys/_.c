@@ -4,7 +4,7 @@
 #include "arrow.c"
 #include "move.c"
 
-void zox_define_systems_maps(ecs* world) {
+void zox_systems_maps(ecs* world) {
     zox_system_1(
         MapInitializeSystem,
         zoxp_spawn,

@@ -25,7 +25,7 @@ void set_light_systems(ecs* world, byte is_lights) {
 
 // TODO: Rename NodeDepth to OctreeDepth
 
-void define_systems_lights3(ecs* world) {
+void zox_systems_lights3(ecs* world) {
     zox_system(
         sunlight_system,
         zoxp_update,

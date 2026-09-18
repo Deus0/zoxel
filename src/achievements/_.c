@@ -18,6 +18,6 @@
 
 void import_achievements(ecs* world) {
     zox_module(achievements);
-    define_components_achievements(world);
+    zox_components_achievements(world);
     spawn_systems_achievements(world);
 }

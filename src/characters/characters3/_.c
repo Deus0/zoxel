@@ -16,8 +16,8 @@ byte disable_npc_positioner = 0;
 #include "dbg/_.c"
 
 zox_begin_module(Characters3) {
-    define_components_characters3(world);
-    define_systems_characters3(world);
+    zox_components_characters3(world);
+    zox_systems_characters3(world);
     set_character_settings();
     add_hook_spawn_prefabs(spawn_prefabs_characters3D);
 } zox_end_module(Characters3);

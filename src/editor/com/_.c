@@ -11,7 +11,7 @@ zox_tag(Profiler);
 zoxc_double(FPSDisplayTicker);
 zoxc(DebugLabelData, DebugLabelEvent);
 
-void define_components_editor(ecs* world) {
+void zox_components_editor(ecs* world) {
     zoxd_tag(EditorElement);
     zoxd_tag(InspectorLabel);
     zoxd_tag(InspectorUI);

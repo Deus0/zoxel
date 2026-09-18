@@ -5,7 +5,7 @@ zoxc_float(BasicCollider);
 zoxc_float(SphereRadius);
 zoxc_function(OverlapEvent, byte, ecs*, entity, entity);
 
-void define_components_collisions3(ecs* world) {
+void zox_components_collisions3(ecs* world) {
     zoxd_tag(SphereCollider);
     zoxd_byte(Collision);
     zoxd_float(BasicCollider);

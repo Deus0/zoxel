@@ -5,6 +5,6 @@
 
 void import_slots(ecs* world) {
     zox_module(slots);
-    zox_define_components_slots(world);
+    zox_components_slots(world);
     add_hook_spawn_prefabs(zox_spawn_prefabs_slots);
 }

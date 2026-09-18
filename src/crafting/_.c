@@ -13,8 +13,8 @@
 
 void import_crafting(ecs* world) {
     zox_module(crafting);
-    define_components_crafting(world);
-    define_systems_crafting(world);
+    zox_components_crafting(world);
+    zox_systems_crafting(world);
     add_hook_spawn_prefabs(spawn_prefabs_crafting);
     add_taskbar_button(world, (TaskbarData) {
         .index = 9,

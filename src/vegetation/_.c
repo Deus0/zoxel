@@ -13,9 +13,9 @@ byte zox_disable_vegetation = 0;
 
 void import_vegetation(ecs* world) {
     zox_module(vegetation);
-    zox_define_components_vegetation(world);
-    zox_define_systems_vegetation(world);
+    zox_components_vegetation(world);
+    zox_systems_vegetation(world);
     add_hook_spawn_prefabs(spawn_prefabs_vegetation);
     // add_hook_spawn_prefabs(spawn_prefabs_tunks);
-    // zox_define_systems_tunks_debug(world);
+    // zox_systems_tunks_debug(world);
 }

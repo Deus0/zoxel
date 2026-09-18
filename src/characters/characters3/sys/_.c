@@ -3,7 +3,7 @@
 #include "debug_types.c"
 #include "realm.c"
 
-void define_systems_characters3(ecs *world) {
+void zox_systems_characters3(ecs *world) {
     zox_system(
         CharacterRenderDepthSystem,
         zoxp_update,

@@ -28,6 +28,6 @@ void import_colorz(ecs* world) {
     zoxd_color_rgb(FogColor);
     zoxd_arrayd(ColorRGBs);
     zoxd_arrayd(Colors);
-    define_systems_colors(world);
+    zox_systems_colors(world);
     add_hook_spawn_prefabs(spawn_prefabs_colors);
 }

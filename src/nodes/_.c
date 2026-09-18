@@ -20,7 +20,7 @@
 
 void import_nodes(ecs* world) {
     zox_module(nodes);
-    define_components_nodes(world);
-    define_systems_nodes(world);
+    zox_components_nodes(world);
+    zox_systems_nodes(world);
     add_hook_spawn_prefabs(spawn_prefabs_nodes);
 }

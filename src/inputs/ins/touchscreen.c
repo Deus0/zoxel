@@ -1,12 +1,25 @@
-entity spawn_touchscreen_joystick(ecs* world, entity device, entity pointer, byte index, byte type) {
-    entity e = spawn_zevice_stick(world, device, index, index);
+entity spawn_touchscreen_joystick(
+    ecs* world,
+    entity device,
+    entity pointer,
+    byte index,
+    byte type)
+{
+    entity e = spawn_zevice_stick(
+        world,
+        device,
+        index,
+        index);
+    zox_setv(e, DeviceButtonType, type);
+    zox_setv(pointer, VirtualZeviceLink, e);
     zox_set_parent(world, e, device);
-    zox_set(e, DeviceButtonType, { type });
-    zox_set(pointer, VirtualZeviceLink, { e });
     return e;
 }
 
-entity spawn_touchscreen(ecs *world, entity prefab) {
+entity spawn_touchscreen(
+    ecs *world,
+    entity prefab)
+{
     zox_instance(prefab);
     zox_name("touchscreen");
     // we should spawn virtual joysticks first then link to the fingers

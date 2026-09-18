@@ -24,6 +24,6 @@ zox_tag(Projectile);
 void import_projectiles(ecs* world) {
     zox_module(projectiles);
     zoxd_tag(Projectile);
-    // zox_define_systems_projectiles(world);
+    // zox_systems_projectiles(world);
     add_hook_spawn_prefabs(zox_define_prefabs_projectiles);
 }

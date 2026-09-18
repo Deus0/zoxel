@@ -12,7 +12,7 @@
 zox_increment_system_with_reset_extra(ClickState, zox_click_state_trigger_clicked, zox_click_state_clicked_idle, zox_click_state_trigger_released, zox_click_state_idle);
 zox_increment_system_with_reset_extra(SelectState, zox_state_select_trigger, zox_state_select_idle, zox_state_deselect_trigger, zox_state_deselect_idle);
 
-void zox_define_systems_interaction(ecs* world) {
+void zox_systems_interaction(ecs* world) {
     zoxd_system_increment(ClickState);
     zoxd_system_increment(SelectState);
     zox_filter(

@@ -9,7 +9,7 @@ byte mrpenguin_mode = 0;
 void import_zoxgame(ecs* world) {
     zox_module(zoxgame);
     game_name = "zoxel";
-    define_systems_zoxel(world);
+    zox_systems_zoxel(world);
     add_hook_on_boot(spawn_weather);
     // Initial Zoxel Settings
     initialize_zoxel_settings(world);

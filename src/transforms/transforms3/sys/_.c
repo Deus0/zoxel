@@ -14,7 +14,7 @@ zoxd_system(transform_sync2_system);
 void transform_sync3_system(iter* it) { }
 zoxd_system(transform_sync3_system);*/
 
-void zox_define_systems_transforms3(ecs *world) {
+void zox_systems_transforms3(ecs *world) {
     /*zox_system_1(
         transform_sync_system,
         zoxp_transform_sync,

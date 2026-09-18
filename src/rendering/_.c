@@ -43,7 +43,8 @@ byte initialize_rendering(byte render_backend) {
 }
 
 void viewport_clear(ecs *world) {
-    zox_gpu_set_clear_color(color_to_float4(viewport_clear_color));
+    float4 clear = color_to_float4(viewport_clear_color);
+    zox_gpu_set_clear_color(clear);
     zox_gpu_clear_viewport();
 }
 
@@ -53,17 +54,17 @@ void import_rendering(ecs* world) {
     initialize_hook_load_shader();
     initialize_gpu_systems();
     // ecs defines
-    define_components_rendering(world);
-    define_systems_rendering(world);
+    zox_components_rendering(world);
+    zox_systems_rendering(world);
     // hooks
     add_hook_spawn_prefabs(spawn_prefabs_rendering);
     add_hook_terminal_command(process_arguments_rendering);
-    zox_module_dispose(on_module_dispose_rendering)
+    zox_module_dispose(on_module_dispose_rendering);
     // prefab spawning
     zox_add_module(shaders);
     zox_add_module(rendering2);
     zox_add_module(rendering3);
     zox_add_module(render_cameras);
-    add_to_update_loop(viewport_clear);
+    // add_to_update_loop(viewport_clear);
 }
 

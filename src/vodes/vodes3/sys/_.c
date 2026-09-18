@@ -7,7 +7,7 @@
 #include "can.c"
 #include "settings.c"
 
-void define_systems_vodes3(ecs* world) {
+void zox_systems_vodes3(ecs* world) {
     // NOTE: Writes to VoxelNode
     zox_system(
         VodesDespawnSystem,

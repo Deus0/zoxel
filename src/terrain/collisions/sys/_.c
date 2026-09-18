@@ -6,7 +6,7 @@
 #include "intersect.c"
 #include "debug.c"
 
-void define_systems_terrain_collisions(ecs* world) {
+void zox_systems_terrain_collisions(ecs* world) {
     zox_system(
         InsideBlockSystem,
         zoxp_update,

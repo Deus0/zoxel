@@ -1,7 +1,7 @@
 #include "label.c"
 #include "tooltip.c"
 
-void define_systems_items_ui(ecs *world) {
+void zox_systems_items_ui(ecs *world) {
     zox_system(
         ItemIconTooltipSystem,
         zoxp_update,

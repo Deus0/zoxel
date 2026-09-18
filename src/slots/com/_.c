@@ -6,7 +6,7 @@ zoxc_byte(SlotAnchor);
 zoxc_entity(DataLink);
 zoxc_state(DataDirty);
 
-void zox_define_components_slots(ecs* world) {
+void zox_components_slots(ecs* world) {
     zoxd_tag(SlotManager);
     zoxd_tag(Slot);
     zoxd_entity(SlotLink);

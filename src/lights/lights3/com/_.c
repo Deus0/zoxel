@@ -21,7 +21,7 @@ zoxc_queue_remove(SunlightQueue, SunlightUpdate);
 zoxc_queue_remove(LightQueue, LightUpdate);
 zoxc_queue_remove(DarkQueue, DarkUpdate);
 
-void define_components_lights3(ecs *world) {
+void zox_components_lights3(ecs *world) {
     // NOTE: Sunny used in system filter
     zoxd_tag(SunnyChunk);
     // Property

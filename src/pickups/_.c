@@ -27,6 +27,6 @@ void import_pickups(ecs* world) {
     zoxd_tag(Pickup);
     zoxd_tag(PickUpperer);
     zoxd_state(PickedUp);
-    zox_define_systems_pickups(world);
+    zox_systems_pickups(world);
     add_hook_spawn_prefabs(spawn_prefabs_pickups);
 }

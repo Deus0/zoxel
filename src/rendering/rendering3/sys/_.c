@@ -15,7 +15,7 @@
 #include "weights_render.c"
 #include "element.c"
 
-void zox_define_systems_basics3(ecs* world) {
+void zox_systems_basics3(ecs* world) {
     zox_render3_system(
         0,
         Chunk3TexturedRenderSystem,

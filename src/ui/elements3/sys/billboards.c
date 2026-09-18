@@ -98,7 +98,6 @@ void billboard_system(iter* it) {
             zox_getv(e, Position3D),
             rotation->value,
             world_scale);
-
         zox_sys_increment();
         if (dbg_log) {
             zox_sys_e();

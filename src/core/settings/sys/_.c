@@ -1,7 +1,7 @@
 #include "save.c"
 #include "load.c"
 
-void define_systems_settings(ecs* world) {
+void zox_systems_settings(ecs* world) {
     zox_system(
         SettingSaveSystem,
         zoxp_update,

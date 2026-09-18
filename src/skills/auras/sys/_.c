@@ -4,7 +4,7 @@
 #include "particles.c"
 #include "sounds.c"
 
-void zox_define_systems_auras(ecs* world) {
+void zox_systems_auras(ecs* world) {
     zox_filter(
         characters,
         [in] transforms3.Position3D,

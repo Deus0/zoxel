@@ -6,7 +6,7 @@
 #include "end.c"
 #include "settings.c"
 
-void define_systems_models(ecs* world) {
+void zox_systems_models(ecs* world) {
     zox_system(
         ModelSizeNodeSystem,
         zoxp_update,

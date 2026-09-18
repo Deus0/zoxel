@@ -4,7 +4,7 @@
 #include "hold.c"
 #include "raycaster.c"
 
-void zox_define_systems_actions(ecs* world) {
+void zox_systems_actions(ecs* world) {
     zox_system(
         ActiveActionSystem,
         zoxp_update,

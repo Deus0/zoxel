@@ -1,5 +1,5 @@
 #include "stream.c"
 
-void zox_define_systems_regions(ecs* world) {
+void zox_systems_regions(ecs* world) {
 
 }

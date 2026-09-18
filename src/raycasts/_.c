@@ -16,6 +16,6 @@ void import_raycasts(ecs* world) {
     //zoxd_entity(EntityTarget);
     zoxd_float3(RaycastOrigin);
     zoxd_float3(RaycastNormal);
-    zox_define_systems_raycasts(world);
+    zox_systems_raycasts(world);
     add_hook_spawn_prefabs(prefab_set_game_prefabs);
 }

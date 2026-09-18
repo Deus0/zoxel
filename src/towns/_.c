@@ -21,8 +21,8 @@ byte zox_disable_homes = 0;
 
 void import_towns(ecs* world) {
     zox_module(towns);
-    zox_define_components_towns(world);
-    zox_define_systems_towns(world);
+    zox_components_towns(world);
+    zox_systems_towns(world);
     add_hook_spawn_prefabs(zox_define_prefabs_towns);
-    zox_define_systems_towns_debug(world);
+    zox_systems_towns_debug(world);
 }

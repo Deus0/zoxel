@@ -15,7 +15,7 @@ zoxc_byte(Chunk3Stacked);
 // Links
 zox_tag(TunkLink);
 
-void define_components_tunks(ecs *world) {
+void zox_components_tunks(ecs *world) {
     zoxd_tag(Tunk);
     zoxd_tag(TunkTexture);
     zoxd_tag(RegionTexture);

@@ -25,14 +25,12 @@ void initialize_sounds() {
 
 void import_sdl(ecs* world) {
     zox_module(sdl);
-    define_components_sdl(world);
-    define_systems_sdl(world);
+    zox_components_sdl(world);
+    zox_systems_sdl(world);
     zox_module_dispose(dispose_apps_sdl);
-    // add_to_post_update_loop(app_update_gpu);
     add_hook_terminal_command(process_terminal_sdl);
     add_hook_spawn_prefabs(spawn_prefabs_sdl);
     initialize_sounds();
-    add_to_update_loop(update_sdl);
     zox_add_module(sdl_inputs);
     // Setting idk
     // SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");

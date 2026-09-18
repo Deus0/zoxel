@@ -9,7 +9,7 @@
 #include "arrow.c"
 #include "gpu.c"
 
-void define_systems_textures(ecs *world) {
+void zox_systems_textures(ecs *world) {
     zox_system(
         ArrowTextureSystem,
         zoxp_update,

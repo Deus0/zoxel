@@ -5,7 +5,7 @@ entity spawn_item_pickedup(
     byte quantity)
 {
     entity e = spawn_user_item(world, user, prefab);
-    zox_set(e, Quantity, { quantity });
-    zox_set(e, QuantityDirty, { zox_dirty_trigger });
+    zox_setv(e, Quantity, quantity);
+    zox_add(e, QuantityDirty);
     return e;
 }

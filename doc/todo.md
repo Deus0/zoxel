@@ -1,50 +1,30 @@
 # Todo
 
+- Fix icon not updating sometimes
+    - pickup item event
+- Fix touchscreen error message
+
 ## Main MVP Bugs
 - camera position off - can see through walls
 - add a function to turn off gpu disposal if non android
-- Windows sdl3 window mode - it dissapears
-    - windowed mode bug
--x Billboard lags a frame as it needs position/rotation off cameras
-    - then it will impact all children of it 
-    - for now we can just recursively set Rotation3D
-    - tried this, needs to reposition though
 - we shouldn't update mesh when terrain updates until lighting does
     - atm it flashes white during updates
 - When streaming terrain - flag neighbor of updated chunks dirty
     - the outside chunks have missing faces now
     - move a little around chunks
     - look at LOD horizon and notice chunk faces can be missing
-- action selection didnt work
-    - press 2
-    - observe no selection ui switch
 - vox item textures did not generate
     - pickup grass
     - notice no texture
-- lag spikes now that its wrapped
-    - i think the wraps stopped bugs though
-    - but lag spikes are back damn it
--x Crashes - wrap all octrees
--x Crash on start
-	-x loaded game
-	-x crashed
--x Crash on exit game
-    -x fatal: flecs.c: 20794: abort(): cannot change children of prefab 'realm_8589938080.Boney_4124' after it has been instantiated (INVALID_OPERATION)
-    - I think we fixed this by reverting most transforms back to relationships
 - Integral test on falling through map
 	- fly up
 	- fall
 	- lag spike
 	- wham into ground
--x Block (regular) didnt remove/add
-	- loaded game
-	- removed block
-	- it didnt dissapeart
 - Characters - npcs not despawning now
     - changed recently the states
 - Main Menu music missing
--x Block didnt update again... this was mesh not spawning issue
-    - when spawning on top of world
+- Block didnt update when spawning on top of world
 
 ## Refactors
 - Turn quest slayer into an event

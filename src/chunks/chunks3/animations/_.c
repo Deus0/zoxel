@@ -8,7 +8,7 @@ zoxc_double(AnimateChunk);
 
 zox_begin_module(VoxelsAnimations) {
     zoxd_double(AnimateChunk);
-    zox_define_systems_chunks3_noise(world);
+    zox_systems_chunks3_noise(world);
     add_hook_spawn_prefabs(spawn_prefabs_voxel_animations);
 } zox_end_module(VoxelsAnimations)
 

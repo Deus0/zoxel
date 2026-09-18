@@ -28,6 +28,6 @@
 
 void import_animations(ecs* world) {
     zox_module(animations);
-    define_components_animations(world);
-    define_systems_animations(world);
+    zox_components_animations(world);
+    zox_systems_animations(world);
 }

@@ -17,7 +17,7 @@ byte close_button_outline_size = 0;
 
 void import_windows(ecs* world) {
     zox_module(windows);
-    define_components_windows(world);
-    define_systems_windows(world);
+    zox_components_windows(world);
+    zox_systems_windows(world);
     add_hook_spawn_prefabs(spawn_prefabs_windows);
 }

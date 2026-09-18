@@ -12,7 +12,7 @@ zoxc_entity(TooltipperLink);
 zoxc_fixed_string(TooltipText, 512);
 zoxc_function(TooltipEvent, byte, ecs*, const TooltipEventData*);
 
-void zox_define_components_tooltips(ecs* world) {
+void zox_components_tooltips(ecs* world) {
     zoxd_tag(Tooltip);
     zoxd_tag(Tooltipper);
     zoxd_tag(TooltipLink);

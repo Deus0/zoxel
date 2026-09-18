@@ -6,7 +6,7 @@ zox_tag(DisableMovement);
 zoxc_byte(CollisionDisabled);
 zoxc_byte(Grounded); // use for friction - todo: use bit operations to check what sides cause friction and apply like that
 
-void zox_define_components_physics(ecs* world) {
+void zox_components_physics(ecs* world) {
     zoxd_tag(Moveable);
     zoxd_tag(Frictioned);
     zoxd_tag(NoClip);

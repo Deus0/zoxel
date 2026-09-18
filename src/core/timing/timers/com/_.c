@@ -9,7 +9,7 @@ zoxc_state(WarmupState);
 zoxc_state(Activate);
 zoxc_state(CooldownState);
 
-void zox_define_components_timers(ecs* world) {
+void zox_components_timers(ecs* world) {
     zoxd_byte(CanActivate);
     zoxd_double(WarmupTime);
     zoxd_double(CooldownTime);

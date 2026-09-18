@@ -1,7 +1,7 @@
 #include "label.c"
 #include "tooltip.c"
 
-void zox_define_systems_quests_ui(ecs* world) {
+void zox_systems_quests_ui(ecs* world) {
     zox_system(
         QuestIconTooltipSystem,
         zoxp_update,

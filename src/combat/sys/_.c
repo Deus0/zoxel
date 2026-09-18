@@ -1,7 +1,7 @@
 #include "death_cleanup.c"
 #include "combat_states.c"
 
-void define_systems_combat(ecs* world) {
+void zox_systems_combat(ecs* world) {
     zox_system(
         CombatStateSystem,
         zoxp_update,

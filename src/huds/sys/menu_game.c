@@ -17,7 +17,7 @@ zox_sys2(TaskbarBeginSystem) {
         }
         // Get Taskbar Body
         entity body = zox_get_child_by_id(world, e, zox_id(WindowBody));
-        if (!body) {
+        if (!zox_valid(body)) {
             zox_loge("Invalid [taskbar_body]");
             continue;
         }
@@ -40,7 +40,7 @@ zox_sys2(TaskbarBeginSystem) {
         // TODO: Get Proper Toggle per spawned window
         // entity wtoggle = toggles[0]; // for now, we just add to player  menu
         if (!zox_valid(toggle)) {
-            zox_log("Unfound Toggle [%s]: [%s]",
+            zox_logw("Unfound Toggle [%s]: [%s]",
                 zox_sys_e_name,
                 zox_getn(taskbar));
             continue;

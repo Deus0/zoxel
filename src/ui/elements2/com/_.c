@@ -25,7 +25,7 @@ zoxc_entity(ScrollviewLink);
 zoxc_entity(ListUILink);
 zoxc(OptionLabel, const char*);
 
-void define_components_elements2(ecs *world) {
+void zox_components_elements2(ecs *world) {
     zoxd_tag(Label);
     zoxd_tag(Button);
     zoxd_tag(Icon);

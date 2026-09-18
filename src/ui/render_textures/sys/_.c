@@ -3,7 +3,7 @@
 #include "screen.c"
 #include "camera_blur.c"
 
-void define_systems_render_textures(ecs* world) {
+void zox_systems_render_textures(ecs* world) {
     zox_system(
         ScreenRenderTextureSystem,
         zoxp_update,

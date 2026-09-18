@@ -10,7 +10,7 @@
     #endif
 #endif
 
-void define_systems_sounds(ecs *world) {
+void zox_systems_sounds(ecs *world) {
     zox_system(
         SoundProcessSystem,
         zoxp_update,

@@ -17,9 +17,8 @@ byte is_debug_attack = 0;
 #include "attack_trigger.c"
 #include "stay_upright_system.c"
 #include "random_jumping.c"
-#include "settings.c"
 
-void define_systems_npcs(ecs *world) {
+void zox_systems_npcs(ecs *world) {
     zox_system(
         BehaviourSystem,
         zoxp_update,
@@ -123,18 +122,5 @@ void define_systems_npcs(ecs *world) {
         [out] ai.TargetPosition,
         [none] ai.Npc,
         [none] !physics.DisableMovement,
-    );
-    // Sound gen takes longer;
-    zox_system_1(
-        AiSettingsSystem,
-        zoxp_spawn,
-        [in] settings.LoadSettings
-    );
-    zox_system(
-        AiSettingsDirtySystem,
-        zoxp_update,
-        [in] settings.SettingDirty,
-        [in] core.ZoxName,
-        [in] settings.Setting
     );
 }

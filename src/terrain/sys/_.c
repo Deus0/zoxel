@@ -12,7 +12,7 @@
 #include "stream.c"
 
 // Note: Updates on VoxelNode has to be done in PostLoad, away from use of Voxels, due to the cleaning step
-void define_systems_terrain(ecs *world) {
+void zox_systems_terrain(ecs *world) {
     zox_system(
         ChunkLinkSystem,
         zoxp_update,

@@ -34,7 +34,7 @@ zox_begin_module(Jumps)
     zoxd_byte(LandState);
     zoxd_double(Jump);
     zoxd_byte(FlyMode);
-    define_systems_jump(world);
+    zox_systems_jump(world);
 zox_end_module(Jumps)
 
 #endif

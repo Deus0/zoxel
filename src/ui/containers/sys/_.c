@@ -3,7 +3,7 @@
 #include "label.c"
 #include "clear.c"
 
-void zox_define_systems_ui_containers(ecs* world) {
+void zox_systems_ui_containers(ecs* world) {
     zox_system(
         DataFrameClickSystem,
         zoxp_update,

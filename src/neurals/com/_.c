@@ -13,7 +13,7 @@ zoxc_arrayd(BrainInputs, entity)
 zoxc_arrayd(BrainOutputs, entity)
 zoxc_arrayd(BrainLinks, entity)
 
-void define_components_neurals(ecs* world) {
+void zox_components_neurals(ecs* world) {
     zoxd_tag(Brain);
     zoxd_tag(Neuron);
     zoxd_tag(Connection);

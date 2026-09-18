@@ -1,7 +1,7 @@
 #include "follow.c"
 #include "attach.c"
 
-void define_systems_cameras3(ecs *world) {
+void zox_systems_cameras3(ecs *world) {
     zox_system(
         Camera3FollowSystem,
         zoxp_update,

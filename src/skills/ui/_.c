@@ -8,8 +8,8 @@
 #include "sys/_.c"
 
 zox_begin_module(UISkills) {
-    zox_define_components_skills_ui(world);
-    zox_define_systems_skills_ui(world);
+    zox_components_skills_ui(world);
+    zox_systems_skills_ui(world);
     // add_hook_spawn_prefabs(spawn_prefabs_ui_skills);
     add_taskbar_button(world, (TaskbarData) {
         .index = 4,

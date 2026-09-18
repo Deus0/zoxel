@@ -1,7 +1,7 @@
 #include "regions.c"
 #include "heights.c"
 
-void zox_define_systems_tunks_debug(ecs* world) {
+void zox_systems_tunks_debug(ecs* world) {
     zox_system(
         RegionTextureSystem,
         zoxp_update,

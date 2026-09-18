@@ -33,7 +33,7 @@ byte region_dividor = 32;
 
 void import_regions(ecs* world) {
     zox_module(regions);
-    zox_define_components_regions(world);
-    zox_define_systems_regions(world);
+    zox_components_regions(world);
+    zox_systems_regions(world);
     add_hook_spawn_prefabs(spawn_prefabs_regions);
 }

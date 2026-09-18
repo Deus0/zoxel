@@ -1,6 +1,4 @@
 #include "count.c"
-#include "update_loop.c"
-#include "post_update_loop.c"
 #include "stats2.c"
 #include "profiler.c"
 #include "update.c"

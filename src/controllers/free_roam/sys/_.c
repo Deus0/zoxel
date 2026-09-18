@@ -2,7 +2,7 @@
 #include "rotate.c"
 #include "toggle.c"
 
-void define_systems_free_roam(ecs* world) {
+void zox_systems_free_roam(ecs* world) {
     zox_system(
         FreeCameraMoveSystem,
         zoxp_update,

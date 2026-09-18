@@ -1,7 +1,7 @@
 #include "save.c"
 #include "load.c"
 
-void define_systems_chunksio(ecs* world) {
+void zox_systems_chunksio(ecs* world) {
     zox_system(
         chunk3_load_system,
         zoxp_load,

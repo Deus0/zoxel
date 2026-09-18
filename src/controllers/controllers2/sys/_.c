@@ -2,7 +2,7 @@
 #include "game_start.c"
 #include "game_end.c"
 
-void define_systems_controllers2(ecs *world) {
+void zox_systems_controllers2(ecs *world) {
     zox_system(
         Controller2MoveSystem,
         zoxp_update,

@@ -5,7 +5,7 @@
 #include "bounds2D_system.c"
 #include "gravity2D_system.c"
 
-void define_systems_physics2(ecs* world) {
+void zox_systems_physics2(ecs* world) {
     zox_system(
         Friction2DSystem,
         zoxp_physics,

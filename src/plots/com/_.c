@@ -7,7 +7,7 @@ zoxc_double(PlotMax);
 zoxc_entity(PlotDataLink);
 zoxc_int(PlotLineIndex);
 
-void zox_define_components_plots(ecs* world) {
+void zox_components_plots(ecs* world) {
     zoxd_tag(Plot);
     zoxd_tag(PlotLine);
     zoxd_tag(PlotLabel);

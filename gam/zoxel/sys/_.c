@@ -14,7 +14,7 @@
 #include "biomes.c"
 #include "biome_blocks.c"
 
-void define_systems_zoxel(ecs *world) {
+void zox_systems_zoxel(ecs *world) {
     zox_system_1(
         StatsRealmSpawnSystem,
         zoxp_spawn,

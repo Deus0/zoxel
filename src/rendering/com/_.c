@@ -68,7 +68,7 @@ static inline int2 get_texture_size(ecs* world, entity e) {
     return zox_getv(e, TextureSize);
 }
 
-void define_components_rendering(ecs *world) {
+void zox_components_rendering(ecs *world) {
     zoxd_tag(Mesh);
     zoxd_tag(Shader);
     zoxd_tag(Material);

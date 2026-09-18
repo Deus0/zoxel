@@ -1,4 +1,7 @@
-entity spawn_prefab_gamepad(ecs *world, entity prefab) {
+entity spawn_prefab_gamepad(
+    ecs *world,
+    entity prefab)
+{
     zox_prefab_child(prefab);
     zox_prefab_name("gamepad");
     zox_add(e, Gamepad);
@@ -97,7 +100,10 @@ entity spawn_gamepad(
     return e;
 }
 
-entity spawn_gamepad_new(ecs* world, entity parent) {
+entity spawn_gamepad_new(
+    ecs* world,
+    entity parent)
+{
     zox_instance(prefab_gamepad);
     zox_name("gamepad");
     zox_set_parent(world, e, parent);

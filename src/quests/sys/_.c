@@ -2,7 +2,7 @@
 #include "slay.c"
 #include "marker.c"
 
-void define_systems_quests(ecs* world) {
+void zox_systems_quests(ecs* world) {
     zox_system(
         SlaySystem,
         zoxp_update,

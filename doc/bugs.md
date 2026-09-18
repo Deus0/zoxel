@@ -5,10 +5,8 @@
 	- doesnt crash when gdb on khadas, just rund	
 	
 Unsorted
--x Body lagging still behind camera
-    - Only sometimes?
-    - Suddenly, body lagging again
-    - pipelines should be fine though
+- Windows sdl3 window mode - it dissapears
+    - windowed mode bug
 - Big Terrain Disposal Bug
     - set render distance to 32
     - terrain very big, and delete, it causes it to hang

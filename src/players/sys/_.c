@@ -2,7 +2,7 @@
 #include "state.c"
 #include "event.c"
 
-void zox_define_systems_players(ecs* world) {
+void zox_systems_players(ecs* world) {
     zox_system(
         PlayerGameStateSystem,
         zoxp_update,

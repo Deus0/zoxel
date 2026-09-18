@@ -29,7 +29,7 @@ void update_statistics_particles3D() {
 zox_begin_module(Particles3D) {
     zoxd_tag(Particle3D);
     zoxd_tag(Particle3DEmitter);
-    define_systems_particles3(world);
+    zox_systems_particles3(world);
     add_hook_load_shader(&spawn_shaders_particles3D);
     add_hook_spawn_prefabs(spawn_prefabs_particles3D);
 } zox_end_module(Particles3D)

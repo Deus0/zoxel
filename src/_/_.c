@@ -103,7 +103,6 @@ void process_arguments_flecs(ecs *world, char* args[], int count) {
 void initialize_zox(ecs* world) {
     zox_module_dispose(module_dispose_zox);
     clear_logs();
-    initialize_update_loop();
     initialize_hook_terminal_command();
     initialize_hook_files_load();
     initialize_hook_spawn_prefabs();
@@ -112,7 +111,7 @@ void initialize_zox(ecs* world) {
     add_hook_terminal_command(process_arguments_flecs);
     add_hook_on_boot(on_boot_game_store);
     set_noise_seed(get_unique_time_seed());
-#if zox_web
+/*#if zox_web
     add_to_update_loop(update_web_canvas);
-#endif
+#endif*/
 }

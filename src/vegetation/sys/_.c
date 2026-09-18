@@ -1,7 +1,7 @@
 #include "maps.c"
 #include "chunks.c"
 
-void zox_define_systems_vegetation(ecs* world) {
+void zox_systems_vegetation(ecs* world) {
     // NOTE: Vegetation maps need biomes and temperature maps
     zox_system(
         VegetationMapSystem,

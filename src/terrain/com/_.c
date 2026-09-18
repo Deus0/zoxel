@@ -22,7 +22,7 @@ entity get_linked_terrain(ecs* world, entity e) {
     return zox_get_link(world, e, TerrainLink);
 }
 
-void define_components_terrain(ecs *world) {
+void zox_components_terrain(ecs *world) {
     zoxd_tag(Terrain);
     zoxd_nf_tag(TerrainLink);
     zoxd_tag(FlatTerrain);

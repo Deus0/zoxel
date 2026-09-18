@@ -1,6 +1,6 @@
 #include "state.c"
 
-void zox_define_systems_games(ecs* world) {
+void zox_systems_games(ecs* world) {
     // NOTE: MainThread because triggers event
     zox_system_1(
         GameStateSystem,

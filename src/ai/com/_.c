@@ -13,7 +13,7 @@ zoxc_float3(ThreatPosition);
 zoxc_float3(WanderDirection);
 zoxc_entity(FollowTarget);
 
-void define_components_npcs(ecs* world) {
+void zox_components_npcs(ecs* world) {
     zoxd_tag(Npc);
     zoxd_tag(Jumper);
     zoxd_tag(Wanderer);

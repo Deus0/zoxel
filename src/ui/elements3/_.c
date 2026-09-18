@@ -14,6 +14,6 @@ float zox_popup_scale = 0.05f;
 void import_elements3(ecs* world) {
     zox_module(elements3);
     zoxd_components_elemments3(world);
-    define_systems_elements3D(world);
+    zox_systems_elements3D(world);
     add_hook_spawn_prefabs(spawn_prefabs_elements3D);
 }

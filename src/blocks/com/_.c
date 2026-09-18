@@ -34,7 +34,7 @@ entity get_block_link(ecs* world, entity e) {
     return zox_getv(e, BlockLink);
 }
 
-void zox_define_components_blocks(ecs *world) {
+void zox_components_blocks(ecs *world) {
     zoxd_tag(Voxel);
     zoxd_tag(Block);
     zoxd_tag(BlockVox);

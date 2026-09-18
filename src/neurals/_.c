@@ -9,8 +9,8 @@
 
 void import_neurals(ecs* world) {
     zox_module(neurals);
-    define_components_neurals(world);
-    define_systems_neurals(world);
+    zox_components_neurals(world);
+    zox_systems_neurals(world);
     add_hook_spawn_prefabs(spawn_prefabs_neurals);
     // spawn_test_brain(world);
 }

@@ -4,7 +4,7 @@ zox_tag(ItemFrame);
 zox_tag(IconItem);
 zox_tag(ItemIconLabel);
 
-void define_components_items_ui(ecs* world) {
+void zox_components_items_ui(ecs* world) {
     zoxd_tag(Inventory);
     zoxd_tag(MenuItems);
     zoxd_tag(ItemFrame);

@@ -25,10 +25,10 @@
 
 void import_chunks3(ecs* world) {
     zox_module(chunks3);
-    define_components_chunks3(world);
-    define_systems_chunks3(world);
-    define_systems_chunksio(world);
-    define_systems_chunks3_debug(world);
+    zox_components_chunks3(world);
+    zox_systems_chunks3(world);
+    zox_systems_chunksio(world);
+    zox_systems_chunks3_debug(world);
     add_hook_spawn_prefabs(spawn_prefabs_chunks);
     add_hook_files_load(zox_tests_chunks3);
 }

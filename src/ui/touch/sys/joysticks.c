@@ -105,19 +105,30 @@ zox_sys2(VirtualJoystickSystem) {
             continue;
         }
         entity player = zox_get_parent(world, device->value);
-        if (!zox_valid(player) || !zox_has(player, Player)) {
+        if (!zox_valid(player) ||
+            !zox_has(player, Player))
+        {
             zox_loge("Device not attached to player [%s] > [%s]",
                 zox_getn(device->value),
                 zox_getn(player));
             continue;
         }
-        entity canvas = zox_get_link(world, player, CanvasLink);
+        entity canvas = zox_get_link(
+            world,
+            player,
+            CanvasLink);
         if (!zox_valid(canvas)) {
             continue;
         }
         if (zox_valid(joystick_ui->value)) {
-            handle_touch_drag(world, e, joystick->value);
-            handle_touch_release(world, e, joystick->value);
+            handle_touch_drag(
+                world,
+                e,
+                joystick->value);
+            handle_touch_release(
+                world,
+                e,
+                joystick->value);
             continue;
         }
         // NOTE: On first click, spawn virtual joystick

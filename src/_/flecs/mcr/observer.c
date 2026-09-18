@@ -46,19 +46,18 @@ void zox_observer_internal(
         line);
 }
 
-#define zox_observer(T, callback, event, ...) \
+#define zox_observer(callback, event, ...) \
     zox_observer_internal( \
         world, \
-        #T, \
+        #callback, \
         callback, \
         event, \
         #__VA_ARGS__, \
         __FILE__, \
         __LINE__)
 
-#define zox_on_add(T, callback, ...) \
+#define zox_on_add(callback, ...) \
     zox_observer( \
-        T, \
         callback, \
         EcsOnAdd, \
         __VA_ARGS__)

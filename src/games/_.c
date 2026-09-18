@@ -26,8 +26,8 @@
 
 void import_games(ecs* world) {
     zox_module(games);
-    define_components_games(world);
-    zox_define_systems_games(world);
+    zox_components_games(world);
+    zox_systems_games(world);
     add_hook_terminal_command(process_arguments_games);
     add_hook_spawn_prefabs(spawn_prefabs_games);
     // zox_module_dispose(dispose_games);

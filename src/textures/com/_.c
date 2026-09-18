@@ -31,7 +31,7 @@ zoxc_entities(TextureLinks)
 zox_tag(VoxTexture);
 zox_tag(CenterVoxTexture);
 
-void define_components_textures(ecs* world) {
+void zox_components_textures(ecs* world) {
     // entity types
     zoxd_tag(Texture);    // RGBA
     zoxd_tag(TextureRGB);

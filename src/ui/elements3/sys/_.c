@@ -4,7 +4,7 @@
 #include "billboards.c"
 #include "mesh.c"
 
-void define_systems_elements3D(ecs *world) {
+void zox_systems_elements3D(ecs *world) {
     zox_system(
         Layout3MeshBeginSystem,
         zoxp_initialize,

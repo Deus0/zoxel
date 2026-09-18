@@ -7,7 +7,7 @@
 #include "toggle_state.c"
 #include "scrollbar_handle.c"
 
-void define_systems_elements2(ecs *world) {
+void zox_systems_elements2(ecs *world) {
     zox_system(
         ElementDragSystem,
         zoxp_update,

@@ -7,7 +7,7 @@ zoxc(LineData2D, float4);
 // zoxc(LineLocalPosition2, int4);
 // zoxc(LineAnchor, float4);
 
-void define_components_lines2(ecs* world) {
+void zox_components_lines2(ecs* world) {
     zoxd_tag(Line2D);
     zoxd_tag(ElementLine2D);
     zoxd(LineData2D);

@@ -21,7 +21,7 @@ zoxc_byte(WalkSpeed);
 zoxc_double(SwingStart);
 zoxc_float(SwingSpeed);
 
-void define_components_bones(ecs* world) {
+void zox_components_bones(ecs* world) {
     zoxd_tag(Bone);
     zoxd_tag(Skeleton);
     zoxd_tag(PaintedSkeleton);

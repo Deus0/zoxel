@@ -27,7 +27,7 @@ typedef struct {
 } LayoutLinePoints;
 zoxc_custom(LayoutLinePoints);
 
-void define_components_layouts2(ecs* world) {
+void zox_components_layouts2(ecs* world) {
     // Canvases
     zoxd_tag(Layout);
     zoxd_tag(Canvas);

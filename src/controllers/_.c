@@ -22,7 +22,7 @@
 
 void import_controllers(ecs* world) {
     zox_module(controllers);
-    zox_define_systems_controllers(world);
+    zox_systems_controllers(world);
     zox_add_module(controllers2);
     zox_add_module(controllers3);
     zox_add_module(freeroam);

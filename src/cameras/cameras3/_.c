@@ -12,5 +12,5 @@ float pause_vignette = 2.2f;
 void import_cameras3(ecs* world) {
     zox_module(cameras3);
     add_hook_spawn_prefabs(spawn_prefabs_cameras3);
-    define_systems_cameras3(world);
+    zox_systems_cameras3(world);
 }

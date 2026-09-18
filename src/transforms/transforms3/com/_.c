@@ -16,7 +16,7 @@ zoxc_state(Bounds3Dirty);
 zoxc_float6(Position3DBounds);
 zoxc_byte(Transform3Dirty);
 
-void define_components_transforms3(ecs* world) {
+void zox_components_transforms3(ecs* world) {
     zoxd_tag(EulerOverride);
     zoxd_tag(CameraTransform);
     zoxd_float3(Position3D);

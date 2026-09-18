@@ -16,8 +16,8 @@
 
 void import_streaming(ecs* world) {
     zox_module(streaming);
-    define_components_streaming(world);
-    define_systems_streaming(world);
+    zox_components_streaming(world);
+    zox_systems_streaming(world);
     // initialize_settings_streaming(world);
     add_hook_spawn_prefabs(zox_define_prefabs_streaming);
 }

@@ -3,7 +3,7 @@
 #include "uvs.c"
 #include "indexes.c"
 
-void zox_define_systems_blocks(ecs* world) {
+void zox_systems_blocks(ecs* world) {
     zox_system(
         RealmTilemapSystem,
         zoxp_update,

@@ -12,7 +12,7 @@
 #include "texture.c"
 #include "texture_heights.c"
 
-void define_systems_tunks(ecs* world) {
+void zox_systems_tunks(ecs* world) {
     zox_system(
         TunkEndSystem,
         zoxp_update,

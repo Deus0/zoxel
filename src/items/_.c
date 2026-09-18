@@ -13,12 +13,14 @@ byte max_stack_quantity = 255;
 #include "ui/_.c"
 #include "fun/_.c"
 #include "sys/_.c"
+#include "eve/_.c"
 #include "tst/_.c"
 
 void import_items(ecs* world) {
     zox_module(items);
-    define_components_items(world);
-    define_systems_items(world);
+    zox_components_items(world);
+    zox_systems_items(world);
     zox_import_module(ItemsUI);
     add_hook_spawn_prefabs(zox_prefabs_items);
+    add_hook_spawn_prefabs(zox_events_items);
 }

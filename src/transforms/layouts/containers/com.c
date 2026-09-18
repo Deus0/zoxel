@@ -14,7 +14,7 @@ zoxc_byte2(GridMargins);
 zoxc_byte2(GridPadding);
 zoxc_state(GridDirty);
 
-void define_components_containers(ecs* world) {
+void zox_components_containers(ecs* world) {
     // Lists
     zoxd_byte(ListStart);
     zoxd_byte(ListVisible);

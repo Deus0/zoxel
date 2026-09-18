@@ -9,7 +9,7 @@ zoxc_int2(WindowPosition);
 zoxc_int2(WindowSizeRestore);
 zoxc_int2(WindowPositionRestore);
 
-void define_components_apps(ecs *world) {
+void zox_components_apps(ecs *world) {
     zoxd_tag(App);
     zoxd_nf_tag(AppLink);
     zoxd_state(WindowSizeDirty);

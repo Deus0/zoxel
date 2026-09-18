@@ -5,7 +5,7 @@
 #include "tooltip.c"
 #include "players.c"
 
-void define_systems_stats_ui(ecs *world) {
+void zox_systems_stats_ui(ecs *world) {
     zox_system(
         StatbarSystem,
         zoxp_update,

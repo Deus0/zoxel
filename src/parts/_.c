@@ -35,8 +35,8 @@
 
 void import_parts(ecs* world) {
     zox_module(parts);
-    define_components_bodys(world);
-    define_systems_bodys(world);
+    zox_components_bodys(world);
+    zox_systems_bodys(world);
     add_hook_spawn_prefabs(spawn_prefabs_bodys);
     // initialize_settings_models(world);
     add_taskbar_button(world, (TaskbarData) {

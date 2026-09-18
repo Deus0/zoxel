@@ -1,15 +1,8 @@
 #include "boot.c"
 #include "settings.c"
 
-void zox_define_systems_apps(ecs *world) {
+void zox_systems_apps(ecs *world) {
     // NOTE: Needs mainthread for GPU settings
-    zox_system_1(
-        AppsSettingsDirtySystem,
-        zoxp_spawn, // zoxp_update,
-        [in] settings.SettingDirty,
-        [in] core.ZoxName,
-        [in] settings.Setting
-    );
     zox_system_1(
         app_boot_system,
         zoxp_spawn,

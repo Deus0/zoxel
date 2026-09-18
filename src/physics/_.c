@@ -14,7 +14,7 @@ float zox_physics_max_delta_time = 0.1f;
 
 void import_physics(ecs* world) {
     zox_module(physics);
-    zox_define_components_physics(world);
+    zox_components_physics(world);
     zox_add_module(physics2);
     zox_add_module(physics3);
 }

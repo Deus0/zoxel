@@ -17,8 +17,8 @@
 
 void import_players(ecs* world) {
     zox_module(players);
-    zox_define_components_players(world);
-    zox_define_systems_players(world);
+    zox_components_players(world);
+    zox_systems_players(world);
     add_hook_on_boot(on_boot_players);
     add_hook_spawn_prefabs(spawn_prefabs_players);
     // add_to_event_game_state((zox_game_event) { &game_state_players });

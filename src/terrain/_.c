@@ -29,8 +29,8 @@ byte stream_update_rate = 1;
 
 void import_terrains(ecs* world) {
     zox_module(terrains);
-    define_components_terrain(world);
-    define_systems_terrain(world);
+    zox_components_terrain(world);
+    zox_systems_terrain(world);
     add_hook_terminal_command(process_arguments_terrain);
     add_hook_spawn_prefabs(spawn_prefabs_terrain);
     add_hook_spawn_prefabs(zox_events_terrain);

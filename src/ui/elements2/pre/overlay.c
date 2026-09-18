@@ -1,4 +1,7 @@
-entity spawn_prefab_overlay(ecs *world, entity prefab) {
+entity spawn_prefab_overlay(
+    ecs *world,
+    entity prefab)
+{
     zox_prefab_child(prefab);
     zox_prefab_name("screen_overlay");
     zox_add(e, CanvasOverlay);

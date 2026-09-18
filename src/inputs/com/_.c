@@ -31,7 +31,7 @@ zoxc_entity(ZeviceLink);
 zoxc_entity(VirtualZeviceLink);
 #include "keyboard.c"
 
-void define_components_inputs(ecs *world) {
+void zox_components_inputs(ecs *world) {
     zoxd_tag(Device);
     zoxd_tag(Zevice);
     zoxd_tag(Gamepad);

@@ -22,7 +22,7 @@
 
 void import_dialogues(ecs* world) {
     zox_module(dialogues);
-    define_components_dialogues(world);
-    define_systems_dialogues(world);
+    zox_components_dialogues(world);
+    zox_systems_dialogues(world);
     add_hook_spawn_prefabs(spawn_prefabs_dialogues);
 }

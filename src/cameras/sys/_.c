@@ -3,7 +3,7 @@
 #include "orthographic.c"
 #include "view_projection.c"
 
-void define_systems_cameras(ecs *world) {
+void zox_systems_cameras(ecs *world) {
     zox_system(
         ViewportResizeSystem,
         zoxp_update,

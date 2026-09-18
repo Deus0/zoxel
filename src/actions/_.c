@@ -16,8 +16,8 @@ byte test_actions_skills = 0;
 
 void import_actions(ecs* world) {
     zox_module(actions);
-    zox_define_components_actions(world);
-    zox_define_systems_actions(world);
+    zox_components_actions(world);
+    zox_systems_actions(world);
     add_hook_spawn_prefabs(spawn_prefabs_actions);
     zox_add_module(actions_ui);
 }

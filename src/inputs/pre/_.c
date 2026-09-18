@@ -19,15 +19,16 @@ entity local_mouse;
 #include "keyboard.c"
 #include "gamepad.c"
 #include "touchscreen.c"
-int prefabs_count_devices = 0;
-entity prefabs_devices[32];
+#include "finger.c"
+// int prefabs_count_devices = 0;
+/*entity prefabs_devices[32];
 
 // setters for higher modules to add to characters
 #define zox_prefab_set_device(T, ...) {\
     for (int i = 0; i < prefabs_count_devices; i++) {\
         zox_prefab_set(prefabs_devices[i], T, __VA_ARGS__)\
     }\
-}
+}*/
 
 entity prefab_touchscreen;
 entity prefab_finger;
@@ -58,9 +59,9 @@ void spawn_prefabs_inputs(ecs *world) {
         world,
         prefab_device);
     // references?
-    prefabs_devices[prefabs_count_devices++] = prefab_device;
+    /*prefabs_devices[prefabs_count_devices++] = prefab_device;
     prefabs_devices[prefabs_count_devices++] = prefab_keyboard;
     prefabs_devices[prefabs_count_devices++] = prefab_mouse;
     prefabs_devices[prefabs_count_devices++] = prefab_gamepad;
-    prefabs_devices[prefabs_count_devices++] = prefab_touchscreen;
+    prefabs_devices[prefabs_count_devices++] = prefab_touchscreen;*/
 }

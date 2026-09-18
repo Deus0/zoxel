@@ -6,8 +6,8 @@
 #include "sys/_.c"
 
 zox_begin_module(Containers) {
-    define_components_containers(world);
-    define_systems_containers(world);
+    zox_components_containers(world);
+    zox_systems_containers(world);
 } zox_end_module(Containers);
 
 #endif

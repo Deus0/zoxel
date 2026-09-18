@@ -13,7 +13,7 @@ byte zox_texts_min_resolution = 32;
 
 void import_texts(ecs* world) {
     zox_module(texts);
-    define_components_texts(world);
-    define_systems_texts(world);
+    zox_components_texts(world);
+    zox_systems_texts(world);
     add_hook_spawn_prefabs(spawn_prefabs_texts);
 }

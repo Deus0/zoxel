@@ -7,7 +7,7 @@ void app_initialize_lights(ecs* world, entity app) {
 }
 
 void lights_settings_observer_callback(iter* it) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ZoxName);

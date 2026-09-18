@@ -3,7 +3,7 @@
 #include "position.c"
 #include "new.c"
 
-void define_systems_line2(ecs* world) {
+void zox_systems_line2(ecs* world) {
     zox_render2D_system(
         ElementLine2DRenderSystem,
         [in] transforms2.LinePoints2,

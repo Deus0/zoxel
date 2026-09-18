@@ -3,7 +3,7 @@
 #include "menu_game.c"
 #include "crosshair.c"
 
-void define_systems_game_ui(ecs *world) {
+void zox_systems_game_ui(ecs *world) {
     zox_system(
         RaycastCrosshairSystem,
         zoxp_update,

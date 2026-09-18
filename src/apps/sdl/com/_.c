@@ -32,7 +32,7 @@ ECS_DTOR(Context, ptr, {
     #include "mix_chunk.c"
 #endif
 
-void define_components_sdl(ecs *world) {
+void zox_components_sdl(ecs *world) {
     zoxd_dest_old(SDLWindow);
     zoxd_dest_old(Context);
     zoxd_dest_old(Renderer);

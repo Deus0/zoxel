@@ -19,7 +19,7 @@ zoxc_state(AnimateTextEnded);
 #define zox_speakers_max 2
 zoxc_array(SpeakerLinks, entity, zox_speakers_max);
 
-void define_components_dialogues(ecs* world) {
+void zox_components_dialogues(ecs* world) {
     zoxd_tag(DialogueNode);
     zoxd_tag(Dialogue);
     zoxd_tag(DialogueProcess);

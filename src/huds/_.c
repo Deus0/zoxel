@@ -37,8 +37,8 @@ void import_huds(ecs* world) {
     // zox_module_dispose(dispose_gameui);
     add_hook_spawn_prefabs(spawn_prefabs_game_ui);
     // initialize_TaskbarData();
-    define_components_game_ui(world);
-    define_systems_game_ui(world);
+    zox_components_game_ui(world);
+    zox_systems_game_ui(world);
     add_hook_spawn_prefabs(spawn_prefabs_game_ui);
     // add_hook_spawn_prefabs(spawn_taskbar_manager);
     add_hook_spawn_prefabs(zox_events_huds);
