@@ -2,21 +2,23 @@
 set -euo pipefail
 
 # TODO: Add All to itch.sh
-# TODO: Add game to docker shell
 # TODO: Restore web build
+game="${1:-zoxel}"
+root="${PATH}"
 
-# Linux - needs docker to use a lower library
-bash bsh/docker.sh zoxel --release --package --x64
-bash bsh/docker.sh zoxel--release --package --arm
 # Windows
-bash bsh/build.sh zoxel --release --package --x64 --windows
+PATH="${root}" bash bsh/build.sh "${game}" --release --package --x64 --windows --sdl2
+# Linux - needs docker to use a lower library
+PATH="${root}" bash bsh/docker.sh "${game}" --release --package --x64
+PATH="${root}" bash bsh/docker.sh "${game}" --release --package --arm
 # Android
-bash bsh/android.sh zoxel --release --unsigned
+PATH="${root}" bash bsh/android.sh "${game}" --release --signed
 # XR
-bash bsh/android.sh zoxel --release --unsigned --xr
-# bash bsh/web.sh --release
+PATH="${root}" bash bsh/android.sh "${game}" --release --signed --xr
+
+# bash bsh/web.sh ${game} --release
 # Arch Package
 # Debian Package
-
+# --unsigned
 # Push to web platforms
-bash bsh/itch.sh --all
+# bash bsh/itch.sh --all

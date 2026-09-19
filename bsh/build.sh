@@ -397,7 +397,8 @@ fi
 ${compiler} ${cflags} ${sources} -o "${bin_path}" ${includes} ${dflags} ${libs}
 echo "+ Completed Build [${bin_path}]"
 
-# link to bin/
+# link to bin
+# TODO: Check if on host platform here - dont if cross compiling
 ln -sfn "${bin_folder#${output_folder}/}/$(basename "${bin_path}")" \
     "${output_folder}/${bin_filename}.${output_extension}"
 

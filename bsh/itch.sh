@@ -91,17 +91,24 @@ get_package_name() {
 get_package_channel() {
     local filename="$1"
     local name
-    local game platform arch
+    local game platform arch variant
+    local channel
 
     name="$(get_package_name "$filename")"
 
-    IFS='_' read -r game platform arch _ <<< "$name"
+    IFS='_' read -r game platform arch variant _ <<< "$name"
+
+    channel="${platform}_${arch}"
+
+    if [[ "$variant" == "xr" ]]; then
+        channel="${channel}_xr"
+    fi
 
     if [[ "$filename" == *.pkg.tar.zst ]]; then
-        printf '%s_%s_arch' "$platform" "$arch"
-    else
-        printf '%s_%s' "$platform" "$arch"
+        channel="${channel}_arch"
     fi
+
+    printf '%s' "$channel"
 }
 
 # === Check package directory ===

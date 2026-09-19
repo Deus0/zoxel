@@ -141,8 +141,10 @@ case "$TARGET" in
                     SYSROOT=""
                     PKG_CONFIG_LIBDIR=""
                 else
-                    SYSROOT="/usr/aarch64-linux-gnu"
-                    PKG_CONFIG_LIBDIR="$SYSROOT/lib/pkgconfig:$SYSROOT/share/pkgconfig:$SYSROOT/usr/lib/pkgconfig"
+                    SYSROOT=""
+                    PKG_CONFIG_LIBDIR="/usr/aarch64-linux-gnu/lib/pkgconfig:/usr/aarch64-linux-gnu/share/pkgconfig"
+                    #SYSROOT="/usr/aarch64-linux-gnu"
+                    #PKG_CONFIG_LIBDIR="$SYSROOT/lib/pkgconfig:$SYSROOT/share/pkgconfig:$SYSROOT/usr/lib/pkgconfig"
                 fi
                 ;;
 

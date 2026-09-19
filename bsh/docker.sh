@@ -107,6 +107,66 @@ packages=(
     "${audio_packages[@]}"
 )
 
+# ARM cross compiler
+if [[ " ${ARGS[*]} " == *" --arm "* ]] &&
+   [[ "$(uname -m)" == "x86_64" ]]; then
+    echo "🐳 Cross Compiling Arm Detected!"
+
+    docker exec "$CONTAINER_NAME" dpkg --add-architecture arm64
+
+    docker exec "$CONTAINER_NAME" bash -c '
+        . /etc/os-release
+
+        cat > /etc/apt/sources.list.d/ubuntu.sources <<EOF
+Types: deb
+URIs: http://archive.ubuntu.com/ubuntu
+Suites: ${VERSION_CODENAME} ${VERSION_CODENAME}-updates ${VERSION_CODENAME}-backports
+Components: main restricted universe multiverse
+Architectures: amd64
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+Types: deb
+URIs: http://security.ubuntu.com/ubuntu
+Suites: ${VERSION_CODENAME}-security
+Components: main restricted universe multiverse
+Architectures: amd64
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+EOF
+
+        cat > /etc/apt/sources.list.d/arm64.sources <<EOF
+Types: deb
+URIs: http://ports.ubuntu.com/ubuntu-ports
+Suites: ${VERSION_CODENAME} ${VERSION_CODENAME}-updates ${VERSION_CODENAME}-backports
+Components: main restricted universe multiverse
+Architectures: arm64
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+Types: deb
+URIs: http://ports.ubuntu.com/ubuntu-ports
+Suites: ${VERSION_CODENAME}-security
+Components: main restricted universe multiverse
+Architectures: arm64
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+EOF
+
+        rm -f /etc/apt/sources.list
+    '
+
+    echo "📦 Updating System [$CONTAINER_NAME]"
+    docker exec \
+        -e DEBIAN_FRONTEND=noninteractive \
+        "$CONTAINER_NAME" \
+        apt update
+
+    arm_cross_packages=(
+        gcc-aarch64-linux-gnu
+        g++-aarch64-linux-gnu
+        libegl1-mesa-dev:arm64
+        libgles2-mesa-dev:arm64
+    )
+    packages+=("${arm_cross_packages[@]}")
+fi
+
 # git
 # libglu1-mesa-dev
 

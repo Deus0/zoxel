@@ -4,7 +4,7 @@ set -euo pipefail
 # Test
 #    bash bsh/android.sh zoxel --opengl --sdl --debug --install
 # Debug
-#    bash bsh/android.sh zoxel opengl sdl --debug --install --log --verbose
+#    bash bsh/android.sh zoxel opengl sdl --debug --install --logs --verbose
 # Debug
 # bash bsh/android.sh zoxel --debug --install
 # Optimized release, unsigned
@@ -48,12 +48,8 @@ set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 host_arch="$(uname -m)"
-
 apk_dir="${root}/zip"           # Output Directory
-date_str=$(date +%Y_%m_%d)      # Date tag
-
 game_name="${1:-zoxel}"
-apk_path="${apk_dir}/${game_name}_android_arm_${date_str}.apk"
 app_name="${game_name^}"    # First letter will be capitalized
 
 is_run="0"
@@ -101,6 +97,12 @@ fi
 [[ " $* " == *" --xr "* ]] && is_xr="1"
 [[ " $* " == *" --testxr "* ]] && testxr="1"
 [[ " $* " == *" --testsdl "* ]] && testsdl="1"
+
+date_str=$(date +%Y_%m_%d)
+
+apk_path="${apk_dir}/${game_name}_android_arm"
+[[ "${is_xr}" == "1" ]] && apk_path="${apk_path}_xr"
+apk_path="${apk_path}_${date_str}.apk"
 
 # make our export folder
 mkdir -p "${apk_dir}"
