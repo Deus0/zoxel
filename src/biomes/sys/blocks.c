@@ -1,6 +1,6 @@
 // NOTE: Adds biome blocks onto realm
 zox_sys2(BiomeBlocksDirtySystem) {
-    byte dbg_log = 0;
+    byte dbg_log = 1;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Generate);
@@ -16,9 +16,15 @@ zox_sys2(BiomeBlocksDirtySystem) {
                 world,
                 realm,
                 zox_id(Block));
-            uint biome_blocks = zox_get_children_count_by_id(world, e, zox_id(Block));
-            zox_log("Biome Blocks Dirty [%s]:[%i] with Realm Blocks [%i]", zox_get_name(e), biome_blocks, realm_blocks);
+            uint biome_blocks = zox_get_children_count_by_id(
+                world,
+                e,
+                zox_id(Block));
+            zox_log("Biome Blocks Dirty [%s]:[%i] with Realm Blocks [%i]",
+                zox_get_name(e),
+                biome_blocks,
+                realm_blocks);
         }
-        zox_setv(realm, BlocksDirty, zox_blocks_dirty_start);
+        zox_add(realm, BlocksDirty);
     }
 } zox_sys_end(BiomeBlocksDirtySystem);

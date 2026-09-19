@@ -11,13 +11,13 @@ entity spawn_realm_block_solid(
 {
     byte depth = block_depth;
     entity e = zox_ins(world, prefab);
-    zox_set_parent(world, e, parent);
     set_ZoxName(world, e, name);
     zox_set_unique_name(e, name);
     zox_setv(e, Seed, seed);
     zox_setv(e, Color, primary);
     zox_setv(e, BlockCollider, zox_block_solid);
     zox_setv(e, BlockModel, zox_block_solid);
+    zox_set_parent(world, e, parent);
     if (model) {
         // TODO: Juset set model type if model
         zox_setv(e, ModelLink, model);
@@ -42,7 +42,7 @@ entity spawn_realm_block_solid(
         }
         zox_setv(e2, VoxBakeSide, i);
         zox_setv(e2, ModelLink, model);
-        zox_setv(e2, BlockLink, e);
+        zox_link(world, e2, BlockLink, e);
         zox_setv(e2, ChildIndex, i);
         zox_set_parent(world, e2, e);
         // textures.value[i] = e2;

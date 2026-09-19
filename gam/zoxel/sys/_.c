@@ -71,7 +71,7 @@ void zox_systems_zoxel(ecs *world) {
         zoxp_spawn,
         [in] realms.GenerateRealm,
         [in] core.Seed,
-        [out] blocks.BlocksDirty,
+        // [out] blocks.BlocksDirty,
         [none] realms.Realm
     );
     zox_system_1(

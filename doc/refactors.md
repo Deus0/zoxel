@@ -1,6 +1,12 @@
 # Refactoring
 
 Next
+- remove TilemapIndex and use regular index since relations are ordered
+- Refactor character vox into sub entity
+- Single Vox for Grass
+	- split into sub chunks
+-Move blockVox from models into blocks
+	- just link it to model and tag it, no need to have it models
 - Make the tooltip systems into observer / events
 - Add locks onto all VoxelNode setters and getters
 -x Add observer function, when Dirty is added to setting, replace SettingsDirtySystem's

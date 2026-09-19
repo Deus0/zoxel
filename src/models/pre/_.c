@@ -2,9 +2,10 @@
 entity prefab_node_model;
 entity prefab_process_model;
 entity prefab_model_group;
-entity prefab_block_vox_meta;
+entity prefab_block_base;
 entity prefab_block_vox;
 entity prefab_block_vox_instanced;
+entity prefab_block_baked;
 entity prefab_vox;
 entity prefab_invisible_vox;
 entity prefab_static_vox;
@@ -31,8 +32,15 @@ void spawn_prefabs_models(ecs *world) {
     // Moveable Voxes
     prefab_vox = spawn_prefab_vox(world, block_depth);
     // Level 1
-    prefab_block_vox_meta = spawn_prefab_block_vox_meta(world, prefab_block);
-    prefab_vox_file = spawn_prefab_vox_file(world, prefab_chunk_base);
+    prefab_block_base = spawn_prefab_block_base(
+        world,
+        prefab_block);
+    prefab_block_baked = spawn_prefab_block_baked(
+        world,
+        prefab_block_base);
+    prefab_vox_file = spawn_prefab_vox_file(
+        world,
+        prefab_chunk_base);
     prefab_vox_instanced = spawn_prefab_vox_instanced(
         world,
         prefab_renderer_instance);

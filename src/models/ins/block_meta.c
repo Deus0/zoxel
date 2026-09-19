@@ -42,7 +42,7 @@ entity spawn_block_vox_meta(
         zox_set_name_e(e2, "texture_block");
         zox_set(e2, VoxBakeSide, { i });
         zox_set(e2, ModelLink, { data.model });
-        zox_set(e2, BlockLink, { e });
+        zox_link(world, e2, BlockLink, e);
         zox_set_parent(world, e2, e);
         // textures.value[i] = e2;
     }

@@ -14,7 +14,10 @@ entity spawn_block_texture(
         .prefab_texture = prefab_vox_texture,
         .texture_filename = texture_filename,
     };
-    entity e = spawn_block(world, spawn_data);
+    entity e = spawn_block(
+        world,
+        spawn_data);
+    zox_add(e, BlockBaked);
     zox_add(e, SingleTextureBlock);
     return e;
 }

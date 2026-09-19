@@ -1,6 +1,10 @@
 // removed references to block vox
-entity spawn_block(ecs *world, SpawnBlock data) {
-    int2 vox_texture_size = int2_single(powers_of_two[block_depth]);
+entity spawn_block(
+    ecs *world,
+    SpawnBlock data)
+{
+    ushort length = octree_size(block_depth);
+    int2 vox_texture_size = int2_single(length);
     zox_instance(data.prefab);
     zox_set_unique_name(e, "block");
     set_ZoxName(world, e, data.name);
@@ -37,7 +41,7 @@ entity spawn_block(ecs *world, SpawnBlock data) {
             if (data.texture_tag) {
                 zox_add_id(e2, data.texture_tag);
             }
-            zox_setv(e2, BlockLink, e);
+            zox_link(world, e2, BlockLink, e);
             zox_setv(e2, ChildIndex, i);
             zox_set_parent(world, e2, e);
             // textures.value[i] = e2;
