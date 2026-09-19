@@ -70,7 +70,8 @@ entity spawn_realm_block_model(
         zox_setv(texture, GenerateTexture, zox_generate_texture_run);
         zox_setv(texture, VoxBakeSide, texture_direction);
         zox_setv(texture, ModelLink, texture_vox);
-        zox_setv(e, TextureLink, texture);
+        // zox_setv(e, TextureLink, texture);
+        zox_link(world, e, TextureLink, texture);
     }
     return e;
 }

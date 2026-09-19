@@ -56,7 +56,10 @@ zox_sys2(DataIconUpdateSystem) {
             continue;
         }
         // set texture of dirty
-        entity texture = zox_valid(data->value) && zox_has(data->value, TextureLink) ? zox_getv(data->value, TextureLink) : 0;
+        entity texture = zox_valid(data->value) ?
+            zox_get_link(world, data->value, TextureLink) :
+            0;
+            // zox_has(data->value, TextureLink) ? zox_getv(data->value, TextureLink) : 0;
         if (!texture) {
             if (zox_valid(data->value)) {
                 texture = string_hashmap_get(files_hashmap_textures, new_string_data("blank"));

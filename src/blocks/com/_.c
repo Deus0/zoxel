@@ -4,6 +4,7 @@ zox_tag(BlockVox);
 zox_tag(BlockDungeon);
 zox_tag(BlockInvinsible);
 zox_tag(BlockCanGroup);
+zox_tag(SingleTextureBlock);
 zoxc_byte(BlockLightPass);
 zoxc_byte(BlockModel);
 zoxc_byte(BlockCollider); // zox_block_air | zox_block_solid
@@ -42,6 +43,7 @@ void zox_components_blocks(ecs *world) {
     zoxd_tag(BlockInvinsible);
     zoxd_tag(BlockCanGroup);
     zoxd_tag(BlockSoundTrigger);
+    zoxd_nf_tag(SingleTextureBlock);
     zoxd_byte(BlockLightPass);
     zoxd_byte(BlockModel);
     zoxd_byte(BlockCollider);

@@ -7,7 +7,8 @@ entity spawn_item_body(
     entity e = spawn_realm_item2(world, prefab_item, name);
     zox_add(e, BodyItem);
     zox_set(e, ModelLink, { model });
-    zox_set(e, TextureLink, { texture });
+   //  zox_set(e, TextureLink, { texture });
+    zox_link(world, e, TextureLink, texture);
     zox_add(e, BodyPart);
     return e;
 }

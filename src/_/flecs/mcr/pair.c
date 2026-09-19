@@ -104,16 +104,18 @@ static inline byte zox_is_linked_any_internal(
  *
  */
 
-#define zox_pair_query(T) ecs_pair(zox_id(T), EcsWildcard)
+/*#define zox_pair_query(T) \
+    ecs_pair(zox_id(T), EcsWildcard)
 
 #define zox_links(e, T) \
     ecs_query_iter(world, ecs_query(world, { \
         .terms = { { zox_pair_query(T), .src.id = e } } \
     }))
 
-#define zox_query_next(it) ecs_query_next(&it)
+#define zox_query_next(it) \
+    ecs_query_next(&it)*/
 
-static inline entity zox_pair_target_internal(
+/*static inline entity zox_pair_target_internal(
     ecs *world,
     iter *it,
     int field)
@@ -124,5 +126,42 @@ static inline entity zox_pair_target_internal(
     );
 }
 
-#define zox_pair_target(it, field) zox_pair_target_internal(world, &(it), field)
+#define zox_pair_target(it, field) \
+    zox_pair_target_internal(world, &(it), field)*/
 
+static inline void zox_unlink_all_internal(
+    ecs* world,
+    entity e,
+    entity relation)
+{
+#ifdef zox_safety_checks
+    if (!zox_valid(e)) {
+        zox_loge(
+            "Invalid Unlink All [%llu]",
+            (unsigned long long) e);
+        return;
+    }
+#endif
+#ifdef zoxl_links
+    zox_log(
+        "UNLINK ALL [%s:%lu] [%s]",
+        zox_getn(e), e,
+        zox_getn(relation));
+#endif
+    ecs_remove_pair(world, e, relation, EcsWildcard);
+}
+
+#define zox_unlink_all(world, e, T) \
+    zox_unlink_all_internal(world, e, zox_id(T))
+
+static inline entity zox_get_link_index_internal(
+    ecs* world,
+    entity e,
+    entity relation,
+    int index)
+{
+    return ecs_get_target(world, e, relation, index);
+}
+
+#define zox_get_link_index(world, e, T, index) \
+    zox_get_link_index_internal(world, e, zox_id(T), index)

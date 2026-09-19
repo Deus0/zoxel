@@ -25,7 +25,6 @@ void zox_systems_textures(ecs *world) {
         MouseTextureSystem,
         zoxp_update,
         [in] inputs.MouseLock,
-        [in] textures.TextureLink,
         [in] inputs.DeviceDisabled
     );
     zox_filter(fill_texture_query, [none] FillTexture, [out] textures.GenerateTexture)
@@ -68,7 +67,7 @@ void zox_systems_textures(ecs *world) {
         TilemapGenerationSystem,
         zoxp_update,
         [in] textures.TilemapSize,
-        [in] textures.TextureLinks,
+        // [in] textures.TextureLinks,
         [out] textures.GenerateTexture,
         [out] rendering.TextureSize,
         [out] textures.TextureData,

@@ -1,4 +1,9 @@
-entity spawn_block_texture(ecs *world, byte index, char *name, char *texture_filename) {
+entity spawn_block_texture(
+    ecs *world,
+    byte index,
+    char *name,
+    char *texture_filename)
+{
     SpawnBlock spawn_data = {
         .prefab = prefab_block,
         .index = index,
@@ -9,5 +14,7 @@ entity spawn_block_texture(ecs *world, byte index, char *name, char *texture_fil
         .prefab_texture = prefab_vox_texture,
         .texture_filename = texture_filename,
     };
-    return spawn_block(world, spawn_data);
+    entity e = spawn_block(world, spawn_data);
+    zox_add(e, SingleTextureBlock);
+    return e;
 }

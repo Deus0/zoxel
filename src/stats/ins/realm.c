@@ -21,7 +21,7 @@ entity spawn_realm_stat(
         set_ZoxName(world, e, name);
     }
     if (texture) {
-        zox_setv(e, TextureLink, texture);
+        zox_link(world, e, TextureLink, texture);
     }
     if (!color_rgb_equals(ecolor, color_rgb_white)) {
         zox_setv(e, ColorRGB, ecolor);

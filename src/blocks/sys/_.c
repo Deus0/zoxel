@@ -19,7 +19,7 @@ void zox_systems_blocks(ecs* world) {
     zox_system(
         TilemapUVSystem,
         zoxp_update,
-        [in] textures.TextureLinks,
+        // [in] textures.TextureLinks,
         [in] textures.TilemapSize,
         [in] rendering.TextureSize,
         [out] textures.GenerateTexture,

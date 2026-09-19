@@ -82,10 +82,10 @@ UIs
 	- Settings Spawning - InitializeEvent on App
     
 ## Remove old links
+	-x TextureLinks
+	-x TextureLink
 	- SkeletonLink
 	- ChunkLink
-	- TextureLink
-	- TextureLinks
 	- ElementLink
 	- DeviceLink
 	- ZeviceLink
@@ -110,6 +110,7 @@ UIs
 	- SpeakerLinks
 	- EntityLinks
 	- CharacterLinks
+	- BlockLink
 	- BlockLinks
 	- BiomeLinks
 	- ModelLinks (half done)

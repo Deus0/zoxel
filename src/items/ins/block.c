@@ -1,6 +1,6 @@
 // Spawns a item from a block! Can place these and throw them at your enemies
 entity spawn_block_item(
-    ecs *world,
+    ecs* world,
     entity parent,
     entity block,
     byte dbg_log)
@@ -14,7 +14,7 @@ entity spawn_block_item(
         world,
         prefab_item_active,
         voxel_name->value);
-    zox_set_unique_name(e, voxel_name->value); // "block_item");
+    zox_set_unique_name(e, voxel_name->value);
     zox_add(e, ItemBlock);
     zox_prefab_addc_user_timings(world, e);
     zox_setv(e, WarmupTime, 0.125f);
@@ -26,8 +26,9 @@ entity spawn_block_item(
     zox_set_parent(world, e, parent);
     // actually for grass we want to set itemLink differently
     // zox_link(world, block, Item, e);
-    entity texture = 0;
-    if (zox_has(block, TextureLinks)) {
+    // entity first_texture = zox_get_link(world, block, TextureLink);
+    entity first_texture = zox_get_child_by_id(world, block, zox_id(Texture));
+    /*if (zox_has(block, TextureLinks)) {
         zox_geter(block, TextureLinks, textures);
         if (textures->length > 0) {
             texture = textures->value[0];
@@ -35,22 +36,23 @@ entity spawn_block_item(
     }
     if (!texture && zox_has(block, TextureLink)) {
         texture = zox_getv(block, TextureLink);
-    }
-    if (!zox_valid(texture)) {
+    }*/
+    if (!zox_valid(first_texture)) {
         zox_logw("Block Missing Texture [%s]",
             zox_getn(block));
-        texture = string_hashmap_get(
+        first_texture = string_hashmap_get(
             files_hashmap_textures,
             new_string_data("blank"));
     }
-    zox_setv(e, TextureLink, texture);
+    zox_link(world, e, TextureLink, first_texture);
+    // zox_setv(e, TextureLink, first_texture);
     // zox_set_name(item, zox_get_name(block));
     const char* meta_name = zox_getn(block);
     zox_set_unique_name(e, meta_name);
     if (dbg_log) {
         zox_log("+ New Block Item [%s] Texture [%s] Meta [%s]",
             voxel_name->value,
-            zox_getn(texture),
+            zox_getn(first_texture),
             meta_name);
     }
     return e;

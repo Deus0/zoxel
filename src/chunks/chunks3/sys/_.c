@@ -28,7 +28,7 @@ void zox_systems_chunks3(ecs *world) {
         BakeVoxSystem,
         zoxp_update,
         [in] rendering.ModelLink,
-        [in] textures.TextureLinks,
+        // [in] textures.TextureLinks,
         // [none] blocks.Block,
     );
     zox_system(

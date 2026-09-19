@@ -4,11 +4,11 @@ zox_sys2(BakeVoxSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ModelLink);
-    zox_sys_in(TextureLinks);
+    // zox_sys_in(TextureLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ModelLink, model);
-        zox_sys_i(TextureLinks, textures);
+        // zox_sys_i(TextureLinks, textures);
         if (!zox_valid(model->value)) {
             continue;
         }
@@ -20,19 +20,29 @@ zox_sys2(BakeVoxSystem) {
         if (generate != zox_generate_model_bake) {
             continue;
         }
-        zox_set(model->value, GenerateModel, { zox_generate_model_end });
+        zox_setv(model->value, GenerateModel, zox_generate_model_end);
         if (dbg_log) {
-            zox_log("Block is Generating: %s %i", zox_get_name(e), textures->length);
+            zox_log("Block is Generating Textures: %s",
+                zox_getn(e));
         }
-        for (int j = 0; j < textures->length; j++) {
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int k = 0; k < it2.count; k++) {
+                entity texture = it2.entities[k];
+                if (!zox_has(texture, Texture)) {
+                    continue;
+                }
+        /*for (int j = 0; j < textures->length; j++) {
             entity texture = textures->value[j];
             if (!zox_valid(texture)) {
                 zox_loge("Block texture is invalid [%i]", j);
                 continue;
-            }
-            zox_set(texture, GenerateTexture, { zox_generate_texture_run });
-            if (dbg_log) {
-                zox_log(" - Vox Texture: %s %i", zox_get_name(texture), j);
+            }*/
+                zox_setv(texture, GenerateTexture,  zox_generate_texture_run);
+                if (dbg_log) {
+                    zox_log(" - Vox Texture: %s",
+                        zox_getn(texture));
+                }
             }
         }
     }
