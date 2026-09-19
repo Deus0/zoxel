@@ -1,9 +1,7 @@
-// [none] Melee
-// extern entity spawn_pickup_block(ecs*, float3, entity);
-
 // TODO: Check Resource Cost before warming up!
 // TODO: Move resource use out of this System
-zox_sys2(MeleeSystem) {
+// NOTE: Applies damage to character or terrain
+void melee_system(iter* it) {
     byte dbg_log = 0;
     float npc_nerf_multiplier = 0.7f;
     color popup_color = (color) { 255, 0, 0, 255 };
@@ -11,6 +9,7 @@ zox_sys2(MeleeSystem) {
     double volume = get_volume_sfx();
     float knockback_min = 1.5f;
     float knockback_max = 3.5f;
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SkillCost);
@@ -43,7 +42,8 @@ zox_sys2(MeleeSystem) {
         }
         // validate their components
         if (!zox_has(user, RaycastVoxelData)) {
-            zox_loge("User [%s]: Invalid Melee Components", zox_get_name(user));
+            zox_loge("User [%s]: Invalid Melee Components",
+                zox_get_name(user));
             continue;
         }
         // does have resource
@@ -117,21 +117,39 @@ zox_sys2(MeleeSystem) {
         // Ray didn't hit anything
         entity hit = raycast->chunk;
         if (!zox_valid(hit)) {
-            spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[44], 0.3, volume);
+            spawn_sound_generated(
+                world,
+                prefab_sound_generated,
+                instrument_violin,
+                note_frequencies[44],
+                0.3,
+                volume);
             if (dbg_log) {
-                zox_logw("User [%s] Has no Raycast Target with range [%f:%f]", zox_get_name(user), range->value, zox_getv(user, RaycastRange));
+                zox_logw("User [%s] Has no Raycast Target with range [%f:%f]",
+                    zox_get_name(user),
+                    range->value,
+                    zox_getv(user,
+                    RaycastRange));
             }
             continue;
         }
         float skill_range = range->value;
         if (!skill_range) {
-            zox_loge("User [%s]'s Skill [%s] Range is 0", zox_getn(user), zox_getn(e));
+            zox_loge("User [%s]'s Skill [%s] Range is 0",
+                zox_getn(user),
+                zox_getn(e));
         }
-        byte in_range = debug_ray_big_range || !skill_range || raycast->distance <= skill_range;
+        byte in_range =
+            debug_ray_big_range ||
+            !skill_range ||
+            raycast->distance <= skill_range;
         if (!in_range) {
             spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[47], 0.3, volume);
             if (dbg_log) {
-                zox_logw("User [%s] [%f] is out of Range [%f]", zox_get_name(user), raycast->distance, skill_range);
+                zox_logw("User [%s] [%f] is out of Range [%f]",
+                    zox_get_name(user),
+                    raycast->distance,
+                    skill_range);
             }
             continue;
         }
@@ -147,7 +165,7 @@ zox_sys2(MeleeSystem) {
         if (zox_has(hit, Character3)) {
             entity hit_health = zox_get_child_by_id(world, hit, zox_id(StatHealth));
             if (!zox_valid(hit_health)) {
-                zox_log_error("hit user had no health")
+                zox_loge("hit user had no health")
                 continue;
             } else {
                 float stat_value_max = zox_getv(hit_health, StatValueMax);
@@ -161,10 +179,19 @@ zox_sys2(MeleeSystem) {
                 if (dbg_log) {
                     zox_log("[%s] took [%f] damage and is on [%f] health", zox_get_name(hit), skill_damage, statValue->value)
                 }
-                combat_on_hit(world, hit, user);
+                combat_on_hit(
+                    world,
+                    hit,
+                    user);
             }
             // hit sound
-            spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[28], 0.6, volume);
+            spawn_sound_generated(
+                world,
+                prefab_sound_generated,
+                instrument_violin,
+                note_frequencies[28],
+                0.6,
+                volume);
             // add knockback
             float3 hit_impulse = float3_scale(raycast->normal, randf_range(knockback_min, knockback_max));
             zox_muter(hit, Velocity3D, hit_velocity);
@@ -179,7 +206,13 @@ zox_sys2(MeleeSystem) {
             };
             char popup_text[64];
             sprintf(popup_text, "%i", (int) floor(skill_damage));
-            spawn_popup3_easy(world, popup_text, popup_color, popup_position, zox_popup_scale, randf_range(4, 8));
+            spawn_popup3_easy(
+                world,
+                popup_text,
+                popup_color,
+                popup_position,
+                zox_popup_scale,
+                randf_range(4, 8));
 
         }
         // Hitting Terrain
@@ -285,4 +318,5 @@ zox_sys2(MeleeSystem) {
             }*/
         }
     }
-} zox_sys_end(MeleeSystem);
+    zox_sys_on_end();
+} zoxd_system(melee_system);

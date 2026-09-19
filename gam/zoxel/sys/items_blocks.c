@@ -22,7 +22,10 @@ zox_sys2(ItemsRealmSpawnSystem) {
         for (int j = 0; j < blocks->length; j++) {
             entity block = blocks->value[j];
             if (!zox_valid(block)) {
-                zox_log_error("Block Invalid at Realm [%i] - e [%lu] %s", j, block, zox_get_name(block));
+                zox_loge("Block Invalid at Realm [%i] - e [%lu] %s",
+                    j,
+                    block,
+                    zox_get_name(block));
                 continue;
             }
             entity item = spawn_block_item(

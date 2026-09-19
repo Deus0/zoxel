@@ -1,5 +1,11 @@
 // unique mesh, need to instance these!
-entity spawn_cube_textured(ecs* world, entity prefab, entity texture, float3 position, float scale) {
+entity spawn_cube_textured(
+    ecs* world,
+    entity prefab,
+    entity texture,
+    float3 position,
+    float scale)
+{
     zox_instance(prefab);
     zox_name("cube_textured");
     zox_add(e, TexturedMesh3);

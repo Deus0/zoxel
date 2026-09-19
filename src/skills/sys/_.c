@@ -21,7 +21,7 @@ void zox_systems_skills(ecs *world) {
     );
     // TODO: split into sound, resource and damage systems
     zox_system_1(
-        MeleeSystem,
+        melee_system,
         zoxp_spawn,
         [in] skills.SkillCost,
         [in] skills.SkillDamage,

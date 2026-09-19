@@ -220,13 +220,6 @@ void zox_app_set_fullscreen(
         SDL_ShowWindow(window);
         SDL_RaiseWindow(window);
     }
-    int w, h;
-    SDL_GetWindowSize(window, &w, &h);
-    int x, y;
-    SDL_GetWindowPosition(window, &x, &y);
-    zox_log(
-        "window fullscreen=%i size=%ix%i position=%i,%i",
-        fullscreen, w, h, x, y);
 }
 
 byte sdl_window_is_minimized(SDL_Window *window) {

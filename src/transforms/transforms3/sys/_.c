@@ -3,30 +3,10 @@
 #include "euler_limit_z.c"
 #include "transform_matrix.c"
 #include "transform_matrix_scale.c"
-#include "camera_transform_matrix.c"
 #include "shadow.c"
 #include "children.c"
 
-/*void transform_sync_system(iter* it) { }
-zoxd_system(transform_sync_system);
-void transform_sync2_system(iter* it) { }
-zoxd_system(transform_sync2_system);
-void transform_sync3_system(iter* it) { }
-zoxd_system(transform_sync3_system);*/
-
 void zox_systems_transforms3(ecs *world) {
-    /*zox_system_1(
-        transform_sync_system,
-        zoxp_transform_sync,
-    );
-    zox_system_1(
-        transform_sync2_system,
-        zoxp_transform_sync2,
-    );
-    zox_system_1(
-        transform_sync3_system,
-        zoxp_transform_sync3,
-    );*/
     zox_system_1(
         transform3_children_system,
         zoxp_transform_hierarchy,

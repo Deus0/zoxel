@@ -1,7 +1,7 @@
 # Todo
 
-- Fix icon not updating sometimes
-    - pickup item event
+- spawn vox item pickup
+    - use mesh clone by linking blocks model
 - Fix touchscreen error message
 
 ## Main MVP Bugs
@@ -71,13 +71,6 @@
 	- allow jumping inside water
 	- Dampen music sounds
 - humanoids seem missing
-Fix Crashes: (Infrequent)
-- On Player death
-- On load
-- Crashes when opens inventory (after allitems)
-- Crashes on end game (sometimes)
-- Crashes when i spawn stat onto character
-	- Bug: flecs.c: 20794: abort(): cannot change children of prefab 'app_sdl_2647.game_2646.realm_8589938051.Boney_4096' after it has been instantiated (INVALID_OPERATION)
 	
 - Remove trigger system for lods
 	- just update neighbor of updating chunks inside stream systems
@@ -195,7 +188,6 @@ Fix Crashes: (Infrequent)
 - Flying in disabled chunk - disabled due to no voxels - causes player to be disabled
 - if npc is being baited, by the player keep running around them
     - they can run away
-- Mouse scrollwheel broken for switching items
 - start game with 3 skills, so you can try the combat styles of the skill tree
 - When place above chunk - no mesh spawns
 - Add particles when you land

@@ -93,6 +93,11 @@ void zox_dbg_test_window_world(ecs* world, int32_t keycode) {
         .text = "Spawn Chunk3 Textured",
         .on_click = { &zox_dbg_spawn_chunk3_textured },
     };
+    // Items
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Block Pickup",
+        .on_click = { &zox_tst_spawn_item_block },
+    };
     // Characters
     elements[elements_count++] = (SpawnListElement) {
         .text = "NPC",

@@ -51,10 +51,12 @@ zox_sys2(BiomeLinkSystem) {
         }
         entity old_tunk = zox_get_link(world, e, TunkLink);
         if (tunk == old_tunk) {
-            zox_log("[BiomeLinkSystem] Same Tunk [%s]",
-                zox_sys_e_name,
-                stream_position2.x,
-                stream_position2.y);
+            if (dbg_log) {
+                zox_logw("[BiomeLinkSystem] Same Tunk [%s]",
+                    zox_sys_e_name,
+                    stream_position2.x,
+                    stream_position2.y);
+            }
             continue;
         }
         entity biome = zox_get_link(world, tunk, BiomeLink);

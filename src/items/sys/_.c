@@ -1,17 +1,24 @@
-#include "item_drop.c"
+#include "drops.c"
 #include "activate.c"
-#include "terrain_drop.c"
 #include "character.c"
 #include "death.c"
 #include "state.c"
 
 void zox_systems_items(ecs* world) {
     zox_system_1(
-        ItemDropSystem,
+        character_item_drop_system,
         zoxp_spawn,
         [in] transforms3.Position3D,
         [none] core.DeathDirty,
         [none] characters.Character
+    );
+    zox_system_1(
+        terrain_item_drop_system,
+        zoxp_spawn,
+        [in] chunks3.VoxelNodeQueue,
+        [in] transforms3.Position3D,
+        [in] blocks.BlockScale,
+        [none] chunks3.Chunk3
     );
     zox_system_1(
         CharacterItemsSpawnSystem,
@@ -27,15 +34,6 @@ void zox_systems_items(ecs* world) {
         [in] blocks.BlockLink,
         [out] items.Quantity,
         [none] ItemBlock
-    );
-    // TODO: Fix using a secondary queue for item drops
-    zox_system_1(
-        TerrainItemDropSystem,
-        zoxp_spawn,
-        [in] chunks3.VoxelNodeQueue,
-        [in] transforms3.Position3D,
-        [in] blocks.BlockScale,
-        [none] chunks3.Chunk3
     );
     // States
     zox_system(

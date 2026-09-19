@@ -1,12 +1,12 @@
 /*
- * +------------------------------------------------------------------+
- * | Zox Module: Pickups                                              |
- * |                                                                  |
- * |  Loot - Drops - Collection - Spawning - Pickup State             |
- * |                                                                  |
- * |  Uses: Physics - Geometry - Animations                           |
- * |                                                                  |
- * +------------------------------------------------------------------+
+ * +------------------------------------------------------+
+ * | Zox Module: Pickups                                  |
+ * |                                                      |
+ * |  Loot - Drops - Collection - Spawning - State        |
+ * |                                                      |
+ * |  Uses: Physics - Geometry - Animations               |
+ * |                                                      |
+ * +------------------------------------------------------+
  */
 // Uses: Geometry & Models
 byte zox_disable_textured_items = 0;

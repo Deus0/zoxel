@@ -1,5 +1,15 @@
 # Done
 
+-x Fix icon not updating sometimes
+    -x pickup item event
+-x Mouse scrollwheel broken for switching items
+Fix Crashes: (Infrequent)
+-x On Player death
+-x On load
+-x Crashes when opens inventory (after allitems)
+-x Crashes on end game (sometimes)
+-x Crashes when i spawn stat onto character
+	- Bug: flecs.c: 20794: abort(): cannot change children of prefab 'app_sdl_2647.game_2646.realm_8589938051.Boney_4096' after it has been instantiated (INVALID_OPERATION)
 -x QuantityDirty
 -x Block didnt update again... this was mesh not spawning issue
 -x Block (regular) didnt remove/add

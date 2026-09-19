@@ -14,6 +14,7 @@ byte max_stack_quantity = 255;
 #include "fun/_.c"
 #include "sys/_.c"
 #include "eve/_.c"
+#include "dbg/_.c"
 #include "tst/_.c"
 
 void import_items(ecs* world) {

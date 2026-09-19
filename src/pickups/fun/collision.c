@@ -1,9 +1,20 @@
-byte add_item_to_slot_manager(ecs* world, entity smanager, entity user, entity base_item, byte value) {
+byte add_item_to_slot_manager(
+    ecs* world,
+    entity smanager,
+    entity user,
+    entity base_item,
+    byte value)
+{
     if (!zox_valid(smanager) || !zox_valid(user) || !zox_valid(base_item) || !value) {
         return 0;
     }
     entity slots[zox_children_capacity];
-    uint slots_length = zox_get_slots_by_data(world, smanager, base_item, slots, zox_children_capacity);
+    uint slots_length = zox_get_slots_by_data(
+        world,
+        smanager,
+        base_item,
+        slots,
+        zox_children_capacity);
     // zox_log("Item Stacking Slots [%s]:[%i]", zox_get_name(base_item), stacking_slots_length);
     byte can_stack = zox_has(base_item, Quantity);
     entity stack_slot = 0;
@@ -44,10 +55,14 @@ byte add_item_to_slot_manager(ecs* world, entity smanager, entity user, entity b
     if (!zox_valid(add_slot)) {
         return 0;
     }
-    entity new_item = spawn_item_pickedup(world, base_item, user, value);
+    entity new_item = spawn_item_pickedup(
+        world,
+        base_item,
+        user,
+        value);
     zox_muter(add_slot, DataLink, slot_data);
     slot_data->value = new_item;
-    zox_set(add_slot, DataDirty, { zox_dirty_trigger });
+    zox_setv(add_slot, DataDirty, zox_dirty_trigger);
     return 1;
 }
 

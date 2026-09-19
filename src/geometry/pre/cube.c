@@ -12,14 +12,21 @@ entity spawn_prefab_cube(ecs *world) {
     zox_setv(e, RenderDisabled, 0);
     // Mesh
     zox_add(e, Mesh);
-    zox_prefab_set(e, MeshIndicies, { 0 });
-    zox_prefab_set(e, MeshVertices, { 0 });
-    zox_prefab_set(e, MeshGPULink, { { 0, 0 } });
-    prefab_set_mesh_indicies(world, e, cube2_indicies, cube2_indicies_length);
-    prefab_set_mesh_vertices_float3(world, e, cube2_vertices, cube2_vertices_length);
+    zox_setv(e, MeshIndicies, 0);
+    zox_setv(e, MeshVertices, 0);
+    zox_set(e, MeshGPULink, { { 0, 0 } });
+    prefab_set_mesh_indicies(
+        world,
+        e,
+        cube2_indicies,
+        cube2_indicies_length);
+    prefab_set_mesh_vertices_float3(
+        world,
+        e,
+        cube2_vertices,
+        cube2_vertices_length);
     // Material
-    zox_prefab_set(e, MaterialGPULink, { 0 });
-    // zox_prefab_set(e, MeshRenderCount, { 0 });
+    zox_setv(e, MaterialGPULink, 0);
     zox_add(e, PreInitialize);
     zox_add(e, MeshDirty);
     return e;
