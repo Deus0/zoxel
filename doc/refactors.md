@@ -55,22 +55,18 @@ UIs
     - just make one big function that uses queries and calls those functions
     
 ## Refactor Events/Properties To Tags
-    - DataDirty
+    	- DataDirty
 	- LayoutPositionDirty
 	- LayoutSizeDirty
-	- TextDirty
 	- GenerateTexture
-	- GlyphDirty
 	- PlayerStateDirty
 	- RenderLodDirty
 	- NpcSpawnZoneDirty
-	- BlocksDirty
 	- ActiveActionDirty
 	- WindowSizeDirty
 	- StreamDirty
 	- InsideBlockDirty
 	- SkeletonDirty
-	- SkeletonMeshDirty
 	- AttachDirty
 	- RenderDepthDirty
 	- ChunkLodDirty
@@ -88,8 +84,6 @@ UIs
 	- Settings Spawning - InitializeEvent on App
     
 ## Remove old links
-	-x TextureLinks
-	-x TextureLink
 	- SkeletonLink
 	- ChunkLink
 	- ElementLink

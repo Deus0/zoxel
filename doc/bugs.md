@@ -4,7 +4,8 @@
 - NPC stat spawning crashes in character
 	- doesnt crash when gdb on khadas, just rund	
 	
-Unsorted
+## Unsorted
+- Block didnt update when spawning on top of world
 - Windows sdl3 window mode - it dissapears
     - windowed mode bug
 - Big Terrain Disposal Bug
