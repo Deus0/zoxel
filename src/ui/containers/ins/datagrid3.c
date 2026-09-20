@@ -116,11 +116,11 @@ entity spawn_datagrid_slots2(
                 zox_add(icon, DataFrame);
                 zox_setv(icon, SlotLink, slot);
                 zox_setv(icon, DataLink, dat);
-                zox_setv(icon, DataDirty, zox_dirty_trigger);
+                zox_add(icon, DataDirty);
             }
             if (zox_valid(text)) {
                 zox_setv(text, SlotLink, slot);
-                zox_setv(text, DataDirty, zox_dirty_trigger);
+                zox_add(text, DataDirty);
             }
             if (active_states) {
                 if (array_index == selected) {

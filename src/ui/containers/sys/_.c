@@ -2,6 +2,7 @@
 #include "icon.c"
 #include "label.c"
 #include "clear.c"
+#include "state.c"
 
 void zox_systems_ui_containers(ecs* world) {
     zox_system(
@@ -10,14 +11,12 @@ void zox_systems_ui_containers(ecs* world) {
         [in] interaction.ClickState,
         [in] slots.SlotLink,
         [out] slots.DataLink,
-        [out] slots.DataDirty,
         [none] u.i.containers.DataFrame
     );
     zox_system(
         SlotDataCleanSystem,
         zoxp_update,
         [out] slots.DataLink,
-        [out] slots.DataDirty,
         [none] slots.Slot
     );
     zox_system(
@@ -25,23 +24,32 @@ void zox_systems_ui_containers(ecs* world) {
         zoxp_update,
         [in] slots.SlotLink,
         [out] slots.DataLink,
-        [out] slots.DataDirty,
         [none] elements2.Icon
     );
     zox_system(
         DataIconUpdateSystem,
         zoxp_update,
-        [in] slots.DataDirty,
         [in] slots.DataLink,
-        [none] elements2.Icon
+        [none] elements2.Icon,
+        [none] slots.DataUpdate,
     );
     zox_system(
         IconLabelClearSystem,
         zoxp_update,
-        [in] slots.DataDirty,
         [in] slots.SlotLink,
         [out] texts.TextData,
         [none] texts.Text,
-        [none] elements2.Label
+        [none] elements2.Label,
+        [none] slots.DataUpdate,
+    );
+    zox_system(
+        data_dirty_system,
+        zoxp_remove,
+        [none] slots.DataDirty,
+    );
+    zox_system(
+        data_update_system,
+        zoxp_remove,
+        [none] slots.DataUpdate,
     );
 }

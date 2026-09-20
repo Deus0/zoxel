@@ -1,5 +1,25 @@
 # Todo
 
+- Bugs:
+- item not showing now when  i pickup
+	- issue is the state logic changed in slot->ui
+- action ui not sync with children indexes
+	- logici of action changed
+	- pickup item, it appears on 10th item
+	- just find empty slot, check action indexes?
+
+- Slot Refactors
+	- DataDirty
+	- SlotLink
+	- DataLink?
+	- Convert systems to observers
+		- IconTooltipSystem
+		- IconLabelSystem
+	- UI is connected to Slot
+	- Slot is connected to Data
+	- link slot to multiple uis too
+	- atm - just add DataDirty  onto ui, from system, when detecting slot is dirty
+
 # NOTE: Zoxel android release working now, was issue  with no safety checks Crash
 - move the keys into Apps folder on phone
     - android keys

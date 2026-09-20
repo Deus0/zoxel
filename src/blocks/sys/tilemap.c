@@ -70,7 +70,7 @@ zox_sys2(RealmTilemapSystem) {
                         tilemap,
                         TextureLink,
                         texture);
-                    zox_setv(texture, TilemapIndex, tilemap_textures_length);
+                    // zox_setv(texture, TilemapIndex, tilemap_textures_length);
                     tilemap_textures_length++;
                     if (dbg_log >= 2) {
                         zox_log("Tilemap linked to block [%s] texture [%s] at [%i]",

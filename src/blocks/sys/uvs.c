@@ -84,7 +84,7 @@ zox_sys2(TilemapUVSystem) {
                     zox_get_name(texture));
                 continue;
             }
-            uint tilemap_index = zox_getv(texture, TilemapIndex);
+            uint tilemap_index = texture_index - 1; // zox_getv(texture, TilemapIndex);
             byte block_index = zox_getv(block, BlockIndex) - 1;
             // Now
             byte face_index =

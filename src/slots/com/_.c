@@ -4,7 +4,8 @@ zoxc_entity(SlotLink);
 zoxc_byte(SlotType);
 zoxc_byte(SlotAnchor);
 zoxc_entity(DataLink);
-zoxc_state(DataDirty);
+zox_tag(DataDirty);
+zox_tag(DataUpdate);
 
 void zox_components_slots(ecs* world) {
     zoxd_tag(SlotManager);
@@ -13,5 +14,6 @@ void zox_components_slots(ecs* world) {
     zoxd_byte(SlotType);
     zoxd_byte(SlotAnchor);
     zoxd_entity(DataLink);
-    zoxd_state(DataDirty);
+    zoxd_tag_event(DataDirty);
+    zoxd_tag_event(DataUpdate);
 }

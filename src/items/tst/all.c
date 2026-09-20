@@ -35,9 +35,8 @@ void give_character_all_items(ecs* world, entity e) {
                 zox_set(e2, Quantity, { quantity });
             }
             zox_muter(slot, DataLink, slot_data);
-            zox_muter(slot, DataDirty, dirty);
             slot_data->value = e2;
-            dirty->value = zox_dirty_trigger;
+            zox_add(slot, DataDirty);
             zox_log("   + [%s] x%i", zox_get_name(realm_item), quantity);
         }
     }

@@ -77,10 +77,10 @@ entity spawn_datagrid(
                 array_index);
             // NOTE: Atm this is what connects user data textures
             zox_setv(spawn.y, DataLink, dat);
-            zox_setv(spawn.y, DataDirty, zox_dirty_trigger);
+            zox_add(spawn.y, DataDirty);
             if (spawn.z) {
                 zox_setv(spawn.z, DataLink, dat);
-                zox_setv(spawn.z, DataDirty, zox_dirty_trigger);
+                zox_add(spawn.z, DataDirty);
             }
             // set_frame_texture_from_data(world, spawn.x, spawn.y, dat);
             if (active_states) {

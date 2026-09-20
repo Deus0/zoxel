@@ -6,14 +6,15 @@ zox_sys2(SlotDataCleanSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(DataLink);
-    zox_sys_out(DataDirty);
+    // zox_sys_out(DataDirty);
     for (int i = 0; i < it->count; i++) {
-        // zox_sys_e();
+        zox_sys_e();
         zox_sys_o(DataLink, data);
-        zox_sys_o(DataDirty, state);
+        // zox_sys_o(DataDirty, state);
         if (data->value && !zox_valid(data->value)) {
             data->value = 0;
-            state->value = zox_dirty_trigger;
+            // state->value = zox_dirty_trigger;
+            zox_add(e, DataDirty);
         }
     }
 } zox_sys_end(SlotDataCleanSystem);
@@ -24,18 +25,19 @@ zox_sys2(DataIconSystem) {
     zox_sys_begin();
     zox_sys_in(SlotLink);
     zox_sys_out(DataLink);
-    zox_sys_out(DataDirty);
+    // zox_sys_out(DataDirty);
     for (int i = 0; i < it->count; i++) {
-        // zox_sys_e();
+        zox_sys_e();
         zox_sys_i(SlotLink, slot);
         zox_sys_o(DataLink, data);
-        zox_sys_o(DataDirty, state);
+        // zox_sys_o(DataDirty, state);
         if (!zox_valid(slot->value)) {
             continue;
         }
-        if (zox_getv(slot->value, DataDirty) == zox_dirty_active) {
+        if (zox_has(slot->value, DataUpdate) == zox_dirty_active) {
             data->value = zox_getv(slot->value, DataLink);
-            state->value = zox_dirty_trigger;
+            // state->value = zox_dirty_trigger;
+            zox_add(e, DataDirty);
             // zox_log("Slot was dirty [%s]", zox_get_name(slot->value));
         }
     }
@@ -46,15 +48,15 @@ zox_sys2(DataIconSystem) {
 zox_sys2(DataIconUpdateSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(DataDirty);
+    //zox_sys_in(DataDirty);
     zox_sys_in(DataLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DataDirty, state);
+        //zox_sys_i(DataDirty, state);
         zox_sys_i(DataLink, data);
-        if (state->value != zox_dirty_active) {
+        /*if (state->value != zox_dirty_active) {
             continue;
-        }
+        }*/
         // set texture of dirty
         entity texture = zox_valid(data->value) ?
             zox_get_link(world, data->value, TextureLink) :

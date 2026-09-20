@@ -101,7 +101,7 @@ zox_sys2(TilemapGenerationSystem) {
                     texture_index);
                 continue;
             }
-            uint tilemap_index = zox_getv(texture, TilemapIndex);
+            uint tilemap_index =  texture_index - 1; // zox_getv(texture, TilemapIndex);
             zox_geter_value(texture, TextureSize, int2, texture_size);
             texture_position.x =
                 tilemap_index % map_size->value.x;

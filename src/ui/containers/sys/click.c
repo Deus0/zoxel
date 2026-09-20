@@ -21,13 +21,13 @@ zox_sys2(DataFrameClickSystem) {
     zox_sys_in(ClickState);
     zox_sys_in(SlotLink);
     zox_sys_out(DataLink);
-    zox_sys_out(DataDirty);
+    // zox_sys_out(DataDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ClickState, state);
         zox_sys_i(SlotLink, slot);
         zox_sys_o(DataLink, data);
-        zox_sys_o(DataDirty, dirty);
+        //zox_sys_o(DataDirty, dirty);
         if (state->value != zox_click_state_clicked_this_frame) {
             continue;
         }
@@ -116,10 +116,10 @@ zox_sys2(DataFrameClickSystem) {
                 if (can_stack_items(world, data->value, mouse_data->value)) {
                     zox_log("Stacking Items! %s", zox_get_name(base_item_1));
                     stack_items(world, data->value, mouse_data->value);
-                    dirty->value = zox_dirty_trigger;
                     mouse_data->value = 0;
                     zox_mut_end(mouse_ui, DataLink);
-                    zox_set(mouse_ui, RenderDisabled, { 1 });
+                    zox_setv(mouse_ui, RenderDisabled, 1);
+                    zox_add(e, DataDirty);
                     continue;
                 }
             }
@@ -135,10 +135,9 @@ zox_sys2(DataFrameClickSystem) {
         // we should just set DataDirty here
         swap_textures(world, e, mouse_ui);
         zox_muter(slot->value, DataLink, slot_data);
-        zox_muter(slot->value, DataDirty, dirty2);
         slot_data->value = data->value;
-        dirty2->value = zox_dirty_trigger;
-        dirty->value = zox_dirty_trigger;
+        zox_add(slot->value, DataDirty);
+        zox_add(e, DataDirty);
         if (is_frame_equip2 || is_frame_body2) {
             on_frame_updated_equipment(world, user);
         }

@@ -12,10 +12,10 @@ void zox_systems_items_ui(ecs *world) {
     zox_system(
         ItemIconLabelSystem,
         zoxp_update,
-        [in] slots.DataDirty,
         [in] slots.SlotLink,
         [out] texts.TextData,
         [none] texts.Text,
-        [none] elements2.Label
+        [none] elements2.Label,
+        [none] slots.DataUpdate,
     );
 }
