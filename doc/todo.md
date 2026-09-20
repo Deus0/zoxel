@@ -1,9 +1,9 @@
 # Todo
 
 - Bugs:
-- item quantity wrong
-- slot index for action is off
-- item not showing now when  i pickup
+- item quantity ui not updating properly
+-x slot index for action is off
+-x item not showing now when  i pickup
 	- issue is the state logic changed in slot->ui
 - action ui not sync with children indexes
 	- logici of action changed

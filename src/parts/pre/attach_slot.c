@@ -4,9 +4,12 @@ entity spawn_attach_slot(
     entity parent,
     byte anchor)
 {
+    // ToDO: Proper index
+    uint index = 0;
     entity e = spawn_slot(
         world,
-        parent);
+        parent,
+        index);
     zox_set_unique_name(e, "slot_attach");
     zox_setv(e, PartPosition, byte3_zero);
     zox_setv(e, PartSize, byte3_zero);

@@ -67,17 +67,27 @@ void zox_print_slots(ecs* world, entity slots_manager) {
     }
 }
 
+// NOTE: Now seearches for start index first and increments
 entity zox_get_empty_slot(ecs* world, entity e) {
-    iter it2 = zox_children(world, e);
-    while (zox_children_next(it2)) {
-        for (int j = 0; j < it2.count; j++) {
-            entity e2 = it2.entities[j];
-            if (!zox_valid(e2) || !zox_has(e2, Slot)) {
-                continue;
-            }
-            entity slot_data = zox_getv(e2, DataLink);
-            if (!slot_data) {
-                return e2;
+    uint length = zox_get_children_count_by_id(
+        world,
+        e,
+        zox_id(Slot));
+    for (uint i = 0; i < length; i++) {
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                entity e2 = it2.entities[j];
+                if (!zox_valid(e2) || !zox_has(e2, Slot)) {
+                    continue;
+                }
+                if (zox_getv(e2, ChildIndex) != i) {
+                    continue;
+                }
+                entity slot_data = zox_getv(e2, DataLink);
+                if (!slot_data) {
+                    return e2;
+                }
             }
         }
     }

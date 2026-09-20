@@ -28,18 +28,34 @@ zox_sys2(ActiveActionSystem) {
             continue;
         }
         entity action_slots[layouts2_children_capacity];
-        uint action_slots_length = zox_get_children_by_id(world, actionbar, action_slots, layouts2_children_capacity, zox_id(Slot));
+        uint action_slots_length = zox_get_children_by_id(
+            world,
+            actionbar,
+            action_slots,
+            layouts2_children_capacity,
+            zox_id(Slot));
         if (!action_slots_length) {
             zox_loge("[%s] Has no Action Slots", zox_get_name(e));
             continue;
         }
         if (index->value >= action_slots_length) {
-            zox_loge("[%s] Action selected is out of bounds [%i of %i]", zox_get_name(e), index->value, action_slots_length);
+            zox_loge("[%s] Action selected is out of bounds [%i of %i]",
+                zox_get_name(e),
+                index->value,
+                action_slots_length);
             continue;
         }
-        entity action_slot = action_slots[index->value];
+        entity action_slot = 0;
+        for (int j = 0; j < action_slots_length; j++) {
+            entity slot = action_slots[j];
+            if (zox_getv(slot, ChildIndex) == index->value) {
+                action_slot = slot;
+                break;
+            }
+        }
+        // entity action_slot = action_slots[index->value];
         if (!zox_valid(action_slot)) {
-            zox_loge("Actionslot invalid");
+            // zox_loge("Actionslot invalid");
             continue;
         }
         entity action = zox_getv(action_slot, DataLink);
