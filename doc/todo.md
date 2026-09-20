@@ -1,5 +1,9 @@
 # Todo
 
+# NOTE: Zoxel android release working now, was issue  with no safety checks Crash
+- move the keys into Apps folder on phone
+    - android keys
+    - build same apk from other machines using it
 - Fix webgl bugs:
     - no save games
     - no stats

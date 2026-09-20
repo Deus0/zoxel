@@ -2,6 +2,7 @@
 set -euo pipefail
 
 # TODO: Restore Steam Build and Push
+# TODO: Restore arch/debian packages
 # TODO: Version Support - Date in about page
 
 root="${PATH}"

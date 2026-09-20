@@ -89,9 +89,9 @@ fi
 [[ " $* " == *" --signed "* ]] && signed="1"
 [[ " $* " == *" --install "* ]] && install="1"
 [[ " $* " == *" --run "* ]] && is_run="1"
-[[ " $* " == *" --verbose "* ]] && verbose="1"
 [[ " $* " == *" --logcat "* ]] && logcat="1"
 [[ " $* " == *" --logs "* ]] && logs="1"
+[[ " $* " == *" --verbose "* ]] && verbose="1"
 [[ " $* " == *" --nomixer "* ]] && sdl_mixer="0"
 [[ " $* " == *" --opengl "* ]] && gfx="opengl"
 [[ " $* " == *" --vulkan "* ]] && gfx="vulkan"
@@ -411,7 +411,7 @@ echo "- Found [${sdl_android}]"
 # ============================================================
 
 cflags="-std=gnu99 -fPIC"
-dflags="-Dzox_game=${game_name} -Dflecssource -Dzox_android"
+dflags="-Dzox_game=${game_name} -Dflecssource -Dzox_android -Dzox_safety_checks"
 libs="-llog -landroid -lm -lEGL -lGLESv3"
 includes="-I${flecs_path} -I${sdl_path}/include"
 
