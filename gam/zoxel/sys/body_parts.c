@@ -344,6 +344,6 @@ zox_sys2(BodysRealmSpawnSystem) {
                 dbg_log);
             zox_add(e2.x, Head);
         }
-        zox_logv("At [%f] Realm [bodys] [%i] spawned.", zox_current_time, items->length);
+        zox_logv("At [%f] Realm [bodys] [X] spawned.", zox_current_time);
     }
 } zox_sys_end(BodysRealmSpawnSystem);

@@ -15,6 +15,8 @@
 /pkg
 # and: Android build folder
 /and
+# web: WebGL build folder
+/web
 # exp: Exports from Tools
 /exp
 # app settings

@@ -1,5 +1,9 @@
 byte zox_game_camera_mode = 0;
+#ifdef zox_web
+byte viewport_downscale = 4;
+#else
 byte viewport_downscale = 1;
+#endif
 float3 main_menu_camera_position = (float3) { 0, 0, 3 };
 float4 main_menu_camera_rotation = (float4) { 0, 0, 0, 1 };
 

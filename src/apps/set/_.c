@@ -1,4 +1,9 @@
+// NOTE: We keep this off for web default
+#ifdef zox_web
+byte fullscreen = 0;
+#else
 byte fullscreen = 1;
+#endif
 byte fullscreen_override = 0;
 byte vsync = 1;
 byte is_log_monitors = 1;

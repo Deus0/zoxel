@@ -268,7 +268,8 @@ else
         sdl_library="${library}/libSDL2.so"
         sdl_runtime="${sdl_library}.0"
         sdl_mixer_library="${library}/libSDL2_mixer.so"
-        sdl_mixer_runtime="${sdl_mixer_library}.0"
+        sdl_mixer_runtime="${library}/libSDL2_mixer-2.0.so.0"
+        # sdl_mixer_runtime="${sdl_mixer_library}.0"
     fi
 fi
 
@@ -380,6 +381,7 @@ echo "============================================================"
 echo ""
 
 # Setup our bin folder
+rm -rf "${bin_folder}"
 mkdir -p "${bin_folder}"
 # Link our resources
 ln -sfn "../../res" "${bin_folder}/res"
@@ -418,8 +420,10 @@ if [[ ${package} == "1" ]]; then
 
     rm -f ${zip_name}
 
-    zip -j "${zip_name}" "${bin_path}"
-    zip -q -r "${zip_name}" res
+    (
+        cd "${bin_folder}"
+        zip -q -r "${OLDPWD}/${zip_name}" .
+    )
 
     if [[ -d "gam/${game_name}/res" ]]; then
         echo "> Using Game Resources [gam/${game_name}/res]"
@@ -429,14 +433,25 @@ if [[ ${package} == "1" ]]; then
         )
     fi
 
-    if [[ ${window_lib} == "sdl" ]]; then
-        if [[ "${is_static}" == "1" ]]; then
-            zip -j "${zip_name}" "${sdl_runtime}"
-            if [[ "${sdl_mixer}" == "1" ]]; then
-                zip -j "${zip_name}" "${sdl_mixer_runtime}"
-            fi
-        fi
-    fi
+    #zip -j "${zip_name}" "${bin_path}"
+    #zip -q -r "${zip_name}" res
+
+    #if [[ -d "gam/${game_name}/res" ]]; then
+    #    echo "> Using Game Resources [gam/${game_name}/res]"
+    #    (
+    #        cd "gam/${game_name}"
+    #        zip -q -r "${OLDPWD}/${zip_name}" res
+    #    )
+    #fi
+
+    #if [[ ${window_lib} == "sdl" ]]; then
+    #    if [[ "${is_static}" == "1" ]]; then
+    #        zip -j "${zip_name}" "${sdl_runtime}"
+    #        if [[ "${sdl_mixer}" == "1" ]]; then
+    #            zip -j "${zip_name}" "${sdl_mixer_runtime}"
+    #        fi
+    #    fi
+    #fi
     echo "+ Completed Zipping"
 fi
 

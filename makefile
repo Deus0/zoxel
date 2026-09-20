@@ -127,7 +127,7 @@ flecs:
 # Dev
 
 $(target_dev): $(SRCS)
-	bash bsh/build.sh $(GAME) ${build_args} --debug --logs --profiler --timings
+	bash bsh/build.sh $(GAME) ${build_args} --debug --logs --profiler # --timings
 
 
 dev: $(target_dev)

@@ -26,7 +26,10 @@ zox_sys2(ElementNavigationSystem) {
             continue;
         }
         byte device_mode = zox_getv(player, DeviceMode);
-        if (device_mode != zox_device_mode_gamepad && !(keyboard_navigation_mode && device_mode == zox_device_mode_keyboardmouse)) {
+        if (device_mode != zox_device_mode_gamepad &&
+            !(keyboard_navigation_mode &&
+            device_mode == zox_device_mode_keyboardmouse))
+        {
             if (!state->value) {
                 state->value = 1;
                 timer->value = 0;
@@ -37,7 +40,11 @@ zox_sys2(ElementNavigationSystem) {
         float2 left_stick = float2_zero;
         uint children_capacity = zox_children_capacity;
         entity zevices[children_capacity];
-        uint zevices_length = zox_get_children(world, e, zevices, children_capacity);
+        uint zevices_length = zox_get_children(
+            world,
+            e,
+            zevices,
+            children_capacity);
         for (uint k = 0; k < zevices_length; k++) {
             entity e3 = zevices[k];
             if (!zox_valid(e3)) {
@@ -65,10 +72,18 @@ zox_sys2(ElementNavigationSystem) {
             }
         }*/
         if (dbg_log >= 2) {
-            zox_log("Navigator Navigating [%s] state [%i] stick [%f] timer [%f]", zox_getn(e), state->value, left_stick.y, timer->value);
+            zox_log("Navigator Navigating [%s] state [%i] stick [%f] timer [%f]",
+                zox_getn(e),
+                state->value,
+                left_stick.y,
+                timer->value);
         }
         if (dbg_log) {
-            zox_log("Navigator Navigating [%s] state [%i] stick [%f] timer [%f]", zox_getn(e), state->value, left_stick.y, timer->value);
+            zox_log("Navigator Navigating [%s] state [%i] stick [%f] timer [%f]",
+                zox_getn(e),
+                state->value,
+                left_stick.y,
+                timer->value);
         }
         // If no input
         if (float_abs(left_stick.y) <= restore_joystick_cutoff) {
@@ -99,15 +114,24 @@ zox_sys2(ElementNavigationSystem) {
             continue;
         }
         if (dbg_log) {
-            zox_log("Navigator Navigating [%s]", zox_getn(e));
+            zox_log("Navigator Navigating [%s]",
+                zox_getn(e));
         }
         // using selected window, we navigation elements of that... this could be done better
         // TODO: Move up to window, grab all navigation elements, then find one below?
         // Get Selected Index TODO: Make this a generic parent function
         sbyte selected_index = -1;
-        entity window = zox_get_parent_by_id(world, current->value, zox_id(Window));
+        entity window = zox_get_parent_by_id(
+            world,
+            current->value,
+            zox_id(Window));
         entity children[zox_children_capacity];
-        uint children_length = zox_get_children_by_id_recursive(world, window, children, zox_children_capacity, zox_id(NavigationElement), 0);
+        uint children_length = zox_get_children_by_id_recursive(
+            world,
+            window,
+            children,
+            zox_children_capacity,
+            zox_id(NavigationElement), 0);
         for (byte k = 0; k < children_length; k++) {
             entity child = children[k];
             if (child == current->value) {
@@ -122,20 +146,55 @@ zox_sys2(ElementNavigationSystem) {
         }
         // zox_log("Going Down Town [%i] -> %f", selected_index, left_stick.y);
         entity target = 0;
-        if (left_stick.y >= ui_navigation_joystick_cutoff && selected_index >= 1) {
-            target = children[selected_index - 1];
-        } else if (left_stick.y <= -ui_navigation_joystick_cutoff && selected_index < children_length - 1) {
-            target = children[selected_index + 1];
+        sbyte direction = 0;
+        if (left_stick.y >= ui_navigation_joystick_cutoff) {
+            direction = -1;
+            //target = children[selected_index - 1];
+        } else if (left_stick.y <= -ui_navigation_joystick_cutoff) {
+            direction = 1;
+            //target = children[selected_index + 1];
+        }
+        if (!direction) {
+            continue;
+        }
+        // TODO: Get closest uis and their directions for directional navigation
+        // This is just a quick fix
+        selected_index += direction;
+        if (selected_index < 0 || selected_index >= children_length) {
+            continue;
+        }
+        if (zox_has(current->value, ChildIndex)) {
+            // NOTE: Gets neighbor if indexes are set like a list, very rigid
+            for (int j = 0; j < children_length; j++) {
+                entity e2 = children[j];
+                if (e2 == current->value) {
+                    continue;
+                }
+                if (!zox_has(e2, ChildIndex)) {
+                    continue;
+                }
+                byte index = zox_getv(e2, ChildIndex);
+                if (index == selected_index) {
+                    target = e2;
+                    break;
+                }
+            }
+        } else {
+            target = children[selected_index];
         }
         if (target && target != current->value) {
-            raycaster_select_element(world, e, target);
+            raycaster_select_element(
+                world,
+                e,
+                target);
             if (timer->value < -ui_navigation_timing / 2) {
                 timer->value = ui_navigation_timing;
             } else {
                 timer->value += ui_navigation_timing;
             }
             if (dbg_log) {
-                zox_log("New Navigation Target UI [%s]", zox_getn(target));
+                zox_log("New Navigation Target UI [%s]",
+                    zox_getn(target));
             }
         }
     }

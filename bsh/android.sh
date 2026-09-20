@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# NOTE: --signed automatically creates new keys
+
 # Test
 #    bash bsh/android.sh zoxel --opengl --sdl --debug --install
 # Debug

@@ -20,28 +20,29 @@ int initialize_video() {
     }
     set_sdl_attributes();
     // NOTE: Detects software rendering
-    const char* renderer = (const char*) glGetString(GL_RENDERER);
+    /*const char* renderer = (const char*) glGetString(GL_RENDERER);
     // const char* renderer = SDL_GetCurrentVideoDriver();
     using_gpu =
         renderer &&
         !strstr(renderer, "llvmpipe") &&
         !strstr(renderer, "softpipe") &&
         !strstr(renderer, "Software Rasterizer") &&
+        !strstr(renderer, "SwiftShader");*/
+    // NOTE: Detects software rendering
+#ifdef zox_web
+    using_gpu = 1;
+#else
+    const char* renderer = (const char*) glGetString(GL_RENDERER);
+    using_gpu =
+        renderer &&
+        !strstr(renderer, "llvmpipe") &&
+        !strstr(renderer, "softpipe") &&
+        !strstr(renderer, "Software Rasterizer") &&
         !strstr(renderer, "SwiftShader");
-
-    /*const char* driver = SDL_GetCurrentVideoDriver();
-    using_gpu = strstr(driver, "opengl") ||
-        strstr(driver, "vulkan") ||
-        strstr(driver, "wayland") ||
-        strstr(driver, "x11") ||
-        strstr(driver, "direct3d") ||
-        strstr(driver, "metal") ||
-        strstr(driver, "opengles") ||
-        strstr(driver, "windows");
-    if (!using_gpu) {
-        zox_log("GPU Not Detected: %s", driver);
-    }*/
-    zox_logv("[SDL_INIT_VIDEO] GPU [%i] Renderer [%s]", using_gpu, renderer);
+    zox_logv("[SDL_INIT_VIDEO] GPU [%i] Renderer [%s]",
+        using_gpu,
+        renderer);
+#endif
     print_sdl();
 #ifdef zox_vulkan
     if (!load_vulkan_library()) {

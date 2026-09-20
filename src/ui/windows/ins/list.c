@@ -109,7 +109,8 @@ entity3 spawn_window_list(
     }
     int2 size = (int2) {
         int_max(scrollview_size.x, header_size.x),
-        list_size.y };
+        list_size.y
+    };
     // Spawn our Window
     entity3 e2 = spawn_window(
         world,

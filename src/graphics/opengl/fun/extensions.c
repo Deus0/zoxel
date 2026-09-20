@@ -17,7 +17,7 @@ byte has_opengl_extensions() {
 #if !defined(zox_web) && !defined(zox_android)
     const GLubyte *extensions = glGetString(GL_EXTENSIONS);
     if (!has_gl_extension(extensions, "GL_ARB_shader_objects")) {
-        zox_log_error("Extension not found [GL_ARB_shader_objects]")
+        zox_loge("Extension not found [GL_ARB_shader_objects]")
         has_extension = 0;
     }
 #endif

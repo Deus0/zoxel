@@ -1,4 +1,8 @@
-static inline int2 calculate_header_size(byte length, byte font_size, byte2 padding) {
+static inline int2 calculate_header_size(
+    byte length,
+    byte font_size,
+    byte2 padding)
+{
     return (int2) {
         length * font_size + padding.x * 2,
         font_size + padding.y * 2
@@ -130,6 +134,7 @@ entity spawn_list(
             child = toggle;
         }
         if (child) {
+            zox_setv(child, ChildIndex, i);
             zox_set_parent(world, child, e);
         } else {
             zox_loge("No child at [%i] in spawn_list", i);

@@ -26,7 +26,7 @@ int2 get_webasm_screen_size() {
     return canvas_size;
 }
 
-byte update_web_canvas(ecs *world) {
+/*byte update_web_canvas(ecs *world) {
     int2 size = get_canvas_size();
     //if (!int2_equals(screen_dimensions, size)) {
         //zox_log(" > update_web_canvas: Canvas size has changed [%i x %i]\n", size.x, size.y)
@@ -39,6 +39,29 @@ byte update_web_canvas(ecs *world) {
         return 0;
     }
     //}
+}*/
+
+extern int path_exists(const char* path);
+
+byte initialize_pathing_web(
+    const char** data_path,
+    const char** resources_path,
+    const char** resources_path_game)
+{
+    *data_path = "/";
+    *resources_path = "/res";
+    *resources_path_game = NULL;
+
+    if (!path_exists(*resources_path)) {
+        zox_loge("Resources Path did not exist [%s]",
+            *resources_path);
+        return EXIT_FAILURE;
+    }
+
+    zox_log("data_path %s", *data_path);
+    zox_log("resources_path %s", *resources_path);
+
+    return EXIT_SUCCESS;
 }
 
 #endif

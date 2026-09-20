@@ -26,12 +26,11 @@ byte flecs_log_level = 0;           // 1 for debug_pipelines
 #include "sys/_.c"
 #include "comm/state.c"
 
-ecs* open_ecs(int argc, char* argv[]) {
-    return ecs_init_w_args(argc, argv);
-}
-
-ecs* initialize_ecs(int argc, char* argv[]) {
-    ecs* world = open_ecs(argc, argv);
+ecs* zox_ecs(int argc, char* argv[]) {
+    zox_log("[zox_ecs]");
+    ecs* world = ecs_init_w_args(
+        argc,
+        argv);
     initialize_zox_phases(world);
     local_world = world;
     return world;

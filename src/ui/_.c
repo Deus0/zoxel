@@ -1,12 +1,12 @@
 /*
- * +------------------------------------------------------------------+
- * | Zox Module: UI                                                   |
- * |                                                                  |
- * |  Panels - Labels - Buttons - Layouts - Interface State           |
- * |                                                                  |
- * |  Uses: Transforms2 - Layout2 - Rendering - Interaction           |
- * |                                                                  |
- * +------------------------------------------------------------------+
+ * +------------------------------------------------------+
+ * | Zox Module: UI                                       |
+ * |                                                      |
+ * |  Panels - Labels - Buttons - Layouts - Interface     |
+ * |                                                      |
+ * |  Uses: Transforms2 - Layout2 - Interaction           |
+ * |                                                      |
+ * +------------------------------------------------------+
  **/
 byte is_log_dragging = 0;
 #include "set/_.c"
@@ -40,12 +40,12 @@ void import_ui(ecs* world) {
     zox_add_module(glyphs);
     zox_add_module(texts);
     zox_add_module(interaction);
-    zox_import_module(Tooltips);
+    zox_add_module(tooltips);
     zox_add_module(elements2);
     zox_add_module(elements3);
     zox_add_module(windows);
-    zox_import_module(Navigation);
-    zox_import_module(Touch);
+    zox_add_module(navigation);
+    zox_add_module(touch);
     zox_import_module(RenderTextures);
     zox_import_module(UIContainers);
 }

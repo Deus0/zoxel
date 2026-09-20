@@ -1,11 +1,18 @@
 # Done
 
+<<<<<<< Updated upstream
 -x SkeletonMeshDirty
 -x GlyphDirty
 -x TextDirty
 -x BlocksDirty
 -x TextureLinks
 -x TextureLink
+=======
+-x Android issue might be with restore/dispose resources
+    - its happening on pc the glitchy
+    - android build is broken - graphics glitching
+-x steamdeck build broken...
+>>>>>>> Stashed changes
 -x Fix icon not updating sometimes
     -x pickup item event
 -x Mouse scrollwheel broken for switching items

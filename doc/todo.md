@@ -1,8 +1,22 @@
 # Todo
 
+- Fix webgl bugs:
+    - no save games
+    - no stats
+    - npcs missing
+    - Dev version  stuck on load game
+- Fix lagspikes in [chunk_sides_system] > 200ms
+    - 200+ ms with locks..
+    - 80ms without locks..
+    - just make it generate at depth we are rendering instead of per level
+        - flag levels as dirty when building, just dont update them until render lod changes
+        
+- Fix navigation, use ChildIndex - for steamdeck
+
+- Fix touchscreen touch ui [player_state_touch_ui]
+    - device mode not set if not spawn
 - spawn vox item pickup
     - use mesh clone by linking blocks model
-- Fix touchscreen error message
 
 ## Main MVP Bugs
 - camera position off - can see through walls

@@ -10,7 +10,10 @@ void menu_start_triggered(
         return;
     }
     zox_delete(start_menu);
-    spawn_main_menu(world, player, game_name);
+    spawn_main_menu(
+        world,
+        player,
+        game_name);
     double volume = (0.6 + 0.4 * (rand() % 101) / 100.0) * get_volume_sfx();
     spawn_sound_generated(
         world,

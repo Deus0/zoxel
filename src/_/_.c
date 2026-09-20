@@ -54,7 +54,13 @@ zox_hook(on_boot, (ecs* world, entity app), (world, app))
 // sets up resources path per platform - during preload stage
 static inline byte initialize_pathing(const char* game_name) {
     byte pathing_success = EXIT_FAILURE;
-#ifdef zox_android
+#ifdef zox_web
+    pathing_success = initialize_pathing_web(
+        // game_name,
+        &data_path,
+        &resources_path,
+        &resources_path_game);
+#elifdef zox_android
     pathing_success = initialize_pathing_android();
     if (pathing_success == EXIT_SUCCESS) {
         decompress_android_resources(resources_path);

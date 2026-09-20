@@ -56,7 +56,9 @@ void convert_file_path_slashes(char* path) {
 }
 
 char* initialize_base_path() {
-#ifdef zox_windows
+#ifdef zox_web
+    char* base_path = "/";
+#elifdef zox_windows
     char* base_path = get_base_path_windows();
 #else
     char* base_path = get_base_path_native();
@@ -331,14 +333,10 @@ byte initialize_resources_path_game(
         }
         free(path);
         char* slash = strrchr(search_path, char_slash);
-        if (!slash) {
+        if (!slash || slash == search_path) {
             break;
         }
-        if (slash == search_path) {
-            search_path[1] = '\0';
-        } else {
-            *slash = '\0';
-        }
+        *slash = '\0';
     }
     free(search_path);
     return EXIT_FAILURE;

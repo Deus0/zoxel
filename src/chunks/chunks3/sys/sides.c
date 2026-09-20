@@ -346,6 +346,7 @@ static inline void zox_unlock_voxel_trees(
 // NOTE: Calculates the solid sides of a voxel octree per material
 void chunk_sides_system(iter* it) {
     byte dbg_log = 0;
+    byte is_spinlock = 0;
     zox_sys_on_begin();
     init_side_child_indices();
     byte max_process = !zox_disable_process_skips ? 1 : 0;
@@ -410,12 +411,17 @@ void chunk_sides_system(iter* it) {
             neighbor_voxels[j] = zox_get(e, VoxelNode);
             neighbor_locks[j] = &(zox_mut(e, VoxelNodeLock)->value);
         }
+        byte locked_voxel_count;
         spinlock* locked_voxel_locks[7];
-        byte locked_voxel_count = zox_lock_voxel_trees(
-            &voxels_lock->value,
-            neighbor_locks,
-            locked_voxel_locks);
-        spin_lock(&sides_lock->value);
+        if (is_spinlock) {
+            spin_lock(&sides_lock->value);
+            if (is_spinlock >= 2) {
+                locked_voxel_count = zox_lock_voxel_trees(
+                    &voxels_lock->value,
+                    neighbor_locks,
+                    locked_voxel_locks);
+            }
+        }
         build_sides_dig(
             solids,
             voxels,
@@ -427,10 +433,14 @@ void chunk_sides_system(iter* it) {
             0,
             byte3_zero,
             dbg_log);
-        spin_unlock(&sides_lock->value);
-        zox_unlock_voxel_trees(
-            locked_voxel_locks,
-            locked_voxel_count);
+        if (is_spinlock) {
+            if (is_spinlock >= 2) {
+                zox_unlock_voxel_trees(
+                    locked_voxel_locks,
+                    locked_voxel_count);
+            }
+            spin_unlock(&sides_lock->value);
+        }
         if (dbg_log) {
             zox_log("Built Sides [%s]", zox_sys_e_name);
         }

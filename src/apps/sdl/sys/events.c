@@ -5,9 +5,9 @@ extern void engine_end(); // engine
 //  TODO: Use event's window to fetch the entity properly
 
 void sdl_events_system(iter* it) {
+    byte dbg_log = 0;
     zox_sys_world();
     reset_sdl_inputs(world);
-    byte dbg_log = 0;
     entity e = main_app;
     if (!zox_valid(e) || !zox_has(e, SDLWindow)) {
         return;
@@ -29,13 +29,17 @@ void sdl_events_system(iter* it) {
             int2 window_size = sdl_event_window_size(&event);
             byte old_orientation = zox_getv(e, ScreenOrientation);
             if (old_orientation != orientation) {
-                zox_set(e, ScreenOrientation, { orientation });
+                zox_setv(e, ScreenOrientation, orientation);
                 if (dbg_log) {
                     zox_log("Screen Orientation Set [%i]", orientation);
                 }
             }
             // NOTE: On orientation it will just change the window dimensions
-            on_window_resized(world, e, window_size, dbg_log);
+            on_window_resized(
+                world,
+                e,
+                window_size,
+                dbg_log);
             if (dbg_log) {
                 zox_log("Window Resized to [%ix%i]", window_size.x, window_size.y);
             }
@@ -71,9 +75,12 @@ void sdl_events_system(iter* it) {
             }
         } else if (sdl_event_window_focus_gained(&event)) {
             enable_time();
+#ifdef zox_android
             opengl_restore_resources(world);
+#endif
             if (dbg_log) {
-                zox_log("App Gained Focus [%s]", zox_getn(e));
+                zox_log("App Gained Focus [%s]",
+                zox_getn(e));
             }
         } else if (sdl_event_window_restored(&event) ||
             sdl_event_background_left(&event)
@@ -93,6 +100,9 @@ void sdl_events_system(iter* it) {
             }
         } else if (sdl_event_window_focus_lost(&event)) {
             disable_time();
+#ifdef zox_android
+            opengl_dispose_resources(world);
+#endif
             if (sdl_window_is_minimized(sdl_window->value)) {
                 opengl_dispose_resources(world);
                 if (dbg_log) {

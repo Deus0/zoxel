@@ -1,8 +1,8 @@
 byte get_cpu_count() {
-#if zox_web
-    int cores = emscripten_get_num_cores();
+#if defined(zox_web)
+    int cores = SDL_GetNumLogicalCPUCores();
     return cores > 0 ? (byte) cores : 1;
-#elif zox_windows
+#elif defined(zox_windows)
     SYSTEM_INFO sysinfo;
     GetSystemInfo(&sysinfo);
     return (sysinfo.dwNumberOfProcessors > 255) ? 255 : (byte) sysinfo.dwNumberOfProcessors;

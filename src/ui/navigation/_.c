@@ -1,5 +1,3 @@
-#ifndef zox_elements_navigation
-#define zox_elements_navigation
 
 // NOTE: Keyboard navigation now broken
 
@@ -7,8 +5,7 @@
 
 #include "sys/_.c"
 
-zox_begin_module(Navigation) {
+void import_navigation(ecs* world) {
+    zox_module(navigation);
     zox_systems_navigation(world);
-} zox_end_module(Navigation);
-
-#endif
+}

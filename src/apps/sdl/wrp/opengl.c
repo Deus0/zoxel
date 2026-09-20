@@ -44,10 +44,13 @@ void set_sdl_attributes() {
         }
     }
     zox_logv("Graphics Backend [%s]",
-             opengl_mode == zox_opengl_es ? "OpenGL ES" :
-             (opengl_mode == zox_opengl_core ? "OpenGL Core" : "OpenGL Compatibility"));
-    byte profile = opengl_mode == zox_opengl_es ? SDL_GL_CONTEXT_PROFILE_ES :
-             (opengl_mode == zox_opengl_core ? SDL_GL_CONTEXT_PROFILE_CORE : SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+        opengl_mode == zox_opengl_es ? "OpenGL ES" :
+        (opengl_mode == zox_opengl_core ? "OpenGL Core" : "OpenGL Compatibility"));
+    byte profile =
+        opengl_mode == zox_opengl_es ? SDL_GL_CONTEXT_PROFILE_ES :
+            (opengl_mode == zox_opengl_core ?
+                SDL_GL_CONTEXT_PROFILE_CORE :
+                SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
     set_sdl_attributes2(sdl_gl_major, sdl_gl_minor, profile);
 }
 

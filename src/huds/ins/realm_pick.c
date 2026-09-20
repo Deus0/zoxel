@@ -1,4 +1,7 @@
-void button_event_load_cancel(ecs *world, ClickEventData event) {
+void button_event_load_cancel(
+    ecs *world,
+    ClickEventData event)
+{
     entity player = event.clicker;
     entity canvas = zox_get_link(world, player, CanvasLink);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuLoad));
@@ -17,7 +20,10 @@ void delay_spawn_menu_realm(ecs* world, entity player) {
     spawn_menu_realm(world, player);
 }
 
-void button_event_load_confirm(ecs *world, ClickEventData event) {
+void button_event_load_confirm(
+    ecs *world,
+    ClickEventData event)
+{
     entity player = event.clicker;
     entity clicked = event.clicked;
     entity game = zox_get_link(world, player, GameLink);

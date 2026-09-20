@@ -98,10 +98,20 @@ get_package_channel() {
 
     IFS='_' read -r game platform arch variant _ <<< "$name"
 
+    # WebGL / HTML5
+    if [[ "$platform" == "web" ]]; then
+        printf '%s' "html"
+        return
+    fi
+
     channel="${platform}_${arch}"
 
     if [[ "$variant" == "xr" ]]; then
         channel="${channel}_xr"
+    fi
+
+    if [[ "$variant" == "headless" ]]; then
+        channel="${channel}_headless"
     fi
 
     if [[ "$filename" == *.pkg.tar.zst ]]; then
@@ -109,6 +119,20 @@ get_package_channel() {
     fi
 
     printf '%s' "$channel"
+}
+
+contains_value() {
+    local value="$1"
+    shift
+
+    local item
+    for item in "$@"; do
+        if [[ "$item" == "$value" ]]; then
+            return 0
+        fi
+    done
+
+    return 1
 }
 
 # === Check package directory ===
@@ -211,60 +235,108 @@ if [ "${#games[@]}" -eq 0 ]; then
     error_exit "No valid packages found in $package_path"
 fi
 
-# === Pick game ===
-echo
-echo "🎮 Select game:"
-echo
 
-select GAME in "${games[@]}"; do
-    if [ -n "${GAME:-}" ]; then
-        break
+# === Optional command-line selection ===
+GAME="${1:-}"
+CHANNEL="${2:-}"
+
+if [ -n "$GAME" ] && [ -n "$CHANNEL" ]; then
+    # Validate game against available games.
+    if ! contains_value "$GAME" "${games[@]}"; then
+        error_exit "Game not found in $package_path: $GAME"
     fi
 
-    echo "❌ Invalid selection."
-done
+    # Find available channels for selected game.
+    channels=()
 
-# === Find channels for selected game ===
-channels=()
+    while IFS= read -r -d '' package_file; do
+        filename="$(basename "$package_file")"
+        name="$(get_package_name "$filename")"
 
-while IFS= read -r -d '' package_file; do
-    filename="$(basename "$package_file")"
-    name="$(get_package_name "$filename")"
+        IFS='_' read -r game platform arch _ <<< "$name"
 
-    IFS='_' read -r game platform arch _ <<< "$name"
+        if [ "$game" != "$GAME" ]; then
+            continue
+        fi
 
-    if [ "$game" != "$GAME" ]; then
-        continue
+        channel="$(get_package_channel "$filename")"
+
+        if ! contains_value "$channel" "${channels[@]}"; then
+            channels+=("$channel")
+        fi
+
+    done < <(
+        find "$package_path" -maxdepth 1 -type f \
+            \( -name '*.zip' -o -name '*.apk' -o -name '*.pkg.tar.zst' \) \
+            -print0
+    )
+
+    if [ "${#channels[@]}" -eq 0 ]; then
+        error_exit "No channels found for game: $GAME"
     fi
 
-    channel="$(get_package_channel "$filename")"
-
-    if [[ ! " ${channels[*]} " =~ " ${channel} " ]]; then
-        channels+=("$channel")
+    # Validate channel against available channels.
+    if ! contains_value "$CHANNEL" "${channels[@]}"; then
+        error_exit "Channel not found for $GAME: $CHANNEL"
     fi
 
-done < <(
-    find "$package_path" -maxdepth 1 -type f \
-        \( -name '*.zip' -o -name '*.apk' -o -name '*.pkg.tar.zst' \) \
-        -print0
-)
+    log "Using command-line selection: ${GAME}:${CHANNEL}"
+else
+    # === Pick game ===
+    echo
+    echo "🎮 Select game:"
+    echo
 
-if [ "${#channels[@]}" -eq 0 ]; then
-    error_exit "No channels found for game: $GAME"
+    select GAME in "${games[@]}"; do
+        if [ -n "${GAME:-}" ]; then
+            break
+        fi
+
+        echo "❌ Invalid selection."
+    done
+
+    # === Find channels for selected game ===
+    channels=()
+
+    while IFS= read -r -d '' package_file; do
+        filename="$(basename "$package_file")"
+        name="$(get_package_name "$filename")"
+
+        IFS='_' read -r game platform arch _ <<< "$name"
+
+        if [ "$game" != "$GAME" ]; then
+            continue
+        fi
+
+        channel="$(get_package_channel "$filename")"
+
+        if [[ ! " ${channels[*]} " =~ " ${channel} " ]]; then
+            channels+=("$channel")
+        fi
+
+    done < <(
+        find "$package_path" -maxdepth 1 -type f \
+            \( -name '*.zip' -o -name '*.apk' -o -name '*.pkg.tar.zst' \) \
+            -print0
+    )
+
+    if [ "${#channels[@]}" -eq 0 ]; then
+        error_exit "No channels found for game: $GAME"
+    fi
+
+    # === Pick channel ===
+    echo
+    echo "📦 Select channel for $GAME:"
+    echo
+
+    select CHANNEL in "${channels[@]}"; do
+        if [ -n "${CHANNEL:-}" ]; then
+            break
+        fi
+
+        echo "❌ Invalid selection."
+    done
 fi
-
-# === Pick channel ===
-echo
-echo "📦 Select channel for $GAME:"
-echo
-
-select CHANNEL in "${channels[@]}"; do
-    if [ -n "${CHANNEL:-}" ]; then
-        break
-    fi
-
-    echo "❌ Invalid selection."
-done
 
 # ============================================================
 # Find newest package matching game + channel

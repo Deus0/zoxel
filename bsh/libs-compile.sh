@@ -270,11 +270,23 @@ build_if_missing() {
     fi
 
     cp -L "$artifact" "$library/$OUTPUT_NAME"
-    if [[ -f "$artifact.0" ]]; then
-        cp -L "$artifact.0" "bin/$OUTPUT_NAME.0"
-        cp -L "$artifact.0" "$library/$OUTPUT_NAME.0"
+    #if [[ -f "$artifact.0" ]]; then
+    #    cp -L "$artifact.0" "bin/$OUTPUT_NAME.0"
+    #    cp -L "$artifact.0" "$library/$OUTPUT_NAME.0"
+    #else
+    #    cp -L "$artifact" "bin/$OUTPUT_NAME"
+    #    import_artifact="$(locate_artifact "$BUILD_DIR" "lib$OUTPUT_GLOB.a")"
+    #    cp -L "$import_artifact" "$library/lib$OUTPUT_NAME.a"
+    #fi
+    if [[ -e "$artifact.0" ]]; then
+        runtime_artifact="$artifact.0"
+        runtime_name="$(basename "$runtime_artifact")"
+
+        cp -L "$runtime_artifact" "bin/$runtime_name"
+        cp -L "$runtime_artifact" "$library/$runtime_name"
     else
         cp -L "$artifact" "bin/$OUTPUT_NAME"
+
         import_artifact="$(locate_artifact "$BUILD_DIR" "lib$OUTPUT_GLOB.a")"
         cp -L "$import_artifact" "$library/lib$OUTPUT_NAME.a"
     fi

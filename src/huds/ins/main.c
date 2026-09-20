@@ -14,7 +14,11 @@ byte tooltip_event_zoxel_header(ecs* world, const TooltipEventData *data) {
 extern void button_event_new_game(ecs*, ClickEventData);
 
 // List Menus adjust to the menu size
-entity spawn_main_menu(ecs *world, entity player, const char* base_header) {
+entity spawn_main_menu(
+    ecs *world,
+    entity player,
+    const char* base_header)
+{
     byte window_alignment = zox_huds_window_alignment;
     float2 window_anchor = zox_huds_window_anchor;
     byte header_font_size = 32 * ui_scale;
@@ -45,7 +49,7 @@ entity spawn_main_menu(ecs *world, entity player, const char* base_header) {
     SpawnListElement elements[4];
     byte can_load = has_save_game_directory(game_name);
     byte can_exit = 1;
-#ifdef zox_android
+#if defined(zox_android) || defined(zox_web)
     can_exit = 0;
 #endif
     if (can_load) {
@@ -99,15 +103,27 @@ entity spawn_main_menu(ecs *world, entity player, const char* base_header) {
     int j = 0;
     if (can_load) {
         entity load_button = spawned[j++];
-        zox_add_tooltip_text(world, load_button, "Load Game");
+        zox_add_tooltip_text(
+            world,
+            load_button,
+            "Load Game");
     }
     entity b2 = spawned[j++];
-    zox_add_tooltip_text(world, b2, "New Game");
+    zox_add_tooltip_text(
+        world,
+        b2,
+        "New Game");
     entity b3 = spawned[j++];
-    zox_add_tooltip_text(world, b3, "Options");
+    zox_add_tooltip_text(
+        world,
+        b3,
+        "Options");
     if (can_exit) {
         entity exit_button = spawned[j++];
-        zox_add_tooltip_text(world, exit_button, "Exit Game");
+        zox_add_tooltip_text(
+            world,
+            exit_button,
+            "Exit Game");
     }
     for (int i = 0; i < elements_count; i++) {
         zox_set_unique_name(spawned[i], "main_menu_button");

@@ -42,11 +42,12 @@ byte initialize_rendering(byte render_backend) {
     }
 }
 
-void viewport_clear(ecs *world) {
+// void viewport_clear(ecs* world) {
+void viewport_clear_system(iter* it) {
     float4 clear = color_to_float4(viewport_clear_color);
     zox_gpu_set_clear_color(clear);
     zox_gpu_clear_viewport();
-}
+} zoxd_system(viewport_clear_system);
 
 void import_rendering(ecs* world) {
     zox_module(rendering);
@@ -66,5 +67,10 @@ void import_rendering(ecs* world) {
     zox_add_module(rendering3);
     zox_add_module(render_cameras);
     // add_to_update_loop(viewport_clear);
+    zox_system_1(
+        viewport_clear_system,
+        zoxp_begin,
+        0
+    );
 }
 

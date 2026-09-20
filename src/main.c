@@ -26,9 +26,9 @@ int main(int argc, char* argv[]) {
     byte cores = get_cpu_count();    // gets our cpu core count
     set_cpu_tier2(cores);
     zox_logv("Initializing Flecs");
-    ecs* world = initialize_ecs(argc, argv);
+    ecs* world = zox_ecs(argc, argv);
     if (!world) {
-        zox_loge("[initialize_ecs] failed");
+        zox_loge("[zox_ecs] failed");
         return EXIT_FAILURE;
     }
     zox_logv("Initializing Zox Engine");
@@ -43,7 +43,10 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
     zox_logv("Initializing ECS Settings: FPS [%i]", target_fps);
-    initialize_ecs_settings(world, target_fps, cores); // sets ecs threads
+    zox_ecs_settings(
+        world,
+        target_fps,
+        cores); // sets ecs threads
     // TODO We should really hide the library used here
 #ifdef zox_sdl
     if (initialize_sdl(game_name) == EXIT_FAILURE) {
@@ -77,7 +80,10 @@ int main(int argc, char* argv[]) {
             return EXIT_FAILURE;
         }
         zox_logv("Setting App Icon [game.png]");
-        spawn_window_icon(world, app, "game.bmp");
+        spawn_window_icon(
+            world,
+            app,
+            "game.bmp");
         // FIX: Actually load shaders -> spawns materials...
     }
 #endif
