@@ -21,6 +21,7 @@ zox_sys2(SlotDataCleanSystem) {
 
 // NOTE: Flags dirty if slot data is dirty
 zox_sys2(DataIconSystem) {
+    byte dbg_log = 1;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SlotLink);
@@ -34,11 +35,15 @@ zox_sys2(DataIconSystem) {
         if (!zox_valid(slot->value)) {
             continue;
         }
-        if (zox_has(slot->value, DataUpdate) == zox_dirty_active) {
+        if (zox_has(slot->value, DataUpdate)) {
             data->value = zox_getv(slot->value, DataLink);
             // state->value = zox_dirty_trigger;
             zox_add(e, DataDirty);
             // zox_log("Slot was dirty [%s]", zox_get_name(slot->value));
+            if (dbg_log) {
+                zox_log("Data UI - Slot UI was Dirty [%s]",
+                    zox_sys_e_name);
+            }
         }
     }
 } zox_sys_end(DataIconSystem);
@@ -46,6 +51,7 @@ zox_sys2(DataIconSystem) {
 // NOTE: Updates icon texture when dirty
 // NOTE: Also updates the Tooltip to clear it
 zox_sys2(DataIconUpdateSystem) {
+    byte dbg_log = 1;
     zox_sys_world();
     zox_sys_begin();
     //zox_sys_in(DataDirty);
@@ -78,6 +84,10 @@ zox_sys2(DataIconUpdateSystem) {
             if (zox_valid(tooltip)) {
                 set_entity_text(world, tooltip, "");
             }
+        }
+        if (dbg_log) {
+            zox_log("Data Icon Updated [%s]",
+                zox_sys_e_name);
         }
     }
 } zox_sys_end(DataIconUpdateSystem);

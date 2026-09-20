@@ -52,4 +52,16 @@ void zox_systems_ui_containers(ecs* world) {
         zoxp_remove,
         [none] slots.DataUpdate,
     );
+    zox_system(
+        slot_ui_update_system,
+        zoxp_remove,
+        [none] slots.SlotLink,
+        // [none] slots.SlotUI,
+    );
+    zox_system(
+        data_ui_update_system,
+        zoxp_remove,
+        [none] slots.DataLink,
+        // [none] slots.SlotUI,
+    );
 }

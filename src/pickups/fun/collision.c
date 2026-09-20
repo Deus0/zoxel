@@ -5,7 +5,11 @@ byte add_item_to_slot_manager(
     entity base_item,
     byte value)
 {
-    if (!zox_valid(smanager) || !zox_valid(user) || !zox_valid(base_item) || !value) {
+    if (!zox_valid(smanager) ||
+        !zox_valid(user) ||
+        !zox_valid(base_item) ||
+        !value)
+    {
         return 0;
     }
     entity slots[zox_children_capacity];
@@ -39,39 +43,48 @@ byte add_item_to_slot_manager(
         }
     } else {
         if (value > 1) {
-            zox_loge("Trying to stack a item [%s] with no quantity!", zox_get_name(base_item));
+            zox_loge("Trying to stack a item [%s] with no quantity!",
+                zox_getn(base_item));
             value = 1;
         }
     }
     if (stack_slot) {
-        entity e3 = zox_getv(stack_slot, DataLink);
-        zox_geter_value(e3, Quantity, byte, quantity);
-        zox_setv(e3, Quantity, quantity + value);
-        zox_add(e3, QuantityDirty);
+        entity item = zox_getv(stack_slot, DataLink);
+        byte quantity = zox_getv(item, Quantity);
+        zox_setv(item, Quantity, quantity + value);
+        zox_add(item, QuantityDirty);
         zox_add(stack_slot, DataDirty);
         return 1;
     }
     entity add_slot = zox_get_empty_slot(world, smanager);
-    if (!zox_valid(add_slot)) {
-        return 0;
+    if (zox_valid(add_slot)) {
+        zox_muter(add_slot, DataLink, slot_data);
+        entity new_item = spawn_item_pickedup(
+            world,
+            base_item,
+            user,
+            value);
+        slot_data->value = new_item;
+        zox_add(add_slot, DataDirty);
+        return 1;
     }
-    entity new_item = spawn_item_pickedup(
-        world,
-        base_item,
-        user,
-        value);
-    zox_muter(add_slot, DataLink, slot_data);
-    slot_data->value = new_item;
-    zox_add(add_slot, DataDirty);
-    return 1;
+    return 0;
 }
 
 // TODO: Use System instead of Hook!
-byte on_overlap_pickup(ecs *world, entity e, entity user) {
-    if (!zox_valid(e) || !zox_valid(user)) {
+byte on_overlap_pickup(
+    ecs *world,
+    entity e,
+    entity user)
+{
+    if (!zox_valid(e) ||
+        !zox_valid(user))
+    {
         return 0;
     }
-    if (zox_getv(e, PickedUp) || !zox_has(user, PickUpperer)) {
+    if (zox_getv(e, PickedUp) ||
+        !zox_has(user, PickUpperer))
+    {
         return 0;
     }
     if (zox_has(user, Dead)) {
