@@ -39,7 +39,8 @@ void zox_systems_bodys(ecs* world) {
         zoxp_update,
         [in] interaction.SelectState,
         [in] slots.DataLink,
-        [in] slots.SlotLink,
+        // [in] slots.SlotLink,
+        [none] slots.SlotUser,
         [none] elements2.Icon
     );
 }

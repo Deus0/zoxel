@@ -114,12 +114,14 @@ entity spawn_datagrid_slots2(
             }
             if (zox_valid(icon)) {
                 zox_add(icon, DataFrame);
-                zox_setv(icon, SlotLink, slot);
+                zox_add(icon, SlotUser);
+                zox_link(world, icon, SlotLink, slot);
                 zox_setv(icon, DataLink, dat);
                 zox_add(icon, DataDirty);
             }
             if (zox_valid(text)) {
-                zox_setv(text, SlotLink, slot);
+                zox_add(text, SlotUser);
+                zox_link(world, text, SlotLink, slot);
                 zox_add(text, DataDirty);
             }
             if (active_states) {

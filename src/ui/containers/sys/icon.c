@@ -24,19 +24,20 @@ zox_sys2(DataIconSystem) {
     byte dbg_log = 1;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(SlotLink);
+    // zox_sys_in(SlotLink);
     zox_sys_out(DataLink);
     // zox_sys_out(DataDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(SlotLink, slot);
+        // zox_sys_i(SlotLink, slot);
         zox_sys_o(DataLink, data);
         // zox_sys_o(DataDirty, state);
-        if (!zox_valid(slot->value)) {
+        entity slot = zox_get_link(world, e, SlotLink);
+        if (!zox_valid(slot)) {
             continue;
         }
-        if (zox_has(slot->value, DataUpdate)) {
-            data->value = zox_getv(slot->value, DataLink);
+        if (zox_has(slot, DataUpdate)) {
+            data->value = zox_getv(slot, DataLink);
             // state->value = zox_dirty_trigger;
             zox_add(e, DataDirty);
             // zox_log("Slot was dirty [%s]", zox_get_name(slot->value));

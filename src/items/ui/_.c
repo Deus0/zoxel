@@ -4,18 +4,18 @@
  *      - UIs for all our things
  *
  * */
-#ifndef zoxm_items_ui
-#define zoxm_items_ui
-
 #include "com/_.c"
 #include "fun/_.c"
 #include "pre/_.c"
 #include "sys/_.c"
 #include "ins/_.c"
+#include "eve/_.c"
 
-zox_begin_module(ItemsUI) {
+void import_items_ui(ecs* world) {
+    zox_module(items_ui);
     zox_components_items_ui(world);
     zox_systems_items_ui(world);
+    add_hook_spawn_prefabs(zox_events_items_ui);
     add_taskbar_button(world, (TaskbarData) {
         .index = 3,
         .spawn = &spawn_menu_inventory,
@@ -23,6 +23,5 @@ zox_begin_module(ItemsUI) {
         .texture_name = "taskbar_items",
         .tooltip_text = "Inventory"
     });
-} zox_end_module(ItemsUI)
 
-#endif
+}

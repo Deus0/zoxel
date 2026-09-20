@@ -3,16 +3,22 @@ zox_sys2(ItemActivateSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Activate);
-    // zox_sys_in(BlockLink);
     zox_sys_out(Quantity);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Activate, activate);
-        // zox_sys_i(BlockLink, block_link);
         zox_sys_o(Quantity, quantity);
         if (activate->value != zox_dirty_active ||
             !quantity->value)
         {
+            continue;
+        }
+        entity block = zox_get_link(world, e, BlockLink);
+        if (!zox_valid(block) ||
+            !zox_has(block, BlockIndex))
+        {
+            zox_loge("invalid block [%s]",
+                zox_getn(block));
             continue;
         }
         entity user = zox_get_parent(world, e);
@@ -23,14 +29,6 @@ zox_sys2(ItemActivateSystem) {
         if (!hit_block ||
             !in_range)
         {
-            continue;
-        }
-        // entity block = block_link->value;
-        entity block = zox_get_link(world, e, BlockLink);
-        if (!zox_valid(block) ||
-            !zox_has(block, BlockIndex))
-        {
-            zox_loge("invalid block [%s]", zox_get_name(block));
             continue;
         }
         byte block_index = zox_getv(block, BlockIndex);
@@ -51,6 +49,7 @@ zox_sys2(ItemActivateSystem) {
         });
         quantity->value--;
         zox_add(e, QuantityDirty);
+        zox_add(e, DataDirty);
         // place block sound
         spawn_sound_generated(
             world,

@@ -9,7 +9,7 @@ void zox_systems_items_ui(ecs *world) {
         [in] slots.DataLink,
         [none] elements2.Icon
     );
-    zox_system(
+    /*zox_system(
         ItemIconLabelSystem,
         zoxp_update,
         [in] slots.SlotLink,
@@ -17,5 +17,5 @@ void zox_systems_items_ui(ecs *world) {
         [none] texts.Text,
         [none] elements2.Label,
         [none] slots.DataUpdate,
-    );
+    );*/
 }

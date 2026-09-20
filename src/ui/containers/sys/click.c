@@ -19,18 +19,19 @@ zox_sys2(DataFrameClickSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ClickState);
-    zox_sys_in(SlotLink);
+    // zox_sys_in(SlotLink);
     zox_sys_out(DataLink);
     // zox_sys_out(DataDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ClickState, state);
-        zox_sys_i(SlotLink, slot);
+        // zox_sys_i(SlotLink, slot);
         zox_sys_o(DataLink, data);
         //zox_sys_o(DataDirty, dirty);
         if (state->value != zox_click_state_clicked_this_frame) {
             continue;
         }
+        entity slot = zox_get_link(world, e, SlotLink);
         if (dbg_log) {
             zox_log("DataFrame is Activating [%s]", zox_get_name(e));
         }
@@ -84,7 +85,7 @@ zox_sys2(DataFrameClickSystem) {
             }
             if (is_frame_body2) {
                 // continue here if child body slots all empty!
-                if (!is_slot_children_empty(world, slot->value)) {
+                if (!is_slot_children_empty(world, slot)) {
                     zox_log("Cannot Pickup part, children are not empty!");
                     continue;
                 }
@@ -98,7 +99,7 @@ zox_sys2(DataFrameClickSystem) {
             if (is_frame_body2) {
                 // continue here if child body slots all empty!
                 // TODO: Check Part Slot Type!
-                if (is_slot_parent_empty(world, slot->value)) {
+                if (is_slot_parent_empty(world, slot)) {
                     zox_log("Cannot Place Part, Parent is Partless!");
                     continue;
                 }
@@ -134,9 +135,9 @@ zox_sys2(DataFrameClickSystem) {
         zox_set(mouse_ui, RenderDisabled, { !zox_valid(mouse_data->value) });
         // we should just set DataDirty here
         swap_textures(world, e, mouse_ui);
-        zox_muter(slot->value, DataLink, slot_data);
+        zox_muter(slot, DataLink, slot_data);
         slot_data->value = data->value;
-        zox_add(slot->value, DataDirty);
+        zox_add(slot, DataDirty);
         zox_add(e, DataDirty);
         if (is_frame_equip2 || is_frame_body2) {
             on_frame_updated_equipment(world, user);

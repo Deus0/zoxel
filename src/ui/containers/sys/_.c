@@ -9,8 +9,9 @@ void zox_systems_ui_containers(ecs* world) {
         DataFrameClickSystem,
         zoxp_update,
         [in] interaction.ClickState,
-        [in] slots.SlotLink,
+        // [in] slots.SlotLink,
         [out] slots.DataLink,
+        [none] slots.SlotUser,
         [none] u.i.containers.DataFrame
     );
     zox_system(
@@ -22,8 +23,9 @@ void zox_systems_ui_containers(ecs* world) {
     zox_system(
         DataIconSystem,
         zoxp_update,
-        [in] slots.SlotLink,
+        // [in] slots.SlotLink,
         [out] slots.DataLink,
+        [none] slots.SlotUser,
         [none] elements2.Icon
     );
     zox_system(
@@ -36,7 +38,7 @@ void zox_systems_ui_containers(ecs* world) {
     zox_system(
         IconLabelClearSystem,
         zoxp_update,
-        [in] slots.SlotLink,
+        // [in] slots.SlotLink,
         [out] texts.TextData,
         [none] texts.Text,
         [none] elements2.Label,
@@ -55,7 +57,7 @@ void zox_systems_ui_containers(ecs* world) {
     zox_system(
         slot_ui_update_system,
         zoxp_remove,
-        [none] slots.SlotLink,
+        [none] slots.SlotUser,
         // [none] slots.SlotUI,
     );
     zox_system(

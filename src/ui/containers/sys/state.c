@@ -22,8 +22,10 @@ void slot_ui_update_system(iter* it) {
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        entity slot = zox_getv(e, SlotLink);
-        if (zox_valid(slot) && zox_has(slot, DataUpdate)) {
+        entity slot = zox_get_link(world, e, SlotLink);
+        if (zox_valid(slot) &&
+            zox_has(slot, DataUpdate))
+        {
             zox_add(e, DataDirty);
             if (dbg_log) {
                 entity data = zox_getv(slot, DataLink);

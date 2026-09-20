@@ -1,21 +1,18 @@
-// NOTE: Tooltips for Body/Equip Items
-zox_sys2(SlotItemTooltipSystem) {
+// Tooltip Event for item icons
+void icon_tooltip_event(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SelectState);
     zox_sys_in(DataLink);
-    // zox_sys_in(SlotLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(SelectState, state);
         zox_sys_i(DataLink, data);
-        // zox_sys_i(SlotLink, slot);
         if (state->value != zox_state_select_active) {
             continue;
         }
-        entity slot = zox_get_link(world, e, SlotLink);
         entity e2 = data->value;
-        if (!zox_valid(e2) || !zox_has(e2, SlotType)) {
+        if (!zox_valid(e2) || !zox_has(e2, Item) || !zox_has(e2, Quantity)) {
             continue;
         }
         entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
@@ -27,29 +24,18 @@ zox_sys2(SlotItemTooltipSystem) {
             zox_loge("Tooltip not found in canvas");
             continue;
         }
-        entity body = zox_get_parent_by_id(
-            world,
-            slot,
-            zox_id(Body));
         const char* name = zox_has(e2, ZoxName) ?
-            zox_getv(e2, ZoxName) :
-            zox_get_name(e2);
-        byte slot_type = zox_getv(e2, SlotType);
-        const char* slot_name =
-            slot_type < slot_names_length ?
-                slot_names[slot_type] :
-                "unknown";
+        zox_getv(e2, ZoxName) :
+        zox_get_name(e2);
+        byte quantity = zox_has(e2, Quantity) ?
+        zox_getv(e2, Quantity) :
+        1;
         char result[128];
-        sprintf(result, "[%s]\n- Slot [%s]%s\n",
-            name,
-            slot_name,
-            zox_valid(body) ?
-                "+" :
-                "");
+        sprintf(result, "[%s] x%i\n", name, quantity);
         set_tooltip_text(
             world,
             e,
             tooltip,
             result);
     }
-} zox_sys_end(SlotItemTooltipSystem);
+}

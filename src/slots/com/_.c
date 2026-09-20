@@ -1,6 +1,7 @@
 zox_tag(SlotManager);
 zox_tag(Slot);
-zoxc_entity(SlotLink);
+zox_tag(SlotUser);
+zox_tag(SlotLink);
 zoxc_byte(SlotType);
 zoxc_byte(SlotAnchor);
 zoxc_entity(DataLink);
@@ -10,7 +11,8 @@ zox_tag(DataUpdate);
 void zox_components_slots(ecs* world) {
     zoxd_tag(SlotManager);
     zoxd_tag(Slot);
-    zoxd_entity(SlotLink);
+    zoxd_tag(SlotUser);
+    zoxd_nf_tag(SlotLink);
     zoxd_byte(SlotType);
     zoxd_byte(SlotAnchor);
     zoxd_entity(DataLink);
