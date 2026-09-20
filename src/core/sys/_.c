@@ -5,12 +5,12 @@
 void zox_systems_core(ecs* world) {
     zox_system(
         pre_initialize_system,
-        zoxp_remove, // zoxp_initialize
+        zoxp_remove,
         [none] core.PreInitialize,
     );
     zox_system(
         initialize_system,
-        zoxp_remove, // zoxp_initialize
+        zoxp_remove,
         [none] core.Initialize,
     );
     zox_system_1(

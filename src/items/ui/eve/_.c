@@ -1,5 +1,5 @@
 #include "icon.c"
-// #include "tooltip.c"
+#include "tooltip.c"
 
 void zox_events_items_ui(ecs* world) {
     zox_on_add(
@@ -11,4 +11,11 @@ void zox_events_items_ui(ecs* world) {
         [none] elements2.Label,
         [none] slots.DataUpdate,
     );
+    zox_on_add(
+        icon_tooltip_event,
+        [in] slots.DataLink,
+        [none] slots.SlotUser,
+        [none] interactions.Select,
+    );
+
 }

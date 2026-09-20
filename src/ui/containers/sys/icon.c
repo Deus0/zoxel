@@ -21,7 +21,7 @@ zox_sys2(SlotDataCleanSystem) {
 
 // NOTE: Flags dirty if slot data is dirty
 zox_sys2(DataIconSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     // zox_sys_in(SlotLink);
@@ -52,7 +52,7 @@ zox_sys2(DataIconSystem) {
 // NOTE: Updates icon texture when dirty
 // NOTE: Also updates the Tooltip to clear it
 zox_sys2(DataIconUpdateSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     //zox_sys_in(DataDirty);

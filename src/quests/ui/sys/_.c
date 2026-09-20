@@ -5,7 +5,7 @@ void zox_systems_quests_ui(ecs* world) {
     zox_system(
         QuestIconTooltipSystem,
         zoxp_update,
-        [in] interaction.SelectState,
+        [in] interactions.SelectState,
         [in] slots.DataLink,
         [none] elements2.Icon
     );

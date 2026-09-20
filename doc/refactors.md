@@ -1,7 +1,8 @@
 # Refactoring
 
 Next
-- remove TilemapIndex and use regular index since relations are ordered
+- Turn quest slayer into an event
+    - Make observer function for callbacks
 - Refactor character vox into sub entity
 - Single Vox for Grass
 	- split into sub chunks
@@ -11,6 +12,9 @@ Next
 - Add locks onto all VoxelNode setters and getters
 -x Add observer function, when Dirty is added to setting, replace SettingsDirtySystem's
 - Replace rest of [SettingsDirtySystem] with observer zox_on_add
+- Refactor character mesh from its prefab
+	- vox / vox instance will be child
+	- test function to set it as unique when decaying its mesh
 
 Modules
 - Move AnimateTextSystem from dialogue to ui/texts
@@ -42,6 +46,10 @@ Unsorted
 - Refactor our timings from on system entities
     - spawn a profile entity (dataset)
 
+## ANDROID
+- move the keys into Apps folder on phone
+    - android keys
+    - build same apk from other machines using it
 
 ## Custom Phases
 - remove update loops and just use systems as functions
@@ -84,6 +92,9 @@ UIs
 	- Settings Spawning - InitializeEvent on App
     
 ## Remove old links
+	-x SlotLink
+	- ModelLinks (half done)
+	- DataLink
 	- SkeletonLink
 	- ChunkLink
 	- ElementLink
@@ -113,7 +124,6 @@ UIs
 	- BlockLink
 	- BlockLinks
 	- BiomeLinks
-	- ModelLinks (half done)
 	- CameraFollowLink
 	- Character2DLink
 	- CloneVoxLink
@@ -124,8 +134,6 @@ UIs
 	- NodeStartLink
 	- NodeLink
 	- FolderPathLink
-	- SlotLink
-	- DataLink
 	- StreamLink
 
 

@@ -1,6 +1,3 @@
-#ifndef zox_ui_containers
-#define zox_ui_containers
-
 #include "com/_.c"
 #include "dat/_.c"
 #include "pre/_.c"
@@ -8,10 +5,9 @@
 #include "ins/_.c"
 #include "sys/_.c"
 
-zox_begin_module(UIContainers)
+void import_ui_containers(ecs* world) {
+    zox_module(ui_containers);
     zox_components_ui_containers(world);
     zox_systems_ui_containers(world);
     add_hook_spawn_prefabs(zox_spawn_prefabs_ui_containers);
-zox_end_module(UIContainers)
-
-#endif
+}

@@ -22,6 +22,9 @@ zox_sys2(DialogueRealmSpawnSystem) {
                 e,
                 texts,
                 texts_count);
+            // Spawn conditional node here
+            // If they have quest, do A, if not do B
+
             // Spawn quests here, linked to dialogue
             entity dialogue_quest = spawn_realm_quest(
                 world,
@@ -34,7 +37,10 @@ zox_sys2(DialogueRealmSpawnSystem) {
             entity give_quest_node = spawn_node_give_quest(
                 world,
                 dialogue_quest);
-            new_link_single_node(world, dialogue_nodes.y, give_quest_node);
+            new_link_single_node(
+                world,
+                dialogue_nodes.y,
+                give_quest_node);
         }
         {
             byte texts_count = 2;

@@ -1,7 +1,7 @@
 // NOTE: Pushes Texture data into tilemap from realm
 // NOTE: Updates on dirty end state
 zox_sys2(RealmTilemapSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(BlockLinks);

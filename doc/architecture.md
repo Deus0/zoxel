@@ -2,7 +2,7 @@
 
 ## Events vs Systems
 
-Use an **event** when something happens once because of a specific change or interaction.
+Use an **event** when something happens once because of a specific change or interactions.
 
 Use a **system** when something needs to be checked, processed, or updated repeatedly over time.
 

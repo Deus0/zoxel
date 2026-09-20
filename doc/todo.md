@@ -1,145 +1,25 @@
 # Todo
 
-- Bugs:
--x item quantity ui not updating properly
--x slot index for action is off
--x item not showing now when  i pickup
-	- issue is the state logic changed in slot->ui
--x action ui not sync with children indexes
-	- logici of action changed
-	- pickup item, it appears on 10th item
-	- just find empty slot, check action indexes?
-
-- Slot Refactors
-	-x DataDirty
-	- SlotLink
-	- DataLink?
-	- Convert systems to observers
-		- IconTooltipSystem
-		- IconLabelSystem
-	- UI is connected to Slot
-	- Slot is connected to Data
-	- link slot to multiple uis too
-	-x atm - just add DataDirty  onto ui, from system, when detecting slot is dirty
-
-# NOTE: Zoxel android release working now, was issue  with no safety checks Crash
-- move the keys into Apps folder on phone
-    - android keys
-    - build same apk from other machines using it
-- Fix webgl bugs:
-    - no save games
-    - no stats
-    - npcs missing
-    - Dev version  stuck on load game
-- Fix lagspikes in [chunk_sides_system] > 200ms
-    - 200+ ms with locks..
-    - 80ms without locks..
-    - just make it generate at depth we are rendering instead of per level
-        - flag levels as dirty when building, just dont update them until render lod changes
-        
-- Fix navigation, use ChildIndex - for steamdeck
-
-- Fix touchscreen touch ui [player_state_touch_ui]
-    - device mode not set if not spawn
+- World Item - Vox Mesh
+	- use model linked to block for this
+	- grab the top model i guess
+- add conditional dialogue node for quest
+	- refactor node events and links
+	- when node activate, use observer for checking HasQuestNode
+	- NodeTrue added -> triggering it to go to the TrueLink
+	- NodeFalse added -> triggering it to go to False Link
+	- This is node module works
+	- but HasQuest implemented in quests events
 - spawn vox item pickup
     - use mesh clone by linking blocks model
+- Refactor DataLink 108 times
 
-## Main MVP Bugs
-- camera position off - can see through walls
-- add a function to turn off gpu disposal if non android
-- we shouldn't update mesh when terrain updates until lighting does
-    - atm it flashes white during updates
-- When streaming terrain - flag neighbor of updated chunks dirty
-    - the outside chunks have missing faces now
-    - move a little around chunks
-    - look at LOD horizon and notice chunk faces can be missing
-- vox item textures did not generate
-    - pickup grass
-    - notice no texture
-- Integral test on falling through map
-	- fly up
-	- fall
-	- lag spike
-	- wham into ground
-- Characters - npcs not despawning now
-    - changed recently the states
-- Main Menu music missing
-
-## Refactors
-- Turn quest slayer into an event
-    - Make observer function for callbacks
--o Fix - Npcs not spawning atm
-    - maybe the ordering i did change that
-
-## New
 - Collect 5 cookies for quest
 - Hand in Quest Node - linked to two answer
     - Dialogue Nodes: QuestDoneLink - QuestActiveLink
 - Quest Rewards - More Cookies - Particles - Sounds (Yay)
 
 
------------
-## Backlog
------------
-
-# Dialogues
-- Add a text speed option - 1, 2, 3 (default 2)
-	- add sounds per syllabal too instead of sound
-
-- Loops endless - when exiting game now
-    - can test by spawning/destroying terrain in main menu
-    - i disabled mesh, vodes, npcs, lights, still stuck on dispose terrain
-    - I disabled chunks.. its tunks or regions
-    - by Elimination, we find its hashmap disposal hanging
-- Add spinlock onto all ChunkSides access
-- Add VoxelNodeLocks onto any read/wrists
-    - ChunkSidesSystem - needs to use neighbors, and push spinlocks into octree functions
-- Maybe we just build spinlock into the octree types root
-    - would be a massive refactor tho
-
-- Look into plain data types of flecs
-- Water Blocks / Chunk Materials
-	- seperate out subchunks by material (with sides per material)
-	- keep a list of materials when blocks update - refresh this list
-	- move meshes underneath Subchunk's
-	- generate sides if block is linked to water or not
-- Underwater
-	- change filter of camera - add block - sky darkened
-	- add splash when entering water
-	- reduce gravity
-	- allow jumping inside water
-	- Dampen music sounds
-- humanoids seem missing
-	
-- Remove trigger system for lods
-	- just update neighbor of updating chunks inside stream systems
-	- atm the faces stay sometimes between lods
-- Refactor DoubleDataMax - system timings - use a seperate entity
-    - with system link
-    
-# NOTE: Relationships fragment by default (including ChildOf)
-- Bug: Spawning health on realm character errors
-    - with the non fragmenting parenting set
-
-## Next
-- Fix Font imports for "?"
-	- test marker change with quest
-- dialogue conditional node
-	- if you have quest, npc laughs at you
-	- make it a function pointer byte node_condition_event
-- Add death event for character
-	- xp gain
-	- sound spawn
-- Refactor character mesh from its prefab
-	- vox / vox instance will be child
-	- test function to set it as unique when decaying its mesh
-- "[Landfill] Depth Invalid:" bug
-- spawn dialogue inside character spawning for realm, so its in one spot
-	
-## Observers
-- We can add a On Tag observer for dirty tags
-- we can use filter ecs on add for the tag
-- the issue is how do we add this per entity prefab?
 
 ## Gameplay
 - Add conditional node, and link it to two speech nodes
@@ -162,6 +42,53 @@
 - When Add/Remove body part
 	- remove the associated item slots
 	- refresh the body ui
+	
+-----------
+## Backlog
+-----------
+
+# Dialogues
+- Add a text speed option - 1, 2, 3 (default 2)
+	- add sounds per syllabal too instead of sound
+
+- Loops endless - when exiting game now
+    - can test by spawning/destroying terrain in main menu
+    - i disabled mesh, vodes, npcs, lights, still stuck on dispose terrain
+    - I disabled chunks.. its tunks or regions
+    - by Elimination, we find its hashmap disposal hanging
+- Maybe we just build spinlock into the octree types root
+    - would be a massive refactor tho
+
+- Water Blocks / Chunk Materials
+	- seperate out subchunks by material (with sides per material)
+	- keep a list of materials when blocks update - refresh this list
+	- move meshes underneath Subchunk's
+	- generate sides if block is linked to water or not
+- Underwater
+	- change filter of camera - add block - sky darkened
+	- add splash when entering water
+	- reduce gravity
+	- allow jumping inside water
+	- Dampen music sounds
+- humanoids seem missing
+	
+- Remove trigger system for lods
+	- just update neighbor of updating chunks inside stream systems
+	- atm the faces stay sometimes between lods
+- Refactor DoubleDataMax - system timings - use a seperate entity
+    - with system link
+    
+
+- Fix Font imports for "?"
+	- test marker change with quest
+- dialogue conditional node
+	- if you have quest, npc laughs at you
+	- make it a function pointer byte node_condition_event
+- Add death event for character
+	- xp gain
+	- sound spawn
+- "[Landfill] Depth Invalid:" bug
+- spawn dialogue inside character spawning for realm, so its in one spot
 
 ## Projectiles
 - Projectiles get destroyed on hit characters (use same system as pickups)

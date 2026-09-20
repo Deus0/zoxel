@@ -1,18 +1,47 @@
 # Done
-
-<<<<<<< Updated upstream
+	
+## Observers
+-x We can add a On Tag observer for dirty tags
+-x we can use filter ecs on add for the tag
+-x the issue is how do we add this per entity prefab?
+# NOTE: Relationships fragment by default (including ChildOf)
+-x Bug: Spawning health on realm character errors
+    - with the non fragmenting parenting set
+-x Add spinlock onto all ChunkSides access
+-x Add VoxelNodeLocks onto any read/wrists
+    - ChunkSidesSystem - needs to use neighbors, and push spinlocks into octree functions
+-x remove TilemapIndex and use regular index since relations are ordered
+-x Lighting node at top suddenly dark - only when sunlight and reduce are on too
+-x When the light octree increases scale, it doesnt get blacked out? this causes bigger lights to lightup house sides
+-x NPC stat spawning crashes in character
+	- doesnt crash when gdb on khadas, just rund
+-x item quantity ui not updating properly
+-x slot index for action is off
+-x item not showing now when  i pickup
+	- issue is the state logic changed in slot->ui
+-x action ui not sync with children indexes
+	- logici of action changed
+	- pickup item, it appears on 10th item
+	- just find empty slot, check action indexes?
+-x Slot Refactors
+	-x DataDirty
+	-x SlotLink
+	- Convert systems to observers
+		- IconTooltipSystem
+		- IconLabelSystem
+	- UI is connected to Slot
+	- Slot is connected to Data
+	-x atm - just add DataDirty  onto ui, from system, when detecting slot is dirty
 -x SkeletonMeshDirty
 -x GlyphDirty
 -x TextDirty
 -x BlocksDirty
 -x TextureLinks
 -x TextureLink
-=======
 -x Android issue might be with restore/dispose resources
     - its happening on pc the glitchy
     - android build is broken - graphics glitching
 -x steamdeck build broken...
->>>>>>> Stashed changes
 -x Fix icon not updating sometimes
     -x pickup item event
 -x Mouse scrollwheel broken for switching items

@@ -1,45 +1,65 @@
 # Bugs
 
 ## Next
-- NPC stat spawning crashes in character
-	- doesnt crash when gdb on khadas, just rund	
+- Main Menu music missing
+- cant talk / raycast npcs when no action selected
+- Terrain Chunk faces missing when streaming
+	- update neighbors directly from the queue
+	- just rebuild their mesh, no need for voxelnodeupdate etc
+- Map UI doesnt initialize properly
+- top hat doesn't scale up when imported to depth of 5!
+- doesnt spawn new chunk mesh ... again
+	- test by building upwards generating, the chunk
+- Fall through map
+	- fix unstuck - 
+	- Make sure collision checks deltas
+
+## WEB
+    - no save games
+    - no stats
+    - npcs missing
+    - Dev version  stuck on load game
+
+## ANDROID
+   - Touch UI not showing up in game
+	- Fix touchscreen touch ui [player_state_touch_ui]
+    	- device mode not set if not spawn
+   
+## STEAM DECK
+   - Gamepad navigation faulty neighbors
+	- Implement position checking for any interactable items in canvas tree
+   
+## WINDOWS
+   - sdl3 window mode - it dissapears
+   	- windowed mode bug
 	
 ## Unsorted
+- camera position off - can see through walls?
+- When streaming terrain - flag neighbor of updated chunks dirty
+    - the outside chunks have missing faces now
+    - move a little around chunks
+    - look at LOD horizon and notice chunk faces can be missing
+-x vox item textures did not generate
+    -x pickup grass
+    -x notice no texture
 - Block didnt update when spawning on top of world
-- Windows sdl3 window mode - it dissapears
-    - windowed mode bug
 - Big Terrain Disposal Bug
     - set render distance to 32
     - terrain very big, and delete, it causes it to hang
     - actually it did end up working
     - also deleting while its spawning, causes crash
-    - I think we can just add a destroy tag, and then move destroy to another phase
-- top hat doesn't scale up when imported to depth of 5!
-- doesnt spawn new chunk mesh ... again
-	- test by building upwards generating, the chunk initialization issue
+    - I think we can just add a destroy tag, and then move destroy to another phase initialization issue
 - Lighting flashes when chunks update
 	- stop mesh updating until its finished building lights
-        
-- Add VoxelNodeLock for Octree Safety
-	- Crashed on load...!
-	
-## RareBugs
-- Placing twice in a row can crash it still
-- Sometimes block item textures dont load for vox items
-    - flowers, grass, etc
-- new game loaded chunks... check that
-    - broke the selections
 - Sometimes flying around we see missing faces now in chunks
     - probably didnt trigger neighbors..
-- placed block texture stayed in actionbar
-- bug - place block, alt tab at same time
-- Fix physics clipping - falling through terrain
-- Voxel Sides
-	- They arnt being culled between lods, perhaps this is a trigger issue
-- Im getting neighbor updates not triggering at map edges
-- Fall through map
-	- fix unstuck - 
-	- Make sure collision checks deltas
+
+## Characters
+- npcs not despawning now
+    - changed recently the states
+-o Fix - Npcs not spawning atm
+    - maybe the ordering i did change that
+- Item in hand dissapears when updating body
 
 ## Rendering
 - Cube mesh doesnt restore on alt tab
@@ -48,8 +68,8 @@
 - corners of light still off (needs check solids)
 - when moving between chunks can throw lights off
     - i think due to light at lower depth is more sunny
--x Lighting node at top suddenly dark - only when sunlight and reduce are on too
--x When the light octree increases scale, it doesnt get blacked out? this causes bigger lights to lightup house sides
+- we shouldn't update mesh when terrain updates until lighting does
+    - atm it flashes white during updates
 
 ## Blocks
 - SoilGrass color at bottom wrong
@@ -59,16 +79,19 @@
 
 ## Physics
 - Fix low frame rates - clip through ground - by checking deltas between intersections
+- Integral test on falling through map
+	- fly up
+	- fall
+	- lag spike
+	- wham into ground
 
 ## UI
 - Line2Ds are broken, need to add to new 2D render stack that sorts layers
 
 ## Next
-- cant talk / raycast npcs when no action selected
-- Fix body (body parts) icon didnt generate
+-x Fix body (body parts) icon didnt generate
     - check events
 - Fix music importer
-
 - Fix light face on bigger lods, needs tojust pick brightest if at a lower division
 - make run should check gam directory too for changes
 - Music load error on linux (somehow loads on windows)
@@ -81,7 +104,6 @@
 - Fix viewport not resizing
 
 ## Unsorted
-- Item in hand dissapears when updating body
 - Redo skinning, has overlapping issues if parts close atm 
 	- Cellular automata voxels around bone joints for better rotation
 	- use octree data for bone indexes, so we can remember what part we placed the voxels from, then we can use this when building up the weights
@@ -96,4 +118,25 @@
 Polish:
 - Fix little teleport when loading player character
 - set the slider text block depth [5] when sliding
+	
+## RareBugs
+- Add VoxelNodeLock for Octree Safety
+	- Crashed on load...!
+- Placing twice in a row can crash it still
+-x Sometimes block item textures dont load for vox items
+    - flowers, grass, etc
+-x new game loaded chunks... check that
+    - broke the selections
+-x placed block texture stayed in actionbar
+- bug - place block, alt tab at same time
+- Voxel Sides
+	- They arnt being culled between lods, perhaps this is a trigger issue
+- Im getting neighbor updates not triggering at map edges
 
+# NOTE: Zoxel android release working now, was issue  with no safety checks Crash
+- Fix lagspikes in [chunk_sides_system] > 200ms
+    - 200+ ms with locks..
+    - 80ms without locks..
+    - just make it generate at depth we are rendering instead of per level
+        - flag levels as dirty when building, just dont update them until render lod changes
+        

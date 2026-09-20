@@ -39,13 +39,13 @@ void import_ui(ecs* world) {
     add_hook_spawn_prefabs(spawn_prefabs_elements);
     zox_add_module(glyphs);
     zox_add_module(texts);
-    zox_add_module(interaction);
+    zox_add_module(interactions);
     zox_add_module(tooltips);
     zox_add_module(elements2);
     zox_add_module(elements3);
     zox_add_module(windows);
     zox_add_module(navigation);
     zox_add_module(touch);
-    zox_import_module(RenderTextures);
-    zox_import_module(UIContainers);
+    zox_add_module(render_textures);
+    zox_add_module(ui_containers);
 }

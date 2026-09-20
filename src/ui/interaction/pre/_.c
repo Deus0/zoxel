@@ -1,4 +1,4 @@
-void zox_spawn_prefabs_elements_interaction(ecs *world) {
+void zox_prefabs_interaction(ecs *world) {
     // linking
     if (prefab_player) {
         zox_prefab_set(prefab_player, ClickingEntity, { 0 });

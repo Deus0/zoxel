@@ -2,7 +2,7 @@
 // uses terrain's texture links to generate a tilemap
 // todo: support for multiple sizes, would have to place them in? or something
 zox_sys2(TilemapUVSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     byte faces_per_block = 6;
     byte uvs_per_face = 4;
     zox_sys_world();

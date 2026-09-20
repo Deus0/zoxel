@@ -30,7 +30,7 @@ void zox_systems_stats_ui(ecs *world) {
     zox_system(
         StatIconTooltipSystem,
         zoxp_update,
-        [in] interaction.SelectState,
+        [in] interactions.SelectState,
         [in] slots.DataLink,
         [none] elements2.Icon
     );

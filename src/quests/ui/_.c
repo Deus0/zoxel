@@ -1,13 +1,11 @@
-#ifndef zoxm_quests_ui
-#define zoxm_quests_ui
-
 zox_tag(MenuQuests);
 #include "fun/_.c"
 #include "pre/_.c"
 #include "ins/_.c"
 #include "sys/_.c"
 
-zox_begin_module(QuestsUI) {
+void import_quests_ui(ecs* world) {
+    zox_module(quests_ui);
     zoxd_tag(MenuQuests);
     zox_systems_quests_ui(world);
     // add_hook_spawn_prefabs(spawn_prefabs_ui_quests);
@@ -18,6 +16,4 @@ zox_begin_module(QuestsUI) {
         .texture_name = "taskbar_quests",
         .tooltip_text = "Questlog"
     });
-} zox_end_module(UIQuests)
-
-#endif
+}

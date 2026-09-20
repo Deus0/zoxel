@@ -21,13 +21,13 @@ void zox_systems_tooltips(ecs* world) {
     zox_system(
         TooltipeeDeselectSystem,
         zoxp_update,
-        [in] interaction.SelectState,
+        [in] interactions.SelectState,
         [none] tooltips.Tooltipper
     );
     zox_system(
         TooltipEventSystem,
         zoxp_update,
-        [in] interaction.SelectState,
+        [in] interactions.SelectState,
         [in] tooltips.TooltipEvent,
         [none] tooltips.Tooltipper
     );

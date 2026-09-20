@@ -11,14 +11,14 @@ void zox_systems_elements2(ecs *world) {
     zox_system(
         ElementDragSystem,
         zoxp_update,
-        [in] interaction.DraggableState,
-        [in] interaction.DraggingDelta,
-        [in] interaction.DraggedLink
+        [in] interactions.DraggableState,
+        [in] interactions.DraggingDelta,
+        [in] interactions.DraggedLink
     );
     zox_system(
         ScrollbarSystem,
         zoxp_update,
-        [in] interaction.DraggableState,
+        [in] interactions.DraggableState,
         [in] layouts.LayoutPosition,
         [in] layouts.LayoutSize,
         [in] elements2.ScrollviewLink,
@@ -50,10 +50,10 @@ void zox_systems_elements2(ecs *world) {
     zox_system(
         SlideEventSystem,
         zoxp_update,
-        [in] interaction.SlideEvent,
+        [in] interactions.SlideEvent,
         [in] elements2.SlideBounds,
-        [in] interaction.DraggableState,
-        [in] interaction.DraggerLink,
+        [in] interactions.DraggableState,
+        [in] interactions.DraggerLink,
         [in] layouts.LayoutConstraints,
         [in] layouts.LayoutPosition
     );
@@ -61,11 +61,11 @@ void zox_systems_elements2(ecs *world) {
     zox_system_1(
         ToggleEventSystem,
         zoxp_spawn,
-        [in] interaction.ClickState,
-        [in] interaction.Clicker,
-        [in] interaction.ToggleEvent,
-        [out] interaction.ActiveState,
-        [out] interaction.ActiveStateDirty,
+        [in] interactions.ClickState,
+        [in] interactions.Clicker,
+        [in] interactions.ToggleEvent,
+        [out] interactions.ActiveState,
+        [out] interactions.ActiveStateDirty,
         [none] elements2.Toggle
     );
     /*zox_system(

@@ -18,7 +18,7 @@ void data_update_system(iter* it) {
 
 // slot dirty to ui
 void slot_ui_update_system(iter* it) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();

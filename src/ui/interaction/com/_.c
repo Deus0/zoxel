@@ -25,6 +25,9 @@ zoxc_state(ActiveStateDirty);
 zoxc_color(ActiveColor);
 zox_tag(ActiveSingle);
 zoxc_entity(ActiveLink);    // parents active link
+// Events
+zox_tag(TriggerSelect);
+zox_tag(Select);
 
 typedef struct {
     entity clicker;
@@ -79,4 +82,7 @@ void zox_components_interaction(ecs* world) {
     zoxd(ClickEvent);
     zoxd(SlideEvent);
     zoxd(ToggleEvent);
+    // Events
+    zoxd_tag_event(TriggerSelect);
+    zoxd_tag_event(Select);
 }

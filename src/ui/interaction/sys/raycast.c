@@ -142,7 +142,10 @@ zox_sys2(ElementRaycastSystem) {
             ui_selected = 0;
         }
         if (target->value != ui_selected) {
-            raycaster_select_element(world, e, ui_selected);
+            raycaster_select_element(
+                world,
+                e,
+                ui_selected);
         }
     }
 } zox_sys_end(ElementRaycastSystem);

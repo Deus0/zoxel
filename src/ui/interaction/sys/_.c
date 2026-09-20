@@ -9,6 +9,8 @@
 #include "active.c"
 #include "link.c"
 #include "resulter.c"
+#include "state.c"
+
 zox_increment_system_with_reset_extra(ClickState, zox_click_state_trigger_clicked, zox_click_state_clicked_idle, zox_click_state_trigger_released, zox_click_state_idle);
 zox_increment_system_with_reset_extra(SelectState, zox_state_select_trigger, zox_state_select_idle, zox_state_deselect_trigger, zox_state_deselect_idle);
 
@@ -22,7 +24,7 @@ void zox_systems_interaction(ecs* world) {
         [in] layouts.Layer,
         [in] rendering.RenderDisabled,
         [none] ui.Element,
-        [none] interaction.Selectable
+        [none] interactions.Selectable
     );
     zox_system_ctx(
         ElementRaycastSystem,
@@ -38,7 +40,7 @@ void zox_systems_interaction(ecs* world) {
         [in] inputs.ZeviceDisabled,
         [in] inputs.DeviceLink,
         [in] core.EntityTarget,
-        [out] interaction.ClickingEntity,
+        [out] interactions.ClickingEntity,
         [none] inputs.Zevice
     );
     zox_system(
@@ -47,16 +49,16 @@ void zox_systems_interaction(ecs* world) {
         [in] inputs.DeviceDisabled,
         [in] core.EntityTarget,
         [in] inputs.Keyboard,
-        [out] interaction.ClickingEntity,
+        [out] interactions.ClickingEntity,
         [none] inputs.Device
     );
     // Coloring Animations
     zox_system(
         ElementSelectedFillColorSystem,
         zoxp_update,
-        [in] interaction.SelectState,
+        [in] interactions.SelectState,
         [in] ui.ElementFillColor,
-        [in] interaction.SelectedFillColor,
+        [in] interactions.SelectedFillColor,
         [out] textures.FillColor,
         [out] textures.GenerateTexture,
         [none] ui.Element
@@ -64,9 +66,9 @@ void zox_systems_interaction(ecs* world) {
     zox_system(
         ElementSelectedOutlineColorSystem,
         zoxp_update,
-        [in] interaction.SelectState,
+        [in] interactions.SelectState,
         [in] ui.ElementOutlineColor,
-        [in] interaction.SelectedOutlineColor,
+        [in] interactions.SelectedOutlineColor,
         [out] textures.OutlineColor,
         [out] textures.GenerateTexture,
         [none] ui.Element
@@ -75,10 +77,10 @@ void zox_systems_interaction(ecs* world) {
     zox_system(
         ElementActiveSystem,
         zoxp_update,
-        [in] interaction.ActiveState,
-        [in] interaction.ActiveStateDirty,
+        [in] interactions.ActiveState,
+        [in] interactions.ActiveStateDirty,
         [in] ui.ElementOutlineColor,
-        [in] interaction.ActiveColor,
+        [in] interactions.ActiveColor,
         [out] textures.OutlineColor,
         [out] textures.GenerateTexture,
         [none] ui.Element
@@ -86,24 +88,24 @@ void zox_systems_interaction(ecs* world) {
     zox_system(
         ElementSelectedBrighterSystem,
         zoxp_update,
-        [in] interaction.SelectState,
+        [in] interactions.SelectState,
         [out] rendering.Brightness,
         [none] ui.Element,
-        [none] interaction.SelectedBrighter,
-        // [none] !interaction.SelectedFillColor
+        [none] interactions.SelectedBrighter,
+        // [none] !interactions.SelectedFillColor
     );
     zox_system(
         DraggerEndSystem,
         zoxp_update,
-        [out] interaction.DraggableState,
-        [out] interaction.DraggerLink,
-        [out] interaction.DraggingDelta
+        [out] interactions.DraggableState,
+        [out] interactions.DraggerLink,
+        [out] interactions.DraggingDelta
     );
     zox_system(
         ElementActiveLinkSystem,
         zoxp_update,
-        [in] interaction.ActiveState,
-        [in] interaction.ActiveStateDirty,
+        [in] interactions.ActiveState,
+        [in] interactions.ActiveStateDirty,
         [none] ui.Element
     );
     zox_system(
@@ -126,15 +128,26 @@ void zox_systems_interaction(ecs* world) {
     zox_system_1(
         ClickSoundSystem,
         zoxp_spawn,
-        [in] interaction.ClickState,
-        [none] interaction.ClickMakeSound
+        [in] interactions.ClickState,
+        [none] interactions.ClickMakeSound
     );
     zox_system_1(
         ButtonClickEventSystem,
         zoxp_spawn,
-        [in] interaction.ClickEvent,
-        [in] interaction.ClickState,
-        [out] interaction.Clicker,
+        [in] interactions.ClickEvent,
+        [in] interactions.ClickState,
+        [out] interactions.Clicker,
         [none] ui.Element
+    );
+
+    zox_system(
+        trigger_select_system,
+        zoxp_remove,
+        [none] interactions.TriggerSelect,
+    );
+    zox_system(
+        select_system,
+        zoxp_remove,
+        [none] interactions.Select,
     );
 }

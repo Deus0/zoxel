@@ -14,15 +14,14 @@ void zox_systems_bodys(ecs* world) {
         [out] chunks3.CombineVox,
         [out] chunks.NodeDepth,
         [out] blocks.BlockScale,
-        [none] bones.Skeleton
-        // [none] players.PlayerCharacter
+        [none] bones.Skeleton,
     );
     zox_system_1(
         CharacterBodySpawnSystem,
         zoxp_spawn,
         [in] characters.GenerateCharacter,
         [out] parts.BodyDirty,
-        [none] bones.Skeleton
+        [none] bones.Skeleton,
     );
     zox_system_1(
         CharacterBoneSpawnSystem,
@@ -32,15 +31,14 @@ void zox_systems_bodys(ecs* world) {
         [out] parts.BodyDirty,
         [out] rendering3.BoneLinks,
         [out] bones.SkeletonDirty,
-        [none] bones.Skeleton
+        [none] bones.Skeleton,
     );
     zox_system(
         SlotItemTooltipSystem,
         zoxp_update,
-        [in] interaction.SelectState,
+        [in] interactions.SelectState,
         [in] slots.DataLink,
-        // [in] slots.SlotLink,
         [none] slots.SlotUser,
-        [none] elements2.Icon
+        [none] elements2.Icon,
     );
 }

@@ -26,7 +26,7 @@ void zox_systems_navigation(ecs* world) {
         zoxp_update,
         [in] inputs.DeviceDisabled,
         [in] core.EntityTarget,
-        [out] interaction.ClickingEntity,
+        [out] interactions.ClickingEntity,
         [none] inputs.DeviceNavigator
     );
 }

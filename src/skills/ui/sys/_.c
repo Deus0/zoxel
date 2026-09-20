@@ -11,7 +11,7 @@ void zox_systems_skills_ui(ecs *world) {
     zox_system(
         SkillIconTooltipSystem,
         zoxp_update,
-        [in] interaction.SelectState,
+        [in] interactions.SelectState,
         [in] slots.DataLink,
         [none] elements2.Icon
     );
