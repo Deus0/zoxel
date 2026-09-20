@@ -46,17 +46,17 @@ entity spawn_realm_block_model(
         .model = vox,
         .color = block_color,
         .disable_collision = !is_collision,
-        .prefab = prefab_block_vox_meta,
+        .prefab = prefab_block_base,
         .prefab_world_block = prefab_block_vox_instanced,
         .tag = zox_id(BlockVox),
         .model_type = zox_block_vox,
     };
     // TODO: test non instanced voxes
     process_disabled_block_vox(world, &spawn_data, 1);
-    entity e = spawn_block_vox_meta(
+    entity block = spawn_block_vox_meta(
         world,
         spawn_data);
-    zox_set_parent(world, e, parent);
+    zox_set_parent(world, block, parent);
     // NOTE: Spawns a VoxTexture for the Items!
     {
         byte length = octree_size(block_depth);
@@ -66,11 +66,12 @@ entity spawn_realm_block_model(
             prefab_vox_texture,
             texture_size);
         zox_set_unique_name(texture, name);
-        zox_set_parent(world, texture, parent);
         zox_setv(texture, GenerateTexture, zox_generate_texture_run);
         zox_setv(texture, VoxBakeSide, texture_direction);
         zox_setv(texture, ModelLink, texture_vox);
-        zox_setv(e, TextureLink, texture);
+        // zox_setv(e, TextureLink, texture);
+        zox_set_parent(world, texture, block);
+        zox_link(world, block, TextureLink, texture);
     }
-    return e;
+    return block;
 }

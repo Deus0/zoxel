@@ -111,7 +111,8 @@ void on_boot_game_ui(
         zox_set(mouse_ui, LayoutSizeDirty, { zox_dirty_trigger });
         zox_set(mouse_ui, LayoutPositionDirty, { zox_dirty_trigger });
         if (local_mouse) {
-            zox_setv(local_mouse, TextureLink, mouse_ui);
+            zox_link(world, local_mouse, TextureLink, mouse_ui);
+            // zox_setv(local_mouse, TextureLink, mouse_ui);
         } else {
             zox_loge("No Local Mouse for our UI");
         }

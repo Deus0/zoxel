@@ -13,7 +13,7 @@ entity spawn_realm_skill(ecs* world, entity parent, entity prefab, const char* n
         zox_set_parent(world, e, parent);
     }
     if (texture) {
-        zox_set(e, TextureLink, { texture });
+        zox_link(world, e, TextureLink, texture);
     }
     if (!color_equals(ecolor, color_white)) {
         zox_set(e, Color, { ecolor });

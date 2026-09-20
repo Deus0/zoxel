@@ -12,10 +12,10 @@
  *      - Baked Vox Textures
  *
  * */
-#define zox_blocks_dirty_start 1
+/*#define zox_blocks_dirty_start 1
 #define zox_blocks_dirty_indexes 1
 #define zox_blocks_dirty_tilemaps 2
-#define zox_blocks_dirty_end 0
+#define zox_blocks_dirty_end 0*/
 
 float block_place_range = 2;
 

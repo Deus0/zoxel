@@ -16,7 +16,8 @@ entity spawn_realm_item(
     }
     entity texture = string_hashmap_get(files_hashmap_textures, new_string_data(tname));
     if (zox_valid(texture)) {
-        zox_set(e, TextureLink, { texture });
+        // zox_set(e, TextureLink, { texture });
+        zox_link(world, e, TextureLink, texture);
     }
     return e;
 }

@@ -1,4 +1,7 @@
-entity spawn_prefab_block_vox(ecs *world, entity prefab) {
+entity spawn_prefab_block_vox(
+    ecs *world,
+    entity prefab)
+{
     short length = octree_size(block_depth);
     zox_prefab_child(prefab);
     zox_prefab_name("block_vox");

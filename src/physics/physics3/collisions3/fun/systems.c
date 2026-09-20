@@ -1,5 +1,9 @@
 // contains air!
-void get_block_collisions(ecs *world, const BlockLinks *voxels, byte *collisions) {
+void get_block_collisions(
+    ecs *world,
+    const BlockLinks *voxels,
+    byte *collisions)
+{
     collisions[0] = 0;    // air
     for (int i = 0; i < voxels->length; i++) {
         entity block = voxels->value[i];

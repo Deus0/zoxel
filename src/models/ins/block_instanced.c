@@ -1,4 +1,7 @@
-entity spawn_block_vox_instanced(ecs *world, SpawnBlockVox data) {
+entity spawn_block_vox_instanced(
+    ecs *world,
+    SpawnBlockVox data)
+{
     if (!zox_valid(data.vox)) {
         zox_loge("Invalid Block [%i] Vox for [spawn_block_vox_instanced]", data.block_index);
         return 0;
@@ -19,11 +22,16 @@ entity spawn_block_vox_instanced(ecs *world, SpawnBlockVox data) {
         model = data.vox;
     }
     if (!zox_valid(model)) {
-        zox_log_error("Spawned BlockVoxInstance [%s::%lu] with Invalid Model [%lu] - block index [%i]", zox_get_name(data.prefab), data.prefab, data.vox, data.block_index);
+        zox_log_error("Spawned BlockVoxInstance [%s::%lu] with Invalid Model [%lu] - block index [%i]",
+            zox_get_name(data.prefab),
+            data.prefab,
+            data.vox,
+            data.block_index);
         return 0;
     }
     if (!zox_has(model, MaxRenderDepth)) {
-        zox_loge("Max Depth not on vox [%s]", zox_get_name(model));
+        zox_loge("Max Depth not on vox [%s]",
+            zox_get_name(model));
         return 0;
     }
     byte mdepth = zox_getv(model, MaxRenderDepth);
@@ -41,7 +49,8 @@ entity spawn_block_vox_instanced(ecs *world, SpawnBlockVox data) {
     zox_set(e, RenderDisabled, { data.render_disabled });
     zox_set(e, Position3D, { data.positionf });
     zox_set(e, Scale1, { scale });
-    zox_set(e, TransformMatrix, { float4x4_position_scale(data.positionf, scale) });
+    zox_setv(e, TransformMatrix,
+        float4x4_position_scale(data.positionf, scale));
     //zox_set(e, TransformMatrix, { float4x4_position(positionf) });
     // zox_set(e, TransformMatrix, { float4x4_transform_scale(positionf, quaternion_identity, 1) });
     // zox_set(e, TransformMatrix, { float4x4_transform(positionf, quaternion_identity) });

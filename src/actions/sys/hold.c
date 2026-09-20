@@ -58,7 +58,7 @@ zox_sys2(ActiveActionHoldSystem) {
         float3 position = zox_valid(hand) ?
             hand_position :
             body_position;
-        entity texture = zox_getv(aaction->value, TextureLink);
+        entity texture = zox_get_link(world, aaction->value, TextureLink);
         if (zox_valid(texture)) {
             e2 = spawn_cube_textured(
                 world,

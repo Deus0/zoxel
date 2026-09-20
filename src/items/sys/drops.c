@@ -35,10 +35,15 @@ void character_item_drop_system(iter* it) {
             {
                 continue;
             }
-            entity meta = zox_get_prefab(world, user_item);
+            entity meta = zox_get_prefab(
+                world,
+                user_item);
             entity e2;
-            if (zox_has(user_item, BlockLink)) {
-                entity block = zox_getv(user_item, BlockLink);
+            entity block = zox_get_link(
+                world,
+                user_item,
+                BlockLink);
+            if (block) {
                 e2 = spawn_pickup_block(
                     world,
                     block,
@@ -55,7 +60,9 @@ void character_item_drop_system(iter* it) {
                 zox_setv(e2, Quantity, quantity);
             }
             if (dbg_log) {
-                zox_log("  - [%s] - m [%s]", zox_get_name(user_item), zox_get_name(meta));
+                zox_log("  - [%s] - m [%s]",
+                    zox_get_name(user_item),
+                    zox_get_name(meta));
             }
         }
         // destroy voxel sound

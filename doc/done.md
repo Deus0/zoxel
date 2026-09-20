@@ -1,5 +1,11 @@
 # Done
 
+-x SkeletonMeshDirty
+-x GlyphDirty
+-x TextDirty
+-x BlocksDirty
+-x TextureLinks
+-x TextureLink
 -x Fix icon not updating sometimes
     -x pickup item event
 -x Mouse scrollwheel broken for switching items

@@ -122,56 +122,177 @@ zox_sys2(BiomeBlocksSystem) {
         uint variant_shift = 369;
         uint seed_offset = seed_shift;
         lint sky_seed = seed->value + (seed_offset+=seed_shift);
-        sky->value = seed_to_color_rgb_range(sky_seed, (float2) { 0, 360 }, (float2) { 30, 70 }, (float2) { 30, 70 });
+        sky->value = seed_to_color_rgb_range(
+            sky_seed,
+            (float2) { 0, 360 },
+            (float2) { 30, 70 },
+            (float2) { 30, 70 });
         lint dirt_seed = seed->value + (seed_offset+=seed_shift);
-        color dirt_color = color_rgb_to_color(seed_to_color_rgb_range(dirt_seed, (float2) { 0, 360 }, (float2) { 10, 90 }, (float2) { 25, 75 }));
+        color dirt_color = color_rgb_to_color(
+            seed_to_color_rgb_range(
+                dirt_seed,
+                (float2) { 0, 360 },
+                (float2) { 10, 90 },
+                (float2) { 25, 75 }));
         lint grass_seed = seed->value + (seed_offset+=seed_shift);
-        color grass_color = color_rgb_to_color(seed_to_color_rgb_range(grass_seed, (float2) { 0, 360 }, (float2) { 10, 90 }, (float2) { 30, 70 }));
+        color grass_color = color_rgb_to_color(
+            seed_to_color_rgb_range(
+                grass_seed,
+                (float2) { 0, 360 },
+                (float2) { 10, 90 },
+                (float2) { 30, 70 }));
         lint sand_seed = seed->value + (seed_offset+=seed_shift);
-        color sand_color = color_rgb_to_color(seed_to_color_rgb_range(sand_seed, (float2) { 0, 360 }, (float2) { 35, 70 }, (float2) { 40, 75 }));
+        color sand_color = color_rgb_to_color(
+            seed_to_color_rgb_range(
+                sand_seed,
+                (float2) { 0, 360 },
+                (float2) { 35, 70 },
+                (float2) { 40, 75 }));
         lint stone_seed = seed->value + (seed_offset+=seed_shift);
-        color stone_color = color_rgb_to_color(seed_to_color_rgb_range(stone_seed, (float2) { 0, 360 }, (float2) { 15, 45 }, (float2) { 30, 60 }));
+        color stone_color = color_rgb_to_color(
+            seed_to_color_rgb_range(stone_seed,
+                (float2) { 0, 360 },
+                (float2) { 15, 45 },
+                (float2) { 30, 60 }));
         lint wood_seed = seed->value + (seed_offset+=seed_shift);
-        color wood_color = color_rgb_to_color(seed_to_color_rgb_range(wood_seed, (float2) { 0, 360 }, (float2) { 10, 90 }, (float2) { 20, 50 }));
+        color wood_color = color_rgb_to_color(
+            seed_to_color_rgb_range(
+                wood_seed,
+                (float2) { 0, 360 },
+                (float2) { 10, 90 },
+                (float2) { 20, 50 }));
         lint road_seed = seed->value + (seed_offset+=seed_shift);
-        color road_color = color_rgb_to_color(seed_to_color_rgb_range(road_seed, (float2) { 0, 360 }, (float2) { 10, 40 }, (float2) { 20, 50 }));
+        color road_color = color_rgb_to_color(
+            seed_to_color_rgb_range(
+                road_seed,
+                (float2) { 0, 360 },
+                (float2) { 10, 40 },
+                (float2) { 20, 50 }));
         lint flowers_seed = seed->value + (seed_offset+=seed_shift);
-        color flowers_color = color_rgb_to_color(seed_to_color_rgb_range(flowers_seed, (float2) { 0, 360 }, (float2) { 10, 90 }, (float2) { 30, 70 }));
-
+        color flowers_color = color_rgb_to_color(
+            seed_to_color_rgb_range(
+                flowers_seed,
+                (float2) { 0, 360 },
+                (float2) { 10, 90 },
+                (float2) { 30, 70 }));
         {
-            entity model = spawn_model_soil(world, "dirt", e, dirt_seed, dirt_color, 0.44f, vox_type_soil);
-            entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, dirt_seed, "dirt", dirt_color, model, dbg_log);
+            entity model = spawn_model_soil(
+                world,
+                "dirt",
+                e,
+                dirt_seed,
+                dirt_color,
+                0.44f,
+                vox_type_soil);
+            entity block = spawn_realm_block_solid(
+                world,
+                prefab_block_baked,
+                e,
+                dirt_seed,
+                "dirt",
+                dirt_color,
+                model,
+                dbg_log);
             zox_add(block, BlockSoil);
-            zox_set(block, BlockHealth, { (float2) { 3, 6 } });
+            zox_setv(block, BlockHealth,
+                ((float2) { 3, 6 }));
         }
         {
-            entity model = spawn_model_soil(world, "sand", e, sand_seed, sand_color, 0.14f, vox_type_sand);
-            entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, sand_seed, "sand", sand_color, model, dbg_log);
+            entity model = spawn_model_soil(
+                world,
+                "sand",
+                e,
+                sand_seed,
+                sand_color,
+                0.14f,
+                vox_type_sand);
+            entity block = spawn_realm_block_solid(
+                world,
+                prefab_block_baked,
+                e,
+                sand_seed,
+                "sand",
+                sand_color,
+                model,
+                dbg_log);
             zox_add(block, BlockSand);
-            zox_set(block, BlockHealth, { (float2) { 2, 4 } });
+            zox_setv(block, BlockHealth,
+                ((float2) { 2, 4 }));
         }
         {
-            entity model = spawn_model_stone(world, e, stone_seed, stone_color);
-            entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, stone_seed, "stone", stone_color, model, dbg_log);
+            entity model = spawn_model_stone(
+                world,
+                e,
+                stone_seed,
+                stone_color);
+            entity block = spawn_realm_block_solid(
+                world,
+                prefab_block_baked,
+                e,
+                stone_seed,
+                "stone",
+                stone_color,
+                model,
+                dbg_log);
             zox_add(block, BlockStone);
-            zox_set(block, BlockHealth, { (float2) { 8, 12 } });
+            zox_setv(block, BlockHealth,
+                     ((float2) { 8, 12 }));
         }
         {
-            entity model = spawn_model_wood(world, e, wood_seed, wood_color);
-            entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, wood_seed,  "wood", wood_color, model, dbg_log);
+            entity model = spawn_model_wood(
+                world,
+                e,
+                wood_seed,
+                wood_color);
+            entity block = spawn_realm_block_solid(
+                world,
+                prefab_block_baked,
+                e,
+                wood_seed,
+                "wood",
+                wood_color,
+                model,
+                dbg_log);
             zox_add(block, BlockWood);
-            zox_set(block, BlockHealth, { (float2) { 4, 8 } });
+            zox_setv(block, BlockHealth,
+                ((float2) { 4, 8 }));
         }
         {
             // color road_color = color_mix(dirt_color, stone_color, 0.4f);
-            entity model = spawn_model_road(world, e, road_seed, road_color);
-            entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, road_seed, "road", road_color, model, dbg_log);
+            entity model = spawn_model_road(
+                world,
+                e,
+                road_seed,
+                road_color);
+            entity block = spawn_realm_block_solid(
+                world,
+                prefab_block_baked,
+                e,
+                road_seed,
+                "road",
+                road_color,
+                model,
+                dbg_log);
             zox_add(block, BlockRoad);
             zox_set(block, BlockHealth, { (float2) { 6, 10 } });
         }
         {
-            entity model = spawn_model_soil_grass(world, e, grass_seed, dirt_color, grass_color, 0.44f);
-            entity block = spawn_realm_block_solid(world, prefab_block_vox_meta, e, grass_seed,  "soil_grass", grass_color, model, dbg_log);
+            entity model = spawn_model_soil_grass(
+                world,
+                e,
+                grass_seed,
+                dirt_color,
+                grass_color,
+                0.44f);
+            entity block = spawn_realm_block_solid(
+                world,
+                prefab_block_baked,
+                e,
+                grass_seed,
+                "soil_grass",
+                grass_color,
+                model,
+                dbg_log);
             zox_add(block, BlockSoilGrass);
             zox_set(block, BlockHealth, { (float2) { 4, 8 } });
         }
@@ -190,13 +311,27 @@ zox_sys2(BiomeBlocksSystem) {
                 color variant_color = weed_color;
                 srand(variant_seed);
                 variant_color = color_mutate(variant_color, grass_color_mutation);
-                entity2 e3 = spawn_model_grass(world, prefab_vox, variant_seed, mdepth_vode, variant_color);
+                entity2 e3 = spawn_model_grass(
+                    world,
+                    prefab_vox,
+                    variant_seed,
+                    mdepth_vode,
+                    variant_color);
                 add_to_ModelLinks(&variants, e3.x);
                 variant = e3;
             }
             zox_set_ptr(model, ModelLinks, variants);
             entity texture_vox = variant.y;
-            entity block = spawn_realm_block_model(world, e, grass_seed, "grass", weed_color, 0, model, texture_vox, direction_front);
+            entity block = spawn_realm_block_model(
+                world,
+                e,
+                grass_seed,
+                "grass",
+                weed_color,
+                0,
+                model,
+                texture_vox,
+                direction_front);
             zox_add(block, BlockGrass);
             zox_set(block, BlockLightPass, { 1 });
             zox_set(block, BlockSound, { 1 });
@@ -207,24 +342,67 @@ zox_sys2(BiomeBlocksSystem) {
             entity2 e2 = spawn_model_lods_generated(world, prefab_vox, e, "debris", vox_type_rubble, dirt_color, max_depth, dirt_seed);
             entity model = e2.x;
             entity texture_vox = e2.y;
-            entity block = spawn_realm_block_model(world, e, dirt_seed, "debris", dirt_color, 0, model, texture_vox, direction_up);
+            entity block = spawn_realm_block_model(
+                world,
+                e,
+                dirt_seed,
+                "debris",
+                dirt_color,
+                0,
+                model,
+                texture_vox,
+                direction_up);
             zox_set(block, BlockLightPass, { 1 });
         }
         // A noisey block
         {
             byte max_depth = block_depth_limits.y;
-            entity2 e2 = spawn_model_lods_generated(world, prefab_vox, e, "decayed", vox_type_noisey, dirt_color, max_depth, dirt_seed);
+            entity2 e2 = spawn_model_lods_generated(
+                world,
+                prefab_vox,
+                e,
+                "decayed",
+                vox_type_noisey,
+                dirt_color,
+                max_depth,
+                dirt_seed);
             entity model = e2.x;
             entity texture_model = e2.y;
-            spawn_realm_block_model(world, e, dirt_seed, "decayed", dirt_color, 1, model, texture_model, direction_front);
+            spawn_realm_block_model(
+                world,
+                e,
+                dirt_seed,
+                "decayed",
+                dirt_color,
+                1,
+                model,
+                texture_model,
+                direction_front);
         }
         // Biome Flora
         {
             byte max_depth = block_depth_limits.y;
-            entity2 e2 = spawn_model_lods_generated(world, prefab_vox, e, "flowers", vox_type_flowers, flowers_color, max_depth, flowers_seed);
+            entity2 e2 = spawn_model_lods_generated(
+                world,
+                prefab_vox,
+                e,
+                "flowers",
+                vox_type_flowers,
+                flowers_color,
+                max_depth,
+                flowers_seed);
             entity model = e2.x;
             entity texture_model = e2.y;
-            entity block = spawn_realm_block_model(world, e, flowers_seed, "flowers", flowers_color, 0, model, texture_model, direction_front);
+            entity block = spawn_realm_block_model(
+                world,
+                e,
+                flowers_seed,
+                "flowers",
+                flowers_color,
+                0,
+                model,
+                texture_model,
+                direction_front);
             zox_add(block, BlockFlower);
             zox_set(block, BlockLightPass, { 1 });
             zox_set(block, BlockSound, { 1 });

@@ -11,6 +11,5 @@ void spawn_prefabs_terrain(ecs *world) {
     prefab_terrain = spawn_prefab_terrain(world);
     if (prefab_realm) {
         zox_setv(prefab_realm, BlockLinks, 0);
-        zox_setv(prefab_realm, BlocksDirty, 0);
     }
 }

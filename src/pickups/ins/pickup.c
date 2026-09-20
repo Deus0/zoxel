@@ -51,25 +51,42 @@ entity2 spawn_pickup_block(
     float3 position,
     float scale)
 {
-    entity texture = 0;
+    byte target_direction = direction_down;
+    entity pickup_texture = 0;
     if (zox_valid(block) && !zox_disable_textured_items) {
-        if (zox_has(block, TextureLinks)) {
-            zox_geter(block, TextureLinks, textures);
-            if (textures->length) {
-                if (textures->length == 1) {
+        iter it2 = zox_children(world, block);
+        while (zox_children_next(it2)) {
+            for (int k = 0; k < it2.count; k++) {
+                entity texture = it2.entities[k];
+                if (!zox_has(texture, Texture)) {
+                    continue;
+                }
+                if (!texture) {
+                    pickup_texture = texture;
+                }
+                if (zox_getv(texture, ChildIndex) == target_direction) {
+                    pickup_texture = texture;
+                }
+            }
+            if (!zox_valid(pickup_texture) &&
+                zox_has(block, TextureLink))
+            {
+                pickup_texture = zox_get_link(world,block, TextureLink);
+            }
+        // if (zox_has(block, TextureLinks)) {
+            //zox_geter(block, TextureLinks, textures);
+            //if (textures->length) {
+                /*if (textures->length == 1) {
                     texture = textures->value[0];
                 } else {
                     texture = textures->value[direction_down];
-                }
-            }
-        }
-        if (!zox_valid(texture) && zox_has(block, TextureLink)) {
-            texture = zox_getv(block, TextureLink);
+                }*/
+            //}
         }
     }
     return spawn_pickup_cube_texture(
         world,
         position,
         scale,
-        texture);
+        pickup_texture);
 }

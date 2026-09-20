@@ -24,7 +24,6 @@
 - Characters - npcs not despawning now
     - changed recently the states
 - Main Menu music missing
-- Block didnt update when spawning on top of world
 
 ## Refactors
 - Turn quest slayer into an event

@@ -5,6 +5,6 @@ entity spawn_realm_item_equip(ecs *world, entity realm, entity model, entity tex
     zox_add(e, EquipItem);
     zox_prefab_set(e, SlotType, { slot_type });
     zox_prefab_set(e, ModelLink, { model });
-    zox_prefab_set(e, TextureLink, { texture });
+    zox_link(world, e, TextureLink, texture);
     return e;
 }

@@ -31,7 +31,6 @@ void zox_systems_items(ecs* world) {
         ItemActivateSystem,
         zoxp_spawn,
         [in] timers.Activate,
-        [in] blocks.BlockLink,
         [out] items.Quantity,
         [none] ItemBlock
     );

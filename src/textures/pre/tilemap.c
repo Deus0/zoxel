@@ -8,7 +8,6 @@ entity spawn_prefab_tilemap(ecs *world) {
     zox_setv(e, TextureSize, int2_zero);
     zox_setv(e, TextureGPULink, 0);
     zox_setv(e, MaterialGPULink, 0);
-    zox_setv(e, TextureLinks, 0);
     zox_setv(e, TilemapUVs, 0);
     zox_setv(e, GenerateTexture, 0);
     zox_add(e, PreInitialize);

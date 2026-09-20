@@ -7,12 +7,6 @@
 // #include "animate.c"
 
 void zox_systems_texts(ecs *world) {
-    /*zox_system(
-        text_dirty_system,
-        zoxp_remove,
-        [none] texts.Text,
-        [none] texts.TextDirty,
-    );*/
     // TODO: Move Dialogue one here
     zox_system(
         TextParentBackgroundSystem,
