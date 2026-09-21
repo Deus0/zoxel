@@ -23,14 +23,10 @@ zox_sys2(ActionsShortcutSystem) {
             uint children_length = zox_get_children(world, e2, children, children_capacity);
             for (uint k = 0; k < children_length; k++) {
                 entity e3 = children[k];
-                if (!zox_valid(e3)) {
+                if (zox_has(e3, Disabled)) {
                     continue;
                 }
                 if (zox_has(e3, ZeviceButton)) {
-                    zox_geter_value(e3, ZeviceDisabled, byte, disabled);
-                    if (disabled) {
-                        continue;
-                    }
                     byte device_button_type = zox_getv(e3, DeviceButtonType);
                     byte zevice_button = zox_getv(e3, ZeviceButton);
                     if (device_button_type == zox_btn_lb) {

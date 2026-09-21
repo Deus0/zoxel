@@ -1,10 +1,17 @@
 # Todo
 
+- Maps
+    - Make maps use GridDirty instead of manually positioning
+    - Move pieces pixel by pixel around player - set centre position of map
+    - add a mask around map
+    - update ony pieces and not entire map
+    - zoom + - buttons on header
+    
 - World Item - Vox Mesh
 	- use model linked to block for this
 	- grab the top model i guess
-- add conditional dialogue node for quest
-	- refactor node events and links
+- Refactor node events and links
+- Add conditional dialogue node for quest
 	- when node activate, use observer for checking HasQuestNode
 	- NodeTrue added -> triggering it to go to the TrueLink
 	- NodeFalse added -> triggering it to go to False Link

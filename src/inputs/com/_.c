@@ -8,7 +8,7 @@ zox_tag(ZeviceBumper);
 zox_tag(MousePointer);
 zox_tag(DeviceNavigator);
 // zoxc_byte(DeviceDisabled);
-zoxc_byte(ZeviceDisabled);
+// zoxc_byte(ZeviceDisabled);
 zoxc_byte(ZeviceButton);
 zoxc_byte(ZevicePointer);
 zoxc_byte(ZevicePointerOld);
@@ -43,7 +43,7 @@ void zox_components_inputs(ecs *world) {
     zoxd_tag(DeviceNavigator);
     zoxd(Keyboard);
     // zoxd_byte(DeviceDisabled);
-    zoxd_byte(ZeviceDisabled);
+    // zoxd_byte(ZeviceDisabled);
     zoxd_byte(ZevicePointer);
     zoxd_byte(ZevicePointerOld);
     zoxd_byte(ZevicePointerRight);

@@ -4,17 +4,12 @@ zox_sys2(CancelMenuSystem) {
     byte cancel_type = zox_btn_b;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ZeviceDisabled);
     zox_sys_in(DeviceButtonType);
     zox_sys_in(ZeviceButton);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(ZeviceDisabled, disabled);
         zox_sys_i(DeviceButtonType, type);
         zox_sys_i(ZeviceButton, clicked);
-        if (disabled->value) {
-            continue;
-        }
         entity device = zox_get_parent(world, e);
         if (!zox_valid(device)) {
             continue;
@@ -100,7 +95,7 @@ zox_sys2(KeyboardCancelMenuSystem) {
                             if (!zox_has(zevice, Zevice)) {
                                 continue;
                             }
-                            if (zox_getv(zevice, ZeviceDisabled)) {
+                            if (zox_has(zevice, Disabled)) {
                                 continue;
                             }
                             if (zox_has(zevice, EntityTarget)) {

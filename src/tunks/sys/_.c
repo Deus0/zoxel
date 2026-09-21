@@ -54,9 +54,9 @@ void zox_systems_tunks(ecs* world) {
     zox_system(
         TunkTextureSystem,
         zoxp_update,
-        [out] textures.GenerateTexture,
         [out] textures.TextureData,
         [out] rendering.TextureSize,
+        [out] textures.GenerateTexture,
         [none] tunks.TunkTexture
     );
     /*zox_system(

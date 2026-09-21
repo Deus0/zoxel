@@ -42,8 +42,6 @@ zox_sys2(ScrollbarSystem) {
             zox_log_error("List UI: Invalid Components. [%s]", zox_get_name(list_ui));
             continue;
         }
-        //entity list_elements[layouts2_children_capacity];
-        //uint list_elements_length = zox_get_children(world, list_ui, list_elements, layouts2_children_capacity);
         uint list_elements_length = zox_get_children_count(world, list_ui);
         zox_geter_value(list_ui, ListVisible, byte, visible);
         zox_geter_value(list_ui, ListStart, byte, start);

@@ -1,10 +1,10 @@
 /*
- * +------------------------------------------------------------------+
- * | Zox Module: Inputs                                                  |
- * |                                                                  |
- * |  Keyboard - Mouse - Touch - Gamepad - Input State                 |
- * |                                                                  |
- * +------------------------------------------------------------------+
+ * +------------------------------------------------------+
+ * | Zox Module: Inputs                                   |
+ * |                                                      |
+ * |  Keyboard - Mouse - Touch - Gamepad - State          |
+ * |                                                      |
+ * +------------------------------------------------------+
  *
  *      - defines base types for device handling
  *      - emulates state changes of physical devices

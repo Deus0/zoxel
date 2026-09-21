@@ -32,9 +32,15 @@ zox_sys2(Transform2Rotation2Scale1System) {
         zox_sys_i(Rotation2, rotation);
         zox_sys_i(Scale1, scale);
         zox_sys_o(TransformMatrix, matrix);
-        matrix->value = float4x4_transform_scale(float2_to_float3(position->value), rotation2_to_quaternion(rotation->value), scale->value);
+        matrix->value = float4x4_transform_scale(
+            float2_to_float3(position->value),
+            rotation2_to_quaternion(rotation->value),
+            scale->value);
         if (dbg_log) {
-            zox_log("Transform2Rotation2Scale1System [%s] Rot [%f] Scale [%f]", zox_getn(e), rotation->value, scale->value);
+            zox_log("Transform2Rotation2Scale1System [%s] Rot [%f] Scale [%f]",
+                zox_getn(e),
+                rotation->value,
+                scale->value);
         }
     }
 } zox_sys_end(Transform2Rotation2Scale1System);

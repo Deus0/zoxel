@@ -1,13 +1,5 @@
-#include "zevice_button_reset.c"
-#include "zevice_pointer_reset.c"
-#include "zevice_pointer_delta_reset.c"
-#include "zevice_button_enable.c"
-#include "zevice_stick_enable.c"
-#include "zevice_pointer_enable.c"
-#include "device_mode_dirty.c"
-#include "keyboard_reset.c"
-#include "zevice_pointer_right_reset_button.c"
-#include "zevice_finger_reset_button.c"
+#include "reenable.c"
+#include "reset.c"
 #include "device_mode.c"
 
 void zox_systems_input(ecs* world) {
@@ -29,22 +21,22 @@ void zox_systems_input(ecs* world) {
         ZeviceButtonEnableSystem,
         zoxp_inputs_enable,
         [in] inputs.ZeviceButton,
-        [out] inputs.ZeviceDisabled,
-        [none] !inputs.Finger
+        [none] !inputs.Finger,
+        [none] core.Disabled,
     );
     zox_system(
         ZeviceStickEnableSystem,
         zoxp_inputs_enable,
         [in] inputs.ZeviceStick,
-        [out] inputs.ZeviceDisabled,
-        [none] !inputs.Finger
+        [none] !inputs.Finger,
+        [none] core.Disabled,
     );
     zox_system(
         ZevicePointerEnableSystem,
         zoxp_inputs_enable,
         [in] inputs.ZevicePointer,
-        [out] inputs.ZeviceDisabled,
-        [none] !inputs.Finger
+        [none] !inputs.Finger,
+        [none] core.Disabled,
     );
     /*zox_system(
         ZeviceFingerResetSystem,

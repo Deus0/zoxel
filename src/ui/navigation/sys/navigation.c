@@ -45,10 +45,7 @@ zox_sys2(ElementNavigationSystem) {
             children_capacity);
         for (uint k = 0; k < zevices_length; k++) {
             entity e3 = zevices[k];
-            if (!zox_valid(e3)) {
-                continue;
-            }
-            if (zox_getv(e3, ZeviceDisabled)) {
+            if (zox_has(e3, Disabled)) {
                 continue;
             }
             if (zox_has(e3, ZeviceStick)) {

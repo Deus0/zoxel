@@ -12,7 +12,12 @@ entity spawn_stats_panel(
         return 0;
     }
     entity stats[zox_children_capacity];
-    uint stats_length = zox_get_children_by_id(world, character, stats, zox_children_capacity, zox_id(Stat));
+    uint stats_length = zox_get_children_by_id(
+        world,
+        character,
+        stats,
+        zox_children_capacity,
+        zox_id(Stat));
     if (!stats_length) {
         zox_logw("Character [%s] has no [Stat] children", zox_get_name(character));
         zox_logw(" - GenerateCharacter? %i", zox_getv(character, GenerateCharacter));

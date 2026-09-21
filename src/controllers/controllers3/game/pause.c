@@ -37,11 +37,7 @@ zox_sys2(PlayerPauseSystem) {
             uint children_length = zox_get_children(world, e2, children, children_capacity);
             for (uint k = 0; k < children_length; k++) {
                 entity e3 = children[k];
-                if (!zox_valid(e3)) {
-                    continue;
-                }
-                zox_geter_value(e3, ZeviceDisabled, byte, disabled);
-                if (disabled) {
+                if (zox_has(e3, Disabled)) {
                     continue;
                 }
                 if (zox_has(e3, ZeviceButton)) {

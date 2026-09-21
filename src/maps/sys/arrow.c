@@ -25,7 +25,9 @@ zox_sys2(MapArrowSystem) {
         }
         rotation->value = euler.y; //  + 180 * degrees_to_radians;
         if (dbg_log) {
-            zox_log("Map Arrow [%s] Rotation Set [%f]", zox_getn(e), rotation->value);
+            zox_log("Map Arrow [%s] Rotation Set [%f]",
+                zox_getn(e),
+                rotation->value);
         }
     }
 } zox_sys_end(MapArrowSystem);

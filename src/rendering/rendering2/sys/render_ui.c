@@ -7,7 +7,8 @@
  *  NOTE: Uses sorted transparency calls with depth testing for rendering
  *
 */
-#define max_renders_count 2048
+// maps take up more - 12 * 12 = 144 pieces
+#define max_renders_count 2048 // 2048
 
 typedef struct {
     entity e;
@@ -35,7 +36,7 @@ static inline void clear_ui_layers() {
     }
 }
 
-entity spawn_material_matrixui(ecs *world) {
+entity spawn_material_matrixui(ecs* world) {
     byte shader_index = get_new_shader_source_index();
     uint material;
     char* vert = get_shader_source(world, "matrixui.vert");
@@ -200,7 +201,9 @@ zox_sys2(ElementRenderSystem) {
 #endif
         ui_render_queue* queue = &zox_ui_render_queue[layer->value];
         if (queue->count >= max_renders_count) {
-            zox_loge("UI Render Layer Over Max [%i]", layer->value);
+            zox_loge("UI Render Ov  er Max: [%i] >= [%i]",
+                queue->count,
+                max_renders_count);
             continue;
         }
         entity material = zox_get_link(world, e, MaterialLink);

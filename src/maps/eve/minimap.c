@@ -1,4 +1,8 @@
-void player_state_minimaps(ecs* world, entity player, byte state) {
+void player_state_minimaps(
+    ecs* world,
+    entity player,
+    byte state)
+{
     byte dbg_log = 0;
     byte is_spawn = state == zox_player_state_play_begin;
     byte is_destroy =
@@ -12,7 +16,10 @@ void player_state_minimaps(ecs* world, entity player, byte state) {
         // zox_logw("Canvas is missing from Player [PlayerUIGamePauseSystem]");
         return;
     }
-    entity minimap = zox_get_child_by_id(world, canvas, zox_id(Minimap));
+    entity minimap = zox_get_child_by_id(
+        world,
+        canvas,
+        zox_id(Minimap));
     if (is_spawn && !zox_valid(minimap)) {
         entity game = zox_get_parent(world, player);
         if (!zox_valid(game)) {

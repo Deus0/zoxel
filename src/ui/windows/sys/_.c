@@ -31,10 +31,10 @@ void zox_systems_windows(ecs* world) {
     zox_system(
         CancelMenuSystem,
         zoxp_update,
-        [in] inputs.ZeviceDisabled,
         [in] inputs.DeviceButtonType,
         [in] inputs.ZeviceButton,
-        [none] inputs.Zevice
+        [none] inputs.Zevice,
+        [none] !core.Disabled,
     );
     zox_system(
         KeyboardCancelMenuSystem,

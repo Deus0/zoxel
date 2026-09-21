@@ -28,7 +28,7 @@ byte sdl_extract_finger(ecs *world, int2 screen_size, entity e, byte dbg_log) {
     // NOTE: If released last frame, reset all the values now
     if (devices_get_released_this_frame(clicked)) {
         zox_setm(e, ZevicePointer, 0);
-        zox_setm(e, ZeviceDisabled, 1);
+        zox_set_tag(e, Disabled, 1);
         zox_setm(e, ZevicePointerPosition, int2_hidden);
         zox_setm(e, ZevicePointerDelta, int2_zero);
         zox_setm(e, ID, 0);
@@ -138,7 +138,7 @@ byte link_sdl_new_finger(ecs *world, int2 screen_size, const entity* children, u
     zox_setm(e, ZevicePointer, clicked);
     zox_setm(e, ZevicePointerPosition, position);
     zox_setm(e, ID, finger_id);
-    zox_setm(e, ZeviceDisabled, 0);
+    zox_set_tag(e, Disabled, 0);
     if (dbg_log) {
         zox_log("New Finger [%s] ID [%i] at [%ix%i] Clicked [%i]", zox_getn(e), finger_id, position.x, position.y, clicked);
     }
@@ -182,7 +182,7 @@ zox_sys2(TouchscreenExtractSystem) {
             }
 #endif
             // When disabled check for new finger
-            if (zox_getv(e2, ZeviceDisabled)) {
+            if (zox_has(e2, Disabled)) {
                 if (link_sdl_new_finger(
                     world,
                     screen_size->value,

@@ -75,15 +75,6 @@ entity2 spawn_pickup_block(
             {
                 pickup_texture = zox_get_link(world,block, TextureLink);
             }
-        // if (zox_has(block, TextureLinks)) {
-            //zox_geter(block, TextureLinks, textures);
-            //if (textures->length) {
-                /*if (textures->length == 1) {
-                    texture = textures->value[0];
-                } else {
-                    texture = textures->value[direction_down];
-                }*/
-            //}
         }
     }
     return spawn_pickup_cube_texture(

@@ -16,16 +16,9 @@ zox_sys2(ScrollbarHandleSystem) {
         // set handle size here
         zox_geter_value(scrollview->value, ListUILink, entity, list);
         uint list_children_length = zox_get_children_count(world, list);
-        /*entity list_children[layouts2_children_capacity];
-        uint list_children_length = zox_get_children(world, list, list_children, layouts2_children_capacity);*/
         if (!list_children_length) {
             continue;
         }
-        /*entity scrollarea_children[layouts2_children_capacity];
-        uint scrollarea_children_length = zox_get_children(world, scrollview->value, scrollarea_children, layouts2_children_capacity);
-        if (!scrollarea_children_length) {
-            continue;
-        }*/
         entity scrollbar = zox_get_child_by_id(world, scrollview->value, zox_id(Scrollbar)); // scrollarea_children[0];
         if (!zox_valid(scrollbar)) {
             continue;

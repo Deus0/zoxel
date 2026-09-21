@@ -81,7 +81,13 @@ static inline void set_position_rotation_scale2_recursive(
     while (zox_children_next(it)) {
         for (int i = 0; i < it.count; i++) {
             entity e2 = it.entities[i];
-            set_position_rotation_scale2_recursive(world, e2, world_position, world_rotation, world_scale, dbg_log);
+            set_position_rotation_scale2_recursive(
+                world,
+                e2,
+                world_position,
+                world_rotation,
+                world_scale,
+                dbg_log);
         }
     }
 }
@@ -106,7 +112,13 @@ zox_sys2(Transform2ChildrenSystem) {
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
-                set_position_rotation_scale2_recursive(world, e2, position->value, rotation, world_scale, dbg_log);
+                set_position_rotation_scale2_recursive(
+                    world,
+                    e2,
+                    position->value,
+                    rotation,
+                    world_scale,
+                    dbg_log);
             }
         }
         zox_sys_increment();

@@ -20,7 +20,6 @@ entity spawn_zevice_bumper(
     zox_set_unique_name(e, name);
     zox_add(e, ZeviceBumper);
     zox_add(e, Zevice);
-    zox_setv(e, ZeviceDisabled, 0);
     zox_setv(e, DeviceButtonType, map);
     zox_setv(e, RealButtonIndex, rindex);
     zox_setv(e, ZeviceButton, 0);

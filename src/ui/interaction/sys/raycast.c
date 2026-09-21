@@ -5,15 +5,13 @@ zox_sys2(ElementRaycastSystem) {
     zox_sys_query();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ZeviceDisabled);
     zox_sys_in(ZevicePointerPosition);
     zox_sys_out(EntityTarget);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(ZeviceDisabled, disabled);
         zox_sys_i(ZevicePointerPosition, ray_position);
         zox_sys_o(EntityTarget, target);
-        if (disabled->value) {
+        /*if (disabled->value) {
             raycaster_select_element(
                 world,
                 e,
@@ -23,7 +21,7 @@ zox_sys2(ElementRaycastSystem) {
                     zox_getn(e));
             }
             continue;
-        }
+        }*/
         entity device = zox_get_parent(world, e);
         if (!zox_valid(device)) {
             zox_loge("No Device owning Zevice [%s]",

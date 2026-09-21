@@ -7,14 +7,14 @@ zox_sys2(TunkTextureSystem) {
     float color_boost = 0.5f;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_out(GenerateTexture);
     zox_sys_out(TextureData);
     zox_sys_out(TextureSize);
+    zox_sys_out(GenerateTexture);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_o(GenerateTexture, generate);
         zox_sys_o(TextureData, data);
         zox_sys_o(TextureSize, size);
+        zox_sys_o(GenerateTexture, generate);
         if (generate->value != zox_generate_texture_run) {
             continue;
         }
@@ -41,7 +41,8 @@ zox_sys2(TunkTextureSystem) {
         // NOTE: Generation Delay for Tunks
         if (zox_getv(tunk, GenerateTunk)) {
             if (dbg_log) {
-                zox_logw("Tunk Still Generating [%s]", zox_get_name(tunk));
+                zox_logw("[TunkTextureSystem] Tunk Still Generating [%s]",
+                    zox_get_name(tunk));
             }
             continue;
         }
@@ -61,6 +62,10 @@ zox_sys2(TunkTextureSystem) {
             }
         }
         if (chunks_busy) {
+            if (dbg_log) {
+                zox_logw("[TunkTextureSystem] Chunk Still Generating [%s]",
+                    zox_getn(tunk));
+            }
             continue;
         }
         entity realm = zox_get_parent(world, terrain);
@@ -90,15 +95,27 @@ zox_sys2(TunkTextureSystem) {
         }
         int map_length = powers_of_two[chunk_depth];
         size->value = int2_single(map_length);
-        resize_TextureData(data, size->value.x * size->value.y);
+        resize_TextureData(
+            data,
+            size->value.x * size->value.y);
         if (dbg_log) {
-            zox_log("Generating Tunk Texture [%ix%i]", size->value.x, size->value.y);
+            entity body = zox_get_parent(world, e);
+            entity map = zox_get_parent(world, body);
+            zox_log("Map [%s] Generating Piece at [%ix%i]",
+                zox_getn(map),
+                size->value.x,
+                size->value.y);
         }
-        float height_div = (float) { render_distance_y * 2 * map_length };
+        float height_div = render_distance_y * 2 * map_length;
         byte3 position = byte3_zero;
         for (position.x = 0; position.x < map_length; position.x++) {
             for (position.z = 0; position.z < map_length; position.z++) {
-                int index = int2_array_index((int2) { position.x, position.z }, size->value);
+                int index = int2_array_index(
+                    (int2) {
+                        position.x,
+                        position.z
+                    },
+                    size->value);
                 // NOTE: From top of world, we cast down to find first block
                 byte lowest_voxel = 0;
                 byte lowest_height = 255;
@@ -113,9 +130,13 @@ zox_sys2(TunkTextureSystem) {
                         byte voxel;
                         if (zox_maps_flip_x || zox_maps_flip_z) {
                             byte3 flipped_position = (byte3) {
-                                zox_maps_flip_x ? map_length - 1 - position.x : position.x,
+                                zox_maps_flip_x ?
+                                    map_length - 1 - position.x :
+                                    position.x,
                                 position.y,
-                                zox_maps_flip_z ? map_length - 1 - position.z : position.z
+                                zox_maps_flip_z ?
+                                    map_length - 1 - position.z :
+                                    position.z
                             };
                             voxel = getv_VoxelNode(voxels, chunk_depth, flipped_position);
                         } else {
@@ -132,9 +153,13 @@ zox_sys2(TunkTextureSystem) {
                         break;
                     }
                 }
-                color block_color = lowest_voxel ? block_colors[lowest_voxel - 1] : color_black;
-                float height_mul = (float) lowest_height / height_div;;
-                data->value[index] = color_multiply_float(block_color, height_mul + color_boost);
+                color block_color = lowest_voxel ?
+                    block_colors[lowest_voxel - 1] :
+                    color_black;
+                float height_mul = (float) lowest_height / height_div;
+                data->value[index] = color_multiply_float(
+                    block_color,
+                    height_mul + color_boost);
             }
         }
         generate->value = 0;

@@ -1,6 +1,12 @@
 // NOTE: Returns 1 if successfully added a new position/size
 
-byte is_overlap_bounds(int2* positions, byte2* sizes, uint count, int2 position, byte2 size) {
+byte is_overlap_bounds(
+    int2* positions,
+    byte2* sizes,
+    uint count,
+    int2 position,
+    byte2 size)
+{
     for (uint i = 0; i < count; i++) {
         int2 p = positions[i];
         byte2 s = sizes[i];
@@ -15,7 +21,13 @@ byte is_overlap_bounds(int2* positions, byte2* sizes, uint count, int2 position,
 }
 
 // NOTE: Towns now avoid mountains
-byte is_overlap_points(int2* positions, byte* radii, uint count, int2 position, byte2 size) {
+byte is_overlap_points(
+    int2* positions,
+    byte* radii,
+    uint count,
+    int2 position,
+    byte2 size)
+{
     int left   = position.x - size.x / 2;
     int right  = position.x + size.x / 2;
     int top    = position.y - size.y / 2;
@@ -34,8 +46,25 @@ byte is_overlap_points(int2* positions, byte* radii, uint count, int2 position, 
     return 0;
 }
 
-byte get_place_position(lint seed, int2 region_position, int2 region_size, byte2 region_padding, byte2 minimum_size, byte2 maximum_size, byte2 place_padding, int2* positions, byte2* sizes, byte added, int2* mountain_positions, byte* mountain_radii, byte mountains_count, uint max_attempts) {
-    if (minimum_size.x > maximum_size.x || minimum_size.y > maximum_size.y) {
+byte get_place_position(
+    lint seed,
+    int2 region_position,
+    int2 region_size,
+    byte2 region_padding,
+    byte2 minimum_size,
+    byte2 maximum_size,
+    byte2 place_padding,
+    int2* positions,
+    byte2* sizes,
+    byte added,
+    int2* mountain_positions,
+    byte* mountain_radii,
+    byte mountains_count,
+    uint max_attempts)
+{
+    if (minimum_size.x > maximum_size.x ||
+        minimum_size.y > maximum_size.y)
+    {
         zox_loge("Min size greater than max size [get_place_position]");
         return 0;
     }
@@ -114,10 +143,17 @@ zox_sys2(RegionTownsSystem) {
             continue;
         }
         if (dbg_log) {
-            zox_log("   - Region Position [%ix%i]", block_position->value.x, block_position->value.y);
+            zox_log("   - Region Position [%ix%i]",
+                block_position->value.x,
+                block_position->value.y);
         };
         entity mountains[zox_children_capacity];
-        uint mountains_length = zox_get_children_by_id(world, e, mountains, zox_children_capacity, zox_id(Radius));
+        uint mountains_length = zox_get_children_by_id(
+            world,
+            e,
+            mountains,
+            zox_children_capacity,
+            zox_id(Radius));
         if (dbg_log) {
             zox_log("Region has [%i] Mountains", mountains_length);
         }

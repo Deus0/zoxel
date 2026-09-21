@@ -1,4 +1,4 @@
-entity spawn_minimap(
+/*entity spawn_minimap(
     ecs* world,
     entity canvas,
     entity player,
@@ -16,7 +16,10 @@ entity spawn_minimap(
     int2 size = int2_single(minimap_size * ui_scale);
     int2 position = int2_zero; //  (int2) { -16 * ui_scale, -16 * ui_scale };
     byte header_font_size = 4 * ui_scale;
-    byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
+    byte2 header_padding = (byte2) {
+        10 * ui_scale,
+        4 * ui_scale
+    };
     const char* header_text = "";
     // Margin from canvas corner
     entity3 e3 = spawn_window(
@@ -35,10 +38,34 @@ entity spawn_minimap(
     zox_set_unique_name(e, "minimap");
     zox_add(e, Map);
     zox_add(e, Minimap);
-    zox_set(e, MapPosition, { tunk_position });
-    zox_set(e, MapZoom, { minimap_zoom });
-    zox_set(e, Alpha, { minimap_alpha });
+    zox_setv(e, MapPosition, tunk_position);
+    zox_setv(e, MapZoom, minimap_zoom);
+    zox_setv(e, Alpha, minimap_alpha);
     zox_link(world, e, PlayerLink, player);
     zox_link(world, e, TerrainLink, terrain);
+    return e;
+}*/
+
+entity spawn_minimap(
+    ecs* world,
+    entity canvas,
+    entity player,
+    entity terrain)
+{;
+    // entity game = zox_get_parent(world, player);
+    // entity realm = zox_get_link(world, game, RealmLink);
+    float2 position_anchor = float2_top_right;
+    int2 size = int2_single(minimap_size * ui_scale);
+    entity e = spawn_map(
+        world,
+        canvas,
+        player,
+        terrain,
+        minimap_zoom,
+        minimap_alpha,
+        "",
+        position_anchor,
+        size);
+    zox_add(e, Minimap);
     return e;
 }

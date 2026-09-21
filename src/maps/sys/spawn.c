@@ -21,13 +21,17 @@ zox_sys2(MapInitializeSystem) {
         zox_sys_i(MapPosition, position);
         entity terrain = zox_get_link(world, e, TerrainLink);
         if (dbg_log) {
-            zox_log("Map Initialized. Terrain [%s]. Center [%ix%i]. Zoom [%i].",
+            zox_log("Map [%s] Initialized. Terrain [%s]. Center [%ix%i]. Zoom [%i].",
+                zox_sys_e_name,
                 zox_get_name(terrain),
                 position->value.x,
                 position->value.y,
                 zoom->value);
         }
-        entity body = zox_get_child_by_id(world, e, zox_id(WindowBody));
+        entity body = zox_get_child_by_id(
+            world,
+            e,
+            zox_id(WindowBody));
         if (!zox_valid(body)) {
             zox_loge("No body on Minimap");
             continue;
@@ -71,12 +75,14 @@ zox_sys2(MapInitializeSystem) {
                 }
                 zox_setv(e2, GenerateTexture, zox_generate_texture_run);
                 zox_setv(e2, MapPiecePosition, grid_position);
-                if (dbg_log) {
-                    zox_log("   - Piece [%ix%i], Tunk [%ix%i]: %s",
+                if (dbg_log >= 2) {
+                    zox_log("   - Piece [%ix%i], Tunk [%ix%i], Layout [%ix%i]: %s",
                         grid_position.x,
                         grid_position.y,
                         tunk_position.x,
                         tunk_position.y,
+                        piece_position.x,
+                        piece_position.y,
                         zox_valid(tunk) ?
                             "Valid" :
                             "Invalid");
@@ -114,9 +120,9 @@ zox_sys2(MapInitializeSystem) {
             zox_setv(e3, Rotation2, 0);
             zox_setv(e3, LocalRotation2, 0);
             zox_setv(e3, BonusLayer, 1);
-            zox_link(world, e3, PlayerLink, player);
             zox_setv(e3, Generate, zox_dirty_trigger);
             zox_setv(e3, OutlineThickness, arrow_thickness);
+            zox_link(world, e3, PlayerLink, player);
         }
     }
 } zox_sys_end(MapInitializeSystem);

@@ -28,7 +28,7 @@ zox_sys2(MouseElementSystem) {
             zox_loge("Pointer Invalid: %s", zox_get_name(zevice->value));
             continue;
         }
-        if (zox_getv(zevice->value, ZeviceDisabled)) {
+        if (zox_has(zevice->value, Disabled)) {
             continue;
         }
         entity canvas = zox_get_parent_by_id(

@@ -66,6 +66,7 @@ UIs
 	-x DataDirty
 	- LayoutPositionDirty
 	- LayoutSizeDirty
+	- GridDirty
 	- GenerateTexture
 	- PlayerStateDirty
 	- RenderLodDirty

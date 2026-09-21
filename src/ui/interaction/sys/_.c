@@ -30,18 +30,18 @@ void zox_systems_interaction(ecs* world) {
         ElementRaycastSystem,
         zoxp_update,
         raycast_query,
-        [in] inputs.ZeviceDisabled,
         [in] inputs.ZevicePointerPosition,
         [out] core.EntityTarget,
+        [none] !core.Disabled,
     );
     zox_system(
         ZeviceClickSystem,
         zoxp_update,
-        [in] inputs.ZeviceDisabled,
         [in] inputs.DeviceLink,
         [in] core.EntityTarget,
         [out] interactions.ClickingEntity,
-        [none] inputs.Zevice
+        [none] inputs.Zevice,
+        [none] !core.Disabled,
     );
     zox_system(
         KeyboardClickSystem,
@@ -137,7 +137,7 @@ void zox_systems_interaction(ecs* world) {
         [in] interactions.ClickEvent,
         [in] interactions.ClickState,
         [out] interactions.Clicker,
-        [none] ui.Element
+        [none] ui.Element,
     );
 
     zox_system(

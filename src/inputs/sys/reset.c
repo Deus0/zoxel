@@ -1,3 +1,70 @@
+// reset each zevice in a system, on EcsOnLoad
+zox_sys2(ZeviceButtonResetSystem) {
+    byte dbg_log = 0;
+    zox_sys_begin();
+    zox_sys_out(ZeviceButton);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_o(ZeviceButton, button);
+        if (devices_get_pressed_this_frame(button->value)) {
+            devices_set_pressed_this_frame(&button->value, 0);
+            if (dbg_log) {
+                zox_log("Pressed this frame is resetting [%s]", zox_sys_e_name);
+            }
+        } else if (devices_get_released_this_frame(button->value))  {
+            devices_set_released_this_frame(&button->value, 0);
+            if (dbg_log) {
+                zox_log("Releasing this frame is resetting [%s]", zox_sys_e_name);
+            }
+        }
+    }
+} zox_sys_end(ZeviceButtonResetSystem);
+
+zox_sys2(ZevicePointerResetSystem) {
+    zox_sys_begin();
+    zox_sys_out(ZevicePointer);
+    zox_sys_out(ZevicePointerOld);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_o(ZevicePointer, zevicePointer);
+        zox_sys_o(ZevicePointerOld, zevicePointerOld);
+        zevicePointerOld->value = zevicePointer->value;
+        zevicePointer->value = reset_button_state(zevicePointer->value);
+    }
+} zox_sys_end(ZevicePointerResetSystem);
+
+zox_sys2(ZevicePointerRightResetSystem) {
+    zox_sys_begin();
+    zox_sys_out(ZevicePointerRight);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_o(ZevicePointerRight, click);
+        click->value = reset_button_state(click->value);
+    }
+} zox_sys_end(ZevicePointerRightResetSystem);
+
+zox_sys2(ZevicePointerDeltaResetSystem) {
+    zox_sys_begin();
+    zox_sys_out(ZevicePointerDelta);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_o(ZevicePointerDelta, zevicePointerDelta);
+        zevicePointerDelta->value = int2_zero;
+    }
+} zox_sys_end(ZevicePointerDeltaResetSystem);
+
+zox_sys2(ZeviceFingerResetSystem) {
+    /*zox_sys_begin();
+    zox_sys_in(ZevicePointerOld);
+    zox_sys_out(ZevicePointerPosition);
+    zox_sys_out(ZevicePointerDelta);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_i(ZevicePointerOld, clicked)
+        zox_sys_o(ZevicePointerPosition, position)
+        zox_sys_o(ZevicePointerDelta, delta)
+        if (devices_get_released_this_frame(clicked->value)) {
+            position->value = int2_hidden;
+            delta->value = int2_zero;
+        }
+    }*/
+} zox_sys_end(ZeviceFingerResetSystem);
+
 #define reset_keyboard_key(key) \
     reset_key(&keyboard->key);
 

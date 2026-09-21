@@ -38,6 +38,7 @@ float minimap_alpha = 0.46f;
 #include "pre/_.c"
 #include "ins/_.c"
 #include "sys/_.c"
+#include "eve/_.c"
 
 void import_maps(ecs* world) {
     zox_module(maps);

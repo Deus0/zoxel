@@ -53,7 +53,12 @@ zox_sys2(Player3DMoveSystem) {
         byte is_running = 0;
         float2 left_stick = float2_zero;
         entity devices[zox_children_capacity];
-        uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
+        uint length = zox_get_children_by_id(
+            world,
+            e,
+            devices,
+            zox_children_capacity,
+            zox_id(Device));
         for (uint j = 0; j < length; j++) {
             entity e2 = devices[j];
             if (zox_has(e2, Disabled)) {
@@ -61,14 +66,18 @@ zox_sys2(Player3DMoveSystem) {
             }
             uint children_capacity = zox_children_capacity;
             entity children[children_capacity];
-            uint children_length = zox_get_children(world, e2, children, children_capacity);
+            uint children_length = zox_get_children(
+                world,
+                e2,
+                children,
+                children_capacity);
             for (uint k = 0; k < children_length; k++) {
                 entity e3 = children[k];
-                // NOTE: Disabled for Fingers now
-                if (!zox_valid(e3) && !zox_has(e3, Finger)) {
+                if (zox_has(e3, Disabled)) {
                     continue;
                 }
-                if (zox_getv(e3, ZeviceDisabled)) {
+                // NOTE: Disabled for Fingers now
+                if (zox_has(e3, Finger)) {
                     continue;
                 }
                 byte type = zox_getv(e3, DeviceButtonType);

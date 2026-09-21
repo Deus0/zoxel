@@ -235,7 +235,12 @@ zox_sys2(TownMapSystem) {
                 continue;
             }
             entity homes[zox_children_capacity];
-            uint homes_length = zox_get_children_by_id(world, town, homes, zox_children_capacity, zox_id(Home));
+            uint homes_length = zox_get_children_by_id(
+                world,
+                town,
+                homes,
+                zox_children_capacity,
+                zox_id(Home));
             if (dbg_log) {
                 zox_log(" - Town Homes [%i]", homes_length);
             }

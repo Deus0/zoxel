@@ -9,11 +9,17 @@ zox_sys2(Transform2Scale2System) {
         zox_sys_i(Position2, position);
         zox_sys_i(Scale2, scale2);
         zox_sys_o(TransformMatrix, matrix);
-        matrix->value = float4x4_transform_scale2(float2_to_float3(position->value), quaternion_identity, scale2->value);
+        matrix->value = float4x4_transform_scale2(
+            float2_to_float3(position->value),
+            quaternion_identity,
+            scale2->value);
         if (dbg_log) {
             zox_sys_world();
             zox_sys_e();
-            zox_log("Scaleyo Transform set [%s] [%fx%f]", zox_getn(e), scale2->value.x, scale2->value.y);
+            zox_log("Scaleyo Transform set [%s] [%fx%f]",
+                zox_getn(e),
+                scale2->value.x,
+                scale2->value.y);
         }
     }
 } zox_sys_end(Transform2Scale2System);
