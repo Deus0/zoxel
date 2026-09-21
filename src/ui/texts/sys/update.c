@@ -51,7 +51,6 @@ zox_sys2(TextUpdateSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TextData, text);
-        // dirty->value != zox_dirty_end ||
         if (!text->length) {
             continue;
         }
@@ -65,16 +64,21 @@ zox_sys2(TextUpdateSystem) {
                     continue;
                 }
                 if (!zox_has(e2, GlyphIndex)) {
-                    zox_loge("Glyph [%s] does not have [GlyphIndex]", zox_get_name(e2));
+                    zox_loge("Glyph [%s] does not have [GlyphIndex]",
+                        zox_get_name(e2));
                     continue;
                 }
                 if (!zox_has(e2, DataIndex)) {
-                    zox_loge("Glyph [%s] does not have [DataIndex]", zox_get_name(e2));
+                    zox_loge("Glyph [%s] does not have [DataIndex]",
+                        zox_get_name(e2));
                     continue;
                 }
 #endif
                 zox_mut_begin(e2, DataIndex, data_index);
-                uint new_data_index = child_index_to_text_array_index(text->value, text->length, child_index);
+                uint new_data_index = child_index_to_text_array_index(
+                    text->value,
+                    text->length,
+                    child_index);
                 data_index->value = new_data_index;
                 zox_mut_begin(e2, GlyphIndex, zigel_index);
                 byte new_index = text->value[new_data_index];
@@ -83,7 +87,11 @@ zox_sys2(TextUpdateSystem) {
                     zox_muter(e2, GenerateTexture, generate);
                     generate->value = zox_generate_texture_run;
                     if (dbg_log) {
-                        zox_log("+ Text [%s]:[%i] New [%i] Old [%i]", zox_get_name(e), j, new_index, zigel_index->value);
+                        zox_log("+ Text [%s]:[%i] New [%i] Old [%i]",
+                            zox_get_name(e),
+                            j,
+                            new_index,
+                            zigel_index->value);
                     }
                 }
                 child_index++;

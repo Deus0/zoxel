@@ -9,7 +9,10 @@ void set_rotation_recursive(ecs* world, entity e, float4 rotation) {
     while (zox_children_next(it)) {
         for (int i = 0; i < it.count; i++) {
             entity e2 = it.entities[i];
-            set_rotation_recursive(world, e2, rotation);
+            set_rotation_recursive(
+                world,
+                e2,
+                rotation);
         }
     }
 }

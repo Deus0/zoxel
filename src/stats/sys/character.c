@@ -32,7 +32,7 @@ void spawn_base_stats(
         }
     }
     if (!zox_valid(realm_soul)) {
-        zox_log_error("the realm has invalid stats")
+        zox_loge("the realm has invalid stats")
         return;
     }
     // generate numbers here

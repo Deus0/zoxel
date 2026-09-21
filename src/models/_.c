@@ -48,6 +48,7 @@ byte zox_block_outlines = 1;
 #include "sys/_.c"
 #include "io/_.c"
 #include "generation/_.c"
+#include "tst/_.c"
 
 void dispose_models(ecs *world, void *ctx) {
     dispose_files_voxes(world);

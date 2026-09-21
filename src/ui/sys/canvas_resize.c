@@ -1,5 +1,8 @@
 // todo: get dimensions off app using AppLink from Canvas, check it's dimensions
-void set_layout_dirty_recursive(ecs* world, entity e) {
+void set_layout_dirty_recursive(
+    ecs* world,
+    entity e)
+{
     if (!zox_valid(e)) {
         return;
     }
@@ -13,7 +16,9 @@ void set_layout_dirty_recursive(ecs* world, entity e) {
     while (zox_children_next(it)) {
         for (int i = 0; i < it.count; i++) {
             entity e2 = it.entities[i];
-            set_layout_dirty_recursive(world, e2);
+            set_layout_dirty_recursive(
+                world,
+                e2);
         }
     }
 }

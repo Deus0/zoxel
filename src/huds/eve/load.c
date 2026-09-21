@@ -13,7 +13,7 @@ void game_state_load(ecs* world, entity game, byte state) {
                 continue;
             }
             entity canvas = zox_get_link(world, player, CanvasLink);
-            if (!zox_valid(canvas)) {
+            if (!canvas) {
                 continue;
             }
             entity load_ui = zox_get_child_by_id(

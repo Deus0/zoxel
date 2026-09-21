@@ -12,7 +12,7 @@ void zox_dbg_spawn_particle_emitter(
         return;
     }
     entity camera = zox_get_link(world, dbg_player, CameraLink);
-    zox_geter_value(camera, Position3D, float3, cposition);
+    float3 camera_position = zox_getv(camera, Position3D);
     int spawn_rate = 100;
     float3 bounds = float3_single(4);
     color pcolor = (color) { rand_range(0, 255), rand_range(0, 255), rand_range(0, 255), rand_range(0, 255) };
@@ -27,6 +27,6 @@ void zox_dbg_spawn_particle_emitter(
         spawn_rate,
         float3_scale(bounds, 2),
         pcolor);
-    zox_setv(e, Position3D, cposition);
+    zox_setv(e, Position3D, camera_position);
     big_old_particle_zone = e;
 }

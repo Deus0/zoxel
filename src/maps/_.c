@@ -6,6 +6,7 @@
  * |                                                  |
  * +--------------------------------------------------+
  */
+// TODO: Map limited to max size of 12, couldn t workout why. - pieces count = (n * m + 1) * (n * m + 1)
 // TODO: Fix updating of maps
 // - black textures appear
 // - need to not regenerate them all, reuse them

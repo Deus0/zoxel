@@ -49,7 +49,10 @@ zox_sys2(MapPositionSystem) {
                     continue;
                 }
                 // Unlink Old one
-                entity old_tunk = zox_get_link(world, e2, TunkLink);
+                entity old_tunk = zox_get_link(
+                    world,
+                    e2,
+                    TunkLink);
                 if (old_tunk) {
                     zox_unlink(
                         world,

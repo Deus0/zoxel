@@ -10,7 +10,7 @@ void zox_dbg_terrain_refresh(ecs* world, ClickEventData data) {
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
             entity e2 = it2.entities[j];
-            if (zox_valid(e2) && zox_has(e2, Chunk3)) {
+            if (zox_has(e2, Chunk3)) {
                 zox_add(e2, VoxelNodeDirty);
             }
         }
@@ -30,7 +30,7 @@ void zox_dbg_terrain_refresh_mesh_colors(ecs* world, ClickEventData data) {
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
             entity e2 = it2.entities[j];
-            if (zox_valid(e2) && zox_has(e2, Chunk3)) {
+            if (zox_has(e2, Chunk3)) {
                 // float4x4 matrix = zox_getv(e2, TransformMatrix);
                 // zox_set(e2, VoxelNodeDirty, { 1 });
                 // zox_set(e2, BuildChunkSides, { 1 });

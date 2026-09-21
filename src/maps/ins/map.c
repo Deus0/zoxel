@@ -102,7 +102,7 @@ entity spawn_player_menu_map(ecs* world, entity player) {
     entity game = zox_get_parent(world, player);
     entity realm = zox_get_link(world, game, RealmLink);
     entity terrain = zox_get_link(world, realm, TerrainLink);
-    byte max_zoom = 12;
+    byte max_zoom = 10;
     byte zoom = terrain_lod_far > max_zoom ?
         max_zoom :
         terrain_lod_far;

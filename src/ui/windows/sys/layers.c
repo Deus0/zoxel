@@ -1,4 +1,9 @@
-void set_layers_auto(ecs *world, entity e, byte layer, byte dbg_log) {
+void set_layers_auto(
+    ecs *world,
+    entity e,
+    byte layer,
+    byte dbg_log)
+{
     if (!zox_valid(e)) {
         return;
     }
@@ -9,14 +14,20 @@ void set_layers_auto(ecs *world, entity e, byte layer, byte dbg_log) {
     if (zox_has(e, Layer)) {
         zox_setv(e, Layer, new_layer);
         if (dbg_log) {
-            zox_log(" - [%s]: %i", zox_getn(e), new_layer);
+            zox_log(" - [%s]: %i",
+                zox_getn(e),
+                new_layer);
         }
     }
     iter it = zox_children(world, e);
     while (zox_children_next(it)) {
         for (int i = 0; i < it.count; i++) {
             entity e2 = it.entities[i];
-            set_layers_auto(world, e2, new_layer, dbg_log);
+            set_layers_auto(
+                world,
+                e2,
+                new_layer,
+                dbg_log);
         }
     }
 }
@@ -53,7 +64,11 @@ zox_sys2(WindowLayerSystem) {
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
-                set_layers_auto(world, e2, layer->value, dbg_log);
+                set_layers_auto(
+                    world,
+                    e2,
+                    layer->value,
+                    dbg_log);
             }
         }
         zox_remove(e, WindowLayerDirty);

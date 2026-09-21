@@ -54,6 +54,10 @@ void zox_dbg_test_window_world(ecs* world, int32_t keycode) {
         .text = "Cube Textured",
         .on_click = { &zox_dbg_spawn_cube_textured_ui },
     };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Vox Clone",
+        .on_click = { &zox_dbg_spawn_vox_mesh_clone2 },
+    };
     // Particles
     elements[elements_count++] = (SpawnListElement) {
         .text = "Particles3",

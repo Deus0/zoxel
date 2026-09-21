@@ -19,11 +19,11 @@ zox_sys2(ListRenderDirtySystem) {
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
-                if (!zox_valid(e2)) {
-                    continue;
-                }
                 byte is_visible = k >= start->value && k < start->value + visible->value;
-                set_children_render_disabled(world, e2, !is_visible);
+                set_children_render_disabled(
+                    world,
+                    e2,
+                    !is_visible);
                 k++;
             }
         }

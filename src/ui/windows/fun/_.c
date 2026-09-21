@@ -1,6 +1,6 @@
 void raycaster_select_window_children(ecs *world, entity e, entity window) {
     if (zox_has(e, WindowRaycasted)) {
-        zox_set(e, WindowRaycasted, { window })
+        zox_set(e, WindowRaycasted, { window });
     }
     iter it2 = zox_children(world, e);
     while (zox_children_next(it2)) {
@@ -9,7 +9,10 @@ void raycaster_select_window_children(ecs *world, entity e, entity window) {
             if (!zox_valid(e2)) {
                 continue;
             }
-            raycaster_select_window_children(world, e2, window);
+            raycaster_select_window_children(
+                world,
+                e2,
+                window);
         }
     }
     entity devices[zox_children_capacity];

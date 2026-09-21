@@ -23,7 +23,11 @@ zox_sys2(DeviceClickSystem) {
         byte input_type = 0;
         uint children_capacity = zox_children_capacity;
         entity children[children_capacity];
-        uint children_length = zox_get_children(world, e, children, children_capacity);
+        uint children_length = zox_get_children(
+            world,
+            e,
+            children,
+            children_capacity);
         for (uint j = 0; j < children_length; j++) {
             entity e2 = children[j];
             if (!zox_has(e2, ZeviceButton) || !zox_has(e2, DeviceButtonType)) {

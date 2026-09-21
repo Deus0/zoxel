@@ -11,10 +11,14 @@ static inline void set_position_rotation_scale2_recursive(
         return;
     }
     #endif
-    if (zox_has(e, DisableTransform) || zox_has(e, DisableParentTransform)) {
+    if (zox_has(e, DisableTransform) ||
+        zox_has(e, DisableParentTransform))
+    {
         return;
     }
-    if (zox_has(e, LinePoints2) && zox_has(e, LocalLinePoints2)) {
+    if (zox_has(e, LinePoints2) &&
+        zox_has(e, LocalLinePoints2))
+    {
         const LocalLinePoints2* local_line = zox_get(e, LocalLinePoints2);
         zox_mut_begin(e, LinePoints2, line);
         line->start = float2_add(
@@ -28,30 +32,47 @@ static inline void set_position_rotation_scale2_recursive(
                 float2_multiply(local_line->end, parent_scale),
                     parent_rotation));
         if (dbg_log) {
-            zox_log("[%s] line [%fx%f] -> [%fx%f]", zox_getn(e), line->start.x, line->start.y, line->end.x, line->end.y);
+            zox_log("[%s] line [%fx%f] -> [%fx%f]",
+                zox_getn(e),
+                line->start.x,
+                line->start.y,
+                line->end.x,
+                line->end.y);
         }
     }
     if (!zox_has(e, Position2)) {
         return;
     }
     byte updated = 0;
-    float2 local_position = zox_has(e, LocalPosition2) ? zox_getv(e, LocalPosition2) : float2_zero;
-    float local_rotation = zox_has(e, LocalRotation2) ? zox_getv(e, LocalRotation2) : 0;
-    float2 local_scale = zox_has(e, LocalScale2) ? zox_getv(e, LocalScale2) : (zox_has(e, LocalScale1) ? float2_single(zox_getv(e, LocalScale1)) : float2_one);
+    float2 local_position = zox_has(e, LocalPosition2) ?
+        zox_getv(e, LocalPosition2) :
+        float2_zero;
+    float local_rotation = zox_has(e, LocalRotation2) ?
+        zox_getv(e, LocalRotation2) :
+        0;
+    float2 local_scale = zox_has(e, LocalScale2) ?
+        zox_getv(e, LocalScale2) :
+        (zox_has(e, LocalScale1) ?
+            float2_single(zox_getv(e, LocalScale1)) :
+            float2_one);
     // world_position = parent_position + parent_rotation * (parent_scale * local_position)
     float2 world_position = float2_add(
         parent_position,
             float2_rotate(
                 float2_multiply(local_position, parent_scale), parent_rotation));
     float world_rotation = parent_rotation + local_rotation;
-    float2 world_scale = float2_multiply(parent_scale, local_scale);
+    float2 world_scale = float2_multiply(
+        parent_scale,
+        local_scale);
     zox_mut_begin(e, Position2, old_position);
     if (!float2_equals(world_position, old_position->value))
     {
         old_position->value = world_position;
         updated = 1;
         if (dbg_log) {
-            zox_log("New Position2 [%fx%f]", world_position.x, world_position.y);
+            zox_log("New Position2 [%fx%f]",
+                world_position.x,
+                world_position.y);
         }
     }
     if (zox_has(e, Rotation2)) {

@@ -19,7 +19,11 @@
 }*/
 
 // todo: implement localLayer's here for elements'
-byte get_highest_layer(ecs *world, entity e, byte layer) {
+byte get_highest_layer(
+    ecs *world,
+    entity e,
+    byte layer)
+{
     if (!e) {
         return layer;
     }
@@ -29,7 +33,10 @@ byte get_highest_layer(ecs *world, entity e, byte layer) {
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
             entity e2 = it2.entities[j];
-            byte new_layer = get_highest_layer(world, e2, child_layer);
+            byte new_layer = get_highest_layer(
+                world,
+                e2,
+                child_layer);
             if (new_layer > highest_layer) {
                 highest_layer = new_layer;
             }
@@ -45,13 +52,15 @@ byte get_highest_window_layer(ecs* world, entity e) {
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
             entity e2 = it2.entities[j];
-            if (!zox_valid(e2) ||
-                !zox_has(e2, Window) ||
+            if (!zox_has(e2, Window) ||
                 zox_has(e2, IgnoreCanvasStack)
             ) {
                 continue;
             }
-            byte window_layers = get_highest_layer(world, e2, 1);
+            byte window_layers = get_highest_layer(
+                world,
+                e2,
+                1);
             if (window_layers > layer) {
                 layer = window_layers;
             }
@@ -83,7 +92,9 @@ zox_sys2(CanvasStackSystem) {
             continue;
         }
         byte old_layer = zox_getv(add_window->value, WindowLayer);
-        uint windows_count = zox_get_children_count(world, e);
+        uint windows_count = zox_get_children_count(
+            world,
+            e);
         byte layers_per_window = get_highest_window_layer(world, e);
         // gett previous window layer of moving to top window
         // skip if: same window clicked as already on top
@@ -110,7 +121,10 @@ zox_sys2(CanvasStackSystem) {
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
-                if (!zox_valid(e2) || !zox_has(e2, Window) || zox_has(e2, IgnoreCanvasStack)) {
+                if (!zox_valid(e2) ||
+                    !zox_has(e2, Window) ||
+                    zox_has(e2, IgnoreCanvasStack))
+                {
                     continue;
                 }
                 if (add_window->value == e2) {

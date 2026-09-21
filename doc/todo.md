@@ -1,11 +1,25 @@
 # Todo
 
+- test for mesh clone of character
+- test for mesh clone of models under realm
+    - pick random ones
+- test for spawning all models under realm
+- Simple test function to spawn vox mesh
+    - just the mesh itself, usign a entity reference
+    - mesh clone is it? basically yeah
+
 - Maps
     - Make maps use GridDirty instead of manually positioning
     - Move pieces pixel by pixel around player - set centre position of map
     - add a mask around map
     - update ony pieces and not entire map
     - zoom + - buttons on header
+    - map texture can be seperate
+        - optimized
+        - spawn when map spawns
+        - child of tunk
+        - disable when ui closes / dies
+        - updates when enabled / chunk changes
     
 - World Item - Vox Mesh
 	- use model linked to block for this

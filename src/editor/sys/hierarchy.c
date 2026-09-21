@@ -102,10 +102,13 @@ void editor_fetch_children(
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
             entity e2 = it2.entities[j];
-            if (!zox_valid(e2)) {
-                continue;
-            }
-            editor_fetch_children(world, labels, entities, tree_levels, e2, tree_level);
+            editor_fetch_children(
+                world,
+                labels,
+                entities,
+                tree_levels,
+                e2,
+                tree_level);
         }
     }
 }
@@ -169,9 +172,7 @@ zox_sys2(HierarchySpawnSystem) {
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
-                if (zox_valid(e2)) {
-                    zox_delete(e2);
-                }
+                zox_delete(e2);
             }
         }
         // Spawn new buttons
