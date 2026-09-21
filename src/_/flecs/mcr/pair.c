@@ -9,8 +9,9 @@ static inline void zox_link_internal(
 #ifdef zox_safety_checks
     if (!zox_valid(e) || !zox_valid(target)) {
         zox_loge(
-            "Invalid Link [%llu] Target [%llu]",
-                (unsigned long long) e,
+            "Invalid Link [%s:%llu] Target [%llu]",
+                zox_getn(e),
+                e,
                 (unsigned long long) target);
         return;
     }

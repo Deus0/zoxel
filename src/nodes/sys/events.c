@@ -5,21 +5,22 @@ zox_sys2(NodeBeginEventSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NodeBegin);
-    zox_sys_in(NodeLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(NodeBegin, state);
-        zox_sys_i(NodeLink, current);
-        if (!(zox_valid(current->value) &&
-            state->value == zox_dirty_active &&
-            zox_has(current->value, NodeBeginEvent)))
+        if (state->value == zox_dirty_active) {
+            continue;
+        }
+        entity current = zox_get_link(world, e, CurrentNodeLink);
+        if (!current ||
+            !zox_has(current, NodeBeginEvent))
         {
             continue;
         }
-        const NodeBeginEvent* event = zox_get(current->value, NodeBeginEvent);
+        const NodeBeginEvent* event = zox_get(current, NodeBeginEvent);
         for (int j = 0; j < event->count; j++) {
             if (event->value[j].fun == NULL) {
-                zox_loge("NodeBeginEvent [%s] Null [%i]", zox_getn(current->value), j);
+                zox_loge("NodeBeginEvent [%s] Null [%i]", zox_getn(current), j);
                 continue;
             }
             if (dbg_log) {
@@ -29,7 +30,7 @@ zox_sys2(NodeBeginEventSystem) {
             event->value[j].fun(
                 world,
                 e,
-                current->value);
+                current);
         }
     }
 } zox_sys_end(NodeBeginEventSystem);

@@ -4,11 +4,9 @@ zox_sys2(DialogueSpeechSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NodeBegin);
-    zox_sys_in(NodeLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(NodeBegin, state);
-        zox_sys_i(NodeLink, node);
         if (state->value != zox_dirty_active) {
             continue;
         }
@@ -29,9 +27,10 @@ zox_sys2(DialogueSpeechSystem) {
             zox_loge("Dialogue Missing Text or Buttons");
             continue;
         }
+        entity node = zox_get_link(world, e, CurrentNodeLink);
         const char* text =
-            zox_has(node->value, DialogueText) ?
-                zox_getv(node->value, DialogueText) :
+            zox_has(node, DialogueText) ?
+                zox_getv(node, DialogueText) :
                 "Here.";
         // zox_geter(node->value, DialogueText, text);
         set_TargetText(world, text_ui, text);
@@ -46,7 +45,7 @@ zox_sys2(DialogueSpeechSystem) {
             1);
         if (dbg_log) {
             zox_log("Dialogue Node [%s], Text UI [%s], Next Button [%s], Target Text [%s]",
-                zox_getn(node->value),
+                zox_getn(node),
                 zox_getn(text_ui),
                 zox_getn(next_button),
                 text);

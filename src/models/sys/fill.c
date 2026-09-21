@@ -30,43 +30,47 @@ zox_sys2(FillModelNodeSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NodeBegin);
-    zox_sys_in(NodeLink);
     zox_sys_in(ModelLink);
     zox_sys_in(ModelSize);
     zox_sys_out(NodeEnd);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(NodeBegin, state);
-        zox_sys_i(NodeLink, node);
         zox_sys_i(ModelLink, model);
         zox_sys_i(ModelSize, bounds);
         zox_sys_o(NodeEnd, end);
-        if (state->value != zox_dirty_active || !zox_valid(model->value)) {
+        if (state->value != zox_dirty_active ||
+            !zox_valid(model->value))
+        {
             continue;
         }
-        if (!zox_valid(node->value)) {
+        entity node = zox_get_link(world, e, CurrentNodeLink);
+        if (!node) {
+            continue;
+        }
+        if (!zox_valid(node)) {
             zox_logw("Node in Process is Invalid", zox_getn(e));
             return;
         }
-        if (!zox_has(node->value, NodeType)) {
-            zox_logw("Node [%s] has no Type.", zox_getn(node->value));
+        if (!zox_has(node, NodeType)) {
+            zox_logw("Node [%s] has no Type.", zox_getn(node));
             continue;
         }
-        byte node_type = zox_getv(node->value, NodeType);
+        byte node_type = zox_getv(node, NodeType);
         if (node_type != zox_model_node_fill) {
             continue;
         }
-        if (!zox_has(node->value, NodeVoxel) || !zox_has(node->value, Shape3Position) || !zox_has(node->value, Shape3Size)) {
-            zox_logw("Node [%s] has invalid components for [zox_model_node_fill].", zox_getn(node->value));
+        if (!zox_has(node, NodeVoxel) || !zox_has(node, Shape3Position) || !zox_has(node, Shape3Size)) {
+            zox_logw("Node [%s] has invalid components for [zox_model_node_fill].", zox_getn(node));
             continue;
         }
-        byte3 position = zox_getv(node->value, Shape3Position);
-        byte3 size = zox_getv(node->value, Shape3Size);
+        byte3 position = zox_getv(node, Shape3Position);
+        byte3 size = zox_getv(node, Shape3Size);
         if (!byte3_equals(bounds->value, byte3_zero)) {
             scale_node_transform(bounds->value, &position, &size);
         }
         lint seed = zox_getv(model->value, Seed);
-        // byte depth = zox_getv(node->value, NodeDepth);
+        // byte depth = zox_getv(node, NodeDepth);
         // for each model LOD, run shapes
         if (dbg_log) {
             zox_log(" - Node: Model Fill [%s] Seed %i", zox_getn(model->value), seed);
@@ -87,7 +91,7 @@ zox_sys2(FillModelNodeSystem) {
                 if (dbg_log) {
                     zox_log("  - Lod Model [%s] Depth [%i]", zox_getn(vox), model_depth);
                 }
-                process_node_model_fill(world, node->value, vox, seed, position, size);
+                process_node_model_fill(world, node, vox, seed, position, size);
             }
         }  else {
             zox_logw("Node Process Entity does not have ModelLods");

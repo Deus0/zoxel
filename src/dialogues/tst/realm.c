@@ -5,7 +5,7 @@ entity test_dialogue_ui;
 void zox_tst_spawn_dialogue(ecs *world, ClickEventData data) {
     if (zox_valid(test_dialogue_run)) {
         // if not end, go to next:
-        entity next = zox_getv(test_dialogue_run, NodeLink);
+        entity next = zox_get_link(world, test_dialogue_run, NodeLink);
         if (zox_valid(next)) {
             zox_log("Moving to Next Dialogue Leaf [%s]",
                 zox_getn(next));

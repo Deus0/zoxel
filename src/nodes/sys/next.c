@@ -1,36 +1,50 @@
 // NOTE: This runs from a Node Process
 
+// TODO: Tag the node so some can auto progress
 // System handles the next node process
 zox_sys2(NextNodeSystem) {
-    // byte dbg_log = 0;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NodeEnd);
-    zox_sys_out(NodeLink);
     zox_sys_out(NodetreeEnd);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(NodeEnd, state);
-        zox_sys_o(NodeLink, current);
         zox_sys_o(NodetreeEnd, complete);
         // Process on completed single node
-        if (!zox_valid(current->value) ||
-            state->value != zox_dirty_active)
-        {
+        if (state->value != zox_dirty_active) {
             continue;
         }
+        entity previous = zox_get_link(world, e, CurrentNodeLink);
+        if (!previous) {
+            continue;
+        }
+        entity next = zox_get_link(world, previous, NodeLink);
+        if (previous == next) {
+            zox_logw("Cannot progress to same node in tree [%s]",
+                zox_sys_e_name);
+            continue;
+        }
+        zox_unlink(world, e, CurrentNodeLink, previous);
         // Gets next node - First one for now
-        zox_geter(current->value, NodeLinks, nodes);
-        current->value = nodes->length > 0 ? nodes->value[0] : 0;
-        if (!zox_valid(current->value)) {
+        if (next) {
+            zox_link(world, e, CurrentNodeLink, next);
+            zox_setv(e, NodeBegin, zox_dirty_trigger);
+            if (dbg_log) {
+                zox_log("Nodetree Progresses [%s] at [%s] to [%s]",
+                    zox_sys_e_name,
+                    zox_getn(previous),
+                    zox_getn(next));
+            }
+        } else {
             // Finished Node Tree!
             complete->value = zox_dirty_trigger;
-            // zox_log("Dialogue Completed.");
-            // zox_log("Nodetree End [%s]", zox_get_name(e));
-        } else {
-            zox_setv(e, NodeBegin, zox_dirty_trigger);
-            // do this for now - then implement dialogue node system with confirm button
-            // zox_set(e, NodeEnd, { zox_dirty_trigger });
+            if (dbg_log) {
+                zox_log("Nodetree End [%s] at [%s]",
+                    zox_sys_e_name,
+                    zox_getn(previous));
+            }
         }
     }
 } zox_sys_end(NextNodeSystem);

@@ -9,14 +9,12 @@ void zox_systems_nodes(ecs* world) {
         zoxp_update,
         [in] nodes.NodeStartLink,
         [in] nodes.NodetreeBegin,
-        [out] nodes.NodeLink,
         [none] nodes.NodeRun,
     );
     zox_system(
         NextNodeSystem,
         zoxp_update,
         [in] nodes.NodeEnd,
-        [out] nodes.NodeLink,
         [out] nodes.NodetreeEnd,
         [none] nodes.NodeRun,
     );
@@ -30,7 +28,6 @@ void zox_systems_nodes(ecs* world) {
         NodeBeginEventSystem,
         zoxp_spawn,
         [in] nodes.NodeBegin,
-        [in] nodes.NodeLink,
         [none] nodes.NodeRun,
     );
 }

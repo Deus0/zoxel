@@ -28,25 +28,28 @@ zox_sys2(ColorsModelNodeSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NodeBegin);
-    zox_sys_in(NodeLink);
     zox_sys_in(ModelLink);
     zox_sys_out(Seed);
     zox_sys_out(NodeEnd);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(NodeBegin, state);
-        zox_sys_i(NodeLink, node);
         zox_sys_i(ModelLink, model);
         zox_sys_o(Seed, seed);
         zox_sys_o(NodeEnd, end);
         if (state->value != zox_dirty_active || !zox_valid(model->value)) {
             continue;
         }
-        byte node_type = zox_getv(node->value, NodeType);
+        entity node = zox_get_link(world, e, CurrentNodeLink);
+        if (!node) {
+            continue;
+        }
+        byte node_type = zox_getv(node, NodeType);
         if (node_type != zox_model_node_colors) {
             continue;
         }
-        if (!zox_has(node->value, NodeColors)) {
-            zox_loge("Node (colors) [%s] has invalid components.", zox_getn(node->value));
+        if (!zox_has(node, NodeColors)) {
+            zox_loge("Node (colors) [%s] has invalid components.", zox_getn(node));
             continue;
         }
         // for each model LOD, run shapes
@@ -56,13 +59,19 @@ zox_sys2(ColorsModelNodeSystem) {
             seed->value = model_seed;
         }
         // color node_color = zox_getv(node->value, Color);
-        color node_color = zox_has(node->value, Color) ? zox_getv(node->value, Color) : seed_color(&seed->value, inner_seed_shift);
-        byte color_count = zox_getv(node->value, NodeColors);
+        color node_color = zox_has(node, Color) ? zox_getv(node, Color) : seed_color(&seed->value, inner_seed_shift);
+        byte color_count = zox_getv(node, NodeColors);
         if (zox_has(model->value, ModelLods)) {
             zox_geter(model->value, ModelLods, models);
             for (int j = 0; j < model_lods_max_length; j++) {
                 entity vox = models->value[j];
-                process_node_model_generate_colors(world, node->value, vox, seed->value, node_color, color_count);
+                process_node_model_generate_colors(
+                    world,
+                    node,
+                    vox,
+                    seed->value,
+                    node_color,
+                    color_count);
             }
         }  else {
             zox_logw("Node Process Entity does not have ModelLods");

@@ -3,7 +3,6 @@ entity spawn_prefab_node(ecs *world) {
     zox_prefab_name("node");
     zox_add(e, Node);
     zox_add(e, Nodeleaf);
-    zox_prefab_set(e, NodeLinks, { 0 });
     return e;
 }
 
