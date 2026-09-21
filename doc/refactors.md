@@ -63,7 +63,7 @@ UIs
     - just make one big function that uses queries and calls those functions
     
 ## Refactor Events/Properties To Tags
-    	-x DataDirty
+	-x DataDirty
 	- LayoutPositionDirty
 	- LayoutSizeDirty
 	- GenerateTexture
@@ -85,6 +85,8 @@ UIs
 ## Refactor Properties
 	- RenderDisabled
 	- BlocksSpawned
+    -x DeviceDisabled
+    - ZeviceDisabled
 	
 ## Refactor Reactionary Systems to Events
 	- Tooltip Systems
@@ -204,7 +206,6 @@ Input Refactor
 - Move sdl/glut/glfw/headless into core as wrappers or not idk... we havnt actually wrapped yet!
 
 ## Data
-- Make DeviceDisabled a tag - Generic Disabled
 - Remove build states when not building (60ms)
     - ChunkMeshColorsTriggerSystem
     - ChunkTexturedBuildSystem

@@ -61,8 +61,10 @@ entity2 spawn_pickup_block(
                 if (!zox_has(texture, Texture)) {
                     continue;
                 }
-                if (!texture) {
+                // Vox item?
+                if (!zox_has(texture, ChildIndex)) {
                     pickup_texture = texture;
+                    continue;
                 }
                 if (zox_getv(texture, ChildIndex) == target_direction) {
                     pickup_texture = texture;
