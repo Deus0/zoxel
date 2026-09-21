@@ -33,10 +33,7 @@ zox_sys2(PlayerToggleCameraSystem) {
         uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
         for (uint j = 0; j < length; j++) {
             entity e2 = devices[j];
-            if (!zox_valid(e2)) {
-                continue;
-            }
-            if (!zox_has(e2, DeviceDisabled) || zox_getv(e2, DeviceDisabled)) {
+            if (zox_has(e2, Disabled)) {
                 continue;
             }
             uint children_capacity = zox_children_capacity;

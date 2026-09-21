@@ -100,6 +100,7 @@ void initialize_zoxel_settings(ecs* world) {
     add_hook_key_down(toggle_hierarchy);
     add_hook_key_down(key_down_toggle_streaming);
     add_hook_key_down(key_down_toggle_npc_movement);
+    add_hook_key_down(key_down_toggle_keyboard_navigation);
     // Gameplay
     // hit_terrain_color = (color) { 2, 2, 2, 255 };
     hit_character_color = (color) { 155, 45, 45, 255 };

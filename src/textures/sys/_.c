@@ -25,7 +25,7 @@ void zox_systems_textures(ecs *world) {
         MouseTextureSystem,
         zoxp_update,
         [in] inputs.MouseLock,
-        [in] inputs.DeviceDisabled
+        [none] inputs.Mouse,
     );
     zox_filter(fill_texture_query, [none] FillTexture, [out] textures.GenerateTexture)
     zox_system_ctx(

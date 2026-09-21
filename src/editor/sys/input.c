@@ -18,10 +18,7 @@ zox_sys2(EditorInputSystem) {
             continue;
         }
         entity e2 = zox_get_child_by_id(world, e, zox_id(Keyboard));
-        if (!zox_valid(e2)) {
-            continue;
-        }
-        if (zox_getv(e2, DeviceDisabled)) {
+        if (zox_has(e2, Disabled)) {
             continue;
         }
         zox_geter(e2, Keyboard, keyboard);

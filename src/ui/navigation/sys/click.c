@@ -4,16 +4,13 @@ zox_sys2(DeviceClickSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(DeviceDisabled);
     zox_sys_in(EntityTarget);
     zox_sys_out(ClickingEntity);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DeviceDisabled, disabled);
         zox_sys_i(EntityTarget, target);
         zox_sys_o(ClickingEntity, clicking);
-        if (disabled->value ||
-            !zox_valid(target->value) ||
+        if (!zox_valid(target->value) ||
             !zox_has(target->value, RenderDisabled) ||
             zox_getv(target->value, RenderDisabled)
         ) {

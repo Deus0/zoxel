@@ -118,13 +118,13 @@ zox_sys2(DeviceSwitchSystem) {
                     byte enabled =
                         zox_has(e2, Keyboard) ||
                         zox_has(e2, Mouse);
-                    zox_setv(e2, DeviceDisabled, !enabled);
+                    zox_set_tag(e2, Disabled, !enabled);
                 } else if (new_mode == zox_device_mode_gamepad) {
                     byte enabled = zox_has(e2, Gamepad);
-                    zox_setv(e2, DeviceDisabled, !enabled);
+                    zox_set_tag(e2, Disabled, !enabled);
                 } else if (new_mode == zox_device_mode_touchscreen) {
                     byte enabled = zox_has(e2, Touchscreen);
-                    zox_setv(e2, DeviceDisabled, !enabled);
+                    zox_set_tag(e2, Disabled, !enabled);
                 }
             }
         }

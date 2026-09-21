@@ -24,7 +24,7 @@ zox_sys2(ZeviceClickSystem) {
             zox_loge(" device null from zevice [%lu]", e);
             continue;
         }
-        if (zox_getv(device->value, DeviceDisabled)) {
+        if (zox_has(device->value, Disabled)) {
             continue;
         }
         byte device_mode = zox_getv(player, DeviceMode);

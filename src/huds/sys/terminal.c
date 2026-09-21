@@ -13,7 +13,7 @@ zox_sys2(PlayerTerminalSystem) {
         uint length = zox_get_children_by_id(world, e, keyboards, zox_children_capacity, zox_id(Keyboard));
         for (uint j = 0; j < length; j++) {
             entity e2 = keyboards[j];
-            if (!zox_valid(e2) || zox_getv(e2, DeviceDisabled)) {
+            if (zox_has(e2, Disabled)) {
                 continue;
             }
             if (!zox_has(e2, Keyboard)) {

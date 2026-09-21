@@ -83,3 +83,7 @@ typedef struct {
 
 #define zox_get_idv(e, id, T) \
     (((zox_##T*) ecs_get_id(world, e, id))->value)
+
+#define zox_set_tag(e, T, is_tag) \
+    if (is_tag) { zox_add(e, T); } \
+    else { zox_remove(e, T); }

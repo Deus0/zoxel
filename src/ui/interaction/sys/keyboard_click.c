@@ -6,19 +6,14 @@ zox_sys2(KeyboardClickSystem) {
     }
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(DeviceDisabled);
     zox_sys_in(EntityTarget);
     zox_sys_in(Keyboard);
     zox_sys_out(ClickingEntity);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DeviceDisabled, disabled);
         zox_sys_i(EntityTarget, target);
         zox_sys_i(Keyboard, keyboard);
         zox_sys_o(ClickingEntity, clickee);
-        if (disabled->value) {
-            continue;
-        }
         entity player = zox_get_link(world, e, PlayerLink);
         if (!zox_valid(player)) {
             continue;

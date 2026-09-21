@@ -46,11 +46,11 @@ void zox_systems_interaction(ecs* world) {
     zox_system(
         KeyboardClickSystem,
         zoxp_update,
-        [in] inputs.DeviceDisabled,
         [in] core.EntityTarget,
         [in] inputs.Keyboard,
         [out] interactions.ClickingEntity,
-        [none] inputs.Device
+        [none] inputs.Device,
+        [none] !core.Disabled,
     );
     // Coloring Animations
     zox_system(

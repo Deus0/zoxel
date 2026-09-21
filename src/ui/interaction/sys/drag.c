@@ -16,19 +16,16 @@ zox_sys2(DraggerEndSystem) {
         uint length = zox_get_children_by_id(world, dragger->value, devices, zox_children_capacity, zox_id(Device));
         for (uint j = 0; j < length; j++) {
             entity e2 = devices[j];
-            if (!zox_valid(e2) || zox_getv(e2, DeviceDisabled)) {
+            if (!zox_valid(e2) || zox_has(e2, Disabled)) {
                 continue;
             }
-            /*uint children_capacity = zox_children_capacity;
-            entity children[children_capacity];
-            uint children_length = zox_get_children(world, e2, children, children_capacity);
-            for (uint k = 0; k < children_length; k++) {
-                entity e3 = children[k];*/
             iter it2 = zox_children(world, e2);
             while (zox_children_next(it2)) {
                 for (int k = 0; k < it2.count; k++) {
                     entity e3 = it2.entities[k];
-                    if (!zox_valid(e3) || !zox_has(e3, ZevicePointer)) {
+                    if (!zox_valid(e3) ||
+                        !zox_has(e3, ZevicePointer))
+                    {
                         continue;
                     }
                     zox_geter_value(e3, ZevicePointer, byte, click);
@@ -46,7 +43,7 @@ zox_sys2(DraggerEndSystem) {
             dragger->value = 0;
             delta->value = int2_zero;
             if (is_log_dragging) {
-                zox_log("Dragging Ended [%f]", (float) zox_current_time);
+                zox_log("Dragging Ended!");
             }
         }
     }

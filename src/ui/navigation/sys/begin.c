@@ -36,13 +36,11 @@ zox_sys2(ElementNavigationBeginSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(DeviceDisabled);
     zox_sys_out(EntityTarget);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DeviceDisabled, disabled);
         zox_sys_o(EntityTarget, current);
-        if (disabled->value || zox_valid(current->value)) {
+        if (zox_valid(current->value)) {
             continue;
         }
         if (dbg_log >= 2) {

@@ -5,15 +5,10 @@ zox_sys2(MouseConstrainSystem) {
     }
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(DeviceDisabled);
     zox_sys_in(MouseLock);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DeviceDisabled, disabled);
         zox_sys_i(MouseLock, lock);
-        if (disabled->value) {
-            continue;
-        }
         entity app = zox_get_link(world, e, AppLink);
         if (!zox_valid(app) || !zox_has(app, SDLWindow)) {
             continue;

@@ -14,39 +14,55 @@ zox_sys2(ElementRaycastSystem) {
         zox_sys_i(ZevicePointerPosition, ray_position);
         zox_sys_o(EntityTarget, target);
         if (disabled->value) {
-            raycaster_select_element(world, e, 0);
+            raycaster_select_element(
+                world,
+                e,
+                0);
             if (dbg_log >= 3) {
-                zox_log("(ElementRaycastSystem) Zevice Disabled [%s]", zox_getn(e));
+                zox_log("(ElementRaycastSystem) Zevice Disabled [%s]",
+                    zox_getn(e));
             }
             continue;
         }
         entity device = zox_get_parent(world, e);
         if (!zox_valid(device)) {
-            zox_loge("No Device owning Zevice [%s]", zox_getn(e));
+            zox_loge("No Device owning Zevice [%s]",
+                zox_getn(e));
             continue;
         }
-        if (zox_getv(device, DeviceDisabled)) {
+        if (zox_has(device, Disabled)) {
             raycaster_select_element(world, e, 0);
             if (dbg_log >= 3) {
-                zox_log("(ElementRaycastSystem) Zevice Disabled [%s]", zox_getn(e));
+                zox_log("(ElementRaycastSystem) Zevice Disabled [%s]",
+                    zox_getn(e));
             }
             continue;
         }
         entity player = zox_get_parent(world, device);
         if (!player) {
-            zox_loge("No Player owning Device that was not disabled [%s]", zox_getn(device));
+            zox_loge("No Player owning Device that was not disabled [%s]",
+                zox_getn(device));
             continue;
         }
         byte dmode = zox_getv(player, DeviceMode);
-        byte raycaster_mode = dmode == zox_device_mode_touchscreen || (!keyboard_navigation_mode && dmode == zox_device_mode_keyboardmouse);
+        byte raycaster_mode =
+            dmode == zox_device_mode_touchscreen ||
+            (!keyboard_navigation_mode &&
+            dmode == zox_device_mode_keyboardmouse);
         if (!raycaster_mode) {
             continue;
         }
-        entity canvas = zox_get_link(world, player, CanvasLink);
+        entity canvas = zox_get_link(
+            world,
+            player,
+            CanvasLink);
         if (!zox_valid(canvas)) {
             continue;
         }
-        entity camera = zox_get_link(world, canvas, CameraLink);
+        entity camera = zox_get_link(
+            world,
+            canvas,
+            CameraLink);
         if (!zox_valid(camera)) {
             continue;
         }
@@ -63,7 +79,10 @@ zox_sys2(ElementRaycastSystem) {
             position.y <= canvas_position.y + canvas_size.y;
         if (!ray_in_viewport) {
             if (dbg_log >= 2) {
-                zox_log("(ElementRaycastSystem) Ray not in viewport [%s] at [%ix%i]", zox_getn(e), position.x, position.y);
+                zox_log("(ElementRaycastSystem) Ray not in viewport [%s] at [%ix%i]",
+                    zox_getn(e),
+                    position.x,
+                    position.y);
             }
             continue;
         }

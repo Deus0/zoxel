@@ -1,5 +1,3 @@
-
-
 // TODO: If Camera Distance > 500, use double precision for planes - it still flickers so we need to use for now
 byte is_camera_positive_z = 1;
 /*#if defined(zox_web)

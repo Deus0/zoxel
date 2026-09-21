@@ -66,15 +66,10 @@ zox_sys2(KeyboardCancelMenuSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(DeviceDisabled);
     zox_sys_in(Keyboard);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DeviceDisabled, disabled);
         zox_sys_i(Keyboard, keyboard);
-        if (disabled->value) {
-            continue;
-        }
         entity player = zox_get_parent(world, e);
         entity target = 0;
         /*entity target = zox_has(player, EntityTarget) ? zox_getv(player, EntityTarget) : 0;
@@ -87,10 +82,9 @@ zox_sys2(KeyboardCancelMenuSystem) {
             while (zox_children_next(it)) {
                 for (int j = 0; j < it.count; j++) {
                     entity device = it.entities[j];
-                    if (!zox_has(device, Device)) {
-                        continue;
-                    }
-                    if (zox_getv(device, DeviceDisabled)) {
+                    if (!zox_has(device, Device) ||
+                        zox_has(device, Disabled))
+                    {
                         continue;
                     }
                     if (zox_has(device, EntityTarget)) {

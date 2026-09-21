@@ -14,9 +14,9 @@ void zox_systems_sdl_inputs(ecs* world) {
     zox_system_1(
         MouseConstrainSystem,
         zoxp_inputs_extract,
-        [in] inputs.DeviceDisabled,
         [in] inputs.MouseLock,
-        [none] inputs.Mouse
+        [none] inputs.Mouse,
+        [none] !core.Disabled,
     );
     zox_system_1(
         KeyboardExtractSystem,

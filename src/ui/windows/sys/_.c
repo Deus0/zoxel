@@ -39,9 +39,9 @@ void zox_systems_windows(ecs* world) {
     zox_system(
         KeyboardCancelMenuSystem,
         zoxp_update,
-        [in] inputs.DeviceDisabled,
         [in] inputs.Keyboard,
-        [none] inputs.Device
+        [none] inputs.Device,
+        [none] !core.Disabled,
     );
     zox_system(
         CanvasBoundsSystem,

@@ -4,18 +4,16 @@ zox_sys2(ElementNavigationSystem) {
     init_delta_time();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(DeviceDisabled);
     zox_sys_out(NavigatorState);
     zox_sys_out(NavigatorTimer);
     zox_sys_out(EntityTarget);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DeviceDisabled, disabled);
         zox_sys_o(EntityTarget, current);
         zox_sys_o(NavigatorState, state);
         zox_sys_o(NavigatorTimer, timer);
         // Navigation needs a current selection
-        if (disabled->value || !zox_valid(current->value)) {
+        if (!zox_valid(current->value)) {
             continue;
         }
         entity player = zox_get_parent(world, e);
