@@ -85,7 +85,6 @@ entity spawn_datagrid(
                 zox_setv(spawn.z, DataLink, dat);
                 zox_add(spawn.z, DataDirty);
             }*/
-
             if (icon) {
                 zox_add(icon, DataUI);
                 zox_add(icon, SlotUser);
@@ -96,7 +95,7 @@ entity spawn_datagrid(
                 zox_add(text, DataUI);
                 zox_add(text, SlotUser);
                 zox_add(text, DataDirty);
-                zox_setv(icon, DataLink, dat);
+                zox_setv(text, DataLink, dat);
             }
             // set_frame_texture_from_data(world, spawn.x, spawn.y, dat);
             if (active_states) {

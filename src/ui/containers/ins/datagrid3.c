@@ -115,15 +115,15 @@ entity spawn_datagrid_slots2(
             if (icon) {
                 zox_add(icon, DataUI);
                 zox_add(icon, SlotUser);
-                zox_link(world, icon, SlotLink, slot);
-                zox_setv(icon, DataLink, dat);
                 zox_add(icon, DataDirty);
+                zox_setv(icon, DataLink, dat);
+                zox_link(world, icon, SlotLink, slot);
             }
             if (text) {
                 zox_add(text, DataUI);
                 zox_add(text, SlotUser);
-                zox_link(world, text, SlotLink, slot);
                 zox_add(text, DataDirty);
+                zox_link(world, text, SlotLink, slot);
             }
             if (active_states) {
                 if (array_index == selected) {
