@@ -1,22 +1,4 @@
-entity get_lodded_model(
-    ecs* world,
-    entity e,
-    byte depth)
-{
-    if (!zox_valid(e) ||
-        !zox_has(e, ModelLods) ||
-        !zox_has(e, MaxRenderDepth))
-    {
-        zox_loge("Item has Invalid Model [%s]", zox_get_name(e));
-        return 0;
-    }
-    byte mdepth = zox_getv(e, MaxRenderDepth);
-    if (depth > mdepth) {
-        depth = mdepth;
-    }
-    zox_geter(e, ModelLods, mlods);
-    return mlods->value[depth];
-}
+
 
 // NOTE: Something disposes of Model when Realm Dies
 //  - We clone the model here otherwise it crashes on second Realm spawn (reload game)
@@ -34,7 +16,12 @@ entity spawn_realm_model_item_filename(
         zox_log("Model [%s] Not Found", vox_name);
         return 0;
     }
-    if (!zox_has(model_base, MaxRenderDepth)) {
+    byte model_depth = zox_getv(model_base, MaxRenderDepth);
+    if (block_depth < model_depth) {
+        model_depth = block_depth;
+    }
+    entity vox = get_max_model_mesh(world, model_base);
+    /*if (!zox_has(model_base, MaxRenderDepth)) {
         zox_log("Model [%s] has no MaxRenderDepth", vox_name);
         return 0;
     }
@@ -45,7 +32,7 @@ entity spawn_realm_model_item_filename(
     entity vox = get_lodded_model(
         world,
         model_base,
-        model_depth);
+        model_depth);*/
     if (!zox_valid(vox)) {
         zox_log("Model [%s] has no Vox Model", vox_name);
         return 0;

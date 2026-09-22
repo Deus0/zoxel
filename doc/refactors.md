@@ -96,6 +96,7 @@ UIs
     
 ## Remove old links
 	-x SlotLink
+	- ModelLink
 	- ModelLinks (half done)
 	- DataLink
 	- SkeletonLink
@@ -103,7 +104,6 @@ UIs
 	- ElementLink
 	- DeviceLink
 	- ZeviceLink
-	- ModelLink
 	- PlayerLinks
 	- NoteLinks
 	- UIHolderLink
@@ -123,12 +123,12 @@ UIs
 	- VirtualZeviceLink
 	- SpeakerLinks
 	- EntityLinks
+	- Character2DLink
 	- CharacterLinks
 	- BlockLink
 	- BlockLinks
 	- BiomeLinks
 	- CameraFollowLink
-	- Character2DLink
 	- CloneVoxLink
 	- ChunkPrefabLink
 	- ChunkMeshPrefabLink

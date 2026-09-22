@@ -7,14 +7,11 @@ entity spawn_prefab_character3(
     zox_prefab_name("character3");
     zox_add(e, Character);
     zox_add(e, Character3);
-#ifdef zox_non_fragment_parent
-    // zox_add(e, EcsParent);
-#endif
     // generation
     zox_setv(e, Seed, 0);
     // name
     zox_setv(e, ZoxName, 0);
-    zox_setv(e, GenerateName, 1);
+    // zox_setv(e, GenerateName, 1);
     // In Terrain
     zox_add(e, LinkChunk);
     zox_setv(e, ChunkLink, 0);

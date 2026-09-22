@@ -1,15 +1,14 @@
 # Todo
 
+- GiveAllQuests cheat function
+- Goal: Give 20 xp for handing in quest
+- remove marker when quest is completed
+- tag our humanoid with 'QuestGiver' so only they can handout quests
 - link our data / slot to the ui frame
     - icons/texts will just grab parent data links
 
 - for our tests, just link to current inspector if its opened
 	- no need to spawn it everywhere
--x Set a NextNodeLink on NodeRun
--x Our conditional events will just set that and trigger end
-	- if no next linked, it just picks first, as is the current behaviour
-
--x test for mesh clone of character
 - test for mesh clone of models under realm
     - pick random ones
 - test for spawning all models under realm

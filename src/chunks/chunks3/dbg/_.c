@@ -1,4 +1,4 @@
-extern entity spawn_inspector(ecs*, entity, entity, entity);
+// extern entity spawn_inspector(ecs*, entity, entity, entity);
 
 #include "label.c"
 #include "memory.c"

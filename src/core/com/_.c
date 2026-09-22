@@ -11,6 +11,13 @@ zox_tag(PreInitialize);
 zox_tag(Initialize);
 zox_tag(Dirty);
 zox_tag(Update);
+// Basic node states
+zox_tag(TriggerBegin);
+zox_tag(Begin);
+zox_tag(TriggerEnd);
+zox_tag(End);
+zox_tag(TriggerExit);
+zox_tag(Exit);
 // zoxc_byte(Active);
 zoxc_double(DeactivateDelay);
 zoxc_byte(GenericEvent);
@@ -66,6 +73,14 @@ void zox_components_core(ecs* world) {
     zoxd_tag_event(PreInitialize);
     zoxd_tag_event(Dirty);
     zoxd_tag_event(Update);
+    // Basic node states
+    zoxd_tag_event(TriggerBegin);
+    zoxd_tag_event(Begin);
+    zoxd_tag_event(TriggerEnd);
+    zoxd_tag_event(End);
+    zoxd_tag_event(TriggerExit);
+    zoxd_tag_event(Exit);
+    // Events
     zoxd(InitializeEvent);
     zoxd_inherited(InitializeEvent);
     // Data

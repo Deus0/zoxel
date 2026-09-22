@@ -121,6 +121,7 @@ void zox_tst_render_texture(ecs *world, ClickEventData data) {
             }
         }
     }
+    inspect_entity(world, ui);
     // zox_log("Spawned [dbg_render_texture]");
     spawn_sound_from_file_index(world, prefab_sound, 0);
     // spawn_inspector(world, canvas, player, dbg_render_texture);

@@ -9,7 +9,6 @@ void zox_tst_spawn_character3_npc(
     ecs *world,
     ClickEventData data)
 {
-    byte dbg_inspector = 0;
     if (zox_valid(zox_tst_character3_npc)) {
         zox_log("Cleaning Test [zox_tst_character3_npc]");
         zox_delete(zox_tst_character3_npc);
@@ -59,14 +58,7 @@ void zox_tst_spawn_character3_npc(
         0,
         sposition,
         srotation,
-        NULL);
+        "minion");
     zox_tst_character3_npc = e;
-    if (dbg_inspector) {
-        entity canvas = zox_get_link(world, player, CanvasLink);
-        spawn_inspector(
-            world,
-            canvas,
-            player,
-            e);
-    }
+    inspect_entity(world, e);
 }

@@ -67,14 +67,13 @@ void zox_systems_textures(ecs *world) {
         TilemapGenerationSystem,
         zoxp_update,
         [in] textures.TilemapSize,
-        // [in] textures.TextureLinks,
         [out] textures.GenerateTexture,
         [out] rendering.TextureSize,
         [out] textures.TextureData,
         [none] textures.Tilemap
     );
     zox_system_1(
-        TextureRgbUploadSystem,
+        texture_rgb_upload_system,
         zoxp_gpu_upload,
         [in] textures.TextureData,
         [in] rendering.TextureSize,
@@ -84,7 +83,7 @@ void zox_systems_textures(ecs *world) {
         [none] !core.Initialize,
     );
     zox_system_1(
-        TextureRgbaUploadSystem,
+        texture_rgba_upload_system,
         zoxp_gpu_upload,
         [in] textures.TextureData,
         [in] rendering.TextureSize,

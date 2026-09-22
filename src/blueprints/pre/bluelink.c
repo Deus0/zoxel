@@ -5,8 +5,8 @@ entity spawn_prefab_bluelink(ecs *world, entity prefab) {
     return e;
 }
 
-entity spawn_bluelink(ecs *world, entity prefab, entity e1, entity e2) {
+/*entity spawn_bluelink(ecs *world, entity prefab, entity e1, entity e2) {
     entity e = spawn_node_link(world, prefab, e1, e2);
     zox_name("bluelink");
     return e;
-}
+}*/

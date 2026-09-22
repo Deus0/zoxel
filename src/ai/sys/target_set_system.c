@@ -5,7 +5,7 @@ zox_sys2(ThreatPositionSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_o(ThreatPosition, attacker_position);
-        entity attacker = zox_get_link(world, e, LastDamager);
+        entity attacker = zox_get_link(world, e, AttackerLink);
         if (!zox_valid(attacker)) {
             continue;
         }

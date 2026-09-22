@@ -1,7 +1,5 @@
  entity zox_dbg_canvas;
 
-extern entity spawn_inspector(ecs*, entity, entity, entity);
-
 // TODO: Refactor CanvasLink and just scan for root canvas
 // TODO: Use ecs pair here too for canvaslinks
 // DONE: Remove this and use new parent system for rendering / transform
@@ -58,4 +56,5 @@ void zox_dbg_spawn_canvas(ecs* world, ClickEventData data) {
         default_outline_color_icon,
         default_fill_color_icon);
     zox_set(element2, Layer, { 2 });
+    inspect_entity(world, canvas);
 }

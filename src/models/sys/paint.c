@@ -37,17 +37,13 @@ void process_node_model_paint(ecs* world, entity node, entity vox, lint seed, by
 zox_sys2(PaintModelNodeSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(NodeBegin);
     zox_sys_in(ModelLink);
     zox_sys_in(ModelSize);
-    zox_sys_out(NodeEnd);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(NodeBegin, state);
         zox_sys_i(ModelLink, model);
         zox_sys_i(ModelSize, bounds);
-        zox_sys_o(NodeEnd, end);
-        if (state->value != zox_dirty_active || !zox_valid(model->value)) {
+        if (!zox_valid(model->value)) {
             continue;
         }
         entity node = zox_get_link(world, e, CurrentNodeLink);
@@ -75,11 +71,17 @@ zox_sys2(PaintModelNodeSystem) {
             zox_geter(model->value, ModelLods, models);
             for (int j = 0; j < model_lods_max_length; j++) {
                 entity v = models->value[j];
-                process_node_model_paint(world, node, v, seed->value, position, size);
+                process_node_model_paint(
+                    world,
+                    node,
+                    v,
+                    seed->value,
+                    position,
+                    size);
             }
         }  else {
             zox_logw("Node Process Entity does not have ModelLods");
         }
-        end->value = zox_dirty_trigger;
+        zox_add(e, TriggerEnd);
     }
 } zox_sys_end(PaintModelNodeSystem);

@@ -34,5 +34,5 @@ void new_link_single_node(ecs* world, entity e, entity e2) {
 
 // Used for conditional nodes atm
 void delayed_node_end(ecs* world, entity node) {
-    zox_setv(node, NodeEnd, zox_dirty_trigger);
+    zox_add(node, TriggerEnd);
 }

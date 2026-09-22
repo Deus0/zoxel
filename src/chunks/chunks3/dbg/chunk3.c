@@ -7,7 +7,6 @@ entity spawn_test_vox_at(
     float4 rotation,
     float2 scales)
 {
-    // byte dbg_inspector = 0;
     float distance = frand_range(2.6f, 3.4f);
     float3 spawn_position = move_along_direction(
         position,
@@ -57,8 +56,7 @@ entity spawn_test_vox(
 
 entity zox_dbg_spawn_chunk3(
     ecs* world,
-    entity player2,
-    byte dbg_inspector)
+    entity player2)
 {
     if (zox_valid(dbg_chunk3)) {
         zox_log("Deleting Test: Spawn [Chunk3]");
@@ -71,14 +69,7 @@ entity zox_dbg_spawn_chunk3(
         dbg_player;
     entity e = spawn_test_vox(world, player);
     zox_set_unique_name(e, "dbg_chunk3");
-    if (dbg_inspector) {
-        entity canvas = zox_get_link(world, player, CanvasLink);
-        spawn_inspector(
-            world,
-            canvas,
-            player,
-            e);
-    }
+    inspect_entity(world, e);
     dbg_chunk3 = e;
     return e;
 }
@@ -88,6 +79,5 @@ void zox_dbg_spawn_chunk3_button(
     ClickEventData data)
 {
     entity player = data.clicker;
-    byte dbg_inspector = 0;
-    zox_dbg_spawn_chunk3(world, player, dbg_inspector);
+    zox_dbg_spawn_chunk3(world, player);
 }

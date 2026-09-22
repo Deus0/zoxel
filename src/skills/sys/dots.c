@@ -1,8 +1,9 @@
 // DotsSystem - skill applies damage to a users health
-zox_sys2(DotsSystem) {
+void dots_system(iter* it) {
     // const float damage_rate = 1.0f; // add this property to dot entity
     // byte dbg_log = 0;
     init_delta_time();
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SkillDamage);
@@ -66,4 +67,5 @@ zox_sys2(DotsSystem) {
         // rememer last to give xp - wait this tick rate - warlocks will always get xp lmao
         combat_on_hit(world, defender, attacker);
     }
-} zox_sys_end(DotsSystem);
+    zox_sys_on_end();
+} zoxd_system(dots_system);

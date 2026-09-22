@@ -8,8 +8,8 @@ entity spawn_process_dialogue(
     zox_instance(prefab);
     zox_name("dialogue_process");
     // Start the run!
-    zox_setv(e, NodeStartLink, node);
-    zox_setv(e, NodetreeBegin, zox_dirty_trigger);
+    zox_link(world, e, NodeLink, node);
+    // zox_setv(e, NodetreeBegin, zox_dirty_trigger);
     if (zox_valid(speaker_a) && zox_valid(speaker_b)) {
         SpeakerLinks speakers = (SpeakerLinks) { 0 };
         speakers.value[0] = speaker_a;

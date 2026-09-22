@@ -2,7 +2,6 @@
 // Set Dead to 1
 void pre_death_system(iter* it) {
     byte dbg_log = 0;
-    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(StatValue);
@@ -27,12 +26,10 @@ void pre_death_system(iter* it) {
                 zox_getn(user));
         }
     }
-    zox_sys_on_end();
 } zoxd_system(pre_death_system);
 
 void death_system(iter* it) {
     byte dbg_log = 0;
-    zox_sys_on_begin();
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
@@ -46,16 +43,13 @@ void death_system(iter* it) {
                 zox_sys_e_name);
         }
     }
-    zox_sys_on_end();
 } zoxd_system(death_system);
 
 void post_death_system(iter* it) {
-    zox_sys_on_begin();
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_remove(e, DeathDirty);
     }
-    zox_sys_on_end();
 } zoxd_system(post_death_system);
 

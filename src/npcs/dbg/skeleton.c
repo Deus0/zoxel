@@ -4,7 +4,6 @@ void zox_tst_spawn_character3_npc_skeleton(
     ecs *world,
     ClickEventData data)
 {
-    byte dbg_inspector = 1;
     if (zox_valid(zox_tst_character3_npc_skeleton)) {
         zox_log("Cleaning Test [zox_tst_character3_npc_skeleton]");
         zox_delete(zox_tst_character3_npc_skeleton);
@@ -50,8 +49,5 @@ void zox_tst_spawn_character3_npc_skeleton(
         srotation,
         "Testyman");
     zox_tst_character3_npc_skeleton = e;
-    if (dbg_inspector) {
-        entity canvas = zox_get_link(world, player, CanvasLink);
-        spawn_inspector(world, canvas, player, e);
-    }
+    inspect_entity(world, e);
 }

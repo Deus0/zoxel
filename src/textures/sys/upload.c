@@ -1,7 +1,11 @@
-zox_sys2(TextureRgbaUploadSystem) {
+void texture_rgba_upload_system(iter* it) {
     byte dbg_log = 0;
-    byte max_process = !zox_disable_process_skips ? texture_upload_rate : 0;
+    byte max_process =
+        !zox_disable_process_skips ?
+            texture_upload_rate :
+            0;
     byte dbg_save = 0;
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextureData);
@@ -54,12 +58,17 @@ zox_sys2(TextureRgbaUploadSystem) {
         zox_remove(e, TextureDirty);
         zox_sys_increment();
     }
-} zox_sys_end(TextureRgbaUploadSystem);
+    zox_sys_on_end();
+} zoxd_system(texture_rgba_upload_system);
 
 // TextureRGB's
-zox_sys2(TextureRgbUploadSystem) {
+void texture_rgb_upload_system(iter* it) {
     byte dbg_log = 0;
-    byte max_process = !zox_disable_process_skips ? texture_upload_rate : 0;
+    byte max_process =
+        !zox_disable_process_skips ?
+            texture_upload_rate :
+            0;
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextureData);
@@ -97,5 +106,6 @@ zox_sys2(TextureRgbUploadSystem) {
         }
         zox_remove(e, TextureDirty);
         zox_sys_increment();
-}
-} zox_sys_end(TextureRgbUploadSystem);
+    }
+    zox_sys_on_end();
+} zoxd_system(texture_rgb_upload_system);

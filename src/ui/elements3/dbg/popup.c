@@ -1,8 +1,7 @@
-extern entity spawn_inspector(ecs*, entity, entity, entity);
+extern void inspect_entity(ecs*, entity);
 entity dbg_popup3;
 
 void zox_dbg_spawn_popup3(ecs *world, ClickEventData data) {
-    byte dbg_inspector = 0;
     if (zox_valid(dbg_popup3)) {
         // delete?
     }
@@ -28,13 +27,5 @@ void zox_dbg_spawn_popup3(ecs *world, ClickEventData data) {
         scale,
         lifetime);
     dbg_popup3 = e;
-    if (dbg_inspector) {
-        entity player = dbg_player;
-        entity canvas = zox_get_link(world, player, CanvasLink);
-        spawn_inspector(
-            world,
-            canvas,
-            player,
-            e);
-    }
+    inspect_entity(world, e);
 }

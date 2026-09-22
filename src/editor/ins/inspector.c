@@ -40,5 +40,6 @@ entity spawn_inspector(
     zox_setv(header, OutlineColor, editor_header_outline);
     zox_setv(header, ElementFillColor, editor_header_fill);
     zox_setv(header, ElementOutlineColor, editor_header_outline);
+    local_inspector = window;
     return window;
 }

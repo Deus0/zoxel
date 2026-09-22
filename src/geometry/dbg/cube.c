@@ -2,7 +2,7 @@ entity dbg_cube;
 entity dbg_cube_inspector;
 
 void zox_dbg_spawn_cube(ecs *world) {
-    byte dbg_inspector = 1;
+    // byte dbg_inspector = 1;
     float distance = 1;
     float scale = 0.25f;
     if (zox_valid(dbg_cube_inspector)) {
@@ -29,10 +29,6 @@ void zox_dbg_spawn_cube(ecs *world) {
         spawn_position,
         scale);
     add_eternal_euler(world, cube, (float3) { 24, 24, 0 });
-    if (dbg_inspector) {
-        entity player = dbg_player;
-        entity canvas = zox_get_link(world, player, CanvasLink);
-        dbg_cube_inspector = spawn_inspector(world, canvas, player, cube);
-    }
     dbg_cube = cube;
+    inspect_entity(world, cube);
 }

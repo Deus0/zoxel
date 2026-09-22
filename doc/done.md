@@ -1,5 +1,9 @@
 # Done
 	
+-x Set a NextNodeLink on NodeRun
+-x Our conditional events will just set that and trigger end
+	- if no next linked, it just picks first, as is the current behaviour
+-x test for mesh clone of character
 ## Observers
 -x We can add a On Tag observer for dirty tags
 -x we can use filter ecs on add for the tag

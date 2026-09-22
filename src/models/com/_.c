@@ -2,6 +2,7 @@ zox_tag(Model);
 zox_tag(ModelGroup);
 zox_tag(ModelCharacter);
 zox_tag(BakeModel);
+zox_tag(ModelRun);
 zoxc_byte3(ModelSize);
 zoxc_float6(ModelRatio);
 zoxc_byte(EyeRidge);
@@ -22,6 +23,7 @@ void zox_components_models(ecs* world) {
     zoxd_tag(ModelGroup);
     zoxd_tag(ModelCharacter);
     zoxd_tag(BakeModel);
+    zoxd_tag(ModelRun);
     zoxd_byte3(ModelSize);
     zoxd_float6(ModelRatio);
     zoxd_byte(EyeRidge);

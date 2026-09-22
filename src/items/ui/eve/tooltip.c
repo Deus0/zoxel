@@ -1,6 +1,6 @@
 // Tooltip Event for item icons
 void item_icon_tooltip_event(iter* it) {
-    byte dbg_log = 1;
+    // byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DataLink);

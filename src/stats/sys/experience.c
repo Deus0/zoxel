@@ -5,7 +5,7 @@ zox_sys2(ExperienceSystem) {
     // zox_sys_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        entity attacker = zox_get_link(world, e, LastDamager);
+        entity attacker = zox_get_link(world, e, AttackerLink);
         // proces if i die
         /*if (dead->value != zox_dirty_active) {
             continue;

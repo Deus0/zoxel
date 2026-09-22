@@ -28,7 +28,7 @@ void on_click_dialogue_button(
             zox_getn(process));
         return;
     }
-    zox_setv(process, NodeEnd, zox_dirty_trigger);
+    zox_add(process, TriggerEnd);
 }
 
 void on_closed_dialogue_ui(ecs* world, ClickEventData data) {
@@ -49,5 +49,5 @@ void on_closed_dialogue_ui(ecs* world, ClickEventData data) {
         return;
     }
     // exit tree when closed window
-    zox_setv(runner, NodetreeEnd, zox_dirty_trigger);
+    zox_add(runner, TriggerExit);
 }

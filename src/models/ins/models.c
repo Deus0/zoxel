@@ -72,7 +72,10 @@ entity spawn_blueprint_models(
         zox_set_unique_name(model, name);
         add_to_ModelLinks(&variants, model);
         // NOTE: Kicks off model generaiton using the blueprint
-        spawn_process_model(world, prefab_process_model, nodegraph, model);
+        spawn_process_model(
+            world,
+            nodegraph,
+            model);
     }
     zox_set_ptr(model_group, ModelLinks, variants);
     return model_group;

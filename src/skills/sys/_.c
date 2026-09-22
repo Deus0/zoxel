@@ -14,7 +14,7 @@ void zox_systems_skills(ecs *world) {
         [none] skills.SkillToggleable
     );
     zox_system(
-        DotsSystem,
+        dots_system,
         zoxp_update,
         [in] skills.SkillDamage,
         [none] skills.Dot

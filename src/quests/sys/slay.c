@@ -1,4 +1,4 @@
-void quest_on_slay(
+/*void quest_on_slay(
     ecs* world,
     entity e,
     entity killer,
@@ -34,7 +34,7 @@ zox_sys2(SlaySystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         // if enemy invalid or dead, continue
-        entity attacker = zox_get_link(world, e, LastDamager);
+        entity attacker = zox_get_link(world, e, AttackerLink);
         if (!zox_valid(attacker) ||
             zox_has(attacker, Dead))
         {
@@ -58,4 +58,4 @@ zox_sys2(SlaySystem) {
                 e);
         }
     }
-} zox_sys_end(SlaySystem);
+} zox_sys_end(SlaySystem);*/

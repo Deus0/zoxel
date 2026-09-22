@@ -1,13 +1,24 @@
 # Bugs
 
 ## Next
-- Main Menu music missing
+- noticed the item label didnt reduce when placing item
+- Add a sphere collider under npc
+	- detect nearby characters
+	- event useful when spawning/despawning name labels or markers
+- healthbar is wrong orderin stats panel
+- Add ? and ! markers on the map
+	- ? new quest
+	- ! hand in quest
+- Add x marker on map for enemies
+- Quest tracker ui at top right
+- top hat doesn't scale up when imported to depth of 5!
 - cant talk / raycast npcs when no action selected
+- Sometimes the npcs labels dont spawn - name labels
+- Main Menu music missing
 - Terrain Chunk faces missing when streaming
 	- update neighbors directly from the queue
 	- just rebuild their mesh, no need for voxelnodeupdate etc
-- Map UI doesnt initialize properly
-- top hat doesn't scale up when imported to depth of 5!
+-o Map UI doesnt initialize properly
 - doesnt spawn new chunk mesh ... again
 	- test by building upwards generating, the chunk
 - Fall through map

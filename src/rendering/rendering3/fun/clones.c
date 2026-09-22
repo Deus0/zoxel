@@ -2,6 +2,12 @@ entity spawn_mesh3_clone(
     ecs* world,
     entity clonee)
 {
+    if (!zox_valid(clonee) ||
+        !zox_has(clonee, Mesh)) {
+        zox_loge("[spawn_mesh3_clone] Invalid clonee [%s]",
+            zox_getn(clonee));
+        return 0;
+    }
     // get mesh data
     const MeshIndicies* source_indicies = zox_get(clonee, MeshIndicies);
     const MeshVertices* source_verts = zox_get(clonee, MeshVertices);

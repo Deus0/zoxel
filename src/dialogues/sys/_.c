@@ -8,9 +8,9 @@ void zox_systems_dialogues(ecs* world) {
     zox_system(
         DialogueSpeechSystem,
         zoxp_update,
-        [in] nodes.NodeBegin,
         [none] nodes.NodeRun,
-        [none] dialogues.DialogueProcess
+        [none] dialogues.DialogueProcess,
+        [none] core.Begin,
     );
     zox_system(
         AnimateTextSystem,

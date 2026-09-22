@@ -4,21 +4,14 @@ zox_sys2(ModelSizeNodeSystem) {
     ushort inner_seed_shift = 39393;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(NodeBegin);
     zox_sys_in(ModelLink);
     zox_sys_out(Seed);
     zox_sys_out(ModelSize);
-    zox_sys_out(NodeEnd);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(NodeBegin, state);
         zox_sys_i(ModelLink, model);
         zox_sys_o(Seed, seed);
         zox_sys_o(ModelSize, size);
-        zox_sys_o(NodeEnd, end);
-        if (state->value != zox_dirty_active) {
-            continue;
-        }
         entity node = zox_get_link(world, e, CurrentNodeLink);
         if (!node) {
             continue;
@@ -54,7 +47,7 @@ zox_sys2(ModelSizeNodeSystem) {
         seed->value += inner_seed_shift;
         float3 ratio = (float3) { x, y, z };
         size->value = get_scaled_size(nodegraph_max_depth, ratio);
-        end->value = zox_dirty_trigger;
+        zox_add(e, TriggerEnd);
         if (dbg_log) {
             zox_log("New Size of Model [%ix%ix%i]", size->value.x, size->value.y, size->value.z);
         }

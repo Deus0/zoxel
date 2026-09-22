@@ -9,7 +9,6 @@ entity spawn_dbg_chunk3_textured(
         // zox_log("Realm invalid, cannot spawn chunk terrain");
         // return 0;
     }
-    // byte dbg_inspector = 0;
     lint seed = 666;
     entity camera = zox_get_link(world, player, CameraLink);
     if (!zox_valid(camera)) {
@@ -63,7 +62,6 @@ void zox_dbg_spawn_chunk3_textured(
     ecs* world,
     ClickEventData data)
 {
-    byte dbg_inspector = 1;
     entity player = data.clicker;
     if (zox_valid(dbg_chunk3_textured)) {
         zox_log("+ Deleting [Chunk3 Textured]");
@@ -75,16 +73,6 @@ void zox_dbg_spawn_chunk3_textured(
         world,
         player);
     zox_set_unique_name(e, "dbg_chunk3");
-    if (dbg_inspector) {
-        entity canvas = zox_get_link(
-            world,
-            player,
-            CanvasLink);
-        spawn_inspector(
-            world,
-            canvas,
-            player,
-            e);
-    }
+    inspect_entity(world, e);
     dbg_chunk3_textured = e;
 }

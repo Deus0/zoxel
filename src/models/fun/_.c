@@ -96,3 +96,51 @@ void process_arguments_voxes(ecs *world, char* args[], int count) {
         }
     }
 }
+
+entity get_lodded_model(
+    ecs* world,
+    entity e,
+    byte depth)
+{
+    if (!zox_valid(e)) {
+        return 0;
+    }
+    if (!zox_has(e, ModelLods) ||
+        !zox_has(e, MaxRenderDepth))
+    {
+        zox_loge("Item has Invalid Model [%s]", zox_get_name(e));
+        return 0;
+    }
+    byte mdepth = zox_getv(e, MaxRenderDepth);
+    if (depth > mdepth) {
+        depth = mdepth;
+    }
+    zox_geter(e, ModelLods, mlods);
+    return mlods->value[depth];
+}
+
+entity get_max_model_mesh(
+    ecs* world,
+    entity e)
+{
+    if (zox_has(e, ModelGroup)) {
+        // pick first model
+        e = zox_get_child_by_id(world, e, zox_id(Model));
+        if (!zox_valid(e)) {
+            return 0;
+        }
+    }
+    if (!zox_has(e, MaxRenderDepth)) {
+        zox_loge("Model [%s] has no MaxRenderDepth",
+            zox_getn(e));
+        return 0;
+    }
+    byte model_depth = zox_getv(e, MaxRenderDepth);
+    if (block_depth < model_depth) {
+        model_depth = block_depth;
+    }
+    return get_lodded_model(
+        world,
+        e,
+        model_depth);
+}

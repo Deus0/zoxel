@@ -108,9 +108,10 @@ void zox_systems_controllers3(ecs *world) {
     zox_system(
         DialogueEndSystem,
         zoxp_update,
-        [in] nodes.NodetreeEnd,
         [out] dialogues.SpeakerLinks,
-        [none] dialogues.DialogueProcess
+        [none] nodes.NodeRun,
+        [none] dialogues.DialogueProcess,
+        [none] core.Exit,
     );
     zox_system(
         WalkStateSystem,

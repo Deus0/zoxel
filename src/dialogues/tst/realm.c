@@ -9,7 +9,7 @@ void zox_tst_spawn_dialogue(ecs *world, ClickEventData data) {
         if (zox_valid(next)) {
             zox_log("Moving to Next Dialogue Leaf [%s]",
                 zox_getn(next));
-            zox_setv(test_dialogue_run, NodeEnd, zox_dirty_trigger);
+            zox_add(test_dialogue_run, TriggerEnd);
         } else {
             zox_log("Dialogue Finished, Ending.");
             zox_delete(test_dialogue_run);

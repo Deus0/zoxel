@@ -36,4 +36,5 @@ void tst_spawn_character3_particles(
         pcolor);
     zox_set_parent(world, e, character);
     zox_tst_character3_particles = e;
+    inspect_entity(world, e);
 }

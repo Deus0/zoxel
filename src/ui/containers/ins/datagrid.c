@@ -43,7 +43,8 @@ entity spawn_datagrid(
         4 * ui_scale
     };
     entity3 e2 = spawn_window(
-        world, prefab,
+        world,
+        prefab,
         prefab_grid,
         header_label,
         canvas,
@@ -75,16 +76,8 @@ entity spawn_datagrid(
                 icon_size,
                 label_font_size,
                 array_index);
-            entity frame = spawn.x;
             entity icon = spawn.y;
             entity text = spawn.z;
-            // NOTE: Atm this is what connects user data textures
-            /*zox_setv(spawn.y, DataLink, dat);
-            zox_add(spawn.y, DataDirty);
-            if (spawn.z) {
-                zox_setv(spawn.z, DataLink, dat);
-                zox_add(spawn.z, DataDirty);
-            }*/
             if (icon) {
                 zox_add(icon, DataUI);
                 zox_add(icon, SlotUser);

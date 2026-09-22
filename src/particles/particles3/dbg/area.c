@@ -29,4 +29,5 @@ void zox_dbg_spawn_particle_emitter(
         pcolor);
     zox_setv(e, Position3D, camera_position);
     big_old_particle_zone = e;
+    inspect_entity(world, e);
 }

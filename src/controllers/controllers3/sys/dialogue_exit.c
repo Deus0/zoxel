@@ -13,8 +13,8 @@ zox_sys2(DialogueExitSystem) {
         byte player_state = zox_getv(player, PlayerState);
         if (player_state == zox_player_state_dialogue_active) {
             entity process = zox_get_link(world, e, DialogueProcess);
-            zox_setv(process, NodetreeEnd, zox_dirty_trigger);
             zox_unlink(world, e, DialogueProcess, process);
+            zox_add(process, TriggerExit);
         }
     }
 } zox_sys_end(DialogueExitSystem);

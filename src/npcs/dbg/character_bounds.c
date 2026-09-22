@@ -1,6 +1,9 @@
 extern entity get_linked_terrain(ecs*, entity);
 
-void zox_dbg_toggle_gizmos_characters(ecs *world, ClickEventData data) {
+void zox_dbg_toggle_gizmos_characters(
+    ecs *world,
+    ClickEventData data)
+{
     entity terrain = local_terrain;
     if (!zox_valid(terrain)) {
         return;

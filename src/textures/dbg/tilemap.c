@@ -1,6 +1,5 @@
 extern entity local_terrain;
 extern entity prefab_element;
-extern entity spawn_inspector(ecs*, entity, entity, entity);
 extern entity spawn_element_texture(ecs*, entity, entity, int2, int2, float2, byte, entity);
 
 entity dbg_tilemap = 0;
@@ -89,4 +88,5 @@ void zox_tst_spawn_tilemap(ecs *world) {
         prefab_sound,
         0);
     dbg_tilemap = e;
+    inspect_entity(world, e);
 }

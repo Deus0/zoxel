@@ -1,12 +1,12 @@
 /*
- * +------------------------------------------------------------------+
- * | Zox Module: Textures                                             |
- * |                                                                  |
- * |  Images - Generation - Materials - IO - Texture State            |
- * |                                                                  |
- * +------------------------------------------------------------------+
+ * +------------------------------------------------------+
+ * | Zox Module: Textures                                 |
+ * |                                                      |
+ * |  Images - Generation - Materials - IO - State        |
+ * |                                                      |
+ * +------------------------------------------------------+
  */
-byte texture_upload_rate = 8;
+byte texture_upload_rate = 0; // 8;
 
 // TODO: Move font texture functions into textures
 #include "dat/_.c"

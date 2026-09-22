@@ -38,13 +38,5 @@ void zox_tst_spawn_item_block(
         position,
         item_pickup_scale);
     zox_tst_item_block = e2.x;
-    if (dbg_inspector) {
-        entity canvas = zox_get_link(world, player, CanvasLink);
-        spawn_inspector(
-            world,
-            canvas,
-            player,
-            e2.x
-        );
-    }
+    inspect_entity(world, e2.x);
 }

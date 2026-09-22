@@ -2,7 +2,7 @@ entity dbg_cube_textured;
 entity dbg_cube_textured_inspector;
 
 void zox_dbg_spawn_cube_textured(ecs *world) {
-    byte dbg_inspector = 1;
+    // byte dbg_inspector = 1;
     char* texture_name = "block_dungeon_core";
     float distance = 1;
     float scale = 0.25f;
@@ -36,10 +36,6 @@ void zox_dbg_spawn_cube_textured(ecs *world) {
         spawn_position,
         scale);
     add_eternal_euler(world, cube, (float3) { 24, 24, 0 });
-    if (dbg_inspector) {
-        entity player = dbg_player;
-        entity canvas = zox_get_link(world, player, CanvasLink);
-        dbg_cube_textured_inspector = spawn_inspector(world, canvas, player, cube);
-    }
     dbg_cube_textured = cube;
+    inspect_entity(world, cube);
 }

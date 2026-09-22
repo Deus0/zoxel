@@ -15,7 +15,6 @@ entity zox_dbg_spawn_vox_mesh_clone(
     if (!zox_valid(player)) {
         return 0;
     }
-    entity canvas = get_linked_canvas(world, player);
     entity character = get_linked_character(world, player);
     entity camera = zox_get_link(world, player, CameraLink);
     if (!zox_valid(character)) {
@@ -36,6 +35,7 @@ entity zox_dbg_spawn_vox_mesh_clone(
         mesh_clone,
         (float3) { 0, rotate_speed, 0 });
     dbg_vox_mesh_clone = mesh_clone;
+    inspect_entity(world, mesh_clone);
     return mesh_clone;
 }
 

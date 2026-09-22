@@ -4,7 +4,6 @@ void zox_tst_spawn_quest_giver_npc(
     ecs *world,
     ClickEventData data)
 {
-    byte dbg_inspector = 0;
     uint capacity = 256;
     if (zox_valid(zox_tst_quest_giver)) {
         zox_log("Cleaning Test [zox_tst_quest_giver]");
@@ -81,10 +80,7 @@ void zox_tst_spawn_quest_giver_npc(
         player_start_quest);
     // We need to link to the quest giver quest
     zox_tst_quest_giver = e;
+    inspect_entity(world, e);
     zox_log("   + Quest To Give [%s]",
         zox_getn(player_start_quest));
-    if (dbg_inspector) {
-        entity canvas = zox_get_link(world, player, CanvasLink);
-        spawn_inspector(world, canvas, player, e);
-    }
 }

@@ -16,13 +16,13 @@ entity spawn_model_soil(
         sprintf(name2, "model_%s", name);
         zox_name(name2);
     }
-    zox_set_parent(world, e, parent);
     zox_add(e, BakeModel);
     zox_setv(e, Seed, seed);
     zox_setv(e, VoxType, voxtype);
     zox_setv(e, VoxUniqueColors, 8);
     zox_setv(e, VoxColorRange, 0.34f);
     zox_setv(e, VRegions, 0);    // TODO: Remove property
+    zox_set_parent(world, e, parent);
     return e;
 }
 

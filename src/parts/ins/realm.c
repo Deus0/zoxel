@@ -89,7 +89,10 @@ entity2 spawn_realm_body_part(
         if (j == 0) {
             max_depth_vox = mlods2.value[mdepth];
         }
-        spawn_process_model(world, prefab_process_model, blueprint, model_lods);
+        spawn_process_model(
+            world,
+            blueprint,
+            model_lods);
     }
     zox_set_ptr(e, ModelLinks, models);
     // NOTE: Uses first model and highest depth one

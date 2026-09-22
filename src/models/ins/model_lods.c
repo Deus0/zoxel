@@ -34,9 +34,10 @@ entity spawn_model_lods(
     c = color_mutate(c, 40);
     entity e = zox_new();
     zox_name("model_lods");
-    zox_set_parent(world, e, parent);
+    zox_add(e, Model);
     zox_setv(e, Seed, seed);
     zox_setv(e, MaxRenderDepth, mdepth);
+    zox_set_parent(world, e, parent);
     for (byte i = 0; i <= mdepth; i++) {
         byte rdepth = i;
         short ddepth = octree_size(mdepth - rdepth);

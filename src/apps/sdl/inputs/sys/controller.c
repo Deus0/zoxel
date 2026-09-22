@@ -226,7 +226,7 @@ void gamepad_extract_system(iter* it) {
 
 // TODO: This later
 /*void gamepad_button_extract_system(iter* it) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();

@@ -2,20 +2,11 @@
 
 // TODO: Tag the node so some can auto progress
 // System handles the next node process
-zox_sys2(NextNodeSystem) {
+void next_node_system(iter* it) {
     byte dbg_log = 0;
     zox_sys_world();
-    zox_sys_begin();
-    zox_sys_in(NodeEnd);
-    zox_sys_out(NodetreeEnd);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(NodeEnd, state);
-        zox_sys_o(NodetreeEnd, complete);
-        // Process on completed single node
-        if (state->value != zox_dirty_active) {
-            continue;
-        }
         entity previous = zox_get_link(world, e, CurrentNodeLink);
         if (!previous) {
             continue;
@@ -39,7 +30,7 @@ zox_sys2(NextNodeSystem) {
         // Gets next node - First one for now
         if (next) {
             zox_link(world, e, CurrentNodeLink, next);
-            zox_setv(e, NodeBegin, zox_dirty_trigger);
+            zox_add(e, TriggerBegin);
             zox_add(e, Dirty);
             if (dbg_log) {
                 zox_log("Nodetree Progresses [%s] at [%s] to [%s]",
@@ -49,7 +40,7 @@ zox_sys2(NextNodeSystem) {
             }
         } else {
             // Finished Node Tree!
-            complete->value = zox_dirty_trigger;
+            zox_add(e, TriggerExit);
             if (dbg_log) {
                 zox_log("Nodetree End [%s] at [%s]",
                     zox_sys_e_name,
@@ -57,4 +48,4 @@ zox_sys2(NextNodeSystem) {
             }
         }
     }
-} zox_sys_end(NextNodeSystem);
+} zoxd_system(next_node_system);

@@ -21,7 +21,11 @@ void toggle_inspector(ecs *world, int32_t keycode) {
     }
 }
 
-void toggle_inspector_target(ecs* world, entity player, entity target) {
+void toggle_inspector_target(
+    ecs* world,
+    entity player,
+    entity target)
+{
     entity canvas = zox_get_link(world, player, CanvasLink);
     if (!zox_valid(target)) {
         return;
