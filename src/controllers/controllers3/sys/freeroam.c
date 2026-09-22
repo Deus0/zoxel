@@ -30,7 +30,7 @@ void attach_camera_to_character(
     }
     float3 euler = (float3) { 0, 180, 0 };
     // Initial Linking
-    zox_link(world, e, Character, character);
+    zox_link(world, e, CharacterLink, character);
     zox_link(world, character, CameraLink, e);
     // reset using head bone
     zox_remove(e, EulerOverride);
@@ -97,7 +97,7 @@ zox_sys2(FreeRoamToggleSystem) {
             }
         }
         if (is_toggle) {
-            entity character = zox_get_link(world, e, Character);
+            entity character = zox_get_link(world, e, CharacterLink);
             byte old = zox_getv(camera, CameraState);
             byte new = old;
             if (old == zox_camera_state_free) {

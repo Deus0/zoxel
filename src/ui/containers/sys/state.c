@@ -37,8 +37,7 @@ void slot_ui_update_system(iter* it) {
     }
 } zoxd_system(slot_ui_update_system);
 
-
-// slot dirty to ui
+// data dirty to ui
 void data_ui_update_system(iter* it) {
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {

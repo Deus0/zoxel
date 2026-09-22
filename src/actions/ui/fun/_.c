@@ -96,10 +96,7 @@ void set_player_action(
     entity player,
     byte index)
 {
-    entity character = zox_get_link(
-        world,
-        player,
-        Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     set_character_action(
         world,
         character,
@@ -111,10 +108,7 @@ void player_action_ui_move(
     entity player,
     sbyte direction)
 {
-    entity character = zox_get_link(
-        world,
-        player,
-        Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     if (!zox_valid(character) ||
         !zox_has(character, ActionIndex))
     {

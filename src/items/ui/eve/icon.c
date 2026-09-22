@@ -1,14 +1,12 @@
 // Tooltip Event for item icons
-void icon_label_event(iter* it) {
+void item_icon_label_event(iter* it) {
     byte dbg_log = 0;
     byte label_text_capacity = 8;
     zox_sys_world();
     zox_sys_begin();
-    //zox_sys_in(SlotLink);
     zox_sys_out(TextData);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        //zox_sys_i(SlotLink, slot);
         zox_sys_o(TextData, text);
         entity slot = zox_get_link(world, e, SlotLink);
         if (!zox_valid(slot) ||

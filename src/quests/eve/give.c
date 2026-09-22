@@ -3,13 +3,11 @@ void zox_event_give_quest(iter* it) {
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_log("zox_event_give_quest1");
         // current node
         entity node = zox_get_link(world, e, CurrentNodeLink);
         if (!node || !zox_has(node, NodeGiveQuest)) {
             continue;
         }
-        zox_log("zox_event_give_quest2");
         // increment node tree
         zox_setv(node, NodeEnd, zox_dirty_trigger);
         // get speaker of process - FirstSpeaker

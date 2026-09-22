@@ -6,7 +6,7 @@ zox_sys2(Controller2MoveSystem) {
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        entity character = zox_get_link(world, e, Character);
+        entity character = zox_get_link(world, e, CharacterLink);
         if (!zox_valid(character) || !zox_has(character, Character2D)) {
             continue;
         }

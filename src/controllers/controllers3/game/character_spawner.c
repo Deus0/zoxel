@@ -197,7 +197,7 @@ zox_sys2(PlayerBeginSystem) {
             dirty->value = zox_dirty_trigger;
             continue;
         }
-        entity old_character = zox_get_link(world, e, Character);
+        entity old_character = zox_get_link(world, e, CharacterLink);
         if (zox_valid(old_character)) {
             zox_loge("Trying to load character twice [zox_player_state_starting]");
             state->value = zox_player_state_play_trigger; // zox_player_state_play_begin;
@@ -243,7 +243,7 @@ zox_sys2(PlayerBeginSystem) {
                 continue;
             }
         }
-        zox_link(world, e, Character, character);
+        zox_link(world, e, CharacterLink, character);
         if (dbg_log) {
             zox_log("[%s] Player Character Spawned at [%fx%fx%f]",
                 is_new_game ? "New" : "Load",

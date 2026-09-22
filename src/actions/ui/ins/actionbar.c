@@ -3,14 +3,8 @@ entity spawn_menu_actions(
     ecs* world,
     entity player)
 {
-    entity canvas = zox_get_link(
-        world,
-        player,
-        CanvasLink);
-    entity character = zox_get_link(
-        world,
-        player,
-        Character);
+    entity canvas = zox_get_link(world, player, CanvasLink);
+    entity character = zox_get_link(world, player, CharacterLink);
     if (!zox_valid(canvas)) {
         zox_loge("Character not found on canvas");
         return 0;

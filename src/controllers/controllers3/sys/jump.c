@@ -14,7 +14,7 @@ zox_sys2(Player3DJumpSystem) {
         if (state->value != zox_player_state_playing) {
             continue;
         }
-        entity character = zox_get_link(world, e, Character);
+        entity character = zox_get_link(world, e, CharacterLink);
         if (!zox_valid(character) || !zox_has(character, Character3)) {
             continue;
         }

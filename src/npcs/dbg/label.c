@@ -36,7 +36,7 @@ uint debug_ui_single_npc(
     const uint size,
     uint index
 ) {
-    entity character = zox_get_link(world, player, Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     // index += snprintf(buffer + index, size - index, "NPCs [%li]\n", zox_stats_characters);
     index += snprintf(buffer + index, size - index, "NPC:\n");
     index = debug_ui_character_position(world, single_npc, buffer, size, index);

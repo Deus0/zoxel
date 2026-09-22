@@ -75,12 +75,28 @@ entity spawn_datagrid(
                 icon_size,
                 label_font_size,
                 array_index);
+            entity frame = spawn.x;
+            entity icon = spawn.y;
+            entity text = spawn.z;
             // NOTE: Atm this is what connects user data textures
-            zox_setv(spawn.y, DataLink, dat);
+            /*zox_setv(spawn.y, DataLink, dat);
             zox_add(spawn.y, DataDirty);
             if (spawn.z) {
                 zox_setv(spawn.z, DataLink, dat);
                 zox_add(spawn.z, DataDirty);
+            }*/
+
+            if (icon) {
+                zox_add(icon, DataUI);
+                zox_add(icon, SlotUser);
+                zox_add(icon, DataDirty);
+                zox_setv(icon, DataLink, dat);
+            }
+            if (text) {
+                zox_add(text, DataUI);
+                zox_add(text, SlotUser);
+                zox_add(text, DataDirty);
+                zox_setv(icon, DataLink, dat);
             }
             // set_frame_texture_from_data(world, spawn.x, spawn.y, dat);
             if (active_states) {

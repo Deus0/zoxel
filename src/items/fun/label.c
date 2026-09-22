@@ -9,7 +9,7 @@ uint get_label_player_items(
         index += snprintf(buffer + index, size - index, "! invalid player\n");
         return index;
     }
-    entity character = zox_get_link(world, player, Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     if (!zox_valid(character)) {
         index += snprintf(
             buffer + index,

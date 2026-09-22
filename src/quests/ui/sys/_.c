@@ -2,7 +2,7 @@
 #include "tooltip.c"
 
 void zox_systems_quests_ui(ecs* world) {
-    zox_system(
+    /*zox_system(
         QuestIconTooltipSystem,
         zoxp_update,
         [in] interactions.SelectState,
@@ -15,5 +15,5 @@ void zox_systems_quests_ui(ecs* world) {
         [in] slots.DataLink,
         [out] texts.TextData,
         [none] elements2.Label
-    );
+    );*/
 }

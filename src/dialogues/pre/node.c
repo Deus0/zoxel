@@ -1,4 +1,4 @@
-entity spawn_prefab_dialogue_node(
+entity spawn_prefab_node_speech(
     ecs* world,
     entity prefab)
 {

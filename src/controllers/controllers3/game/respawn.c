@@ -13,7 +13,7 @@ zox_sys2(Player3RespawnSystem) {
         zox_sys_o(PlayerStateDirty, dirty);
         zox_sys_o(PlayerState, state);
         // Playing happily!
-        entity character = zox_get_link(world, e, Character);
+        entity character = zox_get_link(world, e, CharacterLink);
         if (state->value == zox_player_state_playing || state->value == zox_player_state_paused) {
             byte is_character_dead =
                 zox_valid(character) &&
@@ -76,7 +76,7 @@ zox_sys2(Player3RespawnSystem) {
                     zox_loge("Respawn character failed");
                     continue;
                 }
-                zox_link(world, e, Character, character);
+                zox_link(world, e, CharacterLink, character);
                 spawn_arrow3D(
                     world,
                     spawned,

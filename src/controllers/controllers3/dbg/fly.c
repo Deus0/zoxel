@@ -6,7 +6,7 @@ void toggle_flymode(ecs *world, int32_t keycode) {
     if (!zox_valid(player)) {
         return;
     }
-    entity character = zox_get_link(world, player, Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     if (!zox_valid(character)) {
         return;
     }

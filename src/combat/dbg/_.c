@@ -3,7 +3,7 @@ void zox_tst_player_character_death(
     ClickEventData data)
 {
     entity player = dbg_player;
-    entity character = zox_get_link(world, player, Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     if (!zox_valid(character)) {
         zox_log("No player character to kill.");
         return;

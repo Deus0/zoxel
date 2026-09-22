@@ -66,7 +66,7 @@ void toggle_inspector_player(ecs* world, int32_t keycode) {
     if (!zox_valid(player)) {
         return;
     }
-    entity character = zox_get_link(world, player, Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     entity target = keycode == zox_key_i ?
         player :
         zox_valid(character) ?

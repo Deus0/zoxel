@@ -6,12 +6,10 @@ void place_camera_head_system(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SkeletonDirty);
-    // zox_sys_in(HeadBoneLink);
     zox_sys_in(BlockScale);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(SkeletonDirty, state);
-        // zox_sys_i(HeadBoneLink, head);
         zox_sys_i(BlockScale, bscale);
         if (state->value != zox_dirty_active) {
             continue;

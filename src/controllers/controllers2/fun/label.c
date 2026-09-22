@@ -5,7 +5,7 @@ int get_label_player_character2D(
     int buffer_size,
     int buffer_index)
 {
-    entity character = zox_get_link(world, player, Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     if (!zox_valid(character) || !zox_has(character, Position2)) return buffer_index;
     const float2 position2 = zox_getv(character, Position2);
     buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "player [%ix%i]\n", (int) position2.x, (int) position2.y);
@@ -23,7 +23,7 @@ uint get_label_character2_player(
         index += snprintf(buffer + index, size - index, "! invalid player\n");
         return index;
     }
-    entity character = zox_get_link(world, player, Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     if (!zox_valid(character)) {
         index += snprintf(buffer + index, size - index, "[%s] has no character\n", zox_get_name(player));
         return index;

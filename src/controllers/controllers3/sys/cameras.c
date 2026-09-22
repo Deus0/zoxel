@@ -22,7 +22,7 @@ zox_sys2(PlayerToggleCameraSystem) {
             continue;
         }
         entity camera = zox_get_link(world, e, CameraLink);
-        // entity character = zox_get_link(world, e, Character);
+        // entity character = zox_get_link(world, e, CharacterLink);
         if (!zox_valid(camera))
             // !zox_valid(character))
         {

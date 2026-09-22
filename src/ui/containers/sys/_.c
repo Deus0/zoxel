@@ -6,12 +6,12 @@
 
 void zox_systems_ui_containers(ecs* world) {
     zox_system(
-        DataFrameClickSystem,
+        DataUIClickSystem,
         zoxp_update,
         [in] interactions.ClickState,
         [out] slots.DataLink,
         [none] slots.SlotUser,
-        [none] ui_containers.DataFrame
+        [none] ui_containers.DataUI,
     );
     zox_system(
         SlotDataCleanSystem,
@@ -59,6 +59,7 @@ void zox_systems_ui_containers(ecs* world) {
     zox_system(
         data_ui_update_system,
         zoxp_remove,
+        [none] ui_containers.DataUI,
         [none] slots.DataLink,
     );
 }

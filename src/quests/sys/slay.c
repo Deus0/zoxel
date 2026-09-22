@@ -5,19 +5,22 @@ void quest_on_slay(
     entity slayed)
 {
     if (!zox_has(e, SlayQuest)) {
-        zox_logv("Quest not a SlayQuest [%s]", zox_get_name(e));
+        zox_logv("Quest not a SlayQuest [%s]",
+            zox_getn(e));
         return;
     }
-    entity target = zox_get_link(world, e, Character);
+    entity target = zox_get_link(world, e, CharacterLink);
     entity meta = zox_getp(world, slayed);
     if (target == meta) {
         zox_muter(e, QuestValue, value);
         zox_geter(e, QuestTarget, target_value);
         if (value->value < target_value->value) {
             value->value++;
-            zox_muter(e, QuestDirty, qdirty);
-            qdirty->value = zox_dirty_trigger;
-            zox_logv("Incrementing Slay Count [%s]", zox_get_name(target));
+            zox_add(e, Dirty);
+            //zox_muter(e, QuestDirty, qdirty);
+            //qdirty->value = zox_dirty_trigger;
+            zox_logv("Incrementing Slay Count [%s]",
+                zox_get_name(target));
         } else {
             zox_logv("Slay Count Maxxed [%s]", zox_get_name(target));
         }

@@ -1,4 +1,4 @@
-/*zox_sys2(DataFrameLabelSystem) {
+/*zox_sys2(DataUILabelSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SlotLink);
@@ -23,5 +23,5 @@
             dirty->value = zox_dirty_trigger;
         }
     }
-} zox_sys_end(DataFrameLabelSystem);
+} zox_sys_end(DataUILabelSystem);
 */

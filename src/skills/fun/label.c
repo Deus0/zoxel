@@ -9,7 +9,7 @@ uint get_label_player_skills(
         index += snprintf(buffer + index, size - index, "! invalid player\n");
         return index;
     }
-    entity character = zox_get_link(world, player, Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     if (!zox_valid(character)) {
         index += snprintf(buffer + index, size - index, "[%s] has no character\n", zox_get_name(player));
         return index;

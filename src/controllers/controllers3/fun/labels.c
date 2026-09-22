@@ -1,5 +1,11 @@
-int get_label_player_character3D(ecs *world, const entity player, char buffer[], int buffer_size, int buffer_index) {
-    entity character = zox_get_link(world, player, Character);
+int get_label_player_character3D(
+    ecs *world,
+    const entity player,
+    char buffer[],
+    int buffer_size,
+    int buffer_index)
+{
+    entity character = zox_get_link(world, player, CharacterLink);
     if (!zox_valid(character) || !zox_has(character, Position3D)) return buffer_index;
     const float3 position3D = zox_getv(character, Position3D);
     buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "player [%ix%ix%i]\n", (int) position3D.x, (int) position3D.y, (int) position3D.z);
@@ -7,7 +13,7 @@ int get_label_player_character3D(ecs *world, const entity player, char buffer[],
 }
 
 int get_label_player_grounded(ecs *world, const entity player, char buffer[], int buffer_size, int buffer_index) {
-    entity character = zox_get_link(world, player, Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     if (!zox_valid(character) || !zox_has(character, Grounded)) return buffer_index;
     const byte grounded = zox_getv(character, Grounded);
     buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "%s\n", grounded ? "Grounded" : "Airborne");
@@ -18,7 +24,7 @@ int get_label_player_chunk_position(ecs *world, const entity player, char buffer
     if (!player) {
         return buffer_index;
     }
-    entity character = zox_get_link(world, player, Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     if (!zox_valid(character) || !zox_has(character, ChunkLink)) {
         return buffer_index;
     }

@@ -52,7 +52,7 @@ void zox_tst_all_items(ecs* world, ClickEventData data) {
     if (!zox_valid(player)) {
         return;
     }
-    entity character = zox_get_link(world, player, Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     if (!zox_valid(character)) {
         return;
     }

@@ -14,7 +14,7 @@ zox_sys2(PlayerGame2EndSystem) {
         if (zox_valid(world_grid2D)) {
             zox_delete(world_grid2D);
         }
-        entity character = zox_get_link(world, e, Character);
+        entity character = zox_get_link(world, e, CharacterLink);
         zox_delete(character);
         // character->value = 0;
         // camera->value = 0;

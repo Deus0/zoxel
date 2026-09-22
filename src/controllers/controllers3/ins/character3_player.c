@@ -33,7 +33,7 @@ entity spawn_character3_player(
     // New links
     zox_link(world, e, Player, player);
     zox_link(world, e, CameraLink, camera);
-    zox_link(world, player, Character, e);
-    zox_link(world, camera, Character, e);
+    zox_link(world, player, CharacterLink, e);
+    zox_link(world, camera, CharacterLink, e);
     return e;
 }

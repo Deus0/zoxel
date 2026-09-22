@@ -61,7 +61,12 @@ entity spawn_character3(
         }
     }
     zox_instance(prefab);
-    zox_name("character3");
+    if (name) {
+        zox_name(name);
+        set_ZoxName(world, e, name);
+    } else {
+        zox_name("character3");
+    }
     if (zox_has(prefab, VoxelNodeLock)) {
         initialize_voxel_lock(world, e);
         initialize_sides_lock(world, e);
@@ -76,9 +81,6 @@ entity spawn_character3(
     }
     if (terrain) {
         zox_link(world, e, TerrainLink, terrain);
-    }
-    if (name) {
-        set_ZoxName(world, e, name);
     }
     zox_setv(e, Seed, seed);
     zox_setv(e, Position3D, position);

@@ -3,7 +3,7 @@
 // TODO: Tag the node so some can auto progress
 // System handles the next node process
 zox_sys2(NextNodeSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NodeEnd);

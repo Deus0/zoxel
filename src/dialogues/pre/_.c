@@ -1,4 +1,4 @@
-entity prefab_dialogue_node;
+entity prefab_node_speech;
 entity prefab_process_dialogue;
 entity prefab_dialogue_text;
 
@@ -7,7 +7,7 @@ entity prefab_dialogue_text;
 #include "ui.c"
 
 void zox_prefabs_dialogues(ecs* world) {
-    prefab_dialogue_node = spawn_prefab_dialogue_node(
+    prefab_node_speech = spawn_prefab_node_speech(
         world,
         prefab_node);
     prefab_process_dialogue = spawn_prefab_process_dialogue(

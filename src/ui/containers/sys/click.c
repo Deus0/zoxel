@@ -14,26 +14,25 @@ extern byte is_frame_body_part(ecs*, entity);
 extern byte is_data_body_part(ecs*, entity);
 
 // NOTE: Called from the clicked icon
-zox_sys2(DataFrameClickSystem) {
+zox_sys2(DataUIClickSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ClickState);
-    // zox_sys_in(SlotLink);
     zox_sys_out(DataLink);
-    // zox_sys_out(DataDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ClickState, state);
-        // zox_sys_i(SlotLink, slot);
         zox_sys_o(DataLink, data);
-        //zox_sys_o(DataDirty, dirty);
         if (state->value != zox_click_state_clicked_this_frame) {
             continue;
         }
         entity slot = zox_get_link(world, e, SlotLink);
+        if (!slot) {
+            continue;
+        }
         if (dbg_log) {
-            zox_log("DataFrame is Activating [%s]", zox_get_name(e));
+            zox_log("DataUI is Activating [%s]", zox_get_name(e));
         }
         entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
         if (!zox_valid(canvas)) {
@@ -49,7 +48,7 @@ zox_sys2(DataFrameClickSystem) {
         // If both empty
         if (mouse_data_empty && clicked_data_empty) {
             if (dbg_log) {
-                zox_log("   Both Mouse and DataFrame are empty.");
+                zox_log("   Both Mouse and DataUI are empty.");
             }
             continue;
         }
@@ -81,7 +80,7 @@ zox_sys2(DataFrameClickSystem) {
         // NOTE: If Mouse picking up data!
         if (mouse_data_empty && !clicked_data_empty) {
             if (dbg_log) {
-                zox_log("   Mouse is Empty, DataFrame has [%s]", zox_get_name(data->value));
+                zox_log("   Mouse is Empty, DataUI has [%s]", zox_get_name(data->value));
             }
             if (is_frame_body2) {
                 // continue here if child body slots all empty!
@@ -94,7 +93,7 @@ zox_sys2(DataFrameClickSystem) {
         // NOTE: If Mouse placing data!
         else if (!mouse_data_empty && clicked_data_empty) {
             if (dbg_log) {
-                zox_log("   DataFrame is Empty, Mouse has [%s]", zox_get_name(mouse_data->value));
+                zox_log("   DataUI is Empty, Mouse has [%s]", zox_get_name(mouse_data->value));
             }
             if (is_frame_body2) {
                 // continue here if child body slots all empty!
@@ -108,14 +107,17 @@ zox_sys2(DataFrameClickSystem) {
         // NOTE: If Swapping Data!
         else {
             if (dbg_log) {
-                zox_log("   DataFrame has [%s], Mouse has [%s]", zox_get_name(data->value), zox_get_name(mouse_data->value));
+                zox_log("   DataUI has [%s], Mouse has [%s]",
+                    zox_get_name(data->value),
+                    zox_get_name(mouse_data->value));
             }
             // check if both base types are the same
             entity base_item_1 = zox_get_prefab(world, mouse_data->value);
             entity base_item_2 = zox_get_prefab(world, data->value);
             if (base_item_1 == base_item_2) {
                 if (can_stack_items(world, data->value, mouse_data->value)) {
-                    zox_log("Stacking Items! %s", zox_get_name(base_item_1));
+                    zox_log("Stacking Items! %s",
+                        zox_get_name(base_item_1));
                     stack_items(world, data->value, mouse_data->value);
                     mouse_data->value = 0;
                     zox_mut_end(mouse_ui, DataLink);
@@ -143,4 +145,4 @@ zox_sys2(DataFrameClickSystem) {
             on_frame_updated_equipment(world, user);
         }
     }
-} zox_sys_end(DataFrameClickSystem);
+} zox_sys_end(DataUIClickSystem);

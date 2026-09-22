@@ -112,14 +112,15 @@ entity spawn_datagrid_slots2(
                 }
                 zox_setv(frame, ChildIndex, array_index);
             }
-            if (zox_valid(icon)) {
-                zox_add(icon, DataFrame);
+            if (icon) {
+                zox_add(icon, DataUI);
                 zox_add(icon, SlotUser);
                 zox_link(world, icon, SlotLink, slot);
                 zox_setv(icon, DataLink, dat);
                 zox_add(icon, DataDirty);
             }
-            if (zox_valid(text)) {
+            if (text) {
+                zox_add(text, DataUI);
                 zox_add(text, SlotUser);
                 zox_link(world, text, SlotLink, slot);
                 zox_add(text, DataDirty);

@@ -122,6 +122,7 @@ zox_sys2(Character3RealmSpawnSystem) {
     byte is_add_stats = 1;
     byte character_depth = block_depth_limits.y;
     uint seed_shift = 36936;
+    char character_name[64];
     // uint inner_seed_shift = 33;
     zox_sys_world();
     zox_sys_begin();
@@ -155,12 +156,13 @@ zox_sys2(Character3RealmSpawnSystem) {
         // add our skeleton prefab
         if (!zox_no_humanoids) {
             byte chance = 2;
+            generate_name(character_seed, character_name);
             entity e2 = spawn_character3_meta(
                 world,
                 prefab_character3_skeleton_npc,
                 e,
                 character_seed,
-                "Boney",
+                character_name, // "Boney",
                 chance);
             if (!e2) {
                 zox_loge("Boney failed to spawn");
@@ -170,14 +172,19 @@ zox_sys2(Character3RealmSpawnSystem) {
                 spawn_stat_level(world, e2, base_soul, 5);
                 spawn_stat_state(world, e2, base_health, 21, 21);
             }
+            // Generate Name
+            char name[64];
+            generate_name(character_seed, name);
+            set_ZoxName(world, e2, name);
+            // Links
             chance_max += chance;
             add_to_CharacterLinks(characters, e2);
             character_seed += seed_shift;
         }
         // SLIMES
         // TODO: Spawn one blueprint and just use that
-        byte slime_types = 4;
-        byte variants = 1;
+        byte slime_types = 1;
+        byte variants = 4;
         byte generated_chance = slime_types > 0 ? 65 / slime_types : 0;
         entity slime_nodegraph = spawn_model_nodegraph_slime(world, e);
         entity cookie_nodegraph = spawn_model_nodegraph_cookie(world, e);
@@ -204,12 +211,14 @@ zox_sys2(Character3RealmSpawnSystem) {
             }
             zox_add(model, ModelCharacter);
             byte chance = generated_chance;
+            char character_name[64];
+            generate_name(character_seed, character_name);
             entity e2 = spawn_character3_meta(
                 world,
                 prefab_character,
                 e,
                 character_seed,
-                "character",
+                character_name,
                 chance);
             if (!e2) {
                 zox_loge("Generated Character Failed");
@@ -217,6 +226,9 @@ zox_sys2(Character3RealmSpawnSystem) {
             }
             zox_setv(e2, ModelLink, model);
             zox_add(e2, CharacterGeneric);
+            // Generate Name
+           // set_ZoxName(world, e2, name);
+            // Links
             zox_set_parent(world, e2, e);
             add_to_CharacterLinks(characters, e2);
             chance_max += chance;
@@ -261,7 +273,10 @@ zox_sys2(Character3RealmSpawnSystem) {
                 character_seed,
                 name,
                 chance);
-            zox_set_name(e2, name); // assuming name is unique to the ecs world
+            // Set Names
+            // zox_set_name(e2, name); // assuming name is
+            // set_ZoxName(world, e2, name);
+            // Links unique to the ecs world
             zox_setv(e2, ModelLink, model);
             chance_max += chance;
             float soul_value = (float)(souls[j]);

@@ -1,5 +1,5 @@
 // Tooltip Event for item icons
-zox_sys2(QuestIconTooltipSystem) {
+/*zox_sys2(QuestIconTooltipSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SelectState);
@@ -28,7 +28,7 @@ zox_sys2(QuestIconTooltipSystem) {
         char result[128];
         // TODO: Get Objectives
         if (zox_has(e2, SlayQuest)) {
-            entity character = zox_get_link(world, e2, Character);
+            entity character = zox_get_link(world, e2, CharacterLink);
             // zox_geter_value(e2, QuestValue, byte, value);
             zox_geter_value(e2, QuestTarget, byte, target);
             sprintf(result, "%s\n- slay %s x%i", name, zox_get_name(character), target);
@@ -37,4 +37,4 @@ zox_sys2(QuestIconTooltipSystem) {
         }
         set_tooltip_text(world, e, tooltip, result);
     }
-} zox_sys_end(QuestIconTooltipSystem);
+} zox_sys_end(QuestIconTooltipSystem);*/

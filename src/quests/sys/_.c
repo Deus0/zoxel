@@ -1,14 +1,14 @@
 #include "character.c"
-#include "slay.c"
+// #include "slay.c"
 #include "marker.c"
 
 void zox_systems_quests(ecs* world) {
-    zox_system(
+    /*zox_system(
         SlaySystem,
         zoxp_update,
         [none] characters.Character,
         [none] core.DeathDirty,
-    );
+    );*/
     zox_system_1(
         CharacterPlayerQuestsSystem,
         zoxp_spawn,

@@ -1,5 +1,8 @@
 # Todo
 
+- link our data / slot to the ui frame
+    - icons/texts will just grab parent data links
+
 - for our tests, just link to current inspector if its opened
 	- no need to spawn it everywhere
 -x Set a NextNodeLink on NodeRun

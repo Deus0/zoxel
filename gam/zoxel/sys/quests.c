@@ -14,9 +14,9 @@ zox_sys2(QuestsRealmSpawnSystem) {
         {
             spawn_realm_quest(
                 world,
-                e,
                 prefab_quest,
-                "find bob",
+                e,
+                "Find Bob",
                 "discord");
         }
         if (!characters->length) {
@@ -26,16 +26,16 @@ zox_sys2(QuestsRealmSpawnSystem) {
         {
             entity quest = spawn_realm_quest(
                 world,
-                e,
                 prefab_quest,
+                e,
                 "Slem Infestation",
-                "taskbar_lore");
+                "slay_slems");
             // TODO: Objective: Slay 10 Slimes
             zox_add(quest, SlayQuest);
             zox_set(quest, QuestValue, { 0 });
             zox_set(quest, QuestTarget, { 10 });
-            entity slime = characters->value[0];
-            zox_link(world, quest, Character, slime);
+            entity slime = characters->value[1];
+            zox_link(world, quest, CharacterLink, slime);
         }
         zox_logv("Realm [quests] [X] spawned.");
     }

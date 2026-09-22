@@ -39,7 +39,7 @@ void zox_tst_spawn_dialogue(ecs *world, ClickEventData data) {
         return;
     }
     entity canvas = zox_get_link(world, player, CanvasLink);
-    entity character = zox_get_link(world, player, Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     if (!zox_valid(character)) {
         zox_logw("Player has no character.");
         return;

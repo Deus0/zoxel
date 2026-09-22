@@ -11,7 +11,7 @@ zox_sys2(PlayerDialogueSystem) {
             // zox_logw("Canvas is missing from Player");
             continue;
         }*/
-        entity character = zox_get_link(world, e, Character);
+        entity character = zox_get_link(world, e, CharacterLink);
         if (state->value == zox_player_state_dialogue_begin) {
             entity camera = zox_get_link(world, e, CameraLink);
             state->value = zox_player_state_dialogue_active;

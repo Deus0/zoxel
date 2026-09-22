@@ -6,7 +6,7 @@ void key_down_test_aura(ecs *world, int32_t keycode) {
             zox_log("! player is null")
             return;
         }
-        entity character = zox_get_link(world, player, Character);
+        entity character = zox_get_link(world, player, CharacterLink);
         if (!zox_valid(character)) {
             zox_log("! character is null\n")
             return;

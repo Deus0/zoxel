@@ -17,7 +17,7 @@ void zox_tst_spawn_character3_npc(
         return;
     }
     entity player = dbg_player;
-    entity character = zox_get_link(world, player, Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     if (!zox_valid(character)) {
         zox_logw("No Player Character.");
         return;

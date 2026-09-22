@@ -19,7 +19,7 @@ uint zox_dbg_label_character_links(
     uint size,
     uint index)
 {
-    entity e = zox_get_link(world, player, Character);
+    entity e = zox_get_link(world, player, CharacterLink);
     if (!zox_valid(e)) {
         return index;
     }
@@ -284,7 +284,7 @@ uint zox_dbg_label_towns(
     uint size,
     uint index)
 {
-    entity character = zox_get_link(world, player, Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     if (!zox_valid(character)) {
         return index;
     }

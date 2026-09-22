@@ -9,7 +9,7 @@ int get_characters_count(ecs *world) {
         index += snprintf(buffer + index, size - index, "Invalid Player\n");
         return index;
     }
-    entity character = zox_get_link(world, player, Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     if (!zox_valid(characterLink->value)) {
         index += snprintf(buffer + index, size - index, "[%s] has no Character\n", zox_get_name(player));
         return index;

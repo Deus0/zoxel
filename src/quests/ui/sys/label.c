@@ -1,4 +1,4 @@
-zox_sys2(QuestIconLabelSystem) {
+/*zox_sys2(QuestIconLabelSystem) {
     byte label_text_capacity = 12;
     zox_sys_world();
     zox_sys_begin();
@@ -32,4 +32,4 @@ zox_sys2(QuestIconLabelSystem) {
             zox_add(e, Dirty);
         }
     }
-} zox_sys_end(QuestIconLabelSystem);
+} zox_sys_end(QuestIconLabelSystem);*/

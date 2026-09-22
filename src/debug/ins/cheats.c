@@ -5,7 +5,7 @@ void zox_dbg_toggle_free_roam(ecs* world, ClickEventData data) {
     if (!zox_valid(player)) {
         return;
     }
-    entity character = zox_get_link(world, player, Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     entity camera = zox_get_link(world, player, CameraLink);
     if (!zox_valid(camera)) {
         zox_loge("[zox_dbg_toggle_free_roam] No Camera on Player");
@@ -38,7 +38,7 @@ void zox_dbg_toggle_fly_mode(ecs* world, ClickEventData data) {
     if (!zox_valid(player)) {
         return;
     }
-    entity character = zox_get_link(world, player, Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     if (!zox_valid(character)) {
         return;
     }
@@ -51,7 +51,7 @@ void zox_dbg_add_no_clip(ecs* world, ClickEventData data) {
     if (!zox_valid(player)) {
         return;
     }
-    entity character = zox_get_link(world, player, Character);
+    entity character = zox_get_link(world, player, CharacterLink);
     if (!zox_valid(character)) {
         return;
     }

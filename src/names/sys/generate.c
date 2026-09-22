@@ -77,7 +77,10 @@ zox_sys2(GenerateNameSystem) {
         generate_name(seed->value, name->value);
         generate->value = 0;
         if (dbg_log) {
-            zox_log("+ [%s] Generated Name [%lu]:[%s]", zox_get_name(e), seed->value, name->value);
+            zox_log("+ [%s] Generated Name [%lu]:[%s]",
+                zox_get_name(e),
+                seed->value,
+                name->value);
         }
     }
 } zox_sys_end(GenerateNameSystem);
