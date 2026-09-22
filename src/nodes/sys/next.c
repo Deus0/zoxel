@@ -3,7 +3,7 @@
 // TODO: Tag the node so some can auto progress
 // System handles the next node process
 zox_sys2(NextNodeSystem) {
-    byte dbg_log = 0;
+    byte dbg_log = 1;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NodeEnd);
@@ -20,7 +20,16 @@ zox_sys2(NextNodeSystem) {
         if (!previous) {
             continue;
         }
-        entity next = zox_get_link(world, previous, NodeLink);
+        entity next = zox_get_link(world, e, NextNodeLink);
+        if (!next) {
+            next = zox_get_link(world, previous, NodeLink);
+        } else {
+            zox_unlink(world, e, NextNodeLink, next);
+            if (dbg_log) {
+                zox_log("Consumed [NextNodeLink] [%s]",
+                        zox_getn(next));
+            }
+        }
         if (previous == next) {
             zox_logw("Cannot progress to same node in tree [%s]",
                 zox_sys_e_name);
@@ -31,6 +40,7 @@ zox_sys2(NextNodeSystem) {
         if (next) {
             zox_link(world, e, CurrentNodeLink, next);
             zox_setv(e, NodeBegin, zox_dirty_trigger);
+            zox_add(e, Dirty);
             if (dbg_log) {
                 zox_log("Nodetree Progresses [%s] at [%s] to [%s]",
                     zox_sys_e_name,

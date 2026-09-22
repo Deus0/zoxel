@@ -1,9 +1,8 @@
 // extern entity spawn_dialogue_tree(ecs*, entity, char*);
-extern entity spawn_dialogue_node(ecs*, entity, char*);
+extern entity spawn_node_speech(ecs*, char*);
 
 entity2 spawn_dialogue_tree_texts(
     ecs* world,
-    entity prefab,
     entity parent,
     char** texts,
     byte count)
@@ -15,10 +14,7 @@ entity2 spawn_dialogue_tree_texts(
     entity first_node = 0;
     entity last_node = 0;
     for (int i = 0; i < count; i++) {
-        entity e2 = spawn_dialogue_node(
-            world,
-            prefab,
-            texts[i]);
+        entity e2 = spawn_node_speech(world, texts[i]);
         if (!first_node) {
             // if first node
             first_node = e2;

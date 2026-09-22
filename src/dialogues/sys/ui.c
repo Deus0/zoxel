@@ -28,10 +28,14 @@ zox_sys2(DialogueSpeechSystem) {
             continue;
         }
         entity node = zox_get_link(world, e, CurrentNodeLink);
+        if (!node) {
+            zox_loge("Current node invalid in dialogue");
+            continue;
+        }
         const char* text =
             zox_has(node, DialogueText) ?
                 zox_getv(node, DialogueText) :
-                "Here.";
+                ".....";
         // zox_geter(node->value, DialogueText, text);
         set_TargetText(world, text_ui, text);
         zox_muter(text_ui, TextData, text_data);

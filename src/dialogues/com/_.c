@@ -1,5 +1,6 @@
 zox_tag(Dialogue);
-zox_tag(DialogueNode);
+zox_tag(SpeechNode);
+zox_tag(DialogueOptionNode);
 zox_tag(DialogueProcess);
 zox_tag(DialogueUI);
 zox_tag(DialogueLabel);
@@ -20,7 +21,8 @@ zoxc_state(AnimateTextEnded);
 zoxc_array(SpeakerLinks, entity, zox_speakers_max);
 
 void zox_components_dialogues(ecs* world) {
-    zoxd_tag(DialogueNode);
+    zoxd_tag(SpeechNode);
+    zoxd_tag(DialogueOptionNode);
     zoxd_tag(Dialogue);
     zoxd_tag(DialogueProcess);
     zoxd_nf_tag(DialogueUI);

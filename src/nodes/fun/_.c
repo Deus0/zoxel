@@ -31,3 +31,8 @@ void new_link_single_node(ecs* world, entity e, entity e2) {
     // add_to_NodeLinks(&links, e2);
     // zox_set_ptr(e, NodeLinks, links);
 }
+
+// Used for conditional nodes atm
+void delayed_node_end(ecs* world, entity node) {
+    zox_setv(node, NodeEnd, zox_dirty_trigger);
+}

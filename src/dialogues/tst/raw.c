@@ -36,7 +36,6 @@ void zox_tst_spawn_dialogue(ecs *world, ClickEventData data) {
         };
         tree = spawn_dialogue_tree_texts(
             world,
-            prefab_dialogue_node,
             0,
             texts,
             texts_count).x;

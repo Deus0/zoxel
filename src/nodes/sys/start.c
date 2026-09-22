@@ -25,6 +25,7 @@ zox_sys2(NodetreeBeginSystem) {
         }
         zox_link(world, e, CurrentNodeLink, node);
         zox_setv(e, NodeBegin, zox_dirty_trigger);
+        zox_add(e, Dirty);
         if (dbg_log) {
             zox_log("Nodetree [%s] Begins at [%s]",
                 zox_sys_e_name,

@@ -21,13 +21,17 @@ void close_ui_related_tooltip(ecs* world, entity e) {
         return;
     }
     // for all uis connected to tooltip
-    uint j = 0;
+    uint node_index = 0;
     while (1) {
-        entity old_ui = zox_get_link_index(world, tooltip, TooltipLink, j);
+        entity old_ui = zox_get_link_index(
+            world,
+            tooltip,
+            TooltipLink,
+            node_index);
         if (!old_ui) {
             break;
         }
-        j++;
+        node_index++;
     //iter it2 = zox_links(tooltip, TooltipLink);
     //while (zox_query_next(it2)) {
     //    entity old_ui = zox_pair_target(it2, 0);

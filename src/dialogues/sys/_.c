@@ -9,7 +9,7 @@ void zox_systems_dialogues(ecs* world) {
         DialogueSpeechSystem,
         zoxp_update,
         [in] nodes.NodeBegin,
-        [none] nodes.Node,
+        [none] nodes.NodeRun,
         [none] dialogues.DialogueProcess
     );
     zox_system(

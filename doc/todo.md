@@ -1,6 +1,12 @@
 # Todo
 
-- test for mesh clone of character
+- for our tests, just link to current inspector if its opened
+	- no need to spawn it everywhere
+-x Set a NextNodeLink on NodeRun
+-x Our conditional events will just set that and trigger end
+	- if no next linked, it just picks first, as is the current behaviour
+
+-x test for mesh clone of character
 - test for mesh clone of models under realm
     - pick random ones
 - test for spawning all models under realm

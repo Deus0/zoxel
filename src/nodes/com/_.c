@@ -6,8 +6,9 @@ zox_tag(Nodetree);
 zox_tag(NodeRun);
 zoxc_byte(NodeType);
 // Links
-zox_tag(CurrentNodeLink);
 zox_tag(NodeLink);
+zox_tag(CurrentNodeLink);
+zox_tag(NextNodeLink);
 zoxc_entity(NodeStartLink);
 zoxc_entity(NodeParent);
 zoxc_entity(NodeNext);
@@ -37,8 +38,9 @@ void zox_components_nodes(ecs* world) {
     zoxd_entity(NodeStartLink);
     zoxd(NodeBeginEvent);
     // Links
-    zoxd_nf_tag(CurrentNodeLink);
     zoxd_nf_tag(NodeLink);
+    zoxd_nf_tag(CurrentNodeLink);
+    zoxd_nf_tag(NextNodeLink);
     zoxd_tag_event(NodeTrue);
     zoxd_tag_event(NodeFalse);
 }

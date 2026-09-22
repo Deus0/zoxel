@@ -6,7 +6,7 @@ entity prefab_dialogue_text;
 #include "process.c"
 #include "ui.c"
 
-void spawn_prefabs_dialogues(ecs* world) {
+void zox_prefabs_dialogues(ecs* world) {
     prefab_dialogue_node = spawn_prefab_dialogue_node(
         world,
         prefab_node);

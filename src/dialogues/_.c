@@ -1,10 +1,10 @@
 /*
- * +------------------------------------------------------------------+
- * | Zox Module: Dialogues                                            |
- * |                                                                  |
- * |  Conversations - Choices - Responses - Events - Dialogue State   |
- * |                                                                  |
- * +------------------------------------------------------------------+
+ * +------------------------------------------------------+
+ * | Zox Module: Dialogues                                |
+ * |                                                      |
+ * |  Conversations - Choices - Responses - Events        |
+ * |                                                      |
+ * +------------------------------------------------------+
  */
 // TODO: NodeTree prefab as DialogueTree
 // TODO: Dialogue Node with Text
@@ -18,11 +18,13 @@
 #include "fun/_.c"
 #include "ins/_.c"
 #include "sys/_.c"
+#include "eve/_.c"
 #include "tst/_.c"
 
 void import_dialogues(ecs* world) {
     zox_module(dialogues);
     zox_components_dialogues(world);
     zox_systems_dialogues(world);
-    add_hook_spawn_prefabs(spawn_prefabs_dialogues);
+    add_hook_spawn_prefabs(zox_prefabs_dialogues);
+    add_hook_spawn_prefabs(zox_events_dialogues);
 }

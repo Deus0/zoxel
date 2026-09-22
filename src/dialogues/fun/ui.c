@@ -3,8 +3,6 @@ void link_dialogue_run_to_ui(
     entity run,
     entity ui)
 {
-    // zox_setv(ui, DialogueProcessLink, run);
-    // zox_setv(run, DialogueUILink, ui);
     zox_link(world, ui, DialogueProcess, run);
     zox_link(world, run, DialogueUI, ui);
 }
@@ -41,7 +39,7 @@ void on_closed_dialogue_ui(ecs* world, ClickEventData data) {
         zox_id(Window));
     if (!zox_valid(window)) {
         zox_loge("Invalid Dialogue Window [%s]",
-                 zox_getn(window));
+            zox_getn(window));
         return;
     }
     entity runner = zox_get_link(world, window, DialogueProcess);

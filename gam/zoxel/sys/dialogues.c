@@ -9,38 +9,41 @@ zox_sys2(DialogueRealmSpawnSystem) {
             continue;
         }
         {
-            byte texts_count = 4;
-            char* texts[] = {
-                "Welcome Traveler",
-                "I have a quest you may like.",
-                "I require cookies!",
-                "But I have yet to implement them",
-            };
-            entity2 dialogue_nodes = spawn_dialogue_tree_texts(
-                world,
-                prefab_dialogue_node,
-                e,
-                texts,
-                texts_count);
-            // Spawn conditional node here
-            // If they have quest, do A, if not do B
-
-            // Spawn quests here, linked to dialogue
             entity dialogue_quest = spawn_realm_quest(
                 world,
                 e,
                 prefab_quest,
                 "Cookies Gett",
                 "discord");
-            zox_add(dialogue_nodes.x, QuestDialogue);
+            byte texts_count = 3;
+            char* texts[] = {
+                "Welcome Traveler",
+                "I have a quest you may like.",
+                "I require cookies!",
+                // "But I have yet to implement them",
+            };
+            entity2 dialogue_nodes = spawn_dialogue_tree_texts(
+                world,
+                e,
+                texts,
+                texts_count);
+            entity root = dialogue_nodes.x;
+            zox_add(root, QuestDialogue);
+            entity has_quest = spawn_node_has_quest(world, dialogue_quest);
+            zox_link(world, dialogue_nodes.y, NodeLink, has_quest);
+            entity has_quest_speech = spawn_node_speech(world, "You have already been commanded.");
+            zox_add(has_quest_speech, NodeTrue);
+            zox_link(world, has_quest, NodeLink, has_quest_speech);
+            // Spawn conditional node here
+            // If they have quest, do A, if not do B
+            // Spawn quests here, linked to dialogue
             // Link quest node to dialogues
-            entity give_quest_node = spawn_node_give_quest(
-                world,
-                dialogue_quest);
-            new_link_single_node(
-                world,
-                dialogue_nodes.y,
-                give_quest_node);
+            entity give_quest = spawn_node_give_quest(world, dialogue_quest);
+            zox_add(give_quest, NodeFalse);
+            zox_link(world, has_quest, NodeLink, give_quest);
+            entity give_quest_speech = spawn_node_speech(world, "My Cookie Furnace Screams.");
+            zox_add(has_quest_speech, NodeTrue);
+            zox_link(world, give_quest, NodeLink, give_quest_speech);
         }
         {
             byte texts_count = 2;
@@ -50,7 +53,6 @@ zox_sys2(DialogueRealmSpawnSystem) {
             };
             entity dialogue = spawn_dialogue_tree_texts(
                 world,
-                prefab_dialogue_node,
                 e,
                 texts,
                 texts_count).x;
@@ -65,7 +67,6 @@ zox_sys2(DialogueRealmSpawnSystem) {
             };
             entity dialogue = spawn_dialogue_tree_texts(
                 world,
-                prefab_dialogue_node,
                 e,
                 texts,
                 texts_count).x;
@@ -80,7 +81,6 @@ zox_sys2(DialogueRealmSpawnSystem) {
             };
             entity dialogue = spawn_dialogue_tree_texts(
                 world,
-                prefab_dialogue_node,
                 e,
                 texts,
                 texts_count).x;
@@ -97,7 +97,6 @@ zox_sys2(DialogueRealmSpawnSystem) {
             };
             entity dialogue = spawn_dialogue_tree_texts(
                 world,
-                prefab_dialogue_node,
                 e,
                 texts,
                 texts_count).x;
@@ -113,7 +112,6 @@ zox_sys2(DialogueRealmSpawnSystem) {
             };
             entity dialogue = spawn_dialogue_tree_texts(
                 world,
-                prefab_dialogue_node,
                 e,
                 texts,
                 texts_count).x;
@@ -127,7 +125,6 @@ zox_sys2(DialogueRealmSpawnSystem) {
             };
             entity dialogue = spawn_dialogue_tree_texts(
                 world,
-                prefab_dialogue_node,
                 e,
                 texts,
                 texts_count).x;
@@ -142,7 +139,6 @@ zox_sys2(DialogueRealmSpawnSystem) {
             };
             entity dialogue = spawn_dialogue_tree_texts(
                 world,
-                prefab_dialogue_node,
                 e,
                 texts,
                 texts_count).x;
@@ -161,7 +157,6 @@ zox_sys2(DialogueRealmSpawnSystem) {
             };
             entity dialogue = spawn_dialogue_tree_texts(
                 world,
-                prefab_dialogue_node,
                 e,
                 texts,
                 texts_count).x;

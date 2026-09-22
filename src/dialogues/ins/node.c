@@ -1,9 +1,8 @@
-entity spawn_dialogue_node(
+entity spawn_node_speech(
     ecs* world,
-    entity prefab,
     char* text)
 {
-    zox_instance(prefab);
+    zox_instance(prefab_dialogue_text);
     zox_name("dialogue_node");
     set_DialogueText(world, e, text);
     return e;
