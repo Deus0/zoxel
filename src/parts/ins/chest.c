@@ -1,4 +1,9 @@
-entity spawn_blueprint_chest(ecs* world, byte3 nsize, byte depth, color chest_color) {
+entity spawn_blueprint_chest(
+    ecs* world,
+    byte3 nsize,
+    byte depth,
+    color chest_color)
+{
     // colors node
     entity e = spawn_node_model_colors(world, chest_color, 1);
     // fill node
@@ -31,5 +36,8 @@ entity spawn_blueprint_chest(ecs* world, byte3 nsize, byte depth, color chest_co
     entity node_2 = spawn_node_model_at(world, prefab_node_model, zox_model_node_fill, nposition_2, nsize_2, 1);
     zox_set(node_2, NodeDepth, { depth });
     new_link_single_node(world, node_1, node_2);
+    // Finish Him!
+    entity end_node = spawn_node_model_end(world);
+    new_link_single_node(world, node_2, end_node);
     return e;
 }

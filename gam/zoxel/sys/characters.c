@@ -70,10 +70,7 @@ entity spawn_model_nodegraph_cookie(
         chip_size,
         2);
     new_link_single_node(world, chip2, chip3);
-    entity end_node = spawn_node_model(
-        world,
-        prefab_node_model,
-        zox_model_node_end);
+    entity end_node = spawn_node_model_end(world);
     new_link_single_node(world, chip3, end_node);
     zox_set_parent(world, root_node, parent);
     return root_node;
@@ -111,7 +108,7 @@ entity spawn_model_nodegraph_slime(
     entity right_eye_node = spawn_node_model_at(world, prefab, zox_model_node_paint, reye_position, eye_size, 2);
     new_link_single_node(world, left_eye_node, right_eye_node);
     // Everything good must come to an end
-    entity end_node = spawn_node_model(world, prefab_node_model, zox_model_node_end);
+    entity end_node = spawn_node_model_end(world);
     new_link_single_node(world, right_eye_node, end_node);
     zox_set_parent(world, root_node, parent);
     return root_node;

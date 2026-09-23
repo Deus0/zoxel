@@ -54,7 +54,7 @@ entity2 spawn_realm_body_part(
     entity parent,
     byte variants,
     byte max_depth,
-    byte3 size,
+    // byte3 size,
     entity blueprint,
     const char* name,
     lint seed,
@@ -76,18 +76,17 @@ entity2 spawn_realm_body_part(
             world,
             prefab_vox,
             e,
-            "body",
+            name, // "body",
             0,
             vcolor,
             max_depth,
-            seed);
+            vseed);
         /*entity2 model = spawn_model_lods(
             world,
             e,
             vcolor,
             vseed,
             max_depth,
-            size,
             name);*/
         zox_set_parent(world, model.x, e);
         spawn_process_model(
@@ -97,7 +96,7 @@ entity2 spawn_realm_body_part(
         // zox_set_unique_name(mlods, "bodys_mlods_head");
         add_to_ModelLinks(&models, model.x);
         if (j == 0) {
-            max_depth_vox = model.y; //  mlods2.value[max_depth];
+            max_depth_vox = model.y;
         }
     }
     zox_set_ptr(e, ModelLinks, models);
@@ -146,7 +145,7 @@ entity2 spawn_realm_body_part2(
         realm,
         1,
         model_depth,
-        model_size,
+        // model_size,
         blueprint,
         name,
         seed,

@@ -1,6 +1,6 @@
 // Ends the nodegraph by marking model dirty
 zox_sys2(ModelEndNodeSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = zox_dbg_model_nodes;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ModelLink);
@@ -27,7 +27,8 @@ zox_sys2(ModelEndNodeSystem) {
             continue;
         }
         if (dbg_log) {
-            zox_log(" - Node: Model End [%s]", zox_getn(model->value));
+            zox_log("[End] ModelNode  [%s]",
+                zox_getn(model->value));
         }
         if (zox_has(model->value, ModelLods)) {
             zox_geter(model->value, ModelLods, models);

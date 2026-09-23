@@ -21,5 +21,8 @@ entity spawn_blueprint_flesh_part(
         1);
     zox_setv(e2, NodeDepth, depth);
     new_link_single_node(world, e, e2);
+    // Finish Him!
+    entity end_node = spawn_node_model_end(world);
+    new_link_single_node(world, e2, end_node);
     return e;
 }

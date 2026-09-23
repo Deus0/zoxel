@@ -1,4 +1,10 @@
-entity spawn_blueprint_head(ecs* world, byte3 nsize, byte depth, color skin_color, color eye_color) {
+entity spawn_blueprint_head(
+    ecs* world,
+    byte3 nsize,
+    byte depth,
+    color skin_color,
+    color eye_color)
+{
     entity e = spawn_node_model_colors(world, skin_color, 1);
     byte3 nposition_1 = byte3_half(nsize);
     entity e2 = spawn_node_model_at(world, prefab_node_model, zox_model_node_fill, nposition_1, nsize, 1);
@@ -42,5 +48,8 @@ entity spawn_blueprint_head(ecs* world, byte3 nsize, byte depth, color skin_colo
     new_link_single_node(world, e4, e5);
     // zox_log("Eye size[%i] L[%i] R[%i] out of [%i]... Ridge [%i]", eye_size, leye_position.x, reye_position.x, nsize.x, eye_ridge);
     // zox_log("=> eye - ridge [%i] size [%i] at [(L:%ixR:%i)x%ix%i] nsize[%ix%ix%i]", eye_ridge, eye_size, leye_position.x, reye_position.x, eye_pos_y, eye_pos_z, nsize.x, nsize.y, nsize.z);
+    // Finish Him!
+    entity end_node = spawn_node_model_end(world);
+    new_link_single_node(world, e5, end_node);
     return e;
 }

@@ -1,5 +1,6 @@
 # Todo
 
+- make lists sorting use child index - after sort it shuffles atm
 - GiveAllQuests cheat function
 - Goal: Give 20 xp for handing in quest
 - remove marker when quest is completed

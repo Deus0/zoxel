@@ -42,6 +42,7 @@ void process_node_model_paint(
 // Runs from a Model Node Process
 //      This system will simply fill the voxes
 zox_sys2(PaintModelNodeSystem) {
+    byte dbg_log = zox_dbg_model_nodes;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ModelLink);
@@ -51,7 +52,8 @@ zox_sys2(PaintModelNodeSystem) {
         zox_sys_i(ModelLink, model);
         zox_sys_i(ModelSize, bounds);
         if (!zox_valid(model->value)) {
-            zox_logw("[PaintModelNodeSystem] Node has Invalid Model [%s]", zox_getn(e));
+            zox_logw("[PaintModelNodeSystem] Node has Invalid Model [%s]",
+                zox_getn(e));
             zox_add(e, TriggerEnd);
             continue;
         }
@@ -78,9 +80,13 @@ zox_sys2(PaintModelNodeSystem) {
             scale_node_transform(bounds->value, &position, &size);
         }
         // for each model LOD, run shapes
-        zox_logv(" - Node: Model Paint [%s]", zox_get_name(model->value));
         lint seed = zox_has(model->value, Seed) ?
             zox_getv(model->value, Seed) : 0;
+        if (dbg_log) {
+            zox_log("[Paint] ModelNode [%s] Seed %i",
+                zox_getn(model->value),
+                seed);
+        }
         if (zox_has(model->value, ModelLods)) {
             zox_geter(model->value, ModelLods, models);
             for (int j = 0; j < model_lods_max_length; j++) {

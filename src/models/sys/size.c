@@ -1,6 +1,6 @@
 // Sets the model size in the nodegraph
 zox_sys2(ModelSizeNodeSystem) {
-    byte dbg_log = 0;
+    byte dbg_log = 1;
     ushort inner_seed_shift = 39393;
     zox_sys_world();
     zox_sys_begin();
@@ -46,10 +46,16 @@ zox_sys2(ModelSizeNodeSystem) {
         float z = seed_rangef(seed->value, limits.u, limits.v);
         seed->value += inner_seed_shift;
         float3 ratio = (float3) { x, y, z };
-        size->value = get_scaled_size(nodegraph_max_depth, ratio);
+        size->value = get_scaled_size(
+            nodegraph_max_depth,
+            ratio);
         zox_add(e, TriggerEnd);
         if (dbg_log) {
-            zox_log("New Size of Model [%ix%ix%i]", size->value.x, size->value.y, size->value.z);
+            zox_log("+ [%s] New Model Size [%ix%ix%i]",
+                zox_sys_e_name,
+                size->value.x,
+                size->value.y,
+                size->value.z);
         }
     }
 } zox_sys_end(ModelSizeNodeSystem);

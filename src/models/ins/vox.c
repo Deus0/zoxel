@@ -1,4 +1,4 @@
-entity spawn_vox_basic(
+entity spawn_vox(
     ecs *world,
     entity prefab,
     byte depth,
@@ -7,7 +7,7 @@ entity spawn_vox_basic(
     byte ddepth = max_depth - depth;
     ushort dlength = octree_size(ddepth);
     float block_scale = ((float) dlength) / 64.0f;
-    int3 size = int3_single(octree_size(depth));
+    int3 size = int3_single(dlength);
     zox_instance(prefab);
     zox_setv(e, NodeDepth, depth);
     zox_setv(e, RenderDepth, depth);

@@ -50,7 +50,7 @@ entity2 spawn_model_lods2(
             vox = e2;
         }
     }
-    zox_set_data(e, ModelLods, lods);
+    zox_set_ptr(e, ModelLods, lods);
     return (entity2) {
         e,
         vox

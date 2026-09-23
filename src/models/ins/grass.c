@@ -22,7 +22,7 @@ entity2 spawn_model_grass(
         if (place_count == 0) {
             place_count = 1;
         }
-        entity e2 = spawn_vox_basic(
+        entity e2 = spawn_vox(
             world,
             prefab_lod,
             depth,
@@ -44,7 +44,7 @@ entity2 spawn_model_grass(
             zox_log("Model Grass - Depth [%i]", depth);
         }
     }
-    zox_set_data(e, ModelLods, lods);
+    zox_set_ptr(e, ModelLods, lods);
     return (entity2) {
         e,
         vox_lod

@@ -45,3 +45,11 @@ entity spawn_node_model_size(
     zox_setv(e, ModelRatio, bounds);
     return e;
 }
+
+entity spawn_node_model_end(ecs* world) {
+    return spawn_node_model(
+        world,
+        prefab_node_model,
+        zox_model_node_end);
+}
+

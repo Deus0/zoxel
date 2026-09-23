@@ -1,4 +1,5 @@
-#define zox_set_data(e, T, data) ecs_set_id(world, e, ecs_id(T), sizeof(T), &data);
+#define zox_set_data(e, T, data) \
+    ecs_set_id(world, e, ecs_id(T), sizeof(T), &data);
 
 #ifdef zox_debug
     #define zox_set(e, T, ...) {\

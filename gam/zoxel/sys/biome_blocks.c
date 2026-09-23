@@ -301,9 +301,8 @@ zox_sys2(BiomeBlocksSystem) {
             color weed_color = color_mix(grass_color, stone_color, 0.8f);
             byte grass_color_mutation = 15;
             byte mdepth_vode = block_depth_limits.y;
-            entity model_group = zox_new();
+            entity model_group = zox_ins(world, prefab_model_group);
             zox_set_unique_name(model_group, "model_group_grass");
-            zox_add(model_group, ModelGroup);
             zox_setv(model_group, MaxRenderDepth, mdepth_vode);
             zox_set_parent(world, model_group, e);
             entity2 variant = (entity2) { 0 };

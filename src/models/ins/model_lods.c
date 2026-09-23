@@ -1,4 +1,4 @@
-/*entity spawn_model(
+entity spawn_model(
     ecs *world,
     entity parent,
     const char* name,
@@ -9,7 +9,7 @@
     color vox_color)
 {
     // entity prefab_lod = prefab_vox; // prefab_invisible_vox,
-    entity e = spawn_vox_basic(
+    entity e = spawn_vox(
         world,
         prefab_vox,
         depth,
@@ -45,7 +45,6 @@ entity2 spawn_model_lods(
     color vox_color,
     lint seed,
     byte max_depth,
-    byte3 rsize,
     const char* label)
 {
     srand(seed);
@@ -79,7 +78,7 @@ entity2 spawn_model_lods(
         e,
         vox
     };
-}*/
+}
 
 /*short ddepth = octree_size(max_depth - depth);
  b yte3 rsized = rsize;*

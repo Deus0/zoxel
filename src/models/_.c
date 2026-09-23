@@ -30,6 +30,7 @@
  *      - Can we Refactor ModelLinks from Rendering to here
  *
 */
+byte zox_dbg_model_nodes = 0;
 byte zox_block_outlines = 1;
 #define zox_model_node_none 0
 #define zox_model_node_colors 1

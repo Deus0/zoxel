@@ -10,7 +10,7 @@ entity spawn_model_generated(
     byte depth,
     byte max_depth)
 {
-    entity e = spawn_vox_basic(
+    entity e = spawn_vox(
         world,
         prefab_lod,
         depth,
@@ -42,14 +42,15 @@ entity2 spawn_model_lods_generated(
     byte max_depth,
     lint seed)
 {
+    // entity e = zox_ins(world, prefab_model);
     entity e = zox_new();
+    zox_add(e, Model);
     {
         char name2[64];
         sprintf(name2, "modellods_%s", name);
         zox_name(name2);
     }
     zox_set_unique_name(e, "model_lods");
-    zox_add(e, Model);
     zox_setv(e, MaxRenderDepth, max_depth);
     entity texture_model = 0;
     ModelLods lods = { 0 };
@@ -69,7 +70,7 @@ entity2 spawn_model_lods_generated(
             texture_model = e2;
         }
     }
-    zox_set_data(e, ModelLods, lods);
+    zox_set_ptr(e, ModelLods, lods);
     return (entity2) {
         e,
         texture_model

@@ -3,7 +3,7 @@ entity spawn_prefab_body(
     entity prefab)
 {
     zox_prefab_child(prefab);
-    zox_prefab_name("body");
+    zox_prefab_name("window_body");
     zox_add(e, WindowBody);
     // Texture
     zox_add(e, FixToLayout);

@@ -17,7 +17,10 @@ void process_node_model_generate_colors(
     }
     color_rgb vcolor_rgb = color_to_color_rgb(node_color);
     zox_muter(vox, ColorRGBs, colors);
-    float2 crange = (float2) { 1 - default_color_range, 1 + default_color_range };
+    float2 crange = (float2) {
+        1 - default_color_range,
+        1 + default_color_range
+    };
     // TODO: Reset colors at start of blueprint running
     // resize_ColorRGBs(colors, 0);
     for (byte i = 0; i < count; i++) {
@@ -31,6 +34,7 @@ void process_node_model_generate_colors(
 // Runs from a Model Node Process
 //      This system will simply fill the voxes
 zox_sys2(ColorsModelNodeSystem) {
+    byte dbg_log = zox_dbg_model_nodes;
     ushort inner_seed_shift = 39393;
     zox_sys_world();
     zox_sys_begin();
@@ -66,7 +70,11 @@ zox_sys2(ColorsModelNodeSystem) {
         if (!seed->value) {
             seed->value = model_seed;
         }
-        // color node_color = zox_getv(node->value, Color);
+        if (dbg_log) {
+            zox_log("[Colors] ModelNode [%s] Seed %i",
+                zox_getn(model->value),
+                seed);
+        }
         color node_color = zox_has(node, Color) ?
             zox_getv(node, Color) :
             seed_color(&seed->value, inner_seed_shift);
@@ -75,6 +83,9 @@ zox_sys2(ColorsModelNodeSystem) {
             zox_geter(model->value, ModelLods, models);
             for (int j = 0; j < model_lods_max_length; j++) {
                 entity vox = models->value[j];
+                if (!zox_valid(vox)) {
+                    break;
+                }
                 process_node_model_generate_colors(
                     world,
                     node,
@@ -82,6 +93,11 @@ zox_sys2(ColorsModelNodeSystem) {
                     seed->value,
                     node_color,
                     color_count);
+                if (dbg_log >= 2) {
+                    zox_log("   - [Colors] ModelNode [%s] Depth [%i]",
+                        zox_getn(vox),
+                        j);
+                }
             }
         }  else {
             zox_logw("Node Process Entity does not have ModelLods");

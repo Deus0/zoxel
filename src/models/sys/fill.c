@@ -26,7 +26,7 @@ void process_node_model_fill(ecs* world, entity node, entity vox, lint seed, byt
 // Runs from a Model Node Process
 //      This system will simply fill the voxes
 zox_sys2(FillModelNodeSystem) {
-    byte dbg_log = 0;
+    byte dbg_log = zox_dbg_model_nodes;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ModelLink);
@@ -74,7 +74,9 @@ zox_sys2(FillModelNodeSystem) {
         // byte depth = zox_getv(node, NodeDepth);
         // for each model LOD, run shapes
         if (dbg_log) {
-            zox_log(" - Node: Model Fill [%s] Seed %i", zox_getn(model->value), seed);
+            zox_log("[Fill] ModelNode [%s] Seed %i",
+                zox_getn(model->value),
+                seed);
         }
         if (zox_has(model->value, ModelLods)) {
             zox_geter(model->value, ModelLods, models);
@@ -84,15 +86,28 @@ zox_sys2(FillModelNodeSystem) {
                 if (!zox_valid(vox)) {
                     break;
                 }
-                if (!zox_has(vox, NodeDepth) || !zox_has(vox, ColorRGBs) || !zox_has(vox, VoxelNode)) {
-                    zox_loge("Lod Model [%s] [%i] has Invalid Components", zox_getn(vox), j);
+                if (!zox_has(vox, NodeDepth) ||
+                    !zox_has(vox, ColorRGBs) ||
+                    !zox_has(vox, VoxelNode))
+                {
+                    zox_loge("Lod Model [%s] [%i] has Invalid Components",
+                        zox_getn(vox),
+                        j);
                     break;
                 }
                 byte model_depth = zox_getv(vox, NodeDepth);
-                if (dbg_log) {
-                    zox_log("  - Lod Model [%s] Depth [%i]", zox_getn(vox), model_depth);
+                if (dbg_log >= 2) {
+                    zox_log("   - [Fill] ModelNode - [%s] Depth [%i]",
+                        zox_getn(vox),
+                        model_depth);
                 }
-                process_node_model_fill(world, node, vox, seed, position, size);
+                process_node_model_fill(
+                    world,
+                    node,
+                    vox,
+                    seed,
+                    position,
+                    size);
             }
         }  else {
             zox_logw("Node Process Entity does not have ModelLods");
