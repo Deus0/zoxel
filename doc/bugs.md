@@ -1,6 +1,8 @@
 # Bugs
 
 ## Next
+- Let body parts meshes generate
+	- so we can loot them!
 - noticed the item label didnt reduce when placing item
 - Add a sphere collider under npc
 	- detect nearby characters

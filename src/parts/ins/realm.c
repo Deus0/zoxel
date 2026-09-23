@@ -4,18 +4,21 @@ entity spawn_item_body(
     entity texture,
     const char* name)
 {
-    entity e = spawn_realm_item2(world, prefab_item, name);
-    zox_add(e, BodyItem);
-    zox_set(e, ModelLink, { model });
-   //  zox_set(e, TextureLink, { texture });
-    zox_link(world, e, TextureLink, texture);
+    entity e = spawn_realm_item2(
+        world,
+        prefab_item,
+        name);
+    zox_add(e, ItemVox);
     zox_add(e, BodyPart);
+    zox_add(e, BodyItem);
+    zox_setv(e, ModelLink, model);
+    zox_link(world, e, TextureLink, texture);
     return e;
 }
 
 void delayed_texture_generate(ecs* world, entity e) {
     if (zox_valid(e)) {
-        zox_set(e, GenerateTexture, { zox_generate_texture_run });
+        zox_setv(e, GenerateTexture, zox_generate_texture_run);
     }
 }
 
@@ -35,16 +38,13 @@ entity spawn_texture_from_vox(
         zox_set_unique_name(texture, name2);
     }
     // zox_set_name_e(texture, "bodys_texture_head");
-    zox_set(texture, VoxBakeSide, { direction_front });
-    zox_set(texture, ModelLink, { vox });
-    // Do we need this??
-    /*if (zox_valid(vox)) {
-        zox_set(vox, TextureLink, { texture });
-    }*/
-    // Link Model to Texture
-    // zox_set_unique_name(texture_model, "bodys_chest_model_high");
-    // TODO: Spawn Texture with Model Graph
-    delay_event(world, &delayed_texture_generate, texture, 1.0f);
+    zox_setv(texture, VoxBakeSide, direction_front);
+    zox_setv(texture, ModelLink, vox);
+    delay_event(
+        world,
+        &delayed_texture_generate,
+        texture,
+        1.0f);
     return texture;
 }
 
@@ -62,11 +62,10 @@ entity2 spawn_realm_body_part(
 {
     // entity e2 = zox_prefab_from_parent(world, prefab_model_group);
     entity e = zox_ins(world, prefab_model_group);
+    zox_set_unique_name(e, name);
+    zox_add(e, BodyModel);
     // zox_make_prefab(e);
     zox_set_parent(world, e, parent);
-    zox_add(e, BodyModel);
-    zox_set_unique_name(e, name);
-    // zox_set_unique_name(model_group, name);
     entity max_depth_vox = 0;
     ModelLinks models = (ModelLinks) { 0 };
     for (byte j = 0; j < variants; j++) {
@@ -76,7 +75,7 @@ entity2 spawn_realm_body_part(
         entity model_lods = spawn_model_lods(
             world,
             e,
-            prefab_invisible_vox,
+            prefab_block_vox, // prefab_invisible_vox,
             vcolor,
             vseed,
             mdepth,

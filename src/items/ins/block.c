@@ -22,6 +22,14 @@ entity spawn_block_item(
     zox_link(world, e, BlockLink, block);
     zox_setv(e, RaycastRange, block_place_range);
     zox_setv(e, RaycastType, 1);
+    if (zox_has(block, BlockVox)) {
+        zox_add(e, ItemVox);
+    }
+    entity model = zox_has(block, ModelLink) ?
+        zox_getv(block, ModelLink) : 0;
+    if (model) {
+        zox_setv(e, ModelLink, model);
+    }
     // Links
     zox_set_parent(world, e, parent);
     // actually for grass we want to set itemLink differently
@@ -53,10 +61,11 @@ entity spawn_block_item(
     const char* meta_name = zox_getn(block);
     zox_set_unique_name(e, meta_name);
     if (dbg_log) {
-        zox_log("+ New Block Item [%s] Texture [%s] Meta [%s]",
+        zox_log("+ New Block Item [%s] Texture [%s] Meta [%s] BlockVox [%i]",
             voxel_name->value,
             zox_getn(first_texture),
-            meta_name);
+            meta_name,
+            zox_has(block, BlockVox));
     }
     return e;
 }

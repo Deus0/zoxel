@@ -45,6 +45,10 @@ void zox_dbg_test_window_world(ecs* world, int32_t keycode) {
     byte header_font_size = 6 * ui_scale;
     byte list_font_size = 4 * ui_scale;
     byte2 list_padding = byte2_single(2 * ui_scale);
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Realm",
+        .on_click = { &test_spawn_realm2 },
+    };
     // Geometry
     elements[elements_count++] = (SpawnListElement) {
         .text = "Cube",
@@ -62,6 +66,18 @@ void zox_dbg_test_window_world(ecs* world, int32_t keycode) {
         .text = "Item Mesh",
         .on_click = { &zox_dbg_spawn_item_mesh2 },
     };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Block Vox Mesh",
+        .on_click = { &zox_dbg_spawn_block_vox_mesh2 },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Item Meshes",
+        .on_click = { &zox_dbg_spawn_item_meshes_all2 },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Block Vox Meshes",
+        .on_click = { &zox_dbg_spawn_block_vox_meshes_all2 },
+    };
     // Particles
     elements[elements_count++] = (SpawnListElement) {
         .text = "Particles3",
@@ -71,24 +87,7 @@ void zox_dbg_test_window_world(ecs* world, int32_t keycode) {
         .text = "Character Particles3",
         .on_click = { &tst_spawn_character3_particles },
     };
-    // World
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Realm",
-        .on_click = { &test_spawn_realm2 },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Terrain",
-        .on_click = { &test_spawn_terrain2 },
-    };
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Terrain Stream Point",
-        .on_click = { &zox_dbg_spawn_streamer },
-    };
     // Chunk Rendering
-    elements[elements_count++] = (SpawnListElement) {
-        .text = "Tilemap",
-        .on_click = { &zox_tst_spawn_tilemap2 },
-    };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Spawn Chunk3",
         .on_click = { &zox_dbg_spawn_chunk3_button },
@@ -100,6 +99,19 @@ void zox_dbg_test_window_world(ecs* world, int32_t keycode) {
     elements[elements_count++] = (SpawnListElement) {
         .text = "Spawn Chunk3 Textured",
         .on_click = { &zox_dbg_spawn_chunk3_textured },
+    };
+    // World
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Terrain",
+        .on_click = { &test_spawn_terrain2 },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Terrain Stream Point",
+        .on_click = { &zox_dbg_spawn_streamer },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Tilemap",
+        .on_click = { &zox_tst_spawn_tilemap2 },
     };
     // Items
     elements[elements_count++] = (SpawnListElement) {
