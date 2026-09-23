@@ -1,5 +1,14 @@
 # Todo
 
+- item textures missing off block voxes
+- block voxes are offset by half a block now
+	- i changed the spawning so maybe thats why
+
+- we should centre them,  and just reposition them when placing in terrain
+	- for block voxes
+- for our model test - change mesh every 5 seconds to a variant model
+	- showcase variants
+- slime 50% chance drop cookies
 - make lists sorting use child index - after sort it shuffles atm
 - GiveAllQuests cheat function
 - Goal: Give 20 xp for handing in quest

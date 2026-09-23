@@ -45,7 +45,8 @@ entity spawn_realm_model_item_filename(
     entity texture = spawn_texture_from_vox(
         world,
         vox,
-        byte2_single(length));
+        byte2_single(length),
+        direction_front);
     zox_set_unique_name(texture, vox_name);
     zox_set_parent(world, texture, realm);
     // Spawn Item

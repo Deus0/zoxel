@@ -15,3 +15,5 @@
 // TODO: Refactor to model_lods + blueprint for grass
 #include "grass.c"
 #include "generated.c"
+#include "slime.c"
+#include "cookie.c"

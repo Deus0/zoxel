@@ -36,6 +36,7 @@ entity spawn_realm_block_model(
     color block_color,
     byte is_collision,
     entity vox,
+    byte depth,
     entity texture_vox,
     byte texture_direction)
 {
@@ -59,7 +60,7 @@ entity spawn_realm_block_model(
     zox_set_parent(world, block, parent);
     // NOTE: Spawns a VoxTexture for the Items!
     {
-        byte length = octree_size(block_depth);
+        byte length = octree_size(depth);
         int2 texture_size = int2_single(length);
         entity texture = spawn_texture(
             world,
@@ -69,9 +70,8 @@ entity spawn_realm_block_model(
         zox_setv(texture, GenerateTexture, zox_generate_texture_run);
         zox_setv(texture, VoxBakeSide, texture_direction);
         zox_setv(texture, ModelLink, texture_vox);
-        // zox_setv(e, TextureLink, texture);
-        zox_set_parent(world, texture, block);
         zox_link(world, block, TextureLink, texture);
+        zox_set_parent(world, texture, block);
     }
     return block;
 }

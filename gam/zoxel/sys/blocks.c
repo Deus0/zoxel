@@ -93,6 +93,7 @@ zox_sys2(BlocksRealmSpawnSystem) {
                     color_red,
                     0,
                     model,
+                    max_render_depth,
                     vox,
                     direction_up);
                 zox_set(e2, BlockLightPass, { 1 });

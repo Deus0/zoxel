@@ -57,37 +57,44 @@ entity2 spawn_model_lods2(
     };
 }
 
-entity spawn_blueprint_models(
+entity3 spawn_blueprint_models(
     ecs *world,
     entity parent,
     entity nodegraph,
     lint seed,
     const char *name,
     byte depth,
-    // byte3 size,
     byte variants_count)
 {
     lint variant_seed_step = 1209;
+    entity2 first_models;
     entity model_group = zox_ins(world, prefab_model_group);
     zox_set_unique_name(model_group, name);
     zox_set_parent(world, model_group, parent);
     ModelLinks variants = { 0 };
     for (byte i = 0; i < variants_count; i++) {
         lint variant_seed = seed + (lint) i * variant_seed_step;
-        entity model = spawn_model_lods2(
+        entity2 models = spawn_model_lods2(
             world,
             model_group,
             variant_seed,
             depth,
-            name).x;
-        zox_set_unique_name(model, name);
-        add_to_ModelLinks(&variants, model);
+            name);
+        // zox_set_unique_name(model, name);
         // NOTE: Kicks off model generaiton using the blueprint
         spawn_process_model(
             world,
             nodegraph,
-            model);
+            models.x);
+        add_to_ModelLinks(&variants, models.x);
+        if (i == 0) {
+            first_models = models;
+        }
     }
     zox_set_ptr(model_group, ModelLinks, variants);
-    return model_group;
+    return (entity3) {
+        model_group,
+        first_models.x,
+        first_models.y
+    };
 }

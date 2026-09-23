@@ -16,49 +16,16 @@ entity spawn_item_body(
     return e;
 }
 
-void delayed_texture_generate(ecs* world, entity e) {
-    if (zox_valid(e)) {
-        zox_setv(e, GenerateTexture, zox_generate_texture_run);
-    }
-}
-
-entity spawn_texture_from_vox(
-    ecs* world,
-    entity vox,
-    byte2 tsize)
-{
-    // # # # Spawn Item Texture # # #
-    entity texture = spawn_texture(
-        world,
-        prefab_vox_texture,
-        byte2_to_int2(tsize));
-    {
-        char name2[128];
-        sprintf(name2, "texture_%s", zox_getn(vox));
-        zox_set_unique_name(texture, name2);
-    }
-    // zox_set_name_e(texture, "bodys_texture_head");
-    zox_setv(texture, VoxBakeSide, direction_front);
-    zox_setv(texture, ModelLink, vox);
-    delay_event(
-        world,
-        &delayed_texture_generate,
-        texture,
-        1.0f);
-    return texture;
-}
-
 // NOTE: Spawns model group, texture and item
 entity2 spawn_realm_body_part(
     ecs* world,
     entity parent,
     byte variants,
     byte max_depth,
-    // byte3 size,
     entity blueprint,
     const char* name,
     lint seed,
-    byte2 tsize,
+    byte2 texture_size,
     byte slot_type)
 {
     // entity e2 = zox_prefab_from_parent(world, prefab_model_group);
@@ -105,7 +72,8 @@ entity2 spawn_realm_body_part(
     entity texture = spawn_texture_from_vox(
         world,
         max_depth_vox,
-        tsize);
+        texture_size,
+        direction_front);
     zox_set_parent(world, texture, parent);
     // NOTE: This has GenerateModel on it atm
     // zox_setv(max_depth_vox, GenerateModel, 0);

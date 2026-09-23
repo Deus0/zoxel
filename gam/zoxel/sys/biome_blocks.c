@@ -1,7 +1,11 @@
 // TODO: Refactor these into Biomes from Terrain
 // Blocks >> Chunks >> Biomes >> Terrain ?
 
-void generate_colors(lint seed, Colors* colors, byte dbg_log) {
+void generate_colors(
+    lint seed,
+    Colors* colors,
+    byte dbg_log)
+{
     srand((uint) seed);
     // One random seed color, then the rest are related off it
     float3 dirt_hsv = (float3) {
@@ -298,14 +302,16 @@ zox_sys2(BiomeBlocksSystem) {
         }
         // Grass Model
         {
+            byte max_depth = block_depth_limits.y;
             color weed_color = color_mix(grass_color, stone_color, 0.8f);
             byte grass_color_mutation = 15;
-            byte mdepth_vode = block_depth_limits.y;
+            // create model group for grass
             entity model_group = zox_ins(world, prefab_model_group);
             zox_set_unique_name(model_group, "model_group_grass");
-            zox_setv(model_group, MaxRenderDepth, mdepth_vode);
+            zox_setv(model_group, MaxRenderDepth, max_depth);
             zox_set_parent(world, model_group, e);
-            entity2 variant = (entity2) { 0 };
+            // entity2 variant = (entity2) { 0 };
+            entity texture_vox = 0;
             ModelLinks variants = (ModelLinks) { 0 };
             for (int j = 0; j < grass_variants; j++) {
                 lint variant_seed = grass_seed +
@@ -313,19 +319,22 @@ zox_sys2(BiomeBlocksSystem) {
                 color variant_color = weed_color;
                 srand(variant_seed);
                 variant_color = color_mutate(variant_color, grass_color_mutation);
-                entity2 e3 = spawn_model_grass(
+                entity2 e2 = spawn_model_grass(
                     world,
                     prefab_vox,
                     variant_seed,
-                    mdepth_vode,
+                    max_depth,
                     variant_color);
-                entity model = e3.x;
+                entity model = e2.x;
                 zox_set_parent(world, model, model_group);
                 add_to_ModelLinks(&variants, model);
-                variant = e3;
+                // variant = e2;
+                if (j == 0) {
+                    texture_vox = e2.y;
+                }
             }
             zox_set_ptr(model_group, ModelLinks, variants);
-            entity texture_vox = variant.y;
+            // entity texture_vox = variant.y;
             entity block = spawn_realm_block_model(
                 world,
                 e,
@@ -334,11 +343,12 @@ zox_sys2(BiomeBlocksSystem) {
                 weed_color,
                 0,
                 model_group,
+                max_depth,
                 texture_vox,
                 direction_front);
             zox_add(block, BlockGrass);
-            zox_set(block, BlockLightPass, { 1 });
-            zox_set(block, BlockSound, { 1 });
+            zox_setv(block, BlockLightPass, 1);
+            zox_setv(block, BlockSound, 1);
         }
         // Dirt Piles on ground
         {
@@ -362,6 +372,7 @@ zox_sys2(BiomeBlocksSystem) {
                 dirt_color,
                 0,
                 model,
+                max_depth,
                 texture_vox,
                 direction_up);
             zox_set(block, BlockLightPass, { 1 });
@@ -388,6 +399,7 @@ zox_sys2(BiomeBlocksSystem) {
                 dirt_color,
                 1,
                 model,
+                max_depth,
                 texture_model,
                 direction_front);
         }
@@ -413,6 +425,7 @@ zox_sys2(BiomeBlocksSystem) {
                 flowers_color,
                 0,
                 model,
+                max_depth,
                 texture_model,
                 direction_front);
             zox_add(block, BlockFlower);

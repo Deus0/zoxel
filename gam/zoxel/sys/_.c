@@ -19,19 +19,20 @@ void zox_systems_zoxel(ecs *world) {
         StatsRealmSpawnSystem,
         zoxp_spawn,
         [in] realms.GenerateRealm,
-        [none] realms.Realm
+        [none] realms.Realm,
     );
     zox_system_1(
-        FoodRealmSpawnSystem,
+        food_generate_system,
         zoxp_spawn,
+        [in] core.Seed,
         [in] realms.GenerateRealm,
-        [none] realms.Realm
+        [none] realms.Realm,
     );
     zox_system_1(
         SkillsRealmSpawnSystem,
         zoxp_spawn,
         [in] realms.GenerateRealm,
-        [none] realms.Realm
+        [none] realms.Realm,
     );
     zox_system_1(
         QuestsRealmSpawnSystem,
