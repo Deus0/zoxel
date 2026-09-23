@@ -1,6 +1,10 @@
-
-
-entity spawn_model2(ecs* world, entity parent, lint seed, byte max_depth, byte depth) {
+entity spawn_model2(
+    ecs* world,
+    entity parent,
+    lint seed,
+    byte max_depth,
+    byte depth)
+{
     byte ddepth = max_depth - depth;
     short length = octree_size(ddepth);
     float bscale = ((float) length) / 64.0f;
@@ -16,30 +20,41 @@ entity spawn_model2(ecs* world, entity parent, lint seed, byte max_depth, byte d
 }
 
 // color c,
-entity spawn_model_lods2(
+entity2 spawn_model_lods2(
     ecs* world,
     entity parent,
     lint seed,
     byte max_depth,
-    const char* label,
-    ModelLods* mlods)
+    const char* label)
 {
     // srand(seed);
     // c = color_mutate(c, 40);
     entity e = zox_new();
     zox_name("model_lods");
+    zox_add(e, Model);
+    zox_setv(e, Seed, seed);
+    zox_setv(e, MaxRenderDepth, max_depth);
     zox_set_parent(world, e, parent);
-    zox_set(e, Seed, { seed });
-    zox_set(e, MaxRenderDepth, { max_depth });
+    entity vox = 0;
+    ModelLods lods = { 0 };
     for (ushort depth = 0; depth <= max_depth; depth++) {
-        // byte depth = i;
-        entity e2 = spawn_model2(world, e, seed, max_depth, depth);
+        entity e2 = spawn_model2(
+            world,
+            e,
+            seed,
+            max_depth,
+            depth);
         zox_set_unique_name(e2, label);
-        // zox_set(e2, Color, { c });
-        mlods->value[depth] = e2;
+        lods.value[depth] = e2;
+        if (depth == max_depth) {
+            vox = e2;
+        }
     }
-    zox_set_ptr(e, ModelLods, *mlods);
-    return e;
+    zox_set_data(e, ModelLods, lods);
+    return (entity2) {
+        e,
+        vox
+    };
 }
 
 entity spawn_blueprint_models(
@@ -59,16 +74,12 @@ entity spawn_blueprint_models(
     ModelLinks variants = { 0 };
     for (byte i = 0; i < variants_count; i++) {
         lint variant_seed = seed + (lint) i * variant_seed_step;
-        ModelLods lods = { 0 };
         entity model = spawn_model_lods2(
             world,
             model_group,
-            // color_red,
             variant_seed,
             depth,
-            // size,
-            name,
-            &lods);
+            name).x;
         zox_set_unique_name(model, name);
         add_to_ModelLinks(&variants, model);
         // NOTE: Kicks off model generaiton using the blueprint

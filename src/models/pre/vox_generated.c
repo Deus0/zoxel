@@ -8,6 +8,5 @@ entity spawn_prefab_vox_generated(ecs *world, entity prefab) {
     zox_setv(e, Seed, 0);
     zox_setv(e, GenerateModel, zox_generate_model_run);
     zox_setv(e, VoxType, 0);
-    // zox_setv(e, Busy, 1);
     return e;
 }

@@ -2,13 +2,21 @@
 
 entity spawn_entity_mesh_clone(
     ecs* world,
-    entity block,
+    entity e,
     float3 spawn_position,
     float rotate_speed)
 {
-    entity model = zox_has(block, ModelLink) ?
-        zox_getv(block, ModelLink) :
+    if (!e) {
+        zox_loge("Invalid [e]");
+        return 0;
+    }
+    entity model = zox_has(e, ModelLink) ?
+        zox_getv(e, ModelLink) :
         0;
+    if (!model) {
+        zox_loge("Invalid [model]");
+        return 0;
+    }
     entity mesh = get_max_model_mesh(world, model);
     if (!mesh) {
         zox_loge("[dbg_block_vox_mesh] Invalid Model [mesh]:[%s]", zox_getn(model));
@@ -20,6 +28,12 @@ entity spawn_entity_mesh_clone(
     }
     // float3 camera_position = zox_getv(camera, Position3D);
     entity clone = spawn_mesh3_clone(world, mesh);
+    if (!clone) {
+        zox_loge("Invalid [clone] on [%s]:[%s]",
+            zox_getn(e),
+            zox_getn(model));
+        return 0;
+    }
     zox_add(clone, VoxMesh);
     zox_set_unique_name(clone, "block_item_mesh");
     zox_setv(clone, Position3D, spawn_position);

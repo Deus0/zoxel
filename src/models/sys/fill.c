@@ -35,8 +35,9 @@ zox_sys2(FillModelNodeSystem) {
         zox_sys_e();
         zox_sys_i(ModelLink, model);
         zox_sys_i(ModelSize, bounds);
-        if (!zox_valid(model->value))
-        {
+        if (!zox_valid(model->value)) {
+            zox_logw("[FillModelNodeSystem] Node has Invalid Model [%s]", zox_getn(e));
+            zox_add(e, TriggerEnd);
             continue;
         }
         entity node = zox_get_link(world, e, CurrentNodeLink);
@@ -55,8 +56,12 @@ zox_sys2(FillModelNodeSystem) {
         if (node_type != zox_model_node_fill) {
             continue;
         }
-        if (!zox_has(node, NodeVoxel) || !zox_has(node, Shape3Position) || !zox_has(node, Shape3Size)) {
-            zox_logw("Node [%s] has invalid components for [zox_model_node_fill].", zox_getn(node));
+        if (!zox_has(node, NodeVoxel) ||
+            !zox_has(node, Shape3Position) ||
+            !zox_has(node, Shape3Size))
+        {
+            zox_loge("[FillModelNodeSystem] Node [%s] has invalid components for [zox_model_node_fill].",
+                zox_getn(node));
             continue;
         }
         byte3 position = zox_getv(node, Shape3Position);
@@ -64,7 +69,8 @@ zox_sys2(FillModelNodeSystem) {
         if (!byte3_equals(bounds->value, byte3_zero)) {
             scale_node_transform(bounds->value, &position, &size);
         }
-        lint seed = zox_getv(model->value, Seed);
+        lint seed = zox_has(model->value, Seed) ?
+            zox_getv(model->value, Seed) : 0;
         // byte depth = zox_getv(node, NodeDepth);
         // for each model LOD, run shapes
         if (dbg_log) {

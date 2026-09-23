@@ -12,6 +12,14 @@ entity spawn_mesh3_clone(
     const MeshIndicies* source_indicies = zox_get(clonee, MeshIndicies);
     const MeshVertices* source_verts = zox_get(clonee, MeshVertices);
     const MeshColorRGBs* source_colors = zox_get(clonee, MeshColorRGBs);
+    if (!source_indicies->value ||
+        !source_verts->value ||
+        !source_colors->value)
+    {
+        zox_loge("Mesh3 Invalid Source [%s]",
+            zox_getn(clonee));
+        return 0;
+    }
     // Initialize new data
     MeshIndicies indicies = { 0 };
     MeshVertices verts = { 0 };
@@ -29,7 +37,8 @@ entity spawn_mesh3_clone(
         !verts.value ||
         !colors.value)
     {
-        zox_loge("Mesh3 data malloc failed");
+        zox_loge("Mesh3 data malloc failed clonee [%s]",
+            zox_getn(clonee));
         return 0;
     }
     memcpy(

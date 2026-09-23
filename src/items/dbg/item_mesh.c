@@ -78,6 +78,10 @@ entity zox_dbg_spawn_item_mesh(
     }
     // float3 camera_position = zox_getv(camera, Position3D);
     entity mesh_clone = spawn_mesh3_clone(world, mesh);
+    if (!mesh_clone) {
+        zox_loge("Invalid [mesh_clone]");
+        return 0;
+    }
     zox_add(mesh_clone, VoxMesh);
     zox_set_unique_name(mesh_clone, "block_item_mesh");
     zox_setv(mesh_clone, Position3D, spawn_position);

@@ -1,16 +1,23 @@
 // Uses a model node to fill with shape data
 // DialogueUILink
 
-void process_node_model_paint(ecs* world, entity node, entity vox, lint seed, byte3 position, byte3 size) {
+void process_node_model_paint(
+    ecs* world,
+    entity node,
+    entity vox,
+    lint seed,
+    byte3 position,
+    byte3 size)
+{
     if (!zox_valid(node) || !zox_valid(vox)) {
         return;
     }
     if (!zox_has(node, NodeVoxel) || !zox_has(node, Shape3Position) || !zox_has(node, Shape3Size)) {
-        zox_log("Node [%s] has invalid components.", zox_getn(node));
+        zox_loge("[process_node_model_paint] Node [%s] has invalid components.", zox_getn(node));
         return;
     }
     if (!zox_has(vox, NodeDepth) || !zox_has(vox, ColorRGBs) || !zox_has(vox, VoxelNode)) {
-        zox_log("Vox [%s] has invalid components.", zox_get_name(vox));
+        zox_loge("[process_node_model_paint] Vox [%s] has invalid components.", zox_get_name(vox));
         return;
     }
     byte paint_type = zox_getv(node, NodeVoxel);
@@ -44,6 +51,8 @@ zox_sys2(PaintModelNodeSystem) {
         zox_sys_i(ModelLink, model);
         zox_sys_i(ModelSize, bounds);
         if (!zox_valid(model->value)) {
+            zox_logw("[PaintModelNodeSystem] Node has Invalid Model [%s]", zox_getn(e));
+            zox_add(e, TriggerEnd);
             continue;
         }
         entity node = zox_get_link(world, e, CurrentNodeLink);
@@ -55,8 +64,12 @@ zox_sys2(PaintModelNodeSystem) {
             continue;
         }
         // !zox_has(node, NodeDepth) ||
-        if (!zox_has(node, NodeVoxel) || !zox_has(node, Shape3Position) || !zox_has(node, Shape3Size)) {
-            zox_logw("Node [%s] has invalid components for [zox_model_node_fill].", zox_getn(node));
+        if (!zox_has(node, NodeVoxel) ||
+            !zox_has(node, Shape3Position) ||
+            !zox_has(node, Shape3Size))
+        {
+            zox_loge("Node [%s] has invalid components for [zox_model_node_fill].",
+                zox_getn(node));
             continue;
         }
         byte3 position = zox_getv(node, Shape3Position);
@@ -66,7 +79,8 @@ zox_sys2(PaintModelNodeSystem) {
         }
         // for each model LOD, run shapes
         zox_logv(" - Node: Model Paint [%s]", zox_get_name(model->value));
-        zox_geter(model->value, Seed, seed);
+        lint seed = zox_has(model->value, Seed) ?
+            zox_getv(model->value, Seed) : 0;
         if (zox_has(model->value, ModelLods)) {
             zox_geter(model->value, ModelLods, models);
             for (int j = 0; j < model_lods_max_length; j++) {
@@ -75,11 +89,11 @@ zox_sys2(PaintModelNodeSystem) {
                     world,
                     node,
                     v,
-                    seed->value,
+                    seed,
                     position,
                     size);
             }
-        }  else {
+        } else {
             zox_logw("Node Process Entity does not have ModelLods");
         }
         zox_add(e, TriggerEnd);

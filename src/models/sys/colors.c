@@ -1,15 +1,22 @@
 // Uses a model node to fill with shape data
 
-void process_node_model_generate_colors(ecs* world, entity n, entity v, lint seed, color node_color, byte count) {
-    if (!zox_valid(v) || !zox_valid(n)) {
+void process_node_model_generate_colors(
+    ecs* world,
+    entity node,
+    entity vox,
+    lint seed,
+    color node_color,
+    byte count)
+{
+    if (!zox_valid(vox) || !zox_valid(node)) {
         return;
     }
-    if (!zox_has(v, ColorRGBs)) {
-        zox_loge("Vox [%s] has invalid components.", zox_get_name(v));
+    if (!zox_has(vox, ColorRGBs)) {
+        zox_loge("[process_node_model_generate_colors] Vox [%s] has invalid components.", zox_get_name(vox));
         return;
     }
     color_rgb vcolor_rgb = color_to_color_rgb(node_color);
-    zox_muter(v, ColorRGBs, colors);
+    zox_muter(vox, ColorRGBs, colors);
     float2 crange = (float2) { 1 - default_color_range, 1 + default_color_range };
     // TODO: Reset colors at start of blueprint running
     // resize_ColorRGBs(colors, 0);
@@ -34,6 +41,8 @@ zox_sys2(ColorsModelNodeSystem) {
         zox_sys_i(ModelLink, model);
         zox_sys_o(Seed, seed);
         if (!zox_valid(model->value)) {
+            zox_logw("[ColorsModelNodeSystem] Node has Invalid Model [%s]", zox_getn(e));
+            zox_add(e, TriggerEnd);
             continue;
         }
         entity node = zox_get_link(world, e, CurrentNodeLink);
@@ -45,17 +54,22 @@ zox_sys2(ColorsModelNodeSystem) {
             continue;
         }
         if (!zox_has(node, NodeColors)) {
-            zox_loge("Node (colors) [%s] has invalid components.", zox_getn(node));
+            zox_loge("Node (colors) [%s] has invalid components.",
+                zox_getn(node));
             continue;
         }
         // for each model LOD, run shapes
-        zox_logv(" - Node: Model Colors [%s]", zox_getn(model->value));
-        lint model_seed = zox_getv(model->value, Seed);
+        zox_logv(" - Node: Model Colors [%s]",
+            zox_getn(model->value));
+        lint model_seed = zox_has(model->value, Seed) ?
+            zox_getv(model->value, Seed) : 0;
         if (!seed->value) {
             seed->value = model_seed;
         }
         // color node_color = zox_getv(node->value, Color);
-        color node_color = zox_has(node, Color) ? zox_getv(node, Color) : seed_color(&seed->value, inner_seed_shift);
+        color node_color = zox_has(node, Color) ?
+            zox_getv(node, Color) :
+            seed_color(&seed->value, inner_seed_shift);
         byte color_count = zox_getv(node, NodeColors);
         if (zox_has(model->value, ModelLods)) {
             zox_geter(model->value, ModelLods, models);

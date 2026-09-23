@@ -20,13 +20,15 @@ entity spawn_model_generated(
         sprintf(name2, "model_%s", name);
         zox_name(name2);
     }
-    zox_set_parent(world, e, parent);
     zox_setv(e, Seed, seed);
-    zox_setv(e, VoxType, vox_type);
     zox_setv(e, Color, fill);
-    zox_setv(e, GenerateModel, zox_generate_model_run);
-    zox_setv(e, RenderDepth, depth);
-    zox_setv(e, MaxRenderDepth, max_depth);
+    // zox_setv(e, RenderDepth, depth);
+    // zox_setv(e, MaxRenderDepth, max_depth);
+    zox_set_parent(world, e, parent);
+    if (vox_type) {
+        zox_setv(e, VoxType, vox_type);
+        zox_setv(e, GenerateModel, zox_generate_model_run);
+    }
     return e;
 }
 
@@ -47,9 +49,10 @@ entity2 spawn_model_lods_generated(
         zox_name(name2);
     }
     zox_set_unique_name(e, "model_lods");
+    zox_add(e, Model);
     zox_setv(e, MaxRenderDepth, max_depth);
     entity texture_model = 0;
-    ModelLods lods;
+    ModelLods lods = { 0 };
     for (byte depth = 0; depth <= max_depth; depth++) {
         entity e2 = spawn_model_generated(
             world,
@@ -66,7 +69,7 @@ entity2 spawn_model_lods_generated(
             texture_model = e2;
         }
     }
-    zox_set_ptr(e, ModelLods, lods);
+    zox_set_data(e, ModelLods, lods);
     return (entity2) {
         e,
         texture_model

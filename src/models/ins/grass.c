@@ -14,10 +14,10 @@ entity2 spawn_model_grass(
     zox_set_unique_name(e, "model_grass");
     zox_add(e, Model);
     zox_setv(e, MaxRenderDepth, max_depth);
-    ModelLods lods;
-    for (byte rdepth = 0; rdepth <= max_depth; rdepth++) {
-        short node_length = octree_size(rdepth);
-        byte ddepth = max_depth - rdepth;
+    ModelLods lods = { 0 };
+    for (byte depth = 0; depth <= max_depth; depth++) {
+        short node_length = octree_size(depth);
+        byte ddepth = max_depth - depth;
         uint place_count = place_count_big / (pow(ddepth + 1, 2 + ddepth));
         if (place_count == 0) {
             place_count = 1;
@@ -25,7 +25,7 @@ entity2 spawn_model_grass(
         entity e2 = spawn_vox_basic(
             world,
             prefab_lod,
-            rdepth,
+            depth,
             max_depth);
         zox_set_unique_name(e2, "model_lod_grass");
         zox_setv(e2, Seed, seed);
@@ -33,18 +33,18 @@ entity2 spawn_model_grass(
         zox_setv(e2, GenerateModel, zox_generate_model_run);
         zox_setv(e2, Color, vox_color);
         zox_setv(e2, RubbleHeight, node_length - 1);
-        zox_setv(e2, RenderDepth, rdepth);
+        zox_setv(e2, RenderDepth, depth);
         zox_setv(e2, MaxRenderDepth, max_depth);
         zox_setv(e2, RubbleCount, place_count);
-        lods.value[rdepth] = e2;
-        if (rdepth == max_depth) {
+        lods.value[depth] = e2;
+        if (depth == max_depth) {
             vox_lod = e2;
         }
         if (dbg_log) {
-            zox_log("Model Grass - Depth [%i]", rdepth);
+            zox_log("Model Grass - Depth [%i]", depth);
         }
     }
-    zox_set_ptr(e, ModelLods, lods);
+    zox_set_data(e, ModelLods, lods);
     return (entity2) {
         e,
         vox_lod
