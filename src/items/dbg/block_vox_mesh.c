@@ -148,12 +148,10 @@ void zox_dbg_spawn_block_vox_meshes_all(
             blocks[count++] = block;
         }
     }
-
     if (!count) {
         zox_loge("[dbg_block_vox_meshes_all] No models found in blocks.");
         return;
     }
-
     int columns = (int) sqrtf((float) count);
     if (columns * columns < (int) count) {
         columns++;

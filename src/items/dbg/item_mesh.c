@@ -86,6 +86,7 @@ entity zox_dbg_spawn_item_mesh(
     zox_set_unique_name(mesh_clone, "block_item_mesh");
     zox_setv(mesh_clone, Position3D, spawn_position);
     zox_setv(mesh_clone, Rotation3D, quaternion_identity);
+    zox_setv(mesh_clone, Scale1, 1);
     add_eternal_euler(
         world,
         mesh_clone,

@@ -93,30 +93,31 @@ entity spawn_item_world_from_meta(
     float scale)
 {
     // TODO: Spawn model clone here too
-    entity e;
+    entity pickup;
     if (zox_has(meta, ItemVox)) {
-        e = zox_ins(world, prefab_pickup);
-        zox_name("pickup");
-        zox_setv(e, Position3D, position);
-        zox_setv(e, Scale1, scale * 0.25f);
+        pickup = zox_ins(world, prefab_pickup);
+        zox_set_unique_name(pickup, "pickup");
+        zox_setv(pickup, Position3D, position);
+        zox_setv(pickup, Scale1, 0.5f);
         entity mesh = spawn_item_vox_mesh(world, meta);
-        zox_set_parent(world, mesh, e);
+        zox_set_parent(world, mesh, pickup);
         zox_setv(mesh, LocalPosition3D, float3_zero);
-        zox_setv(mesh, LocalScale1, 1);
+        zox_setv(mesh, Scale1, 1);
+        // zox_setv(mesh, LocalScale1, 0.5f);
     } else {
         entity block = zox_get_link(world, meta, BlockLink);
         if (block) {
-            e = spawn_pickup_block(
+            pickup = spawn_pickup_block(
                 world,
                 block,
                 position,
                 scale).x;
         } else {
-            e = spawn_pickup_basic(world, position);
+            pickup = spawn_pickup_basic(world, position);
         }
     }
-    zox_link(world, e, ItemLink, meta);
-    return e;
+    zox_link(world, pickup, ItemLink, meta);
+    return pickup;
 }
 
 entity spawn_item_world(
@@ -127,7 +128,7 @@ entity spawn_item_world(
     float scale)
 {
     entity meta = zox_get_prefab(world, item);
-    entity e = spawn_item_world_from_meta(
+    entity pickup = spawn_item_world_from_meta(
         world,
         realm,
         item,
@@ -135,7 +136,7 @@ entity spawn_item_world(
         scale);
     if (zox_has(item, Quantity)) {
         byte quantity = zox_getv(item, Quantity);
-        zox_setv(e, Quantity, quantity);
+        zox_setv(pickup, Quantity, quantity);
     }
-    return e;
+    return pickup;
 }

@@ -103,6 +103,16 @@ void transform3_children_system(iter* it) {
                 (zox_has(e, Scale1) ?
                     float3_single(zox_getv(e, Scale1)) :
                     float3_one);
+        if (dbg_log) {
+            zox_log("Parent Transform3 [%s] at [%fx%fx%f] S [%fx%fx%f]",
+                zox_sys_e_name,
+                position->value.x,
+                position->value.y,
+                position->value.z,
+                world_scale.x,
+                world_scale.y,
+                world_scale.z);
+        }
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
@@ -114,10 +124,6 @@ void transform3_children_system(iter* it) {
                     rotation->value,
                     world_scale);
             }
-        }
-        if (dbg_log) {
-            zox_log("Parent Transform3 [%s]",
-                zox_sys_e_name);
         }
         zox_sys_increment();
     }

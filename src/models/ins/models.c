@@ -8,13 +8,19 @@ entity spawn_model2(
     byte ddepth = max_depth - depth;
     short length = octree_size(ddepth);
     float bscale = ((float) length) / 64.0f;
-    zox_instance(prefab_vox);
+
+    entity e = spawn_vox(
+        world,
+        prefab_vox,
+        depth,
+        max_depth);
+    /*zox_instance(prefab_vox);
+     z ox_set(e, NodeDepth, { depth });         *
+     zox_set(e, RenderDepth, { depth });
+     zox_set(e, BlockScale, { bscale });
+     zox_set(e, MaxRenderDepth, { max_depth });*/
     zox_set_parent(world, e, parent);
     zox_set(e, Seed, { seed });
-    zox_set(e, NodeDepth, { depth });
-    zox_set(e, RenderDepth, { depth });
-    zox_set(e, BlockScale, { bscale });
-    zox_set(e, MaxRenderDepth, { max_depth });
     // zox_set(e, ChunkSize, { byte3_to_int3(rsize) });
     return e;
 }

@@ -1,7 +1,10 @@
 // spawn random pickup
 entity dbg_item_pickup;
 
-entity zox_tst_spawn_item_pickup(ecs* world, entity player) {
+entity zox_tst_spawn_item_pickup(
+    ecs* world,
+    entity player)
+{
     byte filter_voxes = 1;
     float rotate_speed = 16;
     float distance = frand_range(0.6f, 0.9f);

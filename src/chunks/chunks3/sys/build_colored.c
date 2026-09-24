@@ -139,7 +139,8 @@ void build_voxel_mesh_c(
     byte depth,
     byte3 position,
     float3 bounds_offset,
-    float scale, byte is_split)
+    float scale,
+    byte is_split)
 {
     // If data is null
     if (!voxels) {
@@ -160,7 +161,19 @@ void build_voxel_mesh_c(
             // Models dont have these set??
             const VoxelNode* child_voxels = has_vkids ? &vkids[i] : voxels;
             byte3 child_position = byte3_add(position, octree_positions[i]);
-            build_voxel_mesh_c(root, child_voxels, noctrees, nrdepths, vcolors, mesh, target_depth, depth, child_position, bounds_offset, scale, is_split);
+            build_voxel_mesh_c(
+                root,
+                child_voxels,
+                noctrees,
+                nrdepths,
+                vcolors,
+                mesh,
+                target_depth,
+                depth,
+                child_position,
+                bounds_offset,
+                scale,
+                is_split);
         }
         return;
     }
@@ -176,7 +189,16 @@ void build_voxel_mesh_c(
     }
     color_rgb voxel_color = vcolors->value[voxel];
     float3 positionf = byte3_to_float3(position);
-    build_voxel_faces_colored(root, noctrees, mesh, voxel_color, scale, positionf, bounds_offset, depth, position);
+    build_voxel_faces_colored(
+        root,
+        noctrees,
+        mesh,
+        voxel_color,
+        scale,
+        positionf,
+        bounds_offset,
+        depth,
+        position);
 }
 
 // Builds Colored Vox Meshes
@@ -224,10 +246,22 @@ zox_sys2(ChunkColorsBuildSystem) {
             noctrees[j] = n ? zox_get(neighbors->value[j], VoxelNode) : NULL;
             nrdepths[j] = n ? zox_getv(n, RenderDepth) : 0;
         }
-        float3 b = calculate_vox_bounds(csize->value, scale->value);
-        float3 position = float3_scale(b, -1);
-        short vlength = octree_size(ndepth->value);
+        ushort vlength = octree_size(ndepth->value);
+        int3 chunk_size = int3_single(vlength);
+        float3 bounds = calculate_vox_bounds(
+            csize->value, // chunk_size,
+            scale->value);
+        float3 position = float3_scale(bounds, -1);
         float cscale = scale->value * vlength;
+        /*zox_log("Colored Chunk [%s] Size [%ix%ix%i] Offset [%fx%fx%f] - Scale [%f]",
+            zox_sys_e_name,
+            csize->value.x,
+            csize->value.y,
+            csize->value.z,
+            position.x,
+            position.y,
+            position.z,
+            scale->value);*/
         // initialize our mesh data
         mesh_colored_build_data mesh = {
             .indicies = create_int_array_d(initial_dynamic_array_size),
@@ -235,7 +269,19 @@ zox_sys2(ChunkColorsBuildSystem) {
             .colors = create_color_rgb_array_d(initial_dynamic_array_size)
         };
         // read_lock_VoxelNode(voxels);
-        build_voxel_mesh_c(voxels, voxels, noctrees, nrdepths, vcolors, &mesh, rdepth->value, 0, byte3_zero, position, cscale, is_split);
+        build_voxel_mesh_c(
+            voxels,
+            voxels,
+            noctrees,
+            nrdepths,
+            vcolors,
+            &mesh,
+            rdepth->value,
+            0,
+            byte3_zero,
+            position,
+            cscale,
+            is_split);
         // read_unlock_VoxelNode(voxels);
         indicies->length = mesh.indicies->size;
         vertices->length = mesh.vertices->size;

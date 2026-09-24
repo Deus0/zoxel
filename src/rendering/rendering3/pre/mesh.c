@@ -4,11 +4,8 @@ entity spawn_prefab_mesh3(ecs* world) {
     zox_prefab_name("mesh3");
     zox_add(e, Mesh);
     zox_add(e, Mesh3);
-    // Data
+    // Transform
     zox_setv(e, TransformMatrix, float4x4_identity);
-#ifdef zox_non_fragment_parent
-    // zox_add(e, EcsParent);
-#endif
     // Mesh Data
     zox_add(e, Mesh);
     zox_add(e, MeshIndicies);

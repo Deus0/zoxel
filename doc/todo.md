@@ -1,13 +1,14 @@
 # Todo
 
-
-- item textures missing off block voxes
-- block voxes are offset by half a block now
+- just fix the missing textures now
+	- item textures missing off block voxes
+	- sand wasnt added to tilemap too
+-x block voxes are offset by half a block now
 	- i changed the spawning so maybe thats why
 	- fix position of them
 	
 
-- we should centre them,  and just reposition them when placing in terrain
+-x we should centre them,  and just reposition them when placing in terrain
 	- for block voxes
 - for our model test - change mesh every 5 seconds to a variant model
 	- showcase variants

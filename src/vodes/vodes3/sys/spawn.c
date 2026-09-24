@@ -1,5 +1,8 @@
 // Our main spawn function
-void spawned_block_vox(ecs *world, spawned_block_data* data) {
+void spawned_block_vox(
+    ecs *world,
+    spawned_block_data* data)
+{
     if (!zox_has(data->block, BlockPrefabLink)) {
         return;
     }

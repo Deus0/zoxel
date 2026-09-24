@@ -55,8 +55,6 @@ void zox_systems_basics3(ecs* world) {
         [in] transforms.TransformMatrix,
         [in] rendering.RenderDisabled,
         [none] rendering.VoxMesh,
-        // [none] rendering.MeshColorRGBs,
-        // [none] !rendering.UvsGPULink,
         [none] !rendering3.SkeletonMesh,
         [none] !core.Initialize,
     );
