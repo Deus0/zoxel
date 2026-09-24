@@ -21,6 +21,7 @@ zoxc_state(PickedUp);
 #include "pre/_.c"
 #include "ins/_.c"
 #include "sys/_.c"
+#include "dbg/_.c"
 
 void import_pickups(ecs* world) {
     zox_module(pickups);

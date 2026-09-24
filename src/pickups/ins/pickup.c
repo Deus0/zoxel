@@ -20,6 +20,7 @@ entity2 spawn_pickup_cube_texture(
     entity e = zox_ins(world, prefab_pickup);
     zox_name("pickup");
     zox_setv(e, Position3D, position);
+    zox_setv(e, Scale1, scale);
     entity cube;
     if (zox_valid(texture)) {
         cube = spawn_cube_textured(
@@ -38,7 +39,7 @@ entity2 spawn_pickup_cube_texture(
     zox_set_parent(world, cube, e);
     // tag local transform
     zox_setv(cube, LocalPosition3D, float3_zero);
-    zox_setv(cube, LocalScale1, scale);
+    zox_setv(cube, LocalScale1, 1); // scale);
     return (entity2) {
         e,
         cube
@@ -82,4 +83,59 @@ entity2 spawn_pickup_block(
         position,
         scale,
         pickup_texture);
+}
+
+entity spawn_item_world_from_meta(
+    ecs* world,
+    entity realm,
+    entity meta,
+    float3 position,
+    float scale)
+{
+    // TODO: Spawn model clone here too
+    entity e;
+    if (zox_has(meta, ItemVox)) {
+        e = zox_ins(world, prefab_pickup);
+        zox_name("pickup");
+        zox_setv(e, Position3D, position);
+        zox_setv(e, Scale1, scale * 0.25f);
+        entity mesh = spawn_item_vox_mesh(world, meta);
+        zox_set_parent(world, mesh, e);
+        zox_setv(mesh, LocalPosition3D, float3_zero);
+        zox_setv(mesh, LocalScale1, 1);
+    } else {
+        entity block = zox_get_link(world, meta, BlockLink);
+        if (block) {
+            e = spawn_pickup_block(
+                world,
+                block,
+                position,
+                scale).x;
+        } else {
+            e = spawn_pickup_basic(world, position);
+        }
+    }
+    zox_link(world, e, ItemLink, meta);
+    return e;
+}
+
+entity spawn_item_world(
+    ecs* world,
+    entity realm,
+    entity item,
+    float3 position,
+    float scale)
+{
+    entity meta = zox_get_prefab(world, item);
+    entity e = spawn_item_world_from_meta(
+        world,
+        realm,
+        item,
+        position,
+        scale);
+    if (zox_has(item, Quantity)) {
+        byte quantity = zox_getv(item, Quantity);
+        zox_setv(e, Quantity, quantity);
+    }
+    return e;
 }

@@ -113,10 +113,14 @@ void zox_dbg_test_window_world(ecs* world, int32_t keycode) {
         .text = "Tilemap",
         .on_click = { &zox_tst_spawn_tilemap2 },
     };
-    // Items
+    // Pickups
     elements[elements_count++] = (SpawnListElement) {
         .text = "Block Pickup",
         .on_click = { &zox_tst_spawn_item_block },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Item Pickup",
+        .on_click = { &zox_tst_spawn_item_pickup2 },
     };
     // Characters
     elements[elements_count++] = (SpawnListElement) {

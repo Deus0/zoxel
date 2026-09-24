@@ -5,6 +5,8 @@ zox_tag(ItemConsumable);
 zoxc_state(ItemDirty);
 zoxc_byte(Quantity);
 zox_tag(QuantityDirty);
+// Links
+zox_tag(ItemLink);
 
 void zox_components_items(ecs* world) {
     zoxd_tag(Item);
@@ -14,4 +16,6 @@ void zox_components_items(ecs* world) {
     zoxd_state(ItemDirty);
     zoxd_byte(Quantity);
     zoxd_tag(QuantityDirty);
+    // Links
+    zoxd_nf_tag(ItemLink);
 }

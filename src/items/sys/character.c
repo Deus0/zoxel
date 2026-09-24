@@ -19,7 +19,7 @@ zox_sys2(CharacterItemsSpawnSystem) {
         if (!zox_valid(block)) {
             continue;
         }
-        entity prefab_item = zox_get_link(world, block, Item);
+        entity prefab_item = zox_get_link(world, block, ItemLink);
         if (zox_valid(prefab_item)) {
             byte quantity = rand_range(1, 3);
             entity e2 = spawn_user_item(

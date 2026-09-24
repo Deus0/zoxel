@@ -96,7 +96,7 @@ byte on_overlap_pickup(
     zox_setv(e, PickedUp, pickup_state_trigger);
     zox_setv(e, CollisionDisabled, 1);
     zox_setv(e, DestroyInTime, 1);
-    entity base_item = zox_get_link(world, e, Item);
+    entity base_item = zox_get_link(world, e, ItemLink);
     if (!zox_valid(base_item)) {
         zox_loge("Pickup item is invalid");
         return 0;

@@ -3,3 +3,4 @@
 #include "block.c"
 #include "pickedup.c"
 #include "consumable.c"
+#include "item_vox.c"

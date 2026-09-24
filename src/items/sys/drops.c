@@ -1,7 +1,7 @@
 extern entity spawn_pickup_basic(ecs*, float3);
 extern float item_pickup_scale;
 extern entity2 spawn_pickup_block(ecs*, entity, float3, float);
-
+extern entity spawn_item_world(ecs*, entity, entity, float3, float);
 // TODO: Move this over to Pickups
 
 // NOTE: For now we just drop BlockItems!
@@ -25,44 +25,28 @@ void character_item_drop_system(iter* it) {
             items,
             capacity,
             zox_id(Item));
+        if (!items_length) {
+            continue;
+        }
         if (dbg_log) {
             zox_log("Character dropping [%i] items", items_length);
         }
+        entity realm = zox_get_link(world, e, RealmLink);
         for (int j = 0; j < items_length; j++) {
-            entity user_item = items[j];
-            if (!zox_valid(user_item) ||
-                !zox_has(user_item, ItemBlock))
+            entity item = items[j];
+            if (!zox_valid(item) ) //||
+                //!zox_has(item, ItemBlock))
             {
                 continue;
             }
-            entity meta = zox_get_prefab(
+            spawn_item_world(
                 world,
-                user_item);
-            entity e2;
-            entity block = zox_get_link(
-                world,
-                user_item,
-                BlockLink);
-            if (block) {
-                e2 = spawn_pickup_block(
-                    world,
-                    block,
-                    position->value,
-                    item_pickup_scale).x;
-            } else {
-                e2 = spawn_pickup_basic(
-                    world,
-                    position->value);
-            }
-            zox_link(world, e2, Item, meta);
-            if (zox_has(user_item, Quantity)) {
-                byte quantity = zox_getv(user_item, Quantity);
-                zox_setv(e2, Quantity, quantity);
-            }
+                realm,
+                item,
+                position->value,
+                item_pickup_scale);
             if (dbg_log) {
-                zox_log("  - [%s] - m [%s]",
-                    zox_get_name(user_item),
-                    zox_get_name(meta));
+                zox_log("  - [%s]", zox_getn(item));
             }
         }
         // destroy voxel sound
@@ -127,7 +111,7 @@ void terrain_item_drop_system(iter* it) {
                     voxel - 1);
                 continue;
             }
-            entity block_item = zox_get_link(world, block, Item);
+            entity block_item = zox_get_link(world, block, ItemLink);
             if (!zox_valid(block_item)) {
                 zox_loge("block [%s] has no valid item", zox_get_name(block));
             }
@@ -136,13 +120,19 @@ void terrain_item_drop_system(iter* it) {
             float3_add_float3_p(&positionf, position->value); // chunk
             float3_add_float3_p(&positionf, float3_single(scale->value * 0.5f));
             // get positionf from local position and depth
-            entity pickup = spawn_pickup_block(
+            entity pickup = spawn_item_world(
+                world,
+                realm,
+                block_item,
+                positionf,
+                item_pickup_scale);
+            /*entity pickup = spawn_pickup_block(
                 world,
                 block,
                 positionf,
-                item_pickup_scale).x;
+                item_pickup_scale).x;*/
             if (pickup) {
-                zox_link(world, pickup, Item, block_item);
+                zox_link(world, pickup, ItemLink, block_item);
             }
             if (dbg_log) {
                 zox_log("Spawned block pickup at [%fx%fx%f] scale [%f]",

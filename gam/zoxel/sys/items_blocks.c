@@ -39,7 +39,7 @@ zox_sys2(ItemsRealmSpawnSystem) {
                 drop_item = previous_soil_item;
             }
             // link to drop item
-            zox_link(world, block, Item, drop_item);
+            zox_link(world, block, ItemLink, drop_item);
             if (zox_has(block, BlockSoil)) {
                 previous_soil_item = item;
             }

@@ -1,8 +1,11 @@
 # Todo
 
+
 - item textures missing off block voxes
 - block voxes are offset by half a block now
 	- i changed the spawning so maybe thats why
+	- fix position of them
+	
 
 - we should centre them,  and just reposition them when placing in terrain
 	- for block voxes
