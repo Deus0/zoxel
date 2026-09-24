@@ -1,4 +1,5 @@
 // TODO: Make player just alter a MovementInput float2, then in Character, it grabs that, this seperates the control scheme from the movement itself
+const float player_pickup_radius = 0.6f; // 0.16f
 
 #include "set/_.c"
 #include "com/_.c"

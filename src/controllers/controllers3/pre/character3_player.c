@@ -21,10 +21,9 @@ entity spawn_prefab_character3_player(
     zox_add(e, Saver);
     zox_setv(e, SaveHash, 0);
     // Pickups
-    const float pickup_radius = 1.5f; // 0.16f
     zox_add(e, PickUpperer);
     zox_add(e, SphereCollider);
-    zox_setv(e, SphereRadius, pickup_radius);
+    zox_setv(e, SphereRadius, player_pickup_radius);
     zox_setv(e, CollisionDisabled, 0);
     // Debug
     if (auto_player) {

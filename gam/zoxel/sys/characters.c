@@ -70,7 +70,7 @@ zox_sys2(Character3RealmSpawnSystem) {
             65 / slime_types :
             0;
         entity slime_nodegraph = spawn_model_nodegraph_slime(world, e);
-        entity cookie_nodegraph = spawn_model_nodegraph_cookie(world, e);
+        //entity cookie_nodegraph = spawn_model_nodegraph_cookie(world, e);
         for (int j = 0; j < slime_types; j++) {
             // lint inner_character_seed = character_seed;
             entity nodegraph = slime_nodegraph;

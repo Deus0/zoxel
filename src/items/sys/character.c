@@ -1,5 +1,32 @@
 int character_inventory_count = 8; // 8 | 16; // having blank items seems to b reak it
 byte test_give_npcs_blocks = 1;
+
+void add_item_to_inventory(
+    ecs* world,
+    entity user,
+    entity inventory,
+    entity item)
+{
+    if (!zox_valid(item)) {
+        return;
+    }
+    byte quantity = rand_range(1, 3);
+    entity user_item = spawn_user_item(
+        world,
+        user,
+        item);
+    zox_setv(user_item, Quantity, quantity);
+    if (zox_valid(inventory)) {
+        entity slot = zox_get_empty_slot(
+            world,
+            inventory);
+        if (zox_valid(slot)) {
+            zox_muter(slot, DataLink, slot_data);
+            slot_data->value = user_item;
+        }
+    }
+}
+
 // NOTE: For NPC item drops
 zox_sys2(CharacterItemsSpawnSystem) {
     zox_sys_world();
@@ -11,31 +38,21 @@ zox_sys2(CharacterItemsSpawnSystem) {
         if (state->value != zox_dirty_active) {
             continue;
         }
-        entity realm = zox_get_link(world, e, RealmLink);
         entity inventory = zox_get_child_by_id(world, e, zox_id(Inventory));
+        entity realm = zox_get_link(world, e, RealmLink);
+        // cookie
+        entity cookie = zox_get_child_by_id(world, realm, ItemConsumable);
+        add_item_to_inventory(world, e, inventory, cookie);
         // NOTE: Grabs a random block item and gives it to character
+        if (!zox_has(e, Skeleton)) {
+            continue;
+        }
         zox_geter(realm, BlockLinks, blocks);
         entity block = blocks->value[rand() % blocks->length];
         if (!zox_valid(block)) {
             continue;
         }
-        entity prefab_item = zox_get_link(world, block, ItemLink);
-        if (zox_valid(prefab_item)) {
-            byte quantity = rand_range(1, 3);
-            entity e2 = spawn_user_item(
-                world,
-                e,
-                prefab_item);
-            zox_setv(e2, Quantity, quantity);
-            if (zox_valid(inventory)) {
-                entity slot = zox_get_empty_slot(
-                    world,
-                    inventory);
-                if (zox_valid(slot)) {
-                    zox_muter(slot, DataLink, slot_data);
-                    slot_data->value = e2;
-                }
-            }
-        }
+        entity block_item = zox_get_link(world, block, ItemLink);
+        add_item_to_inventory(world, e, inventory, block_item);
     }
 } zox_sys_end(CharacterItemsSpawnSystem);

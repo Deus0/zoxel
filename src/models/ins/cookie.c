@@ -6,12 +6,13 @@ entity spawn_model_nodegraph_cookie(
     entity prefab = prefab_node_model;
     byte3 center = byte3_half(size);
     // Set random cookie size
-    float3 size_min = (float3) { 0.55f, 0.18f, 0.55f };
-    float3 size_max = (float3) { 0.95f, 0.32f, 0.95f };
+    float3 size_min = (float3) { 0.55f, 0.55f, 0.18f };
+    float3 size_max = (float3) { 0.95f, 0.95f, 0.32f };
     entity root_node = spawn_node_model_size(
         world,
         size_min,
         size_max);
+    zox_add(root_node, SameXY);
     // Dough color
     entity dough_color = spawn_node_model_colors_seed(world, 1);
     new_link_single_node(world, root_node, dough_color);

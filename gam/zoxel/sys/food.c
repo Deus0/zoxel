@@ -37,7 +37,7 @@ void food_generate_system(iter* it) {
                 model,
                 depth,
                 texture_vox,
-                direction_up, // direction_front
+                direction_front,
                 dbg_log);
         }
     }

@@ -49,6 +49,15 @@ zox_sys2(ModelSizeNodeSystem) {
         size->value = get_scaled_size(
             nodegraph_max_depth,
             ratio);
+        if (zox_has(node, SameXZ)) {
+            float xz = (size->value.x + size->value.z) / 2.0f;
+            size->value.x = xz;
+            size->value.z = xz;
+        } else if (zox_has(node, SameXY)) {
+            float xy = (size->value.x + size->value.y) / 2.0f;
+            size->value.x = xy;
+            size->value.y = xy;
+        }
         zox_add(e, TriggerEnd);
         if (dbg_log) {
             zox_log("+ [%s] New Model Size [%ix%ix%i]",
