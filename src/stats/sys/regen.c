@@ -6,12 +6,10 @@ void stat_regen_system(iter* it) {
     zox_sys_begin();
     zox_sys_in(StatValueMax);
     zox_sys_out(StatValue);
-    zox_sys_out(StatDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(StatValueMax, max);
         zox_sys_o(StatValue, value);
-        zox_sys_o(StatDirty, dirty);
         entity user = zox_get_parent(world, e);
         if (!zox_valid(user) ||
             zox_has(user, Dead) ||
@@ -26,14 +24,20 @@ void stat_regen_system(iter* it) {
         if (value->value == 0) {
             continue;
         }
-        value->value += zox_delta_time * regen_rate;
+        // in combat?
+        float regen = regen_rate;
+        if (zox_has(e, StatHealth)) {
+            byte in_combat = zox_getv(user, CombatState) != zox_combat_peace;
+            if (in_combat) {
+                regen *= combat_regen_mul;
+            }
+        }
+        value->value += zox_delta_time * regen;
         if (value->value > max->value) {
             value->value = max->value;
         }
-        // Signals to UI
-        if (dirty->value != zox_dirty_active) {
-            dirty->value = zox_dirty_trigger;
-        }
+        zox_add(e, Dirty);
+        zox_add(e, DataDirty);
     }
     zox_sys_on_end();
 } zoxd_system(stat_regen_system);

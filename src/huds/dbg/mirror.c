@@ -12,7 +12,7 @@ entity zox_tst_render_texture_character(
         randf_range(-100, 100),
     };
     float rotate_speed = 16;
-    byte downscale = 4;
+    byte downscale = mirror_downscale;
     float alpha = 0.9f;
     // byte is_camera_filtering = 1;
     // float downscale = 1;

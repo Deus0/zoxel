@@ -1,4 +1,8 @@
-entity spawn_prefab_vox_texture(ecs *world, entity prefab, byte depth) {
+entity spawn_prefab_vox_texture(
+    ecs *world,
+    entity prefab,
+    byte depth)
+{
     zox_prefab_child(prefab);
     zox_prefab_name("vox_texture");
     zox_add(e, VoxTexture);

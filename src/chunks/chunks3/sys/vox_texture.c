@@ -2,7 +2,11 @@
 byte is_debug_sides = direction_none; // direction_none | direction_front
 const color air_vox_color = { 15, 15, 25, 88 };
 
-void generate_vox_debug_texture(color *data, const int2 size, byte side) {
+void generate_vox_debug_texture(
+    color *data,
+    const int2 size,
+    byte side)
+{
     color fill = air_vox_color;
     if (is_debug_sides == direction_up && side == direction_up) {
         fill = (color) { 255, 0, 0, 255 };
@@ -25,7 +29,17 @@ void generate_vox_debug_texture(color *data, const int2 size, byte side) {
 }
 
 // TODO: Take in vox_size and texture_size
-void generate_vox_texture(color* data, int2 size, const VoxelNode *chunk, const color_rgb *colors, byte side, byte depth, int2 toffset, int2 vox_texture_size, color air) {
+void generate_vox_texture(
+    color* data,
+    int2 size,
+    const VoxelNode *chunk,
+    const color_rgb *colors,
+    byte side,
+    byte depth,
+    int2 toffset,
+    int2 vox_texture_size,
+    color air)
+{
     if (!chunk) {
         return;
     }
@@ -182,27 +196,29 @@ zox_sys2(VoxTextureSystem) {
             zox_loge("Invalid Vox on Texture [%s]", zox_getn(e));
             continue;
         }
-        if (!zox_has(vox->value, VoxelNode) || !zox_has(vox->value, ColorRGBs)  || !zox_has(vox->value, ChunkSize) || !zox_has(vox->value, NodeDepth)) {
-            zox_loge("Invalid Vox [%s] Components on Texture [%s]", zox_getn(vox->value), zox_getn(e));
+        if (!zox_has(vox->value, VoxelNode) ||
+            !zox_has(vox->value, ColorRGBs) ||
+            !zox_has(vox->value, ChunkSize) ||
+            !zox_has(vox->value, NodeDepth))
+        {
+            zox_loge("Invalid Vox [%s] Components on Texture [%s]",
+                zox_getn(vox->value),
+                zox_getn(e));
             continue;
         }
         // NOTE: Delays the texture until its done
-        if (zox_has(vox->value, GenerateModel) && zox_getv(vox->value, GenerateModel)) {
+        if (zox_has(vox->value, GenerateModel) &&
+            zox_getv(vox->value, GenerateModel))
+        {
             if (dbg_log) {
-                zox_log("Texture [%s] waiting on model to generate [%s]", zox_get_name(e), zox_get_name(vox->value));
+                zox_log("Texture [%s] waiting on model to generate [%s]",
+                    zox_get_name(e),
+                    zox_get_name(vox->value));
             }
             continue;
         }
         // byte is_center = zox_has(e, CenterVoxTexture);
         zox_geter(vox->value, VoxelNode, voctree);
-        // TODO: Find out why Body Parts didn't get Optimized (they stayed air at this level)
-        /*if (!voctree->value) {
-            // TODO: Find out why Models here are Air for a frame
-            if (dbg_log) {
-                zox_logw("Texture [%s] Model [%s] is Air", zox_getn(e), zox_get_name(vox->value));
-            }
-            continue;
-        }*/
         zox_geter(vox->value, ColorRGBs, colors);
         int3 vox_size = zox_getv(vox->value, ChunkSize);
         // max depth tho
@@ -227,15 +243,35 @@ zox_sys2(VoxTextureSystem) {
             vox_texture_size.x /= 2;
             vox_texture_size.y /= 2;
         }
-        if (vox_texture_size.x > size->value.x || vox_texture_size.y >  size->value.y) {
-            zox_loge("Vox Texture e[%s] v[%s] Size (still) too large [%ix%i] > [%ix%i]", zox_get_name(e), zox_get_name(vox->value), vox_texture_size.x, vox_texture_size.y,  size->value.x,  size->value.y);
+        if (vox_texture_size.x > size->value.x ||
+            vox_texture_size.y >  size->value.y)
+        {
+            zox_loge("Vox Texture e[%s] v[%s] Size (still) too large [%ix%i] > [%ix%i]",
+                zox_get_name(e),
+                zox_get_name(vox->value),
+                vox_texture_size.x,
+                vox_texture_size.y,
+                size->value.x,
+                size->value.y);
             continue;
         }
         int2 texture_offset = int2_sub(size->value, vox_texture_size);
         texture_offset = int2_divide_int(texture_offset, 2);
         int new_size = size->value.x * size->value.y;
         if (dbg_log >= 2) {
-            zox_log("Vox Texture Debug e[%s] v[%s] offset %ix%i - vox_texture_size [%ix%i] - texture_size %ix%i - vox_size %ix%ix%i - pixels length [%i]", zox_get_name(e), zox_get_name(vox->value), texture_offset.x, texture_offset.y, vox_texture_size.x, vox_texture_size.y, size->value.x, size->value.y, vox_size.x, vox_size.y, vox_size.z, new_size);
+            zox_log("Vox Texture Debug e[%s] v[%s] offset %ix%i - vox_texture_size [%ix%i] - texture_size %ix%i - vox_size %ix%ix%i - pixels length [%i]",
+                zox_get_name(e),
+                zox_get_name(vox->value),
+                texture_offset.x,
+                texture_offset.y,
+                vox_texture_size.x,
+                vox_texture_size.y,
+                size->value.x,
+                size->value.y,
+                vox_size.x,
+                vox_size.y,
+                vox_size.z,
+                new_size);
         }
         if (new_size <= 0) {
             for (int j = 0; j < data->length; j++) {
@@ -246,7 +282,10 @@ zox_sys2(VoxTextureSystem) {
         }
         resize_TextureData(data, new_size);
         if (!data->value) {
-            zox_loge("Failure resizing texture [%s]:[%ix%i]", zox_get_name(e),  size->value.x, size->value.y);
+            zox_loge("Failure resizing texture [%s]:[%ix%i]",
+                zox_get_name(e),
+                size->value.x,
+                size->value.y);
             continue;
         }
         if (texture_offset.x || texture_offset.y) {
@@ -257,9 +296,21 @@ zox_sys2(VoxTextureSystem) {
         }
         // Testing
         // read_lock_VoxelNode(voctree);
-        generate_vox_texture(data->value, size->value, voctree, colors->value, side->value, bake_depth, texture_offset, vox_texture_size, air_color);
+        generate_vox_texture(
+            data->value,
+            size->value,
+            voctree,
+            colors->value,
+            side->value,
+            bake_depth,
+            texture_offset,
+            vox_texture_size,
+            air_color);
         if (is_debug_sides != direction_none) {
-            generate_vox_debug_texture(data->value, size->value, side->value);
+            generate_vox_debug_texture(
+                data->value,
+                size->value,
+                side->value);
         }
         // read_unlock_VoxelNode(voctree);
         if (texture_offset.x || texture_offset.y) {
@@ -268,8 +319,24 @@ zox_sys2(VoxTextureSystem) {
         generate->value = zox_generate_texture_end;
         zox_add(e, TextureDirty);
         if (dbg_log) {
-            zox_log("Generated Vox Texture [%s]: Model [%s] Offset [%ix%i] vox_texture_size [%ix%i] texture_size [%ix%i] vox_size [%ix%ix%i] pixels length [%i]", zox_get_name(e), zox_get_name(vox->value), texture_offset.x, texture_offset.y, vox_texture_size.x, vox_texture_size.y, size->value.x, size->value.y, vox_size.x, vox_size.y, vox_size.z, new_size);
-            zox_log("   - Bake Depth [%i] Side [%i] Vox Depth [%i] GenerateModel [%i]", bake_depth, side->value, vox_depth, zox_has(vox->value, GenerateModel));
+            zox_log("Generated Vox Texture [%s]: Model [%s] Offset [%ix%i] vox_texture_size [%ix%i] texture_size [%ix%i] vox_size [%ix%ix%i] pixels length [%i]",
+                zox_get_name(e),
+                zox_get_name(vox->value),
+                texture_offset.x,
+                texture_offset.y,
+                vox_texture_size.x,
+                vox_texture_size.y,
+                size->value.x,
+                size->value.y,
+                vox_size.x,
+                vox_size.y,
+                vox_size.z,
+                new_size);
+            zox_log("   - Bake Depth [%i] Side [%i] Vox Depth [%i] GenerateModel [%i]",
+                bake_depth,
+                side->value,
+                vox_depth,
+                zox_has(vox->value, GenerateModel));
         }
     }
 } zox_sys_end(VoxTextureSystem);

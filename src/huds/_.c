@@ -14,6 +14,7 @@ const byte zox_huds_header_font_size = 22;
 const byte zox_huds_element_font_size = 10;
 const byte zox_huds_list_padding = 8;
 const byte zox_huds_window_alignment = zox_alignment_centre;
+byte mirror_downscale = 1;
 // const float2 zox_huds_window_anchor = (float2) { 0.1f, 0.9f }; // float2_top_left; // float2_centre;
 // const float2 zox_huds_window_anchor = float2_centre;
 const float2 zox_huds_window_anchor = (float2) { 0.5f, 0.7f };

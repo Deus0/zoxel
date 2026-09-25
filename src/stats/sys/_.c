@@ -14,13 +14,14 @@ void zox_systems_stats(ecs *world) {
         zoxp_update,
         [in] stats.StatValueMax,
         [out] stats.StatValue,
-        [out] stats.StatDirty,
-        [none] stats.StatState
+        [none] stats.Stat,
+        [none] stats.StatState,
     );
     zox_system(
         pre_death_system,
         zoxp_update,
         [in] stats.StatValue,
+        [none] stats.Stat,
         [none] stats.StatHealth,
     );
     zox_system(
@@ -52,7 +53,7 @@ void zox_systems_stats(ecs *world) {
         [out] stats.StatValue,
         [out] stats.ExperienceValue,
         [out] stats.ExperienceMax,
-        [out] stats.StatDirty,
+        [none] stats.Stat,
         [none] stats.StatLevel
     );
     zox_system_1(
@@ -70,7 +71,6 @@ void zox_systems_stats(ecs *world) {
     zox_system_1(
         CharacterNameLabelsSystem,
         zoxp_spawn,
-        // [in] characters.GenerateCharacter,
         [in] core.ZoxName,
         [out] ui.ElementLinks,
         [none] SpawnNameLabel

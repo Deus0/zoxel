@@ -1,5 +1,5 @@
 // NOTE: Sets the stat icon labels
-zox_sys2(StatIconLabelSystem) {
+/*zox_sys2(StatIconLabelSystem) {
     byte label_text_capacity = 253;
     zox_sys_world();
     zox_sys_begin();
@@ -12,13 +12,12 @@ zox_sys2(StatIconLabelSystem) {
         entity e2 = data->value;
         if (!zox_valid(e2) ||
             !zox_has(e2, Stat) ||
-            !zox_has(e2, StatDirty) ||
+            !zox_has(e2, Update) ||
             !zox_has(e2, StatValue))
         {
             continue;
         }
-        zox_geter_value(e2, StatDirty, byte, stat_dirty);
-        if (text->length && stat_dirty != zox_dirty_active) {
+        if (text->length) {
             continue;
         }
         zox_geter(e2, StatValue, value);
@@ -41,4 +40,4 @@ zox_sys2(StatIconLabelSystem) {
             zox_add(e, Dirty);
         }
     }
-} zox_sys_end(StatIconLabelSystem);
+} zox_sys_end(StatIconLabelSystem);*/

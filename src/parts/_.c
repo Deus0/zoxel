@@ -1,10 +1,10 @@
 /*
- * +------------------------------------------------------------------+
- * | Zox Module: Parts                                                |
- * |                                                                  |
- * |  Combine Items - Body - Gear - UI                                |
- * |                                                                  |
- * +------------------------------------------------------------------+
+ * +------------------------------------------------------+
+ * | Zox Module: Parts                                    |
+ * |                                                      |
+ * |  Combine Items - Body - Gear - UI                    |
+ * |                                                      |
+ * +------------------------------------------------------+
  *
  *  Used By
  *
@@ -38,7 +38,6 @@ void import_parts(ecs* world) {
     zox_components_bodys(world);
     zox_systems_bodys(world);
     add_hook_spawn_prefabs(spawn_prefabs_bodys);
-    // initialize_settings_models(world);
     add_taskbar_button(world, (TaskbarData) {
         .index = 6,
         .spawn = &spawn_player_menu_body,

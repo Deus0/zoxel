@@ -8,7 +8,7 @@ zox_sys2(StatTextSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_o(TextData, data);
-        entity stat = zox_get_link(world, e, Stat);
+        entity stat = zox_get_link(world, e, StatLink);
         if (!zox_valid(stat)) {
             const char* text = "-";
             if (!is_zext(data, text)) {

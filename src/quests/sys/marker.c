@@ -22,7 +22,7 @@ zox_sys2(MarkerSpawnSystem) {
         uint quests = zox_get_children_count_by_id(
             world,
             e,
-            zox_id(Quest));
+            zox_id(QuestGiving));
         if (!quests) {
             continue;
         }

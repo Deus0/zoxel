@@ -1,6 +1,9 @@
 # Bugs
 
 ## Next
+-x Add conditional node, and link it to two speech nodes
+	- condition is if the speaker A has the quest
+-x Add dialoguenode for handing in quest
 - Let body parts meshes generate
 	- so we can loot them!
 - noticed the item label didnt reduce when placing item

@@ -10,7 +10,7 @@ void zox_systems_stats_ui(ecs *world) {
         StatbarSystem,
         zoxp_update,
         [out] ui.BarLevel,
-        [none] Statbar
+        [none] Statbar,
     );
     zox_system(
         StatTextSystem,
@@ -19,30 +19,10 @@ void zox_systems_stats_ui(ecs *world) {
         [none] texts.Text,
         [none] StatsLabel,
     );
-    zox_system(
-        StatIconLabelSystem,
-        zoxp_update,
-        [in] slots.DataLink,
-        [out] texts.TextData,
-        [none] texts.Text,
-        [none] elements2.Label,
-    );
-    zox_system(
-        StatIconTooltipSystem,
-        zoxp_update,
-        [in] interactions.SelectState,
-        [in] slots.DataLink,
-        [none] elements2.Icon
-    );
     zox_system_1(
         HealthbarSpawnerSystem,
         zoxp_spawn,
         [in] combat.CombatState,
-        [out] ui.ElementLinks
+        [none] characters.Character,
     );
-}
-
-void zox_events_stats_ui(ecs* world) {
-    zox_muter(prefab_player, PlayerStateEvent, player_event);
-    add_to_PlayerStateEvent(player_event, player_state_stats_ui);
 }

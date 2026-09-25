@@ -4,6 +4,7 @@ zox_tag(StatsLabel);
 zox_tag(Healthbar);
 zox_tag(StatIconLabel);
 zox_tag(StatBars);
+zox_tag(HealthbarLink);
 
 void zox_components_stats_ui(ecs* world) {
     zoxd_tag(Statbar);
@@ -12,6 +13,7 @@ void zox_components_stats_ui(ecs* world) {
     zoxd_tag(Healthbar);
     zoxd_tag(StatIconLabel);
     zoxd_tag(StatBars);
+    zoxd_nf_tag(HealthbarLink);
 }
 
 // quick fix for now

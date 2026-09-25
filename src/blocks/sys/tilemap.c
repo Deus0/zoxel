@@ -5,14 +5,9 @@ zox_sys2(RealmTilemapSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(BlockLinks);
-    // zox_sys_out(BlocksDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(BlockLinks, blocks);
-        /*zox_sys_o(BlocksDirty, dirty);
-        if (dirty->value != zox_blocks_dirty_tilemaps) {
-            continue;
-        }*/
         entity tilemap = zox_get_link(world, e, Tilemap);
         if (!zox_valid(tilemap)) {
             continue;
@@ -70,7 +65,6 @@ zox_sys2(RealmTilemapSystem) {
                         tilemap,
                         TextureLink,
                         texture);
-                    // zox_setv(texture, TilemapIndex, tilemap_textures_length);
                     tilemap_textures_length++;
                     if (dbg_log >= 2) {
                         zox_log("Tilemap linked to block [%s] texture [%s] at [%i]",

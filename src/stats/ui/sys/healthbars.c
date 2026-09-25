@@ -16,20 +16,20 @@ zox_sys2(HealthbarSpawnerSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(CombatState);
-    zox_sys_out(ElementLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(CombatState, combat);
-        zox_sys_o(ElementLinks, elementLinks);
         // remove old
         if (combat->value == zox_combat_leaving) {
             // destroy healthbar here
-            find_array_element_with_tag(elementLinks, Healthbar, healthbar)
+            entity healthbar = zox_get_link(world, e, HealthbarLink);
+            // find_array_element_with_tag(elementLinks, Healthbar, healthbar)
             if (zox_valid(healthbar)) {
-                remove_from_ElementLinks(elementLinks, healthbar);
-                zox_delete(healthbar)
+                // remove_from_ElementLinks(elementLinks, healthbar);
+                zox_delete(healthbar);
             } else {
-                zox_logw("[%s] had no healthbar in combat", zox_get_name(e));
+                zox_logw("[%s] had no healthbar in combat",
+                    zox_get_name(e));
             }
             continue;
         }
@@ -44,6 +44,7 @@ zox_sys2(HealthbarSpawnerSystem) {
         if (!zox_valid(health)) {
             continue;
         }
+        entity realm = zox_get_link(world, e, RealmLink);
         float3 spawn_position = float3_zero;
         entity3 spawns = spawn_bar3(
             world,
@@ -59,14 +60,18 @@ zox_sys2(HealthbarSpawnerSystem) {
             font_outline,
             e,
             healthbar_trail_offset);
-        zox_add(spawns.x, Healthbar);
-        add_to_ElementLinks(elementLinks, spawns.x);
-        // Statbar stuff
+        entity healthbar = spawns.x;
         entity bar = spawns.y;
+        entity text = spawns.z;
+        // Healthbar
+        zox_add(healthbar, Healthbar);
+        zox_set_parent(world, healthbar, realm);
+        zox_link(world, e, HealthbarLink, healthbar);
+        // Statbar
         zox_add(bar, Statbar);
-        zox_link(world, bar, Stat, health);
+        zox_link(world, bar, StatLink, health);
         // Text
-        zox_link(world, spawns.z, Stat, health);
-        zox_add(spawns.z, StatsLabel);
+        zox_add(text, StatsLabel);
+        zox_link(world, text, StatLink, health);
     }
 } zox_sys_end(HealthbarSpawnerSystem);

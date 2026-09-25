@@ -1,5 +1,28 @@
 # Done
 	
+-x slime 50% chance drop cookies
+-x 45% should be drop dirt
+-x 5% drop hat
+-x just fix the missing textures now
+	- item textures missing off block voxes
+	- sand wasnt added to tilemap too
+-x block voxes are offset by half a block now
+	- i changed the spawning so maybe thats why
+	- fix position of them
+-x we should centre them,  and just reposition them when placing in terrain
+	- for block voxes
+-x World Item - Vox Mesh
+	-x use model linked to block for this
+	-x grab the top model i guess
+-x Refactor node events and links
+-x Add conditional dialogue node for quest
+	- when node activate, use observer for checking HasQuestNode
+	- NodeTrue added -> triggering it to go to the TrueLink
+	- NodeFalse added -> triggering it to go to False Link
+	- This is node module works
+	- but HasQuest implemented in quests events
+-x spawn vox item pickup
+    - use mesh clone by linking blocks model
 -x Set a NextNodeLink on NodeRun
 -x Our conditional events will just set that and trigger end
 	- if no next linked, it just picks first, as is the current behaviour

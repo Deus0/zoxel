@@ -138,7 +138,6 @@ void rubble_model_system(iter* it) {
     zox_sys_in(VoxType);
     zox_sys_out(GenerateModel);
     zox_sys_out(VoxelNode);
-    // zox_sys_out(VoxelNodeDirty);
     zox_sys_out(NodeDepth);
     zox_sys_out(ColorRGBs);
     for (int i = 0; i < it->count; i++) {
@@ -148,7 +147,6 @@ void rubble_model_system(iter* it) {
         zox_sys_i(VoxType, gentype);
         zox_sys_o(GenerateModel, generate);
         zox_sys_o(VoxelNode, node);
-        // zox_sys_o(VoxelNodeDirty, dirty);
         zox_sys_o(NodeDepth, depth);
         zox_sys_o(ColorRGBs, colors);
         if (generate->value != zox_generate_model_run) {

@@ -10,7 +10,7 @@ zox_sys2(CharacterDialogueSystem) {
             continue;
         }
         entity realm = zox_get_link(world, e, RealmLink);
-        byte is_give_quest = rand() % 100 >= 94;
+        byte is_give_quest = zox_has(e, QuestGiver); // rand() % 100 >= 94;
         entity dialogue_type = is_give_quest ?
             zox_id(QuestDialogue) :
             zox_id(Greetings);
@@ -41,10 +41,11 @@ zox_sys2(CharacterDialogueSystem) {
                 zox_id(Quest));
             // Add our test quest to our test character
             entity dialogue_quest = quests[rand() % quests_length];
-            spawn_user_quest(
+            entity user_quest = spawn_user_quest(
                 world,
                 e,
                 dialogue_quest);
+            zox_add(user_quest, QuestGiving);
         }
     }
 } zox_sys_end(CharacterDialogueSystem);

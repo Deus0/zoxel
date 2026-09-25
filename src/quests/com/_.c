@@ -1,4 +1,7 @@
 zox_tag(Quest);
+zox_tag(QuestDoing);
+zox_tag(QuestGiving);
+zox_tag(QuestGiver);
 zox_tag(QuestDone);
 zox_tag(QuestHandedin);
 zox_tag(QuestGiven);
@@ -17,6 +20,9 @@ zox_tag(QuestLink);
 
 void zox_components_quests(ecs* world) {
     zoxd_tag(Quest);
+    zoxd_tag(QuestDoing);
+    zoxd_tag(QuestGiving);
+    zoxd_tag(QuestGiver);
     zoxd_tag(QuestGiven);
     zoxd_tag(SlayQuest);
     zoxd_tag(NodeActionQuest);

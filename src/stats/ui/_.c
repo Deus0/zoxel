@@ -6,6 +6,7 @@ byte level_label_show_experience = 0;
 #include "ins/_.c"
 #include "fun/_.c"
 #include "sys/_.c"
+#include "eve/_.c"
 
 void import_statsui(ecs* world) {
     zox_module(statsui);

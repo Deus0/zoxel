@@ -27,6 +27,8 @@ void add_item_to_inventory(
     }
 }
 
+extern entity Hat;
+
 // NOTE: For NPC item drops
 zox_sys2(CharacterItemsSpawnSystem) {
     zox_sys_world();
@@ -41,18 +43,20 @@ zox_sys2(CharacterItemsSpawnSystem) {
         entity inventory = zox_get_child_by_id(world, e, zox_id(Inventory));
         entity realm = zox_get_link(world, e, RealmLink);
         // cookie
-        entity cookie = zox_get_child_by_id(world, realm, ItemConsumable);
-        add_item_to_inventory(world, e, inventory, cookie);
-        // NOTE: Grabs a random block item and gives it to character
-        if (!zox_has(e, Skeleton)) {
-            continue;
+        entity drop_item;
+        byte drop_chance = rand_range(0, 100);
+        if (drop_chance <= 70) {
+            drop_item = zox_get_child_by_id(world, realm, ItemConsumable);
+        } else if (drop_chance <= 95) {
+            zox_geter(realm, BlockLinks, blocks);
+            entity block = blocks->value[rand() % blocks->length];
+            if (!zox_valid(block)) {
+                continue;
+            }
+            drop_item = zox_get_link(world, block, ItemLink);
+        } else {
+            drop_item = zox_get_child_by_id(world, realm, Hat);
         }
-        zox_geter(realm, BlockLinks, blocks);
-        entity block = blocks->value[rand() % blocks->length];
-        if (!zox_valid(block)) {
-            continue;
-        }
-        entity block_item = zox_get_link(world, block, ItemLink);
-        add_item_to_inventory(world, e, inventory, block_item);
+        add_item_to_inventory(world, e, inventory, drop_item);
     }
 } zox_sys_end(CharacterItemsSpawnSystem);

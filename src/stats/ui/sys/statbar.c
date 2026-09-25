@@ -7,11 +7,12 @@ zox_sys2(StatbarSystem) {
         zox_sys_e();
         zox_sys_o(BarLevel, bar);
         float new_value = bar->value;
-        entity stat = zox_get_link(world, e, Stat);
+        entity stat = zox_get_link(world, e, StatLink);
         if (!zox_valid(stat)) {
             new_value = 0;
             if (dbg_log) {
-                zox_logw("Statbar Unlinked [%s]", zox_sys_e_name);
+                zox_logw("Statbar Unlinked [%s]",
+                    zox_sys_e_name);
             }
         } else if (zox_has(stat, StatState)) {
             zox_geter(stat, StatValue, value);
@@ -25,7 +26,10 @@ zox_sys2(StatbarSystem) {
         if (bar->value != new_value) {
             bar->value = new_value;
             if (dbg_log) {
-                zox_log("[%s] Statbar [%s]:%f", zox_sys_e_name, zox_getn(stat), new_value);
+                zox_log("[%s] Statbar [%s]:%f",
+                    zox_sys_e_name,
+                    zox_getn(stat),
+                    new_value);
             }
         }
     }

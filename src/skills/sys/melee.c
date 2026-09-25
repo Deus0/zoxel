@@ -69,10 +69,6 @@ void melee_system(iter* it) {
                 }
             }
         }
-        // entity user_stats[stats_children_capacity];
-        // uint user_stats_length = zox_get_children(world, user, user_stats, stats_children_capacity);
-        // for (uint j = 0; j < user_stats_length; j++) {
-            // entity stat = user_stats[j];
         // TODO: move cost use into activation system
         // resource cost
         if (!disable_skill_costs) {
@@ -104,7 +100,9 @@ void melee_system(iter* it) {
             lresource = lresource - cost->value;
             zox_set(resource, StatValue, { lresource });
             if (dbg_log) {
-                zox_log("User [%s] Skill Cost Subtracted [%f]", zox_get_name(user), lresource);
+                zox_log("User [%s] Skill Cost Subtracted [%f]",
+                    zox_get_name(user),
+                    lresource);
             }
         }
         // Temporary for now place here
@@ -163,21 +161,26 @@ void melee_system(iter* it) {
         }
         // Hitting NPC
         if (zox_has(hit, Character3)) {
-            entity hit_health = zox_get_child_by_id(world, hit, zox_id(StatHealth));
-            if (!zox_valid(hit_health)) {
+            entity health = zox_get_child_by_id(world, hit, zox_id(StatHealth));
+            if (!zox_valid(health)) {
                 zox_loge("hit user had no health")
                 continue;
             } else {
-                float stat_value_max = zox_getv(hit_health, StatValueMax);
-                zox_muter(hit_health, StatValue, statValue);
-                statValue->value -= skill_damage;
-                if (statValue->value < 0) {
-                    statValue->value = 0;
-                } else if (statValue->value > stat_value_max) {
-                    statValue->value = stat_value_max;
+                float stat_value_max = zox_getv(health, StatValueMax);
+                zox_muter(health, StatValue, state);
+                state->value -= skill_damage;
+                if (state->value < 0) {
+                    state->value = 0;
+                } else if (state->value > stat_value_max) {
+                    state->value = stat_value_max;
                 }
+                zox_add(health, Dirty);
+                zox_add(health, DataDirty);
                 if (dbg_log) {
-                    zox_log("[%s] took [%f] damage and is on [%f] health", zox_get_name(hit), skill_damage, statValue->value)
+                    zox_log("[%s] took [%f] damage and is on [%f] health",
+                        zox_get_name(hit),
+                        skill_damage,
+                        state->value)
                 }
                 combat_on_hit(
                     world,
@@ -224,7 +227,6 @@ void melee_system(iter* it) {
             }
             float block_damage = randf_range(1, 3);
             BlockDamageUpdate update = {
-                // .meta = block,
                 .position = raycast->positionl,
                 .damage = block_damage
             };

@@ -1,6 +1,6 @@
 //  NOTE: Spawns the food items as children of Realm
 void food_generate_system(iter* it) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     byte depth = block_depth_limits.y;
     uint seed_shift = 236913;
     byte variants = 1;

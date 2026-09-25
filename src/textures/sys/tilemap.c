@@ -8,14 +8,12 @@ zox_sys2(TilemapGenerationSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TilemapSize);
-    // zox_sys_in(TextureLinks);
     zox_sys_out(GenerateTexture);
     zox_sys_out(TextureSize);
     zox_sys_out(TextureData);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TilemapSize, map_size);
-        // zox_sys_i(TextureLinks, textures);
         zox_sys_o(GenerateTexture, generate);
         zox_sys_o(TextureSize, size);
         zox_sys_o(TextureData, data);
@@ -39,9 +37,20 @@ zox_sys2(TilemapGenerationSystem) {
             if (!texture) {
                 break;
             }
-            /*zox_log("TTTexture [%s] index [%i]",
-                zox_getn(texture),
-                texture_index);*/
+            if (!zox_has(texture, TextureData)) {
+                zox_loge("Ivalid texture [%s] index [%i]",
+                    zox_getn(texture),
+                    texture_index);
+                continue;
+            }
+            const TextureData* texture_data = zox_get(texture, TextureData);
+            if (!texture_data->value) {
+                zox_loge("Null TextureData [%s] index [%i]",
+                    zox_getn(texture),
+                    texture_index);
+                still_generating = 1;
+                break;
+            }
             if (!first_texture) {
                 first_texture = texture;
             }
@@ -88,20 +97,8 @@ zox_sys2(TilemapGenerationSystem) {
             if (!texture) {
                 break;
             }
-            if (!zox_has(texture, TextureData)) {
-                zox_loge("invalid texture [%s] index [%i]",
-                    zox_getn(texture),
-                    texture_index);
-                continue;
-            }
-            zox_geter(texture, TextureData, texture_data);
-            if (!texture_data->value) {
-                zox_loge("Invalid texture data [%s] index [%i]",
-                    zox_getn(texture),
-                    texture_index);
-                continue;
-            }
-            uint tilemap_index =  texture_index - 1; // zox_getv(texture, TilemapIndex);
+            const TextureData* texture_data = zox_get(texture, TextureData);
+            uint tilemap_index = texture_index - 1;
             zox_geter_value(texture, TextureSize, int2, texture_size);
             texture_position.x =
                 tilemap_index % map_size->value.x;

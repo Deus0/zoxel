@@ -31,8 +31,8 @@ entity spawn_statbar2(
         front_color);
     zox_set_unique_name(e2.x, "statbar2");
     zox_set_unique_name(e2.y, "statbar2_text");
-    zox_link(world, e2.x, Stat, stat);
-    zox_link(world, e2.y, Stat, stat);
+    zox_link(world, e2.x, StatLink, stat);
+    zox_link(world, e2.y, StatLink, stat);
     zox_add(e2.y, StatsLabel);
     return e2.x;
 }

@@ -1,6 +1,6 @@
 // Sets the model size in the nodegraph
 zox_sys2(ModelSizeNodeSystem) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     ushort inner_seed_shift = 39393;
     zox_sys_world();
     zox_sys_begin();

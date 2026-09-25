@@ -3,7 +3,9 @@ entity spawn_block_vox_instanced(
     SpawnBlockVox data)
 {
     if (!zox_valid(data.vox)) {
-        zox_loge("Invalid Block [%i] Vox for [spawn_block_vox_instanced]", data.block_index);
+        zox_loge("Invalid Block [%s] : [%i] Vox for [spawn_block_vox_instanced]",
+            zox_getn(data.prefab),
+            data.block_index);
         return 0;
     }
     // NOTE: Picks a random Model based on position seed

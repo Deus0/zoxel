@@ -4,6 +4,7 @@ zox_tag(HatSlot);
 zox_tag(MenuEquipment);
 zox_tag(EquipFrame);
 zox_tag(EquipIcon);
+zox_tag(Hat);
 
 void add_tag_equip_slot(ecs* world, entity e) {
     zox_add(e, EquipSlot);
@@ -20,4 +21,5 @@ void zox_components_equipment(ecs* world) {
     zoxd_tag(MenuEquipment);
     zoxd_tag(EquipFrame);
     zoxd_tag(EquipIcon);
+    zoxd_tag(Hat);
 }

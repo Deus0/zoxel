@@ -1,30 +1,55 @@
 # Todo
 
-- just fix the missing textures now
-	- item textures missing off block voxes
-	- sand wasnt added to tilemap too
--x block voxes are offset by half a block now
-	- i changed the spawning so maybe thats why
-	- fix position of them
-	
+# Bugs
+- first hit on npc - 3 damage, shows -1 on healthbar
+- healtbar getting stuck when npc dies now
+	- recently changed the way statdirty works
+- npc hits arnt hitting
+- Wood, Sand textures didn't update
+	- sometimes
+	- i made it stop tilemap atm
+- animated  text is buggy atm
+- item pickedup is a block item
+	- even when cokie
+- no rewards on quest handin
+	- Goal: Give 20 xp for handing in quest
+- quest marker not updated
+- action indexes off when selecting
+- item didnt stack or split when picked up and dropped in ui
+- item pickup didnt go to actionbar
+- regen not using proper stats
+- item tooltip didnt update when stacked
+- mirror mesh doesnt update when game model does
 
--x we should centre them,  and just reposition them when placing in terrain
-	- for block voxes
+# Tests
+- write giveall quests test
+- write pickedup item test
+- write a grid spawn test for every model
+- write a grid spawn test for every character
+
+# Debug
+- add a mode where it shows block ids in item tooltips
+
+
+- regen should be based on regen stat thats linked - StatLink
+- spawn vox item in hand when selected
+	- instead of cube
+- marker should set when player goes near npc, it should update based on quest
+	- link marker to nearby player character
+	- if they are doing quest, update it, observe its quest
+- reduce health regen
+	- when in combat
+- tag our humanoid with 'QuestGiver' so only they can handout quests
 - for our model test - change mesh every 5 seconds to a variant model
 	- showcase variants
-- slime 50% chance drop cookies
 - make lists sorting use child index - after sort it shuffles atm
 - GiveAllQuests cheat function
-- Goal: Give 20 xp for handing in quest
 - remove marker when quest is completed
-- tag our humanoid with 'QuestGiver' so only they can handout quests
 - link our data / slot to the ui frame
     - icons/texts will just grab parent data links
 
 - for our tests, just link to current inspector if its opened
 	- no need to spawn it everywhere
-- test for mesh clone of models under realm
-    - pick random ones
 - test for spawning all models under realm
 - Simple test function to spawn vox mesh
     - just the mesh itself, usign a entity reference
@@ -43,18 +68,6 @@
         - disable when ui closes / dies
         - updates when enabled / chunk changes
     
-- World Item - Vox Mesh
-	- use model linked to block for this
-	- grab the top model i guess
-- Refactor node events and links
-- Add conditional dialogue node for quest
-	- when node activate, use observer for checking HasQuestNode
-	- NodeTrue added -> triggering it to go to the TrueLink
-	- NodeFalse added -> triggering it to go to False Link
-	- This is node module works
-	- but HasQuest implemented in quests events
-- spawn vox item pickup
-    - use mesh clone by linking blocks model
 - Refactor DataLink 108 times
 
 - Collect 5 cookies for quest
@@ -63,15 +76,12 @@
 - Quest Rewards - More Cookies - Particles - Sounds (Yay)
 
 
-
 ## Gameplay
-- Add conditional node, and link it to two speech nodes
-	- condition is if the speaker A has the quest
-- Add dialoguenode for handing in quest
-- Give me the rare hat when handing in
-- Make projectile collide with Terrain
-- Make projectil collide with npc
+- Quest Reward: New Hat
+- Give user skill when leveling up
 - Add skillpoints when level up
+- Make projectile collide with Terrain
+- Make projectile collide with npc
 - add a simple skilltree
 	- with a skill to unlock button
 	- click and hold it to unlock

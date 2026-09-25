@@ -405,12 +405,13 @@ zox_sys2(BiomeBlocksSystem) {
         }
         // Biome Flora
         {
+            char* block_name = "stalks";
             byte max_depth = block_depth_limits.y;
             entity2 e2 = spawn_model_lods_generated(
                 world,
                 prefab_vox,
                 e,
-                "flowers",
+                block_name,
                 vox_type_flowers,
                 flowers_color,
                 max_depth,
@@ -421,7 +422,7 @@ zox_sys2(BiomeBlocksSystem) {
                 world,
                 e,
                 flowers_seed,
-                "flowers",
+                block_name,
                 flowers_color,
                 0,
                 model,

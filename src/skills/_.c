@@ -1,10 +1,10 @@
 /*
- * +------------------------------------------------------------------+
- * | Zox Module: Skills                                               |
- * |                                                                  |
- * |  Abilities - Levels - Effects - Cooldowns - Skill Trees          |
- * |                                                                  |
- * +------------------------------------------------------------------+
+ * +-------------------------------------------------------+
+ * | Zox Module: Skills                                    |
+ * |                                                       |
+ * |  Abilities - Effects - Cooldowns - Skill Trees        |
+ * |                                                       |
+ * +-------------------------------------------------------+
  */
 #include "set/_.c"
 #include "dat/_.c"
@@ -22,6 +22,7 @@ void import_skills(ecs* world) {
     zox_components_skills(world);
     zox_systems_skills(world);
     add_hook_spawn_prefabs(spawn_prefabs_skills);
+    // add_hook_spawn_prefabs(zox_events_skills);
     zox_import_module(UISkills);
     zox_import_module(Auras);
 }

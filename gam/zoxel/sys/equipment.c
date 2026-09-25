@@ -71,28 +71,31 @@ zox_sys2(EquipsRealmSpawnSystem) {
             continue;
         }
         {
-            spawn_realm_model_item_filename(
+            entity hatty = spawn_realm_model_item_filename(
                 world,
                 e,
                 "Hatty",
                 "hatty",
                 zox_slot_hat);
+            zox_add(hatty, Hat);
         }
         {
-            spawn_realm_model_item_filename(
+            entity fancyhat = spawn_realm_model_item_filename(
                 world,
                 e,
                 "Magician Hat",
                 "cavalier_hat",
                 zox_slot_hat);
+            zox_add(fancyhat, Hat);
         }
         {
-            spawn_realm_model_item_filename(
+            entity tophat = spawn_realm_model_item_filename(
                 world,
                 e,
                 "Top Hat",
                 "top_hat",
                 zox_slot_hat);
+            zox_add(tophat, Hat);
         }
         zox_logv("Realm [bodys] [X] spawned.");
     }

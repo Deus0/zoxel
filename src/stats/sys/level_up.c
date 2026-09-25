@@ -7,13 +7,11 @@ void level_up_system(iter* it) {
     zox_sys_out(StatValue);
     zox_sys_out(ExperienceValue);
     zox_sys_out(ExperienceMax);
-    zox_sys_out(StatDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_o(StatValue, level);
         zox_sys_o(ExperienceValue, experience);
         zox_sys_o(ExperienceMax, experience_max);
-        zox_sys_o(StatDirty, dirty);
         if (experience->value < experience_max->value) {
             continue;
         }
@@ -31,15 +29,14 @@ void level_up_system(iter* it) {
         iter it2 = zox_children(world, parent);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
-                entity stat = it2.entities[j];
-                if (!zox_has(stat, StatAttribute)) {
+                entity attribute = it2.entities[j];
+                if (!zox_has(attribute, StatAttribute)) {
                     continue;
                 }
-                zox_muter(stat, StatValue, attribute);
-                attribute->value++;
-                // TODO: Make tag
-                zox_muter(stat, StatDirty, attribute_dirty);
-                attribute_dirty->value = zox_dirty_trigger;
+                zox_muter(attribute, StatValue, value);
+                value->value++;
+                zox_add(attribute, Dirty);
+                zox_add(attribute, DataDirty);
             }
         }
         /*entity stats[stats_children_capacity];
@@ -69,7 +66,7 @@ void level_up_system(iter* it) {
             (color) { 255, 255, 0, 55 });
         zox_setv(e2, DestroyInTime, 3 + level->value);
         // dirty
-        dirty->value = zox_dirty_trigger;
+        zox_add(e, Dirty);
     }
     zox_sys_on_end();
 } zoxd_system(level_up_system);

@@ -1,6 +1,6 @@
 // Our main spawn function
 void spawned_block_vox(
-    ecs *world,
+    ecs* world,
     spawned_block_data* data)
 {
     if (!zox_has(data->block, BlockPrefabLink)) {
@@ -33,6 +33,10 @@ void spawned_block_vox(
     } else if (zox_has(prefab, RendererInstance)) {
         e2 = spawn_block_vox_instanced(world, spawn_data);
     } else {
+        return;
+    }
+    if (!e2) {
+        // failed spawning
         return;
     }
     link_node_VoxelNode(data->octree, e2);

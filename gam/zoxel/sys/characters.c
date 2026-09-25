@@ -49,6 +49,7 @@ zox_sys2(Character3RealmSpawnSystem) {
                 zox_loge("Boney failed to spawn");
                 continue;
             }
+            zox_add(e2, QuestGiver);
             if (is_add_stats) {
                 spawn_stat_level(world, e2, base_soul, 5);
                 spawn_stat_state(world, e2, base_health, 21, 21);

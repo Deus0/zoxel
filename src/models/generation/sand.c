@@ -1,4 +1,9 @@
-void build_vox_sand(ColorRGBs *colors, VoxelNode *vox, byte depth, color_rgb primary) {
+void build_vox_sand(
+    ColorRGBs *colors,
+    VoxelNode *vox,
+    byte depth,
+    color_rgb primary)
+{
     byte unique_colors = 10;
     byte first = colors->length + 1;
     // Mystical palette (dark -> glowing)
@@ -26,7 +31,7 @@ void build_vox_sand(ColorRGBs *colors, VoxelNode *vox, byte depth, color_rgb pri
         c.g = byte_min(255, c.g + (byte)(t * 8));
         add_to_ColorRGBs(colors, c);
     }*/
-    byte size = powers_of_two_byte[depth];
+    byte size = octree_size(depth);
     byte3 pos;
     const float TAU = 6.28318530718f;
     for (pos.x = 0; pos.x < size; pos.x++)
@@ -64,7 +69,6 @@ zox_sys2(SandModelGenerationSystem) {
     zox_sys_in(VoxType);
     zox_sys_out(GenerateModel);
     zox_sys_out(VoxelNode);
-    // zox_sys_out(VoxelNodeDirty);
     zox_sys_out(NodeDepth);
     zox_sys_out(ColorRGBs);
     for (int i = 0; i < it->count; i++) {
@@ -74,7 +78,6 @@ zox_sys2(SandModelGenerationSystem) {
         zox_sys_i(VoxType, gentype);
         zox_sys_o(GenerateModel, generate);
         zox_sys_o(VoxelNode, node);
-        // zox_sys_o(VoxelNodeDirty, dirty);
         zox_sys_o(NodeDepth, depth);
         zox_sys_o(ColorRGBs, colors);
         if (generate->value != zox_generate_model_run) {
@@ -91,14 +94,20 @@ zox_sys2(SandModelGenerationSystem) {
         if (zox_block_outlines) {
             byte black_voxel = colors->length + 1;
             add_to_ColorRGBs(colors, color_rgb_black);
-            vox_outlines(node, depth->value, black_voxel);
+            vox_outlines(
+                node,
+                depth->value,
+                black_voxel);
         }
         // write_unlock_VoxelNode(node);
-        generate->value = zox_has(e, BakeModel) ? zox_generate_model_bake : zox_generate_model_end;
-        // dirty->value = zox_dirty_trigger;
+        generate->value = zox_has(e, BakeModel) ?
+            zox_generate_model_bake :
+            zox_generate_model_end;
         zox_add(e, VoxelNodeDirty);
         if (dbg_log) {
-            zox_log("Generated Sand Vox [%s]:%i", zox_get_name(e), gentype->value);
+            zox_log("Generated Sand Vox [%s]:%i",
+                zox_get_name(e),
+                gentype->value);
         }
     }
 } zox_sys_end(SandModelGenerationSystem);
