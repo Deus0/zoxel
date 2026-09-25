@@ -2,15 +2,15 @@ zox_sys2(TooltipEventSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(SelectState);
+    //zox_sys_in(SelectState);
     zox_sys_in(TooltipEvent);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(SelectState, state);
+        // zox_sys_i(SelectState, state);
         zox_sys_i(TooltipEvent, tooltip_event);
-        if (state->value != zox_state_select_active) {
+        /*if (state->value != zox_state_select_active) {
             continue;
-        }
+        }*/
         /*if (!(state->value == zox_state_select_active ||
             state->value == zox_state_deselect_active)) {
             continue;

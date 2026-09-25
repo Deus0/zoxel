@@ -8,19 +8,20 @@ zox_sys2(ElementDragSystem) {
     zox_sys_begin();
     zox_sys_in(DraggableState);
     zox_sys_in(DraggingDelta);
-    zox_sys_in(DraggedLink);
+    //zox_sys_in(DraggedLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(DraggableState, state);
         zox_sys_i(DraggingDelta, delta);
-        zox_sys_i(DraggedLink, dragged);
+        //zox_sys_i(DraggedLink, dragged);
         if (!state->value) {
             continue;
         }
         if (!delta->value.x && !delta->value.y) {
             continue;
         }
-        entity e2 = !dragged->value ? e : dragged->value;
+        entity dragged = zox_get_link(world, e, DraggedLink);
+        entity e2 = !dragged ? e : dragged;
         // TODO: We should check new position equals before setting
         zox_muter(e2, LayoutPosition, position);
         zox_muter(e2, LayoutPositionDirty, dirty);

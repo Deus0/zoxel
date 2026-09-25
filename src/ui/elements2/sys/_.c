@@ -13,7 +13,7 @@ void zox_systems_elements2(ecs *world) {
         zoxp_update,
         [in] interactions.DraggableState,
         [in] interactions.DraggingDelta,
-        [in] interactions.DraggedLink
+        // [in] interactions.DraggedLink
     );
     zox_system(
         ScrollbarSystem,
@@ -53,7 +53,6 @@ void zox_systems_elements2(ecs *world) {
         [in] interactions.SlideEvent,
         [in] elements2.SlideBounds,
         [in] interactions.DraggableState,
-        [in] interactions.DraggerLink,
         [in] layouts.LayoutConstraints,
         [in] layouts.LayoutPosition
     );

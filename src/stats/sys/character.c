@@ -1,10 +1,10 @@
 // When health goes to 0, kill UserLink->value
 // Set Dead to 1
-
 void spawn_base_stats(
     ecs* world,
     entity e,
-    entity realm)
+    entity realm,
+    byte dbg_log)
 {
     entity realm_soul = 0;
     entity realm_health = 0;
@@ -17,12 +17,10 @@ void spawn_base_stats(
             if (!zox_has(stat, Stat)) {
                 continue;
             }
-    //for (int j = 0; j < stats->length; j++) {
-        //entity stat = stats->value[j];
             if (!realm_soul && zox_has(stat, StatLevel)) {
                 realm_soul = stat;
             }
-            if (!realm_health && zox_has(stat, StatState)) {
+            if (!realm_health && zox_has(stat, StatHealth)) {
                 realm_health = stat;
             } else if (!realm_energy && zox_has(stat, StatState)) {
                 realm_energy = stat;
@@ -53,7 +51,6 @@ void spawn_base_stats(
     float2 mana = (float2) {
         mana_base,
         mana_base + soul_value * mana_level_increase
-
     };
     // Soul
     entity soule = zox_get_child_by_id(world, e, zox_id(StatSoul));
@@ -80,6 +77,16 @@ void spawn_base_stats(
         realm_mana,
         mana.x,
         mana.y);
+    if (dbg_log) {
+        zox_log("[%s] spawned stat [%s] x[%f]",
+            zox_getn(e),
+            zox_getn(realm_energy),
+            energy.y);
+        zox_log("[%s] spawned stat [%s] x[%f]",
+            zox_getn(e),
+            zox_getn(realm_mana),
+            mana.y);
+    }
     // Add Regen Stats
     it2 = zox_children(world, realm);
     while (zox_children_next(it2)) {
@@ -90,7 +97,11 @@ void spawn_base_stats(
             }
             if (zox_has(stat, StatRegen)) {
                 // Spawn a regen
-                spawn_stat_regen(world, e, stat, base_regen);
+                spawn_stat_regen(
+                    world,
+                    e,
+                    stat,
+                    base_regen);
             }
         }
     }
@@ -98,17 +109,16 @@ void spawn_base_stats(
 
 // NOTE: Generates base stats for Characters
 zox_sys2(CharacterStatsSystem) {
+    byte dbg_log = 0;
     zox_sys_world();
-    zox_sys_begin();
-    zox_sys_in(GenerateCharacter);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(GenerateCharacter, state);
-        if (state->value != zox_dirty_active) {
-            continue;
-        }
         // Collect Realm Stats
         entity realm = zox_get_link(world, e, RealmLink);
-        spawn_base_stats(world, e, realm);
+        spawn_base_stats(
+            world,
+            e,
+            realm,
+            dbg_log);
     }
 } zox_sys_end(CharacterStatsSystem);

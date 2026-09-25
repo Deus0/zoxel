@@ -14,7 +14,7 @@ zoxc_function(TooltipEvent, byte, ecs*, const TooltipEventData*);
 void zox_components_tooltips(ecs* world) {
     zoxd_tag(Tooltip);
     zoxd_tag(Tooltipper);
-    zoxd_tag(TooltipLink);
+    zoxd_nf_tag(TooltipLink);
     zoxd_fixed_string(TooltipText);
     zoxd(TooltipEvent);
 }

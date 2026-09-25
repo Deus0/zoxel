@@ -24,10 +24,10 @@ entity spawn_header(
     zox_instance(prefab_header);
     zox_name("header");
     zox_set_parent(world, e, parent);
-    zox_set(e, LayoutPosition, { position });
-    zox_set(e, LayoutSize, { size });
-    zox_set(e, Anchor, { anchor });
-    zox_set(e, DraggedLink, { parent });
+    zox_setv(e, LayoutPosition, position);
+    zox_setv(e, LayoutSize, size);
+    zox_setv(e, Anchor, anchor);
+    zox_link(world, e, DraggedLink, parent);
     {
         spawn_text(
             world,
@@ -77,7 +77,7 @@ entity spawn_header_old(
         parent,
         element_data);
     zox_set(e, RenderDisabled, { element_data.render_disabled });
-    zox_set(e, DraggedLink, { parent.e });
+    zox_link(world, e, DraggedLink, parent.e);
     // # Header Text # - Left Aligned
     int string_length = strlen(zext.text);
     int2 zext_position = (int2) {

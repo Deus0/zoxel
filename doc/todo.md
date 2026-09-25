@@ -11,10 +11,13 @@
 - tooltip now not showing..
 	- game icons - itll dissapear
 	- gone in taskbar too
+    - if ui selects while didnt deselect..!
+        - select main menu header after button selects
+        - it can show nothing selected even though log shows it set, teh issue therefor must be that it gets set and unset in same frame
 - stats issues
-	- regen not using proper stats
 	- first hit on npc - 3 damage, shows -1 on healthbar
 	- healtbar getting stuck when npc dies now
+	- regen not using proper stats
 	- recently changed the way statdirty works
 - actions issues
 	- when close/open after pickup item, it will spawn them at wrong indexes - the pickup go to 10th ui

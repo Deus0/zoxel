@@ -1,4 +1,4 @@
-
+byte zox_log_tooltips = 1;
 #include "com/_.c"
 #include "pre/_.c"
 #include "fun/_.c"

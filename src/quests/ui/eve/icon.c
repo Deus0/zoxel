@@ -42,7 +42,7 @@ void quest_icon_label_event(iter* it) {
 
 // Tooltip Event for item icons
 void quest_icon_tooltip_event(iter* it) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DataLink);

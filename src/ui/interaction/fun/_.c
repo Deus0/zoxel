@@ -35,12 +35,16 @@ void set_raycast_target_children(
     }
     if (zox_has(e, EntityTarget)) {
         entity last_target = zox_getv(e, EntityTarget);
-        if (zox_valid(last_target) && zox_has(last_target, SelectState)) {
+        if (zox_valid(last_target) &&
+            zox_has(last_target, Selectable))
+        {
             zox_setm(last_target, SelectState, zox_state_deselect_trigger);
             zox_add(last_target, TriggerDeselect);
         }
         zox_setm(e, EntityTarget, target);
-        if (zox_valid(target)) {
+        if (zox_valid(target) &&
+            zox_has(target, Selectable)
+        ) {
             zox_setm(target, SelectState, zox_state_select_trigger);
             zox_add(target, TriggerSelect);
         }
@@ -65,7 +69,10 @@ void raycaster_select_element(
     entity raycaster,
     entity element)
 {
-    set_raycast_target_children(world, raycaster, element);
+    set_raycast_target_children(
+        world,
+        raycaster,
+        element);
 }
 
 
@@ -78,7 +85,7 @@ void set_element_dragged(
     DraggableState* state = zox_get_mut(e, DraggableState);
     if (!state->value) {
         state->value = drag_mode;
-        zox_setm(e, DraggerLink, dragger);
+        zox_link(world, e, DraggerLink, dragger);
         if (is_log_dragging) {
             zox_log("Dragging Started!");
         }

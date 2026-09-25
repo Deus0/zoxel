@@ -92,13 +92,11 @@ void zox_systems_interaction(ecs* world) {
         [out] rendering.Brightness,
         [none] ui.Element,
         [none] interactions.SelectedBrighter,
-        // [none] !interactions.SelectedFillColor
     );
     zox_system(
         DraggerEndSystem,
         zoxp_update,
         [out] interactions.DraggableState,
-        [out] interactions.DraggerLink,
         [out] interactions.DraggingDelta
     );
     zox_system(

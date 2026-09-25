@@ -2,21 +2,31 @@ zox_sys2(DraggerEndSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(DraggableState);
-    zox_sys_out(DraggerLink);
     zox_sys_out(DraggingDelta);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_o(DraggerLink, dragger);
+        zox_sys_e();
         zox_sys_o(DraggableState, state);
         zox_sys_o(DraggingDelta, delta);
-        if (!dragger->value || !state->value) {
+        if (!state->value) {
+            continue;
+        }
+        entity dragger = zox_get_link(world, e, DraggerLink);
+        if (!dragger) {
             continue;
         }
         byte did_drag_end = 0;
         entity devices[zox_children_capacity];
-        uint length = zox_get_children_by_id(world, dragger->value, devices, zox_children_capacity, zox_id(Device));
+        uint length = zox_get_children_by_id(
+            world,
+            dragger,
+            devices,
+            zox_children_capacity,
+            zox_id(Device));
         for (uint j = 0; j < length; j++) {
             entity e2 = devices[j];
-            if (!zox_valid(e2) || zox_has(e2, Disabled)) {
+            if (!zox_valid(e2) ||
+                zox_has(e2, Disabled))
+            {
                 continue;
             }
             iter it2 = zox_children(world, e2);
@@ -28,8 +38,8 @@ zox_sys2(DraggerEndSystem) {
                     {
                         continue;
                     }
-                    zox_geter_value(e3, ZevicePointer, byte, click);
-                    zox_geter_value(e3, ZevicePointerDelta, int2, zdelta);
+                    byte click = zox_getv(e3, ZevicePointer);
+                    int2 zdelta = zox_getv(e3, ZevicePointerDelta);
                     if (devices_get_released_this_frame(click)) {
                         did_drag_end = 1;
                     } else if (devices_get_pressed(click)) {
@@ -40,8 +50,8 @@ zox_sys2(DraggerEndSystem) {
         }
         if (did_drag_end) {
             state->value = 0;
-            dragger->value = 0;
             delta->value = int2_zero;
+            zox_unlink(world, e, DraggerLink, dragger);
             if (is_log_dragging) {
                 zox_log("Dragging Ended!");
             }

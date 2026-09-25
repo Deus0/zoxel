@@ -59,14 +59,16 @@ void zox_systems_stats(ecs *world) {
     zox_system_1(
         CharacterStatsSystem,
         zoxp_spawn,
-        [in] characters.GenerateCharacter,
+        [none] characters.Character,
+        [none] core.Initialize,
         [none] !players.PlayerCharacter
     );
     zox_system_1(
         PlayerCharacterStatsSystem,
         zoxp_spawn,
-        [in] characters.GenerateCharacter,
-        [none] players.PlayerCharacter
+        [none] characters.Character,
+        [none] core.Initialize,
+        [none] players.PlayerCharacter,
     );
     zox_system_1(
         CharacterNameLabelsSystem,

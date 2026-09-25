@@ -16,8 +16,8 @@ zoxc_byte(ClickDisabled);
 // Dragging
 zox_tag(Dragable);
 zoxc_int2(DraggingDelta);
-zoxc_entity(DraggerLink);
-zoxc_entity(DraggedLink);
+zox_tag(DraggerLink);
+zox_tag(DraggedLink);   // link to what the dragging moves
 zoxc_byte(DraggableState);
 // Active
 zoxc_byte(ActiveState);
@@ -77,8 +77,8 @@ void zox_components_interaction(ecs* world) {
     // Dragging
     zoxd_tag(Dragable);
     zoxd_int2(DraggingDelta);
-    zoxd_entity(DraggerLink);
-    zoxd_entity(DraggedLink);
+    zoxd_nf_tag(DraggerLink);
+    zoxd_nf_tag(DraggedLink);
     zoxd_byte(DraggableState);
     // Slides
     zoxd(ClickEvent);

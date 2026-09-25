@@ -30,8 +30,9 @@ void zox_systems_tooltips(ecs* world) {
     zox_system(
         TooltipEventSystem,
         zoxp_update,
-        [in] interactions.SelectState,
+        // [in] interactions.SelectState,
         [in] tooltips.TooltipEvent,
-        [none] tooltips.Tooltipper
+        [none] tooltips.Tooltipper,
+        [none] interactions.Select,
     );
 }

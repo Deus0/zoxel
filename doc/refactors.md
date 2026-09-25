@@ -96,6 +96,9 @@ UIs
     
 ## Remove old links
 	-x SlotLink
+	-x DraggerLink
+	-x DraggedLink
+	-x NodeLink
 	- ModelLink
 	- ModelLinks (half done)
 	- DataLink
@@ -113,8 +116,6 @@ UIs
 	- ScrollviewLink
 	- ListUILink
 	- FontLink
-	- DraggerLink
-	- DraggedLink
 	- TooltipLink
 	- TooltipeeLink
 	- IconOverlayLink
@@ -135,7 +136,6 @@ UIs
 	- SystemLink
 	- BrainLink
 	- NodeStartLink
-	-x NodeLink
 	- FolderPathLink
 	- StreamLink
 

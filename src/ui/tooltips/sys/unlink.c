@@ -15,7 +15,7 @@
 
 // NOTE: Windows are passed in, we should check all uis in tree?
 void close_ui_related_tooltip(ecs* world, entity e) {
-    byte dbg_log = 0;
+    byte dbg_log = zox_log_tooltips;
     entity tooltip = zox_get_link(world, e, TooltipLink);
     if (!zox_valid(tooltip)) {
         return;

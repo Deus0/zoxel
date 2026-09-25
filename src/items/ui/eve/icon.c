@@ -1,6 +1,6 @@
 // Tooltip Event for item icons
 void item_icon_label_event(iter* it) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     byte label_text_capacity = 8;
     zox_sys_world();
     zox_sys_begin();

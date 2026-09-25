@@ -2,7 +2,7 @@
 // TODO: Move resource use out of this System
 // NOTE: Applies damage to character or terrain
 void melee_system(iter* it) {
-    byte dbg_log = 0;
+    byte dbg_log = 1;
     float npc_nerf_multiplier = 0.7f;
     color popup_color = (color) { 255, 0, 0, 255 };
     float popup_spawn_y = 0.18f;
@@ -30,7 +30,8 @@ void melee_system(iter* it) {
         // user validation
         entity user = zox_get_parent(world, e);
         if (!zox_valid(user)) {
-            zox_loge("Skill has Invalid User [%s]", zox_get_name(e));
+            zox_loge("Skill has Invalid User [%s]",
+                zox_get_name(e));
             continue;
         }
         if (zox_has(user, Dead)) {
@@ -98,10 +99,10 @@ void melee_system(iter* it) {
             }
             // this should be muter -> instant use
             lresource = lresource - cost->value;
-            zox_set(resource, StatValue, { lresource });
+            zox_setv(resource, StatValue, lresource);
             if (dbg_log) {
                 zox_log("User [%s] Skill Cost Subtracted [%f]",
-                    zox_get_name(user),
+                    zox_getn(user),
                     lresource);
             }
         }
@@ -142,10 +143,16 @@ void melee_system(iter* it) {
             !skill_range ||
             raycast->distance <= skill_range;
         if (!in_range) {
-            spawn_sound_generated(world, prefab_sound_generated, instrument_violin, note_frequencies[47], 0.3, volume);
+            spawn_sound_generated(
+                world,
+                prefab_sound_generated,
+                instrument_violin,
+                note_frequencies[47],
+                0.3,
+                volume);
             if (dbg_log) {
                 zox_logw("User [%s] [%f] is out of Range [%f]",
-                    zox_get_name(user),
+                    zox_getn(user),
                     raycast->distance,
                     skill_range);
             }
@@ -172,7 +179,8 @@ void melee_system(iter* it) {
                 if (state->value < 0) {
                     state->value = 0;
                 } else if (state->value > stat_value_max) {
-                    state->value = stat_value_max;
+                    state->value = stat_value_max - skill_damage;
+                    zox_loge("Stat is over max? [%f]", stat_value_max);
                 }
                 zox_add(health, Dirty);
                 zox_add(health, DataDirty);

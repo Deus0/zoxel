@@ -11,8 +11,6 @@ entity spawn_prefab_handle(
     zox_add(e, Dragable);
     zox_setv(e, DraggableState, 0);
     zox_setv(e, DraggingDelta, int2_zero);
-    zox_setv(e, DraggerLink, 0);
-    zox_setv(e, DraggedLink, 0);
     zox_setv(e, LayoutConstraints, int4_zero);
     // Slide
     zox_setv(e, SlideEvent, 0);
