@@ -27,7 +27,9 @@ zox_tag(ActiveSingle);
 zoxc_entity(ActiveLink);    // parents active link
 // Events
 zox_tag(TriggerSelect);
+zox_tag(TriggerDeselect);
 zox_tag(Select);
+zox_tag(Deselect);
 
 typedef struct {
     entity clicker;
@@ -85,4 +87,6 @@ void zox_components_interaction(ecs* world) {
     // Events
     zoxd_tag_event(TriggerSelect);
     zoxd_tag_event(Select);
+    zoxd_tag_event(TriggerDeselect);
+    zoxd_tag_event(Deselect);
 }

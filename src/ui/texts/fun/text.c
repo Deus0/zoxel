@@ -11,7 +11,9 @@ static inline byte is_zext(
     if (!zext || !zext->value) {
         return 0; // error
     }
-    int length = text ? strlen(text) : 0;
+    int length = text ?
+        strlen(text) :
+        0;
     if (zext->length != length) {
         return 0;
     }

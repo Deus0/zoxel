@@ -32,10 +32,6 @@ void close_ui_related_tooltip(ecs* world, entity e) {
             break;
         }
         node_index++;
-    //iter it2 = zox_links(tooltip, TooltipLink);
-    //while (zox_query_next(it2)) {
-    //    entity old_ui = zox_pair_target(it2, 0);
-        // entity old_ui = zox_get_link(world, tooltip, TooltipLink);
         if (old_ui == e) {
             zox_unlink(world, tooltip, TooltipLink, old_ui);
             if (dbg_log) {
@@ -55,14 +51,14 @@ void close_ui_related_tooltip(ecs* world, entity e) {
 // NOTE: Called by the UI element with a tooltip event on it
 zox_sys2(TooltipeeDeselectSystem) {
     zox_sys_world();
-    zox_sys_begin();
-    zox_sys_in(SelectState);
+    // zox_sys_begin();
+    // zox_sys_in(SelectState);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(SelectState, state);
+        /*zox_sys_i(SelectState, state);
         if (state->value != zox_state_deselect_active) {
             continue;
-        }
+        }*/
         close_ui_related_tooltip(world, e);
     }
 } zox_sys_end(TooltipeeDeselectSystem);

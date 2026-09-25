@@ -2,6 +2,8 @@ extern entity spawn_pickup_basic(ecs*, float3);
 extern float item_pickup_scale;
 extern entity2 spawn_pickup_block(ecs*, entity, float3, float);
 extern entity spawn_item_world(ecs*, entity, entity, float3, float);
+extern entity spawn_item_world_from_meta(ecs*, entity, entity, float3, float);
+
 // TODO: Move this over to Pickups
 
 // NOTE: For now we just drop BlockItems!
@@ -120,7 +122,7 @@ void terrain_item_drop_system(iter* it) {
             float3_add_float3_p(&positionf, position->value); // chunk
             float3_add_float3_p(&positionf, float3_single(scale->value * 0.5f));
             // get positionf from local position and depth
-            entity pickup = spawn_item_world(
+            entity pickup = spawn_item_world_from_meta(
                 world,
                 realm,
                 block_item,
@@ -132,6 +134,7 @@ void terrain_item_drop_system(iter* it) {
                 positionf,
                 item_pickup_scale).x;*/
             if (pickup) {
+                zox_setv(pickup, Quantity, 1);
                 zox_link(world, pickup, ItemLink, block_item);
             }
             if (dbg_log) {

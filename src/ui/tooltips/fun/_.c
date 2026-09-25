@@ -4,6 +4,12 @@ static inline void set_tooltip_text(
     entity tooltip,
     const char* text)
 {
+    entity old_linked = zox_get_link(world, tooltip, TooltipLink);
+    if (old_linked) {
+        zox_loge("Tooltip Double Linked %s",
+            zox_getn(old_linked));
+        zox_unlink(world, tooltip, TooltipLink, old_linked);
+    }
     // zox_log("Linking Tooltip [%s] => [%s]", zox_getn(tooltip), zox_getn(ui));
     // link tooltip new ui
     zox_link(world, tooltip, TooltipLink, ui);
@@ -19,7 +25,11 @@ byte tooltip_text_event(
         return 0;
     }
     zox_geter(data->ui, TooltipText, tooltip_text);
-    set_tooltip_text(world, data->ui, data->tooltip, tooltip_text->value);
+    set_tooltip_text(
+        world,
+        data->ui,
+        data->tooltip,
+        tooltip_text->value);
     return 1;
 }
 

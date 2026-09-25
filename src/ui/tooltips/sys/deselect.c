@@ -1,6 +1,6 @@
 // NOTE: The tooltip will shut down when no more uis are linked to it.
 zox_sys2(TooltipDeselectSystem) {
-    byte dbg_log = 0;
+    byte dbg_log = 1;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(TextData);
@@ -19,7 +19,8 @@ zox_sys2(TooltipDeselectSystem) {
         resize_TextData(data, 0);
         zox_add(e, Dirty);
         if (dbg_log) {
-            zox_log("Tooltip is shutting down [%s]", zox_getn(e));
+            zox_log("Tooltip is shutting down [%s]",
+                zox_getn(e));
         }
     }
 } zox_sys_end(TooltipDeselectSystem);

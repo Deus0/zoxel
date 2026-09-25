@@ -23,15 +23,21 @@ void slot_ui_update_system(iter* it) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         entity slot = zox_get_link(world, e, SlotLink);
-        if (zox_valid(slot) &&
-            zox_has(slot, DataUpdate))
-        {
+        if (!zox_valid(slot)) {
+            continue;
+        }
+        if (zox_has(slot, DataUpdate)) {
             zox_add(e, DataDirty);
             if (dbg_log) {
                 entity data = zox_getv(slot, DataLink);
                 zox_log("Slot was Dirty, updating UI [%s], Data [%s]",
                     zox_getn(e),
                     zox_getn(data));
+            }
+        } else {
+            entity data = zox_getv(slot, DataLink);
+            if (zox_valid(data) && zox_has(e, DataUpdate)) {
+                zox_add(e, DataDirty);
             }
         }
     }
@@ -48,4 +54,3 @@ void data_ui_update_system(iter* it) {
         }
     }
 } zoxd_system(data_ui_update_system);
-

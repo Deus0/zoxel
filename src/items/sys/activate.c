@@ -49,6 +49,7 @@ zox_sys2(ItemActivateSystem) {
         });
         quantity->value--;
         zox_add(e, QuantityDirty);
+        zox_add(e, Dirty);
         zox_add(e, DataDirty);
         // place block sound
         spawn_sound_generated(

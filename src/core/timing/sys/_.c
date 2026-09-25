@@ -1,7 +1,6 @@
 #include "time_destroy.c"
 #include "timers.c"
 #include "destroy_in_frame.c"
-#include "timed_event.c"
 #include "system_time.c"
 
 void zox_systems_timing(ecs* world) {
@@ -21,13 +20,6 @@ void zox_systems_timing(ecs* world) {
         DestroyInFrameSystem,
         zoxp_destroy,
         [none] core.DestroyInFrame
-    );
-    zox_system_1(
-        TimedEventSystem,
-        zoxp_spawn,
-        [in] core.TimedEvent,
-        [in] core.EventInput,
-        [out] core.EventTime
     );
     zox_system(
         FpsCurveSystem,

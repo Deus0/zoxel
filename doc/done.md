@@ -1,5 +1,12 @@
 # Done
 	
+-x crashes sometimes when npc dies
+-x Wood, Sand textures didn't update
+	- sometimes itll happen now
+	- i made it stop tilemap atm
+-x Add conditional node, and link it to two speech nodes
+	- condition is if the speaker A has the quest
+-x Add dialoguenode for handing in quest
 -x slime 50% chance drop cookies
 -x 45% should be drop dirt
 -x 5% drop hat

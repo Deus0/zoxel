@@ -123,6 +123,9 @@ entity get_max_model_mesh(
     ecs* world,
     entity e)
 {
+    if (!zox_valid(e)) {
+        return 0;
+    }
     if (zox_has(e, ModelGroup)) {
         // pick first model
         e = zox_get_child_by_id(world, e, zox_id(Model));

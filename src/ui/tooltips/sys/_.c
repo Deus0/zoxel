@@ -21,8 +21,11 @@ void zox_systems_tooltips(ecs* world) {
     zox_system(
         TooltipeeDeselectSystem,
         zoxp_update,
-        [in] interactions.SelectState,
-        [none] tooltips.Tooltipper
+        [none] ui.Element,
+        // [none] interactions.Selectable,
+        [none] tooltips.Tooltipper,
+        [none] interactions.Deselect,
+        //[in] interactions.SelectState,
     );
     zox_system(
         TooltipEventSystem,

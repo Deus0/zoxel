@@ -24,7 +24,7 @@ void zox_systems_interaction(ecs* world) {
         [in] layouts.Layer,
         [in] rendering.RenderDisabled,
         [none] ui.Element,
-        [none] interactions.Selectable
+        [none] interactions.Selectable,
     );
     zox_system_ctx(
         ElementRaycastSystem,
@@ -149,5 +149,16 @@ void zox_systems_interaction(ecs* world) {
         select_system,
         zoxp_remove,
         [none] interactions.Select,
+    );
+
+    zox_system(
+        trigger_deselect_system,
+        zoxp_remove,
+        [none] interactions.TriggerDeselect,
+    );
+    zox_system(
+        deselect_system,
+        zoxp_remove,
+        [none] interactions.Deselect,
     );
 }

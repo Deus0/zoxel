@@ -42,23 +42,21 @@ void quest_icon_label_event(iter* it) {
 
 // Tooltip Event for item icons
 void quest_icon_tooltip_event(iter* it) {
-    byte dbg_log = 0;
+    byte dbg_log = 1;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DataLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(DataLink, data);
-        /*if (state->value != zox_state_select_active) {
-            continue;
-        }*/
-        // zox_log("quest_icon_tooltip_event [%s]", zox_sys_e_name);
         entity quest = data->value;
-        // TODO: We should do this for only X types of items
-        //      - BlockItem, ConsumeableItem, etc
         if (!zox_valid(quest) ||
             !zox_has(quest, Quest))
         {
+            if (dbg_log) {
+                zox_loge("Dirty Data not Quest [%s]",
+                    zox_getn(quest));
+            }
             continue;
         }
         entity canvas = zox_get_parent_by_id(

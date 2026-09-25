@@ -19,7 +19,6 @@ entity spawn_block_item(
     zox_prefab_addc_user_timings(world, e);
     zox_setv(e, WarmupTime, 0.125f);
     zox_setv(e, CooldownTime, 0.125f);
-    zox_link(world, e, BlockLink, block);
     zox_setv(e, RaycastRange, block_place_range);
     zox_setv(e, RaycastType, 1);
     if (zox_has(block, BlockVox)) {
@@ -31,6 +30,7 @@ entity spawn_block_item(
         zox_setv(e, ModelLink, model);
     }
     // Links
+    zox_link(world, e, BlockLink, block);
     zox_set_parent(world, e, parent);
     // actually for grass we want to set itemLink differently
     // zox_link(world, block, Item, e);

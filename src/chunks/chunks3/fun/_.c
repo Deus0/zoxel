@@ -41,8 +41,6 @@ static inline void initialize_sides_lock(
     zox_setv(e, SidesOctreeLock, lock);
 }
 
-
-
 entity spawn_texture_from_vox(
     ecs* world,
     entity vox,

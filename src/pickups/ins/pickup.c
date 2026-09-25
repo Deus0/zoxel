@@ -100,10 +100,13 @@ entity spawn_item_world_from_meta(
         zox_setv(pickup, Position3D, position);
         zox_setv(pickup, Scale1, 0.5f);
         entity mesh = spawn_item_vox_mesh(world, meta);
-        zox_set_parent(world, mesh, pickup);
-        zox_setv(mesh, LocalPosition3D, float3_zero);
-        zox_setv(mesh, Scale1, 1);
-        // zox_setv(mesh, LocalScale1, 0.5f);
+        if (mesh) {
+            zox_set_parent(world, mesh, pickup);
+            zox_setv(mesh, LocalPosition3D, float3_zero);
+            zox_setv(mesh, Scale1, 1);
+        } else {
+            zox_loge("ItemVox mesh didn't spawn.");
+        }
     } else {
         entity block = zox_get_link(world, meta, BlockLink);
         if (block) {
@@ -113,6 +116,8 @@ entity spawn_item_world_from_meta(
                 position,
                 scale).x;
         } else {
+            zox_loge("Realm Item had no Block [%s]",
+                zox_getn(meta));
             pickup = spawn_pickup_basic(world, position);
         }
     }
@@ -131,7 +136,7 @@ entity spawn_item_world(
     entity pickup = spawn_item_world_from_meta(
         world,
         realm,
-        item,
+        meta,
         position,
         scale);
     if (zox_has(item, Quantity)) {

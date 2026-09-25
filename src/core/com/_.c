@@ -34,9 +34,6 @@ zoxc_lint(Seed);
 zoxc_fixed_string(ZoxName, 64);
 // time events
 zox_tag(DestroyInFrame);
-zoxc_double(EventTime);
-zoxc_entity(EventInput);
-zoxc_function(TimedEvent, void, ecs*, const entity);
 // used for editor
 zoxc_byte(EntityDirty);
 zoxc_entity(EntityTarget);
@@ -98,9 +95,6 @@ void zox_components_core(ecs* world) {
     zoxd_fixed_string(ZoxName);
     // timed
     zoxd_tag(DestroyInFrame);
-    zoxd_double(EventTime);
-    zoxd_entity(EventInput);
-    zoxd(TimedEvent);
     // editor
     zoxd_byte(EntityDirty);
     zoxd_entity(EntityTarget);

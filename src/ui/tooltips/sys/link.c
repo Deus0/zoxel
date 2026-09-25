@@ -21,7 +21,9 @@ zox_sys2(TooltipeeInitializeSystem) {
         }
         zox_link(world, e, TooltipLink, tooltip);
         if (dbg_log) {
-            zox_log("Tooltipee Initialized [%s] => [%s]", zox_getn(e), zox_getn(tooltip));
+            zox_log("Tooltipee Initialized [%s] => [%s]",
+                zox_getn(e),
+                zox_getn(tooltip));
         }
     }
 } zox_sys_end(TooltipeeInitializeSystem);

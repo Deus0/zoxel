@@ -11,11 +11,17 @@ zox_sys2(TimedEventSystem) {
         zox_sys_i(TimedEvent, event);
         zox_sys_i(EventInput, input);
         zox_sys_o(EventTime, time);
-
         time->value -= zox_delta_time;
         if (time->value <= 0) {
             if (event->value) {
-                (*event->value)(world, input->value);
+                entity e1 = input->value;
+                if (zox_has(e, EventInput2)) {
+                    entity e2 = zox_getv(e, EventInput2);
+                    ((void (*)(ecs*, entity, entity)) event->value)(world, e1, e2);
+                } else {
+                    ((void (*)(ecs*, entity)) event->value)(world, e1);
+                }
+                // (*event->value)(world, input->value);
             }
             zox_delete(e);
         }

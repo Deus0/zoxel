@@ -1,25 +1,48 @@
 # Todo
 
+- github contributors didnt update
+	- remove old ones
+	- try push to new project?
+	
+# New
+- spawn vox mesh in hands
+
 # Bugs
-- first hit on npc - 3 damage, shows -1 on healthbar
-- healtbar getting stuck when npc dies now
+- tooltip now not showing..
+	- game icons - itll dissapear
+	- gone in taskbar too
+- stats issues
+	- regen not using proper stats
+	- first hit on npc - 3 damage, shows -1 on healthbar
+	- healtbar getting stuck when npc dies now
 	- recently changed the way statdirty works
-- npc hits arnt hitting
-- Wood, Sand textures didn't update
-	- sometimes
-	- i made it stop tilemap atm
-- animated  text is buggy atm
-- item pickedup is a block item
+- actions issues
+	- when close/open after pickup item, it will spawn them at wrong indexes - the pickup go to 10th ui
+	- and then it didnt show in hand - well it did for2, just not 10
+	- action indexes off when selecting
+- item issues
+	- cokie is not centred??
+	-x cokie didnt add when pickedup
+	-x placed label didnt always update
+	- item pickedup is a block item
 	- even when cokie
+	- item didnt stack or split when picked up and dropped in ui
+	-x item pickup didnt go to actionbar
+	- item tooltip didnt update when stacked
+	- cokie shouldnt select terrain
+- npc hits arnt hitting back - or raycast fails?
+- Dialogue animated text is buggy atm
 - no rewards on quest handin
 	- Goal: Give 20 xp for handing in quest
-- quest marker not updated
-- action indexes off when selecting
-- item didnt stack or split when picked up and dropped in ui
-- item pickup didnt go to actionbar
-- regen not using proper stats
-- item tooltip didnt update when stacked
 - mirror mesh doesnt update when game model does
+- make lists sorting use child index - after sort it shuffles atm
+
+# Polish
+- quest marker not updated
+	- marker should set when player goes near npc, it should update based on quest
+	- link marker to nearby player character
+	- if they are doing quest, update it, observe its quest
+	- remove marker when quest is completed
 
 # Tests
 - write giveall quests test
@@ -34,17 +57,12 @@
 - regen should be based on regen stat thats linked - StatLink
 - spawn vox item in hand when selected
 	- instead of cube
-- marker should set when player goes near npc, it should update based on quest
-	- link marker to nearby player character
-	- if they are doing quest, update it, observe its quest
 - reduce health regen
 	- when in combat
 - tag our humanoid with 'QuestGiver' so only they can handout quests
 - for our model test - change mesh every 5 seconds to a variant model
 	- showcase variants
-- make lists sorting use child index - after sort it shuffles atm
 - GiveAllQuests cheat function
-- remove marker when quest is completed
 - link our data / slot to the ui frame
     - icons/texts will just grab parent data links
 

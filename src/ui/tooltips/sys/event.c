@@ -37,7 +37,6 @@ zox_sys2(TooltipEventSystem) {
         }
         // TODO: Make another system that just uses TooltipText instead of event
         TooltipEventData data = {
-            // .event = state->value,
             .ui = e,
             .tooltip = tooltip
         };
@@ -45,7 +44,9 @@ zox_sys2(TooltipEventSystem) {
             // hmm need to rethink this
         }
         if (dbg_log) {
-            zox_log("Tooltipee Activated [%s] => [%s]", zox_getn(e), zox_getn(tooltip));
+            zox_log("Tooltipee Activated [%s] => [%s]",
+                zox_getn(e),
+                zox_getn(tooltip));
         }
     }
 } zox_sys_end(TooltipEventSystem);
