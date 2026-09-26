@@ -46,7 +46,7 @@ void item_icon_label_event(iter* it) {
 
 // Tooltip Event for item icons
 void item_icon_tooltip_event(iter* it) {
-    // byte dbg_log = 0;
+    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     for (int i = 0; i < it->count; i++) {
@@ -101,5 +101,10 @@ void item_icon_tooltip_event(iter* it) {
             e,
             tooltip,
             result);
+        if (dbg_log) {
+            zox_log("Item Icon Tooltip: [%s]: [%s]",
+                zox_sys_e_name,
+                result);
+        }
     }
 }

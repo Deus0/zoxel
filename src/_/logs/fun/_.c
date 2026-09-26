@@ -16,7 +16,8 @@ int clear_logs() { return 0; }
 
     #define zox_log_error(...) zox_log_prefix(zox_log_colors_red, "[ERROR] ", __VA_ARGS__);
 
-    #define zox_log_errno(format, ...) zox_log(format ": [%s]", __VA_ARGS__, strerror(errno))
+    #define zox_log_errno(format, ...) \
+        zox_log(format ": [%s]", __VA_ARGS__, strerror(errno))
 
     #ifdef zox_verbose
         #define zox_logv(...) \

@@ -45,7 +45,7 @@ zox_sys2(TaskbarBeginSystem) {
                 zox_getn(taskbar));
             continue;
         }
-        zox_link(world, e, Toggle, toggle);
+        zox_link(world, e, ToggleLink, toggle);
         zox_setv(toggle, ActiveState, 1);
         zox_setv(toggle, ActiveStateDirty, zox_dirty_trigger);
     }

@@ -2,7 +2,7 @@
 // TODO: Move resource use out of this System
 // NOTE: Applies damage to character or terrain
 void melee_system(iter* it) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     float npc_nerf_multiplier = 0.7f;
     color popup_color = (color) { 255, 0, 0, 255 };
     float popup_spawn_y = 0.18f;

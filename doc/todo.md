@@ -6,39 +6,49 @@
 	
 # New
 - spawn vox mesh in hands
+- regen not using proper stats
+	- make regening state depend on linked regen stat
+- right click to split cokie in half
+- Add rewards on quest handin
+	- Goal: Give 20 xp for handing in quest
+- import texture outlines as a seperate mask texture
+	- making it easier to change outlines
+	- bitmask - 0 / 1 ?
+- for body parts we can detatch:
+	- add a tooltip detachable line
+	- change frame color slightly to show
+- when removing body part
+	- remove any associated slots
+	- remove the uis
+	- refresh the list after
 
 # Bugs
-- tooltip now not showing..
-	- game icons - itll dissapear
-	- gone in taskbar too
-    - if ui selects while didnt deselect..!
-        - select main menu header after button selects
-        - it can show nothing selected even though log shows it set, teh issue therefor must be that it gets set and unset in same frame
-- stats issues
-	- first hit on npc - 3 damage, shows -1 on healthbar
-	- healtbar getting stuck when npc dies now
-	- regen not using proper stats
-	- recently changed the way statdirty works
-- actions issues
-	- when close/open after pickup item, it will spawn them at wrong indexes - the pickup go to 10th ui
-	- and then it didnt show in hand - well it did for2, just not 10
-	- action indexes off when selecting
-- item issues
-	- cokie is not centred??
-	-x cokie didnt add when pickedup
-	-x placed label didnt always update
-	- item pickedup is a block item
-	- even when cokie
-	- item didnt stack or split when picked up and dropped in ui
-	-x item pickup didnt go to actionbar
-	- item tooltip didnt update when stacked
-	- cokie shouldnt select terrain
-- npc hits arnt hitting back - or raycast fails?
 - Dialogue animated text is buggy atm
-- no rewards on quest handin
-	- Goal: Give 20 xp for handing in quest
 - mirror mesh doesnt update when game model does
+	- make a system that grabs the mesh clone link
+	- when it updates, we can update our mesh clone too
+	- link it to the characters mesh
 - make lists sorting use child index - after sort it shuffles atm
+- actions issues
+	- active state not action index
+	-x when close/open after pickup item, it will spawn them at wrong indexes - the pickup go to 10th ui
+	-x and then it didnt show in hand - well it did for2, just not 10
+	-x action indexes off when selecting
+- Sometimes the npc labels dont spawn
+	- its dissapearing due to chunk distance issues
+- item issues
+	- item label didnt update when it was removed
+	- cokie shouldnt select terrain
+	- item pickedup was a block item - test hat pickups
+	-x item didnt stack when picked up and dropped in ui
+- cokie is not centred??
+	- super rare vox texture bug
+- GameStateSystem log error after exiting game
+	- guess state looking for realm
+- Tooltips: If ui selects while didnt deselect..!
+	- select main menu header after button selects
+	- the tooltip updates to wrong one - shows load game when you  mouse move fast between uis
+	- it can show nothing selected even though log shows it set, teh issue therefor must be that it gets set and unset in same frame
 
 # Polish
 - quest marker not updated

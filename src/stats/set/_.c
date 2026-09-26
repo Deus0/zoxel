@@ -5,9 +5,10 @@ float energy_base = 12; // for now
 float energy_level_increase = 2;
 float mana_base = 4; // for now
 float mana_level_increase = 2;
+float player_health_base = 10;
 // regen
 float base_regen = 1;
-float regen_rate = 0.5f;
+float regen_rate = 0.25f;
 // leveling
 float zox_experience_max_start = 10;
 float experience_max_multiplier = 1.4f;

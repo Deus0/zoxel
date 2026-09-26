@@ -53,10 +53,6 @@ void stat_icon_tooltip_event(iter* it) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(DataLink, data);
-        /*if (state->value != zox_state_select_active) {
-            continue;
-        }*/
-        // zox_log("quest_icon_tooltip_event [%s]", zox_sys_e_name);
         entity stat = data->value;
         // TODO: We should do this for only X types of items
         //      - BlockItem, ConsumeableItem, etc
@@ -102,5 +98,10 @@ void stat_icon_tooltip_event(iter* it) {
             sprintf(result, "[%s]\n", name);
         }
         set_tooltip_text(world, e, tooltip, result);
+        if (dbg_log) {
+            zox_log("Stat Icon Tooltip: [%s]: [%s]",
+                zox_sys_e_name,
+                result);
+        }
     }
 }

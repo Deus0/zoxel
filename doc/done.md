@@ -1,5 +1,17 @@
 # Done
 	
+-x cokie didnt add when pickedup
+-x placed label didnt always update
+-x item pickup didnt go to actionbar
+-x item tooltip didnt update when stacked
+-x npc hits arnt hitting back - or raycast fails?
+-x stats issues
+	-x first hit on npc - 3 damage, shows -1 on healthbar
+	-x healtbar getting stuck when npc dies now
+	-o recently changed the way statdirty works
+-x tooltip now not showing..
+	-x game icons - itll dissapear
+	-x gone in taskbar too
 -x crashes sometimes when npc dies
 -x Wood, Sand textures didn't update
 	- sometimes itll happen now

@@ -1,5 +1,5 @@
 // NOTE: Clears text when data removed
-zox_sys2(IconLabelClearSystem) {
+/*zox_sys2(IconLabelClearSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -13,11 +13,6 @@ zox_sys2(IconLabelClearSystem) {
         {
             continue;
         }
-        /*byte dirty2 = zox_getv(slot->value, DataDirty) == zox_dirty_active;
-        dirty2 |= state->value == zox_dirty_active;
-        if (!dirty2) {
-            continue;
-        }*/
         entity data = zox_getv(slot, DataLink);
         if (zox_valid(data)) {
             continue;
@@ -31,4 +26,4 @@ zox_sys2(IconLabelClearSystem) {
             zox_log("Clearing Frame Label [%s]", zox_get_name(e));
         }
     }
-} zox_sys_end(IconLabelClearSystem);
+} zox_sys_end(IconLabelClearSystem);*/

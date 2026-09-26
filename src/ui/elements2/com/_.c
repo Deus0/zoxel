@@ -8,6 +8,7 @@ zoxc_float2(SlideBounds);
 zoxc(SliderLabel, const char*);
 // Toggle
 zox_tag(Toggle);
+zox_tag(ToggleLink);
 // zoxc_byte(ToggleState);
 // zoxc_state(ToggleStateDirty);
 // Frames
@@ -44,6 +45,7 @@ void zox_components_elements2(ecs *world) {
     zoxd_entity(ScrollviewLink);
     zoxd_entity(ListUILink);
     zoxd_tag(Toggle);
+    zoxd_nf_tag(ToggleLink);
     //zoxd_byte(ToggleState);
     //zoxd_state(ToggleStateDirty);
     zoxd(OptionLabel);

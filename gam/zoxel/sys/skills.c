@@ -37,6 +37,7 @@ zox_sys2(SkillsRealmSpawnSystem) {
         // Punch
         {
             color ecolor = (color) { 155, 155, 155, 255 };
+            float punch_cost = 0.5f;
             float range = 1.5f;
             float2 damage = (float2) { 1, 2 };
             entity e2 = spawn_realm_skill_melee(
@@ -50,7 +51,7 @@ zox_sys2(SkillsRealmSpawnSystem) {
                 damage.y,
                 range,
                 energy,
-                1,
+                punch_cost,
                 0.25f,
                 0.25f);
             meta_skill_punch = e2;

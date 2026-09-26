@@ -39,10 +39,16 @@ void spawn_base_stats(
         is_player_character ?
             1 :
             randf_range(1, 3);
-    float2 health = (float2) {
-        health_base,
-        health_base + soul_value * health_level_increase
-    };
+    float2 health;
+    // = (float2) {
+    //    health_base,
+    //    health_base + soul_value * health_level_increase
+    //};
+    if (is_player_character) {
+        health = float2_single(player_health_base);
+    } else {
+        health = float2_single(health_base + soul_value * health_level_increase);
+    }
     health.x = randf_range(health_base, health.y);
     float2 energy = (float2) {
         energy_base,
@@ -63,7 +69,12 @@ void spawn_base_stats(
         e,
         zox_id(StatHealth));
     if (!zox_valid(healthe)) {
-        spawn_stat_state(world, e, realm_health, health.x, health.y);
+        spawn_stat_state(
+            world,
+            e,
+            realm_health,
+            health.x,
+            health.y);
     }
     spawn_stat_state(
         world,

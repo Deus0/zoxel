@@ -8,7 +8,7 @@ static inline byte is_zext(
     TextData* zext,
     const char* text)
 {
-    if (!zext || !zext->value) {
+    if (!zext) {
         return 0; // error
     }
     int length = text ?
@@ -16,6 +16,17 @@ static inline byte is_zext(
         0;
     if (zext->length != length) {
         return 0;
+    }
+    // both empty
+    if (!length) {
+        return 1;
+    }
+    if (!zext->value) {
+        zox_loge("Text value is invalid in [is_zext]: %s, Lengths [%i] - [%i]",
+            text,
+            zext->length,
+            length);
+        return 0; // error
     }
     for (int i = 0; i < length; i++) {
         byte j = convert_ascii(text[i]);
@@ -43,6 +54,8 @@ void set_zext(
         char ascii_char = ntext[i];
         text->value[i] = convert_ascii(ascii_char);
     }
+    zox_log("set_zext [%s]",
+        ntext);
 }
 
 byte set_text_component(
@@ -91,7 +104,7 @@ static inline byte set_entity_text(
     }
 }
 
-void set_entity_text_raw(
+/*void set_entity_text_raw(
     ecs* world,
     entity e,
     const char* text)
@@ -100,7 +113,7 @@ void set_entity_text_raw(
     set_zext(&data, text);
     zox_set_ptr(e, TextData, data);
     zox_add(e, Dirty);
-}
+}*/
 
 int get_zexts_count(ecs *world) {
     return zox_count_types(Text);

@@ -79,13 +79,13 @@ zox_sys2(DataIconUpdateSystem) {
         clone_texture_data(world, e, texture);
         // zox_log("Set Icon [%s] to texture [%s]", zox_get_name(e), zox_get_name(texture));if (!clicked_data_empty) {
         // For now lets do this
-        entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
+        /*entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
         if (zox_valid(canvas)) {
             entity tooltip = zox_get_child_by_id(world, canvas, zox_id(Tooltip));
             if (zox_valid(tooltip)) {
                 set_entity_text(world, tooltip, "");
             }
-        }
+        }*/
         if (dbg_log) {
             zox_log("Data Icon Updated [%s]",
                 zox_sys_e_name);

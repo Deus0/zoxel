@@ -5,12 +5,23 @@ static inline void zox_log_prefix(
     ...)
 {
     // build timestamp
-    char timestamp[32];
+    /*char timestamp[32];
     if (is_time_log_prefixes) {
         time_t now = time(NULL);
         struct tm t;
         localtime_r(&now, &t);
         strftime(timestamp, sizeof(timestamp), "[%H:%M:%S]", &t);
+    }*/
+    char timestamp[32];
+    if (is_time_log_prefixes) {
+        struct timespec ts;
+        clock_gettime(CLOCK_REALTIME, &ts);
+        struct tm t;
+        localtime_r(&ts.tv_sec, &t);
+        snprintf(timestamp, sizeof(timestamp),
+                 "[%02d:%02d:%02d.%03ld]",
+                 t.tm_hour, t.tm_min, t.tm_sec,
+                 ts.tv_nsec / 1000000);
     }
     // prepend timestamp + prefix
     int index = 0;

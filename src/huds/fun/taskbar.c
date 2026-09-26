@@ -12,13 +12,13 @@ void on_closed_taskbar_window(
             zox_getn(data.clicked));
         return;
     }
-    entity toggle = zox_get_link(world, window, Toggle);
+    entity toggle = zox_get_link(world, window, ToggleLink);
     if (zox_valid(toggle)) {
         /*zox_log("[on_closed_taskbar_window] Window [%s] has [Toggle] %s", zox_getn(window), zox_getn(toggle));*/
         zox_setv(toggle, ActiveState, 0);
         zox_setv(toggle, ActiveStateDirty, zox_dirty_trigger);
     } else {
-        zox_loge("Window [%s] has no [Toggle]",
+        zox_loge("Window [%s] Invalid [ToggleLink]",
             zox_getn(window));
     }
     zox_delete(window);
@@ -84,7 +84,7 @@ void link_window_to_taskbar(
         }
     }
     if (zox_valid(toggle)) { //  && zox_has(toggle, Toggle)) {
-        zox_link(world, window, Toggle, toggle);
+        zox_link(world, window, ToggleLink, toggle);
         zox_setv(toggle, ActiveState, 1);
         zox_setv(toggle, ActiveStateDirty, zox_dirty_trigger);
     } else {

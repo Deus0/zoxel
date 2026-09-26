@@ -36,7 +36,7 @@ void taskbar_button_click_event(
     zox_setv(frame, ActiveState, window_state);
     zox_setv(frame, ActiveStateDirty, zox_dirty_trigger);
     if (window_state) {
-        zox_link(world, window_state, Toggle, frame);
+        zox_link(world, window, ToggleLink, frame);
     }
 }
 
@@ -161,7 +161,7 @@ entity spawn_taskbar(
                 zox_setv(frame, ActiveState, 1);
                 zox_setv(frame, ActiveStateDirty, zox_dirty_trigger);
                 if (zox_valid(window)) {
-                    zox_link(world, window, Toggle, frame);
+                    zox_link(world, window, ToggleLink, frame);
                     // zox_setv(window, TaskbarToggleLink, frame);
                 }
             }

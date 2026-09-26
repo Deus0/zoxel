@@ -13,17 +13,12 @@ entity spawn_menu_actions(
         zox_loge("Character not found on player");
         return 0;
     }
-    entity old_menu = zox_get_child_by_id(
-        world,
-        canvas,
-        zox_id(MenuActions));
+    entity old_menu = zox_get_child_by_id(world, canvas, zox_id(MenuActions));
     if (zox_valid(old_menu)) {
         return 0;
     }
-    entity actionbar = zox_get_child_by_id(
-        world,
-        character,
-        zox_id(Actionbar));
+    entity actionbar = zox_get_child_by_id(world, character, zox_id(Actionbar));
+    byte action_index = zox_getv(character, ActionIndex);
     if (!zox_valid(actionbar)) {
         zox_loge("Actionbar Slots not found on player");
         return 0;
@@ -59,7 +54,8 @@ entity spawn_menu_actions(
         outline_color_frame_action,
         position_anchor,
         position,
-        frame_id);
+        frame_id,
+        action_index);
     zox_add(e, MenuActions);
     return e;
 }

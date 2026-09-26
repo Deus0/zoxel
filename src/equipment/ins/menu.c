@@ -47,7 +47,8 @@ entity spawn_player_menu_equipment(ecs* world, entity player) {
         position,
         frame_id,
         parts->data,
-        parts->size);
+        parts->size,
+        0);
     zox_add(e, MenuEquipment);
     dispose_entity_array_d(parts);
     return e;

@@ -23,7 +23,8 @@ entity spawn_player_menu_crafting(ecs* world, entity player) {
         color_white,
         position_anchor,
         position,
-        frame_id);
+        frame_id,
+        0);
     zox_add(e, MenuCrafting);
     return e;
  }

@@ -51,8 +51,13 @@ zox_sys2(Character3RealmSpawnSystem) {
             }
             zox_add(e2, QuestGiver);
             if (is_add_stats) {
-                spawn_stat_level(world, e2, base_soul, 5);
-                spawn_stat_state(world, e2, base_health, 21, 21);
+                spawn_stat_level(world, e2, base_soul, 16);
+                spawn_stat_state(
+                    world,
+                    e2,
+                    base_health,
+                    42,
+                    42);
             }
             // Generate Name
             char name[64];
@@ -167,7 +172,12 @@ zox_sys2(Character3RealmSpawnSystem) {
             float health = (float)(healths[j]);
             if (is_add_stats) {
                 spawn_stat_level(world, e2, base_soul, soul_value);
-                spawn_stat_state(world, e2, base_health, health, health);
+                spawn_stat_state(
+                    world,
+                    e2,
+                    base_health,
+                    health,
+                    health);
             }
             add_to_CharacterLinks(characters, e2);
             character_seed += seed_shift;

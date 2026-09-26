@@ -16,7 +16,8 @@ entity spawn_datagrid_slots2(
     int2 position,
     entity frame_id,
     entity* slots,
-    uint slots_length)
+    uint slots_length,
+    byte selected)
 {
     if (!zox_valid(character)) {
         zox_loge("invalid character in [spawn_datagrid_slots]");
@@ -33,10 +34,12 @@ entity spawn_datagrid_slots2(
         grid_padding,
         grid_margins);
     byte active_states = zox_has(prefab_frame, ActiveState);
-    byte selected = 0;
+    // byte selected = 0;
     if (active_states) {
         if (selected >= slots_length) {
-            zox_logw("selected [%i] out of bounds [%i]", selected, slots_length);
+            zox_logw("selected [%i] out of bounds [%i]",
+                selected,
+                slots_length);
             selected = slots_length - 1;
         }
     }
@@ -68,7 +71,12 @@ entity spawn_datagrid_slots2(
     uint array_index = 0;
     for (int j = cells_size.y - 1; j >= 0; j--) {
         for (int i = 0; i < cells_size.x; i++) {
-            entity slot = slots[array_index];
+            // entity slot = slots[array_index];
+            entity slot = get_child_at_index(
+                world,
+                slots,
+                slots_length,
+                array_index);
             if (!zox_valid(slot)) {
                 zox_loge("[spawn_datagrid] [%s] Invalid Slot [%i]",
                     header_label,
@@ -127,8 +135,8 @@ entity spawn_datagrid_slots2(
             }
             if (active_states) {
                 if (array_index == selected) {
-                    zox_setv(spawn.x, ActiveState, 1);
-                    zox_setv(spawn.x, ActiveStateDirty, zox_dirty_trigger);
+                    zox_setv(frame, ActiveState, 1);
+                    zox_setv(frame, ActiveStateDirty, zox_dirty_trigger);
                 }
             }
             array_index++;
@@ -159,7 +167,8 @@ entity spawn_datagrid_slots(
     color outline,
     float2 position_anchor,
     int2 position,
-    entity frame_id)
+    entity frame_id,
+    byte selected)
 {
     // Get our Slots
     entity slots[layouts2_children_capacity];
@@ -186,5 +195,6 @@ entity spawn_datagrid_slots(
         position,
         frame_id,
         slots,
-        slots_length);
+        slots_length,
+        selected);
 }

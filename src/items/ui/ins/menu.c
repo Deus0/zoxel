@@ -30,7 +30,8 @@ entity spawn_menu_inventory(ecs* world, entity player) {
         default_fill_color_frame_item,
         position_anchor,
         position,
-        frame_id);
+        frame_id,
+        0);
     zox_add(e, MenuItems);
     return e;
 }

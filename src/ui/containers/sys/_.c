@@ -33,14 +33,14 @@ void zox_systems_ui_containers(ecs* world) {
         [none] elements2.Icon,
         [none] slots.DataUpdate,
     );
-    zox_system(
+    /*zox_system(
         IconLabelClearSystem,
         zoxp_update,
         [out] texts.TextData,
         [none] texts.Text,
         [none] elements2.Label,
         [none] slots.DataUpdate,
-    );
+    );*/
     zox_system(
         data_dirty_system,
         zoxp_remove,

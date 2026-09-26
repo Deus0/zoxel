@@ -31,7 +31,8 @@ entity spawn_player_menu_skills(ecs* world, entity player) {
         default_fill_color_frame_skill,
         position_anchor,
         position,
-        frame_id);
+        frame_id,
+        0);
     zox_add(e, MenuSkills);
     return e;
 }
