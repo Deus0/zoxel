@@ -11,7 +11,7 @@ entity spawn_block_vox_instanced(
     float3 positionf)
 {
     if (!zox_valid(vox)) {
-        zox_loge("Invalid Block [%s] - block [%s] at [%i] Vox for [spawn_block_vox_instanced]",
+        zox_loge("Invalid Block [vox] at [%s] - block [%s] at [%i] Vox for [spawn_block_vox_instanced]",
             zox_getn(prefab),
             zox_getn(block),
             block_index);
@@ -42,7 +42,7 @@ entity spawn_block_vox_instanced(
     }
     if (!zox_has(model, MaxRenderDepth)) {
         zox_loge("Max Depth not on vox [%s]",
-            zox_get_name(model));
+            zox_getn(model));
         return 0;
     }
     byte mdepth = zox_getv(model, MaxRenderDepth);

@@ -53,7 +53,10 @@ entity spawn_realm_model_item_filename(
     entity e2 = spawn_realm_item_equip(
         world,
         realm,
-        model, texture, name, slot);
+        model,
+        texture,
+        name,
+        slot);
     zox_set_unique_name(e2, vox_name);
     zox_setv(e2, MaxRenderDepth, model_depth);
     return e2;

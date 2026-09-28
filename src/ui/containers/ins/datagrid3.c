@@ -17,8 +17,12 @@ entity spawn_datagrid_slots2(
     entity frame_id,
     entity* slots,
     uint slots_length,
-    byte selected)
+    byte selected,
+    byte use_child_indexes)
 {
+    if (!slots_length) {
+        return 0;
+    }
     if (!zox_valid(character)) {
         zox_loge("invalid character in [spawn_datagrid_slots]");
         return 0;
@@ -71,12 +75,13 @@ entity spawn_datagrid_slots2(
     uint array_index = 0;
     for (int j = cells_size.y - 1; j >= 0; j--) {
         for (int i = 0; i < cells_size.x; i++) {
-            // entity slot = slots[array_index];
-            entity slot = get_child_at_index(
-                world,
-                slots,
-                slots_length,
-                array_index);
+            entity slot = use_child_indexes ?
+                get_child_at_index(
+                    world,
+                    slots,
+                    slots_length,
+                    array_index) :
+                slots[array_index];
             if (!zox_valid(slot)) {
                 zox_loge("[spawn_datagrid] [%s] Invalid Slot [%i]",
                     header_label,
@@ -196,5 +201,6 @@ entity spawn_datagrid_slots(
         frame_id,
         slots,
         slots_length,
-        selected);
+        selected,
+        1);
 }

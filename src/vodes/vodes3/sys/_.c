@@ -50,11 +50,12 @@ void zox_systems_vodes3(ecs* world) {
     );
     zox_system_1(
         vodes_spawn_system,
-        zoxp_octree_write, // zoxp_spawn,
+        zoxp_spawn, // zoxp_octree_write, // zoxp_spawn,
         [in] chunks.NodeDepth,
         [in] rendering.RenderDisabled,
         [in] rendering.RenderDistance,
         [in] transforms3.Position3D,
+        [in] chunks3.ChunkPosition,
         [out] chunks3.VoxelNode,
         [none] terrains.TerrainChunk,
         [none] vodes.CanVodes,

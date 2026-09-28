@@ -27,12 +27,24 @@ static inline float3 float3_halve(const float3 input) {
     return (float3) { input.x * 0.5f, input.y * 0.5f, input.z * 0.5f };
 }
 
-static inline float3 float3_single(const float input) {
+static inline float3 float3_single(float input) {
     return (float3) { input, input, input };
 }
 
-static inline float3 float3_scale(const float3 v, const float u) {
-    return (float3) { v.x * u, v.y * u, v.z * u };
+static inline float3 float3_scale(float3 v, float u) {
+    return (float3) {
+        v.x * u,
+        v.y * u,
+        v.z * u
+    };
+}
+
+static inline float3 float3_scale1(float3 input, float scale) {
+    return (float3) {
+        input.x * scale,
+        input.y * scale,
+        input.z * scale
+    };
 }
 
 static inline float3 float3_add(const float3 a, const float3 b) {

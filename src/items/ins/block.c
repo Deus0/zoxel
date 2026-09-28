@@ -5,8 +5,11 @@ entity spawn_block_item(
     entity block,
     byte dbg_log)
 {
-    if (!zox_valid(block) || !zox_has(block, ZoxName)) {
-        zox_loge("Block components name? [%i]\n", zox_has(block, ZoxName));
+    if (!zox_valid(block) ||
+        !zox_has(block, ZoxName))
+    {
+        zox_loge("Block components name? [%i]\n",
+            zox_has(block, ZoxName));
         return 0;
     }
     zox_geter(block, ZoxName, voxel_name);
@@ -21,13 +24,19 @@ entity spawn_block_item(
     zox_setv(e, CooldownTime, 0.125f);
     zox_setv(e, RaycastRange, block_place_range);
     zox_setv(e, RaycastType, 1);
-    if (zox_has(block, BlockVox)) {
-        zox_add(e, ItemVox);
-    }
     entity model = zox_has(block, ModelLink) ?
         zox_getv(block, ModelLink) : 0;
+    byte is_block_vox = zox_has(block, BlockVox);
     if (model) {
         zox_setv(e, ModelLink, model);
+    }
+    if (is_block_vox) {
+        zox_add(e, ItemVox);
+    }
+    if (is_block_vox && !model) {
+        zox_loge("Block Vox has no ModelLink model [%s]: block [%s]",
+            voxel_name->value,
+            zox_getn(block));
     }
     // Links
     zox_link(world, e, BlockLink, block);

@@ -39,11 +39,13 @@ void zox_observer_internal(
         return;
     }
     zox_set_name(e, name);
-    zox_log(
-        "[Observer] %s at %s:%d",
-        name,
-        file,
-        line);
+    if (zox_dbg_observers) {
+        zox_log(
+            "[Observer] %s at %s:%d",
+            name,
+            file,
+            line);
+    }
 }
 
 #define zox_observer(callback, event, ...) \

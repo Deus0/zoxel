@@ -4,10 +4,9 @@
 #define zox_generate_realm_clear 2
 
 // core stuff
-#define zox_generate_realm_stats 6
-
 #define zox_generate_realm_biomes 3
 #define zox_generate_realm_models 5
+#define zox_generate_realm_stats 6
 
 // voxels children take more frames
 #define zox_generate_realm_blocks 7

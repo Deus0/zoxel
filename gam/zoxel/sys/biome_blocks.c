@@ -342,8 +342,8 @@ zox_sys2(BiomeBlocksSystem) {
                 "grass",
                 weed_color,
                 0,
-                model_group,
                 max_depth,
+                model_group,
                 texture_vox,
                 direction_front);
             zox_add(block, BlockGrass);
@@ -371,20 +371,21 @@ zox_sys2(BiomeBlocksSystem) {
                 "debris",
                 dirt_color,
                 0,
-                model,
                 max_depth,
+                model,
                 texture_vox,
                 direction_up);
             zox_set(block, BlockLightPass, { 1 });
         }
         // A noisey block
         {
+            char* block_name = "decayed";
             byte max_depth = block_depth_limits.y;
             entity2 e2 = spawn_model_lods_generated(
                 world,
                 prefab_vox,
                 e,
-                "decayed",
+                block_name,
                 vox_type_noisey,
                 dirt_color,
                 max_depth,
@@ -395,11 +396,11 @@ zox_sys2(BiomeBlocksSystem) {
                 world,
                 e,
                 dirt_seed,
-                "decayed",
+                block_name,
                 dirt_color,
                 1,
-                model,
                 max_depth,
+                model,
                 texture_model,
                 direction_front);
         }
@@ -425,8 +426,8 @@ zox_sys2(BiomeBlocksSystem) {
                 block_name,
                 flowers_color,
                 0,
-                model,
                 max_depth,
+                model,
                 texture_model,
                 direction_front);
             zox_add(block, BlockFlower);

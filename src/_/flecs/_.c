@@ -16,6 +16,7 @@ byte zox_disable_threads = 0;
 byte zox_log_pipelines = 0;         // 1 for big frames, 2 for all
 byte zox_log_system_stats = 0;
 byte flecs_log_level = 0;           // 1 for debug_pipelines
+byte zox_dbg_observers = 0;
 
 #include "fun/spinlock.c"
 #include "mcr/_.c"

@@ -7,7 +7,7 @@ entity zox_tst_spawn_item_pickup(
 {
     byte filter_voxes = 1;
     float rotate_speed = 16;
-    float distance = frand_range(0.6f, 0.9f);
+    float distance = frand_range(0.8f, 1.3f);
     if (zox_valid(dbg_item_pickup)) {
         zox_log("Deleting [dbg_item_pickup]");
         zox_delete(dbg_item_pickup);

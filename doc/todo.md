@@ -5,15 +5,6 @@
 	- try push to new project?
 	
 # New
-- spawn vox mesh in hands
-- regen not using proper stats
-	- make regening state depend on linked regen stat
-- right click to split cokie in half
-- Add rewards on quest handin
-	- Goal: Give 20 xp for handing in quest
-- import texture outlines as a seperate mask texture
-	- making it easier to change outlines
-	- bitmask - 0 / 1 ?
 - for body parts we can detatch:
 	- add a tooltip detachable line
 	- change frame color slightly to show
@@ -21,39 +12,31 @@
 	- remove any associated slots
 	- remove the uis
 	- refresh the list after
+	- keep same pose - camera position and head
+- right click to split cokie in half
+- regen not using proper stats
+	- make regening state depend on linked regen stat
+- Add rewards on quest handin
+	- Goal: Give 20 xp for handing in quest
+- import texture outlines as a seperate mask texture
+	- making it easier to change outlines
+	- bitmask - 0 / 1 ?
 
 # Bugs
-- hats model links broken - spawns cube
-- texture block is broken too
-- block vox - broken too - no flowers or stalks shown
-- grass not spawning atm in terrain
-    - block voxes..
 - Dialogue animated text is buggy atm
 - mirror mesh doesnt update when game model does
 	- make a system that grabs the mesh clone link
 	- when it updates, we can update our mesh clone too
 	- link it to the characters mesh
 - make lists sorting use child index - after sort it shuffles atm
-- actions issues
-	- active state not action index
-	-x when close/open after pickup item, it will spawn them at wrong indexes - the pickup go to 10th ui
-	-x and then it didnt show in hand - well it did for2, just not 10
-	-x action indexes off when selecting
 - Sometimes the npc labels dont spawn
 	- its dissapearing due to chunk distance issues
 - item issues
-	- item label didnt update when it was removed
-	- cokie shouldnt select terrain
-	- item pickedup was a block item - test hat pickups
-	-x item didnt stack when picked up and dropped in ui
+	- consumable items cokie shouldnt select terrain
 - cokie is not centred??
 	- super rare vox texture bug
 - GameStateSystem log error after exiting game
 	- guess state looking for realm
-- Tooltips: If ui selects while didnt deselect..!
-	- select main menu header after button selects
-	- the tooltip updates to wrong one - shows load game when you  mouse move fast between uis
-	- it can show nothing selected even though log shows it set, teh issue therefor must be that it gets set and unset in same frame
 
 # Polish
 - quest marker not updated

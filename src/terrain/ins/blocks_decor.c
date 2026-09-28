@@ -35,8 +35,8 @@ entity spawn_realm_block_model(
     char* name,
     color block_color,
     byte is_collision,
-    entity vox,
     byte depth,
+    entity model,
     entity texture_vox,
     byte texture_direction)
 {
@@ -44,7 +44,7 @@ entity spawn_realm_block_model(
     SpawnBlock spawn_data = {
         .seed = seed,
         .name = name,
-        .model = vox,
+        .model = model,
         .color = block_color,
         .disable_collision = !is_collision,
         .prefab = prefab_block_base,
@@ -57,6 +57,7 @@ entity spawn_realm_block_model(
     entity block = spawn_block_vox_meta(
         world,
         spawn_data);
+    zox_setv(block, ModelLink, model);
     zox_set_parent(world, block, parent);
     // NOTE: Spawns a VoxTexture for the Items!
     {

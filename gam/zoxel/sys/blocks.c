@@ -92,15 +92,14 @@ zox_sys2(BlocksRealmSpawnSystem) {
                     "rose",
                     color_red,
                     0,
-                    model,
                     max_render_depth,
+                    model,
                     vox,
                     direction_up);
-                zox_set(e2, BlockLightPass, { 1 });
+                zox_setv(e2, BlockLightPass, 1);
             }
         }
         spawn_dungeon_blocks(world, e);
-        // dirty->value = zox_blocks_dirty_start;
         zox_add(e, BlocksDirty);
         if (dbg_log) {
             zox_log("Realm [%s] Spawning [Blocks]", zox_get_name(e));

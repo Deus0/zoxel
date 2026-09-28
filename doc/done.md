@@ -1,5 +1,23 @@
 # Done
 	
+-x spawn vox mesh in hands
+-x vox item textures did not generate
+    -x pickup grass
+    -x notice no texture
+-x item label didnt update when it was removed
+-x item pickedup was a block item - test hat pickups
+-x item didnt stack when picked up and dropped in ui
+-x actions issues
+	-x active state not action index
+	-x when close/open after pickup item, it will spawn them at wrong indexes - the pickup go to 10th ui
+	-x and then it didnt show in hand - well it did for2, just not 10
+	-x action indexes off when selecting
+-x now body uis arnt showing...
+-x hats model links broken - spawns cube
+-x texture block is broken too
+-x block vox - broken too - no flowers or stalks shown
+-x grass not spawning atm in terrain
+    - block voxes..
 -x cokie didnt add when pickedup
 -x placed label didnt always update
 -x item pickup didnt go to actionbar

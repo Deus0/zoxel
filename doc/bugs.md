@@ -47,14 +47,15 @@
    	- windowed mode bug
 	
 ## Unsorted
+- Tooltips: If ui selects while didnt deselect..!
+	- select main menu header after button selects
+	- the tooltip updates to wrong one - shows load game when you  mouse move fast between uis
+	- it can show nothing selected even though log shows it set, teh issue therefor must be that it gets set and unset in same frame
 - camera position off - can see through walls?
 - When streaming terrain - flag neighbor of updated chunks dirty
     - the outside chunks have missing faces now
     - move a little around chunks
     - look at LOD horizon and notice chunk faces can be missing
--x vox item textures did not generate
-    -x pickup grass
-    -x notice no texture
 - Block didnt update when spawning on top of world
 - Big Terrain Disposal Bug
     - set render distance to 32
