@@ -31,7 +31,17 @@ void spawned_block_vox(
     if (zox_has(prefab, BlockVox)) {
         e2 = spawn_block_vox(world, spawn_data);
     } else if (zox_has(prefab, RendererInstance)) {
-        e2 = spawn_block_vox_instanced(world, spawn_data);
+        e2 = spawn_block_vox_instanced(
+            world,
+            prefab,
+            data->block,
+            vox,
+            data->block_index,
+            data->render_depth,
+            data->render_disabled,
+            data->positionl,
+            data->positionv,
+            data->positionf);
     } else {
         return;
     }

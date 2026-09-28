@@ -54,8 +54,7 @@ void set_zext(
         char ascii_char = ntext[i];
         text->value[i] = convert_ascii(ascii_char);
     }
-    zox_log("set_zext [%s]",
-        ntext);
+    // zox_log("set_zext [%s]", ntext);
 }
 
 byte set_text_component(

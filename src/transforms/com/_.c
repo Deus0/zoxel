@@ -10,7 +10,7 @@ zoxc(TransformMatrix, float4x4);
 void zoxd_components_transforms(ecs* world) {
     zoxd_tag(DisableTransform);
     zoxd_tag(DisableParentTransform);
-    zoxd_tag(DisableParentScale);
+    zoxd_nf_tag(DisableParentScale);
     zoxd_tag(StaticTransform);
     zoxd_tag(IgnoreParentRotation);
     zoxd_float(Scale1);

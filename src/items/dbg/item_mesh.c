@@ -2,7 +2,7 @@ entity dbg_item_mesh = 0;
 extern entity get_linked_character(ecs*, entity);
 
 entity zox_dbg_spawn_item_mesh(
-    ecs *world,
+    ecs* world,
     entity player)
 {
     float rotate_speed = 16;
@@ -134,30 +134,25 @@ void zox_dbg_spawn_item_meshes_all(
         zox_loge("[dbg_item_meshes_all] Invalid [player]");
         return;
     }
-
     entity game = zox_get_parent(world, player);
     entity camera = zox_get_link(world, player, CameraLink);
     if (!zox_valid(game)) {
         zox_loge("[dbg_item_meshes_all] Invalid [game]");
         return;
     }
-
     entity realm = zox_get_link(world, game, RealmLink);
     if (!zox_valid(realm)) {
         zox_loge("[dbg_item_meshes_all] Invalid [realm]");
         return;
     }
-
     float3 position = zox_getv(camera, Position3D);
     float4 rotation = zox_getv(camera, Rotation3D);
     float3 spawn_position = move_along_direction(
         position,
         rotation,
         -distance);
-
     uint count = 0;
     entity items[256];
-
     iter it2 = zox_children(world, realm);
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
@@ -165,23 +160,19 @@ void zox_dbg_spawn_item_meshes_all(
             if (!zox_has(item, ItemVox)) {
                 continue;
             }
-
             entity model = zox_has(item, ModelLink) ?
             zox_getv(item, ModelLink) :
             0;
             if (!model) {
                 continue;
             }
-
             entity mesh = get_max_model_mesh(world, model);
             if (!mesh || !zox_has(mesh, Mesh)) {
                 continue;
             }
-
             if (count >= 256) {
                 break;
             }
-
             items[count++] = item;
         }
 
@@ -189,30 +180,23 @@ void zox_dbg_spawn_item_meshes_all(
             break;
         }
     }
-
     if (!count) {
         zox_loge("[dbg_item_meshes_all] No models found in items.");
         return;
     }
-
     int columns = (int) sqrtf((float) count);
     if (columns * columns < (int) count) {
         columns++;
     }
-
     int rows = ((int) count + columns - 1) / columns;
-
     for (int i = 0; i < (int) count; i++) {
         int column = i % columns;
         int row = i / columns;
-
         float x = ((float) column - (float) (columns - 1) * 0.5f) * spacing;
         float z = ((float) row - (float) (rows - 1) * 0.5f) * spacing;
-
         float3 item_position = spawn_position;
         item_position.x += x;
         item_position.z += z;
-
         dbg_item_meshes[i] = spawn_entity_mesh_clone(
             world,
             items[i],
@@ -223,7 +207,6 @@ void zox_dbg_spawn_item_meshes_all(
             inspect_entity(world, dbg_item_meshes[i]);
         }
     }
-
     zox_log("[dbg_item_meshes_all] Spawned [%u] Item Meshes", count);
 }
 
@@ -236,6 +219,3 @@ void zox_dbg_spawn_item_meshes_all2(
         world,
         player);
 }
-
-
-

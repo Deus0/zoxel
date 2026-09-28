@@ -1,10 +1,20 @@
+extern entity spawn_item_mesh(ecs*, entity, entity, float);
+
 // NOTE: Uses slot index to equip a new action
 zox_sys2(ActiveActionHoldSystem) {
     byte dbg_log = 0;
     // TODO: If item changes?
     float scale = 0.125f;
-    float3 hand_position = (float3) { 0, 0, -scale / 2.0f - 0.01f };
-    float3 body_position = (float3) { -0.125f / 4, 0.26f, 0.16f };
+    float3 hand_position = (float3) {
+        0,
+        0,
+        -scale / 2.0f - 0.01f
+    };
+    float3 body_position = (float3) {
+        -0.125f / 4,
+        0.26f,
+        0.16f
+    };
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ActiveActionDirty);
@@ -20,9 +30,12 @@ zox_sys2(ActiveActionHoldSystem) {
         }
         byte new_raise = zox_valid(aaction->value);
         if (raise->value != new_raise) {
-            raise->value = zox_valid(aaction->value); // raise arm if proper action
+            raise->value = zox_valid(aaction->value);
+            // raise arm if proper action
             if (dbg_log) {
-                zox_log("[%s] is Raising their arm for [%s]", zox_getn(e), zox_getn(aaction->value));
+                zox_log("[%s] is Raising their arm for [%s]",
+                    zox_getn(e),
+                    zox_getn(aaction->value));
             }
         }
         byte spawn_held =
@@ -43,12 +56,14 @@ zox_sys2(ActiveActionHoldSystem) {
             zox_id(HeldAction));
         if (zox_valid(e2)) {
             if (dbg_log) {
-                zox_log("Removing Held Item [%s]", zox_get_name(e2));
+                zox_log("Removing Held Item [%s]",
+                    zox_getn(e2));
             }
             zox_delete(e2);
         } else {
             if (dbg_log) {
-                zox_log("No HeldAction Model Found on [%s]", zox_get_name(e));
+                zox_log("No HeldAction Model Found on [%s]",
+                    zox_getn(e));
             }
         }
         if (!spawn_held) {
@@ -58,8 +73,10 @@ zox_sys2(ActiveActionHoldSystem) {
         float3 position = zox_valid(hand) ?
             hand_position :
             body_position;
-        entity texture = zox_get_link(world, aaction->value, TextureLink);
-        if (zox_valid(texture)) {
+        entity meta = zox_getp(world, aaction->value);
+        // entity texture = zox_get_link(world, aaction->value, TextureLink);
+        entity mesh = spawn_item_mesh(world, bone_parent, meta, scale);
+        /*if (zox_valid(texture)) {
             e2 = spawn_cube_textured(
                 world,
                 prefab_cube_textured,
@@ -73,13 +90,20 @@ zox_sys2(ActiveActionHoldSystem) {
                 float3_zero,
                 scale);
         }
-        zox_set_parent(world, e2, bone_parent);
-        zox_add(e2, HeldAction);
-        zox_setv(e2, LocalPosition3D, position);
-        zox_setv(e2, LocalScale1, scale);
-        zox_add(e2, DisableParentScale);
+        zox_set_parent(world, e2, bone_parent);*/
+        if (mesh) {
+            zox_add(mesh, HeldAction);
+            zox_setv(mesh, LocalPosition3D, position);
+            // zox_setv(mesh, LocalScale1, scale);
+            zox_add(mesh, DisableParentScale);
+        }
         if (dbg_log) {
-            zox_log("[%s] has Spawned Held Item [%s] at [%fx%fx%f]", zox_getn(e), zox_getn(aaction->value), position.x, position.y, position.z);
+            zox_log("[%s] has Spawned Held Item [%s] at [%fx%fx%f]",
+                zox_getn(e),
+                zox_getn(aaction->value),
+                position.x,
+                position.y,
+                position.z);
         }
     }
 } zox_sys_end(ActiveActionHoldSystem);

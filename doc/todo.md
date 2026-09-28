@@ -23,6 +23,11 @@
 	- refresh the list after
 
 # Bugs
+- hats model links broken - spawns cube
+- texture block is broken too
+- block vox - broken too - no flowers or stalks shown
+- grass not spawning atm in terrain
+    - block voxes..
 - Dialogue animated text is buggy atm
 - mirror mesh doesnt update when game model does
 	- make a system that grabs the mesh clone link
