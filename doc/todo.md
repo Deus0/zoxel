@@ -1,10 +1,22 @@
 # Todo
 
-- github contributors didnt update
-	- remove old ones
-	- try push to new project?
+# Finish
+- quest marker not updated
+	- marker should set when player goes near npc, it should update based on quest
+	- link marker to nearby player character
+	- if they are doing quest, update it, observe its quest
+	- remove marker when quest is completed
+- Add rewards on quest handin
+	- Goal: Give 20 xp for handing in quest
+- regen not using proper stats
+	- make regening state depend on linked regen stat
+- mirror mesh doesnt update when game model does
+	- make a system that grabs the mesh clone link
+	- when it updates, we can update our mesh clone too
+	- link it to the characters mesh
+- MapUI should move per pixel
 	
-# New
+# Improve
 - for body parts we can detatch:
 	- add a tooltip detachable line
 	- change frame color slightly to show
@@ -13,21 +25,16 @@
 	- remove the uis
 	- refresh the list after
 	- keep same pose - camera position and head
+	
+# New
 - right click to split cokie in half
-- regen not using proper stats
-	- make regening state depend on linked regen stat
-- Add rewards on quest handin
-	- Goal: Give 20 xp for handing in quest
 - import texture outlines as a seperate mask texture
 	- making it easier to change outlines
 	- bitmask - 0 / 1 ?
+- GiveAllQuests cheat function
 
 # Bugs
 - Dialogue animated text is buggy atm
-- mirror mesh doesnt update when game model does
-	- make a system that grabs the mesh clone link
-	- when it updates, we can update our mesh clone too
-	- link it to the characters mesh
 - make lists sorting use child index - after sort it shuffles atm
 - Sometimes the npc labels dont spawn
 	- its dissapearing due to chunk distance issues
@@ -38,13 +45,6 @@
 - GameStateSystem log error after exiting game
 	- guess state looking for realm
 
-# Polish
-- quest marker not updated
-	- marker should set when player goes near npc, it should update based on quest
-	- link marker to nearby player character
-	- if they are doing quest, update it, observe its quest
-	- remove marker when quest is completed
-
 # Tests
 - write giveall quests test
 - write pickedup item test
@@ -54,16 +54,19 @@
 # Debug
 - add a mode where it shows block ids in item tooltips
 
+# Devops
+- github contributors didnt update
+	- remove old ones
+	- try push to new project?
 
 - regen should be based on regen stat thats linked - StatLink
 - spawn vox item in hand when selected
 	- instead of cube
-- reduce health regen
-	- when in combat
-- tag our humanoid with 'QuestGiver' so only they can handout quests
+-x reduce health regen
+	-x when in combat
+-x tag our humanoid with 'QuestGiver' so only they can handout quests
 - for our model test - change mesh every 5 seconds to a variant model
 	- showcase variants
-- GiveAllQuests cheat function
 - link our data / slot to the ui frame
     - icons/texts will just grab parent data links
 
