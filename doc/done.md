@@ -1,5 +1,11 @@
 # Done
-	
+
+-x When give quest...
+-x When spawn marker, link to player characters quest
+-x When give quest to player, link it to marker then
+-x quest marker not updated
+-x if they are doing quest, update it, observe its quest
+-x remove marker when quest is completed
 -x spawn vox mesh in hands
 -x vox item textures did not generate
     -x pickup grass

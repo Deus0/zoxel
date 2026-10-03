@@ -1,13 +1,10 @@
-zox_sys2(MarkerSpawnSystem) {
+// NOTE: For now just supports one quest to one marker!
+void marker_spawn_system(iter* it) {
     // TODO: Check if has quest to give
     // TODO: Use texture quad instead - simpler
-    byte dbg_log = 0;
-    byte resolution = 64;
-    float ui_scale = zox_ui_scale3 * 8;
-    float trail_offset = name_trail_offset * 2.5f;
+    byte dbg_log = 1;
     color fill = color_yellow;
     color outline = color_black;
-    color background = color_null;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
@@ -22,30 +19,33 @@ zox_sys2(MarkerSpawnSystem) {
         uint quests = zox_get_children_count_by_id(
             world,
             e,
-            zox_id(QuestGiving));
+            zox_id(Quest)); // QuestGiving));
         if (!quests) {
+            if (dbg_log) {
+                zox_log("No [quests] Marker for [%s]",
+                    zox_getn(e));
+            }
             continue;
         }
         char* text = "!";
-        entity2 e2 = spawn_label3(
+        entity marker = spawn_marker(
             world,
-            text,
-            resolution,
-            background,
-            background,
-            fill,
-            outline,
-            ui_scale,
             e,
-            trail_offset);
-        zox_set_unique_name(e2.x, "marker");
-        zox_add(e2.y, CentredGlyph);
-        zox_setv(e2.x, ElementHolder, e);
-        add_to_ElementLinks(elements, e2.x);
-        zox_link(world, e, Marker, e2.x);
+            text,
+            fill,
+            outline);
+        add_to_ElementLinks(elements, marker);
+        // link quest to marker
+        /*entity quest = zox_get_child_by_id(
+            world,
+            e,
+            zox_id(QuestGiving));*/
+        // zox_link(world, quest, MarkerLink, marker);
+        // zox_link(world, marker, QuestLink, quest);
         if (dbg_log) {
-            zox_log("Spawned Marker Label on [%s]: %s", zox_getn(e),
-            text);
+            zox_log("Spawned Marker Label on [%s]: %s",
+                zox_getn(e),
+                text);
         }
     }
-} zox_sys_end(MarkerSpawnSystem);
+} zoxd_system(marker_spawn_system);

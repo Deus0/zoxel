@@ -3,12 +3,6 @@
 #include "marker.c"
 
 void zox_systems_quests(ecs* world) {
-    /*zox_system(
-        SlaySystem,
-        zoxp_update,
-        [none] characters.Character,
-        [none] core.DeathDirty,
-    );*/
     zox_system_1(
         CharacterPlayerQuestsSystem,
         zoxp_spawn,
@@ -17,7 +11,7 @@ void zox_systems_quests(ecs* world) {
         [none] players.PlayerCharacter,
     );
     zox_system_1(
-        MarkerSpawnSystem,
+        marker_spawn_system,
         zoxp_spawn,
         [in] characters.GenerateCharacter,
         [out] ui.ElementLinks,

@@ -21,8 +21,8 @@ void place_camera_head_system(iter* it) {
         }
         entity camera = zox_get_link(world, e, CameraLink);
         if (!zox_valid(camera)) {
-            zox_loge("Invalid Camera on Character %s",
-                zox_getn(e));
+            //zox_loge("Invalid Camera on Character %s",
+            //    zox_getn(e));
             continue;
         }
         byte camera_state = zox_getv(camera, CameraState);

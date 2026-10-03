@@ -16,6 +16,7 @@
  * */
 #include "com/_.c"
 #include "sys/_.c"
+#include "ins/_.c"
 #include "eve/_.c"
 
 void import_markers(ecs* world) {

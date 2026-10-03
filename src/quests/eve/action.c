@@ -26,20 +26,46 @@ void zox_event_give_quest(iter* it) {
         }
         // TODO: Make sure we dont a already have it
         // NOTE: Give quest to quest taker
+        entity marker = zox_get_link(world, quest_giver, MarkerLink);
+        if (!zox_valid(marker)) {
+            zox_loge("Marker not found on [%s]",
+                zox_getn(quest_giver));
+        }
         color particles_color;
-        char* marker_symbol = "";
         if (zox_has(node, NodeGiveQuest)) {
             entity user_quest = spawn_user_quest(
                 world,
                 quest_taker,
                 quest);
             zox_add(user_quest, QuestDoing);
-            marker_symbol = "+";
             particles_color = (color) { 155, 155, 155, 88 };
-        } else {
+            if (zox_valid(marker)) {
+                // Link Marker of NPC to player characters quest
+                zox_link(world, user_quest, MarkerLink, marker);
+                zox_link(world, marker, QuestLink, user_quest);
+                // set to ?
+                entity text = zox_get_child_by_id_recursive(
+                    world,
+                    marker,
+                    zox_id(Text));
+                if (text) {
+                    set_entity_text(
+                        world,
+                        text,
+                        "+");
+                } else {
+                    zox_loge("Marker text not found");
+                }
+            }
+        } else if (zox_has(node, NodeHandinQuest)) {
             entity user_quest = get_user_quest(world, quest_taker, quest);
             zox_add(user_quest, QuestHandedin);
             particles_color = (color) { 255, 220, 0, 88 };
+            if (zox_valid(marker)) {
+                zox_setv(marker, DestroyInTime, 3);
+            }
+        } else {
+            continue;
         }
         // Spawn particles
         float3 bounds = zox_getv(quest_taker, Bounds3D);
@@ -53,24 +79,6 @@ void zox_event_give_quest(iter* it) {
         // TODO: Link Quest Givers quest to Quest Taker
         // TODO: Mark Quest Givers quest as Active
         // NOTE: Swap Marker of quest giver
-        entity marker = zox_get_link(world, quest_giver, Marker);
-        if (zox_valid(marker)) {
-            // set to ?
-            entity text = zox_get_child_by_id_recursive(
-                world,
-                marker,
-                zox_id(Text));
-            if (text) {
-                set_entity_text(
-                    world,
-                    text,
-                    marker_symbol);
-            } else {
-                zox_loge("Marker text not found");
-            }
-        } else {
-            zox_loge("Marker not found");
-        }
         if (dbg_log) {
             zox_log("[zox_node_give_quest] [%s] Given to [%s] From [%s]",
                 zox_getn(quest),

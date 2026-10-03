@@ -1,11 +1,15 @@
 # Todo
 
-# Finish
-- quest marker not updated
-	- marker should set when player goes near npc, it should update based on quest
+# later
+- spawn new marker based on surrounding characters quest states
 	- link marker to nearby player character
-	- if they are doing quest, update it, observe its quest
-	- remove marker when quest is completed
+- marker should set when player goes near npc, it should update based on quest
+- Why is npc quest not QuestGiving tagged?
+
+# Finish
+- Quest Tracker ui under map
+	- click on quest to link / unlink ui
+	- update ui when quest is dirty
 - Add rewards on quest handin
 	- Goal: Give 20 xp for handing in quest
 - regen not using proper stats
@@ -15,8 +19,6 @@
 	- when it updates, we can update our mesh clone too
 	- link it to the characters mesh
 - MapUI should move per pixel
-	
-# Improve
 - for body parts we can detatch:
 	- add a tooltip detachable line
 	- change frame color slightly to show

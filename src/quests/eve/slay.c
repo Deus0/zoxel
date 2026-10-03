@@ -76,8 +76,7 @@ void zox_event_quest_slay(iter* it) {
                     world,
                     child,
                     slayed_character_prefab,
-                    dbg_log
-                );
+                    dbg_log);
             }
         }
     }
