@@ -2,7 +2,7 @@
 void marker_spawn_system(iter* it) {
     // TODO: Check if has quest to give
     // TODO: Use texture quad instead - simpler
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     color fill = color_yellow;
     color outline = color_black;
     zox_sys_world();

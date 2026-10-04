@@ -1,14 +1,18 @@
-entity spawn_fps_display(ecs *world, entity canvas) {
-    if (!zox_valid(canvas) || !zox_has(canvas, Canvas)) {
-        zox_log_error("Invalid Canvas");
+entity spawn_fps_display(
+    ecs* world,
+    entity canvas)
+{
+    if (!zox_valid(canvas) ||
+        !zox_has(canvas, Canvas))
+    {
+        zox_loge("Invalid Canvas");
         return 0;
     }
     byte layer = max_layers2D - 10; // editor_overlay_layer + 10;
     byte font_size = 32;
     byte2 padding = (byte2) { 12, 8 };
-    float2 anchor = { 1.0f, 1.0f };
+    float2 anchor = float2_top_right;
     int2 position = (int2) { -16, -16 };
-    // int2 psize = zox_getv(canvas, LayoutSize);
     entity e = spawn_label(
         world,
         prefab_label2t,
@@ -25,11 +29,8 @@ entity spawn_fps_display(ecs *world, entity canvas) {
         button_font_fill,
         button_font_outline);
     zox_set_unique_name(e, "fps_viewer");
-    zox_prefab_name("fps_display");
-    //zox_prefab_set(e, FontOutlineColor, {{ 200, 80, 80, 255 }});
-    //zox_prefab_set(e, FontFillColor, {{ 244, 33, 33, 255 }});
     zox_add(e, FPSDisplay);
-    zox_prefab_set(e, FPSDisplayTicker, { 0 });
+    zox_setv(e, FPSDisplayTicker, 0);
     return e;
 }
 

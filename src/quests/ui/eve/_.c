@@ -1,4 +1,7 @@
 #include "icon.c"
+#include "tracker.c"
+
+// event on quest icon clicked?
 
 void zox_events_quests_ui(ecs* world) {
     zox_on_add(
@@ -14,4 +17,7 @@ void zox_events_quests_ui(ecs* world) {
         [none] slots.SlotUser,
         [none] interactions.Select, // event
     );
+    // for now...
+    zox_muter(prefab_player, PlayerStateEvent, player_event);
+    add_to_PlayerStateEvent(player_event, player_state_quest_tracker);
 }

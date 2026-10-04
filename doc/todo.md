@@ -8,9 +8,11 @@
 -x Why is npc quest not QuestGiving tagged?
 
 # Finish
-- Quest Tracker ui under map
-	- click on quest to link / unlink ui
-	- update ui when quest is dirty
+-x Quest Tracker ui under map
+- click on quest to link / unlink quest to tracker
+- update ui when quest is dirty or when set
+- add QuestIcon tag
+- Add a Clicked event, like our select event
 - Add rewards on quest handin
 	- Goal: Give 20 xp for handing in quest
 - regen not using proper stats
