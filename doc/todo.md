@@ -1,10 +1,11 @@
 # Todo
 
 # later
-- spawn new marker based on surrounding characters quest states
-	- link marker to nearby player character
-- marker should set when player goes near npc, it should update based on quest
-- Why is npc quest not QuestGiving tagged?
+- Track NearbyCharacters on npcs for UI spawning
+	- spawn new marker based on surrounding characters quest states
+		- link marker to nearby player character
+	- marker should set when player goes near npc, it should update based on quest
+-x Why is npc quest not QuestGiving tagged?
 
 # Finish
 - Quest Tracker ui under map

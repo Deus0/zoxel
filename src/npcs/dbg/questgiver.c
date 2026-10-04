@@ -74,7 +74,7 @@ void zox_tst_spawn_quest_giver_npc(
         zox_id(Quest));
     // Add our test quest to our test character
     entity player_start_quest = quests[rand() % quests_length];
-    spawn_user_quest(
+    spawn_quest_giving(
         world,
         e,
         player_start_quest);

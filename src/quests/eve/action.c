@@ -33,11 +33,10 @@ void zox_event_give_quest(iter* it) {
         }
         color particles_color;
         if (zox_has(node, NodeGiveQuest)) {
-            entity user_quest = spawn_user_quest(
+            entity user_quest = spawn_quest_doing(
                 world,
                 quest_taker,
                 quest);
-            zox_add(user_quest, QuestDoing);
             particles_color = (color) { 155, 155, 155, 88 };
             if (zox_valid(marker)) {
                 // Link Marker of NPC to player characters quest

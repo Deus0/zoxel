@@ -19,7 +19,8 @@ void marker_spawn_system(iter* it) {
         uint quests = zox_get_children_count_by_id(
             world,
             e,
-            zox_id(Quest)); // QuestGiving));
+            zox_id(QuestGiving));
+            // zox_id(Quest));
         if (!quests) {
             if (dbg_log) {
                 zox_log("No [quests] Marker for [%s]",

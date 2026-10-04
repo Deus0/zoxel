@@ -1,5 +1,6 @@
 // Links a npc to a dialogue!
 zox_sys2(CharacterDialogueSystem) {
+    byte dbg_log = 1;
     uint capacity = 256;
     zox_sys_world();
     zox_sys_begin();
@@ -42,10 +43,14 @@ zox_sys2(CharacterDialogueSystem) {
             zox_id(Quest));
         // Add our test quest to our test character
         entity dialogue_quest = quests[rand() % quests_length];
-        entity user_quest = spawn_user_quest(
+        entity user_quest = spawn_quest_giving(
             world,
             e,
             dialogue_quest);
-        zox_add(user_quest, QuestGiving);
+        if (dbg_log) {
+            zox_log("User [%s] has new quest to give [%lu]",
+                zox_getn(e),
+                user_quest);
+        }
     }
 } zox_sys_end(CharacterDialogueSystem);

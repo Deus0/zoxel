@@ -34,7 +34,7 @@ zox_sys2(CharacterPlayerQuestsSystem) {
         //  TODO: Go through quest objectives, if Slay objective, add to characters SlayEvent component, storing entity and function
         // TODO: When character slay, itll check objective inside the hook function, did player kill slime? itll compare the character with objective data
         {
-            spawn_user_quest(
+            spawn_quest_doing(
                 world,
                 e,
                 player_start_quest);
