@@ -55,6 +55,7 @@ entity spawn_menu_actions(
         position_anchor,
         position,
         frame_id,
+        0,
         action_index);
     zox_add(e, MenuActions);
     return e;

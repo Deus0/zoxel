@@ -1,5 +1,12 @@
 # Done
 
+-x Why is npc quest not QuestGiving tagged?
+-x Quest Tracker ui under map
+-x click on quest to link / unlink quest to tracker
+-x add QuestIcon tag
+-x Add a Clicked event, like our select event
+-x update tracker ui when quest is dirty
+-x show overlay when tracking quest
 -x When give quest...
 -x When spawn marker, link to player characters quest
 -x When give quest to player, link it to marker then

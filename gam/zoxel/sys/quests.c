@@ -33,7 +33,7 @@ zox_sys2(QuestsRealmSpawnSystem) {
             // TODO: Objective: Slay 10 Slimes
             zox_add(quest, SlayQuest);
             zox_setv(quest, QuestValue, 0);
-            zox_setv(quest, QuestTarget, 1); // 10
+            zox_setv(quest, QuestTarget, 6);
             entity slime = characters->value[1];
             zox_link(world, quest, CharacterLink, slime);
         }

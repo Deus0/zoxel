@@ -17,6 +17,7 @@ entity spawn_player_menu_quests(
         canvas,
         character,
         zox_id(Quest),
+        zox_id(QuestIcon),
         "Quests",
         frame_fill,
         frame_outline);

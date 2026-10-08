@@ -25,7 +25,8 @@ void zox_systems_windows(ecs* world) {
     zox_system(
         WindowElementClickedSystem,
         zoxp_update,
-        [in] interactions.ClickState
+        [none] ui.Element,
+        [none] interactions.Click,
     );
     // TODO: Add keyboard escape to this
     zox_system(

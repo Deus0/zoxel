@@ -32,6 +32,7 @@ entity spawn_player_menu_skills(ecs* world, entity player) {
         position_anchor,
         position,
         frame_id,
+        zox_id(SkillIcon),
         0);
     zox_add(e, MenuSkills);
     return e;

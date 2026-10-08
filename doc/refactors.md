@@ -118,7 +118,7 @@ UIs
 	- FontLink
 	- TooltipLink
 	- TooltipeeLink
-	- IconOverlayLink
+	-x IconOverlayLink
 	- PlotDataLink
 	- MouseLink
 	- VirtualZeviceLink

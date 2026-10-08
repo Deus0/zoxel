@@ -23,6 +23,6 @@ void import_skills(ecs* world) {
     zox_systems_skills(world);
     add_hook_spawn_prefabs(spawn_prefabs_skills);
     // add_hook_spawn_prefabs(zox_events_skills);
-    zox_import_module(UISkills);
-    zox_import_module(Auras);
+    zox_add_module(skills_ui);
+    zox_add_module(auras);
 }

@@ -46,6 +46,7 @@ entity spawn_player_menu_equipment(ecs* world, entity player) {
         position_anchor,
         position,
         frame_id,
+        0,
         parts->data,
         parts->size,
         0,

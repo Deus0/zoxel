@@ -90,7 +90,8 @@ static inline byte set_entity_text(
     if (!zox_valid(e) ||
         !zox_has(e, TextData))
     {
-        zox_loge("invalid Text in [set_entity_text]")
+        zox_loge("invalid Text in [set_entity_text]: [%s]",
+            zox_getn(e));
         return 0;
     }
     zox_muter(e, TextData, text_data);

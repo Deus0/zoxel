@@ -6,7 +6,7 @@ entity spawn_prefab_scrollbar(ecs *world, entity prefab) {
     zox_prefab_set(e, SelectState, { 0 });
     // Click
     zox_add(e, Clickable);
-    zox_prefab_set(e, ClickState, { 0 });
+    zox_setv(e, ClickState, 0);
     zox_prefab_set(e, Clicker, { 0 });
     zox_prefab_set(e, ClickEvent, { NULL });
     zox_prefab_set(e, ClickDisabled, { 0 });

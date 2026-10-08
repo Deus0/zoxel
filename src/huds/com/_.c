@@ -17,7 +17,6 @@ zoxc_byte(HitType);
 #include "taskbar.c"
 zox_tag(Taskbar);
 zoxc_entity(TaskbarWindowID);
-zoxc_entity(IconOverlayLink);
 
 void zox_components_game_ui(ecs *world) {
     zoxd_nf_tag(MenuMain);
@@ -36,7 +35,6 @@ void zox_components_game_ui(ecs *world) {
     zoxd_nf_tag(MenuMirror);
     // Others
     zoxd_byte(HitType);
-    zoxd_entity(IconOverlayLink);
     // taskbar
     zoxd(TaskbarData);
     zoxd(SpawnWindowEvent);

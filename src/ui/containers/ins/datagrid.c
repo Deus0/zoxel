@@ -8,13 +8,14 @@ entity spawn_datagrid(
     byte label_font_size,
     entity canvas,
     entity character,
-    entity id,
+    entity data_id,
+    entity icon_id,
     const char* header_label,
     color fill,
     color outline)
 {
     if (!zox_valid(character)) {
-        zox_log_error("invalid character in [spawn_datagrid_slots]");
+        zox_loge("invalid character in [spawn_datagrid_slots]");
         return 0;
     }
     // This just uses children data directly for a grid
@@ -24,7 +25,7 @@ entity spawn_datagrid(
         character,
         datas,
         layouts2_children_capacity,
-        id);
+        data_id);
     int2 position = int2_zero;
     float2 position_anchor = float2_half;
     // our window info
@@ -83,6 +84,9 @@ entity spawn_datagrid(
                 zox_add(icon, SlotUser);
                 zox_add(icon, DataDirty);
                 zox_setv(icon, DataLink, dat);
+                if (icon_id) {
+                    zox_add_id(icon, icon_id);
+                }
             }
             if (text) {
                 zox_add(text, DataUI);

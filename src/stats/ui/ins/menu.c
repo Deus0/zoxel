@@ -12,6 +12,7 @@ entity spawn_player_menu_stats(ecs* world, entity player) {
         canvas,
         character,
         zox_id(Stat),
+        0,
         "Status",
         default_fill_color_frame_stat,
         default_fill_color_frame_stat);

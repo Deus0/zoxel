@@ -1,12 +1,7 @@
 zox_sys2(ClickSoundSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ClickState);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ClickState, clickState);
-        if (clickState->value != zox_click_state_clicked_this_frame) {
-            continue;
-        }
         double volume = (0.53 + 0.32 * (rand() % 101) / 100.0) * get_volume_sfx();
         double length = 0.33 + 0.22 * (rand() % 101) / 100.0;
         if (rand() % 100 >= 94) {

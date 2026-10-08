@@ -129,3 +129,103 @@ void quest_icon_tooltip_event(iter* it) {
             quantity);*/
     }
 }
+
+// Click
+void quest_icon_click_event(iter* it) {
+    byte dbg_log = 0;
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(DataLink);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(DataLink, data);
+        entity quest = data->value;
+        if (!zox_valid(quest) ||
+            !zox_has(quest, Quest))
+        {
+            if (dbg_log) {
+                zox_loge("Dirty Data not Quest [%s]",
+                    zox_getn(quest));
+            }
+            continue;
+        }
+        if (dbg_log) {
+            zox_log("Quest Clicked %s",
+                zox_getn(quest));
+        }
+        entity character = zox_get_parent(world, quest);
+        if (!zox_valid(character)) {
+            zox_loge("Quest has no Character.");
+            continue;
+        }
+        byte is_reset = 0;
+        entity old_quest = zox_get_link(world, character, QuestTracked);
+        if (old_quest == quest) {
+            is_reset = 1;
+            if (dbg_log) {
+                zox_log("QuestTracker Same Quest",
+                    zox_getn(quest));
+            }
+            // Get ui linked to quest here and remove its overlay
+        }
+        if (old_quest) {
+            zox_unlink(world, character, QuestTracked, old_quest);
+            entity old_icon = zox_get_link(world, old_quest, QuestIconLink);
+            if (old_icon) {
+                zox_unlink(world, old_quest, QuestIconLink, old_icon);
+                entity old_overlay = zox_get_child_by_id(world, old_icon, zox_id(IconOverlay));
+                if (old_overlay) {
+                    zox_setv(old_overlay, RenderDisabled, 1);
+                }
+            }
+        }
+        if (!is_reset) {
+            zox_link(world, character, QuestTracked, quest);
+            zox_link(world, quest, QuestIconLink, e);
+        }
+        // Overlay to show we are tracking it
+        entity overlay = zox_get_child_by_id(world, e, zox_id(IconOverlay));
+        if (overlay) {
+            zox_setv(overlay, RenderDisabled, is_reset);
+            zox_setm(overlay, LocalScale1, !is_reset);
+            if (dbg_log) {
+                zox_log("Quest Icon Overlay RenderDisabled set to [%i]",
+                    is_reset);
+            }
+        } else {
+            zox_loge("No IconOverlay on QuestIcon [%s]",
+                zox_getn(e));
+        }
+        entity canvas = zox_get_parent_by_id(
+            world,
+            e,
+            zox_id(Canvas));
+        if (!zox_valid(canvas)) {
+            continue;
+        }
+        entity tracker = zox_get_child_by_id(
+            world,
+            canvas,
+            zox_id(QuestTracker));
+        if (!tracker) {
+            continue;
+        }
+        if (!is_reset) {
+            zox_link(world, quest, QuestTrackerLink, tracker);
+        }
+        // TODO: Link to tracker ui
+        char* text = "";
+        if (!is_reset) {
+            if (quest) {
+                text = (char*) get_quest_tracker_text(world, quest);
+            }
+        }
+        if (set_entity_text(world, tracker, text)) {
+            if (dbg_log) {
+                zox_log("QuestTracker [%s] Set to [%s]",
+                    zox_getn(tracker),
+                    text);
+            }
+        }
+    }
+}

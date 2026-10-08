@@ -8,8 +8,9 @@ void zox_systems_ui_containers(ecs* world) {
     zox_system(
         DataUIClickSystem,
         zoxp_update,
-        [in] interactions.ClickState,
+        // [in] interactions.ClickState,
         [out] slots.DataLink,
+        [none] interactions.Click,
         [none] slots.SlotUser,
         [none] ui_containers.DataUI,
     );

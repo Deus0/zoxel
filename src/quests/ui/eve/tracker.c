@@ -39,3 +39,22 @@ void player_state_quest_tracker(
     }
 }
 
+void quest_tracker_updated(iter* it) {
+    byte dbg_log = 1;
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        entity tracker = zox_get_link(world, e, QuestTrackerLink);
+        if (!tracker) {
+            continue;
+        }
+        char* text = (char*) get_quest_tracker_text(world, e);
+        byte dirty = set_entity_text(world, tracker, text);
+        if (dbg_log) {
+            zox_log("Tracked Quest Updated [%s], Dirty [%i], Text [%s]",
+                zox_getn(e),
+                dirty,
+                text);
+        }
+    }
+}

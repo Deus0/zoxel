@@ -15,6 +15,7 @@ entity spawn_datagrid_slots2(
     float2 position_anchor,
     int2 position,
     entity frame_id,
+    entity icon_id,
     entity* slots,
     uint slots_length,
     byte selected,
@@ -131,6 +132,9 @@ entity spawn_datagrid_slots2(
                 zox_add(icon, DataDirty);
                 zox_setv(icon, DataLink, dat);
                 zox_link(world, icon, SlotLink, slot);
+                if (icon_id) {
+                    zox_add_id(icon, icon_id);
+                }
             }
             if (text) {
                 zox_add(text, DataUI);
@@ -173,6 +177,7 @@ entity spawn_datagrid_slots(
     float2 position_anchor,
     int2 position,
     entity frame_id,
+    entity icon_id,
     byte selected)
 {
     // Get our Slots
@@ -199,6 +204,7 @@ entity spawn_datagrid_slots(
         position_anchor,
         position,
         frame_id,
+        icon_id,
         slots,
         slots_length,
         selected,

@@ -18,15 +18,15 @@ zox_sys2(DataUIClickSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ClickState);
+    //zox_sys_in(ClickState);
     zox_sys_out(DataLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(ClickState, state);
+        //zox_sys_i(ClickState, state);
         zox_sys_o(DataLink, data);
-        if (state->value != zox_click_state_clicked_this_frame) {
+        /*if (state->value != zox_click_state_clicked_this_frame) {
             continue;
-        }
+        }*/
         entity slot = zox_get_link(world, e, SlotLink);
         if (!slot) {
             continue;

@@ -115,26 +115,20 @@ void zox_systems_interaction(ecs* world) {
         [out] layouts.LayoutPositionDirty,
         [none] ui.MouseElement
     );
-    /*zox_system(
-        RaycasterResulterSystem,
-        zoxp_update,
-        [in] inputs.DeviceLink,
-        [in] core.EntityTarget,
-        [out] raycasts.RaycasterResult,
-        [none] inputs.Zevice
-    );*/
     zox_system_1(
         ClickSoundSystem,
         zoxp_spawn,
-        [in] interactions.ClickState,
+        // [in] interactions.ClickState,
+        [none] interactions.Click,
         [none] interactions.ClickMakeSound
     );
     zox_system_1(
         ButtonClickEventSystem,
         zoxp_spawn,
         [in] interactions.ClickEvent,
-        [in] interactions.ClickState,
+        // [in] interactions.ClickState,
         [out] interactions.Clicker,
+        [none] interactions.Click,
         [none] ui.Element,
     );
 
@@ -158,5 +152,16 @@ void zox_systems_interaction(ecs* world) {
         deselect_system,
         zoxp_remove,
         [none] interactions.Deselect,
+    );
+    // Clicks
+    zox_system(
+        trigger_click_system,
+        zoxp_remove,
+        [none] interactions.TriggerClick,
+    );
+    zox_system(
+        click_system,
+        zoxp_remove,
+        [none] interactions.Click,
     );
 }

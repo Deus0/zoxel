@@ -9,6 +9,7 @@ void on_element_clicked(
     if (zox_has(e, ClickDisabled) && zox_getv(e, ClickDisabled)) {
         return;
     }
+    zox_add(e, TriggerClick);
     zox_setm(e, ClickState, zox_click_state_trigger_clicked);
     zox_setm(e, Clicker, player);
 }

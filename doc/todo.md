@@ -5,14 +5,10 @@
 	- spawn new marker based on surrounding characters quest states
 		- link marker to nearby player character
 	- marker should set when player goes near npc, it should update based on quest
--x Why is npc quest not QuestGiving tagged?
+- GiveAllQuests cheat function
+- set overlays based on quest tracking when we spawn datagrid
 
 # Finish
--x Quest Tracker ui under map
-- click on quest to link / unlink quest to tracker
-- update ui when quest is dirty or when set
-- add QuestIcon tag
-- Add a Clicked event, like our select event
 - Add rewards on quest handin
 	- Goal: Give 20 xp for handing in quest
 - regen not using proper stats
@@ -36,7 +32,6 @@
 - import texture outlines as a seperate mask texture
 	- making it easier to change outlines
 	- bitmask - 0 / 1 ?
-- GiveAllQuests cheat function
 
 # Bugs
 - Dialogue animated text is buggy atm

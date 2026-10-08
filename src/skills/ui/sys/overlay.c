@@ -12,27 +12,31 @@ zox_sys2(SkillOverlaySystem) {
         if (!zox_valid(overlay)) {
             continue;
         }
+        byte has_scale2 = zox_has(overlay, LocalScale2);
         if (!zox_has(overlay, LocalScale1)) {
             zox_loge("Icon Overlay [%s] has no LocalScale1", zox_getn(overlay));
             continue;
         }
-        byte has_scale2 = zox_has(overlay, LocalScale2);
         entity data = link->value;
         if (!zox_valid(data)) {
             if (!has_scale2) {
                 float old_scale = zox_getv(overlay, LocalScale1);
                 if (old_scale) {
-                    zox_setv(overlay, LocalScale1, 0);
+                    zox_setm(overlay, LocalScale1, 0);
                 }
             } else {
                 float old_scale = zox_getv(overlay, LocalScale2).x;
                 if (old_scale) {
-                    zox_setv(overlay, LocalScale2, float2_zero);
+                    zox_setm(overlay, LocalScale2, float2_zero);
                 }
             }
             continue;
         }
-        byte active = zox_has(data, SkillActive) ? zox_getv(data, SkillActive) : 0;
+        if (!zox_has(data, Skill)) {
+            continue;
+        }
+        byte active = zox_has(data, SkillActive) ?
+            zox_getv(data, SkillActive) : 0;
         byte old_render_disabled = zox_getv(overlay, RenderDisabled);
         byte warmup_state = zox_has(data, WarmupState) ? zox_getv(data, WarmupState) : 0;
         double warmup_at = zox_has(data, WarmupAt) ? zox_getv(data, WarmupAt) : 0;
@@ -54,12 +58,20 @@ zox_sys2(SkillOverlaySystem) {
             zox_setm(overlay, LocalScale1, scale * 1.2f);
         } else {
             // we should use a setm_raw here instead
-            zox_setv(overlay, LocalScale2, float2_single(scale * 1.2f));
+            zox_setm(overlay, LocalScale2, float2_single(scale * 1.2f));
         }
         if (dbg_log && scale) {
-            zox_log("Overlay Skill System [%s] -> [%s] - scale2 [%i]", zox_getn(data), zox_getn(overlay), has_scale2);
-            zox_log("   - at [%f],  warmup_at: %f, cooldown_at [%f]", zox_current_time, warmup_at, cooldown_at);
-            zox_log("   - scale %f - new_render_disabled %i",   scale, new_render_disabled);
+            zox_log("Overlay Skill System [%s] -> [%s] - scale2 [%i]",
+                zox_getn(data),
+                zox_getn(overlay),
+                has_scale2);
+            zox_log("   - at [%f],  warmup_at: %f, cooldown_at [%f]",
+                zox_current_time,
+                warmup_at,
+                cooldown_at);
+            zox_log("   - scale %f - new_render_disabled %i",
+                scale,
+                new_render_disabled);
         }
     }
 } zox_sys_end(SkillOverlaySystem);

@@ -60,11 +60,12 @@ void zox_systems_elements2(ecs *world) {
     zox_system_1(
         ToggleEventSystem,
         zoxp_spawn,
-        [in] interactions.ClickState,
+        //[in] interactions.ClickState,
         [in] interactions.Clicker,
         [in] interactions.ToggleEvent,
         [out] interactions.ActiveState,
         [out] interactions.ActiveStateDirty,
+        [none] interactions.Click,
         [none] elements2.Toggle
     );
     /*zox_system(
