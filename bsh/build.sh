@@ -4,6 +4,16 @@ set -euo pipefail
 # NOTE: Converts the shell flags into flags for our game code
 source bsh/get-compiler.sh
 
+# Check Flecs files
+if [[ ! -f "inc/flecs/flecs.h" || ! -f "inc/flecs/flecs.c" ]]; then
+    echo "Error: Flecs files missing from inc/flecs/"
+    echo "  - Call bsh/flecs.sh"
+    exit 1
+fi
+
+# Create our bin folder
+mkdir -p "bin"
+
 # settings
 game_name="zoxel"
 os="linux"
@@ -380,7 +390,7 @@ echo "  Compiler : ${compiler}"
 echo "============================================================"
 echo ""
 
-# Setup our bin folder
+# Setup our build folder
 rm -rf "${bin_folder}"
 mkdir -p "${bin_folder}"
 # Link our resources
