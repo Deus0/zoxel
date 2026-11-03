@@ -50,13 +50,11 @@ zox_sys2(GridSystem) {
                     }
                 }
 
-                if (!zox_valid(child) ||
-                    !zox_has(child, LayoutPositionDirty))
-                {
+                if (!zox_valid(child)) {
                     continue;
                 }
                 zox_muter(child, LayoutPosition, position);
-                zox_muter(child, LayoutPositionDirty, position_dirty);
+                // zox_muter(child, LayoutPositionDirty, position_dirty);
 
                 if (x == 0) {
                     pos.x += frame_size.x / 2;
@@ -65,8 +63,8 @@ zox_sys2(GridSystem) {
                 }
 
                 position->value = pos;
-                position_dirty->value = zox_dirty_trigger;
                 pos.x += padding->value.x;
+                zox_add(child, LayoutPositionDirty);
             }
             if (k >= grid_size->value.x * grid_size->value.y) {
                 break;

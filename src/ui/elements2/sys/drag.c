@@ -24,7 +24,6 @@ zox_sys2(ElementDragSystem) {
         entity e2 = !dragged ? e : dragged;
         // TODO: We should check new position equals before setting
         zox_muter(e2, LayoutPosition, position);
-        zox_muter(e2, LayoutPositionDirty, dirty);
         int2 new_position = position->value;
         new_position.x += delta->value.x;
         new_position.y += delta->value.y;
@@ -55,7 +54,7 @@ zox_sys2(ElementDragSystem) {
         }
         if (!int2_equals(position->value, new_position)) {
             position->value = new_position;
-            dirty->value = zox_dirty_trigger;
+            zox_add(e2, LayoutPositionDirty);
             if (dbg_log) {
                 zox_log("> dragging [%s] by %ix%i", zox_getn(e), delta->value.x, delta->value.y);
             }

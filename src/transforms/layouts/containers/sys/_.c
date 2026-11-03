@@ -29,6 +29,6 @@ void zox_systems_containers(ecs* world) {
         [in] layouts.LayoutSize,
         [in] layouts.LayoutSizeDirty,
         [out] layouts.LayoutPosition,
-        [out] layouts.LayoutPositionDirty
+        // [none] layouts.LayoutPositionUpdate,
     );
 }

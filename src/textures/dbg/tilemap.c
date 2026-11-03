@@ -82,7 +82,7 @@ void zox_tst_spawn_tilemap(ecs *world) {
     zox_setv(e, MeshAlignment, 0);
     zox_setv(e, LayoutSize, size);
     zox_setv(e, LayoutSizeDirty, zox_dirty_trigger);
-    zox_setv(e, LayoutPositionDirty, zox_dirty_trigger);
+    zox_add(e, LayoutPositionDirty);
     spawn_sound_from_file_index(
         world,
         prefab_sound,

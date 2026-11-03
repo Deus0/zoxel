@@ -2,8 +2,15 @@ void handle_touch_down(ecs* world, entity finger, entity virtual_joystick, entit
 }
 
 // When finger is held down against the screen
-void handle_touch_drag(ecs* world, entity finger, entity virtual_joystick) {
-    if (!zox_valid(finger) || !zox_has(finger, ZevicePointer) || !zox_has(finger, ZevicePointerPosition)) {
+void handle_touch_drag(
+    ecs* world,
+    entity finger,
+    entity virtual_joystick)
+{
+    if (!zox_valid(finger) ||
+        !zox_has(finger, ZevicePointer) ||
+        !zox_has(finger, ZevicePointerPosition))
+    {
         return;
     }
     zox_geter(finger, ZevicePointer, pointer);
@@ -34,16 +41,13 @@ void handle_touch_drag(ecs* world, entity finger, entity virtual_joystick) {
     zox_geter(joystick_ui, LayoutSize, joystick_size);
     zox_geter(joystick_pointer, LayoutSize, joystick_pointer_size);
     zox_muter(joystick_pointer, LayoutPosition, pointer_position);
-    zox_muter(joystick_pointer, LayoutPositionDirty, pointer_position_dirty);
     int2 delta_position = int2_sub(finger_position->value, virtual_joystick_position->value);
     int2 size_limits = int2_multiply_float(int2_sub(joystick_size->value, joystick_pointer_size->value), 0.5f);
     // Set Pointer Position
     pointer_position->value.x = delta_position.x;
     pointer_position->value.y = delta_position.y;
     int2_limit(&pointer_position->value, size_limits);
-    if (!pointer_position_dirty->value) {
-        pointer_position_dirty->value = zox_dirty_trigger;
-    }
+    zox_add(joystick_pointer, LayoutPositionDirty);
     // Set Pointer Value
     zox_muter(virtual_joystick, ZeviceStick, stick);
     stick->value = (float2) {
@@ -56,7 +60,11 @@ void handle_touch_drag(ecs* world, entity finger, entity virtual_joystick) {
 }
 
 // Destroy the UI when released
-void handle_touch_release(ecs* world, entity finger, entity zevice) {
+void handle_touch_release(
+    ecs* world,
+    entity finger,
+    entity zevice)
+{
     if (!zox_valid(finger) || !zox_has(finger, ZevicePointer)) {
         return;
     }

@@ -42,7 +42,7 @@ zox_sys2(ListSystem) {
                     list_position_y -= padding->value.y;
                     list_position_y -= child_size.y / 2;
                 }
-                zox_setv(e2, LayoutPositionDirty, zox_dirty_trigger);
+                zox_add(e2, LayoutPositionDirty);
                 zox_muter(e2, LayoutPosition, position);
                 position->value.y = list_position_y;
                 if (alignment->value == zox_alignment_left) {

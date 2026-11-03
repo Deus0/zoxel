@@ -6,13 +6,11 @@ zox_sys2(MouseElementSystem) {
     zox_sys_in(ZeviceLink);
     zox_sys_in(Anchor);
     zox_sys_out(LayoutPosition);
-    zox_sys_out(LayoutPositionDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ZeviceLink, zevice);
         zox_sys_i(Anchor, anchor);
         zox_sys_o(LayoutPosition, position);
-        zox_sys_o(LayoutPositionDirty, dirty);
         if (!zox_valid(zevice->value)) {
             if (zox_has(e, DeviceLink)) {
                 entity device = zox_getv(e, DeviceLink);
@@ -45,7 +43,7 @@ zox_sys2(MouseElementSystem) {
         output.y -= anchor->value.y * canvas_size.y;
         if (!int2_equals(position->value, output)) {
             position->value = output;
-            dirty->value = zox_dirty_trigger;
+            zox_add(e, LayoutPositionDirty);
         }
     }
 } zox_sys_end(MouseElementSystem);

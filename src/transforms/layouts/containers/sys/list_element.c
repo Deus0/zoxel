@@ -5,16 +5,11 @@ zox_sys2(ListElementPositionSystem) {
     zox_sys_in(LayoutSize);
     zox_sys_in(LayoutSizeDirty);
     zox_sys_out(LayoutPosition);
-    zox_sys_out(LayoutPositionDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(LayoutSize, size);
         zox_sys_i(LayoutSizeDirty, state);
         zox_sys_o(LayoutPosition, position);
-        zox_sys_o(LayoutPositionDirty, dirty);
-        if (state->value != zox_dirty_active) {
-            continue;
-        }
         entity parent = zox_get_parent(world, e);
         if (!zox_valid(parent) ||
             !zox_has(parent, ListAlignment) ||
@@ -22,7 +17,7 @@ zox_sys2(ListElementPositionSystem) {
             !zox_has(parent, LayoutSize)) {
             continue;
         }
-        zox_geter_value(parent, ListAlignment, byte, alignment);
+        byte alignment = zox_getv(parent, ListAlignment);
         if (alignment == zox_alignment_centre) {
             continue;
         }
@@ -35,6 +30,6 @@ zox_sys2(ListElementPositionSystem) {
         } else {
             continue;
         }
-        dirty->value = zox_dirty_trigger;
+        zox_add(e, LayoutPositionDirty);
     }
 } zox_sys_end(ListElementPositionSystem);

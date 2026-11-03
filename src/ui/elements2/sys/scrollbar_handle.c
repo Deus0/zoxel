@@ -37,7 +37,7 @@ zox_sys2(ScrollbarHandleSystem) {
         zox_set(handle, LayoutSize, { handle_size });
         zox_set(handle, LayoutSizeDirty, { zox_dirty_trigger });
         zox_set(handle, LayoutPosition, { handle_position });
-        zox_set(handle, LayoutPositionDirty, { zox_dirty_trigger });
+        zox_add(handle, LayoutPositionDirty);
         zox_set(handle, LayoutConstraints, { (int4) { 0, 0, -ybounds, ybounds } });
         //zox_log("Resizing Scrollbar Handle [%s]:", zox_get_name(handle));
         //zox_log("   + new height [%i] scrollbar height [%i]", handle_height, scrollbar_size.y );

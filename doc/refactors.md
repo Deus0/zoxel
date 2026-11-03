@@ -63,8 +63,12 @@ UIs
     - just make one big function that uses queries and calls those functions
     
 ## Refactor Events/Properties To Tags
+	* make event tag
+	* add/remove instead of set
+	* remove/add sysetm for a Update variant tag
+	* update systems use hte Update tag [none]
 	-x DataDirty
-	- LayoutPositionDirty
+	-x LayoutPositionDirty
 	- LayoutSizeDirty
 	- GridDirty
 	- GenerateTexture

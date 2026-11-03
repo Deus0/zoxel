@@ -18,10 +18,6 @@ zox_sys2(ElementbarSystem) {
             zox_loge("frontbar missing LayoutPosition");
             continue;
         }
-        if (!zox_has(frontbar, LayoutPositionDirty)) {
-            zox_loge("frontbar missing LayoutPositionDirty");
-            continue;
-        }
 #endif
         // # Important: Check if busy still
         if (zox_has(frontbar, Initialize)) {
@@ -45,27 +41,21 @@ zox_sys2(ElementbarSystem) {
             }
             continue;
         }
-        /*if (zox_getv(frontbar, LayoutPositionDirty) ||
-            zox_getv(frontbar, LayoutSizeDirty)) {
-            if (dbg_log >= 2) {
-                zox_log("Frontbar [%s] busy", zox_getn(e));
-            }
-            continue;
-        }*/
         zox_muter(frontbar, LayoutSize, size);
         int new_size = (int) floor(parent_size->value.x * percentage->value);
         if (size->value.x != new_size) {
             size->value.x = new_size;
             int2 new_position = { -(parent_size->value.x - new_size) / 2, 0 };
             // left aligned inside parent
-            // zox_muter(frontbar, LayoutPosition, position);
             zox_setv(frontbar, LayoutPosition, new_position);
-            zox_setv(frontbar, LayoutPositionDirty, 1);
+            zox_add(frontbar, LayoutPositionDirty);
             zox_setv(frontbar, LayoutSizeDirty, 1);
-            //pdirty->value = zox_dirty_trigger;
-            // sdirty->value = zox_dirty_trigger;
             if (dbg_log) {
-                zox_log("Frontbar Dirty [%s] Size [%i] Parent Width [%i] Percentage [%f]", zox_getn(e), new_size, parent_size->value.x, percentage->value);
+                zox_log("Frontbar Dirty [%s] Size [%i] Parent Width [%i] Percentage [%f]",
+                    zox_getn(e),
+                    new_size,
+                    parent_size->value.x,
+                    percentage->value);
             }
         } else {
             if (dbg_log >= 2) {

@@ -6,11 +6,11 @@ void set_layout_dirty_recursive(
     if (!zox_valid(e)) {
         return;
     }
-    if (zox_has(e, LayoutPositionDirty)) {
-        zox_setm(e, LayoutPositionDirty, zox_dirty_trigger);
+    if (zox_has(e, LayoutPosition)) {
+        zox_add(e, LayoutPositionDirty);
     }
     if (zox_has(e, LayoutSizeDirty)) {
-        zox_setm(e, LayoutSizeDirty, zox_dirty_trigger);
+        zox_setv(e, LayoutSizeDirty, zox_dirty_trigger);
     }
     iter it = zox_children(world, e);
     while (zox_children_next(it)) {

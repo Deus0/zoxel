@@ -112,7 +112,6 @@ void zox_systems_interaction(ecs* world) {
         [in] inputs.ZeviceLink,
         [in] layouts.Anchor,
         [out] layouts.LayoutPosition,
-        [out] layouts.LayoutPositionDirty,
         [none] ui.MouseElement
     );
     zox_system_1(

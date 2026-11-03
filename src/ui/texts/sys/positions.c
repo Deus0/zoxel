@@ -120,18 +120,17 @@ zox_sys2(TextsPositionSystem) {
                 if (!zox_valid(e2)) {
                     continue;
                 }
-                if (!zox_has(e2, LayoutPosition) || !zox_has(e2, LayoutPositionDirty)) {
-                    zox_logw("Glyph [%s] is missing Layout Component/s", zox_get_name(e2));
+                if (!zox_has(e2, LayoutPosition)) {
+                    zox_logw("Glyph [%s] is missing Layout Components",
+                        zox_get_name(e2));
                     continue;
                 }
                 uint index = child_index_to_text_array_index(text_data->value, text_data->length, child_index);
                 int2 position = calculate_position(text_data->value, text_data->length, index, size->value, alignment->value, padding->value, default_line_padding);
                 zox_mut_begin(e2, LayoutPosition, lposition);
-                zox_mut_begin(e2, LayoutPositionDirty, ldirty);
-                if (!int2_equals(lposition->value, position))
-                {
+                if (!int2_equals(lposition->value, position)) {
                     lposition->value = position;
-                    ldirty->value = zox_dirty_trigger;
+                    zox_add(e2, LayoutPositionDirty);
                     if (is_log) {
                         zox_log("Positioned [%i]  Glyph [%s]:[%i] at [%ix%i]", child_index, zox_getn(e2), j, position.x, position.y);
                     }
