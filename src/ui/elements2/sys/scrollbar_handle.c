@@ -3,16 +3,11 @@
 zox_sys2(ScrollbarHandleSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ListDirty);
     zox_sys_in(ListVisible);
     zox_sys_in(ScrollviewLink);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ListDirty, state);
         zox_sys_i(ListVisible, visible);
         zox_sys_i(ScrollviewLink, scrollview);
-        if (state->value != zox_dirty_active) {
-            continue;
-        }
         // set handle size here
         zox_geter_value(scrollview->value, ListUILink, entity, list);
         uint list_children_length = zox_get_children_count(world, list);

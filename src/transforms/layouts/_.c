@@ -15,5 +15,5 @@ void import_layouts(ecs* world) {
     zox_components_layouts2(world);
     zox_systems_layouts2(world);
     add_hook_spawn_prefabs(spawn_prefabs_layouts2);
-    zox_import_module(Containers);
+    zox_add_module(containers);
 }

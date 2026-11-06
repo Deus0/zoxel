@@ -3,17 +3,12 @@
 zox_sys2(ListRenderDirtySystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ListPositionDirty);
     zox_sys_in(ListStart);
     zox_sys_in(ListVisible);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(ListPositionDirty, state);
         zox_sys_i(ListStart, start);
         zox_sys_i(ListVisible, visible);
-        if (state->value != zox_dirty_active) {
-            continue;
-        }
         uint k = 0;
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {

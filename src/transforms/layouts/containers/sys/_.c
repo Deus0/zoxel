@@ -2,18 +2,22 @@
 #include "grid.c"
 #include "list_element.c"
 zoxc_system_dirty(Grid);
+zoxc_system_dirty(List);
+zoxc_system_dirty(ListPosition);
 
 void zox_systems_containers(ecs* world) {
     zoxd_system_dirty(Grid);
+    zoxd_system_dirty(List);
+    zoxd_system_dirty(ListPosition);
     zox_system(
         ListSystem,
         zoxp_update,
         [in] layouts.LayoutSize,
-        [in] containers.ListPositionDirty,
         [in] containers.ListPadding,
         [in] containers.ListMargins,
         [in] containers.ListStart,
-        [in] containers.ListAlignment
+        [in] containers.ListAlignment,
+        [none] containers.ListPositionUpdate,
     );
     zox_system(
         GridSystem,

@@ -10,7 +10,7 @@ entity spawn_prefab_list(
     zox_setv(e, ListStart, 0);
     zox_setv(e, ListVisible, 0);
     zox_setv(e, ListAlignment, zox_alignment_centre);
-    zox_setv(e, ListDirty, zox_dirty_trigger);
-    zox_setv(e, ListPositionDirty, zox_dirty_trigger);
+    zox_add(e, ListDirty);
+    zox_add(e, ListPositionDirty);
     return e;
 }

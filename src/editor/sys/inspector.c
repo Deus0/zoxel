@@ -218,8 +218,8 @@ zox_sys2(InspectorSpawnSystem) {
         }
         // 6: Set ListDirty for positioning / hiding etc
         zox_set(list_ui, ListStart, { 0 });
-        zox_set(list_ui, ListDirty, { zox_dirty_trigger });
-        zox_set(list_ui, ListPositionDirty, { zox_dirty_trigger });
+        zox_add(list_ui, ListDirty);
+        zox_add(list_ui, ListPositionDirty);
         // 7: Debug
         zox_logv("Inspector Refreshed [%i]", list_children_length);
         zox_logv("   - Elements [%i]", labels->size);

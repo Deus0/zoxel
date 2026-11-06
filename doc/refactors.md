@@ -72,8 +72,8 @@ UIs
 	-x LayoutSizeDirty
 	-x SkeletonDirty
 	-x GridDirty
-	- ListDirty
-	- ListPositionDirty
+	-x ListDirty
+	-x ListPositionDirty
 	- GenerateTexture
 	- PlayerStateDirty
 	- RenderLodDirty

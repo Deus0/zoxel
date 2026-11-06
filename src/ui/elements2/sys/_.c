@@ -28,17 +28,17 @@ void zox_systems_elements2(ecs *world) {
     zox_system(
         ListRenderDirtySystem,
         zoxp_update,
-        [in] containers.ListPositionDirty,
         [in] containers.ListStart,
-        [in] containers.ListVisible
+        [in] containers.ListVisible,
+        [none] containers.ListPositionUpdate,
     );
     // resize handle when list dirty
     zox_system(
         ScrollbarHandleSystem,
         zoxp_update,
-        [in] containers.ListDirty,
         [in] containers.ListVisible,
-        [in] elements2.ScrollviewLink
+        [in] elements2.ScrollviewLink,
+        [none] containers.ListUpdate,
     );
     zox_system(
         ElementbarSystem,

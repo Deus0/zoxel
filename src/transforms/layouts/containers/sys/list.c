@@ -3,7 +3,6 @@ zox_sys2(ListSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LayoutSize);
-    zox_sys_in(ListPositionDirty);
     zox_sys_in(ListPadding);
     zox_sys_in(ListMargins);
     zox_sys_in(ListStart);
@@ -11,14 +10,10 @@ zox_sys2(ListSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(LayoutSize, size);
-        zox_sys_i(ListPositionDirty, state);
         zox_sys_i(ListPadding, padding);
         zox_sys_i(ListMargins, margins);
         zox_sys_i(ListStart, start);
         zox_sys_i(ListAlignment, alignment);
-        if (state->value != zox_dirty_active) {
-            continue;
-        }
         byte indent_size = size->value.x / 12;
         int list_position_y = (int)(size->value.y / 2);
         list_position_y -= margins->value.y;

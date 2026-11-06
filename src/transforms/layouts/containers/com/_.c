@@ -11,8 +11,8 @@ zoxc_byte2(GridMargins);
 zoxc_byte2(GridPadding);
 // Events
 zoxc_dirty(Grid);
-zoxc_state(ListDirty);
-zoxc_state(ListPositionDirty);
+zoxc_dirty(List);
+zoxc_dirty(ListPosition);
 
 void zox_components_containers(ecs* world) {
     // Lists
@@ -27,7 +27,7 @@ void zox_components_containers(ecs* world) {
     zoxd_byte2(GridMargins);
     zoxd_byte2(GridPadding);
     // Events
-    zoxd_state(ListDirty);
-    zoxd_state(ListPositionDirty);
+    zoxd_dirty(List);
+    zoxd_dirty(ListPosition);
     zoxd_dirty(Grid);
 }

@@ -55,7 +55,7 @@ zox_sys2(ScrollbarSystem) {
         if (start != new_start) {
             // zox_log("new scroll position: %i", new_start);
             zox_set(list_ui, ListStart, { new_start });
-            zox_set(list_ui, ListPositionDirty, { zox_dirty_trigger });
+            zox_add(list_ui, ListPositionDirty);
         }
     }
 } zox_sys_end(ScrollbarSystem);

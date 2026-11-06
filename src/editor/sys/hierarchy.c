@@ -210,8 +210,8 @@ zox_sys2(HierarchySpawnSystem) {
         }
         // Set ListDirty for positioning / hiding etc
         zox_set(list_ui, ListStart, { 0 });
-        zox_set(list_ui, ListDirty, { zox_dirty_trigger });
-        zox_set(list_ui, ListPositionDirty, { zox_dirty_trigger });
+        zox_add(list_ui, ListDirty);
+        zox_add(list_ui, ListPositionDirty);
         // Debug
         zox_logv("Hierarchy Refreshed");
         zox_logv("   - Elements [%i]", labels->size);
