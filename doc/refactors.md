@@ -79,7 +79,7 @@ UIs
 	- RenderLodDirty
 	- NpcSpawnZoneDirty
 	- ActiveActionDirty
-	- WindowSizeDirty
+	-x WindowSizeDirty
 	- StreamDirty
 	- InsideBlockDirty
 	- AttachDirty

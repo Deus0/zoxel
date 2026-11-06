@@ -2,15 +2,10 @@ zox_sys2(ViewportResizeSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(WindowSizeDirty);
     zox_sys_in(WindowSize);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(WindowSizeDirty, dirty);
         zox_sys_i(WindowSize, size);
-        if (dirty->value != zox_dirty_active) {
-            continue;
-        }
         if (dbg_log) {
             zox_log("Viewport Dirty at [%ix%i]", size->value.x, size->value.y);
         }

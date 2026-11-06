@@ -7,9 +7,9 @@ void zox_systems_cameras(ecs *world) {
     zox_system(
         ViewportResizeSystem,
         zoxp_update,
-        [in] apps.WindowSizeDirty,
         [in] apps.WindowSize,
-        [none] apps.App
+        [none] apps.App,
+        [none] apps.WindowSizeUpdate,
     );
     // View Matrixes
     zox_system(

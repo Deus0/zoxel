@@ -1,6 +1,5 @@
 zox_tag(App);
 zox_tag(AppLink);
-zoxc_state(WindowSizeDirty);
 zoxc_byte(WindowFullscreen);
 zoxc_byte(WindowMaximized);
 zoxc_byte(WindowMonitor);
@@ -8,11 +7,11 @@ zoxc_int2(WindowSize);
 zoxc_int2(WindowPosition);
 zoxc_int2(WindowSizeRestore);
 zoxc_int2(WindowPositionRestore);
+zoxc_dirty(WindowSize);
 
 void zox_components_apps(ecs *world) {
     zoxd_tag(App);
     zoxd_nf_tag(AppLink);
-    zoxd_state(WindowSizeDirty);
     zoxd_byte(WindowFullscreen);
     zoxd_byte(WindowMaximized);
     zoxd_byte(WindowMonitor);
@@ -23,4 +22,5 @@ void zox_components_apps(ecs *world) {
 #ifdef zox_vulkan
     zoxd(VulkanSurface);
 #endif
+    zoxd_dirty(WindowSize);
 }

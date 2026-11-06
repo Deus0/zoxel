@@ -36,7 +36,7 @@ void on_window_resized(ecs *world, entity e, int2 size, byte dbg_log) {
     }
     // resize
     zox_set(e, WindowSize, { size });
-    zox_set(e, WindowSizeDirty, { zox_dirty_trigger });
+    zox_add(e, WindowSizeDirty);
     if (dbg_log) {
         zox_logv("+ WindowSizeDirty [%ix%i]", size.x, size.y);
     }

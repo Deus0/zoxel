@@ -30,12 +30,16 @@ void zox_app_set_monitor_e(ecs *world, entity e, byte monitor) {
     zox_set(e, WindowMonitor, { monitor });
 }
 
-void zox_app_set_size(ecs *world, entity e, int2 size) {
+void zox_app_set_size(
+    ecs *world,
+    entity e,
+    int2 size)
+{
     SDL_Window* sdl_window = zox_getv(e, SDLWindow);
     zox_sdl_window_size(sdl_window, size);
     if (!int2_equals(size, zox_getv(e, WindowSize))) {
         zox_set(e, WindowSize, { size })
-        zox_set(e, WindowSizeDirty, { zox_dirty_trigger })
+        zox_add(e, WindowSizeDirty);
     }
 }
 
@@ -54,9 +58,13 @@ void on_sdl_window_restored(ecs *world, entity e) {
     }
     SDL_SetWindowSize(sdl_window, size.x, size.y);
     SDL_SetWindowPosition(sdl_window, position.x, position.y);
-    zox_set(e, WindowSize, { size })
-    zox_set(e, WindowSizeDirty, { zox_dirty_trigger })
-    zox_logv(" > setting to window: position [%ix%i] size [%ix%i]", position.x, position.y, size.x, size.y);
+    zox_set(e, WindowSize, { size });
+    zox_add(e, WindowSizeDirty);
+    zox_logv(" > setting to window: position [%ix%i] size [%ix%i]",
+        position.x,
+        position.y,
+        size.x,
+        size.y);
 }
 
 void zox_set_app_fullscreen(
@@ -64,7 +72,9 @@ void zox_set_app_fullscreen(
     entity e,
     byte fullscreen)
 {
-    if (!zox_valid(e) || !zox_has(e, WindowFullscreen)) {
+    if (!zox_valid(e) ||
+        !zox_has(e, WindowFullscreen))
+    {
         zox_loge("invalid app in [zox_set_app_fullscreen]");
         return;
     }
@@ -81,7 +91,11 @@ void zox_set_app_fullscreen(
 }
 
 // sdl implementation for maximized state
-void zox_set_app_maximized(ecs* world, entity e, byte maximized) {
+void zox_set_app_maximized(
+    ecs* world,
+    entity e,
+    byte maximized)
+{
     if (!zox_valid(e) || !zox_has(e, WindowFullscreen)) {
         zox_log_error("invalid app in [zox_set_app_fullscreen]")
         return;
@@ -108,7 +122,10 @@ void zox_set_app_maximized(ecs* world, entity e, byte maximized) {
     }
 }
 
-static inline byte load_app_icon(SDL_Window* window, const char *icon_path) {
+static inline byte load_app_icon(
+    SDL_Window* window,
+    const char *icon_path)
+{
     if (!window || !icon_path) {
         zox_loge("Invalid arguments in [load_app_icon]");
         return 0;
