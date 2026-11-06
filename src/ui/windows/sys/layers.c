@@ -58,7 +58,9 @@ zox_sys2(WindowLayerSystem) {
             layer->value += zox_getv(e, BonusLayer);
         }
         if (dbg_log) {
-            zox_log("Window [%s] Layers Set [%i]", zox_sys_e_name, layer->value);
+            zox_log("Window [%s] Layers Set [%i]",
+                zox_sys_e_name,
+                layer->value);
         }
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {

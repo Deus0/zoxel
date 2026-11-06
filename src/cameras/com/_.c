@@ -20,7 +20,6 @@ zoxc(ViewProjectionMatrix, float4x4); // todo: rename to ViewProjectionMatrix
 #define zox_camera_planes 6
 zoxc_array(CameraPlanes, plane, zox_camera_planes);
 zoxc_array(FrustumCorners, double3, 8);
-zoxc_state(AttachDirty);
 // Filters
 zox_tag(CameraFilter);
 zoxc_entity(CameraRenderer);
@@ -35,6 +34,7 @@ zoxc_float(CameraVignette);
 // Properties
 zox_tag(CanRoam);
 zox_tag(Roaming);
+zoxc_dirty(Attach);
 
 void zox_components_cameras(ecs *world) {
     zoxd_tag(Camera);
@@ -60,7 +60,6 @@ void zox_components_cameras(ecs *world) {
     zoxd_float4(ScreenToCanvas);
     zox_define_component_array(FrustumCorners);
     zox_define_component_array(CameraPlanes);
-    zoxd_state(AttachDirty);
     // render cameras
     zoxd_tag(RenderCamera);
     zoxd_tag(RenderTexture);
@@ -74,4 +73,5 @@ void zox_components_cameras(ecs *world) {
     // temp properties
     zoxd_nf_tag(CanRoam);
     zoxd_tag(Roaming);
+    zoxd_dirty(Attach);
 }

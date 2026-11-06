@@ -67,18 +67,16 @@ UIs
 	* add/remove instead of set
 	* remove/add sysetm for a Update variant tag
 	* update systems use hte Update tag [none]
-	- GenerateTexture
+	-o GenerateTexture
 	- PlayerStateDirty
 	- RenderLodDirty
 	- NpcSpawnZoneDirty
 	- ActiveActionDirty
 	- StreamDirty
-	- AttachDirty
 	- RenderDepthDirty
 	- ChunkLodDirty
 	- RenderDistanceDirty
 	- GlyphSpawnedDirty
-	- WindowLayerDirty
 	
 ## Refactor Properties
 	- RenderDisabled

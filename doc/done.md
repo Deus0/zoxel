@@ -1,5 +1,7 @@
 # Done
 
+-x AttachDirty
+-x WindowLayerDirty
 -x InsideBlockDirty
 -x WindowSizeDirty
 -x DataDirty

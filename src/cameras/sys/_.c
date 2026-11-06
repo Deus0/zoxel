@@ -2,8 +2,10 @@
 #include "viewport_resize_system.c"
 #include "orthographic.c"
 #include "view_projection.c"
+zoxc_system_dirty(Attach);
 
 void zox_systems_cameras(ecs *world) {
+    zoxd_system_dirty(Attach);
     zox_system(
         ViewportResizeSystem,
         zoxp_update,
