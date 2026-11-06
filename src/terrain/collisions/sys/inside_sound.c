@@ -1,4 +1,4 @@
-zox_sys2(InsideBlockSoundSystem) {
+/*zox_sys2(InsideBlockSoundSystem) {
     double spawn_rate = 0.2;
     zox_sys_world();
     zox_sys_begin();
@@ -50,4 +50,4 @@ zox_sys2(InsideBlockSoundSystem) {
         // zox_sys_e();
         // zox_log("- [%s] inside block [%i] sound [%i]", zox_get_name(e), inside->value, sound);
     }
-} zox_sys_end(InsideBlockSoundSystem);
+} zox_sys_end(InsideBlockSoundSystem);*/

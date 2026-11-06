@@ -1,13 +1,11 @@
-#ifndef zoxm_terrain_collisions
-#define zoxm_terrain_collisions
-
 // #define zox_dbg_lines_unstuck
 
 #include "fun/_.c"
 #include "sys/_.c"
+#include "eve/_.c"
 
-zox_begin_module(TerrainsCollisions) {
+void import_terrain_collisions(ecs* world) {
+    zox_module(terrain_collisions);
     zox_systems_terrain_collisions(world);
-} zox_end_module(TerrainsCollisions);
-
-#endif
+    add_hook_spawn_prefabs(zox_events_terrain_collisions);
+}

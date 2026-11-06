@@ -16,12 +16,6 @@ zox_sys2(ViewportResizeSystem) {
                 break;
             }
             j++;
-        /*iter it2 = zox_links(e, ViewportCamera);
-        while (zox_query_next(it2)) {
-            entity camera = zox_pair_target(it2, 0);
-            if (!zox_valid(camera)) {
-                continue;
-            }*/
             // TODO: Camera should have CanvasLinks and a size dirty flag!
             float4 screen_to_canvas = zox_getv(camera, ScreenToCanvas);
             int2 new_size = screen_to_canvas_size(size->value, screen_to_canvas);
@@ -39,6 +33,5 @@ zox_sys2(ViewportResizeSystem) {
                     zox_has(camera, RenderCamera));
             }
         }
-        //}
     }
 } zox_sys_end(ViewportResizeSystem);

@@ -79,10 +79,10 @@ UIs
 	- GlyphSpawnedDirty
 	
 ## Refactor Properties
-	- RenderDisabled
-	- BlocksSpawned
-    -x DeviceDisabled
-    - ZeviceDisabled
+- RenderDisabled
+- BlocksSpawned
+-x DeviceDisabled
+- ZeviceDisabled
 	
 ## Refactor Reactionary Systems to Events
 	- Tooltip Systems

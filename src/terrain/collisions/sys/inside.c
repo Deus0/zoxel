@@ -58,6 +58,5 @@ zox_sys2(InsideBlockSystem) {
             continue;
         }
         zox_add(e, InsideBlockDirty);
-
     }
 } zox_sys_end(InsideBlockSystem);

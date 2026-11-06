@@ -1,3 +1,27 @@
+entity spawn_minimap(
+    ecs* world,
+    entity canvas,
+    entity player,
+    entity terrain)
+{;
+    // entity game = zox_get_parent(world, player);
+    // entity realm = zox_get_link(world, game, RealmLink);
+    float2 position_anchor = float2_top_right;
+    int2 size = int2_single(minimap_size * ui_scale);
+    entity e = spawn_map(
+        world,
+        canvas,
+        player,
+        terrain,
+        minimap_zoom,
+        minimap_alpha,
+        "",
+        position_anchor,
+        size);
+    zox_add(e, Minimap);
+    return e;
+}
+
 /*entity spawn_minimap(
     ecs* world,
     entity canvas,
@@ -45,27 +69,3 @@
     zox_link(world, e, TerrainLink, terrain);
     return e;
 }*/
-
-entity spawn_minimap(
-    ecs* world,
-    entity canvas,
-    entity player,
-    entity terrain)
-{;
-    // entity game = zox_get_parent(world, player);
-    // entity realm = zox_get_link(world, game, RealmLink);
-    float2 position_anchor = float2_top_right;
-    int2 size = int2_single(minimap_size * ui_scale);
-    entity e = spawn_map(
-        world,
-        canvas,
-        player,
-        terrain,
-        minimap_zoom,
-        minimap_alpha,
-        "",
-        position_anchor,
-        size);
-    zox_add(e, Minimap);
-    return e;
-}

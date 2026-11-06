@@ -1,5 +1,6 @@
 # Done
 
+-x refactor block sound into a observer event
 -x AttachDirty
 -x WindowLayerDirty
 -x InsideBlockDirty
