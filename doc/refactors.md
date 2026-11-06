@@ -67,21 +67,12 @@ UIs
 	* add/remove instead of set
 	* remove/add sysetm for a Update variant tag
 	* update systems use hte Update tag [none]
-	-x DataDirty
-	-x LayoutPositionDirty
-	-x LayoutSizeDirty
-	-x SkeletonDirty
-	-x GridDirty
-	-x ListDirty
-	-x ListPositionDirty
 	- GenerateTexture
 	- PlayerStateDirty
 	- RenderLodDirty
 	- NpcSpawnZoneDirty
 	- ActiveActionDirty
-	-x WindowSizeDirty
 	- StreamDirty
-	- InsideBlockDirty
 	- AttachDirty
 	- RenderDepthDirty
 	- ChunkLodDirty

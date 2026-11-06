@@ -26,12 +26,12 @@ zoxc_entities(BlockLinks)
 zox_tag(BlockManagerLink);
 zoxc_byte(InsideBlock);
 zoxc_int3(InsideBlockPosition);
-zoxc_state(InsideBlockDirty);
 zoxc_double(InsideBlockTime);
 zox_tag(BlockSoundTrigger);
 zoxc_entity(BlockSound);        // Links Block to a Sound
 zoxc_float2(BlockHealth);
 #include "queue.c"
+zoxc_dirty(InsideBlock);
 
 entity get_block_link(ecs* world, entity e) {
     return zox_get_link(world, e, BlockLink);
@@ -69,7 +69,7 @@ void zox_components_blocks(ecs *world) {
     zoxd_entity(BlockPrefabLink);
     zoxd_nf_tag(BlockManagerLink);
     zoxd_entity(BlockSound);
-    zoxd_state(InsideBlockDirty);
     zoxd_entities(BlockLinks);
     zoxd_queue(BlockDamageQueue);
+    zoxd_dirty(InsideBlock);
 }

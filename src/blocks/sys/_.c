@@ -2,8 +2,10 @@
 #include "spawn.c"
 #include "uvs.c"
 #include "indexes.c"
+zoxc_system_dirty(InsideBlock);
 
 void zox_systems_blocks(ecs* world) {
+    zoxd_system_dirty(InsideBlock);
     zox_system(
         RealmTilemapSystem,
         zoxp_update,

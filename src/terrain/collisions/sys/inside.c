@@ -5,14 +5,12 @@ zox_sys2(InsideBlockSystem) {
     zox_sys_in(Bounds3D);
     zox_sys_out(InsideBlock);
     zox_sys_out(InsideBlockPosition);
-    zox_sys_out(InsideBlockDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Position3D, position);
         zox_sys_i(Bounds3D, bounds);
         zox_sys_o(InsideBlock, inside);
         zox_sys_o(InsideBlockPosition, iposition);
-        zox_sys_o(InsideBlockDirty, idirty);
         entity terrain = zox_get_link(world, e, TerrainLink);
         if (!zox_valid(terrain)) {
             zox_loge("Terrain invalid in character [%s]", zox_get_name(e));
@@ -51,12 +49,15 @@ zox_sys2(InsideBlockSystem) {
         // byte voxel = get_sub_node_voxel_locked(voctree, &positionl, cdepth);
         if (inside->value != voxel) {
             inside->value = voxel;
-            idirty->value = zox_dirty_trigger;
+            iposition->value = positionv;
             // zox_log("Inside new block [%i]", voxel);
         } else if (!int3_equals(positionv, iposition->value)) {
             // Compares voxel position and triggers when moving into same block type
-            idirty->value = zox_dirty_trigger;
+            iposition->value = positionv;
+        } else {
+            continue;
         }
-        iposition->value = positionv;
+        zox_add(e, InsideBlockDirty);
+
     }
 } zox_sys_end(InsideBlockSystem);

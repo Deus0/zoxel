@@ -21,7 +21,6 @@ entity spawn_prefab_character3(
     // Block Inside
     zox_setv(e, InsideBlock, 0);
     zox_setv(e, InsideBlockPosition, int3_zero);
-    zox_setv(e, InsideBlockDirty, 0);
     zox_setv(e, InsideBlockTime, 0);
     // Vox Mesh
     zox_setv(e, BlockScale, 1);

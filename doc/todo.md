@@ -1,9 +1,10 @@
 # Todo
 
+- refactor block sound into a observer event
 - quantity of item didnt update when moving items
-- Upgrade Flecs to 4.2
-- clicking on ui - activated punch... during dialogue
+-o clicking on ui - activated punch... during dialogue
 - Fix Dialogue Animation
+- Upgrade Flecs to 4.2
 
 # later
 - Track NearbyCharacters on npcs for UI spawning

@@ -14,16 +14,15 @@ void zox_systems_terrain_collisions(ecs* world) {
         [in] transforms3.Bounds3D,
         [out] blocks.InsideBlock,
         [out] blocks.InsideBlockPosition,
-        [out] blocks.InsideBlockDirty,
     );
     zox_system_1(
         InsideBlockSoundSystem,
         zoxp_spawn,
-        [in] blocks.InsideBlockDirty,
         [in] blocks.InsideBlock,
         [in] transforms3.Position3D,
         [out] blocks.InsideBlockTime,
-        [none] blocks.BlockSoundTrigger
+        [none] blocks.BlockSoundTrigger,
+        [none] blocks.InsideBlockUpdate,
     );
     zox_system(
         TerrainIntersectSystem,
