@@ -34,10 +34,10 @@ zox_sys2(ScrollbarHandleSystem) {
         int ybounds = (scrollbar_size.y / 2) - handle_height / 2;
         int2 handle_size = (int2) { scrollbar_size.x, handle_height };
         int2 handle_position = (int2) { 0, (scrollbar_size.y - handle_height) / 2 };
-        zox_set(handle, LayoutSize, { handle_size });
-        zox_set(handle, LayoutSizeDirty, { zox_dirty_trigger });
         zox_set(handle, LayoutPosition, { handle_position });
+        zox_set(handle, LayoutSize, { handle_size });
         zox_add(handle, LayoutPositionDirty);
+        zox_add(handle, LayoutSizeDirty);
         zox_set(handle, LayoutConstraints, { (int4) { 0, 0, -ybounds, ybounds } });
         //zox_log("Resizing Scrollbar Handle [%s]:", zox_get_name(handle));
         //zox_log("   + new height [%i] scrollbar height [%i]", handle_height, scrollbar_size.y );

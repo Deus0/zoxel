@@ -16,10 +16,10 @@ void zox_systems_elements3D(ecs *world) {
     zox_system(
         Layout3MeshUpdateSystem,
         zoxp_update,
-        [in] layouts.LayoutSizeDirty,
         [in] layouts.LayoutSize,
         [in] rendering.MeshAlignment,
         [out] rendering.MeshVertices,
+        [none] layouts.LayoutSizeUpdate,
         [none] !core.Initialize,
     );
     // m ainthread to sync point it

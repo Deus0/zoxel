@@ -25,9 +25,8 @@ typedef struct {
 } LayoutLinePoints;
 zoxc_custom(LayoutLinePoints);
 // events
-zox_tag(LayoutPositionDirty);
-zox_tag(LayoutPositionUpdate);
-zoxc_state(LayoutSizeDirty);
+zoxc_dirty(LayoutPosition);
+zoxc_dirty(LayoutSize);
 
 void zox_components_layouts2(ecs* world) {
     // Canvases
@@ -53,7 +52,6 @@ void zox_components_layouts2(ecs* world) {
     zoxd_float2(LineAnchor);
     zoxd(LayoutLinePoints);
     // events
-    zoxd_tag_event(LayoutPositionDirty);
-    zoxd_tag_event(LayoutPositionUpdate);
-    zoxd_state(LayoutSizeDirty);
+    zoxd_dirty(LayoutPosition);
+    zoxd_dirty(LayoutSize);
 }

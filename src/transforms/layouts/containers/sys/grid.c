@@ -3,20 +3,15 @@ zox_sys2(GridSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LayoutSize);
-    zox_sys_in(GridDirty);
     zox_sys_in(GridSize);
     zox_sys_in(GridPadding);
     zox_sys_in(GridMargins);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(LayoutSize, size);
-        zox_sys_i(GridDirty, dirty);
         zox_sys_i(GridSize, grid_size);
         zox_sys_i(GridPadding, padding);
         zox_sys_i(GridMargins, margins);
-        if (dirty->value != zox_dirty_active) {
-            continue;
-        }
         entity first_child = zox_get_child_by_id(
             world,
             e,

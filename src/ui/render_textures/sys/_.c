@@ -7,19 +7,19 @@ void zox_systems_render_textures(ecs* world) {
     zox_system(
         ScreenRenderTextureSystem,
         zoxp_update,
-        [in] layouts.LayoutSizeDirty,
         [in] layouts.LayoutSize,
         [out] rendering.TextureSize,
-        [none] render_textures.RenderTextureScreen
+        [none] render_textures.RenderTextureScreen,
+        [none] layouts.LayoutSizeUpdate,
     );
     zox_system(
         RenderTextureSizeSystem,
         zoxp_update,
-        [in] layouts.LayoutSizeDirty,
         [in] rendering.TextureSize,
         [in] rendering.TextureGPULink,
         [none] cameras.RenderTexture,
-        [none] !core.Initialize
+        [none] layouts.LayoutSizeUpdate,
+        [none] !core.Initialize,
     );
     zox_system_1(
         RenderTextureInitializeSystem,

@@ -69,10 +69,9 @@ void zox_systems_controllers3(ecs *world) {
     zox_system(
         place_camera_head_system,
         zoxp_update,
-        [in] bones.SkeletonDirty,
-        // [in] bones.HeadBoneLink,
         [in] blocks.BlockScale,
-        [none] bones.Skeleton
+        [none] bones.Skeleton,
+        [none] bones.SkeletonUpdate,
     );
     // Shortcuts
     zox_system(

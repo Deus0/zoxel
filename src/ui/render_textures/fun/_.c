@@ -17,5 +17,5 @@ void on_set_viewport_scale(ecs* world, entity app) {
         zox_loge("App Canvas RenderTexture Invalid in RenderSettings");
         return;
     }
-    zox_setv(render_texture, LayoutSizeDirty, zox_dirty_trigger);
+    zox_add(render_texture, LayoutSizeDirty);
 }

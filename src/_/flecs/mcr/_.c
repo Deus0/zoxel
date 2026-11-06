@@ -23,6 +23,7 @@
 #include "children.c"
 #include "disable.c"
 #include "pair.c"
+#include "dirty.c"
 
 entity zox_ins_named(ecs* world, entity prefab) {
     entity e = zox_ins(world, prefab);

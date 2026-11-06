@@ -7,23 +7,24 @@
 #include "arm_control.c"
 #include "arm_swing.c"
 #include "arm_raise.c"
+zoxc_system_dirty(Skeleton);
 
 void zox_systems_bones(ecs *world) {
+    zoxd_system_dirty(Skeleton);
     zox_system(
         HeadAnimateSystem,
         zoxp_update,
-        [in] bones.SkeletonDirty,
-        // [in] bones.HeadBoneLink,
-        [none] bones.Skeleton
+        [none] bones.Skeleton,
+        [none] bones.SkeletonUpdate,
     );
     zox_system(
         BoneIndexGenerateSystem,
         zoxp_update,
-        [in] bones.SkeletonDirty,
         [in] rendering.MeshVertices,
         [in] rendering3.BoneLinks,
         [out] rendering3.BoneIndexes,
-        [none] bones.Skeleton
+        [none] bones.Skeleton,
+        [none] bones.SkeletonUpdate,
     );
     zox_system(
         BoneIndexGenerateSystem2,

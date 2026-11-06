@@ -11,7 +11,6 @@ entity spawn_prefab_character3_skeleton(
     zox_prefab_name("character3_skeleton");
     zox_add(e, Skeleton);
     zox_add(e, SkeletonMesh);
-    zox_setv(e, SkeletonDirty, 0);
     zox_setv(e, BoneLinks, 0);
     zox_setv(e, BoneIndexes, 0);
     zox_setv(e, BoneIndexGPULink, 0);

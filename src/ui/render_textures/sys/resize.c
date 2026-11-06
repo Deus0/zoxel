@@ -2,17 +2,12 @@ zox_sys2(RenderTextureSizeSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(LayoutSizeDirty);
     zox_sys_in(TextureSize);
     zox_sys_in(TextureGPULink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(LayoutSizeDirty, dirty);
         zox_sys_i(TextureSize, size);
         zox_sys_i(TextureGPULink, texture_gpu);
-        if (dirty->value != zox_dirty_active) {
-            continue;
-        }
         if (!texture_gpu->value) {
             zox_loge("[RenderTextureSizeSystem] [%s] Invalid [TextureGPULink]", zox_getn(e));
             continue;

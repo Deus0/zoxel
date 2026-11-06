@@ -3,12 +3,10 @@ zox_sys2(ListElementPositionSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LayoutSize);
-    zox_sys_in(LayoutSizeDirty);
     zox_sys_out(LayoutPosition);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(LayoutSize, size);
-        zox_sys_i(LayoutSizeDirty, state);
         zox_sys_o(LayoutPosition, position);
         entity parent = zox_get_parent(world, e);
         if (!zox_valid(parent) ||

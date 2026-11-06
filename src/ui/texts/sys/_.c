@@ -24,7 +24,6 @@ void zox_systems_texts(ecs *world) {
         [in] texts.TextFontSize,
         [in] TextPadding,
         [out] layouts.LayoutSize,
-        [out] layouts.LayoutSizeDirty,
         [none] texts.Text,
         [none] core.Update,
     );

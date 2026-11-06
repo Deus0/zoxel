@@ -72,20 +72,14 @@ zox_sys2(BoneIndexGenerateSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(SkeletonDirty);
     zox_sys_in(MeshVertices);
     zox_sys_in(BoneLinks);
     zox_sys_out(BoneIndexes);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(SkeletonDirty, skeleton_dirty);
         zox_sys_i(MeshVertices, verts);
         zox_sys_i(BoneLinks, bones);
         zox_sys_o(BoneIndexes, weights);
-        if (skeleton_dirty->value != zox_dirty_active) {
-            // mesh_dirty->value == mesh_state_skeleton_generate)) {
-            continue;
-        }
         generate_weights(
             world,
             e,

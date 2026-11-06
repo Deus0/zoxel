@@ -5,15 +5,10 @@ void place_camera_head_system(iter* it) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(SkeletonDirty);
     zox_sys_in(BlockScale);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(SkeletonDirty, state);
         zox_sys_i(BlockScale, bscale);
-        if (state->value != zox_dirty_active) {
-            continue;
-        }
         entity head_bone = zox_get_link(world, e, HeadBoneLink);
         if (!zox_valid(head_bone)) {
             zox_loge("Invalid Head on Character");

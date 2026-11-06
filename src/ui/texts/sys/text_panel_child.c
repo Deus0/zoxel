@@ -28,7 +28,7 @@ zox_sys2(TextParentBackgroundSystem) {
             default_line_padding);
         if (!int2_equals(old_size, new_size)) {
             zox_setv(parent, LayoutSize, new_size);
-            zox_setv(parent, LayoutSizeDirty, zox_dirty_trigger);
+            zox_add(parent, LayoutSizeDirty);
         }
     }
 } zox_sys_end(TextParentBackgroundSystem);

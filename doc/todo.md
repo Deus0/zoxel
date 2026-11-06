@@ -1,5 +1,10 @@
 # Todo
 
+- quantity of item didnt update when moving items
+- Upgrade Flecs to 4.2
+- clicking on ui - activated punch... during dialogue
+- Fix Dialogue Animation
+
 # later
 - Track NearbyCharacters on npcs for UI spawning
 	- spawn new marker based on surrounding characters quest states

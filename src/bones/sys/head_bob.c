@@ -3,13 +3,8 @@ zox_sys2(HeadAnimateSystem) {
     float2 headbob_range = (float2) { 0.004f, 0.006f };
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(SkeletonDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(SkeletonDirty, state);
-        if (state->value != zox_dirty_active) {
-            continue;
-        }
         entity head_bone = zox_get_link(world, e, HeadBoneLink);
         if (!zox_valid(head_bone)) {
             zox_loge("Head bone invalid.");

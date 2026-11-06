@@ -108,7 +108,7 @@ void on_boot_game_ui(
             texture_mouse,
             int2_single(mouse_ui_size));
         zox_set(mouse_ui, LayoutSize, { int2_single(mouse_ui_size) });
-        zox_set(mouse_ui, LayoutSizeDirty, { zox_dirty_trigger });
+        zox_add(mouse_ui, LayoutSizeDirty);
         zox_add(mouse_ui, LayoutPositionDirty);
         if (local_mouse) {
             zox_link(world, local_mouse, TextureLink, mouse_ui);

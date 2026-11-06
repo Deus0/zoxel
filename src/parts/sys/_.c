@@ -30,7 +30,6 @@ void zox_systems_bodys(ecs* world) {
         [in] blocks.BlockScale,
         [out] parts.BodyDirty,
         [out] rendering3.BoneLinks,
-        [out] bones.SkeletonDirty,
         [none] bones.Skeleton,
     );
     zox_system(

@@ -69,8 +69,11 @@ UIs
 	* update systems use hte Update tag [none]
 	-x DataDirty
 	-x LayoutPositionDirty
-	- LayoutSizeDirty
-	- GridDirty
+	-x LayoutSizeDirty
+	-x SkeletonDirty
+	-x GridDirty
+	- ListDirty
+	- ListPositionDirty
 	- GenerateTexture
 	- PlayerStateDirty
 	- RenderLodDirty
@@ -79,7 +82,6 @@ UIs
 	- WindowSizeDirty
 	- StreamDirty
 	- InsideBlockDirty
-	- SkeletonDirty
 	- AttachDirty
 	- RenderDepthDirty
 	- ChunkLodDirty

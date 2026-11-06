@@ -19,19 +19,14 @@ zox_sys2(Layout3MeshUpdateSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(LayoutSizeDirty);
     zox_sys_in(LayoutSize);
     zox_sys_in(MeshAlignment);
     zox_sys_out(MeshVertices);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(LayoutSizeDirty, dirty);
         zox_sys_i(LayoutSize, size);
         zox_sys_i(MeshAlignment, alignment);
         zox_sys_o(MeshVertices, verts);
-        if (dirty->value != zox_dirty_active) {
-            continue;
-        }
         entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas3));
         if (!zox_valid(canvas)) {
             zox_loge("[Layout3MeshUpdateSystem] Invalid [canvas]: %s", zox_getn(e));
@@ -70,21 +65,14 @@ zox_sys2(Layout3MeshBeginSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    // zox_sys_in(Initialize);
     zox_sys_in(LayoutSize);
     zox_sys_in(MeshAlignment);
     zox_sys_out(MeshVertices);
-    // zox_sys_out(MeshDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        // zox_sys_i(Initialize, initialize);
         zox_sys_i(LayoutSize, size);
         zox_sys_i(MeshAlignment, alignment);
-        //zox_sys_o(MeshDirty, dirty);
         zox_sys_o(MeshVertices, verts);
-        /*if (initialize->value != zox_dirty_active) {
-            continue;
-        }*/
         entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas3));
         if (!zox_valid(canvas)) {
             zox_loge("Invalid Canvas3 for Layout %s", zox_get_name(e));
@@ -104,7 +92,6 @@ zox_sys2(Layout3MeshBeginSystem) {
         scale.y *= world_scale.y;
         set_mesh_vertices_scale3(verts, get_aligned_mesh2D(alignment->value), 4, scale);
         zox_add(e, MeshDirty);
-        // dirty->value = mesh_state_upload;
         if (dbg_log) {
             zox_log("LayoutMeshBeginSystem Mesh 3D Updated [%s] Size [%fx%f] Canvas Scale [%fx%f]", zox_getn(e), scale.x, scale.y, world_scale.x, world_scale.y);
         }

@@ -49,7 +49,7 @@ zox_sys2(ElementbarSystem) {
             // left aligned inside parent
             zox_setv(frontbar, LayoutPosition, new_position);
             zox_add(frontbar, LayoutPositionDirty);
-            zox_setv(frontbar, LayoutSizeDirty, 1);
+            zox_add(frontbar, LayoutSizeDirty);
             if (dbg_log) {
                 zox_log("Frontbar Dirty [%s] Size [%i] Parent Width [%i] Percentage [%f]",
                     zox_getn(e),

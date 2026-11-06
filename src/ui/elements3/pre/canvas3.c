@@ -11,7 +11,7 @@ entity spawn_prefab_canvas3(ecs *world) {
     // zox_prefab_set(e, Scale3, { float3_one });
     zox_prefab_set(e, TransformMatrix, { float4x4_identity });
     zox_prefab_set(e, LayoutSize, { int2_zero });
-    zox_prefab_set(e, LayoutSizeDirty, { 1 });
+    zox_add(e, LayoutSizeDirty);
     zox_prefab_set(e, RenderDisabled, { 0 });   // used for children
     return e;
 }

@@ -16,16 +16,16 @@ void zox_systems_elements(ecs *world) {
     zox_system(
         TextureSizeSystem,
         zoxp_update,
-        [in] layouts.LayoutSizeDirty,
         [in] layouts.LayoutSize,
         [out] rendering.TextureSize,
-        [none] textures.FixToLayout
+        [none] textures.FixToLayout,
+        [none] layouts.LayoutSizeUpdate,
     );
     zox_system(
         TextureSizeGenerateSystem,
         zoxp_update,
-        [in] layouts.LayoutSizeDirty,
-        [out] textures.GenerateTexture
+        [out] textures.GenerateTexture,
+        [none] layouts.LayoutSizeUpdate,
     );
     zox_system(
         LayoutMeshBeginSystem,
@@ -38,9 +38,9 @@ void zox_systems_elements(ecs *world) {
     zox_system(
         LayoutMeshUpdateSystem,
         zoxp_update,
-        [in] layouts.LayoutSizeDirty,
         [in] layouts.LayoutSize,
         [in] rendering.MeshAlignment,
         [out] rendering.MeshVertices2D,
+        [none] layouts.LayoutSizeUpdate,
     );
 }

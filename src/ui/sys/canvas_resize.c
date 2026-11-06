@@ -9,8 +9,8 @@ void set_layout_dirty_recursive(
     if (zox_has(e, LayoutPosition)) {
         zox_add(e, LayoutPositionDirty);
     }
-    if (zox_has(e, LayoutSizeDirty)) {
-        zox_setv(e, LayoutSizeDirty, zox_dirty_trigger);
+    if (zox_has(e, LayoutSize)) {
+        zox_add(e, LayoutSizeDirty);
     }
     iter it = zox_children(world, e);
     while (zox_children_next(it)) {

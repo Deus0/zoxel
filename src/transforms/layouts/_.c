@@ -1,5 +1,4 @@
 // Anchor/Grid Aware Positioning for our UIs and 2D Games!
-
 float zox_depth_per_layer3 = 0; //  0.1f;
 float zox_depth_per_layer = 0.001f;
 uint layouts2_children_capacity = 255;  // for big ass text
