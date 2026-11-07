@@ -6,7 +6,7 @@
  *
  * */
 // TODO: Fix the shaking issues on ground
-float zox_physics_max_delta_time = 0.1f;
+float zox_physics_max_delta_time = 0.2f;
 #include "com/_.c"
 #include "physics2/_.c"
 #include "physics3/_.c"

@@ -1,4 +1,8 @@
-double time_begin, zox_current_time, zox_delta_time = 0.0;
+double time_begin = 0;
+double zox_current_time = 0;
+double zox_delta_time = 0;
+byte zox_delta_time_override_count = 0;
+double zox_delta_time_override = 0;
 double frames_per_second_time = 0.0;
 int frames_count, frames_per_second = 0;
 double zox_current_time_check = 0.0;

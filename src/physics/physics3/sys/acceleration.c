@@ -1,5 +1,5 @@
 void acceleration3_system(iter* it) {
-    if (zox_delta_time >= zox_physics_max_delta_time) {
+    if (zox_delta_time > zox_physics_max_delta_time) {
         return;
     }
     zox_sys_on_begin();

@@ -1,5 +1,7 @@
 zox_sys2(Dissipation3System) {
-    if (zox_delta_time >= zox_physics_max_delta_time) return;
+    if (zox_delta_time > zox_physics_max_delta_time) {
+        return;
+    }
     float dissipation_rate = 2.0f; // tweak for stronger or weaker drag
     zox_sys_begin();
     zox_sys_out(Omega3D);

@@ -1,5 +1,7 @@
 zox_sys2(Omega3System) {
-    if (zox_delta_time >= zox_physics_max_delta_time) return;
+    if (zox_delta_time > zox_physics_max_delta_time) {
+        return;
+    }
     zox_sys_begin();
     zox_sys_in(Omega3D);
     zox_sys_out(Rotation3D);

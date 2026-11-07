@@ -194,10 +194,10 @@ run-gles2: build-gles2
 	MESA_SOFTWARE_DEVICE=llvmpipe \
 	make run
 
-gdb:
+gdb: dev
 	gdb -ex "set debuginfod enabled off" -ex run --args ./$(target_dev)
 
-rund-gdb: dev
+rund-gdb:
 	@ make gdb
 
 gdbv:

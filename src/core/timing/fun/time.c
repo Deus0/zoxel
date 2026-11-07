@@ -29,6 +29,14 @@ void iterate_time_system(iter* it) {
         return;
     }
     zox_delta_time = zox_current_time - last_time;
+    if (zox_delta_time_override_count) {
+        zox_delta_time = zox_delta_time_override;
+        zox_delta_time_override_count--;
+        if (!zox_delta_time_override_count) {
+            zox_delta_time_override_count = 0;
+            zox_delta_time_override = 0;
+        }
+    }
     zox_current_time_check += zox_delta_time;
     // add_plot_data_time(world, zox_delta_time);
     add_double_to_samples(world, frame_times_samples, zox_delta_time * 1000);
