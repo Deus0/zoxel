@@ -8,7 +8,7 @@ AABB voxel
 */
 
 // NOTE: Detects intersections with voxel chunks
-zox_sys2(TerrainIntersectSystem) {
+void terrain_collision_system(iter* it) {
     // TODO: First just make a list of voxels intersecting with
     zox_sys_world();
     zox_sys_begin();
@@ -39,14 +39,11 @@ zox_sys2(TerrainIntersectSystem) {
         const BlockLinks* blocks = zox_get(realm, BlockLinks);
         byte terrain_depth = zox_getv(terrain, NodeDepth);
         float terrain_block_scale = zox_getv(terrain, BlockScale);
-        // float3 block_size = float3_single(terrain_block_scale * 0.5f);
         zox_geter(terrain, ChunkLinks, chunks);
         // For each block position in bounds, check if collides with chunk
         float3 bounds_rotated = float4_rotate_bounds(rotation->value, bounds->value);
         float3 lower_bounds = float3_subtract(position->value, bounds_rotated);
         float3 upper_bounds = float3_add(position->value, bounds_rotated);
-        // int3 lower_bounds_block_position = real_position_to_block_position(lower_bounds, terrain_block_scale);
-        // int3 upper_bounds_block_position = real_position_to_block_position(upper_bounds, terrain_block_scale);
         float3 correction = float3_zero;
         // we just need add + terrain_block_scale and final one too
         byte hit_ground = 0;
@@ -78,60 +75,12 @@ zox_sys2(TerrainIntersectSystem) {
                     byte chunk_depth = zox_getv(chunk, NodeDepth);
                     byte3 local_position = block_position_to_local_position(block_position, terrain_depth, chunk_depth);
                     byte voxel = getv_VoxelNode(voxel_octree, chunk_depth, local_position);
-                    byte solid = voxel ? zox_getv(blocks->value[voxel - 1], BlockCollider) != zox_block_air : 0;
+                    byte solid = voxel ?
+                        zox_getv(blocks->value[voxel - 1], BlockCollider) != zox_block_air :
+                        0;
                     if (!solid) {
                         continue;
                     }
-                    // Get Block Face Centre
-                    // NOTE: Get the closest voxel face out of 3 potential axis ones
-                    /*float3 block_position_face_x = block_positionf;
-                    if (position->value.x >= block_positionf.x) {
-                        block_position_face_x.x += terrain_block_scale / 2;
-                    } else {
-                        block_position_face_x.x -= terrain_block_scale / 2;
-                    }
-                    float3 block_position_face_y = block_positionf;
-                    if (position->value.y >= block_positionf.y) {
-                        block_position_face_y.y += terrain_block_scale / 2;
-                    } else {
-                        block_position_face_y.y -= terrain_block_scale / 2;
-                    }
-                    float3 block_position_face_z = block_positionf;
-                    if (position->value.z >= block_positionf.z) {
-                        block_position_face_z.z += terrain_block_scale / 2;
-                    } else {
-                        block_position_face_z.z -= terrain_block_scale / 2;
-                    }
-                    // TODO: Work out a better way to check closest face
-                    // Gets closest face XYZ
-                    float block_face_dist_x = float3_distance(position->value, block_position_face_x);
-                    float block_face_dist_y = float3_distance(position->value, block_position_face_y);
-                    float block_face_dist_z = float3_distance(position->value, block_position_face_z);
-                    byte block_axis = block_face_dist_x < block_face_dist_y && block_face_dist_x < block_face_dist_z ? 0 : block_face_dist_y < block_face_dist_z ? 1 : 2;
-                    float3 block_position_face = block_face_dist_x < block_face_dist_y && block_face_dist_x < block_face_dist_z ? block_position_face_x : block_face_dist_y < block_face_dist_z ? block_position_face_y : block_position_face_z;
-
-                    // NOTE: Get the Face Direction as a byte
-                    byte face_direction = 0;
-                    if (block_axis == 0) {
-                        if (position->value.x > block_position_face.x) {
-                            face_direction = direction_right;
-                        } else {
-                            face_direction = direction_left;
-                        }
-                    } else if (block_axis == 1) {
-                        if (position->value.y > block_position_face.y) {
-                            face_direction = direction_up;
-                        } else {
-                            face_direction = direction_down;
-                        }
-                    } else if (block_axis == 2) {
-                        if (position->value.z > block_position_face.z) {
-                            face_direction = direction_front;
-                        } else {
-                            face_direction = direction_back;
-                        }
-                    }
-                    */
 
                     // Face Selection
                     float half_block = terrain_block_scale * 0.5f;
@@ -158,7 +107,9 @@ zox_sys2(TerrainIntersectSystem) {
                         continue;
                     }
 
+                    // Which axis did we collide with
                     byte block_axis;
+                    // which face we hit
                     byte face_direction;
                     float3 penetration = float3_zero;
 
@@ -200,27 +151,7 @@ zox_sys2(TerrainIntersectSystem) {
                         continue;
                     }
 
-                    /*
-                    float3 penetration = float3_zero;
-                    if (block_axis == 0) {
-                        penetration.x = block_position_face.x - point.x;
-                    } else if (block_axis == 1) {
-                        penetration.y = block_position_face.y - point.y;
-                    } else {
-                        penetration.z = block_position_face.z - point.z;
-                    }
-
-                    // NOTE: Calculate correction for moving away from blocks
-                    // float3 penetration = float3_subtract(block_position_face, point);
-                    if (block_axis == 0 && float_abs(penetration.x) > float_abs(correction.x)) {
-                        correction.x = penetration.x;
-                    }
-                    if (block_axis == 1 && float_abs(penetration.y) > float_abs(correction.y)) {
-                        correction.y = penetration.y;
-                    }
-                    if (block_axis == 2 && float_abs(penetration.z) > float_abs(correction.z)) {
-                        correction.z = penetration.z;
-                    }*/
+                    // Picks the largest penetration vector
                     if (block_axis == 0 && float_abs(penetration.x) > float_abs(correction.x))
                         correction.x = penetration.x;
 
@@ -269,4 +200,4 @@ zox_sys2(TerrainIntersectSystem) {
             position->value = float3_add(position->value, correction);
         }
     }
-} zox_sys_end(TerrainIntersectSystem);
+} zoxd_system(terrain_collision_system);

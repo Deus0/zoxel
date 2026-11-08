@@ -1,8 +1,5 @@
 # Todo
 
-- fix fall through map
-	- make test fall button
-	- do interpolated collision checks
 - quantity of item didnt update when moving items
 -o clicking on ui - activated punch... during dialogue
 - Fix Dialogue Animation

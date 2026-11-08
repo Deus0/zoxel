@@ -1,5 +1,8 @@
 # Done
 
+-x fix fall through map
+	-x make test fall button
+	-x do interpolated collision checks
 -x refactor block sound into a observer event
 -x AttachDirty
 -x WindowLayerDirty

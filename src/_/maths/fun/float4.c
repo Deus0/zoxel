@@ -112,7 +112,10 @@ static inline float3 move_along_direction(float3 position, float4 rotation, floa
     return float3_add(position, float4_rotate_float3(rotation, (float3) { 0, 0, length }));
 }
 
-static inline float3 float4_rotate_bounds(float4 rotation, float3 extents) {
+static inline float3 float4_rotate_bounds(
+    float4 rotation,
+    float3 extents)
+{
     float3 xAxis = (float3){1.0f, 0.0f, 0.0f};
     float3 yAxis = (float3){0.0f, 1.0f, 0.0f};
     float3 zAxis = (float3){0.0f, 0.0f, 1.0f};

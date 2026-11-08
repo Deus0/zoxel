@@ -1,9 +1,6 @@
 #include "unstuck.c"
-#include "inside_sound.c"
 #include "inside.c"
-// #include "detect_new.c"
-// #include "detect1.c"
-#include "intersect.c"
+#include "intersect2.c"
 #include "debug.c"
 
 void zox_systems_terrain_collisions(ecs* world) {
@@ -25,7 +22,7 @@ void zox_systems_terrain_collisions(ecs* world) {
         [none] blocks.InsideBlockUpdate,
     );*/
     zox_system(
-        TerrainIntersectSystem,
+        terrain_collision_system,
         zoxp_physics,
         [in] transforms3.Rotation3D,
         [in] transforms3.Bounds3D,
