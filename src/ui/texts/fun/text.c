@@ -104,22 +104,15 @@ static inline byte set_entity_text(
     }
 }
 
-/*void set_entity_text_raw(
-    ecs* world,
-    entity e,
-    const char* text)
-{
-    TextData data = (TextData) { 0 };
-    set_zext(&data, text);
-    zox_set_ptr(e, TextData, data);
-    zox_add(e, Dirty);
-}*/
-
 int get_zexts_count(ecs *world) {
     return zox_count_types(Text);
 }
 
-byte is_zext_cut(TextData *zext, const char* text, byte cut_length) {
+byte is_zext_cut(
+    TextData *zext,
+    const char* text,
+    byte cut_length)
+{
     if (!zext || !zext->value) {
         return 0; // error
     }
@@ -139,7 +132,11 @@ byte is_zext_cut(TextData *zext, const char* text, byte cut_length) {
     return 1;
 }
 
-void set_zext_cut(TextData *data, const char* text, byte cut_length) {
+void set_zext_cut(
+    TextData *data,
+    const char* text,
+    byte cut_length)
+{
     if (data->length != cut_length) {
         resize_memory_component(TextData, data, byte, cut_length);
     }

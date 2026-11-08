@@ -39,7 +39,10 @@ int check_opengl_error(char* function_name) {
                 error_message = "UNKNOWN";
                 break;
         }
-        zox_log(" ! render error [%s]:[%d] - %s\n", error_message, error_code, function_name);
+        zox_loge("Render Error [%s]:[%d] - %s\n",
+            error_message,
+            error_code,
+            function_name);
         error_code = glGetError();
     }
     return is_error;
@@ -50,6 +53,7 @@ byte check_opengl_error_unlogged() {
     GLenum error_code = glGetError();
     while (error_code != GL_NO_ERROR) {
         is_error = 1;
+        zox_log("OpenGL Error Code [%i]", error_code);
         error_code = glGetError();
     }
     return is_error;

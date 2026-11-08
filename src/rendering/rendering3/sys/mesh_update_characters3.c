@@ -1,22 +1,3 @@
-/*void opengl_upload_mesh_colors(
-    guint2 mesh_buffer,
-    guint color_buffer,
-    const int *indicies,
-    int indicies_length,
-    const float3 *verts,
-    const color_rgb *color_rgbs,
-    uint verts_length)
-{
-    zox_gpu_bind_buffer_element(mesh_buffer.x);
-    zox_gpu_set_buffer_element(indicies, indicies_length * sizeof(int));
-    zox_gpu_bind_buffer_array(mesh_buffer.y);
-    zox_gpu_set_buffer_array(verts, verts_length * sizeof(float3));
-    zox_gpu_bind_buffer_array(color_buffer);
-    zox_gpu_set_buffer_array(color_rgbs, verts_length * sizeof(color_rgb));
-    zox_gpu_bind_buffer_element(0);
-    zox_gpu_bind_buffer_array(0);
-}*/
-
 zox_sys2(MeshUpdateCharacters3DSystem) {
     byte dbg_log = 0;
     zox_sys_world();

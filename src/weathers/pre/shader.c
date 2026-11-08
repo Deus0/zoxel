@@ -6,7 +6,7 @@ entity spawn_shader_skybox(ecs *world) {
     shader_frags[shader_index] = frag;
     entity e = spawn_shader(world, shader_index);
     if (!e) {
-        zox_log_error("[shader_skybox] failed to spawn")
+        zox_loge("[shader_skybox] failed to spawn")
         return 0;
     }
     zox_name("shader_skybox");

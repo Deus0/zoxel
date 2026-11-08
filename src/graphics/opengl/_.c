@@ -1,6 +1,4 @@
 // OpenGL Wrapper for Zoxel
-#ifndef zoxm_opengl
-#define zoxm_opengl
 
 byte is_log_opengl = 0;
 
@@ -17,7 +15,6 @@ byte is_log_opengl = 0;
 #include "fun/_.c"
 #include "tst/_.c"
 
-zox_begin_module(Opengl)
-zox_end_module(Opengl)
-
-#endif
+void import_opengl(ecs* world) {
+    zox_module(opengl);
+}

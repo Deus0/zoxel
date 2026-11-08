@@ -34,6 +34,9 @@
 #define FLECS_MODULE
 #define FLECS_SYSTEM
 #define FLECS_PIPELINE
+#define FLECS_PREFAB          // new in 4.2: EcsPrefab, IsA instancing
+// Idk what this does really, maybe faster?
+#define FLECS_CACHED_QUERIES  // likely needed: systems use cached queries
 // #define FLECS_PROFILER
 #ifdef flecs_profiler
     #define FLECS_STATS

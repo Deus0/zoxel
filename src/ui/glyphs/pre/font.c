@@ -6,8 +6,16 @@ entity spawn_font_prefab(ecs *world) {
     return e;
 }
 
-entity spawn_font(ecs *world, entity parent, entity prefab, const byte2 *points, byte length) {
-    if (!points || length == 0) {
+entity spawn_font(
+    ecs* world,
+    entity parent,
+    entity prefab,
+    const byte2 *points,
+    byte length)
+{
+    if (!points ||
+        length == 0)
+    {
         zox_log("! [spawn_font] cannot spawn null points\n")
         return 0;
     }
@@ -22,7 +30,12 @@ entity spawn_font(ecs *world, entity parent, entity prefab, const byte2 *points,
 }
 
 // doesn't clone points
-entity spawn_font_direct(ecs *world, entity prefab, byte2 *points, byte length) {
+entity spawn_font_direct(
+    ecs *world,
+    entity prefab,
+    byte2 *points,
+    byte length)
+{
     zox_instance(prefab);
     zox_name("font");
     zox_muter(e, FontData, fontData);

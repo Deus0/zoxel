@@ -1,8 +1,7 @@
 entity zox_phase(ecs* world, const char* name) {
-    return ecs_entity(world, {
-        .name = name,
-        .add = ecs_ids(EcsPhase)
-    });
+    entity e = ecs_entity(world, { .name = name });
+    ecs_add_id(world, e, EcsPhase);
+    return e;
 }
 
 entity zox_phase_after_internal(

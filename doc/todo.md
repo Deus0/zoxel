@@ -1,9 +1,13 @@
 # Todo
 
+- multiply mvp matrix in render systems before the upload, instead of doing per gpu
+-x Upgrade Flecs to 4.2
+	- skybox missing
+	- destroy cube missing
 - quantity of item didnt update when moving items
 -o clicking on ui - activated punch... during dialogue
 - Fix Dialogue Animation
-- Upgrade Flecs to 4.2
+	- Dialogue animated text is buggy atm
 
 # later
 - Track NearbyCharacters on npcs for UI spawning
@@ -39,7 +43,6 @@
 	- bitmask - 0 / 1 ?
 
 # Bugs
-- Dialogue animated text is buggy atm
 - make lists sorting use child index - after sort it shuffles atm
 - Sometimes the npc labels dont spawn
 	- its dissapearing due to chunk distance issues

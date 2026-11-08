@@ -77,27 +77,40 @@ void zox_system_on_new(ecs* world, entity system) {
 
 #define zox_sys(T)\
     void T(iter *it) {
+static inline entity zox_system_entity(ecs* world, entity id, const char* name, entity phase) {
+    ecs_entity_desc_t edesc = {0};
+    edesc.id = id;
+    edesc.name = name;
+    entity e = ecs_entity_init(world, &edesc);
+    if (phase) {
+        ecs_add_pair(world, e, EcsDependsOn, phase);
+        ecs_add_id(world, e, phase);
+    }
+    return e;
+}
 
 #define zox_system_internal(id_, phase, multi_threaded_, ctx_, ...) { \
-    ecs_entity_desc_t edesc = {0}; \
-    ecs_id_t add_ids[3] = {\
-        ((phase) ? ecs_pair(EcsDependsOn, (phase)) : 0), \
-        (phase), \
-        0 \
-    };\
-    edesc.id = ecs_id(id_);\
-    edesc.name = #id_;\
-    edesc.add = add_ids;\
     ecs_system_desc_t desc = {0}; \
-    desc.entity = ecs_entity_init(world, &edesc);\
+    desc.entity = zox_system_entity(world, ecs_id(id_), #id_, (phase)); \
     desc.query.expr = #__VA_ARGS__; \
     desc.callback = id_; \
-    desc.multi_threaded = multi_threaded_;\
-    desc.ctx = ctx_;\
+    desc.multi_threaded = multi_threaded_; \
+    desc.ctx = ctx_; \
     ecs_id(id_) = ecs_system_init(world, &desc); \
-    zox_system_on_new(world, zox_id(id_));\
+    zox_system_on_new(world, zox_id(id_)); \
 };
 
+#define zox_system_cached(id_, phase, ...) { \
+    ecs_system_desc_t desc = {0}; \
+    desc.entity = zox_system_entity(world, ecs_id(id_), #id_, (phase)); \
+    desc.query.expr = #__VA_ARGS__; \
+    desc.query.cache_kind = EcsQueryCacheAll; \
+    desc.callback = id_; \
+    desc.multi_threaded = 1; \
+    desc.ctx = 0; \
+    ecs_id(id_) = ecs_system_init(world, &desc); \
+    zox_system_on_new(world, zox_id(id_)); \
+}
 
 #define zox_system(id_, phase, ...)\
     zox_system_internal(id_, phase, 1, 0, __VA_ARGS__)
@@ -107,26 +120,3 @@ void zox_system_on_new(ecs* world, entity system) {
 
 #define zox_system_m(id_, multi_threaded_, ...)\
     zox_system_internal(id_, zoxp_update, multi_threaded_, 0, __VA_ARGS__)
-
-
-
-#define zox_system_cached(id_, phase, ...) { \
-    ecs_entity_desc_t edesc = {0}; \
-    ecs_id_t add_ids[3] = {\
-        ((phase) ? ecs_pair(EcsDependsOn, (phase)) : 0), \
-        (phase), \
-        0 \
-    };\
-    edesc.id = ecs_id(id_);\
-    edesc.name = #id_;\
-    edesc.add = add_ids;\
-    ecs_system_desc_t desc = {0}; \
-    desc.entity = ecs_entity_init(world, &edesc);\
-    desc.query.expr = #__VA_ARGS__; \
-    desc.query.cache_kind = EcsQueryCacheAll; \
-    desc.callback = id_; \
-    desc.multi_threaded = 1;\
-    desc.ctx = 0;\
-    ecs_id(id_) = ecs_system_init(world, &desc); \
-    zox_system_on_new(world, zox_id(id_));\
-}

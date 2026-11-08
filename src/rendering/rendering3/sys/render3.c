@@ -1,6 +1,10 @@
 // NOTE: Rendering Skybox atm and debug cube
 zox_sys2(Basic3RenderSystem) {
+    byte dbg_gl = 0;
     byte dbg_log = 0;
+    if (dbg_gl && check_opengl_error_unlogged()) {
+        zox_loge("pre Basic3RenderSystem");
+    }
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TransformMatrix);
@@ -25,15 +29,30 @@ zox_sys2(Basic3RenderSystem) {
         if (!indicies->length) {
             continue;
         }
+        if (!mesh->value.x ||
+            !mesh->value.y)
+        {
+            // zox_loge("(Basic3) Gpu links [mesh] broken [%s]", zox_getn(e));
+            continue;
+        }
         camera_filtering_check();
         if (!material->value) {
             zox_loge("(Basic3) Gpu Link [material] broken [%s]", zox_getn(e));
             continue;
         }
-        if (!mesh->value.x ||
-            !mesh->value.y)
+        if (attributes->vertex_position < 0 ||
+            attributes->camera_matrix < 0 ||
+            attributes->transform_matrix < 0)
         {
-            // zox_loge("(Basic3) Gpu links [mesh] broken [%s]", zox_getn(e));
+            static byte warned = 0;
+            if (!warned) {
+                zox_loge("(Basic3) missing required locations [%s] pos [%i] cam [%i] transform [%i] color [%i] fog [%i]",
+                    zox_getn(e),
+                    attributes->vertex_position, attributes->camera_matrix, attributes->transform_matrix,
+                    attributes->color,
+                    attributes->fog_data);
+                warned = 1;
+            }
             continue;
         }
         if (alpha->value < 1) {
@@ -41,23 +60,38 @@ zox_sys2(Basic3RenderSystem) {
         }
         zox_gpu_material(material->value);
         zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
-        zox_gpu_float4(attributes->fog_data, get_fog_value());
-        float4 colorf = color_to_float4(fill->value);
-        colorf.x *= brightness->value;
-        colorf.y *= brightness->value;
-        colorf.z *= brightness->value;
-        colorf.w *= alpha->value;
-        zox_gpu_float4(attributes->color, colorf);
+        if (attributes->fog_data) {
+            zox_gpu_float4(attributes->fog_data, get_fog_value());
+        }
+        if (attributes->color) {
+            float4 colorf = color_to_float4(fill->value);
+            colorf.x *= brightness->value;
+            colorf.y *= brightness->value;
+            colorf.z *= brightness->value;
+            colorf.w *= alpha->value;
+            zox_gpu_float4(attributes->color, colorf);
+        }
         zox_gpu_float4x4(attributes->transform_matrix, matrix->value);
         zox_gpu_bind_buffer_element(mesh->value.x);
         opengl_enable_vertex_buffer(attributes->vertex_position, mesh->value.y);
         zox_gpu_render3(indicies->length);
+        if (dbg_gl && check_opengl_error_unlogged()) {
+            zox_loge("Basic3RenderSystem [%s]",
+                zox_sys_e_name);
+        }
         if (dbg_log) {
             float3 position = matrix_to_position(matrix->value);
-            zox_log("Rendering BasicMesh3D [%s] - Triangles [%i] Render Camera [%s]", zox_getn(e),  indicies->length, zox_getn(renderer_camera));
+            zox_log("Rendering BasicMesh3D [%s] - Triangles [%i] Render Camera [%s] - Alpha [%f]",
+                zox_getn(e),
+                indicies->length,
+                zox_getn(renderer_camera),
+                alpha->value);
             zox_log("   - At [%fx%fx%f]", position.x, position.y, position.z);
             zox_log("   - GPU: Mesh [%ix%i]", mesh->value.x, mesh->value.y);
-            zox_log("   - Attributes: %i %i %i", attributes->vertex_position, attributes->transform_matrix, attributes->color);
+            zox_log("   - Locations: pos [%i] cam [%i] transform [%i] color [%i] fog [%i]",
+                attributes->vertex_position, attributes->camera_matrix, attributes->transform_matrix,
+                attributes->color,
+                attributes->fog_data);
         }
         zox_gpu_disable_attribute(attributes->vertex_position);
         zox_gpu_reset_mesh();

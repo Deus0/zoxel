@@ -51,5 +51,4 @@ void main() {
     // Small animated variation.
     float noise = rand(time * mesh_pos.xy);
     frag_color += vec3((noise * 0.2) - 0.1);
-
 }

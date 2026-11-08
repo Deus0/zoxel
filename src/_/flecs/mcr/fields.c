@@ -22,7 +22,10 @@
 // new
 
 #define zox_sys_world()\
-    ecs *world = it->world;
+    ecs *world = it->stage;
+
+#define zox_sys_world2()\
+    ecs *world = it->world
 
 #define zox_sys_e()\
     entity e = it->entities[i];

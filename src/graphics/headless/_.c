@@ -5,8 +5,6 @@
  *      - boy this is taking time
  *
  * */
-#ifndef zoxm_headless
-#define zoxm_headless
 
 // Shaders
 guint2 zox_gpu_compile_shader(const gchar* vert_buffer, const gchar* frag_buffer) { return guint2_zero; }
@@ -43,8 +41,7 @@ byte zox_init_glew() { return EXIT_SUCCESS; }
 
 #include "fun/_.c"
 
-zox_begin_module(Headless) {
+void import_headless(ecs* world) {
+    zox_module(headless);
     zox_log("Zox Headless is Enabled");
-} zox_end_module(Headless);
-
-#endif
+}

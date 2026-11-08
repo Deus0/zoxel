@@ -1,3 +1,3 @@
-typedef struct {
+/*typedef struct {
     uint x, y;
-} uint2;
+} uint2;*/

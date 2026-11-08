@@ -17,10 +17,10 @@ byte zox_render_lines = 0;
 void import_graphics(ecs* world) {
     zox_module(graphics);
 #ifdef zox_opengl
-    zox_import_module(Opengl);
+    zox_add_module(opengl);
 #elif zox_vulkan
     zox_import_module(Vulkan);
 #else
-    zox_import_module(Headless);
+    zox_add_module(headless);
 #endif
 }

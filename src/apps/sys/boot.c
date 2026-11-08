@@ -1,7 +1,4 @@
-typedef byte (*boot_zox)(ecs*, entity);
-boot_zox boot_event;
-
-void app_boot_system(iter* it) {
+/*void app_boot_system(iter* it) {
     byte dbg_log = 0;
     zox_sys_on_begin();
     zox_sys_world();
@@ -17,4 +14,4 @@ void app_boot_system(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(app_boot_system);
+} zoxd_system(app_boot_system);*/

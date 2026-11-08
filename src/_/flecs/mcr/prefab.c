@@ -1,3 +1,13 @@
+// NOTE: Creates a prefab child of another to build on
+static inline entity zox_prefab_from_parent(ecs* world, entity parent) {
+    entity e = ecs_new_w_pair(world, EcsIsA, parent);
+    ecs_add_id(world, e, EcsPrefab);
+    return e;
+    // entity e = ecs_new(world);
+    // ecs_add_pair(world, e, EcsIsA, parent);     // inherit components
+    // ecs_add_pair(world, e, EcsChildOf, parent); // make it a child
+}
+
 #define zox_make_prefab(e)\
     ecs_add_id(world, e, EcsPrefab);
 

@@ -1,6 +1,15 @@
-void zox_settings_apps(ecs* world, entity app) {
+/*void zox_settings_apps(ecs* world, entity app) {
     spawn_setting_byte(world, app, "Fullscreen", fullscreen);
     spawn_setting_byte(world, app, "VSync", vsync);
+}*/
+
+void zox_settings_apps(iter* it) {
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        spawn_setting_byte(world, e, "Fullscreen", fullscreen);
+        spawn_setting_byte(world, e, "VSync", vsync);
+    }
 }
 
 void zox_settings_dirty_apps(iter* it) {

@@ -1,8 +1,19 @@
+#include "boot.c"
 #include "settings.c"
 
 void zox_apps_events(ecs* world) {
-    zox_muter(prefab_app, InitializeEvent, event);
-    add_to_InitializeEvent(event, zox_settings_apps);
+    //zox_muter(prefab_app, InitializeEvent, event);
+    //add_to_InitializeEvent(event, zox_settings_apps);
+    zox_on_add(
+        zox_settings_apps,
+        [none] apps.App,
+        [none] core.Initialize,
+    );
+    zox_on_add(
+        zox_apps_boot,
+        [none] apps.App,
+        [none] core.Initialize,
+    );
     zox_on_add(
         zox_settings_dirty_apps,
         [in] core.ZoxName,

@@ -35,14 +35,6 @@ void zox_systems_bones(ecs *world) {
         [none] bones.Skeleton,
         [none] rendering.BuildMeshWeights,
     );
-    /*zox_system(
-        BonePaintSystem,
-        zoxp_update,
-        [in] rendering3.BoneIndexes,
-        [out] rendering.MeshDirty,
-        [out] rendering.MeshColorRGBs,
-        [none] bones.Skeleton
-    );*/
     zox_system(
         ArmControlSystem,
         zoxp_update,

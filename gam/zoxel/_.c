@@ -1,4 +1,3 @@
-
 byte mrpenguin_mode = 0;
 // TODO: Generate Block + Model + Colors in Biomes themselves (single point of edit)
 #include "fun/_.c"
