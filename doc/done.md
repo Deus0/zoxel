@@ -1,5 +1,9 @@
 # Done
 
+-x multiply mvp matrix in render systems before the upload, instead of doing per gpu
+-x Upgrade Flecs to 4.2
+	-x skybox missing
+	-x destroy cube missing
 -x fix fall through map
 	-x make test fall button
 	-x do interpolated collision checks

@@ -18,7 +18,6 @@ zox_sys2(Chunk3TexturedRenderSystem) {
         zox_sys_e();
         zox_sys_i(RenderDisabled, disabled);
         zox_sys_i(TransformMatrix, matrix);
-        // zox_sys_i(MaterialLink, material);
         zox_sys_i(MeshGPULink, mesh);
         zox_sys_i(UvsGPULink, gpu_uvs);
         zox_sys_i(ColorsGPULink, gpu_colors);
@@ -75,9 +74,9 @@ zox_sys2(Chunk3TexturedRenderSystem) {
             }
             zox_gpu_material(material_id);
             zox_gpu_bind_texture(texture_id);
-            zox_gpu_float4x4(
+            /*zox_gpu_float4x4(
                 attributes->camera_matrix,
-                render_camera_matrix);
+                render_camera_matrix);*/
             zox_gpu_float4(
                 attributes->fog_data,
                 get_fog_value());
@@ -86,6 +85,12 @@ zox_sys2(Chunk3TexturedRenderSystem) {
                 1);
             initialized_material = 1;
         }
+        float4x4 mvp_matrix = float4x4_multiply(
+            matrix->value,
+            render_camera_matrix);
+        zox_gpu_float4x4(
+            attributes->mvp_matrix,
+            mvp_matrix);
         zox_gpu_bind_buffer_element(mesh->value.x);
         opengl_enable_vertex_buffer(
             attributes->vertex_position,
@@ -96,9 +101,9 @@ zox_sys2(Chunk3TexturedRenderSystem) {
         opengl_enable_color_buffer(
             attributes->vertex_color,
             gpu_colors->value);
-        zox_gpu_float4x4(
+        /*zox_gpu_float4x4(
             attributes->transform_matrix,
-            matrix->value);
+            matrix->value);*/
         // Rendering!
         zox_gpu_render3(count->value);
         if (dbg_gl) {

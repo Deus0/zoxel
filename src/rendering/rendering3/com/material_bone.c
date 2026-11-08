@@ -2,8 +2,7 @@ typedef struct {
     gint vertex_position;
     gint vertex_color;
     gint bone_index;
-    gint transform_matrix;
-    gint camera_matrix;
+    gint mvp_matrix;
     gint bone_matrix;
     gint bone_positions;
     gint brightness;
@@ -16,8 +15,7 @@ MaterialBone create_MaterialBone(guint material) {
         zox_gpu_get_material_attribute(material, "vertex_position"),
         zox_gpu_get_material_attribute(material, "vertex_color"),
         zox_gpu_get_material_attribute(material, "bone_index"),
-        zox_gpu_get_material_property(material, "transform_matrix"),
-        zox_gpu_get_material_property(material, "camera_matrix"),
+        zox_gpu_get_material_property(material, "mvp_matrix"),
         zox_gpu_get_material_property(material, "bone_matrix"),
         zox_gpu_get_material_property(material, "bone_positions"),
         zox_gpu_get_material_property(material, "brightness"),

@@ -49,7 +49,7 @@ zox_sys2(Skeleton3RenderSystem) {
                 zox_gpu_disable_blend();
             }*/
             zox_gpu_material(material_link);
-            zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
+            // zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
             zox_gpu_float4(material_attributes->fog_data, get_fog_value());
             zox_gpu_float(material_attributes->brightness, 1);
         }
@@ -75,13 +75,19 @@ zox_sys2(Skeleton3RenderSystem) {
             transforms[j] = float4x4_multiply(bone_matrix, inverse);
             bone_positions[j] = zox_getv(bone, BonePosition);
         }
+        float4x4 mvp_matrix = float4x4_multiply(
+            matrix->value,
+            render_camera_matrix);
+        zox_gpu_float4x4(
+            material_attributes->mvp_matrix,
+            mvp_matrix);
         zox_gpu_float4x4_array(material_attributes->bone_matrix, transforms, bones->length);
         zox_gpu_float3_array(material_attributes->bone_positions, bone_positions, bones->length);
         zox_gpu_array_buffer_byte(material_attributes->bone_index, bone_indicies->value);
         zox_gpu_bind_buffer_element(mesh->value.x);
         opengl_enable_vertex_buffer(material_attributes->vertex_position, mesh->value.y);
         opengl_enable_color_buffer(material_attributes->vertex_color, colors->value);
-        zox_gpu_float4x4(material_attributes->transform_matrix, matrix->value);
+        // zox_gpu_float4x4(material_attributes->transform_matrix, matrix->value);
         zox_gpu_render3(indicies->length);
     }
     if (has_set_material) {

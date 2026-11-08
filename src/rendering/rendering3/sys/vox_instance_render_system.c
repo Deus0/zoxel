@@ -47,6 +47,9 @@ zox_sys2(VoxInstanceRenderSystem) {
             continue;
         }
         camera_filtering_check();
+        float4x4 mvp_matrix = float4x4_multiply(
+            matrix->value,
+            render_camera_matrix);
         int index = 0;
         if (has_mesh(commands, instance->value, &index)) {
             InstanceRenderCommand command = commands->data[index];
@@ -54,7 +57,7 @@ zox_sys2(VoxInstanceRenderSystem) {
                 zox_loge("(VoxInstanceRenderSystem) command.transforms malloc failed");
                 break;
             }
-            float4x4_array_d_add(command.transforms, matrix->value);
+            float4x4_array_d_add(command.transforms, mvp_matrix);
             commands->data[index] = command;
         } else {
             InstanceRenderCommand command = {
@@ -66,12 +69,11 @@ zox_sys2(VoxInstanceRenderSystem) {
                 zox_loge("(VoxInstanceRenderSystem) command.transforms malloc failed");
                 break;
             }
-            float4x4_array_d_add(command.transforms, matrix->value);
+            float4x4_array_d_add(command.transforms, mvp_matrix);
             InstanceRenderCommand_array_d_add(commands, command);
         }
     }
     zox_gpu_material(material_link);
-    zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
     zox_gpu_float4(material_attributes->fog_data, get_fog_value());
     zox_gpu_float(material_attributes->brightness, 1);
     for (size_t i = 0; i < commands->size; i++) {
@@ -110,7 +112,10 @@ zox_sys2(VoxInstanceRenderSystem) {
         opengl_enable_vertex_buffer(material_attributes->vertex_position, gpumesh->value.y);
         opengl_enable_color_buffer(material_attributes->vertex_color, gpucolors->value);
         int render_count = command.transforms->size;
-        zox_gpu_ubo_set_matricies(ubo->value, render_count, command.transforms->data);
+        zox_gpu_ubo_set_matricies(
+            ubo->value,
+            render_count,
+            command.transforms->data);
         zox_gpu_render_triangles_instanced(meshIndicies->length, render_count);
         zox_gpu_ubo_reset();
         zox_gpu_disable_attribute(material_attributes->vertex_color);

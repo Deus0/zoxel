@@ -4,8 +4,7 @@ entity material_colored3D;
 typedef struct {
     gint vertex_position;
     gint vertex_color;
-    guint transform_matrix;
-    guint camera_matrix;
+    guint mvp_matrix;
     guint brightness;
     guint fog_data;
 } MaterialColored3D;
@@ -15,8 +14,7 @@ MaterialColored3D create_MaterialColored3D(guint material) {
     return (MaterialColored3D) {
         .vertex_position = zox_gpu_get_material_attribute(material, "vertex_position"),
         .vertex_color = zox_gpu_get_material_attribute(material, "vertex_color"),
-        .transform_matrix = zox_gpu_get_material_property(material, "transform_matrix"),
-        .camera_matrix = zox_gpu_get_material_property(material, "camera_matrix"),
+        .mvp_matrix = zox_gpu_get_material_property(material, "mvp_matrix"),
         .brightness = zox_gpu_get_material_property(material, "brightness"),
         .fog_data = zox_gpu_get_material_property(material, "fog_data")
     };

@@ -1,7 +1,6 @@
 typedef struct {
     gint vertex_position;
-    gint transform_matrix;
-    gint camera_matrix;
+    gint mvp_matrix;
     gint fog_data;
     gint color;
 } MaterialBasic3D;
@@ -10,8 +9,7 @@ zoxc_custom(MaterialBasic3D);
 MaterialBasic3D create_MaterialBasic3D(guint material) {
     return (MaterialBasic3D) {
         .vertex_position = zox_gpu_get_material_attribute(material, "vertex_position"),
-        .transform_matrix = zox_gpu_get_material_property(material, "transform_matrix"),
-        .camera_matrix = zox_gpu_get_material_property(material, "camera_matrix"),
+        .mvp_matrix = zox_gpu_get_material_property(material, "mvp_matrix"),
         .color = zox_gpu_get_material_property(material, "color"),
         .fog_data = zox_gpu_get_material_property(material, "fog_data")
     };

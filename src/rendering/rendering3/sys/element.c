@@ -56,7 +56,7 @@ zox_sys2(Element3RenderSystem) {
             zox_gpu_enable_polyoffset();
             zox_gpu_enable_blend();
             zox_gpu_material(material_link);
-            zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
+            //zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
             zox_gpu_float4(attributes->fog_data, get_fog_value());
             zox_gpu_float(attributes->brightness, 1);
             if (dbg_log >= 2) {
@@ -64,7 +64,13 @@ zox_sys2(Element3RenderSystem) {
                 zox_log("Rendering Element3 Material [%s]: %i - Shader [%s]", zox_getn(material), material_link, zox_getn(shader));
             }
         }
-        zox_gpu_float4x4(attributes->transform_matrix, matrix->value);
+        float4x4 mvp_matrix = float4x4_multiply(
+            matrix->value,
+            render_camera_matrix);
+        zox_gpu_float4x4(
+            attributes->mvp_matrix,
+            mvp_matrix);
+        //zox_gpu_float4x4(attributes->transform_matrix, matrix->value);
         zox_gpu_bind_buffer_element(mesh->value.x);
         opengl_enable_vertex_buffer(attributes->vertex_position, mesh->value.y);
         opengl_enable_uv_buffer(attributes->vertex_uv, uvs->value);

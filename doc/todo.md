@@ -1,9 +1,5 @@
 # Todo
 
-- multiply mvp matrix in render systems before the upload, instead of doing per gpu
--x Upgrade Flecs to 4.2
-	- skybox missing
-	- destroy cube missing
 - quantity of item didnt update when moving items
 -o clicking on ui - activated punch... during dialogue
 - Fix Dialogue Animation

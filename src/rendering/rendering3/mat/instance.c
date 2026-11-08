@@ -7,9 +7,8 @@ typedef struct {
     gint vertex_position;
     gint vertex_color;
     gint matrices;
-    uint camera_matrix;
-    uint brightness;
-    uint fog_data;
+    guint brightness;
+    guint fog_data;
 } MaterialVoxInstance;
 zoxc_custom(MaterialVoxInstance);
 
@@ -22,7 +21,6 @@ MaterialVoxInstance create_MaterialVoxInstance(const uint material) {
 #else
         0,
 #endif
-        zox_gpu_get_material_property(material, "camera_matrix"),
         zox_gpu_get_material_property(material, "brightness"),
         zox_gpu_get_material_property(material, "fog_data")
     };
@@ -31,7 +29,7 @@ MaterialVoxInstance create_MaterialVoxInstance(const uint material) {
 uint generate_ubo(gint binding_point) {
 #ifndef zox_disable_ubos
 
-    uint ubo = zox_gpu_create_buffer();
+    guint ubo = zox_gpu_create_buffer();
     zox_gpu_ubo_initialize_matricies(ubo, binding_point, zox_get_safe_ubo_size());
     zox_gpu_ubo_reset();
 
@@ -57,7 +55,7 @@ uint generate_ubo(gint binding_point) {
     return generate_ubo(binding_point);
 }*/
 
-entity spawn_material_vox_instance(ecs *world) {
+entity spawn_material_vox_instance(ecs* world) {
     const byte shader_index = get_new_shader_source_index();
     char* vert = get_shader_source(world, "vox_instance.vert");
     char* frag = get_shader_source(world, "vox_instance.frag");

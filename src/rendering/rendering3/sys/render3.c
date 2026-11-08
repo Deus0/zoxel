@@ -41,14 +41,13 @@ zox_sys2(Basic3RenderSystem) {
             continue;
         }
         if (attributes->vertex_position < 0 ||
-            attributes->camera_matrix < 0 ||
-            attributes->transform_matrix < 0)
+            attributes->mvp_matrix < 0)
         {
             static byte warned = 0;
             if (!warned) {
-                zox_loge("(Basic3) missing required locations [%s] pos [%i] cam [%i] transform [%i] color [%i] fog [%i]",
+                zox_loge("(Basic3) missing required locations [%s] pos [%i] mvp_matrix [%i] color [%i] fog [%i]",
                     zox_getn(e),
-                    attributes->vertex_position, attributes->camera_matrix, attributes->transform_matrix,
+                    attributes->vertex_position, attributes->mvp_matrix,
                     attributes->color,
                     attributes->fog_data);
                 warned = 1;
@@ -59,7 +58,13 @@ zox_sys2(Basic3RenderSystem) {
             zox_gpu_enable_blend();
         }
         zox_gpu_material(material->value);
-        zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
+        float4x4 mvp_matrix = float4x4_multiply(
+            matrix->value,
+            render_camera_matrix);
+        zox_gpu_float4x4(
+            attributes->mvp_matrix,
+            mvp_matrix);
+        // zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
         if (attributes->fog_data) {
             zox_gpu_float4(attributes->fog_data, get_fog_value());
         }
@@ -71,7 +76,7 @@ zox_sys2(Basic3RenderSystem) {
             colorf.w *= alpha->value;
             zox_gpu_float4(attributes->color, colorf);
         }
-        zox_gpu_float4x4(attributes->transform_matrix, matrix->value);
+        // zox_gpu_float4x4(attributes->transform_matrix, matrix->value);
         zox_gpu_bind_buffer_element(mesh->value.x);
         opengl_enable_vertex_buffer(attributes->vertex_position, mesh->value.y);
         zox_gpu_render3(indicies->length);
@@ -88,8 +93,8 @@ zox_sys2(Basic3RenderSystem) {
                 alpha->value);
             zox_log("   - At [%fx%fx%f]", position.x, position.y, position.z);
             zox_log("   - GPU: Mesh [%ix%i]", mesh->value.x, mesh->value.y);
-            zox_log("   - Locations: pos [%i] cam [%i] transform [%i] color [%i] fog [%i]",
-                attributes->vertex_position, attributes->camera_matrix, attributes->transform_matrix,
+            zox_log("   - Locations: pos [%i] mvp_matrix [%i] color [%i] fog [%i]",
+                attributes->vertex_position, attributes->mvp_matrix,
                 attributes->color,
                 attributes->fog_data);
         }

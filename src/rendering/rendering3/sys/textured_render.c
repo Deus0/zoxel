@@ -45,17 +45,23 @@ zox_sys2(TexturedRenderSystem) {
         camera_filtering_check();
         zox_gpu_material(material->value);
         zox_gpu_bind_texture(texture->value);
-        // glActiveTexture(GL_TEXTURE0);
+        float4x4 mvp_matrix = float4x4_multiply(
+            matrix->value,
+            render_camera_matrix);
         zox_gpu_float4x4(
+            attributes->mvp_matrix,
+            mvp_matrix);
+        // glActiveTexture(GL_TEXTURE0);
+        /*zox_gpu_float4x4(
             attributes->camera_matrix,
             render_camera_matrix);
+        zox_gpu_float4x4(
+            attributes->transform_matrix,
+            matrix->value);*/
         zox_gpu_float4(
             attributes->fog_data,
             get_fog_value());
         zox_gpu_float(attributes->brightness, 1);
-        zox_gpu_float4x4(
-            attributes->transform_matrix,
-            matrix->value);
         zox_gpu_bind_buffer_element(mesh->value.x);
         opengl_enable_vertex_buffer(
             attributes->vertex_position,

@@ -23,7 +23,7 @@ zox_sys2(VoxRenderSystem) {
         zox_sys_i(MeshIndicies, indicies);
         zox_sys_i(MeshGPULink, mesh);
         zox_sys_i(ColorsGPULink, colors);
-        zox_sys_i(TransformMatrix, transformMatrix);
+        zox_sys_i(TransformMatrix, matrix);
         if (disabled->value ||
             !indicies->length ||
             !mesh->value.x ||
@@ -40,9 +40,6 @@ zox_sys2(VoxRenderSystem) {
             zox_gpu_disable_culling();
 #endif*/
             zox_gpu_material(material_link);
-            zox_gpu_float4x4(
-                material_attributes->camera_matrix,
-                render_camera_matrix);
             zox_gpu_float4(
                 material_attributes->fog_data,
                 get_fog_value());
@@ -50,6 +47,12 @@ zox_sys2(VoxRenderSystem) {
                 material_attributes->brightness,
                 1);
         }
+        float4x4 mvp_matrix = float4x4_multiply(
+            matrix->value,
+            render_camera_matrix);
+        zox_gpu_float4x4(
+            material_attributes->mvp_matrix,
+            mvp_matrix);
         zox_gpu_bind_buffer_element(mesh->value.x);
         opengl_enable_vertex_buffer(
             material_attributes->vertex_position,
@@ -57,9 +60,6 @@ zox_sys2(VoxRenderSystem) {
         opengl_enable_color_buffer(
             material_attributes->vertex_color,
             colors->value);
-        zox_gpu_float4x4(
-            material_attributes->transform_matrix,
-            transformMatrix->value);
         zox_gpu_render3(indicies->length);
         if (dbg_log) {
             zox_log("Rendering Vox Mesh [%s] - Tris [%i]",
