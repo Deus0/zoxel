@@ -1,5 +1,6 @@
 // NOTE: Sets Instance Links Based on ModelLods!
-zox_sys2(LodInstanceSystem) {
+void lod_instance_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RenderDepthDirty);
@@ -35,4 +36,5 @@ zox_sys2(LodInstanceSystem) {
         }
         instance->value = vox_lod;
     }
-} zox_sys_end(LodInstanceSystem);
+    zox_sys_on_end();
+} zoxd_system(lod_instance_system);

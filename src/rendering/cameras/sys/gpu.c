@@ -1,5 +1,6 @@
 // NOTE: Restore render buffer for camera
-zox_sys2(RenderBufferRestoreSystem) {
+void render_buffer_restore_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0 || is_log_gpu_restore;
     zox_sys_begin();
     zox_sys_in(PixelSize);
@@ -20,11 +21,13 @@ zox_sys2(RenderBufferRestoreSystem) {
             zox_log("Restored Render Camera [%s]: FBO [%u] RBO [%u] at [%ix%i]", zox_sys_e_name, fbo->value, rbo->value, size->value.x, size->value.y);
         }
     }
-} zox_sys_end(RenderBufferRestoreSystem);
+    zox_sys_on_end();
+} zoxd_system(render_buffer_restore_system);
 
 
 // NOTE: Runs from render textures
-zox_sys2(RenderTextureRestoreSystem) {
+void render_texture_restore_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0 || is_log_gpu_restore;
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
@@ -63,9 +66,11 @@ zox_sys2(RenderTextureRestoreSystem) {
             zox_log("Restored Render Texture [%s] Texture [%u] -> fbo [%u] and rbo [%u]", zox_sys_e_name, texture->value, fbo, rbo);
         }*/
     }
-} zox_sys_end(RenderTextureRestoreSystem);
+    zox_sys_on_end();
+} zoxd_system(render_texture_restore_system);
 
-zox_sys2(FrameBufferDisposeSystem) {
+void frame_buffer_dispose_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_out(FrameBufferLink);
     for (int i = 0; i < it->count; i++) {
@@ -73,9 +78,11 @@ zox_sys2(FrameBufferDisposeSystem) {
         zox_gpu_dispose_fbo(fbo->value);
         fbo->value = 0;
     }
-} zox_sys_end(FrameBufferDisposeSystem);
+    zox_sys_on_end();
+} zoxd_system(frame_buffer_dispose_system);
 
-zox_sys2(RenderBufferDisposeSystem) {
+void render_buffer_dispose_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_out(RenderBufferLink);
     for (int i = 0; i < it->count; i++) {
@@ -83,4 +90,5 @@ zox_sys2(RenderBufferDisposeSystem) {
         zox_gpu_dispose_rbo(rbo->value);
         rbo->value = 0;
     }
-} zox_sys_end(RenderBufferDisposeSystem);
+    zox_sys_on_end();
+} zoxd_system(render_buffer_dispose_system);

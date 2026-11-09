@@ -1,6 +1,7 @@
 byte dbg_initialize_mesh = 0;
 
-zox_sys2(InitializeMeshSystem) {
+void initialize_mesh_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0 || dbg_initialize_mesh;
     zox_sys_world();
     zox_sys_begin();
@@ -13,9 +14,11 @@ zox_sys2(InitializeMeshSystem) {
             zox_log("Mesh Initialized on GPU [%s]", zox_getn(e));
         }
     }
-} zox_sys_end(InitializeMeshSystem);
+    zox_sys_on_end();
+} zoxd_system(initialize_mesh_system);
 
-zox_sys2(InitializeMeshUvsSystem) {
+void initialize_mesh_uvs_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = dbg_initialize_mesh || 0;
     zox_sys_world();
     zox_sys_begin();
@@ -28,9 +31,11 @@ zox_sys2(InitializeMeshUvsSystem) {
             zox_log("Mesh UVs Initialized on GPU [%s]", zox_getn(e));
         }
     }
-} zox_sys_end(InitializeMeshUvsSystem);
+    zox_sys_on_end();
+} zoxd_system(initialize_mesh_uvs_system);
 
-zox_sys2(InitializeMeshColorsSystem) {
+void initialize_mesh_colors_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = dbg_initialize_mesh || 0;
     zox_sys_world();
     zox_sys_begin();
@@ -43,9 +48,11 @@ zox_sys2(InitializeMeshColorsSystem) {
             zox_log("Mesh Colors Initialized on GPU [%s]", zox_getn(e));
         }
     }
-} zox_sys_end(InitializeMeshColorsSystem);
+    zox_sys_on_end();
+} zoxd_system(initialize_mesh_colors_system);
 
-zox_sys2(InitializeMeshTextureSystem) {
+void initialize_mesh_texture_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0 || dbg_initialize_mesh;
     zox_sys_world();
     zox_sys_begin();
@@ -61,5 +68,6 @@ zox_sys2(InitializeMeshTextureSystem) {
                 texture->value);
         }
     }
-} zox_sys_end(InitializeMeshTextureSystem);
+    zox_sys_on_end();
+} zoxd_system(initialize_mesh_texture_system);
 

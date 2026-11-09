@@ -1,9 +1,10 @@
 // NOTE: Rendering Skybox atm and debug cube
-zox_sys2(Basic3RenderSystem) {
+void basic3_render_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_gl = 0;
     byte dbg_log = 0;
     if (dbg_gl && check_opengl_error_unlogged()) {
-        zox_loge("pre Basic3RenderSystem");
+        zox_loge("pre basic3_render_system");
     }
     zox_sys_world();
     zox_sys_begin();
@@ -81,7 +82,7 @@ zox_sys2(Basic3RenderSystem) {
         opengl_enable_vertex_buffer(attributes->vertex_position, mesh->value.y);
         zox_gpu_render3(indicies->length);
         if (dbg_gl && check_opengl_error_unlogged()) {
-            zox_loge("Basic3RenderSystem [%s]",
+            zox_loge("basic3_render_system [%s]",
                 zox_sys_e_name);
         }
         if (dbg_log) {
@@ -105,4 +106,5 @@ zox_sys2(Basic3RenderSystem) {
             zox_gpu_disable_blend();
         }
     }
-} zox_sys_end(Basic3RenderSystem);
+    zox_sys_on_end();
+} zoxd_system(basic3_render_system);

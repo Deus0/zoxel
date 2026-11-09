@@ -1,4 +1,5 @@
-zox_sys2(MeshUpdateSystem) {
+void mesh_update_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -67,4 +68,5 @@ zox_sys2(MeshUpdateSystem) {
             }
         }
     }
-} zox_sys_end(MeshUpdateSystem);
+    zox_sys_on_end();
+} zoxd_system(mesh_update_system);

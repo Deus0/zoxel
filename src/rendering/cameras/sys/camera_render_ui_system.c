@@ -1,5 +1,5 @@
 
-zox_sys_untimed(CameraRenderUISystem) {
+void camera_render_ui_system(iter* it) {
     byte dbg_log = 0;
     if (!rendering) {
         return;
@@ -45,4 +45,4 @@ zox_sys_untimed(CameraRenderUISystem) {
         }
         render_uis(world, zox_ui_render_queue);
     }
-} zox_sys_end_untimed(CameraRenderUISystem);
+} zoxd_system(camera_render_ui_system);

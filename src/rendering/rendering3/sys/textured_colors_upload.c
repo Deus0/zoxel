@@ -1,4 +1,5 @@
-zox_sys2(MeshColorsGpuSystem) {
+void mesh_colors_gpu_system(iter* it) {
+    zox_sys_on_begin();
     // TODO: Just use mesh colors dirty and use other flag
     byte dbg_log = 0;
     zox_sys_world();
@@ -32,4 +33,5 @@ zox_sys2(MeshColorsGpuSystem) {
             zox_log("updating colors %s", zox_getn(e));
         }
     }
-} zox_sys_end(MeshColorsGpuSystem);
+    zox_sys_on_end();
+} zoxd_system(mesh_colors_gpu_system);

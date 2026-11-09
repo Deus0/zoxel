@@ -1,4 +1,5 @@
-zox_sys2(MeshUVs2UploadSystem) {
+void mesh_uvs2_upload_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -42,4 +43,5 @@ zox_sys2(MeshUVs2UploadSystem) {
                 zox_getn(parent));
         }
     }
-} zox_sys_end(MeshUVs2UploadSystem);
+    zox_sys_on_end();
+} zoxd_system(mesh_uvs2_upload_system);

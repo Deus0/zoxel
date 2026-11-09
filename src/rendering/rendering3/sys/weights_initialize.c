@@ -1,4 +1,5 @@
-zox_sys2(BonesInitializeSystem) {
+void bones_initialize_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0 || dbg_initialize_mesh;
     zox_sys_world();
     zox_sys_begin();
@@ -12,4 +13,5 @@ zox_sys2(BonesInitializeSystem) {
                 zox_getn(e));
         }
     }
-} zox_sys_end(BonesInitializeSystem);
+    zox_sys_on_end();
+} zoxd_system(bones_initialize_system);

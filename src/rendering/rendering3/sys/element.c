@@ -1,5 +1,6 @@
 // NOTE: Renders our 3D uis
-zox_sys2(Element3RenderSystem) {
+void element3_render_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     byte dbg_gl = 0;
     float depth_base = 0;
@@ -8,7 +9,7 @@ zox_sys2(Element3RenderSystem) {
     float units_per_layer = 0;
     entity material = material_textured3D;
     if (!material) {
-        // zox_loge("[material_textured3D] missing in Element3RenderSystem.");
+        // zox_loge("[material_textured3D] missing in element3_render_system.");
         return;
     }
     zox_sys_world();
@@ -83,7 +84,7 @@ zox_sys2(Element3RenderSystem) {
         zox_gpu_render3(6);
         if (dbg_gl) {
             if (check_opengl_error_unlogged()) {
-                zox_loge("Element3RenderSystem");
+                zox_loge("element3_render_system");
             }
         }
         if (dbg_log) {
@@ -108,4 +109,5 @@ zox_sys2(Element3RenderSystem) {
         zox_disable_material();
         zox_gpu_disable_polyoffset();
     }
-} zox_sys_end(Element3RenderSystem);
+    zox_sys_on_end();
+} zoxd_system(element3_render_system);

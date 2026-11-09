@@ -1,4 +1,5 @@
-zox_sys2(MeshUpdateCharacters3DSystem) {
+void mesh_update_characters3_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -48,4 +49,5 @@ zox_sys2(MeshUpdateCharacters3DSystem) {
                 colors->length);
         }
     }
-} zox_sys_end(MeshUpdateCharacters3DSystem);
+    zox_sys_on_end();
+} zoxd_system(mesh_update_characters3_system);

@@ -1,5 +1,6 @@
 // TODO: For each chunk render, we use linked tilemap GPU data
-zox_sys2(Chunk3TexturedRenderSystem) {
+void chunk3_textured_render_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     byte dbg_gl = 0;
     byte initialized_material = 0;
@@ -108,7 +109,7 @@ zox_sys2(Chunk3TexturedRenderSystem) {
         zox_gpu_render3(count->value);
         if (dbg_gl) {
             if (check_opengl_error_unlogged()) {
-                zox_loge("Chunk3TexturedRenderSystem");
+                zox_loge("chunk3_textured_render_system");
             }
         }
         if (dbg_log) {
@@ -136,5 +137,6 @@ zox_sys2(Chunk3TexturedRenderSystem) {
         zox_gpu_reset_mesh();
         zox_disable_material();
     }
-} zox_sys_end(Chunk3TexturedRenderSystem);
+    zox_sys_on_end();
+} zoxd_system(chunk3_textured_render_system);
 

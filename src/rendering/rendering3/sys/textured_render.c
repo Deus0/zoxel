@@ -1,6 +1,7 @@
 // World Items / cube textured
 // NOTE: For Unique Materials on a Mesh
-zox_sys2(TexturedRenderSystem) {
+void textured_render_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     byte dbg_gl = 0;
     zox_sys_world();
@@ -83,7 +84,7 @@ zox_sys2(TexturedRenderSystem) {
         zox_disable_material();
         if (dbg_gl) {
             if (check_opengl_error_unlogged()) {
-                zox_loge("TexturedRenderSystem");
+                zox_loge("textured_render_system");
             }
         }
         if (dbg_log) {
@@ -106,4 +107,5 @@ zox_sys2(TexturedRenderSystem) {
                 attributes->vertex_color);
         }
     }
-} zox_sys_end(TexturedRenderSystem);
+    zox_sys_on_end();
+} zoxd_system(textured_render_system);

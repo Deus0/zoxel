@@ -1,5 +1,6 @@
 // for unique meshes - not atm used
-zox_sys2(VoxRenderSystem) {
+void vox_render_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     if (!zox_valid(material_colored3D)) {
@@ -77,4 +78,5 @@ zox_sys2(VoxRenderSystem) {
         zox_gpu_enable_culling();
 #endif*/
     }
-} zox_sys_end(VoxRenderSystem);
+    zox_sys_on_end();
+} zoxd_system(vox_render_system);

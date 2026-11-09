@@ -1,5 +1,6 @@
 // uploads bone indexes to shader
-zox_sys2(BoneIndexUploadSystem) {
+void bone_index_upload_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -28,4 +29,5 @@ zox_sys2(BoneIndexUploadSystem) {
                 zox_sys_e_name);
         }
     }
-} zox_sys_end(BoneIndexUploadSystem);
+    zox_sys_on_end();
+} zoxd_system(bone_index_upload_system);

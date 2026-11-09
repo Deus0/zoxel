@@ -18,7 +18,7 @@
 void zox_systems_basics3(ecs* world) {
     zox_render3_system(
         0,
-        Chunk3TexturedRenderSystem,
+        chunk3_textured_render_system,
         [in] rendering.RenderDisabled,
         [in] transforms.TransformMatrix,
         [in] rendering.MeshGPULink,
@@ -29,11 +29,11 @@ void zox_systems_basics3(ecs* world) {
         [none] !core.Disabled,
         // [none] !core.Initialize,
     );
-    add_system_process_counter(world, zox_id(Chunk3TexturedRenderSystem));
+    add_system_process_counter(world, zox_id(chunk3_textured_render_system));
     // skybox, block damage overlay!
     zox_render3_system(
         2,
-        Basic3RenderSystem,
+        basic3_render_system,
         [in] transforms.TransformMatrix,
         [in] colorz.Color,
         [in] rendering.Alpha,
@@ -48,7 +48,7 @@ void zox_systems_basics3(ecs* world) {
     // characters
     zox_render3_system(
         1,
-        VoxRenderSystem,
+        vox_render_system,
         [in] rendering.MeshIndicies,
         [in] rendering.MeshGPULink,
         [in] rendering.ColorsGPULink,
@@ -61,7 +61,7 @@ void zox_systems_basics3(ecs* world) {
     // generating bone indexes here
     zox_render3_system(
         1,
-        Skeleton3RenderSystem,
+        skeleton3_render_system,
         [in] rendering.MeshIndicies,
         [in] rendering.MeshGPULink,
         [in] rendering.ColorsGPULink,
@@ -76,7 +76,7 @@ void zox_systems_basics3(ecs* world) {
     // NOTE: These are materials themselves
     zox_render3_system(
         1,
-        TexturedRenderSystem,
+        textured_render_system,
         [in] transforms.TransformMatrix,
         [in] rendering.MeshGPULink,
         [in] rendering.UvsGPULink,
@@ -91,7 +91,7 @@ void zox_systems_basics3(ecs* world) {
     );
     zox_render3_system(
         2,
-        Element3RenderSystem,
+        element3_render_system,
         [in] rendering.RenderDisabled,
         [in] layouts.Layer,
         [in] transforms.TransformMatrix,
@@ -105,7 +105,7 @@ void zox_systems_basics3(ecs* world) {
 #ifndef zox_disable_rendering_instances
     zox_render3_system(
         1,
-        VoxInstanceRenderSystem,
+        vox_instance_render_system,
         [in] transforms.TransformMatrix,
         [in] rendering.InstanceLink,
         [in] rendering.RenderDisabled,
@@ -114,7 +114,7 @@ void zox_systems_basics3(ecs* world) {
 #endif
     // upload gpu
     zox_system_1(
-        MeshUpdateSystem,
+        mesh_update_system,
         zoxp_gpu_upload,
         [in] rendering.MeshIndicies,
         [in] rendering.MeshVertices,
@@ -125,7 +125,7 @@ void zox_systems_basics3(ecs* world) {
         [none] !core.Initialize,
     );
     zox_system_1(
-        MeshUpdateCharacters3DSystem,
+        mesh_update_characters3_system,
         zoxp_gpu_upload,
         [in] rendering.MeshIndicies,
         [in] rendering.MeshVertices,
@@ -156,7 +156,7 @@ void zox_systems_basics3(ecs* world) {
         [none] !core.Initialize,
     );
     zox_system_1(
-        MeshColorsGpuSystem,
+        mesh_colors_gpu_system,
         zoxp_gpu_upload,
         [in] rendering.ColorsGPULink,
         [in] rendering.MeshColorRGBs,
@@ -164,7 +164,7 @@ void zox_systems_basics3(ecs* world) {
         [none] !core.Initialize,
     );
     zox_system_1(
-        BoneIndexUploadSystem,
+        bone_index_upload_system,
         zoxp_gpu_upload,
         [in] rendering3.BoneIndexes,
         [out] rendering3.BoneIndexGPULink,
@@ -173,7 +173,7 @@ void zox_systems_basics3(ecs* world) {
     );
     // Initialize
     zox_system_1(
-        BonesInitializeSystem,
+        bones_initialize_system,
         zoxp_gpu_upload,
         [out] rendering3.BoneIndexGPULink,
         [none] core.Initialize,

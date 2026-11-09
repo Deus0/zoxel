@@ -1,4 +1,5 @@
-zox_sys2(RenderCameraInitializeSystem) {
+void render_camera_initialize_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -26,4 +27,5 @@ zox_sys2(RenderCameraInitializeSystem) {
             zox_log("+ [%s] Render Camera Initialized [%ix%i]", zox_getn(e), size->value.x, size->value.y);
         }
     }
-} zox_sys_end(RenderCameraInitializeSystem);
+    zox_sys_on_end();
+} zoxd_system(render_camera_initialize_system);

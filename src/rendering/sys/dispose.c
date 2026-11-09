@@ -1,4 +1,4 @@
-void MeshColorsGPUDisposeSystem(iter *it) {
+void mesh_colors_gpu_dispose_system(iter* it) {
     zox_sys_begin()
     zox_sys_out(ColorsGPULink)
     for (int i = 0; i < it->count; i++) {
@@ -6,9 +6,9 @@ void MeshColorsGPUDisposeSystem(iter *it) {
         zox_gpu_dispose_buffer(colors->value);
         colors->value = 0;
     }
-} zoxd_system(MeshColorsGPUDisposeSystem);
+} zoxd_system(mesh_colors_gpu_dispose_system);
 
-void MaterialDisposeSystem(iter *it) {
+void material_dispose_system(iter* it) {
     zox_sys_begin();
     zox_sys_out(MaterialGPULink);
     for (int i = 0; i < it->count; i++) {
@@ -19,9 +19,10 @@ void MaterialDisposeSystem(iter *it) {
         zox_dispose_material(material->value);
         material->value = 0;
     }
-} zoxd_system(MaterialDisposeSystem);
+} zoxd_system(material_dispose_system);
 
-zox_sys2(MeshGPUDisposeSystem) {
+void mesh_gpu_dispose_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin()
     zox_sys_out(MeshGPULink)
     for (int i = 0; i < it->count; i++) {
@@ -30,9 +31,11 @@ zox_sys2(MeshGPUDisposeSystem) {
         zox_gpu_dispose_buffer(mesh->value.y);
         mesh->value = guint2_zero;
     }
-} zox_sys_end(MeshGPUDisposeSystem);
+    zox_sys_on_end();
+} zoxd_system(mesh_gpu_dispose_system);
 
-zox_sys2(ShaderDisposeSystem) {
+void shader_dispose_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin()
     zox_sys_out(ShaderGPULink)
     for (int i = 0; i < it->count; i++) {
@@ -44,9 +47,11 @@ zox_sys2(ShaderDisposeSystem) {
         zox_gpu_dispose_shader(shader->value.y);
         shader->value = guint2_zero;
     }
-} zox_sys_end(ShaderDisposeSystem);
+    zox_sys_on_end();
+} zoxd_system(shader_dispose_system);
 
-zox_sys2(MeshUvsGPUDisposeSystem) {
+void mesh_uvs_gpu_dispose_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin()
     zox_sys_out(UvsGPULink)
     for (int i = 0; i < it->count; i++) {
@@ -54,9 +59,11 @@ zox_sys2(MeshUvsGPUDisposeSystem) {
         zox_gpu_dispose_buffer(uvs->value);
         uvs->value = 0;
     }
-} zox_sys_end(MeshUvsGPUDisposeSystem);
+    zox_sys_on_end();
+} zoxd_system(mesh_uvs_gpu_dispose_system);
 
-zox_sys2(TextureGPUDisposeSystem) {
+void texture_gpu_dispose_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_out(TextureGPULink);
     for (int i = 0; i < it->count; i++) {
@@ -67,32 +74,33 @@ zox_sys2(TextureGPUDisposeSystem) {
         zox_gpu_dispose_texture(texture->value);
         texture->value = 0;
     }
-} zox_sys_end(TextureGPUDisposeSystem);
+    zox_sys_on_end();
+} zoxd_system(texture_gpu_dispose_system);
 
 
 void zox_systems_rendering_dispose(ecs *world) {
     zox_gpu_dispose_system(
-        MeshGPUDisposeSystem,
+        mesh_gpu_dispose_system,
         [out] MeshGPULink
     );
     zox_gpu_dispose_system(
-        MeshUvsGPUDisposeSystem,
+        mesh_uvs_gpu_dispose_system,
         [out] rendering.UvsGPULink
     );
     zox_gpu_dispose_system(
-        MeshColorsGPUDisposeSystem,
+        mesh_colors_gpu_dispose_system,
         [out] rendering.ColorsGPULink
     );
     zox_gpu_dispose_system(
-        TextureGPUDisposeSystem,
+        texture_gpu_dispose_system,
         [out] TextureGPULink
     );
     zox_gpu_dispose_system(
-        ShaderDisposeSystem,
+        shader_dispose_system,
         [out] ShaderGPULink
     );
     zox_gpu_dispose_system(
-        MaterialDisposeSystem,
+        material_dispose_system,
         [out] MaterialGPULink
     );
 }

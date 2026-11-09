@@ -1,6 +1,7 @@
 float fog_settings_mul = 0.048f;
 
-zox_sys2(RenderingSettingsSystem) {
+void rendering_settings_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LoadSettings);
@@ -13,11 +14,13 @@ zox_sys2(RenderingSettingsSystem) {
         spawn_setting_float(world, e, "Fog", fog_density / fog_settings_mul, (float2) { 0, 1 });
         spawn_setting_byte_slider(world, e, "Downscale", viewport_downscale, (byte2) { 1, 8 });
     }
-} zox_sys_end(RenderingSettingsSystem);
+    zox_sys_on_end();
+} zoxd_system(rendering_settings_system);
 
 extern void on_set_viewport_scale(ecs*, entity);
 
-zox_sys2(RenderingSettingsDirtySystem) {
+void rendering_settings_dirty_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -50,4 +53,5 @@ zox_sys2(RenderingSettingsDirtySystem) {
             }
         }
     }
-} zox_sys_end(RenderingSettingsDirtySystem);
+    zox_sys_on_end();
+} zoxd_system(rendering_settings_dirty_system);

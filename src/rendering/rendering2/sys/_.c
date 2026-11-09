@@ -6,7 +6,7 @@
 
 void zox_systems_basics2D(ecs *world) {
     zox_system_1(
-        Mesh2DUpdateSystem,
+        mesh2_update_system,
         zoxp_gpu_upload,
         [in] rendering.MeshIndicies,
         [in] rendering.MeshVertices2D,
@@ -17,7 +17,7 @@ void zox_systems_basics2D(ecs *world) {
         [none] !core.Initialize,
     );
     zox_system_1(
-        MeshUVs2UploadSystem,
+        mesh_uvs2_upload_system,
         zoxp_gpu_upload,
         [in] rendering.MeshGPULink,
         [in] rendering.UvsGPULink,
@@ -30,7 +30,7 @@ void zox_systems_basics2D(ecs *world) {
     // all ui
     // Render using Matrix instead of Position2 etc
     zox_render2D_system(
-        ElementRenderSystem,
+        element_render_system,
         [in] rendering.RenderDisabled,
         [in] transforms.TransformMatrix,
         [in] layouts.Layer,
@@ -44,7 +44,7 @@ void zox_systems_basics2D(ecs *world) {
     );
     zox_render3_system(
         0,
-        RenderMaterial2DSystem,
+        render_material2_system,
         [in] transforms2.Position2,
         [in] transforms2.Rotation2,
         [in] transforms.Scale1,

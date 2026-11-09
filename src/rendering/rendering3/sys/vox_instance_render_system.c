@@ -10,7 +10,8 @@
 // extern string_hashmap *files_hashmap_voxes;
 
 // Renders Characters and Mimuvoxes
-zox_sys2(VoxInstanceRenderSystem) {
+void vox_instance_render_system(iter* it) {
+    zox_sys_on_begin();
 #ifndef zox_disable_ubos
     if (!material_vox_instance) {
         return;
@@ -36,7 +37,7 @@ zox_sys2(VoxInstanceRenderSystem) {
     InstanceRenderCommand_array_d* commands = create_InstanceRenderCommand_array_d(max_meshes);
     if (!commands->data) {
         // errored out
-        zox_loge("(VoxInstanceRenderSystem) commands->data malloc failed");
+        zox_loge("(vox_instance_render_system) commands->data malloc failed");
         return;
     }
     for (int i = 0; i < it->count; i++) {
@@ -54,7 +55,7 @@ zox_sys2(VoxInstanceRenderSystem) {
         if (has_mesh(commands, instance->value, &index)) {
             InstanceRenderCommand command = commands->data[index];
             if (!command.transforms) {
-                zox_loge("(VoxInstanceRenderSystem) command.transforms malloc failed");
+                zox_loge("(vox_instance_render_system) command.transforms malloc failed");
                 break;
             }
             float4x4_array_d_add(command.transforms, mvp_matrix);
@@ -66,7 +67,7 @@ zox_sys2(VoxInstanceRenderSystem) {
             };
             if (!command.transforms) {
                 // errored out
-                zox_loge("(VoxInstanceRenderSystem) command.transforms malloc failed");
+                zox_loge("(vox_instance_render_system) command.transforms malloc failed");
                 break;
             }
             float4x4_array_d_add(command.transforms, mvp_matrix);
@@ -129,6 +130,7 @@ zox_sys2(VoxInstanceRenderSystem) {
     }
     dispose_InstanceRenderCommand_array_d(commands);
     zox_disable_material();
-    catch_basic3D_errors("VoxInstanceRenderSystem");
+    catch_basic3D_errors("vox_instance_render_system");
 #endif
-} zox_sys_end(VoxInstanceRenderSystem);
+    zox_sys_on_end();
+} zoxd_system(vox_instance_render_system);

@@ -1,8 +1,9 @@
-zox_sys2(Skeleton3RenderSystem) {
+void skeleton3_render_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     entity rmaterial = transparent_meshes ? material_bonet : material_bone;
     if (!zox_valid(rmaterial)) {
-        zox_loge("(Skeleton3RenderSystem) Bone Material Invalid");
+        zox_loge("(skeleton3_render_system) Bone Material Invalid");
         return;
     }
     byte has_set_material = 0;
@@ -100,4 +101,5 @@ zox_sys2(Skeleton3RenderSystem) {
             zox_gpu_enable_culling();
         }
     }
-} zox_sys_end(Skeleton3RenderSystem);
+    zox_sys_on_end();
+} zoxd_system(skeleton3_render_system);

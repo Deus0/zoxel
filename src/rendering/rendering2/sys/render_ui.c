@@ -157,7 +157,8 @@ void render_uis(ecs* world, ui_render_queue* uis) {
 }
 
 // NOTE: Collects our Render Queue for UIs
-zox_sys2(ElementRenderSystem) {
+void element_render_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     entity base_material = material_matrixui;
     zox_sys_world();
@@ -227,5 +228,6 @@ zox_sys2(ElementRenderSystem) {
         queue->data[queue->count] = data;
         queue->count++;
     }
-} zox_sys_end(ElementRenderSystem);
+    zox_sys_on_end();
+} zoxd_system(element_render_system);
 
