@@ -1,6 +1,7 @@
 # Todo
 
-- Bug: crashes when player character dies
+- Make items pop a little when dropped, like borderlands, a little movement away from original position
+-x Bug: crashes when player character dies
 - Animate grass shader
 	- add grass noise animation, move only top verts
 	- add setting for this, use the newer logic thats observer based
@@ -60,6 +61,15 @@
 	- refresh the list after
 	- keep same pose - camera position and head
 
+# Bugs
+- make lists sorting use child index - after sort it shuffles atm
+- Sometimes the npc labels dont spawn
+	- its dissapearing due to chunk distance issues
+- cokie is not centred??
+	- super rare vox texture bug
+- GameStateSystem log error after exiting game
+	- guess state looking for realm
+
 # later
 - Track NearbyCharacters on npcs for UI spawning
 	- spawn new marker based on surrounding characters quest states
@@ -71,15 +81,6 @@
 - import texture outlines as a seperate mask texture
 	- making it easier to change outlines
 	- bitmask - 0 / 1 ?
-
-# Bugs
-- make lists sorting use child index - after sort it shuffles atm
-- Sometimes the npc labels dont spawn
-	- its dissapearing due to chunk distance issues
-- cokie is not centred??
-	- super rare vox texture bug
-- GameStateSystem log error after exiting game
-	- guess state looking for realm
 
 # Tests
 - write pickedup item test

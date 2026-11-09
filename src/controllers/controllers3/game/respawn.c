@@ -62,7 +62,11 @@ zox_sys2(Player3RespawnSystem) {
                 entity camera = zox_get_link(
                     world,
                     e,
-                    Camera);
+                    CameraLink);
+                if (!zox_valid(camera)) {
+                    zox_loge("Player3RespawnSystem - Player has no camera linked");
+                    continue;
+                }
                 float3 spawned;
                 character = game_start_player_new(
                     world,
