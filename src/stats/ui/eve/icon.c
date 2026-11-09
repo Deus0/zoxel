@@ -1,8 +1,34 @@
-// Tooltip Event for item icons
-// NOTE: Quests have no slots, just direct data linked to ui
-void stat_icon_label_event(iter* it) {
+// Sets a stat icon label to its stats value
+void set_stat_icon_label(
+    ecs* world,
+    entity e,
+    TextData* text,
+    entity stat)
+{
     byte dbg_log = 0;
-    byte label_text_capacity = 8;
+    const byte label_text_capacity = 8;
+    if (!zox_valid(stat) ||
+        !zox_has(stat, Stat) ||
+        !zox_has(stat, StatValue))
+    {
+        return;
+    }
+    zox_geter(stat, StatValue, value);
+    char result[label_text_capacity];
+    snprintf(result, label_text_capacity, "%i", (int) floor(value->value));
+    if (!is_zext(text, result)) {
+        set_zext(text, result);
+        zox_add(e, Dirty);
+        if (dbg_log) {
+            zox_log("Stat Frame Label [%s] Set to [%s]",
+                zox_getn(e),
+                result);
+        }
+    }
+}
+
+// Label spawned or its data changed
+void stat_icon_label_event(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(TextData);
@@ -12,33 +38,29 @@ void stat_icon_label_event(iter* it) {
         entity stat = zox_has(e, DataLink) ?
             zox_getv(e, DataLink) :
             0;
-        if (!zox_valid(stat) ||
-            !zox_has(stat, Stat))
-        {
-            continue;
-        }
-        zox_geter(stat, StatValue, value);
-        int val = floor(value->value);
-        char result[label_text_capacity];
-        if (zox_has(stat, StatState)) {
-            zox_geter(stat, StatValueMax, maxx);
-            int max = ceil(maxx->value);
-            snprintf(result, label_text_capacity, "%i", max);
-        } else if (!val) {
-            result[0] = '\0';
-        } else if (zox_has(stat, StatLevel)) {
-            snprintf(result, label_text_capacity, "%i", val); // Lvl
-        } else {
-            snprintf(result, label_text_capacity, "%i", val);
-        }
-        // set text of quantity label
-        if (!is_zext(text, result)) {
-            set_zext(text, result);
-            zox_add(e, Dirty);
-            if (dbg_log) {
-                zox_log("Stat Frame Label [%s] Set to [%s]",
-                    zox_getn(e),
-                    result);
+        set_stat_icon_label(world, e, text, stat);
+    }
+}
+
+// Labels that display data, used to find a stats labels
+ecs_query_t* stat_labels_query = NULL;
+
+// Stat became DataDirty, update its linked labels
+void stat_dirty_labels_event(iter* it) {
+    if (!stat_labels_query) {
+        return;
+    }
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        iter it2 = ecs_query_iter(world, stat_labels_query);
+        while (ecs_query_next(&it2)) {
+            const DataLink* links = ecs_field(&it2, DataLink, 0);
+            TextData* texts = ecs_field(&it2, TextData, 1);
+            for (int j = 0; j < it2.count; j++) {
+                if (links[j].value == e) {
+                    set_stat_icon_label(world, it2.entities[j], &texts[j], e);
+                }
             }
         }
     }

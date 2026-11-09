@@ -1,5 +1,19 @@
 # Done
 
+-x regen not using proper stats
+	-x make regening state depend on linked regen stat
+-x regen should be based on regen stat thats linked - StatLink
+-x link our data / slot to the ui frame
+    - icons/texts will just grab parent data links
+-x spawn vox item in hand when selected
+	- instead of cube
+-x tag our humanoid with 'QuestGiver' so only they can handout quests
+-x reduce health regen
+	-x when in combat
+-x github contributors didnt update
+	- remove old ones
+	- try push to new project?
+-x Fix Stat UI Labels - the icon label, needs to show value and update when stat updates - using observer for when stat dirty (data dirty? i forgot)
 -x Refactor LayoutDirty
 -x IconOverlayLink
 -x SlotLink

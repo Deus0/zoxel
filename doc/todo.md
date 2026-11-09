@@ -1,6 +1,14 @@
 # Todo
 
-- Fix Stat UI Labels - the icon label, needs to show value and update when stat updates - using observer for when stat dirty (data dirty? i forgot)
+- Add skillpoints when level up
+- Add rewards on quest handin
+	- Goal: Give 20 xp for handing in quest
+- Collect 5 cookies for quest
+	- Quest Reward: Top Hat
+- Hand in Quest Node - linked to two answer
+    - Dialogue Nodes: QuestDoneLink - QuestActiveLink
+- Quest Rewards - More Cookies - Particles - Sounds (Yay)
+- Arm animation needs to slerp to new rotations and now instantly snap during walk and attacking.
 - When Level up + 3 stat points
 - Shake camera when hit - return to og position after
 - item issues
@@ -18,23 +26,9 @@
 	- support for linking a world model (minivox/blockvox) to multiple voxel links
 	- add a second block, tall_grass
 	- multi chunk support needed for vox models
-- regen should be based on regen stat thats linked - StatLink
 - When right click on an item ui, it should split the item quantity in half, the other half should be in the mouse item
 - When right click empty spot, place a single item, or stack a single item
-- regen not using proper stats
-	- make regening state depend on linked regen stat
 -o clicking on ui - activated punch... during dialogue
-
-# later
-- Track NearbyCharacters on npcs for UI spawning
-	- spawn new marker based on surrounding characters quest states
-		- link marker to nearby player character
-	- marker should set when player goes near npc, it should update based on quest
-- set overlays based on quest tracking when we spawn datagrid
-
-# Finish
-- Add rewards on quest handin
-	- Goal: Give 20 xp for handing in quest
 - MapUI should move per pixel
 - for body parts we can detatch:
 	- add a tooltip detachable line
@@ -44,6 +38,14 @@
 	- remove the uis
 	- refresh the list after
 	- keep same pose - camera position and head
+- Bodys' right arm doesnt swing when no action selected
+
+# later
+- Track NearbyCharacters on npcs for UI spawning
+	- spawn new marker based on surrounding characters quest states
+		- link marker to nearby player character
+	- marker should set when player goes near npc, it should update based on quest
+- set overlays based on quest tracking when we spawn datagrid
 	
 # New
 - import texture outlines as a seperate mask texture
@@ -67,20 +69,8 @@
 # Debug
 - add a mode where it shows block ids in item tooltips
 
-# Devops
-- github contributors didnt update
-	- remove old ones
-	- try push to new project?
-
-- spawn vox item in hand when selected
-	- instead of cube
--x reduce health regen
-	-x when in combat
--x tag our humanoid with 'QuestGiver' so only they can handout quests
 - for our model test - change mesh every 5 seconds to a variant model
 	- showcase variants
-- link our data / slot to the ui frame
-    - icons/texts will just grab parent data links
 
 - for our tests, just link to current inspector if its opened
 	- no need to spawn it everywhere
@@ -101,19 +91,9 @@
         - child of tunk
         - disable when ui closes / dies
         - updates when enabled / chunk changes
-    
-- Refactor DataLink 108 times
-
-- Collect 5 cookies for quest
-- Hand in Quest Node - linked to two answer
-    - Dialogue Nodes: QuestDoneLink - QuestActiveLink
-- Quest Rewards - More Cookies - Particles - Sounds (Yay)
-
 
 ## Gameplay
-- Quest Reward: New Hat
 - Give user skill when leveling up
-- Add skillpoints when level up
 - Make projectile collide with Terrain
 - Make projectile collide with npc
 - add a simple skilltree
@@ -302,9 +282,6 @@
     - add date in tooltip
     - Sort latest to top
     - Add Realm Names as labels instead of seed
-
-## Body
-- right arm doesnt swing when not selected
 
 ## Weather
 - Fix the fog, make look nicer
@@ -876,6 +853,7 @@ Bugs:
 	- Add tooltip of slot type over empty slots
 - Show unuseable slots as grayed out or something
 - Check body slot type before placing body items
+	- can we place a hand in arm slot?
 - Add Cylinder Shape for Fill Nodes
 - Add Neck Node for Headblueprint
 - Use Cylinder for Bicep / Forearm Items

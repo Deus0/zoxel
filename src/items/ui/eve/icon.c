@@ -9,6 +9,10 @@ void item_icon_label_event(iter* it) {
         zox_sys_e();
         zox_sys_o(TextData, text);
         entity slot = zox_get_link(world, e, SlotLink);
+        // NOTE: labels without slots (stats, data grids) arn't item labels
+        if (!zox_valid(slot)) {
+            continue;
+        }
         entity item =
             zox_valid(slot) && zox_has(slot, DataLink) ?
                 zox_getv(slot, DataLink) :

@@ -16,6 +16,15 @@ void zox_events_stats_ui(ecs* world) {
         [none] slots.SlotUser,
         [none] interactions.Select,
     );
+    zox_on_add(
+        stat_dirty_labels_event,
+        [none] stats.Stat,
+        [none] slots.DataDirty,
+    );
+    stat_labels_query = ecs_query(world, {
+        .expr = "[in] slots.DataLink, [inout] texts.TextData, [none] texts.Text, [none] elements2.Label, [none] ui_containers.DataUI",
+        .cache_kind = EcsQueryCacheAuto
+    });
     zox_muter(prefab_player, PlayerStateEvent, player_event);
     add_to_PlayerStateEvent(player_event, player_state_stats_ui);
 }
