@@ -1,15 +1,13 @@
 # Todo
 
+- Add GiveAllQuests cheat function to the test ui, like GiveAllItems
 -o clicking on ui - activated punch... during dialogue
-- Fix Dialogue Animation
-	- Dialogue animated text is buggy atm
 
 # later
 - Track NearbyCharacters on npcs for UI spawning
 	- spawn new marker based on surrounding characters quest states
 		- link marker to nearby player character
 	- marker should set when player goes near npc, it should update based on quest
-- GiveAllQuests cheat function
 - set overlays based on quest tracking when we spawn datagrid
 
 # Finish

@@ -7,6 +7,9 @@ entity spawn_prefab_text(
     zox_prefab_name("text");
     // text
     zox_add(e, Text);
+    // NOTE: glyphs iterate in spawn order, not table order
+    //      - positions + characters are set by child order
+    zox_add_id(e, EcsOrderedChildren);
     zox_setv(e, GlyphPrefab, prefab_glyph);
     zox_setv(e, TextData, 0);
     // used for font

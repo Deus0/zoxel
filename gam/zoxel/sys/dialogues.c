@@ -176,7 +176,7 @@ zox_sys2(DialogueRealmSpawnSystem) {
         {
             byte texts_count = 7;
             char* texts[] = {
-                "Hell",
+                "Helll",
                 "oooo",
                 "I...",
                 "Go...",

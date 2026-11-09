@@ -63,24 +63,20 @@ zox_sys2(GlyphSpawnSystem) {
                 zigel_layer);
         }
         if (new_length < old_length) {
-            // NOTE: Shrinks the children zigels
-            // int child_index = old_length - 1;
-            uint deleted_count = 0;
-            uint deleted_target = old_length - new_length;
+            // NOTE: Shrinks the children zigels from the end
+            //      - keeps remaining glyphs ordered
+            uint glyph_index = 0;
             iter it2 = zox_children(world, e);
             while (zox_children_next(it2)) {
-                for (int j = 0; j < it2.count && deleted_count < deleted_target; j++) {
+                for (int j = 0; j < it2.count; j++) {
                     entity e2 = it2.entities[j];
-#ifdef zox_safety_checks
                     if (!zox_has(e2, Glyph)) {
-                        zox_loge("Glyph [%s] is Invalid",
-                            zox_getn(e2));
                         continue;
                     }
-#endif
-                    // keep deleting until we arrive at new length;
+                    if (glyph_index++ < new_length) {
+                        continue;
+                    }
                     zox_delete(e2);
-                    deleted_count++;
                     if (dbg_log) {
                         zox_log("   - Destroyed [%s]",
                             zox_getn(e2));
