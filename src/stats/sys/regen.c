@@ -46,8 +46,11 @@ void stat_regen_system(iter* it) {
         if (value->value < 0) {
             value->value = 0;
         }
-        // PreDeath will be added in other system
-        if (value->value == 0) {
+        // NOTE: Health at 0 is dying, pre_death_system disables our regens
+        //  - until then don't heal it, or regen may cancel the death
+        if (value->value == 0 &&
+            zox_has(stat, StatHealth))
+        {
             continue;
         }
         float regen = regen_value->value * regen_rate;

@@ -14,6 +14,7 @@ void zox_systems_stats(ecs *world) {
         [in] stats.StatValue,
         [none] stats.Stat,
         [none] stats.StatRegen,
+        [none] !stats.StatDisabled,
     );
     zox_system(
         pre_death_system,

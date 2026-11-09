@@ -6,6 +6,7 @@ zox_tag(StatState);
 zox_tag(StatRegen);
 zox_tag(StatAttribute);
 zox_tag(StatLevel);
+zox_tag(StatDisabled);  // stat stops processing, ie regen on death
 // Data
 zoxc_float(StatValue);
 zoxc_float(StatValueMax);
@@ -27,6 +28,7 @@ void zox_components_stats(ecs *world) {
     zoxd_tag(StatRegen);
     zoxd_tag(StatAttribute);
     zoxd_tag(StatLevel);
+    zoxd_tag(StatDisabled);
     // Data
     zoxd_float(StatValue);
     zoxd_float(StatValueMax);

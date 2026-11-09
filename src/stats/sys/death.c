@@ -21,6 +21,8 @@ void pre_death_system(iter* it) {
             continue;
         }
         zox_add(user, PreDeath);
+        // dying, stop all regens
+        disable_user_regens(world, user);
         if (dbg_log) {
             zox_log("[%s] has Pre Died.",
                 zox_getn(user));

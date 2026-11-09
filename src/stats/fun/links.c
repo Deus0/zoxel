@@ -1,3 +1,24 @@
+// Stops all of a users regen stats, ie when health reaches 0
+void disable_user_regens(
+    ecs* world,
+    entity user)
+{
+    if (!zox_valid(user)) {
+        return;
+    }
+    iter it = zox_children(world, user);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count; i++) {
+            entity stat = it.entities[i];
+            if (zox_has(stat, StatRegen) &&
+                !zox_has(stat, StatDisabled))
+            {
+                zox_add(stat, StatDisabled);
+            }
+        }
+    }
+}
+
 // Finds the users stat that was spawned from a realm stat
 entity get_user_stat_from_realm(
     ecs* world,

@@ -1,5 +1,6 @@
 # Done
 
+-x Fix light flickering issue
 -x regen not using proper stats
 	-x make regening state depend on linked regen stat
 -x regen should be based on regen stat thats linked - StatLink
