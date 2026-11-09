@@ -101,8 +101,8 @@ zox_sys2(LightBeamSystem) {
     zox_sys_out(LightNode);
     zox_sys_out(LightNodeDirty);
     entity realm = 0;
-    byte solidity[255];
-    memset(solidity, 1, 255);
+    byte solidity[zox_light_solidity_length];
+    memset(solidity, 1, zox_light_solidity_length);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ChunkNeighbors, neighbors);
@@ -126,15 +126,11 @@ zox_sys2(LightBeamSystem) {
             }
         }
         // NOTE: Check Blocks Caches
-        entity manager = zox_get_link(world, e, BlockManagerLink);
-        if (realm != manager) {
-            realm = manager;
-            zox_geter(realm, BlockLinks, blocks);
-            for (int j = 0; j < blocks->length; j++) {
-                entity block = blocks->value[j];
-                solidity[j] = zox_valid(block) && zox_has(block, BlockLightPass) ? !zox_getv(block, BlockLightPass) : 1;
-            }
-        }
+        update_light_solidity(
+            world,
+            zox_get_link(world, e, BlockManagerLink),
+            &realm,
+            solidity);
         SunlightQueue* chunk_below_sunlight_queue =
             zox_valid(chunkd) ?
                 zox_gett_mut(chunkd, SunlightQueue) :
@@ -211,8 +207,8 @@ zox_sys2(LightBeamSystem) {
     zox_sys_out(LightNode);
     zox_sys_out(LightNodeDirty);
     entity realm = 0;
-    byte solidity[255];
-    memset(solidity, 1, 255);
+    byte solidity[zox_light_solidity_length];
+    memset(solidity, 1, zox_light_solidity_length);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(NodeDepth, depth);
@@ -231,14 +227,11 @@ zox_sys2(LightBeamSystem) {
             continue;
         }
         // NOTE: Check Blocks Caches
-        if (realm != manager->value) {
-            realm = manager->value;
-            zox_geter(realm, BlockLinks, blocks);
-            for (int j = 0; j < blocks->length; j++) {
-                entity block = blocks->value[j];
-                solidity[j] = zox_valid(block) && zox_has(block, BlockLightPass) ? !zox_getv(block, BlockLightPass) : 1;
-            }
-        }
+        update_light_solidity(
+            world,
+            manager->value,
+            &realm,
+            solidity);
         SunlightQueue* chunk_below_sunlight_queue = zox_gett_mut(chunkd, SunlightQueue);
         light_depth->value = depth->value;
         short length = octree_size(depth->value);

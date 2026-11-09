@@ -1,6 +1,22 @@
 # Todo
 
-- Intelligence stat should increase mana, and Wisdom should increase mana regen
+- When right click on an item ui, it should split the item quantity in half, the other half should be in the mouse item
+- When right click empty spot, place a single item, or stack a single item
+
+- Bodys' right arm doesnt swing when no action selected
+
+- Add base stat "Physical Damage" that punch uses, strength should increase this, and use physical defence to decrease it, when damage is applied
+- Intelligence stat should increase mana, and Wisdom should increase mana regen, Strength increase health, Vitality increases health regen, endurance increases physical defence, Agility increases energy, dexterity increases energy regen.
+
+- Add Projectiles Damaging Terrain
+- Add Projects Damaging NPCs
+- Add Color of projectile, based on skill
+
+- add a simple skilltree
+	- with a skill to unlock button
+	- click and hold it to unlock
+	- screen shake and particles when unlock
+
 - Npc Item drops - should pick an item item randomly based on rarity of the body parts + inventory
 	- it should not drop all items
 	- player characters should still drop all loot though for chance to pick them up
@@ -12,7 +28,6 @@
     - Dialogue Nodes: QuestDoneLink - QuestActiveLink
 - Quest Rewards - More Cookies - Particles - Sounds (Yay)
 - Arm animation needs to slerp to new rotations and now instantly snap during walk and attacking.
-- When Level up + 3 stat points
 - Shake camera when hit - return to og position after
 - fix error '[14:58:49.178] [ERROR] Smooth Lights Error: Colors Past Limits [1496] - Face [5] at Pos [14x0x14] Depth [4] of [4]
 [14:58:51.554] [ERROR] Smooth Lights Error: Colors Past Limits [332] - Face [5] at Pos [0x5x4] Depth [3] of [3]'
@@ -20,14 +35,10 @@
 	- it will find the test in the modules tst folders
 	- it will compile that file with zoxels src and flecs
 	- it outputs a test for claude to use
-- write some tests in lighting
-	- this should test the flickering issue 
 - Implement a tall grass block model
 	- support for linking a world model (minivox/blockvox) to multiple voxel links
 	- add a second block, tall_grass
 	- multi chunk support needed for vox models
-- When right click on an item ui, it should split the item quantity in half, the other half should be in the mouse item
-- When right click empty spot, place a single item, or stack a single item
 -o clicking on ui - activated punch... during dialogue
 - MapUI should move per pixel
 - for body parts we can detatch:
@@ -38,7 +49,6 @@
 	- remove the uis
 	- refresh the list after
 	- keep same pose - camera position and head
-- Bodys' right arm doesnt swing when no action selected
 
 # later
 - Track NearbyCharacters on npcs for UI spawning
@@ -93,13 +103,8 @@
         - updates when enabled / chunk changes
 
 ## Gameplay
-- Give user skill when leveling up
 - Make projectile collide with Terrain
 - Make projectile collide with npc
-- add a simple skilltree
-	- with a skill to unlock button
-	- click and hold it to unlock
-	- screen shake and particles when unlock
 - add a simple log, with the entry line fade out
 	- log at bottom left
 	- when level up add a line about it
@@ -763,11 +768,6 @@ Bugs:
 - When place last block, dont release arm raise until after animation is done
 - Base Speed of swing off walk speed and state - WalkSpeed (byte based on max speed)
 
-## Projectiles
-- Add Projectiles Damaging Terrain
-- Add Projects Damaging NPCs
-- Add Color of projectile, based on skill
-
 ## Dialogue
 - improve dialogue contrast, make the dialogue ui block background
 - Aim down when speaking to slime/chicken etc
@@ -834,7 +834,6 @@ Bugs:
 ## Stats
 - Add Stats panel to the taskbar and give header / window
 - Vitality should increase health stat
-- Add base stat "Physical Damage" that punch uses, strength should increase this
 
 ## Skills
 - NPC - Raycast Range should be Skill Range

@@ -2,6 +2,7 @@
 #include "prefab.c"
 #include "fetch.c"
 #include "nearby.c"
+#include "solidity.c"
 
 byte zox_chunk_mesh_lighting_busy(ecs* world, entity e) {
     if (zox_no_lights) {

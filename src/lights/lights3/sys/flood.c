@@ -150,8 +150,8 @@ zox_sys2(LightFloodSystem) {
     zox_sys_out(LightNode);
     zox_sys_out(LightNodeDirty);
     entity realm = 0;
-    byte solidity[255];
-    memset(solidity, 1, 255);
+    byte solidity[zox_light_solidity_length];
+    memset(solidity, 1, zox_light_solidity_length);
     for (int i = 0; i < it->count && flooded < max_flooding; i++) {
         zox_sys_e();
         zox_sys_i(VoxelNode, root_vnode);
@@ -167,18 +167,11 @@ zox_sys2(LightFloodSystem) {
             continue;
         }
         // NOTE: Check Blocks Caches
-        entity manager = zox_get_link(world, e, BlockManagerLink);
-        if (realm != manager) {
-            realm = manager;
-            zox_geter(realm, BlockLinks, blocks);
-            for (int j = 0; j < blocks->length; j++) {
-                entity block = blocks->value[j];
-                solidity[j] = zox_valid(block) &&
-                    zox_has(block, BlockLightPass) ?
-                        !zox_getv(block, BlockLightPass) :
-                        1;
-            }
-        }
+        update_light_solidity(
+            world,
+            zox_get_link(world, e, BlockManagerLink),
+            &realm,
+            solidity);
         const VoxelNode* neighbor_voxels[6];
         const LightNode* neighbor_lights[6];
         spinlock* neighbor_locks[6];

@@ -1,5 +1,6 @@
 # Done
 
+-x When Level up + 3 stat points
 -x The stat + button is not very visible, generate a texture for it
 -x Add 1 skill point and 3 stat points to player character when level up
 	-x add this base stat to realm stats too

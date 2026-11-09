@@ -24,7 +24,8 @@ zox_sys2(RefreshLightsSystem) {
     zox_sys_out(LightNode);
     zox_sys_out(LightNodeDirty);
     entity realm = 0;
-    byte solidity[255];
+    byte solidity[zox_light_solidity_length];
+    memset(solidity, 1, zox_light_solidity_length);
     for (int j = 0; j < 255; j++) {
         solidity[j] = 1;
     }
@@ -42,14 +43,11 @@ zox_sys2(RefreshLightsSystem) {
             continue;
         }
         // NOTE: Check Blocks Caches
-        if (realm != manager->value) {
-            realm = manager->value;
-            zox_geter(realm, BlockLinks, blocks);
-            for (int j = 0; j < blocks->length; j++) {
-                entity block = blocks->value[j];
-                solidity[j] = zox_valid(block) && zox_has(block, BlockLightPass) ? !zox_getv(block, BlockLightPass) : 1;
-            }
-        }
+        update_light_solidity(
+            world,
+            manager->value,
+            &realm,
+            solidity);
         const VoxelNode* nvoxels[6];
         fetch_neightbor_voxel_nodes(world, neighbors, nvoxels);
         const LightNode* nlights[6];
