@@ -38,6 +38,13 @@ entity2 spawn_model_grass(
         zox_setv(e2, RenderDepth, depth);
         zox_setv(e2, MaxRenderDepth, max_depth);
         zox_setv(e2, RubbleCount, place_count);
+        // sway animation - mesh is centered, so bottom is -bounds.y
+        // NOTE: same size/scale as spawn_vox, its sets are deferred so we can't read them back here
+        float3 bounds = calculate_vox_bounds(
+            int3_single(node_length),
+            ((float) octree_size(ddepth)) / 64.0f);
+        zox_add(e2, SwayMesh);
+        zox_setv(e2, SwayBounds, ((float2) { -bounds.y, bounds.y * 2 }));
         lods.value[depth] = e2;
         if (depth == max_depth) {
             vox_lod = e2;

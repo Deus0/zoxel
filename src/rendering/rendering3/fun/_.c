@@ -22,6 +22,7 @@ void spawn_shaders_basics3D(ecs *world) {
     spawn_material_textured3D(world);
 #ifndef zox_disable_rendering_instances
     spawn_material_vox_instance(world);
+    spawn_material_vox_instance_sway(world);
 #endif
     material_bone = spawn_material_bone(world, 0);
     material_bonet = spawn_material_bone(world, 1);

@@ -1,12 +1,9 @@
 # Todo
 
+- Refactor vox models to use a single vox entity, instead of per lod models + generation
+	- generate only at max detail
+	- spawn chunk mesh per lod level instead
 - Make items pop a little when dropped, like borderlands, a little movement away from original position
--x Bug: crashes when player character dies
-- Animate grass shader
-	- add grass noise animation, move only top verts
-	- add setting for this, use the newer logic thats observer based
-	- so we can turn off grass animation
-	- since grass uses vox instance system, the hard part is making it work with the old and new shader, since other minivox/block voxes use this static shader
 - Set minivox/world voxels brightness when lighting updates
 	- use observer on light change event on terrain chunk types
 	- might need to pass this data to the frag shader

@@ -1,5 +1,6 @@
 typedef struct {
     entity mesh;
+    byte sway;      // uses sway material, transforms are model matrices not mvp
     float4x4_array_d* transforms;
 } InstanceRenderCommand;
 zoxel_dynamic_array(InstanceRenderCommand)

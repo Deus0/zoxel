@@ -1,4 +1,6 @@
 byte transparent_meshes = 0;
+byte zox_grass_animation = 1;           // setting: "Grass Animation"
+float zox_grass_sway_strength = 0.04f;  // world units the grass tips move
 
 #include "dat/_.c"
 #include "mat/_.c"

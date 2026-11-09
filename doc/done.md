@@ -1,5 +1,11 @@
 # Done
 
+-x Animate grass shader
+	- add grass noise animation, move only top verts, as a shader in res/shaders
+	- add setting for this, use the newer logic thats observer based
+	- so we can turn off grass animation
+	- since grass uses vox instance system, the hard part is making it work with the old and new shader, since other minivox/block voxes use this static shader
+-x Bug: crashes when player character dies
 -x Shake camera when hit - return to OG position after
 	-x Create a animation entity that shakes camera for x seconds
 	-x use observer for when player character is hit
