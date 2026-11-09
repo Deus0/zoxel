@@ -8,14 +8,12 @@
 #include "character_player.c"
 
 void zox_systems_stats(ecs *world) {
-    // debuff system here, skills will add debuffs
     zox_system(
         stat_regen_system,
         zoxp_update,
-        [in] stats.StatValueMax,
-        [out] stats.StatValue,
+        [in] stats.StatValue,
         [none] stats.Stat,
-        [none] stats.StatState,
+        [none] stats.StatRegen,
     );
     zox_system(
         pre_death_system,

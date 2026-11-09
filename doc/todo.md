@@ -1,5 +1,19 @@
 # Todo
 
+- Fix Stat UI Labels - the icon label, needs to show value and update when stat updates - using observer for when stat dirty (data dirty? i forgot)
+- When Level up + 3 stat points
+- Shake camera when hit - return to og position after
+- item issues
+	- consumable items cokie shouldnt select terrain
+- fix error '[14:58:49.178] [ERROR] Smooth Lights Error: Colors Past Limits [1496] - Face [5] at Pos [14x0x14] Depth [4] of [4]
+[14:58:51.554] [ERROR] Smooth Lights Error: Colors Past Limits [332] - Face [5] at Pos [0x5x4] Depth [3] of [3]'
+- Fix light flickering issue
+- write bsh/test.sh that takes in test name
+	- it will find the test in the modules tst folders
+	- it will compile that file with zoxels src and flecs
+	- it outputs a test for claude to use
+- write some tests in lighting
+	- this should test the flickering issue 
 - Implement a tall grass block model
 	- support for linking a world model (minivox/blockvox) to multiple voxel links
 	- add a second block, tall_grass
@@ -40,8 +54,6 @@
 - make lists sorting use child index - after sort it shuffles atm
 - Sometimes the npc labels dont spawn
 	- its dissapearing due to chunk distance issues
-- item issues
-	- consumable items cokie shouldnt select terrain
 - cokie is not centred??
 	- super rare vox texture bug
 - GameStateSystem log error after exiting game
@@ -659,7 +671,6 @@ Editor:
 - Dock window - inspector on right, hierarchy on left of canvas
 
 New:
-- When Level up + 3 stat points
 - When you have stat points, add + button on Attributes
 - When attributes go up, increase base stats too!
 - When equiping gear, add particles buff around character
@@ -795,7 +806,6 @@ Bugs:
 - FIX: Set CubeLines Faces based on VoxelSides thats generated, then make sure it Renders Over Top of the overlays - disabled depth
 
 ## Cameras
-- Shake camera when hit
 
 ## Rendering
 - Lines: Line Instancing

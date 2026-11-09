@@ -116,6 +116,10 @@ void zox_dbg_ui_cheats(ecs* world, int32_t keycode) {
         .text = "Level Up",
         .on_click = { &zox_tst_level_up },
     };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Regen Up",
+        .on_click = { &zox_tst_regen_up },
+    };
     // Test our uis
     entity spawned[elements_count];
 

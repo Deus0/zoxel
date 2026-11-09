@@ -6,10 +6,6 @@
  * |                                                      |
  * +------------------------------------------------------+
  *
- *  TODO:
- *
- *      - Implement Regen Stats (currently just using set rate)
- *
  */
 float  combat_regen_mul = 0.25f;
 #include "set/_.c"

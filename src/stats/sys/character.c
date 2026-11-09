@@ -112,7 +112,9 @@ void spawn_base_stats(
                     world,
                     e,
                     stat,
-                    base_regen);
+                    is_player_character ?
+                        player_base_regen :
+                        base_regen);
             }
         }
     }
