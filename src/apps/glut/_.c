@@ -4,9 +4,6 @@
         - Implements Glut use for windowing
 
  */
-#ifndef zoxm_glut
-#define zoxm_glut
-
 static inline int2 get_screen_size() {
     return int2_zero;
 }
@@ -20,11 +17,8 @@ void zox_set_app_fullscreen(ecs* world, entity e, byte fullscreen) { }
 void zox_app_set_monitor_e(ecs *world, entity e, byte monitor) { }
 void zox_set_app_maximized(ecs* world, entity e, byte maximized) { }
 
-zox_begin_module(Glut)
-
+void import_glut(ecs* world) {
+    zox_module(glut);
     // zox_components_sdl(world);
     // zox_systems_sdl(world);
-
-zox_end_module(Glut)
-
-#endif
+}

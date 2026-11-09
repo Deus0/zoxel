@@ -6,11 +6,6 @@
  * |                                                                  |
  * +------------------------------------------------------------------+
  */
-#if !defined(zoxm_lores)
-#define zoxm_lores
-
-zox_begin_module(Lores) {
-
-} zox_end_module(Lores);
-
-#endif
+void import_lores(ecs* world) {
+    zox_module(lores);
+}

@@ -9,5 +9,5 @@
 
 void import_shapes(ecs* world) {
     zox_module(shapes);
-    zox_import_module(Shapes3);
+    zox_add_module(shapes3);
 }

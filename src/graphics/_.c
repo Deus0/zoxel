@@ -19,7 +19,7 @@ void import_graphics(ecs* world) {
 #ifdef zox_opengl
     zox_add_module(opengl);
 #elif zox_vulkan
-    zox_import_module(Vulkan);
+    zox_add_module(vulkan);
 #else
     zox_add_module(headless);
 #endif

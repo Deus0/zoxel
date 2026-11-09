@@ -25,5 +25,5 @@ void import_textures(ecs* world) {
     zox_components_textures(world);
     zox_systems_textures(world);
     add_hook_spawn_prefabs(spawn_prefabs_textures_core);
-    zox_import_module(TexturesFiles);
+    zox_add_module(textures_io);
 }

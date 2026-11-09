@@ -29,5 +29,5 @@ void import_musics(ecs* world) {
     zox_systems_music(world);
     add_hook_terminal_command(process_arguments_musics);
     add_hook_spawn_prefabs(spawn_prefabs_musics);
-    zox_import_module(Playlists);
+    zox_add_module(playlists);
 }

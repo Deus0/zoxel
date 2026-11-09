@@ -17,6 +17,6 @@ void import_particles(ecs* world) {
     zoxd_tag(Particle);
     zoxd_tag(ParticlesEmitter);
     zoxd_int(ParticleEmitRate);
-    zox_import_module(Particles2D);
-    zox_import_module(Particles3D);
+    zox_add_module(particles2);
+    zox_add_module(particles3);
 }

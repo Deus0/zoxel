@@ -1,6 +1,3 @@
-#ifndef zoxm_textures_io
-#define zoxm_textures_io
-
 #define directory_textures "textures"
 int files_count_textures = 0;
 entity *files_textures;
@@ -13,10 +10,9 @@ zox_tag(SaveTexture);
 #include "sys/save.c"
 #include "fun/assets.c"
 
-zox_begin_module(TexturesFiles)
+void import_textures_io(ecs* world) {
+    zox_module(textures_io);
     zox_module_dispose(dispose_textures_files);
     zoxd_tag(SaveTexture);
     add_hook_files_load(load_files_textures);
-zox_end_module(TexturesFiles)
-
-#endif
+}

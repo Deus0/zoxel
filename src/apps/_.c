@@ -29,6 +29,6 @@ void import_apps(ecs* world) {
 #ifdef zox_sdl
     zox_add_module(sdl);
 #elif zox_glut
-    zox_import_module(Glut);
+    zox_add_module(glut);
 #endif
 }

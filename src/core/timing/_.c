@@ -22,7 +22,7 @@ void import_timing(ecs* world) {
     zox_systems_timing(world);
     initialize_time();
     zox_systems_timing_debug(world);
-    zox_import_module(Timers);
+    zox_add_module(timers);
     // this for profiler data
     {
         frame_times_samples = zox_new();

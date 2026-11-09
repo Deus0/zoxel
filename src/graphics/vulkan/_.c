@@ -1,6 +1,3 @@
-#ifndef zoxm_vulkan
-#define zoxm_vulkan
-
 #include "fun/vulkan_check.c"
 #ifdef zox_vulkan
     #include "fun/vulkan_setup.c"
@@ -27,8 +24,7 @@ void dispose_vulkan(ecs *world, void *ctx) {
     dispose_vulkan_globals();
 }
 
-zox_begin_module(Vulkan)
+void import_vulkan(ecs* world) {
+    zox_module(vulkan);
     zox_module_dispose(dispose_vulkan);
-zox_end_module(Vulkan)
-
-#endif
+}

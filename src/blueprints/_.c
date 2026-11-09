@@ -1,6 +1,4 @@
-/*#if !defined(zoxm_blueprints) && defined(zoxm_nodes)
-#define zoxm_blueprints
-
+/*
 // first we spawn a texture blueprint
 // we want one input, one output, one action node
 // connected up
@@ -16,7 +14,8 @@ zox_tag(BluenodeOutput);
 #include "pre/_.c"
 #include "sys/_.c"
 
-zox_begin_module(Blueprints)
+void import_blueprints(ecs* world) {
+    zox_module(blueprints);
     add_hook_spawn_prefabs(spawn_prefabs_blueprints);
     zoxd_tag(Blueprint);
     zoxd_tag(Bluenode);
@@ -25,7 +24,5 @@ zox_begin_module(Blueprints)
     zoxd_tag(BluenodeAction);
     zoxd_tag(BluenodeOutput);
     // test blueprints - spawn like neurals
-zox_end_module(Blueprints)
-
-#endif
+}
 */

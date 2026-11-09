@@ -198,20 +198,20 @@ void import_zox(ecs* world) {
         zox_add_module(actions);
         zox_add_module(quests);
         zox_add_module(dialogues);
-        zox_import_module(Classes);
-        zox_import_module(Jobs);
-        zox_import_module(Races);
+        zox_add_module(classes);
+        zox_add_module(jobs);
+        zox_add_module(races);
         zox_add_module(clans);
-        zox_import_module(Lores);
+        zox_add_module(lores);
         zox_add_module(achievements);
 
         // depth 6: gameplay systems
         zox_add_module(pickups);
         zox_add_module(crafting);
         zox_add_module(maps);
-        zox_import_module(Farming);
-        zox_import_module(Turrets);
-        zox_import_module(Pets);
+        zox_add_module(farming);
+        zox_add_module(turrets);
+        zox_add_module(pets);
 
         // depth 7: world placement / AI
         zox_add_module(ai);

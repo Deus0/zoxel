@@ -1,6 +1,3 @@
-#ifndef zoxm_jump
-#define zoxm_jump
-
 #define jump_state_none     0
 #define jump_state_trigger  1
 #define jump_state_active   2
@@ -27,7 +24,8 @@ static inline byte get_character_can_jump(ecs *world, entity c) {
     return zox_valid(c) && zox_has(c, CanJump) ? zox_getv(c, CanJump) : 0;
 }
 
-zox_begin_module(Jumps)
+void import_jumps(ecs* world) {
+    zox_module(jumps);
     zoxd_tag(SilentJumper);
     zoxd_byte(CanJump);
     zoxd_byte(JumpState);
@@ -35,6 +33,4 @@ zox_begin_module(Jumps)
     zoxd_double(Jump);
     zoxd_byte(FlyMode);
     zox_systems_jump(world);
-zox_end_module(Jumps)
-
-#endif
+}

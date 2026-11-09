@@ -11,13 +11,9 @@
  *      - Spawn your fav friend!
  *
  * */
-#ifndef zoxm_pets
-#define zoxm_pets
-
 // #include "com/_.c"
 
-zox_begin_module(Pets) {
+void import_pets(ecs* world) {
+    zox_module(pets);
     // here!
-} zox_end_module(Pets);
-
-#endif
+}

@@ -1,6 +1,3 @@
-#ifndef zox_timers
-#define zox_timers
-
 byte zox_log_activations = 0;
 
 #include "com/_.c"
@@ -15,9 +12,8 @@ void zox_prefab_addc_user_timings(ecs* world, entity e) {
     zox_prefab_set(e, CooldownTime, { 0.5 });
 }
 
-zox_begin_module(Timers) {
+void import_timers(ecs* world) {
+    zox_module(timers);
     zox_components_timers(world);
     zox_systems_timers(world);
-} zox_end_module(Timers)
-
-#endif
+}
