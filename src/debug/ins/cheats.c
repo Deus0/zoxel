@@ -105,6 +105,10 @@ void zox_dbg_ui_cheats(ecs* world, int32_t keycode) {
         .on_click = { &zox_tst_all_items },
     };
     elements[elements_count++] = (SpawnListElement) {
+        .text = "All Quests",
+        .on_click = { &zox_tst_all_quests },
+    };
+    elements[elements_count++] = (SpawnListElement) {
         .text = "All Skills",
         .on_click = { &zox_tst_all_skills },
     };

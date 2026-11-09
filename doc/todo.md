@@ -1,7 +1,10 @@
 # Todo
 
-- Add GiveAllQuests cheat function to the test ui, like GiveAllItems
 -o clicking on ui - activated punch... during dialogue
+- mirror mesh doesnt update when game model does
+	- make a system that grabs the mesh clone link
+	- when it updates, we can update our mesh clone too
+	- link it to the characters mesh
 
 # later
 - Track NearbyCharacters on npcs for UI spawning
@@ -15,10 +18,6 @@
 	- Goal: Give 20 xp for handing in quest
 - regen not using proper stats
 	- make regening state depend on linked regen stat
-- mirror mesh doesnt update when game model does
-	- make a system that grabs the mesh clone link
-	- when it updates, we can update our mesh clone too
-	- link it to the characters mesh
 - MapUI should move per pixel
 - for body parts we can detatch:
 	- add a tooltip detachable line

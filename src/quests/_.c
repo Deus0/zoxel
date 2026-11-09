@@ -20,6 +20,7 @@
 #include "fun/_.c"
 #include "sys/_.c"
 #include "eve/_.c"
+#include "tst/_.c"
 #include "ui/_.c"
 
 void import_quests(ecs* world) {

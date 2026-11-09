@@ -1,5 +1,6 @@
 # Done
 
+-x Add GiveAllQuests cheat function to the test ui, like GiveAllItems
 -x Fix Dialogue Animation
 	-x Dialogue animated text is buggy atm
 -x quantity of item didnt update when moving items
