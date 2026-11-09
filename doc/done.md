@@ -1,5 +1,7 @@
 # Done
 
+-x Add base stat "Physical Damage" that punch uses, strength should increase this, and use physical defence to decrease it, when damage is applied
+-x Intelligence stat should increase mana, and Wisdom should increase mana regen, Strength increase health, Vitality increases health regen, endurance increases physical defence, Agility increases energy, dexterity increases energy regen.
 -x When Level up + 3 stat points
 -x The stat + button is not very visible, generate a texture for it
 -x Add 1 skill point and 3 stat points to player character when level up

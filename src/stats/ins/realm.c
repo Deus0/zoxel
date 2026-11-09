@@ -51,3 +51,17 @@ entity spawn_realm_stat_regen(
     zox_link(world, e, StatLink, target_stat);
     return e;
 }
+
+// Stat gains [amount] per point of [attribute]
+void set_realm_stat_scale(
+    ecs* world,
+    entity stat,
+    entity attribute,
+    float amount)
+{
+    if (!zox_valid(stat) || !zox_valid(attribute)) {
+        return;
+    }
+    zox_link(world, stat, StatScaleLink, attribute);
+    zox_prefab_set(stat, StatScaleAmount, { amount });
+}

@@ -51,7 +51,6 @@ void melee_system(iter* it) {
         entity resource = 0;
         // entity strength = 0;
         zox_geter(user, RaycastVoxelData, raycast);
-        entity boost_stat = 0;
         entity rresource = zox_get_link(world, e, SkillResource);
         iter it2 = zox_children(world, user);
         while (zox_children_next(it2)) {
@@ -63,10 +62,6 @@ void melee_system(iter* it) {
                 entity meta = zox_get_prefab(world, stat);
                 if (rresource == meta) {
                     resource = stat;
-                }
-                // Assuming strength is first attribute
-                if (!boost_stat && zox_has(stat, StatAttribute)) {
-                    boost_stat = stat;
                 }
             }
         }
@@ -160,14 +155,28 @@ void melee_system(iter* it) {
         }
         // todo: reduce energy stat value using SkillCost, check if has enough energy
         float skill_damage = randf_range(damage->value, damage_max->value);
-        if (boost_stat) {
-            skill_damage += strength_damage_multiplier * zox_getv(boost_stat, StatValue);
+        // users damage stat, ie physical damage (boosted by strength)
+        entity realm_damage_stat = zox_get_link(world, e, SkillDamageStat);
+        entity damage_stat = get_user_stat_from_realm(world, user, realm_damage_stat);
+        if (zox_valid(damage_stat)) {
+            skill_damage += zox_getv(damage_stat, StatValue);
         }
         if (!zox_has(user, PlayerCharacter)) {
             skill_damage *= npc_nerf_multiplier; // EASY MODE
         }
         // Hitting NPC
         if (zox_has(hit, Character3)) {
+            // targets defence, ie physical defence (boosted by endurance)
+            entity realm_defence_stat = zox_valid(realm_damage_stat) ?
+                zox_get_link(world, realm_damage_stat, StatDefenceLink) :
+                0;
+            entity defence_stat = get_user_stat_from_realm(world, hit, realm_defence_stat);
+            if (zox_valid(defence_stat)) {
+                skill_damage -= zox_getv(defence_stat, StatValue);
+                if (skill_damage < 0) {
+                    skill_damage = 0;
+                }
+            }
             entity health = zox_get_child_by_id(world, hit, zox_id(StatHealth));
             if (!zox_valid(health)) {
                 zox_loge("hit user had no health")

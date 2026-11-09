@@ -1,12 +1,15 @@
 # Todo
 
+- We can just have a more general Damage/Defence type stats 
+	- With Physical and Magical tags
+	- DamageStat, DefenceStat
+- Add rewards on quest handin
+	- Goal: Give 20 xp for handing in quest
+	- Quest Rewards - More Cookies - Particles - Sounds (Yay)
 - When right click on an item ui, it should split the item quantity in half, the other half should be in the mouse item
 - When right click empty spot, place a single item, or stack a single item
 
 - Bodys' right arm doesnt swing when no action selected
-
-- Add base stat "Physical Damage" that punch uses, strength should increase this, and use physical defence to decrease it, when damage is applied
-- Intelligence stat should increase mana, and Wisdom should increase mana regen, Strength increase health, Vitality increases health regen, endurance increases physical defence, Agility increases energy, dexterity increases energy regen.
 
 - Add Projectiles Damaging Terrain
 - Add Projects Damaging NPCs
@@ -20,13 +23,10 @@
 - Npc Item drops - should pick an item item randomly based on rarity of the body parts + inventory
 	- it should not drop all items
 	- player characters should still drop all loot though for chance to pick them up
-- Add rewards on quest handin
-	- Goal: Give 20 xp for handing in quest
 - Collect 5 cookies for quest
 	- Quest Reward: Top Hat
 - Hand in Quest Node - linked to two answer
     - Dialogue Nodes: QuestDoneLink - QuestActiveLink
-- Quest Rewards - More Cookies - Particles - Sounds (Yay)
 - Arm animation needs to slerp to new rotations and now instantly snap during walk and attacking.
 - Shake camera when hit - return to og position after
 - fix error '[14:58:49.178] [ERROR] Smooth Lights Error: Colors Past Limits [1496] - Face [5] at Pos [14x0x14] Depth [4] of [4]

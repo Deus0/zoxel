@@ -98,7 +98,7 @@ void spawn_base_stats(
             zox_getn(realm_mana),
             mana.y);
     }
-    // Add Regen Stats
+    // Add Regen and Base Stats
     it2 = zox_children(world, realm);
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
@@ -115,6 +115,13 @@ void spawn_base_stats(
                     is_player_character ?
                         player_base_regen :
                         base_regen);
+            } else if (zox_has(stat, StatBase)) {
+                // ie physical damage, starts at the realms base value
+                spawn_stat_base(
+                    world,
+                    e,
+                    stat,
+                    zox_getv(stat, StatValue));
             }
         }
     }

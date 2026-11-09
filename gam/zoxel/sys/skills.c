@@ -16,12 +16,16 @@ zox_sys2(SkillsRealmSpawnSystem) {
         entity health = 0;
         entity energy = 0;
         entity mana = 0;
+        entity physical_damage = 0;
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
                 entity stat = it2.entities[j];
                 if (!zox_has(stat, Stat)) {
                     continue;
+                }
+                if (!physical_damage && zox_has(stat, StatDamage)) {
+                    physical_damage = stat;
                 }
                 if (zox_has(stat, StatState)) {
                     if (!health && zox_has(stat, StatHealth)) {
@@ -54,6 +58,10 @@ zox_sys2(SkillsRealmSpawnSystem) {
                 punch_cost,
                 0.25f,
                 0.25f);
+            // strength boosts physical damage, which boosts punch
+            if (zox_valid(physical_damage)) {
+                zox_link(world, e2, SkillDamageStat, physical_damage);
+            }
             meta_skill_punch = e2;
         }
         // Shoot

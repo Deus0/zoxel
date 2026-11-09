@@ -1,3 +1,11 @@
+// Bonus per attribute point
+float attribute_health_scale = 2;
+float attribute_mana_scale = 2;
+float attribute_energy_scale = 2;
+float attribute_regen_scale = 0.5f;     // x regen_rate
+float attribute_damage_scale = 0.7f;
+float attribute_defence_scale = 0.5f;
+
 zox_sys2(StatsRealmSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -51,7 +59,7 @@ zox_sys2(StatsRealmSpawnSystem) {
             "mana",
             mana_c);
         // Regens
-        spawn_realm_stat_regen(
+        entity health_regen = spawn_realm_stat_regen(
             world,
             e,
             prefab_stat_regen,
@@ -59,7 +67,7 @@ zox_sys2(StatsRealmSpawnSystem) {
             "healthregen",
             health_c,
             health);
-        spawn_realm_stat_regen(
+        entity energy_regen = spawn_realm_stat_regen(
             world,
             e,
             prefab_stat_regen,
@@ -67,7 +75,7 @@ zox_sys2(StatsRealmSpawnSystem) {
             "energyregen",
             energy_c,
             energy);
-        spawn_realm_stat_regen(
+        entity mana_regen = spawn_realm_stat_regen(
             world,
             e,
             prefab_stat_regen,
@@ -75,6 +83,26 @@ zox_sys2(StatsRealmSpawnSystem) {
             "manaregen",
             mana_c,
             mana);
+        // Base
+        entity physical_damage = spawn_realm_stat(
+            world,
+            e,
+            prefab_stat_base,
+            "physical damage",
+            "physical_damage",
+            color_rgb_white);
+        zox_add(physical_damage, StatDamage);
+        zox_prefab_set(physical_damage, StatValue, { 0 });
+        entity physical_defence = spawn_realm_stat(
+            world,
+            e,
+            prefab_stat_base,
+            "physical defence",
+            "physical_defence",
+            color_rgb_white);
+        zox_add(physical_defence, StatDefence);
+        zox_prefab_set(physical_defence, StatValue, { 0 });
+        zox_link(world, physical_damage, StatDefenceLink, physical_defence);
         // Currencies
         entity stat_point = spawn_realm_stat(
             world,
@@ -95,49 +123,49 @@ zox_sys2(StatsRealmSpawnSystem) {
         zox_add(skill_point, SkillPoint);
         zox_prefab_set(skill_point, StatLevelReward, { 1 });
         // Attributes
-        spawn_realm_stat(
+        entity strength = spawn_realm_stat(
             world,
             e,
             prefab_stat_attribute,
             "strength",
             "strength",
             color_rgb_white);
-        spawn_realm_stat(
+        entity vitality = spawn_realm_stat(
             world,
             e,
             prefab_stat_attribute,
             "vitality",
             "vitality",
             color_rgb_white);
-        spawn_realm_stat(
+        entity endurance = spawn_realm_stat(
             world,
             e,
             prefab_stat_attribute,
             "endurance",
             "endurance",
             color_rgb_white);
-        spawn_realm_stat(
+        entity intelligence = spawn_realm_stat(
             world,
             e,
             prefab_stat_attribute,
             "intelligence",
             "intelligence",
             color_rgb_white);
-        spawn_realm_stat(
+        entity wisdom = spawn_realm_stat(
             world,
             e,
             prefab_stat_attribute,
             "wisdom",
             "wisdom",
             color_rgb_white);
-        spawn_realm_stat(
+        entity agility = spawn_realm_stat(
             world,
             e,
             prefab_stat_attribute,
             "agility",
             "agility",
             color_rgb_white);
-        spawn_realm_stat(
+        entity dexterity = spawn_realm_stat(
             world,
             e,
             prefab_stat_attribute,
@@ -158,6 +186,15 @@ zox_sys2(StatsRealmSpawnSystem) {
             "luck",
             "luck",
             color_rgb_white);
+        // Attribute Scaling - stat gains amount per attribute point
+        set_realm_stat_scale(world, health, strength, attribute_health_scale);
+        set_realm_stat_scale(world, health_regen, vitality, attribute_regen_scale);
+        set_realm_stat_scale(world, mana, intelligence, attribute_mana_scale);
+        set_realm_stat_scale(world, mana_regen, wisdom, attribute_regen_scale);
+        set_realm_stat_scale(world, energy, agility, attribute_energy_scale);
+        set_realm_stat_scale(world, energy_regen, dexterity, attribute_regen_scale);
+        set_realm_stat_scale(world, physical_damage, strength, attribute_damage_scale);
+        set_realm_stat_scale(world, physical_defence, endurance, attribute_defence_scale);
         // Jobs
         // create regen stat
         // stats.value[i++] = spawn_stat_level_t(world, "farming", "farming", color_rgb_gray);

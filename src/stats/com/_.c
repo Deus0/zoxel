@@ -1,5 +1,7 @@
 zox_tag(Stat);
 zox_tag(StatLink);
+zox_tag(StatScaleLink);      // realm stat -> realm attribute that boosts it
+zox_tag(StatDefenceLink);    // realm damage stat -> realm stat that reduces it
 // Types
 zox_tag(StatBase);
 zox_tag(StatState);
@@ -14,17 +16,23 @@ zoxc_float(StatValueMax);
 zoxc_float(ExperienceValue);
 zoxc_float(ExperienceMax);
 zoxc_float(StatLevelReward);    // currency gained per level up
+zoxc_float(StatScaleAmount);    // bonus per point of the StatScaleLink attribute
+zoxc_float(StatBonus);          // attribute bonus currently applied to a users stat
 // special stats
 zox_tag(StatHealth);
 zox_tag(StatSoul);
 zox_tag(StatPoint);     // currency spent on attributes
 zox_tag(SkillPoint);    // currency spent on skills
+zox_tag(StatDamage);    // base stat added to skill damage, ie physical damage
+zox_tag(StatDefence);   // base stat that reduces damage, ie physical defence
 zox_tag(SpawnNameLabel);
 
 
 void zox_components_stats(ecs *world) {
     zoxd_tag(Stat);
     zoxd_nf_tag(StatLink);
+    zoxd_nf_tag(StatScaleLink);
+    zoxd_nf_tag(StatDefenceLink);
     zoxd_tag(SpawnNameLabel);
     // Types
     zoxd_tag(StatBase);
@@ -40,9 +48,13 @@ void zox_components_stats(ecs *world) {
     zoxd_float(ExperienceValue);
     zoxd_float(ExperienceMax);
     zoxd_float(StatLevelReward);
+    zoxd_float(StatScaleAmount);
+    zoxd_float(StatBonus);
     // special stats
     zoxd_tag(StatHealth);
     zoxd_tag(StatSoul);
     zoxd_tag(StatPoint);
     zoxd_tag(SkillPoint);
+    zoxd_tag(StatDamage);
+    zoxd_tag(StatDefence);
 }
