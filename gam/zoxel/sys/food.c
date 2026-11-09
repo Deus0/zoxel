@@ -4,6 +4,7 @@ void food_generate_system(iter* it) {
     byte depth = block_depth_limits.y;
     uint seed_shift = 236913;
     byte variants = 1;
+    float cookie_heal = 5;
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -17,6 +18,11 @@ void food_generate_system(iter* it) {
             continue;
         }
         uint seed = realm_seed->value + seed_shift;
+        // cookies restore health
+        entity realm_health = zox_get_child_by_id(world, e, zox_id(StatHealth));
+        if (!zox_valid(realm_health)) {
+            zox_logw("Realm has no health stat for [cokie]");
+        }
         entity cookie_nodegraph = spawn_model_nodegraph_cookie(world, e);
         // Spawn a Cookies Item
         {
@@ -38,6 +44,8 @@ void food_generate_system(iter* it) {
                 depth,
                 texture_vox,
                 direction_front,
+                realm_health,
+                cookie_heal,
                 dbg_log);
         }
     }

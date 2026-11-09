@@ -7,6 +7,8 @@ entity spawn_item_consumable(
     byte depth,
     entity texture_vox,
     byte face,
+    entity consume_stat,
+    float consume_value,
     byte dbg_log)
 {
     if (!zox_valid(model)) {
@@ -27,6 +29,11 @@ entity spawn_item_consumable(
     zox_setv(e, RaycastRange, block_place_range);
     zox_setv(e, RaycastType, zox_raycast_type_none);  // only consumed, no gizmo
     zox_prefab_addc_user_timings(world, e);
+    // Consuming restores a stat
+    zox_prefab_set(e, ConsumeValue, { consume_value });
+    if (zox_valid(consume_stat)) {
+        zox_link(world, e, ConsumeStat, consume_stat);
+    }
     // Links
     zox_setv(e, ModelLink, model);
     zox_set_parent(world, e, parent);

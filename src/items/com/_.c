@@ -5,8 +5,11 @@ zox_tag(ItemConsumable);
 zoxc_state(ItemDirty);
 zoxc_byte(Quantity);
 zox_tag(QuantityDirty);
+// Consumables
+zoxc_float(ConsumeValue);   // amount added to the consumed stat
 // Links
 zox_tag(ItemLink);
+zox_tag(ConsumeStat);       // links consumable to the realm stat it restores
 
 void zox_components_items(ecs* world) {
     zoxd_tag(Item);
@@ -16,6 +19,9 @@ void zox_components_items(ecs* world) {
     zoxd_state(ItemDirty);
     zoxd_byte(Quantity);
     zoxd_tag(QuantityDirty);
+    // Consumables
+    zoxd_float(ConsumeValue);
     // Links
     zoxd_nf_tag(ItemLink);
+    zoxd_nf_tag(ConsumeStat);
 }

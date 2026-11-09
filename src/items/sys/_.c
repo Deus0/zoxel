@@ -1,5 +1,6 @@
 #include "drops.c"
 #include "activate.c"
+#include "consume.c"
 #include "character.c"
 #include "death.c"
 #include "state.c"
@@ -33,6 +34,14 @@ void zox_systems_items(ecs* world) {
         [in] timers.Activate,
         [out] items.Quantity,
         [none] ItemBlock
+    );
+    zox_system_1(
+        ItemConsumeSystem,
+        zoxp_spawn,
+        [in] timers.Activate,
+        [in] items.ConsumeValue,
+        [out] items.Quantity,
+        [none] ItemConsumable
     );
     // States
     zox_system(
