@@ -1,4 +1,9 @@
+extern byte zox_no_lights;
+extern byte zox_smooth_lighting;
+
 // NOTE: Uplaods Terrain Chunks
+// NOTE: Waits for BuildMeshColors, otherwise new geometry renders a frame
+//      with unlit (white) colors, flickering bright in dark areas
 void textured_mesh_update_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
@@ -22,6 +27,13 @@ void textured_mesh_update_system(iter* it) {
         zox_sys_o(MeshUVs, uvs);
         zox_sys_i(MeshColorRGBs, colors);
         zox_sys_o(MeshRenderCount, count);
+        // lights still building colors, keep old mesh until ready
+        if (!zox_no_lights &&
+            zox_smooth_lighting &&
+            zox_has(e, BuildMeshColors))
+        {
+            continue;
+        }
         if (!gpu_mesh->value.x ||
             !gpu_mesh->value.y ||
             !gpu_uvs->value ||

@@ -218,6 +218,8 @@ void build_smooth_lights_system(iter* it) {
                 zox_log("Chunk Depth is wrong for Light Build [%s]",
                     zox_getn(chunk));
             }
+            // can't light it, don't block its geometry upload
+            zox_remove(e, BuildMeshColors);
             continue;
         }
         // If chunk building we wait

@@ -1,5 +1,6 @@
 # Todo
 
+- Fix light flickering issue
 - Add skillpoints when level up
 - Add rewards on quest handin
 	- Goal: Give 20 xp for handing in quest
@@ -15,7 +16,6 @@
 	- consumable items cokie shouldnt select terrain
 - fix error '[14:58:49.178] [ERROR] Smooth Lights Error: Colors Past Limits [1496] - Face [5] at Pos [14x0x14] Depth [4] of [4]
 [14:58:51.554] [ERROR] Smooth Lights Error: Colors Past Limits [332] - Face [5] at Pos [0x5x4] Depth [3] of [3]'
-- Fix light flickering issue
 - write bsh/test.sh that takes in test name
 	- it will find the test in the modules tst folders
 	- it will compile that file with zoxels src and flecs

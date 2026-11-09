@@ -114,6 +114,7 @@ void zox_systems_lights3(ecs* world) {
     );
     // Mesh
     // Wait until after mesh has built
+    // NOTE: Runs before MeshDirty upload, geometry upload waits for these colors
     zox_system(
         build_smooth_lights_system,
         zoxp_octree_read,
@@ -122,7 +123,6 @@ void zox_systems_lights3(ecs* world) {
         [none] rendering.ChunkMesh,
         [none] rendering.BuildMeshColors,
         [none] !core.BuildDisabled,
-        [none] !rendering.MeshDirty,
         [none] !rendering.BuildMesh,
     );
     /*zox_system(
