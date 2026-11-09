@@ -6,6 +6,7 @@ byte transparent_meshes = 0;
 #include "pre/_.c"
 #include "fun/_.c"
 #include "sys/_.c"
+#include "eve/_.c"
 
 void import_rendering3(ecs* world) {
     zox_module(rendering3);
@@ -13,5 +14,6 @@ void import_rendering3(ecs* world) {
     zox_systems_basics3(world);
     add_hook_load_shader(&spawn_shaders_basics3D);
     add_hook_spawn_prefabs(&zox_prefabs_rendering3);
+    add_hook_spawn_prefabs(&zox_events_rendering3);
 }
 

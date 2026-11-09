@@ -59,5 +59,8 @@ entity spawn_mesh3_clone(
     zox_set_ptr(e, MeshColorRGBs, colors);
     zox_setv(e, MeshRenderCount, zox_getv(clonee, MeshRenderCount));
     zox_add(e, MeshDirty);
+    // keep clone in sync with source, see mesh_clone_sync_event
+    zox_link(world, e, MeshCloneLink, clonee);
+    zox_add(clonee, MeshCloned);
     return e;
 }

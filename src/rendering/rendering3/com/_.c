@@ -2,6 +2,8 @@ zox_tag(Mesh3);
 zox_tag(MeshBasic3);
 zox_tag(TexturedMesh3);
 zox_tag(SkeletonMesh);
+zox_tag(MeshCloneLink);     // links a mesh clone to its source mesh
+zox_tag(MeshCloned);        // source mesh has clones linked to it
 #include "bone_index.c"
 #include "material_bone.c"
 zoxc_float3(BonePosition);      // Local to skeleton
@@ -14,6 +16,9 @@ void zox_components_rendering3(ecs* world) {
     zoxd_tag(MeshBasic3);
     zoxd_tag(TexturedMesh3);
     zoxd_tag(SkeletonMesh);
+    // Links
+    zoxd_nf_tag(MeshCloneLink);
+    zoxd_tag(MeshCloned);
     zoxd(MaterialTextured3D);
     zoxd(MaterialColored3D);
     zoxd(MaterialVoxInstance);

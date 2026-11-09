@@ -90,10 +90,6 @@ UIs
 	- Settings Spawning - InitializeEvent on App
     
 ## Remove old links
-	-x SlotLink
-	-x DraggerLink
-	-x DraggedLink
-	-x NodeLink
 	- ModelLink
 	- ModelLinks (half done)
 	- DataLink
@@ -113,7 +109,6 @@ UIs
 	- FontLink
 	- TooltipLink
 	- TooltipeeLink
-	-x IconOverlayLink
 	- PlotDataLink
 	- MouseLink
 	- VirtualZeviceLink
@@ -134,7 +129,6 @@ UIs
 	- FolderPathLink
 	- StreamLink
 
-
 Input Refactor
 - Make input actions events instead of systems
     - Pause key - PlayerPauseSystem
@@ -150,7 +144,6 @@ Input Refactor
 
 ## Tags / Events
 - Use a generic Dirty tag, use for stats
-- Refactor LayoutDirty
 - Refactor RenderDepthDirty, RenderDistanceDirty
 - Refactor MeshDirty as tag
 - Refactor BuildMesh - tag - BuildSkeletonMesh after

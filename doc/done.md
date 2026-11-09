@@ -1,5 +1,16 @@
 # Done
 
+-x Refactor LayoutDirty
+-x IconOverlayLink
+-x SlotLink
+-x DraggerLink
+-x DraggedLink
+-x NodeLink
+-x write giveall quests test
+-x mirror mesh doesnt update when game model does
+	- make a system that grabs the mesh clone link
+	- when it updates, we can update our mesh clone too
+	- link it to the characters mesh
 -x Add GiveAllQuests cheat function to the test ui, like GiveAllItems
 -x Fix Dialogue Animation
 	-x Dialogue animated text is buggy atm

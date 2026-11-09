@@ -1,10 +1,15 @@
 # Todo
 
+- Implement a tall grass block model
+	- support for linking a world model (minivox/blockvox) to multiple voxel links
+	- add a second block, tall_grass
+	- multi chunk support needed for vox models
+- regen should be based on regen stat thats linked - StatLink
+- When right click on an item ui, it should split the item quantity in half, the other half should be in the mouse item
+- When right click empty spot, place a single item, or stack a single item
+- regen not using proper stats
+	- make regening state depend on linked regen stat
 -o clicking on ui - activated punch... during dialogue
-- mirror mesh doesnt update when game model does
-	- make a system that grabs the mesh clone link
-	- when it updates, we can update our mesh clone too
-	- link it to the characters mesh
 
 # later
 - Track NearbyCharacters on npcs for UI spawning
@@ -16,8 +21,6 @@
 # Finish
 - Add rewards on quest handin
 	- Goal: Give 20 xp for handing in quest
-- regen not using proper stats
-	- make regening state depend on linked regen stat
 - MapUI should move per pixel
 - for body parts we can detatch:
 	- add a tooltip detachable line
@@ -29,7 +32,6 @@
 	- keep same pose - camera position and head
 	
 # New
-- right click to split cokie in half
 - import texture outlines as a seperate mask texture
 	- making it easier to change outlines
 	- bitmask - 0 / 1 ?
@@ -46,7 +48,6 @@
 	- guess state looking for realm
 
 # Tests
-- write giveall quests test
 - write pickedup item test
 - write a grid spawn test for every model
 - write a grid spawn test for every character
@@ -59,7 +60,6 @@
 	- remove old ones
 	- try push to new project?
 
-- regen should be based on regen stat thats linked - StatLink
 - spawn vox item in hand when selected
 	- instead of cube
 -x reduce health regen
