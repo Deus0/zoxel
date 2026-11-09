@@ -1,8 +1,19 @@
 # Todo
 
+- Bug: crashes when player character dies
+- Animate grass shader
+	- add grass noise animation, move only top verts
+	- add setting for this, use the newer logic thats observer based
+	- so we can turn off grass animation
+	- since grass uses vox instance system, the hard part is making it work with the old and new shader, since other minivox/block voxes use this static shader
+- Set minivox/world voxels brightness when lighting updates
+	- use observer on light change event on terrain chunk types
+	- might need to pass this data to the frag shader
 - We can just have a more general Damage/Defence type stats 
 	- With Physical and Magical tags
 	- DamageStat, DefenceStat
+- Link Aura to magial damage
+- link projectile to magical damage too
 - Add rewards on quest handin
 	- Goal: Give 20 xp for handing in quest
 	- Quest Rewards - More Cookies - Particles - Sounds (Yay)
@@ -28,7 +39,6 @@
 - Hand in Quest Node - linked to two answer
     - Dialogue Nodes: QuestDoneLink - QuestActiveLink
 - Arm animation needs to slerp to new rotations and now instantly snap during walk and attacking.
-- Shake camera when hit - return to og position after
 - fix error '[14:58:49.178] [ERROR] Smooth Lights Error: Colors Past Limits [1496] - Face [5] at Pos [14x0x14] Depth [4] of [4]
 [14:58:51.554] [ERROR] Smooth Lights Error: Colors Past Limits [332] - Face [5] at Pos [0x5x4] Depth [3] of [3]'
 - write bsh/test.sh that takes in test name

@@ -27,6 +27,12 @@ zoxc_float(AnimationDuration);
 // Floats
 zoxc_float(LerpFloatFrom);
 zoxc_float(LerpFloatTo);
+// Shakes - offsets a targets LocalPosition3D, restores it after
+zox_tag(ShakePosition);
+zoxc_float(ShakeStrength);
+zoxc_float3(ShakeOrigin);   // targets position without shake
+zoxc_float3(ShakeOffset);   // offset applied last frame
+zox_tag(ShakeLink);         // target -> its active shake
 
 void zox_components_animations(ecs* world) {
     zoxd_tag(Idling);
@@ -62,4 +68,10 @@ void zox_components_animations(ecs* world) {
     zoxd_float(AnimationDuration);
     zoxd_float(LerpFloatFrom);
     zoxd_float(LerpFloatTo);
+    // Shakes
+    zoxd_tag(ShakePosition);
+    zoxd_float(ShakeStrength);
+    zoxd_float3(ShakeOrigin);
+    zoxd_float3(ShakeOffset);
+    zoxd_nf_tag(ShakeLink);
 }

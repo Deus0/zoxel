@@ -9,6 +9,7 @@
 #include "lerp_to_entity.c"
 #include "position.c"
 #include "lerp.c"
+#include "shake.c"
 
 void zox_systems_animations(ecs* world) {
     zox_system(
@@ -102,5 +103,16 @@ void zox_systems_animations(ecs* world) {
         [in] AnimationDuration,
         [in] LerpFloatFrom,
         [in] LerpFloatTo
+    );
+    zox_system(
+        ShakePositionSystem,
+        zoxp_update,
+        [in] AnimationTarget,
+        [in] AnimationStartTime,
+        [in] AnimationDuration,
+        [in] ShakeStrength,
+        [out] ShakeOrigin,
+        [out] ShakeOffset,
+        [none] ShakePosition
     );
 }

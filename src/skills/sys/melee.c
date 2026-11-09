@@ -203,6 +203,7 @@ void melee_system(iter* it) {
                     world,
                     hit,
                     user);
+                zox_add(hit, JustHit);
             }
             // hit sound
             spawn_sound_generated(

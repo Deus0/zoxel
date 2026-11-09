@@ -1,5 +1,24 @@
 # Done
 
+-x Shake camera when hit - return to OG position after
+	-x Create a animation entity that shakes camera for x seconds
+	-x use observer for when player character is hit
+-x More Components (to remove)
+    -x BuildChunkSides
+    -x Busy
+    -x Ready
+    -x RenderDepthDirty
+    -x RenderDistanceDirty
+    -x GenerateChunk
+    -x GenerateLights
+-x LightFloodSystem [7ms]
+-x ChunkSidesSystem [5ms]
+-x Target: 230fps at the current position
+-x keep testing against old builds
+-x Streaming gets 20ms spikes atm...
+	-x debug with mangohud
+-x Lower FPS, investigate the chunk meshes tables
+    -x we can see by debugging pipelines
 -x Add base stat "Physical Damage" that punch uses, strength should increase this, and use physical defence to decrease it, when damage is applied
 -x Intelligence stat should increase mana, and Wisdom should increase mana regen, Strength increase health, Vitality increases health regen, endurance increases physical defence, Agility increases energy, dexterity increases energy regen.
 -x When Level up + 3 stat points

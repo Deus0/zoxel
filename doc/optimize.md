@@ -1,10 +1,5 @@
 # Optimizations
 
-Unsorted
--x Streaming gets 20ms spikes atm...
-	-x debug with mangohud
--x Lower FPS, investigate the chunk meshes tables
-    -x we can see by debugging pipelines
 
 ## --------------------
 ## TOP PRIORITY
@@ -15,12 +10,8 @@ Unsorted
 ## --------------------
 
 ## Regression again
--x Target: 230fps at the current position
--x keep testing against old builds
 
 ## Fix Lag Spikes
--x LightFloodSystem [7ms]
--x ChunkSidesSystem [5ms]
 
 -> Use the flecs profiler to make sure chunk components are reduced properly
 -> Focus on terrain chunks for now
@@ -40,13 +31,6 @@ Unsorted
     - BuildChunkSides
     - GenerateModel
     - FindNeighbors
-    -x BuildChunkSides
-    -x Busy
-    -x Ready
-    -x RenderDepthDirty
-    -x RenderDistanceDirty
-    -x GenerateChunk
-    -x GenerateLights
 
 - Remove systems when idle, by removing components
     - Chunks
