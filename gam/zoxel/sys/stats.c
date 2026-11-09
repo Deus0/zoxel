@@ -75,6 +75,25 @@ zox_sys2(StatsRealmSpawnSystem) {
             "manaregen",
             mana_c,
             mana);
+        // Currencies
+        entity stat_point = spawn_realm_stat(
+            world,
+            e,
+            prefab_stat_currency,
+            "stat point",
+            "stat_point",
+            color_rgb_white);
+        zox_add(stat_point, StatPoint);
+        zox_prefab_set(stat_point, StatLevelReward, { 3 });
+        entity skill_point = spawn_realm_stat(
+            world,
+            e,
+            prefab_stat_currency,
+            "skill point",
+            "skill_point",
+            color_rgb_white);
+        zox_add(skill_point, SkillPoint);
+        zox_prefab_set(skill_point, StatLevelReward, { 1 });
         // Attributes
         spawn_realm_stat(
             world,

@@ -15,6 +15,7 @@ zox_tag(FillTexture);
 zox_tag(TextureAddNoise);
 zox_tag(TextureRGB);
 zox_tag(ArrowTexture);
+zox_tag(PlusTexture);
 zoxc_byte(GenerateTexture);
 zoxc_byte(OutlineThickness);
 zoxc_byte(FrameCorner);
@@ -68,4 +69,5 @@ void zox_components_textures(ecs* world) {
     zoxd_tag(TextureAddNoise);
     zoxd_tag(CenterVoxTexture);
     zoxd_tag(ArrowTexture);
+    zoxd_tag(PlusTexture);
 }

@@ -1,5 +1,12 @@
 # Done
 
+-x The stat + button is not very visible, generate a texture for it
+-x Add 1 skill point and 3 stat points to player character when level up
+	-x add this base stat to realm stats too
+	-x make a currency stat type
+	-x add skillpoints and stat points
+	-x when stat points added, you can see a + button added to top left corner of attributes
+	-x click these plus buttons to decrease stat points and increase the attributes
 -x consumable items (cokie) shouldnt select terrain (placement gizmo)
 -x Fix light flickering issue
 -x regen not using proper stats

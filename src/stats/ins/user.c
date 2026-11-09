@@ -71,3 +71,17 @@ entity spawn_stat_level(
     zox_setv(e, StatValue, value);
     return e;
 }
+
+entity spawn_stat_currency(
+    ecs* world,
+    entity parent,
+    entity prefab,
+    float value)
+{
+    entity e = spawn_stat(
+        world,
+        prefab,
+        parent);
+    zox_setv(e, StatValue, value);
+    return e;
+}

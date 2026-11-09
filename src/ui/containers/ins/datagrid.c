@@ -29,7 +29,12 @@ entity spawn_datagrid(
     int2 position = int2_zero;
     float2 position_anchor = float2_half;
     // our window info
+    // NOTE: 4 columns, add rows when more data than fits
     byte2 cells_size = byte2_single(4);
+    uint rows = (dlength + cells_size.x - 1) / cells_size.x;
+    if (rows > cells_size.y) {
+        cells_size.y = rows > 255 ? 255 : (byte) rows;
+    }
     byte2 grid_padding = byte2_single(2 * ui_scale);
     byte2 grid_margins = byte2_single(4 * ui_scale);
     int2 icon_size = int2_single((default_icon_size / 4) * ui_scale);

@@ -5,6 +5,7 @@ zox_tag(Healthbar);
 zox_tag(StatIconLabel);
 zox_tag(StatBars);
 zox_tag(HealthbarLink);
+zox_tag(StatPlusButton);    // spends a stat point on an attribute
 
 void zox_components_stats_ui(ecs* world) {
     zoxd_tag(Statbar);
@@ -14,6 +15,7 @@ void zox_components_stats_ui(ecs* world) {
     zoxd_tag(StatIconLabel);
     zoxd_tag(StatBars);
     zoxd_nf_tag(HealthbarLink);
+    zoxd_tag(StatPlusButton);
 }
 
 // quick fix for now

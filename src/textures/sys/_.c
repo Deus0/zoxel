@@ -7,6 +7,7 @@
 #include "mouse.c"
 #include "icon.c"
 #include "arrow.c"
+#include "plus.c"
 #include "gpu.c"
 
 void zox_systems_textures(ecs *world) {
@@ -20,6 +21,17 @@ void zox_systems_textures(ecs *world) {
         [in] textures.OutlineThickness,
         [out] textures.TextureData,
         [none] textures.ArrowTexture
+    );
+    zox_system(
+        PlusTextureSystem,
+        zoxp_update,
+        [in] core.Generate,
+        [in] rendering.TextureSize,
+        [in] textures.FillColor,
+        [in] textures.OutlineColor,
+        [in] textures.OutlineThickness,
+        [out] textures.TextureData,
+        [none] textures.PlusTexture
     );
     zox_system(
         MouseTextureSystem,

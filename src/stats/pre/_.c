@@ -4,6 +4,7 @@ entity prefab_stat_base;
 entity prefab_stat_state;
 entity prefab_stat_regen;
 entity prefab_stat_attribute;
+entity prefab_stat_currency;
 entity prefab_stat_level;
 
 void spawn_prefabs_stats(ecs* world) {
@@ -40,6 +41,13 @@ void spawn_prefabs_stats(ecs* world) {
         entity e = zox_prefab_from_parent(world, prefab_stat);
         zox_add(e, StatAttribute);
         prefab_stat_attribute = e;
+    }
+    // Currencies
+    {
+        entity e = zox_prefab_from_parent(world, prefab_stat);
+        zox_add(e, StatCurrency);
+        zox_prefab_set(e, StatLevelReward, { 0 });
+        prefab_stat_currency = e;
     }
     zox_prefab_character_add(SpawnNameLabel);
 }

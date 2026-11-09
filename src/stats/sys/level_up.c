@@ -23,20 +23,24 @@ void level_up_system(iter* it) {
         experience_max->value = (int) ( experience_max->value * experience_max_multiplier);
         level->value++;
         // zox_log_name(" + [%s] has leveled up", userLink->value)
-        // give 1 in all attributes for now
-        //  to test them out
-        // TODO: Increase StatPoint and SkillPoint instead
+        // reward currencies, ie stat point and skill point
         iter it2 = zox_children(world, parent);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
-                entity attribute = it2.entities[j];
-                if (!zox_has(attribute, StatAttribute)) {
+                entity currency = it2.entities[j];
+                if (!zox_has(currency, StatCurrency) ||
+                    !zox_has(currency, StatLevelReward))
+                {
                     continue;
                 }
-                zox_muter(attribute, StatValue, value);
-                value->value++;
-                zox_add(attribute, Dirty);
-                zox_add(attribute, DataDirty);
+                float reward = zox_getv(currency, StatLevelReward);
+                if (reward <= 0) {
+                    continue;
+                }
+                zox_muter(currency, StatValue, value);
+                value->value += reward;
+                zox_add(currency, Dirty);
+                zox_add(currency, DataDirty);
             }
         }
         /*entity stats[stats_children_capacity];

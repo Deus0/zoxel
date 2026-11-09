@@ -1,11 +1,9 @@
 # Todo
 
-- Add 1 skill point and 3 stat points to player character when level up
-	- add this base stat to realm stats too
-	- make a currency stat type
-	- add skillpoints and stat points
-	- when stat points added, you can see a + button added to top left corner of attributes
-	- click these plus buttons to decrease stat points and increase the attributes
+- Intelligence stat should increase mana, and Wisdom should increase mana regen
+- Npc Item drops - should pick an item item randomly based on rarity of the body parts + inventory
+	- it should not drop all items
+	- player characters should still drop all loot though for chance to pick them up
 - Add rewards on quest handin
 	- Goal: Give 20 xp for handing in quest
 - Collect 5 cookies for quest

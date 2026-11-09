@@ -1,32 +1,17 @@
-void generate_texture_arrow(color* data, int2 size, color fill, color outline, byte thickness) {
-    const color empty = color_clear;
-    // Pass 1: generate arrow shape
-    int center = size.x / 2;
-    int half_height = size.y / 2;
-    int shaft_width = size.x / 3;
+// Outlines a filled shape, edges of fill pixels become outline
+void generate_texture_shape_outline(
+    color* data,
+    int2 size,
+    color fill,
+    color outline,
+    byte thickness)
+{
     int index = 0;
-    for (int y = 0; y < size.y; y++) {
-        for (int x = 0; x < size.x; x++) {
-            // Arrow head occupies upper half
-            byte in_head = 0;
-            if (y >= half_height) {
-                int head_y = size.y - 1 - y;
-                int half_width = (head_y * center) / (half_height - 1);
-                in_head = (x >= center - half_width &&
-                           x <= center + half_width);
-            }
-            // Arrow shaft occupies lower half
-            byte in_shaft =
-                (y < half_height) &&
-                (x >= center - shaft_width / 2) &&
-                (x <= center + shaft_width / 2);
-            data[index++] = (in_head || in_shaft) ? fill : empty;
-        }
-    }
-    // Pass 2: generate outline
-    index = 0;
     int pixel_count = size.x * size.y;
     color* source = malloc(sizeof(color) * pixel_count);
+    if (!source) {
+        return;
+    }
     memcpy(source, data, sizeof(color) * pixel_count);
     for (int y = 0; y < size.y; y++) {
         for (int x = 0; x < size.x; x++, index++) {
@@ -56,6 +41,35 @@ void generate_texture_arrow(color* data, int2 size, color fill, color outline, b
         }
     }
     free(source);
+}
+
+void generate_texture_arrow(color* data, int2 size, color fill, color outline, byte thickness) {
+    const color empty = color_clear;
+    // Pass 1: generate arrow shape
+    int center = size.x / 2;
+    int half_height = size.y / 2;
+    int shaft_width = size.x / 3;
+    int index = 0;
+    for (int y = 0; y < size.y; y++) {
+        for (int x = 0; x < size.x; x++) {
+            // Arrow head occupies upper half
+            byte in_head = 0;
+            if (y >= half_height) {
+                int head_y = size.y - 1 - y;
+                int half_width = (head_y * center) / (half_height - 1);
+                in_head = (x >= center - half_width &&
+                           x <= center + half_width);
+            }
+            // Arrow shaft occupies lower half
+            byte in_shaft =
+                (y < half_height) &&
+                (x >= center - shaft_width / 2) &&
+                (x <= center + shaft_width / 2);
+            data[index++] = (in_head || in_shaft) ? fill : empty;
+        }
+    }
+    // Pass 2: generate outline
+    generate_texture_shape_outline(data, size, fill, outline, thickness);
 }
 
 zox_sys2(ArrowTextureSystem) {

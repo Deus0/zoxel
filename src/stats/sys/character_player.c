@@ -12,7 +12,7 @@ zox_sys2(PlayerCharacterStatsSystem) {
             e,
             realm,
             dbg_log);
-        // add all attributes as 0
+        // add all attributes and currencies as 0
         iter it2 = zox_children(world, realm);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
@@ -20,10 +20,12 @@ zox_sys2(PlayerCharacterStatsSystem) {
                 if (!zox_has(stat, Stat)) {
                     continue;
                 }
-                if (!zox_has(stat, StatAttribute)) {
-                    continue;
+                if (zox_has(stat, StatAttribute)) {
+                    spawn_stat_attribute(world, e, stat, 0);
+                } else if (zox_has(stat, StatCurrency)) {
+                    // stat point, skill point, etc
+                    spawn_stat_currency(world, e, stat, 0);
                 }
-                spawn_stat_attribute(world, e, stat, 0);
             }
         }
     }

@@ -116,6 +116,9 @@ void stat_icon_tooltip_event(iter* it) {
         } else if (zox_has(stat, StatAttribute)) {
             float value = zox_getv(stat, StatValue);
             sprintf(result, "[%s] [%i]\n", name, (int) value);
+        } else if (zox_has(stat, StatCurrency)) {
+            float value = zox_getv(stat, StatValue);
+            sprintf(result, "[%s] [%i]\n", name, (int) value);
         } else {
             sprintf(result, "[%s]\n", name);
         }
