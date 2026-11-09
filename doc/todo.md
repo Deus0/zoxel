@@ -1,8 +1,11 @@
 # Todo
 
-- item issues
-	- consumable items cokie shouldnt select terrain
-- Add skillpoints when level up
+- Add 1 skill point and 3 stat points to player character when level up
+	- add this base stat to realm stats too
+	- make a currency stat type
+	- add skillpoints and stat points
+	- when stat points added, you can see a + button added to top left corner of attributes
+	- click these plus buttons to decrease stat points and increase the attributes
 - Add rewards on quest handin
 	- Goal: Give 20 xp for handing in quest
 - Collect 5 cookies for quest

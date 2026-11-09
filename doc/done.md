@@ -1,5 +1,6 @@
 # Done
 
+-x consumable items (cokie) shouldnt select terrain (placement gizmo)
 -x Fix light flickering issue
 -x regen not using proper stats
 	-x make regening state depend on linked regen stat

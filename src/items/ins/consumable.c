@@ -25,7 +25,7 @@ entity spawn_item_consumable(
     zox_setv(e, WarmupTime, 0.125f);
     zox_setv(e, CooldownTime, 0.125f);
     zox_setv(e, RaycastRange, block_place_range);
-    zox_setv(e, RaycastType, 1);
+    zox_setv(e, RaycastType, zox_raycast_type_none);  // only consumed, no gizmo
     zox_prefab_addc_user_timings(world, e);
     // Links
     zox_setv(e, ModelLink, model);

@@ -16,6 +16,10 @@ zox_sys2(RaycastGizmoSystem) {
         zox_sys_i(RaycastVoxelData, data);
         zox_sys_i(RaycastType, rtype);
         byte ray_hit = data->result;
+        // no gizmo for this raycast, ie consumables, hides gizmo below
+        if (rtype->value == zox_raycast_type_none) {
+            ray_hit = rayhit_none;
+        }
         entity gizmo = zox_get_link(world, e, Gizmo);
         if (ray_hit == rayhit_terrain) {
             float3 position = data->positionf;
@@ -23,12 +27,12 @@ zox_sys2(RaycastGizmoSystem) {
                 position = float3_add(position, float3_scale(data->normal, quad_depth_buffer));
             } else {
                 // For placement rays
-                if (rtype->value == 1) {
+                if (rtype->value == zox_raycast_type_place) {
                     position = float3_add(position, float3_scale(data->normal, data->voxel_scale));
                 }
             }
             byte sides = get_raycast_sides(world, data);
-            if (rtype->value == 1) {
+            if (rtype->value == zox_raycast_type_place) {
                 sides = 255; // all sides
             }
             float4 quad_rotation = quaternion_from_to(float3_up, data->normal);

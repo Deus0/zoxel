@@ -2,6 +2,10 @@
 #define rayhit_terrain 1
 #define rayhit_block_vox 2
 #define rayhit_character 3
+// RaycastType - what the raycast is used for, sets the gizmo
+#define zox_raycast_type_select 0   // selection gizmo, destroying blocks
+#define zox_raycast_type_place 1    // placement gizmo, placing blocks
+#define zox_raycast_type_none 2     // no gizmo, ie consumables
 float raycaster_range = 2.5f;
 // this should be per scale of the quad?
 const float quad_depth_buffer = 0.02f; // 0.02f;

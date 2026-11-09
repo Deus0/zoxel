@@ -54,7 +54,7 @@ entity spawn_prefab_character3(
     zox_setv(e, Jump, 0);
     // Triggers
     zox_setv(e, RaycastVoxelData, 0);
-    zox_setv(e, RaycastType, 0);
+    zox_setv(e, RaycastType, zox_raycast_type_select);
     zox_setv(e, RaycastRange, 1.5f);
     zox_setv(e, TriggerActionA, 0);
     // Debug
