@@ -1,6 +1,5 @@
 # Todo
 
-- quantity of item didnt update when moving items
 -o clicking on ui - activated punch... during dialogue
 - Fix Dialogue Animation
 	- Dialogue animated text is buggy atm

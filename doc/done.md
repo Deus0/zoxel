@@ -1,5 +1,6 @@
 # Done
 
+-x quantity of item didnt update when moving items
 -x multiply mvp matrix in render systems before the upload, instead of doing per gpu
 -x Upgrade Flecs to 4.2
 	-x skybox missing

@@ -9,18 +9,14 @@ void item_icon_label_event(iter* it) {
         zox_sys_e();
         zox_sys_o(TextData, text);
         entity slot = zox_get_link(world, e, SlotLink);
-        if (!zox_valid(slot) ||
-            !zox_has(slot, DataLink))
-        {
-            continue;
-        }
-        entity item = zox_getv(slot, DataLink);
-        if (!zox_valid(item) ||
-            !zox_has(item, Item))
-        {
-            continue;
-        }
+        entity item =
+            zox_valid(slot) && zox_has(slot, DataLink) ?
+                zox_getv(slot, DataLink) :
+                0;
+        // NOTE: empty slots / non items still clear the label
         byte quantity =
+            zox_valid(item) &&
+            zox_has(item, Item) &&
             zox_has(item, Quantity) ?
                 zox_getv(item, Quantity) :
                 0;

@@ -36,7 +36,7 @@ void slot_ui_update_system(iter* it) {
             }
         } else {
             entity data = zox_getv(slot, DataLink);
-            if (zox_valid(data) && zox_has(e, DataUpdate)) {
+            if (zox_valid(data) && zox_has(data, DataUpdate)) {
                 zox_add(e, DataDirty);
             }
         }

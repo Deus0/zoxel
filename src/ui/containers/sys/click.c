@@ -122,6 +122,8 @@ zox_sys2(DataUIClickSystem) {
                     mouse_data->value = 0;
                     zox_mut_end(mouse_ui, DataLink);
                     zox_setv(mouse_ui, RenderDisabled, 1);
+                    // slot dirty so its quantity label updates
+                    zox_add(slot, DataDirty);
                     zox_add(e, DataDirty);
                     continue;
                 }
