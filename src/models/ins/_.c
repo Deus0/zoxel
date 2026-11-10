@@ -1,5 +1,6 @@
 // voxes
 #include "vox_lods.c"
+#include "vox_children.c"
 #include "vox_generated.c"
 #include "vox_file.c"
 #include "block.c"

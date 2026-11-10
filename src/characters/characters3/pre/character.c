@@ -1,12 +1,22 @@
-entity spawn_prefab_character3(
-    ecs *world,
-    entity prefab,
-    byte type)
-{
-    entity e = zox_prefab_from_parent(world, prefab);
+// NOTE: Characters hold no voxel or mesh data, those are children:
+//  - with a model: a renderer child (RendererLink), see CharacterChildrenSpawnSystem
+//  - CharacterUnique: also a cloned vox child (VoxLink) with its own lod meshes
+//  - SkeletonLink: a combined vox child (VoxLink) and a skeleton child, from the bones module
+entity spawn_prefab_character3(ecs *world) {
+    zox_prefab();
     zox_prefab_name("character3");
     zox_add(e, Character);
     zox_add(e, Character3);
+    // Transforms
+    zox_setv(e, Position3D, float3_zero);
+    zox_setv(e, Rotation3D, float4_identity);
+    zox_setv(e, Scale1, 1);
+    zox_setv(e, TransformMatrix, float4x4_identity);
+    // Render State, children follow these
+    zox_setv(e, RenderDisabled, 0);
+    zox_setv(e, RenderDepth, 0);
+    zox_setv(e, MaxRenderDepth, 0);
+    zox_setv(e, RenderDepthDirty, zox_dirty_none);
     // generation
     zox_setv(e, Seed, 0);
     // name
@@ -59,12 +69,9 @@ entity spawn_prefab_character3(
     zox_setv(e, TriggerActionA, 0);
     // Debug
     // prefab_add_cube_lines(world, e, color_white, 0);
-    // Unique Character
-    if (type != zox_character_type_instanced) {
-        // zox_setv(e, ChunkLod, 255);
-        zox_setv(e, CloneVox, 0);
-        zox_setv(e, CloneVoxLink, 0);
-    }
+    // Children
+    zox_setv(e, VoxLink, 0);
+    zox_setv(e, RendererLink, 0);
     zox_add(e, PreInitialize);
     zox_setv(e, GenerateCharacter, zox_dirty_trigger);
     return e;

@@ -69,7 +69,6 @@ void zox_systems_controllers3(ecs *world) {
     zox_system(
         place_camera_head_system,
         zoxp_update,
-        [in] blocks.BlockScale,
         [none] bones.Skeleton,
         [none] bones.SkeletonUpdate,
     );
@@ -115,7 +114,6 @@ void zox_systems_controllers3(ecs *world) {
     zox_system(
         WalkStateSystem,
         zoxp_update,
-        [in] physics3.Velocity3D,
         [out] bones.WalkState,
         [none] bones.Skeleton
     );

@@ -120,6 +120,21 @@ entity get_lodded_model(
     return mlods->value[depth];
 }
 
+// Gets a models block scale and physics bounds, returns 0 if not a vox model
+byte get_model_bounds(
+    ecs* world,
+    entity model,
+    float* block_scale,
+    float3* bounds)
+{
+    if (!zox_valid(model) || !zox_has(model, BlockScale) || !zox_has(model, ChunkSize)) {
+        return 0;
+    }
+    *block_scale = zox_getv(model, BlockScale);
+    *bounds = calculate_vox_bounds(zox_getv(model, ChunkSize), *block_scale);
+    return 1;
+}
+
 // Resolves a ModelGroup to its first Model
 entity get_model_first(
     ecs* world,

@@ -10,6 +10,7 @@
 #include "com/_.c"
 #include "set/_.c"
 #include "pre/_.c"
+#include "ins/_.c"
 #include "sys/_.c"
 #include "fun/_.c"
 #include "eve/_.c"

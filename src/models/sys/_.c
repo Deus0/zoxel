@@ -5,8 +5,16 @@
 #include "size.c"
 #include "end.c"
 #include "settings.c"
+#include "renderer_lod.c"
 
 void zox_systems_models(ecs* world) {
+    zox_system(
+        RendererLodSystem,
+        zoxp_update,
+        [in] rendering.RenderDepthDirty,
+        [in] rendering.RenderDepth,
+        [in] rendering.RendererLink,
+    );
     zox_system(
         ModelSizeNodeSystem,
         zoxp_update,

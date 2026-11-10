@@ -28,6 +28,7 @@ zoxc_hashmap(ChunkLinks, int3)
 // operations
 zoxc_byte(CloneVox);
 zoxc_entity(CloneVoxLink);
+zoxc_entity(VoxLink);      // links to a child vox that holds voxel data, i.e. a characters vox
 zoxc_state(CombineVox);
 zoxc_entitiesw(CombineList);
 zoxc_arrayd(CombinePositions, byte3);
@@ -81,6 +82,7 @@ void zox_components_chunks3(ecs* world) {
     zoxd_byte(CloneVox);
     zoxd_state(CombineVox);
     zoxd_entity(CloneVoxLink);
+    zoxd_entity(VoxLink);
     zoxd_entitiesw(CombineList);
     zoxd_arrayd(CombinePositions);
     zoxd_arrayd(CombineDepths);

@@ -153,15 +153,8 @@ zox_sys2(CombineVoxSystem) {
         }
         // write_unlock_VoxelNode(voctree);
         csize->value = new_csize;
-        // NOTE: Render at the depth for our chunks distance, like ChunkEntitiesLodSystem
-        byte distance = 0;
-        if (zox_has(e, ChunkLink)) {
-            entity chunk = zox_getv(e, ChunkLink);
-            if (zox_valid(chunk) && zox_has(chunk, RenderDistance)) {
-                distance = zox_getv(chunk, RenderDistance);
-            }
-        }
-        rdepth->value = camera_distance_to_npc_render_depth(distance, ndepth->value);
+        // NOTE: Vox data is always at max depth, its owners RenderDepth picks the mesh
+        rdepth->value = ndepth->value;
         zox_add(e, VoxelNodeDirty);
         /*zox_log(" - colors [%i]", colors->length);
         zox_log(" - vdepth [%i] - grid max [%i]", ndepth->value, powers_of_two_byte[ndepth->value]);

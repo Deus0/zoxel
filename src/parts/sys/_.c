@@ -7,31 +7,26 @@ void zox_systems_bodys(ecs* world) {
     zox_system(
         BodyCombineSystem,
         zoxp_update,
+        [in] chunks3.VoxLink,
         [out] parts.BodyDirty,
         [out] parts.BodySize,
-        [out] chunks3.CombineList,
-        [out] chunks3.CombinePositions,
-        [out] chunks3.CombineDepths,
-        [out] chunks3.CombineVox,
-        [out] chunks.NodeDepth,
         [out] blocks.BlockScale,
-        [none] bones.Skeleton,
+        [none] bones.SkeletonLink,
     );
     zox_system_1(
         CharacterBodySpawnSystem,
         zoxp_spawn,
         [in] characters.GenerateCharacter,
         [out] parts.BodyDirty,
-        [none] bones.Skeleton,
+        [none] bones.SkeletonLink,
     );
     zox_system_1(
         CharacterBoneSpawnSystem,
         zoxp_spawn,
         [in] parts.BodySize,
         [in] blocks.BlockScale,
+        [in] bones.SkeletonLink,
         [out] parts.BodyDirty,
-        [out] rendering3.BoneLinks,
-        [none] bones.Skeleton,
     );
     zox_system(
         SlotItemTooltipSystem,

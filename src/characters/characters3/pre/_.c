@@ -1,15 +1,11 @@
 #include "character.c"
-#include "instanced.c"
 #include "skeleton.c"
-#include "skeleton_mesh.c"
 
 ushort prefab_characters_count = 0;
 entity prefabs_characters3[32];
 entity local_character3D;
 entity prefab_character3;
-entity prefab_character3_instanced;
 entity prefab_character3_skeleton;
-entity prefab_skeleton_mesh;
 
 // setters for higher modules to add to characters
 #define zox_prefab_character_set(T, ...) {\
@@ -31,19 +27,9 @@ entity prefab_skeleton_mesh;
 }
 
 void spawn_prefabs_characters3D(ecs *world) {
-    prefab_character3 = spawn_prefab_character3(
-        world,
-        prefab_vox,
-        zox_character_type_unique);
-    prefab_character3_skeleton = spawn_prefab_character3_skeleton(
-        world,
-        prefab_vox);
-    prefab_skeleton_mesh = spawn_prefab_skeleton_mesh(world);
-    prefab_character3_instanced = spawn_prefab_character3_instanced(
-        world,
-        prefab_vox_instanced);
+    prefab_character3 = spawn_prefab_character3(world);
+    prefab_character3_skeleton = spawn_prefab_character3_skeleton(world, prefab_character3);
     prefabs_characters3[prefab_characters_count++] = prefab_character3;
-    prefabs_characters3[prefab_characters_count++] = prefab_character3_instanced;
     prefabs_characters3[prefab_characters_count++] = prefab_character3_skeleton;
     if (prefab_realm) {
         zox_prefab_add(prefab_realm, CharacterLinks);

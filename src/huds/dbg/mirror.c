@@ -43,10 +43,20 @@ entity zox_tst_render_texture_character(
         10 * ui_scale,
         4 * ui_scale
     };
-    // NOTE: Skeleton characters keep their meshes as children
-    entity mesh_source = zox_get_link(world, character, ActiveMesh);
+    // NOTE: Characters keep their meshes as children
+    entity skeleton = get_skeleton(world, character);
+    entity mesh_source = zox_valid(skeleton) ?
+        zox_get_link(world, skeleton, ActiveMesh) :
+        0;
+    if (!zox_valid(mesh_source) && zox_has(character, RendererLink)) {
+        entity renderer = zox_getv(character, RendererLink);
+        if (zox_valid(renderer)) {
+            mesh_source = zox_getv(renderer, InstanceLink);
+        }
+    }
     if (!zox_valid(mesh_source)) {
-        mesh_source = character;
+        zox_log("No character mesh to render");
+        return 0;
     }
     entity mesh_clone =
         spawn_mesh3_clone(

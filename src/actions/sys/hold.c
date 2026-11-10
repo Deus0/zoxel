@@ -19,15 +19,20 @@ zox_sys2(ActiveActionHoldSystem) {
     zox_sys_begin();
     zox_sys_in(ActiveActionDirty);
     zox_sys_in(ActiveAction);
-    zox_sys_out(RaiseShoulder);
+    zox_sys_in(SkeletonLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ActiveActionDirty, dirty);
         zox_sys_i(ActiveAction, aaction);
-        zox_sys_o(RaiseShoulder, raise);
+        zox_sys_i(SkeletonLink, skeleton_link);
         if (dirty->value != zox_dirty_active) {
             continue;
         }
+        entity skeleton = skeleton_link->value;
+        if (!zox_valid(skeleton) || !zox_has(skeleton, RaiseShoulder)) {
+            continue;
+        }
+        RaiseShoulder* raise = zox_getm(skeleton, RaiseShoulder);
         byte new_raise = zox_valid(aaction->value);
         if (raise->value != new_raise) {
             raise->value = zox_valid(aaction->value);
@@ -41,7 +46,7 @@ zox_sys2(ActiveActionHoldSystem) {
         byte spawn_held =
             zox_valid(aaction->value) &&
             zox_has(aaction->value, Item);
-        entity hand = zox_get_link(world, e, HandBoneLink);
+        entity hand = zox_get_link(world, skeleton, HandBoneLink);
         entity bone_parent;
         if (zox_valid(hand)) {
             bone_parent = hand;

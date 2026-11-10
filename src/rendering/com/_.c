@@ -33,6 +33,7 @@ zox_tag(MaterialLink);
 zoxc_byte(ShaderSourceIndex);
 zox_tag(ShaderLink); // links to a shader entity
 zoxc_entity(InstanceLink); // links to a instance parent
+zoxc_entity(RendererLink); // links to a child renderer, i.e. a characters instance renderer
 // Models
 zoxc_entities(ModelLinks)
 zoxc_entity(ModelLink);         // a render instance links to model
@@ -112,6 +113,7 @@ void zox_components_rendering(ecs *world) {
     zoxd_byte(ShaderSourceIndex);
     zoxd_nf_tag(MaterialLink);
     zoxd_entity(InstanceLink);
+    zoxd_entity(RendererLink);
     zoxd_nf_tag(ShaderLink);
     zoxd_entity(ModelLink);
     zoxd_entities(ModelLinks);

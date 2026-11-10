@@ -123,6 +123,17 @@ cd zoxel
 ./bsh/build.sh
 ```
 
+## Docs
+
+Notes on how the code fits together live in [doc](doc). They're a work in
+progress and will be reorganised over time.
+
+- [Characters](doc/character.md): how characters are structured, their
+  children (voxes, renderers, skeletons), and tips for working with them
+- [Architecture](doc/architecture.md): events vs systems, and other
+  design guidelines
+- [Coding Standards](doc/coding_standards.md): code style and conventions
+
 ## Follow Development
 
 Mastodon:

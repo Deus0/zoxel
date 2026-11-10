@@ -1,20 +1,23 @@
 // NOTE: Sets camera position when body updates
 // NOTE: We will use a camera negative Z from now on
+// NOTE: Runs on skeletons, its owner character holds the CameraLink and BlockScale
 void place_camera_head_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
-    zox_sys_begin();
-    zox_sys_in(BlockScale);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(BlockScale, bscale);
-        entity head_bone = zox_get_link(world, e, HeadBoneLink);
-        if (!zox_valid(head_bone)) {
-            zox_loge("Invalid Head on Character");
+        entity character = zox_get_parent(world, e);
+        if (!zox_valid(character) || !zox_has(character, BlockScale)) {
             continue;
         }
-        entity camera = zox_get_link(world, e, CameraLink);
+        float block_scale = zox_getv(character, BlockScale);
+        entity head_bone = zox_get_link(world, e, HeadBoneLink);
+        if (!zox_valid(head_bone)) {
+            zox_loge("Invalid Head on Skeleton");
+            continue;
+        }
+        entity camera = zox_get_link(world, character, CameraLink);
         if (!zox_valid(camera)) {
             //zox_loge("Invalid Camera on Character %s",
             //    zox_getn(e));
@@ -28,7 +31,7 @@ void place_camera_head_system(iter* it) {
         float3 camera_offset = (float3) {
             0,
             0,
-            - (head_size.z + bscale->value * 1.5f)
+            - (head_size.z + block_scale * 1.5f)
         };
         float3 euler = (float3) { 0, 0, 0 };    // 180
         if (is_camera_positive_z) {

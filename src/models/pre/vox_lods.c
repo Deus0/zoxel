@@ -1,26 +1,11 @@
 // A single max detail vox model, data only
 //  - spawns a VoxLodMesh child per render depth
 //  - ModelLods links to those meshes, for instancing
-entity spawn_prefab_vox_lods(ecs *world) {
-    zox_prefab();
+entity spawn_prefab_vox_lods(ecs *world, entity prefab) {
+    zox_prefab_child(prefab);
     zox_prefab_name("vox_lods");
     zox_add(e, Model);
-    zox_add(e, Vox);
     zox_add(e, VoxLods);
-    zox_add(e, Chunk);
-    zox_add(e, Chunk3);
-    zox_setv(e, ChunkPosition, int3_zero);
-    zox_setv(e, ChunkSize, int3_zero);
-    zox_prefab_set(e, ChunkNeighbors, { { 0 } } );
-    // NOTE: Raycasting reads RenderDepth, this is always max depth
-    zox_setv(e, RenderDepth, 0);
-    zox_setv(e, MaxRenderDepth, 0);
-    zox_setv(e, NodeDepth, 0);
-    zox_setv(e, BlockScale, vox_model_scale);
-    // allocations
-    zox_setv(e, VoxelNode, 0);
-    zox_setv(e, VoxelNodeLock, 0);
-    zox_setv(e, ColorRGBs, 0);
     // generation
     zox_setv(e, Seed, 0);
     zox_setv(e, Color, color_white);

@@ -2,7 +2,6 @@ entity spawn_prefab_character3_npc(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("character3_npc");
     zox_add(e, Npc);
-    zox_add(e, VoxMesh);
     zox_add(e, Jumper);
     zox_add(e, SilentJumper);   //  dont have 3d sounds yet
     zox_prefab_set(e, Behaviour, { zox_behaviour_idle });

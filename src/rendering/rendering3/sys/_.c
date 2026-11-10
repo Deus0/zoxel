@@ -55,7 +55,7 @@ void zox_systems_basics3(ecs* world) {
         [in] transforms.TransformMatrix,
         [in] rendering.RenderDisabled,
         [none] rendering.VoxMesh,
-        [none] !rendering3.BoneLinks,
+        [none] !rendering3.SkeletonMesh,
         [none] !core.Initialize,
     );
     // generating bone indexes here
@@ -66,6 +66,8 @@ void zox_systems_basics3(ecs* world) {
         [in] rendering.MeshGPULink,
         [in] rendering.ColorsGPULink,
         [in] rendering3.BoneIndexGPULink,
+        [in] transforms.TransformMatrix,
+        [in] rendering.RenderDisabled,
         [none] rendering3.SkeletonMesh,
         [none] !core.Disabled,
         [none] !core.Initialize,

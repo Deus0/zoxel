@@ -7,10 +7,28 @@
 #include "arm_control.c"
 #include "arm_swing.c"
 #include "arm_raise.c"
+#include "skeleton_meshes.c"
 zoxc_system_dirty(Skeleton);
 
 void zox_systems_bones(ecs *world) {
     zoxd_system_dirty(Skeleton);
+    // Spawns, reuses and swaps a skeleton mesh per render depth
+    zox_system_1(
+        SkeletonMeshesSystem,
+        zoxp_spawn,
+        [none] bones.Skeleton,
+    );
+    // Builds skeleton meshes from their parents vox
+    zox_system(
+        SkeletonMeshBuildSystem,
+        zoxp_octree_read,
+        [in] rendering.RenderDepth,
+        [out] rendering.MeshIndicies,
+        [out] rendering.MeshVertices,
+        [out] rendering.MeshColorRGBs,
+        [none] rendering3.SkeletonMesh,
+        [none] rendering.BuildMesh,
+    );
     zox_system(
         HeadAnimateSystem,
         zoxp_update,

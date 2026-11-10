@@ -22,9 +22,7 @@ zox_sys2(Character3RealmSpawnSystem) {
         }
         uint character_seed = seed->value + seed_shift;
         byte chance_max = 0;
-        entity prefab_character = is_characters_instanced ?
-            prefab_character3_instanced_npc :
-            prefab_character3_npc;
+        entity prefab_character = prefab_character3_npc;
         // add files
         entity base_soul = zox_get_child_by_id(
             world,
@@ -114,7 +112,10 @@ zox_sys2(Character3RealmSpawnSystem) {
                 continue;
             }
             zox_setv(e2, ModelLink, model);
-            zox_add(e2, CharacterGeneric);
+            // NOTE: Unique characters clone their model, otherwise they instance it
+            if (!is_characters_instanced) {
+                zox_add(e2, CharacterUnique);
+            }
             // Generate Name
            // set_ZoxName(world, e2, name);
             // Links
@@ -167,6 +168,9 @@ zox_sys2(Character3RealmSpawnSystem) {
             // set_ZoxName(world, e2, name);
             // Links unique to the ecs world
             zox_setv(e2, ModelLink, model);
+            if (!is_characters_instanced) {
+                zox_add(e2, CharacterUnique);
+            }
             chance_max += chance;
             float soul_value = (float)(souls[j]);
             float health = (float)(healths[j]);

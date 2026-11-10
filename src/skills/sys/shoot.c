@@ -36,7 +36,10 @@ zox_sys2(ShootSystem) {
         zox_log("SHooting");
         float3 position;
         float4 rotation;
-        entity hand = zox_get_link(world, user, HandBoneLink);
+        entity skeleton = get_skeleton(world, user);
+        entity hand = zox_valid(skeleton) ?
+            zox_get_link(world, skeleton, HandBoneLink) :
+            0;
         if (zox_valid(hand)) {
             position = zox_getv(hand, Position3D);
             rotation = zox_getv(hand, Rotation3D);

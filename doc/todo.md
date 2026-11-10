@@ -1,5 +1,13 @@
 # Todo
 
+- export character, mesh and bones, to blender so i can make animations
+	- reimport animation back in
+- the arms and legs should slerp and be more natural
+	- atm it also flickers between rotations
+	- investigate first then make a proposal for the changes
+- Refactor any old link code, that uses entity, into zox_link:
+	- ModelLink
+	- ModelLinks (half done)
 - add rotated character per voxel selection for raycasts, similar to how we do for grass
 	- keeping bounds as a sweep pass
 

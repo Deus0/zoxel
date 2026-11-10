@@ -40,7 +40,10 @@ void attach_camera_to_character(
         quaternion_from_euler(float3_scale(euler, degreesToRadians)));
     // set_camera_locked(world, e, character);
     // TODO: Add CameraDirty to Character for headbone adjustment system
-    zox_add(character, SkeletonDirty);
+    entity skeleton = get_skeleton(world, character);
+    if (zox_valid(skeleton)) {
+        zox_add(skeleton, SkeletonDirty);
+    }
     if (local_mouse) {
         zox_setv(local_mouse, MouseLock, 1);
     }

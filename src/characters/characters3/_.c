@@ -4,7 +4,6 @@ byte disable_npc_hooks = 0;
 byte disable_npc_positioner = 0;
 #include "set/_.c"
 #include "com/_.c"
-#include "sta/_.c"
 #include "dat/_.c"
 #include "pre/_.c"
 #include "ins/_.c"

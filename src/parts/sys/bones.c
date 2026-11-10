@@ -101,6 +101,7 @@ entity spawn_part_bones(
     return bone;
 }
 
+// Spawns bones under the characters skeleton child, from its body parts
 // NOTE: We could delete only bones that are linked to updated parts here, but that is a refactor, perhaps later
 zox_sys2(CharacterBoneSpawnSystem) {
     byte dbg_log = 0;
@@ -108,23 +109,29 @@ zox_sys2(CharacterBoneSpawnSystem) {
     zox_sys_begin();
     zox_sys_in(BodySize);
     zox_sys_in(BlockScale);
+    zox_sys_in(SkeletonLink);
     zox_sys_out(BodyDirty);
-    zox_sys_out(BoneLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(BodySize, bsize);
         zox_sys_i(BlockScale, bscale);
+        zox_sys_i(SkeletonLink, skeleton_link);
         zox_sys_o(BodyDirty, body_dirty);
-        zox_sys_o(BoneLinks, bones);
         if (body_dirty->value != zox_generate_body_bones) {
             continue;
         }
+        // NOTE: Waits for the skeleton to spawn
+        entity skeleton = skeleton_link->value;
+        if (!zox_valid(skeleton) || !zox_has(skeleton, BoneLinks)) {
+            continue;
+        }
+        BoneLinks* bones = zox_getm(skeleton, BoneLinks);
         // NOTE: Deletes old bones, and old parts
         entity camera = zox_get_child_by_id_recursive(world, e, zox_id(Camera));
         if (zox_valid(camera)) {
             zox_set_parent(world, camera, 0);
         }
-        entity root_bone = zox_get_child_by_id(world, e, zox_id(Bone));
+        entity root_bone = zox_get_child_by_id(world, skeleton, zox_id(Bone));
         if (zox_valid(root_bone)) {
             zox_delete(root_bone);
         }
@@ -140,8 +147,8 @@ zox_sys2(CharacterBoneSpawnSystem) {
             continue;
         }
         entity chest_part = zox_getv(chest_slot, DataLink);
-        spawn_part_bones(world, e, bones, half_bounds, bscale->value, e, float3_zero, chest_slot, chest_part);
+        spawn_part_bones(world, skeleton, bones, half_bounds, bscale->value, skeleton, float3_zero, chest_slot, chest_part);
         body_dirty->value = zox_generate_body_end;
-        zox_add(e, SkeletonDirty);
+        zox_add(skeleton, SkeletonDirty);
     }
 } zox_sys_end(CharacterBoneSpawnSystem);

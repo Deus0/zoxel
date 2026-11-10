@@ -103,10 +103,11 @@ void melee_system(iter* it) {
         }
         // Temporary for now place here
         // TODO: Start swinging on Warmup
-        if (zox_has(user, SwingStart)) {
+        entity skeleton = get_skeleton(world, user);
+        if (zox_valid(skeleton)) {
             float swing_time = zox_getv(e, WarmupTime) + zox_getv(e, CooldownTime);
-            zox_set(user, SwingStart, { zox_current_time });
-            zox_set(user, SwingSpeed, { swing_time });
+            zox_set(skeleton, SwingStart, { zox_current_time });
+            zox_set(skeleton, SwingSpeed, { swing_time });
         }
         // Ray didn't hit anything
         entity hit = raycast->chunk;

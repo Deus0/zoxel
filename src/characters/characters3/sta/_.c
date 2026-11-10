@@ -1,3 +1,0 @@
-#define zox_character_type_instanced 0
-#define zox_character_type_unique 1
-#define zox_character_type_skeleton 2

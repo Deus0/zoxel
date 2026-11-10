@@ -29,10 +29,7 @@ void zox_tst_spawn_character3_npc(
     if (!zox_valid(realm)) {
         return;
     }
-    // NOTE: Non instanced is broken atm?
-    entity prefab = is_characters_instanced ?
-        prefab_character3_instanced_npc :
-        prefab_character3_npc;
+    entity prefab = prefab_character3_npc;
     float3 sposition = zox_getv(character, Position3D);
     float4 srotation = zox_getv(character, Rotation3D);
     zox_geter(realm, CharacterLinks, characters);

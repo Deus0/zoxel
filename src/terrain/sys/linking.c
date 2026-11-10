@@ -68,7 +68,8 @@ byte set_entity_chunk(
     const VoxelNode* new_voxel_octree = zox_get(new_chunk, VoxelNode);
     byte is_air_chunk = !new_voxel_octree->value && !new_voxel_octree->ptr;
     if (!is_air_chunk && character_render_disabled != chunk_render_disabled) {
-        zox_setv(e, RenderDisabled, chunk_render_disabled);
+        // NOTE: Sets render children too
+        set_entity_render_disabled(world, e, chunk_render_disabled);
     }
     // now lod
     // calculate_lods

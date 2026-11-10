@@ -59,12 +59,13 @@ zox_sys2(ItemActivateSystem) {
             note_frequencies[30 + rand() % 6],
             0.6,
             1.4f * get_volume_sfx());
-        if (zox_has(user, SwingStart)) {
+        entity skeleton = get_skeleton(world, user);
+        if (zox_valid(skeleton)) {
             float swing_time =
                 zox_getv(e, WarmupTime) +
                 zox_getv(e, CooldownTime);
-            zox_setv(user, SwingStart, zox_current_time);
-            zox_setv(user, SwingSpeed, swing_time);
+            zox_setv(skeleton, SwingStart, zox_current_time);
+            zox_setv(skeleton, SwingSpeed, swing_time);
         }
     }
 } zox_sys_end(ItemActivateSystem);

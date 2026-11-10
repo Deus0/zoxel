@@ -236,35 +236,36 @@ void build_body_parts(ecs *world, entity slot, CombineList* voxes, CombinePositi
 // TODO: The placement should know the Position + Size of the vox we are attaching to
 // for now just set vox, later we spawn item and set it from BodyDirty
 // TODO: When Combining a part, remember where the parent position is, add them in recursively instead of the flat way atm
+// NOTE: Combines into the characters child vox (VoxLink), each child vox belongs to one character
 zox_sys2(BodyCombineSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
+    zox_sys_in(VoxLink);
     zox_sys_out(BodyDirty);
     zox_sys_out(BodySize);
-    zox_sys_out(CombineList);
-    zox_sys_out(CombinePositions);
-    zox_sys_out(CombineDepths);
-    zox_sys_out(CombineVox);
-    zox_sys_out(NodeDepth);
     zox_sys_out(BlockScale);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
+        zox_sys_i(VoxLink, vox_link);
         zox_sys_o(BodyDirty, body_dirty);
         zox_sys_o(BodySize, body_size);
-        zox_sys_o(CombineList, voxes);
-        zox_sys_o(CombinePositions, positions);
-        zox_sys_o(CombineDepths, depths);
-        zox_sys_o(CombineVox, dirty);
-        zox_sys_o(NodeDepth, ndepth);
         zox_sys_o(BlockScale, block_scale);
         if (body_dirty->value != zox_generate_body_combine) {
+            continue;
+        }
+        // NOTE: Waits for the vox to spawn
+        entity vox = vox_link->value;
+        if (!zox_valid(vox) || !zox_has(vox, CombineList)) {
             continue;
         }
         entity chest_slot = zox_get_child_by_id(world, e, zox_id(Body));
         if (!zox_valid(chest_slot)) {
             continue;
         }
+        CombineList* voxes = zox_getm(vox, CombineList);
+        CombinePositions* positions = zox_getm(vox, CombinePositions);
+        CombineDepths* depths = zox_getm(vox, CombineDepths);
         byte max_depth = 0;
         body_size->value = byte3_zero;
         resize_CombineList(voxes, 0);
@@ -273,16 +274,27 @@ zox_sys2(BodyCombineSystem) {
         entity_array_d* slots_used = create_entity_array_d(1);
         build_body_parts(world, chest_slot, voxes, positions, depths, slots_used, &body_size->value, &max_depth, dbg_log);
         dispose_entity_array_d(slots_used);
-        // This should be calculated when we add to our vox?
-        // TODO: We should make this same scale as npcs
-        ndepth->value = max_depth;
         // NOTE: Keep at consistent scale
+        // TODO: We should make this same scale as npcs
         short length2 = octree_size(block_depth + 2);
         block_scale->value = 1.0f / length2;
         body_dirty->value = zox_generate_body_bones;
-        dirty->value = zox_dirty_trigger;
-        if (zox_has(e, MaxRenderDepth)) {
-            zox_setm(e, MaxRenderDepth, max_depth);
+        zox_setm(vox, NodeDepth, max_depth);
+        zox_setm(vox, BlockScale, block_scale->value);
+        zox_setm(vox, CombineVox, zox_dirty_trigger);
+        // NOTE: Render at the depth for our chunks distance, like ChunkEntitiesLodSystem
+        zox_setm(e, MaxRenderDepth, max_depth);
+        byte distance = 0;
+        if (zox_has(e, ChunkLink)) {
+            entity chunk = zox_getv(e, ChunkLink);
+            if (zox_valid(chunk) && zox_has(chunk, RenderDistance)) {
+                distance = zox_getv(chunk, RenderDistance);
+            }
+        }
+        byte render_depth = camera_distance_to_npc_render_depth(distance, max_depth);
+        if (zox_getv(e, RenderDepth) != render_depth) {
+            zox_setm(e, RenderDepth, render_depth);
+            zox_setm(e, RenderDepthDirty, zox_dirty_trigger);
         }
         if (dbg_log) {
             zox_log("Body [%s] Depth [%i] Scale [%f]", zox_get_name(e), max_depth, block_scale->value);

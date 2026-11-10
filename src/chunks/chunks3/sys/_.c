@@ -43,7 +43,6 @@ void zox_systems_chunks3(ecs *world) {
         [none] textures.VoxTexture
     );
     // ColoredChunk, triggers mesh to update
-    // NOTE: Skeletons rebuild their child meshes instead, see SkeletonMeshesSystem
     zox_system(
         ColoredChunkMeshTriggerSystem,
         zoxp_update,
@@ -51,7 +50,6 @@ void zox_systems_chunks3(ecs *world) {
         [none] chunks3.ColorChunk,
         [none] chunks3.ChunkUpdate,
         [none] !rendering.BuildMesh,
-        [none] !bones.Skeleton,
     );
     // VoxLods, triggers its lod meshes to update
     zox_system(

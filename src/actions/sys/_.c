@@ -40,7 +40,7 @@ void zox_systems_actions(ecs* world) {
         zoxp_spawn,
         [in] actions.ActiveActionDirty,
         [in] actions.ActiveAction,
-        [out] bones.RaiseShoulder,
+        [in] bones.SkeletonLink,
         [none] characters.Character,
     );
 }

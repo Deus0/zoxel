@@ -36,7 +36,6 @@
 #include "textures/_.c"
 #include "geometry/_.c"
 #include "musics/_.c"
-#include "bones/_.c"
 #include "ui/_.c"
 
 // depth 3: simulation / world
@@ -49,6 +48,8 @@
 #include "physics/_.c"
 #include "lights/_.c"
 #include "models/_.c"
+// NOTE: Skeleton meshes build from models
+#include "bones/_.c"
 
 // depth 4: environment
 #include "weathers/_.c"
@@ -150,7 +151,6 @@ void import_zox(ecs* world) {
     zox_add_module(sounds);
     zox_add_module(textures);
     zox_add_module(geometry);
-    zox_add_module(bones);
     zox_add_module(animations);
     zox_add_module(musics);
     zox_add_module(ui);
@@ -170,6 +170,7 @@ void import_zox(ecs* world) {
 
     // depth 4: world / environment
     zox_add_module(models);
+    zox_add_module(bones);
     zox_add_module(weathers);
     zox_add_module(streaming);
     zox_add_module(regions);
