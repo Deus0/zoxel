@@ -166,3 +166,51 @@ static inline entity zox_get_link_index_internal(
 
 #define zox_get_link_index(world, e, T, index) \
     zox_get_link_index_internal(world, e, zox_id(T), index)
+
+// Links to a target, or removes the link if target is 0 / invalid
+//  - for Exclusive links (zoxd_nf_link) linking replaces the old target
+static inline void zox_set_link_internal(
+    ecs* world,
+    entity e,
+    entity relation,
+    entity target)
+{
+    if (target && zox_valid(target)) {
+        ecs_add_pair(world, e, relation, target);
+    } else {
+        ecs_remove_pair(world, e, relation, EcsWildcard);
+    }
+}
+
+#define zox_set_link(world, e, T, target) \
+    zox_set_link_internal(world, e, zox_id(T), target)
+
+static inline int zox_get_links_count_internal(
+    ecs* world,
+    entity e,
+    entity relation)
+{
+    int count = 0;
+    while (ecs_get_target(world, e, relation, count)) {
+        count++;
+    }
+    return count;
+}
+
+#define zox_get_links_count(world, e, T) \
+    zox_get_links_count_internal(world, e, zox_id(T))
+
+/*
+ * Iterates all targets of a link, i.e. zoxd_nf_links
+ *
+ *     zox_each_link(world, e, ElementLinks, element) {
+ *         ...
+ *     }
+ *
+ * NOTE: break and continue work as normal
+ */
+#define zox_each_link(world, e, T, target) \
+    for (int zox_link_index_##target = 0; zox_link_index_##target >= 0; zox_link_index_##target = -1) \
+    for (entity target = zox_get_link_index(world, e, T, 0); \
+        target; \
+        target = zox_get_link_index(world, e, T, ++zox_link_index_##target))

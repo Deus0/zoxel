@@ -26,7 +26,7 @@ uint zox_dbg_label_character_links(
     float3 position = zox_getv(e, Position3D);
     float3 euler = zox_getv(e, Euler);
     entity camera = zox_get_link(world, e, CameraLink);
-    entity chunk = zox_getv(e, ChunkLink);
+    entity chunk = zox_get_link(world, e, ChunkLink);
     entity tunk = zox_valid(chunk) ?
         zox_get_link(world, chunk, TunkLink) :
         0;
@@ -288,7 +288,7 @@ uint zox_dbg_label_towns(
     if (!zox_valid(character)) {
         return index;
     }
-    entity chunk = zox_getv(character, ChunkLink);
+    entity chunk = zox_get_link(world, character, ChunkLink);
     if (!zox_valid(chunk)) {
         return index;
     }

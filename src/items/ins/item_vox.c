@@ -1,7 +1,5 @@
 entity spawn_item_vox_mesh(ecs* world, entity item) {
-    entity model = zox_has(item, ModelLink) ?
-        zox_getv(item, ModelLink) :
-        0;
+    entity model = zox_get_link(world, item, ModelLink);
     entity mesh = get_max_model_mesh(world, model);
     if (!mesh) {
         zox_loge("[spawn_item_vox_mesh] Invalid [mesh]: item [%s], model [%s], mesh [%s]",

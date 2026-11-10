@@ -13,10 +13,9 @@ void item_icon_label_event(iter* it) {
         if (!zox_valid(slot)) {
             continue;
         }
-        entity item =
-            zox_valid(slot) && zox_has(slot, DataLink) ?
-                zox_getv(slot, DataLink) :
-                0;
+        entity item = zox_valid(slot) ?
+            zox_get_link(world, slot, DataLink) :
+            0;
         // NOTE: empty slots / non items still clear the label
         byte quantity =
             zox_valid(item) &&
@@ -53,12 +52,12 @@ void item_icon_tooltip_event(iter* it) {
         zox_sys_e();
         entity slot = zox_get_link(world, e, SlotLink);
         if (!zox_valid(slot) ||
-            !zox_has(slot, DataLink))
+            !zox_is_linked_any(world, slot, DataLink))
         {
             continue;
         }
         // zox_log("icon_tooltip_event [%s]", zox_sys_e_name);
-        entity item = zox_getv(slot, DataLink);
+        entity item = zox_get_link(world, slot, DataLink);
         // TODO: We should do this for only X types of items
         //      - BlockItem, ConsumeableItem, etc
         if (!zox_valid(item) ||

@@ -11,6 +11,8 @@ entity spawn_prefab_music_generated(ecs *world, entity prefab) {
 entity spawn_music_generated(ecs *world, entity prefab, lint seed, byte instrument, float2 speed_range) {
     zox_instance(prefab);
     zox_name("music");
+    // NOTE: Notes are children, kept in play order
+    zox_add_ordered_children(e);
     zox_set(e, Seed, { seed });
     zox_set(e, MusicSpeed, { randf_range(speed_range.x, speed_range.y) });
     zox_set(e, InstrumentType, { instrument });

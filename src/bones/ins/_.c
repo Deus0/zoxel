@@ -12,7 +12,7 @@ entity spawn_skeleton(
         zox_setv(e, Rotation3D, zox_getv(owner, Rotation3D));
     }
     zox_set_parent(world, e, owner);
-    zox_setv(owner, SkeletonLink, e);
+    zox_link(world, owner, SkeletonLink, e);
     return e;
 }
 
@@ -27,11 +27,8 @@ entity get_skeleton(
     if (zox_has(e, Skeleton)) {
         return e;
     }
-    if (zox_has(e, SkeletonLink)) {
-        entity skeleton = zox_getv(e, SkeletonLink);
-        return zox_valid(skeleton) ? skeleton : 0;
-    }
-    return 0;
+    entity skeleton = zox_get_link(world, e, SkeletonLink);
+    return zox_valid(skeleton) ? skeleton : 0;
 }
 
 // The vox a skeletons meshes build from, its owners VoxLink

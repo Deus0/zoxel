@@ -9,29 +9,21 @@ void zox_systems_ui_containers(ecs* world) {
         DataUIClickSystem,
         zoxp_update,
         // [in] interactions.ClickState,
-        [out] slots.DataLink,
         [none] interactions.Click,
         [none] slots.SlotUser,
         [none] ui_containers.DataUI,
     );
     zox_system(
-        SlotDataCleanSystem,
-        zoxp_update,
-        [out] slots.DataLink,
-        [none] slots.Slot
-    );
-    zox_system(
         DataIconSystem,
         zoxp_update,
-        [out] slots.DataLink,
         [none] slots.SlotUser,
         [none] elements2.Icon
     );
     zox_system(
         DataIconUpdateSystem,
         zoxp_update,
-        [in] slots.DataLink,
         [none] elements2.Icon,
+        [none] ui_containers.DataUI,
         [none] slots.DataUpdate,
     );
     /*zox_system(
@@ -61,6 +53,5 @@ void zox_systems_ui_containers(ecs* world) {
         data_ui_update_system,
         zoxp_remove,
         [none] ui_containers.DataUI,
-        [none] slots.DataLink,
     );
 }

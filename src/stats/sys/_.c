@@ -73,7 +73,6 @@ void zox_systems_stats(ecs *world) {
         CharacterNameLabelsSystem,
         zoxp_spawn,
         [in] core.ZoxName,
-        [out] ui.ElementLinks,
         [none] SpawnNameLabel
     );
 }

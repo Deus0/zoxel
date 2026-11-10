@@ -111,7 +111,7 @@ zox_sys2(Character3RealmSpawnSystem) {
                 zox_loge("Generated Character Failed");
                 continue;
             }
-            zox_setv(e2, ModelLink, model);
+            zox_set_link(world, e2, ModelLink, model);
             // NOTE: Unique characters clone their model, otherwise they instance it
             if (!is_characters_instanced) {
                 zox_add(e2, CharacterUnique);
@@ -167,7 +167,7 @@ zox_sys2(Character3RealmSpawnSystem) {
             // zox_set_name(e2, name); // assuming name is
             // set_ZoxName(world, e2, name);
             // Links unique to the ecs world
-            zox_setv(e2, ModelLink, model);
+            zox_set_link(world, e2, ModelLink, model);
             if (!is_characters_instanced) {
                 zox_add(e2, CharacterUnique);
             }

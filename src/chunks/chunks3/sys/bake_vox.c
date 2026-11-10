@@ -3,22 +3,21 @@ zox_sys2(BakeVoxSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ModelLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(ModelLink, model);
-        if (!zox_valid(model->value)) {
+        entity model = zox_get_link(world, e, ModelLink);
+        if (!zox_valid(model)) {
             continue;
         }
-        if (!zox_has(model->value, GenerateModel)) {
+        if (!zox_has(model, GenerateModel)) {
             // zox_loge("Model missing GenerateChunk");
             continue;
         }
-        byte generate = zox_getv(model->value, GenerateModel);
+        byte generate = zox_getv(model, GenerateModel);
         if (generate != zox_generate_model_bake) {
             continue;
         }
-        zox_setv(model->value, GenerateModel, zox_generate_model_end);
+        zox_setv(model, GenerateModel, zox_generate_model_end);
         if (dbg_log) {
             zox_log("Block is Generating Textures: %s",
                 zox_getn(e));

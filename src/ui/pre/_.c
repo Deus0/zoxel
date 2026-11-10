@@ -14,10 +14,6 @@ void prefabs_add_to_player_inputs(ecs *world, entity e) {
     zox_prefab_set(e, DeviceModeDirty, { 0 });
 }
 
-void prefabs_add_to_player_uis(ecs *world, entity e) {
-    // Player -> UI Links
-    zox_prefab_set(e, ElementLinks, { 0 });
-}
 
 // this is all UI interaction
 void prefab_add_navigator(ecs *world, entity e) {
@@ -34,6 +30,5 @@ void spawn_prefabs_elements(ecs *world) {
     // linking
     if (prefab_player) {
         prefabs_add_to_player_inputs(world, prefab_player);
-        prefabs_add_to_player_uis(world, prefab_player);
     }
 }

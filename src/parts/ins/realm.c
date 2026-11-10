@@ -11,7 +11,7 @@ entity spawn_item_body(
     zox_add(e, ItemVox);
     zox_add(e, BodyPart);
     zox_add(e, BodyItem);
-    zox_setv(e, ModelLink, model);
+    zox_set_link(world, e, ModelLink, model);
     zox_link(world, e, TextureLink, texture);
     return e;
 }
@@ -35,7 +35,6 @@ entity2 spawn_realm_body_part(
     zox_add(e, ModelGroup);
     zox_set_parent(world, e, parent);
     entity max_depth_vox = 0;
-    ModelLinks models = (ModelLinks) { 0 };
     for (byte j = 0; j < variants; j++) {
         lint vseed = seed + j * 1209;
         color vcolor = (color) { 200, 200, 155, 255 };
@@ -51,14 +50,12 @@ entity2 spawn_realm_body_part(
             world,
             blueprint,
             model);
-        add_to_ModelLinks(&models, model);
         if (j == 0) {
             max_depth_vox = model;
         }
     }
-    zox_set_ptr(e, ModelLinks, models);
     // NOTE: Uses first model and highest depth one
-    entity model = models.value[0];
+    entity model = max_depth_vox;
     entity texture = spawn_texture_from_vox(
         world,
         max_depth_vox,

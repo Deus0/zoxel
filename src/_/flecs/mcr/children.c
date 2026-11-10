@@ -452,3 +452,30 @@ static inline byte zox_set_parent_non_fragment(
     zox_setv(child, EcsParent, parent);
     return 1;
 }
+
+// Ordered Children
+//  - children keep their insertion order, i.e. notes in a music
+//  - add with zox_add_ordered_children before adding children
+
+// A read only view of an entities ordered children
+typedef struct {
+    int length;
+    const entity* value;
+} ordered_children;
+
+#define zox_add_ordered_children(e) \
+    ecs_add_id(world, e, EcsOrderedChildren)
+
+static inline ordered_children zox_get_ordered_children(
+    ecs* world,
+    entity parent)
+{
+    if (!zox_valid(parent) || !ecs_has_id(world, parent, EcsOrderedChildren)) {
+        return (ordered_children) { 0 };
+    }
+    const ecs_entities_t children = ecs_get_ordered_children(world, parent);
+    return (ordered_children) {
+        .length = children.count,
+        .value = children.ids
+    };
+}

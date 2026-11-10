@@ -57,7 +57,7 @@ entity spawn_realm_block_model(
     entity block = spawn_block_vox_meta(
         world,
         spawn_data);
-    zox_setv(block, ModelLink, model);
+    zox_set_link(world, block, ModelLink, model);
     zox_set_parent(world, block, parent);
     // NOTE: Spawns a VoxTexture for the Items!
     {
@@ -70,7 +70,7 @@ entity spawn_realm_block_model(
         zox_set_unique_name(texture, name);
         zox_setv(texture, GenerateTexture, zox_generate_texture_run);
         zox_setv(texture, VoxBakeSide, texture_direction);
-        zox_setv(texture, ModelLink, texture_vox);
+        zox_set_link(world, texture, ModelLink, texture_vox);
         zox_link(world, block, TextureLink, texture);
         zox_set_parent(world, texture, block);
     }

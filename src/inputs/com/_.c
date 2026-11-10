@@ -25,9 +25,9 @@ zoxc_float2(ZeviceStick);
 zoxc_int2(ZevicePointerPosition);
 zoxc_int2(ZevicePointerDelta);
 zoxc_int2(ZeviceWheel);
-zoxc_entity(DeviceLink);
+zox_tag(DeviceLink);       // links to a device, i.e. from its zevices
 zoxc_entity(MouseLink);
-zoxc_entity(ZeviceLink);
+zox_tag(ZeviceLink);       // links to a zevice, i.e. a pointer
 zoxc_entity(VirtualZeviceLink);
 #include "keyboard.c"
 
@@ -60,8 +60,8 @@ void zox_components_inputs(ecs *world) {
     zoxd_int2(ZevicePointerDelta);
     zoxd_int2(ZeviceWheel);
     zoxd_float2(ZeviceStick);
-    zoxd_entity(DeviceLink);
+    zoxd_nf_link(DeviceLink);
     zoxd_entity(MouseLink);
-    zoxd_entity(ZeviceLink);
+    zoxd_nf_link(ZeviceLink);
     zoxd_entity(VirtualZeviceLink);
 }

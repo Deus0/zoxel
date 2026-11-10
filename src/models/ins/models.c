@@ -15,7 +15,6 @@ entity2 spawn_blueprint_models(
     entity model_group = zox_ins(world, prefab_model_group);
     zox_set_unique_name(model_group, name);
     zox_set_parent(world, model_group, parent);
-    ModelLinks variants = { 0 };
     for (byte i = 0; i < variants_count; i++) {
         lint variant_seed = seed + (lint) i * variant_seed_step;
         entity model = spawn_vox_lods(
@@ -30,12 +29,10 @@ entity2 spawn_blueprint_models(
             world,
             nodegraph,
             model);
-        add_to_ModelLinks(&variants, model);
         if (i == 0) {
             first_model = model;
         }
     }
-    zox_set_ptr(model_group, ModelLinks, variants);
     return (entity2) {
         model_group,
         first_model

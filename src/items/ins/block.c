@@ -24,11 +24,10 @@ entity spawn_block_item(
     zox_setv(e, CooldownTime, 0.125f);
     zox_setv(e, RaycastRange, block_place_range);
     zox_setv(e, RaycastType, zox_raycast_type_place);
-    entity model = zox_has(block, ModelLink) ?
-        zox_getv(block, ModelLink) : 0;
+    entity model = zox_get_link(world, block, ModelLink);
     byte is_block_vox = zox_has(block, BlockVox);
     if (model) {
-        zox_setv(e, ModelLink, model);
+        zox_set_link(world, e, ModelLink, model);
     }
     if (is_block_vox) {
         zox_add(e, ItemVox);

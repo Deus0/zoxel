@@ -3,11 +3,10 @@ zox_sys2(ModelEndNodeSystem) {
     byte dbg_log = zox_dbg_model_nodes;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ModelLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(ModelLink, model);
-        if (!zox_valid(model->value)) {
+        entity model = zox_get_link(world, e, ModelLink);
+        if (!zox_valid(model)) {
             continue;
         }
         entity node = zox_get_link(world, e, CurrentNodeLink);
@@ -28,9 +27,9 @@ zox_sys2(ModelEndNodeSystem) {
         }
         if (dbg_log) {
             zox_log("[End] ModelNode  [%s]",
-                zox_getn(model->value));
+                zox_getn(model));
         }
-        entity vox = model->value;
+        entity vox = model;
         if (zox_has(vox, VoxelNode) && zox_has(vox, NodeDepth)) {
             const VoxelNode* voxels = zox_get(vox, VoxelNode);
             byte depth = zox_getv(vox, NodeDepth);

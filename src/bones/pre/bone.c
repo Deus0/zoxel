@@ -14,7 +14,6 @@ entity spawn_prefab_bone(ecs *world) {
     zox_setv(e, LocalRotation3D, quaternion_identity);
     zox_setv(e, BonePosition, float3_zero);
     zox_setv(e, BoneSize, float3_zero);
-    zox_setv(e, SkeletonLink, 0);
     return e;
 }
 
@@ -27,7 +26,7 @@ entity spawn_bone(
     float3 size)
 {
     zox_instance(prefab);
-    zox_setv(e, SkeletonLink, skeleton);
+    zox_link(world, e, SkeletonLink, skeleton);
     zox_setv(e, LocalPosition3D, local_position);
     zox_setv(e, BonePosition, skeleton_position);
     zox_setv(e, BoneSize, size);

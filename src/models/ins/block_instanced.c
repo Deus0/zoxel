@@ -18,20 +18,9 @@ entity spawn_block_vox_instanced(
         return 0;
     }
     // NOTE: Picks a random Model based on position seed
-    entity model = 0;
-    if (zox_has(vox, ModelLinks)) {
-        zox_geter(vox, ModelLinks, models);
-        if (models->length) {
-            // srand - pick the model randomly, off our position in world
-            srand(positionf.x * positionf.z * positionf.y);
-            byte model_index = rand() % models->length;
-            model = models->value[model_index];
-        } else {
-            model = vox;
-        }
-    } else {
-        model = vox;
-    }
+    // srand - pick the model randomly, off our position in world
+    srand(positionf.x * positionf.z * positionf.y);
+    entity model = get_model_variant(world, vox, rand());
     if (!zox_valid(model)) {
         zox_loge("Spawned BlockVoxInstance [%s::%lu] with Invalid Model [%lu] - block index [%i]",
             zox_get_name(prefab),
@@ -54,7 +43,7 @@ entity spawn_block_vox_instanced(
     zox_name("block_vox_instanced");
     zox_setv(e, BlockIndex, block_index);
     zox_setv(e, BlockScale, scale);
-    zox_setv(e, ModelLink, model);
+    zox_set_link(world, e, ModelLink, model);
     zox_setv(e, MaxRenderDepth, mdepth);
     zox_setv(e, RenderDepth, render_depth);
     zox_setv(e, RenderDisabled, render_disabled);

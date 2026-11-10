@@ -3,18 +3,17 @@ zox_sys2(SlotItemTooltipSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SelectState);
-    zox_sys_in(DataLink);
     // zox_sys_in(SlotLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(SelectState, state);
-        zox_sys_i(DataLink, data);
+        entity data = zox_get_link(world, e, DataLink);
         // zox_sys_i(SlotLink, slot);
         if (state->value != zox_state_select_active) {
             continue;
         }
         entity slot = zox_get_link(world, e, SlotLink);
-        entity e2 = data->value;
+        entity e2 = data;
         if (!zox_valid(e2) || !zox_has(e2, SlotType)) {
             continue;
         }

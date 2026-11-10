@@ -19,16 +19,14 @@ zox_sys2(ActiveActionHoldSystem) {
     zox_sys_begin();
     zox_sys_in(ActiveActionDirty);
     zox_sys_in(ActiveAction);
-    zox_sys_in(SkeletonLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ActiveActionDirty, dirty);
         zox_sys_i(ActiveAction, aaction);
-        zox_sys_i(SkeletonLink, skeleton_link);
         if (dirty->value != zox_dirty_active) {
             continue;
         }
-        entity skeleton = skeleton_link->value;
+        entity skeleton = zox_get_link(world, e, SkeletonLink);
         if (!zox_valid(skeleton) || !zox_has(skeleton, RaiseShoulder)) {
             continue;
         }

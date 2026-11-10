@@ -23,9 +23,7 @@ void button_event_exit_app(ecs *world, ClickEventData event) {
     // close on all players
     entity player = event.clicker;
     entity game = zox_get_link(world, player, GameLink);
-    zox_geter(game, PlayerLinks, players);
-    for (int i = 0; i < players->length; i++) {
-        entity e = players->value[i];
+    zox_each_link(world, game, PlayerLinks, e) {
         entity canvas = zox_get_link(world, e, CanvasLink);
         if (!zox_valid(canvas)) {
             continue;

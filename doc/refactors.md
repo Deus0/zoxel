@@ -90,18 +90,6 @@ UIs
 	- Settings Spawning - InitializeEvent on App
     
 ## Remove old links
-	- ModelLink
-	- ModelLinks (half done)
-	- DataLink
-	- SkeletonLink
-	- ChunkLink
-	- ElementLink
-	- DeviceLink
-	- ZeviceLink
-	- PlayerLinks
-	- NoteLinks
-	- UIHolderLink
-	- ElementLinks
 	- LabelPrefabLink
 	- FramePrefabLink
 	- ScrollviewLink

@@ -3,13 +3,12 @@
     byte label_text_capacity = 253;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(DataLink);
     zox_sys_out(TextData);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DataLink, data);
+        entity data = zox_get_link(world, e, DataLink);
         zox_sys_o(TextData, text);
-        entity e2 = data->value;
+        entity e2 = data;
         if (!zox_valid(e2) ||
             !zox_has(e2, Stat) ||
             !zox_has(e2, Update) ||

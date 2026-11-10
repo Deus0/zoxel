@@ -4,12 +4,11 @@ zox_sys2(ModelSizeNodeSystem) {
     ushort inner_seed_shift = 39393;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ModelLink);
     zox_sys_out(Seed);
     zox_sys_out(ModelSize);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(ModelLink, model);
+        entity model = zox_get_link(world, e, ModelLink);
         zox_sys_o(Seed, seed);
         zox_sys_o(ModelSize, size);
         entity node = zox_get_link(world, e, CurrentNodeLink);
@@ -32,7 +31,7 @@ zox_sys2(ModelSizeNodeSystem) {
             zox_loge("Node has no ModelRatio");
             continue;
         }
-        lint model_seed = zox_getv(model->value, Seed);
+        lint model_seed = zox_getv(model, Seed);
         if (!seed->value) {
             seed->value = model_seed;
         }

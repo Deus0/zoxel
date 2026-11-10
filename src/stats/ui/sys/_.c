@@ -24,7 +24,6 @@ void zox_systems_stats_ui(ecs *world) {
     zox_system_1(
         StatPlusButtonSystem,
         zoxp_spawn,
-        [in] slots.DataLink,
         [none] texts.Text,
         [none] elements2.Label,
         [none] ui_containers.DataUI,

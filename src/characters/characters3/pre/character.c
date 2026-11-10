@@ -1,7 +1,7 @@
 // NOTE: Characters hold no voxel or mesh data, those are children:
 //  - with a model: a renderer child (RendererLink), see CharacterChildrenSpawnSystem
 //  - CharacterUnique: also a cloned vox child (VoxLink) with its own lod meshes
-//  - SkeletonLink: a combined vox child (VoxLink) and a skeleton child, from the bones module
+//  - SkeletonOwner: a combined vox child (VoxLink) and a skeleton child (SkeletonLink), from bones
 entity spawn_prefab_character3(ecs *world) {
     zox_prefab();
     zox_prefab_name("character3");
@@ -24,7 +24,6 @@ entity spawn_prefab_character3(ecs *world) {
     // zox_setv(e, GenerateName, 1);
     // In Terrain
     zox_add(e, LinkChunk);
-    zox_setv(e, ChunkLink, 0);
     zox_setv(e, ChunkPosition, int3_chaos);
     zox_setv(e, BlockPosition, int3_zero);
     zox_setv(e, Position3DBounds, float6_zero);
@@ -34,11 +33,9 @@ entity spawn_prefab_character3(ecs *world) {
     zox_setv(e, InsideBlockTime, 0);
     // Vox Mesh
     zox_setv(e, BlockScale, 1);
-    zox_setv(e, ModelLink, 0);
     // animation
     zox_setv(e, AnimationState, zox_animation_idle);
     zox_setv(e, AnimationStart, 0);
-    zox_setv(e, ElementLinks, 0); // uis
     // physics3
     zox_add(e, Moveable);
     zox_add(e, Frictioned);

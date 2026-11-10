@@ -17,10 +17,7 @@ void handle_touch_drag(
     if (!devices_get_pressed(pointer->value)) {
         return;
     }
-    if (!zox_has(virtual_joystick, ElementLink)) {
-        return;
-    }
-    entity joystick_ui = zox_getv(virtual_joystick, ElementLink);
+    entity joystick_ui = zox_get_link(world, virtual_joystick, ElementLink);
     if (!zox_valid(joystick_ui)) {
         return;
     }
@@ -72,16 +69,13 @@ void handle_touch_release(
     if (!devices_get_released_this_frame(pointer->value)) {
         return;
     }
-    if (!zox_has(zevice, ElementLink)) {
-        return;
-    }
-    entity joystick_ui = zox_getv(zevice, ElementLink);
+    entity joystick_ui = zox_get_link(world, zevice, ElementLink);
     // zox_log("Finger Released - UI: [%lu]", joystick_ui);
     if (!zox_valid(joystick_ui)) {
         return;
     }
     zox_delete(joystick_ui)  // assume not touching
-    zox_set(zevice, ElementLink, { 0 });
+    zox_set_link(world, zevice, ElementLink, 0);
     // Reset on release
     zox_muter(zevice, ZeviceStick, stick);
     stick->value = float2_zero;
@@ -91,33 +85,30 @@ void handle_touch_release(
 zox_sys2(VirtualJoystickSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(DeviceLink);
     zox_sys_in(EntityTarget);
     zox_sys_in(ZevicePointerPosition);
     zox_sys_in(ZevicePointer);
     zox_sys_in(VirtualZeviceLink);
-    zox_sys_out(ElementLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DeviceLink, device);
         zox_sys_i(EntityTarget, target);
+        entity device = zox_get_link(world, e, DeviceLink);
         zox_sys_i(ZevicePointerPosition, position);
         zox_sys_i(ZevicePointer, clicked);
         zox_sys_i(VirtualZeviceLink, joystick);
-        zox_sys_o(ElementLink, joystick_ui);
         // TODO: Just add finger to system filter, and add to mouse component when testing
         if (!zox_dbg_touch_with_mouse && !zox_has(e, Finger)) {
             continue;
         }
-        if (!zox_valid(device->value)) {
+        if (!zox_valid(device)) {
             continue;
         }
-        entity player = zox_get_parent(world, device->value);
+        entity player = zox_get_parent(world, device);
         if (!zox_valid(player) ||
             !zox_has(player, Player))
         {
             zox_loge("Device not attached to player [%s] > [%s]",
-                zox_getn(device->value),
+                zox_getn(device),
                 zox_getn(player));
             continue;
         }
@@ -128,7 +119,8 @@ zox_sys2(VirtualJoystickSystem) {
         if (!zox_valid(canvas)) {
             continue;
         }
-        if (zox_valid(joystick_ui->value)) {
+        entity joystick_ui = zox_get_link(world, e, ElementLink);
+        if (zox_valid(joystick_ui)) {
             handle_touch_drag(
                 world,
                 e,
@@ -156,7 +148,7 @@ zox_sys2(VirtualJoystickSystem) {
             } else {
                 button_type = zox_device_stick_left;
             }
-            joystick_ui->value = spawn_virtual_joystick(
+            spawn_virtual_joystick(
                 world,
                 canvas,
                 position->value,

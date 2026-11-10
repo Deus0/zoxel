@@ -9,9 +9,11 @@ entity spawn_prefab_note(ecs *world) {
     return e;
 }
 
-entity spawn_note(ecs *world, entity prefab, int note, byte instrument, float length, float volume) {
+// Notes are ordered children of their music, played in order
+entity spawn_note(ecs *world, entity prefab, entity music, int note, byte instrument, float length, float volume) {
     zox_instance(prefab);
     zox_name("note");
+    zox_set_parent(world, e, music);
     zox_set(e, InstrumentType, { instrument });
     zox_set(e, SoundFrequencyIndex, { note });
     zox_set(e, SoundLength, { length });

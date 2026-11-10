@@ -56,7 +56,7 @@ entity2 spawn_label3(
         }
     }
     if (owner) {
-        zox_setv(e, UIHolderLink, owner);
+        zox_link(world, e, UIHolderLink, owner);
         zox_set(e, UITrail, { (float3) { 0, trail_offset, 0 } });
     }
     return output;

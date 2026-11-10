@@ -12,3 +12,4 @@
     (void) ctx;
     dispose_TaskbarData();
 }*/
+#include "terminal.c"

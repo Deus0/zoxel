@@ -19,12 +19,10 @@ zox_sys2(CharacterNameLabelsSystem) {
     zox_sys_begin();
     // zox_sys_in(GenerateCharacter);
     zox_sys_in(ZoxName);
-    zox_sys_out(ElementLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         // zox_sys_i(GenerateCharacter, state);
         zox_sys_i(ZoxName, name);
-        zox_sys_o(ElementLinks, elements);
         /*if (state->value != zox_dirty_active) {
             continue;
         }*/
@@ -52,9 +50,8 @@ zox_sys2(CharacterNameLabelsSystem) {
             e,
             name_trail_offset);
         zox_set_unique_name(e2.x, "name_label3");
-        zox_setv(e2.x, ElementHolder, e);
         zox_setv(e2.y, OutlineThickness, 1);
-        add_to_ElementLinks(elements, e2.x);
+        zox_link(world, e, ElementLinks, e2.x);
         zox_remove(e, SpawnNameLabel);
         if (dbg_log) {
             zox_log("Spawned Name Label on [%s]: %s", zox_getn(e), text);

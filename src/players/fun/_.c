@@ -3,8 +3,7 @@ void add_player(
     entity e,
     entity player)
 {
-    zox_muter(e, PlayerLinks, players);
-    add_to_PlayerLinks(players, player);
+    zox_link(world, e, PlayerLinks, player);
     zox_link(world, player, GameLink, e);
 }
 

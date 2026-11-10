@@ -12,7 +12,7 @@ void spawn_world_dungeon_core(ecs *world, spawned_block_data *data) {
     }
     zox_instance(prefab);
     zox_set_parent(world, e, data->chunk);
-    zox_set(e, ChunkLink, { data->chunk });
+    zox_set_link(world, e, ChunkLink, data->chunk);
     // todo: make this set as local position instead - VoxelLocalPosition
     zox_set(e, VoxelLocalPosition, { data->positionl });
     link_node_VoxelNode(data->octree, e);

@@ -2,22 +2,7 @@
 // TODO: Use SlotLink instead of DataLink, more accurate
 // NOTE: If slots data is dirty, we can also update texture
 
-zox_sys2(SlotDataCleanSystem) {
-    zox_sys_world();
-    zox_sys_begin();
-    zox_sys_out(DataLink);
-    // zox_sys_out(DataDirty);
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
-        zox_sys_o(DataLink, data);
-        // zox_sys_o(DataDirty, state);
-        if (data->value && !zox_valid(data->value)) {
-            data->value = 0;
-            // state->value = zox_dirty_trigger;
-            zox_add(e, DataDirty);
-        }
-    }
-} zox_sys_end(SlotDataCleanSystem);
+// NOTE: Slots whose data is deleted are refreshed by on_unlink_DataLink
 
 // NOTE: Flags dirty if slot data is dirty
 zox_sys2(DataIconSystem) {
@@ -25,19 +10,17 @@ zox_sys2(DataIconSystem) {
     zox_sys_world();
     zox_sys_begin();
     // zox_sys_in(SlotLink);
-    zox_sys_out(DataLink);
     // zox_sys_out(DataDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         // zox_sys_i(SlotLink, slot);
-        zox_sys_o(DataLink, data);
         // zox_sys_o(DataDirty, state);
         entity slot = zox_get_link(world, e, SlotLink);
         if (!zox_valid(slot)) {
             continue;
         }
         if (zox_has(slot, DataUpdate)) {
-            data->value = zox_getv(slot, DataLink);
+            zox_set_link(world, e, DataLink, zox_get_link(world, slot, DataLink));
             // state->value = zox_dirty_trigger;
             zox_add(e, DataDirty);
             // zox_log("Slot was dirty [%s]", zox_get_name(slot->value));
@@ -56,21 +39,20 @@ zox_sys2(DataIconUpdateSystem) {
     zox_sys_world();
     zox_sys_begin();
     //zox_sys_in(DataDirty);
-    zox_sys_in(DataLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         //zox_sys_i(DataDirty, state);
-        zox_sys_i(DataLink, data);
+        entity data = zox_get_link(world, e, DataLink);
         /*if (state->value != zox_dirty_active) {
             continue;
         }*/
         // set texture of dirty
-        entity texture = zox_valid(data->value) ?
-            zox_get_link(world, data->value, TextureLink) :
+        entity texture = zox_valid(data) ?
+            zox_get_link(world, data, TextureLink) :
             0;
-            // zox_has(data->value, TextureLink) ? zox_getv(data->value, TextureLink) : 0;
+            // zox_has(data, TextureLink) ? zox_getv(data, TextureLink) : 0;
         if (!texture) {
-            if (zox_valid(data->value)) {
+            if (zox_valid(data)) {
                 texture = string_hashmap_get(files_hashmap_textures, new_string_data("blank"));
             } else {
                 texture = string_hashmap_get(files_hashmap_textures, new_string_data("empty"));

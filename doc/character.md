@@ -30,9 +30,9 @@ character (characters)          gameplay, transform, LOD state, VoxLink, Rendere
 |---|---|---|
 | Instanced | has `ModelLink` | `renderer_child` instancing the model's `ModelLods` |
 | Unique | `CharacterUnique` tag (+ `ModelLink`) | cloned `vox_lods` + `renderer_child` instancing the clone's lods |
-| Skeleton | `SkeletonLink` | `vox_combined` + `skeleton` (bones and skeleton meshes) |
+| Skeleton | `SkeletonOwner` tag | `vox_combined` + `skeleton` (bones and skeleton meshes), linked with `SkeletonLink` |
 
-- There is one base prefab, `prefab_character3`. Skeleton characters use `prefab_character3_skeleton`, a child of it that only adds `SkeletonLink`.
+- There is one base prefab, `prefab_character3`. Skeleton characters use `prefab_character3_skeleton`, a child of it that only adds the `SkeletonOwner` tag.
 - Gameplay variants derive from these: `prefab_character3_npc`, `prefab_character3_skeleton_npc`, `prefab_character3_player`.
 - Unique vs instanced is data, not a prefab. Gam adds `CharacterUnique` to realm metas when `is_characters_instanced` is 0.
 
@@ -58,7 +58,7 @@ Module order matters: `chunks → physics → models → bones → characters �
 
 1. `spawn_character3()` instances a prefab, sets transform, `ModelLink`, `RenderDepth`, `MaxRenderDepth`, and bounds from the model.
 2. `GenerateCharacter` goes active → `CharacterChildrenSpawnSystem` (`zoxp_spawn`) spawns the children:
-   - `SkeletonLink` → `spawn_vox_combined_child()` + `spawn_skeleton()`
+   - `SkeletonOwner` → `spawn_vox_combined_child()` + `spawn_skeleton()`
    - `CharacterUnique` → `spawn_vox_cloned_child()` + `spawn_renderer_child()`
    - otherwise with a model → `spawn_renderer_child()`
 3. Skeleton characters:
@@ -95,4 +95,11 @@ Module order matters: `chunks → physics → models → bones → characters �
 - **Waiting on children:** systems that need a child (`BodyCombineSystem`, `CharacterBoneSpawnSystem`) skip the entity until the link is valid, rather than consuming their dirty state.
 - **Writing to a child from a multithreaded system** with `zox_getm` is fine when each child belongs to one owner. Structural changes still go through deferred commands.
 - **Vox data `RenderDepth` is always max depth** (raycasts read it). The owner's `RenderDepth` picks which mesh to show.
+- **Links are flecs pairs** (`zox_link`, `zox_set_link`, `zox_get_link`), declared non-fragmenting so they don't split tables. See [links.md](links.md):
+  - `zoxd_nf_link`: one target, linking again replaces it (Exclusive).
+  - `zoxd_nf_links`: many targets, iterate with `zox_each_link`, count with `zox_get_links_count`. Not kept in insertion order.
+  - `zoxd_nf_link_owned`: the linking entity is deleted with its target (`UIHolderLink`: 3D UIs die with their character).
+  - Links can't be used in system queries. Use a tag to select entities (i.e. `SkeletonOwner`, `DataUI`) and `zox_get_link` inside.
+  - A link to a deleted entity is removed by flecs automatically. Use `zox_on_unlink` to react, see `on_unlink_ChunkLink`, `on_unlink_DataLink`.
+- **Owned lists are children** ([children.md](children.md)): model variants are children of their `ModelGroup` (`get_model_variant()`), and notes are ordered children of their music.
 - **Untested paths:** `CharacterUnique` (only used when `is_characters_instanced` is 0).

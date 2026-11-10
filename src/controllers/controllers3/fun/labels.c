@@ -25,10 +25,10 @@ int get_label_player_chunk_position(ecs *world, const entity player, char buffer
         return buffer_index;
     }
     entity character = zox_get_link(world, player, CharacterLink);
-    if (!zox_valid(character) || !zox_has(character, ChunkLink)) {
+    if (!zox_valid(character) || !zox_is_linked_any(world, character, ChunkLink)) {
         return buffer_index;
     }
-    const entity chunk = zox_getv(character, ChunkLink);
+    const entity chunk = zox_get_link(world, character, ChunkLink);
     if (!chunk || !zox_has(chunk, ChunkPosition)) return buffer_index;
     const int3 chunk_position = zox_getv(chunk, ChunkPosition);
     buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "chunk position [%ix%ix%i]\n",  chunk_position.x, chunk_position.y, chunk_position.z);

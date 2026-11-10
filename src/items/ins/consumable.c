@@ -35,7 +35,7 @@ entity spawn_item_consumable(
         zox_link(world, e, ConsumeStat, consume_stat);
     }
     // Links
-    zox_setv(e, ModelLink, model);
+    zox_set_link(world, e, ModelLink, model);
     zox_set_parent(world, e, parent);
     // actually for grass we want to set itemLink differently
     entity texture = spawn_texture_from_vox(

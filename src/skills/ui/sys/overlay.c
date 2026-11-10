@@ -4,10 +4,9 @@ zox_sys2(SkillOverlaySystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(DataLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DataLink, link);
+        entity link = zox_get_link(world, e, DataLink);
         entity overlay = zox_get_child_by_id(world, e, zox_id(IconOverlay));
         if (!zox_valid(overlay)) {
             continue;
@@ -17,7 +16,7 @@ zox_sys2(SkillOverlaySystem) {
             zox_loge("Icon Overlay [%s] has no LocalScale1", zox_getn(overlay));
             continue;
         }
-        entity data = link->value;
+        entity data = link;
         if (!zox_valid(data)) {
             if (!has_scale2) {
                 float old_scale = zox_getv(overlay, LocalScale1);

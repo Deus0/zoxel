@@ -44,6 +44,7 @@ void import_huds(ecs* world) {
     // add_hook_spawn_prefabs(spawn_taskbar_manager);
     add_hook_spawn_prefabs(zox_events_huds);
     add_hook_on_boot(on_boot_game_ui);
+    add_hook_terminal_command(process_arguments_huds);
     spawn_taskbar_manager(world);
     add_taskbar_button(world, (TaskbarData) {
         .index = 0,

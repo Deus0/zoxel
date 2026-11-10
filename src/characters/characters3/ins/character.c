@@ -14,16 +14,10 @@ entity spawn_character3(
     byte dbg_log = 0;
     // If Model, get the Vox (its lodded)
     byte max_depth = 0;
-    entity model = zox_getv(prefab, ModelLink);
+    entity model = zox_get_link(world, prefab, ModelLink);
     if (zox_valid(model)) {
         // If a ModelGroup, pick a random sub model
-        if (zox_has(model, ModelLinks)) {
-            zox_geter(model, ModelLinks, models);
-            if (models->length) {
-                uint mindex = rand() % models->length;
-                model = models->value[mindex];
-            }
-        }
+        model = get_model_variant(world, model, rand());
         if (zox_has(model, MaxRenderDepth)) {
             max_depth = zox_getv(model, MaxRenderDepth);
         }
@@ -69,7 +63,7 @@ entity spawn_character3(
     zox_setv(e, LastPosition3D, position);
     zox_setv(e, RenderDisabled, render_disabled);
     if (zox_valid(model)) {
-        zox_setv(e, ModelLink, model);
+        zox_set_link(world, e, ModelLink, model);
         zox_setv(e, RenderDepth, render_depth);
         zox_setv(e, MaxRenderDepth, max_depth);
         // zox_log("Render Depth of character set to [%i] of [%i]", render_depth, max_depth);

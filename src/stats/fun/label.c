@@ -93,14 +93,14 @@ uint get_label_player_element_links(ecs *world, const entity player, char *buffe
         return index;
     }
     entity character = zox_get_link(world, player, CharacterLink);
-    if (!zox_valid(character) || !zox_has(character, ElementLinks)) {
+    if (!zox_valid(character)) {
         index += snprintf(buffer + index, size - index, "[%s] has invalid character\n", zox_get_name(player));
         return index;
     }
-    zox_geter(character, ElementLinks, elements);
-    index += snprintf(buffer + index, size - index, "[%s]'s elements [%i]\n", zox_get_name(character), elements->length);
-    for (int i = 0; i < elements->length; i++) {
-        index += snprintf(buffer + index, size - index, " - [%i] %s\n", i, zox_get_name(elements->value[i]));
+    index += snprintf(buffer + index, size - index, "[%s]'s elements [%i]\n", zox_get_name(character), zox_get_links_count(world, character, ElementLinks));
+    int element_index = 0;
+    zox_each_link(world, character, ElementLinks, element) {
+        index += snprintf(buffer + index, size - index, " - [%i] %s\n", element_index++, zox_get_name(element));
     }
     return index;
 }

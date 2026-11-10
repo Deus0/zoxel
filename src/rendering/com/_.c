@@ -35,8 +35,7 @@ zox_tag(ShaderLink); // links to a shader entity
 zoxc_entity(InstanceLink); // links to a instance parent
 zoxc_entity(RendererLink); // links to a child renderer, i.e. a characters instance renderer
 // Models
-zoxc_entities(ModelLinks)
-zoxc_entity(ModelLink);         // a render instance links to model
+zox_tag(ModelLink);          // links to a model, or a model group
 #define model_lods_max_length 8
 zoxc_array(ModelLods, entity, model_lods_max_length);
 // Render Data
@@ -115,8 +114,7 @@ void zox_components_rendering(ecs *world) {
     zoxd_entity(InstanceLink);
     zoxd_entity(RendererLink);
     zoxd_nf_tag(ShaderLink);
-    zoxd_entity(ModelLink);
-    zoxd_entities(ModelLinks);
+    zoxd_nf_link(ModelLink);
     zox_define_component_array(ModelLods);
     // Render Data
     zoxd_uint(MeshRenderCount);

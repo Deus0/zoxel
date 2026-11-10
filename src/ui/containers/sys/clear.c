@@ -8,12 +8,10 @@
         zox_sys_e();
         zox_sys_o(TextData, text);
         entity slot = zox_get_link(world, e, SlotLink);
-        if (!zox_valid(slot) ||
-            !zox_has(slot, DataLink))
-        {
+        if (!zox_valid(slot)) {
             continue;
         }
-        entity data = zox_getv(slot, DataLink);
+        entity data = zox_get_link(world, slot, DataLink);
         if (zox_valid(data)) {
             continue;
         }

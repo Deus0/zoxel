@@ -91,7 +91,7 @@ entity spawn_part_bones(
             if (!zox_valid(e2) || !zox_has(e2, Slot)) {
                 continue;
             }
-            entity child_part = zox_getv(e2, DataLink);
+            entity child_part = zox_get_link(world, e2, DataLink);
             entity child_bone = spawn_part_bones(world, skeleton, bones, half_bounds, bscale, bone, position, e2, child_part);
             if (child_bone) {
                 zox_set_parent(world, child_bone, bone);
@@ -109,19 +109,17 @@ zox_sys2(CharacterBoneSpawnSystem) {
     zox_sys_begin();
     zox_sys_in(BodySize);
     zox_sys_in(BlockScale);
-    zox_sys_in(SkeletonLink);
     zox_sys_out(BodyDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(BodySize, bsize);
         zox_sys_i(BlockScale, bscale);
-        zox_sys_i(SkeletonLink, skeleton_link);
         zox_sys_o(BodyDirty, body_dirty);
         if (body_dirty->value != zox_generate_body_bones) {
             continue;
         }
         // NOTE: Waits for the skeleton to spawn
-        entity skeleton = skeleton_link->value;
+        entity skeleton = zox_get_link(world, e, SkeletonLink);
         if (!zox_valid(skeleton) || !zox_has(skeleton, BoneLinks)) {
             continue;
         }
@@ -146,7 +144,7 @@ zox_sys2(CharacterBoneSpawnSystem) {
         if (!zox_valid(chest_slot)) {
             continue;
         }
-        entity chest_part = zox_getv(chest_slot, DataLink);
+        entity chest_part = zox_get_link(world, chest_slot, DataLink);
         spawn_part_bones(world, skeleton, bones, half_bounds, bscale->value, skeleton, float3_zero, chest_slot, chest_part);
         body_dirty->value = zox_generate_body_end;
         zox_add(skeleton, SkeletonDirty);

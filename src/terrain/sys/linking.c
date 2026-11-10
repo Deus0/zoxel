@@ -29,14 +29,15 @@ void zox_log_chunk_added(
         position.z);
 }
 
+// Links an entity to a chunk, and moves it between the chunks ChunkEntities
+//  - on_unlink_ChunkLink also removes it from the old chunk when the link is replaced or destroyed
 byte set_entity_chunk(
     ecs* world,
     entity e,
-    ChunkLink* link,
+    entity old_chunk,
     entity new_chunk,
     byte dbg_log)
 {
-    entity old_chunk = link->value;
     if (!zox_valid(new_chunk) || !zox_has(new_chunk, ChunkEntities) || old_chunk == new_chunk) {
         return 0;
     }
@@ -58,7 +59,7 @@ byte set_entity_chunk(
     } else {
         zox_log_error("failed to add npc to chunk");
     }
-    link->value = new_chunk;
+    zox_link(world, e, ChunkLink, new_chunk);
     // now render distabled
     byte chunk_render_disabled = zox_getv(new_chunk, RenderDisabled);
     zox_geter_value(new_chunk, RenderDistance, byte, chunk_render_distance);
@@ -96,12 +97,11 @@ zox_sys2(ChunkLinkSystem) {
     zox_sys_begin();
     zox_sys_out(Position3D);
     zox_sys_out(ChunkPosition);
-    zox_sys_out(ChunkLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Position3D, position);
         zox_sys_o(ChunkPosition, chunk_position);
-        zox_sys_o(ChunkLink, link);
+        entity linked_chunk = zox_get_link(world, e, ChunkLink);
         entity terrain = zox_get_link(world, e, TerrainLink);
         if (!zox_valid(terrain)) {
             if (dbg_log) {
@@ -115,7 +115,7 @@ zox_sys2(ChunkLinkSystem) {
         short length = octree_size(node_depth);
         int3 new_chunk_position = real_position_to_chunk_position(position->value, length, terrain_scale);
         // If already set and position has not changed
-        if (zox_valid(link->value) && int3_equals(new_chunk_position, chunk_position->value)) {
+        if (zox_valid(linked_chunk) && int3_equals(new_chunk_position, chunk_position->value)) {
             continue;
         }
         chunk_position->value = new_chunk_position;
@@ -125,15 +125,18 @@ zox_sys2(ChunkLinkSystem) {
             zox_log("Character [%s] Linking Chunk [%ix%ix%i]:[%s]", zox_get_name(e), new_chunk_position.x, new_chunk_position.y, new_chunk_position.z, zox_get_name(chunk));
         }
         // NOTE: Disables if not set
-        set_entity_chunk(
+        if (set_entity_chunk(
             world,
             e,
-            link,
+            linked_chunk,
             chunk,
-            dbg_log);
-        if (zox_valid(link->value) && zox_has(e, DisableMovement)) {
+            dbg_log))
+        {
+            linked_chunk = chunk;
+        }
+        if (zox_valid(linked_chunk) && zox_has(e, DisableMovement)) {
             zox_remove(e, DisableMovement);
-        } else if (!zox_valid(link->value) && !zox_has(e, DisableMovement)) {
+        } else if (!zox_valid(linked_chunk) && !zox_has(e, DisableMovement)) {
             // check if in space here
             if (new_chunk_position.y <= render_distance_y) {
                 zox_add(e, DisableMovement);

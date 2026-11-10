@@ -7,7 +7,6 @@ entity spawn_prefab_music(ecs *world) {
     zox_prefab_set(e, MusicSpeed, { 1.0 });
     zox_prefab_set(e, MusicNote, { 0 });
     zox_prefab_set(e, MusicEnabled, { 0 });
-    zox_prefab_add(e, NoteLinks);
     return e;
 }
 
@@ -18,6 +17,8 @@ entity spawn_music(
 {
     zox_instance(prefab);
     zox_name("music");
+    // NOTE: Notes are children, kept in play order
+    zox_add_ordered_children(e);
     zox_set(e, MusicSpeed, { speed });
     return e;
 }

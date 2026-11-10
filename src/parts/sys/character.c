@@ -61,13 +61,13 @@ zox_sys2(CharacterBodySpawnSystem) {
         // Get our Core Slot
         entity chest_slot = zox_get_child_by_id(world, e, zox_id(Body));
         // now add them all sequentially to the body
-        if (!zox_valid(chest_slot) || !zox_has(chest_slot, DataLink)) {
+        if (!zox_valid(chest_slot)) {
             zox_logw("No chest slot on character [%s]", zox_get_name(e));
             continue;
         }
         // Spawn our user body
         // Attach Core Part
-        zox_set(chest_slot, DataLink, { spawn_user_item_body(world, e, realm_chest, zox_slot_core) });
+        zox_set_link(world, chest_slot, DataLink, spawn_user_item_body(world, e, realm_chest, zox_slot_core));
         short chest_width = octree_size(block_depth);
         byte chest_height = int_floorf(0.56f * chest_width);
         // Trigger early, incase we cannot keep growing body
@@ -92,7 +92,7 @@ zox_sys2(CharacterBodySpawnSystem) {
         if (realm_head)
         {
             entity head = spawn_user_item_body(world, e, realm_head, zox_slot_head);
-            zox_set(eslot_head, DataLink, { head });
+            zox_set_link(world, eslot_head, DataLink, head);
             // Sub Slots
             byte hat_position_y = chest_width / 5;
             entity eslot_hat = spawn_equip_slot(
@@ -108,7 +108,7 @@ zox_sys2(CharacterBodySpawnSystem) {
         // NOTE: This is legs branch
         if (realm_hips) {
             entity hips = spawn_user_item_body(world, e, realm_hips, zox_slot_hips);
-            zox_set(eslot_hips, DataLink, { hips });
+            zox_set_link(world, eslot_hips, DataLink, hips);
             zox_add(hips, Hips);
             // Sub Slots
             entity eslot_lthigh = spawn_body_slot(world, eslot_hips, body_anchor_bottom);
@@ -121,8 +121,8 @@ zox_sys2(CharacterBodySpawnSystem) {
                 // Attach Parts [Thighs]
                 entity lthigh = spawn_user_item_body(world, e, realm_thigh, zox_slot_lthigh);
                 entity rthigh = spawn_user_item_body(world, e, realm_thigh, zox_slot_rthigh);
-                zox_set(eslot_lthigh, DataLink, { lthigh });
-                zox_set(eslot_rthigh, DataLink, { rthigh });
+                zox_set_link(world, eslot_lthigh, DataLink, lthigh);
+                zox_set_link(world, eslot_rthigh, DataLink, rthigh);
                 zox_add(lthigh, Thigh);
                 zox_add(rthigh, Thigh);
                 // Sub Slots [Calfs]
@@ -133,8 +133,8 @@ zox_sys2(CharacterBodySpawnSystem) {
                 zox_set(eslot_rcalf, PartOffset, {{ 1, 0, 1 }});
                 if (realm_calf) {
                     // Attach Parts [Calfs]
-                    zox_set(eslot_lcalf, DataLink, { spawn_user_item_body(world, e, realm_calf, zox_slot_lthigh) });
-                    zox_set(eslot_rcalf, DataLink, { spawn_user_item_body(world, e, realm_calf, zox_slot_rthigh) });
+                    zox_set_link(world, eslot_lcalf, DataLink, spawn_user_item_body(world, e, realm_calf, zox_slot_lthigh));
+                    zox_set_link(world, eslot_rcalf, DataLink, spawn_user_item_body(world, e, realm_calf, zox_slot_rthigh));
                     // Sub Slots [Calfs]
                     entity eslot_lfoot = spawn_body_slot(world, eslot_lcalf, body_anchor_bottom);
                     entity eslot_rfoot = spawn_body_slot(world, eslot_rcalf, body_anchor_bottom);
@@ -143,8 +143,8 @@ zox_sys2(CharacterBodySpawnSystem) {
                     zox_set(eslot_rfoot, PartOffset, {{ 0, 1, 2 }});
                     if (realm_foot) {
                         // Attach Parts [Calfs]
-                        zox_set(eslot_lfoot, DataLink, { spawn_user_item_body(world, e, realm_foot, zox_slot_lfoot) });
-                        zox_set(eslot_rfoot, DataLink, { spawn_user_item_body(world, e, realm_foot, zox_slot_rfoot) });
+                        zox_set_link(world, eslot_lfoot, DataLink, spawn_user_item_body(world, e, realm_foot, zox_slot_lfoot));
+                        zox_set_link(world, eslot_rfoot, DataLink, spawn_user_item_body(world, e, realm_foot, zox_slot_rfoot));
                     }
                 }
             }
@@ -154,8 +154,8 @@ zox_sys2(CharacterBodySpawnSystem) {
             // Attach Parts
             entity lshoulder = spawn_user_item_body(world, e, realm_shoulder, zox_slot_lshoulder);
             entity rshoulder = spawn_user_item_body(world, e, realm_shoulder, zox_slot_rshoulder);
-            zox_set(eslot_lshoulder, DataLink, { lshoulder });
-            zox_set(eslot_rshoulder, DataLink, { rshoulder });
+            zox_set_link(world, eslot_lshoulder, DataLink, lshoulder);
+            zox_set_link(world, eslot_rshoulder, DataLink, rshoulder);
             // NOTE: Tag this here for now as it's based on side of body
             zox_add(lshoulder, ArmPart);
             zox_add(rshoulder, ArmPart);
@@ -171,8 +171,8 @@ zox_sys2(CharacterBodySpawnSystem) {
                 // Attach Parts
                 entity lbicep = spawn_user_item_body(world, e, realm_bicep, zox_slot_lbicep);
                 entity rbicep = spawn_user_item_body(world, e, realm_bicep, zox_slot_rbicep);
-                zox_set(eslot_lbicep, DataLink, { lbicep });
-                zox_set(eslot_rbicep, DataLink, { rbicep });
+                zox_set_link(world, eslot_lbicep, DataLink, lbicep);
+                zox_set_link(world, eslot_rbicep, DataLink, rbicep);
                 // Tag Parts
                 zox_add(lbicep, ArmPart);
                 zox_add(rbicep, ArmPart);
@@ -183,8 +183,8 @@ zox_sys2(CharacterBodySpawnSystem) {
                     // Attach Parts
                     entity lforearm = spawn_user_item_body(world, e, realm_forearm, zox_slot_lforearm);
                     entity rforearm = spawn_user_item_body(world, e, realm_forearm, zox_slot_rforearm);
-                    zox_set(eslot_lforearm, DataLink, { lforearm });
-                    zox_set(eslot_rforearm, DataLink, { rforearm });
+                    zox_set_link(world, eslot_lforearm, DataLink, lforearm);
+                    zox_set_link(world, eslot_rforearm, DataLink, rforearm);
                     zox_add(lforearm, ArmPart);
                     zox_add(rforearm, ArmPart);
                     // Sub Slots
@@ -197,8 +197,8 @@ zox_sys2(CharacterBodySpawnSystem) {
                         // Attach Parts
                         entity lhand = spawn_user_item_body(world, e, realm_hand, zox_slot_lhand);
                         entity rhand = spawn_user_item_body(world, e, realm_hand, zox_slot_rhand);
-                        zox_set(eslot_lhand, DataLink, { lhand });
-                        zox_set(eslot_rhand, DataLink, { rhand });
+                        zox_set_link(world, eslot_lhand, DataLink, lhand);
+                        zox_set_link(world, eslot_rhand, DataLink, rhand);
                         zox_add(lhand, Hand);
                         zox_add(rhand, Hand);
                         zox_add(lhand, ArmPart);
@@ -233,7 +233,7 @@ zox_sys2(CharacterBodySpawnSystem) {
                 pslot = pslot5;
             }
             entity e2 = spawn_user_item_body(world, e, realm_head, zox_slot_head);
-            zox_set(pslot, DataLink, { e2 });
+            zox_set_link(world, pslot, DataLink, e2);
         }
         // TODO: Once we attach chest to this slot, we should spawn sub slots of chest onto the slot
     }

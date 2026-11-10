@@ -93,18 +93,7 @@ entity spawn_datagrid_slots2(
                 }
                 continue;
             }
-            if (!zox_has(slot, DataLink)) {
-                zox_loge("[spawn_datagrid] [%s] Slot [%s] has no DataLink [%i]",
-                    header_label,
-                    zox_get_name(slot),
-                    array_index);
-                array_index++;
-                if (array_index >= slots_length) {
-                    break;
-                }
-                continue;
-            }
-            entity dat = zox_getv(slot, DataLink);
+            entity dat = zox_get_link(world, slot, DataLink);
             entity3 spawn = spawn_frame(
                 world,
                 prefab_frame,
@@ -130,7 +119,7 @@ entity spawn_datagrid_slots2(
                 zox_add(icon, DataUI);
                 zox_add(icon, SlotUser);
                 zox_add(icon, DataDirty);
-                zox_setv(icon, DataLink, dat);
+                zox_set_link(world, icon, DataLink, dat);
                 zox_link(world, icon, SlotLink, slot);
                 if (icon_id) {
                     zox_add_id(icon, icon_id);

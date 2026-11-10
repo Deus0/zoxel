@@ -33,6 +33,7 @@ ecs* zox_ecs(int argc, char* argv[]) {
         argc,
         argv);
     initialize_zox_phases(world);
+    zox_unlinks_initialize(world);
     local_world = world;
     return world;
 }

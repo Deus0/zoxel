@@ -10,7 +10,6 @@ void zox_systems_characters3(ecs *world) {
         zoxp_spawn,
         [in] characters.GenerateCharacter,
         [in] rendering.RenderDepth,
-        [in] rendering.ModelLink,
         [none] Character3,
     );
     zox_system(

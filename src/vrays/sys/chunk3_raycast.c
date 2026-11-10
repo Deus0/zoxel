@@ -274,9 +274,9 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
                     if (zox_valid(vox) && zox_has(vox, VoxLodMesh)) {
                         vox = zox_get_parent(world, vox);
                     }
-                } else if (zox_has(hit_block, ModelLink)) {
+                } else if (zox_is_linked_any(world, hit_block, ModelLink)) {
                     block_type = 2;
-                    vox = zox_getv(hit_block, ModelLink);
+                    vox = zox_get_link(world, hit_block, ModelLink);
                 } else {
                     vox = chunk;
                 }

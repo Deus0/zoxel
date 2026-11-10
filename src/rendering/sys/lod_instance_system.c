@@ -5,13 +5,12 @@ void lod_instance_system(iter* it) {
     zox_sys_begin();
     zox_sys_in(RenderDepthDirty);
     zox_sys_in(RenderDepth);
-    zox_sys_in(ModelLink);
     zox_sys_out(InstanceLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RenderDepthDirty, dirty);
         zox_sys_i(RenderDepth, rdepth);
-        zox_sys_i(ModelLink, model);
+        entity model = zox_get_link(world, e, ModelLink);
         zox_sys_o(InstanceLink, instance);
         if (dirty->value != zox_dirty_active) {
             continue;
@@ -20,18 +19,18 @@ void lod_instance_system(iter* it) {
             instance->value = 0;
             continue;
         }
-        if (!zox_valid(model->value)) {
+        if (!zox_valid(model)) {
             zox_loge("[%s] has invalid Model", zox_get_name(e));
             continue;
         }
-        if (!zox_has(model->value, ModelLods)) {
-            zox_loge("Block [%s] Model [%s] has no ModelLods", zox_get_name(e), zox_get_name(model->value));
+        if (!zox_has(model, ModelLods)) {
+            zox_loge("Block [%s] Model [%s] has no ModelLods", zox_get_name(e), zox_get_name(model));
             continue;
         }
-        zox_geter(model->value, ModelLods, lods);
+        zox_geter(model, ModelLods, lods);
         entity vox_lod = lods->value[rdepth->value];
         if (!zox_valid(vox_lod)) {
-            zox_logw("+ %s with model [%s] has invalid vox lod at Depth [%i]", zox_get_name(e), zox_get_name(model->value), rdepth->value);
+            zox_logw("+ %s with model [%s] has invalid vox lod at Depth [%i]", zox_get_name(e), zox_get_name(model), rdepth->value);
             continue;
         }
         instance->value = vox_lod;

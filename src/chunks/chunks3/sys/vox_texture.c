@@ -178,52 +178,51 @@ zox_sys2(VoxTextureSystem) {
     zox_sys_begin();
     zox_sys_in(TextureSize);
     zox_sys_in(VoxBakeSide);
-    zox_sys_in(ModelLink);
     zox_sys_out(GenerateTexture);
     zox_sys_out(TextureData);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TextureSize, size);
         zox_sys_i(VoxBakeSide, side);
-        zox_sys_i(ModelLink, vox);
+        entity vox = zox_get_link(world, e, ModelLink);
         zox_sys_o(GenerateTexture, generate);
         zox_sys_o(TextureData, data);
         // NOTE: It had to be delayed one frame due to the Generating Vox Time
         if (generate->value != zox_generate_texture_run) {
             continue;
         }
-        if (!zox_valid(vox->value)) {
+        if (!zox_valid(vox)) {
             zox_loge("Invalid Vox on Texture [%s]", zox_getn(e));
             continue;
         }
-        if (!zox_has(vox->value, VoxelNode) ||
-            !zox_has(vox->value, ColorRGBs) ||
-            !zox_has(vox->value, ChunkSize) ||
-            !zox_has(vox->value, NodeDepth))
+        if (!zox_has(vox, VoxelNode) ||
+            !zox_has(vox, ColorRGBs) ||
+            !zox_has(vox, ChunkSize) ||
+            !zox_has(vox, NodeDepth))
         {
             zox_loge("Invalid Vox [%s] Components on Texture [%s]",
-                zox_getn(vox->value),
+                zox_getn(vox),
                 zox_getn(e));
             continue;
         }
         // NOTE: Delays the texture until its done
-        if (zox_has(vox->value, GenerateModel) &&
-            zox_getv(vox->value, GenerateModel))
+        if (zox_has(vox, GenerateModel) &&
+            zox_getv(vox, GenerateModel))
         {
             if (dbg_log) {
                 zox_log("Texture [%s] waiting on model to generate [%s]",
                     zox_get_name(e),
-                    zox_get_name(vox->value));
+                    zox_get_name(vox));
             }
             continue;
         }
         // byte is_center = zox_has(e, CenterVoxTexture);
-        zox_geter(vox->value, VoxelNode, voctree);
-        zox_geter(vox->value, ColorRGBs, colors);
-        int3 vox_size = zox_getv(vox->value, ChunkSize);
+        zox_geter(vox, VoxelNode, voctree);
+        zox_geter(vox, ColorRGBs, colors);
+        int3 vox_size = zox_getv(vox, ChunkSize);
         // max depth tho
         byte bake_depth = next_power_of_two_root(int_max(size->value.x, size->value.y));
-        byte vox_depth = zox_getv(vox->value, NodeDepth);
+        byte vox_depth = zox_getv(vox, NodeDepth);
         // NOTE: We reduce bake depth if its greater than our models depth
         if (bake_depth > vox_depth) {
             bake_depth = vox_depth;
@@ -248,7 +247,7 @@ zox_sys2(VoxTextureSystem) {
         {
             zox_loge("Vox Texture e[%s] v[%s] Size (still) too large [%ix%i] > [%ix%i]",
                 zox_get_name(e),
-                zox_get_name(vox->value),
+                zox_get_name(vox),
                 vox_texture_size.x,
                 vox_texture_size.y,
                 size->value.x,
@@ -261,7 +260,7 @@ zox_sys2(VoxTextureSystem) {
         if (dbg_log >= 2) {
             zox_log("Vox Texture Debug e[%s] v[%s] offset %ix%i - vox_texture_size [%ix%i] - texture_size %ix%i - vox_size %ix%ix%i - pixels length [%i]",
                 zox_get_name(e),
-                zox_get_name(vox->value),
+                zox_get_name(vox),
                 texture_offset.x,
                 texture_offset.y,
                 vox_texture_size.x,
@@ -321,7 +320,7 @@ zox_sys2(VoxTextureSystem) {
         if (dbg_log) {
             zox_log("Generated Vox Texture [%s]: Model [%s] Offset [%ix%i] vox_texture_size [%ix%i] texture_size [%ix%i] vox_size [%ix%ix%i] pixels length [%i]",
                 zox_get_name(e),
-                zox_get_name(vox->value),
+                zox_get_name(vox),
                 texture_offset.x,
                 texture_offset.y,
                 vox_texture_size.x,
@@ -336,7 +335,7 @@ zox_sys2(VoxTextureSystem) {
                 bake_depth,
                 side->value,
                 vox_depth,
-                zox_has(vox->value, GenerateModel));
+                zox_has(vox, GenerateModel));
         }
     }
 } zox_sys_end(VoxTextureSystem);

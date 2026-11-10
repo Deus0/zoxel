@@ -29,13 +29,12 @@ zox_sys2(FillModelNodeSystem) {
     byte dbg_log = zox_dbg_model_nodes;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ModelLink);
     zox_sys_in(ModelSize);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(ModelLink, model);
+        entity model = zox_get_link(world, e, ModelLink);
         zox_sys_i(ModelSize, bounds);
-        if (!zox_valid(model->value)) {
+        if (!zox_valid(model)) {
             zox_logw("[FillModelNodeSystem] Node has Invalid Model [%s]", zox_getn(e));
             zox_add(e, TriggerEnd);
             continue;
@@ -69,16 +68,16 @@ zox_sys2(FillModelNodeSystem) {
         if (!byte3_equals(bounds->value, byte3_zero)) {
             scale_node_transform(bounds->value, &position, &size);
         }
-        lint seed = zox_has(model->value, Seed) ?
-            zox_getv(model->value, Seed) : 0;
+        lint seed = zox_has(model, Seed) ?
+            zox_getv(model, Seed) : 0;
         // byte depth = zox_getv(node, NodeDepth);
         // for each model LOD, run shapes
         if (dbg_log) {
             zox_log("[Fill] ModelNode [%s] Seed %i",
-                zox_getn(model->value),
+                zox_getn(model),
                 seed);
         }
-        entity vox = model->value;
+        entity vox = model;
         if (!zox_has(vox, NodeDepth) ||
             !zox_has(vox, ColorRGBs) ||
             !zox_has(vox, VoxelNode))

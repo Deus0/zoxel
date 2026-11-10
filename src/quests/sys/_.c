@@ -14,7 +14,6 @@ void zox_systems_quests(ecs* world) {
         marker_spawn_system,
         zoxp_spawn,
         [in] characters.GenerateCharacter,
-        [out] ui.ElementLinks,
         [none] characters.Character,
     );
 }

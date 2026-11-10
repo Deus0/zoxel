@@ -12,7 +12,7 @@ entity get_owner_lod_mesh(
     }
     entity source = zox_has(e, VoxLink) ? zox_getv(e, VoxLink) : 0;
     if (!zox_valid(source) || !zox_has(source, ModelLods)) {
-        source = zox_has(e, ModelLink) ? zox_getv(e, ModelLink) : 0;
+        source = zox_get_link(world, e, ModelLink);
     }
     if (!zox_valid(source) || !zox_has(source, ModelLods)) {
         return 0;
@@ -58,4 +58,21 @@ entity spawn_vox_cloned_child(
     zox_setv(e, CloneVox, 1);
     zox_setv(parent, VoxLink, e);
     return e;
+}
+
+// Picks a variant from a ModelGroup's children (Model), or returns the model itself
+entity get_model_variant(
+    ecs* world,
+    entity e,
+    uint random)
+{
+    if (!zox_valid(e) || !zox_has(e, ModelGroup)) {
+        return e;
+    }
+    entity models[64];
+    uint count = zox_get_children_by_id(world, e, models, 64, zox_id(Model));
+    if (!count) {
+        return e;
+    }
+    return models[random % count];
 }

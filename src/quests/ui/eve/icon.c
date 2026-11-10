@@ -9,9 +9,7 @@ void quest_icon_label_event(iter* it) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_o(TextData, text);
-        entity data = zox_has(e, DataLink) ?
-            zox_getv(e, DataLink) :
-            0;
+        entity data = zox_get_link(world, e, DataLink);
         // zox_get_link(world, e, DataLink);
         if (!data || !zox_has(data, Quest)) {
             if (data && dbg_log) {
@@ -45,11 +43,10 @@ void quest_icon_tooltip_event(iter* it) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(DataLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DataLink, data);
-        entity quest = data->value;
+        entity data = zox_get_link(world, e, DataLink);
+        entity quest = data;
         if (!zox_valid(quest) ||
             !zox_has(quest, Quest))
         {
@@ -135,11 +132,10 @@ void quest_icon_click_event(iter* it) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(DataLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DataLink, data);
-        entity quest = data->value;
+        entity data = zox_get_link(world, e, DataLink);
+        entity quest = data;
         if (!zox_valid(quest) ||
             !zox_has(quest, Quest))
         {

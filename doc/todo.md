@@ -1,13 +1,25 @@
 # Todo
 
-- export character, mesh and bones, to blender so i can make animations
-	- reimport animation back in
+- Add --autostart tag that autos through the uis, into a new game, and makes player character auto walk too (should already be implemented somewhere)
+	- this can be used by claude in automated testing
+
+-x Refactor any old link code, that uses entity, into zox_link:
+	-x ModelLink
+	-x ModelLinks (half done)
+	-x DataLink
+	-x SkeletonLink
+	-x ChunkLink
+	-x ElementLink
+	-x DeviceLink
+	-x ZeviceLink
+	-x PlayerLinks
+	-x NoteLinks
+	-x UIHolderLink
+	-x ElementLinks
+	
 - the arms and legs should slerp and be more natural
 	- atm it also flickers between rotations
 	- investigate first then make a proposal for the changes
-- Refactor any old link code, that uses entity, into zox_link:
-	- ModelLink
-	- ModelLinks (half done)
 - add rotated character per voxel selection for raycasts, similar to how we do for grass
 	- keeping bounds as a sweep pass
 
@@ -988,6 +1000,8 @@ Bugs:
 # Experimental
 - Vox Frames - different vox models we swap between
 - We could have MegaChunks again, 4x4 chunks, and then cull them first with the Frustum + bounds checks (this is just a quicker sweep)
+- export character, mesh and bones, to blender so i can make animations
+	- reimport animation back in
 
 # Notes
 + I removed render_depth_invisible, we are just going to set depth to 0 from now on or destroy the chunk - or we can disable but it should be seperate from depth variable

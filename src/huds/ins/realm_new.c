@@ -1,10 +1,5 @@
-void on_confirmed_new_realm(ecs *world, ClickEventData event) {
-    entity player = event.clicker;
-    entity canvas = zox_get_link(world, player, CanvasLink);
-    entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuNewRealm));
-    if (menu) {
-        zox_delete(menu);
-    }
+// Creates the new realms save folder, and starts loading the game
+void enter_new_realm(ecs *world, entity player) {
     entity game = zox_get_link(world, player, GameLink);
     entity realm = zox_get_link(world, game, RealmLink);
     zox_geter_value(realm, Seed, lint, seed);
@@ -32,6 +27,16 @@ void on_confirmed_new_realm(ecs *world, ClickEventData event) {
     zox_logv("Created new Saves Directory [%s]", save_dir);
     free(game_path);
     free(save_dir);
+}
+
+void on_confirmed_new_realm(ecs *world, ClickEventData event) {
+    entity player = event.clicker;
+    entity canvas = zox_get_link(world, player, CanvasLink);
+    entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuNewRealm));
+    if (menu) {
+        zox_delete(menu);
+    }
+    enter_new_realm(world, event.clicker);
 }
 
 void on_cancelled_new_realm(ecs *world, ClickEventData event) {

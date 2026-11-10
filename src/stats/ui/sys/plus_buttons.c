@@ -21,11 +21,11 @@ void on_click_stat_plus(
     byte dbg_log = 0;
     entity button = data.clicked;
     if (!zox_valid(button) ||
-        !zox_has(button, DataLink))
+        !zox_is_linked_any(world, button, DataLink))
     {
         return;
     }
-    entity attribute = zox_getv(button, DataLink);
+    entity attribute = zox_get_link(world, button, DataLink);
     if (!zox_valid(attribute) ||
         !zox_has(attribute, StatAttribute))
     {
@@ -62,11 +62,10 @@ zox_sys2(StatPlusButtonSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(DataLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DataLink, data);
-        entity stat = data->value;
+        entity data = zox_get_link(world, e, DataLink);
+        entity stat = data;
         if (!zox_valid(stat) ||
             !zox_has(stat, StatAttribute))
         {
@@ -108,7 +107,7 @@ zox_sys2(StatPlusButtonSystem) {
             zox_setv(button, ElementFillColor, button_fill);
             zox_setv(button, ElementOutlineColor, button_outline);
             zox_add(button, StatPlusButton);
-            zox_setv(button, DataLink, stat);
+            zox_set_link(world, button, DataLink, stat);
             zox_setv(button, ClickEvent, &on_click_stat_plus);
             // above the frames icon and label (frame + 1)
             zox_setv(button, BonusLayer, 1);

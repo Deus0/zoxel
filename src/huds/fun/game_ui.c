@@ -1,5 +1,6 @@
 // TODO: Refactor to Cameras (camera spawning) + UIs (canvas spawning)
 extern entity spawn_menu_start(ecs*, entity, entity);
+extern void autostart_new_realm(ecs*, entity);
 
 // NOTE: Runs on boot, spawns game cameras, uis
 void on_boot_game_ui(
@@ -139,10 +140,14 @@ void on_boot_game_ui(
                 vp_size);
         }
         // main menu ui
-        spawn_menu_start(
-            world,
-            player,
-            canvas);
+        if (zox_autostart) {
+            autostart_new_realm(world, player);
+        } else {
+            spawn_menu_start(
+                world,
+                player,
+                canvas);
+        }
 #ifndef zox_xr
         // spawns a render texture ui and links to camera
         if (!zox_disable_post_processing) {

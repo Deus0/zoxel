@@ -1,7 +1,7 @@
 // Characters hold no voxel or mesh data, their render children are spawned here
 //  - with a model: a renderer child instancing its models lod mesh
 //  - CharacterUnique: a cloned vox child with its own lod meshes, and a renderer child for those
-//  - SkeletonLink: a combined vox child for its body parts, and a skeleton child
+//  - SkeletonOwner: a combined vox child for its body parts, and a skeleton child (SkeletonLink)
 // NOTE: Spawned from a system so meta characters (prefabs) don't get children
 zox_sys2(CharacterChildrenSpawnSystem) {
     byte dbg_log = 0;
@@ -9,28 +9,27 @@ zox_sys2(CharacterChildrenSpawnSystem) {
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
     zox_sys_in(RenderDepth);
-    zox_sys_in(ModelLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateCharacter, state);
         zox_sys_i(RenderDepth, rdepth);
-        zox_sys_i(ModelLink, model);
+        entity model = zox_get_link(world, e, ModelLink);
         if (state->value != zox_dirty_active) {
             continue;
         }
-        if (zox_has(e, SkeletonLink)) {
+        if (zox_has(e, SkeletonOwner)) {
             spawn_vox_combined_child(world, e);
             spawn_skeleton(world, e);
             continue;
         }
-        if (!zox_valid(model->value)) {
+        if (!zox_valid(model)) {
             continue;
         }
         entity mesh = 0;
         if (zox_has(e, CharacterUnique)) {
             // NOTE: VoxLink is deferred, so we use the lods returned here
             ModelLods lods = { 0 };
-            if (!spawn_vox_cloned_child(world, e, model->value, &lods)) {
+            if (!spawn_vox_cloned_child(world, e, model, &lods)) {
                 continue;
             }
             if (rdepth->value < model_lods_max_length) {

@@ -42,17 +42,8 @@ void set_entity_render_disabled(
         zox_setm(e, RenderDisabled, disabled);
     }
     // NOTE: for 3D UIs
-    if (zox_has(e, ElementLinks)) {
-        zox_geter(e, ElementLinks, elements);
-        for (int k = 0; k < elements->length; k++) {
-            entity e2 = elements->value[k];
-#ifdef zox_safety_checks
-            if (!zox_valid(e2)) {
-                continue;
-            }
-#endif
-            set_entity_render_disabled(world, e2, disabled);
-        }
+    zox_each_link(world, e, ElementLinks, element) {
+        set_entity_render_disabled(world, element, disabled);
     }
     iter it2 = zox_children(world, e);
     while (zox_children_next(it2)) {

@@ -6,7 +6,6 @@ void zox_systems_items_ui(ecs *world) {
         ItemIconTooltipSystem,
         zoxp_update,
         [in] interactions.SelectState,
-        [in] slots.DataLink,
         [none] elements2.Icon
     );*/
     /*zox_system(

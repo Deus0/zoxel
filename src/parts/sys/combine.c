@@ -5,11 +5,11 @@ entity item_get_max_depth_vox(ecs* world, entity part) {
     if (!zox_valid(part)) {
         return 0;
     }
-    if (!zox_has(part, ModelLink)) {
+    if (!zox_is_linked_any(world, part, ModelLink)) {
         zox_log_error("Part has no Model Link [%s]", zox_get_name(part));
         return 0;
     }
-    entity vox = get_model_first(world, zox_getv(part, ModelLink));
+    entity vox = get_model_first(world, zox_get_link(world, part, ModelLink));
     if (!zox_valid(vox)) {
         zox_log_error("[player body]: Invalid Part %s Model", zox_get_name(part));
         return 0;
@@ -24,7 +24,7 @@ entity item_get_max_depth_vox(ecs* world, entity part) {
 // NOTE: Recursively add parts to the body
 // TODO: Get position based on previous slot
 void build_body_parts(ecs *world, entity slot, CombineList* voxes, CombinePositions* positions, CombineDepths* depths, entity_array_d* slots_used, byte3* body_size, byte* max_depth, byte dbg_log) {
-    entity part = zox_getv(slot, DataLink);
+    entity part = zox_get_link(world, slot, DataLink);
     byte anchor = zox_getv(slot, SlotAnchor);
     if (!zox_valid(part)) {
         return;
@@ -285,8 +285,8 @@ zox_sys2(BodyCombineSystem) {
         // NOTE: Render at the depth for our chunks distance, like ChunkEntitiesLodSystem
         zox_setm(e, MaxRenderDepth, max_depth);
         byte distance = 0;
-        if (zox_has(e, ChunkLink)) {
-            entity chunk = zox_getv(e, ChunkLink);
+        if (zox_is_linked_any(world, e, ChunkLink)) {
+            entity chunk = zox_get_link(world, e, ChunkLink);
             if (zox_valid(chunk) && zox_has(chunk, RenderDistance)) {
                 distance = zox_getv(chunk, RenderDistance);
             }

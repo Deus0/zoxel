@@ -311,7 +311,6 @@ zox_sys2(BiomeBlocksSystem) {
             zox_setv(model_group, MaxRenderDepth, max_depth);
             zox_set_parent(world, model_group, e);
             entity texture_vox = 0;
-            ModelLinks variants = (ModelLinks) { 0 };
             for (int j = 0; j < grass_variants; j++) {
                 lint variant_seed = grass_seed +
                     variant_shift * (j + 1);
@@ -324,12 +323,10 @@ zox_sys2(BiomeBlocksSystem) {
                     max_depth,
                     variant_color);
                 zox_set_parent(world, model, model_group);
-                add_to_ModelLinks(&variants, model);
                 if (j == 0) {
                     texture_vox = model;
                 }
             }
-            zox_set_ptr(model_group, ModelLinks, variants);
             entity block = spawn_realm_block_model(
                 world,
                 e,

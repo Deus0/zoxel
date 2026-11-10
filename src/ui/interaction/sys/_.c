@@ -37,7 +37,6 @@ void zox_systems_interaction(ecs* world) {
     zox_system(
         ZeviceClickSystem,
         zoxp_update,
-        [in] inputs.DeviceLink,
         [in] core.EntityTarget,
         [out] interactions.ClickingEntity,
         [none] inputs.Zevice,
@@ -109,7 +108,6 @@ void zox_systems_interaction(ecs* world) {
     zox_system(
         MouseElementSystem,
         zoxp_update,
-        [in] inputs.ZeviceLink,
         [in] layouts.Anchor,
         [out] layouts.LayoutPosition,
         [none] ui.MouseElement

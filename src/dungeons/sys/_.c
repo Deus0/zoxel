@@ -9,7 +9,6 @@ void zox_systems_dungeons(ecs* world) {
         DungeonBlockSystem,
         zoxp_spawn, // zoxp_queue_add,
         [in] timing.TimerState,
-        [in] chunks3.ChunkLink,
         [in] DungeonWallType,
         [none] blocks.BlockDungeon
     );

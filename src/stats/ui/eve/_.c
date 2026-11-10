@@ -12,7 +12,6 @@ void zox_events_stats_ui(ecs* world) {
     );
     zox_on_add(
         stat_icon_tooltip_event,
-        [in] slots.DataLink,
         [none] slots.SlotUser,
         [none] interactions.Select,
     );
@@ -22,7 +21,7 @@ void zox_events_stats_ui(ecs* world) {
         [none] slots.DataDirty,
     );
     stat_labels_query = ecs_query(world, {
-        .expr = "[in] slots.DataLink, [inout] texts.TextData, [none] texts.Text, [none] elements2.Label, [none] ui_containers.DataUI",
+        .expr = "[inout] texts.TextData, [none] texts.Text, [none] elements2.Label, [none] ui_containers.DataUI",
         .cache_kind = EcsQueryCacheAuto
     });
     zox_muter(prefab_player, PlayerStateEvent, player_event);

@@ -5,7 +5,6 @@ entity spawn_prefab_block_base(
 {
     zox_prefab_child(prefab);
     zox_prefab_name("block_base");
-    zox_prefab_add(e, ModelLink);
     return e;
 }
 

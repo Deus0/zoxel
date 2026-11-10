@@ -7,7 +7,6 @@ entity spawn_block_world_dungeon(ecs *world, entity wall) {
     zox_prefab_set(e, TimerRate, { dungeon_grow_rate });
     zox_prefab_set(e, TimerState, { 0 });
     zox_prefab_set(e, TimerTime, { 0 });
-    zox_prefab_set(e, ChunkLink, { 0 });
     // zox_prefab_set(e, DungeonWallType, { zox_block_dark });
     zox_prefab_set(e, DungeonWallType, { wall });
     return e;

@@ -7,11 +7,11 @@ entity get_item_model(ecs* world, entity e) {
         zox_logw("Item Invalid");
         return 0;
     }
-    if (!zox_has(e, ModelLink)) {
+    if (!zox_is_linked_any(world, e, ModelLink)) {
         zox_logw("Item has no ModelLink [%s]", zox_get_name(e));
         return 0;
     }
-    entity model = get_model_first(world, zox_getv(e, ModelLink));
+    entity model = get_model_first(world, zox_get_link(world, e, ModelLink));
     if (!zox_valid(model) ||
         !zox_has(model, VoxelNode) ||
         !zox_has(model, NodeDepth) ||

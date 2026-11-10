@@ -7,7 +7,6 @@ zoxc_byte(MusicEnabled);
 zoxc_double(MusicLength);
 zoxc_double(MusicTime);
 zoxc_double(MusicSpeed);
-zoxc_entities(NoteLinks)
 // playlist
 zox_tag(Playlist);
 zoxc_byte(PlaylistEnabled);
@@ -29,7 +28,6 @@ void zox_components_musics(ecs* world) {
     zoxd_double(MusicTime);
     zoxd_double(MusicSpeed);
     zoxd_double(MusicLength);
-    zoxd_entities(NoteLinks);
     // playlist
     zoxd_tag(Playlist);
     zoxd_byte(PlaylistEnabled);

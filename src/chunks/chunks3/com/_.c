@@ -11,7 +11,16 @@ zoxc_int3(ChunkSize);
 zoxc_byte(ChunkLodDirty);
 zox_tag(BlocksSpawned);
 zoxc_entities(ChunkEntities);
-zoxc_link(ChunkLink, entity, ChunkEntities)
+zox_tag(ChunkLink);        // links to the chunk an entity is in, which holds it in its ChunkEntities
+
+// Removes an entity from its old chunks ChunkEntities, when moved, unlinked or destroyed
+void on_unlink_ChunkLink(ecs* world, entity e, entity chunk) {
+    if (!zox_valid(chunk) || !zox_has(chunk, ChunkEntities)) {
+        return;
+    }
+    ChunkEntities* entities = zox_getm(chunk, ChunkEntities);
+    remove_from_ChunkEntities(entities, e);
+}
 #define chunk_neighbors_length 6
 zoxc_array(ChunkNeighbors, entity, chunk_neighbors_length);
 zoxc_float(RaycastRange);
@@ -67,13 +76,14 @@ void zox_components_chunks3(ecs* world) {
     zoxd_int3(ChunkSize);
     // Links
     zoxd(ChunkNeighbors);
-    zoxd_links(ChunkLink);
     // Pointers
     zoxd_octree(VoxelNode);
     zoxd(VoxelNodeLock);
     zoxd_octree(SidesOctree);
     zoxd(SidesOctreeLock);
     zoxd_entities(ChunkEntities);
+    zoxd_nf_link(ChunkLink);
+    zox_on_unlink(on_unlink_ChunkLink, ChunkLink);
     zoxd_queue(VoxelNodeQueue);
     // Voxes
     // zoxd_byte(ChunkLod);

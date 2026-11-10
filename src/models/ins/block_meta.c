@@ -29,7 +29,7 @@ entity spawn_block_vox_meta(
         return e;
     }
     if (data.model) {
-        zox_setv(e, ModelLink, data.model);
+        zox_set_link(world, e, ModelLink, data.model);
     }
     byte length = octree_size(depth);
     int2 vox_texture_size = int2_single(length);
@@ -41,7 +41,7 @@ entity spawn_block_vox_meta(
             vox_texture_size);
         zox_set_name_e(e2, "texture_block");
         zox_setv(e2, VoxBakeSide, i);
-        zox_setv(e2, ModelLink, data.model);
+        zox_set_link(world, e2, ModelLink, data.model);
         zox_link(world, e2, BlockLink, e);
         zox_set_parent(world, e2, e);
     }

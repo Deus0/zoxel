@@ -3,10 +3,10 @@ byte is_slot_children_empty(ecs* world, entity e) {
     uint length = zox_get_children_by_id(world, e, children, layouts2_children_capacity, zox_id(Slot));
     for (uint k = 0; k < length; k++) {
         entity slot = children[k];
-        if (!zox_valid(slot) || !zox_has(slot, DataLink)) {
+        if (!zox_valid(slot)) {
             continue;
         }
-        entity data = zox_getv(slot, DataLink);
+        entity data = zox_get_link(world, slot, DataLink);
         if (zox_valid(data)) {
             return 0;
         }
@@ -19,10 +19,10 @@ byte is_slot_parent_empty(ecs* world, entity e) {
         return 0;
     }
     entity parent = zox_get_parent(world, e);
-    if (!zox_valid(parent) || !zox_has(parent, DataLink)) {
+    if (!zox_valid(parent) || !zox_has(parent, Slot)) {
         return 0;
     }
-    entity data = zox_getv(parent, DataLink);
+    entity data = zox_get_link(world, parent, DataLink);
     return !zox_valid(data);
 }
 
@@ -62,7 +62,7 @@ void zox_print_slots(ecs* world, entity slots_manager) {
     entity slots[layouts2_children_capacity];
     uint slots_length = zox_get_children_by_id(world, slots_manager, slots, layouts2_children_capacity, zox_id(Slot));
     for (uint k = 0; k < slots_length; k++) {
-        entity slot_data = zox_getv(slots[k], DataLink);
+        entity slot_data = zox_get_link(world, slots[k], DataLink);
         zox_log("Slot [%i] Data: %s", k, zox_get_name(slot_data));
     }
 }
@@ -84,7 +84,7 @@ entity zox_get_empty_slot(ecs* world, entity e) {
                 if (zox_getv(e2, ChildIndex) != i) {
                     continue;
                 }
-                entity slot_data = zox_getv(e2, DataLink);
+                entity slot_data = zox_get_link(world, e2, DataLink);
                 if (!slot_data) {
                     return e2;
                 }
@@ -99,7 +99,7 @@ entity zox_get_slot_by_data(ecs* world, entity slots_manager, entity data) {
     uint slots_length = zox_get_children_by_id(world, slots_manager, slots, layouts2_children_capacity, zox_id(Slot));
     for (uint k = 0; k < slots_length; k++) {
         entity slot = slots[k];
-        entity slot_data = zox_getv(slot, DataLink);
+        entity slot_data = zox_get_link(world, slot, DataLink);
         if (slot_data == data) {
             return slot;
         }
@@ -116,10 +116,10 @@ uint zox_get_slots_by_data(ecs* world, entity smanager, entity base_data, entity
     uint slots_length = zox_get_children_by_id(world, smanager, slots, layouts2_children_capacity, zox_id(Slot));
     for (uint k = 0; k < slots_length; k++) {
         entity slot = slots[k];
-        if (!zox_valid(slot) || !zox_has(slot, DataLink)) {
+        if (!zox_valid(slot)) {
             continue;
         }
-        entity data = zox_getv(slot, DataLink);
+        entity data = zox_get_link(world, slot, DataLink);
         if (!zox_valid(data)) {
             continue;
         }

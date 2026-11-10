@@ -44,9 +44,7 @@ entity zox_dbg_spawn_item_mesh(
             if (!zox_has(child, ItemVox)) {
                 continue;
             }
-            entity model = zox_has(child, ModelLink) ?
-                zox_getv(child, ModelLink) :
-                0;
+            entity model = zox_get_link(world, child, ModelLink);
             if (model) {
                 items[count++] = child;
             }
@@ -61,9 +59,7 @@ entity zox_dbg_spawn_item_mesh(
         zox_loge("[zox_dbg_spawn_item_mesh] Invalid Item Model");
         return 0;
     }
-    entity model = zox_has(item, ModelLink) ?
-        zox_getv(item, ModelLink) :
-        0;
+    entity model = zox_get_link(world, item, ModelLink);
     entity mesh = get_max_model_mesh(world, model);
     if (!mesh) {
         zox_loge("[dbg_item_mesh] Invalid Model [mesh]:[%s]",
@@ -160,9 +156,7 @@ void zox_dbg_spawn_item_meshes_all(
             if (!zox_has(item, ItemVox)) {
                 continue;
             }
-            entity model = zox_has(item, ModelLink) ?
-            zox_getv(item, ModelLink) :
-            0;
+            entity model = zox_get_link(world, item, ModelLink);
             if (!model) {
                 continue;
             }

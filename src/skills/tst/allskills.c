@@ -40,8 +40,7 @@ void zox_tst_all_skills(ecs* world, ClickEventData data) {
                 break;
             }
             entity skill = spawn_user_skill(world, character, rskill);
-            zox_muter(slot, DataLink, slot_data);
-            slot_data->value = skill;
+            zox_set_link(world, slot, DataLink, skill);
             zox_add(slot, DataDirty);
             zox_log("   + [%s]",
                 zox_getn(rskill));

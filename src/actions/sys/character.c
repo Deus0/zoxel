@@ -18,8 +18,7 @@ zox_sys2(CharacterActionsSpawnSystem) {
             if (zox_valid(actionbar)) {
                 entity slot = zox_get_empty_slot(world, actionbar);
                 if (zox_valid(slot)) {
-                    zox_muter(slot, DataLink, slot_data);
-                    slot_data->value = e2;
+                    zox_set_link(world, slot, DataLink, e2);
                 }
             }
         }

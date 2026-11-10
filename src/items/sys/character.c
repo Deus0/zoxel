@@ -21,8 +21,7 @@ void add_item_to_inventory(
             world,
             inventory);
         if (zox_valid(slot)) {
-            zox_muter(slot, DataLink, slot_data);
-            slot_data->value = user_item;
+            zox_set_link(world, slot, DataLink, user_item);
         }
     }
 }

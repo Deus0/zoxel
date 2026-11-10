@@ -10,9 +10,7 @@ entity spawn_entity_mesh_clone(
         zox_loge("Invalid [e]");
         return 0;
     }
-    entity model = zox_has(e, ModelLink) ?
-        zox_getv(e, ModelLink) :
-        0;
+    entity model = zox_get_link(world, e, ModelLink);
     if (!model) {
         zox_loge("Invalid [model]");
         return 0;

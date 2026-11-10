@@ -42,9 +42,7 @@ entity zox_dbg_spawn_block_vox_mesh(
         if (!zox_has(block, BlockVox)) {
             continue;
         }
-        entity model = zox_has(block, ModelLink) ?
-            zox_getv(block, ModelLink) :
-            0;
+        entity model = zox_get_link(world, block, ModelLink);
         if (model) {
             blocks[count++] = block;
         }
@@ -134,9 +132,7 @@ void zox_dbg_spawn_block_vox_meshes_all(
         if (!zox_has(block, BlockVox)) {
             continue;
         }
-        entity model = zox_has(block, ModelLink) ?
-            zox_getv(block, ModelLink) :
-            0;
+        entity model = zox_get_link(world, block, ModelLink);
         if (!model) {
             continue;
         }

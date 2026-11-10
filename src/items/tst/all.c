@@ -34,8 +34,7 @@ void give_character_all_items(ecs* world, entity e) {
                 quantity = rand_range(4, 16);
                 zox_set(e2, Quantity, { quantity });
             }
-            zox_muter(slot, DataLink, slot_data);
-            slot_data->value = e2;
+            zox_set_link(world, slot, DataLink, e2);
             zox_add(slot, DataDirty);
             zox_log("   + [%s] x%i", zox_get_name(realm_item), quantity);
         }

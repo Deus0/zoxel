@@ -54,8 +54,7 @@ zox_sys2(CharacterPlayerEquipsSystem) {
                 zox_slot_hat);
             if (zox_valid(realm_hat)) {
                 entity e2 = spawn_user_item(world, e, realm_hat);
-                zox_muter(hat_slot, DataLink, slot_data);
-                slot_data->value = e2;
+                zox_set_link(world, hat_slot, DataLink, e2);
                 body_updated = 1;
                 if (dbg_log) {
                     zox_log("Added Hat [%s] to Character [%s]", zox_get_name(realm_hat), zox_get_name(e));
@@ -86,8 +85,7 @@ zox_sys2(CharacterPlayerEquipsSystem) {
                 1);
             if (zox_valid(realm_hat)) {
                 entity e2 = spawn_user_item(world, e, realm_hat);
-                zox_muter(inventory_slot, DataLink, slot_data);
-                slot_data->value = e2;
+                zox_set_link(world, inventory_slot, DataLink, e2);
                 // dirty->value = zox_generate_body_start;
                 if (dbg_log) {
                     zox_log("Added Hat [%s] to Character [%s]", zox_get_name(realm_hat), zox_get_name(e));

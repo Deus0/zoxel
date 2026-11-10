@@ -18,7 +18,7 @@ entity spawn_realm_block_solid(
     zox_setv(e, BlockCollider, zox_block_solid);
     zox_setv(e, BlockModel, zox_block_solid);
     if (model) {
-        zox_setv(e, ModelLink, model);
+        zox_set_link(world, e, ModelLink, model);
     }
     zox_set_parent(world, e, parent);
     // if not bake
@@ -42,7 +42,7 @@ entity spawn_realm_block_solid(
         }
         zox_setv(e2, ChildIndex, i);
         zox_setv(e2, VoxBakeSide, i);
-        zox_setv(e2, ModelLink, model);
+        zox_set_link(world, e2, ModelLink, model);
         zox_link(world, e2, BlockLink, e);
         zox_set_parent(world, e2, e);
     }

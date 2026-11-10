@@ -21,9 +21,8 @@ entity spawn_mouse_icon(
         default_outline_color_icon);
     zox_add(e, MouseElement);
     zox_setv(e, Layer, layer);
-    zox_setv(e, DeviceLink, device);
-    zox_setv(e, ZeviceLink, zevice);
-    zox_setv(e, DataLink, 0);
+    zox_set_link(world, e, DeviceLink, device);
+    zox_set_link(world, e, ZeviceLink, zevice);
     zox_setv(e, RenderDisabled, 1);
     return e;
 }

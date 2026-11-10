@@ -18,7 +18,6 @@ void zox_systems_terrain(ecs *world) {
         zoxp_update,
         [in] transforms3.Position3D,
         [out] chunks3.ChunkPosition,
-        [out] chunks3.ChunkLink,
         [none] chunks3.LinkChunk
     );
     // Starts Building

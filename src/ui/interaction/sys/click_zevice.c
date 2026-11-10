@@ -2,24 +2,22 @@ zox_sys2(ZeviceClickSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(DeviceLink);
     zox_sys_in(EntityTarget);
     zox_sys_out(ClickingEntity);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DeviceLink, device);
+        entity device = zox_get_link(world, e, DeviceLink);
         zox_sys_i(EntityTarget, target);
         zox_sys_o(ClickingEntity, clicked);
-        entity player = zox_get_parent(world, device->value);
-        if (!zox_valid(player)) {
-            // zox_log(" ! device has null player [%lu]\n", device)
-            continue;
-        }
-        if (!zox_valid(device->value)) {
+        if (!zox_valid(device)) {
             zox_loge(" device null from zevice [%lu]", e);
             continue;
         }
-        if (zox_has(device->value, Disabled)) {
+        entity player = zox_get_parent(world, device);
+        if (!zox_valid(player)) {
+            continue;
+        }
+        if (zox_has(device, Disabled)) {
             continue;
         }
         byte device_mode = zox_getv(player, DeviceMode);

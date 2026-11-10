@@ -11,28 +11,27 @@ void zox_systems_bodys(ecs* world) {
         [out] parts.BodyDirty,
         [out] parts.BodySize,
         [out] blocks.BlockScale,
-        [none] bones.SkeletonLink,
+        [none] bones.SkeletonOwner,
     );
     zox_system_1(
         CharacterBodySpawnSystem,
         zoxp_spawn,
         [in] characters.GenerateCharacter,
         [out] parts.BodyDirty,
-        [none] bones.SkeletonLink,
+        [none] bones.SkeletonOwner,
     );
     zox_system_1(
         CharacterBoneSpawnSystem,
         zoxp_spawn,
         [in] parts.BodySize,
         [in] blocks.BlockScale,
-        [in] bones.SkeletonLink,
         [out] parts.BodyDirty,
+        [none] bones.SkeletonOwner,
     );
     zox_system(
         SlotItemTooltipSystem,
         zoxp_update,
         [in] interactions.SelectState,
-        [in] slots.DataLink,
         [none] slots.SlotUser,
         [none] elements2.Icon,
     );

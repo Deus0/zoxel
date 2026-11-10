@@ -15,7 +15,7 @@ entity spawn_realm_item_equip(
     zox_add(e, EquipItem);
     zox_add(e, ItemVox);
     zox_setv(e, SlotType, slot_type);
-    zox_setv(e, ModelLink, model);
+    zox_set_link(world, e, ModelLink, model);
     zox_link(world, e, TextureLink, texture);
     return e;
 }

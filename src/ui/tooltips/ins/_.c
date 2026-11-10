@@ -40,8 +40,8 @@ entity spawn_tooltip(
     zox_name("tooltip");
     zox_setv(e, RenderDisabled, 1);
     zox_setv(e, OutlineThickness, 0);
-    zox_setv(e, DeviceLink, device);
-    zox_setv(e, ZeviceLink, zevice);
+    zox_set_link(world, e, DeviceLink, device);
+    zox_set_link(world, e, ZeviceLink, zevice);
     /*
     if (zox_valid(local_mouse)) {
         entity pointer = zox_get_child_by_id(
@@ -49,7 +49,7 @@ entity spawn_tooltip(
             local_mouse,
             zox_id(ZevicePointer));
         if (zox_valid(pointer)) {
-            zox_setv(e, ZeviceLink, pointer);
+            zox_set_link(world, e, ZeviceLink, pointer);
         } else {
             zox_loge("Mouse has no Pointer child");
         }

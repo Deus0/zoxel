@@ -28,7 +28,6 @@ void zox_systems_chunks3(ecs *world) {
     zox_system(
         BakeVoxSystem,
         zoxp_update,
-        [in] rendering.ModelLink,
         // [in] textures.TextureLinks,
         [none] blocks.Block,
     );
@@ -37,7 +36,6 @@ void zox_systems_chunks3(ecs *world) {
         zoxp_update,
         [in] rendering.TextureSize,
         [in] blocks.VoxBakeSide,
-        [in] rendering.ModelLink,
         [out] textures.GenerateTexture,
         [out] textures.TextureData,
         [none] textures.VoxTexture

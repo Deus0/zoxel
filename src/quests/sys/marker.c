@@ -8,11 +8,9 @@ void marker_spawn_system(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateCharacter);
-    zox_sys_out(ElementLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateCharacter, state);
-        zox_sys_o(ElementLinks, elements);
         if (state->value != zox_dirty_end) {
             continue;
         }
@@ -35,7 +33,7 @@ void marker_spawn_system(iter* it) {
             text,
             fill,
             outline);
-        add_to_ElementLinks(elements, marker);
+        zox_link(world, e, ElementLinks, marker);
         // link quest to marker
         /*entity quest = zox_get_child_by_id(
             world,

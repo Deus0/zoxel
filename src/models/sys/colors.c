@@ -38,13 +38,12 @@ zox_sys2(ColorsModelNodeSystem) {
     ushort inner_seed_shift = 39393;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ModelLink);
     zox_sys_out(Seed);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(ModelLink, model);
+        entity model = zox_get_link(world, e, ModelLink);
         zox_sys_o(Seed, seed);
-        if (!zox_valid(model->value)) {
+        if (!zox_valid(model)) {
             zox_logw("[ColorsModelNodeSystem] Node has Invalid Model [%s]", zox_getn(e));
             zox_add(e, TriggerEnd);
             continue;
@@ -64,15 +63,15 @@ zox_sys2(ColorsModelNodeSystem) {
         }
         // for each model LOD, run shapes
         zox_logv(" - Node: Model Colors [%s]",
-            zox_getn(model->value));
-        lint model_seed = zox_has(model->value, Seed) ?
-            zox_getv(model->value, Seed) : 0;
+            zox_getn(model));
+        lint model_seed = zox_has(model, Seed) ?
+            zox_getv(model, Seed) : 0;
         if (!seed->value) {
             seed->value = model_seed;
         }
         if (dbg_log) {
             zox_log("[Colors] ModelNode [%s] Seed %i",
-                zox_getn(model->value),
+                zox_getn(model),
                 seed);
         }
         color node_color = zox_has(node, Color) ?
@@ -82,7 +81,7 @@ zox_sys2(ColorsModelNodeSystem) {
         process_node_model_generate_colors(
             world,
             node,
-            model->value,
+            model,
             seed->value,
             node_color,
             color_count);

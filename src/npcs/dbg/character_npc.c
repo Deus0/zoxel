@@ -36,7 +36,7 @@ void zox_tst_spawn_character3_npc(
     lint seed = rand_range(0, 10000);
     uint mindex = rand_range(0, characters->length - 1);
     entity meta = characters->value[mindex];
-    // entity model = zox_getv(meta, ModelLink);
+    // entity model = zox_get_link(world, meta, ModelLink);
     // cchar name[64]; // = "TS-G391";
     // csprintf(name, "TS-G%lu", seed);
     // char* name = generate_name();

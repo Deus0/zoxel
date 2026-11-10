@@ -35,9 +35,7 @@ void stat_icon_label_event(iter* it) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_o(TextData, text);
-        entity stat = zox_has(e, DataLink) ?
-            zox_getv(e, DataLink) :
-            0;
+        entity stat = zox_get_link(world, e, DataLink);
         set_stat_icon_label(world, e, text, stat);
     }
 }
@@ -55,10 +53,9 @@ void stat_dirty_labels_event(iter* it) {
         zox_sys_e();
         iter it2 = ecs_query_iter(world, stat_labels_query);
         while (ecs_query_next(&it2)) {
-            const DataLink* links = ecs_field(&it2, DataLink, 0);
-            TextData* texts = ecs_field(&it2, TextData, 1);
+            TextData* texts = ecs_field(&it2, TextData, 0);
             for (int j = 0; j < it2.count; j++) {
-                if (links[j].value == e) {
+                if (zox_get_link(world, it2.entities[j], DataLink) == e) {
                     set_stat_icon_label(world, it2.entities[j], &texts[j], e);
                 }
             }
@@ -71,11 +68,10 @@ void stat_icon_tooltip_event(iter* it) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(DataLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(DataLink, data);
-        entity stat = data->value;
+        entity data = zox_get_link(world, e, DataLink);
+        entity stat = data;
         // TODO: We should do this for only X types of items
         //      - BlockItem, ConsumeableItem, etc
         if (!zox_valid(stat) ||

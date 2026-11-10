@@ -22,9 +22,7 @@ void spawned_block_vox(
     // gett block data
     entity prefab = zox_getv(block, BlockPrefabLink);
     entity vox =
-        zox_has(block, ModelLink) ?
-            zox_getv(block, ModelLink) :
-            0;
+        zox_get_link(world, block, ModelLink);
     entity e2;
     if (zox_has(prefab, BlockVox)) {
         e2 = spawn_block_vox(

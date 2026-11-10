@@ -14,21 +14,24 @@ zox_sys2(MusicGenerateSystem) {
     zox_sys_in(Seed);
     zox_sys_in(InstrumentType);
     zox_sys_out(GenerateMusic);
-    zox_sys_out(NoteLinks);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(Seed, seed);
         zox_sys_i(InstrumentType, instrument);
         zox_sys_o(GenerateMusic, generateMusic);
-        zox_sys_o(NoteLinks, noteLinks);
         if (!generateMusic->value) {
             continue;
+        }
+        // NOTE: Clear old notes, they are children
+        ordered_children old_notes = zox_get_ordered_children(world, e);
+        for (int j = 0; j < old_notes.length; j++) {
+            zox_delete(old_notes.value[j]);
         }
         zox_logv("Generating music with Seed [%lu]", seed->value);
         srand(seed->value);
 
         int sounds_per_verse = 8;
         int verses = 6;
-        initialize_NoteLinks(noteLinks, verses * sounds_per_verse);
         int sound_index = 0;
         int palete_type = 0;
         palete_type = rand() % music_palette_end;
@@ -84,11 +87,12 @@ zox_sys2(MusicGenerateSystem) {
                 entity note = spawn_note(
                     world,
                     prefab_note,
+                    e,
                     music_note,
                     instrument->value,
                     note_length,
                     note_volume);
-                noteLinks->value[sound_index] = note;
+                (void) note; // used by zox_logv
                 sound_index++;
 
                 zox_logv("  + note [%lu:%s] at [%i] is: (%i:%i) [volume[%f]]", note, zox_get_name(note), sound_index, music_note, instrument->value, note_volume);

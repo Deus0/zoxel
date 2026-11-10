@@ -130,6 +130,10 @@ progress and will be reorganised over time.
 
 - [Characters](doc/character.md): how characters are structured, their
   children (voxes, renderers, skeletons), and tips for working with them
+- [Links](doc/links.md): pointing entities at each other with `zox_link`,
+  single and many links, and reacting to unlinks
+- [Children](doc/children.md): parenting, getting children, and ordered
+  children
 - [Architecture](doc/architecture.md): events vs systems, and other
   design guidelines
 - [Coding Standards](doc/coding_standards.md): code style and conventions

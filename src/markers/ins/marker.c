@@ -28,7 +28,5 @@ entity spawn_marker(
     zox_add(text, CentredGlyph);
     // Links
     zox_link(world, parent, MarkerLink, e2.x);
-    zox_setv(marker, ElementHolder, parent);
-    // add_to_ElementLinks(elements, marker);
     return marker;
 }

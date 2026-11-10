@@ -15,6 +15,6 @@ entity spawn_process_model(
     zox_setv(e, Seed, 0);
     zox_setv(e, ModelSize, byte3_zero);
     zox_link(world, e, NodeLink, node);
-    zox_setv(e, ModelLink, model);
+    zox_set_link(world, e, ModelLink, model);
     return e;
 }

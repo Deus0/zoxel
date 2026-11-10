@@ -59,7 +59,7 @@ entity spawn_texture_from_vox(
     }
     // zox_set_name_e(texture, "bodys_texture_head");
     zox_setv(texture, VoxBakeSide, face);
-    zox_setv(texture, ModelLink, vox);
+    zox_set_link(world, texture, ModelLink, vox);
     delay_event(
         world,
         &delayed_texture_generate,

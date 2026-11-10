@@ -8,10 +8,10 @@
         zox_sys_i(SlotLink, slot);
         zox_sys_o(TextData, text);
         zox_sys_o(TextDirty, dirty);
-        if (!zox_valid(slot->value) || !zox_has(slot->value, DataLink)) {
+        if (!zox_valid(slot->value) || !zox_is_linked_any(world, slot->value, DataLink)) {
             continue;
         }
-        entity e2 = zox_getv(slot->value, DataLink);
+        entity e2 = zox_get_link(world, slot->value, DataLink);
         if (zox_valid(e2)) {
             continue;
         }

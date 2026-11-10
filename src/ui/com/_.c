@@ -1,10 +1,9 @@
 // Core Elements
 zox_tag(Element);
 zox_tag(Element2D);
-zoxc_entity(ElementLink);
-zoxc_entities(ElementLinks)
-zoxc_child(ElementHolder, ElementLinks)
-zoxc_entity(UIHolderLink);
+zox_tag(ElementLink);      // links to a UI element, i.e. a zevices virtual joystick
+zox_tag(ElementLinks);     // links to many UI elements, i.e. a characters 3D UIs
+zox_tag(UIHolderLink);     // a 3D UI links to its holder, it is deleted with it
 zoxc_int2(ElementMargins);
 zoxc_color(ElementFillColor);
 zoxc_color(ElementOutlineColor);
@@ -25,10 +24,9 @@ zox_tag(MouseElement);
 void zox_components_elements(ecs *world) {
     zoxd_tag(Element);
     zoxd_tag(Element2D);
-    zoxd_entity(ElementLink);
-    zoxd_entities(ElementLinks);
-    zoxd(UIHolderLink);
-    zoxd_child(ElementHolder);
+    zoxd_nf_link(ElementLink);
+    zoxd_nf_links(ElementLinks);
+    zoxd_nf_link_owned(UIHolderLink);
     zoxd_int2(ElementMargins);
     zoxd_color(ElementFillColor);
     zoxd_color(ElementOutlineColor);

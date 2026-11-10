@@ -9,7 +9,8 @@ zox_tag(ArmBone);
 zox_tag(HandBone);
 zox_tag(ShoulderBone);
 zox_tag(ThighBone);
-zoxc_entity(SkeletonLink);
+zox_tag(SkeletonLink);     // links to a skeleton, from its owner or its bones
+zox_tag(SkeletonOwner);    // has a skeleton child, linked with SkeletonLink
 zox_tag(HeadBoneLink);
 zox_tag(HandBoneLink);
 zox_tag(ShoulderBoneLink);
@@ -32,7 +33,8 @@ void zox_components_bones(ecs* world) {
     zoxd_tag(HandBone);
     zoxd_tag(ShoulderBone);
     zoxd_tag(ThighBone);
-    zoxd_entity(SkeletonLink);
+    zoxd_nf_link(SkeletonLink);
+    zoxd_tag(SkeletonOwner);
     zoxd_nf_tag(HeadBoneLink);
     zoxd_nf_tag(HandBoneLink);
     zoxd_nf_tag(ShoulderBoneLink);

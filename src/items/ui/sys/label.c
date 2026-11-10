@@ -11,11 +11,11 @@
         zox_sys_o(TextData, text);
         entity slot = zox_get_link(world, e, SlotLink);
         if (!zox_valid(slot) ||
-            !zox_has(slot->value, DataLink))
+            !zox_is_linked_any(world, slot->value, DataLink))
         {
             continue;
         }
-        entity e2 = zox_getv(slot->value, DataLink);
+        entity e2 = zox_get_link(world, slot->value, DataLink);
         if (!zox_valid(e2) || !zox_has(e2, Item)) {
             continue;
         }

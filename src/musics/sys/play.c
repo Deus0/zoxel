@@ -8,28 +8,29 @@ zox_sys2(MusicPlaySystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(MusicEnabled);
-    zox_sys_in(NoteLinks);
     zox_sys_in(MusicSpeed);
     zox_sys_out(MusicNote);
     zox_sys_out(MusicTime);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(MusicEnabled, playing);
-        zox_sys_i(NoteLinks, notes);
+        // NOTE: Notes are ordered children
+        ordered_children notes = zox_get_ordered_children(world, e);
         zox_sys_i(MusicSpeed, musicSpeed);
         zox_sys_o(MusicNote, musicNote);
         zox_sys_o(MusicTime, musicTime);
 
-        if (!playing->value || !notes->length) {
+        if (!playing->value || !notes.length) {
             // zox_logw("Music disabled");
             continue;
         }
 
         musicTime->value += delta_time * global_music_speed;
-        if (notes->length > 0 && musicTime->value >= musicSpeed->value) {
+        if (notes.length > 0 && musicTime->value >= musicSpeed->value) {
             musicTime->value -= musicSpeed->value;
             musicNote->value++;
 
-            if (musicNote->value >= notes->length) {
+            if (musicNote->value >= notes.length) {
                 // zox_logw("Music disabled");
                 musicNote->value = 0;
             }
@@ -40,7 +41,7 @@ zox_sys2(MusicPlaySystem) {
                 continue;
             }
 
-            entity note = notes->value[musicNote->value];
+            entity note = notes.value[musicNote->value];
             int music_note = zox_getv(note, SoundFrequencyIndex);
             float note_volume = zox_getv(note, SoundVolume);
             float note_time = zox_getv(note, SoundLength);

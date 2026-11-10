@@ -31,7 +31,7 @@ void zox_tst_spawn_character3_npc_skeleton(
     lint seed = rand_range(0, 10000);
     uint mindex = rand_range(0, characters->length - 1);
     entity meta = characters->value[mindex];
-    // entity model = zox_getv(meta, ModelLink);
+    // entity model = zox_get_link(world, meta, ModelLink);
     zox_log("Running Test [zox_tst_character3_npc_skeleton]");
     zox_log("   - Meta [%s:%i]:[%lu]",
             zox_getn(meta),

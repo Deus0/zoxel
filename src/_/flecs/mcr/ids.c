@@ -64,6 +64,26 @@
     zoxd_tag(T); \
     zox_dont_fragment(T)
 
+// A link to one target, linking again replaces the old target (Exclusive)
+//  - use zox_link / zox_set_link / zox_get_link, avoid in system queries
+#define zoxd_nf_link(T)\
+    zoxd_tag(T); \
+    zox_add_id(zox_id(T), EcsExclusive); \
+    zox_dont_fragment(T)
+
+// An Exclusive link, the linking entity is deleted when its target is (OnDeleteTarget, Delete)
+//  - i.e. a 3D UI is deleted with the character it is held by
+#define zoxd_nf_link_owned(T)\
+    zoxd_tag(T); \
+    zox_add_id(zox_id(T), EcsExclusive); \
+    ecs_add_pair(world, zox_id(T), EcsOnDeleteTarget, EcsDelete); \
+    zox_dont_fragment(T)
+
+// A link to many targets, iterate with zox_each_link, count with zox_get_links_count
+//  - targets are not kept in insertion order
+#define zoxd_nf_links(T)\
+    zoxd_nf_tag(T)
+
 // so we can change fragmentation rules here
 #define zoxd_tag_event(T)\
     zoxd_tag(T)

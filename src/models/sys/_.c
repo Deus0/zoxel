@@ -18,7 +18,6 @@ void zox_systems_models(ecs* world) {
     zox_system(
         ModelSizeNodeSystem,
         zoxp_update,
-        [in] rendering.ModelLink,
         [out] core.Seed,
         [out] models.ModelSize,
         [none] nodes.NodeRun,
@@ -28,7 +27,6 @@ void zox_systems_models(ecs* world) {
     zox_system(
         FillModelNodeSystem,
         zoxp_update,
-        [in] rendering.ModelLink,
         [in] models.ModelSize,
         [none] nodes.NodeRun,
         [none] models.ModelRun,
@@ -37,7 +35,6 @@ void zox_systems_models(ecs* world) {
     zox_system(
         PaintModelNodeSystem,
         zoxp_update,
-        [in] rendering.ModelLink,
         [in] models.ModelSize,
         [none] nodes.NodeRun,
         [none] models.ModelRun,
@@ -46,7 +43,6 @@ void zox_systems_models(ecs* world) {
     zox_system(
         ModelEndNodeSystem,
         zoxp_update,
-        [in] rendering.ModelLink,
         [none] nodes.NodeRun,
         [none] models.ModelRun,
         [none] core.Begin,
@@ -54,7 +50,6 @@ void zox_systems_models(ecs* world) {
     zox_system(
         ColorsModelNodeSystem,
         zoxp_update,
-        [in] rendering.ModelLink,
         [out] core.Seed,
         [none] nodes.NodeRun,
         [none] models.ModelRun,
