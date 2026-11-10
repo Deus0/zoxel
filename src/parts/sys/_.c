@@ -7,7 +7,6 @@ void zox_systems_bodys(ecs* world) {
     zox_system(
         BodyCombineSystem,
         zoxp_update,
-        [in] chunks3.VoxLink,
         [out] parts.BodyDirty,
         [out] parts.BodySize,
         [out] blocks.BlockScale,

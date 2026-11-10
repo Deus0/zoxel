@@ -107,7 +107,6 @@ void zox_systems_basics3(ecs* world) {
         1,
         vox_instance_render_system,
         [in] transforms.TransformMatrix,
-        [in] rendering.InstanceLink,
         [in] rendering.RenderDisabled,
         [none] rendering.RendererInstance
     );

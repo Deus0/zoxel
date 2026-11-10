@@ -71,7 +71,6 @@ void vox_instance_render_system(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TransformMatrix);
-    zox_sys_in(InstanceLink);
     zox_sys_in(RenderDisabled);
     camera_filtering_begin();
     guint material_link = zox_getv(material_vox_instance, MaterialGPULink);
@@ -92,20 +91,23 @@ void vox_instance_render_system(iter* it) {
     }
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(RenderDisabled, disabled);
-        zox_sys_i(InstanceLink, instance);
         zox_sys_i(TransformMatrix, matrix);
-        if (!zox_valid(instance->value) || disabled->value) {
+        if (disabled->value) {
+            continue;
+        }
+        const entity instance = zox_get_link(world, it->entities[i], InstanceLink);
+        if (!zox_valid(instance)) {
             continue;
         }
         camera_filtering_check();
         int index = 0;
-        if (!has_mesh(commands, instance->value, &index)) {
+        if (!has_mesh(commands, instance, &index)) {
             // NOTE: sway meshes (grass) use the sway material, if animation is on
             byte sway = zox_grass_animation &&
                 material_vox_instance_sway &&
-                zox_has(instance->value, SwayMesh);
+                zox_has(instance, SwayMesh);
             InstanceRenderCommand command = {
-                .mesh = instance->value,
+                .mesh = instance,
                 .sway = sway,
                 .transforms = create_float4x4_array_d(max_transforms)
             };

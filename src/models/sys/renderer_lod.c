@@ -16,6 +16,6 @@ zox_sys2(RendererLodSystem) {
             continue;
         }
         entity mesh = get_owner_lod_mesh(world, e, rdepth->value);
-        zox_setv(renderer, InstanceLink, mesh);
+        zox_set_link(world, renderer, InstanceLink, mesh);
     }
 } zox_sys_end(RendererLodSystem);

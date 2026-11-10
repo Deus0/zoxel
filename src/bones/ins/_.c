@@ -37,8 +37,8 @@ entity get_skeleton_vox(
     entity skeleton)
 {
     entity owner = zox_valid(skeleton) ? zox_get_parent(world, skeleton) : 0;
-    if (!zox_valid(owner) || !zox_has(owner, VoxLink)) {
+    if (!zox_valid(owner)) {
         return 0;
     }
-    return zox_getv(owner, VoxLink);
+    return zox_get_link(world, owner, VoxLink);
 }

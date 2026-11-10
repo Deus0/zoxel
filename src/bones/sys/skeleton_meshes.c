@@ -150,12 +150,11 @@ zox_sys2(SkeletonMeshesSystem) {
         zox_sys_e();
         entity owner = zox_get_parent(world, e);
         if (!zox_valid(owner) ||
-            !zox_has(owner, RenderDepth) ||
-            !zox_has(owner, VoxLink))
+            !zox_has(owner, RenderDepth))
         {
             continue;
         }
-        entity vox = zox_getv(owner, VoxLink);
+        entity vox = zox_get_link(world, owner, VoxLink);
         if (!zox_valid(vox) || !zox_has(vox, ColorRGBs)) {
             continue;
         }

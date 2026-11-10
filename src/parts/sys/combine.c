@@ -241,13 +241,11 @@ zox_sys2(BodyCombineSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(VoxLink);
     zox_sys_out(BodyDirty);
     zox_sys_out(BodySize);
     zox_sys_out(BlockScale);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(VoxLink, vox_link);
         zox_sys_o(BodyDirty, body_dirty);
         zox_sys_o(BodySize, body_size);
         zox_sys_o(BlockScale, block_scale);
@@ -255,7 +253,7 @@ zox_sys2(BodyCombineSystem) {
             continue;
         }
         // NOTE: Waits for the vox to spawn
-        entity vox = vox_link->value;
+        entity vox = zox_get_link(world, e, VoxLink);
         if (!zox_valid(vox) || !zox_has(vox, CombineList)) {
             continue;
         }

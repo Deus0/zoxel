@@ -5,18 +5,16 @@ void lod_instance_system(iter* it) {
     zox_sys_begin();
     zox_sys_in(RenderDepthDirty);
     zox_sys_in(RenderDepth);
-    zox_sys_out(InstanceLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RenderDepthDirty, dirty);
         zox_sys_i(RenderDepth, rdepth);
-        entity model = zox_get_link(world, e, ModelLink);
-        zox_sys_o(InstanceLink, instance);
         if (dirty->value != zox_dirty_active) {
             continue;
         }
+        entity model = zox_get_link(world, e, ModelLink);
         if (rdepth->value == render_depth_uninitialized) { //  || rdepth->value == render_depth_invisible) {
-            instance->value = 0;
+            zox_set_link(world, e, InstanceLink, 0);
             continue;
         }
         if (!zox_valid(model)) {
@@ -33,7 +31,7 @@ void lod_instance_system(iter* it) {
             zox_logw("+ %s with model [%s] has invalid vox lod at Depth [%i]", zox_get_name(e), zox_get_name(model), rdepth->value);
             continue;
         }
-        instance->value = vox_lod;
+        zox_set_link(world, e, InstanceLink, vox_lod);
     }
     zox_sys_on_end();
 } zoxd_system(lod_instance_system);

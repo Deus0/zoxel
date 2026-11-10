@@ -1,31 +1,11 @@
 # Todo
 
-- Add --autostart tag that autos through the uis, into a new game, and makes player character auto walk too (should already be implemented somewhere)
+-x Add --autostart tag that autos through the uis, into a new game, and makes player character auto walk too (should already be implemented somewhere)
 	- this can be used by claude in automated testing
-
--x Refactor any old link code, that uses entity, into zox_link:
-	-x ModelLink
-	-x ModelLinks (half done)
-	-x DataLink
-	-x SkeletonLink
-	-x ChunkLink
-	-x ElementLink
-	-x DeviceLink
-	-x ZeviceLink
-	-x PlayerLinks
-	-x NoteLinks
-	-x UIHolderLink
-	-x ElementLinks
 	
-- the arms and legs should slerp and be more natural
-	- atm it also flickers between rotations
-	- investigate first then make a proposal for the changes
 - add rotated character per voxel selection for raycasts, similar to how we do for grass
 	- keeping bounds as a sweep pass
 
-- This next patch: please refactor characters so that vox or mesh (instance reference too) are children to the character, this seperation is important to seperate concerns of modules too
-	- also cleanup old render data on skeleton characters
-	- skeleton shouldnt inherit vox too, needs to be seperate?
 
 - Make sure all mesh code is out of characters, inside rendering or models where appropriate.
 - I noticed some faces are not culled between chunks

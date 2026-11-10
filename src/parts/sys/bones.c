@@ -59,6 +59,8 @@ entity spawn_part_bones(
         zox_add(bone, ShoulderBone);
         zox_setv(bone, SwingState, 1);
         zox_setv(bone, SwingAngle, 110);
+        zox_setv(bone, SwingPhase, 0);
+        zox_setv(bone, SwingBlend, 0);
         // NOTE: For Right Shoulder
         if (is_right_side) {
             zox_link(world, skeleton, ShoulderBoneLink, bone);
@@ -76,6 +78,8 @@ entity spawn_part_bones(
         zox_add(bone, ThighBone);
         zox_set(bone, SwingState, { 1 });
         zox_set(bone, SwingAngle, { 60 });
+        zox_setv(bone, SwingPhase, 0);
+        zox_setv(bone, SwingBlend, 0);
         // zox_log("Added ThighBone to Part's Bone [%s]", zox_get_name(part));
     }
     if (dbg_log) {

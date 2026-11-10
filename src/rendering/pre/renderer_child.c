@@ -4,7 +4,6 @@
 entity spawn_prefab_renderer_child(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("renderer_child");
-    zox_setv(e, InstanceLink, 0);
     zox_setv(e, LocalPosition3D, float3_zero);
     zox_setv(e, LocalRotation3D, quaternion_identity);
     return e;
@@ -19,7 +18,7 @@ entity spawn_renderer_child(
 {
     entity e = zox_ins(world, prefab);
     zox_set_unique_name(e, "renderer_child");
-    zox_setv(e, InstanceLink, mesh);
+    zox_set_link(world, e, InstanceLink, mesh);
     if (zox_has(parent, RenderDisabled)) {
         zox_setv(e, RenderDisabled, zox_getv(parent, RenderDisabled));
     }

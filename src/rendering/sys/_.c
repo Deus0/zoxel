@@ -37,7 +37,7 @@ void zox_systems_rendering(ecs *world) {
         zoxp_update,
         [in] rendering.RenderDepthDirty,
         [in] rendering.RenderDepth,
-        [out] rendering.InstanceLink
+        [none] rendering.RendererInstance
     );
     zox_system_1(
         rendering_settings_system,

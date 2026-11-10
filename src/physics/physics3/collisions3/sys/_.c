@@ -57,9 +57,9 @@ void zox_systems_collisions3(ecs *world) {
     zox_system(
         VoxLinkBounds3GrowSystem,
         zoxp_update,
-        [in] chunks3.VoxLink,
         [out] transforms3.Bounds3D,
         [out] transforms3.Bounds3Dirty,
+        [none] chunks3.VoxOwner,
     );
     zox_system(
         Bounds3EnableSystem,

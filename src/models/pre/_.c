@@ -74,9 +74,6 @@ void spawn_prefabs_models(ecs *world) {
     prefab_block_vox_instanced = spawn_prefab_block_vox_instanced(
         world,
         prefab_static_vox_instanced);
-    /*if (prefab_vox_texture) {
-        zox_prefab_set(prefab_vox_texture, VoxLink, { 0 });
-    }*/
     // models
     prefab_model_group = spawn_prefab_model_group(world);
     prefab_node_model = spawn_prefab_node_model(world, prefab_node);

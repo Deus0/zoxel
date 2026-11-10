@@ -16,6 +16,8 @@ zox_tag(HandBoneLink);
 zox_tag(ShoulderBoneLink);
 zoxc_byte(SwingState);
 zoxc_byte(SwingAngle);
+zoxc_float(SwingPhase);    // accumulated swing cycle, in radians
+zoxc_float(SwingBlend);    // 0 idle -> 1 walking, smoothed
 zoxc_byte(RaiseShoulder);
 zoxc_byte(WalkState);
 zoxc_byte(WalkSpeed);
@@ -40,6 +42,8 @@ void zox_components_bones(ecs* world) {
     zoxd_nf_tag(ShoulderBoneLink);
     zoxd_byte(SwingState);
     zoxd_byte(SwingAngle);
+    zoxd_float(SwingPhase);
+    zoxd_float(SwingBlend);
     zoxd_double(SwingStart);
     zoxd_float(SwingSpeed);
     zoxd_byte(RaiseShoulder);

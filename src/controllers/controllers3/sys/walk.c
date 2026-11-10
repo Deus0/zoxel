@@ -1,7 +1,9 @@
 // NOTE: Tells the arms to swing or not, from the skeletons owner velocity
 zox_sys2(WalkStateSystem) {
     byte dbg_log = 0;
-    float speed_cutoff = 0.3f;
+    // NOTE: Hysteresis, so speeds near the cutoff don't flicker between idle and walking
+    const float speed_start = 0.4f;
+    const float speed_stop = 0.15f;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(WalkState);
@@ -13,7 +15,9 @@ zox_sys2(WalkStateSystem) {
             continue;
         }
         float speed = float3_length(zox_getv(owner, Velocity3D));
-        byte new_state = speed >= speed_cutoff;
+        byte new_state = state->value ?
+            speed >= speed_stop :
+            speed >= speed_start;
         if (state->value != new_state) {
             state->value = new_state;
             if (dbg_log) {

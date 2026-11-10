@@ -4,6 +4,12 @@ zox_sys2(ShoulderRaiseSystem) {
     float swing_angle_x = -28;
     float swing_angle_y = 14;
     float swing_angle_z = 8;
+    const float follow_rate = 25.0f;    // how fast the arm slerps to its raised target
+    float delta = zox_delta_time;
+    if (delta > 0.1f) {
+        delta = 0.1f;
+    }
+    const float follow_t = 1.0f - expf(-follow_rate * delta);
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RaiseShoulder);
@@ -20,7 +26,7 @@ zox_sys2(ShoulderRaiseSystem) {
         zox_muter(shoulder, LocalRotation3D, rotation);
         zox_muter(shoulder, SwingState, swing);
         if (!state->value) {
-            rotation->value = quaternion_identity;  // set to original
+            // NOTE: Hands back to the swing system, which slerps it back down
             if (!swing->value) {
                 swing->value = 1;
             }
@@ -57,7 +63,8 @@ zox_sys2(ShoulderRaiseSystem) {
             }
         }
         euler = target;
-        rotation->value = euler_to_quaternion(euler);
+        rotation->value = quaternion_normalize2(
+            quaternion_slerp(rotation->value, euler_to_quaternion(euler), follow_t));
         // NOTE: Disable Swing
         swing->value = 0;
         // zox_log("Compare Euler: Real: [%f] Target: [%f]", euler.x * radians_to_degrees, test_euler.x * radians_to_degrees);

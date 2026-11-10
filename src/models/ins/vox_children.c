@@ -10,7 +10,7 @@ entity get_owner_lod_mesh(
     if (depth >= model_lods_max_length) {
         return 0;
     }
-    entity source = zox_has(e, VoxLink) ? zox_getv(e, VoxLink) : 0;
+    entity source = zox_get_link(world, e, VoxLink);
     if (!zox_valid(source) || !zox_has(source, ModelLods)) {
         source = zox_get_link(world, e, ModelLink);
     }
@@ -34,7 +34,7 @@ entity spawn_vox_combined_child(
         zox_add(e, NoSplitChunk);
     }
     zox_set_parent(world, e, parent);
-    zox_setv(parent, VoxLink, e);
+    zox_set_link(world, parent, VoxLink, e);
     return e;
 }
 
@@ -56,7 +56,7 @@ entity spawn_vox_cloned_child(
     entity e = spawn_vox_lods(world, parent, "clone", max_depth, lods);
     zox_set_link(world, e, CloneVoxLink, model);
     zox_setv(e, CloneVox, 1);
-    zox_setv(parent, VoxLink, e);
+    zox_set_link(world, parent, VoxLink, e);
     return e;
 }
 

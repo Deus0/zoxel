@@ -1,5 +1,21 @@
 # Done
 
+-x This next patch: please refactor characters so that vox or mesh (instance reference too) are children to the character, this seperation is important to seperate concerns of modules too
+	-x also cleanup old render data on skeleton characters
+	-x skeleton shouldnt inherit vox too, needs to be seperate?
+-x Refactor any old link code, that uses entity, into zox_link:
+	-x ModelLink
+	-x ModelLinks (half done)
+	-x DataLink
+	-x SkeletonLink
+	-x ChunkLink
+	-x ElementLink
+	-x DeviceLink
+	-x ZeviceLink
+	-x PlayerLinks
+	-x NoteLinks
+	-x UIHolderLink
+	-x ElementLinks
 -x Refactor vox models to use a single vox entity, instead of per lod models + generation
 	-x generate only at max detail
 	-x spawn chunk mesh per lod level instead

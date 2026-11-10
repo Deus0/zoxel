@@ -67,20 +67,19 @@ zox_sys2(VoxLinkBounds3GrowSystem) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(VoxLink);
     zox_sys_out(Bounds3D);
     zox_sys_out(Bounds3Dirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(VoxLink, vox);
         zox_sys_o(Bounds3D, bounds);
         zox_sys_o(Bounds3Dirty, dirty);
-        if (!zox_valid(vox->value) || !zox_has(vox->value, VoxelNodePostDirty)) {
+        const entity vox = zox_get_link(world, e, VoxLink);
+        if (!zox_valid(vox) || !zox_has(vox, VoxelNodePostDirty)) {
             continue;
         }
         float3 new_bounds = calculate_vox_bounds(
-            zox_getv(vox->value, ChunkSize),
-            zox_getv(vox->value, BlockScale));
+            zox_getv(vox, ChunkSize),
+            zox_getv(vox, BlockScale));
         if (grow_bounds3(world, e, bounds, dirty, new_bounds) && dbg_log) {
             zox_log("[%s] Bounds from Vox [%fx%fx%f]", zox_sys_e_name, new_bounds.x, new_bounds.y, new_bounds.z);
         }

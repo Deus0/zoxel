@@ -267,9 +267,9 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
                 entity vox;
                 // if Instanced mesh, use meta, otherwise use world block spawn!
                 byte block_type = 0;
-                if (zox_has(block_spawn, InstanceLink)) {
+                if (zox_has(block_spawn, RendererInstance)) {
                     block_type = 1;
-                    vox = zox_getv(block_spawn, InstanceLink);
+                    vox = zox_get_link(world, block_spawn, InstanceLink);
                     // NOTE: Instances link to a lod mesh, its parent vox holds the voxels
                     if (zox_valid(vox) && zox_has(vox, VoxLodMesh)) {
                         vox = zox_get_parent(world, vox);
