@@ -2,18 +2,17 @@
 zox_sys2(DialogueEndSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(SpeakerLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(SpeakerLinks, speakers);
         entity ui = zox_get_link(world, e, DialogueUI);
         if (zox_valid(ui)) {
             zox_delete(ui);
         }
-        if (zox_valid(speakers->value[1])) {
-            unfollow(world, speakers->value[1]);
+        const entity speaker_a = get_speaker_a(world, e);
+        const entity speaker_b = get_speaker_b(world, e);
+        if (zox_valid(speaker_b)) {
+            unfollow(world, speaker_b);
         }
-        entity speaker_a = speakers->value[0];
         if (zox_valid(speaker_a)) {
             entity player = zox_get_link(world, speaker_a, PlayerLink);
             if (zox_valid(player)) {
@@ -36,9 +35,6 @@ zox_sys2(DialogueEndSystem) {
                 }
             }
         }
-        /*if (zox_valid(speakers->value[0]) && zox_valid(speakers->value[1])) {
-            zox_log("[%s] Stopped Talking to [%s]", zox_get_name(speakers->value[0]), zox_get_name(speakers->value[1]));
-        }*/
 
     }
 } zox_sys_end(DialogueEndSystem);

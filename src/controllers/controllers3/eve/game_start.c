@@ -98,7 +98,7 @@ void player_state_game_begin(
     zox_set(e2, Position3D, { position });
     zox_set(e2, Euler, { spawn_euler });
     zox_set(e2, Rotation3D, { spawn_rotation });
-    zox_set(e2, StreamLink, { terrain });
+    zox_set_link(world, e2, StreamLink, terrain);
     zox_set(e2, StreamPosition, { terrain_position });
     zox_set(e2, StreamPosition2, { terrain_position2 });
     zox_set(e2, StreamDirty, { zox_dirty_trigger });

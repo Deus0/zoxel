@@ -30,7 +30,7 @@ int count_entities_npc(ecs *world) {
 
 void follow_target(ecs* world, entity e, entity target, float distance) {
     zox_set(e, Behaviour, { zox_behaviour_follow });
-    zox_set(e, FollowTarget, { target });
+    zox_set_link(world, e, FollowTarget, target);
     zox_set(e, MoveToBuffer, { distance });
 }
 
@@ -39,6 +39,6 @@ void unfollow(ecs* world, entity e) {
         return;
     }
     zox_set(e, Behaviour, { zox_behaviour_idle });
-    zox_set(e, FollowTarget, { 0 });
+    zox_set_link(world, e, FollowTarget, 0);
     zox_set(e, MoveToBuffer, { default_npc_follow_distance });
 }

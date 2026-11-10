@@ -10,25 +10,24 @@ zox_sys2(BiomeLinkSystem) {
     zox_sys_begin();
     zox_sys_in(StreamDirty);
     zox_sys_in(StreamPosition);
-    zox_sys_in(StreamLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(StreamDirty, dirty);
         zox_sys_i(StreamPosition, position);
-        zox_sys_i(StreamLink, terrain);
+        entity terrain = zox_get_link(world, e, StreamLink);
         if (dirty->value != zox_dirty_active) {
             // NOTE: Keep checking not linked yet
             if (zox_get_link(world, e, TunkLink)) {
                 continue;
             }
         }
-        if (!zox_valid(terrain->value)) {
+        if (!zox_valid(terrain)) {
             continue;
         }
 #ifdef zox_safety_checks
-        if (!zox_has(terrain->value, TunkLinks)) {
+        if (!zox_has(terrain, TunkLinks)) {
             zox_loge("Terrain [%s] has no TunkLinks",
-                zox_getn(terrain->value));
+                zox_getn(terrain));
             continue;
         }
 #endif
@@ -36,7 +35,7 @@ zox_sys2(BiomeLinkSystem) {
             position->value.x,
             position->value.z
         };
-        zox_geter(terrain->value, TunkLinks, tunks);
+        zox_geter(terrain, TunkLinks, tunks);
         entity tunk = int2_hashmap_get(
             tunks->value,
             stream_position2);
@@ -119,11 +118,11 @@ zox_sys2(BiomeLinkSystem) {
         }
         entity realm = zox_get_parent_by_id(
             world,
-            terrain->value,
+            terrain,
             zox_id(Realm));
         if (!zox_valid(realm)) {
             zox_loge("Invalid [realm] parent on terrain %s",
-                zox_getn(terrain->value));
+                zox_getn(terrain));
             continue;
         }
         entity game = zox_get_link(world, realm, GameLink);

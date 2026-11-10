@@ -27,10 +27,20 @@ void zox_tst_spawn_character3_npc_skeleton(
         return;
     }
     // zox_geter_value(pcharacter, RenderDepth, byte, render_depth);
-    zox_geter(realm, CharacterLinks, characters);
+    entity characters[zox_realm_characters_max];
+    const uint characters_count = zox_get_links(
+        world,
+        realm,
+        CharacterLinks,
+        characters,
+        zox_realm_characters_max);
+    if (!characters_count) {
+        zox_logw("Realm has no characters.");
+        return;
+    }
     lint seed = rand_range(0, 10000);
-    uint mindex = rand_range(0, characters->length - 1);
-    entity meta = characters->value[mindex];
+    uint mindex = rand_range(0, characters_count - 1);
+    entity meta = characters[mindex];
     // entity model = zox_get_link(world, meta, ModelLink);
     zox_log("Running Test [zox_tst_character3_npc_skeleton]");
     zox_log("   - Meta [%s:%i]:[%lu]",

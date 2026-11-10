@@ -34,7 +34,6 @@ void zox_systems_biomes(ecs *world) {
         zoxp_update,
         [in] streaming.StreamDirty,
         [in] streaming.StreamPosition,
-        [in] streaming.StreamLink,
         [none] streaming.Streamer,
         [none] biomes.BiomeLinker,
     );

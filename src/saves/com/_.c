@@ -6,7 +6,7 @@ zox_tag(Edited);
 zox_tag(SaveDirty);
 zox_tag(Saving);
 zoxc_ulong(SaveHash);
-zoxc_entity(FolderPathLink); // Link our entities to realm for folder path
+zox_tag(FolderPathLink); // Link our entities to realm for folder path
 zoxc_fixed_string(FolderPath, 512);
 zoxc_fixed_string(SaveGamePath, 32); // TODO: Reduce this size for FilePaths
 zoxc(FileLink, FILE*);
@@ -28,7 +28,7 @@ void zox_components_saves(ecs* world) {
     zoxd_tag(SaveDirty);
     zoxd_nf_tag(Saving);
     zoxd_ulong(SaveHash);
-    zoxd_entity(FolderPathLink);
+    zoxd_nf_link(FolderPathLink);
     zoxd_fixed_string(FolderPath);
     zoxd_fixed_string(SaveGamePath);
     zoxd_dest_old(FileLink);

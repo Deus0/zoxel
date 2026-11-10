@@ -4,17 +4,19 @@ zox_sys2(ScrollbarHandleSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ListVisible);
-    zox_sys_in(ScrollviewLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ListVisible, visible);
-        zox_sys_i(ScrollviewLink, scrollview);
+        entity scrollview = zox_get_link(world, it->entities[i], ScrollviewLink);
+        if (!zox_valid(scrollview)) {
+            continue;
+        }
         // set handle size here
-        zox_geter_value(scrollview->value, ListUILink, entity, list);
+        entity list = zox_get_link(world, scrollview, ListUILink);
         uint list_children_length = zox_get_children_count(world, list);
         if (!list_children_length) {
             continue;
         }
-        entity scrollbar = zox_get_child_by_id(world, scrollview->value, zox_id(Scrollbar)); // scrollarea_children[0];
+        entity scrollbar = zox_get_child_by_id(world, scrollview, zox_id(Scrollbar)); // scrollarea_children[0];
         if (!zox_valid(scrollbar)) {
             continue;
         }

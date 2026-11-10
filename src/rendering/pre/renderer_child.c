@@ -30,6 +30,6 @@ entity spawn_renderer_child(
         zox_setv(e, Rotation3D, zox_getv(parent, Rotation3D));
     }
     zox_set_parent(world, e, parent);
-    zox_setv(parent, RendererLink, e);
+    zox_set_link(world, parent, RendererLink, e);
     return e;
 }

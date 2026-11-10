@@ -1,24 +1,23 @@
 zox_sys2(PlotLimitSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(PlotDataLink);
     zox_sys_out(PlotMin);
     zox_sys_out(PlotMax);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(PlotDataLink, link);
+        entity link = zox_get_link(world, it->entities[i], PlotDataLink);
         zox_sys_o(PlotMin, min);
         zox_sys_o(PlotMax, max);
-        if (!zox_valid(link->value) ||
-            !zox_has(link->value, DoubleData))
+        if (!zox_valid(link) ||
+            !zox_has(link, DoubleData))
         {
             zox_log_error("No DoubleData found on data->value");
             continue;
         }
-        zox_geter(link->value, DoubleData, data);
+        zox_geter(link, DoubleData, data);
         if (!data->length) {
             continue;
         }
-        // max->value = zox_getv(link->value, DoubleDataMax);
+        // max->value = zox_getv(link, DoubleDataMax);
 
         double min_ = 99999;
         double max_ = -99999;

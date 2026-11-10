@@ -90,32 +90,15 @@ UIs
 	- Settings Spawning - InitializeEvent on App
     
 ## Remove old links
-	- LabelPrefabLink
-	- FramePrefabLink
-	- ScrollviewLink
-	- ListUILink
-	- FontLink
-	- TooltipLink
-	- TooltipeeLink
-	- PlotDataLink
-	- MouseLink
-	- VirtualZeviceLink
-	- SpeakerLinks
-	- EntityLinks
-	- Character2DLink
-	- CharacterLinks
-	- BlockLink
-	- BlockLinks
-	- BiomeLinks
-	- CameraFollowLink
-	- CloneVoxLink
-	- ChunkPrefabLink
-	- ChunkMeshPrefabLink
-	- SystemLink
-	- BrainLink
-	- NodeStartLink
-	- FolderPathLink
-	- StreamLink
+	- BlockLinks (lookup table, voxel value - 1 is the index)
+	- BiomeLinks (lookup table, biome id is the index)
+	- Still zoxc_entity, need a decision:
+		- VoxLink, InstanceLink (hot render paths, in system queries)
+		- EntityTarget, ActiveAction, Clicker, ClickingEntity, WindowToTop, GlyphPrefab
+		- not links: ComponentTarget, TaskbarWindowID (component ids), EventInput/2 (event payloads), DungeonWallType
+	- Indexed arrays (order matters, not links): ModelLods, Chunk3Stack, ChunkNeighbors, Chunk2Neighbors, CombineList
+	- ChunkEntities (reverse of ChunkLink, could become links)
+	- Children + ParentLink (old hierarchy, move to ChildOf)
 
 Input Refactor
 - Make input actions events instead of systems

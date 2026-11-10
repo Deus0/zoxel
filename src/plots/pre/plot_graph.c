@@ -8,7 +8,6 @@ entity spawn_prefab_plot_graph(ecs *world, entity prefab) {
     zox_add(e, Plot);
     zox_setv(e, PlotMin, 0);
     zox_setv(e, PlotMax, 0);
-    zox_setv(e, PlotDataLink, 0);
     // zox_prefab_set(e, DoubleData, { 0 });
     // zox_prefab_set(e, PlotPaused, { 0 });
     return e;
@@ -33,7 +32,7 @@ entity spawn_plot_graph(
     int2 position = int2_zero;
     entity e = spawn_layout2(world, prefab, parent, position, size, anchor, 0);
     // Initialize the Curve Data
-    zox_setv(e, PlotDataLink, data_entity);
+    zox_set_link(world, e, PlotDataLink, data_entity);
     // DoubleData data = (DoubleData) { 0 };
     // initialize_DoubleData(&data, lines_count);
     for (ushort i = 0; i < lines_count; i++) {

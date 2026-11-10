@@ -19,11 +19,11 @@ void plot_line_system(iter* it) {
         entity parent = zox_get_parent(world, e);
         if (cached_parent != parent) {
             if (!zox_valid(parent) ||
-                !zox_has(parent, PlotDataLink)) {
+                !zox_is_linked_any(world, parent, PlotDataLink)) {
                 zox_loge("No PlotDataLink found on parent");
                 continue;
             }
-            entity data_entity = zox_getv(parent, PlotDataLink);
+            entity data_entity = zox_get_link(world, parent, PlotDataLink);
             if (!zox_has(data_entity, DoubleData)) {
                 zox_loge("Invalid [data_entity] [%s]",
                     zox_getn(data_entity));

@@ -16,9 +16,7 @@ zoxc_float(AnimateTextTime);
 zoxc_float2(AnimateTextTimeLimits);
 zoxc_state(GlyphSpawnedDirty);
 zoxc_state(AnimateTextEnded);
-// Use Links
-#define zox_speakers_max 2
-zoxc_array(SpeakerLinks, entity, zox_speakers_max);
+zox_tag(SpeakerLinks);  // links a dialogue process to its many speakers
 
 void zox_components_dialogues(ecs* world) {
     zoxd_tag(SpeechNode);
@@ -39,6 +37,5 @@ void zox_components_dialogues(ecs* world) {
     zoxd_float2(AnimateTextTimeLimits);
     zoxd_state(GlyphSpawnedDirty);
     zoxd_state(AnimateTextEnded);
-    // Use Links
-    zoxd(SpeakerLinks);
+    zoxd_nf_links(SpeakerLinks);
 }

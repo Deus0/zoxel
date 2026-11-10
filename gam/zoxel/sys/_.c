@@ -38,7 +38,6 @@ void zox_systems_zoxel(ecs *world) {
         QuestsRealmSpawnSystem,
         zoxp_spawn,
         [in] realms.GenerateRealm,
-        [in] characters.CharacterLinks,
         [none] realms.Realm
     );
     zox_system_1(
@@ -112,7 +111,6 @@ void zox_systems_zoxel(ecs *world) {
         zoxp_spawn,
         [in] realms.GenerateRealm,
         [in] core.Seed,
-        [out] characters.CharacterLinks,
         [out] characters3.CharactersChanceMax,
         [none] realms.Realm
     );

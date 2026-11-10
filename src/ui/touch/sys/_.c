@@ -7,7 +7,6 @@ void zox_systems_touch(ecs *world) {
         [in] core.EntityTarget,
         [in] inputs.ZevicePointerPosition,
         [in] inputs.ZevicePointer,
-        [in] inputs.VirtualZeviceLink,
         [none] inputs.Zevice
     );
 }

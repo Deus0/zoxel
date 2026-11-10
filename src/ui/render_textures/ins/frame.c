@@ -64,7 +64,7 @@ entity spawn_render_frame(
     // Set down tree?
     if (is_camera_filtering) {
         zox_add(camera, CameraFilter);
-        zox_setv(target, CameraRenderer, camera);
+        zox_set_link(world, target, CameraRenderer, camera);
     }
     return ui;
 }

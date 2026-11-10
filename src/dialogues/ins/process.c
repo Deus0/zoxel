@@ -11,10 +11,8 @@ entity spawn_process_dialogue(
     zox_link(world, e, NodeLink, node);
     // zox_setv(e, NodetreeBegin, zox_dirty_trigger);
     if (zox_valid(speaker_a) && zox_valid(speaker_b)) {
-        SpeakerLinks speakers = (SpeakerLinks) { 0 };
-        speakers.value[0] = speaker_a;
-        speakers.value[1] = speaker_b;
-        zox_set_ptr(e, SpeakerLinks, speakers);
+        zox_link(world, e, SpeakerLinks, speaker_a);
+        zox_link(world, e, SpeakerLinks, speaker_b);
     }
     return e;
 }

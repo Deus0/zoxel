@@ -23,18 +23,17 @@ void terrain_stream_system(iter* it) {
             zox_sys_begin_2();
             zox_sys_in_2(StreamDirty);
             zox_sys_in_2(StreamerLevel);
-            zox_sys_in_2(StreamLink);
             zox_sys_in_2(StreamPosition);
             for (int j = 0; j < it2.count; j++) {
                 zox_sys_i_2(StreamDirty, dirty);
                 zox_sys_i_2(StreamerLevel, level);
-                zox_sys_i_2(StreamLink, terrain);
+                entity terrain = zox_get_link(world, it2.entities[j], StreamLink);
                 zox_sys_i_2(StreamPosition, stream_position);
                 // NOTE: For some reason this was failing for StreamDirty flags
                 if (!dirty->value) {
                     continue;
                 }
-                if (terrain->value != e) {
+                if (terrain != e) {
                     continue;
                 }
                 int2 stream_position2 = (int2) {

@@ -22,7 +22,6 @@ zox_sys2(TerrainCharactersSpawnSystem) {
     zox_sys_in(ChunkPosition);
     zox_sys_in(Position3D);
     zox_sys_in(BlockScale);
-    zox_sys_out(ChunkCharacters);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(NpcSpawnZoneDirty, dirty);
@@ -36,7 +35,6 @@ zox_sys2(TerrainCharactersSpawnSystem) {
         zox_sys_i(ChunkPosition, chunk_position);
         zox_sys_i(Position3D, positionf);
         zox_sys_i(BlockScale, cscale);
-        zox_sys_o(ChunkCharacters, characters);
         // Only spawn if fully loaded
         if (!active->value || dirty->value) {
             continue;
@@ -60,7 +58,16 @@ zox_sys2(TerrainCharactersSpawnSystem) {
         if (!has_children_VoxelNode(voctree) || !voctree->value) {
             continue;
         }
-        zox_geter(realm, CharacterLinks, realm_characters);
+        entity realm_characters[zox_realm_characters_max];
+        const uint realm_characters_count = zox_get_links(
+            world,
+            realm,
+            CharacterLinks,
+            realm_characters,
+            zox_realm_characters_max);
+        if (!realm_characters_count) {
+            continue;
+        }
         zox_geter_value(realm, CharactersChanceMax, byte, max_chance);
         entity chunk_above = neighbors->value[direction_up];
         const VoxelNode* voctree_above =
@@ -84,8 +91,8 @@ zox_sys2(TerrainCharactersSpawnSystem) {
             byte chance_current = 0;
             byte chance_rolled = rand() % max_chance;
             entity meta = 0;
-            for (byte k = 0; k < realm_characters->length; k++) {
-                entity e2 = realm_characters->value[k];
+            for (uint k = 0; k < realm_characters_count; k++) {
+                entity e2 = realm_characters[k];
                 zox_geter_value(e2, SpawnChance, byte, chance);
                 chance_current += chance;
                 if (chance_rolled <= chance_current) {
@@ -119,7 +126,7 @@ zox_sys2(TerrainCharactersSpawnSystem) {
                 continue;
             }
             zox_add(e2, DisableMovement);
-            characters->value[spawned] = e2;
+            zox_link(world, e, ChunkCharacters, e2);
             spawned++;
             if (dbg_length) {
                 spawn_arrow3D(

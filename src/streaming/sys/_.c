@@ -7,7 +7,6 @@ void zox_systems_streaming(ecs* world) {
     zox_system(
         StreamPositionSystem,
         zoxp_update,
-        [in] streaming.StreamLink,
         [in] transforms3.Position3D,
         [out] streaming.StreamPosition,
         [out] streaming.StreamPosition2,

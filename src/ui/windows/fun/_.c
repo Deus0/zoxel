@@ -1,7 +1,4 @@
 void raycaster_select_window_children(ecs *world, entity e, entity window) {
-    if (zox_has(e, WindowRaycasted)) {
-        zox_set(e, WindowRaycasted, { window });
-    }
     iter it2 = zox_children(world, e);
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {

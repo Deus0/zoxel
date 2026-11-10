@@ -9,13 +9,11 @@ zox_sys2(Character3RealmSpawnSystem) {
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
     zox_sys_in(Seed);
-    zox_sys_out(CharacterLinks);
     zox_sys_out(CharactersChanceMax);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateRealm, state);
         zox_sys_i(Seed, seed);
-        zox_sys_o(CharacterLinks, characters);
         zox_sys_o(CharactersChanceMax, chance);
         if (state->value != zox_generate_realm_characters) {
             continue;
@@ -63,7 +61,7 @@ zox_sys2(Character3RealmSpawnSystem) {
             set_ZoxName(world, e2, name);
             // Links
             chance_max += chance;
-            add_to_CharacterLinks(characters, e2);
+            zox_link(world, e, CharacterLinks, e2);
             character_seed += seed_shift;
         }
         // SLIMES
@@ -112,6 +110,7 @@ zox_sys2(Character3RealmSpawnSystem) {
                 continue;
             }
             zox_set_link(world, e2, ModelLink, model);
+            zox_add(e2, CharacterSlime);
             // NOTE: Unique characters clone their model, otherwise they instance it
             if (!is_characters_instanced) {
                 zox_add(e2, CharacterUnique);
@@ -119,8 +118,7 @@ zox_sys2(Character3RealmSpawnSystem) {
             // Generate Name
            // set_ZoxName(world, e2, name);
             // Links
-            zox_set_parent(world, e2, e);
-            add_to_CharacterLinks(characters, e2);
+            zox_link(world, e, CharacterLinks, e2);
             chance_max += chance;
             // NOTE: This crashes it
             // ecs_defer_end(world);
@@ -183,7 +181,7 @@ zox_sys2(Character3RealmSpawnSystem) {
                     health,
                     health);
             }
-            add_to_CharacterLinks(characters, e2);
+            zox_link(world, e, CharacterLinks, e2);
             character_seed += seed_shift;
         }
         chance->value = chance_max;

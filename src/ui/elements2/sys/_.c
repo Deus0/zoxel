@@ -21,7 +21,6 @@ void zox_systems_elements2(ecs *world) {
         [in] interactions.DraggableState,
         [in] layouts.LayoutPosition,
         [in] layouts.LayoutSize,
-        [in] elements2.ScrollviewLink,
         [none] elements2.ScrollbarHandle
     );
     // make elements visible/invisible within list
@@ -37,7 +36,6 @@ void zox_systems_elements2(ecs *world) {
         ScrollbarHandleSystem,
         zoxp_update,
         [in] containers.ListVisible,
-        [in] elements2.ScrollviewLink,
         [none] containers.ListUpdate,
     );
     zox_system(

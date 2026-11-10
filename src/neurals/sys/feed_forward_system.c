@@ -9,7 +9,6 @@ zox_sys2(LinkFeedForwardSystem) {
     init_delta_time()
     zox_field_world()
     zox_field_in(ConnectionData, connectionDatas, 1)
-    zox_field_in(BrainLink, brainLinks, 2)
     zox_field_out(Weight, weights, 3)
     zox_field_out(Signal, signals, 4)
     zox_field_out(Transfer, transfers, 5)
@@ -36,8 +35,10 @@ zox_sys2(LinkFeedForwardSystem) {
         }
         signal->value = 0;
         if (reached_end) {
-            zox_field_i(BrainLink, brainLinks, brainLink)
-            zox_set(brainLink->value, BrainDirty, { 1 })
+            entity brain = zox_get_link(world, it->entities[i], BrainLink);
+            if (zox_valid(brain)) {
+                zox_set(brain, BrainDirty, { 1 })
+            }
         }
     }
 } zox_sys_end(LinkFeedForwardSystem);

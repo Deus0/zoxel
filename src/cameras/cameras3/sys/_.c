@@ -5,9 +5,9 @@ void zox_systems_cameras3(ecs *world) {
     zox_system(
         Camera3FollowSystem,
         zoxp_update,
-        [in] cameras.CameraFollowLink,
         [in] transforms3.LocalPosition3D,
-        [out] transforms3.Position3D
+        [out] transforms3.Position3D,
+        [none] cameras.Camera
     );
     zox_system(
         CameraAttachSystem,

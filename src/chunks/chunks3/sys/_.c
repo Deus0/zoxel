@@ -61,7 +61,6 @@ void zox_systems_chunks3(ecs *world) {
     zox_system(
         CloneVoxSystem,
         zoxp_octree_write,
-        [in] CloneVoxLink,
         [out] CloneVox,
         [out] chunks3.VoxelNode,
         [out] chunks.NodeDepth,

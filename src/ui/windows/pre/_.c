@@ -10,7 +10,6 @@ entity prefab_body;
 entity prefab_close_button;
 
 void prefabs_add_windows_raycaster(ecs *world, entity e) {
-    zox_setv(e, WindowRaycasted, 0);
     zox_setv(e, WindowTarget, 0);
 }
 

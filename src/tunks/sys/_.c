@@ -35,7 +35,6 @@ void zox_systems_tunks(ecs* world) {
         streamers_lod,
         [in] streaming.StreamDirty2,
         [in] streaming.StreamerLevel,
-        [in] streaming.StreamLink,
         [in] streaming.StreamPosition2,
         [none] streaming.Streamer
     );

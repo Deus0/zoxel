@@ -137,7 +137,7 @@ entity3 spawn_window_list(
         list_data.visible_count,
         list_data.count,
         scrollbar_visible);
-    zox_setv(e, ScrollviewLink, scrollview);
+    zox_set_link(world, e, ScrollviewLink, scrollview);
     // Spawn our list
     ElementSpawnData list_element_data = {
         .prefab = prefab_list,
@@ -154,8 +154,8 @@ entity3 spawn_window_list(
         list_data,
         alignment,
         elements2);
-    zox_setv(list, ScrollviewLink, scrollview);
-    zox_setv(scrollview, ListUILink, list);
+    zox_set_link(world, list, ScrollviewLink, scrollview);
+    zox_set_link(world, scrollview, ListUILink, list);
     if (scrollbar_visible) {
         zox_setv(list, LayoutPosition, ((int2) { -scrollbar_width, 0 }));
     }
@@ -231,7 +231,7 @@ entity4 spawn_window_list_at(
         list_data.visible_count,
         list_data.count,
         scrollbar_visible);
-    zox_setv(e, ScrollviewLink, scrollview);
+    zox_set_link(world, e, ScrollviewLink, scrollview);
     // Spawn our list
     ElementSpawnData list_element_data = {
         .prefab = prefab_list,
@@ -249,8 +249,8 @@ entity4 spawn_window_list_at(
         alignment,
         NULL);
     // make sure to link them together
-    zox_set(list, ScrollviewLink, { scrollview });
-    zox_set(scrollview, ListUILink, { list });
+    zox_set_link(world, list, ScrollviewLink, scrollview);
+    zox_set_link(world, scrollview, ListUILink, list);
     // NOTE: Returns Window, List, Header
     return (entity4) { e, e2.y, body, list };
 }

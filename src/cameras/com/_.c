@@ -11,8 +11,8 @@ zoxc_byte(CameraViewing);
 zoxc_float(FieldOfView);
 zoxc_float(CameraNearDistance);
 zoxc_float(CameraFarDistance);
-zoxc_entity(CameraTarget);
-zoxc_entity(CameraFollowLink);
+zox_tag(CameraTarget);     // camera -> the entity it follows
+zox_tag(CameraFollowLink);
 zoxc_int2(ScreenPosition);
 zoxc_float4(ScreenToCanvas);
 zoxc(ProjectionMatrix, float4x4);
@@ -22,13 +22,12 @@ zoxc_array(CameraPlanes, plane, zox_camera_planes);
 zoxc_array(FrustumCorners, double3, 8);
 // Filters
 zox_tag(CameraFilter);
-zoxc_entity(CameraRenderer);
+zox_tag(CameraRenderer);   // entity -> the only camera allowed to render it
 zox_tag(ViewportCamera);
 // Render Cameras
 zox_tag(RenderCamera);
 zox_tag(RenderTexture);
-zoxc_entity(RenderTextureLink);
-zoxc_entity(RenderCameraLink);
+zox_tag(RenderTextureLink);    // camera -> the render texture it draws to
 zoxc_float(CameraBlur);
 zoxc_float(CameraVignette);
 // Properties
@@ -52,8 +51,8 @@ void zox_components_cameras(ecs *world) {
     zoxd_float(CameraNearDistance);
     zoxd_float(CameraFarDistance);
     zoxd_int2(ScreenPosition);
-    zoxd_entity(CameraTarget);
-    zoxd_entity(CameraFollowLink);
+    zoxd_nf_link(CameraTarget);
+    zoxd_nf_link(CameraFollowLink);
     zoxd(ProjectionMatrix);
     zoxd(ViewProjectionMatrix);
     // zoxd(ViewProjectionMatrix)
@@ -63,13 +62,12 @@ void zox_components_cameras(ecs *world) {
     // render cameras
     zoxd_tag(RenderCamera);
     zoxd_tag(RenderTexture);
-    zoxd_entity(RenderTextureLink);
-    zoxd_entity(RenderCameraLink);
+    zoxd_nf_link(RenderTextureLink);
     zoxd_float(CameraBlur);
     zoxd_float(CameraVignette);
     // Filters
     zoxd_tag(CameraFilter);
-    zoxd_entity(CameraRenderer);
+    zoxd_nf_link(CameraRenderer);
     // temp properties
     zoxd_nf_tag(CanRoam);
     zoxd_tag(Roaming);

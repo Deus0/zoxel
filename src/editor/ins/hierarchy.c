@@ -44,6 +44,5 @@ entity spawn_window_hierarchy(ecs *world, entity canvas, entity player, entity r
     zox_set(header, ElementOutlineColor, { editor_header_outline });
     // Add linker to hierarchy list
     zox_add(list, ActiveSingle);
-    zox_set(list, ActiveLink, { 0 });
     return window;
 }

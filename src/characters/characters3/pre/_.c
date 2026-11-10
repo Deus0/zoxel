@@ -32,7 +32,6 @@ void spawn_prefabs_characters3D(ecs *world) {
     prefabs_characters3[prefab_characters_count++] = prefab_character3;
     prefabs_characters3[prefab_characters_count++] = prefab_character3_skeleton;
     if (prefab_realm) {
-        zox_prefab_add(prefab_realm, CharacterLinks);
         zox_prefab_set(prefab_realm, CharactersChanceMax, { 0 });
     }
 }

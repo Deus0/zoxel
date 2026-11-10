@@ -54,7 +54,7 @@ entity spawn_vox_cloned_child(
         zox_getv(model, MaxRenderDepth) :
         zox_getv(model, NodeDepth);
     entity e = spawn_vox_lods(world, parent, "clone", max_depth, lods);
-    zox_setv(e, CloneVoxLink, model);
+    zox_set_link(world, e, CloneVoxLink, model);
     zox_setv(e, CloneVox, 1);
     zox_setv(parent, VoxLink, e);
     return e;

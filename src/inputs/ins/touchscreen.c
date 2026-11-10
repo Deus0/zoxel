@@ -11,7 +11,7 @@ entity spawn_touchscreen_joystick(
         index,
         index);
     zox_setv(e, DeviceButtonType, type);
-    zox_setv(pointer, VirtualZeviceLink, e);
+    zox_set_link(world, pointer, VirtualZeviceLink, e);
     zox_set_parent(world, e, device);
     return e;
 }

@@ -8,7 +8,7 @@ void set_camera_free(
     zox_set(e, Euler, { euler });
     zox_set_parent(world, e, 0);
     if (camera_follow_mode == zox_camera_follow_mode_follow_xz) {
-        zox_setv(e, CameraFollowLink, 0)
+        zox_set_link(world, e, CameraFollowLink, 0);
     }
     if (local_mouse) {
         zox_setv(local_mouse, MouseLock, 0);

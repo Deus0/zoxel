@@ -16,7 +16,7 @@ entity spawn_block_vox(
     zox_setv(e, RenderDisabled, render_disabled);
     zox_setv(e, BlockIndex, block_index);
     zox_setv(e, CloneVox, 1);
-    zox_setv(e, CloneVoxLink, vox);
+    zox_set_link(world, e, CloneVoxLink, vox);
     zox_setv(e, Position3D, positionf);
     zox_link(world, e, BlockLink, block);
     return e;

@@ -87,7 +87,7 @@ void zox_tst_render_texture(ecs *world, ClickEventData data) {
         add_eternal_euler(world, cube, (float3) { 24, 24, 0 });
         zox_setv(cube, Color, color_green);
         if (is_camera_filtering) {
-            zox_set(cube, CameraRenderer, { camera });
+            zox_set_link(world, cube, CameraRenderer, camera);
         }
         dbg_render_cube = cube;
         {
@@ -102,7 +102,7 @@ void zox_tst_render_texture(ecs *world, ClickEventData data) {
             zox_set_parent(world, cube, dbg_render_cube);
             zox_setv(cube, Color, color_blue);
             if (is_camera_filtering) {
-                zox_set(cube, CameraRenderer, { camera });
+                zox_set_link(world, cube, CameraRenderer, camera);
             }
         }
         {
@@ -117,7 +117,7 @@ void zox_tst_render_texture(ecs *world, ClickEventData data) {
             zox_set_parent(world, cube, dbg_render_cube);
             zox_setv(cube, Color, color_red);
             if (is_camera_filtering) {
-                zox_set(cube, CameraRenderer, { camera });
+                zox_set_link(world, cube, CameraRenderer, camera);
             }
         }
     }

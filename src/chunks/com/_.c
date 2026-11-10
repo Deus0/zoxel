@@ -7,8 +7,6 @@ zox_tag(FindNeighbors);
 zoxc_byte(GenerateChunk);
 zoxc_byte(GenerateModel);
 zoxc_byte(NodeDepth);
-zoxc_entity(ChunkPrefabLink);
-zoxc_entity(ChunkMeshPrefabLink);
 zoxc_double(ChunkMeshTimer);
 
 void zox_components_chunks(ecs* world) {
@@ -26,6 +24,4 @@ void zox_components_chunks(ecs* world) {
     zoxd_byte(GenerateModel);
     zoxd_byte(NodeDepth);
     zoxd_double(ChunkMeshTimer);
-    zoxd_entity(ChunkPrefabLink);
-    zoxd_entity(ChunkMeshPrefabLink);
 }

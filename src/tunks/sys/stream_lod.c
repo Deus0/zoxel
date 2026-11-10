@@ -53,16 +53,15 @@
         while (zox_sys_query_loop()) {
             zox_sys_begin_2_at(1);
             zox_sys_in_2(StreamerLevel);
-            zox_sys_in_2(StreamLink);
             zox_sys_in_2(StreamPosition2);
             for (int j = 0; j < it2.count; j++) {
                 zox_sys_i_2(StreamerLevel, level);
-                zox_sys_i_2(StreamLink, stream_terrain);
+                entity stream_terrain = zox_get_link(world, it2.entities[j], StreamLink);
                 zox_sys_i_2(StreamPosition2, stream_point);
                 if (level->value < 1) {
                     continue;
                 }
-                if (stream_terrain->value != terrain) {
+                if (stream_terrain != terrain) {
                     continue;
                 }
                 float streamer_distance = int2_distance(stream_point->value, position->value);

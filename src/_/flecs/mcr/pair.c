@@ -214,3 +214,43 @@ static inline int zox_get_links_count_internal(
     for (entity target = zox_get_link_index(world, e, T, 0); \
         target; \
         target = zox_get_link_index(world, e, T, ++zox_link_index_##target))
+
+/*
+ * Fills the buffer with all targets of a link, i.e. zoxd_nf_links
+ *  - returns the count found (capped at capacity)
+ *  - targets are not kept in insertion order
+ *
+ *     entity characters[64];
+ *     uint count = zox_get_links(world, realm, CharacterLinks, characters, 64);
+ */
+static inline uint zox_get_links_internal(
+    ecs* world,
+    entity e,
+    entity relation,
+    entity* entities,
+    uint capacity)
+{
+    if (!ecs_is_alive(world, e)) {
+        return 0;
+    }
+    if (!entities || capacity <= 0) {
+        zox_logw("[%s]'s No Capacity [zox_get_links]", zox_get_name(e));
+        return 0;
+    }
+    uint count = 0;
+    entity target;
+    while ((target = ecs_get_target(world, e, relation, count))) {
+        if (count >= capacity) {
+            if (is_warn_capacity) {
+                zox_logw("[%s]'s Exceeded Capacity [%i] [zox_get_links]", zox_get_name(e), capacity);
+            }
+            break;
+        }
+        entities[count] = target;
+        count++;
+    }
+    return count;
+}
+
+#define zox_get_links(world, e, T, entities, capacity) \
+    zox_get_links_internal(world, e, zox_id(T), entities, capacity)

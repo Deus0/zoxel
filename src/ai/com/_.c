@@ -11,7 +11,7 @@ zoxc_float(MoveToBuffer);
 zoxc_float3(TargetPosition);
 zoxc_float3(ThreatPosition);
 zoxc_float3(WanderDirection);
-zoxc_entity(FollowTarget);
+zox_tag(FollowTarget);     // npc -> the entity it follows
 
 void zox_components_npcs(ecs* world) {
     zoxd_tag(Npc);
@@ -27,5 +27,5 @@ void zox_components_npcs(ecs* world) {
     zoxd_float3(TargetPosition);
     zoxd_float3(ThreatPosition);
     zoxd_float3(WanderDirection);
-    zoxd_entity(FollowTarget);
+    zoxd_nf_link(FollowTarget);
 }

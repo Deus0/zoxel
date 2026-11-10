@@ -24,7 +24,7 @@ zoxc_byte(GenericEvent);
 zoxc_byte(SpawnChance);
 zoxc_byte(Busy);
 zoxc_byte(Ready);
-zoxc_entity(SystemLink);
+zox_tag(SystemLink);
 zoxc_state(Generate);
 zoxc_double(DiedTime);
 zoxc_listener(InitializeEvent, 32, ecs*, entity);
@@ -87,7 +87,7 @@ void zox_components_core(ecs* world) {
     zoxd_byte(Busy);
     zoxd_byte(Ready);
     zoxd_state(Generate);
-    zoxd_entity(SystemLink);
+    zoxd_nf_link(SystemLink);
     zoxd_double(DiedTime);
     // ids
     zoxd_int(ID);

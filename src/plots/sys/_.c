@@ -20,7 +20,6 @@ void zox_systems_plots(ecs* world) {
     zox_system(
         PlotLimitSystem,
         zoxp_update,
-        [in] plots.PlotDataLink,
         [out] plots.PlotMin,
         [out] plots.PlotMax,
         [none] plots.Plot

@@ -13,7 +13,6 @@ void zox_systems_models(ecs* world) {
         zoxp_update,
         [in] rendering.RenderDepthDirty,
         [in] rendering.RenderDepth,
-        [in] rendering.RendererLink,
     );
     zox_system(
         ModelSizeNodeSystem,

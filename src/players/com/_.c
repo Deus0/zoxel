@@ -7,7 +7,6 @@ zoxc_state(PlayerStateDirty);
 zoxc_double(PlayerStateTimer);
 zoxc_double(PlayerRespawn);
 zox_tag(PlayerLinks);      // links to many players, i.e. from a game
-zoxc_entity(PlayerPauseEvent);
 zoxc_listener(PlayerStateEvent, 32, ecs*, entity, byte);
 zox_tag(PlayerLink);
 
@@ -21,7 +20,6 @@ void zox_components_players(ecs* world) {
     zoxd_double(PlayerStateTimer);
     zoxd_double(PlayerRespawn);
     zoxd_nf_links(PlayerLinks);
-    zoxd_entity(PlayerPauseEvent);
     zoxd(PlayerStateEvent);
     zoxd_nf_tag(PlayerLink);
 }

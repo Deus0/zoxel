@@ -7,7 +7,6 @@ void zox_systems_characters3_terrain(ecs* world) {
     zox_system(
         CharactersCanSpawnSystem,
         zoxp_update,
-        [in] rendering.RenderDepthDirty,
         [in] rendering.RenderDepth,
         [in] rendering.RenderDistance,
         [out] npcs.NpcSpawnZone,
@@ -19,7 +18,6 @@ void zox_systems_characters3_terrain(ecs* world) {
         zoxp_update,
         [in] npcs.NpcSpawnZoneDirty,
         [in] npcs.NpcSpawnZone,
-        [out] npcs.ChunkCharacters,
         [none] terrains.TerrainChunk,
         [none] npcs.CharactersSpawned,
     );
@@ -38,7 +36,6 @@ void zox_systems_characters3_terrain(ecs* world) {
         [in] chunks3.ChunkPosition,
         [in] transforms3.Position3D,
         [in] blocks.BlockScale,
-        [out] npcs.ChunkCharacters,
         [none] terrains.TerrainChunk,
         [none] !npcs.CharactersSpawned,
     );

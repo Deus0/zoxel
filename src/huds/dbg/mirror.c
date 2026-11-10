@@ -48,8 +48,8 @@ entity zox_tst_render_texture_character(
     entity mesh_source = zox_valid(skeleton) ?
         zox_get_link(world, skeleton, ActiveMesh) :
         0;
-    if (!zox_valid(mesh_source) && zox_has(character, RendererLink)) {
-        entity renderer = zox_getv(character, RendererLink);
+    if (!zox_valid(mesh_source)) {
+        entity renderer = zox_get_link(world, character, RendererLink);
         if (zox_valid(renderer)) {
             mesh_source = zox_getv(renderer, InstanceLink);
         }

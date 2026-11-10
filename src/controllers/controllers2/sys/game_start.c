@@ -24,8 +24,8 @@ void player_start_game2D_delayed(ecs *world, entity player) {
     // character-camera
     zox_link(world, character, CameraLink, camera);
     zox_link(world, camera, CharacterLink, character);
-    zox_setv(camera, CameraTarget, character);
-    zox_setv(camera, Character2DLink, character);
+    zox_set_link(world, camera, CameraTarget, character);
+    zox_set_link(world, camera, Character2DLink, character);
 }
 
 zox_sys2(PlayerGame2StartSystem) {

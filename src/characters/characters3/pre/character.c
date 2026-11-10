@@ -68,7 +68,6 @@ entity spawn_prefab_character3(ecs *world) {
     // prefab_add_cube_lines(world, e, color_white, 0);
     // Children
     zox_setv(e, VoxLink, 0);
-    zox_setv(e, RendererLink, 0);
     zox_add(e, PreInitialize);
     zox_setv(e, GenerateCharacter, zox_dirty_trigger);
     return e;

@@ -24,7 +24,7 @@ zoxc_byte(ActiveState);
 zoxc_state(ActiveStateDirty);
 zoxc_color(ActiveColor);
 zox_tag(ActiveSingle);
-zoxc_entity(ActiveLink);    // parents active link
+zox_tag(ActiveLink);       // list -> its active element, only for ActiveSingle lists
 // Events
 zox_tag(TriggerSelect);
 zox_tag(Select);
@@ -74,7 +74,7 @@ void zox_components_interaction(ecs* world) {
     zoxd_byte(ActiveState);
     zoxd_state(ActiveStateDirty);
     zoxd_color(ActiveColor);
-    zoxd_entity(ActiveLink);
+    zoxd_nf_link(ActiveLink);
     zoxd_tag(ActiveSingle);
     // Dragging
     zoxd_tag(Dragable);

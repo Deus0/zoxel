@@ -6,7 +6,6 @@ zox_tag(WindowRaycastTarget);
 zoxc_byte(WindowLayer);
 zox_tag(IgnoreCanvasStack);
 zox_tag(WindowLayerDirty);
-zoxc_entity(WindowRaycasted);
 zoxc_entity(WindowTarget);
 zoxc_byte(WindowsLayers);
 zoxc_byte(WindowsCount);
@@ -17,7 +16,6 @@ void zox_components_windows(ecs* world) {
     zoxd_tag(Header);
     zoxd_tag(CloseButton);
     zoxd_tag(WindowRaycastTarget);
-    zoxd_entity(WindowRaycasted);
     zoxd_entity(WindowTarget);
     zoxd_byte(WindowLayer);
     zoxd_tag(WindowLayerDirty);

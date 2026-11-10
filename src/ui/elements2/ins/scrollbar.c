@@ -39,7 +39,7 @@ entity spawn_scrollbar(
         handle_outline,
         1);
     zox_add(handle, ScrollbarHandle);
-    zox_setv(handle, ScrollviewLink, scrollview);
+    zox_set_link(world, handle, ScrollviewLink, scrollview);
     zox_setv(handle, RenderDisabled, !visible);
     return e;
 }

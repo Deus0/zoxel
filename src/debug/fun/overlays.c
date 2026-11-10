@@ -42,7 +42,7 @@ uint zox_dbg_ui_camera(
         return index;
     }
     byte streamer_level = zox_getv(camera, StreamerLevel);
-    entity stream_terrain = zox_getv(camera, StreamLink);
+    entity stream_terrain = zox_get_link(world, camera, StreamLink);
     int3 stream_position = zox_getv(camera, StreamPosition);
     int2 stream_position2 = zox_getv(camera, StreamPosition2);
     index += snprintf(buffer + index, size - index, " - Streamer Level [%i]\n", streamer_level);

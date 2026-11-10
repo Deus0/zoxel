@@ -17,13 +17,13 @@ zox_tag(Icon);
 zox_tag(IconOverlay);
 zoxc_byte(IconType);
 zoxc_byte(IconIndex);
-zoxc_entity(LabelPrefabLink);
-zoxc_entity(FramePrefabLink);
+zox_tag(LabelPrefabLink);
+zox_tag(FramePrefabLink);
 // Scroll
 zox_tag(Scrollbar);
 zox_tag(ScrollbarHandle);
-zoxc_entity(ScrollviewLink);
-zoxc_entity(ListUILink);
+zox_tag(ScrollviewLink);
+zox_tag(ListUILink);
 zoxc(OptionLabel, const char*);
 
 void zox_components_elements2(ecs *world) {
@@ -36,14 +36,14 @@ void zox_components_elements2(ecs *world) {
     zoxd_tag(BarFront);
     zoxd_byte(IconType);
     zoxd_byte(IconIndex);
-    zoxd_entity(LabelPrefabLink);
-    zoxd_entity(FramePrefabLink);
+    zoxd_nf_link(LabelPrefabLink);
+    zoxd_nf_link(FramePrefabLink);
     zoxd_float2(SlideBounds);
     zoxd(SliderLabel);
     zoxd_tag(Scrollbar);
     zoxd_tag(ScrollbarHandle);
-    zoxd_entity(ScrollviewLink);
-    zoxd_entity(ListUILink);
+    zoxd_nf_link(ScrollviewLink);
+    zoxd_nf_link(ListUILink);
     zoxd_tag(Toggle);
     zoxd_nf_tag(ToggleLink);
     //zoxd_byte(ToggleState);

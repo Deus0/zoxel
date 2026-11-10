@@ -4,7 +4,7 @@ zox_tag(PlotLabel);
 zoxc_byte(PlotPaused);
 zoxc_double(PlotMin);
 zoxc_double(PlotMax);
-zoxc_entity(PlotDataLink);
+zox_tag(PlotDataLink);
 zoxc_int(PlotLineIndex);
 
 void zox_components_plots(ecs* world) {
@@ -14,6 +14,6 @@ void zox_components_plots(ecs* world) {
     zoxd_byte(PlotPaused);
     zoxd_double(PlotMin);
     zoxd_double(PlotMax);
-    zoxd_entity(PlotDataLink);
+    zoxd_nf_link(PlotDataLink);
     zoxd_int(PlotLineIndex);
 }

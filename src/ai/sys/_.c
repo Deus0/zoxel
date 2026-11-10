@@ -118,7 +118,6 @@ void zox_systems_npcs(ecs *world) {
         FollowSystem,
         zoxp_update,
         [in] Behaviour,
-        [in] FollowTarget,
         [out] ai.TargetPosition,
         [none] ai.Npc,
         [none] !physics.DisableMovement,

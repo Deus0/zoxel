@@ -8,13 +8,12 @@ zox_sys2(ScrollbarSystem) {
     zox_sys_in(DraggableState);
     zox_sys_in(LayoutPosition);
     zox_sys_in(LayoutSize);
-    zox_sys_in(ScrollviewLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(DraggableState, state);
         zox_sys_i(LayoutPosition, position);
         zox_sys_i(LayoutSize, size);
-        zox_sys_i(ScrollviewLink, scrollview);
+        entity scrollview = zox_get_link(world, e, ScrollviewLink);
         if (!state->value) {
             continue;
         }
@@ -29,13 +28,13 @@ zox_sys2(ScrollbarSystem) {
             continue;
         }
         // entity scrollview = zox_getv(scrollbar, ParentLink);
-        if (!zox_valid(scrollview->value)) {
+        if (!zox_valid(scrollview)) {
             zox_log_error("ScrollView is invalid (scrollbar [%s]'s parent)", zox_get_name(scrollbar));
             continue;
         }
-        entity list_ui = zox_has(scrollview->value, ListUILink) ? zox_getv(scrollview->value, ListUILink) : 0;
+        entity list_ui = zox_get_link(world, scrollview, ListUILink);
         if (!zox_valid(list_ui)) {
-            zox_log_error("List UI: Invalid [%s]", zox_get_name(scrollview->value));
+            zox_log_error("List UI: Invalid [%s]", zox_get_name(scrollview));
             continue;
         }
         if (!zox_has(list_ui, ListVisible) || !zox_has(list_ui, ListStart)) {

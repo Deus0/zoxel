@@ -6,5 +6,5 @@ void spawn_prefabs_crafting(ecs* world) {
     prefab_menu_crafting = spawn_prefab_menu_crafting(
         world,
         prefab_window);
-    zox_setv(prefab_menu_crafting, FramePrefabLink, prefab_frame);
+    zox_set_link(world, prefab_menu_crafting, FramePrefabLink, prefab_frame);
 }

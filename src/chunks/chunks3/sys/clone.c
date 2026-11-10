@@ -4,7 +4,6 @@
 zox_sys2(CloneVoxSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(CloneVoxLink);
     zox_sys_out(CloneVox);
     zox_sys_out(VoxelNode);
     zox_sys_out(NodeDepth);
@@ -14,7 +13,6 @@ zox_sys2(CloneVoxSystem) {
     // zox_sys_out(VoxelNodeDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(CloneVoxLink, source);
         zox_sys_o(VoxelNode, voctree);
         zox_sys_o(NodeDepth, ndepth);
         zox_sys_o(BlockScale, scale);
@@ -22,7 +20,7 @@ zox_sys2(CloneVoxSystem) {
         zox_sys_o(ChunkSize, csize);
         // zox_sys_o(VoxelNodeDirty, dirty);
         zox_sys_o(CloneVox, state);
-        entity src = source->value;
+        entity src = zox_get_link(world, e, CloneVoxLink);
         if (!state->value || !src) {
             continue;
         }

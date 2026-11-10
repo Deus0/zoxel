@@ -37,7 +37,6 @@ void zox_systems_editor(ecs *world) {
         zoxp_spawn,
         [in] editor.HierarchyUIDirty,
         [in] core.EntityTarget,
-        [in] elements2.ScrollviewLink,
         [in] ui.ElementFontSize
     );
     zox_system_1(
@@ -45,7 +44,6 @@ void zox_systems_editor(ecs *world) {
         zoxp_spawn,
         [in] editor.InspectorDirty,
         [in] core.EntityTarget,
-        [in] elements2.ScrollviewLink,
         [in] ui.FontSize
     );
     zox_system_1(

@@ -1,40 +1,55 @@
-// NOTE: Sets active or not
+// NOTE: Sets the chunks NpcSpawnZone active or not
+//  - active when the chunk is close, at full detail, and finished generating
+//  - checked every frame, as lod changes and generation finish at different times
 zox_sys2(CharactersCanSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(RenderDepthDirty);
     zox_sys_in(RenderDepth);
     zox_sys_in(RenderDistance);
     zox_sys_out(NpcSpawnZone);
     zox_sys_out(NpcSpawnZoneDirty);
+    entity cached_terrain = 0;
+    byte terrain_depth = 0;
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(RenderDepthDirty, lod_dirty);
         zox_sys_i(RenderDepth, depth);
         zox_sys_i(RenderDistance, distance);
         zox_sys_o(NpcSpawnZone, active);
         zox_sys_o(NpcSpawnZoneDirty, dirty);
-        // NOTE: Lod Dirty is a short state so it wont catch it now
-        if (!lod_dirty->value) {
+        // wait for the last change to finish
+        if (dirty->value) {
             continue;
         }
-        // Max Depth Checks
-        entity terrain = zox_get_parent(world, e);
-#ifdef zox_safety_checks
-        if (!zox_valid(terrain)) {
-            zox_loge("Terrain missing on chunk3_terrain");
+        const byte in_distance = distance->value <= character_spawn_distance;
+        // cheap early out, most chunks are far away
+        if (!in_distance && !active->value) {
             continue;
         }
-#endif
-        float terrain_depth = zox_getv(terrain, NodeDepth);
-        byte new_active =
-            !zox_has(e, GenerateChunk) &&
-            depth->value == terrain_depth &&
-            distance->value <= character_spawn_distance;
+        byte new_active = in_distance;
+        if (new_active) {
+            entity terrain = zox_get_parent(world, e);
+            if (!zox_valid(terrain)) {
+                continue;
+            }
+            if (terrain != cached_terrain) {
+                cached_terrain = terrain;
+                terrain_depth = zox_getv(terrain, NodeDepth);
+            }
+            const byte lod_state = zox_has(e, ChunkLodDirty) ?
+                zox_getv(e, ChunkLodDirty) :
+                zox_chunk_lod_dirty_end;
+            const byte lod_settled =
+                lod_state == zox_chunk_lod_dirty_end ||
+                lod_state >= zox_chunk_lod_dirty_spawn;
+            new_active =
+                lod_settled &&
+                !zox_has(e, GenerateChunk) &&
+                depth->value == terrain_depth &&
+                zox_getv(e, NodeDepth) == terrain_depth;
+        }
         if (active->value != new_active) {
             active->value = new_active;
             dirty->value = zox_dirty_trigger;
-            continue;
         }
     }
 } zox_sys_end(CharactersCanSpawnSystem);

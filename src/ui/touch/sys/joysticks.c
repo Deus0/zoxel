@@ -88,14 +88,17 @@ zox_sys2(VirtualJoystickSystem) {
     zox_sys_in(EntityTarget);
     zox_sys_in(ZevicePointerPosition);
     zox_sys_in(ZevicePointer);
-    zox_sys_in(VirtualZeviceLink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(EntityTarget, target);
         entity device = zox_get_link(world, e, DeviceLink);
         zox_sys_i(ZevicePointerPosition, position);
         zox_sys_i(ZevicePointer, clicked);
-        zox_sys_i(VirtualZeviceLink, joystick);
+        // NOTE: Only pointers with a virtual joystick, i.e. touchscreen fingers
+        entity joystick = zox_get_link(world, e, VirtualZeviceLink);
+        if (!zox_valid(joystick)) {
+            continue;
+        }
         // TODO: Just add finger to system filter, and add to mouse component when testing
         if (!zox_dbg_touch_with_mouse && !zox_has(e, Finger)) {
             continue;
@@ -124,11 +127,11 @@ zox_sys2(VirtualJoystickSystem) {
             handle_touch_drag(
                 world,
                 e,
-                joystick->value);
+                joystick);
             handle_touch_release(
                 world,
                 e,
-                joystick->value);
+                joystick);
             continue;
         }
         // NOTE: On first click, spawn virtual joystick
@@ -153,7 +156,7 @@ zox_sys2(VirtualJoystickSystem) {
                 canvas,
                 position->value,
                 e,
-                joystick->value,
+                joystick,
                 button_type);
             zox_setv(e, DeviceButtonType, button_type);
             // zox_log("Spawning Virtual Joystick [%i]", button_type);

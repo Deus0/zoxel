@@ -106,7 +106,6 @@ void zox_systems_controllers3(ecs *world) {
     zox_system(
         DialogueEndSystem,
         zoxp_update,
-        [out] dialogues.SpeakerLinks,
         [none] nodes.NodeRun,
         [none] dialogues.DialogueProcess,
         [none] core.Exit,

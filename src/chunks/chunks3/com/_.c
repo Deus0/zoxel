@@ -36,7 +36,7 @@ zox_tag(VoxLodMesh);    // a mesh built from its parent VoxLods at its RenderDep
 zoxc_hashmap(ChunkLinks, int3)
 // operations
 zoxc_byte(CloneVox);
-zoxc_entity(CloneVoxLink);
+zox_tag(CloneVoxLink);
 zoxc_entity(VoxLink);      // links to a child vox that holds voxel data, i.e. a characters vox
 zoxc_state(CombineVox);
 zoxc_entitiesw(CombineList);
@@ -91,7 +91,7 @@ void zox_components_chunks3(ecs* world) {
     // operations
     zoxd_byte(CloneVox);
     zoxd_state(CombineVox);
-    zoxd_entity(CloneVoxLink);
+    zoxd_nf_link(CloneVoxLink);
     zoxd_entity(VoxLink);
     zoxd_entitiesw(CombineList);
     zoxd_arrayd(CombinePositions);

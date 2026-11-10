@@ -2,11 +2,9 @@ zox_sys2(QuestsRealmSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
-    zox_sys_in(CharacterLinks);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(GenerateRealm, state);
-        zox_sys_i(CharacterLinks, characters);
         if (state->value != zox_generate_realm_quests) {
             continue;
         }
@@ -19,8 +17,15 @@ zox_sys2(QuestsRealmSpawnSystem) {
                 "Find Bob",
                 "discord");
         }
-        if (!characters->length) {
-            zox_logw("no characters to spawn realm quests with");
+        entity slime = 0;
+        zox_each_link(world, e, CharacterLinks, character) {
+            if (zox_has(character, CharacterSlime)) {
+                slime = character;
+                break;
+            }
+        }
+        if (!slime) {
+            zox_logw("no slime character to spawn realm quests with");
             continue;
         }
         {
@@ -34,7 +39,6 @@ zox_sys2(QuestsRealmSpawnSystem) {
             zox_add(quest, SlayQuest);
             zox_setv(quest, QuestValue, 0);
             zox_setv(quest, QuestTarget, 6);
-            entity slime = characters->value[1];
             zox_link(world, quest, CharacterLink, slime);
         }
         zox_logv("Realm [quests] [X] spawned.");

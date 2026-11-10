@@ -1,22 +1,22 @@
 zox_sys2(Camera2FollowSystem) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(CameraTarget);
     zox_sys_out(Position3D);
     zox_sys_out(Rotation3D);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(CameraTarget, cameraTarget);
+        zox_sys_e();
+        const entity target = zox_get_link(world, e, CameraTarget);
         zox_sys_o(Position3D, position3D);
         zox_sys_o(Rotation3D, rotation3D);
-        if (!zox_valid(cameraTarget->value)) {
+        if (!zox_valid(target)) {
             continue;
         }
-        if (zox_has(cameraTarget->value, Position2)) {
-            float2 target_position = zox_getv(cameraTarget->value, Position2);
+        if (zox_has(target, Position2)) {
+            float2 target_position = zox_getv(target, Position2);
             position3D->value.x = target_position.x;
             position3D->value.y = target_position.y;
-        } else if (zox_has(cameraTarget->value, Position3D)) {
-            float3 target_position = zox_getv(cameraTarget->value, Position3D);
+        } else if (zox_has(target, Position3D)) {
+            float3 target_position = zox_getv(target, Position3D);
             position3D->value.x = target_position.x;
             position3D->value.y = target_position.y;
         } else {

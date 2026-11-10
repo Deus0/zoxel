@@ -1,6 +1,6 @@
 entity spawn_font_style_save_data(ecs *world, entity prefab, const SaveDataFontStyle *data) {
     zox_logv("[spawn_font_style_save_data] fonts [%i]", data->length);
-    entity prefab_font = zox_getv(prefab, FontLink);
+    entity prefab_font = zox_get_link(world, prefab, FontLink);
     zox_instance(prefab);
     zox_name("font_style_io");
     zox_add(e, TTFFontStyle);

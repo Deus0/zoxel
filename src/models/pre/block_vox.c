@@ -8,7 +8,6 @@ entity spawn_prefab_block_vox(
     zox_add(e, BlockVox);
     zox_add(e, VoxMesh);
     zox_setv(e, CloneVox, 0);
-    zox_setv(e, CloneVoxLink, 0);
     // zox_setv(e, ChunkLod, { render_depth_uninitialized });
     zox_setv(e, BlockIndex, 0);
     zox_setv(e, RenderDepth, render_depth_uninitialized);

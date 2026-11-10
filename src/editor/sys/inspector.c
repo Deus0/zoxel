@@ -72,13 +72,12 @@ zox_sys2(InspectorSpawnSystem) {
     zox_sys_begin();
     zox_sys_in(InspectorDirty);
     zox_sys_in(EntityTarget);
-    zox_sys_in(ScrollviewLink);
     zox_sys_in(FontSize);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(InspectorDirty, dirty);
         zox_sys_i(EntityTarget, target);
-        zox_sys_i(ScrollviewLink, scrollview);
+        entity scrollview = zox_get_link(world, e, ScrollviewLink);
         zox_sys_i(FontSize, font_size);
         if (dirty->value != zox_dirty_active) {
             continue;
@@ -87,18 +86,18 @@ zox_sys2(InspectorSpawnSystem) {
         if (!zox_valid(canvas)) {
             continue;
         }
-        if (!zox_valid(scrollview->value)) {
+        if (!zox_valid(scrollview)) {
             zox_log_error("Scrollview Link is invalid.");
             continue;
         }
-        if (!zox_has(scrollview->value, ListUILink)) {
-            zox_log_error("Scrollview [%s] has no list link", zox_get_name(scrollview->value));
+        if (!zox_is_linked_any(world, scrollview, ListUILink)) {
+            zox_log_error("Scrollview [%s] has no list link", zox_get_name(scrollview));
             continue;
         }
         // 2: Fetch our scrollview data
-        entity list_ui = zox_getv(scrollview->value, ListUILink);
+        entity list_ui = zox_get_link(world, scrollview, ListUILink);
         if (!zox_valid(list_ui)) {
-            zox_log_error("Scrollview [%s] Invalid ListUI", zox_get_name(scrollview->value));
+            zox_log_error("Scrollview [%s] Invalid ListUI", zox_get_name(scrollview));
             continue;
         }
         if (!zox_has(list_ui, Layer) || !zox_has(list_ui, ListVisible)) {

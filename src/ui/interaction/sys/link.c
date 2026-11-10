@@ -12,19 +12,19 @@ zox_sys2(ElementActiveLinkSystem) {
         if (dirty->value != zox_dirty_active || !state->value) {
             continue;
         }
-        if (!zox_valid(parent) || !zox_has(parent, ActiveLink)) {
+        if (!zox_valid(parent) || !zox_has(parent, ActiveSingle)) {
             continue;
         }
-        zox_mut_begin(parent, ActiveLink, active);
-        if (active->value == e) {
+        const entity active = zox_get_link(world, parent, ActiveLink);
+        if (active == e) {
             continue;
         }
         // resets last list active
-        if (zox_valid(active->value) && zox_has(parent, ActiveSingle)) {
-            zox_set(active->value, ActiveState, { 0 });
-            zox_set(active->value, ActiveStateDirty, { zox_dirty_trigger });
+        if (zox_valid(active)) {
+            zox_set(active, ActiveState, { 0 });
+            zox_set(active, ActiveStateDirty, { zox_dirty_trigger });
         }
         // Link our active to our list
-        active->value = e;
+        zox_set_link(world, parent, ActiveLink, e);
     }
 } zox_sys_end(ElementActiveLinkSystem);

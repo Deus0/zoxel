@@ -9,7 +9,7 @@ zoxc_byte(GlyphIndex);
 zoxc_ushort(DataIndex);
 zoxc_color(FontFillColor);
 zoxc_color(FontOutlineColor);
-zoxc_entity(FontLink);
+zox_tag(FontLink);
 zoxc_arrayd(FontData, byte2);
 // States
 zoxc_byte(GlyphDirty);
@@ -31,7 +31,7 @@ void zox_components_zigels(ecs *world) {
     zoxd_color(FontFillColor);
     zoxd_color(FontOutlineColor);
     zoxd_arrayd(FontData);
-    zoxd_entity(FontLink);
+    zoxd_nf_link(FontLink);
     // States
     zoxd_byte(GlyphDirty);
 }
