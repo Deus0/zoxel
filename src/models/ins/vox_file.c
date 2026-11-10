@@ -100,46 +100,45 @@ void set_vox_file(
     memcpy(colors->value, vox->palette.values_rgb, clength * sizeof(color_rgb));
 }
 
-// TODO: Convert vox_file to VoxNode, and clone to depth to ModelLods
-//      atm we rebuild everytime the same
+// Imports a vox file as a single max detail vox, with lod meshes for instancing
 entity spawn_vox_file(
     ecs *world,
-    entity prefab,
     const vox_file* data,
     const char* filename)
 {
-    entity model = zox_new();
-    {
-        char name[128];
-        sprintf(name, "vox_file_%s", filename);
-        zox_set_unique_name(model, name);
+    if (!is_vox_valid(data)) {
+        zox_loge("Invalid vox file [%s]", filename);
+        return 0;
     }
     byte mdepth = pick_node_depth(data->chunks[0].size.xyz);
-    zox_setv(model, MaxRenderDepth, mdepth);
-    ModelLods model_lods;
-    for (byte rdepth = 0; rdepth <= mdepth; rdepth++) {
-        byte reducer = mdepth - rdepth;
-        float bscale = (1 / 64.0f);
-        bscale *= powers_of_two[mdepth - rdepth];
-        entity e2 = zox_ins(world, prefab);
-        {
-            char name[128];
-            sprintf(name, "vox_file_lod_%s", filename);
-            zox_set_unique_name(e2, name);
+    char name[128];
+    snprintf(name, sizeof(name), "vox_file_%s", filename);
+    ModelLods lods = { 0 };
+    entity e = spawn_vox_lods(
+        world,
+        0,
+        name,
+        mdepth,
+        &lods);
+    set_vox_file(
+        world,
+        e,
+        data,
+        0,
+        vox_model_scale);
+    // NOTE: Loaded outside systems, the VoxelNodeDirty chain doesn't trigger lod meshes
+    //  - so optimize now (sets parent node values for lower lods) and build meshes directly
+    zox_muter(e, VoxelNode, voxels);
+    optimize_reduce_octree_node(
+        voxels,
+        sizeof(VoxelNode),
+        offsetof(VoxelNode, value),
+        offsetof(VoxelNode, type));
+    for (byte depth = 0; depth < model_lods_max_length; depth++) {
+        if (!lods.value[depth]) {
+            break;
         }
-        set_vox_file(
-            world,
-            e2,
-            data,
-            reducer,
-            bscale);
-        initialize_voxel_lock(world, e2);
-        initialize_sides_lock(world, e2);
-        zox_add(e2, BuildMesh);
-        zox_setv(e2, RenderDepth, rdepth);
-        zox_setv(e2, MaxRenderDepth, mdepth);
-        model_lods.value[rdepth] = e2;
+        zox_add(lods.value[depth], BuildMesh);
     }
-    zox_set_ptr(model, ModelLods, model_lods);
-    return model;
+    return e;
 }

@@ -30,28 +30,19 @@ zox_sys2(ModelEndNodeSystem) {
             zox_log("[End] ModelNode  [%s]",
                 zox_getn(model->value));
         }
-        if (zox_has(model->value, ModelLods)) {
-            zox_geter(model->value, ModelLods, models);
-            for (byte depth = 0; depth < model_lods_max_length; depth++) {
-                entity vox = models->value[depth];
-                if (!zox_valid(vox)) {
-                    break;
-                }
-                if (!zox_has(vox, VoxelNode)) {
-                    zox_loge("Lod Model [%s] [%i] has Invalid Components", zox_getn(vox), depth);
-                    break;
-                }
-                const VoxelNode* voxels = zox_get(vox, VoxelNode);
-                byte3 size = get_octree_bounds(
-                    (const void*) voxels,
-                    depth,
-                    sizeof(VoxelNode),
-                    offsetof(VoxelNode, value));
-                zox_setv(vox, ChunkSize, byte3_to_int3(size));
-                zox_add(vox, VoxelNodeDirty);
-            }
+        entity vox = model->value;
+        if (zox_has(vox, VoxelNode) && zox_has(vox, NodeDepth)) {
+            const VoxelNode* voxels = zox_get(vox, VoxelNode);
+            byte depth = zox_getv(vox, NodeDepth);
+            byte3 size = get_octree_bounds(
+                (const void*) voxels,
+                depth,
+                sizeof(VoxelNode),
+                offsetof(VoxelNode, value));
+            zox_setv(vox, ChunkSize, byte3_to_int3(size));
+            zox_add(vox, VoxelNodeDirty);
         } else {
-            zox_logw("Node Process Entity does not have ModelLods");
+            zox_logw("[End] Model [%s] has no VoxelNode", zox_getn(vox));
         }
         zox_add(e, TriggerEnd);
     }

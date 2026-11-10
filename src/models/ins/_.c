@@ -1,5 +1,5 @@
 // voxes
-#include "vox.c"
+#include "vox_lods.c"
 #include "vox_generated.c"
 #include "vox_file.c"
 #include "block.c"
@@ -9,7 +9,6 @@
 // models
 #include "node.c"
 #include "process.c"
-#include "model_lods.c"
 #include "models.c"
 #include "node_colors.c"
 // TODO: Refactor to model_lods + blueprint for grass

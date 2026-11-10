@@ -32,7 +32,7 @@ entity spawn_part_bones(
         zox_logw("Model components invalid for part [%s]", zox_get_name(part));
         return 0;
     }
-    int3 vsize = zox_getv(vox, ChunkSize);
+    int3 vsize = get_item_model_size(world, part, vox);
     float3 size = float3_scale(int3_to_float3(vsize), bscale * 0.5f);
     size = float3_add(size, float3_single(bscale * 0.5f));
     float3 position = float3_scale(byte3_to_float3(part_centre_position), bscale);

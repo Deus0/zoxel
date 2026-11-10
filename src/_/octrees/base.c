@@ -18,9 +18,10 @@ static inline void octree_close(
         return;
     }
     zox_free(*ptr);
-    byte value = *(byte*)node;
+    // NOTE: value is after the children pointer
+    byte value = *(byte*)((char*)node + sizeof(void*));
     memset(node, 0, stride);
-    *(byte*)node = value;
+    *(byte*)((char*)node + sizeof(void*)) = value;
 }
 
 static inline byte octree_open(
@@ -48,14 +49,18 @@ static inline void octree_clone(
     const void* src,
     size_t stride)
 {
-    *(byte*)dst = *(const byte*)src;
+    // NOTE: Copies value + type, which come after the children pointer
+    memcpy(dst, src, stride);
     void* src_children = *(void* const*)src;
     if (!src_children) {
-        *(void**)dst = NULL;
         return;
     }
-    octree_open(dst, stride, *(byte*)dst);
+    *(void**)dst = NULL;
+    octree_open(dst, stride, *(const byte*)((const char*)src + sizeof(void*)));
     void* dst_children = *(void**)dst;
+    if (!dst_children) {
+        return;
+    }
     for (byte i = 0; i < octree_length; i++) {
         octree_clone(
             (char*)dst_children + i * stride,

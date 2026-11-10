@@ -270,6 +270,10 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
                 if (zox_has(block_spawn, InstanceLink)) {
                     block_type = 1;
                     vox = zox_getv(block_spawn, InstanceLink);
+                    // NOTE: Instances link to a lod mesh, its parent vox holds the voxels
+                    if (zox_valid(vox) && zox_has(vox, VoxLodMesh)) {
+                        vox = zox_get_parent(world, vox);
+                    }
                 } else if (zox_has(hit_block, ModelLink)) {
                     block_type = 2;
                     vox = zox_getv(hit_block, ModelLink);

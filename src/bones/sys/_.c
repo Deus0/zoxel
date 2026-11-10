@@ -20,9 +20,6 @@ void zox_systems_bones(ecs *world) {
     zox_system(
         BoneIndexGenerateSystem,
         zoxp_update,
-        [in] rendering.MeshVertices,
-        [in] rendering3.BoneLinks,
-        [out] rendering3.BoneIndexes,
         [none] bones.Skeleton,
         [none] bones.SkeletonUpdate,
     );
@@ -30,9 +27,8 @@ void zox_systems_bones(ecs *world) {
         BoneIndexGenerateSystem2,
         zoxp_update,
         [in] rendering.MeshVertices,
-        [in] rendering3.BoneLinks,
         [out] rendering3.BoneIndexes,
-        [none] bones.Skeleton,
+        [none] rendering3.SkeletonMesh,
         [none] rendering.BuildMeshWeights,
     );
     zox_system(

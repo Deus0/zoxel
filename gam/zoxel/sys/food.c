@@ -26,7 +26,7 @@ void food_generate_system(iter* it) {
         entity cookie_nodegraph = spawn_model_nodegraph_cookie(world, e);
         // Spawn a Cookies Item
         {
-            entity3 models = spawn_blueprint_models(
+            entity2 models = spawn_blueprint_models(
                 world,
                 e,
                 cookie_nodegraph,
@@ -35,7 +35,7 @@ void food_generate_system(iter* it) {
                 depth,
                 variants);
             entity model = models.y;
-            entity texture_vox = models.z;
+            entity texture_vox = models.y;
             spawn_item_consumable(
                 world,
                 e,

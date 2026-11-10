@@ -131,6 +131,7 @@ $(target_dev): $(SRCS)
 
 
 dev: $(target_dev)
+	@ $(target_dev)
 
 profiler: $(SRCS)
 	bash bsh/build.sh $(GAME) ${build_args} --debug --logs --timings --profiler

@@ -29,6 +29,12 @@ zox_sys2(CombineVoxSystem) {
             continue;
         }
         // zox_log("Combining Voxes [%i]", voxes->length);
+        // NOTE: Optional depths to sample each vox at, as models only store max depth voxels
+        const CombineDepths* depths = zox_has(e, CombineDepths) ?
+            zox_get(e, CombineDepths) : NULL;
+        if (depths && depths->length != voxes->length) {
+            depths = NULL;
+        }
         // TODO: calculate the overall size first
         // add each vox to the current node
         int3 new_csize = int3_zero;
@@ -60,6 +66,10 @@ zox_sys2(CombineVoxSystem) {
             byte3 vposition = positions->value[j];
             byte vox_depth = zox_getv(vox, NodeDepth);
             int3 vox_size = zox_getv(vox, ChunkSize);
+            if (depths && depths->value[j] < vox_depth) {
+                vox_size = get_vox_size_at_depth(vox_size, vox_depth, depths->value[j]);
+                vox_depth = depths->value[j];
+            }
             const VoxelNode* vox_octree = zox_get(vox, VoxelNode);
             const ColorRGBs* vox_colors = zox_get(vox, ColorRGBs);
             // get max octree type
@@ -143,7 +153,15 @@ zox_sys2(CombineVoxSystem) {
         }
         // write_unlock_VoxelNode(voctree);
         csize->value = new_csize;
-        rdepth->value = ndepth->value;
+        // NOTE: Render at the depth for our chunks distance, like ChunkEntitiesLodSystem
+        byte distance = 0;
+        if (zox_has(e, ChunkLink)) {
+            entity chunk = zox_getv(e, ChunkLink);
+            if (zox_valid(chunk) && zox_has(chunk, RenderDistance)) {
+                distance = zox_getv(chunk, RenderDistance);
+            }
+        }
+        rdepth->value = camera_distance_to_npc_render_depth(distance, ndepth->value);
         zox_add(e, VoxelNodeDirty);
         /*zox_log(" - colors [%i]", colors->length);
         zox_log(" - vdepth [%i] - grid max [%i]", ndepth->value, powers_of_two_byte[ndepth->value]);

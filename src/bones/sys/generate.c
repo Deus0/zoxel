@@ -68,18 +68,49 @@ void generate_weights(
     zox_add(e, SkeletonMeshDirty);
 }
 
+// When the skeleton updates, regenerate weights for all its meshes
 zox_sys2(BoneIndexGenerateSystem) {
+    byte dbg_log = 0;
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                entity mesh = it2.entities[j];
+                if (!zox_has(mesh, SkeletonMesh) ||
+                    zox_has(mesh, BuildMesh) ||
+                    zox_has(mesh, BuildMeshWeights))
+                {
+                    continue;
+                }
+                zox_add(mesh, BuildMeshWeights);
+            }
+        }
+        if (dbg_log) {
+            zox_log("Skeleton Updated [%s], rebuilding weights", zox_sys_e_name);
+        }
+    }
+} zox_sys_end(BoneIndexGenerateSystem);
+
+// Generates a skeleton mesh's weights from its parent's bones
+zox_sys2(BoneIndexGenerateSystem2) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(MeshVertices);
-    zox_sys_in(BoneLinks);
     zox_sys_out(BoneIndexes);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(MeshVertices, verts);
-        zox_sys_i(BoneLinks, bones);
         zox_sys_o(BoneIndexes, weights);
+        zox_remove(e, BuildMeshWeights);
+        entity skeleton = zox_get_parent(world, e);
+        if (!zox_valid(skeleton) || !zox_has(skeleton, BoneLinks)) {
+            zox_loge("SkeletonMesh [%s] has no parent skeleton", zox_sys_e_name);
+            continue;
+        }
+        zox_geter(skeleton, BoneLinks, bones);
         generate_weights(
             world,
             e,
@@ -91,35 +122,5 @@ zox_sys2(BoneIndexGenerateSystem) {
                 zox_sys_e_name,
                 bones->length);
         }
-        // mesh_dirty->value = paint_bone_weights ? mesh_state_skeleton_paint : mesh_state_skeleton_end;
-    }
-} zox_sys_end(BoneIndexGenerateSystem);
-
-
-zox_sys2(BoneIndexGenerateSystem2) {
-    byte dbg_log = 0;
-    zox_sys_world();
-    zox_sys_begin();
-    zox_sys_in(MeshVertices);
-    zox_sys_in(BoneLinks);
-    zox_sys_out(BoneIndexes);
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
-        zox_sys_i(MeshVertices, verts);
-        zox_sys_i(BoneLinks, bones);
-        zox_sys_o(BoneIndexes, weights);
-        generate_weights(
-            world,
-            e,
-            verts,
-            bones,
-            weights);
-        zox_remove(e, BuildMeshWeights);
-        if (dbg_log) {
-            zox_log("Weights Updated 2 [%s] Bones [%i]",
-                zox_sys_e_name,
-                bones->length);
-        }
     }
 } zox_sys_end(BoneIndexGenerateSystem2);
-

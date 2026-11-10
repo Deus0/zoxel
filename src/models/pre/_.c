@@ -13,12 +13,15 @@ entity prefab_vox_instanced;
 entity prefab_vox_file;
 entity prefab_vox_generated;
 entity prefab_static_vox_instanced;
+entity prefab_vox_lods;
+entity prefab_vox_mesh;
 
 // Model Entities
 #include "vox.c"
 #include "vox_generated.c"
 #include "vox_file.c"
 #include "vox_instanced.c"
+#include "vox_lods.c"
 // Blocks
 #include "block_vox.c"
 #include "block_vox_instanced.c"
@@ -31,6 +34,8 @@ entity prefab_static_vox_instanced;
 void spawn_prefabs_models(ecs *world) {
     // Moveable Voxes
     prefab_vox = spawn_prefab_vox(world, block_depth);
+    prefab_vox_lods = spawn_prefab_vox_lods(world);
+    prefab_vox_mesh = spawn_prefab_vox_mesh(world);
     // Level 1
     prefab_block_base = spawn_prefab_block_base(
         world,

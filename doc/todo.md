@@ -1,8 +1,16 @@
 # Todo
 
-- Refactor vox models to use a single vox entity, instead of per lod models + generation
-	- generate only at max detail
-	- spawn chunk mesh per lod level instead
+- add rotated character per voxel selection for raycasts, similar to how we do for grass
+	- keeping bounds as a sweep pass
+
+- This next patch: please refactor characters so that vox or mesh (instance reference too) are children to the character, this seperation is important to seperate concerns of modules too
+	- also cleanup old render data on skeleton characters
+	- skeleton shouldnt inherit vox too, needs to be seperate?
+
+- Make sure all mesh code is out of characters, inside rendering or models where appropriate.
+- I noticed some faces are not culled between chunks
+	- write bsh/test.sh that can take in test name from any modules tst as a main.c, together with flecs and src
+	- write some tests in chunks/chunks3/tst
 - Make items pop a little when dropped, like borderlands, a little movement away from original position
 - Set minivox/world voxels brightness when lighting updates
 	- use observer on light change event on terrain chunk types

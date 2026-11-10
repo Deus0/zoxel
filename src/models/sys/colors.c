@@ -79,29 +79,13 @@ zox_sys2(ColorsModelNodeSystem) {
             zox_getv(node, Color) :
             seed_color(&seed->value, inner_seed_shift);
         byte color_count = zox_getv(node, NodeColors);
-        if (zox_has(model->value, ModelLods)) {
-            zox_geter(model->value, ModelLods, models);
-            for (int j = 0; j < model_lods_max_length; j++) {
-                entity vox = models->value[j];
-                if (!zox_valid(vox)) {
-                    break;
-                }
-                process_node_model_generate_colors(
-                    world,
-                    node,
-                    vox,
-                    seed->value,
-                    node_color,
-                    color_count);
-                if (dbg_log >= 2) {
-                    zox_log("   - [Colors] ModelNode [%s] Depth [%i]",
-                        zox_getn(vox),
-                        j);
-                }
-            }
-        }  else {
-            zox_logw("Node Process Entity does not have ModelLods");
-        }
+        process_node_model_generate_colors(
+            world,
+            node,
+            model->value,
+            seed->value,
+            node_color,
+            color_count);
         zox_add(e, TriggerEnd);
     }
 } zox_sys_end(ColorsModelNodeSystem);

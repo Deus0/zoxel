@@ -7,7 +7,7 @@ void zox_dbg_body_part(ecs* world, entity e) {
         zox_log("Model [%s]: Invalid Vox", zox_get_name(e));
         return;
     }
-    int3 model_size = zox_getv(vox, ChunkSize);
+    int3 model_size = get_item_model_size(world, e, vox);
     byte model_depth = zox_getv(e, MaxRenderDepth);
     short model_length = octree_size(model_depth);
     byte slot_type = zox_getv(e, SlotType);

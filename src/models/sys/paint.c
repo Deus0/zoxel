@@ -87,21 +87,13 @@ zox_sys2(PaintModelNodeSystem) {
                 zox_getn(model->value),
                 seed);
         }
-        if (zox_has(model->value, ModelLods)) {
-            zox_geter(model->value, ModelLods, models);
-            for (int j = 0; j < model_lods_max_length; j++) {
-                entity v = models->value[j];
-                process_node_model_paint(
-                    world,
-                    node,
-                    v,
-                    seed,
-                    position,
-                    size);
-            }
-        } else {
-            zox_logw("Node Process Entity does not have ModelLods");
-        }
+        process_node_model_paint(
+            world,
+            node,
+            model->value,
+            seed,
+            position,
+            size);
         zox_add(e, TriggerEnd);
     }
 } zox_sys_end(PaintModelNodeSystem);

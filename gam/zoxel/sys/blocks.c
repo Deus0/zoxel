@@ -82,9 +82,8 @@ zox_sys2(BlocksRealmSpawnSystem) {
             // Flowers for Gardens
             entity model = string_hashmap_get(files_hashmap_voxes, new_string_data("flower"));
             if (model) {
-                zox_geter(model, ModelLods, lods);
                 byte max_render_depth = block_depth;
-                entity vox = lods->value[max_render_depth];
+                entity vox = model;
                 entity e2 = spawn_realm_block_model(
                     world,
                     e,

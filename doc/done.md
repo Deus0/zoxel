@@ -1,10 +1,17 @@
 # Done
 
+-x Refactor vox models to use a single vox entity, instead of per lod models + generation
+	-x generate only at max detail
+	-x spawn chunk mesh per lod level instead
+	-x similar to how i refactored the terrain chunks into chunk + lod meshes
+	-x It needs to also link up / work properly with all the games data, so this is a hard task
+	-x we have imported models and generated models
+	-x all the models and game data is created in the game module
 -x Animate grass shader
-	- add grass noise animation, move only top verts, as a shader in res/shaders
-	- add setting for this, use the newer logic thats observer based
-	- so we can turn off grass animation
-	- since grass uses vox instance system, the hard part is making it work with the old and new shader, since other minivox/block voxes use this static shader
+	-x add grass noise animation, move only top verts, as a shader in res/shaders
+	-x add setting for this, use the newer logic thats observer based
+	-x so we can turn off grass animation
+	-x since grass uses vox instance system, the hard part is making it work with the old and new shader, since other minivox/block voxes use this static shader
 -x Bug: crashes when player character dies
 -x Shake camera when hit - return to OG position after
 	-x Create a animation entity that shakes camera for x seconds

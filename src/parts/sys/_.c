@@ -11,6 +11,7 @@ void zox_systems_bodys(ecs* world) {
         [out] parts.BodySize,
         [out] chunks3.CombineList,
         [out] chunks3.CombinePositions,
+        [out] chunks3.CombineDepths,
         [out] chunks3.CombineVox,
         [out] chunks.NodeDepth,
         [out] blocks.BlockScale,

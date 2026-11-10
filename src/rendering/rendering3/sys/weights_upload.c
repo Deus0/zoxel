@@ -24,6 +24,10 @@ void bone_index_upload_system(iter* it) {
         zox_gpu_bind_buffer_array(0);
         zox_remove(e, SkeletonMeshDirty);
         zox_add(e, MeshDirty);
+        // NOTE: Used to know when a prepared skeleton mesh can be swapped in
+        if (!zox_has(e, MeshBuilt)) {
+            zox_add(e, MeshBuilt);
+        }
         if (dbg_log) {
             zox_log("[%s]'s Bone Weights Uploaded",
                 zox_sys_e_name);

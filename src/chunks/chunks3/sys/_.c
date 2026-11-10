@@ -16,6 +16,7 @@
 #include "vox_texture.c"
 // colored
 #include "build_colored.c"
+#include "vox_lods.c"
 // textured
 #include "build_textured.c"
 #include "wait.c"
@@ -42,6 +43,7 @@ void zox_systems_chunks3(ecs *world) {
         [none] textures.VoxTexture
     );
     // ColoredChunk, triggers mesh to update
+    // NOTE: Skeletons rebuild their child meshes instead, see SkeletonMeshesSystem
     zox_system(
         ColoredChunkMeshTriggerSystem,
         zoxp_update,
@@ -49,6 +51,15 @@ void zox_systems_chunks3(ecs *world) {
         [none] chunks3.ColorChunk,
         [none] chunks3.ChunkUpdate,
         [none] !rendering.BuildMesh,
+        [none] !bones.Skeleton,
+    );
+    // VoxLods, triggers its lod meshes to update
+    zox_system(
+        VoxLodsMeshTriggerSystem,
+        zoxp_update,
+        [none] chunks3.Chunk3,
+        [none] chunks3.VoxLods,
+        [none] chunks3.ChunkUpdate,
     );
     // NOTE: Writes to VoxelNode
     zox_system(
@@ -91,6 +102,17 @@ void zox_systems_chunks3(ecs *world) {
         [out] rendering.MeshVertices,
         [out] rendering.MeshColorRGBs,
         [none] chunks3.ColorChunk,
+        [none] rendering.BuildMesh,
+    );
+    // Builds lod meshes from their parent VoxLods
+    zox_system(
+        VoxLodMeshBuildSystem,
+        zoxp_octree_read,
+        [in] rendering.RenderDepth,
+        [out] rendering.MeshIndicies,
+        [out] rendering.MeshVertices,
+        [out] rendering.MeshColorRGBs,
+        [none] chunks3.VoxLodMesh,
         [none] rendering.BuildMesh,
     );
     zox_system(

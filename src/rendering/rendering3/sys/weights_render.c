@@ -14,20 +14,28 @@ void skeleton3_render_system(iter* it) {
     zox_sys_in(MeshGPULink);
     zox_sys_in(ColorsGPULink);
     zox_sys_in(BoneIndexGPULink);
-    zox_sys_in(TransformMatrix);
-    zox_sys_in(RenderDisabled);
-    zox_sys_in(BoneLinks);
     camera_filtering_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(RenderDisabled, disabled);
         zox_sys_i(MeshIndicies, indicies);
         zox_sys_i(MeshGPULink, mesh);
         zox_sys_i(ColorsGPULink, colors);
         zox_sys_i(BoneIndexGPULink, bone_indicies);
-        zox_sys_i(BoneLinks, bones);
-        zox_sys_i(TransformMatrix, matrix);
-        if (disabled->value || !indicies->length || !bones->length) {
+        if (!indicies->length) {
+            continue;
+        }
+        // NOTE: Skeleton meshes use their parent characters transform and bones
+        entity skeleton = zox_get_parent(world, e);
+        if (!zox_valid(skeleton) ||
+            !zox_has(skeleton, BoneLinks) ||
+            !zox_has(skeleton, TransformMatrix) ||
+            zox_getv(skeleton, RenderDisabled))
+        {
+            continue;
+        }
+        zox_geter(skeleton, BoneLinks, bones);
+        zox_geter(skeleton, TransformMatrix, matrix);
+        if (!bones->length) {
             continue;
         }
 //#ifdef zox_safety_checks
@@ -40,7 +48,7 @@ void skeleton3_render_system(iter* it) {
             continue;
         }
 //#endif
-        camera_filtering_check();
+        camera_filtering_check_entity(skeleton);
         if (!has_set_material) {
             has_set_material = 1;
             if (transparent_meshes) {

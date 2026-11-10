@@ -43,10 +43,15 @@ entity zox_tst_render_texture_character(
         10 * ui_scale,
         4 * ui_scale
     };
+    // NOTE: Skeleton characters keep their meshes as children
+    entity mesh_source = zox_get_link(world, character, ActiveMesh);
+    if (!zox_valid(mesh_source)) {
+        mesh_source = character;
+    }
     entity mesh_clone =
         spawn_mesh3_clone(
             world,
-            character);
+            mesh_source);
     zox_add(mesh_clone, VoxMesh);
     zox_set_unique_name(mesh_clone, "character_clone");
     zox_setv(mesh_clone, Position3D, renderer_position);

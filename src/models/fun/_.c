@@ -97,6 +97,7 @@ void process_arguments_voxes(ecs *world, char* args[], int count) {
     }
 }
 
+// Returns the lod mesh of a model at a depth, used for rendering
 entity get_lodded_model(
     ecs* world,
     entity e,
@@ -119,7 +120,8 @@ entity get_lodded_model(
     return mlods->value[depth];
 }
 
-entity get_max_model_mesh(
+// Resolves a ModelGroup to its first Model
+entity get_model_first(
     ecs* world,
     entity e)
 {
@@ -132,6 +134,34 @@ entity get_max_model_mesh(
         if (!zox_valid(e)) {
             return 0;
         }
+    }
+    return e;
+}
+
+// Returns the vox holding the voxel data of a model (always max depth)
+entity get_model_vox(
+    ecs* world,
+    entity e)
+{
+    e = get_model_first(world, e);
+    if (!zox_valid(e)) {
+        return 0;
+    }
+    if (!zox_has(e, VoxelNode)) {
+        zox_loge("Model [%s] has no VoxelNode", zox_getn(e));
+        return 0;
+    }
+    return e;
+}
+
+// Returns the highest detail lod mesh, limited by block_depth
+entity get_max_model_mesh(
+    ecs* world,
+    entity e)
+{
+    e = get_model_first(world, e);
+    if (!zox_valid(e)) {
+        return 0;
     }
     if (!zox_has(e, MaxRenderDepth)) {
         zox_loge("Model [%s] has no MaxRenderDepth",

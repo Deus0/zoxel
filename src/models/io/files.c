@@ -18,7 +18,6 @@ void dispose_vox_file(vox_file *vox) {
 
 void load_files_voxes(ecs *world) {
     byte dbg_log = 0 || is_verbose;
-    entity prefab = prefab_vox; // prefab_vox_file;
     char* load_directory = concat_file_path(resources_path, directory_voxes);
     if (dbg_log) {
         zox_log("Loading Vox Files  [%s]", load_directory);
@@ -47,7 +46,7 @@ void load_files_voxes(ecs *world) {
             zox_logw("[%s] failed to load properly", filepath);
             continue;
         }
-        entity e = spawn_vox_file(world, prefab, &data, filename);
+        entity e = spawn_vox_file(world, &data, filename);
         dispose_vox_file(&data);
         if (e) {
             string_hashmap_add(files_hashmap_voxes, new_string_data_clone(filename), e);

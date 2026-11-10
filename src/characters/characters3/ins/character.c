@@ -32,12 +32,13 @@ entity spawn_character3(
     byte render_depth = camera_distance_to_npc_render_depth(
         render_distance,
         max_depth);
+    // NOTE: vox holds the voxels (max depth), mesh is the lod mesh to instance
+    entity mesh = 0;
     if (zox_valid(model)) {
+        vox = model;
         if (zox_has(model, ModelLods)) {
             zox_geter(model, ModelLods, lods);
-            vox = lods->value[render_depth];
-        } else {
-            vox = model;
+            mesh = lods->value[render_depth];
         }
     }
     // zox_log("Spawning Character [%s] with Model [%s] of render type [%i]", name, zox_get_name(model), type);
@@ -94,8 +95,8 @@ entity spawn_character3(
         // zox_log("Render Depth of character set to [%i] of [%i]", render_depth, max_depth);
     }
     if (zox_has(prefab, CharacterGeneric)) {
-        if (zox_valid(vox)) {
-            zox_setv(e, InstanceLink, vox);
+        if (zox_valid(mesh)) {
+            zox_setv(e, InstanceLink, mesh);
         }
         if (zox_valid(vox) && zox_has(vox, BlockScale)) {
             float block_scale = zox_getv(vox, BlockScale);

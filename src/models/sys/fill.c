@@ -78,39 +78,21 @@ zox_sys2(FillModelNodeSystem) {
                 zox_getn(model->value),
                 seed);
         }
-        if (zox_has(model->value, ModelLods)) {
-            zox_geter(model->value, ModelLods, models);
-            // we should be using max depth here
-            for (byte j = 0; j < model_lods_max_length; j++) {
-                entity vox = models->value[j];
-                if (!zox_valid(vox)) {
-                    break;
-                }
-                if (!zox_has(vox, NodeDepth) ||
-                    !zox_has(vox, ColorRGBs) ||
-                    !zox_has(vox, VoxelNode))
-                {
-                    zox_loge("Lod Model [%s] [%i] has Invalid Components",
-                        zox_getn(vox),
-                        j);
-                    break;
-                }
-                byte model_depth = zox_getv(vox, NodeDepth);
-                if (dbg_log >= 2) {
-                    zox_log("   - [Fill] ModelNode - [%s] Depth [%i]",
-                        zox_getn(vox),
-                        model_depth);
-                }
-                process_node_model_fill(
-                    world,
-                    node,
-                    vox,
-                    seed,
-                    position,
-                    size);
-            }
-        }  else {
-            zox_logw("Node Process Entity does not have ModelLods");
+        entity vox = model->value;
+        if (!zox_has(vox, NodeDepth) ||
+            !zox_has(vox, ColorRGBs) ||
+            !zox_has(vox, VoxelNode))
+        {
+            zox_loge("[Fill] Model [%s] has Invalid Components",
+                zox_getn(vox));
+        } else {
+            process_node_model_fill(
+                world,
+                node,
+                vox,
+                seed,
+                position,
+                size);
         }
         zox_add(e, TriggerEnd);
     }

@@ -20,19 +20,8 @@ entity spawn_realm_model_item_filename(
     if (block_depth < model_depth) {
         model_depth = block_depth;
     }
-    entity vox = get_max_model_mesh(world, model_base);
-    /*if (!zox_has(model_base, MaxRenderDepth)) {
-        zox_log("Model [%s] has no MaxRenderDepth", vox_name);
-        return 0;
-    }
-    byte model_depth = zox_getv(model_base, MaxRenderDepth);
-    if (block_depth < model_depth) {
-        model_depth = block_depth;
-    }
-    entity vox = get_lodded_model(
-        world,
-        model_base,
-        model_depth);*/
+    // NOTE: Texture bakes from the voxels, reduced to model_depth
+    entity vox = get_model_vox(world, model_base);
     if (!zox_valid(vox)) {
         zox_log("Model [%s] has no Vox Model", vox_name);
         return 0;

@@ -19,6 +19,8 @@
 /web
 # exp: Exports from Tools
 /exp
+# tst: Test binaries
+/tst
 # app settings
 /.build_settings
 /.game

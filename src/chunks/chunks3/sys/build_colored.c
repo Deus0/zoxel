@@ -290,11 +290,7 @@ zox_sys2(ChunkColorsBuildSystem) {
         vertices->value = finalize_arrayd_float3(mesh.vertices);
         colors->value = finalize_arrayd_color_rgb(mesh.colors);
         zox_remove(e, BuildMesh);
-        if (zox_has(e, Skeleton)) {
-            zox_add(e, BuildMeshWeights);
-        } else {
-            zox_add(e, MeshDirty);
-        }
+        zox_add(e, MeshDirty);
         if (dbg_log) {
             zox_log("[%s] has built a colored mesh: Tris [%i]", zox_getn(e), indicies->length / 3);
         }

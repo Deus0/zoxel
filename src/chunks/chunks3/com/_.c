@@ -21,6 +21,8 @@ zoxc_float(RaycastRange);
 #include "damage.c"
 // Voxes
 zox_tag(Vox);
+zox_tag(VoxLods);       // a single max detail vox, that has a child VoxLodMesh per depth
+zox_tag(VoxLodMesh);    // a mesh built from its parent VoxLods at its RenderDepth
 // zoxc_byte(ChunkLod);    // we using this??!?!
 zoxc_hashmap(ChunkLinks, int3)
 // operations
@@ -29,6 +31,7 @@ zoxc_entity(CloneVoxLink);
 zoxc_state(CombineVox);
 zoxc_entitiesw(CombineList);
 zoxc_arrayd(CombinePositions, byte3);
+zoxc_arrayd(CombineDepths, byte);   // depth to sample each CombineList vox at
 
 // ChunkLodDirty
 // - ChunkLodSystem
@@ -50,6 +53,8 @@ void zox_components_chunks3(ecs* world) {
     zoxd_tag(ChunkDebugger);
     zoxd_tag(NoiseChunk);
     zoxd_tag(Vox);
+    zoxd_tag(VoxLods);
+    zoxd_tag(VoxLodMesh);
     // Events
     zoxd_tag(VoxelNodeDirty);
     zoxd_tag(VoxelNodePostDirty);
@@ -78,4 +83,5 @@ void zox_components_chunks3(ecs* world) {
     zoxd_entity(CloneVoxLink);
     zoxd_entitiesw(CombineList);
     zoxd_arrayd(CombinePositions);
+    zoxd_arrayd(CombineDepths);
 }

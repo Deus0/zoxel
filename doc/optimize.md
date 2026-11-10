@@ -1,5 +1,6 @@
 # Optimizations
 
+- 2300 tables again, try reduce fragmentation
 
 ## --------------------
 ## TOP PRIORITY

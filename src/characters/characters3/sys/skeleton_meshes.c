@@ -1,0 +1,241 @@
+// Skeleton characters keep their voxels, each render depth gets a child SkeletonMesh
+//  - like terrain chunk meshes, a mesh is spawned when its depth is first needed, then kept
+//  - the PreparingMesh builds while the ActiveMesh renders, then they swap
+//  - when voxels change, cached meshes are deleted and the active one rebuilds
+
+entity find_skeleton_mesh(
+    ecs* world,
+    entity e,
+    byte depth)
+{
+    iter it2 = zox_children(world, e);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            entity mesh = it2.entities[j];
+            if (zox_has(mesh, SkeletonMesh) &&
+                zox_getv(mesh, RenderDepth) == depth)
+            {
+                ecs_iter_fini(&it2);
+                return mesh;
+            }
+        }
+    }
+    return 0;
+}
+
+// Built, weighted and uploaded
+byte is_skeleton_mesh_ready(
+    ecs* world,
+    entity mesh)
+{
+    return zox_has(mesh, MeshBuilt) &&
+        !zox_has(mesh, BuildMesh) &&
+        !zox_has(mesh, BuildMeshWeights) &&
+        !zox_has(mesh, SkeletonMeshDirty) &&
+        !zox_has(mesh, MeshDirty);
+}
+
+entity spawn_skeleton_mesh(
+    ecs* world,
+    entity e,
+    byte depth)
+{
+    entity mesh = zox_ins(world, prefab_skeleton_mesh);
+    zox_set_unique_name(mesh, "skeleton_mesh");
+    zox_setv(mesh, RenderDepth, depth);
+    zox_set_parent(world, mesh, e);
+    return mesh;
+}
+
+// Sets the PreparingMesh for a depth, spawning it if it doesn't exist
+//  - is_cache_valid is 0 when cached meshes are being deleted this frame
+void prepare_skeleton_mesh(
+    ecs* world,
+    entity e,
+    byte depth,
+    entity active,
+    entity preparing,
+    byte is_cache_valid,
+    byte dbg_log)
+{
+    entity mesh = 0;
+    if (zox_valid(active) && zox_getv(active, RenderDepth) == depth) {
+        mesh = active;
+    } else if (is_cache_valid) {
+        mesh = find_skeleton_mesh(world, e, depth);
+    }
+    if (mesh && mesh == preparing) {
+        return;
+    }
+    if (zox_valid(preparing)) {
+        zox_unlink(world, e, PreparingMesh, preparing);
+    }
+    // NOTE: Moving back to the active depth, nothing to swap
+    if (mesh && mesh == active) {
+        return;
+    }
+    if (!mesh) {
+        mesh = spawn_skeleton_mesh(world, e, depth);
+        if (dbg_log) {
+            zox_log("[%s] spawned skeleton mesh at depth [%i]", zox_getn(e), depth);
+        }
+    } else if (dbg_log) {
+        zox_log("[%s] reusing skeleton mesh at depth [%i]", zox_getn(e), depth);
+    }
+    zox_link(world, e, PreparingMesh, mesh);
+}
+
+// Enables the prepared mesh, disables the rest
+void swap_skeleton_mesh(
+    ecs* world,
+    entity e,
+    entity active,
+    entity preparing)
+{
+    zox_unlink(world, e, PreparingMesh, preparing);
+    if (zox_valid(active)) {
+        zox_unlink(world, e, ActiveMesh, active);
+    }
+    zox_link(world, e, ActiveMesh, preparing);
+    if (zox_has(preparing, Disabled)) {
+        zox_remove(preparing, Disabled);
+    }
+    iter it2 = zox_children(world, e);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            entity mesh = it2.entities[j];
+            if (mesh == preparing ||
+                !zox_has(mesh, SkeletonMesh) ||
+                zox_has(mesh, Disabled))
+            {
+                continue;
+            }
+            zox_add(mesh, Disabled);
+        }
+    }
+}
+
+// When voxels change, delete cached meshes and rebuild the active one
+void refresh_skeleton_meshes(
+    ecs* world,
+    entity e,
+    entity active)
+{
+    iter it2 = zox_children(world, e);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            entity mesh = it2.entities[j];
+            if (!zox_has(mesh, SkeletonMesh)) {
+                continue;
+            }
+            if (mesh == active) {
+                if (!zox_has(mesh, BuildMesh)) {
+                    zox_add(mesh, BuildMesh);
+                }
+            } else {
+                zox_delete(mesh);
+            }
+        }
+    }
+}
+
+zox_sys2(SkeletonMeshesSystem) {
+    byte dbg_log = 0;
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(RenderDepth);
+    zox_sys_in(NodeDepth);
+    zox_sys_in(ColorRGBs);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(RenderDepth, rdepth);
+        zox_sys_i(NodeDepth, ndepth);
+        zox_sys_i(ColorRGBs, vcolors);
+        entity active = zox_get_link(world, e, ActiveMesh);
+        entity preparing = zox_get_link(world, e, PreparingMesh);
+        if (!zox_valid(active)) {
+            active = 0;
+        }
+        if (!zox_valid(preparing)) {
+            preparing = 0;
+        }
+        byte is_voxels_updated = zox_has(e, ChunkUpdate);
+        byte is_depth_updated = zox_has(e, RenderDepthDirty) &&
+            zox_getv(e, RenderDepthDirty) == zox_dirty_active;
+        if (is_voxels_updated) {
+            refresh_skeleton_meshes(world, e, active);
+            if (preparing) {
+                zox_unlink(world, e, PreparingMesh, preparing);
+                preparing = 0;
+            }
+        }
+        byte has_voxels = vcolors->length > 0;
+        byte has_depth = rdepth->value != render_depth_uninitialized;
+        byte is_prepare = is_voxels_updated ||
+            is_depth_updated ||
+            (!active && !preparing);
+        if (has_voxels && has_depth && is_prepare) {
+            byte depth = rdepth->value;
+            if (depth > ndepth->value) {
+                depth = ndepth->value;
+            }
+            prepare_skeleton_mesh(
+                world,
+                e,
+                depth,
+                active,
+                preparing,
+                !is_voxels_updated,
+                dbg_log);
+        } else if (preparing && is_skeleton_mesh_ready(world, preparing)) {
+            swap_skeleton_mesh(world, e, active, preparing);
+            if (dbg_log) {
+                zox_log("[%s] swapped to skeleton mesh at depth [%i]",
+                    zox_sys_e_name,
+                    zox_getv(preparing, RenderDepth));
+            }
+        }
+    }
+} zox_sys_end(SkeletonMeshesSystem);
+
+// Builds a skeleton mesh from its parent character's voxels at RenderDepth
+zox_sys2(SkeletonMeshBuildSystem) {
+    byte dbg_log = 0;
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(RenderDepth);
+    zox_sys_out(MeshIndicies);
+    zox_sys_out(MeshVertices);
+    zox_sys_out(MeshColorRGBs);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(RenderDepth, rdepth);
+        zox_sys_o(MeshIndicies, indicies);
+        zox_sys_o(MeshVertices, vertices);
+        zox_sys_o(MeshColorRGBs, colors);
+        entity character = zox_get_parent(world, e);
+        byte result = build_vox_mesh_at_depth(
+            world,
+            character,
+            rdepth->value,
+            indicies,
+            vertices,
+            colors);
+        zox_remove(e, BuildMesh);
+        if (result == zox_vox_mesh_invalid) {
+            zox_loge("SkeletonMesh [%s] has invalid parent character", zox_sys_e_name);
+            continue;
+        }
+        if (result != zox_vox_mesh_built) {
+            continue;
+        }
+        zox_add(e, BuildMeshWeights);
+        if (dbg_log) {
+            zox_log("[%s] built skeleton mesh from [%s] depth [%i] tris [%i]",
+                zox_sys_e_name,
+                zox_getn(character),
+                rdepth->value,
+                indicies->length / 3);
+        }
+    }
+} zox_sys_end(SkeletonMeshBuildSystem);

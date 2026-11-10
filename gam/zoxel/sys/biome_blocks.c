@@ -310,7 +310,6 @@ zox_sys2(BiomeBlocksSystem) {
             zox_set_unique_name(model_group, "model_group_grass");
             zox_setv(model_group, MaxRenderDepth, max_depth);
             zox_set_parent(world, model_group, e);
-            // entity2 variant = (entity2) { 0 };
             entity texture_vox = 0;
             ModelLinks variants = (ModelLinks) { 0 };
             for (int j = 0; j < grass_variants; j++) {
@@ -319,22 +318,18 @@ zox_sys2(BiomeBlocksSystem) {
                 color variant_color = weed_color;
                 srand(variant_seed);
                 variant_color = color_mutate(variant_color, grass_color_mutation);
-                entity2 e2 = spawn_model_grass(
+                entity model = spawn_model_grass(
                     world,
-                    prefab_vox,
                     variant_seed,
                     max_depth,
                     variant_color);
-                entity model = e2.x;
                 zox_set_parent(world, model, model_group);
                 add_to_ModelLinks(&variants, model);
-                // variant = e2;
                 if (j == 0) {
-                    texture_vox = e2.y;
+                    texture_vox = model;
                 }
             }
             zox_set_ptr(model_group, ModelLinks, variants);
-            // entity texture_vox = variant.y;
             entity block = spawn_realm_block_model(
                 world,
                 e,
@@ -353,17 +348,15 @@ zox_sys2(BiomeBlocksSystem) {
         // Dirt Piles on ground
         {
             byte max_depth = block_depth_limits.y;
-            entity2 e2 = spawn_model_lods_generated(
+            entity model = spawn_model_lods_generated(
                 world,
-                prefab_vox,
                 e,
                 "debris",
                 vox_type_rubble,
                 dirt_color,
                 max_depth,
                 dirt_seed);
-            entity model = e2.x;
-            entity texture_vox = e2.y;
+            entity texture_vox = model;
             entity block = spawn_realm_block_model(
                 world,
                 e,
@@ -381,17 +374,15 @@ zox_sys2(BiomeBlocksSystem) {
         {
             char* block_name = "decayed";
             byte max_depth = block_depth_limits.y;
-            entity2 e2 = spawn_model_lods_generated(
+            entity model = spawn_model_lods_generated(
                 world,
-                prefab_vox,
                 e,
                 block_name,
                 vox_type_noisey,
                 dirt_color,
                 max_depth,
                 dirt_seed);
-            entity model = e2.x;
-            entity texture_model = e2.y;
+            entity texture_model = model;
             spawn_realm_block_model(
                 world,
                 e,
@@ -408,17 +399,15 @@ zox_sys2(BiomeBlocksSystem) {
         {
             char* block_name = "stalks";
             byte max_depth = block_depth_limits.y;
-            entity2 e2 = spawn_model_lods_generated(
+            entity model = spawn_model_lods_generated(
                 world,
-                prefab_vox,
                 e,
                 block_name,
                 vox_type_flowers,
                 flowers_color,
                 max_depth,
                 flowers_seed);
-            entity model = e2.x;
-            entity texture_model = e2.y;
+            entity texture_model = model;
             entity block = spawn_realm_block_model(
                 world,
                 e,

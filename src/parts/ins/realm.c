@@ -39,31 +39,21 @@ entity2 spawn_realm_body_part(
     for (byte j = 0; j < variants; j++) {
         lint vseed = seed + j * 1209;
         color vcolor = (color) { 200, 200, 155, 255 };
-        entity2 model = spawn_model_lods_generated(
+        entity model = spawn_model_lods_generated(
             world,
-            prefab_vox,
             e,
             name, // "body",
             0,
             vcolor,
             max_depth,
             vseed);
-        /*entity2 model = spawn_model_lods(
-            world,
-            e,
-            vcolor,
-            vseed,
-            max_depth,
-            name);*/
-        zox_set_parent(world, model.x, e);
         spawn_process_model(
             world,
             blueprint,
-            model.x);
-        // zox_set_unique_name(mlods, "bodys_mlods_head");
-        add_to_ModelLinks(&models, model.x);
+            model);
+        add_to_ModelLinks(&models, model);
         if (j == 0) {
-            max_depth_vox = model.y;
+            max_depth_vox = model;
         }
     }
     zox_set_ptr(e, ModelLinks, models);

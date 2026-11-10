@@ -1,5 +1,6 @@
 ushort max_model_length = 256;
 
+// Returns the vox of a part model, voxels are always at max depth
 entity item_get_max_depth_vox(ecs* world, entity part) {
     if (!zox_valid(part)) {
         return 0;
@@ -8,31 +9,21 @@ entity item_get_max_depth_vox(ecs* world, entity part) {
         zox_log_error("Part has no Model Link [%s]", zox_get_name(part));
         return 0;
     }
-    entity vox = zox_getv(part, ModelLink);
+    entity vox = get_model_first(world, zox_getv(part, ModelLink));
     if (!zox_valid(vox)) {
         zox_log_error("[player body]: Invalid Part %s Model", zox_get_name(part));
         return 0;
     }
-    if (!zox_has(vox, MaxRenderDepth)) {
+    if (!zox_has(vox, VoxelNode) || !zox_has(vox, NodeDepth)) {
         zox_log_error("Part Vox Invalid Components %s Model %s", zox_get_name(part), zox_get_name(vox));
         return 0;
-    }
-    byte max_render_depth = zox_getv(part, MaxRenderDepth);
-    if (zox_has(vox, ModelLods)) {
-        zox_geter(vox, ModelLods, mlods);
-        entity vox_lod = mlods->value[max_render_depth];
-        if (!zox_valid(vox_lod)) {
-            zox_logw("Part [%s] has invalid Vox Lod [%i]", zox_get_name(part), max_render_depth);
-            return 0;
-        }
-        return vox_lod;
     }
     return vox;
 }
 
 // NOTE: Recursively add parts to the body
 // TODO: Get position based on previous slot
-void build_body_parts(ecs *world, entity slot, CombineList* voxes, CombinePositions* positions, entity_array_d* slots_used, byte3* body_size, byte* max_depth, byte dbg_log) {
+void build_body_parts(ecs *world, entity slot, CombineList* voxes, CombinePositions* positions, CombineDepths* depths, entity_array_d* slots_used, byte3* body_size, byte* max_depth, byte dbg_log) {
     entity part = zox_getv(slot, DataLink);
     byte anchor = zox_getv(slot, SlotAnchor);
     if (!zox_valid(part)) {
@@ -53,7 +44,9 @@ void build_body_parts(ecs *world, entity slot, CombineList* voxes, CombinePositi
         zox_loge("Part [%s]'s Vox [%s] has no ChunkSize", zox_get_name(part), zox_get_name(vox));
         return;
     }
-    int3 part_size = (zox_getv(vox, ChunkSize)); // int3_to_byte3
+    // NOTE: Parts are sampled at the parts depth, models only hold max depth voxels
+    byte part_depth = get_item_model_depth(world, part, vox);
+    int3 part_size = get_item_model_size(world, part, vox);
     if (part_max_depth > *max_depth) {
         *max_depth = part_max_depth;
         if (dbg_log) {
@@ -215,6 +208,7 @@ void build_body_parts(ecs *world, entity slot, CombineList* voxes, CombinePositi
     // Store them
     add_to_CombineList(voxes, vox);
     add_to_CombinePositions(positions, part_position_b3);
+    add_to_CombineDepths(depths, part_depth);
     entity_array_d_add(slots_used, slot);
     if (dbg_log) {
         zox_log("Combining Part [%s] a[%i]", zox_get_name(vox), anchor);
@@ -235,7 +229,7 @@ void build_body_parts(ecs *world, entity slot, CombineList* voxes, CombinePositi
         if (dbg_log) {
             zox_log("   - [%i]:[%s]", k, zox_get_name(child_slot));
         }
-        build_body_parts(world, child_slot, voxes, positions, slots_used, body_size, max_depth, dbg_log);
+        build_body_parts(world, child_slot, voxes, positions, depths, slots_used, body_size, max_depth, dbg_log);
     }
 }
 
@@ -250,6 +244,7 @@ zox_sys2(BodyCombineSystem) {
     zox_sys_out(BodySize);
     zox_sys_out(CombineList);
     zox_sys_out(CombinePositions);
+    zox_sys_out(CombineDepths);
     zox_sys_out(CombineVox);
     zox_sys_out(NodeDepth);
     zox_sys_out(BlockScale);
@@ -259,6 +254,7 @@ zox_sys2(BodyCombineSystem) {
         zox_sys_o(BodySize, body_size);
         zox_sys_o(CombineList, voxes);
         zox_sys_o(CombinePositions, positions);
+        zox_sys_o(CombineDepths, depths);
         zox_sys_o(CombineVox, dirty);
         zox_sys_o(NodeDepth, ndepth);
         zox_sys_o(BlockScale, block_scale);
@@ -273,8 +269,9 @@ zox_sys2(BodyCombineSystem) {
         body_size->value = byte3_zero;
         resize_CombineList(voxes, 0);
         resize_CombinePositions(positions, 0);
+        resize_CombineDepths(depths, 0);
         entity_array_d* slots_used = create_entity_array_d(1);
-        build_body_parts(world, chest_slot, voxes, positions, slots_used, &body_size->value, &max_depth, dbg_log);
+        build_body_parts(world, chest_slot, voxes, positions, depths, slots_used, &body_size->value, &max_depth, dbg_log);
         dispose_entity_array_d(slots_used);
         // This should be calculated when we add to our vox?
         // TODO: We should make this same scale as npcs
