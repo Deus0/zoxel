@@ -16,10 +16,22 @@ void engine_end() {
 #endif
 }
 
+#ifdef __GLIBC__
+    #include <execinfo.h>
+#endif
+
+// logs a backtrace (glibc only), resolve it with: addr2line -f -e <binary> <+offsets>
 void handle_segfault(int sig) {
     zox_loge("Segfault Detected [%i]", sig);
+#ifdef __GLIBC__
+    void* frames[64];
+    const int count = backtrace(frames, 64);
+    fflush(stdout);
+    backtrace_symbols_fd(frames, count, 2);
+#endif
     zox_loge("Exiting...");
-    exit(0);
+    fflush(stdout);
+    _exit(128 + sig);
 }
 
 void handle_terminal_close(int sig) {
