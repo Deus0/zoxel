@@ -1150,3 +1150,8 @@ Disabling Lods means:
 	- test: zox_tst_save=<realm folder> bash bsh/tst.sh continue_game loads a copy of a real save
 -x Onboarding doc for new users (doc/onboarding.md), linked from readme.md
 -x Doc on command line flags for the binary (doc/commands.md), linked from readme.md and onboarding
+-x Some faces weren't culled between chunks (and some border faces went missing)
+	- cause: side_infos (src/_/octrees/data.c) had every side flipped, so when a chunk's node was coarser than
+	  its neighbor's voxels (lod chunks, lod seams), it checked the neighbor's far face instead of the touching one
+	- fix: side_infos side is the neighbor's touching face (build_colored already did this via reverse_direction)
+	- test: chunk_sides (src/chunks/chunks3/tst/sides.c), 6 directions x every render depth, lod seams both ways

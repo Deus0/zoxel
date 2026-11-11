@@ -5,11 +5,9 @@
 	
 - add a test for exit game, its crashing on exit atm
 - add a test for streaming between chunks, this can be reused to test its speed for optmization too
-- finish fixing all prior test cases
-- finish up current work tasks
 - add a table test, for when in game, check total flecs tables, this needs to be reduced to reduce our query times - can add this to tst module in src, it sits on top of engine
 
-- speedup the loading of terrain
+-x speedup the loading of terrain
 -x Add --autostart tag that autos through the uis, into a new game, and makes player character auto walk too (should already be implemented somewhere)
 	- this can be used by claude in automated testing
 	
@@ -28,21 +26,25 @@
 - add rotated character per voxel selection for raycasts, similar to how we do for grass
 	- keeping bounds as a sweep pass
 
-- I noticed some faces are not culled between chunks
-	- write bsh/test.sh that can take in test name from any modules tst as a main.c, together with flecs and src
+-x I noticed some faces are not culled between chunks
 	- write some tests in chunks/chunks3/tst
+	
 - Make items pop a little when dropped, like borderlands, a little movement away from original position
+
 - Set minivox/world voxels brightness when lighting updates
 	- use observer on light change event on terrain chunk types
 	- might need to pass this data to the frag shader
+	
 - We can just have a more general Damage/Defence type stats 
 	- With Physical and Magical tags
 	- DamageStat, DefenceStat
+	
 - Link Aura to magial damage
 - link projectile to magical damage too
 - Add rewards on quest handin
 	- Goal: Give 20 xp for handing in quest
 	- Quest Rewards - More Cookies - Particles - Sounds (Yay)
+	
 - When right click on an item ui, it should split the item quantity in half, the other half should be in the mouse item
 - When right click empty spot, place a single item, or stack a single item
 
@@ -54,10 +56,13 @@
 - Npc Item drops - should pick an item item randomly based on rarity of the body parts + inventory
 	- it should not drop all items
 	- player characters should still drop all loot though for chance to pick them up
+	
 - Collect 5 cookies for quest
 	- Quest Reward: Top Hat
 - Hand in Quest Node - linked to two answer
+
     - Dialogue Nodes: QuestDoneLink - QuestActiveLink
+    
 -x Arm animation needs to slerp to new rotations and now instantly snap during walk and attacking.
 - fix error '[14:58:49.178] [ERROR] Smooth Lights Error: Colors Past Limits [1496] - Face [5] at Pos [14x0x14] Depth [4] of [4]
 [14:58:51.554] [ERROR] Smooth Lights Error: Colors Past Limits [332] - Face [5] at Pos [0x5x4] Depth [3] of [3]'

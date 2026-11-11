@@ -38,13 +38,17 @@ static inline byte byte3_octree_array_index(byte3 position) {
             (position.z << 2);
 }
 
+// Per direction: the opposite direction, and the face of the neighbor in that direction which touches us
+//  - side is the neighbor's child side (side_child_indices), 0 = its negative face, 1 = its positive face
+//  - i.e. the neighbor to our -x touches us with its +x face, so side 1
+//  - was flipped (its far face), so lod and chunk border faces were culled by the wrong voxels (tst chunk_sides)
 static const SideInfo side_infos[6] = {
-    {1, 0, 0}, // -x sees +x neighbor
-    {0, 0, 1}, // +x sees -x neighbor
-    {3, 1, 0}, // -y
-    {2, 1, 1}, // +y
-    {5, 2, 0}, // -z
-    {4, 2, 1}  // +z
+    {1, 0, 1}, // -x: neighbor touches with its +x face
+    {0, 0, 0}, // +x: neighbor touches with its -x face
+    {3, 1, 1}, // -y
+    {2, 1, 0}, // +y
+    {5, 2, 1}, // -z
+    {4, 2, 0}  // +z
 };
 
 static const byte3 side_offsets[6] = {
