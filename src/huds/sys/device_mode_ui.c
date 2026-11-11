@@ -80,10 +80,13 @@ zox_sys2(DeviceModeUISystem) {
             world,
             canvas,
             new->value);
-        menu_start_triggered(
-            world,
-            e,
-            canvas);
+        // any input on the start menu opens the main menu
+        if (zox_valid(zox_get_link(world, e, MenuStart))) {
+            menu_start_triggered(
+                world,
+                e,
+                canvas);
+        }
         if (dbg_log) {
             zox_log("New Device Mode Detected [%i] -> [%i], mouse_visible [%i]",
                 old->value,

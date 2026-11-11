@@ -1,5 +1,6 @@
 #include "links.c"
 #include "wheel.c"
+#include "split.c"
 // tst: player_spawn, a new realm spawns the player's character standing in the terrain
 //  - waits for the player's character, then lets it settle for a few seconds
 //  - the character's block is air (not stuck in the ground) and it hasn't fallen out of the world
@@ -124,9 +125,10 @@ byte zox_tst_player_spawn_ready(ecs* world) {
                 zox_player_spawn_blocked, terrain_lod_far, render_distance_y, zox_stream_end_status);
             zox_tst_waiting = waiting;
             // once, when streaming stopped: why the camera's column has no spawn position
-            static double dumped = 0;
-            if (zox_current_time - zox_tst_spawn_start > 15 && zox_current_time - dumped > 30) {
-                dumped = zox_current_time;
+            //  - once per test, 15s in (a stall fails the test 20s after its last progress)
+            static byte dumped = 0;
+            if (!dumped && zox_current_time - zox_tst_spawn_start > 15) {
+                dumped = 1;
                 zox_tst_spawn_dump_column(world, local_terrain, camera_chunk);
             }
         }
@@ -548,4 +550,5 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("links_cleanup", zox_tst_links_cleanup_ready, zox_tst_links_cleanup_check, 30);
     zox_tst_add("stream_npcs", zox_tst_stream_npcs_ready, zox_tst_stream_npcs_check, 95);
     zox_tst_add("action_wheel", zox_tst_action_wheel_ready, zox_tst_action_wheel_check, 60);
+    zox_tst_add("item_split", zox_tst_item_split_ready, zox_tst_item_split_check, 90);
 }

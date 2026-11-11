@@ -161,6 +161,17 @@ void zox_systems_interaction(ecs* world) {
         zoxp_remove,
         [none] interactions.Click,
     );
+    // Right clicks
+    zox_system(
+        trigger_right_click_system,
+        zoxp_remove,
+        [none] interactions.TriggerRightClick,
+    );
+    zox_system(
+        right_click_system,
+        zoxp_remove,
+        [none] interactions.RightClick,
+    );
     // Presses
     zox_system(
         trigger_press_system,

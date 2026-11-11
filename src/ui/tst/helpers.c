@@ -104,6 +104,15 @@ static inline void zox_tst_mouse(
     zox_mouse_fake_right = 0;
 }
 
+// moves the fake mouse with its right button (left up)
+static inline void zox_tst_mouse_right(
+    int2 position,
+    byte right)
+{
+    zox_tst_mouse(position, 0);
+    zox_mouse_fake_right = right;
+}
+
 // scrolls the fake mouse's wheel (positive y is up), set it back to zero after a frame for one notch
 static inline void zox_tst_mouse_wheel(int y) {
     zox_mouse_fake_wheel = (int2) { 0, y };

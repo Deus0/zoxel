@@ -11,7 +11,6 @@
 	- remove the associated item slots
 	- refresh the body ui
 	
-- add a test for exit game, its crashing on exit atm
 - add a test for streaming between chunks, this can be reused to test its speed for optmization too
 - add a table test, for when in game, check total flecs tables, this needs to be reduced to reduce our query times - can add this to tst module in src, it sits on top of engine
 
@@ -47,8 +46,6 @@
 	- Goal: Give 20 xp for handing in quest
 	- Quest Rewards - More Cookies - Particles - Sounds (Yay)
 	
-- When right click on an item ui, it should split the item quantity in half, the other half should be in the mouse item
-- When right click empty spot, place a single item, or stack a single item
 
 - add a simple skilltree
 	- with a skill to unlock button
@@ -65,8 +62,6 @@
 
     - Dialogue Nodes: QuestDoneLink - QuestActiveLink
     
-- fix error '[14:58:49.178] [ERROR] Smooth Lights Error: Colors Past Limits [1496] - Face [5] at Pos [14x0x14] Depth [4] of [4]
-[14:58:51.554] [ERROR] Smooth Lights Error: Colors Past Limits [332] - Face [5] at Pos [0x5x4] Depth [3] of [3]'
 
 - write bsh/test.sh that takes in test name
 	- it will find the test in the modules tst folders
@@ -91,13 +86,10 @@
 	- keep same pose - camera position and head
 
 # Bugs
-- make lists sorting use child index - after sort it shuffles atm
 - Sometimes the npc labels dont spawn
 	- its dissapearing due to chunk distance issues
 - cokie is not centred??
 	- super rare vox texture bug
-- GameStateSystem log error after exiting game
-	- guess state looking for realm
 
 # later
 - Track NearbyCharacters on npcs for UI spawning
@@ -122,8 +114,6 @@
 - for our model test - change mesh every 5 seconds to a variant model
 	- showcase variants
 
-- for our tests, just link to current inspector if its opened
-	- no need to spawn it everywhere
 - test for spawning all models under realm
 - Simple test function to spawn vox mesh
     - just the mesh itself, usign a entity reference

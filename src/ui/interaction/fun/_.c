@@ -47,6 +47,22 @@ void on_element_pressed(
     }
 }
 
+// The right button went down on an element, it right clicks on press (i.e. item slots)
+void on_element_right_pressed(
+    ecs *world,
+    entity player,
+    entity e)
+{
+    if (!zox_valid(e) || !zox_has(e, Clickable)) {
+        return;
+    }
+    if (zox_has(e, ClickDisabled) && zox_getv(e, ClickDisabled)) {
+        return;
+    }
+    zox_add(e, TriggerRightClick);
+    zox_setm(e, Clicker, player);
+}
+
 // Released on the same element it was pressed on, this is the click
 void on_element_press_released(
     ecs *world,

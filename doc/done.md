@@ -1,5 +1,24 @@
 # Done
 
+-x add a test for exit game, its crashing on exit atm
+	- no longer crashes: main doesn't dispose the world anymore (the hashmap disposal hang)
+	- tst exit_menu (exit button) and exit_game (closing while playing), tests can pass on close (zox_tst_set_exits)
+-x fix error Smooth Lights Error: Colors Past Limits
+	- the mesh builder ran while its chunk's sides rebuilt on another thread (same phase), reading half built sides,
+	  and the sides system skipped BuildMesh as the mesh was still building, so it never rebuilt, now it waits for BuildChunkSides
+	- smooth lights also skip air with sides, like the mesh builder
+	- player_spawn and stream_npcs fail on any of these errors
+-x make lists sorting use child index - after sort it shuffles atm
+	- children iterate by table, hovering moved elements between tables, lists now lay out by ChildIndex
+	- tst list_order
+-x When right click on an item ui, split the item quantity in half, the other half in the mouse
+-x When right click empty spot, place a single item, or stack a single item
+	- RightClick event (on press), DataUIRightClickSystem (main thread, it spawns items), tst item_split
+-x GameStateSystem log error after exiting game
+	- the_clean deleted the realm, then it errored every frame, now it reaches none (tst menu_flow)
+-x for our tests, just link to current inspector if its opened
+	- inspect_entity only retargets an open inspector (tst editor)
+
 -x I noticed some faces are not culled between chunks
 	- write some tests in chunks/chunks3/tst
 -x Make projectile collide with Terrain
