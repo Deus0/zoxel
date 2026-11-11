@@ -7,6 +7,8 @@ entity spawn_prefab_music(ecs *world) {
     zox_prefab_set(e, MusicSpeed, { 1.0 });
     zox_prefab_set(e, MusicNote, { 0 });
     zox_prefab_set(e, MusicEnabled, { 0 });
+    zox_prefab_set(e, MusicVolume, { 1 });
+    zox_prefab_set(e, MusicVolumeTarget, { 1 });
     return e;
 }
 

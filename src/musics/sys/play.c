@@ -51,7 +51,12 @@ zox_sys2(MusicPlaySystem) {
                 continue;
             }
 
-            float volume = note_volume * get_volume_music();
+            // crossfades scale it (MusicFadeSystem)
+            const float fade = zox_has(e, MusicVolume) ? zox_getv(e, MusicVolume) : 1;
+            if (fade <= 0) {
+                continue;
+            }
+            float volume = note_volume * get_volume_music() * fade;
             zox_geter_value(note, InstrumentType, byte, note_instrument);
             float frequency = note_frequencies[music_note];
             // zox_log(" > spawning note type: %i\n", note_instrument)
@@ -59,7 +64,6 @@ zox_sys2(MusicPlaySystem) {
             if (note_instrument == instrument_piano_file) {
                 // spawn sound_file_note(world, prefab_sound_file_note)
                 spawn_sound_from_file_name(world, prefab_sound, "piano", frequency, volume);
-                zox_log("playing note.");
             } else {
                 spawn_sound_generated(world,
                     prefab_sound_generated,
@@ -83,3 +87,29 @@ zox_sys2(MusicPlaySystem) {
         }
     }
 } zox_sys_end(MusicPlaySystem);
+
+// Eases each music's volume to its target, a faded out music stops playing
+zox_sys2(MusicFadeSystem) {
+    init_delta_time();
+    zox_sys_begin();
+    zox_sys_in(MusicVolumeTarget);
+    zox_sys_out(MusicVolume);
+    zox_sys_out(MusicEnabled);
+    const float step = (float) (delta_time / music_fade_seconds);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_i(MusicVolumeTarget, target);
+        zox_sys_o(MusicVolume, volume);
+        zox_sys_o(MusicEnabled, enabled);
+        if (!enabled->value || volume->value == target->value) {
+            continue;
+        }
+        if (volume->value < target->value) {
+            volume->value = float_min(target->value, volume->value + step);
+        } else {
+            volume->value = float_max(target->value, volume->value - step);
+        }
+        if (volume->value <= 0 && target->value <= 0) {
+            enabled->value = 0;
+        }
+    }
+} zox_sys_end(MusicFadeSystem);

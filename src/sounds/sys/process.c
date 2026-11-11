@@ -24,8 +24,17 @@ zox_sys2(SoundProcessSystem) {
             continue;
         }
         float frequency = soundFrequency->value;
+        if (frequency <= 0) {
+            zox_loge("Failed processing, frequency [%f]", frequency);
+            continue;
+        }
         float frequency_scale = frequency / default_frequency;
-        float new_data[soundData->length];
+        // heap, a few seconds of samples is too big for a worker thread's stack
+        float* new_data = malloc(soundData->length * sizeof(float));
+        if (!new_data) {
+            zox_loge("Failed processing, out of memory");
+            continue;
+        }
         byte out_of_bounds = 0;
         for (uint j = 0; j < soundData->length; j++) {
             if (out_of_bounds) {
@@ -47,6 +56,7 @@ zox_sys2(SoundProcessSystem) {
             new_data[j] *= soundVolume->value;
         }
         memcpy(soundData->value, new_data, soundData->length * sizeof(float));
+        free(new_data);
         triggerSound->value = zox_dirty_trigger;
         zox_logv("  -> updated sound frequency to [%f]", frequency_scale);
     }

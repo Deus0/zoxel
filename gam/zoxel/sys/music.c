@@ -1,3 +1,5 @@
+// The realm's in game music (generated), played when the player's character spawns
+//  - the main menu's music is on the game (spawn_menu_music), it lasts from boot
 zox_sys2(MusicRealmSpawnSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -8,37 +10,8 @@ zox_sys2(MusicRealmSpawnSystem) {
         if (state->value != zox_generate_realm_music) {
             continue;
         }
-        entity playlist_main_menu = spawn_playlist(world, e);
         entity playlist_game = spawn_playlist(world, e);
-        // Each playlist links to musics
-        MusicLinks musics_main_menu = (MusicLinks) { 0 };
         MusicLinks musics_game = (MusicLinks) { 0 };
-        // musics
-        entity music_file = load_music_file(
-            world,
-            prefab_music_file,
-            prefab_note,
-            music_file_path);
-        // add musics to playlists
-        if (music_file) {
-            // add_music(world, playlist_main_menu, music_file);
-            add_to_MusicLinks(&musics_main_menu, music_file);
-            zox_set(music_file, MusicEnabled, { 1 });
-            local_music = music_file;
-        } else {
-            zox_loge("File Loading Failed [%s]",
-                music_file_path);
-            entity main_menu_song = spawn_music_generated(
-                world,
-                prefab_music_generated,
-                13666,
-                instrument_edm,
-                (float2) { 0.3f, 0.5f }
-            );
-            add_to_MusicLinks(&musics_main_menu, main_menu_song);
-            local_music = main_menu_song;
-            // zox_setv(main_menu_song, MusicEnabled, 1);
-        }
         entity generated_music = spawn_music_generated(
             world,
             prefab_music_generated,
@@ -47,8 +20,36 @@ zox_sys2(MusicRealmSpawnSystem) {
             (float2) { 1.0f, 1.4f }
         );
         add_to_MusicLinks(&musics_game, generated_music);
-        zox_set_ptr(playlist_main_menu, MusicLinks, musics_main_menu);
         zox_set_ptr(playlist_game, MusicLinks, musics_game);
         zox_logv("Realm [musics] [X] spawned.");
     }
 } zox_sys_end(MusicRealmSpawnSystem);
+
+// The main menu's music, on the game: the imported song (res/music, make convert), or a
+// generated one if it won't load, it crossfades with the realm's music (crossfade_music)
+void spawn_menu_music(ecs* world, entity app) {
+    const entity game = zox_valid(app) ? zox_get_child_by_id(world, app, zox_id(Game)) : 0;
+    if (!zox_valid(game)) {
+        zox_loge("[spawn_menu_music] Invalid [game]");
+        return;
+    }
+    entity music = load_music_file(
+        world,
+        prefab_music_file,
+        prefab_note,
+        music_file_path);
+    if (!music) {
+        zox_loge("File Loading Failed [%s]", music_file_path);
+        music = spawn_music_generated(
+            world,
+            prefab_music_generated,
+            13666,
+            instrument_edm,
+            (float2) { 0.3f, 0.5f });
+    }
+    zox_set_parent(world, music, game);
+    zox_set_link(world, game, MenuMusicLink, music);
+    local_music = music;
+    // the link above is deferred, so crossfades to the music itself
+    crossfade_music(world, game, music);
+}

@@ -9,5 +9,6 @@ byte is_log_playlists = 0;
 // instrument_piano_file | instrument_piano
 const byte music_load_instrument = instrument_piano_file;
 float global_music_speed = 1;
+const double music_fade_seconds = 1.5;   // crossfading between the menu and game musics
 const int music_note_skip = 89;
 const int music_play_double_chance = 89;

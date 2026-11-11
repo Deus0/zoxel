@@ -276,7 +276,7 @@ zox_sys2(PlayerBeginSystem) {
             spawn_position,
             (float3) { 0, 1, 0}, 0.2f, 6, 30);
         // Needs ui spawn after frame
-        play_playlist(world, realm, 1);
+        play_realm_music(world, realm);
         entity mouse = zox_get_child_by_id(world, e, zox_id(Mouse));
         if (mouse) {
             zox_setv(mouse, MouseLock, 1);
