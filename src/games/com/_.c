@@ -18,7 +18,7 @@ void zox_link_game(ecs* world, entity e, entity game) {
 
 void zox_components_games(ecs* world) {
     zoxd_tag(Game);
-    zoxd_nf_tag(GameLink);
+    zoxd_nf_link(GameLink);
     zoxd_byte(GameState);
     zoxd_byte(LastGameState);
     zoxd_byte(GameStateTarget);

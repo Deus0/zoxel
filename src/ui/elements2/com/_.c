@@ -45,7 +45,7 @@ void zox_components_elements2(ecs *world) {
     zoxd_nf_link(ScrollviewLink);
     zoxd_nf_link(ListUILink);
     zoxd_tag(Toggle);
-    zoxd_nf_tag(ToggleLink);
+    zoxd_nf_link(ToggleLink);
     //zoxd_byte(ToggleState);
     //zoxd_state(ToggleStateDirty);
     zoxd(OptionLabel);

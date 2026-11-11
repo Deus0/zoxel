@@ -39,3 +39,6 @@ entity zox_get_prefab(ecs* world, entity e) {
 
 #define zox_getp(world, e)\
     ecs_get_target(world, e, EcsIsA, 0)
+
+#define zox_is_prefab(e)\
+    ecs_has_id(world, e, EcsPrefab)

@@ -1,6 +1,6 @@
 zox_sys2(MouseConstrainSystem) {
     byte dbg_log = 0;
-    if (disable_mouse_lock || zox_dbg_touch_with_mouse) {
+    if (disable_mouse_lock || background || zox_dbg_touch_with_mouse) {
         return;
     }
     zox_sys_world();

@@ -37,9 +37,9 @@ void zox_components_bones(ecs* world) {
     zoxd_tag(ThighBone);
     zoxd_nf_link(SkeletonLink);
     zoxd_tag(SkeletonOwner);
-    zoxd_nf_tag(HeadBoneLink);
-    zoxd_nf_tag(HandBoneLink);
-    zoxd_nf_tag(ShoulderBoneLink);
+    zoxd_nf_link(HeadBoneLink);
+    zoxd_nf_link(HandBoneLink);
+    zoxd_nf_link(ShoulderBoneLink);
     zoxd_byte(SwingState);
     zoxd_byte(SwingAngle);
     zoxd_float(SwingPhase);

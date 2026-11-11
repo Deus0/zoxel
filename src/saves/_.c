@@ -29,4 +29,5 @@ void import_saves(ecs* world) {
     zox_module(saves);
     zox_components_saves(world);
     zox_systems_saves(world);
+    add_hook_terminal_command(process_arguments_saves);
 }

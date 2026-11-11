@@ -125,6 +125,12 @@ zox_sys2(SettingsLoadSystem) {
             if (!name || !type || !raw) {
                 continue;
             }
+            if (zox_settings_is_from_args(name)) {
+                if (dbg_log) {
+                    zox_log("- skipped [%s], set by launch args", name);
+                }
+                continue;
+            }
             if (strcmp(type, "byte") == 0) {
                 byte value = (byte)atoi(raw);
                 set_app_setting_byte(world, e, name, value);

@@ -79,8 +79,8 @@ void zox_components_interaction(ecs* world) {
     // Dragging
     zoxd_tag(Dragable);
     zoxd_int2(DraggingDelta);
-    zoxd_nf_tag(DraggerLink);
-    zoxd_nf_tag(DraggedLink);
+    zoxd_nf_link(DraggerLink);
+    zoxd_nf_link(DraggedLink);
     zoxd_byte(DraggableState);
     // Slides
     zoxd(ClickEvent);

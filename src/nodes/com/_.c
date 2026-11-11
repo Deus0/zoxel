@@ -23,7 +23,7 @@ void zox_components_nodes(ecs* world) {
     zoxd_tag_event(NodeFalse);
     zoxd_byte(NodeType);
     // Links
-    zoxd_nf_tag(NodeLink);
-    zoxd_nf_tag(CurrentNodeLink);
-    zoxd_nf_tag(NextNodeLink);
+    zoxd_nf_link(NodeLink);
+    zoxd_nf_link(CurrentNodeLink);
+    zoxd_nf_link(NextNodeLink);
 }

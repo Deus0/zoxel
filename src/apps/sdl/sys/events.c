@@ -94,12 +94,16 @@ void sdl_events_system(iter* it) {
             sdl_event_background_entered(&event)
         ) {
             opengl_dispose_resources(world);
-            disable_time();
+            if (!background) {
+                disable_time();
+            }
             if (dbg_log) {
                 zox_log("App Frozen [%s]", zox_getn(e));
             }
         } else if (sdl_event_window_focus_lost(&event)) {
-            disable_time();
+            if (!background) {
+                disable_time();
+            }
 #ifdef zox_android
             opengl_dispose_resources(world);
 #endif

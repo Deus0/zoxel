@@ -11,11 +11,8 @@ void node_start_system(iter* it) {
                 zox_sys_e_name);
             continue;
         }
-        // Unlink Previous
-        entity previous = zox_get_link(world, e, CurrentNodeLink);
-        if (previous) {
-            zox_unlink(world, e, CurrentNodeLink, previous);
-        }
+        // NOTE: exclusive, replaces the previous node
+        //  - never unlink first, unlink + link in one deferred batch loses the link
         zox_link(world, e, CurrentNodeLink, start_node);
         zox_add(e, TriggerBegin);
         zox_add(e, Dirty);

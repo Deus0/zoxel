@@ -13,11 +13,11 @@ byte save_voxel_node(FILE* out, const VoxelNode* node) {
     }
     byte result = 0;
     if (has_children) {
-        if (!node->ptr) {
+        if (!get_children_VoxelNode(node)) {
             zox_loge("Node has children but ptr is null!");
             return 1;
         }
-        VoxelNode* children = (VoxelNode*) node->ptr;
+        VoxelNode* children = get_children_VoxelNode(node);
         for (int i = 0; i < 8; i++) {
             byte error = save_voxel_node(out, &children[i]);
             if (error) {

@@ -33,7 +33,6 @@ zox_sys2(ShootSystem) {
             continue;
         }
         // entity rresource = zox_get_link(world, e, SkillResource);
-        zox_log("SHooting");
         float3 position;
         float4 rotation;
         entity skeleton = get_skeleton(world, user);
@@ -62,14 +61,26 @@ zox_sys2(ShootSystem) {
                 rotation = zox_getv(user, Rotation3D);
             }
         }
-        float damage = randf_range(damage_min->value, damage_max->value);
+        float damage = get_skill_damage(
+            world,
+            e,
+            user,
+            damage_min->value,
+            damage_max->value);
+        // projectile takes the skills color
+        color projectile_color = zox_has(e, Color) ?
+            zox_getv(e, Color) :
+            color_white;
         spawn_projectile(
             world,
             prefab_projectile,
+            user,
+            e,
             position,
             rotation,
             0.1f,
             default_power * range->value,
-            damage);
+            damage,
+            projectile_color);
     }
 } zox_sys_end(ShootSystem);

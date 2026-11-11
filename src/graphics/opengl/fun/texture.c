@@ -91,6 +91,7 @@ static inline void zox_gpu_clear_texture_rgb(guint id) {
 static inline void zox_gpu_dispose_texture(guint id) {
     if (id) {
         glDeleteTextures(1, &id);
+        zox_gpu_textures_live--;
     }
 }
 
@@ -99,6 +100,7 @@ static inline guint spawn_gpu_texture_buffer() {
     int filter = GL_NEAREST;
     guint id;
     glGenTextures(1, &id);
+    zox_gpu_textures_live++;
     glBindTexture(GL_TEXTURE_2D, id);
     zox_gpu_bind_texture(id);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);

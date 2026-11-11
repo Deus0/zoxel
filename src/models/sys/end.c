@@ -33,11 +33,7 @@ zox_sys2(ModelEndNodeSystem) {
         if (zox_has(vox, VoxelNode) && zox_has(vox, NodeDepth)) {
             const VoxelNode* voxels = zox_get(vox, VoxelNode);
             byte depth = zox_getv(vox, NodeDepth);
-            byte3 size = get_octree_bounds(
-                (const void*) voxels,
-                depth,
-                sizeof(VoxelNode),
-                offsetof(VoxelNode, value));
+            byte3 size = get_bounds_VoxelNode(voxels, depth);
             zox_setv(vox, ChunkSize, byte3_to_int3(size));
             zox_add(vox, VoxelNodeDirty);
         } else {

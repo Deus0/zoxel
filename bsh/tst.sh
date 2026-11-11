@@ -1,0 +1,298 @@
+#!/usr/bin/env bash
+# Runs automated tests headless, exit code 0 = all passed
+#   bash bsh/tst.sh all [--nobuild] [extra game args]     (make tests)
+#   bash bsh/tst.sh <name> [--nobuild] [extra game args]  (make test name=<name>)
+#   bash bsh/tst.sh list
+#   --repeat <n>: runs the test(s) n times, for intermittent bugs (i.e. player_spawn --repeat 5)
+#   --gdb: runs under gdb, prints a backtrace on crash
+#   --visible: shows the window (no --background) on the real gpu, i.e. to compare gpu memory
+#   --gpu: hidden, but on the real gpu (mali) inside the desktop session
+#   default is software rendering (mesa llvmpipe, sdl offscreen, no wayland window), since
+#     mali faults in a test run once crashed gnome-shell and logged the user out (2026-11-11)
+#     still opengl es 3.0 (--gles), the same render path the game takes on mali
+#   --stress: full terrain stream distance, tests default to --tiny terrain
+#   --keepsaves: saves to the real save folder, tests default to --nosaves (a /tmp folder, deleted after)
+# Tests are added with zox_tst_add in a module's tst folder (see src/core/tst/_.c)
+# Safety: low priority, memory capped and killed on timeout, so a bad run can't freeze the pc
+#   override with zox_tst_timeout=<seconds> zox_tst_memory=<size> zox_tst_log_max=<bytes>
+#   also killed if the machine's MemAvailable drops below zox_tst_mem_floor (KB, default 1.5GB),
+#   since gpu driver memory isn't under the cgroup cap; trace in bin/tst/<name>.mem
+# Fail fast: killed once its log passes zox_tst_log_max (log spam), and the game itself
+#   fails a test after 100 logged errors (--tst-errors <n>)
+set -uo pipefail
+
+name="${1:-all}"
+shift || true
+build=1
+gdb=0
+stress=0
+keepsaves=0
+visible=0
+gpu=0
+repeat=1
+args=()
+next_is_repeat=0
+for arg in "$@"; do
+    if [[ ${next_is_repeat} == "1" ]]; then
+        repeat="${arg}"
+        next_is_repeat=0
+    elif [[ "${arg}" == "--repeat" ]]; then
+        next_is_repeat=1
+    elif [[ "${arg}" == "--nobuild" ]]; then
+        build=0
+    elif [[ "${arg}" == "--gdb" ]]; then
+        gdb=1
+    elif [[ "${arg}" == "--stress" ]]; then
+        stress=1
+    elif [[ "${arg}" == "--visible" ]]; then
+        visible=1
+        gpu=1
+    elif [[ "${arg}" == "--gpu" ]]; then
+        gpu=1
+    elif [[ "${arg}" == "--keepsaves" ]]; then
+        keepsaves=1
+    else
+        args+=("${arg}")
+    fi
+done
+
+timeout_seconds="${zox_tst_timeout:-100}"
+memory_max="${zox_tst_memory:-2G}"
+log_max="${zox_tst_log_max:-20000000}"  # 20MB, a healthy test logs a few KB
+# system wide guard: gpu driver memory (mali) isn't charged to the cgroup cap, so also
+# kill the run when the whole machine's MemAvailable drops below this (in KB)
+mem_floor_kb="${zox_tst_mem_floor:-1500000}"
+# small terrain unless stress testing it, streaming is the heaviest part of a run
+if [[ ${stress} == "0" ]]; then
+    args+=("--tiny")
+fi
+# saves go to /tmp/zoxel_nosaves_<pid>, so test runs don't fill the real save folder
+if [[ ${keepsaves} == "0" ]]; then
+    args+=("--nosaves")
+fi
+mode_args=(--background)
+[[ ${visible} == "1" ]] && mode_args=()
+# software rendering: no mali context and no compositor involved, so a driver fault can't
+# take the desktop down. glvnd libs ahead of the mali folder in ld.so.conf, mesa as vendor
+# egl device 2 = mesa software device on this board (0,1 are the drm cards, mesa segfaults on them)
+soft_env=()
+if [[ ${gpu} == "0" ]]; then
+    soft_env=(env
+        SDL_VIDEODRIVER=offscreen
+        SDL_HINT_EGL_DEVICE="${zox_tst_egl_device:-2}"
+        LD_LIBRARY_PATH=/usr/lib/aarch64-linux-gnu
+        __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/50_mesa.json
+        LIBGL_ALWAYS_SOFTWARE=1
+        GALLIUM_DRIVER=llvmpipe
+        EGL_PLATFORM=surfaceless)
+    # llvmpipe streams terrain ~2x slower than mali (stream_npcs spawn 52s vs 20s)
+    mode_args+=(--gles --tst-timescale 2)
+    [[ -z "${zox_tst_timeout:-}" ]] && timeout_seconds=200
+fi
+root="$(pwd)"
+log_dir="${root}/bin/tst"
+mkdir -p "${log_dir}"
+
+if [[ ${build} == "1" ]]; then
+    echo "> building debug"
+    # cap the compiler too, it's a single big translation unit
+    if ! (ulimit -v 4500000; nice -n 19 bash bsh/build.sh zoxel --debug --logs > "${log_dir}/build.log" 2>&1); then
+        grep -m 20 "error" "${log_dir}/build.log"
+        echo "!! build failed, see [bin/tst/build.log]"
+        exit 2
+    fi
+fi
+
+bin=$(ls -t bin/zoxel_*_dev/zoxel-dev.bin 2>/dev/null | head -1)
+if [[ -z "${bin}" ]]; then
+    echo "!! no dev binary found in [bin/zoxel_*_dev]"
+    exit 2
+fi
+bin_dir="$(dirname "${bin}")"
+bin_name="$(basename "${bin}")"
+
+cap=()
+if command -v systemd-run > /dev/null && systemd-run --user --scope -q true 2> /dev/null; then
+    cap=(systemd-run --user --scope -q -p "MemoryMax=${memory_max}" -p MemorySwapMax=0)
+fi
+
+# runs the game with --tst <name>, output to <log>, returns its exit code
+run_game() {
+    local tst="$1"
+    local log="$2"
+    local debugger=()
+    if [[ ${gdb} == "1" ]]; then
+        debugger=(gdb -q -batch -ex "handle SIGPIPE nostop" -ex run -ex bt --args)
+    fi
+    # exec, so $! is timeout's pid, and killing it takes the game down with it
+    (
+        cd "${bin_dir}" &&
+        exec timeout -k 5 "${timeout_seconds}" "${cap[@]}" "${soft_env[@]}" nice -n 10 \
+            "${debugger[@]}" "./${bin_name}" --tst "${tst}" --autostart "${mode_args[@]}" "${args[@]}" \
+            > "${log}" 2>&1
+    ) &
+    local pid=$!
+    local spammed=0
+    local lowmem=0
+    local onmali=0
+    local printed=0
+    local ticks=0
+    local mem_log="${log%.log}.mem"
+    : > "${mem_log}"
+    # prints new [tst] lines while it runs, so a slow test doesn't look hung
+    print_tst_lines() {
+        [[ "${tst}" == "list" ]] && return
+        local lines
+        lines=$(grep -a "\[tst\]" "${log}" 2> /dev/null | tail -n +$((printed + 1)))
+        if [[ -n "${lines}" ]]; then
+            echo "${lines}" | sed 's/^/    /'
+            printed=$((printed + $(echo "${lines}" | wc -l)))
+        fi
+    }
+    while kill -0 "${pid}" 2> /dev/null; do
+        print_tst_lines
+        if [[ $(stat -c %s "${log}" 2> /dev/null || echo 0) -gt ${log_max} ]]; then
+            spammed=1
+            kill -TERM "${pid}" 2> /dev/null
+            sleep 2
+            kill -KILL "${pid}" 2> /dev/null
+            break
+        fi
+        local available
+        available=$(awk '/^MemAvailable:/ {print $2}' /proc/meminfo)
+        # trace to disk every 2s and sync it, so a freeze still leaves evidence
+        if (( ticks % 4 == 0 )); then
+            echo "$(date +%H:%M:%S) available_kb ${available} $(awk '/^(RssAnon|RssFile|RssShmem):/ {printf "%s %s ", $1, $2}' /proc/$(pgrep -x -n "${bin_name}" 2> /dev/null || echo 0)/status 2> /dev/null)" >> "${mem_log}"
+            sync "${mem_log}" 2> /dev/null
+        fi
+        ticks=$((ticks + 1))
+        # software mode must never touch the mali device, kill it if it does
+        if [[ ${gpu} == "0" ]]; then
+            local game_pid
+            game_pid=$(pgrep -x -n "${bin_name}" 2> /dev/null)
+            if [[ -n "${game_pid}" ]] && ls -l /proc/${game_pid}/fd 2> /dev/null | grep -q "/dev/mali"; then
+                onmali=1
+                pkill -KILL -x "${bin_name}" 2> /dev/null
+                kill -KILL "${pid}" 2> /dev/null
+                break
+            fi
+        fi
+        if [[ -n "${available}" ]] && (( available < mem_floor_kb )); then
+            lowmem=1
+            pkill -KILL -x "${bin_name}" 2> /dev/null
+            kill -KILL "${pid}" 2> /dev/null
+            break
+        fi
+        sleep 0.5
+    done
+    wait "${pid}"
+    local code=$?
+    print_tst_lines
+    rm -rf /tmp/zoxel_nosaves_* 2> /dev/null
+    if [[ ${onmali} == "1" ]]; then
+        echo "!! software mode opened /dev/mali, killed (use --gpu for real gpu runs)" >> "${log}"
+        return 127
+    fi
+    if [[ ${lowmem} == "1" ]]; then
+        echo "!! system memory available dropped below ${mem_floor_kb}KB, killed (see ${mem_log})" >> "${log}"
+        return 126
+    fi
+    if [[ ${spammed} == "1" ]]; then
+        echo "!! log passed ${log_max} bytes, killed (log spam)" >> "${log}"
+        return 125
+    fi
+    return ${code}
+}
+
+# runs one test, prints its [tst] lines, keeps the log if it failed
+run_tst() {
+    local tst="$1"
+    local log="${log_dir}/${tst}.log"
+    echo "> tst [${tst}]"
+    run_game "${tst}" "${log}"
+    local code=$?
+    if [[ ${gdb} == "1" ]]; then
+        # gdb's exit code isn't the game's
+        code=1
+        grep -aq "received signal" "${log}" && code=139
+    fi
+    # a crash can still exit 0 (segfault handler, or gdb), only a logged pass counts
+    if [[ ${code} == "0" || ${gdb} == "1" ]] && ! grep -aq "\[tst\] \[${tst}\] PASSED" "${log}"; then
+        [[ ${code} == "0" ]] && code=3
+    elif [[ ${gdb} == "1" ]]; then
+        code=0
+    fi
+    if grep -aq "received signal" "${log}"; then
+        grep -a -A30 "received signal" "${log}" | grep -a "^#\|signal" | head -25 | sed 's/^/    /'
+    fi
+    if [[ ${code} == "125" ]]; then
+        echo "    !! killed, log passed ${log_max} bytes (log spam)"
+        # the spam itself is the useful part, show what repeated most
+        grep -a "ERROR" "${log}" | sed 's/^.*\] \[ERROR\]/[ERROR]/' | sort | uniq -c | sort -rn | head -3 | sed 's/^/    /'
+    elif [[ ${code} == "126" ]]; then
+        echo "    !! killed, system memory ran low (gpu/driver memory isn't under the cgroup cap)"
+        tail -n 3 "${log_dir}/${tst}.mem" | sed 's/^/    /'
+    elif [[ ${code} == "127" ]]; then
+        echo "    !! killed, software mode opened /dev/mali"
+    elif [[ ${code} == "124" || ${code} == "137" ]]; then
+        echo "    !! killed after ${timeout_seconds}s (hung, or never reached its own timeout)"
+    fi
+    if [[ ${code} != "0" ]]; then
+        # keep failed logs, the next run overwrites ${log}
+        local failed_log="${log_dir}/${tst}_failed_$(date +%H%M%S).log"
+        cp "${log}" "${failed_log}"
+        tail -n 5 "${failed_log}" | sed 's/^/    | /'
+        echo "    exit [${code}], log [${failed_log#${root}/}]"
+    fi
+    return ${code}
+}
+
+list_tsts() {
+    run_game list "${log_dir}/list.log"
+    grep -aoP "\[tst\] test: \K\S+" "${log_dir}/list.log"
+}
+
+if [[ "${name}" == "list" ]]; then
+    list_tsts
+    exit 0
+fi
+
+if ! [[ "${repeat}" =~ ^[1-9][0-9]*$ ]]; then
+    echo "!! --repeat needs a count above 0, got [${repeat}]"
+    exit 2
+fi
+
+if [[ "${name}" != "all" ]]; then
+    if [[ ${repeat} == "1" ]]; then
+        run_tst "${name}"
+        exit $?
+    fi
+    tsts=("${name}")
+else
+    tsts=($(list_tsts))
+fi
+if [[ ${#tsts[@]} == 0 ]]; then
+    echo "!! no tests found, see [bin/tst/list.log]"
+    exit 2
+fi
+runs=$((${#tsts[@]} * repeat))
+echo "> running [${#tsts[@]}] tests x [${repeat}] (timeout ${timeout_seconds}s, memory ${memory_max})"
+passed=()
+failed=()
+for ((r = 1; r <= repeat; r++)); do
+    [[ ${repeat} != "1" ]] && echo "> repeat [${r}/${repeat}]"
+    for tst in "${tsts[@]}"; do
+        if run_tst "${tst}"; then
+            passed+=("${tst}")
+        else
+            failed+=("${tst}")
+        fi
+    done
+done
+echo ""
+echo "> passed [${#passed[@]}/${runs}]"
+if [[ ${#failed[@]} != 0 ]]; then
+    echo "!! failed: ${failed[*]}"
+    exit 1
+fi
+exit 0

@@ -32,11 +32,13 @@
 #include "ins/_.c"
 #include "dbg/_.c"
 #include "sys/_.c"
+#include "tst/_.c"
 
 void import_parts(ecs* world) {
     zox_module(parts);
     zox_components_bodys(world);
     zox_systems_bodys(world);
+    zox_tsts_parts(world);
     add_hook_spawn_prefabs(spawn_prefabs_bodys);
     add_taskbar_button(world, (TaskbarData) {
         .index = 6,

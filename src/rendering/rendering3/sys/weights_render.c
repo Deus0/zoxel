@@ -97,6 +97,7 @@ void skeleton3_render_system(iter* it) {
         opengl_enable_color_buffer(material_attributes->vertex_color, colors->value);
         // zox_gpu_float4x4(material_attributes->transform_matrix, matrix->value);
         zox_gpu_render3(indicies->length);
+        zox_drawn_skeleton_meshes++;
     }
     if (has_set_material) {
         zox_gpu_disable_attribute(material_attributes->vertex_color);

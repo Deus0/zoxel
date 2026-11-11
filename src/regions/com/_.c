@@ -7,7 +7,7 @@ zoxc_hashmap(RegionLinks, int2)
 
 void zox_components_regions(ecs* world) {
     zoxd_tag(Region);
-    zoxd_nf_tag(RegionLink);
+    zoxd_nf_link(RegionLink);
     zoxd_byte(GenerateRegion);
     zoxd_int2(RegionPosition);
     zoxd_int2(RegionSize);

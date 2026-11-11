@@ -10,7 +10,9 @@ zoxc_int3(ChunkPosition);
 zoxc_int3(ChunkSize);
 zoxc_byte(ChunkLodDirty);
 zox_tag(BlocksSpawned);
-zoxc_entities(ChunkEntities);
+// weak: where entities are, not who owns them, so unloading a chunk never deletes what walked into it
+//  - npcs are owned by their spawn chunk (ChunkCharacters), the player by its game
+zoxc_arrayd_with_remove(ChunkEntities, entity)
 zox_tag(ChunkLink);        // links to the chunk an entity is in, which holds it in its ChunkEntities
 
 // Removes an entity from its old chunks ChunkEntities, when moved, unlinked or destroyed
@@ -82,7 +84,7 @@ void zox_components_chunks3(ecs* world) {
     zoxd(VoxelNodeLock);
     zoxd_octree(SidesOctree);
     zoxd(SidesOctreeLock);
-    zoxd_entities(ChunkEntities);
+    zoxd_entitiesw(ChunkEntities);
     zoxd_nf_link(ChunkLink);
     zox_on_unlink(on_unlink_ChunkLink, ChunkLink);
     zoxd_queue(VoxelNodeQueue);

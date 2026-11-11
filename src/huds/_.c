@@ -32,6 +32,7 @@ byte zox_disable_screen_fader = 0;
 #include "eve/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
+#include "tst/_.c"
 
 void import_huds(ecs* world) {
     zox_module(huds);
@@ -45,6 +46,7 @@ void import_huds(ecs* world) {
     add_hook_spawn_prefabs(zox_events_huds);
     add_hook_on_boot(on_boot_game_ui);
     add_hook_terminal_command(process_arguments_huds);
+    zox_tsts_huds();
     spawn_taskbar_manager(world);
     add_taskbar_button(world, (TaskbarData) {
         .index = 0,

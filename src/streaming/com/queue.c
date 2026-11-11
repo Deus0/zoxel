@@ -5,6 +5,7 @@ typedef struct {
     entity tunk;    // update tunks
     byte level;     // streamer level
     double time;    // time added to queue
+    double queued;  // time first queued, kept when re-queued (time isn't), for aging
 } TerrainSpawnUpdate;
 zoxc_custom(TerrainSpawnQueue);
 
@@ -17,6 +18,7 @@ typedef struct {
     byte* hash_state; // 0 = empty, 1 = used, 2 = tombstone
     size_t hash_capacity;
     size_t hash_count;
+    size_t hash_tombstones; // removed slots, lookups probe past them until a rehash
     spinlock lock;
 } TerrainSpawnQueue;
 
@@ -73,6 +75,7 @@ static void init_TerrainSpawnQueueHash(
 
     q->hash_capacity = hash_capacity;
     q->hash_count = 0;
+    q->hash_tombstones = 0;
 }
 
 static void rehash_TerrainSpawnQueue(
@@ -126,6 +129,7 @@ static void rehash_TerrainSpawnQueue(
     q->hash_keys = new_keys;
     q->hash_state = new_state;
     q->hash_capacity = hash_capacity;
+    q->hash_tombstones = 0;
 }
 
 static byte inside_TerrainSpawnQueue(
@@ -159,15 +163,18 @@ static void insert_TerrainSpawnQueueHash(
     TerrainSpawnQueue* q,
     int2 position)
 {
-    // Grow at ~70% load.
+    // Grow at ~70% load. Tombstones count too, lookups only stop at empty slots,
+    // so a table full of tombstones would never end a probe
     if (!q->hash_capacity) {
         init_TerrainSpawnQueueHash(q, 16);
-    } else if ((q->hash_count + 1) * 10 >=
+    } else if ((q->hash_count + q->hash_tombstones + 1) * 10 >=
         q->hash_capacity * 7)
     {
+        // only grow if the live keys need it, otherwise rehash in place to drop tombstones
+        const size_t grow = (q->hash_count + 1) * 10 >= q->hash_capacity * 5;
         rehash_TerrainSpawnQueue(
             q,
-            q->hash_capacity * 2);
+            grow ? q->hash_capacity * 2 : q->hash_capacity);
     }
 
     const size_t mask = q->hash_capacity - 1;
@@ -210,6 +217,7 @@ static void remove_TerrainSpawnQueueHash(
         {
             q->hash_state[index] = 2; // tombstone
             q->hash_count--;
+            q->hash_tombstones++;
             return;
         }
 
@@ -230,6 +238,7 @@ static void i_TerrainSpawnQueue(
     q->hash_state = NULL;
     q->hash_capacity = 0;
     q->hash_count = 0;
+    q->hash_tombstones = 0;
 
     spinlock_init(&q->lock);
 
@@ -259,6 +268,22 @@ static void d_TerrainSpawnQueue(
     q->hash_state = NULL;
     q->hash_capacity = 0;
     q->hash_count = 0;
+    q->hash_tombstones = 0;
+}
+
+// Empties the queue, keep its positions hash in sync, a position left in it can never be queued again
+static void clear_TerrainSpawnQueue(
+    TerrainSpawnQueue* q)
+{
+    q->count = 0;
+    if (q->hash_state && q->hash_capacity) {
+        memset(
+            q->hash_state,
+            0,
+            sizeof(byte) * q->hash_capacity);
+    }
+    q->hash_count = 0;
+    q->hash_tombstones = 0;
 }
 
 static byte add_TerrainSpawnQueue(
@@ -347,6 +372,7 @@ ECS_MOVE(
         src->hash_state = NULL;
         src->hash_capacity = 0;
         src->hash_count = 0;
+        src->hash_tombstones = 0;
     }
 )
 
@@ -389,6 +415,7 @@ ECS_COPY(
 
         dst->hash_capacity = src->hash_capacity;
         dst->hash_count = src->hash_count;
+        dst->hash_tombstones = src->hash_tombstones;
 
         if (src->hash_capacity) {
             dst->hash_keys =
@@ -477,9 +504,11 @@ static byte add_or_set_TerrainSpawnQueue(
         {
             return 0;
         }
+        item.queued = existing->queued;
         *existing = item;
         return 0;
     }
+    item.queued = item.time;
     return add_TerrainSpawnQueue(q, item);
 }
 
@@ -532,4 +561,50 @@ static TerrainSpawnUpdate remove_closest_TerrainSpawnQueue(
 
     TerrainSpawnUpdate empty = {0};
     return empty;
+}
+
+// Picks the next update without starving any, so streaming doesn't depend on frame rate
+//  - kills first (past terrain_lod_far), they're cheap and free memory
+//  - then any update waiting longer than max_wait, oldest first
+//  - otherwise the closest, so terrain near the streamer builds first
+//  - closest only used to starve far updates (unloads, npc despawns) while the streamer kept moving
+static TerrainSpawnUpdate remove_next_TerrainSpawnQueue(
+    TerrainSpawnQueue* q,
+    double now,
+    double max_wait)
+{
+    if (q->count == 0) {
+        TerrainSpawnUpdate empty = {0};
+        return empty;
+    }
+    size_t closest = 0;
+    size_t oldest = 0;
+    size_t kill = q->count;
+    for (size_t i = 0; i < q->count; i++) {
+        const TerrainSpawnUpdate* u = &q->ptr[i];
+        if (u->distance > terrain_lod_far) {
+            kill = i;
+            break;
+        }
+        if (u->distance < q->ptr[closest].distance) {
+            closest = i;
+        }
+        if (u->queued < q->ptr[oldest].queued) {
+            oldest = i;
+        }
+    }
+    size_t pick = closest;
+    if (kill < q->count) {
+        pick = kill;
+    } else if (now - q->ptr[oldest].queued > max_wait) {
+        pick = oldest;
+    }
+    TerrainSpawnUpdate item = q->ptr[pick];
+    size_t last = q->count - 1;
+    if (pick != last) {
+        q->ptr[pick] = q->ptr[last];
+    }
+    q->count--;
+    remove_TerrainSpawnQueueHash(q, item.position);
+    return item;
 }

@@ -105,7 +105,12 @@ void UnlinksSystem(iter* it) {
     zox_unlinks_count = 0;
     zox_unlinks_capacity = 0;
     for (uint i = 0; i < count; i++) {
-        events[i].callback(world, events[i].e, events[i].target);
+        // NOTE: a target deleted during cleanup was still alive when queued, it's 0 now (tst links_api)
+        entity target = events[i].target;
+        if (target && !ecs_is_alive(world, target)) {
+            target = 0;
+        }
+        events[i].callback(world, events[i].e, target);
     }
     free(events);
 } zoxd_system(UnlinksSystem);

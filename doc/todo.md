@@ -1,13 +1,39 @@
 # Todo
 
+- add a section on readme.md with some razzle dazzle stats from tests
+	- add a test that might be impressive and measure engine capacity for this
+- add a doc on commands for the binary - pretty useful
+	
+- add a doc or new users of the project, that gets them on board
+	- link to any other relevant docs
+	- link this in readme.md
+	- its for first time users, assume only know c and wanna get their head around project and doing tasks on it
+
+- add a test for exit game, its crashing on exit atm
+- add a test for streaming between chunks, this can be reused to test its speed for optmization too
+- finish fixing all prior test cases
+- finish up current work tasks
+- add a table test, for when in game, check total flecs tables, this needs to be reduced to reduce our query times - can add this to tst module in src, it sits on top of engine
+
+- speedup the loading of terrain
 -x Add --autostart tag that autos through the uis, into a new game, and makes player character auto walk too (should already be implemented somewhere)
 	- this can be used by claude in automated testing
+	
+- Add markers on map uis
+	- npcs
+		- peaceful npcs
+		- npcs with quests
+		- hostile npcs
+- Add ? and ! markers on the map
+	- ? new quest
+	- ! hand in quest
+	
+- Make quest tracker track new quest when you get it
+- stack tracked quests in a list like fashion
 	
 - add rotated character per voxel selection for raycasts, similar to how we do for grass
 	- keeping bounds as a sweep pass
 
-
-- Make sure all mesh code is out of characters, inside rendering or models where appropriate.
 - I noticed some faces are not culled between chunks
 	- write bsh/test.sh that can take in test name from any modules tst as a main.c, together with flecs and src
 	- write some tests in chunks/chunks3/tst
@@ -26,12 +52,6 @@
 - When right click on an item ui, it should split the item quantity in half, the other half should be in the mouse item
 - When right click empty spot, place a single item, or stack a single item
 
-- Bodys' right arm doesnt swing when no action selected
-
-- Add Projectiles Damaging Terrain
-- Add Projects Damaging NPCs
-- Add Color of projectile, based on skill
-
 - add a simple skilltree
 	- with a skill to unlock button
 	- click and hold it to unlock
@@ -44,7 +64,7 @@
 	- Quest Reward: Top Hat
 - Hand in Quest Node - linked to two answer
     - Dialogue Nodes: QuestDoneLink - QuestActiveLink
-- Arm animation needs to slerp to new rotations and now instantly snap during walk and attacking.
+-x Arm animation needs to slerp to new rotations and now instantly snap during walk and attacking.
 - fix error '[14:58:49.178] [ERROR] Smooth Lights Error: Colors Past Limits [1496] - Face [5] at Pos [14x0x14] Depth [4] of [4]
 [14:58:51.554] [ERROR] Smooth Lights Error: Colors Past Limits [332] - Face [5] at Pos [0x5x4] Depth [3] of [3]'
 - write bsh/test.sh that takes in test name
@@ -770,7 +790,6 @@ Bugs:
 - Npcs: Add Monster spawn zones for types - remove around towns
 
 ## Bodys
-- FIX: Make arms never snap, just lerp the rotation over time
 - Animations: Add Sine Scale on chest for breathing animation
 - Animations: Sine Bob + rotate the World Items
 - Footstep Sounds
@@ -885,26 +904,6 @@ Bugs:
 - Body Part Tooltip
 	- show PartLinks
 	- show AttachLinks
-
-## Crafting
-- Fix Crafting and use Slots for them
-- Output Craft Slot, pickup only
-- Pickup item to change after any of the other slots change, using recipe data to match
-
-## Pets
-- Spawn mr penguin on screen
-- Give the ability to change his hat
-- Make a penguin module
-- Adds a penguin to taskbar
-- Adds a penguin render scene and 3 buttons to change his hat
-- remove any use of user macros from user data
-	- just reuse their prefabs and add tags
-- use functions like spawn_window, or spawn_user_grid inside those uis
-- Spawn label top left above stats - show block / npc selected
-- Generate a mouse texture - arrow
-- Maximize a window - button on map header
-- Resize window grabber at corner
-- move sand/wood/stone into biome blocks
 
 ## Placing
 - Show a gizmo where block would be if holding block - 3D cube gizmo

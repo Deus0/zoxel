@@ -3,12 +3,7 @@
 // NOTE: Applies damage to character or terrain
 void melee_system(iter* it) {
     byte dbg_log = 0;
-    float npc_nerf_multiplier = 0.7f;
-    color popup_color = (color) { 255, 0, 0, 255 };
-    float popup_spawn_y = 0.18f;
     double volume = get_volume_sfx();
-    float knockback_min = 1.5f;
-    float knockback_max = 3.5f;
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -154,88 +149,17 @@ void melee_system(iter* it) {
             }
             continue;
         }
-        // todo: reduce energy stat value using SkillCost, check if has enough energy
-        float skill_damage = randf_range(damage->value, damage_max->value);
-        // users damage stat, ie physical damage (boosted by strength)
-        entity realm_damage_stat = zox_get_link(world, e, SkillDamageStat);
-        entity damage_stat = get_user_stat_from_realm(world, user, realm_damage_stat);
-        if (zox_valid(damage_stat)) {
-            skill_damage += zox_getv(damage_stat, StatValue);
-        }
-        if (!zox_has(user, PlayerCharacter)) {
-            skill_damage *= npc_nerf_multiplier; // EASY MODE
-        }
+        float skill_damage = get_skill_damage(
+            world,
+            e,
+            user,
+            damage->value,
+            damage_max->value);
         // Hitting NPC
         if (zox_has(hit, Character3)) {
-            // targets defence, ie physical defence (boosted by endurance)
-            entity realm_defence_stat = zox_valid(realm_damage_stat) ?
-                zox_get_link(world, realm_damage_stat, StatDefenceLink) :
-                0;
-            entity defence_stat = get_user_stat_from_realm(world, hit, realm_defence_stat);
-            if (zox_valid(defence_stat)) {
-                skill_damage -= zox_getv(defence_stat, StatValue);
-                if (skill_damage < 0) {
-                    skill_damage = 0;
-                }
-            }
-            entity health = zox_get_child_by_id(world, hit, zox_id(StatHealth));
-            if (!zox_valid(health)) {
-                zox_loge("hit user had no health")
+            if (!damage_character(world, user, hit, e, skill_damage, raycast->normal)) {
                 continue;
-            } else {
-                float stat_value_max = zox_getv(health, StatValueMax);
-                zox_muter(health, StatValue, state);
-                state->value -= skill_damage;
-                if (state->value < 0) {
-                    state->value = 0;
-                } else if (state->value > stat_value_max) {
-                    state->value = stat_value_max - skill_damage;
-                    zox_loge("Stat is over max? [%f]", stat_value_max);
-                }
-                zox_add(health, Dirty);
-                zox_add(health, DataDirty);
-                if (dbg_log) {
-                    zox_log("[%s] took [%f] damage and is on [%f] health",
-                        zox_get_name(hit),
-                        skill_damage,
-                        state->value)
-                }
-                combat_on_hit(
-                    world,
-                    hit,
-                    user);
-                zox_add(hit, JustHit);
             }
-            // hit sound
-            spawn_sound_generated(
-                world,
-                prefab_sound_generated,
-                instrument_violin,
-                note_frequencies[28],
-                0.6,
-                volume);
-            // add knockback
-            float3 hit_impulse = float3_scale(raycast->normal, randf_range(knockback_min, knockback_max));
-            zox_muter(hit, Velocity3D, hit_velocity);
-            hit_velocity->value = float3_add(hit_velocity->value, hit_impulse);
-            // zox_log("+ added impulse [%fx%fx%f]", hit_impulse.x, hit_impulse.y, hit_impulse.z)
-            // damage popup
-            zox_geter_value(hit, Bounds3D, float3, bounds3D);
-            zox_geter_value(hit, Position3D, float3, hit_character_position);
-            float3 popup_position = (float3) {
-                hit_character_position.x, hit_character_position.y + bounds3D.y + popup_spawn_y,
-                hit_character_position.z
-            };
-            char popup_text[64];
-            sprintf(popup_text, "%i", (int) floor(skill_damage));
-            spawn_popup3_easy(
-                world,
-                popup_text,
-                popup_color,
-                popup_position,
-                zox_popup_scale,
-                randf_range(4, 8));
-
         }
         // Hitting Terrain
         else if (raycast->voxel && raycast->hit_block && zox_has(hit, TerrainChunk)) {
@@ -245,12 +169,7 @@ void melee_system(iter* it) {
                 continue;
             }
             float block_damage = randf_range(1, 3);
-            BlockDamageUpdate update = {
-                .position = raycast->positionl,
-                .damage = block_damage
-            };
-            zox_muter(raycast->chunk, BlockDamageQueue, damage_queue);
-            a_BlockDamageQueue(damage_queue, update);
+            damage_terrain_block(world, raycast->chunk, raycast->positionl, block_damage);
             // Hit Bedrock!
             /*if (zox_has(block, BlockInvinsible)) {
                 // cannot destroy voxel sound

@@ -22,6 +22,6 @@ void zox_components_items(ecs* world) {
     // Consumables
     zoxd_float(ConsumeValue);
     // Links
-    zoxd_nf_tag(ItemLink);
-    zoxd_nf_tag(ConsumeStat);
+    zoxd_nf_link(ItemLink);
+    zoxd_nf_link(ConsumeStat);
 }

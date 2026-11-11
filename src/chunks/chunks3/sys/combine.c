@@ -73,13 +73,13 @@ zox_sys2(CombineVoxSystem) {
             const VoxelNode* vox_octree = zox_get(vox, VoxelNode);
             const ColorRGBs* vox_colors = zox_get(vox, ColorRGBs);
             // get max octree type
-            byte max_color_index = get_octree_max_value((void*) vox_octree,  sizeof(VoxelNode), offsetof(VoxelNode, value));
+            byte max_color_index = get_max_value_VoxelNode(vox_octree);
             if (dbg_log) {
                 zox_log("Vox [%i] max_color_index for vox [%s] [%i]", j, zox_get_name(vox), max_color_index);
             }
             for (ushort k = 0; k < max_color_index && colors->length < max_colors; k++) {
                 // NOTE: Added check to make sure color is actually inside vox, for imported voxes
-                byte is_in = is_in_octree((void*) vox_octree,  sizeof(VoxelNode), offsetof(VoxelNode, value), k + 1);
+                byte is_in = is_in_VoxelNode(vox_octree, k + 1);
                 if (!is_in) {
                     continue;
                 }

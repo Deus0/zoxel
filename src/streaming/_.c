@@ -13,6 +13,7 @@
 #include "fun/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
+#include "tst/_.c"
 
 void import_streaming(ecs* world) {
     zox_module(streaming);
@@ -20,4 +21,5 @@ void import_streaming(ecs* world) {
     zox_systems_streaming(world);
     // initialize_settings_streaming(world);
     add_hook_spawn_prefabs(zox_define_prefabs_streaming);
+    zox_tsts_streaming();
 }

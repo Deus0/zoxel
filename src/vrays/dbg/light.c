@@ -61,8 +61,8 @@ uint debug_ui_raycasted_light(ecs *world, entity player, char *buffer, uint size
         // index += snprintf(buffer + index, size - index, " - Max Light [%i]\n", max_light);
         if (adjacent_light) {
             // print children
-            if (adjacent_light->ptr) {
-                const LightNode* adjacent_light_children = (const LightNode*) adjacent_light->ptr;
+            if (has_children_LightNode(adjacent_light)) {
+                const LightNode* adjacent_light_children = get_children_LightNode(adjacent_light);
                 index += snprintf(buffer + index, size - index, " - Adjacent All\n");
                 for (byte i = 0; i < 8; i++) {
                     const LightNode* kid = &adjacent_light_children[i];

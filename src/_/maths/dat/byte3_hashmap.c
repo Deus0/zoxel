@@ -4,10 +4,9 @@
 #define hash_multiple_2 31 // 109
 #define hash_multiple_3 37 // 139
 
+// NOTE: packed, every byte3 has its own key
 uint get_byte3_hash(byte3 input) {
-    uint hash = hash_constant;
-    hash = hash * 163 + ((uint) input.x);
-    hash = hash * 109 + ((uint) input.y);
-    hash = hash * 139 + ((uint) input.z);
-    return hash;
+    return ((uint) input.x << 16) |
+        ((uint) input.y << 8) |
+        (uint) input.z;
 }

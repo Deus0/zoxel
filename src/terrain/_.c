@@ -13,7 +13,11 @@
  *
  * */
 byte zox_terrain_chunk_lod_system = 0;
-byte stream_update_rate = 1;
+// stream queue updates per second (was 1 per frame, so streaming slowed with the frame rate)
+float stream_updates_per_second = 60;
+byte stream_updates_max_per_frame = 8;  // so a long frame doesn't burst
+double stream_update_max_wait = 2.0;    // seconds, an update queued longer goes before closer ones
+float stream_update_credit = 0;
 // Initial core
 #include "set/_.c"
 #include "com/_.c"
@@ -26,11 +30,13 @@ byte stream_update_rate = 1;
 #include "dbg/_.c"
 #include "sys/_.c"
 #include "collisions/_.c"
+#include "tst/_.c"
 
 void import_terrains(ecs* world) {
     zox_module(terrains);
     zox_components_terrain(world);
     zox_systems_terrain(world);
+    zox_tsts_terrain(world);
     add_hook_terminal_command(process_arguments_terrain);
     add_hook_spawn_prefabs(spawn_prefabs_terrain);
     add_hook_spawn_prefabs(zox_events_terrain);

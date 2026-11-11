@@ -31,7 +31,7 @@ zox_sys2(TilemapGenerationSystem) {
             entity texture = zox_get_link_index(
                 world,
                 e,
-                TextureLink,
+                TilemapTextureLinks,
                 texture_index);
             texture_index++;
             if (!texture) {
@@ -91,7 +91,7 @@ zox_sys2(TilemapGenerationSystem) {
             entity texture = zox_get_link_index(
                 world,
                 e,
-                TextureLink,
+                TilemapTextureLinks,
                 texture_index);
             texture_index++;
             if (!texture) {

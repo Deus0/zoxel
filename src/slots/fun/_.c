@@ -134,3 +134,37 @@ uint zox_get_slots_by_data(ecs* world, entity smanager, entity base_data, entity
     }
     return count;
 }
+
+// Fills the buffer with all empty slots, in slot order
+//  - use this when filling many slots at once: links set inside systems are deferred,
+//    so calling zox_get_empty_slot again would return the same slot
+uint zox_get_empty_slots(
+    ecs* world,
+    entity e,
+    entity* slots,
+    uint capacity)
+{
+    uint count = 0;
+    const uint length = zox_get_children_count_by_id(
+        world,
+        e,
+        zox_id(Slot));
+    for (uint i = 0; i < length && count < capacity; i++) {
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                entity e2 = it2.entities[j];
+                if (!zox_valid(e2) ||
+                    !zox_has(e2, Slot) ||
+                    zox_getv(e2, ChildIndex) != i)
+                {
+                    continue;
+                }
+                if (!zox_get_link(world, e2, DataLink) && count < capacity) {
+                    slots[count++] = e2;
+                }
+            }
+        }
+    }
+    return count;
+}

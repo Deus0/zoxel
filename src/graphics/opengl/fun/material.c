@@ -32,6 +32,7 @@ static inline void zox_gpu_reset_mesh() {
 static inline guint2 spawn_gpu_mesh_buffers() {
     guint2 result;
     glGenBuffers(2, &result.x);
+    zox_gpu_buffers_live += 2;
     return result;
 }
 

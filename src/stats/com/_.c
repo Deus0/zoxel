@@ -30,9 +30,9 @@ zox_tag(SpawnNameLabel);
 
 void zox_components_stats(ecs *world) {
     zoxd_tag(Stat);
-    zoxd_nf_tag(StatLink);
-    zoxd_nf_tag(StatScaleLink);
-    zoxd_nf_tag(StatDefenceLink);
+    zoxd_nf_link(StatLink);
+    zoxd_nf_link(StatScaleLink);
+    zoxd_nf_link(StatDefenceLink);
     zoxd_tag(SpawnNameLabel);
     // Types
     zoxd_tag(StatBase);

@@ -54,7 +54,7 @@ zox_sys2(TextUpdateSystem) {
         if (!text->length) {
             continue;
         }
-        uint child_index = 0;
+        const uint glyphs_count = calculate_total_zigels(text->value, text->length);
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
@@ -74,6 +74,15 @@ zox_sys2(TextUpdateSystem) {
                     continue;
                 }
 #endif
+                // NOTE: glyphs aren't iterated in order, so use their index (same as TextsPositionSystem)
+                if (!zox_has(e2, ChildIndex)) {
+                    continue;
+                }
+                const uint child_index = zox_getv(e2, ChildIndex);
+                // glyph is past the end, GlyphSpawnSystem is shrinking it away
+                if (child_index >= glyphs_count) {
+                    continue;
+                }
                 zox_mut_begin(e2, DataIndex, data_index);
                 uint new_data_index = child_index_to_text_array_index(
                     text->value,
@@ -94,7 +103,6 @@ zox_sys2(TextUpdateSystem) {
                             zigel_index->value);
                     }
                 }
-                child_index++;
             }
         }
         // zox_log("+ updating text [%s]", zox_get_name(e))

@@ -37,7 +37,7 @@ zoxc_dirty(Attach);
 
 void zox_components_cameras(ecs *world) {
     zoxd_tag(Camera);
-    zoxd_nf_tag(CameraLink);
+    zoxd_nf_link(CameraLink);
     zoxd_tag(Camera2);
     zoxd_tag(Camera3);
     zoxd_tag(CameraUI);

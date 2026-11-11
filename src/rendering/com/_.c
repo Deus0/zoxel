@@ -80,8 +80,8 @@ void zox_components_rendering(ecs *world) {
     zoxd_tag(DisableDepthTest);
     zoxd_tag(MeshClearCache);
     // Links
-    zoxd_nf_tag(PreparingMesh);
-    zoxd_nf_tag(ActiveMesh);
+    zoxd_nf_link(PreparingMesh);
+    zoxd_nf_link(ActiveMesh);
     // zoxd_nf_tag
     // Events
     zoxd_tag_event(BuildMesh);
@@ -110,10 +110,10 @@ void zox_components_rendering(ecs *world) {
     zoxd_float(Alpha);
     // Links
     zoxd_byte(ShaderSourceIndex);
-    zoxd_nf_tag(MaterialLink);
+    zoxd_nf_link(MaterialLink);
     zoxd_nf_link(InstanceLink);
     zoxd_nf_link(RendererLink);
-    zoxd_nf_tag(ShaderLink);
+    zoxd_nf_link(ShaderLink);
     zoxd_nf_link(ModelLink);
     zox_define_component_array(ModelLods);
     // Render Data

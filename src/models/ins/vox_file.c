@@ -129,11 +129,7 @@ entity spawn_vox_file(
     // NOTE: Loaded outside systems, the VoxelNodeDirty chain doesn't trigger lod meshes
     //  - so optimize now (sets parent node values for lower lods) and build meshes directly
     zox_muter(e, VoxelNode, voxels);
-    optimize_reduce_octree_node(
-        voxels,
-        sizeof(VoxelNode),
-        offsetof(VoxelNode, value),
-        offsetof(VoxelNode, type));
+    optimize_reduce_VoxelNode(voxels);
     for (byte depth = 0; depth < model_lods_max_length; depth++) {
         if (!lods.value[depth]) {
             break;

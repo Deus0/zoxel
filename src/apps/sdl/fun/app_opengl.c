@@ -29,7 +29,8 @@ entity spawn_app_sdl_opengl(
         return 0;
     }
     zox_setv(e, Context, context);
-    if (!is_verbose) {
+    // background runs are tests, log which driver they rendered on
+    if (!is_verbose && !background) {
         return e;
     }
     zox_log("OpenGL Context Created");

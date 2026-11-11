@@ -80,15 +80,15 @@ static inline void zox_terrain_building_dig(
     byte dbg_log)
 {
     // Dig Deeper
-    if (depth < target_depth && sides->ptr) {
+    if (depth < target_depth && has_children_SidesOctree(sides)) {
         depth++;
         scale *= 0.5f;
         position = byte3_mul1(position, 2);
-        const SidesOctree* sides_kids = (const SidesOctree*) sides->ptr;
+        const SidesOctree* sides_kids = get_children_SidesOctree(sides);
         spin_lock(&voxels_lock->value);
-        byte has_vkids = !is_closed_VoxelNode(voxels);
+        byte has_vkids = has_children_VoxelNode(voxels);
         const VoxelNode* vkids = has_vkids ?
-            (const VoxelNode*) voxels->ptr :
+            get_children_VoxelNode(voxels):
             NULL;
         spin_unlock(&voxels_lock->value);
         for (byte i = 0; i < 8; i++) {

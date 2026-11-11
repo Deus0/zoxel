@@ -1,6 +1,7 @@
 static inline guint zox_gpu_create_buffer() {
     guint o;
     glGenBuffers(1, &o);
+    zox_gpu_buffers_live++;
     return o;
 }
 
@@ -21,7 +22,11 @@ static inline void zox_gpu_set_buffer_array(const void* ptr, gsize length) {
 }
 
 static inline void zox_gpu_dispose_buffer(guint link) {
-    if (link) glDeleteBuffers(1, &link);
+    if (link) {
+        glDeleteBuffers(1, &link);
+        zox_gpu_buffers_live--;
+        zox_gpu_buffers_freed++;
+    }
 }
 
 static inline void zox_gpu_set_sub_buffer_float3(gsize length, const void* ptr) {

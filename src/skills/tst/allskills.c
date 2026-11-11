@@ -26,6 +26,9 @@ void zox_tst_all_skills(ecs* world, ClickEventData data) {
     zox_log("Giving [%s] [X] Skills.",
             zox_getn(character)); //,
             //rskills->length);
+    entity slots[layouts2_children_capacity];
+    const uint slots_count = zox_get_empty_slots(world, skillbook, slots, layouts2_children_capacity);
+    uint slot_index = 0;
     iter it2 = zox_children(world, realm);
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
@@ -33,7 +36,7 @@ void zox_tst_all_skills(ecs* world, ClickEventData data) {
             if (!zox_has(rskill, Skill)) {
                 continue;
             }
-            entity slot = zox_get_empty_slot(world, skillbook);
+            entity slot = slot_index < slots_count ? slots[slot_index++] : 0;
             if (!zox_valid(slot)) {
                 zox_logw("[Skillbook] Out of empty slots.");
                 zox_print_slots(world, skillbook);

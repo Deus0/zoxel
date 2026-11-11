@@ -38,5 +38,5 @@ void zox_components_quests(ecs* world) {
     zoxd_tag(QuestDone);
     zoxd_tag(QuestHandedin);
     // Links
-    zoxd_nf_tag(QuestLink);
+    zoxd_nf_link(QuestLink);
 }

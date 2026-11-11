@@ -140,7 +140,8 @@ void on_boot_game_ui(
                 vp_size);
         }
         // main menu ui
-        if (zox_autostart) {
+        // NOTE: tests that check the menus (zox_tst_menus) ignore --autostart
+        if (zox_autostart && !zox_tst_menus) {
             autostart_new_realm(world, player);
         } else {
             spawn_menu_start(

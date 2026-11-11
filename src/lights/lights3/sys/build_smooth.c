@@ -27,7 +27,7 @@ static inline void zox_apply_smooth_lights(
     byte depth)
 {
     const SidesOctree* sides_kids =
-        (const SidesOctree*) sides->ptr;
+        get_children_SidesOctree(sides);
     byte has_sides_kids = sides_kids != NULL;
     // NOTE: Voxels passed in for later adjacent checks
     // spinlock* root_lights_lock = lights_locks[OCTREE_INDEX(0, 0, 0)];
@@ -35,14 +35,14 @@ static inline void zox_apply_smooth_lights(
     // Dig Deeper
     if (depth < target_depth && has_sides_kids) {
         /*spin_lock(root_voxels_lock);
-        byte has_vkids = !is_closed_VoxelNode(voxels);
+        byte has_vkids = has_children_VoxelNode(voxels);
         spin_unlock(root_voxels_lock);*/
         byte3_multiply_byte(&position, 2);
         depth++;
         for (byte i = 0; i < 8; i++) {
             /*spin_lock(root_voxels_lock);
             const VoxelNode* child_voxels = has_vkids ?
-                &((const VoxelNode*) voxels->ptr)[i] :
+                &(get_children_VoxelNode(voxels))[i] :
                 voxels;
             spin_unlock(root_voxels_lock);*/
             byte3 child_position = byte3_add(

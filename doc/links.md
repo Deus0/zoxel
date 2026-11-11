@@ -87,7 +87,13 @@ if (zox_is_linked(world, e, ElementLinks, button)) { }  // linked to this target
 
 ## Reacting to unlinks
 
-When a target is deleted, its links are removed automatically, so links never point at dead entities. Use `zox_on_unlink` to react whenever a link goes away, for any reason:
+When a target is deleted, its links are removed automatically, so links never point at dead entities.
+
+These claims are tested by `bash bsh/tst.sh links_api`, and cleanup in the ways the game deletes npcs by `bash bsh/tst.sh links_cleanup`.
+
+> flecs v4.2.0 skipped this for recycled ids after an owned link deleted its holder (stale links, owned links not deleted). Patched in `bsh/flecs_fix.sh` ("ZOXEL PATCH cleanup"), so keep that patch when updating flecs, until it's fixed upstream.
+
+Use `zox_on_unlink` to react whenever a link goes away, for any reason:
 
 | Case | Callback |
 |---|---|

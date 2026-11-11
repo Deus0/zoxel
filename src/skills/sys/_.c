@@ -4,6 +4,7 @@
 #include "character.c"
 #include "melee.c"
 #include "shoot.c"
+#include "projectile_hit.c"
 
 void zox_systems_skills(ecs *world) {
     zox_system(
@@ -39,5 +40,13 @@ void zox_systems_skills(ecs *world) {
         [in] skills.SkillDamage,
         [in] skills.SkillDamageMax,
         [none] skills.Shoot
+    );
+    zox_system_1(
+        ProjectileHitSystem,
+        zoxp_spawn,
+        [in] transforms3.Position3D,
+        [in] physics3.Velocity3D,
+        [in] combat.Damage,
+        [none] projectiles.Projectile
     );
 }

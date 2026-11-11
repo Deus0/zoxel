@@ -18,8 +18,21 @@ void process_arguments_apps(ecs *world, char* args[], int count) {
         } else if (strcmp(args[i], "--disablevsync") == 0 || strcmp(args[i], "--novsync") == 0) {
             vsync = 0;
             zox_log("Disabled [vsync]");
+        } else if (strcmp(args[i], "--background") == 0) {
+            background = 1;
+            fullscreen = 0;
+            maximized = 0;
+            nosounds = 1;
+            zox_log("+ setting enabled [background]");
         } else if (strcmp(args[i], "--nodecor") == 0) {
             disable_apps_decor = 1;
         }
+#ifdef zox_sdl
+        else if (strcmp(args[i], "--gles") == 0) {
+            // skips the core probe, i.e. tests on mesa use the same es path as mali
+            opengl_mode = zox_opengl_es;
+            zox_log("+ setting enabled [gles]");
+        }
+#endif
     }
 }

@@ -34,7 +34,7 @@ static inline byte get_node_sides_all_solid(
     if (!distance || !has_children_VoxelNode(node)) {
         return is_node_solid(solidity, node);
     }
-    VoxelNode* kids = (VoxelNode*) node->ptr ;
+    VoxelNode* kids = get_children_VoxelNode(node);
     if (!kids) {
         zox_loge("get_node_sides_all_solid: null children.");
         return 0;
@@ -195,23 +195,23 @@ static inline byte build_sides_dig(
     if (!value) {
         // collapse sub node and set to 0
         sides->value = 0;
-        if (sides->ptr) {
+        if (has_children_SidesOctree(sides)) {
             collapse_SidesOctree(sides);
         }
         return 0;
     }
     // We should keep digging even when it's closed
     // NOTE: Dig down voxel + sides octree
-    byte has_vkids = !is_closed_VoxelNode(voxels);
+    byte has_vkids = has_children_VoxelNode(voxels);
     if (depth < target_depth &&
         (zox_split_textured_quads ||
             (!zox_split_textured_quads &&
             has_vkids)))
     {
-        if (!sides->ptr) {
+        if (is_closed_SidesOctree(sides)) {
             open_one_SidesOctree(sides);
             // NOTE: If fails malloc
-            if (!sides->ptr) {
+            if (is_closed_SidesOctree(sides)) {
                 zox_loge("Sides Malloc Failed");
                 return 0;
             }
@@ -221,10 +221,10 @@ static inline byte build_sides_dig(
             position.y << 1,
             position.z << 1
         };
-        SidesOctree* sides_kids = (SidesOctree*) sides->ptr;
+        SidesOctree* sides_kids = get_children_SidesOctree(sides);
         const VoxelNode* kids =
             has_vkids ?
-                (const VoxelNode*) voxels->ptr :
+                get_children_VoxelNode(voxels):
                 NULL;
         // byte did_build = 0;
         byte child_depth = depth + 1;

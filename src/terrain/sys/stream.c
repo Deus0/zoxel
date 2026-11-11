@@ -75,7 +75,16 @@ void terrain_stream_system(iter* it) {
 
 void terrain_stream_queue_system(iter* it) {
     byte dbg_log = 0;
-    uint max_process = stream_update_rate; // NOTE How to scale this better per cpu power
+    // a rate per second, credit builds with frame time so streaming speed doesn't follow the fps
+    stream_update_credit += stream_updates_per_second * zox_delta_time;
+    if (stream_update_credit > stream_updates_max_per_frame) {
+        stream_update_credit = stream_updates_max_per_frame;
+    }
+    uint max_process = (uint) stream_update_credit;
+    if (!max_process) {
+        return;
+    }
+    stream_update_credit -= max_process;
     int3 size = (int3) {
         terrain_lod_far,
         render_distance_y,
@@ -117,7 +126,7 @@ void terrain_stream_queue_system(iter* it) {
         while (queue->count && processed < max_process) {
 
             // TerrainSpawnUpdate update = remove_TerrainSpawnQueue(queue);
-            TerrainSpawnUpdate update = remove_closest_TerrainSpawnQueue(queue);
+            TerrainSpawnUpdate update = remove_next_TerrainSpawnQueue(queue, zox_current_time, stream_update_max_wait);
 
             int2 position2 = update.position;
             byte new_distance = update.distance;

@@ -8,7 +8,7 @@ void remove_vodes(ecs *world, VoxelNode *node) {
             }
         }
     } else if (has_children_VoxelNode(node)) {
-        VoxelNode* kids = (VoxelNode*) node->ptr;
+        VoxelNode* kids = get_children_VoxelNode(node);
         for (int i = 0; i < octree_length; i++) {
             remove_vodes(world, &kids[i]);
         }

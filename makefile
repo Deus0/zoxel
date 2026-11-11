@@ -84,7 +84,7 @@ else
     DFLAGS += -Dflecssource # -Iinc/flecs
 endif
 
-.PHONY: game help clean build dev pick run rund runp runpd gdb val flecs flecs-package
+.PHONY: game help clean build dev pick run rund runp runpd gdb val flecs flecs-package test tests
 # .DEFAULT_GOAL := build
 
 
@@ -132,6 +132,15 @@ $(target_dev): $(SRCS)
 
 dev: $(target_dev)
 	@ $(target_dev)
+
+# Automated headless tests, see bsh/tst.sh and src/core/tst
+#   make tests              builds debug, runs every test
+#   make test name=tilemap  builds debug, runs one test
+tests: flecs
+	@ bash bsh/tst.sh all
+
+test: flecs
+	@ bash bsh/tst.sh $(if $(name),$(name),all)
 
 profiler: $(SRCS)
 	bash bsh/build.sh $(GAME) ${build_args} --debug --logs --timings --profiler

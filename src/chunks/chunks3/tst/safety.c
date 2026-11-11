@@ -156,9 +156,7 @@ static void zox_tst_chunks3_safety_cull(iter* it) {
                 depth);
 
             if (branch) {
-                octree_collapse(
-                    branch,
-                    sizeof(VoxelNode));
+                collapse_VoxelNode(branch);
             }
             if (zoxt_chunks3_safety_locks) {
                 spin_unlock(&lock->value);
@@ -310,10 +308,7 @@ void zox_tst_chunks3_safety(ecs* zox_world) {
             continue;
         }
         byte max =
-            get_octree_max_value(
-                vnode,
-                sizeof(VoxelNode),
-                offsetof(VoxelNode, value));
+            get_max_value_VoxelNode(vnode);
         if (max > 8) {
             zox_loge(
                 "[Chunks3Safety] CORRUPTION [%i] max=%u",

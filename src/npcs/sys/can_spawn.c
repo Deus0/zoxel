@@ -1,5 +1,6 @@
 // NOTE: Sets the chunks NpcSpawnZone active or not
-//  - active when the chunk is close, at full detail, and finished generating
+//  - becomes active when the chunk is close, at full detail, lod settled, and finished generating
+//  - stays active until it's one chunk past range or below full detail (lod transitions don't despawn npcs)
 //  - checked every frame, as lod changes and generation finish at different times
 zox_sys2(CharactersCanSpawnSystem) {
     zox_sys_world();
@@ -20,7 +21,11 @@ zox_sys2(CharactersCanSpawnSystem) {
         if (dirty->value) {
             continue;
         }
-        const byte in_distance = distance->value <= character_spawn_distance;
+        // hysteresis: spawns within character_spawn_distance, despawns one chunk past it,
+        //  - so a streamer bobbing across a chunk border (jumping, landing) doesn't despawn + respawn npcs
+        const byte in_distance = active->value ?
+            distance->value <= character_spawn_distance + 1 :
+            distance->value <= character_spawn_distance;
         // cheap early out, most chunks are far away
         if (!in_distance && !active->value) {
             continue;
@@ -41,11 +46,19 @@ zox_sys2(CharactersCanSpawnSystem) {
             const byte lod_settled =
                 lod_state == zox_chunk_lod_dirty_end ||
                 lod_state >= zox_chunk_lod_dirty_spawn;
-            new_active =
-                lod_settled &&
-                !zox_has(e, GenerateChunk) &&
+            const byte full_detail =
                 depth->value == terrain_depth &&
                 zox_getv(e, NodeDepth) == terrain_depth;
+            if (active->value) {
+                // NOTE: once active, only leaving range or dropping detail deactivates it
+                //  - walking re-dirties lods of nearby chunks, which used to despawn and respawn their npcs
+                new_active = full_detail;
+            } else {
+                new_active =
+                    full_detail &&
+                    lod_settled &&
+                    !zox_has(e, GenerateChunk);
+            }
         }
         if (active->value != new_active) {
             active->value = new_active;

@@ -1,4 +1,11 @@
+// --nosaves (or a test) sets this, saves then go under it instead of the real save folder
+char zox_saves_root[256] = { 0 };
+
 void get_home_directory(char *path, size_t size) {
+    if (zox_saves_root[0]) {
+        snprintf(path, size, "%s/", zox_saves_root);
+        return;
+    }
 #ifdef zox_windows
     const char *home_directory = getenv("USERPROFILE");
     if (home_directory) {
@@ -35,6 +42,10 @@ void get_save_directory(
     const char *game,
     char *path, size_t size
 ) {
+    if (zox_saves_root[0]) {
+        snprintf(path, size, "%s/%s", zox_saves_root, game);
+        return;
+    }
 #ifdef zox_windows
     const char *home_directory = getenv("USERPROFILE");
     if (home_directory) {
