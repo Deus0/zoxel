@@ -1148,3 +1148,5 @@ Disabling Lods means:
 	  45 of 49 columns, 91.8%, so it never ended (position dependent)
 	- fix: StreamEndSystem counts the near circle (get_stream_near_chunks_count)
 	- test: zox_tst_save=<realm folder> bash bsh/tst.sh continue_game loads a copy of a real save
+-x Onboarding doc for new users (doc/onboarding.md), linked from readme.md
+-x Doc on command line flags for the binary (doc/commands.md), linked from readme.md and onboarding

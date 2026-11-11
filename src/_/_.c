@@ -116,6 +116,7 @@ void initialize_zox(ecs* world) {
     initialize_hook_on_boot();
     initialize_hook_post_update();
     initialize_component_ids();
+    add_hook_terminal_command(process_arguments_help);
     add_hook_terminal_command(process_arguments_flecs);
     add_hook_on_boot(on_boot_game_store);
     set_noise_seed(get_unique_time_seed());

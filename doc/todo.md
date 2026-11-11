@@ -2,13 +2,7 @@
 
 - add a section on readme.md with some razzle dazzle stats from tests
 	- add a test that might be impressive and measure engine capacity for this
-- add a doc on commands for the binary - pretty useful
 	
-- add a doc or new users of the project, that gets them on board
-	- link to any other relevant docs
-	- link this in readme.md
-	- its for first time users, assume only know c and wanna get their head around project and doing tasks on it
-
 - add a test for exit game, its crashing on exit atm
 - add a test for streaming between chunks, this can be reused to test its speed for optmization too
 - finish fixing all prior test cases
