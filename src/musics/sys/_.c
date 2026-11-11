@@ -19,4 +19,12 @@ void zox_systems_music(ecs* world) {
         [out] musics.MusicTime,
         [none] musics.Music
     );
+    zox_system(
+        MusicFadeSystem,
+        zoxp_update,
+        [in] musics.MusicVolumeTarget,
+        [out] musics.MusicVolume,
+        [out] musics.MusicEnabled,
+        [none] musics.Music
+    );
 }

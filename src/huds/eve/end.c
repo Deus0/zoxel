@@ -51,7 +51,7 @@ void game_state_end_huds(
         return;
     }
     // entity realm = zox_get_child_by_id(world, game, zox_id(Realm));
-    play_playlist(world, realm, 0);
+    play_menu_music(world, game);
     iter it2 = zox_children(world, game);
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {

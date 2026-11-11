@@ -10,6 +10,7 @@ void import_zoxgame(ecs* world) {
     game_name = "zoxel";
     zox_systems_zoxel(world);
     add_hook_on_boot(spawn_weather);
+    add_hook_on_boot(spawn_menu_music);
     // Initial Zoxel Settings
     initialize_zoxel_settings(world);
     add_hook_spawn_prefabs(zox_events_zoxel);
