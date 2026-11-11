@@ -86,6 +86,7 @@ entity spawn_datagrid(
             entity text = spawn.z;
             if (icon) {
                 zox_add(icon, DataUI);
+                zox_add(icon, ClickOnPress);    // picks up / places items on press, like a drag
                 zox_add(icon, SlotUser);
                 zox_add(icon, DataDirty);
                 zox_set_link(world, icon, DataLink, dat);

@@ -34,7 +34,15 @@ zox_sys2(PlayerGameStateSystem) {
                     zox_log("Game Setting player [%s] to Loading", zox_get_name(e2));
                 }
                 zox_setv(e2, PlayerState, zox_player_state_loading);
-            } else if (state->value == zox_game_start) {
+            } else if (state->value == zox_game_none) {
+                // the_end already sends players to the main menu, this catches any that weren't
+                const byte player_state = zox_getv(e2, PlayerState);
+                if (player_state == zox_player_state_the_end ||
+                    player_state == zox_player_state_main_menu_begin ||
+                    player_state == zox_player_state_main_menu)
+                {
+                    continue;
+                }
                 zox_setv(e2, PlayerState, zox_player_state_main_menu_begin);
                 if (dbg_log) {
                     zox_log("Game Setting player [%s] to [MainMenu]", zox_get_name(e2));

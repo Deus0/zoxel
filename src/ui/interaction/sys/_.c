@@ -161,4 +161,15 @@ void zox_systems_interaction(ecs* world) {
         zoxp_remove,
         [none] interactions.Click,
     );
+    // Presses
+    zox_system(
+        trigger_press_system,
+        zoxp_remove,
+        [none] interactions.TriggerPress,
+    );
+    zox_system(
+        press_system,
+        zoxp_remove,
+        [none] interactions.Press,
+    );
 }

@@ -44,6 +44,23 @@ void trigger_click_system(iter* it) {
     }
 } zoxd_system(trigger_click_system);
 
+void trigger_press_system(iter* it) {
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_remove(e, TriggerPress);
+        zox_add(e, Press);
+    }
+} zoxd_system(trigger_press_system);
+
+void press_system(iter* it) {
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_remove(e, Press);
+    }
+} zoxd_system(press_system);
+
 void click_system(iter* it) {
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {

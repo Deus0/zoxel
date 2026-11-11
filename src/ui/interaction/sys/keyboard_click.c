@@ -37,7 +37,7 @@ zox_sys2(KeyboardClickSystem) {
         // released
         if (input_type == 1) {
             clickee->value = target->value;
-            on_element_clicked(
+            on_element_pressed(
                 world,
                 player,
                 clickee->value);
@@ -62,7 +62,7 @@ zox_sys2(KeyboardClickSystem) {
         // Released
         else if (input_type == 2) {
             if (target->value == clickee->value) {
-                on_element_released(
+                on_element_press_released(
                     world,
                     player,
                     target->value);

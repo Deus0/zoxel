@@ -25,9 +25,10 @@ zox_sys2(GameStateSystem) {
             continue;
         }
         entity realm = zox_get_link(world, e, RealmLink);
-        if (!zox_valid(realm)) {
+        // the_clean deletes the realm, so returning to none (the main menu) doesn't need one
+        if (!zox_valid(realm) && target->value != zox_game_none) {
             zox_loge("[GameStateSystem] Invalid [realm]");
-            return;
+            continue;
         }
         // NOTE: Handles Game State Transition Checks
         byte is_update = 0;
@@ -115,7 +116,7 @@ zox_sys2(GameStateSystem) {
             }
         } else if (state->value == zox_game_state_the_clean) {
             local_terrain = 0;
-            target->value = zox_game_none; // start;
+            target->value = zox_game_none;
             if (dbg_log) {
                 zox_log("Game Set To [Start] [%s]",
                     zox_getn(e));

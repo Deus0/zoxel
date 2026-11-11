@@ -1,4 +1,4 @@
-// NOTE: Triggers Click event when released
+// NOTE: Runs the ClickEvent on Click, added on release (or on press for ClickOnPress), see on_element_pressed
 zox_sys2(ButtonClickEventSystem) {
     zox_sys_world();
     zox_sys_begin();

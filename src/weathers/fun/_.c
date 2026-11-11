@@ -68,7 +68,7 @@ void refresh_weather(ecs* world) {
             skybox,
             game_sky_color,
             game_sky_bottom_color);
-    } else if (last_weather_state == zox_game_start) {
+    } else if (last_weather_state == zox_game_none) {
         set_skybox_colors(
             world,
             skybox,

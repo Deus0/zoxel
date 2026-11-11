@@ -14,6 +14,10 @@ void mouse_input_system(iter* it) {
     if (sdl_mouse_button_pressed(buttons, SDL_BUTTON_RIGHT)) {
         button_pressed_right = 1;
     }
+    if (zox_mouse_fake) {
+        button_pressed_left = zox_mouse_fake_left;
+        button_pressed_right = zox_mouse_fake_right;
+    }
     // zox_sys_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
@@ -33,6 +37,9 @@ void mouse_input_system(iter* it) {
         }
         int2 mouse_position = global_mouse_position;
         int2_flip_y(&mouse_position, screen_size);
+        if (zox_mouse_fake) {
+            mouse_position = zox_mouse_fake_position;
+        }
         // using button_pressed_left
         uint children_capacity = zox_children_capacity;
         entity children[children_capacity];
