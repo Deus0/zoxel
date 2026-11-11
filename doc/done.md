@@ -1,5 +1,10 @@
 # Done
 
+-x I noticed some faces are not culled between chunks
+	- write some tests in chunks/chunks3/tst
+-x Make projectile collide with Terrain
+-x Make projectile collide with npc
+-x Arm animation needs to slerp to new rotations and now instantly snap during walk and attacking.
 -x Fix lagspikes in [chunk_sides_system] > 200ms
 	- 200+ ms with locks..
 	- 80ms without locks..
@@ -1155,3 +1160,9 @@ Disabling Lods means:
 	  its neighbor's voxels (lod chunks, lod seams), it checked the neighbor's far face instead of the touching one
 	- fix: side_infos side is the neighbor's touching face (build_colored already did this via reverse_direction)
 	- test: chunk_sides (src/chunks/chunks3/tst/sides.c), 6 directions x every render depth, lod seams both ways
+-x Minivoxes (block voxes) are lit like the terrain around them, and relit when lights change
+	- Brightness from the brightest of its voxel + 6 sides (minivox voxels stop light, so never get any), light / 255
+	- instanced: model matrices now, the unused bottom row x carries brightness, shaders apply the camera
+	- block_vox_lights_system relights a chunk's (and its neighbors') minivoxes on LightNodeDirty
+	- fixed ChunkColorsTriggerSystem being inverted: a chunk's own light changes didn't recolor its own meshes
+	- tests: block_vox_lights (game), block_vox_light_sampling (logic)

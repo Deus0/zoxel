@@ -73,6 +73,7 @@ void vox_instance_render_system(iter* it) {
     zox_sys_begin();
     zox_sys_in(TransformMatrix);
     zox_sys_in(RenderDisabled);
+    zox_sys_in(Brightness);
     camera_filtering_begin();
     guint material_link = zox_getv(material_vox_instance, MaterialGPULink);
     if (!material_link) {
@@ -93,6 +94,7 @@ void vox_instance_render_system(iter* it) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(RenderDisabled, disabled);
         zox_sys_i(TransformMatrix, matrix);
+        zox_sys_i(Brightness, brightness);
         if (disabled->value) {
             continue;
         }
@@ -125,12 +127,10 @@ void vox_instance_render_system(iter* it) {
             zox_loge("(vox_instance_render_system) command.transforms malloc failed");
             break;
         }
-        // sway shader applies camera after moving verts in world space
-        float4x4 instance_matrix = command.sway ?
-            matrix->value :
-            float4x4_multiply(
-                matrix->value,
-                render_camera_matrix);
+        // model matrices, the shaders apply the camera (sway moves verts in world space first)
+        //  - the unused bottom row x carries the brightness, i.e. the light at a minivox
+        float4x4 instance_matrix = matrix->value;
+        instance_matrix.x.w = brightness->value;
         float4x4_array_d_add(command.transforms, instance_matrix);
         commands->data[index] = command;
     }
@@ -138,6 +138,7 @@ void vox_instance_render_system(iter* it) {
     zox_gpu_material(material_link);
     zox_gpu_float4(material_attributes->fog_data, get_fog_value());
     zox_gpu_float(material_attributes->brightness, 1);
+    zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
     byte has_sway = 0;
     for (size_t i = 0; i < commands->size; i++) {
         InstanceRenderCommand command = commands->data[i];

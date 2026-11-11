@@ -38,6 +38,7 @@ static inline void zox_gpu_render_triangles_instanced(gsizei indicies, gsizei le
 #include "lines.c"
 #include "attributes.c"
 #include "shaders.c"
+#include "screenshot.c"
 #include "extensions.c"
 #include "compute.c"
 #include "geometry.c"

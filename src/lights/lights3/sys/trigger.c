@@ -11,11 +11,13 @@ zox_sys2(ChunkColorsTriggerSystem) {
         if (lights_dirty->value != zox_dirty_active) {
             continue;
         }
+        // NOTE: was inverted (skipped its meshes, tagged its other children), so a chunk's own light
+        //  changes only recolored its neighbors (tst block_vox_lights)
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
-                if (zox_has(e2, ChunkMesh)) {
+                if (!zox_has(e2, ChunkMesh)) {
                     continue;
                 }
                 zox_add(e2, BuildMeshColors);

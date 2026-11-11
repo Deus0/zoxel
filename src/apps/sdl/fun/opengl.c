@@ -1,3 +1,6 @@
+// a path here saves the next frame to it, then clears (i.e. tests looking at the rendering)
+char zox_screenshot_request[256] = "";
+
 // wrapper for SDL GL Swap Window
 void app_gpu_end_system(iter* it) {
     zox_sys_world();
@@ -12,6 +15,14 @@ void app_gpu_end_system(iter* it) {
     if (!window->value) {
         zox_loge("[main_app] is has invalid SDLWindow");
         return;
+    }
+    if (zox_screenshot_request[0]) {
+        if (zox_gpu_save_screenshot(zox_screenshot_request)) {
+            zox_log("+ saved screenshot [%s]", zox_screenshot_request);
+        } else {
+            zox_loge("failed to save screenshot [%s]", zox_screenshot_request);
+        }
+        zox_screenshot_request[0] = 0;
     }
     SDL_GL_SwapWindow(window->value);
     if (background) {

@@ -4,9 +4,10 @@ byte block_vox_render_at_lod = 0;
 #include "com/_.c"
 #include "hok/_.c"
 #include "pre/_.c"
-#include "sys/_.c"
 #include "fun/_.c"
+#include "sys/_.c"
 #include "eve/_.c"
+#include "tst/_.c"
 
 void module_dispose_vodes3(ecs *world, void *ctx) {
     dispose_hook_spawned_block();
@@ -20,4 +21,5 @@ void import_vodes3(ecs* world) {
     zox_module_dispose(module_dispose_vodes3);
     add_hook_spawn_prefabs(zox_prefabs_vodes3);
     add_hook_spawn_prefabs(zox_events_vodes3);
+    zox_tsts_vodes3();
 }

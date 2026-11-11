@@ -21,6 +21,8 @@ entity spawn_block_vox_meta(
     if (data.model_type) {
         zox_setv(e, BlockModel, data.model_type);
     }
+    // minivoxes (grass, flowers) let light through like air, so they and the ground under them get lit
+    zox_setv(e, BlockLightPass, data.model_type == zox_block_vox);
     if (data.vox_offset) {
         zox_setv(e, BlockVoxOffset, 1);
     }

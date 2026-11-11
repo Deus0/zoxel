@@ -33,6 +33,7 @@ void spawned_block_vox(
             block_index,
             render_depth,
             render_disabled,
+            positionl,
             positionf,
             scale);
     } else if (zox_has(prefab, RendererInstance)) {
@@ -56,6 +57,8 @@ void spawned_block_vox(
     }
     link_node_VoxelNode(octree, e2);
     zox_set_parent(world, e2, chunk);
+    // lit like the terrain around it, block_vox_lights_system keeps it updated
+    zox_setv(e2, Brightness, get_block_vox_brightness(world, chunk, positionl));
     // spawn_line3(world, spawn_data.positionf, float3_add(spawn_data.positionf, (float3) { 0, 2, 0 }), 2, 3);
 }
 
