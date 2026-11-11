@@ -1,5 +1,6 @@
 // Containers like groups of elements, Grids, Lists, etc
 #include "com/_.c"
+#include "fun/_.c"
 #include "sys/_.c"
 
 void import_containers(ecs* world) {

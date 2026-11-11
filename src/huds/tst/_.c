@@ -5,6 +5,7 @@
 #include "options.c"
 #include "scroll.c"
 #include "exit.c"
+#include "list.c"
 
 void zox_tsts_huds() {
     zox_tsts_huds_load();
@@ -25,4 +26,6 @@ void zox_tsts_huds() {
     zox_tst_set_exits("exit_menu");
     zox_tst_add("exit_game", zox_tst_exit_game_ready, zox_tst_exit_check, 90);
     zox_tst_set_exits("exit_game");
+    zox_tst_add("list_order", zox_tst_list_order_ready, zox_tst_list_order_check, 60);
+    zox_tst_set_setup("list_order", NULL, 1);
 }
