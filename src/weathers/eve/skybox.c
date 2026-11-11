@@ -10,7 +10,7 @@ void game_state_weather(ecs* world, entity game, byte state) {
             skybox,
             game_sky_color,
             game_sky_bottom_color);
-    } else if (state == zox_game_start) {
+    } else if (state == zox_game_none) {
         set_skybox_colors(
             world,
             skybox,
@@ -40,7 +40,7 @@ void game_state_weather(ecs* world, entity game, byte state) {
         }
         if (state->value == zox_game_state_play_begin) {
             set_skybox_colors(world, skybox, game_sky_color, game_sky_bottom_color);
-        } else if (state->value == zox_game_start) {
+        } else if (state->value == zox_game_none) {
             set_skybox_colors(world, skybox, menu_sky_color, menu_sky_bottom_color);
         }
         last_weather_state = state->value;

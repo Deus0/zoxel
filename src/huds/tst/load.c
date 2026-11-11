@@ -87,23 +87,6 @@ void zox_tst_load_games_setup() {
 #endif
 }
 
-// finds a descendant with a ClickEvent of on_click
-entity zox_tst_find_click(ecs* world, entity e, void (*on_click)(ecs*, ClickEventData)) {
-    if (zox_has(e, ClickEvent) && zox_getv(e, ClickEvent) == on_click) {
-        return e;
-    }
-    iter it2 = zox_children(world, e);
-    while (zox_children_next(it2)) {
-        for (int j = 0; j < it2.count; j++) {
-            entity found = zox_tst_find_click(world, it2.entities[j], on_click);
-            if (found) {
-                return found;
-            }
-        }
-    }
-    return 0;
-}
-
 // counts descendants with a FolderPath, and finds the newest save's button
 int zox_tst_load_list_buttons(ecs* world, entity e, int* oldest, entity* newest) {
     int count = 0;
@@ -125,11 +108,6 @@ int zox_tst_load_list_buttons(ecs* world, entity e, int* oldest, entity* newest)
         }
     }
     return count;
-}
-
-static inline void zox_tst_load_click(ecs* world, entity player, entity button) {
-    void (*on_click)(ecs*, ClickEventData) = zox_getv(button, ClickEvent);
-    on_click(world, (ClickEventData) { .clicker = player, .clicked = button });
 }
 
 byte zox_tst_load_games_ready(ecs* world) {
@@ -155,7 +133,7 @@ byte zox_tst_load_games_ready(ecs* world) {
         if (!button) {
             return 1;
         }
-        zox_tst_load_click(world, player, button);
+        zox_tst_click(world, player, button);
         zox_tst_load_stage = 1;
         zox_tst_load_frames = 0;
         return 0;
@@ -182,7 +160,7 @@ byte zox_tst_load_games_ready(ecs* world) {
             return 1;
         }
         zox_tst_load_button = newest;
-        zox_tst_load_click(world, player, newest);
+        zox_tst_click(world, player, newest);
         zox_tst_load_stage = 2;
         zox_tst_load_frames = 0;
         return 0;
@@ -208,7 +186,7 @@ void zox_tst_load_games_check(ecs* world) {
     (void) world;
 }
 
-void zox_tsts_huds() {
+void zox_tsts_huds_load() {
     zox_tst_add("load_games", zox_tst_load_games_ready, zox_tst_load_games_check, 60);
     zox_tst_set_setup("load_games", zox_tst_load_games_setup, 1);
 }

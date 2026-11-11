@@ -55,14 +55,14 @@ zox_sys2(DeviceClickSystem) {
         // First Clicked
         if (input_type == 1) {
             clicking->value = target->value;
-            on_element_clicked(world, player, clicking->value);
+            on_element_pressed(world, player, clicking->value);
             if (dbg_log) {
                 zox_log("Began Click [%s]", zox_getn(target->value));
             }
         } else if (input_type == 2) {
             // released
             if (target->value == clicking->value) {
-                on_element_released(world, player, target->value);
+                on_element_press_released(world, player, target->value);
             }
             clicking->value = 0;
             if (dbg_log) {

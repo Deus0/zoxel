@@ -49,7 +49,7 @@ zox_sys2(ZeviceClickSystem) {
         }
         if (click_type == 1) {
             clicked->value = zox_valid(target->value) ? target->value : 0;
-            on_element_clicked(world, player, clicked->value);
+            on_element_pressed(world, player, clicked->value);
             // Drag
             if (zox_valid(target->value) && zox_has(target->value, Dragable)) {
                 byte drag_mode = zox_drag_mode_none;
@@ -67,7 +67,7 @@ zox_sys2(ZeviceClickSystem) {
         // released
         else if (click_type == 2) {
             if (target->value == clicked->value) {
-                on_element_released(world, player, target->value);
+                on_element_press_released(world, player, target->value);
                 if (dbg_log) {
                     zox_log("Zevice Released UI [%s]", zox_getn(target->value));
                 }

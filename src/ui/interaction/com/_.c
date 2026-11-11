@@ -7,6 +7,7 @@ zoxc_color(SelectedOutlineColor);
 zox_tag(ElementRaycaster);
 // Clicking
 zox_tag(Clickable);
+zox_tag(ClickOnPress);     // clicks as soon as it's pressed (touch controls, item slots), others click on release
 zox_tag(ClickMakeSound);
 zoxc_byte(ClickState);
 zoxc_byte(ClickType);
@@ -32,6 +33,8 @@ zox_tag(TriggerDeselect);
 zox_tag(Deselect);
 zox_tag(TriggerClick);
 zox_tag(Click);
+zox_tag(TriggerPress);
+zox_tag(Press);            // pressed this frame, i.e. bringing its window to the top
 
 typedef struct {
     entity clicker;
@@ -64,6 +67,7 @@ void zox_components_interaction(ecs* world) {
     zoxd_tag(ElementRaycaster);
     // Click
     zoxd_tag(Clickable);
+    zoxd_tag(ClickOnPress);
     zoxd_tag(ClickMakeSound);
     zoxd_byte(ClickState);
     zoxd_byte(ClickType);
@@ -93,4 +97,6 @@ void zox_components_interaction(ecs* world) {
     zoxd_tag_event(Deselect);
     zoxd_tag_event(TriggerClick);
     zoxd_tag_event(Click);
+    zoxd_tag_event(TriggerPress);
+    zoxd_tag_event(Press);
 }

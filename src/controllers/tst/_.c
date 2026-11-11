@@ -220,7 +220,7 @@ byte zox_tst_continue_game_ready(ecs* world) {
         if (!button) {
             return 1;
         }
-        zox_tst_load_click(world, player, button);
+        zox_tst_click(world, player, button);
         zox_tst_continue_confirmed = 1;
         zox_tst_spawn_start = zox_current_time;
         return 0;

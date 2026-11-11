@@ -26,6 +26,39 @@ void on_element_released(
     zox_setm(e, Clicker, player);
 }
 
+// A pointer, key or button went down on an element
+//  - elements click when released on (on_element_press_released), so a press can be cancelled
+//      by moving off it, unless they're ClickOnPress (touch controls, item slots)
+//  - dragging starts on press, in the click systems
+void on_element_pressed(
+    ecs *world,
+    entity player,
+    entity e)
+{
+    if (!zox_valid(e) || !zox_has(e, Clickable)) {
+        return;
+    }
+    if (zox_has(e, ClickDisabled) && zox_getv(e, ClickDisabled)) {
+        return;
+    }
+    zox_add(e, TriggerPress);
+    if (zox_has(e, ClickOnPress)) {
+        on_element_clicked(world, player, e);
+    }
+}
+
+// Released on the same element it was pressed on, this is the click
+void on_element_press_released(
+    ecs *world,
+    entity player,
+    entity e)
+{
+    if (zox_valid(e) && !zox_has(e, ClickOnPress)) {
+        on_element_clicked(world, player, e);
+    }
+    on_element_released(world, player, e);
+}
+
 void set_raycast_target_children(
     ecs *world,
     entity e,
