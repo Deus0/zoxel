@@ -3,8 +3,22 @@
 #include "mesh.c"
 #include "canvas_resize.c"
 #include "element_begin.c"
+#include "settings.c"
 
 void zox_systems_elements(ecs *world) {
+    // main thread, it spawns the setting
+    zox_system_1(
+        UISettingsSystem,
+        zoxp_spawn,
+        [in] settings.LoadSettings
+    );
+    zox_system(
+        UISettingsDirtySystem,
+        zoxp_update,
+        [in] settings.SettingDirty,
+        [in] core.ZoxName,
+        [in] settings.Setting
+    );
     zox_system(
         CanvasResizeSystem,
         zoxp_update,

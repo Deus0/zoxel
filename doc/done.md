@@ -1,5 +1,9 @@
 # Done
 
+-x add min, max to fps display
+	- "60 [55-62]", min and max over the last 10 seconds
+-x When return to main menu - set camera back to origin
+	- already done by player_state_game_end, tst menu_flow checks it now
 -x add a test for exit game, its crashing on exit atm
 	- no longer crashes: main doesn't dispose the world anymore (the hashmap disposal hang)
 	- tst exit_menu (exit button) and exit_game (closing while playing), tests can pass on close (zox_tst_set_exits)

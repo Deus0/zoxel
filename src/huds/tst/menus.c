@@ -210,6 +210,16 @@ byte zox_tst_menu_flow_ready(ecs* world) {
             zox_tst_check(state == zox_game_none,
                 "ended: game state is [%i], expected none [%i] (stuck after deleting the realm?)", state, zox_game_none);
             {
+                // the camera went back to the main menu's spot (player_state_game_end)
+                const entity camera = zox_get_link(world, player, CameraLink);
+                const float3 camera_position = zox_valid(camera) ? zox_getv(camera, Position3D) : float3_zero;
+                const float3 offset = float3_sub(camera_position, main_menu_camera_position);
+                zox_tst_check(zox_valid(camera) && !zox_valid(zox_get_parent(world, camera)), "ended: the camera is still parented");
+                zox_tst_check(fabsf(offset.x) + fabsf(offset.y) + fabsf(offset.z) < 0.01f,
+                    "ended: the camera is at [%.2fx%.2fx%.2f], not back at the main menu's spot",
+                    camera_position.x, camera_position.y, camera_position.z);
+            }
+            {
                 const entity game = zox_get_link(world, player, GameLink);
                 zox_log("[tst] ended: game state [%i] target [%i], player state [%i]",
                     state, zox_getv(game, GameStateTarget), zox_getv(player, PlayerState));

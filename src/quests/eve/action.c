@@ -1,3 +1,5 @@
+extern void track_quest(ecs*, entity, entity);
+
 void zox_event_give_quest(iter* it) {
     byte dbg_log = 0;
     zox_sys_world();
@@ -37,6 +39,8 @@ void zox_event_give_quest(iter* it) {
                 world,
                 quest_taker,
                 quest);
+            // the newest quest is tracked
+            track_quest(world, quest_taker, user_quest);
             particles_color = (color) { 155, 155, 155, 88 };
             if (zox_valid(marker)) {
                 // Link Marker of NPC to player characters quest
@@ -51,7 +55,7 @@ void zox_event_give_quest(iter* it) {
                     set_entity_text(
                         world,
                         text,
-                        "+");
+                        quest_marker_doing);
                 } else {
                     zox_loge("Marker text not found");
                 }
