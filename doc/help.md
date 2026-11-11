@@ -16,4 +16,5 @@
 - ▶ **install**  — Installs game!!!
 - ▶ **clean**    — Clean build & dist
 - ▶ **flecs**    — Rebuild Flecs ECS
+- ▶ **convert**  — Convert raw/ assets (fonts, music) into res/, kept out of game builds
 

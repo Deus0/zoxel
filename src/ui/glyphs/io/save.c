@@ -1,7 +1,7 @@
-// todo: save properly
+// Saves a font style's glyph outlines as a .zox (see bsh/convert.sh --fonts)
 byte save_font_style(ecs *world, entity e, char *resources_directory, char *filename) {
     if (!e) {
-        zox_log_error("error saving entity [%lu] invalid children [%s]", e, filename)
+        zox_loge("error saving entity [%lu] invalid children [%s]", e, filename)
         return 0;
     }
     char* directory = concat_file_path(resources_directory, directory_fonts);
@@ -15,40 +15,32 @@ byte save_font_style(ecs *world, entity e, char *resources_directory, char *file
     free(directory2);
     FILE *file = fopen(path, "wb");
     if (file == NULL) {
-        zox_log_error(" > error saving [%s]", path)
+        zox_loge(" > error saving [%s]", path)
         perror("Error opening file for writing");
         free(path);
         return 0;
     }
     // get full filepath
     // get binary for each font and added with seperation?
-    // TODO: FIX THIS, Children Obsolete
-    zox_geter(e, Children, children);
-    if (children == NULL) {
-        zox_log_error("! error saving entity [%lu] invalid children [%s]", e, path)
-        free(path);
-        return 0;
-    }
-    SaveDataFontStyle data = {
-        .length = children->length
-    };
-    zox_logv("   - font style children [%i]", children->length);
-    for (int i = 0; i < children->length; i++) {
-        const entity child = children->value[i];
-        if (!child) {
-            zox_logv(" > font [%i]", i);
-            data.fonts[i] = (SaveDataFont) {
-                .length = 0
-            };
+    // fonts in child order, the order glyphs are looked up by (zox_get_children, see font_texture.c)
+    entity children[max_save_data_fonts];
+    const uint children_length = zox_get_children(world, e, children, max_save_data_fonts);
+    static SaveDataFontStyle data;
+    memset(&data, 0, sizeof(data));
+    data.length = children_length;
+    zox_logv("   - font style children [%i]", children_length);
+    for (uint i = 0; i < children_length; i++) {
+        const entity child = children[i];
+        if (!zox_valid(child) || !zox_has(child, FontData)) {
             continue;
         }
-
         zox_geter(child, FontData, fdata);
-        zox_logv(" > font [%i] - points: [%i]", i, fdata->length);
-        data.fonts[i] = (SaveDataFont) {
-            .length = fdata->length
-        };
-        for (int j = 0; j < fdata->length; j++) {
+        const int length = fdata->length < max_font_points ? fdata->length : max_font_points;
+        if (fdata->length > max_font_points) {
+            zox_logw("font [%i] has [%i] points, saving [%i]", i, fdata->length, max_font_points);
+        }
+        data.fonts[i].length = length;
+        for (int j = 0; j < length; j++) {
             data.fonts[i].points[j] = fdata->value[j];
         }
     }

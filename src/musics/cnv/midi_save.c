@@ -10,7 +10,8 @@ int save_notes_to_file(MidiNote *notes, int note_count, const char *filename) {
         perror("Failed to open file for saving");
         return -1;
     }
-    fwrite(&note_count, sizeof(int), 1, file); // Write the number of notes
+    const uint32_t count = (uint32_t) note_count;
+    fwrite(&count, sizeof(uint32_t), 1, file); // the number of notes
     fwrite(notes, sizeof(MidiNote), note_count, file); // Write the notes data
     /*for (int i = 0; i < note_count; i++) {
         MidiNote note = notes[i];

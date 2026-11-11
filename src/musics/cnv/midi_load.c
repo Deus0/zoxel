@@ -2,41 +2,31 @@
 // #include <math.h>
 
 // Load the notes from a file
+// Loads up to MAX_NOTES notes, returns how many, 0 if it failed
+//  - the count is a uint32, the saver's int (it was read as a size_t, 8 bytes on 64 bit,
+//      so the count took half the first note and the music never loaded)
 int load_notes_from_file(MidiNote *notes, const char *filename) {
     FILE *file = fopen(filename, "rb");
     if (!file) {
         perror("Failed to open file for loading");
-        return -1;
+        return 0;
     }
-    // Read the number of notes
-    size_t note_count;
-    size_t items_read = fread(&note_count, sizeof(size_t), 1, file);
-    // Check for fread errors
-    if (items_read < 1) {
-        if (ferror(file)) {
-            // An error occurred during reading
-            perror("(1) Error reading file");
-            fclose(file); // Don't forget to close the file
-            return 0;
-        } else if (feof(file)) {
-            // End of file reached, which is not an error
-            zox_logv("[load_notes_from_file] items_read less than 1: %i", items_read);
-            return 0;
-        }
+    uint32_t note_count = 0;
+    if (fread(&note_count, sizeof(uint32_t), 1, file) != 1) {
+        zox_logv("[load_notes_from_file] no note count in [%s]", filename);
+        fclose(file);
+        return 0;
     }
-    // Read the notes data
-    items_read = fread(notes, sizeof(MidiNote), note_count, file);
-    if (items_read < note_count) {
-        if (ferror(file)) {
-            perror("(2) Error reading file");
-            note_count = 0;
-        } else if (feof(file)) {
-            zox_logv("[load_notes_from_file] Notes Data Invalid: [%i] less than [%i]", items_read, note_count);
-            // printf("End of file reached, only %zu items read\n", items_read);
-        }
+    if (note_count > MAX_NOTES) {
+        zox_logv("[load_notes_from_file] [%u] notes, keeping [%i]", note_count, MAX_NOTES);
+        note_count = MAX_NOTES;
     }
+    const size_t items_read = fread(notes, sizeof(MidiNote), note_count, file);
     fclose(file);
-    return note_count;
+    if (items_read < note_count) {
+        zox_logv("[load_notes_from_file] read [%zu] of [%u] notes", items_read, note_count);
+    }
+    return (int) items_read;
 }
 
 void test_notes_from_file(const char *filename) {

@@ -14,6 +14,10 @@
 *       - Node can also be a reward, given by system or by the npc
 *
 */
+// quest marker over an npc's head
+#define quest_marker_available "?"  // has a quest to give
+#define quest_marker_doing "+"      // you have its quest
+#define quest_marker_done "!"       // you can hand its quest in
 #include "com/_.c"
 #include "pre/_.c"
 #include "ins/_.c"

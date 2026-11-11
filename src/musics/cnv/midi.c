@@ -1,13 +1,16 @@
 // wsl gcc -std=c99 src/musics/convert/midi.c -o build/midi_converter `pkg-config --cflags --libs glib-2.0` -lm -lsmf
 //  wsl gcc -std=c99 src/inner_core/musics/convert/midi.c -o build/midi_converter -lm $(pkg-config --cflags --libs glib-2.0 smf) && wsl ./build/midi_converter raw/midis/song_1.mid
+// Converts a midi file into a music .zox (bsh/convert.sh --music)
+//  midi_converter <in.mid> [out.zox, default res/music/music.zox]
 #include <stdio.h>
+#include <stdint.h>
 #include <math.h>
 #include <smf.h>
 #include "midi_note.c"
 #include "midi_load.c"
 #include "midi_save.c"
 
-#define FILENAME "resources/music/music.zox"
+#define default_music_output "res/music/music.zox"
 
 // Function to convert MIDI note number to frequency
 double midi_note_to_frequency(int note_number) {
@@ -23,9 +26,9 @@ void debug_midi_file(smf_t *smf) {
         while ((event = smf_track_get_next_event(track)) != NULL) {
             printf(" > [%i] time [%f] len [%i]\n", event->event_number, event->time_seconds, event->midi_buffer_length);
             if (event->midi_buffer_length >= 3) { // && event->event_number == SMF_EVENT_MIDI) {
-                byte status = event->midi_buffer[0] & 0xF0;
+                unsigned char status = event->midi_buffer[0] & 0xF0;
                 if (status == 0x90 || status == 0x80) {  // Note On or Note Off
-                    byte note_number = event->midi_buffer[1];
+                    unsigned char note_number = event->midi_buffer[1];
                     double frequency = midi_note_to_frequency(note_number);
                     printf("        - note %s\n", (status == 0x90) ? "On" : "Off");
                     printf("        - number %i\n", note_number);
@@ -39,11 +42,12 @@ void debug_midi_file(smf_t *smf) {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc != 2) {
-        printf("Usage: %s <MIDI file>\n", argv[0]);
+    if (argc < 2 || argc > 3) {
+        printf("Usage: %s <MIDI file> [out .zox]\n", argv[0]);
         return 1;
     }
     const char *filename = argv[1];
+    const char *output = argc == 3 ? argv[2] : default_music_output;
     smf_t *smf = smf_load(filename);
     if (!smf) {
         fprintf(stderr, "Error: could not load MIDI file %s\n", filename);
@@ -62,8 +66,8 @@ int main(int argc, char *argv[]) {
         smf_event_t *event;
         while ((event = smf_track_get_next_event(track)) != NULL) {
             if (event->midi_buffer_length >= 3) {
-                byte status = event->midi_buffer[0] & 0xF0;
-                byte note_number = event->midi_buffer[1];
+                unsigned char status = event->midi_buffer[0] & 0xF0;
+                unsigned char note_number = event->midi_buffer[1];
                 double frequency = midi_note_to_frequency(note_number);
                 if (status == 0x90) {  // Note On
                     // Store the start time and frequency when the note is turned on
@@ -87,11 +91,12 @@ int main(int argc, char *argv[]) {
     }
 
     // Save notes to file
-    if (save_notes_to_file(notes, note_count, FILENAME) == 0) {
-        printf("Notes [%i] saved successfully to %s\n", note_count, FILENAME);
+    if (save_notes_to_file(notes, note_count, output) != 0) {
+        smf_delete(smf);
+        return 1;
     }
-
-    test_notes_from_file(FILENAME);
+    printf("Notes [%i] saved to %s\n", note_count, output);
+    test_notes_from_file(output);
 
     smf_delete(smf);
     return 0;

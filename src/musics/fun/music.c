@@ -17,14 +17,14 @@ void stop_music(ecs *world, entity playlist) {
 
 void play_music(ecs *world, entity playlist, byte new_index) {
     if (!playlist || !zox_has(playlist, MusicPlaying)) {
-        zox_log_error("invalid playlist in [play_music]");
+        zox_loge("invalid playlist in [play_music]");
         return;
     }
     byte old_index = zox_getv(playlist, MusicPlaying);
     // set previous music off and new one on
     zox_geter(playlist, MusicLinks, musics);
     if (new_index >= musics->length) {
-        zox_log_error("new_index out of bounds [%i] >= [%i]", new_index, musics->length);
+        zox_loge("new_index out of bounds [%i] >= [%i]", new_index, musics->length);
         return;
     }
     zox_set(musics->value[old_index], MusicEnabled, { 0 });
@@ -39,7 +39,7 @@ void play_music(ecs *world, entity playlist, byte new_index) {
 
 void add_music(ecs *world, entity playlist, entity music) {
     if (!playlist) {
-        zox_log_error("cannot add music to null playlist");
+        zox_loge("cannot add music to null playlist");
         return;
     }
     // zox_log(" + added music to playlist [%lu]\n", music)
