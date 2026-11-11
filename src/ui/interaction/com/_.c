@@ -33,6 +33,8 @@ zox_tag(TriggerDeselect);
 zox_tag(Deselect);
 zox_tag(TriggerClick);
 zox_tag(Click);
+zox_tag(TriggerRightClick);
+zox_tag(RightClick);       // right pressed this frame, i.e. splitting an item stack
 zox_tag(TriggerPress);
 zox_tag(Press);            // pressed this frame, i.e. bringing its window to the top
 
@@ -97,6 +99,8 @@ void zox_components_interaction(ecs* world) {
     zoxd_tag_event(Deselect);
     zoxd_tag_event(TriggerClick);
     zoxd_tag_event(Click);
+    zoxd_tag_event(TriggerRightClick);
+    zoxd_tag_event(RightClick);
     zoxd_tag_event(TriggerPress);
     zoxd_tag_event(Press);
 }

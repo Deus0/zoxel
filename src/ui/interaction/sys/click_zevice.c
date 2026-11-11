@@ -41,6 +41,12 @@ zox_sys2(ZeviceClickSystem) {
                 }
             }
         }
+        // the mouse's right button right clicks on press
+        if (zox_has(e, ZevicePointerRight) &&
+            devices_get_pressed_this_frame(zox_getv(e, ZevicePointerRight)))
+        {
+            on_element_right_pressed(world, player, target->value);
+        }
         // used for virtual joysticks to see if a t arget was raycasted, todo: move to raycast system
         // result->value = target->value;
         // released

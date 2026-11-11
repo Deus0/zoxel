@@ -1,4 +1,5 @@
 #include "click.c"
+#include "right_click.c"
 #include "icon.c"
 #include "label.c"
 #include "clear.c"
@@ -10,6 +11,15 @@ void zox_systems_ui_containers(ecs* world) {
         zoxp_update,
         // [in] interactions.ClickState,
         [none] interactions.Click,
+        [none] slots.SlotUser,
+        [none] ui_containers.DataUI,
+    );
+    // main thread, splitting a stack spawns an item
+    zox_system_1(
+        DataUIRightClickSystem,
+        zoxp_update,
+        // [in] interactions.ClickState,
+        [none] interactions.RightClick,
         [none] slots.SlotUser,
         [none] ui_containers.DataUI,
     );
