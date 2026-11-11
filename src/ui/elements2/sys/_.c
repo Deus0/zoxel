@@ -23,6 +23,21 @@ void zox_systems_elements2(ecs *world) {
         [in] layouts.LayoutSize,
         [none] elements2.ScrollbarHandle
     );
+    zox_filter(
+        scrollview_query,
+        [in] transforms2.Position2,
+        [in] layouts.LayoutSize,
+        [none] elements2.Scrollview,
+    );
+    zox_system_ctx(
+        ScrollviewWheelSystem,
+        zoxp_update,
+        scrollview_query,
+        [in] inputs.ZeviceWheel,
+        [in] inputs.ZevicePointerPosition,
+        [in] core.EntityTarget,
+        [none] !core.Disabled,
+    );
     // make elements visible/invisible within list
     zox_system(
         ListRenderDirtySystem,

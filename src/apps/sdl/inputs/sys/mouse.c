@@ -88,11 +88,12 @@ void mouse_input_system(iter* it) {
             // can be both
             if (zox_has(e2, ZeviceWheel)) {
                 zox_muter(e2, ZeviceWheel, wheel);
+                const int2 mouse_wheel = zox_mouse_fake ? zox_mouse_fake_wheel : static_mouse_wheel;
                 if (!int2_equals(
-                    static_mouse_wheel,
+                    mouse_wheel,
                     wheel->value))
                 {
-                    wheel->value = static_mouse_wheel;
+                    wheel->value = mouse_wheel;
                     if (dbg_log) {
                         zox_log("Mouse Wheel [%ix%i]",
                             wheel->value.x,

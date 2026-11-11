@@ -72,41 +72,19 @@ byte zox_tst_ui_pointer_position(
     entity e,
     int2* position)
 {
-    const entity camera = zox_get_link(world, canvas, CameraLink);
-    if (!zox_valid(camera) ||
+    CanvasViewport viewport;
+    if (!get_canvas_viewport(world, canvas, &viewport) ||
         !zox_has(e, Position2) ||
         !zox_has(e, LayoutSize))
     {
         return 0;
     }
-    const float2 canvas_sizef = int2_to_float2(zox_getv(canvas, LayoutSize));
-    if (canvas_sizef.y <= 0) {
-        return 0;
-    }
-    const float aspect_ratio = canvas_sizef.x / canvas_sizef.y;
-    const int2 canvas_position = zox_getv(camera, ScreenPosition);
-    const int2 canvas_size = zox_getv(camera, PixelSize);
-    const float2 p = zox_getv(e, Position2);
-    const int2 lsize = zox_getv(e, LayoutSize);
-    const int2 viewport_position = {
-        canvas_position.x + (int)((p.x / aspect_ratio + 0.5f) * canvas_size.x),
-        canvas_position.y + (int)((p.y + 0.5f) * canvas_size.y)
-    };
-    int4 bounds = {
-        viewport_position.x - lsize.x / 2,
-        viewport_position.x + lsize.x / 2,
-        viewport_position.y - lsize.y / 2,
-        viewport_position.y + lsize.y / 2
-    };
-    if (zox_has(e, MeshAlignment)) {
-        const float4 scaler = alignment_to_scaler(zox_getv(e, MeshAlignment));
-        bounds = (int4) {
-            viewport_position.x - lsize.x * scaler.x,
-            viewport_position.x + lsize.x * scaler.y,
-            viewport_position.y - lsize.y * scaler.z,
-            viewport_position.y + lsize.y * scaler.w
-        };
-    }
+    const int4 bounds = get_element_pointer_bounds(
+        world,
+        &viewport,
+        e,
+        zox_getv(e, Position2),
+        zox_getv(e, LayoutSize));
     *position = (int2) {
         (bounds.x + bounds.y) / 2,
         (bounds.z + bounds.w) / 2
@@ -125,7 +103,13 @@ static inline void zox_tst_mouse(
     zox_mouse_fake_right = 0;
 }
 
+// scrolls the fake mouse's wheel (positive y is up), set it back to zero after a frame for one notch
+static inline void zox_tst_mouse_wheel(int y) {
+    zox_mouse_fake_wheel = (int2) { 0, y };
+}
+
 static inline void zox_tst_mouse_end() {
+    zox_mouse_fake_wheel = int2_zero;
     zox_mouse_fake = 0;
     zox_mouse_fake_left = 0;
     zox_mouse_fake_right = 0;

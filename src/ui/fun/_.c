@@ -30,3 +30,4 @@ void initialize_element(ecs *world, entity e, entity parent, entity canvas, int2
     }
     zox_set(e, TextureSize, { tsize });
 }
+#include "pointer.c"

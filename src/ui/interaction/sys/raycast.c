@@ -57,24 +57,12 @@ zox_sys2(ElementRaycastSystem) {
         if (!zox_valid(canvas)) {
             continue;
         }
-        entity camera = zox_get_link(
-            world,
-            canvas,
-            CameraLink);
-        if (!zox_valid(camera)) {
+        CanvasViewport viewport;
+        if (!get_canvas_viewport(world, canvas, &viewport)) {
             continue;
         }
-        float2 canvas_sizef = int2_to_float2(zox_getv(canvas, LayoutSize));
-        float aspect_ratio = canvas_sizef.x / canvas_sizef.y;
-        // NOTE: Now it only works for one canvas hmmm
-        int2 canvas_position = zox_getv(camera, ScreenPosition);
-        int2 canvas_size = zox_getv(camera, PixelSize);
         int2 position = ray_position->value;
-        byte ray_in_viewport =
-            position.x >= canvas_position.x &&
-            position.x <= canvas_position.x + canvas_size.x &&
-            position.y >= canvas_position.y &&
-            position.y <= canvas_position.y + canvas_size.y;
+        byte ray_in_viewport = is_in_canvas_viewport(&viewport, position);
         if (!ray_in_viewport) {
             if (dbg_log >= 2) {
                 zox_log("(ElementRaycastSystem) Ray not in viewport [%s] at [%ix%i]",
@@ -106,37 +94,13 @@ zox_sys2(ElementRaycastSystem) {
                 if (canvas != rcanvas) {
                     continue;
                 }
-                int2 lsize = lsize2->value;
-                float2 p = position2->value;
-                int2 viewport_position = {
-                    canvas_position.x + (int)((p.x / aspect_ratio + 0.5f) * canvas_size.x),
-                    canvas_position.y + (int)((p.y + 0.5f) * canvas_size.y)
-                };
-                // int2 viewport_position = canvasPosition2->value;
-                // viewport_position.x += canvas_position.x;
-                // viewport_position.y += canvas_position.y;
-                // bounds should be offset with canvas position
-                int4 ui_bounds = {
-                    viewport_position.x - lsize.x / 2,
-                    viewport_position.x + lsize.x / 2,
-                    viewport_position.y - lsize.y / 2,
-                    viewport_position.y + lsize.y / 2
-                };
-                if (zox_has(e2, MeshAlignment)) {
-                    byte alignment = zox_getv(e2, MeshAlignment);
-                    float4 scaler = alignment_to_scaler(alignment);
-                    ui_bounds = (int4) {
-                        viewport_position.x - lsize.x * scaler.x,
-                        viewport_position.x + lsize.x * scaler.y,
-                        viewport_position.y - lsize.y * scaler.z,
-                        viewport_position.y + lsize.y * scaler.w
-                    };
-                }
-                byte was_raycasted =
-                    position.x >= ui_bounds.x &&
-                    position.x <= ui_bounds.y &&
-                    position.y >= ui_bounds.z &&
-                    position.y <= ui_bounds.w;
+                int4 ui_bounds = get_element_pointer_bounds(
+                    world,
+                    &viewport,
+                    e2,
+                    position2->value,
+                    lsize2->value);
+                byte was_raycasted = is_in_pointer_bounds(ui_bounds, position);
                 if (was_raycasted) {
                     if (layer->value > ui_layer) {
                         ui_layer = layer->value;
