@@ -4,6 +4,7 @@
 #include "tooltips.c"
 #include "options.c"
 #include "scroll.c"
+#include "exit.c"
 
 void zox_tsts_huds() {
     zox_tsts_huds_load();
@@ -19,4 +20,9 @@ void zox_tsts_huds() {
     zox_tst_set_setup("options_toggle", NULL, 1);
     zox_tst_add("scroll_wheel", zox_tst_scroll_wheel_ready, zox_tst_scroll_wheel_check, 60);
     zox_tst_set_setup("scroll_wheel", NULL, 1);
+    zox_tst_add("exit_menu", zox_tst_exit_menu_ready, zox_tst_exit_check, 60);
+    zox_tst_set_setup("exit_menu", NULL, 1);
+    zox_tst_set_exits("exit_menu");
+    zox_tst_add("exit_game", zox_tst_exit_game_ready, zox_tst_exit_check, 90);
+    zox_tst_set_exits("exit_game");
 }

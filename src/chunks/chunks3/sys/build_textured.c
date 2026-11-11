@@ -205,6 +205,12 @@ void chunk_textured_build_system(iter* it) {
                 chunk_depth);
             continue;
         }
+        // waits while the chunk's sides rebuild: SidesBuildSystem runs in this phase on other
+        //  threads, so building now reads half built sides, and it skips adding BuildMesh to a mesh
+        //  that's still building, so the mesh never rebuilds (Smooth Lights Colors Past Limits)
+        if (zox_has(chunk, BuildChunkSides)) {
+            continue;
+        }
         entity terrain = zox_get_parent(world, chunk);
 #ifdef zox_safety_checks
         if (!zox_valid(terrain)) {

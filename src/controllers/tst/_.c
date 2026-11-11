@@ -148,6 +148,8 @@ byte zox_tst_player_spawn_ready(ecs* world) {
 }
 
 void zox_tst_player_spawn_check(ecs* world) {
+    // the terrain's meshes matched their sides when lit (the mesh builder waits for sides)
+    zox_tst_check(zox_smooth_lights_errors == 0, "[%u] Smooth Lights Colors Past Limits errors", zox_smooth_lights_errors);
     const entity character = zox_tst_spawn_character(world);
     zox_tst_check(character, "player character is gone after settling");
     if (!character) {
@@ -481,6 +483,7 @@ byte zox_tst_stream_npcs_ready(ecs* world) {
 
 void zox_tst_stream_npcs_check(ecs* world) {
     (void) world;
+    zox_tst_check(zox_smooth_lights_errors == 0, "[%u] Smooth Lights Colors Past Limits errors while streaming", zox_smooth_lights_errors);
     zox_log("[tst] most npcs at once [%i], chunks that despawned their npcs [%i]",
         zox_tst_stream_most_npcs, zox_tst_stream_despawned_chunks);
     zox_tst_check(zox_tst_stream_step >= zox_tst_stream_steps, "only walked [%i] of [%i] steps", zox_tst_stream_step, zox_tst_stream_steps);
