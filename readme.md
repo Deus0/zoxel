@@ -128,12 +128,18 @@ cd zoxel
 Notes on how the code fits together live in [doc](doc). They're a work in
 progress and will be reorganised over time.
 
+New to the code? Start with **[Onboarding](doc/onboarding.md)**: the big
+picture, building, the module layout, reading systems, tests, and how to pick
+up a task.
+
 - [Characters](doc/character.md): how characters are structured, their
   children (voxes, renderers, skeletons), and tips for working with them
 - [Links](doc/links.md): pointing entities at each other with `zox_link`,
   single and many links, and reacting to unlinks
 - [Children](doc/children.md): parenting, getting children, and ordered
   children
+- [Commands](doc/commands.md): command line flags for the game binary
+  (`--autostart`, `--tiny`, `--nosaves`, tests and more)
 - [Architecture](doc/architecture.md): events vs systems, and other
   design guidelines
 - [Coding Standards](doc/coding_standards.md): code style and conventions
