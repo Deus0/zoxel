@@ -41,11 +41,12 @@ zox_sys2(GlyphSpawnSystem) {
             world,
             e,
             zox_id(Glyph));
-        if (new_length == old_length) {
-            continue;
-        }
+        // visibility follows the text, even when the glyph count didn't change
         if (zox_has(e, TextRenderEnabler)) {
             render_disabled->value = new_length == 0;
+        }
+        if (new_length == old_length) {
+            continue;
         }
         float2 position_anchor = float2_half;
         int2 size = int2_single(text_size->value);
