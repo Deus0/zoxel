@@ -33,6 +33,7 @@ is_profiler="0"         # https://www.flecs.dev/explorer/?host=localhost
 is_fast_dev="0"         # -O3
 is_dev_memory="0"
 is_dev_syntax="0"
+is_fonts="0"             # --fonts: freetype font converter (bsh/convert.sh --fonts), not for game builds
 is_run="0"
 logs="0"
 verbose="0"
@@ -99,6 +100,7 @@ fi
 [[ " $* " == *" --fast_dev "* ]] && is_fast_dev="1"
 [[ " $* " == *" --memory "* ]] && is_dev_memory="1"
 [[ " $* " == *" --syntax "* ]] && is_dev_syntax="1"
+[[ " $* " == *" --fonts "* ]] && is_fonts="1"
 [[ " $* " == *" --release "* ]] && debug="0"
 [[ " $* " == *" --run "* ]] && is_run="1"
 [[ " $* " == *" --nologs "* ]] && logs="0"
@@ -405,6 +407,13 @@ if [[ "${window_lib}" == "sdl" && "${is_static}" == "1" ]]; then
     fi
 fi
 
+# font converter: reads raw/fonts ttfs with freetype, saves res/fonts .zox (bsh/convert.sh --fonts)
+if [[ ${is_fonts} == "1" ]]; then
+    echo "+ Added [font converter] (freetype)"
+    dflags+=" -Dzox_lib_ttf -Dconvert_fonts"
+    cflags+=" $(pkg-config --cflags freetype2)"
+    libs+=" $(pkg-config --libs freetype2)"
+fi
 
 ${compiler} ${cflags} ${sources} -o "${bin_path}" ${includes} ${dflags} ${libs}
 echo "+ Completed Build [${bin_path}]"

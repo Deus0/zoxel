@@ -84,7 +84,7 @@ else
     DFLAGS += -Dflecssource # -Iinc/flecs
 endif
 
-.PHONY: game help clean build dev pick run rund runp runpd gdb val flecs flecs-package test tests
+.PHONY: game help clean build dev pick run rund runp runpd gdb val flecs flecs-package convert test tests
 # .DEFAULT_GOAL := build
 
 
@@ -119,6 +119,10 @@ help:
 clean:
 	@ echo "> You are removing [bin dist]"
 	@ rm -rf bin dist
+
+# converts raw/ assets (fonts, music) into res/ data, kept out of game builds
+convert:
+	@ bash bsh/convert.sh --all
 
 # installs flecs source directly
 flecs:

@@ -11,8 +11,8 @@ void zox_event_quest_marker(iter* it) {
         // NOTE: Collect quests might switch, if you drop items etc
         byte quest_done = zox_has(e, QuestDone);
         const char* text = quest_done ?
-            "=" :
-            "+";
+            quest_marker_done :
+            quest_marker_doing;
         // update marker based on quest
         // set to ?
         entity text_entity = zox_get_child_by_id_recursive(

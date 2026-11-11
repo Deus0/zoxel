@@ -39,7 +39,7 @@ entity load_font_style(ecs *world, char *filename) {
     free(directory_slash);
     free(directory);
     if (!file) {
-        zox_log_error(" > file is NULL at path [%s]", path)
+        zox_loge(" > file is NULL at path [%s]", path)
         perror("Error opening file for writing");
         free(path);
         return 0;
@@ -55,7 +55,7 @@ entity load_font_style(ecs *world, char *filename) {
             &data
         );
     } else {
-        zox_log_error("Filesize is 0 at [%s]", path);
+        zox_loge("Filesize is 0 at [%s]", path);
         perror("filesize is 0");
     }
     fclose(file);

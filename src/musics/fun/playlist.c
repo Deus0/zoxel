@@ -4,7 +4,7 @@ void play_playlist(
     byte new_index)
 {
     if (!zox_valid(realm)) {
-        zox_log_error("play_playlist invalid realm [%lu]", realm);
+        zox_loge("play_playlist invalid realm [%lu]", realm);
         return;
     }
     entity playlists[64];

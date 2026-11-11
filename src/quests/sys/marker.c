@@ -26,7 +26,7 @@ void marker_spawn_system(iter* it) {
             }
             continue;
         }
-        char* text = "!";
+        char* text = quest_marker_available;
         entity marker = spawn_marker(
             world,
             e,

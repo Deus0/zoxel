@@ -17,7 +17,7 @@ entity load_music_file(ecs *world, entity prefab, entity prefab_note, char* file
     zox_logv(" - Length: %f", music_length);*/
     free(music_filepath);
 
-    if (loaded_note_count == 0) {
+    if (loaded_note_count <= 0) {
         zox_logv("Music Error: No Notes");
         return 0;
     }
