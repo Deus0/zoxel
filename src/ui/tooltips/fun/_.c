@@ -4,11 +4,10 @@ static inline void set_tooltip_text(
     entity tooltip,
     const char* text)
 {
+    // NOTE: moving straight from one ui to the next, the old one's deselect unlink is still
+    //  deferred, so it's still linked here, that's expected: replace it
     entity old_linked = zox_get_link(world, tooltip, TooltipLink);
     if (old_linked) {
-        zox_loge("Tooltip Double Linked [%s] at [%s]",
-            zox_getn(old_linked),
-            zox_getn(ui));
         if (old_linked == ui) {
             return;
         }
