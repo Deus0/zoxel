@@ -3,7 +3,7 @@
 SDL_Rect get_monitor_bounds(byte index) {
     SDL_Rect b;
     if (SDL_GetDisplayBounds(index, &b)) {
-        zox_log_error("[SDL_GetDisplayBounds] Failed for %d: %s", index, SDL_GetError());
+        zox_loge("[SDL_GetDisplayBounds] Failed for %d: %s", index, SDL_GetError());
         if (index == 0) {
             return (SDL_Rect) { .w = 480, .h = 480 };
         } else {

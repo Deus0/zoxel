@@ -10,14 +10,14 @@ static inline entity spawn_file_shader_at_path(ecs *world, entity prefab, const 
     char* source_precision = append_shader_precision(source, shader_precision);
     free(source);
     if (!source_precision) {
-        zox_log_error("[sourcep] is invalid");
+        zox_loge("[sourcep] is invalid");
         return 0;
     }
     // Example: #version 320 es
     char* source2 = append_shader_version(source_precision, shader_opengl_version, is_shaders_es);
     free(source_precision);
     if (!source2) {
-        zox_log_error("[source2] is invalid");
+        zox_loge("[source2] is invalid");
         return 0;
     }
     char* source3 = source2;
@@ -25,14 +25,14 @@ static inline entity spawn_file_shader_at_path(ecs *world, entity prefab, const 
         source3 = convert_to_gles2_shader(source2);
         free(source2);
         if (!source3) {
-            zox_log_error("[source3] is invalid");
+            zox_loge("[source3] is invalid");
             return 0;
         }
     }
     char* source4 = process_ubo_max_define(source3, ubo_size);
     free(source3);
     if (!source4) {
-        zox_log_error("[source4] is invalid");
+        zox_loge("[source4] is invalid");
         return 0;
     }
     if (is_log_shaders) {

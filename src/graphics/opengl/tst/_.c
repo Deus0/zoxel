@@ -8,7 +8,7 @@ byte test_graphics() {
         print_opengl();
     }
     if (test_opengl_shaders()) {
-        zox_log_error("Shaders not supported");
+        zox_loge("Shaders not supported");
         return EXIT_FAILURE;
     }
     if (test_frame_buffer()) {

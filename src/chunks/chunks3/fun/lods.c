@@ -16,7 +16,7 @@ static inline byte camera_distance_to_render_depth(
     }
     // vanish beyond the horizon
     if (distance > farf) {
-        // zox_log_error(" lod finder out of range: dist [%i] range [%i-%i] depth [%i]", distance, near, far, depth)
+        // zox_loge(" lod finder out of range: dist [%i] range [%i-%i] depth [%i]", distance, near, far, depth)
         return 0; // render_depth_invisible;
     }
     // carve the remaining range (render_distance–init_lod) into max_lod+1 equal slices

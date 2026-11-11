@@ -22,13 +22,13 @@ CameraSpawnData get_camera_preset(byte mode) {
 void set_camera_transform(ecs *world, entity camera, entity character, byte mode) {
 
     if (!zox_valid(camera)) {
-        zox_log_error("[set_camera_transform]: Invalid Camera");
+        zox_loge("[set_camera_transform]: Invalid Camera");
         return;
     }
 
     float3 target_position = (float3) { 8, 0, 8 };
     if (zox_valid(character) && zox_has(character, Position3D)) {
-        // zox_log_error("[set_camera_transform]: Invalid Character");
+        // zox_loge("[set_camera_transform]: Invalid Character");
         // return;
         zox_geter_value(character, Position3D, float3, position);
         target_position = position;

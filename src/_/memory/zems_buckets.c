@@ -77,7 +77,7 @@ static void refill_class(int idx) {
         BlockHeader *hdr = (BlockHeader *) malloc(full_size);
         zox_log("-> [%i] new pool malloc [%i]", i, full_size);
         if (!hdr) {
-            zox_log_error("[ZEMS] Failed to refill class %d", idx);
+            zox_loge("[ZEMS] Failed to refill class %d", idx);
             abort();
         }
         hdr->magic = ZEMS_MAGIC;
@@ -102,7 +102,7 @@ void* zalloc(uint length) {
     }
 
     if (idx == NUM_CLASSES) {
-        zox_log_error("[ZEMS] Allocation too large: %zu bytes (limit %zu)", needed, class_sizes[NUM_CLASSES - 1]);
+        zox_loge("[ZEMS] Allocation too large: %zu bytes (limit %zu)", needed, class_sizes[NUM_CLASSES - 1]);
         return NULL;
     }
 
@@ -115,7 +115,7 @@ void* zalloc(uint length) {
         block = free_lists[idx];
         if (!block) {
             unlock_mem();
-            zox_log_error("[ZEMS] Failed to allocate block for class %d\n", idx);
+            zox_loge("[ZEMS] Failed to allocate block for class %d\n", idx);
             return NULL;
         }
     }
@@ -130,19 +130,19 @@ void* zalloc(uint length) {
 
 void zee(void *ptr) {
     if (!ptr) {
-        zox_log_error("missing pointer in zee");
+        zox_loge("missing pointer in zee");
         return;
     }
 
     BlockHeader *hdr = ((BlockHeader *)ptr) - 1;
     if (hdr->magic != ZEMS_MAGIC) {
-        zox_log_error("[ZEMS] zee(): invalid or corrupted pointer %p (magic = 0x%X)", ptr, hdr->magic);
+        zox_loge("[ZEMS] zee(): invalid or corrupted pointer %p (magic = 0x%X)", ptr, hdr->magic);
         return;
     }
 
     int idx = hdr->class_index;
     if (idx < 0 || idx >= NUM_CLASSES) {
-        zox_log_error("[ZEMS] zee(): corrupt class_index %d", idx);
+        zox_loge("[ZEMS] zee(): corrupt class_index %d", idx);
         return;
     }
 
@@ -164,7 +164,7 @@ void* rezalloc(void *ptr, uint new_length) {
 
     BlockHeader *old_hdr = (BlockHeader*)ptr - 1;
     if (old_hdr->magic != ZEMS_MAGIC) {
-        zox_log_error("[ZEMS] rezalloc(): invalid pointer %p (magic = 0x%X)", ptr, old_hdr->magic);
+        zox_loge("[ZEMS] rezalloc(): invalid pointer %p (magic = 0x%X)", ptr, old_hdr->magic);
         abort();
     }
 

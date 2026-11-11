@@ -5,7 +5,7 @@ void toggle_life_terrain(ecs *world, int32_t keycode) {
     zox_log("> terrain death toggling");
     entity realm = local_realm;
     if (!zox_valid(realm)) {
-        zox_log_error("Invalid [local_realm]")
+        zox_loge("Invalid [local_realm]")
         return;
     }
     entity terrain = local_terrain;

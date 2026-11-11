@@ -12,7 +12,7 @@ void player_start_game2D_delayed(ecs *world, entity player) {
     zox_link(world, player, CharacterLink, character);
     entity camera = zox_get_link(world, player, CameraLink);
     if (!zox_valid(camera)) {
-        zox_log_error("Camera is gone from player.");
+        zox_loge("Camera is gone from player.");
         return;
     }
     // set camera2D data

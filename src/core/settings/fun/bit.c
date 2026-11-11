@@ -23,7 +23,7 @@ byte zoxs_set_bit_silently(ecs *world, const char *name, byte value) {
             }
         }
     }
-    zox_log_error("missing [byte] setting [%s]", name)
+    zox_loge("missing [byte] setting [%s]", name)
     return 0;
 }
 
@@ -43,7 +43,7 @@ byte zoxs_set_bit(ecs *world, const char *name, byte value) {
             }
         }
     }
-    zox_log_error("missing [byte] setting [%s]", name)
+    zox_loge("missing [byte] setting [%s]", name)
     return 0;
 }
 

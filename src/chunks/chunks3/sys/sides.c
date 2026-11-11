@@ -27,7 +27,7 @@ static inline byte get_node_sides_all_solid(
     byte distance)
 {
     if (!node) {
-        // zox_log_error("get_node_sides_all_solid has invalid node.");
+        // zox_loge("get_node_sides_all_solid has invalid node.");
         return 0;
     }
     // at end of node tree, return if solid

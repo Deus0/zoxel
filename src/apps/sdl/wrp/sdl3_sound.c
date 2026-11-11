@@ -36,7 +36,7 @@ byte sdl_audio_play_sound(const float *data, int length, byte channels) {
         data,
         length * sizeof(float)
     )) {
-        zox_log_error("SDL_PutAudioStreamData: %s", SDL_GetError());
+        zox_loge("SDL_PutAudioStreamData: %s", SDL_GetError());
         return 0;
     }
     return 1;

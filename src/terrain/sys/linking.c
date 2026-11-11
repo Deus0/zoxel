@@ -57,7 +57,7 @@ byte set_entity_chunk(
             zox_log_chunk_added(world, new_chunk, e);
         }
     } else {
-        zox_log_error("failed to add npc to chunk");
+        zox_loge("failed to add npc to chunk");
     }
     zox_link(world, e, ChunkLink, new_chunk);
     // now render distabled

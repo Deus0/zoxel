@@ -156,7 +156,7 @@ zox_sys2(LightBeamSystem) {
             byte3 pos = update.pos;
             short length = octree_size(update.depth);
             if (pos.x >= length || pos.z >= length || pos.y >= length) {
-                //  zox_log_error("[r_LightQueue] position oob [%ix%ix%i]", pos.x, pos.y, pos.z);
+                //  zox_loge("[r_LightQueue] position oob [%ix%ix%i]", pos.x, pos.y, pos.z);
                 continue;
             }
             if (dbg_log >= 2) {

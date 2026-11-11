@@ -304,7 +304,7 @@ void collide_with_chunk(ecs* world,
         // todo: fix for more depth
         float chunk_scale = terrain_scale / ((float) ddepth);
         *distance_d = get_distance_to_voxel_grid(position_d, *collided_d, chunk_scale);
-        // zox_log_error("hitting chunk position [%ix%ix%i] - %f", chunk_position.x, chunk_position.y, chunk_position.z, position_d);
+        // zox_loge("hitting chunk position [%ix%ix%i] - %f", chunk_position.x, chunk_position.y, chunk_position.z, position_d);
     }
 }
 

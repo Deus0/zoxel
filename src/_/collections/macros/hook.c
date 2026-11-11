@@ -25,7 +25,7 @@
     \
     void add_hook_##name(return_type (*event) args_decl) {\
         if (!functions_##name) {\
-            zox_log_error("hook [%s] not initialized yet", #name)\
+            zox_loge("hook [%s] not initialized yet", #name)\
         } else {\
             hook_##name fun_event = (hook_##name) { event }; \
             hook_##name##_array_d_add(functions_##name, fun_event); \

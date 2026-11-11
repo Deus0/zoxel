@@ -20,7 +20,7 @@ static inline void zox_dispose_mixer() {
     Uint16 format;
     if (Mix_QuerySpec(&frequency, &format, &channels) == 0) {
         // Oh dear, SDL_mixer isn't initialized or is being bashful
-        zox_log_error("failed finding sound frequency (mix length)");
+        zox_loge("failed finding sound frequency (mix length)");
         return -1.0;
     }
     // The size of a sample in bytes

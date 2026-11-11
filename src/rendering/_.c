@@ -37,7 +37,7 @@ byte initialize_rendering(byte render_backend) {
     }
 #endif
     else {
-        zox_log_error("! unknown render_backend")
+        zox_loge("! unknown render_backend")
         return EXIT_FAILURE;
     }
 }

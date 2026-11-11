@@ -60,7 +60,7 @@ SDL_GLContext create_sdl_opengl_context(SDL_Window* window) {
     }
     SDL_GLContext context = SDL_GL_CreateContext(window);
     if (!context) {
-        zox_log_error("[create_sdl_opengl_context:SDL_GL_CreateContext] [%s]", SDL_GetError());
+        zox_loge("[create_sdl_opengl_context:SDL_GL_CreateContext] [%s]", SDL_GetError());
         return NULL;
     }
     return context;

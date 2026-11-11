@@ -4,16 +4,16 @@ void clone_texture_data(ecs *world, entity e, entity src) {
 
     if (!src || !zox_has(src, TextureSize) || !zox_has(src, TextureData)) {
         if (!src) {
-            zox_log_error("[texture not found] [%s]", zox_get_name(e));
+            zox_loge("[texture not found] [%s]", zox_get_name(e));
         } else {
-            zox_log_error("[texture invalid] [%s] > source [%s]", zox_get_name(e), zox_get_name(src));
+            zox_loge("[texture invalid] [%s] > source [%s]", zox_get_name(e), zox_get_name(src));
         }
         return;
     }
 
     zox_geter(src, TextureData, source_data);
     if (source_data->length == 0 || !source_data->value) {
-        zox_log_error("[clone_texture_data] Invalid src TextureData [%s] > source [%s]", zox_get_name(e), zox_get_name(src));
+        zox_loge("[clone_texture_data] Invalid src TextureData [%s] > source [%s]", zox_get_name(e), zox_get_name(src));
         return;
     }
     zox_geter_value(src, TextureSize, int2, size);
@@ -22,7 +22,7 @@ void clone_texture_data(ecs *world, entity e, entity src) {
     TextureData data = { 0 };
     initialize_TextureData(&data, source_data->length);
     if (!data.value) {
-        zox_log_error("texture data malloc failed");
+        zox_loge("texture data malloc failed");
         return;
     }
 

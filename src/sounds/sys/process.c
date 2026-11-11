@@ -20,7 +20,7 @@ zox_sys2(SoundProcessSystem) {
             continue;
         }
         if (!soundData->value) {
-            zox_log_error("Failed processing, no sound data");
+            zox_loge("Failed processing, no sound data");
             continue;
         }
         float frequency = soundFrequency->value;

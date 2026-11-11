@@ -5,7 +5,7 @@
 // # New Settings #
 void zoxs_set(const char* name, byte type, on_set_event on_set) {
     if (settings_count >= max_settings) {
-        zox_log_error("settings count already at its limit of [%i]", max_settings)
+        zox_loge("settings count already at its limit of [%i]", max_settings)
         return;
     }
     setting value = {

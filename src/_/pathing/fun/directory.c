@@ -59,7 +59,7 @@ char* get_filename(const char* filepath, byte keep_extension) {
 void add_file(FileList *fileList, const char *filepath, byte keep_extension) {
 
     if (fileList == NULL || filepath == NULL || !*filepath) {
-        zox_log_error("[add_file] invalid input: fileList=%p, filepath=%s", fileList, filepath ? filepath : "NULL");
+        zox_loge("[add_file] invalid input: fileList=%p, filepath=%s", fileList, filepath ? filepath : "NULL");
         return;
     }
 

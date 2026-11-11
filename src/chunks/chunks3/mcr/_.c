@@ -70,7 +70,7 @@ static void debug_octree_node_compare_##T( \
     byte ignore_value \
 ) { \
     if (!node) {\
-        zox_log_error("invalid node in debug_octree_node"); \
+        zox_loge("invalid node in debug_octree_node"); \
         return; \
     } \
     \
@@ -95,7 +95,7 @@ static void debug_octree_node_compare_##T( \
     for (byte i = 0; i < 8; i++) { \
         const T *child = (const T*)((const char*)(*kids_ptr) + i * sizeof(T)); \
         if (!child) { \
-            zox_log_error("invalid child on octree"); \
+            zox_loge("invalid child on octree"); \
             continue; \
         } \
         byte3 offset = octree_positions[i]; \

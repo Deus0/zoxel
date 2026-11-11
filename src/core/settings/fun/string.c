@@ -15,7 +15,7 @@ byte zoxs_set_string(ecs *world, const char *name, const char* value) {
             }
         }
     }
-    zox_log_error("missing [string] setting [%s]", name)
+    zox_loge("missing [string] setting [%s]", name)
     return 0;
 }
 */

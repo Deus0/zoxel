@@ -5,7 +5,7 @@
 - refactor GenerateModel to tag event
 	- check any other bytes that can be tag events too
 	- the idea is to reduce idling systems when the game isnt using them
-- make all zox_log_error use zox_loge
+-x make all zox_log_error use zox_loge
 - remove any hooks and keep it all inside flecs pipelines
 	- we want it consistent and easier to debug the logic
 	- ecs practices
@@ -18,7 +18,7 @@
 	- ao in a seperate system
 - add greedy mesh for vox models
 	- needs to have smaller quads around corners to maintain ao visuals
-- Turn quest slayer into an event
+-x Turn quest slayer into an event (zox_event_quest_slay, an observer in quests/eve)
     - Make observer function for callbacks
 - Refactor character vox into sub entity
 - Single Vox for Grass
@@ -38,7 +38,7 @@
 - Refactor Texture Generation into Nodegraphs
 
 Modules
-- Move AnimateTextSystem from dialogue to ui/texts
+-x Move AnimateTextSystem from dialogue to ui/texts
 
 Events
 - Refactor all 'SettingsSystem' into events on prefab_app

@@ -22,7 +22,7 @@ byte sdl_audio_play_sound(const float *data, int length, byte channels) {
         SDL_PauseAudioDevice(audio_device, 0);
     }
     if (SDL_QueueAudio(audio_device, data, length * sizeof(float)) < 0) {
-        zox_log_error("SDL_QueueAudio: %s", SDL_GetError());
+        zox_loge("SDL_QueueAudio: %s", SDL_GetError());
         return 0;
     }
     return 1;

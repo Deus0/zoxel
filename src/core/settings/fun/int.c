@@ -26,7 +26,7 @@ byte zoxs_limit_int(ecs* world, const char *name, int min, int max) {
         }
     }
 
-    zox_log_error("? [int] setting [%s]", name)
+    zox_loge("? [int] setting [%s]", name)
     return 0;
 }
 
@@ -49,6 +49,6 @@ byte zoxs_set_int(ecs *world, const char *name, int value) {
             }
         }
     }
-    zox_log_error("Missing [int] setting [%s]", name)
+    zox_loge("Missing [int] setting [%s]", name)
     return 0;
 }*/

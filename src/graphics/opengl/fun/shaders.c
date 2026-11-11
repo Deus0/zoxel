@@ -8,20 +8,20 @@ static inline void zox_gpu_dispose_shader(guint id) {
 
 byte initialize_material(guint material, guint vert_shader, guint frag_shader) {
     if (!vert_shader || !frag_shader) {
-        zox_log_error("[initialize_materialial]: invalid shader");
+        zox_loge("[initialize_materialial]: invalid shader");
         return EXIT_FAILURE;
     }
     gint attached_shaders = 0;
     glAttachShader(material, vert_shader);
     glGetProgramiv(material, GL_ATTACHED_SHADERS, &attached_shaders);
     if (attached_shaders != 1) {
-        zox_log_error("Vert Shader failed to attach.");
+        zox_loge("Vert Shader failed to attach.");
         return EXIT_FAILURE;
     }
     glAttachShader(material, frag_shader);
     glGetProgramiv(material, GL_ATTACHED_SHADERS, &attached_shaders);
     if (attached_shaders != 2) {
-        zox_log_error("Frag Shader failed to attach.");
+        zox_loge("Frag Shader failed to attach.");
         return EXIT_FAILURE;
     }
     glLinkProgram(material);
@@ -35,10 +35,10 @@ byte initialize_material(guint material, guint vert_shader, guint frag_shader) {
         if (info_log_length > 0) {
             gchar* log = malloc(info_log_length + 1);
             glGetProgramInfoLog(material, info_log_length, NULL, log);
-            zox_log_error("Material Link Failure [%u] to [%u x %u]\n%s", material, vert_shader, frag_shader, log);
+            zox_loge("Material Link Failure [%u] to [%u x %u]\n%s", material, vert_shader, frag_shader, log);
             free(log);
         } else {
-            zox_log_error("Material Link Failed [%u] to [%u x %u]", material, vert_shader, frag_shader);
+            zox_loge("Material Link Failed [%u] to [%u x %u]", material, vert_shader, frag_shader);
         }
         output = EXIT_FAILURE;
     }
@@ -65,7 +65,7 @@ byte check_shader_compile_status(guint shader) {
         gchar* info_log = malloc(info_log_length + 1); // +1 for null-terminator
         if (info_log) {
             glGetShaderInfoLog(shader, info_log_length, NULL, info_log);
-            zox_log_error("###\n[glCompileShader] failed:\n[%s]\n###\n", info_log);
+            zox_loge("###\n[glCompileShader] failed:\n[%s]\n###\n", info_log);
             free(info_log);
         }
         return 1;

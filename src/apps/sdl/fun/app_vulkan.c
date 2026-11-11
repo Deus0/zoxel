@@ -18,7 +18,7 @@ entity spawn_main_window_vulkan(
         return 0;
     }
     if (*SDL_GetError()) {
-        zox_log_error("vulkan error: %s\n", SDL_GetError())
+        zox_loge("vulkan error: %s\n", SDL_GetError())
         return 0;
     }
     return spawn_main_window_vulkan(world, sdl_window);

@@ -74,7 +74,7 @@ name* create_##name(hash_type size) {\
     }\
     name* map = zox_malloc(sizeof(name));\
     if (!map) {\
-        zox_log_error("error creating hashmap [%s]\n", #name)\
+        zox_loge("error creating hashmap [%s]\n", #name)\
         return NULL;\
     }\
     map->size = size;\

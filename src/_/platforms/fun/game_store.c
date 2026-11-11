@@ -10,7 +10,7 @@ void intialize_game_store() {
         is_steam_running = 1;
         zox_log("> game store [steam]")
     } else {
-        zox_log_error("! steam failed to initialize")
+        zox_loge("! steam failed to initialize")
     }
 }
 

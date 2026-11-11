@@ -39,13 +39,13 @@ int load_instance2D_material(ecs *world) {
     shader2D_basic = zox_gpu_compile_shader(vert, frag);
 
     if (guint2_equals(shader2D_basic, guint2_zero)) {
-        zox_log_error("shader2D_basic has failed")
+        zox_loge("shader2D_basic has failed")
         return EXIT_FAILURE;
     }
 
     square2DMaterial = spawn_gpu_material_program((guint2) { shader2D_basic.x, shader2D_basic.y });
     if (!square2DMaterial) {
-        zox_log_error("=> [load_instance2D_material] Failed:\nVert Shader:\n%s\nFrag Shader:\n%s", vert, frag);
+        zox_loge("=> [load_instance2D_material] Failed:\nVert Shader:\n%s\nFrag Shader:\n%s", vert, frag);
         return EXIT_FAILURE;
     }
 

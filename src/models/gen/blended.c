@@ -21,7 +21,7 @@ byte get_sub_node_voxel(const VoxelNode* node, byte3* positionl, byte depth) {
     byte3_modulus_byte(positionl, dividor); // leftover goes here
     VoxelNode* kids = get_children_VoxelNode(node);
     if (!kids) {
-        zox_log_error("node kids null!");
+        zox_loge("node kids null!");
         return node->value;
     }
     return get_sub_node_voxel(&kids[i], positionl, depth);

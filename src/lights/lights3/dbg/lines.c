@@ -9,7 +9,7 @@ static void debug_octree_node_compare(
     byte ignore_value
 ) {
     if (!node) {
-        zox_log_error("invalid node in debug_octree_node");
+        zox_loge("invalid node in debug_octree_node");
         return;
     }
     const LightNode** kids_ptr = (const LightNode**) node;
@@ -41,7 +41,7 @@ static void debug_octree_node_compare(
             (const LightNode*)((const char*)(*kids_ptr) + i * sizeof(LightNode));
 
         if (!child) {
-            zox_log_error("invalid child on octree");
+            zox_loge("invalid child on octree");
             continue;
         }
 

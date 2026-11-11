@@ -1,6 +1,5 @@
 #include "character.c"
 #include "ui.c"
-#include "animate.c"
 #include "animate_end.c"
 #include "sound.c"
 
@@ -13,21 +12,9 @@ void zox_systems_dialogues(ecs* world) {
         [none] core.Begin,
     );
     zox_system(
-        AnimateTextSystem,
-        zoxp_update,
-        [in] dialogues.TargetText,
-        [in] dialogues.AnimateTextTimeLimits,
-        [out] dialogues.AnimateTextBegin,
-        [out] dialogues.AnimateTextTime,
-        [out] texts.TextData,
-        [out] dialogues.GlyphSpawnedDirty,
-        [out] dialogues.AnimateTextEnded,
-        [none] texts.Text,
-    );
-    zox_system(
         AnimateTextEndSystem,
         zoxp_update,
-        [in] dialogues.AnimateTextEnded,
+        [in] texts.AnimateTextEnded,
         [none] dialogues.DialogueLabel
     );
     zox_system_1(
@@ -39,8 +26,8 @@ void zox_systems_dialogues(ecs* world) {
     zox_system_1(
         DialogueSoundSystem,
         zoxp_spawn,
-        [in] dialogues.GlyphSpawnedDirty,
-        [in] dialogues.AnimateTextEnded,
+        [in] texts.GlyphSpawnedDirty,
+        [in] texts.AnimateTextEnded,
         [none] dialogues.DialogueLabel
     );
 }

@@ -1,4 +1,4 @@
-// on the text entity
+// Types a text out a character at a time (TargetText), on the text entity (i.e. dialogue)
 zox_sys2(AnimateTextSystem) {
     byte dbg_log = 0;
     zox_sys_world();

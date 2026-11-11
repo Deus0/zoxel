@@ -202,7 +202,7 @@ entity spawn_taskbar(
      }
      }
      if (hook_index == -1) {
-         zox_log_error("hook_index [%i] not found.", i);
+         zox_loge("hook_index [%i] not found.", i);
          continue;
          }
          TaskbarData hook = TaskbarDatas->data[hook_index];*/

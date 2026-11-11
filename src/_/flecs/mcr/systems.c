@@ -9,7 +9,7 @@ int zox_systems_count = 0;
 
 void zox_system_on_new(ecs* world, entity system) {
     if (zox_systems_count == zox_max_systems) {
-        zox_log_error("Max Systems hit, increase limit [%i]", zox_systems_count);
+        zox_loge("Max Systems hit, increase limit [%i]", zox_systems_count);
         return;
     }
     zox_systems[zox_systems_count++] = system;

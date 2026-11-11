@@ -32,7 +32,7 @@ zox_sys2(InsideBlockSystem) {
             continue;
         }
         if (!zox_has(chunk, VoxelNode) || !zox_has(chunk, NodeDepth)) {
-            zox_log_error("Invalid [%s] Chunk Components [%lu]", zox_get_name(chunk), chunk);
+            zox_loge("Invalid [%s] Chunk Components [%lu]", zox_get_name(chunk), chunk);
             continue;
         }
         zox_geter(chunk, VoxelNode, voctree);
@@ -41,7 +41,7 @@ zox_sys2(InsideBlockSystem) {
         byte3 csize = byte3_single(length2);
         byte3 positionl = get_positionl_byte3(positionv, csize);
         if (!byte3_in_bounds(positionl, csize)) {
-            zox_log_error("Voxel OOB: [%ix%ix%i] :: %i", positionl.x, positionl.y, positionl.z, csize.x);
+            zox_loge("Voxel OOB: [%ix%ix%i] :: %i", positionl.x, positionl.y, positionl.z, csize.x);
             continue;
         }
         // voxel
