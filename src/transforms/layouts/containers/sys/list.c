@@ -1,4 +1,4 @@
-// NOTE: Repositions list elementswhen ListPositionDirty is active
+// NOTE: Repositions list elements (in ChildIndex order) when ListPositionDirty is active
 zox_sys2(ListSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -17,12 +17,12 @@ zox_sys2(ListSystem) {
         byte indent_size = size->value.x / 12;
         int list_position_y = (int)(size->value.y / 2);
         list_position_y -= margins->value.y;
-        uint k = 0;
         int previous_height = 0;
-        iter it2 = zox_children(world, e);
-        while (zox_children_next(it2)) {
-            for (int j = 0; j < it2.count; j++, k++) {
-                entity e2 = it2.entities[j];
+        entity children[layouts2_children_capacity];
+        const uint children_count = get_list_children_ordered(world, e, children, layouts2_children_capacity);
+        {
+            for (uint k = 0; k < children_count; k++) {
+                entity e2 = children[k];
                 if (!zox_valid(e2) || !zox_has(e2, LayoutPosition)) {
                     continue;
                 }

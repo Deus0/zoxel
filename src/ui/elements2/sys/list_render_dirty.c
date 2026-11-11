@@ -9,18 +9,14 @@ zox_sys2(ListRenderDirtySystem) {
         zox_sys_e();
         zox_sys_i(ListStart, start);
         zox_sys_i(ListVisible, visible);
-        uint k = 0;
-        iter it2 = zox_children(world, e);
-        while (zox_children_next(it2)) {
-            for (int j = 0; j < it2.count; j++) {
-                entity e2 = it2.entities[j];
-                byte is_visible = k >= start->value && k < start->value + visible->value;
-                set_children_render_disabled(
-                    world,
-                    e2,
-                    !is_visible);
-                k++;
-            }
+        entity children[layouts2_children_capacity];
+        const uint children_count = get_list_children_ordered(world, e, children, layouts2_children_capacity);
+        for (uint k = 0; k < children_count; k++) {
+            const byte is_visible = k >= start->value && k < start->value + visible->value;
+            set_children_render_disabled(
+                world,
+                children[k],
+                !is_visible);
         }
     }
 } zox_sys_end(ListRenderDirtySystem);
