@@ -10,7 +10,7 @@ zox_sys2(PlotLimitSystem) {
         if (!zox_valid(link) ||
             !zox_has(link, DoubleData))
         {
-            zox_log_error("No DoubleData found on data->value");
+            zox_loge("No DoubleData found on data->value");
             continue;
         }
         zox_geter(link, DoubleData, data);

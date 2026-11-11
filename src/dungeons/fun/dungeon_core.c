@@ -3,7 +3,7 @@ void spawn_world_dungeon_core(ecs *world, spawned_block_data *data) {
         return;
     }
     if (!data->octree) {
-        // zox_log_error("null node in [spawned_block_vox]")
+        // zox_loge("null node in [spawned_block_vox]")
         return;
     }
     entity prefab = zox_getv(data->block, BlockPrefabLink);

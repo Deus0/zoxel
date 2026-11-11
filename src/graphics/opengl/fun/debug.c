@@ -5,7 +5,7 @@ void print_opengl_functions() {
     zox_log("+ OpenGL Extensions: %d", numExtensions);
     const GLubyte *extensions = glGetString(GL_EXTENSIONS);
     if (!extensions) {
-        zox_log_error("Could not retrieve extensions [%s]", SDL_GetError())
+        zox_loge("Could not retrieve extensions [%s]", SDL_GetError())
     } else {
         // zox_log(" - gl extensions: %s", extensions);
         for (int i = 0; i < numExtensions; ++i) {

@@ -10,7 +10,7 @@ entity spawn_shader_textured2D(ecs *world) {
     shader_frags[shader_index] = frag;
     entity e = spawn_shader(world, shader_index);
     if (!e) {
-        zox_log_error("=> [spawn_shader_textured2D] Failed:\n%s", vert);
+        zox_loge("=> [spawn_shader_textured2D] Failed:\n%s", vert);
         return 0;
     }
     zox_name("shader_textured2D");

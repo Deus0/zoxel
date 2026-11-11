@@ -24,7 +24,7 @@ byte zoxs_limit_float(ecs* world, const char *name, float min, float max) {
             }
         }
     }
-    zox_log_error("? [float] setting [%s]", name)
+    zox_loge("? [float] setting [%s]", name)
     return 0;
 }
 
@@ -48,6 +48,6 @@ byte zoxs_set_float(ecs *world, const char *name, float value) {
             }
         }
     }
-    zox_log_error("missing [float] setting [%s]", name)
+    zox_loge("missing [float] setting [%s]", name)
     return 0;
 }*/

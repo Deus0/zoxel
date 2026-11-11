@@ -6,16 +6,16 @@ entity item_get_max_depth_vox(ecs* world, entity part) {
         return 0;
     }
     if (!zox_is_linked_any(world, part, ModelLink)) {
-        zox_log_error("Part has no Model Link [%s]", zox_get_name(part));
+        zox_loge("Part has no Model Link [%s]", zox_get_name(part));
         return 0;
     }
     entity vox = get_model_first(world, zox_get_link(world, part, ModelLink));
     if (!zox_valid(vox)) {
-        zox_log_error("[player body]: Invalid Part %s Model", zox_get_name(part));
+        zox_loge("[player body]: Invalid Part %s Model", zox_get_name(part));
         return 0;
     }
     if (!zox_has(vox, VoxelNode) || !zox_has(vox, NodeDepth)) {
-        zox_log_error("Part Vox Invalid Components %s Model %s", zox_get_name(part), zox_get_name(vox));
+        zox_loge("Part Vox Invalid Components %s Model %s", zox_get_name(part), zox_get_name(vox));
         return 0;
     }
     return vox;

@@ -37,14 +37,14 @@ entity spawn_material_vox_instance_sway(ecs* world) {
     shader_frags[shader_index] = frag;
     entity shader = spawn_shader(world, shader_index);
     if (!shader) {
-        zox_log_error("[shader_vox_instance_sway] failed to spawn")
+        zox_loge("[shader_vox_instance_sway] failed to spawn")
         return 0;
     }
     guint material;
     entity e = spawn_material(world, shader, &material);
     zox_link(world, e, ShaderLink, shader);
     if (!material) {
-        zox_log_error("vox instance sway material failed to initialize")
+        zox_loge("vox instance sway material failed to initialize")
         return 0;
     }
     const MaterialVoxInstanceSway data = create_MaterialVoxInstanceSway(material);

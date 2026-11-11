@@ -16,7 +16,7 @@ zox_sys2(UnstuckSystem) {
     // cache voxels and colliders for speed
     const BlockLinks *voxels = get_first_terrain_voxels(it);
     if (!voxels) {
-        zox_log_error("UnstuckSystem: No BlockLinks on Realm");
+        zox_loge("UnstuckSystem: No BlockLinks on Realm");
         return;
     }
     byte colliders[voxels->length + 1];
@@ -43,20 +43,20 @@ zox_sys2(UnstuckSystem) {
         // int3 lastv = real_position_to_block_position(lastf, terrain_scale);
         entity chunk = int3_hashmap_get(chunks->value, pointc);
         if (!zox_valid(chunk)) {
-            // zox_log_error("[%s] Chunk Not Found [%lu] v[%ix%ix%i] c[%ix%ix%i]", zox_get_name(e), chunk, pointv.x, pointv.y, pointv.z, pointc.x, pointc.y, pointc.z);
+            // zox_loge("[%s] Chunk Not Found [%lu] v[%ix%ix%i] c[%ix%ix%i]", zox_get_name(e), chunk, pointv.x, pointv.y, pointv.z, pointc.x, pointc.y, pointc.z);
             if (position->value.y < 0) {
                 if (!float3_equals(last->value, float3_zero)) {
                     position->value.y = 100;
                     zox_logw("Character [%s] Fell through map",
                              zox_get_name(e));
                     // position->value = float3_add(last->value, unstuck_push);
-                    // zox_log_error("[%s] Chunk Not Found [%lu] v[%ix%ix%i] c[%ix%ix%i]", zox_get_name(e), chunk, pointv.x, pointv.y, pointv.z, pointc.x, pointc.y, pointc.z);
+                    // zox_loge("[%s] Chunk Not Found [%lu] v[%ix%ix%i] c[%ix%ix%i]", zox_get_name(e), chunk, pointv.x, pointv.y, pointv.z, pointc.x, pointc.y, pointc.z);
                 }
             }
             continue;
         }
         if (!zox_has(chunk, VoxelNode)) {
-            zox_log_error("chunk [%s:%lu] doesn't have a VoxelNode!", zox_get_name(chunk), chunk);
+            zox_loge("chunk [%s:%lu] doesn't have a VoxelNode!", zox_get_name(chunk), chunk);
             continue;
         }
         zox_geter(chunk, VoxelNode, voctree);
@@ -68,7 +68,7 @@ zox_sys2(UnstuckSystem) {
         byte3 chunk_size = byte3_single(powers_of_two[cdepth]);
         byte3 pointl = get_positionl_byte3(pointv, chunk_size);
         if (!byte3_in_bounds(pointl, chunk_size)) {
-            zox_log_error("Voxel Local OOB: [%ix%ix%i] :: %i", pointl.x, pointl.y, pointl.z, powers_of_two[cdepth]);
+            zox_loge("Voxel Local OOB: [%ix%ix%i] :: %i", pointl.x, pointl.y, pointl.z, powers_of_two[cdepth]);
             continue;
         }
         // voxel
@@ -110,6 +110,6 @@ zox_sys2(UnstuckSystem) {
         // spawn_line3c(world, ogposition, float3_add(ogposition, float3_forward), dthickness, dtime, color_rgb_green);
         // spawn_line3c(world, pointf, float3_add(pointf, float3_right), dthickness, dtime, color_rgb_cyan);
 #endif
-        // zox_log_error("Character Unstuck v[%ix%ix%i] l[%ix%ix%i] to f[%f.1x%f.1x%f.1]", pointv.x, pointv.y, pointv.z, pointl.x, pointl.y,  pointl.z, last->value.x, last->value.y, last->value.z);
+        // zox_loge("Character Unstuck v[%ix%ix%i] l[%ix%ix%i] to f[%f.1x%f.1x%f.1]", pointv.x, pointv.y, pointv.z, pointl.x, pointl.y,  pointl.z, last->value.x, last->value.y, last->value.z);
     }
 } zox_sys_end(UnstuckSystem);

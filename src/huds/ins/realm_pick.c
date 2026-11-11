@@ -33,7 +33,7 @@ void button_event_load_confirm(
     entity canvas = zox_get_link(world, player, CanvasLink);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuLoad));
     if (!menu) {
-        zox_log_error("UI [MenuLoad] Not Found");
+        zox_loge("UI [MenuLoad] Not Found");
         return;
     }
     zox_delete(menu);

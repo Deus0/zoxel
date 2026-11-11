@@ -11,7 +11,7 @@ void get_home_directory(char *path, size_t size) {
     if (home_directory) {
         snprintf(path, size, "%s\\AppData\\Local\\", home_directory);
     } else {
-        zox_log_error("home_directory null [get_save_directory]")
+        zox_loge("home_directory null [get_save_directory]")
     }
 #elif defined(zox_android)
     // Android-specific code
@@ -33,7 +33,7 @@ void get_home_directory(char *path, size_t size) {
     if (home_directory) {
         snprintf(path, size, "%s/.local/share/", home_directory);
     } else {
-        zox_log_error("home_directory null [get_save_directory]")
+        zox_loge("home_directory null [get_save_directory]")
     }
 #endif
 }

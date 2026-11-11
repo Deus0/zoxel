@@ -22,7 +22,7 @@ int check_compute_shader_support_from_version() {
         }
     }
     if (is_log_opengl) {
-        zox_log_error("compute not supported: OpenGL %d.%d [%s]", major, minor, version_str)
+        zox_loge("compute not supported: OpenGL %d.%d [%s]", major, minor, version_str)
     }
 #endif
     return EXIT_FAILURE;
@@ -43,7 +43,7 @@ int check_compute_shader_support() {
 // removed compute test for now, broke on android version
 void test_compute() {
     if (check_compute_shader_support() == EXIT_FAILURE) {
-        zox_log_error("opengl compute is not supported")
+        zox_loge("opengl compute is not supported")
     } else {
         zox_log_opengl("+ opengl compute supported")
     }

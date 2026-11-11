@@ -142,7 +142,7 @@ int read_vox(const char* filename, vox_file *vox) {
             return EXIT_FAILURE;
         }
         if (chunk.xyzi.chunk_nums != 0) {
-            zox_log_error("Bad Token: chunk nums is %i,i t should be 0.", chunk.xyzi.chunk_nums);
+            zox_loge("Bad Token: chunk nums is %i,i t should be 0.", chunk.xyzi.chunk_nums);
             return EXIT_FAILURE;
         }
         int voxel_nums;

@@ -13,7 +13,7 @@ void disable_inputs_until_release(
         return;
     }
     if (device_mode != zox_device_mode_gamepad) {
-        // zox_log_error("Need to reenable this function and refactor it.")
+        // zox_loge("Need to reenable this function and refactor it.")
         raycaster_select_element(
             world,
             player,

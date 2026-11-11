@@ -52,7 +52,7 @@ uint generate_ubo(gint binding_point) {
     zox_geter(material, MaterialVoxInstance, materialVoxInstance)
     const gint binding_point = materialVoxInstance->matrices;
     if (binding_point == GL_INVALID_INDEX) {
-        zox_log_error("InstanceMatrices block index not found in shader")
+        zox_loge("InstanceMatrices block index not found in shader")
     }
     return generate_ubo(binding_point);
 }*/
@@ -65,14 +65,14 @@ entity spawn_material_vox_instance(ecs* world) {
     shader_frags[shader_index] = frag;
     entity shader = spawn_shader(world, shader_index);
     if (!shader) {
-        zox_log_error("[shader_vox_instance] failed to spawn")
+        zox_loge("[shader_vox_instance] failed to spawn")
         return 0;
     }
     guint material;
     entity e = spawn_material(world, shader, &material);
     zox_link(world, e, ShaderLink, shader);
     if (!material) {
-        zox_log_error("vox instance material failed to initialize")
+        zox_loge("vox instance material failed to initialize")
         return 0;
     }
     const MaterialVoxInstance materialVoxInstance =  create_MaterialVoxInstance(material);

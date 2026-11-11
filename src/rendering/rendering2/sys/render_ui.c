@@ -46,7 +46,7 @@ entity spawn_material_matrixui(ecs* world) {
     entity shader = spawn_shader(world, shader_index);
     shader_matrixui = shader;
     if (!shader) {
-        zox_log_error("=> [spawn_shader_textured2D] Failed:\n%s", vert);
+        zox_loge("=> [spawn_shader_textured2D] Failed:\n%s", vert);
         return 0;
     }
     zox_set_unique_name(shader, "shader_matrixui");

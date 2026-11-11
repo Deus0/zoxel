@@ -88,7 +88,7 @@ zox_sys2(TownWallsSystem) {
         zox_geter(tunk, TownMap, town_map);
 #ifdef zox_safety_checks
         if (!town_map->length) {
-            zox_log_error("Invalid [Tunk] [town_map] at [%ix%ix%i]", cposition->value.x, cposition->value.y, cposition->value.z);
+            zox_loge("Invalid [Tunk] [town_map] at [%ix%ix%i]", cposition->value.x, cposition->value.y, cposition->value.z);
             continue;
         }
 #endif

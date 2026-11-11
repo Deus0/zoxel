@@ -10,12 +10,6 @@ zox_tag(Greetings);
 zox_tag(QuestDialogue);
 // Move to texts
 zoxc_fixed_string(DialogueText, 512);
-zoxc_fixed_string(TargetText, 512);
-zoxc_double(AnimateTextBegin);
-zoxc_float(AnimateTextTime);
-zoxc_float2(AnimateTextTimeLimits);
-zoxc_state(GlyphSpawnedDirty);
-zoxc_state(AnimateTextEnded);
 zox_tag(SpeakerLinks);  // links a dialogue process to its many speakers
 
 void zox_components_dialogues(ecs* world) {
@@ -31,11 +25,5 @@ void zox_components_dialogues(ecs* world) {
     zoxd_nf_tag(QuestDialogue);
     // Move to texts
     zoxd_fixed_string(DialogueText);
-    zoxd_fixed_string(TargetText);
-    zoxd_double(AnimateTextBegin);
-    zoxd_float(AnimateTextTime);
-    zoxd_float2(AnimateTextTimeLimits);
-    zoxd_state(GlyphSpawnedDirty);
-    zoxd_state(AnimateTextEnded);
     zoxd_nf_links(SpeakerLinks);
 }

@@ -126,7 +126,7 @@ zox_sys2(DungeonBlockSystem) {
             continue;
         }
         if (!place_chunk || !zox_has(place_chunk, VoxelNodeQueue)) {
-            zox_log_error("Cannot place: Invalid VoxelNodeQueue [%ix%ix%i]", place_positionl.x, place_positionl.y, place_positionl.z);
+            zox_loge("Cannot place: Invalid VoxelNodeQueue [%ix%ix%i]", place_positionl.x, place_positionl.y, place_positionl.z);
             continue;
         }
         // add to queue

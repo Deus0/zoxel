@@ -59,12 +59,12 @@ int initialize_shader_particle3D(ecs *world) {
     char* frag = get_shader_source(world, "particle3D.frag");
     particle3D_shader = zox_gpu_compile_shader(vert, frag);
     if (guint2_equals(particle3D_shader, guint2_zero)) {
-        zox_log_error("particle3D_shader has failed")
+        zox_loge("particle3D_shader has failed")
         return EXIT_FAILURE;
     }
     particle3D_material = spawn_gpu_material_program((guint2) { particle3D_shader.x, particle3D_shader.y });
     if (!particle3D_material) {
-        zox_log_error("=> [initialize_shader_particle3D] Failed:\n%s", vert);
+        zox_loge("=> [initialize_shader_particle3D] Failed:\n%s", vert);
         return EXIT_FAILURE;
     }
     particle3D_position_location = zox_gpu_get_material_attribute(particle3D_material, "position");

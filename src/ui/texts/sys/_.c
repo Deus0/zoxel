@@ -4,10 +4,22 @@
 #include "text_panel_child.c"
 #include "positions.c"
 #include "update.c"
-// #include "animate.c"
+#include "animate.c"
 
 void zox_systems_texts(ecs *world) {
-    // TODO: Move Dialogue one here
+    // types TargetText out a character at a time (i.e. dialogue)
+    zox_system(
+        AnimateTextSystem,
+        zoxp_update,
+        [in] texts.TargetText,
+        [in] texts.AnimateTextTimeLimits,
+        [out] texts.AnimateTextBegin,
+        [out] texts.AnimateTextTime,
+        [out] texts.TextData,
+        [out] texts.GlyphSpawnedDirty,
+        [out] texts.AnimateTextEnded,
+        [none] texts.Text,
+    );
     zox_system(
         TextParentBackgroundSystem,
         zoxp_update,

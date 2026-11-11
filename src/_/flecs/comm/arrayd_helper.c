@@ -25,7 +25,7 @@
         } else {\
             type* new_memory = zox_realloc(ptr->value, new_length * sizeof(type));\
             if (!new_memory) {\
-                zox_log_error("Failure with realloc");\
+                zox_loge("Failure with realloc");\
             } else {\
                 ptr->value = new_memory;\
                 ptr->length = new_length;\

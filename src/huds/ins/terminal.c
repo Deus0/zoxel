@@ -1,6 +1,6 @@
 entity spawn_menu_terminal(ecs *world, entity canvas) {
     if (!zox_valid(canvas) || !zox_has(canvas, Canvas)) {
-        zox_log_error("Invalid Canvas");
+        zox_loge("Invalid Canvas");
         return 0;
     }
     byte layer = get_game_overlay_layer();

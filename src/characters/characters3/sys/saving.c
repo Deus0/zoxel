@@ -10,7 +10,7 @@ static inline float float_to_precision(const float v, const float precision) {
     }
     FILE* file = fopen(path, "wb");
     if (file == NULL) {
-        zox_log_error("[save2] error saving [%s]", path)
+        zox_loge("[save2] error saving [%s]", path)
         perror("Error opening file for writing");
         free(path);
         return 0;

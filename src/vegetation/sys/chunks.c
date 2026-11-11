@@ -37,7 +37,7 @@ zox_sys2(VegetationChunk3System) {
         zox_geter(realm, BiomeLinks, realm_biomes);
 #ifdef zox_safety_checks
         if (!realm_biomes->length) {
-            zox_log_error("No Biomes on Realm");
+            zox_loge("No Biomes on Realm");
             continue;
         }
 #endif

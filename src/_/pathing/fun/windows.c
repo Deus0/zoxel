@@ -12,11 +12,11 @@ char* get_base_path_windows() {
 
     DWORD len = GetModuleFileNameA(NULL, path, sizeof(path));
     if (len == 0) {
-        zox_log_error("GetModuleFileNameA failed with error %lu", GetLastError());
+        zox_loge("GetModuleFileNameA failed with error %lu", GetLastError());
         return NULL;
     }
     if (len == sizeof(path)) {
-        zox_log_error("Buffer too small for executable path");
+        zox_loge("Buffer too small for executable path");
         return NULL;
     }
 
@@ -24,7 +24,7 @@ char* get_base_path_windows() {
 
     char *last_backslash = strrchr(path, char_slash);
     if (!last_backslash) {
-        zox_log_error("Failed to find last backslash in path");
+        zox_loge("Failed to find last backslash in path");
         return NULL;
     }
 
@@ -33,7 +33,7 @@ char* get_base_path_windows() {
 
     base = _strdup(path);
     if (!base) {
-        zox_log_error("Failed to duplicate path string");
+        zox_loge("Failed to duplicate path string");
     }
     return base;
 }

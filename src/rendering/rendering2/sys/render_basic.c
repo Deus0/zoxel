@@ -4,10 +4,10 @@ void render_material2_system(iter* it) {
     zox_sys_on_begin();
     if (!global_mesh2.x || !global_mesh2.y) {
         if (!global_mesh2.x) {
-            zox_log_error("global_mesh2.x 0")
+            zox_loge("global_mesh2.x 0")
         }
         if (!global_mesh2.y) {
-            zox_log_error("global_mesh2.y 0")
+            zox_loge("global_mesh2.y 0")
         }
         return;
     }
@@ -34,7 +34,7 @@ void render_material2_system(iter* it) {
 
         uint material = materialGPULink->value;
         if (!material) {
-            zox_log_error("invalid material2D");
+            zox_loge("invalid material2D");
             continue;
         }
 

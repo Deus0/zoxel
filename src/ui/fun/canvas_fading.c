@@ -28,7 +28,7 @@ void trigger_canvas_overlay_fade_out(ecs *world, entity e, float delay, float le
 void trigger_canvas_fade_out(ecs *world, entity canvas, float delay, float length) {
     entity e = zox_get_child_by_id(world, canvas, zox_id(CanvasOverlay));
     if (!e) {
-        zox_log_error("Failed to find canvas_overlay on canvas");
+        zox_loge("Failed to find canvas_overlay on canvas");
         return;
     }
     trigger_canvas_overlay_fade_out(world, e, delay, length);
@@ -37,7 +37,7 @@ void trigger_canvas_fade_out(ecs *world, entity canvas, float delay, float lengt
 void trigger_canvas_fade_in(ecs *world, entity canvas, float delay, float length) {
     entity e = zox_get_child_by_id(world, canvas, zox_id(CanvasOverlay));
     if (!e) {
-        zox_log_error("Failed to find canvas_overlay on canvas");
+        zox_loge("Failed to find canvas_overlay on canvas");
         return;
     }
     clear_animation_sequence(world, e);
@@ -53,7 +53,7 @@ void trigger_canvas_fade_in(ecs *world, entity canvas, float delay, float length
 void trigger_canvas_fade_transition(ecs* world, entity canvas, double fade_time, double delay_time) {
     entity e = zox_get_child_by_id(world, canvas, zox_id(CanvasOverlay));
     if (!e) {
-        zox_log_error("Failed to find canvas_overlay on canvas");
+        zox_loge("Failed to find canvas_overlay on canvas");
         return;
     }
     zox_set(e, Layer, { get_game_overlay_layer() });

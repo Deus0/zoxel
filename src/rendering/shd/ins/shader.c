@@ -2,7 +2,7 @@
 entity spawn_shader(ecs *world, int shader_index) {
     guint2 shader = zox_gpu_compile_shader(shader_verts[shader_index], shader_frags[shader_index]);
     if (guint2_equals(shader, guint2_zero)) {
-        zox_log_error("shader [%i] has failed with [zox_gpu_compile_shader]", shader_index);
+        zox_loge("shader [%i] has failed with [zox_gpu_compile_shader]", shader_index);
         return 0;
     }
     zox_instance(prefab_shader);
@@ -20,7 +20,7 @@ entity spawn_shader_source(ecs *world, char* name, char* svert, char* sfrag) {
     shader_frags[shader_index] = frag;
     entity e = spawn_shader(world, shader_index);
     if (!e) {
-        zox_log_error("[%s] failed to spawn", name)
+        zox_loge("[%s] failed to spawn", name)
         return 0;
     }
     zox_name(name);
@@ -30,7 +30,7 @@ entity spawn_shader_source(ecs *world, char* name, char* svert, char* sfrag) {
 entity spawn_shader_new(ecs *world, int shader_index, guint2* ids) {
     *ids = zox_gpu_compile_shader(shader_verts[shader_index], shader_frags[shader_index]);
     if (guint2_equals(*ids, guint2_zero)) {
-        zox_log_error("shader [%i] has failed with [zox_gpu_compile_shader]", shader_index);
+        zox_loge("shader [%i] has failed with [zox_gpu_compile_shader]", shader_index);
         return 0;
     }
     zox_instance(prefab_shader);

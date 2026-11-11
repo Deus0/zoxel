@@ -17,12 +17,12 @@ int initialize_shader_line3D(ecs *world) {
     char* frag = get_shader_source(world, "line3D.frag");
     line3D_shader = zox_gpu_compile_shader(vert, frag);
     if (guint2_equals(line3D_shader, guint2_zero)) {
-        zox_log_error("line3D_shader has failed")
+        zox_loge("line3D_shader has failed")
         return EXIT_FAILURE;
     }
     line3D_material = spawn_gpu_material_program((guint2) { line3D_shader.x, line3D_shader.y });
     if (!line3D_material) {
-        zox_log_error("=> [initialize_shader_line3D] Failed:\n%s", vert);
+        zox_loge("=> [initialize_shader_line3D] Failed:\n%s", vert);
         return EXIT_FAILURE;
     }
     line3D_position_location = zox_gpu_get_material_attribute(line3D_material, "position");

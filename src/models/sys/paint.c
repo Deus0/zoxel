@@ -25,7 +25,7 @@ void process_node_model_paint(
     zox_geter(vox, ColorRGBs, colors);
     zox_muter(vox, VoxelNode, voctree);
     if (!paint_type) {
-        zox_log_error("Cannot paint air type.");
+        zox_loge("Cannot paint air type.");
         return;
     }
     // NOTE: Scales node sizing to the Vox Size

@@ -20,7 +20,7 @@ static void init_children_pool_##name(void) {\
 \
 void* get_new_children_##name() {\
     if (pool_head_##name < 0) {\
-        zox_log_error("AOWIEJWAE")\
+        zox_loge("AOWIEJWAE")\
         return NULL;\
     }\
     int idx = pool_head_##name;\

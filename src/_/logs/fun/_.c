@@ -21,8 +21,6 @@ int zox_gpu_buffers_freed = 0;
     #define zox_loge(...) \
         { zox_log_errors_count++; zox_log_prefix(zox_log_colors_red, "[ERROR] ", __VA_ARGS__); }
 
-    #define zox_log_error(...) { zox_log_errors_count++; zox_log_prefix(zox_log_colors_red, "[ERROR] ", __VA_ARGS__); }
-
     #define zox_log_errno(format, ...) \
         zox_log(format ": [%s]", __VA_ARGS__, strerror(errno))
 
@@ -39,6 +37,5 @@ int zox_gpu_buffers_freed = 0;
     #define zox_logv(...) { }
     #define zox_logw(...) { }
     #define zox_loge(...) { }
-    #define zox_log_error(...) { }
     #define zox_log_errno(format, ...) { }
 #endif

@@ -100,7 +100,7 @@ static const char* get_settings_file(const char *app_name) {
     const char* filepath = get_settings_file(app_name);
     FILE* f = fopen(filepath, "w");
     if (!f) {
-        zox_log_error("failed to open settings file [%s]: %s", filepath, strerror(errno));
+        zox_loge("failed to open settings file [%s]: %s", filepath, strerror(errno));
         return;
     }
     zox_logv("Saving Settings to [%s]", filepath);

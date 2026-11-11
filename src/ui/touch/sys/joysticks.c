@@ -30,7 +30,7 @@ void handle_touch_drag(
     }
     entity joystick_pointer = children[0];
     if (!zox_valid(joystick_pointer)) {
-        zox_log_error("invalid joystick_pointer, parent [%s]", zox_get_name(joystick_ui))
+        zox_loge("invalid joystick_pointer, parent [%s]", zox_get_name(joystick_ui))
         return;
     }
     zox_geter(finger, ZevicePointerPosition, finger_position);

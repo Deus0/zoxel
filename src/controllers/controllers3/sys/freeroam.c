@@ -25,7 +25,7 @@ void attach_camera_to_character(
         zox_remove(e, CanRoam);
     }
     if (!zox_valid(character)) {
-        zox_log_error("Invalid Character [attach_camera_to_character]");
+        zox_loge("Invalid Character [attach_camera_to_character]");
         return;
     }
     float3 euler = (float3) { 0, 180, 0 };

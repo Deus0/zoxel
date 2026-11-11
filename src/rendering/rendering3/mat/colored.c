@@ -28,7 +28,7 @@ entity spawn_shader_colored3D(ecs *world) {
     shader_frags[shader_index] = frag;
     entity e = spawn_shader(world, shader_index);
     if (!e) {
-        zox_log_error("[shader_colored3D] failed to spawn")
+        zox_loge("[shader_colored3D] failed to spawn")
         return 0;
     }
     zox_name("shader_colored3D")

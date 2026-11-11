@@ -3,7 +3,7 @@ void on_new_settings_toggle_toggled(
     const ToggleEventData* data)
 {
     if (!zox_valid(data->e)) {
-        zox_log_error("Invalid [e] on_new_settings_toggle_toggled");
+        zox_loge("Invalid [e] on_new_settings_toggle_toggled");
         return;
     }
     entity e2 = zox_getv(data->e, SettingLink);

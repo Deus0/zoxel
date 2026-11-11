@@ -9,12 +9,12 @@ entity spawn_prefab_generated_sound(ecs *world, entity prefab) {
 
 entity spawn_sound_generated(ecs *world, entity prefab, byte instrument_type, float frequency, float sound_length, float volume) {
     if (!prefab) {
-        zox_log_error("spawn_sound_generated prefab is null")
+        zox_loge("spawn_sound_generated prefab is null")
         return 0;
     }
     uint length = (uint) (sound_sample_rate * sound_length);
     if (length > MAX_SOUND_DATA) {
-        zox_log_error("length out of bounds [%i] of [%i]", length, MAX_SOUND_DATA);
+        zox_loge("length out of bounds [%i] of [%i]", length, MAX_SOUND_DATA);
         length = MAX_SOUND_DATA;
     }
     SoundData data = { 0 };

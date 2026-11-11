@@ -97,7 +97,7 @@ void zox_set_app_maximized(
     byte maximized)
 {
     if (!zox_valid(e) || !zox_has(e, WindowFullscreen)) {
-        zox_log_error("invalid app in [zox_set_app_fullscreen]")
+        zox_loge("invalid app in [zox_set_app_fullscreen]")
         return;
     }
     byte fullscreen = zox_getv(e, WindowFullscreen);
@@ -168,7 +168,7 @@ byte spawn_window_icon(ecs *world, entity app, const char* texture_name) {
     char* icon_filepath = concat_file_path(path_textures, texture_name);
     free(path_textures);
     if (!icon_filepath) {
-        zox_log_error("Icon Path not found.");
+        zox_loge("Icon Path not found.");
         return 1;
     }
     zox_geter(app, SDLWindow, window);

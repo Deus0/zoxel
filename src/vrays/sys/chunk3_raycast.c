@@ -295,7 +295,7 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
                     return rayhit_none;
                 }
                 if (!zox_has(vox, NodeDepth)) {
-                    zox_log_error("Raycast Error: Vox Missing NodeDepth [%s] [%s] [%s]", zox_get_name(vox), zox_get_name(block_spawn), zox_get_name(hit_block));
+                    zox_loge("Raycast Error: Vox Missing NodeDepth [%s] [%s] [%s]", zox_get_name(vox), zox_get_name(block_spawn), zox_get_name(hit_block));
                     if (raycast_locks && root_voctree) {
                         // read_unlock_VoxelNode(root_voctree);
                     }

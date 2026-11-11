@@ -88,7 +88,7 @@ void on_boot_game_ui(
         // SDL_ShowCursor(SDL_DISABLE);
         entity texture_mouse = string_hashmap_get(files_hashmap_textures, new_string_data("cursor"));
         if (!texture_mouse) {
-            zox_log_error("[cursor] mouse texture not found");
+            zox_loge("[cursor] mouse texture not found");
         }
         byte mouse_ui_size = 8 * ui_scale;
         entity mouse_ui = spawn_mouse_icon(
