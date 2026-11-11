@@ -47,3 +47,9 @@ static inline uint zox_component_size(
     const EcsComponent* data = (const EcsComponent*) ecs_get(world, component, EcsComponent);
     return data ? data->size : 0;
 }
+
+// how many tables (archetypes) the world has, fewer means faster queries
+static inline int zox_get_tables_count(ecs* world) {
+    const ecs_world_info_t* info = ecs_get_world_info(world);
+    return info ? info->table_count : 0;
+}

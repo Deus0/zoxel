@@ -111,6 +111,58 @@ entity3 spawn_window_list(
         int_max(scrollview_size.x, header_size.x),
         list_size.y
     };
+    // a window is never wider than its canvas, its fonts shrink to fit instead
+    //  - ui_scale follows the screen's area, so narrow screens (phones in portrait) overflowed
+    const int max_width = zox_getv(canvas, LayoutSize).x - 2 * (int) (4 * ui_scale);
+    if (max_width > 0 && size.x > max_width) {
+        const byte max_characters = calculate_list_max_characters(list_data);
+        // the list's width without its text (paddings, margins, scrollbar)
+        const int list_fixed = list_size.x - max_characters * list_data.font_size +
+            (scrollbar_visible ? scrollbar_width : 0);
+        if (max_characters && list_size.x + (scrollbar_visible ? scrollbar_width : 0) > max_width) {
+            list_data.font_size = (byte) int_max(4, (max_width - list_fixed) / max_characters);
+        }
+        const int header_characters = strlen(header);
+        if (header_characters && header_size.x > max_width) {
+            header_font_size = (byte) int_max(4, (max_width - header_padding.x * 2) / header_characters);
+            header_size = calculate_header_size(header_characters, header_font_size, header_padding);
+        }
+        list_size = calculate_list_size(max_characters, list_data);
+        scrollview_size = list_size;
+        if (min_width && scrollview_size.x < min_width) {
+            scrollview_size.x = min_width;
+        }
+        if (scrollbar_visible) {
+            scrollview_size.x += scrollbar_width;
+        }
+        size = (int2) {
+            int_max(scrollview_size.x, header_size.x),
+            list_size.y
+        };
+    }
+    // and never taller: shows fewer elements at once (the list scrolls), at least one
+    const int max_height = zox_getv(canvas, LayoutSize).y - 2 * (int) (4 * ui_scale);
+    if (max_height > 0 && size.y + header_size.y > max_height && list_data.visible_count > 1) {
+        const int element_height = list_data.font_size + list_data.button_padding.y * 2;
+        const int list_space = max_height - header_size.y - list_data.margins.y * 2 + list_data.padding.y;
+        const int fit = int_max(1, list_space / (element_height + list_data.padding.y));
+        if (fit < list_data.visible_count) {
+            list_data.visible_count = fit;
+            scrollbar_visible = list_data.visible_count != list_data.count;
+            list_size = calculate_list_size(calculate_list_max_characters(list_data), list_data);
+            scrollview_size = list_size;
+            if (min_width && scrollview_size.x < min_width) {
+                scrollview_size.x = min_width;
+            }
+            if (scrollbar_visible) {
+                scrollview_size.x += scrollbar_width;
+            }
+            size = (int2) {
+                int_max(scrollview_size.x, header_size.x),
+                list_size.y
+            };
+        }
+    }
     // Spawn our Window
     entity3 e2 = spawn_window(
         world,

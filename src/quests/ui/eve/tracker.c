@@ -40,7 +40,7 @@ void player_state_quest_tracker(
 }
 
 void quest_tracker_updated(iter* it) {
-    byte dbg_log = 1;
+    byte dbg_log = 0;
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
@@ -55,6 +55,9 @@ void quest_tracker_updated(iter* it) {
                 zox_getn(e),
                 dirty,
                 text);
+        }
+        if (text[0]) {
+            free(text);
         }
     }
 }

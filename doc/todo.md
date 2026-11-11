@@ -191,7 +191,6 @@
 - Projectiles get destroyed on hit characters (use same system as pickups)
 
 ## After
-- add min, max to fps display
 - We should not have restore/dispose systems
     - just use query
     - as systems cache their results per frame
@@ -263,7 +262,6 @@
     - Greetings
     - based sentence gen on their personality types
     - give each npc a personality type
-- When return to main menu - set camera back to origin
 - Spawn load text / ui during fade out / game event
     - just show loading for now
 - Add loading screen

@@ -1,6 +1,9 @@
 #include "links.c"
 #include "wheel.c"
 #include "split.c"
+#include "punch.c"
+#include "pop.c"
+#include "quest.c"
 // tst: player_spawn, a new realm spawns the player's character standing in the terrain
 //  - waits for the player's character, then lets it settle for a few seconds
 //  - the character's block is air (not stuck in the ground) and it hasn't fallen out of the world
@@ -537,6 +540,8 @@ void zox_tst_screenshot_check(ecs* world) {
     }
 }
 
+#include "perf.c"
+
 void zox_tsts_controllers(ecs* world) {
     zox_tst_add("screenshot", zox_tst_screenshot_ready, zox_tst_screenshot_check, 90);
     const char* real_save = getenv("zox_tst_save");
@@ -551,4 +556,8 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("stream_npcs", zox_tst_stream_npcs_ready, zox_tst_stream_npcs_check, 95);
     zox_tst_add("action_wheel", zox_tst_action_wheel_ready, zox_tst_action_wheel_check, 60);
     zox_tst_add("item_split", zox_tst_item_split_ready, zox_tst_item_split_check, 90);
+    zox_tst_add("resume_no_punch", zox_tst_resume_no_punch_ready, zox_tst_resume_no_punch_check, 90);
+    zox_tst_add("pickup_pop", zox_tst_pickup_pop_ready, zox_tst_pickup_pop_check, 90);
+    zox_tst_add("quest_tracking", zox_tst_quest_tracking_ready, zox_tst_quest_tracking_check, 90);
+    zox_tst_add("perf_stream", zox_tst_perf_stream_ready, zox_tst_perf_stream_check, 180);
 }

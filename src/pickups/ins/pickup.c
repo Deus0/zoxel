@@ -143,6 +143,28 @@ entity spawn_item_mesh(
     return mesh;
 }
 
+// pops a dropped item: it hops to a random spot nearby (within its block, so it can't land in one)
+void pop_pickup(
+    ecs* world,
+    entity pickup,
+    float3 position,
+    float scale)
+{
+    const float radius = scale * 1.5f;
+    const float angle = (rand() % 360) * degrees_to_radians;
+    const float distance = radius * (0.5f + 0.5f * (rand() % 101) / 100.0f);
+    const float3 end = (float3) {
+        position.x + cosf(angle) * distance,
+        position.y,
+        position.z + sinf(angle) * distance
+    };
+    zox_add(pickup, PickupPop);
+    zox_setv(pickup, PickupPopStart, position);
+    zox_setv(pickup, PickupPopEnd, end);
+    zox_setv(pickup, PickupPopHeight, scale * 2);
+    zox_setv(pickup, PickupPopTime, zox_current_time);
+}
+
 entity spawn_item_world_from_meta(
     ecs* world,
     entity realm,
@@ -154,6 +176,7 @@ entity spawn_item_world_from_meta(
     entity pickup = zox_ins(world, prefab_pickup);
     zox_set_unique_name(pickup, "pickup");
     zox_setv(pickup, Position3D, position);
+    pop_pickup(world, pickup, position, scale);
     zox_link(world, pickup, ItemLink, meta);
     zox_set_parent(world, pickup, realm);
     spawn_item_mesh(world, pickup, meta, scale);

@@ -1,5 +1,4 @@
 #include "character.c"
-// #include "slay.c"
 #include "marker.c"
 
 void zox_systems_quests(ecs* world) {

@@ -6,6 +6,8 @@
 #include "scroll.c"
 #include "exit.c"
 #include "list.c"
+#include "layout.c"
+#include "font.c"
 
 void zox_tsts_huds() {
     zox_tsts_huds_load();
@@ -28,4 +30,8 @@ void zox_tsts_huds() {
     zox_tst_set_exits("exit_game");
     zox_tst_add("list_order", zox_tst_list_order_ready, zox_tst_list_order_check, 60);
     zox_tst_set_setup("list_order", NULL, 1);
+    zox_tst_add("ui_layout", zox_tst_ui_layout_ready, zox_tst_ui_layout_check, 90);
+    zox_tst_set_setup("ui_layout", NULL, 1);
+    zox_tst_add("font_glyphs", zox_tst_font_glyphs_ready, zox_tst_font_glyphs_check, 60);
+    zox_tst_set_setup("font_glyphs", NULL, 1);
 }
