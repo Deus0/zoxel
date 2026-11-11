@@ -1,5 +1,6 @@
 // Vox Instance Sway - like vox_instance, but sways top verts with noise (grass)
 // NOTE: matrices are model matrices here, camera_matrix is applied after sway
+// NOTE: [0][3] of a model matrix carries the instance brightness, like vox_instance.vert
 layout(location=0) in vec3 vertex_position;
 layout(location=1) in vec3 vertex_color;
 uniform InstanceMatrices {
@@ -29,6 +30,8 @@ float sway_noise(vec2 p) {
 
 void main() {
     mat4 model_matrix = matrices[gl_InstanceID];
+    float instance_brightness = model_matrix[0][3];
+    model_matrix[0][3] = 0.0;
     vec4 world_position = model_matrix * vec4(vertex_position, 1.0);
     // 0 at mesh bottom, 1 at top - bottom verts stay planted
     float top = clamp((vertex_position.y - sway_data.z) / max(sway_data.w, 0.0001), 0.0, 1.0);
@@ -40,7 +43,7 @@ void main() {
         sway_noise(wind + vec2(17.3, 5.1))) * 2.0 - 1.0;
     world_position.xz += sway * sway_data.y * top;
     gl_Position = camera_matrix * world_position;
-    vertex_color_frag = vertex_color;
+    vertex_color_frag = vertex_color * instance_brightness;
     float fog_level = gl_Position.z * gl_Position.z;
     fog_blend = min(1.0, 1.1 - exp2(-fog_data.w * fog_level));
 }

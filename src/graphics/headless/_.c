@@ -34,6 +34,7 @@ void zox_gpu_dispose_shader(guint id) { }
 
 static inline void zox_gpu_render(guint length) { }
 static inline void zox_gpu_render3(guint length) { }
+static inline byte zox_gpu_save_screenshot(const char* path) { return 0; }
 static inline void zox_gpu_render_as_lines(guint length) { }
 static inline void zox_gpu_render_triangles_instanced(guint indicies, uint length) { }
 

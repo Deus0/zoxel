@@ -1,7 +1,15 @@
 # Todo
 
+-x Set minivox/world voxels brightness when lighting updates
+	- use observer on light change event on terrain chunk types
+	- might need to pass this data to the frag shader
+	
 - add a section on readme.md with some razzle dazzle stats from tests
 	- add a test that might be impressive and measure engine capacity for this
+	
+- When Add/Remove body part
+	- remove the associated item slots
+	- refresh the body ui
 	
 - add a test for exit game, its crashing on exit atm
 - add a test for streaming between chunks, this can be reused to test its speed for optmization too
@@ -16,6 +24,7 @@
 		- peaceful npcs
 		- npcs with quests
 		- hostile npcs
+		
 - Add ? and ! markers on the map
 	- ? new quest
 	- ! hand in quest
@@ -25,15 +34,8 @@
 	
 - add rotated character per voxel selection for raycasts, similar to how we do for grass
 	- keeping bounds as a sweep pass
-
--x I noticed some faces are not culled between chunks
-	- write some tests in chunks/chunks3/tst
 	
 - Make items pop a little when dropped, like borderlands, a little movement away from original position
-
-- Set minivox/world voxels brightness when lighting updates
-	- use observer on light change event on terrain chunk types
-	- might need to pass this data to the frag shader
 	
 - We can just have a more general Damage/Defence type stats 
 	- With Physical and Magical tags
@@ -63,22 +65,25 @@
 
     - Dialogue Nodes: QuestDoneLink - QuestActiveLink
     
--x Arm animation needs to slerp to new rotations and now instantly snap during walk and attacking.
 - fix error '[14:58:49.178] [ERROR] Smooth Lights Error: Colors Past Limits [1496] - Face [5] at Pos [14x0x14] Depth [4] of [4]
 [14:58:51.554] [ERROR] Smooth Lights Error: Colors Past Limits [332] - Face [5] at Pos [0x5x4] Depth [3] of [3]'
+
 - write bsh/test.sh that takes in test name
 	- it will find the test in the modules tst folders
 	- it will compile that file with zoxels src and flecs
 	- it outputs a test for claude to use
+	
 - Implement a tall grass block model
 	- support for linking a world model (minivox/blockvox) to multiple voxel links
 	- add a second block, tall_grass
 	- multi chunk support needed for vox models
+	
 -o clicking on ui - activated punch... during dialogue
 - MapUI should move per pixel
 - for body parts we can detatch:
 	- add a tooltip detachable line
 	- change frame color slightly to show
+	
 - when removing body part
 	- remove any associated slots
 	- remove the uis
@@ -138,17 +143,12 @@
         - updates when enabled / chunk changes
 
 ## Gameplay
-- Make projectile collide with Terrain
-- Make projectile collide with npc
 - add a simple log, with the entry line fade out
 	- log at bottom left
 	- when level up add a line about it
 - Fix destruction material
 	- use the depth offset instead
 	- reduce z offset to 0
-- When Add/Remove body part
-	- remove the associated item slots
-	- refresh the body ui
 	
 -----------
 ## Backlog
@@ -772,6 +772,11 @@ Bugs:
 - Add quantity label as child of icon - for mouse pickup too
 
 ## Lights
+- Light character models from the environment (like minivoxes)
+	- sample the LightNode at the character's voxel position (get_block_vox_light in vodes3/fun/lights.c), set Brightness
+	- update when the character moves to a new voxel, or its chunk's LightNodeDirty goes active
+	- pass Brightness to the skeleton/character shaders (uniform, like vox_render)
+	- tst: character walks from sunlight into a dark area and gets darker
 - One when it updates the Render Depth
 - Make layout positions recursive too - so it updates
 - Lights: Add smooth lights for terrain faces, so the corners are darkened

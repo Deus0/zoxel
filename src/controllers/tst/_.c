@@ -487,7 +487,56 @@ void zox_tst_stream_npcs_check(ecs* world) {
     zox_tst_check(zox_tst_stream_despawned_chunks > 0, "no chunk ever despawned its npcs while walking");
 }
 
+// tst: screenshot, saves what the player sees after spawning to bin/tst/screenshot.ppm
+//  - for looking at the rendering (i.e. lighting), bash bsh/tst.sh screenshot, then convert to png
+//  - waits zox_tst_screenshot_wait after the player settles, so lights and meshes finish
+//  - zox_tst_save=<realm folder> loads a copy of a real save instead (same place every run, for before / after)
+extern char zox_screenshot_request[256];
+const double zox_tst_screenshot_wait = 6.0;
+byte zox_tst_screenshot_stage = 0;
+double zox_tst_screenshot_time = 0;
+
+byte zox_tst_screenshot_ready(ecs* world) {
+    if (zox_tst_screenshot_stage == 0) {
+        const char* real_save = getenv("zox_tst_save");
+        const byte spawned = real_save && real_save[0] ?
+            zox_tst_continue_game_ready(world) :
+            zox_tst_player_spawn_ready(world);
+        if (!spawned) {
+            return 0;
+        }
+        zox_tst_screenshot_stage = 1;
+        zox_tst_screenshot_time = zox_current_time;
+    }
+    zox_tst_waiting = "lights and meshes to finish before the screenshot";
+    zox_tst_progress(zox_current_time - zox_tst_screenshot_time);
+    if (zox_tst_screenshot_stage == 1) {
+        if (zox_current_time - zox_tst_screenshot_time < zox_tst_screenshot_wait) {
+            return 0;
+        }
+        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "../tst/screenshot.ppm");
+        zox_tst_screenshot_stage = 2;
+        return 0;
+    }
+    // saved at the end of the frame it was requested in
+    return !zox_screenshot_request[0];
+}
+
+void zox_tst_screenshot_check(ecs* world) {
+    (void) world;
+    FILE* file = fopen("../tst/screenshot.ppm", "rb");
+    zox_tst_check(file, "no screenshot saved");
+    if (file) {
+        fclose(file);
+    }
+}
+
 void zox_tsts_controllers(ecs* world) {
+    zox_tst_add("screenshot", zox_tst_screenshot_ready, zox_tst_screenshot_check, 90);
+    const char* real_save = getenv("zox_tst_save");
+    if (real_save && real_save[0]) {
+        zox_tst_set_setup("screenshot", zox_tst_load_games_setup, 1);
+    }
     (void) world;
     zox_tst_add("player_spawn", zox_tst_player_spawn_ready, zox_tst_player_spawn_check, 60);
     zox_tst_add("continue_game", zox_tst_continue_game_ready, zox_tst_player_spawn_check, 90);

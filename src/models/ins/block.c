@@ -6,6 +6,7 @@ entity spawn_block_vox(
     byte block_index,
     byte render_depth,
     byte render_disabled,
+    byte3 positionl,
     float3 positionf,
     float scale)
 {
@@ -15,6 +16,7 @@ entity spawn_block_vox(
     zox_setv(e, RenderDepth, render_depth);
     zox_setv(e, RenderDisabled, render_disabled);
     zox_setv(e, BlockIndex, block_index);
+    zox_setv(e, VoxelLocalPosition, positionl);
     zox_setv(e, CloneVox, 1);
     zox_set_link(world, e, CloneVoxLink, vox);
     zox_setv(e, Position3D, positionf);

@@ -6,6 +6,7 @@
 #include "block_health_overlay.c"
 #include "can.c"
 #include "settings.c"
+#include "lights.c"
 
 void zox_systems_vodes3(ecs* world) {
     // NOTE: Writes to VoxelNode
@@ -68,6 +69,13 @@ void zox_systems_vodes3(ecs* world) {
         [in] chunks.NodeDepth,
         [out] blocks.BlockDamageQueue,
         [none] chunks3.Chunk3
+    );
+    zox_system(
+        block_vox_lights_system,
+        zoxp_update,
+        [in] lights3.LightNodeDirty,
+        [in] chunks3.ChunkNeighbors,
+        [none] terrains.TerrainChunk,
     );
     zox_system(
         VodesSettingsDirtySystem,

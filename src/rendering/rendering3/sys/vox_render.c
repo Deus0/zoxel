@@ -12,6 +12,7 @@ void vox_render_system(iter* it) {
     }
     zox_geter(material_colored3D, MaterialColored3D, material_attributes);
     byte has_set_material = 0;
+    float last_brightness = -1;
     zox_sys_begin();
     zox_sys_in(MeshIndicies);
     zox_sys_in(MeshGPULink);
@@ -20,6 +21,7 @@ void vox_render_system(iter* it) {
     zox_sys_in(RenderDisabled);
     camera_filtering_begin();
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(RenderDisabled, disabled);
         zox_sys_i(MeshIndicies, indicies);
         zox_sys_i(MeshGPULink, mesh);
@@ -44,9 +46,14 @@ void vox_render_system(iter* it) {
             zox_gpu_float4(
                 material_attributes->fog_data,
                 get_fog_value());
-            zox_gpu_float(
-                material_attributes->brightness,
-                1);
+        }
+        // i.e. a block vox lit by its chunk, not every VoxMesh has one
+        const float brightness = zox_has(e, Brightness) ?
+            zox_getv(e, Brightness) :
+            1;
+        if (brightness != last_brightness) {
+            last_brightness = brightness;
+            zox_gpu_float(material_attributes->brightness, brightness);
         }
         float4x4 mvp_matrix = float4x4_multiply(
             matrix->value,

@@ -10,6 +10,9 @@ entity spawn_prefab_block_vox(
     zox_setv(e, CloneVox, 0);
     // zox_setv(e, ChunkLod, { render_depth_uninitialized });
     zox_setv(e, BlockIndex, 0);
+    // its voxel in the chunk, and how lit it is there (vodes3 updates it when the chunk's lights change)
+    zox_setv(e, VoxelLocalPosition, byte3_zero);
+    zox_setv(e, Brightness, 1);
     zox_setv(e, RenderDepth, render_depth_uninitialized);
     zox_setv(e, RenderDepthDirty, zox_dirty_none);
     // BlockLink to original voxel meta data

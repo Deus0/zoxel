@@ -42,6 +42,7 @@ entity spawn_block_vox_instanced(
     zox_instance(prefab);
     zox_name("block_vox_instanced");
     zox_setv(e, BlockIndex, block_index);
+    zox_setv(e, VoxelLocalPosition, positionl);
     zox_setv(e, BlockScale, scale);
     zox_set_link(world, e, ModelLink, model);
     zox_setv(e, MaxRenderDepth, mdepth);
