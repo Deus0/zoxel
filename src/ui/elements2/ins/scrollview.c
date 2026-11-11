@@ -17,6 +17,7 @@ entity spawn_scrollview(
 {
     zox_instance(prefab_layout2);
     zox_name("scrollview");
+    zox_add(e, Scrollview);
     zox_set_parent(world, e, parent);
     zox_setv(e, LayoutPosition, position);
     zox_setv(e, LayoutSize, size);

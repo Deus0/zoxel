@@ -11,3 +11,4 @@ byte zox_mouse_fake = 0;
 int2 zox_mouse_fake_position = { 0, 0 };
 byte zox_mouse_fake_left = 0;
 byte zox_mouse_fake_right = 0;
+int2 zox_mouse_fake_wheel = { 0, 0 };

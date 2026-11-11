@@ -49,7 +49,9 @@ zox_sys2(ActionsShortcutSystem) {
                         }
                     }
                 }
-                if (zox_has(e3, ZeviceWheel)) {
+                // the wheel only switches actions while the mouse is locked, unlocked it scrolls ui
+                const byte mouse_unlocked = zox_has(e2, MouseLock) && !zox_getv(e2, MouseLock);
+                if (zox_has(e3, ZeviceWheel) && !mouse_unlocked) {
                     int2 wheel = zox_getv(e3, ZeviceWheel);
                     if (wheel.y > 0) {
                         is_shift_action_right = 1;

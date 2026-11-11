@@ -1,4 +1,5 @@
 #include "links.c"
+#include "wheel.c"
 // tst: player_spawn, a new realm spawns the player's character standing in the terrain
 //  - waits for the player's character, then lets it settle for a few seconds
 //  - the character's block is air (not stuck in the ground) and it hasn't fallen out of the world
@@ -543,4 +544,5 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_set_setup("continue_game", zox_tst_load_games_setup, 1);
     zox_tst_add("links_cleanup", zox_tst_links_cleanup_ready, zox_tst_links_cleanup_check, 30);
     zox_tst_add("stream_npcs", zox_tst_stream_npcs_ready, zox_tst_stream_npcs_check, 95);
+    zox_tst_add("action_wheel", zox_tst_action_wheel_ready, zox_tst_action_wheel_check, 60);
 }

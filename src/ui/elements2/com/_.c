@@ -20,6 +20,7 @@ zoxc_byte(IconIndex);
 zox_tag(LabelPrefabLink);
 zox_tag(FramePrefabLink);
 // Scroll
+zox_tag(Scrollview);
 zox_tag(Scrollbar);
 zox_tag(ScrollbarHandle);
 zox_tag(ScrollviewLink);
@@ -40,6 +41,7 @@ void zox_components_elements2(ecs *world) {
     zoxd_nf_link(FramePrefabLink);
     zoxd_float2(SlideBounds);
     zoxd(SliderLabel);
+    zoxd_tag(Scrollview);
     zoxd_tag(Scrollbar);
     zoxd_tag(ScrollbarHandle);
     zoxd_nf_link(ScrollviewLink);
