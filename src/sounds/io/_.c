@@ -37,6 +37,7 @@ void load_files_sounds(ecs *world) {
         float* values = NULL;
         if (!load_wav_data(filepath, &values, &samples, &length, dbg_log)) {
             files_sounds[i] = 0;
+            continue;
         }
         // Spawn our loaded data as sounds
         entity e = spawn_sound_filepath(

@@ -7,7 +7,7 @@ byte sdl_audio_play_sound(const float *data, int length, byte channels) {
 
     if (!audio_stream) {
         SDL_AudioSpec want = {
-            .freq = 48000,
+            .freq = (int) channel_sample_rate,  // the sounds' rate (they were played at 48000)
             .format = SDL_AUDIO_F32,
             .channels = channels,
         };

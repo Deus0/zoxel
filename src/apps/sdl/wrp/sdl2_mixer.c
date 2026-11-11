@@ -1,5 +1,7 @@
 byte initialize_sdl_mixer(ulong sample_rate, byte channels_count) {
-    if (Mix_OpenAudio(sample_rate, AUDIO_F32SYS, channels_count, 2048) < 0) {
+    // mono, the chunks are raw sound data in the device's format, and sounds are mono
+    (void) channels_count;
+    if (Mix_OpenAudio(sample_rate, AUDIO_F32SYS, 1, 2048) < 0) {
         zox_loge("sdl audio could not initialize [%s]\n", Mix_GetError());
         return EXIT_FAILURE;
     } else {
