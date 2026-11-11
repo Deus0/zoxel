@@ -1,14 +1,16 @@
 byte sdl_play_sound(const float* data, int length, float volume, int channel) {
     if (use_sdl_audio) {
-        return sdl_audio_play_sound(data, length, 2);
+        return sdl_audio_play_sound(data, length, 1);
     }
     if (!length || !volume || !data) {
         return 0;
     }
+    // sound data is mono (wavs are downmixed when loaded), it played as stereo before,
+    //  so mono sounds played at double speed, an octave up
     SDL_AudioSpec spec = {
         .format = SDL_AUDIO_F32,
-        .channels = 2,
-        .freq = 44100
+        .channels = 1,
+        .freq = sound_sample_rate
     };
     MIX_Audio* audio = MIX_LoadRawAudio(
         zox_mixer,

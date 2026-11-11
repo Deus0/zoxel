@@ -110,6 +110,21 @@ byte load_wav_data(const char* filepath, float** values, uint* samples, float* l
             SDL_free(wav_data);
             return 0;
     }
+    // sounds are mono: downmixes the channels (keeps its length and pitch), as sounds are played
+    //  and re-pitched (SoundProcessSystem) as one channel of samples
+    if (spec.channels > 1) {
+        for (uint f = 0; f < frame_count; f++) {
+            float sum = 0;
+            for (int c = 0; c < spec.channels; c++) {
+                sum += (*values)[f * spec.channels + c];
+            }
+            (*values)[f] = sum / spec.channels;
+        }
+        *samples = frame_count;
+    }
+    if (spec.freq != 44100) {
+        zox_logw("Sound [%s] is [%i] hz, sounds play at 44100 hz", filepath, spec.freq);
+    }
     if (dbg_log) {
         zox_log("Loaded Wav [%s] Length [%u] Samples [%u] Channels [%i] Frequency [%i]",
             filepath,

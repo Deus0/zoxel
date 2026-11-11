@@ -1,6 +1,6 @@
 byte sdl_play_sound(SDLMixChunk* chunk, const float* data, int length, float volume, int channel) {
     if (use_sdl_audio) {
-        return sdl_audio_play_sound(data, length, 2);
+        return sdl_audio_play_sound(data, length, 1);
     }
     if (!length || !volume || !data) {
         return 0;
