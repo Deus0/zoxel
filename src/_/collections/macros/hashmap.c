@@ -1,4 +1,6 @@
 // default hash is uint
+// NOTE: only the hash of a key is stored, keys with the same hash are the same entry
+//  - int3 chunk positions are unique within a streaming window (tst hashmaps)
 #define zox_hashmap(name, type, type_zero, key_type, hash_type, convert_to_hash)\
 \
 typedef struct name##_pair name##_pair;\
@@ -54,9 +56,15 @@ static inline void read_unlock_##name(const name *ptr) {\
 hash_type name##_hash(hash_type key, hash_type size) {\
     if (size == 0) {\
         return -1;\
-    } else {\
-        return key % size;\
     }\
+    /* NOTE: mixes the bits so packed keys spread over the buckets (murmur3 finalizer) */\
+    uint mixed = (uint) key;\
+    mixed ^= mixed >> 16;\
+    mixed *= 0x85ebca6bu;\
+    mixed ^= mixed >> 13;\
+    mixed *= 0xc2b2ae35u;\
+    mixed ^= mixed >> 16;\
+    return mixed % size;\
 }\
 \
 name* create_##name(hash_type size) {\
@@ -83,6 +91,18 @@ void name##_add(name* map, key_type key_raw, type value) {\
     write_lock_##name(map);\
     hash_type key = convert_to_hash(key_raw);\
     hash_type index = name##_hash(key, map->size);\
+    /* NOTE: an existing key is replaced, a duplicate made remove leave the old value behind */\
+    name##_pair* existing = map->data[index];\
+    uint existing_checks = 0;\
+    while (existing != NULL && existing_checks < max_safety_checks_hashmap) {\
+        if (existing->key == key) {\
+            existing->value = value;\
+            write_unlock_##name(map);\
+            return;\
+        }\
+        existing = existing->next;\
+        existing_checks++;\
+    }\
     name##_pair* pair = zox_malloc(sizeof(name##_pair));\
     pair->key = key;\
     pair->value = value;\

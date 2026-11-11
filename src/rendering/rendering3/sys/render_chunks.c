@@ -107,6 +107,7 @@ void chunk3_textured_render_system(iter* it) {
             matrix->value);*/
         // Rendering!
         zox_gpu_render3(count->value);
+        zox_drawn_chunks++;
         if (dbg_gl) {
             if (check_opengl_error_unlogged()) {
                 zox_loge("chunk3_textured_render_system");

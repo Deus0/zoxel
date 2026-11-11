@@ -1,6 +1,10 @@
+// runs on the main thread after every world update (i.e. tests)
+zox_hook(post_update, (ecs* world), (world))
+
 #ifdef zox_web
 void update_ecs_web() {
     update_ecs(local_world);
+    run_hook_post_update(local_world);
 }
 #endif
 
@@ -34,6 +38,7 @@ void main_loop(ecs *world) {
     signal(SIGSEGV, handle_segfault);
     while (running) {
         update_ecs(world);
+        run_hook_post_update(world);
     }
 #endif
 }

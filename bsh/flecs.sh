@@ -10,6 +10,7 @@ if test -f inc/flecs/flecs.c && test -f inc/flecs/flecs.h; then
     echo "> Flecs Source Found"
     echo "  - [inc/flecs/flecs.c]"
     echo "  - [inc/flecs/flecs.h]"
+    bash bsh/flecs_fix.sh
     sleep 1
     exit 0
 fi
@@ -49,6 +50,9 @@ sleep 1
 echo ""
 echo "+ Flecs Fetching Complete!"
 echo ""
+
+# Local fixes until they're fixed upstream
+bash bsh/flecs_fix.sh
 
 #if pkg-config --exists flecs; then \
 #    echo "> Flecs Package Installed"; \

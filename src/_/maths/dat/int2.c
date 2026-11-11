@@ -13,9 +13,9 @@ static const int2 int2_two    = { 2, 2 };
 static const int2 int2_four   = { 4, 4 };
 static const int2 int2_hidden = { -666, -666 };
 
+// NOTE: packed, so keys are unique within a 65536 x 65536 window (hashmaps only store the hash)
+//  - the old linear hash collided at [1,-109] apart
 static inline uint get_int2_hash(int2 input) {
-    uint hash = hash_constant;
-    hash = hash * 163 + ((uint) input.x);
-    hash = hash * 109 + ((uint) input.y);
-    return hash;
+    return (((uint) input.x & 0xffff) << 16) |
+        ((uint) input.y & 0xffff);
 }

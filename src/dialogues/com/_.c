@@ -23,7 +23,7 @@ void zox_components_dialogues(ecs* world) {
     zoxd_tag(DialogueOptionNode);
     zoxd_tag(Dialogue);
     zoxd_tag(DialogueProcess);
-    zoxd_nf_tag(DialogueUI);
+    zoxd_nf_link(DialogueUI);
     zoxd_tag(DialogueLabel);
     zoxd_nf_tag(DialogueButton);
     // Dialogue Types

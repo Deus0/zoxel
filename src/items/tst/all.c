@@ -15,6 +15,9 @@ void give_character_all_items(ecs* world, entity e) {
     }
     zox_log("Giving [%s] [X] Items.",
         zox_getn(e));
+    entity slots[layouts2_children_capacity];
+    const uint slots_count = zox_get_empty_slots(world, inventory, slots, layouts2_children_capacity);
+    uint slot_index = 0;
     iter it2 = zox_children(world, realm);
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
@@ -22,7 +25,7 @@ void give_character_all_items(ecs* world, entity e) {
             if (!zox_has(realm_item, Item)) {
                 continue;
             }
-            entity slot = zox_get_empty_slot(world, inventory);
+            entity slot = slot_index < slots_count ? slots[slot_index++] : 0;
             if (!zox_valid(slot)) {
                 zox_logw("[Inventory] Out of empty slots.");
                 zox_print_slots(world, inventory);

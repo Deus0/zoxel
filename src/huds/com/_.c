@@ -24,7 +24,7 @@ void zox_components_game_ui(ecs *world) {
     zoxd_nf_tag(MenuPaused);
     zoxd_nf_tag(MenuPlay);
     zoxd_nf_tag(MenuPlayTouch);
-    zoxd_nf_tag(MenuStart);
+    zoxd_nf_link(MenuStart);
     zoxd_nf_tag(MenuLoad);
     zoxd_nf_tag(MenuTerminal);
     zoxd_nf_tag(MenuRealm);

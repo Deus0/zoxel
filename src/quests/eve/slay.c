@@ -47,7 +47,8 @@ void zox_event_quest_slay(iter* it) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         entity attacker = zox_get_link(world, e, AttackerLink);
-        if (!attacker ||
+        // attacker may already be deleted (stale link), has() on it segfaults in release
+        if (!zox_valid(attacker) ||
             zox_has(attacker, Dead))
         {
             if (dbg_log) {

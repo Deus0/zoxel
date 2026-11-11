@@ -89,7 +89,7 @@ void spawn_vodes_dive(
         position = byte3_mul1(position, 2);
         // int3_multiply_int_p(&position, 2);
         if (has_children_VoxelNode(octree)) {
-            VoxelNode* kids = (VoxelNode*) octree->ptr;
+            VoxelNode* kids = get_children_VoxelNode(octree);
             for (byte i = 0; i < octree_length; i++) {
                 byte3 child_position = byte3_add(position, octree_positions[i]);
                 spawn_vodes_dive(

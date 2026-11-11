@@ -3,7 +3,6 @@
 #include "root.c"
 #include "tree.c"
 #include "components.c"
-#include "linked.c"
 #include "macros.c"
 
 static inline byte3 get_scaled_size(

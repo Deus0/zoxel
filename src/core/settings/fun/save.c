@@ -4,11 +4,42 @@ byte is_log_save_settings = 0;
 byte is_log_load_settings = 0;
 byte has_loaded = 0;
 
+// settings given as launch args (i.e. --tiny) win over the settings file, like new user input
+#define zox_settings_args_max 32
+const char* zox_settings_from_args[zox_settings_args_max];
+int zox_settings_from_args_count = 0;
+
+void zox_settings_set_by_args(const char* name) {
+    for (int i = 0; i < zox_settings_from_args_count; i++) {
+        if (!strcmp(zox_settings_from_args[i], name)) {
+            return;
+        }
+    }
+    if (zox_settings_from_args_count < zox_settings_args_max) {
+        zox_settings_from_args[zox_settings_from_args_count++] = name;
+    }
+}
+
+byte zox_settings_is_from_args(const char* name) {
+    for (int i = 0; i < zox_settings_from_args_count; i++) {
+        if (!strcmp(zox_settings_from_args[i], name)) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 // Helpers to find ~/.config/<appname>/settings.cfg
 static const char* get_settings_file(const char *app_name) {
     static char final_path[2048];
     char base_path[1024];
     const char* home = getenv("HOME");
+    // --nosaves (tests): settings live in the temp saves folder, so the user's settings
+    // (i.e. a far render distance) neither override test args like --tiny nor get overwritten
+    if (zox_saves_root[0]) {
+        snprintf(final_path, sizeof(final_path), "%s%csettings.cfg", zox_saves_root, char_slash);
+        return final_path;
+    }
 #if zox_windows
     const char* appdata = getenv("APPDATA");
     if (appdata && *appdata) {

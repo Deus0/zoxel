@@ -6,7 +6,7 @@ void destroy_vodes(ecs *world, VoxelNode *node) {
             zox_loge("failed to destroy voxel instance")
         }
     } else if (has_children_VoxelNode(node)) {
-        VoxelNode* kids = (VoxelNode*) node->ptr;
+        VoxelNode* kids = get_children_VoxelNode(node);
         for (int i = 0; i < octree_length; i++) {
             destroy_vodes(world, &kids[i]);
         }

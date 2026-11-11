@@ -14,4 +14,9 @@ void app_gpu_end_system(iter* it) {
         return;
     }
     SDL_GL_SwapWindow(window->value);
+    if (background) {
+        // a hidden window is never presented, so the gpu driver (mali on wayland) never
+        // retires frames and keeps every freed/re-uploaded buffer, ~100MB/s until the pc freezes
+        glFinish();
+    }
 } zoxd_system(app_gpu_end_system);

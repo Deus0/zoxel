@@ -53,6 +53,7 @@ static inline void render_vox_instance_command(
         render_count,
         command.transforms->data);
     zox_gpu_render_triangles_instanced(meshIndicies->length, render_count);
+    zox_drawn_vox_instances += render_count;
     zox_gpu_ubo_reset();
     zox_gpu_disable_attribute(vertex_color);
     zox_gpu_disable_attribute(vertex_position);

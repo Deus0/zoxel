@@ -19,6 +19,7 @@
 #include "controllers3/_.c"
 #include "free_roam/_.c"
 #include "dbg/_.c"
+#include "tst/_.c"
 
 void import_controllers(ecs* world) {
     zox_module(controllers);
@@ -26,4 +27,5 @@ void import_controllers(ecs* world) {
     zox_add_module(controllers2);
     zox_add_module(controllers3);
     zox_add_module(freeroam);
+    zox_tsts_controllers(world);
 }

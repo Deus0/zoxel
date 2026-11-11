@@ -107,7 +107,7 @@ zox_sys2(PlayerTownFinderSystem) {
         zox_setv(camera, StreamerLevel, 1);
         // Clear spawn queue
         zox_muter(terrain, TerrainSpawnQueue, queue);
-        queue->count = 0;
+        clear_TerrainSpawnQueue(queue);
         // zox_set(terrain, Loaded, { zox_load_begin });
         if (dbg_log) {
             byte2 town_size2 = town ? zox_getv(town, TownSize) : byte2_zero;

@@ -28,6 +28,9 @@ entity spawn_app_sdl(
     // calculate position
     int2 position = calculate_monitor_position(monitor, 1, size_restore);
     SDL_WindowFlags flags = zox_sdl_window_flags(fullscreen, maximized);
+    if (background) {
+        flags |= SDL_WINDOW_HIDDEN;
+    }
     SDL_Window* sdl_window = create_sdl_window(position, size, name, flags);
     if (!sdl_window) {
         zox_loge(" opengl did not create sdl_window, exiting zoxel")

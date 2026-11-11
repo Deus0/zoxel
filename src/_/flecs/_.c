@@ -5,6 +5,7 @@ typedef ecs_iter_t iter;
 typedef ecs_query_t query;
 // Globals
 byte running = 1;
+int zox_exit_code = 0; // returned by main, i.e. tests set 1 on fail
 byte cores_count = 1;
 byte target_fps = 0;
 uint ecs_run_count = 0;

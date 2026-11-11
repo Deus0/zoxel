@@ -24,3 +24,14 @@
         zox_delete(e)\
         e = 0;\
     }
+
+// Queues changes until zox_defer_end, like inside a system (tests use it to batch like the game does)
+//  - world becomes its first stage, so zox_ calls in between are queued, zox_defer_end merges them
+#define zox_defer_begin()\
+    ecs* zox_defer_world = world;\
+    ecs_readonly_begin(zox_defer_world, false);\
+    world = ecs_get_stage(zox_defer_world, 0)
+
+#define zox_defer_end()\
+    world = zox_defer_world;\
+    ecs_readonly_end(world)

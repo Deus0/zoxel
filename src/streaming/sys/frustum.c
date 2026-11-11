@@ -20,7 +20,7 @@ void set_chunk_block_spawns_render_disabled(
             zox_setm(e, RenderDisabled, state);
         }
     } else if (has_children_VoxelNode(node)) {
-        VoxelNode* kids = (VoxelNode*) node->ptr;
+        VoxelNode* kids = get_children_VoxelNode(node);
         for (int i = 0; i < octree_length; i++) {
             set_chunk_block_spawns_render_disabled(
                 world,
@@ -171,7 +171,7 @@ void chunk_frustum_system(iter* it) {
         zox_sys_i(ChunkEntities, entities);
         zox_sys_o(RenderDisabled, render_disabled);
         // NOTE: Some quick skips for largest voxels
-        if (ignore_low_lods == 2 && !voxels->value && !voxels->ptr) {
+        if (ignore_low_lods == 2 && !voxels->value && is_closed_VoxelNode(voxels)) {
             // render_disabled->value = 0;
             continue;
         }
@@ -186,7 +186,7 @@ void chunk_frustum_system(iter* it) {
             &chunk_bounds.extents,
             fudge_frustum_extents);
         byte is_viewed = disable_frustum_culling;
-        if (ignore_low_lods && voxels->value && !voxels->ptr) {
+        if (ignore_low_lods && voxels->value && is_closed_VoxelNode(voxels)) {
             is_viewed = 1;
         }
         // For each Camera

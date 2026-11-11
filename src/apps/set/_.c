@@ -16,6 +16,7 @@ byte disable_apps_decor = 0;
 byte using_gpu = 1;
 byte audio_enabled = 0;
 byte nosounds = 0;
+byte background = 0; // --background: hidden window, no sound, no mouse lock, never pauses
 byte window_resizeable = 1;
 byte rendering = 1;
 byte is_split_screen = 0;

@@ -29,5 +29,5 @@ void zox_components_tunks(ecs *world) {
     zoxd_byte(Chunk3Stacked);
     zoxd_hashmap(TunkLinks);
     // Links
-    zoxd_nf_tag(TunkLink);
+    zoxd_nf_link(TunkLink);
 }

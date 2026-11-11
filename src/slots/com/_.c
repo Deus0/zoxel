@@ -20,7 +20,7 @@ void zox_components_slots(ecs* world) {
     zoxd_tag(SlotManager);
     zoxd_tag(Slot);
     zoxd_tag(SlotUser);
-    zoxd_nf_tag(SlotLink);
+    zoxd_nf_link(SlotLink);
     zoxd_byte(SlotType);
     zoxd_byte(SlotAnchor);
     zoxd_tag_event(DataDirty);

@@ -73,5 +73,5 @@ void zox_components_animations(ecs* world) {
     zoxd_float(ShakeStrength);
     zoxd_float3(ShakeOrigin);
     zoxd_float3(ShakeOffset);
-    zoxd_nf_tag(ShakeLink);
+    zoxd_nf_link(ShakeLink);
 }

@@ -147,8 +147,8 @@ void build_voxel_mesh_c(
         return;
     }
     // Dig Deeper
-    byte has_vkids = !is_closed_VoxelNode(voxels);
-    const VoxelNode* vkids = has_vkids ? (const VoxelNode*) voxels->ptr : NULL;
+    byte has_vkids = has_children_VoxelNode(voxels);
+    const VoxelNode* vkids = has_vkids ? get_children_VoxelNode(voxels): NULL;
     byte is_dig = depth < target_depth;
     if (!is_split) { // || !zox_split_colored_chunks) {
         is_dig &= has_vkids;

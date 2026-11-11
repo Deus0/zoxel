@@ -67,7 +67,7 @@ byte set_entity_chunk(
     // NOTE: Special case for air chunks
     // TODO: Ahhh think of how to fix this for flying npcs
     const VoxelNode* new_voxel_octree = zox_get(new_chunk, VoxelNode);
-    byte is_air_chunk = !new_voxel_octree->value && !new_voxel_octree->ptr;
+    byte is_air_chunk = !new_voxel_octree->value && is_closed_VoxelNode(new_voxel_octree);
     if (!is_air_chunk && character_render_disabled != chunk_render_disabled) {
         // NOTE: Sets render children too
         set_entity_render_disabled(world, e, chunk_render_disabled);

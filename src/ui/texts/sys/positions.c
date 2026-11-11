@@ -112,14 +112,15 @@ zox_sys2(TextsPositionSystem) {
         /*if (dirty->value != zox_dirty_end) {
             continue;
         }*/
-        uint child_index = 0;
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
-                if (!zox_valid(e2)) {
+                if (!zox_valid(e2) || !zox_has(e2, ChildIndex)) {
                     continue;
                 }
+                // NOTE: glyphs aren't iterated in order, so use their index
+                const uint child_index = zox_getv(e2, ChildIndex);
                 if (!zox_has(e2, LayoutPosition)) {
                     zox_logw("Glyph [%s] is missing Layout Components",
                         zox_get_name(e2));
@@ -135,7 +136,6 @@ zox_sys2(TextsPositionSystem) {
                         zox_log("Positioned [%i]  Glyph [%s]:[%i] at [%ix%i]", child_index, zox_getn(e2), j, position.x, position.y);
                     }
                 }
-                child_index++;
             }
         }
     }

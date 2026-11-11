@@ -67,7 +67,7 @@ void zox_components_blocks(ecs *world) {
     zoxd_float2(BlockHealth);
     zoxd_nf_link(BlockLink);
     zoxd_entity(BlockPrefabLink);
-    zoxd_nf_tag(BlockManagerLink);
+    zoxd_nf_link(BlockManagerLink);
     zoxd_entity(BlockSound);
     zoxd_entities(BlockLinks);
     zoxd_queue(BlockDamageQueue);

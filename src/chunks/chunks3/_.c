@@ -20,8 +20,8 @@
 #include "ins/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
-#include "tst/_.c"
 #include "io/_.c"
+#include "tst/_.c"
 
 void import_chunks3(ecs* world) {
     zox_module(chunks3);
@@ -31,6 +31,8 @@ void import_chunks3(ecs* world) {
     zox_systems_chunks3_debug(world);
     add_hook_spawn_prefabs(spawn_prefabs_chunks);
     add_hook_files_load(zox_tests_chunks3);
+    zox_tsts_chunks3_positions();
+    zox_tsts_chunks3_io();
 }
 
 

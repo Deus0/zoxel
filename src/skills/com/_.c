@@ -18,7 +18,7 @@ zoxc_float(SkillCost);
 void zox_components_skills(ecs* world) {
     zoxd_tag(Skill);
     zoxd_tag(SkillResource);
-    zoxd_nf_tag(SkillDamageStat);
+    zoxd_nf_link(SkillDamageStat);
     zoxd_tag(Dot);
     zoxd_tag(Poison);
     zoxd_tag(SkillToggleable);

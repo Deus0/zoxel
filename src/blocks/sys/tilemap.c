@@ -43,7 +43,7 @@ zox_sys2(RealmTilemapSystem) {
         // UNlink all old links
         // NOTE: This must be done immediately due to the unlink vs link race conditinos
         /*ecs_defer_suspend(world);
-        zox_unlink_all(world, tilemap, TextureLink);
+        zox_unlink_all(world, tilemap, TilemapTextureLinks);
         ecs_defer_resume(world);*/
         uint tilemap_textures_length = 0;
         for (int j = 0; j < blocks->length; j++) {
@@ -63,7 +63,7 @@ zox_sys2(RealmTilemapSystem) {
                     zox_link(
                         world,
                         tilemap,
-                        TextureLink,
+                        TilemapTextureLinks,
                         texture);
                     tilemap_textures_length++;
                     if (dbg_log >= 2) {

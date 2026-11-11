@@ -1,12 +1,29 @@
 # Refactoring
 
-Next
+- Refactor all systems to use the void <T>(iter* it) { instead of the old macros, it fits better with c standards
+	- they also need timer macros added around them, check already refactored systems for reference
+- refactor GenerateModel to tag event
+	- check any other bytes that can be tag events too
+	- the idea is to reduce idling systems when the game isnt using them
+- make all zox_log_error use zox_loge
+- remove any hooks and keep it all inside flecs pipelines
+	- we want it consistent and easier to debug the logic
+	- ecs practices
+	- observers for reaction based logic
+- make text ascii instead of currently uses a custom indexing, ascii will make using strings easier with our text data
+- Merge the voxel build code
+	- same side octree building too
+	- merged mesh face building
+	- uv pass in a seperate system
+	- ao in a seperate system
+- add greedy mesh for vox models
+	- needs to have smaller quads around corners to maintain ao visuals
 - Turn quest slayer into an event
     - Make observer function for callbacks
 - Refactor character vox into sub entity
 - Single Vox for Grass
 	- split into sub chunks
--Move blockVox from models into blocks
+- Move blockVox from models into blocks
 	- just link it to model and tag it, no need to have it models
 - Make the tooltip systems into observer / events
 - Add locks onto all VoxelNode setters and getters
@@ -15,6 +32,10 @@ Next
 - Refactor character mesh from its prefab
 	- vox / vox instance will be child
 	- test function to set it as unique when decaying its mesh
+
+- Refactor the shaders and element render system
+- Refactor Block Model Spawning out of block_vox_meta functions
+- Refactor Texture Generation into Nodegraphs
 
 Modules
 - Move AnimateTextSystem from dialogue to ui/texts
@@ -255,3 +276,12 @@ Input Refactor
 - Move character/block name generation to system under new module Names
 - Remove any random delays, and make the state changes timed instead
 - Add a tooltip that just stores a string - no need for event every time
+
+# Future Ideas
+
+## Voxel Links Side Table
+- VoxelNode reuses `ptr` for children or an OctreeLink (type 255), so every octree function must check the node type (`octree_children` helper)
+- Idea: move links out of the octree into a per chunk table keyed by position + depth, then `ptr` always means children and every octree function is generic
+- VoxelNode could drop its `type` byte (stays 16 bytes from alignment anyway)
+- Cost: a table lookup to get a voxel's entity, instead of the octree walk
+- History: links used a table before and were moved into the octree, as the table had speed issues. Benchmark (stress test) before trying again

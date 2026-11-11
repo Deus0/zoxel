@@ -8,7 +8,7 @@ void zox_components_combat(ecs* world) {
     zoxd_byte(CombatState);
     zoxd_float(Damage);
     zoxd_double(LastCombatTime);
-    zoxd_nf_tag(AttackerLink);
+    zoxd_nf_link(AttackerLink);
     zoxd_tag(JustHit);
 }
 

@@ -19,7 +19,7 @@ void zox_components_rendering3(ecs* world) {
     zoxd_tag(TexturedMesh3);
     zoxd_tag(SkeletonMesh);
     // Links
-    zoxd_nf_tag(MeshCloneLink);
+    zoxd_nf_link(MeshCloneLink);
     zoxd_tag(MeshCloned);
     zoxd_tag(SwayMesh);
     zoxd_float2(SwayBounds);

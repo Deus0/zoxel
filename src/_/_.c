@@ -84,6 +84,7 @@ void module_dispose_zox(ecs *world, void* ctx) {
     dispose_game_store();
     dispose_hook_files_load();
     dispose_hook_on_boot();
+    dispose_hook_post_update();
     dispose_hook_spawn_prefabs();
     dispose_component_ids();
 }
@@ -113,6 +114,7 @@ void initialize_zox(ecs* world) {
     initialize_hook_files_load();
     initialize_hook_spawn_prefabs();
     initialize_hook_on_boot();
+    initialize_hook_post_update();
     initialize_component_ids();
     add_hook_terminal_command(process_arguments_flecs);
     add_hook_on_boot(on_boot_game_store);

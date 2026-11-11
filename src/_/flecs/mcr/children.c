@@ -40,6 +40,9 @@
     ecs_children(world, e)
 #define zox_children_next(it) \
     ecs_children_next(&it)
+// call before leaving a zox_children_next loop early (break / return), frees the iterator
+#define zox_children_end(it) \
+    ecs_iter_fini(&it)
 
 #define zox_children_by_id(e, T) \
     ecs_query_iter(world, ecs_query(world, { \

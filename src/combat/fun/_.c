@@ -7,13 +7,9 @@ void combat_on_hit(
     if (!zox_valid(e)) {
         return;
     }
-    entity old_attacker = zox_get_link(world, e, AttackerLink);
-    // NOTE: Only link/unlink when new
-    if (old_attacker != attacker) {
-        if (old_attacker) {
-            zox_unlink(world, e, AttackerLink, old_attacker);
-        }
-        zox_link(world, e, AttackerLink, attacker);
+    // NOTE: AttackerLink is exclusive, linking replaces the old attacker
+    if (zox_get_link(world, e, AttackerLink) != attacker) {
+        zox_set_link(world, e, AttackerLink, attacker);
     }
     byte combat_state = zox_getv(e, CombatState);
     if (!(combat_state == zox_combat_battle ||

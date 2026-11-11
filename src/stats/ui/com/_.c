@@ -14,7 +14,7 @@ void zox_components_stats_ui(ecs* world) {
     zoxd_tag(Healthbar);
     zoxd_tag(StatIconLabel);
     zoxd_tag(StatBars);
-    zoxd_nf_tag(HealthbarLink);
+    zoxd_nf_link(HealthbarLink);
     zoxd_tag(StatPlusButton);
 }
 

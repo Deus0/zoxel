@@ -14,7 +14,7 @@ byte load_voxel_node(ecs* world, FILE* in, VoxelNode* node) {
         if (!has_children_VoxelNode(node)) {
             open_one_VoxelNode(node);
         }
-        VoxelNode* children = (VoxelNode*) node->ptr;
+        VoxelNode* children = get_children_VoxelNode(node);
         for (int i = 0; i < 8; i++) {
             load_voxel_node(world, in, &children[i]);
         }

@@ -26,9 +26,10 @@ void next_node_system(iter* it) {
                 zox_sys_e_name);
             continue;
         }
-        zox_unlink(world, e, CurrentNodeLink, previous);
         // Gets next node - First one for now
         if (next) {
+            // NOTE: exclusive, replaces previous
+            //  - never unlink first, unlink + link in one deferred batch loses the link
             zox_link(world, e, CurrentNodeLink, next);
             zox_add(e, TriggerBegin);
             zox_add(e, Dirty);
@@ -40,6 +41,7 @@ void next_node_system(iter* it) {
             }
         } else {
             // Finished Node Tree!
+            zox_unlink(world, e, CurrentNodeLink, previous);
             zox_add(e, TriggerExit);
             if (dbg_log) {
                 zox_log("Nodetree End [%s] at [%s]",

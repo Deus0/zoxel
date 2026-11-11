@@ -8,6 +8,16 @@
     zox_log("     + lowest low is [%i]", lowest_voxel_height)
 }*/
 
+// args win over the settings file (see zox_settings_set_by_args)
+static inline void zox_terrain_size_set_by_args() {
+    if (terrain_lod_near > terrain_lod_far) {
+        terrain_lod_near = terrain_lod_far;
+    }
+    zox_settings_set_by_args("Far RD");
+    zox_settings_set_by_args("Near RD");
+    zox_settings_set_by_args("Vertical RD");
+}
+
 void process_arguments_terrain(ecs *world, char* args[], int count) {
     (void) world;
     for (int i = 1; i < count; i++) {
@@ -15,14 +25,17 @@ void process_arguments_terrain(ecs *world, char* args[], int count) {
             terrain_lod_far = 3;
             render_distance_y = 3;
             zox_log("+ [tiny terrain] [%ix%i]", terrain_lod_far, render_distance_y)
+            zox_terrain_size_set_by_args();
         } else if (strcmp(args[i], "--medium") == 0) {
             terrain_lod_far = 6;
             render_distance_y = 3;
             zox_log("+ [medium terrain] [%ix%i]", terrain_lod_far, render_distance_y)
+            zox_terrain_size_set_by_args();
         } else if (strcmp(args[i], "--large") == 0) {
             terrain_lod_far = 12;
             render_distance_y = 4;
             zox_log("+ [large terrain] [%ix%i]", terrain_lod_far, render_distance_y)
+            zox_terrain_size_set_by_args();
         }
     }
 }

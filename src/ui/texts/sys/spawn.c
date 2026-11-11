@@ -63,17 +63,16 @@ zox_sys2(GlyphSpawnSystem) {
                 zigel_layer);
         }
         if (new_length < old_length) {
-            // NOTE: Shrinks the children zigels from the end
+            // NOTE: Shrinks the children zigels from the end, by their ChildIndex
             //      - keeps remaining glyphs ordered
-            uint glyph_index = 0;
             iter it2 = zox_children(world, e);
             while (zox_children_next(it2)) {
                 for (int j = 0; j < it2.count; j++) {
                     entity e2 = it2.entities[j];
-                    if (!zox_has(e2, Glyph)) {
+                    if (!zox_has(e2, Glyph) || !zox_has(e2, ChildIndex)) {
                         continue;
                     }
-                    if (glyph_index++ < new_length) {
+                    if (zox_getv(e2, ChildIndex) < new_length) {
                         continue;
                     }
                     zox_delete(e2);

@@ -26,6 +26,7 @@ zoxc_int2(TilemapSize);
 zoxc_color(FillColor);
 zoxc_color(OutlineColor);
 zox_tag(TextureLink);
+zox_tag(TilemapTextureLinks); // links a tilemap to all its block textures, in order
 zoxc_arrayd(TextureData, color)
 zoxc_arrayd(TilemapUVs, float2)
 // zoxc_entities(TextureLinks)
@@ -53,7 +54,8 @@ void zox_components_textures(ecs* world) {
     zoxd_int2(TilemapSize);
     zoxd_color(FillColor);
     zoxd_color(OutlineColor);
-    zoxd_nf_tag(TextureLink);
+    zoxd_nf_link(TextureLink);
+    zoxd_nf_links(TilemapTextureLinks);
     zoxd_arrayd(TextureData);
     zoxd_arrayd(TilemapUVs);
     // Generation Types (obsolete)

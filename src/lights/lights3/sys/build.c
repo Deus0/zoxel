@@ -9,7 +9,7 @@
     const LightNode* best_node = node;
     byte max_value = node->value;
     if (node->ptr) {
-        const LightNode* kids = (const LightNode*) node->ptr;
+        const LightNode* kids = get_children_LightNode(node);
         const byte* indexes = octree_face_children[face];
         for (byte i = 0; i < 4; i++) {
             const LightNode* kid = &kids[indexes[i]];
@@ -46,10 +46,10 @@ static inline const LightNode* get_max_light_on_face_start(const LightNode* root
 
 static inline void zox_apply_basic_lights(const LightNode* root_light_octree, const LightNode** neighbor_light_octrees, const VoxelNode* voctree, const SidesOctree* sides, const MeshColorRGBs* colors, byte3 position, uint* ccount, byte render_depth, byte depth) {
     // Dig Deeper
-    if (depth < render_depth && sides->ptr) {
-        const SidesOctree* sides_kids = (const SidesOctree*) sides->ptr;
-        byte has_vkids = !is_closed_VoxelNode(voctree);
-        const VoxelNode* vkids = has_vkids ? (const VoxelNode*) voctree->ptr : NULL;
+    if (depth < render_depth && has_children_SidesOctree(sides)) {
+        const SidesOctree* sides_kids = get_children_SidesOctree(sides);
+        byte has_vkids = has_children_VoxelNode(voctree);
+        const VoxelNode* vkids = has_vkids ? get_children_VoxelNode(voctree): NULL;
         byte3_multiply_byte(&position, 2);
         depth++;
         for (byte i = 0; i < 8; i++) {

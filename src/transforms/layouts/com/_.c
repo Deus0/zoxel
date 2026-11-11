@@ -35,7 +35,7 @@ void zox_components_layouts2(ecs* world) {
     zoxd_tag(Canvas3);
     zoxd_tag(BoundToCanvas);
     zoxd_tag(BoundToParent);
-    zoxd_nf_tag(CanvasLink);
+    zoxd_nf_link(CanvasLink);
     zoxd_byte(Layer);
     zoxd_byte(BonusLayer);
     // local positions

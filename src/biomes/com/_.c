@@ -12,7 +12,7 @@ zoxc_color_rgb(BiomeSkyColor);
 
 void zox_components_biomes(ecs *world) {
     zoxd_tag(Biome);
-    zoxd_nf_tag(BiomeLink);
+    zoxd_nf_link(BiomeLink);
     zoxd_tag(BiomeLinker);
     zoxd_entities(BiomeLinks)
     zoxd_float(DirtChance);

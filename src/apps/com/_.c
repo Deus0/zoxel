@@ -11,7 +11,7 @@ zoxc_dirty(WindowSize);
 
 void zox_components_apps(ecs *world) {
     zoxd_tag(App);
-    zoxd_nf_tag(AppLink);
+    zoxd_nf_link(AppLink);
     zoxd_byte(WindowFullscreen);
     zoxd_byte(WindowMaximized);
     zoxd_byte(WindowMonitor);

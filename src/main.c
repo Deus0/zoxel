@@ -114,7 +114,7 @@ int main(int argc, char* argv[]) {
 #ifdef zox_xr
     SDL_Quit();
 #endif
-    return EXIT_SUCCESS;
+    return zox_exit_code;
 }
 
 // Yet another Hook

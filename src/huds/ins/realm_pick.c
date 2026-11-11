@@ -27,7 +27,9 @@ void button_event_load_confirm(
     entity player = event.clicker;
     entity clicked = event.clicked;
     entity game = zox_get_link(world, player, GameLink);
-    zox_geter(clicked, FolderPath, path);
+    // copy it, the clicked button is deleted with the menu below (use after free, garbage realm path)
+    FolderPath path_copy = *zox_get(clicked, FolderPath);
+    const FolderPath* path = &path_copy;
     entity canvas = zox_get_link(world, player, CanvasLink);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuLoad));
     if (!menu) {
@@ -47,12 +49,36 @@ void button_event_load_confirm(
         world,
         game,
         realm_save.seed);
-    zox_set_ptr(realm, FolderPath, path->value);
+    zox_set_ptr(realm, FolderPath, path_copy);
     delay_event(
         world,
         &delay_spawn_menu_realm,
         player,
         0.01);
+}
+
+// newest save first, so a capped list keeps the latest saves
+static inline time_t get_save_modified_time(const char* path) {
+    struct stat st;
+    if (stat(path, &st) != 0) {
+        return 0;
+    }
+    return st.st_mtime;
+}
+
+typedef struct {
+    char* path;
+    time_t modified;
+} SaveDirSort;
+
+static int compare_save_dirs_newest(const void* a, const void* b) {
+    const time_t ta = ((const SaveDirSort*) a)->modified;
+    const time_t tb = ((const SaveDirSort*) b)->modified;
+    if (ta != tb) {
+        return ta < tb ? 1 : -1;
+    }
+    // same time, keep a stable name order
+    return strcmp(((const SaveDirSort*) a)->path, ((const SaveDirSort*) b)->path);
 }
 
 entity spawn_menu_load(ecs *world, entity player) {
@@ -62,20 +88,37 @@ entity spawn_menu_load(ecs *world, entity player) {
     byte header_font_size = zox_huds_header_font_size * ui_scale;
     byte list_font_size = zox_huds_element_font_size * ui_scale;
     byte2 padding = byte2_single(zox_huds_list_padding * ui_scale);
-    SpawnListElement elements[huds_max_list_elements + 1];
+    SpawnListElement elements[huds_max_list_elements];
     int elements_count = 0;
     char **save_dirs;
     byte saves_count;
-    // TODO: Load folder names here
     if (!get_save_games(game_name, &save_dirs, &saves_count)) {
-        for (byte i = 0; i < saves_count; i++) {
-            char* folder = get_folder_name(save_dirs[i]);
+        SaveDirSort sorted[256];
+        for (int i = 0; i < saves_count; i++) {
+            sorted[i] = (SaveDirSort) { save_dirs[i], get_save_modified_time(save_dirs[i]) };
+        }
+        qsort(sorted, saves_count, sizeof(SaveDirSort), compare_save_dirs_newest);
+        if (saves_count > huds_max_list_elements) {
+            zox_logw("[%i] saves, the load menu only lists the newest [%i]",
+                saves_count,
+                huds_max_list_elements);
+        }
+        for (int i = 0; i < saves_count; i++) {
+            // NOTE: elements is fixed size, overflowing it used to corrupt the stack (crash on continue)
+            char* folder = elements_count < huds_max_list_elements ?
+                get_folder_name(sorted[i].path) :
+                NULL;
+            if (!folder) {
+                free(sorted[i].path);
+                continue;
+            }
+            // NOTE: the list takes save_path (frees it), text is freed below
             elements[elements_count++] = (SpawnListElement) {
                 .text = folder,
-                .save_path = save_dirs[i],
+                .save_path = sorted[i].path,
                 .on_click = { &button_event_load_confirm },
             };
-            zox_logv("Save Dir: %s - folder %s", save_dirs[i], folder);
+            zox_logv("Save Dir: %s - folder %s", sorted[i].path, folder);
         }
         free(save_dirs);
     }
@@ -100,5 +143,9 @@ entity spawn_menu_load(ecs *world, entity player) {
     zox_name("menu_load");
     zox_add(e, MenuLoad);
     zox_add(e, NavigationWindow);
+    // button labels copy their text
+    for (int i = 0; i < elements_count; i++) {
+        free((char*) elements[i].text);
+    }
     return e;
 }

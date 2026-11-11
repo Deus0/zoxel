@@ -1,5 +1,82 @@
 # Done
 
+-x Fix lagspikes in [chunk_sides_system] > 200ms
+	- 200+ ms with locks..
+	- 80ms without locks..
+	- just make it generate at depth we are rendering instead of per level
+	- flag levels as dirty when building, just dont update them until render lod changes
+-x Map UI doesnt initialize properly
+-x Sometimes the npcs labels dont spawn - name labels
+-x noticed the item label didnt reduce when placing item
+-x Crashed on start a few times randomly.. then stopped
+	- tst stream_npcs segfaulted once ~11s in while terrain loaded (not under --gdb)
+-> Use the flecs profiler to make sure chunk components are reduced properly
+-> Focus on terrain chunks for now
+-x More Components (to remove, when not in use)
+    -x VoxelNodeDirty
+    -x BuildChunkSides
+    -x FindNeighbors
+-x Remove systems when idle, by removing components
+    - Chunks
+        - ChunkTexturedBuildSystem [6ms]
+        - ChunkMeshToggleSystem [6ms]
+        - VodesSpawnSystem [2ms]
+    - Lighting
+        - ChunkMeshColorsTriggerSystem [9ms]
+        - SmoothLightsBuildSystem [8ms]
+-x The next system in timing is Camera3RenderSystem [2ms]
+-x Chunk3TexturedRenderSystem (11ms) + ElementRenderSystem (3ms)
+-x FIX: Make arms never snap, just lerp the rotation over time
+-x Flecs skipped all target cleanup for some deleted entities (ghost npc uis, dead links, labels on random objects)
+	- cause, flecs v4.2.0: deleting an npc deletes its uis through (UIHolderLink, npc) (non fragmenting, OnDeleteTarget Delete)
+	  inside flecs_on_delete_clear_ids, after the marked ids were counted, so the ids those deletes marked ((*, ui)) were dropped
+	- the leaked (*, ui) record stayed MarkedForDelete, pair ids ignore generations, so the next entity recycling that id
+	  skipped all (*, e) cleanup when deleted
+	- fix: bsh/flecs_fix.sh "ZOXEL PATCH cleanup" runs those deletes in their own pass and repeats until no new ids
+	- tests: links_cleanup 12/12 cases, stream_npcs no npc errors
+-x Player spawn sometimes stalled (~1 in 3 new games), player never placed, terrain streaming stopped
+	- cause: the town placer cleared the TerrainSpawnQueue with count = 0, its positions hash kept them,
+	  so those columns were "already queued" forever, if the camera's column was one the player never spawned
+	- fix: clear_TerrainSpawnQueue clears both, the hash also rehashes when tombstones fill it (lookups never ended)
+	- tests: spawn_queue, player_spawn / stream_npcs dump the camera's column when streaming stops
+	- the 8 - 20s frames seen while stalled were another build running at the same time
+-x player_spawn test checks the character stands on ground, tst.sh --repeat <n> for intermittent bugs
+
+-x We going to need to make two systems for voxel dirty and for when lod updates, to spawn new meshes - just use same iterator and pass it in
+-x  Remove components when done - ChunkLodDirty
+	-x ChunkMeshToggleSystem
+	-x VodesSpawnSystem
+	-x ChunkMeshSpawnSystem
+-x Glitchy Ass Terrain Meshes
+-x Fix Chunks from mesh updating before their neighbors do
+    -x use Ready systems and timers
+-x Fix Chunks Lights flashing when updating
+-x Integral test on falling through map
+	- fly up
+	- fall
+	- lag spike
+	- wham into ground
+-x Fix low frame rates - clip through ground - by checking deltas between intersections
+-x Fall through map
+	- fix unstuck -
+	- Make sure collision checks deltas
+-x Lighting flashes when chunks update
+	- stop mesh updating until its finished building lights
+	- we shouldn't update mesh when terrain updates until lighting does
+	- atm it flashes white during updates
+-x doesnt spawn new chunk mesh ... again
+	- test by building upwards generating, the chunk
+-x Block didnt update when spawning on top of world
+-x Add VoxelNodeLock for Octree Safety
+	- Crashed on load...!
+-x Placing twice in a row can crash it still
+-x Let body parts meshes generate
+	- so we can loot them!
+-x Make sure all mesh code is out of characters, inside rendering or models where appropriate
+-x Bodys' right arm doesnt swing when no action selected
+-x Add Projectiles Damaging Terrain
+-x Add Projects Damaging NPCs
+-x Add Color of projectile, based on skill
 -x This next patch: please refactor characters so that vox or mesh (instance reference too) are children to the character, this seperation is important to seperate concerns of modules too
 	-x also cleanup old render data on skeleton characters
 	-x skeleton shouldnt inherit vox too, needs to be seperate?
@@ -1057,3 +1134,12 @@ Disabling Lods means:
 -x hide stats panel and actionbar when dialogue
 -x give blocks different health from meta
 -x Sometimes NPCs dont spawn in chunk, debug chunk states
+-x Tests render in software (mesa llvmpipe, SDL offscreen, --gles), a mali fault during a test crashed gnome-shell and logged the user out
+	- tst.sh kills a software run that opens /dev/mali, --gpu / --visible to use the real gpu, --tst-timescale for slower runs
+-x Npcs despawned and respawned when the camera bobbed across a chunk border (jumping, landing)
+	- fix: spawn zones turn off one chunk past character_spawn_distance (hysteresis)
+-x Chunks deleted any npc that walked into them when unloaded (ChunkEntities owned its entities, could delete the player too)
+	- fix: ChunkEntities is weak, npcs are owned by their spawn chunk (ChunkCharacters)
+-x Stream queue starved far updates (unloads, npc despawns) while the streamer kept moving, closest always went first
+	- fix: kills first, then updates queued over 2s (oldest), then closest (remove_next_TerrainSpawnQueue)
+-x Streaming speed followed the frame rate (1 update per frame), now stream_updates_per_second with a per frame cap

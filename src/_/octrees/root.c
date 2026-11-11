@@ -11,11 +11,15 @@ typedef void (*octree_open_hook) (
     size_t stride,
     void *user);
 
+// walks from node to target_depth at position
+//  - STOP: returns the deepest existing node (a closed or linked node above target_depth)
+//  - OPEN: allocates missing children down to target_depth, NULL if a link is in the way
 static inline void *walk_octree(
     void *node,
     byte target_depth,
     byte3 position,
     size_t stride,
+    size_t type_offset,
     octree_walk_mode mode,
     octree_open_hook hook,
     void *hook_user)
@@ -35,17 +39,21 @@ static inline void *walk_octree(
             return NULL;
         }
 #endif
-        void **children_ptr = (void **)node;
-        void *children = *children_ptr;
+        void *children = octree_children(node, type_offset);
         if (!children) {
             if (mode == OCTREE_WALK_STOP) {
                 return node;
             }
-            children = calloc(8, stride);
+            // NOTE: can't open through a link, unlink it first
+            if (octree_is_linked(node, type_offset)) {
+                return NULL;
+            }
+            children = zox_malloc(stride * octree_length);
             if (!children) {
                 return NULL;
             }
-            *children_ptr = children;
+            memset(children, 0, stride * octree_length);
+            *(void **) node = children;
             if (hook) {
                 hook(node, children, stride, hook_user);
             }
@@ -56,7 +64,7 @@ static inline void *walk_octree(
             position.y >> shift,
             position.z >> shift
         });
-        node = (char *)children + index * stride;
+        node = octree_child(children, index, stride);
         if (shift) {
             byte mask = (1u << shift) - 1u;
             position.x &= mask;
@@ -71,13 +79,15 @@ static inline const void *get_octree(
     const void *node,
     byte target_depth,
     byte3 position,
-    size_t stride)
+    size_t stride,
+    size_t type_offset)
 {
     return walk_octree(
         (void *)node,
         target_depth,
         position,
         stride,
+        type_offset,
         OCTREE_WALK_STOP,
         NULL,
         NULL);
@@ -87,13 +97,15 @@ static inline void* get_octree_mut(
     void *node,
     byte target_depth,
     byte3 position,
-    size_t stride)
+    size_t stride,
+    size_t type_offset)
 {
     return walk_octree(
         node,
         target_depth,
         position,
         stride,
+        type_offset,
         OCTREE_WALK_STOP,
         NULL,
         NULL);
@@ -117,13 +129,15 @@ static inline void *open_octree_node(
     byte target_depth,
     byte3 position,
     size_t stride,
-    size_t value_offset)
+    size_t value_offset,
+    size_t type_offset)
 {
     return walk_octree(
         node,
         target_depth,
         position,
         stride,
+        type_offset,
         OCTREE_WALK_OPEN,
         inherit_parent_value,
         (void *)value_offset);
@@ -136,13 +150,15 @@ static inline void *set_octree_value2(
     byte value,
     byte inherit_parent_value_flag,
     size_t stride,
-    size_t value_offset)
+    size_t value_offset,
+    size_t type_offset)
 {
     node = walk_octree(
         node,
         target_depth,
         position,
         stride,
+        type_offset,
         OCTREE_WALK_OPEN,
         inherit_parent_value_flag ? inherit_parent_value : NULL,
         (void *)value_offset);
@@ -157,13 +173,15 @@ static inline byte get_octree_value(
     byte target_depth,
     byte3 position,
     size_t stride,
-    size_t value_offset)
+    size_t value_offset,
+    size_t type_offset)
 {
     node = walk_octree(
         (void *)node,
         target_depth,
         position,
         stride,
+        type_offset,
         OCTREE_WALK_STOP,
         NULL,
         NULL);
@@ -224,6 +242,7 @@ static inline byte octree_getv_nearby(
     byte depth,
     sbyte3 offset,
     size_t stride,
+    size_t type_offset,
     byte oob_value)
 {
     if (!octrees || depth >= 7) {
@@ -255,10 +274,11 @@ static inline byte octree_getv_nearby(
         root,
         depth,
         local_position,
-        stride
+        stride,
+        type_offset
     );
     const byte value = octree ?
-        ((OctreeBasic*)octree)->value :
+        *(const byte*)((const char*) octree + octree_value_offset) :
         oob_value;
     spin_unlock(lock);
     return value;
@@ -277,7 +297,8 @@ static inline const void* octree_get_adjacent_leaf(
     byte dir,
     byte3 pos,
     byte depth,
-    size_t stride)
+    size_t stride,
+    size_t type_offset)
 {
     if (!root_node || dir > 5) {
         return NULL;
@@ -314,7 +335,8 @@ static inline const void* octree_get_adjacent_leaf(
             neighbour,
             depth,
             neighbour_pos,
-            stride
+            stride,
+            type_offset
         );
     }
     // Same chunk
@@ -329,6 +351,7 @@ static inline const void* octree_get_adjacent_leaf(
         root_node,
         depth,
         pos,
-        stride
+        stride,
+        type_offset
     );
 }

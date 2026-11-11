@@ -1,6 +1,6 @@
 # Children
 
-A child is an entity owned by its parent. Children are deleted with their parent, i.e. a character's skeleton, a model group's variants, or a music's notes.
+A child is an entity owned by its parent. The claims below are tested by `bash bsh/tst.sh children`. Children are deleted with their parent, i.e. a character's skeleton, a model group's variants, or a music's notes.
 
 Children are wrapped in `src/_/flecs/mcr/children.c`. Game code only uses the `zox_` wrappers. Never call `ecs_*` or use `Ecs*` ids outside `src/_/flecs`. If a wrapper is missing, add it there.
 

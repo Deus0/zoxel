@@ -108,21 +108,26 @@ int get_zexts_count(ecs *world) {
     return zox_count_types(Text);
 }
 
+// NOTE: lengths are uint, dialogue lines are longer than a byte (TargetText is 512)
 byte is_zext_cut(
     TextData *zext,
     const char* text,
-    byte cut_length)
+    uint cut_length)
 {
-    if (!zext || !zext->value) {
+    if (!zext) {
         return 0; // error
     }
-    if (zext->length != cut_length) {
+    if ((uint) zext->length != cut_length) {
         return 0;
     }
-    if (!cut_length && !zext->length) {
+    // both empty, an empty text has no value
+    if (!cut_length) {
         return 1;
     }
-    for (int i = 0; i < cut_length; i++) {
+    if (!zext->value) {
+        return 0; // error
+    }
+    for (uint i = 0; i < cut_length; i++) {
         byte j = convert_ascii(text[i]);
         byte k = zext->value[i];
         if (j != k) {
@@ -135,12 +140,12 @@ byte is_zext_cut(
 void set_zext_cut(
     TextData *data,
     const char* text,
-    byte cut_length)
+    uint cut_length)
 {
     if (data->length != cut_length) {
         resize_memory_component(TextData, data, byte, cut_length);
     }
-    for (int i = 0; i < cut_length; i++) {
+    for (uint i = 0; i < cut_length; i++) {
         data->value[i] = convert_ascii(text[i]);
     }
 }

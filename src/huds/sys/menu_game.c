@@ -15,8 +15,8 @@ zox_sys2(TaskbarBeginSystem) {
         if (!taskbar) {
             continue;
         }
-        // Get Taskbar Body
-        entity body = zox_get_child_by_id(world, e, zox_id(WindowBody));
+        // Get Taskbar Body, which holds the toggles
+        entity body = zox_get_child_by_id(world, taskbar, zox_id(WindowBody));
         if (!zox_valid(body)) {
             zox_loge("Invalid [taskbar_body]");
             continue;

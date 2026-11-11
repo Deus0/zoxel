@@ -1,3 +1,6 @@
+// why the players character has not spawned yet, for tests/debugging
+const char* zox_player_spawn_blocked = "";
+
 byte find_position_in_terrain(
     ecs* world,
     entity terrain,
@@ -16,12 +19,23 @@ byte find_position_in_terrain(
     for (sbyte y = render_distance_y; y >= -render_distance_y; y--) {
         chunk_position.y = y;
         chunk = int3_hashmap_get(chunks->value, chunk_position);
+        // NOTE: a missing chunk may still be streaming in, search lower ones
+        //  - this retries every frame, so missing chunks only report every few seconds (it spammed 7 lines a frame)
         if (!zox_valid(chunk)) {
-            zox_loge("Chunk Missing at [0x%ix0]", y);
+            static double last_missing_log = 0;
+            if (zox_current_time - last_missing_log > 5.0) {
+                last_missing_log = zox_current_time;
+                zox_logw("Spawn finder: missing Chunk at [%ix%ix%i], Chunks [%i]",
+                    chunk_position.x, chunk_position.y, chunk_position.z,
+                    count_int3_hashmap(chunks->value));
+            }
             continue;
         }
         // If generating, we wait until done
         if (zox_has(chunk, GenerateChunk)) {
+            static char reason[96];
+            snprintf(reason, sizeof(reason), "chunk [%ix%ix%i] generating [%i]", chunk_position.x, chunk_position.y, chunk_position.z, zox_getv(chunk, GenerateChunk));
+            zox_player_spawn_blocked = reason;
             return 0;
         }
         zox_geter(chunk, VoxelNode, chunkd);
@@ -40,10 +54,13 @@ byte find_position_in_terrain(
         voxel_node_above = chunkd;
     }
     if (!found_position) {
-        int count = count_int3_hashmap(chunks->value);
-        zox_loge("Failed finding spawn position for player; Chunks [%i]", count);
-        if (!count) {
-            zox_loge(" -> ? No chunks!");
+        zox_player_spawn_blocked = "no ground found in column";
+        static double last_failed_log = 0;
+        if (zox_current_time - last_failed_log > 5.0) {
+            last_failed_log = zox_current_time;
+            int count = count_int3_hashmap(chunks->value);
+            zox_loge("Failed finding spawn position for player in column [%ix%i]; Chunks [%i]",
+                chunk_position.x, chunk_position.z, count);
         }
         return 0;
     }
@@ -129,12 +146,14 @@ entity game_start_player_load(
     placer.chunk = int3_hashmap_get(chunks->value, chunk_position);
     // Still loading
     if (!zox_valid(placer.chunk)) {
+        zox_player_spawn_blocked = "load: save position chunk missing";
         if (dbg_log) {
             zox_log("   - Chunk Invalid at [%ix%ix%i]", chunk_position.x, chunk_position.y, chunk_position.z);
         }
         return 0;
     }
     if (zox_has(placer.chunk, GenerateChunk)) {
+        zox_player_spawn_blocked = "load: save position chunk generating";
         if (dbg_log) {
             zox_log("   - Chunk is Generating at [%ix%ix%i]", chunk_position.x, chunk_position.y, chunk_position.z);
         }
@@ -189,6 +208,7 @@ zox_sys2(PlayerBeginSystem) {
 #endif
         // Wait for Terrain to load
         if (zox_has(terrain, Loading)) {
+            zox_player_spawn_blocked = "terrain Loading";
             if (dbg_log) {
                 zox_log("Terrain is still Loading [%s]",
                     zox_getn(terrain));

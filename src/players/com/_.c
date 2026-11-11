@@ -21,5 +21,5 @@ void zox_components_players(ecs* world) {
     zoxd_double(PlayerRespawn);
     zoxd_nf_links(PlayerLinks);
     zoxd(PlayerStateEvent);
-    zoxd_nf_tag(PlayerLink);
+    zoxd_nf_link(PlayerLink);
 }
