@@ -33,6 +33,7 @@ void import_chunks3(ecs* world) {
     add_hook_files_load(zox_tests_chunks3);
     zox_tsts_chunks3_positions();
     zox_tsts_chunks3_io();
+    zox_tsts_chunks3_sides();
 }
 
 
