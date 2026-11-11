@@ -20,6 +20,7 @@ typedef struct {
     double timeout;
     zox_tst_setup_fun setup;    // optional, runs with the terminal arguments, before boot
     byte menus;                 // runs through the menus, ignoring --autostart
+    byte exits;                 // passes when the app closes itself (the main loop ends cleanly)
 } zox_tst;
 
 #define zox_tsts_max 64
@@ -78,7 +79,7 @@ void zox_tst_add(
         zox_loge("[tst] too many tests, raise zox_tsts_max");
         return;
     }
-    zox_tsts[zox_tsts_count++] = (zox_tst) { name, ready, check, timeout, NULL, 0 };
+    zox_tsts[zox_tsts_count++] = (zox_tst) { name, ready, check, timeout, NULL, 0, 0 };
 }
 
 // Adds a setup step (before boot) to a test, and whether it runs through the menus
@@ -95,6 +96,19 @@ void zox_tst_set_setup(
         }
     }
     zox_loge("[tst] can't set setup, no test [%s]", name);
+}
+
+// the test passes when the app closes itself, its ready function triggers the close
+//  - main calls zox_tst_main_ended after the main loop, then returns normally, so a crash
+//      or hang while closing fails it (exit code, or bsh/tst.sh's timeout)
+void zox_tst_set_exits(const char* name) {
+    for (int i = 0; i < zox_tsts_count; i++) {
+        if (strcmp(zox_tsts[i].name, name) == 0) {
+            zox_tsts[i].exits = 1;
+            return;
+        }
+    }
+    zox_loge("[tst] can't set exits, no test [%s]", name);
 }
 
 void zox_tst_end(const char* reason) {
@@ -125,6 +139,24 @@ void zox_tst_end(const char* reason) {
 
 void zox_tst_start();
 
+// called by main once the main loop has ended
+void zox_tst_main_ended() {
+    if (!zox_tst_active) {
+        return;
+    }
+    if (!zox_tst_active->exits) {
+        zox_loge("[tst] [%s] FAILED, the app closed before the test finished", zox_tst_active->name);
+        zox_exit_code = 1;
+    } else if (zox_tst_fails) {
+        zox_loge("[tst] [%s] FAILED [%i/%i] before closing", zox_tst_active->name, zox_tst_fails, zox_tst_checks);
+        zox_exit_code = 1;
+    } else {
+        zox_log("[tst] [%s] PASSED [%i] checks, the main loop ended, closing", zox_tst_active->name, zox_tst_checks);
+    }
+    fflush(stdout);
+    fflush(stderr);
+}
+
 void zox_tst_update(ecs* world) {
     if (zox_tst_name) {
         zox_tst_start();
@@ -140,7 +172,7 @@ void zox_tst_update(ecs* world) {
         zox_tst_end("too many errors logged, failing fast (raise with --tst-errors <n>)");
         return;
     }
-    if (zox_tst_active->ready(world)) {
+    if (zox_tst_active->ready(world) && !zox_tst_active->exits) {
         zox_tst_active->check(world);
         zox_tst_end("");
         return;

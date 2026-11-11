@@ -14,11 +14,17 @@
         ), \
         oob_value)
 
+// NOTE: walks the voxels (node) with the sides like the mesh builder (zox_terrain_building_dig),
+//  so both skip the same faces (sides set on air), and colors line up with the mesh's vertices
+// colors past limits errors, the mesh didn't match its chunk's sides (checked by tests)
+uint zox_smooth_lights_errors = 0;
+
 static inline void zox_apply_smooth_lights(
     spinlock** lights_locks,
     spinlock** voxels_locks,
     const LightNode** lights,
     const VoxelNode** voxels,
+    const VoxelNode* node,
     const SidesOctree* sides,
     const MeshColorRGBs* colors,
     byte3 position,
@@ -29,22 +35,17 @@ static inline void zox_apply_smooth_lights(
     const SidesOctree* sides_kids =
         get_children_SidesOctree(sides);
     byte has_sides_kids = sides_kids != NULL;
-    // NOTE: Voxels passed in for later adjacent checks
-    // spinlock* root_lights_lock = lights_locks[OCTREE_INDEX(0, 0, 0)];
-    // spinlock* root_voxels_lock = voxels_locks[OCTREE_INDEX(0, 0, 0)];
+    spinlock* node_lock = voxels_locks[OCTREE_INDEX(0, 0, 0)];
     // Dig Deeper
     if (depth < target_depth && has_sides_kids) {
-        /*spin_lock(root_voxels_lock);
-        byte has_vkids = has_children_VoxelNode(voxels);
-        spin_unlock(root_voxels_lock);*/
+        spin_lock(node_lock);
+        const VoxelNode* node_kids = has_children_VoxelNode(node) ?
+            get_children_VoxelNode(node) :
+            NULL;
+        spin_unlock(node_lock);
         byte3_multiply_byte(&position, 2);
         depth++;
         for (byte i = 0; i < 8; i++) {
-            /*spin_lock(root_voxels_lock);
-            const VoxelNode* child_voxels = has_vkids ?
-                &(get_children_VoxelNode(voxels))[i] :
-                voxels;
-            spin_unlock(root_voxels_lock);*/
             byte3 child_position = byte3_add(
                 position,
                 octree_positions[i]);
@@ -52,7 +53,8 @@ static inline void zox_apply_smooth_lights(
                 lights_locks,
                 voxels_locks,
                 lights,
-                voxels, // child_voxels,
+                voxels,
+                node_kids ? &node_kids[i] : node,
                 &sides_kids[i],
                 colors,
                 child_position,
@@ -72,12 +74,13 @@ static inline void zox_apply_smooth_lights(
     if (!sides_visible) {
         return;
     }
-    /*spin_lock(root_lock);
-    byte is_air = !voxels->value;
-    spin_unlock(root_lock);
-    if (!voxels->value) {
+    // the mesh builder skips air with sides (stale sides), so we do too
+    spin_lock(node_lock);
+    const byte is_air = !node->value;
+    spin_unlock(node_lock);
+    if (is_air) {
         return;
-    }*/
+    }
     // TODO: Handle Corners Properly:
     //      - If two adjacent voxels solid, dont use corner light as it will be blocked
     // for each face that is visible according to node->sides
@@ -89,6 +92,7 @@ static inline void zox_apply_smooth_lights(
         }
 //#ifdef zox_safety_checks
         if (*ccount + voxel_face_vertices_length > colors->length) {
+            zox_smooth_lights_errors++;
             zox_loge("Smooth Lights Error: Colors Past Limits [%i] - Face [%i] at Pos [%ix%ix%i] Depth [%i] of [%i]",
                 *ccount,
                 direction,
@@ -261,6 +265,7 @@ void build_smooth_lights_system(iter* it) {
             voxels_locks,
             lights,
             voxels,
+            voxels[OCTREE_INDEX(0, 0, 0)],
             sides,
             colors,
             byte3_zero,

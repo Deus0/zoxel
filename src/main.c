@@ -111,6 +111,7 @@ int main(int argc, char* argv[]) {
     zox_logv("Running Main Loop [%s]", game_name);
     main_loop(world);
     zox_logv("Ended Main Loop [%s]", game_name);
+    zox_tst_main_ended();
 #ifdef zox_xr
     SDL_Quit();
 #endif
