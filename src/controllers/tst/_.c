@@ -58,6 +58,15 @@ void zox_tst_spawn_dump_column(ecs* world, entity terrain, int3 column) {
     zox_log("[tst] column [%ix%i] queue [%i] tunks [%i] chunks [%i] tunk [%s] valid [%i] loading [%i]",
         column.x, column.z, (int) queue->count, count_int2_hashmap(tunks->value), count_int3_hashmap(chunks->value),
         zox_valid(tunk) ? zox_getn(tunk) : "none", zox_valid(tunk), zox_has(terrain, Loading));
+    // near columns with no tunk, i.e. never queued or dropped from the queue
+    for (int dx = -terrain_lod_near; dx <= terrain_lod_near; dx++) {
+        for (int dz = -terrain_lod_near; dz <= terrain_lod_near; dz++) {
+            const int2 p2 = (int2) { column.x + dx, column.z + dz };
+            if (!zox_valid(int2_hashmap_get(tunks->value, p2))) {
+                zox_log("[tst]   near column [%ix%i] has no tunk (queued [%i])", p2.x, p2.y, get_TerrainSpawnQueue(queue, p2) != NULL);
+            }
+        }
+    }
     for (int k = 0; k < (int) queue->count && k < 5; k++) {
         const TerrainSpawnUpdate u = queue->ptr[k];
         zox_log("[tst]   queued [%ix%i] distance [%i] level [%i] tunk [%llu]", u.position.x, u.position.y, u.distance, u.level, (unsigned long long) u.tunk);

@@ -71,6 +71,19 @@ void zox_tst_load_games_setup() {
         utime(folder, &times);
     }
     zox_log("[tst] made [%i] saves in [%s]", zox_tst_load_saves, zox_tst_load_saves_path);
+    // zox_tst_save=<realm folder>: a copy of a real save becomes the newest, i.e. to reproduce a bad load
+    //  - only copies from it, the real save is never written to
+    const char* real_save = getenv("zox_tst_save");
+    if (real_save && real_save[0]) {
+        char newest[640];
+        snprintf(newest, sizeof(newest), "%s/realm_%03i", zox_tst_load_saves_path, zox_tst_load_saves - 1);
+        snprintf(command, sizeof(command), "rm -rf '%s' && cp -r '%s' '%s' && touch '%s'", newest, real_save, newest, newest);
+        if (system(command) != 0) {
+            zox_loge("[tst] couldn't copy save [%s]", real_save);
+        } else {
+            zox_log("[tst] newest save is a copy of [%s]", real_save);
+        }
+    }
 #endif
 }
 
@@ -185,7 +198,8 @@ byte zox_tst_load_games_ready(ecs* world) {
     const uint seed = (uint) zox_getv(realm, Seed);
     zox_log("[tst] loaded realm [%s] seed [%u] from [%s]", zox_getn(realm), seed, path->value);
     zox_tst_check(index == zox_tst_load_saves - 1, "loaded realm path [%s], expected the newest save", path->value);
-    zox_tst_check(seed == zox_tst_load_seed + zox_tst_load_saves - 1, "loaded seed [%u], expected [%i]", seed, zox_tst_load_seed + zox_tst_load_saves - 1);
+    const char* real_save = getenv("zox_tst_save");
+    zox_tst_check((real_save && real_save[0]) || seed == zox_tst_load_seed + zox_tst_load_saves - 1, "loaded seed [%u], expected [%i]", seed, zox_tst_load_seed + zox_tst_load_saves - 1);
     zox_tst_check(!zox_valid(zox_get_child_by_id(world, canvas, zox_id(MenuLoad))), "load menu wasn't closed");
     return 1;
 }

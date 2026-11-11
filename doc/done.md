@@ -1143,3 +1143,8 @@ Disabling Lods means:
 -x Stream queue starved far updates (unloads, npc despawns) while the streamer kept moving, closest always went first
 	- fix: kills first, then updates queued over 2s (oldest), then closest (remove_next_TerrainSpawnQueue)
 -x Streaming speed followed the frame rate (1 update per frame), now stream_updates_per_second with a per frame cap
+-x Continue stuck on the loading screen for some saves
+	- cause: Loading waited for 95% of the near square of chunks, streaming only spawns a circle (int2_distance),
+	  45 of 49 columns, 91.8%, so it never ended (position dependent)
+	- fix: StreamEndSystem counts the near circle (get_stream_near_chunks_count)
+	- test: zox_tst_save=<realm folder> bash bsh/tst.sh continue_game loads a copy of a real save
