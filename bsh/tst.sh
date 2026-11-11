@@ -225,6 +225,12 @@ run_tst() {
     if grep -aq "received signal" "${log}"; then
         grep -a -A30 "received signal" "${log}" | grep -a "^#\|signal" | head -25 | sed 's/^/    /'
     fi
+    # the game's segfault handler logs a backtrace (glibc), resolve it to functions and lines
+    if grep -aq "Segfault Detected" "${log}" && command -v addr2line > /dev/null; then
+        echo "    !! segfault, backtrace:"
+        grep -aoP "${bin_name}\(\+\K0x[0-9a-f]+" "${log}" | head -25 | \
+            xargs -r addr2line -f -C -e "${bin}" | paste - - | sed 's/^/    /'
+    fi
     if [[ ${code} == "125" ]]; then
         echo "    !! killed, log passed ${log_max} bytes (log spam)"
         # the spam itself is the useful part, show what repeated most

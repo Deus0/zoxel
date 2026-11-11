@@ -762,7 +762,9 @@ void zox_tst_octree_links_check(ecs* world) {
 }
 
 // --- octree_leaks: every way of freeing a tree gives back all its memory (glibc only) ---
-#ifdef __GLIBC__
+//  - skipped under AddressSanitizer (build.sh --memory), its malloc doesn't fill mallinfo2,
+//      and it checks leaks itself
+#if defined(__GLIBC__) && !defined(__SANITIZE_ADDRESS__)
 #include <malloc.h>
 
 static inline long zox_tst_octree_heap() {
@@ -851,7 +853,7 @@ void zox_tst_octree_leaks_check(ecs* world) {
 #else
 void zox_tst_octree_leaks_check(ecs* world) {
     (void) world;
-    zox_log("[tst] octree_leaks needs glibc mallinfo2, skipped");
+    zox_log("[tst] octree_leaks needs glibc mallinfo2 (and no AddressSanitizer), skipped");
 }
 #endif
 
