@@ -1,4 +1,11 @@
-byte fetch_component_type(ecs* world, entity target, entity component) {
+// What the inspector shows for each of an entity's ids (components, tags and pairs)
+
+// the type of target's component, for its row's color and click behaviour
+byte fetch_component_type(
+    ecs* world,
+    entity target,
+    entity component)
+{
     if (!zox_valid(target)) {
         zox_logw("Invalid target in [fetch_component_type]");
         return zox_type_none;
@@ -6,22 +13,19 @@ byte fetch_component_type(ecs* world, entity target, entity component) {
     if (zox_has_id_flag(component, PAIR)) {
         return zox_type_pair;
     }
-    ecs_id_t id = component & ECS_COMPONENT_MASK;
+    const entity id = zox_id_component(component);
     if (!zox_valid(id)) {
-        zox_logw("invalid component in [fetch_component_type]");
+        zox_logw("Invalid component in [fetch_component_type]");
         return zox_type_none;
     }
     if (zox_has_id_flag(id, zox_override_tag)) {
         return zox_type_override;
     }
     #define fetch_component_type_i(T)\
-        else if (is_component_type_##T(id)) { \
+        if (is_component_type_##T(id)) { \
             return zox_type_##T; \
         }
-
-    if (is_component_type_byte(id)) {
-        return zox_type_byte;
-    }
+    fetch_component_type_i(byte)
     fetch_component_type_i(byte2)
     fetch_component_type_i(byte3)
     fetch_component_type_i(int)
@@ -48,64 +52,49 @@ byte fetch_component_type(ecs* world, entity target, entity component) {
     fetch_component_type_i(gint)
     fetch_component_type_i(guint)
     fetch_component_type_i(guint2)
-    else {
-        const EcsComponent* component = (EcsComponent*) ecs_get(world, id, EcsComponent);
-        uint component_size = component != NULL ? component->size : 0;
-        if (!component_size) {
-            return zox_type_tag;
-        } else {
-            // havn't added yet to zox: MeshIndicies etc
-            return zox_type_unknown;
-        }
-    }
-    return zox_type_none;
+    #undef fetch_component_type_i
+    // not a zox type yet (i.e. MeshIndicies), or a tag
+    return zox_component_size(world, id) ? zox_type_unknown : zox_type_tag;
 }
 
-char* fetch_compoent_label(ecs *world, entity target, entity component) {
-    uint tlength = inspector_component_size_buffer;
-    char* buffer = malloc(tlength);
+// the label for target's component, i.e. "Position3D [1.0, 2.0, 3.0]"
+//  - returns a new string (inspector_component_size_buffer long), the caller frees it
+char* fetch_component_label(
+    ecs *world,
+    entity target,
+    entity component)
+{
+    const uint size = inspector_component_size_buffer;
+    char* buffer = malloc(size);
     if (!zox_valid(target)) {
-        // zox_logw("Invalid target [Entity] in [fetch_compoent_label]");
-        snprintf(buffer, tlength, "Invalid Entity");
+        snprintf(buffer, size, "Invalid Entity");
         return buffer;
     }
     if (zox_has_id_flag(component, PAIR)) {
-        entity pair1 = ecs_pair_first(world, component);
-        entity pair2 = ecs_pair_second(world, component);
-        if (!zox_valid(pair1) && !zox_valid(pair2)) {
-            snprintf(buffer, tlength, "Invalid Pair");
-        } else if (!zox_valid(pair1)) {
-            snprintf(buffer, tlength, "Invalid -=- %s", zox_get_name(pair2));
-        } else if (!zox_valid(pair2)) {
-            snprintf(buffer, tlength, "%s -=- Invalid", zox_get_name(pair1));
-        } else {
-            snprintf(buffer, tlength, "%s -=- %s", zox_get_name(pair1), zox_get_name(pair2));
-        }
-
+        const entity first = zox_pair_first(world, component);
+        const entity second = zox_pair_second(world, component);
+        snprintf(buffer, size, "%s -=- %s",
+            zox_valid(first) ? zox_get_name(first) : "Invalid",
+            zox_valid(second) ? zox_get_name(second) : "Invalid");
         return buffer;
     }
-    ecs_id_t id = component & ECS_COMPONENT_MASK;
+    const entity id = zox_id_component(component);
     if (!zox_valid(id)) {
-        zox_logw("%s has Invalid [Component] in [fetch_compoent_label]", zox_get_name(target));
-        snprintf(buffer, tlength, "Invalid Component");
+        zox_logw("[%s] has an invalid component in [fetch_component_label]", zox_get_name(target));
+        snprintf(buffer, size, "Invalid Component");
         return buffer;
     }
     if (zox_has_id_flag(id, zox_override_tag)) {
-        snprintf(buffer, tlength, "*[%s]*", zox_get_name(id));
+        snprintf(buffer, size, "*[%s]*", zox_get_name(id));
         return buffer;
     }
-    int index = 0;
-    index += snprintf(buffer + index, tlength, "%s", zox_get_name(component));
-
+    int index = snprintf(buffer, size, "%s", zox_get_name(component));
     #define add_component_label(T)\
-        else if (is_component_type_##T(id)) { \
-            index = get_type_label_##T(world, target, id, buffer, tlength, index); \
+        if (is_component_type_##T(id)) { \
+            get_type_label_##T(world, target, id, buffer, size, index); \
+            return buffer; \
         }
-
-    // TODO: Make this dynamically use all types
-    if (is_component_type_byte(id)) {
-        index = get_type_label_byte(world, target, id, buffer, tlength, index);
-    }
+    add_component_label(byte)
     add_component_label(byte2)
     add_component_label(byte3)
     add_component_label(int)
@@ -131,14 +120,10 @@ char* fetch_compoent_label(ecs *world, entity target, entity component) {
     add_component_label(gint)
     add_component_label(guint)
     add_component_label(guint2)
-    else {
-        const EcsComponent* component = (EcsComponent*) ecs_get(world, id, EcsComponent);
-        uint component_size = component !=  NULL ? component->size : 0;
-        if (!component_size) {
-            index += snprintf(buffer + index, tlength - index, " [T]");
-        } else {
-            index += snprintf(buffer + index, tlength - index, " [?]");
-        }
+    #undef add_component_label
+    // [T] tag, [?] a component without a zox type
+    if (index < (int) size) {
+        snprintf(buffer + index, size - index, zox_component_size(world, id) ? " [?]" : " [T]");
     }
     return buffer;
 }

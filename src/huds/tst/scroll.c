@@ -80,11 +80,10 @@ byte zox_tst_scroll_wheel_ready(ecs* world) {
             // the first list element, the gap below it, and empty space off the window
             entity first_child = 0;
             iter it2 = zox_children(world, zox_tst_scroll_list);
-            while (zox_children_next(it2) && !first_child) {
-                for (int j = 0; j < it2.count; j++) {
+            while (zox_children_next(it2)) {
+                for (int j = 0; j < it2.count && !first_child; j++) {
                     if (zox_has(it2.entities[j], ChildIndex) && zox_getv(it2.entities[j], ChildIndex) == 0) {
                         first_child = it2.entities[j];
-                        break;
                     }
                 }
             }

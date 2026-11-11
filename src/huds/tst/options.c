@@ -32,6 +32,7 @@ entity zox_tst_options_find_toggle(ecs* world, entity e) {
         for (int j = 0; j < it2.count; j++) {
             const entity found = zox_tst_options_find_toggle(world, it2.entities[j]);
             if (found) {
+                zox_children_end(it2);
                 return found;
             }
         }

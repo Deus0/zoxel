@@ -1,6 +1,5 @@
 #include "hierarchy.c"
 #include "inspector.c"
-#include "profiler.c"
 #include "label.c"
 
 entity prefab_inspector;

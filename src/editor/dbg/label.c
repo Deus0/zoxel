@@ -18,7 +18,7 @@ uint zox_dbg_ui_hierarchy(
         if (zox_has(e2, EditorElement)) {
             continue;
         }
-        for (byte j = 0; j < dig; j++) {
+        for (byte k = 0; k < dig; k++) {
             index += snprintf(buffer + index, size - index, " ");
         }
         index += snprintf(buffer + index, size - index, "- [%s]\n", zox_get_name(e2));
