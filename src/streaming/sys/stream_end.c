@@ -1,6 +1,18 @@
 // why terrain is still Loading, for tests/debugging
 char zox_stream_end_status[160] = "";
 
+// chunks streaming keeps within terrain_lod_near, a circle of columns (int2_distance, like terrain_stream_system)
+//  - used to be the full square, its 4 corners never spawn, so Loading never ended for some positions
+static inline uint get_stream_near_chunks_count() {
+    uint columns = 0;
+    for (int x = -terrain_lod_near; x <= terrain_lod_near; x++) {
+        for (int z = -terrain_lod_near; z <= terrain_lod_near; z++) {
+            columns += int2_distance(int2_zero, (int2) { x, z }) <= terrain_lod_near;
+        }
+    }
+    return columns * (2 * render_distance_y + 1);
+}
+
 // A state checker for stream loading
 // Loading ends once the chunks near the streamer are done (RenderDistance <= terrain_lod_near),
 // the far ones keep streaming in after (spawn queue is sorted by distance, closest first)
@@ -94,11 +106,11 @@ zox_sys2(StreamEndSystem) {
                 chunks_busy,
                 meshes_loading);
         }
-        const uint near_width_status = 2 * terrain_lod_near + 1;
+        const uint near_count = get_stream_near_chunks_count();
         snprintf(zox_stream_end_status, sizeof(zox_stream_end_status),
             "near loaded [%u/%u] loading [%u] generating [%u] (lowest [%i]) busy [%u] meshes [%u] closest queued [%i]",
             chunks_loaded,
-            (uint) (near_width_status * near_width_status * (2 * render_distance_y + 1)),
+            near_count,
             chunks_loading, chunks_generating, lowest_generate_state, chunks_busy, meshes_loading,
             get_closest_TerrainSpawnQueue_distance((TerrainSpawnQueue*) queue));
         if (chunks_loading > 0) {
@@ -111,10 +123,7 @@ zox_sys2(StreamEndSystem) {
         if (running && !zox_disable) {
             continue;
         }
-        // NOTE: Can we get render distance from the chunks here?
-        // the near square of columns, each a stack of 2 * render_distance_y + 1 chunks
-        const uint near_width = 2 * terrain_lod_near + 1;
-        uint chunk_required = near_width * near_width * (2 * render_distance_y + 1) * required_buffer;
+        uint chunk_required = near_count * required_buffer;
         if (chunks_loaded < chunk_required && !zox_disable) {
             if (dbg_log) {
                 zox_log("Chunks Didnt load enough: [%i] < [%i]", chunks_loaded, chunk_required);
