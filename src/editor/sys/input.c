@@ -1,32 +1,24 @@
-// todo: move to add key event
-
-entity canvas_toggle_ui(ecs *world, entity canvas, entity e, entity (*spawn_ui)(ecs*, entity)) {
-    if (e == 0) {
-        return (*spawn_ui)(world, canvas);
-    } else {
-        zox_delete(e);
-        return 0;
-    }
-}
+// Editor keys (x: profiler, c: debug label), the other tools are toggled with key down hooks
+// TODO: move these to add_hook_key_down too
 
 zox_sys2(EditorInputSystem) {
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        entity canvas = zox_get_link(world, e, CanvasLink);
-        if (!zox_valid(canvas)) {
+        const entity canvas = zox_get_link(world, e, CanvasLink);
+        const entity keyboard_device = zox_get_child_by_id(world, e, zox_id(Keyboard));
+        if (!zox_valid(canvas) ||
+            !zox_valid(keyboard_device) ||
+            zox_has(keyboard_device, Disabled))
+        {
             continue;
         }
-        entity e2 = zox_get_child_by_id(world, e, zox_id(Keyboard));
-        if (zox_has(e2, Disabled)) {
-            continue;
-        }
-        zox_geter(e2, Keyboard, keyboard);
+        zox_geter(keyboard_device, Keyboard, keyboard);
         if (keyboard->x.pressed_this_frame) {
-            entity profiler = zox_get_child_by_id(world, canvas, zox_id(Profiler));
+            const entity profiler = zox_get_child_by_id(world, canvas, zox_id(Profiler));
             canvas_toggle_ui(world, canvas, profiler, spawn_profiler_canvas);
         } else if (keyboard->c.pressed_this_frame) {
-            entity label = zox_get_child_by_id(world, canvas, zox_id(GameDebugLabel));
+            const entity label = zox_get_child_by_id(world, canvas, zox_id(GameDebugLabel));
             canvas_toggle_ui(world, canvas, label, spawn_game_debug_label);
         }
     }

@@ -9,3 +9,4 @@
 #include "find.c"
 #include "phases.c"
 #include "unlinks.c"
+#include "inspect.c"

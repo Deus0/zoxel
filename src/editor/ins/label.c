@@ -1,6 +1,7 @@
+// The debug label (c), top right, showing local_debug_label's text (see DebugLabelSystem)
 entity spawn_game_debug_label(ecs* world, entity canvas) {
-    if (!canvas) {
-        zox_loge("[spawn_game_debug_label] error: invalid canvas, or no player found on canvas");
+    if (!zox_valid(canvas)) {
+        zox_loge("[spawn_game_debug_label] invalid canvas");
         return 0;
     }
     entity prefab = prefab_label2t;
@@ -8,7 +9,7 @@ entity spawn_game_debug_label(ecs* world, entity canvas) {
         zox_loge("prefab invalid in [spawn_game_debug_label]");
         return 0;
     }
-    // Lyout
+    // Layout
     entity parent = canvas;
     int layer = editor_overlay_layer;
     byte alignment = zox_alignment_top_right;

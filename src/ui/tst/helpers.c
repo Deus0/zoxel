@@ -17,6 +17,7 @@ entity zox_tst_find_click(
         for (int j = 0; j < it2.count; j++) {
             entity found = zox_tst_find_click(world, it2.entities[j], on_click);
             if (found) {
+                zox_children_end(it2);
                 return found;
             }
         }
@@ -129,6 +130,7 @@ entity zox_tst_mouse_pointer(
         for (int j = 0; j < it2.count; j++) {
             const entity e = it2.entities[j];
             if (zox_has(e, ZevicePointerPosition) && zox_has(e, EntityTarget)) {
+                zox_children_end(it2);
                 return e;
             }
         }

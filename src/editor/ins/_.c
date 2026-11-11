@@ -1,4 +1,4 @@
-
+#include "window.c"
 #include "inspector.c"
 #include "hierarchy.c"
 #include "profiler.c"

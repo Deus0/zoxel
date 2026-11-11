@@ -1,28 +1,20 @@
+// y: toggles the hierarchy, of the realm's tree (or the canvas's, in the menus)
 void toggle_hierarchy(ecs *world, int32_t keycode) {
-    // our logic stuff
     if (keycode != zox_key_y) {
         return;
     }
-    entity player = dbg_player;
-    if (!zox_valid(player)) {
+    const entity canvas = get_editor_canvas(world);
+    if (!canvas) {
         return;
     }
-    entity canvas = zox_get_link(world, player, CanvasLink);
-    entity e = zox_get_child_by_id(world, canvas, zox_id(HierarchyUI));
-    // entity e = get_canvas_window(world, canvas, zox_window_hierarchy);
-    if (e) {
-        zox_log("Deleting Editor Hierarchy");
-        zox_delete(e);
-        spawn_sound_from_file_index(world, prefab_sound, 1);
-    } else {
-        entity target = local_realm ? local_realm : canvas;
-        if (!zox_valid(target)) {
-            zox_log_error("Hierarchy Target is invalid");
-            return;
-        }
-        target = zox_get_parent_root(world, target);
-        zox_log("Spawning Editor Hierarchy -> [%s]", zox_get_name(target));
-        spawn_window_hierarchy(world, canvas, player, target);
-        spawn_sound_from_file_index(world, prefab_sound, 0);
+    const entity hierarchy = zox_get_child_by_id(world, canvas, zox_id(HierarchyUI));
+    if (zox_valid(hierarchy)) {
+        zox_delete(hierarchy);
+        play_editor_toggle_sound(world, 0);
+        return;
     }
+    const entity root = zox_get_parent_root(world, zox_valid(local_realm) ? local_realm : canvas);
+    zox_logv("Spawning Editor Hierarchy -> [%s]", zox_getn(root));
+    spawn_window_hierarchy(world, canvas, dbg_player, root);
+    play_editor_toggle_sound(world, 1);
 }

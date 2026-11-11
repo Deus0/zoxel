@@ -6,6 +6,7 @@
 - Model Inspector for Blocks, Characters, Items
 
 # Tools #
+- resources viewer - show io folders, with sub files of loaded resources
 - terminal log text list
 - chunk debugger - show lods of chunks etc
 - character debugger - show number per tunk2D of npcs

@@ -1,119 +1,46 @@
+// The hierarchy lists an entity tree as buttons, indented by depth, clicking one inspects it
 const int hierarchy_max_line_characters = 64;
 const ushort hierarchy_max_elements = 128;
 
-void inspector_select_target(
-    ecs* world,
-    entity player,
-    entity target)
-{
-    if (!zox_valid(player)) {
-        return;
-    }
-    entity canvas = zox_get_link(world, player, CanvasLink);
-    if (!zox_valid(canvas)) {
-        return;
-    }
-    entity inspector = zox_get_child_by_id(world, canvas, zox_id(InspectorUI));
-    if (!zox_valid(inspector)) {
-        zox_log("Inspector Closed, Spawning for Target [%s]", target ? zox_get_name(target) : "None");
-        spawn_inspector(world, canvas, player, target);
-        return;
-    }
-    if (!zox_has(inspector, EntityTarget)) {
-        zox_log("Inspector Invalid Components");
-        return;
-    }
-    zox_geter_value(inspector, EntityTarget, entity, old_target);
-    if (old_target == target) {
-        zox_log("Inspector Same Target [%s]", target ? zox_get_name(target) : "None");
-        return;
-    }
-    zox_set(inspector, EntityTarget, { target });
-    zox_set(inspector, InspectorDirty, { zox_dirty_trigger });
-    zox_log("+ Inspector Target [%s]", target ? zox_get_name(target) : "None");
-}
+typedef struct {
+    entity target;
+    byte depth;
+} HierarchyRow;
 
 void button_event_clicked_hierarchy(
     ecs* world,
     ClickEventData event)
 {
-    entity player = event.clicker;
-    entity clicked = event.clicked;
+    const entity clicked = event.clicked;
     if (!zox_has(clicked, EntityTarget)) {
-        zox_loge("Clicked [%s] Invalid Components", zox_get_name(clicked));
+        zox_loge("Clicked [%s] is not a hierarchy row", zox_get_name(clicked));
         return;
     }
-    zox_geter_value(clicked, EntityTarget, entity, target);
-    inspector_select_target(world, player, target);
-    zox_set(clicked, ActiveState, { 1 });
-    zox_set(clicked, ActiveStateDirty, { zox_dirty_trigger });
+    inspector_select_target(world, event.clicker, zox_getv(clicked, EntityTarget));
+    zox_setv(clicked, ActiveState, 1);
+    zox_setv(clicked, ActiveStateDirty, zox_dirty_trigger);
 }
 
-void add_entity_to_labels(
+// adds e and its descendants (depth first), skipping glyphs, up to hierarchy_max_elements
+void get_hierarchy_rows(
     ecs *world,
     entity e,
-    text_group_dynamic_array_d* labels,
-    entity_array_d* entities,
-    int tree_level)
+    byte depth,
+    HierarchyRow* rows,
+    int* count)
 {
-    if (!zox_valid(e)) {
+    if (*count >= hierarchy_max_elements || !zox_valid(e) || zox_has(e, Glyph)) {
         return;
     }
-    char *text = malloc(hierarchy_max_line_characters);
-    if (!zox_has(e, ZoxName)) {
-        snprintf(text, hierarchy_max_line_characters, "%s", zox_get_name(e));
-    } else {
-        zox_geter(e, ZoxName, zox_name);
-        snprintf(text, hierarchy_max_line_characters, "%s", zox_name->value);
-    }
-    /*for (int i = 0; i < tree_level; i++) {
-        char *temp = strdup(text);
-        if (temp) {
-            snprintf(text, hierarchy_max_line_characters, "-%s", temp);
-            free(temp);
-        } else {
-            zox_loge("no temp was created")
-        }
-    }*/
-    // zox_log("%s made label [%s]", zox_get_name(e), text)
-    text_group_dynamic_array_d_add(labels, (text_group_dynamic) { .text = text });
-    entity_array_d_add(entities, e);
-}
-
-void editor_fetch_children(
-    ecs *world,
-    text_group_dynamic_array_d* labels,
-    entity_array_d* entities,
-    byte_array_d* tree_levels,
-    entity e,
-    byte tree_level)
-{
-    if (entities->size >= hierarchy_max_elements) {
-        zox_logw("Hierarchy past limits [%i]", hierarchy_max_elements);
-        return;
-    }
-    if (!zox_valid(e) || zox_has(e, Glyph)) {
-        return;
-    }
-    add_entity_to_labels(world, e, labels, entities, tree_level);
-    byte_array_d_add(tree_levels, tree_level);
-    tree_level++;
+    rows[(*count)++] = (HierarchyRow) { .target = e, .depth = depth };
     iter it2 = zox_children(world, e);
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
-            entity e2 = it2.entities[j];
-            editor_fetch_children(
-                world,
-                labels,
-                entities,
-                tree_levels,
-                e2,
-                tree_level);
+            get_hierarchy_rows(world, it2.entities[j], depth + 1, rows, count);
         }
     }
 }
 
-// NOTE: Spawns button children of hierarchy list
 zox_sys2(HierarchySpawnSystem) {
     const ClickEvent on_click = (ClickEvent) { &button_event_clicked_hierarchy };
     zox_sys_world();
@@ -125,105 +52,37 @@ zox_sys2(HierarchySpawnSystem) {
         zox_sys_e();
         zox_sys_i(HierarchyUIDirty, dirty);
         zox_sys_i(EntityTarget, target);
-        entity scrollview = zox_get_link(world, e, ScrollviewLink);
         zox_sys_i(ElementFontSize, font_size);
         if (dirty->value != zox_dirty_active) {
             continue;
         }
-        entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
-        if (!zox_valid(canvas)) {
+        const entity list = get_editor_window_list(world, e);
+        if (!list) {
             continue;
         }
-        if (!zox_valid(scrollview)) {
-            zox_loge("Scrollview Link is invalid.");
-            continue;
+        clear_editor_list(world, list);
+        HierarchyRow rows[hierarchy_max_elements];
+        int count = 0;
+        get_hierarchy_rows(world, target->value, 0, rows, &count);
+        if (count >= hierarchy_max_elements) {
+            zox_logw("Hierarchy of [%s] cut off at [%i] entities", zox_getn(target->value), hierarchy_max_elements);
         }
-        if (!zox_is_linked_any(world, scrollview, ListUILink)) {
-            zox_loge("Scrollview [%s] has no list link", zox_get_name(scrollview));
-            continue;
-        }
-        // 2: Fetch our scrollview data
-        entity list_ui = zox_get_link(world, scrollview, ListUILink);
-        if (!zox_valid(list_ui)) {
-            zox_loge("Scrollview [%s] Invalid ListUI", zox_get_name(scrollview));
-            continue;
-        }
-        if (!zox_has(list_ui, Layer) || !zox_has(list_ui, ListVisible)) {
-            zox_loge("List UI [%s] Invalid Components", zox_get_name(list_ui));
-            continue;
-        }
-        // byte scrollview_layer = zox_getv(list_ui, Layer);
-        // Fetch Target Hierarchy Data
-        entity_array_d* entities = create_entity_array_d(1);
-        text_group_dynamic_array_d* labels = create_text_group_dynamic_array_d(1);
-        byte_array_d* tree_levels = create_byte_array_d(1);
-        editor_fetch_children(
-            world,
-            labels,
-            entities,
-            tree_levels,
-            target->value,
-            0);
-        // Initialize Data
-        zox_geter_value(list_ui, TextPadding, byte2, text_padding);
-        // Delete old list elements
-        iter it2 = zox_children(world, list_ui);
-        while (zox_children_next(it2)) {
-            for (int j = 0; j < it2.count; j++) {
-                entity e2 = it2.entities[j];
-                zox_delete(e2);
-            }
-        }
-        // Spawn new buttons
-        byte visible = zox_getv(list_ui, ListVisible);
-        byte button_layer = zox_getv(list_ui, Layer) + 1;
-        byte button_text_layer = button_layer + 1;
-        for (size_t j = 0; j < labels->size; j++) {
-            // child_text_data.text = labels->data[j].text;
-            const char* text = labels->data[j].text;
-            entity target = entities->data[j];
-            byte tree_level = tree_levels->data[j];
-            entity2 e2 = spawn_button(
+        char text[hierarchy_max_line_characters];
+        for (int j = 0; j < count; j++) {
+            get_editor_entity_label(world, rows[j].target, text, hierarchy_max_line_characters);
+            const entity button = spawn_editor_list_row(
                 world,
+                list,
                 prefab_button_hierarchy,
-                list_ui,
                 text,
-                int2_zero,
-                int2_zero,
-                float2_half,
-                zox_alignment_centre,
                 font_size->value,
-                text_padding,
-                editor_button_fill,
                 editor_button_outline,
-                editor_color_font,
-                editor_color_fonto);
-            zox_set(e2.x, ClickEvent, { on_click.value });
-            zox_set(e2.x, EntityTarget, { target });
-            zox_set(e2.x, ListIndent, { tree_level });
-            zox_set(e2.x, Layer, { button_layer });
-            zox_set(e2.y, Layer, { button_text_layer });
-            byte rendered = j < visible;
-            zox_set(e2.x, RenderDisabled, { !rendered });
-            zox_set(e2.y, RenderDisabled, { !rendered });
+                j);
+            zox_setv(button, ClickEvent, on_click.value);
+            zox_setv(button, EntityTarget, rows[j].target);
+            zox_setv(button, ListIndent, rows[j].depth);
         }
-        // Set ListDirty for positioning / hiding etc
-        zox_set(list_ui, ListStart, { 0 });
-        zox_add(list_ui, ListDirty);
-        zox_add(list_ui, ListPositionDirty);
-        // Debug
-        zox_logv("Hierarchy Refreshed");
-        zox_logv("   - Elements [%i]", labels->size);
-        zox_logv("   - Visible [%i]", visible);
-        for (size_t j = 0; j < labels->size; j++) {
-            zox_logv("   + %i: [%s]", j, labels->data[j].text);
-        }
-        // Dispose of dynamic arrays
-        for (size_t j = 0; j < labels->size; j++) {
-            free(labels->data[j].text);
-        }
-        dispose_text_group_dynamic_array_d(labels);
-        dispose_entity_array_d(entities);
-        dispose_byte_array_d(tree_levels);
+        refresh_editor_list(world, list);
+        zox_logv("Hierarchy [%s] refreshed with [%i] rows", zox_getn(target->value), count);
     }
 } zox_sys_end(HierarchySpawnSystem);
