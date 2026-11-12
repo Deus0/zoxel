@@ -1,31 +1,22 @@
-// the music's own random numbers, from its seed (srand reset the global rand other threads use,
-// and made the music depend on whatever else called rand)
-static inline int music_rand(uint* state) {
-    *state = *state * 1103515245u + 12345u;
-    return (int) ((*state >> 16) & 0x7fff);
-}
-
-int get_random_pallete_note(uint* rng, const byte *pallete, int array_length) {
-   return pallete[music_rand(rng) % array_length];
-}
-
+// Generates a music's notes from its seed (compose_song, like a dungeon from its seed)
+//  - each step is a note (the melody, or a rest), its other voices are its child notes
+//  - the music plays the composed song's tempo, its lead instrument is the music's InstrumentType
 zox_sys2(MusicGenerateSystem) {
     if (nomusic) {
         return;
     }
-    byte lowest_note = 12;
-    byte highest_note = 36;
-    byte note_verse_difference = 6;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Seed);
     zox_sys_in(InstrumentType);
     zox_sys_out(GenerateMusic);
+    zox_sys_out(MusicSpeed);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Seed, seed);
         zox_sys_i(InstrumentType, instrument);
         zox_sys_o(GenerateMusic, generateMusic);
+        zox_sys_o(MusicSpeed, speed);
         if (!generateMusic->value) {
             continue;
         }
@@ -34,77 +25,26 @@ zox_sys2(MusicGenerateSystem) {
         for (int j = 0; j < old_notes.length; j++) {
             zox_delete(old_notes.value[j]);
         }
-        zox_logv("Generating music with Seed [%lu]", seed->value);
-        uint rng = (uint) seed->value;
-
-        int sounds_per_verse = 8;
-        int verses = 6;
-        int sound_index = 0;
-        int palete_type = 0;
-        palete_type = music_rand(&rng) % music_palette_end;
-        int first_note = lowest_note + music_rand(&rng) % (highest_note - lowest_note + 1 - note_verse_difference);
-        // music_palette_names[palete_type], instrumentType->value,
-        zox_log_notes("+ generating music\n - Palette [%i]\n - Instrument: -\n    - First Note [%i]", palete_type, first_note);
-
-        for (int j = 0; j < verses; j++) {
-            first_note += - note_verse_difference + music_rand(&rng) % (note_verse_difference * 2 + 1);
-            if (first_note < lowest_note) {
-                first_note = lowest_note;
-            } else if (first_note > highest_note) {
-                first_note = highest_note;
-            }
-            for (int k = 0; k < sounds_per_verse; k++) {
-                int music_note = first_note;
-                if (palete_type == music_palette_creepy) {
-                    music_note += get_random_pallete_note(&rng, music_palette_values_creepy, 7);
-                } else if (palete_type == music_palette_happy) {
-                    music_note += get_random_pallete_note(&rng, music_palette_values_happy, 7);
-                } else if (palete_type == music_palette_blues) {
-                    music_note += get_random_pallete_note(&rng, music_palette_values_blues, 5);
-                } else if (palete_type == music_palette_blues2) {
-                    music_note += get_random_pallete_note(&rng, music_palette_values_blues2, 7);
-                } else if (palete_type == music_palette_romantic) {
-                    music_note += get_random_pallete_note(&rng, music_palette_values_romantic, 6);
-                } else if (palete_type == music_palette_epic) {
-                    music_note += get_random_pallete_note(&rng, music_palette_values_epic, 6);
-                } else if (palete_type == music_palette_jazz) {
-                    music_note += get_random_pallete_note(&rng, music_palette_values_jazz, 5);
-                } else if (palete_type == music_palette_rock) {
-                    music_note += get_random_pallete_note(&rng, music_palette_values_rock, 6);
-                } else if (palete_type == music_palette_techno) {
-                    music_note += get_random_pallete_note(&rng, music_palette_values_techno, 7);
-                } else if (palete_type == music_palette_funk) {
-                    music_note += get_random_pallete_note(&rng, music_palette_values_funk, 5);
+        static Song song;
+        compose_song((uint) seed->value, instrument->value, &song);
+        speed->value = song.step_seconds;
+        for (uint step = 0; step < song.steps_count; step++) {
+            const SongStep* song_step = &song.steps[step];
+            const SongNote melody = song_step->voices[song_voice_melody];
+            const entity note = spawn_note(world, prefab_note, e, melody.note, melody.instrument,
+                melody.steps * song.step_seconds, melody.volume);
+            for (byte v = 1; v < song_voices; v++) {
+                const SongNote voice = song_step->voices[v];
+                if (!voice.note) {
+                    continue;
                 }
-                if (music_rand(&rng) % 100 >= music_note_skip) {
-                    music_note = 0;
-                    // printf("Skiping at %i\n", sound_index);
-                } else {
-                    music_note += -2 + music_rand(&rng) % 3;
-                }
-
-                // hmm we should do this better
-                /*byte music_instrument = instrument_piano;
-                if (music_rand(&rng) % 100 >= 50) {
-                    music_instrument = instrument_organ;
-                }*/
-
-                float note_length = 0.8f + 0.6f * (music_rand(&rng) % 100 * 0.01f);
-                float note_volume = 0.6f + 0.4f * (music_rand(&rng) % 100 * 0.01f);
-                entity note = spawn_note(
-                    world,
-                    prefab_note,
-                    e,
-                    music_note,
-                    instrument->value,
-                    note_length,
-                    note_volume);
-                (void) note; // used by zox_logv
-                sound_index++;
-
-                zox_logv("  + note [%lu:%s] at [%i] is: (%i:%i) [volume[%f]]", note, zox_get_name(note), sound_index, music_note, instrument->value, note_volume);
+                // held notes ring a little past their steps, capped at a sound's longest
+                const float length = fminf(2.8f, voice.steps * song.step_seconds * 1.1f);
+                spawn_note(world, prefab_note, note, voice.note, voice.instrument, length, voice.volume);
             }
         }
+        zox_logv("Composed music [%s] seed [%lu]: [%u] steps, [%i] sections, mode [%i] tonic [%i]",
+            zox_getn(e), seed->value, song.steps_count, song.sections_count, song.mode, song.tonic);
         generateMusic->value = 0;
     }
 } zox_sys_end(MusicGenerateSystem);

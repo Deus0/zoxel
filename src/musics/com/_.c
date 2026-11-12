@@ -1,7 +1,7 @@
 zox_tag(Note);
 zox_tag(Music);
 zox_tag(Looping);
-zoxc_byte(MusicNote);
+zoxc_uint(MusicNote);
 zoxc_byte(GenerateMusic);
 zoxc_byte(MusicEnabled);
 zoxc_double(MusicLength);
@@ -27,7 +27,7 @@ void zox_components_musics(ecs* world) {
     zoxd_tag(Music);
     zoxd_tag(Looping);
     // Music
-    zoxd_byte(MusicNote);
+    zoxd_uint(MusicNote);
     zoxd_byte(GenerateMusic);
     zoxd_byte(MusicEnabled);
     zoxd_double(MusicTime);

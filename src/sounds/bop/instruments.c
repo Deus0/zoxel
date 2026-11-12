@@ -90,7 +90,7 @@ byte generate_instrument_samples(
         samples[j] = value;
         peak = fmaxf(peak, fabsf(value));
     }
-    const float scale = peak > 0 ? 0.8f * volume / peak : 0;
+    const float scale = peak > 0 ? 0.9f * volume / peak : 0;
     for (uint j = 0; j < length; j++) {
         samples[j] = clampf(samples[j] * scale, -1, 1);
     }
