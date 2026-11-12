@@ -1,6 +1,4 @@
 
-byte use_sdl_audio = 0;
-byte channels_count = 2;
 uint channel_sample_rate = 44100;
 #include "dat/_.c"
 #include "wrp/_.c"
@@ -16,10 +14,10 @@ void initialize_sounds() {
     if (nosounds) {
         return;
     }
-    if (initialize_sdl_mixer(channel_sample_rate, channels_count) == EXIT_SUCCESS) {
+    if (initialize_sdl_audio(channel_sample_rate) == EXIT_SUCCESS) {
         audio_enabled = 1;
     } else {
-        zox_loge("[initialize_sdl_mixer] failed");
+        zox_loge("[initialize_sdl_audio] failed");
     }
 }
 

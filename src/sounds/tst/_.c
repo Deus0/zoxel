@@ -183,7 +183,116 @@ void zox_tst_sound_instruments_check(ecs* world) {
     free(samples);
 }
 
+// tst: sound_mixer, the engine's mixer and 3D sounds (no audio device, renders by hand)
+//  - a sound without a position plays in the middle, both ears the same
+//  - a 3D sound to the listener's right is louder on the right, turning around swaps them
+//  - further is quieter, past sound_max_distance it doesn't play
+//  - voices free when they finish, a full mixer makes way for a new sound, the limiter keeps it under 1
+//  - run: bash bsh/tst.sh sound_mixer
+#define zox_tst_mixer_length 1000
+static float zox_tst_mixer_out[2 * zox_tst_mixer_length];
+
+// plays a constant 0.5 sound, renders one frame of it, returns its left and right
+static inline SoundGains zox_tst_mixer_hear(const float3* source) {
+    static float samples[zox_tst_mixer_length];
+    for (int j = 0; j < zox_tst_mixer_length; j++) {
+        samples[j] = 0.5f;
+    }
+    zox_mixer_stop_all();
+    if (zox_mixer_play(samples, zox_tst_mixer_length, source) < 0) {
+        return (SoundGains) { 0, 0 };
+    }
+    zox_mixer_render(zox_tst_mixer_out, 1);
+    return (SoundGains) { zox_tst_mixer_out[0], zox_tst_mixer_out[1] };
+}
+
+byte zox_tst_sound_mixer_ready(ecs* world) {
+    (void) world;
+    return 1;
+}
+
+void zox_tst_sound_mixer_check(ecs* world) {
+    (void) world;
+    const byte listener_was = sound_listener_active;
+    const float3 listener_position = sound_listener_position;
+    const float4 listener_rotation = sound_listener_rotation;
+    zox_mixer_set_listener(float3_zero, float4_identity);
+    // in the middle
+    SoundGains heard = zox_tst_mixer_hear(NULL);
+    zox_tst_check(fabsf(heard.left - 0.5f) < 0.001f && fabsf(heard.right - 0.5f) < 0.001f,
+        "a 2D sound plays [%.3f, %.3f], not [0.5, 0.5]", heard.left, heard.right);
+    // right and left (forward is -z, right is +x)
+    const float3 right = { 5, 0, 0 };
+    const float3 left = { -5, 0, 0 };
+    const float3 ahead = { 0, 0, -5 };
+    heard = zox_tst_mixer_hear(&right);
+    zox_tst_check(heard.right > heard.left * 2, "a sound on the right plays [%.3f, %.3f]", heard.left, heard.right);
+    zox_tst_check(heard.left > 0, "a sound on the right is silent in the left ear");
+    heard = zox_tst_mixer_hear(&left);
+    zox_tst_check(heard.left > heard.right * 2, "a sound on the left plays [%.3f, %.3f]", heard.left, heard.right);
+    heard = zox_tst_mixer_hear(&ahead);
+    zox_tst_check(fabsf(heard.left - heard.right) < 0.001f, "a sound ahead plays [%.3f, %.3f]", heard.left, heard.right);
+    // turned around, right is left
+    zox_mixer_set_listener(float3_zero, quaternion_from_euler((float3) { 0, M_PI, 0 }));
+    heard = zox_tst_mixer_hear(&right);
+    zox_tst_check(heard.left > heard.right * 2, "turned around, a sound on +x plays [%.3f, %.3f]", heard.left, heard.right);
+    zox_mixer_set_listener(float3_zero, float4_identity);
+    // distance
+    float last = 1000;
+    byte quieter = 1;
+    for (float distance = 1; distance < sound_max_distance; distance += 4) {
+        const float3 source = { 0, 0, -distance };
+        heard = zox_tst_mixer_hear(&source);
+        const float loudness = heard.left + heard.right;
+        quieter &= loudness <= last + 0.0001f;
+        last = loudness;
+    }
+    zox_tst_check(quieter, "sounds don't get quieter with distance");
+    const float3 near = { 0, 0, -sound_min_distance };
+    heard = zox_tst_mixer_hear(&near);
+    zox_tst_check(fabsf(heard.left - 0.5f) < 0.001f, "within sound_min_distance it plays [%.3f], not full", heard.left);
+    const float3 far = { 0, 0, -sound_max_distance - 1 };
+    zox_mixer_stop_all();
+    static float samples[zox_tst_mixer_length];
+    for (int j = 0; j < zox_tst_mixer_length; j++) {
+        samples[j] = 0.5f;
+    }
+    zox_tst_check(zox_mixer_play(samples, zox_tst_mixer_length, &far) < 0, "a sound past max distance played");
+    // a moving listener moves a playing sound
+    zox_mixer_stop_all();
+    zox_mixer_play(samples, zox_tst_mixer_length, &right);
+    zox_mixer_set_listener(float3_zero, quaternion_from_euler((float3) { 0, M_PI, 0 }));
+    zox_mixer_render(zox_tst_mixer_out, 1);
+    zox_tst_check(zox_tst_mixer_out[0] > zox_tst_mixer_out[1], "a playing sound didn't follow the listener turning");
+    zox_mixer_set_listener(float3_zero, float4_identity);
+    // voices finish
+    zox_mixer_stop_all();
+    zox_mixer_play(samples, zox_tst_mixer_length, NULL);
+    zox_tst_check(zox_mixer_voices_playing() == 1, "[%i] voices playing, not 1", zox_mixer_voices_playing());
+    zox_mixer_render(zox_tst_mixer_out, zox_tst_mixer_length);
+    zox_tst_check(zox_mixer_voices_playing() == 0, "a voice didn't finish after its length");
+    // a full mixer makes way
+    for (int i = 0; i < mixer_voices_max + 1; i++) {
+        zox_tst_check(zox_mixer_play(samples, zox_tst_mixer_length - i, NULL) >= 0, "sound [%i] didn't play", i);
+    }
+    zox_tst_check(zox_mixer_voices_playing() == mixer_voices_max, "[%i] voices playing", zox_mixer_voices_playing());
+    // the limiter: 65 sounds of 0.5 add to 32, played under 1
+    zox_mixer_render(zox_tst_mixer_out, 10);
+    float peak = 0;
+    for (int j = 0; j < 20; j++) {
+        peak = fmaxf(peak, fabsf(zox_tst_mixer_out[j]));
+    }
+    zox_tst_check(peak <= 1 && peak > 0.9f, "loud mixing peaks at [%.3f]", peak);
+    zox_mixer_stop_all();
+    dispose_mixer();
+    if (listener_was) {
+        zox_mixer_set_listener(listener_position, listener_rotation);
+    }
+}
+
 void zox_tsts_sounds() {
+    zox_tst_add("sound_mixer", zox_tst_sound_mixer_ready, zox_tst_sound_mixer_check, 30);
+    zox_tst_set_setup("sound_mixer", NULL, 1);
     zox_tst_add("sound_formats", zox_tst_sound_formats_ready, zox_tst_sound_formats_check, 30);
     zox_tst_set_setup("sound_formats", NULL, 1);
     zox_tst_add("sound_instruments", zox_tst_sound_instruments_ready, zox_tst_sound_instruments_check, 30);

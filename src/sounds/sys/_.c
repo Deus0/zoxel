@@ -2,13 +2,7 @@
 #include "generate.c"
 #include "debug.c"
 #include "settings.c"
-#ifdef zox_sdl_mixer
-    #ifdef zox_sdl3
-        #include "play3.c"
-    #else
-        #include "play.c"
-    #endif
-#endif
+#include "play.c"
 
 void zox_systems_sounds(ecs *world) {
     zox_system(
@@ -41,15 +35,12 @@ void zox_systems_sounds(ecs *world) {
         [in] TriggerSound,
         [none] Sound
     );
-#ifdef zox_sdl_mixer
     zox_system(
         SoundPlaySystem,
         zoxp_update,
         [in] TriggerSound,
         [in] SoundData,
-#ifndef zox_sdl3
-        [out] sdl.SDLMixChunk,
-#endif
+        [in] ?SoundPosition,
         [none] Sound
     );
     zox_system(
@@ -57,12 +48,16 @@ void zox_systems_sounds(ecs *world) {
         zoxp_update,
         [in] TriggerSound,
         [in] SoundDataRef,
-#ifndef zox_sdl3
-        [out] sdl.SDLMixChunk,
-#endif
+        [in] ?SoundPosition,
         [none] Sound
     );
-#endif
+    zox_system_1(
+        SoundListenerSystem,
+        zoxp_update,
+        [in] transforms3.Position3D,
+        [in] transforms3.Rotation3D,
+        [none] SoundListener
+    );
     // Sound gen takes longer;
     zox_system_1(
         SoundsSettingsSystem,

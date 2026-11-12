@@ -2,6 +2,7 @@
 //  - drops an item beside the player (spawn_item_world_from_meta, what block and character drops use)
 //  - mid pop it's above where it dropped (the hop)
 //  - after the pop it rests at the drop's height, moved sideways but within its block, PickupPop removed
+//  - the game camera is the sound listener, the mixer hears from where it is
 //  - run: bash bsh/tst.sh pickup_pop
 int zox_tst_pop_stage = 0;
 int zox_tst_pop_frames = 0;
@@ -68,6 +69,14 @@ byte zox_tst_pickup_pop_ready(ecs* world) {
     zox_tst_check(fabsf(position.y - zox_tst_pop_start.y) < 0.001f, "the item rests at [%.3f], dropped at [%.3f]", position.y, zox_tst_pop_start.y);
     zox_tst_check(moved > 0.001f, "the item didn't move away from where it dropped");
     zox_tst_check(moved <= item_pickup_scale * 1.5f + 0.001f, "the item moved [%.3f], further than its block", moved);
+    // the game camera hears 3D sounds
+    const entity camera = main_cameras[0];
+    zox_tst_check(zox_valid(camera) && zox_has(camera, SoundListener), "the game camera isn't the sound listener");
+    zox_tst_check(sound_listener_active, "no sound listener");
+    if (zox_valid(camera)) {
+        const float off = float3_distance(sound_listener_position, zox_getv(camera, Position3D));
+        zox_tst_check(off < 0.5f, "the sound listener is [%.2f] from the camera", off);
+    }
     return 1;
 }
 

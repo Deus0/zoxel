@@ -4,6 +4,7 @@ zox_sys2(LandSoundSystem) {
     zox_sys_begin();
     zox_sys_in(LandState);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(LandState, state);
         if (state->value != land_state_active) {
             continue;
@@ -12,13 +13,13 @@ zox_sys2(LandSoundSystem) {
         double length = randf_range(0.32f, 0.38f);
         byte frequency = rand_range(16, 22);
         byte instrument = instrument_edm; // instrument_edm;
-        spawn_sound_generated(
+        set_sound_source(world, spawn_sound_generated(
             world,
             prefab_sound_generated,
             instrument,
             note_frequencies[frequency],
             length,
             volume
-        );
+        ), e);
     }
 } zox_sys_end(LandSoundSystem);

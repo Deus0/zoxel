@@ -46,6 +46,10 @@ void on_boot_game_ui(
         entity ui_camera = spawned_cameras.y;
         // remove these soon
         main_cameras[i] = game_camera;
+        // hears 3D sounds (split screen: the first player's)
+        if (i == 0) {
+            zox_add(game_camera, SoundListener);
+        }
         ui_cameras[i] = spawned_cameras.y;
         set_camera_mode(
             world,

@@ -269,7 +269,7 @@ Input Refactor
 - taskbar data into entities
 - settings data into entities
 - remove sdl_image and use BMP imports
-- remove sdl_mixer and use another simpler audio lib
+- ~~remove sdl_mixer and use another simpler audio lib~~ (sdl audio, mixed in src/sounds/mix)
 - Refactor texture generation to blueprints
 - upgrade the texture for the item frames
 - Terrain loading and finishing should be overseen by GameState and not Player events

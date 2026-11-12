@@ -78,13 +78,13 @@ void melee_system(iter* it) {
                         zox_get_name(resource),
                         lresource);
                 }
-                spawn_sound_generated(
+                set_sound_source(world, spawn_sound_generated(
                     world,
                     prefab_sound_generated,
                     instrument_piano,
                     note_frequencies[14],
                     0.6,
-                    0.6f * get_volume_sfx());
+                    0.6f * get_volume_sfx()), user);
                 continue;
             }
             // this should be muter -> instant use
@@ -107,13 +107,13 @@ void melee_system(iter* it) {
         // Ray didn't hit anything
         entity hit = raycast->chunk;
         if (!zox_valid(hit)) {
-            spawn_sound_generated(
+            set_sound_source(world, spawn_sound_generated(
                 world,
                 prefab_sound_generated,
                 instrument_violin,
                 note_frequencies[44],
                 0.3,
-                volume);
+                volume), user);
             if (dbg_log) {
                 zox_logw("User [%s] Has no Raycast Target with range [%f:%f]",
                     zox_get_name(user),
@@ -134,13 +134,13 @@ void melee_system(iter* it) {
             !skill_range ||
             raycast->distance <= skill_range;
         if (!in_range) {
-            spawn_sound_generated(
+            set_sound_source(world, spawn_sound_generated(
                 world,
                 prefab_sound_generated,
                 instrument_violin,
                 note_frequencies[47],
                 0.3,
-                volume);
+                volume), user);
             if (dbg_log) {
                 zox_logw("User [%s] [%f] is out of Range [%f]",
                     zox_getn(user),
@@ -173,7 +173,7 @@ void melee_system(iter* it) {
             // Hit Bedrock!
             /*if (zox_has(block, BlockInvinsible)) {
                 // cannot destroy voxel sound
-                spawn_sound_generated(world, prefab_sound_generated,  instrument_violin, note_frequencies[42 + rand() % 6], 0.26, 1.4f * get_volume_sfx());
+                set_sound_source(world, spawn_sound_generated(world, prefab_sound_generated,  instrument_violin, note_frequencies[42 + rand() % 6], 0.26, 1.4f * get_volume_sfx()), user);
                 continue;
             }
             // effect our terrain here
@@ -244,7 +244,7 @@ void melee_system(iter* it) {
             // a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = 0, .pos = positionl });
             // add health to block child
             // destroy voxel sound
-            spawn_sound_generated(world, prefab_sound_generated, instrument_piano, note_frequencies[24 + rand() % 6], 0.4, 1.2f * get_volume_sfx());
+            set_sound_source(world, spawn_sound_generated(world, prefab_sound_generated, instrument_piano, note_frequencies[24 + rand() % 6], 0.4, 1.2f * get_volume_sfx()), user);
             // hit block popup
             float3 popup_position = raycast->positionf;
             popup_position.x += randf_range(-0.15f, 0.15f);

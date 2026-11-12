@@ -49,7 +49,6 @@ is_static="1"
 graphics_lib="opengl"       # headless, opengl or vulkan
 window_lib="sdl"            # sdl, glut
 is_sdl3="1"                 # sdl2, sdl3
-sdl_mixer="1"
 is_glew="0"
 is_desktop_gl="1"           # Use GL libs instead of EGL on desktop
 native="0"                  # Fastest
@@ -78,7 +77,6 @@ fi
 [[ " $* " == *" --native "* ]] && native="1"
 
 # Libraries
-[[ " $* " == *" --nomixer "* ]] && sdl_mixer="0"
 [[ " $* " == *" --system "* ]] && is_static="0"
 [[ " $* " == *" --static "* ]] && is_static="1"
 [[ " $* " == *" --package "* ]] && package="1"
@@ -248,40 +246,26 @@ library="lib/${os}_${arc}"
 sdl_include=""
 sdl_library=""
 sdl_runtime=""
-sdl_mixer_include=""
-sdl_mixer_library=""
-sdl_mixer_runtime=""
 
 [[ "${docker}" == "1" ]] && library="${library}_docker"
 
 if [[ "${is_sdl3}" == "1" ]]; then
     sdl_include="-Iext/sdl3/include"
-    sdl_mixer_include="-Iext/sdl3_mixer/include"
     if [[ "${os}" == "windows" ]]; then
         sdl_library="${library}/SDL3.dll"
         sdl_runtime="${sdl_library}"
-        sdl_mixer_library="${library}/SDL3_mixer.dll"
-        sdl_mixer_runtime="${sdl_mixer_library}"
     else
         sdl_library="${library}/libSDL3.so"
-        sdl_mixer_library="${library}/libSDL3_mixer.so"
         sdl_runtime="${library}/libSDL3.so.0"
-        sdl_mixer_runtime="${library}/libSDL3_mixer.so.0"
     fi
 else
     sdl_include="-Iext/sdl2/include"
-    sdl_mixer_include="-Iext/sdl2_mixer/include"
     if [[ "${os}" == "windows" ]]; then
         sdl_library="${library}/SDL2.dll"
         sdl_runtime="${sdl_library}"
-        sdl_mixer_library="${library}/SDL2_mixer.dll"
-        sdl_mixer_runtime="${sdl_mixer_library}"
     else
         sdl_library="${library}/libSDL2.so"
         sdl_runtime="${sdl_library}.0"
-        sdl_mixer_library="${library}/libSDL2_mixer.so"
-        sdl_mixer_runtime="${library}/libSDL2_mixer-2.0.so.0"
-        # sdl_mixer_runtime="${sdl_mixer_library}.0"
     fi
 fi
 
@@ -311,9 +295,7 @@ fi
 
 if [[ ${window_lib} == "sdl" ]]; then
     # libs+=" -L${library}" # static libs for build
-    if [[ ${sdl_mixer} == "1" ]]; then
-        dflags+=" -Dzox_sdl_mixer"
-    fi
+    # audio is sdl's own, mixed in the engine (src/sounds/mix), no sdl_mixer
     if [[ "${is_sdl3}" == "1" ]]; then
         echo "+ Added [zox_sdl3]"
         dflags+=" -Dzox_sdl3"
@@ -321,22 +303,12 @@ if [[ ${window_lib} == "sdl" ]]; then
     if [[ ${is_static} == "1" ]]; then
         libs+=" ${sdl_library}"
         includes+=" ${sdl_include}"
-        if [[ "${sdl_mixer}" == "1" ]]; then
-            libs+=" ${sdl_mixer_library}"
-            includes+=" ${sdl_mixer_include}"
-        fi
     else
         echo "+ Using Systems SDL"
         if [[ ${is_sdl3} == "1" ]]; then
             libs+=" -lSDL3"
-            if [[ ${sdl_mixer} == "1" ]]; then
-                libs+=" -lSDL3_mixer"
-            fi
         else
             libs+=" -lSDL2"
-            if [[ ${sdl_mixer} == "1" ]]; then
-                libs+=" -lSDL2_mixer"
-            fi
         fi
     fi
 fi
@@ -357,7 +329,6 @@ if [[ "${window_lib}" == "sdl" && ${is_static} == "1" ]]; then
     lib_args=""
     [[ ${is_sdl3} == "0" ]] && lib_args+=" --sdl2"
     [[ ${is_sdl3} == "1" ]] && lib_args+=" --sdl3"
-    [[ ${sdl_mixer} == "1" ]] && lib_args+=" --sdl-mixer"
     [[ ${docker} == "1" ]] && lib_args+=" --docker"
     [[ ${is_mesa} == "1" ]] && lib_args+=" --mesa"
     bsh/libs-download.sh ${lib_args}
@@ -401,10 +372,6 @@ ln -sfn "../../res" "${bin_folder}/res"
 if [[ "${window_lib}" == "sdl" && "${is_static}" == "1" ]]; then
     ln -sfn "../../${sdl_runtime}" \
         "${bin_folder}/$(basename "${sdl_runtime}")"
-    if [[ "${sdl_mixer}" == "1" ]]; then
-        ln -sfn "../../${sdl_mixer_runtime}" \
-            "${bin_folder}/$(basename "${sdl_mixer_runtime}")"
-    fi
 fi
 
 # font converter: reads raw/fonts ttfs with freetype, saves res/fonts .zox (bsh/convert.sh --fonts)
@@ -466,9 +433,6 @@ if [[ ${package} == "1" ]]; then
     #if [[ ${window_lib} == "sdl" ]]; then
     #    if [[ "${is_static}" == "1" ]]; then
     #        zip -j "${zip_name}" "${sdl_runtime}"
-    #        if [[ "${sdl_mixer}" == "1" ]]; then
-    #            zip -j "${zip_name}" "${sdl_mixer_runtime}"
-    #        fi
     #    fi
     #fi
     echo "+ Completed Zipping"

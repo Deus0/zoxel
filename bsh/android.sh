@@ -55,7 +55,7 @@ game_name="${1:-zoxel}"
 app_name="${game_name^}"    # First letter will be capitalized
 
 is_run="0"
-sdl_mixer="1"
+sdl_mixer="0"  # audio is sdl's own now, mixed in the engine (src/sounds/mix), --mixer adds sdl_mixer back
 profile="debug"
 signed="0"
 install="0"
@@ -92,7 +92,7 @@ fi
 [[ " $* " == *" --logcat "* ]] && logcat="1"
 [[ " $* " == *" --logs "* ]] && logs="1"
 [[ " $* " == *" --verbose "* ]] && verbose="1"
-[[ " $* " == *" --nomixer "* ]] && sdl_mixer="0"
+[[ " $* " == *" --mixer "* ]] && sdl_mixer="1"
 [[ " $* " == *" --opengl "* ]] && gfx="opengl"
 [[ " $* " == *" --vulkan "* ]] && gfx="vulkan"
 [[ " $* " == *" --headless "* ]] && gfx="headless"

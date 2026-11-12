@@ -79,13 +79,13 @@ byte damage_character(
     }
     zox_add(hit, JustHit);
     // hit sound
-    spawn_sound_generated(
+    set_sound_source(world, spawn_sound_generated(
         world,
         prefab_sound_generated,
         instrument_violin,
         note_frequencies[28],
         0.6,
-        get_volume_sfx());
+        get_volume_sfx()), hit);
     // knockback
     float3 hit_impulse = float3_scale(
         knockback_normal,
