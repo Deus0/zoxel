@@ -1,6 +1,6 @@
 // tst: item_split, right clicking item slots in the inventory with the fake mouse
 //  - gives the character a stack of 10, pauses, closes the pause menu and opens the inventory
-//  - right clicking the stack picks up half: 5 on the mouse, 5 left in the slot
+//  - right clicking the stack picks up half: 5 on the mouse, 5 left in the slot, the mouse icon is the item's texture
 //  - right clicking an empty slot places one (mouse 4), again stacks one more there (mouse 3)
 //  - right clicking the first stack again adds one to it (6, mouse 2)
 //  - run: bash bsh/tst.sh item_split
@@ -141,6 +141,19 @@ byte zox_tst_item_split_ready(ecs* world) {
                 "mouse holds [%i], expected half [%i]", get_item_quantity(world, mouse_data), zox_tst_split_quantity / 2);
             zox_tst_check(get_item_quantity(world, zox_tst_split_item) == zox_tst_split_quantity - zox_tst_split_quantity / 2,
                 "slot kept [%i], expected [%i]", get_item_quantity(world, zox_tst_split_item), zox_tst_split_quantity - zox_tst_split_quantity / 2);
+            // the mouse icon shows the item, not the blank texture (the half is spawned that frame, no texture yet)
+            {
+                const entity mouse_ui = zox_get_child_by_id(world, canvas, zox_id(DataMouse));
+                const entity texture = zox_get_link(world, zox_tst_split_item, TextureLink);
+                byte same = 0;
+                if (zox_valid(mouse_ui) && zox_valid(texture) && zox_has(mouse_ui, TextureData) && zox_has(texture, TextureData)) {
+                    zox_geter(mouse_ui, TextureData, icon);
+                    zox_geter(texture, TextureData, item_texture);
+                    same = icon->length == item_texture->length && icon->value && item_texture->value &&
+                        !memcmp(icon->value, item_texture->value, sizeof(color) * icon->length);
+                }
+                zox_tst_check(same, "the mouse icon isn't the item's texture after splitting (blank?)");
+            }
             if (!zox_valid(mouse_data)) {
                 return 1;
             }
