@@ -86,7 +86,7 @@ An add event (`zox_on_add`) only fires when the tag **wasn't already there**.
 
 Most components are plain values. A few hold memory, and free it when they're removed:
 
-- **Arrays** (`zoxc_array`, i.e. `TextData`): a length and a pointer
+- **Arrays** (`zoxc_arrayd`, `zoxc_text` i.e. `TextData`, `zoxc_entities`): a length and a pointer
 - **Node trees** (`VoxelNode`): voxel octrees, see the `octree_*` tests
 - **Hashmaps**: lookups by id or name, i.e. files by name
 
