@@ -61,6 +61,30 @@ void zox_system_on_new(ecs* world, entity system) {
 #define zox_sys_increment()\
     process_count++
 
+// A time budget per worker thread per frame, for heavy systems (better than counting processed entities,
+//  two heavy entities were still a lag spike):
+//  - each item adds its time, once a thread spent its budget this frame it leaves the rest for next frame
+//  - a thread always does at least one item a frame, so work never stalls
+//  - zox_sys_budget(name, ms) at the top, zox_sys_budget_spent(name) to skip, start/end around each item
+#define zox_sys_budget(name, ms) \
+    static __thread uint name##_budget_frame = UINT32_MAX; \
+    static __thread double name##_budget_spent = 0; \
+    if (name##_budget_frame != ecs_run_count) { \
+        name##_budget_frame = ecs_run_count; \
+        name##_budget_spent = 0; \
+    } \
+    const double name##_budget_ms = (ms); \
+    double name##_budget_start = 0
+
+#define zox_sys_budget_spent(name) \
+    (name##_budget_spent >= name##_budget_ms)
+
+#define zox_sys_budget_start(name) \
+    name##_budget_start = get_time_ms()
+
+#define zox_sys_budget_end(name) \
+    name##_budget_spent += get_time_ms() - name##_budget_start
+
 #define zox_sys2(T)\
     void T(iter *it) {\
         zox_sys_on_begin();

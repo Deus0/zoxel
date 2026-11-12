@@ -9,6 +9,8 @@
 //  - fails fast when its zox_tst_progress value doesn't change for [zox_tst_stall_seconds]
 //  - logs "still waiting" every [zox_tst_heartbeat_seconds]
 
+#include "profile.c"
+
 typedef byte (*zox_tst_ready_fun)(ecs* world);
 typedef void (*zox_tst_check_fun)(ecs* world);
 typedef void (*zox_tst_setup_fun)();
@@ -222,6 +224,12 @@ void zox_tst_start() {
 
 void process_arguments_tst(ecs* world, char* args[], int count) {
     (void) world;
+    for (int i = 1; i < count; i++) {
+        if (strcmp(args[i], "--profile") == 0) {
+            zox_profile_spikes = 1;
+            zox_log("+ profiling, frames over [%.0fms] are logged with their slowest systems", zox_profile_spike_ms);
+        }
+    }
     for (int i = 1; i < count - 1; i++) {
         if (strcmp(args[i], "--tst") == 0) {
             zox_tst_name = args[i + 1];
@@ -257,4 +265,5 @@ void initialize_tst() {
     zox_tsts_maths();
     add_hook_terminal_command(process_arguments_tst);
     add_hook_post_update(zox_tst_update);
+    add_hook_post_update(zox_profile_update);
 }

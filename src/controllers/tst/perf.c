@@ -4,6 +4,7 @@
 //      are generating, building sides or meshes
 //  - logs [tst] [metric] lines (step times, flecs tables) to compare runs, i.e. when optimizing
 //      (software rendering in tests, so compare runs on the same machine)
+//  - profiles every frame while stepping: the slowest frames and the systems making them (lag spikes)
 //  - fails if a step never settles (streaming stuck)
 //  - run: bash bsh/tst.sh perf_stream
 #define zox_tst_perf_steps 6
@@ -55,6 +56,7 @@ byte zox_tst_perf_stream_ready(ecs* world) {
         zox_tst_perf_step = 0;
         zox_tst_perf_step_time = 0;
     }
+    zox_tst_profile_frame(world);
     zox_tst_waiting = "streaming to settle after a step";
     const int busy = zox_tst_perf_busy(world);
     zox_tst_progress(zox_tst_perf_step * 100000.0 + busy);
@@ -90,6 +92,7 @@ byte zox_tst_perf_stream_ready(ecs* world) {
         if (zox_tst_perf_step >= zox_tst_perf_steps) {
             zox_log("[tst] [metric] perf_stream steps [%i] average [%.3fs] slowest [%.3fs] tables [%i]",
                 zox_tst_perf_steps, zox_tst_perf_total / zox_tst_perf_steps, zox_tst_perf_slowest, zox_get_tables_count(world));
+            zox_tst_profile_log(world, "perf_stream");
             return 1;
         }
     }

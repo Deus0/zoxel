@@ -95,6 +95,7 @@ Usually run through `bash bsh/tst.sh`, see [Onboarding](onboarding.md#6-tests).
 
 | Flag | Effect | Source |
 |---|---|---|
+| `--profile` | logs every frame over 25ms with its slowest systems, i.e. to find lag spikes | [core/tst](../src/core/tst/profile.c) |
 | `--tst <name>` | runs one test, exits 0 on pass, 1 on fail | [core/tst](../src/core/tst/_.c) |
 | `--tst list` | prints every test name and exits | core/tst |
 | `--tst-errors <n>` | fails a test once it logs this many errors (default 100) | core/tst |
