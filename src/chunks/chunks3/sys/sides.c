@@ -1,6 +1,7 @@
 // TODO: Calculate only sides needed
 
 byte zox_sides_only_target_depth = 0;
+#define zox_chunk_sides_budget_ms 3.0
 
 // Sides System will generate our chunk sides before rendering
 // TODO: Let Colored use this too
@@ -349,7 +350,8 @@ void chunk_sides_system(iter* it) {
     byte is_spinlock = 0;
     zox_sys_on_begin();
     init_side_child_indices();
-    byte max_process = !zox_disable_process_skips ? 1 : 0;
+    // a few ms a worker a frame, the rest next frame (whole chunks at once were 290ms lag spikes)
+    zox_sys_budget(sides, zox_disable_process_skips ? 1000000 : zox_chunk_sides_budget_ms);
     byte* solids = NULL;
     zox_sys_world();
     zox_sys_begin();
@@ -367,10 +369,10 @@ void chunk_sides_system(iter* it) {
         zox_sys_o(VoxelNodeLock, voxels_lock);
         zox_sys_o(SidesOctree, sides);
         zox_sys_o(SidesOctreeLock, sides_lock);
-        // NOTE: Delay if past limit [max_process]
-        if (max_process && process_count > max_process) {
+        if (zox_sys_budget_spent(sides)) {
             continue;
         }
+        zox_sys_budget_start(sides);
         // fetch here instead
         if (!solids) {
             // entity chunk = zox_get_parent(world, e);
@@ -462,7 +464,7 @@ void chunk_sides_system(iter* it) {
             }
         }
         zox_remove(e, BuildChunkSides);
-        // Should we set chunks to build here?
+        zox_sys_budget_end(sides);
         zox_sys_increment();
     }
     if (solids) {

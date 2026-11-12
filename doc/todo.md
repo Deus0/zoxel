@@ -2,6 +2,13 @@
 - Now first, then by module. Done items move to [done.md](done.md), ideas to [new.md](new.md) and [future.md](future.md).
 
 # Now
+- Lag spikes crossing chunks (48ms): flecs merges and observers, found with --profile
+	- streaming bursts (debug): merges up to 145ms, observers up to 100ms a frame, systems far less
+	- next: time each observer (a timing wrapper in zox_observer_internal, on with --profile), find the heavy ones
+	- next: fewer deferred commands per chunk (tags added and removed every stage move entities between tables)
+	-x chunk_sides_system has a time budget per worker per frame (it built whole chunks, 18ms real time)
+	- VoxLodMeshBuildSystem: a 108ms frame once (single threaded), when a character's mesh builds
+	- move other heavy systems from process counts to zox_sys_budget
 - Lag spikes (up to 96ms): sound generation, a whole sound in one frame when it spawns
 	- measured (debug): a 1.3s choir note 290-670ms, a 2.8s cello note 60-100ms, choir 330ms per second of sound
 	- music pads and jingles play choir and cello notes, the spikes
