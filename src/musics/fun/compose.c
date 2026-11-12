@@ -316,10 +316,10 @@ void compose_song(uint seed, byte lead_instrument, Song* song) {
             // bass: the chord's root held, the fifth halfway in busier sections
             const int bass = song_degree_note(song, chord) - 24;
             const byte busy = role == song_role_contrast || role == song_role_climax;
-            song_set_note(song, bar_step, song_voice_bass, bass, song->bass, busy ? 4 : 8, 0.65f * loudness);
+            song_set_note(song, bar_step, song_voice_bass, bass, song->bass, busy ? 4 : 8, 0.5f * loudness);
             if (busy) {
                 song_set_note(song, bar_step + 4, song_voice_bass, song_degree_note(song, chord + 4) - 24,
-                    song->bass, 4, 0.6f * loudness);
+                    song->bass, 4, 0.45f * loudness);
             }
             // arpeggio: music box in the intro, the ensemble's in the contrast and climax
             if (role == song_role_intro || busy) {
@@ -327,17 +327,17 @@ void compose_song(uint seed, byte lead_instrument, Song* song) {
                 static const byte pattern[] = { 0, 2, 4, 7, 4, 2, 0, 2 };
                 for (int i = 0; i < song_steps_per_bar; i += 1 + (role == song_role_intro)) {
                     song_set_note(song, bar_step + i, song_voice_arpeggio,
-                        song_degree_note(song, chord + pattern[i]) - 12, instrument, 2, 0.5f * loudness);
+                        song_degree_note(song, chord + pattern[i]) - 12, instrument, 2, 0.35f * loudness);
                 }
             }
             // pad: holding the chord's third in the climax, a deep bell rings it in
             if (role == song_role_climax) {
                 if (b == 0) {
                     song_set_note(song, bar_step, song_voice_pad, song_degree_note(song, chord) - 24,
-                        instrument_bell, 8, 0.6f * loudness);
+                        instrument_bell, 8, 0.45f * loudness);
                 } else {
                     song_set_note(song, bar_step, song_voice_pad, song_degree_note(song, chord + 2) - 12,
-                        song->pad, 8, 0.45f * loudness);
+                        song->pad, 8, 0.3f * loudness);
                 }
             }
             // the song ends home, the tonic held over the last bar

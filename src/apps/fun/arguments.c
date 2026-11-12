@@ -24,6 +24,10 @@ void process_arguments_apps(ecs *world, char* args[], int count) {
             maximized = 0;
             nosounds = 1;
             zox_log("+ setting enabled [background]");
+        } else if (strcmp(args[i], "--sounds") == 0) {
+            // after --background, i.e. tests that listen (bash bsh/tst.sh <name> --sounds)
+            nosounds = 0;
+            zox_log("+ setting enabled [sounds]");
         } else if (strcmp(args[i], "--nodecor") == 0) {
             disable_apps_decor = 1;
         }

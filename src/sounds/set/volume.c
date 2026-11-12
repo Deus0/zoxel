@@ -3,8 +3,8 @@ const float mixer_audio_volume = 1.0f;  // not used atm until my sound driver fi
 const float default_sound_volume = 1.0f; // 0.5f
 const float default_sound_volume_loaded = 1.3f * scale_volumes;
 float master_volume = 0.5f;
-float volume_sfx = 0.6f;
-float volume_music = 0.4f;
+float volume_sfx = 0.9f;    // above the music, a fuller song buried them
+float volume_music = 0.3f;
 float music_load_volume = 0.75f;
 float master_volume_increment = 0.05f;
 
