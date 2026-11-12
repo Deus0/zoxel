@@ -1,6 +1,6 @@
 // Generates a music's notes from its seed (compose_song, like a dungeon from its seed)
-//  - each step is a note (the melody, or a rest), its other voices are its child notes
-//  - the music plays the composed song's tempo, its lead instrument is the music's InstrumentType
+//  - its notes are the performed song's events, each with its own start and length (they overlap)
+//  - its lead instrument is the music's InstrumentType, it loops after the song's length
 zox_sys2(MusicGenerateSystem) {
     if (nomusic) {
         return;
@@ -28,23 +28,15 @@ zox_sys2(MusicGenerateSystem) {
         static Song song;
         compose_song((uint) seed->value, instrument->value, &song);
         speed->value = song.step_seconds;
-        for (uint step = 0; step < song.steps_count; step++) {
-            const SongStep* song_step = &song.steps[step];
-            const SongNote melody = song_step->voices[song_voice_melody];
-            const entity note = spawn_note(world, prefab_note, e, melody.note, melody.instrument,
-                melody.steps * song.step_seconds, melody.volume);
-            for (byte v = 1; v < song_voices; v++) {
-                const SongNote voice = song_step->voices[v];
-                if (!voice.note) {
-                    continue;
-                }
-                // held notes ring a little past their steps, capped at a sound's longest
-                const float length = fminf(2.8f, voice.steps * song.step_seconds * 1.1f);
-                spawn_note(world, prefab_note, note, voice.note, voice.instrument, length, voice.volume);
-            }
+        zox_set(e, MusicLength, { song.seconds });
+        zox_set(e, MusicTime, { 0 });
+        zox_set(e, MusicNote, { 0 });
+        for (uint j = 0; j < song.events_count; j++) {
+            const SongEvent event = song.events[j];
+            spawn_note(world, prefab_note, e, event.note, event.instrument, event.start, event.seconds, event.volume);
         }
-        zox_logv("Composed music [%s] seed [%lu]: [%u] steps, [%i] sections, mode [%i] tonic [%i]",
-            zox_getn(e), seed->value, song.steps_count, song.sections_count, song.mode, song.tonic);
+        zox_logv("Composed music [%s] seed [%lu]: [%u] notes over [%.0fs], [%i] sections, mode [%i] tonic [%i]",
+            zox_getn(e), seed->value, song.events_count, song.seconds, song.sections_count, song.mode, song.tonic);
         generateMusic->value = 0;
     }
 } zox_sys_end(MusicGenerateSystem);

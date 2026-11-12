@@ -14,6 +14,15 @@ typedef enum {
     sound_effect_consume,
     sound_effect_place,
     sound_effect_aura,
+    sound_effect_block_damage,  // a block hit by a punch or tool (block_damage.c)
+    sound_effect_block_break,
+    sound_effect_level_up,
+    sound_effect_click,         // ui, in the middle
+    sound_effect_click_rare,
+    sound_effect_talk,          // dialogue letters appearing
+    sound_effect_talk_rare,
+    sound_effect_talk_end,
+    sound_effect_start,         // the start screen, on to the main menu
     sound_effect_end
 } SoundEffectType;
 
@@ -40,18 +49,40 @@ const SoundEffect sound_effects[sound_effect_end] = {
     [sound_effect_consume] = { "consume", instrument_guitar, 40, 45, 0.4f, 0.4f, 1.5f, 1.5f },
     [sound_effect_place] = { "place", instrument_guitar, 38, 43, 0.4f, 0.4f, 1.5f, 1.5f },
     [sound_effect_aura] = { "aura", instrument_piano_square, 40, 40, 0.5f, 0.5f, 0.75f, 0.75f },
+    [sound_effect_block_damage] = { "block damage", instrument_piano, 32, 38, 0.4f, 0.4f, 1.1f, 1.1f },
+    [sound_effect_block_break] = { "block break", instrument_piano, 40, 48, 0.7f, 0.7f, 1.4f, 1.4f },
+    [sound_effect_level_up] = { "level up", instrument_piano, 44, 47, 2.8f, 2.8f, 1.4f, 1.4f },
+    [sound_effect_click] = { "click", instrument_flute, 27, 33, 0.3f, 0.45f, 0.9f, 1.2f },
+    [sound_effect_click_rare] = { "click rare", instrument_harp, 52, 52, 0.4f, 0.5f, 1.2f, 1.4f },
+    [sound_effect_talk] = { "talk", instrument_guitar, 38, 45, 0.12f, 0.2f, 1.6f, 1.9f },
+    [sound_effect_talk_rare] = { "talk rare", instrument_harp, 47, 47, 0.15f, 0.25f, 1.2f, 1.4f },
+    [sound_effect_talk_end] = { "talk end", instrument_guitar, 38, 42, 0.8f, 1.2f, 1.6f, 1.9f },
+    [sound_effect_start] = { "start", instrument_piano, 40, 40, 2.8f, 2.8f, 1.1f, 1.3f },
 };
 
-// plays an effect from a source entity (3D), or in the middle when source is 0
-entity spawn_sound_effect(ecs* world, SoundEffectType type, entity source) {
+static inline entity spawn_sound_effect_sound(ecs* world, SoundEffectType type) {
     if (type >= sound_effect_end) {
         return 0;
     }
     const SoundEffect effect = sound_effects[type];
     const byte note = (byte) rand_range(effect.note_min, effect.note_max + 1);
-    const entity e = spawn_sound_generated(world, prefab_sound_generated, effect.instrument, note_frequencies[note],
+    return spawn_sound_generated(world, prefab_sound_generated, effect.instrument, note_frequencies[note],
         frand_range(effect.seconds_min, effect.seconds_max),
         frand_range(effect.volume_min, effect.volume_max) * get_volume_sfx());
+}
+
+// plays an effect from a source entity (3D), or in the middle when source is 0
+entity spawn_sound_effect(ecs* world, SoundEffectType type, entity source) {
+    const entity e = spawn_sound_effect_sound(world, type);
     set_sound_source(world, e, source);
+    return e;
+}
+
+// plays an effect from a place (3D), i.e. a block
+entity spawn_sound_effect_at(ecs* world, SoundEffectType type, float3 position) {
+    const entity e = spawn_sound_effect_sound(world, type);
+    if (e) {
+        zox_set(e, SoundPosition, { position });
+    }
     return e;
 }

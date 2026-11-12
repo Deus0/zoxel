@@ -4,6 +4,8 @@
 //  - chord progressions are the corridors: a walk through a chord graph, each section ending
 //      on a cadence (the last one on the tonic)
 //  - layers are the decoration: melody, bass, arpeggio and pad, by the section's role
+//  - then it's performed (perform_song): the grid becomes timed notes (events), each with its own start
+//      and length, so they overlap freely: strummed chords, grace notes, a player's looseness, swing
 //  - deterministic from its seed, steps are eighth notes, bars 8 steps
 #define song_max_steps 640
 #define song_max_sections 14
@@ -15,6 +17,8 @@
 #define song_voice_pad 3
 #define song_motif_steps 16         // two bars
 #define song_max_motifs 4
+#define song_max_events 2048
+#define song_max_note_seconds 2.8f   // a sound's longest (MAX_SOUND_DATA)
 
 #define song_role_intro 0
 #define song_role_theme 1
@@ -32,6 +36,16 @@ typedef struct {
 typedef struct {
     SongNote voices[song_voices];
 } SongStep;
+
+// a performed note: when it starts (seconds from the song's start), how long it rings
+typedef struct {
+    float start;
+    float seconds;
+    byte note;
+    byte instrument;
+    byte voice;
+    float volume;
+} SongEvent;
 
 typedef struct {
     byte role;
@@ -64,6 +78,11 @@ typedef struct {
     byte bass;
     byte arpeggio;
     byte pad;
+    // the performance, sorted by start
+    byte swing;
+    float seconds;
+    uint events_count;
+    SongEvent events[song_max_events];
 } Song;
 
 // modes, as semitones per scale degree
@@ -212,12 +231,99 @@ static inline void compose_chords(uint* rng, Song* song, const SongSection* sect
     }
 }
 
+// is a note in the song's key
+static inline byte song_in_key(const Song* song, int note) {
+    const int semitone = ((note - song->tonic) % 12 + 12) % 12;
+    for (int d = 0; d < 7; d++) {
+        if (song_modes[song->mode][d] == semitone) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// the next note in the key, above (direction 1) or below (-1)
+static inline int song_key_neighbour(const Song* song, int note, int direction) {
+    for (int i = 1; i <= 3; i++) {
+        if (song_in_key(song, note + i * direction)) {
+            return note + i * direction;
+        }
+    }
+    return note;
+}
+
 // fills a note if the step's voice is free
 static inline void song_set_note(Song* song, int step, byte voice, int note, byte instrument, byte steps, float volume) {
-    if (step < 0 || step >= (int) song->steps_count || note <= 0 || note >= 108) {
+    if (step < 0 || step >= (int) song->steps_count || note <= 0 || note >= notes_max) {
         return;
     }
     song->steps[step].voices[voice] = (SongNote) { (byte) note, instrument, steps, volume };
+}
+
+static inline void song_add_event(Song* song, float start, float seconds, int note, byte instrument, byte voice, float volume) {
+    if (song->events_count >= song_max_events || note <= 0 || note >= notes_max) {
+        return;
+    }
+    song->events[song->events_count++] = (SongEvent) { fmaxf(0, start), fminf(song_max_note_seconds, seconds),
+        (byte) note, instrument, voice, volume };
+}
+
+// plays the composed grid like a player would, into timed notes (events)
+//  - a few milliseconds loose and a touch louder or softer, the first note right on time
+//  - a third of songs swing: off beats a little late
+//  - grace notes lead into some leaps on strong beats, from the next note in the key
+//  - pads are full chords (root, third, fifth), strummed upward
+//  - held notes (not the melody) ring a little past their steps
+void perform_song(uint* rng, Song* song) {
+    const float step_seconds = song->step_seconds;
+    song->swing = song_rand(rng) % 3 == 0;
+    const float swing = song->swing ? 0.12f * step_seconds : 0;
+    song->events_count = 0;
+    int last_melody = 0;
+    for (uint s = 0; s < song->steps_count; s++) {
+        const float at = s * step_seconds + (s % 2 ? swing : 0);
+        const byte chord = song->chords[s / song_steps_per_bar];
+        for (byte v = 0; v < song_voices; v++) {
+            const SongNote n = song->steps[s].voices[v];
+            if (!n.note) {
+                continue;
+            }
+            const float loose = s == 0 ? 0 : ((int) (song_rand(rng) % 17) - 8) * 0.001f;
+            const float dynamics = 0.93f + 0.14f * (song_rand(rng) % 100) / 100.0f;
+            const float start = at + loose;
+            const float held = n.steps * step_seconds * 1.1f;
+            if (v == song_voice_melody) {
+                if (last_melody && abs(n.note - last_melody) >= 4 && s % 4 == 0 && song_rand(rng) % 3 == 0) {
+                    const int grace = song_key_neighbour(song, n.note, n.note > last_melody ? -1 : 1);
+                    song_add_event(song, start - 0.07f, 0.09f, grace, n.instrument, v, n.volume * 0.55f);
+                }
+                last_melody = n.note;
+                song_add_event(song, start, n.steps * step_seconds, n.note, n.instrument, v, n.volume * dynamics);
+            } else if (v == song_voice_pad && n.instrument != instrument_bell) {
+                const int chord_notes[3] = {
+                    song_degree_note(song, chord) - 12,
+                    song_degree_note(song, chord + 2) - 12,
+                    song_degree_note(song, chord + 4) - 12
+                };
+                for (int c = 0; c < 3; c++) {
+                    song_add_event(song, start + c * 0.03f, held, chord_notes[c], n.instrument, v, n.volume * 0.75f);
+                }
+            } else {
+                song_add_event(song, start, held, n.note, n.instrument, v, n.volume * dynamics);
+            }
+        }
+    }
+    // in order of start (nearly sorted already, graces and strums move a little)
+    for (uint i = 1; i < song->events_count; i++) {
+        const SongEvent event = song->events[i];
+        int j = (int) i - 1;
+        while (j >= 0 && song->events[j].start > event.start) {
+            song->events[j + 1] = song->events[j];
+            j--;
+        }
+        song->events[j + 1] = event;
+    }
+    song->seconds = song->steps_count * step_seconds;
 }
 
 void compose_song(uint seed, byte lead_instrument, Song* song) {
@@ -330,7 +436,12 @@ void compose_song(uint seed, byte lead_instrument, Song* song) {
                         song_degree_note(song, chord + pattern[i]) - 12, instrument, 2, 0.35f * loudness);
                 }
             }
-            // pad: holding the chord's third in the climax, a deep bell rings it in
+            // pad: a quiet chord under the theme every other bar
+            if (role == song_role_theme && b % 2 == 0) {
+                song_set_note(song, bar_step, song_voice_pad, song_degree_note(song, chord + 2) - 12,
+                    song->pad, 8, 0.2f * loudness);
+            }
+            // pad: holding the chord in the climax, a deep bell rings it in
             if (role == song_role_climax) {
                 if (b == 0) {
                     song_set_note(song, bar_step, song_voice_pad, song_degree_note(song, chord) - 24,
@@ -349,4 +460,5 @@ void compose_song(uint seed, byte lead_instrument, Song* song) {
             }
         }
     }
+    perform_song(&rng, song);
 }

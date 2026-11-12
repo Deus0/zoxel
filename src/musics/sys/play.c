@@ -19,63 +19,73 @@ void play_music_note(ecs* world, entity note, float fade) {
     }
 }
 
+// a music's loop length: its MusicLength, or when its last note ends
+static inline double get_music_length(ecs* world, entity music, const ordered_children* notes) {
+    const double length = zox_getv(music, MusicLength);
+    if (length > 0) {
+        return length;
+    }
+    double end = 0;
+    for (int j = 0; j < notes->length; j++) {
+        const entity note = notes->value[j];
+        const double note_end = zox_getv(note, NoteStart) + zox_getv(note, SoundLength);
+        end = note_end > end ? note_end : end;
+    }
+    return end;
+}
+
+// Plays each music's notes as its playhead passes their starts, any number at once (chords, overlaps)
+//  - MusicTime is the playhead (seconds), MusicNote the next note, notes are in order of start
+//  - after its length it loops back to the start
 zox_sys2(MusicPlaySystem) {
     if (nomusic || nosounds) {
         return;
     }
-
-    float volume_music = get_volume_music();
+    const float volume_music = get_volume_music();
     init_delta_time();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(MusicEnabled);
-    zox_sys_in(MusicSpeed);
     zox_sys_out(MusicNote);
     zox_sys_out(MusicTime);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(MusicEnabled, playing);
-        // NOTE: Notes are ordered children
-        ordered_children notes = zox_get_ordered_children(world, e);
-        zox_sys_i(MusicSpeed, musicSpeed);
-        zox_sys_o(MusicNote, musicNote);
-        zox_sys_o(MusicTime, musicTime);
-
-        if (!playing->value || !notes.length) {
-            // zox_logw("Music disabled");
+        zox_sys_o(MusicNote, next);
+        zox_sys_o(MusicTime, playhead);
+        if (!playing->value) {
             continue;
         }
-
-        musicTime->value += delta_time * global_music_speed;
-        if (notes.length > 0 && musicTime->value >= musicSpeed->value) {
-            musicTime->value -= musicSpeed->value;
-            musicNote->value++;
-
-            if (musicNote->value >= notes.length) {
-                // zox_logw("Music disabled");
-                musicNote->value = 0;
-            }
-
-            // music notes disabled atm
-            if (!volume_music) {
-                // zox_logw("Music disabled");
-                continue;
-            }
-
-            // crossfades scale it (MusicFadeSystem)
-            const float fade = zox_has(e, MusicVolume) ? zox_getv(e, MusicVolume) : 1;
-            if (fade <= 0) {
-                continue;
-            }
-            // the step's note, and its layered notes (child notes, i.e. bass and arpeggio)
-            const entity note = notes.value[musicNote->value];
-            play_music_note(world, note, fade);
-            iter it2 = zox_children(world, note);
-            while (zox_children_next(it2)) {
-                for (int j = 0; j < it2.count; j++) {
-                    play_music_note(world, it2.entities[j], fade);
+        // NOTE: Notes are ordered children, by start
+        ordered_children notes = zox_get_ordered_children(world, e);
+        if (!notes.length) {
+            continue;
+        }
+        const double length = get_music_length(world, e, &notes);
+        if (length <= 0) {
+            continue;
+        }
+        // crossfades scale it (MusicFadeSystem), silent music still moves on
+        const float fade = zox_has(e, MusicVolume) ? zox_getv(e, MusicVolume) : 1;
+        const byte audible = volume_music > 0 && fade > 0;
+        playhead->value += delta_time * global_music_speed;
+        // at most one loop a frame (a long hitch skips ahead, it doesn't play the song twice)
+        for (int loop = 0; loop < 2; loop++) {
+            while (next->value < (uint) notes.length) {
+                const entity note = notes.value[next->value];
+                if (zox_getv(note, NoteStart) > playhead->value) {
+                    break;
                 }
+                if (audible) {
+                    play_music_note(world, note, fade);
+                }
+                next->value++;
             }
+            if (playhead->value < length) {
+                break;
+            }
+            playhead->value = fmod(playhead->value - length, length);
+            next->value = 0;
         }
     }
 } zox_sys_end(MusicPlaySystem);

@@ -1,12 +1,13 @@
 zox_tag(Note);
+zoxc_double(NoteStart);     // seconds from its music's start
 zox_tag(Music);
 zox_tag(Looping);
-zoxc_uint(MusicNote);
+zoxc_uint(MusicNote);        // the next note to play
 zoxc_byte(GenerateMusic);
 zoxc_byte(MusicEnabled);
-zoxc_double(MusicLength);
-zoxc_double(MusicTime);
-zoxc_double(MusicSpeed);
+zoxc_double(MusicLength);    // seconds, then it loops (0: when its last note ends)
+zoxc_double(MusicTime);      // the playhead, seconds from its start
+zoxc_double(MusicSpeed);     // seconds per step, its tempo
 // crossfading: the volume eases to its target, and switches the music off once it's silent
 zoxc_float(MusicVolume);
 zoxc_float(MusicVolumeTarget);
@@ -24,6 +25,7 @@ zoxc_byte(PlaylistMode);
 void zox_components_musics(ecs* world) {
     // Notes
     zoxd_tag(Note);
+    zoxd_double(NoteStart);
     zoxd_tag(Music);
     zoxd_tag(Looping);
     // Music

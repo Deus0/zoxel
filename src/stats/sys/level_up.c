@@ -52,13 +52,7 @@ void level_up_system(iter* it) {
         for (uint j = 0; j < stats_length; j++) {
             entity stat = stats[j];*/
         // level up sound
-        spawn_sound_generated(
-            world,
-            prefab_sound_generated,
-            instrument_piano,
-            note_frequencies[32 + rand() % 4],
-            3.4,
-            1.4f * get_volume_sfx());
+        spawn_sound_effect(world, sound_effect_level_up, parent);
         // spawn particle system
         float3 bounds = zox_getv(parent, Bounds3D);
         // Spawns level up particles

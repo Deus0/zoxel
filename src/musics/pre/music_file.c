@@ -27,7 +27,8 @@ entity load_music_file(ecs *world, entity prefab, entity prefab_note, char* file
         zox_logv("Music Error: Invalid Speed: %f", music_speed);
         return 0;
     }
-    float music_length = 0;
+    // it loops when its last note ends
+    double music_length = 0;
     for (int i = 0; i < loaded_note_count; i++) {
         MidiNote note = loaded_notes[i];
         // trouble shoot
@@ -35,8 +36,9 @@ entity load_music_file(ecs *world, entity prefab, entity prefab_note, char* file
             zox_logv("Music Error: Note [%i] Invalid Length: %f", i, note.length);
             return 0;
         }
-        // int note_index = find_note_index(note.frequency);
-        music_length += note.length;
+        if (note.time + note.length > music_length) {
+            music_length = note.time + note.length;
+        }
         // zox_log("   - %i - Frequency: %.2f : %.2f Hz, Start time: %.2f, Length: %.2f\n", i + 1, note.frequency, test_frequency, note.time, note.length)
     }
     entity e = spawn_music(world, prefab, music_speed);
@@ -51,7 +53,8 @@ entity load_music_file(ecs *world, entity prefab, entity prefab_note, char* file
         }
         int note_index = find_note_index(note.frequency);
         // double test_frequency = note_frequencies[note_index];
-        spawn_note(world, prefab_note, e, note_index, instrument, note.length, music_load_volume);
+        // at its time in the midi, chords and overlaps as written
+        spawn_note(world, prefab_note, e, note_index, instrument, note.time, note.length, music_load_volume);
         // zox_log("   - %i - Frequency: %.2f : %.2f Hz, Start time: %.2f, Length: %.2f\n", i + 1, note.frequency, test_frequency, note.time, note.length)
     }
     return e;
