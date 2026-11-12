@@ -1,4 +1,4 @@
-/*void SkillActivateSystem(iter *it) {
+/*void SkillActivateSystem(iter* it) {
     zox_sys_begin();
     zox_sys_in(Activate);
     zox_sys_out(SkillActive);
@@ -11,7 +11,7 @@
     }
 } zoxd_system2(SkillActivateSystem);*/
 
-/*void SkillWarmupSystem(iter *it) {
+/*void SkillWarmupSystem(iter* it) {
     zox_sys_begin();
     zox_sys_in(Activate);
     zox_sys_out(SkillActive);

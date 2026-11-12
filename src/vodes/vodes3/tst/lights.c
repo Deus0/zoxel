@@ -5,7 +5,7 @@
 //  - relit: a chunk's lights are set to darklight and marked dirty, then
 //      - its minivoxes match their new light, most of the inner ones dark (block_vox_lights_system)
 //        (the terrain's sunlight pass can refill the chunk, i.e. after a lod change, then it's darkened again)
-//      - its own terrain meshes rebuild darker colors (ChunkColorsTriggerSystem used to skip them)
+//      - its own terrain meshes rebuild darker colors (chunk_colors_trigger_system used to skip them)
 //  - run: bash bsh/tst.sh block_vox_lights
 
 #define zox_tst_bvl_settle_seconds 3.0

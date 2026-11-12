@@ -1,7 +1,7 @@
 // Define the FrameBufferLink component
 zoxc_guint(FrameBufferLink);
 
-void on_destroyed_FrameBufferLink(iter *it) {
+void on_destroyed_FrameBufferLink(iter* it) {
     byte dbg_log = 0;
     zox_sys_begin();
     zox_sys_out(FrameBufferLink);

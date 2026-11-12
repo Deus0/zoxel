@@ -2,7 +2,7 @@
 //  - exact steps like linear motion (see physics/fun), Frictioned bodies also slow their spin
 //      with omega_dissipation3, so a spin turns the same at any frame rate
 //  - bodies with an Alpha3D spin in spin3_system / spin3_damped_system (and it's cleared),
-//      the rest in Omega3System / Omega3DampedSystem
+//      the rest in omega3_system / omega3_damped_system
 //  - the turn is about the step's average axis, exact when alpha is along omega (or zero)
 
 // turns a rotation by a body frame rotation vector (axis * angle)
@@ -69,20 +69,20 @@ void spin3_damped_system(iter* it) {
     zox_sys_on_end();
 } zoxd_system(spin3_damped_system);
 
-void Omega3System(iter* it) {
+void omega3_system(iter* it) {
     zox_sys_on_begin();
     if (zox_delta_time > zox_physics_max_delta_time) {
         return;
     }
     physics3_spin_free(it, 0);
     zox_sys_on_end();
-} zoxd_system(Omega3System);
+} zoxd_system(omega3_system);
 
-void Omega3DampedSystem(iter* it) {
+void omega3_damped_system(iter* it) {
     zox_sys_on_begin();
     if (zox_delta_time > zox_physics_max_delta_time) {
         return;
     }
     physics3_spin_free(it, omega_dissipation3);
     zox_sys_on_end();
-} zoxd_system(Omega3DampedSystem);
+} zoxd_system(omega3_damped_system);

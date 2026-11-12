@@ -2,7 +2,7 @@
 
 void zox_systems_controllers(ecs *world) {
     zox_system(
-        ControllerPlayerStateSystem,
+        controller_player_state_system,
         zoxp_update,
         [in] players.PlayerStateDirty,
         [in] players.PlayerState,

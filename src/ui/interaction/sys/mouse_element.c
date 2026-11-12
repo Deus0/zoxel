@@ -1,6 +1,6 @@
 // element will follow mouse position
-//  -> linked to MouseTextureSystem
-void MouseElementSystem(iter* it) {
+//  -> linked to mouse_texture_system
+void mouse_element_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -34,7 +34,7 @@ void MouseElementSystem(iter* it) {
             e,
             zox_id(Canvas));
         if (!zox_valid(canvas)) {
-            zox_loge("[MouseElementSystem] Invalid [canvas]: %s", zox_getn(e));
+            zox_loge("[mouse_element_system] Invalid [canvas]: %s", zox_getn(e));
             continue;
         }
         int2 canvas_size = zox_getv(canvas, LayoutSize);
@@ -47,4 +47,4 @@ void MouseElementSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(MouseElementSystem);
+} zoxd_system(mouse_element_system);

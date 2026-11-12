@@ -1,6 +1,6 @@
 // An instance renderer that follows its parent, i.e. a characters model
 //  - transform comes from the transform hierarchy, RenderDisabled is set with its parent
-//  - InstanceLink is the lod mesh to render, set by RendererLodSystem
+//  - InstanceLink is the lod mesh to render, set by renderer_lod_system
 entity spawn_prefab_renderer_child(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("renderer_child");

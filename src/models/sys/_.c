@@ -9,13 +9,13 @@
 
 void zox_systems_models(ecs* world) {
     zox_system(
-        RendererLodSystem,
+        renderer_lod_system,
         zoxp_update,
         [in] rendering.RenderDepthDirty,
         [in] rendering.RenderDepth,
     );
     zox_system(
-        ModelSizeNodeSystem,
+        model_size_node_system,
         zoxp_update,
         [out] core.Seed,
         [out] models.ModelSize,
@@ -24,7 +24,7 @@ void zox_systems_models(ecs* world) {
         [none] core.Begin,
     );
     zox_system(
-        FillModelNodeSystem,
+        fill_model_node_system,
         zoxp_update,
         [in] models.ModelSize,
         [none] nodes.NodeRun,
@@ -32,7 +32,7 @@ void zox_systems_models(ecs* world) {
         [none] core.Begin,
     );
     zox_system(
-        PaintModelNodeSystem,
+        paint_model_node_system,
         zoxp_update,
         [in] models.ModelSize,
         [none] nodes.NodeRun,
@@ -40,14 +40,14 @@ void zox_systems_models(ecs* world) {
         [none] core.Begin,
     );
     zox_system(
-        ModelEndNodeSystem,
+        model_end_node_system,
         zoxp_update,
         [none] nodes.NodeRun,
         [none] models.ModelRun,
         [none] core.Begin,
     );
     zox_system(
-        ColorsModelNodeSystem,
+        colors_model_node_system,
         zoxp_update,
         [out] core.Seed,
         [none] nodes.NodeRun,
@@ -55,12 +55,12 @@ void zox_systems_models(ecs* world) {
         [none] core.Begin,
     );
     zox_system_1(
-        ModelsSettingsSystem,
+        models_settings_system,
         zoxp_spawn,
         [in] settings.LoadSettings,
     );
     zox_system(
-        ModelsSettingsDirtySystem,
+        models_settings_dirty_system,
         zoxp_update,
         [in] settings.SettingDirty,
         [in] core.ZoxName,

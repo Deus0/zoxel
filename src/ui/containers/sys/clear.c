@@ -1,5 +1,5 @@
 // NOTE: Clears text when data removed
-/*void IconLabelClearSystem(iter* it) {
+/*void icon_label_clear_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -26,4 +26,4 @@
         }
     }
     zox_sys_on_end();
-} zoxd_system(IconLabelClearSystem);*/
+} zoxd_system(icon_label_clear_system);*/

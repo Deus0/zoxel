@@ -7,7 +7,7 @@ void zox_systems_zigels(ecs* world) {
         [out] textures.GenerateTexture
     );
     zox_system_ctx(
-        FontTextureSystem,
+        font_texture_system,
         zoxp_update,
         fonts,
         [in] GlyphIndex,

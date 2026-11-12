@@ -1,4 +1,4 @@
-/*void ShadowPositionSystem(iter* it) {
+/*void shadow_position_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -14,5 +14,5 @@
         set_position_from_parents(world, link->value, &position->value, float3_zero);
     }
     zox_sys_on_end();
-} zoxd_system(ShadowPositionSystem);
+} zoxd_system(shadow_position_system);
 */

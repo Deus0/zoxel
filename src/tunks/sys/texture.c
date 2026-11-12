@@ -2,7 +2,7 @@ extern byte zox_maps_flip_x;
 extern byte zox_maps_flip_z;
 
 // NOTE: Simply creates a height texture from tunks
-void TunkTextureSystem(iter* it) {
+void tunk_texture_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     float color_boost = 0.5f;
@@ -42,7 +42,7 @@ void TunkTextureSystem(iter* it) {
         // NOTE: Generation Delay for Tunks
         if (zox_getv(tunk, GenerateTunk)) {
             if (dbg_log) {
-                zox_logw("[TunkTextureSystem] Tunk Still Generating [%s]",
+                zox_logw("[tunk_texture_system] Tunk Still Generating [%s]",
                     zox_get_name(tunk));
             }
             continue;
@@ -64,7 +64,7 @@ void TunkTextureSystem(iter* it) {
         }
         if (chunks_busy) {
             if (dbg_log) {
-                zox_logw("[TunkTextureSystem] Chunk Still Generating [%s]",
+                zox_logw("[tunk_texture_system] Chunk Still Generating [%s]",
                     zox_getn(tunk));
             }
             continue;
@@ -167,4 +167,4 @@ void TunkTextureSystem(iter* it) {
         zox_add(e, TextureDirty);
     }
     zox_sys_on_end();
-} zoxd_system(TunkTextureSystem);
+} zoxd_system(tunk_texture_system);

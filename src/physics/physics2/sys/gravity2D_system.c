@@ -1,5 +1,5 @@
 // adds a constant force to Acceleration2D, opt in with a Gravity2D component
-void Gravity2DSystem(iter* it) {
+void gravity2d_system(iter* it) {
     zox_sys_on_begin();
     zox_physics_profile_begin();
     zox_sys_begin();
@@ -13,4 +13,4 @@ void Gravity2DSystem(iter* it) {
     }
     zox_physics_profile_end();
     zox_sys_on_end();
-} zoxd_system(Gravity2DSystem);
+} zoxd_system(gravity2d_system);

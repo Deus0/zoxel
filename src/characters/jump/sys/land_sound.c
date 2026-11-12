@@ -1,5 +1,5 @@
 // TODO: Make it louder based on velocity of land
-void LandSoundSystem(iter* it) {
+void land_sound_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -12,4 +12,4 @@ void LandSoundSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(LandSoundSystem);
+} zoxd_system(land_sound_system);

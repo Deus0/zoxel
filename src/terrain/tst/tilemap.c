@@ -4,7 +4,7 @@
 //  - tilemap pixels at tile i == linked texture i (generation order)
 //  - each block face's tilemap uvs point at the tile of its texture (uv order)
 //  - every face of the chunk mesh samples a used tile
-entity zox_tst_tilemap_mesh = 0;   // found by TstTilemapProbeSystem
+entity zox_tst_tilemap_mesh = 0;   // found by tst_tilemap_probe_system
 
 // tile index of a uv inside a map of map_size x map_size tiles
 static inline int zox_tst_tilemap_tile(float2 uv, int map_size) {
@@ -45,7 +45,7 @@ void zox_tst_tilemap_check_tilemap(ecs* world, entity tilemap) {
     if (!zox_valid(realm)) {
         return;
     }
-    // expected textures, gathered the same way RealmTilemapSystem does
+    // expected textures, gathered the same way realm_tilemap_system does
     zox_geter(realm, BlockLinks, blocks);
     int expected = 0;
     for (int j = 0; j < blocks->length; j++) {
@@ -187,7 +187,7 @@ void zox_tst_tilemap_check(ecs* world) {
 }
 
 // Remembers a built textured terrain chunk mesh, only while the test runs
-void TstTilemapProbeSystem(iter* it) {
+void tst_tilemap_probe_system(iter* it) {
     zox_sys_on_begin();
     if (!zox_tst_active || zox_tst_active->check != zox_tst_tilemap_check) {
         return;
@@ -207,7 +207,7 @@ void TstTilemapProbeSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(TstTilemapProbeSystem);
+} zoxd_system(tst_tilemap_probe_system);
 
 void zox_tsts_tilemap(ecs* world) {
     zox_tst_add(
@@ -217,7 +217,7 @@ void zox_tsts_tilemap(ecs* world) {
         90);
     // main thread, in zoxp_render with the other main thread systems: no merges of its own (tst pipeline_syncs)
     zox_system_1(
-        TstTilemapProbeSystem,
+        tst_tilemap_probe_system,
         zoxp_render,
         [in] rendering.MeshUVs,
         [none] rendering.ChunkMesh,

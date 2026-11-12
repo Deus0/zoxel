@@ -1,4 +1,4 @@
-void FillTextureSystem(iter* it) {
+void fill_texture_system(iter* it) {
     zox_sys_on_begin();
     zox_change_check();
     zox_sys_world();
@@ -22,4 +22,4 @@ void FillTextureSystem(iter* it) {
         zox_add(e, TextureDirty);
     }
     zox_sys_on_end();
-} zoxd_system(FillTextureSystem);
+} zoxd_system(fill_texture_system);

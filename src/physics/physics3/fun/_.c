@@ -1,4 +1,4 @@
-// Omega3D and Alpha3D are in the body's frame (Omega3System: rotation = rotation * delta),
+// Omega3D and Alpha3D are in the body's frame (omega3_system: rotation = rotation * delta),
 // these turn a world space spin into the body's frame and back. Unit quaternions only.
 static inline float3 physics3_world_to_body(const float4 rotation, const float3 world) {
     return float4_rotate_float3(float4_inverse(rotation), world);

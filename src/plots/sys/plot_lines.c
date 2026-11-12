@@ -1,6 +1,7 @@
 // sets the lines height based on frame times
 // todo: use PlotData
 void plot_line_system(iter* it) {
+    zox_sys_on_begin();
     const int graph_plot_height = 100;
     entity cached_parent;
     int2 parent_size;
@@ -57,6 +58,7 @@ void plot_line_system(iter* it) {
         }
         position->end.y = (int)(value * parent_size.y);
     }
+    zox_sys_on_end();
 } zoxd_system(plot_line_system);
 
 

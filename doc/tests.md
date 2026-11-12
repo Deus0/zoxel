@@ -64,6 +64,7 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 
 | Area | Tests |
 |---|---|
+| Lints (scripts, no game) | `lint_systems`: system names, signatures, timers (bsh/lint_systems.py) |
 | Core | `hashmaps` `links_api` `links_cleanup` `children` `node_graphs` `spawn_queue` |
 | Maths | `maths_vectors` `maths_quaternions` |
 | Physics | `physics_steps` `physics2_motion` `physics2_rotation` `physics3_motion` `physics3_rotation` `terrain_collisions` (each also `_10fps` `_30fps`), see [physics.md](physics.md) |

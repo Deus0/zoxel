@@ -2,7 +2,7 @@ extern entity game_start_player_new(ecs*, entity, entity, entity, entity, float3
 
 // NOTE: Detects character death and respawns when needed
 // TODO: Move spawning player out and use states instead
-void Player3RespawnSystem(iter* it) {
+void player3_respawn_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -65,7 +65,7 @@ void Player3RespawnSystem(iter* it) {
                     e,
                     CameraLink);
                 if (!zox_valid(camera)) {
-                    zox_loge("Player3RespawnSystem - Player has no camera linked");
+                    zox_loge("player3_respawn_system - Player has no camera linked");
                     continue;
                 }
                 float3 spawned;
@@ -103,4 +103,4 @@ void Player3RespawnSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(Player3RespawnSystem);
+} zoxd_system(player3_respawn_system);

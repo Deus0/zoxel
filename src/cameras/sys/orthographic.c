@@ -32,6 +32,7 @@ static inline float4x4 calculate_orthographic_matrix(
 
 // This should only update when either ScreenDimensions or FieldOfView changes
 void orthographic_matrix_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(PixelSize);
     zox_sys_out(ProjectionMatrix);
@@ -43,4 +44,5 @@ void orthographic_matrix_system(iter* it) {
         }
         matrix->value = calculate_orthographic_matrix(screen->value);
     }
+    zox_sys_on_end();
 } zoxd_system(orthographic_matrix_system);

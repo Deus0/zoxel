@@ -1,4 +1,4 @@
-void TextParentBackgroundSystem(iter* it) {
+void text_parent_background_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -33,4 +33,4 @@ void TextParentBackgroundSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(TextParentBackgroundSystem);
+} zoxd_system(text_parent_background_system);

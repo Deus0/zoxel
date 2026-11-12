@@ -14,13 +14,13 @@ void zox_systems_bones(ecs *world) {
     zoxd_system_dirty(Skeleton);
     // Spawns, reuses and swaps a skeleton mesh per render depth
     zox_system_1(
-        SkeletonMeshesSystem,
+        skeleton_meshes_system,
         zoxp_spawn,
         [none] bones.Skeleton,
     );
     // Builds skeleton meshes from their parents vox
     zox_system(
-        SkeletonMeshBuildSystem,
+        skeleton_mesh_build_system,
         zoxp_octree_read,
         [in] rendering.RenderDepth,
         [out] rendering.MeshIndicies,
@@ -30,19 +30,19 @@ void zox_systems_bones(ecs *world) {
         [none] rendering.BuildMesh,
     );
     zox_system(
-        HeadAnimateSystem,
+        head_animate_system,
         zoxp_update,
         [none] bones.Skeleton,
         [none] bones.SkeletonUpdate,
     );
     zox_system(
-        BoneIndexGenerateSystem,
+        bone_index_generate_system,
         zoxp_update,
         [none] bones.Skeleton,
         [none] bones.SkeletonUpdate,
     );
     zox_system(
-        BoneIndexGenerateSystem2,
+        bone_index_generate_system2,
         zoxp_update,
         [in] rendering.MeshVertices,
         [out] rendering3.BoneIndexes,
@@ -50,13 +50,13 @@ void zox_systems_bones(ecs *world) {
         [none] rendering.BuildMeshWeights,
     );
     zox_system(
-        ArmControlSystem,
+        arm_control_system,
         zoxp_update,
         [in] bones.WalkState,
         [none] bones.Skeleton
     );
     zox_system(
-        ArmSwingSystem,
+        arm_swing_system,
         zoxp_update,
         [in] bones.SwingState,
         [in] bones.SwingAngle,
@@ -67,7 +67,7 @@ void zox_systems_bones(ecs *world) {
         [none] bones.ShoulderBone
     );
     zox_system(
-        LegSwingSystem,
+        leg_swing_system,
         zoxp_update,
         [in] bones.SwingState,
         [in] bones.SwingAngle,
@@ -78,13 +78,13 @@ void zox_systems_bones(ecs *world) {
         [none] bones.ThighBone
     );
     zox_system(
-        ShoulderRaiseSystem,
+        shoulder_raise_system,
         zoxp_update,
         [in] bones.RaiseShoulder,
         [none] bones.Skeleton
     );
     zox_system_1(
-        BoneGizmoSystem,
+        bone_gizmo_system,
         zoxp_spawn,
         [in] transforms3.Position3D,
         [in] bones.BoneSize,

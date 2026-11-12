@@ -60,7 +60,7 @@ static inline byte reduce_max_octree_node(
 }
 
 // Groups same nodes when dirty
-void LightNodeReduceSystem(iter* it) {
+void light_node_reduce_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(LightNodeDirty);
@@ -84,4 +84,4 @@ void LightNodeReduceSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(LightNodeReduceSystem);
+} zoxd_system(light_node_reduce_system);

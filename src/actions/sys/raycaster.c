@@ -1,5 +1,5 @@
 // NOTE: Uses slot index to equip a new action
-void ActiveActionRangeSystem(iter* it) {
+void active_action_range_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -43,4 +43,4 @@ void ActiveActionRangeSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ActiveActionRangeSystem);
+} zoxd_system(active_action_range_system);

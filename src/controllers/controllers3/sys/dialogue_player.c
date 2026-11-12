@@ -1,5 +1,5 @@
 // NOTE: This handles player dialogue state changes
-void PlayerDialogueSystem(iter* it) {
+void player_dialogue_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -47,10 +47,10 @@ void PlayerDialogueSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(PlayerDialogueSystem);
+} zoxd_system(player_dialogue_system);
 
 // NOTE: This handles player dialogue state changes
-void CameraPlayerStateSystem(iter* it) {
+void camera_player_state_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -80,5 +80,5 @@ void CameraPlayerStateSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(CameraPlayerStateSystem);
+} zoxd_system(camera_player_state_system);
 

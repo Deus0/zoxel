@@ -133,7 +133,7 @@ void generate_texture_frame2(color* data, int2 size, color fill_color, color out
     }
 }
 
-void FrameTextureSystem(iter* it) {
+void frame_texture_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -173,4 +173,4 @@ void FrameTextureSystem(iter* it) {
     }
     // zox_log("Frame Textures Generated [%i]:[%f]", process_count, calculate_sys_delta());
     zox_sys_on_end();
-} zoxd_system(FrameTextureSystem);
+} zoxd_system(frame_texture_system);

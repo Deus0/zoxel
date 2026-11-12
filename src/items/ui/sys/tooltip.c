@@ -1,5 +1,5 @@
 // Tooltip Event for item icons
-/*void ItemIconTooltipSystem(iter* it) {
+/*void item_icon_tooltip_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -31,4 +31,4 @@
         set_tooltip_text(world, e, tooltip, result);
     }
     zox_sys_on_end();
-} zoxd_system(ItemIconTooltipSystem);*/
+} zoxd_system(item_icon_tooltip_system);*/

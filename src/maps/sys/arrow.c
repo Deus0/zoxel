@@ -1,4 +1,4 @@
-void MapArrowSystem(iter* it) {
+void map_arrow_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -32,4 +32,4 @@ void MapArrowSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(MapArrowSystem);
+} zoxd_system(map_arrow_system);

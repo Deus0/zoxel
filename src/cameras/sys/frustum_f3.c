@@ -46,7 +46,7 @@ void frustum_to_planes_f3(float3* frustum, plane* planes) {
     planes[5] = calculate_plane_from_points_f3(frustum[7], frustum[5], frustum[6]);
 }
 
-void CameraFrustumSystem(iter* it) {
+void camera_frustum_system(iter* it) {
     zox_sys_on_begin();
     if (zox_cameras_disable_streaming) {
         return;
@@ -66,4 +66,4 @@ void CameraFrustumSystem(iter* it) {
         frustum_to_planes_f3(corners->value, planes->value);
     }
     zox_sys_on_end();
-} zoxd_system(CameraFrustumSystem);*/
+} zoxd_system(camera_frustum_system);*/

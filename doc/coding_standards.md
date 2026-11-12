@@ -297,6 +297,11 @@ Avoid encoding unnecessary behavior into component definitions. Keep the data mo
 
 Systems use lowercase snake_case function names.
 
+- `void name_system(iter* it)`, a plain function, registered with `zoxd_system(name_system)` after it
+- `zox_sys_on_begin()` first and `zox_sys_on_end()` last (its time, for the profiler)
+- checked by `bash bsh/tst.sh lint_systems` (part of `all`): systems a macro names from a component
+  (`T##IncrementSystem`) are left alone
+
 Example:
 
 ```c

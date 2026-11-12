@@ -1,5 +1,5 @@
 // NOTE: Simply creates a height texture from tunks
-void TownTextureSystem(iter* it) {
+void town_texture_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -83,4 +83,4 @@ void TownTextureSystem(iter* it) {
         zox_add(e, TextureDirty);
     }
     zox_sys_on_end();
-} zoxd_system(TownTextureSystem);
+} zoxd_system(town_texture_system);

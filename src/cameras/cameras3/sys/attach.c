@@ -1,4 +1,4 @@
-void CameraAttachSystem(iter* it) {
+void camera_attach_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -10,4 +10,4 @@ void CameraAttachSystem(iter* it) {
         zox_set_parent(world, e, target->value);
     }
     zox_sys_on_end();
-} zoxd_system(CameraAttachSystem);
+} zoxd_system(camera_attach_system);

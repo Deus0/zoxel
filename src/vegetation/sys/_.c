@@ -4,7 +4,7 @@
 void zox_systems_vegetation(ecs* world) {
     // NOTE: Vegetation maps need biomes and temperature maps
     zox_system(
-        VegetationMapSystem,
+        vegetation_map_system,
         zoxp_update,
         [in] tunks.TunkLod,
         [in] tunks.TunkPosition,
@@ -14,7 +14,7 @@ void zox_systems_vegetation(ecs* world) {
         [none] tunks.Tunk
     );
     zox_system(
-        VegetationChunk3System,
+        vegetation_chunk3_system,
         zoxp_octree_write,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkPosition,
@@ -22,5 +22,5 @@ void zox_systems_vegetation(ecs* world) {
         [out] chunks3.VoxelNode,
         [none] terrains.TerrainChunk
     );
-    add_system_process_counter(world, zox_id(VegetationChunk3System));
+    add_system_process_counter(world, zox_id(vegetation_chunk3_system));
 }

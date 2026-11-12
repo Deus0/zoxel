@@ -16,7 +16,7 @@
 
 void zox_systems_zoxel(ecs *world) {
     zox_system_1(
-        StatsRealmSpawnSystem,
+        stats_realm_spawn_system,
         zoxp_spawn,
         [in] realms.GenerateRealm,
         [none] realms.Realm,
@@ -29,37 +29,37 @@ void zox_systems_zoxel(ecs *world) {
         [none] realms.Realm,
     );
     zox_system_1(
-        SkillsRealmSpawnSystem,
+        skills_realm_spawn_system,
         zoxp_spawn,
         [in] realms.GenerateRealm,
         [none] realms.Realm,
     );
     zox_system_1(
-        QuestsRealmSpawnSystem,
+        quests_realm_spawn_system,
         zoxp_spawn,
         [in] realms.GenerateRealm,
         [none] realms.Realm
     );
     zox_system_1(
-        DialogueRealmSpawnSystem,
+        dialogue_realm_spawn_system,
         zoxp_spawn,
         [in] realms.GenerateRealm,
         [none] realms.Realm
     );
     zox_system_1(
-        MusicRealmSpawnSystem,
+        music_realm_spawn_system,
         zoxp_spawn,
         [in] realms.GenerateRealm,
         [none] realms.Realm
     );
     zox_system_1(
-        AchievementRealmSpawnSystem,
+        achievement_realm_spawn_system,
         zoxp_spawn,
         [in] realms.GenerateRealm,
         [none] realms.Realm
     );
     zox_system_1(
-        BiomesRealmSpawnSystem,
+        biomes_realm_spawn_system,
         zoxp_spawn,
         [in] realms.GenerateRealm,
         [in] core.Seed,
@@ -67,7 +67,7 @@ void zox_systems_zoxel(ecs *world) {
         [none] realms.Realm
     );
     zox_system_1(
-        BlocksRealmSpawnSystem,
+        blocks_realm_spawn_system,
         zoxp_spawn,
         [in] realms.GenerateRealm,
         [in] core.Seed,
@@ -75,7 +75,7 @@ void zox_systems_zoxel(ecs *world) {
         [none] realms.Realm
     );
     zox_system_1(
-        BiomeBlocksSystem,
+        biome_blocks_system,
         zoxp_spawn,
         [in] core.Generate,
         [in] core.Seed,
@@ -85,21 +85,21 @@ void zox_systems_zoxel(ecs *world) {
     // NOTE: Blocks must be set before items spawn if this is the case!
     // TODO: Spawn Block Items when the Realm BlocksDirty is flagged
     zox_system_1(
-        ItemsRealmSpawnSystem,
+        items_realm_spawn_system,
         zoxp_spawn,
         [in] realms.GenerateRealm,
         [in] blocks.BlockLinks,
         [none] realms.Realm
     );
     zox_system_1(
-        BodysRealmSpawnSystem,
+        bodys_realm_spawn_system,
         zoxp_spawn,
         [in] realms.GenerateRealm,
         [in] core.Seed,
         [none] realms.Realm
     );
     zox_system_1(
-        EquipsRealmSpawnSystem,
+        equips_realm_spawn_system,
         zoxp_spawn,
         [in] realms.GenerateRealm,
         [none] realms.Realm
@@ -107,7 +107,7 @@ void zox_systems_zoxel(ecs *world) {
     // Confirmed Crashes
     // Worlds
     zox_system_1(
-        Character3RealmSpawnSystem,
+        character3_realm_spawn_system,
         zoxp_spawn,
         [in] realms.GenerateRealm,
         [in] core.Seed,

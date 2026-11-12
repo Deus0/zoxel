@@ -1,5 +1,5 @@
-// moves bodies with a velocity but no Acceleration2D (those move in Acceleration2DSystem)
-void Velocity2DSystem(iter* it) { // Veloco Rapters!
+// moves bodies with a velocity but no Acceleration2D (those move in acceleration2d_system)
+void velocity2d_system(iter* it) { // Veloco Rapters!
     zox_sys_on_begin();
     init_delta_time();
     zox_physics_profile_begin();
@@ -14,4 +14,4 @@ void Velocity2DSystem(iter* it) { // Veloco Rapters!
     }
     zox_physics_profile_end();
     zox_sys_on_end();
-} zoxd_system(Velocity2DSystem);
+} zoxd_system(velocity2d_system);

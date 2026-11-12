@@ -3,6 +3,7 @@
 // TODO: Tag the node so some can auto progress
 // System handles the next node process
 void next_node_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
@@ -50,4 +51,5 @@ void next_node_system(iter* it) {
             }
         }
     }
+    zox_sys_on_end();
 } zoxd_system(next_node_system);

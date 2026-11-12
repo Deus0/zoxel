@@ -1,6 +1,6 @@
 // this animates alpha over time usingg  lerp
 // todo: make this a macro to animate a component - make RenderDisabled an event?
-void AnimateAlphaSystem(iter* it) {
+void animate_alpha_system(iter* it) {
     zox_sys_on_begin();
     const double time = zox_current_time;
     zox_sys_begin();
@@ -31,4 +31,4 @@ void AnimateAlphaSystem(iter* it) {
         alpha->value = float_lerp(animateSourceFloat->value, animateTargetFloat->value, animation_time);
     }
     zox_sys_on_end();
-} zoxd_system(AnimateAlphaSystem);
+} zoxd_system(animate_alpha_system);

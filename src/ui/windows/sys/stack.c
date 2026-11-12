@@ -71,7 +71,7 @@ byte get_highest_window_layer(ecs* world, entity e) {
 
 // Reorders windows on a stack, moves all previous ones up the stack when a new one is placed
 // TODO: Just check children instead and use a CanvasDirty flag
-void CanvasStackSystem(iter* it) {
+void canvas_stack_system(iter* it) {
     zox_sys_on_begin();
     const byte dbg_log = 0;
     const uint max_checks = 255;
@@ -241,4 +241,4 @@ void CanvasStackSystem(iter* it) {
         add_window->value = 0;
     }
     zox_sys_on_end();
-} zoxd_system(CanvasStackSystem);
+} zoxd_system(canvas_stack_system);

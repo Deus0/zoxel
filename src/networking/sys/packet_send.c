@@ -19,7 +19,7 @@ static inline int send_packet(
 
 //! Atm this is just testing sending to server and getting replies
 // NOTE: Testing: Every 3 seconds send one packet!
-void FakePacketSendSystem(iter* it) {
+void fake_packet_send_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 1;
     last_time_send += zox_delta_time;
@@ -101,4 +101,4 @@ void FakePacketSendSystem(iter* it) {
         free(send_buffer_2);
     }
     zox_sys_on_end();
-} zoxd_system(FakePacketSendSystem);
+} zoxd_system(fake_packet_send_system);

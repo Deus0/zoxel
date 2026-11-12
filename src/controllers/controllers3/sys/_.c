@@ -17,51 +17,51 @@
 
 void zox_systems_controllers3(ecs *world) {
     zox_system(
-        Player3DMoveSystem,
+        player3d_move_system,
         zoxp_update,
         [in] players.PlayerState,
         [none] players.Player
     );
     zox_system(
-        PlayerFlySystem,
+        player_fly_system,
         zoxp_update,
         [in] players.PlayerState,
         [in] inputs.DeviceMode,
         [none] players.Player
     );
     zox_system(
-        Player3RotateSystem,
+        player3_rotate_system,
         zoxp_update,
         [in] players.PlayerState,
         [none] players.Player
     );
     zox_system(
-        Player3DJumpSystem,
+        player3d_jump_system,
         zoxp_update,
         [in] players.PlayerState,
         [in] inputs.DeviceMode,
         [none] players.Player
     );
     zox_system_1(
-        ActionsShortcutSystem,
+        actions_shortcut_system,
         zoxp_spawn,
         [in] players.PlayerState,
         [none] players.Player
     );
     zox_system(
-        Player3DTriggerSystem,
+        player3d_trigger_system,
         zoxp_update,
         [in] players.PlayerState,
         [none] players.Player
     );
     zox_system_1(
-        PlayerToggleCameraSystem,
+        player_toggle_camera_system,
         zoxp_spawn,
         [in] players.PlayerState,
         [none] players.Player
     );
     zox_system_1(
-        FreeRoamToggleSystem,
+        free_roam_toggle_system,
         zoxp_spawn,
         [in] players.PlayerState,
         [none] players.Player
@@ -74,44 +74,44 @@ void zox_systems_controllers3(ecs *world) {
     );
     // Shortcuts
     zox_system(
-        QolShortcutsSystem,
+        qol_shortcuts_system,
         zoxp_update,
         [none] players.Player
     );
     // Dialogue
     zox_system_1(
-        DialogueBeginSystem,
+        dialogue_begin_system,
         zoxp_spawn,
         [in] core.TriggerActionB,
         [in] vrays.RaycastVoxelData,
     );
     // Spawns animation events
     zox_system_1(
-        PlayerDialogueSystem,
+        player_dialogue_system,
         zoxp_spawn, // zoxp_update,
         [out] players.PlayerState
     );
     // NOTE: Spawns animation events
     zox_system_1(
-        CameraPlayerStateSystem,
+        camera_player_state_system,
         zoxp_spawn, // zoxp_update,
         [in] players.PlayerStateDirty,
         [out] players.PlayerState
     );
     zox_system(
-        DialogueExitSystem,
+        dialogue_exit_system,
         zoxp_update,
         [in] core.TriggerActionE,
     );
     zox_system(
-        DialogueEndSystem,
+        dialogue_end_system,
         zoxp_update,
         [none] nodes.NodeRun,
         [none] dialogues.DialogueProcess,
         [none] core.Exit,
     );
     zox_system(
-        WalkStateSystem,
+        walk_state_system,
         zoxp_update,
         [out] bones.WalkState,
         [none] bones.Skeleton

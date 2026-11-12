@@ -1,4 +1,4 @@
-void PlotLimitSystem(iter* it) {
+void plot_limit_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -36,4 +36,4 @@ void PlotLimitSystem(iter* it) {
         max->value *= 2;
     }
     zox_sys_on_end();
-} zoxd_system(PlotLimitSystem);
+} zoxd_system(plot_limit_system);

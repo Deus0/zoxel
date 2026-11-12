@@ -3,7 +3,7 @@
 
 void zox_systems_tunks_debug(ecs* world) {
     zox_system(
-        RegionTextureSystem,
+        region_texture_system,
         zoxp_update,
         [out] textures.GenerateTexture,
         [out] textures.TextureData,
@@ -11,7 +11,7 @@ void zox_systems_tunks_debug(ecs* world) {
         [none] tunks.RegionTexture
     );
     zox_system(
-        HeightsTextureSystem,
+        heights_texture_system,
         zoxp_update,
         [out] textures.GenerateTexture,
         [out] textures.TextureData,

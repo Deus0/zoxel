@@ -1,4 +1,4 @@
-void QuadLineRenderSystem(iter* it) {
+void quad_line_render_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -46,4 +46,4 @@ void QuadLineRenderSystem(iter* it) {
     zox_gpu_disable_attribute(line3D_position_location);
     zox_disable_material();
     zox_sys_on_end();
-} zoxd_system(QuadLineRenderSystem);
+} zoxd_system(quad_line_render_system);

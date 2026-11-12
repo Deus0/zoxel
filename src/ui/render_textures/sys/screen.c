@@ -1,4 +1,4 @@
-void ScreenRenderTextureSystem(iter* it) {
+void screen_render_texture_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_begin();
@@ -13,4 +13,4 @@ void ScreenRenderTextureSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ScreenRenderTextureSystem);
+} zoxd_system(screen_render_texture_system);

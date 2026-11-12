@@ -1,4 +1,4 @@
-void NoiseTextureSystem(iter* it) {
+void noise_texture_system(iter* it) {
     zox_sys_on_begin();
     zox_change_check();
     zox_sys_world();
@@ -37,4 +37,4 @@ void NoiseTextureSystem(iter* it) {
         zox_add(e, TextureDirty);
     }
     zox_sys_on_end();
-} zoxd_system(NoiseTextureSystem);
+} zoxd_system(noise_texture_system);

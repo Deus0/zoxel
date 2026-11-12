@@ -23,7 +23,7 @@ void spawn_voxel_debug_line(
 }
 
 // Renders Ground Lines
-void ChunkDebugSystem(iter* it) {
+void chunk_debug_system(iter* it) {
     zox_sys_on_begin();
     return;
     const byte debug_distance = 1;
@@ -75,5 +75,5 @@ void ChunkDebugSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ChunkDebugSystem);
+} zoxd_system(chunk_debug_system);
 */

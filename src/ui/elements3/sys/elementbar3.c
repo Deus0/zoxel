@@ -1,5 +1,5 @@
 // Sets child frontbar mesh when resized
-/*void Elementbar3DSystem(iter* it) {
+/*void elementbar3d_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -57,4 +57,4 @@
         }
     }
     zox_sys_on_end();
-} zoxd_system(Elementbar3DSystem);*/
+} zoxd_system(elementbar3d_system);*/

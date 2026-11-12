@@ -1,5 +1,5 @@
 // Run from DialoguetreeRun
-void DialogueEndSystem(iter* it) {
+void dialogue_end_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -39,4 +39,4 @@ void DialogueEndSystem(iter* it) {
 
     }
     zox_sys_on_end();
-} zoxd_system(DialogueEndSystem);
+} zoxd_system(dialogue_end_system);

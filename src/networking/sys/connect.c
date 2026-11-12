@@ -1,4 +1,4 @@
-void NetConnectSystem(iter* it) {
+void net_connect_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 1;
     zox_sys_world();
@@ -74,4 +74,4 @@ void NetConnectSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(NetConnectSystem);
+} zoxd_system(net_connect_system);

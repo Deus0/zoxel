@@ -7,8 +7,8 @@ How sound works in Zoxel: from an effect, a voice or a song's note to your speak
 ```text
 spawn_sound_effect / spawn_voice_syllable / a music note
 → a Sound entity (SoundData: mono samples, 44100hz)
-→ generated (SoundGenerateSystem) or loaded (SoundProcessSystem)
-→ TriggerSound → SoundPlaySystem
+→ generated (sound_generate_system) or loaded (sound_process_system)
+→ TriggerSound → sound_play_system
 → zox_mixer_play (src/sounds/mix/mixer.c)
 → sdl's audio device pulls the mix (src/apps/sdl/wrp/audio.c)
 ```
@@ -32,7 +32,7 @@ spawn_sound_effect / spawn_voice_syllable / a music note
 [src/sounds/fun/spatial.c](../src/sounds/fun/spatial.c)
 
 - A sound with a `SoundPosition` is 3D. Without one (ui, music) it plays in the middle.
-- The listener is the entity tagged `SoundListener`, the game camera. `SoundListenerSystem` hands its
+- The listener is the entity tagged `SoundListener`, the game camera. `sound_listener_system` hands its
   position and rotation to the mixer every frame, so playing sounds follow you as you turn.
 - Volume falls with distance like unity's logarithmic rolloff: full within `sound_min_distance` (3),
   then min / distance, silent by `sound_max_distance` (48).
@@ -87,7 +87,7 @@ Short tunes for moments: `spawn_jingle(world, jingle_level_up)`. Level up, quest
 [src/musics](../src/musics)
 
 - A music's notes are its ordered children. Each note has a start (`NoteStart`, seconds) and a length.
-- `MusicPlaySystem` moves the playhead (`MusicTime`) and plays every note it passes, so chords and
+- `music_play_system` moves the playhead (`MusicTime`) and plays every note it passes, so chords and
   overlapping notes play as they come. It loops after `MusicLength`.
 - The main menu plays the imported song (`res/music`, made with `make convert`). The realm plays a
   generated one, and they crossfade (`crossfade_music`).

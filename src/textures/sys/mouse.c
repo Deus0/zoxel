@@ -1,4 +1,4 @@
-void MouseTextureSystem(iter* it) {
+void mouse_texture_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -16,4 +16,4 @@ void MouseTextureSystem(iter* it) {
         zox_setv(texture, RenderDisabled, render_disabled);
     }
     zox_sys_on_end();
-} zoxd_system(MouseTextureSystem);
+} zoxd_system(mouse_texture_system);

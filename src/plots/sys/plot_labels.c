@@ -1,4 +1,4 @@
-void PlotLabelSystem(iter* it) {
+void plot_label_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -26,4 +26,4 @@ void PlotLabelSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(PlotLabelSystem);
+} zoxd_system(plot_label_system);

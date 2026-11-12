@@ -5,6 +5,7 @@ extern void engine_end(); // engine
 //  TODO: Use event's window to fetch the entity properly
 
 void sdl_events_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     reset_sdl_inputs(world);
@@ -121,4 +122,5 @@ void sdl_events_system(iter* it) {
         // handle input events
         update_sdl_input(world, e, event);
     }
+    zox_sys_on_end();
 } zoxd_system(sdl_events_system);

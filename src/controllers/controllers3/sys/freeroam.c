@@ -50,7 +50,7 @@ void attach_camera_to_character(
     zox_set_parent(world, e, character);
 }
 
-void FreeRoamToggleSystem(iter* it) {
+void free_roam_toggle_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -122,4 +122,4 @@ void FreeRoamToggleSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(FreeRoamToggleSystem);
+} zoxd_system(free_roam_toggle_system);

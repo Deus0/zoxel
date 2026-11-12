@@ -52,7 +52,7 @@ entity spawn_realm_model_item_filename(
 }
 
 // NOTE: Spawns Gear from different vox files
-void EquipsRealmSpawnSystem(iter* it) {
+void equips_realm_spawn_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -93,4 +93,4 @@ void EquipsRealmSpawnSystem(iter* it) {
         zox_logv("Realm [bodys] [X] spawned.");
     }
     zox_sys_on_end();
-} zoxd_system(EquipsRealmSpawnSystem);
+} zoxd_system(equips_realm_spawn_system);

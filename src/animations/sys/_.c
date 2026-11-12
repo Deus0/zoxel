@@ -13,21 +13,21 @@
 
 void zox_systems_animations(ecs* world) {
     zox_system(
-        EternalRotationSystem,
+        eternal_rotation_system,
         zoxp_update,
         [in] EternalRotation,
         [out] transforms3.Rotation3D
     );
     // Shrinking?
     zox_system(
-        ShrinkSystem,
+        shrink_system,
         zoxp_update,
         [in] AnimationState,
         [in] AnimationStart,
         [out] transforms.Scale1
     );
     zox_system(
-        IdleSystem,
+        idle_system,
         zoxp_update,
         [in] AnimationState,
         [in] AnimationStart,
@@ -35,7 +35,7 @@ void zox_systems_animations(ecs* world) {
         [none] animations.Idling
     );
     zox_system(
-        AnimationSequenceSystem,
+        animation_sequence_system,
         zoxp_update,
         [in] AnimationSequence,
         [in] AnimationTimes,
@@ -47,7 +47,7 @@ void zox_systems_animations(ecs* world) {
         [out] AnimationState
     );
     zox_system(
-        AnimateAlphaSystem,
+        animate_alpha_system,
         zoxp_update,
         [in] AnimationState,
         [in] AnimationStart,
@@ -58,14 +58,14 @@ void zox_systems_animations(ecs* world) {
         [out] rendering.Alpha
     );
     zox_system(
-        FadeoutSystem,
+        fadeout_system,
         zoxp_update,
         [in] FadeOutTime,
         [in] AnimationStart,
         [out] rendering.Alpha
     );
     zox_system(
-        OscillateSystem,
+        oscillate_system,
         zoxp_update,
         [in] OscillateStartPosition3D,
         [in] OscillateDeltaPosition3D,
@@ -73,7 +73,7 @@ void zox_systems_animations(ecs* world) {
         [none] OscillatePosition3D
     );
     zox_system(
-        LerpToEntitySystem,
+        lerp_to_entity_system,
         zoxp_update,
         [in] AnimationState,
         [in] AnimationPositionStart,
@@ -84,7 +84,7 @@ void zox_systems_animations(ecs* world) {
         [out] transforms3.Position3D
     );
     zox_system(
-        LerpToPositionSystem,
+        lerp_to_position_system,
         zoxp_update,
         [in] AnimationState,
         [in] AnimationPositionStart,
@@ -95,7 +95,7 @@ void zox_systems_animations(ecs* world) {
         [out] transforms3.Position3D
     );
     zox_system(
-        LerpFloatSystem,
+        lerp_float_system,
         zoxp_update,
         [in] AnimationTarget,
         [in] AnimationTargetComponent,
@@ -105,7 +105,7 @@ void zox_systems_animations(ecs* world) {
         [in] LerpFloatTo
     );
     zox_system(
-        ShakePositionSystem,
+        shake_position_system,
         zoxp_update,
         [in] AnimationTarget,
         [in] AnimationStartTime,

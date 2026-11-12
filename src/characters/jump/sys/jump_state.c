@@ -2,7 +2,7 @@
 // #define cooldown_start_landing 251
 // byte can_jump_delay = 15;
 
-/*void CanJumpSystem(iter* it) {
+/*void can_jump_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(Grounded);
@@ -34,9 +34,9 @@
         }
     }
     zox_sys_on_end();
-} zoxd_system(CanJumpSystem);
+} zoxd_system(can_jump_system);
 
-void JumpBeginSystem(iter* it) {
+void jump_begin_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(JumpState);
@@ -50,10 +50,10 @@ void JumpBeginSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(JumpBeginSystem);*/
+} zoxd_system(jump_begin_system);*/
 
 double zox_jump_time = 0.06;
-void JumpSystem(iter* it) {
+void jump_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -123,4 +123,4 @@ void JumpSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(JumpSystem);
+} zoxd_system(jump_system);

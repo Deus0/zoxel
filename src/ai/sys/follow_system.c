@@ -1,4 +1,4 @@
-void FollowSystem(iter* it) {
+void follow_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -19,4 +19,4 @@ void FollowSystem(iter* it) {
         target_position->value = position;
     }
     zox_sys_on_end();
-} zoxd_system(FollowSystem);
+} zoxd_system(follow_system);

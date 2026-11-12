@@ -7,7 +7,7 @@ extern entity spawn_line3c(ecs*, float3, float3, float, double, color_rgb);
 
 // TODO: Dont cache a position, just raycast in direction of gravity
 // TODO: Spawn debug lines when repositioning
-void UnstuckSystem(iter* it) {
+void unstuck_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -17,7 +17,7 @@ void UnstuckSystem(iter* it) {
     // cache voxels and colliders for speed
     const BlockLinks *voxels = get_first_terrain_voxels(it);
     if (!voxels) {
-        zox_loge("UnstuckSystem: No BlockLinks on Realm");
+        zox_loge("unstuck_system: No BlockLinks on Realm");
         return;
     }
     byte colliders[voxels->length + 1];
@@ -114,4 +114,4 @@ void UnstuckSystem(iter* it) {
         // zox_loge("Character Unstuck v[%ix%ix%i] l[%ix%ix%i] to f[%f.1x%f.1x%f.1]", pointv.x, pointv.y, pointv.z, pointl.x, pointl.y,  pointl.z, last->value.x, last->value.y, last->value.z);
     }
     zox_sys_on_end();
-} zoxd_system(UnstuckSystem);
+} zoxd_system(unstuck_system);

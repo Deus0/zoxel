@@ -1,4 +1,4 @@
-void DraggerEndSystem(iter* it) {
+void dragger_end_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -59,4 +59,4 @@ void DraggerEndSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(DraggerEndSystem);
+} zoxd_system(dragger_end_system);

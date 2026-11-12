@@ -1,6 +1,6 @@
 // NOTE: This runs from a Node Process
 // System handles the next node process
-/*void NodeBeginEventSystem(iter* it) {
+/*void node_begin_event_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -35,4 +35,4 @@
         }
     }
     zox_sys_on_end();
-} zoxd_system(NodeBeginEventSystem);*/
+} zoxd_system(node_begin_event_system);*/

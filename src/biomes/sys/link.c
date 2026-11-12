@@ -4,7 +4,7 @@
 // extern void set_skybox_colors(ecs*, entity, color_rgb, color_rgb);
 // A Streamer will Link to a Biome based on the Tunk's BiomeLink
 // NOTE: Links Biome to Chunk using Tunk
-void BiomeLinkSystem(iter* it) {
+void biome_link_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -42,7 +42,7 @@ void BiomeLinkSystem(iter* it) {
             stream_position2);
         if (!zox_valid(tunk)) {
             if (dbg_log) {
-                zox_loge("[BiomeLinkSystem] Tunk Invalid [%s]: %ix%i",
+                zox_loge("[biome_link_system] Tunk Invalid [%s]: %ix%i",
                     zox_sys_e_name,
                     stream_position2.x,
                     stream_position2.y);
@@ -52,7 +52,7 @@ void BiomeLinkSystem(iter* it) {
         entity old_tunk = zox_get_link(world, e, TunkLink);
         if (tunk == old_tunk) {
             if (dbg_log) {
-                zox_logw("[BiomeLinkSystem] Same Tunk [%s]",
+                zox_logw("[biome_link_system] Same Tunk [%s]",
                     zox_sys_e_name,
                     stream_position2.x,
                     stream_position2.y);
@@ -61,7 +61,7 @@ void BiomeLinkSystem(iter* it) {
         }
         entity biome = zox_get_link(world, tunk, BiomeLink);
         if (!zox_valid(biome)) {
-            zox_loge("[BiomeLinkSystem] Tunk's Biome Invalid [%s]",
+            zox_loge("[biome_link_system] Tunk's Biome Invalid [%s]",
                 zox_sys_e_name,
                 stream_position2.x,
                 stream_position2.y);
@@ -144,4 +144,4 @@ void BiomeLinkSystem(iter* it) {
             game_sky_bottom_color);
     }
     zox_sys_on_end();
-} zoxd_system(BiomeLinkSystem);
+} zoxd_system(biome_link_system);

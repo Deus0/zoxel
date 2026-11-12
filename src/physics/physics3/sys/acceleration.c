@@ -31,7 +31,9 @@ void acceleration3_system(iter* it) {
 } zoxd_system(acceleration3_system);
 
 void acceleration3_loose_system(iter* it) {
+    zox_sys_on_begin();
     acceleration3_system(it);
+    zox_sys_on_end();
 } zoxd_system(acceleration3_loose_system);
 
 // Frictioned and Grounded: drag, stronger on the ground

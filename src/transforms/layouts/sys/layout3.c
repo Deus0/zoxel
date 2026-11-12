@@ -88,7 +88,7 @@ static inline void update_layout3_recursive(
     }
 }
 
-void Layout3System(iter* it) {
+void layout3_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -116,4 +116,4 @@ void Layout3System(iter* it) {
             dbg_log);
     }
     zox_sys_on_end();
-} zoxd_system(Layout3System);
+} zoxd_system(layout3_system);

@@ -1,4 +1,4 @@
-void WoodModelGenerationSystem(iter* it) {
+void wood_model_generation_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -73,4 +73,4 @@ void WoodModelGenerationSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(WoodModelGenerationSystem);
+} zoxd_system(wood_model_generation_system);

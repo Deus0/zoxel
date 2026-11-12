@@ -1,6 +1,6 @@
 // Player presses input which pauses game
 // NOTE: Must be paused or playing state to toggle pause!
-void PlayerPauseSystem(iter* it) {
+void player_pause_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -74,4 +74,4 @@ void PlayerPauseSystem(iter* it) {
     }
 
     zox_sys_on_end();
-} zoxd_system(PlayerPauseSystem);
+} zoxd_system(player_pause_system);

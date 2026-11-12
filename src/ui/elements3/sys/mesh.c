@@ -15,7 +15,7 @@ void set_mesh_vertices_scale3(
 }
 
 // Initialize Mesh2D data when size changes
-void Layout3MeshUpdateSystem(iter* it) {
+void layout3_mesh_update_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -30,7 +30,7 @@ void Layout3MeshUpdateSystem(iter* it) {
         zox_sys_o(MeshVertices, verts);
         entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas3));
         if (!zox_valid(canvas)) {
-            zox_loge("[Layout3MeshUpdateSystem] Invalid [canvas]: %s", zox_getn(e));
+            zox_loge("[layout3_mesh_update_system] Invalid [canvas]: %s", zox_getn(e));
             continue;
         }
         float2 canvas_size = int2_to_float2(zox_getv(canvas, LayoutSize));
@@ -53,17 +53,17 @@ void Layout3MeshUpdateSystem(iter* it) {
             scale);
         zox_add(e, MeshDirty);
         if (dbg_log) {
-            zox_log("Layout3MeshUpdateSystem Mesh 3D Updated [%s] Size [%fx%f]",
+            zox_log("layout3_mesh_update_system Mesh 3D Updated [%s] Size [%fx%f]",
                 zox_getn(e),
                 scale.x,
                 scale.y);
         }
     }
     zox_sys_on_end();
-} zoxd_system(Layout3MeshUpdateSystem);
+} zoxd_system(layout3_mesh_update_system);
 
 // NOTE: Initializes Mesh based on instantiated layout size
-void Layout3MeshBeginSystem(iter* it) {
+void layout3_mesh_begin_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -96,9 +96,9 @@ void Layout3MeshBeginSystem(iter* it) {
         set_mesh_vertices_scale3(verts, get_aligned_mesh2D(alignment->value), 4, scale);
         zox_add(e, MeshDirty);
         if (dbg_log) {
-            zox_log("LayoutMeshBeginSystem Mesh 3D Updated [%s] Size [%fx%f] Canvas Scale [%fx%f]", zox_getn(e), scale.x, scale.y, world_scale.x, world_scale.y);
+            zox_log("layout_mesh_begin_system Mesh 3D Updated [%s] Size [%fx%f] Canvas Scale [%fx%f]", zox_getn(e), scale.x, scale.y, world_scale.x, world_scale.y);
         }
     }
     zox_sys_on_end();
-} zoxd_system(Layout3MeshBeginSystem);
+} zoxd_system(layout3_mesh_begin_system);
 

@@ -1,6 +1,6 @@
 // For Elements of Square Shape - LayoutSize
 // NOTE: Casts this from the Zevice (input device child)
-void ElementRaycastSystem(iter* it) {
+void element_raycast_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_query();
@@ -18,7 +18,7 @@ void ElementRaycastSystem(iter* it) {
                 e,
                 0);
             if (dbg_log >= 3) {
-                zox_log("(ElementRaycastSystem) Zevice Disabled [%s]",
+                zox_log("(element_raycast_system) Zevice Disabled [%s]",
                     zox_getn(e));
             }
             continue;
@@ -32,7 +32,7 @@ void ElementRaycastSystem(iter* it) {
         if (zox_has(device, Disabled)) {
             raycaster_select_element(world, e, 0);
             if (dbg_log >= 3) {
-                zox_log("(ElementRaycastSystem) Zevice Disabled [%s]",
+                zox_log("(element_raycast_system) Zevice Disabled [%s]",
                     zox_getn(e));
             }
             continue;
@@ -66,7 +66,7 @@ void ElementRaycastSystem(iter* it) {
         byte ray_in_viewport = is_in_canvas_viewport(&viewport, position);
         if (!ray_in_viewport) {
             if (dbg_log >= 2) {
-                zox_log("(ElementRaycastSystem) Ray not in viewport [%s] at [%ix%i]",
+                zox_log("(element_raycast_system) Ray not in viewport [%s] at [%ix%i]",
                     zox_getn(e),
                     position.x,
                     position.y);
@@ -131,4 +131,4 @@ void ElementRaycastSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ElementRaycastSystem);
+} zoxd_system(element_raycast_system);

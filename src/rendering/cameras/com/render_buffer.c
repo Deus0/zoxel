@@ -6,7 +6,7 @@ ECS_DTOR(RenderBufferLink, ptr, {
     ptr->value = 0;
 })
 
-void on_destroyed_RenderBufferLink(iter *it) {
+void on_destroyed_RenderBufferLink(iter* it) {
     byte dbg_log = 0;
     zox_sys_begin();
     zox_sys_out(RenderBufferLink);

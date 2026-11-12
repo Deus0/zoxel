@@ -1,6 +1,6 @@
 const char *outputTextureName = resources_folder_name"textures/tester.png"; // testing
 
-void TextureSaveSystem(iter* it) {
+void texture_save_system(iter* it) {
     zox_sys_on_begin();
     zox_skip_if_unchanged(1)
     // if (!ecs_query_changed(NULL, it)) return;
@@ -13,4 +13,4 @@ void TextureSaveSystem(iter* it) {
         zox_log(" > saved texture: %lu as [%s]\n", (long int) it->entities[i], outputTextureName)
     }
     zox_sys_on_end();
-} zoxd_system(TextureSaveSystem);
+} zoxd_system(texture_save_system);

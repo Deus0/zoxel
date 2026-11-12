@@ -20,7 +20,7 @@ void game_state_weather(ecs* world, entity game, byte state) {
     last_weather_state = state;
 }
 
-/*void WeatherGameStateSystem(iter* it) {
+/*void weather_game_state_system(iter* it) {
     zox_sys_on_begin();
     // byte dbg_log = 0;
     zox_sys_world();
@@ -47,4 +47,4 @@ void game_state_weather(ecs* world, entity game, byte state) {
         last_weather_state = state->value;
     }
     zox_sys_on_end();
-} zoxd_system(WeatherGameStateSystem);*/
+} zoxd_system(weather_game_state_system);*/

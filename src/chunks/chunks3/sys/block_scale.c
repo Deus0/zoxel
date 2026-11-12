@@ -1,5 +1,5 @@
 // Sync Block Scale to the Terrain Chunks from the Vox
-void BlockScaleSystem(iter* it) {
+void block_scale_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -24,4 +24,4 @@ void BlockScaleSystem(iter* it) {
         // zox_log(" [%s] Scale set [%f]", zox_get_name(it->entities[i]), scale->value);
     }
     zox_sys_on_end();
-} zoxd_system(BlockScaleSystem);
+} zoxd_system(block_scale_system);

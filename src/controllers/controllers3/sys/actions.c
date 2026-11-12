@@ -1,5 +1,5 @@
 // NOTE: Players keys to switch between actions
-void ActionsShortcutSystem(iter* it) {
+void actions_shortcut_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -93,4 +93,4 @@ void ActionsShortcutSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ActionsShortcutSystem);
+} zoxd_system(actions_shortcut_system);

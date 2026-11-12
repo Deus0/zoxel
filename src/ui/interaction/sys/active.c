@@ -1,5 +1,5 @@
 // animation system
-void ElementActiveSystem(iter* it) {
+void element_active_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(ActiveState);
@@ -21,4 +21,4 @@ void ElementActiveSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ElementActiveSystem);
+} zoxd_system(element_active_system);

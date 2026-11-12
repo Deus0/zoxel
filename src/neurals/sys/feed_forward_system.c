@@ -1,4 +1,4 @@
-void LinkFeedForwardSystem(iter* it) {
+void link_feed_forward_system(iter* it) {
     zox_sys_on_begin();
     if (zox_current_time < neural_brain_delay) return;
     /*
@@ -43,4 +43,4 @@ void LinkFeedForwardSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(LinkFeedForwardSystem);
+} zoxd_system(link_feed_forward_system);

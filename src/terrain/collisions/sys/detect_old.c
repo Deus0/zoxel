@@ -167,7 +167,7 @@ void collide_with_chunkf(
     }
 }
 
-void CollisionDetectSystem(iter* it) {
+void collision_detect_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -284,4 +284,4 @@ void CollisionDetectSystem(iter* it) {
 
     }
     zox_sys_on_end();
-} zoxd_system(CollisionDetectSystem);*/
+} zoxd_system(collision_detect_system);*/

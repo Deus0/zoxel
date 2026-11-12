@@ -2,7 +2,7 @@ extern entity spawn_line2D(ecs *world, float2 pointA, float2 pointB, float thick
 
 // todo: rework this to use ui lines
 //      camera matrix 2D breaks it atm
-void SoundDebugSystem(iter* it) {
+void sound_debug_system(iter* it) {
     zox_sys_on_begin();
     if (!zox_visualize_sounds) {
         return;
@@ -38,4 +38,4 @@ void SoundDebugSystem(iter* it) {
     }
 //#endif
     zox_sys_on_end();
-} zoxd_system(SoundDebugSystem);
+} zoxd_system(sound_debug_system);

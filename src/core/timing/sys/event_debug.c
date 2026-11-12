@@ -1,4 +1,4 @@
-void GenericEventDebugSystem(iter* it) {
+void generic_event_debug_system(iter* it) {
     zox_sys_on_begin();
     zox_log(" > events occurs [%i]\n", it->count);
     zox_sys_begin();
@@ -9,4 +9,4 @@ void GenericEventDebugSystem(iter* it) {
         zox_log("     > event occurs [%lu] [%i]", e, genericEvent->value);
     }
     zox_sys_on_end();
-} zoxd_system(GenericEventDebugSystem);
+} zoxd_system(generic_event_debug_system);

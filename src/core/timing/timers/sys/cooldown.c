@@ -1,4 +1,4 @@
-void CooldownSystem(iter* it) {
+void cooldown_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = zox_log_activations;
     zox_sys_world();
@@ -17,9 +17,9 @@ void CooldownSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(CooldownSystem);
+} zoxd_system(cooldown_system);
 
-void CooldownStateSystem(iter* it) {
+void cooldown_state_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = zox_log_activations;
     zox_sys_world();
@@ -46,4 +46,4 @@ void CooldownStateSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(CooldownStateSystem);
+} zoxd_system(cooldown_state_system);

@@ -1,7 +1,7 @@
 // If Streamer2 is Dirty:
 //  - Update Render Distances
 //  - Update Render Depths
-/*void TunkLodSystem(iter* it) {
+/*void tunk_lod_system(iter* it) {
     zox_sys_on_begin();
     // TODO: Cache stream positions before we get to our iterator
     byte dbg_log = 0;
@@ -147,5 +147,5 @@
         }
     }
     zox_sys_on_end();
-} zoxd_system(TunkLodSystem);
+} zoxd_system(tunk_lod_system);
 */

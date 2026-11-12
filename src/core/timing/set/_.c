@@ -14,7 +14,7 @@ const double zox_lag_cutoff = 4;
 
 // NOTE: Time Pausing Disabled because it Line Renders
 //          Will keep spawning and not die
-//          DestroyInTimeSystem needs time for now during pause events
+//          destroy_in_time_system needs time for now during pause events
 
 void disable_time_pausing() {
     // time_pause_disabled = 1;

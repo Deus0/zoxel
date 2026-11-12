@@ -1,5 +1,5 @@
 
-void VodesSettingsDirtySystem(iter* it) {
+void vodes_settings_dirty_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -24,4 +24,4 @@ void VodesSettingsDirtySystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(VodesSettingsDirtySystem);
+} zoxd_system(vodes_settings_dirty_system);

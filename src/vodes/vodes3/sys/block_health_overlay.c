@@ -1,5 +1,5 @@
 // NOTE: Updates the alpha of the block damage overlays
-void BlockHealthOverlaySystem(iter* it) {
+void block_health_overlay_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -31,4 +31,4 @@ void BlockHealthOverlaySystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(BlockHealthOverlaySystem);
+} zoxd_system(block_health_overlay_system);

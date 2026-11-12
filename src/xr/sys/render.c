@@ -32,6 +32,7 @@ static inline float4x4 xr_calculate_ui_projection_matrix(
 
 // NOTE: NO need to time as it runs systems inside it
 void xr_camera_render_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     // XR Triangle direction
@@ -137,5 +138,6 @@ void xr_camera_render_system(iter* it) {
         xr_eye_render_end(eye.swapchain);
     }
     xr_end_frame();
+    zox_sys_on_end();
 } zoxd_system(xr_camera_render_system);
 

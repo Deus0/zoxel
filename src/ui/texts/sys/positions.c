@@ -45,7 +45,7 @@ int2 calculate_position(const byte *data, int length, int data_index, byte font_
 }
 
 // Centralized position setting for text zigels
-/*void GlyphPositionSystem(iter* it) {
+/*void glyph_position_system(iter* it) {
     zox_sys_on_begin();
     byte is_log = 0;
     zox_sys_world();
@@ -79,7 +79,7 @@ int2 calculate_position(const byte *data, int length, int data_index, byte font_
         byte2 padding = zox_getv(parent, TextPadding);
         uint array_index = child_index_to_text_array_index(text_data->value, text_data->length, child_index->value);
         if (array_index >= text_data->length) {
-            zox_loge("(GlyphPositionSystem) [%s]: [%s] Has a array_index oob [%i] >= [%i] (child_index_to_text_array_index)", zox_getn(parent), zox_getn(e), array_index, text_data->length);
+            zox_loge("(glyph_position_system) [%s]: [%s] Has a array_index oob [%i] >= [%i] (child_index_to_text_array_index)", zox_getn(parent), zox_getn(e), array_index, text_data->length);
             continue;
         }
         int2 new_position = calculate_position(text_data->value, text_data->length, array_index, font_size, alignment, padding, default_line_padding);
@@ -94,10 +94,10 @@ int2 calculate_position(const byte *data, int length, int data_index, byte font_
         zigel_dirty->value = zox_zigel_dirty_update;
     }
     zox_sys_on_end();
-} zoxd_system(GlyphPositionSystem);*/
+} zoxd_system(glyph_position_system);*/
 
 // Centralized position setting for text zigels
-void TextsPositionSystem(iter* it) {
+void texts_position_system(iter* it) {
     zox_sys_on_begin();
     byte is_log = 0;
     zox_sys_world();
@@ -143,4 +143,4 @@ void TextsPositionSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(TextsPositionSystem);
+} zoxd_system(texts_position_system);

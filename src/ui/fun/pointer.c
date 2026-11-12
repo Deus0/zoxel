@@ -1,5 +1,5 @@
 // Maps ui elements into pointer space (pixels, bottom left origin, like ZevicePointerPosition)
-//  - used by ElementRaycastSystem, scrollview wheel scrolling and ui tests
+//  - used by element_raycast_system, scrollview wheel scrolling and ui tests
 
 // where a canvas is drawn on screen
 typedef struct {

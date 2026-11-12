@@ -5,7 +5,7 @@
 
 void zox_systems_line2(ecs* world) {
     zox_render2D_system(
-        ElementLine2DRenderSystem,
+        element_line2d_render_system,
         [in] transforms2.LinePoints2,
         [in] lines.LineThickness,
         [in] colorz.Color,

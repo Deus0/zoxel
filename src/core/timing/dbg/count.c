@@ -1,5 +1,5 @@
 // Reset our deltas
-void SystemProcessedResetSystem(iter* it) {
+void system_processed_reset_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_out(SystemProcessed);
@@ -11,4 +11,4 @@ void SystemProcessedResetSystem(iter* it) {
         count->value = 0;
     }
     zox_sys_on_end();
-} zoxd_system(SystemProcessedResetSystem);
+} zoxd_system(system_processed_reset_system);

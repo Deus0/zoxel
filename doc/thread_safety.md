@@ -26,9 +26,9 @@ Writing a `[out]` component of the system's own entities (`$this`) never makes a
 bin/tst/pipeline_syncs.log:
 
 ```
-zoxp_octree_write: CombineVoxSystem voxel_octree_optimize_system VoxelUpdateQueueSystem ... VodesRemoveSystem |
+zoxp_octree_write: combine_vox_system voxel_octree_optimize_system voxel_update_queue_system ... vodes_remove_system |
 zoxp_trails_sync: zoxp_trails_sync_write | zoxp_trails_sync_wait
-zoxp_octree_read: ChunkColorsBuildSystem VoxLodMeshBuildSystem chunk_sides_system ...
+zoxp_octree_read: chunk_colors_build_system vox_lod_mesh_build_system chunk_sides_system ...
 ```
 
 - `|` is a merge, `[1]` a main thread system, `[!]` an immediate one, nothing is multi threaded.
@@ -47,7 +47,7 @@ zoxp_octree_read: ChunkColorsBuildSystem VoxLodMeshBuildSystem chunk_sides_syste
 - **A system that doesn't need the main thread is multi threaded.** Main thread is for spawning and deleting,
   gpu calls, and state shared outside flecs (the mixer, sdl).
 - A main thread system alone in a multi threaded phase splits it, 2 merges (listed by `pipeline_syncs`).
-  `SoundListenerSystem` was one, moved to `zoxp_render` with the other main thread systems.
+  `sound_listener_system` was one, moved to `zoxp_render` with the other main thread systems.
 - Add a merge on purpose only as a barrier (below), and say why where it's registered.
 
 ### Barriers
@@ -63,7 +63,7 @@ the phases before it before any start the phases after, with **one merge and no 
 Barriers (2026-11-12), the transform chain: physics ->
 `zoxp_trails_sync` -> trails -> `zoxp_layouts_sync` -> 3D layouts -> `zoxp_hierarchy_sync` -> hierarchy ->
 `zoxp_billboards_sync` -> billboards -> `zoxp_transform_end_sync` -> matrices. Each step reads what the one before
-wrote. `trail_system`, `Layout3System`, `transform3_children_system` and `billboard_system` were main thread to be
+wrote. `trail_system`, `layout3_system`, `transform3_children_system` and `billboard_system` were main thread to be
 those syncs (the 2026-09-18 crash fixes), now multi threaded: each root writes only its own subtree (the roots
 with parents are chunks, under the app, which has no transform).
 

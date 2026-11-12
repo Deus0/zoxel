@@ -25,7 +25,7 @@ float debug_thickness = 2.0f;
 extern entity spawn_line3(ecs*, float3, float3, float, double);
 #endif
 
-void Player3DMoveSystem(iter* it) {
+void player3d_move_system(iter* it) {
     zox_sys_on_begin();
     init_delta_time();
     zox_sys_world();
@@ -190,4 +190,4 @@ void Player3DMoveSystem(iter* it) {
 #endif
     }
     zox_sys_on_end();
-} zoxd_system(Player3DMoveSystem);
+} zoxd_system(player3d_move_system);

@@ -6,7 +6,7 @@
 
 void zox_systems_elements3D(ecs *world) {
     zox_system(
-        Layout3MeshBeginSystem,
+        layout3_mesh_begin_system,
         zoxp_initialize,
         [in] layouts.LayoutSize,
         [in] rendering.MeshAlignment,
@@ -14,7 +14,7 @@ void zox_systems_elements3D(ecs *world) {
         [none] core.Initialize,
     );
     zox_system(
-        Layout3MeshUpdateSystem,
+        layout3_mesh_update_system,
         zoxp_update,
         [in] layouts.LayoutSize,
         [in] rendering.MeshAlignment,

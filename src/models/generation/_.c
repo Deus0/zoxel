@@ -32,7 +32,7 @@ void zox_systems_models_generation(ecs* world) {
         [out] colorz.ColorRGBs
     );
     zox_system(
-        BlendedSoilGenerationSystem,
+        blended_soil_generation_system,
         zoxp_octree_write,
         [in] core.Seed,
         [in] colorz.Color,
@@ -54,7 +54,7 @@ void zox_systems_models_generation(ecs* world) {
         [out] colorz.ColorRGBs
     );
     zox_system(
-        RoadModelGenerationSystem,
+        road_model_generation_system,
         zoxp_octree_write,
         [in] core.Seed,
         [in] colorz.Color,
@@ -65,7 +65,7 @@ void zox_systems_models_generation(ecs* world) {
         [out] colorz.ColorRGBs
     );
     zox_system(
-        SandModelGenerationSystem,
+        sand_model_generation_system,
         zoxp_octree_write,
         [in] core.Seed,
         [in] colorz.Color,
@@ -76,7 +76,7 @@ void zox_systems_models_generation(ecs* world) {
         [out] colorz.ColorRGBs
     );
     zox_system(
-        BricksModelGenerationSystem,
+        bricks_model_generation_system,
         zoxp_octree_write,
         [in] core.Seed,
         [in] colorz.Color,
@@ -87,7 +87,7 @@ void zox_systems_models_generation(ecs* world) {
         [out] colorz.ColorRGBs
     );
     zox_system(
-        FlowersModelGenerationSystem,
+        flowers_model_generation_system,
         zoxp_octree_write,
         [in] core.Seed,
         [in] colorz.Color,
@@ -109,7 +109,7 @@ void zox_systems_models_generation(ecs* world) {
         [out] colorz.ColorRGBs
     );
     zox_system(
-        WoodModelGenerationSystem,
+        wood_model_generation_system,
         zoxp_octree_write,
         [in] core.Seed,
         [in] colorz.Color,

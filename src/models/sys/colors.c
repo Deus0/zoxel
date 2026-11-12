@@ -33,7 +33,7 @@ void process_node_model_generate_colors(
 
 // Runs from a Model Node Process
 //      This system will simply fill the voxes
-void ColorsModelNodeSystem(iter* it) {
+void colors_model_node_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = zox_dbg_model_nodes;
     ushort inner_seed_shift = 39393;
@@ -45,7 +45,7 @@ void ColorsModelNodeSystem(iter* it) {
         entity model = zox_get_link(world, e, ModelLink);
         zox_sys_o(Seed, seed);
         if (!zox_valid(model)) {
-            zox_logw("[ColorsModelNodeSystem] Node has Invalid Model [%s]", zox_getn(e));
+            zox_logw("[colors_model_node_system] Node has Invalid Model [%s]", zox_getn(e));
             zox_add(e, TriggerEnd);
             continue;
         }
@@ -89,4 +89,4 @@ void ColorsModelNodeSystem(iter* it) {
         zox_add(e, TriggerEnd);
     }
     zox_sys_on_end();
-} zoxd_system(ColorsModelNodeSystem);
+} zoxd_system(colors_model_node_system);

@@ -1,7 +1,7 @@
 // Torque2D is the 2D angular velocity (radians per second), named before Alpha2D existed
-// spins bodies without an Alpha2D (those spin in Alpha2DSystem)
+// spins bodies without an Alpha2D (those spin in alpha2d_system)
 // the angle is kept within (-2pi, 2pi), spinning either way, however fast
-void Torque2DSystem(iter* it) {
+void torque2d_system(iter* it) {
     zox_sys_on_begin();
     init_delta_time();
     zox_physics_profile_begin();
@@ -18,4 +18,4 @@ void Torque2DSystem(iter* it) {
     }
     zox_physics_profile_end();
     zox_sys_on_end();
-} zoxd_system(Torque2DSystem);
+} zoxd_system(torque2d_system);

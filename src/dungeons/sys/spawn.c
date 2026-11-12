@@ -1,5 +1,5 @@
 // NOTE: Spawns Dungeons per Region
-void DungeonsSpawnSystem(iter* it) {
+void dungeons_spawn_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     uint max_attempts = 100;
@@ -90,4 +90,4 @@ void DungeonsSpawnSystem(iter* it) {
         generate->value = zox_generate_region_end;
     }
     zox_sys_on_end();
-} zoxd_system(DungeonsSpawnSystem);
+} zoxd_system(dungeons_spawn_system);

@@ -1,5 +1,5 @@
 // NOTE: SPawns a tilemap per realm for our blocks
-void TilemapRealmSpawnSystem(iter* it) {
+void tilemap_realm_spawn_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
@@ -14,4 +14,4 @@ void TilemapRealmSpawnSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(TilemapRealmSpawnSystem);
+} zoxd_system(tilemap_realm_spawn_system);

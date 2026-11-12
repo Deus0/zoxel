@@ -1,5 +1,5 @@
 // NOTE: Adds height to the heightmap using region mountains
-void MountainMapSystem(iter* it) {
+void mountain_map_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -40,11 +40,11 @@ void MountainMapSystem(iter* it) {
         }
 #ifdef zox_safety_checks
         if (!height_map->length) {
-            zox_logw("Invalid [height_map] in MountainMapSystem");
+            zox_logw("Invalid [height_map] in mountain_map_system");
             continue;
         }
         if (!zox_disable_vegetation && !vegetation_map->length) {
-            zox_logw("Invalid [vegetation_map] in MountainMapSystem");
+            zox_logw("Invalid [vegetation_map] in mountain_map_system");
             continue;
         }
 #endif
@@ -108,4 +108,4 @@ void MountainMapSystem(iter* it) {
         generate->value = zox_generate_tunk_towns;
     }
     zox_sys_on_end();
-} zoxd_system(MountainMapSystem);
+} zoxd_system(mountain_map_system);

@@ -1,5 +1,5 @@
 // on the text entity
-void AnimateTextEndSystem(iter* it) {
+void animate_text_end_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -29,4 +29,4 @@ void AnimateTextEndSystem(iter* it) {
             0);
     }
     zox_sys_on_end();
-} zoxd_system(AnimateTextEndSystem);
+} zoxd_system(animate_text_end_system);

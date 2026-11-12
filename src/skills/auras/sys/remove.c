@@ -1,7 +1,7 @@
 // if poisoned, remove if leaving area
 // I could do this per debuff instead of character...! if it's a area based debuff
 // NOTE: When a character has AuraDots, we check if still in range!
-void AuraRemoveSystem(iter* it) {
+void aura_remove_system(iter* it) {
     zox_sys_on_begin();
     // const float damage_radius = 3.0f; // todo: grab this off skill
     zox_sys_world();
@@ -44,4 +44,4 @@ void AuraRemoveSystem(iter* it) {
 
     }
     zox_sys_on_end();
-} zoxd_system(AuraRemoveSystem);
+} zoxd_system(aura_remove_system);

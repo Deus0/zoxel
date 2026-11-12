@@ -5,7 +5,7 @@
 // TODO: Add ANgle
 void zox_systems_transforms2(ecs* world) {
     zox_system(
-        Transform2ChildrenSystem,
+        transform2_children_system,
         zoxp_transform_hierarchy,
         [in] transforms2.Position2,
         // [in] transforms2.Rotation2,
@@ -15,7 +15,7 @@ void zox_systems_transforms2(ecs* world) {
     );
     // TODO: Add Rottions to these
     zox_system(
-        Transform2Scale1System,
+        transform2_scale1_system,
         zoxp_transform_end,
         [in] transforms2.Position2,
         [in] transforms.Scale1,
@@ -25,7 +25,7 @@ void zox_systems_transforms2(ecs* world) {
         [none] !transforms.DisableTransform
     );
     zox_system(
-        Transform2Rotation2Scale1System,
+        transform2_rotation2_scale1_system,
         zoxp_transform_end,
         [in] transforms2.Position2,
         [in] transforms2.Rotation2,
@@ -35,7 +35,7 @@ void zox_systems_transforms2(ecs* world) {
         [none] !transforms.DisableTransform
     );
     zox_system(
-        Transform2Scale2System,
+        transform2_scale2_system,
         zoxp_transform_end,
         [in] transforms2.Position2,
         [in] transforms2.Scale2,

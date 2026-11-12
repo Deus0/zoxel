@@ -3,14 +3,14 @@
 
 void zox_systems_weather(ecs* world) {
     zox_gpu_restore_system(
-        SkyboxRestoreSystem,
+        skybox_restore_system,
         [in] rendering.MaterialGPULink,
         [in] colorz.ColorRGB,
         [in] colorz.SecondaryColorRGB,
         [none] Skybox
     );
     zox_system_1(
-        SkyboxSetTimeSystem,
+        skybox_set_time_system,
         zoxp_gpu_upload,
         [in] rendering.MaterialGPULink,
         [none] Skybox

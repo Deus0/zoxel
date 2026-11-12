@@ -1,4 +1,4 @@
-void AttackSystem(iter* it) {
+void attack_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(Behaviour);
@@ -14,4 +14,4 @@ void AttackSystem(iter* it) {
         target->value = threat->value;
     }
     zox_sys_on_end();
-} zoxd_system(AttackSystem);
+} zoxd_system(attack_system);

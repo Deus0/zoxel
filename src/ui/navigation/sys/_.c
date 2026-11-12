@@ -4,14 +4,14 @@
 
 void zox_systems_navigation(ecs* world) {
     zox_system(
-        ElementNavigationBeginSystem,
+        element_navigation_begin_system,
         zoxp_update,
         [out] core.EntityTarget,
         [none] inputs.DeviceNavigator,
         [none] !core.Disabled,
     );
     zox_system(
-        ElementNavigationSystem,
+        element_navigation_system,
         zoxp_update,
         [out] ui.NavigatorState,
         [out] ui.NavigatorTimer,
@@ -21,7 +21,7 @@ void zox_systems_navigation(ecs* world) {
     );
     // NOTE: Has to be after raycasting system
     zox_system(
-        DeviceClickSystem,
+        device_click_system,
         zoxp_update,
         [in] core.EntityTarget,
         [out] interactions.ClickingEntity,

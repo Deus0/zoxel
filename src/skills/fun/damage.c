@@ -106,7 +106,7 @@ byte damage_character(
     return 1;
 }
 
-// Queues damage on a terrain block, applied by BlockDamageQueueSystem
+// Queues damage on a terrain block, applied by block_damage_queue_system
 void damage_terrain_block(
     ecs* world,
     entity chunk,

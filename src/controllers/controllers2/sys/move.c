@@ -1,4 +1,4 @@
-void Controller2MoveSystem(iter* it) {
+void controller2_move_system(iter* it) {
     zox_sys_on_begin();
     init_delta_time()
     float2 max_delta_velocity = max_velocity2D;
@@ -97,4 +97,4 @@ void Controller2MoveSystem(iter* it) {
         // zox_log("movement: %fx%f", movement.x, movement.y)
     }
     zox_sys_on_end();
-} zoxd_system(Controller2MoveSystem);
+} zoxd_system(controller2_move_system);

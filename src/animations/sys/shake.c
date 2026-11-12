@@ -1,6 +1,6 @@
 // Shakes a targets LocalPosition3D for a duration, then returns it to its origin
 // - if something else moves the target mid shake, that becomes the new origin
-void ShakePositionSystem(iter* it) {
+void shake_position_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -47,4 +47,4 @@ void ShakePositionSystem(iter* it) {
         local->value = float3_add(origin->value, offset->value);
     }
     zox_sys_on_end();
-} zoxd_system(ShakePositionSystem);
+} zoxd_system(shake_position_system);

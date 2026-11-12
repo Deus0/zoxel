@@ -1,4 +1,4 @@
-void PlayerTerminalSystem(iter* it) {
+void player_terminal_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -38,4 +38,4 @@ void PlayerTerminalSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(PlayerTerminalSystem);
+} zoxd_system(player_terminal_system);

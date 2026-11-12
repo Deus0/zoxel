@@ -1,7 +1,7 @@
 // NOTE: System responsible for device switching for a DeviceUser
 // TODO: Grab not used devices from DeviceManager instead of local ones
 // TODO: It goes through devices 3 times... thats bad!
-void DeviceSwitchSystem(iter* it) {
+void device_switch_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     if (!auto_switch_device) {
@@ -145,4 +145,4 @@ void DeviceSwitchSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(DeviceSwitchSystem);
+} zoxd_system(device_switch_system);

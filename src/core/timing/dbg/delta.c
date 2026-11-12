@@ -1,5 +1,5 @@
 // Reset our deltas
-void SystemDeltaCacheSystem(iter* it) {
+void system_delta_cache_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_out(SystemDelta);
@@ -11,4 +11,4 @@ void SystemDeltaCacheSystem(iter* it) {
         delta->value = 0;
     }
     zox_sys_on_end();
-} zoxd_system(SystemDeltaCacheSystem);
+} zoxd_system(system_delta_cache_system);

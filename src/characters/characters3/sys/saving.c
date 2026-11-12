@@ -34,7 +34,7 @@ static inline float float_to_precision(const float v, const float precision) {
 }*/
 
 // NOTE: Saves Character to file!
-void CharacterSaveSystem(iter* it) {
+void character_save_system(iter* it) {
     zox_sys_on_begin();
     float precision_level = 100.0f;    // 100
     zox_sys_world();
@@ -75,4 +75,4 @@ void CharacterSaveSystem(iter* it) {
         // zox_log("+ new hash detected at [%fx%fx%f] - %lu", position->value.x, position->value.y, position->value.z, hash)
     }
     zox_sys_on_end();
-} zoxd_system(CharacterSaveSystem);
+} zoxd_system(character_save_system);

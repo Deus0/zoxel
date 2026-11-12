@@ -1,5 +1,6 @@
 // NOTE: Increments Initialize, then removes it
 void initialize_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
@@ -10,9 +11,11 @@ void initialize_system(iter* it) {
                 zox_sys_e_name);
         }
     }
+    zox_sys_on_end();
 } zoxd_system(initialize_system);
 
 void pre_initialize_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
@@ -24,6 +27,7 @@ void pre_initialize_system(iter* it) {
                 zox_sys_e_name);
         }
     }
+    zox_sys_on_end();
 } zoxd_system(pre_initialize_system);
 
 void initialize_event_system(iter* it) {

@@ -2,7 +2,7 @@
 
 void zox_systems_names(ecs* world) {
     zox_system(
-        GenerateNameSystem,
+        generate_name_system,
         zoxp_update,
         [in] core.Seed,
         [out] names.GenerateName,

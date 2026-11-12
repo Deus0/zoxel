@@ -9,6 +9,7 @@ AABB voxel
 
 // NOTE: Detects intersections with voxel chunks
 void terrain_collision_system(iter* it) {
+    zox_sys_on_begin();
     // TODO: First just make a list of voxels intersecting with
     zox_sys_world();
     zox_sys_begin();
@@ -210,4 +211,5 @@ void terrain_collision_system(iter* it) {
             position->value = float3_add(position->value, correction);
         }
     }
+    zox_sys_on_end();
 } zoxd_system(terrain_collision_system);

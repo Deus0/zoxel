@@ -430,7 +430,7 @@ void build_vox_stoned(ColorRGBs *colors, VoxelNode *vox, byte depth, color_rgb p
 }
 
 // NOTE: Generates a road block for towns
-void RoadModelGenerationSystem(iter* it) {
+void road_model_generation_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -483,4 +483,4 @@ void RoadModelGenerationSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(RoadModelGenerationSystem);
+} zoxd_system(road_model_generation_system);

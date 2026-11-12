@@ -1,4 +1,4 @@
-void FleeSystem(iter* it) {
+void flee_system(iter* it) {
     zox_sys_on_begin();
     const float flee_distance    = 4.0f;  // how far we want to flee
     const float jitter_power     = 0.4f;
@@ -62,4 +62,4 @@ void FleeSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(FleeSystem);
+} zoxd_system(flee_system);

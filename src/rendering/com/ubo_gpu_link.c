@@ -5,7 +5,7 @@ ECS_DTOR(UboGPULink, ptr, {
     // if (ptr->value != 0) glDeleteBuffers(1, &ptr->value);
 })
 
-void on_destroyed_UboGPULink(iter *it) {
+void on_destroyed_UboGPULink(iter* it) {
     byte dbg_log = 0;
     zox_sys_begin();
     zox_sys_out(UboGPULink);

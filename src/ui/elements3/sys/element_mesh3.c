@@ -1,4 +1,4 @@
-/*void Element3MeshSystem(iter* it) {
+/*void element3_mesh_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -31,4 +31,4 @@
         }
     }
     zox_sys_on_end();
-} zoxd_system(Element3MeshSystem);*/
+} zoxd_system(element3_mesh_system);*/

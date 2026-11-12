@@ -12,17 +12,17 @@ void zox_systems_timing(ecs* world) {
         [out] TimerTime
     );
     zox_system(
-        DestroyInTimeSystem,
+        destroy_in_time_system,
         zoxp_destroy,
         [out] timing.DestroyInTime
     );
     zox_system(
-        DestroyInFrameSystem,
+        destroy_in_frame_system,
         zoxp_destroy,
         [none] core.DestroyInFrame
     );
     zox_system(
-        FpsCurveSystem,
+        fps_curve_system,
         zoxp_update,
         0
     );

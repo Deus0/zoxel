@@ -3,7 +3,7 @@
 // color skin_color = (color) { 200, 155, 133, 255 };
 // color eye_color = (color) { 55, 200, 99, 255 };
 // TODO: Spawn the slots onto the items themselves
-void BodysRealmSpawnSystem(iter* it) {
+void bodys_realm_spawn_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -23,7 +23,7 @@ void BodysRealmSpawnSystem(iter* it) {
         byte blueprint_depth = nodegraph_max_depth;
         short blueprint_length = octree_size(blueprint_depth);
         if (max_part_depth >= model_lods_max_length) {
-            zox_logw("[BodysRealmSpawnSystem] Does not support depth [%i] max is [%i]",
+            zox_logw("[bodys_realm_spawn_system] Does not support depth [%i] max is [%i]",
                 max_part_depth,
                 model_lods_max_length);
             continue;
@@ -348,4 +348,4 @@ void BodysRealmSpawnSystem(iter* it) {
         zox_logv("At [%f] Realm [bodys] [X] spawned.", zox_current_time);
     }
     zox_sys_on_end();
-} zoxd_system(BodysRealmSpawnSystem);
+} zoxd_system(bodys_realm_spawn_system);

@@ -1,5 +1,5 @@
 // NOTE: Tells the arms to swing or not, from the skeletons owner velocity
-void WalkStateSystem(iter* it) {
+void walk_state_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     // NOTE: Hysteresis, so speeds near the cutoff don't flicker between idle and walking
@@ -27,4 +27,4 @@ void WalkStateSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(WalkStateSystem);
+} zoxd_system(walk_state_system);

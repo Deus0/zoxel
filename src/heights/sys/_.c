@@ -3,7 +3,7 @@
 
 void zox_systems_heights(ecs* world) {
     zox_system(
-        HeightMapSystem,
+        height_map_system,
         zoxp_update,
         [in] tunks.TunkLod,
         [in] tunks.TunkPosition,

@@ -1,4 +1,4 @@
-/*void QuestIconLabelSystem(iter* it) {
+/*void quest_icon_label_system(iter* it) {
     zox_sys_on_begin();
     byte label_text_capacity = 12;
     zox_sys_world();
@@ -33,4 +33,4 @@
         }
     }
     zox_sys_on_end();
-} zoxd_system(QuestIconLabelSystem);*/
+} zoxd_system(quest_icon_label_system);*/

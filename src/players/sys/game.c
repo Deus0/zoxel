@@ -1,6 +1,6 @@
 extern entity local_terrain;
 
-void PlayerGameStateSystem(iter* it) {
+void player_game_state_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -65,4 +65,4 @@ void PlayerGameStateSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(PlayerGameStateSystem);
+} zoxd_system(player_game_state_system);

@@ -1,5 +1,5 @@
 // This calculcates the matrix from Position2 and Scale1 when Layout is dirty
-void Transform2Scale1System(iter* it) {
+void transform2_scale1_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -14,13 +14,13 @@ void Transform2Scale1System(iter* it) {
         zox_sys_o(TransformMatrix, matrix);
         matrix->value = float4x4_transform_scale(float2_to_float3(position->value), quaternion_identity, scale->value);
         if (dbg_log) {
-            zox_log("Transform2Scale1System [%s]", zox_getn(e));
+            zox_log("transform2_scale1_system [%s]", zox_getn(e));
         }
     }
     zox_sys_on_end();
-} zoxd_system(Transform2Scale1System);
+} zoxd_system(transform2_scale1_system);
 
-void Transform2Rotation2Scale1System(iter* it) {
+void transform2_rotation2_scale1_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -40,11 +40,11 @@ void Transform2Rotation2Scale1System(iter* it) {
             rotation2_to_quaternion(rotation->value),
             scale->value);
         if (dbg_log) {
-            zox_log("Transform2Rotation2Scale1System [%s] Rot [%f] Scale [%f]",
+            zox_log("transform2_rotation2_scale1_system [%s] Rot [%f] Scale [%f]",
                 zox_getn(e),
                 rotation->value,
                 scale->value);
         }
     }
     zox_sys_on_end();
-} zoxd_system(Transform2Rotation2Scale1System);
+} zoxd_system(transform2_rotation2_scale1_system);

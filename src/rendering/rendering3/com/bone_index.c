@@ -1,6 +1,6 @@
 zoxc_guint(BoneIndexGPULink);
 
-void on_destroyed_BoneIndexGPULink(iter *it) {
+void on_destroyed_BoneIndexGPULink(iter* it) {
     byte dbg_log = 0;
     zox_sys_begin();
     zox_sys_out(BoneIndexGPULink);

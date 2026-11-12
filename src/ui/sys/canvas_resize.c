@@ -25,7 +25,7 @@ void set_layout_dirty_recursive(
 
 // NOTE: this just checks every frame if WindowSize changed
 // TODO: Link Camera to Canvas (CanvasLinks) and use LayoutSizeDirty on Camera / LayoutSize
-void CanvasResizeSystem(iter* it) {
+void canvas_resize_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -68,4 +68,4 @@ void CanvasResizeSystem(iter* it) {
         // zox_log("Canvas resized [%ix%i] screen [%ix%i]", size->value.x, size->value.y, screen_size.x, screen_size.y);
     }
     zox_sys_on_end();
-} zoxd_system(CanvasResizeSystem);
+} zoxd_system(canvas_resize_system);

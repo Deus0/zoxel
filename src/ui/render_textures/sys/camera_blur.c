@@ -1,5 +1,5 @@
 // NOTE: Pushes camera data onto material for Render systems
-void CameraMaterialSystem(iter* it) {
+void camera_material_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -34,4 +34,4 @@ void CameraMaterialSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(CameraMaterialSystem);
+} zoxd_system(camera_material_system);

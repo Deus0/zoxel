@@ -5,7 +5,7 @@
 
 void zox_systems_terrain_collisions(ecs* world) {
     zox_system(
-        InsideBlockSystem,
+        inside_block_system,
         zoxp_update,
         [in] transforms3.Position3D,
         [in] transforms3.Bounds3D,
@@ -13,7 +13,7 @@ void zox_systems_terrain_collisions(ecs* world) {
         [out] blocks.InsideBlockPosition,
     );
     /*zox_system_1(
-        InsideBlockSoundSystem,
+        inside_block_sound_system,
         zoxp_spawn,
         [in] blocks.InsideBlock,
         [in] transforms3.Position3D,
@@ -32,7 +32,7 @@ void zox_systems_terrain_collisions(ecs* world) {
         [none] !physics.NoClip
     );
     /*zox_system(
-        UnstuckSystem,
+        unstuck_system,
         zoxp_physics + 1,
         [in] transforms3.Bounds3D,
         [out] physics3.LastUnstuck3,
@@ -41,18 +41,18 @@ void zox_systems_terrain_collisions(ecs* world) {
     );*/
 #ifdef zox_debug
     zox_system_1(
-        TerrainIntersectDebugSystem,
+        terrain_intersect_debug_system,
         zoxp_spawn,
         [in] transforms3.Position3D,
         [in] transforms3.Rotation3D,
         [in] transforms3.Bounds3D,
     );
-    zox_set_enabled(TerrainIntersectDebugSystem, zox_dbg_intersect);
+    zox_set_enabled(terrain_intersect_debug_system, zox_dbg_intersect);
 #endif
     /*byte use_old_collisions = 0;
     if (use_old_collisions) {
         zox_system(
-            CollisionDetectSystem,
+            collision_detect_system,
             zoxp_physics,
             [in] transforms3.Bounds3D,
             [in] transforms3.Position3D,
@@ -63,7 +63,7 @@ void zox_systems_terrain_collisions(ecs* world) {
         );
         // TODO: Find a better way to modulate this system
         zox_system(
-            CollisionResponseSystem,
+            collision_response_system,
             zoxp_physics,
             [in] collisions3.CollisionDistance,
             [out] transforms3.Position3D,

@@ -12,7 +12,7 @@ void zox_set_key(ecs *world, PhysicalButton *key, byte key_down, SDL_Keycode key
     key->is_pressed = key_down;
 }
 
-void KeyboardExtractSystem(iter* it) {
+void keyboard_extract_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     const byte* state = sdl_get_keyboard_state();
@@ -97,4 +97,4 @@ void KeyboardExtractSystem(iter* it) {
         zox_extract_key(_0, ZOX_SDL_SCANCODE_0, ZOX_SDL_KEYCODE_0);
     }
     zox_sys_on_end();
-} zoxd_system(KeyboardExtractSystem);
+} zoxd_system(keyboard_extract_system);

@@ -3,7 +3,7 @@
 
 void zox_systems_music(ecs* world) {
     zox_system_1(
-        MusicGenerateSystem,
+        music_generate_system,
         zoxp_spawn,
         [in] core.Seed,
         [in] sounds.InstrumentType,
@@ -12,7 +12,7 @@ void zox_systems_music(ecs* world) {
         [none] musics.Music
     );
     zox_system_1(
-        MusicPlaySystem,
+        music_play_system,
         zoxp_spawn,
         [in] musics.MusicEnabled,
         [out] musics.MusicNote,
@@ -20,7 +20,7 @@ void zox_systems_music(ecs* world) {
         [none] musics.Music
     );
     zox_system(
-        MusicFadeSystem,
+        music_fade_system,
         zoxp_update,
         [in] musics.MusicVolumeTarget,
         [out] musics.MusicVolume,

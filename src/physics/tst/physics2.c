@@ -9,7 +9,7 @@
 //      no gravity: Gravity2D with DisableGravity doesn't fall
 //  - each checked against a frame by frame model of the systems, and the analytic answer, which
 //      the exact steps (see physics/fun) hit at any frame rate, not just within a step's error
-//  - drift has no Acceleration2D (Velocity2DSystem), the rest move in Acceleration2D/Friction2D
+//  - drift has no Acceleration2D (velocity2d_system), the rest move in Acceleration2D/Friction2D
 // tst: physics2_rotation, 2D spin (Alpha2D, Torque2D, Rotation2)
 //  - spin either way stays within (-2pi, 2pi) at the right angle, even faster than a turn a frame
 //  - Alpha2D spins up, w = alpha t, angle = alpha t^2 / 2
@@ -28,8 +28,8 @@ typedef struct {
     byte frictioned;
     byte has_gravity;
     byte has_bounds;
-    byte no_acceleration;   // no Acceleration2D, moves in Velocity2DSystem
-    byte no_alpha;          // no Alpha2D, spins in Torque2DSystem
+    byte no_acceleration;   // no Acceleration2D, moves in velocity2d_system
+    byte no_alpha;          // no Alpha2D, spins in torque2d_system
 } zox_tst_body2;
 
 // what the 2D systems do in one frame, in their order

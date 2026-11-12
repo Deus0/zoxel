@@ -1,6 +1,6 @@
 extern double zox_delta_time;
 
-void TimedEventSystem(iter* it) {
+void timed_event_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -28,4 +28,4 @@ void TimedEventSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(TimedEventSystem);
+} zoxd_system(timed_event_system);

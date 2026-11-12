@@ -1,4 +1,4 @@
-void StatbarSystem(iter* it) {
+void statbar_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -35,4 +35,4 @@ void StatbarSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(StatbarSystem);
+} zoxd_system(statbar_system);

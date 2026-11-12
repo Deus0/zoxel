@@ -1,4 +1,4 @@
-void EulerLimitZSystem(iter* it) {
+void euler_limit_z_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(EulerLimitZ);
@@ -11,4 +11,4 @@ void EulerLimitZSystem(iter* it) {
         else if (euler->value.z > eulerLimitZ->value.y) euler->value.z = eulerLimitZ->value.y;
     }
     zox_sys_on_end();
-} zoxd_system(EulerLimitZSystem);
+} zoxd_system(euler_limit_z_system);

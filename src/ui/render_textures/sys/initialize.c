@@ -1,4 +1,4 @@
-void RenderTextureInitializeSystem(iter* it) {
+void render_texture_initialize_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0 || is_verbose;
     zox_sys_world();
@@ -10,7 +10,7 @@ void RenderTextureInitializeSystem(iter* it) {
         zox_sys_i(TextureSize, tsize);
         zox_sys_i(TextureGPULink, texture);
         if (!texture->value) {
-            zox_loge("[RenderTextureInitializeSystem] Invalid [TextureGPULink] on [%s]", zox_sys_e_name);
+            zox_loge("[render_texture_initialize_system] Invalid [TextureGPULink] on [%s]", zox_sys_e_name);
             continue;
         }
         entity camera = zox_get_link(world, e, CameraLink);
@@ -25,12 +25,12 @@ void RenderTextureInitializeSystem(iter* it) {
         // one time only
         guint fbo = zox_getv(camera, FrameBufferLink);
         if (!fbo) {
-            zox_loge("[RenderTextureInitializeSystem] FBO Invalid on camera [%s]", zox_getn(camera));
+            zox_loge("[render_texture_initialize_system] FBO Invalid on camera [%s]", zox_getn(camera));
             continue;
         }
         guint rbo = zox_getv(camera, RenderBufferLink);
         if (!rbo) {
-            zox_loge("[RenderTextureInitializeSystem] RBO Invalid on camera [%s]", zox_getn(camera));
+            zox_loge("[render_texture_initialize_system] RBO Invalid on camera [%s]", zox_getn(camera));
             continue;
         }
         byte is_alpha = zox_has(e, RenderTextureAlpha);
@@ -57,4 +57,4 @@ void RenderTextureInitializeSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(RenderTextureInitializeSystem);
+} zoxd_system(render_texture_initialize_system);

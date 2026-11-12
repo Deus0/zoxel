@@ -3,13 +3,13 @@
 
 void zox_systems_combat(ecs* world) {
     zox_system(
-        CombatStateSystem,
+        combat_state_system,
         zoxp_update,
         [in] combat.LastCombatTime,
         [out] combat.CombatState
     );
     zox_system(
-        DeathCleanSystem,
+        death_clean_system,
         zoxp_destroy,
         [in] core.DiedTime,
         [none] core.Dead,

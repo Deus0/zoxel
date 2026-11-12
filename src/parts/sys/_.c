@@ -5,7 +5,7 @@
 
 void zox_systems_bodys(ecs* world) {
     zox_system(
-        BodyCombineSystem,
+        body_combine_system,
         zoxp_update,
         [out] parts.BodyDirty,
         [out] parts.BodySize,
@@ -13,14 +13,14 @@ void zox_systems_bodys(ecs* world) {
         [none] bones.SkeletonOwner,
     );
     zox_system_1(
-        CharacterBodySpawnSystem,
+        character_body_spawn_system,
         zoxp_spawn,
         [in] characters.GenerateCharacter,
         [out] parts.BodyDirty,
         [none] bones.SkeletonOwner,
     );
     zox_system_1(
-        CharacterBoneSpawnSystem,
+        character_bone_spawn_system,
         zoxp_spawn,
         [in] parts.BodySize,
         [in] blocks.BlockScale,
@@ -28,7 +28,7 @@ void zox_systems_bodys(ecs* world) {
         [none] bones.SkeletonOwner,
     );
     zox_system(
-        SlotItemTooltipSystem,
+        slot_item_tooltip_system,
         zoxp_update,
         [in] interactions.SelectState,
         [none] slots.SlotUser,

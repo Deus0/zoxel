@@ -1,7 +1,7 @@
 extern entity local_terrain;
 extern entity get_terrain_id();
 
-void GameStateSystem(iter* it) {
+void game_state_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -28,7 +28,7 @@ void GameStateSystem(iter* it) {
         entity realm = zox_get_link(world, e, RealmLink);
         // the_clean deletes the realm, so returning to none (the main menu) doesn't need one
         if (!zox_valid(realm) && target->value != zox_game_none) {
-            zox_loge("[GameStateSystem] Invalid [realm]");
+            zox_loge("[game_state_system] Invalid [realm]");
             continue;
         }
         // NOTE: Handles Game State Transition Checks
@@ -140,4 +140,4 @@ void GameStateSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(GameStateSystem);
+} zoxd_system(game_state_system);

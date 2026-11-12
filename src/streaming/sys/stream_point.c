@@ -1,5 +1,5 @@
 // Streamer components added to cameras
-void StreamPositionSystem(iter* it) {
+void stream_position_system(iter* it) {
     zox_sys_on_begin();
     if (zox_cameras_disable_streaming) {
         return;
@@ -44,4 +44,4 @@ void StreamPositionSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(StreamPositionSystem);
+} zoxd_system(stream_position_system);

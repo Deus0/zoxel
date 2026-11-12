@@ -1,6 +1,6 @@
 // UI Scale setting: starts as the screen's auto scale (calculate_ui_scale), a saved one overrides it
 //  - applies to uis spawned after it changes (respawning the options menu would end its slider drag)
-void UISettingsSystem(iter* it) {
+void ui_settings_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -14,9 +14,9 @@ void UISettingsSystem(iter* it) {
         spawn_setting_float(world, e, "UI Scale", ui_scale, (float2) { 0.5f, 3 });
     }
     zox_sys_on_end();
-} zoxd_system(UISettingsSystem);
+} zoxd_system(ui_settings_system);
 
-void UISettingsDirtySystem(iter* it) {
+void ui_settings_dirty_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -38,4 +38,4 @@ void UISettingsDirtySystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(UISettingsDirtySystem);
+} zoxd_system(ui_settings_dirty_system);

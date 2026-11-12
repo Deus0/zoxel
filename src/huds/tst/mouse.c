@@ -1,5 +1,5 @@
 // tst: mouse_click, clicks the main menu with the fake mouse, through the real input path
-//  - mouse device > ElementRaycastSystem > ZeviceClickSystem > ButtonClickEventSystem
+//  - mouse device > element_raycast_system > zevice_click_system > button_click_event_system
 //  - clicking on the start menu opens the main menu (mouse buttons count as any input, movement doesn't)
 //  - clicking empty space does nothing
 //  - pressing on empty space, then dragging onto new game and releasing there, doesn't click it

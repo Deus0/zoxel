@@ -47,9 +47,9 @@ zoxc_arrayd(CombinePositions, byte3);
 zoxc_arrayd(CombineDepths, byte);   // depth to sample each CombineList vox at
 
 // ChunkLodDirty
-// - ChunkLodSystem
-// - ChunkMeshSpawn2System
-// - ChunkMeshTransitionSystem
+// - chunk_lod_system
+// - chunk_mesh_spawn2_system
+// - chunk_mesh_transition_system
 #define zox_chunk_lod_dirty_start 1
 #define zox_chunk_lod_dirty_generate 1
 #define zox_chunk_lod_dirty_generating 2

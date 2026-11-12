@@ -111,7 +111,7 @@ byte load_wav_data(const char* filepath, float** values, uint* samples, float* l
             return 0;
     }
     // sounds are mono: downmixes the channels (keeps its length and pitch), as sounds are played
-    //  and re-pitched (SoundProcessSystem) as one channel of samples
+    //  and re-pitched (sound_process_system) as one channel of samples
     if (spec.channels > 1) {
         for (uint f = 0; f < frame_count; f++) {
             float sum = 0;

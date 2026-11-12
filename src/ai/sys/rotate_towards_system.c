@@ -2,7 +2,7 @@ static inline float wrap_angle(float angle) {
     return remainderf(angle, 2.0f * M_PI);
 }
 
-void RotateTowardsSystem(iter* it) {
+void rotate_towards_system(iter* it) {
     zox_sys_on_begin();
     float kP = 4.0f;          // Stronger response to error
     float kD = 0.5f;          // Still some damping
@@ -57,4 +57,4 @@ void RotateTowardsSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(RotateTowardsSystem);
+} zoxd_system(rotate_towards_system);

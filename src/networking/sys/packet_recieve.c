@@ -46,7 +46,7 @@ static inline int consume_packet(
         &recv_addr_len);
 }
 
-void PacketRecieveSystem(iter* it) {
+void packet_recieve_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 1;
     uint zox_max_packet_reads = 256;
@@ -160,7 +160,7 @@ void PacketRecieveSystem(iter* it) {
                     }*/
                     if (recv_size == socket_error_code) {
                         check_socket_error("recieve_system3");
-                        // perror("    PacketRecieveSystem : zox_packet_msg 2 : recvfrom");
+                        // perror("    packet_recieve_system : zox_packet_msg 2 : recvfrom");
                     } else {
                         char* text = convert_to_ascii_text_at(recv_buffer_3, text_length, 2);
                         if (dbg_log) {
@@ -189,4 +189,4 @@ void PacketRecieveSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(PacketRecieveSystem);
+} zoxd_system(packet_recieve_system);

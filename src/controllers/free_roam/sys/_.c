@@ -4,17 +4,17 @@
 
 void zox_systems_free_roam(ecs* world) {
     zox_system(
-        FreeCameraMoveSystem,
+        free_camera_move_system,
         zoxp_update,
         [none] players.Player
     );
     zox_system(
-        FreeCameraRotateSystem,
+        free_camera_rotate_system,
         zoxp_update,
         [none] players.Player
     );
     zox_system(
-        FreeCameraToggleSystem,
+        free_camera_toggle_system,
         zoxp_update,
         [none] players.Player
     );

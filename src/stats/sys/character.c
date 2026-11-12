@@ -275,7 +275,7 @@ void fill_character_base_stats(ecs* world, entity character, entity realm, float
 
 // NOTE: Gives npcs any realm base stats their prefab didn't (realm generation gives character prefabs all
 //  of theirs, instances copy them, so this normally adds nothing)
-void CharacterStatsSystem(iter* it) {
+void character_stats_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
@@ -285,4 +285,4 @@ void CharacterStatsSystem(iter* it) {
         fill_character_base_stats(world, e, realm, soul, health_base + soul * health_level_increase, 0);
     }
     zox_sys_on_end();
-} zoxd_system(CharacterStatsSystem);
+} zoxd_system(character_stats_system);

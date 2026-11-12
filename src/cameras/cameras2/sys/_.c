@@ -2,7 +2,7 @@
 
 void zoxd_systems_cameras2(ecs *world) {
     zox_system(
-        Camera2FollowSystem,
+        camera2_follow_system,
         zoxp_update,
         [out] transforms3.Position3D,
         [out] transforms3.Rotation3D,

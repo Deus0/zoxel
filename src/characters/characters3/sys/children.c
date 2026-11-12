@@ -3,7 +3,7 @@
 //  - CharacterUnique: a cloned vox child with its own lod meshes, and a renderer child for those
 //  - SkeletonOwner: a combined vox child for its body parts, and a skeleton child (SkeletonLink)
 // NOTE: Spawned from a system so meta characters (prefabs) don't get children
-void CharacterChildrenSpawnSystem(iter* it) {
+void character_children_spawn_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -45,4 +45,4 @@ void CharacterChildrenSpawnSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(CharacterChildrenSpawnSystem);
+} zoxd_system(character_children_spawn_system);

@@ -12,15 +12,15 @@
 // Toggle the light systems
 void set_light_systems(ecs* world, byte is_lights) {
     zox_set_enabled(sunlight_system, is_lights);
-    zox_set_enabled(LightBeamSystem, is_lights);
-    zox_set_enabled(LightFloodSystem, is_lights);
-    zox_set_enabled(DarkLightSystem, is_lights);
-    zox_set_enabled(VoxelLightSystem, is_lights);
-    zox_set_enabled(ChunkColorsTriggerSystem, is_lights);
-    zox_set_enabled(ChunkNeighborLightTriggerSystem, is_lights);
+    zox_set_enabled(light_beam_system, is_lights);
+    zox_set_enabled(light_flood_system, is_lights);
+    zox_set_enabled(dark_light_system, is_lights);
+    zox_set_enabled(voxel_light_system, is_lights);
+    zox_set_enabled(chunk_colors_trigger_system, is_lights);
+    zox_set_enabled(chunk_neighbor_light_trigger_system, is_lights);
     zox_set_enabled(build_smooth_lights_system, is_lights);
     zox_set_enabled(LightNodeDirtyIncrementSystem, is_lights);
-    zox_set_enabled(LightNodeReduceSystem, is_lights);
+    zox_set_enabled(light_node_reduce_system, is_lights);
 }
 
 // TODO: Rename NodeDepth to OctreeDepth
@@ -36,7 +36,7 @@ void zox_systems_lights3(ecs* world) {
         [none] lights.GenerateSunlight,
     );
     zox_system(
-        LightBeamSystem,
+        light_beam_system,
         zoxp_octree_write,
         [in] chunks3.VoxelNode,
         [in] chunks3.ChunkNeighbors,
@@ -49,7 +49,7 @@ void zox_systems_lights3(ecs* world) {
         // [none] !chunks.GenerateChunk,
     );
     zox_system(
-        LightFloodSystem,
+        light_flood_system,
         zoxp_octree_write,
         [in] chunks3.VoxelNode,
         [in] chunks3.ChunkNeighbors,
@@ -61,7 +61,7 @@ void zox_systems_lights3(ecs* world) {
         // [none] !chunks.GenerateChunk,
     );
     zox_system(
-        DarkLightSystem,
+        dark_light_system,
         zoxp_update,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
@@ -76,7 +76,7 @@ void zox_systems_lights3(ecs* world) {
     );
     // NOTE: This needs to be queue dependent
     zox_system(
-        VoxelLightSystem,
+        voxel_light_system,
         zoxp_queue_process, // zoxp_octree_write
         [in] chunks3.VoxelNodeQueue,
         [in] chunks.NodeDepth,
@@ -92,7 +92,7 @@ void zox_systems_lights3(ecs* world) {
     );
     // this kinda has issues atm hmm
     zox_system(
-        LightNodeReduceSystem,
+        light_node_reduce_system,
         zoxp_octree_write,
         [in] lights3.LightNodeDirty,
         [out] lights.LightLock,
@@ -100,13 +100,13 @@ void zox_systems_lights3(ecs* world) {
         [none] chunks3.Chunk3,
     );
     zox_system(
-        ChunkColorsTriggerSystem,
+        chunk_colors_trigger_system,
         zoxp_update,
         [in] lights3.LightNodeDirty,
         [none] chunks3.Chunk3,
     );
     zox_system(
-        ChunkNeighborLightTriggerSystem,
+        chunk_neighbor_light_trigger_system,
         zoxp_update,
         [in] lights3.LightNodeDirty,
         [in] chunks3.ChunkNeighbors,
@@ -126,7 +126,7 @@ void zox_systems_lights3(ecs* world) {
         [none] !rendering.BuildMesh,
     );
     /*zox_system(
-        BasicLightsBuildSystem,
+        basic_lights_build_system,
         zoxp_voxels_lights,
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
@@ -143,7 +143,7 @@ void zox_systems_lights3(ecs* world) {
 }
 
 /*zox_system(
-    RefreshLightsSystem,
+    refresh_lights_system,
     zoxp_update,
     [in] chunks3.VoxelNode,
     [in] chunks3.ChunkNeighbors,

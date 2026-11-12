@@ -381,6 +381,7 @@ static byte collision_sweep_axis(const collision_terrain* terrain, collision_chu
 
 // NOTE: Detects intersections with voxel chunks
 void terrain_collision_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Rotation3D);
@@ -551,4 +552,5 @@ void terrain_collision_system(iter* it) {
         if (bounce[1]) velocity->value.y *= -bounce_lost_force.y;
         if (bounce[2]) velocity->value.z *= -bounce_lost_force.z;
     }
+    zox_sys_on_end();
 } zoxd_system(terrain_collision_system);

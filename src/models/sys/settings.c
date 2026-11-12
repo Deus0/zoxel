@@ -1,4 +1,4 @@
-void ModelsSettingsSystem(iter* it) {
+void models_settings_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -16,9 +16,9 @@ void ModelsSettingsSystem(iter* it) {
 #endif
     }
     zox_sys_on_end();
-} zoxd_system(ModelsSettingsSystem);
+} zoxd_system(models_settings_system);
 
-void ModelsSettingsDirtySystem(iter* it) {
+void models_settings_dirty_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -57,4 +57,4 @@ void ModelsSettingsDirtySystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ModelsSettingsDirtySystem);
+} zoxd_system(models_settings_dirty_system);

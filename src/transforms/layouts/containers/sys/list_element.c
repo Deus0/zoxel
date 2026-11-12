@@ -1,5 +1,5 @@
 // Reposition the List Element when it resizes so it matches alignment
-void ListElementPositionSystem(iter* it) {
+void list_element_position_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -32,4 +32,4 @@ void ListElementPositionSystem(iter* it) {
         zox_add(e, LayoutPositionDirty);
     }
     zox_sys_on_end();
-} zoxd_system(ListElementPositionSystem);
+} zoxd_system(list_element_position_system);

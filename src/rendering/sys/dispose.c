@@ -1,4 +1,5 @@
 void mesh_colors_gpu_dispose_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin()
     zox_sys_out(ColorsGPULink)
     for (int i = 0; i < it->count; i++) {
@@ -6,9 +7,11 @@ void mesh_colors_gpu_dispose_system(iter* it) {
         zox_gpu_dispose_buffer(colors->value);
         colors->value = 0;
     }
+    zox_sys_on_end();
 } zoxd_system(mesh_colors_gpu_dispose_system);
 
 void material_dispose_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_out(MaterialGPULink);
     for (int i = 0; i < it->count; i++) {
@@ -19,6 +22,7 @@ void material_dispose_system(iter* it) {
         zox_dispose_material(material->value);
         material->value = 0;
     }
+    zox_sys_on_end();
 } zoxd_system(material_dispose_system);
 
 void mesh_gpu_dispose_system(iter* it) {

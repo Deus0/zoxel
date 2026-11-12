@@ -1,4 +1,4 @@
-void TransformMatrixScaleSystem(iter* it) {
+void transform_matrix_scale_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(Position3D);
@@ -13,9 +13,9 @@ void TransformMatrixScaleSystem(iter* it) {
         matrix->value = float4x4_transform_scale(position->value, rotation->value, scale->value);
     }
     zox_sys_on_end();
-} zoxd_system(TransformMatrixScaleSystem);
+} zoxd_system(transform_matrix_scale_system);
 
-void TransformMatrixScale3System(iter* it) {
+void transform_matrix_scale3_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(Position3D);
@@ -30,5 +30,5 @@ void TransformMatrixScale3System(iter* it) {
         matrix->value = float4x4_transform_scale3(position->value, rotation->value, scale->value);
     }
     zox_sys_on_end();
-} zoxd_system(TransformMatrixScale3System);
+} zoxd_system(transform_matrix_scale3_system);
 

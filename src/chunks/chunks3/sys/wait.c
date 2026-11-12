@@ -31,7 +31,7 @@ byte is_chunk_busy(ecs* world, entity e) {
 // NOTE: Queue method was slower than just using entire chunks
 // NOTE: Need to check neighbor is updating, if they are
 // NOTE: Just checks entire terrain chunk, makes them all update at same time
-/*void ChunkMeshSlowSystem(iter* it) {
+/*void chunk_mesh_slow_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     byte dbg_skip = !zox_is_slow_updates;
@@ -116,9 +116,9 @@ byte is_chunk_busy(ecs* world, entity e) {
     dispose_entity_array_d(voxes);
     dispose_byte_array_d(voxes_busy);
     zox_sys_on_end();
-} zoxd_system(ChunkMeshSlowSystem);*/
+} zoxd_system(chunk_mesh_slow_system);*/
 
-/*void ChunkMeshSlow2System(iter* it) {
+/*void chunk_mesh_slow2_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_out(MeshReady);
@@ -133,7 +133,7 @@ byte is_chunk_busy(ecs* world, entity e) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ChunkMeshSlow2System);*/
+} zoxd_system(chunk_mesh_slow2_system);*/
 
 // NOTE: I like the idea of Floodfill Busy checks, because npcs might edit parts of the map at once
 

@@ -28,7 +28,7 @@ void game_state_fader(ecs* world, entity game, byte state) {
     }
 }
 
-/*void GameStartFaderSystem(iter* it) {
+/*void game_start_fader_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -54,4 +54,4 @@ void game_state_fader(ecs* world, entity game, byte state) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(GameStartFaderSystem);*/
+} zoxd_system(game_start_fader_system);*/

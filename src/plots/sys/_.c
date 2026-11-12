@@ -11,14 +11,14 @@ void zox_systems_plots(ecs* world) {
         [none] plots.PlotLine,
     );
     zox_system(
-        PlotLabelSystem,
+        plot_label_system,
         zoxp_update,
         [out] texts.TextData,
         [none] texts.Text,
         [none] plots.PlotLabel
     );
     zox_system(
-        PlotLimitSystem,
+        plot_limit_system,
         zoxp_update,
         [out] plots.PlotMin,
         [out] plots.PlotMax,

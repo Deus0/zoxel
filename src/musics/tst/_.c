@@ -471,7 +471,7 @@ void zox_tst_sound_balance_check(ecs* world) {
         }
         zox_log("[tst] [the old hit, square piano] brightness [%.4f]", power > 0 ? change / power : 0);
     }
-    // voices (dialogue): a deep, normal, high and tiny one, as loud as DialogueSoundSystem says them
+    // voices (dialogue): a deep, normal, high and tiny one, as loud as dialogue_sound_system says them
     const float voice_pitches[4] = { 100, 180, 290, 420 };
     for (int v = 0; v < 4; v++) {
         Voice voice = voice_from_seed(1);

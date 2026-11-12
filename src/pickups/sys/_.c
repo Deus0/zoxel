@@ -4,13 +4,13 @@
 
 void zox_systems_pickups(ecs* world) {
     zox_system_1(
-        PickupSoundSystem,
+        pickup_sound_system,
         zoxp_spawn,
         [in] PickedUp,
         [none] Pickup
     );
     zox_system(
-        PickupPopSystem,
+        pickup_pop_system,
         zoxp_update,
         [in] PickupPopStart,
         [in] PickupPopEnd,

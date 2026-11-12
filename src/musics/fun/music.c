@@ -47,7 +47,7 @@ void add_music(ecs *world, entity playlist, entity music) {
     add_to_MusicLinks(musicLinks, music);
 }
 
-// Fades from the music holder is playing to music, over music_fade_seconds (MusicFadeSystem)
+// Fades from the music holder is playing to music, over music_fade_seconds (music_fade_system)
 //  - holder is the game, it plays its menu music in the menus and the realm's music in game
 void crossfade_music(
     ecs* world,

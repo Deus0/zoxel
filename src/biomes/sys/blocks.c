@@ -1,5 +1,5 @@
 // NOTE: Adds biome blocks onto realm
-void BiomeBlocksDirtySystem(iter* it) {
+void biome_blocks_dirty_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -29,4 +29,4 @@ void BiomeBlocksDirtySystem(iter* it) {
         zox_add(realm, BlocksDirty);
     }
     zox_sys_on_end();
-} zoxd_system(BiomeBlocksDirtySystem);
+} zoxd_system(biome_blocks_dirty_system);

@@ -1,6 +1,6 @@
 // NOTE: Tells the Limbs to swing or not
 // TODO: Only signal the bones when WalkStateDirty
-void ArmControlSystem(iter* it) {
+void arm_control_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -20,4 +20,4 @@ void ArmControlSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ArmControlSystem);
+} zoxd_system(arm_control_system);

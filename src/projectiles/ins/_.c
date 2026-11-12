@@ -1,5 +1,5 @@
 // Spawns a projectile flying forward from rotation
-//  - hits are handled by ProjectileHitSystem (skills), raycasting along its velocity each frame
+//  - hits are handled by projectile_hit_system (skills), raycasting along its velocity each frame
 entity spawn_projectile(
     ecs* world,
     entity prefab,

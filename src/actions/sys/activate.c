@@ -1,6 +1,6 @@
 // NOTE: Starts Warmups when action equiped
 // TODO: Implement a CanActivate flag
-void ActionActivateSystem(iter* it) {
+void action_activate_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -38,7 +38,7 @@ void ActionActivateSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ActionActivateSystem);
+} zoxd_system(action_activate_system);
 
 /*entity actionbar = zox_get_child_by_id(world, e, zox_id(Actionbar));
 if (!zox_valid(actionbar)) {

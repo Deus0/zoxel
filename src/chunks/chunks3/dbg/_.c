@@ -11,7 +11,7 @@
 void zox_systems_chunks3_debug(ecs *world) {
     // main thread
     /*zox_system_1(
-        ChunkDebugSystem,
+        chunk_debug_system,
         zoxp_update,
         [in] lines3.DebugCubeLines,
         [in] blocks.BlockScale,

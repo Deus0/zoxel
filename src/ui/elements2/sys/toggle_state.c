@@ -1,5 +1,5 @@
 // TODO: Use Entity Colors here instead of globals
-/*void ToggleStateSystem(iter* it) {
+/*void toggle_state_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin()
     zox_sys_in(ToggleState);
@@ -20,5 +20,5 @@
         }
     }
     zox_sys_on_end();
-} zoxd_system(ToggleStateSystem);
+} zoxd_system(toggle_state_system);
 */

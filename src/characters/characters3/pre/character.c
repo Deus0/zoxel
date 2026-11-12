@@ -1,5 +1,5 @@
 // NOTE: Characters hold no voxel or mesh data, those are children:
-//  - with a model: a renderer child (RendererLink), see CharacterChildrenSpawnSystem
+//  - with a model: a renderer child (RendererLink), see character_children_spawn_system
 //  - CharacterUnique: also a cloned vox child (VoxLink) with its own lod meshes
 //  - SkeletonOwner: a combined vox child (VoxLink) and a skeleton child (SkeletonLink), from bones
 entity spawn_prefab_character3(ecs *world) {

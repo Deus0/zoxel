@@ -785,7 +785,7 @@ void generate_font_texture(
     }*/
 }
 
-void FontTextureSystem(iter* it) {
+void font_texture_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_change_check();
@@ -909,4 +909,4 @@ void FontTextureSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(FontTextureSystem);
+} zoxd_system(font_texture_system);

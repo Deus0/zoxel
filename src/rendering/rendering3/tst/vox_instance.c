@@ -46,7 +46,7 @@ void zox_tst_vox_instance_check(ecs* world) {
     zox_tst_check_camera_filter(world, e);
 }
 
-void TstVoxInstanceProbeSystem(iter* it) {
+void tst_vox_instance_probe_system(iter* it) {
     zox_sys_on_begin();
     if (!zox_tst_active || zox_tst_active->check != zox_tst_vox_instance_check) {
         return;
@@ -66,13 +66,13 @@ void TstVoxInstanceProbeSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(TstVoxInstanceProbeSystem);
+} zoxd_system(tst_vox_instance_probe_system);
 
 void zox_tsts_vox_instance_render(ecs* world) {
     zox_tst_add("vox_instance_render", zox_tst_vox_instance_ready, zox_tst_vox_instance_check, 90);
     // main thread, in zoxp_render with the other main thread systems: no merges of its own (tst pipeline_syncs)
     zox_system_1(
-        TstVoxInstanceProbeSystem,
+        tst_vox_instance_probe_system,
         zoxp_render,
         [in] rendering.RenderDisabled,
         [none] rendering.RendererInstance

@@ -1,4 +1,4 @@
-void FpsCurveSystem(iter* it) {
+void fps_curve_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     if (!zox_valid(fps_curve)) {
@@ -10,4 +10,4 @@ void FpsCurveSystem(iter* it) {
     }
     data->value[data->length - 1] = zox_delta_time;
     zox_sys_on_end();
-} zoxd_system(FpsCurveSystem);
+} zoxd_system(fps_curve_system);

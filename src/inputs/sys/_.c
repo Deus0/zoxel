@@ -5,41 +5,41 @@
 void zox_systems_input(ecs* world) {
     // resets
     zox_system(
-        ZevicePointerResetSystem,
+        zevice_pointer_reset_system,
         zoxp_inputs_reset,
         [out] inputs.ZevicePointer,
         [out] inputs.ZevicePointerOld,
         [none] !inputs.Finger
     );
     zox_system(
-        ZeviceButtonResetSystem,
+        zevice_button_reset_system,
         zoxp_inputs_reset,
         [out] inputs.ZeviceButton,
         [none] !inputs.Finger
     );
     zox_system(
-        ZeviceButtonEnableSystem,
+        zevice_button_enable_system,
         zoxp_inputs_enable,
         [in] inputs.ZeviceButton,
         [none] !inputs.Finger,
         [none] core.Disabled,
     );
     zox_system(
-        ZeviceStickEnableSystem,
+        zevice_stick_enable_system,
         zoxp_inputs_enable,
         [in] inputs.ZeviceStick,
         [none] !inputs.Finger,
         [none] core.Disabled,
     );
     zox_system(
-        ZevicePointerEnableSystem,
+        zevice_pointer_enable_system,
         zoxp_inputs_enable,
         [in] inputs.ZevicePointer,
         [none] !inputs.Finger,
         [none] core.Disabled,
     );
     /*zox_system(
-        ZeviceFingerResetSystem,
+        zevice_finger_reset_system,
         zoxp_inputs_reset,
         [in] ZevicePointerOld,
         [out] ZevicePointerPosition,
@@ -47,23 +47,23 @@ void zox_systems_input(ecs* world) {
         [none] Finger
     );*/
     zox_system(
-        ZevicePointerRightResetSystem,
+        zevice_pointer_right_reset_system,
         zoxp_inputs_reset,
         [out] inputs.ZevicePointerRight
     );
     zox_system(
-        ZevicePointerDeltaResetSystem,
+        zevice_pointer_delta_reset_system,
         zoxp_inputs_reset,
         [out] inputs.ZevicePointerDelta
     );
     zox_system(
-        KeyboardResetSystem,
+        keyboard_reset_system,
         zoxp_inputs_reset,
         [out] inputs.Keyboard
     );
     // state changes
     zox_system(
-        DeviceSwitchSystem,
+        device_switch_system,
         zoxp_inputs_update,
         [out] inputs.DeviceModeDirty,
         [out] inputs.DeviceMode,

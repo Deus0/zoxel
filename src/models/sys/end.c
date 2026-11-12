@@ -1,5 +1,5 @@
 // Ends the nodegraph by marking model dirty
-void ModelEndNodeSystem(iter* it) {
+void model_end_node_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = zox_dbg_model_nodes;
     zox_sys_world();
@@ -43,4 +43,4 @@ void ModelEndNodeSystem(iter* it) {
         zox_add(e, TriggerEnd);
     }
     zox_sys_on_end();
-} zoxd_system(ModelEndNodeSystem);
+} zoxd_system(model_end_node_system);

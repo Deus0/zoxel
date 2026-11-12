@@ -5,7 +5,7 @@
 
 void zox_systems_tooltips(ecs* world) {
     zox_system(
-        TooltipDeselectSystem,
+        tooltip_deselect_system,
         zoxp_update,
         [out] texts.TextData,
         [none] texts.Text,
@@ -13,13 +13,13 @@ void zox_systems_tooltips(ecs* world) {
     );
     // We can use later to clean hierarchys
     zox_system(
-        TooltipeeInitializeSystem,
+        tooltipee_initialize_system,
         zoxp_initialize,
         [none] tooltips.Tooltipper,
         [none] core.Initialize,
     );
     zox_system(
-        TooltipeeDeselectSystem,
+        tooltipee_deselect_system,
         zoxp_update,
         [none] ui.Element,
         // [none] interactions.Selectable,
@@ -28,7 +28,7 @@ void zox_systems_tooltips(ecs* world) {
         //[in] interactions.SelectState,
     );
     zox_system(
-        TooltipEventSystem,
+        tooltip_event_system,
         zoxp_update,
         // [in] interactions.SelectState,
         [in] tooltips.TooltipEvent,

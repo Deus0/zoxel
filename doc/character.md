@@ -43,12 +43,12 @@ character (characters)          gameplay, transform, LOD state, VoxLink, Rendere
 | Module | Provides |
 |---|---|
 | rendering | `renderer_child` prefab, `spawn_renderer_child()`, `RendererLink`, skeleton render system |
-| chunks3 | `VoxLink`, `build_vox_mesh_at_depth()`, `CombineVoxSystem`, `CloneVoxSystem` |
-| physics | `grow_bounds3()`, `VoxLinkBounds3GrowSystem` (bounds from a `VoxLink` child) |
-| models | `vox_data`, `vox_lods`, `vox_mesh`, `vox_combined` prefabs, `vox_children.c` helpers, `RendererLodSystem`, `get_model_bounds()` |
+| chunks3 | `VoxLink`, `build_vox_mesh_at_depth()`, `combine_vox_system`, `clone_vox_system` |
+| physics | `grow_bounds3()`, `vox_link_bounds3_grow_system` (bounds from a `VoxLink` child) |
+| models | `vox_data`, `vox_lods`, `vox_mesh`, `vox_combined` prefabs, `vox_children.c` helpers, `renderer_lod_system`, `get_model_bounds()` |
 | bones | `skeleton` + `skeleton_mesh` prefabs, `spawn_skeleton()`, `get_skeleton()`, skeleton mesh systems, bone weights |
-| characters | `character3` prefabs, `CharacterChildrenSpawnSystem` (decides which children to spawn) |
-| parts | body slots, `BodyCombineSystem` (into the vox child), `CharacterBoneSpawnSystem` (into the skeleton) |
+| characters | `character3` prefabs, `character_children_spawn_system` (decides which children to spawn) |
+| parts | body slots, `body_combine_system` (into the vox child), `character_bone_spawn_system` (into the skeleton) |
 
 Module order matters: `chunks → physics → models → bones → characters → parts`. A lower module must never reference a higher one. If characters needs something render related, add a helper to a lower module and call it.
 
@@ -57,19 +57,19 @@ Module order matters: `chunks → physics → models → bones → characters �
 ## Lifecycle
 
 1. `spawn_character3()` instances a prefab, sets transform, `ModelLink`, `RenderDepth`, `MaxRenderDepth`, and bounds from the model.
-2. `GenerateCharacter` goes active → `CharacterChildrenSpawnSystem` (`zoxp_spawn`) spawns the children:
+2. `GenerateCharacter` goes active → `character_children_spawn_system` (`zoxp_spawn`) spawns the children:
    - `SkeletonOwner` → `spawn_vox_combined_child()` + `spawn_skeleton()`
    - `CharacterUnique` → `spawn_vox_cloned_child()` + `spawn_renderer_child()`
    - otherwise with a model → `spawn_renderer_child()`
 3. Skeleton characters:
-   - `CharacterBodySpawnSystem` spawns body slots and parts.
-   - `BodyCombineSystem` fills the vox child's `CombineList`, sets `MaxRenderDepth`, and sets `RenderDepth` from chunk distance.
-   - `CombineVoxSystem` builds the voxels → `VoxelNodeDirty` → `ChunkUpdate` on the vox.
-   - `CharacterBoneSpawnSystem` spawns bones under the skeleton → `SkeletonDirty`.
-   - `SkeletonMeshesSystem` sees the vox `ChunkUpdate`, spawns or rebuilds a mesh for the depth, and swaps it in when built.
+   - `character_body_spawn_system` spawns body slots and parts.
+   - `body_combine_system` fills the vox child's `CombineList`, sets `MaxRenderDepth`, and sets `RenderDepth` from chunk distance.
+   - `combine_vox_system` builds the voxels → `VoxelNodeDirty` → `ChunkUpdate` on the vox.
+   - `character_bone_spawn_system` spawns bones under the skeleton → `SkeletonDirty`.
+   - `skeleton_meshes_system` sees the vox `ChunkUpdate`, spawns or rebuilds a mesh for the depth, and swaps it in when built.
 4. LOD: chunk systems set `RenderDepth` + `RenderDepthDirty` on the character.
-   - `RendererLodSystem` sets the renderer's `InstanceLink`.
-   - `SkeletonMeshesSystem` prepares or reuses a mesh for the new depth.
+   - `renderer_lod_system` sets the renderer's `InstanceLink`.
+   - `skeleton_meshes_system` prepares or reuses a mesh for the new depth.
 
 ---
 
@@ -78,7 +78,7 @@ Module order matters: `chunks → physics → models → bones → characters �
 - A mesh per render depth is spawned **only when needed**, then cached, like terrain chunk meshes.
 - `PreparingMesh` builds while `ActiveMesh` renders. They swap when the prepared mesh is ready: `MeshBuilt` and no `BuildMesh` / `BuildMeshWeights` / `SkeletonMeshDirty` / `MeshDirty`.
 - When voxels change, cached meshes are deleted and the active mesh rebuilds in place.
-- Build pipeline: `BuildMesh` → `SkeletonMeshBuildSystem` → `BuildMeshWeights` → `BoneIndexGenerateSystem2` → `SkeletonMeshDirty` → bone upload (adds `MeshBuilt`) → `MeshDirty` → mesh upload.
+- Build pipeline: `BuildMesh` → `skeleton_mesh_build_system` → `BuildMeshWeights` → `bone_index_generate_system2` → `SkeletonMeshDirty` → bone upload (adds `MeshBuilt`) → `MeshDirty` → mesh upload.
 - `SkeletonUpdate` (bones respawned) re-triggers weights on all of a skeleton's meshes.
 
 ---
@@ -92,7 +92,7 @@ Module order matters: `chunks → physics → models → bones → characters �
 - **`RenderDisabled`:** use `set_entity_render_disabled()` (streaming) so children follow. Spawned children should copy their owner's value at spawn.
 - **Reaching the skeleton:** use `get_skeleton(world, character)` for anything on the skeleton: hand/head/shoulder bones, `RaiseShoulder`, `SwingStart`, `WalkState`, `SkeletonDirty`.
 - **Mesh build settings live on the vox.** Tags like `NoSplitChunk` must be on the vox child. `spawn_vox_combined_child()` copies it from the owner.
-- **Waiting on children:** systems that need a child (`BodyCombineSystem`, `CharacterBoneSpawnSystem`) skip the entity until the link is valid, rather than consuming their dirty state.
+- **Waiting on children:** systems that need a child (`body_combine_system`, `character_bone_spawn_system`) skip the entity until the link is valid, rather than consuming their dirty state.
 - **Writing to a child from a multithreaded system** with `zox_getm` is fine when each child belongs to one owner. Structural changes still go through deferred commands.
 - **Vox data `RenderDepth` is always max depth** (raycasts read it). The owner's `RenderDepth` picks which mesh to show.
 - **Links are flecs pairs** (`zox_link`, `zox_set_link`, `zox_get_link`), declared non-fragmenting so they don't split tables. See [links.md](links.md):

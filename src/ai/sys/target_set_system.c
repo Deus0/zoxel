@@ -1,4 +1,4 @@
-void ThreatPositionSystem(iter* it) {
+void threat_position_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -18,4 +18,4 @@ void ThreatPositionSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ThreatPositionSystem);
+} zoxd_system(threat_position_system);

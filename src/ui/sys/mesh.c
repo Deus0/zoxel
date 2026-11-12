@@ -1,5 +1,5 @@
 // Initialize Mesh2D data when size changes
-void LayoutMeshUpdateSystem(iter* it) {
+void layout_mesh_update_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -14,7 +14,7 @@ void LayoutMeshUpdateSystem(iter* it) {
         zox_sys_o(MeshVertices2D, verts);
         entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
         if (!zox_valid(canvas)) {
-            zox_loge("[LayoutMeshUpdateSystem] Invalid [canvas]: %s", zox_getn(e));
+            zox_loge("[layout_mesh_update_system] Invalid [canvas]: %s", zox_getn(e));
             continue;
         }
         float2 canvas_size = int2_to_float2(zox_getv(canvas, LayoutSize));
@@ -25,15 +25,15 @@ void LayoutMeshUpdateSystem(iter* it) {
         set_mesh_vertices_scale2D(verts, get_aligned_mesh2D(alignment->value), 4, sizef);
         zox_add(e, MeshDirty);
         if (dbg_log) {
-            zox_log("LayoutMeshUpdateSystem [%s] Layout Size Dirty, Updated Mesh",
+            zox_log("layout_mesh_update_system [%s] Layout Size Dirty, Updated Mesh",
                 zox_getn(e));
         }
     }
     zox_sys_on_end();
-} zoxd_system(LayoutMeshUpdateSystem);
+} zoxd_system(layout_mesh_update_system);
 
 // NOTE: Initializes Mesh based on instantiated layout size
-void LayoutMeshBeginSystem(iter* it) {
+void layout_mesh_begin_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -48,7 +48,7 @@ void LayoutMeshBeginSystem(iter* it) {
         zox_sys_o(MeshVertices2D, verts);
         entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
         if (!zox_valid(canvas)) {
-            zox_loge("[LayoutMeshBeginSystem] Invalid [canvas]: %s", zox_getn(e));
+            zox_loge("[layout_mesh_begin_system] Invalid [canvas]: %s", zox_getn(e));
             continue;
         }
         // we also set mesh verts here
@@ -60,12 +60,12 @@ void LayoutMeshBeginSystem(iter* it) {
         set_mesh_vertices_scale2D(verts, get_aligned_mesh2D(alignment->value), 4, size2);
         zox_add(e, MeshDirty);
         if (dbg_log) {
-            zox_log("LayoutMeshBeginSystem Mesh Updated [%s] Size [%fx%f]",
+            zox_log("layout_mesh_begin_system Mesh Updated [%s] Size [%fx%f]",
                 zox_getn(e),
                 size2.x,
                 size2.y);
         }
     }
     zox_sys_on_end();
-} zoxd_system(LayoutMeshBeginSystem);
+} zoxd_system(layout_mesh_begin_system);
 

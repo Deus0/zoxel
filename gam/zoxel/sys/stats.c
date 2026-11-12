@@ -6,7 +6,7 @@ float attribute_regen_scale = 0.5f;     // x regen_rate
 float attribute_damage_scale = 0.7f;
 float attribute_defence_scale = 0.5f;
 
-void StatsRealmSpawnSystem(iter* it) {
+void stats_realm_spawn_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -202,4 +202,4 @@ void StatsRealmSpawnSystem(iter* it) {
         zox_logv("Realm [stats] spawned");
     }
     zox_sys_on_end();
-} zoxd_system(StatsRealmSpawnSystem);
+} zoxd_system(stats_realm_spawn_system);

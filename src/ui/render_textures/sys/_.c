@@ -5,7 +5,7 @@
 
 void zox_systems_render_textures(ecs* world) {
     zox_system(
-        ScreenRenderTextureSystem,
+        screen_render_texture_system,
         zoxp_update,
         [in] layouts.LayoutSize,
         [out] rendering.TextureSize,
@@ -13,7 +13,7 @@ void zox_systems_render_textures(ecs* world) {
         [none] layouts.LayoutSizeUpdate,
     );
     zox_system(
-        RenderTextureSizeSystem,
+        render_texture_size_system,
         zoxp_update,
         [in] rendering.TextureSize,
         [in] rendering.TextureGPULink,
@@ -22,7 +22,7 @@ void zox_systems_render_textures(ecs* world) {
         [none] !core.Initialize,
     );
     zox_system_1(
-        RenderTextureInitializeSystem,
+        render_texture_initialize_system,
         zoxp_gpu_upload,
         [in] rendering.TextureSize,
         [in] rendering.TextureGPULink,
@@ -31,7 +31,7 @@ void zox_systems_render_textures(ecs* world) {
         [none] !core.Initialize,
     );
     zox_system_1(
-        CameraMaterialSystem,
+        camera_material_system,
         zoxp_gpu_upload,
         [in] cameras.CameraBlur,
         [in] cameras.CameraVignette,

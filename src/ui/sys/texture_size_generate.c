@@ -1,5 +1,5 @@
 // NOTE: Triggers texture generation when the layout size changes
-void TextureSizeGenerateSystem(iter* it) {
+void texture_size_generate_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_out(GenerateTexture);
@@ -8,4 +8,4 @@ void TextureSizeGenerateSystem(iter* it) {
         generate->value = zox_generate_texture_run;
     }
     zox_sys_on_end();
-} zoxd_system(TextureSizeGenerateSystem);
+} zoxd_system(texture_size_generate_system);

@@ -1,4 +1,4 @@
-void BricksModelGenerationSystem(iter* it) {
+void bricks_model_generation_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -77,4 +77,4 @@ void BricksModelGenerationSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(BricksModelGenerationSystem);
+} zoxd_system(bricks_model_generation_system);

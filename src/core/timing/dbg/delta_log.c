@@ -80,7 +80,7 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
 
 // NOTE: zox_delta_time is on main thread
 //      These system deltas are max for any thread
-void SystemDeltaLogSystem(iter* it) {
+void system_delta_log_system(iter* it) {
     zox_sys_on_begin();
     byte did_lag = 0;
     double total = 0;
@@ -113,4 +113,4 @@ void SystemDeltaLogSystem(iter* it) {
         zox_log("# # # # # # # # #");
     }
     zox_sys_on_end();
-} zoxd_system(SystemDeltaLogSystem);
+} zoxd_system(system_delta_log_system);

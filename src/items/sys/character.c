@@ -29,7 +29,7 @@ void add_item_to_inventory(
 extern entity Hat;
 
 // NOTE: For NPC item drops
-void CharacterItemsSpawnSystem(iter* it) {
+void character_items_spawn_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -60,4 +60,4 @@ void CharacterItemsSpawnSystem(iter* it) {
         add_item_to_inventory(world, e, inventory, drop_item);
     }
     zox_sys_on_end();
-} zoxd_system(CharacterItemsSpawnSystem);
+} zoxd_system(character_items_spawn_system);

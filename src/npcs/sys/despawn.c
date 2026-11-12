@@ -1,5 +1,5 @@
 // Despawns a chunks npcs when its NpcSpawnZone becomes inactive
-void TerrainCharactersDespawnSystem(iter* it) {
+void terrain_characters_despawn_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -22,4 +22,4 @@ void TerrainCharactersDespawnSystem(iter* it) {
         zox_remove(e, CharactersSpawned);
     }
     zox_sys_on_end();
-} zoxd_system(TerrainCharactersDespawnSystem);
+} zoxd_system(terrain_characters_despawn_system);

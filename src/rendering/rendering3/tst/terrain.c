@@ -42,7 +42,7 @@ void zox_tst_terrain_check(ecs* world) {
     zox_tst_check_camera_filter(world, e);
 }
 
-void TstTerrainRenderProbeSystem(iter* it) {
+void tst_terrain_render_probe_system(iter* it) {
     zox_sys_on_begin();
     if (!zox_tst_active || zox_tst_active->check != zox_tst_terrain_check) {
         return;
@@ -64,13 +64,13 @@ void TstTerrainRenderProbeSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(TstTerrainRenderProbeSystem);
+} zoxd_system(tst_terrain_render_probe_system);
 
 void zox_tsts_terrain_render(ecs* world) {
     zox_tst_add("terrain_render", zox_tst_terrain_ready, zox_tst_terrain_check, 90);
     // main thread, in zoxp_render with the other main thread systems: no merges of its own (tst pipeline_syncs)
     zox_system_1(
-        TstTerrainRenderProbeSystem,
+        tst_terrain_render_probe_system,
         zoxp_render,
         [in] rendering.RenderDisabled,
         [in] rendering.MeshRenderCount,

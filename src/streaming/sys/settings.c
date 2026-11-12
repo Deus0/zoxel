@@ -1,4 +1,4 @@
-void StreamingSettingsSystem(iter* it) {
+void streaming_settings_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -18,9 +18,9 @@ void StreamingSettingsSystem(iter* it) {
 #endif
     }
     zox_sys_on_end();
-} zoxd_system(StreamingSettingsSystem);
+} zoxd_system(streaming_settings_system);
 
-void StreamingSettingsDirtySystem(iter* it) {
+void streaming_settings_dirty_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -60,4 +60,4 @@ void StreamingSettingsDirtySystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(StreamingSettingsDirtySystem);
+} zoxd_system(streaming_settings_dirty_system);

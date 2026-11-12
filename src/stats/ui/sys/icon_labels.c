@@ -1,5 +1,5 @@
 // NOTE: Sets the stat icon labels
-/*void StatIconLabelSystem(iter* it) {
+/*void stat_icon_label_system(iter* it) {
     zox_sys_on_begin();
     byte label_text_capacity = 253;
     zox_sys_world();
@@ -41,4 +41,4 @@
         }
     }
     zox_sys_on_end();
-} zoxd_system(StatIconLabelSystem);*/
+} zoxd_system(stat_icon_label_system);*/

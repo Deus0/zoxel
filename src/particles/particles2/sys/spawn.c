@@ -1,5 +1,5 @@
 //! Here for now, spawns a one man bobarmy.
-/*void Particle2DSpawnSystem(
+/*void particle2d_spawn_system(
     ecs *world,
     float2 bobPosition,
     int spawnCount
@@ -72,7 +72,7 @@
     free(brightnesses);
     free(destroyInTimes);
     zox_sys_on_end();
-} zoxd_system(Particle2DSpawnSystem);*/
+} zoxd_system(particle2d_spawn_system);*/
 
     /*cs_filter_t *filter = ecs_filter(world, {
         .terms = {{ id }} // by default matches owned & inherited components

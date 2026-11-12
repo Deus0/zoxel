@@ -1,4 +1,4 @@
-/*void GlyphUpdateSystem(iter* it) {
+/*void glyph_update_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -39,13 +39,13 @@
         dirty->value = zox_zigel_dirty_end;
     }
     zox_sys_on_end();
-} zoxd_system(GlyphUpdateSystem);*/
+} zoxd_system(glyph_update_system);*/
 
 
 // NOTE: Updates previous zigels to new data
 // TODO: Can we move this to Glyphs instead of working at Text
-// NOTE: Needs to run on end, a frame after GlyphSpawnSystem shrinks the children
-void TextUpdateSystem(iter* it) {
+// NOTE: Needs to run on end, a frame after glyph_spawn_system shrinks the children
+void text_update_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -77,12 +77,12 @@ void TextUpdateSystem(iter* it) {
                     continue;
                 }
 #endif
-                // NOTE: glyphs aren't iterated in order, so use their index (same as TextsPositionSystem)
+                // NOTE: glyphs aren't iterated in order, so use their index (same as texts_position_system)
                 if (!zox_has(e2, ChildIndex)) {
                     continue;
                 }
                 const uint child_index = zox_getv(e2, ChildIndex);
-                // glyph is past the end, GlyphSpawnSystem is shrinking it away
+                // glyph is past the end, glyph_spawn_system is shrinking it away
                 if (child_index >= glyphs_count) {
                     continue;
                 }
@@ -111,4 +111,4 @@ void TextUpdateSystem(iter* it) {
         // zox_log("+ updating text [%s]", zox_get_name(e))
     }
     zox_sys_on_end();
-} zoxd_system(TextUpdateSystem);
+} zoxd_system(text_update_system);

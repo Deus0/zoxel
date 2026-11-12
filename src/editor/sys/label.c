@@ -1,7 +1,7 @@
 uint max_debug_characters = 6 * 1024;
 double time_update_debug_label_system = 0;
 
-void DebugLabelSystem(iter* it) {
+void debug_label_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     uint size = max_debug_characters;
@@ -44,4 +44,4 @@ void DebugLabelSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(DebugLabelSystem);
+} zoxd_system(debug_label_system);

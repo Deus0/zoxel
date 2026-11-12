@@ -1,4 +1,5 @@
 void node_start_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
@@ -22,4 +23,5 @@ void node_start_system(iter* it) {
                 zox_getn(start_node));
         }
     }
+    zox_sys_on_end();
 } zoxd_system(node_start_system);

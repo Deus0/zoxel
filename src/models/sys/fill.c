@@ -29,7 +29,7 @@ void process_node_model_fill(ecs* world, entity node, entity vox, lint seed, byt
 
 // Runs from a Model Node Process
 //      This system will simply fill the voxes
-void FillModelNodeSystem(iter* it) {
+void fill_model_node_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = zox_dbg_model_nodes;
     zox_sys_world();
@@ -40,7 +40,7 @@ void FillModelNodeSystem(iter* it) {
         entity model = zox_get_link(world, e, ModelLink);
         zox_sys_i(ModelSize, bounds);
         if (!zox_valid(model)) {
-            zox_logw("[FillModelNodeSystem] Node has Invalid Model [%s]", zox_getn(e));
+            zox_logw("[fill_model_node_system] Node has Invalid Model [%s]", zox_getn(e));
             zox_add(e, TriggerEnd);
             continue;
         }
@@ -64,7 +64,7 @@ void FillModelNodeSystem(iter* it) {
             !zox_has(node, Shape3Position) ||
             !zox_has(node, Shape3Size))
         {
-            zox_loge("[FillModelNodeSystem] Node [%s] has invalid components for [zox_model_node_fill].",
+            zox_loge("[fill_model_node_system] Node [%s] has invalid components for [zox_model_node_fill].",
                 zox_getn(node));
             continue;
         }
@@ -101,4 +101,4 @@ void FillModelNodeSystem(iter* it) {
         zox_add(e, TriggerEnd);
     }
     zox_sys_on_end();
-} zoxd_system(FillModelNodeSystem);
+} zoxd_system(fill_model_node_system);

@@ -3,7 +3,7 @@
 void zox_systems_games(ecs* world) {
     // NOTE: MainThread because triggers event
     zox_system_1(
-        GameStateSystem,
+        game_state_system,
         zoxp_spawn,
         [in] games.GameStateEvent,
         [out] games.GameState,

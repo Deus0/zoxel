@@ -1,5 +1,5 @@
 // If Not cooling or warming, start warmup state
-void WarmupSystem(iter* it) {
+void warmup_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = zox_log_activations;
     zox_sys_world();
@@ -20,9 +20,9 @@ void WarmupSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(WarmupSystem);
+} zoxd_system(warmup_system);
 
-void WarmupStateSystem(iter* it) {
+void warmup_state_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = zox_log_activations;
     zox_sys_world();
@@ -49,4 +49,4 @@ void WarmupStateSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(WarmupStateSystem);
+} zoxd_system(warmup_state_system);

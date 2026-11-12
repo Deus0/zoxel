@@ -1,5 +1,5 @@
 // NOTE: For new placement of characters, we wait for region/towns to spawn, then we find a position in one of the towns
-void PlayerTownFinderSystem(iter* it) {
+void player_town_finder_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -63,7 +63,7 @@ void PlayerTownFinderSystem(iter* it) {
         uint regions_length = zox_get_children_by_id(world, terrain, regions, zox_children_capacity, zox_id(Region));
         if (!regions_length) {
             if (dbg_log) {
-                zox_log("PlayerTownFinderSystem: Terrain Loading Regions...");
+                zox_log("player_town_finder_system: Terrain Loading Regions...");
             }
             continue;
         }
@@ -79,7 +79,7 @@ void PlayerTownFinderSystem(iter* it) {
 #endif
         if (zox_getv(region, GenerateRegion)) {
             if (dbg_log) {
-                zox_log("Terrain Loading Regions... (PlayerTownFinderSystem)");
+                zox_log("Terrain Loading Regions... (player_town_finder_system)");
             }
             continue;
         }
@@ -95,7 +95,7 @@ void PlayerTownFinderSystem(iter* it) {
             town_position.z = town_position2.y;
         } else {
             if (dbg_log) {
-                zox_log("PlayerTownFinderSystem: Terrain Region [%s] has no Towns", zox_get_name(region));
+                zox_log("player_town_finder_system: Terrain Region [%s] has no Towns", zox_get_name(region));
             }
         }
         float terrain_block_scale = zox_getv(terrain, BlockScale);
@@ -126,4 +126,4 @@ void PlayerTownFinderSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(PlayerTownFinderSystem);
+} zoxd_system(player_town_finder_system);
