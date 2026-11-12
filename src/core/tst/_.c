@@ -249,10 +249,12 @@ void process_arguments_tst(ecs* world, char* args[], int count) {
 #include "../../_/octrees/tst/_.c"
 #include "../../_/collections/tst/_.c"
 #include "../../_/flecs/tst/_.c"
+#include "../../_/maths/tst/_.c"
 
 void initialize_tst() {
     zox_tsts_octrees();
     zox_tsts_hashmaps();
+    zox_tsts_maths();
     add_hook_terminal_command(process_arguments_tst);
     add_hook_post_update(zox_tst_update);
 }

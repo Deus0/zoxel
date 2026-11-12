@@ -1,5 +1,6 @@
 void gravity3_system(iter* it) {
     zox_sys_on_begin();
+    zox_physics_profile_begin();
     zox_sys_begin();
     zox_sys_in(Gravity3D);
     zox_sys_out(Acceleration3D);
@@ -8,5 +9,6 @@ void gravity3_system(iter* it) {
         zox_sys_o(Acceleration3D, acceleration);
         float3_add_float3_p(&acceleration->value, gravity->value);
     }
+    zox_physics_profile_end();
     zox_sys_on_end();
 } zoxd_system(gravity3_system);

@@ -1,5 +1,6 @@
 //! Bounds, because everyone needs limits! Used atm to keep player within the start area.
 zox_sys2(Bounds2DSystem) {
+    zox_physics_profile_begin();
     zox_sys_begin();
     zox_sys_in(Bounds2D);
     zox_sys_out(Position2);
@@ -15,4 +16,5 @@ zox_sys2(Bounds2DSystem) {
         else if (position2->value.y < -bounds2D->value.y)
             position2->value.y = -bounds2D->value.y;
     }
+    zox_physics_profile_end();
 } zox_sys_end(Bounds2DSystem);

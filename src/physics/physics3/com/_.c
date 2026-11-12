@@ -1,3 +1,4 @@
+zox_tag(Rolling3D);              // rolls over the ground without slipping, see rolling3_system
 zoxc_byte(InitializePhysics3D);
 zoxc_float3(Velocity3D);
 zoxc_float3(Acceleration3D);
@@ -10,6 +11,7 @@ zoxc_float3(LastPosition3D);
 zoxc_float3(LastUnstuck3);
 
 void zox_components_physics3(ecs *world) {
+    zoxd_tag(Rolling3D);
     zoxd_byte(InitializePhysics3D);
     zoxd_float3(Velocity3D);
     zoxd_float3(Acceleration3D);
