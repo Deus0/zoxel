@@ -81,3 +81,13 @@ An add event (`zox_on_add`) only fires when the tag **wasn't already there**.
 - Hook events on a tag added once per transition, i.e. `Begin` when a process moves to a node
   (see [nodes.md](nodes.md)), or a state component going `zox_dirty_trigger` → `zox_dirty_active`.
 - When an event doesn't seem to fire, log at the top of the callback first: was it called at all?
+
+## Allocated Components
+
+Most components are plain values. A few hold memory, and free it when they're removed:
+
+- **Arrays** (`zoxc_array`, i.e. `TextData`): a length and a pointer
+- **Node trees** (`VoxelNode`): voxel octrees, see the `octree_*` tests
+- **Hashmaps**: lookups by id or name, i.e. files by name
+
+See [coding_standards.md](coding_standards.md#components) for declaring them.

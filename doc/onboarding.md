@@ -201,6 +201,7 @@ bash bsh/tst.sh <name> --gdb    # backtrace on a crash
 - Tests are written in a module's `tst/` folder and registered with `zox_tst_add(name, ready, check, timeout)`.
   The harness is [src/core/tst/_.c](../src/core/tst/_.c).
 - When you fix a bug, add a test that would have caught it.
+- Writing tests, patterns and every test by area: [tests.md](tests.md).
 - To reproduce a bad save: `zox_tst_save=<realm save folder> bash bsh/tst.sh continue_game`.
   It loads a copy and never writes to the real save.
 
@@ -235,6 +236,8 @@ The loop:
 - [Characters](character.md): how characters are built (vox, renderer, skeleton)
 - [Audio](audio.md): the mixer, 3D sounds, effects, voices and music
 - [Nodes](nodes.md): node graphs, how dialogue and quests walk them
+- [Tests](tests.md): writing tests, patterns, every test by area
+- [Game Design](gdd.md): the blend, the pillars, what's playable and planned
 - [Commands](commands.md): every command line flag for the game binary
 - [Help](help.md): make targets
 - [Notes](notes.md): assorted engine notes

@@ -23,7 +23,7 @@ typedef struct {
     byte exits;                 // passes when the app closes itself (the main loop ends cleanly)
 } zox_tst;
 
-#define zox_tsts_max 64
+#define zox_tsts_max 128
 zox_tst zox_tsts[zox_tsts_max];
 int zox_tsts_count = 0;
 const char* zox_tst_name = NULL;   // set by --tst <name>
