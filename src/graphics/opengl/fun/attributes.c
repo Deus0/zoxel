@@ -40,3 +40,8 @@ static inline void zox_gpu_set_attribute_float3(guint id, const void* ptr) {
 static inline void zox_gpu_set_attribute_color(guint id, const void* ptr) {
     glVertexAttribPointer(id, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, ptr);
 }
+
+// an attribute read from an interleaved buffer: stride bytes between elements, offset bytes into each
+static inline void zox_gpu_set_attribute_float3_strided(guint id, gsizei stride, gsize offset) {
+    glVertexAttribPointer(id, 3, GL_FLOAT, GL_FALSE, stride, (void*) offset);
+}
