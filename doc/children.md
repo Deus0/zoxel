@@ -18,6 +18,34 @@ if (zox_is_parent(world, note, music)) { }
 zox_remove_parent(world, note);         // or zox_set_parent(world, note, 0)
 ```
 
+## Tables and fragmenting
+
+`zox_set_parent` uses flecs `ChildOf`, which **fragments**: every parent's children get their own tables.
+Making tables is slow (merges, and every observer is notified), so many parents that come and go make lag
+spikes. Crossing a chunk made 400 to 1100 tables (npcs' name labels and their glyphs, their stats), see
+`bash bsh/tst.sh tables_stream` and `--profile`.
+
+`zox_set_parent_non_fragment` uses flecs `EcsParent`, which doesn't: children share tables.
+
+| Use non fragmenting for | Why it's safe |
+|---|---|
+| a terrain's chunks, a chunk's meshes | they're deleted with their own parent, nothing else deletes them |
+
+**Don't** use it for children that are deleted another way too. Flecs (4.2) asserts a non fragmenting child's
+parent is alive while deleting it, and crashes when:
+
+- a cascade (deleting a realm) deletes the parent first, and then reaches the child by another path,
+  i.e. a character's stats are instances of the realm's stat prefabs, deleting the realm deletes the
+  character, then the stats as the prefabs' instances
+- prefabs and their instances, children spawned from prefabs, mixed with ChildOf in the same tree
+
+Tried and reverted (tests crashed ending a game): characters' stats, skills and items, ui elements, texts and
+glyphs. The `nf_*` tests (`src/_/flecs/tst/non_fragment.c`) cover what works: cascades, deferred deletes,
+mixed children, prefab instances in one tree. Add a case there before trying a new use.
+
+Other ways to stop fragmenting: link instead of parenting (links never fragment), or keep the data as
+components on the entity instead of child entities (i.e. stats).
+
 ## Getting children
 
 Children are copied into a buffer you pass in. If there are more than `capacity`, the extras are skipped with a warning.

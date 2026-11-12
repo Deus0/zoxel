@@ -14,6 +14,11 @@ double zox_tst_perf_step_time = 0;
 double zox_tst_perf_total = 0;
 double zox_tst_perf_slowest = 0;
 int zox_tst_perf_settled_frames = 0;
+int zox_tst_perf_step_tables = 0;      // tables when the step began
+int zox_tst_perf_tables_most = 0;      // the most tables one step made
+int zox_tst_perf_tables_total = 0;
+uintptr_t* zox_tst_perf_tables_before = NULL;  // tables when the step began
+int zox_tst_perf_tables_before_count = 0;
 
 // the terrain's chunks still generating or building sides, and their meshes still building
 //  (counting the tags world wide also counts prefabs and other voxel chunks, i.e. characters)
@@ -83,7 +88,22 @@ byte zox_tst_perf_stream_ready(ecs* world) {
             }
             return 0;
         }
-        zox_log("[tst] [metric] perf_stream step [%i] settled in [%.3fs]", zox_tst_perf_step, elapsed);
+        const int tables_made = zox_get_tables_count(world) - zox_tst_perf_step_tables;
+        zox_log("[tst] [metric] perf_stream step [%i] settled in [%.3fs], tables made [%i]", zox_tst_perf_step, elapsed, tables_made);
+        zox_tst_perf_tables_most = tables_made > zox_tst_perf_tables_most ? tables_made : zox_tst_perf_tables_most;
+        zox_tst_perf_tables_total += tables_made;
+        // what the step made, by family (the last step's, logged once)
+        if (zox_tst_perf_tables_before && zox_tst_perf_step == zox_tst_perf_steps - 1) {
+            static char families[512][zox_table_family_length];
+            static int counts[512];
+            int total = 0;
+            const int count = zox_new_table_families(world, zox_tst_perf_tables_before, zox_tst_perf_tables_before_count, families, counts, 512, &total);
+            zox_log("[tst] [metric] perf_stream the last step made [%i] tables, in [%i] families", total, count);
+            for (int i = 0; i < count && i < 12; i++) {
+                const int length = (int) strlen(families[i]);
+                zox_log("[tst] [metric] perf_stream new [%i]: %.110s ... %s", counts[i], families[i], families[i] + (length > 110 ? length - 110 : length));
+            }
+        }
         zox_tst_perf_total += elapsed;
         if (elapsed > zox_tst_perf_slowest) {
             zox_tst_perf_slowest = elapsed;
@@ -111,9 +131,44 @@ byte zox_tst_perf_stream_ready(ecs* world) {
     zox_setv(character, Position3D, position);
     zox_tst_perf_step_time = zox_current_time;
     zox_tst_perf_settled_frames = 0;
+    zox_tst_perf_step_tables = zox_get_tables_count(world);
+    if (zox_tst_perf_tables_before) {
+        free(zox_tst_perf_tables_before);
+    }
+    zox_tst_perf_tables_before = zox_tables_snapshot(world, &zox_tst_perf_tables_before_count);
     return 0;
 }
 
+// the table families with the most tables (a pair with many targets fragments)
+static inline void zox_tst_log_child_tables(ecs* world, const char* name) {
+    static char families[256][zox_table_family_length];
+    static int counts[256];
+    int total = 0;
+    const int count = zox_table_families(world, families, counts, 256, &total);
+    zox_log("[tst] [metric] %s tables [%i], counted [%i], families [%i]", name, zox_get_tables_count(world), total, count);
+    for (int i = 0; i < count && i < 10; i++) {
+        zox_log("[tst] [metric] %s family [%i] tables: %s", name, counts[i], families[i]);
+    }
+}
+
 void zox_tst_perf_stream_check(ecs* world) {
-    (void) world;
+    zox_tst_log_child_tables(world, "perf_stream");
+}
+
+// tst: tables_stream, streaming across chunks doesn't make many flecs tables
+//  - walks across chunks like perf_stream, counts the tables each chunk step makes
+//  - each new table is merge work and notifies every observer (lag spikes crossing chunks),
+//      ChildOf children get tables per parent, so chunks' children must use non fragmenting parents
+//  - logs the table families with the most tables (pairs with many targets), to find the next to fix
+//  - run: bash bsh/tst.sh tables_stream
+// today's level (npcs' labels, glyphs and stats are ChildOf children, about 1100 tables a step),
+//  a guard against it getting worse, lower it as they stop fragmenting (doc/children.md)
+#define zox_tst_tables_per_step_max 1400
+
+void zox_tst_tables_stream_check(ecs* world) {
+    zox_tst_log_child_tables(world, "tables_stream");
+    zox_log("[tst] [metric] tables_stream steps [%i] tables made [%i], most in a step [%i]",
+        zox_tst_perf_steps, zox_tst_perf_tables_total, zox_tst_perf_tables_most);
+    zox_tst_check(zox_tst_perf_tables_most <= zox_tst_tables_per_step_max,
+        "a chunk step made [%i] tables, over [%i]", zox_tst_perf_tables_most, zox_tst_tables_per_step_max);
 }
