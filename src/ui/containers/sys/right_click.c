@@ -61,6 +61,9 @@ void data_ui_right_click_system(iter* it) {
                 continue;
             }
             set_mouse_data(world, mouse_ui, half);
+            // the new stack is spawned this frame (deferred), it has no texture link yet: the same item as the
+            //  stack it came from, so its texture
+            set_data_icon_texture(world, mouse_ui, data);
         } else {
             if (!can_place_icon_in_item_frame(world, frame, mouse_data)) {
                 continue;
