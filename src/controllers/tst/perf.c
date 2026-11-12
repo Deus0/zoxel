@@ -196,6 +196,19 @@ byte zox_tst_perf_fly_ready(ecs* world) {
     }
     zox_tst_profile_frame(world);
     const double elapsed = zox_current_time - zox_tst_fly_start;
+    // npcs alive, once a second (counting walks every table)
+    static int npcs_peak = 0;
+    static double npcs_counted = 0;
+    if (zox_current_time - npcs_counted >= 1.0) {
+        npcs_counted = zox_current_time;
+        const int npcs = zox_count_types(Npc);
+        if (npcs > npcs_peak) {
+            npcs_peak = npcs;
+        }
+    }
+    if (elapsed >= zox_tst_fly_seconds) {
+        zox_log("[tst] [metric] perf_fly npcs peak [%i]", npcs_peak);
+    }
     zox_tst_waiting = "flying across the terrain";
     zox_tst_progress(elapsed);
     if (elapsed >= zox_tst_fly_seconds) {
