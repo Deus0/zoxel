@@ -140,6 +140,20 @@ void zox_tst_sound_instruments_check(ecs* world) {
     const uint length = (uint) (zox_tst_instrument_seconds * sound_sample_rate);
     float* samples = malloc(length * sizeof(float));
     mkdir("../tst/instruments", 0755);
+    // how long each takes to generate a second of sound, on the thread it plays from
+    {
+        const uint second = sound_sample_rate;
+        float* timed = malloc(second * sizeof(float));
+        for (byte instrument = instrument_none + 1; instrument < instrument_end; instrument++) {
+            struct timespec t0, t1;
+            clock_gettime(CLOCK_MONOTONIC, &t0);
+            generate_instrument_samples(instrument, 220, 1, 1, 0, timed, second);
+            clock_gettime(CLOCK_MONOTONIC, &t1);
+            const double ms = (t1.tv_sec - t0.tv_sec) * 1000.0 + (t1.tv_nsec - t0.tv_nsec) / 1000000.0;
+            zox_log("[tst] [%s] generates a second in [%.1fms]", instruments[instrument].name, ms);
+        }
+        free(timed);
+    }
     for (byte instrument = instrument_none + 1; instrument < instrument_end; instrument++) {
         const char* name = instruments[instrument].name;
         zox_tst_check(generate_instrument_samples(instrument, zox_tst_instrument_frequency, zox_tst_instrument_seconds, 1, 0, samples, length),

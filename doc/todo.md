@@ -2,6 +2,16 @@
 - Now first, then by module. Done items move to [done.md](done.md), ideas to [new.md](new.md) and [future.md](future.md).
 
 # Now
+- Lag spikes (up to 96ms): sound generation, a whole sound in one frame when it spawns
+	- measured (debug): a 1.3s choir note 290-670ms, a 2.8s cello note 60-100ms, choir 330ms per second of sound
+	- music pads and jingles play choir and cello notes, the spikes
+	- 1. precompute per harmonic weights once per note (choir formants, cello body, voices), not per sample
+	- 2. cached instrument tables: generate base waveforms once, reuse them, add noise, breath and vibrato
+	  in a pass while playing (see Sounds: optimization)
+	- 3. long notes generated over a few frames, the start first
+	- tst: every instrument generates a second of sound under a budget (sound_instruments logs timings)
+- Miss sounds need more whoosh, a wind feeling (instrument_whoosh in sounds/bop/impacts.c)
+- Footstep sounds, per block like hits (realm sounds), timed to the walk
 - Realm sounds: hits sound like what they hit (stone, dirt, wood, flesh)
 	- the realm spawns sound entities (like its quests and items), each a SoundEffect's settings:
 	  instrument, notes, lengths, volumes (sounds/fun/effects.c rows become data)
@@ -22,10 +32,12 @@
 - Tests for terrain generation (heights, biomes, trees spaced apart, grass coverage, region placements)
 
 # Sounds and Music
+- Optimize sound generation (see Now: lag spikes)
+	- reuse base instrument waveforms (sin tables, harmonics) instead of generating every note
+	- noise and modulation as a processing pass while playing, in the mixer
 - Opt: SoundGenerateSystem by using preset sound data + mods
 - Opt: Spawn Sound Samples on Realm Start, then use this data in generated sounds - optimized sound generation
 - SoundGenerateSystem - uses too much still
-- Footstep Sounds when walking around
 - Add damage and sound if you land strongly
 - Change music track when dialogue starts too
 - Underwater: Dampen music sounds
