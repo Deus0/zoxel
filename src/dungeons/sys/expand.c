@@ -106,12 +106,18 @@ void DungeonBlockSystem(iter* it) {
                         continue;
                     }
                     zox_geter(check_chunk, VoxelNode, check_node);
+                    // read locked, its writers can run alongside (thread_safety.md)
+                    spinlock* check_lock = zox_octree_lock(world, check_chunk);
+                    zox_octree_lock_begin(check_lock);
                     const VoxelNode* check_subnode = get_VoxelNode((VoxelNode*) check_node, check_node_depth, check_positionl);
-                    if (!check_subnode || check_subnode->value == place_id) {
+                    const byte check_exists = check_subnode != NULL;
+                    const byte check_value = check_exists ? check_subnode->value : 0;
+                    zox_octree_lock_end(check_lock);
+                    if (!check_exists || check_value == place_id) {
                         continue;
                     }
                     // can only place in air
-                    if (place_id && check_subnode->value) {
+                    if (place_id && check_value) {
                         place_id = 0;
                         // continue;
                     }

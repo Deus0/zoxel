@@ -225,6 +225,12 @@ void zox_tst_start() {
 // Runs the active test and the frame profiler, at the end of each frame
 //  - immediate: a test's checks see their changes straight away
 //  - disabled unless --tst or --profile, so games have no merge for it
+// the frame's start, for the profiler, main thread in the first op (no merge of its own)
+void zox_tst_frame_begin_system(iter* it) {
+    (void) it;
+    zox_tst_profile_frame_start = get_time_ms();
+} zoxd_system(zox_tst_frame_begin_system);
+
 void zox_tst_system(iter* it) {
     zox_sys_world2();
     zox_tst_update(world);
@@ -264,6 +270,7 @@ void process_arguments_tst(ecs* world, char* args[], int count) {
     }
     if (zox_tst_name || zox_profile_spikes) {
         ecs_enable(world, ecs_id(zox_tst_system), true);
+        ecs_enable(world, ecs_id(zox_tst_frame_begin_system), true);
     }
 }
 
@@ -284,6 +291,12 @@ void initialize_tst(ecs* world) {
         zoxp_dbg_end,
         0
     );
+    zox_system_1(
+        zox_tst_frame_begin_system,
+        zoxp_dbg_begin,
+        0
+    );
     ecs_enable(world, ecs_id(zox_tst_system), false);
+    ecs_enable(world, ecs_id(zox_tst_frame_begin_system), false);
     zox_system_times_ignore = ecs_id(zox_tst_system);
 }

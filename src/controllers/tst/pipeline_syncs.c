@@ -5,11 +5,10 @@
 //  - a main thread system between multi threaded ones adds 2 merges and leaves the other cores waiting, those
 //    are listed (not barriers, zox_phase_barrier): keep main thread systems together (zoxp_spawn), make the
 //    rest multi threaded, see doc/thread_safety.md
-//  - checks octree writes finish before octree reads (zoxp_octree_sync's merge)
 //  - how to read a pipeline's sync points: ecs_pipeline_stats_get, its systems with a 0 at each merge
 //  - run: bash bsh/tst.sh pipeline_syncs
 
-#define zox_tst_pipeline_merges_max 12
+#define zox_tst_pipeline_merges_max 11
 
 static const char* zox_tst_pipeline_phase_name(ecs* world, entity system) {
     const entity phase = ecs_get_target(world, system, EcsDependsOn, 0);
@@ -83,32 +82,10 @@ void zox_tst_pipeline_syncs_check(ecs* world) {
     }
     zox_log("[tst] [metric] pipeline systems [%i] merges [%i] main thread between multi threaded [%i]",
         system_count, merges, sandwiched);
-    // guards, raise with a reason: 12 merges (2026-11-12), one per op from spawn to the end of the frame, and
-    //  zox_tst_system (immediate, only on with --tst or --profile, games have 11)
+    // guards, raise with a reason: 11 merges (2026-11-12), one per op from spawn to the end of the frame, and
+    //  zox_tst_system (immediate, only on with --tst or --profile, games have 10)
     zox_tst_check(merges <= zox_tst_pipeline_merges_max, "[%i] merges, over [%i]: a main thread system in a multi \
 threaded phase? (listed above)", merges, zox_tst_pipeline_merges_max);
     zox_tst_check(!sandwiched, "[%i] main thread systems between multi threaded ones", sandwiched);
-    // octree writes all finish before reads: a merge between the last write and the first read
-    int last_write = -1, first_read = -1;
-    for (int i = 0; i < count; i++) {
-        if (!systems[i]) {
-            continue;
-        }
-        const entity phase = ecs_get_target(world, systems[i], EcsDependsOn, 0);
-        if (phase == zoxp_octree_write) {
-            last_write = i;
-        } else if (phase == zoxp_octree_read && first_read < 0) {
-            first_read = i;
-        }
-    }
-    zox_tst_check(last_write >= 0 && first_read >= 0, "no octree write [%i] or read [%i] systems running",
-        last_write, first_read);
-    if (last_write >= 0 && first_read > last_write) {
-        byte merged = 0;
-        for (int i = last_write + 1; i < first_read; i++) {
-            merged |= !systems[i];
-        }
-        zox_tst_check(merged, "no merge between octree writes and reads, workers can read an octree being written");
-    }
     ecs_pipeline_stats_fini(&stats);
 }

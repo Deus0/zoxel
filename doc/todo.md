@@ -787,10 +787,7 @@
 
 # Engine and Refactors
 - Thread safety (doc/thread_safety.md, tst pipeline_syncs):
-	- chunk3_load_system writes octrees in zoxp_physics, same op as collisions and raycasts reading them (saves only)
-	- octree writers lock (model generation, model nodes, landfill, vegetation, town walls, combine, vodes remove,
-	  chunk load), then drop zoxp_octree_sync: readers lock already (thread_safety.md)
-	- 11 merges (from 19), the transform chain is 5: billboards could rotate inside the hierarchy walk
+	- 10 merges (from 19), under 10: the transform chain is 5, billboards could rotate inside the hierarchy walk
 	- stream_npcs segfaulted once in a full suite run (before the octree barrier), watch for it
 - add a table test, for when in game, check total flecs tables, this needs to be reduced to reduce our query times - can add this to tst module in src, it sits on top of engine
 - Refactor BlocksDirty to non state
