@@ -21,6 +21,7 @@ entity zox_tst_qd_ui = 0;
 char zox_tst_qd_lines[zox_tst_qd_talks][zox_tst_qd_max_lines][128];
 int zox_tst_qd_lines_count[zox_tst_qd_talks];
 int zox_tst_qd_slain = 0;
+int zox_tst_qd_jingle_notes = 0;    // delayed sounds after taking the quest (its jingle)
 int zox_tst_qd_voices = 0;
 
 // a quest giving npc with its dialogue
@@ -184,6 +185,9 @@ byte zox_tst_quest_dialogue_ready(ecs* world) {
                 zox_tst_qd_begin(world, player, character, canvas);
                 break;
             }
+            if (talk == 1 && !zox_tst_qd_jingle_notes) {
+                zox_tst_qd_jingle_notes = zox_count_types(SoundDelay);
+            }
             zox_tst_waiting = "a talk";
             if (!zox_tst_qd_talk(world, talk)) {
                 return 0;
@@ -217,4 +221,5 @@ void zox_tst_quest_dialogue_check(ecs* world) {
     zox_tst_check(zox_tst_qd_lines_count[3] == 2 && !strcmp(zox_tst_qd_lines[3][1], "You did well..."),
         "the fourth talk said [%i] lines, not only that it was done well", zox_tst_qd_lines_count[3]);
     zox_tst_check(zox_tst_qd_voices > 0, "the npc said its lines without a voice");
+    zox_tst_check(zox_tst_qd_jingle_notes > 0, "taking the quest played no jingle");
 }

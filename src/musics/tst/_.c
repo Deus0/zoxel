@@ -432,6 +432,21 @@ void zox_tst_sound_balance_check(ecs* world) {
         zox_tst_check(worst[i] <= sound_balance_ratio_max, "[%s] is [%.2f]x the music, too loud", sound_effects[i].name, worst[i]);
     }
     zox_tst_check(placed >= 3 * sound_effect_end, "only [%i] effects placed", placed);
+    // jingles stand out over the music, as loud as spawn_jingle plays them
+    for (int t = 0; t < jingle_end; t++) {
+        static float jingle_mix[6 * 44100];
+        memset(jingle_mix, 0, sizeof(jingle_mix));
+        const uint start = (uint) ((12 + t * 25) * sound_sample_rate);
+        const uint end = zox_tst_render_jingle(t, jingle_volume * get_volume_sfx(), jingle_mix, 0, 6 * 44100);
+        static float heard_jingle[6 * 44100];
+        zox_tst_speaker(jingle_mix, heard_jingle, end);
+        const double jingle_power = zox_tst_power(heard_jingle, end);
+        const double music_power = zox_tst_power(heard_music + start, end);
+        const float ratio = music_power > 0 ? sqrtf(jingle_power / music_power) : 1000;
+        zox_log("[tst] [jingle %s] at least [%.2f]x the music", jingles[t].name, ratio);
+        zox_tst_check(ratio >= sound_balance_ratio && ratio <= sound_balance_ratio_max,
+            "the [%s] jingle is [%.2f]x the music, on small speakers", jingles[t].name, ratio);
+    }
     // attacks are soft, not sharp: duller than a 1khz tone (its brightness, change to size, is about 0.02)
     {
         const SoundEffectType soft[] = { sound_effect_hit, sound_effect_swing, sound_effect_block_hit, sound_effect_aura };

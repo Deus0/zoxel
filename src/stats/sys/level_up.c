@@ -52,7 +52,12 @@ void level_up_system(iter* it) {
         for (uint j = 0; j < stats_length; j++) {
             entity stat = stats[j];*/
         // level up sound
-        spawn_sound_effect(world, sound_effect_level_up, parent);
+        // the player's level up is a moment, a jingle, others ring from where they are
+        if (zox_valid(zox_get_link(world, parent, PlayerLink))) {
+            spawn_jingle(world, jingle_level_up);
+        } else {
+            spawn_sound_effect(world, sound_effect_level_up, parent);
+        }
         // spawn particle system
         float3 bounds = zox_getv(parent, Bounds3D);
         // Spawns level up particles
