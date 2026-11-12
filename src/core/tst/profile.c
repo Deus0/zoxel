@@ -149,9 +149,17 @@ void zox_tst_profile_frame(ecs* world) {
                 zox_log("[profile]   observer %s [%.1fms]", zox_observer_timings[o].name, zox_tst_profile_observer_frame[o]);
             }
         }
+        {
+            static char top_ids[1024];
+            zox_count_ids_top(world, top_ids, sizeof(top_ids), 8);
+            zox_log("[profile]   moved most: %s", top_ids);
+        }
         zox_log("[profile]   commands: adds [%li] removes [%li] deletes [%li] sets [%li], observers ran [%li], tables made [%li]",
             (long) (world_times.adds - last.adds), (long) (world_times.removes - last.removes), (long) (world_times.deletes - last.deletes),
             (long) (world_times.sets - last.sets), (long) (world_times.observers - last.observers), (long) (world_times.tables - last.tables));
+    }
+    if (!(zox_profile_spikes && frame.wall_ms > zox_profile_spike_ms)) {
+        memset(zox_id_counts, 0, sizeof(zox_id_counts));
     }
     // keep the slowest frames
     for (int w = 0; w < zox_tst_profile_worst_frames; w++) {
@@ -180,6 +188,12 @@ void zox_tst_profile_log(ecs* world, const char* name) {
             f->top[0] ? zox_get_name(f->top[0]) : "-", f->top_ms[0],
             f->top[1] ? zox_get_name(f->top[1]) : "-", f->top_ms[1],
             f->top[2] ? zox_get_name(f->top[2]) : "-", f->top_ms[2]);
+    }
+    // what moved entities between tables most (adds and removes, each a table move and observer checks)
+    {
+        static char top_ids[2048];
+        zox_count_ids_totals(world, top_ids, sizeof(top_ids), 14);
+        zox_log("[tst] [metric] %s moved most: %s", name, top_ids);
     }
     // the observers with the slowest frames
     for (int n = 0; n < 8; n++) {

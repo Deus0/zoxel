@@ -11,6 +11,12 @@
 	-x npcs' labels, glyphs, stats, skills and items are non fragmenting children (flecs patched, doc/children.md),
 	  400 to 2500 tables a step -> about 100, worst merges 145ms -> 38ms (debug)
 	- the rest: block decor and vox instances (ChildOf a chunk), npc ui still a child, link it instead
+	- table moves (perf_stream "moved most", --profile per frame): the worst frames' merges and notifications
+		- Dirty and DataDirty 23k adds and removes each over a run: stat_regen_system dirties every regenerating
+		  stat every frame (every npc's health, mana), only dirty when its shown value changes (whole numbers)
+		- DataUpdate 11k, TextureDirty 5k: what follows the dirties
+		- spawning: PreInitialize and Initialize (each new entity moves 4 times), a name on every entity
+		  ((Identifier,Name) 2.3k, flecs indexes them), state tags as events could be state components
 	- delete empty tables now and then (15k of 17k tables are empty after streaming)
 	-x chunk_sides_system has a time budget per worker per frame (it built whole chunks, 18ms real time)
 	- VoxLodMeshBuildSystem: a 108ms frame once (single threaded), when a character's mesh builds
