@@ -432,6 +432,25 @@ void zox_tst_sound_balance_check(ecs* world) {
         zox_tst_check(worst[i] <= sound_balance_ratio_max, "[%s] is [%.2f]x the music, too loud", sound_effects[i].name, worst[i]);
     }
     zox_tst_check(placed >= 3 * sound_effect_end, "only [%i] effects placed", placed);
+    // voices (dialogue): a deep, normal, high and tiny one, as loud as DialogueSoundSystem says them
+    const float voice_pitches[4] = { 100, 180, 290, 420 };
+    for (int v = 0; v < 4; v++) {
+        Voice voice = voice_from_seed(1);
+        voice.pitch = voice_pitches[v];
+        voice.formant = 0.85f + v * 0.15f;
+        double sfx_power = 0, music_power = 0;
+        for (int k = 0; k < 6; k++) {
+            const uint start = (uint) ((10 + v * 20 + k * 3) * sound_sample_rate);
+            const uint sfx_length = generate_voice_syllable(&voice, "tsmlba"[k], "aeiouo"[k], 0, 1.3f * get_volume_sfx(), k, sfx, MAX_SOUND_DATA);
+            zox_tst_speaker(sfx, heard_sfx, sfx_length);
+            sfx_power += zox_tst_power(heard_sfx, sfx_length);
+            music_power += zox_tst_power(heard_music + start, sfx_length);
+        }
+        const float ratio = music_power > 0 ? sqrtf(sfx_power / music_power) : 1000;
+        zox_log("[tst] [voice %.0fhz] at least [%.2f]x the music", voice.pitch, ratio);
+        zox_tst_check(ratio >= sound_balance_ratio && ratio <= sound_balance_ratio_max,
+            "a [%.0fhz] voice is [%.2f]x the music, on small speakers", voice.pitch, ratio);
+    }
     zox_tst_write_wav("../tst/sound_balance.wav", mix, length);
     free(heard_sfx);
     free(sfx);

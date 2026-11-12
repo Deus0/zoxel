@@ -27,4 +27,5 @@ void import_dialogues(ecs* world) {
     zox_systems_dialogues(world);
     add_hook_spawn_prefabs(zox_prefabs_dialogues);
     add_hook_spawn_prefabs(zox_events_dialogues);
+    zox_tsts_dialogues();
 }

@@ -1,6 +1,7 @@
 #include "leaf.c"
 #include "tree.c"
 #include "ui.c"
+#include "voice.c"
 
 // Speaker A is the player speaker, otherwise the first speaker found
 entity get_speaker_a(ecs* world, entity process) {
