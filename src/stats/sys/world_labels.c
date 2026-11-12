@@ -45,6 +45,14 @@ void CharacterNameLabelsSystem(iter* it) {
         }
     }
     zox_sys_query_end();
+    // only while playing: not in menus or loading, and not while a game ends (its realm and characters
+    //  are deleted that frame, a label spawned on them was left half made, tst menu_flow)
+    const byte game_state = zox_valid(local_game) ? zox_getv(local_game, GameState) : zox_game_none;
+    if (!cameras_count ||
+        (game_state != zox_game_state_playing && game_state != zox_game_state_paused))
+    {
+        return;
+    }
     zox_sys_begin();
     zox_sys_in(ZoxName);
     zox_sys_in(Position3D);
