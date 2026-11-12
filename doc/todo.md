@@ -826,6 +826,8 @@
 - Also when i disable lods
 
 # Tests
+- lights settle: after a block changes, light propagation finishes within a few frames (a bouncing
+  propagation could be the rare 'terrain loading' stalls in player_spawn and perf_stream)
 - write a grid spawn test for every model
 - write a grid spawn test for every character
 - Add test function for spawning a Terrain Chunk

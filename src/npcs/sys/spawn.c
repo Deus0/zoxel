@@ -1,5 +1,10 @@
 extern void on_spawned_character3_npc(ecs*, entity);
 uint total_spawned_npcs_count = 0;
+// npcs a frame at most: each brings its children (stats, body, skeleton, label), chunks streaming in together
+//  spawned many in one frame (lag spikes), the rest of the chunks spawn theirs next frame
+#define npcs_spawned_per_frame_max 4
+uint npcs_spawned_frame = UINT32_MAX;
+uint npcs_spawned_this_frame = 0;
 
 // we need to check if chunk has generated yet - is there a component for this?
 zox_sys2(TerrainCharactersSpawnSystem) {
@@ -9,6 +14,10 @@ zox_sys2(TerrainCharactersSpawnSystem) {
         return;
     }
     uint spawned_count = 0;
+    if (npcs_spawned_frame != ecs_run_count) {
+        npcs_spawned_frame = ecs_run_count;
+        npcs_spawned_this_frame = 0;
+    }
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NpcSpawnZoneDirty);
@@ -38,6 +47,10 @@ zox_sys2(TerrainCharactersSpawnSystem) {
         // Only spawn if fully loaded
         if (!active->value || dirty->value) {
             continue;
+        }
+        // this frame's share spawned, the chunk spawns its npcs next frame
+        if (npcs_spawned_this_frame >= npcs_spawned_per_frame_max) {
+            break;
         }
         entity terrain = zox_get_parent(world, e);
 #ifdef zox_safety_checks
@@ -128,6 +141,7 @@ zox_sys2(TerrainCharactersSpawnSystem) {
             zox_add(e2, DisableMovement);
             zox_link(world, e, ChunkCharacters, e2);
             spawned++;
+            npcs_spawned_this_frame++;
             if (dbg_length) {
                 spawn_arrow3D(
                     world,

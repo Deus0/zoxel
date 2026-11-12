@@ -36,7 +36,7 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
     index += snprintf(buffer + index, size - index, "System Times [%i]\n", count);
     index += snprintf(buffer + index, size - index, "- Frame [%.2fms]\n", zox_delta_time * 1000);
     if (count == 0) {
-        // ecs_query_fini(q);
+        ecs_query_fini(q);
         return index;
     }
     system_delta_entry *entries = malloc(sizeof(system_delta_entry) * count);
@@ -74,7 +74,7 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
         index += snprintf(buffer + index, size - index, "\n");
     }
     free(entries);
-    // ecs_query_fini(q);
+    ecs_query_fini(q);  // made every call, it leaked a query each time the system times showed
     return index;
 }
 

@@ -56,7 +56,8 @@ void spawned_block_vox(
         return;
     }
     link_node_VoxelNode(octree, e2);
-    zox_set_parent(world, e2, chunk);
+    // non fragmenting, like the chunk's meshes, ChildOf gave every chunk's block voxes their own tables
+    zox_set_parent_non_fragment(world, e2, chunk);
     // lit like the terrain around it, block_vox_lights_system keeps it updated
     zox_setv(e2, Brightness, get_block_vox_brightness(world, chunk, positionl));
     // spawn_line3(world, spawn_data.positionf, float3_add(spawn_data.positionf, (float3) { 0, 2, 0 }), 2, 3);
@@ -192,9 +193,20 @@ void spawn_vodes_dive(
 // TODO: Break this up into two systems:
 //      - Triggered by VoxelNodePostDirty or ChunkLodDirty
 // Triggers: [VoxelNodeDirty] + [RenderDistanceDirty]
+// new chunks' block voxes (grass, flowers) a frame at most: a chunk spawns many, chunks streaming in
+//  together spawned hundreds in one frame (lag spikes), the rest wait for the next frame
+//  - only first spawns wait, a chunk with its block voxes changed (a block placed) updates straight away
+#define vodes_new_chunks_per_frame 2
+uint vodes_spawn_frame = UINT32_MAX;
+uint vodes_new_chunks_this_frame = 0;
+
 void vodes_spawn_system(iter* it) {
     if (zox_disable_vodes) {
         return;
+    }
+    if (vodes_spawn_frame != ecs_run_count) {
+        vodes_spawn_frame = ecs_run_count;
+        vodes_new_chunks_this_frame = 0;
     }
     zox_sys_world();
     zox_sys_begin();
@@ -218,6 +230,13 @@ void vodes_spawn_system(iter* it) {
         byte has_vodes = zox_has(e, BlocksSpawned);
         if (!(is_dirty || !has_vodes)) {
             continue;
+        }
+        // a chunk's first spawn (new chunks come dirty from generating), not one already spawned
+        if (!has_vodes) {
+            if (vodes_new_chunks_this_frame >= vodes_new_chunks_per_frame) {
+                continue;
+            }
+            vodes_new_chunks_this_frame++;
         }
         // either voxel octree is dirty, or we are spawning for first time based on distance changes
         entity terrain = zox_get_parent(world, e);

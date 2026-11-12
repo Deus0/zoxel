@@ -37,6 +37,8 @@ ZoxTstProfileFrame zox_tst_profile_frames[zox_tst_profile_worst_frames];
 int zox_tst_profile_frame_index = 0;
 double zox_tst_profile_last_ms = 0;
 double zox_tst_profile_ecs_worst_ms = 0;    // the most time systems took in one frame
+uintptr_t* zox_tst_profile_tables_before = NULL;   // last frame's tables (--profile)
+int zox_tst_profile_tables_count = 0;
 ZoxWorldTimes zox_tst_profile_world_last;
 // observers (zox_observer_timings): their totals last frame, this frame, their slowest frame
 double zox_tst_profile_observer_last[zox_observer_timings_max];
@@ -149,6 +151,17 @@ void zox_tst_profile_frame(ecs* world) {
                 zox_log("[profile]   observer %s [%.1fms]", zox_observer_timings[o].name, zox_tst_profile_observer_frame[o]);
             }
         }
+        // the families of the tables this frame made (each new table notifies every observer)
+        if (zox_tst_profile_tables_before) {
+            static char families[64][zox_table_family_length];
+            static int counts[64];
+            int total = 0;
+            const int count = zox_new_table_families(world, zox_tst_profile_tables_before, zox_tst_profile_tables_count, families, counts, 64, &total);
+            for (int f = 0; f < count && f < 3; f++) {
+                const int length = (int) strlen(families[f]);
+                zox_log("[profile]   new tables [%i]: %.90s ... %.150s", counts[f], families[f], families[f] + (length > 150 ? length - 150 : 0));
+            }
+        }
         {
             static char spawned[1024];
             zox_count_spawned_prefabs(world, spawned, sizeof(spawned), 8);
@@ -165,6 +178,13 @@ void zox_tst_profile_frame(ecs* world) {
     }
     if (!(zox_profile_spikes && frame.wall_ms > zox_profile_spike_ms)) {
         memset(zox_id_counts, 0, sizeof(zox_id_counts));
+    }
+    // the tables now, the next frame's new ones are what it made (only with --profile, it's a scan)
+    if (zox_profile_spikes) {
+        if (zox_tst_profile_tables_before) {
+            free(zox_tst_profile_tables_before);
+        }
+        zox_tst_profile_tables_before = zox_tables_snapshot(world, &zox_tst_profile_tables_count);
     }
     // keep the slowest frames
     for (int w = 0; w < zox_tst_profile_worst_frames; w++) {
