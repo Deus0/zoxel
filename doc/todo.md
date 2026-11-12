@@ -21,7 +21,9 @@
 		  ((Identifier,Name) 2.3k, flecs indexes them), state tags as events could be state components
 	- delete empty tables now and then (15k of 17k tables are empty after streaming)
 	-x chunk_sides_system has a time budget per worker per frame (it built whole chunks, 18ms real time)
-	- VoxLodMeshBuildSystem: a 108ms frame once (single threaded), when a character's mesh builds
+	-x VoxLodMeshBuildSystem: a 275ms frame (216 lod meshes at once, ~340ms cpu over 16 workers), now a time
+	  budget per worker, max depth meshes from a flat grid (depth 5: 29ms -> 5ms, tst vox_mesh_grid)
+	- lod meshes as non fragmenting children stalled terrain generation (perf_stream), still ChildOf, find why
 	- move other heavy systems from process counts to zox_sys_budget
 - Lag spikes (up to 96ms): sound generation, a whole sound in one frame when it spawns
 	- measured (debug): a 1.3s choir note 290-670ms, a 2.8s cello note 60-100ms, choir 330ms per second of sound
@@ -257,7 +259,7 @@
 	- and keep set in systems that upload them
 	- keep them all modular
 	- keep it all centralized in rendering so we dont have to do the same work everywhere
-- Eventually we need multi chunk characters, cause their updates lag
+- Eventually we need multi chunk characters, cause their updates lag (see future.md, multi chunk models)
 	- max depth 4-5 for mesh build times
 - Generated slime colors should be the same every time loads
 - Fix Slemz eyes - missing

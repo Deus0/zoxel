@@ -4,6 +4,7 @@
 #include "positions.c"
 #include "io.c"
 #include "sides.c"
+#include "vox_mesh_grid.c"
 
 void zox_tests_chunks3(ecs* world) {
     // test_nodes(world, 1000, 5);

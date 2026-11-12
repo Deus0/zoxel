@@ -78,6 +78,10 @@ void build_voxel_faces_colored(
     for (byte direction = 0; direction < 6; direction++) {
         nsolids[direction] = is_adjacent_all_solid(NULL, edge, noctrees, root, byte3_to_int3(position), direction, depth);
     }
+    // hidden voxels add no faces, skip their ao lookups (most of a solid model)
+    if (nsolids[0] && nsolids[1] && nsolids[2] && nsolids[3] && nsolids[4] && nsolids[5]) {
+        return;
+    }
     // bake our27 neighbor voxels
 #ifdef zox_ambient_occlusion27
     short vlength = octree_size(depth);
@@ -199,6 +203,136 @@ void build_voxel_mesh_c(
         bounds_offset,
         depth,
         position);
+}
+
+// Flat grid mesh building, for a vox without neighbors at its max depth
+//  - the octree flattened once into a padded grid, neighbor checks are array reads, not root lookups
+//  - same faces and ao as build_voxel_mesh_c, in grid order
+#define zox_vox_grid_max_depth 6
+
+static inline int vox_grid_index(int length, int x, int y, int z) {
+    return ((x + 1) * (length + 2) + (y + 1)) * (length + 2) + (z + 1);
+}
+
+// returns 0 if a node at target depth has children (a lower lod, needs side checks)
+static byte fill_vox_grid(
+    const VoxelNode* node,
+    byte depth,
+    byte target_depth,
+    int3 position,
+    byte* grid,
+    int length)
+{
+    if (!node) {
+        return 1;
+    }
+    const byte has_kids = has_children_VoxelNode(node);
+    if (depth == target_depth || !has_kids) {
+        if (has_kids) {
+            return 0;
+        }
+        if (!node->value) {
+            return 1;
+        }
+        const int size = octree_size(target_depth - depth);
+        const int3 start = int3_multiply_int(position, size);
+        for (int x = start.x; x < start.x + size; x++) {
+            for (int y = start.y; y < start.y + size; y++) {
+                for (int z = start.z; z < start.z + size; z++) {
+                    grid[vox_grid_index(length, x, y, z)] = node->value;
+                }
+            }
+        }
+        return 1;
+    }
+    const VoxelNode* kids = get_children_VoxelNode(node);
+    for (byte i = 0; i < octree_length; i++) {
+        const int3 child_position = int3_add(int3_multiply_int(position, 2), byte3_to_int3(octree_positions[i]));
+        if (!fill_vox_grid(&kids[i], depth + 1, target_depth, child_position, grid, length)) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+// returns 0 if it couldn't (use build_voxel_mesh_c)
+byte build_voxel_mesh_grid(
+    const VoxelNode* root,
+    const ColorRGBs* vcolors,
+    mesh_colored_build_data* mesh,
+    byte target_depth,
+    float3 bounds_offset,
+    float scale)
+{
+#ifndef zox_ambient_occlusion27
+    return 0;
+#endif
+    if (!root || target_depth > zox_vox_grid_max_depth) {
+        return 0;
+    }
+    const int length = octree_size(target_depth);
+    const int glength = length + 2;
+    byte* grid = calloc(glength * glength * glength, 1);
+    if (!fill_vox_grid(root, 0, target_depth, int3_zero, grid, length)) {
+        free(grid);
+        return 0;
+    }
+    const float vscale = scale / length;
+    for (int x = 0; x < length; x++) {
+        for (int y = 0; y < length; y++) {
+            for (int z = 0; z < length; z++) {
+                const byte value = grid[vox_grid_index(length, x, y, z)];
+                if (!value) {
+                    continue;
+                }
+                const int3 position = (int3) { x, y, z };
+                byte nsolids[6];
+                byte hidden = 1;
+                for (byte direction = 0; direction < 6; direction++) {
+                    const int3 n = move_position(position, direction);
+                    nsolids[direction] = grid[vox_grid_index(length, n.x, n.y, n.z)] > 0;
+                    hidden &= nsolids[direction];
+                }
+                if (hidden) {
+                    continue;
+                }
+                const byte voxel = value - 1;
+                if (voxel >= vcolors->length) {
+                    zox_logw("Voxel Index OOB: %i >= %i", voxel, vcolors->length);
+                    continue;
+                }
+                const color_rgb voxel_color = vcolors->value[voxel];
+                byte naos[27];
+                byte i = 0;
+                for (sbyte ax = -1; ax <= 1; ax++) {
+                    for (sbyte ay = -1; ay <= 1; ay++) {
+                        for (sbyte az = -1; az <= 1; az++) {
+                            naos[i++] = (ax || ay || az) &&
+                                grid[vox_grid_index(length, x + ax, y + ay, z + az)] > 0;
+                        }
+                    }
+                }
+                const float3 positionf = int3_to_float3(position);
+                for (byte direction = 0; direction < 6; direction++) {
+                    if (nsolids[direction]) {
+                        continue;
+                    }
+                    const int* indiciesf = voxel_face_indicies_n + direction * voxel_face_indicies_length;
+                    const float3* verticesf = voxel_face_vertices_v2[direction];
+                    add_voxel_face(mesh, positionf, bounds_offset, vscale, indiciesf, verticesf);
+#ifdef zox_ambient_occlusion27
+                    if (zox_ambient_occlusion) {
+                        add_voxel_face_colors_ao_27(mesh->colors, voxel_color, direction, naos);
+                    } else {
+                        add_voxel_face_colors(mesh->colors, voxel_color, direction);
+                    }
+#endif
+                }
+            }
+        }
+    }
+    free(grid);
+    return 1;
 }
 
 // Builds Colored Vox Meshes

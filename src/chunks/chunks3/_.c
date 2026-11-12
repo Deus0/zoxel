@@ -34,6 +34,7 @@ void import_chunks3(ecs* world) {
     zox_tsts_chunks3_positions();
     zox_tsts_chunks3_io();
     zox_tsts_chunks3_sides();
+    zox_tsts_chunks3_vox_mesh_grid();
 }
 
 
