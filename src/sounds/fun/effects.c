@@ -1,6 +1,7 @@
 // Sound effects: what the world's actions sound like, all in one place (tuned by tst sound_balance)
 //  - an effect is an instrument, a range of notes (note_frequencies), lengths and volumes (of the sfx volume)
 //  - each spawn picks within its ranges, plays from its source (3D) or in the middle (no source)
+//  - dialogue is spoken in voices (sounds/bop/voice.c), not effects
 //  - small speakers barely play under ~150hz, so effects keep their body above that, or nobody hears them
 typedef enum {
     sound_effect_jump,
@@ -19,9 +20,6 @@ typedef enum {
     sound_effect_level_up,
     sound_effect_click,         // ui, in the middle
     sound_effect_click_rare,
-    sound_effect_talk,          // dialogue letters appearing
-    sound_effect_talk_rare,
-    sound_effect_talk_end,
     sound_effect_start,         // the start screen, on to the main menu
     sound_effect_end
 } SoundEffectType;
@@ -54,9 +52,6 @@ const SoundEffect sound_effects[sound_effect_end] = {
     [sound_effect_level_up] = { "level up", instrument_piano, 44, 47, 2.8f, 2.8f, 1.4f, 1.4f },
     [sound_effect_click] = { "click", instrument_flute, 27, 33, 0.3f, 0.45f, 0.9f, 1.2f },
     [sound_effect_click_rare] = { "click rare", instrument_harp, 52, 52, 0.4f, 0.5f, 1.2f, 1.4f },
-    [sound_effect_talk] = { "talk", instrument_guitar, 38, 45, 0.12f, 0.2f, 1.6f, 1.9f },
-    [sound_effect_talk_rare] = { "talk rare", instrument_harp, 47, 47, 0.15f, 0.25f, 1.2f, 1.4f },
-    [sound_effect_talk_end] = { "talk end", instrument_guitar, 38, 42, 0.8f, 1.2f, 1.6f, 1.9f },
     [sound_effect_start] = { "start", instrument_piano, 40, 40, 2.8f, 2.8f, 1.1f, 1.3f },
 };
 

@@ -11,6 +11,8 @@ zox_tag(QuestDialogue);
 // Move to texts
 zoxc_fixed_string(DialogueText, 512);
 zox_tag(SpeakerLinks);  // links a dialogue process to its many speakers
+zox_tag(SpeakerLink);   // the dialogue text -> who's saying it (their voice)
+zoxc_int(VoiceIndex);   // the dialogue text's next letter to say
 
 void zox_components_dialogues(ecs* world) {
     zoxd_tag(SpeechNode);
@@ -26,4 +28,6 @@ void zox_components_dialogues(ecs* world) {
     // Move to texts
     zoxd_fixed_string(DialogueText);
     zoxd_nf_links(SpeakerLinks);
+    zoxd_nf_link(SpeakerLink);
+    zoxd_int(VoiceIndex);
 }

@@ -32,6 +32,9 @@ zox_sys2(DialogueSpeechSystem) {
                 ".....";
         // zox_geter(node->value, DialogueText, text);
         set_TargetText(world, text_ui, text);
+        // said in the speaker's voice (the npc, not the player)
+        zox_set_link(world, text_ui, SpeakerLink, get_speaker_b(world, e));
+        zox_setv(text_ui, VoiceIndex, 0);
         zox_muter(text_ui, TextData, text_data);
         resize_TextData(text_data, 0);
         zox_add(text_ui, Dirty);

@@ -27,7 +27,9 @@ void zox_systems_dialogues(ecs* world) {
         DialogueSoundSystem,
         zoxp_spawn,
         [in] texts.GlyphSpawnedDirty,
-        [in] texts.AnimateTextEnded,
+        [in] texts.TargetText,
+        [in] texts.TextData,
+        [out] dialogues.VoiceIndex,
         [none] dialogues.DialogueLabel
     );
 }

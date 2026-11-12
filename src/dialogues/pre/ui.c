@@ -8,5 +8,6 @@ entity spawn_prefab_dialogue_text(ecs *world, entity prefab) {
     zox_set(e, AnimateTextTimeLimits, {{ 0.03f, 0.08f }});
     zox_setv(e, GlyphSpawnedDirty, 0);
     zox_setv(e, AnimateTextEnded, 0);
+    zox_setv(e, VoiceIndex, 0);
     return e;
 }
