@@ -629,6 +629,8 @@
 - Add a compass symbol to show north etc
 
 # Rendering, Lights and Cameras
+-x 3D lines draw instanced like particles (2000 lines in a draw, was a draw each), tst lines_render, lines_spawn
+- Cube lines (cube_line_render_system) and quad lines still draw an entity at a time: instance them too (gizmos)
 - Voxel meshing on the gpu, faster updates and less cpu load
 	- upload the voxels (a flat grid per depth like build_voxel_mesh_grid's pyramid, or the octree), a compute
 	  shader writes faces, ao and colors into the mesh buffers, no cpu mesh or upload

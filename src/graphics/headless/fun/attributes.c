@@ -8,4 +8,5 @@ void zox_gpu_enable_set_attribute_float2(guint id,  const void* ptr) { }
 void zox_gpu_enable_attribute_float3(guint id, const void* ptr) { }
 void zox_gpu_set_attribute_float3(guint id, const void* ptr) { }
 void zox_gpu_set_attribute_color(guint id, const void* ptr) { }
-static inline void zox_gpu_int(gint index, int value) { }
+static inline void zox_gpu_int(gint index, int value) { }void zox_gpu_set_attribute_float3_strided(guint id, int stride, unsigned long offset) { }
+void zox_gpu_set_attribute_floatx(guint id, const void* ptr, byte length) { }

@@ -16,3 +16,4 @@ static inline void zox_gpu_array_buffer_byte(uint shader_index, uint buffer) { }
 
 static inline void zox_gpu_array_buffer(uint link, int length, byte byte_size, void* ptr) { }
 static inline void zox_gpu_element_buffer(uint link, int length, byte byte_size, void* ptr) { }
+static inline void zox_gpu_set_sub_buffer_bytes(uint bytes, const void* ptr) { }

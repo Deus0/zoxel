@@ -76,3 +76,8 @@ static inline void zox_gpu_element_buffer(guint link, gsize length, byte byte_si
     zox_gpu_set_buffer_element(ptr, length * byte_size);
     zox_gpu_bind_buffer_element(0);
 }
+
+// uploads bytes to the start of the bound array buffer
+static inline void zox_gpu_set_sub_buffer_bytes(gsize bytes, const void* ptr) {
+    glBufferSubData(GL_ARRAY_BUFFER, 0, bytes, ptr);
+}
