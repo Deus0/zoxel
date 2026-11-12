@@ -105,3 +105,44 @@ void zox_tst_nf_prefabs_deferred_check(ecs* world) {
     zox_delete(prefab_middle);
     zox_delete(prefab_leaf);
 }
+
+// like a realm's stats: stat prefabs ChildOf the realm, a character ChildOf the realm, the character's stats
+//  instances of the prefabs, named, non fragmenting children of the character, deleting the realm
+//  - spawn_deferred: the stats made and parented in one deferred batch (a spawn system)
+static inline void zox_tst_nf_realm_case(ecs* world, byte spawn_deferred) {
+    const entity realm = zox_new();
+    const entity prefab_stat = zox_new();
+    zox_set_parent(world, prefab_stat, realm);
+    zox_make_prefab(prefab_stat);
+    zox_set_name(prefab_stat, "tst_stat_prefab");
+    const entity character = zox_new();
+    zox_set_parent(world, character, realm);
+    entity stat = 0;
+    if (spawn_deferred) {
+        zox_defer_begin();
+        stat = zox_ins_named(world, prefab_stat);
+        zox_set_parent_non_fragment(world, stat, character);
+        zox_defer_end();
+    } else {
+        stat = zox_ins_named(world, prefab_stat);
+        zox_set_parent_non_fragment(world, stat, character);
+    }
+    char* type = ecs_type_str(world, ecs_get_type(world, stat));
+    zox_log("[tst] the stat's type: %s", type);
+    ecs_os_free(type);
+    zox_tst_check(zox_get_parent(world, stat) == character, "the stat's parent isn't its character");
+    {
+        zox_defer_begin();
+        zox_delete(realm);
+        zox_defer_end();
+    }
+    zox_tst_check(!zox_alive(character) && !zox_alive(stat) && !zox_alive(prefab_stat), "the realm's entities survived it");
+}
+
+void zox_tst_nf_realm_check(ecs* world) {
+    zox_tst_nf_realm_case(world, 0);
+}
+
+void zox_tst_nf_realm_spawn_deferred_check(ecs* world) {
+    zox_tst_nf_realm_case(world, 1);
+}
