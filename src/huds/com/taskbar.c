@@ -26,6 +26,6 @@ void add_taskbar_button(ecs* world, TaskbarData data) {
     entity item = zox_new();
     zox_set_unique_name(item, data.tooltip_text);
     zox_set_data(item, TaskbarData, data);
-    zox_set_parent(world, item, taskbar_manager);
+    zox_set_parent_non_fragment(world, item, taskbar_manager);
     // TaskbarData_array_d_add(TaskbarDatas, data);
 }

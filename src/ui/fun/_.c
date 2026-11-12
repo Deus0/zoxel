@@ -20,7 +20,7 @@ void initialize_element(ecs *world, entity e, entity parent, entity canvas, int2
         zox_loge("Invalid e in [initialize_element]");
         return;
     }
-    zox_set_parent(world, e, parent);
+    zox_set_parent_non_fragment(world, e, parent);
     zox_set(e, LayoutPosition, { position });
     zox_set(e, Anchor, { anchor });
     zox_set(e, LayoutSize, { size });

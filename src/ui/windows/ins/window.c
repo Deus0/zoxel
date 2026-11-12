@@ -18,7 +18,7 @@ entity3 spawn_window(
     zox_instance(prefab);
     output.x = e;
     zox_set_unique_name(e, header);
-    zox_set_parent(world, e, parent);
+    zox_set_parent_non_fragment(world, e, parent);
     byte header_height = 0;
     // NOTE: Header Anchored to top of window
     {
@@ -143,7 +143,7 @@ entity2 spawn_window_old(
             header_text_data,
             header_data,
             on_click);
-        zox_set_parent(world, header, e);
+        zox_set_parent_non_fragment(world, header, e);
     }
     return (entity2) { e, header };
 }

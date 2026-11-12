@@ -150,6 +150,11 @@ void zox_tst_profile_frame(ecs* world) {
             }
         }
         {
+            static char spawned[1024];
+            zox_count_spawned_prefabs(world, spawned, sizeof(spawned), 8);
+            zox_log("[profile]   spawned most: %.400s", spawned);
+        }
+        {
             static char top_ids[1024];
             zox_count_ids_top(world, top_ids, sizeof(top_ids), 8);
             zox_log("[profile]   moved most: %.400s", top_ids);

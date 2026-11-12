@@ -299,6 +299,38 @@ static void zox_count_ids_text(ecs* world, ZoxIdCount* zox_id_counts, char* out,
     }
 }
 
+// the prefabs instantiated most since the last reset ((IsA, prefab) adds), what's spawning, as text
+void zox_count_spawned_prefabs(ecs* world, char* out, int size, int top) {
+    static ZoxIdCount isa[zox_id_counts_max];
+    int count = 0;
+    for (int i = 0; i < zox_id_counts_max; i++) {
+        const ecs_id_t id = zox_id_counts[i].id;
+        if (id && ECS_IS_PAIR(id) && ECS_PAIR_FIRST(id) == EcsIsA && zox_id_counts[i].adds) {
+            isa[count++] = zox_id_counts[i];
+        }
+    }
+    int written = 0;
+    out[0] = 0;
+    for (int t = 0; t < top; t++) {
+        int best = -1;
+        for (int i = 0; i < count; i++) {
+            if (isa[i].adds && (best < 0 || isa[i].adds > isa[best].adds)) {
+                best = i;
+            }
+        }
+        if (best < 0) {
+            break;
+        }
+        const char* name = ecs_get_name(world, ecs_pair_second(world, isa[best].id));
+        const int length = snprintf(out + written, size - written, "%s%s x%u", t ? ", " : "", name ? name : "?", isa[best].adds);
+        isa[best].adds = 0;
+        if (length < 0 || written + length >= size - 1) {
+            break;
+        }
+        written += length;
+    }
+}
+
 // the ids moved most since the last reset (this frame), then resets them
 void zox_count_ids_top(ecs* world, char* out, int size, int top) {
     zox_count_ids_text(world, zox_id_counts, out, size, top);

@@ -16,7 +16,7 @@ entity spawn_image(
     zox_set(e, LayoutSize, { size });
     zox_set(e, Anchor, { panchor });
     zox_set(e, Layer, { layer });
-    zox_set_parent(world, e, parent);
+    zox_set_parent_non_fragment(world, e, parent);
     zox_set(e, RenderDisabled, { rdisabled });
     if (canvas == parent) {
         zox_set(canvas, WindowToTop, { e });

@@ -7,7 +7,7 @@ entity2 spawn_button(ecs* world, entity prefab, entity parent, const char* text,
     }
     zox_instance(prefab);
     zox_name("button");
-    zox_set_parent(world, e, parent);
+    zox_set_parent_non_fragment(world, e, parent);
     zox_set(e, LayoutPosition, { position });
     zox_set(e, LayoutSize, { size });
     zox_set(e, Anchor, { position_anchor });

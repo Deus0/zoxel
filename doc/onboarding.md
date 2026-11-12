@@ -237,6 +237,8 @@ The loop:
 - [Audio](audio.md): the mixer, 3D sounds, effects, voices and music
 - [Nodes](nodes.md): node graphs, how dialogue and quests walk them
 - [Tests](tests.md): writing tests, patterns, every test by area
+- [Systems](systems.md): the phases in a frame, kinds of systems, budgets, profiling
+- [Spawning](spawning.md): how entities are made, what it costs, keeping it cheap
 - [Game Design](gdd.md): the blend, the pillars, what's playable and planned
 - [Commands](commands.md): every command line flag for the game binary
 - [Help](help.md): make targets

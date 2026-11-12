@@ -11,7 +11,7 @@ entity spawn_skeleton(
     if (zox_has(owner, Rotation3D)) {
         zox_setv(e, Rotation3D, zox_getv(owner, Rotation3D));
     }
-    zox_set_parent(world, e, owner);
+    zox_set_parent_non_fragment(world, e, owner);
     zox_link(world, owner, SkeletonLink, e);
     return e;
 }

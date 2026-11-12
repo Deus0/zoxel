@@ -139,7 +139,7 @@ entity spawn_taskbar(
                 isize,
                 isize);
             zox_set_unique_name(icon, "taskbar_icon");
-            // zox_set_parent(world, icon, frame);
+            // zox_set_parent_non_fragment(world, icon, frame);
             zox_setv(icon, ClickEvent, &taskbar_button_click_event);
             zox_setv(icon, TooltipEvent, &tooltip_text_event);
             // Set Tooltip
@@ -187,7 +187,7 @@ entity spawn_taskbar(
             zox_loge("[spawn_taskbar] Frame Invalid [%i]", i);
             continue;
         }
-        zox_set_parent(world, frame, body);
+        zox_set_parent_non_fragment(world, frame, body);
     }*/
     return e;
 }

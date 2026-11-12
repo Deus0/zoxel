@@ -23,7 +23,7 @@ entity spawn_header(
     }
     zox_instance(prefab_header);
     zox_name("header");
-    zox_set_parent(world, e, parent);
+    zox_set_parent_non_fragment(world, e, parent);
     zox_setv(e, LayoutPosition, position);
     zox_setv(e, LayoutSize, size);
     zox_setv(e, Anchor, anchor);
@@ -112,7 +112,7 @@ entity spawn_header_old(
             zext.margins.y,
             element_data.layer + 2,
             on_click);
-        zox_set_parent(world, close_button, e);
+        zox_set_parent_non_fragment(world, close_button, e);
     }
     return e;
 }

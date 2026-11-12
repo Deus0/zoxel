@@ -135,7 +135,7 @@ entity spawn_list(
         }
         if (child) {
             zox_setv(child, ChildIndex, i);
-            zox_set_parent(world, child, e);
+            zox_set_parent_non_fragment(world, child, e);
         } else {
             zox_loge("No child at [%i] in spawn_list", i);
         }

@@ -16,7 +16,7 @@ entity2 spawn_slider(
     zox_instance(element_data.prefab);
     zox_name("slider");
     zox_set(e, SliderLabel, { slider_data.name });
-    zox_set_parent(world, e, parent_data.e);
+    zox_set_parent_non_fragment(world, e, parent_data.e);
     zox_set(e, LayoutPosition, { element_data.position });
     zox_set(e, LayoutSize, { element_data.size });
     zox_set(e, Anchor, { element_data.anchor });
@@ -42,7 +42,7 @@ entity2 spawn_slider(
         handle_outline,
         0);
     zox_set(handle, SlideBounds, { slider_data.bounds });
-    zox_set_parent(world, handle, e);
+    zox_set_parent_non_fragment(world, handle, e);
     spawn_text(
         world,
         prefab_text,

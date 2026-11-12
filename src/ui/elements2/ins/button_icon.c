@@ -20,7 +20,7 @@ entity spawn_button_icon(
     zox_set(e, LayoutSize, { size });
     zox_set(e, Anchor, { panchor });
     zox_set(e, Layer, { layer });
-    zox_set_parent(world, e, parent);
+    zox_set_parent_non_fragment(world, e, parent);
     if (canvas == parent) {
         zox_set(canvas, WindowToTop, { e });
     }
@@ -43,6 +43,6 @@ entity spawn_button_icon(
         layer + 1,
         rdisabled,
         texture);
-    zox_set_parent(world, image, e);
+    zox_set_parent_non_fragment(world, image, e);
     return e;
 }
