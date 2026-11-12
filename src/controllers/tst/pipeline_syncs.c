@@ -83,7 +83,8 @@ void zox_tst_pipeline_syncs_check(ecs* world) {
     }
     zox_log("[tst] [metric] pipeline systems [%i] merges [%i] main thread between multi threaded [%i]",
         system_count, merges, sandwiched);
-    // guards, raise with a reason: 11 merges (2026-11-12), one per op from spawn to the end of the frame
+    // guards, raise with a reason: 12 merges (2026-11-12), one per op from spawn to the end of the frame, and
+    //  zox_tst_system (immediate, only on with --tst or --profile, games have 11)
     zox_tst_check(merges <= zox_tst_pipeline_merges_max, "[%i] merges, over [%i]: a main thread system in a multi \
 threaded phase? (listed above)", merges, zox_tst_pipeline_merges_max);
     zox_tst_check(!sandwiched, "[%i] main thread systems between multi threaded ones", sandwiched);

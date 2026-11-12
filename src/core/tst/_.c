@@ -222,8 +222,16 @@ void zox_tst_start() {
     _exit(zox_exit_code);
 }
 
+// Runs the active test and the frame profiler, at the end of each frame
+//  - immediate: a test's checks see their changes straight away
+//  - disabled unless --tst or --profile, so games have no merge for it
+void zox_tst_system(iter* it) {
+    zox_sys_world2();
+    zox_tst_update(world);
+    zox_profile_update(world);
+} zoxd_system(zox_tst_system);
+
 void process_arguments_tst(ecs* world, char* args[], int count) {
-    (void) world;
     for (int i = 1; i < count; i++) {
         if (strcmp(args[i], "--profile-ms") == 0 && i + 1 < count) {
             zox_profile_spike_ms = atof(args[i + 1]);
@@ -254,6 +262,9 @@ void process_arguments_tst(ecs* world, char* args[], int count) {
             zox_tst_timescale = atof(args[i + 1]);
         }
     }
+    if (zox_tst_name || zox_profile_spikes) {
+        ecs_enable(world, ecs_id(zox_tst_system), true);
+    }
 }
 
 // module tests below core (the "_" module), registered here as they can't see the harness
@@ -262,11 +273,17 @@ void process_arguments_tst(ecs* world, char* args[], int count) {
 #include "../../_/flecs/tst/_.c"
 #include "../../_/maths/tst/_.c"
 
-void initialize_tst() {
+
+void initialize_tst(ecs* world) {
     zox_tsts_octrees();
     zox_tsts_hashmaps();
     zox_tsts_maths();
     add_hook_terminal_command(process_arguments_tst);
-    add_hook_post_update(zox_tst_update);
-    add_hook_post_update(zox_profile_update);
+    zox_system_immediate(
+        zox_tst_system,
+        zoxp_dbg_end,
+        0
+    );
+    ecs_enable(world, ecs_id(zox_tst_system), false);
+    zox_system_times_ignore = ecs_id(zox_tst_system);
 }
