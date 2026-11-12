@@ -42,11 +42,23 @@ zoxp_octree_read: ChunkColorsBuildSystem VoxLodMeshBuildSystem chunk_sides_syste
 
 - A merge waits for every worker and applies every queued command, the pipeline's slowest points.
 - Keep main thread systems together: spawning in `zoxp_spawn`, gpu work in `zoxp_gpu_upload`, `zoxp_render`.
-- A main thread system alone in a multi threaded phase splits it, 2 merges (listed by `pipeline_syncs`):
-  `trail_system`, `Layout3System`, `transform3_children_system`, `billboard_system` (2026-11-12), candidates to
-  be multi threaded or moved. `SoundListenerSystem` was one, moved to `zoxp_render` with the other main thread
-  systems.
+- **A system that doesn't need the main thread is multi threaded.** Main thread is for spawning and deleting,
+  gpu calls, and state shared outside flecs (the mixer, sdl).
+- A main thread system alone in a multi threaded phase splits it, 2 merges (listed by `pipeline_syncs`).
+  `SoundListenerSystem` was one, moved to `zoxp_render` with the other main thread systems.
 - Add a merge on purpose only as a barrier (below), and say why where it's registered.
+
+### The transform chain's barriers
+
+`trail_system`, `Layout3System`, `transform3_children_system` and `billboard_system` are main thread to be
+barriers (the 2026-09-18 crash fixes, "to sync it"), not for the main thread: each needs the step before it done
+on every worker, physics -> trails -> 3D layouts -> hierarchy -> billboards -> matrices.
+
+- Multi threaded with an empty barrier phase before each, the merges stay the same (2 a barrier), only their
+  work spreads over workers (small: ~0.3ms for the hierarchy, 2026-11-12).
+- Fewer merges: flecs merges once, not twice, when a system reads (`$this`) what an earlier system declared it
+  writes to the stage (a `[out] T()` term, no source): a dependency between two multi threaded systems, no main
+  thread system. A tag per step could chain them with 1 merge each, untried.
 
 ## Octrees
 
