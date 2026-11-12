@@ -153,6 +153,10 @@ void build_voxel_mesh_c(
     // Dig Deeper
     byte has_vkids = has_children_VoxelNode(voxels);
     const VoxelNode* vkids = has_vkids ? get_children_VoxelNode(voxels): NULL;
+    // an air leaf is air all the way down, no faces (split digs into leaves, a depth 7 vox is 2M cells)
+    if (!has_vkids && !voxels->value) {
+        return;
+    }
     byte is_dig = depth < target_depth;
     if (!is_split) { // || !zox_split_colored_chunks) {
         is_dig &= has_vkids;
@@ -205,54 +209,181 @@ void build_voxel_mesh_c(
         position);
 }
 
-// Flat grid mesh building, for a vox without neighbors at its max depth
-//  - the octree flattened once into a padded grid, neighbor checks are array reads, not root lookups
-//  - same faces and ao as build_voxel_mesh_c, in grid order
-#define zox_vox_grid_max_depth 6
+// Pyramid mesh building, for a vox without neighbors (models, skeletons)
+//  - the octree flattened once into a padded grid of node pointers per depth (a pyramid), so neighbor lookups
+//    are array reads, not lookups from the root (a depth 5 model: 29ms -> 5ms)
+//  - each cell is what get_VoxelNode returns there: the node at that depth, or the leaf above it
+//  - levels down to the target depth only, deeper side checks walk the octree, air leaves aren't filled down
+//    (calloc'd pages nobody writes stay free), a sparse depth 7 character is cheap
+//  - walks the octree like build_voxel_mesh_c (split or not, any lod), the same faces and ao in the same order
+#define zox_vox_grid_max_depth 7
+
+typedef struct {
+    byte max_depth;
+    const VoxelNode** levels[zox_vox_grid_max_depth + 1];
+} vox_pyramid;
 
 static inline int vox_grid_index(int length, int x, int y, int z) {
     return ((x + 1) * (length + 2) + (y + 1)) * (length + 2) + (z + 1);
 }
 
-// returns 0 if a node at target depth has children (a lower lod, needs side checks)
-static byte fill_vox_grid(
-    const VoxelNode* node,
-    byte depth,
-    byte target_depth,
-    int3 position,
-    byte* grid,
-    int length)
-{
+static inline const VoxelNode* vox_pyramid_get(const vox_pyramid* pyramid, byte depth, int x, int y, int z) {
+    return pyramid->levels[depth][vox_grid_index(octree_size(depth), x, y, z)];
+}
+
+static void fill_vox_pyramid(vox_pyramid* pyramid, const VoxelNode* node, byte depth, int3 position) {
     if (!node) {
-        return 1;
+        return;
     }
-    const byte has_kids = has_children_VoxelNode(node);
-    if (depth == target_depth || !has_kids) {
-        if (has_kids) {
-            return 0;
+    pyramid->levels[depth][vox_grid_index(octree_size(depth), position.x, position.y, position.z)] = node;
+    if (depth == pyramid->max_depth) {
+        return;
+    }
+    if (has_children_VoxelNode(node)) {
+        const VoxelNode* kids = get_children_VoxelNode(node);
+        for (byte i = 0; i < octree_length; i++) {
+            const int3 child_position = int3_add(int3_multiply_int(position, 2), byte3_to_int3(octree_positions[i]));
+            fill_vox_pyramid(pyramid, &kids[i], depth + 1, child_position);
         }
-        if (!node->value) {
-            return 1;
-        }
-        const int size = octree_size(target_depth - depth);
+        return;
+    }
+    // air below reads as no node, the same to faces and ao
+    if (!node->value) {
+        return;
+    }
+    // a leaf: it's the node all the way down
+    for (byte level = depth + 1; level <= pyramid->max_depth; level++) {
+        const int size = octree_size(level - depth);
+        const int length = octree_size(level);
         const int3 start = int3_multiply_int(position, size);
+        const VoxelNode** grid = pyramid->levels[level];
         for (int x = start.x; x < start.x + size; x++) {
             for (int y = start.y; y < start.y + size; y++) {
                 for (int z = start.z; z < start.z + size; z++) {
-                    grid[vox_grid_index(length, x, y, z)] = node->value;
+                    grid[vox_grid_index(length, x, y, z)] = node;
                 }
             }
         }
-        return 1;
     }
-    const VoxelNode* kids = get_children_VoxelNode(node);
-    for (byte i = 0; i < octree_length; i++) {
-        const int3 child_position = int3_add(int3_multiply_int(position, 2), byte3_to_int3(octree_positions[i]));
-        if (!fill_vox_grid(&kids[i], depth + 1, target_depth, child_position, grid, length)) {
-            return 0;
+}
+
+// like is_adjacent_all_solid with no neighbor chunks
+static inline byte vox_pyramid_adjacent_solid(const vox_pyramid* pyramid, byte depth, int3 position, byte direction) {
+    const int3 adjacent = move_position(position, direction);
+    const VoxelNode* node = vox_pyramid_get(pyramid, depth, adjacent.x, adjacent.y, adjacent.z);
+    if (!node) {
+        return 0;
+    }
+    const byte reversed = reverse_direction(direction);
+    return get_node_sides_all_solid(NULL, node, reversed >> 1, reversed & 1, 8);
+}
+
+static void build_voxel_faces_pyramid(
+    const vox_pyramid* pyramid,
+    mesh_colored_build_data* mesh,
+    color_rgb voxel_color,
+    float scale,
+    float3 bounds_offset,
+    byte depth,
+    byte3 position)
+{
+    const int3 p = byte3_to_int3(position);
+    byte nsolids[6];
+    byte hidden = 1;
+    for (byte direction = 0; direction < 6; direction++) {
+        nsolids[direction] = vox_pyramid_adjacent_solid(pyramid, depth, p, direction);
+        hidden &= nsolids[direction];
+    }
+    // hidden voxels add no faces
+    if (hidden) {
+        return;
+    }
+    byte naos[27];
+    byte i = 0;
+    for (sbyte x = -1; x <= 1; x++) {
+        for (sbyte y = -1; y <= 1; y++) {
+            for (sbyte z = -1; z <= 1; z++) {
+                if (!x && !y && !z) {
+                    naos[i++] = 0;
+                    continue;
+                }
+                const VoxelNode* node = vox_pyramid_get(pyramid, depth, p.x + x, p.y + y, p.z + z);
+                naos[i++] = node && node->value > 0;
+            }
         }
     }
-    return 1;
+    const float3 positionf = byte3_to_float3(position);
+    for (byte direction = 0; direction < 6; direction++) {
+        if (nsolids[direction]) {
+            continue;
+        }
+        const int* indiciesf = voxel_face_indicies_n + direction * voxel_face_indicies_length;
+        const float3* verticesf = voxel_face_vertices_v2[direction];
+        add_voxel_face(mesh, positionf, bounds_offset, scale, indiciesf, verticesf);
+#ifdef zox_ambient_occlusion27
+        if (zox_ambient_occlusion) {
+            add_voxel_face_colors_ao_27(mesh->colors, voxel_color, direction, naos);
+        } else {
+            add_voxel_face_colors(mesh->colors, voxel_color, direction);
+        }
+#endif
+    }
+}
+
+// build_voxel_mesh_c's walk, with pyramid lookups
+static void build_voxel_mesh_pyramid_dig(
+    const vox_pyramid* pyramid,
+    const VoxelNode* voxels,
+    const ColorRGBs* vcolors,
+    mesh_colored_build_data* mesh,
+    byte target_depth,
+    byte depth,
+    byte3 position,
+    float3 bounds_offset,
+    float scale,
+    byte is_split)
+{
+    if (!voxels) {
+        return;
+    }
+    const byte has_vkids = has_children_VoxelNode(voxels);
+    const VoxelNode* vkids = has_vkids ? get_children_VoxelNode(voxels): NULL;
+    if (!has_vkids && !voxels->value) {
+        return;
+    }
+    byte is_dig = depth < target_depth;
+    if (!is_split) {
+        is_dig &= has_vkids;
+    }
+    if (is_dig) {
+        depth++;
+        scale *= 0.5f;
+        byte3_multiply_byte(&position, 2);
+        for (byte i = 0; i < octree_length; i++) {
+            const VoxelNode* child_voxels = has_vkids ? &vkids[i] : voxels;
+            build_voxel_mesh_pyramid_dig(
+                pyramid,
+                child_voxels,
+                vcolors,
+                mesh,
+                target_depth,
+                depth,
+                byte3_add(position, octree_positions[i]),
+                bounds_offset,
+                scale,
+                is_split);
+        }
+        return;
+    }
+    if (!voxels->value) {
+        return;
+    }
+    const byte voxel = voxels->value - 1;
+    if (voxel >= vcolors->length) {
+        zox_logw("Voxel Index OOB: %i >= %i", voxel, vcolors->length);
+        return;
+    }
+    build_voxel_faces_pyramid(pyramid, mesh, vcolors->value[voxel], scale, bounds_offset, depth, position);
 }
 
 // returns 0 if it couldn't (use build_voxel_mesh_c)
@@ -260,78 +391,29 @@ byte build_voxel_mesh_grid(
     const VoxelNode* root,
     const ColorRGBs* vcolors,
     mesh_colored_build_data* mesh,
+    byte node_depth,
     byte target_depth,
     float3 bounds_offset,
-    float scale)
+    float scale,
+    byte is_split)
 {
 #ifndef zox_ambient_occlusion27
     return 0;
 #endif
-    if (!root || target_depth > zox_vox_grid_max_depth) {
+    if (!root || target_depth > zox_vox_grid_max_depth || target_depth > node_depth) {
         return 0;
     }
-    const int length = octree_size(target_depth);
-    const int glength = length + 2;
-    byte* grid = calloc(glength * glength * glength, 1);
-    if (!fill_vox_grid(root, 0, target_depth, int3_zero, grid, length)) {
-        free(grid);
-        return 0;
+    vox_pyramid pyramid = { .max_depth = target_depth };
+    for (byte depth = 0; depth <= target_depth; depth++) {
+        const int glength = octree_size(depth) + 2;
+        pyramid.levels[depth] = calloc(glength * glength * glength, sizeof(VoxelNode*));
     }
-    const float vscale = scale / length;
-    for (int x = 0; x < length; x++) {
-        for (int y = 0; y < length; y++) {
-            for (int z = 0; z < length; z++) {
-                const byte value = grid[vox_grid_index(length, x, y, z)];
-                if (!value) {
-                    continue;
-                }
-                const int3 position = (int3) { x, y, z };
-                byte nsolids[6];
-                byte hidden = 1;
-                for (byte direction = 0; direction < 6; direction++) {
-                    const int3 n = move_position(position, direction);
-                    nsolids[direction] = grid[vox_grid_index(length, n.x, n.y, n.z)] > 0;
-                    hidden &= nsolids[direction];
-                }
-                if (hidden) {
-                    continue;
-                }
-                const byte voxel = value - 1;
-                if (voxel >= vcolors->length) {
-                    zox_logw("Voxel Index OOB: %i >= %i", voxel, vcolors->length);
-                    continue;
-                }
-                const color_rgb voxel_color = vcolors->value[voxel];
-                byte naos[27];
-                byte i = 0;
-                for (sbyte ax = -1; ax <= 1; ax++) {
-                    for (sbyte ay = -1; ay <= 1; ay++) {
-                        for (sbyte az = -1; az <= 1; az++) {
-                            naos[i++] = (ax || ay || az) &&
-                                grid[vox_grid_index(length, x + ax, y + ay, z + az)] > 0;
-                        }
-                    }
-                }
-                const float3 positionf = int3_to_float3(position);
-                for (byte direction = 0; direction < 6; direction++) {
-                    if (nsolids[direction]) {
-                        continue;
-                    }
-                    const int* indiciesf = voxel_face_indicies_n + direction * voxel_face_indicies_length;
-                    const float3* verticesf = voxel_face_vertices_v2[direction];
-                    add_voxel_face(mesh, positionf, bounds_offset, vscale, indiciesf, verticesf);
-#ifdef zox_ambient_occlusion27
-                    if (zox_ambient_occlusion) {
-                        add_voxel_face_colors_ao_27(mesh->colors, voxel_color, direction, naos);
-                    } else {
-                        add_voxel_face_colors(mesh->colors, voxel_color, direction);
-                    }
-#endif
-                }
-            }
-        }
+    fill_vox_pyramid(&pyramid, root, 0, int3_zero);
+    build_voxel_mesh_pyramid_dig(&pyramid, root, vcolors, mesh,
+        target_depth, 0, byte3_zero, bounds_offset, scale, is_split);
+    for (byte depth = 0; depth <= target_depth; depth++) {
+        free((void*) pyramid.levels[depth]);
     }
-    free(grid);
     return 1;
 }
 
