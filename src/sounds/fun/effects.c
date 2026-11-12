@@ -2,6 +2,7 @@
 //  - an effect is an instrument, a range of notes (note_frequencies), lengths and volumes (of the sfx volume)
 //  - each spawn picks within its ranges, plays from its source (3D) or in the middle (no source)
 //  - dialogue is spoken in voices (sounds/bop/voice.c), not effects
+//  - hits are impacts (flesh on flesh), swings whooshes, soft not sharp (sounds/bop/impacts.c)
 //  - small speakers barely play under ~150hz, so effects keep their body above that, or nobody hears them
 typedef enum {
     sound_effect_jump,
@@ -38,16 +39,16 @@ typedef struct {
 const SoundEffect sound_effects[sound_effect_end] = {
     [sound_effect_jump] = { "jump", instrument_edm, 38, 43, 0.18f, 0.24f, 1.6f, 2.0f },
     [sound_effect_land] = { "land", instrument_edm, 31, 35, 0.3f, 0.36f, 2.2f, 2.6f },
-    [sound_effect_hit] = { "hit", instrument_piano_square, 40, 42, 0.4f, 0.5f, 0.85f, 1.0f },
-    [sound_effect_swing] = { "swing", instrument_flute, 45, 47, 0.22f, 0.28f, 1.2f, 1.4f },
+    [sound_effect_hit] = { "hit", instrument_impact, 34, 38, 0.1f, 0.13f, 1.9f, 2.1f },
+    [sound_effect_swing] = { "swing", instrument_whoosh, 40, 44, 0.2f, 0.24f, 1.6f, 1.8f },
     [sound_effect_out_of_range] = { "out of range", instrument_flute, 50, 50, 0.3f, 0.3f, 1.2f, 1.2f },
     [sound_effect_no_resource] = { "no resource", instrument_piano, 36, 36, 0.6f, 0.6f, 1.4f, 1.4f },
-    [sound_effect_block_hit] = { "block hit", instrument_piano, 36, 41, 0.4f, 0.4f, 1.4f, 1.6f },
+    [sound_effect_block_hit] = { "block hit", instrument_impact, 40, 44, 0.12f, 0.14f, 1.8f, 1.9f },
     [sound_effect_block_hard] = { "block hard", instrument_piano_square, 45, 47, 0.26f, 0.26f, 0.75f, 0.75f },
     [sound_effect_consume] = { "consume", instrument_guitar, 40, 45, 0.4f, 0.4f, 1.5f, 1.5f },
     [sound_effect_place] = { "place", instrument_guitar, 38, 43, 0.4f, 0.4f, 1.5f, 1.5f },
-    [sound_effect_aura] = { "aura", instrument_piano_square, 40, 40, 0.5f, 0.5f, 0.75f, 0.75f },
-    [sound_effect_block_damage] = { "block damage", instrument_piano, 32, 38, 0.4f, 0.4f, 1.1f, 1.1f },
+    [sound_effect_aura] = { "aura", instrument_impact, 33, 35, 0.16f, 0.16f, 1.8f, 1.8f },
+    [sound_effect_block_damage] = { "block damage", instrument_impact, 40, 44, 0.12f, 0.14f, 1.8f, 1.9f },
     [sound_effect_block_break] = { "block break", instrument_piano, 40, 48, 0.7f, 0.7f, 1.4f, 1.4f },
     [sound_effect_level_up] = { "level up", instrument_piano, 44, 47, 2.8f, 2.8f, 1.4f, 1.4f },
     [sound_effect_click] = { "click", instrument_flute, 27, 33, 0.3f, 0.45f, 0.9f, 1.2f },

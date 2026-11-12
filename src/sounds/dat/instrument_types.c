@@ -16,5 +16,8 @@
 #define instrument_cello 14
 #define instrument_choir 15
 #define instrument_bell 16
-#define instrument_end 17
-#define instrument_piano_file 18   // the piano.wav sound file, re-pitched (not generated)
+// impacts (bop/impacts.c)
+#define instrument_impact 17
+#define instrument_whoosh 18
+#define instrument_end 19
+#define instrument_piano_file 20   // the piano.wav sound file, re-pitched (not generated)

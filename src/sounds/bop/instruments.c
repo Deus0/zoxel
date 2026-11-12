@@ -30,6 +30,8 @@ const InstrumentData instruments[instrument_end] = {
     [instrument_cello] = { "cello", cello_sound, 0.12f, 0.25f, 1 },
     [instrument_choir] = { "choir", choir_sound, 0.3f, 0.3f, 1 },
     [instrument_bell] = { "bell", bell_sound, 0.003f, 0.1f, 1 },
+    [instrument_impact] = { "impact", impact_sound, 0.001f, 0.35f, 1 },
+    [instrument_whoosh] = { "whoosh", whoosh_sound, 0.08f, 0.55f, 1 },
 };
 
 static inline byte is_instrument(byte instrument) {
