@@ -1,0 +1,107 @@
+--- a/inc/flecs/flecs.c	2026-11-13 02:20:13.663352335 +0800
++++ b/inc/flecs/flecs.c	2026-11-13 02:20:13.707010571 +0800
+@@ -17945,10 +17945,12 @@
+ 
+ static bool flecs_on_delete_clear_entities(
+     ecs_world_t *world,
+-    bool force_delete)
++    bool force_delete,
++    int32_t first_id)
+ {
++    /* ZOXEL PATCH cleanup: starts at first_id, earlier ids are cleared */
+     /* Iterate in reverse order so that DAGs get deleted bottom to top */
+-    int32_t i, last = ecs_vec_count(&world->store.marked_ids), first = 0;
++    int32_t i, last = ecs_vec_count(&world->store.marked_ids), first = first_id;
+     ecs_marked_id_t *ids = ecs_vec_first(&world->store.marked_ids);
+     
+     do {
+@@ -18073,6 +18075,47 @@
+     }
+ }
+ 
++/* ZOXEL PATCH cleanup: runs OnDelete / OnDeleteTarget traits of non
++ * fragmenting components for marked ids [first, last). Deletes made here can
++ * mark new ids, the caller clears those too. */
++static void flecs_on_delete_clear_sparse_ids(
++    ecs_world_t *world,
++    int32_t first,
++    int32_t last)
++{
++    int32_t twice = 2;
++    do {
++        int32_t i;
++        for (i = first; i < last; i ++) {
++            /* deletes can grow the array, reobtain it */
++            ecs_marked_id_t *ids = ecs_vec_first(&world->store.marked_ids);
++            ecs_component_record_t *cr = ids[i].cr;
++            ecs_entity_t action = ids[i].action;
++            ecs_id_t component_id = cr->id;
++
++            /* Same order as release, normal ids before wildcard ids */
++            if (ecs_id_is_wildcard(component_id) != (twice == 1)) {
++                continue;
++            }
++
++            /* Run OnDeleteTarget traits for non-fragmenting relationships */
++            if (ECS_IS_PAIR(component_id) &&
++               (ECS_PAIR_FIRST(component_id) == EcsWildcard) &&
++               (cr->flags & EcsIdMatchDontFragment))
++            {
++                flecs_on_delete_clear_sparse(world, cr);
++            }
++
++            /* Run OnDelete traits for non-fragmenting components */
++            if (action == EcsDelete) {
++                if (cr->flags & EcsIdDontFragment) {
++                    flecs_component_delete_sparse(world, cr);
++                }
++            }
++        }
++    } while (-- twice);
++}
++
+ static bool flecs_on_delete_clear_ids(
+     ecs_world_t *world,
+     bool force_delete)
+@@ -18099,21 +18142,8 @@
+             ecs_component_record_t *cr = ids[i].cr;
+             bool delete_id = ids[i].delete_id;
+ 
+-            /* Run OnDeleteTarget traits for non-fragmenting relationships */
+-            ecs_id_t component_id = cr->id;
+-            if (ECS_IS_PAIR(component_id) && 
+-               (ECS_PAIR_FIRST(component_id) == EcsWildcard) &&
+-               (cr->flags & EcsIdMatchDontFragment)) 
+-            {
+-                flecs_on_delete_clear_sparse(world, cr);
+-            }
+-
+-            /* Run OnDelete traits for non-fragmenting components */
+-            if (ids[i].action == EcsDelete) {
+-                if (cr->flags & EcsIdDontFragment) {
+-                    flecs_component_delete_sparse(world, cr);
+-                }
+-            }
++            /* ZOXEL PATCH cleanup: non fragmenting deletes moved to
++             * flecs_on_delete_clear_sparse_ids, as ids they mark here are lost */
+ 
+             if (flecs_component_release_tables(world, cr)) {
+                 ecs_assert(!force_delete || 
+@@ -18191,8 +18221,15 @@
+         ecs_dbg_2("#[red]delete#[reset]");
+         ecs_log_push_2();
+ 
+-        /* Delete all entities from the to-be-deleted tables/components */
+-        flecs_on_delete_clear_entities(world, force_delete);
++        /* Delete all entities from the to-be-deleted tables/components
++         * ZOXEL PATCH cleanup: and non fragmenting holders, until no new ids */
++        int32_t zox_first = 0, zox_last;
++        do {
++            flecs_on_delete_clear_entities(world, force_delete, zox_first);
++            zox_last = ecs_vec_count(&world->store.marked_ids);
++            flecs_on_delete_clear_sparse_ids(world, zox_first, zox_last);
++            zox_first = zox_last;
++        } while (ecs_vec_count(&world->store.marked_ids) > zox_first);
+ 
+         /* Release remaining references to the ids */
+         flecs_on_delete_clear_ids(world, force_delete);

@@ -1,0 +1,34 @@
+--- a/inc/flecs/flecs.c	2026-11-13 02:20:13.716555159 +0800
++++ b/inc/flecs/flecs.c	2026-11-13 02:20:13.746012044 +0800
+@@ -40469,12 +40469,16 @@
+             continue;
+         }
+ 
+-        ecs_assert(flecs_entities_is_alive(world, p),
+-            ECS_INTERNAL_ERROR, NULL);
++        /* ZOXEL PATCH nf parent: a cascade can delete the parent before this
++         * child, its child record still exists, skip what uses the parent */
++        const bool parent_alive = flecs_entities_is_alive(world, p);
+ 
+         ecs_component_record_t *cr = flecs_components_get(
+             world, ecs_childof(p));
+-        ecs_assert(cr != NULL, ECS_INTERNAL_ERROR, NULL);
++        if (!cr) {
++            ecs_assert(!parent_alive, ECS_INTERNAL_ERROR, NULL);
++            continue;
++        }
+ 
+         flecs_non_fragmenting_childof_count(world, cr, src, -1);
+ 
+@@ -40485,6 +40489,11 @@
+ 
+         flecs_ordered_entities_remove(world, cr, e);
+ 
++        /* ZOXEL PATCH nf parent: not for a deleted parent */
++        if (!parent_alive) {
++            continue;
++        }
++
+         flecs_tree_spawner_assert_not_instantiated(world, p);
+ 
+         if (names) {

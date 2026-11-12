@@ -1,0 +1,160 @@
+--- a/inc/flecs/flecs.c	2026-11-13 02:20:13.756012421 +0800
++++ b/inc/flecs/flecs.c	2026-11-13 02:20:13.794085831 +0800
+@@ -764,6 +764,8 @@
+ 
+     /* All non-fragmenting ids */
+     ecs_id_record_elem_t non_fragmenting;
++    ecs_id_record_elem_t non_fragmenting_root; /* ZOXEL PATCH nf root list */
++    bool non_fragmenting_is_root;
+ 
+     /* Refcount */
+     int32_t refcount;
+@@ -4062,6 +4064,7 @@
+ 
+     /* Head of list that points to all non-fragmenting component ids */
+     ecs_component_record_t *cr_non_fragmenting_head;
++    ecs_component_record_t *cr_non_fragmenting_root_head; /* ZOXEL PATCH nf root list */
+ 
+     int32_t cr_flag_count;
+ 
+@@ -7517,6 +7520,26 @@
+     return false;
+ }
+ 
++/* ZOXEL PATCH nf root list: removes one non fragmenting id from an entity */
++static void flecs_entity_remove_non_fragmenting_one(
++    ecs_world_t *world,
++    ecs_component_record_t *cr,
++    ecs_record_t *r)
++{
++    ecs_type_t type = { .count = 1, .array = &cr->id };
++    flecs_emit(world, world, &(ecs_event_desc_t) {
++        .event = EcsOnRemove,
++        .ids = &type,
++        .table = r->table,
++        .other_table = r->table,
++        .offset = ECS_RECORD_TO_ROW(r->row),
++        .count = 1,
++        .observable = world
++    });
++    flecs_component_sparse_remove(
++        world, cr, r->table, ECS_RECORD_TO_ROW(r->row));
++}
++
+ void flecs_entity_remove_non_fragmenting(
+     ecs_world_t *world,
+     ecs_entity_t e,
+@@ -7530,29 +7553,54 @@
+         return;
+     }
+ 
+-    ecs_component_record_t *cur = world->cr_non_fragmenting_head;
++    /* ZOXEL PATCH nf root list: the roots, and the entity's own targets of each relationship */
++    ecs_component_record_t *cur = world->cr_non_fragmenting_root_head;
+     while (cur) {
++        ecs_component_record_t *next = cur->non_fragmenting_root.next;
+         ecs_assert(cur->flags & EcsIdSparse, ECS_INTERNAL_ERROR, NULL);
+-        if (cur->sparse && !(ecs_id_is_wildcard(cur->id))) {
+-            if (flecs_sparse_has(cur->sparse, e)) {
+-                ecs_type_t type = { .count = 1, .array = &cur->id };
+-
+-                flecs_emit(world, world, &(ecs_event_desc_t) {
+-                    .event = EcsOnRemove,
+-                    .ids = &type,
+-                    .table = r->table,
+-                    .other_table = r->table,
+-                    .offset = ECS_RECORD_TO_ROW(r->row),
+-                    .count = 1,
+-                    .observable = world
+-                });
+-
+-                flecs_component_sparse_remove(
+-                    world, cur, r->table, ECS_RECORD_TO_ROW(r->row));
++        if (cur->sparse && flecs_sparse_has(cur->sparse, e)) {
++            if (!ecs_id_is_wildcard(cur->id)) {
++                flecs_entity_remove_non_fragmenting_one(world, cur, r);
++            } else if (ECS_IS_PAIR(cur->id) &&
++                ECS_PAIR_FIRST(cur->id) != EcsWildcard)
++            {
++                /* copied, removing a pair removes its target from this */
++                ecs_entity_t stack_targets[32];
++                ecs_entity_t *targets = stack_targets;
++                int32_t count = 0;
++                if (cur->flags & EcsIdExclusive) {
++                    ecs_entity_t *tgt = flecs_sparse_get_t(
++                        cur->sparse, ecs_entity_t, e);
++                    if (tgt && *tgt) {
++                        targets[count ++] = *tgt;
++                    }
++                } else {
++                    ecs_type_t *type = flecs_sparse_get_t(
++                        cur->sparse, ecs_type_t, e);
++                    if (type && type->count) {
++                        count = type->count;
++                        if (count > 32) {
++                            targets = ecs_os_malloc_n(ecs_entity_t, count);
++                        }
++                        ecs_os_memcpy_n(targets, type->array, ecs_entity_t, count);
++                    }
++                }
++                ecs_entity_t first = ECS_PAIR_FIRST(cur->id);
++                for (int32_t i = 0; i < count; i ++) {
++                    ecs_component_record_t *pair_cr = flecs_components_get(
++                        world, ecs_pair(first, targets[i]));
++                    if (pair_cr && pair_cr->sparse &&
++                        flecs_sparse_has(pair_cr->sparse, e))
++                    {
++                        flecs_entity_remove_non_fragmenting_one(world, pair_cr, r);
++                    }
++                }
++                if (targets != stack_targets) {
++                    ecs_os_free(targets);
++                }
+             }
+         }
+-
+-        cur = cur->non_fragmenting.next;
++        cur = next;
+     }
+ 
+     r->row &= ~EcsEntityHasDontFragment;
+@@ -38788,6 +38836,18 @@
+     cr->non_fragmenting.next = world->cr_non_fragmenting_head;
+     world->cr_non_fragmenting_head = cr;
+ 
++    /* ZOXEL PATCH nf root list: a pair whose (R, *) keeps its targets is reached through it */
++    bool is_child_pair = ECS_IS_PAIR(cr->id) && !ecs_id_is_wildcard(cr->id) &&
++        cr->pair && cr->pair->parent && cr->pair->parent->sparse;
++    if (!is_child_pair) {
++        cr->non_fragmenting_is_root = true;
++        if (world->cr_non_fragmenting_root_head) {
++            world->cr_non_fragmenting_root_head->non_fragmenting_root.prev = cr;
++        }
++        cr->non_fragmenting_root.next = world->cr_non_fragmenting_root_head;
++        world->cr_non_fragmenting_root_head = cr;
++    }
++
+     if (cr->id < FLECS_HI_COMPONENT_ID) {
+         world->non_trivial_lookup[cr->id] |= EcsNonTrivialIdNonFragmenting;
+         world->non_trivial_set[cr->id] = true;
+@@ -38804,6 +38864,20 @@
+         world->cr_non_fragmenting_head = cr->non_fragmenting.next;
+     }
+ 
++    /* ZOXEL PATCH nf root list */
++    if (cr->non_fragmenting_is_root) {
++        if (world->cr_non_fragmenting_root_head == cr) {
++            world->cr_non_fragmenting_root_head = cr->non_fragmenting_root.next;
++        }
++        if (cr->non_fragmenting_root.prev) {
++            cr->non_fragmenting_root.prev->non_fragmenting_root.next = cr->non_fragmenting_root.next;
++        }
++        if (cr->non_fragmenting_root.next) {
++            cr->non_fragmenting_root.next->non_fragmenting_root.prev = cr->non_fragmenting_root.prev;
++        }
++        cr->non_fragmenting_is_root = false;
++    }
++
+     if (cr->non_fragmenting.prev) {
+         cr->non_fragmenting.prev->non_fragmenting.next = 
+             cr->non_fragmenting.next;

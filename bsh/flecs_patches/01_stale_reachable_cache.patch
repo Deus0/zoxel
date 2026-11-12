@@ -1,0 +1,67 @@
+--- a/inc/flecs/flecs.c	2026-11-13 02:20:13.614373371 +0800
++++ b/inc/flecs/flecs.c	2026-11-13 02:20:13.654517064 +0800
+@@ -15005,9 +15005,7 @@
+ {
+     ecs_assert(cr->pair != NULL, ECS_INTERNAL_ERROR, NULL);
+     ecs_reachable_cache_t *rc = &cr->pair->reachable;
+-    if (rc->current == rc->generation) {
+-        return;
+-    }
++    /* ZOXEL PATCH v3: always rebuild, the generation can miss invalidations */
+ 
+     if (depth >= FLECS_DAG_DEPTH_MAX) {
+         ecs_abort(ECS_CYCLE_DETECTED, "cycle in traversable relationship");
+@@ -15077,14 +15075,11 @@
+ {
+     ecs_assert(cr->pair != NULL, ECS_INTERNAL_ERROR, NULL);
+     ecs_reachable_cache_t *rc = &cr->pair->reachable;
+-    if (rc->current != rc->generation) {
+-        if (world->flags & EcsWorldMultiThreaded) {
+-            return NULL;
+-        }
+-
+-        flecs_reachable_cache_ensure(world, cr, 0, true);
++    /* ZOXEL PATCH v3: never trust the cache, multithreaded uses the slow search */
++    if (world->flags & EcsWorldMultiThreaded) {
++        return NULL;
+     }
+-
++    flecs_reachable_cache_ensure(world, cr, 0, true);
+     return &rc->ids;
+ }
+ 
+@@ -15109,16 +15104,24 @@
+     int32_t i, count = ecs_vec_count(&rc->ids);
+     for (i = 0; i < count; i ++) {
+         ecs_reachable_elem_t *elem = &elems[i];
+-        const ecs_table_record_t *tr = elem->tr;
+-        ecs_assert(tr != NULL, ECS_INTERNAL_ERROR, NULL);
+-        ecs_component_record_t *rc_cr = tr->hdr.cr;
+-        ecs_record_t *r = elem->record;
+-
+-        ecs_assert(rc_cr->id == elem->id, ECS_INTERNAL_ERROR, NULL);
+-        ecs_assert(r != NULL, ECS_INTERNAL_ERROR, NULL);
+-        ecs_assert(flecs_entities_get(world, elem->src) == r,
+-            ECS_INTERNAL_ERROR, NULL);
+-        ecs_dbg_assert(r->table == elem->table, ECS_INTERNAL_ERROR, NULL);
++        /* ZOXEL PATCH v3: stale reachable cache (bsh/flecs_fix.sh)
++         * The source can change table, or be deleted, in the same command
++         * flush after the cache was built. Use its live record and look up
++         * the table record in its current table. */
++        if (!flecs_entities_is_alive(world, elem->src)) {
++            continue;
++        }
++        ecs_record_t *r = flecs_entities_get(world, elem->src);
++        if (!r || !r->table) {
++            continue;
++        }
++        ecs_component_record_t *rc_cr = flecs_components_get(world, elem->id);
++        const ecs_table_record_t *tr = (rc_cr && r->table) ?
++            flecs_component_get_table(rc_cr, r->table) : NULL;
++        if (!tr) {
++            /* id was removed from the source since the cache was built */
++            continue;
++        }
+ 
+         flecs_emit_forward_id(world, er, er_onset, emit_ids, it, table,
+             rc_cr, elem->src, r->table, tr->index, trav);
