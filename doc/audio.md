@@ -53,6 +53,8 @@ spawn_sound_effect(world, sound_effect_click, 0);          // ui, in the middle
 - To add one, add a `SoundEffectType` and its row. `tst sound_balance` checks it straight away.
 - **Small speakers barely play under ~150hz.** Laptops and most headphones lose anything lower, so an effect
   at 50hz is silent for most players however loud it is. Keep an effect's body above ~90hz.
+- Hits are `instrument_impact` (flesh on flesh: a falling thump, a dull smack, a muffled slap), swings
+  `instrument_whoosh` ([impacts.c](../src/sounds/bop/impacts.c)). `tst sound_balance` keeps attacks duller than a 1khz tone.
 - Spiky instruments (violin) hit their clip limit before they get loud. Fuller ones (square piano, flute,
   guitar, edm) carry better.
 

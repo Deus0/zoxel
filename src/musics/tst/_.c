@@ -432,6 +432,30 @@ void zox_tst_sound_balance_check(ecs* world) {
         zox_tst_check(worst[i] <= sound_balance_ratio_max, "[%s] is [%.2f]x the music, too loud", sound_effects[i].name, worst[i]);
     }
     zox_tst_check(placed >= 3 * sound_effect_end, "only [%i] effects placed", placed);
+    // attacks are soft, not sharp: duller than a 1khz tone (its brightness, change to size, is about 0.02)
+    {
+        const SoundEffectType soft[] = { sound_effect_hit, sound_effect_swing, sound_effect_block_hit, sound_effect_aura };
+        for (int k = 0; k < 4; k++) {
+            const SoundEffect effect = sound_effects[soft[k]];
+            const uint sfx_length = (uint) (effect.seconds_max * sound_sample_rate);
+            generate_instrument_samples(effect.instrument, note_frequencies[effect.note_min], effect.seconds_max, 1, 0, sfx, sfx_length);
+            double change = 0, power = 0;
+            for (uint j = 1; j < sfx_length; j++) {
+                change += (sfx[j] - sfx[j - 1]) * (sfx[j] - sfx[j - 1]);
+                power += sfx[j] * sfx[j];
+            }
+            const float brightness = power > 0 ? (float) (change / power) : 0;
+            zox_log("[tst] [%s] brightness [%.4f]", effect.name, brightness);
+            zox_tst_check(brightness < 0.02f, "[%s] is sharp, brightness [%.4f] (a 1khz tone is 0.02)", effect.name, brightness);
+        }
+        generate_instrument_samples(instrument_piano_square, note_frequencies[40], 0.4f, 1, 0, sfx, (uint) (0.4f * sound_sample_rate));
+        double change = 0, power = 0;
+        for (uint j = 1; j < (uint) (0.4f * sound_sample_rate); j++) {
+            change += (sfx[j] - sfx[j - 1]) * (sfx[j] - sfx[j - 1]);
+            power += sfx[j] * sfx[j];
+        }
+        zox_log("[tst] [the old hit, square piano] brightness [%.4f]", power > 0 ? change / power : 0);
+    }
     // voices (dialogue): a deep, normal, high and tiny one, as loud as DialogueSoundSystem says them
     const float voice_pitches[4] = { 100, 180, 290, 420 };
     for (int v = 0; v < 4; v++) {
