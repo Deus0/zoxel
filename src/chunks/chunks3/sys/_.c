@@ -24,7 +24,19 @@
 #include "trigger.c"
 #include "transition.c"
 
+// Does nothing: a main thread system between multi threaded ones makes flecs merge and wait for every worker,
+//  so octree writes (zoxp_octree_write) all finish before octree reads (zoxp_octree_read) start
+//  - flecs only syncs workers on a merge, phases alone don't (a worker runs its share of each system in turn)
+void octree_sync_system(iter* it) {
+    (void) it;
+} zoxd_system(octree_sync_system);
+
 void zox_systems_chunks3(ecs *world) {
+    zox_system_1(
+        octree_sync_system,
+        zoxp_octree_sync,
+        0
+    );
     zox_system(
         BakeVoxSystem,
         zoxp_update,
