@@ -173,3 +173,55 @@ void zox_tst_tables_stream_check(ecs* world) {
     zox_tst_check(zox_tst_perf_tables_most <= zox_tst_tables_per_step_max,
         "a chunk step made [%i] tables, over [%i]", zox_tst_perf_tables_most, zox_tst_tables_per_step_max);
 }
+
+// tst: perf_fly, the player flies across the terrain like playing, not stepping and waiting like perf_stream
+//  - diagonal (two chunk borders at once), about a chunk a second, for zox_tst_fly_seconds, streaming never
+//    settles, so its spikes stack like they do in play
+//  - profiles every frame, the slowest frames and systems, run in release at default settings for real numbers:
+//      bash bsh/build.sh zoxel --release, then the release binary with --tst perf_fly --profile --nosaves
+//  - run: bash bsh/tst.sh perf_fly --stress (tests default to --tiny terrain)
+#define zox_tst_fly_seconds 20.0
+#define zox_tst_fly_chunks_per_second 1.0
+double zox_tst_fly_start = 0;
+float zox_tst_fly_height = 0;
+
+byte zox_tst_perf_fly_ready(ecs* world) {
+    if (!zox_tst_fly_start) {
+        if (!zox_tst_player_spawn_ready(world)) {
+            return 0;
+        }
+        zox_tst_fly_start = zox_current_time;
+        const entity character = zox_tst_spawn_character(world);
+        zox_tst_fly_height = zox_getv(character, Position3D).y + 8 * zox_getv(local_terrain, BlockScale);
+    }
+    zox_tst_profile_frame(world);
+    const double elapsed = zox_current_time - zox_tst_fly_start;
+    zox_tst_waiting = "flying across the terrain";
+    zox_tst_progress(elapsed);
+    if (elapsed >= zox_tst_fly_seconds) {
+        return 1;
+    }
+    const entity character = zox_tst_spawn_character(world);
+    if (!character || !zox_valid(local_terrain)) {
+        zox_tst_check(0, "the player's character or terrain is gone");
+        return 1;
+    }
+    const float scale = zox_getv(local_terrain, BlockScale);
+    const float chunk_length = octree_size(zox_getv(local_terrain, NodeDepth)) * scale;
+    const float distance = elapsed * zox_tst_fly_chunks_per_second * chunk_length * 0.7071f;
+    // from where it spawned, so frame time doesn't change the path
+    static float3 origin;
+    static byte has_origin = 0;
+    if (!has_origin) {
+        origin = zox_getv(character, Position3D);
+        has_origin = 1;
+    }
+    const float3 position = { origin.x + distance, zox_tst_fly_height, origin.z + distance };
+    zox_setv(character, Position3D, position);
+    zox_setv(character, Velocity3D, float3_zero);
+    return 0;
+}
+
+void zox_tst_perf_fly_check(ecs* world) {
+    zox_tst_profile_log(world, "perf_fly");
+}

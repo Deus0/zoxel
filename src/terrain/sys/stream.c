@@ -153,6 +153,9 @@ void terrain_stream_queue_system(iter* it) {
                     }
                     int2_hashmap_remove(tunks->value, position2);
                     zox_delete(tunk);
+                    // a column's chunks and everything in them (npcs, block voxes): one a frame, the frame's whole
+                    //  quota, all queued kills in one frame were 50-78ms frames flying (tst perf_fly)
+                    processed = max_process;
                     continue;
                 }
                 RenderDistance* tunk_distance = zox_mut(tunk, RenderDistance);

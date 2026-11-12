@@ -9,7 +9,7 @@
 //  - many links: count, iteration, get by index (0 past the end) and zox_unlink_all over 100 targets
 //  - owned links (zoxd_nf_link_owned): the linking entity is deleted with its target
 //  - zox_is_linked_any
-//  - callbacks are queued and run next frame (UnlinksSystem), so this runs over a few frames
+//  - callbacks are queued and run next frame (unlink_system), so this runs over a few frames
 //  - run: bash bsh/tst.sh links_api
 zox_tag(TstLink);
 zox_tag(TstLinks);
