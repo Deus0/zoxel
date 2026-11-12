@@ -1,5 +1,6 @@
 #include "load.c"
 #include "menus.c"
+#include "end_game.c"
 #include "mouse.c"
 #include "tooltips.c"
 #include "options.c"
@@ -12,6 +13,8 @@
 void zox_tsts_huds() {
     zox_tsts_huds_load();
     zox_tst_add("menu_flow", zox_tst_menu_flow_ready, zox_tst_menu_flow_check, 120);
+    zox_tst_add("end_game_cleanup", zox_tst_end_game_ready, zox_tst_end_game_check, 180);
+    zox_tst_set_setup("end_game_cleanup", NULL, 1);
     zox_tst_set_setup("menu_flow", NULL, 1);
     zox_tst_add("mouse_click", zox_tst_mouse_click_ready, zox_tst_mouse_click_check, 60);
     zox_tst_set_setup("mouse_click", NULL, 1);

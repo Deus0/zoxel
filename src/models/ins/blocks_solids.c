@@ -64,6 +64,7 @@ entity spawn_model_wood(
     zox_setv(e, VoxType, vox_type_wood);
     zox_setv(e, VoxUniqueColors, 8);
     zox_setv(e, VoxColorRange, 0.34f);
+    zox_set_parent(world, e, parent);   // the realm owns it, it leaked ending a game (tst end_game_cleanup)
     return e;
 }
 
@@ -82,6 +83,7 @@ entity spawn_model_stone(
     zox_setv(e, VoxType, vox_type_soil);
     zox_setv(e, VRegions, 80);
     zox_setv(e, VoxColorRange, 0.15f);
+    zox_set_parent(world, e, parent);   // the realm owns it, it leaked ending a game (tst end_game_cleanup)
     return e;
 }
 
@@ -100,6 +102,7 @@ entity spawn_model_bricks(
     zox_add(e, BakeModel);
     zox_setv(e, VoxType, vox_type_bricks);
     zox_setv(e, SecondaryColor, cracks_color);
+    zox_set_parent(world, e, parent);   // the realm owns it, it leaked ending a game (tst end_game_cleanup)
     return e;
 }
 
@@ -118,5 +121,6 @@ entity spawn_model_road(
     zox_setv(e, VoxType, vox_type_road);
     zox_setv(e, VoxUniqueColors, 8);
     zox_setv(e, VoxColorRange, 0.24f);
+    zox_set_parent(world, e, parent);   // the realm owns it, it leaked ending a game (tst end_game_cleanup)
     return e;
 }

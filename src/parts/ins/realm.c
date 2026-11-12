@@ -34,6 +34,9 @@ entity2 spawn_realm_body_part(
     zox_add(e, BodyModel);
     zox_add(e, ModelGroup);
     zox_set_parent(world, e, parent);
+    // the realm owns the blueprint (a node graph), not a model: a cloned model would copy it
+    //  (unowned it leaked when a game ended, tst end_game_cleanup)
+    zox_set_parent(world, blueprint, parent);
     entity max_depth_vox = 0;
     for (byte j = 0; j < variants; j++) {
         lint vseed = seed + j * 1209;

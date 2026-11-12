@@ -789,6 +789,8 @@
 	- Maybe we just build spinlock into the octree types root, would be a massive refactor tho
 
 # Engine and Refactors
+- Heap grows ~22mb a game ended and started again (tst end_game_cleanup), entities, gpu buffers, textures and
+  tables don't: trace allocations (glibc mtrace, or a flecs os api malloc hook) to tell a leak from flecs pools
 - Thread safety (doc/thread_safety.md, tst pipeline_syncs):
 	- 10 merges (from 19), under 10: the transform chain is 5, billboards could rotate inside the hierarchy walk
 	- stream_npcs segfaulted once in a full suite run (before the octree barrier), watch for it

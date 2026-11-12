@@ -209,6 +209,10 @@ void vodes_spawn_system(iter* it) {
         vodes_new_chunks_this_frame = 0;
     }
     zox_sys_world();
+    // only while its game plays: not while it ends, its chunks are deleted that frame and a block vox spawned
+    //  into one was left without a parent (tst end_game_cleanup), checked once per terrain
+    entity checked_terrain = 0;
+    byte terrain_playing = 0;
     zox_sys_begin();
     zox_sys_in(NodeDepth);
     zox_sys_in(RenderDisabled);
@@ -245,6 +249,15 @@ void vodes_spawn_system(iter* it) {
         }
         entity realm = zox_get_parent(world, terrain);
         if (!zox_valid(realm)) {
+            continue;
+        }
+        if (terrain != checked_terrain) {
+            checked_terrain = terrain;
+            const entity game = zox_get_link(world, realm, GameLink);
+            const byte game_state = zox_valid(game) ? zox_getv(game, GameState) : zox_game_none;
+            terrain_playing = game_state == zox_game_state_playing || game_state == zox_game_state_paused;
+        }
+        if (!terrain_playing) {
             continue;
         }
         //  base off render distance
