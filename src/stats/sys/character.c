@@ -58,6 +58,12 @@ void spawn_base_stats(
         mana_base,
         mana_base + soul_value * mana_level_increase
     };
+    // npcs start full, so they don't regenerate (dirtying their stats) until they're hurt
+    if (!is_player_character) {
+        health.x = health.y;
+        energy.x = energy.y;
+        mana.x = mana.y;
+    }
     // Soul
     entity soule = zox_get_child_by_id(world, e, zox_id(StatSoul));
     if (!zox_valid(soule)) {
