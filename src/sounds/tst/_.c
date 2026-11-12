@@ -51,6 +51,7 @@ void zox_tst_sound_formats_check(ecs* world) {
 //  - writes a short phrase per instrument to bin/tst/instruments/<name>.wav, to listen to
 //  - run: bash bsh/tst.sh sound_instruments
 #define zox_tst_instrument_seconds 0.5f
+#define zox_tst_instrument_budget_ms 40.0  // a second of sound, in a debug build (the choir took 330ms, lag spikes)
 #define zox_tst_instrument_frequency 220.0f
 
 // the strongest period near the expected one, as a frequency (autocorrelation)
@@ -151,6 +152,9 @@ void zox_tst_sound_instruments_check(ecs* world) {
             clock_gettime(CLOCK_MONOTONIC, &t1);
             const double ms = (t1.tv_sec - t0.tv_sec) * 1000.0 + (t1.tv_nsec - t0.tv_nsec) / 1000000.0;
             zox_log("[tst] [%s] generates a second in [%.1fms]", instruments[instrument].name, ms);
+            // a note is generated in one go when it spawns, a slow one is a lag spike (debug build budget)
+            zox_tst_check(ms < zox_tst_instrument_budget_ms, "[%s] takes [%.1fms] to generate a second, over [%.0fms]",
+                instruments[instrument].name, ms, zox_tst_instrument_budget_ms);
         }
         free(timed);
     }

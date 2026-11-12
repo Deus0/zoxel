@@ -108,3 +108,90 @@ float bell_sound(float time, float frequency) {
     }
     return value;
 }
+
+// whole notes at once: what doesn't change through a note is worked out once, not every sample
+//  (the choir's formant weights cost 180 exponentials a sample, 330ms a second, the lag spikes)
+//  - steady instruments (cello, choir) become a wavetable: one cycle of their wave, then every sample
+//      reads it at its phase, vibrato wobbles the phase (about 1ms a second of sound)
+//  - fills samples with the raw note, the instrument's attack, release and normalizing come after
+//  - the table is what an instrument entity could keep, built once, not per note
+#define wavetable_size 2048
+
+// one cycle of a wave from its harmonic weights (phase offset per harmonic)
+static inline void wavetable_build(float* table, const float* weights, int harmonics, float offset) {
+    for (int i = 0; i < wavetable_size; i++) {
+        const float phase = 2 * M_PI * i / wavetable_size;
+        float value = 0;
+        for (int n = 1; n <= harmonics; n++) {
+            value += weights[n] * sinf(n * phase + offset);
+        }
+        table[i] = value;
+    }
+}
+
+// reads a wavetable at a phase (cycles), blending between its samples
+static inline float wavetable_read(const float* table, double phase) {
+    const double cycle = phase - floor(phase);
+    const float x = (float) (cycle * wavetable_size);
+    const int i = (int) x;
+    const float t = x - i;
+    const float a = table[i & (wavetable_size - 1)];
+    const float b = table[(i + 1) & (wavetable_size - 1)];
+    return a + (b - a) * t;
+}
+
+// the cello: its body resonance per harmonic, a vibrato fading in
+void cello_note(float frequency, float* samples, uint length) {
+    float table[wavetable_size];     // per note (notes generate on worker threads)
+    float weights[17];
+    int harmonics = 0;
+    for (int n = 1; n <= 16 && frequency * n <= 6000; n++) {
+        const float partial = frequency * n;
+        weights[n] = (1 + 0.6f * expf(-powf((partial - 500) / 250, 2))) / n;
+        harmonics = n;
+    }
+    wavetable_build(table, weights, harmonics, 0);
+    const float vibrato_rate = 5.2f;
+    double phase = 0;
+    for (uint j = 0; j < length; j++) {
+        const float time = j / sample_rate_f;
+        const float vibrato = 0.005f * fminf(1, time / 0.3f) * sinf(2 * M_PI * vibrato_rate * time);
+        phase += frequency * (1 + vibrato) / sample_rate_f;
+        samples[j] = wavetable_read(table, phase) + 0.02f * ambient_noise(time);
+    }
+}
+
+// the choir: three voices slightly detuned, each its own table of formant weighted harmonics
+void choir_note(float frequency, float* samples, uint length) {
+    static const float formants[] = { 700, 1220, 2600 };
+    static const float widths[] = { 130, 150, 250 };
+    static const float strengths[] = { 1.0f, 0.7f, 0.25f };
+    static const float detunes[] = { 1.0f, 1.004f, 0.996f };
+    float tables[3][wavetable_size]; // per note (notes generate on worker threads)
+    for (int v = 0; v < 3; v++) {
+        const float voice = frequency * detunes[v];
+        float weights[21];
+        int harmonics = 0;
+        for (int n = 1; n <= 20 && voice * n <= 5000; n++) {
+            const float partial = voice * n;
+            float weight = 0.08f;
+            for (int f = 0; f < 3; f++) {
+                weight += strengths[f] * expf(-powf((partial - formants[f]) / widths[f], 2));
+            }
+            weights[n] = weight;
+            harmonics = n;
+        }
+        wavetable_build(tables[v], weights, harmonics, v);
+    }
+    double phases[3] = { 0, 0, 0 };
+    for (uint j = 0; j < length; j++) {
+        const float time = j / sample_rate_f;
+        const float vibrato = 0.004f * sinf(2 * M_PI * 5.0f * time);
+        float value = 0;
+        for (int v = 0; v < 3; v++) {
+            phases[v] += frequency * detunes[v] * (1 + vibrato) / sample_rate_f;
+            value += wavetable_read(tables[v], phases[v]);
+        }
+        samples[j] = value + 0.015f * ambient_noise(time);
+    }
+}
