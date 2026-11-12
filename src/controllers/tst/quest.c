@@ -12,7 +12,8 @@ entity zox_tst_quest_given[2];
 // the tracker shows quest's tracker text
 static inline byte zox_tst_quest_tracker_shows(ecs* world, entity tracker, entity quest) {
     char* expected = (char*) get_quest_tracker_text(world, quest);
-    const byte shows = is_zext(zox_get(tracker, TextData), expected);
+    const TextData* text_data = zox_get(tracker, TextData);
+    const byte shows = is_zext((TextData*) text_data, expected);
     if (expected[0]) {
         free(expected);
     }

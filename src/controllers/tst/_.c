@@ -74,7 +74,7 @@ void zox_tst_spawn_dump_column(ecs* world, entity terrain, int3 column) {
         for (int dz = -terrain_lod_near; dz <= terrain_lod_near; dz++) {
             const int2 p2 = (int2) { column.x + dx, column.z + dz };
             if (!zox_valid(int2_hashmap_get(tunks->value, p2))) {
-                zox_log("[tst]   near column [%ix%i] has no tunk (queued [%i])", p2.x, p2.y, get_TerrainSpawnQueue(queue, p2) != NULL);
+                zox_log("[tst]   near column [%ix%i] has no tunk (queued [%i])", p2.x, p2.y, get_TerrainSpawnQueue((TerrainSpawnQueue*) queue, p2) != NULL);
             }
         }
     }

@@ -168,7 +168,7 @@ byte zox_tst_editor_ready(ecs* world) {
                             continue;
                         }
                         char* label = fetch_component_label(world, zox_tst_editor_target, component);
-                        if (!is_zext(zox_get(text, TextData), label)) {
+                        if (!is_zext((TextData*) zox_get(text, TextData), label)) {
                             stale++;
                         }
                         free(label);
