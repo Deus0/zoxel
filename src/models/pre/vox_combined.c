@@ -4,8 +4,8 @@ entity spawn_prefab_vox_combined(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("vox_combined");
     zox_setv(e, CombineVox, 0);
-    zox_prefab_add(e, CombineList);
-    zox_prefab_add(e, CombinePositions);
-    zox_prefab_add(e, CombineDepths);
+    zox_add(e, CombineList);
+    zox_add(e, CombinePositions);
+    zox_add(e, CombineDepths);
     return e;
 }

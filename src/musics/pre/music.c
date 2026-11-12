@@ -2,13 +2,13 @@ entity spawn_prefab_music(ecs *world) {
     zox_prefab();
     zox_prefab_name("music");
     zox_add(e, Music);
-    zox_prefab_set(e, MusicLength, { 0 });
-    zox_prefab_set(e, MusicTime, { 0 });
-    zox_prefab_set(e, MusicSpeed, { 1.0 });
-    zox_prefab_set(e, MusicNote, { 0 });
-    zox_prefab_set(e, MusicEnabled, { 0 });
-    zox_prefab_set(e, MusicVolume, { 1 });
-    zox_prefab_set(e, MusicVolumeTarget, { 1 });
+    zox_set(e, MusicLength, { 0 });
+    zox_set(e, MusicTime, { 0 });
+    zox_set(e, MusicSpeed, { 1.0 });
+    zox_set(e, MusicNote, { 0 });
+    zox_set(e, MusicEnabled, { 0 });
+    zox_set(e, MusicVolume, { 1 });
+    zox_set(e, MusicVolumeTarget, { 1 });
     return e;
 }
 

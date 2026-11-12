@@ -8,9 +8,9 @@ entity spawn_prefab_terrain(ecs *world) {
     zox_setv(e, NodeDepth, 0);
     // Should we add transform late?
     // Links
-    zox_prefab_add(e, RegionLinks);
-    zox_prefab_add(e, TunkLinks);
-    zox_prefab_add(e, ChunkLinks);
+    zox_add(e, RegionLinks);
+    zox_add(e, TunkLinks);
+    zox_add(e, ChunkLinks);
     // Stream Event
     zox_setv(e, EventInput, 0);
     zox_setv(e, StreamEndEvent, NULL);

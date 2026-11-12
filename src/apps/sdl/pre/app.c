@@ -1,9 +1,9 @@
 entity spawn_prefab_app_sdl(ecs *world) {
     zox_prefab_child(prefab_app);
     zox_prefab_name("app_sdl");
-    zox_prefab_set(e, SDLWindow, { NULL });
-    zox_prefab_set(e, Context, { NULL });
-    zox_prefab_set(e, WindowFullscreen, { 0 });
+    zox_set(e, SDLWindow, { NULL });
+    zox_set(e, Context, { NULL });
+    zox_set(e, WindowFullscreen, { 0 });
     // zox_add(e, ViewPort)
     return e;
 }

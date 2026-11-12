@@ -10,7 +10,7 @@ void prefab_set_mesh_indicies(
     MeshIndicies indicies = (MeshIndicies) { 0 };
     resize_MeshIndicies(&indicies, length);
     memcpy(indicies.value, indicies_, length * sizeof(int));
-    zox_prefab_set_ptr(e, MeshIndicies, indicies);
+    zox_set_ptr(e, MeshIndicies, indicies);
 }
 
 void prefab_set_mesh2D_vertices(
@@ -25,7 +25,7 @@ void prefab_set_mesh2D_vertices(
     MeshVertices2D vertices = (MeshVertices2D) { 0 };
     resize_MeshVertices2D(&vertices, length);
     memcpy(vertices.value, vertices_, length * sizeof(float2));
-    zox_prefab_set_ptr(e, MeshVertices2D, vertices);
+    zox_set_ptr(e, MeshVertices2D, vertices);
 }
 
 void prefab_set_mesh3D_vertices(
@@ -48,28 +48,28 @@ void prefab_set_mesh3D_vertices(
             0
         };
     }
-    zox_prefab_set_ptr(e, MeshVertices, meshVertices);
+    zox_set_ptr(e, MeshVertices, meshVertices);
 }
 
 void prefab_set_mesh_colors_rgb(ecs *world, entity e, color_rgb color, int length) {
     MeshColorRGBs *meshColorRGBs = &((MeshColorRGBs) { 0 });
     resize_MeshColorRGBs(meshColorRGBs, length);
     for (int i = 0; i < length; i++) meshColorRGBs->value[i] = color;
-    zox_prefab_set(e, MeshColorRGBs, { meshColorRGBs->length, meshColorRGBs->value });
+    zox_set(e, MeshColorRGBs, { meshColorRGBs->length, meshColorRGBs->value });
 }
 
 void prefab_set_mesh_vertices_float(ecs *world, entity e, const float* vertices, int length) {
     MeshVertices *meshVertices = &((MeshVertices) { 0 });
     resize_MeshVertices(meshVertices, length);
     memcpy(meshVertices->value, vertices, length * sizeof(float));
-    zox_prefab_set(e, MeshVertices, { meshVertices->length, meshVertices->value })
+    zox_set(e, MeshVertices, { meshVertices->length, meshVertices->value })
 }
 
 void prefab_set_mesh_vertices_float3(ecs *world, entity e, const float3* vertices, int length) {
     MeshVertices *meshVertices = &((MeshVertices) { 0 });
     initialize_MeshVertices(meshVertices, length);
     if (length > 0) memcpy(meshVertices->value, vertices, length * sizeof(float3));
-    zox_prefab_set(e, MeshVertices, { meshVertices->length, meshVertices->value });
+    zox_set(e, MeshVertices, { meshVertices->length, meshVertices->value });
 }
 
 void set_mesh_vertices_scale2D(MeshVertices2D* verts, const float2* new_vertices, int length, float2 scale2D) {
@@ -86,7 +86,7 @@ void prefab_set_mesh_uvs_float(ecs *world, entity e, const float* uvs, int lengt
     MeshUVs *meshUVs = &((MeshUVs) { 0, NULL });
     resize_MeshUVs(meshUVs, length);
     memcpy(meshUVs->value, uvs, length * sizeof(float));
-    zox_prefab_set(e, MeshUVs, { meshUVs->length, meshUVs->value });
+    zox_set(e, MeshUVs, { meshUVs->length, meshUVs->value });
 }
 
 void prefab_set_mesh_uvs_float2(ecs *world, entity e, const float2* uvs, int length) {
@@ -97,5 +97,5 @@ void prefab_set_mesh_uvs_float2(ecs *world, entity e, const float2* uvs, int len
     } else {
         zox_loge("mesh_uvs realloc failed")
     }
-    zox_prefab_set(e, MeshUVs, { mesh_uvs->length, mesh_uvs->value });
+    zox_set(e, MeshUVs, { mesh_uvs->length, mesh_uvs->value });
 }

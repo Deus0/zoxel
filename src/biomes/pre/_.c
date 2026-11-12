@@ -3,7 +3,7 @@ entity prefab_biome;
 
 void spawn_prefabs_biomes(ecs *world) {
     if (prefab_realm) {
-        zox_prefab_add(prefab_realm, BiomeLinks);
+        zox_add(prefab_realm, BiomeLinks);
     }
     if (prefab_tunk2) {
         zox_setv(prefab_tunk2, BiomeMap, 0);

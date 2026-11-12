@@ -1,13 +1,13 @@
 void add_debug_cube(ecs* world, entity e, float3 size) {
-    zox_prefab_set(e, DebugCubeLines, { 1 });
+    zox_set(e, DebugCubeLines, { 1 });
     zox_add(e, CubeLines);
-    zox_prefab_set(e, LineThickness, { 4 });
-    zox_prefab_set(e, ColorRGB, {{ 0, 255, 255 }});
-    zox_prefab_set(e, Bounds3D, { size });
-    zox_prefab_set(e, RenderDepth, { 0 });
-    zox_prefab_set(e, RenderDisabled, { 0 });
-    zox_prefab_set(e, MeshIndicies, { 0 });
-    zox_prefab_set(e, MeshRenderCount, { 0 });
+    zox_set(e, LineThickness, { 4 });
+    zox_set(e, ColorRGB, {{ 0, 255, 255 }});
+    zox_set(e, Bounds3D, { size });
+    zox_set(e, RenderDepth, { 0 });
+    zox_set(e, RenderDisabled, { 0 });
+    zox_set(e, MeshIndicies, { 0 });
+    zox_set(e, MeshRenderCount, { 0 });
 }
 
 /*void debug_cubec(

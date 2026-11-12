@@ -8,8 +8,8 @@ entity spawn_prefab_plot_graph(ecs *world, entity prefab) {
     zox_add(e, Plot);
     zox_setv(e, PlotMin, 0);
     zox_setv(e, PlotMax, 0);
-    // zox_prefab_set(e, DoubleData, { 0 });
-    // zox_prefab_set(e, PlotPaused, { 0 });
+    // zox_set(e, DoubleData, { 0 });
+    // zox_set(e, PlotPaused, { 0 });
     return e;
 }
 

@@ -2,12 +2,12 @@ entity spawn_prefab_zevice_pointer(ecs *world) {
     zox_prefab();
     zox_prefab_name("zevice_pointer");
     zox_add(e, Zevice);
-    zox_prefab_set(e, ZevicePointer, { 0 });
-    zox_prefab_set(e, ZevicePointerOld, { 0 });
-    zox_prefab_set(e, ZevicePointerPosition, { int2_zero });
-    zox_prefab_set(e, ZevicePointerDelta, { int2_zero });
-    zox_prefab_set(e, DeviceButtonType, { 0 });
-    zox_prefab_set(e, RealButtonIndex, { 0 });
+    zox_set(e, ZevicePointer, { 0 });
+    zox_set(e, ZevicePointerOld, { 0 });
+    zox_set(e, ZevicePointerPosition, { int2_zero });
+    zox_set(e, ZevicePointerDelta, { int2_zero });
+    zox_set(e, DeviceButtonType, { 0 });
+    zox_set(e, RealButtonIndex, { 0 });
     return e;
 }
 

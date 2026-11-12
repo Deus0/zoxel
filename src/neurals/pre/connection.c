@@ -2,10 +2,10 @@ entity spawn_prefab_connection(ecs *world) {
     zox_prefab();
     zox_prefab_name("connection");
     zox_add(e, Connection);
-    zox_prefab_add(e, ConnectionData);
-    zox_prefab_set(e, Signal, { 0 });
-    zox_prefab_set(e, Transfer, { 0 });
-    zox_prefab_set(e, Weight, { 1.0f });
+    zox_add(e, ConnectionData);
+    zox_set(e, Signal, { 0 });
+    zox_set(e, Transfer, { 0 });
+    zox_set(e, Weight, { 1.0f });
     return e;
 }
 

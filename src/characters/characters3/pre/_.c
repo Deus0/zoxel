@@ -10,7 +10,7 @@ entity prefab_character3_skeleton;
 // setters for higher modules to add to characters
 #define zox_prefab_character_set(T, ...) {\
     for (int i = 0; i < prefab_characters_count; i++) {\
-        zox_prefab_set(prefabs_characters3[i], T, __VA_ARGS__)\
+        zox_set(prefabs_characters3[i], T, __VA_ARGS__)\
     }\
 }
 
@@ -22,7 +22,7 @@ entity prefab_character3_skeleton;
 
 #define zox_prefab_character_add(T) {\
     for (int i = 0; i < prefab_characters_count; i++) {\
-        zox_prefab_add(prefabs_characters3[i], T);\
+        zox_add(prefabs_characters3[i], T);\
     }\
 }
 
@@ -32,6 +32,6 @@ void spawn_prefabs_characters3D(ecs *world) {
     prefabs_characters3[prefab_characters_count++] = prefab_character3;
     prefabs_characters3[prefab_characters_count++] = prefab_character3_skeleton;
     if (prefab_realm) {
-        zox_prefab_set(prefab_realm, CharactersChanceMax, { 0 });
+        zox_set(prefab_realm, CharactersChanceMax, { 0 });
     }
 }

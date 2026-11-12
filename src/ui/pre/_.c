@@ -9,17 +9,17 @@ entity prefab_element_frame;   // rename to element_frame
 
 // Player -> Devices (move this to device module)
 void prefabs_add_to_player_inputs(ecs *world, entity e) {
-    zox_prefab_set(e, DeviceMode, { 0 });
-    zox_prefab_set(e, LastDeviceMode, { 0 });
-    zox_prefab_set(e, DeviceModeDirty, { 0 });
+    zox_set(e, DeviceMode, { 0 });
+    zox_set(e, LastDeviceMode, { 0 });
+    zox_set(e, DeviceModeDirty, { 0 });
 }
 
 
 // this is all UI interaction
 void prefab_add_navigator(ecs *world, entity e) {
-    zox_prefab_add(e, DeviceNavigator);
-    zox_prefab_set(e, NavigatorState, { 0 })
-    zox_prefab_set(e, NavigatorTimer, { 0 })
+    zox_add(e, DeviceNavigator);
+    zox_set(e, NavigatorState, { 0 })
+    zox_set(e, NavigatorTimer, { 0 })
 }
 
 void spawn_prefabs_elements(ecs *world) {

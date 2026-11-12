@@ -69,12 +69,12 @@ void zox_tst_mass_spawn_check(ecs* world) {
     zox_measure_system_times(world);
     const entity prefab = zox_new();
     zox_make_prefab(prefab);
-    zox_prefab_set(prefab, TstSpawnPosition, { float3_zero });
-    zox_prefab_set(prefab, TstSpawnHealth, { 0 });
-    zox_prefab_set(prefab, TstSpawnSeed, { 0 });
+    zox_set(prefab, TstSpawnPosition, { float3_zero });
+    zox_set(prefab, TstSpawnHealth, { 0 });
+    zox_set(prefab, TstSpawnSeed, { 0 });
     const entity prefab_stat = zox_new();
     zox_make_prefab(prefab_stat);
-    zox_prefab_set(prefab_stat, TstSpawnValue, { 0 });
+    zox_set(prefab_stat, TstSpawnValue, { 0 });
     static entity single[zox_tst_spawn_count];
     static entity single_stats[zox_tst_spawn_count][zox_tst_spawn_stats];
     static entity bulk[zox_tst_spawn_count];

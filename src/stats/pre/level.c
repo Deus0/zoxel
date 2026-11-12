@@ -6,10 +6,10 @@
 ) {
     entity e = spawn_meta_stat(world, prefab_stat, name);
     zox_add(e, StatLevel);
-    zox_prefab_set(e, StatValue, { 1 });
-    zox_prefab_set(e, ExperienceValue, { 0 });
-    zox_prefab_set(e, ExperienceMax, { zox_experience_max_start });
-    zox_prefab_set(e, TextureLink, { texture });
-    zox_prefab_set(e, ColorRGB, { c });
+    zox_set(e, StatValue, { 1 });
+    zox_set(e, ExperienceValue, { 0 });
+    zox_set(e, ExperienceMax, { zox_experience_max_start });
+    zox_set(e, TextureLink, { texture });
+    zox_set(e, ColorRGB, { c });
     return e;
 }*/

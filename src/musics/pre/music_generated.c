@@ -1,10 +1,10 @@
 entity spawn_prefab_music_generated(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("music_generated");
-    zox_prefab_set(e, GenerateMusic, { 1 });
-    zox_prefab_set(e, MusicNote, { 0 });
-    zox_prefab_set(e, InstrumentType, { instrument_piano });
-    zox_prefab_set(e, Seed, { 0 });
+    zox_set(e, GenerateMusic, { 1 });
+    zox_set(e, MusicNote, { 0 });
+    zox_set(e, InstrumentType, { instrument_piano });
+    zox_set(e, Seed, { 0 });
     return e;
 }
 

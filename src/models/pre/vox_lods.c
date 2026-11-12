@@ -11,7 +11,7 @@ entity spawn_prefab_vox_lods(ecs *world, entity prefab) {
     zox_setv(e, Color, color_white);
     zox_setv(e, VoxType, 0);
     zox_setv(e, GenerateModel, 0);
-    zox_prefab_add(e, ModelLods);
+    zox_add(e, ModelLods);
     return e;
 }
 

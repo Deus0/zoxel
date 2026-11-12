@@ -1,7 +1,7 @@
 entity spawn_prefab_file_shader(ecs *world) {
     zox_prefab();
     zox_prefab_name("file_shader");
-    zox_prefab_add(e, ShaderSource);
+    zox_add(e, ShaderSource);
     return e;
 }
 

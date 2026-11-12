@@ -32,8 +32,8 @@ void spawn_prefabs_stats(ecs* world) {
     {
         entity e = zox_prefab_from_parent(world, prefab_stat);
         zox_add(e, StatLevel);
-        zox_prefab_set(e, ExperienceValue, { 0 });
-        zox_prefab_set(e, ExperienceMax, { zox_experience_max_start });
+        zox_set(e, ExperienceValue, { 0 });
+        zox_set(e, ExperienceMax, { zox_experience_max_start });
         prefab_stat_level = e;
     }
     // Attributes
@@ -46,7 +46,7 @@ void spawn_prefabs_stats(ecs* world) {
     {
         entity e = zox_prefab_from_parent(world, prefab_stat);
         zox_add(e, StatCurrency);
-        zox_prefab_set(e, StatLevelReward, { 0 });
+        zox_set(e, StatLevelReward, { 0 });
         prefab_stat_currency = e;
     }
     zox_prefab_character_add(SpawnNameLabel);

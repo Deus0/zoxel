@@ -10,7 +10,7 @@ entity spawn_prefab_vox(
     zox_add(e, Chunk3);
     zox_setv(e, ChunkPosition, int3_zero);
     zox_setv(e, ChunkSize, int3_zero);
-    zox_prefab_set(e, ChunkNeighbors, { { 0 } } );
+    zox_set(e, ChunkNeighbors, { { 0 } } );
     // render_depth_uninitialized
     zox_setv(e, RenderDistance, 0);
     zox_setv(e, RenderDepth, 0);
