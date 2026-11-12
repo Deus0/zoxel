@@ -38,6 +38,10 @@ int zox_tst_profile_frame_index = 0;
 double zox_tst_profile_last_ms = 0;
 double zox_tst_profile_ecs_worst_ms = 0;    // the most time systems took in one frame
 ZoxWorldTimes zox_tst_profile_world_last;
+// observers (zox_observer_timings): their totals last frame, this frame, their slowest frame
+double zox_tst_profile_observer_last[zox_observer_timings_max];
+double zox_tst_profile_observer_frame[zox_observer_timings_max];
+double zox_tst_profile_observer_worst[zox_observer_timings_max];
 
 static void zox_tst_profile_system(ecs* world, entity system, double seconds, byte multi_threaded, void* ctx) {
     int* hint = (int*) ctx;
@@ -87,7 +91,27 @@ void zox_tst_profile_frame(ecs* world) {
     const double merge_ms = (world_times.merge - zox_tst_profile_world_last.merge) * 1000.0;
     const double emit_ms = (world_times.emit - zox_tst_profile_world_last.emit) * 1000.0;
     const double ecs_frame_ms = (world_times.frame - zox_tst_profile_world_last.frame) * 1000.0;
+    const ZoxWorldTimes last = zox_tst_profile_world_last;
     zox_tst_profile_world_last = world_times;
+    int top_observers[zox_tst_profile_top] = { -1, -1, -1 };
+    for (int i = 0; i < zox_observer_timings_count; i++) {
+        const double total = zox_observer_timings[i].total_ms;
+        const double ms = total - zox_tst_profile_observer_last[i];
+        zox_tst_profile_observer_last[i] = total;
+        zox_tst_profile_observer_frame[i] = ms;
+        if (zox_tst_profile_frame_index >= 2 && ms > zox_tst_profile_observer_worst[i]) {
+            zox_tst_profile_observer_worst[i] = ms;
+        }
+        for (int t = 0; t < zox_tst_profile_top; t++) {
+            if (top_observers[t] < 0 || ms > zox_tst_profile_observer_frame[top_observers[t]]) {
+                for (int k = zox_tst_profile_top - 1; k > t; k--) {
+                    top_observers[k] = top_observers[k - 1];
+                }
+                top_observers[t] = i;
+                break;
+            }
+        }
+    }
     zox_tst_profile_frame_index++;
     if (zox_tst_profile_frame_index < 3) {
         return; // the first frames only set totals
@@ -119,6 +143,15 @@ void zox_tst_profile_frame(ecs* world) {
             frame.top[0] ? zox_get_name(frame.top[0]) : "-", frame.top_ms[0],
             frame.top[1] ? zox_get_name(frame.top[1]) : "-", frame.top_ms[1],
             frame.top[2] ? zox_get_name(frame.top[2]) : "-", frame.top_ms[2]);
+        for (int t = 0; t < zox_tst_profile_top; t++) {
+            const int o = top_observers[t];
+            if (o >= 0 && zox_tst_profile_observer_frame[o] > 0.5) {
+                zox_log("[profile]   observer %s [%.1fms]", zox_observer_timings[o].name, zox_tst_profile_observer_frame[o]);
+            }
+        }
+        zox_log("[profile]   commands: adds [%li] removes [%li] deletes [%li] sets [%li], observers ran [%li], tables made [%li]",
+            (long) (world_times.adds - last.adds), (long) (world_times.removes - last.removes), (long) (world_times.deletes - last.deletes),
+            (long) (world_times.sets - last.sets), (long) (world_times.observers - last.observers), (long) (world_times.tables - last.tables));
     }
     // keep the slowest frames
     for (int w = 0; w < zox_tst_profile_worst_frames; w++) {
@@ -147,6 +180,21 @@ void zox_tst_profile_log(ecs* world, const char* name) {
             f->top[0] ? zox_get_name(f->top[0]) : "-", f->top_ms[0],
             f->top[1] ? zox_get_name(f->top[1]) : "-", f->top_ms[1],
             f->top[2] ? zox_get_name(f->top[2]) : "-", f->top_ms[2]);
+    }
+    // the observers with the slowest frames
+    for (int n = 0; n < 8; n++) {
+        int best = -1;
+        for (int i = 0; i < zox_observer_timings_count; i++) {
+            if (zox_tst_profile_observer_worst[i] > 0 && (best < 0 || zox_tst_profile_observer_worst[i] > zox_tst_profile_observer_worst[best])) {
+                best = i;
+            }
+        }
+        if (best < 0) {
+            break;
+        }
+        zox_log("[tst] [metric] %s observer [%s] slowest frame [%.1fms] total [%.1fms] calls [%u]", name,
+            zox_observer_timings[best].name, zox_tst_profile_observer_worst[best], zox_observer_timings[best].total_ms, zox_observer_timings[best].calls);
+        zox_tst_profile_observer_worst[best] = -zox_tst_profile_observer_worst[best];   // listed
     }
     qsort(zox_tst_profile_systems, zox_tst_profile_systems_count, sizeof(ZoxTstProfileSystem), zox_tst_profile_compare);
     for (int i = 0; i < 12 && i < zox_tst_profile_systems_count; i++) {

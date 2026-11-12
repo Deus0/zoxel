@@ -4,8 +4,11 @@
 # Now
 - Lag spikes crossing chunks (48ms): flecs merges and observers, found with --profile
 	- streaming bursts (debug): merges up to 145ms, observers up to 100ms a frame, systems far less
-	- next: time each observer (a timing wrapper in zox_observer_internal, on with --profile), find the heavy ones
-	- next: fewer deferred commands per chunk (tags added and removed every stage move entities between tables)
+	-x time each observer (zox_observer_internal wraps them, on with --profile): ours are cheap, 1ms a frame at most
+	- the cause: tables made, 250 to 424 a frame while streaming (tables 16k -> 22k over 6 chunk steps),
+	  each new table notifies observers (18k notifications for 300 commands), ChildOf fragments per parent
+	- options: non fragmenting parents (EcsParent, zox_non_fragment_parent, reverted before for bugs, retry
+	  with tests), chunk children as links instead, delete empty tables now and then
 	-x chunk_sides_system has a time budget per worker per frame (it built whole chunks, 18ms real time)
 	- VoxLodMeshBuildSystem: a 108ms frame once (single threaded), when a character's mesh builds
 	- move other heavy systems from process counts to zox_sys_budget
