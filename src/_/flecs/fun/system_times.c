@@ -15,12 +15,6 @@ void zox_each_system_time(ecs* world, zox_system_time_fun fun, void* ctx) {
     }
 }
 
-// flecs times each system (on in flecs_profiler builds, profiling tests turn it on)
-void zox_measure_system_times(ecs* world) {
-    ecs_measure_system_time(world, 1);
-    ecs_measure_frame_time(world, 1);
-    zox_time_observers = 1;
-}
 
 // the world's running totals (seconds): its frames, merging deferred commands, notifying observers
 typedef struct {
@@ -222,4 +216,104 @@ int zox_table_families(ecs* world, char families[][zox_table_family_length], int
         }
     }
     return families_count;
+}
+
+// Counts every add and remove per id while profiling (an observer on * and (*,*), only when profiling)
+//  - the ids moved most in a frame are what make its merges and notifications slow
+#define zox_id_counts_max 4096
+typedef struct {
+    ecs_id_t id;
+    uint adds;
+    uint removes;
+} ZoxIdCount;
+ZoxIdCount zox_id_counts[zox_id_counts_max];
+ZoxIdCount zox_id_totals[zox_id_counts_max];    // the whole run
+byte zox_id_counts_on = 0;
+
+static inline void zox_count_id_in(ZoxIdCount* counts, ecs_iter_t* it) {
+    const ecs_id_t id = it->event_id;
+    uint slot = (uint) ((id * 2654435761u) ^ (id >> 32)) % zox_id_counts_max;
+    for (int probe = 0; probe < 64; probe++) {
+        ZoxIdCount* c = &counts[(slot + probe) % zox_id_counts_max];
+        if (!c->id || c->id == id) {
+            c->id = id;
+            if (it->event == EcsOnAdd) {
+                c->adds += it->count;
+            } else {
+                c->removes += it->count;
+            }
+            return;
+        }
+    }
+}
+
+static void zox_count_id_event(ecs_iter_t* it) {
+    zox_count_id_in(zox_id_counts, it);
+    zox_count_id_in(zox_id_totals, it);
+}
+
+void zox_count_ids_begin(ecs* world) {
+    if (zox_id_counts_on) {
+        return;
+    }
+    zox_id_counts_on = 1;
+    ecs_observer(world, {
+        .query.terms = {{ EcsWildcard }},
+        .events = { EcsOnAdd, EcsOnRemove },
+        .callback = zox_count_id_event
+    });
+    ecs_observer(world, {
+        .query.terms = {{ ecs_pair(EcsWildcard, EcsWildcard) }},
+        .events = { EcsOnAdd, EcsOnRemove },
+        .callback = zox_count_id_event
+    });
+}
+
+// the ids moved most in counts, as text into out (it changes counts, reset them after)
+static void zox_count_ids_text(ecs* world, ZoxIdCount* zox_id_counts, char* out, int size, int top) {
+    int written = 0;
+    out[0] = 0;
+    for (int t = 0; t < top; t++) {
+        int best = -1;
+        uint best_total = 0;
+        for (int i = 0; i < zox_id_counts_max; i++) {
+            const uint total = zox_id_counts[i].adds + zox_id_counts[i].removes;
+            if (zox_id_counts[i].id && total > best_total) {
+                best_total = total;
+                best = i;
+            }
+        }
+        if (best < 0) {
+            break;
+        }
+        char* name = ecs_id_str(world, zox_id_counts[best].id);
+        written += snprintf(out + written, size - written, "%s%s +%u -%u", t ? ", " : "", name ? name : "?",
+            zox_id_counts[best].adds, zox_id_counts[best].removes);
+        ecs_os_free(name);
+        zox_id_counts[best].adds = zox_id_counts[best].removes = 0;
+        if (written >= size - 1) {
+            break;
+        }
+    }
+}
+
+// the ids moved most since the last reset (this frame), then resets them
+void zox_count_ids_top(ecs* world, char* out, int size, int top) {
+    zox_count_ids_text(world, zox_id_counts, out, size, top);
+    memset(zox_id_counts, 0, sizeof(zox_id_counts));
+}
+
+// the ids moved most this run
+void zox_count_ids_totals(ecs* world, char* out, int size, int top) {
+    static ZoxIdCount copy[zox_id_counts_max];
+    memcpy(copy, zox_id_totals, sizeof(copy));
+    zox_count_ids_text(world, copy, out, size, top);
+}
+
+// flecs times each system (on in flecs_profiler builds, profiling tests turn it on)
+void zox_measure_system_times(ecs* world) {
+    ecs_measure_system_time(world, 1);
+    ecs_measure_frame_time(world, 1);
+    zox_time_observers = 1;
+    zox_count_ids_begin(world);
 }
