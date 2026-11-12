@@ -48,6 +48,7 @@ void zox_tst_sound_formats_check(ecs* world) {
 //      - every sample is a number, the note is audible and doesn't clip (samples cut at full scale)
 //      - it starts and ends near silence (no clicks)
 //      - the pitched instruments sound at their pitch (autocorrelation), the music box an octave up
+//  - writes a short phrase per instrument to bin/tst/instruments/<name>.wav, to listen to
 //  - run: bash bsh/tst.sh sound_instruments
 #define zox_tst_instrument_seconds 0.5f
 #define zox_tst_instrument_frequency 220.0f
@@ -76,6 +77,59 @@ float zox_tst_instrument_pitch(const float* samples, uint length, float expected
     return best_lag ? sound_sample_rate / (float) best_lag : 0;
 }
 
+// writes mono float samples as a .wav, to listen to them
+static inline void zox_tst_write_wav(const char* path, const float* samples, uint length) {
+    FILE* file = fopen(path, "wb");
+    if (!file) {
+        return;
+    }
+    const uint32_t data_size = length * sizeof(float);
+    const uint32_t riff_size = 36 + data_size;
+    const uint32_t fmt_size = 16;
+    const uint16_t format = 3;   // ieee float
+    const uint16_t channels = 1;
+    const uint32_t rate = sound_sample_rate;
+    const uint32_t byte_rate = rate * sizeof(float);
+    const uint16_t block_align = sizeof(float);
+    const uint16_t bits = 32;
+    fwrite("RIFF", 1, 4, file);
+    fwrite(&riff_size, 4, 1, file);
+    fwrite("WAVEfmt ", 1, 8, file);
+    fwrite(&fmt_size, 4, 1, file);
+    fwrite(&format, 2, 1, file);
+    fwrite(&channels, 2, 1, file);
+    fwrite(&rate, 4, 1, file);
+    fwrite(&byte_rate, 4, 1, file);
+    fwrite(&block_align, 2, 1, file);
+    fwrite(&bits, 2, 1, file);
+    fwrite("data", 1, 4, file);
+    fwrite(&data_size, 4, 1, file);
+    fwrite(samples, sizeof(float), length, file);
+    fclose(file);
+}
+
+// a slow a minor arpeggio of the instrument, to bin/tst/instruments/<name>.wav
+static inline void zox_tst_write_instrument_phrase(byte instrument) {
+    static const float notes[] = { 220.0f, 261.63f, 329.63f, 440.0f };
+    const float note_seconds = 0.9f;
+    const uint note_length = (uint) (note_seconds * sound_sample_rate);
+    const uint step = (uint) (0.45f * sound_sample_rate);
+    const uint length = step * 3 + note_length;
+    float* phrase = calloc(length, sizeof(float));
+    float* note = malloc(note_length * sizeof(float));
+    for (int i = 0; i < 4; i++) {
+        generate_instrument_samples(instrument, notes[i], note_seconds, 0.45f, 0, note, note_length);
+        for (uint j = 0; j < note_length; j++) {
+            phrase[step * i + j] += note[j];
+        }
+    }
+    char path[128];
+    snprintf(path, sizeof(path), "../tst/instruments/%s.wav", instruments[instrument].name);
+    zox_tst_write_wav(path, phrase, length);
+    free(note);
+    free(phrase);
+}
+
 byte zox_tst_sound_instruments_ready(ecs* world) {
     (void) world;
     return 1;
@@ -85,6 +139,7 @@ void zox_tst_sound_instruments_check(ecs* world) {
     (void) world;
     const uint length = (uint) (zox_tst_instrument_seconds * sound_sample_rate);
     float* samples = malloc(length * sizeof(float));
+    mkdir("../tst/instruments", 0755);
     for (byte instrument = instrument_none + 1; instrument < instrument_end; instrument++) {
         const char* name = instruments[instrument].name;
         zox_tst_check(generate_instrument_samples(instrument, zox_tst_instrument_frequency, zox_tst_instrument_seconds, 1, 0, samples, length),
@@ -123,6 +178,7 @@ void zox_tst_sound_instruments_check(ecs* world) {
             zox_tst_check(fabsf(pitch - expected) / expected < 0.04f, "[%s] sounds at [%.1f] hz, expected [%.1f]", name, pitch, expected);
         }
         zox_log("[tst] [%s] peak [%.2f] clipped [%i]", name, peak, clipped);
+        zox_tst_write_instrument_phrase(instrument);
     }
     free(samples);
 }
