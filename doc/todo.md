@@ -5,7 +5,8 @@
 - Lag spikes (up to 96ms): sound generation, a whole sound in one frame when it spawns
 	- measured (debug): a 1.3s choir note 290-670ms, a 2.8s cello note 60-100ms, choir 330ms per second of sound
 	- music pads and jingles play choir and cello notes, the spikes
-	- 1. precompute per harmonic weights once per note (choir formants, cello body, voices), not per sample
+	-x 1. choir and cello are wavetables: one cycle built per note, read at its phase (choir 330ms -> 3ms a second)
+	- still slowest (debug, a second of sound): unique 29ms, flute 27ms, harp 24ms, soft piano 17ms
 	- 2. cached instrument tables: generate base waveforms once, reuse them, add noise, breath and vibrato
 	  in a pass while playing (see Sounds: optimization)
 	- 3. long notes generated over a few frames, the start first
@@ -35,6 +36,10 @@
 - Optimize sound generation (see Now: lag spikes)
 	- reuse base instrument waveforms (sin tables, harmonics) instead of generating every note
 	- noise and modulation as a processing pass while playing, in the mixer
+	- instruments as entities: their settings and cached wavetables as components, notes link to them
+- Musicians' mistakes: now and then a wrong note (a neighbour), quickly corrected, a little out of time
+	- in perform_song, tst music_compose allows them (it checks every note is in key)
+	- noise and detuning added to a note after it's made, per instrument entity
 - Opt: SoundGenerateSystem by using preset sound data + mods
 - Opt: Spawn Sound Samples on Realm Start, then use this data in generated sounds - optimized sound generation
 - SoundGenerateSystem - uses too much still

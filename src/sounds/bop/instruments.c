@@ -4,6 +4,8 @@
 //  - the ambient ones have their own: struck / plucked ones a quick attack (they decay themselves),
 //      bowed / sung ones a slow attack, and they're normalized to the same loudness
 typedef float (*instrument_function)(float time, float frequency);
+// a whole note at once, raw (for instruments with work that's the same through a note)
+typedef void (*instrument_note_function)(float frequency, float* samples, uint length);
 
 typedef struct {
     const char* name;
@@ -11,6 +13,7 @@ typedef struct {
     float attack;       // seconds (0: the shared sound_attack_multiplier, of the length)
     float release;      // of the length, fades out at the end (0: the shared dampen)
     byte normalize;
+    instrument_note_function note;  // optional, used over sound for whole notes
 } InstrumentData;
 
 const InstrumentData instruments[instrument_end] = {
@@ -27,8 +30,8 @@ const InstrumentData instruments[instrument_end] = {
     [instrument_soft_piano] = { "soft_piano", soft_piano_sound, 0.004f, 0.1f, 1 },
     [instrument_harp] = { "harp", harp_sound, 0.002f, 0.1f, 1 },
     [instrument_music_box] = { "music_box", music_box_sound, 0.002f, 0.1f, 1 },
-    [instrument_cello] = { "cello", cello_sound, 0.12f, 0.25f, 1 },
-    [instrument_choir] = { "choir", choir_sound, 0.3f, 0.3f, 1 },
+    [instrument_cello] = { "cello", cello_sound, 0.12f, 0.25f, 1, cello_note },
+    [instrument_choir] = { "choir", choir_sound, 0.3f, 0.3f, 1, choir_note },
     [instrument_bell] = { "bell", bell_sound, 0.003f, 0.1f, 1 },
     [instrument_impact] = { "impact", impact_sound, 0.001f, 0.35f, 1 },
     [instrument_whoosh] = { "whoosh", whoosh_sound, 0.08f, 0.55f, 1 },
@@ -79,10 +82,13 @@ byte generate_instrument_samples(
     // ambient: shaped by its own attack and release, then normalized
     const float attack = fminf(data.attack, seconds * 0.25f);
     const float release_start = seconds * (1 - data.release);
+    if (data.note) {
+        data.note(frequency, samples, length);
+    }
     float peak = 0;
     for (uint j = 0; j < length; j++) {
         const float time = (float) (j / sample_rate_f);
-        float value = data.sound(time, frequency);
+        float value = data.note ? samples[j] : data.sound(time, frequency);
         if (time < attack) {
             value *= time / attack;
         } else if (time > release_start) {
