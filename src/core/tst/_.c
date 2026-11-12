@@ -225,6 +225,9 @@ void zox_tst_start() {
 void process_arguments_tst(ecs* world, char* args[], int count) {
     (void) world;
     for (int i = 1; i < count; i++) {
+        if (strcmp(args[i], "--profile-ms") == 0 && i + 1 < count) {
+            zox_profile_spike_ms = atof(args[i + 1]);
+        }
         if (strcmp(args[i], "--profile") == 0) {
             zox_profile_spikes = 1;
             zox_log("+ profiling, frames over [%.0fms] are logged with their slowest systems", zox_profile_spike_ms);
