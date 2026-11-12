@@ -36,6 +36,10 @@ void zox_components_example(ecs* world) {
 
 ## Single links
 
+A single (exclusive) link holds one target: linking again replaces it. Only use one when there can never
+be two. A node's `NodeLink` was single by mistake, so every branch kept only its last choice (see
+[nodes.md](nodes.md)). When in doubt, use many.
+
 ```c
 // link, replaces any old target
 zox_set_link(world, character, SkeletonLink, skeleton);

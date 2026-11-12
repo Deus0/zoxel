@@ -71,3 +71,13 @@ If yes, it is probably an event.
 
 This is also useful for reducing ECS system overhead. Systems should generally be reserved for work that genuinely needs continuous or periodic processing, while events handle discrete changes and one-shot interactions.
 
+
+## Events on tags
+
+An add event (`zox_on_add`) only fires when the tag **wasn't already there**.
+
+- A tag that lingers, or can be added again before it's removed, misses events. `Update` is one: a
+  process dirtied again keeps its `Update`, so quest nodes hooked on it never ran.
+- Hook events on a tag added once per transition, i.e. `Begin` when a process moves to a node
+  (see [nodes.md](nodes.md)), or a state component going `zox_dirty_trigger` → `zox_dirty_active`.
+- When an event doesn't seem to fire, log at the top of the callback first: was it called at all?

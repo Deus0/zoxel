@@ -67,6 +67,10 @@ The terrain sizes override `Far RD` from your settings for that run.
 |---|---|---|
 | `--nosound` `--nosounds` | no sound effects | [sounds](../src/sounds/fun/terminal.c) |
 | `--nomusic` | no music | [musics](../src/musics/fun/_.c) |
+| `--sounds` | sounds on again after `--background`, i.e. to listen to a test | [apps](../src/apps/fun/arguments.c) |
+
+To record what the game plays: `SDL_AUDIO_DRIVER=disk`, the mix goes to `sdlaudio.raw` beside the binary
+(stereo float32, 44100hz). See [audio.md](audio.md).
 
 ## Engine
 

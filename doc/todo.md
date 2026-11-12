@@ -28,13 +28,13 @@
 	- ? new quest
 	- ! hand in quest
 	
-- Make quest tracker track new quest when you get it
+-x Make quest tracker track new quest when you get it
 - stack tracked quests in a list like fashion
 	
 - add rotated character per voxel selection for raycasts, similar to how we do for grass
 	- keeping bounds as a sweep pass
 	
-- Make items pop a little when dropped, like borderlands, a little movement away from original position
+-x Make items pop a little when dropped, like borderlands, a little movement away from original position
 	
 - We can just have a more general Damage/Defence type stats 
 	- With Physical and Magical tags

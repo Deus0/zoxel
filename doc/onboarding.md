@@ -233,6 +233,8 @@ The loop:
 - [Links](links.md): `zox_link`, single and many links, unlink callbacks
 - [Children](children.md): parenting and child entities
 - [Characters](character.md): how characters are built (vox, renderer, skeleton)
+- [Audio](audio.md): the mixer, 3D sounds, effects, voices and music
+- [Nodes](nodes.md): node graphs, how dialogue and quests walk them
 - [Commands](commands.md): every command line flag for the game binary
 - [Help](help.md): make targets
 - [Notes](notes.md): assorted engine notes

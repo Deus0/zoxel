@@ -63,13 +63,11 @@
 - 16 printable ascii have no glyphs, i.e. ' (dialogue "I'm" shows ?), needs font art (tst text_data)
 
 ## Audio
-- Main Menu music missing
-	- Music Missing from main menu as no realm then
-	- Audio missing from main menu - need to spawn a realm for it
-- Fix music importer
-	- Fix music file not importing from LMM
-- Music load error on linux (somehow loads on windows)
-	- write a test to import the music file
+-x Main Menu music missing (spawn_menu_music, on the game, crossfades with the realm's)
+-x Fix music importer (make convert, tst music_file)
+-x Music load error on linux (the note count was read as a size_t, tst music_file)
+-x Sound effects quiet in game (too low for small speakers, tst sound_balance)
+-x Quest givers say "You did well..." without giving a quest (NodeLink was exclusive, tst quest_dialogue)
 
 ## Rendering
 - Cube mesh doesnt restore on alt tab - gpu restore issue?
