@@ -6,10 +6,9 @@ entity spawn_stat(
 {
     entity e = zox_ins_named(world, prefab);
     // zox_remove(e, RealmStat);
-    zox_set_parent(
-        world,
-        e,
-        parent);
+    // non fragmenting: every character's stats had their own tables (ChildOf), streaming npcs made
+    //  hundreds of tables a chunk (lag spikes, tst tables_stream), needs flecs patched (bsh/flecs_fix.sh)
+    zox_set_parent_non_fragment(world, e, parent);
     return e;
 }
 

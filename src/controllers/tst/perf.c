@@ -161,9 +161,10 @@ void zox_tst_perf_stream_check(ecs* world) {
 //      ChildOf children get tables per parent, so chunks' children must use non fragmenting parents
 //  - logs the table families with the most tables (pairs with many targets), to find the next to fix
 //  - run: bash bsh/tst.sh tables_stream
-// today's level (npcs' labels, glyphs and stats are ChildOf children, about 1100 tables a step),
+// npcs labels, glyphs, stats, skills and items are non fragmenting children now (they made 400 to 2500
+//  tables a step as ChildOf children), about 100 a step now (block decor, vox instances),
 //  a guard against it getting worse, lower it as they stop fragmenting (doc/children.md)
-#define zox_tst_tables_per_step_max 1400
+#define zox_tst_tables_per_step_max 300
 
 void zox_tst_tables_stream_check(ecs* world) {
     zox_tst_log_child_tables(world, "tables_stream");

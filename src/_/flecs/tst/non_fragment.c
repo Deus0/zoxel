@@ -146,3 +146,101 @@ void zox_tst_nf_realm_check(ecs* world) {
 void zox_tst_nf_realm_spawn_deferred_check(ecs* world) {
     zox_tst_nf_realm_case(world, 1);
 }
+
+// like a realm of npcs: several characters (ChildOf the realm), each with several non fragmenting stats
+//  (instances of the realm's stat prefabs), the stats of every character share tables (non fragmenting),
+//  deleting the realm, deferred
+//  - flecs deletes the marked tables in an order, if the shared stats table comes after the characters',
+//      every stat's parent is dead already (the game crashed ending a game)
+void zox_tst_nf_realm_many_check(ecs* world) {
+    const entity realm = zox_new();
+    entity prefabs[4];
+    for (int p = 0; p < 4; p++) {
+        prefabs[p] = zox_new();
+        zox_set_parent(world, prefabs[p], realm);
+        zox_make_prefab(prefabs[p]);
+    }
+    entity characters[8], stats[8][4];
+    for (int c = 0; c < 8; c++) {
+        characters[c] = zox_new();
+        zox_set_parent(world, characters[c], realm);
+    }
+    // stats spawned after their characters, in a batch, like a spawn system
+    {
+        zox_defer_begin();
+        for (int c = 0; c < 8; c++) {
+            for (int p = 0; p < 4; p++) {
+                stats[c][p] = zox_ins(world, prefabs[p]);
+                zox_set_parent_non_fragment(world, stats[c][p], characters[c]);
+            }
+        }
+        zox_defer_end();
+    }
+    {
+        zox_defer_begin();
+        zox_delete(realm);
+        zox_defer_end();
+    }
+    int alive = 0;
+    for (int c = 0; c < 8; c++) {
+        alive += zox_alive(characters[c]);
+        for (int p = 0; p < 4; p++) {
+            alive += zox_alive(stats[c][p]);
+        }
+    }
+    zox_tst_check(alive == 0, "[%i] entities survived deleting their realm", alive);
+}
+
+// everything the game's realm has: characters as prefab instances, linked to the realm (TstLink), with ChildOf
+//  children (body parts) and non fragmenting stats, stats instances of prefabs of a base prefab, linked
+//  to each other (TstLinks), stat prefabs ChildOf the realm, a 3D ui owned by each character (TstOwnedLink)
+void zox_tst_nf_realm_full_check(ecs* world) {
+    const entity realm = zox_new();
+    const entity base_stat = zox_new();
+    zox_make_prefab(base_stat);
+    const entity base_character = zox_new();
+    zox_make_prefab(base_character);
+    entity prefabs[4];
+    for (int p = 0; p < 4; p++) {
+        prefabs[p] = zox_prefab_from_parent(world, base_stat);
+        zox_set_parent(world, prefabs[p], realm);
+        if (p > 0) {
+            zox_link(world, prefabs[p], TstLink, prefabs[0]);
+        }
+    }
+    entity characters[8], stats[8][4], parts[8], uis[8];
+    for (int c = 0; c < 8; c++) {
+        characters[c] = zox_ins(world, base_character);
+        zox_set_parent(world, characters[c], realm);
+        zox_link(world, characters[c], TstLinks, realm);
+        parts[c] = zox_new();
+        zox_set_parent(world, parts[c], characters[c]);
+        uis[c] = zox_new();
+        zox_link(world, uis[c], TstOwnedLink, characters[c]);
+    }
+    {
+        zox_defer_begin();
+        for (int c = 0; c < 8; c++) {
+            for (int p = 0; p < 4; p++) {
+                stats[c][p] = zox_ins_named(world, prefabs[p]);
+                zox_set_parent_non_fragment(world, stats[c][p], characters[c]);
+            }
+        }
+        zox_defer_end();
+    }
+    {
+        zox_defer_begin();
+        zox_delete(realm);
+        zox_defer_end();
+    }
+    int alive = 0;
+    for (int c = 0; c < 8; c++) {
+        alive += zox_alive(characters[c]) + zox_alive(parts[c]) + zox_alive(uis[c]);
+        for (int p = 0; p < 4; p++) {
+            alive += zox_alive(stats[c][p]);
+        }
+    }
+    zox_tst_check(alive == 0, "[%i] entities survived deleting their realm", alive);
+    zox_delete(base_stat);
+    zox_delete(base_character);
+}

@@ -2,7 +2,7 @@
 entity spawn_element3(ecs *world, entity prefab, entity parent, float2 anchor, int2 position, int2 size) {
     zox_instance(prefab);
     zox_set_unique_name(e, "element3");
-    zox_set_parent(world, e, parent);
+    zox_set_parent_non_fragment(world, e, parent);  // per parent tables otherwise (tst tables_stream)
     zox_setv(e, Anchor, anchor);
     zox_setv(e, LayoutPosition, position);
     zox_setv(e, LayoutSize, size);

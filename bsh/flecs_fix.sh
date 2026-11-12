@@ -26,6 +26,15 @@ set -euo pipefail
 #   - Fix: run the non fragmenting deletes in their own pass, before ids are released,
 #     and repeat clearing until no new ids were marked
 #
+#   Non fragmenting children deleted after their parent (ZOXEL PATCH nf parent)
+#   - Deleting a tree (a realm), ids marked while clearing (ChildOf, character) are cleared after the
+#     tables that held their parents, so a non fragmenting child (EcsParent, a character's stats) is
+#     deleted when its parent already is
+#   - flecs_non_fragmenting_childof_move asserted the parent was alive (ECS_INTERNAL_ERROR)
+#   - Fix: the parent's child record still exists, keep its bookkeeping, skip the steps that use the
+#     dead parent entity (the spawner check, renaming under its path), the child is being deleted
+#     - repro: bash bsh/tst.sh menu_flow (ending a game with npcs' stats non fragmenting)
+#
 # Requirements: perl
 
 file=inc/flecs/flecs.c
@@ -240,5 +249,60 @@ fi
 echo "+ Flecs Patched [nested cleanup]"
 }
 
+nf_parent_marker="ZOXEL PATCH nf parent"
+
+patch_nf_parent_delete() {
+if grep -q "${nf_parent_marker}" "${file}"; then
+    echo "> Flecs Patch Found [nf parent delete]"
+    return 0
+fi
+
+echo "-> Patching [${file}] [nf parent delete]"
+
+perl -0pi -e '
+s{        ecs_assert\(flecs_entities_is_alive\(world, p\),
+            ECS_INTERNAL_ERROR, NULL\);
+
+        ecs_component_record_t \*cr = flecs_components_get\(
+            world, ecs_childof\(p\)\);
+        ecs_assert\(cr != NULL, ECS_INTERNAL_ERROR, NULL\);
+
+        flecs_non_fragmenting_childof_count\(world, cr, src, -1\);}{        /* ZOXEL PATCH nf parent: a cascade can delete the parent before this
+         * child, its child record still exists, skip what uses the parent */
+        const bool parent_alive = flecs_entities_is_alive(world, p);
+
+        ecs_component_record_t *cr = flecs_components_get(
+            world, ecs_childof(p));
+        if (!cr) {
+            ecs_assert(!parent_alive, ECS_INTERNAL_ERROR, NULL);
+            continue;
+        }
+
+        flecs_non_fragmenting_childof_count(world, cr, src, -1);}' "${file}"
+
+perl -0pi -e '
+s{        flecs_ordered_entities_remove\(world, cr, e\);
+
+        flecs_tree_spawner_assert_not_instantiated\(world, p\);
+
+        if \(names\) \{}{        flecs_ordered_entities_remove(world, cr, e);
+
+        /* ZOXEL PATCH nf parent: not for a deleted parent */
+        if (!parent_alive) {
+            continue;
+        }
+
+        flecs_tree_spawner_assert_not_instantiated(world, p);
+
+        if (names) \{}' "${file}"
+
+if [ "$(grep -c "${nf_parent_marker}" "${file}")" != "2" ]; then
+    echo "!! Patch failed, flecs_non_fragmenting_childof_move didnt match (flecs version changed?)"
+    return 1
+fi
+echo "+ Flecs Patched [nf parent delete]"
+}
+
 patch_reachable_cache || exit 1
 patch_nested_cleanup || exit 1
+patch_nf_parent_delete || exit 1

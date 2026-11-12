@@ -17,4 +17,6 @@ void zox_tsts_flecs(ecs* world) {
     zox_tst_add("nf_prefabs_deferred", zox_tst_nf_ready, zox_tst_nf_prefabs_deferred_check, 30);
     zox_tst_add("nf_realm", zox_tst_nf_ready, zox_tst_nf_realm_check, 30);
     zox_tst_add("nf_realm_spawn_deferred", zox_tst_nf_ready, zox_tst_nf_realm_spawn_deferred_check, 30);
+    zox_tst_add("nf_realm_many", zox_tst_nf_ready, zox_tst_nf_realm_many_check, 30);
+    zox_tst_add("nf_realm_full", zox_tst_nf_ready, zox_tst_nf_realm_full_check, 30);
 }

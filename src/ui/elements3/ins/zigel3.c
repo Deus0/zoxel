@@ -1,7 +1,7 @@
 entity spawn_zigel3(ecs *world, entity prefab, entity parent, uint child_index, byte zigel_index, float3 position, float scale, byte render_disabled, byte thickness, byte outline_thickness, byte resolution, color fill, color outline) {
     zox_instance(prefab);
     zox_set_unique_name(e, "zigel3");
-    zox_set_parent(world, e, parent);
+    zox_set_parent_non_fragment(world, e, parent);  // per parent tables otherwise (tst tables_stream)
     zox_set(e, LocalPosition3D, { position });
     zox_set(e, ChildIndex, { child_index });
     zox_set(e, GlyphIndex, { zigel_index });

@@ -15,7 +15,7 @@ entity spawn_ui(
     zox_setv(e, LayoutSize, size);
     zox_setv(e, TextureSize, texture_size);
     if (parent) {
-        zox_set_parent(world, e, parent);
+        zox_set_parent_non_fragment(world, e, parent);  // per parent tables otherwise (tst tables_stream)
     }
     return e;
 }
