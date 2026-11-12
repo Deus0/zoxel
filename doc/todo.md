@@ -1,169 +1,37 @@
 # Todo
+- Now first, then by module. Done items move to [done.md](done.md), ideas to [new.md](new.md) and [future.md](future.md).
 
--x Set minivox/world voxels brightness when lighting updates
-	- use observer on light change event on terrain chunk types
-	- might need to pass this data to the frag shader
-	
-- add a section on readme.md with some razzle dazzle stats from tests
-	- add a test that might be impressive and measure engine capacity for this
-	
-- When Add/Remove body part
-	- remove the associated item slots
-	- refresh the body ui
-	
-- add a test for streaming between chunks, this can be reused to test its speed for optmization too
-- add a table test, for when in game, check total flecs tables, this needs to be reduced to reduce our query times - can add this to tst module in src, it sits on top of engine
-
--x speedup the loading of terrain
--x Add --autostart tag that autos through the uis, into a new game, and makes player character auto walk too (should already be implemented somewhere)
-	- this can be used by claude in automated testing
-	
-- Add markers on map uis
-	- npcs
-		- peaceful npcs
-		- npcs with quests
-		- hostile npcs
-		
-- Add ? and ! markers on the map
-	- ? new quest
-	- ! hand in quest
-	
--x Make quest tracker track new quest when you get it
-- stack tracked quests in a list like fashion
-	
-- add rotated character per voxel selection for raycasts, similar to how we do for grass
-	- keeping bounds as a sweep pass
-	
--x Make items pop a little when dropped, like borderlands, a little movement away from original position
-	
-- We can just have a more general Damage/Defence type stats 
-	- With Physical and Magical tags
-	- DamageStat, DefenceStat
-	
-- Link Aura to magial damage
-- link projectile to magical damage too
-- Add rewards on quest handin
-	- Goal: Give 20 xp for handing in quest
-	- Quest Rewards - More Cookies - Particles - Sounds (Yay)
-	
-
-- add a simple skilltree
-	- with a skill to unlock button
-	- click and hold it to unlock
-	- screen shake and particles when unlock
-
-- Npc Item drops - should pick an item item randomly based on rarity of the body parts + inventory
-	- it should not drop all items
-	- player characters should still drop all loot though for chance to pick them up
-	
-- Collect 5 cookies for quest
-	- Quest Reward: Top Hat
-- Hand in Quest Node - linked to two answer
-
-    - Dialogue Nodes: QuestDoneLink - QuestActiveLink
-    
-
-- write bsh/test.sh that takes in test name
-	- it will find the test in the modules tst folders
-	- it will compile that file with zoxels src and flecs
-	- it outputs a test for claude to use
-	
-- Implement a tall grass block model
-	- support for linking a world model (minivox/blockvox) to multiple voxel links
-	- add a second block, tall_grass
-	- multi chunk support needed for vox models
-	
--o clicking on ui - activated punch... during dialogue
-- MapUI should move per pixel
-- for body parts we can detatch:
-	- add a tooltip detachable line
-	- change frame color slightly to show
-	
-- when removing body part
-	- remove any associated slots
-	- remove the uis
-	- refresh the list after
-	- keep same pose - camera position and head
-
+# Now
 - Realm sounds: hits sound like what they hit (stone, dirt, wood, flesh)
 	- the realm spawns sound entities (like its quests and items), each a SoundEffect's settings:
 	  instrument, notes, lengths, volumes (sounds/fun/effects.c rows become data)
-	- blocks and npcs link one: HitSoundLink -> its realm sound (stone a dry knock, dirt a soft thud,
-	  wood a hollow tock, slimes a squelch)
+	- blocks and npcs link one when spawned: HitSoundLink -> its realm sound (stone a dry knock,
+	  dirt a soft thud, wood a hollow tock, slimes a squelch)
 	- spawning a hit reads the linked sound's settings, falls back to sound_effects
 	- tst: every block and character kind has a hit sound, they differ (brightness, pitch), all pass sound_balance
+- Font filling is a bit off
+	- write a test for it (glyph fills, compare to the font's raw data)
+- The arms don't keep in sync
+- Npcs disappear: they don't return to their spawn positions when out of spawn range
+	- not solved yet: spawn links vs inside chunk links
+- Trees spawn too rarely, and don't spawn apart
+- The grassy biome isn't grassy enough
+- Refactor town and mountain placement in regions
+	- it's really placing any things in regions across chunks, make it a general region placer
+	- new region placers should avoid prior ones
+- Tests for terrain generation (heights, biomes, trees spaced apart, grass coverage, region placements)
 
-# Bugs
-- Sometimes the npc labels dont spawn
-	- its dissapearing due to chunk distance issues
-- cokie is not centred??
-	- super rare vox texture bug
+# Sounds and Music
+- Opt: SoundGenerateSystem by using preset sound data + mods
+- Opt: Spawn Sound Samples on Realm Start, then use this data in generated sounds - optimized sound generation
+- SoundGenerateSystem - uses too much still
+- Footstep Sounds when walking around
+- Add damage and sound if you land strongly
+- Change music track when dialogue starts too
+- Underwater: Dampen music sounds
 
-# later
-- Track NearbyCharacters on npcs for UI spawning
-	- spawn new marker based on surrounding characters quest states
-		- link marker to nearby player character
-	- marker should set when player goes near npc, it should update based on quest
-- set overlays based on quest tracking when we spawn datagrid
-	
-# New
-- import texture outlines as a seperate mask texture
-	- making it easier to change outlines
-	- bitmask - 0 / 1 ?
-
-# Tests
-- write pickedup item test
-- write a grid spawn test for every model
-- write a grid spawn test for every character
-
-# Debug
-- add a mode where it shows block ids in item tooltips
-
-- for our model test - change mesh every 5 seconds to a variant model
-	- showcase variants
-
-- test for spawning all models under realm
-- Simple test function to spawn vox mesh
-    - just the mesh itself, usign a entity reference
-    - mesh clone is it? basically yeah
-
-- Maps
-    - Make maps use GridDirty instead of manually positioning
-    - Move pieces pixel by pixel around player - set centre position of map
-    - add a mask around map
-    - update ony pieces and not entire map
-    - zoom + - buttons on header
-    - map texture can be seperate
-        - optimized
-        - spawn when map spawns
-        - child of tunk
-        - disable when ui closes / dies
-        - updates when enabled / chunk changes
-
-## Gameplay
-- add a simple log, with the entry line fade out
-	- log at bottom left
-	- when level up add a line about it
-- Fix destruction material
-	- use the depth offset instead
-	- reduce z offset to 0
-	
------------
-## Backlog
------------
-
-# Dialogues
-- Add a text speed option - 1, 2, 3 (default 2)
-	- add sounds per syllabal too instead of sound
-
-- Loops endless - when exiting game now
-    - can test by spawning/destroying terrain in main menu
-    - i disabled mesh, vodes, npcs, lights, still stuck on dispose terrain
-    - I disabled chunks.. its tunks or regions
-    - by Elimination, we find its hashmap disposal hanging
-- Maybe we just build spinlock into the octree types root
-    - would be a massive refactor tho
-
+# Terrain and Chunks
+- add a test for streaming between chunks, this can be reused to test its speed for optmization too
 - Water Blocks / Chunk Materials
 	- seperate out subchunks by material (with sides per material)
 	- keep a list of materials when blocks update - refresh this list
@@ -174,239 +42,12 @@
 	- add splash when entering water
 	- reduce gravity
 	- allow jumping inside water
-	- Dampen music sounds
-- humanoids seem missing
-	
 - Remove trigger system for lods
 	- just update neighbor of updating chunks inside stream systems
 	- atm the faces stay sometimes between lods
-- Refactor DoubleDataMax - system timings - use a seperate entity
-    - with system link
-    
-
-- Fix Font imports for "?"
-	- test marker change with quest
-- dialogue conditional node
-	- if you have quest, npc laughs at you
-	- make it a function pointer byte node_condition_event
-- Add death event for character
-	- xp gain
-	- sound spawn
 - "[Landfill] Depth Invalid:" bug
-- spawn dialogue inside character spawning for realm, so its in one spot
-
-## Projectiles
-- Projectiles get destroyed on hit characters (use same system as pickups)
-
-## After
-- We should not have restore/dispose systems
-    - just use query
-    - as systems cache their results per frame
-- fix docker build and test onsteamdeck
-    - uses new pathing
-
-- Profiler should show exact frames
-    - a second graph over top can show max system times
-- Calculate the camera transform before uploading to shader
-    - atm it calculates in the vert shader, not good
-- I really should just link player to a canvas 3D - then i can spawn/remove from that normally
-- Why datagrid?? why not simply ui_grid??
-- Optimize the npc spawning
-- Optimize the different block generation
-	- lags on realm load (for my arm pc)
-- Fix logs in build system, should become alot cleaner
-
-## Next
-- Spawn 2 XR Eye entities that are cameras
-    - XRRender Systems for them
-- Seperate character depth from block depth in settings
-- Refactor ListPositionDirty and ListSizeDirty into tags
-- remove StatLinks just use children and queries
-
-- Fix overlay of destruction materials for block destruction
-- Make lines in plotgraph use a set value of the graph
-    - set the graph based on max value in that frame, but use multiple curves
-    - display frame time behind, and system time in front
-    
-## Settings
-- Add ui scale to settings
-
-## Important Refactor
-- Why is player state 'playing' when i exit game..
-- Player State Refactor
-    - Remove just use disables etc
-- Game States
-    - Controller all players centrally from game states
-    - single state machine for games
-    - Remove GameStateTarget
-    - Use a listener event for modules
-- do 2D uis get restored? missing any 2D vert data?
-- When low on damage - add more downscale on the camera
-    - make it a camera property too
-- Vox item textures... broken again... only sometimes
-- just a simple component macro that creates an expanding number ofevents
-    - just arrayd for now?
-- Add event listeners that can handle multiple events
-    - use this for game state
-    - modules can add too prefab_game's state change listener
-    - use this for special stuffs
-    - use this for options
-    - can massively reduce systems
-- Refactor Punch mechanic as just the way damage is added
-- Make a AOE skill that npc can use when its low health
-    - adds particles
-- Flying in disabled chunk - disabled due to no voxels - causes player to be disabled
-- if npc is being baited, by the player keep running around them
-    - they can run away
-- start game with 3 skills, so you can try the combat styles of the skill tree
 - When place above chunk - no mesh spawns
-- Add particles when you land
-- Add damage and sound if you land strongly
-- Add red screen overlay when you are hit
-- Test Dialogue function
-    - animate scale for each new character 0->1.2->1 (3 frames)
-    - remove the glitchy first letter - probably due to it spawning
-- Dialogue Generation
-    - Greetings
-    - based sentence gen on their personality types
-    - give each npc a personality type
-- Spawn load text / ui during fade out / game event
-    - just show loading for now
-- Add loading screen
-    - with cancel button
-    - show loading chunks count
-    
-## Polish
-- Add ui scale onto options
-- Slider UI isnt accounted for in list ui
-- Refactor the taskbar button to window using links
-    - Fix taskbars again properly linking to windows
-- Fix flickering issue of raycast
-    - maybe we should use a fixed rotation integral
-- Move map UI as player moves
-    - mask the map ui
-    - or just disable when goes over edge for now
-- Add Version of build date to main menu bottom right
-- stats panel didnt spawn when respawn
-    
-## Gameplay
-- Each character type - spawn dialogue there
-
-## KeyboardMouse
-- We need a target window for player, whichis the last selected one
-
-## Gamepads
-- Tooltip should just be at top right of screen when finger is off ui
-- add controller vibration support
-
-## Touchscreen
-- Add auto jump option - for touchscreen + option to disable
-- Fix post procesing on android
-- make jump button use - ClickingEvent instead of ClickEvent
-    - so we can hold jump button
-    - Make button activate while holding - on clicked rather than first click
-
-## New
-- Raycast x 4, for player, and compare results
-    - so we dont get shuffling between cubes when camera shakes
-    - like squarecast
-- Check when spawning if we are inside blocks
-
-
-## Game UI
-- Redo Realm Select UI
-    - add date in tooltip
-    - Sort latest to top
-    - Add Realm Names as labels instead of seed
-
-## Weather
-- Fix the fog, make look nicer
-
-## Models
-- Node (Runner) Process Entity should shift the seed its using
-- Add SetSizeNode with min max properties
-    - min max get shifted depth to the depth of the model
-    - this lets us use same blueprint for all slimes
-    - This way we wont need float3 ratio in the model spawning too
-- Add paint detail - clamp options - for tiny details
-- Once its done, get ai to spawn chickens and cookies
-- add spawn spots node that adds some variation
-
-## Cookies
-- Refactor Model Blueprints to vary size based on seed - set size node
-- Refactor the model to generate all chunk meshes
-    - refactor vox color builder to use parent
-
-Later
-- Crosshair will flicker siize too fast
-- Animate Text test
-- Note: Atm the material is the same on all render textures
-    - we can just create a child of the ui as material if we need unique values
-        
-Bugs
-- Destruction Material Flickering - increase depth until i fix it
-- List ui calculating wrong cause sliders different heights then buttons!
-- Fix Skinning issues of humanoids at max depth
-- Fix unstuck system and test it with no clip
-
-### Refactoring ###
-- Move particle and bone rendering systems into rendering module
-- Remove crafting users reference and use normal item ui for craft ui
-- Refactor Chunk Render systems back into Rendering module
-- Replace Generate components with core one
-- Refactor Colored Vox to use same ChunkSides system
-- Convert Vox Model to use ChunkMeshes
-- remove GenerateTexture after use
-- Replace Generate components (GenerateTexture, GenerateRealm, GenerateTunk)
-- Add GenerateProgress, and add to it when generate state begins, remove when ends
-- Redo all my destruction hooks like MeshGPULink - remove DTOR for OBSR
-- Refactor Character - Vox model can be underneath them
-- Refactor Vox Model so meshes can be underneath them
-- Move chunk render back to rendering module, and just link to material
-	- keep all rendering stuff there
-
-Polish
-- When dialogue animates - first fontt will flash...!
-- Smooth the camera or sleep the physics cause it flickers the lighting
-- make voxel item textures 2 pixels larger, one is outline, one is air
-- Make map move around player position
-- Fix timing of arm swing
-- item ++ shhould occur after it reaches you (the world item)
-- Add loading screen
-
-# Note we need to use s to isolate reading from voxels / writing to
-
-- Make a easy way to add hotkey functionality
-	- zox_on_key_pressed(key_z, test_thingo);
-
-Quick Wins
-- set particle grass color to that of grass itself - block color
-- arm should only slerp rotation - no setting
-- save player character slot data
-	- items, skills, etc whatever is there
-- load player character slot data
-- Add chicken head item
-- Vox Items - hold chicken head in hands
-- 10% chance for Boney npc to have a quest to give
-	- change dialogue if no quest
-- simple kill slime quest 
-	- hand in once you killed 10
-
-Fix:
-- Sometimes humanoids dissapear (when talkin go them?)
-- aura particles are broken, they only spawn in same spot now
-- PNG errors - convert rest to bmp
-- 'Sides is true with Air'
-- 'child_index_to_text_array_index: index ' warning
-- 'OOB [set_octree_value] [0x2x0] depth [1] vlength [2]' warnings
-- Glitchy depth fighting on 3D UIs, and on Block Destruction Materials
-- Smooth out camera at low fps - its very glitchy
-- skybox doesnt follow to main menu?
-- "Terrain Chunk Mesh Builder: Sides is true with Air" error
-- "OOB [set_octree_value] " error with vox building
-- PNG errors
-- Eventually we need multi chunk characters, cause their updates lag
-	- max depth 4-5 for mesh build times
+- Flying in disabled chunk - disabled due to no voxels - causes player to be disabled
 - Top of world bugs
 	- blocks placed on top of world cause no face to show
 	- slime npcs arnt hitting back
@@ -415,328 +56,107 @@ Fix:
 			- only small ones
 			- when im far away from origin
 			- super weird
-	
-- add destruction particles
-- debug npc voxel positions - porcupine style
-- particles for skeleton death
-- bleed effect
-
-Atm:
-- time punch animation when first click?
-	- warmup of skill first
-	- then punch begins
-	- punch swings
-	- punch hits
-	- punch winds back
-	- skill coolsdown
-- Animate ui for punch, overlay
-
-Fix:
-- The errors about ChunkSides
-- Set editor text contrast alot higher, black and white
-- Make raycast from fixed position, not off moving head
-- Fix the layering of the 3D UIs, text and such has depth issues
-- Fix npcs falling through map
-
-New:
-- Add slight directional light over the AO on colored voxes
-
-Refactor:
-- Big one is making Vox + terrain use same ChunkSides code
-	- make vox use chunksides
-	- refactor vox mesh outside of vox itself
-	- Seperate out UVs generation from Faces, so they both use same Mesh Building
-- Make the chunk colors use same system to build mesh
-    - we can just add uvs in for textured system
-- MeshDirty should set for diff data - bitfield - Mesh + UVs + Colors etc
-    - and keep set in systems that upload them
-    - keep them all modular
-    - keep it all centralized in rendering so we dont have to do the same work everywhere
-
-- Spawn/Despawn npc labels when they enter near player
-- SkeletonMesh accidently dissapeared whoops, check changing states
-- debug label - the font will dissapear sometimes and reappear
-	- Looks like a memory issue causing the mashes to dissapear? when streaming
-- sort load games by latest played
-- Add lookouts around map - just big ole scary towers
-    - make system so all new region placers will a void prior ones
-- Add different rarity on items and frame them differently
-- Make homes built with different materials / Blocks
-- Add strange names for blocks
-    - just show label as Soil type of block
-
-Refactors
-- Make 3D ui use layouts
-    - test the canvas
-    - layout to local position
-    - Position2 on prefab stack gets shifted to Position3
-    - TextSpawnSystem just uses a ZigelPrefabLink instead, handling both types
-
-Gameplay
-- Add countdown timer on respawn
-- Add a timer for new items to be picked up
-- Spawn NPC - Humanoid -Test
-- Give npc in town a quest
-- Give option of dialogue to give user a quest
-- Quest accept UI shows between dialogue
-- Escape key should exit dialogue
-- Finish converting icons to bmp
-- Add mirror UI for viewing player model
-
-Fixes
-- Add delays to queue so its frame timing independent 
 - if building a tower up - shows invisible face
-    - Its when its next to a chunk with no chunk meshes - it doesnt build the edge
-- Jumps should work independent of time delta
-- Third Person Camera a bit buggy
-- Fix Vegation not building at same scale
-- Npcs fall through ground durin load..
-- Fix jumps working same at diff time deltas
-    - physics, we just need to give it the same accelaration juice
+	- Its when its next to a chunk with no chunk meshes - it doesnt build the edge
 - Fix Lighting Seems between Chunks, only sometimes??
-- Wait is grass missing now??
-    - it didnt spawn in time
-- Sometimes still crashes - fix that
-- Font sometimes scrambled on ui
 - Chunk Mesh failed deactivating... ? Keep eye on them
-- Npcs be falling through ground
-- Text font just scrambled positions again - maybe it repositions before child index is set
-- Occasional Crashes
-- Map UI slightly off still - the flipping part
-    - wait i think its just lods updating stuff
-    - Vegetation seems off, when moving between LODs
-
-Optimize
-- ChunkTexturedBuildSystem - 28ms idle??
-    - should we be removing states after?
-- Maybe we create entities for events, this will save the idle times?
-- Remove DeactivateDelay on chunk meshes and build new system for this
-
-Crashes:
-- crashes when destroying grass - only in run
-- put more entity component checks everywhere
-- crashed randommly on block place
-
-Ideas
-- Add chunks on edge that are Simulation only? for map? idk
-- Create a biomemap at the region level that helps coordinate
-
-- Generated slime colors should be the same every time loads
-- Begin animating arm when attack starts
-	- atm it is delayed until mid attack
-- Can we give each chunk a seed
-	- then use seed for spawning npcs so it spawns the same every time
-
-Fixes (older bugs)
-
-Opptimize
-- ChunkFrustumSystem [20ms]
-- ChunkColoredBuildSystem [
-- Test Pipeline sync points before i finish
-
-- Add a loading screen - for bigger loads
-- for ui we should keep a Size2 property - real float - this is for the mesh resizing
-
-Improve
+- Vegetation seems off, when moving between LODs
+- Fix Vegation not building at same scale
+- Sometimes chunk didnt update until we destroyed a block from it
+- When i spawn new chunk meshes, it breaks the old ones...!
+- It still glitches though, when mesh built, it shows at wrong place
+	- only on new chunks though
+- for some reason when it lods lod again it will rebuild mesh
+- Fix the flickering of chunks when I move through terrain
+- Bug: Sometimes when streaming, chunks will flicker randomly
+- Bug: Fix Grass placement on outer chunks, it places + 1 but using lower depth so goes too high
+- Fix chunk mesh reload glitch (flashes, basically missing for one frame)
+- "Terrain Chunk Mesh Builder: Sides is true with Air" error
+- The errors about ChunkSides
+- 'OOB [set_octree_value] [0x2x0] depth [1] vlength [2]' warnings
+- "OOB [set_octree_value] " error with vox building
+- Clean: Remove the OOB warnings in octree, print the stack maybe?
+- Fix OOB errors
+- Regressions:
+	- Dissapearing chunk meshes
+	- Meshes that randomly render
+	- Mesh flickers off and on when rebuilds
+		- it shouldn't need to rebuild only when depth updates
+		- Maybe make a swap lod mesh state that waits for the enabled chunk to finish loading
+	- Pretty sure loading chunks was removed - test IO
+	- Landfill not scaling well looks like - tested with low map render distance
+	-o Lag with transforms due to new meshes?
+		-o Position - transform updates lagging - add a dirty flag for this
+- Current Terrain Chunk Refactor:
+	- Move spawn gpu stuff to initialize mesh systems
+	- Frustum should account for sub meshes
+	- We should set bounds of chunk sepertate to mesh
+	- Next:
+		- Add extra stage for Sides - ChunkMaterial
+		- Add second block with lava material for test
+	- Systems: GenerateChunk, GenerateSides, Generate Mesh (children)
+	- New Systems: ChunkMeshSpawnSystem, Chunk3MeshTrigger2System, Chunk3TexturedBuild2System, Chunk3Sides2System, ChunkMeshSlow2System
+- Refactor Terrain Chunks to use LOD mesh entities instead of singular chunk
+- Prioritize Chunks higher lod first
+- Also process double if the lod is less, per depth
+	- use a point system for counting processing based on depth levels
+- When chunk updating, create an update group
+	- first check neighbrs, if it has an update group
+	- if any do, we use that instead
+	- When pushing update, just check the group if all chunks on are done
+	- This basically keeps them updating in groups without the need to check entire terrains Chunks
+- Make a better slow chunk system - perhaps a queue to terrain, when theyre done just remove them from it, to track
+- Queue new chunks - so it doesnt lag
+	- TerrainStreamSystem is basically just spawning new chunks
+	- Tunks Lod updates happen elsewhere in threads
+- Add a queue for spawning new positions, do like 256 checks per frame for terrain for spawning, so its delayed a bit? only if still lagging with new stream systems
 - Chunk meshes should only be spawning if materials per side > 0
-    - Ignore spawn mesh if air or if no visible edges
-
-New:
-- Spawn / Respawn point should be in a Home - facing outward
-- Add Terrain Depth to options - debug options
-- Draw X inside chunk after it builds sides - to debug  this
-- Make close button smaller square with a circle pattern
-    - the X is ugly there need icon
+	- Ignore spawn mesh if air or if no visible edges
 - Add material + system for Fading chunks in
 	- Tag then Remove tag after faded for TransparentRendering
 - After it works, lets fade between the lod meshes
 	- handle interupts so it can fade the other direction again
 - also switch chunk depth to 5 + double scale so its 32x32x32
+- if our body is overlapping chunk edges, we shouldnt update the chunk streaming, wait until its not overlapping
+- Flag if chunk has file, then progressively load the contents per LOD level
+- Add dictionary to chunk data, so it maps the blocks to the block ids, and then make the block ids generate from realm ids so it stays consistent after changes
+- Can we give each chunk a seed
+	- then use seed for spawning npcs so it spawns the same every time
+- Add chunks on edge that are Simulation only? for map? idk
+- Opt: ChunkNeighborSystem
+	- On Init - add to neighbor directly from the init chunk
+	- On Spawn - grab directly there from dictionary on terrain
+- Opt: also add back the color uploads for chunk meshes - MeshColorsDirty
+- Remove DeactivateDelay on chunk meshes and build new system for this
+- ChunkTexturedBuildSystem - 28ms idle??
+	- should we be removing states after?
+- ChunkFrustumSystem [20ms]
+- ChunkColoredBuildSystem
+- Ref: Remake RenderDepthDirty for TerrainChunks, setting per system instead of zoxc_state
+- Note: I removed render_depth_invisible, we are just going to set depth to 0 from now on or destroy the chunk - or we can disable but it should be seperate from depth variable
+
+# Generation, Biomes and Regions
+- Use Realm Seed + region positions to set Region Seeds
+- Use Region Seeds to generate mountain dat
+- base biome color on prior biomes so it stands out too
+- Create a biomemap at the region level that helps coordinate
+- Opt: HeightMapSystem lagging, use LODin g for HeightMaps / Tunk Generation
+- Refactor: Tunk Generation should have lodding as it currently lags
+	- if still lag at per system limitations
+- Tunks to use Quadtrees and LODing
+- Optimize the different block generation
+	- lags on realm load (for my arm pc)
+- Regions
+	- destroy regions
+	- Region lods
+	- region town/mountain links
+	- spawn straight highways between region towns
+- Add lookouts around map - just big ole scary towers
+- Test WaveFunctionCollapse
 - Create a fullscreen ui scroll view, render textures, of spinning vox models
 	- each one will be a part of a population
 	- population breeds based on rules
 	- the final population becomes the biome blocks
-
--o Test entity table issues by adding tag to chunk im in and seeing if it breaks their rendering... weird but might be why meshes dissapearing
-- Fix chunk bounds debug visuals - the lines debugger
-- for some reason when it lods lod again it will rebuild mesh
-
-	
-- Sometimes chunk didnt update until we destroyed a block from it
-
-- When i spawn new chunk meshes, it breaks the old ones...!
-- New Test: Spawns MeshViewer ui based on inside chunk data
-
-- Shrink Game Viewport and put Editor Buttons as icon buttons around side, like gizmos - docked
-- For soil vox addition, while it digs down, use a random chance to alter the color?
-- when I turn off toggling, it doesnt break
-- Also when i disable lods
-- It still glitches though, when mesh built, it shows at wrong place
-    - only on new chunks though
-
-Regressions:
-- Fix item drop from terrain, so it works in same pipeline as others (sync point reduction)
--x LAG - 150 ms before now 50...
-- Dissapearing chunk meshes
-- Meshes that randomly render
-- Mesh flickers off and on when rebuilds
-    - it shouldn't need to rebuild only when depth updates
-    - Maybe make a swap lod mesh state that waits for the enabled chunk to finish loading
-- Pretty sure loading chunks was removed - test IO
-- Landfill not scaling well looks like - tested with low map render distance
--o Lag with transforms due to new meshes?
-    -x Disable ChunkMesh and just set Transform + position data
-    -x same for chunk
-    -o Position - transform updates lagging - add a dirty flag for this
-- Fix Loading of settings
-	- make load in system
-	- if spawning, check if exists or not yet
-	- Add state for Settings Load, and Settings Spawn, for Initializing app settings
-Current Terrain Chunk Refactor:
-- Move spawn gpu stuff to initialize mesh systems
-- Frustum should account for sub meshes
-- We should set bounds of chunk sepertate to mesh
-
-Next:
-- Add extra stage for Sides - ChunkMaterial
-- Add second block with lava material for test
-
-Systems
-	- GenerateChunk
-	- GenerateSides
-	- Generate Mesh (children)
-	
-New Systems:
-	- ChunkMeshSpawnSystem
-	- Chunk3MeshTrigger2System
-	- Chunk3TexturedBuild2System
-	- Chunk3Sides2System
-	- ChunkMeshSlow2System
-	
-Hard:
-- Refactor Layouts by using LocalPosition2 instead of CanvasLayout
-- Fix P hysics collision bug, by choosing collision side based on previous position
-- Refactor 3D UI to use layouts
-- Refactor Terrain Chunks to use LOD mesh entities instead of singular chunk
-
-- Save Options to disk from a system - OptionsDirty
-- Fix arm, needs to not instantly rotate
-- Pause NPCs when press escape
-- Fix physics bug
-- Fix Unstuck system
-- Make Camera Z + and remove maps ui FLIP hacks code
-- Prioritize Chunks higher lod first
-- Also process double if the lod is less, per depth
-    - use a point system for counting processing based on depth levels
-- Make the bars dissapear when not used
-- When chunk updating, create an update group
-    - first check neighbrs, if it has an update group
-    - if any do, we use that instead
-    - When pushing update, just check the group if all chunks on are done
-    - This basically keeps them updating in groups without the need to check entire terrains Chunks
-- Fix Scale2 working on UIs
-- Make a better slow chunk system - perhaps a queue to terrain, when theyre done just remove them from it, to track
-- make some npcs attack you
-- Queue new chunks - so it doesnt lag
-    - TerrainStreamSystem is basically just spawning new chunks
-    # Tunks Lod updates happen elsewhere in threads-=
-- optimize npcs
-    - just spawn closer to player, so not as many for now
-
-# Map
-- Zoom in / out buttons / scroll wheel
-- Keep track of chunks player has explored - fog of war
-- Show percentage explored of Region - name the region
-- When you open map, fade it in from player, one piece at a time
-- show name label over town on map
-- Blend in heights with voxel colors to give more of a mappy feel
-- Add a compass symbol to show north etc
-
------
-
-- Improve Dirt Model
-- Improve Wood Model
-- Add Town Dirt Model - more like stone ish, rounded pebbles
-- Make compile shell work per module!
-- Refactor the sdl mixer into audio - using my own mixer code
-- Test WaveFunctionCollapse
-
-# log: 
-- Refactor BlocksDirty to non state
-- Refactor Statbar3D to use Element2D data, merge the ui code
-    - we simply translate the layout2D information into the 3D transform space
-- Add WindowTitle property and spawn Header of window in system
-    - decouples the header code from spawning
-    - keeps spawning purely for data setting!
-- Refactor: Tunk Generation should have lodding as it currently lags
-    - if still lag at per system limitations
-- Map Arrow is backwards, but its pointing right way, when we move right in character, the map ui goes left... So rotation is flipped of map and arrow
-- CharacterLoadSystem - Just load character from system using load state
-    - streaming should just work seperately to character positioning
-
-Editor:
-- Add a Toggle when entity has children in hierarchy, toggle will remove/add their children uis
-- Add mask on ScrollArea, so it hides off buttons when they overflow
-- Let mouse scrollwheel work on the scrollbar
-- Indent the buttons instead of adding "-" to them
-- For Edit mode - remove main menu
-    - add canvas lines to show
-- Dock window - inspector on right, hierarchy on left of canvas
-
-New:
-- When you have stat points, add + button on Attributes
-- When attributes go up, increase base stats too!
-- When equiping gear, add particles buff around character
-- Add dust particles when we jump
-- Spawn NPCs based on spawn maps in tunks
-
-Fixes:
-- Move NPC dialogue distance back 1 units
-
-Optimize:
-- Opt: HeightMapSystem lagging, use LODin g for HeightMaps / Tunk Generation
-- Opt: SoundGenerateSystem by using preset sound data + mods
-- Opt: Spawn Sound Samples on Realm Start, then use this data in generated sounds - optimized sound generation
-- Opt: also add back the color uploads for chunk meshes - MeshColorsDirty
-- Opt: ChunkNeighborSystem
-    - On Init - add to neighbor directly from the init chunk
-    - On Spawn - grab directly there from dictionary on terrain
-- Add a queue for spawning new positions, do like 256 checks per frame for terrain for spawning, so its delayed a bit? only if still lagging with new stream systems
-- SoundGenerateSystem - uses too much still
-
-Refactor:
-- Remove Realm Links components, just use Children
-- Make GenerateTexture a byte again - so we set per system
-- Ref: Make models just use one vox with multiple Renders Underneath, atm it spawns 5 models and regenerates everytime
-- Rft: Make GenerateCharacter states and byte type
-- Ref: Remake RenderDepthDirty for TerrainChunks, setting per system instead of zoxc_state
-- Finish removning all spawn_block_vox
-- Refactor Models to nodegraphs for soil, stone, etc
-
-Regressions:
-- Bug: Fix music on Main Menu
-- Bug: Fix music loading properly
-- [02:12:59] [WARNING] [character3_player_9369]'s Exceeded Capacity [64] [zox_get_children] 
-- [02:13:07] [WARNING] [taskbar_icon_4294977265] Invalid GPU Link [0]
-- Fix Android Build - on arm pcs
-- Fix Slemz eyes - missing
-
-Bugs:
-- Bug: Edge of map UI is glitchy
-- Bug: Taskbar toggle not deactivated when window closes
-- Bug: NPCs can spawn before the chunk is finished, which makes them fall through the chunk
-- Bug: The 3D uis are flickering due to depth fighting atm
-- Bug: Sometimes when streaming, chunks will flicker randomly
-- Bug: Fix Grass placement on outer chunks, it places + 1 but using lower depth so goes too high
-- Bug: died holding block, stuck to model?
-
-# Misc
-- Tool: Make a region debugger, show the region bounds with a cross through each corner (X) A big X
-- Show max system time's graph, in red, overlay over the regular graph
-- Bug: lines of selected block should render over destruction overlay
-- Bug: Realm Generation: Memory leak somewhere, breaks during VoxGenerationSystem - color spawning - test with valgrind on x86 later
-- Bug: Character shakes - smooth the physics - put to sleep when not moving
-- Refactor: load files on boot and not per realm
 
 # Towns
 - TownLinkSystem for Characters - Log when entering a town
@@ -745,143 +165,140 @@ Bugs:
 - Towns: Place Roads during Maps based on Roads Children of Towns
 - Towns: Spawn Highways between towns
 - Towns: Set Block Links inside Homes, for Home Floor, Roof, Wall, Door blocks
+- Make homes built with different materials / Blocks
+- Make Road from middle of town to gate
+- Make Walls Thicker
+- Make Town Gates more overhanggy
+- Debug missing town wall parts, cuttoff, do minimaps next
+- Spawn / Respawn point should be in a Home - facing outward
 
-## Textures
-- Refactor texture generation to use nodegraph + nodeprocess
-- Add fancier frames to the uis
-- Use a MaskTexture in the generation data, use this to apply different materials on frames (mask just black and white array)
-
-## UI
-- Add Glyphs for Key/Buttons on UI
-- UI: Toast UI when you enter Town
-- Add Character Render Texture UI to show your character - mirror taskbar icon too
-- Add Logs UI at bottom left
-- Status UI
-	- Test button first
-	- Spawn render texture
-	- Spawn render camera facing this
-	- Spawn characters mesh object (mesh clone)
-- Use realm colors for UI
-- Spawn Status UI + player model through the UI
-- Click TextureData label to open a texture window
-- Slider UI to snap on integer points - when integer - on release
-- Add quantity label as child of icon - for mouse pickup too
-
-## Lights
-- Light character models from the environment (like minivoxes)
-	- sample the LightNode at the character's voxel position (get_block_vox_light in vodes3/fun/lights.c), set Brightness
-	- update when the character moves to a new voxel, or its chunk's LightNodeDirty goes active
-	- pass Brightness to the skeleton/character shaders (uniform, like vox_render)
-	- tst: character walks from sunlight into a dark area and gets darker
-- One when it updates the Render Depth
-- Make layout positions recursive too - so it updates
-- Lights: Add smooth lights for terrain faces, so the corners are darkened
-
-## Blocks
+# Blocks
+- Implement a tall grass block model
+	- support for linking a world model (minivox/blockvox) to multiple voxel links
+	- add a second block, tall_grass
+	- multi chunk support needed for vox models
 - Make Grass Taller, 2-3 blocks tall sometimes
 - seperate block spawning more from the realm,break it into biomes and modules
 - remove use of global voxel indexes and use BlockLinks from realm
 - Add Regen to BlockHealths
 - Use BlockHealth prefabs with health stat as children
 - Vodes: Destroy Block Health when full for >= 3 seconds
+- Add strange names for blocks
+	- just show label as Soil type of block
+- Refactor spawn_block_vox_meta and remove structs
+- Finish removning all spawn_block_vox
+- For soil vox addition, while it digs down, use a random chance to alter the color?
+- Improve Dirt Model
+- Improve Wood Model
+- Add Town Dirt Model - more like stone ish, rounded pebbles
 
-## Npcs
+# Models and Vox
+- Node (Runner) Process Entity should shift the seed its using
+- Add SetSizeNode with min max properties
+	- min max get shifted depth to the depth of the model
+	- this lets us use same blueprint for all slimes
+	- This way we wont need float3 ratio in the model spawning too
+- Add paint detail - clamp options - for tiny details
+- Once its done, get ai to spawn chickens and cookies
+- add spawn spots node that adds some variation
+- Refactor Model Blueprints to vary size based on seed - set size node
+- Refactor the model to generate all chunk meshes
+	- refactor vox color builder to use parent
+- Refactor Models to nodegraphs for soil, stone, etc
+- Ref: Make models just use one vox with multiple Renders Underneath, atm it spawns 5 models and regenerates everytime
+- Refactor Colored Vox to use same ChunkSides system
+- Convert Vox Model to use ChunkMeshes
+- Refactor Vox Model so meshes can be underneath them
+- Big one is making Vox + terrain use same ChunkSides code
+	- make vox use chunksides
+	- refactor vox mesh outside of vox itself
+	- Seperate out UVs generation from Faces, so they both use same Mesh Building
+- Make the chunk colors use same system to build mesh
+	- we can just add uvs in for textured system
+- MeshDirty should set for diff data - bitfield - Mesh + UVs + Colors etc
+	- and keep set in systems that upload them
+	- keep them all modular
+	- keep it all centralized in rendering so we dont have to do the same work everywhere
+- Eventually we need multi chunk characters, cause their updates lag
+	- max depth 4-5 for mesh build times
+- Generated slime colors should be the same every time loads
+- Fix Slemz eyes - missing
+- Vox Frames - different vox models we swap between
+- Vox item textures... broken again... only sometimes
+- make voxel item textures 2 pixels larger, one is outline, one is air
+- cokie is not centred??
+	- super rare vox texture bug
+
+# Characters and Npcs
+- When Add/Remove body part
+	- remove the associated item slots
+	- refresh the body ui
+	- keep same pose - camera position and head
+- for body parts we can detatch:
+	- add a tooltip detachable line
+	- change frame color slightly to show
+- Npc Item drops - should pick an item item randomly based on rarity of the body parts + inventory
+	- it should not drop all items
+	- player characters should still drop all loot though for chance to pick them up
 - Add humanoids back to npc spawning
+	- humanoids seem missing
+- Spawn NPC - Humanoid -Test
 - Npcs: Add Monster spawn zones for types - remove around towns
+- Spawn NPCs based on spawn maps in tunks
+- optimize npcs
+	- just spawn closer to player, so not as many for now
+- Optimize the npc spawning
+- Bug: NPCs can spawn before the chunk is finished, which makes them fall through the chunk
+- Npcs fall through ground durin load..
+- Fix npcs falling through map
+- Sometimes humanoids dissapear (when talkin go them?)
+- Sometimes the npc labels dont spawn
+	- its dissapearing due to chunk distance issues
+- Sometimes namelabel didnt load on npcs
+- Spawn/Despawn npc labels when they enter near player
+- if npc is being baited, by the player keep running around them
+	- they can run away
+- make some npcs attack you
+- Make a AOE skill that npc can use when its low health
+	- adds particles
+- NPC RaycastRange add ActiveAction to NPCs - ActiveActionRangeSystem
+- NPC - Raycast Range should be Skill Range
+- Pause NPCs when press escape
+	- pause should pause the npcs too, cherrie wants dat
+- Add death event for character
+	- xp gain
+	- sound spawn
+- Handle player death by removing camera on death state
+- SkeletonMesh accidently dissapeared whoops, check changing states
+- Fix Skinning issues of humanoids at max depth
+- debug npc voxel positions - porcupine style
+- Refactor Character - Vox model can be underneath them
+- Rft: Make GenerateCharacter states and byte type
+- CharacterLoadSystem - Just load character from system using load state
+	- streaming should just work seperately to character positioning
 
-## Bodys
-- Animations: Add Sine Scale on chest for breathing animation
-- Animations: Sine Bob + rotate the World Items
-- Footstep Sounds
-- Footstep Prints on ground
-- Dust Particles for jumping and landing
-- Add standard ground dust particles
-
-## Animations
+# Bodies and Animations
+- Fix timing of arm swing
+- arm should only slerp rotation - no setting
+- Fix arm, needs to not instantly rotate
+- Begin animating arm when attack starts
+	- atm it is delayed until mid attack
+- time punch animation when first click?
+	- warmup of skill first
+	- then punch begins
+	- punch swings
+	- punch hits
+	- punch winds back
+	- skill coolsdown
+- Animate ui for punch, overlay
 - Disable Switching Action when one is active
 - Global Cooldown When Switching
 - When place last block, dont release arm raise until after animation is done
 - Base Speed of swing off walk speed and state - WalkSpeed (byte based on max speed)
-
-## Dialogue
-- improve dialogue contrast, make the dialogue ui block background
-- Aim down when speaking to slime/chicken etc
-- Change music track when dialogue starts too
-- Fade it in when you get closer to them, like within a chunk distance
-- Reduce ai's dialogue distance a little
-- Aim head at the npc when talking to them
-	- making sure the dialogue is above them
-- Black bars to animate from top and bottom when dialogue mode is dirty (remove the fade effect)
-
-## Gizmos
-- Gizmos: Selected Block Gizmo - is flickering - only when attached to character, if detatch is stops...
-- FIX: Set CubeLines Faces based on VoxelSides thats generated, then make sure it Renders Over Top of the overlays - disabled depth
-
-## Cameras
-
-## Rendering
-- Lines: Line Instancing
-- PostProcessing: Add a Post Processor Noise option - Slider - we can reduce it or turn off
-- PostProcessing: Add a Post Processor Vignette option - Slider - we can reduce it or turn off
-- FIX: Create a new Unstuck system
-- Smooth Lighting for terrain lights - smoothed edges
-
-## Generation
-- Use Realm Seed + region positions to set Region Seeds
-- Use Region Seeds to generate mountain dat
-- Fix the flickering of chunks when I move through terrain
-- Windows no longer close taskbar toggle
-- Physics clip issue now that my body is bigger than one block size
-- base biome color on prior biomes so it stands out too
-
-## Regions
-- destroy regions
-- Region lods
-- region town/mountain links
-- spawn straight highways between region towns
-
-## Emojis
-- Add little vox model above npc if you can talk to them - little cube that animates
-	- Animate it more when talking to the npc
-
-## Saves
-- SaveLoad Items - using new Saves Module for better workflow
-- Add Statistics Overlay
-	- SHow counts for many things
-- Remove Debug options and just put in Gizmos
-	- Transparent Meshes
-	- Render Bones
-	- Paint Bone Weights
-	- Disable NPCs
-- SaveTransformSystem using States
-- Make Road from middle of town to gate
-- Make Walls Thicker
-- Make Town Gates more overhanggy
-- Debug missing town wall parts, cuttoff, do minimaps next
-- Fix OOB errors
-- Fix chunk mesh reload glitch (flashes, basically missing for one frame)
-
-## Inputs
-- Button Mapping
-	- Add Button Mapping Module
-	- so the player systems use those instead
-
-## Stats
-- Add Stats panel to the taskbar and give header / window
-- Vitality should increase health stat
-
-## Skills
-- NPC - Raycast Range should be Skill Range
-	
-## Items
-- Drop item button
-- Spawn Vox model items in hand
-- Spawn Vox model items in world (flowers drop)
-- Add Cookie Item
-- Right click to split items
-- Write a test function to spawn a world item to pickup
-
-## Body
+- Animations: Add Sine Scale on chest for breathing animation
+- Animations: Sine Bob + rotate the World Items
+- Head bob to move faster when walking
+- Footstep Prints on ground
 - Body / Equip Tooltips
 	- Add Slot Names to Body Parts + Equipment in tooltips
 	- Add tooltip of slot type over empty slots
@@ -896,92 +313,488 @@ Bugs:
 	- cylinder shape at bottom+top
 - Designate a hand bone
 	- Spawn Held Item onto handbone
-- Footstep Sounds when walking around
-- Head bob to move faster when walking
 - use chest shape data from zoxel for the chest
 - handle color combos by making head a different color
 	- uses lookup table when placing
 - Body Part Tooltip
 	- show PartLinks
 	- show AttachLinks
+- export character, mesh and bones, to blender so i can make animations
+	- reimport animation back in
 
-## Placing
+# Physics and Movement
+- add rotated character per voxel selection for raycasts, similar to how we do for grass
+	- keeping bounds as a sweep pass
+- Jumps should work independent of time delta
+- Fix jumps working same at diff time deltas
+	- physics, we just need to give it the same accelaration juice
+- Fix P hysics collision bug, by choosing collision side based on previous position
+- Physics clip issue now that my body is bigger than one block size
+- Fix physics bug
+- Fix unstuck system and test it with no clip
+- FIX: Create a new Unstuck system
+- Long pause breaks physics - test big frame times
+- Bug: Character shakes - smooth the physics - put to sleep when not moving
+- Smooth the camera or sleep the physics cause it flickers the lighting
+- Check when spawning if we are inside blocks
+- Raycast x 4, for player, and compare results
+	- so we dont get shuffling between cubes when camera shakes
+	- like squarecast
+- Make raycast from fixed position, not off moving head
+- Fix flickering issue of raycast
+	- maybe we should use a fixed rotation integral
+- Add particles when you land
+- Dust Particles for jumping and landing
+- Add dust particles when we jump
+- Add standard ground dust particles
+
+# Combat, Skills and Stats
+- We can just have a more general Damage/Defence type stats
+	- With Physical and Magical tags
+	- DamageStat, DefenceStat
+- Link Aura to magial damage
+- link projectile to magical damage too
+- Projectiles get destroyed on hit characters (use same system as pickups)
+- add a simple skilltree
+	- with a skill to unlock button
+	- click and hold it to unlock
+	- screen shake and particles when unlock
+- start game with 3 skills, so you can try the combat styles of the skill tree
+- Refactor Punch mechanic as just the way damage is added
+- When low on damage - add more downscale on the camera
+	- make it a camera property too
+- Add red screen overlay when you are hit
+- aura particles are broken, they only spawn in same spot now
+- add destruction particles
+- particles for skeleton death
+- bleed effect
+- Fix destruction material
+	- use the depth offset instead
+	- reduce z offset to 0
+- Fix overlay of destruction materials for block destruction
+- Destruction Material Flickering - increase depth until i fix it
+- Bug: lines of selected block should render over destruction overlay
+- When you have stat points, add + button on Attributes
+- When attributes go up, increase base stats too!
+- Vitality should increase health stat
+- When equiping gear, add particles buff around character
+- remove StatLinks just use children and queries
+- Add countdown timer on respawn
+
+# Items and Placing
+- Drop item button
+- Spawn Vox model items in hand
+- Spawn Vox model items in world (flowers drop)
+- Add Cookie Item
+- Add chicken head item
+- Vox Items - hold chicken head in hands
+- spawn item model as child of character - when switch action
+- Write a test function to spawn a world item to pickup
+- write pickedup item test
+- Add a timer for new items to be picked up
+- item ++ shhould occur after it reaches you (the world item)
+- Event for pickup we can latch onto in system
+	- trigger the body dirty if body item picked up
+- Add different rarity on items and frame them differently
+- Remove crafting users reference and use normal item ui for craft ui
+- Fix item drop from terrain, so it works in same pipeline as others (sync point reduction)
+- Bug: died holding block, stuck to model?
 - Show a gizmo where block would be if holding block - 3D cube gizmo
 - Animate particles fade in when placing over time
 - Lock in place position from when clicked
 	- Slow rotation of camera during lock
+- set particle grass color to that of grass itself - block color
 
-## Tunks
-- Tunks to use Quadtrees and LODing
+# Quests and Dialogue
+- Add rewards on quest handin
+	- Goal: Give 20 xp for handing in quest
+	- Quest Rewards - More Cookies - Particles
+- Collect 5 cookies for quest
+	- Quest Reward: Top Hat
+- 10% chance for Boney npc to have a quest to give
+	- change dialogue if no quest
+- Quest accept UI shows between dialogue
+- stack tracked quests in a list like fashion
+- Track NearbyCharacters on npcs for UI spawning
+	- spawn new marker based on surrounding characters quest states
+		- link marker to nearby player character
+	- marker should set when player goes near npc, it should update based on quest
+- set overlays based on quest tracking when we spawn datagrid
+- Add a text speed option - 1, 2, 3 (default 2)
+- Escape key should exit dialogue
+- spawn dialogue inside character spawning for realm, so its in one spot
+- Each character type - spawn dialogue there
+- Dialogue Generation
+	- Greetings
+	- based sentence gen on their personality types
+	- give each npc a personality type
+- Test Dialogue function
+	- animate scale for each new character 0->1.2->1 (3 frames)
+	- remove the glitchy first letter - probably due to it spawning
+- When dialogue animates - first fontt will flash...!
+- improve dialogue contrast, make the dialogue ui block background
+- Aim down when speaking to slime/chicken etc
+- Fade it in when you get closer to them, like within a chunk distance
+- Reduce ai's dialogue distance a little
+- Move NPC dialogue distance back 1 units
+- Aim head at the npc when talking to them
+	- making sure the dialogue is above them
+- Black bars to animate from top and bottom when dialogue mode is dirty (remove the fade effect)
+- Add little vox model above npc if you can talk to them - little cube that animates
+	- Animate it more when talking to the npc
 
-## Huds
+# UI and Huds
+- 16 printable ascii have no glyphs, i.e. ' (dialogue "I'm" shows ?), needs font art (tst text_data)
+- Font sometimes scrambled on ui
+- Text font just scrambled positions again - maybe it repositions before child index is set
+- debug label - the font will dissapear sometimes and reappear
+	- Looks like a memory issue causing the mashes to dissapear? when streaming
+- Line2Ds are broken, need to add to new 2D render stack that sorts layers
+- fix text label size when resizing - button size
+- set the slider text block depth [5] when sliding
+- Slider UI isnt accounted for in list ui
+- List ui calculating wrong cause sliders different heights then buttons!
+- Slider UI to snap on integer points - when integer - on release
+- Fix Scale2 working on UIs
+- for ui we should keep a Size2 property - real float - this is for the mesh resizing
+- Add ui scale to settings
+- Refactor ListPositionDirty and ListSizeDirty into tags
+- Refactor Layouts by using LocalPosition2 instead of CanvasLayout
+- Make layout positions recursive too - so it updates in a single frame
+- Make all ui shaders use transforms like render texture does
+- Why datagrid?? why not simply ui_grid??
+- Refactor the taskbar button to window using links
+	- Fix taskbars again properly linking to windows
+- Bug: Taskbar toggle not deactivated when window closes
+- Windows no longer close taskbar toggle
+- Pause ui toggle not showing on spawn taskbar + pause
+- stats panel didnt spawn when respawn
+- Add Stats panel to the taskbar and give header / window
 - Seperate Pause UI from other Game UIs (Taskbar etc)
 - Pause UI to use blacked out screen, game ui to just use blur
-- Sometimes namelabel didnt load on npcs
-- Pause ui toggle not showing on spawn taskbar + pause
 - Give game uis the realm colors so feels different to the main menu
-
-## Realms
-- fix end game fade out, really bad atm
-- remove all realm macros and just use state in their own systems (RealmItemsSpawnSystem, ClearSystem, etc) - wait clear can be a macro tho
-- Shows play time on Load Game
-- delete option Confirm Screen
-- use node system
-
-## Game
-- pause should pause the npcs too, cherrie wants dat
-
-## Unsorted
-- if our body is overlapping chunk edges, we shouldnt update the chunk streaming, wait until its not overlapping
+- Use realm colors for UI
 - Set UI hightlight color of buttons, and highlight outline colors
 	- have it lerp there over time
+- Use a HighlightColor - instead of just adjusting brightness
+- Make close button smaller square with a circle pattern
+	- the X is ugly there need icon
+- Add Glyphs for Key/Buttons on UI
+- UI: Toast UI when you enter Town
+- add a simple log, with the entry line fade out
+	- log at bottom left
+	- when level up add a line about it
+- Add Logs UI at bottom left
+- Add Character Render Texture UI to show your character - mirror taskbar icon too
+- Status UI
+	- Test button first
+	- Spawn render texture
+	- Spawn render camera facing this
+	- Spawn characters mesh object (mesh clone)
+- Spawn Status UI + player model through the UI
+- Add mirror UI for viewing player model
+- Add quantity label as child of icon - for mouse pickup too
+- Add Tooltips to Empty Slot Frames
+- Update frame texture outline when icon is selected!
+- Selected Text option - update the Glyph Colors
+- Add fancier frames to the uis
+- Crosshair will flicker siize too fast
+- Make the bars dissapear when not used
+- Add Version of build date to main menu bottom right
+- Spawn load text / ui during fade out / game event
+	- just show loading for now
+- Add loading screen
+	- with cancel button
+	- show loading chunks count
+- Redo Realm Select UI
+	- add date in tooltip
+	- Sort latest to top
+	- Add Realm Names as labels instead of seed
+	- Shows play time on Load Game
+	- delete option Confirm Screen
+- sort load games by latest played
 - consider prompts for inputs when character is less than a day old
-- Flag if chunk has file, then progressively load the contents per LOD level
-- Clean: Remove the OOB warnings in octree, print the stack maybe?
+- Add Statistics Overlay
+	- Show counts for many things
+- Note: Atm the material is the same on all render textures
+	- we can just create a child of the ui as material if we need unique values
+
+# 3D UI
+- Glitchy depth fighting on 3D UIs, and on Block Destruction Materials
+- Bug: The 3D uis are flickering due to depth fighting atm
+- Fix the layering of the 3D UIs, text and such has depth issues
+- Make 3D ui use layouts
+	- test the canvas
+	- layout to local position
+	- Position2 on prefab stack gets shifted to Position3
+	- TextSpawnSystem just uses a ZigelPrefabLink instead, handling both types
+- Refactor 3D UI to use layouts
+- Refactor Statbar3D to use Element2D data, merge the ui code
+	- we simply translate the layout2D information into the 3D transform space
+- I really should just link player to a canvas 3D - then i can spawn/remove from that normally
+
+# Map
+- Add markers on map uis
+	- npcs
+		- peaceful npcs
+		- npcs with quests
+		- hostile npcs
+- Add ? and ! markers on the map
+	- ? new quest
+	- ! hand in quest
+- MapUI should move per pixel
+- Maps
+	- Make maps use GridDirty instead of manually positioning
+	- Move pieces pixel by pixel around player - set centre position of map
+	- add a mask around map
+	- update ony pieces and not entire map
+	- zoom + - buttons on header
+	- map texture can be seperate
+		- optimized
+		- spawn when map spawns
+		- child of tunk
+		- disable when ui closes / dies
+		- updates when enabled / chunk changes
+- Move map UI as player moves
+	- mask the map ui
+	- or just disable when goes over edge for now
+- Make map move around player position
+- Bug: Edge of map UI is glitchy
+- Map UI slightly off still - the flipping part
+- Map Arrow is backwards, but its pointing right way, when we move right in character, the map ui goes left... So rotation is flipped of map and arrow
+- Make Camera Z + and remove maps ui FLIP hacks code
+- Zoom in / out buttons / scroll wheel
+- Keep track of chunks player has explored - fog of war
+- Show percentage explored of Region - name the region
+- When you open map, fade it in from player, one piece at a time
+- show name label over town on map
+- Blend in heights with voxel colors to give more of a mappy feel
+- Add a compass symbol to show north etc
+
+# Rendering, Lights and Cameras
+- Light character models from the environment (like minivoxes)
+	- sample the LightNode at the character's voxel position (get_block_vox_light in vodes3/fun/lights.c), set Brightness
+	- update when the character moves to a new voxel, or its chunk's LightNodeDirty goes active
+	- pass Brightness to the skeleton/character shaders (uniform, like vox_render)
+	- tst: character walks from sunlight into a dark area and gets darker
+- Lights: Add smooth lights for terrain faces, so the corners are darkened
+- Smooth Lighting for terrain lights - smoothed edges
+- Add slight directional light over the AO on colored voxes
+- Make MeshColorsDirty do similar check to MeshReady - MeshColorsReady
+	- fix it up in Light3BuildSystem
+- import texture outlines as a seperate mask texture
+	- making it easier to change outlines
+	- bitmask - 0 / 1 ?
+- Use a MaskTexture in the generation data, use this to apply different materials on frames (mask just black and white array)
+- Refactor texture generation to use nodegraph + nodeprocess
+- remove GenerateTexture after use
+- Make GenerateTexture a byte again - so we set per system
+- Calculate the camera transform before uploading to shader
+	- atm it calculates in the vert shader, not good
+- Seperate character depth from block depth in settings
+- Lines: Line Instancing
+- Add instancing to lines so we can test it easier the lights
+- PostProcessing: Add a Post Processor Noise option - Slider - we can reduce it or turn off
+- PostProcessing: Add a Post Processor Vignette option - Slider - we can reduce it or turn off
+- Fix No post processing mode / Rawdog Camera Mode
+- Fix the fog, make look nicer
+- Smooth out camera at low fps - its very glitchy
+- Third Person Camera a bit buggy
+- skybox doesnt follow to main menu?
 - Rendering: Make it easier to add a custom material / shader
 	- dynamically gets/adds components per shader file?
 - We can even raycast check against chunks to further reduce whats rendered...? - fade them in and out?
-- Add dictionary to chunk data, so it maps the blocks to the block ids, and then make the block ids generate from realm ids so it stays consistent after changes
-- Physics Clip issue for big body
-- Use a HighlightColor - instead of just adjusting brightness
-- Event for pickup we can latch onto in system
-	- trigger the body dirty if body item picked up
-- spawn item model as child of character - when switch action
-- Make layout positions recursive too - so it updates in a single frame
-- Make all ui shaders use transforms like render texture does
-- Handle player death by removing camera on death state
-- F6 key to toggle bone render debugs
-- Arrows to fold/unfold children in hierarchy
-- Click MeshIndicies or MeshVertices label to open a Mesh Window
+- Can we hide behind mountains to improve culling?
+- We could have MegaChunks again, 4x4 chunks, and then cull them first with the Frustum + bounds checks (this is just a quicker sweep)
+- Move particle and bone rendering systems into rendering module
+- Refactor Chunk Render systems back into Rendering module
+- Move chunk render back to rendering module, and just link to material
+	- keep all rendering stuff there
+- Redo all my destruction hooks like MeshGPULink - remove DTOR for OBSR
+- do 2D uis get restored? missing any 2D vert data?
+- PNG errors - convert rest to bmp
+- Finish converting icons to bmp
+- Spawn 2 XR Eye entities that are cameras
+	- XRRender Systems for them
 
-# Tools
-- Add a delete all savegames to the test window
+# Gizmos, Debug and Tools
+- add a mode where it shows block ids in item tooltips
+- for our model test - change mesh every 5 seconds to a variant model
+	- showcase variants
+- test for spawning all models under realm
+- Simple test function to spawn vox mesh
+	- just the mesh itself, usign a entity reference
+- Gizmos: Selected Block Gizmo - is flickering - only when attached to character, if detatch is stops...
+- FIX: Set CubeLines Faces based on VoxelSides thats generated, then make sure it Renders Over Top of the overlays - disabled depth
+- Fix chunk bounds debug visuals - the lines debugger
+- Draw X inside chunk after it builds sides - to debug this
+- Tool: Make a region debugger, show the region bounds with a cross through each corner (X) A big X
+- Debug Town Gizmo
+- Debug House Gizmo
+- Player Respawn Point Gizmos
 - Render Lines at chunk when action happens
 	- using an entity called ChunkBeamDebugger
 	- One when it updates the Voxels
 	- One when it updates the Lighting
 	- One when it updates the Render Depth
+- tools (this will help fix bugs)
+	- press 'f' while raycasting chunk to select it as debug target
+	- this will show the 'chunk ui' which shows all chunk info
+- Remove Debug options and just put in Gizmos
+	- Transparent Meshes
+	- Render Bones
+	- Paint Bone Weights
+	- Disable NPCs
+- F6 key to toggle bone render debugs
+- Make a easy way to add hotkey functionality
+	- zox_on_key_pressed(key_z, test_thingo);
+- Add a delete all savegames to the test window
 - Click SoundData to play the sound
+- Profiler should show exact frames
+	- a second graph over top can show max system times
+- Show max system time's graph, in red, overlay over the regular graph
+- Make lines in plotgraph use a set value of the graph
+	- set the graph based on max value in that frame, but use multiple curves
+	- display frame time behind, and system time in front
+- Refactor DoubleDataMax - system timings - use a seperate entity
+	- with system link
+- Add Terrain Depth to options - debug options
+- New Test: Spawns MeshViewer ui based on inside chunk data
 
-# Gamepads
-- Add GameMenu RB and LB to switch between UIs
-- Add haptic feedback rumble when hit
-- Navigation on UIs should also auto scroll down on the options menu
+# Editor
+- Add a Toggle when entity has children in hierarchy, toggle will remove/add their children uis
+- Arrows to fold/unfold children in hierarchy
+- Add mask on ScrollArea, so it hides off buttons when they overflow
+- Indent the buttons instead of adding "-" to them
+- For Edit mode - remove main menu
+	- add canvas lines to show
+- Dock window - inspector on right, hierarchy on left of canvas
+- Set editor text contrast alot higher, black and white
+- Click TextureData label to open a texture window
+- Click MeshIndicies or MeshVertices label to open a Mesh Window
+- Shrink Game Viewport and put Editor Buttons as icon buttons around side, like gizmos - docked
 
-# Engine
+# Inputs
+- We need a target window for player, whichis the last selected one
+- Button Mapping
+	- Add Button Mapping Module
+	- so the player systems use those instead
+- Gamepads
+	- Tooltip should just be at top right of screen when finger is off ui
+	- add controller vibration support
+	- Add haptic feedback rumble when hit
+	- Add GameMenu RB and LB to switch between UIs
+	- Navigation on UIs should also auto scroll down on the options menu
+- Touchscreen
+	- Add auto jump option - for touchscreen + option to disable
+	- make jump button use - ClickingEvent instead of ClickEvent
+		- so we can hold jump button
+		- Make button activate while holding - on clicked rather than first click
+-o clicking on ui - activated punch... during dialogue
+
+# Saves, Realms and Game States
+- save player character slot data
+	- items, skills, etc whatever is there
+- load player character slot data
+- SaveLoad Items - using new Saves Module for better workflow
+- Save/Load Realm Blocks + data to future proof updates
+- SaveTransformSystem using States
+- Save Options to disk from a system - OptionsDirty
+- Fix Loading of settings
+	- make load in system
+	- if spawning, check if exists or not yet
+	- Add state for Settings Load, and Settings Spawn, for Initializing app settings
+- fix end game fade out, really bad atm
+- Why is player state 'playing' when i exit game..
+- Player State Refactor
+	- Remove just use disables etc
+- Game States
+	- Controller all players centrally from game states
+	- single state machine for games
+	- Remove GameStateTarget
+	- Use a listener event for modules
+- remove all realm macros and just use state in their own systems (RealmItemsSpawnSystem, ClearSystem, etc) - wait clear can be a macro tho
+- Realms: use node system
+- Refactor: load files on boot and not per realm
+- Remove Realm Links components, just use Children
+- Replace Generate components (GenerateTexture, GenerateRealm, GenerateTunk) with core one
+- Add GenerateProgress, and add to it when generate state begins, remove when ends
+- Bug: Realm Generation: Memory leak somewhere, breaks during VoxGenerationSystem - color spawning - test with valgrind on x86 later
+- Loops endless - when exiting game now
+	- can test by spawning/destroying terrain in main menu
+	- i disabled mesh, vodes, npcs, lights, still stuck on dispose terrain
+	- I disabled chunks.. its tunks or regions
+	- by Elimination, we find its hashmap disposal hanging
+	- Maybe we just build spinlock into the octree types root, would be a massive refactor tho
+
+# Engine and Refactors
+- add a table test, for when in game, check total flecs tables, this needs to be reduced to reduce our query times - can add this to tst module in src, it sits on top of engine
+- Refactor BlocksDirty to non state
+- Add WindowTitle property and spawn Header of window in system
+	- decouples the header code from spawning
+	- keeps spawning purely for data setting!
+- We should not have restore/dispose systems
+	- just use query
+	- as systems cache their results per frame
+- just a simple component macro that creates an expanding number of events
+	- just arrayd for now?
+- Add event listeners that can handle multiple events
+	- use this for game state
+	- modules can add too prefab_game's state change listener
+	- use this for options
+	- can massively reduce systems
+- Maybe we create entities for events, this will save the idle times?
+- Add delays to queue so its frame timing independent
+- Test Pipeline sync points before i finish
+- Fix logs in build system, should become alot cleaner
 - Fix import workflow - make import call
+- Make compile shell work per module!
 - Engine: Compile modules seperately into .o and then combine, during debug builds - developing
 - Look into compiling parts modularly so it compiles faster - important for development speed
+- Note: we need to isolate reading from voxels / writing to
+- Remove more VoxLink use if its from chunk/tunk/region / use parents
+
+# Platforms
+- fix docker build and test onsteamdeck
+	- uses new pathing
+- Fix post procesing on android
+- Fix Android Build - on arm pcs
+
+# Bugs and Crashes
+- Sometimes still crashes - fix that
+- Occasional Crashes
+- crashes when destroying grass - only in run
+- crashed randommly on block place
+- put more entity component checks everywhere
+- [02:12:59] [WARNING] [character3_player_9369]'s Exceeded Capacity [64] [zox_get_children]
+- [02:13:07] [WARNING] [taskbar_icon_4294977265] Invalid GPU Link [0]
+- 'child_index_to_text_array_index: index ' warning
+- 'Sides is true with Air'
+- Wait is grass missing now??
+	- it didnt spawn in time
+-o Test entity table issues by adding tag to chunk im in and seeing if it breaks their rendering... weird but might be why meshes dissapearing
+- when I turn off toggling, it doesnt break
+- Also when i disable lods
 
 # Tests
+- write a grid spawn test for every model
+- write a grid spawn test for every character
 - Add test function for spawning a Terrain Chunk
+- Animate Text test
+- add a section on readme.md with some razzle dazzle stats from tests
+	- add a test that might be impressive and measure engine capacity for this
+- write bsh/test.sh that takes in test name
+	- it will find the test in the modules tst folders
+	- it will compile that file with zoxels src and flecs
+	- it outputs a test for claude to use
 
-# Experimental
-- Vox Frames - different vox models we swap between
-- We could have MegaChunks again, 4x4 chunks, and then cull them first with the Frustum + bounds checks (this is just a quicker sweep)
-- export character, mesh and bones, to blender so i can make animations
-	- reimport animation back in
-
-# Notes
-+ I removed render_depth_invisible, we are just going to set depth to 0 from now on or destroy the chunk - or we can disable but it should be seperate from depth variable
-+ Remove more VoxLink use if its from chunk/tunk/region / use parents
+# Unsorted
+- Hand in Quest Node - linked to two answer
+	- Dialogue Nodes: QuestDoneLink - QuestActiveLink
+- Stream Level - Region only for initial game town spawning!
+- Tunk LOD Levels
+	- So we dont generate maps for far away chunks
+- Refactor OverlapEvent to Overlapped state with a system in items
+- Make Glut Build work
+	- Glut should spawn a window
+	- We should wrap all other sdl functions properly for glut

@@ -1,5 +1,27 @@
 # Done
 
+## Moved from todo (2026-11-12)
+-x Set minivox/world voxels brightness when lighting updates
+	- use observer on light change event on terrain chunk types
+-x speedup the loading of terrain
+-x Add --autostart tag that autos through the uis, into a new game
+-x Make quest tracker track new quest when you get it
+-x Make items pop a little when dropped, like borderlands (tst pickup_pop)
+-x LAG - 150 ms before now 50...
+	-x Disable ChunkMesh and just set Transform + position data
+	-x same for chunk
+-x Refactor the sdl mixer into audio - using my own mixer code (src/sounds/mix, doc/audio.md)
+-x Bug: Fix music on Main Menu (spawn_menu_music, crossfades with the realm's)
+-x Bug: Fix music loading properly (tst music_file)
+-x Dialogue: add sounds per syllable (npc voices, tst voice_sounds)
+-x Fix Font imports for "?" (quest markers use ?)
+-x dialogue conditional node: has quest (tst quest_dialogue)
+-x simple kill slime quest, hand in once you killed them (tst quest_dialogue)
+-x Give npc a quest, dialogue option to give the user a quest
+-x Quest rewards: sounds (quest taken and handed in jingles)
+-x Right click to split items (tst item_split)
+-x Editor: let mouse scrollwheel work on the scrollbar (tst scroll_wheel)
+
 -x add min, max to fps display
 	- "60 [55-62]", min and max over the last 10 seconds
 -x When return to main menu - set camera back to origin
