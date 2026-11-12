@@ -1,9 +1,11 @@
 // NOTE: Veloco Rapters!
+// moves bodies with a velocity but no Acceleration3D (those move in acceleration3 / friction3)
 void velocity3_system(iter* it) {
     if (zox_delta_time > zox_physics_max_delta_time) {
         return;
     }
     zox_sys_on_begin();
+    zox_physics_profile_begin();
     zox_sys_begin();
     zox_sys_in(Velocity3D);
     zox_sys_out(Position3D);
@@ -12,5 +14,6 @@ void velocity3_system(iter* it) {
         zox_sys_o(Position3D, position);
         position->value = float3_add(position->value, float3_scale(velocity->value, zox_delta_time));
     }
+    zox_physics_profile_end();
     zox_sys_on_end();
 } zoxd_system(velocity3_system);

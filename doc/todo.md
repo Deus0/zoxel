@@ -359,6 +359,17 @@
 - Dust Particles for jumping and landing
 - Add dust particles when we jump
 - Add standard ground dust particles
+- Tumbling: rotational physics from collisions, cubes tip, rock and roll on their own (see doc/physics.md)
+	- for cube particles, dropped items, knocked over things, so they land and settle realistically
+	- terrain collision pushes out and bounces but never makes spin, Rolling3D only spins like a ball
+	- contact point: where the body touches the voxel face (lowest corner / face of the rotated box)
+	- push out at an off centre point = torque, spin += (r x impulse) / inertia, as Alpha3D or straight into Omega3D
+	- inertia per body: a box's from its Bounds3D and mass (new component, i.e. Inertia3D or Mass), opt in tag (Tumbles3D?)
+	- collide the rotated box (its corners), not float4_rotate_bounds' grown AABB, or it bobs as it turns
+	- friction at the contact point: sliding turns into rolling, so a sliding cube tips over its front edge
+	- rest / sleep: settle flat on a face and stop jittering (also helps the character shake bug above)
+	- tests, like terrain_collisions: a cube pushed over an edge falls off rotating, a sliding cube tips,
+	  a dropped tilted cube lands flat, a resting cube stays still, all at _10fps / _30fps too
 
 # Combat, Skills and Stats
 - We can just have a more general Damage/Defence type stats

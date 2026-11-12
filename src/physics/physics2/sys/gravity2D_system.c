@@ -1,14 +1,14 @@
-//! Each entity will impact all other entities.
+// adds a constant force to Acceleration2D, opt in with a Gravity2D component
 zox_sys2(Gravity2DSystem) {
-    // NearbyEntities component instead of everything.
-    // double delta_time = (double) it->delta_time;
+    zox_physics_profile_begin();
     zox_sys_begin();
-    zox_sys_out(Position2);
-    zox_sys_in(Velocity2D);
+    zox_sys_in(Gravity2D);
+    zox_sys_out(Acceleration2D);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_o(Position2, position2);
-        zox_sys_i(Velocity2D, velocity2D);
-        position2->value.x += velocity2D->value.x * zox_delta_time;
-        position2->value.y += velocity2D->value.y * zox_delta_time;
+        zox_sys_i(Gravity2D, gravity2D);
+        zox_sys_o(Acceleration2D, acceleration2D);
+        acceleration2D->value.x += gravity2D->value.x;
+        acceleration2D->value.y += gravity2D->value.y;
     }
+    zox_physics_profile_end();
 } zox_sys_end(Gravity2DSystem);

@@ -68,8 +68,13 @@ static inline float4 float4_inverse(float4 input) {
     return (float4) { -input.x, -input.y, -input.z, input.w };
 }
 
+// q * inverse(q) = identity, for any length (float4_inverse, the conjugate, needs a unit q)
 static inline float4 quaternion_inverse(float4 q) {
-    return float4_divide_float(q, sqrt(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w));
+    const float length_squared = q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w;
+    if (length_squared <= 0) {
+        return (float4) { 0, 0, 0, 1 };
+    }
+    return float4_divide_float(float4_inverse(q), length_squared);
 }
 
 static inline float4 float3_to_float4(float3 input) {

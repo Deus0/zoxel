@@ -8,14 +8,12 @@ AABB voxel
 
 Tunneling: this system runs AFTER the movement system, so it only sees where the entity
 ended up. When the frame's movement is bigger than a safe step, the move is redone from
-where the entity started (position - velocity * dt), one axis at a time (y, then x, then z),
+where the entity started (position - velocity * dt, drag corrected), one axis at a time (y, then x, then z),
 checking every voxel layer on the way. A sweep never carries the entity deeper into a block
 it is already standing in: it pushes it back out instead. Then the normal push-out runs.
 Last line of defence: if the entity's centre still ends up inside a solid block, it is
 walked back the way it came (or straight up) until its box is clear.
 */
-
-// NOTE: ecs_world_t is whatever zox_sys_world() declares. Adjust if your typedef differs.
 
 // A frame's movement up to this fraction of min(half block, smallest entity half extent)
 // is handled by the push-out alone; bigger moves are swept. Keep it below 1: deeper than
@@ -36,7 +34,7 @@ walked back the way it came (or straight up) until its box is clear.
 
 // Voxel 0 and blocks with an air collider are passable.
 // A block without a BlockCollider counts as solid, an invalid block as passable.
-static inline byte collision_is_voxel_solid(ecs_world_t* world, const BlockLinks* blocks, byte voxel) {
+static inline byte collision_is_voxel_solid(ecs* world, const BlockLinks* blocks, byte voxel) {
     if (!voxel) {
         return 0;
     }
@@ -62,7 +60,7 @@ typedef struct {
 } collision_chunk_cache;
 
 // Returns 1 if there is a chunk with voxels at chunk_position (and fills the cache), else 0.
-static inline byte collision_chunk_select(ecs_world_t* world, collision_chunk_cache* cache,
+static inline byte collision_chunk_select(ecs* world, collision_chunk_cache* cache,
         const ChunkLinks* chunks, int3 chunk_position) {
     if (cache->loaded && int3_equals(cache->position, chunk_position)) {
         return cache->found;
@@ -81,7 +79,7 @@ static inline byte collision_chunk_select(ecs_world_t* world, collision_chunk_ca
 
 // Everything the collision functions need to know about the terrain an entity is on.
 typedef struct {
-    ecs_world_t* world;
+    ecs* world;
     const BlockLinks* blocks;
     const ChunkLinks* chunks;
     byte depth;        // terrain NodeDepth
@@ -150,7 +148,7 @@ static inline int3 collision_block_position(float3 position, float3 origin, floa
 // Used for every solidity check (hit voxels AND their neighbours), so they can't disagree.
 static inline byte collision_block_solid(const collision_terrain* terrain, collision_chunk_cache* cache,
         int3 block_position) {
-    ecs_world_t* world = terrain->world;
+    ecs* world = terrain->world;
     const int3 chunk_position = block_position_to_chunk_position(block_position, terrain->depth);
     if (!collision_chunk_select(world, cache, terrain->chunks, chunk_position)) {
         return 0;
@@ -390,6 +388,15 @@ void terrain_collision_system(iter* it) {
     zox_sys_out(Position3D);
     zox_sys_out(Velocity3D);
     zox_sys_out(Grounded);
+    // NOTE: the same dt the physics steps used: zox_delta_time, not flecs' it->delta_time
+    //  (that one isn't clamped to max_zox_delta_time on a lag spike, or overridden), and 0
+    //  when the physics skipped the frame
+    const float sweep_dt = zox_delta_time > zox_physics_max_delta_time ? 0 : (float) zox_delta_time;
+    // a body under drag k moved v_end * g / keep this frame (physics_step: v_end = v keep, moved = v g)
+    const physics_step ground_step = physics_step_new(ground_friction3, sweep_dt);
+    const physics_step air_step = physics_step_new(air_friction3, sweep_dt);
+    const float move_scale_ground = ground_step.keep > 0 ? ground_step.g / ground_step.keep : sweep_dt;
+    const float move_scale_air = air_step.keep > 0 ? air_step.g / air_step.keep : sweep_dt;
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Rotation3D, rotation);
@@ -418,14 +425,16 @@ void terrain_collision_system(iter* it) {
         const collision_terrain terrain_data = { world, blocks, chunks, terrain_depth, block_scale };
         const float3 half_extents = float4_rotate_bounds(rotation->value, bounds->value);
 
-        // How far did the movement system move the entity this frame?
-        // NOTE: must be the same dt your movement system integrates with.
-        const float sweep_dt = (float) it->delta_time;
-        const float3 move = {
-            velocity->value.x * sweep_dt,
-            velocity->value.y * sweep_dt,
-            velocity->value.z * sweep_dt
-        };
+        // the move this frame, worked back from the velocity, no stored state (teleports are safe)
+        //  - an exact step (see physics/fun) isn't velocity * dt when drag slows it mid frame:
+        //      under drag alone it moved v_end * g / keep (exact), see move_scale below
+        //  - forces (gravity) leave it off by up to |a| dt^2 / 2: 5cm at 10fps, 1.4mm at 60fps
+        //      the start is guessed behind the real one when the force is along the move (a fall,
+        //      the sweep covers a little more) and ahead when against it (rising in a jump), well
+        //      within the push-out's reach (collision_step_scale * half a block)
+        const byte dragged = zox_has(e, Frictioned) && zox_has(e, Acceleration3D);
+        const float move_scale = dragged ? (grounded->value ? move_scale_ground : move_scale_air) : sweep_dt;
+        const float3 move = float3_scale(velocity->value, move_scale);
         float move_max = float_abs(move.x);
         if (float_abs(move.y) > move_max) move_max = float_abs(move.y);
         if (float_abs(move.z) > move_max) move_max = float_abs(move.z);
