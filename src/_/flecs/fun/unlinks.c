@@ -20,7 +20,7 @@
  *
  * Deletion code doesn't need to know about links, cleanup is handled here.
  *
- * NOTE: Callbacks are queued, and called once per frame at zoxp_begin, outside cleanup,
+ * NOTE: Callbacks are queued, and called once per frame in zoxp_pre_end, outside cleanup,
  *  so they can add, remove and delete as normal
  * NOTE: e may be deleted by then (when the linking entity was deleted), check zox_valid
  * NOTE: target is 0 if it was deleted
@@ -93,11 +93,13 @@ void zox_on_unlink_internal(
     zox_on_unlink_internal(world, zox_id(T), callback)
 
 // Calls queued unlink callbacks, events queued during these run next frame
-void UnlinksSystem(iter* it) {
-    if (!zox_unlinks_count) {
+//  - multi threaded, it runs on every worker (no query terms), only the first stage's runs the callbacks
+//  - through its stage (zox_sys_world), so the callbacks' changes (deleting an npc's tree) are deferred
+void unlink_system(iter* it) {
+    zox_sys_world();
+    if (!zox_unlinks_count || ecs_stage_get_id(world) != 0) {
         return;
     }
-    ecs* world = it->world;
     const uint count = zox_unlinks_count;
     zox_unlink_event* events = zox_unlinks;
     // swap out so callbacks can queue new events safely
@@ -113,8 +115,9 @@ void UnlinksSystem(iter* it) {
         events[i].callback(world, events[i].e, target);
     }
     free(events);
-} zoxd_system(UnlinksSystem);
+} zoxd_system(unlink_system);
 
 void zox_unlinks_initialize(ecs* world) {
-    zox_system_1(UnlinksSystem, zoxp_begin);
+    // in the end of frame cleanup, already multi threaded, no merges of its own
+    zox_system(unlink_system, zoxp_pre_end, 0);
 }

@@ -18,7 +18,7 @@ entity zox_tst_nodes_begun[zox_tst_nodes_max];
 int zox_tst_nodes_begun_count = 0;
 
 static void zox_tst_nodes_on_begin(iter* it) {
-    ecs* world = it->world;
+    zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         if (it->entities[i] == zox_tst_nodes_process && zox_tst_nodes_begun_count < zox_tst_nodes_max) {
             zox_tst_nodes_begun[zox_tst_nodes_begun_count++] = zox_get_link(world, it->entities[i], CurrentNodeLink);
