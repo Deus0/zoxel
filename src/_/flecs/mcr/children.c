@@ -428,6 +428,10 @@ byte zox_remove_parent_non_fragment(
     return 0;
 }
 
+// Sets a parent without fragmenting (flecs EcsParent): ChildOf gives every parent's children their
+//  own tables, so many parents (characters, chunks) made hundreds of tables a frame while streaming
+//  - use it for children of entities that come and go (a character's stats, skills, items, a chunk's meshes)
+//  - zox_get_parent, zox_children and deleting with the parent work the same
 // Returns 1 if sets parent
 static inline byte zox_set_parent_non_fragment(
     ecs* world,
@@ -446,7 +450,7 @@ static inline byte zox_set_parent_non_fragment(
         return 0;
     }
     if (!parent || !zox_valid(parent)) {
-        return zox_remove_parent(world, child);
+        return zox_remove_parent_non_fragment(world, child);
     }
     const EcsParent* current = zox_get(child, EcsParent);
     if (current && current->value == parent) {

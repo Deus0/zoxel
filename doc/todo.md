@@ -7,8 +7,12 @@
 	-x time each observer (zox_observer_internal wraps them, on with --profile): ours are cheap, 1ms a frame at most
 	- the cause: tables made, 250 to 424 a frame while streaming (tables 16k -> 22k over 6 chunk steps),
 	  each new table notifies observers (18k notifications for 300 commands), ChildOf fragments per parent
-	- options: non fragmenting parents (EcsParent, zox_non_fragment_parent, reverted before for bugs, retry
-	  with tests), chunk children as links instead, delete empty tables now and then
+	- tst tables_stream measures it (tables a chunk step makes, by family), today about 1100, guarded at 1400
+	- the families: npcs' name labels and healthbars (3D ui, their texts and glyphs), npcs' stats and skills
+	- non fragmenting parents crash ending a game for those (doc/children.md), so instead:
+		- npc labels and healthbars: not children of the npc, linked to it, glyphs as one mesh per text
+		- stats: components on the character (or one stats entity), not a child entity per stat
+		- delete empty tables now and then (15k of 17k tables are empty after streaming)
 	-x chunk_sides_system has a time budget per worker per frame (it built whole chunks, 18ms real time)
 	- VoxLodMeshBuildSystem: a 108ms frame once (single threaded), when a character's mesh builds
 	- move other heavy systems from process counts to zox_sys_budget
