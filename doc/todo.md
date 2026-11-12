@@ -832,6 +832,15 @@
 - Fix Android Build - on arm pcs
 
 # Bugs and Crashes
+- Rare stall starting a game: terrain stays loading, the player never spawns (2026-11-13)
+	- the waiting log: `blocked [terrain Loading] ... near loaded [224/315]`, no progress for 20s, the test
+	  fails fast as stalled
+	- seen in menu_flow (its second game) and lines_render, both the first run after a rebuild
+	- not the nf root list flecs patches: player_spawn passed 10/10 with and without them
+	- an older stall with the same numbers came from vox lod meshes as non fragmenting children (reverted)
+	- guesses: a chunk that never finishes generating or meshing (timing), light propagation bouncing
+	  (see Tests, lights settle)
+	- repro: `bash bsh/tst.sh player_spawn --repeat 20`, log which near chunks are still busy when it stalls
 - Sometimes still crashes - fix that
 - Occasional Crashes
 - crashes when destroying grass - only in run
