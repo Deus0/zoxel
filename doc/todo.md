@@ -85,6 +85,14 @@
 	- refresh the list after
 	- keep same pose - camera position and head
 
+- Realm sounds: hits sound like what they hit (stone, dirt, wood, flesh)
+	- the realm spawns sound entities (like its quests and items), each a SoundEffect's settings:
+	  instrument, notes, lengths, volumes (sounds/fun/effects.c rows become data)
+	- blocks and npcs link one: HitSoundLink -> its realm sound (stone a dry knock, dirt a soft thud,
+	  wood a hollow tock, slimes a squelch)
+	- spawning a hit reads the linked sound's settings, falls back to sound_effects
+	- tst: every block and character kind has a hit sound, they differ (brightness, pitch), all pass sound_balance
+
 # Bugs
 - Sometimes the npc labels dont spawn
 	- its dissapearing due to chunk distance issues
