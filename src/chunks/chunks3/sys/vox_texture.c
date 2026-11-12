@@ -295,7 +295,9 @@ void VoxTextureSystem(iter* it) {
             }
         }
         // Testing
-        // read_lock_VoxelNode(voctree);
+        // the vox's octree locked while read, writers can run alongside (thread_safety.md)
+        spinlock* vlock = zox_octree_lock(world, vox);
+        zox_octree_lock_begin(vlock);
         generate_vox_texture(
             data->value,
             size->value,
@@ -306,13 +308,13 @@ void VoxTextureSystem(iter* it) {
             texture_offset,
             vox_texture_size,
             air_color);
+        zox_octree_lock_end(vlock);
         if (is_debug_sides != direction_none) {
             generate_vox_debug_texture(
                 data->value,
                 size->value,
                 side->value);
         }
-        // read_unlock_VoxelNode(voctree);
         if (texture_offset.x || texture_offset.y) {
             add_texture_outline(data->value, size->value, air_color, color_black);
         }

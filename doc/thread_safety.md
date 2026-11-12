@@ -78,11 +78,19 @@ at the same time can follow a freed pointer, a segfault.
 - **Barrier:** `zoxp_octree_sync` between them (a barrier, above), every worker finishes writing before any
   reads (`pipeline_syncs` checks it). Before it, write and read systems shared
   an op: `voxel_octree_optimize_system` freeing nodes while a mesh builder on another worker walked them.
-- **Locks:** `VoxelNodeLock` (a spinlock per octree) guards writes and reads that cross chunks in one phase:
-  `VoxelUpdateQueueSystem`, `voxel_octree_optimize_system`, light flood and beam, chunk sides (locks its
-  neighbors in address order, no deadlocks).
-- **Unlocked readers** rely on the phases: chunk colors, vox lod and skeleton meshes (they read another entity's
-  octree, the vox or skeleton owner), raycasts, collisions, vox textures.
+- **Locks over barriers:** a lock only makes the cores that touch the same octree wait, a barrier makes all of
+  them wait. The goal is to drop `zoxp_octree_sync` once every reader and writer locks.
+- **Locks:** `VoxelNodeLock` (a spinlock per octree), helpers in src/chunks/chunks3/fun/locks.c:
+  `zox_octree_lock(world, e)` (NULL if none), `zox_octree_lock_begin/end`, and `zox_lock_voxel_trees` for a chunk
+  and its neighbors (address order, no deadlocks). Not reentrant: never lock one you hold.
+- **Readers that lock** (2026-11-12): chunk colors (and neighbors), chunk sides, vox lod and skeleton meshes
+  (`build_vox_mesh_at_depth`, the vox), raycasts (the chunk or vox walked, one per call, nested block vox calls
+  hold their own), terrain collisions and inside block, frustum and vodes lod walks, vox textures, smooth and dark
+  lights.
+- **Writers that lock:** `VoxelUpdateQueueSystem`, `voxel_octree_optimize_system`, light flood and beam.
+- **Writers that don't lock yet**, so the barrier stays: model generation (noise, soil, wood, ...), the model node
+  systems (`FillModelNodeSystem`, `PaintModelNodeSystem`, in `zoxp_pre_physics`), `landfill_chunk_system`,
+  `VegetationChunk3System`, `TownWallsSystem`, `CombineVoxSystem`, `VodesRemoveSystem`, `chunk3_load_system`.
 - **Main thread systems** (`zox_system_1`) run alone in their op, any octree access there is safe.
 
 ### Known risks (2026-11-12)

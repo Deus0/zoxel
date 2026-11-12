@@ -77,6 +77,9 @@ byte build_vox_mesh_at_depth(
         .vertices = create_float3_array_d(initial_dynamic_array_size),
         .colors = create_color_rgb_array_d(initial_dynamic_array_size)
     };
+    // the vox's octree locked while walked, its writers can run alongside (thread_safety.md)
+    spinlock* vlock = zox_octree_lock(world, vox);
+    zox_octree_lock_begin(vlock);
     if (!build_voxel_mesh_grid(
         voxels,
         vcolors,
@@ -99,6 +102,7 @@ byte build_vox_mesh_at_depth(
         position,
         cscale,
         is_split);
+    zox_octree_lock_end(vlock);
     indicies->length = mesh.indicies->size;
     vertices->length = mesh.vertices->size;
     colors->length = mesh.colors->size;

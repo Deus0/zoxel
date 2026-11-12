@@ -27,15 +27,20 @@ void VodesLodSystem(iter* it) {
     zox_sys_in(RenderDistance);
     zox_sys_in(VoxelNode);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(RenderDistanceDirty, dirty);
         zox_sys_i(RenderDistance, distance);
         zox_sys_i(VoxelNode, node);
         if (dirty->value == zox_dirty_active) {
             byte render_depth = camera_distance_to_block_depth(distance->value);
+            // its octree locked while walked, writers can run alongside (thread_safety.md)
+            spinlock* lock = zox_octree_lock(world, e);
+            zox_octree_lock_begin(lock);
             set_vode_lods(
                 world,
                 node,
                 render_depth);
+            zox_octree_lock_end(lock);
         }
     }
     zox_sys_on_end();

@@ -1,5 +1,5 @@
 extern entity get_linked_character(ecs*, entity);
-byte raycast_locks = 0;
+byte raycast_locks = 1;   // the chunk (or vox) walked is locked, one at a time (thread_safety.md)
 // TODO: Handle out-of-bounds raycasting
 // TODO: Raycast through character voxels too!
 // NOTE: We Raycast Character Bounds | Terrain seperately
@@ -52,6 +52,7 @@ byte update_chunk_for_raycast(
     ecs* world,
     entity* chunk,
     const VoxelNode** root_voctree,
+    spinlock** held_lock,
     const ChunkLinks* chunk_links,
     int3 chunk_position,
     byte terrain_depth,
@@ -67,12 +68,13 @@ byte update_chunk_for_raycast(
 ) {
     // Terrain Pass
     if (chunk_links) {
-        if (raycast_locks && *root_voctree) {
-            // read_unlock_VoxelNode(*root_voctree);
-        }
         entity new_chunk = int3_hashmap_get(chunk_links->value, chunk_position);
         if (!zox_valid(new_chunk)) {
-            return 0;
+            return 0;   // keeps the chunk it's in, and its lock
+        }
+        if (*held_lock) {
+            spin_unlock(*held_lock);
+            *held_lock = NULL;
         }
         *chunk = new_chunk;
     }
@@ -87,8 +89,9 @@ byte update_chunk_for_raycast(
     if (!*root_voctree) {
         return 0;
     }
-    if (raycast_locks) {
-        // read_lock_VoxelNode(*root_voctree);
+    if (raycast_locks && !*held_lock) {
+        *held_lock = zox_octree_lock(world, *chunk);
+        zox_octree_lock_begin(*held_lock);
     }
     *chunk_depth = zox_getv(*chunk, RenderDepth);
     byte length = octree_size(*chunk_depth);
@@ -121,6 +124,7 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
     // setup voxel data
     byte raycasting_terrain = voxels && voxels->length && chunk_links;
     const VoxelNode* root_voctree = NULL;
+    spinlock* held_lock = NULL;  // this call's, nested calls (block voxes) hold their own
     VoxelNode* node_voxel = NULL;
     byte chunk_depth = 0;
     byte chunk_depth_reduction = 0; // terrain_depth - chunk_depth
@@ -132,8 +136,9 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
     byte was_hitting = 0;
     // NOTE: This is called from Minivoxes
     if (zox_valid(chunk)) {
-        if (!update_chunk_for_raycast(world, &chunk, &root_voctree, chunk_links, chunk_position, terrain_depth, terrain_scalev, &chunk_depth, &chunk_depth_reduction, &chunk_size, &chunk_scalev, character_raycast, ray_origin, ray_normal, caster)) {
+        if (!update_chunk_for_raycast(world, &chunk, &root_voctree, &held_lock, chunk_links, chunk_position, terrain_depth, terrain_scalev, &chunk_depth, &chunk_depth_reduction, &chunk_size, &chunk_scalev, character_raycast, ray_origin, ray_normal, caster)) {
             // zox_loge("Minivox Invalid Node");
+            zox_octree_lock_end(held_lock);
             return 0;
         }
     }
@@ -186,7 +191,7 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
             if (!has_fetched || !int3_equals(chunk_position, new_chunk_position)) {
                 has_fetched = 1;
                 // NOTE: we traverse through the void of space now
-                update_chunk_for_raycast(world, &chunk, &root_voctree, chunk_links, new_chunk_position, terrain_depth, terrain_scalev, &chunk_depth, &chunk_depth_reduction, &chunk_size, &chunk_scalev, character_raycast, ray_origin, ray_normal, caster);
+                update_chunk_for_raycast(world, &chunk, &root_voctree, &held_lock, chunk_links, new_chunk_position, terrain_depth, terrain_scalev, &chunk_depth, &chunk_depth_reduction, &chunk_size, &chunk_scalev, character_raycast, ray_origin, ray_normal, caster);
                 chunk_position = new_chunk_position;
             }
             positionl = block_position_to_local_position(positionv, terrain_depth, chunk_depth);
@@ -202,8 +207,9 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
                 positionl = (byte3) { 255, 255, 255 }; // failure!
                 // return here ?
                 if (was_hitting) {
-                    if (raycast_locks && root_voctree) {
-                        // read_unlock_VoxelNode(root_voctree);
+                    if (held_lock) {
+                        zox_octree_lock_end(held_lock);
+                    held_lock = NULL;
                     }
                     return rayhit_none;
                 }
@@ -217,8 +223,9 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
             data->hit = character_raycast->point;
             data->distance = character_raycast->distance;
             data->normal = ray_normal;
-            if (raycast_locks && root_voctree) {
-                // read_unlock_VoxelNode(root_voctree);
+            if (held_lock) {
+                zox_octree_lock_end(held_lock);
+                    held_lock = NULL;
             }
             return rayhit_character;
         }
@@ -234,16 +241,18 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
             if (!raycasting_terrain) {
                 data->distance = ray_distancef;
                 data->normal = int3_to_float3(hit_normal);
-                if (raycast_locks && root_voctree) {
-                    // read_unlock_VoxelNode(root_voctree);
+                if (held_lock) {
+                    zox_octree_lock_end(held_lock);
+                    held_lock = NULL;
                 }
                 return rayhit_block_vox;
             }
             // safety!
             if (block_index >= voxels->length) {
                 zox_logw("voxel index out of bounds [%i]", hit_voxel);
-                if (raycast_locks && root_voctree) {
-                    // read_unlock_VoxelNode(root_voctree);
+                if (held_lock) {
+                    zox_octree_lock_end(held_lock);
+                    held_lock = NULL;
                 }
                 return rayhit_none;
             }
@@ -289,15 +298,17 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
                     } else {
                         zox_loge("Raycast Invalid Vox %i",  block_index);
                     }
-                    if (raycast_locks && root_voctree) {
-                        // read_unlock_VoxelNode(root_voctree);
+                    if (held_lock) {
+                        zox_octree_lock_end(held_lock);
+                    held_lock = NULL;
                     }
                     return rayhit_none;
                 }
                 if (!zox_has(vox, NodeDepth)) {
                     zox_loge("Raycast Error: Vox Missing NodeDepth [%s] [%s] [%s]", zox_get_name(vox), zox_get_name(block_spawn), zox_get_name(hit_block));
-                    if (raycast_locks && root_voctree) {
-                        // read_unlock_VoxelNode(root_voctree);
+                    if (held_lock) {
+                        zox_octree_lock_end(held_lock);
+                    held_lock = NULL;
                     }
                     return rayhit_none;
                 }
@@ -323,8 +334,9 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
                 else if (result == rayhit_character) {
                     data->distance += ray_distancef;
                     data->hit = float3_add(ray_origin, float3_scale(ray_normal, data->distance));
-                    if (raycast_locks && root_voctree) {
-                        // read_unlock_VoxelNode(root_voctree);
+                    if (held_lock) {
+                        zox_octree_lock_end(held_lock);
+                    held_lock = NULL;
                     }
                     return rayhit_character;
                 }
@@ -405,8 +417,9 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
     else if (result == rayhit_none) {
         clear_raycast_data(data);
     }
-    if (raycast_locks && root_voctree) {
-        // read_unlock_VoxelNode(root_voctree);
+    if (held_lock) {
+        zox_octree_lock_end(held_lock);
+                    held_lock = NULL;
     }
     return result;
 }

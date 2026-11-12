@@ -74,7 +74,11 @@ void terrain_collision_system(iter* it) {
                     const VoxelNode* voxel_octree = zox_get(chunk, VoxelNode);
                     byte chunk_depth = zox_getv(chunk, NodeDepth);
                     byte3 local_position = block_position_to_local_position(block_position, terrain_depth, chunk_depth);
+                    // octree reads locked, its writers can run alongside (thread_safety.md)
+                    spinlock* chunk_lock = zox_octree_lock(world, chunk);
+                    zox_octree_lock_begin(chunk_lock);
                     byte voxel = getv_VoxelNode(voxel_octree, chunk_depth, local_position);
+                    zox_octree_lock_end(chunk_lock);
                     byte solid = voxel ?
                         zox_getv(blocks->value[voxel - 1], BlockCollider) != zox_block_air :
                         0;
@@ -139,10 +143,16 @@ void terrain_collision_system(iter* it) {
                             neighbor_voxel_octrees[a] = zox_get(neighbor, VoxelNode);
                         }
                     }
+                    spinlock* neighbor_locks[6];
+                    zox_octree_neighbor_locks(world, neighbors, neighbor_locks);
+                    spinlock* locked[7];
+                    const byte locked_count = zox_lock_voxel_trees(chunk_lock, neighbor_locks, locked);
                     const VoxelNode* adjacent = get_neighbor_VoxelNode(voxel_octree, neighbor_voxel_octrees, face_direction, local_position, chunk_depth);
+                    const byte adjacent_value = adjacent ? adjacent->value : 0;
+                    zox_unlock_voxel_trees(locked, locked_count);
                     byte adjacent_solid = 0;
-                    if (adjacent && adjacent->value) {
-                        entity block = blocks->value[adjacent->value - 1];
+                    if (adjacent_value) {
+                        entity block = blocks->value[adjacent_value - 1];
                         if (zox_valid(block)) {
                             adjacent_solid = !zox_has(block, BlockCollider) || zox_getv(block, BlockCollider) != zox_block_air;
                         }
