@@ -43,8 +43,9 @@ zoxp_octree_read: ChunkColorsBuildSystem VoxLodMeshBuildSystem chunk_sides_syste
 - A merge waits for every worker and applies every queued command, the pipeline's slowest points.
 - Keep main thread systems together: spawning in `zoxp_spawn`, gpu work in `zoxp_gpu_upload`, `zoxp_render`.
 - A main thread system alone in a multi threaded phase splits it, 2 merges (listed by `pipeline_syncs`):
-  `trail_system`, `Layout3System`, `transform3_children_system`, `billboard_system`, `SoundListenerSystem`
-  (2026-11-12), candidates to be multi threaded or moved.
+  `trail_system`, `Layout3System`, `transform3_children_system`, `billboard_system` (2026-11-12), candidates to
+  be multi threaded or moved. `SoundListenerSystem` was one, moved to `zoxp_render` with the other main thread
+  systems.
 - Add a merge on purpose only as a barrier (below), and say why where it's registered.
 
 ## Octrees

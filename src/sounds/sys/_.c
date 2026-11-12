@@ -52,9 +52,11 @@ void zox_systems_sounds(ecs *world) {
         [in] ?SoundPosition,
         [none] Sound
     );
+    // main thread (the mixer's listener), in zoxp_render with the other main thread systems: no merges of its
+    //  own, and the camera's final position this frame
     zox_system_1(
         SoundListenerSystem,
-        zoxp_update,
+        zoxp_render,
         [in] transforms3.Position3D,
         [in] transforms3.Rotation3D,
         [none] SoundListener
