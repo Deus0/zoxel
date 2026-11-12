@@ -788,8 +788,7 @@
 # Engine and Refactors
 - Thread safety (doc/thread_safety.md, tst pipeline_syncs):
 	- chunk3_load_system writes octrees in zoxp_physics, same op as collisions and raycasts reading them (saves only)
-	- transform chain barriers (trail_system, Layout3System, transform3_children_system, billboard_system) are main
-	  thread to sync: make them multi threaded with 1 merge dependencies (a [out] T() write, see thread_safety.md)
+	- 11 merges (from 19), the transform chain is 5: billboards could rotate inside the hierarchy walk
 	- stream_npcs segfaulted once in a full suite run (before the octree barrier), watch for it
 - add a table test, for when in game, check total flecs tables, this needs to be reduced to reduce our query times - can add this to tst module in src, it sits on top of engine
 - Refactor BlocksDirty to non state

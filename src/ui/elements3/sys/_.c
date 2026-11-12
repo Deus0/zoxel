@@ -22,8 +22,8 @@ void zox_systems_elements3D(ecs *world) {
         [none] layouts.LayoutSizeUpdate,
         [none] !core.Initialize,
     );
-    // m ainthread to sync point it
-    zox_system_1(
+    // multi threaded, zoxp_trails_sync (a barrier) has physics done first
+    zox_system(
         trail_system,
         zoxp_trails,
         [in] UITrail,
@@ -35,8 +35,8 @@ void zox_systems_elements3D(ecs *world) {
         [in] transforms3.Rotation3D,
         [none] cameras.Camera3
     );
-    // to sync it
-    zox_system_ctx_1(
+    // multi threaded, zoxp_billboards_sync has the hierarchy done first
+    zox_system_ctx(
         billboard_system,
         zoxp_billboards,
         billboard_cameras,

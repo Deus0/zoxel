@@ -34,6 +34,14 @@ ecs* zox_ecs(int argc, char* argv[]) {
         argc,
         argv);
     initialize_zox_phases(world);
+    // flecs script's async tasks, unused: an immediate system every frame, 2 merges
+    entity progress_tasks = ecs_lookup(world, "flecs.script.ProgressTasks");
+    if (!progress_tasks) {
+        progress_tasks = ecs_lookup(world, "ProgressTasks");
+    }
+    if (progress_tasks) {
+        ecs_enable(world, progress_tasks, false);
+    }
     zox_unlinks_initialize(world);
     local_world = world;
     return world;

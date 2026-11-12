@@ -7,7 +7,9 @@
 #include "children.c"
 
 void zox_systems_transforms3(ecs *world) {
-    zox_system_1(
+    // multi threaded: each root (no local transform) writes its own subtree, zoxp_hierarchy_sync has layouts
+    //  and trails done first
+    zox_system(
         transform3_children_system,
         zoxp_transform_hierarchy,
         [in] transforms3.Position3D,

@@ -70,9 +70,10 @@ void TstVoxInstanceProbeSystem(iter* it) {
 
 void zox_tsts_vox_instance_render(ecs* world) {
     zox_tst_add("vox_instance_render", zox_tst_vox_instance_ready, zox_tst_vox_instance_check, 90);
+    // main thread, in zoxp_render with the other main thread systems: no merges of its own (tst pipeline_syncs)
     zox_system_1(
         TstVoxInstanceProbeSystem,
-        zoxp_update,
+        zoxp_render,
         [in] rendering.RenderDisabled,
         [none] rendering.RendererInstance
     );

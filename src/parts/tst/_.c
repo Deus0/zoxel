@@ -99,9 +99,10 @@ void TstPartsProbeSystem(iter* it) {
 
 void zox_tsts_parts(ecs* world) {
     zox_tst_add("parts", zox_tst_parts_ready, zox_tst_parts_check, 90);
+    // main thread, in zoxp_render with the other main thread systems: no merges of its own (tst pipeline_syncs)
     zox_system_1(
         TstPartsProbeSystem,
-        zoxp_update,
+        zoxp_render,
         [none] parts.BodyItem
     );
 }
