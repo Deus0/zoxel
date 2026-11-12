@@ -1,5 +1,12 @@
-int get_random_pallete_note(const byte *pallete, int array_length) {
-   return pallete[rand() % array_length];
+// the music's own random numbers, from its seed (srand reset the global rand other threads use,
+// and made the music depend on whatever else called rand)
+static inline int music_rand(uint* state) {
+    *state = *state * 1103515245u + 12345u;
+    return (int) ((*state >> 16) & 0x7fff);
+}
+
+int get_random_pallete_note(uint* rng, const byte *pallete, int array_length) {
+   return pallete[music_rand(rng) % array_length];
 }
 
 zox_sys2(MusicGenerateSystem) {
@@ -28,19 +35,19 @@ zox_sys2(MusicGenerateSystem) {
             zox_delete(old_notes.value[j]);
         }
         zox_logv("Generating music with Seed [%lu]", seed->value);
-        srand(seed->value);
+        uint rng = (uint) seed->value;
 
         int sounds_per_verse = 8;
         int verses = 6;
         int sound_index = 0;
         int palete_type = 0;
-        palete_type = rand() % music_palette_end;
-        int first_note = lowest_note + rand() % (highest_note - lowest_note + 1 - note_verse_difference);
+        palete_type = music_rand(&rng) % music_palette_end;
+        int first_note = lowest_note + music_rand(&rng) % (highest_note - lowest_note + 1 - note_verse_difference);
         // music_palette_names[palete_type], instrumentType->value,
         zox_log_notes("+ generating music\n - Palette [%i]\n - Instrument: -\n    - First Note [%i]", palete_type, first_note);
 
         for (int j = 0; j < verses; j++) {
-            first_note += - note_verse_difference + rand() % (note_verse_difference * 2 + 1);
+            first_note += - note_verse_difference + music_rand(&rng) % (note_verse_difference * 2 + 1);
             if (first_note < lowest_note) {
                 first_note = lowest_note;
             } else if (first_note > highest_note) {
@@ -49,41 +56,41 @@ zox_sys2(MusicGenerateSystem) {
             for (int k = 0; k < sounds_per_verse; k++) {
                 int music_note = first_note;
                 if (palete_type == music_palette_creepy) {
-                    music_note += get_random_pallete_note(music_palette_values_creepy, 7);
+                    music_note += get_random_pallete_note(&rng, music_palette_values_creepy, 7);
                 } else if (palete_type == music_palette_happy) {
-                    music_note += get_random_pallete_note(music_palette_values_happy, 7);
+                    music_note += get_random_pallete_note(&rng, music_palette_values_happy, 7);
                 } else if (palete_type == music_palette_blues) {
-                    music_note += get_random_pallete_note(music_palette_values_blues, 5);
+                    music_note += get_random_pallete_note(&rng, music_palette_values_blues, 5);
                 } else if (palete_type == music_palette_blues2) {
-                    music_note += get_random_pallete_note(music_palette_values_blues2, 7);
+                    music_note += get_random_pallete_note(&rng, music_palette_values_blues2, 7);
                 } else if (palete_type == music_palette_romantic) {
-                    music_note += get_random_pallete_note(music_palette_values_romantic, 6);
+                    music_note += get_random_pallete_note(&rng, music_palette_values_romantic, 6);
                 } else if (palete_type == music_palette_epic) {
-                    music_note += get_random_pallete_note(music_palette_values_epic, 6);
+                    music_note += get_random_pallete_note(&rng, music_palette_values_epic, 6);
                 } else if (palete_type == music_palette_jazz) {
-                    music_note += get_random_pallete_note(music_palette_values_jazz, 5);
+                    music_note += get_random_pallete_note(&rng, music_palette_values_jazz, 5);
                 } else if (palete_type == music_palette_rock) {
-                    music_note += get_random_pallete_note(music_palette_values_rock, 6);
+                    music_note += get_random_pallete_note(&rng, music_palette_values_rock, 6);
                 } else if (palete_type == music_palette_techno) {
-                    music_note += get_random_pallete_note(music_palette_values_techno, 7);
+                    music_note += get_random_pallete_note(&rng, music_palette_values_techno, 7);
                 } else if (palete_type == music_palette_funk) {
-                    music_note += get_random_pallete_note(music_palette_values_funk, 5);
+                    music_note += get_random_pallete_note(&rng, music_palette_values_funk, 5);
                 }
-                if (rand() % 100 >= music_note_skip) {
+                if (music_rand(&rng) % 100 >= music_note_skip) {
                     music_note = 0;
                     // printf("Skiping at %i\n", sound_index);
                 } else {
-                    music_note += -2 + rand() % 3;
+                    music_note += -2 + music_rand(&rng) % 3;
                 }
 
                 // hmm we should do this better
                 /*byte music_instrument = instrument_piano;
-                if (rand() % 100 >= 50) {
+                if (music_rand(&rng) % 100 >= 50) {
                     music_instrument = instrument_organ;
                 }*/
 
-                float note_length = 0.8f + 0.6f * (rand() % 100 * 0.01f);
-                float note_volume = 0.6f + 0.4f * (rand() % 100 * 0.01f);
+                float note_length = 0.8f + 0.6f * (music_rand(&rng) % 100 * 0.01f);
+                float note_volume = 0.6f + 0.4f * (music_rand(&rng) % 100 * 0.01f);
                 entity note = spawn_note(
                     world,
                     prefab_note,

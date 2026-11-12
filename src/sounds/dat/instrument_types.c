@@ -9,5 +9,12 @@
 #define instrument_saxophone 8
 #define instrument_trumpet 9
 #define instrument_unique 10
-#define instrument_end 11
-#define instrument_piano_file 12
+// ambient (bop/ambient.c)
+#define instrument_soft_piano 11
+#define instrument_harp 12
+#define instrument_music_box 13
+#define instrument_cello 14
+#define instrument_choir 15
+#define instrument_bell 16
+#define instrument_end 17
+#define instrument_piano_file 18   // the piano.wav sound file, re-pitched (not generated)

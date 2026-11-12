@@ -16,7 +16,7 @@ zox_sys2(MusicRealmSpawnSystem) {
             world,
             prefab_music_generated,
             666,
-            instrument_piano,
+            instrument_soft_piano,
             (float2) { 1.0f, 1.4f }
         );
         add_to_MusicLinks(&musics_game, generated_music);
@@ -44,7 +44,7 @@ void spawn_menu_music(ecs* world, entity app) {
             world,
             prefab_music_generated,
             13666,
-            instrument_edm,
+            instrument_harp,
             (float2) { 0.3f, 0.5f });
     }
     zox_set_parent(world, music, game);

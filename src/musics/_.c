@@ -22,6 +22,7 @@
 #include "pre/_.c"
 #include "fun/_.c"
 #include "sys/_.c"
+#include "tst/_.c"
 
 void import_musics(ecs* world) {
     zox_module(musics);
@@ -30,4 +31,5 @@ void import_musics(ecs* world) {
     add_hook_terminal_command(process_arguments_musics);
     add_hook_spawn_prefabs(spawn_prefabs_musics);
     zox_add_module(playlists);
+    zox_tsts_musics();
 }
