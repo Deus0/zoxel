@@ -1,6 +1,6 @@
 // Sampling profiler: ZOX_SAMPLE=path, the main thread's backtrace every 2ms with its frame, written at exit
-//  - for when perf isn't there and ptrace is restricted (ptrace_scope 1), summarise with bsh/sample_report.py
-//  - found deleting walking every non fragmenting record (bsh/flecs_nf_root.py), see doc/commands.md
+//  - for when perf isn't there and ptrace is restricted (ptrace_scope 1), summarise with bsh/sample_report.sh
+//  - found deleting walking every non fragmenting record (bsh/flecs_patches/04_nf_root_list.patch), see doc/commands.md
 #include <time.h>
 #include <execinfo.h>
 #include <signal.h>

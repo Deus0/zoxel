@@ -1,0 +1,173 @@
+--- a/inc/flecs/flecs.c	2026-11-13 02:20:13.809220613 +0800
++++ b/inc/flecs/flecs.c	2026-11-13 02:20:13.843370710 +0800
+@@ -64952,72 +64952,120 @@
+     return;    
+ }
+ 
++/* ZOXEL PATCH nf root instantiate: copies one non fragmenting id from a base to an instance */
++static void flecs_instantiate_dont_fragment_one(
++    ecs_world_t *world,
++    ecs_component_record_t *cur,
++    ecs_entity_t base,
++    ecs_entity_t instance,
++    bool has_isa)
++{
++    ecs_assert(cur->flags & EcsIdSparse, ECS_INTERNAL_ERROR, NULL);
++    bool inherit = (cur->flags & EcsIdOnInstantiateInherit) != 0;
++    if (cur->sparse && (!has_isa || !inherit) && 
++        !(cur->flags & EcsIdOnInstantiateDontInherit) &&
++        !ecs_id_is_wildcard(cur->id)) 
++    {
++        if (flecs_component_sparse_has(cur, base)) {
++            if (cur->flags & EcsIdExclusive) {
++                ecs_component_record_t *cr_wc = flecs_components_get(
++                    world, ecs_pair(ECS_PAIR_FIRST(cur->id), EcsWildcard));
++                if (cr_wc && cr_wc->sparse &&
++                    flecs_sparse_has(cr_wc->sparse, instance))
++                {
++                    return;
++                }
++            }
++
++            void *base_ptr = flecs_component_sparse_get(
++                world, cur, NULL, base);
++            const ecs_type_info_t *ti = cur->type_info;
++
++            ecs_record_t *r = flecs_entities_get(world, instance);
++
++            void *ptr = NULL;
++            bool is_new = flecs_sparse_on_add_cr(world,
++                r->table, ECS_RECORD_TO_ROW(r->row), cur, true, &ptr);
++
++            if (ti) {
++                ecs_assert(ptr != NULL, ECS_INTERNAL_ERROR, NULL);
++                flecs_type_info_copy(ptr, base_ptr, 1, ti);
++            }
++
++            if (is_new) {
++                ecs_type_t added = { .array = &cur->id, .count = 1 };
++                flecs_emit(world, world, &(ecs_event_desc_t){
++                    .event = EcsOnAdd,
++                    .ids = &added,
++                    .table = r->table,
++                    .offset = ECS_RECORD_TO_ROW(r->row),
++                    .count = 1,
++                    .observable = world,
++                    .flags = EcsEventNoOnSet
++                });
++            }
++
++            if (ti) {
++                flecs_notify_on_set(
++                    world, r->table, ECS_RECORD_TO_ROW(r->row),
++                    cur->id, true, ptr);
++            }
++        }
++    }
++}
++
+ void flecs_instantiate_dont_fragment(
+     ecs_world_t *world,
+     ecs_entity_t base,
+     ecs_entity_t instance)
+ {
+-    ecs_component_record_t *cur = world->cr_non_fragmenting_head;
++    /* ZOXEL PATCH nf root instantiate: the roots, and the base's own targets of each relationship */
+     ecs_record_t *instance_r = flecs_entities_get(world, instance);
+     bool has_isa = ecs_table_get_type_index(
+         world, instance_r->table, ecs_isa(base)) != -1;
+-
++    ecs_component_record_t *cur = world->cr_non_fragmenting_root_head;
+     while (cur) {
+-        ecs_assert(cur->flags & EcsIdSparse, ECS_INTERNAL_ERROR, NULL);
+-        bool inherit = (cur->flags & EcsIdOnInstantiateInherit) != 0;
+-        if (cur->sparse && (!has_isa || !inherit) && 
+-            !(cur->flags & EcsIdOnInstantiateDontInherit) &&
+-            !ecs_id_is_wildcard(cur->id)) 
+-        {
+-            if (flecs_component_sparse_has(cur, base)) {
++        ecs_component_record_t *next = cur->non_fragmenting_root.next;
++        if (cur->sparse && flecs_sparse_has(cur->sparse, base)) {
++            if (!ecs_id_is_wildcard(cur->id)) {
++                flecs_instantiate_dont_fragment_one(world, cur, base, instance, has_isa);
++            } else if (ECS_IS_PAIR(cur->id) &&
++                ECS_PAIR_FIRST(cur->id) != EcsWildcard)
++            {
++                ecs_entity_t stack_targets[32];
++                ecs_entity_t *targets = stack_targets;
++                int32_t count = 0;
+                 if (cur->flags & EcsIdExclusive) {
+-                    ecs_component_record_t *cr_wc = flecs_components_get(
+-                        world, ecs_pair(ECS_PAIR_FIRST(cur->id), EcsWildcard));
+-                    if (cr_wc && cr_wc->sparse &&
+-                        flecs_sparse_has(cr_wc->sparse, instance))
+-                    {
+-                        cur = cur->non_fragmenting.next;
+-                        continue;
++                    ecs_entity_t *tgt = flecs_sparse_get_t(
++                        cur->sparse, ecs_entity_t, base);
++                    if (tgt && *tgt) {
++                        targets[count ++] = *tgt;
++                    }
++                } else {
++                    ecs_type_t *type = flecs_sparse_get_t(
++                        cur->sparse, ecs_type_t, base);
++                    if (type && type->count) {
++                        count = type->count;
++                        if (count > 32) {
++                            targets = ecs_os_malloc_n(ecs_entity_t, count);
++                        }
++                        ecs_os_memcpy_n(targets, type->array, ecs_entity_t, count);
+                     }
+                 }
+-
+-                void *base_ptr = flecs_component_sparse_get(
+-                    world, cur, NULL, base);
+-                const ecs_type_info_t *ti = cur->type_info;
+-
+-                ecs_record_t *r = flecs_entities_get(world, instance);
+-
+-                void *ptr = NULL;
+-                bool is_new = flecs_sparse_on_add_cr(world,
+-                    r->table, ECS_RECORD_TO_ROW(r->row), cur, true, &ptr);
+-
+-                if (ti) {
+-                    ecs_assert(ptr != NULL, ECS_INTERNAL_ERROR, NULL);
+-                    flecs_type_info_copy(ptr, base_ptr, 1, ti);
+-                }
+-
+-                if (is_new) {
+-                    ecs_type_t added = { .array = &cur->id, .count = 1 };
+-                    flecs_emit(world, world, &(ecs_event_desc_t){
+-                        .event = EcsOnAdd,
+-                        .ids = &added,
+-                        .table = r->table,
+-                        .offset = ECS_RECORD_TO_ROW(r->row),
+-                        .count = 1,
+-                        .observable = world,
+-                        .flags = EcsEventNoOnSet
+-                    });
++                ecs_entity_t first = ECS_PAIR_FIRST(cur->id);
++                for (int32_t i = 0; i < count; i ++) {
++                    ecs_component_record_t *pair_cr = flecs_components_get(
++                        world, ecs_pair(first, targets[i]));
++                    if (pair_cr) {
++                        flecs_instantiate_dont_fragment_one(world, pair_cr, base, instance, has_isa);
++                    }
+                 }
+-
+-                if (ti) {
+-                    flecs_notify_on_set(
+-                        world, r->table, ECS_RECORD_TO_ROW(r->row),
+-                        cur->id, true, ptr);
++                if (targets != stack_targets) {
++                    ecs_os_free(targets);
+                 }
+             }
+         }
+-
+-        cur = cur->non_fragmenting.next;
++        cur = next;
+     }
+ }
+ 
