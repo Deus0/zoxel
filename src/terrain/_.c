@@ -15,7 +15,8 @@
 byte zox_terrain_chunk_lod_system = 0;
 // stream queue updates per second (was 1 per frame, so streaming slowed with the frame rate)
 float stream_updates_per_second = 60;
-byte stream_updates_max_per_frame = 8;  // so a long frame doesn't burst
+byte stream_updates_max_per_frame = 2;  // so a long frame doesn't burst: a slow frame earned more updates, the
+                                         //  next spawned more chunks (6 columns) and was slow too, at 60fps it's 1
 double stream_update_max_wait = 2.0;    // seconds, an update queued longer goes before closer ones
 float stream_update_credit = 0;
 // Initial core

@@ -4,10 +4,20 @@ const color label3D_font_color_outline = { 155, 12, 12, 0 };
 
 // TODO: Sometimes this doesnt spawn!
 
+// name labels spawned a frame at most: a label is a glyph entity per letter, npcs streaming in together
+//  spawned their labels in one frame (lag spikes), the rest keep SpawnNameLabel for next frame
+#define name_labels_per_frame_max 3
+uint name_labels_frame = UINT32_MAX;
+uint name_labels_this_frame = 0;
+
 // NOTE: Spawns a name label above character
 zox_sys2(CharacterNameLabelsSystem) {
     if (disable_npc_uis) {
         return;
+    }
+    if (name_labels_frame != ecs_run_count) {
+        name_labels_frame = ecs_run_count;
+        name_labels_this_frame = 0;
     }
     byte dbg_log = 0;
     color fill = (color) { 0, 0, 0, 155 };
@@ -28,6 +38,9 @@ zox_sys2(CharacterNameLabelsSystem) {
         }*/
         if (!strlen(name->value)) {
             continue;
+        }
+        if (name_labels_this_frame >= name_labels_per_frame_max) {
+            break;
         }
         entity soul = zox_get_child_by_id(world, e, zox_id(StatSoul));
         if (!zox_valid(soul)) {
@@ -53,6 +66,7 @@ zox_sys2(CharacterNameLabelsSystem) {
         zox_setv(e2.y, OutlineThickness, 1);
         zox_link(world, e, ElementLinks, e2.x);
         zox_remove(e, SpawnNameLabel);
+        name_labels_this_frame++;
         if (dbg_log) {
             zox_log("Spawned Name Label on [%s]: %s", zox_getn(e), text);
         }
