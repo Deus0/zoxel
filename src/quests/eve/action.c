@@ -10,8 +10,8 @@ void zox_event_give_quest(iter* it) {
         if (!node || !zox_has(node, NodeActionQuest)) {
             continue;
         }
-        // increment node tree
-        zox_add(node, TriggerEnd);
+        // moves on by itself, like has quest (it tagged the node, so the dialogue waited on a next press)
+        delay_event(world, &delayed_node_end, e, 0.05);
         // get speaker of process - FirstSpeaker
         entity quest = zox_get_link(world, node, QuestLink);
         if (!quest) {

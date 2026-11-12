@@ -9,7 +9,7 @@ zoxc_byte(NodeType);
 zox_tag(NodeTrue);
 zox_tag(NodeFalse);
 // Links
-zox_tag(NodeLink);          // links nodes to nodes and runner to first node
+zox_tag(NodeLink);          // links nodes to their next nodes (branches have many), and a runner to its first
 zox_tag(CurrentNodeLink);   // Current node runner is at
 zox_tag(NextNodeLink);      // Next node runner will move to
 
@@ -23,7 +23,8 @@ void zox_components_nodes(ecs* world) {
     zoxd_tag_event(NodeFalse);
     zoxd_byte(NodeType);
     // Links
-    zoxd_nf_link(NodeLink);
+    // many: a branch (has quest) links its NodeTrue and NodeFalse nodes, exclusive kept only the last
+    zoxd_nf_links(NodeLink);
     zoxd_nf_link(CurrentNodeLink);
     zoxd_nf_link(NextNodeLink);
 }
