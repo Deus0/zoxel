@@ -52,13 +52,13 @@ zox_sys2(ItemActivateSystem) {
         zox_add(e, Dirty);
         zox_add(e, DataDirty);
         // place block sound
-        spawn_sound_generated(
+        set_sound_source(world, spawn_sound_generated(
             world,
             prefab_sound_generated,
             instrument_violin,
             note_frequencies[30 + rand() % 6],
             0.6,
-            1.4f * get_volume_sfx());
+            1.4f * get_volume_sfx()), user);
         entity skeleton = get_skeleton(world, user);
         if (zox_valid(skeleton)) {
             float swing_time =

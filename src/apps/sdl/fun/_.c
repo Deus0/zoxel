@@ -10,7 +10,5 @@ void dispose_apps_sdl(ecs *world, void *ctx) {
     // dispose_sdl_cursor();
     close_sdl_video();
     // dispose_mixer_pool();
-#ifdef zox_sdl_mixer
-    zox_dispose_mixer();
-#endif
+    zox_dispose_audio();
 }

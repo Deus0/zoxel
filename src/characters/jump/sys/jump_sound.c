@@ -4,6 +4,7 @@ zox_sys2(JumpSoundSystem) {
     zox_sys_begin();
     zox_sys_in(JumpState);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(JumpState, jumpState);
         if (jumpState->value != jump_state_active) {
             continue;
@@ -13,6 +14,6 @@ zox_sys2(JumpSoundSystem) {
         byte frequency = rand_range(26, 32);
         byte instrument = instrument_edm;
         // rand() % 100 >= 94 ? instrument_piano : instrument_flute;
-        spawn_sound_generated(world, prefab_sound_generated, instrument, note_frequencies[frequency], length, volume);
+        set_sound_source(world, spawn_sound_generated(world, prefab_sound_generated, instrument, note_frequencies[frequency], length, volume), e);
     }
 } zox_sys_end(JumpSoundSystem);

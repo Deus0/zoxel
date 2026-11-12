@@ -19,9 +19,7 @@ package_name="${game}_${OS}_${ARC}_${GLB}_${GFX}_${date_str}"
 CHANNEL="${OS}_${ARC}"
 lib_path="lib/${CHANNEL}"
 libsdl="lib${sdl_version}.so.0"
-libsdl_mixer="lib${sdl_version}_mixer.so.0"
 sdl_path="${lib_path}/${libsdl}"
-sdl_mixer_path="${lib_path}/${libsdl_mixer}"
 BINARY_PATH="./bin/${game}.bin"
 RES_DIR="./res"
 install_path="/usr/local/games"
@@ -120,7 +118,7 @@ Version: ${VERSION}
 Section: games
 Priority: optional
 Architecture: ${ARCH}
-Depends: libsdl2-2.0-0, libsdl2-mixer-2.0-0
+Depends: libsdl2-2.0-0
 Maintainer: Packager <root>
 Description: A Voxel Game ${game}
 EOF
@@ -139,7 +137,6 @@ build_arch() {
     # Copy sources directly into PKGBUILD folder (makepkg expects them here)
     cp "${BINARY_PATH}" "${staging_dir}/${game}"
     cp "${sdl_path}" "${staging_dir}"
-    cp "${sdl_mixer_path}" "${staging_dir}"
     tar czf  "${staging_dir}/res.tar.gz" -C "${RES_DIR}/.." res
     cp "${ICON_PATH}" "${staging_dir}/game.png"
     # PKGBUILD
@@ -151,8 +148,8 @@ pkgdesc="An awesome game [${game}]"
 arch=('x86_64')
 url="${url_path}"
 license=('GPL3')
-source=("${game}" "${libsdl}" "${libsdl_mixer}" "${desktop_file}" "res.tar.gz")
-sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+source=("${game}" "${libsdl}" "${desktop_file}" "res.tar.gz")
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP')
 depends=()
 
 package() {
@@ -161,7 +158,6 @@ package() {
     mkdir -p "\${install_res_path}"
     install -Dm755 "\${pkgname}" "\${install_game_path}/\${pkgname}.bin"
     install -Dm644 "${libsdl}" "\${install_game_path}/${libsdl}"
-    install -Dm644 "${libsdl_mixer}" "\${install_game_path}/${libsdl_mixer}"
     tar xzf "\${srcdir}/res.tar.gz" \
         -C "\${install_game_path}"
     install -Dm644 "\${srcdir}/../game.png" \

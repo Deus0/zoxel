@@ -64,8 +64,8 @@ target_dev 	:= bin/$(GAME)-dev.bin
 DFLAGS 		+= -Dzox_game=$(GAME)
 
 # Add SDL
-LIBS += $(shell $(pkg_config) --libs sdl2 SDL2_image SDL2_mixer)
-DFLAGS += -Dzox_sdl -Dzox_sdl_mixer -Dzox_sdl_images
+LIBS += $(shell $(pkg_config) --libs sdl2 SDL2_image)
+DFLAGS += -Dzox_sdl -Dzox_sdl_images
 
 # Find and add GL Libaries
 LIBS_GL := $(shell $(pkg_config) --libs egl glesv2)

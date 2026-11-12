@@ -28,15 +28,9 @@ ECS_DTOR(Context, ptr, {
     }
 })
 
-#if defined(zox_sdl_mixer) && !defined(zox_sdl3)
-    #include "mix_chunk.c"
-#endif
 
 void zox_components_sdl(ecs *world) {
     zoxd_dest_old(SDLWindow);
     zoxd_dest_old(Context);
     zoxd_dest_old(Renderer);
-#if defined(zox_sdl_mixer) && !defined(zox_sdl3)
-    zoxd_dest(SDLMixChunk);
-#endif
 }

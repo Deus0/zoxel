@@ -76,18 +76,12 @@
     #ifdef zox_sdl3
         #include <SDL3/SDL.h>
         #include <SDL3/SDL_opengl.h>
-        #ifdef zox_sdl_mixer
-            #include <SDL3_mixer/SDL_mixer.h>
-        #endif
         #ifdef zox_sdl_images
             #include <SDL3/SDL_image.h>
         #endif
     #else
         #include <SDL.h>
         #include <SDL_opengl.h>
-        #ifdef zox_sdl_mixer
-            #include <SDL_mixer.h>
-        #endif
     #endif
     #ifdef zox_android
         #ifdef zox_sdl3

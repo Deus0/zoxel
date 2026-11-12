@@ -8,6 +8,8 @@ zoxc_float(SoundFrequency);     //! The frequency of the generated sound
 zoxc_float(SoundVolume);     //! The frequency of the generated sound
 zoxc_int(SoundFrequencyIndex);     //! The frequency of the generated sound
 zoxc_double(SoundLength);       //! The length of a sound
+zoxc_float3(SoundPosition);     //! where a 3D sound plays from, sounds without it play in the middle
+zox_tag(SoundListener);         //! hears the 3D sounds (the game camera)
 #include "sound_data.c"
 #include "sound_data_ref.c"
 
@@ -18,6 +20,8 @@ void zox_components_sounds(ecs* world) {
     zoxd_state(GenerateSound);
     zoxd_state(ProcessSound);
     zoxd_double(SoundLength);
+    zoxd_float3(SoundPosition);
+    zoxd_tag(SoundListener);
     zoxd_float(SoundFrequency);
     zoxd_float(SoundVolume);
     zoxd_int(SoundFrequencyIndex);
