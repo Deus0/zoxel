@@ -64,8 +64,8 @@ target_dev 	:= bin/$(GAME)-dev.bin
 DFLAGS 		+= -Dzox_game=$(GAME)
 
 # Add SDL
-LIBS += $(shell $(pkg_config) --libs sdl2 SDL2_image)
-DFLAGS += -Dzox_sdl -Dzox_sdl_images
+LIBS += $(shell $(pkg_config) --libs sdl2)
+DFLAGS += -Dzox_sdl
 
 # Find and add GL Libaries
 LIBS_GL := $(shell $(pkg_config) --libs egl glesv2)
@@ -134,8 +134,8 @@ $(target_dev): $(SRCS)
 	bash bsh/build.sh $(GAME) ${build_args} --debug --logs --profiler # --timings
 
 
-dev: $(target_dev)
-	@ $(target_dev)
+dev: $(SRCS)
+	bash bsh/build.sh $(GAME) ${build_args} --debug --logs --profiler # --timings
 
 # Automated headless tests, see bsh/tst.sh and src/core/tst
 #   make tests              builds debug, runs every test
@@ -191,7 +191,8 @@ run-gdb: build
 	@ echo "-------------------"
 	gdb -ex "set debuginfod enabled off" -ex run --args ./$(target_release)
 
-rund: dev
+rund:
+	@ make $(target_dev)
 	./$(target_dev)
 
 # flecs profiler
