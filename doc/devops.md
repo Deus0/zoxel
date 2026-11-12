@@ -17,4 +17,5 @@
 -x Screen Rotation event not working
 
 ## Windows
-- SDL3Mixer not compiling for windows
+- sdl_mixer is gone (audio is sdl's own, mixed in the engine, see [audio.md](audio.md)),
+  libs-download.sh and libs-compile.sh still fetch and build it
