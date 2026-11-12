@@ -64,12 +64,17 @@ void stat_regen_system(iter* it) {
                 regen *= combat_regen_mul;
             }
         }
+        const int shown = (int) value->value;
         value->value += zox_delta_time * regen;
         if (value->value > max) {
             value->value = max;
         }
-        zox_add(stat, Dirty);
-        zox_add(stat, DataDirty);
+        // dirty only when its whole number changes (what the ui shows), dirtying every frame moved every
+        //  regenerating stat between tables every frame (perf_stream "moved most")
+        if ((int) value->value != shown || value->value >= max) {
+            zox_add(stat, Dirty);
+            zox_add(stat, DataDirty);
+        }
     }
     zox_sys_on_end();
 } zoxd_system(stat_regen_system);

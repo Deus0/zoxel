@@ -287,13 +287,15 @@ static void zox_count_ids_text(ecs* world, ZoxIdCount* zox_id_counts, char* out,
             break;
         }
         char* name = ecs_id_str(world, zox_id_counts[best].id);
-        written += snprintf(out + written, size - written, "%s%s +%u -%u", t ? ", " : "", name ? name : "?",
+        // snprintf returns what it would write, past the end when cut, so stop when full
+        const int length = snprintf(out + written, size - written, "%s%s +%u -%u", t ? ", " : "", name ? name : "?",
             zox_id_counts[best].adds, zox_id_counts[best].removes);
         ecs_os_free(name);
         zox_id_counts[best].adds = zox_id_counts[best].removes = 0;
-        if (written >= size - 1) {
+        if (length < 0 || written + length >= size - 1) {
             break;
         }
+        written += length;
     }
 }
 

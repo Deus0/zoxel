@@ -12,8 +12,10 @@
 	  400 to 2500 tables a step -> about 100, worst merges 145ms -> 38ms (debug)
 	- the rest: block decor and vox instances (ChildOf a chunk), npc ui still a child, link it instead
 	- table moves (perf_stream "moved most", --profile per frame): the worst frames' merges and notifications
-		- Dirty and DataDirty 23k adds and removes each over a run: stat_regen_system dirties every regenerating
-		  stat every frame (every npc's health, mana), only dirty when its shown value changes (whole numbers)
+		-x Dirty and DataDirty 23k adds and removes each over a run: stat_regen_system dirtied every regenerating
+		  stat every frame, now only when its whole number changes, npcs start full (both under 800 a run)
+		- spawn bursts are the worst frames now (merges 46ms, observers 47ms, debug): names (435 a frame),
+		  PreInitialize and Initialize, 3D labels' layout dirties, EcsParent adds
 		- DataUpdate 11k, TextureDirty 5k: what follows the dirties
 		- spawning: PreInitialize and Initialize (each new entity moves 4 times), a name on every entity
 		  ((Identifier,Name) 2.3k, flecs indexes them), state tags as events could be state components

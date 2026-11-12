@@ -152,7 +152,7 @@ void zox_tst_profile_frame(ecs* world) {
         {
             static char top_ids[1024];
             zox_count_ids_top(world, top_ids, sizeof(top_ids), 8);
-            zox_log("[profile]   moved most: %s", top_ids);
+            zox_log("[profile]   moved most: %.400s", top_ids);
         }
         zox_log("[profile]   commands: adds [%li] removes [%li] deletes [%li] sets [%li], observers ran [%li], tables made [%li]",
             (long) (world_times.adds - last.adds), (long) (world_times.removes - last.removes), (long) (world_times.deletes - last.deletes),
@@ -193,7 +193,7 @@ void zox_tst_profile_log(ecs* world, const char* name) {
     {
         static char top_ids[2048];
         zox_count_ids_totals(world, top_ids, sizeof(top_ids), 14);
-        zox_log("[tst] [metric] %s moved most: %s", name, top_ids);
+        zox_log("[tst] [metric] %s moved most: %.400s", name, top_ids);
     }
     // the observers with the slowest frames
     for (int n = 0; n < 8; n++) {
