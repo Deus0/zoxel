@@ -46,7 +46,10 @@ void InsideBlockSystem(iter* it) {
             continue;
         }
         // voxel
+        spinlock* chunk_lock = zox_octree_lock(world, chunk);   // writers can run alongside (thread_safety.md)
+        zox_octree_lock_begin(chunk_lock);
         byte voxel = getv_VoxelNode(voctree, cdepth, positionl);
+        zox_octree_lock_end(chunk_lock);
         // byte voxel = get_sub_node_voxel_locked(voctree, &positionl, cdepth);
         if (inside->value != voxel) {
             inside->value = voxel;

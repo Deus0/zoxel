@@ -298,7 +298,9 @@ static inline byte zox_lock_voxel_trees(
     spinlock** locked_locks)
 {
     byte count = 0;
-    locked_locks[count++] = root_lock;
+    if (root_lock) {
+        locked_locks[count++] = root_lock;
+    }
     for (byte i = 0; i < 6; i++) {
         spinlock* lock = neighbor_locks[i];
         if (!lock) {
@@ -347,7 +349,7 @@ static inline void zox_unlock_voxel_trees(
 // NOTE: Calculates the solid sides of a voxel octree per material
 void chunk_sides_system(iter* it) {
     byte dbg_log = 0;
-    byte is_spinlock = 0;
+    byte is_spinlock = 2;   // its octree and neighbors' locked while read (thread_safety.md)
     zox_sys_on_begin();
     init_side_child_indices();
     // a few ms a worker a frame, the rest next frame (whole chunks at once were 290ms lag spikes)

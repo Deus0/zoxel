@@ -241,10 +241,14 @@ void chunk_frustum_system(iter* it) {
         // Also set objects inside our terrain chunks!
         // -=- World Blocks -=-
         if (zox_has(e, BlocksSpawned)) {
+            // its octree locked while walked, writers can run alongside (thread_safety.md)
+            spinlock* lock = zox_octree_lock(world, e);
+            zox_octree_lock_begin(lock);
             set_chunk_block_spawns_render_disabled(
                 world,
                 voxels,
                 render_disabled->value);
+            zox_octree_lock_end(lock);
         }
         // -=- -=- -=- -=- -=- -=-
         // NOTE: For characters

@@ -485,7 +485,11 @@ void ChunkColorsBuildSystem(iter* it) {
             .vertices = create_float3_array_d(initial_dynamic_array_size),
             .colors = create_color_rgb_array_d(initial_dynamic_array_size)
         };
-        // read_lock_VoxelNode(voxels);
+        // its octree and neighbors' locked while walked (thread_safety.md)
+        spinlock* neighbor_locks[6];
+        zox_octree_neighbor_locks(world, neighbors, neighbor_locks);
+        spinlock* locked[7];
+        const byte locked_count = zox_lock_voxel_trees(zox_octree_lock(world, e), neighbor_locks, locked);
         build_voxel_mesh_c(
             voxels,
             voxels,
@@ -499,7 +503,7 @@ void ChunkColorsBuildSystem(iter* it) {
             position,
             cscale,
             is_split);
-        // read_unlock_VoxelNode(voxels);
+        zox_unlock_voxel_trees(locked, locked_count);
         indicies->length = mesh.indicies->size;
         vertices->length = mesh.vertices->size;
         colors->length = mesh.colors->size;
