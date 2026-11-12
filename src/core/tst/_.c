@@ -136,6 +136,7 @@ void zox_tst_end(const char* reason) {
     // exit now, the result is logged, and app teardown has its own (unrelated) crashes
     fflush(stdout);
     fflush(stderr);
+    zox_sample_write(); // ZOX_SAMPLE, _exit skips atexit
     _exit(zox_exit_code);
 }
 
@@ -219,6 +220,7 @@ void zox_tst_start() {
         zox_log("[tst] test: %s", zox_tsts[i].name);
     }
     fflush(stdout);
+    zox_sample_write(); // ZOX_SAMPLE, _exit skips atexit
     _exit(zox_exit_code);
 }
 

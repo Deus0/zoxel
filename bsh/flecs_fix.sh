@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 # Patches our imported flecs.c (v4.2.0) until fixed upstream
+# Each patch is described in doc/flecs_patches.md (why, repro, upstream status), keep it in sync
 #
 #   Stale reachable cache in flecs_emit_forward
 #   - When a parent changes table (i.e. a Dirty tag is added) in the same command flush
@@ -35,7 +36,15 @@ set -euo pipefail
 #     dead parent entity (the spawner check, renaming under its path), the child is being deleted
 #     - repro: bash bsh/tst.sh menu_flow (ending a game with npcs' stats non fragmenting)
 #
-# Requirements: perl
+#   Deleting an entity walked every non fragmenting component record (ZOXEL PATCH nf root list)
+#   - flecs_entity_remove_non_fragmenting checked each record in the world's non fragmenting list for the
+#     entity, a pair link makes a record per target, 14k in game, so a delete was O(records)
+#   - deleting a chunk column and its npcs (thousands of entities) took 100-160ms merges flying (tst perf_fly)
+#   - Fix: a second list of roots (components, (R, *) wildcards), an entity's pairs come from its (R, *)
+#     record's sparse targets, a delete visits ~70 records, worst flying 160ms -> 22ms (--maxnpcs)
+#     - bsh/flecs_nf_root.py, repro: bash bsh/tst.sh perf_fly --stress (release, --maxnpcs)
+#
+# Requirements: perl, python3
 
 file=inc/flecs/flecs.c
 marker="ZOXEL PATCH v3: stale reachable cache"
@@ -306,3 +315,4 @@ echo "+ Flecs Patched [nf parent delete]"
 patch_reachable_cache || exit 1
 patch_nested_cleanup || exit 1
 patch_nf_parent_delete || exit 1
+python3 bsh/flecs_nf_root.py "${file}" || exit 1
