@@ -14,14 +14,7 @@ void menu_start_triggered(
         world,
         player,
         game_name);
-    double volume = (0.6 + 0.4 * (rand() % 101) / 100.0) * get_volume_sfx();
-    spawn_sound_generated(
-        world,
-        prefab_sound_generated,
-        instrument_piano,
-        note_frequencies[16],
-        2.8f,
-        volume);
+    spawn_sound_effect(world, sound_effect_start, 0);
 }
 
 void button_event_menu_start(ecs *world, ClickEventData event) {

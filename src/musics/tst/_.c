@@ -88,42 +88,110 @@ void zox_tst_music_plays_check(ecs* world) {
     zox_tst_check(sounds > zox_tst_music_plays_start_sounds, "the menu music spawned no sounds");
 }
 
+// tst: music_timing, notes play when the playhead reaches their start, together when they start together
+//  - a music of: a note at 0.2s, a three note chord at 0.6s, a note at 1.0s, looping at 1.4s
+//      (high notes nothing else plays, so their sounds are told apart from the menu music)
+//  - each note's sound appears once the playhead passes its start, not before
+//  - the chord's notes appear on the same frame, the first note again after the loop
+//  - run: bash bsh/tst.sh music_timing
+#define zox_tst_timing_notes 5
+const int zox_tst_timing_note_index[zox_tst_timing_notes] = { 90, 91, 92, 93, 94 };
+const double zox_tst_timing_starts[zox_tst_timing_notes] = { 0.2, 0.6, 0.6, 0.6, 1.0 };
+entity zox_tst_timing_music = 0;
+int zox_tst_timing_frame = 0;
+int zox_tst_timing_heard_frame[zox_tst_timing_notes];
+double zox_tst_timing_heard_at[zox_tst_timing_notes];
+int zox_tst_timing_first_count = 0;
+byte zox_tst_timing_looped = 0;
+
+// how many sounds play a note
+static inline int zox_tst_timing_count(ecs* world, int note) {
+    const float frequency = note_frequencies[note];
+    int count = 0;
+    ecs_iter_t it = ecs_each_id(world, ecs_id(SoundFrequency));
+    while (ecs_each_next(&it)) {
+        const SoundFrequency* frequencies = ecs_field(&it, SoundFrequency, 0);
+        for (int i = 0; i < it.count; i++) {
+            count += zox_has(it.entities[i], Sound) && fabsf(frequencies[i].value - frequency) < 0.01f;
+        }
+    }
+    return count;
+}
+
+byte zox_tst_music_timing_ready(ecs* world) {
+    // tests run --background, which turns sounds off, music only plays with them on
+    nosounds = 0;
+    zox_tst_timing_frame++;
+    if (!zox_tst_timing_music) {
+        if (!zox_valid(local_game)) {
+            zox_tst_waiting = "the game";
+            return 0;
+        }
+        const entity music = spawn_music(world, prefab_music, 1);
+        zox_set(music, MusicLength, { 1.4 });
+        for (int i = 0; i < zox_tst_timing_notes; i++) {
+            spawn_note(world, prefab_note, music, zox_tst_timing_note_index[i], instrument_harp, zox_tst_timing_starts[i], 0.1f, 0.5f);
+            zox_tst_timing_heard_frame[i] = -1;
+        }
+        zox_set(music, MusicEnabled, { 1 });
+        zox_tst_timing_music = music;
+        return 0;
+    }
+    zox_tst_waiting = "the music to play its notes and loop";
+    const double playhead = zox_getv(zox_tst_timing_music, MusicTime);
+    for (int i = 0; i < zox_tst_timing_notes; i++) {
+        if (zox_tst_timing_heard_frame[i] < 0 && zox_tst_timing_count(world, zox_tst_timing_note_index[i]) > 0) {
+            zox_tst_timing_heard_frame[i] = zox_tst_timing_frame;
+            zox_tst_timing_heard_at[i] = playhead;
+        }
+    }
+    // looped: the playhead went back to the start, the first note plays again
+    if (zox_tst_timing_heard_frame[4] >= 0 && playhead < 0.6) {
+        zox_tst_timing_looped = 1;
+    }
+    zox_tst_timing_first_count = zox_tst_timing_count(world, zox_tst_timing_note_index[0]);
+    return zox_tst_timing_looped && zox_tst_timing_first_count >= 2;
+}
+
+void zox_tst_music_timing_check(ecs* world) {
+    for (int i = 0; i < zox_tst_timing_notes; i++) {
+        zox_log("[tst] note [%i] (start [%.1fs]) heard on frame [%i], the playhead at [%.2fs]",
+            i, zox_tst_timing_starts[i], zox_tst_timing_heard_frame[i], zox_tst_timing_heard_at[i]);
+        zox_tst_check(zox_tst_timing_heard_frame[i] >= 0, "note [%i] never played", i);
+        // spawns are seen the frame after, a slow frame later still
+        zox_tst_check(zox_tst_timing_heard_at[i] >= zox_tst_timing_starts[i] &&
+            zox_tst_timing_heard_at[i] < zox_tst_timing_starts[i] + 0.35,
+            "note [%i] (start [%.1fs]) played with the playhead at [%.2fs]", i, zox_tst_timing_starts[i], zox_tst_timing_heard_at[i]);
+    }
+    zox_tst_check(zox_tst_timing_heard_frame[1] == zox_tst_timing_heard_frame[2] && zox_tst_timing_heard_frame[2] == zox_tst_timing_heard_frame[3],
+        "the chord's notes played on frames [%i, %i, %i]", zox_tst_timing_heard_frame[1], zox_tst_timing_heard_frame[2], zox_tst_timing_heard_frame[3]);
+    zox_tst_check(zox_tst_timing_heard_frame[0] < zox_tst_timing_heard_frame[1] && zox_tst_timing_heard_frame[1] < zox_tst_timing_heard_frame[4],
+        "the notes played out of order");
+    zox_tst_check(zox_tst_timing_first_count >= 2, "the music didn't loop back to its first note");
+    zox_delete(zox_tst_timing_music);
+}
+
 // tst: music_compose, songs are composed like dungeons: a floor plan of sections (rooms) reusing
 // motifs (room templates), joined by chord progressions (corridors), decorated with layers
 //  - for 20 seeds: enough sections, every melody and bass note in the song's key, the bass under
 //      the melody, sections sharing a motif share its rhythm, mostly stepwise, ending on the tonic
 //  - the same seed composes the same song, different seeds differ, and they vary in mode and form
+//  - its performance: timed notes in order, in the key and in note_frequencies, chords (3 notes together),
+//      varied lengths, some seeds swing, grace notes
 //  - renders a song to bin/tst/song.wav, to listen to
 //  - run: bash bsh/tst.sh music_compose
-static inline byte zox_tst_song_in_key(const Song* song, int note) {
-    const int semitone = ((note - song->tonic) % 12 + 12) % 12;
-    for (int d = 0; d < 7; d++) {
-        if (song_modes[song->mode][d] == semitone) {
-            return 1;
-        }
-    }
-    return 0;
-}
-
-// mixes a song's notes as the music system plays them, each note scaled by gain (the game's music volume)
+// mixes a song's notes (its performed events) as the music system plays them, each scaled by gain (the music volume)
 float* zox_tst_mix_song(const Song* song, float gain, uint* out_length) {
-    const uint step_samples = (uint) (song->step_seconds * sound_sample_rate);
-    const uint length = song->steps_count * step_samples + 3 * sound_sample_rate;
+    const uint length = (uint) ((song->seconds + 3) * sound_sample_rate);
     float* mix = calloc(length, sizeof(float));
     float* note = malloc(MAX_SOUND_DATA * sizeof(float));
-    for (uint step = 0; step < song->steps_count; step++) {
-        for (byte v = 0; v < song_voices; v++) {
-            const SongNote n = song->steps[step].voices[v];
-            if (!n.note) {
-                continue;
-            }
-            const float seconds = fminf(2.8f, n.steps * song->step_seconds * (v ? 1.1f : 1.0f));
-            const uint note_length = (uint) (seconds * sound_sample_rate);
-            generate_instrument_samples(n.instrument, note_frequencies[n.note], seconds, n.volume * gain, 0, note, note_length);
-            const uint start = step * step_samples;
-            for (uint j = 0; j < note_length && start + j < length; j++) {
-                mix[start + j] += note[j];
-            }
+    for (uint i = 0; i < song->events_count; i++) {
+        const SongEvent event = song->events[i];
+        const uint note_length = (uint) (event.seconds * sound_sample_rate);
+        generate_instrument_samples(event.instrument, note_frequencies[event.note], event.seconds, event.volume * gain, 0, note, note_length);
+        const uint start = (uint) (event.start * sound_sample_rate);
+        for (uint j = 0; j < note_length && start + j < length; j++) {
+            mix[start + j] += note[j];
         }
     }
     free(note);
@@ -160,6 +228,7 @@ void zox_tst_music_compose_check(ecs* world) {
     byte modes_seen[song_modes_count] = { 0 };
     byte section_counts_seen[song_max_sections + 1] = { 0 };
     byte contrast_leads_seen[instrument_end] = { 0 };
+    int swings = 0, graces = 0;
     for (uint seed = 1; seed <= 20; seed++) {
         compose_song(seed, instrument_soft_piano, &song);
         modes_seen[song.mode] = 1;
@@ -188,7 +257,7 @@ void zox_tst_music_compose_check(ecs* world) {
             const SongNote bass = song.steps[step].voices[song_voice_bass];
             if (melody.note) {
                 notes++;
-                out_of_key += !zox_tst_song_in_key(&song, melody.note);
+                out_of_key += !song_in_key(&song, melody.note);
                 if (previous && abs(melody.note - previous) > 7) {
                     leaps++;
                 }
@@ -196,7 +265,7 @@ void zox_tst_music_compose_check(ecs* world) {
                 last_melody = melody.note;
             }
             if (bass.note) {
-                out_of_key += !zox_tst_song_in_key(&song, bass.note);
+                out_of_key += !song_in_key(&song, bass.note);
                 bass_above += melody.note && bass.note >= melody.note;
             }
         }
@@ -221,6 +290,38 @@ void zox_tst_music_compose_check(ecs* world) {
                 zox_tst_check(differ == 0, "seed [%u] sections [%i] and [%i] share a motif but not its rhythm", seed, a, b);
             }
         }
+        // the performance: timed notes, overlapping freely
+        int unsorted = 0, outside = 0, performed_out_of_key = 0, chords = 0;
+        float lengths_seen[64];
+        int lengths_count = 0;
+        for (uint e = 0; e < song.events_count; e++) {
+            const SongEvent event = song.events[e];
+            unsorted += e > 0 && event.start < song.events[e - 1].start;
+            outside += event.start < 0 || event.start > song.seconds || event.seconds <= 0 || event.seconds > song_max_note_seconds;
+            performed_out_of_key += !song_in_key(&song, event.note);
+            outside += event.note >= notes_max;
+            graces += event.voice == song_voice_melody && event.seconds < 0.1f;
+            // a chord: three or more notes starting within 70ms
+            int together = 0;
+            for (uint f = e; f < song.events_count && song.events[f].start - event.start < 0.07f; f++) {
+                together++;
+            }
+            chords += together >= 3;
+            byte known = 0;
+            for (int l = 0; l < lengths_count; l++) {
+                known |= fabsf(lengths_seen[l] - event.seconds) < 0.01f;
+            }
+            if (!known && lengths_count < 64) {
+                lengths_seen[lengths_count++] = event.seconds;
+            }
+        }
+        swings += song.swing;
+        zox_tst_check(song.events_count > notes, "seed [%u] performed [%u] notes from [%i] melody notes", seed, song.events_count, notes);
+        zox_tst_check(unsorted == 0, "seed [%u] has [%i] notes out of order", seed, unsorted);
+        zox_tst_check(outside == 0, "seed [%u] has [%i] notes outside the song or too long", seed, outside);
+        zox_tst_check(performed_out_of_key == 0, "seed [%u] performed [%i] notes out of its key", seed, performed_out_of_key);
+        zox_tst_check(chords > 0, "seed [%u] plays no chords (3 notes together)", seed);
+        zox_tst_check(lengths_count >= 5, "seed [%u] only has [%i] note lengths", seed, lengths_count);
         compose_song(seed, instrument_soft_piano, &again);
         zox_tst_check(!memcmp(&song, &again, sizeof(Song)), "seed [%u] composed a different song the second time", seed);
     }
@@ -241,10 +342,12 @@ void zox_tst_music_compose_check(ecs* world) {
         contrast_leads += contrast_leads_seen[i];
     }
     zox_tst_check(contrast_leads >= 3, "20 seeds only used [%i] contrast leads", contrast_leads);
+    zox_tst_check(swings > 0 && swings < 20, "[%i] of 20 seeds swing, some should and some not", swings);
+    zox_tst_check(graces > 0, "20 seeds played no grace notes");
     // listen to one
     compose_song(666, instrument_soft_piano, &song);
-    zox_log("[tst] song [666]: [%i] sections, [%u] steps of [%.2fs], mode [%i], tonic [%i]",
-        song.sections_count, song.steps_count, song.step_seconds, song.mode, song.tonic);
+    zox_log("[tst] song [666]: [%i] sections, [%u] steps of [%.2fs], [%u] notes over [%.0fs], mode [%i], tonic [%i], swing [%i]",
+        song.sections_count, song.steps_count, song.step_seconds, song.events_count, song.seconds, song.mode, song.tonic, song.swing);
     zox_tst_render_song(&song, "../tst/song.wav");
 }
 
@@ -303,7 +406,7 @@ void zox_tst_sound_balance_check(ecs* world) {
     for (int i = 0; i < sound_effect_end; i++) {
         worst[i] = 1000;
     }
-    const uint gap = 2 * sound_sample_rate;
+    const uint gap = 3 * sound_sample_rate / 2;
     int placed = 0;
     for (uint start = sound_sample_rate; start + MAX_SOUND_DATA < length; start += gap, placed++) {
         const int type = placed % sound_effect_end;
@@ -337,6 +440,8 @@ void zox_tst_sound_balance_check(ecs* world) {
 }
 
 void zox_tsts_musics() {
+    zox_tst_add("music_timing", zox_tst_music_timing_ready, zox_tst_music_timing_check, 30);
+    zox_tst_set_setup("music_timing", NULL, 1);
     zox_tst_add("sound_balance", zox_tst_sound_balance_ready, zox_tst_sound_balance_check, 60);
     zox_tst_set_setup("sound_balance", NULL, 1);
     zox_tst_add("music_compose", zox_tst_music_compose_ready, zox_tst_music_compose_check, 60);

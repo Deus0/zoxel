@@ -35,13 +35,7 @@ zox_sys2(BlockDamageQueueSystem) {
             // TODO: Grab meta again here using lookup table, reduce cache
             if (zox_has(meta, BlockInvinsible)) {
                 // cannot destroy voxel sound
-                spawn_sound_generated(
-                    world,
-                    prefab_sound_generated,
-                    instrument_violin,
-                    note_frequencies[42 + rand() % 6],
-                    0.26,
-                    1.4f * get_volume_sfx());
+                spawn_sound_effect(world, sound_effect_block_hard, 0);
                 continue;
             }
             // effect our terrain here
@@ -168,19 +162,9 @@ zox_sys2(BlockDamageQueueSystem) {
             // add health to block child
             // destroy voxel sound
             if (did_destroy_block) {
-                spawn_sound_generated(
-                    world,
-                    prefab_sound_generated,
-                    instrument_piano,
-                    note_frequencies[rand_range(28, 36)],
-                    0.7, 1.4f * get_volume_sfx());
+                spawn_sound_effect_at(world, sound_effect_block_break, positionf);
             } else {
-                spawn_sound_generated(
-                    world,
-                    prefab_sound_generated,
-                    instrument_piano,
-                    note_frequencies[rand_range(20, 26)],
-                    0.4, 1.1f * get_volume_sfx());
+                spawn_sound_effect_at(world, sound_effect_block_damage, positionf);
             }
             // hit block popup
             // float3 positionf = raycast->positionf;

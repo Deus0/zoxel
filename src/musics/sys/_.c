@@ -15,7 +15,6 @@ void zox_systems_music(ecs* world) {
         MusicPlaySystem,
         zoxp_spawn,
         [in] musics.MusicEnabled,
-        [in] musics.MusicSpeed,
         [out] musics.MusicNote,
         [out] musics.MusicTime,
         [none] musics.Music
