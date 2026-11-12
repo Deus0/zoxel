@@ -3,12 +3,15 @@
 //  - multi threaded systems' times add up every worker's (cpu time), divide by zox_worker_count for real time
 typedef void (*zox_system_time_fun)(ecs* world, entity system, double seconds, byte multi_threaded, void* ctx);
 
+// left out of profiles: the test runner and profiler's own system (zox_tst_system)
+entity zox_system_times_ignore = 0;
+
 void zox_each_system_time(ecs* world, zox_system_time_fun fun, void* ctx) {
     ecs_iter_t it = ecs_each_id(world, EcsSystem);
     while (ecs_each_next(&it)) {
         for (int i = 0; i < it.count; i++) {
             const ecs_system_t* system = ecs_system_get(world, it.entities[i]);
-            if (system) {
+            if (system && it.entities[i] != zox_system_times_ignore) {
                 fun(world, it.entities[i], system->time_spent, system->multi_threaded, ctx);
             }
         }

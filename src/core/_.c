@@ -19,7 +19,7 @@ void import_core(ecs* world) {
     initialize_zox(world);
     zox_components_core(world);
     zox_systems_core(world);
-    initialize_tst();
+    initialize_tst(world);
     zox_tsts_flecs(world);
     add_hook_spawn_prefabs(zox_prefabs_core);
     zox_add_module(timing);
