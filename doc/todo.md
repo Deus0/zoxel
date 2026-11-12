@@ -22,7 +22,9 @@
 	- delete empty tables now and then (15k of 17k tables are empty after streaming)
 	-x chunk_sides_system has a time budget per worker per frame (it built whole chunks, 18ms real time)
 	-x VoxLodMeshBuildSystem: a 275ms frame (216 lod meshes at once, ~340ms cpu over 16 workers), now a time
-	  budget per worker, max depth meshes from a flat grid (depth 5: 29ms -> 5ms, tst vox_mesh_grid)
+	  budget per worker, vox meshes from a pyramid of node grids, no root lookups (depth 5 model 29ms -> 4ms,
+	  depth 7 player skeleton 13.5ms -> 2.9ms: air leaves skipped, split dug into all 2M cells), tst vox_mesh_grid
+	- slowest frame left (release, gpu): ~21ms at game start, merges and observers 13ms
 	- lod meshes as non fragmenting children stalled terrain generation (perf_stream), still ChildOf, find why
 	- move other heavy systems from process counts to zox_sys_budget
 - Lag spikes (up to 96ms): sound generation, a whole sound in one frame when it spawns
@@ -623,6 +625,11 @@
 - Add a compass symbol to show north etc
 
 # Rendering, Lights and Cameras
+- Voxel meshing on the gpu, faster updates and less cpu load
+	- upload the voxels (a flat grid per depth like build_voxel_mesh_grid's pyramid, or the octree), a compute
+	  shader writes faces, ao and colors into the mesh buffers, no cpu mesh or upload
+	- chunks, vox models and skeletons, cpu meshing kept for tests and platforms without compute
+	- (tst vox_mesh_grid compares mesh builders, a gpu one could be checked against the cpu one)
 - Light character models from the environment (like minivoxes)
 	- sample the LightNode at the character's voxel position (get_block_vox_light in vodes3/fun/lights.c), set Brightness
 	- update when the character moves to a new voxel, or its chunk's LightNodeDirty goes active

@@ -77,13 +77,15 @@ byte build_vox_mesh_at_depth(
         .vertices = create_float3_array_d(initial_dynamic_array_size),
         .colors = create_color_rgb_array_d(initial_dynamic_array_size)
     };
-    if (!is_split || !build_voxel_mesh_grid(
+    if (!build_voxel_mesh_grid(
         voxels,
         vcolors,
         &mesh,
+        node_depth,
         target_depth,
         position,
-        cscale))
+        cscale,
+        is_split))
     build_voxel_mesh_c(
         voxels,
         voxels,
