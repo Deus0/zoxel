@@ -89,7 +89,8 @@ void TerrainCharactersSpawnSystem(iter* it) {
                 zox_get(chunk_above, VoxelNode) :
                 NULL;
         // calcs
-        byte character_spawn_rate = seed_range(seed->value, character_spawn_rate_min, character_spawn_rate_max);
+        byte character_spawn_rate = max_npcs ? character_spawn_rate_max :
+            seed_range(seed->value, character_spawn_rate_min, character_spawn_rate_max);
         srand(seed->value);
         byte spawned = 0;
         for (byte j = 0; j < character_spawn_rate; j++) {
