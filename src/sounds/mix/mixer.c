@@ -4,6 +4,7 @@
 //  - zox_mixer_render runs on the audio thread: adds up the voices, then a soft limiter (no harsh clipping)
 //  - finished voices are freed on the main thread, when the next sound plays
 //  - when every voice is busy, the one closest to finishing makes way
+//  - a voice can wait before it starts (delay, in samples), so a jingle's notes are timed exactly
 #define mixer_voices_max 64
 #define mixer_limit_knee 0.8f
 
@@ -17,6 +18,7 @@ typedef struct {
     float* data;
     uint length;
     uint position;
+    uint delay;         // samples to wait before it starts
     float left;
     float right;
     float3 source;
@@ -50,8 +52,9 @@ static inline void mixer_collect(float** to_free, int* to_free_count) {
     }
 }
 
-// plays mono samples, from a source position (3D) or NULL (in the middle), returns the voice or -1
-int zox_mixer_play(const float* data, uint length, const float3* source) {
+// plays mono samples after a delay (seconds), from a source position (3D) or NULL (in the middle),
+//  returns the voice or -1
+int zox_mixer_play_delayed(const float* data, uint length, const float3* source, float delay) {
     if (!data || !length) {
         return -1;
     }
@@ -76,7 +79,7 @@ int zox_mixer_play(const float* data, uint length, const float3* source) {
             index = i;
             break;
         }
-        const uint left = voice->length - voice->position;
+        const uint left = voice->delay + voice->length - voice->position;
         if (left < least_left) {
             least_left = left;
             index = i;
@@ -89,6 +92,7 @@ int zox_mixer_play(const float* data, uint length, const float3* source) {
     *voice = (MixerVoice) {
         .data = copy,
         .length = length,
+        .delay = delay > 0 ? (uint) (delay * sound_sample_rate) : 0,
         .left = gains.left,
         .right = gains.right,
         .source = source ? *source : float3_zero,
@@ -100,6 +104,11 @@ int zox_mixer_play(const float* data, uint length, const float3* source) {
         free(to_free[i]);
     }
     return index;
+}
+
+// plays mono samples now
+int zox_mixer_play(const float* data, uint length, const float3* source) {
+    return zox_mixer_play_delayed(data, length, source, 0);
 }
 
 // the listener moved or turned, 3D voices follow it
@@ -138,12 +147,23 @@ void zox_mixer_render(float* out, int frames) {
         if (!voice->active) {
             continue;
         }
+        // waiting to start
+        uint offset = 0;
+        if (voice->delay) {
+            offset = voice->delay < (uint) frames ? voice->delay : (uint) frames;
+            voice->delay -= offset;
+            if (offset == (uint) frames) {
+                continue;
+            }
+        }
         const uint left = voice->length - voice->position;
-        const uint count = (uint) frames < left ? (uint) frames : left;
+        const uint room = (uint) frames - offset;
+        const uint count = room < left ? room : left;
         const float* samples = voice->data + voice->position;
+        float* to = out + 2 * offset;
         for (uint j = 0; j < count; j++) {
-            out[2 * j] += samples[j] * voice->left;
-            out[2 * j + 1] += samples[j] * voice->right;
+            to[2 * j] += samples[j] * voice->left;
+            to[2 * j + 1] += samples[j] * voice->right;
         }
         voice->position += count;
         if (voice->position >= voice->length) {

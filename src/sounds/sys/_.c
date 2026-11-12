@@ -41,6 +41,7 @@ void zox_systems_sounds(ecs *world) {
         [in] TriggerSound,
         [in] SoundData,
         [in] ?SoundPosition,
+        [in] ?SoundDelay,
         [none] Sound
     );
     zox_system(

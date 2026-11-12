@@ -71,6 +71,17 @@ NPCs babble their dialogue, a syllable as each one appears, from where they stan
   their formants (mouth resonances). Each syllable falls in pitch, and a question rises.
 - Syllables, not letters: "hello there" says he-llo the-re.
 
+## Jingles
+
+[src/sounds/bop/jingles.c](../src/sounds/bop/jingles.c)
+
+Short tunes for moments: `spawn_jingle(world, jingle_level_up)`. Level up, quest taken, quest handed in.
+
+- Zelda's lift, Metroid's mystery: a quick rising arpeggio landing on an open chord, a bell and choir over
+  a low root, echoes of the bright notes.
+- Each note is a sound with a `SoundDelay`, the mixer starts it on its exact sample.
+- `tst jingles` checks they rise and land on a chord, and writes `bin/tst/jingles.wav`.
+
 ## Music
 
 [src/musics](../src/musics)

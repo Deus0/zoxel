@@ -265,6 +265,18 @@ void zox_tst_sound_mixer_check(ecs* world) {
     zox_mixer_render(zox_tst_mixer_out, 1);
     zox_tst_check(zox_tst_mixer_out[0] > zox_tst_mixer_out[1], "a playing sound didn't follow the listener turning");
     zox_mixer_set_listener(float3_zero, float4_identity);
+    // a delayed voice waits for its moment (a jingle's notes)
+    zox_mixer_stop_all();
+    zox_mixer_play_delayed(samples, zox_tst_mixer_length, NULL, 0.01f);   // 441 samples
+    zox_mixer_render(zox_tst_mixer_out, 400);
+    float early = 0;
+    for (int j = 0; j < 800; j++) {
+        early = fmaxf(early, fabsf(zox_tst_mixer_out[j]));
+    }
+    zox_tst_check(early == 0, "a delayed voice played [%.3f] before its delay", early);
+    zox_mixer_render(zox_tst_mixer_out, 100);
+    zox_tst_check(zox_tst_mixer_out[0] == 0 && fabsf(zox_tst_mixer_out[2 * 60] - 0.5f) < 0.001f,
+        "a delayed voice didn't start on its sample [%.3f, %.3f]", zox_tst_mixer_out[0], zox_tst_mixer_out[2 * 60]);
     // voices finish
     zox_mixer_stop_all();
     zox_mixer_play(samples, zox_tst_mixer_length, NULL);
@@ -290,7 +302,80 @@ void zox_tst_sound_mixer_check(ecs* world) {
     }
 }
 
+// tst: jingles, short tunes for moments (level up, quest taken, handed in), sounds/bop/jingles.c
+//  - each: notes in order, in note_frequencies, under 4 seconds, some echoes
+//  - it rises (its first notes climb, the lift), and lands on a chord (3 or more notes together)
+//  - writes bin/tst/jingles.wav, every jingle in turn, to listen to
+//  - run: bash bsh/tst.sh jingles
+
+// mixes a jingle into mix at start (samples), as the mixer would play its delayed notes, returns its end
+uint zox_tst_render_jingle(JingleType type, float gain, float* mix, uint start, uint length) {
+    static float note_samples[MAX_SOUND_DATA];
+    JingleNote notes[jingle_max_notes * 2];
+    const int count = jingle_performed(type, notes, jingle_max_notes * 2);
+    uint end = start;
+    for (int i = 0; i < count; i++) {
+        const float seconds = fminf(notes[i].seconds, 2.8f);
+        const uint note_length = (uint) (seconds * sound_sample_rate);
+        const int index = jingles[type].tonic + notes[i].note;
+        generate_instrument_samples(notes[i].instrument, note_frequencies[index], seconds, notes[i].volume * gain, 0, note_samples, note_length);
+        const uint at = start + (uint) (notes[i].start * sound_sample_rate);
+        for (uint j = 0; j < note_length && at + j < length; j++) {
+            mix[at + j] += note_samples[j];
+        }
+        end = at + note_length > end ? at + note_length : end;
+    }
+    return end;
+}
+
+byte zox_tst_jingles_ready(ecs* world) {
+    (void) world;
+    return 1;
+}
+
+void zox_tst_jingles_check(ecs* world) {
+    (void) world;
+    JingleNote notes[jingle_max_notes * 2];
+    for (int t = 0; t < jingle_end; t++) {
+        const Jingle* jingle = &jingles[t];
+        const int count = jingle_performed(t, notes, jingle_max_notes * 2);
+        int unsorted = 0, outside = 0, echoes = count - jingle->count;
+        for (int i = 0; i < count; i++) {
+            unsorted += i > 0 && notes[i].start < notes[i - 1].start;
+            const int index = jingle->tonic + notes[i].note;
+            outside += index <= 0 || index >= notes_max;
+        }
+        zox_tst_check(unsorted == 0, "[%s] has [%i] notes out of order", jingle->name, unsorted);
+        zox_tst_check(outside == 0, "[%s] has [%i] notes outside note_frequencies", jingle->name, outside);
+        zox_tst_check(echoes > 0, "[%s] has no echoes", jingle->name);
+        zox_tst_check(jingle_seconds(t) < 4, "[%s] lasts [%.1fs]", jingle->name, jingle_seconds(t));
+        // the lift: its first notes climb
+        zox_tst_check(jingle->notes[1].note > jingle->notes[0].note, "[%s] doesn't rise", jingle->name);
+        // the landing: a chord, 3 or more notes starting together
+        int chord = 0;
+        for (int i = 0; i < jingle->count; i++) {
+            int together = 0;
+            for (int j = 0; j < jingle->count; j++) {
+                together += fabsf(jingle->notes[j].start - jingle->notes[i].start) < 0.06f;
+            }
+            chord = together > chord ? together : chord;
+        }
+        zox_tst_check(chord >= 3, "[%s] doesn't land on a chord (most together [%i])", jingle->name, chord);
+    }
+    // listen
+    const uint length = (uint) (jingle_end * 4.5f * sound_sample_rate);
+    float* mix = calloc(length, sizeof(float));
+    uint at = 0;
+    for (int t = 0; t < jingle_end; t++) {
+        at = zox_tst_render_jingle(t, 0.5f, mix, at, length) + sound_sample_rate / 2;
+    }
+    zox_tst_write_wav("../tst/jingles.wav", mix, at < length ? at : length);
+    free(mix);
+}
+
 void zox_tsts_sounds() {
+    zox_tst_add("jingles", zox_tst_jingles_ready, zox_tst_jingles_check, 30);
+    zox_tst_set_setup("jingles", NULL, 1);
     zox_tst_add("sound_mixer", zox_tst_sound_mixer_ready, zox_tst_sound_mixer_check, 30);
     zox_tst_set_setup("sound_mixer", NULL, 1);
     zox_tst_add("sound_formats", zox_tst_sound_formats_ready, zox_tst_sound_formats_check, 30);

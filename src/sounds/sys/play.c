@@ -7,6 +7,7 @@ zox_sys2(SoundPlaySystem) {
     zox_sys_in(TriggerSound);
     zox_sys_in(SoundData);
     zox_sys_in(SoundPosition);  // optional
+    zox_sys_in(SoundDelay);     // optional
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(TriggerSound, trigger);
         zox_sys_i(SoundData, data);
@@ -17,7 +18,8 @@ zox_sys2(SoundPlaySystem) {
             zox_loge("Invalid SoundData, triggered.");
             continue;
         }
-        zox_mixer_play(data->value, data->length, SoundPosition_ ? &SoundPosition_[i].value : NULL);
+        zox_mixer_play_delayed(data->value, data->length, SoundPosition_ ? &SoundPosition_[i].value : NULL,
+            SoundDelay_ ? SoundDelay_[i].value : 0);
     }
 } zox_sys_end(SoundPlaySystem);
 

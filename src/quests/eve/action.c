@@ -42,6 +42,7 @@ void zox_event_give_quest(iter* it) {
             // the newest quest is tracked
             track_quest(world, quest_taker, user_quest);
             particles_color = (color) { 155, 155, 155, 88 };
+            spawn_jingle(world, jingle_quest_taken);
             if (zox_valid(marker)) {
                 // Link Marker of NPC to player characters quest
                 zox_link(world, user_quest, MarkerLink, marker);
@@ -64,6 +65,7 @@ void zox_event_give_quest(iter* it) {
             entity user_quest = get_user_quest(world, quest_taker, quest);
             zox_add(user_quest, QuestHandedin);
             particles_color = (color) { 255, 220, 0, 88 };
+            spawn_jingle(world, jingle_quest_handed_in);
             if (zox_valid(marker)) {
                 zox_setv(marker, DestroyInTime, 3);
             }
