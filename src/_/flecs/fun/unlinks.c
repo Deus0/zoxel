@@ -96,7 +96,7 @@ void zox_on_unlink_internal(
 //  - multi threaded, it runs on every worker (no query terms), only the first stage's runs the callbacks
 //  - through its stage (zox_sys_world), so the callbacks' changes (deleting an npc's tree) are deferred
 void unlink_system(iter* it) {
-    zox_sys_on_begin();
+    // zox_sys_on_begin();
     zox_sys_world();
     if (!zox_unlinks_count || ecs_stage_get_id(world) != 0) {
         return;
@@ -116,7 +116,7 @@ void unlink_system(iter* it) {
         events[i].callback(world, events[i].e, target);
     }
     free(events);
-    zox_sys_on_end();
+    // zox_sys_on_end();
 } zoxd_system(unlink_system);
 
 void zox_unlinks_initialize(ecs* world) {

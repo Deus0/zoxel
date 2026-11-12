@@ -130,9 +130,9 @@ byte zox_tst_tooltips_ready(ecs* world) {
         // resting on a button
         const entity button = zox_tst_tooltips_buttons[zox_tst_tooltips_rest];
         zox_geter(button, TooltipText, expected);
-        zox_geter(tooltip, TextData, text);
+        const TextData* text = zox_get(tooltip, TextData);
         const entity linked = zox_get_link(world, tooltip, TooltipLink);
-        const byte has_text = is_zext(text, expected->value);
+        const byte has_text = is_zext((TextData*) text, expected->value);
         const byte hidden = zox_getv(tooltip, RenderDisabled);
         const int glyphs = zox_get_children_count_by_id(world, tooltip, zox_id(Glyph));
         const int expected_glyphs = calculate_total_zigels(text->value, text->length);

@@ -1,5 +1,7 @@
 // Timing Systems
 
+extern double get_time_ms();
+
 #define zoxd_system(T) \
     ECS_SYSTEM_DECLARE(T)
 
