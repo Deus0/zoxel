@@ -241,6 +241,7 @@ The loop:
 - [Tests](tests.md): writing tests, patterns, every test by area
 - [Systems](systems.md): the phases in a frame, kinds of systems, budgets, profiling
 - [Thread Safety](thread_safety.md): workers, merges (sync points), octree phases and locks, `tst pipeline_syncs`
+- [Flecs Patches](flecs_patches.md): our fixes to flecs (bsh/flecs_fix.sh), why, repros, for upstream PRs
 - [Spawning](spawning.md): how entities are made, what it costs, keeping it cheap
 - [Game Design](gdd.md): the blend, the pillars, what's playable and planned
 - [Commands](commands.md): every command line flag for the game binary

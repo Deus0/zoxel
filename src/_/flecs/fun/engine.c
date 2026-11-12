@@ -5,6 +5,8 @@ void update_ecs_web() {
 #endif
 
 
+#include "sampler.c"
+
 void engine_end() {
     running = 0;
 #ifdef zox_web
@@ -44,9 +46,11 @@ void main_loop(ecs *world) {
 #else
     signal(SIGINT, handle_terminal_close);     // Handles closing from control + c
     signal(SIGSEGV, handle_segfault);
+    zox_sample_start();
     while (running) {
         update_ecs(world);
     }
+    zox_sample_write();
 #endif
 }
 

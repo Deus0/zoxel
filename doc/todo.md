@@ -27,6 +27,9 @@
 	- slowest frame left (release, gpu): ~21ms at game start, merges and observers 13ms
 	- lod meshes as non fragmenting children stalled terrain generation (perf_stream), still ChildOf, find why
 	- move other heavy systems from process counts to zox_sys_budget
+-x Flying spikes (78-164ms, tst perf_fly): deleting an entity walked all 14k non fragmenting records (flecs patch,
+  doc/flecs_patches.md), flying is 20-22ms worst now, even with --maxnpcs
+	- next: the remaining ~12ms merges, and npc spawning (perf_fly --maxnpcs --profile)
 - Lag spikes (up to 96ms): sound generation, a whole sound in one frame when it spawns
 	- measured (debug): a 1.3s choir note 290-670ms, a 2.8s cello note 60-100ms, choir 330ms per second of sound
 	- music pads and jingles play choir and cello notes, the spikes
