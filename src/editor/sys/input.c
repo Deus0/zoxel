@@ -1,7 +1,7 @@
 // Editor keys (x: profiler, c: debug label), the other tools are toggled with key down hooks
 // TODO: move these to add_hook_key_down too
 
-void EditorInputSystem(iter* it) {
+void editor_input_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
@@ -24,4 +24,4 @@ void EditorInputSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(EditorInputSystem);
+} zoxd_system(editor_input_system);

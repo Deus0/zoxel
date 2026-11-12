@@ -1,4 +1,4 @@
-void AuraParticlesSystem(iter* it) {
+void aura_particles_system(iter* it) {
     zox_sys_on_begin();
     byte aura_spawn_rate = 16;
     zox_sys_world();
@@ -39,4 +39,4 @@ void AuraParticlesSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(AuraParticlesSystem);
+} zoxd_system(aura_particles_system);

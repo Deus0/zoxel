@@ -4,6 +4,7 @@
 
 // NOTE:
 void xr_frame_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     /// This is the basic flow
     /*if (!rendering || !session_running) {
@@ -49,4 +50,5 @@ void xr_frame_system(iter* it) {
         eye_right_rotation,
         eye_fov_left,
         eye_fov_right);
+    zox_sys_on_end();
 } zoxd_system(xr_frame_system);

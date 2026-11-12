@@ -1,5 +1,5 @@
 // NOTE: Repositions list elements (in ChildIndex order) when ListPositionDirty is active
-void ListSystem(iter* it) {
+void list_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -55,4 +55,4 @@ void ListSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ListSystem);
+} zoxd_system(list_system);

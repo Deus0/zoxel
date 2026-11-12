@@ -1,4 +1,4 @@
-void Line3DRenderSystem(iter* it) {
+void line3d_render_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -32,4 +32,4 @@ void Line3DRenderSystem(iter* it) {
     zox_disable_material();
     zox_gpu_disable_blend();
     zox_sys_on_end();
-} zoxd_system(Line3DRenderSystem);
+} zoxd_system(line3d_render_system);

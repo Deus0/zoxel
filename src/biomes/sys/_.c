@@ -6,7 +6,7 @@
 
 void zox_systems_biomes(ecs *world) {
     zox_system(
-        BiomeBlocksDirtySystem,
+        biome_blocks_dirty_system,
         zoxp_update,
         [in] core.Generate,
         [none] biomes.Biome
@@ -14,7 +14,7 @@ void zox_systems_biomes(ecs *world) {
     // Move to Biomes
     // NOTE: Generates biome map before height maps
     zox_system(
-        BiomeMapSystem,
+        biome_map_system,
         zoxp_update,
         [in] tunks.TunkLod,
         [in] tunks.TunkPosition,
@@ -23,14 +23,14 @@ void zox_systems_biomes(ecs *world) {
         [none] tunks.Tunk
     );
     zox_system(
-        BiomeMapAvgSystem,
+        biome_map_avg_system,
         zoxp_update,
         [in] tunks.GenerateTunk,
         [in] tunks.BiomeMap,
         [none] tunks.Tunk
     );
     zox_system(
-        BiomeLinkSystem,
+        biome_link_system,
         zoxp_update,
         [in] streaming.StreamDirty,
         [in] streaming.StreamPosition,

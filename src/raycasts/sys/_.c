@@ -3,13 +3,13 @@
 
 void zox_systems_raycasts(ecs* world) {
     zox_system(
-        CameraRaySystem,
+        camera_ray_system,
         zoxp_update,
         [out] raycasts.RaycastOrigin,
         [out] raycasts.RaycastNormal
     );
     zox_system_1(
-        RayDebugSystem,
+        ray_debug_system,
         zoxp_spawn,
         [in] raycasts.RaycastOrigin,
         [in] raycasts.RaycastNormal

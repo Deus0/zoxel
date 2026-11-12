@@ -96,7 +96,7 @@ static inline void debug_octree_compare(
 }
 
 // NOTE: This compares voxel nodes to make sure it only renders cubes for air blocks
-void LightNodeDebugSystem(iter* it) {
+void light_node_debug_system(iter* it) {
     zox_sys_on_begin();
     /*if (!zox_debug_lights) {
         return;
@@ -133,4 +133,4 @@ void LightNodeDebugSystem(iter* it) {
         }*/
     }
     zox_sys_on_end();
-} zoxd_system(LightNodeDebugSystem);
+} zoxd_system(light_node_debug_system);

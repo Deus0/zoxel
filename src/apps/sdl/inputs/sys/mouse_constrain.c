@@ -1,4 +1,4 @@
-void MouseConstrainSystem(iter* it) {
+void mouse_constrain_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     if (disable_mouse_lock || background || zox_dbg_touch_with_mouse) {
@@ -49,4 +49,4 @@ void MouseConstrainSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(MouseConstrainSystem);
+} zoxd_system(mouse_constrain_system);

@@ -1,4 +1,4 @@
-/*void InsideBlockSoundSystem(iter* it) {
+/*void inside_block_sound_system(iter* it) {
     zox_sys_on_begin();
     double spawn_rate = 0.2;
     zox_sys_world();
@@ -6,7 +6,7 @@
     // cache voxels and colliders for speed
     const BlockLinks* blocks = get_first_terrain_voxels(it);
     if (!blocks) {
-        zox_loge("InsideBlockSoundSystem: No BlockLinks");
+        zox_loge("inside_block_sound_system: No BlockLinks");
         return;
     }
     entity sounds[blocks->length];
@@ -52,4 +52,4 @@
         // zox_log("- [%s] inside block [%i] sound [%i]", zox_get_name(e), inside->value, sound);
     }
     zox_sys_on_end();
-} zoxd_system(InsideBlockSoundSystem);*/
+} zoxd_system(inside_block_sound_system);*/

@@ -1,4 +1,4 @@
-void ZeviceButtonEnableSystem(iter* it) {
+void zevice_button_enable_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -12,9 +12,9 @@ void ZeviceButtonEnableSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ZeviceButtonEnableSystem);
+} zoxd_system(zevice_button_enable_system);
 
-void ZevicePointerEnableSystem(iter* it) {
+void zevice_pointer_enable_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -28,9 +28,9 @@ void ZevicePointerEnableSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ZevicePointerEnableSystem);
+} zoxd_system(zevice_pointer_enable_system);
 
-void ZeviceStickEnableSystem(iter* it) {
+void zevice_stick_enable_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -44,4 +44,4 @@ void ZeviceStickEnableSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ZeviceStickEnableSystem);
+} zoxd_system(zevice_stick_enable_system);

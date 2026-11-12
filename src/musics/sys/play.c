@@ -37,7 +37,7 @@ static inline double get_music_length(ecs* world, entity music, const ordered_ch
 // Plays each music's notes as its playhead passes their starts, any number at once (chords, overlaps)
 //  - MusicTime is the playhead (seconds), MusicNote the next note, notes are in order of start
 //  - after its length it loops back to the start
-void MusicPlaySystem(iter* it) {
+void music_play_system(iter* it) {
     zox_sys_on_begin();
     if (nomusic || nosounds) {
         return;
@@ -66,7 +66,7 @@ void MusicPlaySystem(iter* it) {
         if (length <= 0) {
             continue;
         }
-        // crossfades scale it (MusicFadeSystem), silent music still moves on
+        // crossfades scale it (music_fade_system), silent music still moves on
         const float fade = zox_has(e, MusicVolume) ? zox_getv(e, MusicVolume) : 1;
         const byte audible = volume_music > 0 && fade > 0;
         playhead->value += delta_time * global_music_speed;
@@ -90,10 +90,10 @@ void MusicPlaySystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(MusicPlaySystem);
+} zoxd_system(music_play_system);
 
 // Eases each music's volume to its target, a faded out music stops playing
-void MusicFadeSystem(iter* it) {
+void music_fade_system(iter* it) {
     zox_sys_on_begin();
     init_delta_time();
     zox_sys_begin();
@@ -118,4 +118,4 @@ void MusicFadeSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(MusicFadeSystem);
+} zoxd_system(music_fade_system);

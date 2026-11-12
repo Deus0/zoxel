@@ -1,4 +1,4 @@
-/*void DeactivateDelaySystem(iter* it) {
+/*void deactivate_delay_system(iter* it) {
     zox_sys_on_begin();
     //byte dbg_log = 0;
     zox_sys_begin();
@@ -23,5 +23,5 @@
         }
     }
     zox_sys_on_end();
-} zoxd_system(DeactivateDelaySystem);
+} zoxd_system(deactivate_delay_system);
 */

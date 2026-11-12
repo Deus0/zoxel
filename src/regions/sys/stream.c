@@ -1,5 +1,5 @@
 // NOTE: SPawn in regions
-/*void RegionSpawnSystem(iter* it) {
+/*void region_spawn_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     byte distance = terrain_lod_far;
@@ -54,4 +54,4 @@
         zox_sys_query_end();
     }
     zox_sys_on_end();
-} zoxd_system(RegionSpawnSystem);*/
+} zoxd_system(region_spawn_system);*/

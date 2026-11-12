@@ -1,5 +1,5 @@
 // Links a npc to a dialogue!
-void CharacterDialogueSystem(iter* it) {
+void character_dialogue_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     uint capacity = 256;
@@ -55,4 +55,4 @@ void CharacterDialogueSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(CharacterDialogueSystem);
+} zoxd_system(character_dialogue_system);

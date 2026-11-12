@@ -1,5 +1,5 @@
 // a simple lerp animation system
-void LerpFloatSystem(iter* it) {
+void lerp_float_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -37,4 +37,4 @@ void LerpFloatSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(LerpFloatSystem);
+} zoxd_system(lerp_float_system);

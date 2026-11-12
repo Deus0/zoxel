@@ -1,4 +1,4 @@
-void Tunk2DeathSystem(iter* it) {
+void tunk2_death_system(iter* it) {
     zox_sys_on_begin();
     return;
     zox_sys_world();
@@ -54,4 +54,4 @@ void Tunk2DeathSystem(iter* it) {
         // zox_log("Deleted Tunk2 [%ix%i]", position->value.x, position->value.y);
     }
     zox_sys_on_end();
-} zoxd_system(Tunk2DeathSystem);
+} zoxd_system(tunk2_death_system);

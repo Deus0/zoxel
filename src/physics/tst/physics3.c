@@ -16,7 +16,7 @@
 // tst: physics3_rotation, 3D spin (alpha3, Omega3D, Dissipation3, Rolling3D)
 //  - Omega3D is in the body's frame: rotation = rotation * delta
 //  - exact steps, so spin up and damped spin match the analytic angle at any frame rate
-//  - spin and damped have no Alpha3D (Omega3System / Omega3DampedSystem), the rest do (spin3)
+//  - spin and damped have no Alpha3D (omega3_system / omega3_damped_system), the rest do (spin3)
 //  - bodies: spin about y, a tilted body spinning about (1,2,3), spin up with Alpha3D,
 //      Frictioned spin dying off as w0 e^(-rate t), a fast tumble staying a unit quaternion,
 //      a tiny spin (below the system's threshold) not moving, and two Rolling3D bodies
@@ -44,7 +44,7 @@ typedef struct {
     byte initialize;
     byte rolling;
     byte no_acceleration;   // no Acceleration3D, moves in velocity3_system
-    byte no_alpha;          // no Alpha3D, spins in Omega3System / Omega3DampedSystem
+    byte no_alpha;          // no Alpha3D, spins in omega3_system / omega3_damped_system
 } zox_tst_body3;
 
 static inline zox_tst_body3 zox_tst_body3_new() {

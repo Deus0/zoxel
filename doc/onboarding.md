@@ -118,7 +118,7 @@ Systems are registered in a module's `sys/_.c`:
 
 ```c
 zox_system(
-    CharactersCanSpawnSystem,       // the system
+    characters_can_spawn_system,       // the system
     zoxp_update,                    // the pipeline phase it runs in
     [in] rendering.RenderDepth,     // read only
     [in] rendering.RenderDistance,
@@ -131,7 +131,7 @@ zox_system(
 And the system reads its fields **in the same order** as they were declared:
 
 ```c
-void CharactersCanSpawnSystem(iter* it) {
+void characters_can_spawn_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -148,7 +148,7 @@ void CharactersCanSpawnSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(CharactersCanSpawnSystem);
+} zoxd_system(characters_can_spawn_system);
 ```
 
 Newer systems are written as plain functions, `void npc_spawn_system(iter* it) { ... } zoxd_system(npc_spawn_system);`,

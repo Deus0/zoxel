@@ -1,5 +1,5 @@
 // Sets the model size in the nodegraph
-void ModelSizeNodeSystem(iter* it) {
+void model_size_node_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     ushort inner_seed_shift = 39393;
@@ -68,4 +68,4 @@ void ModelSizeNodeSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ModelSizeNodeSystem);
+} zoxd_system(model_size_node_system);

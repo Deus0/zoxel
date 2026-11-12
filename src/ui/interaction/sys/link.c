@@ -1,5 +1,5 @@
 // active links
-void ElementActiveLinkSystem(iter* it) {
+void element_active_link_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -29,4 +29,4 @@ void ElementActiveLinkSystem(iter* it) {
         zox_set_link(world, parent, ActiveLink, e);
     }
     zox_sys_on_end();
-} zoxd_system(ElementActiveLinkSystem);
+} zoxd_system(element_active_link_system);

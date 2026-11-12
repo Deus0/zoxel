@@ -1,5 +1,6 @@
 // NOTE: NO need to time as it runs systems inside it
 void camera_render3_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     if (!rendering) {
         return;
@@ -84,4 +85,5 @@ void camera_render3_system(iter* it) {
             zox_gpu_reset_fbo();
         }
     }
+    zox_sys_on_end();
 } zoxd_system(camera_render3_system);

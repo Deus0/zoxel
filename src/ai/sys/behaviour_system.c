@@ -1,4 +1,4 @@
-void BehaviourSystem(iter* it) {
+void behaviour_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -47,4 +47,4 @@ void BehaviourSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(BehaviourSystem);
+} zoxd_system(behaviour_system);

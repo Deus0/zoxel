@@ -5,14 +5,14 @@
 
 void zox_systems_lines3(ecs* world) {
     zox_render3_system(2,
-        Line3DRenderSystem,
+        line3d_render_system,
         [in] lines3.LineData3D,
         [in] lines.LineThickness,
         [in] colorz.Color,
         [none] lines3.Line3D
     );
     zox_render3_system(2,
-        QuadLineRenderSystem,
+        quad_line_render_system,
         [in] lines.LineThickness,
         [in] colorz.Color,
         [in] transforms3.Position3D,
@@ -22,7 +22,7 @@ void zox_systems_lines3(ecs* world) {
     );
     // todo: make overlay layer in render stack
     zox_render3_system(2,
-        CubeLineRenderSystem,
+        cube_line_render_system,
         [in] lines3.DebugCubeLines,
         [in] lines.LineThickness,
         [in] colorz.Color,
@@ -31,9 +31,9 @@ void zox_systems_lines3(ecs* world) {
         [in] transforms3.Bounds3D,
         [none] CubeLines
     );
-    add_system_process_counter(world, zox_id(CubeLineRenderSystem));
+    add_system_process_counter(world, zox_id(cube_line_render_system));
     zox_system(
-        RenderDepthColorSystem,
+        render_depth_color_system,
         zoxp_update,
         [in] DebugCubeLines,
         [in] rendering.RenderDepth,

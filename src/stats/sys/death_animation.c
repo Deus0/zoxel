@@ -1,4 +1,4 @@
-void DeathAnimationSystem(iter* it) {
+void death_animation_system(iter* it) {
     zox_sys_on_begin();
     // zox_sys_world();
     zox_sys_begin();
@@ -14,4 +14,4 @@ void DeathAnimationSystem(iter* it) {
         start->value = zox_current_time;
     }
     zox_sys_on_end();
-} zoxd_system(DeathAnimationSystem);
+} zoxd_system(death_animation_system);

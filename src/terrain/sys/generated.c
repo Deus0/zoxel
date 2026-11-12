@@ -1,6 +1,6 @@
 // NOTE: Tell the light systems to update when its all done
 
-void SunnyChunkGeneratedSystem(iter* it) {
+void sunny_chunk_generated_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -21,10 +21,10 @@ void SunnyChunkGeneratedSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(SunnyChunkGeneratedSystem);
+} zoxd_system(sunny_chunk_generated_system);
 
 // NOTE Our chunk generation ends here
-void ChunkGeneratedSystem(iter* it) {
+void chunk_generated_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -39,4 +39,4 @@ void ChunkGeneratedSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ChunkGeneratedSystem);
+} zoxd_system(chunk_generated_system);

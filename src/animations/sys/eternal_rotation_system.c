@@ -1,4 +1,4 @@
-void EternalRotationSystem(iter* it) {
+void eternal_rotation_system(iter* it) {
     zox_sys_on_begin();
     init_delta_time();
     zox_sys_begin();
@@ -16,4 +16,4 @@ void EternalRotationSystem(iter* it) {
         // zox_log("   - eternally rotating: %s\n", zox_get_name(it->entities[i]))
     }
     zox_sys_on_end();
-} zoxd_system(EternalRotationSystem);
+} zoxd_system(eternal_rotation_system);

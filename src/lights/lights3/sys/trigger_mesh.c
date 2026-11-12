@@ -1,5 +1,5 @@
 // TODO: There is no delay so it might get skipped
-/*void ChunkMeshColorsTriggerSystem(iter* it) {
+/*void chunk_mesh_colors_trigger_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -16,4 +16,4 @@
         //}
     }
     zox_sys_on_end();
-} zoxd_system(ChunkMeshColorsTriggerSystem);*/
+} zoxd_system(chunk_mesh_colors_trigger_system);*/

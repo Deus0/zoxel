@@ -1,4 +1,4 @@
-/*void Character3TypeDebugSystem(iter* it) {
+/*void character3_type_debug_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(DebugCubeLines);
@@ -26,5 +26,5 @@
         dcolor->value = color_rgb_to_color(output);
     }
     zox_sys_on_end();
-} zoxd_system(Character3TypeDebugSystem);
+} zoxd_system(character3_type_debug_system);
 */

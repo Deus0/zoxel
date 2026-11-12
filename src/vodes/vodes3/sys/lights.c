@@ -1,6 +1,7 @@
 // Relights block voxes (minivoxes) when a chunk's lights change
 //  - its neighbors too, block voxes on their edge take light from this chunk
 void block_vox_lights_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LightNodeDirty);
@@ -17,4 +18,5 @@ void block_vox_lights_system(iter* it) {
             relight_block_voxes(world, neighbors->value[j]);
         }
     }
+    zox_sys_on_end();
 } zoxd_system(block_vox_lights_system);

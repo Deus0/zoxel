@@ -68,7 +68,7 @@ Everything is in `zoxp_physics`, in this order:
 | `Acceleration3D` | `acceleration3_system` | |
 | `Acceleration3D`, `Frictioned`, `Grounded` | `friction3_system` (drag: ground 6, air 1) | |
 | `Frictioned` without `Grounded` | `acceleration3_loose_system` (no drag) | |
-| `Omega3D` only | | `Omega3System` (`Omega3DampedSystem` if `Frictioned`) |
+| `Omega3D` only | | `omega3_system` (`omega3_damped_system` if `Frictioned`) |
 | `Omega3D` and `Alpha3D` | | `spin3_system` (`spin3_damped_system` if `Frictioned`) |
 
 ## Making things move
@@ -115,7 +115,7 @@ not `v_end * dt`, so the collision corrects for that (exact under drag alone). F
   the wrong start.
 - **Physics skips frames over `zox_physics_max_delta_time` (0.2s)**, but `max_zox_delta_time` already clamps
   dt to 0.1s, so it only happens with a `zox_delta_time_override` (see `src/physics/dbg/big_frame.c`).
-- **Forces added during `zoxp_physics` by a later module land next frame**, i.e. `JumpForceSystem`. Add forces
+- **Forces added during `zoxp_physics` by a later module land next frame**, i.e. `jump_force_system`. Add forces
   before `zoxp_physics` (`zoxp_update`) to have them this frame.
 - **Adding or removing `Acceleration3D`, `Alpha3D`, `Frictioned` or `Grounded` changes which system moves a
   body** (see the table). If you write a new movement system, exclude the others' bodies (`[none] !...`)
@@ -165,5 +165,5 @@ khadas board: about 150ns a 2D body a frame, 470ns a 3D body (2026-11-12).
 
 - Rolling is exact at constant speed. A rolling body slowing under friction slips a little within a frame.
 - Spin about a changing axis (alpha not along omega) is very close, not exact.
-- Bodies against each other: only sphere overlap events (`SphereCollideSystem`, O(n²)), no response.
+- Bodies against each other: only sphere overlap events (`sphere_collide_system`, O(n²)), no response.
 - Tumbling: collisions never make spin, so a cube can't tip, rock or roll over its edges (in doc/todo.md, Physics).

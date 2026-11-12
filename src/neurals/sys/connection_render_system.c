@@ -1,5 +1,5 @@
 //! Adds force to the velocity per frame.
-void ConnectionRenderSystem(iter* it) {
+void connection_render_system(iter* it) {
     zox_sys_on_begin();
     if (zox_current_time < 0.1) {
         return;
@@ -55,4 +55,4 @@ void ConnectionRenderSystem(iter* it) {
         // zox_log(" + transfer->value [%f] at pos [%f]\n", transfer->value, signal_position.x)
     }
     zox_sys_on_end();
-} zoxd_system(ConnectionRenderSystem);
+} zoxd_system(connection_render_system);

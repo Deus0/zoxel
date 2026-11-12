@@ -1,4 +1,4 @@
-void QolShortcutsSystem(iter* it) {
+void qol_shortcuts_system(iter* it) {
     zox_sys_on_begin();
     byte toggle_fullscreen = 0;
     byte toggle_maximized = 0;
@@ -27,4 +27,4 @@ void QolShortcutsSystem(iter* it) {
         zox_toggle_maximized(world);
     }
     zox_sys_on_end();
-} zoxd_system(QolShortcutsSystem);
+} zoxd_system(qol_shortcuts_system);

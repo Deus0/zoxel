@@ -1,5 +1,5 @@
 // todo: fix this, EntityTarget moved to zevices
-void ElementNavigationSystem(iter* it) {
+void element_navigation_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     init_delta_time();
@@ -195,4 +195,4 @@ void ElementNavigationSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ElementNavigationSystem);
+} zoxd_system(element_navigation_system);

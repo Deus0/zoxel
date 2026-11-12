@@ -1,4 +1,4 @@
-/*void AnimateNoiseSystem(iter *it) {
+/*void AnimateNoiseSystem(iter* it) {
     return;
     init_delta_time()
     AnimateTexture *animateTextures = ecs_field(it, AnimateTexture, 1);

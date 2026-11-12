@@ -14,7 +14,7 @@
 // Note: Updates on VoxelNode has to be done in PostLoad, away from use of Voxels, due to the cleaning step
 void zox_systems_terrain(ecs *world) {
     zox_system(
-        ChunkLinkSystem,
+        chunk_link_system,
         zoxp_update,
         [in] transforms3.Position3D,
         [out] chunks3.ChunkPosition,
@@ -22,7 +22,7 @@ void zox_systems_terrain(ecs *world) {
     );
     // Starts Building
     zox_system(
-        ChunkLodSystem,
+        chunk_lod_system,
         zoxp_update,
         [in] rendering.RenderDepth,
         [out] chunks3.ChunkLodDirty,
@@ -32,7 +32,7 @@ void zox_systems_terrain(ecs *world) {
     );
     // Lighting
     zox_system(
-        SunnyChunkGeneratedSystem,
+        sunny_chunk_generated_system,
         zoxp_update,
         [out] chunks.GenerateChunk,
         [none] terrains.TerrainChunk,
@@ -40,7 +40,7 @@ void zox_systems_terrain(ecs *world) {
         [none] !lights.GenerateSunlight
     );
     zox_system(
-        ChunkGeneratedSystem,
+        chunk_generated_system,
         zoxp_update,
         [out] chunks.GenerateChunk,
         [none] terrains.TerrainChunk,
@@ -78,7 +78,7 @@ void zox_systems_terrain(ecs *world) {
     // Debug Terrains
 #ifdef zox_debug_chunk_bounds
     zox_system_1(
-        ChunkBoundsDrawSystem,
+        chunk_bounds_draw_system,
         zoxp_spawn,
         [in] transforms3.Position3D,
         [in] transforms3.Bounds3D,

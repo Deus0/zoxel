@@ -105,7 +105,7 @@ void zox_tst_links_deferred(ecs* world, zox_tst_links_set* set, int round) {
     zox_defer_end();
 }
 
-// TerrainCharactersDespawnSystem: deletes all while iterating the links, then changes the chunk
+// terrain_characters_despawn_system: deletes all while iterating the links, then changes the chunk
 void zox_tst_links_despawn_all(ecs* world, zox_tst_links_set* set, int round) {
     (void) round;
     zox_defer_begin();

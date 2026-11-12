@@ -1,4 +1,4 @@
-void SkillsRealmSpawnSystem(iter* it) {
+void skills_realm_spawn_system(iter* it) {
     zox_sys_on_begin();
     float base_death_aura_damage = 1;
     float base_death_aura_range = 3;
@@ -140,4 +140,4 @@ void SkillsRealmSpawnSystem(iter* it) {
         zox_logv("Realm [skills] [X] spawned.");
     }
     zox_sys_on_end();
-} zoxd_system(SkillsRealmSpawnSystem);
+} zoxd_system(skills_realm_spawn_system);

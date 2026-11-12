@@ -12,7 +12,7 @@ ECS_DTOR(TextureGPULink, ptr, {
     zox_gpu_dispose_texture(ptr->value);
 })
 
-void on_destroyed_TextureGPULink(iter *it) {
+void on_destroyed_TextureGPULink(iter* it) {
     byte dbg_log = 0;
     zox_sys_begin();
     zox_sys_out(TextureGPULink);

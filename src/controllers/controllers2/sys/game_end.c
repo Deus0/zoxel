@@ -1,4 +1,4 @@
-void PlayerGame2EndSystem(iter* it) {
+void player_game2_end_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -22,4 +22,4 @@ void PlayerGame2EndSystem(iter* it) {
         // spawn_main_menu(world, e, game_name);
     }
     zox_sys_on_end();
-} zoxd_system(PlayerGame2EndSystem);
+} zoxd_system(player_game2_end_system);

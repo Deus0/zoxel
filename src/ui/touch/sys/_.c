@@ -2,7 +2,7 @@
 
 void zox_systems_touch(ecs *world) {
     zox_system_1(
-        VirtualJoystickSystem,
+        virtual_joystick_system,
         zoxp_spawn,
         [in] core.EntityTarget,
         [in] inputs.ZevicePointerPosition,

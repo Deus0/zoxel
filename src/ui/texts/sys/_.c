@@ -9,7 +9,7 @@
 void zox_systems_texts(ecs *world) {
     // types TargetText out a character at a time (i.e. dialogue)
     zox_system(
-        AnimateTextSystem,
+        animate_text_system,
         zoxp_update,
         [in] texts.TargetText,
         [in] texts.AnimateTextTimeLimits,
@@ -21,7 +21,7 @@ void zox_systems_texts(ecs *world) {
         [none] texts.Text,
     );
     zox_system(
-        TextParentBackgroundSystem,
+        text_parent_background_system,
         zoxp_update,
         [in] texts.TextData,
         [in] texts.TextFontSize,
@@ -30,7 +30,7 @@ void zox_systems_texts(ecs *world) {
         [none] core.Update,
     );
     zox_system(
-        TextBackgroundSystem,
+        text_background_system,
         zoxp_update,
         [in] texts.TextData,
         [in] texts.TextFontSize,
@@ -40,7 +40,7 @@ void zox_systems_texts(ecs *world) {
         [none] core.Update,
     );
     zox_system_1(
-        GlyphSpawnSystem,
+        glyph_spawn_system,
         zoxp_spawn,
         [in] texts.TextData,
         [in] texts.GlyphPrefab,
@@ -56,14 +56,14 @@ void zox_systems_texts(ecs *world) {
         [none] core.Update,
     );
     zox_system(
-        TextUpdateSystem,
+        text_update_system,
         zoxp_update,
         [in] texts.TextData,
         [none] texts.Text,
         [none] core.Update,
     );
     zox_system(
-        TextsPositionSystem,
+        texts_position_system,
         zoxp_update,
         [in] texts.TextData,
         [in] texts.TextFontSize,

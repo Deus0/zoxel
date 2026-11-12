@@ -9,14 +9,14 @@
 
 void zox_systems_elements2(ecs *world) {
     zox_system(
-        ElementDragSystem,
+        element_drag_system,
         zoxp_update,
         [in] interactions.DraggableState,
         [in] interactions.DraggingDelta,
         // [in] interactions.DraggedLink
     );
     zox_system(
-        ScrollbarSystem,
+        scrollbar_system,
         zoxp_update,
         [in] interactions.DraggableState,
         [in] layouts.LayoutPosition,
@@ -30,7 +30,7 @@ void zox_systems_elements2(ecs *world) {
         [none] elements2.Scrollview,
     );
     zox_system_ctx(
-        ScrollviewWheelSystem,
+        scrollview_wheel_system,
         zoxp_update,
         scrollview_query,
         [in] inputs.ZeviceWheel,
@@ -40,7 +40,7 @@ void zox_systems_elements2(ecs *world) {
     );
     // make elements visible/invisible within list
     zox_system(
-        ListRenderDirtySystem,
+        list_render_dirty_system,
         zoxp_update,
         [in] containers.ListStart,
         [in] containers.ListVisible,
@@ -48,20 +48,20 @@ void zox_systems_elements2(ecs *world) {
     );
     // resize handle when list dirty
     zox_system(
-        ScrollbarHandleSystem,
+        scrollbar_handle_system,
         zoxp_update,
         [in] containers.ListVisible,
         [none] containers.ListUpdate,
     );
     zox_system(
-        ElementbarSystem,
+        elementbar_system,
         zoxp_update,
         [in] layouts.LayoutSize,
         [in] ui.BarLevel,
         [none] Elementbar
     );
     zox_system(
-        SlideEventSystem,
+        slide_event_system,
         zoxp_update,
         [in] interactions.SlideEvent,
         [in] elements2.SlideBounds,
@@ -71,7 +71,7 @@ void zox_systems_elements2(ecs *world) {
     );
     // Main Thread needed due to nature of options
     zox_system_1(
-        ToggleEventSystem,
+        toggle_event_system,
         zoxp_spawn,
         //[in] interactions.ClickState,
         [in] interactions.Clicker,
@@ -82,7 +82,7 @@ void zox_systems_elements2(ecs *world) {
         [none] elements2.Toggle
     );
     /*zox_system(
-        ToggleStateSystem,
+        toggle_state_system,
         zoxp_update,
         [in] elements2.ToggleState,
         [in] elements2.ToggleStateDirty,

@@ -1,4 +1,4 @@
-void NeuronFeedForwardSystem(iter* it) {
+void neuron_feed_forward_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -19,4 +19,4 @@ void NeuronFeedForwardSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(NeuronFeedForwardSystem);
+} zoxd_system(neuron_feed_forward_system);

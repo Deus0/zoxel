@@ -1,5 +1,6 @@
 // NOTE: For now just supports one quest to one marker!
 void marker_spawn_system(iter* it) {
+    zox_sys_on_begin();
     // TODO: Check if has quest to give
     // TODO: Use texture quad instead - simpler
     byte dbg_log = 0;
@@ -47,4 +48,5 @@ void marker_spawn_system(iter* it) {
                 text);
         }
     }
+    zox_sys_on_end();
 } zoxd_system(marker_spawn_system);

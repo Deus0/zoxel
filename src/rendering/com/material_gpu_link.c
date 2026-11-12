@@ -5,7 +5,7 @@ ECS_DTOR(MaterialGPULink, ptr, {
     zox_dispose_material(ptr->value);
 })
 
-void on_destroyed_MaterialGPULink(iter *it) {
+void on_destroyed_MaterialGPULink(iter* it) {
     byte dbg_log = 0;
     zox_sys_begin();
     zox_sys_out(MaterialGPULink);

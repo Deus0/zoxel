@@ -1,7 +1,7 @@
 float zox_jump_power = 6.0f;
 
 // this is having issues now due to new collision detect
-void JumpForceSystem(iter* it) {
+void jump_force_system(iter* it) {
     zox_sys_on_begin();
     init_delta_time();
     zox_sys_begin();
@@ -28,9 +28,9 @@ void JumpForceSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(JumpForceSystem);
+} zoxd_system(jump_force_system);
 
-/*void Jump3VelSystem(iter* it) {
+/*void jump3_vel_system(iter* it) {
     zox_sys_on_begin();
     const float jump_power = zox_jump_power;
     init_delta_time();
@@ -52,7 +52,7 @@ void JumpForceSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(Jump3VelSystem);*/
+} zoxd_system(jump3_vel_system);*/
 
 /*float intended_vel = zox_jump_power;
 float acc_total = (intended_vel - vel->value.y) / delta_time;

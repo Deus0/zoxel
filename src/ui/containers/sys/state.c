@@ -1,23 +1,28 @@
 
 void data_dirty_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_remove(e, DataDirty);
         zox_add(e, DataUpdate);
     }
+    zox_sys_on_end();
 } zoxd_system(data_dirty_system);
 
 void data_update_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_remove(e, DataUpdate);
     }
+    zox_sys_on_end();
 } zoxd_system(data_update_system);
 
 // slot dirty to ui
 void slot_ui_update_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
@@ -41,10 +46,12 @@ void slot_ui_update_system(iter* it) {
             }
         }
     }
+    zox_sys_on_end();
 } zoxd_system(slot_ui_update_system);
 
 // data dirty to ui
 void data_ui_update_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
@@ -53,4 +60,5 @@ void data_ui_update_system(iter* it) {
             zox_add(e, DataDirty);
         }
     }
+    zox_sys_on_end();
 } zoxd_system(data_ui_update_system);

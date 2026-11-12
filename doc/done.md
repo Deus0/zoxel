@@ -39,8 +39,8 @@
 	- tst list_order
 -x When right click on an item ui, split the item quantity in half, the other half in the mouse
 -x When right click empty spot, place a single item, or stack a single item
-	- RightClick event (on press), DataUIRightClickSystem (main thread, it spawns items), tst item_split
--x GameStateSystem log error after exiting game
+	- RightClick event (on press), data_ui_right_click_system (main thread, it spawns items), tst item_split
+-x game_state_system log error after exiting game
 	- the_clean deleted the realm, then it errored every frame, now it reaches none (tst menu_flow)
 -x for our tests, just link to current inspector if its opened
 	- inspect_entity only retargets an open inspector (tst editor)
@@ -72,7 +72,7 @@
         - ChunkMeshToggleSystem [6ms]
         - VodesSpawnSystem [2ms]
     - Lighting
-        - ChunkMeshColorsTriggerSystem [9ms]
+        - chunk_mesh_colors_trigger_system [9ms]
         - SmoothLightsBuildSystem [8ms]
 -x The next system in timing is Camera3RenderSystem [2ms]
 -x Chunk3TexturedRenderSystem (11ms) + ElementRenderSystem (3ms)
@@ -96,7 +96,7 @@
 -x  Remove components when done - ChunkLodDirty
 	-x ChunkMeshToggleSystem
 	-x VodesSpawnSystem
-	-x ChunkMeshSpawnSystem
+	-x chunk_mesh_spawn_system
 -x Glitchy Ass Terrain Meshes
 -x Fix Chunks from mesh updating before their neighbors do
     -x use Ready systems and timers
@@ -167,7 +167,7 @@
     -x RenderDistanceDirty
     -x GenerateChunk
     -x GenerateLights
--x LightFloodSystem [7ms]
+-x light_flood_system [7ms]
 -x ChunkSidesSystem [5ms]
 -x Target: 230fps at the current position
 -x keep testing against old builds
@@ -433,7 +433,7 @@ Fix Crashes: (Infrequent)
         - spawn_prefab_mesh3
         - spawn_prefab_chunk_textured
 -x make a lod update queue
-    -x TunkLodSystem
+    -x tunk_lod_system
         - we can just add in stream system
         - can we get an update from hashmap
         - we will need to override previous entries in lod update queue
@@ -455,7 +455,7 @@ Fix Crashes: (Infrequent)
 -x Fix skybox, make sure fog color blends properly though
 -x Refactor ChunkMesh to use Non fragment parenting
     -x atm creates 4000 tables
--x Optimize CharactersCanSpawnSystem
+-x Optimize characters_can_spawn_system
     x- check only when depth changes
 -x Bug: Fog color not sky color
 -x GizmoLink
@@ -586,7 +586,7 @@ Removing Links
 -x sdl2 linux broken
     -x sdl3 window not working anymore
     + was a libs issue
--x Player3DTriggerSystem:
+-x player3d_trigger_system:
 > The log shows that sometimes doesnt get called, i.e. resets faster
     [13:25:38] Raw Bumper [1]: [1.000000] - button [0]
     [13:25:38] RT Pressed
@@ -600,7 +600,7 @@ Removing Links
     -x when not linked, we can close the tooltip (TooltipCloseSystem)
 -x Noticed gamepad - joining - doesnt work (turning on)
 -x Gamepad click button now broken - clicking selected
-    -x used to be DeviceClickSystem
+    -x used to be device_click_system
     -x target should of been set in zevice though - but i dont think buttons have this component - only pointers
 -x Punch always activates when using touch buttons
 -x Add icons to the Touch uis
@@ -922,7 +922,7 @@ Disabling Lods means:
 -x Move block health to vodes module
 -x Fade out death for block health overlay (instead of instant)
 + Chunks at 15000 gives 10ms ish per chunk system:
-+ Chunk3TexturedRenderSystem, ChunkFrustumSystem, ChunkNeighborLightTriggerSystem, Chunk3NeighborMeshTriggerSystem, ChunkSpawnSystem, ChunkFindNeighborSystem, Chunk3DeathSystem, Characters3SpawnZoneSystem
++ Chunk3TexturedRenderSystem, ChunkFrustumSystem, chunk_neighbor_light_trigger_system, Chunk3NeighborMeshTriggerSystem, ChunkSpawnSystem, ChunkFindNeighborSystem, chunk3_death_system, Characters3SpawnZoneSystem
 + Make sure if chunk isn't doing anything that it sleeps, i.e. just a quick Dirty check, don't do anything else like zox_getv etc
 -x I can make it so FindNeighborSystem works on chunk init, and it also sets neighbors to them as well, this eliminates per frame calls
 -x TunkLinkSystem was taking 3ms... now 0.3ms
@@ -1154,7 +1154,7 @@ Disabling Lods means:
 -x Grass model in between others messes up indexing for block -> uvs for second biome
 	- put individual uvs on each block instead
 	- refactor tilemap uvs onto block dirty system
-	- TilemapGenerationSystem generates here - just add individual uvs here too for quick fix
+	- tilemap_generation_system generates here - just add individual uvs here too for quick fix
 	- Chunk3TexturedBuildSystem - get the block uvs here - entitymap
 -x Sometimes vegetation didn't generate
 -x Fix Chunk Loading
@@ -1196,7 +1196,7 @@ Disabling Lods means:
 -x Continue stuck on the loading screen for some saves
 	- cause: Loading waited for 95% of the near square of chunks, streaming only spawns a circle (int2_distance),
 	  45 of 49 columns, 91.8%, so it never ended (position dependent)
-	- fix: StreamEndSystem counts the near circle (get_stream_near_chunks_count)
+	- fix: stream_end_system counts the near circle (get_stream_near_chunks_count)
 	- test: zox_tst_save=<realm folder> bash bsh/tst.sh continue_game loads a copy of a real save
 -x Onboarding doc for new users (doc/onboarding.md), linked from readme.md
 -x Doc on command line flags for the binary (doc/commands.md), linked from readme.md and onboarding
@@ -1209,5 +1209,5 @@ Disabling Lods means:
 	- Brightness from the brightest of its voxel + 6 sides (minivox voxels stop light, so never get any), light / 255
 	- instanced: model matrices now, the unused bottom row x carries brightness, shaders apply the camera
 	- block_vox_lights_system relights a chunk's (and its neighbors') minivoxes on LightNodeDirty
-	- fixed ChunkColorsTriggerSystem being inverted: a chunk's own light changes didn't recolor its own meshes
+	- fixed chunk_colors_trigger_system being inverted: a chunk's own light changes didn't recolor its own meshes
 	- tests: block_vox_lights (game), block_vox_light_sampling (logic)

@@ -5,7 +5,7 @@
 
 void zox_systems_streaming(ecs* world) {
     zox_system(
-        StreamPositionSystem,
+        stream_position_system,
         zoxp_update,
         [in] transforms3.Position3D,
         [out] streaming.StreamPosition,
@@ -36,7 +36,7 @@ void zox_systems_streaming(ecs* world) {
     // streams
     // main thread
     zox_system_1(
-        StreamEndSystem,
+        stream_end_system,
         zoxp_spawn,
         [in] chunks3.ChunkLinks,
         [in] streaming.TerrainSpawnQueue,
@@ -45,12 +45,12 @@ void zox_systems_streaming(ecs* world) {
     );
     // Settings
     zox_system_1(
-        StreamingSettingsSystem,
+        streaming_settings_system,
         zoxp_spawn,
         [in] settings.LoadSettings
     );
     zox_system(
-        StreamingSettingsDirtySystem,
+        streaming_settings_dirty_system,
         zoxp_update,
         [in] settings.SettingDirty,
         [in] core.ZoxName,

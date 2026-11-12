@@ -1,5 +1,5 @@
 // NOTE: Tells the block textures to generate when the Model Generates!
-void BakeVoxSystem(iter* it) {
+void bake_vox_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -39,4 +39,4 @@ void BakeVoxSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(BakeVoxSystem);
+} zoxd_system(bake_vox_system);

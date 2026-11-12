@@ -8,7 +8,7 @@ extern entity split_item_stack(ecs*, entity);
 extern entity take_one_item(ecs*, entity);
 extern byte add_one_item(ecs*, entity, entity);
 
-// sets an icon's texture to its data's, like DataIconUpdateSystem (the mouse icon isn't DataUI)
+// sets an icon's texture to its data's, like data_icon_update_system (the mouse icon isn't DataUI)
 static inline void set_data_icon_texture(
     ecs* world,
     entity icon,
@@ -33,7 +33,7 @@ static inline void set_mouse_data(
     }
 }
 
-void DataUIRightClickSystem(iter* it) {
+void data_ui_right_click_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -86,4 +86,4 @@ void DataUIRightClickSystem(iter* it) {
         zox_add(e, DataDirty);
     }
     zox_sys_on_end();
-} zoxd_system(DataUIRightClickSystem);
+} zoxd_system(data_ui_right_click_system);

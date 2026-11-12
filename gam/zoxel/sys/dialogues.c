@@ -63,7 +63,7 @@ void spawn_fetch_quest(
     }
 }
 
-void DialogueRealmSpawnSystem(iter* it) {
+void dialogue_realm_spawn_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -195,4 +195,4 @@ void DialogueRealmSpawnSystem(iter* it) {
         zox_logv("Realm [dialogues] [X] spawned.");
     }
     zox_sys_on_end();
-} zoxd_system(DialogueRealmSpawnSystem);
+} zoxd_system(dialogue_realm_spawn_system);

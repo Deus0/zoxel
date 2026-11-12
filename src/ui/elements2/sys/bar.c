@@ -1,4 +1,4 @@
-void ElementbarSystem(iter* it) {
+void elementbar_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -65,7 +65,7 @@ void ElementbarSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ElementbarSystem);
+} zoxd_system(elementbar_system);
 
 
         // we should also set LayoutSize here and dirty for it

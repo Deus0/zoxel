@@ -1,4 +1,4 @@
-void NpcsSettingsSystem(iter* it) {
+void npcs_settings_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -17,9 +17,9 @@ void NpcsSettingsSystem(iter* it) {
 #endif
     }
     zox_sys_on_end();
-} zoxd_system(NpcsSettingsSystem);
+} zoxd_system(npcs_settings_system);
 
-void NpcsSettingsDirtySystem(iter* it) {
+void npcs_settings_dirty_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -48,4 +48,4 @@ void NpcsSettingsDirtySystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(NpcsSettingsDirtySystem);
+} zoxd_system(npcs_settings_dirty_system);

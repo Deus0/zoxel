@@ -1,5 +1,5 @@
 // Keeps the shown inspector rows' component values up to date, every frame
-void InspectorLabelSystem(iter* it) {
+void inspector_label_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -36,4 +36,4 @@ void InspectorLabelSystem(iter* it) {
         free(label);
     }
     zox_sys_on_end();
-} zoxd_system(InspectorLabelSystem);
+} zoxd_system(inspector_label_system);

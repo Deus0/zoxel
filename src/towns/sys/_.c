@@ -5,7 +5,7 @@
 
 void zox_systems_towns(ecs* world) {
     zox_system(
-        TownMapSystem,
+        town_map_system,
         zoxp_update,
         [in] tunks.TunkLod,
         [in] tunks.TunkPosition,
@@ -18,7 +18,7 @@ void zox_systems_towns(ecs* world) {
     );
     // NOTE: Before vegetation atm
     zox_system(
-        TownWallsSystem,
+        town_walls_system,
         zoxp_octree_write,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkPosition,
@@ -27,7 +27,7 @@ void zox_systems_towns(ecs* world) {
         [none] terrains.TerrainChunk
     );
     zox_system_1(
-        RegionTownsSystem,
+        region_towns_system,
         zoxp_spawn,
         [in] core.Seed,
         [in] blocks.BlockPosition2,
@@ -36,7 +36,7 @@ void zox_systems_towns(ecs* world) {
         [none] regions.Region
     );
     zox_system_1(
-        HomesSpawnSystem,
+        homes_spawn_system,
         zoxp_spawn,
         [in] core.Seed,
         [in] blocks.BlockPosition2,

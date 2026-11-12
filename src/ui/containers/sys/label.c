@@ -1,4 +1,4 @@
-/*void DataUILabelSystem(iter* it) {
+/*void data_ui_label_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -25,5 +25,5 @@
         }
     }
     zox_sys_on_end();
-} zoxd_system(DataUILabelSystem);
+} zoxd_system(data_ui_label_system);
 */

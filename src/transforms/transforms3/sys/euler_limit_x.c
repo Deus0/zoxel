@@ -1,4 +1,4 @@
-void EulerLimitXSystem(iter* it) {
+void euler_limit_x_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(EulerLimitX);
@@ -14,4 +14,4 @@ void EulerLimitXSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(EulerLimitXSystem);
+} zoxd_system(euler_limit_x_system);

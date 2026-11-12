@@ -21,7 +21,7 @@ void zox_systems_layouts2(ecs* world) {
     );*/
     // NOTE: Used atm for render texture
     zox_system(
-        AnchorSizeSystem,
+        anchor_size_system,
         zoxp_update,
         [in] layouts.AnchorSize,
         [out] layouts.LayoutSize,
@@ -29,7 +29,7 @@ void zox_systems_layouts2(ecs* world) {
     );
     // For Canvas basically
     zox_system(
-        LayoutSystem,
+        layout_system,
         zoxp_layouts,
         [in] layouts.LayoutSize,
         [none] layouts.Canvas,
@@ -38,7 +38,7 @@ void zox_systems_layouts2(ecs* world) {
     );
     // multi threaded: each canvas3 root writes its own children, zoxp_layouts_sync has trails done first
     zox_system(
-        Layout3System,
+        layout3_system,
         zoxp_layouts,
         [in] layouts.LayoutSize,
         [none] layouts.Canvas3,

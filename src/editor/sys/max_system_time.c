@@ -1,5 +1,5 @@
 // MaxSystemTimeLabel
-void MaxSystemTimeLabelSystem(iter* it) {
+void max_system_time_label_system(iter* it) {
     zox_sys_on_begin();
     // Get the output
     zox_sys_world();
@@ -51,4 +51,4 @@ void MaxSystemTimeLabelSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(MaxSystemTimeLabelSystem);
+} zoxd_system(max_system_time_label_system);

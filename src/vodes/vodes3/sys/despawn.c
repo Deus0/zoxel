@@ -14,7 +14,7 @@ void destroy_vodes(ecs *world, VoxelNode *node) {
 }
 
 // NOTE: Destroys World Blocks when they are out of range
-void VodesDespawnSystem(iter* it) {
+void vodes_despawn_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world()
     zox_sys_begin()
@@ -53,4 +53,4 @@ void VodesDespawnSystem(iter* it) {
         // spawned->value = 0;
     }
     zox_sys_on_end();
-} zoxd_system(VodesDespawnSystem);
+} zoxd_system(vodes_despawn_system);

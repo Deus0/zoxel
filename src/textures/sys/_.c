@@ -12,7 +12,7 @@
 
 void zox_systems_textures(ecs *world) {
     zox_system(
-        ArrowTextureSystem,
+        arrow_texture_system,
         zoxp_update,
         [in] core.Generate,
         [in] rendering.TextureSize,
@@ -23,7 +23,7 @@ void zox_systems_textures(ecs *world) {
         [none] textures.ArrowTexture
     );
     zox_system(
-        PlusTextureSystem,
+        plus_texture_system,
         zoxp_update,
         [in] core.Generate,
         [in] rendering.TextureSize,
@@ -34,14 +34,14 @@ void zox_systems_textures(ecs *world) {
         [none] textures.PlusTexture
     );
     zox_system(
-        MouseTextureSystem,
+        mouse_texture_system,
         zoxp_update,
         [in] inputs.MouseLock,
         [none] inputs.Mouse,
     );
     zox_filter(fill_texture_query, [none] FillTexture, [out] textures.GenerateTexture)
     zox_system_ctx(
-        FillTextureSystem,
+        fill_texture_system,
         zoxp_update,
         fill_texture_query,
         [in] rendering.TextureSize,
@@ -51,7 +51,7 @@ void zox_systems_textures(ecs *world) {
         [none] textures.FillTexture
     );
     zox_system(
-        FrameTextureSystem,
+        frame_texture_system,
         zoxp_update,
         [in] rendering.TextureSize,
         [in] textures.FillColor,
@@ -62,9 +62,9 @@ void zox_systems_textures(ecs *world) {
         [out] textures.TextureData,
         [none] textures.FrameTexture
     );
-    add_system_process_counter(world, zox_id(FrameTextureSystem));
+    add_system_process_counter(world, zox_id(frame_texture_system));
     zox_system(
-        IconTextureSystem,
+        icon_texture_system,
         zoxp_update,
         [in] rendering.TextureSize,
         [in] textures.FillColor,
@@ -76,7 +76,7 @@ void zox_systems_textures(ecs *world) {
         [none] textures.IconTexture
     );
     zox_system(
-        TilemapGenerationSystem,
+        tilemap_generation_system,
         zoxp_update,
         [in] textures.TilemapSize,
         [out] textures.GenerateTexture,
@@ -105,7 +105,7 @@ void zox_systems_textures(ecs *world) {
         [none] !core.Initialize,
     );
     zox_gpu_restore_system(
-        TextureDataRestoreSystem,
+        texture_data_restore_system,
         [none] textures.TextureData,
         [none] textures.Texture
     );

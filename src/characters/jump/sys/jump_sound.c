@@ -1,4 +1,4 @@
-void JumpSoundSystem(iter* it) {
+void jump_sound_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -11,4 +11,4 @@ void JumpSoundSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(JumpSoundSystem);
+} zoxd_system(jump_sound_system);

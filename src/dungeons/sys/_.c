@@ -6,7 +6,7 @@
 void zox_systems_dungeons(ecs* world) {
     // Spawns new blocks
     zox_system_1(
-        DungeonBlockSystem,
+        dungeon_block_system,
         zoxp_spawn, // zoxp_queue_add,
         [in] timing.TimerState,
         [in] DungeonWallType,
@@ -14,7 +14,7 @@ void zox_systems_dungeons(ecs* world) {
     );
     // A region has manyy dungeons
     zox_system_1(
-        DungeonsSpawnSystem,
+        dungeons_spawn_system,
         zoxp_spawn,
         [in] core.Seed,
         [in] blocks.BlockPosition2,
@@ -37,7 +37,7 @@ void zox_systems_dungeons(ecs* world) {
     );
     // NOTE: Before vegetation atm
     zox_system(
-        TownWallsSystem,
+        town_walls_system,
         zoxp_octree_write,
         [in] chunks.NodeDepth,
         [in] chunks3.ChunkPosition,

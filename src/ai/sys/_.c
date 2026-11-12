@@ -20,7 +20,7 @@ byte is_debug_attack = 0;
 
 void zox_systems_npcs(ecs *world) {
     zox_system(
-        BehaviourSystem,
+        behaviour_system,
         zoxp_update,
         [in] combat.CombatState,
         [in] ai.DefaultBehaviour,
@@ -31,13 +31,13 @@ void zox_systems_npcs(ecs *world) {
         [none] ai.Npc
     );
     zox_system_m(
-        ThreatPositionSystem,
+        threat_position_system,
         !is_debug_target,
         [out] ai.ThreatPosition,
         [none] ai.Npc
     );
     zox_system_m(
-        RotateTowardsSystem,
+        rotate_towards_system,
         !is_debug_rotate_towards,
         [in] ai.RotateTowards,
         [in] transforms3.Position3D,
@@ -49,7 +49,7 @@ void zox_systems_npcs(ecs *world) {
         [none] !physics.DisableMovement,
     );
     zox_system_m(
-        MoveForwardSystem,
+        move_forward_system,
         !is_debug_move_forwards,
         [in] ai.MoveForwards,
         [in] transforms3.Position3D,
@@ -63,7 +63,7 @@ void zox_systems_npcs(ecs *world) {
         [none] !physics.DisableMovement,
     );
     zox_system_m(
-        WanderSystem,
+        wander_system,
         !is_debug_wander,
         [in] ai.Behaviour,
         [in] transforms3.Position3D,
@@ -73,7 +73,7 @@ void zox_systems_npcs(ecs *world) {
         [none] !physics.DisableMovement,
     );
     zox_system_m(
-        AttackSystem,
+        attack_system,
         !is_debug_attack,
         [in] ai.Behaviour,
         [in] ai.ThreatPosition,
@@ -82,7 +82,7 @@ void zox_systems_npcs(ecs *world) {
         [none] !physics.DisableMovement,
     );
     zox_system_m(
-        AttackTriggerSystem,
+        attack_trigger_system,
         !is_debug_attack,
         [in] ai.Behaviour,
         [out] actions.ActiveAction,
@@ -92,7 +92,7 @@ void zox_systems_npcs(ecs *world) {
         [none] !physics.DisableMovement,
     );
     zox_system_m(
-        FleeSystem,
+        flee_system,
         !is_debug_flee,
         [in] ai.Behaviour,
         [in] transforms3.Position3D,
@@ -101,21 +101,21 @@ void zox_systems_npcs(ecs *world) {
         [none] ai.Npc,
         [none] !physics.DisableMovement,
     );
-    /*zox_system(StayUprightSystem,
+    /*zox_system(stay_upright_system,
         zoxp_update,
         [in] transforms3.Rotation3D,
         [in] physics3.Omega3D,
         [out] physics3.Alpha3D,
         [none] ai.Npc)*/
     zox_system(
-        RandomJump3DSystem,
+        random_jump3d_system,
         zoxp_physics,
         [in] jumps.CanJump,
         [out] jumps.JumpState,
         [none] ai.Jumper
     );
     zox_system(
-        FollowSystem,
+        follow_system,
         zoxp_update,
         [in] Behaviour,
         [out] ai.TargetPosition,

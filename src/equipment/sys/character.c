@@ -16,7 +16,7 @@ entity get_equip_slot_in_children(ecs *world, entity e, entity id) {
 }
 
 // NOTE: Has to run after body parts spawn for slots attachment
-void CharacterPlayerEquipsSystem(iter* it) {
+void character_player_equips_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -97,4 +97,4 @@ void CharacterPlayerEquipsSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(CharacterPlayerEquipsSystem);
+} zoxd_system(character_player_equips_system);

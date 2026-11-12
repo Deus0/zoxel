@@ -2,7 +2,7 @@
 //  - starts in a game (--autostart), playing with the mouse locked
 //  - a wheel notch switches the character's ActionIndex
 //  - with the mouse unlocked (i.e. free roam, dialogue, an open window), a notch doesn't,
-//      the wheel scrolls ui then instead (see ScrollviewWheelSystem)
+//      the wheel scrolls ui then instead (see scrollview_wheel_system)
 //  - run: bash bsh/tst.sh action_wheel
 #define zox_tst_wheel_hold_frames 4
 int zox_tst_wheel_stage = 0;

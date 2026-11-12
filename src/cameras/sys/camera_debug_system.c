@@ -30,7 +30,7 @@ void visualize_frustum(const float4x4 mat, const plane *planes) {
     }
 }*/
 
-void CameraDebugSystem(iter* it) {
+void camera_debug_system(iter* it) {
     zox_sys_on_begin();
     // const float line_length = 1024;
     double spawn_life_time = 1.05;
@@ -75,7 +75,7 @@ void CameraDebugSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(CameraDebugSystem);
+} zoxd_system(camera_debug_system);
 
 // spawn_line3c(world, float3_add(test_bounds.center, (float3) { 0, -line_length, 0 }), float3_add(test_bounds.center, (float3) { 0, line_length, 0 }), 0.5f, 0.03, cube_color);
 // spawn_line3c(world, float3_add(test_bounds.center, (float3) { -line_length, 0, 0 }), float3_add(test_bounds.center, (float3) { line_length, 0, 0 }), 0.5f, 0.03, cube_color);

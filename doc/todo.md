@@ -21,7 +21,7 @@
 		  ((Identifier,Name) 2.3k, flecs indexes them), state tags as events could be state components
 	- delete empty tables now and then (15k of 17k tables are empty after streaming)
 	-x chunk_sides_system has a time budget per worker per frame (it built whole chunks, 18ms real time)
-	-x VoxLodMeshBuildSystem: a 275ms frame (216 lod meshes at once, ~340ms cpu over 16 workers), now a time
+	-x vox_lod_mesh_build_system: a 275ms frame (216 lod meshes at once, ~340ms cpu over 16 workers), now a time
 	  budget per worker, vox meshes from a pyramid of node grids, no root lookups (depth 5 model 29ms -> 4ms,
 	  depth 7 player skeleton 13.5ms -> 2.9ms: air leaves skipped, split dug into all 2M cells), tst vox_mesh_grid
 	- slowest frame left (release, gpu): ~21ms at game start, merges and observers 13ms
@@ -69,9 +69,9 @@
 - Musicians' mistakes: now and then a wrong note (a neighbour), quickly corrected, a little out of time
 	- in perform_song, tst music_compose allows them (it checks every note is in key)
 	- noise and detuning added to a note after it's made, per instrument entity
-- Opt: SoundGenerateSystem by using preset sound data + mods
+- Opt: sound_generate_system by using preset sound data + mods
 - Opt: Spawn Sound Samples on Realm Start, then use this data in generated sounds - optimized sound generation
-- SoundGenerateSystem - uses too much still
+- sound_generate_system - uses too much still
 - Add damage and sound if you land strongly
 - Change music track when dialogue starts too
 - Underwater: Dampen music sounds
@@ -141,7 +141,7 @@
 		- Add extra stage for Sides - ChunkMaterial
 		- Add second block with lava material for test
 	- Systems: GenerateChunk, GenerateSides, Generate Mesh (children)
-	- New Systems: ChunkMeshSpawnSystem, Chunk3MeshTrigger2System, Chunk3TexturedBuild2System, Chunk3Sides2System, ChunkMeshSlow2System
+	- New Systems: chunk_mesh_spawn_system, Chunk3MeshTrigger2System, Chunk3TexturedBuild2System, Chunk3Sides2System, chunk_mesh_slow2_system
 - Refactor Terrain Chunks to use LOD mesh entities instead of singular chunk
 - Prioritize Chunks higher lod first
 - Also process double if the lod is less, per depth
@@ -186,7 +186,7 @@
 - Use Region Seeds to generate mountain dat
 - base biome color on prior biomes so it stands out too
 - Create a biomemap at the region level that helps coordinate
-- Opt: HeightMapSystem lagging, use LODin g for HeightMaps / Tunk Generation
+- Opt: height_map_system lagging, use LODin g for HeightMaps / Tunk Generation
 - Refactor: Tunk Generation should have lodding as it currently lags
 	- if still lag at per system limitations
 - Tunks to use Quadtrees and LODing
@@ -307,7 +307,7 @@
 - make some npcs attack you
 - Make a AOE skill that npc can use when its low health
 	- adds particles
-- NPC RaycastRange add ActiveAction to NPCs - ActiveActionRangeSystem
+- NPC RaycastRange add ActiveAction to NPCs - active_action_range_system
 - NPC - Raycast Range should be Skill Range
 - Pause NPCs when press escape
 	- pause should pause the npcs too, cherrie wants dat
@@ -643,7 +643,7 @@
 - Smooth Lighting for terrain lights - smoothed edges
 - Add slight directional light over the AO on colored voxes
 - Make MeshColorsDirty do similar check to MeshReady - MeshColorsReady
-	- fix it up in Light3BuildSystem
+	- fix it up in light3_build_system
 - import texture outlines as a seperate mask texture
 	- making it easier to change outlines
 	- bitmask - 0 / 1 ?

@@ -14,14 +14,14 @@
 
 void zox_systems_tunks(ecs* world) {
     zox_system(
-        TunkEndSystem,
+        tunk_end_system,
         zoxp_update,
         [in] tunks.Chunk3Stack,
         [out] tunks.GenerateTunk,
         [none] tunks.Tunk
     );
     zox_system(
-        Tunk2DeathSystem,
+        tunk2_death_system,
         zoxp_destroy,
         [in] rendering.RenderDistanceDirty,
         [in] rendering.RenderDistance,
@@ -39,7 +39,7 @@ void zox_systems_tunks(ecs* world) {
         [none] streaming.Streamer
     );
     zox_system_ctx(
-        TunkLodSystem,
+        tunk_lod_system,
         zoxp_update,
         streamers_lod,
         [in] tunks.TunkPosition,
@@ -51,7 +51,7 @@ void zox_systems_tunks(ecs* world) {
     );*/
     // Texture
     zox_system(
-        TunkTextureSystem,
+        tunk_texture_system,
         zoxp_update,
         [out] textures.TextureData,
         [out] rendering.TextureSize,
@@ -59,7 +59,7 @@ void zox_systems_tunks(ecs* world) {
         [none] tunks.TunkTexture
     );
     /*zox_system(
-        HeightmapTextureSystem,
+        heightmap_texture_system,
         zoxp_update,
         [in] core.Generate,
         [out] textures.TextureData,

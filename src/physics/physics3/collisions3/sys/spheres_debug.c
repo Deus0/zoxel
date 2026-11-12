@@ -1,6 +1,6 @@
 extern void spawn_line3t(ecs *world, const float3 a, const float3 b, const color_rgb line_color);
 
-void SphereColliderDrawSystem(iter* it) {
+void sphere_collider_draw_system(iter* it) {
     zox_sys_on_begin();
     const color_rgb line_color = (color_rgb) { 55, 55, 55 };
     zox_sys_world();
@@ -25,4 +25,4 @@ void SphereColliderDrawSystem(iter* it) {
         spawn_line3t(world, position3D->value, float3_add(position3D->value, (float3) { 0, 0, -sphereRadius->value }), line_color);
     }
     zox_sys_on_end();
-} zoxd_system(SphereColliderDrawSystem);
+} zoxd_system(sphere_collider_draw_system);

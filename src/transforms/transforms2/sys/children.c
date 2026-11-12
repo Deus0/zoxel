@@ -114,7 +114,7 @@ static inline void set_position_rotation_scale2_recursive(
 }
 
 // Uses flecs children parenting for recursively transformingthings
-void Transform2ChildrenSystem(iter* it) {
+void transform2_children_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -146,4 +146,4 @@ void Transform2ChildrenSystem(iter* it) {
         zox_sys_increment();
     }
     zox_sys_on_end();
-} zoxd_system(Transform2ChildrenSystem);
+} zoxd_system(transform2_children_system);

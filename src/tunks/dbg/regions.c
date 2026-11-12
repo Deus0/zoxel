@@ -1,5 +1,5 @@
 // NOTE: Simply creates a height texture from tunks
-void RegionTextureSystem(iter* it) {
+void region_texture_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -53,4 +53,4 @@ void RegionTextureSystem(iter* it) {
         zox_add(e, TextureDirty);
     }
     zox_sys_on_end();
-} zoxd_system(RegionTextureSystem);
+} zoxd_system(region_texture_system);

@@ -16,7 +16,7 @@ void remove_vodes(ecs *world, VoxelNode *node) {
 }
 
 // cleans up vodes attached to air
-void VodesRemoveSystem(iter* it) {
+void vodes_remove_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -31,4 +31,4 @@ void VodesRemoveSystem(iter* it) {
         zox_octree_lock_end(write_lock);
     }
     zox_sys_on_end();
-} zoxd_system(VodesRemoveSystem);
+} zoxd_system(vodes_remove_system);

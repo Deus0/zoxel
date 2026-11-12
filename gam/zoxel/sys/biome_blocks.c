@@ -100,7 +100,7 @@ void generate_colors(
 
 // TODO: Generate Block Seeds off Biome Seeds
 // A biome will generate blocks
-void BiomeBlocksSystem(iter* it) {
+void biome_blocks_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -426,4 +426,4 @@ void BiomeBlocksSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(BiomeBlocksSystem);
+} zoxd_system(biome_blocks_system);

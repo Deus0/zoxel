@@ -1,5 +1,5 @@
 // NOTE: This assumes item quantity!
-void ItemActivateSystem(iter* it) {
+void item_activate_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -64,4 +64,4 @@ void ItemActivateSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ItemActivateSystem);
+} zoxd_system(item_activate_system);

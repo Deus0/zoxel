@@ -1,4 +1,4 @@
-void MoveForwardSystem(iter* it) {
+void move_forward_system(iter* it) {
     zox_sys_on_begin();
     const float target_angle = 45;
     const float min_dot_threshold = target_angle * degrees_to_radians; // 0.866f; // cos(30°)
@@ -77,4 +77,4 @@ void MoveForwardSystem(iter* it) {
         acceleration->value = float3_add(acceleration->value, movement_force);
     }
     zox_sys_on_end();
-} zoxd_system(MoveForwardSystem);
+} zoxd_system(move_forward_system);

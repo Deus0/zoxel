@@ -1,4 +1,4 @@
-// tst: npc_stats, every npc gets the realm's base stats (bulk spawned, CharacterStatsSystem)
+// tst: npc_stats, every npc gets the realm's base stats (bulk spawned, character_stats_system)
 //  - waits for npcs to spawn and initialize
 //  - each initialized npc: every realm base stat exactly once (copied from its prefab, made at realm
 //      generation, or spawned to fill a gap), parented

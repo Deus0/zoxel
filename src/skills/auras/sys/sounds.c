@@ -1,4 +1,4 @@
-void AuraSoundSystem(iter* it) {
+void aura_sound_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -11,4 +11,4 @@ void AuraSoundSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(AuraSoundSystem);
+} zoxd_system(aura_sound_system);

@@ -8,19 +8,19 @@
 void zox_systems_elements(ecs *world) {
     // main thread, it spawns the setting
     zox_system_1(
-        UISettingsSystem,
+        ui_settings_system,
         zoxp_spawn,
         [in] settings.LoadSettings
     );
     zox_system(
-        UISettingsDirtySystem,
+        ui_settings_dirty_system,
         zoxp_update,
         [in] settings.SettingDirty,
         [in] core.ZoxName,
         [in] settings.Setting
     );
     zox_system(
-        CanvasResizeSystem,
+        canvas_resize_system,
         zoxp_update,
         [in] cameras.ScreenToCanvas,
         [out] layouts.LayoutPosition,
@@ -28,7 +28,7 @@ void zox_systems_elements(ecs *world) {
         [none] layouts.Canvas
     );
     zox_system(
-        TextureSizeSystem,
+        texture_size_system,
         zoxp_update,
         [in] layouts.LayoutSize,
         [out] rendering.TextureSize,
@@ -36,13 +36,13 @@ void zox_systems_elements(ecs *world) {
         [none] layouts.LayoutSizeUpdate,
     );
     zox_system(
-        TextureSizeGenerateSystem,
+        texture_size_generate_system,
         zoxp_update,
         [out] textures.GenerateTexture,
         [none] layouts.LayoutSizeUpdate,
     );
     zox_system(
-        LayoutMeshBeginSystem,
+        layout_mesh_begin_system,
         zoxp_initialize,
         [in] layouts.LayoutSize,
         [in] rendering.MeshAlignment,
@@ -50,7 +50,7 @@ void zox_systems_elements(ecs *world) {
         [none] core.Initialize,
     );
     zox_system(
-        LayoutMeshUpdateSystem,
+        layout_mesh_update_system,
         zoxp_update,
         [in] layouts.LayoutSize,
         [in] rendering.MeshAlignment,

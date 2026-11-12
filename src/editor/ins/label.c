@@ -1,4 +1,4 @@
-// The debug label (c), top right, showing local_debug_label's text (see DebugLabelSystem)
+// The debug label (c), top right, showing local_debug_label's text (see debug_label_system)
 entity spawn_game_debug_label(ecs* world, entity canvas) {
     if (!zox_valid(canvas)) {
         zox_loge("[spawn_game_debug_label] invalid canvas");

@@ -1,5 +1,5 @@
 
-// TODO: HeaderSpawnSystem, HeaderResizeSystem (when window is dirty)
+// TODO: header_spawn_system, HeaderResizeSystem (when window is dirty)
 byte window_corner_size = 0;
 byte window_outline_size = 0;
 byte header_corner_size = 0;

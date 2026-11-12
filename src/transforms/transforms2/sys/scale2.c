@@ -1,5 +1,5 @@
 // This calculcates the matrix from Position2 and Scale2 when Layout is dirty
-void Transform2Scale2System(iter* it) {
+void transform2_scale2_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_begin();
@@ -24,4 +24,4 @@ void Transform2Scale2System(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(Transform2Scale2System);
+} zoxd_system(transform2_scale2_system);

@@ -4,7 +4,7 @@
 
 void zox_systems_players(ecs* world) {
     zox_system(
-        PlayerGameStateSystem,
+        player_game_state_system,
         zoxp_update,
         [in] games.GameStateDirty,
         [in] games.GameState,
@@ -12,7 +12,7 @@ void zox_systems_players(ecs* world) {
         [none] games.Game
     );
     zox_system(
-        PlayerStateSystem,
+        player_state_system,
         zoxp_update,
         [out] players.PlayerState,
         [out] players.PlayerStateDirty,
@@ -20,7 +20,7 @@ void zox_systems_players(ecs* world) {
         [none] players.Player
     );
     zox_system_1(
-        PlayerStateEventSystem,
+        player_state_event_system,
         zoxp_spawn,
         [in] players.PlayerState,
         [in] players.PlayerStateDirty,

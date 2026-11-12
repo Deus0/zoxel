@@ -1,4 +1,4 @@
-void FrustumDrawSystem(iter* it) {
+void frustum_draw_system(iter* it) {
     zox_sys_on_begin();
     /*color_rgb debug_color = (color_rgb) { 0, 0, 0 };
     zox_field_world()
@@ -9,4 +9,4 @@ void FrustumDrawSystem(iter* it) {
         // draw_frustum(world, frustumCorners->value, debug_color);
     }*/
     zox_sys_on_end();
-} zoxd_system(FrustumDrawSystem);
+} zoxd_system(frustum_draw_system);

@@ -2,7 +2,7 @@
 
 void zox_systems_towns_debug(ecs* world) {
     zox_system(
-        TownTextureSystem,
+        town_texture_system,
         zoxp_update,
         [out] textures.GenerateTexture,
         [out] textures.TextureData,

@@ -229,14 +229,18 @@ void zox_tst_start() {
 //  - disabled unless --tst or --profile, so games have no merge for it
 // the frame's start, for the profiler, main thread in the first op (no merge of its own)
 void zox_tst_frame_begin_system(iter* it) {
+    zox_sys_on_begin();
     (void) it;
     zox_tst_profile_frame_start = get_time_ms();
+    zox_sys_on_end();
 } zoxd_system(zox_tst_frame_begin_system);
 
 void zox_tst_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world2();
     zox_tst_update(world);
     zox_profile_update(world);
+    zox_sys_on_end();
 } zoxd_system(zox_tst_system);
 
 void process_arguments_tst(ecs* world, char* args[], int count) {
@@ -273,7 +277,7 @@ void process_arguments_tst(ecs* world, char* args[], int count) {
     for (int i = 1; i < count; i++) {
         if (strcmp(args[i], "--nouis") == 0) {
             // no labels or healthbars over characters, to compare (tst perf_fly)
-            const char* names[2] = { "CharacterNameLabelsSystem", "HealthbarSpawnerSystem" };
+            const char* names[2] = { "character_name_labels_system", "healthbar_spawner_system" };
             for (byte j = 0; j < 2; j++) {
                 entity system = 0;
                 ecs_iter_t sit = ecs_each_id(world, EcsSystem);

@@ -1,5 +1,5 @@
 // Types a text out a character at a time (TargetText), on the text entity (i.e. dialogue)
-void AnimateTextSystem(iter* it) {
+void animate_text_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -88,4 +88,4 @@ void AnimateTextSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(AnimateTextSystem);
+} zoxd_system(animate_text_system);

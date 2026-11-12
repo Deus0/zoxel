@@ -1,6 +1,6 @@
 // TODO: Add Region Position to Town Positions
 // NOTE: Spawns X Towns per region
-void HomesSpawnSystem(iter* it) {
+void homes_spawn_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     uint max_attempts = 100;
@@ -63,4 +63,4 @@ void HomesSpawnSystem(iter* it) {
         generate->value = 0;
     }
     zox_sys_on_end();
-} zoxd_system(HomesSpawnSystem);
+} zoxd_system(homes_spawn_system);

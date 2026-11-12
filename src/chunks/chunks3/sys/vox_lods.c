@@ -4,7 +4,7 @@
 //  - the octree optimizer (VoxelNodePostDirty) sets parent node values, which lower lods use
 
 // When the vox voxels update, rebuild all of its lod meshes
-void VoxLodsMeshTriggerSystem(iter* it) {
+void vox_lods_mesh_trigger_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -25,7 +25,7 @@ void VoxLodsMeshTriggerSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(VoxLodsMeshTriggerSystem);
+} zoxd_system(vox_lods_mesh_trigger_system);
 
 #define zox_vox_mesh_invalid 0
 #define zox_vox_mesh_waiting 1
@@ -116,7 +116,7 @@ byte build_vox_mesh_at_depth(
 double zox_vox_mesh_budget_ms = 3.0;
 
 // Builds a colored mesh from the parent VoxLods at RenderDepth
-void VoxLodMeshBuildSystem(iter* it) {
+void vox_lod_mesh_build_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_budget(vox_mesh, zox_disable_process_skips ? 1000000 : zox_vox_mesh_budget_ms);
@@ -163,4 +163,4 @@ void VoxLodMeshBuildSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(VoxLodMeshBuildSystem);
+} zoxd_system(vox_lod_mesh_build_system);

@@ -3,13 +3,13 @@
 
 void zox_systems_items_ui(ecs *world) {
     /*zox_system(
-        ItemIconTooltipSystem,
+        item_icon_tooltip_system,
         zoxp_update,
         [in] interactions.SelectState,
         [none] elements2.Icon
     );*/
     /*zox_system(
-        ItemIconLabelSystem,
+        item_icon_label_system,
         zoxp_update,
         [in] slots.SlotLink,
         [out] texts.TextData,

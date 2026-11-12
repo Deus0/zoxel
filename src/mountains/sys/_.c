@@ -3,7 +3,7 @@
 
 void zox_systems_mountains(ecs* world) {
     zox_system_1(
-        RegionMountainSystem,
+        region_mountain_system,
         zoxp_spawn,
         [in] core.Seed,
         [in] blocks.BlockPosition2,
@@ -12,7 +12,7 @@ void zox_systems_mountains(ecs* world) {
         [none] regions.Region
     );
     zox_system(
-        MountainMapSystem,
+        mountain_map_system,
         zoxp_update,
         [in] tunks.TunkLod,
         [in] tunks.TunkPosition,

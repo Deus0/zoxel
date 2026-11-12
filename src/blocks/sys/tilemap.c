@@ -1,6 +1,6 @@
 // NOTE: Pushes Texture data into tilemap from realm
 // NOTE: Updates on dirty end state
-void RealmTilemapSystem(iter* it) {
+void realm_tilemap_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -86,4 +86,4 @@ void RealmTilemapSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(RealmTilemapSystem);
+} zoxd_system(realm_tilemap_system);

@@ -25,7 +25,7 @@ zox_tag(StatPoint);     // currency spent on attributes
 zox_tag(SkillPoint);    // currency spent on skills
 zox_tag(StatDamage);    // base stat added to skill damage, ie physical damage
 zox_tag(StatDefence);   // base stat that reduces damage, ie physical defence
-zox_tag(SpawnNameLabel);   // has a name label near players (CharacterNameLabelsSystem)
+zox_tag(SpawnNameLabel);   // has a name label near players (character_name_labels_system)
 zox_tag(NameLabelLink);
 
 

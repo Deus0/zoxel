@@ -7,14 +7,14 @@
 
 # Low Priority
 - Make MeshColorsDirty do similar check to MeshReady - MeshColorsReady
-    - fix it up in Light3BuildSystem
+    - fix it up in light3_build_system
 - Player Respawn Point Gizmos
 - Stream Level - Region only for initial game town spawning!
 - Tunk LOD Levels
 	- So we dont generate maps for far away chunks
 - Update frame texture outline when icon is selected!
 - Save/Load Realm Blocks + data to future proof updates
-- NPC RaycastRange add ActiveAction to NPCs - ActiveActionRangeSystem
+- NPC RaycastRange add ActiveAction to NPCs - active_action_range_system
 - Long pause breaks physics - test big frame times
 - Refactor spawn_block_vox_meta and remove structs
 - Add Tooltips to Empty Slot Frames

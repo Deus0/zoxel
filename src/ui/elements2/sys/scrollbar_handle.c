@@ -1,6 +1,6 @@
 // Resizes the scrollbar handle upon list updates
 // TODO: shouldn't this be on scrollarea resizes??
-void ScrollbarHandleSystem(iter* it) {
+void scrollbar_handle_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -42,4 +42,4 @@ void ScrollbarHandleSystem(iter* it) {
         //zox_log("   visible [%i] existing [%i]", visible->value, list_children_length);
     }
     zox_sys_on_end();
-} zoxd_system(ScrollbarHandleSystem);
+} zoxd_system(scrollbar_handle_system);

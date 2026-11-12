@@ -27,7 +27,7 @@ void zox_systems_interaction(ecs* world) {
         [none] interactions.Selectable,
     );
     zox_system_ctx(
-        ElementRaycastSystem,
+        element_raycast_system,
         zoxp_update,
         raycast_query,
         [in] inputs.ZevicePointerPosition,
@@ -35,7 +35,7 @@ void zox_systems_interaction(ecs* world) {
         [none] !core.Disabled,
     );
     zox_system(
-        ZeviceClickSystem,
+        zevice_click_system,
         zoxp_update,
         [in] core.EntityTarget,
         [out] interactions.ClickingEntity,
@@ -43,7 +43,7 @@ void zox_systems_interaction(ecs* world) {
         [none] !core.Disabled,
     );
     zox_system(
-        KeyboardClickSystem,
+        keyboard_click_system,
         zoxp_update,
         [in] core.EntityTarget,
         [in] inputs.Keyboard,
@@ -53,7 +53,7 @@ void zox_systems_interaction(ecs* world) {
     );
     // Coloring Animations
     zox_system(
-        ElementSelectedFillColorSystem,
+        element_selected_fill_color_system,
         zoxp_update,
         [in] interactions.SelectState,
         [in] ui.ElementFillColor,
@@ -63,7 +63,7 @@ void zox_systems_interaction(ecs* world) {
         [none] ui.Element
     );
     zox_system(
-        ElementSelectedOutlineColorSystem,
+        element_selected_outline_color_system,
         zoxp_update,
         [in] interactions.SelectState,
         [in] ui.ElementOutlineColor,
@@ -74,7 +74,7 @@ void zox_systems_interaction(ecs* world) {
     );
     // Active
     zox_system(
-        ElementActiveSystem,
+        element_active_system,
         zoxp_update,
         [in] interactions.ActiveState,
         [in] interactions.ActiveStateDirty,
@@ -85,7 +85,7 @@ void zox_systems_interaction(ecs* world) {
         [none] ui.Element
     );
     zox_system(
-        ElementSelectedBrighterSystem,
+        element_selected_brighter_system,
         zoxp_update,
         [in] interactions.SelectState,
         [out] rendering.Brightness,
@@ -93,34 +93,34 @@ void zox_systems_interaction(ecs* world) {
         [none] interactions.SelectedBrighter,
     );
     zox_system(
-        DraggerEndSystem,
+        dragger_end_system,
         zoxp_update,
         [out] interactions.DraggableState,
         [out] interactions.DraggingDelta
     );
     zox_system(
-        ElementActiveLinkSystem,
+        element_active_link_system,
         zoxp_update,
         [in] interactions.ActiveState,
         [in] interactions.ActiveStateDirty,
         [none] ui.Element
     );
     zox_system(
-        MouseElementSystem,
+        mouse_element_system,
         zoxp_update,
         [in] layouts.Anchor,
         [out] layouts.LayoutPosition,
         [none] ui.MouseElement
     );
     zox_system_1(
-        ClickSoundSystem,
+        click_sound_system,
         zoxp_spawn,
         // [in] interactions.ClickState,
         [none] interactions.Click,
         [none] interactions.ClickMakeSound
     );
     zox_system_1(
-        ButtonClickEventSystem,
+        button_click_event_system,
         zoxp_spawn,
         [in] interactions.ClickEvent,
         // [in] interactions.ClickState,

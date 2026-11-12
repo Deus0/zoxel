@@ -1,4 +1,4 @@
-/*void ItemIconLabelSystem(iter* it) {
+/*void item_icon_label_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     byte label_text_capacity = 8;
@@ -41,5 +41,5 @@
         }
     }
     zox_sys_on_end();
-} zoxd_system(ItemIconLabelSystem);
+} zoxd_system(item_icon_label_system);
 */

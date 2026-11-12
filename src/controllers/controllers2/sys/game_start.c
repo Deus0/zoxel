@@ -28,7 +28,7 @@ void player_start_game2D_delayed(ecs *world, entity player) {
     zox_set_link(world, camera, Character2DLink, character);
 }
 
-void PlayerGame2StartSystem(iter* it) {
+void player_game2_start_system(iter* it) {
     zox_sys_on_begin();
     double game_load_player_delay = 0.2; // 1.1;
     zox_sys_world();
@@ -52,4 +52,4 @@ void PlayerGame2StartSystem(iter* it) {
             delay);
     }
     zox_sys_on_end();
-} zoxd_system(PlayerGame2StartSystem);
+} zoxd_system(player_game2_start_system);

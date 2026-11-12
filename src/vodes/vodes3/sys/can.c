@@ -1,4 +1,5 @@
 void can_have_vodes_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -35,4 +36,5 @@ void can_have_vodes_system(iter* it) {
             }
         }
     }
+    zox_sys_on_end();
 } zoxd_system(can_have_vodes_system);

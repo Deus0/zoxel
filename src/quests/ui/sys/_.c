@@ -3,13 +3,13 @@
 
 void zox_systems_quests_ui(ecs* world) {
     /*zox_system(
-        QuestIconTooltipSystem,
+        quest_icon_tooltip_system,
         zoxp_update,
         [in] interactions.SelectState,
         [none] elements2.Icon
     );
     zox_system(
-        QuestIconLabelSystem,
+        quest_icon_label_system,
         zoxp_update,
         [out] texts.TextData,
         [none] elements2.Label

@@ -1,4 +1,4 @@
-void HeightMapSystem(iter* it) {
+void height_map_system(iter* it) {
     zox_sys_on_begin();
     // TODO: use height frequency from biome maps
     byte terrain_height_multiplier = 3;
@@ -112,4 +112,4 @@ void HeightMapSystem(iter* it) {
         generate->value = zox_generate_tunk_vegetation;
     }
     zox_sys_on_end();
-} zoxd_system(HeightMapSystem);
+} zoxd_system(height_map_system);

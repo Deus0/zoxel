@@ -1,7 +1,7 @@
 // NOTE: Goes through all Doubles on array and find biggest
-void MaxDataSystem(iter* it) {
+void max_data_system(iter* it) {
     zox_sys_on_begin();
-    // zox_log("MaxDataSystem [%i]", it->count);
+    // zox_log("max_data_system [%i]", it->count);
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DoubleData);
@@ -22,4 +22,4 @@ void MaxDataSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(MaxDataSystem);
+} zoxd_system(max_data_system);

@@ -6,25 +6,25 @@
 
 void zoxd_systems_networking(ecs* world) {
     zox_system(
-        SocketSystem,
+        socket_system,
         zoxp_update,
         [in] networking.NetPort,
         [out] networking.SocketLink
     );
     zox_system(
-        PacketRecieveSystem,
+        packet_recieve_system,
         zoxp_update,
         [in] networking.SocketLink,
         [out] networking.PacketQueue,
         [none] networking.PacketReciever,
     );
     zox_system(
-        PacketQueueSystem,
+        packet_queue_system,
         zoxp_update,
         [out] PacketQueue,
     );
     zox_system_1(
-        NetConnectSystem,
+        net_connect_system,
         zoxp_spawn, // zoxp_update,
         [in] networking.SocketLink,
         [in] networking.PacketQueue,
@@ -32,7 +32,7 @@ void zoxd_systems_networking(ecs* world) {
     );
     // Testing
     zox_system(
-        FakePacketSendSystem,
+        fake_packet_send_system,
         zoxp_update,
         [in] networking.TargetNetAddress,
         [in] networking.TargetNetPort,

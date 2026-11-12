@@ -1,4 +1,4 @@
-void BoneGizmoSystem(iter* it) {
+void bone_gizmo_system(iter* it) {
     zox_sys_on_begin();
     if (!render_bones) {
         return;
@@ -34,4 +34,4 @@ void BoneGizmoSystem(iter* it) {
             0.01);
     }
     zox_sys_on_end();
-} zoxd_system(BoneGizmoSystem);
+} zoxd_system(bone_gizmo_system);

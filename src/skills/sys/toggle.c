@@ -1,4 +1,4 @@
-void SkillToggleSystem(iter* it) {
+void skill_toggle_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(Activate);
@@ -11,4 +11,4 @@ void SkillToggleSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(SkillToggleSystem);
+} zoxd_system(skill_toggle_system);

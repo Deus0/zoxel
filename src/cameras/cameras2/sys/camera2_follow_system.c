@@ -1,4 +1,4 @@
-void Camera2FollowSystem(iter* it) {
+void camera2_follow_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -26,4 +26,4 @@ void Camera2FollowSystem(iter* it) {
         rotation3D->value = float4_identity;
     }
     zox_sys_on_end();
-} zoxd_system(Camera2FollowSystem);
+} zoxd_system(camera2_follow_system);

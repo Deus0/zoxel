@@ -1,5 +1,5 @@
 // tst: quest_dialogue, a quest giver offers its quest to a character without it, then remembers it gave it
-//  - talks to a quest giving npc the way DialogueBeginSystem does, pressing next as each line finishes
+//  - talks to a quest giving npc the way dialogue_begin_system does, pressing next as each line finishes
 //  - the first talk: "Welcome traveler." then "I have a quest you may like.", and the character gets the quest
 //      (it said "You did well..." to a character without the quest: NodeLink was exclusive, a branch kept
 //      only its true node, and the character started with the quest it offers)
@@ -39,7 +39,7 @@ static inline entity zox_tst_qd_find_npc(ecs* world) {
     return 0;
 }
 
-// any npc, made a quest giver like CharacterDialogueSystem does (quest givers are random)
+// any npc, made a quest giver like character_dialogue_system does (quest givers are random)
 static inline entity zox_tst_qd_make_npc(ecs* world, entity character) {
     const entity realm = zox_get_link(world, character, RealmLink);
     const entity tree = zox_get_child_by_id(world, realm, zox_id(QuestDialogue));

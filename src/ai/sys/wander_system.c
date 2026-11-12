@@ -1,4 +1,4 @@
-void WanderSystem(iter* it) {
+void wander_system(iter* it) {
     zox_sys_on_begin();
     init_delta_time()
     const float wander_length    = 5.0f;  // units per second
@@ -44,7 +44,7 @@ void WanderSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(WanderSystem);
+} zoxd_system(wander_system);
 
 
 
@@ -53,7 +53,7 @@ void WanderSystem(iter* it) {
 // similar to player, make move forward, make rotate randomly
 
 // todo: make similar to flee, just set target position randomly
-/*void WanderSystem(iter *it) {
+/*void wander_system(iter* it) {
     const float2 movement_power = (float2) { 0, 4 };
     const float2 max_velocity = { 60 * 60, 160 * 60 };
     const double max_rotate_speed = 0.2; //  0.23;
@@ -95,5 +95,5 @@ void WanderSystem(iter* it) {
             quaternion_rotate_quaternion_p(&alpha3D->value, float2_to_rotation(euler));
         }
     }
-} zoxd_system(WanderSystem)*/
+} zoxd_system(wander_system)*/
 

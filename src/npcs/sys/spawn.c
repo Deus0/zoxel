@@ -7,7 +7,7 @@ uint npcs_spawned_frame = UINT32_MAX;
 uint npcs_spawned_this_frame = 0;
 
 // we need to check if chunk has generated yet - is there a component for this?
-void TerrainCharactersSpawnSystem(iter* it) {
+void terrain_characters_spawn_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     float dbg_length = 0;
@@ -172,4 +172,4 @@ void TerrainCharactersSpawnSystem(iter* it) {
         zox_add(e, CharactersSpawned);
     }
     zox_sys_on_end();
-} zoxd_system(TerrainCharactersSpawnSystem);
+} zoxd_system(terrain_characters_spawn_system);

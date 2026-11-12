@@ -1,4 +1,4 @@
-void BlendedSoilGenerationSystem(iter* it) {
+void blended_soil_generation_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -111,4 +111,4 @@ void BlendedSoilGenerationSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(BlendedSoilGenerationSystem);
+} zoxd_system(blended_soil_generation_system);

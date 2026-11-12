@@ -5,7 +5,7 @@ ECS_DTOR(ShaderGPULink, ptr, {
     zox_gpu_dispose_shader(ptr->value.y);
 })
 
-void on_destroyed_ShaderGPULink(iter *it) {
+void on_destroyed_ShaderGPULink(iter* it) {
     byte dbg_log = 0;
     zox_sys_begin();
     zox_sys_out(ShaderGPULink);

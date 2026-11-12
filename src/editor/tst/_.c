@@ -152,7 +152,7 @@ byte zox_tst_editor_ready(ecs* world) {
                 zox_tst_editor_target = canvas;
                 inspect_entity(world, canvas);
             } else {
-                // shown component rows show their component's live label (InspectorLabelSystem)
+                // shown component rows show their component's live label (inspector_label_system)
                 int checked = 0;
                 int stale = 0;
                 iter it2 = zox_children(world, list);

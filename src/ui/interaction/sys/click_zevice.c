@@ -1,4 +1,4 @@
-void ZeviceClickSystem(iter* it) {
+void zevice_click_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -83,4 +83,4 @@ void ZeviceClickSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ZeviceClickSystem);
+} zoxd_system(zevice_click_system);

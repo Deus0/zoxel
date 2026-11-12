@@ -6,7 +6,7 @@
 
 void zox_systems_windows(ecs* world) {
     zox_system(
-        CanvasStackSystem,
+        canvas_stack_system,
         zoxp_update,
         [out] layouts.WindowToTop,
         [out] WindowsLayers,
@@ -14,7 +14,7 @@ void zox_systems_windows(ecs* world) {
         [none] layouts.Canvas
     );
     zox_system(
-        WindowLayerSystem,
+        window_layer_system,
         zoxp_update,
         // [in] SetWindowLayer,
         [in] windows.WindowLayer,
@@ -23,14 +23,14 @@ void zox_systems_windows(ecs* world) {
         [none] windows.WindowLayerDirty
     );
     zox_system(
-        WindowElementClickedSystem,
+        window_element_clicked_system,
         zoxp_update,
         [none] ui.Element,
         [none] interactions.Press,    // to the top on press, not waiting for the click
     );
     // TODO: Add keyboard escape to this
     zox_system(
-        CancelMenuSystem,
+        cancel_menu_system,
         zoxp_update,
         [in] inputs.DeviceButtonType,
         [in] inputs.ZeviceButton,
@@ -38,14 +38,14 @@ void zox_systems_windows(ecs* world) {
         [none] !core.Disabled,
     );
     zox_system(
-        KeyboardCancelMenuSystem,
+        keyboard_cancel_menu_system,
         zoxp_update,
         [in] inputs.Keyboard,
         [none] inputs.Device,
         [none] !core.Disabled,
     );
     zox_system(
-        CanvasBoundsSystem,
+        canvas_bounds_system,
         zoxp_initialize,
         [in] layouts.LayoutSize,
         [in] layouts.Anchor,

@@ -15,7 +15,7 @@ uint name_labels_frame = UINT32_MAX;
 uint name_labels_this_frame = 0;
 
 // NOTE: Spawns a name label above character
-void CharacterNameLabelsSystem(iter* it) {
+void character_name_labels_system(iter* it) {
     zox_sys_on_begin();
     if (disable_npc_uis) {
         return;
@@ -114,4 +114,4 @@ void CharacterNameLabelsSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(CharacterNameLabelsSystem);
+} zoxd_system(character_name_labels_system);

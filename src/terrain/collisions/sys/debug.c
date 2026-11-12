@@ -1,7 +1,7 @@
 byte zox_dbg_intersect = 0;
 
 // NOTE:Purely show the intersections
-void TerrainIntersectDebugSystem(iter* it) {
+void terrain_intersect_debug_system(iter* it) {
     zox_sys_on_begin();
     if (!zox_dbg_intersect) {
         return;
@@ -187,7 +187,7 @@ void TerrainIntersectDebugSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(TerrainIntersectDebugSystem);
+} zoxd_system(terrain_intersect_debug_system);
 
 void toggle_dbg_intersect(ecs* world, ClickEventData data) {
     zox_dbg_intersect = !zox_dbg_intersect;
@@ -195,5 +195,5 @@ void toggle_dbg_intersect(ecs* world, ClickEventData data) {
         zox_dbg_intersect ?
             "Enabled" :
             "Disabled");
-    zox_set_enabled(TerrainIntersectDebugSystem, zox_dbg_intersect);
+    zox_set_enabled(terrain_intersect_debug_system, zox_dbg_intersect);
 }

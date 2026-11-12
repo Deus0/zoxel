@@ -1,4 +1,4 @@
-// The inspector window, on the right, listing target's components (see InspectorSpawnSystem)
+// The inspector window, on the right, listing target's components (see inspector_spawn_system)
 entity spawn_inspector(
     ecs *world,
     entity canvas,

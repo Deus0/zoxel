@@ -1,5 +1,5 @@
 //! Bounds, because everyone needs limits! Used atm to keep player within the start area.
-void Bounds2DSystem(iter* it) {
+void bounds2d_system(iter* it) {
     zox_sys_on_begin();
     zox_physics_profile_begin();
     zox_sys_begin();
@@ -19,4 +19,4 @@ void Bounds2DSystem(iter* it) {
     }
     zox_physics_profile_end();
     zox_sys_on_end();
-} zoxd_system(Bounds2DSystem);
+} zoxd_system(bounds2d_system);

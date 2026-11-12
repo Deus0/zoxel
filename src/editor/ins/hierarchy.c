@@ -1,4 +1,4 @@
-// The hierarchy window, on the left, listing root's entity tree (see HierarchySpawnSystem)
+// The hierarchy window, on the left, listing root's entity tree (see hierarchy_spawn_system)
 entity spawn_window_hierarchy(
     ecs *world,
     entity canvas,

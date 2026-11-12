@@ -1,4 +1,4 @@
-void ActivateSystem(iter* it) {
+void activate_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(WarmupState);
@@ -11,4 +11,4 @@ void ActivateSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ActivateSystem);
+} zoxd_system(activate_system);

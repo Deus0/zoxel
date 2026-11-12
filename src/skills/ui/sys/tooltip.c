@@ -1,5 +1,5 @@
 // Tooltip Event for item icons
-void SkillIconTooltipSystem(iter* it) {
+void skill_icon_tooltip_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -31,4 +31,4 @@ void SkillIconTooltipSystem(iter* it) {
         // zox_log("Skill Tooltip [%s]", result);
     }
     zox_sys_on_end();
-} zoxd_system(SkillIconTooltipSystem);
+} zoxd_system(skill_icon_tooltip_system);

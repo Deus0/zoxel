@@ -5,7 +5,7 @@
 
 void zox_systems_maps(ecs* world) {
     zox_system_1(
-        MapInitializeSystem,
+        map_initialize_system,
         zoxp_spawn,
         [in] maps.MapZoom,
         [in] rendering.Alpha,
@@ -14,14 +14,14 @@ void zox_systems_maps(ecs* world) {
         [none] core.Initialize,
     );
     zox_system_1(
-        MapPositionSystem,
+        map_position_system,
         zoxp_spawn,
         [out] maps.MapPosition,
         [none] maps.Map,
         // [none] maps.Minimap
     );
     zox_system(
-        MapArrowSystem,
+        map_arrow_system,
         zoxp_update,
         [out] transforms2.LocalRotation2,
         [none] maps.MapArrow

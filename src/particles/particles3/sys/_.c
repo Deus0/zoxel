@@ -3,7 +3,7 @@
 
 void zox_systems_particles3(ecs* world) {
     zox_system_1(
-        Particle3DEmitSystem,
+        particle3d_emit_system,
         zoxp_spawn,
         [in] transforms3.Position3D,
         [in] particles.ParticleEmitRate,
@@ -13,7 +13,7 @@ void zox_systems_particles3(ecs* world) {
     );
     // if making rotation ones, just create new systems, add [none] transforms3.Rotation3D - for this one
     zox_render3_system(2,
-        Particle3DRenderSystem,
+        particle3d_render_system,
         [in] transforms3.Position3D,
         [in] colorz.Color,
         [none] Particle3D

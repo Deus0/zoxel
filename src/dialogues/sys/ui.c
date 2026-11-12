@@ -1,5 +1,5 @@
 // A NodeRunner will be linked to the UIs
-void DialogueSpeechSystem(iter* it) {
+void dialogue_speech_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -58,4 +58,4 @@ void DialogueSpeechSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(DialogueSpeechSystem);
+} zoxd_system(dialogue_speech_system);

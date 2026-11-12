@@ -1,6 +1,6 @@
 // The inspector lists an entity: its name, parent, children, then a row per id (component, tag, pair)
 //  - every row targets the inspected entity (EntityTarget), and its id (ComponentTarget)
-//  - InspectorLabelSystem keeps the component rows' values up to date
+//  - inspector_label_system keeps the component rows' values up to date
 
 typedef struct {
     char* text;         // freed after spawning
@@ -107,7 +107,7 @@ void button_event_clicked_inspector(ecs *world, ClickEventData event) {
     inspector_select_target(world, event.clicker, link->value);
 }
 
-void InspectorSpawnSystem(iter* it) {
+void inspector_spawn_system(iter* it) {
     zox_sys_on_begin();
     const ClickEvent on_click = (ClickEvent) { &button_event_clicked_inspector };
     zox_sys_world();
@@ -155,4 +155,4 @@ void InspectorSpawnSystem(iter* it) {
         zox_logv("Inspector [%s] refreshed with [%i] rows", zox_getn(target->value), count);
     }
     zox_sys_on_end();
-} zoxd_system(InspectorSpawnSystem);
+} zoxd_system(inspector_spawn_system);

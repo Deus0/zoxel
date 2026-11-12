@@ -1,4 +1,4 @@
-void Camera3FollowSystem(iter* it) {
+void camera3_follow_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -24,4 +24,4 @@ void Camera3FollowSystem(iter* it) {
         float3_add_float3_p(&position->value, localPosition3D->value);
     }
     zox_sys_on_end();
-} zoxd_system(Camera3FollowSystem);
+} zoxd_system(camera3_follow_system);

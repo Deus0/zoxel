@@ -6,7 +6,7 @@ void terrain_callback_inside_block(iter* it) {
     // cache voxels and colliders for speed
     const BlockLinks* blocks = get_first_terrain_voxels(it);
     if (!blocks) {
-        zox_loge("InsideBlockSoundSystem: No BlockLinks");
+        zox_loge("inside_block_sound_system: No BlockLinks");
         return;
     }
     entity sounds[blocks->length];

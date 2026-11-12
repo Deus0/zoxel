@@ -1,5 +1,5 @@
 // Dragging a scrollbar's handle scrolls its list, by how far the handle is along the scrollbar
-void ScrollbarSystem(iter* it) {
+void scrollbar_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -35,7 +35,7 @@ void ScrollbarSystem(iter* it) {
         set_scrollview_start(world, scrollview, (int) round(max_start * percentage), 0);
     }
     zox_sys_on_end();
-} zoxd_system(ScrollbarSystem);
+} zoxd_system(scrollbar_system);
 
 // is e the ancestor, or one of its descendants
 static inline byte is_ui_within(
@@ -56,7 +56,7 @@ static inline byte is_ui_within(
 //  - the topmost scrollview the pointer is inside, also between its list elements
 //  - unless the pointer is over ui unrelated to it, i.e. another window on top of it
 //      (its own elements, and the window body behind it, don't block it)
-void ScrollviewWheelSystem(iter* it) {
+void scrollview_wheel_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_query();
     zox_sys_world();
@@ -124,4 +124,4 @@ void ScrollviewWheelSystem(iter* it) {
         set_scrollview_start(world, scrollview, start - wheel->value.y, 1);
     }
     zox_sys_on_end();
-} zoxd_system(ScrollviewWheelSystem);
+} zoxd_system(scrollview_wheel_system);

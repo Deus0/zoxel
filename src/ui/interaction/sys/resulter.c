@@ -1,5 +1,5 @@
 // NOTE: used for virtual joysticks to see if a target was raycasted
-/*void RaycasterResulterSystem(iter* it) {
+/*void raycaster_resulter_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -15,4 +15,4 @@
         }
     }
     zox_sys_on_end();
-} zoxd_system(RaycasterResulterSystem);*/
+} zoxd_system(raycaster_resulter_system);*/

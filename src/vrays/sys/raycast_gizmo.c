@@ -1,4 +1,4 @@
-void RaycastGizmoSystem(iter* it) {
+void raycast_gizmo_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     byte gizmo_type = 1;
@@ -132,4 +132,4 @@ void RaycastGizmoSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(RaycastGizmoSystem);
+} zoxd_system(raycast_gizmo_system);

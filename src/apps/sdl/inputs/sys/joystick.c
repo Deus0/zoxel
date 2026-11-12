@@ -144,7 +144,7 @@ byte sdl_gamepad_handle_disconnect(SDL_Joystick *joystick) {
     return 1;
 }
 
-void SdlJoystickFetchSystem(iter* it) {
+void sdl_joystick_fetch_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     byte dbg_log_all = 0;
@@ -206,4 +206,4 @@ void SdlJoystickFetchSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(SdlJoystickFetchSystem);*/
+} zoxd_system(sdl_joystick_fetch_system);*/

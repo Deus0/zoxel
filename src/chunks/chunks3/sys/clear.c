@@ -1,4 +1,4 @@
-/*void VoxelNodeQueueClearSystem(iter* it) {
+/*void voxel_node_queue_clear_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_out(VoxelNodeQueue);
@@ -13,9 +13,9 @@
         }
     }
     zox_sys_on_end();
-} zoxd_system(VoxelNodeQueueClearSystem);
+} zoxd_system(voxel_node_queue_clear_system);
 
-void VoxelDropQueueClearSystem(iter* it) {
+void voxel_drop_queue_clear_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_out(VoxelDropQueue);
@@ -30,5 +30,5 @@ void VoxelDropQueueClearSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(VoxelDropQueueClearSystem);*/
+} zoxd_system(voxel_drop_queue_clear_system);*/
 

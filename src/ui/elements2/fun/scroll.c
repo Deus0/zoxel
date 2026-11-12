@@ -1,6 +1,6 @@
 // Scrollviews: a Scrollview has a Scrollbar child (with a ScrollbarHandle) and a list (ListUILink)
 //  - ListStart is the list's first shown element, ListVisible how many show at once
-//  - dragging the handle (ScrollbarSystem) and the mouse wheel (ScrollviewWheelSystem) set the start
+//  - dragging the handle (scrollbar_system) and the mouse wheel (scrollview_wheel_system) set the start
 
 // the furthest the list can scroll, 0 if every element fits
 int get_scrollview_max_start(
@@ -23,7 +23,7 @@ entity get_scrollview_handle(
     return zox_get_child_by_id(world, scrollbar, zox_id(ScrollbarHandle));
 }
 
-// moves the handle along its scrollbar to show start, the inverse of ScrollbarSystem
+// moves the handle along its scrollbar to show start, the inverse of scrollbar_system
 void set_scrollbar_handle_to_start(
     ecs* world,
     entity scrollview,

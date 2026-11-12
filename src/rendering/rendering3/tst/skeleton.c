@@ -179,7 +179,7 @@ void zox_tst_skeleton_check(ecs* world) {
     zox_tst_check(checked_count - hidden - pending, "no visible built skeletons");
 }
 
-void TstSkeletonProbeSystem(iter* it) {
+void tst_skeleton_probe_system(iter* it) {
     zox_sys_on_begin();
     if (!zox_tst_active || zox_tst_active->check != zox_tst_skeleton_check) {
         return;
@@ -204,13 +204,13 @@ void TstSkeletonProbeSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(TstSkeletonProbeSystem);
+} zoxd_system(tst_skeleton_probe_system);
 
 void zox_tsts_skeleton_render(ecs* world) {
     zox_tst_add("skeleton_render", zox_tst_skeleton_ready, zox_tst_skeleton_check, 90);
     // main thread, in zoxp_render with the other main thread systems: no merges of its own (tst pipeline_syncs)
     zox_system_1(
-        TstSkeletonProbeSystem,
+        tst_skeleton_probe_system,
         zoxp_render,
         [in] rendering.MeshIndicies,
         [in] rendering.RenderDisabled,

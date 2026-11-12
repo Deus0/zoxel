@@ -1,5 +1,5 @@
 // NOTE: This builds out Simple Town Data into 2D Maps!
-void TownMapSystem(iter* it) {
+void town_map_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     // byte is_effect_heights = 0;
@@ -300,4 +300,4 @@ void TownMapSystem(iter* it) {
         generate->value = zox_generate_tunk_end;
     }
     zox_sys_on_end();
-} zoxd_system(TownMapSystem);
+} zoxd_system(town_map_system);

@@ -201,6 +201,7 @@ uint vodes_spawn_frame = UINT32_MAX;
 uint vodes_new_chunks_this_frame = 0;
 
 void vodes_spawn_system(iter* it) {
+    zox_sys_on_begin();
     if (zox_disable_vodes) {
         return;
     }
@@ -321,4 +322,5 @@ void vodes_spawn_system(iter* it) {
             zox_add(e, BlocksSpawned);
         }
     }
+    zox_sys_on_end();
 } zoxd_system(vodes_spawn_system);

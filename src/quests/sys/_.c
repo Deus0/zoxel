@@ -3,7 +3,7 @@
 
 void zox_systems_quests(ecs* world) {
     zox_system_1(
-        CharacterPlayerQuestsSystem,
+        character_player_quests_system,
         zoxp_spawn,
         [in] characters.GenerateCharacter,
         [none] characters.Character,

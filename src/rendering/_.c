@@ -44,9 +44,11 @@ byte initialize_rendering(byte render_backend) {
 
 // void viewport_clear(ecs* world) {
 void viewport_clear_system(iter* it) {
+    zox_sys_on_begin();
     float4 clear = color_to_float4(viewport_clear_color);
     zox_gpu_set_clear_color(clear);
     zox_gpu_clear_viewport();
+    zox_sys_on_end();
 } zoxd_system(viewport_clear_system);
 
 void import_rendering(ecs* world) {

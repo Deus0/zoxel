@@ -237,7 +237,7 @@ void build_body_parts(ecs *world, entity slot, CombineList* voxes, CombinePositi
 // for now just set vox, later we spawn item and set it from BodyDirty
 // TODO: When Combining a part, remember where the parent position is, add them in recursively instead of the flat way atm
 // NOTE: Combines into the characters child vox (VoxLink), each child vox belongs to one character
-void BodyCombineSystem(iter* it) {
+void body_combine_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -281,7 +281,7 @@ void BodyCombineSystem(iter* it) {
         zox_setm(vox, NodeDepth, max_depth);
         zox_setm(vox, BlockScale, block_scale->value);
         zox_setm(vox, CombineVox, zox_dirty_trigger);
-        // NOTE: Render at the depth for our chunks distance, like ChunkEntitiesLodSystem
+        // NOTE: Render at the depth for our chunks distance, like chunk_entities_lod_system
         zox_setm(e, MaxRenderDepth, max_depth);
         byte distance = 0;
         if (zox_is_linked_any(world, e, ChunkLink)) {
@@ -300,4 +300,4 @@ void BodyCombineSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(BodyCombineSystem);
+} zoxd_system(body_combine_system);

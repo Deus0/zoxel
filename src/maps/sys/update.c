@@ -1,5 +1,5 @@
 // NOTE: Update Map Position from Player
-void MapPositionSystem(iter* it) {
+void map_position_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -69,7 +69,7 @@ void MapPositionSystem(iter* it) {
                     tunks->value,
                     tunk_position);
                 if (!zox_valid(tunk)) {
-                    zox_logw("MapPositionSystem: Tunk Not Found at [%ix%i]",
+                    zox_logw("map_position_system: Tunk Not Found at [%ix%i]",
                         tunk_position.x,
                         tunk_position.y);
                 } else {
@@ -88,5 +88,5 @@ void MapPositionSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(MapPositionSystem);
+} zoxd_system(map_position_system);
 

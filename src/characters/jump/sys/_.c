@@ -12,7 +12,7 @@ void zox_systems_jump(ecs* world) {
     // jump
     // move these to Jump module? under Characters
     zox_system(
-        JumpSystem,
+        jump_system,
         zoxp_update,
         [in] physics.Grounded,
         [out] jumps.JumpState,
@@ -21,7 +21,7 @@ void zox_systems_jump(ecs* world) {
         [out] jumps.Jump,
      );
     zox_system(
-        JumpForceSystem,
+        jump_force_system,
         zoxp_physics,
         // [in] physics3.Velocity3D,
         [out] physics3.Acceleration3D,
@@ -29,19 +29,19 @@ void zox_systems_jump(ecs* world) {
         [none] !physics.DisableMovement
     );
     zox_system_1(
-        JumpSoundSystem,
+        jump_sound_system,
         zoxp_spawn,
         [in] jumps.JumpState,
         [none] !jumps.SilentJumper
     );
     zox_system_1(
-        LandSoundSystem,
+        land_sound_system,
         zoxp_spawn,
         [in] jumps.LandState,
         [none] !jumps.SilentJumper
     );
     /*zox_system(
-        CanJumpSystem,
+        can_jump_system,
         zoxp_update,
         [in] physics.Grounded,
         [in] jumps.JumpState,
@@ -49,13 +49,13 @@ void zox_systems_jump(ecs* world) {
         [out] jumps.LandState
      );
     zox_system(
-        JumpBeginSystem,
+        jump_begin_system,
         zoxp_update,
         [in] jumps.JumpState,
         [out] jumps.Jump
     );*/
     /*zox_system(
-        Jump3VelSystem,
+        jump3_vel_system,
         zoxp_physics + 1,
         [out] physics3.Velocity3D,
         [out] jumps.Jump,

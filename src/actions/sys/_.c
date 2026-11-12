@@ -6,7 +6,7 @@
 
 void zox_systems_actions(ecs* world) {
     zox_system(
-        ActiveActionSystem,
+        active_action_system,
         zoxp_update,
         [in] actions.ActionIndex,
         [out] actions.ActiveAction,
@@ -14,14 +14,14 @@ void zox_systems_actions(ecs* world) {
         [none] characters.Character,
     );
     zox_system(
-        ActionActivateSystem,
+        action_activate_system,
         zoxp_update,
         [in] core.TriggerActionA,
         [in] actions.ActiveAction,
         [none] characters.Character,
     );
     zox_system(
-        ActiveActionRangeSystem,
+        active_action_range_system,
         zoxp_update,
         [in] actions.ActiveActionDirty,
         [in] actions.ActiveAction,
@@ -30,13 +30,13 @@ void zox_systems_actions(ecs* world) {
         [none] characters.Character
     );
     zox_system_1(
-        CharacterActionsSpawnSystem,
+        character_actions_spawn_system,
         zoxp_spawn,
         [in] characters.GenerateCharacter,
         [none] characters.Character
     );
     zox_system_1(
-        ActiveActionHoldSystem,
+        active_action_hold_system,
         zoxp_spawn,
         [in] actions.ActiveActionDirty,
         [in] actions.ActiveAction,

@@ -7,7 +7,7 @@ zoxc_system_dirty(Attach);
 void zox_systems_cameras(ecs *world) {
     zoxd_system_dirty(Attach);
     zox_system(
-        ViewportResizeSystem,
+        viewport_resize_system,
         zoxp_update,
         [in] apps.WindowSize,
         [none] apps.App,
@@ -15,7 +15,7 @@ void zox_systems_cameras(ecs *world) {
     );
     // View Matrixes
     zox_system(
-        ProjectionMatrixSystem,
+        projection_matrix_system,
         zoxp_update,
         [in] core.PixelSize,
         [in] cameras.FieldOfView,

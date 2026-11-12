@@ -27,6 +27,7 @@ static inline void zox_sys_log_thread(
 }
 
 static void zox_tst_chunks3_safety_read(iter* it) {
+    zox_sys_on_begin();
     zox_sys_log_thread(it, "chunks3_safety_read");
 #if zoxt_chunks3_safety_fields
     zox_sys_begin();
@@ -72,10 +73,12 @@ static void zox_tst_chunks3_safety_read(iter* it) {
             }
         }
     }
+    zox_sys_on_end();
 } zoxd_system(zox_tst_chunks3_safety_read);
 
 // NOTE: Sets random values for nodes
 static void zox_tst_chunks3_safety_write(iter* it) {
+    zox_sys_on_begin();
     zox_sys_log_thread(it, "chunks3_safety_writes");
 #if zoxt_chunks3_safety_fields
     zox_sys_begin();
@@ -115,9 +118,11 @@ static void zox_tst_chunks3_safety_write(iter* it) {
             }
         }
     }
+    zox_sys_on_end();
 } zoxd_system(zox_tst_chunks3_safety_write);
 
 static void zox_tst_chunks3_safety_cull(iter* it) {
+    zox_sys_on_begin();
     zox_sys_log_thread(it, "chunks3_safety_culls");
 #if zoxt_chunks3_safety_fields
     zox_sys_begin();
@@ -163,6 +168,7 @@ static void zox_tst_chunks3_safety_cull(iter* it) {
             }
         }
     }
+    zox_sys_on_end();
 } zoxd_system(zox_tst_chunks3_safety_cull);
 
 zox_tag(Chunks3SafetyRead);

@@ -1,4 +1,4 @@
-void SlideEventSystem(iter* it) {
+void slide_event_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -33,4 +33,4 @@ void SlideEventSystem(iter* it) {
         (*slideEvent->value)(world, &event_data);
     }
     zox_sys_on_end();
-} zoxd_system(SlideEventSystem);
+} zoxd_system(slide_event_system);

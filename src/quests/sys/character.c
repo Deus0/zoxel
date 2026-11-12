@@ -1,4 +1,4 @@
-void CharacterPlayerQuestsSystem(iter* it) {
+void character_player_quests_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -43,4 +43,4 @@ void CharacterPlayerQuestsSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(CharacterPlayerQuestsSystem);
+} zoxd_system(character_player_quests_system);

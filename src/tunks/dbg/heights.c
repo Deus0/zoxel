@@ -2,7 +2,7 @@ extern byte zox_maps_flip_x;
 extern byte zox_maps_flip_z;
 
 // NOTE: Simply creates a height texture from tunks
-void HeightsTextureSystem(iter* it) {
+void heights_texture_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -70,4 +70,4 @@ void HeightsTextureSystem(iter* it) {
         zox_add(e, TextureDirty);
     }
     zox_sys_on_end();
-} zoxd_system(HeightsTextureSystem);
+} zoxd_system(heights_texture_system);

@@ -27,7 +27,7 @@ byte grow_bounds3(
 }
 
 // NOTE: This is what sets a Vox's bounds for Physics use
-void Bounds3GrowSystem(iter* it) {
+void bounds3_grow_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -48,9 +48,9 @@ void Bounds3GrowSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(Bounds3GrowSystem);
+} zoxd_system(bounds3_grow_system);
 
-void Bounds3EnableSystem(iter* it) {
+void bounds3_enable_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -63,11 +63,11 @@ void Bounds3EnableSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(Bounds3EnableSystem);
+} zoxd_system(bounds3_enable_system);
 
 
 // Grows bounds to fit a child vox (VoxLink), when its voxels change, i.e. for characters
-void VoxLinkBounds3GrowSystem(iter* it) {
+void vox_link_bounds3_grow_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -90,4 +90,4 @@ void VoxLinkBounds3GrowSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(VoxLinkBounds3GrowSystem);
+} zoxd_system(vox_link_bounds3_grow_system);

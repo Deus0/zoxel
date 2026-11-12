@@ -8,7 +8,7 @@
 
 void zox_systems_skills(ecs *world) {
     zox_system(
-        SkillToggleSystem,
+        skill_toggle_system,
         zoxp_update,
         [in] timers.Activate,
         [out] skills.SkillActive,
@@ -33,7 +33,7 @@ void zox_systems_skills(ecs *world) {
     );
     // TODO: Make skill activate use resource
     zox_system_1(
-        ShootSystem,
+        shoot_system,
         zoxp_spawn,
         [in] timers.Activate,
         [in] skills.SkillRange,
@@ -42,7 +42,7 @@ void zox_systems_skills(ecs *world) {
         [none] skills.Shoot
     );
     zox_system_1(
-        ProjectileHitSystem,
+        projectile_hit_system,
         zoxp_spawn,
         [in] transforms3.Position3D,
         [in] physics3.Velocity3D,

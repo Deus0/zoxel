@@ -12,7 +12,7 @@ void zox_systems_auras(ecs* world) {
         [none] !core.Dead,
     );
     zox_system_ctx_1(
-        AuraDotSystem,
+        aura_dot_system,
         zoxp_spawn,
         characters,
         [in] skills.SkillActive,
@@ -22,12 +22,12 @@ void zox_systems_auras(ecs* world) {
         [none] auras.Aura
     );
     zox_system(
-        AuraDotRemoveSystem,
+        aura_dot_remove_system,
         zoxp_update,
         [none] skills.AuraDot
     );
     zox_system_1(
-        AuraParticlesSystem,
+        aura_particles_system,
         zoxp_spawn,
         [in] timers.Activate,
         [in] skills.SkillActive,
@@ -36,7 +36,7 @@ void zox_systems_auras(ecs* world) {
         [none] auras.Aura
     );
     zox_system_1(
-        AuraSoundSystem,
+        aura_sound_system,
         zoxp_spawn,
         [in] timers.Activate,
         [none] auras.Aura

@@ -74,7 +74,7 @@ void zox_tst_parts_check(ecs* world) {
 }
 
 // collects realm body part items, only while the test runs
-void TstPartsProbeSystem(iter* it) {
+void tst_parts_probe_system(iter* it) {
     zox_sys_on_begin();
     if (!zox_tst_active || zox_tst_active->check != zox_tst_parts_check) {
         return;
@@ -95,13 +95,13 @@ void TstPartsProbeSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(TstPartsProbeSystem);
+} zoxd_system(tst_parts_probe_system);
 
 void zox_tsts_parts(ecs* world) {
     zox_tst_add("parts", zox_tst_parts_ready, zox_tst_parts_check, 90);
     // main thread, in zoxp_render with the other main thread systems: no merges of its own (tst pipeline_syncs)
     zox_system_1(
-        TstPartsProbeSystem,
+        tst_parts_probe_system,
         zoxp_render,
         [none] parts.BodyItem
     );

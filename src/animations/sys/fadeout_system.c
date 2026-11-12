@@ -5,7 +5,7 @@
     zox_set(e, AnimationStart, { 0 });
 }*/
 
-void FadeoutSystem(iter* it) {
+void fadeout_system(iter* it) {
     zox_sys_on_begin();
     double time = zox_current_time;
     zox_sys_begin();
@@ -25,7 +25,7 @@ void FadeoutSystem(iter* it) {
         alpha->value = float_lerp(1, 0, animation_time);
     }
     zox_sys_on_end();
-} zoxd_system(FadeoutSystem);
+} zoxd_system(fadeout_system);
 
 
     /*

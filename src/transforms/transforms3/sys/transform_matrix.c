@@ -1,6 +1,6 @@
 // todo: why i have to reverse  rotation?? for npcs, fix this shit!
 //  OMG THATS WHY: Its because camera was Z forward instead of Z negative
-void TransformMatrixSystem(iter* it) {
+void transform_matrix_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(Position3D);
@@ -13,4 +13,4 @@ void TransformMatrixSystem(iter* it) {
         matrix->value = float4x4_transform(position->value, rotation->value);
     }
     zox_sys_on_end();
-} zoxd_system(TransformMatrixSystem);
+} zoxd_system(transform_matrix_system);

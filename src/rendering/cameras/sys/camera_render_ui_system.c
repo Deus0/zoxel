@@ -1,5 +1,6 @@
 
 void camera_render_ui_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     if (!rendering) {
         return;
@@ -45,4 +46,5 @@ void camera_render_ui_system(iter* it) {
         }
         render_uis(world, zox_ui_render_queue);
     }
+    zox_sys_on_end();
 } zoxd_system(camera_render_ui_system);

@@ -1,7 +1,7 @@
 // should i grab neighbor states instead, or should i create setters?
 //  probably grab them, its faster to write in my systems
 // When: VoxelNodeDirty is zox_dirty_active
-void ColoredChunkMeshTriggerSystem(iter* it) {
+void colored_chunk_mesh_trigger_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -13,4 +13,4 @@ void ColoredChunkMeshTriggerSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ColoredChunkMeshTriggerSystem);
+} zoxd_system(colored_chunk_mesh_trigger_system);

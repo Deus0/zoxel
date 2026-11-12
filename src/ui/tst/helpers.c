@@ -65,7 +65,7 @@ byte zox_tst_is_within(
     return 0;
 }
 
-// a ui element's centre in pointer space (bottom left origin), as ElementRaycastSystem sees it
+// a ui element's centre in pointer space (bottom left origin), as element_raycast_system sees it
 //  - returns 0 if the element or the canvas's camera isn't ready
 byte zox_tst_ui_pointer_position(
     ecs* world,

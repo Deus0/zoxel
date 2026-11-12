@@ -1,4 +1,4 @@
-void FlowersModelGenerationSystem(iter* it) {
+void flowers_model_generation_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -87,4 +87,4 @@ void FlowersModelGenerationSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(FlowersModelGenerationSystem);
+} zoxd_system(flowers_model_generation_system);

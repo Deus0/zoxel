@@ -3,6 +3,7 @@ char zox_screenshot_request[256] = "";
 
 // wrapper for SDL GL Swap Window
 void app_gpu_end_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     if (!zox_valid(main_app)) {
         zox_loge("[main_app] is missing");
@@ -30,4 +31,5 @@ void app_gpu_end_system(iter* it) {
         // retires frames and keeps every freed/re-uploaded buffer, ~100MB/s until the pc freezes
         glFinish();
     }
+    zox_sys_on_end();
 } zoxd_system(app_gpu_end_system);

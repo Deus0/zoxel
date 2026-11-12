@@ -99,7 +99,7 @@ byte get_place_position(
 
 // TODO: Add Region Position to Town Positions
 // NOTE: Spawns X Towns per region
-void RegionTownsSystem(iter* it) {
+void region_towns_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     uint max_attempts = 100;
@@ -187,4 +187,4 @@ void RegionTownsSystem(iter* it) {
         generate->value = zox_generate_region_towns_homes;
     }
     zox_sys_on_end();
-} zoxd_system(RegionTownsSystem);
+} zoxd_system(region_towns_system);

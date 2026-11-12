@@ -34,14 +34,14 @@ void zox_systems_stats(ecs *world) {
         [none] core.DeathDirty
     );
     zox_system(
-        DeathAnimationSystem,
+        death_animation_system,
         zoxp_update,
         [out] animations.AnimationState,
         [out] animations.AnimationStart,
         [none] core.DeathDirty,
     );
     zox_system_1(
-        ExperienceSystem,
+        experience_system,
         zoxp_spawn,
         [none] core.Dead,
         [none] core.DeathDirty,
@@ -56,14 +56,14 @@ void zox_systems_stats(ecs *world) {
         [none] stats.StatLevel
     );
     zox_system_1(
-        CharacterStatsSystem,
+        character_stats_system,
         zoxp_spawn,
         [none] characters.Character,
         [none] core.Initialize,
         [none] !players.PlayerCharacter
     );
     zox_system_1(
-        PlayerCharacterStatsSystem,
+        player_character_stats_system,
         zoxp_spawn,
         [none] characters.Character,
         [none] core.Initialize,
@@ -74,7 +74,7 @@ void zox_systems_stats(ecs *world) {
         [none] players.Player
     );
     zox_system_ctx_1(
-        CharacterNameLabelsSystem,
+        character_name_labels_system,
         zoxp_spawn,
         name_label_players,
         [in] core.ZoxName,

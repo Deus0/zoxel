@@ -1,7 +1,7 @@
 extern entity get_linked_character(ecs*, entity);
 
 // NOTE: Sets to playing when resuming from pause
-void PlayerStateSystem(iter* it) {
+void player_state_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     double pause_time = 0.3;
@@ -116,5 +116,5 @@ void PlayerStateSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(PlayerStateSystem);
+} zoxd_system(player_state_system);
 

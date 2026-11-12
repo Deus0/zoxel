@@ -69,7 +69,7 @@ void generate_weights(
 }
 
 // When the skeleton updates, regenerate weights for all its meshes
-void BoneIndexGenerateSystem(iter* it) {
+void bone_index_generate_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -93,10 +93,10 @@ void BoneIndexGenerateSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(BoneIndexGenerateSystem);
+} zoxd_system(bone_index_generate_system);
 
 // Generates a skeleton mesh's weights from its parent's bones
-void BoneIndexGenerateSystem2(iter* it) {
+void bone_index_generate_system2(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -127,4 +127,4 @@ void BoneIndexGenerateSystem2(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(BoneIndexGenerateSystem2);
+} zoxd_system(bone_index_generate_system2);

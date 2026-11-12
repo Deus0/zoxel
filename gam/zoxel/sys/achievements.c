@@ -1,4 +1,4 @@
-void AchievementRealmSpawnSystem(iter* it) {
+void achievement_realm_spawn_system(iter* it) {
     zox_sys_on_begin();
     // zox_sys_world();
     zox_sys_begin();
@@ -13,4 +13,4 @@ void AchievementRealmSpawnSystem(iter* it) {
         // zox_logv("At [%f] Realm [achievements] [%i] spawned.", zox_current_time, achievements->length);
     }
     zox_sys_on_end();
-} zoxd_system(AchievementRealmSpawnSystem);
+} zoxd_system(achievement_realm_spawn_system);

@@ -10,7 +10,7 @@
 //  - forces: gravity (and anything added before zoxp_physics: controllers, ai in zoxp_update)
 //  - an exact step of velocity and position (see physics/fun), friction included
 //  - spin: rolling sets it, then an exact step of omega and rotation, angular drag included
-//  - forces added in zoxp_physics by later modules (i.e. JumpForceSystem) land next frame
+//  - forces added in zoxp_physics by later modules (i.e. jump_force_system) land next frame
 //  - each body moves in exactly one linear and one spin system, picked by its components
 void zox_systems_physics3(ecs *world) {
     zox_system(
@@ -21,7 +21,7 @@ void zox_systems_physics3(ecs *world) {
         [none] !physics.DisableGravity
     );
     zox_system(
-        Physics3DDisableSystem,
+        physics3d_disable_system,
         zoxp_physics,
         [out] InitializePhysics3D,
         [out] physics3.Velocity3D,
@@ -101,7 +101,7 @@ void zox_systems_physics3(ecs *world) {
         [none] physics.Frictioned
     );
     zox_system(
-        Omega3System,
+        omega3_system,
         zoxp_physics,
         [out] physics3.Omega3D,
         [out] transforms3.Rotation3D,
@@ -109,7 +109,7 @@ void zox_systems_physics3(ecs *world) {
         [none] !physics.Frictioned
     );
     zox_system(
-        Omega3DampedSystem,
+        omega3_damped_system,
         zoxp_physics,
         [out] physics3.Omega3D,
         [out] transforms3.Rotation3D,
@@ -117,7 +117,7 @@ void zox_systems_physics3(ecs *world) {
         [none] physics.Frictioned
     );
     zox_system(
-        Position3DBoundsSystem,
+        position3d_bounds_system,
         zoxp_physics,
         [in] transforms3.Position3DBounds,
         [in] transforms3.Bounds3D,

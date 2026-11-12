@@ -1,5 +1,5 @@
 // NOTE: Allows player to fly up or down when flymode is active
-void PlayerFlySystem(iter* it) {
+void player_fly_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -50,4 +50,4 @@ void PlayerFlySystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(PlayerFlySystem);
+} zoxd_system(player_fly_system);

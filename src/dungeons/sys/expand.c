@@ -8,7 +8,7 @@ typedef struct {
 } TerrainPlacePosition;
 
 // TODO: Use Structures for Placement Data
-void DungeonBlockSystem(iter* it) {
+void dungeon_block_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -156,4 +156,4 @@ void DungeonBlockSystem(iter* it) {
         // zox_log("+ Dungeon Block Placing: %s [%ix%ix%i]: %i", zox_get_name(e), position.x, position.y, position.z, place_type)
     }
     zox_sys_on_end();
-} zoxd_system(DungeonBlockSystem);
+} zoxd_system(dungeon_block_system);

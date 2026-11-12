@@ -3,7 +3,7 @@
 
 void zox_systems_saves(ecs* world) {
     zox_system(
-        SaveBeginSystem,
+        save_begin_system,
         zoxp_update,
         [in] saves.SaveGamePath,
         [out] saves.FileLink,

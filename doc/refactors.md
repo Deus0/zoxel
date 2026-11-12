@@ -38,15 +38,15 @@
 - Refactor Texture Generation into Nodegraphs
 
 Modules
--x Move AnimateTextSystem from dialogue to ui/texts
+-x Move animate_text_system from dialogue to ui/texts
 
 Events
 - Refactor all 'SettingsSystem' into events on prefab_app
-	- StreamingSettingsSystem
-	- SoundsSettingsSystem
+	- streaming_settings_system
+	- sounds_settings_system
 	- RenderingSettingsSystem
-	- NpcsSettingsSystem
-	- ModelsSettingsSystem
+	- npcs_settings_system
+	- models_settings_system
 	- BonesSettingsSystem
 	- AiSettingsSystem
 - Refactor ([in] players.PlayerState) with new PlayerStateEvent listener
@@ -122,7 +122,7 @@ UIs
 
 Input Refactor
 - Make input actions events instead of systems
-    - Pause key - PlayerPauseSystem
+    - Pause key - player_pause_system
 	
 ## Remove old structs
 	- CanvasData
@@ -164,8 +164,8 @@ Input Refactor
 
 ## Events
 - Move sound systems to events too
-    - PickupSoundSystem
-    - LandSoundSystem
+    - pickup_sound_system
+    - land_sound_system
 - Remove state systems and just use event components with listeners
 
 ## Devops
@@ -183,7 +183,7 @@ Input Refactor
 
 ## Data
 - Remove build states when not building (60ms)
-    - ChunkMeshColorsTriggerSystem
+    - chunk_mesh_colors_trigger_system
     - ChunkTexturedBuildSystem
     - SmoothLightsBuildSystem
     - BuildMesh

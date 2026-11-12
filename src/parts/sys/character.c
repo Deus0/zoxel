@@ -6,7 +6,7 @@ extern void add_tag_hat_slot(ecs*, entity);
 extern entity spawn_equip_slot(ecs* world, entity parent, byte anchor);
 
 // NOTE: Spawns in body parts from Realm
-void CharacterBodySpawnSystem(iter* it) {
+void character_body_spawn_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -239,4 +239,4 @@ void CharacterBodySpawnSystem(iter* it) {
         // TODO: Once we attach chest to this slot, we should spawn sub slots of chest onto the slot
     }
     zox_sys_on_end();
-} zoxd_system(CharacterBodySpawnSystem);
+} zoxd_system(character_body_spawn_system);

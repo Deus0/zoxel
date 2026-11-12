@@ -1,6 +1,6 @@
 // The realm's in game music (generated), played when the player's character spawns
 //  - the main menu's music is on the game (spawn_menu_music), it lasts from boot
-void MusicRealmSpawnSystem(iter* it) {
+void music_realm_spawn_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -25,7 +25,7 @@ void MusicRealmSpawnSystem(iter* it) {
         zox_logv("Realm [musics] [X] spawned.");
     }
     zox_sys_on_end();
-} zoxd_system(MusicRealmSpawnSystem);
+} zoxd_system(music_realm_spawn_system);
 
 // The main menu's music, on the game: the imported song (res/music, make convert), or a
 // generated one if it won't load, it crossfades with the realm's music (crossfade_music)

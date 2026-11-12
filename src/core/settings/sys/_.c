@@ -3,14 +3,14 @@
 
 void zox_systems_settings(ecs* world) {
     zox_system(
-        SettingSaveSystem,
+        setting_save_system,
         zoxp_update,
         [in] settings.SettingDirty,
         [none] settings.Setting
     );
     // Can we take in game name from App??
     zox_system(
-        SettingsLoadSystem,
+        settings_load_system,
         zoxp_update,
         [in] core.ZoxName,
         [out] settings.LoadSettings,

@@ -24,20 +24,20 @@ void zox_systems_transforms3(ecs *world) {
     // TODO: Merge these limits, EulerLimits float4
     // TODO: Put this in a new zoxp_transform_limit phase
     zox_system(
-        EulerLimitXSystem,
+        euler_limit_x_system,
         zoxp_update,
         [in] EulerLimitX,
         [out] Euler
     );
     zox_system(
-        EulerLimitZSystem,
+        euler_limit_z_system,
         zoxp_update,
         [in] EulerLimitZ,
         [out] Euler
     );
     // Transform our euler to quaternion
     zox_system(
-        EulerOverrideSystem,
+        euler_override_system,
         zoxp_update,
         [in] Euler,
         [out] Rotation3D,
@@ -45,7 +45,7 @@ void zox_systems_transforms3(ecs *world) {
     );
     // NOTE: No Scales
     zox_system(
-        TransformMatrixSystem,
+        transform_matrix_system,
         zoxp_transform_end,
         [in] Position3D,
         [in] Rotation3D,
@@ -56,7 +56,7 @@ void zox_systems_transforms3(ecs *world) {
     );
     // Scale1
     zox_system(
-        TransformMatrixScaleSystem,
+        transform_matrix_scale_system,
         zoxp_transform_end,
         [in] Position3D,
         [in] Rotation3D,
@@ -66,7 +66,7 @@ void zox_systems_transforms3(ecs *world) {
         [none] !transforms3.Scale3,
     );
     zox_system(
-        TransformMatrixScale3System,
+        transform_matrix_scale3_system,
         zoxp_transform_end,
         [in] Position3D,
         [in] Rotation3D,

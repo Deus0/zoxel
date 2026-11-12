@@ -88,7 +88,7 @@ byte sunbeam(
 }
 
 // Queued side updates for propogation
-void LightBeamSystem(iter* it) {
+void light_beam_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     const uint max_beams = 256;
@@ -189,7 +189,7 @@ void LightBeamSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(LightBeamSystem);
+} zoxd_system(light_beam_system);
 
 
 

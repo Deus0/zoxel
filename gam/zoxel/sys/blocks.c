@@ -1,5 +1,5 @@
 // NOTE: Spawns Realm Specific Blocks (Global ones)
-void BlocksRealmSpawnSystem(iter* it) {
+void blocks_realm_spawn_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -106,4 +106,4 @@ void BlocksRealmSpawnSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(BlocksRealmSpawnSystem);
+} zoxd_system(blocks_realm_spawn_system);

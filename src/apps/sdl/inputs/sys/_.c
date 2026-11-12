@@ -12,20 +12,20 @@ void zox_systems_sdl_inputs(ecs* world) {
     );
     // NOTE: We must constrain after extracting
     zox_system_1(
-        MouseConstrainSystem,
+        mouse_constrain_system,
         zoxp_inputs_extract,
         [in] inputs.MouseLock,
         [none] inputs.Mouse,
         [none] !core.Disabled,
     );
     zox_system_1(
-        KeyboardExtractSystem,
+        keyboard_extract_system,
         zoxp_inputs_extract,
         [out] inputs.Keyboard,
        // [none] inputs.Keyboard
     );
     zox_system_1(
-        TouchscreenExtractSystem,
+        touchscreen_extract_system,
         zoxp_inputs_extract,
         [out] core.PixelSize,
         [none] inputs.Touchscreen

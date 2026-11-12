@@ -10,7 +10,7 @@ void zox_systems_collisions3(ecs *world) {
     //      maybe we keep last_collision state? and we response based on it?? idk
     //      idk how the systems might overlap so its hard
     zox_system_1(
-        CollisionDebugSystem,
+        collision_debug_system,
         zoxp_spawn,
         [in] collisions3.CollisionDistance,
         [in] transforms3.Position3D,
@@ -26,7 +26,7 @@ void zox_systems_collisions3(ecs *world) {
         [none] SphereCollider
     );
     zox_system_ctx_1(
-        SphereCollideSystem,
+        sphere_collide_system,
         zoxp_spawn,
         sphere_colliders,
         [in] transforms3.Position3D,
@@ -36,7 +36,7 @@ void zox_systems_collisions3(ecs *world) {
     );
 #ifdef zox_gizmos_sphere_colliders
     zox_system_1(
-        SphereColliderDrawSystem,
+        sphere_collider_draw_system,
         zoxp_spawn,
         [in] rendering.RenderDisabled,
         [in] transforms3.Position3D,
@@ -46,7 +46,7 @@ void zox_systems_collisions3(ecs *world) {
 #endif
     // NOTE: timing specific, fucks up if changes position
     zox_system(
-        Bounds3GrowSystem,
+        bounds3_grow_system,
         zoxp_update,
         [in] chunks3.ChunkSize,
         [in] blocks.BlockScale,
@@ -55,14 +55,14 @@ void zox_systems_collisions3(ecs *world) {
         [none] chunks3.VoxelNodePostDirty,
     );
     zox_system(
-        VoxLinkBounds3GrowSystem,
+        vox_link_bounds3_grow_system,
         zoxp_update,
         [out] transforms3.Bounds3D,
         [out] transforms3.Bounds3Dirty,
         [none] chunks3.VoxOwner,
     );
     zox_system(
-        Bounds3EnableSystem,
+        bounds3_enable_system,
         zoxp_update,
         [in] transforms3.Bounds3Dirty,
         [none] physics.DisableMovement

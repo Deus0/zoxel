@@ -1,7 +1,7 @@
 extern entity spawn_item_mesh(ecs*, entity, entity, float);
 
 // NOTE: Uses slot index to equip a new action
-void ActiveActionHoldSystem(iter* it) {
+void active_action_hold_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     // TODO: If item changes?
@@ -111,4 +111,4 @@ void ActiveActionHoldSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ActiveActionHoldSystem);
+} zoxd_system(active_action_hold_system);

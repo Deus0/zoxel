@@ -2,6 +2,7 @@
 // NOTE: This flips mouse position to match our engine
 
 void mouse_input_system(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     int2 global_mouse_position;
@@ -103,4 +104,5 @@ void mouse_input_system(iter* it) {
             }
         }
     }
+    zox_sys_on_end();
 } zoxd_system(mouse_input_system);

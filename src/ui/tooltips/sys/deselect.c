@@ -1,6 +1,6 @@
 // NOTE: The tooltip will shut down when no more uis are linked to it.
 // NOTE: This might of been when the selected dies too
-void TooltipDeselectSystem(iter* it) {
+void tooltip_deselect_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = zox_log_tooltips;
     zox_sys_world();
@@ -26,4 +26,4 @@ void TooltipDeselectSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(TooltipDeselectSystem);
+} zoxd_system(tooltip_deselect_system);

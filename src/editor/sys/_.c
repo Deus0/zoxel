@@ -8,7 +8,7 @@
 
 void zox_systems_editor(ecs *world) {
     zox_system(
-        FpsDisplaySystem,
+        fps_display_system,
         zoxp_update,
         [out] texts.TextData,
         [out] editor.FPSDisplayTicker,
@@ -16,7 +16,7 @@ void zox_systems_editor(ecs *world) {
         [none] editor.FPSDisplay,
     );
     zox_system(
-        DebugLabelSystem,
+        debug_label_system,
         zoxp_update,
         [in] editor.DebugLabelData,
         [out] texts.TextData,
@@ -24,7 +24,7 @@ void zox_systems_editor(ecs *world) {
         [none] editor.GameDebugLabel
     );
     zox_system(
-        InspectorLabelSystem,
+        inspector_label_system,
         zoxp_update,
         [in] rendering.RenderDisabled,
         [in] core.ComponentType,
@@ -33,27 +33,27 @@ void zox_systems_editor(ecs *world) {
         [none] editor.InspectorLabel
     );
     zox_system_1(
-        HierarchySpawnSystem,
+        hierarchy_spawn_system,
         zoxp_spawn,
         [in] editor.HierarchyUIDirty,
         [in] core.EntityTarget,
         [in] ui.ElementFontSize
     );
     zox_system_1(
-        InspectorSpawnSystem,
+        inspector_spawn_system,
         zoxp_spawn,
         [in] editor.InspectorDirty,
         [in] core.EntityTarget,
         [in] ui.FontSize
     );
     zox_system_1(
-        EditorInputSystem,
+        editor_input_system,
         zoxp_spawn,
         [none] players.Player
     );
 #ifdef zox_time_systems
     zox_system(
-        MaxSystemTimeLabelSystem,
+        max_system_time_label_system,
         zoxp_update,
         [out] texts.TextData,
         [none] texts.Text,

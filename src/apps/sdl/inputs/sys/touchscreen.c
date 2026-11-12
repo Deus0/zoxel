@@ -145,7 +145,7 @@ byte link_sdl_new_finger(ecs *world, int2 screen_size, const entity* children, u
     return 1;
 }
 
-void TouchscreenExtractSystem(iter* it) {
+void touchscreen_extract_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     // TODO: Remove this, its bad
@@ -207,4 +207,4 @@ void TouchscreenExtractSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(TouchscreenExtractSystem);
+} zoxd_system(touchscreen_extract_system);

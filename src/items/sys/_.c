@@ -22,21 +22,21 @@ void zox_systems_items(ecs* world) {
         [none] chunks3.Chunk3
     );
     zox_system_1(
-        CharacterItemsSpawnSystem,
+        character_items_spawn_system,
         zoxp_spawn,
         [in] characters.GenerateCharacter,
         [none] characters.Character,
     );
     // NOTE: Timing issues due to Queue Clearing
     zox_system_1(
-        ItemActivateSystem,
+        item_activate_system,
         zoxp_spawn,
         [in] timers.Activate,
         [out] items.Quantity,
         [none] ItemBlock
     );
     zox_system_1(
-        ItemConsumeSystem,
+        item_consume_system,
         zoxp_spawn,
         [in] timers.Activate,
         [in] items.ConsumeValue,

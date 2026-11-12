@@ -27,7 +27,7 @@ static inline void setup_character3(
     byte render_depth = camera_distance_to_npc_render_depth(
         render_distance,
         max_depth);
-    // NOTE: Render children spawn in CharacterChildrenSpawnSystem
+    // NOTE: Render children spawn in character_children_spawn_system
     // zox_log("Spawning Character [%s] with Model [%s] of render type [%i]", name, zox_get_name(model), type);
     if (dbg_log) {
         zox_log("Character [%s] At [%fx%fx%f]",

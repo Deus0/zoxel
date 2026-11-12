@@ -1,4 +1,4 @@
-void CombineVoxSystem(iter* it) {
+void combine_vox_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     ushort max_colors = 255;
@@ -165,7 +165,7 @@ void CombineVoxSystem(iter* it) {
         zox_log(" - bscale [%f]", bscale->value);*/
     }
     zox_sys_on_end();
-} zoxd_system(CombineVoxSystem);
+} zoxd_system(combine_vox_system);
 
         /*byte new_depth = 0;
         // float new_scale = 0;

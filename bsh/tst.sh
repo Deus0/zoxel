@@ -92,6 +92,22 @@ fi
 root="$(pwd)"
 log_dir="${root}/bin/tst"
 mkdir -p "${log_dir}"
+# lint_* tests are scripts (bsh/<name>.sh), not the game: conventions, i.e. lint_systems
+lints=(lint_systems)
+run_lint() {
+    bash "${root}/bsh/${1}.sh" > "${log_dir}/${1}.log" 2>&1
+    local code=$?
+    grep -a "\[tst\] \[${1}\]" "${log_dir}/${1}.log" | sed 's/^/    /'
+    [[ ${code} != 0 ]] && head -20 "${log_dir}/${1}.log" | grep -v "\[tst\]" | sed 's/^/    | /'
+    return ${code}
+}
+
+if [[ "${name}" == lint_* ]]; then
+    run_lint "${name}"
+    exit $?
+fi
+
+mkdir -p "${log_dir}"
 
 if [[ ${build} == "1" ]]; then
     echo "> building debug"
@@ -275,7 +291,7 @@ if [[ "${name}" != "all" ]]; then
     fi
     tsts=("${name}")
 else
-    tsts=($(list_tsts))
+    tsts=("${lints[@]}" $(list_tsts))
 fi
 if [[ ${#tsts[@]} == 0 ]]; then
     echo "!! no tests found, see [bin/tst/list.log]"
@@ -288,6 +304,10 @@ failed=()
 for ((r = 1; r <= repeat; r++)); do
     [[ ${repeat} != "1" ]] && echo "> repeat [${r}/${repeat}]"
     for tst in "${tsts[@]}"; do
+        if [[ "${tst}" == lint_* ]]; then
+            run_lint "${tst}" && passed+=("${tst}") || failed+=("${tst}")
+            continue
+        fi
         if run_tst "${tst}"; then
             passed+=("${tst}")
         else

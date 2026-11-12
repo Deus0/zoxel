@@ -2,7 +2,7 @@
 
 // todo: it shouldnt use setters
 //      - we should get player data from a Character!
-void Player3DJumpSystem(iter* it) {
+void player3d_jump_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -72,4 +72,4 @@ void Player3DJumpSystem(iter* it) {
 #endif
     }
     zox_sys_on_end();
-} zoxd_system(Player3DJumpSystem);
+} zoxd_system(player3d_jump_system);

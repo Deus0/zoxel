@@ -21,6 +21,7 @@ void skip_time_to_current() {
 }*/
 
 void iterate_time_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     double last_time = zox_current_time;
     zox_current_time = current_time_in_seconds() - time_begin;
@@ -67,6 +68,7 @@ void iterate_time_system(iter* it) {
     zox_log(" > frame time [%fms]\n", (float) (zox_delta_time * 1000.0f))
 #endif
     zox_delta_time_system = 0;
+    zox_sys_on_end();
 } zoxd_system(iterate_time_system);
 
 float get_total_time_seconds() {

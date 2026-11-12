@@ -1,5 +1,5 @@
 // todo: alter frequency over time during sound
-void SoundGenerateSystem(iter* it) {
+void sound_generate_system(iter* it) {
     zox_sys_on_begin();
     if (nosounds || !master_volume) {
         return;
@@ -24,7 +24,7 @@ void SoundGenerateSystem(iter* it) {
             continue;
         }
         if (!soundData->value) {
-            zox_logw("Sound Data missing in [SoundGenerateSystem]");
+            zox_logw("Sound Data missing in [sound_generate_system]");
             continue;
         }
         float noise = sound_noise * (rand() % 101) / 100.0f;
@@ -37,11 +37,11 @@ void SoundGenerateSystem(iter* it) {
             soundData->value,
             soundData->length))
         {
-            zox_logw("Unknown instrument [%i] in [SoundGenerateSystem]", instrumentType->value);
+            zox_logw("Unknown instrument [%i] in [sound_generate_system]", instrumentType->value);
         }
         triggerSound->value = zox_dirty_trigger;
         zox_logv("+ generated sound (%f)", soundVolume->value);
         zox_sys_increment();
     }
     zox_sys_on_end();
-} zoxd_system(SoundGenerateSystem);
+} zoxd_system(sound_generate_system);

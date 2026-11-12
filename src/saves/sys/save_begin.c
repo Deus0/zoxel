@@ -1,5 +1,5 @@
 // NOTE: Begin Saving to a File!
-void SaveBeginSystem(iter* it) {
+void save_begin_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -30,4 +30,4 @@ void SaveBeginSystem(iter* it) {
         zox_add(e, Saving);
     }
     zox_sys_on_end();
-} zoxd_system(SaveBeginSystem);
+} zoxd_system(save_begin_system);

@@ -4,7 +4,7 @@
 
 // TODO: Refactor this into Zevice, Input State -> Action
 // NOTE: Player Input -> Character Triggers
-void Player3DTriggerSystem(iter* it) {
+void player3d_trigger_system(iter* it) {
     zox_sys_on_begin();
     if (zox_dbg_touch_with_mouse) {
         return;
@@ -97,4 +97,4 @@ void Player3DTriggerSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(Player3DTriggerSystem);
+} zoxd_system(player3d_trigger_system);

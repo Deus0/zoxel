@@ -1,7 +1,7 @@
 
 // uses terrain's texture links to generate a tilemap
 // todo: support for multiple sizes, would have to place them in? or something
-void TilemapUVSystem(iter* it) {
+void tilemap_uv_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     byte faces_per_block = 6;
@@ -161,7 +161,7 @@ void TilemapUVSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(TilemapUVSystem);
+} zoxd_system(tilemap_uv_system);
 
 
 /*uvs->value[uv_index + 0] = float2_add(tile_uv, float2_mul1(voxel_face_uvs[face_index][0], unit_sizef));

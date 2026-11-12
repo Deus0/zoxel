@@ -1,5 +1,5 @@
 
-void GridSystem(iter* it) {
+void grid_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -68,9 +68,9 @@ void GridSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(GridSystem);
+} zoxd_system(grid_system);
 
-/*void GridSystem(iter* it) {
+/*void grid_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -134,6 +134,6 @@ void GridSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(GridSystem);*/
+} zoxd_system(grid_system);*/
 
 

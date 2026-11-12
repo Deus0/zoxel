@@ -1,4 +1,4 @@
-void LerpToEntitySystem(iter* it) {
+void lerp_to_entity_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -31,4 +31,4 @@ void LerpToEntitySystem(iter* it) {
         // zox_log("lerp [%f] pos [%fx%fx%f]", lerp, position->value.x, position->value.y, position->value.z);
     }
     zox_sys_on_end();
-} zoxd_system(LerpToEntitySystem);
+} zoxd_system(lerp_to_entity_system);

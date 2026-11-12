@@ -1,6 +1,6 @@
 // Grab all the settings and add to a single user file
 // TODO: Do this per app, its so weird seeing this monstrosity
-void SettingSaveSystem(iter* it) {
+void setting_save_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -59,4 +59,4 @@ void SettingSaveSystem(iter* it) {
     }
     fclose(file);
     zox_sys_on_end();
-} zoxd_system(SettingSaveSystem);
+} zoxd_system(setting_save_system);

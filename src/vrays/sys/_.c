@@ -3,13 +3,13 @@
 
 void zox_systems_vrays(ecs* world) {
     zox_system(
-        Chunk3RaycastSystem,
+        chunk3_raycast_system,
         zoxp_update,
         [in] vrays.RaycastRange,
         [out] vrays.RaycastVoxelData
     );
     zox_system_1(
-        RaycastGizmoSystem,
+        raycast_gizmo_system,
         zoxp_spawn,
         [in] vrays.RaycastVoxelData,
         [in] vrays.RaycastType,

@@ -1,4 +1,4 @@
-void InsideBlockSystem(iter* it) {
+void inside_block_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -64,4 +64,4 @@ void InsideBlockSystem(iter* it) {
         zox_add(e, InsideBlockDirty);
     }
     zox_sys_on_end();
-} zoxd_system(InsideBlockSystem);
+} zoxd_system(inside_block_system);

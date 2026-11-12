@@ -56,7 +56,7 @@ zoxc_custom(SoundData);
     }
 })*/
 
-void on_destroyed_SoundData(iter *it) {
+void on_destroyed_SoundData(iter* it) {
     byte dbg_log = 0;
     zox_sys_begin();
     zox_sys_out(SoundData);

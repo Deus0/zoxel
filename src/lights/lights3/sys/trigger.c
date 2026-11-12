@@ -1,6 +1,6 @@
 // When Mesh Rebuilds, rebuild our colors too based on lights
 // If queue empty + lightnode dirty, activate!
-void ChunkColorsTriggerSystem(iter* it) {
+void chunk_colors_trigger_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -29,10 +29,10 @@ void ChunkColorsTriggerSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ChunkColorsTriggerSystem);
+} zoxd_system(chunk_colors_trigger_system);
 
 // NOTE: Generates lights again when the neighbor lights update
-void ChunkNeighborLightTriggerSystem(iter* it) {
+void chunk_neighbor_light_trigger_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
@@ -67,5 +67,5 @@ void ChunkNeighborLightTriggerSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(ChunkNeighborLightTriggerSystem);
+} zoxd_system(chunk_neighbor_light_trigger_system);
 

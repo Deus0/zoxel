@@ -19,7 +19,7 @@ void set_vode_lods(ecs *world, const VoxelNode *node, byte render_depth) {
 }
 
 // NOTE: Sets the World Blocks Depths
-void VodesLodSystem(iter* it) {
+void vodes_lod_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -44,4 +44,4 @@ void VodesLodSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(VodesLodSystem);
+} zoxd_system(vodes_lod_system);

@@ -8,12 +8,12 @@ void zox_systems_sdl(ecs* world) {
         0 // [none] SDLWindow
     );
     zox_system(
-        HideVirtualKeyboardSystem,
+        hide_virtual_keyboard_system,
         zoxp_update,
         [in] SDLWindow
     );
     zox_system(
-        ToggleVirtualKeyboardSystem,
+        toggle_virtual_keyboard_system,
         zoxp_update,
         [in] inputs.Keyboard
     );

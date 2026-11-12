@@ -51,7 +51,7 @@ int open_socket(int port) {
     return sock;
 }
 
-void SocketSystem(iter* it) {
+void socket_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 1;
     zox_sys_begin();
@@ -71,4 +71,4 @@ void SocketSystem(iter* it) {
         }
     }
     zox_sys_on_end();
-} zoxd_system(SocketSystem);
+} zoxd_system(socket_system);
