@@ -13,13 +13,14 @@ zox_sys2(CharacterPlayerQuestsSystem) {
             zox_loge("[player_quests] Invalid [realm]");
             continue;
         }
-        // Give Random Quest
+        // Give a starting quest, not the slay quest: quest givers offer that one (gam/zoxel/sys/dialogues.c),
+        //  starting with it they only said "You have already been commanded."
         entity player_start_quest = 0;
         iter it2 = zox_children(world, realm);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
                 entity quest = it2.entities[j];
-                if (!zox_has(quest, Quest)) {
+                if (!zox_has(quest, Quest) || zox_has(quest, SlayQuest)) {
                     continue;
                 }
                 if (!player_start_quest) {

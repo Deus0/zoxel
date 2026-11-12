@@ -23,10 +23,22 @@ void process_arguments_apps(ecs *world, char* args[], int count) {
             fullscreen = 0;
             maximized = 0;
             nosounds = 1;
+            // silent: tests turn sounds on to check them (music_plays), the device opened before args
+#ifdef zox_sdl
+            if (audio_enabled) {
+                zox_dispose_audio();
+                audio_enabled = 0;
+            }
+#endif
             zox_log("+ setting enabled [background]");
         } else if (strcmp(args[i], "--sounds") == 0) {
             // after --background, i.e. tests that listen (bash bsh/tst.sh <name> --sounds)
             nosounds = 0;
+#ifdef zox_sdl
+            if (!audio_enabled) {
+                initialize_sounds();
+            }
+#endif
             zox_log("+ setting enabled [sounds]");
         } else if (strcmp(args[i], "--nodecor") == 0) {
             disable_apps_decor = 1;

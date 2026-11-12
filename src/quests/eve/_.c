@@ -7,16 +7,17 @@ extern entity get_speaker_b(ecs*, entity);
 #include "marker.c"
 
 void zox_events_quests(ecs* world) {
+    // when a node begins (Begin is added each time a process moves to a node, Update only when it wasn't
+    //  already there, so a process dirtied again missed its quest nodes: has quest said "You did well...")
     zox_on_add(
         zox_event_give_quest,
         [none] nodes.NodeRun,
-        [none] core.Update,
+        [none] core.Begin,
     );
-    // TODO: Add observer for has quest
     zox_on_add(
         zox_event_has_quest,
         [none] nodes.NodeRun,
-        [none] core.Update,
+        [none] core.Begin,
     );
     zox_on_add(
         zox_event_quest_slay,

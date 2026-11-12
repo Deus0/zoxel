@@ -27,6 +27,7 @@ void zox_event_has_quest(iter* it) {
         // if character has quest
         // go through all characters quests
         entity user_quest = get_user_quest(world, quest_taker, quest);
+
         /*iter it2 = zox_children(world, quest_taker);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {

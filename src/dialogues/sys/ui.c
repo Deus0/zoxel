@@ -26,6 +26,10 @@ zox_sys2(DialogueSpeechSystem) {
             zox_loge("Current node invalid in dialogue");
             continue;
         }
+        // only speech is said, checks and actions (has quest, give quest) run unseen (they flashed ".....")
+        if (!zox_has(node, SpeechNode)) {
+            continue;
+        }
         const char* text =
             zox_has(node, DialogueText) ?
                 zox_getv(node, DialogueText) :
