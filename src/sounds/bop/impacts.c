@@ -33,6 +33,6 @@ float impact_sound(float time, float frequency) {
 float whoosh_sound(float time, float frequency) {
     const float swell = sinf(fminf(1, time * 4) * M_PI);
     const float dull = impact_noise(time, frequency * 8, 0.7f);
-    const float bright = impact_noise(time, frequency * 20, 1.9f);
-    return dull * (1 - 0.5f * swell) + bright * swell * 0.7f + 0.2f * sinf(2 * M_PI * frequency * 2 * time);
+    const float bright = impact_noise(time, frequency * 13, 1.9f);
+    return dull * (1 - 0.4f * swell) + bright * swell * 0.45f + 0.25f * sinf(2 * M_PI * frequency * 2 * time);
 }
