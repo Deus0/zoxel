@@ -105,8 +105,8 @@ static inline byte zox_tst_song_in_key(const Song* song, int note) {
     return 0;
 }
 
-// mixes a song's notes into a .wav, as the music system would play them
-void zox_tst_render_song(const Song* song, const char* path) {
+// mixes a song's notes as the music system plays them, each note scaled by gain (the game's music volume)
+float* zox_tst_mix_song(const Song* song, float gain, uint* out_length) {
     const uint step_samples = (uint) (song->step_seconds * sound_sample_rate);
     const uint length = song->steps_count * step_samples + 3 * sound_sample_rate;
     float* mix = calloc(length, sizeof(float));
@@ -119,13 +119,22 @@ void zox_tst_render_song(const Song* song, const char* path) {
             }
             const float seconds = fminf(2.8f, n.steps * song->step_seconds * (v ? 1.1f : 1.0f));
             const uint note_length = (uint) (seconds * sound_sample_rate);
-            generate_instrument_samples(n.instrument, note_frequencies[n.note], seconds, n.volume, 0, note, note_length);
+            generate_instrument_samples(n.instrument, note_frequencies[n.note], seconds, n.volume * gain, 0, note, note_length);
             const uint start = step * step_samples;
             for (uint j = 0; j < note_length && start + j < length; j++) {
-                mix[start + j] += note[j] * 0.5f;
+                mix[start + j] += note[j];
             }
         }
     }
+    free(note);
+    *out_length = length;
+    return mix;
+}
+
+// renders a song into a .wav to listen to, normalized
+void zox_tst_render_song(const Song* song, const char* path) {
+    uint length;
+    float* mix = zox_tst_mix_song(song, 1, &length);
     float peak = 0;
     for (uint j = 0; j < length; j++) {
         peak = fmaxf(peak, fabsf(mix[j]));
@@ -136,7 +145,6 @@ void zox_tst_render_song(const Song* song, const char* path) {
         }
     }
     zox_tst_write_wav(path, mix, length);
-    free(note);
     free(mix);
 }
 
@@ -240,7 +248,71 @@ void zox_tst_music_compose_check(ecs* world) {
     zox_tst_render_song(&song, "../tst/song.wav");
 }
 
+// tst: sound_balance, sound effects stand out over the music, at the game's volumes
+//  - mixes the realm's song (seed 666) at the music volume, as the game plays it
+//  - drops the common effects (jump, land, hit, swing miss, consume) at their game volumes every few seconds
+//  - each must be louder than the music under it (rms over its length, by sound_balance_ratio)
+//  - writes bin/tst/sound_balance.wav, the song with the effects, to listen to
+//  - run: bash bsh/tst.sh sound_balance
+#define sound_balance_ratio 2.0f    // about 6db over the music
+typedef struct {
+    const char* name;
+    byte instrument;
+    byte note;
+    float seconds;
+    float volume;   // of the sfx volume
+} ZoxTstSfx;
+
+byte zox_tst_sound_balance_ready(ecs* world) {
+    (void) world;
+    return 1;
+}
+
+void zox_tst_sound_balance_check(ecs* world) {
+    (void) world;
+    // as the game spawns them (jump_sound.c, land_sound.c, damage.c, melee.c, consume.c), at their middle values
+    const ZoxTstSfx effects[] = {
+        { "jump", instrument_edm, 29, 0.21f, 1.25f },
+        { "land", instrument_edm, 19, 0.35f, 1.8f },
+        { "hit", instrument_violin, 28, 0.6f, 1.0f },
+        { "swing miss", instrument_violin, 44, 0.3f, 1.0f },
+        { "consume", instrument_violin, 42, 0.4f, 1.2f },
+    };
+    const int effects_count = sizeof(effects) / sizeof(effects[0]);
+    static Song song;
+    compose_song(666, instrument_soft_piano, &song);
+    uint length;
+    float* mix = zox_tst_mix_song(&song, get_volume_music(), &length);
+    float* sfx = malloc(MAX_SOUND_DATA * sizeof(float));
+    float worst = 1000;
+    const uint gap = 3 * sound_sample_rate;
+    int placed = 0;
+    for (uint start = sound_sample_rate; start + MAX_SOUND_DATA < length; start += gap, placed++) {
+        const ZoxTstSfx effect = effects[placed % effects_count];
+        const uint sfx_length = (uint) (effect.seconds * sound_sample_rate);
+        generate_instrument_samples(effect.instrument, note_frequencies[effect.note], effect.seconds,
+            effect.volume * get_volume_sfx(), 0, sfx, sfx_length);
+        double sfx_power = 0, music_power = 0;
+        for (uint j = 0; j < sfx_length; j++) {
+            sfx_power += sfx[j] * sfx[j];
+            music_power += mix[start + j] * mix[start + j];
+            mix[start + j] += sfx[j];
+        }
+        const float ratio = music_power > 0 ? sqrtf(sfx_power / music_power) : 1000;
+        worst = fminf(worst, ratio);
+        zox_tst_check(ratio >= sound_balance_ratio, "[%s] at [%.1fs] is only [%.2f]x the music under it",
+            effect.name, start / (float) sound_sample_rate, ratio);
+    }
+    zox_log("[tst] [%i] effects over the music, the quietest [%.2f]x louder", placed, worst);
+    zox_tst_check(placed >= 20, "only [%i] effects placed", placed);
+    zox_tst_write_wav("../tst/sound_balance.wav", mix, length);
+    free(sfx);
+    free(mix);
+}
+
 void zox_tsts_musics() {
+    zox_tst_add("sound_balance", zox_tst_sound_balance_ready, zox_tst_sound_balance_check, 60);
+    zox_tst_set_setup("sound_balance", NULL, 1);
     zox_tst_add("music_compose", zox_tst_music_compose_ready, zox_tst_music_compose_check, 60);
     zox_tst_set_setup("music_compose", NULL, 1);
     zox_tst_add("music_file", zox_tst_music_file_ready, zox_tst_music_file_check, 30);
