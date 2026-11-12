@@ -58,8 +58,6 @@ entity zoxp_begin;
 // Who knows what this one does
 entity zoxp_spawn;
 entity zoxp_octree_write;
-// a barrier: every worker finishes writing octrees before any reads them (see doc/thread_safety.md)
-entity zoxp_octree_sync;
 entity zoxp_octree_read;
 // Apply Acc to Velocity
 entity zoxp_pre_physics;
@@ -98,9 +96,8 @@ void initialize_zox_phases(ecs* world) {
     zox_phase_after(zoxp_spawn, zoxp_begin);
     zox_phase_after(zoxp_gpu_upload, zoxp_spawn);
     zox_phase_after(zoxp_octree_write, zoxp_gpu_upload);
-    // octree writes finish before reads
-    zoxp_octree_sync = zox_phase_barrier(world, "zoxp_octree_sync", zoxp_octree_write);
-    zox_phase_after(zoxp_octree_read, zoxp_octree_sync);
+    // no barrier between octree writes and reads: both lock the octrees they touch (thread_safety.md)
+    zox_phase_after(zoxp_octree_read, zoxp_octree_write);
     zox_phase_after(zoxp_pre_physics, zoxp_octree_read);
     zox_phase_after(zoxp_physics, zoxp_pre_physics);
     // the transform chain, each step multi threaded, a barrier before each: physics -> trails -> layouts ->

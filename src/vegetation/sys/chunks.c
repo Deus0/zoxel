@@ -78,7 +78,9 @@ void VegetationChunk3System(iter* it) {
         byte grass_id = 0;
         byte wood_id = 0;
         byte flower_id = 0;
-        // write_lock_VoxelNode(voctree);
+        // its octree locked while written, readers can run alongside (thread_safety.md)
+        spinlock* write_lock = zox_octree_lock(world, e);
+        zox_octree_lock_begin(write_lock);
         byte3 position;
         for (position.x = 0; position.x < length; position.x++) {
             for (position.z = 0; position.z < length; position.z++) {
@@ -207,7 +209,7 @@ void VegetationChunk3System(iter* it) {
                 }
             }
         }
-        // write_unlock_VoxelNode(voctree);
+        zox_octree_lock_end(write_lock);
         generate->value = zox_generate_terrain_towns;
         zox_sys_increment();
     }

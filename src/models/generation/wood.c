@@ -54,7 +54,9 @@ void WoodModelGenerationSystem(iter* it) {
             colors->value[k] = c;
         }
         // Write Locks node
-        // write_lock_VoxelNode(node);
+        // its octree locked while written, readers can run alongside (thread_safety.md)
+        spinlock* write_lock = zox_octree_lock(world, e);
+        zox_octree_lock_begin(write_lock);
         build_vox_wood(node, depth->value, wood, bark);
         // Outlines
         if (zox_block_outlines) {
@@ -62,7 +64,7 @@ void WoodModelGenerationSystem(iter* it) {
             byte black_voxel = colors->length;
             vox_outlines(node, depth->value, black_voxel);
         }
-        // write_unlock_VoxelNode(node);
+        zox_octree_lock_end(write_lock);
         generate->value = zox_has(e, BakeModel) ? zox_generate_model_bake : zox_generate_model_end;
         // dirty->value = zox_dirty_trigger;
         zox_add(e, VoxelNodeDirty);

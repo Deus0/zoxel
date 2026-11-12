@@ -172,7 +172,9 @@ void rubble_model_system(iter* it) {
         }
         byte max_height = zox_has(e, RubbleHeight) ? zox_getv(e, RubbleHeight) : 4;
         // Write Locks node
-        // write_lock_VoxelNode(node);
+        // its octree locked while written, readers can run alongside (thread_safety.md)
+        spinlock* write_lock = zox_octree_lock(world, e);
+        zox_octree_lock_begin(write_lock);
         // build_vox_heights(node, node_depth, vrange, max_height);
         uint count = zox_has(e, RubbleCount) ?
             zox_getv(e, RubbleCount) :
@@ -189,7 +191,7 @@ void rubble_model_system(iter* it) {
             byte black_voxel = colors->length;
             vox_outlines(node, depth->value, black_voxel);
         }
-        // write_unlock_VoxelNode(node);
+        zox_octree_lock_end(write_lock);
         generate->value = zox_has(e, BakeModel) ?
             zox_generate_model_bake :
             zox_generate_model_end;

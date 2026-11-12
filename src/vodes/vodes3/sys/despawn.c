@@ -44,9 +44,11 @@ void VodesDespawnSystem(iter* it) {
         if (in_spawn_zone) {
             continue;
         }
-        // write_lock_VoxelNode(node);
+        // its octree locked while written, readers can run alongside (thread_safety.md)
+        spinlock* write_lock = zox_octree_lock(world, e);
+        zox_octree_lock_begin(write_lock);
         destroy_vodes(world, node);
-        // write_unlock_VoxelNode(node);
+        zox_octree_lock_end(write_lock);
         zox_remove(e, BlocksSpawned);
         // spawned->value = 0;
     }

@@ -42,7 +42,9 @@ void CombineVoxSystem(iter* it) {
         // set voctree here
         resize_ColorRGBs(colors, 0);
         // TODO: set voctree depth and set to air
-        // write_lock_VoxelNode(voctree);
+        // its octree locked while written, readers can run alongside (thread_safety.md)
+        spinlock* write_lock = zox_octree_lock(world, e);
+        zox_octree_lock_begin(write_lock);
         // Clear octree
         voctree->value = 0;
         collapse_VoxelNode(voctree);
@@ -152,7 +154,7 @@ void CombineVoxSystem(iter* it) {
             }
             // zox_log(" + vox %i [%s] c[%i] at [%ix%ix%i] of s[%ix%ix%i]", j, zox_get_name(vox), acolors->length, vposition.x, vposition.y, vposition.z, vox_size.x, vox_size.y, vox_size.z);
         }
-        // write_unlock_VoxelNode(voctree);
+        zox_octree_lock_end(write_lock);
         csize->value = new_csize;
         // NOTE: Vox data is always at max depth, its owners RenderDepth picks the mesh
         rdepth->value = ndepth->value;

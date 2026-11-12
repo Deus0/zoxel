@@ -36,12 +36,12 @@ void CloneVoxSystem(iter* it) {
         zox_geter(src, ColorRGBs, colors_source);
         ndepth->value = source_voctree_depth->value;
         scale->value = src_scale;
-        // Write Locks voctree
-        // write_lock_VoxelNode(voctree);
-        // clone_at_depth_VoxelNode(voctree, soctree, clod->value, 0);
+        // its octree (written) and the source's (read) locked, address order (thread_safety.md)
+        spinlock* other_locks[6] = { zox_octree_lock(world, src), NULL, NULL, NULL, NULL, NULL };
+        spinlock* locked[7];
+        const byte locked_count = zox_lock_voxel_trees(zox_octree_lock(world, e), other_locks, locked);
         clone_at_depth_VoxelNode(voctree, soctree, ndepth->value, 0);
-        // Write Locks voctree
-        // write_unlock_VoxelNode(voctree);
+        zox_unlock_voxel_trees(locked, locked_count);
         colors->length = colors_source->length;
         int clength = sizeof(color_rgb) * colors_source->length;
         resize_ColorRGBs(colors, clength);

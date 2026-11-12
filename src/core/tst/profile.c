@@ -80,6 +80,9 @@ static void zox_tst_profile_system(ecs* world, entity system, double seconds, by
     (*hint)++;
 }
 
+// when this frame's pipeline started (zox_tst_frame_begin_system, zoxp_dbg_begin)
+double zox_tst_profile_frame_start = 0;
+
 void zox_tst_profile_frame(ecs* world) {
     if (!zox_tst_profile_frame_index && !zox_tst_profile_systems_count) {
         zox_measure_system_times(world);
@@ -92,7 +95,8 @@ void zox_tst_profile_frame(ecs* world) {
     const ZoxWorldTimes world_times = zox_world_times(world);
     const double merge_ms = (world_times.merge - zox_tst_profile_world_last.merge) * 1000.0;
     const double emit_ms = (world_times.emit - zox_tst_profile_world_last.emit) * 1000.0;
-    const double ecs_frame_ms = (world_times.frame - zox_tst_profile_world_last.frame) * 1000.0;
+    // the pipeline so far (zoxp_dbg_begin to here), flecs' own frame total is only set after the frame
+    const double ecs_frame_ms = zox_tst_profile_frame_start ? now - zox_tst_profile_frame_start : 0;
     const ZoxWorldTimes last = zox_tst_profile_world_last;
     zox_tst_profile_world_last = world_times;
     int top_observers[zox_tst_profile_top] = { -1, -1, -1 };

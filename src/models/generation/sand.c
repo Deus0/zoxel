@@ -90,7 +90,9 @@ void SandModelGenerationSystem(iter* it) {
         resize_ColorRGBs(colors, 0);
         color_rgb primary_rgb = color_to_color_rgb(fill->value);
         srand(seed->value);
-        // write_lock_VoxelNode(node);
+        // its octree locked while written, readers can run alongside (thread_safety.md)
+        spinlock* write_lock = zox_octree_lock(world, e);
+        zox_octree_lock_begin(write_lock);
         build_vox_sand(colors, node, depth->value, primary_rgb);
         if (zox_block_outlines) {
             byte black_voxel = colors->length + 1;
@@ -100,7 +102,7 @@ void SandModelGenerationSystem(iter* it) {
                 depth->value,
                 black_voxel);
         }
-        // write_unlock_VoxelNode(node);
+        zox_octree_lock_end(write_lock);
         generate->value = zox_has(e, BakeModel) ?
             zox_generate_model_bake :
             zox_generate_model_end;

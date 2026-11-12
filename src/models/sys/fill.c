@@ -14,7 +14,11 @@ void process_node_model_fill(ecs* world, entity node, entity vox, lint seed, byt
     }
     shift_node_transform(model_depth, &position, &size);
     zox_muter(vox, VoxelNode, voctree);
+    // the vox's octree locked while written, readers can run alongside (thread_safety.md)
+    spinlock* write_lock = zox_octree_lock(world, vox);
+    zox_octree_lock_begin(write_lock);
     voctree_fill_ellipsoid(voctree, model_depth, fill_type, position, size);
+    zox_octree_lock_end(write_lock);
     // voctree_fill_cube(voctree, ndepth, vrange.x, position, size);
     // voctree_fill_sphere(voctree, ndepth, vrange.x, byte3_single(vlength / 2), vlength / 2);
     // zox_set(vox, VoxelNodeDirty, { zox_dirty_trigger });

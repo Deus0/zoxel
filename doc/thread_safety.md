@@ -27,7 +27,7 @@ bin/tst/pipeline_syncs.log:
 
 ```
 zoxp_octree_write: CombineVoxSystem voxel_octree_optimize_system VoxelUpdateQueueSystem ... VodesRemoveSystem |
-zoxp_octree_sync: zoxp_octree_sync_write | zoxp_octree_sync_wait
+zoxp_trails_sync: zoxp_trails_sync_write | zoxp_trails_sync_wait
 zoxp_octree_read: ChunkColorsBuildSystem VoxLodMeshBuildSystem chunk_sides_system ...
 ```
 
@@ -60,7 +60,7 @@ the phases before it before any start the phases after, with **one merge and no 
 - both empty and multi threaded: the systems either side stay multi threaded
 - a main thread system as a barrier makes 2 merges, and the other cores wait while it runs
 
-Barriers (2026-11-12): `zoxp_octree_sync` (octree writes before reads), and the transform chain, physics ->
+Barriers (2026-11-12), the transform chain: physics ->
 `zoxp_trails_sync` -> trails -> `zoxp_layouts_sync` -> 3D layouts -> `zoxp_hierarchy_sync` -> hierarchy ->
 `zoxp_billboards_sync` -> billboards -> `zoxp_transform_end_sync` -> matrices. Each step reads what the one before
 wrote. `trail_system`, `Layout3System`, `transform3_children_system` and `billboard_system` were main thread to be
@@ -74,41 +74,35 @@ with parents are chunks, under the app, which has no transform).
 Octrees (`VoxelNode`) are pointer trees: a write can open (allocate) or close (free) nodes, a reader walking it
 at the same time can follow a freed pointer, a segfault.
 
-- **Phases:** writes in `zoxp_octree_write`, reads in `zoxp_octree_read`.
-- **Barrier:** `zoxp_octree_sync` between them (a barrier, above), every worker finishes writing before any
-  reads (`pipeline_syncs` checks it). Before it, write and read systems shared
-  an op: `voxel_octree_optimize_system` freeing nodes while a mesh builder on another worker walked them.
-- **Locks over barriers:** a lock only makes the cores that touch the same octree wait, a barrier makes all of
-  them wait. The goal is to drop `zoxp_octree_sync` once every reader and writer locks.
+- **Phases:** writes in `zoxp_octree_write`, reads in `zoxp_octree_read`, with no barrier between them: every
+  reader and writer locks the octrees it touches. A lock only makes the cores on the same octree wait, a barrier
+  makes them all wait. (`zoxp_octree_sync` was a barrier there until every octree system locked, 2026-11-12.)
 - **Locks:** `VoxelNodeLock` (a spinlock per octree), helpers in src/chunks/chunks3/fun/locks.c:
   `zox_octree_lock(world, e)` (NULL if none), `zox_octree_lock_begin/end`, and `zox_lock_voxel_trees` for a chunk
   and its neighbors (address order, no deadlocks). Not reentrant: never lock one you hold.
-- **Readers that lock** (2026-11-12): chunk colors (and neighbors), chunk sides, vox lod and skeleton meshes
+- **Readers lock** (2026-11-12): chunk colors (and neighbors), chunk sides, vox lod and skeleton meshes
   (`build_vox_mesh_at_depth`, the vox), raycasts (the chunk or vox walked, one per call, nested block vox calls
   hold their own), terrain collisions and inside block, frustum and vodes lod walks, vox textures, smooth and dark
-  lights.
-- **Writers that lock:** `VoxelUpdateQueueSystem`, `voxel_octree_optimize_system`, light flood and beam.
-- **Writers that don't lock yet**, so the barrier stays: model generation (noise, soil, wood, ...), the model node
-  systems (`FillModelNodeSystem`, `PaintModelNodeSystem`, in `zoxp_pre_physics`), `landfill_chunk_system`,
-  `VegetationChunk3System`, `TownWallsSystem`, `CombineVoxSystem`, `VodesRemoveSystem`, `chunk3_load_system`.
+  lights, dungeon expansion's checks.
+- **Writers lock:** around their writes, the `write_lock_VoxelNode` markers they had: model generation, model
+  nodes (fill, paint), landfill, vegetation, town walls, combine, clone (and its source, address order), vodes
+  remove and despawn, chunk load, the voxel update queue, the optimizer, light flood and beam.
+- A new octree system locks too, or the octrees race again: a crash, not a stale read.
 - **Main thread systems** (`zox_system_1`) run alone in their op, any octree access there is safe.
 
 ### Known risks (2026-11-12)
 
-- `chunk3_load_system` writes octrees in `zoxp_physics` (`zoxp_load`), the same op as `terrain_collision_system`,
-  `Chunk3RaycastSystem` and `InsideBlockSystem` reading them. Only with saves (tests run `--nosaves`).
-  Moving it to `zoxp_octree_write` races `landfill_chunk_system` on new chunks (load sets `GenerateChunk`
-  deferred), it needs its own phase between barriers or to run on the main thread.
-- `zoxp_octree_read` runs on into `zoxp_pre_physics` in one op: model node systems (`FillModelNodeSystem`,
-  `PaintModelNodeSystem`) write vox octrees while the mesh builders read others. Different entities, a mesh
-  builds after its model is generated.
-- `VegetationChunk3System`, `CombineVoxSystem`, `landfill_chunk_system` write without locking, they only write
-  their own (new) chunk.
+- `chunk3_load_system` (`zoxp_physics`) and `landfill_chunk_system` (`zoxp_octree_write`) both write new chunks,
+  in different ops, both locked now. Moving the load into the write phase would race landfill's deferred
+  `GenerateChunk` (which runs first), not the octree.
+- Spinlocks spin: a long write (a model generating) keeps a reader of that model's octree spinning. Snapshots
+  (copy under the lock, work after) would shorten reads if it shows in profiles.
 
 ## Rules
 
-- Write an octree only in `zoxp_octree_write` (or a main thread system), read it in `zoxp_octree_read` or later.
-- Reading a neighbor's octree in the write phase: lock it (`VoxelNodeLock`).
+- Lock every octree you read or write (`zox_octree_lock`), only for the walk, never across frames or while
+  holding another (use `zox_lock_voxel_trees` for several).
+- Write octrees in `zoxp_octree_write` where you can, read them in `zoxp_octree_read` or later.
 - Never keep octree pointers across frames.
 - Spawning, deleting, adding or removing components from workers is deferred (commands), safe. Reading another
   entity's component on a worker is safe if nothing writes it in that op.

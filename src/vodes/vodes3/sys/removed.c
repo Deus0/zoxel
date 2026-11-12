@@ -22,11 +22,13 @@ void VodesRemoveSystem(iter* it) {
     zox_sys_begin();
     zox_sys_out(VoxelNode);
     for (int i = 0; i < it->count; i++) {
-        // zox_sys_e();
+        zox_sys_e();
         zox_sys_o(VoxelNode, node);
-        // write_lock_VoxelNode(node);
+        // its octree locked while written, readers can run alongside (thread_safety.md)
+        spinlock* write_lock = zox_octree_lock(world, e);
+        zox_octree_lock_begin(write_lock);
         remove_vodes(world, node);
-        // write_unlock_VoxelNode(node);
+        zox_octree_lock_end(write_lock);
     }
     zox_sys_on_end();
 } zoxd_system(VodesRemoveSystem);

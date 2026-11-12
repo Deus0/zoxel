@@ -112,12 +112,16 @@ void chunk3_load_system(iter* it) {
             continue;
         }
 #endif
-        if (load_chunk(
+        // its octree locked while loaded into, readers can run alongside (thread_safety.md)
+        spinlock* write_lock = zox_octree_lock(world, e);
+        zox_octree_lock_begin(write_lock);
+        const byte loaded = load_chunk(
             world,
             realm,
             position->value,
-            voxels))
-        {
+            voxels);
+        zox_octree_lock_end(write_lock);
+        if (loaded) {
             depth->value = terrain_depth;
             zox_add(e, Loaded);
             zox_setv(e, GenerateChunk, zox_generate_terrain_sunlight);

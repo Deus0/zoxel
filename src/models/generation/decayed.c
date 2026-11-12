@@ -255,7 +255,9 @@ void decayed_model_system(iter* it) {
             black_voxel_3,
             &random_state);
         // Write Locks node
-        // write_lock_VoxelNode(node);
+        // its octree locked while written, readers can run alongside (thread_safety.md)
+        spinlock* write_lock = zox_octree_lock(world, e);
+        zox_octree_lock_begin(write_lock);
         for (int j = 0; j < 6; j++) {
             if (j == direction_down) {
                 continue;
@@ -276,7 +278,7 @@ void decayed_model_system(iter* it) {
                 depth->value,
                 black_voxel);
         }
-        // write_unlock_VoxelNode(node);
+        zox_octree_lock_end(write_lock);
         generate->value =
             zox_has(e, BakeModel) ?
                 zox_generate_model_bake :

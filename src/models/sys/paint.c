@@ -35,7 +35,11 @@ void process_node_model_paint(
         zox_loge("Paint Index OOB [%i] colors [%i]", paint_type, colors->length);
         return;
     }
+    // the vox's octree locked while written, readers can run alongside (thread_safety.md)
+    spinlock* write_lock = zox_octree_lock(world, vox);
+    zox_octree_lock_begin(write_lock);
     voctree_paint(voctree, model_depth, paint_type, position, size);
+    zox_octree_lock_end(write_lock);
     // zox_log("     - Painting at [%ix%ix%i] s[%ix%ix%i] :: v%i %ix%ix%i", position.x, position.y, position.z, size.x, size.y, size.z, paint_type, vcolor.r, vcolor.g, vcolor.b);
 }
 
