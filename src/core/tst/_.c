@@ -268,6 +268,26 @@ void process_arguments_tst(ecs* world, char* args[], int count) {
             zox_tst_timescale = atof(args[i + 1]);
         }
     }
+    for (int i = 1; i < count; i++) {
+        if (strcmp(args[i], "--nouis") == 0) {
+            // no labels or healthbars over characters, to compare (tst perf_fly)
+            const char* names[2] = { "CharacterNameLabelsSystem", "HealthbarSpawnerSystem" };
+            for (byte j = 0; j < 2; j++) {
+                entity system = 0;
+                ecs_iter_t sit = ecs_each_id(world, EcsSystem);
+                while (ecs_each_next(&sit)) {
+                    for (int k = 0; k < sit.count; k++) {
+                        const char* n = ecs_get_name(world, sit.entities[k]);
+                        if (n && !strcmp(n, names[j])) system = sit.entities[k];
+                    }
+                }
+                if (system) {
+                    ecs_enable(world, system, false);
+                }
+                zox_log("+ [nouis] [%s] [%s]", names[j], system ? "disabled" : "not found");
+            }
+        }
+    }
     if (zox_tst_name || zox_profile_spikes) {
         ecs_enable(world, ecs_id(zox_tst_system), true);
         ecs_enable(world, ecs_id(zox_tst_frame_begin_system), true);
