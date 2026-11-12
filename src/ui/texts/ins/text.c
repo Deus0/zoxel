@@ -17,7 +17,7 @@ entity spawn_text(
     }
     zox_instance(prefab);
     zox_name("text");
-    zox_set_parent(world, e, parent);
+    zox_set_parent_non_fragment(world, e, parent);  // per parent tables otherwise (tst tables_stream)
     zox_set(e, Anchor, { position_anchor });
     zox_set(e, LayoutPosition, { position });
     zox_set(e, TextFontSize, { font_size });

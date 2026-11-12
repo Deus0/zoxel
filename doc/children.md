@@ -25,37 +25,23 @@ Making tables is slow (merges, and every observer is notified), so many parents 
 spikes. Crossing a chunk made 400 to 1100 tables (npcs' name labels and their glyphs, their stats), see
 `bash bsh/tst.sh tables_stream` and `--profile`.
 
-`zox_set_parent_non_fragment` uses flecs `EcsParent`, which doesn't: children share tables.
+`zox_set_parent_non_fragment` uses flecs `EcsParent`, which doesn't: children share tables. Streaming now makes
+about 100 tables a chunk step (from 400 to 2500), its worst merges 38ms (from 145ms, debug).
 
-| Use non fragmenting for | Why it's safe |
+| Non fragmenting children | Spawned in |
 |---|---|
-| a terrain's chunks, a chunk's meshes | they're deleted with their own parent, nothing else deletes them |
+| a terrain's chunks, a chunk's meshes | `chunks3/ins` |
+| a character's stats, skills and items | `stats/ins/user.c`, `skills/ins/user.c`, `items/ins/user.c` |
+| ui elements, texts, glyphs, 3D ui and glyphs | `ui/ins/ui.c`, `ui/texts`, `ui/glyphs`, `ui/elements3` |
 
-**Don't** use it for children that are deleted another way too. Flecs (4.2) asserts a non fragmenting child's
-parent is alive while deleting it, and crashes when:
+It **needs flecs patched** (`bsh/flecs_fix.sh`, "ZOXEL PATCH nf parent", flecs 4.2.0): deleting a tree (a realm,
+ending a game), flecs cleared ids marked during the delete after the tables of their parents, so a non
+fragmenting child was deleted after its parent, and `flecs_non_fragmenting_childof_move` asserted the parent
+was alive (an `ECS_INTERNAL_ERROR`, the earlier "Broken" note, prefabs' children). The patch skips what uses
+the dead parent, its child record still exists. `menu_flow` crashed without it.
 
-- a cascade (deleting a realm) deletes the parent first, and then reaches the child by another path,
-  i.e. a character's stats are instances of the realm's stat prefabs, deleting the realm deletes the
-  character, then the stats as the prefabs' instances
-- prefabs and their instances, children spawned from prefabs, mixed with ChildOf in the same tree
-
-Tried and reverted (tests crashed ending a game): characters' stats, skills and items, ui elements, texts and
-glyphs.
-
-What the crash is (2026-11-12, flecs 4.2.0), likely a flecs bug:
-- ending a game deletes the realm, flecs cleans up `(*, realm)` and deletes a character in that cleanup,
-  but not the character's non fragmenting children (its stats)
-- reaching a stat later, `flecs_non_fragmenting_childof_move` asserts its parent is alive, an
-  `ECS_INTERNAL_ERROR` (flecs' own invariant, not misuse)
-- the stats are instances of the realm's stat prefabs (prefabs of prefabs, with links), small repros of a
-  realm, a character and its stats (`nf_realm`, `nf_realm_spawn_deferred`) don't crash, the extra
-  ingredient isn't found yet, needed to report it upstream
-- deleting the realm's tree deepest first (children before parents) hit a real flecs rule instead: a stat
-  a prefab still points at can't be deleted before the prefab (`INVALID_OPERATION`) The `nf_*` tests (`src/_/flecs/tst/non_fragment.c`) cover what works: cascades, deferred deletes,
-mixed children, prefab instances in one tree. Add a case there before trying a new use.
-
-Other ways to stop fragmenting: link instead of parenting (links never fragment), or keep the data as
-components on the entity instead of child entities (i.e. stats).
+The `nf_*` tests (`src/_/flecs/tst/non_fragment.c`) cover cascades, deferred deletes, mixed children, prefab
+instances and realms of characters with stats. Add a case there for a new use, and check `tables_stream`.
 
 ## Getting children
 

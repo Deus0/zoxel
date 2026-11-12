@@ -5,7 +5,7 @@ entity spawn_zigel(ecs* world, entity prefab, entity parent, float2 position_anc
         sprintf(name, "zigel_%c", convert_to_ascii(zigel));
         zox_name(name);
     }
-    zox_set_parent(world, e, parent);
+    zox_set_parent_non_fragment(world, e, parent);  // per parent tables otherwise (tst tables_stream)
     zox_set(e, GlyphIndex, { zigel });
     zox_set(e, ChildIndex, { child_index });
     zox_set(e, Anchor, { position_anchor });
