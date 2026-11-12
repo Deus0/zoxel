@@ -1,4 +1,3 @@
-// TODO: Make a envelope setting for our generated sounds, jumps need to be sharper at start! WOOSH
 zox_sys2(JumpSoundSystem) {
     zox_sys_world();
     zox_sys_begin();
@@ -6,14 +5,8 @@ zox_sys2(JumpSoundSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(JumpState, jumpState);
-        if (jumpState->value != jump_state_active) {
-            continue;
+        if (jumpState->value == jump_state_active) {
+            spawn_sound_effect(world, sound_effect_jump, e);
         }
-        double volume = randf_range(1.1f, 1.4f) * get_volume_sfx();
-        double length = randf_range(0.18f, 0.24f);
-        byte frequency = rand_range(26, 32);
-        byte instrument = instrument_edm;
-        // rand() % 100 >= 94 ? instrument_piano : instrument_flute;
-        set_sound_source(world, spawn_sound_generated(world, prefab_sound_generated, instrument, note_frequencies[frequency], length, volume), e);
     }
 } zox_sys_end(JumpSoundSystem);

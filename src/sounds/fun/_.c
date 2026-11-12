@@ -1,6 +1,7 @@
 #include "spatial.c"
 #include "../mix/mixer.c"
 #include "spawn.c"
+#include "effects.c"
 #include "setting.c"
 #include "terminal.c"
 

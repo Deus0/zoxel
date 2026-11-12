@@ -55,13 +55,7 @@ zox_sys2(ItemConsumeSystem) {
         zox_add(e, Dirty);
         zox_add(e, DataDirty);
         // consume sound
-        set_sound_source(world, spawn_sound_generated(
-            world,
-            prefab_sound_generated,
-            instrument_violin,
-            note_frequencies[40 + rand() % 6],
-            0.4,
-            1.2f * get_volume_sfx()), user);
+        spawn_sound_effect(world, sound_effect_consume, user);
         entity skeleton = get_skeleton(world, user);
         if (zox_valid(skeleton)) {
             float swing_time =

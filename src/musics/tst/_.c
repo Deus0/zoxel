@@ -248,20 +248,41 @@ void zox_tst_music_compose_check(ecs* world) {
     zox_tst_render_song(&song, "../tst/song.wav");
 }
 
-// tst: sound_balance, sound effects stand out over the music, at the game's volumes
+// tst: sound_balance, sound effects stand out over the music, at the game's volumes, on small speakers
 //  - mixes the realm's song (seed 666) at the music volume, as the game plays it
-//  - drops the common effects (jump, land, hit, swing miss, consume) at their game volumes every few seconds
-//  - each must be louder than the music under it (rms over its length, by sound_balance_ratio)
+//  - drops every effect (sound_effects in sounds/fun/effects.c) at its middle values every few seconds
+//  - each must be louder than the music under it (rms over its length, by sound_balance_ratio, under _max),
+//      heard through a small speaker (a high pass at sound_balance_speaker_hz, laptops barely play below)
 //  - writes bin/tst/sound_balance.wav, the song with the effects, to listen to
 //  - run: bash bsh/tst.sh sound_balance
-#define sound_balance_ratio 2.0f    // about 6db over the music
-typedef struct {
-    const char* name;
-    byte instrument;
-    byte note;
-    float seconds;
-    float volume;   // of the sfx volume
-} ZoxTstSfx;
+#define sound_balance_ratio 2.0f            // about 6db over the music
+#define sound_balance_ratio_max 8.0f        // and not painfully over it
+#define sound_balance_speaker_hz 200.0f
+
+// a second order high pass (butterworth), like a small speaker's bass roll off
+static inline void zox_tst_speaker(const float* in, float* out, uint length) {
+    const float w = 2 * M_PI * sound_balance_speaker_hz / sound_sample_rate;
+    const float alpha = sinf(w) / (2 * 0.7071f);
+    const float cw = cosf(w);
+    const float a0 = 1 + alpha;
+    const float b0 = (1 + cw) / 2 / a0, b1 = -(1 + cw) / a0, b2 = (1 + cw) / 2 / a0;
+    const float a1 = -2 * cw / a0, a2 = (1 - alpha) / a0;
+    float x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+    for (uint j = 0; j < length; j++) {
+        const float x = in[j];
+        const float y = b0 * x + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2;
+        x2 = x1; x1 = x; y2 = y1; y1 = y;
+        out[j] = y;
+    }
+}
+
+static inline double zox_tst_power(const float* samples, uint length) {
+    double power = 0;
+    for (uint j = 0; j < length; j++) {
+        power += samples[j] * samples[j];
+    }
+    return power;
+}
 
 byte zox_tst_sound_balance_ready(ecs* world) {
     (void) world;
@@ -270,43 +291,48 @@ byte zox_tst_sound_balance_ready(ecs* world) {
 
 void zox_tst_sound_balance_check(ecs* world) {
     (void) world;
-    // as the game spawns them (jump_sound.c, land_sound.c, damage.c, melee.c, consume.c), at their middle values
-    const ZoxTstSfx effects[] = {
-        { "jump", instrument_edm, 29, 0.21f, 1.25f },
-        { "land", instrument_edm, 19, 0.35f, 1.8f },
-        { "hit", instrument_violin, 28, 0.6f, 1.0f },
-        { "swing miss", instrument_violin, 44, 0.3f, 1.0f },
-        { "consume", instrument_violin, 42, 0.4f, 1.2f },
-    };
-    const int effects_count = sizeof(effects) / sizeof(effects[0]);
     static Song song;
     compose_song(666, instrument_soft_piano, &song);
     uint length;
     float* mix = zox_tst_mix_song(&song, get_volume_music(), &length);
+    float* heard_music = malloc(length * sizeof(float));
+    zox_tst_speaker(mix, heard_music, length);
     float* sfx = malloc(MAX_SOUND_DATA * sizeof(float));
-    float worst = 1000;
-    const uint gap = 3 * sound_sample_rate;
+    float* heard_sfx = malloc(MAX_SOUND_DATA * sizeof(float));
+    float worst[sound_effect_end];
+    for (int i = 0; i < sound_effect_end; i++) {
+        worst[i] = 1000;
+    }
+    const uint gap = 2 * sound_sample_rate;
     int placed = 0;
     for (uint start = sound_sample_rate; start + MAX_SOUND_DATA < length; start += gap, placed++) {
-        const ZoxTstSfx effect = effects[placed % effects_count];
-        const uint sfx_length = (uint) (effect.seconds * sound_sample_rate);
-        generate_instrument_samples(effect.instrument, note_frequencies[effect.note], effect.seconds,
-            effect.volume * get_volume_sfx(), 0, sfx, sfx_length);
-        double sfx_power = 0, music_power = 0;
+        const int type = placed % sound_effect_end;
+        const SoundEffect effect = sound_effects[type];
+        const float seconds = (effect.seconds_min + effect.seconds_max) / 2;
+        const float volume = (effect.volume_min + effect.volume_max) / 2;
+        const byte note = (effect.note_min + effect.note_max) / 2;
+        const uint sfx_length = (uint) (seconds * sound_sample_rate);
+        generate_instrument_samples(effect.instrument, note_frequencies[note], seconds, volume * get_volume_sfx(), 0, sfx, sfx_length);
+        zox_tst_speaker(sfx, heard_sfx, sfx_length);
+        const double music_power = zox_tst_power(heard_music + start, sfx_length);
+        const double sfx_power = zox_tst_power(heard_sfx, sfx_length);
+        const float ratio = music_power > 0 ? sqrtf(sfx_power / music_power) : 1000;
+        worst[type] = fminf(worst[type], ratio);
         for (uint j = 0; j < sfx_length; j++) {
-            sfx_power += sfx[j] * sfx[j];
-            music_power += mix[start + j] * mix[start + j];
             mix[start + j] += sfx[j];
         }
-        const float ratio = music_power > 0 ? sqrtf(sfx_power / music_power) : 1000;
-        worst = fminf(worst, ratio);
-        zox_tst_check(ratio >= sound_balance_ratio, "[%s] at [%.1fs] is only [%.2f]x the music under it",
-            effect.name, start / (float) sound_sample_rate, ratio);
     }
-    zox_log("[tst] [%i] effects over the music, the quietest [%.2f]x louder", placed, worst);
-    zox_tst_check(placed >= 20, "only [%i] effects placed", placed);
+    for (int i = 0; i < sound_effect_end; i++) {
+        zox_log("[tst] [%s] at least [%.2f]x the music", sound_effects[i].name, worst[i]);
+        zox_tst_check(worst[i] >= sound_balance_ratio, "[%s] is only [%.2f]x the music under it, on small speakers",
+            sound_effects[i].name, worst[i]);
+        zox_tst_check(worst[i] <= sound_balance_ratio_max, "[%s] is [%.2f]x the music, too loud", sound_effects[i].name, worst[i]);
+    }
+    zox_tst_check(placed >= 3 * sound_effect_end, "only [%i] effects placed", placed);
     zox_tst_write_wav("../tst/sound_balance.wav", mix, length);
+    free(heard_sfx);
     free(sfx);
+    free(heard_music);
     free(mix);
 }
 

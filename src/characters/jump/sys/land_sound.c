@@ -6,20 +6,8 @@ zox_sys2(LandSoundSystem) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(LandState, state);
-        if (state->value != land_state_active) {
-            continue;
+        if (state->value == land_state_active) {
+            spawn_sound_effect(world, sound_effect_land, e);
         }
-        double volume = randf_range(1.6f, 2.0f) * get_volume_sfx();
-        double length = randf_range(0.32f, 0.38f);
-        byte frequency = rand_range(16, 22);
-        byte instrument = instrument_edm; // instrument_edm;
-        set_sound_source(world, spawn_sound_generated(
-            world,
-            prefab_sound_generated,
-            instrument,
-            note_frequencies[frequency],
-            length,
-            volume
-        ), e);
     }
 } zox_sys_end(LandSoundSystem);
