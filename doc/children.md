@@ -40,7 +40,18 @@ parent is alive while deleting it, and crashes when:
 - prefabs and their instances, children spawned from prefabs, mixed with ChildOf in the same tree
 
 Tried and reverted (tests crashed ending a game): characters' stats, skills and items, ui elements, texts and
-glyphs. The `nf_*` tests (`src/_/flecs/tst/non_fragment.c`) cover what works: cascades, deferred deletes,
+glyphs.
+
+What the crash is (2026-11-12, flecs 4.2.0), likely a flecs bug:
+- ending a game deletes the realm, flecs cleans up `(*, realm)` and deletes a character in that cleanup,
+  but not the character's non fragmenting children (its stats)
+- reaching a stat later, `flecs_non_fragmenting_childof_move` asserts its parent is alive, an
+  `ECS_INTERNAL_ERROR` (flecs' own invariant, not misuse)
+- the stats are instances of the realm's stat prefabs (prefabs of prefabs, with links), small repros of a
+  realm, a character and its stats (`nf_realm`, `nf_realm_spawn_deferred`) don't crash, the extra
+  ingredient isn't found yet, needed to report it upstream
+- deleting the realm's tree deepest first (children before parents) hit a real flecs rule instead: a stat
+  a prefab still points at can't be deleted before the prefab (`INVALID_OPERATION`) The `nf_*` tests (`src/_/flecs/tst/non_fragment.c`) cover what works: cascades, deferred deletes,
 mixed children, prefab instances in one tree. Add a case there before trying a new use.
 
 Other ways to stop fragmenting: link instead of parenting (links never fragment), or keep the data as
