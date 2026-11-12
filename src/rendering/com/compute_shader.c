@@ -18,7 +18,7 @@ uint gpu_spawn_compute_shader() {
 
 // Function to add a compute shader to a prefab
 void prefab_add_compute_shader(ecs *world, entity e) {
-    zox_prefab_set(e, ComputeShaderLink, { 0 })
+    zox_set(e, ComputeShaderLink, { 0 })
 }
 
 // Function to spawn and attach a compute shader to an entity

@@ -21,8 +21,8 @@ entity spawn_prefab_block_vox(
     zox_setv(e, NodeDepth, block_depth);
     zox_setv(e, ChunkSize, int3_single(length));
     // for debug
-    /*zox_prefab_set(e, Bounds3D, { (float3) { 0.25f, 0.25f, 0.25f } });
-    zox_prefab_set(e, Bounds3Dirty, { 0 });
+    /*zox_set(e, Bounds3D, { (float3) { 0.25f, 0.25f, 0.25f } });
+    zox_set(e, Bounds3Dirty, { 0 });
     prefab_add_cube_lines(world, e, color_white, 0);*/
     return e;
 }

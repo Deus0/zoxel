@@ -30,7 +30,7 @@ entity spawn_item_consumable(
     zox_setv(e, RaycastType, zox_raycast_type_none);  // only consumed, no gizmo
     zox_prefab_addc_user_timings(world, e);
     // Consuming restores a stat
-    zox_prefab_set(e, ConsumeValue, { consume_value });
+    zox_set(e, ConsumeValue, { consume_value });
     if (zox_valid(consume_stat)) {
         zox_link(world, e, ConsumeStat, consume_stat);
     }

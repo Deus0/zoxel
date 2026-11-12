@@ -2,11 +2,11 @@ entity spawn_prefab_note(ecs *world) {
     zox_prefab();
     zox_prefab_name("note");
     zox_add(e, Note);
-    zox_prefab_set(e, InstrumentType, { instrument_piano });
-    zox_prefab_set(e, SoundFrequencyIndex, { 32 });
-    zox_prefab_set(e, SoundVolume, { 1 });
-    zox_prefab_set(e, SoundLength, { 0 });
-    zox_prefab_set(e, NoteStart, { 0 });
+    zox_set(e, InstrumentType, { instrument_piano });
+    zox_set(e, SoundFrequencyIndex, { 32 });
+    zox_set(e, SoundVolume, { 1 });
+    zox_set(e, SoundLength, { 0 });
+    zox_set(e, NoteStart, { 0 });
     return e;
 }
 

@@ -2,10 +2,10 @@ entity spawn_prefab_line3D(ecs *world) {
     zox_prefab();
     zox_prefab_name("line3");
     zox_add(e, Line3D);
-    zox_prefab_set(e, LineData3D, { { 0, 0, 0, 0, 0, 0 } });
-    zox_prefab_set(e, LineThickness, { 1 });
-    zox_prefab_set(e, DestroyInTime, { 0 });
-    zox_prefab_set(e, Color, { { 0, 0, 0, 255 } });
+    zox_set(e, LineData3D, { { 0, 0, 0, 0, 0, 0 } });
+    zox_set(e, LineThickness, { 1 });
+    zox_set(e, DestroyInTime, { 0 });
+    zox_set(e, Color, { { 0, 0, 0, 255 } });
     return e;
 }
 

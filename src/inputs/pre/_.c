@@ -26,7 +26,7 @@ entity local_mouse;
 // setters for higher modules to add to characters
 #define zox_prefab_set_device(T, ...) {\
     for (int i = 0; i < prefabs_count_devices; i++) {\
-        zox_prefab_set(prefabs_devices[i], T, __VA_ARGS__)\
+        zox_set(prefabs_devices[i], T, __VA_ARGS__)\
     }\
 }*/
 

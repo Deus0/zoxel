@@ -2,8 +2,8 @@
     zox_prefab();
     zox_prefab_name("nodelink");
     zox_add(e, Nodelink);
-    // zox_prefab_add(e, NodeParent);
-    zox_prefab_add(e, NodeNext);
+    // zox_add(e, NodeParent);
+    zox_add(e, NodeNext);
     return e;
 }*/
 

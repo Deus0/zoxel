@@ -1,8 +1,8 @@
 // a simple alpha animation
 /*void zox_prefab_add_animation_event(ecs *world, entity e, float length) {
-    zox_prefab_set(e, FadeOutTime, { length });
-    zox_prefab_set(e, Alpha, { 1 });
-    zox_prefab_set(e, AnimationStart, { 0 });
+    zox_set(e, FadeOutTime, { length });
+    zox_set(e, Alpha, { 1 });
+    zox_set(e, AnimationStart, { 0 });
 }*/
 
 void FadeoutSystem(iter* it) {

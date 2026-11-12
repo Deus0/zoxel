@@ -22,5 +22,5 @@ void prefab_set_game_prefabs(ecs* world) {
     }
     prefab_add_raycasts3D(world, prefab_camera_game);
     prefab_add_element_raycaster(world, prefab_zevice_pointer);
-    zox_prefab_set(prefab_gamepad, EntityTarget, { 0 });
+    zox_set(prefab_gamepad, EntityTarget, { 0 });
 }

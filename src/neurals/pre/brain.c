@@ -2,10 +2,10 @@ entity spawn_prefab_brain(ecs *world) {
     zox_prefab();
     zox_prefab_name("brain");
     zox_add(e, Brain);
-    zox_prefab_add(e, BrainInputs);
-    zox_prefab_add(e, BrainOutputs);
-    zox_prefab_add(e, BrainLinks);
-    zox_prefab_set(e, BrainDirty, { 0 });
+    zox_add(e, BrainInputs);
+    zox_add(e, BrainOutputs);
+    zox_add(e, BrainLinks);
+    zox_set(e, BrainDirty, { 0 });
     return e;
 }
 

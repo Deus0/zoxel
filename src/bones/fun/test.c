@@ -4,10 +4,10 @@
 /*void prefab_make_skeleton(ecs *world, const entity e) {
     zox_add(e, Skeleton)
     zox_add(e, SkeletonMesher)
-    zox_prefab_add(e, BoneLinks)
-    zox_prefab_add(e, BoneIndexes)
+    zox_add(e, BoneLinks)
+    zox_add(e, BoneIndexes)
     // add_gpu_bone_index(world, e);
-    // zox_prefab_add(e, BoneLinks)
+    // zox_add(e, BoneLinks)
     spawn_gpu_bone_index(world, e);
 #ifdef zox_paint_skeletons
     zox_add(e, PaintedSkeleton)

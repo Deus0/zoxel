@@ -1,7 +1,7 @@
 entity spawn_prefab_keyboard(ecs *world, entity p) {
     zox_prefab_child(p);
     zox_prefab_name("keyboard");
-    zox_prefab_add(e, Keyboard);
+    zox_add(e, Keyboard);
     return e;
 }
 

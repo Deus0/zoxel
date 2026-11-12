@@ -93,7 +93,7 @@ void StatsRealmSpawnSystem(iter* it) {
             "physical_damage",
             color_rgb_white);
         zox_add(physical_damage, StatDamage);
-        zox_prefab_set(physical_damage, StatValue, { 0 });
+        zox_set(physical_damage, StatValue, { 0 });
         entity physical_defence = spawn_realm_stat(
             world,
             e,
@@ -102,7 +102,7 @@ void StatsRealmSpawnSystem(iter* it) {
             "physical_defence",
             color_rgb_white);
         zox_add(physical_defence, StatDefence);
-        zox_prefab_set(physical_defence, StatValue, { 0 });
+        zox_set(physical_defence, StatValue, { 0 });
         zox_link(world, physical_damage, StatDefenceLink, physical_defence);
         // Currencies
         entity stat_point = spawn_realm_stat(
@@ -113,7 +113,7 @@ void StatsRealmSpawnSystem(iter* it) {
             "stat_point",
             color_rgb_white);
         zox_add(stat_point, StatPoint);
-        zox_prefab_set(stat_point, StatLevelReward, { 3 });
+        zox_set(stat_point, StatLevelReward, { 3 });
         entity skill_point = spawn_realm_stat(
             world,
             e,
@@ -122,7 +122,7 @@ void StatsRealmSpawnSystem(iter* it) {
             "skill_point",
             color_rgb_white);
         zox_add(skill_point, SkillPoint);
-        zox_prefab_set(skill_point, StatLevelReward, { 1 });
+        zox_set(skill_point, StatLevelReward, { 1 });
         // Attributes
         entity strength = spawn_realm_stat(
             world,

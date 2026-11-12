@@ -63,5 +63,5 @@ void set_realm_stat_scale(
         return;
     }
     zox_link(world, stat, StatScaleLink, attribute);
-    zox_prefab_set(stat, StatScaleAmount, { amount });
+    zox_set(stat, StatScaleAmount, { amount });
 }

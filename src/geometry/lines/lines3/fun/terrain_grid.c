@@ -19,7 +19,7 @@ void spawn_terrain_grid(ecs *world, float real_chunk_scale, byte terrain_spawn_d
     const float back_bounds = -radius;
     const float front_bounds = radius2;
     terrain_grid = zox_new();
-    zox_prefab_add(terrain_grid, Children);
+    zox_add(terrain_grid, Children);
     Children *children = zox_get_mut(terrain_grid, Children);
     // front/back side
     for (float k = back_bounds; k <= front_bounds; k += (front_bounds - back_bounds)) {

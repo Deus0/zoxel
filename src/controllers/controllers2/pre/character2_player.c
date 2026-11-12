@@ -3,7 +3,7 @@ entity spawn_prefab_character2_player(ecs *world, entity prefab) {
     zox_prefab_name("character2_player");
     zox_add(e, PlayerCharacter);
     zox_add(e, PlayerCharacter2);
-    zox_prefab_set(e, Movement2, { float2_zero });
+    zox_set(e, Movement2, { float2_zero });
     return e;
 }
 

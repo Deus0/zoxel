@@ -29,14 +29,14 @@ entity spawn_prefab_character3_player(
     if (auto_player) {
         zox_add(e, Npc);
         zox_add(e, Jumper);
-        zox_prefab_set(e, Behaviour, { zox_behaviour_idle });
-        zox_prefab_set(e, DefaultBehaviour, { zox_behaviour_wander });
-        zox_prefab_set(e, MoveForwards, { 0 });
-        zox_prefab_set(e, RotateTowards, { 0 });
-        zox_prefab_set(e, MoveSpeed, { 4 });
-        zox_prefab_set(e, TargetPosition, { float3_zero });
-        zox_prefab_set(e, ThreatPosition, { float3_zero });
-        zox_prefab_set(e, WanderDirection, { float3_zero });
+        zox_set(e, Behaviour, { zox_behaviour_idle });
+        zox_set(e, DefaultBehaviour, { zox_behaviour_wander });
+        zox_set(e, MoveForwards, { 0 });
+        zox_set(e, RotateTowards, { 0 });
+        zox_set(e, MoveSpeed, { 4 });
+        zox_set(e, TargetPosition, { float3_zero });
+        zox_set(e, ThreatPosition, { float3_zero });
+        zox_set(e, WanderDirection, { float3_zero });
     }
     // Spawn Actionbar slots
     entity actionbar = spawn_slots(world, e, 10);

@@ -2,14 +2,14 @@ void set_character3_npc(ecs* world, entity c, byte npc) {
     if (npc) {
         zox_add(c, Npc);
         zox_add(c, Jumper);
-        zox_prefab_set(c, Behaviour, { zox_behaviour_idle });
-        zox_prefab_set(c, DefaultBehaviour, { zox_behaviour_wander });
-        zox_prefab_set(c, MoveForwards, { 0 });
-        zox_prefab_set(c, RotateTowards, { 0 });
-        zox_prefab_set(c, MoveSpeed, { 4 });
-        zox_prefab_set(c, TargetPosition, { float3_zero });
-        zox_prefab_set(c, ThreatPosition, { float3_zero });
-        zox_prefab_set(c, WanderDirection, { float3_zero });
+        zox_set(c, Behaviour, { zox_behaviour_idle });
+        zox_set(c, DefaultBehaviour, { zox_behaviour_wander });
+        zox_set(c, MoveForwards, { 0 });
+        zox_set(c, RotateTowards, { 0 });
+        zox_set(c, MoveSpeed, { 4 });
+        zox_set(c, TargetPosition, { float3_zero });
+        zox_set(c, ThreatPosition, { float3_zero });
+        zox_set(c, WanderDirection, { float3_zero });
     } else {
         zox_add(c, Npc);
         zox_add(c, Jumper);

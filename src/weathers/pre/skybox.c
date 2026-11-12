@@ -13,7 +13,7 @@ entity spawn_prefab_skybox(ecs *world) {
     zox_add(e, Mesh);
     zox_add(e, MeshIndicies);
     zox_add(e, MeshVertices);
-    zox_prefab_set(e, MeshGPULink, { { 0, 0 } });
+    zox_set(e, MeshGPULink, { { 0, 0 } });
     zox_setv(e, MaterialGPULink, 0);
     zox_setv(e, Color, color_white);
     zox_setv(e, ColorRGB, color_rgb_white);
