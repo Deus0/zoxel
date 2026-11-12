@@ -15,51 +15,51 @@ void spawn_fetch_quest(
     zox_add(root, Dialogue);
     zox_set_parent(world, root, realm);
     entity has_quest = spawn_node_has_quest(world, dialogue_quest);
-    zox_link(world, root, NodeLink, has_quest);
+    new_link_single_node(world, root, has_quest);
 
     // no quest, give user quest
     entity leadon = spawn_node_speech(world, "I have a quest you may like.");
     zox_add(leadon, NodeFalse);
-    zox_link(world, has_quest, NodeLink, leadon);
+    new_link_single_node(world, has_quest, leadon);
     entity demand = spawn_node_speech(world, "I require cookies!");
-    zox_link(world, leadon, NodeLink, demand);
+    new_link_single_node(world, leadon, demand);
     entity give_quest = spawn_node_give_quest(world, dialogue_quest);
-    zox_link(world, demand, NodeLink, give_quest);
+    new_link_single_node(world, demand, give_quest);
     entity give_quest_speech = spawn_node_speech(world, "My Cookie Furnace Screams.");
-    zox_link(world, give_quest, NodeLink, give_quest_speech);
+    new_link_single_node(world, give_quest, give_quest_speech);
 
     // Quest Done?
     entity has_done_quest = spawn_node_has_quest_done(world, dialogue_quest);
     zox_add(has_done_quest, NodeTrue);
-    zox_link(world, has_quest, NodeLink, has_done_quest);
+    new_link_single_node(world, has_quest, has_done_quest);
 
     // Doing Quest
     entity doing_quest_speech = spawn_node_speech(world, "You have already been commanded.");
     zox_add(doing_quest_speech, NodeFalse);
-    zox_link(world, has_done_quest, NodeLink, doing_quest_speech);
+    new_link_single_node(world, has_done_quest, doing_quest_speech);
 
     // Handed in Quest?
     {
         entity has_handedin_quest = spawn_node_has_quest_handedin(world, dialogue_quest);
         zox_add(has_handedin_quest, NodeTrue);
-        zox_link(world, has_done_quest, NodeLink, has_handedin_quest);
+        new_link_single_node(world, has_done_quest, has_handedin_quest);
 
         // Done Quest
         // TODO: Did hand in quest?
         entity handin_quest = spawn_node_speech(world, "You did well...");
         zox_add(handin_quest, NodeFalse);
-        zox_link(world, has_handedin_quest, NodeLink, handin_quest);
+        new_link_single_node(world, has_handedin_quest, handin_quest);
         entity handin_quest2 = spawn_node_speech(world, "I shall reward thee.");
-        zox_link(world, handin_quest, NodeLink, handin_quest2);
+        new_link_single_node(world, handin_quest, handin_quest2);
         entity handin_quest3 = spawn_node_handin_quest(world, dialogue_quest);
-        zox_link(world, handin_quest2, NodeLink, handin_quest3);
+        new_link_single_node(world, handin_quest2, handin_quest3);
         entity handin_quest4 = spawn_node_speech(world, "Go on, giitt.");
-        zox_link(world, handin_quest3, NodeLink, handin_quest4);
+        new_link_single_node(world, handin_quest3, handin_quest4);
 
         // Quest Rewards Nodes
         entity handedin_quest = spawn_node_speech(world, "You did well...");
         zox_add(handedin_quest, NodeTrue);
-        zox_link(world, has_handedin_quest, NodeLink, handedin_quest);
+        new_link_single_node(world, has_handedin_quest, handedin_quest);
     }
 }
 

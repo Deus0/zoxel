@@ -11,5 +11,7 @@ entity spawn_realm_dungeon_core(ecs *world, entity wall) {
     // add prefab for world spawning
     entity world_block = spawn_block_world_dungeon(world, wall);
     zox_setv(e, BlockPrefabLink, world_block);
+    // its own world prefab (other blocks share global ones), the block owns it, it leaked ending a game
+    zox_set_parent(world, world_block, e);
     return e;
 }

@@ -34,10 +34,14 @@ void CharacterNameLabelsSystem(iter* it) {
     // the players' cameras
     float3 cameras[8];
     int cameras_count = 0;
+    byte playing = 0;
     zox_sys_query();
     zox_sys_query_begin();
     while (zox_sys_query_loop()) {
         for (int j = 0; j < it2.count && cameras_count < 8; j++) {
+            const entity game = zox_get_link(world, it2.entities[j], GameLink);
+            const byte game_state = zox_valid(game) ? zox_getv(game, GameState) : zox_game_none;
+            playing |= game_state == zox_game_state_playing || game_state == zox_game_state_paused;
             const entity camera = zox_get_link(world, it2.entities[j], CameraLink);
             if (zox_valid(camera) && zox_has(camera, Position3D)) {
                 cameras[cameras_count++] = zox_getv(camera, Position3D);
@@ -47,10 +51,7 @@ void CharacterNameLabelsSystem(iter* it) {
     zox_sys_query_end();
     // only while playing: not in menus or loading, and not while a game ends (its realm and characters
     //  are deleted that frame, a label spawned on them was left half made, tst menu_flow)
-    const byte game_state = zox_valid(local_game) ? zox_getv(local_game, GameState) : zox_game_none;
-    if (!cameras_count ||
-        (game_state != zox_game_state_playing && game_state != zox_game_state_paused))
-    {
+    if (!cameras_count || !playing) {
         return;
     }
     zox_sys_begin();
