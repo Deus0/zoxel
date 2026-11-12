@@ -6,7 +6,8 @@ entity spawn_attach_slot(
 {
     // ToDO: Proper index
     uint index = 0;
-    entity e = spawn_slot(
+    // non fragmenting, a character's body slot sits beside its non fragmenting stats
+    entity e = spawn_slot_non_fragment(
         world,
         parent,
         index);

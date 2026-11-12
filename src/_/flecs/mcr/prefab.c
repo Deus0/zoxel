@@ -1,7 +1,9 @@
 // NOTE: Creates a prefab child of another to build on
 static inline entity zox_prefab_from_parent(ecs* world, entity parent) {
-    entity e = ecs_new_w_pair(world, EcsIsA, parent);
+    // a prefab first, then its base (see zox_prefab_variant)
+    entity e = ecs_new(world);
     ecs_add_id(world, e, EcsPrefab);
+    ecs_add_pair(world, e, EcsIsA, parent);
     return e;
     // entity e = ecs_new(world);
     // ecs_add_pair(world, e, EcsIsA, parent);     // inherit components
@@ -10,6 +12,15 @@ static inline entity zox_prefab_from_parent(ecs* world, entity parent) {
 
 #define zox_make_prefab(e)\
     ecs_add_id(world, e, EcsPrefab);
+
+// A prefab of a prefab (a variant): a prefab first, then its base, so its instances get the base's children
+//  (an instance made a prefab afterwards had copies of them instead, its own instances lost them, tst prefab_variants)
+static inline entity zox_prefab_variant(ecs* world, entity base) {
+    entity e = ecs_new(world);
+    ecs_add_id(world, e, EcsPrefab);
+    ecs_add_pair(world, e, EcsIsA, base);
+    return e;
+}
 
 #define zox_prefab()\
     entity e = zox_new();\
