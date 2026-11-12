@@ -44,6 +44,10 @@ set -euo pipefail
 #     record's sparse targets, a delete visits ~70 records, worst flying 160ms -> 22ms (--maxnpcs)
 #     - bsh/flecs_nf_root.py, repro: bash bsh/tst.sh perf_fly --stress (release, --maxnpcs)
 #
+#   Instancing a prefab walked every non fragmenting component record (ZOXEL PATCH nf root instantiate)
+#   - flecs_instantiate_dont_fragment, the same walk for each instance, 38% of slow frames flying (npcs spawning)
+#   - Fix: the roots and the prefab's own targets, bsh/flecs_nf_root_instantiate.py
+#
 # Requirements: perl, python3
 
 file=inc/flecs/flecs.c
@@ -316,3 +320,4 @@ patch_reachable_cache || exit 1
 patch_nested_cleanup || exit 1
 patch_nf_parent_delete || exit 1
 python3 bsh/flecs_nf_root.py "${file}" || exit 1
+python3 bsh/flecs_nf_root_instantiate.py "${file}" || exit 1

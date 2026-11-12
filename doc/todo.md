@@ -29,7 +29,8 @@
 	- move other heavy systems from process counts to zox_sys_budget
 -x Flying spikes (78-164ms, tst perf_fly): deleting an entity walked all 14k non fragmenting records (flecs patch,
   doc/flecs_patches.md), flying is 20-22ms worst now, even with --maxnpcs
-	- next: the remaining ~12ms merges, and npc spawning (perf_fly --maxnpcs --profile)
+	-x npc spawning walked every non fragmenting record too (flecs patch), worst merge 18.6 -> 11ms
+	- next: new tables while streaming (16% of the slowest frames), colored chunk meshes (9%)
 - Lag spikes (up to 96ms): sound generation, a whole sound in one frame when it spawns
 	- measured (debug): a 1.3s choir note 290-670ms, a 2.8s cello note 60-100ms, choir 330ms per second of sound
 	- music pads and jingles play choir and cello notes, the spikes
@@ -791,6 +792,8 @@
 # Engine and Refactors
 - Heap grows ~22mb a game ended and started again (tst end_game_cleanup), entities, gpu buffers, textures and
   tables don't: trace allocations (glibc mtrace, or a flecs os api malloc hook) to tell a leak from flecs pools
+	- check if flecs can own our mesh data (vertices, indices, colors, uvs are malloc'd arrays in components):
+	  flecs allocators or sparse/vector components with hooks, it might fix the heap growth and frees on delete
 - Thread safety (doc/thread_safety.md, tst pipeline_syncs):
 	- 10 merges (from 19), under 10: the transform chain is 5, billboards could rotate inside the hierarchy walk
 	- stream_npcs segfaulted once in a full suite run (before the octree barrier), watch for it

@@ -42,6 +42,14 @@ flecs.c is patched by bsh/flecs_fix.sh after downloading, each patch has a ZOXEL
 - Repro: release build, `--tst perf_fly --maxnpcs --profile` (bash bsh/tst.sh perf_fly --stress); a plain flecs repro is many pair targets (a record each) then deleting entities that have any non fragmenting id
 - Upstream: not reported yet
 
+### Instancing a prefab walked every non fragmenting component record
+
+- Marker: ZOXEL PATCH nf root instantiate
+- Problem: flecs_instantiate_dont_fragment checked every record in the world's non fragmenting list (sparse_has on the prefab for each of ~14k), for every instance. It was 38% of slow frames flying (npcs and their parts spawning), sparse_has alone 29%.
+- Fix: walks the root list (from the nf root list patch), and the prefab's own targets of each relationship from its (R, *) record, the per record copy is unchanged (flecs_instantiate_dont_fragment_one). Applied by bsh/flecs_nf_root_instantiate.py, after bsh/flecs_nf_root.py.
+- Repro: release build, `--tst perf_fly --maxnpcs --profile` with `ZOX_SAMPLE` (doc/commands.md), worst merge flying 18.6ms -> 11ms, slow frames (12ms+) 57 -> 9
+- Upstream: not reported yet
+
 ## Writing an upstream PR
 
 - A minimal repro in plain flecs C (no zoxel macros), against flecs master, ideally as a flecs test
