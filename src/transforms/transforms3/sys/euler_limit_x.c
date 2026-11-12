@@ -1,4 +1,5 @@
-zox_sys2(EulerLimitXSystem) {
+void EulerLimitXSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(EulerLimitX);
     zox_sys_out(Euler);
@@ -12,4 +13,5 @@ zox_sys2(EulerLimitXSystem) {
             euler->value.x = eulerLimitX->value.y;
         }
     }
-} zox_sys_end(EulerLimitXSystem);
+    zox_sys_on_end();
+} zoxd_system(EulerLimitXSystem);

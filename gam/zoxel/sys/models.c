@@ -1,5 +1,6 @@
 // TODO: Spawn the models in other categories, directly in character/block/gear/body if not shared models
-/*zox_sys2(ModelsRealmSpawnSystem) {
+/*void ModelsRealmSpawnSystem(iter* it) {
+    zox_sys_on_begin();
     // byte vlength_max = powers_of_two[nodegraph_max_depth];
     // byte mdepth_vode = block_depth_limits.y;
     byte mdepth_character = block_depth_limits.y;
@@ -17,7 +18,8 @@
         }
         // zox_logv("At [%f] Realm [models] [%i] spawned.", zox_current_time, models->length);
     }
-} zox_sys_end(ModelsRealmSpawnSystem);*/
+    zox_sys_on_end();
+} zoxd_system(ModelsRealmSpawnSystem);*/
 
         // Grass
         // TODO: set different heights

@@ -1,5 +1,6 @@
 //! Bounds, because everyone needs limits! Used atm to keep player within the start area.
-zox_sys2(Position3DBoundsSystem) {
+void Position3DBoundsSystem(iter* it) {
+    zox_sys_on_begin();
     const float teleport_force = 0.2f;
     zox_physics_profile_begin();
     zox_sys_begin();
@@ -25,4 +26,5 @@ zox_sys2(Position3DBoundsSystem) {
         else if (p->z + extents.z > bounds.v) p->z = bounds.v - extents.z - teleport_force;
     }
     zox_physics_profile_end();
-} zox_sys_end(Position3DBoundsSystem);
+    zox_sys_on_end();
+} zoxd_system(Position3DBoundsSystem);

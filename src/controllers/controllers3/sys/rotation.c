@@ -1,4 +1,5 @@
-zox_sys2(Player3RotateSystem) {
+void Player3RotateSystem(iter* it) {
+    zox_sys_on_begin();
     double gamepad_rotate_multiplier_x = 0.04;
     double gamepad_rotate_multiplier_y = 0.03;
     double mouse_rotate_multiplier = 0.0032; // 0.008;
@@ -133,4 +134,5 @@ zox_sys2(Player3RotateSystem) {
         }
         head_rotation->value = euler_to_quaternion(head_euler);
     }
-} zox_sys_end(Player3RotateSystem);
+    zox_sys_on_end();
+} zoxd_system(Player3RotateSystem);

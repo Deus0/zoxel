@@ -1,4 +1,5 @@
-zox_sys2(PlayerGame2EndSystem) {
+void PlayerGame2EndSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerStateDirty);
@@ -20,4 +21,5 @@ zox_sys2(PlayerGame2EndSystem) {
         // camera->value = 0;
         // spawn_main_menu(world, e, game_name);
     }
-} zox_sys_end(PlayerGame2EndSystem);
+    zox_sys_on_end();
+} zoxd_system(PlayerGame2EndSystem);

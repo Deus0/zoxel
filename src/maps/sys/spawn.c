@@ -2,7 +2,8 @@
 //  A ui and just use Clone TextureData from TunkTexture
 //  Link the map piece to a Tunk
 // NOTE: Adds/Removes Minimap to Game UI
-zox_sys2(MapInitializeSystem) {
+void MapInitializeSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     int2 arrow_size = int2_single(8 * ui_scale);
     byte arrow_thickness = 0.5f * ui_scale;
@@ -137,4 +138,5 @@ zox_sys2(MapInitializeSystem) {
             zox_link(world, e3, PlayerLink, player);
         }
     }
-} zox_sys_end(MapInitializeSystem);
+    zox_sys_on_end();
+} zoxd_system(MapInitializeSystem);

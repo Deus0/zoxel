@@ -60,10 +60,14 @@ void simple_swing_system(iter* it, byte limb) {
     }
 }
 
-zox_sys2(ArmSwingSystem) {
+void ArmSwingSystem(iter* it) {
+    zox_sys_on_begin();
     simple_swing_system(it, 0);
-} zox_sys_end(ArmSwingSystem);
+    zox_sys_on_end();
+} zoxd_system(ArmSwingSystem);
 
-zox_sys2(LegSwingSystem) {
+void LegSwingSystem(iter* it) {
+    zox_sys_on_begin();
     simple_swing_system(it, 1);
-} zox_sys_end(LegSwingSystem);
+    zox_sys_on_end();
+} zoxd_system(LegSwingSystem);

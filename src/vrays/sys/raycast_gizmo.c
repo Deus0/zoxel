@@ -1,4 +1,5 @@
-zox_sys2(RaycastGizmoSystem) {
+void RaycastGizmoSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     byte gizmo_type = 1;
     byte disable_depth = 0; // 1;
@@ -130,4 +131,5 @@ zox_sys2(RaycastGizmoSystem) {
             }
         }
     }
-} zox_sys_end(RaycastGizmoSystem);
+    zox_sys_on_end();
+} zoxd_system(RaycastGizmoSystem);

@@ -131,7 +131,8 @@ zox_system(
 And the system reads its fields **in the same order** as they were declared:
 
 ```c
-zox_sys2(CharactersCanSpawnSystem) {
+void CharactersCanSpawnSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RenderDepth);        // field 0
@@ -146,7 +147,8 @@ zox_sys2(CharactersCanSpawnSystem) {
             active->value = 1;
         }
     }
-} zox_sys_end(CharactersCanSpawnSystem);
+    zox_sys_on_end();
+} zoxd_system(CharactersCanSpawnSystem);
 ```
 
 Newer systems are written as plain functions, `void npc_spawn_system(iter* it) { ... } zoxd_system(npc_spawn_system);`,

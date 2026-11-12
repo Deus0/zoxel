@@ -50,7 +50,8 @@ void calculate_perspective_projection_matrix(
 
 
 // This should only update when either ScreenDimensions or FieldOfView changes
-zox_sys2(ProjectionMatrixSystem) {
+void ProjectionMatrixSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(PixelSize);
     zox_sys_in(FieldOfView);
@@ -72,4 +73,5 @@ zox_sys2(ProjectionMatrixSystem) {
             camera_far_distance,
             fieldOfView->value);
     }
-} zox_sys_end(ProjectionMatrixSystem);
+    zox_sys_on_end();
+} zoxd_system(ProjectionMatrixSystem);

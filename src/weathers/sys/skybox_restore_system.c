@@ -1,4 +1,5 @@
-zox_sys2(SkyboxRestoreSystem) {
+void SkyboxRestoreSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_begin();
     zox_sys_in(MaterialGPULink);
@@ -25,4 +26,5 @@ zox_sys2(SkyboxRestoreSystem) {
             zox_log(" - color [%ix%ix%i] secondary [%ix%ix%i]", color->value.r, color->value.g, color->value.b, secondaryColor->value.r, secondaryColor->value.g, secondaryColor->value.b)
         }
     }
-} zox_sys_end(SkyboxRestoreSystem);
+    zox_sys_on_end();
+} zoxd_system(SkyboxRestoreSystem);

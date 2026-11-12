@@ -14,7 +14,8 @@ void process_arguments_skills(ecs* world, char* args[], int count) {
     }
 }
 
-zox_sys2(BlackPlagueSystem) {
+void BlackPlagueSystem(iter* it) {
+    zox_sys_on_begin();
     // NOTE: a system runs once per matched table, so the strike time is shared for the frame
     static double last_strike = 0;
     static double strike_frame = -1;
@@ -44,7 +45,8 @@ zox_sys2(BlackPlagueSystem) {
             (float3) { 0, 1, 0 });
     }
     zox_log("+ [blackplague] struck [%i] npcs", it->count);
-} zox_sys_end(BlackPlagueSystem);
+    zox_sys_on_end();
+} zoxd_system(BlackPlagueSystem);
 
 void zox_systems_blackplague(ecs* world) {
     zox_system_1(

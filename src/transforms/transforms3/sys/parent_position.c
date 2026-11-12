@@ -1,5 +1,6 @@
 /*
-zox_sys2(ParentPositionSystem) {
+void ParentPositionSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ParentLink);
@@ -16,4 +17,5 @@ zox_sys2(ParentPositionSystem) {
 
         set_position_from_parents(world, parent->value, &position->value, local->value);
     }
-} zox_sys_end(ParentPositionSystem);*/
+    zox_sys_on_end();
+} zoxd_system(ParentPositionSystem);*/

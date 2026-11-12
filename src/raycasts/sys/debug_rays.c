@@ -1,6 +1,7 @@
 extern void spawn_line3t(ecs *world, const float3, const float3, const color_rgb);
 
-zox_sys2(RayDebugSystem) {
+void RayDebugSystem(iter* it) {
+    zox_sys_on_begin();
     if (!zox_dbg_rays) {
         return;
     }
@@ -28,4 +29,5 @@ zox_sys2(RayDebugSystem) {
             float3_add(origin->value, end_point2),
             debug_color2);
     }
-} zox_sys_end(RayDebugSystem);
+    zox_sys_on_end();
+} zoxd_system(RayDebugSystem);

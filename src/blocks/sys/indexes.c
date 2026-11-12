@@ -31,7 +31,8 @@ void fetch_children_blocks(
 }
 
 // NOTE: Sets all Realm Block Indexes after dirty
-zox_sys2(RealmBlocksDirtySystem) {
+void RealmBlocksDirtySystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -64,4 +65,5 @@ zox_sys2(RealmBlocksDirtySystem) {
         zox_add(e, BlocksTilemapUpdate);
         // dirty->value = zox_blocks_dirty_tilemaps;
     }
-} zox_sys_end(RealmBlocksDirtySystem);
+    zox_sys_on_end();
+} zoxd_system(RealmBlocksDirtySystem);

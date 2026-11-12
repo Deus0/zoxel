@@ -106,7 +106,8 @@ void emit_particle3Ds(ecs *world, const float3 spawn_position, const int spawn_c
     free(destroyInTimes);
 }
 
-zox_sys2(Particle3DEmitSystem) {
+void Particle3DEmitSystem(iter* it) {
+    zox_sys_on_begin();
     const uint base_seed = (uint) (zox_current_time * 100);
     // const uint seed_shift = 8;
     byte is_bulk_spawn = 0;
@@ -135,4 +136,5 @@ zox_sys2(Particle3DEmitSystem) {
                 seed);
         }
     }
-} zox_sys_end(Particle3DEmitSystem);
+    zox_sys_on_end();
+} zoxd_system(Particle3DEmitSystem);

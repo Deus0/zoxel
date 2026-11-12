@@ -1,5 +1,6 @@
 // NOTE: Sets Mesh Children to build when Voxels are dirty
-zox_sys2(ChunkSidesTriggerSystem) {
+void ChunkSidesTriggerSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
@@ -9,11 +10,13 @@ zox_sys2(ChunkSidesTriggerSystem) {
             zox_log("Chunk Triggered Build Sides + Mesh [%s]", zox_getn(e));
         }
     }
-} zox_sys_end(ChunkSidesTriggerSystem);
+    zox_sys_on_end();
+} zoxd_system(ChunkSidesTriggerSystem);
 
 // should i grab neighbor states instead, or should i create setters?
 //  probably grab them, its faster to write in my systems
-zox_sys2(ChunkNeighborsSidesTriggerSystem) {
+void ChunkNeighborsSidesTriggerSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -35,4 +38,5 @@ zox_sys2(ChunkNeighborsSidesTriggerSystem) {
             }
         }
     }
-} zox_sys_end(ChunkNeighborsSidesTriggerSystem);
+    zox_sys_on_end();
+} zoxd_system(ChunkNeighborsSidesTriggerSystem);

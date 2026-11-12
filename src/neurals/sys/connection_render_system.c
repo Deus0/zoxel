@@ -1,5 +1,6 @@
 //! Adds force to the velocity per frame.
-zox_sys2(ConnectionRenderSystem) {
+void ConnectionRenderSystem(iter* it) {
+    zox_sys_on_begin();
     if (zox_current_time < 0.1) {
         return;
     }
@@ -53,4 +54,5 @@ zox_sys2(ConnectionRenderSystem) {
         // spawn_line2D_square(world, signal_position, (float2) { square_size, square_size }, 0.5f, animate_time);
         // zox_log(" + transfer->value [%f] at pos [%f]\n", transfer->value, signal_position.x)
     }
-} zox_sys_end(ConnectionRenderSystem);
+    zox_sys_on_end();
+} zoxd_system(ConnectionRenderSystem);

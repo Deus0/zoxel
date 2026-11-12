@@ -1,5 +1,6 @@
 
-zox_sys2(GridSystem) {
+void GridSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LayoutSize);
@@ -66,9 +67,11 @@ zox_sys2(GridSystem) {
             }
         }
     }
-} zox_sys_end(GridSystem);
+    zox_sys_on_end();
+} zoxd_system(GridSystem);
 
-/*zox_sys2(GridSystem) {
+/*void GridSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LayoutSize);
@@ -130,6 +133,7 @@ zox_sys2(GridSystem) {
             pos.y -= padding->value.y;
         }
     }
-} zox_sys_end(GridSystem);*/
+    zox_sys_on_end();
+} zoxd_system(GridSystem);*/
 
 

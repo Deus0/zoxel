@@ -58,4 +58,5 @@
         zox_log_streaming(" + [%i] spawned [%i]", ecs_run_count, spawned_chunks);
     }
 
-} zox_sys_end(GenPlaneSpawnSystem);*/
+    zox_sys_on_end();
+} zoxd_system(GenPlaneSpawnSystem);*/

@@ -1,4 +1,5 @@
-/*zox_sys2(ItemIconLabelSystem) {
+/*void ItemIconLabelSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     byte label_text_capacity = 8;
     zox_sys_world();
@@ -39,5 +40,6 @@
             }
         }
     }
-} zox_sys_end(ItemIconLabelSystem);
+    zox_sys_on_end();
+} zoxd_system(ItemIconLabelSystem);
 */

@@ -1,4 +1,5 @@
-zox_sys2(RenderTextureSizeSystem) {
+void RenderTextureSizeSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -33,4 +34,5 @@ zox_sys2(RenderTextureSizeSystem) {
             zox_log("+ [%s] Render Scaled Size: %ix%i - og [%ix%i]", zox_get_name(e), scaled_size.x, scaled_size.y, size->value.x, size->value.y);
         }
     }
-} zox_sys_end(RenderTextureSizeSystem);
+    zox_sys_on_end();
+} zoxd_system(RenderTextureSizeSystem);

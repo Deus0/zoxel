@@ -1,4 +1,5 @@
-zox_sys2(LinkFeedForwardSystem) {
+void LinkFeedForwardSystem(iter* it) {
+    zox_sys_on_begin();
     if (zox_current_time < neural_brain_delay) return;
     /*
     float total_loss = 0.0f;
@@ -41,4 +42,5 @@ zox_sys2(LinkFeedForwardSystem) {
             }
         }
     }
-} zox_sys_end(LinkFeedForwardSystem);
+    zox_sys_on_end();
+} zoxd_system(LinkFeedForwardSystem);

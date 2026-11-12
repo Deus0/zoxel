@@ -136,7 +136,8 @@ Links can't be system query terms. Select entities with a tag instead, then get 
 
 ```c
 // sys/example.c
-zox_sys2(ExampleSystem) {
+void ExampleSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     for (int i = 0; i < it->count; i++) {

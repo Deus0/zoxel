@@ -1,5 +1,6 @@
 // NOTE: Handles stat->value labels!
-zox_sys2(StatTextSystem) {
+void StatTextSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     int label_text_count = 256;
     zox_sys_world();
@@ -87,4 +88,5 @@ zox_sys2(StatTextSystem) {
             }
         }
     }
-} zox_sys_end(StatTextSystem);
+    zox_sys_on_end();
+} zoxd_system(StatTextSystem);

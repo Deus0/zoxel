@@ -1,5 +1,6 @@
 // active links
-zox_sys2(ElementActiveLinkSystem) {
+void ElementActiveLinkSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ActiveState);
@@ -27,4 +28,5 @@ zox_sys2(ElementActiveLinkSystem) {
         // Link our active to our list
         zox_set_link(world, parent, ActiveLink, e);
     }
-} zox_sys_end(ElementActiveLinkSystem);
+    zox_sys_on_end();
+} zoxd_system(ElementActiveLinkSystem);

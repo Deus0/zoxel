@@ -174,7 +174,8 @@ entity game_start_player_load(
 
 // NOTE: Player Spawns Player Character
 // TODO: Remove terrain load checks out this, and just change player from game when terrain is loaded
-zox_sys2(PlayerBeginSystem) {
+void PlayerBeginSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -284,4 +285,5 @@ zox_sys2(PlayerBeginSystem) {
         state->value = zox_player_state_play_trigger;
         dirty->value = zox_dirty_trigger;
     }
-} zox_sys_end(PlayerBeginSystem);
+    zox_sys_on_end();
+} zoxd_system(PlayerBeginSystem);

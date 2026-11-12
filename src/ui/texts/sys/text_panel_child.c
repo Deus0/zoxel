@@ -1,4 +1,5 @@
-zox_sys2(TextParentBackgroundSystem) {
+void TextParentBackgroundSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextData);
@@ -31,4 +32,5 @@ zox_sys2(TextParentBackgroundSystem) {
             zox_add(parent, LayoutSizeDirty);
         }
     }
-} zox_sys_end(TextParentBackgroundSystem);
+    zox_sys_on_end();
+} zoxd_system(TextParentBackgroundSystem);

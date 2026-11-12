@@ -1,4 +1,5 @@
-zox_sys2(DraggerEndSystem) {
+void DraggerEndSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(DraggableState);
@@ -57,4 +58,5 @@ zox_sys2(DraggerEndSystem) {
             }
         }
     }
-} zox_sys_end(DraggerEndSystem);
+    zox_sys_on_end();
+} zoxd_system(DraggerEndSystem);

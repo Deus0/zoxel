@@ -137,7 +137,8 @@ static inline byte flood_light(
     return dirty;
 }
 
-zox_sys2(LightFloodSystem) {
+void LightFloodSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     const uint max_flooding = 256;
     uint flooded = 0;
@@ -269,4 +270,5 @@ zox_sys2(LightFloodSystem) {
         }
         zox_sys_increment();
     }
-} zox_sys_end(LightFloodSystem);
+    zox_sys_on_end();
+} zoxd_system(LightFloodSystem);

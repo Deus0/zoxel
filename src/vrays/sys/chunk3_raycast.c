@@ -414,7 +414,8 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
 // ECS system iterating entities with camera & voxel links to perform raycasting
 // Sets up raycast parameters and executes raycast_voxel_node with proper inputs
 // Stores result in RaycastVoxelData component for consumption by gameplay logic
-zox_sys2(Chunk3RaycastSystem) {
+void Chunk3RaycastSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -496,4 +497,5 @@ zox_sys2(Chunk3RaycastSystem) {
             }
         }
     }
-} zox_sys_end(Chunk3RaycastSystem);
+    zox_sys_on_end();
+} zoxd_system(Chunk3RaycastSystem);

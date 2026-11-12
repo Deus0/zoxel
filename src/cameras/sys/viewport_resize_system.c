@@ -1,4 +1,5 @@
-zox_sys2(ViewportResizeSystem) {
+void ViewportResizeSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -34,4 +35,5 @@ zox_sys2(ViewportResizeSystem) {
             }
         }
     }
-} zox_sys_end(ViewportResizeSystem);
+    zox_sys_on_end();
+} zoxd_system(ViewportResizeSystem);

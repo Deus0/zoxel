@@ -1,5 +1,6 @@
 // TODO: Make a dirty flag for canvas line points
-zox_sys2(Line2DElementSystem) {
+void Line2DElementSystem(iter* it) {
+    zox_sys_on_begin();
     /*zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LinePosition2);
@@ -19,4 +20,5 @@ zox_sys2(Line2DElementSystem) {
         float2 b = get_element_position((int2) { points->value.z, points->value.w }, canvas_size, aspect_ratio);
         pointsf->value = (float4) { a.x, a.y, b.x, b.y };
     }*/
-} zox_sys_end(Line2DElementSystem);
+    zox_sys_on_end();
+} zoxd_system(Line2DElementSystem);

@@ -28,7 +28,8 @@ void generate_texture_plus(
     generate_texture_shape_outline(data, size, fill, outline, thickness);
 }
 
-zox_sys2(PlusTextureSystem) {
+void PlusTextureSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -65,4 +66,5 @@ zox_sys2(PlusTextureSystem) {
                 thickness->value);
         }
     }
-} zox_sys_end(PlusTextureSystem);
+    zox_sys_on_end();
+} zoxd_system(PlusTextureSystem);

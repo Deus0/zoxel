@@ -74,7 +74,8 @@ void zox_tst_parts_check(ecs* world) {
 }
 
 // collects realm body part items, only while the test runs
-zox_sys2(TstPartsProbeSystem) {
+void TstPartsProbeSystem(iter* it) {
+    zox_sys_on_begin();
     if (!zox_tst_active || zox_tst_active->check != zox_tst_parts_check) {
         return;
     }
@@ -93,7 +94,8 @@ zox_sys2(TstPartsProbeSystem) {
             zox_tst_parts[zox_tst_parts_count++] = e;
         }
     }
-} zox_sys_end(TstPartsProbeSystem);
+    zox_sys_on_end();
+} zoxd_system(TstPartsProbeSystem);
 
 void zox_tsts_parts(ecs* world) {
     zox_tst_add("parts", zox_tst_parts_ready, zox_tst_parts_check, 90);

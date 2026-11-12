@@ -1,5 +1,6 @@
 //! Adds force to the velocity per frame.
-zox_sys2(NeuronRenderSystem) {
+void NeuronRenderSystem(iter* it) {
+    zox_sys_on_begin();
     if (zox_current_time < 0.1) {
         return;
     }
@@ -24,4 +25,5 @@ zox_sys2(NeuronRenderSystem) {
         int gray_value = (int) (255 * output);
         spawn_line2D_square(world, neuron_position, (float2) { scale + scale * output, scale + scale * output }, line_thickness * 2, animate_time, (color_rgb) { gray_value, gray_value, gray_value });
     }
-} zox_sys_end(NeuronRenderSystem);
+    zox_sys_on_end();
+} zoxd_system(NeuronRenderSystem);

@@ -1,4 +1,5 @@
-zox_sys2(ActivateSystem) {
+void ActivateSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(WarmupState);
     zox_sys_out(Activate);
@@ -9,4 +10,5 @@ zox_sys2(ActivateSystem) {
             activate->value = zox_dirty_trigger;
         }
     }
-} zox_sys_end(ActivateSystem);
+    zox_sys_on_end();
+} zoxd_system(ActivateSystem);

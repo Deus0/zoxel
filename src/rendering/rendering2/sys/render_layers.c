@@ -1,7 +1,8 @@
 // TODO: Give uis a position2 and transform and use that instead directly
 // TODO: Render layers in order instead of positioning with 3D
 // NOTE: Needs to skip GPU calls for non layers since called per layer
-/*zox_sys2(ElementRenderSystem) {
+/*void ElementRenderSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     byte dbg_gl = 0;
     float depth_per_layer = 0.001f;
@@ -131,4 +132,5 @@
             zox_gpu_disable_depth_test();
         }
     }
-} zox_sys_end(ElementRenderSystem);*/
+    zox_sys_on_end();
+} zoxd_system(ElementRenderSystem);*/

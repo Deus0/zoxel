@@ -1,7 +1,8 @@
 // if poisoned, remove if leaving area
 // I could do this per debuff instead of character...! if it's a area based debuff
 // NOTE: When a character has AuraDots, we check if still in range!
-zox_sys2(AuraDotRemoveSystem) {
+void AuraDotRemoveSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
@@ -30,4 +31,5 @@ zox_sys2(AuraDotRemoveSystem) {
         }
         zox_delete(e);
     }
-} zox_sys_end(AuraDotRemoveSystem);
+    zox_sys_on_end();
+} zoxd_system(AuraDotRemoveSystem);

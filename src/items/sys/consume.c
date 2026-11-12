@@ -1,6 +1,7 @@
 // Consumes a consumable item, adding its ConsumeValue to the users linked stat
 // NOTE: ConsumeStat links to a realm stat, we find the users instance of it
-zox_sys2(ItemConsumeSystem) {
+void ItemConsumeSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -73,4 +74,5 @@ zox_sys2(ItemConsumeSystem) {
                 value->value);
         }
     }
-} zox_sys_end(ItemConsumeSystem);
+    zox_sys_on_end();
+} zoxd_system(ItemConsumeSystem);

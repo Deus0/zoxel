@@ -1,5 +1,6 @@
 // NOTE: Allows player to fly up or down when flymode is active
-zox_sys2(PlayerFlySystem) {
+void PlayerFlySystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
@@ -48,4 +49,5 @@ zox_sys2(PlayerFlySystem) {
             acc->value.y += input;
         }
     }
-} zox_sys_end(PlayerFlySystem);
+    zox_sys_on_end();
+} zoxd_system(PlayerFlySystem);

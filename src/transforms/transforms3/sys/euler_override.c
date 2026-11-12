@@ -1,4 +1,5 @@
-zox_sys2(EulerOverrideSystem) {
+void EulerOverrideSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(Euler);
     zox_sys_out(Rotation3D);
@@ -8,4 +9,5 @@ zox_sys2(EulerOverrideSystem) {
 
         rotation->value = quaternion_from_euler(euler->value);
     }
-} zox_sys_end(EulerOverrideSystem);
+    zox_sys_on_end();
+} zoxd_system(EulerOverrideSystem);

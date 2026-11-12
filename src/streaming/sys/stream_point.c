@@ -1,5 +1,6 @@
 // Streamer components added to cameras
-zox_sys2(StreamPositionSystem) {
+void StreamPositionSystem(iter* it) {
+    zox_sys_on_begin();
     if (zox_cameras_disable_streaming) {
         return;
     }
@@ -42,4 +43,5 @@ zox_sys2(StreamPositionSystem) {
             zox_log("Streaming Dirty: %ix%ix%i", npoint.x, npoint.y, npoint.z);
         }
     }
-} zox_sys_end(StreamPositionSystem);
+    zox_sys_on_end();
+} zoxd_system(StreamPositionSystem);

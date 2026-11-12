@@ -5,7 +5,8 @@
     zox_prefab_set(e, AnimationStart, { 0 });
 }*/
 
-zox_sys2(FadeoutSystem) {
+void FadeoutSystem(iter* it) {
+    zox_sys_on_begin();
     double time = zox_current_time;
     zox_sys_begin();
     zox_sys_in(FadeOutTime);
@@ -23,7 +24,8 @@ zox_sys2(FadeoutSystem) {
         }
         alpha->value = float_lerp(1, 0, animation_time);
     }
-} zox_sys_end(FadeoutSystem);
+    zox_sys_on_end();
+} zoxd_system(FadeoutSystem);
 
 
     /*

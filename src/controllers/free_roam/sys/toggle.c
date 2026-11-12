@@ -1,4 +1,5 @@
-zox_sys2(FreeCameraToggleSystem) {
+void FreeCameraToggleSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
@@ -52,4 +53,5 @@ zox_sys2(FreeCameraToggleSystem) {
             }
         }
     }
-} zox_sys_end(FreeCameraToggleSystem);
+    zox_sys_on_end();
+} zoxd_system(FreeCameraToggleSystem);

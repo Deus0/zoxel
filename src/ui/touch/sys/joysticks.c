@@ -82,7 +82,8 @@ void handle_touch_release(
 }
 
 // NOTE: This runs from a Zevice, Creates our Virtual Joysticks
-zox_sys2(VirtualJoystickSystem) {
+void VirtualJoystickSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(EntityTarget);
@@ -162,4 +163,5 @@ zox_sys2(VirtualJoystickSystem) {
             // zox_log("Spawning Virtual Joystick [%i]", button_type);
         }
     }
-} zox_sys_end(VirtualJoystickSystem);
+    zox_sys_on_end();
+} zoxd_system(VirtualJoystickSystem);

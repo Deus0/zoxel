@@ -1,6 +1,7 @@
 // NOTE: Tell the light systems to update when its all done
 
-zox_sys2(SunnyChunkGeneratedSystem) {
+void SunnyChunkGeneratedSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(GenerateChunk);
@@ -19,10 +20,12 @@ zox_sys2(SunnyChunkGeneratedSystem) {
             // zox_log("Sunny Generation Compplete [%s]", zox_sys_e_name);
         }
     }
-} zox_sys_end(SunnyChunkGeneratedSystem);
+    zox_sys_on_end();
+} zoxd_system(SunnyChunkGeneratedSystem);
 
 // NOTE Our chunk generation ends here
-zox_sys2(ChunkGeneratedSystem) {
+void ChunkGeneratedSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(GenerateChunk);
@@ -35,4 +38,5 @@ zox_sys2(ChunkGeneratedSystem) {
             // zox_log("Generation Compplete [%s]", zox_sys_e_name);
         }
     }
-} zox_sys_end(ChunkGeneratedSystem);
+    zox_sys_on_end();
+} zoxd_system(ChunkGeneratedSystem);

@@ -1,5 +1,6 @@
 // Generates a Biome Map
-zox_sys2(BiomeMapSystem) {
+void BiomeMapSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     double biome_frequency = 0.02;
     byte biome_octaves = 4;         // 12
@@ -80,4 +81,5 @@ zox_sys2(BiomeMapSystem) {
         }
         generate->value = zox_generate_tunk_heights;
     }
-} zox_sys_end(BiomeMapSystem);
+    zox_sys_on_end();
+} zoxd_system(BiomeMapSystem);

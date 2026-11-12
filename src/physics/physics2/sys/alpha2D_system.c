@@ -1,5 +1,6 @@
 // spins bodies with an Alpha2D (angular acceleration): exact steps, then clears it
-zox_sys2(Alpha2DSystem) {
+void Alpha2DSystem(iter* it) {
+    zox_sys_on_begin();
     init_delta_time();
     const physics_step step = physics_step_new(0, (float) delta_time);
     zox_physics_profile_begin();
@@ -18,4 +19,5 @@ zox_sys2(Alpha2DSystem) {
         alpha2D->value = 0;
     }
     zox_physics_profile_end();
-} zox_sys_end(Alpha2DSystem);
+    zox_sys_on_end();
+} zoxd_system(Alpha2DSystem);

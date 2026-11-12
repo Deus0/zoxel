@@ -2,7 +2,8 @@ const byte physics_disable_frames = 8;
 
 // holds a freshly spawned body still for its first physics_disable_frames frames
 //  - runs after the forces are added and before the step, clearing them and its velocity
-zox_sys2(Physics3DDisableSystem) {
+void Physics3DDisableSystem(iter* it) {
+    zox_sys_on_begin();
 #ifdef zoxel_disable_velocity
     return;
 #endif
@@ -22,4 +23,5 @@ zox_sys2(Physics3DDisableSystem) {
         }
     }
     zox_physics_profile_end();
-} zox_sys_end(Physics3DDisableSystem);
+    zox_sys_on_end();
+} zoxd_system(Physics3DDisableSystem);

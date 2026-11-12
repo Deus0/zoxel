@@ -1,5 +1,6 @@
 /*#define realm_clear_system(T)\
-zox_sys2(T##RealmClearSystem) {\
+void T##RealmClearSystem(iter* it) {\
+    zox_sys_on_begin(); \
     zox_sys_world();\
     zox_sys_begin();\
     zox_sys_in(GenerateRealm);\
@@ -21,7 +22,8 @@ zox_sys2(T##RealmClearSystem) {\
         \
         resize_##T(data, 0);\
     }\
-} zox_sys_end(T##RealmClearSystem)
+    zox_sys_on_end(); \
+} zoxd_system(T##RealmClearSystem)
 
 #define realm_clear_systemd(M, T)\
 zox_system(\

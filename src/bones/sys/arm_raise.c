@@ -1,5 +1,6 @@
 // NOTE: Simply raises arm up
-zox_sys2(ShoulderRaiseSystem) {
+void ShoulderRaiseSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     float swing_angle_x = -28;
     float swing_angle_y = 14;
@@ -69,4 +70,5 @@ zox_sys2(ShoulderRaiseSystem) {
         swing->value = 0;
         // zox_log("Compare Euler: Real: [%f] Target: [%f]", euler.x * radians_to_degrees, test_euler.x * radians_to_degrees);
     }
-} zox_sys_end(ShoulderRaiseSystem);
+    zox_sys_on_end();
+} zoxd_system(ShoulderRaiseSystem);

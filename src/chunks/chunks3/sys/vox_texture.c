@@ -169,7 +169,8 @@ void generate_vox_texture(
 }
 
 // TODO: Offset by chunk size difference to node size
-zox_sys2(VoxTextureSystem) {
+void VoxTextureSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     // color air_color = (color) { 255, 0, 0, 255 };
     color debug_color = (color) { 15, 155, 15, 255 };
@@ -338,4 +339,5 @@ zox_sys2(VoxTextureSystem) {
                 zox_has(vox, GenerateModel));
         }
     }
-} zox_sys_end(VoxTextureSystem);
+    zox_sys_on_end();
+} zoxd_system(VoxTextureSystem);

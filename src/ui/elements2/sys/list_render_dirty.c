@@ -1,6 +1,7 @@
 // if outside list visible indexes, hide, otherwise show
 // This sets visibility of the list recursively
-zox_sys2(ListRenderDirtySystem) {
+void ListRenderDirtySystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ListStart);
@@ -19,4 +20,5 @@ zox_sys2(ListRenderDirtySystem) {
                 !is_visible);
         }
     }
-} zox_sys_end(ListRenderDirtySystem);
+    zox_sys_on_end();
+} zoxd_system(ListRenderDirtySystem);

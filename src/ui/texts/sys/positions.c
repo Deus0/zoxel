@@ -45,7 +45,8 @@ int2 calculate_position(const byte *data, int length, int data_index, byte font_
 }
 
 // Centralized position setting for text zigels
-/*zox_sys2(GlyphPositionSystem) {
+/*void GlyphPositionSystem(iter* it) {
+    zox_sys_on_begin();
     byte is_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -92,10 +93,12 @@ int2 calculate_position(const byte *data, int length, int data_index, byte font_
         }
         zigel_dirty->value = zox_zigel_dirty_update;
     }
-} zox_sys_end(GlyphPositionSystem);*/
+    zox_sys_on_end();
+} zoxd_system(GlyphPositionSystem);*/
 
 // Centralized position setting for text zigels
-zox_sys2(TextsPositionSystem) {
+void TextsPositionSystem(iter* it) {
+    zox_sys_on_begin();
     byte is_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -139,4 +142,5 @@ zox_sys2(TextsPositionSystem) {
             }
         }
     }
-} zox_sys_end(TextsPositionSystem);
+    zox_sys_on_end();
+} zoxd_system(TextsPositionSystem);

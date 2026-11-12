@@ -1,5 +1,6 @@
 // This calculcates the matrix from Position2 and Scale1 when Layout is dirty
-zox_sys2(Transform2Scale1System) {
+void Transform2Scale1System(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -16,9 +17,11 @@ zox_sys2(Transform2Scale1System) {
             zox_log("Transform2Scale1System [%s]", zox_getn(e));
         }
     }
-} zox_sys_end(Transform2Scale1System);
+    zox_sys_on_end();
+} zoxd_system(Transform2Scale1System);
 
-zox_sys2(Transform2Rotation2Scale1System) {
+void Transform2Rotation2Scale1System(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -43,4 +46,5 @@ zox_sys2(Transform2Rotation2Scale1System) {
                 scale->value);
         }
     }
-} zox_sys_end(Transform2Rotation2Scale1System);
+    zox_sys_on_end();
+} zoxd_system(Transform2Rotation2Scale1System);

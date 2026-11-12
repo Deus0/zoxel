@@ -42,7 +42,8 @@ void zox_tst_terrain_check(ecs* world) {
     zox_tst_check_camera_filter(world, e);
 }
 
-zox_sys2(TstTerrainRenderProbeSystem) {
+void TstTerrainRenderProbeSystem(iter* it) {
+    zox_sys_on_begin();
     if (!zox_tst_active || zox_tst_active->check != zox_tst_terrain_check) {
         return;
     }
@@ -62,7 +63,8 @@ zox_sys2(TstTerrainRenderProbeSystem) {
             return;
         }
     }
-} zox_sys_end(TstTerrainRenderProbeSystem);
+    zox_sys_on_end();
+} zoxd_system(TstTerrainRenderProbeSystem);
 
 void zox_tsts_terrain_render(ecs* world) {
     zox_tst_add("terrain_render", zox_tst_terrain_ready, zox_tst_terrain_check, 90);

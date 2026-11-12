@@ -1,5 +1,6 @@
 // Sets an owners renderer child to the lod mesh at its RenderDepth
-zox_sys2(RendererLodSystem) {
+void RendererLodSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RenderDepthDirty);
@@ -18,4 +19,5 @@ zox_sys2(RendererLodSystem) {
         entity mesh = get_owner_lod_mesh(world, e, rdepth->value);
         zox_set_link(world, renderer, InstanceLink, mesh);
     }
-} zox_sys_end(RendererLodSystem);
+    zox_sys_on_end();
+} zoxd_system(RendererLodSystem);

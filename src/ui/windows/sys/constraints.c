@@ -1,5 +1,6 @@
 // NOTE: Sets window cconstraints on init
-zox_sys2(CanvasBoundsSystem) {
+void CanvasBoundsSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     // zox_sys_in(Initialize);
@@ -30,4 +31,5 @@ zox_sys2(CanvasBoundsSystem) {
             canvas_size.y * value_reverse.y - size->value.y / 2
         };
     }
-} zox_sys_end(CanvasBoundsSystem);
+    zox_sys_on_end();
+} zoxd_system(CanvasBoundsSystem);

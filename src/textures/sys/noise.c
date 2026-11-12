@@ -1,4 +1,5 @@
-zox_sys2(NoiseTextureSystem) {
+void NoiseTextureSystem(iter* it) {
+    zox_sys_on_begin();
     zox_change_check();
     zox_sys_world();
     zox_sys_begin();
@@ -35,4 +36,5 @@ zox_sys2(NoiseTextureSystem) {
         generate->value = zox_generate_texture_end;
         zox_add(e, TextureDirty);
     }
-} zox_sys_end(NoiseTextureSystem);
+    zox_sys_on_end();
+} zoxd_system(NoiseTextureSystem);

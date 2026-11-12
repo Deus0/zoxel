@@ -11,7 +11,8 @@ byte toggle_camera_mode(ecs *world, entity camera) {
     return mode;
 }
 
-zox_sys2(PlayerToggleCameraSystem) {
+void PlayerToggleCameraSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
@@ -80,4 +81,5 @@ zox_sys2(PlayerToggleCameraSystem) {
             }
         }
     }
-} zox_sys_end(PlayerToggleCameraSystem);
+    zox_sys_on_end();
+} zoxd_system(PlayerToggleCameraSystem);

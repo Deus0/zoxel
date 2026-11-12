@@ -25,7 +25,8 @@ const float penetration_amplifier = 1.0f; // 1.01f
         velocity3D->value.d *= -bounce_lost_force.d; \
     }
 
-zox_sys2(CollisionResponseSystem) {
+void CollisionResponseSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(CollisionDistance);
     zox_sys_out(Position3D);
@@ -72,4 +73,5 @@ zox_sys2(CollisionResponseSystem) {
         zox_log("did_collide_y: %i", did_collide_y);
         zox_log("grounded: %i", grounded->value);*/
     }
-} zox_sys_end(CollisionResponseSystem);
+    zox_sys_on_end();
+} zoxd_system(CollisionResponseSystem);

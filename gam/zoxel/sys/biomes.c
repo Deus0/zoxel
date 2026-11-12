@@ -1,4 +1,5 @@
-zox_sys2(BiomesRealmSpawnSystem) {
+void BiomesRealmSpawnSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
@@ -67,4 +68,5 @@ zox_sys2(BiomesRealmSpawnSystem) {
         }
         zox_logv("Realm [Biomes] [%i] spawned", biomes->length);
     }
-} zox_sys_end(BiomesRealmSpawnSystem);
+    zox_sys_on_end();
+} zoxd_system(BiomesRealmSpawnSystem);

@@ -46,7 +46,8 @@ void zox_tst_vox_instance_check(ecs* world) {
     zox_tst_check_camera_filter(world, e);
 }
 
-zox_sys2(TstVoxInstanceProbeSystem) {
+void TstVoxInstanceProbeSystem(iter* it) {
+    zox_sys_on_begin();
     if (!zox_tst_active || zox_tst_active->check != zox_tst_vox_instance_check) {
         return;
     }
@@ -64,7 +65,8 @@ zox_sys2(TstVoxInstanceProbeSystem) {
             return;
         }
     }
-} zox_sys_end(TstVoxInstanceProbeSystem);
+    zox_sys_on_end();
+} zoxd_system(TstVoxInstanceProbeSystem);
 
 void zox_tsts_vox_instance_render(ecs* world) {
     zox_tst_add("vox_instance_render", zox_tst_vox_instance_ready, zox_tst_vox_instance_check, 90);

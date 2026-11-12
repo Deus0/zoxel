@@ -1,6 +1,7 @@
 // element will follow mouse position
 //  -> linked to MouseTextureSystem
-zox_sys2(MouseElementSystem) {
+void MouseElementSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Anchor);
@@ -45,4 +46,5 @@ zox_sys2(MouseElementSystem) {
             zox_add(e, LayoutPositionDirty);
         }
     }
-} zox_sys_end(MouseElementSystem);
+    zox_sys_on_end();
+} zoxd_system(MouseElementSystem);

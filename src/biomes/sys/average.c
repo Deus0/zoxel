@@ -1,5 +1,6 @@
 // Counts the biomes used in the map, and sets to highest used
-zox_sys2(BiomeMapAvgSystem) {
+void BiomeMapAvgSystem(iter* it) {
+    zox_sys_on_begin();
     if (zox_disable_biomes) {
         return;
     }
@@ -59,4 +60,5 @@ zox_sys2(BiomeMapAvgSystem) {
         }
         // zox_log("popular_biome is [%i] [%s]", popular_biome, zox_get_name(link->value));
     }
-} zox_sys_end(BiomeMapAvgSystem);
+    zox_sys_on_end();
+} zoxd_system(BiomeMapAvgSystem);

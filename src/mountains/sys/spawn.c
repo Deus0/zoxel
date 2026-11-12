@@ -34,7 +34,8 @@ byte find_position_in_bounds(lint seed, int2 region_position, int2 region_size, 
 }
 
 // NOTE: Spawns X Towns per region
-zox_sys2(RegionMountainSystem) {
+void RegionMountainSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     byte min_size = 24;
     byte max_size = 128;
@@ -86,4 +87,5 @@ zox_sys2(RegionMountainSystem) {
         }
         generate->value = zox_generate_region_towns_trigger;
     }
-} zox_sys_end(RegionMountainSystem);
+    zox_sys_on_end();
+} zoxd_system(RegionMountainSystem);

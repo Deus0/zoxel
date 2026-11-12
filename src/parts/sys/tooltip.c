@@ -1,5 +1,6 @@
 // NOTE: Tooltips for Body/Equip Items
-zox_sys2(SlotItemTooltipSystem) {
+void SlotItemTooltipSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SelectState);
@@ -51,4 +52,5 @@ zox_sys2(SlotItemTooltipSystem) {
             tooltip,
             result);
     }
-} zox_sys_end(SlotItemTooltipSystem);
+    zox_sys_on_end();
+} zoxd_system(SlotItemTooltipSystem);

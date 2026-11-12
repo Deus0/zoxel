@@ -1,7 +1,8 @@
 extern void hide_virtual_keyboard(SDL_Window*);
 
 // NOTE: Used on FLX1S because phosh keeps putting it there!
-zox_sys2(HideVirtualKeyboardSystem) {
+void HideVirtualKeyboardSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(SDLWindow);
     for (int i = 0; i < it->count; i++) {
@@ -11,9 +12,11 @@ zox_sys2(HideVirtualKeyboardSystem) {
             hide_virtual_keyboard(window->value);
         }
     }
-} zox_sys_end(HideVirtualKeyboardSystem);
+    zox_sys_on_end();
+} zoxd_system(HideVirtualKeyboardSystem);
 
-zox_sys2(ToggleVirtualKeyboardSystem) {
+void ToggleVirtualKeyboardSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     if (!zox_valid(main_app) || !zox_has(main_app, SDLWindow)) {
         return;
@@ -28,4 +31,5 @@ zox_sys2(ToggleVirtualKeyboardSystem) {
             toggle_virtual_keyboard(window->value);
         }
     }
-} zox_sys_end(ToggleVirtualKeyboardSystem);
+    zox_sys_on_end();
+} zoxd_system(ToggleVirtualKeyboardSystem);

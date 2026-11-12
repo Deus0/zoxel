@@ -1,4 +1,5 @@
-/*zox_sys2(DataUILabelSystem) {
+/*void DataUILabelSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SlotLink);
@@ -23,5 +24,6 @@
             dirty->value = zox_dirty_trigger;
         }
     }
-} zox_sys_end(DataUILabelSystem);
+    zox_sys_on_end();
+} zoxd_system(DataUILabelSystem);
 */

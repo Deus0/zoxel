@@ -1,5 +1,6 @@
 // NOTE: Players keys to switch between actions
-zox_sys2(ActionsShortcutSystem) {
+void ActionsShortcutSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
@@ -91,4 +92,5 @@ zox_sys2(ActionsShortcutSystem) {
             player_action_ui_move(world, e, 1);
         }
     }
-} zox_sys_end(ActionsShortcutSystem);
+    zox_sys_on_end();
+} zoxd_system(ActionsShortcutSystem);

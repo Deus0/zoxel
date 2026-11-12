@@ -14,7 +14,8 @@
     return flood_light(voxels, lights, nvoxels, nlights, nqueues, depth, position, neighbor_light, light_propogation_distance, darklight, light_air_decay, solidity);
 }
 
-zox_sys2(RefreshLightsSystem) {
+void RefreshLightsSystem(iter* it) {
+    zox_sys_on_begin();
     // byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -135,5 +136,6 @@ zox_sys2(RefreshLightsSystem) {
         }
         refresh->value = 0;
     }
-} zox_sys_end(RefreshLightsSystem);
+    zox_sys_on_end();
+} zoxd_system(RefreshLightsSystem);
 */

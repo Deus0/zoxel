@@ -2,7 +2,8 @@ extern byte zox_chunk_lighting_busy(ecs*, entity);
 extern byte zox_chunk_mesh_lighting_busy(ecs*, entity);
 
 // NOTE: Toggles the meshes beased on render depth
-zox_sys2(ChunkMeshTransitionSystem) {
+void ChunkMeshTransitionSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     byte disable_busy = 0;
     double transition_speed = 0.1;
@@ -150,7 +151,8 @@ zox_sys2(ChunkMeshTransitionSystem) {
         // Minimal
         zox_remove(e, ChunkLodDirty);
     }
-} zox_sys_end(ChunkMeshTransitionSystem);
+    zox_sys_on_end();
+} zoxd_system(ChunkMeshTransitionSystem);
 
 // can we just set another flag, then fade it
 /*if (active_mesh) {

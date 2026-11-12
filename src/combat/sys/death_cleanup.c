@@ -1,7 +1,8 @@
 extern double zox_current_time;
 
 // time after death, character will be removed
-zox_sys2(DeathCleanSystem) {
+void DeathCleanSystem(iter* it) {
+    zox_sys_on_begin();
     double cleanup_time = 2.0;
     zox_sys_world();
     zox_sys_begin();
@@ -17,4 +18,5 @@ zox_sys2(DeathCleanSystem) {
             zox_delete(e);
         }
     }
-} zox_sys_end(DeathCleanSystem);
+    zox_sys_on_end();
+} zoxd_system(DeathCleanSystem);

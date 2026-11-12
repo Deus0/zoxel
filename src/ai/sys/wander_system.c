@@ -1,4 +1,5 @@
-zox_sys2(WanderSystem) {
+void WanderSystem(iter* it) {
+    zox_sys_on_begin();
     init_delta_time()
     const float wander_length    = 5.0f;  // units per second
     const float vertical_bias   = 0.0f;   // how much to allow vertical wandering (usually 0 in flatland)
@@ -42,7 +43,8 @@ zox_sys2(WanderSystem) {
             debug_linec(world, start, target->value, color_rgb_cyan);
         }
     }
-} zox_sys_end(WanderSystem);
+    zox_sys_on_end();
+} zoxd_system(WanderSystem);
 
 
 

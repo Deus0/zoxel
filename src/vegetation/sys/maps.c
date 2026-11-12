@@ -24,7 +24,8 @@ static inline byte choose_place(
     return best;
 }
 
-zox_sys2(VegetationMapSystem) {
+void VegetationMapSystem(iter* it) {
+    zox_sys_on_begin();
     // uint seed = global_seed;
     double veggie_frequency = 0.6;
     double veggie_amplitude = 1.0;
@@ -148,7 +149,8 @@ zox_sys2(VegetationMapSystem) {
         }
         generate->value = zox_generate_tunk_mountains;
     }
-} zox_sys_end(VegetationMapSystem);
+    zox_sys_on_end();
+} zoxd_system(VegetationMapSystem);
 
 /*byte value;
 if (perlin_value >= flower_chance) {

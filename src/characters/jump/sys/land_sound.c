@@ -1,5 +1,6 @@
 // TODO: Make it louder based on velocity of land
-zox_sys2(LandSoundSystem) {
+void LandSoundSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LandState);
@@ -10,4 +11,5 @@ zox_sys2(LandSoundSystem) {
             spawn_sound_effect(world, sound_effect_land, e);
         }
     }
-} zox_sys_end(LandSoundSystem);
+    zox_sys_on_end();
+} zoxd_system(LandSoundSystem);

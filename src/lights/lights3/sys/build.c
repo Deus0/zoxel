@@ -87,7 +87,8 @@ static inline void zox_apply_basic_lights(const LightNode* root_light_octree, co
 }
 
 // NOTE: Rebuilds Lights only when BuildMeshColors is dirty
-zox_sys2(BasicLightsBuildSystem) {
+void BasicLightsBuildSystem(iter* it) {
+    zox_sys_on_begin();
     // byte dbg_log = 0;
     if (zox_smooth_lighting) {
         return;
@@ -131,4 +132,5 @@ zox_sys2(BasicLightsBuildSystem) {
         }
         // ready->value = 1;
     }
-} zox_sys_end(BasicLightsBuildSystem);
+    zox_sys_on_end();
+} zoxd_system(BasicLightsBuildSystem);

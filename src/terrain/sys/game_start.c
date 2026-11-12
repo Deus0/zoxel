@@ -31,7 +31,8 @@ void game_state_terrain(ecs* world, entity game, byte state) {
 }
 
 // NOTE: When starting game, it Spawns the Terrain!
-/*zox_sys2(TerrainGameStartSystem) {
+/*void TerrainGameStartSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RealmLink);
@@ -60,4 +61,5 @@ void game_state_terrain(ecs* world, entity game, byte state) {
             spawn_grid2D(world);
         }
     }
-} zox_sys_end(TerrainGameStartSystem);*/
+    zox_sys_on_end();
+} zoxd_system(TerrainGameStartSystem);*/

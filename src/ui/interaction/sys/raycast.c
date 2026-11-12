@@ -1,6 +1,7 @@
 // For Elements of Square Shape - LayoutSize
 // NOTE: Casts this from the Zevice (input device child)
-zox_sys2(ElementRaycastSystem) {
+void ElementRaycastSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_query();
     zox_sys_world();
@@ -129,4 +130,5 @@ zox_sys2(ElementRaycastSystem) {
                 ui_selected);
         }
     }
-} zox_sys_end(ElementRaycastSystem);
+    zox_sys_on_end();
+} zoxd_system(ElementRaycastSystem);

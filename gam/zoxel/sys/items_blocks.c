@@ -1,4 +1,5 @@
-zox_sys2(ItemsRealmSpawnSystem) {
+void ItemsRealmSpawnSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -46,4 +47,5 @@ zox_sys2(ItemsRealmSpawnSystem) {
         }
         zox_logv("Realm [items] spawned");
     }
-} zox_sys_end(ItemsRealmSpawnSystem);
+    zox_sys_on_end();
+} zoxd_system(ItemsRealmSpawnSystem);

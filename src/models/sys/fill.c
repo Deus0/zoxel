@@ -25,7 +25,8 @@ void process_node_model_fill(ecs* world, entity node, entity vox, lint seed, byt
 
 // Runs from a Model Node Process
 //      This system will simply fill the voxes
-zox_sys2(FillModelNodeSystem) {
+void FillModelNodeSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = zox_dbg_model_nodes;
     zox_sys_world();
     zox_sys_begin();
@@ -95,4 +96,5 @@ zox_sys2(FillModelNodeSystem) {
         }
         zox_add(e, TriggerEnd);
     }
-} zox_sys_end(FillModelNodeSystem);
+    zox_sys_on_end();
+} zoxd_system(FillModelNodeSystem);

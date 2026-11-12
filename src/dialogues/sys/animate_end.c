@@ -1,5 +1,6 @@
 // on the text entity
-zox_sys2(AnimateTextEndSystem) {
+void AnimateTextEndSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(AnimateTextEnded);
@@ -27,4 +28,5 @@ zox_sys2(AnimateTextEndSystem) {
             zox_id(RenderDisabled),
             0);
     }
-} zox_sys_end(AnimateTextEndSystem);
+    zox_sys_on_end();
+} zoxd_system(AnimateTextEndSystem);

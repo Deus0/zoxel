@@ -1,5 +1,6 @@
 // Sets child frontbar mesh when resized
-/*zox_sys2(Elementbar3DSystem) {
+/*void Elementbar3DSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -55,4 +56,5 @@
             zox_log("Elementbar set to PositionX [%f] ScaleX[%f]", left_offset, scale.x);
         }
     }
-} zox_sys_end(Elementbar3DSystem);*/
+    zox_sys_on_end();
+} zoxd_system(Elementbar3DSystem);*/

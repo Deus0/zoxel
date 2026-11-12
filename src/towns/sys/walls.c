@@ -1,5 +1,6 @@
 // NOTE: Uses Height Map + Town Map to spawn Town Walls in chunks
-zox_sys2(TownWallsSystem) {
+void TownWallsSystem(iter* it) {
+    zox_sys_on_begin();
     // TODO: Link the Chunk to Town and use hte town data
     // TODO: get the Home from the Town based on position
     byte dbg_log = 0;
@@ -248,4 +249,5 @@ zox_sys2(TownWallsSystem) {
         // write_unlock_VoxelNode(voctree);
         generate->value = zox_generate_terrain_sunlight;
     }
-} zox_sys_end(TownWallsSystem);
+    zox_sys_on_end();
+} zoxd_system(TownWallsSystem);

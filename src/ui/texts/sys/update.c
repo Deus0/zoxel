@@ -1,4 +1,5 @@
-/*zox_sys2(GlyphUpdateSystem) {
+/*void GlyphUpdateSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -37,13 +38,15 @@
         }
         dirty->value = zox_zigel_dirty_end;
     }
-} zox_sys_end(GlyphUpdateSystem);*/
+    zox_sys_on_end();
+} zoxd_system(GlyphUpdateSystem);*/
 
 
 // NOTE: Updates previous zigels to new data
 // TODO: Can we move this to Glyphs instead of working at Text
 // NOTE: Needs to run on end, a frame after GlyphSpawnSystem shrinks the children
-zox_sys2(TextUpdateSystem) {
+void TextUpdateSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -107,4 +110,5 @@ zox_sys2(TextUpdateSystem) {
         }
         // zox_log("+ updating text [%s]", zox_get_name(e))
     }
-} zox_sys_end(TextUpdateSystem);
+    zox_sys_on_end();
+} zoxd_system(TextUpdateSystem);

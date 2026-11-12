@@ -91,7 +91,8 @@ byte set_entity_chunk(
 }
 
 // NOTE: Links characters to terrain chunks
-zox_sys2(ChunkLinkSystem) {
+void ChunkLinkSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -143,4 +144,5 @@ zox_sys2(ChunkLinkSystem) {
             }
         }
     }
-} zox_sys_end(ChunkLinkSystem);
+    zox_sys_on_end();
+} zoxd_system(ChunkLinkSystem);

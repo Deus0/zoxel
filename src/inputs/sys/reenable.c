@@ -1,4 +1,5 @@
-zox_sys2(ZeviceButtonEnableSystem) {
+void ZeviceButtonEnableSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ZeviceButton);
@@ -10,9 +11,11 @@ zox_sys2(ZeviceButtonEnableSystem) {
             zox_remove(e, Disabled);
         }
     }
-} zox_sys_end(ZeviceButtonEnableSystem);
+    zox_sys_on_end();
+} zoxd_system(ZeviceButtonEnableSystem);
 
-zox_sys2(ZevicePointerEnableSystem) {
+void ZevicePointerEnableSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ZevicePointer);
@@ -24,9 +27,11 @@ zox_sys2(ZevicePointerEnableSystem) {
             zox_remove(e, Disabled);
         }
     }
-} zox_sys_end(ZevicePointerEnableSystem);
+    zox_sys_on_end();
+} zoxd_system(ZevicePointerEnableSystem);
 
-zox_sys2(ZeviceStickEnableSystem) {
+void ZeviceStickEnableSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ZeviceStick);
@@ -38,4 +43,5 @@ zox_sys2(ZeviceStickEnableSystem) {
             zox_remove(e, Disabled);
         }
     }
-} zox_sys_end(ZeviceStickEnableSystem);
+    zox_sys_on_end();
+} zoxd_system(ZeviceStickEnableSystem);

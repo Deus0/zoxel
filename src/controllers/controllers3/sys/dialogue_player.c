@@ -1,5 +1,6 @@
 // NOTE: This handles player dialogue state changes
-zox_sys2(PlayerDialogueSystem) {
+void PlayerDialogueSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(PlayerState);
@@ -45,10 +46,12 @@ zox_sys2(PlayerDialogueSystem) {
             zox_remove(character, DisableMovement);
         }
     }
-} zox_sys_end(PlayerDialogueSystem);
+    zox_sys_on_end();
+} zoxd_system(PlayerDialogueSystem);
 
 // NOTE: This handles player dialogue state changes
-zox_sys2(CameraPlayerStateSystem) {
+void CameraPlayerStateSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerStateDirty);
@@ -76,5 +79,6 @@ zox_sys2(CameraPlayerStateSystem) {
             zox_lerp_float(camera, CameraBlur, game_blur, 2.5f);
         }
     }
-} zox_sys_end(CameraPlayerStateSystem);
+    zox_sys_on_end();
+} zoxd_system(CameraPlayerStateSystem);
 

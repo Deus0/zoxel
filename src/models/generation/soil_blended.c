@@ -1,4 +1,5 @@
-zox_sys2(BlendedSoilGenerationSystem) {
+void BlendedSoilGenerationSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -109,4 +110,5 @@ zox_sys2(BlendedSoilGenerationSystem) {
             zox_log("Generated Vox [%s] Type [%i] Depth [%i]", zox_get_name(e), gentype->value, depth->value);
         }
     }
-} zox_sys_end(BlendedSoilGenerationSystem);
+    zox_sys_on_end();
+} zoxd_system(BlendedSoilGenerationSystem);

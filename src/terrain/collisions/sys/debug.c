@@ -1,7 +1,8 @@
 byte zox_dbg_intersect = 0;
 
 // NOTE:Purely show the intersections
-zox_sys2(TerrainIntersectDebugSystem) {
+void TerrainIntersectDebugSystem(iter* it) {
+    zox_sys_on_begin();
     if (!zox_dbg_intersect) {
         return;
     }
@@ -185,7 +186,8 @@ zox_sys2(TerrainIntersectDebugSystem) {
             spawn_cube_lines_rgba(world, float3_add(above, correction), float3_single(0.03f), 2, dbg_color_solid, 0.01);
         }
     }
-} zox_sys_end(TerrainIntersectDebugSystem);
+    zox_sys_on_end();
+} zoxd_system(TerrainIntersectDebugSystem);
 
 void toggle_dbg_intersect(ecs* world, ClickEventData data) {
     zox_dbg_intersect = !zox_dbg_intersect;

@@ -785,7 +785,8 @@ void generate_font_texture(
     }*/
 }
 
-zox_sys2(FontTextureSystem) {
+void FontTextureSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_change_check();
     color clear_color = nothing_font_color;
@@ -907,4 +908,5 @@ zox_sys2(FontTextureSystem) {
                 checksum);
         }
     }
-} zox_sys_end(FontTextureSystem);
+    zox_sys_on_end();
+} zoxd_system(FontTextureSystem);

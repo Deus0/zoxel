@@ -1,4 +1,5 @@
-zox_sys2(StreamingSettingsSystem) {
+void StreamingSettingsSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LoadSettings);
@@ -16,9 +17,11 @@ zox_sys2(StreamingSettingsSystem) {
         spawn_setting_byte(world, e, "No Frustums", disable_frustum_culling);
 #endif
     }
-} zox_sys_end(StreamingSettingsSystem);
+    zox_sys_on_end();
+} zoxd_system(StreamingSettingsSystem);
 
-zox_sys2(StreamingSettingsDirtySystem) {
+void StreamingSettingsDirtySystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -56,4 +59,5 @@ zox_sys2(StreamingSettingsDirtySystem) {
             }
         }
     }
-} zox_sys_end(StreamingSettingsDirtySystem);
+    zox_sys_on_end();
+} zoxd_system(StreamingSettingsDirtySystem);

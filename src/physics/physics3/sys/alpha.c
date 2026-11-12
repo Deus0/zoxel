@@ -51,30 +51,38 @@ static inline void physics3_spin_free(iter* it, const float c) {
     zox_physics_profile_end();
 }
 
-zox_sys2(spin3_system) {
+void spin3_system(iter* it) {
+    zox_sys_on_begin();
     if (zox_delta_time > zox_physics_max_delta_time) {
         return;
     }
     physics3_spin(it, 0);
-} zox_sys_end(spin3_system);
+    zox_sys_on_end();
+} zoxd_system(spin3_system);
 
-zox_sys2(spin3_damped_system) {
+void spin3_damped_system(iter* it) {
+    zox_sys_on_begin();
     if (zox_delta_time > zox_physics_max_delta_time) {
         return;
     }
     physics3_spin(it, omega_dissipation3);
-} zox_sys_end(spin3_damped_system);
+    zox_sys_on_end();
+} zoxd_system(spin3_damped_system);
 
-zox_sys2(Omega3System) {
+void Omega3System(iter* it) {
+    zox_sys_on_begin();
     if (zox_delta_time > zox_physics_max_delta_time) {
         return;
     }
     physics3_spin_free(it, 0);
-} zox_sys_end(Omega3System);
+    zox_sys_on_end();
+} zoxd_system(Omega3System);
 
-zox_sys2(Omega3DampedSystem) {
+void Omega3DampedSystem(iter* it) {
+    zox_sys_on_begin();
     if (zox_delta_time > zox_physics_max_delta_time) {
         return;
     }
     physics3_spin_free(it, omega_dissipation3);
-} zox_sys_end(Omega3DampedSystem);
+    zox_sys_on_end();
+} zoxd_system(Omega3DampedSystem);

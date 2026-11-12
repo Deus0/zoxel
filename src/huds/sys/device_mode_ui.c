@@ -38,7 +38,8 @@ void set_mouse_visible(byte state) {
     zox_sdl_show_cursor(state);
 #endif
 }
-zox_sys2(DeviceModeUISystem) {
+void DeviceModeUISystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -94,4 +95,5 @@ zox_sys2(DeviceModeUISystem) {
                 mouse_visible);
         }
     }
-} zox_sys_end(DeviceModeUISystem);
+    zox_sys_on_end();
+} zoxd_system(DeviceModeUISystem);

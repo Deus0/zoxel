@@ -7,7 +7,8 @@ extern entity spawn_line3c(ecs*, float3, float3, float, double, color_rgb);
 
 // TODO: Dont cache a position, just raycast in direction of gravity
 // TODO: Spawn debug lines when repositioning
-zox_sys2(UnstuckSystem) {
+void UnstuckSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Bounds3D);
@@ -112,4 +113,5 @@ zox_sys2(UnstuckSystem) {
 #endif
         // zox_loge("Character Unstuck v[%ix%ix%i] l[%ix%ix%i] to f[%f.1x%f.1x%f.1]", pointv.x, pointv.y, pointv.z, pointl.x, pointl.y,  pointl.z, last->value.x, last->value.y, last->value.z);
     }
-} zox_sys_end(UnstuckSystem);
+    zox_sys_on_end();
+} zoxd_system(UnstuckSystem);

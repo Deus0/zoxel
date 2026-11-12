@@ -60,7 +60,8 @@ void build_vox_sand(
 }
 
 // NOTE: Generates a Sand block
-zox_sys2(SandModelGenerationSystem) {
+void SandModelGenerationSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -110,4 +111,5 @@ zox_sys2(SandModelGenerationSystem) {
                 gentype->value);
         }
     }
-} zox_sys_end(SandModelGenerationSystem);
+    zox_sys_on_end();
+} zoxd_system(SandModelGenerationSystem);

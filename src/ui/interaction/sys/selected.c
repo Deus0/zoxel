@@ -1,4 +1,5 @@
-zox_sys2(ElementSelectedBrighterSystem) {
+void ElementSelectedBrighterSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -20,9 +21,11 @@ zox_sys2(ElementSelectedBrighterSystem) {
             }
         }
     }
-} zox_sys_end(ElementSelectedBrighterSystem);
+    zox_sys_on_end();
+} zoxd_system(ElementSelectedBrighterSystem);
 
-zox_sys2(ElementSelectedFillColorSystem) {
+void ElementSelectedFillColorSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -56,11 +59,13 @@ zox_sys2(ElementSelectedFillColorSystem) {
             }
         }
     }
-} zox_sys_end(ElementSelectedFillColorSystem);
+    zox_sys_on_end();
+} zoxd_system(ElementSelectedFillColorSystem);
 
 // NOTE: Updates texture outline color when selected
 // NOTE: Disabled if ActiveState is Enabled
-zox_sys2(ElementSelectedOutlineColorSystem) {
+void ElementSelectedOutlineColorSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -99,4 +104,5 @@ zox_sys2(ElementSelectedOutlineColorSystem) {
             }
         }
     }
-} zox_sys_end(ElementSelectedOutlineColorSystem);
+    zox_sys_on_end();
+} zoxd_system(ElementSelectedOutlineColorSystem);

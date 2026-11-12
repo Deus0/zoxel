@@ -1,4 +1,5 @@
-zox_sys2(FleeSystem) {
+void FleeSystem(iter* it) {
+    zox_sys_on_begin();
     const float flee_distance    = 4.0f;  // how far we want to flee
     const float jitter_power     = 0.4f;
     zox_sys_world();
@@ -60,4 +61,5 @@ zox_sys2(FleeSystem) {
             debug_linec(world, start, float3_add(start, (float3){0,debug_length,0}), color_rgb_green);*/
         }
     }
-} zox_sys_end(FleeSystem);
+    zox_sys_on_end();
+} zoxd_system(FleeSystem);

@@ -1,5 +1,6 @@
 // Tooltip Event for item icons
-/*zox_sys2(ItemIconTooltipSystem) {
+/*void ItemIconTooltipSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SelectState);
@@ -29,4 +30,5 @@
         sprintf(result, "[%s] x%i\n", name, quantity);
         set_tooltip_text(world, e, tooltip, result);
     }
-} zox_sys_end(ItemIconTooltipSystem);*/
+    zox_sys_on_end();
+} zoxd_system(ItemIconTooltipSystem);*/

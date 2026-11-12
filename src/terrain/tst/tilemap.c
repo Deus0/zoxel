@@ -187,7 +187,8 @@ void zox_tst_tilemap_check(ecs* world) {
 }
 
 // Remembers a built textured terrain chunk mesh, only while the test runs
-zox_sys2(TstTilemapProbeSystem) {
+void TstTilemapProbeSystem(iter* it) {
+    zox_sys_on_begin();
     if (!zox_tst_active || zox_tst_active->check != zox_tst_tilemap_check) {
         return;
     }
@@ -205,7 +206,8 @@ zox_sys2(TstTilemapProbeSystem) {
             return;
         }
     }
-} zox_sys_end(TstTilemapProbeSystem);
+    zox_sys_on_end();
+} zoxd_system(TstTilemapProbeSystem);
 
 void zox_tsts_tilemap(ecs* world) {
     zox_tst_add(

@@ -1,4 +1,5 @@
-zox_sys2(RenderTextureInitializeSystem) {
+void RenderTextureInitializeSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0 || is_verbose;
     zox_sys_world();
     zox_sys_begin();
@@ -55,4 +56,5 @@ zox_sys2(RenderTextureInitializeSystem) {
                 is_alpha);
         }
     }
-} zox_sys_end(RenderTextureInitializeSystem);
+    zox_sys_on_end();
+} zoxd_system(RenderTextureInitializeSystem);

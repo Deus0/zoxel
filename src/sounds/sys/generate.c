@@ -1,5 +1,6 @@
 // todo: alter frequency over time during sound
-zox_sys2(SoundGenerateSystem) {
+void SoundGenerateSystem(iter* it) {
+    zox_sys_on_begin();
     if (nosounds || !master_volume) {
         return;
     }
@@ -42,4 +43,5 @@ zox_sys2(SoundGenerateSystem) {
         zox_logv("+ generated sound (%f)", soundVolume->value);
         zox_sys_increment();
     }
-} zox_sys_end(SoundGenerateSystem);
+    zox_sys_on_end();
+} zoxd_system(SoundGenerateSystem);

@@ -1,5 +1,6 @@
 // NOTE: Fixes texture size to layout size, for Fixed pixel resolution entities
-zox_sys2(TextureSizeSystem) {
+void TextureSizeSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(LayoutSize);
     zox_sys_out(TextureSize);
@@ -8,4 +9,5 @@ zox_sys2(TextureSizeSystem) {
         zox_sys_o(TextureSize, texture_size);
         texture_size->value = layout_size->value;
     }
-} zox_sys_end(TextureSizeSystem);
+    zox_sys_on_end();
+} zoxd_system(TextureSizeSystem);

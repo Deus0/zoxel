@@ -76,7 +76,8 @@ byte set_app_setting_float(
 }
 
 // Loads a simple settings file for users
-zox_sys2(SettingsLoadSystem) {
+void SettingsLoadSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -153,4 +154,5 @@ zox_sys2(SettingsLoadSystem) {
         fclose(file);
         load->value = zox_load_settings_end;
     }
-} zox_sys_end(SettingsLoadSystem);
+    zox_sys_on_end();
+} zoxd_system(SettingsLoadSystem);

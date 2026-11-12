@@ -167,7 +167,8 @@ void collide_with_chunkf(
     }
 }
 
-zox_sys2(CollisionDetectSystem) {
+void CollisionDetectSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TerrainLink);
@@ -282,4 +283,5 @@ zox_sys2(CollisionDetectSystem) {
         }
 
     }
-} zox_sys_end(CollisionDetectSystem);*/
+    zox_sys_on_end();
+} zoxd_system(CollisionDetectSystem);*/
