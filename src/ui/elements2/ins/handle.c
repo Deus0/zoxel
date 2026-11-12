@@ -15,7 +15,7 @@ entity spawn_handle(
 {
     zox_instance(prefab);
     zox_name("handle");
-    zox_set_parent(world, e, parent);
+    zox_set_parent_non_fragment(world, e, parent);
     zox_set(e, LayoutPosition, { position });
     zox_set(e, LayoutSize, { size });
     zox_set(e, Anchor, { position_anchor });

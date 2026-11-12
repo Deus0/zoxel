@@ -70,7 +70,7 @@ entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas)
         );
         // touch controls (jump, attack..) act as soon as they're touched
         zox_add(b, ClickOnPress);
-        zox_set_parent(world, b, e);
+        zox_set_parent_non_fragment(world, b, e);
     }
     return e;
 }

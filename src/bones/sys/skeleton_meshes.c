@@ -46,7 +46,7 @@ entity spawn_skeleton_mesh(
     zox_set_unique_name(mesh, "skeleton_mesh");
     zox_setv(mesh, RenderDepth, depth);
     zox_setv(mesh, RenderDisabled, render_disabled);
-    zox_set_parent(world, mesh, e);
+    zox_set_parent_non_fragment(world, mesh, e);
     return mesh;
 }
 

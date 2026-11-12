@@ -50,6 +50,6 @@ entity spawn_body_bone(
         position,
         local_position,
         size);
-    zox_set_parent(world, e2, parent);
+    zox_set_parent_non_fragment(world, e2, parent);
     return e2;
 }
