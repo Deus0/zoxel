@@ -7,30 +7,6 @@ float calculate_additive_comp(float time, float frequency, float lfo_frequency, 
     return additive_comp;
 }
 
-float high_pass_filter(float time, float cutoff_frequency) {
-    // Biquad filter coefficients
-    float b0, b1, a1, a2;
-    // Quality factor
-    float Q = 1.0f; // 0.7f; 
-    // Calculate filter coefficients
-    float omega = 2 * M_PI * cutoff_frequency / sample_rate_f;
-    float alpha = sin(omega) / (2 * Q);
-    // a0 = 1 + alpha;
-    b0 = (1 + cos(omega)) / 2;
-    b1 = -(1 + cos(omega));
-    // b2 = (1 + cos(omega)) / 2;
-    a1 = -2 * cos(omega);
-    a2 = 1 - alpha;
-    // State variables
-    static float x_1 = 0, x_2 = 0, y_1 = 0, y_2 = 0;
-    x_1 = x_2;
-    y_1 = y_2;
-    x_2 = time;
-    float output = b0 * x_2 + b1 * x_1 - a1 * y_1 - a2 * y_2;
-    y_2 = output;
-    return output;
-}
-
 float edm_sound(float time, float frequency) {
     return 0.6f * (sin_wave_0(time, frequency, 
         (sin_wave_9(time, frequency, 
@@ -72,7 +48,6 @@ float flute_sound(float time, float frequency) {
     float ring_mod_comp = sin(frequency * 2.0f * M_PI * time + 0.1f * sin(lfo_frequency * 0.1f * 2.0f * M_PI * time));
     // Mix the various components together
     float final_comp = 1.0f / 3.0f * (fm_comp + additive_comp + noise_comp + sawtooth_comp + ring_mod_comp);
-    // final_comp = high_pass_filter(final_comp, frequency * 2.1f);
     return final_comp;
     // Add a noise component to create a more breathy sound
     /*float breathy_comp = (sawtooth_wave_0(time, frequency / 2, pi_offset) + 

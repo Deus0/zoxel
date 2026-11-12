@@ -3,7 +3,6 @@ zox_sys2(SoundGenerateSystem) {
     if (nosounds || !master_volume) {
         return;
     }
-    float sound_bounds = 1.0f;
     zox_sys_begin();
     zox_sys_in(InstrumentType);
     zox_sys_in(SoundLength);
@@ -27,52 +26,20 @@ zox_sys2(SoundGenerateSystem) {
             zox_logw("Sound Data missing in [SoundGenerateSystem]");
             continue;
         }
-        float volume = soundVolume->value;
-        double sound_time_length = soundLength->value;
-        float frequency = soundFrequency->value;
-        // const int data_length = (int) (sound_sample_rate * sound_time_length);
         float noise = sound_noise * (rand() % 101) / 100.0f;
-        // random.NextFloat(generateSound.noise.x, generateSound.noise.y);
-        byte instrument_type = instrumentType->value; // rand() % 3; // 2;
-        float attack = sound_attack_multiplier * sound_time_length; //  0.02f * sound_time_length;
-        float dampen = sound_dampen_multiplier * sound_time_length;
-        // initialize_SoundData(soundData, data_length);
-        float value = 0;
-        for (uint j = 0; j < soundData->length; j++) {
-            float time = (float) (j / sample_rate_f);
-            if (instrument_type == instrument_piano) {
-                value = piano_sound(time, frequency);
-            } else if (instrument_type == instrument_piano_square) {
-                value = piano_square_sound(time, frequency);
-            } else if (instrument_type == instrument_unique) {
-                value = unique_sound(time, frequency);
-            } else if (instrument_type == instrument_organ) {
-                value = organ_sound(time, frequency);
-            } else if (instrument_type == instrument_edm) {
-                value = edm_sound(time, frequency);
-            } else if (instrument_type == instrument_guitar) {
-                value = guitar_sound(time, frequency);
-            } else if (instrument_type == instrument_flute) {
-                value = flute_sound(time, frequency);
-            } else if (instrument_type == instrument_violin) {
-                value = violin_sound(time, frequency);
-            } else if (instrument_type == instrument_saxophone) {
-                value = saxophone_sound(time, frequency);
-            } else if (instrument_type == instrument_trumpet) {
-                value = trumpet_sound(time, frequency);
-            } else {
-                break;
-            }
-            if (noise) {
-                value += noise * ((rand() / (float) RAND_MAX) * 2.0f - 1.0f);
-            }
-            value *= envelope(time, sound_time_length, attack, dampen);
-            value *= volume;
-            value = clampf(value, -sound_bounds, sound_bounds);
-            soundData->value[j] = value;
+        if (!generate_instrument_samples(
+            instrumentType->value,
+            soundFrequency->value,
+            soundLength->value,
+            soundVolume->value,
+            noise,
+            soundData->value,
+            soundData->length))
+        {
+            zox_logw("Unknown instrument [%i] in [SoundGenerateSystem]", instrumentType->value);
         }
         triggerSound->value = zox_dirty_trigger;
-        zox_logv("+ generated [%s] (%f)", zox_sys_e_name, volume);
+        zox_logv("+ generated sound (%f)", soundVolume->value);
         zox_sys_increment();
     }
 } zox_sys_end(SoundGenerateSystem);
