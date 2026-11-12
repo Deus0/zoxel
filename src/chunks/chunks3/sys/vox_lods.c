@@ -77,6 +77,13 @@ byte build_vox_mesh_at_depth(
         .vertices = create_float3_array_d(initial_dynamic_array_size),
         .colors = create_color_rgb_array_d(initial_dynamic_array_size)
     };
+    if (!is_split || !build_voxel_mesh_grid(
+        voxels,
+        vcolors,
+        &mesh,
+        target_depth,
+        position,
+        cscale))
     build_voxel_mesh_c(
         voxels,
         voxels,
@@ -99,10 +106,14 @@ byte build_vox_mesh_at_depth(
     return zox_vox_mesh_built;
 }
 
+// a few ms a worker a frame, the rest next frame (a realm's 216 lod meshes at once were a 275ms frame)
+double zox_vox_mesh_budget_ms = 3.0;
+
 // Builds a colored mesh from the parent VoxLods at RenderDepth
 void VoxLodMeshBuildSystem(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
+    zox_sys_budget(vox_mesh, zox_disable_process_skips ? 1000000 : zox_vox_mesh_budget_ms);
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RenderDepth);
@@ -115,6 +126,10 @@ void VoxLodMeshBuildSystem(iter* it) {
         zox_sys_o(MeshIndicies, indicies);
         zox_sys_o(MeshVertices, vertices);
         zox_sys_o(MeshColorRGBs, colors);
+        if (zox_sys_budget_spent(vox_mesh)) {
+            continue;
+        }
+        zox_sys_budget_start(vox_mesh);
         entity vox = zox_get_parent(world, e);
         byte result = build_vox_mesh_at_depth(
             world,
@@ -123,6 +138,7 @@ void VoxLodMeshBuildSystem(iter* it) {
             indicies,
             vertices,
             colors);
+        zox_sys_budget_end(vox_mesh);
         zox_remove(e, BuildMesh);
         if (result == zox_vox_mesh_invalid) {
             zox_loge("VoxLodMesh [%s] has invalid parent vox", zox_sys_e_name);
