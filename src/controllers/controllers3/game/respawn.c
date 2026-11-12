@@ -2,7 +2,8 @@ extern entity game_start_player_new(ecs*, entity, entity, entity, entity, float3
 
 // NOTE: Detects character death and respawns when needed
 // TODO: Move spawning player out and use states instead
-zox_sys2(Player3RespawnSystem) {
+void Player3RespawnSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -101,4 +102,5 @@ zox_sys2(Player3RespawnSystem) {
             }
         }
     }
-} zox_sys_end(Player3RespawnSystem);
+    zox_sys_on_end();
+} zoxd_system(Player3RespawnSystem);

@@ -1,6 +1,7 @@
 // Temp system used by keyboard for clicking
 // Basically a copy of DeviceClickSystem
-zox_sys2(KeyboardClickSystem) {
+void KeyboardClickSystem(iter* it) {
+    zox_sys_on_begin();
     if (!keyboard_navigation_mode) {
         return;
     }
@@ -70,4 +71,5 @@ zox_sys2(KeyboardClickSystem) {
             clickee->value = 0;
         }
     }
-} zox_sys_end(KeyboardClickSystem);
+    zox_sys_on_end();
+} zoxd_system(KeyboardClickSystem);

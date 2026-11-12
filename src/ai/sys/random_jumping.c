@@ -1,4 +1,5 @@
-zox_sys2(RandomJump3DSystem) {
+void RandomJump3DSystem(iter* it) {
+    zox_sys_on_begin();
     const int random_jump_chance = 9988;
     zox_sys_begin();
     zox_sys_in(CanJump);
@@ -15,4 +16,5 @@ zox_sys2(RandomJump3DSystem) {
             }
         }
     } 
-} zox_sys_end(RandomJump3DSystem);
+    zox_sys_on_end();
+} zoxd_system(RandomJump3DSystem);

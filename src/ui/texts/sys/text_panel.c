@@ -1,5 +1,6 @@
 // this needs textData with Mesh in one entity
-zox_sys2(TextBackgroundSystem) {
+void TextBackgroundSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TextData);
@@ -21,4 +22,5 @@ zox_sys2(TextBackgroundSystem) {
         layout_size->value = new_size;
         zox_add(e, LayoutSizeDirty);
     }
-} zox_sys_end(TextBackgroundSystem);
+    zox_sys_on_end();
+} zoxd_system(TextBackgroundSystem);

@@ -1,4 +1,5 @@
-zox_sys2(LerpToEntitySystem) {
+void LerpToEntitySystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(AnimationState);
@@ -29,4 +30,5 @@ zox_sys2(LerpToEntitySystem) {
 
         // zox_log("lerp [%f] pos [%fx%fx%f]", lerp, position->value.x, position->value.y, position->value.z);
     }
-} zox_sys_end(LerpToEntitySystem);
+    zox_sys_on_end();
+} zoxd_system(LerpToEntitySystem);

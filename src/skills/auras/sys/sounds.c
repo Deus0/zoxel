@@ -1,4 +1,5 @@
-zox_sys2(AuraSoundSystem) {
+void AuraSoundSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Activate);
@@ -9,4 +10,5 @@ zox_sys2(AuraSoundSystem) {
             spawn_sound_effect(world, sound_effect_aura, zox_get_parent(world, e));
         }
     }
-} zox_sys_end(AuraSoundSystem);
+    zox_sys_on_end();
+} zoxd_system(AuraSoundSystem);

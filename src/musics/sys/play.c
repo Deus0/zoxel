@@ -37,7 +37,8 @@ static inline double get_music_length(ecs* world, entity music, const ordered_ch
 // Plays each music's notes as its playhead passes their starts, any number at once (chords, overlaps)
 //  - MusicTime is the playhead (seconds), MusicNote the next note, notes are in order of start
 //  - after its length it loops back to the start
-zox_sys2(MusicPlaySystem) {
+void MusicPlaySystem(iter* it) {
+    zox_sys_on_begin();
     if (nomusic || nosounds) {
         return;
     }
@@ -88,10 +89,12 @@ zox_sys2(MusicPlaySystem) {
             next->value = 0;
         }
     }
-} zox_sys_end(MusicPlaySystem);
+    zox_sys_on_end();
+} zoxd_system(MusicPlaySystem);
 
 // Eases each music's volume to its target, a faded out music stops playing
-zox_sys2(MusicFadeSystem) {
+void MusicFadeSystem(iter* it) {
+    zox_sys_on_begin();
     init_delta_time();
     zox_sys_begin();
     zox_sys_in(MusicVolumeTarget);
@@ -114,4 +117,5 @@ zox_sys2(MusicFadeSystem) {
             enabled->value = 0;
         }
     }
-} zox_sys_end(MusicFadeSystem);
+    zox_sys_on_end();
+} zoxd_system(MusicFadeSystem);

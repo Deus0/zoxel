@@ -6,7 +6,8 @@ float attribute_regen_scale = 0.5f;     // x regen_rate
 float attribute_damage_scale = 0.7f;
 float attribute_defence_scale = 0.5f;
 
-zox_sys2(StatsRealmSpawnSystem) {
+void StatsRealmSpawnSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
@@ -200,4 +201,5 @@ zox_sys2(StatsRealmSpawnSystem) {
         // stats.value[i++] = spawn_stat_level_t(world, "farming", "farming", color_rgb_gray);
         zox_logv("Realm [stats] spawned");
     }
-} zox_sys_end(StatsRealmSpawnSystem);
+    zox_sys_on_end();
+} zoxd_system(StatsRealmSpawnSystem);

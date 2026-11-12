@@ -162,10 +162,6 @@ Input Refactor
 - We can refactor all the links between enttiies as pairs instead of components
 
 
-## Macro Use
-- Remove zox_sys2 and use regular function names
-- just call zox_sys_begin that will add timings there
-
 ## Events
 - Move sound systems to events too
     - PickupSoundSystem

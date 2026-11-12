@@ -1,5 +1,6 @@
 // NOTE: Link UI to its canvas tooltip when initialized.
-zox_sys2(TooltipeeInitializeSystem) {
+void TooltipeeInitializeSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
@@ -26,4 +27,5 @@ zox_sys2(TooltipeeInitializeSystem) {
                 zox_getn(tooltip));
         }
     }
-} zox_sys_end(TooltipeeInitializeSystem);
+    zox_sys_on_end();
+} zoxd_system(TooltipeeInitializeSystem);

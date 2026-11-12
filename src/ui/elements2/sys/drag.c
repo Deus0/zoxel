@@ -2,7 +2,8 @@
 // if it updates, also update any childrens positions too
 // has to also move children and their children
 
-zox_sys2(ElementDragSystem) {
+void ElementDragSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0 || is_log_dragging;
     zox_sys_world();
     zox_sys_begin();
@@ -60,4 +61,5 @@ zox_sys2(ElementDragSystem) {
             }
         }
     }
-} zox_sys_end(ElementDragSystem);
+    zox_sys_on_end();
+} zoxd_system(ElementDragSystem);

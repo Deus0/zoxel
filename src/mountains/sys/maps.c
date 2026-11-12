@@ -1,5 +1,6 @@
 // NOTE: Adds height to the heightmap using region mountains
-zox_sys2(MountainMapSystem) {
+void MountainMapSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -106,4 +107,5 @@ zox_sys2(MountainMapSystem) {
         }
         generate->value = zox_generate_tunk_towns;
     }
-} zox_sys_end(MountainMapSystem);
+    zox_sys_on_end();
+} zoxd_system(MountainMapSystem);

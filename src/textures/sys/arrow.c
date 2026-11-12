@@ -72,7 +72,8 @@ void generate_texture_arrow(color* data, int2 size, color fill, color outline, b
     generate_texture_shape_outline(data, size, fill, outline, thickness);
 }
 
-zox_sys2(ArrowTextureSystem) {
+void ArrowTextureSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -105,4 +106,5 @@ zox_sys2(ArrowTextureSystem) {
             zox_log("Arrow Texture Generated [%s] fill [%ix%ix%ix%i] outline [%ix%ix%ix%i] Size [%ix%i] Thickness [%i]", zox_get_name(e), fill->value.r, fill->value.g, fill->value.b, fill->value.a, outline->value.r, outline->value.g, outline->value.b, outline->value.a, size->value.x, size->value.y, thickness->value);
         }
     }
-} zox_sys_end(ArrowTextureSystem);
+    zox_sys_on_end();
+} zoxd_system(ArrowTextureSystem);

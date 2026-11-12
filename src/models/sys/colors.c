@@ -33,7 +33,8 @@ void process_node_model_generate_colors(
 
 // Runs from a Model Node Process
 //      This system will simply fill the voxes
-zox_sys2(ColorsModelNodeSystem) {
+void ColorsModelNodeSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = zox_dbg_model_nodes;
     ushort inner_seed_shift = 39393;
     zox_sys_world();
@@ -87,4 +88,5 @@ zox_sys2(ColorsModelNodeSystem) {
             color_count);
         zox_add(e, TriggerEnd);
     }
-} zox_sys_end(ColorsModelNodeSystem);
+    zox_sys_on_end();
+} zoxd_system(ColorsModelNodeSystem);

@@ -107,7 +107,8 @@ entity spawn_part_bones(
 
 // Spawns bones under the characters skeleton child, from its body parts
 // NOTE: We could delete only bones that are linked to updated parts here, but that is a refactor, perhaps later
-zox_sys2(CharacterBoneSpawnSystem) {
+void CharacterBoneSpawnSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -153,4 +154,5 @@ zox_sys2(CharacterBoneSpawnSystem) {
         body_dirty->value = zox_generate_body_end;
         zox_add(skeleton, SkeletonDirty);
     }
-} zox_sys_end(CharacterBoneSpawnSystem);
+    zox_sys_on_end();
+} zoxd_system(CharacterBoneSpawnSystem);

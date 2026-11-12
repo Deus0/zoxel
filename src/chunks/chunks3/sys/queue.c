@@ -1,7 +1,8 @@
 // TODO: Maybe store Depth of these commands? worried about race conditions (as always)
 // NOTE: Now we optimize branch nodes in cleanup system
 // NOTE: This wll use a queue to do batches of octtree updates to voxels
-zox_sys2(VoxelUpdateQueueSystem) {
+void VoxelUpdateQueueSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(NodeDepth);
@@ -53,4 +54,5 @@ zox_sys2(VoxelUpdateQueueSystem) {
             }
         }
     }
-} zox_sys_end(VoxelUpdateQueueSystem);
+    zox_sys_on_end();
+} zoxd_system(VoxelUpdateQueueSystem);

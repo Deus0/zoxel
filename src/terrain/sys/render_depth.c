@@ -1,6 +1,7 @@
 // NOTE: When Depth Increases -> Generate our Chunks
 // We can just do this with TunkLod system??
-zox_sys2(ChunkLodSystem) {
+void ChunkLodSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -50,4 +51,5 @@ zox_sys2(ChunkLodSystem) {
                 zox_getn(e));
         }
     }
-} zox_sys_end(ChunkLodSystem);
+    zox_sys_on_end();
+} zoxd_system(ChunkLodSystem);

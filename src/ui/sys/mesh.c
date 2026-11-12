@@ -1,5 +1,6 @@
 // Initialize Mesh2D data when size changes
-zox_sys2(LayoutMeshUpdateSystem) {
+void LayoutMeshUpdateSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -28,10 +29,12 @@ zox_sys2(LayoutMeshUpdateSystem) {
                 zox_getn(e));
         }
     }
-} zox_sys_end(LayoutMeshUpdateSystem);
+    zox_sys_on_end();
+} zoxd_system(LayoutMeshUpdateSystem);
 
 // NOTE: Initializes Mesh based on instantiated layout size
-zox_sys2(LayoutMeshBeginSystem) {
+void LayoutMeshBeginSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -63,5 +66,6 @@ zox_sys2(LayoutMeshBeginSystem) {
                 size2.y);
         }
     }
-} zox_sys_end(LayoutMeshBeginSystem);
+    zox_sys_on_end();
+} zoxd_system(LayoutMeshBeginSystem);
 

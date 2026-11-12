@@ -1,7 +1,8 @@
 // Editor keys (x: profiler, c: debug label), the other tools are toggled with key down hooks
 // TODO: move these to add_hook_key_down too
 
-zox_sys2(EditorInputSystem) {
+void EditorInputSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
@@ -22,4 +23,5 @@ zox_sys2(EditorInputSystem) {
             canvas_toggle_ui(world, canvas, label, spawn_game_debug_label);
         }
     }
-} zox_sys_end(EditorInputSystem);
+    zox_sys_on_end();
+} zoxd_system(EditorInputSystem);

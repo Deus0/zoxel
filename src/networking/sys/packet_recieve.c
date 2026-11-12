@@ -46,7 +46,8 @@ static inline int consume_packet(
         &recv_addr_len);
 }
 
-zox_sys2(PacketRecieveSystem) {
+void PacketRecieveSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 1;
     uint zox_max_packet_reads = 256;
     byte recv_buffer[1];
@@ -187,4 +188,5 @@ zox_sys2(PacketRecieveSystem) {
             }
         }
     }
-} zox_sys_end(PacketRecieveSystem);
+    zox_sys_on_end();
+} zoxd_system(PacketRecieveSystem);

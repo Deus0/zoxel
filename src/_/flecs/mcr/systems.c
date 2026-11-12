@@ -85,22 +85,6 @@ void zox_system_on_new(ecs* world, entity system) {
 #define zox_sys_budget_end(name) \
     name##_budget_spent += get_time_ms() - name##_budget_start
 
-#define zox_sys2(T)\
-    void T(iter *it) {\
-        zox_sys_on_begin();
-
-#define zox_sys_end(T)\
-    zox_sys_on_end(); \
-} zoxd_system(T);
-
-#define zox_sys_untimed(T)\
-    void T(iter *it) {
-
-#define zox_sys_end_untimed(T)\
-    } zoxd_system(T)
-
-#define zox_sys(T)\
-    void T(iter *it) {
 static inline entity zox_system_entity(ecs* world, entity id, const char* name, entity phase) {
     ecs_entity_desc_t edesc = {0};
     edesc.id = id;

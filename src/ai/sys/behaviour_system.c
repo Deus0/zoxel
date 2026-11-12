@@ -1,4 +1,5 @@
-zox_sys2(BehaviourSystem) {
+void BehaviourSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(CombatState);
@@ -45,4 +46,5 @@ zox_sys2(BehaviourSystem) {
             move_speed->value = 3;
         }
     }
-} zox_sys_end(BehaviourSystem);
+    zox_sys_on_end();
+} zoxd_system(BehaviourSystem);

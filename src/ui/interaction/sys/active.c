@@ -1,5 +1,6 @@
 // animation system
-zox_sys2(ElementActiveSystem) {
+void ElementActiveSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(ActiveState);
     zox_sys_in(ActiveStateDirty);
@@ -19,4 +20,5 @@ zox_sys2(ElementActiveSystem) {
             generate->value = zox_generate_texture_run;
         }
     }
-} zox_sys_end(ElementActiveSystem);
+    zox_sys_on_end();
+} zoxd_system(ElementActiveSystem);

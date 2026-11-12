@@ -59,7 +59,8 @@ char* generate_name_malloc(uint seed) {
     return name;
 }
 
-zox_sys2(GenerateNameSystem) {
+void GenerateNameSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -83,4 +84,5 @@ zox_sys2(GenerateNameSystem) {
                 name->value);
         }
     }
-} zox_sys_end(GenerateNameSystem);
+    zox_sys_on_end();
+} zoxd_system(GenerateNameSystem);

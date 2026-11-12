@@ -1,5 +1,6 @@
 // generates our terrain voxels
-zox_sys2(FlatlandSystem) {
+void FlatlandSystem(iter* it) {
+    zox_sys_on_begin();
     byte target_depth = terrain_depth;
     byte chunk_voxel_length = powers_of_two_byte[target_depth];
     zox_sys_world();
@@ -48,4 +49,5 @@ zox_sys2(FlatlandSystem) {
         }
         fill_octree(node, biome_dirt_id, 0);
     }
-} zox_sys_end(FlatlandSystem);
+    zox_sys_on_end();
+} zoxd_system(FlatlandSystem);

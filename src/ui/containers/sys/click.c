@@ -14,7 +14,8 @@ extern byte is_frame_body_part(ecs*, entity);
 extern byte is_data_body_part(ecs*, entity);
 
 // NOTE: Called from the clicked icon
-zox_sys2(DataUIClickSystem) {
+void DataUIClickSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -145,4 +146,5 @@ zox_sys2(DataUIClickSystem) {
             on_frame_updated_equipment(world, user);
         }
     }
-} zox_sys_end(DataUIClickSystem);
+    zox_sys_on_end();
+} zoxd_system(DataUIClickSystem);

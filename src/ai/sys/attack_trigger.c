@@ -1,5 +1,6 @@
 // NOTE: When attacking, Select and Trigger the action
-zox_sys2(AttackTriggerSystem) {
+void AttackTriggerSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -32,4 +33,5 @@ zox_sys2(AttackTriggerSystem) {
             zox_log("+ NPC [%s] is Attacking! [%s]", zox_get_name(e), zox_get_name(aaction->value));
         }
     }
-} zox_sys_end(AttackTriggerSystem);
+    zox_sys_on_end();
+} zoxd_system(AttackTriggerSystem);

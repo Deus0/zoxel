@@ -202,7 +202,8 @@ void build_voxel_mesh_c(
 }
 
 // Builds Colored Vox Meshes
-zox_sys2(ChunkColorsBuildSystem) {
+void ChunkColorsBuildSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     byte max_process = !zox_disable_process_skips ? 1 : 0;
     zox_sys_world();
@@ -296,4 +297,5 @@ zox_sys2(ChunkColorsBuildSystem) {
         }
         zox_sys_increment();
     }
-} zox_sys_end(ChunkColorsBuildSystem);
+    zox_sys_on_end();
+} zoxd_system(ChunkColorsBuildSystem);

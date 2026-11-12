@@ -1,4 +1,5 @@
-zox_sys2(InsideBlockSystem) {
+void InsideBlockSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Position3D);
@@ -59,4 +60,5 @@ zox_sys2(InsideBlockSystem) {
         }
         zox_add(e, InsideBlockDirty);
     }
-} zox_sys_end(InsideBlockSystem);
+    zox_sys_on_end();
+} zoxd_system(InsideBlockSystem);

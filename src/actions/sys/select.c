@@ -1,5 +1,6 @@
 // NOTE: Uses slot index to equip a new action
-zox_sys2(ActiveActionSystem) {
+void ActiveActionSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -68,4 +69,5 @@ zox_sys2(ActiveActionSystem) {
         }
 
     }
-} zox_sys_end(ActiveActionSystem);
+    zox_sys_on_end();
+} zoxd_system(ActiveActionSystem);

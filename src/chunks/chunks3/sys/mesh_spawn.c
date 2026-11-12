@@ -107,7 +107,8 @@ static inline entity spawn_chunk_meshes(
 // TODO: Use sides instead of voxels for check if need mesh
 // If voxels changed, we need to spawn mesh for it
 
-zox_sys2(ChunkMeshSpawnSystem) {
+void ChunkMeshSpawnSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -146,9 +147,11 @@ zox_sys2(ChunkMeshSpawnSystem) {
                 render_disabled->value);
         }
     }
-} zox_sys_end(ChunkMeshSpawnSystem);
+    zox_sys_on_end();
+} zoxd_system(ChunkMeshSpawnSystem);
 
-zox_sys2(ChunkMeshSpawn2System) {
+void ChunkMeshSpawn2System(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -190,5 +193,6 @@ zox_sys2(ChunkMeshSpawn2System) {
                 depth->value);
         }
     }
-} zox_sys_end(ChunkMeshSpawn2System);
+    zox_sys_on_end();
+} zoxd_system(ChunkMeshSpawn2System);
 

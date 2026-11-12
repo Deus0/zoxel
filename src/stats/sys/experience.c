@@ -1,5 +1,6 @@
 
-zox_sys2(ExperienceSystem) {
+void ExperienceSystem(iter* it) {
+    zox_sys_on_begin();
     const float popup_spawn_y = 0.34f;
     zox_sys_world();
     // zox_sys_begin();
@@ -56,4 +57,5 @@ zox_sys2(ExperienceSystem) {
             7 + rand() % 3);
         // zox_log(" + [%s] has gained [%f] xp", zox_get_name(attacker), experience_gain)
     }
-} zox_sys_end(ExperienceSystem);
+    zox_sys_on_end();
+} zoxd_system(ExperienceSystem);

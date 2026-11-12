@@ -32,7 +32,8 @@ void raycaster_select_first_button(ecs *world, entity e, entity window) {
 }
 
 // NOTE: This is for gamepads to select ui in window
-zox_sys2(ElementNavigationBeginSystem) {
+void ElementNavigationBeginSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -71,4 +72,5 @@ zox_sys2(ElementNavigationBeginSystem) {
         }
         raycaster_select_first_button(world, e, window);
     }
-} zox_sys_end(ElementNavigationBeginSystem);
+    zox_sys_on_end();
+} zoxd_system(ElementNavigationBeginSystem);

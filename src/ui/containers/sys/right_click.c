@@ -33,7 +33,8 @@ static inline void set_mouse_data(
     }
 }
 
-zox_sys2(DataUIRightClickSystem) {
+void DataUIRightClickSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     for (int i = 0; i < it->count; i++) {
@@ -84,4 +85,5 @@ zox_sys2(DataUIRightClickSystem) {
         zox_add(slot, DataDirty);
         zox_add(e, DataDirty);
     }
-} zox_sys_end(DataUIRightClickSystem);
+    zox_sys_on_end();
+} zoxd_system(DataUIRightClickSystem);

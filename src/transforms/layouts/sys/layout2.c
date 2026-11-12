@@ -91,7 +91,8 @@ static inline void update_layout_recursive(
     }
 }
 
-zox_sys2(LayoutSystem) {
+void LayoutSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -112,5 +113,5 @@ zox_sys2(LayoutSystem) {
             aspect_ratio,
             dbg_log);
     }
-}
-zox_sys_end(LayoutSystem);
+    zox_sys_on_end();
+} zoxd_system(LayoutSystem);

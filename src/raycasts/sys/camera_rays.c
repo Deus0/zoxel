@@ -61,7 +61,8 @@ void calculate_new_frustum(
 }
 
 // remember: frustum is having precision errors for rays
-zox_sys2(CameraRaySystem) {
+void CameraRaySystem(iter* it) {
+    zox_sys_on_begin();
     const float max_ray_distance = 1;
     const double2 viewport_position = (double2) { 0.5, 0.5 };
     zox_sys_world();
@@ -87,4 +88,5 @@ zox_sys2(CameraRaySystem) {
         spawn_line3(world, ray.origin, float3_add(ray.origin, float3_scale(ray.normal, 8)), color_rgb_white);
 #endif
     }
-} zox_sys_end(CameraRaySystem);
+    zox_sys_on_end();
+} zoxd_system(CameraRaySystem);

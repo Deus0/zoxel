@@ -1,4 +1,5 @@
-zox_sys2(FreeCameraMoveSystem) {
+void FreeCameraMoveSystem(iter* it) {
+    zox_sys_on_begin();
     double movement_power = zox_delta_time;
     movement_power *= movement_multiplier;
 #ifdef zox_web
@@ -50,4 +51,5 @@ zox_sys2(FreeCameraMoveSystem) {
             float3_add(position->value,
                 float4_rotate_float3(rotation, movement));
     }
-} zox_sys_end(FreeCameraMoveSystem);
+    zox_sys_on_end();
+} zoxd_system(FreeCameraMoveSystem);

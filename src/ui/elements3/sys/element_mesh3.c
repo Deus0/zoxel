@@ -1,4 +1,5 @@
-/*zox_sys2(Element3MeshSystem) {
+/*void Element3MeshSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -29,4 +30,5 @@
             zox_log("Element Mesh (3D) Initialized [%s]", zox_getn(e));
         }
     }
-} zox_sys_end(Element3MeshSystem);*/
+    zox_sys_on_end();
+} zoxd_system(Element3MeshSystem);*/

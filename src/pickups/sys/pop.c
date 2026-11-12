@@ -1,7 +1,8 @@
 // Animates a dropped item's pop: an arc from where it dropped to a spot nearby
 //  - horizontally it eases out, vertically it hops (a parabola), then it rests at the end
 //  - stops if it's picked up mid pop
-zox_sys2(PickupPopSystem) {
+void PickupPopSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PickupPopStart);
@@ -32,4 +33,5 @@ zox_sys2(PickupPopSystem) {
         position->value = float3_lerp(start->value, end->value, eased);
         position->value.y += height->value * 4 * t * (1 - t);
     }
-} zox_sys_end(PickupPopSystem);
+    zox_sys_on_end();
+} zoxd_system(PickupPopSystem);

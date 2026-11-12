@@ -96,7 +96,8 @@ static inline void debug_octree_compare(
 }
 
 // NOTE: This compares voxel nodes to make sure it only renders cubes for air blocks
-zox_sys2(LightNodeDebugSystem) {
+void LightNodeDebugSystem(iter* it) {
+    zox_sys_on_begin();
     /*if (!zox_debug_lights) {
         return;
     }*/
@@ -131,4 +132,5 @@ zox_sys2(LightNodeDebugSystem) {
             zox_loge("Lights Dark [%s]", zox_sys_e_name);
         }*/
     }
-} zox_sys_end(LightNodeDebugSystem);
+    zox_sys_on_end();
+} zoxd_system(LightNodeDebugSystem);

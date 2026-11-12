@@ -88,7 +88,8 @@ byte sunbeam(
 }
 
 // Queued side updates for propogation
-zox_sys2(LightBeamSystem) {
+void LightBeamSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     const uint max_beams = 256;
     zox_sys_world();
@@ -187,7 +188,8 @@ zox_sys2(LightBeamSystem) {
             beams++;
         }
     }
-} zox_sys_end(LightBeamSystem);
+    zox_sys_on_end();
+} zoxd_system(LightBeamSystem);
 
 
 
@@ -195,7 +197,8 @@ zox_sys2(LightBeamSystem) {
 // Progress ray in a sunlight direction, stops when solid, decreases when liquid
 // TODO: Optimize LightNode System - group same values
 // Triggers: VoxelNodeGenerated
-/*zox_sys2(SunlightSystem) {
+/*void SunlightSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -257,5 +260,6 @@ zox_sys2(LightBeamSystem) {
         }
         zox_remove(e, GenerateSunlight);
     }
-} zox_sys_end(SunlightSystem);*/
+    zox_sys_on_end();
+} zoxd_system(SunlightSystem);*/
 

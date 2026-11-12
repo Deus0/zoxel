@@ -28,7 +28,8 @@ void set_line2_canvas_position(ecs *world, entity e) {
 }
 
 // TODO: LinePosition2Dirty
-zox_sys2(Line2PositionSystem) {
+void Line2PositionSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LineLocalPositionDirty);
@@ -61,7 +62,8 @@ zox_sys2(Line2PositionSystem) {
             parent_position.y + points->value.w + parent_size.y * anchor->value.w - parent_size.y / 2
         };
     }
-} zox_sys_end(Line2PositionSystem);
+    zox_sys_on_end();
+} zoxd_system(Line2PositionSystem);
 */
         /*iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {

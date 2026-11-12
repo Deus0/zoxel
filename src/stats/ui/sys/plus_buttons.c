@@ -58,7 +58,8 @@ void on_click_stat_plus(
 
 // Shows a + button on attribute frames while the user has a stat point
 // NOTE: system (not observer) so a frame never gets two buttons in one frame
-zox_sys2(StatPlusButtonSystem) {
+void StatPlusButtonSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -140,4 +141,5 @@ zox_sys2(StatPlusButtonSystem) {
             }
         }
     }
-} zox_sys_end(StatPlusButtonSystem);
+    zox_sys_on_end();
+} zoxd_system(StatPlusButtonSystem);

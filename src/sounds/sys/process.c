@@ -1,5 +1,6 @@
 // todo: alter frequency over time during sound
-zox_sys2(SoundProcessSystem) {
+void SoundProcessSystem(iter* it) {
+    zox_sys_on_begin();
     if (nosounds) {
         return;
     }
@@ -60,4 +61,5 @@ zox_sys2(SoundProcessSystem) {
         triggerSound->value = zox_dirty_trigger;
         zox_logv("  -> updated sound frequency to [%f]", frequency_scale);
     }
-} zox_sys_end(SoundProcessSystem);
+    zox_sys_on_end();
+} zoxd_system(SoundProcessSystem);

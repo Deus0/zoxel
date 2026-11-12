@@ -41,7 +41,8 @@ void zox_apply_debug_colors(const byte* solidity,
 }
 
 // Debug System currently disabled / untested
-zox_sys2(Light3BuildSystem) {
+void Light3BuildSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkNeighbors);
@@ -69,4 +70,5 @@ zox_sys2(Light3BuildSystem) {
         zox_apply_debug_colors(solidity, nodev, colors, &color_index, depth->value, 0);
         // upload->value = 1;
     }
-} zox_sys_end(Light3BuildSystem);
+    zox_sys_on_end();
+} zoxd_system(Light3BuildSystem);

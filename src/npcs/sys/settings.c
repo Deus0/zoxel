@@ -1,4 +1,5 @@
-zox_sys2(NpcsSettingsSystem) {
+void NpcsSettingsSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LoadSettings);
@@ -15,9 +16,11 @@ zox_sys2(NpcsSettingsSystem) {
         // spawn_setting_byte(world, e, "Smooth Lighting", zox_smooth_lighting);
 #endif
     }
-} zox_sys_end(NpcsSettingsSystem);
+    zox_sys_on_end();
+} zoxd_system(NpcsSettingsSystem);
 
-zox_sys2(NpcsSettingsDirtySystem) {
+void NpcsSettingsDirtySystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -44,4 +47,5 @@ zox_sys2(NpcsSettingsDirtySystem) {
             }
         }
     }
-} zox_sys_end(NpcsSettingsDirtySystem);
+    zox_sys_on_end();
+} zoxd_system(NpcsSettingsDirtySystem);

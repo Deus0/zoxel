@@ -5,7 +5,8 @@
 // NOTE: Slots whose data is deleted are refreshed by on_unlink_DataLink
 
 // NOTE: Flags dirty if slot data is dirty
-zox_sys2(DataIconSystem) {
+void DataIconSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -30,11 +31,13 @@ zox_sys2(DataIconSystem) {
             }
         }
     }
-} zox_sys_end(DataIconSystem);
+    zox_sys_on_end();
+} zoxd_system(DataIconSystem);
 
 // NOTE: Updates icon texture when dirty
 // NOTE: Also updates the Tooltip to clear it
-zox_sys2(DataIconUpdateSystem) {
+void DataIconUpdateSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -73,4 +76,5 @@ zox_sys2(DataIconUpdateSystem) {
                 zox_sys_e_name);
         }
     }
-} zox_sys_end(DataIconUpdateSystem);
+    zox_sys_on_end();
+} zoxd_system(DataIconUpdateSystem);

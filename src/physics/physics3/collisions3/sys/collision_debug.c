@@ -75,7 +75,8 @@ if (did_collide##_##d) {\
     }\
 }
 
-zox_sys2(CollisionDebugSystem) {
+void CollisionDebugSystem(iter* it) {
+    zox_sys_on_begin();
     if (!is_debug_collisions) {
         return;
     }
@@ -107,4 +108,5 @@ zox_sys2(CollisionDebugSystem) {
         debug_collision_d_pen(x, color_rgb_blue, color_rgb_cyan);
         debug_collision_d_pen(z, color_rgb_red, color_rgb_purple);
     }
-} zox_sys_end(CollisionDebugSystem);
+    zox_sys_on_end();
+} zoxd_system(CollisionDebugSystem);

@@ -20,10 +20,14 @@ static inline void physics2_accelerate(iter* it, const float k) {
     zox_physics_profile_end();
 }
 
-zox_sys2(Acceleration2DSystem) {
+void Acceleration2DSystem(iter* it) {
+    zox_sys_on_begin();
     physics2_accelerate(it, 0);
-} zox_sys_end(Acceleration2DSystem);
+    zox_sys_on_end();
+} zoxd_system(Acceleration2DSystem);
 
-zox_sys2(Friction2DSystem) {
+void Friction2DSystem(iter* it) {
+    zox_sys_on_begin();
     physics2_accelerate(it, friction2D);
-} zox_sys_end(Friction2DSystem);
+    zox_sys_on_end();
+} zoxd_system(Friction2DSystem);

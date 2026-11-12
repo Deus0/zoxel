@@ -1,5 +1,6 @@
 // NOTE: used for virtual joysticks to see if a target was raycasted
-/*zox_sys2(RaycasterResulterSystem) {
+/*void RaycasterResulterSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DeviceLink);
@@ -13,4 +14,5 @@
             result->value = target->value;
         }
     }
-} zox_sys_end(RaycasterResulterSystem);*/
+    zox_sys_on_end();
+} zoxd_system(RaycasterResulterSystem);*/

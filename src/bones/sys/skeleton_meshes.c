@@ -143,7 +143,8 @@ void refresh_skeleton_meshes(
     }
 }
 
-zox_sys2(SkeletonMeshesSystem) {
+void SkeletonMeshesSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
@@ -207,10 +208,12 @@ zox_sys2(SkeletonMeshesSystem) {
             }
         }
     }
-} zox_sys_end(SkeletonMeshesSystem);
+    zox_sys_on_end();
+} zoxd_system(SkeletonMeshesSystem);
 
 // Builds a skeleton mesh from its skeletons owner vox at RenderDepth
-zox_sys2(SkeletonMeshBuildSystem) {
+void SkeletonMeshBuildSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -249,5 +252,6 @@ zox_sys2(SkeletonMeshBuildSystem) {
                 indicies->length / 3);
         }
     }
-} zox_sys_end(SkeletonMeshBuildSystem);
+    zox_sys_on_end();
+} zoxd_system(SkeletonMeshBuildSystem);
 

@@ -34,7 +34,8 @@ void set_layers_auto(
 
 // This sets layers based on a Windows new layer 2D when it is restacked in canvas
 // TODO: We can just set window layer when stacking?
-zox_sys2(WindowLayerSystem) {
+void WindowLayerSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -75,4 +76,5 @@ zox_sys2(WindowLayerSystem) {
         }
         zox_remove(e, WindowLayerDirty);
     }
-} zox_sys_end(WindowLayerSystem);
+    zox_sys_on_end();
+} zoxd_system(WindowLayerSystem);

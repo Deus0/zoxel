@@ -1,7 +1,8 @@
 // Projectiles raycast along their velocity each frame, damaging the first character or terrain block hit
 //  - the ray covers the distance moved this frame, so fast projectiles can't pass through things
 //  - the user who fired it is never hit
-zox_sys2(ProjectileHitSystem) {
+void ProjectileHitSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     const float min_speed = 0.01f;
     const float ray_margin = 0.05f;     // a little ahead, as the projectile has size
@@ -92,4 +93,5 @@ zox_sys2(ProjectileHitSystem) {
         }
         zox_delete(e);
     }
-} zox_sys_end(ProjectileHitSystem);
+    zox_sys_on_end();
+} zoxd_system(ProjectileHitSystem);

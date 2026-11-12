@@ -1,4 +1,5 @@
-zox_sys2(ToggleEventSystem) {
+void ToggleEventSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Clicker);
@@ -24,4 +25,5 @@ zox_sys2(ToggleEventSystem) {
         (*event->value)(world, &data);
         // zox_log("Toggled the Toggle! I AM TOGGLER");
     }
-} zox_sys_end(ToggleEventSystem);
+    zox_sys_on_end();
+} zoxd_system(ToggleEventSystem);

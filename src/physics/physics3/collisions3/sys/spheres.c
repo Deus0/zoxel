@@ -1,5 +1,6 @@
 // TODO: Make this use bytes for collision
-zox_sys2(SphereCollideSystem) {
+void SphereCollideSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_query();
     zox_sys_world();
@@ -53,4 +54,5 @@ zox_sys2(SphereCollideSystem) {
         }
         zox_sys_query_end();
     }
-} zox_sys_end(SphereCollideSystem);
+    zox_sys_on_end();
+} zoxd_system(SphereCollideSystem);

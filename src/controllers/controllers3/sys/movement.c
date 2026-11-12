@@ -25,7 +25,8 @@ float debug_thickness = 2.0f;
 extern entity spawn_line3(ecs*, float3, float3, float, double);
 #endif
 
-zox_sys2(Player3DMoveSystem) {
+void Player3DMoveSystem(iter* it) {
+    zox_sys_on_begin();
     init_delta_time();
     zox_sys_world();
     zox_sys_begin();
@@ -188,4 +189,5 @@ zox_sys2(Player3DMoveSystem) {
         else zox_log(" > past maximum velocity z: %f\n", potential_velocity_forward.z)
 #endif
     }
-} zox_sys_end(Player3DMoveSystem);
+    zox_sys_on_end();
+} zoxd_system(Player3DMoveSystem);

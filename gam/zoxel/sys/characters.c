@@ -1,7 +1,8 @@
 // Spawns a realm's characters as prefabs (npc kinds), with their stats
 //  - the player's come from the same helper, fill_character_base_stats, when it spawns (PlayerCharacterStatsSystem)
 //  - every character's stats are made here once, instances copy them (no stats spawned per npc)
-zox_sys2(Character3RealmSpawnSystem) {
+void Character3RealmSpawnSystem(iter* it) {
+    zox_sys_on_begin();
     byte is_add_stats = 1;
     byte character_depth = block_depth_limits.y;
     uint seed_shift = 36936;
@@ -167,4 +168,5 @@ zox_sys2(Character3RealmSpawnSystem) {
         chance->value = chance_max;
         zox_logv("Realm [characters] [X] spawned");
     }
-} zox_sys_end(Character3RealmSpawnSystem);
+    zox_sys_on_end();
+} zoxd_system(Character3RealmSpawnSystem);

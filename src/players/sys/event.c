@@ -1,5 +1,6 @@
 // NOTE: Sets to playing when resuming from pause
-zox_sys2(PlayerStateEventSystem) {
+void PlayerStateEventSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -35,4 +36,5 @@ zox_sys2(PlayerStateEventSystem) {
                 state->value);
         }
     }
-} zox_sys_end(PlayerStateEventSystem);
+    zox_sys_on_end();
+} zoxd_system(PlayerStateEventSystem);

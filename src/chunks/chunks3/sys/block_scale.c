@@ -1,5 +1,6 @@
 // Sync Block Scale to the Terrain Chunks from the Vox
-zox_sys2(BlockScaleSystem) {
+void BlockScaleSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RenderDepthDirty);
@@ -22,4 +23,5 @@ zox_sys2(BlockScaleSystem) {
         scale->value = get_chunk_scale(rdepth->value, tdepth, terrain_scalev);
         // zox_log(" [%s] Scale set [%f]", zox_get_name(it->entities[i]), scale->value);
     }
-} zox_sys_end(BlockScaleSystem);
+    zox_sys_on_end();
+} zoxd_system(BlockScaleSystem);

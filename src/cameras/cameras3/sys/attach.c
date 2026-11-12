@@ -1,4 +1,5 @@
-zox_sys2(CameraAttachSystem) {
+void CameraAttachSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(EntityTarget);
@@ -8,4 +9,5 @@ zox_sys2(CameraAttachSystem) {
         zox_setv(e, CameraState, zox_camera_state_first_person);
         zox_set_parent(world, e, target->value);
     }
-} zox_sys_end(CameraAttachSystem);
+    zox_sys_on_end();
+} zoxd_system(CameraAttachSystem);

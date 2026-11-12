@@ -1,4 +1,5 @@
-zox_sys2(QolShortcutsSystem) {
+void QolShortcutsSystem(iter* it) {
+    zox_sys_on_begin();
     byte toggle_fullscreen = 0;
     byte toggle_maximized = 0;
     zox_sys_world();
@@ -25,4 +26,5 @@ zox_sys2(QolShortcutsSystem) {
     if (toggle_maximized) {
         zox_toggle_maximized(world);
     }
-} zox_sys_end(QolShortcutsSystem);
+    zox_sys_on_end();
+} zoxd_system(QolShortcutsSystem);

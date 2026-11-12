@@ -1,5 +1,6 @@
 // a simple idle scale animation
-zox_sys2(IdleSystem) {
+void IdleSystem(iter* it) {
+    zox_sys_on_begin();
     const float idle_default_scale = 1.0f;
     const float idle_scale_addition = 0.02f;
     const float idle_animation_speed = 4.0f;
@@ -18,4 +19,5 @@ zox_sys2(IdleSystem) {
         double animation_time = time - start->value;
         scale->value = idle_default_scale + idle_scale_addition * sin(animation_time * idle_animation_speed);
     }
-} zox_sys_end(IdleSystem);
+    zox_sys_on_end();
+} zoxd_system(IdleSystem);

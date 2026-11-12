@@ -9,7 +9,7 @@
 
 // if non zero, moves to target state
 #define zox_increment_system(component_name, target) \
-    zox_sys_untimed(component_name##IncrementSystem) { \
+    void component_name##IncrementSystem(iter* it) { \
         zox_sys_begin();\
         zox_sys_out(component_name);\
         for (int i = 0; i < it->count; i++) {\
@@ -20,11 +20,11 @@
                 }\
             }\
         }\
-    } zox_sys_end_untimed(component_name##IncrementSystem);
+    } zoxd_system(component_name##IncrementSystem);
 
 // if non zero, moves to target state, then resets
 #define zox_increment_system_with_reset(T, target)\
-    zox_sys_untimed(T##IncrementSystem) {\
+    void T##IncrementSystem(iter* it) {\
         zox_sys_begin();\
         zox_sys_out(T);\
         for (int i = 0; i < it->count; i++) {\
@@ -37,10 +37,10 @@
                 } \
             } \
         }\
-    } zox_sys_end_untimed(T##IncrementSystem);
+    } zoxd_system(T##IncrementSystem);
 
 #define zox_increment_system_with_remove(T, target)\
-    zox_sys_untimed(T##IncrementSystem) {\
+    void T##IncrementSystem(iter* it) {\
         zox_sys_world(); \
         zox_sys_begin();\
         zox_sys_out(T);\
@@ -55,14 +55,14 @@
                 } \
             } \
         }\
-    } zox_sys_end_untimed(T##IncrementSystem)
+    } zoxd_system(T##IncrementSystem)
 
 // if non zero, moves to target state
 #define zox_increment_system_with_reset_extra( \
     component_name, \
     start1, target1, \
     start2, target2) \
-        zox_sys_untimed(component_name##IncrementSystem) { \
+        void component_name##IncrementSystem(iter* it) { \
             zox_sys_begin(); \
             zox_sys_out(component_name); \
             for (int i = 0; i < it->count; i++) { \
@@ -76,4 +76,4 @@
                     component->value = 0;\
                 }\
             }\
-        } zox_sys_end_untimed(component_name##IncrementSystem);
+        } zoxd_system(component_name##IncrementSystem);

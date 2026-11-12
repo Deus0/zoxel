@@ -1,4 +1,5 @@
-zox_sys2(QuestsRealmSpawnSystem) {
+void QuestsRealmSpawnSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(GenerateRealm);
@@ -43,4 +44,5 @@ zox_sys2(QuestsRealmSpawnSystem) {
         }
         zox_logv("Realm [quests] [X] spawned.");
     }
-} zox_sys_end(QuestsRealmSpawnSystem);
+    zox_sys_on_end();
+} zoxd_system(QuestsRealmSpawnSystem);

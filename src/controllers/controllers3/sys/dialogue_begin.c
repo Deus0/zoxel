@@ -1,5 +1,6 @@
 // left click - destroy
-zox_sys2(DialogueBeginSystem) {
+void DialogueBeginSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     float dialogue_follow_distance = 0.9f;
     zox_sys_world();
@@ -95,4 +96,5 @@ zox_sys2(DialogueBeginSystem) {
                 dialogue_process);
         }
     }
-} zox_sys_end(DialogueBeginSystem);
+    zox_sys_on_end();
+} zoxd_system(DialogueBeginSystem);

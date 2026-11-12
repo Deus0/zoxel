@@ -2,7 +2,8 @@
 // For now use taskbar hooks id
 
 // NOTE: For a Game Menu it checks and activates Taskbar Toggle
-zox_sys2(TaskbarBeginSystem) {
+void TaskbarBeginSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
@@ -49,4 +50,5 @@ zox_sys2(TaskbarBeginSystem) {
         zox_setv(toggle, ActiveState, 1);
         zox_setv(toggle, ActiveStateDirty, zox_dirty_trigger);
     }
-} zox_sys_end(TaskbarBeginSystem);
+    zox_sys_on_end();
+} zoxd_system(TaskbarBeginSystem);

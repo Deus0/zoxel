@@ -1,5 +1,6 @@
 // Spawns a projectile from raycast point
-zox_sys2(ShootSystem) {
+void ShootSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     float default_power = 64;
     zox_sys_world();
@@ -83,4 +84,5 @@ zox_sys2(ShootSystem) {
             damage,
             projectile_color);
     }
-} zox_sys_end(ShootSystem);
+    zox_sys_on_end();
+} zoxd_system(ShootSystem);

@@ -1,6 +1,7 @@
 // Called from the skill icons
 // TODO: Make generic for any entity ui with cooldown of data (items with cooldowns)
-zox_sys2(SkillOverlaySystem) {
+void SkillOverlaySystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -73,4 +74,5 @@ zox_sys2(SkillOverlaySystem) {
                 new_render_disabled);
         }
     }
-} zox_sys_end(SkillOverlaySystem);
+    zox_sys_on_end();
+} zoxd_system(SkillOverlaySystem);

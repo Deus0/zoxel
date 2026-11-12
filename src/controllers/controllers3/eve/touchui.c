@@ -42,7 +42,8 @@ void player_state_touch_ui(
 }
 
 // Spawn the UIs
-/*zox_sys2(PlayerTouchUISystem) {
+/*void PlayerTouchUISystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
@@ -59,4 +60,5 @@ void player_state_touch_ui(
             }
         }
     }
-} zox_sys_end(PlayerTouchUISystem);*/
+    zox_sys_on_end();
+} zoxd_system(PlayerTouchUISystem);*/

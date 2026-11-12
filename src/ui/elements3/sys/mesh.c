@@ -15,7 +15,8 @@ void set_mesh_vertices_scale3(
 }
 
 // Initialize Mesh2D data when size changes
-zox_sys2(Layout3MeshUpdateSystem) {
+void Layout3MeshUpdateSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -58,10 +59,12 @@ zox_sys2(Layout3MeshUpdateSystem) {
                 scale.y);
         }
     }
-} zox_sys_end(Layout3MeshUpdateSystem);
+    zox_sys_on_end();
+} zoxd_system(Layout3MeshUpdateSystem);
 
 // NOTE: Initializes Mesh based on instantiated layout size
-zox_sys2(Layout3MeshBeginSystem) {
+void Layout3MeshBeginSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -96,5 +99,6 @@ zox_sys2(Layout3MeshBeginSystem) {
             zox_log("LayoutMeshBeginSystem Mesh 3D Updated [%s] Size [%fx%f] Canvas Scale [%fx%f]", zox_getn(e), scale.x, scale.y, world_scale.x, world_scale.y);
         }
     }
-} zox_sys_end(Layout3MeshBeginSystem);
+    zox_sys_on_end();
+} zoxd_system(Layout3MeshBeginSystem);
 

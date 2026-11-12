@@ -1,5 +1,6 @@
 // reset each zevice in a system, on EcsOnLoad
-zox_sys2(ZeviceButtonResetSystem) {
+void ZeviceButtonResetSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_begin();
     zox_sys_out(ZeviceButton);
@@ -17,9 +18,11 @@ zox_sys2(ZeviceButtonResetSystem) {
             }
         }
     }
-} zox_sys_end(ZeviceButtonResetSystem);
+    zox_sys_on_end();
+} zoxd_system(ZeviceButtonResetSystem);
 
-zox_sys2(ZevicePointerResetSystem) {
+void ZevicePointerResetSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_out(ZevicePointer);
     zox_sys_out(ZevicePointerOld);
@@ -29,27 +32,33 @@ zox_sys2(ZevicePointerResetSystem) {
         zevicePointerOld->value = zevicePointer->value;
         zevicePointer->value = reset_button_state(zevicePointer->value);
     }
-} zox_sys_end(ZevicePointerResetSystem);
+    zox_sys_on_end();
+} zoxd_system(ZevicePointerResetSystem);
 
-zox_sys2(ZevicePointerRightResetSystem) {
+void ZevicePointerRightResetSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_out(ZevicePointerRight);
     for (int i = 0; i < it->count; i++) {
         zox_sys_o(ZevicePointerRight, click);
         click->value = reset_button_state(click->value);
     }
-} zox_sys_end(ZevicePointerRightResetSystem);
+    zox_sys_on_end();
+} zoxd_system(ZevicePointerRightResetSystem);
 
-zox_sys2(ZevicePointerDeltaResetSystem) {
+void ZevicePointerDeltaResetSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_out(ZevicePointerDelta);
     for (int i = 0; i < it->count; i++) {
         zox_sys_o(ZevicePointerDelta, zevicePointerDelta);
         zevicePointerDelta->value = int2_zero;
     }
-} zox_sys_end(ZevicePointerDeltaResetSystem);
+    zox_sys_on_end();
+} zoxd_system(ZevicePointerDeltaResetSystem);
 
-zox_sys2(ZeviceFingerResetSystem) {
+void ZeviceFingerResetSystem(iter* it) {
+    zox_sys_on_begin();
     /*zox_sys_begin();
     zox_sys_in(ZevicePointerOld);
     zox_sys_out(ZevicePointerPosition);
@@ -63,12 +72,14 @@ zox_sys2(ZeviceFingerResetSystem) {
             delta->value = int2_zero;
         }
     }*/
-} zox_sys_end(ZeviceFingerResetSystem);
+    zox_sys_on_end();
+} zoxd_system(ZeviceFingerResetSystem);
 
 #define reset_keyboard_key(key) \
     reset_key(&keyboard->key);
 
-zox_sys2(KeyboardResetSystem) {
+void KeyboardResetSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_out(Keyboard);
     for (int i = 0; i < it->count; i++) {
@@ -137,4 +148,5 @@ zox_sys2(KeyboardResetSystem) {
         reset_keyboard_key(_9);
         reset_keyboard_key(_0);
     }
-} zox_sys_end(KeyboardResetSystem);
+    zox_sys_on_end();
+} zoxd_system(KeyboardResetSystem);

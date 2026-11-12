@@ -1,4 +1,5 @@
-zox_sys2(ThreatPositionSystem) {
+void ThreatPositionSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(ThreatPosition);
@@ -16,4 +17,5 @@ zox_sys2(ThreatPositionSystem) {
             debug_linec(world, position, attacker_position->value, color_rgb_gray);
         }
     }
-} zox_sys_end(ThreatPositionSystem);
+    zox_sys_on_end();
+} zoxd_system(ThreatPositionSystem);

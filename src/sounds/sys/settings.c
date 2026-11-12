@@ -1,5 +1,6 @@
 // NOTE: Add bone settings to our App!
-zox_sys2(SoundsSettingsSystem) {
+void SoundsSettingsSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LoadSettings);
@@ -13,9 +14,11 @@ zox_sys2(SoundsSettingsSystem) {
         spawn_setting_float(world, e, "Music", volume_music, (float2) { 0, 1 });
         spawn_setting_float(world, e, "SFX", volume_sfx, (float2) { 0, 1 });
     }
-} zox_sys_end(SoundsSettingsSystem);
+    zox_sys_on_end();
+} zoxd_system(SoundsSettingsSystem);
 
-zox_sys2(SoundsSettingsDirtySystem) {
+void SoundsSettingsDirtySystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -43,4 +46,5 @@ zox_sys2(SoundsSettingsDirtySystem) {
         }
 
     }
-} zox_sys_end(SoundsSettingsDirtySystem);
+    zox_sys_on_end();
+} zoxd_system(SoundsSettingsDirtySystem);

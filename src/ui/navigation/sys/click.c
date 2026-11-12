@@ -1,6 +1,7 @@
 // todo: reuse parts of ZeviceClickSystem in this
 // this is now from zevice
-zox_sys2(DeviceClickSystem) {
+void DeviceClickSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -85,4 +86,5 @@ zox_sys2(DeviceClickSystem) {
             }
         }
     }
-} zox_sys_end(DeviceClickSystem);
+    zox_sys_on_end();
+} zoxd_system(DeviceClickSystem);

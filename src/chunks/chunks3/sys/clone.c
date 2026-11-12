@@ -1,7 +1,8 @@
 // todo: make use TargetChunkLod -> and load/unload depth based on that
 // todo: set lod here instead of just applying RenderDepth only with BuildMesh -> keeps memory down
 // NOTE: This uses ChunkLod to increment the build per level
-zox_sys2(CloneVoxSystem) {
+void CloneVoxSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(CloneVox);
@@ -51,4 +52,5 @@ zox_sys2(CloneVoxSystem) {
         zox_add(e, VoxelNodeDirty);
         // zox_log(" [%s] Is cloned from [%s] [%f]", zox_get_name(it->entities[i]), zox_get_name(src), scale->value);
     }
-} zox_sys_end(CloneVoxSystem);
+    zox_sys_on_end();
+} zoxd_system(CloneVoxSystem);

@@ -32,16 +32,20 @@ static inline void physics3_roll(iter* it, const float c) {
     zox_physics_profile_end();
 }
 
-zox_sys2(rolling3_system) {
+void rolling3_system(iter* it) {
+    zox_sys_on_begin();
     if (zox_delta_time > zox_physics_max_delta_time) {
         return;
     }
     physics3_roll(it, 0);
-} zox_sys_end(rolling3_system);
+    zox_sys_on_end();
+} zoxd_system(rolling3_system);
 
-zox_sys2(rolling3_damped_system) {
+void rolling3_damped_system(iter* it) {
+    zox_sys_on_begin();
     if (zox_delta_time > zox_physics_max_delta_time) {
         return;
     }
     physics3_roll(it, omega_dissipation3);
-} zox_sys_end(rolling3_damped_system);
+    zox_sys_on_end();
+} zoxd_system(rolling3_damped_system);

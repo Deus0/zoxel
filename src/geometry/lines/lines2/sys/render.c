@@ -66,10 +66,14 @@ void line2D_render_iteration(iter *it, byte is_element_line) {
     }
 }
 
-zox_sys2(Line2DRenderSystem) {
+void Line2DRenderSystem(iter* it) {
+    zox_sys_on_begin();
     line2D_render_iteration(it, 0);
-} zox_sys_end(Line2DRenderSystem);
+    zox_sys_on_end();
+} zoxd_system(Line2DRenderSystem);
 
-zox_sys2(ElementLine2DRenderSystem) {
+void ElementLine2DRenderSystem(iter* it) {
+    zox_sys_on_begin();
     line2D_render_iteration(it, 1);
-} zox_sys_end(ElementLine2DRenderSystem);
+    zox_sys_on_end();
+} zoxd_system(ElementLine2DRenderSystem);

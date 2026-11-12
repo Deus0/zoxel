@@ -1,5 +1,6 @@
 // NOTE: Update Map Position from Player
-zox_sys2(MapPositionSystem) {
+void MapPositionSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -86,5 +87,6 @@ zox_sys2(MapPositionSystem) {
             }
         }
     }
-} zox_sys_end(MapPositionSystem);
+    zox_sys_on_end();
+} zoxd_system(MapPositionSystem);
 

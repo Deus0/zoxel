@@ -2,7 +2,8 @@
 
 // todo: it shouldnt use setters
 //      - we should get player data from a Character!
-zox_sys2(Player3DJumpSystem) {
+void Player3DJumpSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
@@ -70,4 +71,5 @@ zox_sys2(Player3DJumpSystem) {
         zox_log("Triggered %s jumping", zox_getn(character));
 #endif
     }
-} zox_sys_end(Player3DJumpSystem);
+    zox_sys_on_end();
+} zoxd_system(Player3DJumpSystem);

@@ -49,7 +49,8 @@ void close_ui_related_tooltip(ecs* world, entity e) {
 }
 
 // NOTE: Called by the UI element with a tooltip event on it
-zox_sys2(TooltipeeDeselectSystem) {
+void TooltipeeDeselectSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     // zox_sys_begin();
     // zox_sys_in(SelectState);
@@ -61,7 +62,8 @@ zox_sys2(TooltipeeDeselectSystem) {
         }*/
         close_ui_related_tooltip(world, e);
     }
-} zox_sys_end(TooltipeeDeselectSystem);
+    zox_sys_on_end();
+} zoxd_system(TooltipeeDeselectSystem);
 
         /*entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
         if (!zox_valid(canvas)) {

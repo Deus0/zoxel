@@ -1,4 +1,5 @@
-zox_sys2(HealthbarSpawnerSystem) {
+void HealthbarSpawnerSystem(iter* it) {
+    zox_sys_on_begin();
     float healthbar_trail_offset = 0.28f;
     float ui_scale = zox_ui_scale3 * 1.8f;
     byte font_size = 16;
@@ -74,4 +75,5 @@ zox_sys2(HealthbarSpawnerSystem) {
         zox_add(text, StatsLabel);
         zox_link(world, text, StatLink, health);
     }
-} zox_sys_end(HealthbarSpawnerSystem);
+    zox_sys_on_end();
+} zoxd_system(HealthbarSpawnerSystem);

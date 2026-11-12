@@ -1,5 +1,6 @@
 /*
-zox_sys2(ParentRotationSystem) {
+void ParentRotationSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ParentLink);
@@ -16,4 +17,5 @@ zox_sys2(ParentRotationSystem) {
 
         set_rotation_from_parents(world, parent->value, &rotation3D->value, localRotation3D->value);
     }
-} zox_sys_end(ParentRotationSystem);*/
+    zox_sys_on_end();
+} zoxd_system(ParentRotationSystem);*/

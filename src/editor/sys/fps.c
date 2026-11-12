@@ -13,7 +13,8 @@ static inline void add_fps_display_sample(int fps) {
     }
 }
 
-zox_sys2(FpsDisplaySystem) {
+void FpsDisplaySystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     double frame_rate_update_speed = 1.0;
     init_delta_time();
@@ -53,4 +54,5 @@ zox_sys2(FpsDisplaySystem) {
             }
         }
     }
-} zox_sys_end(FpsDisplaySystem);
+    zox_sys_on_end();
+} zoxd_system(FpsDisplaySystem);

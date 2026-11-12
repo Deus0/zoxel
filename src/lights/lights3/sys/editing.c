@@ -2,7 +2,8 @@
 // for now: check above voxel, if sun, create beam
 // TODO: Convert local position to terrain position (positionv)
 // Shouuld we use VoxelNodeDepth here? since we are removing/adding at that depth
-zox_sys2(VoxelLightSystem) {
+void VoxelLightSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -166,4 +167,5 @@ zox_sys2(VoxelLightSystem) {
             }
         }
     }
-} zox_sys_end(VoxelLightSystem);
+    zox_sys_on_end();
+} zoxd_system(VoxelLightSystem);

@@ -3,7 +3,8 @@
 // color skin_color = (color) { 200, 155, 133, 255 };
 // color eye_color = (color) { 55, 200, 99, 255 };
 // TODO: Spawn the slots onto the items themselves
-zox_sys2(BodysRealmSpawnSystem) {
+void BodysRealmSpawnSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -346,4 +347,5 @@ zox_sys2(BodysRealmSpawnSystem) {
         }
         zox_logv("At [%f] Realm [bodys] [X] spawned.", zox_current_time);
     }
-} zox_sys_end(BodysRealmSpawnSystem);
+    zox_sys_on_end();
+} zoxd_system(BodysRealmSpawnSystem);

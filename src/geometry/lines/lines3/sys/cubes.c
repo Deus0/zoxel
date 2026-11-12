@@ -1,7 +1,8 @@
 const float cube_lines_length = 1.0f;
 
 // TODO: Use Instancing here, lags!
-zox_sys2(CubeLineRenderSystem) {
+void CubeLineRenderSystem(iter* it) {
+    zox_sys_on_begin();
     zox_gpu_material(line3D_material);
     zox_gpu_enable_attribute(line3D_position_location);
     zox_gpu_float4(
@@ -165,5 +166,6 @@ zox_sys2(CubeLineRenderSystem) {
     zox_gpu_disable_polyoffset_lines();
     zox_gpu_disable_attribute(line3D_position_location);
     zox_disable_material();
-} zox_sys_end(CubeLineRenderSystem);
+    zox_sys_on_end();
+} zoxd_system(CubeLineRenderSystem);
 

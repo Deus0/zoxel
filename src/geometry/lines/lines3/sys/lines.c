@@ -1,4 +1,5 @@
-zox_sys2(Line3DRenderSystem) {
+void Line3DRenderSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LineData3D);
@@ -30,4 +31,5 @@ zox_sys2(Line3DRenderSystem) {
     zox_gpu_disable_attribute(line3D_position_location);
     zox_disable_material();
     zox_gpu_disable_blend();
-} zox_sys_end(Line3DRenderSystem);
+    zox_sys_on_end();
+} zoxd_system(Line3DRenderSystem);

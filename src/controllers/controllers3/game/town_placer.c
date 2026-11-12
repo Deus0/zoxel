@@ -1,5 +1,6 @@
 // NOTE: For new placement of characters, we wait for region/towns to spawn, then we find a position in one of the towns
-zox_sys2(PlayerTownFinderSystem) {
+void PlayerTownFinderSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -124,4 +125,5 @@ zox_sys2(PlayerTownFinderSystem) {
                 spawn_position.z);
         }
     }
-} zox_sys_end(PlayerTownFinderSystem);
+    zox_sys_on_end();
+} zoxd_system(PlayerTownFinderSystem);

@@ -51,7 +51,8 @@ int open_socket(int port) {
     return sock;
 }
 
-zox_sys2(SocketSystem) {
+void SocketSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 1;
     zox_sys_begin();
     zox_sys_in(NetPort);
@@ -69,4 +70,5 @@ zox_sys2(SocketSystem) {
             }
         }
     }
-} zox_sys_end(SocketSystem);
+    zox_sys_on_end();
+} zoxd_system(SocketSystem);

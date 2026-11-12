@@ -1,5 +1,6 @@
 // NOTE: Player cancel the menu!
-zox_sys2(CancelMenuSystem) {
+void CancelMenuSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     byte cancel_type = zox_btn_b;
     zox_sys_world();
@@ -54,10 +55,12 @@ zox_sys2(CancelMenuSystem) {
             on_element_released(world, player, close_button);
         }
     }
-} zox_sys_end(CancelMenuSystem);
+    zox_sys_on_end();
+} zoxd_system(CancelMenuSystem);
 
 // NOTE: Player cancel the menu! (from keyboard)
-zox_sys2(KeyboardCancelMenuSystem) {
+void KeyboardCancelMenuSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -147,5 +150,6 @@ zox_sys2(KeyboardCancelMenuSystem) {
             on_element_released(world, player, close_button);
         }
     }
-} zox_sys_end(KeyboardCancelMenuSystem);
+    zox_sys_on_end();
+} zoxd_system(KeyboardCancelMenuSystem);
 

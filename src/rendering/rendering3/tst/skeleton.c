@@ -179,7 +179,8 @@ void zox_tst_skeleton_check(ecs* world) {
     zox_tst_check(checked_count - hidden - pending, "no visible built skeletons");
 }
 
-zox_sys2(TstSkeletonProbeSystem) {
+void TstSkeletonProbeSystem(iter* it) {
+    zox_sys_on_begin();
     if (!zox_tst_active || zox_tst_active->check != zox_tst_skeleton_check) {
         return;
     }
@@ -202,7 +203,8 @@ zox_sys2(TstSkeletonProbeSystem) {
             zox_tst_skeleton_draws.candidate = e;
         }
     }
-} zox_sys_end(TstSkeletonProbeSystem);
+    zox_sys_on_end();
+} zoxd_system(TstSkeletonProbeSystem);
 
 void zox_tsts_skeleton_render(ecs* world) {
     zox_tst_add("skeleton_render", zox_tst_skeleton_ready, zox_tst_skeleton_check, 90);

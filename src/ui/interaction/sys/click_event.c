@@ -1,5 +1,6 @@
 // NOTE: Runs the ClickEvent on Click, added on release (or on press for ClickOnPress), see on_element_pressed
-zox_sys2(ButtonClickEventSystem) {
+void ButtonClickEventSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ClickEvent);
@@ -17,4 +18,5 @@ zox_sys2(ButtonClickEventSystem) {
         };
         (*event->value)(world, event_data);
     }
-} zox_sys_end(ButtonClickEventSystem);
+    zox_sys_on_end();
+} zoxd_system(ButtonClickEventSystem);

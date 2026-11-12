@@ -1,6 +1,7 @@
 // NOTE: This is for chunks handling incoming damages
 // TODO: Refactor Health to remove from chunk instead of here
-zox_sys2(BlockDamageQueueSystem) {
+void BlockDamageQueueSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     float block_damage_overlay_buffer = 1; //  1.08f;
     color popup_color = (color) { 255, 0, 0, 255 };
@@ -186,4 +187,5 @@ zox_sys2(BlockDamageQueueSystem) {
             }
         }
     }
-} zox_sys_end(BlockDamageQueueSystem);
+    zox_sys_on_end();
+} zoxd_system(BlockDamageQueueSystem);

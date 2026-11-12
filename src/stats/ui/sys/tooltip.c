@@ -1,5 +1,6 @@
 // Tooltip Event for item icons
-/*zox_sys2(StatIconTooltipSystem) {
+/*void StatIconTooltipSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SelectState);
@@ -45,5 +46,6 @@
         }
         set_tooltip_text(world, e, tooltip, result);
     }
-} zox_sys_end(StatIconTooltipSystem);*/
+    zox_sys_on_end();
+} zoxd_system(StatIconTooltipSystem);*/
 

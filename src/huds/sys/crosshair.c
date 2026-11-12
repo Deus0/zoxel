@@ -28,7 +28,8 @@ void crosshair_set_type(ecs* world, entity e, byte new) {
     }
 }
 
-zox_sys2(RaycastCrosshairSystem) {
+void RaycastCrosshairSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RaycastVoxelData);
@@ -49,4 +50,5 @@ zox_sys2(RaycastCrosshairSystem) {
             crosshair_set_type(world, crosshair, data->result);
         }
     }
-} zox_sys_end(RaycastCrosshairSystem);
+    zox_sys_on_end();
+} zoxd_system(RaycastCrosshairSystem);

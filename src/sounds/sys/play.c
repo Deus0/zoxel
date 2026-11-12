@@ -1,5 +1,6 @@
 // plays triggered sounds through the mixer, a sound with a SoundPosition plays in 3D
-zox_sys2(SoundPlaySystem) {
+void SoundPlaySystem(iter* it) {
+    zox_sys_on_begin();
     if (!audio_enabled || nosounds || zox_current_time <= 1) {
         return;
     }
@@ -21,9 +22,11 @@ zox_sys2(SoundPlaySystem) {
         zox_mixer_play_delayed(data->value, data->length, SoundPosition_ ? &SoundPosition_[i].value : NULL,
             SoundDelay_ ? SoundDelay_[i].value : 0);
     }
-} zox_sys_end(SoundPlaySystem);
+    zox_sys_on_end();
+} zoxd_system(SoundPlaySystem);
 
-zox_sys2(SoundPlayRefSystem) {
+void SoundPlayRefSystem(iter* it) {
+    zox_sys_on_begin();
     if (!audio_enabled || nosounds || zox_current_time <= 1) {
         return;
     }
@@ -39,10 +42,12 @@ zox_sys2(SoundPlayRefSystem) {
         }
         zox_mixer_play(sound->value, sound->length, SoundPosition_ ? &SoundPosition_[i].value : NULL);
     }
-} zox_sys_end(SoundPlayRefSystem);
+    zox_sys_on_end();
+} zoxd_system(SoundPlayRefSystem);
 
 // the listener (the game camera) moved or turned, 3D sounds follow it
-zox_sys2(SoundListenerSystem) {
+void SoundListenerSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(Position3D);
     zox_sys_in(Rotation3D);
@@ -52,4 +57,5 @@ zox_sys2(SoundListenerSystem) {
         zox_mixer_set_listener(position->value, rotation->value);
         break;  // one listener
     }
-} zox_sys_end(SoundListenerSystem);
+    zox_sys_on_end();
+} zoxd_system(SoundListenerSystem);

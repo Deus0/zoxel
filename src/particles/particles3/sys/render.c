@@ -5,7 +5,8 @@
 extern entity spawn_line3(ecs*, float3, float3, float, double);
 #endif
 
-zox_sys2(Particle3DRenderSystem) {
+void Particle3DRenderSystem(iter* it) {
+    zox_sys_on_begin();
 #ifdef zox_debug_particle3Ds
     zox_sys_world();
 #endif
@@ -67,7 +68,8 @@ zox_sys2(Particle3DRenderSystem) {
     }
 #endif
     // zox_log("Rendering Particles [%i]", it->count);
-} zox_sys_end(Particle3DRenderSystem);
+    zox_sys_on_end();
+} zoxd_system(Particle3DRenderSystem);
 
 
 // todo: use one draw call with array of positions, instead of multiple calls here

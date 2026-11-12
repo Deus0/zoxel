@@ -16,7 +16,8 @@ static inline uint get_stream_near_chunks_count() {
 // A state checker for stream loading
 // Loading ends once the chunks near the streamer are done (RenderDistance <= terrain_lod_near),
 // the far ones keep streaming in after (spawn queue is sorted by distance, closest first)
-zox_sys2(StreamEndSystem) {
+void StreamEndSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     byte zox_disable = 0;
     float required_buffer = 0.95f;
@@ -139,4 +140,5 @@ zox_sys2(StreamEndSystem) {
             zox_log("Terrain Loaded: chunks: [%i]", chunks_loaded);
         }
     }
-} zox_sys_end(StreamEndSystem);
+    zox_sys_on_end();
+} zoxd_system(StreamEndSystem);

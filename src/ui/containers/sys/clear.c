@@ -1,5 +1,6 @@
 // NOTE: Clears text when data removed
-/*zox_sys2(IconLabelClearSystem) {
+/*void IconLabelClearSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -24,4 +25,5 @@
             zox_log("Clearing Frame Label [%s]", zox_get_name(e));
         }
     }
-} zox_sys_end(IconLabelClearSystem);*/
+    zox_sys_on_end();
+} zoxd_system(IconLabelClearSystem);*/

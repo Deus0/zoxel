@@ -1,5 +1,6 @@
 // TODO: Use Entity Colors here instead of globals
-/*zox_sys2(ToggleStateSystem) {
+/*void ToggleStateSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin()
     zox_sys_in(ToggleState);
     zox_sys_in(ToggleStateDirty);
@@ -18,5 +19,6 @@
             generate->value = zox_dirty_trigger;
         }
     }
-} zox_sys_end(ToggleStateSystem);
+    zox_sys_on_end();
+} zoxd_system(ToggleStateSystem);
 */

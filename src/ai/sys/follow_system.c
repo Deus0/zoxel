@@ -1,4 +1,5 @@
-zox_sys2(FollowSystem) {
+void FollowSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Behaviour);
@@ -17,4 +18,5 @@ zox_sys2(FollowSystem) {
         zox_geter_value(target, Position3D, float3, position);
         target_position->value = position;
     }
-} zox_sys_end(FollowSystem);
+    zox_sys_on_end();
+} zoxd_system(FollowSystem);

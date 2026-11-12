@@ -107,7 +107,8 @@ void button_event_clicked_inspector(ecs *world, ClickEventData event) {
     inspector_select_target(world, event.clicker, link->value);
 }
 
-zox_sys2(InspectorSpawnSystem) {
+void InspectorSpawnSystem(iter* it) {
+    zox_sys_on_begin();
     const ClickEvent on_click = (ClickEvent) { &button_event_clicked_inspector };
     zox_sys_world();
     zox_sys_begin();
@@ -153,4 +154,5 @@ zox_sys2(InspectorSpawnSystem) {
         refresh_editor_list(world, list);
         zox_logv("Inspector [%s] refreshed with [%i] rows", zox_getn(target->value), count);
     }
-} zox_sys_end(InspectorSpawnSystem);
+    zox_sys_on_end();
+} zoxd_system(InspectorSpawnSystem);

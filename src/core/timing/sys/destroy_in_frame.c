@@ -1,7 +1,9 @@
-zox_sys2(DestroyInFrameSystem) {
+void DestroyInFrameSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_delete(e);
     }
-} zox_sys_end(DestroyInFrameSystem);
+    zox_sys_on_end();
+} zoxd_system(DestroyInFrameSystem);

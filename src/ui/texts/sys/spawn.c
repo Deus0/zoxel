@@ -1,7 +1,8 @@
 // NOTE: Spawns / Destroys Glyphs of the Text
 // #define zoxel_debug_zext_updates
 // Dynamically keeps the text characters the right length using entities
-zox_sys2(GlyphSpawnSystem) {
+void GlyphSpawnSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -115,4 +116,5 @@ zox_sys2(GlyphSpawnSystem) {
             }
         }
     }
-} zox_sys_end(GlyphSpawnSystem);
+    zox_sys_on_end();
+} zoxd_system(GlyphSpawnSystem);

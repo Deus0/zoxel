@@ -1,4 +1,5 @@
-zox_sys2(PlayerTerminalSystem) {
+void PlayerTerminalSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DeviceMode);
@@ -36,4 +37,5 @@ zox_sys2(PlayerTerminalSystem) {
             spawn_menu_terminal(world, canvas);
         }
     }
-} zox_sys_end(PlayerTerminalSystem);
+    zox_sys_on_end();
+} zoxd_system(PlayerTerminalSystem);

@@ -2,7 +2,8 @@
 //  - becomes active when the chunk is close, at full detail, lod settled, and finished generating
 //  - stays active until it's one chunk past range or below full detail (lod transitions don't despawn npcs)
 //  - checked every frame, as lod changes and generation finish at different times
-zox_sys2(CharactersCanSpawnSystem) {
+void CharactersCanSpawnSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(RenderDepth);
@@ -65,4 +66,5 @@ zox_sys2(CharactersCanSpawnSystem) {
             dirty->value = zox_dirty_trigger;
         }
     }
-} zox_sys_end(CharactersCanSpawnSystem);
+    zox_sys_on_end();
+} zoxd_system(CharactersCanSpawnSystem);

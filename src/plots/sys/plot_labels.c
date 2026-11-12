@@ -1,4 +1,5 @@
-zox_sys2(PlotLabelSystem) {
+void PlotLabelSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(TextData);
@@ -24,4 +25,5 @@ zox_sys2(PlotLabelSystem) {
             zox_add(e, Dirty);
         }
     }
-} zox_sys_end(PlotLabelSystem);
+    zox_sys_on_end();
+} zoxd_system(PlotLabelSystem);

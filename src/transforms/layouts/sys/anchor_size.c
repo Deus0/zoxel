@@ -1,4 +1,5 @@
-zox_sys2(AnchorSizeSystem) {
+void AnchorSizeSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(AnchorSize);
@@ -17,4 +18,5 @@ zox_sys2(AnchorSizeSystem) {
         size->value.x = ceil(parent_size.x * anchor->value.x);
         size->value.y = ceil(parent_size.y * anchor->value.y);
     }
-} zox_sys_end(AnchorSizeSystem);
+    zox_sys_on_end();
+} zoxd_system(AnchorSizeSystem);

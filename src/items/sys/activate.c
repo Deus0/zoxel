@@ -1,5 +1,6 @@
 // NOTE: This assumes item quantity!
-zox_sys2(ItemActivateSystem) {
+void ItemActivateSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Activate);
@@ -62,4 +63,5 @@ zox_sys2(ItemActivateSystem) {
             zox_setv(skeleton, SwingSpeed, swing_time);
         }
     }
-} zox_sys_end(ItemActivateSystem);
+    zox_sys_on_end();
+} zoxd_system(ItemActivateSystem);

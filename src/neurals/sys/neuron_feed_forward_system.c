@@ -1,4 +1,5 @@
-zox_sys2(NeuronFeedForwardSystem) {
+void NeuronFeedForwardSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_out(Signal);
@@ -17,4 +18,5 @@ zox_sys2(NeuronFeedForwardSystem) {
             signal->value = 0;
         }
     }
-} zox_sys_end(NeuronFeedForwardSystem);
+    zox_sys_on_end();
+} zoxd_system(NeuronFeedForwardSystem);

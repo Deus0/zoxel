@@ -1,7 +1,8 @@
 extern entity local_terrain;
 extern entity get_terrain_id();
 
-zox_sys2(GameStateSystem) {
+void GameStateSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -138,4 +139,5 @@ zox_sys2(GameStateSystem) {
                 target->value);
         }
     }
-} zox_sys_end(GameStateSystem);
+    zox_sys_on_end();
+} zoxd_system(GameStateSystem);

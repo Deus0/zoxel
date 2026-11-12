@@ -1,4 +1,5 @@
-zox_sys2(BoneGizmoSystem) {
+void BoneGizmoSystem(iter* it) {
+    zox_sys_on_begin();
     if (!render_bones) {
         return;
     }
@@ -32,4 +33,5 @@ zox_sys2(BoneGizmoSystem) {
             color_rgb_black,
             0.01);
     }
-} zox_sys_end(BoneGizmoSystem);
+    zox_sys_on_end();
+} zoxd_system(BoneGizmoSystem);

@@ -1,4 +1,5 @@
-zox_sys2(PickupSoundSystem) {
+void PickupSoundSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PickedUp);
@@ -9,4 +10,5 @@ zox_sys2(PickupSoundSystem) {
             set_sound_source(world, spawn_sound_from_file_name(world, prefab_sound, "pickup2", 0, get_volume_sfx()), e);
         }
     }
-} zox_sys_end(PickupSoundSystem);
+    zox_sys_on_end();
+} zoxd_system(PickupSoundSystem);

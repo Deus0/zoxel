@@ -1,4 +1,5 @@
-zox_sys2(WindowElementClickedSystem) {
+void WindowElementClickedSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     // zox_sys_in(ClickState);
@@ -18,4 +19,5 @@ zox_sys2(WindowElementClickedSystem) {
         }
         zox_set(canvas, WindowToTop, { window });
     }
-} zox_sys_end(WindowElementClickedSystem);
+    zox_sys_on_end();
+} zoxd_system(WindowElementClickedSystem);

@@ -1,4 +1,5 @@
-zox_sys2(PacketQueueSystem) {
+void PacketQueueSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 1;
     zox_sys_begin();
     zox_sys_out(PacketQueue);
@@ -21,4 +22,5 @@ zox_sys2(PacketQueueSystem) {
             }
         }
     }
-} zox_sys_end(PacketQueueSystem);
+    zox_sys_on_end();
+} zoxd_system(PacketQueueSystem);

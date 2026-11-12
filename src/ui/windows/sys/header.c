@@ -1,7 +1,9 @@
-zox_sys2(HeaderSpawnSystem) {
+void HeaderSpawnSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
 
 
 
-} zox_sys_end(HeaderSpawnSystem);
+    zox_sys_on_end();
+} zoxd_system(HeaderSpawnSystem);

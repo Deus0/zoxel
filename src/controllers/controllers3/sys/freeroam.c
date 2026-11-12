@@ -50,7 +50,8 @@ void attach_camera_to_character(
     zox_set_parent(world, e, character);
 }
 
-zox_sys2(FreeRoamToggleSystem) {
+void FreeRoamToggleSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(PlayerState);
@@ -120,4 +121,5 @@ zox_sys2(FreeRoamToggleSystem) {
             // zox_log("= toggling free roam - old: [%i] -> new: [%i]", old, state->value);
         }
     }
-} zox_sys_end(FreeRoamToggleSystem);
+    zox_sys_on_end();
+} zoxd_system(FreeRoamToggleSystem);

@@ -1,4 +1,5 @@
-zox_sys2(LerpToPositionSystem) {
+void LerpToPositionSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(AnimationState);
     zox_sys_in(AnimationPositionStart);
@@ -24,4 +25,5 @@ zox_sys2(LerpToPositionSystem) {
 
         position->value = float3_lerp(start_position->value, end_position->value, lerp);
     }
-} zox_sys_end(LerpToPositionSystem);
+    zox_sys_on_end();
+} zoxd_system(LerpToPositionSystem);

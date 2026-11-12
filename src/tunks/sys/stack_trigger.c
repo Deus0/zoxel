@@ -1,6 +1,7 @@
 // Signals Terrain Chunks to Generate -> After Tunk (2D maps) finishes generating
 // TODO: Just Generate here instead of the roundabout way to update chunks
-zox_sys2(TunkEndSystem) {
+void TunkEndSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Chunk3Stack);
@@ -21,4 +22,5 @@ zox_sys2(TunkEndSystem) {
         }
         generate->value = 0;
     }
-} zox_sys_end(TunkEndSystem);
+    zox_sys_on_end();
+} zoxd_system(TunkEndSystem);

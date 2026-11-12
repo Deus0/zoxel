@@ -1,5 +1,6 @@
 // NOTE: Places vegetation, only in top chunks
-zox_sys2(VegetationChunk3System) {
+void VegetationChunk3System(iter* it) {
+    zox_sys_on_begin();
     short grass_height = terrain_grass_height * render_distance_y;
     short stone_height = terrain_stone_height * render_distance_y;
     byte max_process = 0; // 16;
@@ -210,4 +211,5 @@ zox_sys2(VegetationChunk3System) {
         generate->value = zox_generate_terrain_towns;
         zox_sys_increment();
     }
-} zox_sys_end(VegetationChunk3System);
+    zox_sys_on_end();
+} zoxd_system(VegetationChunk3System);

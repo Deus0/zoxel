@@ -1,6 +1,7 @@
 // extern void zox_debug_sound(ecs* world, entity e);
 
-zox_sys2(DestroyInTimeSystem) {
+void DestroyInTimeSystem(iter* it) {
+    zox_sys_on_begin();
     init_delta_time();
     const float max_delta = 0.1f;  // 100 ms max step, tweak as needed
     float dt = delta_time > max_delta ? max_delta : delta_time;
@@ -19,4 +20,5 @@ zox_sys2(DestroyInTimeSystem) {
             zox_delete(e);
         }
     }
-} zox_sys_end(DestroyInTimeSystem);
+    zox_sys_on_end();
+} zoxd_system(DestroyInTimeSystem);

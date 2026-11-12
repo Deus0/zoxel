@@ -1,6 +1,7 @@
 extern void spawn_line3t(ecs*, const float3, const float3, const color_rgb);
 
-zox_sys2(ChunkBoundsDrawSystem) {
+void ChunkBoundsDrawSystem(iter* it) {
+    zox_sys_on_begin();
     const color_rgb up_color = (color_rgb) { 0, 0, 255 };
     zox_sys_world();
     zox_sys_begin();
@@ -32,4 +33,5 @@ zox_sys2(ChunkBoundsDrawSystem) {
         spawn_line3t(world, float3_add(chunk_bounds.center, (float3) { -chunk_bounds.extents.x, 0, 0 }), float3_add(chunk_bounds.center, (float3) { chunk_bounds.extents.x, 0, 0 }), line_color);
 
     }
-} zox_sys_end(ChunkBoundsDrawSystem);
+    zox_sys_on_end();
+} zoxd_system(ChunkBoundsDrawSystem);

@@ -3,7 +3,8 @@
 extern entity get_block_link(ecs*, entity);
 
 // NOTE: Relies on texture size
-zox_sys2(TilemapGenerationSystem) {
+void TilemapGenerationSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -138,7 +139,8 @@ zox_sys2(TilemapGenerationSystem) {
             zox_log("Tilemap Generated!");
         }
     }
-} zox_sys_end(TilemapGenerationSystem);
+    zox_sys_on_end();
+} zoxd_system(TilemapGenerationSystem);
 
 
 /*iter it3 = zox_links(e, TextureLink);

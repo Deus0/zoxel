@@ -1,7 +1,8 @@
 entity max_system;
 
 // NOTE: From Module, go through all systems and find biggest
-zox_sys2(MaxSystemSystem) {
+void MaxSystemSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     // entity max_system = 0;
@@ -40,4 +41,5 @@ zox_sys2(MaxSystemSystem) {
         zox_sys_o(SystemLink, max);
         max->value = max_system;
     }*/
-} zox_sys_end(MaxSystemSystem);
+    zox_sys_on_end();
+} zoxd_system(MaxSystemSystem);

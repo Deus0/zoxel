@@ -1,4 +1,5 @@
-zox_sys2(ModelsSettingsSystem) {
+void ModelsSettingsSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LoadSettings);
@@ -14,9 +15,11 @@ zox_sys2(ModelsSettingsSystem) {
         spawn_setting_byte_slider(world, e, "Terrain Res", terrain_depth, terrain_depth_limits);
 #endif
     }
-} zox_sys_end(ModelsSettingsSystem);
+    zox_sys_on_end();
+} zoxd_system(ModelsSettingsSystem);
 
-zox_sys2(ModelsSettingsDirtySystem) {
+void ModelsSettingsDirtySystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -53,4 +56,5 @@ zox_sys2(ModelsSettingsDirtySystem) {
             }
         }
     }
-} zox_sys_end(ModelsSettingsDirtySystem);
+    zox_sys_on_end();
+} zoxd_system(ModelsSettingsDirtySystem);

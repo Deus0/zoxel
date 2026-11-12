@@ -1,5 +1,6 @@
 // NOTE: Sets Head animation when skeleton is updated
-zox_sys2(HeadAnimateSystem) {
+void HeadAnimateSystem(iter* it) {
+    zox_sys_on_begin();
     float2 headbob_range = (float2) { 0.004f, 0.006f };
     zox_sys_world();
     zox_sys_begin();
@@ -24,4 +25,5 @@ zox_sys2(HeadAnimateSystem) {
         zox_setv(head_bone, OscillateDeltaPosition3D, delta);
         // zox_log("+ Animating head from [%fx%fx%f] delta [%f]", start_position.x, start_position.y, start_position.z, delta.y);
     }
-} zox_sys_end(HeadAnimateSystem);
+    zox_sys_on_end();
+} zoxd_system(HeadAnimateSystem);

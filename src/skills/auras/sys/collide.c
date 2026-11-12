@@ -4,7 +4,8 @@ extern entity spawn_line3(ecs*, float3, float3, float, double);
 #endif
 
 // NOTE: This adds Dots to nearby characters!
-zox_sys2(AuraDotSystem) {
+void AuraDotSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_query();
     zox_sys_world();
@@ -101,4 +102,5 @@ zox_sys2(AuraDotSystem) {
         }
         zox_sys_query_end();
     }
-} zox_sys_end(AuraDotSystem);
+    zox_sys_on_end();
+} zoxd_system(AuraDotSystem);

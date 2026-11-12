@@ -1,4 +1,5 @@
-zox_sys2(TooltipEventSystem) {
+void TooltipEventSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -49,4 +50,5 @@ zox_sys2(TooltipEventSystem) {
                 zox_getn(tooltip));
         }
     }
-} zox_sys_end(TooltipEventSystem);
+    zox_sys_on_end();
+} zoxd_system(TooltipEventSystem);

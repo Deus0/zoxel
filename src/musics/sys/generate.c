@@ -1,7 +1,8 @@
 // Generates a music's notes from its seed (compose_song, like a dungeon from its seed)
 //  - its notes are the performed song's events, each with its own start and length (they overlap)
 //  - its lead instrument is the music's InstrumentType, it loops after the song's length
-zox_sys2(MusicGenerateSystem) {
+void MusicGenerateSystem(iter* it) {
+    zox_sys_on_begin();
     if (nomusic) {
         return;
     }
@@ -39,4 +40,5 @@ zox_sys2(MusicGenerateSystem) {
             zox_getn(e), seed->value, song.events_count, song.seconds, song.sections_count, song.mode, song.tonic);
         generateMusic->value = 0;
     }
-} zox_sys_end(MusicGenerateSystem);
+    zox_sys_on_end();
+} zoxd_system(MusicGenerateSystem);

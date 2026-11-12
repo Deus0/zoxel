@@ -1,5 +1,6 @@
 // NOTE: Adds the System Delta to the Curve
-zox_sys2(SystemTimeAddSystem) {
+void SystemTimeAddSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(SystemDeltaCache);
     zox_sys_out(DoubleData);
@@ -14,4 +15,5 @@ zox_sys2(SystemTimeAddSystem) {
         }
         data->value[data->length - 1] = time->value;
     }
-} zox_sys_end(SystemTimeAddSystem);
+    zox_sys_on_end();
+} zoxd_system(SystemTimeAddSystem);

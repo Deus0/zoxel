@@ -12,7 +12,8 @@ static const color_rgb color_render_depths[] = {
 };
 
 // TODO: Split up into different systems per mode
-zox_sys2(RenderDepthColorSystem) {
+void RenderDepthColorSystem(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DebugCubeLines);
@@ -58,4 +59,5 @@ zox_sys2(RenderDepthColorSystem) {
         }
         colorr->value = color_rgb_to_color(output);
     }
-} zox_sys_end(RenderDepthColorSystem);
+    zox_sys_on_end();
+} zoxd_system(RenderDepthColorSystem);

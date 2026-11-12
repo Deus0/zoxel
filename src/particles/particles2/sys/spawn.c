@@ -71,7 +71,8 @@
     free(scale1Ds);
     free(brightnesses);
     free(destroyInTimes);
-} zox_sys_end(Particle2DSpawnSystem);*/
+    zox_sys_on_end();
+} zoxd_system(Particle2DSpawnSystem);*/
 
     /*cs_filter_t *filter = ecs_filter(world, {
         .terms = {{ id }} // by default matches owned & inherited components

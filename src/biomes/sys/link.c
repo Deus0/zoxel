@@ -4,7 +4,8 @@
 // extern void set_skybox_colors(ecs*, entity, color_rgb, color_rgb);
 // A Streamer will Link to a Biome based on the Tunk's BiomeLink
 // NOTE: Links Biome to Chunk using Tunk
-zox_sys2(BiomeLinkSystem) {
+void BiomeLinkSystem(iter* it) {
+    zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -142,4 +143,5 @@ zox_sys2(BiomeLinkSystem) {
             game_sky_color,
             game_sky_bottom_color);
     }
-} zox_sys_end(BiomeLinkSystem);
+    zox_sys_on_end();
+} zoxd_system(BiomeLinkSystem);
