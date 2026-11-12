@@ -38,7 +38,8 @@ byte zox_tst_pickup_pop_ready(ecs* world) {
             return 1;
         }
         zox_tst_pop_start = zox_getv(character, Position3D);
-        zox_tst_pop_start.x += 1;
+        // out of the player's reach, picking it up would move it too
+        zox_tst_pop_start.x += 4;
         zox_tst_pop_pickup = spawn_item_world_from_meta(world, realm, meta, zox_tst_pop_start, item_pickup_scale);
         zox_tst_pop_time = zox_current_time;
         zox_tst_pop_highest = zox_tst_pop_start.y;

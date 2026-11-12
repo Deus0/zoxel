@@ -8,6 +8,7 @@ void zox_systems_music(ecs* world) {
         [in] core.Seed,
         [in] sounds.InstrumentType,
         [out] musics.GenerateMusic,
+        [out] musics.MusicSpeed,
         [none] musics.Music
     );
     zox_system_1(
