@@ -19,6 +19,7 @@ void zox_each_system_time(ecs* world, zox_system_time_fun fun, void* ctx) {
 void zox_measure_system_times(ecs* world) {
     ecs_measure_system_time(world, 1);
     ecs_measure_frame_time(world, 1);
+    zox_time_observers = 1;
 }
 
 // the world's running totals (seconds): its frames, merging deferred commands, notifying observers
@@ -26,11 +27,20 @@ typedef struct {
     double frame;
     double merge;
     double emit;
+    // commands (deferred, applied in merges): adds, removes, deletes, sets
+    int64_t adds;
+    int64_t removes;
+    int64_t deletes;
+    int64_t sets;
+    int64_t observers;      // observer invocations (flecs' own too)
+    int64_t tables;         // tables created
 } ZoxWorldTimes;
 
 ZoxWorldTimes zox_world_times(ecs* world) {
     const ecs_world_info_t* info = ecs_get_world_info(world);
-    return (ZoxWorldTimes) { info->frame_time_total, info->merge_time_total, info->emit_time_total };
+    return (ZoxWorldTimes) { info->frame_time_total, info->merge_time_total, info->emit_time_total,
+        info->cmd.add_count, info->cmd.remove_count, info->cmd.delete_count, info->cmd.set_count + info->cmd.ensure_count,
+        info->observers_ran_total, info->table_create_total };
 }
 
 // threads running multi threaded systems
