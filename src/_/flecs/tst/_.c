@@ -5,6 +5,7 @@
 #include "children.c"
 #include "non_fragment.c"
 #include "mass_spawn.c"
+#include "mass_delete.c"
 #include "prefab_variants.c"
 
 void zox_tsts_flecs(ecs* world) {
@@ -25,6 +26,8 @@ void zox_tsts_flecs(ecs* world) {
     zox_tst_add("nf_realm_full", zox_tst_nf_ready, zox_tst_nf_realm_full_check, 30);
     zox_tst_add("mass_spawn", zox_tst_mass_spawn_ready, zox_tst_mass_spawn_check, 60);
     zox_tst_set_setup("mass_spawn", NULL, 1);
+    zox_tst_add("mass_delete", zox_tst_mass_delete_ready, zox_tst_mass_delete_check, 60);
+    zox_tst_set_setup("mass_delete", NULL, 1);
     zox_tst_add("prefab_variants", zox_tst_prefab_variants_ready, zox_tst_prefab_variants_check, 30);
     zox_tst_set_setup("prefab_variants", NULL, 1);
 }

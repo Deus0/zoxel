@@ -73,6 +73,6 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 | Text and ui | `text_data` `text_order` `font_glyphs` `menu_flow` `mouse_click` `ui_leaks` `tooltips` `options_toggle` `scroll_wheel` `list_order` `ui_layout` `exit_menu` `exit_game` |
 | Game | `load_games` `player_spawn` `continue_game` `stream_npcs` `parts` `action_wheel` `item_split` `resume_no_punch` `pickup_pop` `editor` |
 | Quests | `quest_tracking` `quest_dialogue` |
-| Performance | `perf_stream` `physics2_perf` `physics3_perf` |
+| Performance | `perf_stream` `perf_fly` `mass_spawn` `mass_delete` `physics2_perf` `physics3_perf` |
 
 The full list with descriptions: the comment at the top of each test, or `bash bsh/tst.sh list`.
