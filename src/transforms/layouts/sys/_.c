@@ -36,7 +36,8 @@ void zox_systems_layouts2(ecs* world) {
         [none] !transforms2.LocalPosition2,
         [none] !layouts.Canvas3,
     );
-    zox_system_1(
+    // multi threaded: each canvas3 root writes its own children, zoxp_layouts_sync has trails done first
+    zox_system(
         Layout3System,
         zoxp_layouts,
         [in] layouts.LayoutSize,

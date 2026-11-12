@@ -68,9 +68,10 @@ void TstTerrainRenderProbeSystem(iter* it) {
 
 void zox_tsts_terrain_render(ecs* world) {
     zox_tst_add("terrain_render", zox_tst_terrain_ready, zox_tst_terrain_check, 90);
+    // main thread, in zoxp_render with the other main thread systems: no merges of its own (tst pipeline_syncs)
     zox_system_1(
         TstTerrainRenderProbeSystem,
-        zoxp_update,
+        zoxp_render,
         [in] rendering.RenderDisabled,
         [in] rendering.MeshRenderCount,
         [none] rendering.ChunkMesh,

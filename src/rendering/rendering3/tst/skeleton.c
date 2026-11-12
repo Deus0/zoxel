@@ -208,9 +208,10 @@ void TstSkeletonProbeSystem(iter* it) {
 
 void zox_tsts_skeleton_render(ecs* world) {
     zox_tst_add("skeleton_render", zox_tst_skeleton_ready, zox_tst_skeleton_check, 90);
+    // main thread, in zoxp_render with the other main thread systems: no merges of its own (tst pipeline_syncs)
     zox_system_1(
         TstSkeletonProbeSystem,
-        zoxp_update,
+        zoxp_render,
         [in] rendering.MeshIndicies,
         [in] rendering.RenderDisabled,
         [none] rendering3.SkeletonMesh

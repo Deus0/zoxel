@@ -215,9 +215,10 @@ void zox_tsts_tilemap(ecs* world) {
         zox_tst_tilemap_ready,
         zox_tst_tilemap_check,
         90);
+    // main thread, in zoxp_render with the other main thread systems: no merges of its own (tst pipeline_syncs)
     zox_system_1(
         TstTilemapProbeSystem,
-        zoxp_update,
+        zoxp_render,
         [in] rendering.MeshUVs,
         [none] rendering.ChunkMesh,
         [none] rendering3.TexturedMesh3

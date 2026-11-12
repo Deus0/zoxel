@@ -2,11 +2,14 @@
 //  - a merge (sync point) is where flecs waits for every worker and applies the deferred commands
 //  - flecs merges when execution switches between multi threaded and main thread (or immediate) systems,
 //    and when a system reads what another wrote through commands, not between phases
-//  - a main thread system between multi threaded ones adds 2 merges, those are listed: keep main thread
-//    systems together in their phases (zoxp_spawn), see doc/thread_safety.md
+//  - a main thread system between multi threaded ones adds 2 merges and leaves the other cores waiting, those
+//    are listed (not barriers, zox_phase_barrier): keep main thread systems together (zoxp_spawn), make the
+//    rest multi threaded, see doc/thread_safety.md
 //  - checks octree writes finish before octree reads (zoxp_octree_sync's merge)
 //  - how to read a pipeline's sync points: ecs_pipeline_stats_get, its systems with a 0 at each merge
 //  - run: bash bsh/tst.sh pipeline_syncs
+
+#define zox_tst_pipeline_merges_max 12
 
 static const char* zox_tst_pipeline_phase_name(ecs* world, entity system) {
     const entity phase = ecs_get_target(world, system, EcsDependsOn, 0);
@@ -65,7 +68,10 @@ void zox_tst_pipeline_syncs_check(ecs* world) {
             entity before = 0, after = 0;
             for (int j = i - 1; j >= 0; j--) if (systems[j]) { before = systems[j]; break; }
             for (int j = i + 1; j < count; j++) if (systems[j]) { after = systems[j]; break; }
-            if (before && after && zox_tst_pipeline_is_mt(world, before) && zox_tst_pipeline_is_mt(world, after)) {
+            const char* name = ecs_get_name(world, system);
+            const byte is_barrier = name && (strstr(name, "_write") || strstr(name, "_wait"));
+            if (!is_barrier && before && after &&
+                zox_tst_pipeline_is_mt(world, before) && zox_tst_pipeline_is_mt(world, after)) {
                 sandwiched++;
                 zox_log("[pipeline] main thread between multi threaded (2 merges): [%s] in [%s]",
                     ecs_get_name(world, system), phase);
@@ -77,6 +83,10 @@ void zox_tst_pipeline_syncs_check(ecs* world) {
     }
     zox_log("[tst] [metric] pipeline systems [%i] merges [%i] main thread between multi threaded [%i]",
         system_count, merges, sandwiched);
+    // guards, raise with a reason: 11 merges (2026-11-12), one per op from spawn to the end of the frame
+    zox_tst_check(merges <= zox_tst_pipeline_merges_max, "[%i] merges, over [%i]: a main thread system in a multi \
+threaded phase? (listed above)", merges, zox_tst_pipeline_merges_max);
+    zox_tst_check(!sandwiched, "[%i] main thread systems between multi threaded ones", sandwiched);
     // octree writes all finish before reads: a merge between the last write and the first read
     int last_write = -1, first_read = -1;
     for (int i = 0; i < count; i++) {

@@ -14,11 +14,11 @@ the one before:
 | `zoxp_spawn` | spawning: characters, ui, chunks' npcs, stats (`zoxp_inputs_extract` too) |
 | `zoxp_gpu_upload` | meshes and textures to the gpu |
 | `zoxp_octree_write` | voxel octrees written (blocks placed, terrain generated) |
-| `zoxp_octree_sync` | a barrier: workers finish octree writes before reads, see [thread_safety.md](thread_safety.md) |
+| `zoxp_octree_sync` | a barrier (`zox_phase_barrier`): workers finish octree writes before reads, see [thread_safety.md](thread_safety.md) |
 | `zoxp_octree_read` | voxel octrees read (chunk sides, lights) |
 | `zoxp_pre_physics` | state and update (`zoxp_update`, `zoxp_state`, `zoxp_initialize`, inputs) |
 | `zoxp_physics` | physics, movement (`zoxp_post_update`, `zoxp_load`), see [physics.md](physics.md) |
-| `zoxp_trails` | things following others (trails) |
+| `zoxp_trails` | things following others (trails), after a barrier (`zoxp_trails_sync`), as are the next four |
 | `zoxp_layouts` | ui layouts to local positions |
 | `zoxp_transform_hierarchy` | local to world transforms, down the hierarchy |
 | `zoxp_billboards` | billboards face the camera |

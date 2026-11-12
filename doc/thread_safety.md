@@ -27,16 +27,18 @@ bin/tst/pipeline_syncs.log:
 
 ```
 zoxp_octree_write: CombineVoxSystem voxel_octree_optimize_system VoxelUpdateQueueSystem ... VodesRemoveSystem |
-zoxp_octree_sync: [1]octree_sync_system |
+zoxp_octree_sync: zoxp_octree_sync_write | zoxp_octree_sync_wait
 zoxp_octree_read: ChunkColorsBuildSystem VoxLodMeshBuildSystem chunk_sides_system ...
 ```
 
 - `|` is a merge, `[1]` a main thread system, `[!]` an immediate one, nothing is multi threaded.
-- It lists main thread systems between multi threaded ones: each costs 2 merges.
-- The metric line counts systems and merges (407 systems, 21 merges, 2026-11-12).
+- It lists main thread systems between multi threaded ones: each costs 2 merges, and fails on any.
+- The metric line counts systems and merges, it fails over 12 merges (11 on 2026-11-12, from 19: the barriers
+  below, `ProgressTasks` disabled, test probes and the sound listener moved into `zoxp_render`).
 - How: `ecs_pipeline_stats_get(world, ecs_get_pipeline(world), &stats)`, `stats.systems` are the active systems
   in order with a 0 at each merge (needs `FLECS_STATS`, defined in src/defines.c).
-- Tests add their own main thread probe systems (`Tst*ProbeSystem`), which add merges the game doesn't have.
+- Test probe systems (`Tst*ProbeSystem`) run in `zoxp_render`, so tests have the game's pipeline.
+- `ProgressTasks` (flecs script's async tasks, immediate, unused) is disabled in `zox_ecs`.
 
 ## Keeping merges few
 
@@ -48,17 +50,24 @@ zoxp_octree_read: ChunkColorsBuildSystem VoxLodMeshBuildSystem chunk_sides_syste
   `SoundListenerSystem` was one, moved to `zoxp_render` with the other main thread systems.
 - Add a merge on purpose only as a barrier (below), and say why where it's registered.
 
-### The transform chain's barriers
+### Barriers
 
-`trail_system`, `Layout3System`, `transform3_children_system` and `billboard_system` are main thread to be
-barriers (the 2026-09-18 crash fixes, "to sync it"), not for the main thread: each needs the step before it done
-on every worker, physics -> trails -> 3D layouts -> hierarchy -> billboards -> matrices.
+`zox_phase_barrier(world, name, after)` (src/_/flecs/dat/pipelines.c) makes a phase where every worker finishes
+the phases before it before any start the phases after, with **one merge and no main thread**:
 
-- Multi threaded with an empty barrier phase before each, the merges stay the same (2 a barrier), only their
-  work spreads over workers (small: ~0.3ms for the hierarchy, 2026-11-12).
-- Fewer merges: flecs merges once, not twice, when a system reads (`$this`) what an earlier system declared it
-  writes to the stage (a `[out] T()` term, no source): a dependency between two multi threaded systems, no main
-  thread system. A tag per step could chain them with 1 merge each, untried.
+- a writer system declares a staged write of the `ZoxSync` tag (`[out] ZoxSync()`, no source), the waiter after
+  it reads `ZoxSync` on an entity that has it (`zox_sync`), flecs merges between them (the rule above)
+- both empty and multi threaded: the systems either side stay multi threaded
+- a main thread system as a barrier makes 2 merges, and the other cores wait while it runs
+
+Barriers (2026-11-12): `zoxp_octree_sync` (octree writes before reads), and the transform chain, physics ->
+`zoxp_trails_sync` -> trails -> `zoxp_layouts_sync` -> 3D layouts -> `zoxp_hierarchy_sync` -> hierarchy ->
+`zoxp_billboards_sync` -> billboards -> `zoxp_transform_end_sync` -> matrices. Each step reads what the one before
+wrote. `trail_system`, `Layout3System`, `transform3_children_system` and `billboard_system` were main thread to be
+those syncs (the 2026-09-18 crash fixes), now multi threaded: each root writes only its own subtree (the roots
+with parents are chunks, under the app, which has no transform).
+
+- Fewer: the chain is 5 of the 11 merges, billboards could rotate inside the hierarchy walk (1 less).
 
 ## Octrees
 
@@ -66,8 +75,8 @@ Octrees (`VoxelNode`) are pointer trees: a write can open (allocate) or close (f
 at the same time can follow a freed pointer, a segfault.
 
 - **Phases:** writes in `zoxp_octree_write`, reads in `zoxp_octree_read`.
-- **Barrier:** `zoxp_octree_sync` between them holds `octree_sync_system`, an empty main thread system, so every
-  worker finishes writing before any reads (`pipeline_syncs` checks it). Before it, write and read systems shared
+- **Barrier:** `zoxp_octree_sync` between them (a barrier, above), every worker finishes writing before any
+  reads (`pipeline_syncs` checks it). Before it, write and read systems shared
   an op: `voxel_octree_optimize_system` freeing nodes while a mesh builder on another worker walked them.
 - **Locks:** `VoxelNodeLock` (a spinlock per octree) guards writes and reads that cross chunks in one phase:
   `VoxelUpdateQueueSystem`, `voxel_octree_optimize_system`, light flood and beam, chunk sides (locks its
