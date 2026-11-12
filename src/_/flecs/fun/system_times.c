@@ -319,3 +319,34 @@ void zox_measure_system_times(ecs* world) {
     zox_time_observers = 1;
     zox_count_ids_begin(world);
 }
+
+// Spawns count entities in one go, straight into their table: ids (an IsA pair for a prefab, components,
+//  tags) with data (an array of count values per component, NULL for tags and pairs)
+//  - no moves between tables, one batch of notifications (spawning one at a time moves each entity
+//      once per component set)
+//  - not while deferred (inside multi threaded systems), run it from an immediate system or between frames
+//  - returns the entities, flecs owns the array (copy it before spawning again)
+const entity* zox_bulk_spawn(ecs* world, int count, const ecs_id_t* ids, void** data, int ids_count) {
+    ecs_bulk_desc_t desc = { .count = count, .data = data };
+    for (int i = 0; i < ids_count && i < FLECS_ID_DESC_MAX; i++) {
+        desc.ids[i] = ids[i];
+    }
+    return ecs_bulk_init(world, &desc);
+}
+
+static inline ecs_id_t zox_isa_id(entity prefab) {
+    return ecs_pair(EcsIsA, prefab);
+}
+
+static inline ecs_id_t zox_parent_id_non_fragment() {
+    return ecs_id(EcsParent);
+}
+
+// non fragmenting parents for bulk spawned children (bulk data can't hold them: writing EcsParent as data
+//  skipped the hook that adds a child to its parent's children, and modified didn't run it)
+//  - spawn them with an empty EcsParent (zox_parent_id_non_fragment, zeroed data), setting it won't move them
+void zox_bulk_parent(ecs* world, const entity* children, const entity* parents, int count) {
+    for (int i = 0; i < count; i++) {
+        ecs_set(world, children[i], EcsParent, { parents[i] });
+    }
+}
