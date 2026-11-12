@@ -7,6 +7,7 @@
 #include "quest_dialogue.c"
 #include "npc_stats.c"
 #include "npc_skeletons.c"
+#include "pipeline_syncs.c"
 #include "music.c"
 // tst: player_spawn, a new realm spawns the player's character standing in the terrain
 //  - waits for the player's character, then lets it settle for a few seconds
@@ -568,6 +569,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("npc_skeletons", zox_tst_npc_skeletons_ready, zox_tst_npc_skeletons_check, 120);
     zox_tst_add("perf_stream", zox_tst_perf_stream_ready, zox_tst_perf_stream_check, 180);
     zox_tst_add("tables_stream", zox_tst_perf_stream_ready, zox_tst_tables_stream_check, 200);
+    zox_tst_add("pipeline_syncs", zox_tst_player_spawn_ready, zox_tst_pipeline_syncs_check, 120);
     zox_tst_add("music_crossfade", zox_tst_music_crossfade_ready, zox_tst_music_crossfade_check, 120);
     zox_tst_set_setup("music_crossfade", NULL, 1);
 }

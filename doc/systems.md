@@ -14,6 +14,7 @@ the one before:
 | `zoxp_spawn` | spawning: characters, ui, chunks' npcs, stats (`zoxp_inputs_extract` too) |
 | `zoxp_gpu_upload` | meshes and textures to the gpu |
 | `zoxp_octree_write` | voxel octrees written (blocks placed, terrain generated) |
+| `zoxp_octree_sync` | a barrier: workers finish octree writes before reads, see [thread_safety.md](thread_safety.md) |
 | `zoxp_octree_read` | voxel octrees read (chunk sides, lights) |
 | `zoxp_pre_physics` | state and update (`zoxp_update`, `zoxp_state`, `zoxp_initialize`, inputs) |
 | `zoxp_physics` | physics, movement (`zoxp_post_update`, `zoxp_load`), see [physics.md](physics.md) |
@@ -52,6 +53,8 @@ Registered in a module's `sys/_.c` with a query (see [coding_standards.md](codin
   happen in: one in `zoxp_spawn` stopped the pause menu opening. Use `zox_sys_world2()` in them (the world, not a
   stage). Prefer not to.
 - Multi threaded systems' times add up every worker's (the profiler divides by them).
+- Workers only wait for each other at merges, not between phases: a main thread system makes merges either side
+  of it, see [thread_safety.md](thread_safety.md) and `tst pipeline_syncs` (logs the pipeline and its merges).
 
 ## Doing less a frame
 

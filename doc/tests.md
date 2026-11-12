@@ -67,7 +67,7 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 | Core | `hashmaps` `links_api` `links_cleanup` `children` `node_graphs` `spawn_queue` |
 | Maths | `maths_vectors` `maths_quaternions` |
 | Physics | `physics_steps` `physics2_motion` `physics2_rotation` `physics3_motion` `physics3_rotation` `terrain_collisions` (each also `_10fps` `_30fps`), see [physics.md](physics.md) |
-| Octrees and chunks | `octree_*` `chunk_positions` `chunk_io` `chunk_sides` `vox_mesh_grid` `tilemap` |
+| Octrees and chunks | `octree_*` `chunk_positions` `chunk_io` `chunk_sides` `vox_mesh_grid` `pipeline_syncs` `tilemap` |
 | Rendering | `skeleton_render` `vox_instance_render` `terrain_render` `block_vox_light_sampling` `block_vox_lights` `screenshot` |
 | Sound and music | `sound_mixer` `sound_formats` `sound_instruments` `sound_balance` `voice_sounds` `music_*` |
 | Text and ui | `text_data` `text_order` `font_glyphs` `menu_flow` `mouse_click` `ui_leaks` `tooltips` `options_toggle` `scroll_wheel` `list_order` `ui_layout` `exit_menu` `exit_game` |

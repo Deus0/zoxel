@@ -786,6 +786,11 @@
 	- Maybe we just build spinlock into the octree types root, would be a massive refactor tho
 
 # Engine and Refactors
+- Thread safety (doc/thread_safety.md, tst pipeline_syncs):
+	- chunk3_load_system writes octrees in zoxp_physics, same op as collisions and raycasts reading them (saves only)
+	- main thread systems alone in multi threaded phases, 2 merges each: trail_system, Layout3System,
+	  transform3_children_system, billboard_system, SoundListenerSystem
+	- stream_npcs segfaulted once in a full suite run (before the octree barrier), watch for it
 - add a table test, for when in game, check total flecs tables, this needs to be reduced to reduce our query times - can add this to tst module in src, it sits on top of engine
 - Refactor BlocksDirty to non state
 - Add WindowTitle property and spawn Header of window in system
