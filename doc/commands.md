@@ -97,6 +97,8 @@ Usually run through `bash bsh/tst.sh`, see [Onboarding](onboarding.md#6-tests).
 |---|---|---|
 | `--profile` | logs every frame over 25ms: its systems, merges, observers, commands, and the components moved most |
 | `--profile-ms <ms>` | the frame time `--profile` logs over, i.e. 16 for 60fps | core/tst | [core/tst](../src/core/tst/profile.c) |
+| `--maxnpcs` | every chunk spawns the most npcs, a worst case to profile (`tst perf_fly`) | characters |
+| `--nouis` | no name labels or healthbars over characters, to compare | core/tst |
 | `--tst <name>` | runs one test, exits 0 on pass, 1 on fail | [core/tst](../src/core/tst/_.c) |
 | `--tst list` | prints every test name and exits | core/tst |
 | `--tst-errors <n>` | fails a test once it logs this many errors (default 100) | core/tst |

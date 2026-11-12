@@ -7,6 +7,10 @@ const color label3D_font_color_outline = { 155, 12, 12, 0 };
 // name labels spawned a frame at most: a label is a glyph entity per letter, npcs streaming in together
 //  spawned their labels in one frame (lag spikes), the rest keep SpawnNameLabel for next frame
 #define name_labels_per_frame_max 3
+// name labels only near a player's camera (any player, local coop): shown within show, deleted past hide
+//  (a little further, so walking the edge doesn't spawn and delete them), far npcs carry no label trees
+float name_label_show_distance = 16.0f;
+float name_label_hide_distance = 20.0f;
 uint name_labels_frame = UINT32_MAX;
 uint name_labels_this_frame = 0;
 
@@ -27,21 +31,49 @@ void CharacterNameLabelsSystem(iter* it) {
     color font_outline = (color) { 255, 255, 255, 233 };
     float ui_scale = zox_ui_scale3 * 1.6f   ;
     zox_sys_world();
+    // the players' cameras
+    float3 cameras[8];
+    int cameras_count = 0;
+    zox_sys_query();
+    zox_sys_query_begin();
+    while (zox_sys_query_loop()) {
+        for (int j = 0; j < it2.count && cameras_count < 8; j++) {
+            const entity camera = zox_get_link(world, it2.entities[j], CameraLink);
+            if (zox_valid(camera) && zox_has(camera, Position3D)) {
+                cameras[cameras_count++] = zox_getv(camera, Position3D);
+            }
+        }
+    }
+    zox_sys_query_end();
     zox_sys_begin();
-    // zox_sys_in(GenerateCharacter);
     zox_sys_in(ZoxName);
+    zox_sys_in(Position3D);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        // zox_sys_i(GenerateCharacter, state);
         zox_sys_i(ZoxName, name);
-        /*if (state->value != zox_dirty_active) {
-            continue;
-        }*/
+        zox_sys_i(Position3D, position);
         if (!strlen(name->value)) {
             continue;
         }
+        float closest = -1;
+        for (int j = 0; j < cameras_count; j++) {
+            const float distance = float3_distance(position->value, cameras[j]);
+            if (closest < 0 || distance < closest) {
+                closest = distance;
+            }
+        }
+        const entity label = zox_get_link(world, e, NameLabelLink);
+        if (zox_valid(label)) {
+            if (closest < 0 || closest > name_label_hide_distance) {
+                zox_delete(label);
+            }
+            continue;
+        }
+        if (closest < 0 || closest > name_label_show_distance) {
+            continue;
+        }
         if (name_labels_this_frame >= name_labels_per_frame_max) {
-            break;
+            continue;
         }
         entity soul = zox_get_child_by_id(world, e, zox_id(StatSoul));
         if (!zox_valid(soul)) {
@@ -66,7 +98,7 @@ void CharacterNameLabelsSystem(iter* it) {
         zox_set_unique_name(e2.x, "name_label3");
         zox_setv(e2.y, OutlineThickness, 1);
         zox_link(world, e, ElementLinks, e2.x);
-        zox_remove(e, SpawnNameLabel);
+        zox_link(world, e, NameLabelLink, e2.x);
         name_labels_this_frame++;
         if (dbg_log) {
             zox_log("Spawned Name Label on [%s]: %s", zox_getn(e), text);

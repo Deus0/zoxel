@@ -69,10 +69,16 @@ void zox_systems_stats(ecs *world) {
         [none] core.Initialize,
         [none] players.PlayerCharacter,
     );
-    zox_system_1(
+    // spawns and deletes name labels near the players' cameras
+    zox_filter(name_label_players,
+        [none] players.Player
+    );
+    zox_system_ctx_1(
         CharacterNameLabelsSystem,
         zoxp_spawn,
+        name_label_players,
         [in] core.ZoxName,
+        [in] transforms3.Position3D,
         [none] SpawnNameLabel
     );
 }

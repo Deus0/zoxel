@@ -130,6 +130,17 @@ bin_folder="${output_folder}/${game_name}_${os}_${arc}_${graphics_lib}_${window_
 [[ "${window_lib}" == "headless" ]] && bin_folder="${bin_folder}_headless"
 [[ "${debug}" == "1" ]] && bin_folder="${bin_folder}_dev"
 
+# --out <name>: builds to bin/<name>/<name>.bin, i.e. a release build while tests run the dev build
+out_name=""
+prev_arg=""
+for arg in "$@"; do
+    [[ "${prev_arg}" == "--out" ]] && out_name="${arg}"
+    prev_arg="${arg}"
+done
+if [[ -n "${out_name}" ]]; then
+    bin_folder="${output_folder}/${out_name}"
+    bin_filename="${out_name}"
+fi
 bin_path="${bin_folder}/${bin_filename}.${output_extension}"
 
 # Set our compiler variables #
