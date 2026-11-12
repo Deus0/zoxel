@@ -1,6 +1,8 @@
-// Also supports no models, for skeleton body gen
-entity spawn_character3(
+// Sets up a character made from a prefab (an instance, or a prefab variant of it)
+//  - also supports no models, for skeleton body gen
+static inline void setup_character3(
     ecs* world,
+    entity e,
     entity prefab,
     entity realm,
     entity terrain,
@@ -40,7 +42,6 @@ entity spawn_character3(
             zox_log("No Model");
         }
     }
-    zox_instance(prefab);
     if (name) {
         zox_name(name);
         set_ZoxName(world, e, name);
@@ -75,5 +76,21 @@ entity spawn_character3(
         zox_setv(e, BlockScale, block_scale);
         zox_setv(e, Bounds3D, bounds);
     }
+}
+
+entity spawn_character3(
+    ecs* world,
+    entity prefab,
+    entity realm,
+    entity terrain,
+    lint seed,
+    byte render_distance,
+    byte render_disabled,
+    float3 position,
+    float4 rotation,
+    const char* name)
+{
+    zox_instance(prefab);
+    setup_character3(world, e, prefab, realm, terrain, seed, render_distance, render_disabled, position, rotation, name);
     return e;
 }

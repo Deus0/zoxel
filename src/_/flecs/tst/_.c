@@ -5,11 +5,13 @@
 #include "children.c"
 #include "non_fragment.c"
 #include "mass_spawn.c"
+#include "prefab_variants.c"
 
 void zox_tsts_flecs(ecs* world) {
     zox_components_tst_links(world);
     zox_components_tst_children(world);
     zox_components_tst_mass_spawn(world);
+    zox_components_tst_prefab_variants(world);
     zox_tst_add("links_api", zox_tst_links_api_ready, zox_tst_links_api_check, 30);
     zox_tst_add("children", zox_tst_children_ready, zox_tst_children_check, 30);
     zox_tst_add("nf_cascade", zox_tst_nf_ready, zox_tst_nf_cascade_check, 30);
@@ -23,4 +25,6 @@ void zox_tsts_flecs(ecs* world) {
     zox_tst_add("nf_realm_full", zox_tst_nf_ready, zox_tst_nf_realm_full_check, 30);
     zox_tst_add("mass_spawn", zox_tst_mass_spawn_ready, zox_tst_mass_spawn_check, 60);
     zox_tst_set_setup("mass_spawn", NULL, 1);
+    zox_tst_add("prefab_variants", zox_tst_prefab_variants_ready, zox_tst_prefab_variants_check, 30);
+    zox_tst_set_setup("prefab_variants", NULL, 1);
 }

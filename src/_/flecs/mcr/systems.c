@@ -142,5 +142,19 @@ static inline entity zox_system_entity(ecs* world, entity id, const char* name, 
 #define zox_system_1(id_, phase, ...)\
     zox_system_internal(id_, phase, 0, 0, __VA_ARGS__)
 
+// a single threaded system that isn't deferred: its changes happen as it makes them, so it can bulk spawn
+//  (zox_bulk_spawn), flecs merges everything before it runs (a sync point)
+//  - use zox_sys_world2() in it (the world), zox_sys_world() gives a stage, bulk spawning asserts on it
+//  - careful: its sync point changes ordering, one in zoxp_spawn stopped the pause menu opening
+#define zox_system_immediate(id_, phase, ...) { \
+    ecs_system_desc_t desc = {0}; \
+    desc.entity = zox_system_entity(world, ecs_id(id_), #id_, (phase)); \
+    desc.query.expr = #__VA_ARGS__; \
+    desc.callback = id_; \
+    desc.immediate = true; \
+    ecs_id(id_) = ecs_system_init(world, &desc); \
+    zox_system_on_new(world, zox_id(id_)); \
+}
+
 #define zox_system_m(id_, multi_threaded_, ...)\
     zox_system_internal(id_, zoxp_update, multi_threaded_, 0, __VA_ARGS__)

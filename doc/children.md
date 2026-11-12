@@ -43,6 +43,23 @@ the dead parent, its child record still exists. `menu_flow` crashed without it.
 The `nf_*` tests (`src/_/flecs/tst/non_fragment.c`) cover cascades, deferred deletes, mixed children, prefab
 instances and realms of characters with stats. Add a case there for a new use, and check `tables_stream`.
 
+## Prefabs and their children
+
+A realm's spawns are prefabs (mostly, a few spawn their vox data, biomes aren't): a character kind is a prefab
+of a base prefab (Boney of the skeleton prefab), instances copy every child through the chain.
+
+- **One kind of children through a prefab's tree.** A prefab with its own non fragmenting children (stats)
+  passed only those to its instances, not its base's `ChildOf` children (the skeleton's body slot): humanoid
+  npcs had no bodies, invisible. With the body slot non fragmenting too, instances get both. A character's
+  stats, body and equipment slots, and slot containers (actionbar, inventory) are all non fragmenting.
+- **Make a prefab of a prefab as a prefab first** (`zox_prefab_child`, `zox_prefab_variant`): an instance made
+  a prefab afterwards set up its children before it was a prefab, adding a non fragmenting child to it asserts
+  in flecs, its instances lost children.
+- Tested by `tst prefab_variants` (flecs) and `tst npc_skeletons`, `tst npc_stats`, `tst item_split` (game).
+
+Character prefabs get their stats once, at realm generation (`fill_character_base_stats`), instances copy
+them. Values that differ per character (rolled from a level) are set after, a set doesn't move an entity.
+
 ## Getting children
 
 Children are copied into a buffer you pass in. If there are more than `capacity`, the extras are skipped with a warning.

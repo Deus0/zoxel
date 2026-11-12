@@ -1,4 +1,6 @@
-// TODO: Just spawn characters here linked to realm, used as prefabs later
+// Spawns a realm's characters as prefabs (npc kinds), with their stats
+//  - the player's come from the same helper, fill_character_base_stats, when it spawns (PlayerCharacterStatsSystem)
+//  - every character's stats are made here once, instances copy them (no stats spawned per npc)
 zox_sys2(Character3RealmSpawnSystem) {
     byte is_add_stats = 1;
     byte character_depth = block_depth_limits.y;
@@ -21,15 +23,6 @@ zox_sys2(Character3RealmSpawnSystem) {
         uint character_seed = seed->value + seed_shift;
         byte chance_max = 0;
         entity prefab_character = prefab_character3_npc;
-        // add files
-        entity base_soul = zox_get_child_by_id(
-            world,
-            e,
-            zox_id(StatSoul));
-        entity base_health = zox_get_child_by_id(
-            world,
-            e,
-            zox_id(StatHealth));
         // add our skeleton prefab
         if (!zox_no_humanoids) {
             byte chance = 2;
@@ -47,13 +40,7 @@ zox_sys2(Character3RealmSpawnSystem) {
             }
             zox_add(e2, QuestGiver);
             if (is_add_stats) {
-                spawn_stat_level(world, e2, base_soul, 16);
-                spawn_stat_state(
-                    world,
-                    e2,
-                    base_health,
-                    42,
-                    42);
+                fill_character_base_stats(world, e2, e, 16, 42, 0);
             }
             // Generate Name
             char name[64];
@@ -123,8 +110,7 @@ zox_sys2(Character3RealmSpawnSystem) {
             // NOTE: This crashes it
             // ecs_defer_end(world);
             if (is_add_stats) {
-                spawn_stat_level(world, e2, base_soul, 2);
-                spawn_stat_state(world, e2, base_health, 8, 8);
+                fill_character_base_stats(world, e2, e, 2, 8, 0);
             }
             // ecs_defer_begin(world);
             character_seed += seed_shift;
@@ -173,13 +159,7 @@ zox_sys2(Character3RealmSpawnSystem) {
             float soul_value = (float)(souls[j]);
             float health = (float)(healths[j]);
             if (is_add_stats) {
-                spawn_stat_level(world, e2, base_soul, soul_value);
-                spawn_stat_state(
-                    world,
-                    e2,
-                    base_health,
-                    health,
-                    health);
+                fill_character_base_stats(world, e2, e, soul_value, health, 0);
             }
             zox_link(world, e, CharacterLinks, e2);
             character_seed += seed_shift;
