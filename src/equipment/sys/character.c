@@ -15,10 +15,25 @@ entity get_equip_slot_in_children(ecs *world, entity e, entity id) {
     return 0;
 }
 
-// gives a character the realm's first item with a tag (Hat, Shirt), in its body's slot with a tag (HatSlot)
+// every equip slot with a tag under a slot (a shoe slot on each foot), depth first
+uint get_equip_slots_in_children(ecs* world, entity e, entity id, entity* found, uint found_max) {
+    uint count = 0;
+    if (zox_has(e, EquipSlot) && zox_has_id(e, id) && count < found_max) {
+        found[count++] = e;
+    }
+    entity slots[zox_children_capacity];
+    const uint length = zox_get_children_by_id(world, e, slots, zox_children_capacity, zox_id(Slot));
+    for (uint k = 0; k < length && count < found_max; k++) {
+        count += get_equip_slots_in_children(world, slots[k], id, found + count, found_max - count);
+    }
+    return count;
+}
+
+// gives a character the realm's first item with a tag (Hat, Shirt, Shoes), in each of its body's slots with a tag (HatSlot)
 byte equip_realm_item(ecs* world, entity character, entity realm, entity chest_slot, entity slot_tag, entity item_tag) {
-    const entity slot = get_equip_slot_in_children(world, chest_slot, slot_tag);
-    if (!zox_valid(slot)) {
+    entity slots[8];
+    const uint length = get_equip_slots_in_children(world, chest_slot, slot_tag, slots, 8);
+    if (!length) {
         zox_loge("No [%s] on character [%s]", zox_get_name(slot_tag), zox_get_name(character));
         return 0;
     }
@@ -27,7 +42,9 @@ byte equip_realm_item(ecs* world, entity character, entity realm, entity chest_s
         zox_loge("No [%s] in the realm", zox_get_name(item_tag));
         return 0;
     }
-    zox_set_link(world, slot, DataLink, spawn_user_item(world, character, realm_item));
+    for (uint k = 0; k < length; k++) {
+        zox_set_link(world, slots[k], DataLink, spawn_user_item(world, character, realm_item));
+    }
     return 1;
 }
 
@@ -61,6 +78,8 @@ void character_player_equips_system(iter* it) {
             zox_id(Body));
         body_updated |= equip_realm_item(world, e, realm, chest_slot, zox_id(HatSlot), zox_id(Hat));
         body_updated |= equip_realm_item(world, e, realm, chest_slot, zox_id(ShirtSlot), zox_id(Shirt));
+        body_updated |= equip_realm_item(world, e, realm, chest_slot, zox_id(ShortsSlot), zox_id(Shorts));
+        body_updated |= equip_realm_item(world, e, realm, chest_slot, zox_id(ShoeSlot), zox_id(Shoes));
         if (body_updated) {
             dirty->value = zox_generate_body_start;
         }

@@ -7,7 +7,7 @@
 #include "quest_dialogue.c"
 #include "npc_stats.c"
 #include "hit_sound_links.c"
-#include "shirt.c"
+#include "clothes.c"
 #include "lod_chunk_lights.c"
 #include "npc_skeletons.c"
 #include "npc_attacks.c"
@@ -563,7 +563,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("quest_dialogue", zox_tst_quest_dialogue_ready, zox_tst_quest_dialogue_check, 120);
     zox_tst_add("npc_stats", zox_tst_npc_stats_ready, zox_tst_npc_stats_check, 120);
     zox_tst_add("hit_sound_links", zox_tst_hit_sound_links_ready, zox_tst_hit_sound_links_check, 120);
-    zox_tst_add("shirt", zox_tst_shirt_ready, zox_tst_shirt_check, 120);
+    zox_tst_add("clothes", zox_tst_clothes_ready, zox_tst_clothes_check, 120);
     zox_tst_add("npc_attacks", zox_tst_npc_attacks_ready, zox_tst_npc_attacks_check, 120);
     zox_tst_add("region_population", zox_tst_region_population_ready, zox_tst_region_population_check, 120);
     zox_tst_add("npc_leash", zox_tst_npc_leash_ready, zox_tst_npc_leash_check, 120);

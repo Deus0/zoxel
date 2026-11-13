@@ -1,3 +1,7 @@
+// the player's chest's blueprint scale, flatter front to back than across, its shirt is fitted to its blobs
+//  (spawn_realm_shirt, gam/zoxel/sys/equipment.c)
+const float3 player_chest_scale = { 0.5f, 0.54f, 0.44f };
+
 // NOTE: Confusing AF atm, nodegraphs use a set size, 32 atm, however the vox models spawn at any size, and fill gets scaled to those
 //      - so we have two sizes created per model
 // color skin_color = (color) { 200, 155, 133, 255 };
@@ -53,11 +57,8 @@ void bodys_realm_spawn_system(iter* it) {
         color eye_color = hsv_to_color(eye_hsv);
         // Chest
         {
-            float3 blueprint_scale = (float3) {
-                0.5f,
-                0.54f,
-                0.56f
-            };
+            // flatter front to back than across, like a person (the shirt fits it, player_chest_scale)
+            float3 blueprint_scale = player_chest_scale;
             // Our Chest Blueprint involving Shapes + other nodes
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
             entity blueprint = spawn_blueprint_chest(
@@ -298,7 +299,7 @@ void bodys_realm_spawn_system(iter* it) {
         color eye_color2 = hsv_to_color(eye_hsv2);
         // Chest2
         {
-            float3 blueprint_scale = (float3) { 0.54f, 0.46f, 0.46f };
+            float3 blueprint_scale = (float3) { 0.54f, 0.46f, 0.4f };
             // Our Chest Blueprint involving Shapes + other nodes
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
             entity blueprint = spawn_blueprint_chest(
