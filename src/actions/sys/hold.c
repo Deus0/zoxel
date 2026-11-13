@@ -78,6 +78,12 @@ void active_action_hold_system(iter* it) {
             hand_position :
             body_position;
         entity meta = zox_getp(world, aaction->value);
+        // out of the hand by half its own depth (a flat cookie sits closer than a block)
+        if (zox_valid(hand)) {
+            position.z = -item_mesh_size(world, meta, scale).z / 2.0f - 0.01f;
+            // its voxels' middle on the hand (a model needn't fill its grid)
+            position = float3_add(position, item_mesh_offset(world, meta, scale));
+        }
         // entity texture = zox_get_link(world, aaction->value, TextureLink);
         entity mesh = spawn_item_mesh(world, bone_parent, meta, scale);
         /*if (zox_valid(texture)) {
