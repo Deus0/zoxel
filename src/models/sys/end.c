@@ -37,6 +37,7 @@ void model_end_node_system(iter* it) {
             byte3 size = get_bounds_VoxelNode(voxels, depth);
             zox_setv(vox, ChunkSize, byte3_to_int3(size));
             zox_add(vox, VoxelNodeDirty);
+            zox_remove(vox, Generating);   // done (spawn_process_model added it)
         } else {
             zox_logw("[End] Model [%s] has no VoxelNode", zox_getn(vox));
         }

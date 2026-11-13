@@ -252,6 +252,27 @@ void build_body_parts(ecs *world, entity slot, CombineList* voxes, CombinePositi
 // for now just set vox, later we spawn item and set it from BodyDirty
 // TODO: When Combining a part, remember where the parent position is, add them in recursively instead of the flat way atm
 // NOTE: Combines into the characters child vox (VoxLink), each child vox belongs to one character
+// whether a part on the body, or under it, has a model still generating (its ChunkSize not set yet: a shirt
+//  read then was the whole octree's size, centred over the chest it sat flush with its back, 2026-11-14)
+byte body_parts_generating(ecs* world, entity slot) {
+    const entity part = zox_get_link(world, slot, DataLink);
+    if (zox_valid(part) && zox_is_linked_any(world, part, ModelLink)) {
+        const entity model = get_model_first(world, zox_get_link(world, part, ModelLink));
+        // a Model still Generating (spawn_process_model adds it, model_end_node_system removes it)
+        if (zox_valid(model) && zox_has(model, Generating)) {
+            return 1;
+        }
+    }
+    entity slots[zox_children_capacity];
+    const uint length = zox_get_children_by_id(world, slot, slots, zox_children_capacity, zox_id(Slot));
+    for (uint k = 0; k < length; k++) {
+        if (body_parts_generating(world, slots[k])) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 void body_combine_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
@@ -275,6 +296,10 @@ void body_combine_system(iter* it) {
         }
         entity chest_slot = zox_get_child_by_id(world, e, zox_id(Body));
         if (!zox_valid(chest_slot)) {
+            continue;
+        }
+        // its parts' and clothes' models all generated first, else their sizes are wrong (tried again next frame)
+        if (body_parts_generating(world, chest_slot)) {
             continue;
         }
         CombineList* voxes = zox_getm(vox, CombineList);

@@ -4,7 +4,8 @@
 //  - on the main menu: its own realm (seed zox_tst_seed, else 666), a character of the player's kind (it wears
 //      the realm's gear) spawned in the void far from the menu's scene, held still (no ground), 4 viewport cameras
 //      round it on gray (spawn_viewport_camera, camera_look_at), the hud and menu view hidden
-//  - checks: each view drew the character (its middle isn't all gray)
+//  - checks: each view drew the character (its middle isn't all gray), each piece of clothes centred over its part
+//  - logs the body's voxels from the front and side, and where its parts and clothes sit (as tst clothes)
 //  - here, not in models: it needs the character, parts, equipment and player prefabs, models load before them
 //  - model_views is one part on its own (src/models/tst/model_views.c), this is them put together
 //  - later: animations, a strip of screenshots a few frames apart (todo.md)
@@ -116,7 +117,32 @@ byte zox_tst_body_views_ready(ecs* world) {
 }
 
 void zox_tst_body_views_check(ecs* world) {
-    (void) world;
+    // the body's voxels, front and side, with where its clothes sit (as tst clothes logs)
+    const entity character = zox_tst_body_views_character;
+    const entity chest_slot = zox_valid(character) ? zox_get_child_by_id(world, character, zox_id(Body)) : 0;
+    if (zox_valid(chest_slot)) {
+        zox_tst_cloth clothes[zox_tst_clothes_max];
+        int count = 0;
+        zox_tst_clothes_find(world, chest_slot, clothes, &count);
+        for (int i = 0; i < count; i++) {
+            if (zox_valid(clothes[i].item)) {
+                const byte3 p = zox_getv(clothes[i].slot, PartPosition), sz = zox_getv(clothes[i].slot, PartSize);
+                zox_log("[tst] cloth [%s] at [%ix%ix%i] size [%ix%ix%i]", zox_getn(clothes[i].item), p.x, p.y, p.z, sz.x, sz.y, sz.z);
+                // centred over what it covers on x and z (the slot's parent holds the part)
+                //  (a shirt sized before its model finished came out 64 deep, flush with the chest's back)
+                const entity over = zox_get_parent(world, clothes[i].slot);
+                if (zox_valid(over) && zox_has(over, PartPosition) && zox_valid(zox_get_link(world, over, DataLink))) {
+                    const byte3 op = zox_getv(over, PartPosition), os = zox_getv(over, PartSize);
+                    const int dx = abs((2 * p.x + sz.x) - (2 * op.x + os.x));
+                    const int dz = abs((2 * p.z + sz.z) - (2 * op.z + os.z));
+                    zox_tst_check(dx <= 2 && dz <= 2, "[%s] isn't centred over its part: off by [%.1f] x, [%.1f] z",
+                        zox_getn(clothes[i].item), dx / 2.0f, dz / 2.0f);
+                }
+            }
+        }
+        zox_tst_clothes_log_parts(world, chest_slot);
+        zox_tst_clothes_log_body(world, character, clothes, count);
+    }
     int2 size;
     byte* pixels = zox_tst_load_ppm(zox_tst_path("body_views.ppm"), &size);
     zox_tst_check(pixels, "no screenshot [%s]", zox_tst_path("body_views.ppm"));
