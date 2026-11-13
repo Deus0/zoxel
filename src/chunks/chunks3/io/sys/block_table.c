@@ -104,7 +104,7 @@ void block_table_system(iter* it) {
             changed |= to != j + 1;
         }
         if (saved_count && changed) {
-            FileList files = get_files(folder->value, 1);
+            FileList files = get_files((char*)folder->value, 1);
             int remapped = 0;
             for (int f = 0; f < files.count; f++) {
                 if (!strncmp(files.filenames[f], "chunk_", 6)) {

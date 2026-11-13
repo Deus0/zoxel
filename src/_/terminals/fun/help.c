@@ -16,6 +16,8 @@ void print_help_menu(const char* arg0) {
         "    -s  --splitscreen       split screen local coop\n"
         "        --nodecor           no window decorations\n"
         "        --background        hidden window, no sound (used by tests)\n"
+        "        --1080p             a 1920x1080 window (tests: screenshots at the game's size)\n"
+        "        --nohud             the ui isn't drawn (tests: screenshots of the world)\n"
         "    -z  --headless          no window\n"
         "        --vsync             vsync on (--enablevsync)\n"
         "        --novsync           vsync off (--disablevsync)\n"

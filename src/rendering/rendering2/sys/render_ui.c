@@ -78,6 +78,10 @@ void render_uis(ecs* world, ui_render_queue* uis) {
         }
         for (int j = 0; j < queue->count; j++) {
             ui_render_data data = queue->data[j];
+            // --nohud: only the game view (the canvas' render texture), for screenshots of the world
+            if (nohud && !zox_has(data.e, RenderTexture)) {
+                continue;
+            }
             entity new_material = data.material;
             // NOTE: Sets the material here
             if (material != new_material) {

@@ -24,6 +24,9 @@ entity spawn_app_sdl(
     int2 screen_size = get_screen_size_monitor(monitor);
     int2 size_restore = int2_scale1(screen_size, 0.6f);
     size_restore = int2_single(int_min(size_restore.x, size_restore.y));
+    if (window_size_override.x) {
+        size_restore = window_size_override;
+    }
     int2 size = fullscreen ? screen_size : size_restore;
     // calculate position
     int2 position = calculate_monitor_position(monitor, 1, size_restore);

@@ -42,6 +42,12 @@ void process_arguments_apps(ecs *world, char* args[], int count) {
             zox_log("+ setting enabled [sounds]");
         } else if (strcmp(args[i], "--nodecor") == 0) {
             disable_apps_decor = 1;
+        } else if (strcmp(args[i], "--1080p") == 0) {
+            window_size_override = (int2) { 1920, 1080 };
+            fullscreen = 0;
+            maximized = 0;
+        } else if (strcmp(args[i], "--nohud") == 0) {
+            nohud = 1;
         }
 #ifdef zox_sdl
         else if (strcmp(args[i], "--gles") == 0) {

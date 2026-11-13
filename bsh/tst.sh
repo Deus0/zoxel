@@ -139,12 +139,15 @@ fi
 # runs the game with --tst <name>, output to <log>, returns its exit code
 # tests that need more terrain than --tiny (i.e. far lods to compare), the later --medium wins
 medium_tests=(lod_chunk_lights)
+# tests that screenshot the world, the hud hidden
+nohud_tests=(sky_clouds)
 run_game() {
     local tst="$1"
     local log="$2"
     local debugger=()
     local test_args=()
     [[ " ${medium_tests[*]} " == *" ${tst} "* ]] && test_args=(--medium)
+    [[ " ${nohud_tests[*]} " == *" ${tst} "* ]] && test_args+=(--nohud)
     if [[ ${gdb} == "1" ]]; then
         debugger=(gdb -q -batch -ex "handle SIGPIPE nostop" -ex run -ex bt --args)
     fi
