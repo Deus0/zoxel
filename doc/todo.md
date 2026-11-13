@@ -844,6 +844,8 @@
 - Also when i disable lods
 
 # Tests
+- --nohud for screenshot tests (hide the hud), and a clear sky view (lift the player, its body hidden: the camera in
+  its head sees its hat looking up), then add tst sky_clouds (written, not added)
 - lights settle: after a block changes, light propagation finishes within a few frames
 - write a grid spawn test for every model
 - write a grid spawn test for every character
