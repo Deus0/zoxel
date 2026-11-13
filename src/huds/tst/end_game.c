@@ -104,6 +104,7 @@ static inline double zox_tst_heap_mb() {
 
 // the process's resident memory, from /proc/self/statm (linux), 0 elsewhere
 static inline double zox_tst_resident_mb() {
+#ifdef zox_linux
     FILE* f = fopen("/proc/self/statm", "r");
     if (!f) {
         return 0;
@@ -112,6 +113,9 @@ static inline double zox_tst_resident_mb() {
     const int read = fscanf(f, "%ld %ld", &pages, &resident);
     fclose(f);
     return read == 2 ? resident * (double) sysconf(_SC_PAGESIZE) / (1024.0 * 1024.0) : 0;
+#else
+    return 1;
+#endif
 }
 
 static inline ZoxTstEndGameCounts zox_tst_end_game_count(ecs* world, entity canvas, const char* when) {

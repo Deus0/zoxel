@@ -2,10 +2,12 @@
 //  - for when perf isn't there and ptrace is restricted (ptrace_scope 1), summarise with bsh/sample_report.sh
 //  - found deleting walking every non fragmenting record (bsh/flecs_patches/04_nf_root_list.patch), see doc/commands.md
 #include <time.h>
-#include <execinfo.h>
 #include <signal.h>
-#include <sys/syscall.h>
 #include <unistd.h>
+#ifdef zox_linux
+#include <execinfo.h>
+#include <sys/syscall.h>
+#endif
 extern long syscall(long number, ...);
 #define zox_sample_max 30000
 #define zox_sample_depth 32
@@ -20,7 +22,9 @@ static void zox_sample_handler(int sig) {
     if (i >= zox_sample_max) {
         return;
     }
+#ifdef zox_linux
     zox_sample_depths[i] = backtrace(zox_samples[i], zox_sample_depth);
+#endif
     zox_sample_frames[i] = ecs_run_count;
     zox_sample_count = i + 1;
 }
@@ -50,6 +54,7 @@ static void zox_sample_start() {
         return;
     }
     void* warm[4];
+#ifdef zox_linux
     backtrace(warm, 4);
     struct sigaction sa = { 0 };
     sa.sa_handler = zox_sample_handler;
@@ -64,5 +69,6 @@ static void zox_sample_start() {
     struct itimerspec its = { { 0, 2000000 }, { 0, 2000000 } };
     timer_settime(timer, 0, &its, NULL);
     atexit(zox_sample_write);
+#endif
 }
 

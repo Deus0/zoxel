@@ -342,6 +342,7 @@ if [[ "${window_lib}" == "sdl" && ${is_static} == "1" ]]; then
     [[ ${is_sdl3} == "1" ]] && lib_args+=" --sdl3"
     [[ ${docker} == "1" ]] && lib_args+=" --docker"
     [[ ${is_mesa} == "1" ]] && lib_args+=" --mesa"
+    [[ ${is_glew} == "1" ]] && lib_args+=" --glew"
     bsh/libs-download.sh ${lib_args}
     echo "--------------------------------------------"
     bsh/libs-compile.sh ${os} --${arc} ${lib_args}
