@@ -1,4 +1,5 @@
 # Future
+- Part of the [todo](todo.md), done items go in [done.md](done.md)
 - Bigger ideas for later
 
 ## Alien Languages

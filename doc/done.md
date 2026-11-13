@@ -1,5 +1,15 @@
 # Done
 
+## Moved from todo (2026-11-13)
+-x Flying spikes (78-164ms, tst perf_fly): deleting an entity walked all 14k non fragmenting records (flecs patch,
+  doc/flecs_patches.md), flying is 20-22ms worst now, even with --maxnpcs
+	-x npc spawning walked every non fragmenting record too (flecs patch), worst merge 18.6 -> 11ms
+-x Refactor town and mountain placement in regions: regions/fun/place.c (circles, rects, used by mountains,
+  towns, homes, dungeons), regions/fun/tunk.c (a tunk's region setup, the columns a thing covers),
+  tst region_place, town_maps (towns drawn across tunks)
+-x Biomes by climate (temperature, moisture), a center each, heights blend near edges (raises gone, tst biome_heights)
+-x 3D lines draw instanced like particles (2000 lines in a draw, was a draw each), tst lines_render, lines_spawn
+
 ## Moved from todo (2026-11-12)
 -x Set minivox/world voxels brightness when lighting updates
 	- use observer on light change event on terrain chunk types

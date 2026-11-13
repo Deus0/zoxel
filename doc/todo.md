@@ -1,5 +1,8 @@
 # Todo
-- Now first, then by module. Done items move to [done.md](done.md), ideas to [new.md](new.md) and [future.md](future.md).
+- Now first, then by module. Done items move to [done.md](done.md).
+- Also see: [bugs.md](bugs.md) (bugs and crashes), [refactors.md](refactors.md) (code to restructure),
+  [optimize.md](optimize.md) (performance), [new.md](new.md) (new modules and features), [future.md](future.md) (bigger
+  ideas), [new/caves.md](new/caves.md) (caves design)
 
 # Now
 - Npcs attacks on player not working - make a test for it
@@ -30,10 +33,7 @@
 	- slowest frame left (release, gpu): ~21ms at game start, merges and observers 13ms
 	- lod meshes as non fragmenting children stalled terrain generation (perf_stream), still ChildOf, find why
 	- move other heavy systems from process counts to zox_sys_budget
--x Flying spikes (78-164ms, tst perf_fly): deleting an entity walked all 14k non fragmenting records (flecs patch,
-  doc/flecs_patches.md), flying is 20-22ms worst now, even with --maxnpcs
-	-x npc spawning walked every non fragmenting record too (flecs patch), worst merge 18.6 -> 11ms
-	- next: new tables while streaming (16% of the slowest frames), colored chunk meshes (9%)
+- Flying's slowest frames now: new tables while streaming (16%), colored chunk meshes (9%), tst perf_fly
 - Lag spikes (up to 96ms): sound generation, a whole sound in one frame when it spawns
 	- measured (debug): a 1.3s choir note 290-670ms, a 2.8s cello note 60-100ms, choir 330ms per second of sound
 	- music pads and jingles play choir and cello notes, the spikes
@@ -59,11 +59,9 @@
 	- not solved yet: spawn links vs inside chunk links
 - Trees spawn too rarely, and don't spawn apart
 - The grassy biome isn't grassy enough
--x Refactor town and mountain placement in regions: regions/fun/place.c (circles, rects, used by mountains,
-  towns, homes, dungeons), regions/fun/tunk.c (a tunk's region setup, the columns a thing covers),
-  tst region_place, town_maps (towns drawn across tunks)
-	- new region placers should avoid prior ones
-- Tests for terrain generation (heights, biomes, trees spaced apart, grass coverage, region placements)
+- new region placers should avoid prior ones
+- Tests for terrain generation: heights, biomes and region placements done (biome_heights, biome_map, region_place,
+  town_maps), still trees spaced apart and grass coverage
 
 # Sounds and Music
 - Optimize sound generation (see Now: lag spikes)
@@ -190,7 +188,6 @@
   planned by regions
 - Mountains never clear their middle's vegetation: `mountain_distance < 2 / (mountain_radius * 3)` is integer
   division, always 0, meant radius / 3? (mountains/sys/maps.c)
--x Biomes by climate (temperature, moisture), a center each, heights blend near edges (raises gone, tst biome_heights)
 - Biomes could use their climate: hot ones drier blocks, cold ones snow on top, moisture for vegetation density
 - Tune zox_biome_blend (climate distance a blend fades over) by eye in game, 0.035 now
 - Use Realm Seed + region positions to set Region Seeds
@@ -640,7 +637,6 @@
 - Add a compass symbol to show north etc
 
 # Rendering, Lights and Cameras
--x 3D lines draw instanced like particles (2000 lines in a draw, was a draw each), tst lines_render, lines_spawn
 - Cube lines (cube_line_render_system) and quad lines still draw an entity at a time: instance them too (gizmos)
 - Voxel meshing on the gpu, faster updates and less cpu load
 	- upload the voxels (a flat grid per depth like build_voxel_mesh_grid's pyramid, or the octree), a compute
