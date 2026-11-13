@@ -3,7 +3,8 @@
 ## Moved from todo (2026-11-14)
 -x Heads look: LookTarget on head bones (bones/sys/head_look.c, eased with camera_look_at, within the neck's reach),
   dialogue speakers look at each other (cleared by an observer when the process goes), humanoid npcs glance at players
-  walking by (ai/sys/glance.c, from their chunk's ChunkEntities); tst npc_glance, quest_dialogue
+  walking by (ai/sys/glance.c, their chunk and its 6 neighbours' ChunkEntities, across edges); tst npc_glance
+  (across a chunk edge), quest_dialogue
 -x Dialogue text wraps to its box: TextWrap (lines wrap to its LayoutSize, the size system skips it), text_wrap,
   TextSizeDirty removed; tst text_data, quest_dialogue (tst/dialogue.ppm)
 -x First person camera at the front of the head, past a thick chest, at eye height; tst head_camera
