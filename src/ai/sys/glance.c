@@ -2,7 +2,7 @@
 //  within reach, and ahead again once they leave (bones/sys/head_look.c turns it)
 //  - players in its chunk and its 6 neighbours (ChunkNeighbors), so it sees across a chunk's edge
 //  - not while following someone (FollowTarget, a dialogue: its speakers look at each other)
-//  - chunks' ChunkEntities only change in zoxp_update (chunk_link_system), read here on workers
+//  - chunks' ChunkEntities change on workers (chunk_link_system), read under their lock (it reallocates them)
 //  - boneless npcs (slimes) don't, see the todo (tumble towards the player)
 const float npc_glance_distance = 3;
 
@@ -12,7 +12,8 @@ static inline entity glance_in_chunk(ecs* world, entity e, entity chunk, float3 
         return 0;
     }
     entity found = 0;
-    const ChunkEntities* entities = zox_get(chunk, ChunkEntities);
+    ChunkEntities* entities = (ChunkEntities*) zox_get(chunk, ChunkEntities);
+    spin_lock(&entities->lock);
     for (int j = 0; j < entities->length; j++) {
         const entity e2 = entities->value[j];
         if (e2 == e || !zox_valid(e2) || !zox_valid(zox_get_link(world, e2, PlayerLink))) {
@@ -24,6 +25,7 @@ static inline entity glance_in_chunk(ecs* world, entity e, entity chunk, float3 
             found = e2;
         }
     }
+    spin_unlock(&entities->lock);
     return found;
 }
 

@@ -1,3 +1,14 @@
+// build.sh --memory (AddressSanitizer): lists memory nothing points to any more before a test's _exit (which skips the
+//  sanitizer's own check at exit), i.e. a component's array not freed when its entity was deleted
+#if defined(__SANITIZE_ADDRESS__)
+#include <sanitizer/lsan_interface.h>
+static inline void zox_tst_leak_check() {
+    __lsan_do_leak_check();
+}
+#else
+static inline void zox_tst_leak_check() { }
+#endif
+
 // Automated Tests
 //  - run: bash bsh/tst.sh <name>  (or ./zoxel-dev.bin --tst <name> --autostart --background)
 //  - a test registers with zox_tst_add(name, ready, check, timeout) in its module
@@ -228,6 +239,7 @@ void zox_tst_end(const char* reason) {
     // exit now, the result is logged, and app teardown has its own (unrelated) crashes
     fflush(stdout);
     fflush(stderr);
+    zox_tst_leak_check();
     zox_sample_write(); // ZOX_SAMPLE, _exit skips atexit
     _exit(zox_exit_code);
 }

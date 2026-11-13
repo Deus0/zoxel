@@ -20,10 +20,9 @@ byte is_debug_attack = 0;
 #include "glance.c"
 
 void zox_systems_npcs(ecs *world) {
-    // physics: after chunk_link_system (zoxp_update) changes chunks' ChunkEntities
     zox_system(
         npc_glance_system,
-        zoxp_physics,
+        zoxp_update,
         [in] transforms3.Position3D,
         [none] ai.Npc
     );

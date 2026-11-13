@@ -13,5 +13,9 @@ void process_arguments_characters(ecs *world, char* args[], int count) {
         if (strcmp(args[i], "--maxnpcs") == 0) {
             max_npcs = 1;
         }
+        // --nohumans: no humanoid npcs (villagers), i.e. to see what they cost (end_game_cleanup's memory)
+        if (strcmp(args[i], "--nohumans") == 0) {
+            zox_no_humanoids = 1;
+        }
     }
 }
