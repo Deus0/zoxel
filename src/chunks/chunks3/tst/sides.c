@@ -25,12 +25,12 @@ static inline byte zox_tst_sides_is_air(byte shape, byte direction, byte3 p, int
     const int coordinate = axis == 0 ? p.x : (axis == 1 ? p.y : p.z);
     // the neighbor sits on the positive side: it touches the chunk with its 0 face
     const int touching = positive ? 0 : length - 1;
-    const int far = positive ? length - 1 : 0;
+    const int far_position = positive ? length - 1 : 0;
     switch (shape) {
         case zox_tst_sides_air:
             return 1;
         case zox_tst_sides_far_air:
-            return coordinate == far;
+            return coordinate == far_position;
         case zox_tst_sides_touch_hole: {
             // the voxel in the middle of the touching face
             const int middle = length / 2;

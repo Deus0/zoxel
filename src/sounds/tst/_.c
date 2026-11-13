@@ -140,7 +140,9 @@ void zox_tst_sound_instruments_check(ecs* world) {
     (void) world;
     const uint length = (uint) (zox_tst_instrument_seconds * sound_sample_rate);
     float* samples = malloc(length * sizeof(float));
+#ifdef zox_linux
     mkdir("../tst/instruments", 0755);
+#endif
     // how long each takes to generate a second of sound, on the thread it plays from
     {
         const uint second = sound_sample_rate;
@@ -266,16 +268,16 @@ void zox_tst_sound_mixer_check(ecs* world) {
         last = loudness;
     }
     zox_tst_check(quieter, "sounds don't get quieter with distance");
-    const float3 near = { 0, 0, -sound_min_distance };
-    heard = zox_tst_mixer_hear(&near);
+    const float3 near_position = { 0, 0, -sound_min_distance };
+    heard = zox_tst_mixer_hear(&near_position);
     zox_tst_check(fabsf(heard.left - 0.5f) < 0.001f, "within sound_min_distance it plays [%.3f], not full", heard.left);
-    const float3 far = { 0, 0, -sound_max_distance - 1 };
+    const float3 far_position = { 0, 0, -sound_max_distance - 1 };
     zox_mixer_stop_all();
     static float samples[zox_tst_mixer_length];
     for (int j = 0; j < zox_tst_mixer_length; j++) {
         samples[j] = 0.5f;
     }
-    zox_tst_check(zox_mixer_play(samples, zox_tst_mixer_length, &far) < 0, "a sound past max distance played");
+    zox_tst_check(zox_mixer_play(samples, zox_tst_mixer_length, &far_position) < 0, "a sound past max distance played");
     // a moving listener moves a playing sound
     zox_mixer_stop_all();
     zox_mixer_play(samples, zox_tst_mixer_length, &right);
