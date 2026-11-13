@@ -61,6 +61,7 @@
 - fix text label size when resizing - button size
 - set the slider text block depth [5] when sliding
 - 16 printable ascii have no glyphs, i.e. ' (dialogue "I'm" shows ?), needs font art (tst text_data)
+- glyphs j and y fill solid, their outlines in res/fonts/monocraft.zox close the whole box (the fill follows the outlines, tst font_glyphs_fill, look at bin/tst/font_fill.ppm)
 
 ## Audio
 -x Main Menu music missing (spawn_menu_music, on the game, crossfades with the realm's)

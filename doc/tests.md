@@ -70,9 +70,10 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 | Physics | `physics_steps` `physics2_motion` `physics2_rotation` `physics3_motion` `physics3_rotation` `terrain_collisions` (each also `_10fps` `_30fps`), see [physics.md](physics.md) |
 | Octrees and chunks | `octree_*` `chunk_positions` `chunk_io` `chunk_sides` `vox_mesh_grid` `pipeline_syncs` `tilemap` |
 | Terrain | `biome_heights` `biome_map` `region_place` `town_maps` `vegetation_trees` `vegetation_cover` `vegetation_chunks` |
+| Textures | `texture_noise` `texture_outline` |
 | Rendering | `lines_spawn` `lines_render` `skeleton_render` `vox_instance_render` `terrain_render` `block_vox_light_sampling` `block_vox_lights` `screenshot` |
 | Sound and music | `sound_mixer` `sound_formats` `sound_instruments` `sound_balance` `voice_sounds` `music_*` |
-| Text and ui | `text_data` `text_order` `font_glyphs` `menu_flow` `mouse_click` `ui_leaks` `tooltips` `options_toggle` `scroll_wheel` `list_order` `ui_layout` `exit_menu` `exit_game` |
+| Text and ui | `text_data` `text_order` `font_glyphs` `font_fill` `font_glyphs_fill` `texture_lines` `menu_flow` `mouse_click` `ui_leaks` `tooltips` `options_toggle` `scroll_wheel` `list_order` `ui_layout` `exit_menu` `exit_game` |
 | Game | `load_games` `player_spawn` `continue_game` `end_game_cleanup` `stream_npcs` `parts` `action_wheel` `item_split` `resume_no_punch` `pickup_pop` `editor` |
 | Quests | `quest_tracking` `quest_dialogue` |
 | Performance | `perf_stream` `perf_fly` `mass_spawn` `mass_delete` `physics2_perf` `physics3_perf` |
