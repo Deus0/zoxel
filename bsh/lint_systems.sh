@@ -3,7 +3,8 @@
 #  - names are snake_case, i.e. chunk_sides_system (systems named by macros from a component, T##IncrementSystem,
 #    are left alone, the preprocessor can't lowercase them)
 #  - plain functions: void name_system(iter* it)
-#  - timed: zox_sys_on_begin() first, zox_sys_on_end() at the end (systems' times, the profiler)
+#  - timed: zox_sys_on_begin() first, zox_sys_on_end() at the end (systems' times, the profiler), except in
+#    src/_ (the flecs layer is before core, where timed builds' get_time_ms and SystemProcessed are)
 #  - commented out code is skipped, prints each problem as file:line, exit 1 if any
 #  - needs only bash, grep and awk
 cd "$(dirname "$0")/.." || exit 2
@@ -49,8 +50,8 @@ FNR == 1 { in_comment = 0; fn = "" }
         }
         if (fn == name) {
             if (args != "iter* it") { printf "%s:%d: [%s] takes (%s), not (iter* it)\n", FILENAME, fn_line, name, args; problems++ }
-            if (!has_begin) { printf "%s:%d: [%s] has no zox_sys_on_begin()\n", FILENAME, fn_line, name; problems++ }
-            if (!has_end) { printf "%s:%d: [%s] has no zox_sys_on_end()\n", FILENAME, fn_line, name; problems++ }
+            if (!has_begin && FILENAME !~ /^src\/_\//) { printf "%s:%d: [%s] has no zox_sys_on_begin()\n", FILENAME, fn_line, name; problems++ }
+            if (!has_end && FILENAME !~ /^src\/_\//) { printf "%s:%d: [%s] has no zox_sys_on_end()\n", FILENAME, fn_line, name; problems++ }
             fn = ""
         }
     }

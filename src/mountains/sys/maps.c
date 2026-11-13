@@ -23,21 +23,16 @@ void mountain_map_system(iter* it) {
             generate->value = zox_generate_tunk_towns;
             continue;
         }
-        entity region = zox_get_link(world, e, RegionLink);
-#ifdef zox_safety_checks
-        if (!zox_valid(region)) {
-            zox_loge("[%s] Tunk has invalid region at [%ix%i]: %lu in MountainMaps",
-                zox_get_name(e),
-                tunk_position->value.x,
-                tunk_position->value.y,
-                region);
+        // its region and sizes (regions/fun/tunk.c)
+        RegionTunk rt;
+        if (!region_tunk_begin(world, e, lod->value, tunk_position->value, &rt)) {
             continue;
         }
-#endif
-        // NOTE: Skip if still Generating Region
-        if (zox_getv(region, GenerateRegion)) {
-            continue;
-        }
+        const entity region = rt.region;
+        const byte terrain_length = rt.terrain_length;
+        const byte length = rt.length;
+        const int2 map_size = rt.map_size;
+        const int2 global_position_start = rt.global_start;
 #ifdef zox_safety_checks
         if (!height_map->length) {
             zox_logw("Invalid [height_map] in mountain_map_system");
@@ -48,16 +43,6 @@ void mountain_map_system(iter* it) {
             continue;
         }
 #endif
-        entity terrain = zox_get_parent(world, e);
-        byte terrain_depth = zox_getv(terrain, NodeDepth);
-        byte terrain_length = octree_size(terrain_depth);
-        byte length = octree_size(lod->value);
-        int2 map_size = int2_single(length);
-        byte depth_difference = octree_size(terrain_depth - lod->value);
-        int2 global_position_start = (int2) {
-            tunk_position->value.x * terrain_length,
-            tunk_position->value.y * terrain_length
-        };
         entity mountains[zox_children_capacity];
         uint mountains_length = zox_get_children_by_id(
             world,
@@ -77,11 +62,14 @@ void mountain_map_system(iter* it) {
             int2 mountain_position = zox_getv(e2, BlockPosition2);
             byte mountain_radius = zox_getv(e2, Radius);
             byte mountain_height = zox_getv(e2, Height);
-            int2 global_position = global_position_start;
-            int2 position;
-            for (position.x = 0; position.x < length; position.x++, global_position.x += depth_difference) {
-                global_position.y = global_position_start.y;
-                for (position.y = 0; position.y < length; position.y++, global_position.y += depth_difference) {
+            // only the columns the mountain covers in this tunk
+            int2 position, from, to;
+            if (!region_tunk_box(&rt, mountain_position, int2_single(mountain_radius), &from, &to)) {
+                continue;
+            }
+            for (position.x = from.x; position.x <= to.x; position.x++) {
+                for (position.y = from.y; position.y <= to.y; position.y++) {
+                    const int2 global_position = region_tunk_global(&rt, position);
                     int mountain_distance = int2_distance(global_position, mountain_position);
                     if (mountain_distance > mountain_radius) {
                         continue;

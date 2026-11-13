@@ -93,7 +93,7 @@ root="$(pwd)"
 log_dir="${root}/bin/tst"
 mkdir -p "${log_dir}"
 # lint_* tests are scripts (bsh/<name>.sh), not the game: conventions, i.e. lint_systems
-lints=(lint_systems)
+lints=(lint_systems lint_builds)
 run_lint() {
     bash "${root}/bsh/${1}.sh" > "${log_dir}/${1}.log" 2>&1
     local code=$?

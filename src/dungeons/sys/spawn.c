@@ -55,7 +55,7 @@ void dungeons_spawn_system(iter* it) {
         int2 positions[spawn_count];
         byte2 sizes[spawn_count];
         for (int j = 0; j < spawn_count; j++) {
-            if (!get_place_position(
+            if (!region_place_rect(
                 seed->value,
                 block_position->value,
                 block_size->value,
