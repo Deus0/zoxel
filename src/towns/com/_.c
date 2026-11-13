@@ -8,6 +8,7 @@ zox_tag(TownTexture);
 zox_tag(Home);
 zoxc_byte2(HomeSize);
 zoxc_byte(HomeHeight);
+zoxc_byte(HomeStyle);   // its roof: 0 flat, 1 peaked (sys/walls.c), from its seed
 #include "types.c"
 
 void zox_components_towns(ecs* world) {
@@ -21,4 +22,5 @@ void zox_components_towns(ecs* world) {
     zoxd_tag(Home);
     zoxd_byte2(HomeSize);
     zoxd_byte(HomeHeight);
+    zoxd_byte(HomeStyle);
 }

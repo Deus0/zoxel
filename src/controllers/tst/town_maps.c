@@ -188,3 +188,137 @@ void zox_tst_region_zones_check(ecs* world) {
     }
     zox_tst_check(!overlaps, "[%i] placement zones overlap", overlaps);
 }
+
+// tst: home_roofs, roof shapes (towns/sys/walls.c): flat is flat, peaked rises a block a column in from its long
+//  sides to a ridge, symmetric, gables at its ends
+//  - run: bash bsh/tst.sh home_roofs
+void zox_tst_home_roofs_check(ecs* world) {
+    (void) world;
+    const TownHome flat = { { 100, 100 }, { 5, 3 }, 0 };
+    const TownHome peaked = { { 100, 100 }, { 5, 3 }, 1 };   // longer along x: its ridge runs along x
+    int flat_rises = 0;
+    for (int x = 95; x <= 105; x++) for (int y = 97; y <= 103; y++) {
+        flat_rises += home_roof_rise(&flat, (int2) { x, y }) != 0;
+    }
+    zox_tst_check(!flat_rises, "a flat roof rises at [%i] columns", flat_rises);
+    zox_tst_check(home_roof_rise(&peaked, (int2) { 100, 97 }) == 0, "a peaked roof doesn't start at its wall");
+    zox_tst_check(home_roof_rise(&peaked, (int2) { 100, 100 }) == 3, "its ridge isn't 3 up, it's [%i]", home_roof_rise(&peaked, (int2) { 100, 100 }));
+    int asymmetric = 0, steps = 0;
+    for (int y = 97; y <= 100; y++) {
+        asymmetric += home_roof_rise(&peaked, (int2) { 102, y }) != home_roof_rise(&peaked, (int2) { 102, 200 - y });
+        steps += y > 97 && home_roof_rise(&peaked, (int2) { 102, y }) != home_roof_rise(&peaked, (int2) { 102, y - 1 }) + 1;
+    }
+    zox_tst_check(!asymmetric && !steps, "the roof isn't a symmetric slope, [%i] uneven, [%i] steps off", asymmetric, steps);
+    zox_tst_check(home_is_gable(&peaked, (int2) { 95, 100 }) && home_is_gable(&peaked, (int2) { 105, 100 }), "its ends aren't gables");
+    zox_tst_check(!home_is_gable(&peaked, (int2) { 100, 97 }) && !home_is_gable(&flat, (int2) { 95, 100 }), "a side or a flat roof is a gable");
+}
+
+// the region of the player's column
+static inline entity zox_tst_player_region(ecs* world) {
+    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity terrain = zox_get_link(world, character, TerrainLink);
+    const int chunk_length = octree_size(zox_getv(terrain, NodeDepth));
+    const int3 chunk = real_position_to_chunk_position(zox_getv(character, Position3D), chunk_length, zox_getv(terrain, BlockScale));
+    const entity tunk = int2_hashmap_get(zox_get(terrain, TunkLinks)->value, (int2) { chunk.x, chunk.z });
+    return zox_valid(tunk) ? zox_get_link(world, tunk, RegionLink) : 0;
+}
+
+// tst: town_homes, homes are placed inside their towns, apart from each other, a few a town, styles mixed
+//  - run: bash bsh/tst.sh town_homes
+byte zox_tst_town_homes_ready(ecs* world) {
+    return zox_tst_player_spawn_ready(world);
+}
+
+void zox_tst_town_homes_check(ecs* world) {
+    const entity region = zox_tst_player_region(world);
+    zox_tst_check(zox_valid(region), "no region under the player");
+    entity towns[zox_children_capacity];
+    const uint towns_count = zox_valid(region) ? zox_get_children_by_id(world, region, towns, zox_children_capacity, zox_id(Town)) : 0;
+    int homes_total = 0, outside = 0, overlaps = 0, peaked = 0;
+    for (uint t = 0; t < towns_count; t++) {
+        const int2 tc = zox_getv(towns[t], BlockPosition2);
+        const byte2 ts = zox_getv(towns[t], TownSize);
+        entity homes[zox_children_capacity];
+        const uint count = zox_get_children_by_id(world, towns[t], homes, zox_children_capacity, zox_id(Home));
+        for (uint a = 0; a < count; a++) {
+            const int2 c = zox_getv(homes[a], BlockPosition2);
+            const byte2 s = zox_getv(homes[a], HomeSize);
+            outside += c.x - s.x / 2 < tc.x - ts.x / 2 || c.x + s.x / 2 > tc.x + ts.x / 2 ||
+                c.y - s.y / 2 < tc.y - ts.y / 2 || c.y + s.y / 2 > tc.y + ts.y / 2;
+            peaked += zox_getv(homes[a], HomeStyle);
+            for (uint b = 0; b < a; b++) {
+                const int2 d = zox_getv(homes[b], BlockPosition2);
+                const byte2 r = zox_getv(homes[b], HomeSize);
+                overlaps += abs(c.x - d.x) <= (s.x + r.x) / 2 && abs(c.y - d.y) <= (s.y + r.y) / 2;
+            }
+        }
+        homes_total += count;
+    }
+    zox_log("[tst] [metric] town_homes [%i] towns [%i] homes, [%i] peaked", towns_count, homes_total, peaked);
+    zox_tst_check(homes_total, "no homes in the region's towns");
+    zox_tst_check(!outside, "[%i] homes outside their towns", outside);
+    zox_tst_check(!overlaps, "[%i] homes overlap", overlaps);
+}
+
+// tst: home_glow, a home's glow stone sits on its roof and lights the air around it (towns/sys/walls.c)
+//  - run: bash bsh/tst.sh home_glow
+double zox_tst_glow_start = 0;
+
+byte zox_tst_home_glow_ready(ecs* world) {
+    if (!zox_tst_player_spawn_ready(world)) {
+        return 0;
+    }
+    if (!zox_tst_glow_start) {
+        zox_tst_glow_start = zox_current_time;
+    }
+    zox_tst_waiting = "lights to flood";
+    return zox_current_time - zox_tst_glow_start > 3;
+}
+
+void zox_tst_home_glow_check(ecs* world) {
+    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity terrain = zox_get_link(world, character, TerrainLink);
+    const entity realm = zox_get_link(world, character, RealmLink);
+    const entity glow = zox_get_child_by_id(world, realm, zox_id(BlockGlowStone));
+    zox_tst_check(zox_valid(glow), "the realm has no glow stone block");
+    if (!zox_valid(glow)) {
+        return;
+    }
+    const int glow_id = zox_getv(glow, BlockIndex);
+    const byte depth = zox_getv(terrain, NodeDepth);
+    const int length = octree_size(depth);
+    const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
+    const entity region = zox_tst_player_region(world);
+    entity towns[zox_children_capacity];
+    const uint towns_count = zox_valid(region) ? zox_get_children_by_id(world, region, towns, zox_children_capacity, zox_id(Town)) : 0;
+    int found = 0, lit = 0, checked = 0;
+    for (uint t = 0; t < towns_count; t++) {
+        entity homes[zox_children_capacity];
+        const uint count = zox_get_children_by_id(world, towns[t], homes, zox_children_capacity, zox_id(Home));
+        for (uint h = 0; h < count; h++) {
+            const int2 c = zox_getv(homes[h], BlockPosition2);
+            // up the column for the glow stone
+            for (int y = -64; y < 128; y++) {
+                const int3 block = { c.x, y, c.y };
+                if (terrain_voxel_at(world, terrain, block) != glow_id) {
+                    continue;
+                }
+                checked++;
+                found++;
+                // the air above it is lit by it
+                const int3 above = { c.x, y + 1, c.y };
+                const int3 chunk_position = block_position_to_chunk_position(above, depth);
+                const entity chunk = int3_hashmap_get(chunks->value, chunk_position);
+                if (zox_valid(chunk) && zox_has(chunk, LightNode)) {
+                    const byte3 local = { above.x - chunk_position.x * length, above.y - chunk_position.y * length, above.z - chunk_position.z * length };
+                    const byte light = getv_LightNode(zox_get(chunk, LightNode), depth, local);
+                    lit += light > darklight + 50;
+                }
+                break;
+            }
+        }
+    }
+    zox_log("[tst] [metric] home_glow [%i] glow stones found, [%i] lit around", found, lit);
+    zox_tst_check(found, "no glow stones on the homes");
+    zox_tst_check(lit == found, "[%i] of [%i] glow stones don't light the air above them", found - lit, found);
+}

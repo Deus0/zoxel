@@ -42,18 +42,21 @@ void homes_spawn_system(iter* it) {
         // Have to corner the position for our finder function
         int2 town_size2 = byte2_to_int2(size->value);
         int2 town_position2 = int2_sub(position->value, int2_half(town_size2));
-        byte spawn_count = rand_range(min_homes_count, max_homes_count);
+        // from its seed, the same town has the same homes (rand() gave a different count each time)
+        byte spawn_count = seed_range(seed->value * 7349, min_homes_count, max_homes_count);
         if (dbg_log) {
             zox_log("[%s] Is Spawning [%i] Homes", zox_get_name(e), spawn_count);
         };
+        // placed: only placed homes count, a failed try left a gap the next ones checked against
         int2 home_positions[spawn_count];
         byte2 home_sizes[spawn_count];
+        byte placed = 0;
         for (int k = 0; k < spawn_count; k++) {
-            if (!region_place_rect(seed->value, town_position2, town_size2, padding, home_min_size, home_max_size, home_padding, home_positions, home_sizes, k, NULL, NULL, 0, max_attempts)) {
+            if (!region_place_rect(seed->value + k * 6151, town_position2, town_size2, padding, home_min_size, home_max_size, home_padding, home_positions, home_sizes, placed, NULL, NULL, 0, max_attempts)) {
                 continue;
             }
-            int2 home_position = home_positions[k];
-            byte2 home_size = home_sizes[k];
+            int2 home_position = home_positions[placed];
+            byte2 home_size = home_sizes[placed++];
             lint home_seed = position_seed2(seed->value, home_position);
             spawn_home(world, prefab_home, e, home_seed, home_position, home_size, 4);
             if (dbg_log) {

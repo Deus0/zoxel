@@ -7,6 +7,7 @@ zox_tag(BlockInvinsible);
 zox_tag(BlockCanGroup);
 zox_tag(SingleTextureBlock);
 zoxc_byte(BlockLightPass);
+zoxc_byte(BlockLight);      // light a block gives off, 0 none (glow stone), it floods out of its sides
 zoxc_byte(BlockModel);
 zoxc_byte(BlockCollider); // zox_block_air | zox_block_solid
 zox_tag(BlocksDirty);
@@ -48,6 +49,7 @@ void zox_components_blocks(ecs *world) {
     zoxd_tag(BlockSoundTrigger);
     zoxd_nf_tag(SingleTextureBlock);
     zoxd_byte(BlockLightPass);
+    zoxd_byte(BlockLight);
     zoxd_byte(BlockModel);
     zoxd_byte(BlockCollider);
     zoxd_byte(VoxBakeSide);

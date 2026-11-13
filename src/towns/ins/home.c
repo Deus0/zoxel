@@ -11,6 +11,7 @@ entity spawn_home(ecs* world, entity prefab, entity parent, lint seed, int2 posi
     zox_set(e, BlockPosition2, { position });
     zox_set(e, HomeSize, { size });
     zox_set(e, HomeHeight, { home_height });
+    zox_setv(e, HomeStyle, (byte) (seed % 3 != 0));   // two in three peaked, the rest flat
     // zox_set(e, WallThickness, { wall_thickness });
     return e;
 }

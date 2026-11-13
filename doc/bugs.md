@@ -3,6 +3,11 @@
 
 
 - healthbar is wrong orderin stats panel
+- Voxel indexing: a voxel is its block's index in the realm's BlockLinks (gathered from the realm's and biomes'
+  children), adding or reordering realm blocks shifts the indices, saved chunks then read as other blocks (an
+  ongoing issue). Fix: save a block id table with the realm (index to block name or seed) and remap on load
+- Removing a glow stone leaves its light: a removed voxel floods from its neighbours, nothing darkens what it lit
+  (lights3/sys/editing.c, a dark pass from a removed emitter)
 - top hat doesn't scale up when imported to depth of 5!
 	- add a top_hat.txt that has a -depth 4 value
 	- importer can then know to scale it up
