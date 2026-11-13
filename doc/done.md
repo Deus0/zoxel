@@ -1,6 +1,8 @@
 # Done
 
 ## Moved from todo (2026-11-13)
+-x Lag spikes crossing chunks (48 to 145ms): non fragmenting children (400 to 2500 tables a step to ~100), flecs
+  patches, mesh and sides budgets, stat dirties; worst flying frame ~20ms (release, gpu), the rest in optimize.md
 -x Player respawn test: dies, waits out the 16s death screen, respawns alive at full health (tst player_respawn,
   drafted by the local AI)
 -x zox_geter and zox_geter_value removed, 409 calls are zox_get and zox_getv now (const T* name = zox_get(e, T))
