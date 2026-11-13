@@ -1,6 +1,8 @@
 # Done
 
 ## Moved from todo (2026-11-14)
+-x Towns: few monsters, mostly villagers: character types tagged Villager, Monster, Critter, the spawn roll weighed by
+  how town like a chunk is (its population, npc_spawn_weight), the wild as before; tst population
 -x Dialogue window pops in and out (ui_pop_in, ui_pop_out: LocalScale1 tweened, eased, AnimationEase,
   AnimationDeletesTarget), its Next button pops in, input comes back once it's gone (an observer on the window);
   tst ui_scale (a ui's scale reaches its glyphs, pops), quest_dialogue

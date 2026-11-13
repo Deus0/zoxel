@@ -10,9 +10,12 @@ A polished core loop before more content.
 - Tweens: an AnimationEndEvent (a function, like StreamEndEvent) called when one ends, AnimationDeletesTarget becomes
   one handler of it (ui_pop_out passes a delete), anything can react to an animation finishing
 - Dialogue window layout in small windows: the box is too short, its Next button overlaps the text (460px test window)
+- Dialogue window: the Next button on a footer in the window, text truncation, scaling text to fit its options
+- Events: StreamEndEvent (and other function events) to observers
+- Population: more info per tunk (who lives there, counts), a level per region (like Trove), regions harder the
+  further from the origin (world scale to decide)
 - Bones: bone weights as octree data on skeletons (refactor)
 - IK on arms and legs, for more bending (a doc/tec doc first)
-- Towns: npc population, way fewer monsters in towns
 - Towns: an age level, older towns are flatter (heights), bigger, with more buildings
 - Homes: holes in them where the heightmap is off, flatter foundations (tilted only for poor npcs)
 - Highways between towns and regions
