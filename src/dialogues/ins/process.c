@@ -13,6 +13,9 @@ entity spawn_process_dialogue(
     if (zox_valid(speaker_a) && zox_valid(speaker_b)) {
         zox_link(world, e, SpeakerLinks, speaker_a);
         zox_link(world, e, SpeakerLinks, speaker_b);
+        // they look at each other, until the process goes (on_removed_dialogue_process)
+        look_at(world, speaker_a, speaker_b);
+        look_at(world, speaker_b, speaker_a);
     }
     return e;
 }

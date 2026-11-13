@@ -6,8 +6,7 @@
 
 # Polish (play test notes, 2026-11-14)
 A polished core loop before more content.
-- Dialogue: the player's head turns to the npc it speaks to (to its head, if it has one)
-- Dialogue and text ui: wrap the text, it overflows now
+- Npcs without bones (slimes): tumble or turn towards the player like humanoids glance (heads: LookTarget, ai/sys/glance.c)
 - Dialogue: a closing animation before input comes back, an opening one for the window, and one when its buttons spawn
 - Bones: bone weights as octree data on skeletons (refactor)
 - IK on arms and legs, for more bending (a doc/tec doc first)

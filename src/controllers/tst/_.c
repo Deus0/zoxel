@@ -10,6 +10,7 @@
 #include "clothes.c"
 #include "lod_chunk_lights.c"
 #include "npc_skeletons.c"
+#include "npc_glance.c"
 #include "npc_attacks.c"
 #include "player_respawn.c"
 #include "footsteps.c"
@@ -577,6 +578,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("arms_in_step", zox_tst_arms_in_step_ready, zox_tst_arms_in_step_check, 120);
     zox_tst_add("lod_chunk_lights", zox_tst_lod_chunk_lights_ready, zox_tst_lod_chunk_lights_check, 120);
     zox_tst_add("npc_skeletons", zox_tst_npc_skeletons_ready, zox_tst_npc_skeletons_check, 120);
+    zox_tst_add("npc_glance", zox_tst_npc_glance_ready, zox_tst_npc_glance_check, 120);
     zox_tst_add("perf_stream", zox_tst_perf_stream_ready, zox_tst_perf_stream_check, 180);
     zox_tst_add("perf_fly", zox_tst_perf_fly_ready, zox_tst_perf_fly_check, 120);
     zox_tst_add("tables_stream", zox_tst_perf_stream_ready, zox_tst_tables_stream_check, 200);

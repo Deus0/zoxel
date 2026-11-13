@@ -76,10 +76,31 @@ static inline void zox_tst_qd_begin(ecs* world, entity player, entity character,
     zox_tst_qd_ui = spawn_dialogue_ui(world, canvas, character, zox_tst_qd_npc);
     link_dialogue_run_to_ui(world, zox_tst_qd_process, zox_tst_qd_ui);
     zox_setv(player, PlayerState, zox_player_state_dialogue_begin);
+    follow_target(world, zox_tst_qd_npc, character, 0.9f);   // as dialogue_begin_system: the npc turns to them
     zox_tst_qd_settled = 0;
 }
 
 extern char zox_screenshot_request[256];
+
+// heads: both speakers look at each other while they talk (LookTarget, bones/sys/head_look.c), ahead after
+int zox_tst_qd_looking = 0;     // moments both heads had the other as LookTarget
+
+static inline entity zox_tst_qd_look(ecs* world, entity character) {
+    const entity skeleton = get_skeleton(world, character);
+    const entity head = zox_valid(skeleton) ? zox_get_link(world, skeleton, HeadBoneLink) : 0;
+    return zox_valid(head) ? zox_getv(head, LookTarget) : 0;
+}
+
+// how directly a character's head faces a target's, 1 straight at it
+static inline float zox_tst_qd_facing(ecs* world, entity character, entity target) {
+    const entity skeleton = get_skeleton(world, character);
+    const entity head = zox_valid(skeleton) ? zox_get_link(world, skeleton, HeadBoneLink) : 0;
+    if (!zox_valid(head)) {
+        return 0;
+    }
+    const float3 forward = float4_rotate_float3(zox_getv(head, Rotation3D), float3_forward);
+    return float3_dot(forward, float3_normalize(float3_sub(look_point(world, target), zox_getv(head, Position3D))));
+}
 
 // characters across the dialogue box, its lines wrap to it
 int zox_tst_qd_columns = 0;
@@ -126,6 +147,12 @@ static inline byte zox_tst_qd_talk(ecs* world, int talk) {
     const TextData* shown = zox_get(label, TextData);
     if (line[0] && shown->length >= (int) strlen(typed)) {
         // typed out, a moment later press next, the first talk's second line (it wraps) saved to look at
+        if (zox_tst_qd_settled == 5) {
+            const entity character = zox_get_link(world, dbg_player, CharacterLink);
+            zox_tst_qd_looking += zox_tst_qd_look(world, character) == zox_tst_qd_npc && zox_tst_qd_look(world, zox_tst_qd_npc) == character;
+            zox_log("[tst] [metric] heads facing: the player [%.2f] the npc [%.2f] (1 straight at the other)",
+                zox_tst_qd_facing(world, character, zox_tst_qd_npc), zox_tst_qd_facing(world, zox_tst_qd_npc, character));
+        }
         if (zox_tst_qd_settled == 5 && talk == 0 && *count == 2) {
             snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("dialogue.ppm"));
         }
@@ -252,6 +279,9 @@ void zox_tst_quest_dialogue_check(ecs* world) {
         "the fourth talk said [%i] lines, not only that it was done well", zox_tst_qd_lines_count[3]);
     zox_tst_check(zox_tst_qd_columns > 0, "the dialogue box has no wrap width");
     zox_tst_check(!zox_tst_qd_overflows, "dialogue lines passed the box's [%i] characters [%i] times", zox_tst_qd_columns, zox_tst_qd_overflows);
+    zox_tst_check(zox_tst_qd_looking > 0, "the speakers' heads didn't look at each other while talking");
+    // the npc may glance at the player after (ai/sys/glance.c), the player looks ahead
+    zox_tst_check(!zox_tst_qd_look(world, character), "the player's head still looks at the npc after the talks");
     zox_tst_check(zox_tst_qd_voices > 0, "the npc said its lines without a voice");
     zox_tst_check(zox_tst_qd_jingle_notes > 0, "taking the quest played no jingle");
 }

@@ -3,6 +3,7 @@
 #include "paint.c"
 #include "bone_render.c"
 #include "head_bob.c"
+#include "head_look.c"
 #include "init.c"
 #include "arm_control.c"
 #include "arm_swing.c"
@@ -28,6 +29,14 @@ void zox_systems_bones(ecs *world) {
         [out] rendering.MeshColorRGBs,
         [none] rendering3.SkeletonMesh,
         [none] rendering.BuildMesh,
+    );
+    zox_system(
+        head_look_system,
+        zoxp_update,
+        [in] LookTarget,
+        [in] transforms3.Position3D,
+        [out] transforms3.LocalRotation3D,
+        [none] HeadBone
     );
     zox_system(
         head_animate_system,
