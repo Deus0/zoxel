@@ -54,6 +54,7 @@ void biome_map_system(iter* it) {
             tunk_position->value.x * terrain_length,
             tunk_position->value.y * terrain_length
         };
+        const BiomeClimates climates = get_biome_climates(terrain_length, seed, biomes_count);
         int2 global_position = global_position_start;
         int2 position = int2_zero;
         resize_BiomeMap(biomes, length * length);
@@ -62,7 +63,7 @@ void biome_map_system(iter* it) {
             for (position.y = 0; position.y < length; position.y++, global_position.y += depth_difference) {
                 int index = int2_array_index(position, map_size);
                 // the same function heights blend with (biomes/fun/blend.c)
-                const byte biome_index = get_biome_index(get_biome_value(global_position, terrain_length, seed, biomes_count));
+                const byte biome_index = get_biome_index(global_position, terrain_length, seed, &climates);
                 biomes->value[index] = biome_index;
                 if (dbg_log >= 2 && biome_index == biomes_count - 1) {
                     zox_log("Biome [%ix%i]: %i", position.x, position.y, biome_index);
