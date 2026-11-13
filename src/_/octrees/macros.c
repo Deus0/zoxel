@@ -77,6 +77,12 @@ static inline byte getv_nearby_##T(\
         oob_value); \
 }
 
+// the max of the leaves under the voxel at a lod's depth (lights read by coarse lod meshes)
+#define create_octree_get_nearby_max(T) \
+static inline byte getv_nearby_max_##T(const T** octrees, spinlock** locks, byte3 position, byte depth, sbyte3 offset, byte oob_value) { \
+    return octree_getv_nearby_ex((const void**) octrees, locks, position, depth, offset, sizeof(T), octree_type_offset_##T, oob_value, 1); \
+}
+
 #define create_octree_reducer(T) \
 static inline byte reduce_##T(T* node) { \
     return reduce_octree_node( \

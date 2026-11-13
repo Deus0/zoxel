@@ -5,6 +5,7 @@ zoxc_octree_basic(LightNode, byte, darklight);
 create_octree_setters(LightNode);
 create_octree_accessors(LightNode);
 create_octree_get_nearby(LightNode);
+create_octree_get_nearby_max(LightNode);
 create_octree_reducer(LightNode);
 create_octree_optimizer(LightNode, 0);
 create_optimize_by_max(LightNode);

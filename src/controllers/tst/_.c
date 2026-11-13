@@ -8,6 +8,7 @@
 #include "npc_stats.c"
 #include "hit_sound_links.c"
 #include "shirt.c"
+#include "lod_chunk_lights.c"
 #include "npc_skeletons.c"
 #include "pipeline_syncs.c"
 #include "lines_render.c"
@@ -573,6 +574,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("npc_stats", zox_tst_npc_stats_ready, zox_tst_npc_stats_check, 120);
     zox_tst_add("hit_sound_links", zox_tst_hit_sound_links_ready, zox_tst_hit_sound_links_check, 120);
     zox_tst_add("shirt", zox_tst_shirt_ready, zox_tst_shirt_check, 120);
+    zox_tst_add("lod_chunk_lights", zox_tst_lod_chunk_lights_ready, zox_tst_lod_chunk_lights_check, 120);
     zox_tst_add("npc_skeletons", zox_tst_npc_skeletons_ready, zox_tst_npc_skeletons_check, 120);
     zox_tst_add("perf_stream", zox_tst_perf_stream_ready, zox_tst_perf_stream_check, 180);
     zox_tst_add("perf_fly", zox_tst_perf_fly_ready, zox_tst_perf_fly_check, 120);

@@ -1,6 +1,8 @@
 # Done
 
 ## Moved from todo (2026-11-13)
+-x Lighting between chunk lods: coarse lod meshes read stale open light nodes (darklight), dark faces in the
+  distance, they read their leaves' max now (getv_nearby_max_LightNode), tst lod_lights, lod_chunk_lights
 -x Smooth lighting: no light leaking round corners (a corner behind two solid edges is dark), faces lit from a table
   of their axes, tst smooth_lights; tests run on x86 again (egl device by machine), npcs link their hit sounds
 -x Shirts with shapes: a boxy sleeved shirt (worn) and a tight sleeveless vest (inventory), box nodes in blueprints,
