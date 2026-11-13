@@ -1,6 +1,9 @@
 # Done
 
 ## Moved from todo (2026-11-13)
+-x Voxel indexing: realms save blocks.txt (each index's block, name and seed), and once their blocks are indexed remap
+  their saved chunks if any index moved (gone blocks to air), tst block_table, block_table_remap; misses whoosh like
+  wind (airy rush, a rising howl, by the local AI)
 -x Removing a glow stone darkens what it lit: darkness from it at its light, the edit light system handles each edit
   once after it's set (it ran every frame an edit queued, before old_value was known), emitters seed a step down,
   placing one lights around it; tst glow_light

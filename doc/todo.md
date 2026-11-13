@@ -34,7 +34,6 @@
 	  in a pass while playing (see Sounds: optimization)
 	- 3. long notes generated over a few frames, the start first
 	- tst: every instrument generates a second of sound under a budget (sound_instruments logs timings)
-- Miss sounds need more whoosh, a wind feeling (instrument_whoosh in sounds/bop/impacts.c)
 
 # Sounds and Music
 - Optimize sound generation (see Now: lag spikes)
@@ -192,6 +191,9 @@
 	- the final population becomes the biome blocks
 
 # Towns
+- Multi room homes: inner walls splitting a home into rooms, doors between them, rooms sized by the home
+- Roads: paths from each home's door to the town gate (and between homes), only inside the town, the gate the only
+  way in
 - TownLinkSystem for Characters - Log when entering a town
 - Towns: Average out heights between chunk neighbors
 - Towns: Spawn roads between houses - simple entity, road, start and end points, thickness
@@ -747,6 +749,10 @@
 -o clicking on ui - activated punch... during dialogue
 
 # Saves, Realms and Game States
+- Save and load the player: its items (inventory, gear, actionbar), stats (levels, health, experience), skills,
+  quests and body parts, with the realm, so a continued game has what it had
+	- by entity, not ids: save what each item or stat is (its realm item's name or seed), relink on load
+	- tst: play, change items and stats, save, continue, everything matches
 - save player character slot data
 	- items, skills, etc whatever is there
 - load player character slot data

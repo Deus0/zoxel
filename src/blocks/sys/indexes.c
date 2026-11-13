@@ -63,6 +63,7 @@ void realm_blocks_dirty_system(iter* it) {
         }
         zox_remove(e, BlocksDirty);
         zox_add(e, BlocksTilemapUpdate);
+        zox_add(e, BlockTableDirty);
         // dirty->value = zox_blocks_dirty_tilemaps;
     }
     zox_sys_on_end();

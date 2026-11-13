@@ -137,6 +137,45 @@ void zox_tst_chunk_io_check(ecs* world) {
     }
 }
 
+// tst: block_table_remap, a saved chunk rewritten through a block remap (io/sys/block_table.c): each voxel its new
+//  index, a removed block air, the rest as they were
+//  - run: bash bsh/tst.sh block_table_remap
+void zox_tst_block_table_remap_check(ecs* world) {
+    VoxelNode original;
+    zox_tst_io_random_tree(&original, 3000, 5);
+    const char* path = "../tst/block_table_remap.dat";
+    FILE* out = fopen(path, "wb");
+    zox_tst_check(out != NULL, "couldn't write [%s]", path);
+    if (!out) {
+        return;
+    }
+    save_voxel_node(out, &original);
+    fclose(out);
+    byte remap[256];
+    for (int i = 0; i < 256; i++) {
+        remap[i] = i;
+    }
+    remap[1] = 3;   // swapped
+    remap[3] = 1;
+    remap[4] = 0;   // removed, air
+    zox_tst_check(block_table_remap_chunk(world, path, remap), "the chunk didn't remap");
+    FILE* in = fopen(path, "rb");
+    VoxelNode loaded;
+    create_VoxelNode(&loaded);
+    load_voxel_node(world, in, &loaded);
+    fclose(in);
+    int wrong = 0;
+    for (int i = 0; i < zox_tst_io_volume; i++) {
+        const byte3 p = zox_tst_io_position(i);
+        wrong += getv_VoxelNode(&loaded, zox_tst_io_depth, p) != remap[getv_VoxelNode(&original, zox_tst_io_depth, p)];
+    }
+    zox_tst_check(!wrong, "[%i] voxels didn't remap", wrong);
+    collapse_VoxelNode(&original);
+    collapse_VoxelNode(&loaded);
+    remove(path);
+}
+
 void zox_tsts_chunks3_io() {
     zox_tst_add("chunk_io", zox_tst_chunk_io_ready, zox_tst_chunk_io_check, 30);
+    zox_tst_add("block_table_remap", zox_tst_chunk_io_ready, zox_tst_block_table_remap_check, 30);
 }

@@ -433,3 +433,29 @@ void zox_tst_glow_light_check(ecs* world) {
     }
     zox_tst_check(!lit_after, "[%i] tunnel voxels still lit after the glow stone was removed", lit_after);
 }
+
+// tst: block_table, a realm saves its block table once generated (chunks3/io/sys/block_table.c): blocks.txt in its
+//  folder, a line a block, in BlockLinks order
+//  - run: bash bsh/tst.sh block_table
+void zox_tst_block_table_check(ecs* world) {
+    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity realm = zox_get_link(world, character, RealmLink);
+    zox_tst_check(zox_has(realm, FolderPath), "the realm has no folder");
+    if (!zox_has(realm, FolderPath)) {
+        return;
+    }
+    char* path = join_path(zox_get(realm, FolderPath)->value, "blocks.txt");
+    static char keys[block_table_max][block_table_key];
+    const int lines = block_table_read(path, keys);
+    const BlockLinks* blocks = zox_get(realm, BlockLinks);
+    zox_log("[tst] [metric] block_table [%i] lines, [%i] blocks, [%s]", lines, blocks->length, path);
+    zox_tst_check(lines == blocks->length, "[%s] has [%i] lines for [%i] blocks", path, lines, blocks->length);
+    int wrong = 0;
+    for (int i = 0; i < lines && i < blocks->length; i++) {
+        char key[block_table_key];
+        block_table_key_of(world, blocks->value[i], key);
+        wrong += strcmp(key, keys[i]) != 0;
+    }
+    zox_tst_check(!wrong, "[%i] lines don't match their block", wrong);
+    free(path);
+}
