@@ -73,7 +73,8 @@ static inline void zox_apply_basic_lights(const LightNode* root_light_octree, co
         // If Not Smooth Lighting
         const LightNode* adjacent_light = get_neighbor_LightNode(root_light_octree, neighbor_light_octrees, direction, position, depth);
         // const LightNode* adjacent_light = get_max_light_on_face_start(root_light_octree, neighbor_light_octrees, position, depth, direction);
-        byte light = adjacent_light ? adjacent_light->value : 0;
+        // a coarse lod reads the max of the leaves under it, an open node's own value is stale
+        byte light = adjacent_light ? octree_max_leaf_value(adjacent_light, sizeof(LightNode), octree_type_offset_LightNode) : 0;
         for (byte v = 0; v < voxel_face_vertices_length; v++) {
             if (*ccount < colors->length) {
                 color_rgb* c = &colors->value[*ccount];

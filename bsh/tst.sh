@@ -137,10 +137,14 @@ if command -v systemd-run > /dev/null && systemd-run --user --scope -q true 2> /
 fi
 
 # runs the game with --tst <name>, output to <log>, returns its exit code
+# tests that need more terrain than --tiny (i.e. far lods to compare), the later --medium wins
+medium_tests=(lod_chunk_lights)
 run_game() {
     local tst="$1"
     local log="$2"
     local debugger=()
+    local test_args=()
+    [[ " ${medium_tests[*]} " == *" ${tst} "* ]] && test_args=(--medium)
     if [[ ${gdb} == "1" ]]; then
         debugger=(gdb -q -batch -ex "handle SIGPIPE nostop" -ex run -ex bt --args)
     fi
@@ -148,7 +152,7 @@ run_game() {
     (
         cd "${bin_dir}" &&
         exec timeout -k 5 "${timeout_seconds}" "${cap[@]}" "${soft_env[@]}" nice -n 10 \
-            "${debugger[@]}" "./${bin_name}" --tst "${tst}" --autostart "${mode_args[@]}" "${args[@]}" \
+            "${debugger[@]}" "./${bin_name}" --tst "${tst}" --autostart "${mode_args[@]}" "${args[@]}" "${test_args[@]}" \
             > "${log}" 2>&1
     ) &
     local pid=$!

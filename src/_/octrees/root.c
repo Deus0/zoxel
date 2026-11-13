@@ -235,7 +235,24 @@ static inline byte3 byte3_offset_wrap(
 }
 
 // NOTE: Gets voxel from neighbouring chunk if position crosses boundary
-static inline byte octree_getv_nearby(
+
+// the max value of a node's leaves, an open node's own value is stale (set when it split), only its leaves count
+static inline byte octree_max_leaf_value(const void* node, size_t stride, size_t type_offset) {
+    const void* children = octree_children(node, type_offset);
+    if (!children) {
+        return *(const byte*)((const char*) node + octree_value_offset);
+    }
+    byte max = 0;
+    for (byte i = 0; i < octree_length; i++) {
+        const byte value = octree_max_leaf_value(octree_child((void*) children, i, stride), stride, type_offset);
+        max = value > max ? value : max;
+    }
+    return max;
+}
+
+// NOTE: Gets voxel from neighbouring chunk if position crosses boundary
+//  - leaf_max: a node above the leaves (a coarse lod reading a detailed tree) gives its leaves' max, not its own value
+static inline byte octree_getv_nearby_ex(
     const void** octrees,
     spinlock** locks,
     byte3 position,
@@ -243,7 +260,8 @@ static inline byte octree_getv_nearby(
     sbyte3 offset,
     size_t stride,
     size_t type_offset,
-    byte oob_value)
+    byte oob_value,
+    byte leaf_max)
 {
     if (!octrees || depth >= 7) {
         return oob_value;
@@ -277,11 +295,24 @@ static inline byte octree_getv_nearby(
         stride,
         type_offset
     );
-    const byte value = octree ?
-        *(const byte*)((const char*) octree + octree_value_offset) :
-        oob_value;
+    const byte value = !octree ? oob_value :
+        leaf_max ? octree_max_leaf_value(octree, stride, type_offset) :
+        *(const byte*)((const char*) octree + octree_value_offset);
     spin_unlock(lock);
     return value;
+}
+
+static inline byte octree_getv_nearby(
+    const void** octrees,
+    spinlock** locks,
+    byte3 position,
+    byte depth,
+    sbyte3 offset,
+    size_t stride,
+    size_t type_offset,
+    byte oob_value)
+{
+    return octree_getv_nearby_ex(octrees, locks, position, depth, offset, stride, type_offset, oob_value, 0);
 }
 
 // dir ordering:

@@ -68,7 +68,7 @@ void smooth_face_lights(
     const sbyte3 face = neighbor_offsets[direction];
     const sbyte3 a = smooth_face_axes[direction][0];
     const sbyte3 b = smooth_face_axes[direction][1];
-    const byte face_light = getv_nearby_LightNode(lights, lights_locks, position, depth, face, oob);
+    const byte face_light = getv_nearby_max_LightNode(lights, lights_locks, position, depth, face, oob);
     for (byte v = 0; v < 4; v++) {
         const sbyte sa = smooth_vertex_signs[v][0], sb = smooth_vertex_signs[v][1];
         const sbyte3 edge_a = smooth_offset(face, a, sa, b, 0);
@@ -76,9 +76,9 @@ void smooth_face_lights(
         const sbyte3 corner = smooth_offset(face, a, sa, b, sb);
         vertex_lights[v] = smooth_vertex_light(
             face_light,
-            getv_nearby_LightNode(lights, lights_locks, position, depth, edge_a, oob),
-            getv_nearby_LightNode(lights, lights_locks, position, depth, edge_b, oob),
-            getv_nearby_LightNode(lights, lights_locks, position, depth, corner, oob),
+            getv_nearby_max_LightNode(lights, lights_locks, position, depth, edge_a, oob),
+            getv_nearby_max_LightNode(lights, lights_locks, position, depth, edge_b, oob),
+            getv_nearby_max_LightNode(lights, lights_locks, position, depth, corner, oob),
             smooth_is_solid(voxels, voxels_locks, solidity, position, depth, edge_a),
             smooth_is_solid(voxels, voxels_locks, solidity, position, depth, edge_b));
     }
