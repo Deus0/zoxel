@@ -5,9 +5,15 @@ zox_tag(MenuEquipment);
 zox_tag(EquipFrame);
 zox_tag(EquipIcon);
 zox_tag(Hat);
+zox_tag(ShirtSlot);      // over the chest (body_anchor_over)
+zox_tag(Shirt);
 
 void add_tag_equip_slot(ecs* world, entity e) {
     zox_add(e, EquipSlot);
+}
+
+void add_tag_shirt_slot(ecs* world, entity e) {
+    zox_add(e, ShirtSlot);
 }
 
 void add_tag_hat_slot(ecs* world, entity e) {
@@ -22,4 +28,6 @@ void zox_components_equipment(ecs* world) {
     zoxd_tag(EquipFrame);
     zoxd_tag(EquipIcon);
     zoxd_tag(Hat);
+    zoxd_tag(ShirtSlot);
+    zoxd_tag(Shirt);
 }

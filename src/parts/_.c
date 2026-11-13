@@ -24,6 +24,7 @@
 #define body_anchor_left 4
 #define body_anchor_back 5
 #define body_anchor_forward 6
+#define body_anchor_over 7      // covers its parent (clothes): centred on x and z, bottoms aligned, can be bigger
 
 #include "com/_.c"
 #include "sta/_.c"

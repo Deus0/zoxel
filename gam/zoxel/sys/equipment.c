@@ -90,6 +90,23 @@ void equips_realm_spawn_system(iter* it) {
                 zox_slot_hat);
             zox_add(tophat, Hat);
         }
+        // a shirt, generated from a blueprint like body parts (doc/body_equips.md)
+        {
+            // the chest's blueprint scale, the biggest of the realm's two chests (gam/zoxel/sys/body_parts.c)
+            const float3 chest_scale = { 0.54f, 0.54f, 0.56f };
+            const byte3 chest_size = byte3_scale3f(byte3_single(octree_size(nodegraph_max_depth)), chest_scale);
+            const lint shirt_seed = zox_getv(e, Seed) * 4441;
+            const color cloth = color_rgb_to_color(seed_to_color_rgb_range(shirt_seed,
+                (float2) { 0, 360 }, (float2) { 35, 65 }, (float2) { 35, 55 }));
+            const color trim = color_rgb_to_color(seed_to_color_rgb_range(shirt_seed + 1,
+                (float2) { 0, 360 }, (float2) { 20, 50 }, (float2) { 15, 30 }));
+            const entity blueprint = spawn_blueprint_shirt(world, chest_size, nodegraph_max_depth, cloth, trim);
+            // the chest's depth (body_parts.c), so its voxels line up
+            const byte model_depth = block_depth + 1;
+            const entity shirt = spawn_realm_item_equip_blueprint(world, e, shirt_seed, model_depth,
+                "Shirt", zox_slot_shirt, blueprint);
+            zox_add(shirt, Shirt);
+        }
         zox_logv("Realm [bodys] [X] spawned.");
     }
     zox_sys_on_end();

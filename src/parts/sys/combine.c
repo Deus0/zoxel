@@ -127,6 +127,15 @@ void build_body_parts(ecs *world, entity slot, CombineList* voxes, CombinePositi
         part_position.x += (parent_size.x - part_size.x) / 2;
         part_position.z = parent_position.z + offset.z - part_size.z;
         part_position.y += (parent_size.y - part_size.y) / 2;
+    } else if (anchor == body_anchor_over) {
+        // clothes: centred over the parent on x and z, from its bottom up, a bigger part sticks out
+        //  (under 0 shifts the grid below, past the body's size grows it here)
+        part_position.x += (parent_size.x - part_size.x) / 2;
+        part_position.z += (parent_size.z - part_size.z) / 2;
+        const int3 upper = int3_add(part_position, part_size);
+        body_size->x = upper.x > body_size->x ? upper.x : body_size->x;
+        body_size->y = upper.y > body_size->y ? upper.y : body_size->y;
+        body_size->z = upper.z > body_size->z ? upper.z : body_size->z;
     }
     short vlength = octree_size(*max_depth);
     if (body_size->x >= vlength || body_size->y >= vlength || body_size->z >= vlength) {
