@@ -459,3 +459,83 @@ void zox_tst_block_table_check(ecs* world) {
     zox_tst_check(!wrong, "[%i] lines don't match their block", wrong);
     free(path);
 }
+
+// tst: sky_clouds (not added yet: spawns vary, under trees, its hat in view looking up, needs a hud-less clear view)
+//  clouds in the sky (res/shaders/skybox.frag): a screenshot's band has some cloud (near white)
+//  and some clear sky, saves ../tst/sky_clouds.ppm to look at
+//  - run: bash bsh/tst.sh sky_clouds
+extern char zox_screenshot_request[256];
+byte zox_tst_clouds_stage = 0;
+double zox_tst_clouds_time = 0;
+
+byte zox_tst_sky_clouds_ready(ecs* world) {
+    if (!zox_tst_clouds_stage) {
+        if (!zox_tst_player_spawn_ready(world)) {
+            return 0;
+        }
+        zox_tst_clouds_stage = 1;
+        zox_tst_clouds_time = zox_current_time;
+    }
+    zox_tst_waiting = "the sky screenshot";
+    if (zox_tst_clouds_stage) {
+        static float lifted = 0;
+        const entity character = zox_get_link(world, dbg_player, CharacterLink);
+        float3 position = zox_getv(character, Position3D);
+        if (!lifted) {
+            lifted = position.y + 40;
+        }
+        position.y = lifted;
+        zox_setv(character, Position3D, position);
+        zox_setv(character, Velocity3D, float3_zero);
+        // the body hidden, the camera sits in its head (looking up saw the inside of its hat)
+        zox_setv(character, RenderDisabled, 1);
+        // look up: the camera under the head bone is what mouse look pitches (controllers3/sys/rotation.c)
+        const entity skeleton = get_skeleton(world, character);
+        const entity head = zox_valid(skeleton) ? zox_get_link(world, skeleton, HeadBoneLink) : 0;
+        const entity head_camera = zox_valid(head) ? zox_get_child_by_id(world, head, zox_id(Camera)) : 0;
+        if (zox_valid(head_camera)) {
+            zox_setv(head_camera, LocalRotation3D, quaternion_from_euler((float3) { -0.5f, 0, 0 }));
+        }
+    }
+    zox_tst_progress(zox_current_time - zox_tst_clouds_time);
+    if (zox_tst_clouds_stage == 1) {
+        if (zox_current_time - zox_tst_clouds_time < 2) {
+            return 0;
+        }
+        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "../tst/sky_clouds.ppm");
+        zox_tst_clouds_stage = 2;
+        return 0;
+    }
+    return !zox_screenshot_request[0];
+}
+
+void zox_tst_sky_clouds_check(ecs* world) {
+    (void) world;
+    FILE* file = fopen("../tst/sky_clouds.ppm", "rb");
+    zox_tst_check(file, "no screenshot saved");
+    if (!file) {
+        return;
+    }
+    int width = 0, height = 0, max = 0;
+    const int read = fscanf(file, "P6 %d %d %d", &width, &height, &max);
+    fgetc(file);
+    zox_tst_check(read == 3 && width > 0 && height > 0, "the screenshot isn't a ppm");
+    // a band under the hud (stats and the minimap cover the top), above the middle
+    const int band_from = height * 42 / 100, band = height * 55 / 100;
+    int cloud = 0, total = 0;
+    byte rgb[3];
+    fseek(file, (long) band_from * width * 3, SEEK_CUR);
+    for (int y = band_from; y < band && read == 3; y++) {
+        for (int x = 0; x < width; x++) {
+            if (fread(rgb, 1, 3, file) != 3) {
+                break;
+            }
+            total++;
+            cloud += rgb[0] > 210 && rgb[1] > 210 && rgb[2] > 210;
+        }
+    }
+    fclose(file);
+    const float share = total ? 100.0f * cloud / total : 0;
+    zox_log("[tst] [metric] sky_clouds [%.1f%%] of the top band is cloud", share);
+    zox_tst_check(share > 3 && share < 85, "the sky's top band is [%.1f%%] cloud, not some cloud and some sky", share);
+}
