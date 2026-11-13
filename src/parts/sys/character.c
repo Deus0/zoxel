@@ -4,6 +4,8 @@ byte zox_dbg_extraheads = 0; // 16;
 // TODO: Spawn location of head: Half chest + half head sizes, minus half head size (cornered spawn location)
 extern void add_tag_hat_slot(ecs*, entity);
 extern void add_tag_shirt_slot(ecs*, entity);
+extern void add_tag_shorts_slot(ecs*, entity);
+extern void add_tag_shoe_slot(ecs*, entity);
 extern entity spawn_equip_slot(ecs* world, entity parent, byte anchor);
 
 // NOTE: Spawns in body parts from Realm
@@ -71,7 +73,6 @@ void character_body_spawn_system(iter* it) {
         // Attach Core Part
         zox_set_link(world, chest_slot, DataLink, spawn_user_item_body(world, e, realm_chest, zox_slot_core));
         short chest_width = octree_size(block_depth);
-        byte chest_height = int_floorf(0.56f * chest_width);
         // Trigger early, incase we cannot keep growing body
         // dirty->value = zox_dirty_trigger;
         body_dirty->value = zox_generate_body_start;
@@ -87,8 +88,8 @@ void character_body_spawn_system(iter* it) {
         // Slot Offsets
         zox_set(eslot_head, PartOffset, {{ 0, 0, 0 }}); // -1
         zox_set(eslot_hips, PartOffset, {{ 0, 2, 0 }});
-        byte shoulder_position_y = chest_height / 4;
-        byte shoulder_dig = 2;
+        byte shoulder_position_y = body_shoulder_offset_y();
+        byte shoulder_dig = body_shoulder_dig();
         zox_set(eslot_lshoulder, PartOffset, {{ shoulder_dig, shoulder_position_y, 0 }});
         zox_set(eslot_rshoulder, PartOffset, {{ -shoulder_dig, shoulder_position_y, 0 }});
         // Now add parts to those slots
@@ -114,6 +115,10 @@ void character_body_spawn_system(iter* it) {
             entity hips = spawn_user_item_body(world, e, realm_hips, zox_slot_hips);
             zox_set_link(world, eslot_hips, DataLink, hips);
             zox_add(hips, Hips);
+            // the shorts slot, worn over the hips, their legs hang down over the thighs
+            const entity eslot_shorts = spawn_equip_slot(world, eslot_hips, body_anchor_over);
+            zox_set(eslot_shorts, PartOffset, {{ 0, -gear_blueprint_to_body(zox_shorts_leg), 0 }});
+            add_tag_shorts_slot(world, eslot_shorts);
             // Sub Slots
             entity eslot_lthigh = spawn_body_slot(world, eslot_hips, body_anchor_bottom);
             entity eslot_rthigh = spawn_body_slot(world, eslot_hips, body_anchor_bottom);
@@ -149,6 +154,9 @@ void character_body_spawn_system(iter* it) {
                         // Attach Parts [Calfs]
                         zox_set_link(world, eslot_lfoot, DataLink, spawn_user_item_body(world, e, realm_foot, zox_slot_lfoot));
                         zox_set_link(world, eslot_rfoot, DataLink, spawn_user_item_body(world, e, realm_foot, zox_slot_rfoot));
+                        // a shoe slot over each foot
+                        add_tag_shoe_slot(world, spawn_equip_slot(world, eslot_lfoot, body_anchor_over));
+                        add_tag_shoe_slot(world, spawn_equip_slot(world, eslot_rfoot, body_anchor_over));
                     }
                 }
             }

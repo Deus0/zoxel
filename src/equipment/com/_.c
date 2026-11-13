@@ -7,6 +7,10 @@ zox_tag(EquipIcon);
 zox_tag(Hat);
 zox_tag(ShirtSlot);      // over the chest (body_anchor_over)
 zox_tag(Shirt);
+zox_tag(ShortsSlot);     // over the hips
+zox_tag(Shorts);
+zox_tag(ShoeSlot);       // over a foot, one a foot
+zox_tag(Shoes);          // a shoe, worn in each ShoeSlot
 
 void add_tag_equip_slot(ecs* world, entity e) {
     zox_add(e, EquipSlot);
@@ -14,6 +18,14 @@ void add_tag_equip_slot(ecs* world, entity e) {
 
 void add_tag_shirt_slot(ecs* world, entity e) {
     zox_add(e, ShirtSlot);
+}
+
+void add_tag_shorts_slot(ecs* world, entity e) {
+    zox_add(e, ShortsSlot);
+}
+
+void add_tag_shoe_slot(ecs* world, entity e) {
+    zox_add(e, ShoeSlot);
 }
 
 void add_tag_hat_slot(ecs* world, entity e) {
@@ -30,4 +42,8 @@ void zox_components_equipment(ecs* world) {
     zoxd_tag(Hat);
     zoxd_tag(ShirtSlot);
     zoxd_tag(Shirt);
+    zoxd_tag(ShortsSlot);
+    zoxd_tag(Shorts);
+    zoxd_tag(ShoeSlot);
+    zoxd_tag(Shoes);
 }

@@ -6,4 +6,4 @@
 #include "head.c"
 #include "hips.c"
 #include "limb.c"
-#include "shirt.c"
+#include "clothes.c"

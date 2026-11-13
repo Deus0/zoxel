@@ -18,8 +18,11 @@
 #define zox_slot_rfoot 16
 #define zox_slot_hat 17
 #define zox_slot_shirt 18
+#define zox_slot_shorts 19
+#define zox_slot_shoes 20
+#define zox_shorts_leg 6        // how far shorts' legs hang below the hips, over the thighs (blueprint voxels)
 
-const byte slot_names_length = 19;
+const byte slot_names_length = 21;
 const char* slot_names[] = {
     "Core",
     "Head",
@@ -40,4 +43,6 @@ const char* slot_names[] = {
     "Right Foot",
     "Hat",
     "Shirt",
+    "Shorts",
+    "Shoes",
 };

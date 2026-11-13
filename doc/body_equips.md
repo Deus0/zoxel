@@ -42,6 +42,10 @@ character
 
 ## Making the realm's parts
 
+- The **chest** (`spawn_blueprint_chest`) is three ellipsoid blobs, a v like a person's: a narrow belly, wider ribs,
+  and a full width yoke where the shoulders join (`get_chest_blobs`, shared with the shirt). It's flatter front to back
+  than across (`player_chest_scale`). The shoulders sit level with its top (`body_shoulder_offset_y`) and dig into its
+  sides (`body_shoulder_dig`, scaled with Block Res so a finer body keeps its shape).
 - **Blueprints** are node graphs: a colours node, fill nodes (ellipsoids around a centre), box nodes (a box from a
   corner, voxel 0 cuts air), paint nodes
   (a corner box, they recolour voxels already there), and an end node.
@@ -108,11 +112,11 @@ Each step sets the next by the character's `BodyDirty` and `GenerateCharacter`.
   - Sizes are worked out from the parts' blueprint scales (`body_part_voxels`). The limbs' are half
     their blueprint, and the rounding can be a voxel off.
   - At the chest's depth, so the voxels line up. Their colours come from the realm's seed (a cloth and a trim colour).
-  - **Shirt** (`spawn_blueprint_shirt`), cubey: a torso box over the chest's bounds (2 shorter, under the neck), a neck
-    hole. Each sleeve is a cap over the shoulder, out to the upper arm's outer side, and a tube hanging from it round
-    the top of the arm, its cuff facing down (a sleeve straight out past the shoulder read as a t-pose). Edges are
-    bevelled (`spawn_blueprint_bevel`, voxel 0 cuts): the torso's upright ones 2 deep in steps, the sleeves' 1.
-    Trim: hem, collar, cuffs, buttons. The realm has a **Shirt** (worn) and a sleeveless **Vest** (in the inventory).
+  - **Shirt** (`spawn_blueprint_shirt`), cubey but shaped like the chest: a box round each of the chest's blobs
+    (`get_chest_blobs`), so it steps out from the belly to the ribs to the shoulders, a neck hole. Each sleeve is a
+    cap over the shoulder, from its tip in to the ribs, and a tube hanging from it round the top of the upper arm, its
+    cuff facing down (a sleeve straight out read as a t-pose). Edges are bevelled (`spawn_blueprint_bevel`, voxel 0
+    cuts). Trim: hem, collar, cuffs, buttons. The realm has a **Shirt** (worn) and a sleeveless **Vest** (inventory).
   - **Shorts** (`spawn_blueprint_shorts`): a waist box over the hips, a leg over each thigh, `zox_shorts_leg` long.
     Their slot's `PartOffset` drops them that far, so the waist lines up with the hips. Trim: waistband, hems,
     drawstring.
