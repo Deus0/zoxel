@@ -24,11 +24,11 @@ void aura_remove_system(iter* it) {
                 // todo: remove dots when aura dies too
                 continue;
             }
-            zox_geter_value(aura, SkillRange, float, radius);
-            zox_geter_value(aura, SkillActive, byte, active);
+            float radius = zox_getv(aura, SkillRange);
+            byte active = zox_getv(aura, SkillActive);
             byte is_still_in_aura = 0;
             if (active) { // if user exists and skill is active
-                zox_geter_value(user, Position3D, float3, aura_position);
+                float3 aura_position = zox_getv(user, Position3D);
                 float distance = float3_distance(position->value, aura_position);
                 is_still_in_aura = distance <= radius;
             }

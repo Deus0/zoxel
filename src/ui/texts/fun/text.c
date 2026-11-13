@@ -76,7 +76,7 @@ void print_entity_zext(
     if (!zox_has(e, TextData)) {
         return;
     }
-    zox_geter(e, TextData, data);
+    const TextData* data = zox_get(e, TextData);
     char *debug_text = get_zext_text(data);
     zox_log("   > zext %lu [%s] length %i\n", e, debug_text, data->length)
     free(debug_text);

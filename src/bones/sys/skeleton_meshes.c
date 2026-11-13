@@ -160,7 +160,7 @@ void skeleton_meshes_system(iter* it) {
             continue;
         }
         byte render_depth = zox_getv(owner, RenderDepth);
-        zox_geter(vox, ColorRGBs, vcolors);
+        const ColorRGBs* vcolors = zox_get(vox, ColorRGBs);
         byte node_depth = zox_getv(vox, NodeDepth);
         entity active = zox_get_link(world, e, ActiveMesh);
         entity preparing = zox_get_link(world, e, PreparingMesh);

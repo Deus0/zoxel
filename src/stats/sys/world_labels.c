@@ -88,7 +88,7 @@ void character_name_labels_system(iter* it) {
         if (!zox_valid(soul)) {
             continue;
         }
-        zox_geter_value(soul, StatValue, float, soul_value);
+        float soul_value = zox_getv(soul, StatValue);
         // "Dave Lvl 3"
         char text[128];
         int souli = floorf(soul_value);

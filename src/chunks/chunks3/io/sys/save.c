@@ -57,7 +57,7 @@ void chunk3_save_system(iter* it) {
 #endif
         char filename[128];
         get_chunk_filename(filename, position->value);
-        zox_geter(realm, FolderPath, game_path);
+        const FolderPath* game_path = zox_get(realm, FolderPath);
         char* path = join_path(game_path->value, filename);
         FILE* file = fopen(path, "wb");
         if (file == NULL) {

@@ -82,9 +82,9 @@ void free_roam_toggle_system(iter* it) {
                     continue;
                 }
                 if (zox_has(e3, ZeviceButton)) {
-                    zox_geter(e3, DeviceButtonType, type);
+                    const DeviceButtonType* type = zox_get(e3, DeviceButtonType);
                     if (type->value == zox_btn_right_stick_push) {
-                        zox_geter_value(e3, ZeviceButton, byte, button);
+                        byte button = zox_getv(e3, ZeviceButton);
                         if (devices_get_pressed_this_frame(button)) {
                             is_toggle_camera = 1;
                             break;
@@ -93,7 +93,7 @@ void free_roam_toggle_system(iter* it) {
                 }
             }*/
             if (zox_has(e2, Keyboard)) {
-                zox_geter(e2, Keyboard, keyboard);
+                const Keyboard* keyboard = zox_get(e2, Keyboard);
                 if (keyboard->f1.pressed_this_frame) {
                     is_toggle = 1;
                     break;

@@ -26,7 +26,7 @@ static inline void render_vox_instance_command(
         return;
     }
     // Ignore if no indicies
-    zox_geter(mesh, MeshIndicies, meshIndicies);
+    const MeshIndicies* meshIndicies = zox_get(mesh, MeshIndicies);
     if (!meshIndicies->length) {
         return;
     }
@@ -34,12 +34,12 @@ static inline void render_vox_instance_command(
         zox_loge("Invalid Instance Mesh [%s]: No MeshGPULink", zox_get_name(mesh));
         return;
     }
-    zox_geter(mesh, MeshGPULink, gpumesh);
+    const MeshGPULink* gpumesh = zox_get(mesh, MeshGPULink);
     if (!gpumesh->value.x || !gpumesh->value.y) {
         zox_loge("Invalid Instance Mesh [%s]: GPU Mesh is 0.", zox_get_name(mesh));
         return;
     }
-    zox_geter(mesh, ColorsGPULink, gpucolors);
+    const ColorsGPULink* gpucolors = zox_get(mesh, ColorsGPULink);
     if (!gpucolors->value) {
         zox_loge("Invalid Instance Mesh [%s]: GPU Color is 0.", zox_get_name(mesh));
         return;
@@ -79,12 +79,12 @@ void vox_instance_render_system(iter* it) {
     if (!material_link) {
         return;
     }
-    zox_geter(material_vox_instance, UboGPULink, ubo);
+    const UboGPULink* ubo = zox_get(material_vox_instance, UboGPULink);
     if (!ubo->value) {
         // zox_log(" ! error with material_vox_instance uboGPULink.\n")
         return;
     }
-    zox_geter(material_vox_instance, MaterialVoxInstance, material_attributes);
+    const MaterialVoxInstance* material_attributes = zox_get(material_vox_instance, MaterialVoxInstance);
     InstanceRenderCommand_array_d* commands = create_InstanceRenderCommand_array_d(max_meshes);
     if (!commands->data) {
         // errored out
@@ -158,7 +158,7 @@ void vox_instance_render_system(iter* it) {
         zox_getv(material_vox_instance_sway, MaterialGPULink) :
         0;
     if (sway_material_link) {
-        zox_geter(material_vox_instance_sway, MaterialVoxInstanceSway, sway_attributes);
+        const MaterialVoxInstanceSway* sway_attributes = zox_get(material_vox_instance_sway, MaterialVoxInstanceSway);
         // wrap time to keep float precision in the shader
         float sway_time = (float) fmod(zox_current_time, 3600.0);
         zox_gpu_material(sway_material_link);

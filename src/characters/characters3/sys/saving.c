@@ -68,7 +68,7 @@ void character_save_system(iter* it) {
             zox_logw("Realm Invalid for Saving.");
             continue;
         }
-        zox_geter(realm, FolderPath, path);
+        const FolderPath* path = zox_get(realm, FolderPath);
         if (save_file_struct(path->value, "player.dat", &data, sizeof(SaveDataCharacter))) {
             hash->value = new_hash;
         }

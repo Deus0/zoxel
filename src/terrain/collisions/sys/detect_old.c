@@ -23,7 +23,7 @@ byte check_collision_point(ecs *world, const ChunkLinks* chunks, byte terrain_de
     if (!zox_valid(chunk)) {
         return 0;
     }
-    zox_geter(chunk, VoxelNode, node);
+    const VoxelNode* node = zox_get(chunk, VoxelNode);
     if (!node) {
         return 0;
     }
@@ -33,7 +33,7 @@ byte check_collision_point(ecs *world, const ChunkLinks* chunks, byte terrain_de
     if (!byte3_in_bounds(in_chunk_position, chunk_size)) {
         return 0;
     }
-    zox_geter_value(chunk, NodeDepth, byte, chunk_depth);
+    byte chunk_depth = zox_getv(chunk, NodeDepth);
     byte block_index = get_sub_node_voxel_locked(node, &in_chunk_position, chunk_depth);
     return block_collisions[block_index];
 }
@@ -196,9 +196,9 @@ void collision_detect_system(iter* it) {
         if (!zox_valid(link->value)) {
             continue; // these shouldn't be here
         }
-        zox_geter(link->value, ChunkLinks, chunks);
-        zox_geter_value(link->value, NodeDepth, byte, terrain_depth);
-        zox_geter_value(link->value, BlockScale, float, terrain_scale);
+        const ChunkLinks* chunks = zox_get(link->value, ChunkLinks);
+        byte terrain_depth = zox_getv(link->value, NodeDepth);
+        float terrain_scale = zox_getv(link->value, BlockScale);
         if (!chunks || collision->value) {
             continue;
         }

@@ -18,7 +18,7 @@ void save_begin_system(iter* it) {
             zox_logw("Folder Entity Invalid [%s]", zox_get_name(e));
             continue;
         }
-        zox_geter(folder, FolderPath, folder_path);
+        const FolderPath* folder_path = zox_get(folder, FolderPath);
         char* filepath = join_path(folder_path->value, path->value);
         if (dbg_log) {
             zox_log("Save Begins [%s] to [%s]", zox_get_name(e), filepath);

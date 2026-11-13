@@ -48,12 +48,12 @@ void disable_inputs_until_release(
             }
             byte has_input = 0;
             if (zox_has(e3, ZeviceStick)) {
-                zox_geter(e3, ZeviceStick, stick);
+                const ZeviceStick* stick = zox_get(e3, ZeviceStick);
                 has_input = zevice_stick_has_input(
                     stick,
                     joystick_min_cutoff);
             } else if (zox_has(e3, ZeviceButton)) {
-                zox_geter(e3, ZeviceButton, button);
+                const ZeviceButton* button = zox_get(e3, ZeviceButton);
                 has_input = button->value !=  0;
             }
             if (has_input) {

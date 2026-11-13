@@ -60,7 +60,7 @@ void light3_build_system(iter* it) {
         const LightNode *nnodesl[6];
         fetch_neightbor_light_nodes(world, neighbors, nnodesl);
         entity realm = zox_get_link(world, vox_link->value, RealmLink);
-        zox_geter(realm, BlockLinks, blocks);
+        const BlockLinks* blocks = zox_get(realm, BlockLinks);
         byte solidity[blocks->length];
         for (int j = 0; j < blocks->length; j++) {
             entity block = blocks->value[j];

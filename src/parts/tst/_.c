@@ -48,7 +48,7 @@ void zox_tst_parts_check(ecs* world) {
             zox_tst_check(zox_has(model, VoxelNode), "part [%s] model [%s] has no VoxelNode",
                 zox_getn(item), zox_getn(model));
             if (zox_has(model, VoxelNode)) {
-                zox_geter(model, VoxelNode, voxels);
+                const VoxelNode* voxels = zox_get(model, VoxelNode);
                 const int count = zox_tst_count_voxels(voxels);
                 zox_log("[tst] part [%s] model [%s] voxels [%i] GenerateModel [%i]",
                     zox_getn(item), zox_getn(model), count,
@@ -60,7 +60,7 @@ void zox_tst_parts_check(ecs* world) {
         entity texture = zox_get_link(world, item, TextureLink);
         zox_tst_check(zox_valid(texture), "part [%s] has no TextureLink", zox_getn(item));
         if (zox_valid(texture) && zox_has(texture, TextureData)) {
-            zox_geter(texture, TextureData, data);
+            const TextureData* data = zox_get(texture, TextureData);
             int pixels = 0;
             for (int j = 0; j < data->length; j++) {
                 pixels += data->value[j].a != 0;

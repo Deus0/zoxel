@@ -60,7 +60,7 @@ byte zox_tst_npc_attacks_ready(ecs* world) {
     const float health = zox_tst_attacks_player_health(world, character);
     if (zox_tst_attacks_frames % 60 == 0 && zox_valid(npc)) {
         const entity action = zox_has(npc, ActiveAction) ? zox_getv(npc, ActiveAction) : 0;
-        zox_geter(npc, RaycastVoxelData, ray);
+        const RaycastVoxelData* ray = zox_get(npc, RaycastVoxelData);
         zox_log("[tst] npc combat [%i] behaviour [%i] action [%s] ray hit [%s] at [%.2f] player health [%.1f] of [%.1f]",
             zox_getv(npc, CombatState), zox_getv(npc, Behaviour), zox_get_name(action),
             zox_get_name(ray->chunk), ray->distance, health, zox_tst_attacks_health);

@@ -87,8 +87,8 @@ byte damage_character(
     zox_muter(hit, Velocity3D, hit_velocity);
     hit_velocity->value = float3_add(hit_velocity->value, hit_impulse);
     // damage popup
-    zox_geter_value(hit, Bounds3D, float3, bounds3D);
-    zox_geter_value(hit, Position3D, float3, hit_character_position);
+    float3 bounds3D = zox_getv(hit, Bounds3D);
+    float3 hit_character_position = zox_getv(hit, Position3D);
     float3 popup_position = (float3) {
         hit_character_position.x,
         hit_character_position.y + bounds3D.y + skill_damage_popup_spawn_y,

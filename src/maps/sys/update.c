@@ -32,7 +32,7 @@ void map_position_system(iter* it) {
                 new_position.y);
         }
         entity terrain = zox_get_link(world, e, TerrainLink);
-        zox_geter(terrain, TunkLinks, tunks);
+        const TunkLinks* tunks = zox_get(terrain, TunkLinks);
         // for all textures
         entity body = zox_get_child_by_id(
             world,

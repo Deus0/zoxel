@@ -8,7 +8,7 @@ uint debug_ui_raycasted_light(ecs *world, entity player, char *buffer, uint size
         index += snprintf(buffer + index, size - index, "[%s] has no character\n", zox_get_name(player));
         return index;
     }
-    zox_geter(character, RaycastVoxelData, data);
+    const RaycastVoxelData* data = zox_get(character, RaycastVoxelData);
     index += snprintf(buffer + index, size - index, "Light Debugger\n");
     index += snprintf(buffer + index, size - index, " - Raycast Result [%i]\n", data->result);
     // node debugger
@@ -18,8 +18,8 @@ uint debug_ui_raycasted_light(ecs *world, entity player, char *buffer, uint size
     }
     entity chunk_last = data->chunk_last;
     if (zox_valid(chunk_last)) {
-        zox_geter_value(chunk_last, RenderDepth, byte, depth_last);
-        zox_geter(chunk_last, LightNode, light_node_last);
+        byte depth_last = zox_getv(chunk_last, RenderDepth);
+        const LightNode* light_node_last = zox_get(chunk_last, LightNode);
         byte light_last = getv_LightNode(light_node_last, depth_last, data->positionl_last);
         index += snprintf(buffer + index, size - index, "Last Chunk [%s]\n", zox_get_name(chunk_last));
         index += snprintf(buffer + index, size - index, " - Depth [%i]\n", depth_last);
@@ -36,10 +36,10 @@ uint debug_ui_raycasted_light(ecs *world, entity player, char *buffer, uint size
     // data->chunk now chunk_last
     // NOTE: This gets adjacent data from hit voxel!
     if (zox_valid(data->chunk) && zox_has(data->chunk, ChunkNeighbors)) {
-        zox_geter(data->chunk, LightNode, hit_light_octree);
-        zox_geter_value(data->chunk, RenderDepth, byte, depth_hit);
+        const LightNode* hit_light_octree = zox_get(data->chunk, LightNode);
+        byte depth_hit = zox_getv(data->chunk, RenderDepth);
         byte face = normal_to_direction(data->normal);
-        zox_geter(data->chunk, ChunkNeighbors, neighbors);
+        const ChunkNeighbors* neighbors = zox_get(data->chunk, ChunkNeighbors);
         const LightNode* neighbor_light_octrees[6];
         fetch_neightbor_light_nodes(world, neighbors, neighbor_light_octrees);
         if (!neighbor_light_octrees[0]) {
@@ -78,8 +78,8 @@ uint debug_ui_raycasted_light(ecs *world, entity player, char *buffer, uint size
         }
     }
     /*entity chunk_hit = data->chunk;
-    zox_geter_value(chunk_hit, RenderDepth, byte, depth_hit);
-    zox_geter(chunk_hit, LightNode, light_node_hit);
+    byte depth_hit = zox_getv(chunk_hit, RenderDepth);
+    const LightNode* light_node_hit = zox_get(chunk_hit, LightNode);
     byte light_hit = getv_LightNode(light_node_hit, depth_hit, data->positionl);
     index += snprintf(buffer + index, size - index, "   + Light Inside [%i]\n", light_hit);
     if (depth_hit) {

@@ -30,7 +30,7 @@ void set_camera_transform(ecs *world, entity camera, entity character, byte mode
     if (zox_valid(character) && zox_has(character, Position3D)) {
         // zox_loge("[set_camera_transform]: Invalid Character");
         // return;
-        zox_geter_value(character, Position3D, float3, position);
+        float3 position = zox_getv(character, Position3D);
         target_position = position;
     }
 

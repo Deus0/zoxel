@@ -4,12 +4,12 @@
         return 0;
     }
     if (zox_has(e, UIHolderLink)) {
-        zox_geter(e, UIHolderLink, uiHolderLink);
+        const UIHolderLink* uiHolderLink = zox_get(e, UIHolderLink);
         if (zox_valid(uiHolderLink->value)) {
             if (zox_has(uiHolderLink->value, RenderDepth) && zox_has(uiHolderLink->value, MaxRenderDepth)) {
-                zox_geter_value(uiHolderLink->value, RenderDepth, byte, render_depth);
+                byte render_depth = zox_getv(uiHolderLink->value, RenderDepth);
                 // TODO: Use a UIVisible flag
-                zox_geter_value(uiHolderLink->value, MaxRenderDepth, byte, max_render_depth);
+                byte max_render_depth = zox_getv(uiHolderLink->value, MaxRenderDepth);
                 byte render_depth_valid =
                     render_depth != render_depth_uninitialized &&
                     // render_depth != render_depth_invisible &&

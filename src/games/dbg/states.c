@@ -7,7 +7,7 @@ void test_game_end(ecs *world) {
         return;
     }
     zox_log("> game toggling [%s]", zox_get_name(game));
-    zox_geter_value(game, GameState, byte, gstate);
+    byte gstate = zox_getv(game, GameState);
     if (gstate == zox_game_none) {
         zox_log("+ game starting %i", gstate);
         zox_set(game, GameStateTarget, { zox_game_load_start });

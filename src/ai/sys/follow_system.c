@@ -15,7 +15,7 @@ void follow_system(iter* it) {
         if (!zox_valid(target)) {
             continue;
         }
-        zox_geter_value(target, Position3D, float3, position);
+        float3 position = zox_getv(target, Position3D);
         target_position->value = position;
     }
     zox_sys_on_end();

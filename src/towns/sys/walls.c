@@ -31,7 +31,7 @@ void town_walls_system(iter* it) {
             continue;
         }
 #endif
-        zox_geter(realm, BiomeLinks, realm_biomes);
+        const BiomeLinks* realm_biomes = zox_get(realm, BiomeLinks);
 #ifdef zox_safety_checks
         if (!realm_biomes->length) {
             zox_loge("No Biomes on Realm");
@@ -84,9 +84,9 @@ void town_walls_system(iter* it) {
         byte gate_height = 6; // rand_range(4, 8);
         byte wall_height = 8; // rand_range(4, 8);
         byte home_height = 6; // rand_range(4, 8);
-        zox_geter(tunk, BiomeMap, biome_map);
-        zox_geter(tunk, HeightMap, height_map);
-        zox_geter(tunk, TownMap, town_map);
+        const BiomeMap* biome_map = zox_get(tunk, BiomeMap);
+        const HeightMap* height_map = zox_get(tunk, HeightMap);
+        const TownMap* town_map = zox_get(tunk, TownMap);
 #ifdef zox_safety_checks
         if (!town_map->length) {
             zox_loge("Invalid [Tunk] [town_map] at [%ix%ix%i]", cposition->value.x, cposition->value.y, cposition->value.z);

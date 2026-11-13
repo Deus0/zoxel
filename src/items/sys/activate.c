@@ -23,8 +23,8 @@ void item_activate_system(iter* it) {
             continue;
         }
         entity user = zox_get_parent(world, e);
-        zox_geter(user, RaycastVoxelData, raycast_data);
-        zox_geter(user, RaycastRange, range);
+        const RaycastVoxelData* raycast_data = zox_get(user, RaycastVoxelData);
+        const RaycastRange* range = zox_get(user, RaycastRange);
         byte hit_block = raycast_data->result == rayhit_terrain;
         byte in_range = raycast_data->distance <= range->value;
         if (!hit_block ||

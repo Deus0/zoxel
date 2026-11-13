@@ -32,7 +32,7 @@ static inline byte zox_tst_lod_mesh(ecs* world, entity chunk, float* average, by
             if (!zox_has(mesh, ChunkMesh) || !zox_has(mesh, MeshColorRGBs) || !zox_has(mesh, RenderDepth)) {
                 continue;
             }
-            zox_geter(mesh, MeshColorRGBs, colors);
+            const MeshColorRGBs* colors = zox_get(mesh, MeshColorRGBs);
             for (int k = 0; k < colors->length; k++) {
                 total += colors->value[k].r;
                 *dark += colors->value[k].r <= darklight;
@@ -66,7 +66,7 @@ void zox_tst_lod_chunk_lights_check(ecs* world) {
             vertices[depth] += verts;
             counts[depth]++;
             // beside a chunk of another lod: a border between lods
-            zox_geter(chunk, ChunkNeighbors, neighbors);
+            const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
             for (byte n = 0; n < chunk_neighbors_length; n++) {
                 float neighbor_average;
                 byte neighbor_depth;

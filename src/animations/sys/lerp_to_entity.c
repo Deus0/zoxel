@@ -22,7 +22,7 @@ void lerp_to_entity_system(iter* it) {
             continue;
         }
 
-        zox_geter_value(target->value, Position3D, float3, end_position);
+        float3 end_position = zox_getv(target->value, Position3D);
 
         double lerp = (zox_current_time - (start->value + delay->value)) / length->value;
 

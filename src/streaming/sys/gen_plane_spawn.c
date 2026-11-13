@@ -47,7 +47,7 @@
             continue;
         }
 
-        zox_geter_value(voxLink->value, BlockScale, float, terrain_scale);
+        float terrain_scale = zox_getv(voxLink->value, BlockScale);
         const byte stream_zone = renderDistance->value < terrain_lod_far;
         if (stream_zone) {
 

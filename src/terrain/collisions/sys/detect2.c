@@ -32,11 +32,11 @@ static inline byte chunk_voxel_solid(
     if (!zox_valid(chunk)) {
         return 0;
     }
-    zox_geter(chunk, VoxelNode, node)
+    const VoxelNode* node = zox_get(chunk, VoxelNode);
     if (!node) {
         return 0;
     }
-    zox_geter_value(chunk, NodeDepth, byte, chunk_depth)
+    byte chunk_depth = zox_getv(chunk, NodeDepth);
     const byte ddepth = terrain_depth - chunk_depth + 1;
     const int3 voxel_position2 = int3_div1(voxel_position, (int)ddepth);
     const byte3 chunk_size = byte3_single(powers_of_two[chunk_depth]);
@@ -352,9 +352,9 @@ void collision_detect_system(iter* it) {
             continue;
         }
 
-        zox_geter(link->value, ChunkLinks, chunks);
-        zox_geter_value(link->value, NodeDepth, byte, terrain_depth);
-        zox_geter_value(link->value, BlockScale, float, terrain_scale);
+        const ChunkLinks* chunks = zox_get(link->value, ChunkLinks);
+        byte terrain_depth = zox_getv(link->value, NodeDepth);
+        float terrain_scale = zox_getv(link->value, BlockScale);
 
         if (!chunks || collision->value) {
             continue;

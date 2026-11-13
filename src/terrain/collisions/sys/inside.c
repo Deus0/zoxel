@@ -17,9 +17,9 @@ void inside_block_system(iter* it) {
             zox_loge("Terrain invalid in character [%s]", zox_get_name(e));
             continue;
         }
-        zox_geter(terrain, ChunkLinks, chunks);
-        zox_geter_value(terrain, BlockScale, float, terrain_scale);
-        zox_geter_value(terrain, NodeDepth, byte, terrain_depth);
+        const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
+        float terrain_scale = zox_getv(terrain, BlockScale);
+        byte terrain_depth = zox_getv(terrain, NodeDepth);
         float3 positionf = float3_add(position->value,
             (float3) { 0, - bounds->value.y / 4.0f, 0 });
         int3 positionv = real_position_to_block_position(positionf, terrain_scale);
@@ -36,8 +36,8 @@ void inside_block_system(iter* it) {
             zox_loge("Invalid [%s] Chunk Components [%lu]", zox_get_name(chunk), chunk);
             continue;
         }
-        zox_geter(chunk, VoxelNode, voctree);
-        zox_geter_value(chunk, NodeDepth, byte, cdepth);
+        const VoxelNode* voctree = zox_get(chunk, VoxelNode);
+        byte cdepth = zox_getv(chunk, NodeDepth);
         byte length2 = octree_size(cdepth);
         byte3 csize = byte3_single(length2);
         byte3 positionl = get_positionl_byte3(positionv, csize);

@@ -30,7 +30,7 @@ static inline int zox_tst_terrain_voxel(ecs* world, entity terrain, int3 block) 
     const byte depth = zox_getv(terrain, NodeDepth);
     const int length = octree_size(depth);
     const int3 chunk_position = block_position_to_chunk_position(block, depth);
-    zox_geter(terrain, ChunkLinks, chunks);
+    const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
     const entity chunk = int3_hashmap_get(chunks->value, chunk_position);
     if (!zox_valid(chunk) || !zox_has(chunk, VoxelNode)) {
         return -1;
@@ -40,7 +40,7 @@ static inline int zox_tst_terrain_voxel(ecs* world, entity terrain, int3 block) 
         block.y - chunk_position.y * length,
         block.z - chunk_position.z * length
     };
-    zox_geter(chunk, VoxelNode, voxels);
+    const VoxelNode* voxels = zox_get(chunk, VoxelNode);
     return getv_VoxelNode(voxels, depth, local);
 }
 
@@ -68,9 +68,9 @@ void zox_tst_spawn_dump_column(ecs* world, entity terrain, int3 column) {
         }
     }
     zox_log("[tst]   near chunks generating [%i]", stuck);
-    zox_geter(terrain, TerrainSpawnQueue, queue);
-    zox_geter(terrain, TunkLinks, tunks);
-    zox_geter(terrain, ChunkLinks, chunks);
+    const TerrainSpawnQueue* queue = zox_get(terrain, TerrainSpawnQueue);
+    const TunkLinks* tunks = zox_get(terrain, TunkLinks);
+    const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
     const entity tunk = int2_hashmap_get(tunks->value, (int2) { column.x, column.z });
     zox_log("[tst] column [%ix%i] queue [%i] tunks [%i] chunks [%i] tunk [%s] valid [%i] loading [%i]",
         column.x, column.z, (int) queue->count, count_int2_hashmap(tunks->value), count_int3_hashmap(chunks->value),
@@ -97,7 +97,7 @@ void zox_tst_spawn_dump_column(ecs* world, entity terrain, int3 column) {
         int solid = 0;
         const byte depth = zox_getv(chunk, NodeDepth);
         const int length = octree_size(depth);
-        zox_geter(chunk, VoxelNode, voxels);
+        const VoxelNode* voxels = zox_get(chunk, VoxelNode);
         for (int x = 0; x < length; x++) for (int yy = 0; yy < length; yy++) for (int z = 0; z < length; z++) {
             solid += getv_VoxelNode(voxels, depth, (byte3) { x, yy, z }) != 0;
         }
@@ -149,7 +149,7 @@ byte zox_tst_player_spawn_ready(ecs* world) {
         }
         // progress: chunks streamed in, and chunks finishing generation
         if (zox_valid(local_terrain) && zox_has(local_terrain, ChunkLinks)) {
-            zox_geter(local_terrain, ChunkLinks, chunks);
+            const ChunkLinks* chunks = zox_get(local_terrain, ChunkLinks);
             const int count = count_int3_hashmap(chunks->value);
             const int generating = zox_count_types(GenerateChunk);
             zox_tst_progress(count * 100000.0 + generating);
@@ -189,7 +189,7 @@ void zox_tst_player_spawn_check(ecs* world) {
     // the block the character stands in is air
     const int3 block = real_position_to_block_position(position, scale);
     const int3 chunk_position = block_position_to_chunk_position(block, depth);
-    zox_geter(terrain, ChunkLinks, chunks);
+    const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
     const entity chunk = int3_hashmap_get(chunks->value, chunk_position);
     zox_tst_check(zox_valid(chunk), "no chunk under the character at [%ix%ix%i]", chunk_position.x, chunk_position.y, chunk_position.z);
     if (!zox_valid(chunk)) {
@@ -200,7 +200,7 @@ void zox_tst_player_spawn_check(ecs* world) {
         block.y - chunk_position.y * length,
         block.z - chunk_position.z * length
     };
-    zox_geter(chunk, VoxelNode, voxels);
+    const VoxelNode* voxels = zox_get(chunk, VoxelNode);
     const byte voxel = getv_VoxelNode(voxels, depth, local);
     zox_tst_check(!voxel, "character is inside a solid block [%i] at [%ix%ix%i]", voxel, block.x, block.y, block.z);
     // standing on ground, not floating or mid fall: a solid block close under it

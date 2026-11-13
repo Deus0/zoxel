@@ -53,7 +53,7 @@ void landfill_chunk_system(iter* it) {
             continue;
         }
 #endif
-        zox_geter(realm, BiomeLinks, realm_biomes);
+        const BiomeLinks* realm_biomes = zox_get(realm, BiomeLinks);
         entity tunk = zox_get_link(world, e, TunkLink);
 #ifdef zox_safety_checks
         if (!realm_biomes->length) {
@@ -85,7 +85,7 @@ void landfill_chunk_system(iter* it) {
             }
             // continue;
         }
-        zox_geter(tunk, BiomeMap, biome_map);
+        const BiomeMap* biome_map = zox_get(tunk, BiomeMap);
 #ifdef zox_safety_checks
         if (!zox_disable_biomes && !biome_map->length) {
             zox_loge("Invalid [Tunk] [biome_map] at [%ix%ix%i]",
@@ -95,7 +95,7 @@ void landfill_chunk_system(iter* it) {
             continue;
         }
 #endif
-        zox_geter(tunk, HeightMap, height_map);
+        const HeightMap* height_map = zox_get(tunk, HeightMap);
 #ifdef zox_safety_checks
         if (!height_map->length) {
             zox_loge("Invalid [Tunk] [height_map] at [%ix%ix%i]",

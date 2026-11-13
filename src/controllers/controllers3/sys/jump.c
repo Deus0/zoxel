@@ -56,7 +56,7 @@ void player3d_jump_system(iter* it) {
                 }
             }
             if (mode->value == zox_device_mode_keyboardmouse && zox_has(e2, Keyboard)) {
-                zox_geter(e2, Keyboard, keyboard);
+                const Keyboard* keyboard = zox_get(e2, Keyboard);
                 if (keyboard->space.is_pressed) {
                     is_jump_triggered = 1;
                 }

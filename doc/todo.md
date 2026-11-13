@@ -6,7 +6,6 @@
 
 # Now
 - Mae a player respawn test too
-- Remove all zox_geter and just use zox_get (clearer syntax)
 - Lag spikes crossing chunks (48ms): flecs merges and observers, found with --profile
 	- streaming bursts (debug): merges up to 145ms, observers up to 100ms a frame, systems far less
 	-x time each observer (zox_observer_internal wraps them, on with --profile): ours are cheap, 1ms a frame at most

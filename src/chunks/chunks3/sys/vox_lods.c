@@ -50,12 +50,12 @@ byte build_vox_mesh_at_depth(
     {
         return zox_vox_mesh_invalid;
     }
-    zox_geter(vox, ColorRGBs, vcolors);
+    const ColorRGBs* vcolors = zox_get(vox, ColorRGBs);
     if (!vcolors->length) {
         // NOTE: Voxels not ready, it will be triggered again on VoxelNodeDirty
         return zox_vox_mesh_waiting;
     }
-    zox_geter(vox, VoxelNode, voxels);
+    const VoxelNode* voxels = zox_get(vox, VoxelNode);
     byte node_depth = zox_getv(vox, NodeDepth);
     int3 chunk_size = zox_getv(vox, ChunkSize);
     float block_scale = zox_getv(vox, BlockScale);

@@ -91,7 +91,7 @@ void zox_tst_load_games_setup() {
 int zox_tst_load_list_buttons(ecs* world, entity e, int* oldest, entity* newest) {
     int count = 0;
     if (zox_has(e, FolderPath)) {
-        zox_geter(e, FolderPath, path);
+        const FolderPath* path = zox_get(e, FolderPath);
         const int index = zox_tst_load_save_index(path->value);
         if (index < *oldest) {
             *oldest = index;
@@ -171,7 +171,7 @@ byte zox_tst_load_games_ready(ecs* world) {
     if (!zox_valid(realm) || !zox_has(realm, FolderPath)) {
         return 0;
     }
-    zox_geter(realm, FolderPath, path);
+    const FolderPath* path = zox_get(realm, FolderPath);
     const int index = zox_tst_load_save_index(path->value);
     const uint seed = (uint) zox_getv(realm, Seed);
     zox_log("[tst] loaded realm [%s] seed [%u] from [%s]", zox_getn(realm), seed, path->value);

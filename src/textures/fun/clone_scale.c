@@ -12,12 +12,12 @@ void clone_texture_data_scale(
         }
         return;
     }
-    zox_geter(src, TextureData, source_data);
+    const TextureData* source_data = zox_get(src, TextureData);
     if (source_data->length == 0 || !source_data->value) {
         zox_loge("[clone_texture_data] Invalid src TextureData [%s] > source [%s]", zox_get_name(e), zox_get_name(src));
         return;
     }
-    zox_geter_value(src, TextureSize, int2, original_size);
+    int2 original_size = zox_getv(src, TextureSize);
     /* basic sanity */
     if (original_size.x <= 0 || original_size.y <= 0 || new_size.x <= 0 || new_size.y <= 0) {
         zox_loge("[clone_texture_data] invalid sizes src=%dx%d dst=%dx%d", original_size.x, original_size.y, new_size.x, new_size.y);

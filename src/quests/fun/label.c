@@ -15,7 +15,7 @@
         return index;
     }
 
-    zox_geter(characterLink->value, QuestLinks, quests)
+    const QuestLinks* quests = zox_get(characterLink->value, QuestLinks);
     index += snprintf(buffer + index, size - index, "[%s] has [%i] quests\n", zox_get_name(player), quests->length);
     for (int i = 0; i < quests->length; i++) {
         const entity action = quests->value[i];

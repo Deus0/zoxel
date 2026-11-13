@@ -22,7 +22,7 @@ void process_node_model_paint(
     }
     byte paint_type = zox_getv(node, NodeVoxel);
     byte model_depth = zox_getv(vox, NodeDepth);
-    zox_geter(vox, ColorRGBs, colors);
+    const ColorRGBs* colors = zox_get(vox, ColorRGBs);
     zox_muter(vox, VoxelNode, voctree);
     if (!paint_type) {
         zox_loge("Cannot paint air type.");
@@ -65,7 +65,7 @@ void paint_model_node_system(iter* it) {
         if (!node) {
             continue;
         }
-        zox_geter_value(node, NodeType, byte, ntype);
+        byte ntype = zox_getv(node, NodeType);
         if (ntype != zox_model_node_paint) {
             continue;
         }

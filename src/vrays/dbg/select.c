@@ -14,7 +14,7 @@ void select_dbg_chunk(ecs* world) {
         return;
     }
 
-    zox_geter(character, RaycastVoxelData, data);
+    const RaycastVoxelData* data = zox_get(character, RaycastVoxelData);
 
     if (dbg_chunk != data->chunk) {
         dbg_chunk = data->chunk;

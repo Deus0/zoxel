@@ -68,7 +68,7 @@ uint debug_ui_system_times(ecs *world, entity player, char *buffer, uint size, u
         );
         // Add process data
         /*if (zox_has(e, SystemProcessedCache)) {
-            zox_geter_value(e, SystemProcessedCache, int, process_count);
+            int process_count = zox_getv(e, SystemProcessedCache);
             index += snprintf(buffer + index, size - index,"  p [%i]", process_count);
         }*/
         index += snprintf(buffer + index, size - index, "\n");

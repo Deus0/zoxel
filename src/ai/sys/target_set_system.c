@@ -10,10 +10,10 @@ void threat_position_system(iter* it) {
         if (!zox_valid(attacker)) {
             continue;
         }
-        zox_geter(attacker, Position3D, target);
+        const Position3D* target = zox_get(attacker, Position3D);
         attacker_position->value = target->value;
         if (is_debug_target) {
-            zox_geter_value(e, Position3D, float3, position);
+            float3 position = zox_getv(e, Position3D);
             debug_linec(world, position, attacker_position->value, color_rgb_gray);
         }
     }

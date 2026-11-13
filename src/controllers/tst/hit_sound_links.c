@@ -40,7 +40,7 @@ void zox_tst_hit_sound_links_check(ecs* world) {
     if (!zox_valid(realm)) {
         return;
     }
-    zox_geter(realm, BlockLinks, blocks);
+    const BlockLinks* blocks = zox_get(realm, BlockLinks);
     int unlinked = 0, stone_wrong = 0, dirt_wrong = 0;
     for (int i = 0; i < blocks->length; i++) {
         const entity block = blocks->value[i];

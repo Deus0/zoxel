@@ -19,7 +19,7 @@ uint zox_dbg_ui_filepaths(
     if (!zox_valid(realm)) {
         return index;
     }
-    zox_geter(realm, FolderPath, folder_path);
+    const FolderPath* folder_path = zox_get(realm, FolderPath);
     index += snprintf(buffer + index, size - index, "Realm Folder [%s]\n - [%s]\n", zox_get_name(realm), folder_path->value);
     entity character = get_linked_character(world, e);
     if (zox_valid(character)) {

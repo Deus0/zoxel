@@ -55,21 +55,21 @@ void player3d_trigger_system(iter* it) {
                     continue;
                 }
                 if (zox_has(e3, ZevicePointer)) {
-                    zox_geter_value(e3, ZevicePointer, byte, click);
+                    byte click = zox_getv(e3, ZevicePointer);
                     // if (devices_get_pressed_this_frame(click)) {
                     if (devices_get_pressed(click)) {
                         is_triggered_a = 1;
                     }
                     // Mouse Pointer has this also
                     if (zox_has(e3, ZevicePointerRight)) {
-                        zox_geter_value(e3, ZevicePointerRight, byte, click);
+                        byte click = zox_getv(e3, ZevicePointerRight);
                         // if (devices_get_pressed_this_frame(click)) {
                         if (devices_get_pressed_this_frame(click)) {
                             is_triggered_b = 1;
                         }
                     }
                 } else if (zox_has(e3, ZeviceButton)) {
-                    zox_geter_value(e3, DeviceButtonType, byte, type);
+                    byte type = zox_getv(e3, DeviceButtonType);
                     if (type == zox_btn_rt) {
                         byte click = zox_getv(e3, ZeviceButton);
                         if (devices_get_pressed(click)) {
@@ -77,7 +77,7 @@ void player3d_trigger_system(iter* it) {
                             is_triggered_a = 1;
                         }
                     } else if (type == zox_btn_lt) {
-                        zox_geter_value(e3, ZeviceButton, byte, value);
+                        byte value = zox_getv(e3, ZeviceButton);
                         if (devices_get_pressed_this_frame(value)) {
                             is_triggered_b = 1;
                         }

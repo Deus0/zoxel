@@ -41,7 +41,7 @@ void player_state_game_begin(
         return;
     }
 #endif
-    zox_geter(realm, FolderPath, path);
+    const FolderPath* path = zox_get(realm, FolderPath);
     byte terrain_depth = zox_getv(terrain, NodeDepth);
     float terrain_scale = zox_getv(terrain, BlockScale);
     byte terrain_chunk_length = octree_size(terrain_depth); // powers_of_two[terrain_depth];

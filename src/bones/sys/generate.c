@@ -113,7 +113,7 @@ void bone_index_generate_system2(iter* it) {
             zox_loge("SkeletonMesh [%s] has no parent skeleton", zox_sys_e_name);
             continue;
         }
-        zox_geter(skeleton, BoneLinks, bones);
+        const BoneLinks* bones = zox_get(skeleton, BoneLinks);
         generate_weights(
             world,
             e,

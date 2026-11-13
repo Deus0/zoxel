@@ -25,7 +25,7 @@ void lod_instance_system(iter* it) {
             zox_loge("Block [%s] Model [%s] has no ModelLods", zox_get_name(e), zox_get_name(model));
             continue;
         }
-        zox_geter(model, ModelLods, lods);
+        const ModelLods* lods = zox_get(model, ModelLods);
         entity vox_lod = lods->value[rdepth->value];
         if (!zox_valid(vox_lod)) {
             zox_logw("+ %s with model [%s] has invalid vox lod at Depth [%i]", zox_get_name(e), zox_get_name(model), rdepth->value);

@@ -11,12 +11,12 @@ void clone_texture_data(ecs *world, entity e, entity src) {
         return;
     }
 
-    zox_geter(src, TextureData, source_data);
+    const TextureData* source_data = zox_get(src, TextureData);
     if (source_data->length == 0 || !source_data->value) {
         zox_loge("[clone_texture_data] Invalid src TextureData [%s] > source [%s]", zox_get_name(e), zox_get_name(src));
         return;
     }
-    zox_geter_value(src, TextureSize, int2, size);
+    int2 size = zox_getv(src, TextureSize);
     const int bytes_length = sizeof(color) * source_data->length;
 
     TextureData data = { 0 };

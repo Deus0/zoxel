@@ -422,7 +422,7 @@ void terrain_collision_system(iter* it) {
             continue;
         }
         const float half_block = block_scale * 0.5f;
-        zox_geter(terrain, ChunkLinks, chunks);
+        const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
         const collision_terrain terrain_data = { world, blocks, chunks, terrain_depth, block_scale };
         const float3 half_extents = float4_rotate_bounds(rotation->value, bounds->value);
 

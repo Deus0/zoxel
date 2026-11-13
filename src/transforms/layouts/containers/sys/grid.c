@@ -95,7 +95,7 @@ void grid_system(iter* it) {
             continue;
         }
         entity first_child = children[0];
-        zox_geter_value(first_child, LayoutSize, int2, frame_size);
+        int2 frame_size = zox_getv(first_child, LayoutSize);
         // calculate total size first: ListUIMax - center it?
         int2 start_pos = (int2) {
             - size->value.x / 2 + margins->value.x,

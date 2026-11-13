@@ -2,8 +2,8 @@
     if (!zox_valid(e)) {
         return;
     }
-    zox_geter_value(e, LineAnchor, float4, anchor);
-    zox_geter_value(e, LineLocalPosition2, int4, points);
+    float4 anchor = zox_getv(e, LineAnchor);
+    int4 points = zox_getv(e, LineLocalPosition2);
     zox_muter(e, LinePosition2, canvas_points);
     // anchoring - point starts from bottom left, then we add 0 to 1 of parent size
     canvas_points->value = (int4) {
@@ -22,8 +22,8 @@ void set_line2_canvas_position(ecs *world, entity e) {
     if (!zox_valid(parent)) {
         return;
     }
-    zox_geter_value(parent, CanvasPosition, int2, parent_position);
-    zox_geter_value(parent, LayoutSize, int2, parent_size);
+    int2 parent_position = zox_getv(parent, CanvasPosition);
+    int2 parent_size = zox_getv(parent, LayoutSize);
     set_line2_canvas_position_direct(world, e, parent_position, parent_size);
 }
 

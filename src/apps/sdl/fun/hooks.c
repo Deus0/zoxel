@@ -5,7 +5,7 @@ void sdl_on_window_moved(ecs *world, entity e, int2 position) {
         zox_set(e, WindowPositionRestore, { position });
         zox_logv("+ setting window restore position to [%ix%i]", position.x, position.y);
     }
-    zox_geter_value(e, WindowMonitor, byte, old_monitor_index);
+    byte old_monitor_index = zox_getv(e, WindowMonitor);
     byte monitor_index = zox_app_get_monitor(world, e);
     if (old_monitor_index != monitor_index) {
         zox_set(e, WindowMonitor, { monitor_index });
@@ -26,7 +26,7 @@ void on_window_resized(ecs *world, entity e, int2 size, byte dbg_log) {
     }
     /*if (fullscreen  && override_system_scaling) {
         zox_log("Overriding shitty SDL Size from [%ix%i]", size.x, size.y);
-        zox_geter_value(e, WindowMonitor, byte, monitor);
+        byte monitor = zox_getv(e, WindowMonitor);
         size = get_screen_size_monitor(monitor);
         zox_log("Overrid shitty SDL Size to [%ix%i] on monitor [%i]", size.x, size.y, monitor);
     }*/
@@ -43,7 +43,7 @@ void on_window_resized(ecs *world, entity e, int2 size, byte dbg_log) {
 }
 
 /*void on_window_rotated(ecs* world, const entity e, byte orientation) {
-    zox_geter_value(e, ScreenOrientation, byte, old_orientation);
+    byte old_orientation = zox_getv(e, ScreenOrientation);
     if (orientation == old_orientation) {
         return;
     }

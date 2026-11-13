@@ -379,7 +379,7 @@ void chunk_sides_system(iter* it) {
         if (!solids) {
             // entity chunk = zox_get_parent(world, e);
             entity manager = zox_get_link(world, e, BlockManagerLink);
-            zox_geter(manager, BlockLinks, blocks);
+            const BlockLinks* blocks = zox_get(manager, BlockLinks);
             solids = malloc(blocks->length * sizeof(byte));
             for (int i = 0; i < blocks->length; i++) {
                 entity block = blocks->value[i];

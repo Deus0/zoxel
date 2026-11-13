@@ -13,6 +13,6 @@ const BlockLinks* get_first_terrain_voxels(iter* it) {
     if (!zox_valid(realm) || !zox_has(realm, BlockLinks)) {
         return NULL;
     }
-    zox_geter(realm, BlockLinks, voxels);
+    const BlockLinks* voxels = zox_get(realm, BlockLinks);
     return voxels;
 }

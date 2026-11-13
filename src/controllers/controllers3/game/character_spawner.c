@@ -10,7 +10,7 @@ byte find_position_in_terrain(
     float block_scale = zox_getv(terrain, BlockScale);
     byte terrain_depth = zox_getv(terrain, NodeDepth);
     int3 chunk_position = block_position_to_chunk_position(block_position, terrain_depth);
-    zox_geter(terrain, ChunkLinks, chunks);
+    const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
     entity chunk;
     const VoxelNode *voxel_node_above = NULL;
     byte node_depth = 0;
@@ -38,7 +38,7 @@ byte find_position_in_terrain(
             zox_player_spawn_blocked = reason;
             return 0;
         }
-        zox_geter(chunk, VoxelNode, chunkd);
+        const VoxelNode* chunkd = zox_get(chunk, VoxelNode);
         node_depth = zox_getv(chunk, NodeDepth);
         if (find_random_position_on_ground(
             chunkd,
@@ -127,8 +127,8 @@ entity game_start_player_load(
     // TODO: Load Character Seed
     lint realm_seed = zox_getv(realm, Seed);
     lint character_seed = seed_rand(realm_seed); // , 0, 100000);
-    zox_geter_value(terrain, BlockScale, float, terrain_scale);
-    zox_geter(terrain, ChunkLinks, chunks);
+    float terrain_scale = zox_getv(terrain, BlockScale);
+    const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
     TerrainPlace placer;
     placer.chunk = 0;
     // load position for spawning
@@ -227,7 +227,7 @@ void player_begin_system(iter* it) {
         }
         // actually we need to do this on loaded player model for bounds
         // if character
-        zox_geter(realm, FolderPath, path);
+        const FolderPath* path = zox_get(realm, FolderPath);
         byte is_new_game = !has_save_game_file(
             path->value,
             "player.dat");

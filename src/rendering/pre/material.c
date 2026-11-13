@@ -21,7 +21,7 @@ entity spawn_material(
     guint gpu_material = spawn_gpu_material_program(shader_value);
 #ifdef zox_verbose
     if (!gpu_material && is_verbose) {
-        zox_geter(shader, ShaderSourceIndex, index);
+        const ShaderSourceIndex* index = zox_get(shader, ShaderSourceIndex);
         zox_logv("### [%s] ###", zox_get_name(shader));
         zox_logv("   .vert\n%s", shader_verts[index->value]);
         zox_logv("   .frag\n%s", shader_frags[index->value]);

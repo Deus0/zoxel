@@ -16,7 +16,7 @@ void delete_nodes(ecs* world, entity e) {
         link_index++;
     }
     /*if (zox_has(e, NodeLinks)) {
-        zox_geter(e, NodeLinks, nodes);
+        const NodeLinks* nodes = zox_get(e, NodeLinks);
         for (int i = 0; i < nodes->length; i++) {
             entity e2 = nodes->value[i];
             delete_nodes(world, e2);

@@ -27,7 +27,7 @@ void scrollbar_handle_system(iter* it) {
             continue;
         }
         entity handle = scrollbar_children[0];
-        zox_geter_value(scrollbar, LayoutSize, int2, scrollbar_size);
+        int2 scrollbar_size = zox_getv(scrollbar, LayoutSize);
         int handle_height = list_children_length <= visible->value ? scrollbar_size.y : (int) scrollbar_size.y * (float_min(1, (float) visible->value / (float) list_children_length));
         int ybounds = (scrollbar_size.y / 2) - handle_height / 2;
         int2 handle_size = (int2) { scrollbar_size.x, handle_height };

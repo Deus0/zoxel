@@ -37,7 +37,7 @@ void height_map_system(iter* it) {
             continue;
         }
 #endif
-        zox_geter(realm, BiomeLinks, realm_biomes);
+        const BiomeLinks* realm_biomes = zox_get(realm, BiomeLinks);
 #ifdef zox_safety_checks
         if (!realm_biomes->length) {
             zox_loge("No Biomes on Realm");

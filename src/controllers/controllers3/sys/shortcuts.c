@@ -10,7 +10,7 @@ void qol_shortcuts_system(iter* it) {
         uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Keyboard));
         for (uint j = 0; j < length; j++) {
             entity e2 = devices[j];
-            zox_geter(e2, Keyboard, keyboard);
+            const Keyboard* keyboard = zox_get(e2, Keyboard);
             if (keyboard->f11.pressed_this_frame) {
                 toggle_fullscreen = 1;
             } else if (keyboard->f10.pressed_this_frame) {

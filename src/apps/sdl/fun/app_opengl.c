@@ -16,7 +16,7 @@ entity spawn_app_sdl_opengl(
         zox_loge("Failed spawning sdl window");
         return 0;
     }
-    zox_geter(e, SDLWindow, sdl_window);
+    const SDLWindow* sdl_window = zox_get(e, SDLWindow);
     SDL_GLContext context = create_sdl_opengl_context(sdl_window->value);
     if (!context) {
         zox_loge("OpenGL could not create a context");

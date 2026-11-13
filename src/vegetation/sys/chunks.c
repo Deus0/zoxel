@@ -35,7 +35,7 @@ void vegetation_chunk3_system(iter* it) {
             continue;
         }
 #endif
-        zox_geter(realm, BiomeLinks, realm_biomes);
+        const BiomeLinks* realm_biomes = zox_get(realm, BiomeLinks);
 #ifdef zox_safety_checks
         if (!realm_biomes->length) {
             zox_loge("No Biomes on Realm");
@@ -58,15 +58,15 @@ void vegetation_chunk3_system(iter* it) {
                 tunk_lod);
             // continue;
         }
-        zox_geter_value(terrain, NodeDepth, byte, terrain_depth);
+        byte terrain_depth = zox_getv(terrain, NodeDepth);
         byte is_max_depth = build_depth == terrain_depth;
         byte length = octree_size(build_depth);
         int3 chunk_block_position = chunk_position_to_block_position(chunk_position->value, terrain_depth);
         int2 map_size = int2_single(length);
         byte hmultiplier = powers_of_two[terrain_depth - build_depth];
-        zox_geter(tunk, BiomeMap, biome_map);
-        zox_geter(tunk, HeightMap, height_map);
-        zox_geter(tunk, VegetationMap, vegetation_map);
+        const BiomeMap* biome_map = zox_get(tunk, BiomeMap);
+        const HeightMap* height_map = zox_get(tunk, HeightMap);
+        const VegetationMap* vegetation_map = zox_get(tunk, VegetationMap);
 #ifdef zox_safety_checks
         if (!vegetation_map->length) {
             zox_loge("Invalid [Tunk] [vegetation_map] at [%ix%ix%i]", chunk_position->value.x, chunk_position->value.y, chunk_position->value.z);

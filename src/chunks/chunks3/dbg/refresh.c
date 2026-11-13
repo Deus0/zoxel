@@ -4,7 +4,7 @@ void zox_dbg_terrain_refresh(ecs* world, ClickEventData data) {
     }
     entity e = local_terrain;
     uint count = zox_get_children_count_by_id(world, e, zox_id(Chunk3));
-    // zox_geter(e, ChunkLinks, chunks);
+    // const ChunkLinks* chunks = zox_get(e, ChunkLinks);
     zox_log("Refreshing Terrain Chunks [%i]", count);
     iter it2 = zox_children(world, e);
     while (zox_children_next(it2)) {
@@ -24,7 +24,7 @@ void zox_dbg_terrain_refresh_mesh_colors(ecs* world, ClickEventData data) {
     }
     entity e = local_terrain;
     uint count = zox_get_children_count_by_id(world, e, zox_id(Chunk3));
-    // zox_geter(e, ChunkLinks, chunks);
+    // const ChunkLinks* chunks = zox_get(e, ChunkLinks);
     zox_log("Refreshing Terrain Chunks [%i]", count);
     iter it2 = zox_children(world, e);
     while (zox_children_next(it2)) {

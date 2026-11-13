@@ -15,8 +15,8 @@ void bone_gizmo_system(iter* it) {
         if (!zox_valid(parent)) {
             continue;
         }
-        // zox_geter_value(skeleton->value, Position3D, float3, sposition);
-        zox_geter_value(parent, Position3D, float3, pposition);
+        // float3 sposition = zox_getv(skeleton->value, Position3D);
+        float3 pposition = zox_getv(parent, Position3D);
         // zox_log("Rendering Bone");
         // spawn_line3(world, float3_add(sposition, position->value), float3_add(sposition, pposition), 1, 15);
         spawn_line3c(

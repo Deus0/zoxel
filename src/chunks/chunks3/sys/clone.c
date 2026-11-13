@@ -29,11 +29,11 @@ void clone_vox_system(iter* it) {
             continue;
         }
         // clone one depth at a time
-        zox_geter(src, VoxelNode, soctree);
-        zox_geter(src, NodeDepth, source_voctree_depth);
-        zox_geter_value(src, BlockScale, float, src_scale);
-        zox_geter(src, ChunkSize, source_chunk_size);
-        zox_geter(src, ColorRGBs, colors_source);
+        const VoxelNode* soctree = zox_get(src, VoxelNode);
+        const NodeDepth* source_voctree_depth = zox_get(src, NodeDepth);
+        float src_scale = zox_getv(src, BlockScale);
+        const ChunkSize* source_chunk_size = zox_get(src, ChunkSize);
+        const ColorRGBs* colors_source = zox_get(src, ColorRGBs);
         ndepth->value = source_voctree_depth->value;
         scale->value = src_scale;
         // its octree (written) and the source's (read) locked, address order (thread_safety.md)

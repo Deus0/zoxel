@@ -13,7 +13,7 @@ entity spawn_dialogue_ui(
     byte header_font_size = 14 * ui_scale;
     byte speech_font_size = 9 * ui_scale;
     byte button_font_size = 12 * ui_scale;
-    // zox_geter_value(canvas, LayoutSize, int2, canvas_size);
+    // int2 canvas_size = zox_getv(canvas, LayoutSize);
     float2 position_anchor = (float2) { 0.5f, 0.84f };
     const char* header_text =
         zox_valid(target) ?

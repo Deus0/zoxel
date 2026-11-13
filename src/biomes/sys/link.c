@@ -36,7 +36,7 @@ void biome_link_system(iter* it) {
             position->value.x,
             position->value.z
         };
-        zox_geter(terrain, TunkLinks, tunks);
+        const TunkLinks* tunks = zox_get(terrain, TunkLinks);
         entity tunk = int2_hashmap_get(
             tunks->value,
             stream_position2);

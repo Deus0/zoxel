@@ -56,7 +56,7 @@ void mouse_input_system(iter* it) {
             }
             if (zox_has(e2, ZevicePointerPosition)) {
                 if (global_any_fingers_down) {
-                    zox_geter(e2, ZevicePointerPosition, position);
+                    const ZevicePointerPosition* position = zox_get(e2, ZevicePointerPosition);
                     int2 position2 = position->value;
                     int2_flip_y(&position2, screen_size);
                     SDL_Window* sdl_window = zox_getv(app, SDLWindow);

@@ -32,7 +32,7 @@ void zevice_click_system(iter* it) {
             }
         }
         if (zox_has(e, ZeviceButton)) {
-            zox_geter(e, DeviceButtonType, deviceButtonType);
+            const DeviceButtonType* deviceButtonType = zox_get(e, DeviceButtonType);
             if (deviceButtonType->value == zox_btn_a) {
                 byte click_value = zox_getv(e, ZeviceButton);
                 if (devices_get_pressed_this_frame(click_value)) {

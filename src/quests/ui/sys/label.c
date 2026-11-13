@@ -15,14 +15,14 @@
         if (!zox_valid(e2) || !zox_has(e2, Quest) || !zox_has(e2, QuestDirty)) {
             continue;
         }
-        zox_geter_value(e2, QuestDirty, byte, qdirty);
+        byte qdirty = zox_getv(e2, QuestDirty);
         if (text->length && qdirty != zox_dirty_active) {
             continue;
         }
         char result[label_text_capacity];
         if (zox_has(e2, SlayQuest)) {
-            zox_geter_value(e2, QuestValue, byte, value);
-            zox_geter_value(e2, QuestTarget, byte, target);
+            byte value = zox_getv(e2, QuestValue);
+            byte target = zox_getv(e2, QuestTarget);
             sprintf(result, "%i/%i", value, target);
         } else {
             result[0] = '\0';

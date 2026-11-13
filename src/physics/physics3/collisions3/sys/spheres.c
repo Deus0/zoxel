@@ -37,7 +37,7 @@ void sphere_collide_system(iter* it) {
                 byte overlaps = (distance <= radius->value + radius2->value);
                 if (overlaps) {
                     if (zox_has(e, OverlapEvent)) {
-                        zox_geter(e, OverlapEvent, oevent);
+                        const OverlapEvent* oevent = zox_get(e, OverlapEvent);
                         if (oevent->value) {
                             (*oevent->value)(world, e, e2);
                         }

@@ -10,7 +10,7 @@ void vox_render_system(iter* it) {
     if (!material_link) {
         return;
     }
-    zox_geter(material_colored3D, MaterialColored3D, material_attributes);
+    const MaterialColored3D* material_attributes = zox_get(material_colored3D, MaterialColored3D);
     byte has_set_material = 0;
     float last_brightness = -1;
     zox_sys_begin();

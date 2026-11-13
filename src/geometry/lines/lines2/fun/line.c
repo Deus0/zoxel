@@ -11,7 +11,7 @@ void set_line_element_real_position2(ecs *world, entity e, float2 positionf, int
     /*if (zox_has(e, LinePosition2)) {
         float2 canvas_size_f = int2_to_float2(canvas_size);
         float aspect_ratio = canvas_size_f.x / canvas_size_f.y;
-        zox_geter(e, LineLocalPosition2, localPoints)
+        const LineLocalPosition2* localPoints = zox_get(e, LineLocalPosition2);
         int4 points = get_new_line_position(positionf, canvas_size_f, aspect_ratio, parent_position, localPoints->value);
         zox_muter(e, LinePosition2, linePosition2);
         linePosition2->value = points;

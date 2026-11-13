@@ -20,11 +20,11 @@
         if (text->length) {
             continue;
         }
-        zox_geter(e2, StatValue, value);
+        const StatValue* value = zox_get(e2, StatValue);
         int val = floor(value->value);
         char result[label_text_capacity];
         if (zox_has(e2, StatState)) {
-            zox_geter(e2, StatValueMax, maxx);
+            const StatValueMax* maxx = zox_get(e2, StatValueMax);
             int max = ceil(maxx->value);
             snprintf(result, label_text_capacity, "%i", max);
         } else if (!val) {

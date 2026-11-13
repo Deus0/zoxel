@@ -28,7 +28,7 @@ byte zox_tst_tilemap_is_ready(ecs* world, entity tilemap) {
     if (!zox_valid(tilemap) || zox_getv(tilemap, GenerateTexture)) {
         return 0;
     }
-    zox_geter(tilemap, TilemapUVs, uvs);
+    const TilemapUVs* uvs = zox_get(tilemap, TilemapUVs);
     return uvs->length && zox_getv(tilemap, TextureGPULink);
 }
 
@@ -46,7 +46,7 @@ void zox_tst_tilemap_check_tilemap(ecs* world, entity tilemap) {
         return;
     }
     // expected textures, gathered the same way realm_tilemap_system does
-    zox_geter(realm, BlockLinks, blocks);
+    const BlockLinks* blocks = zox_get(realm, BlockLinks);
     int expected = 0;
     for (int j = 0; j < blocks->length; j++) {
         entity block = blocks->value[j];
@@ -74,8 +74,8 @@ void zox_tst_tilemap_check_tilemap(ecs* world, entity tilemap) {
     zox_tst_check(count, "tilemap has no textures");
     const int map_size = zox_getv(tilemap, TilemapSize).x;
     const int2 size = zox_getv(tilemap, TextureSize);
-    zox_geter(tilemap, TextureData, data);
-    zox_geter(tilemap, TilemapUVs, tilemap_uvs);
+    const TextureData* data = zox_get(tilemap, TextureData);
+    const TilemapUVs* tilemap_uvs = zox_get(tilemap, TilemapUVs);
     zox_log("[tst] tilemap [%s]: [%i] textures, [%ix%i] tiles, [%ix%i] px",
         zox_getn(tilemap), count, map_size, map_size, size.x, size.y);
     zox_tst_check(map_size * map_size >= count,
@@ -99,7 +99,7 @@ void zox_tst_tilemap_check_tilemap(ecs* world, entity tilemap) {
                 "texture [%s] linked twice [%i] [%i]", zox_getn(texture), j, i);
         }
         // pixels
-        zox_geter(texture, TextureData, texture_data);
+        const TextureData* texture_data = zox_get(texture, TextureData);
         const int2 texture_size = zox_getv(texture, TextureSize);
         const int2 tile_position = (int2) {
             (i % map_size) * texture_size.x,
@@ -151,8 +151,8 @@ void zox_tst_tilemap_check_tilemap(ecs* world, entity tilemap) {
 
 // Checks a built terrain chunk mesh, every face samples a used tile
 void zox_tst_tilemap_check_mesh(ecs* world, entity mesh, entity tilemap) {
-    zox_geter(mesh, MeshUVs, uvs);
-    zox_geter(mesh, MeshVertices, vertices);
+    const MeshUVs* uvs = zox_get(mesh, MeshUVs);
+    const MeshVertices* vertices = zox_get(mesh, MeshVertices);
     zox_tst_check(uvs->length == vertices->length,
         "mesh [%s] has [%i] uvs for [%i] vertices", zox_getn(mesh), uvs->length, vertices->length);
     const int map_size = zox_getv(tilemap, TilemapSize).x;

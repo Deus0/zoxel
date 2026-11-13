@@ -49,7 +49,7 @@ uint generate_ubo(gint binding_point) {
 }
 
 /*uint spawn_ubo(ecs *world, const entity material) {
-    zox_geter(material, MaterialVoxInstance, materialVoxInstance)
+    const MaterialVoxInstance* materialVoxInstance = zox_get(material, MaterialVoxInstance);
     const gint binding_point = materialVoxInstance->matrices;
     if (binding_point == GL_INVALID_INDEX) {
         zox_loge("InstanceMatrices block index not found in shader")

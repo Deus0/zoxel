@@ -18,11 +18,11 @@ void zox_dbg_toggle_gizmos_vodes(ecs *world, ClickEventData data) {
     if (!zox_valid(local_terrain) || !zox_valid(prefab_block_vox) || !zox_has(prefab_block_vox, DebugCubeLines)) {
         return;
     }
-    zox_geter_value(prefab_block_vox, DebugCubeLines, byte, mode);
+    byte mode = zox_getv(prefab_block_vox, DebugCubeLines);
     cycle_cubeline_debug(&mode);
     zox_set(prefab_block_vox, DebugCubeLines, { mode });
     zox_set(prefab_block_vox_instanced, DebugCubeLines, { mode });
-    zox_geter(local_terrain, ChunkLinks, chunkLinks);
+    const ChunkLinks* chunkLinks = zox_get(local_terrain, ChunkLinks);
     for (uint i = 0; i < chunkLinks->value->size; i++) {
         int3_hashmap_pair* pair = chunkLinks->value->data[i];
         uint checks = 0;
@@ -30,7 +30,7 @@ void zox_dbg_toggle_gizmos_vodes(ecs *world, ClickEventData data) {
             entity chunk = pair->value;
             if (zox_valid(chunk)) {
                 if (zox_has(chunk, BlocksSpawned)) {
-                    zox_geter(chunk, VoxelNode, node);
+                    const VoxelNode* node = zox_get(chunk, VoxelNode);
                     toggle_debug_bounds_delve(world, node, mode);
                 }
             }

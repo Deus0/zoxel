@@ -39,16 +39,16 @@ void controller2_move_system(iter* it) {
                     continue;
                 }
                 if (zox_has(e3, ZeviceStick)) {
-                    zox_geter_value(e3, DeviceButtonType, byte, type);
+                    byte type = zox_getv(e3, DeviceButtonType);
                     if (type == zox_device_stick_left) {
-                        zox_geter(e3, ZeviceStick, stick);
+                        const ZeviceStick* stick = zox_get(e3, ZeviceStick);
                         left_stick = stick->value;
                     }
                 }
                 if (zox_has(e3, ZeviceButton)) {
-                    zox_geter_value(e3, DeviceButtonType, byte, type);
+                    byte type = zox_getv(e3, DeviceButtonType);
                     if (type == zox_btn_lb || type == zox_btn_rb) {
-                        zox_geter_value(e3, ZeviceButton, byte, value);
+                        byte value = zox_getv(e3, ZeviceButton);
                         if (!is_running && devices_get_pressed(value)) {
                             is_running = 1;
                         }
@@ -56,7 +56,7 @@ void controller2_move_system(iter* it) {
                 }
             }
             if (zox_has(e2, Keyboard)) {
-                zox_geter(e2, Keyboard, keyboard);
+                const Keyboard* keyboard = zox_get(e2, Keyboard);
                 if (keyboard->a.is_pressed) movement.x = -1;
                 if (keyboard->d.is_pressed) movement.x = 1;
                 if (keyboard->w.is_pressed) movement.y = 1;
@@ -79,7 +79,7 @@ void controller2_move_system(iter* it) {
             movement.x *= run_speed2D;
             movement.y *= run_speed2D;
         }
-        zox_geter(character, Velocity2D, velocity2D);
+        const Velocity2D* velocity2D = zox_get(character, Velocity2D);
         zox_muter(character, Acceleration2D, acceleration2D);
         float2 max_speed = max_velocity2D;
         if (is_running) {

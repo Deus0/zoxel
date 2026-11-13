@@ -12,7 +12,7 @@ void app_gpu_end_system(iter* it) {
     if (!zox_has(main_app, SDLWindow)) {
         return;
     }
-    zox_geter(main_app, SDLWindow, window);
+    const SDLWindow* window = zox_get(main_app, SDLWindow);
     if (!window->value) {
         zox_loge("[main_app] is has invalid SDLWindow");
         return;

@@ -26,7 +26,7 @@ void zox_tst_spawn_character3_npc_skeleton(
     if (!zox_valid(realm)) {
         return;
     }
-    // zox_geter_value(pcharacter, RenderDepth, byte, render_depth);
+    // byte render_depth = zox_getv(pcharacter, RenderDepth);
     entity characters[zox_realm_characters_max];
     const uint characters_count = zox_get_links(
         world,

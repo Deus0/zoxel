@@ -34,18 +34,18 @@ void dialogue_begin_system(iter* it) {
         {
             continue;
         }
-        zox_geter_value(camera, CameraState, byte, camera_state);
+        byte camera_state = zox_getv(camera, CameraState);
         if (camera_state != zox_camera_state_first_person) {
             continue;
         }
         entity npc = raycast->chunk;
-        zox_geter_value(npc, CombatState, byte, combat);
+        byte combat = zox_getv(npc, CombatState);
         if (combat != zox_combat_peace) {
             zox_log("Cannot talk in combat with: %s", zox_get_name(npc));
             continue;
         }
         entity tree = zox_get_link(world, npc, Dialogue);
-        // zox_geter_value(npc, DialoguetreeLink, entity, tree);
+        // entity tree = zox_getv(npc, DialoguetreeLink);
         if (!zox_valid(tree)) {
             zox_log("NPC has no speech: %s",
                 zox_getn(npc));

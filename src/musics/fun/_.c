@@ -17,7 +17,7 @@ void process_arguments_musics(ecs *world, char* args[], int count) {
         zox_logv("Sounds are disabled: no music.");
         return;
     }
-    zox_geter_value(app, GameLink, entity, game);
+    entity game = zox_getv(app, GameLink);
     entity realm = zox_get_link(world, gamee, RealmLink);
     if (!zox_valid(realm)) {
         zox_logw("No realm for musics.");

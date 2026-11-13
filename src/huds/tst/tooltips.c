@@ -129,7 +129,7 @@ byte zox_tst_tooltips_ready(ecs* world) {
     if (zox_tst_tooltips_stage == 3) {
         // resting on a button
         const entity button = zox_tst_tooltips_buttons[zox_tst_tooltips_rest];
-        zox_geter(button, TooltipText, expected);
+        const TooltipText* expected = zox_get(button, TooltipText);
         const TextData* text = zox_get(tooltip, TextData);
         const entity linked = zox_get_link(world, tooltip, TooltipLink);
         const byte has_text = is_zext((TextData*) text, expected->value);
@@ -155,7 +155,7 @@ byte zox_tst_tooltips_ready(ecs* world) {
         return 0;
     }
     // resting on empty space
-    zox_geter(tooltip, TextData, text);
+    const TextData* text = zox_get(tooltip, TextData);
     if (text->length || zox_is_linked_any(world, tooltip, TooltipLink)) {
         zox_tst_tooltips_failed_clears++;
         if (zox_tst_tooltips_failed_clears <= 5) {

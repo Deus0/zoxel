@@ -245,7 +245,7 @@ byte is_chunk_busy(ecs* world, entity e) {
     if (is_mesh_waiting) {
         // we check more neighbors
         entity_array_d_add(chunks, e);
-        zox_geter(e, ChunkNeighbors, neighbors);
+        const ChunkNeighbors* neighbors = zox_get(e, ChunkNeighbors);
         for (byte j = 0; j < 6; j++) {
             entity neighbor = neighbors->value[j];
             get_waiting_neighbors(world, chunks, neighbor);
@@ -258,7 +258,7 @@ byte is_chunk_neighbors_busy(ecs* world, entity e, byte length) {
         return 0;
     }
     length--;
-    zox_geter(e, ChunkNeighbors, neighbors);
+    const ChunkNeighbors* neighbors = zox_get(e, ChunkNeighbors);
     for (byte j = 0; j < 6; j++) {
         entity neighbor = neighbors->value[j];
         if (is_chunk_busy(world, neighbor)) {

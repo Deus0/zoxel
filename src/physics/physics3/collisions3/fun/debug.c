@@ -8,12 +8,12 @@ uint debug_label_collisions(ecs *world, entity player, char *buffer, uint size, 
         return index;
     }
     index += snprintf(buffer + index, size - index, "character [%s]\n", zox_get_name(character));
-    zox_geter_value(character, Position3D, float3, position);
-    zox_geter_value(character, LastUnstuck3, float3, lastun3);
-    zox_geter_value(character, Collision, byte, collision);
-    // zox_geter_value(character, CanJump, byte, can_jump)
+    float3 position = zox_getv(character, Position3D);
+    float3 lastun3 = zox_getv(character, LastUnstuck3);
+    byte collision = zox_getv(character, Collision);
+    // byte can_jump = zox_getv(character, CanJump);
     const byte can_jump = get_character_can_jump(world, character);
-    zox_geter_value(character, Grounded, byte, grounded);
+    byte grounded = zox_getv(character, Grounded);
     index += snprintf(buffer + index, size - index, " - collision [%i]\n", collision);
     index += snprintf(buffer + index, size - index, " - can_jump [%i]\n", can_jump);
     index += snprintf(buffer + index, size - index, " - grounded [%i]\n", grounded);

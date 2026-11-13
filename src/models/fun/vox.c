@@ -5,9 +5,9 @@
     }
     int3 chunk_size = zox_getv(source, ChunkSize);
     zox_set(e, ChunkSize, { chunk_size });
-    zox_geter(source, VoxelNode, chunk_octree_source);
-    zox_geter(source, NodeDepth, source_node_depth);
-    zox_geter(source, ColorRGBs, colors_source);
+    const VoxelNode* chunk_octree_source = zox_get(source, VoxelNode);
+    const NodeDepth* source_node_depth = zox_get(source, NodeDepth);
+    const ColorRGBs* colors_source = zox_get(source, ColorRGBs);
     zox_muter(e, VoxelNode, dest);
     zox_muter(e, NodeDepth, nodeDepth);
     zox_muter(e, ColorRGBs, colors_dest);

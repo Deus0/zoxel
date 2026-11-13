@@ -25,8 +25,8 @@ void stream_position_system(iter* it) {
         if (!zox_valid(terrain) || !zox_has(terrain, BlockScale) || !zox_has(terrain, NodeDepth)) {
             continue;
         }
-        zox_geter_value(terrain, BlockScale, float, tscale);
-        zox_geter_value(terrain, NodeDepth, byte, ndepth);
+        float tscale = zox_getv(terrain, BlockScale);
+        byte ndepth = zox_getv(terrain, NodeDepth);
         short length = octree_size(ndepth);
         int3 npoint = real_position_to_chunk_position(position->value, length, tscale);
         if (int3_equals(npoint, point3->value)) {

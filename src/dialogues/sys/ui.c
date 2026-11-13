@@ -35,7 +35,7 @@ void dialogue_speech_system(iter* it) {
             zox_has(node, DialogueText) ?
                 zox_getv(node, DialogueText) :
                 ".....";
-        // zox_geter(node->value, DialogueText, text);
+        // const DialogueText* text = zox_get(node->value, DialogueText);
         set_TargetText(world, text_ui, text);
         // said in the speaker's voice (the npc, not the player)
         zox_set_link(world, text_ui, SpeakerLink, get_speaker_b(world, e));

@@ -13,7 +13,7 @@ void handle_touch_drag(
     {
         return;
     }
-    zox_geter(finger, ZevicePointer, pointer);
+    const ZevicePointer* pointer = zox_get(finger, ZevicePointer);
     if (!devices_get_pressed(pointer->value)) {
         return;
     }
@@ -33,10 +33,10 @@ void handle_touch_drag(
         zox_loge("invalid joystick_pointer, parent [%s]", zox_get_name(joystick_ui))
         return;
     }
-    zox_geter(finger, ZevicePointerPosition, finger_position);
-    zox_geter(joystick_ui, LayoutPosition, virtual_joystick_position);
-    zox_geter(joystick_ui, LayoutSize, joystick_size);
-    zox_geter(joystick_pointer, LayoutSize, joystick_pointer_size);
+    const ZevicePointerPosition* finger_position = zox_get(finger, ZevicePointerPosition);
+    const LayoutPosition* virtual_joystick_position = zox_get(joystick_ui, LayoutPosition);
+    const LayoutSize* joystick_size = zox_get(joystick_ui, LayoutSize);
+    const LayoutSize* joystick_pointer_size = zox_get(joystick_pointer, LayoutSize);
     zox_muter(joystick_pointer, LayoutPosition, pointer_position);
     int2 delta_position = int2_sub(finger_position->value, virtual_joystick_position->value);
     int2 size_limits = int2_multiply_float(int2_sub(joystick_size->value, joystick_pointer_size->value), 0.5f);
@@ -65,7 +65,7 @@ void handle_touch_release(
     if (!zox_valid(finger) || !zox_has(finger, ZevicePointer)) {
         return;
     }
-    zox_geter(finger, ZevicePointer, pointer);
+    const ZevicePointer* pointer = zox_get(finger, ZevicePointer);
     if (!devices_get_released_this_frame(pointer->value)) {
         return;
     }

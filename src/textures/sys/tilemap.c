@@ -100,7 +100,7 @@ void tilemap_generation_system(iter* it) {
             }
             const TextureData* texture_data = zox_get(texture, TextureData);
             uint tilemap_index = texture_index - 1;
-            zox_geter_value(texture, TextureSize, int2, texture_size);
+            int2 texture_size = zox_getv(texture, TextureSize);
             texture_position.x =
                 tilemap_index % map_size->value.x;
             texture_position.y =

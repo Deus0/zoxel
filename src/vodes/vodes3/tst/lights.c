@@ -45,7 +45,7 @@ static inline byte zox_tst_bvl_chunk_settled(ecs* world, entity chunk) {
     if (!zox_has(chunk, LightNode) || !zox_has(chunk, LightNodeDirty) || zox_getv(chunk, LightNodeDirty)) {
         return 0;
     }
-    zox_geter(chunk, ChunkNeighbors, neighbors);
+    const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
     for (byte j = 0; j < chunk_neighbors_length; j++) {
         const entity n = neighbors->value[j];
         if (zox_valid(n) && zox_has(n, LightNodeDirty) && zox_getv(n, LightNodeDirty)) {
@@ -66,7 +66,7 @@ static inline float zox_tst_bvl_mesh_colors(ecs* world, entity chunk) {
             if (!zox_has(mesh, ChunkMesh) || !zox_has(mesh, MeshColorRGBs)) {
                 continue;
             }
-            zox_geter(mesh, MeshColorRGBs, colors);
+            const MeshColorRGBs* colors = zox_get(mesh, MeshColorRGBs);
             for (int k = 0; k < colors->length; k++) {
                 total += colors->value[k].r;
                 count++;

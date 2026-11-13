@@ -35,7 +35,7 @@ void device_switch_system(iter* it) {
                 }
                 if (mode->value == zox_device_mode_keyboardmouse) {
                     if (zox_has(e2, Keyboard)) {
-                        zox_geter(e2, Keyboard, keyboard);
+                        const Keyboard* keyboard = zox_get(e2, Keyboard);
                         if (keyboard_is_any_input(keyboard)) {
                             using_current = 1;
                         }
@@ -83,7 +83,7 @@ void device_switch_system(iter* it) {
                 }
                 if (mode->value != zox_device_mode_keyboardmouse) {
                     if (zox_has(e2, Keyboard)) {
-                        zox_geter(e2, Keyboard, keyboard);
+                        const Keyboard* keyboard = zox_get(e2, Keyboard);
                         if (keyboard_is_any_input(keyboard)) {
                             new_mode = zox_device_mode_keyboardmouse;
                         }

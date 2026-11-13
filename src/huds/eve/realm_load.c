@@ -33,7 +33,7 @@ void button_event_menu_realm_delete(
     // TODO: Confirm Screen
     entity game = zox_get_link(world, player, GameLink);
     entity realm = zox_get_link(world, game, RealmLink);
-    zox_geter(realm, FolderPath, realm_path);
+    const FolderPath* realm_path = zox_get(realm, FolderPath);
     // zox_log("Deleting Realm (%s: %s", zox_get_name(realm), realm_path);
     if (delete_dir(realm_path->value)) {
         zox_logv("Success Deleting Realm: %s", realm_path);

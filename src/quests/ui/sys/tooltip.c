@@ -29,8 +29,8 @@
         // TODO: Get Objectives
         if (zox_has(e2, SlayQuest)) {
             entity character = zox_get_link(world, e2, CharacterLink);
-            // zox_geter_value(e2, QuestValue, byte, value);
-            zox_geter_value(e2, QuestTarget, byte, target);
+            // byte value = zox_getv(e2, QuestValue);
+            byte target = zox_getv(e2, QuestTarget);
             sprintf(result, "%s\n- slay %s x%i", name, zox_get_name(character), target);
         } else {
             sprintf(result, "[%s]: find ???", name);

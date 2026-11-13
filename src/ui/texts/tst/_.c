@@ -33,7 +33,7 @@ static inline void zox_tst_text_for_step(int step, char* buffer, int size) {
 
 // checks the text's glyphs against its TextData, one check per step so a broken text doesn't spam
 void zox_tst_text_verify(ecs* world, entity text, const char* label) {
-    zox_geter(text, TextData, data);
+    const TextData* data = zox_get(text, TextData);
     const byte font_size = zox_getv(text, TextFontSize);
     const byte alignment = zox_getv(text, TextAlignment);
     const byte2 padding = zox_getv(text, TextPadding);

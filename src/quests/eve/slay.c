@@ -12,7 +12,7 @@ void check_quest_slay(
     }
     if (target == meta) {
         zox_muter(quest, QuestValue, value);
-        zox_geter(quest, QuestTarget, target_value);
+        const QuestTarget* target_value = zox_get(quest, QuestTarget);
         if (value->value < target_value->value) {
             value->value++;
             zox_add(quest, Dirty);

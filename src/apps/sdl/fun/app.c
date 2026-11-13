@@ -171,7 +171,7 @@ byte spawn_window_icon(ecs *world, entity app, const char* texture_name) {
         zox_loge("Icon Path not found.");
         return 1;
     }
-    zox_geter(app, SDLWindow, window);
+    const SDLWindow* window = zox_get(app, SDLWindow);
     load_app_icon(window->value, icon_filepath);
     zox_logv("Set Icon [%s]", icon_filepath);
     free(icon_filepath);

@@ -95,7 +95,7 @@ void collision_debug_system(iter* it) {
         if (!collision->value) {
             continue;
         }
-        // zox_geter_value(voxLink->value, BlockScale, float, terrain_scale);
+        // float terrain_scale = zox_getv(voxLink->value, BlockScale);
         // const float3 pointf_last = lastPosition3D->value;
         const float3 pointf_new = position->value;
         const float3 collision_distance = collisionDistance->value;

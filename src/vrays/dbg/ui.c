@@ -13,7 +13,7 @@ uint debug_ui_raycasting(ecs *world, entity player, char *buffer, uint size, uin
         return index;
     }
 
-    zox_geter(character, RaycastVoxelData, data);
+    const RaycastVoxelData* data = zox_get(character, RaycastVoxelData);
     index += snprintf(buffer + index, size - index, "Raycaster Debugger [%i]\n", data->result);
     index += snprintf(buffer + index, size - index, "   + dist [%f]\n", data->distance);
     index += snprintf(buffer + index, size - index, "   + hit [%fx%fx%f]\n",

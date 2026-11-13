@@ -17,8 +17,8 @@ entity spawn_sound_from_file(ecs *world, entity prefab, entity src, float freque
         zox_loge("invalid prefab [spawn_sound_from_file]");
         return 0;
     }
-    zox_geter(src, SoundData, src_data);
-    zox_geter_value(src, SoundLength, float, sound_length);
+    const SoundData* src_data = zox_get(src, SoundData);
+    float sound_length = zox_getv(src, SoundLength);
     if (!src_data->length) {
         zox_loge("invalid sdl_sound [spawn_sound_from_file]");
         return 0;

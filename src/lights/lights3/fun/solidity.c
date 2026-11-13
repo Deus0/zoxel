@@ -17,7 +17,7 @@ static inline void update_light_solidity(
     {
         return;
     }
-    zox_geter(manager, BlockLinks, blocks);
+    const BlockLinks* blocks = zox_get(manager, BlockLinks);
     const int length = blocks->length < zox_light_solidity_length ?
         blocks->length :
         zox_light_solidity_length;

@@ -13,7 +13,7 @@ void set_stat_icon_label(
     {
         return;
     }
-    zox_geter(stat, StatValue, value);
+    const StatValue* value = zox_get(stat, StatValue);
     char result[label_text_capacity];
     snprintf(result, label_text_capacity, "%i", (int) floor(value->value));
     if (!is_zext(text, result)) {

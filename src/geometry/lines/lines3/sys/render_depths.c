@@ -38,7 +38,7 @@ void render_depth_color_system(iter* it) {
             }
         } else if (mode->value == zox_cubeline_debug_verts) {
             if (zox_has(e, MeshIndicies)) {
-                zox_geter(e, MeshIndicies, meshIndicies);
+                const MeshIndicies* meshIndicies = zox_get(e, MeshIndicies);
                 if (meshIndicies->length == 0) {
                     output = (color_rgb) { 255, 0, 0 };
                 } else {

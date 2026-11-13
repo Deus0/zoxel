@@ -1,6 +1,7 @@
 # Done
 
 ## Moved from todo (2026-11-13)
+-x zox_geter and zox_geter_value removed, 409 calls are zox_get and zox_getv now (const T* name = zox_get(e, T))
 -x Npcs attack the player again: their skill's resource (energy) wasn't found, their stats are copies of their
   kind's (a step from the realm's), stat lookups walk the prefab chain now (is_realm_stat_of), tst npc_attacks
 -x Lighting between chunk lods: coarse lod meshes read stale open light nodes (darklight), dark faces in the

@@ -14,7 +14,7 @@ void anchor_size_system(iter* it) {
         {
             continue;
         }
-        zox_geter_value(parent, LayoutSize, int2, parent_size);
+        int2 parent_size = zox_getv(parent, LayoutSize);
         size->value.x = ceil(parent_size.x * anchor->value.x);
         size->value.y = ceil(parent_size.y * anchor->value.y);
     }
