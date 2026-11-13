@@ -2,8 +2,6 @@
 void biome_map_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
-    double biome_frequency = 0.02;
-    byte biome_octaves = 4;         // 12
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TunkLod);
@@ -63,16 +61,8 @@ void biome_map_system(iter* it) {
             global_position.y = global_position_start.y;
             for (position.y = 0; position.y < length; position.y++, global_position.y += depth_difference) {
                 int index = int2_array_index(position, map_size);
-                //  double frequency = height_frequency;
-                double perlin_x = noise_positiver2 + (global_position.x / ((float) terrain_length));
-                double perlin_y = noise_positiver2 + (global_position.y / ((float) terrain_length));
-                double perlin_value = perlin_octaves(perlin_x, perlin_y, biome_frequency, seed, biome_octaves);
-                // byte value = perlin_value > 0.5 ? 1 : 0;
-                // zox_log("biome value [%i]", value);
-                byte biome_index = (byte)(perlin_value * biomes_count);
-                if (biome_index >= biomes_count) {
-                    biome_index = biomes_count - 1;
-                }
+                // the same function heights blend with (biomes/fun/blend.c)
+                const byte biome_index = get_biome_index(get_biome_value(global_position, terrain_length, seed, biomes_count));
                 biomes->value[index] = biome_index;
                 if (dbg_log >= 2 && biome_index == biomes_count - 1) {
                     zox_log("Biome [%ix%i]: %i", position.x, position.y, biome_index);

@@ -17,6 +17,7 @@ byte zox_biome_override = 0;    // stick to earthy for now
 #include "pre/_.c"
 #include "ins/_.c"
 #include "sys/_.c"
+#include "tst/_.c"
 
 // TODO: Add Biome Blocks to Realm, set VoxelID then
 // TODO: Use Biome Blocks in Terrain Generation
@@ -28,4 +29,5 @@ void import_biomes(ecs* world) {
     zox_components_biomes(world);
     zox_systems_biomes(world);
     add_hook_spawn_prefabs(spawn_prefabs_biomes);
+    zox_tsts_biomes();
 }

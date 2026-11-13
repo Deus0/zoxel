@@ -1,8 +1,5 @@
 void height_map_system(iter* it) {
     zox_sys_on_begin();
-    // TODO: use height frequency from biome maps
-    byte terrain_height_multiplier = 3;
-    int terrain_octaves = 8;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TunkLod);
@@ -65,48 +62,26 @@ void height_map_system(iter* it) {
             tunk_position->value.x * terrain_length,
             tunk_position->value.y * terrain_length
         };
-        entity biome = 0;
-        float frequency = 0;
+        // each biome's height frequency, heights blend between them near their edges (biomes/fun/blend.c)
+        float frequencies[256];
+        const byte biomes_count = zox_disable_biomes ? 1 : (byte) int_min(realm_biomes->length, 255);
+        for (byte b = 0; b < biomes_count; b++) {
+            const entity biome = realm_biomes->value[b];
+            frequencies[b] = zox_valid(biome) ? zox_getv(biome, BiomeHeightFrequency) : 0.01f;
+        }
         int2 global_position = global_position_start;
         int2 position = int2_zero;
         resize_HeightMap(heightmap, length * length);
         for (position.x = 0; position.x < length; position.x++, global_position.x += depth_difference) {
             global_position.y = global_position_start.y;
             for (position.y = 0; position.y < length; position.y++, global_position.y += depth_difference) {
-                int index = int2_array_index(position, map_size);
+                const int index = int2_array_index(position, map_size);
                 if (zox_flatlands) {
                     heightmap->value[index] = max_height / 2;
                     continue;
                 }
-                byte biome_id = !zox_disable_biomes ?
-                    biome_map->value[index] :
-                    0;
-#ifdef zox_safety_checks
-                if (biome_id >= realm_biomes->length) {
-                    zox_loge("Biome ID OOB [%i] of [%i]", biome_id, realm_biomes->length);
-                    continue;
-                }
-#endif
-                // TODO: Blend frequency amongst several nearby ones
-                // double frequency = biome_id == 0 ? height_frequency : height_frequency * 2;
-                entity new_biome = realm_biomes->value[biome_id];
-#ifdef zox_safety_checks
-                if (!zox_valid(new_biome)) {
-                    zox_loge("Biome is invalid [%i]", biome_id);
-                    continue;
-                }
-#endif
-                // NOTE: Updates our cache of our biome
-                if (biome != new_biome) {
-                    biome = new_biome;
-                    frequency = zox_getv(biome, BiomeHeightFrequency);
-                }
-                //  double frequency = height_frequency;
-                double perlin_x = noise_positiver2 + (global_position.x / ((float) terrain_length));
-                double perlin_y = noise_positiver2 + (global_position.y / ((float) terrain_length));
-                double perlin_value = perlin_octaves(perlin_x, perlin_y, frequency, seed, terrain_octaves);
-                int value = int_floorf(perlin_value * terrain_length * terrain_height_multiplier);
-                heightmap->value[index] = int_clamp(value, 0, max_height);
+                heightmap->value[index] = get_terrain_height(global_position, terrain_length, seed,
+                    frequencies, biomes_count, max_height, zox_biome_blend);
             }
         }
         generate->value = zox_generate_tunk_vegetation;
