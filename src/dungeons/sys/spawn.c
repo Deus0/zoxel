@@ -52,8 +52,16 @@ void dungeons_spawn_system(iter* it) {
                     mountain_radii[j]);
             }
         }
-        int2 positions[spawn_count];
-        byte2 sizes[spawn_count];
+        // the region's towns first, prior rects a dungeon avoids, then each dungeon placed
+        entity towns[zox_children_capacity];
+        const uint towns_count = zox_get_children_by_id(world, e, towns, zox_children_capacity, zox_id(Town));
+        int2 positions[towns_count + spawn_count];
+        byte2 sizes[towns_count + spawn_count];
+        byte placed = 0;
+        for (uint j = 0; j < towns_count; j++) {
+            positions[placed] = zox_getv(towns[j], BlockPosition2);
+            sizes[placed++] = zox_getv(towns[j], TownSize);
+        }
         for (int j = 0; j < spawn_count; j++) {
             if (!region_place_rect(
                 seed->value,
@@ -65,7 +73,7 @@ void dungeons_spawn_system(iter* it) {
                 padding,
                 positions,
                 sizes,
-                j,
+                placed,
                 mountain_positions,
                 mountain_radii,
                 mountains_length,
@@ -73,8 +81,8 @@ void dungeons_spawn_system(iter* it) {
             {
                 continue;
             }
-            int2 position = positions[j];
-            byte2 size = sizes[j];
+            int2 position = positions[placed];
+            byte2 size = sizes[placed++];
             lint dungeon_seed = position_seed2(seed->value, position);
             spawn_dungeon(
                 world,

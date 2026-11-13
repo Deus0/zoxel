@@ -35,7 +35,6 @@
 	- 3. long notes generated over a few frames, the start first
 	- tst: every instrument generates a second of sound under a budget (sound_instruments logs timings)
 - Miss sounds need more whoosh, a wind feeling (instrument_whoosh in sounds/bop/impacts.c)
-- new region placers should avoid prior ones
 
 # Sounds and Music
 - Optimize sound generation (see Now: lag spikes)

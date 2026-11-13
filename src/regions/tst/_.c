@@ -78,6 +78,40 @@ void zox_tst_region_place_check(ecs* world) {
     zox_tst_check(!on_circles, "[%i] rects overlap the circles they avoid", on_circles);
 }
 
+// tst: region_place_prior, rects placed after earlier ones (dungeons after towns) avoid them, and a failed try
+//  leaves no gap: only placed rects count (placed, not the try number)
+//  - run: bash bsh/tst.sh region_place_prior
+void zox_tst_region_place_prior_check(ecs* world) {
+    (void) world;
+    int2 positions[16];
+    byte2 sizes[16];
+    // four earlier rects (towns) across the region
+    const int2 towns[4] = { { 60, 60 }, { 200, 60 }, { 60, 200 }, { 200, 200 } };
+    byte placed = 0;
+    for (int i = 0; i < 4; i++) {
+        positions[placed] = towns[i];
+        sizes[placed++] = (byte2) { 40, 40 };
+    }
+    const byte prior = placed;
+    for (int i = 0; i < 8; i++) {
+        if (region_place_rect(777 + i * 13, int2_zero, int2_single(256), byte2_single(4), byte2_single(10),
+            byte2_single(20), byte2_single(2), positions, sizes, placed, NULL, NULL, 0, 200)) {
+            placed++;
+        }
+    }
+    zox_tst_check(placed > prior, "nothing placed after the earlier rects");
+    int overlaps = 0;
+    for (int a = prior; a < placed; a++) {
+        for (int b = 0; b < a; b++) {
+            const int dx = abs(positions[a].x - positions[b].x), dy = abs(positions[a].y - positions[b].y);
+            overlaps += dx < (sizes[a].x + sizes[b].x) / 2 && dy < (sizes[a].y + sizes[b].y) / 2;
+        }
+    }
+    zox_log("[tst] [metric] region_place_prior [%i] placed after [%i] earlier, [%i] overlaps", placed - prior, prior, overlaps);
+    zox_tst_check(!overlaps, "[%i] rects overlap earlier ones or each other", overlaps);
+}
+
 void zox_tsts_regions() {
     zox_tst_add("region_place", zox_tst_region_place_ready, zox_tst_region_place_check, 30);
+    zox_tst_add("region_place_prior", zox_tst_region_place_ready, zox_tst_region_place_prior_check, 30);
 }
