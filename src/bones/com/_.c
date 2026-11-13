@@ -23,6 +23,7 @@ zoxc_byte(WalkState);
 zoxc_byte(WalkSpeed);
 zoxc_double(SwingStart);
 zoxc_float(SwingSpeed);
+zoxc_entity(LookTarget);    // on a head bone: it turns to look at it (its head, if it has one), 0 looks ahead
 
 void zox_components_bones(ecs* world) {
     zoxd_tag(Bone);
@@ -46,6 +47,7 @@ void zox_components_bones(ecs* world) {
     zoxd_float(SwingBlend);
     zoxd_double(SwingStart);
     zoxd_float(SwingSpeed);
+    zoxd_entity(LookTarget);
     zoxd_byte(RaiseShoulder);
     zoxd_byte(WalkState);
     zoxd_byte(WalkSpeed);

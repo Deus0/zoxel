@@ -14,6 +14,7 @@ entity spawn_prefab_bone(ecs *world) {
     zox_setv(e, LocalRotation3D, quaternion_identity);
     zox_setv(e, BonePosition, float3_zero);
     zox_setv(e, BoneSize, float3_zero);
+    zox_setv(e, LookTarget, 0);     // head bones turn to it (head_look_system)
     return e;
 }
 

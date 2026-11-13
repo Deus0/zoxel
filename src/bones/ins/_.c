@@ -42,3 +42,4 @@ entity get_skeleton_vox(
     }
     return zox_get_link(world, owner, VoxLink);
 }
+#include "look.c"
