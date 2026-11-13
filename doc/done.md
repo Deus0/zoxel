@@ -1,6 +1,9 @@
 # Done
 
 ## Moved from todo (2026-11-13)
+-x Arms keep in step: the skeleton owns the swing timing (SwingPhase, SwingBlend), every limb reads it, a raised
+  arm swung out of step after (tst arms_in_step); unique sounds twice as fast (shared harmonic rotation), harp by the
+  local AI (its cost is its decays, not its sines)
 -x Footsteps: walking on the ground plays the block underfoot's hit sound each stride, softer (Footsteps tag,
   players for now), tst footsteps; flute generates 40% faster (its harmonics by rotation, by the local AI)
 -x The rare terrain loading stall: a region with no towns left its tunks at the towns step forever (a continue

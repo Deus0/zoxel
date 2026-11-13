@@ -13,6 +13,7 @@
 #include "npc_attacks.c"
 #include "player_respawn.c"
 #include "footsteps.c"
+#include "arms_in_step.c"
 #include "pipeline_syncs.c"
 #include "lines_render.c"
 #include "town_maps.c"
@@ -566,6 +567,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("npc_attacks", zox_tst_npc_attacks_ready, zox_tst_npc_attacks_check, 120);
     zox_tst_add("player_respawn", zox_tst_player_respawn_ready, zox_tst_player_respawn_check, 120);
     zox_tst_add("footsteps", zox_tst_footsteps_ready, zox_tst_footsteps_check, 120);
+    zox_tst_add("arms_in_step", zox_tst_arms_in_step_ready, zox_tst_arms_in_step_check, 120);
     zox_tst_add("lod_chunk_lights", zox_tst_lod_chunk_lights_ready, zox_tst_lod_chunk_lights_check, 120);
     zox_tst_add("npc_skeletons", zox_tst_npc_skeletons_ready, zox_tst_npc_skeletons_check, 120);
     zox_tst_add("perf_stream", zox_tst_perf_stream_ready, zox_tst_perf_stream_check, 180);
