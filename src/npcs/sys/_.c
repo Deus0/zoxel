@@ -2,8 +2,18 @@
 #include "despawn.c"
 #include "can_spawn.c"
 #include "settings.c"
+#include "population.c"
 
 void zox_systems_characters3_terrain(ecs* world) {
+    zox_system(
+        population_map_system,
+        zoxp_update,
+        [in] blocks.BlockPosition2,
+        [in] blocks.BlockSize2,
+        [out] regions.GenerateRegion,
+        [out] npcs.PopulationMap,
+        [none] regions.Region
+    );
     zox_system(
         characters_can_spawn_system,
         zoxp_update,
@@ -20,6 +30,12 @@ void zox_systems_characters3_terrain(ecs* world) {
         [in] npcs.NpcSpawnZone,
         [none] terrains.TerrainChunk,
         [none] npcs.CharactersSpawned,
+    );
+    zox_system(
+        npc_despawn_system,
+        zoxp_update,
+        [none] ai.Npc,
+        [none] characters.Character
     );
     // NOTE: Writes to VoxelNode
     zox_system_1(

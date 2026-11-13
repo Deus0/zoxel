@@ -16,8 +16,6 @@
 	- 3. long notes generated over a few frames, the start first
 	- tst: every instrument generates a second of sound under a budget (sound_instruments logs timings)
 - Miss sounds need more whoosh, a wind feeling (instrument_whoosh in sounds/bop/impacts.c)
-- Npcs disappear: they don't return to their spawn positions when out of spawn range
-	- not solved yet: spawn links vs inside chunk links
 - new region placers should avoid prior ones
 
 # Sounds and Music
@@ -247,6 +245,10 @@
 	- super rare vox texture bug
 
 # Characters and Npcs
+- Npcs remember where they were and walk back home: a despawned npc returns at its home now (NpcHome, its seed),
+  it should come back where it was and path home, needs A* pathfinding and pathing octrees (none yet)
+	- pathing octrees: walkable space from the voxel octrees, coarse nodes for long paths
+	- A* over them, npcs follow the path, wandering and returning home use it
 - When Add/Remove body part
 	- remove the associated item slots
 	- refresh the body ui

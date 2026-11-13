@@ -89,8 +89,25 @@ void terrain_characters_spawn_system(iter* it) {
                 zox_get(chunk_above, VoxelNode) :
                 NULL;
         // calcs
-        byte character_spawn_rate = max_npcs ? character_spawn_rate_max :
-            seed_range(seed->value, character_spawn_rate_min, character_spawn_rate_max);
+        // its column's population on its region's map scales the rolls (fun/population.c), towns busy, the wild
+        //  quiet, all of them until the map is made
+        const entity tunk = zox_get_link(world, e, TunkLink);
+        const int chunk_length = octree_size(depth->value);
+        const int population = region_population_at(world, zox_valid(tunk) ? zox_get_link(world, tunk, RegionLink) : 0,
+            (int2) { chunk_position->value.x * chunk_length, chunk_position->value.z * chunk_length }, chunk_length);
+        byte character_spawn_rate = seed_range(seed->value, character_spawn_rate_min, character_spawn_rate_max);
+        if (max_npcs) {
+            character_spawn_rate = character_spawn_rate_max;
+        } else if (population >= 0) {
+            character_spawn_rate = (byte) (character_spawn_rate * population / 255);
+        }
+        // its npcs still alive (out walking), by home index: the same rolls are made, they aren't spawned again
+        uint alive = 0;
+        zox_each_link(world, e, ChunkCharacters, npc) {
+            if (zox_valid(npc) && zox_has(npc, NpcHome)) {
+                alive |= 1u << (zox_getv(npc, NpcHome) & 31);
+            }
+        }
         srand(seed->value);
         byte spawned = 0;
         for (byte j = 0; j < character_spawn_rate; j++) {
@@ -125,6 +142,9 @@ void terrain_characters_spawn_system(iter* it) {
             float3_add_float3_p(&position, positionf->value); // chunk
             float3_add_float3_p(&position, float3_single(cscale->value * 0.5f));
             float4 rotation = quaternion_from_euler((float3) { 0, (rand() % 361) * degreesToRadians, 0 });
+            if (alive & (1u << (j & 31))) {
+                continue;   // its rolls made (rand), it's still out there
+            }
             entity e2 = spawn_character3_npc(
                 world,
                 meta,
@@ -142,6 +162,8 @@ void terrain_characters_spawn_system(iter* it) {
             }
             zox_add(e2, DisableMovement);
             zox_link(world, e, ChunkCharacters, e2);
+            zox_setv(e2, NpcHome, j);
+            zox_setv(e2, HomePosition, position);
             spawned++;
             npcs_spawned_this_frame++;
             if (dbg_length) {

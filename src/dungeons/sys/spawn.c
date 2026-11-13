@@ -87,7 +87,7 @@ void dungeons_spawn_system(iter* it) {
                 zox_log(" + Dungeon [%ix%i] Size [%ix%i]", position.x, position.y, size.x, size.y);
             }
         }
-        generate->value = zox_generate_region_end;
+        generate->value = zox_generate_region_population;
     }
     zox_sys_on_end();
 } zoxd_system(dungeons_spawn_system);
