@@ -1,6 +1,7 @@
 zox_tag(Window);
 zox_tag(WindowBody);
 zox_tag(Header);
+zox_tag(WindowFooter);     // a strip along the bottom of a window's body, its buttons on it (ins/footer.c)
 zox_tag(CloseButton);
 zox_tag(WindowRaycastTarget);
 zoxc_byte(WindowLayer);
@@ -14,6 +15,7 @@ void zox_components_windows(ecs* world) {
     zoxd_tag(Window);
     zoxd_tag(WindowBody);
     zoxd_tag(Header);
+    zoxd_tag(WindowFooter);
     zoxd_tag(CloseButton);
     zoxd_tag(WindowRaycastTarget);
     zoxd_entity(WindowTarget);

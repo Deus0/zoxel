@@ -273,22 +273,31 @@ byte zox_tst_quest_dialogue_ready(ecs* world) {
     return 0;
 }
 
+// a line said as expected, or cut short to fit its box (truncated, ending in ..., text_truncate)
+static inline byte zox_tst_qd_said(const char* line, const char* expected) {
+    const int length = strlen(line);
+    if (!strcmp(line, expected)) {
+        return 1;
+    }
+    return length > 3 && !strcmp(line + length - 3, "...") && !strncmp(line, expected, length - 3);
+}
+
 void zox_tst_quest_dialogue_check(ecs* world) {
     const entity player = dbg_player;
     const entity character = zox_valid(player) ? zox_get_link(world, player, CharacterLink) : 0;
-    zox_tst_check(zox_tst_qd_lines_count[0] >= 2 && !strcmp(zox_tst_qd_lines[0][0], "Welcome traveler."),
+    zox_tst_check(zox_tst_qd_lines_count[0] >= 2 && zox_tst_qd_said(zox_tst_qd_lines[0][0], "Welcome traveler."),
         "the first talk didn't start with a welcome");
-    zox_tst_check(zox_tst_qd_lines_count[0] >= 2 && !strcmp(zox_tst_qd_lines[0][1], "I have a quest you may like."),
+    zox_tst_check(zox_tst_qd_lines_count[0] >= 2 && zox_tst_qd_said(zox_tst_qd_lines[0][1], "I have a quest you may like."),
         "a character without the quest heard [%s], not the quest offer", zox_tst_qd_lines_count[0] >= 2 ? zox_tst_qd_lines[0][1] : "nothing");
     const entity quest = zox_tst_qd_quest(world, zox_tst_qd_npc);
     zox_tst_check(zox_valid(get_user_quest(world, character, quest)), "the character didn't get the quest");
-    zox_tst_check(zox_tst_qd_lines_count[1] >= 2 && !strcmp(zox_tst_qd_lines[1][1], "You have already been commanded."),
+    zox_tst_check(zox_tst_qd_lines_count[1] >= 2 && zox_tst_qd_said(zox_tst_qd_lines[1][1], "You have already been commanded."),
         "the second talk said [%s], not that it gave the quest", zox_tst_qd_lines_count[1] >= 2 ? zox_tst_qd_lines[1][1] : "nothing");
     const entity user_quest = get_user_quest(world, character, quest);
-    zox_tst_check(zox_tst_qd_lines_count[2] >= 3 && !strcmp(zox_tst_qd_lines[2][1], "You did well...") &&
-        !strcmp(zox_tst_qd_lines[2][2], "I shall reward thee."), "the third talk didn't reward the done quest");
+    zox_tst_check(zox_tst_qd_lines_count[2] >= 3 && zox_tst_qd_said(zox_tst_qd_lines[2][1], "You did well...") &&
+        zox_tst_qd_said(zox_tst_qd_lines[2][2], "I shall reward thee."), "the third talk didn't reward the done quest");
     zox_tst_check(zox_valid(user_quest) && zox_has(user_quest, QuestHandedin), "the done quest wasn't handed in");
-    zox_tst_check(zox_tst_qd_lines_count[3] == 2 && !strcmp(zox_tst_qd_lines[3][1], "You did well..."),
+    zox_tst_check(zox_tst_qd_lines_count[3] == 2 && zox_tst_qd_said(zox_tst_qd_lines[3][1], "You did well..."),
         "the fourth talk said [%i] lines, not only that it was done well", zox_tst_qd_lines_count[3]);
     zox_tst_check(zox_tst_qd_columns > 0, "the dialogue box has no wrap width");
     zox_tst_check(!zox_tst_qd_overflows, "dialogue lines passed the box's [%i] characters [%i] times", zox_tst_qd_columns, zox_tst_qd_overflows);

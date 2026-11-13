@@ -13,6 +13,13 @@ entity spawn_dialogue_ui(
     byte header_font_size = 14 * ui_scale;
     byte speech_font_size = 9 * ui_scale;
     byte button_font_size = 12 * ui_scale;
+    // its footer's height, its buttons on it (spawn_footer)
+    const byte2 button_padding = byte2_single(4 * ui_scale);
+    const int footer_margin = 2 * ui_scale;
+    const int footer_height = button_font_size + button_padding.y * 2 + footer_margin * 2;
+    // at least its footer and two lines of text tall (its margins and padding round them), on a small screen
+    const int text_min_height = 2 * (speech_font_size + default_line_padding) + (6 + 2) * 2 * ui_scale;
+    size.y = int_max(size.y, footer_height + text_min_height);
     // int2 canvas_size = zox_getv(canvas, LayoutSize);
     float2 position_anchor = (float2) { 0.5f, 0.84f };
     const char* header_text =
@@ -39,10 +46,10 @@ entity spawn_dialogue_ui(
     zox_add(e, DialogueUI);
     zox_add(e, NavigationWindow);
     ui_pop_in(world, e);
+    // a footer along the body's bottom for its buttons, the text above it (they don't overlap in small windows)
+    const entity footer = spawn_footer(world, body, size, footer_height);
     // Speech Text
     {
-        // TODO: Can we enable 2 lines here?
-        // add speech text
         entity parent = body;
         const char* text = "";
         float2 position_anchor = float2_centre;
@@ -75,25 +82,24 @@ entity spawn_dialogue_ui(
             button_font_fill,
             button_font_outline);
         zox_set_unique_name(text_ui, "dialogue_text");
-        // inside the margins, lines wrap to it (dialogue_speech_system)
-        zox_setv(text_ui, LayoutSize, int2_sub(size, int2_multiply1(text_margins, 2)));
+        // inside the margins, above the footer, lines wrap to it (dialogue_speech_system)
+        int2 text_size = int2_sub(size, int2_multiply1(text_margins, 2));
+        text_size.y -= footer_height;
+        zox_setv(text_ui, LayoutSize, text_size);
         zox_link(world, e, DialogueLabel, text_ui);
     }
-    // NOTE: A Confirm button at bottom right
-    // Spawn a small button per choice, for max choices, then enable disable them after text finishes animating
+    // Next, on the footer's right
+    // TODO: a small button per choice, enabled after the text finishes animating
     {
-        entity parent = body;
-        byte2 button_padding = byte2_single(4 * ui_scale);
-        float2 position_anchor = float2_bottom_right; //  (float2) { 1, 0 };
         entity2 e2 = spawn_button(
             world,
             prefab_button,
-            parent,
+            footer,
             "Next",
+            (int2) { -footer_margin, 0 },
             int2_zero,
-            int2_zero,
-            position_anchor,
-            zox_alignment_bottom_right,
+            (float2) { 1, 0.5f },
+            zox_alignment_right,
             button_font_size,
             button_padding,
             button_fill,
@@ -101,7 +107,7 @@ entity spawn_dialogue_ui(
             button_font_fill,
             button_font_outline);
         zox_add(e2.x, DialogueButton);
-        zox_setv(e2.x, MeshAlignment, zox_alignment_bottom_right);
+        zox_setv(e2.x, MeshAlignment, zox_alignment_right);
         zox_setv(e2.x, ClickEvent, &on_click_dialogue_button);
     }
     return e;

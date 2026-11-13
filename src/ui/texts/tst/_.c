@@ -224,6 +224,16 @@ void zox_tst_text_data_check(ecs* world) {
     snprintf(wrap, sizeof(wrap), "fits");
     text_wrap(wrap, 4);
     zox_tst_check(!strcmp(wrap, "fits"), "a line as wide as its width wrapped [%s]", wrap);
+    // truncating: past its rows, the last line that fits ends in ...
+    snprintf(wrap, sizeof(wrap), "one line\ntwo line\nthree");
+    text_truncate(wrap, 2);
+    zox_tst_check(!strcmp(wrap, "one line\ntwo l..."), "truncated to 2 rows is [%s]", wrap);
+    snprintf(wrap, sizeof(wrap), "ab\ncd\nef");
+    text_truncate(wrap, 1);
+    zox_tst_check(!strcmp(wrap, "ab..."), "a short line truncated is [%s]", wrap);
+    snprintf(wrap, sizeof(wrap), "one\ntwo\n");
+    text_truncate(wrap, 2);
+    zox_tst_check(!strcmp(wrap, "one\ntwo\n"), "a text that fits truncated to [%s]", wrap);
     resize_TextData(&text, 0);
 }
 

@@ -10,6 +10,9 @@ color header_fill = { 122, 22, 22, 122 };
 color header_outline = { 44, 44, 44, 222 };
 color header_font_fill = { 199, 220, 41, 177 };
 color header_font_outline = { 100, 110, 50, 227 };
+// footer, darker than its window, its buttons on it
+color footer_fill = { 122, 22, 22, 140 };
+color footer_outline = { 44, 44, 44, 177 };
 // ?
 color default_fill_color = { 155, 155, 155, 144 };
 color default_outline_color = { 155, 88, 45, 200 };
