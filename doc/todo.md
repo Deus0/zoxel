@@ -804,6 +804,7 @@
 - Fix Android Build - on arm pcs
 
 # Bugs and Crashes
+- Sometimes still crashes - fix that
 - Occasional Crashes
 - crashes when destroying grass - only in run
 - crashed randommly on block place
