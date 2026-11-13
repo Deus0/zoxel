@@ -1,4 +1,5 @@
-entity spawn_item_body(
+// a realm item made from a vox model, with its icon texture (body parts and gear)
+entity spawn_item_vox(
     ecs *world,
     entity model,
     entity texture,
@@ -9,15 +10,14 @@ entity spawn_item_body(
         prefab_item,
         name);
     zox_add(e, ItemVox);
-    zox_add(e, BodyPart);
-    zox_add(e, BodyItem);
     zox_set_link(world, e, ModelLink, model);
     zox_link(world, e, TextureLink, texture);
     return e;
 }
 
-// NOTE: Spawns model group, texture and item
-entity2 spawn_realm_body_part(
+// NOTE: Spawns model group, texture and item, the item from blueprint: a model the blueprint generates
+//  - body parts tag it (spawn_realm_body_part), gear too (spawn_realm_item_equip_blueprint)
+entity2 spawn_realm_blueprint_item(
     ecs* world,
     entity parent,
     byte variants,
@@ -31,7 +31,6 @@ entity2 spawn_realm_body_part(
     // entity e2 = zox_prefab_from_parent(world, prefab_model_group);
     entity e = zox_ins(world, prefab_model_group);
     zox_set_unique_name(e, name);
-    zox_add(e, BodyModel);
     zox_add(e, ModelGroup);
     zox_set_parent(world, e, parent);
     // the realm owns the blueprint (a node graph), not a model: a cloned model would copy it
@@ -68,7 +67,7 @@ entity2 spawn_realm_body_part(
     // NOTE: This has GenerateModel on it atm
     // zox_setv(max_depth_vox, GenerateModel, 0);
     // # # # Spawn Item from model and texture # # #
-    entity item = spawn_item_body(
+    entity item = spawn_item_vox(
         world,
         model,
         texture,
@@ -81,6 +80,25 @@ entity2 spawn_realm_body_part(
         item,
         e
     };
+}
+
+// a body part, a blueprint item the body menu lists (BodyItem)
+entity2 spawn_realm_body_part(
+    ecs* world,
+    entity parent,
+    byte variants,
+    byte max_depth,
+    entity blueprint,
+    const char* name,
+    lint seed,
+    byte2 texture_size,
+    byte slot_type)
+{
+    entity2 e = spawn_realm_blueprint_item(world, parent, variants, max_depth, blueprint, name, seed, texture_size, slot_type);
+    zox_add(e.x, BodyPart);
+    zox_add(e.x, BodyItem);
+    zox_add(e.y, BodyModel);
+    return e;
 }
 
 entity2 spawn_realm_body_part2(

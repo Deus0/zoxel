@@ -3,6 +3,7 @@ byte zox_dbg_extraheads = 0; // 16;
 
 // TODO: Spawn location of head: Half chest + half head sizes, minus half head size (cornered spawn location)
 extern void add_tag_hat_slot(ecs*, entity);
+extern void add_tag_shirt_slot(ecs*, entity);
 extern entity spawn_equip_slot(ecs* world, entity parent, byte anchor);
 
 // NOTE: Spawns in body parts from Realm
@@ -74,6 +75,8 @@ void character_body_spawn_system(iter* it) {
         // Trigger early, incase we cannot keep growing body
         // dirty->value = zox_dirty_trigger;
         body_dirty->value = zox_generate_body_start;
+        // the shirt slot, worn over the chest (equipment, body_anchor_over)
+        add_tag_shirt_slot(world, spawn_equip_slot(world, chest_slot, body_anchor_over));
         // Given our chest spawned, we can spawn slots now
         // Sub Slots
         entity eslot_head = spawn_body_slot(world, chest_slot, body_anchor_top);

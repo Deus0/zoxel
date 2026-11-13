@@ -15,6 +15,22 @@ entity get_equip_slot_in_children(ecs *world, entity e, entity id) {
     return 0;
 }
 
+// gives a character the realm's first item with a tag (Hat, Shirt), in its body's slot with a tag (HatSlot)
+byte equip_realm_item(ecs* world, entity character, entity realm, entity chest_slot, entity slot_tag, entity item_tag) {
+    const entity slot = get_equip_slot_in_children(world, chest_slot, slot_tag);
+    if (!zox_valid(slot)) {
+        zox_loge("No [%s] on character [%s]", zox_get_name(slot_tag), zox_get_name(character));
+        return 0;
+    }
+    const entity realm_item = zox_get_child_by_id(world, realm, item_tag);
+    if (!zox_valid(realm_item)) {
+        zox_loge("No [%s] in the realm", zox_get_name(item_tag));
+        return 0;
+    }
+    zox_set_link(world, slot, DataLink, spawn_user_item(world, character, realm_item));
+    return 1;
+}
+
 // NOTE: Has to run after body parts spawn for slots attachment
 void character_player_equips_system(iter* it) {
     zox_sys_on_begin();
@@ -43,33 +59,11 @@ void character_player_equips_system(iter* it) {
             world,
             e,
             zox_id(Body));
-        entity hat_slot = get_equip_slot_in_children(
-            world,
-            chest_slot,
-            zox_id(HatSlot));
-        if (zox_valid(hat_slot)) {
-            entity realm_hat = find_slot_type(
-                world,
-                realm_items,
-                realm_items_length,
-                zox_slot_hat);
-            if (zox_valid(realm_hat)) {
-                entity e2 = spawn_user_item(world, e, realm_hat);
-                zox_set_link(world, hat_slot, DataLink, e2);
-                body_updated = 1;
-                if (dbg_log) {
-                    zox_log("Added Hat [%s] to Character [%s]", zox_get_name(realm_hat), zox_get_name(e));
-                }
-            } else {
-                zox_loge("Could not find Hat in Realm");
-            }
-        } else {
-            zox_loge("Could not find Hat Slot on Character [%s]", zox_get_name(e));
-        }
+        body_updated |= equip_realm_item(world, e, realm, chest_slot, zox_id(HatSlot), zox_id(Hat));
+        body_updated |= equip_realm_item(world, e, realm, chest_slot, zox_id(ShirtSlot), zox_id(Shirt));
         if (body_updated) {
             dirty->value = zox_generate_body_start;
         }
-        // TODO: Add Shirt
         // Add Second Hand to inventory
         entity inventory = zox_get_child_by_id(world, e, zox_id(Inventory));
         if (!zox_valid(inventory)) {

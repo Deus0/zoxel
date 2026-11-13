@@ -153,7 +153,8 @@ elif [[ "${os}" == "windows" ]]; then
     is_glew="1"
     # compiler="x86_64-w64-mingw32-gcc"
     dflags+=" -Dzox_windows"
-    libs+=" -lws2_32 -ldbghelp"
+    # libs+=" -lws2_32 -ldbghelp"
+    libs="-Wl,--push-state,-Bstatic,-lwinpthread,--pop-state -lws2_32 -ldbghelp"
     if ! command -v x86_64-w64-mingw32-gcc >/dev/null 2>&1; then
         echo "ERROR: MinGW x64 toolchain is required for Windows builds."
         echo "Missing: x86_64-w64-mingw32-gcc"

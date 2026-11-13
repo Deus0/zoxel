@@ -24,6 +24,11 @@ entity spawn_part_bones(
         zox_logw("Invalid Part [%s]", zox_get_name(part));
         return 0;
     }
+    // clothes (a shirt) move with what they cover: no bone, else a voxel picks the last bone around it
+    //  (generate_weights) and a shirt's bone, wider than the chest, would hold the shoulders still
+    if (zox_getv(slot, SlotAnchor) == body_anchor_over) {
+        return 0;
+    }
     byte3 part_position = zox_getv(slot, PartPosition);
     byte3 part_size = zox_getv(slot, PartSize);
     byte3 part_centre_position = byte3_add(part_position, byte3_half(part_size));

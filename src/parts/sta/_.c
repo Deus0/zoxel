@@ -17,8 +17,9 @@
 #define zox_slot_rcalf 15
 #define zox_slot_rfoot 16
 #define zox_slot_hat 17
+#define zox_slot_shirt 18
 
-const byte slot_names_length = 18;
+const byte slot_names_length = 19;
 const char* slot_names[] = {
     "Core",
     "Head",
@@ -38,4 +39,5 @@ const char* slot_names[] = {
     "Left Calf",
     "Left Foot",
     "Hat",
+    "Shirt",
 };
