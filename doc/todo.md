@@ -185,6 +185,9 @@
 - Note: I removed render_depth_invisible, we are just going to set depth to 0 from now on or destroy the chunk - or we can disable but it should be seperate from depth variable
 
 # Generation, Biomes and Regions
+-x Biomes by climate (temperature, moisture), a center each, heights blend near edges (raises gone, tst biome_heights)
+- Biomes could use their climate: hot ones drier blocks, cold ones snow on top, moisture for vegetation density
+- Tune zox_biome_blend (climate distance a blend fades over) by eye in game, 0.035 now
 - Use Realm Seed + region positions to set Region Seeds
 - Use Region Seeds to generate mountain dat
 - base biome color on prior biomes so it stands out too
