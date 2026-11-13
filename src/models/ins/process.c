@@ -16,5 +16,7 @@ entity spawn_process_model(
     zox_setv(e, ModelSize, byte3_zero);
     zox_link(world, e, NodeLink, node);
     zox_set_link(world, e, ModelLink, model);
+    // Generating while its blueprint runs, its voxels and ChunkSize not done (bodies wait), its end node removes it
+    zox_add(model, Generating);
     return e;
 }
