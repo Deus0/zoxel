@@ -1,35 +1,10 @@
 // TODO: use terrains seed
 // TODO: use height frequency from biome maps
 // TODO: Check Sand Height in this system
-typedef struct {
-    float perlin;
-    byte value;
-} place_chance;
-
-// NOTE: Uses nearest algorithm for the vegetation maps
-static inline byte choose_place(
-    const place_chance *places,
-    byte count,
-    double perlin_value)
-{
-    byte best = places[0].value;
-    double best_dist = fabs(perlin_value - places[0].perlin);
-    for (size_t i = 1; i < count; ++i) {
-        double dist = fabs(perlin_value - places[i].perlin);
-        if (dist < best_dist) {
-            best_dist = dist;
-            best = places[i].value;
-        }
-    }
-    return best;
-}
 
 void vegetation_map_system(iter* it) {
     zox_sys_on_begin();
     // uint seed = global_seed;
-    double veggie_frequency = 0.6;
-    double veggie_amplitude = 1.0;
-    byte veggie_octaves = 12;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TunkLod);
@@ -85,14 +60,9 @@ void vegetation_map_system(iter* it) {
         // now generate heights
         byte length = octree_size(lod->value);
         int2 map_size = int2_single(length);
-        byte places_count = 5;
-        place_chance places[places_count];
-        memset(places, 0, sizeof(places));
-        places[0].value = zox_vegetation_dirt;
-        places[1].value = zox_vegetation_grass;
-        places[2].value = zox_vegetation_weeds;
-        places[3].value = zox_vegetation_trees;
-        places[4].value = zox_vegetation_flowers;
+        // the biome's ground cover shares and tree chance (vegetation/fun)
+        float shares[4] = { 0 };
+        float tree_chance = 0;
         int2 global_position_start = (int2) {
             tunk_position->value.x * terrain_length,
             tunk_position->value.y * terrain_length
@@ -125,26 +95,15 @@ void vegetation_map_system(iter* it) {
                 // NOTE: Updates our cache of our biome
                 if (biome != new_biome) {
                     biome = new_biome;
-                    // grass_chance
-                    places[0].perlin = zox_getv(biome, DirtChance);
-                    places[1].perlin = zox_getv(biome, GrassChance);
-                    places[2].perlin = zox_getv(biome, WeedsChance);
-                    places[3].perlin = zox_getv(biome, TreeChance);
-                    places[4].perlin = zox_getv(biome, FlowerChance);
+                    shares[0] = zox_getv(biome, DirtChance);
+                    shares[1] = zox_getv(biome, GrassChance);
+                    shares[2] = zox_getv(biome, WeedsChance);
+                    shares[3] = zox_getv(biome, FlowerChance);
+                    tree_chance = zox_getv(biome, TreeChance);
                 }
-                double perlin_x = noise_positiver2 + (global_position.x / ((float) terrain_length));
-                double perlin_y = noise_positiver2 + (global_position.y / ((float) terrain_length));
-                double perlin_value = veggie_amplitude * perlin_octaves(
-                    perlin_x,
-                    perlin_y,
-                    veggie_frequency,
-                    seed,
-                    veggie_octaves);
-                vegetation_map->value[index] = choose_place(
-                    places,
-                    places_count,
-                    perlin_value);
-                // zox_log("value veggie: %f", value);
+                vegetation_map->value[index] = is_tree_at(global_position, seed, tree_chance) ?
+                    zox_vegetation_trees :
+                    get_ground_cover(global_position, terrain_length, seed, shares);
             }
         }
         generate->value = zox_generate_tunk_mountains;

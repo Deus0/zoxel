@@ -10,6 +10,7 @@
 #include "pipeline_syncs.c"
 #include "lines_render.c"
 #include "town_maps.c"
+#include "vegetation_chunks.c"
 #include "music.c"
 // tst: player_spawn, a new realm spawns the player's character standing in the terrain
 //  - waits for the player's character, then lets it settle for a few seconds
@@ -575,6 +576,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("pipeline_syncs", zox_tst_player_spawn_ready, zox_tst_pipeline_syncs_check, 120);
     zox_tst_add("lines_render", zox_tst_lines_render_ready, zox_tst_lines_render_check, 120);
     zox_tst_add("town_maps", zox_tst_town_maps_ready, zox_tst_town_maps_check, 120);
+    zox_tst_add("vegetation_chunks", zox_tst_vegetation_chunks_ready, zox_tst_vegetation_chunks_check, 120);
     zox_tst_add("music_crossfade", zox_tst_music_crossfade_ready, zox_tst_music_crossfade_check, 120);
     zox_tst_set_setup("music_crossfade", NULL, 1);
 }

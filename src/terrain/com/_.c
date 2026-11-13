@@ -7,6 +7,7 @@ zox_tag(TerrainChunk);
 zox_tag(ChunkTerrain);
 // Vegetation
 zox_tag(BlockWood);
+zox_tag(BlockLeaves);      // a tree's canopy (vegetation/sys/chunks.c)
 zox_tag(BlockSoil);
 zox_tag(BlockSoilGrass);
 zox_tag(BlockGrass);
@@ -32,6 +33,7 @@ void zox_components_terrain(ecs *world) {
     zoxd_tag(ChunkTerrain);
     // Vegetation
     zoxd_tag(BlockWood);
+    zoxd_tag(BlockLeaves);
     zoxd_tag(BlockSoil);
     zoxd_tag(BlockSoilGrass);
     zoxd_tag(BlockGrass);
