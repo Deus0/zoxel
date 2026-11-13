@@ -143,7 +143,7 @@ fi
 # tests that need more terrain than --tiny (i.e. far lods to compare), the later --medium wins
 medium_tests=(lod_chunk_lights)
 # tests that screenshot the world, the hud hidden
-nohud_tests=(sky_clouds)
+nohud_tests=(sky_clouds head_camera)
 run_game() {
     local tst="$1"
     local log="$2"

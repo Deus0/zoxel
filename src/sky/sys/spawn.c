@@ -1,5 +1,5 @@
-// Clouds: a field of flat blocky boxes above the terrain, children of the realm (they go with it)
-//  - cells of 4 voxels, so they look built from blocks, 1 to 3 boxes a cloud stacked a little offset
+// Clouds: a field of blocky boxes above the terrain, children of the realm (they go with it)
+//  - cells of 4 voxels, so they look built from blocks, 2 to 4 boxes a cloud, smaller ones stacked on top a little offset
 //  - from the realm's seed, the same realm has the same clouds
 const int clouds_count = 56;
 const float clouds_field = 320;         // half the field's width, they wrap past it (the fog hides the edge)
@@ -34,12 +34,12 @@ void spawn_clouds(ecs* world, entity realm, float3 centre, float block_scale, ui
         position.z = floorf(position.z / cell) * cell;
         float3 size = {
             seed_range(s + 3, 6, 20) * cell,
-            seed_range(s + 4, 1, 3) * cell,
+            seed_range(s + 4, 2, 4) * cell,
             seed_range(s + 5, 5, 16) * cell
         };
         spawn_cloud(world, realm, position, size);
         // smaller boxes on top, offset, a lumpier cloud
-        const int boxes = seed_range(s + 6, 0, 3);
+        const int boxes = seed_range(s + 6, 1, 4);
         for (int j = 0; j < boxes; j++) {
             const uint s2 = seed_rand(s + 11 * (j + 1));
             size.x = floorf(size.x * seed_rangef(s2, 0.4f, 0.8f) / cell) * cell + cell;

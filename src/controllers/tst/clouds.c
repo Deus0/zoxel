@@ -49,7 +49,7 @@ byte zox_tst_sky_clouds_ready(ecs* world) {
     const entity head = zox_valid(skeleton) ? zox_get_link(world, skeleton, HeadBoneLink) : 0;
     const entity head_camera = zox_valid(head) ? zox_get_child_by_id(world, head, zox_id(Camera)) : 0;
     if (zox_valid(head_camera)) {
-        zox_setv(head_camera, LocalRotation3D, quaternion_from_euler((float3) { -0.35f, 0, 0 }));
+        zox_setv(head_camera, LocalRotation3D, euler_to_quaternion((float3) { 0.5f, is_camera_positive_z ? M_PI : 0, 0 }));
     }
     zox_tst_progress(zox_current_time - zox_tst_clouds_time);
     if (zox_tst_clouds_stage == 1) {
@@ -71,7 +71,7 @@ byte zox_tst_sky_clouds_ready(ecs* world) {
     return !zox_screenshot_request[0];
 }
 
-// the share of near white pixels in a band above the middle of the screenshot, -1 without one
+// the share of grey (cloud) pixels in a band above the middle of the screenshot, -1 without one
 float zox_tst_clouds_share(const char* path) {
     FILE* file = fopen(path, "rb");
     if (!file) {
@@ -94,7 +94,10 @@ float zox_tst_clouds_share(const char* path) {
                 break;
             }
             total++;
-            cloud += rgb[0] > 200 && rgb[1] > 200 && rgb[2] > 200;
+            // grey: clouds fade into the fog, the sky is a colour (red, purple, green on alien realms)
+            const int high = rgb[0] > rgb[1] ? (rgb[0] > rgb[2] ? rgb[0] : rgb[2]) : (rgb[1] > rgb[2] ? rgb[1] : rgb[2]);
+            const int low = rgb[0] < rgb[1] ? (rgb[0] < rgb[2] ? rgb[0] : rgb[2]) : (rgb[1] < rgb[2] ? rgb[1] : rgb[2]);
+            cloud += high > 90 && (high - low) * 4 < high;
         }
     }
     fclose(file);
@@ -117,5 +120,6 @@ void zox_tst_sky_clouds_check(ecs* world) {
     zox_tst_check(moved > 1, "a cloud drifted [%.2f] in 3 seconds", moved);
     const float share = zox_tst_clouds_share(zox_tst_path("sky_clouds.ppm"));
     zox_tst_check(share >= 0, "no screenshot saved");
+    zox_tst_check(share > 0.2f, "no cloud in the sky looking up, [%.2f%%] of the band", share);
     zox_log("[tst] [metric] sky_clouds [%.1f%%] of the sky band is cloud, [%i] clouds, drifted [%.1f]", share, count, moved);
 }

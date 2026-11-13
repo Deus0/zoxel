@@ -18,6 +18,7 @@
 #include "lines_render.c"
 #include "town_maps.c"
 #include "clouds.c"
+#include "head_camera.c"
 #include "vegetation_chunks.c"
 #include "music.c"
 // tst: player_spawn, a new realm spawns the player's character standing in the terrain
@@ -590,6 +591,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("glow_light", zox_tst_glow_light_ready, zox_tst_glow_light_check, 120);
     zox_tst_add("block_table", zox_tst_town_homes_ready, zox_tst_block_table_check, 120);
     zox_tst_add("sky_clouds", zox_tst_sky_clouds_ready, zox_tst_sky_clouds_check, 120);
+    zox_tst_add("head_camera", zox_tst_head_camera_ready, zox_tst_head_camera_check, 120);
     zox_tst_add("vegetation_chunks", zox_tst_vegetation_chunks_ready, zox_tst_vegetation_chunks_check, 120);
     zox_tst_add("music_crossfade", zox_tst_music_crossfade_ready, zox_tst_music_crossfade_check, 120);
     zox_tst_set_setup("music_crossfade", NULL, 1);
