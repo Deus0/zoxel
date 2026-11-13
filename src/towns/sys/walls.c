@@ -363,7 +363,8 @@ void town_walls_system(iter* it) {
                         continue;
                     }
                     a_LightQueue(light_queue, (LightUpdate) {
-                        .pos = int3_to_byte3(p), .depth = build_depth, .light = glow_light, .distance = light_propogation_distance });
+                        .pos = int3_to_byte3(p), .depth = build_depth, .distance = light_propogation_distance,
+                        .light = glow_light > light_air_decay ? glow_light - light_air_decay : darklight });
                 }
             }
             spin_unlock(&light_queue->lock);

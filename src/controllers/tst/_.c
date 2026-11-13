@@ -583,6 +583,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("home_roofs", zox_tst_region_zones_ready, zox_tst_home_roofs_check, 120);
     zox_tst_add("town_homes", zox_tst_town_homes_ready, zox_tst_town_homes_check, 120);
     zox_tst_add("home_glow", zox_tst_home_glow_ready, zox_tst_home_glow_check, 120);
+    zox_tst_add("glow_light", zox_tst_glow_light_ready, zox_tst_glow_light_check, 120);
     zox_tst_add("vegetation_chunks", zox_tst_vegetation_chunks_ready, zox_tst_vegetation_chunks_check, 120);
     zox_tst_add("music_crossfade", zox_tst_music_crossfade_ready, zox_tst_music_crossfade_check, 120);
     zox_tst_set_setup("music_crossfade", NULL, 1);

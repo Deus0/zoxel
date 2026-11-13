@@ -3,7 +3,7 @@
 //  - groups terrain meshes by their RenderDepth, a coarse group's average light is near the detailed one's
 //    (coarse meshes read stale open light nodes, darklight, before getv_nearby_max_LightNode)
 //  - a chunk beside a different lod one isn't dark (lighting between lods)
-//  - coarse lods have no darklight vertices (the old stale reads left 0.1 to 0.4%), runs on --medium terrain
+//  - coarse lods aren't dark (under 1.5%, dark home interiors are real), runs on --medium terrain
 //  - run: bash bsh/tst.sh lod_chunk_lights
 byte zox_tst_player_spawn_ready(ecs* world);   // in _.c, after this is included
 double zox_tst_lod_lights_start = 0;
@@ -97,11 +97,12 @@ void zox_tst_lod_chunk_lights_check(ecs* world) {
         zox_tst_check(rough >= fine * 0.6f, "coarse chunks (depth %i) are dark, [%.1f] to the near ones' [%.1f]", coarsest, rough, fine);
     }
     zox_tst_check(!dark_borders, "[%i] of [%i] chunks beside another lod are dark", dark_borders, borders);
-    // coarse lods have no dark vertices (stale open light nodes left 0.1 to 0.4% dark, the fix 0%)
+    // coarse lods aren't dark: under 1.5% (homes are dark inside now, roofed, a little is real), the exact stale
+    //  read check is the pure tst lod_lights
     for (byte d = 0; d < finest; d++) {
         if (vertices[d]) {
             const float share = 100.0f * darks[d] / vertices[d];
-            zox_tst_check(share <= 0.05f, "depth [%i] has [%.2f%%] dark vertices, coarse lods read stale lights", d, share);
+            zox_tst_check(share <= 1.5f, "depth [%i] has [%.2f%%] dark vertices, coarse lods read stale lights", d, share);
         }
     }
 }

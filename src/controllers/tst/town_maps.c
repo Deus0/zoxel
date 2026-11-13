@@ -322,3 +322,114 @@ void zox_tst_home_glow_check(ecs* world) {
     zox_tst_check(found, "no glow stones on the homes");
     zox_tst_check(lit == found, "[%i] of [%i] glow stones don't light the air above them", found - lit, found);
 }
+
+// tst: glow_light, a glow stone lights a dark tunnel, fading with distance, and removing it darkens it again
+//  - digs a sealed tunnel in a solid chunk under the player (local x 4 to 11), places a glow stone at its end
+//  - lit: the air beside it bright, fading along the tunnel; removed: the tunnel back to darklight
+//    (removing an emitter left its light, lights3/sys/editing.c darkens from it now)
+//  - run: bash bsh/tst.sh glow_light
+byte zox_tst_glow_stage = 0;
+double zox_tst_glow_time = 0;
+entity zox_tst_glow_chunk = 0;
+byte zox_tst_glow_lit[8];
+byte zox_tst_glow_dark[8];
+
+static inline void zox_tst_glow_set(ecs* world, entity chunk, byte3 position, byte value) {
+    VoxelNodeQueue* queue = zox_getm(chunk, VoxelNodeQueue);
+    a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = value, .position = position });
+}
+
+static inline void zox_tst_glow_read(ecs* world, entity chunk, byte* lights) {
+    const byte depth = zox_getv(chunk, NodeDepth);
+    for (byte i = 0; i < 8; i++) {
+        lights[i] = getv_LightNode(zox_get(chunk, LightNode), depth, (byte3) { 4 + i, 8, 8 });
+    }
+}
+
+byte zox_tst_glow_light_ready(ecs* world) {
+    if (!zox_tst_player_spawn_ready(world)) {
+        return 0;
+    }
+    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity terrain = zox_get_link(world, character, TerrainLink);
+    const double t = zox_current_time - zox_tst_glow_time;
+    zox_tst_progress(zox_tst_glow_stage);
+    if (zox_tst_glow_stage == 0) {
+        zox_tst_waiting = "a solid chunk under the player";
+        const byte depth = zox_getv(terrain, NodeDepth);
+        const int length = octree_size(depth);
+        int3 chunk_position = real_position_to_chunk_position(zox_getv(character, Position3D), length, zox_getv(terrain, BlockScale));
+        chunk_position.y -= 2;
+        const entity chunk = int3_hashmap_get(zox_get(terrain, ChunkLinks)->value, chunk_position);
+        if (!zox_valid(chunk) || !zox_has(chunk, VoxelNodeQueue)) {
+            return 0;
+        }
+        // the tunnel and its walls all solid, so it's sealed and dark
+        int open = 0;
+        for (int x = 3; x <= 12; x++) for (int y = 7; y <= 9; y++) for (int z = 7; z <= 9; z++) {
+            open += !getv_VoxelNode(zox_get(chunk, VoxelNode), depth, (byte3) { x, y, z });
+        }
+        zox_tst_check(!open, "the chunk under the player isn't solid where the tunnel goes ([%i] open)", open);
+        if (open) {
+            return 1;
+        }
+        for (byte x = 4; x <= 11; x++) {
+            zox_tst_glow_set(world, chunk, (byte3) { x, 8, 8 }, 0);
+        }
+        zox_tst_glow_chunk = chunk;
+        zox_tst_glow_stage = 1;
+        zox_tst_glow_time = zox_current_time;
+        return 0;
+    }
+    const entity chunk = zox_tst_glow_chunk;
+    if (zox_tst_glow_stage == 1) {
+        zox_tst_waiting = "the tunnel to settle dark";
+        if (t < 1) {
+            return 0;
+        }
+        const entity glow = zox_get_child_by_id(world, zox_get_link(world, character, RealmLink), zox_id(BlockGlowStone));
+        zox_tst_glow_set(world, chunk, (byte3) { 4, 8, 8 }, zox_getv(glow, BlockIndex));
+        zox_tst_glow_stage = 2;
+        zox_tst_glow_time = zox_current_time;
+        return 0;
+    }
+    if (zox_tst_glow_stage == 2) {
+        zox_tst_waiting = "the glow stone to light the tunnel";
+        if (t < 1.5) {
+            return 0;
+        }
+        zox_tst_glow_read(world, chunk, zox_tst_glow_lit);
+        zox_tst_glow_set(world, chunk, (byte3) { 4, 8, 8 }, 0);
+        zox_tst_glow_stage = 3;
+        zox_tst_glow_time = zox_current_time;
+        return 0;
+    }
+    zox_tst_waiting = "the tunnel to go dark";
+    if (t < 1.5) {
+        return 0;
+    }
+    zox_tst_glow_read(world, chunk, zox_tst_glow_dark);
+    return 1;
+}
+
+void zox_tst_glow_light_check(ecs* world) {
+    (void) world;
+    if (zox_tst_glow_stage < 3) {
+        return;
+    }
+    zox_log("[tst] lit [%i %i %i %i %i %i %i] dark [%i %i %i %i %i %i %i]",
+        zox_tst_glow_lit[1], zox_tst_glow_lit[2], zox_tst_glow_lit[3], zox_tst_glow_lit[4], zox_tst_glow_lit[5], zox_tst_glow_lit[6], zox_tst_glow_lit[7],
+        zox_tst_glow_dark[1], zox_tst_glow_dark[2], zox_tst_glow_dark[3], zox_tst_glow_dark[4], zox_tst_glow_dark[5], zox_tst_glow_dark[6], zox_tst_glow_dark[7]);
+    // 0 was the glow stone, 1 beside it
+    zox_tst_check(zox_tst_glow_lit[1] > darklight + 100, "beside the glow stone is [%i]", zox_tst_glow_lit[1]);
+    int rising = 0;
+    for (int i = 2; i < 8; i++) {
+        rising += zox_tst_glow_lit[i] > zox_tst_glow_lit[i - 1];
+    }
+    zox_tst_check(!rising, "the light doesn't fade along the tunnel ([%i] rises)", rising);
+    int lit_after = 0;
+    for (int i = 0; i < 8; i++) {
+        lit_after += zox_tst_glow_dark[i] > darklight + 4;
+    }
+    zox_tst_check(!lit_after, "[%i] tunnel voxels still lit after the glow stone was removed", lit_after);
+}

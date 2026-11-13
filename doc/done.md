@@ -1,6 +1,9 @@
 # Done
 
 ## Moved from todo (2026-11-13)
+-x Removing a glow stone darkens what it lit: darkness from it at its light, the edit light system handles each edit
+  once after it's set (it ran every frame an edit queued, before old_value was known), emitters seed a step down,
+  placing one lights around it; tst glow_light
 -x Homes: roofs in their biome's wood, peaked (two in three, a ridge along the long side, gables) or flat
   (HomeStyle), a glow stone on top lighting it (BlockLight, BlockGlowStone, its light seeded on the queue); house
   placement fixed (counted only placed, seeded per try, its count from the town's seed); tst home_roofs, town_homes,
