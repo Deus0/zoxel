@@ -11,6 +11,7 @@ void spawn_dungeon_blocks(
             "block_dark");
         zox_set_unique_name(e2, "block_dark_bricks");
         zox_add(e2, BlockDungeonBricks);
+        link_hit_sound(world, e2, e, &hit_sound_stone);
         zox_set_parent(world, e2, e);
         wall = e2;
     }
@@ -18,5 +19,6 @@ void spawn_dungeon_blocks(
         entity e2 = spawn_realm_dungeon_core(world, wall);
         zox_set_parent(world, e2, e);
         zox_add(e2, BlockDungeonCore);
+        link_hit_sound(world, e2, e, &hit_sound_stone);
     }
 }

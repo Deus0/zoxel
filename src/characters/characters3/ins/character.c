@@ -59,6 +59,8 @@ static inline void setup_character3(
         zox_link(world, e, TerrainLink, terrain);
     }
     zox_setv(e, Seed, seed);
+    // what it sounds like hit, its kind's realm sound (sounds/bop/hits.c)
+    zox_set_link(world, e, HitSoundLink, zox_get_link(world, prefab, HitSoundLink));
     zox_setv(e, Position3D, position);
     zox_setv(e, Rotation3D, rotation);
     zox_setv(e, LastPosition3D, position);

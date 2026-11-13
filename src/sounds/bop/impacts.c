@@ -36,3 +36,56 @@ float whoosh_sound(float time, float frequency) {
     const float bright = impact_noise(time, frequency * 13, 1.9f);
     return dull * (1 - 0.4f * swell) + bright * swell * 0.45f + 0.25f * sinf(2 * M_PI * frequency * 2 * time);
 }
+
+// Materials: what a hit sounds like by what it hits (hit_sounds in fun/effects.c, doc/sounds.md)
+//  - first drafts by the local model, the pitch sweeps fixed (a sweep's phase is its pitch's integral)
+
+// stone, a dry hard knock: a short click and three inharmonic rings that die fast
+float knock_sound(float time, float frequency) {
+    const float click = 1.2f * impact_noise(time, 4000, 0.1f) * expf(-time * 45);
+    const float r1 = sinf(2 * M_PI * frequency * time) * expf(-time * 22);
+    const float r2 = 0.8f * sinf(2 * M_PI * frequency * 2.3f * time) * expf(-time * 28);
+    const float r3 = 0.5f * sinf(2 * M_PI * frequency * 3.9f * time) * expf(-time * 36);
+    return click + r1 + r2 + r3;
+}
+
+// dirt, a soft dull thud: a low body falling in pitch and dull noise
+float thud_sound(float time, float frequency) {
+    const float drop = 1.2f, drop_rate = 25;
+    const float phase = 2 * M_PI * frequency * (time + drop * (1 - expf(-time * drop_rate)) / drop_rate);
+    const float body = sinf(phase) * expf(-time * 14);
+    const float dull = 0.8f * impact_noise(time, frequency * 3, 0.5f) * expf(-time * 12);
+    return body + dull;
+}
+
+// sand, a grainy crunch: muffled noise broken into grains by a slower noise
+float crunch_sound(float time, float frequency) {
+    const float gate = fminf(1, fmaxf(0, impact_noise(time, frequency * 0.6f, 0.2f) + 0.35f));
+    const float noise = impact_noise(time, frequency * 8, 0.8f);
+    return noise * gate * gate * 3 * expf(-time * 15) + 0.3f * sinf(2 * M_PI * frequency * time) * expf(-time * 25);
+}
+
+// wood, a hollow tock: a body ringing at its note and 2.76 times it, a tiny click at the start
+float tock_sound(float time, float frequency) {
+    const float click = 0.5f * impact_noise(time, 5000, 1.3f) * expf(-time * 60);
+    const float r1 = 0.8f * sinf(2 * M_PI * frequency * time) * expf(-time * 18);
+    const float r2 = 0.45f * sinf(2 * M_PI * frequency * 2.76f * time) * expf(-time * 24);
+    return click + r1 + r2;
+}
+
+// slime, a wet squelch: a bubble's pitch rising fast, wobbling, over dull noise
+float squelch_sound(float time, float frequency) {
+    const float rise = 5;
+    const float phase = 2 * M_PI * frequency * (time + rise * time * time) + 0.4f * sinf(2 * M_PI * 18 * time);
+    const float bubble = sinf(phase) * expf(-time * 12);
+    const float wet = 0.5f * impact_noise(time, frequency * 2, 2.1f) * expf(-time * 10);
+    return bubble + wet;
+}
+
+// leaves (and plants), a soft rustle: noise that swells and fades
+float rustle_sound(float time, float frequency) {
+    const float swell = sinf(fminf(1, time / 0.22f) * M_PI);
+    const float leaves = impact_noise(time, frequency * 14, 3.7f);
+    const float twigs = 0.5f * impact_noise(time, frequency * 5, 1.1f);
+    return (leaves + twigs) * swell;
+}

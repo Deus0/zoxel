@@ -79,7 +79,7 @@ byte damage_character(
     }
     zox_add(hit, JustHit);
     // hit sound
-    spawn_sound_effect(world, sound_effect_hit, hit);
+    spawn_character_hit_sound(world, hit);
     // knockback
     float3 hit_impulse = float3_scale(
         knockback_normal,

@@ -1,6 +1,11 @@
 # Done
 
 ## Moved from todo (2026-11-13)
+-x Realm sounds: hits sound like what they hit, stone knocks, dirt thuds, sand crunches, wood tocks, leaves rustle,
+  slimes squelch, bodies thump and grunt in their own voice (distorted), sound entities of the realm linked by
+  block and character kinds (doc/sounds.md), tst hit_sounds, hit_sound_links, sound_balance
+-x Font filling was off: outlines walking back over themselves (g, q) left parts empty, fill by the glyph's
+  winding now, tst font_fill, font_glyphs_fill, texture tests (texture_noise caught dark noise wrapping bright)
 -x Trees spawned too rarely and in clumps: a jittered grid of tree cells (vegetation/fun), spaced 5+ apart, with leaves
   (a leaves block a biome), tst vegetation_trees, vegetation_chunks (trees across chunks)
 -x The grassy biome wasn't grassy: ground cover is a biome's shares now (tall grass 55% in grasslands, was rare),

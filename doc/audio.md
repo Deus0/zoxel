@@ -55,6 +55,7 @@ spawn_sound_effect(world, sound_effect_click, 0);          // ui, in the middle
   at 50hz is silent for most players however loud it is. Keep an effect's body above ~90hz.
 - Hits are `instrument_impact` (flesh on flesh: a falling thump, a dull smack, a muffled slap), swings
   `instrument_whoosh` ([impacts.c](../src/sounds/bop/impacts.c)). `tst sound_balance` keeps attacks duller than a 1khz tone.
+- Hits on blocks and characters sound like what they hit (stone knocks, dirt thuds, bodies grunt), see [Sounds](sounds.md).
 - Spiky instruments (violin) hit their clip limit before they get loud. Fuller ones (square piano, flute,
   guitar, edm) carry better.
 
