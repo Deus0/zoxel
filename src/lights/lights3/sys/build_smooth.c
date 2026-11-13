@@ -1,29 +1,95 @@
-// hmmm issue seems to be about faces
-// maybe we redo our mesh builder system
+// Smooth lighting: each vertex of a face is lit by the air around it, not the face's one light
+//  - a vertex averages four lights: the face's (the voxel it looks into), its two edges' and its corner's
+//  - a corner behind two solid edges is hidden, its light would leak round the corner, it counts as darklight
+//  - solids hold darklight, so vertices in creases darken (ambient occlusion)
+//  - walks the voxels (node) with the sides like the mesh builder (zox_terrain_building_dig), so both skip the
+//    same faces (sides set on air), and colors line up with the mesh's vertices
+//  - tst smooth_lights (the corner leak), terrain_render
 
-// if corner light AND two adjacents are solid voxels, return 0
-#define zox_get_nearby_light(x, y, z) \
-    getv_nearby_LightNode( \
-        lights, \
-        lights_locks, \
-        position, \
-        depth, \
-        sbyte3_add( \
-            neighbor_offsets[direction], \
-            (sbyte3) { x, y, z } \
-        ), \
-        oob_value)
-
-// NOTE: walks the voxels (node) with the sides like the mesh builder (zox_terrain_building_dig),
-//  so both skip the same faces (sides set on air), and colors line up with the mesh's vertices
 // colors past limits errors, the mesh didn't match its chunk's sides (checked by tests)
 uint zox_smooth_lights_errors = 0;
+
+// a face's two axes along it, a vertex is one step along each (signed by smooth_vertex_signs)
+static const sbyte3 smooth_face_axes[6][2] = {
+    [direction_left] = { { 0, 1, 0 }, { 0, 0, 1 } },
+    [direction_right] = { { 0, 1, 0 }, { 0, 0, 1 } },
+    [direction_down] = { { 1, 0, 0 }, { 0, 0, 1 } },
+    [direction_up] = { { 1, 0, 0 }, { 0, 0, 1 } },
+    [direction_back] = { { 1, 0, 0 }, { 0, 1, 0 } },
+    [direction_front] = { { 1, 0, 0 }, { 0, 1, 0 } },
+};
+
+// the mesh's vertex order on a face: --, -+, ++, +-
+static const sbyte smooth_vertex_signs[4][2] = { { -1, -1 }, { -1, 1 }, { 1, 1 }, { 1, -1 } };
+
+// a vertex's light: the face's, its edges' and its corner's averaged, a corner behind two solid edges is darklight
+static inline byte smooth_vertex_light(byte face, byte edge_a, byte edge_b, byte corner, byte solid_a, byte solid_b) {
+    if (solid_a && solid_b) {
+        corner = darklight;
+    }
+    return (byte) ((face + edge_a + edge_b + corner) / 4);
+}
+
+// does the voxel at offset from position stop light (missing chunks are air)
+static inline byte smooth_is_solid(
+    const VoxelNode** voxels,
+    spinlock** voxels_locks,
+    const byte* solidity,
+    byte3 position,
+    byte depth,
+    sbyte3 offset)
+{
+    const byte voxel = getv_nearby_VoxelNode(voxels, voxels_locks, position, depth, offset, 0);
+    return voxel && solidity[voxel - 1];
+}
+
+static inline sbyte3 smooth_offset(sbyte3 face, sbyte3 a, sbyte sign_a, sbyte3 b, sbyte sign_b) {
+    return (sbyte3) {
+        face.x + a.x * sign_a + b.x * sign_b,
+        face.y + a.y * sign_a + b.y * sign_b,
+        face.z + a.z * sign_a + b.z * sign_b,
+    };
+}
+
+// a face's four vertex lights, in the mesh's vertex order, for the voxel at position (27 nearby chunks)
+void smooth_face_lights(
+    const LightNode** lights,
+    spinlock** lights_locks,
+    const VoxelNode** voxels,
+    spinlock** voxels_locks,
+    const byte* solidity,
+    byte3 position,
+    byte depth,
+    byte direction,
+    byte* vertex_lights)
+{
+    // past the world: the sky above, dark elsewhere
+    const byte oob = direction == direction_up ? sunlight : darklight;
+    const sbyte3 face = neighbor_offsets[direction];
+    const sbyte3 a = smooth_face_axes[direction][0];
+    const sbyte3 b = smooth_face_axes[direction][1];
+    const byte face_light = getv_nearby_LightNode(lights, lights_locks, position, depth, face, oob);
+    for (byte v = 0; v < 4; v++) {
+        const sbyte sa = smooth_vertex_signs[v][0], sb = smooth_vertex_signs[v][1];
+        const sbyte3 edge_a = smooth_offset(face, a, sa, b, 0);
+        const sbyte3 edge_b = smooth_offset(face, a, 0, b, sb);
+        const sbyte3 corner = smooth_offset(face, a, sa, b, sb);
+        vertex_lights[v] = smooth_vertex_light(
+            face_light,
+            getv_nearby_LightNode(lights, lights_locks, position, depth, edge_a, oob),
+            getv_nearby_LightNode(lights, lights_locks, position, depth, edge_b, oob),
+            getv_nearby_LightNode(lights, lights_locks, position, depth, corner, oob),
+            smooth_is_solid(voxels, voxels_locks, solidity, position, depth, edge_a),
+            smooth_is_solid(voxels, voxels_locks, solidity, position, depth, edge_b));
+    }
+}
 
 static inline void zox_apply_smooth_lights(
     spinlock** lights_locks,
     spinlock** voxels_locks,
     const LightNode** lights,
     const VoxelNode** voxels,
+    const byte* solidity,
     const VoxelNode* node,
     const SidesOctree* sides,
     const MeshColorRGBs* colors,
@@ -54,6 +120,7 @@ static inline void zox_apply_smooth_lights(
                 voxels_locks,
                 lights,
                 voxels,
+                solidity,
                 node_kids ? &node_kids[i] : node,
                 &sides_kids[i],
                 colors,
@@ -81,108 +148,21 @@ static inline void zox_apply_smooth_lights(
     if (is_air) {
         return;
     }
-    // TODO: Handle Corners Properly:
-    //      - If two adjacent voxels solid, dont use corner light as it will be blocked
-    // for each face that is visible according to node->sides
+    // each face the sides say is visible
     for (byte direction = 0; direction < 6; direction++) {
-        // skip hidden face
-        byte side_visible = (sides->value & (1 << (direction + 1)));
-        if (!side_visible) {
+        if (!(sides->value & (1 << (direction + 1)))) {
             continue;
         }
-//#ifdef zox_safety_checks
         if (*ccount + voxel_face_vertices_length > colors->length) {
             zox_smooth_lights_errors++;
             zox_loge("Smooth Lights Error: Colors Past Limits [%i] - Face [%i] at Pos [%ix%ix%i] Depth [%i] of [%i]",
-                *ccount,
-                direction,
-                position.x,
-                position.y,
-                position.z,
-                depth,
-                target_depth);
+                *ccount, direction, position.x, position.y, position.z, depth, target_depth);
             return;
         }
-//#endif
-        const byte oob_values[] = {
-            darklight,
-            darklight,
-            darklight,
-            sunlight,
-            darklight,
-            darklight
-        };
-        byte oob_value = oob_values[direction];
-        byte adjacent_light = zox_get_nearby_light(0, 0, 0);
-        byte light_n1_0 = 0;
-        byte light_1_0 = 0;
-        byte light_0_n1 = 0;
-        byte light_0_1 = 0;
-        byte light_n1_n1 = 0;
-        byte light_1_1 = 0;
-        byte light_n1_1 = 0;
-        byte light_1_n1 = 0;
-        if (direction == direction_down ||
-            direction == direction_up)
-        {
-            // Adjacents
-            light_n1_0 = zox_get_nearby_light(-1, 0, 0);
-            light_1_0 = zox_get_nearby_light(1, 0, 0);
-            light_0_n1 = zox_get_nearby_light(0, 0, -1);
-            light_0_1 = zox_get_nearby_light(0, 0, 1);
-            light_n1_n1 = zox_get_nearby_light(-1, 0, -1);
-            light_1_1 = zox_get_nearby_light(1, 0, 1);
-            light_n1_1 = zox_get_nearby_light(-1, 0, 1);
-            light_1_n1 = zox_get_nearby_light(1, 0, -1);
-        } else if (direction == direction_back ||
-            direction == direction_front)
-        {
-            // Adjacents
-            light_n1_0 = zox_get_nearby_light(-1, 0, 0);
-            light_1_0 = zox_get_nearby_light(1, 0, 0);
-            light_0_n1 = zox_get_nearby_light(0, -1, 0);
-            light_0_1 = zox_get_nearby_light(0, 1, 0);
-            // Corners
-            light_n1_n1 = zox_get_nearby_light(-1, -1, 0);
-            light_1_1 = zox_get_nearby_light(1, 1, 0);
-            light_n1_1 = zox_get_nearby_light(-1, 1, 0);
-            light_1_n1 = zox_get_nearby_light(1, -1, 0);
-        } else if (direction == direction_left ||
-            direction == direction_right)
-        {
-            // Adjacents
-            light_n1_0 = zox_get_nearby_light(0, -1, 0);
-            light_1_0 = zox_get_nearby_light(0, 1, 0);
-            light_0_n1 = zox_get_nearby_light(0, 0, -1);
-            light_0_1 = zox_get_nearby_light(0, 0, 1);
-            // Corners
-            light_n1_n1 = zox_get_nearby_light(0, -1, -1);
-            light_1_1 = zox_get_nearby_light(0, 1, 1);
-            light_n1_1 = zox_get_nearby_light(0, -1, 1);
-            light_1_n1 = zox_get_nearby_light(0, 1, -1);
-        }
+        byte vertex_lights[4];
+        smooth_face_lights(lights, lights_locks, voxels, voxels_locks, solidity, position, depth, direction, vertex_lights);
         for (byte v = 0; v < voxel_face_vertices_length; v++) {
-            // Get other lights per vertex
-            uint total_light = adjacent_light;
-            if (v == 0) {
-                // Negative Negative
-                total_light += light_0_n1 + light_n1_0 + light_n1_n1;
-            } else if (v == 1) {
-                // Negative Positive
-                total_light += light_0_1 + light_n1_0 + light_n1_1;
-            } else if (v == 2) {
-                // Positive Positive
-                total_light += light_1_0 + light_0_1 + light_1_1;
-            } else if (v == 3) {
-                // Positive Negative
-                total_light += light_0_n1 + light_1_0 + light_1_n1;
-            }
-            byte light = total_light / 4;
-            color_rgb* c = &colors->value[*ccount];
-            c->r = light;
-            c->g = light;
-            c->b = light;
-            (*ccount)++;
+            colors->value[(*ccount)++] = (color_rgb) { vertex_lights[v], vertex_lights[v], vertex_lights[v] };
         }
     }
 }
@@ -198,6 +178,10 @@ void build_smooth_lights_system(iter* it) {
     }
     zox_sys_world();
     zox_sys_begin();
+    // which blocks stop light, rebuilt when the block manager (realm) changes (fun/solidity.c)
+    byte solidity[zox_light_solidity_length];
+    memset(solidity, 1, zox_light_solidity_length);
+    entity realm = 0;
     zox_sys_in(RenderDepth);
     zox_sys_in(MeshColorRGBs);
     for (int i = 0; i < it->count; i++) {
@@ -258,6 +242,7 @@ void build_smooth_lights_system(iter* it) {
             nearby_chunks,
             voxels,
             voxels_locks);
+        update_light_solidity(world, zox_get_link(world, chunk, BlockManagerLink), &realm, solidity);
         uint ccount = 0;
         spin_lock(&sides_lock->value);
         zox_apply_smooth_lights(
@@ -265,6 +250,7 @@ void build_smooth_lights_system(iter* it) {
             voxels_locks,
             lights,
             voxels,
+            solidity,
             voxels[OCTREE_INDEX(0, 0, 0)],
             sides,
             colors,

@@ -1,6 +1,10 @@
 # Done
 
 ## Moved from todo (2026-11-13)
+-x Smooth lighting: no light leaking round corners (a corner behind two solid edges is dark), faces lit from a table
+  of their axes, tst smooth_lights; tests run on x86 again (egl device by machine), npcs link their hit sounds
+-x Shirts with shapes: a boxy sleeved shirt (worn) and a tight sleeveless vest (inventory), box nodes in blueprints,
+  clothes merge last; fixed: the second hat never reached the inventory, slot names out of order, calves' slot types
 -x Body and equipment doc (doc/body_equips.md), a shirt: generated from a blueprint like body parts, worn in a
   shirt slot over the chest (anchor over, no bone of its own), players get the realm's, tst shirt
 -x Realm sounds: hits sound like what they hit, stone knocks, dirt thuds, sand crunches, wood tocks, leaves rustle,
