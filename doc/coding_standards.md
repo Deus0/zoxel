@@ -487,6 +487,15 @@ import_coffee()
 
 That distinction makes the code easier to scan without requiring special syntax or ceremony.
 
+## Entities, Not Ids
+
+Refer to things by their entity, not by an id or kind number looked up later.
+
+- Link the entity (`zox_link`, `zox_set_link`), don't store an enum index and search for a match.
+- Data a kind shares (a material's sound, a block's stats) is an entity the kind links, not a row picked by id.
+- Tags mark what an entity is (`HitSoundVoiced`, `BlockStone`), not a byte compared against constants.
+- e.g. a block links its hit sound entity (`HitSoundLink`, [sounds.md](sounds.md)), no lookup by material id.
+
 ## General Principle
 
 Zox code should be organized around responsibility.

@@ -7,7 +7,7 @@ For the mixer, effects, voices and music, see [Audio](audio.md).
 
 - A hit sound is an entity (prefab `realm_sound`) with `SoundEffectData`: an instrument, a range of notes,
   lengths and volumes. It is never played itself. A hit reads it and spawns a sound.
-- A block or character kind links its sound with `HitSoundLink`. There are no id lookups: the entity is the sound.
+- A block or character kind links its sound with `HitSoundLink`. The entity is the sound (see [Entities, Not Ids](coding_standards.md#entities-not-ids)).
 - [src/sounds/bop/hits.c](../src/sounds/bop/hits.c)
 
 ## Materials
