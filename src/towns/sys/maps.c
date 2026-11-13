@@ -68,9 +68,8 @@ void town_map_system(iter* it) {
                 tunk_position->value.y,
                 towns_length);
         }
-        if (!towns_length) {
-            continue;
-        }
+        // a region with no towns still ends its tunks (a continue here left them generating forever, the rare
+        //  terrain loading stall: chunks waited on their tunk, the player's spawn on them)
         for (int j = 0; j < towns_length; j++) {
             entity town = towns[j];
             int2 town_position = zox_getv(town, BlockPosition2);

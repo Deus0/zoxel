@@ -104,3 +104,50 @@ void zox_tst_town_maps_check(ecs* world) {
     zox_tst_check(!ring_wrong, "[%i] columns on a town's outer ring aren't wall", ring_wrong);
     zox_tst_check(!inside_unmarked, "[%i] columns inside a town aren't marked", inside_unmarked);
 }
+
+// tst: town_maps_empty, a tunk in a region with no towns still finishes (the rare terrain loading stall)
+//  - a done tunk's region loses its towns, the tunk goes back to its towns step, it ends (GenerateTunk 0)
+//  - it used to stay at the towns step forever, its chunks waited on it and the player's spawn on them
+//  - run: bash bsh/tst.sh town_maps_empty
+entity zox_tst_empty_tunk = 0;
+double zox_tst_empty_time = 0;
+
+byte zox_tst_town_maps_empty_ready(ecs* world) {
+    if (!zox_tst_player_spawn_ready(world)) {
+        return 0;
+    }
+    if (!zox_tst_empty_tunk) {
+        zox_tst_waiting = "a finished tunk with a region";
+        iter it2 = zox_children(world, local_terrain);
+        while (zox_children_next(it2)) {
+            for (int i = 0; i < it2.count && !zox_tst_empty_tunk; i++) {
+                const entity tunk = it2.entities[i];
+                RegionTunk rt;
+                if (!zox_has(tunk, TownMap) || !zox_has(tunk, TunkPosition) || zox_getv(tunk, GenerateTunk) ||
+                    !region_tunk_begin(world, tunk, zox_getv(tunk, TunkLod), zox_getv(tunk, TunkPosition), &rt)) {
+                    continue;
+                }
+                entity towns[zox_children_capacity];
+                const uint towns_length = zox_get_children_by_id(world, rt.region, towns, zox_children_capacity, zox_id(Town));
+                for (uint j = 0; j < towns_length; j++) {
+                    zox_delete(towns[j]);
+                }
+                zox_setv(tunk, GenerateTunk, zox_generate_tunk_towns);
+                zox_tst_empty_tunk = tunk;
+                zox_tst_empty_time = zox_current_time;
+                zox_log("[tst] tunk [%s] back to its towns step, its region's [%i] towns deleted", zox_get_name(tunk), towns_length);
+            }
+        }
+        return 0;
+    }
+    zox_tst_waiting = "the tunk to finish";
+    return !zox_getv(zox_tst_empty_tunk, GenerateTunk) || zox_current_time - zox_tst_empty_time > 5;
+}
+
+void zox_tst_town_maps_empty_check(ecs* world) {
+    zox_tst_check(zox_valid(zox_tst_empty_tunk), "no tunk tested");
+    if (zox_valid(zox_tst_empty_tunk)) {
+        const byte generate = zox_getv(zox_tst_empty_tunk, GenerateTunk);
+        zox_tst_check(!generate, "the tunk in a region with no towns is stuck at step [%i]", generate);
+    }
+}

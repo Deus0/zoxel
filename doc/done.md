@@ -1,6 +1,8 @@
 # Done
 
 ## Moved from todo (2026-11-13)
+-x The rare terrain loading stall: a region with no towns left its tunks at the towns step forever (a continue
+  skipped ending them), their chunks waited on them and the player's spawn on the chunks, tst town_maps_empty
 -x Lag spikes crossing chunks (48 to 145ms): non fragmenting children (400 to 2500 tables a step to ~100), flecs
   patches, mesh and sides budgets, stat dirties; worst flying frame ~20ms (release, gpu), the rest in optimize.md
 -x Player respawn test: dies, waits out the 16s death screen, respawns alive at full health (tst player_respawn,
