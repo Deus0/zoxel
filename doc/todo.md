@@ -7,6 +7,9 @@
 # Polish (play test notes, 2026-11-14)
 A polished core loop before more content.
 - Npcs without bones (slimes): tumble or turn towards the player like humanoids glance (heads: LookTarget, ai/sys/glance.c)
+- Tweens: an AnimationEndEvent (a function, like StreamEndEvent) called when one ends, AnimationDeletesTarget becomes
+  one handler of it (ui_pop_out passes a delete), anything can react to an animation finishing
+- Dialogue window layout in small windows: the box is too short, its Next button overlaps the text (460px test window)
 - Bones: bone weights as octree data on skeletons (refactor)
 - IK on arms and legs, for more bending (a doc/tec doc first)
 - Towns: npc population, way fewer monsters in towns
