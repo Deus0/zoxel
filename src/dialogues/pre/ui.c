@@ -9,5 +9,7 @@ entity spawn_prefab_dialogue_text(ecs *world, entity prefab) {
     zox_setv(e, GlyphSpawnedDirty, 0);
     zox_setv(e, AnimateTextEnded, 0);
     zox_setv(e, VoiceIndex, 0);
+    // a fixed box its lines wrap to (dialogue_speech_system), not sized to its text
+    zox_add(e, TextWrap);
     return e;
 }

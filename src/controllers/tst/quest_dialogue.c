@@ -79,6 +79,12 @@ static inline void zox_tst_qd_begin(ecs* world, entity player, entity character,
     zox_tst_qd_settled = 0;
 }
 
+extern char zox_screenshot_request[256];
+
+// characters across the dialogue box, its lines wrap to it
+int zox_tst_qd_columns = 0;
+int zox_tst_qd_overflows = 0;     // checks every frame, a failed wrap counts many times
+
 // records each new line, presses next once it's typed out, returns 1 when the talk ended
 static inline byte zox_tst_qd_talk(ecs* world, int talk) {
     if (!zox_valid(zox_tst_qd_ui) || !zox_valid(zox_tst_qd_process)) {
@@ -88,8 +94,29 @@ static inline byte zox_tst_qd_talk(ecs* world, int talk) {
     if (!zox_valid(label)) {
         return 0;
     }
-    const char* line = zox_getv(label, TargetText);
+    const char* typed = zox_getv(label, TargetText);
     int* count = &zox_tst_qd_lines_count[talk];
+    zox_tst_qd_columns = text_columns(world, label);
+    // wrapped to the box: its new lines read as spaces, a wrapped line wider than the box (with a space to break at) is
+    //  a wrap that failed
+    char line[512];
+    snprintf(line, sizeof(line), "%s", typed);
+    int width = 0;
+    byte spaced = 0;
+    for (int i = 0; ; i++) {
+        if (!line[i] || line[i] == '\n') {
+            zox_tst_qd_overflows += width > zox_tst_qd_columns && spaced;
+            width = 0;
+            spaced = 0;
+            if (!line[i]) {
+                break;
+            }
+            line[i] = ' ';
+            continue;
+        }
+        width++;
+        spaced |= line[i] == ' ';
+    }
     if (line[0] && (*count == 0 || strcmp(zox_tst_qd_lines[talk][*count - 1], line)) && *count < zox_tst_qd_max_lines) {
         snprintf(zox_tst_qd_lines[talk][*count], 128, "%s", line);
         zox_log("[tst] talk [%i] line [%i]: %s", talk, *count, line);
@@ -97,8 +124,11 @@ static inline byte zox_tst_qd_talk(ecs* world, int talk) {
         zox_tst_qd_settled = 0;
     }
     const TextData* shown = zox_get(label, TextData);
-    if (line[0] && shown->length >= (int) strlen(line)) {
-        // typed out, a moment later press next
+    if (line[0] && shown->length >= (int) strlen(typed)) {
+        // typed out, a moment later press next, the first talk's second line (it wraps) saved to look at
+        if (zox_tst_qd_settled == 5 && talk == 0 && *count == 2) {
+            snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("dialogue.ppm"));
+        }
         if (++zox_tst_qd_settled == 10) {
             zox_add(zox_tst_qd_process, TriggerEnd);
         }
@@ -220,6 +250,8 @@ void zox_tst_quest_dialogue_check(ecs* world) {
     zox_tst_check(zox_valid(user_quest) && zox_has(user_quest, QuestHandedin), "the done quest wasn't handed in");
     zox_tst_check(zox_tst_qd_lines_count[3] == 2 && !strcmp(zox_tst_qd_lines[3][1], "You did well..."),
         "the fourth talk said [%i] lines, not only that it was done well", zox_tst_qd_lines_count[3]);
+    zox_tst_check(zox_tst_qd_columns > 0, "the dialogue box has no wrap width");
+    zox_tst_check(!zox_tst_qd_overflows, "dialogue lines passed the box's [%i] characters [%i] times", zox_tst_qd_columns, zox_tst_qd_overflows);
     zox_tst_check(zox_tst_qd_voices > 0, "the npc said its lines without a voice");
     zox_tst_check(zox_tst_qd_jingle_notes > 0, "taking the quest played no jingle");
 }

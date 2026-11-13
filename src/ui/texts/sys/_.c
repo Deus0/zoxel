@@ -37,6 +37,7 @@ void zox_systems_texts(ecs *world) {
         [in] TextPadding,
         [out] layouts.LayoutSize,
         [none] texts.Text,
+        [none] !texts.TextWrap,
         [none] core.Update,
     );
     zox_system_1(
