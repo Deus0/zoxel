@@ -20,7 +20,7 @@ void player_terminal_system(iter* it) {
             if (!zox_has(e2, Keyboard)) {
                 continue;
             }
-            zox_geter(e2, Keyboard, keyboard);
+            const Keyboard* keyboard = zox_get(e2, Keyboard);
             if (keyboard->back_quote.pressed_this_frame) {
                 is_toggle_terminal = 1;
                 break;

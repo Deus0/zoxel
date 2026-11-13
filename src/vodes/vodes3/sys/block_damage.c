@@ -24,7 +24,7 @@ void block_damage_queue_system(iter* it) {
         if (!zox_valid(manager)) {
             continue;
         }
-        zox_geter(manager, BlockLinks, blocks);
+        const BlockLinks* blocks = zox_get(manager, BlockLinks);
         while (queue->count) {
             BlockDamageUpdate update = remove_BlockDamageQueue(queue);
             byte index = getv_VoxelNode(voxel_octree, depth->value, update.position);

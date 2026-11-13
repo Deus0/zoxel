@@ -37,8 +37,8 @@ void projectile_hit_system(iter* it) {
         const entity skill = zox_get_link(world, e, ProjectileSkill);
         const float3 ray_normal = float3_scale(velocity->value, 1.0f / speed);
         const float ray_length = speed * delta + ray_margin;
-        zox_geter(realm, BlockLinks, voxels);
-        zox_geter(terrain, ChunkLinks, chunks);
+        const BlockLinks* voxels = zox_get(realm, BlockLinks);
+        const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
         const float block_scale = zox_getv(terrain, BlockScale);
         const byte terrain_depth = zox_getv(terrain, NodeDepth);
         const int3 size = int3_single(octree_size(terrain_depth));

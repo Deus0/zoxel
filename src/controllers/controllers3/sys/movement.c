@@ -92,7 +92,7 @@ void player3d_move_system(iter* it) {
                 }
                 if (zox_has(e3, ZeviceButton)) {
                     if (type == zox_btn_x) {
-                        zox_geter(e3, ZeviceButton, zeviceButton);
+                        const ZeviceButton* zeviceButton = zox_get(e3, ZeviceButton);
                         if (!is_running && devices_get_pressed(zeviceButton->value)) {
                             is_running = 1;
                         }
@@ -100,7 +100,7 @@ void player3d_move_system(iter* it) {
                 }
             }
             if (zox_has(e2, Keyboard) && !zox_dbg_touch_with_mouse) {
-                zox_geter(e2, Keyboard, keyboard);
+                const Keyboard* keyboard = zox_get(e2, Keyboard);
                 if (keyboard->s.is_pressed) left_stick.y += -1;
                 if (keyboard->w.is_pressed) left_stick.y += 1;
                 if (keyboard->a.is_pressed) left_stick.x += -1;
@@ -128,7 +128,7 @@ void player3d_move_system(iter* it) {
         }
         float4 movement_rotation = float4_identity;
         float4 character_rotation = zox_getv(character, Rotation3D);
-        zox_geter(character, Velocity3D, velocity3D);
+        const Velocity3D* velocity3D = zox_get(character, Velocity3D);
         zox_muter(character, Acceleration3D, acceleration);
         if (camera_mode == zox_camera_state_topdown ||
             camera_mode == zox_camera_state_ortho)

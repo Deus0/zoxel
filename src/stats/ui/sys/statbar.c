@@ -16,12 +16,12 @@ void statbar_system(iter* it) {
                     zox_sys_e_name);
             }
         } else if (zox_has(stat, StatState)) {
-            zox_geter(stat, StatValue, value);
-            zox_geter(stat, StatValueMax, max);
+            const StatValue* value = zox_get(stat, StatValue);
+            const StatValueMax* max = zox_get(stat, StatValueMax);
             new_value = value->value / max->value;
         } else if (zox_has(stat, StatLevel)) {
-            zox_geter(stat, ExperienceValue, value);
-            zox_geter(stat, ExperienceMax, max);
+            const ExperienceValue* value = zox_get(stat, ExperienceValue);
+            const ExperienceMax* max = zox_get(stat, ExperienceMax);
             new_value = value->value / max->value;
         }
         if (bar->value != new_value) {

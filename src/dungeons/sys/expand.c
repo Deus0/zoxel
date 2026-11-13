@@ -37,11 +37,11 @@ void dungeon_block_system(iter* it) {
             continue;
         }
 #endif
-        zox_geter(terrain, ChunkLinks, chunks);
-        zox_geter_value(terrain, NodeDepth, byte, terrain_depth);
+        const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
+        byte terrain_depth = zox_getv(terrain, NodeDepth);
         byte3 terrain_sizec = byte3_single(powers_of_two[terrain_depth]);
         // int3 chunk_bounds = int3_single(powers_of_two[node_depth]);
-        zox_geter_value(e, VoxelLocalPosition, byte3, positionl);
+        byte3 positionl = zox_getv(e, VoxelLocalPosition);
         // get closest grass block
         // byte3 position = (byte3) { rand() % size.x, rand() % size.y, rand() % size.z };
         if (!zox_valid(place->value)) {
@@ -63,8 +63,8 @@ void dungeon_block_system(iter* it) {
         byte radius = 3;
         byte height = 5;
         // chunk stuff
-        zox_geter_value(chunk, ChunkSize, int3, chunk_size);
-        zox_geter_value(chunk, ChunkPosition, int3, chunk_position);
+        int3 chunk_size = zox_getv(chunk, ChunkSize);
+        int3 chunk_position = zox_getv(chunk, ChunkPosition);
         int3 positionv = positionl_to_block_position(positionl, chunk_position, chunk_size, terrain_sizec);
         entity place_chunk = 0;
         byte3 place_positionl;
@@ -99,13 +99,13 @@ void dungeon_block_system(iter* it) {
                     if (!check_chunk) {
                         return;
                     }
-                    zox_geter_value(check_chunk, ChunkSize, int3, check_sizec);
-                    zox_geter_value(check_chunk, NodeDepth, byte, check_node_depth);
+                    int3 check_sizec = zox_getv(check_chunk, ChunkSize);
+                    byte check_node_depth = zox_getv(check_chunk, NodeDepth);
                     byte3 check_positionl = block_position_to_positionl(check_positionv, check_positionc, check_sizec, terrain_sizec);
                     if (!byte3_in_bounds(check_positionl, int3_to_byte3(check_sizec))) {
                         continue;
                     }
-                    zox_geter(check_chunk, VoxelNode, check_node);
+                    const VoxelNode* check_node = zox_get(check_chunk, VoxelNode);
                     // read locked, its writers can run alongside (thread_safety.md)
                     spinlock* check_lock = zox_octree_lock(world, check_chunk);
                     zox_octree_lock_begin(check_lock);

@@ -28,7 +28,7 @@ void biome_map_avg_system(iter* it) {
             zox_logw("Invalid [Realm] in Tunks");
             continue;
         }
-        zox_geter(realm, BiomeLinks, biomes);
+        const BiomeLinks* biomes = zox_get(realm, BiomeLinks);
         if (biomes->length < 2) {
             zox_loge("No biomes on realm");
             continue;

@@ -62,8 +62,8 @@ byte set_entity_chunk(
     zox_link(world, e, ChunkLink, new_chunk);
     // now render distabled
     byte chunk_render_disabled = zox_getv(new_chunk, RenderDisabled);
-    zox_geter_value(new_chunk, RenderDistance, byte, chunk_render_distance);
-    zox_geter_value(e, RenderDisabled, byte, character_render_disabled);
+    byte chunk_render_distance = zox_getv(new_chunk, RenderDistance);
+    byte character_render_disabled = zox_getv(e, RenderDisabled);
     // NOTE: Special case for air chunks
     // TODO: Ahhh think of how to fix this for flying npcs
     const VoxelNode* new_voxel_octree = zox_get(new_chunk, VoxelNode);
@@ -74,11 +74,11 @@ byte set_entity_chunk(
     }
     // now lod
     // calculate_lods
-    // zox_geter_value(e, NodeDepth, byte, node_depth)
+    // byte node_depth = zox_getv(e, NodeDepth);
     // todo: this should be used by system itself
     if (zox_has(e, RenderDepth) && zox_has(e, MaxRenderDepth)) {
-        zox_geter_value(e, RenderDepth, byte, old);
-        zox_geter_value(e, MaxRenderDepth, byte, max_depth);
+        byte old = zox_getv(e, RenderDepth);
+        byte max_depth = zox_getv(e, MaxRenderDepth);
         byte render_depth = camera_distance_to_npc_render_depth(
             chunk_render_distance,
             max_depth);
@@ -120,7 +120,7 @@ void chunk_link_system(iter* it) {
             continue;
         }
         chunk_position->value = new_chunk_position;
-        zox_geter(terrain, ChunkLinks, chunks);
+        const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
         entity chunk = int3_hashmap_get(chunks->value, new_chunk_position);
         if (dbg_log) {
             zox_log("Character [%s] Linking Chunk [%ix%ix%i]:[%s]", zox_get_name(e), new_chunk_position.x, new_chunk_position.y, new_chunk_position.z, zox_get_name(chunk));

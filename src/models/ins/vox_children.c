@@ -17,7 +17,7 @@ entity get_owner_lod_mesh(
     if (!zox_valid(source) || !zox_has(source, ModelLods)) {
         return 0;
     }
-    zox_geter(source, ModelLods, lods);
+    const ModelLods* lods = zox_get(source, ModelLods);
     return lods->value[depth];
 }
 

@@ -8,7 +8,7 @@ void skeleton3_render_system(iter* it) {
     }
     byte has_set_material = 0;
     guint material_link = zox_getv(rmaterial, MaterialGPULink);
-    zox_geter(rmaterial, MaterialBone, material_attributes);
+    const MaterialBone* material_attributes = zox_get(rmaterial, MaterialBone);
     zox_sys_begin();
     zox_sys_in(MeshIndicies);
     zox_sys_in(MeshGPULink);
@@ -33,7 +33,7 @@ void skeleton3_render_system(iter* it) {
         if (!zox_valid(skeleton) || !zox_has(skeleton, BoneLinks)) {
             continue;
         }
-        zox_geter(skeleton, BoneLinks, bones);
+        const BoneLinks* bones = zox_get(skeleton, BoneLinks);
         if (!bones->length) {
             continue;
         }

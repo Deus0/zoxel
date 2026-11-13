@@ -45,7 +45,7 @@ entity link_hit_sound(ecs* world, entity e, entity parent, const SoundEffect* ma
 static inline entity spawn_hit_sound_linked(ecs* world, entity hit, SoundEffectType fallback) {
     const entity sound = zox_valid(hit) ? zox_get_link(world, hit, HitSoundLink) : 0;
     if (zox_valid(sound)) {
-        zox_geter(sound, SoundEffectData, data);
+        const SoundEffectData* data = zox_get(sound, SoundEffectData);
         return spawn_sound_effect_data(world, &data->value);
     }
     return spawn_sound_effect_sound(world, fallback);

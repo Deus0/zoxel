@@ -174,12 +174,12 @@ void combine_vox_system(iter* it) {
             if (!zox_valid(vox)) {
                 continue;
             }
-            zox_geter_value(vox, NodeDepth, byte, vdepth);
+            byte vdepth = zox_getv(vox, NodeDepth);
             if (vdepth > new_depth) {
                 new_depth = vdepth;
             }
             if (vdepth == new_depth) {
-                zox_geter_value(vox, ChunkSize, int3, vox_size);
+                int3 vox_size = zox_getv(vox, ChunkSize);
                 if (vox_size.x > new_csize.x) new_csize.x = vox_size.x;
                 if (vox_size.y > new_csize.y) new_csize.y = vox_size.y;
                 if (vox_size.z > new_csize.z) new_csize.z = vox_size.z;

@@ -14,7 +14,7 @@ void plot_limit_system(iter* it) {
             zox_loge("No DoubleData found on data->value");
             continue;
         }
-        zox_geter(link, DoubleData, data);
+        const DoubleData* data = zox_get(link, DoubleData);
         if (!data->length) {
             continue;
         }

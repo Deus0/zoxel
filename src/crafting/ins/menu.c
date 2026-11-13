@@ -34,7 +34,7 @@ entity spawn_player_menu_crafting(ecs* world, entity player) {
 /*entity spawn_player_menu_crafting(ecs* world, entity player) {
     entity canvas = zox_get_link(world, player, CanvasLink);
     entity character = zox_get_link(world, player, CharacterLink);
-    zox_geter_value(canvas, LayoutSize, int2, canvas_size);
+    int2 canvas_size = zox_getv(canvas, LayoutSize);
     if (!zox_has(character, CraftLinks)) {
         return 0;
     }
@@ -55,7 +55,7 @@ entity spawn_player_menu_crafting(ecs* world, entity player) {
         .outline_color = window_outline
     };
 
-    zox_geter(character, CraftLinks, links);
+    const CraftLinks* links = zox_get(character, CraftLinks);
     entity3 spawns[links->length];
     return 0;
 }

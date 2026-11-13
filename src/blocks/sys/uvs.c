@@ -61,7 +61,7 @@ void tilemap_uv_system(iter* it) {
             zox_loge("Invalid [realm] for Tilemap");
             continue;
         }
-        zox_geter(realm, BlockLinks, blocks);
+        const BlockLinks* blocks = zox_get(realm, BlockLinks);
         int2 unit_size = zox_getv(first_texture, TextureSize);
         // TODO: Recalculate this based on blocks of Baked Type
         uint uvs_length = blocks->length * 6 * 4;

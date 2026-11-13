@@ -116,7 +116,7 @@ entity get_lodded_model(
     if (depth > mdepth) {
         depth = mdepth;
     }
-    zox_geter(e, ModelLods, mlods);
+    const ModelLods* mlods = zox_get(e, ModelLods);
     return mlods->value[depth];
 }
 

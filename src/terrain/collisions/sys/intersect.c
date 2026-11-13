@@ -40,7 +40,7 @@ void terrain_collision_system(iter* it) {
         const BlockLinks* blocks = zox_get(realm, BlockLinks);
         byte terrain_depth = zox_getv(terrain, NodeDepth);
         float terrain_block_scale = zox_getv(terrain, BlockScale);
-        zox_geter(terrain, ChunkLinks, chunks);
+        const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
         // For each block position in bounds, check if collides with chunk
         float3 bounds_rotated = float4_rotate_bounds(rotation->value, bounds->value);
         float3 lower_bounds = float3_subtract(position->value, bounds_rotated);
@@ -134,7 +134,7 @@ void terrain_collision_system(iter* it) {
                     }
 
                     // TODO: Check if direction adjacent node is solid
-                    zox_geter(chunk, ChunkNeighbors, neighbors);
+                    const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
                     const VoxelNode* neighbor_voxel_octrees[6];
                     for (int a = 0; a < 6; a++) {
                         entity neighbor = neighbors->value[a];

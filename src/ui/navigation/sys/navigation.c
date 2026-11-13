@@ -56,7 +56,7 @@ void element_navigation_system(iter* it) {
             }
         }
         /*if (zox_has(e2, Keyboard)) {
-            zox_geter(e2, Keyboard, keyboard);
+            const Keyboard* keyboard = zox_get(e2, Keyboard);
             if (keyboard->down.is_pressed) {
                 left_stick.y -= 1;
             } else if (keyboard->up.is_pressed) {

@@ -12,7 +12,7 @@ void free_camera_toggle_system(iter* it) {
         /*if (state->value != zox_player_state_playing || !zox_valid(camera->value)) {
             continue;
         }
-        zox_geter_value(camera->value, CameraState, byte, camera_state);
+        byte camera_state = zox_getv(camera->value, CameraState);
         if (camera_state != zox_camera_state_free) {
             continue;
         }*/
@@ -34,7 +34,7 @@ void free_camera_toggle_system(iter* it) {
                     continue;
                 }
                 if (zox_has(e3, ZevicePointerRight)) {
-                    zox_geter_value(e3, ZevicePointerRight, byte, click);
+                    byte click = zox_getv(e3, ZevicePointerRight);
                     if (devices_get_pressed_this_frame(click)) {
                         is_triggered = 1;
                         mouse = e2;

@@ -4,7 +4,7 @@ void process_node_model_fill(ecs* world, entity node, entity vox, lint seed, byt
     byte fill_type = zox_getv(node, NodeVoxel);
     // Vox
     byte model_depth = zox_getv(vox, NodeDepth);
-    zox_geter(vox, ColorRGBs, colors);
+    const ColorRGBs* colors = zox_get(vox, ColorRGBs);
     if (!colors->length) {
         zox_loge("vox [%s] has no colors", zox_getn(vox));
         return;

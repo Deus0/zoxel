@@ -271,7 +271,7 @@ void vodes_spawn_system(iter* it) {
         byte block_depth = camera_distance_to_block_depth(render_distance->value);
         // write_lock_VoxelNode(octree);
         // TODO: Cache these
-        zox_geter(realm, BlockLinks, blocks);
+        const BlockLinks* blocks = zox_get(realm, BlockLinks);
         if (!blocks->length) {
             continue;
         }

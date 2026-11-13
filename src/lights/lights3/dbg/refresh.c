@@ -6,7 +6,7 @@ void zox_dbg_lights3_refresh_sunlight(ecs* world, ClickEventData data) {
     }
     entity e = local_terrain;
     uint count = zox_get_children_count_by_id(world, e, zox_id(SunnyChunk));
-    // zox_geter(e, ChunkLinks, chunks);
+    // const ChunkLinks* chunks = zox_get(e, ChunkLinks);
     zox_log("Refreshing Terrain Chunks Sunlights [%i]", count);
     iter it2 = zox_children(world, e);
     while (zox_children_next(it2)) {

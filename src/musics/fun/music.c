@@ -4,7 +4,7 @@ void stop_music(ecs *world, entity playlist) {
         return;
     }
     byte old_index = zox_getv(playlist, MusicPlaying);
-    zox_geter(playlist, MusicLinks, musicLinks);
+    const MusicLinks* musicLinks = zox_get(playlist, MusicLinks);
     if (old_index >= musicLinks->length) {
         zox_loge("old_index out of bounds [%i] >= [%i]", old_index, musicLinks->length)
         return;
@@ -22,7 +22,7 @@ void play_music(ecs *world, entity playlist, byte new_index) {
     }
     byte old_index = zox_getv(playlist, MusicPlaying);
     // set previous music off and new one on
-    zox_geter(playlist, MusicLinks, musics);
+    const MusicLinks* musics = zox_get(playlist, MusicLinks);
     if (new_index >= musics->length) {
         zox_loge("new_index out of bounds [%i] >= [%i]", new_index, musics->length);
         return;
@@ -91,6 +91,6 @@ void play_realm_music(ecs* world, entity realm) {
         zox_loge("[play_realm_music] realm [%s] has no game or playlist", zox_getn(realm));
         return;
     }
-    zox_geter(playlist, MusicLinks, musics);
+    const MusicLinks* musics = zox_get(playlist, MusicLinks);
     crossfade_music(world, game, musics->length ? musics->value[0] : 0);
 }

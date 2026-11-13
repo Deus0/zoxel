@@ -18,8 +18,8 @@ void zox_tst_terrain_check(ecs* world) {
         zox_getn(e), drawn, zox_tst_draws_window);
     zox_tst_check(drawn, "no terrain chunks drawn in [%.0fs]", zox_tst_draws_window);
     if (zox_has(e, MeshUVs)) {
-        zox_geter(e, MeshUVs, uvs);
-        zox_geter(e, MeshVertices, vertices);
+        const MeshUVs* uvs = zox_get(e, MeshUVs);
+        const MeshVertices* vertices = zox_get(e, MeshVertices);
         zox_tst_check(uvs->length == vertices->length,
             "[%s] has [%i] uvs for [%i] vertices", zox_getn(e), uvs->length, vertices->length);
     }

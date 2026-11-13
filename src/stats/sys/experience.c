@@ -32,7 +32,7 @@ void experience_system(iter* it) {
             continue;
         }
         // if either player has no soul, xp cannot be transferred
-        zox_geter(my_soul, StatValue, my_level);
+        const StatValue* my_level = zox_get(my_soul, StatValue);
         zox_muter(enemy_soul, ExperienceValue, experience);
         // base xp
         float experience_gain = experience_gain_base + my_level->value * randf_range(experience_per_level_min, experience_per_level_max);

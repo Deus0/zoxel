@@ -20,8 +20,8 @@ void list_element_position_system(iter* it) {
         if (alignment == zox_alignment_centre) {
             continue;
         }
-        zox_geter_value(parent, ListMargins, byte2, margins);
-        zox_geter_value(parent, LayoutSize, int2, lsize);
+        byte2 margins = zox_getv(parent, ListMargins);
+        int2 lsize = zox_getv(parent, LayoutSize);
         if (alignment == zox_alignment_left) {
             position->value.x = margins.x - lsize.x / 2 + size->value.x / 2;
         } else if (alignment == zox_alignment_right) {

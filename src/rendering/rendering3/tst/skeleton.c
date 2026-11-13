@@ -25,7 +25,7 @@ byte zox_tst_skeleton_ready(ecs* world) {
         }
         const byte is_render_disabled = zox_getv(e, RenderDisabled) != 0;
         const byte is_disabled = zox_has(e, Disabled);
-        zox_geter(e, MeshIndicies, indicies);
+        const MeshIndicies* indicies = zox_get(e, MeshIndicies);
         render_disabled += is_render_disabled;
         disabled += is_disabled;
         no_indicies += !indicies->length;
@@ -56,10 +56,10 @@ void zox_tst_skeleton_check_mesh(ecs* world, entity skeleton, entity e) {
     zox_tst_check(zox_getv(e, ColorsGPULink), "[%s] has no ColorsGPULink", zox_getn(e));
     zox_tst_check(zox_getv(e, BoneIndexGPULink), "[%s] has no BoneIndexGPULink", zox_getn(e));
     zox_tst_check_camera_filter(world, e);
-    zox_geter(e, MeshIndicies, indicies);
-    zox_geter(e, MeshVertices, vertices);
-    zox_geter(e, BoneIndexes, bone_indexes);
-    zox_geter(skeleton, BoneLinks, bones);
+    const MeshIndicies* indicies = zox_get(e, MeshIndicies);
+    const MeshVertices* vertices = zox_get(e, MeshVertices);
+    const BoneIndexes* bone_indexes = zox_get(e, BoneIndexes);
+    const BoneLinks* bones = zox_get(skeleton, BoneLinks);
     zox_tst_check(indicies->length, "[%s] has 0 indicies", zox_getn(e));
     int bad_indicies = 0;
     for (int i = 0; i < indicies->length; i++) {
@@ -101,7 +101,7 @@ void zox_tst_skeleton_check_skeleton(ecs* world, entity skeleton) {
     if (!zox_has(skeleton, BoneLinks)) {
         return;
     }
-    zox_geter(skeleton, BoneLinks, bones);
+    const BoneLinks* bones = zox_get(skeleton, BoneLinks);
     zox_tst_check(bones->length, "[%s] has 0 bones", zox_getn(skeleton));
     for (int i = 0; i < bones->length; i++) {
         entity bone = bones->value[i];

@@ -13,7 +13,7 @@ void zox_dbg_toggle_gizmos_terrain(
     byte mode = zox_getv(prefab_chunk_terrain, DebugCubeLines);
     cycle_cubeline_debug(&mode);
     zox_set(prefab_chunk_terrain, DebugCubeLines, { mode });
-    zox_geter(terrain, ChunkLinks, chunks);
+    const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
     for (uint i = 0; i < chunks->value->size; i++) {
         int3_hashmap_pair* pair = chunks->value->data[i];
         uint checks = 0;

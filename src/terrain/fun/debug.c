@@ -20,7 +20,7 @@ void test_spawn_chunk_terrain(ecs *world, int32_t keycode) {
 
             if (!zox_valid(terrain)) return;
 
-            zox_geter_value(terrain, BlockScale, float, terrain_scale);
+            float terrain_scale = zox_getv(terrain, BlockScale);
             test_chunk_terrain = spawn_chunk_terrain(
                 world,
                 prefab_chunk_terrain,

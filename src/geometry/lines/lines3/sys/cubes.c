@@ -35,7 +35,7 @@ void cube_line_render_system(iter* it) {
         camera_filtering_check();
         float3 b = bounds->value;
         if (zox_has(e, DebugCubeShrink)) {
-            zox_geter_value(e, DebugCubeShrink, float, shrink);
+            float shrink = zox_getv(e, DebugCubeShrink);
             b = float3_scale(b, shrink);
         }
         float3 p = position->value;

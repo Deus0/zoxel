@@ -19,7 +19,7 @@ void player_fly_system(iter* it) {
         if (zox_has(character, DisableMovement)) {
             continue;
         }
-        zox_geter_value(character, FlyMode, byte, flying);
+        byte flying = zox_getv(character, FlyMode);
         if (!flying) {
             continue;
         }
@@ -39,7 +39,7 @@ void player_fly_system(iter* it) {
                 continue;
             }
             if (mode->value == zox_device_mode_keyboardmouse && zox_has(e2, Keyboard)) {
-                zox_geter(e2, Keyboard, keyboard);
+                const Keyboard* keyboard = zox_get(e2, Keyboard);
                 if (keyboard->q.is_pressed) input -= fly_run_acc_y;
                 if (keyboard->e.is_pressed) input += fly_run_acc_y;
             }

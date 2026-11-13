@@ -82,7 +82,7 @@ void terrain_characters_spawn_system(iter* it) {
         if (!realm_characters_count) {
             continue;
         }
-        zox_geter_value(realm, CharactersChanceMax, byte, max_chance);
+        byte max_chance = zox_getv(realm, CharactersChanceMax);
         entity chunk_above = neighbors->value[direction_up];
         const VoxelNode* voctree_above =
             zox_valid(chunk_above) ?
@@ -108,7 +108,7 @@ void terrain_characters_spawn_system(iter* it) {
             entity meta = 0;
             for (uint k = 0; k < realm_characters_count; k++) {
                 entity e2 = realm_characters[k];
-                zox_geter_value(e2, SpawnChance, byte, chance);
+                byte chance = zox_getv(e2, SpawnChance);
                 chance_current += chance;
                 if (chance_rolled <= chance_current) {
                     meta = e2;

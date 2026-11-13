@@ -10,7 +10,7 @@ entity spawn_element_texture(
     entity texture)
 {
     int2 texture_size = zox_getv(texture, TextureSize);
-    zox_geter(texture, TextureData, source_data);
+    const TextureData* source_data = zox_get(texture, TextureData);
     entity e = spawn_ui(
         world,
         prefab,

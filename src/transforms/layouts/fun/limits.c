@@ -33,6 +33,6 @@ void limit_element(ecs *world, entity e) {
         return;
     }
     zox_muter(e, LayoutPosition, pixel_position);
-    zox_geter_value(e, LayoutConstraints, int4, drag_bounds);
+    int4 drag_bounds = zox_getv(e, LayoutConstraints);
     bound_position2(&pixel_position->value, drag_bounds);
 }

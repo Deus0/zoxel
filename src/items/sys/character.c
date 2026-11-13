@@ -48,7 +48,7 @@ void character_items_spawn_system(iter* it) {
         if (drop_chance <= 70) {
             drop_item = zox_get_child_by_id(world, realm, ItemConsumable);
         } else if (drop_chance <= 95) {
-            zox_geter(realm, BlockLinks, blocks);
+            const BlockLinks* blocks = zox_get(realm, BlockLinks);
             entity block = blocks->value[rand() % blocks->length];
             if (!zox_valid(block)) {
                 continue;

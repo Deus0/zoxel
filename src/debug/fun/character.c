@@ -3,11 +3,11 @@ entity real_position_to_chunk(
     entity terrain,
     float3 position)
 {
-    zox_geter_value(terrain, BlockScale, float, terrain_scale);
-    zox_geter_value(terrain, NodeDepth, byte, node_depth);
+    float terrain_scale = zox_getv(terrain, BlockScale);
+    byte node_depth = zox_getv(terrain, NodeDepth);
     short length = octree_size(node_depth);
     int3 chunk_position = real_position_to_chunk_position(position, length, terrain_scale);
-    zox_geter(terrain, ChunkLinks, chunks);
+    const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
     return int3_hashmap_get(chunks->value, chunk_position);
 }
 
@@ -54,8 +54,8 @@ uint zox_dbg_label_character_links(
     if (zox_valid(camera)) {
         index += snprintf(buffer + index, size - index,
             "Camera [%s]\n", zox_getn(camera));
-        zox_geter_value(camera, Position3D, float3, camera_position);
-        zox_geter_value(camera, Euler, float3, camera_euler);
+        float3 camera_position = zox_getv(camera, Position3D);
+        float3 camera_euler = zox_getv(camera, Euler);
         index += snprintf(buffer + index, size - index,
             " - pos [%.1fx%.1fx%.1f]\n", camera_position.x, camera_position.y, camera_position.z);
         index += snprintf(buffer + index, size - index,
@@ -322,7 +322,7 @@ uint zox_dbg_label_towns(
         towns_length);
     for (uint i = 0; i < towns_length; i++) {
         entity town = towns[i];
-        zox_geter(town, ZoxName, name);
+        const ZoxName* name = zox_get(town, ZoxName);
         lint seed = zox_getv(town, Seed);
         int2 position = zox_getv(town, BlockPosition2);
         byte2 size2 = zox_getv(town, TownSize);

@@ -13,18 +13,18 @@ uint debug_ui_character_position(
         return index;
     }
     index += snprintf(buffer + index, size - index, "Name [%s]\n", zox_get_name(character));
-    zox_geter_value(character, Position3D, float3, position);
+    float3 position = zox_getv(character, Position3D);
     index += snprintf(buffer + index, size - index, "Position [%f.1x%f.1x%f.1]\n", position.x, position.y, position.z);
     entity terrain = zox_get_link(world, character, TerrainLink);
     index += snprintf(buffer + index, size - index, "Terrain [%s]\n", zox_get_name(terrain));
-    zox_geter_value(terrain, BlockScale, float, terrain_scale);
-    zox_geter_value(terrain, NodeDepth, byte, terrain_depth);
+    float terrain_scale = zox_getv(terrain, BlockScale);
+    byte terrain_depth = zox_getv(terrain, NodeDepth);
     const byte3 max_chunk_size = byte3_single(powers_of_two[terrain_depth]);
     const int3 positionv = real_position_to_block_position(position, terrain_scale);
     const int3 positionc = block_position_to_positionc(positionv, max_chunk_size);
     index += snprintf(buffer + index, size - index, "Position Voxel [%ix%ix%i]\n", positionv.x, positionv.y, positionv.z);
     index += snprintf(buffer + index, size - index, "Position Chunk [%ix%ix%i]\n", positionc.x, positionc.y, positionc.z);
-    /*zox_geter_value(character, ChunkLink, entity, chunk);
+    /*entity chunk = zox_getv(character, ChunkLink);
     index += snprintf(buffer + index, size - index, "NPC [%s]\n", zox_get_name(character));*/
     return index;
 }

@@ -8,14 +8,14 @@ extern entity get_linked_terrain(ecs*, entity);
             zox_log("No Terrain.");
             return;
         }
-        zox_geter(terrain, ChunkLinks, chunks);
+        const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
         for (uint i = 0; i < chunks->value->size; i++) {
             int3_hashmap_pair* pair = chunks->value->data[i];
             uint checks = 0;
             while (pair != NULL && checks < max_safety_checks_hashmap) {
                 entity chunk = pair->value;
                 if (zox_valid(chunk)) {
-                    zox_geter_value(chunk, ChunkPosition, int3, position);
+                    int3 position = zox_getv(chunk, ChunkPosition);
                     zox_muter(chunk, VoxelNode, node);
                     load_chunk(world, position, node);
                     // make sure flagged

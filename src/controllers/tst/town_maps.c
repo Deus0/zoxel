@@ -42,7 +42,7 @@ void zox_tst_town_maps_check(ecs* world) {
             {
                 continue;
             }
-            zox_geter(tunk, TownMap, town_map);
+            const TownMap* town_map = zox_get(tunk, TownMap);
             if (town_map->length != rt.length * rt.length) {
                 continue;
             }

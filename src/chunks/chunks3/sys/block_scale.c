@@ -18,8 +18,8 @@ void block_scale_system(iter* it) {
         if (!zox_valid(terrain) || !zox_has(terrain, BlockScale)) {
             continue;
         }
-        zox_geter_value(terrain, NodeDepth, byte, tdepth);
-        zox_geter_value(terrain, BlockScale, float, terrain_scalev);
+        byte tdepth = zox_getv(terrain, NodeDepth);
+        float terrain_scalev = zox_getv(terrain, BlockScale);
         scale->value = get_chunk_scale(rdepth->value, tdepth, terrain_scalev);
         // zox_log(" [%s] Scale set [%f]", zox_get_name(it->entities[i]), scale->value);
     }

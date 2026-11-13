@@ -24,7 +24,7 @@ void aura_particles_system(iter* it) {
         if (active->value) {
             // spawn particles
             if (!zox_valid(particles)) {
-                // zox_geter_value(user, Bounds3D, float3, bounds);
+                // float3 bounds = zox_getv(user, Bounds3D);
                 // bounds.y = range->value;
                 // bounds.x = 2 * range->value;
                 float3 bounds = float3_single(range->value);

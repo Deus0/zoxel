@@ -12,7 +12,7 @@ entity spawn_block_item(
             zox_has(block, ZoxName));
         return 0;
     }
-    zox_geter(block, ZoxName, voxel_name);
+    const ZoxName* voxel_name = zox_get(block, ZoxName);
     entity e = spawn_realm_item2(
         world,
         prefab_item_active,
@@ -48,7 +48,7 @@ entity spawn_block_item(
         block,
         zox_id(Texture));
     /*if (zox_has(block, TextureLinks)) {
-        zox_geter(block, TextureLinks, textures);
+        const TextureLinks* textures = zox_get(block, TextureLinks);
         if (textures->length > 0) {
             texture = textures->value[0];
         }

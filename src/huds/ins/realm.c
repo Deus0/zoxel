@@ -23,7 +23,7 @@ entity spawn_menu_realm(
         .type = list_element_type_label,
         .text = "Seed",
     };
-    zox_geter_value(realm, Seed, double, seed);
+    double seed = zox_getv(realm, Seed);
     char sseed[32];
     snprintf(sseed, sizeof(sseed), "%.0f", seed);
     elements[elements_count++] = (SpawnListElement) {

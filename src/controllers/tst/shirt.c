@@ -57,7 +57,7 @@ void zox_tst_shirt_check(ecs* world) {
     if (!zox_valid(model)) {
         return;
     }
-    zox_geter(model, VoxelNode, voxels);
+    const VoxelNode* voxels = zox_get(model, VoxelNode);
     zox_tst_check(zox_tst_count_voxels(voxels), "the shirt's model has no voxels");
     // over the chest: wider, from its bottom
     const byte3 chest_position = zox_getv(chest_slot, PartPosition), chest_size = zox_getv(chest_slot, PartSize);
@@ -70,8 +70,8 @@ void zox_tst_shirt_check(ecs* world) {
     zox_tst_check(position.y == chest_position.y, "the shirt doesn't start at the chest's bottom");
     // merged into the body
     const entity body = zox_get_link(world, character, VoxLink);
-    zox_geter(model, ColorRGBs, shirt_colors);
-    zox_geter(body, ColorRGBs, body_colors);
+    const ColorRGBs* shirt_colors = zox_get(model, ColorRGBs);
+    const ColorRGBs* body_colors = zox_get(body, ColorRGBs);
     int found = 0;
     for (int i = 0; i < shirt_colors->length; i++) {
         for (int j = 0; j < body_colors->length; j++) {

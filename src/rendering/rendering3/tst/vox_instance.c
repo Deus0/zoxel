@@ -32,7 +32,7 @@ void zox_tst_vox_instance_check(ecs* world) {
     if (zox_valid(mesh)) {
         zox_tst_check(zox_has(mesh, MeshIndicies), "instance mesh [%s] has no MeshIndicies", zox_getn(mesh));
         if (zox_has(mesh, MeshIndicies)) {
-            zox_geter(mesh, MeshIndicies, indicies);
+            const MeshIndicies* indicies = zox_get(mesh, MeshIndicies);
             zox_tst_check(indicies->length, "instance mesh [%s] has 0 indicies", zox_getn(mesh));
         }
         zox_tst_check(zox_has(mesh, MeshGPULink), "instance mesh [%s] has no MeshGPULink", zox_getn(mesh));

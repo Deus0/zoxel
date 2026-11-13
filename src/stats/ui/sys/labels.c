@@ -33,12 +33,12 @@ void stat_text_system(iter* it) {
         if (!zox_valid(stat)) {
             continue;
         }
-        zox_geter(stat, StatValue, value);
-        zox_geter(stat, ZoxName, stat_name);
+        const StatValue* value = zox_get(stat, StatValue);
+        const ZoxName* stat_name = zox_get(stat, ZoxName);
         int value_floored = floor(value->value);
         char text[label_text_count];
         if (zox_has(stat, StatState)) {
-            zox_geter(stat, StatValueMax, max);
+            const StatValueMax* max = zox_get(stat, StatValueMax);
             int max_value = ceil(max->value);
             snprintf(
                 text,
@@ -49,8 +49,8 @@ void stat_text_system(iter* it) {
                 max_value);
         } else if (zox_has(stat, StatLevel)) {
             if (level_label_show_experience) {
-                zox_geter(stat, ExperienceValue, experience);
-                zox_geter(stat, ExperienceMax, experience_max);
+                const ExperienceValue* experience = zox_get(stat, ExperienceValue);
+                const ExperienceMax* experience_max = zox_get(stat, ExperienceMax);
                 int experience_i = ceil(experience->value);
                 int experience_max_i = ceil(experience_max->value);
                 snprintf(

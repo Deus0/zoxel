@@ -248,7 +248,7 @@ void chunk_textured_build_system(iter* it) {
                 continue;
             }
 #endif
-            zox_geter(blocks_parent, BlockLinks, blocks);
+            const BlockLinks* blocks = zox_get(blocks_parent, BlockLinks);
 #ifdef zox_safety_checks
             if (!blocks->length) {
                 continue; // if failed to find terrain parents

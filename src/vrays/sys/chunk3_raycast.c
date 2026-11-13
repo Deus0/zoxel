@@ -21,9 +21,9 @@ CharacterRaycast raycast_character(ecs *world, float3 ray_origin, float3 ray_nor
         if (!zox_has(e, Position3D) || !zox_has(e, Rotation3D) || !zox_has(e, Bounds3D)) {
             continue;
         }
-        zox_geter_value(e, Position3D, float3, position3);
-        zox_geter_value(e, Rotation3D, float4, rotation3);
-        zox_geter_value(e, Bounds3D, float3, bounds3);
+        float3 position3 = zox_getv(e, Position3D);
+        float4 rotation3 = zox_getv(e, Rotation3D);
+        float3 bounds3 = zox_getv(e, Bounds3D);
         bounds character_bounds = {
             .center = position3,
             .extents = calculate_aabb_extents(bounds3, rotation3)
@@ -104,7 +104,7 @@ byte update_chunk_for_raycast(
             zox_loge("Chunk has invalid components [%s]", zox_getn(*chunk));
             return 0;
         }
-        zox_geter(*chunk, ChunkEntities, entities);
+        const ChunkEntities* entities = zox_get(*chunk, ChunkEntities);
         *character_raycast = raycast_character(world, ray_origin, ray_normal, caster, entities);
     }
     return 1;
@@ -269,7 +269,7 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
             entity block_spawn = get_node_entity_VoxelNode(node_voxel);
             if (zox_valid(block_spawn) && zox_has(block_spawn, Position3D)) {
                 // NOTE: Minivoxes are centred, so get cornered position, we offset
-                zox_geter_value(block_spawn, Position3D, float3, block_position);
+                float3 block_position = zox_getv(block_spawn, Position3D);
                 float3 ray_point = float3_add(ray_origin, float3_scale(ray_normal, ray_distancef));
                 float3_subtract_float3_p(&block_position, float3_single(0.5f * chunk_scalev));
                 // model itself
@@ -312,7 +312,7 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
                     }
                     return rayhit_none;
                 }
-                zox_geter_value(vox, RenderDepth, byte, minivox_render_depth);
+                byte minivox_render_depth = zox_getv(vox, RenderDepth);
                 byte minivox_chunk_length = octree_size(minivox_render_depth);
                 int3 minivox_chunk_size = int3_single(minivox_chunk_length);
                 float minivox_scalev = chunk_scalev * (1.0f / (float) minivox_chunk_length);
@@ -459,12 +459,12 @@ void chunk3_raycast_system(iter* it) {
             float4 rotation = zox_getv(e, Rotation3D);
             ray_normal = quaternion_to_normal(rotation);
         }
-        zox_geter(realm, BlockLinks, voxels);
+        const BlockLinks* voxels = zox_get(realm, BlockLinks);
         float block_scale = zox_getv(terrain, BlockScale);
         byte terrain_depth = zox_getv(terrain, NodeDepth);
         byte length = octree_size(terrain_depth);
         int3 size = int3_single(length);
-        zox_geter(terrain, ChunkLinks, chunks);
+        const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
         CharacterRaycast character_raycast = { 0 };
         float range = !debug_ray_big_range ? raycast_range->value : 128;
         data->result = raycast_voxel_node(

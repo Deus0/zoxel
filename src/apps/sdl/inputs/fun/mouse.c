@@ -22,7 +22,7 @@ int2 get_mouse_center_point(
     ecs* world,
     entity e)
 {
-    zox_geter_value(e, WindowSize, int2, size);
+    int2 size = zox_getv(e, WindowSize);
     size = int2_half(size);
     if (zox_getv(e, WindowMaximized)) {
     //    size = get_window_size_without_header(world, e, size);

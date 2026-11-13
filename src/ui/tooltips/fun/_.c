@@ -35,7 +35,7 @@ byte tooltip_text_event(
         zox_loge("Invalid Tooltip UI");
         return 0;
     }
-    zox_geter(data->ui, TooltipText, tooltip_text);
+    const TooltipText* tooltip_text = zox_get(data->ui, TooltipText);
     set_tooltip_text(
         world,
         data->ui,

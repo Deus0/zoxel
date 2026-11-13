@@ -20,7 +20,7 @@ void text_parent_background_system(iter* it) {
         {
             continue;
         }
-        zox_geter_value(parent, LayoutSize, int2, old_size);
+        int2 old_size = zox_getv(parent, LayoutSize);
         int2 new_size = calculate_zext_size(
             text->value,
             text->length,

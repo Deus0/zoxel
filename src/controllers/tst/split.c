@@ -147,8 +147,8 @@ byte zox_tst_item_split_ready(ecs* world) {
                 const entity texture = zox_get_link(world, zox_tst_split_item, TextureLink);
                 byte same = 0;
                 if (zox_valid(mouse_ui) && zox_valid(texture) && zox_has(mouse_ui, TextureData) && zox_has(texture, TextureData)) {
-                    zox_geter(mouse_ui, TextureData, icon);
-                    zox_geter(texture, TextureData, item_texture);
+                    const TextureData* icon = zox_get(mouse_ui, TextureData);
+                    const TextureData* item_texture = zox_get(texture, TextureData);
                     same = icon->length == item_texture->length && icon->value && item_texture->value &&
                         !memcmp(icon->value, item_texture->value, sizeof(color) * icon->length);
                 }

@@ -21,7 +21,7 @@ void player_pause_system(iter* it) {
         if (!zox_valid(game)) {
             continue;
         }
-        zox_geter_value(game, GameState, byte, game_state);
+        byte game_state = zox_getv(game, GameState);
         if (!(game_state == zox_game_state_playing || game_state == zox_game_state_paused)) {
             continue;
         }
@@ -42,9 +42,9 @@ void player_pause_system(iter* it) {
                     continue;
                 }
                 if (zox_has(e3, ZeviceButton)) {
-                    zox_geter_value(e3, DeviceButtonType, byte, type);
+                    byte type = zox_getv(e3, DeviceButtonType);
                     if (type == zox_btn_start) {
-                        zox_geter_value(e3, ZeviceButton, byte, value);
+                        byte value = zox_getv(e3, ZeviceButton);
                         if (devices_get_pressed_this_frame(value)) {
                             did_toggle_pause = 1;
                         }
@@ -52,7 +52,7 @@ void player_pause_system(iter* it) {
                 }
             }
             if (zox_has(e2, Keyboard)) {
-                zox_geter(e2, Keyboard, keyboard);
+                const Keyboard* keyboard = zox_get(e2, Keyboard);
                 if (keyboard->escape.pressed_this_frame ||
                     keyboard->enter.pressed_this_frame) {
                     did_toggle_pause = 1;

@@ -31,9 +31,9 @@ void unstuck_system(iter* it) {
         if (!zox_valid(terrain) || !zox_has(terrain, ChunkLinks)) {
             continue;
         }
-        zox_geter(terrain, ChunkLinks, chunks);
-        zox_geter_value(terrain, BlockScale, float, terrain_scale);
-        zox_geter_value(terrain, NodeDepth, byte, terrain_depth);
+        const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
+        float terrain_scale = zox_getv(terrain, BlockScale);
+        byte terrain_depth = zox_getv(terrain, NodeDepth);
         // float3 unstuck_push = (float3) { 0, terrain_scale, 0 };
         float3 poffset = (float3) { 0, - bounds->value.y / 2.0f, 0 };
         float3 pointf = float3_add(position->value, poffset);
@@ -60,8 +60,8 @@ void unstuck_system(iter* it) {
             zox_loge("chunk [%s:%lu] doesn't have a VoxelNode!", zox_get_name(chunk), chunk);
             continue;
         }
-        zox_geter(chunk, VoxelNode, voctree);
-        zox_geter_value(chunk, NodeDepth, byte, cdepth);
+        const VoxelNode* voctree = zox_get(chunk, VoxelNode);
+        byte cdepth = zox_getv(chunk, NodeDepth);
         // const byte3 chunk_size = byte3_single(powers_of_two[node_depth]);
         // positions
         //const int3 pointv = real_position_to_block_position(pointf, terrain_scale);
@@ -99,7 +99,7 @@ void unstuck_system(iter* it) {
         position->value.y += distance_to_above_ground + buffer_up;
         // reverse vel down
         if (zox_has(e, Velocity3D)) {
-            zox_geter_value(e, Velocity3D, float3, vel);
+            float3 vel = zox_getv(e, Velocity3D);
             position->value.y -= vel.y;
         }
 #ifdef zox_dbg_lines_unstuck

@@ -46,7 +46,7 @@ void calculate_new_frustum(
     float camera_far,
     double3 *corners)
 {
-    zox_geter(e, TransformMatrix, matrix);
+    const TransformMatrix* matrix = zox_get(e, TransformMatrix);
     const FieldOfView *sysOfView = zox_get(e, FieldOfView);
     const CameraNearDistance *cameraNearDistance = zox_get(e, CameraNearDistance);
     const PixelSize *screenDimensions = zox_get(e, PixelSize);

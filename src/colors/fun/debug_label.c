@@ -4,14 +4,14 @@ uint get_label_realm_colors(ecs *world, const entity player, char *buffer, const
         return index;
     }
     entity game = zox_get_link(world, player, GameLink);
-    // zox_geter(gameLink->value, RealmLink, realmLink);
+    // const RealmLink* realmLink = zox_get(gameLink->value, RealmLink);
     entity realm = zox_get_link(world, game, RealmLink);
     if (!zox_valid(realm) || !zox_has(realm, Colors)) {
         index += snprintf(buffer + index, size - index, "[%s] has invalid realm\n", zox_get_name(player));
         return index;
     }
-    zox_geter(realm, Colors, colors);
-    zox_geter(realm, Seed, seed);
+    const Colors* colors = zox_get(realm, Colors);
+    const Seed* seed = zox_get(realm, Seed);
     index += snprintf(buffer + index, size - index, "[%s]\n", zox_get_name(realm));
     index += snprintf(buffer + index, size - index, " - total [%i]\n", colors->length);
     index += snprintf(buffer + index, size - index, " - seed [%lu]\n", seed->value);

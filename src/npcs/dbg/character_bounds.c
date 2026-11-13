@@ -11,13 +11,13 @@ void zox_dbg_toggle_gizmos_characters(
     byte mode = zox_getv(prefab_character3, DebugCubeLines);
     cycle_cubeline_debug(&mode);
     zox_prefab_character_set(DebugCubeLines, { mode });
-    zox_geter(terrain, ChunkLinks, chunks);
+    const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
     for (uint i = 0; i < chunks->value->size; i++) {
         int3_hashmap_pair* pair = chunks->value->data[i];
         uint checks = 0;
         while (pair != NULL && checks < max_safety_checks_hashmap) {
             entity chunk = pair->value;
-            zox_geter(chunk, ChunkEntities, entityLinks);
+            const ChunkEntities* entityLinks = zox_get(chunk, ChunkEntities);
             for (int j = 0; j < entityLinks->length; j++) {
                 entity e2 = entityLinks->value[j];
                 zox_set(e2, DebugCubeLines, { mode });

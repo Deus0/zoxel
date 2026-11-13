@@ -17,7 +17,7 @@ void free_camera_rotate_system(iter* it) {
         ) {
             continue;
         }
-        /*zox_geter_value(camera->value, CameraState, byte, camera_state);
+        /*byte camera_state = zox_getv(camera->value, CameraState);
         if (camera_state != zox_camera_state_free) {
             continue;
         }*/

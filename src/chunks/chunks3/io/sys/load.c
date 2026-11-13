@@ -37,7 +37,7 @@ byte load_chunk(
     char filename[128];
     get_chunk_filename(filename, position);
     // sprintf(filename, "chunk_%i_%i_%i.dat", position.x, position.y, position.z);
-    zox_geter(savegame, FolderPath, game_path);
+    const FolderPath* game_path = zox_get(savegame, FolderPath);
     if (!game_path) {
         zox_loge("[load_chunk] Invalid FolderPath [%s]",
             zox_getn(savegame));

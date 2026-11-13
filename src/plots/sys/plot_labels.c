@@ -14,8 +14,8 @@ void plot_label_system(iter* it) {
             zox_loge("invalid plot");
             continue;
         }
-        zox_geter_value(parent, PlotMin, double, min);
-        zox_geter_value(parent, PlotMax, double, max);
+        double min = zox_getv(parent, PlotMin);
+        double max = zox_getv(parent, PlotMax);
         byte buffer_size = 128;
         int buffer_index = 0;
         char buffer[buffer_size];

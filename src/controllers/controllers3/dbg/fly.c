@@ -10,7 +10,7 @@ void toggle_flymode(ecs *world, int32_t keycode) {
     if (!zox_valid(character)) {
         return;
     }
-    zox_geter_value(character, FlyMode, byte, flying);
+    byte flying = zox_getv(character, FlyMode);
     flying = !flying;
     zox_set(character, FlyMode, { flying });
     if (flying && !zox_has(character, DisableGravity)) {

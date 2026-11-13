@@ -26,13 +26,13 @@ void flatland_system(iter* it) {
             continue;
         }
         entity realm = zox_get_link(world, terrain->value, RealmLink);
-        zox_geter(realm, BiomeLinks, biomes);
+        const BiomeLinks* biomes = zox_get(realm, BiomeLinks);
         if (!biomes->length) {
             zox_loge("No Biomes");
             continue;
         }
         entity biome = positionc->value.z > 0 ? biomes->value[0] :  biomes->value[biomes->length - 1];
-        zox_geter(biome, BlockLinks, biome_blocks);
+        const BlockLinks* biome_blocks = zox_get(biome, BlockLinks);
         if (!biome_blocks->length) {
             zox_loge("No Blocks in Biome [%s]", zox_get_name(biome));
             continue;
@@ -42,7 +42,7 @@ void flatland_system(iter* it) {
             zox_loge("Dirt [%s] invalid in Biome [%s]", zox_get_name(biome));
             continue;
         }
-        zox_geter_value(dirt, BlockIndex, byte, biome_dirt_id);
+        byte biome_dirt_id = zox_getv(dirt, BlockIndex);
         if (!biome_dirt_id) {
             zox_loge("Biome dirt is air.");
             continue;

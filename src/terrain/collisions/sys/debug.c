@@ -33,7 +33,7 @@ void terrain_intersect_debug_system(iter* it) {
         byte terrain_depth = zox_getv(terrain, NodeDepth);
         float terrain_block_scale = zox_getv(terrain, BlockScale);
         float3 block_size = float3_single(terrain_block_scale * 0.5f);
-        zox_geter(terrain, ChunkLinks, chunks);
+        const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
         // For each block position in bounds, check if collides with chunk
         float3 bounds_rotated = float4_rotate_bounds(rotation->value, bounds->value);
         float3 lower_bounds = float3_subtract(position->value, bounds_rotated);
@@ -123,7 +123,7 @@ void terrain_intersect_debug_system(iter* it) {
                     }
                     // NOTE: Get Adjacent voxel, if solid we skip this collision
                     // face direction
-                    zox_geter(chunk, ChunkNeighbors, neighbors);
+                    const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
                     const VoxelNode* neighbor_voxel_octrees[6];
                     for (int a = 0; a < 6; a++) {
                         entity neighbor = neighbors->value[a];

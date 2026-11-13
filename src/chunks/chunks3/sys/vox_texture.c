@@ -218,8 +218,8 @@ void vox_texture_system(iter* it) {
             continue;
         }
         // byte is_center = zox_has(e, CenterVoxTexture);
-        zox_geter(vox, VoxelNode, voctree);
-        zox_geter(vox, ColorRGBs, colors);
+        const VoxelNode* voctree = zox_get(vox, VoxelNode);
+        const ColorRGBs* colors = zox_get(vox, ColorRGBs);
         int3 vox_size = zox_getv(vox, ChunkSize);
         // max depth tho
         byte bake_depth = next_power_of_two_root(int_max(size->value.x, size->value.y));

@@ -62,7 +62,7 @@ void actions_shortcut_system(iter* it) {
                 }
             }
             if (zox_has(e2, Keyboard)) {
-                zox_geter(e2, Keyboard, keyboard);
+                const Keyboard* keyboard = zox_get(e2, Keyboard);
                 if (keyboard->_1.pressed_this_frame) {
                     set_player_action(world, e, 0);
                 } else if (keyboard->_2.pressed_this_frame) {

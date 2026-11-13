@@ -34,7 +34,7 @@ byte save_font_style(ecs *world, entity e, char *resources_directory, char *file
         if (!zox_valid(child) || !zox_has(child, FontData)) {
             continue;
         }
-        zox_geter(child, FontData, fdata);
+        const FontData* fdata = zox_get(child, FontData);
         const int length = fdata->length < max_font_points ? fdata->length : max_font_points;
         if (fdata->length > max_font_points) {
             zox_logw("font [%i] has [%i] points, saving [%i]", i, fdata->length, max_font_points);

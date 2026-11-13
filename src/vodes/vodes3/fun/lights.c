@@ -40,10 +40,10 @@ float get_block_vox_brightness(ecs* world, entity chunk, byte3 position) {
     }
     const LightNode* neighbor_lights[6] = { 0 };
     if (zox_has(chunk, ChunkNeighbors)) {
-        zox_geter(chunk, ChunkNeighbors, neighbors);
+        const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
         fetch_neightbor_light_nodes(world, neighbors, neighbor_lights);
     }
-    zox_geter(chunk, LightNode, lights);
+    const LightNode* lights = zox_get(chunk, LightNode);
     const byte light = get_block_vox_light(lights, neighbor_lights, zox_getv(chunk, NodeDepth), position);
     return block_vox_light_to_brightness(light);
 }

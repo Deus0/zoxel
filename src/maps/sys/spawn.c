@@ -43,7 +43,7 @@ void map_initialize_system(iter* it) {
         int2 size = zox_getv(body, LayoutSize);
         byte layer = zox_getv(body, Layer);
         // NOTE: For now just set from origin or something
-        zox_geter(terrain, TunkLinks, tunks);
+        const TunkLinks* tunks = zox_get(terrain, TunkLinks);
         int2 margin_size = int2_single(4 * ui_scale);
         int2 used_size = int2_subtract(
             size,

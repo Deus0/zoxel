@@ -2,7 +2,7 @@
 void enter_new_realm(ecs *world, entity player) {
     entity game = zox_get_link(world, player, GameLink);
     entity realm = zox_get_link(world, game, RealmLink);
-    zox_geter_value(realm, Seed, lint, seed);
+    lint seed = zox_getv(realm, Seed);
     char home_path[max_path_characters];
     get_home_directory(home_path, sizeof(home_path));
     char* game_path = join_paths(home_path, game_name);
@@ -65,7 +65,7 @@ entity spawn_menu_new_realm(
     if (!zox_valid(realm)) {
         return 0;
     }
-    zox_geter_value(realm, Seed, lint, seed);
+    lint seed = zox_getv(realm, Seed);
     int2 size = (int2) { 128 * ui_scale, 96 * ui_scale };
     float2 window_anchor = zox_huds_window_anchor;
     byte header_font_size = zox_huds_header_font_size * ui_scale;

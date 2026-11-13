@@ -42,7 +42,7 @@ void melee_system(iter* it) {
             continue;
         }
         // does have resource
-        zox_geter(user, RaycastVoxelData, raycast);
+        const RaycastVoxelData* raycast = zox_get(user, RaycastVoxelData);
         // an npc's stats are copies of its kind's, a step further from the realm's (tst npc_attacks)
         const entity resource = get_user_stat_from_realm(world, user, zox_get_link(world, e, SkillResource));
         // TODO: move cost use into activation system

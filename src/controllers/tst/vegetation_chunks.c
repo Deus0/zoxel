@@ -25,13 +25,13 @@ static inline int zox_tst_voxel_at(ecs* world, const ChunkLinks* chunks, byte te
         return -1;
     }
     const byte3 local = get_positionl_byte3(block, byte3_single(length));
-    zox_geter(chunk, VoxelNode, voxels);
+    const VoxelNode* voxels = zox_get(chunk, VoxelNode);
     return getv_VoxelNode(voxels, terrain_depth, local);
 }
 
 void zox_tst_vegetation_chunks_check(ecs* world) {
     const entity terrain = local_terrain;
-    zox_geter(terrain, ChunkLinks, chunks);
+    const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
     const byte terrain_depth = zox_getv(terrain, NodeDepth);
     const lint seed = zox_getv(terrain, Seed);
     const int chunk_length = octree_size(terrain_depth);
@@ -45,8 +45,8 @@ void zox_tst_vegetation_chunks_check(ecs* world) {
             {
                 continue;
             }
-            zox_geter(tunk, VegetationMap, vegetation);
-            zox_geter(tunk, HeightMap, heights);
+            const VegetationMap* vegetation = zox_get(tunk, VegetationMap);
+            const HeightMap* heights = zox_get(tunk, HeightMap);
             const int2 tunk_position = zox_getv(tunk, TunkPosition);
             const int length = octree_size(terrain_depth);
             if (vegetation->length != length * length || heights->length != length * length) {

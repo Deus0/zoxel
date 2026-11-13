@@ -145,7 +145,7 @@ void zox_tst_font_glyphs_fill_check(ecs* world) {
         if (!zox_valid(fonts[f]) || !zox_has(fonts[f], FontData)) {
             continue;
         }
-        zox_geter(fonts[f], FontData, font_data);
+        const FontData* font_data = zox_get(fonts[f], FontData);
         if (!font_data->length) {
             continue;
         }

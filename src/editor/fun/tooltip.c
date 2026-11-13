@@ -41,7 +41,7 @@ byte inspector_label_tooltip(
     }
     const byte ctype = zox_getv(label, ComponentType);
     if (ctype >= zox_type_end) {
-        zox_geter(label, TooltipText, text);
+        const TooltipText* text = zox_get(label, TooltipText);
         set_entity_text(world, tooltip, text->value);
         return 1;
     }
