@@ -137,8 +137,8 @@ void character_body_spawn_system(iter* it) {
                 zox_set(eslot_rcalf, PartOffset, {{ 1, 0, 1 }});
                 if (realm_calf) {
                     // Attach Parts [Calfs]
-                    zox_set_link(world, eslot_lcalf, DataLink, spawn_user_item_body(world, e, realm_calf, zox_slot_lthigh));
-                    zox_set_link(world, eslot_rcalf, DataLink, spawn_user_item_body(world, e, realm_calf, zox_slot_rthigh));
+                    zox_set_link(world, eslot_lcalf, DataLink, spawn_user_item_body(world, e, realm_calf, zox_slot_lcalf));
+                    zox_set_link(world, eslot_rcalf, DataLink, spawn_user_item_body(world, e, realm_calf, zox_slot_rcalf));
                     // Sub Slots [Calfs]
                     entity eslot_lfoot = spawn_body_slot(world, eslot_lcalf, body_anchor_bottom);
                     entity eslot_rfoot = spawn_body_slot(world, eslot_rcalf, body_anchor_bottom);

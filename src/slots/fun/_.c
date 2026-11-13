@@ -67,8 +67,8 @@ void zox_print_slots(ecs* world, entity slots_manager) {
     }
 }
 
-// NOTE: Now seearches for start index first and increments
-entity zox_get_empty_slot(ecs* world, entity e) {
+// the nth empty slot by ChildIndex (skip of them passed), for filling a few in one frame (links are deferred)
+entity zox_get_empty_slot_n(ecs* world, entity e, uint skip) {
     uint length = zox_get_children_count_by_id(
         world,
         e,
@@ -85,13 +85,17 @@ entity zox_get_empty_slot(ecs* world, entity e) {
                     continue;
                 }
                 entity slot_data = zox_get_link(world, e2, DataLink);
-                if (!slot_data) {
+                if (!slot_data && !skip--) {
                     return e2;
                 }
             }
         }
     }
     return 0;
+}
+
+entity zox_get_empty_slot(ecs* world, entity e) {
+    return zox_get_empty_slot_n(world, e, 0);
 }
 
 entity zox_get_slot_by_data(ecs* world, entity slots_manager, entity data) {

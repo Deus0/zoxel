@@ -40,7 +40,8 @@ character
 
 ## Making the realm's parts
 
-- **Blueprints** are node graphs: a colours node, fill nodes (ellipsoids around a centre), paint nodes
+- **Blueprints** are node graphs: a colours node, fill nodes (ellipsoids around a centre), box nodes (a box from a
+  corner, voxel 0 cuts air), paint nodes
   (a corner box, they recolour voxels already there), and an end node.
   - They are made at the fixed nodegraph depth (`nodegraph_max_depth`, 32 voxels), and shifted to the model's depth.
   - See `src/parts/ins/chest.c` and `head.c`.
@@ -64,7 +65,7 @@ Each step sets the next by the character's `BodyDirty` and `GenerateCharacter`.
    - It places each part from its parent slot by its anchor.
    - A part below 0 shifts everything placed before it, and the body's size grows to fit.
    - It fills the body vox's `CombineList`, then `combine_vox_system` merges them.
-   - **Later parts overwrite earlier ones**, so a slot's children are drawn over it.
+   - **Later parts overwrite earlier ones**, so a slot's children are drawn over it, and clothes (anchor over) last.
 4. `character_bone_spawn_system` (`src/parts/sys/bones.c`): a bone a part slot.
    - Each bone gets the slot's position and size, and is tagged by the part's tags (`Head`, `Shoulder`, `Hand`...).
    - Every mesh vertex takes the **last** bone whose box (1.2 times its size) holds it (`generate_weights`).
@@ -91,11 +92,15 @@ Each step sets the next by the character's `BodyDirty` and `GenerateCharacter`.
   - Dropping an item there only checks it is an `EquipItem`.
   - A change sets `BodyDirty`, and the body rebuilds.
 - **Hats** are vox files (`hatty`, `cavalier_hat`, `top_hat`), cloned into the realm (`spawn_realm_model_item_filename`).
-- **The shirt** is generated from a blueprint (`spawn_blueprint_shirt`, `src/parts/ins/shirt.c`):
-  - The chest's two blobs, a voxel bigger each side, at the chest's depth so the voxels line up.
-  - A hem and a button strip painted in a trim colour.
-  - Its colours come from the realm's seed.
-  - It sits over the chest (anchor over). Being a child of the chest slot, it is merged after the chest and covers it.
+- **Shirts** are generated from a blueprint (`spawn_blueprint_shirt`, `src/parts/ins/shirt.c`), made of box nodes:
+  - A torso box `margin` wider than the chest each side, as tall as it, with a neck hole cut from its top.
+  - Sleeves `sleeve` voxels out past the torso over the shoulders (0 for none).
+  - Trim in a second colour: hem, collar, cuffs and buttons.
+  - At the chest's depth, so the voxels line up. Their colours come from the realm's seed.
+  - The realm has two (`spawn_realm_shirt`): a boxy **Shirt** (margin 2, sleeves 4), which the player wears, and
+    a tight sleeveless **Vest** (margin 1), which goes in the inventory with the second hat to swap in.
+  - They sit over the chest (anchor over). Clothes merge after their sibling slots, so the sleeves cover the shoulders.
+  - Their sleeves move with the arms: a vertex in a shoulder bone's box takes that bone.
 
 ## Adding gear
 
@@ -120,12 +125,9 @@ Each step sets the next by the character's `BodyDirty` and `GenerateCharacter`.
 
 ## Problems found
 
-These are logged in [bugs.md](bugs.md) and [refactors.md](refactors.md).
+Logged in [refactors.md](refactors.md). Fixed: the second hat never reached the inventory (an inverted check),
+`slot_names` was out of order, and calves had the thighs' slot types.
 
-- The second hat never reaches the inventory: it's added only when `zox_get_empty_slot` finds **no** slot,
-  then linked to that invalid slot (`character_player_equips_system`).
-- `slot_names` doesn't match the `zox_slot_*` order: `zox_slot_lshoulder` (3) reads "Right Shoulder", and so on.
-- Calves are given the thighs' slot types (`zox_slot_lthigh`, `zox_slot_rthigh`), so their tooltips say thigh.
 - Realm parts are found by `SlotType` ids (`find_slot_type`), against
   [Entities, Not Ids](coding_standards.md#entities-not-ids).
   - Gear is found by tag now (`Hat`, `Shirt`).

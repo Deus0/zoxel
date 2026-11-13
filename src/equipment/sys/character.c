@@ -64,29 +64,26 @@ void character_player_equips_system(iter* it) {
         if (body_updated) {
             dirty->value = zox_generate_body_start;
         }
-        // Add Second Hand to inventory
+        // spares in the inventory: the realm's second hat and second shirt (the vest), to swap in
         entity inventory = zox_get_child_by_id(world, e, zox_id(Inventory));
         if (!zox_valid(inventory)) {
             continue;
         }
-        // NOTE: Adds second hat into inventory for fun
-        entity inventory_slot = zox_get_empty_slot(world, inventory);
-        if (!zox_valid(inventory_slot)) {
-            entity realm_hat = find_slot_type_index(
-                world,
-                realm_items,
-                realm_items_length,
-                zox_slot_hat,
-                1);
-            if (zox_valid(realm_hat)) {
-                entity e2 = spawn_user_item(world, e, realm_hat);
-                zox_set_link(world, inventory_slot, DataLink, e2);
-                // dirty->value = zox_generate_body_start;
-                if (dbg_log) {
-                    zox_log("Added Hat [%s] to Character [%s]", zox_get_name(realm_hat), zox_get_name(e));
-                }
-            } else {
-                zox_loge("Could not find Hat in Realm");
+        const entity spares[] = {
+            find_slot_type_index(world, realm_items, realm_items_length, zox_slot_hat, 1),
+            find_slot_type_index(world, realm_items, realm_items_length, zox_slot_shirt, 1),
+        };
+        uint placed = 0;
+        for (byte k = 0; k < 2; k++) {
+            // the nth empty slot, the links made this frame aren't seen yet
+            const entity slot = zox_get_empty_slot_n(world, inventory, placed);
+            if (!zox_valid(spares[k]) || zox_valid(slot)) {
+                continue;
+            }
+            zox_set_link(world, slot, DataLink, spawn_user_item(world, e, spares[k]));
+            placed++;
+            if (dbg_log) {
+                zox_log("Added [%s] to [%s]'s inventory", zox_get_name(spares[k]), zox_get_name(e));
             }
         }
     }
