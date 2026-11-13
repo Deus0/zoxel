@@ -1,6 +1,9 @@
 # Done
 
 ## Moved from todo (2026-11-14)
+-x Homes stand level: the ground under them (and a block round) levelled to one floor (the terrain at their middle,
+  terrain_height_at, the same in every tunk), steps from their doors a block a column; home building in one file
+  (towns/fun/home.c), walls.c simpler; glow stones on a chunk's edge light into the next chunk; tst home_foundations
 -x Towns: few monsters, mostly villagers: character types tagged Villager, Monster, Critter, the spawn roll weighed by
   how town like a chunk is (its population, npc_spawn_weight), the wild as before; tst population
 -x Dialogue window pops in and out (ui_pop_in, ui_pop_out: LocalScale1 tweened, eased, AnimationEase,

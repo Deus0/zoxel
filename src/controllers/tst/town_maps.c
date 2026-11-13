@@ -459,3 +459,78 @@ void zox_tst_block_table_check(ecs* world) {
     zox_tst_check(!wrong, "[%i] lines don't match their block", wrong);
     free(path);
 }
+
+// tst: home_foundations, homes stand level on their ground (towns/fun/home.c): the ground under them levelled to
+//  their floor (the terrain at their middle), steps a block at a time from their doors
+//  - each home in full detail chunks (near the player): inside, its floor block is solid and the room over it air
+//  - in front of its door, the ground's top steps at most a block a column (until something built stands there)
+//  - run: bash bsh/tst.sh home_foundations
+void zox_tst_home_foundations_check(ecs* world) {
+    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity terrain = zox_get_link(world, character, TerrainLink);
+    TerrainHeights th;
+    zox_tst_check(terrain_heights_begin(world, terrain, &th), "no terrain heights");
+    const float3 player = float3_divide_float(zox_getv(character, Position3D), zox_getv(terrain, BlockScale));
+    const entity region = zox_tst_player_region(world);
+    entity towns[zox_children_capacity];
+    const uint towns_count = zox_valid(region) ? zox_get_children_by_id(world, region, towns, zox_children_capacity, zox_id(Town)) : 0;
+    int homes_checked = 0, floors_wrong = 0, rooms_filled = 0, steps_checked = 0, steps_wrong = 0;
+    for (uint t = 0; t < towns_count; t++) {
+        entity homes[zox_children_capacity];
+        const uint count = zox_get_children_by_id(world, towns[t], homes, zox_children_capacity, zox_id(Home));
+        for (uint k = 0; k < count; k++) {
+            const TownHome h = town_home(world, homes[k]);
+            // full detail chunks only, far ones are lods
+            if (fabsf(h.center.x - player.x) > 40 || fabsf(h.center.y - player.z) > 40) {
+                continue;
+            }
+            const int floor = terrain_height_at(&th, h.center);
+            if (terrain_voxel_at(world, terrain, (int3) { h.center.x, floor + 1, h.center.y }) < 0) {
+                continue;
+            }
+            homes_checked++;
+            for (int x = h.center.x - h.half.x + 1; x < h.center.x + h.half.x; x++) {
+                for (int z = h.center.y - h.half.y + 1; z < h.center.y + h.half.y; z++) {
+                    floors_wrong += terrain_voxel_at(world, terrain, (int3) { x, floor + 1, z }) == 0;
+                    rooms_filled += terrain_voxel_at(world, terrain, (int3) { x, floor + 2, z }) > 0;
+                }
+            }
+            // its steps: from its floor block (floor + 1) out of its door
+            for (int x = h.center.x - home_door_width / 2; x <= h.center.x + home_door_width / 2; x++) {
+                int last = floor + 1;
+                for (int d = 1; d <= home_steps; d++) {
+                    const int z = h.center.y + h.half.y + d;
+                    // the ground's top near its floor, stopping at something built (a wall, another home)
+                    if (terrain_voxel_at(world, terrain, (int3) { x, floor + 3, z }) != 0) {
+                        break;
+                    }
+                    // or at another home's levelled ground (its margin, a block round it)
+                    byte neighbour = 0;
+                    for (uint k2 = 0; k2 < count && !neighbour; k2++) {
+                        const TownHome o = town_home(world, homes[k2]);
+                        neighbour = k2 != k && abs(x - o.center.x) <= o.half.x + 1 && abs(z - o.center.y) <= o.half.y + 1;
+                    }
+                    if (neighbour) {
+                        break;
+                    }
+                    int top = floor - home_steps - 2;
+                    for (int y = floor + 2; y >= floor - home_steps - 2; y--) {
+                        if (terrain_voxel_at(world, terrain, (int3) { x, y, z }) > 0) {
+                            top = y;
+                            break;
+                        }
+                    }
+                    steps_checked++;
+                    steps_wrong += abs(top - last) > 1;
+                    last = top;
+                }
+            }
+        }
+    }
+    zox_log("[tst] [metric] home_foundations [%i] homes, floors missing [%i], rooms filled [%i], steps [%i] too tall [%i]",
+        homes_checked, floors_wrong, rooms_filled, steps_checked, steps_wrong);
+    zox_tst_check(homes_checked, "no homes near the player to check");
+    zox_tst_check(!floors_wrong, "[%i] columns of homes have no floor (holes)", floors_wrong);
+    zox_tst_check(!rooms_filled, "[%i] columns of homes' rooms are filled in", rooms_filled);
+    zox_tst_check(!steps_wrong, "[%i] of [%i] steps from doors are taller than a block", steps_wrong, steps_checked);
+}
