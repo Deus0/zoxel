@@ -186,6 +186,8 @@
 - Note: I removed render_depth_invisible, we are just going to set depth to 0 from now on or destroy the chunk - or we can disable but it should be seperate from depth variable
 
 # Generation, Biomes and Regions
+- Caves (design in doc/new/caves.md): 3D noise first (and its test), then cheese and spaghetti carving, then worms
+  planned by regions
 - Mountains never clear their middle's vegetation: `mountain_distance < 2 / (mountain_radius * 3)` is integer
   division, always 0, meant radius / 3? (mountains/sys/maps.c)
 -x Biomes by climate (temperature, moisture), a center each, heights blend near edges (raises gone, tst biome_heights)
