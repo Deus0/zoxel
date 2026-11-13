@@ -2,6 +2,9 @@
 
 Underground spaces under the terrain, explored with the player's light, a home for monsters and ores.
 
+- Add connection points on region edge, with other edge, it uses a perlin combo of both positions to make joint positions the same
+- create all tunnels from these so it feels like an endless liminal zone
+
 ## Goals
 - Caves feel varied: big open caverns, long winding tunnels, narrow cracks, and they connect.
 - Deterministic from the realm seed, chunks generate independently and in any order.
