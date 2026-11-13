@@ -1,6 +1,9 @@
 # Done
 
 ## Moved from todo (2026-11-14)
+-x Towns: a square in the middle (homes placed round it), roads from each home's door to it and from it to the gate,
+  the gate on a random wall at a random spot (TownGateSide, TownGateAt), the rest of the town its natural ground
+  (towns/fun/town.c); tst town_homes (off the square, door roads, gate on its wall)
 -x Buildings as boxes (towns/fun/build.c, like model nodes): build_home writes a home in its own frame (floor,
   walls, doorway, roof layers, gables, glow stone), turned to face its door to the town's middle (HomeFacing), filled
   into chunks; HomeFloor set once at spawn; tst home_roofs (boxes, turned), home_foundations (doorways open),

@@ -72,7 +72,7 @@ void town_texture_system(iter* it) {
                     data->value[index] = (color) { 222, 133, 133, 255 };
                 } else if (value == zox_town_type_home) {
                     data->value[index] = color_grayscale(166);
-                } else if (value == zox_town_type_home_wall || value == zox_town_type_home_door) {
+                } else if (value == zox_town_type_road) {
                     data->value[index] = color_grayscale(189);
                 } else {
                     data->value[index] = color_grayscale(128);

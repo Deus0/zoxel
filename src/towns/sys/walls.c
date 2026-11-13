@@ -153,8 +153,8 @@ void town_walls_system(iter* it) {
                     zox_log("Placing Town Wall at [%ix%i]", chunk_block_position.x + position.x, chunk_block_position.z + position.z);
                 }
                 const int chunk_y = chunk_block_position.y;
-                if (town_value == zox_town_type_zone) {
-                    // roads: the town's ground
+                if (town_value == zox_town_type_road) {
+                    // its roads and square paved, the rest of its ground left as it is
                     town_set_block(voctree, build_depth, &position, height, chunk_y, hmultiplier, length, road_id);
                 } else if (town_value == zox_town_type_wall || town_value == zox_town_type_wall_edge || town_value == zox_town_type_wall_spike) {
                     // walls, their edges a block higher, spikes two
