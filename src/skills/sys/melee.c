@@ -42,23 +42,9 @@ void melee_system(iter* it) {
             continue;
         }
         // does have resource
-        entity resource = 0;
-        // entity strength = 0;
         zox_geter(user, RaycastVoxelData, raycast);
-        entity rresource = zox_get_link(world, e, SkillResource);
-        iter it2 = zox_children(world, user);
-        while (zox_children_next(it2)) {
-            for (int j = 0; j < it2.count; j++) {
-                entity stat = it2.entities[j];
-                if (!zox_has(stat, Stat)) {
-                    continue;
-                }
-                entity meta = zox_get_prefab(world, stat);
-                if (rresource == meta) {
-                    resource = stat;
-                }
-            }
-        }
+        // an npc's stats are copies of its kind's, a step further from the realm's (tst npc_attacks)
+        const entity resource = get_user_stat_from_realm(world, user, zox_get_link(world, e, SkillResource));
         // TODO: move cost use into activation system
         // resource cost
         if (!disable_skill_costs) {

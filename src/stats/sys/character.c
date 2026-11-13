@@ -178,19 +178,6 @@ static inline byte get_realm_base_stats(ecs* world, entity realm, RealmBaseStats
     return stats->soul && stats->health && stats->energy && stats->mana;
 }
 
-// is a stat made from this realm stat: its prefab, or its prefab's prefab (a character prefab's stats are
-//  realm stats' instances, an npc's copies of them are those stats' instances)
-static inline byte is_realm_stat_of(ecs* world, entity stat, entity realm_stat) {
-    entity prefab = zox_get_prefab(world, stat);
-    for (int depth = 0; prefab && depth < 4; depth++) {
-        if (prefab == realm_stat) {
-            return 1;
-        }
-        prefab = zox_get_prefab(world, prefab);
-    }
-    return 0;
-}
-
 // does a character have a stat from this realm stat (its prefab may give it some)
 static inline byte has_realm_stat(ecs* world, entity character, entity realm_stat) {
     iter it2 = zox_children(world, character);

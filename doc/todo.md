@@ -5,7 +5,6 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 # Now
-- Npcs attacks on player not working - make a test for it
 - Mae a player respawn test too
 - Remove all zox_geter and just use zox_get (clearer syntax)
 - Lag spikes crossing chunks (48ms): flecs merges and observers, found with --profile
