@@ -1,6 +1,9 @@
 # Done
 
 ## Moved from todo (2026-11-13)
+-x Npcs stay: region PopulationMap (a cell a chunk column, busy at towns) scales spawns, npcs despawn where they
+  are not where they spawned, homes respawn only missing npcs (NpcHome), wanderers leashed home; tst population,
+  region_population, npc_leash
 -x Arms keep in step: the skeleton owns the swing timing (SwingPhase, SwingBlend), every limb reads it, a raised
   arm swung out of step after (tst arms_in_step); unique sounds twice as fast (shared harmonic rotation), harp by the
   local AI (its cost is its decays, not its sines)

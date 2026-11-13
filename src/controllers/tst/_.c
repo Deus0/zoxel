@@ -565,6 +565,8 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("hit_sound_links", zox_tst_hit_sound_links_ready, zox_tst_hit_sound_links_check, 120);
     zox_tst_add("shirt", zox_tst_shirt_ready, zox_tst_shirt_check, 120);
     zox_tst_add("npc_attacks", zox_tst_npc_attacks_ready, zox_tst_npc_attacks_check, 120);
+    zox_tst_add("region_population", zox_tst_region_population_ready, zox_tst_region_population_check, 120);
+    zox_tst_add("npc_leash", zox_tst_npc_leash_ready, zox_tst_npc_leash_check, 120);
     zox_tst_add("player_respawn", zox_tst_player_respawn_ready, zox_tst_player_respawn_check, 120);
     zox_tst_add("footsteps", zox_tst_footsteps_ready, zox_tst_footsteps_check, 120);
     zox_tst_add("arms_in_step", zox_tst_arms_in_step_ready, zox_tst_arms_in_step_check, 120);

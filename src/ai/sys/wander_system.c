@@ -4,6 +4,7 @@ void wander_system(iter* it) {
     const float wander_length    = 5.0f;  // units per second
     const float vertical_bias   = 0.0f;   // how much to allow vertical wandering (usually 0 in flatland)
     const float jitter_power    = 15 * delta_time;   // chaos factor
+    const float leash = 12.0f;          // units from home before it turns back (no pathing yet, it walks straight)
     zox_sys_world()
     zox_sys_begin()
     zox_sys_in(Behaviour)
@@ -11,6 +12,7 @@ void wander_system(iter* it) {
     zox_sys_out(TargetPosition)
     zox_sys_out(WanderDirection)
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(Behaviour, behaviour)
         zox_sys_i(Position3D, position)
         zox_sys_o(TargetPosition, target)
@@ -32,6 +34,14 @@ void wander_system(iter* it) {
         };
         wander->value = float3_add(wander->value, jitter_vec);
         wander->value = float3_normalize(wander->value);
+        // leashed: past it, it heads home (until A* and pathing octrees, todo)
+        if (zox_has(e, HomePosition)) {
+            const float3 home = zox_getv(e, HomePosition);
+            const float3 to_home = { home.x - position->value.x, 0, home.z - position->value.z };
+            if (to_home.x * to_home.x + to_home.z * to_home.z > leash * leash) {
+                wander->value = float3_normalize(to_home);
+            }
+        }
 
         // Move slightly in that direction
         target->value = float3_add(position->value, float3_scale(wander->value, wander_length));
@@ -69,6 +79,7 @@ void wander_system(iter* it) {
     zox_sys_out(Acceleration3D)
     zox_sys_out(Alpha3D)
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(Behaviour, behaviour)
         zox_sys_i(DisableMovement, disableMovement)
         zox_sys_i(Rotation3D, rotation3D)

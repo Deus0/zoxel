@@ -76,3 +76,111 @@ void zox_tst_npc_attacks_check(ecs* world) {
     zox_tst_check(zox_valid(zox_tst_attacks_npc), "the npc is gone");
     zox_tst_check(health < zox_tst_attacks_health, "the npc didn't hurt the player in [%.0fs]", zox_tst_attacks_seconds);
 }
+
+// tst: region_population, the player's region has its population map, busy at its towns (npcs/sys/population.c)
+//  - one cell a chunk column, every cell at least the base, a town's column full
+//  - run: bash bsh/tst.sh region_population
+byte zox_tst_region_population_ready(ecs* world) {
+    return zox_tst_player_spawn_ready(world);
+}
+
+void zox_tst_region_population_check(ecs* world) {
+    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity terrain = zox_get_link(world, character, TerrainLink);
+    const int chunk_length = octree_size(zox_getv(terrain, NodeDepth));
+    // the region under the player's tunk
+    const float3 position = zox_getv(character, Position3D);
+    const int3 chunk = real_position_to_chunk_position(position, chunk_length, zox_getv(terrain, BlockScale));
+    const TunkLinks* tunks = zox_get(terrain, TunkLinks);
+    const entity tunk = int2_hashmap_get(tunks->value, (int2) { chunk.x, chunk.z });
+    const entity region = zox_valid(tunk) ? zox_get_link(world, tunk, RegionLink) : 0;
+    zox_tst_check(zox_valid(region), "no region under the player");
+    if (!zox_valid(region)) {
+        return;
+    }
+    const PopulationMap* map = zox_get(region, PopulationMap);
+    const int2 size = population_map_size(zox_getv(region, BlockSize2), chunk_length);
+    zox_log("[tst] [metric] region_population [%ix%i] cells, map [%i]", size.x, size.y, map->length);
+    zox_tst_check(map->length && map->length == size.x * size.y, "the map is [%i], not [%ix%i]", map->length, size.x, size.y);
+    int below = 0;
+    for (int i = 0; i < map->length; i++) {
+        below += map->value[i] < population_base;
+    }
+    zox_tst_check(!below, "[%i] cells under the base", below);
+    entity towns[zox_children_capacity];
+    const uint towns_count = zox_get_children_by_id(world, region, towns, zox_children_capacity, zox_id(Town));
+    for (uint i = 0; i < towns_count; i++) {
+        const int p = region_population_at(world, region, zox_getv(towns[i], BlockPosition2), chunk_length);
+        zox_tst_check(p == population_town, "town [%i]'s column is [%i], not full", i, p);
+    }
+}
+
+// tst: npc_leash, an npc wandering far from home walks back towards it (ai/sys/wander_system.c)
+//  - its home set 30 units away (+x), wandering 6s it walks towards it (at peace, half a unit a second)
+//  - run: bash bsh/tst.sh npc_leash
+entity zox_tst_leash_npc = 0;
+double zox_tst_leash_time = 0;
+float zox_tst_leash_start = 0;
+
+static inline float zox_tst_leash_distance(ecs* world, entity npc) {
+    const float3 p = zox_getv(npc, Position3D), h = zox_getv(npc, HomePosition);
+    return sqrtf((p.x - h.x) * (p.x - h.x) + (p.z - h.z) * (p.z - h.z));
+}
+
+byte zox_tst_npc_leash_ready(ecs* world) {
+    if (!zox_tst_player_spawn_ready(world)) {
+        return 0;
+    }
+    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    if (!zox_tst_leash_npc) {
+        const entity realm = zox_get_link(world, character, RealmLink);
+        const entity humanoid = zox_tst_realm_humanoid(world, realm);
+        if (!zox_valid(humanoid)) {
+            zox_tst_check(0, "the realm has no humanoid character prefab");
+            return 1;
+        }
+        float3 position = zox_getv(character, Position3D);
+        position.x += 2;
+        zox_tst_leash_npc = spawn_character3_npc(world, humanoid, realm, zox_get_link(world, character, TerrainLink), 9, 0, 0,
+            position, quaternion_identity, NULL);
+        zox_remove(zox_tst_leash_npc, Coward);
+        return 0;
+    }
+    const entity npc = zox_tst_leash_npc;
+    zox_tst_waiting = "the npc to wander home";
+    if (!zox_tst_leash_time) {
+        if (zox_has(npc, PreInitialize) || zox_has(npc, Initialize)) {
+            return 0;
+        }
+        float3 home = zox_getv(npc, Position3D);
+        home.x += 30;
+        zox_setv(npc, HomePosition, home);
+        zox_setv(npc, DefaultBehaviour, zox_behaviour_wander);
+        zox_setv(npc, Behaviour, zox_behaviour_wander);
+        zox_tst_leash_start = zox_tst_leash_distance(world, npc);
+        zox_tst_leash_time = zox_current_time;
+        return 0;
+    }
+    static int logged = 0;
+    if ((int) (zox_current_time - zox_tst_leash_time) > logged) {
+        logged = (int) (zox_current_time - zox_tst_leash_time);
+        const float3 v = zox_getv(npc, Velocity3D);
+        zox_log("[tst] leash [%is] home [%.1f] behaviour [%i] move [%i] velocity [%.2f %.2f %.2f]", logged,
+            zox_tst_leash_distance(world, npc), zox_getv(npc, Behaviour), zox_getv(npc, MoveForwards), v.x, v.y, v.z);
+    }
+    return zox_current_time - zox_tst_leash_time > 6;
+}
+
+void zox_tst_npc_leash_check(ecs* world) {
+    const entity npc = zox_tst_leash_npc;
+    zox_tst_check(zox_valid(npc), "the npc is gone");
+    if (!zox_valid(npc)) {
+        return;
+    }
+    const float now = zox_tst_leash_distance(world, npc);
+    zox_log("[tst] [metric] npc_leash home [%.1f] away, now [%.1f]", zox_tst_leash_start, now);
+    // npcs walk about half a unit a second at peace
+    zox_tst_check(now < zox_tst_leash_start - 1.5f, "the npc didn't head home, [%.1f] to [%.1f] away", zox_tst_leash_start, now);
+    const float3 v = zox_getv(npc, Velocity3D);
+    zox_tst_check(v.x > 0, "the npc isn't walking towards its home (+x), velocity x [%.2f]", v.x);
+}
