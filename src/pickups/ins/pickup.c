@@ -99,11 +99,13 @@ entity spawn_item_mesh(
     entity meta,
     float scale)
 {
+    const float size = scale;   // its biggest side, scale becomes its mesh's scale
     entity mesh;
     if (zox_has(meta, ItemVox)) {
         mesh = spawn_item_vox_mesh(world, meta);
         if (mesh) {
-            scale *= 3;
+            // its biggest side scale wide, like a block
+            scale = item_mesh_scale(world, meta, scale);
         } else {
             mesh = spawn_cube(
                 world,
@@ -133,7 +135,7 @@ entity spawn_item_mesh(
     }
     if (mesh) {
         zox_set_parent(world, mesh, parent);
-        zox_setv(mesh, LocalPosition3D, float3_zero);
+        zox_setv(mesh, LocalPosition3D, item_mesh_offset(world, meta, size));
         zox_setv(mesh, LocalScale1, scale);
         zox_setv(mesh, Scale1, 1);
     } else {

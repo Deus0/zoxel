@@ -11,6 +11,7 @@
 #include "lod_chunk_lights.c"
 #include "npc_skeletons.c"
 #include "npc_glance.c"
+#include "humanoid_leak.c"
 #include "npc_attacks.c"
 #include "player_respawn.c"
 #include "footsteps.c"
@@ -20,6 +21,8 @@
 #include "clouds.c"
 #include "town_maps.c"
 #include "head_camera.c"
+#include "statbars_hide.c"
+#include "held_item.c"
 #include "vegetation_chunks.c"
 #include "music.c"
 // tst: player_spawn, a new realm spawns the player's character standing in the terrain
@@ -579,6 +582,8 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("lod_chunk_lights", zox_tst_lod_chunk_lights_ready, zox_tst_lod_chunk_lights_check, 120);
     zox_tst_add("npc_skeletons", zox_tst_npc_skeletons_ready, zox_tst_npc_skeletons_check, 120);
     zox_tst_add("npc_glance", zox_tst_npc_glance_ready, zox_tst_npc_glance_check, 120);
+    zox_tst_add("humanoid_leak", zox_tst_humanoid_leak_ready, zox_tst_humanoid_leak_check, 120);
+    zox_tst_add("monster_leak", zox_tst_monster_leak_ready, zox_tst_humanoid_leak_check, 120);
     zox_tst_add("perf_stream", zox_tst_perf_stream_ready, zox_tst_perf_stream_check, 180);
     zox_tst_add("perf_fly", zox_tst_perf_fly_ready, zox_tst_perf_fly_check, 120);
     zox_tst_add("tables_stream", zox_tst_perf_stream_ready, zox_tst_tables_stream_check, 200);
@@ -592,6 +597,9 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("home_glow", zox_tst_home_glow_ready, zox_tst_home_glow_check, 120);
     zox_tst_add("home_foundations", zox_tst_home_glow_ready, zox_tst_home_foundations_check, 120);
     zox_tst_add("town_view", zox_tst_town_view_ready, zox_tst_town_view_check, 120);
+    zox_tst_add("statbars_hide", zox_tst_statbars_hide_ready, zox_tst_statbars_hide_check, 120);
+    zox_tst_add("held_item", zox_tst_held_item_ready, zox_tst_held_item_check, 120);
+    zox_tst_add("held_block", zox_tst_held_block_ready, zox_tst_held_item_check, 120);
     zox_tst_add("glow_light", zox_tst_glow_light_ready, zox_tst_glow_light_check, 120);
     zox_tst_add("block_table", zox_tst_town_homes_ready, zox_tst_block_table_check, 120);
     zox_tst_add("sky_clouds", zox_tst_sky_clouds_ready, zox_tst_sky_clouds_check, 120);
