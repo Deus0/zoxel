@@ -20,26 +20,26 @@ The usual voxel engine split (Minecraft and most since). Two values per voxel, n
 
 The time of day only exists when drawing:
 
-- Each sun is data on the realm: intensity (0 to 1 over its day), colour, direction, its own day length.
+- Each sun is data on the realm: intensity (0 to 1 over its day), colour, direction, its own day length. Moons are
+  suns too, dim and cool.
 - Once a frame, the suns sum into one sky tint: `sky = Σ sun.intensity * sun.colour`, a uniform.
-- The vertex shader: `light = max(color.r * sky, color.g * block_tint)`.
+- The vertex shader: `light = max(color.a * sky, color.rgb)`, and per sun a face shade `max(0, dot(normal, sun.direction))`.
 - Nothing relights as suns move. Torches and glow stones stay bright at night.
 
 ## Getting it to the gpu: no new buffers
 
-Mesh light is already a per vertex colour (`MeshColorRGBs`), and today r = g = b. Two of those bytes are wasted.
+Mesh light is already a per vertex colour (`MeshColorRGBs`), today r = g = b. It becomes rgba (one byte more a vertex):
 
 | Channel | Carries |
 |---|---|
-| r | Sky light at the vertex (smooth lighting averages it, as now) |
-| g | Block light at the vertex (smooth too) |
-| b | Spare, for tinted block light later (lava red, crystal blue) |
+| a | Sky light at the vertex (smooth lighting averages it, as now) |
+| r g b | Block light at the vertex, its colour (mana circuits glow blue), smooth too |
 
 The buffers, their memory and their uploads stay the same. Each frame, one uniform (the sky tint) changes.
 
 ## What changes
 
-1. **Light octrees:** `LightNode` becomes two octrees per chunk, `SkyLightNode` and `BlockLightNode`, each one byte a voxel.
+1. **Light octrees:** `LightNode` becomes `SkyLightNode` and `BlockLightNode` (a byte a voxel, rgb later).
    - It could be one octree of byte pairs instead. Two octrees keep every octree function as it is.
 2. **Flooding:** the sunlight pass (`sunlight.c`) writes sky light only.
    - The flood, dark and edit passes (`flood.c`, `dark.c`, `editing.c`) run for each value.
@@ -62,7 +62,8 @@ The buffers, their memory and their uploads stay the same. Each frame, one unifo
 2. Split `LightNode` into sky and block octrees. All tests pass with the sky tint fixed at 1 (looks the same).
 3. Mesh colours: r and g, and the shader max.
 4. Suns and the time of day: the tint moves. Sunset costs nothing.
-5. Coloured suns, more than one sun, and tinted block light (b).
+5. Coloured suns, more than one sun, moons, face shading by sun direction.
+6. Coloured block light (rgb, a separate job): each colour floods on its own, mana circuits glow blue.
 
 ## Tests
 
@@ -80,6 +81,6 @@ The buffers, their memory and their uploads stay the same. Each frame, one unifo
 
 ## Open questions
 
-- Should a sun's direction shade faces (sides away from it darker)? The normal is in the mesh, it's cheap to add later.
-- Are moons suns with low intensity, or a separate night tint?
+- Shadows from a sun's direction (not just face shading) need gpu lighting: long term, with vulkan.
+- Coloured block light floods three values (or one value and a colour): cost to measure.
 - Should the sky light cap be lower underwater?
