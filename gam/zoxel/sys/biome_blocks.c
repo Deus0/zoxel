@@ -262,6 +262,31 @@ void biome_blocks_system(iter* it) {
             zox_setv(block, BlockHealth,
                 ((float2) { 4, 8 }));
         }
+        // Leaves, a tree's canopy: a dark noisy green of the biome's grass and wood
+        //  (its seed from wood's, so the other blocks' seeds stay as they were)
+        {
+            const lint leaves_seed = wood_seed + 7771;
+            const color leaves_color = color_mix(grass_color, wood_color, 0.25f);
+            entity model = spawn_model_soil(
+                world,
+                "leaves",
+                e,
+                leaves_seed,
+                leaves_color,
+                0.6f,
+                vox_type_soil);
+            entity block = spawn_realm_block_solid(
+                world,
+                prefab_block_baked,
+                e,
+                leaves_seed,
+                "leaves",
+                leaves_color,
+                model,
+                dbg_log);
+            zox_add(block, BlockLeaves);
+            zox_setv(block, BlockHealth, ((float2) { 1, 2 }));
+        }
         {
             // color road_color = color_mix(dirt_color, stone_color, 0.4f);
             entity model = spawn_model_road(

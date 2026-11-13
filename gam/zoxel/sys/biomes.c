@@ -25,11 +25,12 @@ void biomes_realm_spawn_system(iter* it) {
                 biome_seed);
             zox_set_parent(world, e2, e);
             add_to_BiomeLinks(biomes, e2);
-            zox_set(e2, DirtChance, { 0.3f });
-            zox_set(e2, GrassChance, { 0.44f });
-            zox_set(e2, WeedsChance, { 0.71f });
-            zox_set(e2, FlowerChance, { 0.72f });
-            zox_set(e2, TreeChance, { 0.73f });
+            // ground cover shares (the rest is grass) and a tree's chance a cell (vegetation/fun)
+            zox_set(e2, DirtChance, { 0.02f });
+            zox_set(e2, GrassChance, { 0.28f });
+            zox_set(e2, WeedsChance, { 0.55f });
+            zox_set(e2, FlowerChance, { 0.10f });
+            zox_set(e2, TreeChance, { 0.45f });
             zox_set(e2, BiomeHeightFrequency, { 0.13f });
         }
         {
@@ -42,11 +43,11 @@ void biomes_realm_spawn_system(iter* it) {
                 biome_seed);
             zox_set_parent(world, e2, e);
             add_to_BiomeLinks(biomes, e2);
-            zox_set(e2, DirtChance, { 0.56f });
-            zox_set(e2, GrassChance, { 0.6f });
-            zox_set(e2, WeedsChance, { 0.66f });
-            zox_set(e2, FlowerChance, { 0.73f });
-            zox_set(e2, TreeChance, { 0.74f });
+            zox_set(e2, DirtChance, { 0.70f });
+            zox_set(e2, GrassChance, { 0.20f });
+            zox_set(e2, WeedsChance, { 0.06f });
+            zox_set(e2, FlowerChance, { 0.01f });
+            zox_set(e2, TreeChance, { 0.04f });
             zox_set(e2, BiomeHeightFrequency, { 0.07f });
         }
         {
@@ -59,11 +60,11 @@ void biomes_realm_spawn_system(iter* it) {
                 biome_seed);
             zox_set_parent(world, e2, e);
             add_to_BiomeLinks(biomes, e2);
-            zox_set(e2, DirtChance, { 0.1f });
-            zox_set(e2, GrassChance, { 0.2f });
-            zox_set(e2, WeedsChance, { 0.48f });
-            zox_set(e2, FlowerChance, { 0.53f });
-            zox_set(e2, TreeChance, { 0.54f });
+            zox_set(e2, DirtChance, { 0.02f });
+            zox_set(e2, GrassChance, { 0.18f });
+            zox_set(e2, WeedsChance, { 0.62f });
+            zox_set(e2, FlowerChance, { 0.14f });
+            zox_set(e2, TreeChance, { 0.85f });
             zox_set(e2, BiomeHeightFrequency, { 0.369f });
         }
         zox_logv("Realm [Biomes] [%i] spawned", biomes->length);

@@ -57,11 +57,7 @@
 - The arms don't keep in sync
 - Npcs disappear: they don't return to their spawn positions when out of spawn range
 	- not solved yet: spawn links vs inside chunk links
-- Trees spawn too rarely, and don't spawn apart
-- The grassy biome isn't grassy enough
 - new region placers should avoid prior ones
-- Tests for terrain generation: heights, biomes and region placements done (biome_heights, biome_map, region_place,
-  town_maps), still trees spaced apart and grass coverage
 
 # Sounds and Music
 - Optimize sound generation (see Now: lag spikes)
@@ -184,6 +180,12 @@
 - Note: I removed render_depth_invisible, we are just going to set depth to 0 from now on or destroy the chunk - or we can disable but it should be seperate from depth variable
 
 # Generation, Biomes and Regions
+- Structures across chunks: trees stay in their tunk by design (cells line up with tunks), their trunks and
+  canopies cross chunks vertically fine (tst vegetation_chunks), but anything bigger than a cell (big trees,
+  ruins, houses) needs planning before chunks draw it: place it in its region (regions/fun/place.c), each chunk
+  draws the voxels of the structures overlapping it, like towns into tunks (regions/fun/tunk.c)
+- --findtree: the player character walks to the nearest tree on its own, using the npc ai controller code (move to
+  a target), so npcs can use it too (find a tree, a home, food), and a test can watch it get there
 - Caves (design in doc/new/caves.md): 3D noise first (and its test), then cheese and spaghetti carving, then worms
   planned by regions
 - Mountains never clear their middle's vegetation: `mountain_distance < 2 / (mountain_radius * 3)` is integer

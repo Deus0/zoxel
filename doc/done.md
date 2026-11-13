@@ -1,6 +1,12 @@
 # Done
 
 ## Moved from todo (2026-11-13)
+-x Trees spawned too rarely and in clumps: a jittered grid of tree cells (vegetation/fun), spaced 5+ apart, with leaves
+  (a leaves block a biome), tst vegetation_trees, vegetation_chunks (trees across chunks)
+-x The grassy biome wasn't grassy: ground cover is a biome's shares now (tall grass 55% in grasslands, was rare),
+  tst vegetation_cover
+-x Tests for terrain generation: biome_heights, biome_map, region_place, town_maps, vegetation_trees,
+  vegetation_cover, vegetation_chunks
 -x Flying spikes (78-164ms, tst perf_fly): deleting an entity walked all 14k non fragmenting records (flecs patch,
   doc/flecs_patches.md), flying is 20-22ms worst now, even with --maxnpcs
 	-x npc spawning walked every non fragmenting record too (flecs patch), worst merge 18.6 -> 11ms
