@@ -58,6 +58,7 @@
 #include "particles/_.c"
 #include "tunks/_.c"
 #include "terrain/_.c"
+#include "sky/_.c"
 #include "biomes/_.c"
 #include "heights/_.c"
 #include "vegetation/_.c"
@@ -176,6 +177,7 @@ void import_zox(ecs* world) {
     zox_add_module(regions);
     zox_add_module(tunks);
     zox_add_module(terrains);
+    zox_add_module(sky);
     zox_add_module(biomes);
     zox_add_module(heights);
     zox_add_module(vegetation);
