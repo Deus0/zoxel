@@ -120,3 +120,38 @@ int text_columns(ecs* world, entity e) {
     }
     return (zox_getv(e, LayoutSize).x - zox_getv(e, TextPadding).x * 2) / font_size;
 }
+
+// how many lines fit down a text ui: its LayoutSize less its padding (lines are font size tall, line padding between)
+int text_rows(ecs* world, entity e) {
+    const byte font_size = zox_getv(e, TextFontSize);
+    if (!font_size || !zox_has(e, LayoutSize)) {
+        return 0;
+    }
+    return (zox_getv(e, LayoutSize).y - zox_getv(e, TextPadding).y * 2 + default_line_padding) / (font_size + default_line_padding);
+}
+
+// cuts a text to its first rows lines, the last ending in ... if it was cut (a box too short for it)
+void text_truncate(char* text, int rows) {
+    if (!text || rows <= 0) {
+        return;
+    }
+    int line = 0, line_start = 0;
+    for (int i = 0; text[i]; i++) {
+        if (text[i] != '\n') {
+            continue;
+        }
+        if (++line < rows) {
+            line_start = i + 1;
+            continue;
+        }
+        if (!text[i + 1]) {
+            return; // a trailing new line, nothing past it
+        }
+        // text[i] ends the last line that fits: its last three characters become ... (after it if it's short, the
+        //  text went on past it so there's room)
+        const int dots = i - 3 >= line_start ? i - 3 : i;
+        text[dots] = text[dots + 1] = text[dots + 2] = '.';
+        text[dots + 3] = 0;
+        return;
+    }
+}

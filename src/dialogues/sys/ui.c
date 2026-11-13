@@ -41,6 +41,7 @@ void dialogue_speech_system(iter* it) {
         snprintf(wrapped, sizeof(wrapped), "%s", text);
         if (zox_has(text_ui, TextWrap)) {
             text_wrap(wrapped, text_columns(world, text_ui));
+            text_truncate(wrapped, text_rows(world, text_ui));
         }
         set_TargetText(world, text_ui, wrapped);
         // said in the speaker's voice (the npc, not the player)
