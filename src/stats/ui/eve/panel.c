@@ -1,3 +1,6 @@
+// the player's stat bars hide after this many seconds without changing (no regen, no damage)
+const float statbars_hide_time = 5;
+
 entity spawn_stats_panel(
     ecs* world,
     entity canvas,
@@ -67,6 +70,9 @@ entity spawn_stats_panel(
     entity body = e2.z;
     zox_set_unique_name(e, "statbars");
     zox_add(e,  StatBars);
+    // hidden while nothing changes, shown while its bars do (statbar_system pokes it)
+    zox_setv(e, AutoHide, statbars_hide_time);
+    zox_setv(e, AutoHideTime, zox_current_time);
     // Now our bars
     int2 bar_position = (int2) {
         0,

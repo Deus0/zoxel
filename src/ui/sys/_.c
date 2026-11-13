@@ -4,8 +4,15 @@
 #include "canvas_resize.c"
 #include "element_begin.c"
 #include "settings.c"
+#include "auto_hide.c"
 
 void zox_systems_elements(ecs *world) {
+    zox_system_1(
+        auto_hide_system,
+        zoxp_spawn,
+        [in] AutoHide,
+        [in] AutoHideTime
+    );
     // main thread, it spawns the setting
     zox_system_1(
         ui_settings_system,
