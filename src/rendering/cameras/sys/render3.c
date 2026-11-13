@@ -34,22 +34,21 @@ void camera_render3_system(iter* it) {
         uint fbo = zox_has(e, FrameBufferLink) ?
             zox_getv(e, FrameBufferLink) :
             0;
+        // rendering to texture: the whole texture, else its part of the screen
+        const float2 viewport_position = fbo ?
+            float2_zero :
+            int2_to_float2(screen_position->value);
+        const float2 viewport_size = int2_to_float2(screen_size->value);
         if (fbo) {
-            // rendering to texture
-            zox_gpu_set_viewport(
-                float2_zero,
-                int2_to_float2(screen_size->value));
             zox_gpu_bind_fbo(fbo);
-        } else {
-            zox_gpu_set_viewport(
-                int2_to_float2(screen_position->value),
-                int2_to_float2(screen_size->value));
         }
+        zox_gpu_set_viewport(viewport_position, viewport_size);
         color clear_color = zox_has(e, Color) ?
             zox_getv(e, Color) :
             color_black;
         zox_gpu_set_clear_color(color_to_float4(clear_color));
-        zox_gpu_clear_viewport();
+        // only its viewport, cameras sharing the screen keep what the others drew
+        zox_gpu_clear_rect(viewport_position, viewport_size);
         if (dbg_log) {
             // zox_log("Camera [%s] Viewport Color is [%ix%ix%ix%i]", zox_getn(e), clear_color.r, clear_color.g, clear_color.b, clear_color.a);
             zox_log("Rendering 3D [%s]: [%ix%i] Buffer? [%i]",

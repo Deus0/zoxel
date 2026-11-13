@@ -25,7 +25,8 @@ void on_boot_game_ui(
                 zox_getn(app),
                 zox_getn(player));
         }
-        float4 screen_to_canvas = (float4) { 1 / (float) players_playing, 1, i / (float) players_playing, 0 };
+        // split screen: side by side, one column each
+        const float4 screen_to_canvas = viewport_grid_cell(i, players_playing, 1);
         int2 vp_size = screen_to_canvas_size(screen_size, screen_to_canvas);
         int2 viewport_position = screen_to_canvas_position(screen_size, screen_to_canvas);
         int2 svp_size = scale_viewport(vp_size);

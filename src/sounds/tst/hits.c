@@ -4,7 +4,7 @@
 //  - stone and sand brighter than dirt, slime and flesh duller than stone
 //  - nudged by a seed (2 semitones at most), the same seed the same, another seed differs
 //  - a grunt: in range (the distortion keeps it under its volume), loud enough, its own length
-//  - writes bin/tst/instruments/grunt_1 to 6.wav, to listen to (the materials are written by sound_instruments)
+//  - writes tst/instruments/grunt_1 to 6.wav, to listen to (the materials are written by sound_instruments)
 //  - run: bash bsh/tst.sh hit_sounds
 byte zox_tst_hit_sounds_ready(ecs* world) {
     (void) world;
@@ -88,9 +88,9 @@ void zox_tst_hit_sounds_check(ecs* world) {
             broken += !isfinite(samples[j]);
             peak = fmaxf(peak, fabsf(samples[j]));
         }
-        char path[64];
-        snprintf(path, sizeof(path), "../tst/instruments/grunt_%u.wav", seed);
-        zox_tst_write_wav(path, samples, length);
+        char name[64];
+        snprintf(name, sizeof(name), "instruments/grunt_%u.wav", seed);
+        zox_tst_write_wav(zox_tst_path(name), samples, length);
         const float seconds = length / (float) sound_sample_rate;
         zox_log("[tst] grunt [%u] pitch [%.0f] [%.2fs] peak [%.2f] rms [%.3f]", seed, voice.pitch, seconds, peak, zox_tst_hit_rms(samples, length));
         zox_tst_check(length && !broken, "grunt [%u] broken [%i] of [%u]", seed, broken, length);

@@ -1,6 +1,6 @@
 // tst: font_glyphs, draws the font's symbols big on the main menu and saves a screenshot
 //  - for looking at glyphs (i.e. ? and ! for quest markers), the test only checks it saved
-//  - bash bsh/tst.sh font_glyphs, then look at bin/tst/font_glyphs.ppm
+//  - bash bsh/tst.sh font_glyphs, then look at tst/font_glyphs.ppm
 extern char zox_screenshot_request[256];
 int zox_tst_font_stage = 0;
 int zox_tst_font_frames = 0;
@@ -32,7 +32,7 @@ byte zox_tst_font_glyphs_ready(ecs* world) {
         if (zox_tst_font_frames < 20) {
             return 0;
         }
-        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "../tst/font_glyphs.ppm");
+        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("font_glyphs.ppm"));
         zox_tst_font_stage = 2;
         return 0;
     }
@@ -41,7 +41,7 @@ byte zox_tst_font_glyphs_ready(ecs* world) {
 
 void zox_tst_font_glyphs_check(ecs* world) {
     (void) world;
-    FILE* file = fopen("../tst/font_glyphs.ppm", "rb");
+    FILE* file = fopen(zox_tst_path("font_glyphs.ppm"), "rb");
     zox_tst_check(file, "no screenshot saved");
     if (file) {
         fclose(file);

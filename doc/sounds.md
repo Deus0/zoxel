@@ -69,9 +69,9 @@ Named effects in [src/sounds/fun/effects.c](../src/sounds/fun/effects.c), instru
   - stone and sand are brighter than dirt
   - nudges stay within 2 semitones
   - grunts stay in range
-  - writes `bin/tst/instruments/grunt_N.wav`
+  - writes `tst/instruments/grunt_N.wav`
 - `sound_balance`: every material is at least 2x the music under it, on small speakers.
-- `sound_instruments`: writes `bin/tst/instruments/knock.wav`, `thud.wav` and so on, to listen to.
+- `sound_instruments`: writes `tst/instruments/knock.wav`, `thud.wav` and so on, to listen to.
 - `hit_sound_links` (in game): every realm block and npc links a sound, slimes squelch, stone knocks, dirt thuds.
 
 ## Footsteps

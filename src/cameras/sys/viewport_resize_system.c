@@ -21,9 +21,7 @@ void viewport_resize_system(iter* it) {
             float4 screen_to_canvas = zox_getv(camera, ScreenToCanvas);
             int2 new_size = screen_to_canvas_size(size->value, screen_to_canvas);
             int2 position = screen_to_canvas_position(size->value, screen_to_canvas);
-            if (zox_has(camera, Camera3)) {
-                new_size = scale_viewport(new_size);
-            }
+            new_size = camera_viewport_size(world, camera, new_size);
             zox_setv(camera, ScreenPosition, position);
             zox_setv(camera, PixelSize, new_size);
             if (dbg_log) {

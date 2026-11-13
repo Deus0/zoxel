@@ -48,7 +48,7 @@ void zox_tst_sound_formats_check(ecs* world) {
 //      - every sample is a number, the note is audible and doesn't clip (samples cut at full scale)
 //      - it starts and ends near silence (no clicks)
 //      - the pitched instruments sound at their pitch (autocorrelation), the music box an octave up
-//  - writes a short phrase per instrument to bin/tst/instruments/<name>.wav, to listen to
+//  - writes a short phrase per instrument to tst/instruments/<name>.wav, to listen to
 //  - run: bash bsh/tst.sh sound_instruments
 #define zox_tst_instrument_seconds 0.5f
 #define zox_tst_instrument_budget_ms 80.0  // a second of sound, debug, loose for a busy machine (the choir took 330ms, lag spikes)
@@ -109,7 +109,7 @@ static inline void zox_tst_write_wav(const char* path, const float* samples, uin
     fclose(file);
 }
 
-// a slow a minor arpeggio of the instrument, to bin/tst/instruments/<name>.wav
+// a slow a minor arpeggio of the instrument, to tst/instruments/<name>.wav
 static inline void zox_tst_write_instrument_phrase(byte instrument) {
     static const float notes[] = { 220.0f, 261.63f, 329.63f, 440.0f };
     const float note_seconds = 0.9f;
@@ -124,9 +124,9 @@ static inline void zox_tst_write_instrument_phrase(byte instrument) {
             phrase[step * i + j] += note[j];
         }
     }
-    char path[128];
-    snprintf(path, sizeof(path), "../tst/instruments/%s.wav", instruments[instrument].name);
-    zox_tst_write_wav(path, phrase, length);
+    char name[128];
+    snprintf(name, sizeof(name), "instruments/%s.wav", instruments[instrument].name);
+    zox_tst_write_wav(zox_tst_path(name), phrase, length);
     free(note);
     free(phrase);
 }
@@ -140,9 +140,6 @@ void zox_tst_sound_instruments_check(ecs* world) {
     (void) world;
     const uint length = (uint) (zox_tst_instrument_seconds * sound_sample_rate);
     float* samples = malloc(length * sizeof(float));
-#ifdef zox_linux
-    mkdir("../tst/instruments", 0755);
-#endif
     // how long each takes to generate a second of sound, on the thread it plays from
     {
         const uint second = sound_sample_rate;
@@ -325,7 +322,7 @@ void zox_tst_sound_mixer_check(ecs* world) {
 // tst: jingles, short tunes for moments (level up, quest taken, handed in), sounds/bop/jingles.c
 //  - each: notes in order, in note_frequencies, under 4 seconds, some echoes
 //  - it rises (its first notes climb, the lift), and lands on a chord (3 or more notes together)
-//  - writes bin/tst/jingles.wav, every jingle in turn, to listen to
+//  - writes tst/jingles.wav, every jingle in turn, to listen to
 //  - run: bash bsh/tst.sh jingles
 
 // mixes a jingle into mix at start (samples), as the mixer would play its delayed notes, returns its end
@@ -389,7 +386,7 @@ void zox_tst_jingles_check(ecs* world) {
     for (int t = 0; t < jingle_end; t++) {
         at = zox_tst_render_jingle(t, 0.5f, mix, at, length) + sound_sample_rate / 2;
     }
-    zox_tst_write_wav("../tst/jingles.wav", mix, at < length ? at : length);
+    zox_tst_write_wav(zox_tst_path("jingles.wav"), mix, at < length ? at : length);
     free(mix);
 }
 

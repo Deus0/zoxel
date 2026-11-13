@@ -19,6 +19,7 @@ byte zox_disable_post_processing = 0;
 #include "cameras3/_.c"
 #include "fun/player.c"
 #include "dbg/_.c"
+#include "tst/_.c"
 
 void import_cameras(ecs* world) {
     zox_module(cameras);
@@ -27,4 +28,5 @@ void import_cameras(ecs* world) {
     add_hook_spawn_prefabs(spawn_prefabs_cameras);
     zox_add_module(cameras2);
     zox_add_module(cameras3);
+    zox_tsts_cameras();
 }

@@ -4,7 +4,7 @@
 // tst: font_glyphs_fill, every glyph of the font at 32 and 64 pixels against its outline geometry
 //  - pixels more than 1.5 from a line are filled if inside the glyph (font_winding), air if outside
 //  - glyphs of lines only (an end no other segment meets) fill nothing
-//  - saves ../tst/font_fill.ppm, the glyphs in a grid, to look at
+//  - saves tst/font_fill.ppm, the glyphs in a grid, to look at
 //  - run: bash bsh/tst.sh font_glyphs_fill
 #define zox_tst_fill_air ((color) { 0, 0, 0, 0 })
 #define zox_tst_fill_line ((color) { 255, 0, 0, 255 })
@@ -171,7 +171,7 @@ void zox_tst_font_glyphs_fill_check(ecs* world) {
             zox_log("[tst] font_glyphs_fill glyph [%i] has [%i] pixels filled wrong", f, glyph_wrong);
         }
     }
-    zox_tst_fill_save("../tst/font_fill.ppm", grid, grid_size);
+    zox_tst_fill_save(zox_tst_path("font_fill.ppm"), grid, grid_size);
     free(grid);
     free(data);
     zox_log("[tst] [metric] font_glyphs_fill [%i] glyphs, [%i] filled wrong, [%i] pixels", glyphs, wrong_glyphs, wrong_pixels);

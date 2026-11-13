@@ -5,6 +5,11 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 # Now
+- Improve head shape, needs to be more humanoid like
+	- it needs a neck part at bottom too
+- Improve chests too, it doesnt really connect the two parts
+- cookies need crumbes, we need a s	prinkle node for this
+- Add node and model tests
 - place a dungeon 'zone' in the game (zone can be what mountain and towns are)
 	- spawns a dungeon core there
 	- slowly builds over time
@@ -21,9 +26,6 @@
     - dark at night
     - X minutes for day and night
     - hostile undead npcs spawn at night
-- Improve head shape, needs to be more humanoid like
-- Improve chests too, need anatomy like design. Its a bit off
-- Add node and model tests
 - Flying's slowest frames now: new tables while streaming (16%), colored chunk meshes (9%), tst perf_fly
 - Lag spikes (up to 96ms): sound generation, a whole sound in one frame when it spawns
 	- measured (debug): a 1.3s choir note 290-670ms, a 2.8s cello note 60-100ms, choir 330ms per second of sound
@@ -622,6 +624,22 @@
 - Add a compass symbol to show north etc
 
 # Rendering, Lights and Cameras
+- Mirrors: a mirror block or surface shows the world reflected (see [tec/cameras.md](tec/cameras.md))
+	- a render camera per mirror, its view the player's camera reflected through the mirror's plane, drawn to the
+	  mirror's texture; an oblique near plane at the mirror so nothing behind it draws
+	- needs camera draw order (mirror cameras before the main one) and culling masks (the player's own body hidden
+	  from its first person camera but seen in mirrors)
+	- only render mirrors in view and near, at a lower resolution, skip them when off screen (Disabled)
+	- tst: a mirror in front of a coloured cube, the screenshot shows the cube flipped
+- Portals: two linked surfaces, each shows the world from the other, walking through one moves you to the other
+	- like a mirror: a render camera per portal, the player's camera moved by the portal pair's transform (in one,
+	  out the other), clipped at the exit portal's plane
+	- crossing: physics moves the character and its velocity through the pair's transform, the camera with it
+	  (no frame showing the wrong side)
+	- recursion (a portal seen through a portal) limited to a depth or a flat colour past it
+	- portals between realms or dungeons later: the other side's chunks streamed around the exit
+	- tst: a portal pair, the view through the entry matches a camera at the exit; a character walked through comes
+	  out the exit facing the same way relative to it
 - Cube lines (cube_line_render_system) and quad lines still draw an entity at a time: instance them too (gizmos)
 - Voxel meshing on the gpu, faster updates and less cpu load
 	- upload the voxels (a flat grid per depth like build_voxel_mesh_grid's pyramid, or the octree), a compute

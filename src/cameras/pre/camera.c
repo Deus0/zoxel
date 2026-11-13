@@ -21,6 +21,7 @@ entity spawn_prefab_camera(ecs* world) {
     zox_setv(e, PixelSize, int2_zero);
     zox_setv(e, FieldOfView, 0);
     zox_setv(e, CameraNearDistance, camera_near_distance);
+    zox_setv(e, CameraFarDistance, camera_far_distance);
     zox_setv(e, ScreenToCanvas, float4_zero);
     zox_setv(e, FogColor, menu_sky_color); // color_rgb_green);
     // culling

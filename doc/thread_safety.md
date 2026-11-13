@@ -23,7 +23,7 @@ Writing a `[out]` component of the system's own entities (`$this`) never makes a
 ## Seeing the merges
 
 `bash bsh/tst.sh pipeline_syncs` logs the pipeline as it runs in game, a line per phase (wrapped), in
-bin/tst/pipeline_syncs.log:
+tst/pipeline_syncs.log:
 
 ```
 zoxp_octree_write: combine_vox_system voxel_octree_optimize_system voxel_update_queue_system ... vodes_remove_system |

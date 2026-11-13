@@ -20,6 +20,7 @@ void zox_systems_cameras(ecs *world) {
         [in] core.PixelSize,
         [in] cameras.FieldOfView,
         [in] cameras.CameraNearDistance,
+        [in] cameras.CameraFarDistance,
         [out] cameras.ProjectionMatrix,
         [none] cameras.Perspective
     );

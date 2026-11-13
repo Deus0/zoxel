@@ -39,7 +39,7 @@ convert_fonts() {
     echo "> fonts: converting"
     bash bsh/tst.sh list --nobuild > /dev/null 2>&1 || true
     if [[ ! -s "${font_out}" ]]; then
-        echo "!! fonts: no [${font_out}] was saved, see [bin/tst/list.log]"
+        echo "!! fonts: no [${font_out}] was saved, see [tst/list.log]"
         return 1
     fi
     local expected_size actual_size

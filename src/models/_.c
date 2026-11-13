@@ -65,4 +65,5 @@ void import_models(ecs* world) {
     add_hook_spawn_prefabs(spawn_prefabs_models);
     add_hook_terminal_command(process_arguments_voxes);
     add_hook_files_load(load_files_voxes);
+    zox_tsts_models();
 }

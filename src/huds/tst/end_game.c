@@ -184,6 +184,10 @@ byte zox_tst_end_game_ready(ecs* world) {
         case 2:
             zox_tst_waiting = "the game to start playing";
             if (!playing) {
+                // the realm and terrain loading counts as progress: under load (software gl, a busy pc)
+                //  spawning takes over the stall time, the stage alone never changed (failed 1 in 2, 2026-11-13)
+                zox_tst_progress(zox_tst_end_game_round * 100 + zox_tst_end_game_stage +
+                    (zox_gpu_buffers_live + zox_gpu_buffers_freed) * 1000.0);
                 return 0;
             }
             zox_tst_end_game_play_start = zox_current_time;

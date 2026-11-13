@@ -143,7 +143,7 @@ void zox_tst_chunk_io_check(ecs* world) {
 void zox_tst_block_table_remap_check(ecs* world) {
     VoxelNode original;
     zox_tst_io_random_tree(&original, 3000, 5);
-    const char* path = "../tst/block_table_remap.dat";
+    const char* path = zox_tst_path("block_table_remap.dat");
     FILE* out = fopen(path, "wb");
     zox_tst_check(out != NULL, "couldn't write [%s]", path);
     if (!out) {

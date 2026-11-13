@@ -498,7 +498,7 @@ void zox_tst_stream_npcs_check(ecs* world) {
     zox_tst_check(zox_tst_stream_despawned_chunks > 0, "no chunk ever despawned its npcs while walking");
 }
 
-// tst: screenshot, saves what the player sees after spawning to bin/tst/screenshot.ppm
+// tst: screenshot, saves what the player sees after spawning to tst/screenshot.ppm
 //  - for looking at the rendering (i.e. lighting), bash bsh/tst.sh screenshot, then convert to png
 //  - waits zox_tst_screenshot_wait after the player settles, so lights and meshes finish
 //  - zox_tst_save=<realm folder> loads a copy of a real save instead (same place every run, for before / after)
@@ -525,7 +525,7 @@ byte zox_tst_screenshot_ready(ecs* world) {
         if (zox_current_time - zox_tst_screenshot_time < zox_tst_screenshot_wait) {
             return 0;
         }
-        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "../tst/screenshot.ppm");
+        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("screenshot.ppm"));
         zox_tst_screenshot_stage = 2;
         return 0;
     }
@@ -535,7 +535,7 @@ byte zox_tst_screenshot_ready(ecs* world) {
 
 void zox_tst_screenshot_check(ecs* world) {
     (void) world;
-    FILE* file = fopen("../tst/screenshot.ppm", "rb");
+    FILE* file = fopen(zox_tst_path("screenshot.ppm"), "rb");
     zox_tst_check(file, "no screenshot saved");
     if (file) {
         fclose(file);
