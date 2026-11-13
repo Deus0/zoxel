@@ -26,6 +26,8 @@ void statbar_system(iter* it) {
         }
         if (bar->value != new_value) {
             bar->value = new_value;
+            // its window shows while it changes (the player's stat bars hide when idle)
+            ui_poke(world, zox_get_parent_by_id(world, e, zox_id(Window)));
             if (dbg_log) {
                 zox_log("[%s] Statbar [%s]:%f",
                     zox_sys_e_name,

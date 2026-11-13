@@ -20,8 +20,15 @@ zoxc_byte(FontSize);
 zoxc_byte(ElementFontSize);
 // Misc
 zox_tag(MouseElement);
+// Hiding: an element shrinks away after this many seconds idle, pops back in when poked (ui_poke, ui/sys/auto_hide.c)
+zoxc_float(AutoHide);
+zoxc_double(AutoHideTime);     // when it was last poked
+zox_tag(AutoHidden);
 
 void zox_components_elements(ecs *world) {
+    zoxd_float(AutoHide);
+    zoxd_double(AutoHideTime);
+    zoxd_tag(AutoHidden);
     zoxd_tag(Element);
     zoxd_tag(Element2D);
     zoxd_nf_link(ElementLink);
