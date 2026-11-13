@@ -1,6 +1,10 @@
 # Done
 
 ## Moved from todo (2026-11-13)
+-x Homes: roofs in their biome's wood, peaked (two in three, a ridge along the long side, gables) or flat
+  (HomeStyle), a glow stone on top lighting it (BlockLight, BlockGlowStone, its light seeded on the queue); house
+  placement fixed (counted only placed, seeded per try, its count from the town's seed); tst home_roofs, town_homes,
+  home_glow
 -x Placement zones in one place: PlacementZone children (Radius or ZoneSize), region_zones_find and
   region_zones_place_circle/_rect, mountains, towns and dungeons all use them, tst region_zones; the test list held
   128, 4 tests were silently dropped, now 256

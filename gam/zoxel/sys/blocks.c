@@ -103,6 +103,16 @@ void blocks_realm_spawn_system(iter* it) {
             }
         }
         spawn_dungeon_blocks(world, e);
+        // Glow Stone, on homes' roofs (towns/sys/walls.c), a warm light, last: blocks before it keep their indices
+        {
+            lint block_seed = seed->value + (seed_offset+=seed_shift);
+            const color glow_color = (color) { 255, 226, 150, 255 };
+            entity model = spawn_model_stone(world, e, block_seed, glow_color);
+            entity e2 = spawn_realm_block_solid(world, prefab_block_baked, e, block_seed, "glow stone", glow_color, model, dbg_log);
+            zox_add(e2, BlockGlowStone);
+            zox_setv(e2, BlockLight, 230);
+            link_hit_sound(world, e2, e, &hit_sound_stone);
+        }
         zox_add(e, BlocksDirty);
         if (dbg_log) {
             zox_log("Realm [%s] Spawning [Blocks]", zox_get_name(e));
