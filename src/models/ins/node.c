@@ -53,3 +53,22 @@ entity spawn_node_model_end(ecs* world) {
         zox_model_node_end);
 }
 
+
+// a sprinkle (dots on the surface) or speckle (spots painted in it) node: count dots of voxel in a box,
+//  each a voxel at dot_depth (0: the model's)
+//  (position, size: from the corner, blueprint voxels), see voctree_sprinkle
+entity spawn_node_model_sprinkle(
+    ecs* world,
+    byte type,
+    byte voxel,
+    byte count,
+    byte dot_depth,
+    byte3 position,
+    byte3 size)
+{
+    entity e = spawn_node_model_at(world, prefab_node_model, type, position, size, voxel);
+    zox_name("node_model_sprinkle");
+    zox_setv(e, Count, count);
+    zox_setv(e, NodeDepth, dot_depth);  // a dot is one voxel at this depth
+    return e;
+}

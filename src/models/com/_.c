@@ -1,5 +1,6 @@
 zox_tag(Model);
 zox_tag(ModelGroup);
+zox_tag(HueComplement);    // a colors node: its colour the complement of the model's first (seeded hue, contrast)
 zox_tag(ModelCharacter);
 zox_tag(BakeModel);
 zox_tag(ModelRun);
@@ -23,6 +24,7 @@ zoxc_float(VoxColorRange);
 void zox_components_models(ecs* world) {
     zoxd_tag(Model);
     zoxd_tag(ModelGroup);
+    zoxd_tag(HueComplement);
     zoxd_tag(ModelCharacter);
     zoxd_tag(BakeModel);
     zoxd_tag(ModelRun);

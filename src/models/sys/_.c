@@ -1,6 +1,7 @@
 #include "colors.c"
 #include "fill.c"
 #include "paint.c"
+#include "sprinkle.c"
 #include "merge.c"
 #include "size.c"
 #include "end.c"
@@ -33,6 +34,14 @@ void zox_systems_models(ecs* world) {
     );
     zox_system(
         paint_model_node_system,
+        zoxp_update,
+        [in] models.ModelSize,
+        [none] nodes.NodeRun,
+        [none] models.ModelRun,
+        [none] core.Begin,
+    );
+    zox_system(
+        sprinkle_model_node_system,
         zoxp_update,
         [in] models.ModelSize,
         [none] nodes.NodeRun,

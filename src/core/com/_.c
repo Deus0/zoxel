@@ -22,6 +22,7 @@ zox_tag(Exit);
 zoxc_double(DeactivateDelay);
 zoxc_byte(GenericEvent);
 zoxc_byte(SpawnChance);
+zoxc_byte(Count);           // how many, generic (i.e. a sprinkle node's dots)
 zoxc_byte(Busy);
 zoxc_byte(Ready);
 zox_tag(SystemLink);
@@ -84,6 +85,7 @@ void zox_components_core(ecs* world) {
     zoxd_double(DeactivateDelay);
     zoxd_byte(GenericEvent);
     zoxd_byte(SpawnChance);
+    zoxd_byte(Count);
     zoxd_byte(Busy);
     zoxd_byte(Ready);
     zoxd_state(Generate);

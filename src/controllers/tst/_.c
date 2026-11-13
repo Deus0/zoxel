@@ -543,9 +543,12 @@ void zox_tst_screenshot_check(ecs* world) {
 }
 
 #include "perf.c"
+#include "body_views.c"
 
 void zox_tsts_controllers(ecs* world) {
     zox_tst_add("screenshot", zox_tst_screenshot_ready, zox_tst_screenshot_check, 90);
+    zox_tst_add("body_views", zox_tst_body_views_ready, zox_tst_body_views_check, 120);
+    zox_tst_set_setup("body_views", NULL, 1);
     const char* real_save = getenv("zox_tst_save");
     if (real_save && real_save[0]) {
         zox_tst_set_setup("screenshot", zox_tst_load_games_setup, 1);

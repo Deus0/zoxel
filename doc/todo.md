@@ -5,11 +5,31 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 # Now
+- Create a chicken man head, similar to human one, red, white, or similar levels of color hue contrast, and a mohawk/father, beak, etc
+	- be creative
+	- use modelview test to iterate design of the blueprint
+- Add 5% chance for chickens to drop them
+- add + 5 movement speed when its equiped
+	- add movement speed stat
+	- add a row of tooltip text on equipment for the stat when you view it
+- Add synth instruments (or padsynth?), think metroid prime, i really love that sound track
+- Add harmonica, like zelda OOT, they have it in song of storms, or accordion? idk
+- Make a second song, play in town, thats based off song of storm, a bit more cheerie, but a bit eerie
+- Make a third battle track, using synths, inspired by metroid prime theme song
+- add a features.md with all features by module
+	- we can write whats missing / vs game engines
+- add trail particles like unity engine
+- add Rainy Weather
+	- rain particles from sky (transparent cubes instanced)
+	- when they hit terrain, they melt, flatten animation (y scale) or something better
+	- play generated rain drop souds in 3D - has to feel like rain
+	- gray clouds, and many more clouds
 - Improve head shape, needs to be more humanoid like
 	- it needs a neck part at bottom too
 - Improve chests too, it doesnt really connect the two parts
-- cookies need crumbes, we need a s	prinkle node for this
+- cookies need crumbes, we need a sprinkle node for this
 - Add node and model tests
+- add variants
 - place a dungeon 'zone' in the game (zone can be what mountain and towns are)
 	- spawns a dungeon core there
 	- slowly builds over time
@@ -319,6 +339,13 @@
 	- streaming should just work seperately to character positioning
 
 # Bodies and Animations
+- Shirt sits behind the chest (bash bsh/body.sh, Block Res 5, 2026-11-14): from the front the chest is bare, from the
+  back and side the shirt hangs off it; in game it looked right once, maybe the order the body and gear build in
+- First person camera doesn't adjust for the head's size: the head has a neck now, its eyes higher (head.c)
+- Body part seeds are `N * (i * spawn_count++)` (gam/zoxel/sys/body_parts.c), i is the realm's index: 0 in the
+  first realm, every part the same seed, less variation (see tst model_variants)
+- tst arms_in_step fails every run, on HEAD too (2026-11-14): the shoulders swing out of step after one's raised;
+  check the test reads the two shoulder bones (clothes since may add bones), then arm_swing.c's slerp back
 - Fix timing of arm swing
 - arm should only slerp rotation - no setting
 - Fix arm, needs to not instantly rotate
@@ -865,6 +892,16 @@
 - --nohud for screenshot tests (hide the hud), and a clear sky view (lift the player, its body hidden: the camera in
   its head sees its hat looking up), then add tst sky_clouds (written, not added)
 - lights settle: after a block changes, light propagation finishes within a few frames
+- tst body_views into models (src/controllers/tst/body_views.c now, in game round the player): spawn a character in
+  the void like model_views (its own realm on the main menu, no terrain, gray, each view filtered to it), any
+  character kind (zox_tst_model=<name>), bash bsh/body.sh
+	- later for debugging animations: walk, swing, raise an arm, a screenshot a few frames apart (a strip per view)
+- tst model_variants: one model from 16 realm seeds, screenshotted in a 4x4 grid of viewports, so similar objects
+  can be made to vary more (every realm should feel unique)
+	- like tst model_views (src/models/tst/model_views.c): realms generated one after another, a copy of the model's
+	  mesh from each, a camera per cell filtered to its copy (CameraFilter, CameraRenderer), gray, --1080p
+	- checks every cell drew, logs a variety score (pairs of cells that look different), fails if most look the same
+	- bash bsh/variants.sh <name> -> tst/variants/<name>.png, like bsh/model.sh
 - write a grid spawn test for every model
 - write a grid spawn test for every character
 - Add test function for spawning a Terrain Chunk

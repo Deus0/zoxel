@@ -138,7 +138,7 @@ void bodys_realm_spawn_system(iter* it) {
                 world,
                 blueprint_size,
                 blueprint_depth,
-                skin_color);
+                skin_color, (uint) body_seed + spawn_count * 7919u);
             spawn_realm_body_part2(
                 world,
                 e,
@@ -161,7 +161,7 @@ void bodys_realm_spawn_system(iter* it) {
                 world,
                 blueprint_size,
                 blueprint_depth,
-                skin_color);
+                skin_color, (uint) body_seed + spawn_count * 7919u);
             spawn_realm_body_part2(
                 world,
                 e,
@@ -184,7 +184,7 @@ void bodys_realm_spawn_system(iter* it) {
                 world,
                 blueprint_size,
                 blueprint_depth,
-                skin_color);
+                skin_color, (uint) body_seed + spawn_count * 7919u);
             spawn_realm_body_part2(
                 world,
                 e,
@@ -207,7 +207,7 @@ void bodys_realm_spawn_system(iter* it) {
                 world,
                 blueprint_size,
                 blueprint_depth,
-                skin_color);
+                skin_color, (uint) body_seed + spawn_count * 7919u);
             spawn_realm_body_part2(
                 world,
                 e,
@@ -230,7 +230,7 @@ void bodys_realm_spawn_system(iter* it) {
                 world,
                 blueprint_size,
                 blueprint_depth,
-                skin_color);
+                skin_color, (uint) body_seed + spawn_count * 7919u);
             spawn_realm_body_part2(
                 world,
                 e,
@@ -253,7 +253,7 @@ void bodys_realm_spawn_system(iter* it) {
                 world,
                 blueprint_size,
                 blueprint_depth,
-                skin_color);
+                skin_color, (uint) body_seed + spawn_count * 7919u);
             spawn_realm_body_part2(
                 world,
                 e,
@@ -272,7 +272,7 @@ void bodys_realm_spawn_system(iter* it) {
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
-            entity blueprint = spawn_blueprint_flesh_part(world, blueprint_size, blueprint_depth, skin_color);
+            entity blueprint = spawn_blueprint_flesh_part(world, blueprint_size, blueprint_depth, skin_color, (uint) body_seed + spawn_count * 7919u);
             // Spawn Model Item
             spawn_realm_body_part2(
                 world,

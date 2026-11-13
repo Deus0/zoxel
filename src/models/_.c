@@ -38,6 +38,8 @@ byte zox_block_outlines = 1;
 #define zox_model_node_paint 3
 #define zox_model_node_size 4
 #define zox_model_node_box 5     // a fill as a box from a corner, voxel 0 cuts air (a shirt's neck)
+#define zox_model_node_sprinkle 6    // Count seeded dots of its voxel in the air on a surface (crumbs, sprinkles)
+#define zox_model_node_speckle 7     // Count seeded spots painted on a surface (chocolate chips, freckles)
 #define zox_model_node_end 9
 
 #include "dat/_.c"
