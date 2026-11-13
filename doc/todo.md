@@ -44,16 +44,7 @@
 	- 3. long notes generated over a few frames, the start first
 	- tst: every instrument generates a second of sound under a budget (sound_instruments logs timings)
 - Miss sounds need more whoosh, a wind feeling (instrument_whoosh in sounds/bop/impacts.c)
-- Footstep sounds, per block like hits (realm sounds), timed to the walk
-- Realm sounds: hits sound like what they hit (stone, dirt, wood, flesh)
-	- the realm spawns sound entities (like its quests and items), each a SoundEffect's settings:
-	  instrument, notes, lengths, volumes (sounds/fun/effects.c rows become data)
-	- blocks and npcs link one when spawned: HitSoundLink -> its realm sound (stone a dry knock,
-	  dirt a soft thud, wood a hollow tock, slimes a squelch)
-	- spawning a hit reads the linked sound's settings, falls back to sound_effects
-	- tst: every block and character kind has a hit sound, they differ (brightness, pitch), all pass sound_balance
-- Font filling is a bit off
-	- write a test for it (glyph fills, compare to the font's raw data)
+- Footstep sounds, per block like hits (reuse HitSoundLink, doc/sounds.md), timed to the walk
 - The arms don't keep in sync
 - Npcs disappear: they don't return to their spawn positions when out of spawn range
 	- not solved yet: spawn links vs inside chunk links

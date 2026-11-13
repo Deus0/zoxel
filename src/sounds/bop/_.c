@@ -7,4 +7,5 @@
 #include "impacts.c"
 #include "instruments.c"
 #include "voice.c"
+#include "hits.c"
 #include "jingles.c"

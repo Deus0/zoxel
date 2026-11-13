@@ -279,3 +279,46 @@ entity spawn_voice_syllable(ecs* world, const Voice* voice, char consonant, char
     set_sound_source(world, e, source);
     return e;
 }
+
+// a grunt when hit (ugh, eh, ah): the character's own voice, lower, longer, breathier, falling, and
+//  driven into a soft distortion (a strained throat), returns the samples written
+#define voice_grunt_drive 3.0f
+
+static inline Voice voice_grunt_of(const Voice* speaker) {
+    Voice voice = *speaker;
+    voice.pitch *= 0.85f;
+    voice.speed *= 1.6f;
+    voice.breath += 0.2f;
+    return voice;
+}
+
+uint generate_voice_grunt(const Voice* speaker, float volume, uint seed, float* samples, uint max_length) {
+    const Voice voice = voice_grunt_of(speaker);
+    const char vowels[3] = { 'u', 'e', 'a' };
+    const uint length = generate_voice_syllable(&voice, seed % 2 ? 'h' : 0, vowels[seed % 3], -5, 1, seed, samples, max_length);
+    for (uint j = 0; j < length; j++) {
+        samples[j] = volume * tanhf(voice_grunt_drive * samples[j]) / tanhf(voice_grunt_drive);
+    }
+    return length;
+}
+
+entity spawn_voice_grunt(ecs* world, const Voice* speaker, float volume, entity source) {
+    if (nosounds || !master_volume) {
+        return 0;
+    }
+    const Voice voice = voice_grunt_of(speaker);
+    const uint max_length = (uint) (voice_syllable_length(&voice) * sound_sample_rate) + 1;
+    SoundData data = { 0 };
+    data.value = soundpool_alloc(max_length);
+    if (!data.value) {
+        return 0;
+    }
+    data.length = generate_voice_grunt(speaker, volume, (uint) rand(), data.value, max_length);
+    zox_instance(prefab_sound);
+    zox_name("grunt");
+    zox_set_ptr(e, SoundData, data);
+    zox_set(e, SoundLength, { voice_syllable_length(&voice) });
+    zox_set(e, TriggerSound, { zox_dirty_trigger });
+    set_sound_source(world, e, source);
+    return e;
+}

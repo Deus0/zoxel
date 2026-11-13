@@ -40,6 +40,7 @@ void character3_realm_spawn_system(iter* it) {
                 continue;
             }
             zox_add(e2, QuestGiver);
+            link_hit_sound(world, e2, e, &hit_sound_flesh);
             if (is_add_stats) {
                 fill_character_base_stats(world, e2, e, 16, 42, 0);
             }
@@ -99,6 +100,7 @@ void character3_realm_spawn_system(iter* it) {
             }
             zox_set_link(world, e2, ModelLink, model);
             zox_add(e2, CharacterSlime);
+            link_hit_sound(world, e2, e, &hit_sound_slime);
             // NOTE: Unique characters clone their model, otherwise they instance it
             if (!is_characters_instanced) {
                 zox_add(e2, CharacterUnique);
@@ -153,6 +155,7 @@ void character3_realm_spawn_system(iter* it) {
             // set_ZoxName(world, e2, name);
             // Links unique to the ecs world
             zox_set_link(world, e2, ModelLink, model);
+            link_hit_sound(world, e2, e, strcmp(name, "slime") ? &hit_sound_flesh : &hit_sound_slime);
             if (!is_characters_instanced) {
                 zox_add(e2, CharacterUnique);
             }

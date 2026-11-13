@@ -19,5 +19,11 @@
 // impacts (bop/impacts.c)
 #define instrument_impact 17
 #define instrument_whoosh 18
-#define instrument_end 19
-#define instrument_piano_file 20   // the piano.wav sound file, re-pitched (not generated)
+#define instrument_knock 19      // stone
+#define instrument_thud 20       // dirt
+#define instrument_crunch 21     // sand
+#define instrument_tock 22       // wood
+#define instrument_squelch 23    // slime
+#define instrument_rustle 24     // leaves
+#define instrument_end 25
+#define instrument_piano_file 26   // the piano.wav sound file, re-pitched (not generated)

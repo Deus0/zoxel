@@ -237,6 +237,7 @@ The loop:
 - [Children](children.md): parenting and child entities
 - [Characters](character.md): how characters are built (vox, renderer, skeleton)
 - [Audio](audio.md): the mixer, 3D sounds, effects, voices and music
+- [Sounds](sounds.md): what things sound like hit, realm sound entities, materials, grunts
 - [Nodes](nodes.md): node graphs, how dialogue and quests walk them
 - [Tests](tests.md): writing tests, patterns, every test by area
 - [Systems](systems.md): the phases in a frame, kinds of systems, budgets, profiling

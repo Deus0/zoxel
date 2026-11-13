@@ -199,6 +199,7 @@ void biome_blocks_system(iter* it) {
                 model,
                 dbg_log);
             zox_add(block, BlockSoil);
+            link_hit_sound(world, block, e, &hit_sound_dirt);
             zox_setv(block, BlockHealth,
                 ((float2) { 3, 6 }));
         }
@@ -221,6 +222,7 @@ void biome_blocks_system(iter* it) {
                 model,
                 dbg_log);
             zox_add(block, BlockSand);
+            link_hit_sound(world, block, e, &hit_sound_sand);
             zox_setv(block, BlockHealth,
                 ((float2) { 2, 4 }));
         }
@@ -240,6 +242,7 @@ void biome_blocks_system(iter* it) {
                 model,
                 dbg_log);
             zox_add(block, BlockStone);
+            link_hit_sound(world, block, e, &hit_sound_stone);
             zox_setv(block, BlockHealth,
                      ((float2) { 8, 12 }));
         }
@@ -259,6 +262,7 @@ void biome_blocks_system(iter* it) {
                 model,
                 dbg_log);
             zox_add(block, BlockWood);
+            link_hit_sound(world, block, e, &hit_sound_wood);
             zox_setv(block, BlockHealth,
                 ((float2) { 4, 8 }));
         }
@@ -285,6 +289,7 @@ void biome_blocks_system(iter* it) {
                 model,
                 dbg_log);
             zox_add(block, BlockLeaves);
+            link_hit_sound(world, block, e, &hit_sound_leaves);
             zox_setv(block, BlockHealth, ((float2) { 1, 2 }));
         }
         {
@@ -304,6 +309,7 @@ void biome_blocks_system(iter* it) {
                 model,
                 dbg_log);
             zox_add(block, BlockRoad);
+            link_hit_sound(world, block, e, &hit_sound_dirt);
             zox_set(block, BlockHealth, { (float2) { 6, 10 } });
         }
         {
@@ -324,6 +330,7 @@ void biome_blocks_system(iter* it) {
                 model,
                 dbg_log);
             zox_add(block, BlockSoilGrass);
+            link_hit_sound(world, block, e, &hit_sound_dirt);
             zox_set(block, BlockHealth, { (float2) { 4, 8 } });
         }
         // Grass Model
@@ -365,6 +372,7 @@ void biome_blocks_system(iter* it) {
                 texture_vox,
                 direction_front);
             zox_add(block, BlockGrass);
+            link_hit_sound(world, block, e, &hit_sound_leaves);
             zox_setv(block, BlockLightPass, 1);
             zox_setv(block, BlockSound, 1);
         }
@@ -392,6 +400,7 @@ void biome_blocks_system(iter* it) {
                 texture_vox,
                 direction_up);
             zox_set(block, BlockLightPass, { 1 });
+            link_hit_sound(world, block, e, &hit_sound_dirt);
         }
         // A noisey block
         {
@@ -406,7 +415,7 @@ void biome_blocks_system(iter* it) {
                 max_depth,
                 dirt_seed);
             entity texture_model = model;
-            spawn_realm_block_model(
+            const entity decayed = spawn_realm_block_model(
                 world,
                 e,
                 dirt_seed,
@@ -417,6 +426,7 @@ void biome_blocks_system(iter* it) {
                 model,
                 texture_model,
                 direction_front);
+            link_hit_sound(world, decayed, e, &hit_sound_dirt);
         }
         // Biome Flora
         {
@@ -443,6 +453,7 @@ void biome_blocks_system(iter* it) {
                 texture_model,
                 direction_front);
             zox_add(block, BlockFlower);
+            link_hit_sound(world, block, e, &hit_sound_leaves);
             zox_set(block, BlockLightPass, { 1 });
             zox_set(block, BlockSound, { 1 });
         }

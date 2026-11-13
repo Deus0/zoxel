@@ -35,6 +35,12 @@ const InstrumentData instruments[instrument_end] = {
     [instrument_bell] = { "bell", bell_sound, 0.003f, 0.1f, 1 },
     [instrument_impact] = { "impact", impact_sound, 0.001f, 0.35f, 1 },
     [instrument_whoosh] = { "whoosh", whoosh_sound, 0.08f, 0.55f, 1 },
+    [instrument_knock] = { "knock", knock_sound, 0.001f, 0.35f, 1 },
+    [instrument_thud] = { "thud", thud_sound, 0.002f, 0.4f, 1 },
+    [instrument_crunch] = { "crunch", crunch_sound, 0.002f, 0.4f, 1 },
+    [instrument_tock] = { "tock", tock_sound, 0.001f, 0.35f, 1 },
+    [instrument_squelch] = { "squelch", squelch_sound, 0.004f, 0.4f, 1 },
+    [instrument_rustle] = { "rustle", rustle_sound, 0.02f, 0.3f, 1 },
 };
 
 static inline byte is_instrument(byte instrument) {

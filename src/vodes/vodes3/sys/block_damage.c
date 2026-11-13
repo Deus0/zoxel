@@ -162,10 +162,10 @@ void block_damage_queue_system(iter* it) {
             }
             // add health to block child
             // destroy voxel sound
+            // what the block is made of (its realm hit sound), and a chime when it breaks
+            spawn_hit_sound_at(world, meta, sound_effect_block_damage, positionf);
             if (did_destroy_block) {
                 spawn_sound_effect_at(world, sound_effect_block_break, positionf);
-            } else {
-                spawn_sound_effect_at(world, sound_effect_block_damage, positionf);
             }
             // hit block popup
             // float3 positionf = raycast->positionf;

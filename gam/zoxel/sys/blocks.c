@@ -39,6 +39,7 @@ void blocks_realm_spawn_system(iter* it) {
                 model,
                 dbg_log);
             zox_add(e2, BlockObsidian);
+            link_hit_sound(world, e2, e, &hit_sound_stone);
             zox_add(e2, BlockInvinsible);
         }
         // Crafted Items
@@ -75,6 +76,7 @@ void blocks_realm_spawn_system(iter* it) {
                 dbg_log);
             // entity e2 = spawn_block_bricks(world, e, "bricks", bricks_color, 232323);
             zox_add(e2, BlockBricks);
+            link_hit_sound(world, e2, e, &hit_sound_stone);
             zox_set(e2, BlockHealth, { (float2) { 10, 16 } });
         }
         // === File Blocks ===
@@ -97,6 +99,7 @@ void blocks_realm_spawn_system(iter* it) {
                     vox,
                     direction_up);
                 zox_setv(e2, BlockLightPass, 1);
+                link_hit_sound(world, e2, e, &hit_sound_leaves);
             }
         }
         spawn_dungeon_blocks(world, e);
