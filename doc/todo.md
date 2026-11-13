@@ -59,8 +59,9 @@
 	- not solved yet: spawn links vs inside chunk links
 - Trees spawn too rarely, and don't spawn apart
 - The grassy biome isn't grassy enough
-- Refactor town and mountain placement in regions
-	- it's really placing any things in regions across chunks, make it a general region placer
+-x Refactor town and mountain placement in regions: regions/fun/place.c (circles, rects, used by mountains,
+  towns, homes, dungeons), regions/fun/tunk.c (a tunk's region setup, the columns a thing covers),
+  tst region_place, town_maps (towns drawn across tunks)
 	- new region placers should avoid prior ones
 - Tests for terrain generation (heights, biomes, trees spaced apart, grass coverage, region placements)
 
