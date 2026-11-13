@@ -10,6 +10,7 @@ zoxc(VoxelNodeLock, spinlock);
 
 create_octree_setters(VoxelNode);
 create_octree_accessors(VoxelNode);
+create_octree_get_nearby(VoxelNode);
 zoxc_octree_fun2(VoxelNode, byte);
 zox_node_add_link(VoxelNode);
 create_octree_optimizer(VoxelNode, 1);
