@@ -74,12 +74,14 @@ void region_towns_system(iter* it) {
         }
         int2 positions[spawn_count];
         byte2 sizes[spawn_count];
+        byte placed = 0;
         for (int j = 0; j < spawn_count; j++) {
-            if (!region_place_rect(seed->value + j * seed_shift, block_position->value, block_size->value, region_padding, min_size, max_size, town_padding, positions, sizes, j, mountain_positions, mountain_radii, mountains_length, max_attempts)) {
+            // placed: only placed towns count, a failed try left a gap the next ones checked against
+            if (!region_place_rect(seed->value + j * seed_shift, block_position->value, block_size->value, region_padding, min_size, max_size, town_padding, positions, sizes, placed, mountain_positions, mountain_radii, mountains_length, max_attempts)) {
                 continue;
             }
-            int2 town_position = positions[j];
-            byte2 town_size = sizes[j];
+            int2 town_position = positions[placed];
+            byte2 town_size = sizes[placed++];
             lint town_seed = position_seed2(seed->value, town_position);
             byte wall_height = seed_range(town_seed + seed_shift * 2, wall_height_range.x, wall_height_range.y);
             byte wall_thickness = seed_range(town_seed + seed_shift * 3, wall_thickness_range.x, wall_thickness_range.y);

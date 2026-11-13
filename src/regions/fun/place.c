@@ -1,8 +1,10 @@
-// Placing things in a region (mountains, towns, homes, dungeons): seeded, inside bounds, not overlapping what's
-//  already placed, then each tunk's map draws the parts that fall in it (regions/fun/tunk.c)
-//  - region_place_circle: a radius, apart from other circles (mountains)
-//  - region_place_rect: a size, apart from other rects and circles (towns avoid mountains, homes)
-//  - the same seed places the same, tst region_place
+// Placement zones: the areas things claim in a region (mountains, towns, homes, dungeons): seeded, inside bounds,
+//  not overlapping earlier zones, then each tunk's map draws the parts that fall in it (regions/fun/tunk.c)
+//  - region_place_circle: a circle zone, apart from other circles (mountains)
+//  - region_place_rect: a rect zone, apart from earlier rects and circles (towns avoid mountains, dungeons avoid
+//    towns and mountains, homes)
+//  - added counts only zones placed, a failed try leaves no gap (placers keep a placed count)
+//  - the same seed places the same, tst region_place, region_place_prior
 // NOTE: Returns 1 if successfully added a new position/radius
 byte region_place_circle(lint seed, int2 region_position, int2 region_size, byte minimum_radius, byte maximum_radius, int2* positions, byte* radii, byte added) {
     const int max_attempts = 100;
