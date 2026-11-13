@@ -1,0 +1,42 @@
+# Inspirations
+
+- Minecraft - Voxel Worlds
+    - Chill Vibes
+    - Digging, Building, Crafting
+    - Biomes, Towns, Carts
+    - Multiplayer Servers
+- World of Warcraft
+    - attributes and stats
+    - level ups
+    - party play, dungeons
+    - cities
+    - quests and rewards
+- Dwarf Fortress - Simulation
+    - levels of detail
+    - layered chaos in complexity
+    - history & culture generation
+- Cube World
+    - region biome exploration
+    - world dungeons
+    - loot
+- Sonic Adventure - Chao Garden
+    - creature simulation
+    - affection levels
+    - different personality stats
+- Catherine - Aesthetics
+    - Cartoon style
+- Pal World - Creature Collecting
+    - Rarity levels
+    - Adventure Story
+    - Base Building
+- Zelda - Puzzles
+    - Bomb Explosions
+    - Plants
+    - Dungeon Puzzles and Keys
+    - Adventure Story
+- Megabonk/Vampire Survivors
+    - Swarm Enemies
+    - Level Up Rewards
+    - Loot Chests
+    - Unlockable Content
+    - Unique Play Styles

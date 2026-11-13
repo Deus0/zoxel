@@ -17,6 +17,10 @@ bash bsh/tst.sh <name> --nobuild         # rerun without building
 - Tests run on `--tiny` terrain, ones in `medium_tests` (bsh/tst.sh) on `--medium` (far lods to compare).
 - Tests render in software (mesa llvmpipe, offscreen). The egl device is picked by machine: 0 on x86, 2 on the
   arm board. Override it with `zox_tst_egl_device=<n>` ("Invalid EGL device is requested" means a wrong one).
+- Tests use their own settings (defaults, i.e. Block Res 4). To run like real play, copy real ones in:
+  `zox_tst_settings=$HOME/.config/zoxel/settings.cfg bash bsh/tst.sh clothes` (a finer Block Res doubles every model).
+  Load tests also take `zox_tst_save=<realm folder>`, a copy of a real save.
+- `make run` is the release build, tests the dev one: a release-only bug needs the release binary (`make prerelease`).
 - The harness is [src/core/tst/_.c](../src/core/tst/_.c), the runner [bsh/tst.sh](../bsh/tst.sh).
 
 ## Writing one
@@ -77,7 +81,7 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 | Lights | `smooth_lights` `lod_lights` `lod_chunk_lights` `block_vox_lights` `block_vox_light_sampling` |
 | Rendering | `lines_spawn` `lines_render` `skeleton_render` `vox_instance_render` `terrain_render` `block_vox_light_sampling` `block_vox_lights` `screenshot` |
 | Sound and music | `sound_mixer` `sound_formats` `sound_instruments` `sound_balance` `voice_sounds` `hit_sounds` `hit_sound_links` `music_*` |
-| Body and gear | `parts` `shirt` `npc_skeletons` |
+| Body and gear | `parts` `clothes` `npc_skeletons` |
 | Text and ui | `text_data` `text_order` `font_glyphs` `font_fill` `font_glyphs_fill` `texture_lines` `menu_flow` `mouse_click` `ui_leaks` `tooltips` `options_toggle` `scroll_wheel` `list_order` `ui_layout` `exit_menu` `exit_game` |
 | Game | `load_games` `player_spawn` `continue_game` `end_game_cleanup` `stream_npcs` `npc_attacks` `population` `region_population` `npc_leash` `player_respawn` `footsteps` `arms_in_step` `parts` `action_wheel` `item_split` `resume_no_punch` `pickup_pop` `editor` |
 | Quests | `quest_tracking` `quest_dialogue` |

@@ -5,6 +5,25 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 # Now
+- place a dungeon 'zone' in the game (zone can be what mountain and towns are)
+	- spawns a dungeon core there
+	- slowly builds over time
+- let dungeon entity exist if its inside region of SimulationLod = 0 (so where player is and ones next to that)
+- Cloud Voxes to spawn and draft through sky
+	- transparent material
+- Sometimes the lighting doesnt propogate properly into the house
+- Go over parts and slots
+    - slots should be on the item itself, like chest can have a shirt slot, a backpack slot etc
+    - when we remove foot, it should remove the shoe slot, and be removed from the ui
+    - if we had shoe equiped, it should go to inventory or be dropped from the player character into the world
+    - only gear can do this, but the parts, you need to remove the end of limbs first
+- Day and night cycle
+    - dark at night
+    - X minutes for day and night
+    - hostile undead npcs spawn at night
+- Improve head shape, needs to be more humanoid like
+- Improve chests too, need anatomy like design. Its a bit off
+- Add node and model tests
 - Flying's slowest frames now: new tables while streaming (16%), colored chunk meshes (9%), tst perf_fly
 - Lag spikes (up to 96ms): sound generation, a whole sound in one frame when it spawns
 	- measured (debug): a 1.3s choir note 290-670ms, a 2.8s cello note 60-100ms, choir 330ms per second of sound

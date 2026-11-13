@@ -1,6 +1,6 @@
 # Body and Equipment
 
-How a character's body is built from parts, and how gear (hats, shirts) is worn on it.
+How a character's body is built from parts, and how gear (hats, shirts, shorts, shoes) is worn on it.
 
 - Parts: [src/parts](../src/parts)
 - Equipment: [src/equipment](../src/equipment)
@@ -22,7 +22,9 @@ character
    ├─ head slot (anchor top) → head
    │  └─ hat slot (EquipSlot, HatSlot, anchor top) → hat item
    ├─ hips slot (anchor bottom) → hips
+   │  ├─ shorts slot (EquipSlot, ShortsSlot, anchor over, PartOffset down zox_shorts_leg) → shorts item
    │  └─ thighs → calves → feet
+   │                       └─ shoe slot (EquipSlot, ShoeSlot, anchor over), one a foot → shoes item
    └─ shoulder slots (anchor left / right) → shoulders
       └─ biceps → forearms → hands
 ```
@@ -32,7 +34,7 @@ character
 | Entity | What it is | Made in |
 |---|---|---|
 | Realm part item | A body part kind (Chest, Head...), `BodyItem` `BodyPart`, `SlotType`, a model and icon | `bodys_realm_spawn_system`, from blueprints |
-| Realm gear item | A gear kind, `EquipItem`, a `Hat` or `Shirt` tag | `equips_realm_spawn_system` (hats from vox files, the shirt from a blueprint) |
+| Realm gear item | A gear kind, `EquipItem`, a `Hat`, `Shirt`, `Shorts` or `Shoes` tag | `equips_realm_spawn_system` (hats from vox files, clothes from blueprints) |
 | User item | One character's copy of a realm item (an instance of it) | `spawn_user_item` |
 | Slot | Where an item attaches: `SlotAnchor`, `PartOffset`, then `PartPosition` and `PartSize` once built | `spawn_body_slot`, `spawn_equip_slot` (both `spawn_attach_slot`) |
 | Body vox | The character's merged voxels (`VoxLink`), `CombineList` of the parts' voxes | the character |
@@ -57,9 +59,11 @@ Each step sets the next by the character's `BodyDirty` and `GenerateCharacter`.
 1. `character_body_spawn_system` (`src/parts/sys/character.c`), when the character generates:
    - It finds the realm's part items by `SlotType` and links the chest to the chest slot.
    - It spawns the other slots with their anchors and offsets, and links a user item in each.
-   - It also makes the empty gear slots: the shirt over the chest, the hat on the head.
+   - It also makes the empty gear slots: the shirt over the chest, shorts over the hips, a shoe over each foot, the hat
+     on the head.
 2. `character_player_equips_system` (`src/equipment/sys/character.c`), players only, when generation ends:
-   - `equip_realm_item` puts the realm's first `Hat` in the `HatSlot` and its first `Shirt` in the `ShirtSlot`.
+   - `equip_realm_item` puts the realm's first `Hat`, `Shirt`, `Shorts` and `Shoes` in every slot with the matching tag
+     (a shoe in each `ShoeSlot`).
    - Then it sets `BodyDirty` again.
 3. `body_combine_system` (`src/parts/sys/combine.c`): `build_body_parts` walks the slots from the chest, depth first.
    - It places each part from its parent slot by its anchor.
@@ -87,40 +91,58 @@ Each step sets the next by the character's `BodyDirty` and `GenerateCharacter`.
 
 ## Gear
 
-- **Gear slots** are attach slots tagged `EquipSlot`, plus what they hold (`HatSlot`, `ShirtSlot`).
+- **Gear slots** are attach slots tagged `EquipSlot`, plus what they hold (`HatSlot`, `ShirtSlot`, `ShortsSlot`,
+  `ShoeSlot`).
 - The equipment menu (`spawn_player_menu_equipment`) lists every `EquipSlot` on the body.
   - Dropping an item there only checks it is an `EquipItem`.
   - A change sets `BodyDirty`, and the body rebuilds.
 - **Hats** are vox files (`hatty`, `cavalier_hat`, `top_hat`), cloned into the realm (`spawn_realm_model_item_filename`).
-- **Shirts** are generated from a blueprint (`spawn_blueprint_shirt`, `src/parts/ins/shirt.c`), made of box nodes:
-  - A torso box `margin` wider than the chest each side, as tall as it, with a neck hole cut from its top.
-  - Sleeves `sleeve` voxels out past the torso over the shoulders (0 for none).
-  - Trim in a second colour: hem, collar, cuffs and buttons.
-  - At the chest's depth, so the voxels line up. Their colours come from the realm's seed.
-  - The realm has two (`spawn_realm_shirt`): a boxy **Shirt** (margin 2, sleeves 4), which the player wears, and
-    a tight sleeveless **Vest** (margin 1), which goes in the inventory with the second hat to swap in.
-  - They sit over the chest (anchor over). Clothes merge after their sibling slots, so the sleeves cover the shoulders.
-  - Their sleeves move with the arms: a vertex in a shoulder bone's box takes that bone.
+- **Clothes** are the cubey gear, made from blueprints of box nodes (`src/parts/ins/clothes.c`), realm items in
+  `gam/zoxel/sys/equipment.c`:
+  - Each box covers a part's bounds, `margin` more each side. For now one model fits every character (later, one a
+    character from the blueprint, fitted to its chest). Body parts are ellipsoids, so a box their size already
+    hides them: the shirt, shorts and shoes use margin 0 (1 in all for shoes, so they centre on the foot).
+  - Sizes are in blueprint voxels, a body voxel each at Block Res 4 (a finer Block Res doubles the body, and the gear's
+    model with it). Offsets from the body (made from `block_depth`) convert with `body_to_gear_blueprint` and
+    `gear_blueprint_to_body`, or at Block Res 5 they come out twice too big (a negative byte froze loading, 2026-11-13).
+  - Sizes are worked out from the parts' blueprint scales (`body_part_voxels`). The limbs' are half
+    their blueprint, and the rounding can be a voxel off.
+  - At the chest's depth, so the voxels line up. Their colours come from the realm's seed (a cloth and a trim colour).
+  - **Shirt** (`spawn_blueprint_shirt`), cubey: a torso box over the chest's bounds (2 shorter, under the neck), a neck
+    hole. Each sleeve is a cap over the shoulder, out to the upper arm's outer side, and a tube hanging from it round
+    the top of the arm, its cuff facing down (a sleeve straight out past the shoulder read as a t-pose). Edges are
+    bevelled (`spawn_blueprint_bevel`, voxel 0 cuts): the torso's upright ones 2 deep in steps, the sleeves' 1.
+    Trim: hem, collar, cuffs, buttons. The realm has a **Shirt** (worn) and a sleeveless **Vest** (in the inventory).
+  - **Shorts** (`spawn_blueprint_shorts`): a waist box over the hips, a leg over each thigh, `zox_shorts_leg` long.
+    Their slot's `PartOffset` drops them that far, so the waist lines up with the hips. Trim: waistband, hems,
+    drawstring.
+  - **Shoes** (`spawn_blueprint_shoe`): one shoe, worn in both feet's slots, up all but the foot's top voxel. Its
+    upright, toe and heel edges are bevelled.
+    Trim: sole, collar, laces.
+  - They sit over their part (anchor over). Clothes merge after their sibling slots, so they cover them.
+  - They move with the limbs they cover: a vertex in a bone's box takes that bone (sleeves the shoulders', shorts' legs
+    the thighs', shoes the feet's).
 
 ## Adding gear
 
 1. Make its model.
-   - A blueprint like `spawn_blueprint_shirt`, then `spawn_realm_item_equip_blueprint`.
+   - A blueprint like `spawn_blueprint_shirt`, then `spawn_realm_gear` (`spawn_realm_item_equip_blueprint`).
    - Or a vox file, then `spawn_realm_model_item_filename`.
 2. Tag what it is (`Shirt`).
 3. Add its slot where its parent slot is made (`character_body_spawn_system`), with an anchor and a tag (`ShirtSlot`).
    - Clothes use `body_anchor_over`.
 4. To give it to players, call `equip_realm_item` with the slot and item tags.
 5. Name its `SlotType` in `slot_names` (tooltips).
-6. Test it like `tst shirt`.
+6. Test it in `tst clothes`, and look at the body it logs.
 
 ## Tests
 
 - `parts`: every realm part item's model has voxels, and its icon has pixels.
-- `shirt` (in game):
-  - the player wears the realm's shirt, over the chest: wider, from its bottom
-  - its colours are in the body
-  - it has no bone of its own
+- `clothes` (in game):
+  - the player wears a shirt over the chest, shorts over the hips and a shoe on each foot, as wide as their parts or wider
+  - their colours are in the body, and none have a bone of their own
+  - logs every part's place and size, the body from the front and side, and a slice through each piece from above
+    (S shirt, P shorts, B shoes, o skin)
 - `npc_skeletons`: npc bodies and bones.
 
 ## Problems found
