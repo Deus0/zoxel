@@ -1,4 +1,5 @@
 // Uses a model node to fill with shape data
+// fill nodes: an ellipsoid around a centre, box nodes a box from a corner (voxel 0 is air, it cuts)
 void process_node_model_fill(ecs* world, entity node, entity vox, lint seed, byte3 position, byte3 size) {
     byte fill_type = zox_getv(node, NodeVoxel);
     // Vox
@@ -17,9 +18,12 @@ void process_node_model_fill(ecs* world, entity node, entity vox, lint seed, byt
     // the vox's octree locked while written, readers can run alongside (thread_safety.md)
     spinlock* write_lock = zox_octree_lock(world, vox);
     zox_octree_lock_begin(write_lock);
-    voctree_fill_ellipsoid(voctree, model_depth, fill_type, position, size);
+    if (zox_getv(node, NodeType) == zox_model_node_box) {
+        voctree_fill_cube(voctree, model_depth, fill_type, position, size);
+    } else {
+        voctree_fill_ellipsoid(voctree, model_depth, fill_type, position, size);
+    }
     zox_octree_lock_end(write_lock);
-    // voctree_fill_cube(voctree, ndepth, vrange.x, position, size);
     // voctree_fill_sphere(voctree, ndepth, vrange.x, byte3_single(vlength / 2), vlength / 2);
     // zox_set(vox, VoxelNodeDirty, { zox_dirty_trigger });
     // zox_log("[%s] New Transform Data at [%i] [%ix%ix%i] s[%ix%ix%i]", zox_get_name(v), ndepth, position.x, position.y, position.z, size.x, size.y, size.z);
@@ -57,7 +61,7 @@ void fill_model_node_system(iter* it) {
             continue;
         }
         byte node_type = zox_getv(node, NodeType);
-        if (node_type != zox_model_node_fill) {
+        if (node_type != zox_model_node_fill && node_type != zox_model_node_box) {
             continue;
         }
         if (!zox_has(node, NodeVoxel) ||

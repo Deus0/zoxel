@@ -3,10 +3,6 @@
 
 
 - healthbar is wrong orderin stats panel
-- Second hat never reaches the player's inventory: added only when zox_get_empty_slot finds no slot, then
-  linked to that invalid slot (character_player_equips_system, doc/body_equips.md)
-- slot_names don't match the zox_slot_* order (zox_slot_lshoulder reads "Right Shoulder"), calves get the
-  thighs' slot types (doc/body_equips.md)
 - top hat doesn't scale up when imported to depth of 5!
 	- add a top_hat.txt that has a -depth 4 value
 	- importer can then know to scale it up

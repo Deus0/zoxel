@@ -233,12 +233,18 @@ void build_body_parts(ecs *world, entity slot, CombineList* voxes, CombinePositi
     if (dbg_log) {
         zox_log("[%s] has [%i] Children in Body Building", zox_get_name(slot), length);
     }
-    for (uint k = 0; k < length; k++) {
-        entity child_slot = slots[k];
-        if (dbg_log) {
-            zox_log("   - [%i]:[%s]", k, zox_get_name(child_slot));
+    // clothes (anchor over) last: later parts are drawn over earlier ones, so a shirt's sleeves cover the shoulders
+    for (byte clothes = 0; clothes < 2; clothes++) {
+        for (uint k = 0; k < length; k++) {
+            entity child_slot = slots[k];
+            if ((zox_getv(child_slot, SlotAnchor) == body_anchor_over) != clothes) {
+                continue;
+            }
+            if (dbg_log) {
+                zox_log("   - [%i]:[%s]", k, zox_get_name(child_slot));
+            }
+            build_body_parts(world, child_slot, voxes, positions, depths, slots_used, body_size, max_depth, dbg_log);
         }
-        build_body_parts(world, child_slot, voxes, positions, depths, slots_used, body_size, max_depth, dbg_log);
     }
 }
 
