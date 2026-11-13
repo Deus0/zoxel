@@ -8,6 +8,8 @@ entity spawn_prefab_town(ecs* world) {
     zox_set(e, Generate, { zox_dirty_trigger });
     zox_set(e, BlockPosition2, { int2_zero });
     zox_set(e, TownSize, { byte2_zero });
+    zox_setv(e, TownGateSide, 0);
+    zox_setv(e, TownGateAt, 128);
     zox_set(e, WallHeight, { 2 });
     zox_set(e, WallThickness, { 3 });
     return e;

@@ -75,7 +75,6 @@ void town_map_system(iter* it) {
             int2 town_position = zox_getv(town, BlockPosition2);
             byte2 town_size = zox_getv(town, TownSize);
             byte wall_thickness = zox_getv(town, WallThickness);
-            byte gate_width = 4;
             // NOTE: Checks if Tunk is within Town Bounds
             int town_left_side = town_position.x - town_size.x;
             int town_right_side = town_position.x + town_size.x;
@@ -91,6 +90,9 @@ void town_map_system(iter* it) {
             if (dbg_log) {
                 zox_log("Town [%i] found in Tunk [%ix%i]: [%i]", j, tunk_position->value.x, tunk_position->value.y, towns_length);
             }
+            // its square and roads (fun/town.c)
+            TownRoads roads;
+            town_roads(world, town, &roads);
             byte spike_spacing = 3;
             // Town bounds
             int left   = town_position.x - town_size.x / 2;
@@ -141,9 +143,8 @@ void town_map_system(iter* it) {
                     byte right_wall  = global_position.x <= right && global_position.x > right - wall_thickness && global_position.y >= bottom && global_position.y <= top;
                     byte back_wall   = global_position.y >= bottom && global_position.y < bottom + wall_thickness && global_position.x >= left && global_position.x <= right;
                     byte front_wall  = global_position.y <= top && global_position.y > top - wall_thickness && global_position.x >= left && global_position.x <= right;
-                    // Gate is excluded from front wall
-                    byte town_gate_in_x = global_position.x >= town_position.x - gate_width / 2 && global_position.x <= town_position.x + gate_width / 2;
-                    byte front_gate = front_wall && town_gate_in_x;
+                    // its gate, in one of its walls (fun/town.c)
+                    const byte front_gate = town_is_gate(world, town, global_position);
                     // front_wall &= !front_gate;
                     // Corners of the wall band
                     byte bottom_left_corner =
@@ -191,7 +192,7 @@ void town_map_system(iter* it) {
                     } else if (left_wall || right_wall || back_wall || front_wall) {
                         value = zox_town_type_wall;
                     } else {
-                        value = zox_town_type_zone;
+                        value = town_is_road(&roads, global_position) ? zox_town_type_road : zox_town_type_zone;
                     }
                     town_map->value[index] = value;
                     // NOTE: Towns remove all vegetation!

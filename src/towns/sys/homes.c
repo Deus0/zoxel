@@ -56,9 +56,12 @@ void homes_spawn_system(iter* it) {
             continue;
         }
         // placed: only placed homes count, a failed try left a gap the next ones checked against
-        int2 home_positions[spawn_count];
-        byte2 home_sizes[spawn_count];
-        byte placed = 0;
+        // its square first, in its middle, homes placed round it (fun/town.c)
+        int2 home_positions[spawn_count + 1];
+        byte2 home_sizes[spawn_count + 1];
+        home_positions[0] = position->value;
+        home_sizes[0] = byte2_single(town_square_half * 2 + 1);
+        byte placed = 1;
         for (int k = 0; k < spawn_count; k++) {
             if (!region_place_rect(seed->value + k * 6151, town_position2, town_size2, padding, home_min_size, home_max_size, home_padding, home_positions, home_sizes, placed, NULL, NULL, 0, max_attempts)) {
                 continue;

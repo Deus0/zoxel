@@ -18,7 +18,7 @@ A polished core loop before more content.
 - IK on arms and legs, for more bending (a doc/tec doc first)
 - Towns: an age level, older towns are flatter (heights), bigger, with more buildings
 - Homes: tilted foundations for poor npcs (homes stand level now)
-- Town gates on any wall, at a random spot along it
+- Roads: they cut through a home in their way (the home wins), roads round homes, levelled with the ground
 - Homes: keep their door steps clear of neighbours (two homes close by, steps meet the other's levelled ground)
 - Highways between towns and regions
 - More natural mountains
@@ -240,11 +240,8 @@ A polished core loop before more content.
 
 # Towns
 - Multi room homes: inner walls splitting a home into rooms, doors between them, rooms sized by the home
-- Roads: paths from each home's door to the town gate (and between homes), only inside the town, the gate the only
-  way in
 - TownLinkSystem for Characters - Log when entering a town
 - Towns: Average out heights between chunk neighbors
-- Towns: Spawn roads between houses - simple entity, road, start and end points, thickness
 - Towns: Place Roads during Maps based on Roads Children of Towns
 - Towns: Spawn Highways between towns
 - Towns: Set Block Links inside Homes, for Home Floor, Roof, Wall, Door blocks

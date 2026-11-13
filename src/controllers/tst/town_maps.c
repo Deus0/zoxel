@@ -252,6 +252,7 @@ static inline entity zox_tst_player_region(ecs* world) {
 }
 
 // tst: town_homes, homes are placed inside their towns, apart from each other, a few a town, styles mixed
+//  - off their town's square, a road from each door, its gate on its wall (towns/fun/town.c)
 //  - run: bash bsh/tst.sh town_homes
 byte zox_tst_town_homes_ready(ecs* world) {
     return zox_tst_player_spawn_ready(world);
@@ -262,10 +263,16 @@ void zox_tst_town_homes_check(ecs* world) {
     zox_tst_check(zox_valid(region), "no region under the player");
     entity towns[zox_children_capacity];
     const uint towns_count = zox_valid(region) ? zox_get_children_by_id(world, region, towns, zox_children_capacity, zox_id(Town)) : 0;
-    int homes_total = 0, outside = 0, overlaps = 0, peaked = 0;
+    int homes_total = 0, outside = 0, overlaps = 0, peaked = 0, on_square = 0, doors_off_road = 0, gates_off_wall = 0;
     for (uint t = 0; t < towns_count; t++) {
         const int2 tc = zox_getv(towns[t], BlockPosition2);
         const byte2 ts = zox_getv(towns[t], TownSize);
+        // its gate in a wall: on its edge, and its roads (fun/town.c)
+        const int2 gate = town_gate_point(world, towns[t]);
+        gates_off_wall += abs(gate.x - tc.x) != ts.x / 2 && abs(gate.y - tc.y) != ts.y / 2;
+        gates_off_wall += abs(gate.x - tc.x) > ts.x / 2 || abs(gate.y - tc.y) > ts.y / 2;
+        TownRoads roads;
+        town_roads(world, towns[t], &roads);
         entity homes[zox_children_capacity];
         const uint count = zox_get_children_by_id(world, towns[t], homes, zox_children_capacity, zox_id(Home));
         for (uint a = 0; a < count; a++) {
@@ -274,6 +281,10 @@ void zox_tst_town_homes_check(ecs* world) {
             outside += c.x - s.x / 2 < tc.x - ts.x / 2 || c.x + s.x / 2 > tc.x + ts.x / 2 ||
                 c.y - s.y / 2 < tc.y - ts.y / 2 || c.y + s.y / 2 > tc.y + ts.y / 2;
             peaked += zox_getv(homes[a], HomeStyle);
+            // off the square, a road from its door
+            on_square += abs(c.x - tc.x) <= s.x / 2 + town_square_half && abs(c.y - tc.y) <= s.y / 2 + town_square_half;
+            const TownHome h = town_home(world, homes[a]);
+            doors_off_road += !town_is_road(&roads, int2_add(h.center, build_turn(h.facing, 0, home_half_local(&h).y + 1)));
             for (uint b = 0; b < a; b++) {
                 const int2 d = zox_getv(homes[b], BlockPosition2);
                 const byte2 r = zox_getv(homes[b], HomeSize);
@@ -286,6 +297,9 @@ void zox_tst_town_homes_check(ecs* world) {
     zox_tst_check(homes_total, "no homes in the region's towns");
     zox_tst_check(!outside, "[%i] homes outside their towns", outside);
     zox_tst_check(!overlaps, "[%i] homes overlap", overlaps);
+    zox_tst_check(!on_square, "[%i] homes on their town's square", on_square);
+    zox_tst_check(!doors_off_road, "[%i] homes' doors have no road", doors_off_road);
+    zox_tst_check(!gates_off_wall, "[%i] gates aren't on their town's wall", gates_off_wall);
 }
 
 // tst: home_glow, a home's glow stone is set into its roof and lights the room under it (towns/sys/walls.c)
