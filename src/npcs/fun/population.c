@@ -18,6 +18,29 @@ static inline byte population_at(int2 global, const int2* town_centers, const by
     return (byte) density;
 }
 
+// how much a population is a town's: 0 the wild (population_base), 1 in a town, 0 if not known (-1)
+static inline float population_town_share(int population) {
+    if (population <= population_base) {
+        return 0;
+    }
+    return fminf(1, (float) (population - population_base) / (population_town - population_base));
+}
+
+// a character type's spawn weight in a chunk: villagers fill towns, monsters keep to the wild, critters (animals) as
+//  anywhere
+//  - the wild rolls as each type's SpawnChance, a town mostly villagers (a few monsters wander in)
+#define population_villager_boost 40.0f    // villagers weigh this many times more in a town
+#define population_monsters_in_town 0.1f   // monsters weigh this much in a town
+static inline float npc_spawn_weight(byte chance, byte villager, byte monster, float town) {
+    if (villager) {
+        return chance * (1 + town * population_villager_boost);
+    }
+    if (monster) {
+        return chance * (1 - town * (1 - population_monsters_in_town));
+    }
+    return chance;
+}
+
 // a region's cells along a side: its blocks over a chunk's
 static inline int2 population_map_size(int2 region_blocks, int chunk_length) {
     return (int2) { region_blocks.x / chunk_length, region_blocks.y / chunk_length };

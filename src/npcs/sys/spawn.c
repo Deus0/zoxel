@@ -82,7 +82,6 @@ void terrain_characters_spawn_system(iter* it) {
         if (!realm_characters_count) {
             continue;
         }
-        byte max_chance = zox_getv(realm, CharactersChanceMax);
         entity chunk_above = neighbors->value[direction_up];
         const VoxelNode* voctree_above =
             zox_valid(chunk_above) ?
@@ -100,6 +99,18 @@ void terrain_characters_spawn_system(iter* it) {
             character_spawn_rate = character_spawn_rate_max;
         } else if (population >= 0) {
             character_spawn_rate = (byte) (character_spawn_rate * population / 255);
+        }
+        // each type's weight here: villagers in towns, monsters in the wild (fun/population.c)
+        const float town = population_town_share(population);
+        float weights[zox_realm_characters_max];
+        float weights_total = 0;
+        for (uint k = 0; k < realm_characters_count; k++) {
+            const entity type = realm_characters[k];
+            weights[k] = npc_spawn_weight(zox_getv(type, SpawnChance), zox_has(type, Villager), zox_has(type, Monster), town);
+            weights_total += weights[k];
+        }
+        if (weights_total <= 0) {
+            continue;
         }
         // its npcs still alive (out walking), by home index: the same rolls are made, they aren't spawned again
         uint alive = 0;
@@ -119,18 +130,17 @@ void terrain_characters_spawn_system(iter* it) {
                 }
                 break;
             }
-            // Use a random character type
-            byte chance_current = 0;
-            byte chance_rolled = rand() % max_chance;
+            // a random character type, by its weight here
+            float rolled = weights_total * (rand() / (RAND_MAX + 1.0f));
             entity meta = 0;
-            for (uint k = 0; k < realm_characters_count; k++) {
-                entity e2 = realm_characters[k];
-                byte chance = zox_getv(e2, SpawnChance);
-                chance_current += chance;
-                if (chance_rolled <= chance_current) {
-                    meta = e2;
-                    break;
+            for (uint k = 0; k < realm_characters_count && !meta; k++) {
+                rolled -= weights[k];
+                if (rolled < 0) {
+                    meta = realm_characters[k];
                 }
+            }
+            if (!meta) {
+                meta = realm_characters[realm_characters_count - 1];   // float rounding at the very end
             }
             if (!meta) {
                 zox_loge("failed to find a spawn character_meta");
