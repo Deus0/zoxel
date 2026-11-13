@@ -1,5 +1,3 @@
-const uint safety_checks_floodfill = 2000;
-
 const uint safety_checks_drawline = 1000;
 
 int2 font_point_to_pixel(byte2 point, int2 size, float2 pad) {
@@ -118,349 +116,6 @@ void generate_font_lines(
     }
 }
 
-byte texture_does_flood_reach_edge(
-    const color* pixels,
-    const int2 size,
-    const color air_color,
-    const color boundary_color,
-    const int start_x,
-    const int start_y
-) {
-    if (size.x <= 0 || size.y <= 0) {
-        return 0;
-    }
-
-    if (start_x < 0 || start_x >= size.x ||
-        start_y < 0 || start_y >= size.y) {
-        return 0;
-    }
-
-    const int start_index =
-        int2_array_index((int2) { start_x, start_y }, size);
-
-    if (!color_equal(pixels[start_index], air_color)) {
-        return 0;
-    }
-
-    const int pixel_count = size.x * size.y;
-
-    byte* visited = calloc(pixel_count, sizeof(byte));
-    int* stack = malloc(pixel_count * sizeof(int));
-
-    if (!visited || !stack) {
-        free(visited);
-        free(stack);
-        zox_logw("[texture_does_flood_reach_edge] allocation failed");
-        return 0;
-    }
-
-    int stack_top = 0;
-
-    visited[start_index] = 1;
-    stack[stack_top++] = start_index;
-
-    while (stack_top > 0) {
-        const int index = stack[--stack_top];
-
-        const int x = index % size.x;
-        const int y = index / size.x;
-
-        if (x == 0 || x == size.x - 1 ||
-            y == 0 || y == size.y - 1) {
-            free(visited);
-            free(stack);
-            return 1;
-        }
-
-        const int neighbours[4] = {
-            index - 1,
-            index + 1,
-            index - size.x,
-            index + size.x
-        };
-
-        for (int i = 0; i < 4; i++) {
-            const int neighbour = neighbours[i];
-
-            if (visited[neighbour]) {
-                continue;
-            }
-
-            const int nx = neighbour % size.x;
-            const int ny = neighbour / size.x;
-
-            if (nx < 0 || nx >= size.x ||
-                ny < 0 || ny >= size.y) {
-                continue;
-            }
-
-            if (!color_equal(pixels[neighbour], air_color)) {
-                continue;
-            }
-
-            visited[neighbour] = 1;
-            stack[stack_top++] = neighbour;
-        }
-    }
-
-    free(visited);
-    free(stack);
-    return 0;
-}
-void flood_fill_texture(
-    color* pixels,
-    const int2 size,
-    const color air_color,
-    const color boundary_color,
-    const color fill_color,
-    const int start_x,
-    const int start_y
-) {
-    if (size.x <= 0 || size.y <= 0) {
-        return;
-    }
-
-    if (start_x < 0 || start_x >= size.x ||
-        start_y < 0 || start_y >= size.y) {
-        return;
-    }
-
-    const int start_index =
-        int2_array_index((int2) { start_x, start_y }, size);
-
-    if (!color_equal(pixels[start_index], air_color)) {
-        return;
-    }
-
-    const int pixel_count = size.x * size.y;
-
-    byte* visited = calloc(pixel_count, sizeof(byte));
-    int* stack = malloc(pixel_count * sizeof(int));
-
-    if (!visited || !stack) {
-        free(visited);
-        free(stack);
-        zox_logw("[flood_fill_texture] allocation failed");
-        return;
-    }
-
-    int stack_top = 0;
-
-    visited[start_index] = 1;
-    stack[stack_top++] = start_index;
-
-    while (stack_top > 0) {
-        const int index = stack[--stack_top];
-
-        if (color_equal(pixels[index], boundary_color)) {
-            continue;
-        }
-
-        if (!color_equal(pixels[index], air_color)) {
-            continue;
-        }
-
-        pixels[index] = fill_color;
-
-        const int x = index % size.x;
-        const int y = index / size.x;
-
-        if (x > 0) {
-            const int n = index - 1;
-            if (!visited[n] && color_equal(pixels[n], air_color)) {
-                visited[n] = 1;
-                stack[stack_top++] = n;
-            }
-        }
-
-        if (x + 1 < size.x) {
-            const int n = index + 1;
-            if (!visited[n] && color_equal(pixels[n], air_color)) {
-                visited[n] = 1;
-                stack[stack_top++] = n;
-            }
-        }
-
-        if (y > 0) {
-            const int n = index - size.x;
-            if (!visited[n] && color_equal(pixels[n], air_color)) {
-                visited[n] = 1;
-                stack[stack_top++] = n;
-            }
-        }
-
-        if (y + 1 < size.y) {
-            const int n = index + size.x;
-            if (!visited[n] && color_equal(pixels[n], air_color)) {
-                visited[n] = 1;
-                stack[stack_top++] = n;
-            }
-        }
-    }
-
-    free(visited);
-    free(stack);
-}
-
-// NOTE: Moved [stack, visited] to stack from heap, as heap had limits on these sizes
-
-/*byte texture_does_flood_reach_edge(
-    const color* pixels,
-    const int2 size,
-    const color air_color,
-    const color boundary_color,
-    const int start_x,
-    const int start_y
-) {
-    if (!size.x || !size.y) {
-        return 0;
-    }
-
-    if (start_x < 0 || start_x >= size.x ||
-        start_y < 0 || start_y >= size.y) {
-        return 0;
-    }
-
-    int start_index = int2_array_index((int2) { start_x, start_y }, size);
-    if (!color_equal(pixels[start_index], air_color)) {
-        return 0;
-    }
-
-    int pixel_count = size.x * size.y;
-
-    int *visited = calloc(pixel_count, sizeof(int));
-    if (!visited) {
-        zox_logw("[texture_does_flood_reach_edge] calloc failed");
-        return 0;
-    }
-
-    const int stack_cap = pixel_count * 8;
-    int *stack = malloc(stack_cap * sizeof(int));
-    if (!stack) {
-        zox_logw("[texture_does_flood_reach_edge] malloc failed");
-        free(visited);
-        return 0;
-    }
-
-    int stack_top = 0;
-    stack[stack_top++] = start_x; // x-coordinate
-    stack[stack_top++] = start_y; // y-coordinate
-
-    // Loop until the stack is empty
-    uint checks = 0;
-    byte reached_edge = 0;
-
-    while (stack_top > 0 && checks++ < safety_checks_floodfill) {
-
-        // Pop the top pixel from the stack
-        int y = stack[--stack_top];
-        int x = stack[--stack_top];
-
-        if (x < 0 || x >= size.x || y < 0 || y >= size.y) {
-            continue;
-        }
-
-        int index = int2_array_index((int2){ x, y }, size);
-        if (visited[index]) {
-            continue;
-        }
-
-        visited[index] = 1;
-
-        if (color_equal(pixels[index], boundary_color) || !color_equal(pixels[index], air_color)) {
-            continue;
-        }
-
-        if (x == 0 || x == size.x - 1 ||
-            y == 0 || y == size.y - 1) {
-            reached_edge = 1;
-            break;
-        }
-
-        if (stack_top + 8 >= stack_cap) {
-            break;
-        }
-
-        stack[stack_top++] = x - 1; stack[stack_top++] = y;
-        stack[stack_top++] = x + 1; stack[stack_top++] = y;
-        stack[stack_top++] = x;     stack[stack_top++] = y - 1;
-        stack[stack_top++] = x;     stack[stack_top++] = y + 1;
-    }
-
-    free(visited);
-    free(stack);
-    return reached_edge;
-}
-
-void flood_fill_texture(
-    color* pixels,
-    const int2 size,
-    const color air_color,
-    const color boundary_color,
-    const color fill_color,
-    const int start_x,
-    const int start_y
-) {
-    if (!size.x || !size.y) {
-        zox_logw("[flood_fill_texture] No Size");
-        return;
-    }
-
-    int index = int2_array_index((int2) { start_x, start_y }, size);
-    if (!color_equal(pixels[index], air_color)) {
-        return;
-    }
-
-    int pixel_count = size.x * size.y;
-
-    int *visited = calloc(pixel_count, sizeof(int));
-    if (!visited) {
-        zox_logw("[flood_fill_texture] calloc failed");
-        return;
-    }
-
-    int *stack = malloc(pixel_count * 8 * sizeof(int));
-    if (!stack) {
-        zox_logw("[flood_fill_texture] malloc failed");
-        free(visited);
-        return;
-    }
-
-    int stack_top = 0;
-    stack[stack_top++] = start_x; // x-coordinate
-    stack[stack_top++] = start_y; // y-coordinate
-
-    // Loop until the stack is empty
-    uint checks = 0;
-    while (stack_top > 0 && checks < safety_checks_floodfill) {
-        // Pop the top pixel from the stack
-        int y = stack[--stack_top];
-        int x = stack[--stack_top];
-        // Check if the pixel is within the texture bounds and hasn't been visited
-        index = int2_array_index((int2) { x, y }, size);
-        if (x >= 0 && x < size.x && y >= 0 && y < size.y && !visited[index]) {
-            visited[index] = 1;
-            if (color_equal(pixels[index], boundary_color) ||color_equal(pixels[index], fill_color)) {
-                continue;
-            }
-            pixels[index] = fill_color;
-            // zox_log("filling [%ix%i]\n", x, y)
-            // Push neighboring pixels onto the stack (left, right, up, down)
-            stack[stack_top++] = x - 1; // left
-            stack[stack_top++] = y;
-            stack[stack_top++] = x + 1; // right
-            stack[stack_top++] = y;
-            stack[stack_top++] = x;     // up
-            stack[stack_top++] = y - 1;
-            stack[stack_top++] = x;     // down
-            stack[stack_top++] = y + 1;
-        }
-        checks++;
-    }
-    free(visited);
-    free(stack);
-}*/
-
 static inline void centre_font_data(
     const byte2 *input,
     int count,
@@ -503,227 +158,125 @@ void clear_texture(color* data, int2 size, color clear) {
     }
 }
 
+// a segment end in pixel space, at the centre of the pixel draw_texture_line puts it on
+static inline float2 font_segment_point(byte2 point, int2 size, float2 pad) {
+    const int2 p = font_point_to_pixel(point, size, pad);
+    return (float2) { p.x + 0.5f, p.y + 0.5f };
+}
 
-// raycast from all 4 sides!
-/*void scanline_fill_texture(
-    color* data,
-    const int2 size,
-    const color air_color,
-    const color boundary_color,
-    const color fill_color
-) {
-    int2 last_boundary_pixel = int2_zero;
-    for (int y = 0; y < size.y; y++) {
-        byte intersects = 0;
-        byte found_filling = 0;
-        for (int x = 0; x < size.x; x++) {
-            const int index = int2_array_index((int2) { x, y }, size);
-            if (color_equal(data[index], boundary_color)) {
-                if (intersects && found_filling) {
-                    byte hits_edge = texture_does_flood_reach_edge(
-                        data,
-                        size,
-                        air_color,
-                        boundary_color,
-                        last_boundary_pixel.x,
-                        last_boundary_pixel.y
-                    );
-                    if (!hits_edge) {
-                        flood_fill_texture(
-                            data,
-                            size,
-                            air_color,
-                            boundary_color,
-                            fill_color,
-                            last_boundary_pixel.x,
-                            last_boundary_pixel.y);
-                    }
-                }
-                found_filling = 0;
-                intersects = !intersects;
-                if (!intersects) {
-                    break;
-                }
-            } else {
-                // find position in air
-                if (!found_filling) {
-                    found_filling = 1;
-                    last_boundary_pixel = (int2) { x, y };
-                }
-            }
+// nonzero winding of the glyph's segments around a point, overlapping parts add up, a part walked back cancels
+int font_winding(float2 p, const byte2* points, int points_length, int2 size, float2 pad) {
+    int winding = 0;
+    for (int i = 0; i + 1 < points_length; i += 2) {
+        const float2 a = font_segment_point(points[i], size, pad);
+        const float2 b = font_segment_point(points[i + 1], size, pad);
+        if ((a.y > p.y) == (b.y > p.y)) {
+            continue;
+        }
+        const float x = a.x + (p.y - a.y) * (b.x - a.x) / (b.y - a.y);
+        if (p.x < x) {
+            winding += b.y > a.y ? 1 : -1;
         }
     }
-    // texture_swap_colors(data, size, boundary_color, fill_color);
-}*/
+    return winding;
+}
 
-
-// NOTE: Only works on one interior shaape
+// fills the air the glyph's lines close in, a region at a time
+//  - a region touching the texture's edge is outside, an open glyph (lines only) fills nothing
+//  - otherwise most of its pixels inside the glyph (font_winding) fill it, counting crossings on the raster
+//    went wrong where an outline walks back over itself to reach an inner part
+//  - lines with no air beside them are inside the glyph, they become fill
 void texture_fill_shapes(
     color* data,
     const int2 size,
+    const byte2* points,
+    const int points_length,
+    const float2 pad,
     const color air_color,
-    const color boundary_color,
-    const color fill_color
-) {
-
-    if (size.x <= 0 || size.y <= 0) {
+    const color line_color,
+    const color fill_color)
+{
+    const int pixel_count = size.x * size.y;
+    if (pixel_count <= 0) {
         return;
     }
-    const int pixel_count = size.x * size.y;
-    byte* outside = calloc(pixel_count, sizeof(byte));
     byte* visited = calloc(pixel_count, sizeof(byte));
     int* stack = malloc(pixel_count * sizeof(int));
     int* region = malloc(pixel_count * sizeof(int));
-    if (!outside || !visited || !stack || !region) {
-        free(outside);
+    if (!visited || !stack || !region) {
         free(visited);
         free(stack);
         free(region);
-        zox_logw("[scanline_fill_texture] allocation failed");
+        zox_logw("[texture_fill_shapes] allocation failed");
         return;
     }
-    int stack_top = 0;
-    for (int x = 0; x < size.x; x++) {
-        const int top = int2_array_index((int2) { x, 0 }, size);
-        if (!outside[top] && color_equal(data[top], air_color)) {
-            outside[top] = 1;
-            stack[stack_top++] = top;
-        }
-        const int bottom = int2_array_index(
-            (int2) { x, size.y - 1 },
-            size
-        );
-        if (!outside[bottom] && color_equal(data[bottom], air_color)) {
-            outside[bottom] = 1;
-            stack[stack_top++] = bottom;
-        }
-    }
-    for (int y = 1; y < size.y - 1; y++) {
-        const int left = int2_array_index((int2) { 0, y }, size);
-        if (!outside[left] && color_equal(data[left], air_color)) {
-            outside[left] = 1;
-            stack[stack_top++] = left;
-        }
-        const int right = int2_array_index(
-            (int2) { size.x - 1, y },
-            size
-        );
-        if (!outside[right] && color_equal(data[right], air_color)) {
-            outside[right] = 1;
-            stack[stack_top++] = right;
-        }
-    }
-    while (stack_top > 0) {
-        const int index = stack[--stack_top];
-        const int x = index % size.x;
-        const int y = index / size.x;
-        if (x > 0) {
-            const int n = index - 1;
-            if (!outside[n] && color_equal(data[n], air_color)) {
-                outside[n] = 1;
-                stack[stack_top++] = n;
-            }
-        }
-        if (x + 1 < size.x) {
-            const int n = index + 1;
-            if (!outside[n] && color_equal(data[n], air_color)) {
-                outside[n] = 1;
-                stack[stack_top++] = n;
-            }
-        }
-        if (y > 0) {
-            const int n = index - size.x;
-            if (!outside[n] && color_equal(data[n], air_color)) {
-                outside[n] = 1;
-                stack[stack_top++] = n;
-            }
-        }
-        if (y + 1 < size.y) {
-            const int n = index + size.x;
-            if (!outside[n] && color_equal(data[n], air_color)) {
-                outside[n] = 1;
-                stack[stack_top++] = n;
-            }
-        }
-    }
+    const int2 sides[4] = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
     for (int i = 0; i < pixel_count; i++) {
-        if (outside[i] || visited[i] ||
-            !color_equal(data[i], air_color)) {
+        if (visited[i] || !color_equal(data[i], air_color)) {
             continue;
         }
-        int region_length = 0;
-        stack_top = 0;
+        int region_length = 0, stack_top = 0;
+        byte edge = 0;
         stack[stack_top++] = i;
         visited[i] = 1;
         while (stack_top > 0) {
             const int index = stack[--stack_top];
             region[region_length++] = index;
-            const int x = index % size.x;
-            const int y = index / size.x;
-            if (x > 0) {
-                const int n = index - 1;
-                if (!outside[n] && !visited[n] &&
-                    color_equal(data[n], air_color)) {
-                    visited[n] = 1;
-                    stack[stack_top++] = n;
+            const int x = index % size.x, y = index / size.x;
+            edge |= x == 0 || y == 0 || x == size.x - 1 || y == size.y - 1;
+            for (int s = 0; s < 4; s++) {
+                const int nx = x + sides[s].x, ny = y + sides[s].y;
+                if (nx < 0 || ny < 0 || nx >= size.x || ny >= size.y) {
+                    continue;
                 }
-            }
-            if (x + 1 < size.x) {
-                const int n = index + 1;
-                if (!outside[n] && !visited[n] &&
-                    color_equal(data[n], air_color)) {
-                    visited[n] = 1;
-                    stack[stack_top++] = n;
-                }
-            }
-            if (y > 0) {
-                const int n = index - size.x;
-                if (!outside[n] && !visited[n] &&
-                    color_equal(data[n], air_color)) {
-                    visited[n] = 1;
-                    stack[stack_top++] = n;
-                }
-            }
-            if (y + 1 < size.y) {
-                const int n = index + size.x;
-                if (!outside[n] && !visited[n] &&
-                    color_equal(data[n], air_color)) {
+                const int n = ny * size.x + nx;
+                if (!visited[n] && color_equal(data[n], air_color)) {
                     visited[n] = 1;
                     stack[stack_top++] = n;
                 }
             }
         }
-        if (region_length == 0) {
+        if (edge) {
             continue;
         }
-        const int seed = region[0];
-        const int sx = seed % size.x;
-        const int sy = seed / size.x;
-        int crossings = 0;
-        for (int x = sx + 1; x < size.x; x++) {
-            const int index = int2_array_index((int2) { x, sy }, size);
-            if (!color_equal(data[index], boundary_color)) {
-                continue;
-            }
-            if (x == sx + 1 ||
-                !color_equal(
-                    data[int2_array_index((int2) { x - 1, sy }, size)],
-                    boundary_color
-                )) {
-                crossings++;
-            }
+        int inside = 0;
+        for (int j = 0; j < region_length; j++) {
+            const float2 p = { region[j] % size.x + 0.5f, region[j] / size.x + 0.5f };
+            inside += font_winding(p, points, points_length, size, pad) != 0;
         }
-        if (crossings & 1) {
+        if (inside * 2 > region_length) {
             for (int j = 0; j < region_length; j++) {
                 data[region[j]] = fill_color;
             }
         }
     }
-    free(outside);
+    // lines inside the glyph, no air around them (8 sides, the texture's edge counts as air)
+    int inner_length = 0;
+    for (int y = 0; y < size.y; y++) {
+        for (int x = 0; x < size.x; x++) {
+            const int index = y * size.x + x;
+            if (!color_equal(data[index], line_color)) {
+                continue;
+            }
+            byte air = 0;
+            for (int dy = -1; dy <= 1 && !air; dy++) {
+                for (int dx = -1; dx <= 1 && !air; dx++) {
+                    const int nx = x + dx, ny = y + dy;
+                    air = nx < 0 || ny < 0 || nx >= size.x || ny >= size.y ||
+                        color_equal(data[ny * size.x + nx], air_color);
+                }
+            }
+            if (!air) {
+                region[inner_length++] = index;
+            }
+        }
+    }
+    for (int j = 0; j < inner_length; j++) {
+        data[region[j]] = fill_color;
+    }
     free(visited);
     free(stack);
     free(region);
-
 }
 
 void generate_font_texture(
@@ -751,6 +304,9 @@ void generate_font_texture(
     texture_fill_shapes(
         data,
         size,
+        points,
+        points_length,
+        point_padding,
         clear_color,
         line_color,
         fill_color);
@@ -772,17 +328,6 @@ void generate_font_texture(
             line_color,
             fill_color);
     }
-    /*} else {
-        fill_thickness++;
-        generate_splotches_lines(
-            data,
-            size,
-            points, points_length,
-            line_color,
-            fill_thickness,
-            point_padding
-        );
-    }*/
 }
 
 void font_texture_system(iter* it) {

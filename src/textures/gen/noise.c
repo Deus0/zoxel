@@ -15,13 +15,14 @@ void generate_texture_noise(color* data, int2 size, byte texture_type, byte outl
         // if (rand() % 100 >= 50) {
         color_min = fill_color;
         color_max = fill_color;
-        const byte noise = 24;
-        color_min.r -= noise;
-        color_min.g -= noise;
-        color_min.b -= noise;
-        color_max.r += noise;
-        color_max.g += noise;
-        color_max.b += noise;
+        // clamped, a channel under 24 or over 231 wrapped around (dark textures got bright specks)
+        const int noise = 24;
+        color_min.r = int_max(fill_color.r - noise, 0);
+        color_min.g = int_max(fill_color.g - noise, 0);
+        color_min.b = int_max(fill_color.b - noise, 0);
+        color_max.r = int_min(fill_color.r + noise, 255);
+        color_max.g = int_min(fill_color.g + noise, 255);
+        color_max.b = int_min(fill_color.b + noise, 255);
         if (texture_type == zox_texture_dirt) {
             /*color_min.r += 16;
             color_max.r += 32;
