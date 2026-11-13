@@ -30,12 +30,14 @@ void region_mountain_system(iter* it) {
         if (!zox_valid(terrain)) {
             continue;
         }
-        int2 positions[spawn_count];
-        byte sizes[spawn_count];
-        byte placed = 0;
+        // the region's placement zones, each mountain a circle apart from them (regions/fun/zones.c)
+        RegionZones zones;
+        region_zones_find(world, e, &zones);
         for (int j = 0; j < spawn_count; j++) {
-            // placed: only placed mountains count, a failed try left a gap the next ones checked against
-            if (!region_place_circle(seed->value, block_position->value, block_size->value, min_size, max_size, positions, sizes, placed)) {
+            int2 mountain_position;
+            byte radius;
+            if (!region_zones_place_circle(&zones, seed->value, block_position->value, block_size->value, min_size, max_size,
+                &mountain_position, &radius)) {
                 continue;
             }
             byte mountain_chance = seed_range(seed->value * 36963, 0, 100);
@@ -43,8 +45,6 @@ void region_mountain_system(iter* it) {
             if (mountain_chance >= 90) {
                 mountain_type = zox_mountain_type_peak;
             }
-            int2 mountain_position = positions[placed];
-            byte radius = sizes[placed++];
             byte height = seed_range(seed->value + j, min_height, max_height);
             // mountain_position = int2_add(mountain_position, spawn_position);
             lint mountain_seed = position_seed2(seed->value, mountain_position);

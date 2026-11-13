@@ -26,3 +26,4 @@ int2 block_position_to_region_position(int2 position, byte terrain_depth) {
 
 #include "place.c"
 #include "tunk.c"
+#include "zones.c"

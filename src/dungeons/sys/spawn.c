@@ -34,55 +34,16 @@ void dungeons_spawn_system(iter* it) {
         if (dbg_log) {
             zox_log("   - Region Position [%ix%i]", block_position->value.x, block_position->value.y);
         };
-        entity mountains[zox_children_capacity];
-        uint mountains_length = zox_get_children_by_id(world, e, mountains, zox_children_capacity, zox_id(Radius));
-        if (dbg_log) {
-            zox_log("Region has [%i] Mountains", mountains_length);
-        }
-        int2 mountain_positions[mountains_length];
-        byte mountain_radii[mountains_length];
-        for (int j = 0; j < mountains_length; j++) {
-            entity e2 = mountains[j];
-            mountain_positions[j] = zox_getv(e2, BlockPosition2);
-            mountain_radii[j] = zox_getv(e2, Radius);
-            if (dbg_log) {
-                zox_log(" - Mountain [%ix%i] Size [%i]",
-                    mountain_positions[j].x,
-                    mountain_positions[j].y,
-                    mountain_radii[j]);
-            }
-        }
-        // the region's towns first, prior rects a dungeon avoids, then each dungeon placed
-        entity towns[zox_children_capacity];
-        const uint towns_count = zox_get_children_by_id(world, e, towns, zox_children_capacity, zox_id(Town));
-        int2 positions[towns_count + spawn_count];
-        byte2 sizes[towns_count + spawn_count];
-        byte placed = 0;
-        for (uint j = 0; j < towns_count; j++) {
-            positions[placed] = zox_getv(towns[j], BlockPosition2);
-            sizes[placed++] = zox_getv(towns[j], TownSize);
-        }
+        // the region's placement zones (mountains, towns, earlier dungeons), each dungeon a rect apart from them
+        RegionZones zones;
+        region_zones_find(world, e, &zones);
         for (int j = 0; j < spawn_count; j++) {
-            if (!region_place_rect(
-                seed->value,
-                block_position->value,
-                block_size->value,
-                margins,
-                min_size,
-                max_size,
-                padding,
-                positions,
-                sizes,
-                placed,
-                mountain_positions,
-                mountain_radii,
-                mountains_length,
-                max_attempts))
-            {
+            int2 position;
+            byte2 size;
+            if (!region_zones_place_rect(&zones, seed->value + j * 7919, block_position->value, block_size->value,
+                margins, min_size, max_size, padding, max_attempts, &position, &size)) {
                 continue;
             }
-            int2 position = positions[placed];
-            byte2 size = sizes[placed++];
             lint dungeon_seed = position_seed2(seed->value, position);
             spawn_dungeon(
                 world,

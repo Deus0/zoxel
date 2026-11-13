@@ -10,6 +10,8 @@ entity spawn_town(ecs* world, entity prefab, entity parent, lint seed, int2 posi
     zox_set(e, Seed, { seed });
     zox_set(e, BlockPosition2, { position });
     zox_set(e, TownSize, { size });
+    zox_add(e, PlacementZone);   // a rect zone in its region (regions/fun/zones.c)
+    zox_setv(e, ZoneSize, size);
     zox_set(e, WallHeight, { wall_height });
     zox_set(e, WallThickness, { wall_thickness });
     // zox_set(e, RegionPosition, { position });

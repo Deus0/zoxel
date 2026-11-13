@@ -9,6 +9,7 @@ entity spawn_mountain(ecs* world, entity prefab, entity parent, lint seed, byte 
     zox_setv(e, MountainType, type);
     zox_setv(e, BlockPosition2, position);
     zox_setv(e, Radius, radius);
+    zox_add(e, PlacementZone);   // a circle zone in its region (regions/fun/zones.c)
     zox_setv(e, Height, height);
     zox_setv(e, Seed, seed);
     return e;
