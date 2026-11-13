@@ -21,4 +21,12 @@ void import_statsui(ecs* world) {
         .texture_name = "taskbar_stats",
         .tooltip_text = "Status"
     });
+    // who your character is: name, level, title, race, class, job, clan
+    add_taskbar_button(world, (TaskbarData) {
+        .index = 11,
+        .spawn = &spawn_player_menu_id,
+        .component_id = zox_id(MenuId),
+        .texture_name = "taskbar_status",
+        .tooltip_text = "Identity"
+    });
 }
