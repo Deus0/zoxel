@@ -60,7 +60,11 @@ static inline void setup_character3(
     }
     zox_setv(e, Seed, seed);
     // what it sounds like hit, its kind's realm sound (sounds/bop/hits.c)
-    zox_set_link(world, e, HitSoundLink, zox_get_link(world, prefab, HitSoundLink));
+    //  (only when it has one: a removal here, on a kind made this frame, outlived the link added after it)
+    const entity hit_sound = zox_get_link(world, prefab, HitSoundLink);
+    if (hit_sound) {
+        zox_link(world, e, HitSoundLink, hit_sound);
+    }
     zox_setv(e, Position3D, position);
     zox_setv(e, Rotation3D, rotation);
     zox_setv(e, LastPosition3D, position);
