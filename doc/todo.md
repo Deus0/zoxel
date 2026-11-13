@@ -5,31 +5,6 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 # Now
-- Lag spikes crossing chunks (48ms): flecs merges and observers, found with --profile
-	- streaming bursts (debug): merges up to 145ms, observers up to 100ms a frame, systems far less
-	-x time each observer (zox_observer_internal wraps them, on with --profile): ours are cheap, 1ms a frame at most
-	- the cause: tables made, 250 to 424 a frame while streaming (tables 16k -> 22k over 6 chunk steps),
-	  each new table notifies observers (18k notifications for 300 commands), ChildOf fragments per parent
-	- tst tables_stream measures it (tables a chunk step makes, by family), guarded at 300
-	-x npcs' labels, glyphs, stats, skills and items are non fragmenting children (flecs patched, doc/children.md),
-	  400 to 2500 tables a step -> about 100, worst merges 145ms -> 38ms (debug)
-	- the rest: block decor and vox instances (ChildOf a chunk), npc ui still a child, link it instead
-	- table moves (perf_stream "moved most", --profile per frame): the worst frames' merges and notifications
-		-x Dirty and DataDirty 23k adds and removes each over a run: stat_regen_system dirtied every regenerating
-		  stat every frame, now only when its whole number changes, npcs start full (both under 800 a run)
-		- spawn bursts are the worst frames now (merges 46ms, observers 47ms, debug): names (435 a frame),
-		  PreInitialize and Initialize, 3D labels' layout dirties, EcsParent adds
-		- DataUpdate 11k, TextureDirty 5k: what follows the dirties
-		- spawning: PreInitialize and Initialize (each new entity moves 4 times), a name on every entity
-		  ((Identifier,Name) 2.3k, flecs indexes them), state tags as events could be state components
-	- delete empty tables now and then (15k of 17k tables are empty after streaming)
-	-x chunk_sides_system has a time budget per worker per frame (it built whole chunks, 18ms real time)
-	-x vox_lod_mesh_build_system: a 275ms frame (216 lod meshes at once, ~340ms cpu over 16 workers), now a time
-	  budget per worker, vox meshes from a pyramid of node grids, no root lookups (depth 5 model 29ms -> 4ms,
-	  depth 7 player skeleton 13.5ms -> 2.9ms: air leaves skipped, split dug into all 2M cells), tst vox_mesh_grid
-	- slowest frame left (release, gpu): ~21ms at game start, merges and observers 13ms
-	- lod meshes as non fragmenting children stalled terrain generation (perf_stream), still ChildOf, find why
-	- move other heavy systems from process counts to zox_sys_budget
 - Flying's slowest frames now: new tables while streaming (16%), colored chunk meshes (9%), tst perf_fly
 - Lag spikes (up to 96ms): sound generation, a whole sound in one frame when it spawns
 	- measured (debug): a 1.3s choir note 290-670ms, a 2.8s cello note 60-100ms, choir 330ms per second of sound
