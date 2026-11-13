@@ -4,6 +4,26 @@
   [optimize.md](optimize.md) (performance), [new.md](new.md) (new modules and features), [future.md](future.md) (bigger
   ideas), [new/caves.md](new/caves.md) (caves design)
 
+# Polish (play test notes, 2026-11-14)
+A polished core loop before more content.
+- Dialogue: the player's head turns to the npc it speaks to (to its head, if it has one)
+- Dialogue and text ui: wrap the text, it overflows now
+- Dialogue: a closing animation before input comes back, an opening one for the window, and one when its buttons spawn
+- Bones: bone weights as octree data on skeletons (refactor)
+- IK on arms and legs, for more bending (a doc/tec doc first)
+- Towns: npc population, way fewer monsters in towns
+- Towns: an age level, older towns are flatter (heights), bigger, with more buildings
+- Homes: holes in them where the heightmap is off, flatter foundations (tilted only for poor npcs)
+- Highways between towns and regions
+- More natural mountains
+- Blocks: refactor them onto the realm, biomes pick theirs by random rules (still variety in dirts and others)
+- Vox items: fix their positions in the hand
+- Stat bars: hide health and other bars after a while without regen, show them again on change
+- Chest: worse now, too much detachment around the ribs
+- Shorts: not shorts shaped enough, more organic lining
+- Id ui: general info, race, class, job, title, level, clan
+- Github actions: builds there, to grab and test on a phone or whatever device
+
 # Now
 - Create a chicken man head, similar to human one, red, white, or similar levels of color hue contrast, and a mohawk/father, beak, etc
 	- be creative
