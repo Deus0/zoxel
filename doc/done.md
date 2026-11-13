@@ -1,6 +1,9 @@
 # Done
 
 ## Moved from todo (2026-11-13)
+-x Placement zones in one place: PlacementZone children (Radius or ZoneSize), region_zones_find and
+  region_zones_place_circle/_rect, mountains, towns and dungeons all use them, tst region_zones; the test list held
+  128, 4 tests were silently dropped, now 256
 -x Placement zones avoid earlier ones: dungeons avoid towns (and mountains), placers count only placed zones (a
   failed try left a gap later ones checked against), tst region_place_prior
 -x Npcs stay: region PopulationMap (a cell a chunk column, busy at towns) scales spawns, npcs despawn where they

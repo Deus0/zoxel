@@ -52,36 +52,16 @@ void region_towns_system(iter* it) {
                 block_position->value.x,
                 block_position->value.y);
         };
-        entity mountains[zox_children_capacity];
-        uint mountains_length = zox_get_children_by_id(
-            world,
-            e,
-            mountains,
-            zox_children_capacity,
-            zox_id(Radius));
-        if (dbg_log) {
-            zox_log("Region has [%i] Mountains", mountains_length);
-        }
-        int2 mountain_positions[mountains_length];
-        byte mountain_radii[mountains_length];
-        for (int j = 0; j < mountains_length; j++) {
-            entity e2 = mountains[j];
-            mountain_positions[j] = zox_getv(e2, BlockPosition2);
-            mountain_radii[j] = zox_getv(e2, Radius);
-            if (dbg_log) {
-                zox_log(" - Mountain [%ix%i] Size [%i]", mountain_positions[j].x, mountain_positions[j].y, mountain_radii[j]);
-            }
-        }
-        int2 positions[spawn_count];
-        byte2 sizes[spawn_count];
-        byte placed = 0;
+        // the region's placement zones (mountains, earlier towns), each town a rect apart from them (regions/fun/zones.c)
+        RegionZones zones;
+        region_zones_find(world, e, &zones);
         for (int j = 0; j < spawn_count; j++) {
-            // placed: only placed towns count, a failed try left a gap the next ones checked against
-            if (!region_place_rect(seed->value + j * seed_shift, block_position->value, block_size->value, region_padding, min_size, max_size, town_padding, positions, sizes, placed, mountain_positions, mountain_radii, mountains_length, max_attempts)) {
+            int2 town_position;
+            byte2 town_size;
+            if (!region_zones_place_rect(&zones, seed->value + j * seed_shift, block_position->value, block_size->value,
+                region_padding, min_size, max_size, town_padding, max_attempts, &town_position, &town_size)) {
                 continue;
             }
-            int2 town_position = positions[placed];
-            byte2 town_size = sizes[placed++];
             lint town_seed = position_seed2(seed->value, town_position);
             byte wall_height = seed_range(town_seed + seed_shift * 2, wall_height_range.x, wall_height_range.y);
             byte wall_thickness = seed_range(town_seed + seed_shift * 3, wall_thickness_range.x, wall_thickness_range.y);

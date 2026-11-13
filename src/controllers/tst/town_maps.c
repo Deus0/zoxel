@@ -151,3 +151,40 @@ void zox_tst_town_maps_empty_check(ecs* world) {
         zox_tst_check(!generate, "the tunk in a region with no towns is stuck at step [%i]", generate);
     }
 }
+
+// tst: region_zones, a region's placement zones (regions/fun/zones.c) don't overlap
+//  - the player's region: its mountains, towns and dungeons found as PlacementZone children, every rect apart from
+//    every other rect and circle
+//  - run: bash bsh/tst.sh region_zones
+byte zox_tst_region_zones_ready(ecs* world) {
+    return zox_tst_player_spawn_ready(world);
+}
+
+void zox_tst_region_zones_check(ecs* world) {
+    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity terrain = zox_get_link(world, character, TerrainLink);
+    const int chunk_length = octree_size(zox_getv(terrain, NodeDepth));
+    const int3 chunk = real_position_to_chunk_position(zox_getv(character, Position3D), chunk_length, zox_getv(terrain, BlockScale));
+    const entity tunk = int2_hashmap_get(zox_get(terrain, TunkLinks)->value, (int2) { chunk.x, chunk.z });
+    const entity region = zox_valid(tunk) ? zox_get_link(world, tunk, RegionLink) : 0;
+    zox_tst_check(zox_valid(region), "no region under the player");
+    if (!zox_valid(region)) {
+        return;
+    }
+    RegionZones zones;
+    region_zones_find(world, region, &zones);
+    zox_log("[tst] [metric] region_zones [%i] circles [%i] rects", zones.circles, zones.rects);
+    zox_tst_check(zones.circles + zones.rects, "the region has no placement zones");
+    int overlaps = 0;
+    for (int a = 0; a < zones.rects; a++) {
+        const int2 p = zones.rect_positions[a];
+        const byte2 s = zones.rect_sizes[a];
+        for (int b = 0; b < a; b++) {
+            const int2 q = zones.rect_positions[b];
+            const byte2 t = zones.rect_sizes[b];
+            overlaps += abs(p.x - q.x) < (s.x + t.x) / 2 && abs(p.y - q.y) < (s.y + t.y) / 2;
+        }
+        overlaps += is_overlap_points(zones.circle_positions, zones.circle_radii, zones.circles, p, s);
+    }
+    zox_tst_check(!overlaps, "[%i] placement zones overlap", overlaps);
+}
