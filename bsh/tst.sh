@@ -169,6 +169,35 @@ run_game() {
     local ticks=0
     local mem_log="${log%.log}.mem"
     : > "${mem_log}"
+    # this run's game, a descendant of the timeout (gdb, systemd-run and nice may sit between): never another
+    #   process of the same name, i.e. the game the user is playing (pgrep -n by name killed theirs, 2026-11-14)
+    run_game_pid() {
+        local parents=("${pid}")
+        local depth
+        for depth in 1 2 3 4 5; do
+            local children=()
+            local parent
+            for parent in "${parents[@]}"; do
+                local child
+                for child in $(pgrep -P "${parent}" 2> /dev/null); do
+                    if [[ "$(cat /proc/${child}/comm 2> /dev/null)" == "${bin_name:0:15}" ]]; then
+                        echo "${child}"
+                        return
+                    fi
+                    children+=("${child}")
+                done
+            done
+            [[ ${#children[@]} -eq 0 ]] && return
+            parents=("${children[@]}")
+        done
+    }
+    # kills this run's game and its timeout, nothing else
+    kill_run_game() {
+        local game_pid
+        game_pid=$(run_game_pid)
+        [[ -n "${game_pid}" ]] && kill -KILL "${game_pid}" 2> /dev/null
+        kill -KILL "${pid}" 2> /dev/null
+    }
     # prints new [tst] lines while it runs, so a slow test doesn't look hung
     print_tst_lines() {
         [[ "${tst}" == "list" ]] && return
@@ -192,25 +221,23 @@ run_game() {
         available=$(awk '/^MemAvailable:/ {print $2}' /proc/meminfo)
         # trace to disk every 2s and sync it, so a freeze still leaves evidence
         if (( ticks % 4 == 0 )); then
-            echo "$(date +%H:%M:%S) available_kb ${available} $(awk '/^(RssAnon|RssFile|RssShmem):/ {printf "%s %s ", $1, $2}' /proc/$(pgrep -x -n "${bin_name}" 2> /dev/null || echo 0)/status 2> /dev/null)" >> "${mem_log}"
+            echo "$(date +%H:%M:%S) available_kb ${available} $(awk '/^(RssAnon|RssFile|RssShmem):/ {printf "%s %s ", $1, $2}' /proc/$(run_game_pid || true)/status 2> /dev/null)" >> "${mem_log}"
             sync "${mem_log}" 2> /dev/null
         fi
         ticks=$((ticks + 1))
         # software mode must never touch the mali device, kill it if it does
         if [[ ${gpu} == "0" ]]; then
             local game_pid
-            game_pid=$(pgrep -x -n "${bin_name}" 2> /dev/null)
+            game_pid=$(run_game_pid)
             if [[ -n "${game_pid}" ]] && ls -l /proc/${game_pid}/fd 2> /dev/null | grep -q "/dev/mali"; then
                 onmali=1
-                pkill -KILL -x "${bin_name}" 2> /dev/null
-                kill -KILL "${pid}" 2> /dev/null
+                kill_run_game
                 break
             fi
         fi
         if [[ -n "${available}" ]] && (( available < mem_floor_kb )); then
             lowmem=1
-            pkill -KILL -x "${bin_name}" 2> /dev/null
-            kill -KILL "${pid}" 2> /dev/null
+            kill_run_game
             break
         fi
         sleep 0.5

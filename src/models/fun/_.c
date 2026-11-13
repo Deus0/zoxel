@@ -75,6 +75,7 @@ static inline void shift_node_transform(byte model_depth, byte3* position, byte3
 #include "nodegraph.c"
 // nodes
 #include "paint.c"
+#include "sprinkle.c"
 #include "cube.c"
 #include "sphere.c"
 #include "ellipsoid.c"

@@ -1,10 +1,11 @@
-// a chest, shaped like a person's (a v from the shoulders): three ellipsoid blobs in its blueprint bounds (nsize)
-//  - belly: narrow, at the bottom
+// a chest, shaped like a person's (a v from the shoulders): four ellipsoid blobs in its blueprint bounds (nsize)
+//  - belly: narrow, at the bottom, up into the ribs
 //  - ribs: wider, the upper chest
 //  - yoke: the full width, a band where the shoulders join
+//  - waist: between the belly and the ribs, so they're one body, not two blobs pinched together
 //  - flatter front to back than across, its depth is the realm's scale (gam/zoxel/sys/body_parts.c)
 //  - clothes are fitted to the same blobs (chest_blob_box, spawn_blueprint_shirt)
-#define chest_blobs_count 3
+#define chest_blobs_count 4
 typedef struct {
     byte3 center;
     byte3 radius;   // a fill covers center ± radius (voctree_fill_ellipsoid), its size node is twice this
@@ -13,12 +14,18 @@ typedef struct {
 static inline void get_chest_blobs(byte3 nsize, chest_blob* blobs) {
     const byte top = 2 * (nsize.y / 2) - 1;     // the highest voxel, under the bounds' top
     const byte cx = nsize.x / 2, cz = nsize.z / 2;
-    const byte3 belly = { (3 * nsize.x) / 10, top / 4, (2 * nsize.z) / 5 };
+    // the belly reaches up into the ribs, so they overlap where both are wide (top / 4 met only their tips: a pinch,
+    //  tst model_shapes)
+    const byte3 belly = { (3 * nsize.x) / 10, (5 * top) / 16, (2 * nsize.z) / 5 };
     const byte3 ribs = { (2 * nsize.x) / 5, (5 * top) / 16, nsize.z / 2 };
     const byte3 yoke = { nsize.x / 2, top / 8, (2 * nsize.z) / 5 };
     blobs[0] = (chest_blob) { { cx, belly.y, cz }, belly };
     blobs[1] = (chest_blob) { { cx, top - ribs.y, cz }, ribs };
     blobs[2] = (chest_blob) { { cx, top - yoke.y - 1, cz }, yoke };
+    // the waist joins them, between the belly's widest and the ribs' (last, the shirt reads 0 to 2 by place)
+    const byte belly_middle = belly.y, ribs_middle = top - ribs.y;
+    const byte3 waist = { (7 * nsize.x) / 20, (ribs_middle - belly_middle) / 2 + 1, (9 * nsize.z) / 20 };
+    blobs[3] = (chest_blob) { { cx, (belly_middle + ribs_middle) / 2, cz }, waist };
 }
 
 // how far the shoulders sit above centred on the chest, in body voxels (character_body_spawn_system): level with the yoke

@@ -1,10 +1,11 @@
+// paints solid voxels in a box (pp the corner, ps its size, as voctree_fill_cube), air stays air
+//  (it covered ps + 1 a side, eyes a voxel too wide: tst model_nodes)
 void voctree_paint(VoxelNode* voctree, byte ndepth, byte value, byte3 pp, byte3 ps) {
     byte vlength = powers_of_two_byte[ndepth];
-    // byte3 tsize = byte3_single(vlength);
     byte3 vmax = (byte3) {
-        int_clamp(pp.x + ps.x + 1, 0, 255),
-        int_clamp(pp.y + ps.y + 1, 0, 255),
-        int_clamp(pp.z + ps.z + 1, 0, 255)
+        int_clamp(pp.x + ps.x, 0, 255),
+        int_clamp(pp.y + ps.y, 0, 255),
+        int_clamp(pp.z + ps.z, 0, 255)
     };
     byte3 position;
     for (position.x = pp.x; position.x < vmax.x; position.x++) {
