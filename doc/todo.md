@@ -7,7 +7,6 @@
 # Polish (play test notes, 2026-11-14)
 A polished core loop before more content.
 - Npcs without bones (slimes): tumble or turn towards the player like humanoids glance (heads: LookTarget, ai/sys/glance.c)
-- Dialogue: a closing animation before input comes back, an opening one for the window, and one when its buttons spawn
 - Bones: bone weights as octree data on skeletons (refactor)
 - IK on arms and legs, for more bending (a doc/tec doc first)
 - Towns: npc population, way fewer monsters in towns

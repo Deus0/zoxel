@@ -1,6 +1,9 @@
 # Done
 
 ## Moved from todo (2026-11-14)
+-x Dialogue window pops in and out (ui_pop_in, ui_pop_out: LocalScale1 tweened, eased, AnimationEase,
+  AnimationDeletesTarget), its Next button pops in, input comes back once it's gone (an observer on the window);
+  tst ui_scale (a ui's scale reaches its glyphs, pops), quest_dialogue
 -x Heads look: LookTarget on head bones (bones/sys/head_look.c, eased with camera_look_at, within the neck's reach),
   dialogue speakers look at each other (cleared by an observer when the process goes), humanoid npcs glance at players
   walking by (ai/sys/glance.c, their chunk and its 6 neighbours' ChunkEntities, across edges); tst npc_glance

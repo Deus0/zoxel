@@ -24,6 +24,8 @@ zoxc_entity(AnimationTarget);
 zoxc_entity(AnimationTargetComponent);
 zoxc_double(AnimationStartTime);
 zoxc_float(AnimationDuration);
+zoxc_byte(AnimationEase);       // a tween's curve (zox_ease_*), linear without it
+zox_tag(AnimationDeletesTarget); // a tween deletes its target when done, i.e. a window closing
 // Floats
 zoxc_float(LerpFloatFrom);
 zoxc_float(LerpFloatTo);
@@ -66,6 +68,8 @@ void zox_components_animations(ecs* world) {
     zoxd_entity(AnimationTargetComponent);
     zoxd_double(AnimationStartTime);
     zoxd_float(AnimationDuration);
+    zoxd_byte(AnimationEase);
+    zoxd_tag(AnimationDeletesTarget);
     zoxd_float(LerpFloatFrom);
     zoxd_float(LerpFloatTo);
     // Shakes

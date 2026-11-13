@@ -227,7 +227,83 @@ void zox_tst_text_data_check(ecs* world) {
     resize_TextData(&text, 0);
 }
 
+
+// tst: ui_scale, a ui's LocalScale1 scales it and its children (transforms2/sys/children.c), and pops (ui/fun/pop.c)
+//  - a text at half scale: its glyphs' Scale1 and matrices are half, their offsets from it half their LocalPosition2
+//  - ui_pop_in grows it from nothing back to 1, ui_pop_out shrinks it and deletes it
+entity zox_tst_scale_text = 0;
+int zox_tst_scale_stage = 0;
+int zox_tst_scale_frames = 0;
+int zox_tst_scale_glyphs = 0;       // glyphs checked at half scale
+int zox_tst_scale_wrong = 0;        // of them, wrong scale, matrix or position
+float zox_tst_scale_popped = 0;     // its LocalScale1 after popping in
+
+byte zox_tst_ui_scale_ready(ecs* world) {
+    zox_tst_scale_frames++;
+    zox_tst_progress(zox_tst_scale_stage);
+    if (zox_tst_scale_stage == 0) {
+        zox_tst_waiting = "a player with a canvas";
+        const entity canvas = zox_valid(dbg_player) ? zox_get_link(world, dbg_player, CanvasLink) : 0;
+        if (!zox_valid(canvas)) {
+            return 0;
+        }
+        zox_tst_scale_text = spawn_text(world, prefab_text, canvas, int2_zero, float2_half, 24, zox_alignment_centre,
+            (byte2) { 4, 4 }, "scale me", color_white, color_black);
+        zox_setv(zox_tst_scale_text, LocalScale1, 0.5f);
+        zox_tst_scale_stage = 1;
+        zox_tst_scale_frames = 0;
+        return 0;
+    }
+    if (zox_tst_scale_stage == 1) {
+        zox_tst_waiting = "its glyphs at half scale";
+        if (zox_tst_scale_frames < 30) {
+            return 0;
+        }
+        const float2 origin = zox_getv(zox_tst_scale_text, Position2);
+        iter it = zox_children(world, zox_tst_scale_text);
+        while (zox_children_next(it)) {
+            for (int i = 0; i < it.count; i++) {
+                const entity glyph = it.entities[i];
+                if (!zox_has(glyph, Glyph)) {
+                    continue;
+                }
+                zox_tst_scale_glyphs++;
+                const float4x4 matrix = zox_getv(glyph, TransformMatrix);
+                const float2 offset = float2_sub(zox_getv(glyph, Position2), origin);
+                const float2 expected = float2_multiply1(zox_getv(glyph, LocalPosition2), 0.5f);
+                zox_tst_scale_wrong += fabsf(zox_getv(glyph, Scale1) - 0.5f) > 0.001f || fabsf(matrix.x.x - 0.5f) > 0.001f ||
+                    float2_distance(offset, expected) > 0.0001f;
+            }
+        }
+        ui_pop_in(world, zox_tst_scale_text);
+        zox_tst_scale_stage = 2;
+        zox_tst_scale_frames = 0;
+        return 0;
+    }
+    if (zox_tst_scale_stage == 2) {
+        zox_tst_waiting = "it to pop in";
+        if (zox_tst_scale_frames < 60) {
+            return 0;
+        }
+        zox_tst_scale_popped = zox_getv(zox_tst_scale_text, LocalScale1);
+        ui_pop_out(world, zox_tst_scale_text);
+        zox_tst_scale_stage = 3;
+        zox_tst_scale_frames = 0;
+        return 0;
+    }
+    zox_tst_waiting = "it to pop out and be deleted";
+    return !zox_valid(zox_tst_scale_text) || zox_tst_scale_frames > 120;
+}
+
+void zox_tst_ui_scale_check(ecs* world) {
+    zox_tst_check(zox_tst_scale_glyphs == 7, "[%i] glyphs checked, \"scale me\" has 7", zox_tst_scale_glyphs);
+    zox_tst_check(!zox_tst_scale_wrong, "[%i] glyphs didn't follow their text's half scale (scale, matrix or offset)", zox_tst_scale_wrong);
+    zox_tst_check(fabsf(zox_tst_scale_popped - 1) < 0.001f, "popped in to [%.3f], not 1", zox_tst_scale_popped);
+    zox_tst_check(!zox_valid(zox_tst_scale_text), "it wasn't deleted after popping out");
+}
+
 void zox_tsts_texts() {
     zox_tst_add("text_data", zox_tst_text_data_ready, zox_tst_text_data_check, 30);
     zox_tst_add("text_order", zox_tst_text_order_ready, zox_tst_text_order_check, 60);
+    zox_tst_add("ui_scale", zox_tst_ui_scale_ready, zox_tst_ui_scale_check, 60);
 }

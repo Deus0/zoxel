@@ -4,6 +4,7 @@
 #include "fader.c"
 #include "game_start.c"
 #include "game_end.c"
+#include "dialogue_closed.c"
 
 void zox_events_controllers(ecs* world) {
     zox_muter(prefab_player, PlayerStateEvent, player_event);
@@ -13,4 +14,5 @@ void zox_events_controllers(ecs* world) {
     add_to_PlayerStateEvent(player_event, player_state_fader);
     add_to_PlayerStateEvent(player_event, player_state_game_begin);
     add_to_PlayerStateEvent(player_event, player_state_game_end);
+    zox_observe(on_removed_dialogue_ui, EcsOnRemove, [none] dialogues.DialogueUI);
 }
