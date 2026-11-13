@@ -260,7 +260,7 @@ void zox_tst_town_homes_check(ecs* world) {
     zox_tst_check(!overlaps, "[%i] homes overlap", overlaps);
 }
 
-// tst: home_glow, a home's glow stone sits on its roof and lights the air around it (towns/sys/walls.c)
+// tst: home_glow, a home's glow stone is set into its roof and lights the room under it (towns/sys/walls.c)
 //  - run: bash bsh/tst.sh home_glow
 double zox_tst_glow_start = 0;
 
@@ -305,8 +305,8 @@ void zox_tst_home_glow_check(ecs* world) {
                 }
                 checked++;
                 found++;
-                // the air above it is lit by it
-                const int3 above = { c.x, y + 1, c.y };
+                // the room under it is lit by it (roofed, the sun doesn't reach in, only through the door)
+                const int3 above = { c.x, y - 1, c.y };
                 const int3 chunk_position = block_position_to_chunk_position(above, depth);
                 const entity chunk = int3_hashmap_get(chunks->value, chunk_position);
                 if (zox_valid(chunk) && zox_has(chunk, LightNode)) {
@@ -320,7 +320,7 @@ void zox_tst_home_glow_check(ecs* world) {
     }
     zox_log("[tst] [metric] home_glow [%i] glow stones found, [%i] lit around", found, lit);
     zox_tst_check(found, "no glow stones on the homes");
-    zox_tst_check(lit == found, "[%i] of [%i] glow stones don't light the air above them", found - lit, found);
+    zox_tst_check(lit == found, "[%i] of [%i] glow stones don't light the room under them", found - lit, found);
 }
 
 // tst: glow_light, a glow stone lights a dark tunnel, fading with distance, and removing it darkens it again

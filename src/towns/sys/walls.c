@@ -1,5 +1,5 @@
 // Home roofs, by each home's HomeStyle: flat, or peaked (rising a block a column in from its long sides to a ridge,
-//  gable walls at its ends), in its biome's wood, a glow stone on top of its middle
+//  gable walls at its ends), in its biome's wood, a glow stone set into its roof in the middle (lights inside, shows outside)
 #define town_homes_max 64
 
 typedef struct {
@@ -313,7 +313,7 @@ void town_walls_system(iter* it) {
                         }
                     }
                 }
-                // Roofs: in wood, flat or peaked by its home (home_roof_rise), gables filled, glow stone on the middle
+                // Roofs: in wood, flat or peaked by its home (home_roof_rise), gables filled, glow stone set into it
                 if (town_value == zox_town_type_home || town_value == zox_town_type_home_door || town_value == zox_town_type_home_wall) {
                     const int2 g = {
                         chunk_block_position.x + position.x * hmultiplier,
@@ -327,10 +327,10 @@ void town_walls_system(iter* it) {
                             town_set_block(voctree, build_depth, &position, y, chunk_block_position.y, hmultiplier, length, home_wall_id);
                         }
                     }
-                    town_set_block(voctree, build_depth, &position, roof_y, chunk_block_position.y, hmultiplier, length, wood_id);
-                    if (home && glow_id && int2_equals(g, home->center) &&
-                        town_set_block(voctree, build_depth, &position, roof_y + 1, chunk_block_position.y, hmultiplier, length, glow_id) &&
-                        glows < town_homes_max) {
+                    // the roof, its middle a glow stone set into it (lights the room under and shows outside)
+                    const byte is_glow = home && glow_id && int2_equals(g, home->center);
+                    if (town_set_block(voctree, build_depth, &position, roof_y, chunk_block_position.y, hmultiplier, length, is_glow ? glow_id : wood_id) &&
+                        is_glow && glows < town_homes_max) {
                         glow_positions[glows++] = position;
                     }
                 }
