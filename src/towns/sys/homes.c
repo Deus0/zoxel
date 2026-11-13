@@ -49,7 +49,7 @@ void homes_spawn_system(iter* it) {
         int2 home_positions[spawn_count];
         byte2 home_sizes[spawn_count];
         for (int k = 0; k < spawn_count; k++) {
-            if (!get_place_position(seed->value, town_position2, town_size2, padding, home_min_size, home_max_size, home_padding, home_positions, home_sizes, k, NULL, NULL, 0, max_attempts)) {
+            if (!region_place_rect(seed->value, town_position2, town_size2, padding, home_min_size, home_max_size, home_padding, home_positions, home_sizes, k, NULL, NULL, 0, max_attempts)) {
                 continue;
             }
             int2 home_position = home_positions[k];

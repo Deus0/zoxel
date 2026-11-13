@@ -29,12 +29,17 @@ void town_map_system(iter* it) {
             generate->value = zox_generate_tunk_end;
             continue;
         }
-        entity region = zox_get_link(world, e, RegionLink);
-#ifdef zox_safety_checks
-        if (!zox_valid(region)) {
-            zox_loge("[%s] Tunk has invalid region at [%ix%i]: %lu in TownMaps", zox_get_name(e), tunk_position->value.x, tunk_position->value.y, region);
+        // its region and sizes (regions/fun/tunk.c)
+        RegionTunk rt;
+        if (!region_tunk_begin(world, e, lod->value, tunk_position->value, &rt)) {
             continue;
         }
+        const entity region = rt.region;
+        const byte terrain_length = rt.terrain_length;
+        const byte length = rt.length;
+        const int2 map_size = rt.map_size;
+        const int2 global_position_start = rt.global_start;
+#ifdef zox_safety_checks
         if (!zox_disable_biomes && !biome_map->length) {
             zox_loge("[%s]'s TownMap: [BiomeMap] Invalid", zox_get_name(e));
             continue;
@@ -48,17 +53,6 @@ void town_map_system(iter* it) {
             continue;
         }
 #endif
-        // Generate Town Maps
-        entity terrain = zox_get_parent(world, e);
-        byte length = octree_size(lod->value);
-        int2 map_size = int2_single(length);
-        byte terrain_depth = zox_getv(terrain, NodeDepth);
-        byte terrain_length = octree_size(terrain_depth);
-        byte depth_difference = octree_size(terrain_depth - lod->value);
-        int2 global_position_start = (int2) {
-            tunk_position->value.x * terrain_length,
-            tunk_position->value.y * terrain_length
-        };
         resize_TownMap(town_map, length * length);
         memset(town_map->value, 0, length * length);
         entity towns[zox_children_capacity];
@@ -106,11 +100,15 @@ void town_map_system(iter* it) {
             int top    = town_position.y + town_size.y / 2;
             //uint town_heights_total = 0;
             // uint town_blocks_count = 0;
-            int2 global_position = global_position_start;
-            int2 position;
-            for (position.x = 0; position.x < length; position.x++, global_position.x += depth_difference) {
-                global_position.y = global_position_start.y;
-                for (position.y = 0; position.y < length; position.y++, global_position.y += depth_difference) {
+            // only the columns the town covers in this tunk
+            int2 global_position;
+            int2 position, from, to;
+            if (!region_tunk_box(&rt, town_position, (int2) { town_size.x / 2 + 1, town_size.y / 2 + 1 }, &from, &to)) {
+                continue;
+            }
+            for (position.x = from.x; position.x <= to.x; position.x++) {
+                for (position.y = from.y; position.y <= to.y; position.y++) {
+                    global_position = region_tunk_global(&rt, position);
                     // NOTE: Skip if not in town
                     if (!(global_position.x >= left &&
                         global_position.x <= right &&
@@ -253,11 +251,14 @@ void town_map_system(iter* it) {
                 byte door_width = 2;
                 // home_height = ; byte wall_thickness = zox_getv(town, WallThickness);
                 // NOTE: For each position in chunk, XZ, we check if inside Home
-                int2 position;
-                global_position = global_position_start;
-                for (position.x = 0; position.x < length; position.x++, global_position.x += depth_difference) {
-                    global_position.y = global_position_start.y;
-                    for (position.y = 0; position.y < length; position.y++, global_position.y += depth_difference) {
+                // only the columns the home covers in this tunk
+                int2 home_from, home_to;
+                if (!region_tunk_box(&rt, home_position, (int2) { home_size.x / 2 + 1, home_size.y / 2 + 1 }, &home_from, &home_to)) {
+                    continue;
+                }
+                for (position.x = home_from.x; position.x <= home_to.x; position.x++) {
+                    for (position.y = home_from.y; position.y <= home_to.y; position.y++) {
+                        global_position = region_tunk_global(&rt, position);
                         // NOTE: Skip if not in town
                         if (!(global_position.x >= town_position.x - town_size.x / 2 &&
                             global_position.x <= town_position.x + town_size.x / 2 &&
