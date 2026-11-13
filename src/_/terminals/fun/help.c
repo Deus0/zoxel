@@ -38,6 +38,7 @@ void print_help_menu(const char* arg0) {
         "        --large             terrain stream distance 12, height 4\n"
         "        --freeroam          free camera, not attached to the character\n"
         "        --nonpcs            no npcs (--nonpc)\n"
+        "        --nohumans          no humanoid npcs (villagers)\n"
         "        --nominivoxes       no block voxes (--noblockvoxes)\n"
         "        --nosaves           saves go to a temp folder, real saves untouched\n"
         "\n"

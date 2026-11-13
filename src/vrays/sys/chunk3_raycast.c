@@ -104,8 +104,11 @@ byte update_chunk_for_raycast(
             zox_loge("Chunk has invalid components [%s]", zox_getn(*chunk));
             return 0;
         }
-        const ChunkEntities* entities = zox_get(*chunk, ChunkEntities);
+        // under its lock, chunk_link_system reallocates it on workers
+        ChunkEntities* entities = (ChunkEntities*) zox_get(*chunk, ChunkEntities);
+        spin_lock(&entities->lock);
         *character_raycast = raycast_character(world, ray_origin, ray_normal, caster, entities);
+        spin_unlock(&entities->lock);
     }
     return 1;
 }

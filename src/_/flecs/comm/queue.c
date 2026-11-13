@@ -40,6 +40,10 @@ ECS_CTOR(T, ptr, { i_##T(ptr); }) \
 ECS_DTOR(T, ptr, { dispose_##T(ptr); }) \
 \
 ECS_MOVE(T, dst, src, { \
+    /* a move assigns over a live queue (flecs constructs before it moves into new memory): its old items freed */ \
+    if (dst->ptr && dst->ptr != src->ptr) { \
+        zox_free(dst->ptr); \
+    } \
     dst->ptr = src->ptr; \
     dst->count = src->count; \
     dst->capacity = src->capacity; \

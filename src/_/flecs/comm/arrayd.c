@@ -30,6 +30,10 @@ ECS_DTOR(T, ptr, { \
 })\
 \
 ECS_MOVE(T, dst, src, { \
+    /* a move assigns over a live value (flecs constructs before it moves into new memory): its old array freed */ \
+    if (dst->value && dst->value != src->value) { \
+        zox_free(dst->value); \
+    } \
     dst->value = src->value; \
     dst->length = src->length; \
     spinlock_init(&dst->lock); \
