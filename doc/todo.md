@@ -339,8 +339,8 @@
 	- streaming should just work seperately to character positioning
 
 # Bodies and Animations
-- Shirt sits behind the chest (bash bsh/body.sh, Block Res 5, 2026-11-14): from the front the chest is bare, from the
-  back and side the shirt hangs off it; in game it looked right once, maybe the order the body and gear build in
+-x Shirt sat behind the chest: the body combined before the shirt's model finished generating (its size read as 64),
+  bodies wait for Generating models now (f0ad65340, tst body_views checks clothes are centred)
 - First person camera doesn't adjust for the head's size: the head has a neck now, its eyes higher (head.c)
 - Body part seeds are `N * (i * spawn_count++)` (gam/zoxel/sys/body_parts.c), i is the realm's index: 0 in the
   first realm, every part the same seed, less variation (see tst model_variants)
