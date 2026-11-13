@@ -1,6 +1,8 @@
 # Done
 
 ## Moved from todo (2026-11-13)
+-x Player respawn test: dies, waits out the 16s death screen, respawns alive at full health (tst player_respawn,
+  drafted by the local AI)
 -x zox_geter and zox_geter_value removed, 409 calls are zox_get and zox_getv now (const T* name = zox_get(e, T))
 -x Npcs attack the player again: their skill's resource (energy) wasn't found, their stats are copies of their
   kind's (a step from the realm's), stat lookups walk the prefab chain now (is_realm_stat_of), tst npc_attacks

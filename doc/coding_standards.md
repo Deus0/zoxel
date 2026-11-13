@@ -487,6 +487,14 @@ import_coffee()
 
 That distinction makes the code easier to scan without requiring special syntax or ceremony.
 
+## Macros End With ;
+
+A macro used as a statement doesn't hold its own `;`, the call does, so it reads like a function call.
+
+- `#define zox_get(e, T) ecs_get(world, e, T)`, called `const Health* health = zox_get(e, Health);`
+- Expression macros used inline (`zox_getv(e, Seed) * 2`) take none, of course.
+- Old macros that hold their own `;` are fixed as they're touched.
+
 ## Entities, Not Ids
 
 Refer to things by their entity, not by an id or kind number looked up later.
