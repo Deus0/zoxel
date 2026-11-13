@@ -30,6 +30,26 @@ A chunk's walkable space, an octree like its voxels (`PathNode`), rebuilt when i
 - **Built:** on a worker after a chunk's voxels generate or change, from the voxel octree. Its lock is held while reading (doc/thread_safety.md).
 - **Lods:** only full detail chunks near the player need it, the same ones npcs spawn in (`NpcSpawnZone`).
 
+## Fields: a shared octree pulling and pushing
+
+Alongside walkability, one shared field octree for everyone (`FieldNode`), coarse (a node a few metres):
+
+- **Focal points pull:** towns, homes, water, a quest giver, light at night. Each adds a pull falling off with distance.
+- **Dangers push:** monsters, cliffs, a fire, the player for cowards.
+- **A node holds a direction and a strength**, the sum of the pulls and pushes over it. Many npcs read one field,
+  cheaper than each searching.
+- **Wandering** follows the field (towards the town at dusk, away from danger) instead of jitter, A* only when a goal
+  is set (home, a target).
+- **Updated** where something changes (a focal point placed or moved), not every frame.
+
+## Npc memory: smarter npcs know more
+
+- A smarter npc keeps its own small memory octree (`MemoryNode`): places it's seen, where it found food or danger,
+  its own focal points (its house, its workplace).
+- It reads its memory over the shared field: a guard knows the town's gates, a thief knows the back ways.
+- Simple npcs (slimes, chickens) have none, they only read the shared field.
+- Memory fades (strength decays), so it stays small.
+
 ## A*
 
 - **Nodes:** pathing octree nodes (a node's centre, its size). Neighbours: nodes touching its sides, across chunks too.
@@ -74,3 +94,5 @@ A chunk's walkable space, an octree like its voxels (`PathNode`), rebuilt when i
 - Characters of different heights (slimes 1 voxel, bigger beasts 3): one pathing octree for the tallest, or one per height?
 - Flying and swimming npcs: their own walkable rules, later.
 - Should towns keep their own coarse road graph for long trips between them, over A*?
+- Field resolution: one node size everywhere, or finer near towns?
+- Memory size limits per npc, and saving it with the npc.
