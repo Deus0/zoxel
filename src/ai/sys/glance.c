@@ -1,7 +1,7 @@
 // Npcs glance at players walking by: a humanoid npc's head (a skeleton with a head bone) looks at the closest player
 //  within reach, and ahead again once they leave (bones/sys/head_look.c turns it)
 //  - players in its chunk and its 6 neighbours (ChunkNeighbors), so it sees across a chunk's edge
-//  - not while following someone (a dialogue, its speakers look at each other)
+//  - not while following someone (FollowTarget, a dialogue: its speakers look at each other)
 //  - chunks' ChunkEntities only change in zoxp_update (chunk_link_system), read here on workers
 //  - boneless npcs (slimes) don't, see the todo (tumble towards the player)
 const float npc_glance_distance = 3;
@@ -32,12 +32,11 @@ void npc_glance_system(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Position3D);
-    zox_sys_in(Behaviour);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Position3D, position);
-        zox_sys_i(Behaviour, behaviour);
-        if (behaviour->value == zox_behaviour_follow) {
+        // following someone (its FollowTarget, set by a dialogue): its speakers look at each other
+        if (zox_valid(zox_get_link(world, e, FollowTarget))) {
             continue;
         }
         const entity skeleton = get_skeleton(world, e);

@@ -103,9 +103,9 @@ void zox_systems_controllers3(ecs *world) {
         zoxp_update,
         [in] core.TriggerActionE,
     );
-    zox_system(
+    zox_system_1(
         dialogue_end_system,
-        zoxp_update,
+        zoxp_spawn,
         [none] nodes.NodeRun,
         [none] dialogues.DialogueProcess,
         [none] core.Exit,

@@ -104,6 +104,9 @@ static inline float zox_tst_qd_facing(ecs* world, entity character, entity targe
 
 // characters across the dialogue box, its lines wrap to it
 int zox_tst_qd_columns = 0;
+float zox_tst_qd_scale_min = 1;     // the window's smallest and biggest LocalScale1, popping in and out
+float zox_tst_qd_scale_max = 0;
+int zox_tst_qd_input_early = 0;     // frames playing (input back) while a dialogue window was still there
 int zox_tst_qd_overflows = 0;     // checks every frame, a failed wrap counts many times
 
 // records each new line, presses next once it's typed out, returns 1 when the talk ended
@@ -149,7 +152,10 @@ static inline byte zox_tst_qd_talk(ecs* world, int talk) {
         // typed out, a moment later press next, the first talk's second line (it wraps) saved to look at
         if (zox_tst_qd_settled == 5) {
             const entity character = zox_get_link(world, dbg_player, CharacterLink);
-            zox_tst_qd_looking += zox_tst_qd_look(world, character) == zox_tst_qd_npc && zox_tst_qd_look(world, zox_tst_qd_npc) == character;
+            // a boneless npc (a slime) has no head to turn, only the player looks then
+            const entity npc_skeleton = get_skeleton(world, zox_tst_qd_npc);
+            const byte npc_head = zox_valid(npc_skeleton) && zox_valid(zox_get_link(world, npc_skeleton, HeadBoneLink));
+            zox_tst_qd_looking += zox_tst_qd_look(world, character) == zox_tst_qd_npc && (!npc_head || zox_tst_qd_look(world, zox_tst_qd_npc) == character);
             zox_log("[tst] [metric] heads facing: the player [%.2f] the npc [%.2f] (1 straight at the other)",
                 zox_tst_qd_facing(world, character, zox_tst_qd_npc), zox_tst_qd_facing(world, zox_tst_qd_npc, character));
         }
@@ -171,6 +177,13 @@ byte zox_tst_quest_dialogue_ready(ecs* world) {
     if (!zox_valid(character) || !zox_valid(canvas)) {
         zox_tst_waiting = "the player's character";
         return 0;
+    }
+    // the window pops in and out (ui_pop_in, ui_pop_out): it grows to its size, input comes back once it's gone
+    if (zox_valid(zox_tst_qd_ui) && zox_has(zox_tst_qd_ui, LocalScale1)) {
+        const float scale = zox_getv(zox_tst_qd_ui, LocalScale1);
+        zox_tst_qd_scale_min = float_min(zox_tst_qd_scale_min, scale);
+        zox_tst_qd_scale_max = float_max(zox_tst_qd_scale_max, scale);
+        zox_tst_qd_input_early += zox_getv(player, PlayerState) == zox_player_state_playing;
     }
     zox_tst_qd_frames++;
     zox_tst_qd_voices += zox_count_types(Sound) > 0 && zox_tst_qd_stage > 0;
@@ -282,6 +295,9 @@ void zox_tst_quest_dialogue_check(ecs* world) {
     zox_tst_check(zox_tst_qd_looking > 0, "the speakers' heads didn't look at each other while talking");
     // the npc may glance at the player after (ai/sys/glance.c), the player looks ahead
     zox_tst_check(!zox_tst_qd_look(world, character), "the player's head still looks at the npc after the talks");
+    zox_log("[tst] [metric] dialogue window scale [%.2f to %.2f] (pops in from 0, overshoots 1)", zox_tst_qd_scale_min, zox_tst_qd_scale_max);
+    zox_tst_check(zox_tst_qd_scale_min < 0.5f && zox_tst_qd_scale_max > 0.99f, "the dialogue window didn't pop in, its scale went [%.2f to %.2f]", zox_tst_qd_scale_min, zox_tst_qd_scale_max);
+    zox_tst_check(!zox_tst_qd_input_early, "input came back [%i] frames before the dialogue window was gone", zox_tst_qd_input_early);
     zox_tst_check(zox_tst_qd_voices > 0, "the npc said its lines without a voice");
     zox_tst_check(zox_tst_qd_jingle_notes > 0, "taking the quest played no jingle");
 }

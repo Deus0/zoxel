@@ -1,4 +1,4 @@
-// on the text entity
+// on the text entity, main thread: the next button pops in (ui_pop_in spawns a tween)
 void animate_text_end_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
@@ -27,6 +27,7 @@ void animate_text_end_system(iter* it) {
             next_button,
             zox_id(RenderDisabled),
             0);
+        ui_pop_in(world, next_button);
     }
     zox_sys_on_end();
 } zoxd_system(animate_text_end_system);

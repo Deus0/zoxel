@@ -7,6 +7,7 @@
 #include "canvas_fading.c"
 #include "set_children.c"
 #include "arguments.c"
+#include "pop.c"
 
 // move to hlp sub folder
 entity get_linked_canvas(ecs* world, entity e) {

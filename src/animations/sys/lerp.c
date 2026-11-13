@@ -1,4 +1,5 @@
-// a simple lerp animation system
+// a simple lerp animation system: a float component of its target, eased (AnimationEase), it can delete its target
+//  when done (AnimationDeletesTarget)
 void lerp_float_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
@@ -27,12 +28,18 @@ void lerp_float_system(iter* it) {
             ? time_passed / length->value
             : 1;
         lerp_time = clampf(lerp_time, 0, 1);
+        if (zox_has(e, AnimationEase)) {
+            lerp_time = zox_ease(zox_getv(e, AnimationEase), lerp_time);
+        }
         float new_value = float_lerp(from->value, to->value, lerp_time);
         zox_set_id(target->value, id->value, float, new_value);
         if (dbg_log) {
             zox_log("[%s]: TimePassed [%f:%f] Value [%f] [%f->%f]", zox_getn(target->value), time_passed, lerp_time, new_value, from->value, to->value);
         }
         if (time_passed >= length->value) {
+            if (zox_has(e, AnimationDeletesTarget)) {
+                zox_delete(target->value);
+            }
             zox_delete(e);
         }
     }

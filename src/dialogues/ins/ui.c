@@ -38,6 +38,7 @@ entity spawn_dialogue_ui(
     entity body = e3.z;
     zox_add(e, DialogueUI);
     zox_add(e, NavigationWindow);
+    ui_pop_in(world, e);
     // Speech Text
     {
         // TODO: Can we enable 2 lines here?

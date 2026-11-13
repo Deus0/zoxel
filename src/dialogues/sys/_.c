@@ -11,9 +11,9 @@ void zox_systems_dialogues(ecs* world) {
         [none] dialogues.DialogueProcess,
         [none] core.Begin,
     );
-    zox_system(
+    zox_system_1(
         animate_text_end_system,
-        zoxp_update,
+        zoxp_spawn,
         [in] texts.AnimateTextEnded,
         [none] dialogues.DialogueLabel
     );

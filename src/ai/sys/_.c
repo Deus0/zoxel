@@ -25,7 +25,6 @@ void zox_systems_npcs(ecs *world) {
         npc_glance_system,
         zoxp_physics,
         [in] transforms3.Position3D,
-        [in] ai.Behaviour,
         [none] ai.Npc
     );
     zox_system(

@@ -20,6 +20,7 @@
 // later we must customly choose what curves to apply to what components
 
 #include "dat/animation_states.c"
+#include "dat/ease.c"
 #include "com/_.c"
 // #include "pre/_.c"
 #include "ins/_.c"
