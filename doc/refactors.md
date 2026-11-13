@@ -3,6 +3,8 @@
 
 - Refactor all systems to use the void <T>(iter* it) { instead of the old macros, it fits better with c standards
 	- they also need timer macros added around them, check already refactored systems for reference
+- Body parts by entities, not SlotType ids: realm parts found by find_slot_type, gear is by tag now (Hat, Shirt),
+  and character_body_spawn_system's slot tree as data (parent, anchor, offset, part) walked once (doc/body_equips.md)
 - refactor GenerateModel to tag event
 	- check any other bytes that can be tag events too
 	- the idea is to reduce idling systems when the game isnt using them
