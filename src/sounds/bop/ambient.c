@@ -29,6 +29,12 @@ float soft_piano_sound(float time, float frequency) {
 float harp_sound(float time, float frequency) {
     const float pluck_position = 0.2f;
     float value = 0;
+    // its partials by rotating one angle (one sin and cos, not a sin each), the same sound
+    const double theta = 2 * M_PI * frequency * time;
+    const double c = cos(theta);
+    const double s = sin(theta);
+    double x = c;
+    double y = s;
     for (int n = 1; n <= 14; n++) {
         const float partial = frequency * n;
         if (partial > 10000) {
@@ -36,7 +42,11 @@ float harp_sound(float time, float frequency) {
         }
         const float amplitude = fabsf(sinf(n * M_PI * pluck_position)) / (n * n);
         const float decay = expf(-time * (1.2f + 0.35f * powf((float) n, 1.3f)));
-        value += amplitude * decay * sinf(2 * M_PI * partial * time);
+        value += amplitude * decay * y;
+        // rotate for next partial
+        double rx = x * c - y * s;
+        y = y * c + x * s;
+        x = rx;
     }
     return value;
 }

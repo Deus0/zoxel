@@ -1,8 +1,15 @@
-
+// harmonics 1 to iterations of a wobbling phase, by rotating one angle (one sin and cos, not a sin each), exact
 float calculate_additive_comp(float time, float frequency, float lfo_frequency, float pi_offset, int iterations) {
+    const double theta = 2.0 * M_PI * frequency * time;
+    const double p = pi_offset + 0.1f * sin(lfo_frequency * 0.2f * 2.0f * M_PI * time);
+    const double c = cos(theta), s = sin(theta);
+    double x = cos(theta + p), y = sin(theta + p);
     float additive_comp = 0.0f;
     for (int i = 1; i <= iterations; i++) {
-        additive_comp += 0.2f * sin(2.0f * M_PI * frequency * i * time + pi_offset + 0.1f * sin(lfo_frequency * 0.2f * 2.0f * M_PI * time));
+        additive_comp += 0.2f * y;
+        const double rx = x * c - y * s;
+        y = y * c + x * s;
+        x = rx;
     }
     return additive_comp;
 }
@@ -36,23 +43,7 @@ float flute_sound(float time, float frequency) {
     // FM synthesis with a modulator frequency that varies over time
     float fm_comp = fm_synthesis_ext_0(time, frequency, frequency * (1.0f + 0.1f * sin(lfo_frequency * 2.0f * M_PI * time)), 0.1f);
     // Additive synthesis using multiple harmonic sine waves
-    float additive_comp = 0.0f;
-    // the 12 harmonics by rotating one angle (one sin and cos, not 12 sins), the same sound
-    {
-        double theta = 2.0 * M_PI * frequency * time;
-        double p = pi_offset + 0.1f * sin(lfo_frequency * 0.2f * 2.0f * M_PI * time);
-        double c = cos(theta);
-        double s = sin(theta);
-        double x = cos(theta + p);
-        double y = sin(theta + p);
-        for (int i = 1; i <= 12; i++) {
-            additive_comp += 0.2f * y;
-            double new_x = x * c - y * s;
-            double new_y = y * c + x * s;
-            x = new_x;
-            y = new_y;
-        }
-    }
+    float additive_comp = calculate_additive_comp(time, frequency, lfo_frequency, pi_offset, 12);
     // Noise component with a varying frequency
     float noise_comp = noise_wave_1(time) * (1.0f + 0.1f * sin(lfo_frequency * M_PI * time));
     // sawtooth component  with a varying frequency

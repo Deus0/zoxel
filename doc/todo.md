@@ -16,7 +16,6 @@
 	- 3. long notes generated over a few frames, the start first
 	- tst: every instrument generates a second of sound under a budget (sound_instruments logs timings)
 - Miss sounds need more whoosh, a wind feeling (instrument_whoosh in sounds/bop/impacts.c)
-- The arms don't keep in sync
 - Npcs disappear: they don't return to their spawn positions when out of spawn range
 	- not solved yet: spawn links vs inside chunk links
 - new region placers should avoid prior ones

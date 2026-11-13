@@ -13,6 +13,8 @@ entity spawn_prefab_skeleton(ecs *world) {
     zox_setv(e, WalkState, 0);
     zox_setv(e, SwingStart, 0);
     zox_setv(e, SwingSpeed, 0);
+    zox_setv(e, SwingPhase, 0);   // its limbs swing in step by these (arm_control.c)
+    zox_setv(e, SwingBlend, 0);
     // Transforms
     zox_setv(e, Position3D, float3_zero);
     zox_setv(e, Rotation3D, float4_identity);

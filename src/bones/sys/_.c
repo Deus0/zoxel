@@ -53,6 +53,8 @@ void zox_systems_bones(ecs *world) {
         arm_control_system,
         zoxp_update,
         [in] bones.WalkState,
+        [out] bones.SwingPhase,
+        [out] bones.SwingBlend,
         [none] bones.Skeleton
     );
     zox_system(
@@ -61,8 +63,6 @@ void zox_systems_bones(ecs *world) {
         [in] bones.SwingState,
         [in] bones.SwingAngle,
         [in] transforms3.LocalPosition3D,
-        [out] bones.SwingPhase,
-        [out] bones.SwingBlend,
         [out] transforms3.LocalRotation3D,
         [none] bones.ShoulderBone
     );
@@ -72,8 +72,6 @@ void zox_systems_bones(ecs *world) {
         [in] bones.SwingState,
         [in] bones.SwingAngle,
         [in] transforms3.LocalPosition3D,
-        [out] bones.SwingPhase,
-        [out] bones.SwingBlend,
         [out] transforms3.LocalRotation3D,
         [none] bones.ThighBone
     );
