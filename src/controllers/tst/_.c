@@ -24,6 +24,7 @@
 #include "head_camera.c"
 #include "statbars_hide.c"
 #include "held_item.c"
+#include "id_window.c"
 #include "vegetation_chunks.c"
 #include "music.c"
 // tst: player_spawn, a new realm spawns the player's character standing in the terrain
@@ -602,6 +603,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("statbars_hide", zox_tst_statbars_hide_ready, zox_tst_statbars_hide_check, 120);
     zox_tst_add("held_item", zox_tst_held_item_ready, zox_tst_held_item_check, 120);
     zox_tst_add("held_block", zox_tst_held_block_ready, zox_tst_held_item_check, 120);
+    zox_tst_add("id_window", zox_tst_id_window_ready, zox_tst_id_window_check, 120);
     zox_tst_add("glow_light", zox_tst_glow_light_ready, zox_tst_glow_light_check, 120);
     zox_tst_add("block_table", zox_tst_town_homes_ready, zox_tst_block_table_check, 120);
     zox_tst_add("sky_clouds", zox_tst_sky_clouds_ready, zox_tst_sky_clouds_check, 120);
