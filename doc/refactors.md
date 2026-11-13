@@ -1,4 +1,5 @@
 # Refactoring
+- Part of the [todo](todo.md), done items go in [done.md](done.md)
 
 - Refactor all systems to use the void <T>(iter* it) { instead of the old macros, it fits better with c standards
 	- they also need timer macros added around them, check already refactored systems for reference

@@ -1,4 +1,5 @@
 # Bugs
+- Part of the [todo](todo.md), done items go in [done.md](done.md)
 * Finished items go in [done.md](done.md). Tests: `bash bsh/tst.sh list`
 
 
