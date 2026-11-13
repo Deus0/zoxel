@@ -74,13 +74,17 @@ mode_args=(--background)
 [[ ${visible} == "1" ]] && mode_args=()
 # software rendering: no mali context and no compositor involved, so a driver fault can't
 # take the desktop down. glvnd libs ahead of the mali folder in ld.so.conf, mesa as vendor
-# egl device 2 = mesa software device on this board (0,1 are the drm cards, mesa segfaults on them)
+# the egl device for mesa software: 2 on the arm board (0,1 are the drm cards, mesa segfaults on them), 0 on x86
+# (with mesa the only vendor it is the one device sdl sees; 2 there fails "Invalid EGL device is requested")
 soft_env=()
+arm=0
+arm_libs=""
+[[ "$(uname -m)" == aarch64 ]] && arm=1 && arm_libs=/usr/lib/aarch64-linux-gnu
 if [[ ${gpu} == "0" ]]; then
     soft_env=(env
         SDL_VIDEODRIVER=offscreen
-        SDL_HINT_EGL_DEVICE="${zox_tst_egl_device:-2}"
-        LD_LIBRARY_PATH=/usr/lib/aarch64-linux-gnu
+        SDL_HINT_EGL_DEVICE="${zox_tst_egl_device:-$(( arm ? 2 : 0 ))}"
+        LD_LIBRARY_PATH="${arm_libs}"
         __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/50_mesa.json
         LIBGL_ALWAYS_SOFTWARE=1
         GALLIUM_DRIVER=llvmpipe

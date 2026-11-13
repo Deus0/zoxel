@@ -13,7 +13,8 @@ bash bsh/tst.sh <name> --nobuild         # rerun without building
 
 - Exit code 0 is a pass. A failed run's log is kept: `bin/tst/<name>_failed_*.log`.
 - Tests run hidden (`--background`), silent, with software rendering, capped memory and a timeout.
-- On x86 (not the arm board), pick the egl device: `zox_tst_egl_device=0 bash bsh/tst.sh all`.
+- Tests render in software (mesa llvmpipe, offscreen). The egl device is picked by machine: 0 on x86, 2 on the
+  arm board. Override it with `zox_tst_egl_device=<n>` ("Invalid EGL device is requested" means a wrong one).
 - The harness is [src/core/tst/_.c](../src/core/tst/_.c), the runner [bsh/tst.sh](../bsh/tst.sh).
 
 ## Writing one
@@ -71,6 +72,7 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 | Octrees and chunks | `octree_*` `chunk_positions` `chunk_io` `chunk_sides` `vox_mesh_grid` `pipeline_syncs` `tilemap` |
 | Terrain | `biome_heights` `biome_map` `region_place` `town_maps` `vegetation_trees` `vegetation_cover` `vegetation_chunks` |
 | Textures | `texture_noise` `texture_outline` |
+| Lights | `smooth_lights` `block_vox_lights` `block_vox_light_sampling` |
 | Rendering | `lines_spawn` `lines_render` `skeleton_render` `vox_instance_render` `terrain_render` `block_vox_light_sampling` `block_vox_lights` `screenshot` |
 | Sound and music | `sound_mixer` `sound_formats` `sound_instruments` `sound_balance` `voice_sounds` `hit_sounds` `hit_sound_links` `music_*` |
 | Body and gear | `parts` `shirt` `npc_skeletons` |
