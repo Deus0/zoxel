@@ -86,3 +86,37 @@ int2 calculate_zext_size(const byte *data, int length, byte font_size, byte2 pad
     // zox_log("sizey: %i\n", y)
     return (int2) { font_size * x + padding.x * 2, (font_size) * y + (y - 1) * line_padding + padding.y * 2 };
 }
+
+// wraps a text to a width in characters: a space becomes a new line where the next word would pass the line's end
+//  - a word longer than a line stays whole (it overflows), new lines already in it start lines
+void text_wrap(char* text, int columns) {
+    if (!text || columns <= 0) {
+        return;
+    }
+    int line_start = 0;
+    int last_space = -1;
+    for (int i = 0; text[i]; i++) {
+        if (text[i] == '\n') {
+            line_start = i + 1;
+            last_space = -1;
+            continue;
+        }
+        if (text[i] == ' ') {
+            last_space = i;
+        }
+        if (i - line_start >= columns && last_space >= 0) {
+            text[last_space] = '\n';
+            line_start = last_space + 1;
+            last_space = -1;
+        }
+    }
+}
+
+// how many characters fit across a text ui: its LayoutSize less its padding (glyphs are font size wide)
+int text_columns(ecs* world, entity e) {
+    const byte font_size = zox_getv(e, TextFontSize);
+    if (!font_size || !zox_has(e, LayoutSize)) {
+        return 0;
+    }
+    return (zox_getv(e, LayoutSize).x - zox_getv(e, TextPadding).x * 2) / font_size;
+}

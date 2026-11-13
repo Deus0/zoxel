@@ -213,6 +213,17 @@ void zox_tst_text_data_check(ecs* world) {
     zox_tst_check(get_zext_max_y(text.value, text.length) == 2, "line count is [%i], expected 2", get_zext_max_y(text.value, text.length));
     zox_tst_check(get_zext_x(text.value, 6) == 1 && get_zext_y(text.value, text.length, 6) == 1, "position of [e] is [%ix%i], expected [1x1]",
         get_zext_x(text.value, 6), get_zext_y(text.value, text.length, 6));
+    // wrapping: spaces become new lines where a word would pass the width, long words overflow, new lines kept
+    char wrap[64];
+    snprintf(wrap, sizeof(wrap), "the quick brown fox jumps");
+    text_wrap(wrap, 10);
+    zox_tst_check(!strcmp(wrap, "the quick\nbrown fox\njumps"), "wrapped to 10 is [%s]", wrap);
+    snprintf(wrap, sizeof(wrap), "a extraordinarily long\nword ok");
+    text_wrap(wrap, 6);
+    zox_tst_check(!strcmp(wrap, "a\nextraordinarily\nlong\nword\nok"), "a long word wrapped to 6 is [%s]", wrap);
+    snprintf(wrap, sizeof(wrap), "fits");
+    text_wrap(wrap, 4);
+    zox_tst_check(!strcmp(wrap, "fits"), "a line as wide as its width wrapped [%s]", wrap);
     resize_TextData(&text, 0);
 }
 

@@ -36,7 +36,13 @@ void dialogue_speech_system(iter* it) {
                 zox_getv(node, DialogueText) :
                 ".....";
         // const DialogueText* text = zox_get(node->value, DialogueText);
-        set_TargetText(world, text_ui, text);
+        // wrapped to the box before it types out, so words don't jump lines as they appear
+        char wrapped[512];
+        snprintf(wrapped, sizeof(wrapped), "%s", text);
+        if (zox_has(text_ui, TextWrap)) {
+            text_wrap(wrapped, text_columns(world, text_ui));
+        }
+        set_TargetText(world, text_ui, wrapped);
         // said in the speaker's voice (the npc, not the player)
         zox_set_link(world, text_ui, SpeakerLink, get_speaker_b(world, e));
         zox_setv(text_ui, VoiceIndex, 0);

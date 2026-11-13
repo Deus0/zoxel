@@ -11,6 +11,7 @@ zoxc_double(AnimateText);
 zoxc_text(TextData)
 // zox_tag(TextDirty);
 zoxc_state(TextSizeDirty);
+zox_tag(TextWrap);            // lines wrap to its LayoutSize (text_wrap, text_columns), i.e. dialogue: a fixed box, not sized to its text
 zoxc_entity(GlyphPrefab);
 // Animated text: types TargetText out a character at a time (i.e. dialogue)
 zoxc_fixed_string(TargetText, 512);
@@ -29,6 +30,7 @@ void zox_components_texts(ecs *world) {
     zoxd_byte(TextAlignment);
     zoxd_byte(TextResolution);
     zoxd_byte2(TextPadding);
+    zoxd_tag(TextWrap);
     zoxd_int(TextFontSize);
     zoxd_double(AnimateText);
     zoxd_text(TextData);

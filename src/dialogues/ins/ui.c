@@ -74,7 +74,8 @@ entity spawn_dialogue_ui(
             button_font_fill,
             button_font_outline);
         zox_set_unique_name(text_ui, "dialogue_text");
-        zox_setv(text_ui, LayoutSize, size);
+        // inside the margins, lines wrap to it (dialogue_speech_system)
+        zox_setv(text_ui, LayoutSize, int2_sub(size, int2_multiply1(text_margins, 2)));
         zox_link(world, e, DialogueLabel, text_ui);
     }
     // NOTE: A Confirm button at bottom right
