@@ -1,5 +1,5 @@
 // tst: npc_glance, a humanoid npc's head turns to the player walking by (ai/sys/glance.c, bones/sys/head_look.c)
-//  - spawns one 2 in front of the player facing them, its head looks at the player and faces them
+//  - spawns one 2 in front of the player facing them, across a chunk's edge (it sees into neighbour chunks), its head looks at the player and faces them
 //  - the player moves away, its head looks ahead again
 //  - run: bash bsh/tst.sh npc_glance
 int zox_tst_glance_stage = 0;
@@ -35,8 +35,13 @@ byte zox_tst_npc_glance_ready(ecs* world) {
             zox_tst_check(0, "the realm has no humanoid character prefab");
             return 1;
         }
-        // facing +z (identity), the player 2 in front of it
+        // across a chunk's edge: the player just inside its chunk's low z edge, the npc 2 back in the next chunk,
+        //  facing +z (identity) at the player
+        const float chunk_length = octree_size(zox_getv(terrain, NodeDepth)) * zox_getv(terrain, BlockScale);
         float3 position = zox_getv(character, Position3D);
+        position.z = floorf(position.z / chunk_length) * chunk_length + 0.5f;
+        zox_setv(character, Position3D, position);
+        zox_setv(character, Velocity3D, float3_zero);
         position.z -= 2;
         zox_tst_glance_npc = spawn_character3_npc(world, humanoid, realm, terrain, 1, 0, 0, position, quaternion_identity, NULL);
         zox_tst_glance_stage = 1;
@@ -46,13 +51,18 @@ byte zox_tst_npc_glance_ready(ecs* world) {
     if (zox_tst_glance_stage == 1) {
         zox_tst_waiting = "the npc to look at the player";
         const entity head = zox_tst_glance_head(world, zox_tst_glance_npc);
-        if (zox_valid(head) && zox_getv(head, LookTarget) == character && zox_tst_glance_frames > 60) {
+        // its best facing over two seconds once it looks (it may wander and turn its body)
+        if (zox_valid(head) && zox_getv(head, LookTarget) == character) {
+            if (!zox_tst_glance_seen) {
+                zox_log("[tst] npc in chunk [%s], the player in [%s]", zox_getn(zox_get_link(world, zox_tst_glance_npc, ChunkLink)), zox_getn(zox_get_link(world, character, ChunkLink)));
+                zox_tst_glance_frames = 0;
+            }
             zox_tst_glance_seen = character;
             const float3 forward = float4_rotate_float3(zox_getv(head, Rotation3D), float3_forward);
             const float3 to = float3_normalize(float3_sub(look_point(world, character), zox_getv(head, Position3D)));
-            zox_tst_glance_facing = float3_dot(forward, to);
+            zox_tst_glance_facing = float_max(zox_tst_glance_facing, float3_dot(forward, to));
         }
-        if (zox_tst_glance_seen || zox_tst_glance_frames > 600) {
+        if ((zox_tst_glance_seen && zox_tst_glance_frames > 120) || zox_tst_glance_frames > 600) {
             // the player walks away
             float3 position = zox_getv(character, Position3D);
             position.x += 24;
