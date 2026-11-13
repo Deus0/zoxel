@@ -51,7 +51,7 @@ void zox_tst_id_window_check(ecs* world) {
     (void) world;
     zox_log("[tst] id before [%s]", zox_tst_id_before);
     zox_tst_check(zox_valid(zox_tst_id_window) && zox_has(zox_tst_id_window, MenuId), "no id window");
-    zox_tst_check(strstr(zox_tst_id_before, "name ") == zox_tst_id_before && strstr(zox_tst_id_before, "\nlevel "), "it doesn't start with its name and level [%s]", zox_tst_id_before);
+    zox_tst_check(strstr(zox_tst_id_before, "name ") == zox_tst_id_before && !strstr(zox_tst_id_before, "name none") && strstr(zox_tst_id_before, "\nlevel "), "it doesn't start with its name (from its seed) and level [%s]", zox_tst_id_before);
     zox_tst_check(strstr(zox_tst_id_before, "race none") && strstr(zox_tst_id_before, "class none") &&
         strstr(zox_tst_id_before, "job none") && strstr(zox_tst_id_before, "clan none"), "unmade data doesn't read none");
     zox_tst_check(strstr(zox_tst_id_after, "race Elf") != NULL, "a linked race reads [%s], not its name", zox_tst_id_after);

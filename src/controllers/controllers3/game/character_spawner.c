@@ -102,6 +102,9 @@ entity game_start_player_new(
     if (!find_position_in_terrain(world, terrain, camera_block_position, &placer)) {
         return 0;
     }
+    // named from its seed (a loaded character keeps its seed, so its name)
+    char name[64];
+    generate_name(character_seed, name);
     *spawned_position = placer.position;
     entity e = spawn_character3_player(
         world,
@@ -112,7 +115,7 @@ entity game_start_player_new(
         character_seed,
         placer.position,
         quaternion_identity,
-        NULL);
+        name);
     return e;
 }
 
@@ -159,6 +162,8 @@ entity game_start_player_load(
         }
         return 0;
     }
+    char name[64];
+    generate_name(character_seed, name);
     *spawned_position = placer.position;
     entity e = spawn_character3_player(
         world,
@@ -168,7 +173,7 @@ entity game_start_player_load(
         terrain, character_seed,
         placer.position,
         quaternion_identity,
-        NULL);
+        name);
     return e;
 }
 
