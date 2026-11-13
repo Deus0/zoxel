@@ -39,9 +39,6 @@ void town_map_system(iter* it) {
         const byte length = rt.length;
         const int2 map_size = rt.map_size;
         const int2 global_position_start = rt.global_start;
-        // the terrain's height anywhere, for homes' floors
-        TerrainHeights th;
-        const byte has_heights = terrain_heights_begin(world, zox_get_parent(world, e), &th);
 #ifdef zox_safety_checks
         if (!zox_disable_biomes && !biome_map->length) {
             zox_loge("[%s]'s TownMap: [BiomeMap] Invalid", zox_get_name(e));
@@ -246,14 +243,13 @@ void town_map_system(iter* it) {
                 zox_log(" - Town Homes [%i]", homes_length);
             }
             // homes: their parts on the map, the ground under them levelled to their floor with steps to their doors
-            //  (fun/home.c), their floor the terrain at their middle, the same in every tunk
+            //  (fun/home.c, HomeFloor), doors any way (HomeFacing)
             //  - two passes: margins and steps, then the homes themselves, a home's floor wins over a neighbour's steps
             for (byte inside_pass = 0; inside_pass < 2; inside_pass++)
             for (uint k = 0; k < homes_length; k++) {
                 const TownHome h = town_home(world, homes[k]);
-                const int floor = has_heights ? int_clamp(terrain_height_at(&th, h.center), 0, 255) : -1;
                 int2 home_from, home_to;
-                const int2 reach = { h.half.x + 1, h.half.y + home_steps + 1 };
+                const int2 reach = int2_single(int_max(h.half.x, h.half.y) + home_steps + 1);
                 if (!region_tunk_box(&rt, h.center, reach, &home_from, &home_to)) {
                     continue;
                 }
@@ -268,12 +264,12 @@ void town_map_system(iter* it) {
                             continue;
                         }
                         const int index = int2_array_index(position, map_size);
-                        const int ground = floor >= 0 ? home_ground_at(&h, floor, g, height_map->value[index]) : -1;
+                        const int ground = home_ground_at(&h, g, height_map->value[index]);
                         if (ground >= 0) {
                             height_map->value[index] = ground;
                         }
                         if (inside) {
-                            town_map->value[index] = home_part_at(&h, g);
+                            town_map->value[index] = zox_town_type_home;
                         }
                     }
                 }

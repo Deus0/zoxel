@@ -189,28 +189,56 @@ void zox_tst_region_zones_check(ecs* world) {
     zox_tst_check(!overlaps, "[%i] placement zones overlap", overlaps);
 }
 
-// tst: home_roofs, roof shapes (towns/sys/walls.c): flat is flat, peaked rises a block a column in from its long
-//  sides to a ridge, symmetric, gables at its ends
+// tst: home_roofs, roof shapes (build_home, towns/fun/home.c): flat is flat, peaked rises a block a column in from its
+//  long sides to a ridge, symmetric, gables at its ends, a turned home's ridge turns with it
 //  - run: bash bsh/tst.sh home_roofs
+// the highest box of a block over a column, -1 if none
+static inline int zox_tst_build_top(const Building* b, int2 g, byte block) {
+    int top = -1;
+    for (byte i = 0; i < b->count; i++) {
+        const BuildBox* box = &b->boxes[i];
+        if (box->block == block && g.x >= box->min.x && g.x <= box->max.x && g.y >= box->min.z && g.y <= box->max.z) {
+            top = int_max(top, box->max.y);
+        }
+    }
+    return top;
+}
+
 void zox_tst_home_roofs_check(ecs* world) {
     (void) world;
-    const TownHome flat = { { 100, 100 }, { 5, 3 }, 0 };
-    const TownHome peaked = { { 100, 100 }, { 5, 3 }, 1 };   // longer along x: its ridge runs along x
+    const HomeBlocks blocks = { .wall = 1, .floor = 2, .roof = 3, .glow = 0 };
+    const TownHome flat = { { 100, 100 }, { 5, 3 }, 0, 10, 0, 6 };
+    const TownHome peaked = { { 100, 100 }, { 5, 3 }, 1, 10, 0, 6 };   // longer along x: its ridge runs along x
+    const TownHome turned = { { 100, 100 }, { 3, 5 }, 1, 10, 1, 6 };   // facing +x, longer along z: its ridge along z
+    Building b;
+    int3 glow;
+    const int roof = 10 + 6;
+    build_home(&b, &flat, &blocks, &glow);
     int flat_rises = 0;
     for (int x = 95; x <= 105; x++) for (int y = 97; y <= 103; y++) {
-        flat_rises += home_roof_rise(&flat, (int2) { x, y }) != 0;
+        flat_rises += zox_tst_build_top(&b, (int2) { x, y }, 3) != roof;
     }
-    zox_tst_check(!flat_rises, "a flat roof rises at [%i] columns", flat_rises);
-    zox_tst_check(home_roof_rise(&peaked, (int2) { 100, 97 }) == 0, "a peaked roof doesn't start at its wall");
-    zox_tst_check(home_roof_rise(&peaked, (int2) { 100, 100 }) == 3, "its ridge isn't 3 up, it's [%i]", home_roof_rise(&peaked, (int2) { 100, 100 }));
+    zox_tst_check(!flat_rises, "a flat roof isn't flat at [%i] columns", flat_rises);
+    build_home(&b, &peaked, &blocks, &glow);
+    #define zox_tst_rise(g) (zox_tst_build_top(&b, g, 3) - roof)
+    zox_tst_check(zox_tst_rise(((int2) { 100, 97 })) == 0, "a peaked roof doesn't start at its wall");
+    zox_tst_check(zox_tst_rise(((int2) { 100, 100 })) == 3, "its ridge isn't 3 up, it's [%i]", zox_tst_rise(((int2) { 100, 100 })));
     int asymmetric = 0, steps = 0;
     for (int y = 97; y <= 100; y++) {
-        asymmetric += home_roof_rise(&peaked, (int2) { 102, y }) != home_roof_rise(&peaked, (int2) { 102, 200 - y });
-        steps += y > 97 && home_roof_rise(&peaked, (int2) { 102, y }) != home_roof_rise(&peaked, (int2) { 102, y - 1 }) + 1;
+        asymmetric += zox_tst_rise(((int2) { 102, y })) != zox_tst_rise(((int2) { 102, 200 - y }));
+        steps += y > 97 && zox_tst_rise(((int2) { 102, y })) != zox_tst_rise(((int2) { 102, y - 1 })) + 1;
     }
     zox_tst_check(!asymmetric && !steps, "the roof isn't a symmetric slope, [%i] uneven, [%i] steps off", asymmetric, steps);
-    zox_tst_check(home_is_gable(&peaked, (int2) { 95, 100 }) && home_is_gable(&peaked, (int2) { 105, 100 }), "its ends aren't gables");
-    zox_tst_check(!home_is_gable(&peaked, (int2) { 100, 97 }) && !home_is_gable(&flat, (int2) { 95, 100 }), "a side or a flat roof is a gable");
+    // gables: its ends walled up to the roof, a side isn't
+    zox_tst_check(zox_tst_build_top(&b, (int2) { 95, 100 }, 1) == roof + 2 && zox_tst_build_top(&b, (int2) { 105, 100 }, 1) == roof + 2,
+        "its ends aren't gables, walled to [%i]", zox_tst_build_top(&b, (int2) { 95, 100 }, 1));
+    zox_tst_check(zox_tst_build_top(&b, (int2) { 100, 97 }, 1) == roof - 1, "a side is walled over its wall height");
+    zox_tst_check(int3_equals(glow, (int3) { 100, roof + 3, 100 }), "its glow stone isn't at its ridge's middle");
+    // turned: the same roof, its ridge along z
+    build_home(&b, &turned, &blocks, &glow);
+    zox_tst_check(zox_tst_rise(((int2) { 97, 100 })) == 0 && zox_tst_rise(((int2) { 100, 100 })) == 3 && zox_tst_rise(((int2) { 100, 103 })) == 3,
+        "a turned home's ridge doesn't run along z");
+    #undef zox_tst_rise
 }
 
 // the region of the player's column
@@ -464,17 +492,16 @@ void zox_tst_block_table_check(ecs* world) {
 //  their floor (the terrain at their middle), steps a block at a time from their doors
 //  - each home in full detail chunks (near the player): inside, its floor block is solid and the room over it air
 //  - in front of its door, the ground's top steps at most a block a column (until something built stands there)
+//  - its doorway open, facing any way (HomeFacing, built in its own frame, fun/build.c)
 //  - run: bash bsh/tst.sh home_foundations
 void zox_tst_home_foundations_check(ecs* world) {
     const entity character = zox_get_link(world, dbg_player, CharacterLink);
     const entity terrain = zox_get_link(world, character, TerrainLink);
-    TerrainHeights th;
-    zox_tst_check(terrain_heights_begin(world, terrain, &th), "no terrain heights");
     const float3 player = float3_divide_float(zox_getv(character, Position3D), zox_getv(terrain, BlockScale));
     const entity region = zox_tst_player_region(world);
     entity towns[zox_children_capacity];
     const uint towns_count = zox_valid(region) ? zox_get_children_by_id(world, region, towns, zox_children_capacity, zox_id(Town)) : 0;
-    int homes_checked = 0, floors_wrong = 0, rooms_filled = 0, steps_checked = 0, steps_wrong = 0;
+    int homes_checked = 0, floors_wrong = 0, rooms_filled = 0, doors_shut = 0, steps_checked = 0, steps_wrong = 0;
     for (uint t = 0; t < towns_count; t++) {
         entity homes[zox_children_capacity];
         const uint count = zox_get_children_by_id(world, towns[t], homes, zox_children_capacity, zox_id(Home));
@@ -484,7 +511,7 @@ void zox_tst_home_foundations_check(ecs* world) {
             if (fabsf(h.center.x - player.x) > 40 || fabsf(h.center.y - player.z) > 40) {
                 continue;
             }
-            const int floor = terrain_height_at(&th, h.center);
+            const int floor = h.floor;
             if (terrain_voxel_at(world, terrain, (int3) { h.center.x, floor + 1, h.center.y }) < 0) {
                 continue;
             }
@@ -495,11 +522,15 @@ void zox_tst_home_foundations_check(ecs* world) {
                     rooms_filled += terrain_voxel_at(world, terrain, (int3) { x, floor + 2, z }) > 0;
                 }
             }
-            // its steps: from its floor block (floor + 1) out of its door
-            for (int x = h.center.x - home_door_width / 2; x <= h.center.x + home_door_width / 2; x++) {
+            // its doorway open, its steps from its floor block (floor + 1) out of it, the way it faces (its own frame)
+            const int2 half = home_half_local(&h);
+            const int2 door = int2_add(h.center, build_turn(h.facing, 0, half.y));
+            doors_shut += terrain_voxel_at(world, terrain, (int3) { door.x, floor + 2, door.y }) > 0;
+            for (int lx = -home_door_width / 2; lx <= home_door_width / 2; lx++) {
                 int last = floor + 1;
                 for (int d = 1; d <= home_steps; d++) {
-                    const int z = h.center.y + h.half.y + d;
+                    const int2 g = int2_add(h.center, build_turn(h.facing, lx, half.y + d));
+                    const int x = g.x, z = g.y;
                     // the ground's top near its floor, stopping at something built (a wall, another home)
                     if (terrain_voxel_at(world, terrain, (int3) { x, floor + 3, z }) != 0) {
                         break;
@@ -527,10 +558,76 @@ void zox_tst_home_foundations_check(ecs* world) {
             }
         }
     }
-    zox_log("[tst] [metric] home_foundations [%i] homes, floors missing [%i], rooms filled [%i], steps [%i] too tall [%i]",
-        homes_checked, floors_wrong, rooms_filled, steps_checked, steps_wrong);
+    zox_log("[tst] [metric] home_foundations [%i] homes, floors missing [%i], rooms filled [%i], doors shut [%i], steps [%i] too tall [%i]",
+        homes_checked, floors_wrong, rooms_filled, doors_shut, steps_checked, steps_wrong);
+    zox_tst_check(!doors_shut, "[%i] homes' doorways are walled up", doors_shut);
     zox_tst_check(homes_checked, "no homes near the player to check");
     zox_tst_check(!floors_wrong, "[%i] columns of homes have no floor (holes)", floors_wrong);
     zox_tst_check(!rooms_filled, "[%i] columns of homes' rooms are filled in", rooms_filled);
     zox_tst_check(!steps_wrong, "[%i] of [%i] steps from doors are taller than a block", steps_wrong, steps_checked);
+}
+
+// tst: town_view, a screenshot over the nearest town looking down (tst/town_view.ppm, --nohud from tst.sh), to see its
+//  homes, which way they face, its roads; add --1080p to see it at the game's size
+//  - run: bash bsh/tst.sh town_view
+byte zox_tst_town_view_stage = 0;
+double zox_tst_town_view_time = 0;
+
+byte zox_tst_town_view_ready(ecs* world) {
+    if (!zox_tst_town_view_stage) {
+        if (!zox_tst_player_spawn_ready(world)) {
+            return 0;
+        }
+        zox_tst_town_view_stage = 1;
+        zox_tst_town_view_time = zox_current_time;
+    }
+    zox_tst_waiting = "the town view";
+    zox_tst_progress(zox_tst_town_view_stage);
+    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity terrain = zox_get_link(world, character, TerrainLink);
+    const float scale = zox_getv(terrain, BlockScale);
+    // over the town nearest the player, looking down
+    const entity region = zox_tst_player_region(world);
+    entity towns[zox_children_capacity];
+    const uint towns_count = zox_valid(region) ? zox_get_children_by_id(world, region, towns, zox_children_capacity, zox_id(Town)) : 0;
+    if (!towns_count) {
+        zox_tst_check(0, "no town in the player's region");
+        return 1;
+    }
+    const float3 player = zox_getv(character, Position3D);
+    int2 town = zox_getv(towns[0], BlockPosition2);
+    for (uint t = 1; t < towns_count; t++) {
+        const int2 c = zox_getv(towns[t], BlockPosition2);
+        if (int2_distance(c, (int2) { player.x / scale, player.z / scale }) < int2_distance(town, (int2) { player.x / scale, player.z / scale })) {
+            town = c;
+        }
+    }
+    // above its homes' floors, back from its middle (the camera faces +z), the fog thinned to see across it
+    entity homes[zox_children_capacity];
+    const uint homes_count = zox_get_children_by_id(world, towns[0], homes, zox_children_capacity, zox_id(Home));
+    const int ground = homes_count ? zox_getv(homes[0], HomeFloor) : 32;
+    fog_density = 0.008f;
+    zox_setv(character, Position3D, ((float3) { town.x * scale, (ground + 44) * scale, (town.y - 36) * scale }));
+    zox_setv(character, Velocity3D, float3_zero);
+    zox_setv(character, RenderDisabled, 1);
+    const entity skeleton = get_skeleton(world, character);
+    const entity head = zox_valid(skeleton) ? zox_get_link(world, skeleton, HeadBoneLink) : 0;
+    const entity head_camera = zox_valid(head) ? zox_get_child_by_id(world, head, zox_id(Camera)) : 0;
+    if (zox_valid(head_camera)) {
+        zox_setv(head_camera, LocalRotation3D, euler_to_quaternion((float3) { -0.85f, is_camera_positive_z ? M_PI : 0, 0 }));
+    }
+    if (zox_tst_town_view_stage == 1) {
+        if (zox_current_time - zox_tst_town_view_time < 6) {
+            return 0;
+        }
+        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("town_view.ppm"));
+        zox_tst_town_view_stage = 2;
+        return 0;
+    }
+    return !zox_screenshot_request[0];
+}
+
+void zox_tst_town_view_check(ecs* world) {
+    (void) world;
+    zox_tst_check(zox_tst_clouds_share(zox_tst_path("town_view.ppm")) >= 0, "no screenshot saved");
 }

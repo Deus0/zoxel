@@ -17,8 +17,8 @@
 #include "arms_in_step.c"
 #include "pipeline_syncs.c"
 #include "lines_render.c"
-#include "town_maps.c"
 #include "clouds.c"
+#include "town_maps.c"
 #include "head_camera.c"
 #include "vegetation_chunks.c"
 #include "music.c"
@@ -591,6 +591,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("town_homes", zox_tst_town_homes_ready, zox_tst_town_homes_check, 120);
     zox_tst_add("home_glow", zox_tst_home_glow_ready, zox_tst_home_glow_check, 120);
     zox_tst_add("home_foundations", zox_tst_home_glow_ready, zox_tst_home_foundations_check, 120);
+    zox_tst_add("town_view", zox_tst_town_view_ready, zox_tst_town_view_check, 120);
     zox_tst_add("glow_light", zox_tst_glow_light_ready, zox_tst_glow_light_check, 120);
     zox_tst_add("block_table", zox_tst_town_homes_ready, zox_tst_block_table_check, 120);
     zox_tst_add("sky_clouds", zox_tst_sky_clouds_ready, zox_tst_sky_clouds_check, 120);

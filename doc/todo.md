@@ -18,9 +18,8 @@ A polished core loop before more content.
 - IK on arms and legs, for more bending (a doc/tec doc first)
 - Towns: an age level, older towns are flatter (heights), bigger, with more buildings
 - Homes: tilted foundations for poor npcs (homes stand level now)
-- Homes: rotated (doors on any side), town gates on any wall, at a random spot along it
+- Town gates on any wall, at a random spot along it
 - Homes: keep their door steps clear of neighbours (two homes close by, steps meet the other's levelled ground)
-- Buildings written like model nodes: build_building(...) of shapes (boxes, walls, roofs), easier than columns
 - Highways between towns and regions
 - More natural mountains
 - Blocks: refactor them onto the realm, biomes pick theirs by random rules (still variety in dirts and others)

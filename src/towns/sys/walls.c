@@ -168,18 +168,22 @@ void town_walls_system(iter* it) {
                         town_set_block(voctree, build_depth, &position, height + h, chunk_y, hmultiplier, length, bricks_id);
                     }
                 }
-                // homes: their floors, walls, door lintels and roofs (fun/home.c)
-                if (town_value == zox_town_type_home || town_value == zox_town_type_home_door || town_value == zox_town_type_home_wall) {
-                    const int2 g = {
-                        chunk_block_position.x + position.x * hmultiplier,
-                        chunk_block_position.z + position.z * hmultiplier
-                    };
-                    const TownHome* home = town_home_at(homes, homes_count, g);
-                    if (home && home_build_column(voctree, build_depth, &position, chunk_y, hmultiplier, length,
-                        home, &blocks, g, height) && glows < town_homes_max) {
-                        glow_positions[glows++] = position;
-                    }
-                }
+            }
+        }
+        // homes crossing this chunk, from their boxes (fun/home.c), their glow stones' light seeded below
+        for (byte k = 0; k < homes_count; k++) {
+            Building building;
+            int3 glow_block;
+            build_home(&building, &homes[k], &blocks, &glow_block);
+            build_in_chunk(voctree, build_depth, chunk_block_position, hmultiplier, length, &building);
+            const int3 glow_local = {
+                floor_div(glow_block.x - chunk_block_position.x, hmultiplier),
+                floor_div(glow_block.y - chunk_block_position.y, hmultiplier),
+                floor_div(glow_block.z - chunk_block_position.z, hmultiplier)
+            };
+            if (glow_id && glows < town_homes_max && glow_local.x >= 0 && glow_local.y >= 0 && glow_local.z >= 0 &&
+                glow_local.x < length && glow_local.y < length && glow_local.z < length) {
+                glow_positions[glows++] = int3_to_byte3(glow_local);
             }
         }
         zox_octree_lock_end(write_lock);

@@ -47,6 +47,14 @@ void homes_spawn_system(iter* it) {
         if (dbg_log) {
             zox_log("[%s] Is Spawning [%i] Homes", zox_get_name(e), spawn_count);
         };
+        // each home's floor: the terrain at its middle (its region's terrain)
+        const entity region = zox_get_parent(world, e);
+        TerrainHeights th;
+        if (!terrain_heights_begin(world, zox_valid(region) ? zox_get_parent(world, region) : 0, &th)) {
+            zox_loge("[%s] can't place homes, no terrain heights", zox_get_name(e));
+            generate->value = 0;
+            continue;
+        }
         // placed: only placed homes count, a failed try left a gap the next ones checked against
         int2 home_positions[spawn_count];
         byte2 home_sizes[spawn_count];
@@ -58,7 +66,8 @@ void homes_spawn_system(iter* it) {
             int2 home_position = home_positions[placed];
             byte2 home_size = home_sizes[placed++];
             lint home_seed = position_seed2(seed->value, home_position);
-            spawn_home(world, prefab_home, e, home_seed, home_position, home_size, 4);
+            const byte floor = (byte) int_clamp(terrain_height_at(&th, home_position), 0, 255);
+            spawn_home(world, prefab_home, e, home_seed, home_position, home_size, floor, home_facing_to(home_position, position->value));
             if (dbg_log) {
                 zox_log("   + Home [%ix%i] Size [%ix%i]", home_position.x, home_position.y, home_size.x, home_size.y);
             }
