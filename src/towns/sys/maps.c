@@ -39,6 +39,9 @@ void town_map_system(iter* it) {
         const byte length = rt.length;
         const int2 map_size = rt.map_size;
         const int2 global_position_start = rt.global_start;
+        // the terrain's height anywhere, for homes' floors
+        TerrainHeights th;
+        const byte has_heights = terrain_heights_begin(world, zox_get_parent(world, e), &th);
 #ifdef zox_safety_checks
         if (!zox_disable_biomes && !biome_map->length) {
             zox_loge("[%s]'s TownMap: [BiomeMap] Invalid", zox_get_name(e));
@@ -242,57 +245,36 @@ void town_map_system(iter* it) {
             if (dbg_log) {
                 zox_log(" - Town Homes [%i]", homes_length);
             }
-            // Place Homes in map
-            for (int k = 0; k < homes_length; k++) {
-                entity home = homes[k];
-                int2 home_position = zox_getv(home, BlockPosition2);
-                byte2 home_size = zox_getv(home, HomeSize);
-                byte door_width = 2;
-                // home_height = ; byte wall_thickness = zox_getv(town, WallThickness);
-                // NOTE: For each position in chunk, XZ, we check if inside Home
-                // only the columns the home covers in this tunk
+            // homes: their parts on the map, the ground under them levelled to their floor with steps to their doors
+            //  (fun/home.c), their floor the terrain at their middle, the same in every tunk
+            //  - two passes: margins and steps, then the homes themselves, a home's floor wins over a neighbour's steps
+            for (byte inside_pass = 0; inside_pass < 2; inside_pass++)
+            for (uint k = 0; k < homes_length; k++) {
+                const TownHome h = town_home(world, homes[k]);
+                const int floor = has_heights ? int_clamp(terrain_height_at(&th, h.center), 0, 255) : -1;
                 int2 home_from, home_to;
-                if (!region_tunk_box(&rt, home_position, (int2) { home_size.x / 2 + 1, home_size.y / 2 + 1 }, &home_from, &home_to)) {
+                const int2 reach = { h.half.x + 1, h.half.y + home_steps + 1 };
+                if (!region_tunk_box(&rt, h.center, reach, &home_from, &home_to)) {
                     continue;
                 }
                 for (position.x = home_from.x; position.x <= home_to.x; position.x++) {
                     for (position.y = home_from.y; position.y <= home_to.y; position.y++) {
-                        global_position = region_tunk_global(&rt, position);
-                        // NOTE: Skip if not in town
-                        if (!(global_position.x >= town_position.x - town_size.x / 2 &&
-                            global_position.x <= town_position.x + town_size.x / 2 &&
-                            global_position.y >= town_position.y - town_size.y / 2 &&
-                            global_position.y <= town_position.y + town_size.y / 2)) {
+                        const int2 g = region_tunk_global(&rt, position);
+                        if (g.x < left || g.x > right || g.y < bottom || g.y > top) {
                             continue;
                         }
-                        int index = int2_array_index(position, map_size);
-                        // NOTE: Skips if not in home
-                        if (!(global_position.x >= home_position.x - home_size.x / 2 &&
-                            global_position.x <= home_position.x + home_size.x / 2 &&
-                            global_position.y >= home_position.y - home_size.y / 2 &&
-                            global_position.y <= home_position.y + home_size.y / 2)) {
+                        const byte inside = abs(g.x - h.center.x) <= h.half.x && abs(g.y - h.center.y) <= h.half.y;
+                        if (inside != inside_pass) {
                             continue;
                         }
-                        // NOTE: 1 is inside town!
-                        byte left_wall = global_position.x == home_position.x - home_size.x / 2;
-                        byte right_wall = global_position.x == home_position.x + home_size.x / 2;
-                        byte back_wall = global_position.y == home_position.y - home_size.y / 2;
-                        byte front_wall = global_position.y == home_position.y + home_size.y / 2;
-                        // Gate is excluded from front wall
-                        byte in_door_x = (global_position.x >= home_position.x - door_width / 2 && global_position.x <= home_position.x + door_width / 2);
-                        byte is_door = front_wall && in_door_x;
-                        byte value;
-                        if (is_door) {
-                            value = zox_town_type_home_door;
-                        } else if (back_wall || front_wall || left_wall || right_wall) {
-                            value = zox_town_type_home_wall;
-                        } else {
-                            value = zox_town_type_home;
+                        const int index = int2_array_index(position, map_size);
+                        const int ground = floor >= 0 ? home_ground_at(&h, floor, g, height_map->value[index]) : -1;
+                        if (ground >= 0) {
+                            height_map->value[index] = ground;
                         }
-                        town_map->value[index] = value;
-                        /*if (is_effect_heights) {
-                            height_map->value[index] = town_height_target;
-                        }*/
+                        if (inside) {
+                            town_map->value[index] = home_part_at(&h, g);
+                        }
                     }
                 }
             }

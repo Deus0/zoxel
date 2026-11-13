@@ -11,6 +11,7 @@
 byte zox_disable_heights = 0;
 
 #include "com/_.c"
+#include "fun/_.c"
 #include "sys/_.c"
 
 void import_heights(ecs* world) {

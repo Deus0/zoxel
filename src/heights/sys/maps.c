@@ -23,35 +23,18 @@ void height_map_system(iter* it) {
             continue;
         }
 #endif
-        entity terrain = zox_get_parent(world, e);
-#ifdef zox_safety_checks
-        if (!zox_valid(terrain)) {
-            zox_loge("Invalid terrain");
+        const entity terrain = zox_get_parent(world, e);
+        TerrainHeights th;
+        if (!terrain_heights_begin(world, terrain, &th)) {
+            zox_loge("Invalid terrain, realm or its biomes");
             continue;
         }
-#endif
-        entity realm = zox_get_parent(world, terrain);
-#ifdef zox_safety_checks
-        if (!zox_valid(realm)) {
-            zox_loge("Invalid realm");
-            continue;
-        }
-#endif
-        const BiomeLinks* realm_biomes = zox_get(realm, BiomeLinks);
-#ifdef zox_safety_checks
-        if (!realm_biomes->length) {
-            zox_loge("No Biomes on Realm");
-            continue;
-        }
-#endif
-        lint seed = zox_getv(terrain, Seed);
-        byte terrain_depth = zox_getv(terrain, NodeDepth);
-        byte terrain_length = octree_size(terrain_depth);
+        const byte terrain_depth = zox_getv(terrain, NodeDepth);
+        const byte terrain_length = th.terrain_length;
         // now generate heightmap
         byte length = octree_size(lod->value);
         int2 map_size = int2_single(length);
         byte depth_difference = octree_size(terrain_depth - lod->value);
-        byte max_height = int_min(render_distance_y * (terrain_length - 1), 255);
 #ifdef zox_safety_checks
         if (!zox_disable_biomes && biome_map->length != length * length) {
             zox_logw("[biome_map] invalid size");
@@ -62,14 +45,6 @@ void height_map_system(iter* it) {
             tunk_position->value.x * terrain_length,
             tunk_position->value.y * terrain_length
         };
-        // each biome's height frequency, heights blend between them near their edges (biomes/fun/blend.c)
-        float frequencies[zox_biomes_max];
-        const byte biomes_count = zox_disable_biomes ? 1 : (byte) int_min(realm_biomes->length, zox_biomes_max);
-        for (byte b = 0; b < biomes_count; b++) {
-            const entity biome = realm_biomes->value[b];
-            frequencies[b] = zox_valid(biome) ? zox_getv(biome, BiomeHeightFrequency) : 0.01f;
-        }
-        const BiomeClimates climates = get_biome_climates(terrain_length, seed, biomes_count);
         int2 global_position = global_position_start;
         int2 position = int2_zero;
         resize_HeightMap(heightmap, length * length);
@@ -77,12 +52,7 @@ void height_map_system(iter* it) {
             global_position.y = global_position_start.y;
             for (position.y = 0; position.y < length; position.y++, global_position.y += depth_difference) {
                 const int index = int2_array_index(position, map_size);
-                if (zox_flatlands) {
-                    heightmap->value[index] = max_height / 2;
-                    continue;
-                }
-                heightmap->value[index] = get_terrain_height(global_position, terrain_length, seed,
-                    frequencies, &climates, max_height, zox_biome_blend);
+                heightmap->value[index] = terrain_height_at(&th, global_position);
             }
         }
         generate->value = zox_generate_tunk_vegetation;
