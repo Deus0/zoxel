@@ -7,7 +7,7 @@ static inline const char* character_id_link(ecs* world, entity character, entity
 }
 
 void character_id_text(ecs* world, entity character, char* text, int size) {
-    // the player's character has no name yet (todo), none like the rest
+    // none if it has no name
     const char* name = zox_has(character, ZoxName) && zox_getv(character, ZoxName)[0] ? zox_getv(character, ZoxName) : "none";
     const entity soul = zox_get_child_by_id(world, character, zox_id(StatSoul));
     const int level = zox_valid(soul) ? (int) floorf(zox_getv(soul, StatValue)) : 0;
