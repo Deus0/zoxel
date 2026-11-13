@@ -12,6 +12,7 @@
 #include "npc_skeletons.c"
 #include "npc_attacks.c"
 #include "player_respawn.c"
+#include "footsteps.c"
 #include "pipeline_syncs.c"
 #include "lines_render.c"
 #include "town_maps.c"
@@ -28,21 +29,7 @@ double zox_tst_spawn_start = 0;
 
 // the voxel at a world block position, -1 if its chunk isn't loaded
 static inline int zox_tst_terrain_voxel(ecs* world, entity terrain, int3 block) {
-    const byte depth = zox_getv(terrain, NodeDepth);
-    const int length = octree_size(depth);
-    const int3 chunk_position = block_position_to_chunk_position(block, depth);
-    const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
-    const entity chunk = int3_hashmap_get(chunks->value, chunk_position);
-    if (!zox_valid(chunk) || !zox_has(chunk, VoxelNode)) {
-        return -1;
-    }
-    const byte3 local = {
-        block.x - chunk_position.x * length,
-        block.y - chunk_position.y * length,
-        block.z - chunk_position.z * length
-    };
-    const VoxelNode* voxels = zox_get(chunk, VoxelNode);
-    return getv_VoxelNode(voxels, depth, local);
+    return terrain_voxel_at(world, terrain, block);
 }
 
 // logs the state of the camera's terrain column, so a stalled spawn shows what it waits on
@@ -578,6 +565,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("shirt", zox_tst_shirt_ready, zox_tst_shirt_check, 120);
     zox_tst_add("npc_attacks", zox_tst_npc_attacks_ready, zox_tst_npc_attacks_check, 120);
     zox_tst_add("player_respawn", zox_tst_player_respawn_ready, zox_tst_player_respawn_check, 120);
+    zox_tst_add("footsteps", zox_tst_footsteps_ready, zox_tst_footsteps_check, 120);
     zox_tst_add("lod_chunk_lights", zox_tst_lod_chunk_lights_ready, zox_tst_lod_chunk_lights_check, 120);
     zox_tst_add("npc_skeletons", zox_tst_npc_skeletons_ready, zox_tst_npc_skeletons_check, 120);
     zox_tst_add("perf_stream", zox_tst_perf_stream_ready, zox_tst_perf_stream_check, 180);

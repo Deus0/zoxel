@@ -12,6 +12,8 @@ entity spawn_prefab_character3_player(
     // zox_add(e, DisableMovement);
     zox_setv(e, FlyMode, 0);
     zox_add(e, BlockSoundTrigger);
+    zox_add(e, Footsteps);
+    zox_setv(e, FootstepDistance, 0);
     // Controller
     zox_setv(e, Movement3, float3_zero);
     // Input Triggers

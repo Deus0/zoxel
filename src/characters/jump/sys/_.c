@@ -3,10 +3,22 @@
 #include "jump_begin.c"
 #include "jump_sound.c"
 #include "land_sound.c"
+#include "footsteps.c"
 // zox_increment_system_with_reset(JumpState, zox_dirty_end);
 // zox_increment_system_with_reset(LandState, zox_dirty_end);
 
 void zox_systems_jump(ecs* world) {
+    // main thread, in the spawn phase with the other spawners: it spawns sounds (no workers, no extra merges)
+    zox_system_1(
+        footsteps_system,
+        zoxp_spawn,
+        [in] physics.Grounded,
+        [in] physics3.Velocity3D,
+        [in] transforms3.Position3D,
+        [in] transforms3.Bounds3D,
+        [out] jumps.FootstepDistance,
+        [none] jumps.Footsteps
+    );
     // zoxd_system_increment(JumpState);
     // zoxd_system_increment(LandState);
     // jump

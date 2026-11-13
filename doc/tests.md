@@ -13,6 +13,7 @@ bash bsh/tst.sh <name> --nobuild         # rerun without building
 
 - Exit code 0 is a pass. A failed run's log is kept: `bin/tst/<name>_failed_*.log`.
 - Tests run hidden (`--background`), silent, with software rendering, capped memory and a timeout.
+- tst.sh builds `--debug --logs`. Testing a `--profiler` build with `--nobuild` adds merges (pipeline_syncs fails on it)
 - Tests run on `--tiny` terrain, ones in `medium_tests` (bsh/tst.sh) on `--medium` (far lods to compare).
 - Tests render in software (mesa llvmpipe, offscreen). The egl device is picked by machine: 0 on x86, 2 on the
   arm board. Override it with `zox_tst_egl_device=<n>` ("Invalid EGL device is requested" means a wrong one).
@@ -78,7 +79,7 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 | Sound and music | `sound_mixer` `sound_formats` `sound_instruments` `sound_balance` `voice_sounds` `hit_sounds` `hit_sound_links` `music_*` |
 | Body and gear | `parts` `shirt` `npc_skeletons` |
 | Text and ui | `text_data` `text_order` `font_glyphs` `font_fill` `font_glyphs_fill` `texture_lines` `menu_flow` `mouse_click` `ui_leaks` `tooltips` `options_toggle` `scroll_wheel` `list_order` `ui_layout` `exit_menu` `exit_game` |
-| Game | `load_games` `player_spawn` `continue_game` `end_game_cleanup` `stream_npcs` `npc_attacks` `player_respawn` `parts` `action_wheel` `item_split` `resume_no_punch` `pickup_pop` `editor` |
+| Game | `load_games` `player_spawn` `continue_game` `end_game_cleanup` `stream_npcs` `npc_attacks` `player_respawn` `footsteps` `parts` `action_wheel` `item_split` `resume_no_punch` `pickup_pop` `editor` |
 | Quests | `quest_tracking` `quest_dialogue` |
 | Performance | `perf_stream` `perf_fly` `mass_spawn` `mass_delete` `physics2_perf` `physics3_perf` |
 

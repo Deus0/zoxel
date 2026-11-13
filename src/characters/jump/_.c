@@ -10,6 +10,8 @@
 #define land_state_end 12
 
 zox_tag(SilentJumper);
+zox_tag(Footsteps);          // makes footstep sounds (sys/footsteps.c)
+zoxc_float(FootstepDistance);  // ground walked since its last step
 zoxc_byte(CanJump);
 zoxc_byte(JumpState);
 zoxc_byte(LandState);
@@ -27,6 +29,8 @@ static inline byte get_character_can_jump(ecs *world, entity c) {
 void import_jumps(ecs* world) {
     zox_module(jumps);
     zoxd_tag(SilentJumper);
+    zoxd_tag(Footsteps);
+    zoxd_float(FootstepDistance);
     zoxd_byte(CanJump);
     zoxd_byte(JumpState);
     zoxd_byte(LandState);

@@ -74,6 +74,13 @@ Named effects in [src/sounds/fun/effects.c](../src/sounds/fun/effects.c), instru
 - `sound_instruments`: writes `bin/tst/instruments/knock.wav`, `thud.wav` and so on, to listen to.
 - `hit_sound_links` (in game): every realm block and npc links a sound, slimes squelch, stone knocks, dirt thuds.
 
+## Footsteps
+
+- A character tagged `Footsteps` (players for now) plays the block underfoot's hit sound each stride, at 35% volume
+  and 60% length (`spawn_footstep_sound`, `characters/jump/sys/footsteps.c`).
+- `FootstepDistance` adds up the ground walked while grounded, a stride is 1.6 times its half height.
+- Main thread, in the spawn phase: flecs can't create entities (sounds) on worker threads.
+
 ## Next
 
-- Footsteps per block can reuse the same links (todo).
+- Npcs near the player could make footsteps too (tag them by distance, many would cost)
