@@ -16,6 +16,7 @@ byte zox_disable_homes = 0;
 #include "com/_.c"
 #include "pre/_.c"
 #include "ins/_.c"
+#include "fun/build.c"
 #include "fun/home.c"
 #include "sys/_.c"
 #include "dbg/_.c"

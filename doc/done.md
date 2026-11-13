@@ -1,6 +1,10 @@
 # Done
 
 ## Moved from todo (2026-11-14)
+-x Buildings as boxes (towns/fun/build.c, like model nodes): build_home writes a home in its own frame (floor,
+  walls, doorway, roof layers, gables, glow stone), turned to face its door to the town's middle (HomeFacing), filled
+  into chunks; HomeFloor set once at spawn; tst home_roofs (boxes, turned), home_foundations (doorways open),
+  town_view (a screenshot over the town)
 -x Homes stand level: the ground under them (and a block round) levelled to one floor (the terrain at their middle,
   terrain_height_at, the same in every tunk), steps from their doors a block a column; home building in one file
   (towns/fun/home.c), walls.c simpler; glow stones on a chunk's edge light into the next chunk; tst home_foundations
