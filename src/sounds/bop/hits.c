@@ -4,6 +4,7 @@
 //    and links it (HitSoundLink), character instances link their prefab's
 //  - spawn_hit_sound / spawn_hit_sound_at: a hit plays what is hit's sound, a fallback effect without one
 //  - spawn_character_hit_sound: a body's sound, and a voiced one (HitSoundVoiced) grunts in its own voice
+//  - spawn_footstep_sound: a walk on a block plays its hit sound, softer
 
 static inline uint hit_sound_hash(uint x) {
     x ^= x >> 16;
@@ -76,4 +77,26 @@ void spawn_character_hit_sound(ecs* world, entity character) {
         const Voice voice = voice_from_seed((uint) zox_getv(character, Seed));
         spawn_voice_grunt(world, &voice, 0.9f * get_volume_sfx(), character);
     }
+}
+
+// a footstep: the hit sound of the block underfoot, quieter and shorter (characters/jump/sys/footsteps.c)
+#define footstep_volume 0.35f
+#define footstep_length 0.6f
+uint zox_footsteps_played = 0;  // counted for tst footsteps
+entity spawn_footstep_sound(ecs* world, entity block, float3 position) {
+    const entity sound = zox_valid(block) ? zox_get_link(world, block, HitSoundLink) : 0;
+    if (!zox_valid(sound)) {
+        return 0;
+    }
+    SoundEffect effect = zox_get(sound, SoundEffectData)->value;
+    effect.volume_min *= footstep_volume;
+    effect.volume_max *= footstep_volume;
+    effect.seconds_min *= footstep_length;
+    effect.seconds_max *= footstep_length;
+    const entity e = spawn_sound_effect_data(world, &effect);
+    zox_footsteps_played++;
+    if (e) {
+        zox_set(e, SoundPosition, { position });
+    }
+    return e;
 }
