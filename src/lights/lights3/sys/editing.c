@@ -19,6 +19,10 @@ void voxel_light_system(iter* it) {
     entity realm = 0;
     byte solidity[zox_light_solidity_length];
     memset(solidity, 1, zox_light_solidity_length);
+    // light each block gives off, a removed emitter darkens what it lit, a placed one lights around it
+    entity emission_realm = 0;
+    byte emission[zox_light_solidity_length];
+    memset(emission, 0, zox_light_solidity_length);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(VoxelNodeQueue, input_queue);
@@ -39,12 +43,30 @@ void voxel_light_system(iter* it) {
             zox_get_link(world, e, BlockManagerLink),
             &realm,
             solidity);
+        update_light_emission(world, zox_get_link(world, e, BlockManagerLink), &emission_realm, emission);
         const LightNode* nnodesl[6];
         fetch_neightbor_light_nodes(world, neighbors, nnodesl);
         for (size_t j = 0; j < input_queue->count; j++) {
             VoxelNodeUpdate update = input_queue->ptr[j];
+            // once an edit, after it's set (old_value known): each was handled every frame it queued, before it was
+            //  set too, a removed glow stone was seen as nothing and its neighbours refilled it
+            if (update.state != zox_voxel_queue_post) {
+                continue;
+            }
             // Removing Voxel - Spreads Light
             if (!update.value) {
+                // a removed emitter (glow stone): darkness out from it at its light, the dark pass then refills from
+                //  the light left, not its own (its neighbours' light came from it, a flood from them kept it lit)
+                const byte emitted = update.old_value ? emission[update.old_value - 1] : 0;
+                if (emitted) {
+                    a_DarkQueue(dark_queue, (DarkUpdate) {
+                        .type = zox_light_type_flood,
+                        .pos = update.position,
+                        .depth = depth->value,
+                        .light = emitted,
+                        .distance = darklight_propogation_distance
+                    });
+                }
                 const LightNode* above = get_neighbor_LightNode(root_lnode, nnodesl, direction_up, update.position, depth->value);
                 byte light_above = above ? above->value : 0;
                 if (light_above == sunlight) {
@@ -64,7 +86,7 @@ void voxel_light_system(iter* it) {
                     }
                     // set dark light, as it was filled up
                     // set_LightNode(root_lnode, depth->value, update.position, sunlight, 0);
-                } else {
+                } else if (!emitted) {
                     byte max_nlight = light_above;
                     for (byte dir = 0; dir < 6; dir++) {
                         if (dir == direction_up) {
@@ -104,6 +126,22 @@ void voxel_light_system(iter* it) {
             }
             // Placing Voxel - Spreads Darkness!
             else { // if (update.value) {
+                // a placed emitter lights the air on its sides a step down (solid, the flood skips its own voxel), a step
+                //  down so a removal's darkness (at its light) clears them, equal light counts as another source
+                if (emission[update.value - 1]) {
+                    const int length = octree_size(depth->value);
+                    for (byte d = 0; d < 6; d++) {
+                        const sbyte3 o = neighbor_offsets[d];
+                        const int3 p = { update.position.x + o.x, update.position.y + o.y, update.position.z + o.z };
+                        if (p.x < 0 || p.y < 0 || p.z < 0 || p.x >= length || p.y >= length || p.z >= length) {
+                            continue;
+                        }
+                        a_LightQueue(light_queue, (LightUpdate) {
+                            .pos = int3_to_byte3(p), .depth = depth->value,
+                            .light = emission[update.value - 1] > light_air_decay ? emission[update.value - 1] - light_air_decay : darklight,
+                            .distance = light_propogation_distance });
+                    }
+                }
                 if (!solidity[update.value - 1]) {
                     continue;
                 }

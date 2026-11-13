@@ -76,7 +76,7 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 | Maths | `maths_vectors` `maths_quaternions` |
 | Physics | `physics_steps` `physics2_motion` `physics2_rotation` `physics3_motion` `physics3_rotation` `terrain_collisions` (each also `_10fps` `_30fps`), see [physics.md](physics.md) |
 | Octrees and chunks | `octree_*` `chunk_positions` `chunk_io` `chunk_sides` `vox_mesh_grid` `pipeline_syncs` `tilemap` |
-| Terrain | `biome_heights` `biome_map` `region_place` `region_place_prior` `region_zones` `town_homes` `home_roofs` `home_glow` `town_maps` `town_maps_empty` `vegetation_trees` `vegetation_cover` `vegetation_chunks` |
+| Terrain | `biome_heights` `biome_map` `region_place` `region_place_prior` `region_zones` `town_homes` `home_roofs` `home_glow` `glow_light` `town_maps` `town_maps_empty` `vegetation_trees` `vegetation_cover` `vegetation_chunks` |
 | Textures | `texture_noise` `texture_outline` |
 | Lights | `smooth_lights` `lod_lights` `lod_chunk_lights` `block_vox_lights` `block_vox_light_sampling` |
 | Rendering | `lines_spawn` `lines_render` `skeleton_render` `vox_instance_render` `terrain_render` `block_vox_light_sampling` `block_vox_lights` `screenshot` |
