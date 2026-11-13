@@ -68,6 +68,8 @@ Each step sets the next by the character's `BodyDirty` and `GenerateCharacter`.
 4. `character_bone_spawn_system` (`src/parts/sys/bones.c`): a bone a part slot.
    - Each bone gets the slot's position and size, and is tagged by the part's tags (`Head`, `Shoulder`, `Hand`...).
    - Every mesh vertex takes the **last** bone whose box (1.2 times its size) holds it (`generate_weights`).
+   - Gear gets a bone too, as any slot holding an item does: a hat's bone is a child of the head's, so it moves
+     with it. Clothes (anchor over) get none, or a shirt's bone, wider than the chest, would take the shoulders' voxels.
 
 ## Anchors
 

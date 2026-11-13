@@ -73,6 +73,7 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 | Textures | `texture_noise` `texture_outline` |
 | Rendering | `lines_spawn` `lines_render` `skeleton_render` `vox_instance_render` `terrain_render` `block_vox_light_sampling` `block_vox_lights` `screenshot` |
 | Sound and music | `sound_mixer` `sound_formats` `sound_instruments` `sound_balance` `voice_sounds` `hit_sounds` `hit_sound_links` `music_*` |
+| Body and gear | `parts` `shirt` `npc_skeletons` |
 | Text and ui | `text_data` `text_order` `font_glyphs` `font_fill` `font_glyphs_fill` `texture_lines` `menu_flow` `mouse_click` `ui_leaks` `tooltips` `options_toggle` `scroll_wheel` `list_order` `ui_layout` `exit_menu` `exit_game` |
 | Game | `load_games` `player_spawn` `continue_game` `end_game_cleanup` `stream_npcs` `parts` `action_wheel` `item_split` `resume_no_punch` `pickup_pop` `editor` |
 | Quests | `quest_tracking` `quest_dialogue` |

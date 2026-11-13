@@ -1,6 +1,8 @@
 # Done
 
 ## Moved from todo (2026-11-13)
+-x Body and equipment doc (doc/body_equips.md), a shirt: generated from a blueprint like body parts, worn in a
+  shirt slot over the chest (anchor over, no bone of its own), players get the realm's, tst shirt
 -x Realm sounds: hits sound like what they hit, stone knocks, dirt thuds, sand crunches, wood tocks, leaves rustle,
   slimes squelch, bodies thump and grunt in their own voice (distorted), sound entities of the realm linked by
   block and character kinds (doc/sounds.md), tst hit_sounds, hit_sound_links, sound_balance
