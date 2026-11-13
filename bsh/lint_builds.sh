@@ -10,15 +10,15 @@ builds=0
 check() {
     local name="$1"; shift
     builds=$((builds + 1))
-    if bash bsh/build.sh zoxel "$@" --out "lint_${name}" > "bin/tst/lint_build_${name}.log" 2>&1; then
+    if bash bsh/build.sh zoxel "$@" --out "lint_${name}" > "tst/lint_build_${name}.log" 2>&1; then
         echo "+ [${name}] builds ($*)"
     else
         failed=$((failed + 1))
-        echo "!! [${name}] doesn't build ($*), bin/tst/lint_build_${name}.log:"
-        grep -m 10 -E "error" "bin/tst/lint_build_${name}.log"
+        echo "!! [${name}] doesn't build ($*), tst/lint_build_${name}.log:"
+        grep -m 10 -E "error" "tst/lint_build_${name}.log"
     fi
 }
-mkdir -p bin/tst
+mkdir -p tst
 check prerelease --logs --timings --release
 check release --release
 echo "[tst] [lint_builds] $([[ ${failed} == 0 ]] && echo PASSED || echo FAILED) [${builds}] builds, [${failed}] failed"

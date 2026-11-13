@@ -4,7 +4,7 @@
 //  - voices from seeds: deep ones and high ones, the same seed the same voice
 //  - a deep voice sounds lower than a tiny one, near its pitch (autocorrelation)
 //  - vowels sound different: an i is brighter than a u, an s hisses brighter than an m hums
-//  - writes bin/tst/voices.wav, a line said by a few voices, to listen to
+//  - writes tst/voices.wav, a line said by a few voices, to listen to
 //  - run: bash bsh/tst.sh voice_sounds
 #define zox_tst_voice_max 8192
 
@@ -128,7 +128,7 @@ void zox_tst_voice_sounds_check(ecs* world) {
         }
         at += sound_sample_rate / 2;
     }
-    zox_tst_write_wav("../tst/voices.wav", mix, at);
+    zox_tst_write_wav(zox_tst_path("voices.wav"), mix, at);
     free(mix);
 }
 

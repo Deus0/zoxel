@@ -17,6 +17,7 @@ zox_tag(Cylinder);
 #include "ins/_.c"
 #include "dbg/_.c"
 #include "lines/_.c"
+#include "tst/_.c"
 
 void import_geometry(ecs* world) {
     zox_module(geometry);
@@ -26,4 +27,5 @@ void import_geometry(ecs* world) {
     zoxd_tag(Cylinder);
     add_hook_spawn_prefabs(zox_prefabs_geometry);
     zox_add_module(lines);
+    zox_tsts_geometry();
 }

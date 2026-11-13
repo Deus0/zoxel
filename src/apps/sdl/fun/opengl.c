@@ -18,7 +18,7 @@ void app_gpu_end_system(iter* it) {
         return;
     }
     if (zox_screenshot_request[0]) {
-        if (zox_gpu_save_screenshot(zox_screenshot_request)) {
+        if (zox_gpu_save_screenshot(zox_screenshot_request, zox_getv(main_app, WindowSize))) {
             zox_log("+ saved screenshot [%s]", zox_screenshot_request);
         } else {
             zox_loge("failed to save screenshot [%s]", zox_screenshot_request);

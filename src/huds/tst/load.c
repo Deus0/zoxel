@@ -1,5 +1,5 @@
 // tst: load_games, the main menu's continue button lists saves and loads one
-//  - setup (before boot): saves root (zox_saves_root) is bin/tst/load_home, never the real saves
+//  - setup (before boot): saves root (zox_saves_root) is tst/load_home, never the real saves
 //      - makes more saves than the load list holds (it used to overflow and crash on continue)
 //      - each save has its own seed, and a newer modified time than the one before
 //  - clicks continue on the main menu, checks the load list keeps the newest saves
@@ -31,13 +31,8 @@ void zox_tst_load_games_setup() {
 #ifdef zox_windows
     zox_loge("[tst] load_games setup is posix only");
 #else
-    char cwd[256];
-    if (!getcwd(cwd, sizeof(cwd))) {
-        zox_loge("[tst] load_games can't get the working directory");
-        return;
-    }
-    char home[384];
-    snprintf(home, sizeof(home), "%s/../tst/load_home", cwd);
+    char home[512];
+    snprintf(home, sizeof(home), "%s", zox_tst_path("load_home"));
     char command[1024];
     snprintf(command, sizeof(command), "rm -rf '%s'", home);
     if (system(command) != 0) {

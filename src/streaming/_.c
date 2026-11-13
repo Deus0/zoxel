@@ -22,4 +22,5 @@ void import_streaming(ecs* world) {
     // initialize_settings_streaming(world);
     add_hook_spawn_prefabs(zox_define_prefabs_streaming);
     zox_tsts_streaming();
+    zox_tsts_camera_frustum();
 }

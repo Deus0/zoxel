@@ -1,7 +1,7 @@
 // tst: lines_render, 3D lines draw instanced, every line in one draw a camera, like particles
 //  - in a game, spawns zox_tst_lines_render_count lines around the player's camera, waits a few frames
 //  - this frame drew at least them (line3D_drawn), in a draw a camera, not a draw a line (line3D_draw_calls)
-//  - saves a screenshot to bin/tst/lines_render.ppm, to look at them
+//  - saves a screenshot to tst/lines_render.ppm, to look at them
 //  - logs the lines drawn and draws (builds with zox_disable_instancing draw a line at a time)
 //  - run: bash bsh/tst.sh lines_render
 byte zox_tst_player_spawn_ready(ecs* world);   // in _.c, after this is included
@@ -40,8 +40,8 @@ byte zox_tst_lines_render_ready(ecs* world) {
     zox_tst_lines_render_frame++;
     zox_tst_waiting = "the lines to render";
     if (zox_tst_lines_render_frame == zox_tst_lines_render_frames) {
-        // a look at them: bin/tst/lines_render.ppm
-        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "../tst/lines_render.ppm");
+        // a look at them: tst/lines_render.ppm
+        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("lines_render.ppm"));
     }
     return zox_tst_lines_render_frame > zox_tst_lines_render_frames && !zox_screenshot_request[0];
 }

@@ -197,7 +197,7 @@ bash bsh/tst.sh stream_npcs --repeat 5   # for intermittent bugs
 bash bsh/tst.sh <name> --gdb    # backtrace on a crash
 ```
 
-- Exit code 0 means pass. A failed run's log is kept in `bin/tst/<name>_failed_*.log`.
+- Exit code 0 means pass. A failed run's log is kept in `tst/<name>_failed_*.log`.
 - Tests run the real game with `--tst <name>`, hidden, with software rendering, capped memory and a timeout.
   A bad run can't freeze the machine. `--gpu` / `--visible` use the real GPU.
 - Tests are written in a module's `tst/` folder and registered with `zox_tst_add(name, ready, check, timeout)`.

@@ -50,6 +50,98 @@ double zox_tst_heartbeat_seconds = 5;
 double zox_tst_started_time = 0;
 double zox_tst_heartbeat_time = 0;
 
+// the folder tests write to (screenshots, wavs, saves) and log to: the repo's tst/ (gitignored)
+//  - bsh/tst.sh passes it absolute as zox_tst_dir, else from where the game runs (bin/<build>/)
+const char* zox_tst_dir() {
+    const char* dir = getenv("zox_tst_dir");
+    return dir && dir[0] ? dir : "../../tst";
+}
+
+static inline void zox_tst_mkdir(const char* path) {
+#ifdef zox_windows
+    mkdir(path);
+#else
+    mkdir(path, 0755);
+#endif
+}
+
+// a path in the tst folder, i.e. zox_tst_path("screenshot.ppm") or "models/cokie.ppm"
+//  - makes the folders on the way, so a test can write to it straight away
+//  - from a ring of buffers, a few can be held at once (copy one to keep it longer)
+#define zox_tst_paths 8
+const char* zox_tst_path(const char* name) {
+    static char paths[zox_tst_paths][512];
+    static int next = 0;
+    char* path = paths[next];
+    next = (next + 1) % zox_tst_paths;
+    snprintf(path, sizeof(paths[0]), "%s/%s", zox_tst_dir(), name);
+    // each folder on the way, the tst folder included
+    const size_t start = strlen(zox_tst_dir());
+    for (size_t i = start; path[i]; i++) {
+        if (path[i] == '/' || i == start) {
+            const char kept = path[i];
+            path[i] = 0;
+            zox_tst_mkdir(path);
+            path[i] = kept;
+        }
+    }
+    return path;
+}
+
+// loads a binary ppm (zox_gpu_save_screenshot's), returns rgb pixels top row first, free it after
+byte* zox_tst_load_ppm(const char* path, int2* size) {
+    FILE* file = fopen(path, "rb");
+    if (!file) {
+        return NULL;
+    }
+    int max_value = 0;
+    if (fscanf(file, "P6 %i %i %i", &size->x, &size->y, &max_value) != 3 || size->x <= 0 || size->y <= 0) {
+        fclose(file);
+        return NULL;
+    }
+    fgetc(file);  // the one whitespace after the header
+    const size_t length = (size_t) size->x * size->y * 3;
+    byte* pixels = malloc(length);
+    if (pixels && fread(pixels, 1, length, file) != length) {
+        free(pixels);
+        pixels = NULL;
+    }
+    fclose(file);
+    return pixels;
+}
+
+// copies a file, i.e. a screenshot kept under another name
+byte zox_tst_copy_file(const char* from, const char* to) {
+    FILE* in = fopen(from, "rb");
+    if (!in) {
+        return 0;
+    }
+    FILE* out = fopen(to, "wb");
+    if (!out) {
+        fclose(in);
+        return 0;
+    }
+    char buffer[65536];
+    size_t read;
+    byte success = 1;
+    while ((read = fread(buffer, 1, sizeof(buffer), in)) > 0) {
+        success &= fwrite(buffer, 1, read, out) == read;
+    }
+    fclose(in);
+    fclose(out);
+    return success;
+}
+
+// the rgb pixel at x, y (top row first, as zox_tst_load_ppm loads) of a w wide image
+static inline const byte* zox_tst_ppm_pixel(const byte* pixels, int2 size, int x, int y) {
+    return &pixels[((size_t) y * size.x + x) * 3];
+}
+
+// how different two pixels are, 0 to 765
+static inline int zox_tst_pixel_difference(const byte* a, const byte* b) {
+    return abs(a[0] - b[0]) + abs(a[1] - b[1]) + abs(a[2] - b[2]);
+}
+
 // called by ready functions with any number that changes while things progress (counts, states)
 void zox_tst_progress(double value) {
     if (!zox_tst_progress_used || value != zox_tst_progress_value) {

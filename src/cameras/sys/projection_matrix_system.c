@@ -56,11 +56,13 @@ void projection_matrix_system(iter* it) {
     zox_sys_in(PixelSize);
     zox_sys_in(FieldOfView);
     zox_sys_in(CameraNearDistance);
+    zox_sys_in(CameraFarDistance);
     zox_sys_out(ProjectionMatrix);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(PixelSize, screenDimensions);
         zox_sys_i(FieldOfView, fieldOfView);
         zox_sys_i(CameraNearDistance, cameraNearDistance);
+        zox_sys_i(CameraFarDistance, far);
         zox_sys_o(ProjectionMatrix, projectionMatrix);
         if(screenDimensions->value.y <= 0) {
             continue;
@@ -70,7 +72,7 @@ void projection_matrix_system(iter* it) {
             &projectionMatrix->value,
             aspect_ratio,
             cameraNearDistance->value,
-            camera_far_distance,
+            far->value,
             fieldOfView->value);
     }
     zox_sys_on_end();

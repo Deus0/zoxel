@@ -1,11 +1,10 @@
 // Saves the frame being drawn (the back buffer) as a binary PPM, i.e. so tests can look at the rendering
 //  - call before the buffer swap, after everything is drawn
+//  - size: the window's, the whole screen whichever viewport was drawn last (split screen, viewport cameras)
 //  - returns 1 on success
-static inline byte zox_gpu_save_screenshot(const char* path) {
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    const int width = viewport[2];
-    const int height = viewport[3];
+static inline byte zox_gpu_save_screenshot(const char* path, int2 size) {
+    const int width = size.x;
+    const int height = size.y;
     if (width <= 0 || height <= 0) {
         return 0;
     }
@@ -14,7 +13,7 @@ static inline byte zox_gpu_save_screenshot(const char* path) {
         return 0;
     }
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
-    glReadPixels(viewport[0], viewport[1], width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     FILE* file = fopen(path, "wb");
     if (!file) {
         free(pixels);

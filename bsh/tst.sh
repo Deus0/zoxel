@@ -15,8 +15,8 @@
 # Tests are added with zox_tst_add in a module's tst folder (see src/core/tst/_.c)
 # Safety: low priority, memory capped and killed on timeout, so a bad run can't freeze the pc
 #   override with zox_tst_timeout=<seconds> zox_tst_memory=<size> zox_tst_log_max=<bytes>
-#   also killed if the machine's MemAvailable drops below zox_tst_mem_floor (KB, default 1.5GB),
-#   since gpu driver memory isn't under the cgroup cap; trace in bin/tst/<name>.mem
+#   also killed if the machine's MemAvailable drops below zox_tst_mem_floor (KB, default 1GB of the 8GB board),
+#   since gpu driver memory isn't under the cgroup cap; trace in tst/<name>.mem
 # Fail fast: killed once its log passes zox_tst_log_max (log spam), and the game itself
 #   fails a test after 100 logged errors (--tst-errors <n>)
 set -uo pipefail
@@ -57,11 +57,11 @@ for arg in "$@"; do
 done
 
 timeout_seconds="${zox_tst_timeout:-100}"
-memory_max="${zox_tst_memory:-2G}"
+memory_max="${zox_tst_memory:-4G}"   # 8GB boards, often idle while tests run
 log_max="${zox_tst_log_max:-20000000}"  # 20MB, a healthy test logs a few KB
 # system wide guard: gpu driver memory (mali) isn't charged to the cgroup cap, so also
 # kill the run when the whole machine's MemAvailable drops below this (in KB)
-mem_floor_kb="${zox_tst_mem_floor:-1500000}"
+mem_floor_kb="${zox_tst_mem_floor:-1000000}"
 # small terrain unless stress testing it, streaming is the heaviest part of a run
 if [[ ${stress} == "0" ]]; then
     args+=("--tiny")
@@ -94,8 +94,11 @@ if [[ ${gpu} == "0" ]]; then
     [[ -z "${zox_tst_timeout:-}" ]] && timeout_seconds=200
 fi
 root="$(pwd)"
-log_dir="${root}/bin/tst"
+# tst/: logs, and the files tests write to look at (screenshots, wavs), gitignored
+#   the game finds it from zox_tst_dir (src/core/tst/_.c zox_tst_path)
+log_dir="${root}/tst"
 mkdir -p "${log_dir}"
+export zox_tst_dir="${log_dir}"
 # lint_* tests are scripts (bsh/<name>.sh), not the game: conventions, i.e. lint_systems
 lints=(lint_systems lint_builds)
 run_lint() {
@@ -118,7 +121,7 @@ if [[ ${build} == "1" ]]; then
     # cap the compiler too, it's a single big translation unit
     if ! (ulimit -v 4500000; nice -n 19 bash bsh/build.sh zoxel --debug --logs > "${log_dir}/build.log" 2>&1); then
         grep -m 20 "error" "${log_dir}/build.log"
-        echo "!! build failed, see [bin/tst/build.log]"
+        echo "!! build failed, see [tst/build.log]"
         exit 2
     fi
 fi
@@ -305,7 +308,7 @@ else
     tsts=("${lints[@]}" $(list_tsts))
 fi
 if [[ ${#tsts[@]} == 0 ]]; then
-    echo "!! no tests found, see [bin/tst/list.log]"
+    echo "!! no tests found, see [tst/list.log]"
     exit 2
 fi
 runs=$((${#tsts[@]} * repeat))

@@ -97,6 +97,20 @@ byte aabb_in_frustum_fast(
     return 1; // intersects/inside
 }
 
+// whether a camera sees any of a box: its frustum planes and their bounding box (CameraPlanes, Position3DBounds)
+//  - a quick sphere test, the frustum's bounding box, then the box's corners against each plane
+//  - chunk_frustum_system per chunk and camera, tst camera_frustum
+byte camera_sees_bounds(
+    const plane* planes,
+    const float6 frustum_bounds,
+    const bounds b)
+{
+    const byte frustum_inwards = 1;
+    return is_sphere_in_frustum(planes, b.center, float3_length(b.extents)) &&
+        is_bounds_in_position_bounds(frustum_bounds, b) &&
+        is_in_frustum(planes, b, frustum_inwards);
+}
+
 // TODO: Optimize this, perhaps with MegaChunks? Need to reduce the overall calls for >= 10k chunks
 // this sets RenderDisabled for chunks and their children
 void chunk_frustum_system(iter* it) {
@@ -104,7 +118,6 @@ void chunk_frustum_system(iter* it) {
     byte dbg_log = 0;
     zox_sys_on_begin();
     byte ignore_low_lods = 0;
-    byte frustum_inwards = 1; // we just using this for safety
     // cache camera positions first
     //  float6_array_d* camera_bounds = create_float6_array_d(1);
     // plane_array_d* camera_planes = create_plane_array_d(6);
@@ -190,26 +203,11 @@ void chunk_frustum_system(iter* it) {
             is_viewed = 1;
         }
         // For each Camera
-        float radius = float3_length(chunk_bounds.extents);
         for (int j = 0; j < camera_count && !is_viewed; j++) {
-            // float6 frustum_bounds = camera_bounds->data[j];
-            //plane* planes = &camera_planes->data[j * zox_camera_planes];
-            float6 frustum_bounds = camera_bounds[j];
-            plane* planes = &camera_planes[j * zox_camera_planes];
-            // our normals appear to be flipped
-            byte inside_sphere = is_sphere_in_frustum(
-                planes,
-                chunk_bounds.center,
-                radius);
-            is_viewed =
-                inside_sphere &&
-                is_bounds_in_position_bounds(
-                    frustum_bounds,
-                    chunk_bounds) &&
-                is_in_frustum(
-                    planes,
-                    chunk_bounds,
-                    frustum_inwards);
+            is_viewed = camera_sees_bounds(
+                &camera_planes[j * zox_camera_planes],
+                camera_bounds[j],
+                chunk_bounds);
             if (dbg_log >= 2) {
                 zox_log("Checking for Camera [%s]",
                     zox_getn(it2.entities[j]));

@@ -11,7 +11,7 @@ bash bsh/tst.sh <name> --gdb             # a backtrace on a crash
 bash bsh/tst.sh <name> --nobuild         # rerun without building
 ```
 
-- Exit code 0 is a pass. A failed run's log is kept: `bin/tst/<name>_failed_*.log`.
+- Exit code 0 is a pass. A failed run's log is kept: `tst/<name>_failed_*.log`.
 - Tests run hidden (`--background`), silent, with software rendering, capped memory and a timeout.
 - tst.sh builds `--debug --logs`. Testing a `--profiler` build with `--nobuild` adds merges (pipeline_syncs fails on it)
 - Tests run on `--tiny` terrain, ones in `medium_tests` (bsh/tst.sh) on `--medium` (far lods to compare).
@@ -60,7 +60,11 @@ void zox_tsts_my_module() {
   `zox_tst_find_click`, `zox_tst_ui_pointer_position`. Press and release on different frames.
 - **Listening**: tests run silent. A test can turn sounds on (`nosounds = 0`) to check sounds spawn, nothing
   plays. To hear one: `--sounds`, to record one: `SDL_AUDIO_DRIVER=disk` (see [audio.md](audio.md)).
-- **Files to look at**: write a `.wav` or a screenshot to `bin/tst/` (`song.wav`, `voices.wav`, `screenshot.ppm`).
+- **Files to look at**: write a `.wav` or a screenshot to `tst/` with `zox_tst_path("song.wav")` (makes sub folders,
+  `zox_tst_path("models/cokie.ppm")`), never a hardcoded path: the game runs from `bin/<build>/`, tst.sh passes the folder.
+- **Looking at a model**: `bash bsh/model.sh <name>` (iterating a blueprint: edit, run, look at
+  `tst/models/<name>.png`, ~45s with the build, ~10s `--nobuild`), or `zox_tst_model=<name> bash bsh/tst.sh model_views`, then `tst/model_views.ppm` (kept per model in `tst/models/<name>.ppm`): a realm
+  model from 4 viewports on gray (`spawn_viewport_camera`, `CameraFilter`, see [src/models/tst/model_views.c](../src/models/tst/model_views.c)).
 
 ## When you fix a bug
 
@@ -79,7 +83,8 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 | Terrain | `biome_heights` `biome_map` `region_place` `region_place_prior` `region_zones` `town_homes` `home_roofs` `home_glow` `glow_light` `town_maps` `town_maps_empty` `vegetation_trees` `vegetation_cover` `vegetation_chunks` |
 | Textures | `texture_noise` `texture_outline` |
 | Lights | `smooth_lights` `lod_lights` `lod_chunk_lights` `block_vox_lights` `block_vox_light_sampling` |
-| Rendering | `lines_spawn` `lines_render` `skeleton_render` `vox_instance_render` `terrain_render` `block_vox_light_sampling` `block_vox_lights` `screenshot` |
+| Rendering | `lines_spawn` `lines_render` `skeleton_render` `vox_instance_render` `terrain_render` `block_vox_light_sampling` `block_vox_lights` `screenshot` `model_views` |
+| Cameras | `camera_viewports` `camera_projection` `camera_orthographic` `camera_look_at` `camera_viewport_spawn` `camera_split_screen` `camera_downscale` `camera_frustum` `camera_filter` |
 | Sound and music | `sound_mixer` `sound_formats` `sound_instruments` `sound_balance` `voice_sounds` `hit_sounds` `hit_sound_links` `music_*` |
 | Body and gear | `parts` `clothes` `npc_skeletons` |
 | Text and ui | `text_data` `text_order` `font_glyphs` `font_fill` `font_glyphs_fill` `texture_lines` `menu_flow` `mouse_click` `ui_leaks` `tooltips` `options_toggle` `scroll_wheel` `list_order` `ui_layout` `exit_menu` `exit_game` |

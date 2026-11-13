@@ -23,7 +23,7 @@ void zox_tst_music_file_check(ecs* world) {
     }
     zox_tst_check(invalid == 0, "[%i] of [%i] notes have an invalid length or pitch", invalid, count);
     // round trip
-    const char* tmp_path = "../tst/music_roundtrip.zox";
+    const char* tmp_path = zox_tst_path("music_roundtrip.zox");
     MidiNote saved[3] = {
         { .time = 0, .length = 0.5, .frequency = 220 },
         { .time = 0.5, .length = 0.25, .frequency = 330 },
@@ -178,7 +178,7 @@ void zox_tst_music_timing_check(ecs* world) {
 //  - the same seed composes the same song, different seeds differ, and they vary in mode and form
 //  - its performance: timed notes in order, in the key and in note_frequencies, chords (3 notes together),
 //      varied lengths, some seeds swing, grace notes
-//  - renders a song to bin/tst/song.wav, to listen to
+//  - renders a song to tst/song.wav, to listen to
 //  - run: bash bsh/tst.sh music_compose
 // mixes a song's notes (its performed events) as the music system plays them, each scaled by gain (the music volume)
 float* zox_tst_mix_song(const Song* song, float gain, uint* out_length) {
@@ -348,7 +348,7 @@ void zox_tst_music_compose_check(ecs* world) {
     compose_song(666, instrument_soft_piano, &song);
     zox_log("[tst] song [666]: [%i] sections, [%u] steps of [%.2fs], [%u] notes over [%.0fs], mode [%i], tonic [%i], swing [%i]",
         song.sections_count, song.steps_count, song.step_seconds, song.events_count, song.seconds, song.mode, song.tonic, song.swing);
-    zox_tst_render_song(&song, "../tst/song.wav");
+    zox_tst_render_song(&song, zox_tst_path("song.wav"));
 }
 
 // tst: sound_balance, sound effects stand out over the music, at the game's volumes, on small speakers
@@ -356,7 +356,7 @@ void zox_tst_music_compose_check(ecs* world) {
 //  - drops every effect (sound_effects in sounds/fun/effects.c) at its middle values every few seconds
 //  - each must be louder than the music under it (rms over its length, by sound_balance_ratio, under _max),
 //      heard through a small speaker (a high pass at sound_balance_speaker_hz, laptops barely play below)
-//  - writes bin/tst/sound_balance.wav, the song with the effects, to listen to
+//  - writes tst/sound_balance.wav, the song with the effects, to listen to
 //  - run: bash bsh/tst.sh sound_balance
 #define sound_balance_ratio 2.0f            // about 6db over the music
 #define sound_balance_ratio_max 8.0f        // and not painfully over it
@@ -501,7 +501,7 @@ void zox_tst_sound_balance_check(ecs* world) {
         zox_tst_check(ratio >= sound_balance_ratio && ratio <= sound_balance_ratio_max,
             "a [%.0fhz] voice is [%.2f]x the music, on small speakers", voice.pitch, ratio);
     }
-    zox_tst_write_wav("../tst/sound_balance.wav", mix, length);
+    zox_tst_write_wav(zox_tst_path("sound_balance.wav"), mix, length);
     free(heard_sfx);
     free(sfx);
     free(heard_music);

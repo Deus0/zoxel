@@ -7,6 +7,7 @@ float dialogue_vignette = 3.1f;
 float dialogue_blur = 0.3f;
 float pause_vignette = 2.2f;
 #include "pre/_.c"
+#include "ins/_.c"
 #include "sys/_.c"
 
 void import_cameras3(ecs* world) {

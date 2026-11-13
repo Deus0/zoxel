@@ -1,5 +1,5 @@
 // tst: sky_clouds, clouds over the realm (src/sky): its children, high above, drifting with the wind
-//  - the player lifted, its body hidden and looking up, a screenshot (../tst/sky_clouds.ppm) to look at, it logs
+//  - the player lifted, its body hidden and looking up, a screenshot (tst/sky_clouds.ppm) to look at, it logs
 //    how much of a band above the middle is cloud (near white)
 //  - run: bash bsh/tst.sh sky_clouds, add --1080p to see it at the game's size (no hud: tst.sh adds --nohud)
 extern char zox_screenshot_request[256];
@@ -64,7 +64,7 @@ byte zox_tst_sky_clouds_ready(ecs* world) {
         if (zox_current_time - zox_tst_clouds_time < 3) {
             return 0;
         }
-        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "../tst/sky_clouds.ppm");
+        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("sky_clouds.ppm"));
         zox_tst_clouds_stage = 2;
         return 0;
     }
@@ -115,7 +115,7 @@ void zox_tst_sky_clouds_check(ecs* world) {
     zox_tst_check(now.y > zox_tst_clouds_ground + 20, "a cloud is at [%.1f], the ground [%.1f]", now.y, zox_tst_clouds_ground);
     const float moved = float3_distance(now, zox_tst_cloud_start);
     zox_tst_check(moved > 1, "a cloud drifted [%.2f] in 3 seconds", moved);
-    const float share = zox_tst_clouds_share("../tst/sky_clouds.ppm");
+    const float share = zox_tst_clouds_share(zox_tst_path("sky_clouds.ppm"));
     zox_tst_check(share >= 0, "no screenshot saved");
     zox_log("[tst] [metric] sky_clouds [%.1f%%] of the sky band is cloud, [%i] clouds, drifted [%.1f]", share, count, moved);
 }

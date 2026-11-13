@@ -81,7 +81,7 @@ Short tunes for moments: `spawn_jingle(world, jingle_level_up)`. Level up, quest
 - Zelda's lift, Metroid's mystery: a quick rising arpeggio landing on an open chord, a bell and choir over
   a low root, echoes of the bright notes.
 - Each note is a sound with a `SoundDelay`, the mixer starts it on its exact sample.
-- `tst jingles` checks they rise and land on a chord, and writes `bin/tst/jingles.wav`.
+- `tst jingles` checks they rise and land on a chord, and writes `tst/jingles.wav`.
 
 ## Music
 
@@ -123,9 +123,9 @@ swing on some seeds, a few milliseconds of looseness. The same seed always compo
 |---|---|
 | `sound_mixer` | panning, turning around, distance, voices finishing, the limiter |
 | `sound_balance` | every effect and voice over the realm's song, through a small speaker filter |
-| `sound_instruments` | every instrument generates, writes `bin/tst/instruments/*.wav` |
-| `voice_sounds` | syllables, voices from seeds, pitch, vowels, consonants, writes `bin/tst/voices.wav` |
-| `music_compose` | 20 seeds: form, key, chords, performance, writes `bin/tst/song.wav` |
+| `sound_instruments` | every instrument generates, writes `tst/instruments/*.wav` |
+| `voice_sounds` | syllables, voices from seeds, pitch, vowels, consonants, writes `tst/voices.wav` |
+| `music_compose` | 20 seeds: form, key, chords, performance, writes `tst/song.wav` |
 | `music_timing` | notes play on their starts, chords together, looping |
 
 - Tests run `--background`, which closes the audio device: they stay silent even when they turn sounds on.
