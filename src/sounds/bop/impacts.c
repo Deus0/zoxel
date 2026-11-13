@@ -29,12 +29,14 @@ float impact_sound(float time, float frequency) {
     return thump + smack + slap;
 }
 
-// a swing through the air: muffled air that brightens in the middle of the swing, frequency sets its body
+// a swing through the air: wind rushing past, airy noise and a soft rising howl peaking mid swing, a dull body under it
 float whoosh_sound(float time, float frequency) {
     const float swell = sinf(fminf(1, time * 4) * M_PI);
     const float dull = impact_noise(time, frequency * 8, 0.7f);
-    const float bright = impact_noise(time, frequency * 13, 1.9f);
-    return dull * (1 - 0.4f * swell) + bright * swell * 0.45f + 0.25f * sinf(2 * M_PI * frequency * 2 * time);
+    const float rush = impact_noise(time, frequency * 20, 2.7f) * swell * 0.8f;
+    const float body = dull * (1 - 0.4f * swell);
+    const float howl = 0.2f * sinf(2 * M_PI * frequency * (1.5f + 0.5f * swell) * time) * swell;
+    return rush + body + howl;
 }
 
 // Materials: what a hit sounds like by what it hits (hit_sounds in fun/effects.c, doc/sounds.md)
