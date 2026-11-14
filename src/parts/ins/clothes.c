@@ -169,11 +169,14 @@ entity spawn_blueprint_shorts(
     const byte leg_z = (waist.z - leg_size.z) / 2;
     // a leg's corner is its thigh's, less the margin, plus the waist's margin
     const byte legs_x[] = { thigh_x.x, thigh_x.y };
-    entity nodes[16];
+    entity nodes[32];
     byte count = 0;
     nodes[count++] = spawn_blueprint_box(world, (byte3) { 0, leg, 0 }, waist, 1, depth);
+    // rounded: the waist's upright edges (hips curving round), each leg a round tube
+    count = spawn_blueprint_bevel(world, nodes, count, (byte3) { 0, leg, 0 }, waist, 1, 2, depth);
     for (byte i = 0; i < 2; i++) {
         nodes[count++] = spawn_blueprint_box(world, (byte3) { legs_x[i], 0, leg_z }, leg_size, 1, depth);
+        count = spawn_blueprint_bevel(world, nodes, count, (byte3) { legs_x[i], 0, leg_z }, leg_size, 1, 1, depth);
     }
     nodes[count++] = spawn_node_model_colors(world, trim_color, 1);
     nodes[count++] = spawn_blueprint_paint(world, (byte3) { 0, leg + waist.y - 1, 0 }, (byte3) { waist.x - 1, 0, waist.z - 1 });
