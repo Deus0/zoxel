@@ -1,6 +1,21 @@
 // todo: Shapes on bones used for setting verts, spheres of influence
-// todo: use SphereRadius float per bone for a simple radius
 // NOTE: If Skeleton Dirty, or MeshDirty, Generate Weights
+
+// each vertex moves with the bone it's deepest in: its distance from the bone's middle over its half size, the
+//  largest of the three axes (under 1 inside its box)
+//  - a chest's rib stays with the chest, not a shoulder whose box reaches over it (it came away when the arms swung)
+//  - a vertex outside every box goes with the box nearest it (an arm's front poking past its box stayed with the chest,
+//    the sleeve tore and the skin showed through when it swung)
+//  - a score per bone, lowest wins: inside its box its depth less 1 (under 0), outside how far it is from the box
+static inline float bone_vertex_score(float3 p, float3 c, float3 s) {
+    const float3 d = { fabsf(p.x - c.x), fabsf(p.y - c.y), fabsf(p.z - c.z) };
+    const float depth = fmaxf(d.x / s.x, fmaxf(d.y / s.y, d.z / s.z));
+    if (depth <= 1) {
+        return depth - 1;
+    }
+    const float3 out = { fmaxf(d.x - s.x, 0), fmaxf(d.y - s.y, 0), fmaxf(d.z - s.z, 0) };
+    return sqrtf(out.x * out.x + out.y * out.y + out.z * out.z);
+}
 
 void generate_weights(
     ecs* world,
@@ -9,69 +24,27 @@ void generate_weights(
     const BoneLinks* bones,
     BoneIndexes* weights)
 {
-    // get all children bone positions and sizes
     float3 bone_positions[bones->length];
     float3 bone_sizes[bones->length];
-    float3 bones_bounds_lower[bones->length];
-    float3 bones_bounds_upper[bones->length];
     for (int j = 0; j < bones->length; j++) {
-        entity bone = bones->value[j];
-        bone_positions[j] = zox_getv(bone, BonePosition);
-        bone_sizes[j] = zox_getv(bone, BoneSize);
-        float3 half_size = bone_sizes[j];
-        if (block_depth >= 5) { // && zox_has(bone, ArmBone)) {
-            half_size = float3_multiply1(half_size, 1.2f);
-        }
-        bones_bounds_lower[j] = float3_subtract(
-            bone_positions[j],
-            half_size);
-        bones_bounds_upper[j] = float3_add(
-            bone_positions[j],
-            half_size);
+        bone_positions[j] = zox_getv(bones->value[j], BonePosition);
+        bone_sizes[j] = zox_getv(bones->value[j], BoneSize);
     }
     resize_BoneIndexes(weights, verts->length);
     for (int j = 0; j < verts->length; j++) {
-        float3 position = verts->value[j];
-        // default weight
+        const float3 p = verts->value[j];
         weights->value[j] = 0;
         if (disable_bones) {
             continue;
         }
-        // of the bones it's in, the one it's deepest in (its distance from the middle over its size): a chest's rib
-        //  stays with the chest, not a shoulder whose box reaches over it (it came away when the arms swung)
-        float deepest = 1000000;
+        float best = 1000000;
         for (int k = bones->length - 1; k >= 0; k--) {
-            float3 lower = bones_bounds_lower[k];
-            float3 upper = bones_bounds_upper[k];
-            // check in constraints
-            if (position.x >= lower.x &&
-                position.x <= upper.x &&
-                position.y >= lower.y &&
-                position.y <= upper.y &&
-                position.z >= lower.z &&
-                position.z <= upper.z)
-            {
-                const float3 c = bone_positions[k], s = bone_sizes[k];
-                const float depth = fmaxf(fabsf(position.x - c.x) / s.x, fmaxf(fabsf(position.y - c.y) / s.y, fabsf(position.z - c.z) / s.z));
-                if (depth >= deepest) {
-                    continue;
-                }
-                deepest = depth;
+            const float score = bone_vertex_score(p, bone_positions[k], bone_sizes[k]);
+            if (score < best) {
+                best = score;
                 weights->value[j] = k;
-                /*if (k == 1) {
-                 z ox_log("Bone *Vert Index Found: %i (vert %i)\n", k, j)
-            }*/
             }
-            /*if (j >= verts->length - 100) {
-             z ox_log("Bone Vert* Index Found: %i (vert %i)\n", k, j)
-             zox_log("  > position: %fx%fx%f", position.x, position.y, position.z)
-             zox_log("  > lower: %fx%fx%f", lower.x, lower.y, lower.z)
-             zox_log("  > upper: %fx%fx%f", upper.x, upper.y, upper.z)
-        }*/
         }
-        // for each position, check all bones, and see if it is within them
-        //if (position.y >= 0.12f * 0.5f) weights->value[j] = 1;
-        //else weights->value[j] = 0;
     }
     zox_add(e, SkeletonMeshDirty);
 }

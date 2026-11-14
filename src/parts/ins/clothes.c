@@ -187,10 +187,10 @@ entity spawn_blueprint_shorts(
     return link_blueprint_nodes(world, cloth_color, nodes, count);
 }
 
-// a shoe, worn over a foot (one a foot):
-//  - a box margin wider and longer than the foot in all (odd, it centres on an odd foot), height voxels up from its bottom
-//  - its edges bevelled: upright ones, and the toe's and heel's, a rounded cube
-//  - trim: a sole, a collar round its top, laces down its top's front half
+// a shoe, worn over a foot (one a foot), shaped like one: low at the toe, up round the ankle at the back
+//  - a margin wider and longer than the foot, its heel height tall, its toe a voxel lower (the foot under it)
+//  - rounded: its sides' upright edges, its toe's top 2 deep (a round toe), its heel's back edges, the step between
+//  - trim: a sole, a collar round the heel's top, laces down the toe's top (+z its front)
 entity spawn_blueprint_shoe(
     ecs* world,
     byte3 foot_size,
@@ -201,15 +201,20 @@ entity spawn_blueprint_shoe(
     byte height)
 {
     const byte3 size = { foot_size.x + margin, height, foot_size.z + margin };
-    entity nodes[16];
+    const byte3 toe = { size.x, height > 2 ? height - 1 : height, size.z };
+    const byte3 heel = { size.x, height, size.z / 2 };
+    entity nodes[40];
     byte count = 0;
-    nodes[count++] = spawn_blueprint_box(world, byte3_zero, size, 1, depth);
-    // softened: its upright edges, and its toe's and heel's (the edges across it)
+    nodes[count++] = spawn_blueprint_box(world, byte3_zero, toe, 1, depth);
+    count = spawn_blueprint_bevel(world, nodes, count, byte3_zero, toe, 0, toe.y > 2 ? 2 : 1, depth);
+    nodes[count++] = spawn_blueprint_box(world, byte3_zero, heel, 1, depth);
+    count = spawn_blueprint_bevel(world, nodes, count, byte3_zero, heel, 0, 1, depth);
+    // a flat sole under it, the toe and heel bevels cut its bottom edges
+    nodes[count++] = spawn_blueprint_box(world, byte3_zero, (byte3) { size.x, 1, size.z }, 1, depth);
     count = spawn_blueprint_bevel(world, nodes, count, byte3_zero, size, 1, 1, depth);
-    count = spawn_blueprint_bevel(world, nodes, count, byte3_zero, size, 0, 1, depth);
     nodes[count++] = spawn_node_model_colors(world, trim_color, 1);
     nodes[count++] = spawn_blueprint_paint(world, byte3_zero, (byte3) { size.x - 1, 0, size.z - 1 });
-    nodes[count++] = spawn_blueprint_paint(world, (byte3) { 0, size.y - 1, 0 }, (byte3) { size.x - 1, 0, size.z / 2 });
-    nodes[count++] = spawn_blueprint_paint(world, (byte3) { size.x / 2 - 1, size.y - 1, size.z / 2 }, (byte3) { 1, 0, size.z / 2 - 2 });
+    nodes[count++] = spawn_blueprint_paint(world, (byte3) { 0, height - 1, 0 }, (byte3) { size.x - 1, 0, heel.z - 1 });
+    nodes[count++] = spawn_blueprint_paint(world, (byte3) { size.x / 2 - 1, toe.y - 1, heel.z }, (byte3) { 1, 0, (size.z - heel.z) / 2 });
     return link_blueprint_nodes(world, cloth_color, nodes, count);
 }
