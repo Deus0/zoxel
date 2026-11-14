@@ -13,11 +13,8 @@
 - add female variant humanoids
 - tooltip got stuck when mouse left it (in game): deleting the hovered element clears it (tst tooltip_gone), what
   else? a hidden element, a closing window, the cursor leaving for the world
-- [09:03:03.671] [ERROR] Smooth Lights Error: Colors Past Limits [160] - Face [4] at Pos [2x3x3] Depth [2] of [2] is back as an error
-- tests are they in build? they shouldnt be included in release - add a zox_tests define?
 - map movement should be per pixel - and we should optimize it too
 - 3D uis are visible through buildings at distances, i was unsure how to fix this before
-- sky color should be blending when moving between biomes
 
 # Polish (play test notes, 2026-11-14)
 A polished core loop before more content.

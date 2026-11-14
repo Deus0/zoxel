@@ -1,6 +1,10 @@
 # Done
 
 ## Moved from todo (2026-11-14)
+-x Smooth Lights Colors Past Limits: a stale mesh (older than its sides) is rebuilt instead; tst tween_end (animations)
+-x Tests left out of release builds (zox_tests, set by --debug); tweens get an end event (AnimationEnded, observed)
+-x Sky blends between biomes (blend_sky_to, sky_blend_system), its fog with it; the gpu upload moved off the worker
+  thread biome_link_system ran on; tst sky_blend
 -x Start gear colours: dull, a hue away from the skin's, light on dark skin and dark on light (realm_skin_hsv, realm_gear_colors)
 -x Cookie: crumbs in the dough's second shade (they were its own colour, unseen), a bite out of its edge
 -x Font: g q y p j get their tails below the baseline (the ttf conversion wrapped negative points round to the top as
