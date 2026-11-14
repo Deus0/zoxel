@@ -77,3 +77,20 @@ static inline byte town_is_gate(ecs* world, entity town, int2 g) {
     const int2 local = build_unturn(side, int2_sub(g, gate));
     return abs(local.x) <= town_gate_width / 2 && local.y <= 0 && local.y > -thickness;
 }
+
+// the town whose walls block (global, x and z) is inside, 0 for none
+static inline entity town_at(ecs* world, int2 block) {
+    ecs_iter_t it = ecs_each_id(world, zox_id(Town));
+    while (ecs_each_next(&it)) {
+        for (int i = 0; i < it.count; i++) {
+            const entity town = it.entities[i];
+            const int2 center = zox_getv(town, BlockPosition2);
+            const byte2 size = zox_getv(town, TownSize);
+            if (size.x && abs(block.x - center.x) * 2 < size.x && abs(block.y - center.y) * 2 < size.y) {
+                ecs_iter_fini(&it);
+                return town;
+            }
+        }
+    }
+    return 0;
+}

@@ -11,5 +11,6 @@
 #include "pause.c"
 #include "respawn.c"
 #include "load.c"
+#include "toast.c"
 // Editor
 #include "terminal.c"

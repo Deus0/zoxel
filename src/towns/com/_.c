@@ -13,6 +13,9 @@ zoxc_byte(HomeHeight);
 zoxc_byte(HomeStyle);   // its roof: 0 flat, 1 peaked (fun/home.c), from its seed
 zoxc_byte(HomeFloor);   // its floor's height, the terrain at its middle (the ground under it is levelled to it)
 zoxc_byte(HomeFacing);  // its door faces: 0 +z, 1 +x, 2 -z, 3 -x (fun/build.c), to its town's middle
+zox_tag(InTown);        // a player's character inside a town's walls (in_town_system)
+// the town a character is in (with InTown)
+zox_tag(TownLink);
 #include "types.c"
 
 void zox_components_towns(ecs* world) {
@@ -31,4 +34,6 @@ void zox_components_towns(ecs* world) {
     zoxd_byte(HomeStyle);
     zoxd_byte(HomeFloor);
     zoxd_byte(HomeFacing);
+    zoxd_tag(InTown);
+    zoxd_nf_link(TownLink);
 }

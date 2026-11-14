@@ -1,4 +1,5 @@
-// The realm's in game music (generated), played when the player's character spawns
+// The realm's in game music (generated): the overworld's (track 0), played when the player's character spawns, and
+//  its towns' (track 1), played inside one (town_music_entered)
 //  - the main menu's music is on the game (spawn_menu_music), it lasts from boot
 void music_realm_spawn_system(iter* it) {
     zox_sys_on_begin();
@@ -21,6 +22,9 @@ void music_realm_spawn_system(iter* it) {
             (float2) { 1.0f, 1.4f }
         );
         add_to_MusicLinks(&musics_game, generated_music);
+        // in towns (track 1, town_music_entered): its own tune, a calmer flute
+        add_to_MusicLinks(&musics_game, spawn_music_generated(world, prefab_music_generated, 4242, instrument_flute,
+            (float2) { 0.8f, 1.0f }));
         zox_set_ptr(playlist_game, MusicLinks, musics_game);
         zox_logv("Realm [musics] [X] spawned.");
     }
@@ -54,4 +58,23 @@ void spawn_menu_music(ecs* world, entity app) {
     local_music = music;
     // the link above is deferred, so crossfades to the music itself
     crossfade_music(world, game, music);
+}
+
+// a player's character entering a town (InTown, in_town_system) plays the town's music, leaving it the overworld's
+void town_music_entered(iter* it) {
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        play_realm_track(world, zox_get_link(world, e, RealmLink), 1);
+    }
+}
+
+void town_music_left(iter* it) {
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        if (!zox_has(e, Dead)) {
+            play_realm_track(world, zox_get_link(world, e, RealmLink), 0);
+        }
+    }
 }
