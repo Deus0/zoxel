@@ -1,16 +1,17 @@
 void zoxel_settings_uis() {
-    // jrpg style: solid dark panels, bright crisp borders (they read against any sky, in vr too)
+    // jrpg style: solid dark panels, crisp borders in the theme's muted green (bright white was harsh), they read
+    //  against any sky, in vr too
     byte window_fill_alpha = 210;
     byte fill_alpha = 66;
     byte text_alpha = 172;
     byte text_outline_alpha = 222;
-    byte outline_alpha = 230;
-    byte outline_value = 205;
+    byte outline_alpha = 200;
+    const color theme_outline = (color) { 78, 118, 92, outline_alpha };
     // Windows
-    window_outline = color_grayscale_a(outline_value, outline_alpha);
+    window_outline = theme_outline;
     window_fill = (color) { 10, 18, 14, window_fill_alpha };
     // Headers
-    header_outline = color_grayscale_a(outline_value, outline_alpha);
+    header_outline = theme_outline;
     header_fill = (color) { 38, 70, 50, window_fill_alpha };
     header_font_outline = (color) { 158, 46, 237, text_outline_alpha };
     header_font_fill = (color) { 244, 33, 166, text_alpha };
@@ -20,7 +21,7 @@ void zoxel_settings_uis() {
     header_fonto_thickness = 3;
     header_font_thickness = 1;
     // Close Buttons
-    close_button_outline = color_grayscale_a(outline_value, outline_alpha);
+    close_button_outline = theme_outline;
     close_button_fill = color_grayscale_a(13, fill_alpha);
     close_button_font_outline = color_grayscale_a(166, text_outline_alpha);
     close_button_font_fill = color_grayscale_a(166, text_alpha);
@@ -30,7 +31,7 @@ void zoxel_settings_uis() {
     frame_outline = color_grayscale_a(12, fill_alpha);
     frame_fill = color_grayscale_a(188, fill_alpha);
     // Buttons
-    button_outline = color_grayscale_a(outline_value, fill_alpha);
+    button_outline = (color) { theme_outline.r, theme_outline.g, theme_outline.b, fill_alpha };
     button_fill = color_grayscale_a(0, fill_alpha);
     button_font_outline = (color) { 88, 25, 124, text_outline_alpha };
     button_font_fill = (color) { 246, 2, 199, text_alpha };
