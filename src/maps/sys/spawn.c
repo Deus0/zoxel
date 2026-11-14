@@ -51,6 +51,10 @@ void map_initialize_system(iter* it) {
         int2 piece_size = int2_divide1(
             used_size,
             1 + zoom->value * 2);
+        // the land: one view, drawn round the player (map_view_system); the debug maps keep a piece a tunk
+        if (!zox_dbg_maps) {
+            spawn_map_view(world, body, terrain, zoom->value, used_size, layer + 1, alpha->value);
+        } else
         for (int x = -zoom->value; x <= zoom->value; x++)
         for (int y = -zoom->value; y <= zoom->value; y++)
         {

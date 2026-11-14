@@ -39,6 +39,7 @@ byte zox_flatlands = 0;
 #include "com/_.c"
 #include "pre/_.c"
 #include "ins/_.c"
+#include "fun/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
 
@@ -46,6 +47,7 @@ void import_tunks(ecs* world) {
     zox_module(tunks);
     zox_components_tunks(world);
     zox_systems_tunks(world);
+    zox_on_add(tunk_map_colors_dirty, [none] chunks3.VoxelNodeDirty, [none] chunks3.ChunkPosition);
     add_hook_spawn_prefabs(spawn_prefabs_tunks);
     zox_systems_tunks_debug(world);
 }
