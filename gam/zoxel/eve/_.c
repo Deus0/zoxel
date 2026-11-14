@@ -12,4 +12,6 @@ void app_initialize_zoxel(ecs* world, entity app) {
 void zox_events_zoxel(ecs* world) {
     zox_muter(prefab_app, InitializeEvent, event);
     add_to_InitializeEvent(event, app_initialize_zoxel);
+    zox_on_add(town_music_entered, [none] towns.InTown, [none] players.PlayerCharacter);
+    zox_observe(town_music_left, EcsOnRemove, [none] towns.InTown, [none] players.PlayerCharacter);
 }

@@ -5,6 +5,7 @@
 // Player
 #include "respawn.c"
 #include "load.c"
+#include "town.c"
 // Buttons
 #include "new_game.c"
 #include "realm_load.c"
@@ -17,4 +18,5 @@ void zox_events_huds(ecs* world) {
     zox_muter(prefab_player, PlayerStateEvent, player_event);
     add_to_PlayerStateEvent(player_event, player_state_pause_ui);
     add_to_PlayerStateEvent(player_event, player_state_respawn_ui);
+    zox_on_add(town_entered_toast, [none] towns.InTown, [none] players.PlayerCharacter);
 }

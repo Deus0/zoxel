@@ -83,14 +83,21 @@ void play_menu_music(ecs* world, entity game) {
     crossfade_music(world, game, zox_get_link(world, game, MenuMusicLink));
 }
 
-// the realm's in game music (its first playlist's first track)
-void play_realm_music(ecs* world, entity realm) {
+// a track of the realm's in game music (its first playlist's): 0 the overworld, 1 in towns (gam/zoxel/sys/music.c),
+//  its first if it has no such track
+void play_realm_track(ecs* world, entity realm, byte track) {
     const entity game = zox_get_link(world, realm, GameLink);
     const entity playlist = zox_get_child_by_id(world, realm, zox_id(Playlist));
     if (!zox_valid(game) || !zox_valid(playlist)) {
-        zox_loge("[play_realm_music] realm [%s] has no game or playlist", zox_getn(realm));
+        zox_loge("[play_realm_track] realm [%s] has no game or playlist", zox_getn(realm));
         return;
     }
     const MusicLinks* musics = zox_get(playlist, MusicLinks);
-    crossfade_music(world, game, musics->length ? musics->value[0] : 0);
+    track = track < musics->length ? track : 0;
+    crossfade_music(world, game, musics->length ? musics->value[track] : 0);
+}
+
+// the realm's overworld music
+void play_realm_music(ecs* world, entity realm) {
+    play_realm_track(world, realm, 0);
 }
