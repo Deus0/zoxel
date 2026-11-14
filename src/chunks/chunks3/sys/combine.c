@@ -1,3 +1,68 @@
+// clothes voxels past the body, their part found after every part is placed
+typedef struct {
+    byte3* positions;
+    byte* entries;
+    int count;
+    int capacity;
+} combine_parts_pending;
+
+#define combine_part_unset 255
+#define combine_part_search 3   // voxels out from a clothes voxel to look for the body under it (its thickness)
+
+// a voxel's part: its entry's, or for clothes (over), the part it covers, else found later (the nearest body part)
+static inline void combine_part_set(BoneNode* parts, combine_parts_pending* pending, byte depth, byte3 position, byte entry, byte is_over) {
+    if (!is_over) {
+        set_BoneNode(parts, depth, position, entry + 1);
+        return;
+    }
+    // over a part already (or waiting already)
+    if (getv_BoneNode(parts, depth, position)) {
+        return;
+    }
+    if (pending->count == pending->capacity) {
+        pending->capacity = pending->capacity ? pending->capacity * 2 : 64;
+        pending->positions = realloc(pending->positions, pending->capacity * sizeof(byte3));
+        pending->entries = realloc(pending->entries, pending->capacity);
+    }
+    pending->positions[pending->count] = position;
+    pending->entries[pending->count++] = entry;
+    set_BoneNode(parts, depth, position, combine_part_unset);
+}
+
+// a clothes voxel past the body takes the nearest body voxel's part (a sleeve's outside its arm's), searched out a
+//  shell at a time; none near, its own entry (CombineBones gives it its parent's bone)
+static inline void combine_parts_resolve(BoneNode* parts, combine_parts_pending* pending, byte depth) {
+    const int length = octree_size(depth);
+    for (int i = 0; i < pending->count; i++) {
+        const byte3 p = pending->positions[i];
+        // a part placed after it took it (a leg after a glove)
+        if (getv_BoneNode(parts, depth, p) != combine_part_unset) {
+            continue;
+        }
+        byte found = 0;
+        for (int r = 1; r <= combine_part_search && !found; r++) {
+            for (int x = -r; x <= r && !found; x++)
+            for (int y = -r; y <= r && !found; y++)
+            for (int z = -r; z <= r && !found; z++) {
+                if (abs(x) != r && abs(y) != r && abs(z) != r) {
+                    continue;
+                }
+                const int3 q = { p.x + x, p.y + y, p.z + z };
+                if (q.x < 0 || q.y < 0 || q.z < 0 || q.x >= length || q.y >= length || q.z >= length) {
+                    continue;
+                }
+                const byte part = getv_BoneNode(parts, depth, (byte3) { q.x, q.y, q.z });
+                if (part && part != combine_part_unset) {
+                    found = part;
+                }
+            }
+        }
+        set_BoneNode(parts, depth, p, found ? found : pending->entries[i] + 1);
+    }
+    free(pending->positions);
+    free(pending->entries);
+}
+
 void combine_vox_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
@@ -48,6 +113,17 @@ void combine_vox_system(iter* it) {
         // Clear octree
         voctree->value = 0;
         collapse_VoxelNode(voctree);
+        // each voxel's part, for its bone (BoneNode, doc/plans/skeletons.md)
+        BoneNode* parts = zox_has(e, BoneNode) ? zox_getm(e, BoneNode) : NULL;
+        const CombineOver* over = zox_has(e, CombineOver) ? zox_get(e, CombineOver) : NULL;
+        if (over && over->length != voxes->length) {
+            over = NULL;
+        }
+        combine_parts_pending pending = { 0 };
+        if (parts) {
+            parts->value = 0;
+            collapse_BoneNode(parts);
+        }
         for (byte j = 0; j < voxes->length; j++) {
             entity vox = voxes->value[j];
             if (!zox_valid(vox)) {
@@ -138,6 +214,9 @@ void combine_vox_system(iter* it) {
                         }
                         byte3 positionb = ushort3_to_byte3(position);
                         set_VoxelNode(voctree, ndepth->value, positionb, value);
+                        if (parts) {
+                            combine_part_set(parts, &pending, ndepth->value, positionb, j, over && over->value[j]);
+                        }
                         // Expands the size of our vox
                         if (position.x >= new_csize.x) {
                             new_csize.x = position.x;
@@ -153,6 +232,10 @@ void combine_vox_system(iter* it) {
                 }
             }
             // zox_log(" + vox %i [%s] c[%i] at [%ix%ix%i] of s[%ix%ix%i]", j, zox_get_name(vox), acolors->length, vposition.x, vposition.y, vposition.z, vox_size.x, vox_size.y, vox_size.z);
+        }
+        if (parts) {
+            combine_parts_resolve(parts, &pending, ndepth->value);
+            optimize_reduce_BoneNode(parts);
         }
         zox_octree_lock_end(write_lock);
         csize->value = new_csize;

@@ -71,7 +71,7 @@ void zox_tst_skeleton_check_mesh(ecs* world, entity skeleton, entity e) {
         "[%s] has [%i] bone indexes for [%i] vertices", zox_getn(e), bone_indexes->length, vertices->length);
     int bad_bones = 0;
     for (int i = 0; i < bone_indexes->length; i++) {
-        bad_bones += bone_indexes->value[i] >= bones->length;
+        bad_bones += bone_indexes->value[i].x >= bones->length || bone_indexes->value[i].y >= bones->length;
     }
     zox_tst_check(!bad_bones, "[%s] has [%i] vertices weighted past [%i] bones",
         zox_getn(e), bad_bones, bones->length);

@@ -65,6 +65,14 @@ static inline void zox_gpu_array_buffer_byte(guint shader_index, guint buffer) {
     zox_gpu_bind_buffer_array(0);
 }
 
+// 4 bytes a vertex, as a vec4 of 0-1 (a skeleton mesh's two bones and weight)
+static inline void zox_gpu_array_buffer_byte4(guint shader_index, guint buffer) {
+    zox_gpu_bind_buffer_array(buffer);
+    glEnableVertexAttribArray(shader_index);
+    glVertexAttribPointer(shader_index, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
+    zox_gpu_bind_buffer_array(0);
+}
+
 static inline void zox_gpu_array_buffer(guint link, gsize length, byte byte_size, void* ptr) {
     zox_gpu_bind_buffer_array(link);
     zox_gpu_set_buffer_array(ptr, length * byte_size);

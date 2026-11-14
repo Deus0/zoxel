@@ -9,7 +9,7 @@ zoxc_float2(SwayBounds);    // mesh bottom y, mesh height - for sway top verts
 #include "bone_index.c"
 #include "material_bone.c"
 zoxc_float3(BonePosition);      // Local to skeleton
-zoxc_arrayd(BoneIndexes, byte);
+zoxc_arrayd(BoneIndexes, byte4);   // a vertex's bones: { bone, other bone, its weight 0-255, 0 } (bones/sys/generate.c)
 zoxc_arrayd(BoneLinks, entity);
 
 void zox_components_rendering3(ecs* world) {

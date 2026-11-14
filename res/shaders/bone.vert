@@ -1,6 +1,6 @@
 layout(location=0) in vec3 vertex_position;
 layout(location=1) in vec3 vertex_color;
-layout(location=2) in float bone_index;
+layout(location=2) in vec4 bone_index;    // two bones, the second's weight (bones/sys/generate.c), 0-1 bytes
 uniform mat4 mvp_matrix;
 uniform mat4 bone_matrix[32];
 uniform vec3 bone_positions[32];
@@ -9,11 +9,12 @@ out vec3 vertex_color_frag;
 out float fog_blend;
 
 void main() {
-    int bone_index2 = int(bone_index * 255.0);
-    mat4 bone = bone_matrix[bone_index2];
-    vec3 bone_position = bone_positions[bone_index2];
-    vec4 transformed_position = bone * vec4(vertex_position - bone_position, 1);
-    vec4 final_position = transformed_position;
+    // blended at joints: moved by both bones, by the second's weight
+    int a = int(bone_index.x * 255.0 + 0.5);
+    int b = int(bone_index.y * 255.0 + 0.5);
+    vec4 position_a = bone_matrix[a] * vec4(vertex_position - bone_positions[a], 1);
+    vec4 position_b = bone_matrix[b] * vec4(vertex_position - bone_positions[b], 1);
+    vec4 final_position = mix(position_a, position_b, bone_index.z);
     gl_Position = mvp_matrix * final_position;
     vertex_color_frag = vertex_color;
     float fog_level = gl_Position.z * gl_Position.z;

@@ -20,7 +20,7 @@ void bone_index_upload_system(iter* it) {
         zox_gpu_bind_buffer_array(gpu->value);
         zox_gpu_set_buffer_array(
             weights->value,
-            weights->length * sizeof(byte));
+            weights->length * sizeof(byte4));
         zox_gpu_bind_buffer_array(0);
         zox_remove(e, SkeletonMeshDirty);
         zox_add(e, MeshDirty);

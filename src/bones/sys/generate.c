@@ -1,50 +1,153 @@
-// todo: Shapes on bones used for setting verts, spheres of influence
-// NOTE: If Skeleton Dirty, or MeshDirty, Generate Weights
+// a vertex's bones from its vox's voxel parts (BoneNode), doc/plans/skeletons.md
+//  - a face's bone: its voxel's (half a voxel behind its middle, the solid side) part's bone (CombineBones)
+//  - a joint: a vertex whose corner touches voxels of a bone joined to the face's (its parent or child) blends toward it
+//    by how many of the 8 it is, so where a chest meets a shoulder both sides meet halfway; an arm resting on the chest
+//    isn't joined to it and stays its own
+//  - out: { bone, other bone, its weight 0-255, 0 }
+typedef struct {
+    const byte* grid;   // each voxel's bone at depth (255 air), flattened from BoneNode once a mesh
+    const CombineBones* table;
+    byte depth;
+    int length;         // voxels a side at depth
+    float size;         // a voxel at depth
+    float3 bounds;
+    const byte* parents;
+    int bones;
+} bone_parts;
 
-// each vertex moves with the bone it's deepest in: its distance from the bone's middle over its half size, the
-//  largest of the three axes (under 1 inside its box)
-//  - a chest's rib stays with the chest, not a shoulder whose box reaches over it (it came away when the arms swung)
-//  - a vertex outside every box goes with the box nearest it (an arm's front poking past its box stayed with the chest,
-//    the sleeve tore and the skin showed through when it swung)
-//  - a score per bone, lowest wins: inside its box its depth less 1 (under 0), outside how far it is from the box
-static inline float bone_vertex_score(float3 p, float3 c, float3 s) {
-    const float3 d = { fabsf(p.x - c.x), fabsf(p.y - c.y), fabsf(p.z - c.z) };
-    const float depth = fmaxf(d.x / s.x, fmaxf(d.y / s.y, d.z / s.z));
-    if (depth <= 1) {
-        return depth - 1;
+// the bone of the voxel at a grid position, 255 if air or outside
+static inline byte bone_parts_at(const bone_parts* b, int3 g) {
+    if (g.x < 0 || g.y < 0 || g.z < 0 || g.x >= b->length || g.y >= b->length || g.z >= b->length) {
+        return 255;
     }
-    const float3 out = { fmaxf(d.x - s.x, 0), fmaxf(d.y - s.y, 0), fmaxf(d.z - s.z, 0) };
-    return sqrtf(out.x * out.x + out.y * out.y + out.z * out.z);
+    return b->grid[(g.x * b->length + g.y) * b->length + g.z];
 }
 
-void generate_weights(
-    ecs* world,
-    entity e,
-    const MeshVertices* verts,
-    const BoneLinks* bones,
-    BoneIndexes* weights)
+// BoneNode's bones into a grid at depth (an octree walk a lookup was 31ms a body, 8 a vertex)
+static inline void bone_parts_fill(byte* grid, int length, const CombineBones* table, const BoneNode* node, byte depth,
+    byte target, int3 position)
 {
-    float3 bone_positions[bones->length];
-    float3 bone_sizes[bones->length];
-    for (int j = 0; j < bones->length; j++) {
-        bone_positions[j] = zox_getv(bones->value[j], BonePosition);
-        bone_sizes[j] = zox_getv(bones->value[j], BoneSize);
+    if (depth < target && has_children_BoneNode(node)) {
+        const BoneNode* kids = get_children_BoneNode(node);
+        for (byte i = 0; i < octree_length; i++) {
+            const byte3 o = octree_positions[i];
+            bone_parts_fill(grid, length, table, &kids[i], depth + 1, target,
+                (int3) { position.x * 2 + o.x, position.y * 2 + o.y, position.z * 2 + o.z });
+        }
+        return;
     }
-    resize_BoneIndexes(weights, verts->length);
-    for (int j = 0; j < verts->length; j++) {
-        const float3 p = verts->value[j];
-        weights->value[j] = 0;
-        if (disable_bones) {
+    const byte bone = !node->value ? 255 : node->value - 1 < table->length ? table->value[node->value - 1] : 0;
+    const int span = 1 << (target - depth);
+    const int3 start = { position.x * span, position.y * span, position.z * span };
+    for (int x = start.x; x < start.x + span; x++)
+    for (int y = start.y; y < start.y + span; y++) {
+        memset((byte*) grid + (x * length + y) * length + start.z, bone, span);
+    }
+}
+
+static inline int3 bone_parts_grid(const bone_parts* b, float3 p) {
+    return (int3) { (int) floorf((p.x + b->bounds.x) / b->size), (int) floorf((p.y + b->bounds.y) / b->size),
+        (int) floorf((p.z + b->bounds.z) / b->size) };
+}
+
+static inline byte bone_parts_joined(const bone_parts* b, byte x, byte y) {
+    return x < b->bones && y < b->bones && (b->parents[x] == y || b->parents[y] == x);
+}
+
+// a face's bone: its voxel, behind its middle on whichever side is solid
+static inline byte bone_parts_face(const bone_parts* b, const float3* v) {
+    const float3 c = float3_scale(float3_add(float3_add(v[0], v[1]), float3_add(v[2], v[3])), 0.25f);
+    const float3 n = float3_normalize(float3_cross(float3_sub(v[1], v[0]), float3_sub(v[2], v[0])));
+    const float h = b->size * 0.5f;
+    const byte front = bone_parts_at(b, bone_parts_grid(b, float3_add(c, float3_scale(n, h))));
+    const byte back = bone_parts_at(b, bone_parts_grid(b, float3_sub(c, float3_scale(n, h))));
+    return back != 255 ? back : front != 255 ? front : 0;
+}
+
+// a vertex: its face's bone, blended toward a joined bone among its corner's 8 voxels
+static inline byte4 bone_parts_vertex(const bone_parts* b, float3 p, byte bone) {
+    const int3 k = { (int) roundf((p.x + b->bounds.x) / b->size), (int) roundf((p.y + b->bounds.y) / b->size),
+        (int) roundf((p.z + b->bounds.z) / b->size) };
+    byte others[8], counts[8], kinds = 0, own = 0, best = 0;
+    for (int i = 0; i < 8; i++) {
+        const byte at = bone_parts_at(b, (int3) { k.x - 1 + (i & 1), k.y - 1 + ((i >> 1) & 1), k.z - 1 + ((i >> 2) & 1) });
+        if (at == bone) {
+            own++;
             continue;
         }
-        float best = 1000000;
-        for (int k = bones->length - 1; k >= 0; k--) {
-            const float score = bone_vertex_score(p, bone_positions[k], bone_sizes[k]);
-            if (score < best) {
-                best = score;
-                weights->value[j] = k;
+        if (at == 255 || !bone_parts_joined(b, bone, at)) {
+            continue;
+        }
+        byte j = 0;
+        while (j < kinds && others[j] != at) {
+            j++;
+        }
+        if (j == kinds) {
+            others[kinds] = at;
+            counts[kinds++] = 0;
+        }
+        counts[j]++;
+        best = counts[j] > counts[best] ? j : best;
+    }
+    if (!kinds) {
+        return (byte4) { bone, bone, 0, 0 };
+    }
+    return (byte4) { bone, others[best], (byte) (255 * counts[best] / (own + counts[best])), 0 };
+}
+
+// every vertex's bones, 4 a face (build_vox_mesh_at_depth), 0 if the vox has no parts
+byte generate_weights_parts(ecs* world, entity vox, byte depth, const MeshVertices* verts, const BoneLinks* bones, byte4* out) {
+    if (!zox_valid(vox) || !zox_has(vox, BoneNode) || !zox_has(vox, CombineBones) || verts->length % 4) {
+        return 0;
+    }
+    byte parents[bones->length];
+    for (int k = 0; k < bones->length; k++) {
+        const entity parent = zox_get_parent(world, bones->value[k]);
+        parents[k] = 255;
+        for (int j = 0; j < bones->length; j++) {
+            if (bones->value[j] == parent) {
+                parents[k] = j;
             }
         }
+    }
+    const byte node_depth = zox_getv(vox, NodeDepth);
+    const float block_scale = zox_getv(vox, BlockScale);
+    depth = depth > node_depth ? node_depth : depth;
+    const int length = octree_size(depth);
+    byte* grid = malloc(length * length * length);
+    const CombineBones* table = zox_get(vox, CombineBones);
+    const bone_parts b = {
+        .grid = grid,
+        .table = table,
+        .depth = depth,
+        .length = length,
+        .size = block_scale * (1 << (node_depth - depth)),
+        .bounds = calculate_vox_bounds(zox_getv(vox, ChunkSize), block_scale),
+        .parents = parents,
+        .bones = bones->length,
+    };
+    // the vox's octrees locked while read, the combine writes them (thread_safety.md)
+    spinlock* lock = zox_octree_lock(world, vox);
+    zox_octree_lock_begin(lock);
+    bone_parts_fill(grid, length, table, zox_get(vox, BoneNode), 0, depth, int3_zero);
+    zox_octree_lock_end(lock);
+    for (int i = 0; i < verts->length; i += 4) {
+        const byte bone = bone_parts_face(&b, &verts->value[i]);
+        for (int j = 0; j < 4; j++) {
+            out[i + j] = bone_parts_vertex(&b, verts->value[i + j], bone);
+        }
+    }
+    free(grid);
+    return 1;
+}
+
+// a skeleton mesh's weights from its vox's parts (all the chest's if it has none)
+void generate_weights(ecs* world, entity e, entity vox, byte depth, const MeshVertices* verts, const BoneLinks* bones,
+    BoneIndexes* weights)
+{
+    resize_BoneIndexes(weights, verts->length);
+    if (disable_bones || !generate_weights_parts(world, vox, depth, verts, bones, weights->value)) {
+        memset(weights->value, 0, sizeof(byte4) * weights->length);
     }
     zox_add(e, SkeletonMeshDirty);
 }
@@ -95,12 +198,7 @@ void bone_index_generate_system2(iter* it) {
             continue;
         }
         const BoneLinks* bones = zox_get(skeleton, BoneLinks);
-        generate_weights(
-            world,
-            e,
-            verts,
-            bones,
-            weights);
+        generate_weights(world, e, get_skeleton_vox(world, skeleton), zox_getv(e, RenderDepth), verts, bones, weights);
         if (dbg_log) {
             zox_log("Weights Updated [%s] Bones [%i]",
                 zox_sys_e_name,

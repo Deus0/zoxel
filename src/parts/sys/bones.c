@@ -1,3 +1,11 @@
+// the bone a slot's voxels move with: its CombineList entry (PartIndex) to the bone (doc/plans/skeletons.md)
+static inline void part_bone_set(ecs* world, CombineBones* table, entity slot, byte bone) {
+    const byte index = zox_has(slot, PartIndex) ? zox_getv(slot, PartIndex) : 0;
+    if (table && index && index <= table->length) {
+        table->value[index - 1] = bone;
+    }
+}
+
 // Spawns a bone for the item part, and children
 entity spawn_part_bones(
     ecs* world,
@@ -8,7 +16,9 @@ entity spawn_part_bones(
     entity parent,
     float3 parent_position,
     entity slot,
-    entity part)
+    entity part,
+    CombineBones* table,
+    byte parent_bone)
 {
     byte dbg_log = 0;
     if (!zox_valid(slot)) {
@@ -27,6 +37,7 @@ entity spawn_part_bones(
     // clothes (a shirt) move with what they cover: no bone, else a voxel picks the last bone around it
     //  (generate_weights) and a shirt's bone, wider than the chest, would hold the shoulders still
     if (zox_getv(slot, SlotAnchor) == body_anchor_over) {
+        part_bone_set(world, table, slot, parent_bone);
         return 0;
     }
     byte3 part_position = zox_getv(slot, PartPosition);
@@ -48,6 +59,8 @@ entity spawn_part_bones(
     entity bone = spawn_body_bone(world, prefab_bone, skeleton, parent, position, local_position, size);
     zox_set_unique_name(bone, "bbone");
     add_to_BoneLinks(bones, bone);
+    const byte bone_index = bones->length - 1;
+    part_bone_set(world, table, slot, bone_index);
     // TODO: FLip models around
     byte is_right_side = position.x < 0;
     if (zox_has(part, Head)) {
@@ -97,7 +110,7 @@ entity spawn_part_bones(
                 continue;
             }
             entity child_part = zox_get_link(world, e2, DataLink);
-            entity child_bone = spawn_part_bones(world, skeleton, bones, half_bounds, bscale, bone, position, e2, child_part);
+            entity child_bone = spawn_part_bones(world, skeleton, bones, half_bounds, bscale, bone, position, e2, child_part, table, bone_index);
             if (child_bone) {
                 zox_set_parent(world, child_bone, bone);
             }
@@ -151,7 +164,14 @@ void character_bone_spawn_system(iter* it) {
             continue;
         }
         entity chest_part = zox_get_link(world, chest_slot, DataLink);
-        spawn_part_bones(world, skeleton, bones, half_bounds, bscale->value, skeleton, float3_zero, chest_slot, chest_part);
+        // each body entry's bone (0, the chest, until set), for the meshes' weights
+        const entity vox = zox_get_link(world, e, VoxLink);
+        CombineBones* table = zox_valid(vox) && zox_has(vox, CombineBones) ? zox_getm(vox, CombineBones) : NULL;
+        if (table) {
+            resize_CombineBones(table, zox_get(vox, CombineList)->length);
+            memset(table->value, 0, table->length);
+        }
+        spawn_part_bones(world, skeleton, bones, half_bounds, bscale->value, skeleton, float3_zero, chest_slot, chest_part, table, 0);
         body_dirty->value = zox_generate_body_end;
         zox_add(skeleton, SkeletonDirty);
     }

@@ -14,6 +14,7 @@ entity spawn_attach_slot(
     zox_set_unique_name(e, "slot_attach");
     zox_setv(e, PartPosition, byte3_zero);
     zox_setv(e, PartSize, byte3_zero);
+    zox_setv(e, PartIndex, 0);
     zox_setv(e, PartOffset, int3_zero);
     zox_setv(e, SlotAnchor, anchor);
     return e;

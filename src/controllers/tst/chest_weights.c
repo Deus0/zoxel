@@ -1,7 +1,4 @@
-// tst: chest_weights, a humanoid's chest moves with its chest (bones/sys/generate.c): its vertices inside only the
-//  chest's own box are weighted to the chest, not a shoulder whose box reaches over its sides (the ribs
-//  came away from the body when the arms swung), and its arms beside it don't move with it (any vertex outside every
-//  bone's box went with the chest: an arm's front strip stayed still, the sleeve tore when it swung)
+// tst: chest_weights, a humanoid's mesh moves with its voxels' bones (checks below)
 //  - spawns a humanoid by the player, waits for its body, checks its active skeleton mesh's weights
 //  - run: bash bsh/tst.sh chest_weights
 int zox_tst_cweights_frames = 0;
@@ -27,6 +24,12 @@ byte zox_tst_chest_weights_ready(ecs* world) {
     return zox_tst_cweights_frames > 150;
 }
 
+// a humanoid's skeleton mesh moves with its voxels' parts (bones/sys/generate.c, doc/plans/skeletons.md)
+//  - every solid voxel of its vox has a part (BoneNode), none left waiting
+//  - a face's 4 vertices share its bone; blends only between a bone and its parent or child, and some joints blend
+//  - its arms beside the chest never move with it (an arm's front strip stayed still, the sleeve tore)
+//  - the box weights it replaced gave 1153 of 18268 vertices another bone at every joint (chest 149 hips, 146 a
+//    shoulder; hips 214 a thigh; head 86 the chest; shoulder 78 the arm)
 void zox_tst_chest_weights_check(ecs* world) {
     const entity skeleton = get_skeleton(world, zox_tst_cweights_npc);
     const entity mesh = zox_valid(skeleton) ? zox_get_link(world, skeleton, ActiveMesh) : 0;
@@ -37,48 +40,51 @@ void zox_tst_chest_weights_check(ecs* world) {
     const BoneLinks* bones = zox_get(skeleton, BoneLinks);
     const MeshVertices* vertices = zox_get(mesh, MeshVertices);
     const BoneIndexes* weights = zox_get(mesh, BoneIndexes);
-    // the chest: the first bone, the body's core, the rest hang off it
-    int inside_chest_only = 0, wrong = 0, shared_other = 0, deeper_in_chest = 0, beside = 0, beside_chest = 0;
-    for (int i = 0; i < vertices->length && i < weights->length; i++) {
-        const float3 p = vertices->value[i];
-        byte inside[bones->length];
-        for (int k = 0; k < bones->length; k++) {
-            const float3 c = zox_getv(bones->value[k], BonePosition);
-            const float3 s = zox_getv(bones->value[k], BoneSize);
-            inside[k] = fabsf(p.x - c.x) <= s.x && fabsf(p.y - c.y) <= s.y && fabsf(p.z - c.z) <= s.z;
-        }
-        byte only_chest = inside[0];
-        for (int k = 1; k < bones->length && only_chest; k++) {
-            only_chest = !inside[k];
-        }
-        // beside the chest (an arm, a sleeve), past its side and level with it: never moved by the chest
-        const float3 cc = zox_getv(bones->value[0], BonePosition), cs = zox_getv(bones->value[0], BoneSize);
-        if (fabsf(p.x - cc.x) > cs.x * 1.2f && fabsf(p.y - cc.y) < cs.y) {
-            beside++;
-            beside_chest += weights->value[i] == 0;
-        }
-        if (only_chest) {
-            inside_chest_only++;
-            wrong += weights->value[i] != 0;
-        } else if (inside[0] && weights->value[i] != 0) {
-            // in the chest and another bone, moved by the other: how deep in each (0 its middle, 1 its edge)
-            const int k = weights->value[i];
-            const float3 cc = zox_getv(bones->value[0], BonePosition), cs = zox_getv(bones->value[0], BoneSize);
-            const float3 oc = zox_getv(bones->value[k], BonePosition), os = zox_getv(bones->value[k], BoneSize);
-            const float chest_depth = fmaxf(fabsf(p.x - cc.x) / cs.x, fmaxf(fabsf(p.y - cc.y) / cs.y, fabsf(p.z - cc.z) / cs.z));
-            const float other_depth = fmaxf(fabsf(p.x - oc.x) / os.x, fmaxf(fabsf(p.y - oc.y) / os.y, fabsf(p.z - oc.z) / os.z));
-            shared_other++;
-            deeper_in_chest += chest_depth < other_depth;
+    const entity vox = get_skeleton_vox(world, skeleton);
+    zox_tst_check(zox_valid(vox) && zox_has(vox, BoneNode), "the humanoid's vox has no BoneNode");
+    if (!zox_valid(vox) || !zox_has(vox, BoneNode)) {
+        return;
+    }
+    const byte depth = zox_getv(vox, NodeDepth);
+    const int length = octree_size(depth);
+    const VoxelNode* voxels = zox_get(vox, VoxelNode);
+    const BoneNode* parts = zox_get(vox, BoneNode);
+    int solid = 0, unparted = 0, waiting = 0;
+    for (int x = 0; x < length; x++)
+    for (int y = 0; y < length; y++)
+    for (int z = 0; z < length; z++) {
+        const byte3 p = { x, y, z };
+        if (getv_VoxelNode(voxels, depth, p)) {
+            const byte part = getv_BoneNode(parts, depth, p);
+            solid++;
+            unparted += !part;
+            waiting += part == 255;
         }
     }
-    zox_log("[tst] [metric] chest_weights [%i] bones, [%i] vertices only in the chest, [%i] weighted to another bone",
-        bones->length, inside_chest_only, wrong);
-    zox_log("[tst] [metric] chest_weights [%i] vertices in the chest and another bone moved by the other, [%i] deeper in the chest",
-        shared_other, deeper_in_chest);
-    zox_tst_check(inside_chest_only > 0, "no vertices only in the chest");
-    zox_tst_check(!deeper_in_chest, "[%i] of the chest's vertices, deeper in it, move with another bone", deeper_in_chest);
-    zox_tst_check(!wrong, "[%i] of the chest\x27s vertices move with another bone", wrong);
-    zox_log("[tst] [metric] chest_weights [%i] vertices beside the chest, [%i] moved by it", beside, beside_chest);
-    zox_tst_check(beside > 0, "no vertices beside the chest (its arms)");
-    zox_tst_check(!beside_chest, "[%i] vertices beside the chest (its arms) move with it, they tear when the arms swing", beside_chest);
+    int split_faces = 0, blended = 0, unjoined = 0, beside = 0, beside_chest = 0;
+    const float3 cc = zox_getv(bones->value[0], BonePosition), cs = zox_getv(bones->value[0], BoneSize);
+    for (int i = 0; i < vertices->length && i < weights->length; i++) {
+        const byte4 w = weights->value[i];
+        split_faces += i % 4 == 0 && i + 3 < weights->length &&
+            (weights->value[i + 1].x != w.x || weights->value[i + 2].x != w.x || weights->value[i + 3].x != w.x);
+        if (w.z) {
+            blended++;
+            const entity a = bones->value[w.x], b = bones->value[w.y];
+            unjoined += zox_get_parent(world, a) != b && zox_get_parent(world, b) != a;
+        }
+        // beside the chest (an arm, a sleeve), past its side and level with it
+        const float3 p = vertices->value[i];
+        if (fabsf(p.x - cc.x) > cs.x * 1.2f && fabsf(p.y - cc.y) < cs.y) {
+            beside++;
+            beside_chest += w.x == 0 || (w.z && w.y == 0);
+        }
+    }
+    zox_log("[tst] [metric] chest_weights [%i] bones, voxels [%i] without a part [%i] waiting [%i]", bones->length, solid, unparted, waiting);
+    zox_log("[tst] [metric] chest_weights [%i] vertices, [%i] blended at joints, [%i] beside the chest", vertices->length, blended, beside);
+    zox_tst_check(solid && !unparted, "[%i] of [%i] voxels have no part", unparted, solid);
+    zox_tst_check(!waiting, "[%i] clothes voxels never found the part under them", waiting);
+    zox_tst_check(!split_faces, "[%i] faces have vertices on different bones", split_faces);
+    zox_tst_check(blended, "no joints blend");
+    zox_tst_check(!unjoined, "[%i] vertices blend between bones that aren't joined", unjoined);
+    zox_tst_check(beside > 0 && !beside_chest, "[%i] of [%i] vertices beside the chest move with it", beside_chest, beside);
 }

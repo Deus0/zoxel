@@ -16,6 +16,7 @@ zoxc_byte(BodyDirty);
 zoxc_byte3(BodySize);
 zoxc_byte3(PartPosition);
 zoxc_byte3(PartSize);
+zoxc_byte(PartIndex);  // its CombineList entry + 1 on the body's vox (0 none), for its bone (CombineBones)
 zoxc_int3(PartOffset); // for now
 
 #define zox_generate_body_start 1
@@ -42,5 +43,6 @@ void zox_components_bodys(ecs* world) {
     zoxd_byte3(BodySize);
     zoxd_byte3(PartPosition);
     zoxd_byte3(PartSize);
+    zoxd_byte(PartIndex);
     zoxd_int3(PartOffset);
 }

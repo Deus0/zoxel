@@ -91,7 +91,7 @@ void skeleton3_render_system(iter* it) {
             mvp_matrix);
         zox_gpu_float4x4_array(material_attributes->bone_matrix, transforms, bones->length);
         zox_gpu_float3_array(material_attributes->bone_positions, bone_positions, bones->length);
-        zox_gpu_array_buffer_byte(material_attributes->bone_index, bone_indicies->value);
+        zox_gpu_array_buffer_byte4(material_attributes->bone_index, bone_indicies->value);
         zox_gpu_bind_buffer_element(mesh->value.x);
         opengl_enable_vertex_buffer(material_attributes->vertex_position, mesh->value.y);
         opengl_enable_color_buffer(material_attributes->vertex_color, colors->value);

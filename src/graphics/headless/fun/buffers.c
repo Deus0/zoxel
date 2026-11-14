@@ -13,6 +13,7 @@ static inline void opengl_enable_vertex_buffer(uint shader_index, uint vertex_bu
 static inline void opengl_enable_uv_buffer(uint shader_index, uint uv_buffer) { }
 static inline void opengl_enable_color_buffer(uint shader_index, uint color_buffer) { }
 static inline void zox_gpu_array_buffer_byte(uint shader_index, uint buffer) { }
+static inline void zox_gpu_array_buffer_byte4(uint shader_index, uint buffer) { }
 
 static inline void zox_gpu_array_buffer(uint link, int length, byte byte_size, void* ptr) { }
 static inline void zox_gpu_element_buffer(uint link, int length, byte byte_size, void* ptr) { }

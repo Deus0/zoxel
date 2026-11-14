@@ -28,6 +28,7 @@ zoxc_array(ChunkNeighbors, entity, chunk_neighbors_length);
 zoxc_float(RaycastRange);
 #include "voxels.c"
 #include "sides.c"
+#include "bones.c"
 #include "queue.c"
 #include "damage.c"
 // Voxes
@@ -83,6 +84,9 @@ void zox_components_chunks3(ecs* world) {
     zoxd_octree(VoxelNode);
     zoxd(VoxelNodeLock);
     zoxd_octree(SidesOctree);
+    zoxd_octree(BoneNode);
+    zoxd_arrayd(CombineOver);
+    zoxd_arrayd(CombineBones);
     zoxd(SidesOctreeLock);
     zoxd_entitiesw(ChunkEntities);
     zoxd_nf_link(ChunkLink);
