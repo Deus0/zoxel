@@ -1,4 +1,4 @@
-// a vertex's bones from its vox's voxel parts (BoneNode), doc/plans/skeletons.md
+// a vertex's bones from its vox's voxel parts (BoneNode), doc/done/skeletons.md
 //  - a face's bone: its voxel's (half a voxel behind its middle, the solid side) part's bone (CombineBones)
 //  - a joint: a vertex whose corner touches voxels of a bone joined to the face's (its parent or child) blends toward it
 //    by how many of the 8 it is, so where a chest meets a shoulder both sides meet halfway; an arm resting on the chest

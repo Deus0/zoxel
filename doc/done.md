@@ -1,5 +1,9 @@
 # Done
 
+## Moved from todo (2026-11-15)
+-x Bones from the voxels, blended at joints: a BoneNode octree written at the merge, box weights gone (they gave
+  6% of a humanoid's vertices the wrong bone at every joint), tst chest_weights; doc/done/skeletons.md
+
 ## Moved from todo (2026-11-14)
 -x Lod swaps without flicker: no holes or dark chunks swapping lods flying, timers gone (tst lod_swap)
 -x Terrain streams 2.4x faster, the land near you keeps up flying (doc/done/streaming.md: plan 1 to 4), tst perf_fly

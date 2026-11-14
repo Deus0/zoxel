@@ -20,7 +20,6 @@ A polished core loop before more content.
 - Events: StreamEndEvent (and other function events) to observers
 - Population: more info per tunk (who lives there, counts), a level per region (like Trove), regions harder the
   further from the origin (world scale to decide)
-- Bones: bone weights as octree data on skeletons (refactor): plan in doc/plans/skeletons.md (analysis first)
 - IK on arms and legs, for more bending (a doc/tec doc first)
 - Towns: an age level, older towns are flatter (heights), bigger, with more buildings
 - Homes: tilted foundations for poor npcs (homes stand level now)

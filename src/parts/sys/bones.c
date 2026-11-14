@@ -1,4 +1,4 @@
-// the bone a slot's voxels move with: its CombineList entry (PartIndex) to the bone (doc/plans/skeletons.md)
+// the bone a slot's voxels move with: its CombineList entry (PartIndex) to the bone (doc/done/skeletons.md)
 static inline void part_bone_set(ecs* world, CombineBones* table, entity slot, byte bone) {
     const byte index = zox_has(slot, PartIndex) ? zox_getv(slot, PartIndex) : 0;
     if (table && index && index <= table->length) {

@@ -78,7 +78,7 @@ Module order matters: `chunks → physics → models → bones → characters �
 - A mesh per render depth is spawned **only when needed**, then cached, like terrain chunk meshes.
 - `PreparingMesh` builds while `ActiveMesh` renders. They swap when the prepared mesh is ready: `MeshBuilt` and no `BuildMesh` / `BuildMeshWeights` / `SkeletonMeshDirty` / `MeshDirty`.
 - When voxels change, cached meshes are deleted and the active mesh rebuilds in place.
-- Build pipeline: `BuildMesh` → `skeleton_mesh_build_system` → `BuildMeshWeights` → `bone_index_generate_system2` → `SkeletonMeshDirty` → bone upload (adds `MeshBuilt`) → `MeshDirty` → mesh upload.
+- Build pipeline: `BuildMesh` → `skeleton_mesh_build_system` → `BuildMeshWeights` → `bone_index_generate_system2` (each face its voxel's bone from the vox's `BoneNode`, blended at joints, [done/skeletons.md](done/skeletons.md)) → `SkeletonMeshDirty` → bone upload (adds `MeshBuilt`) → `MeshDirty` → mesh upload.
 - `SkeletonUpdate` (bones respawned) re-triggers weights on all of a skeleton's meshes.
 
 ---

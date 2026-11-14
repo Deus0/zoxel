@@ -113,7 +113,7 @@ void combine_vox_system(iter* it) {
         // Clear octree
         voctree->value = 0;
         collapse_VoxelNode(voctree);
-        // each voxel's part, for its bone (BoneNode, doc/plans/skeletons.md)
+        // each voxel's part, for its bone (BoneNode, doc/done/skeletons.md)
         BoneNode* parts = zox_has(e, BoneNode) ? zox_getm(e, BoneNode) : NULL;
         const CombineOver* over = zox_has(e, CombineOver) ? zox_get(e, CombineOver) : NULL;
         if (over && over->length != voxes->length) {

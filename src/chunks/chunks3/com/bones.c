@@ -1,4 +1,4 @@
-// a combined vox's voxel parts, so a skeleton mesh's vertices take their voxel's bone (doc/plans/skeletons.md)
+// a combined vox's voxel parts, so a skeleton mesh's vertices take their voxel's bone (doc/done/skeletons.md)
 //  - BoneNode: each voxel's part, its CombineList entry + 1 (0 air), written by combine_vox_system as it places them;
 //    clothes (CombineOver) take the part they cover, or the nearest part past the body
 //  - CombineBones: an entry's bone (its BoneLinks index), set by parts when it spawns the bones (clothes: their parent's)

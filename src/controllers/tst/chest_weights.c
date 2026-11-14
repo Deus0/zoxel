@@ -24,7 +24,7 @@ byte zox_tst_chest_weights_ready(ecs* world) {
     return zox_tst_cweights_frames > 150;
 }
 
-// a humanoid's skeleton mesh moves with its voxels' parts (bones/sys/generate.c, doc/plans/skeletons.md)
+// a humanoid's skeleton mesh moves with its voxels' parts (bones/sys/generate.c, doc/done/skeletons.md)
 //  - every solid voxel of its vox has a part (BoneNode), none left waiting
 //  - a face's 4 vertices share its bone; blends only between a bone and its parent or child, and some joints blend
 //  - its arms beside the chest never move with it (an arm's front strip stayed still, the sleeve tore)

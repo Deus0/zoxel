@@ -76,9 +76,11 @@ Each step sets the next by the character's `BodyDirty` and `GenerateCharacter`.
    - **Later parts overwrite earlier ones**, so a slot's children are drawn over it, and clothes (anchor over) last.
 4. `character_bone_spawn_system` (`src/parts/sys/bones.c`): a bone a part slot.
    - Each bone gets the slot's position and size, and is tagged by the part's tags (`Head`, `Shoulder`, `Hand`...).
-   - Every mesh vertex takes the **last** bone whose box (1.2 times its size) holds it (`generate_weights`).
+   - Every mesh face takes its voxel's bone: the merge writes each voxel's part into `BoneNode`, and each part maps to
+     its bone (`CombineBones`); vertices at a joint blend with the joined bone (`generate_weights`,
+     [done/skeletons.md](done/skeletons.md)).
    - Gear gets a bone too, as any slot holding an item does: a hat's bone is a child of the head's, so it moves
-     with it. Clothes (anchor over) get none, or a shirt's bone, wider than the chest, would take the shoulders' voxels.
+     with it. Clothes (anchor over) get none: their voxels take the bone of the part under them.
 
 ## Anchors
 

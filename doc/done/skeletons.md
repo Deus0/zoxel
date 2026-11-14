@@ -1,7 +1,7 @@
 # Skeletons: Bone Weights From an Octree
 
 How a skeleton character's mesh vertices get their bones now, why that's fragile, and a plan to store each voxel's bone
-in an octree written when the parts merge. Written 2026-11-14 (claude2) from reading the code; nothing changed yet.
+in an octree written when the parts merge. Written 2026-11-14 (claude2) from reading the code, done 2026-11-15 (below).
 
 Code: [src/parts/sys/combine.c](../../src/parts/sys/combine.c) (`body_combine_system`, `build_body_parts`),
 [src/chunks/chunks3/sys/combine.c](../../src/chunks/chunks3/sys/combine.c) (`combine_vox_system`),
@@ -12,6 +12,26 @@ Code: [src/parts/sys/combine.c](../../src/parts/sys/combine.c) (`body_combine_sy
 [src/chunks/chunks3/sys/build_colored.c](../../src/chunks/chunks3/sys/build_colored.c) (the face builders),
 [res/shaders/bone.vert](../../res/shaders/bone.vert), tests `chest_weights`, `npc_skeletons`, `skeleton_render`.
 Also [character.md](../character.md), [body_equips.md](../body_equips.md).
+
+## Done (2026-11-15, commit ee11b43a3)
+
+- Analysis first (chest_weights, a humanoid, its active mesh): every one of 5382 solid voxels got a part, and the box
+  weights gave 1153 of 18268 vertices another bone than their voxel's, at every joint: chest for hips 149, chest for a
+  shoulder 146, hips for the thighs 214, head for the chest 86, a shoulder for its arm 78.
+- `BoneNode` (chunks3/com/bones.c) is written by `combine_vox_system`: a voxel's CombineList entry + 1; clothes
+  (`CombineOver`) keep the part under them, past the body the nearest part within 3 voxels (else their own entry).
+  Parts sets `PartIndex` on each slot as it's placed; `spawn_part_bones` maps it to the slot's bone in `CombineBones`
+  (clothes: their parent's bone).
+- Weights (`generate_weights_parts`, bones/sys/generate.c): no change to the mesh builder. A face's voxel is found
+  half a voxel behind its middle (the solid side); each vertex's corner has 8 voxels, a joined bone (parent or child of
+  the face's) among them blends in by its share: `BoneIndexes` is byte4 { bone, other, weight, 0 }, `bone.vert` mixes
+  the two bone transforms. A plain joint plane meets at 50/50 from both sides, so the skin stays closed; an arm resting
+  on the chest isn't joined to it and doesn't blend. 977 vertices blend on that humanoid.
+- Cost: an octree walk a lookup made it 31-36ms a body; the parts are flattened to a grid at the mesh's depth once
+  (`bone_parts_fill`), 6.4ms at worst (the box weights were 12ms), 0.15ms a frame on average.
+- Box weights (`bone_vertex_score`) are gone. `BoneSize` stays for the head camera and the debug boxes.
+- Later: the blend is a voxel wide (the corner); wider (sample further from the corner) if joints bend sharply;
+  cloth simulation for capes and skirts (they follow the bone under them for now, the user is fine with that).
 
 ## How it works now
 
@@ -52,7 +72,7 @@ Also [character.md](../character.md), [body_equips.md](../body_equips.md).
   plus a pipeline stage (`BuildMeshWeights`) between building and uploading.
 - `BoneSize` is also used by `head_camera` (eye height) and `bone_render` (the debug boxes): those stay.
 
-## Proposal: a bone octree, written at the merge
+## The plan (as proposed, done above with small changes)
 
 ### Data
 
