@@ -24,13 +24,27 @@ int zox_tst_qd_slain = 0;
 int zox_tst_qd_jingle_notes = 0;    // delayed sounds after taking the quest (its jingle)
 int zox_tst_qd_voices = 0;
 
-// a quest giving npc with its dialogue
+// the realm's quest dialogue whose lines this checks, its quest Slem Infestation (gam/zoxel/sys/quests.c)
+static inline entity zox_tst_qd_tree(ecs* world, entity realm) {
+    entity trees[64];
+    const uint count = zox_get_children_by_id(world, realm, trees, 64, zox_id(QuestDialogue));
+    for (uint i = 0; i < count; i++) {
+        const entity quest = zox_get_link(world, trees[i], QuestLink);
+        if (zox_valid(quest) && !strcmp(zox_getv(quest, ZoxName), "Slem Infestation")) {
+            return trees[i];
+        }
+    }
+    return 0;
+}
+
+// a quest giving npc with that dialogue
 static inline entity zox_tst_qd_find_npc(ecs* world) {
     ecs_iter_t it = ecs_each_id(world, zox_id(QuestGiver));
     while (ecs_each_next(&it)) {
         for (int i = 0; i < it.count; i++) {
             const entity npc = it.entities[i];
-            if (zox_valid(zox_get_link(world, npc, Dialogue))) {
+            const entity tree = zox_get_link(world, npc, Dialogue);
+            if (zox_valid(tree) && tree == zox_tst_qd_tree(world, zox_get_link(world, npc, RealmLink))) {
                 ecs_iter_fini(&it);
                 return npc;
             }
@@ -39,12 +53,10 @@ static inline entity zox_tst_qd_find_npc(ecs* world) {
     return 0;
 }
 
-// any npc, made a quest giver like character_dialogue_system does (quest givers are random)
+// any npc, made a quest giver with that dialogue like character_dialogue_system does
 static inline entity zox_tst_qd_make_npc(ecs* world, entity character) {
-    const entity realm = zox_get_link(world, character, RealmLink);
-    const entity tree = zox_get_child_by_id(world, realm, zox_id(QuestDialogue));
-    const entity quest = zox_get_child_by_id(world, realm, zox_id(SlayQuest));
-    if (!zox_valid(tree) || !zox_valid(quest)) {
+    const entity tree = zox_tst_qd_tree(world, zox_get_link(world, character, RealmLink));
+    if (!zox_valid(tree)) {
         return 0;
     }
     ecs_iter_t it = ecs_each_id(world, zox_id(Character));
@@ -55,7 +67,7 @@ static inline entity zox_tst_qd_make_npc(ecs* world, entity character) {
                 ecs_iter_fini(&it);
                 zox_link(world, npc, Dialogue, tree);
                 zox_add(npc, QuestGiver);
-                spawn_quest_giving(world, npc, quest);
+                spawn_quest_giving(world, npc, zox_get_link(world, tree, QuestLink));
                 return npc;
             }
         }
@@ -63,10 +75,9 @@ static inline entity zox_tst_qd_make_npc(ecs* world, entity character) {
     return 0;
 }
 
-// the quest the quest dialogue gives (gam/zoxel/sys/dialogues.c, the realm's slay quest)
+// the quest its dialogue gives (its QuestLink)
 static inline entity zox_tst_qd_quest(ecs* world, entity npc) {
-    const entity realm = zox_get_link(world, npc, RealmLink);
-    return zox_valid(realm) ? zox_get_child_by_id(world, realm, zox_id(SlayQuest)) : 0;
+    return zox_get_link(world, zox_get_link(world, npc, Dialogue), QuestLink);
 }
 
 static inline void zox_tst_qd_begin(ecs* world, entity player, entity character, entity canvas) {

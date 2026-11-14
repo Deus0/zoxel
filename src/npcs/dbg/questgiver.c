@@ -74,20 +74,10 @@ void zox_tst_spawn_quest_giver_npc(
     }
     entity dialogue = dialogues[rand() % length];
     zox_link(world, e, Dialogue, dialogue);
-    // spawn quest
-    entity quests[capacity];
-    uint quests_length = zox_get_children_by_id(
-        world,
-        realm,
-        quests,
-        capacity,
-        zox_id(Quest));
-    // Add our test quest to our test character
-    entity player_start_quest = quests[rand() % quests_length];
-    spawn_quest_giving(
-        world,
-        e,
-        player_start_quest);
+    // its dialogue's quest to give
+    const entity player_start_quest = zox_get_link(world, dialogue, QuestLink);
+    zox_add(e, QuestGiver);
+    spawn_quest_giving(world, e, player_start_quest);
     // We need to link to the quest giver quest
     zox_tst_quest_giver = e;
     inspect_entity(world, e);

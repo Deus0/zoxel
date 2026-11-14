@@ -39,7 +39,6 @@ void character3_realm_spawn_system(iter* it) {
                 zox_loge("Boney failed to spawn");
                 continue;
             }
-            zox_add(e2, QuestGiver);
             zox_add(e2, Villager);
             link_hit_sound(world, e2, e, &hit_sound_flesh);
             if (is_add_stats) {
