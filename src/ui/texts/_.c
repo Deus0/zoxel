@@ -10,12 +10,16 @@ byte zox_texts_min_resolution = 32;
 #include "sys/_.c"
 #include "ins/_.c"
 #include "dbg/_.c"
+#ifdef zox_tests
 #include "tst/_.c"
+#endif
 
 void import_texts(ecs* world) {
     zox_module(texts);
     zox_components_texts(world);
     zox_systems_texts(world);
     add_hook_spawn_prefabs(spawn_prefabs_texts);
+#ifdef zox_tests
     zox_tsts_texts();
+#endif
 }

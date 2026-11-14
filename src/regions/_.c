@@ -31,12 +31,16 @@ byte region_dividor = 32;
 #include "ins/_.c"
 #include "fun/_.c"
 #include "sys/_.c"
+#ifdef zox_tests
 #include "tst/_.c"
+#endif
 
 void import_regions(ecs* world) {
     zox_module(regions);
     zox_components_regions(world);
     zox_systems_regions(world);
     add_hook_spawn_prefabs(spawn_prefabs_regions);
+#ifdef zox_tests
     zox_tsts_regions();
+#endif
 }

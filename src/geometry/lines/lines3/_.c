@@ -7,7 +7,9 @@ const float line_frame_timing = 1 / 10.0f;
 #include "shd/_.c"
 #include "fun/_.c"
 #include "sys/_.c"
+#ifdef zox_tests
 #include "tst/_.c"
+#endif
 
 void import_lines3(ecs* world) {
     zox_module(lines3);
@@ -15,5 +17,7 @@ void import_lines3(ecs* world) {
     add_hook_spawn_prefabs(spawn_prefabs_lines3D);
     zox_components_lines3(world);
     zox_systems_lines3(world);
+#ifdef zox_tests
     zox_tsts_lines3();
+#endif
 }

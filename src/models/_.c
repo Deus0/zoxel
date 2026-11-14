@@ -52,7 +52,10 @@ byte zox_block_outlines = 1;
 #include "sys/_.c"
 #include "io/_.c"
 #include "generation/_.c"
+#include "dbg/_.c"
+#ifdef zox_tests
 #include "tst/_.c"
+#endif
 
 void dispose_models(ecs *world, void *ctx) {
     dispose_files_voxes(world);
@@ -67,5 +70,7 @@ void import_models(ecs* world) {
     add_hook_spawn_prefabs(spawn_prefabs_models);
     add_hook_terminal_command(process_arguments_voxes);
     add_hook_files_load(load_files_voxes);
+#ifdef zox_tests
     zox_tsts_models();
+#endif
 }

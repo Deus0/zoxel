@@ -31,13 +31,17 @@ float stream_update_credit = 0;
 #include "dbg/_.c"
 #include "sys/_.c"
 #include "collisions/_.c"
+#ifdef zox_tests
 #include "tst/_.c"
+#endif
 
 void import_terrains(ecs* world) {
     zox_module(terrains);
     zox_components_terrain(world);
     zox_systems_terrain(world);
+#ifdef zox_tests
     zox_tsts_terrain(world);
+#endif
     add_hook_terminal_command(process_arguments_terrain);
     add_hook_spawn_prefabs(spawn_prefabs_terrain);
     add_hook_spawn_prefabs(zox_events_terrain);

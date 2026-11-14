@@ -17,14 +17,18 @@ byte texture_upload_rate = 0; // 8;
 #include "io/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
+#ifdef zox_tests
 #include "tst/_.c"
+#endif
 
 // todo: rename Textures as TextureLinks, and Textures to Textures again
 void import_textures(ecs* world) {
     zox_module(textures);
     zox_components_textures(world);
     zox_systems_textures(world);
+#ifdef zox_tests
     zox_tsts_textures();
+#endif
     add_hook_spawn_prefabs(spawn_prefabs_textures_core);
     zox_add_module(textures_io);
 }

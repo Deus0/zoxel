@@ -181,6 +181,8 @@ fi
 if [[ ${debug} == "1" ]]; then
     echo "+ Added [zox_debug]"
     dflags+=" -Dzox_debug"
+    # tests (bsh/tst.sh), left out of release builds
+    dflags+=" -Dzox_tests"
     # cflags="-O2 -g -Dzox_debug"
     # cflags="-fPIC -g3 -Dzox_debug" #  -O0
     # For Regular Runs

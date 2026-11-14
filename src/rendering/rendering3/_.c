@@ -13,13 +13,17 @@ uint zox_drawn_chunks = 0;
 #include "fun/_.c"
 #include "sys/_.c"
 #include "eve/_.c"
+#ifdef zox_tests
 #include "tst/_.c"
+#endif
 
 void import_rendering3(ecs* world) {
     zox_module(rendering3);
     zox_components_rendering3(world);
     zox_systems_basics3(world);
+#ifdef zox_tests
     zox_tsts_rendering3(world);
+#endif
     add_hook_load_shader(&spawn_shaders_basics3D);
     add_hook_spawn_prefabs(&zox_prefabs_rendering3);
     add_hook_spawn_prefabs(&zox_events_rendering3);

@@ -14,7 +14,7 @@ void zox_tests_chunks3(ecs* world) {
     // TODO: Make test crash it without safety locks
     // TODO: Detect corruption properly
     // A/B Testing for VoxelNodeLocks
-#ifdef zox_tests
+#ifdef zox_tests_chunks3_safety  // a stress test, off (zox_tests is every test build)
     zox_tst_chunks3_safety(world);
 #endif
 }

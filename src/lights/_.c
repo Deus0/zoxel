@@ -6,12 +6,16 @@ byte zox_smooth_lighting = 1;
 #include "fun/_.c"
 #include "lights3/_.c"
 #include "eve/_.c"
+#ifdef zox_tests
 #include "tst/_.c"
+#endif
 
 void import_lights(ecs* world) {
     zox_module(lights);
     add_hook_spawn_prefabs(zox_events_lights);
     zoxd_components_lights(world);
     zox_add_module(lights3);
+#ifdef zox_tests
     zox_tsts_lights();
+#endif
 }

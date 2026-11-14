@@ -17,12 +17,16 @@
 #include "pre/_.c"
 #include "fun/_.c"
 #include "sys/_.c"
+#ifdef zox_tests
 #include "tst/_.c"
+#endif
 
 void import_nodes(ecs* world) {
     zox_module(nodes);
     zox_components_nodes(world);
     zox_systems_nodes(world);
     add_hook_spawn_prefabs(spawn_prefabs_nodes);
+#ifdef zox_tests
     zox_tsts_nodes();
+#endif
 }
