@@ -79,9 +79,10 @@ void spawn_character_hit_sound(ecs* world, entity character) {
     }
 }
 
-// a footstep: the hit sound of the block underfoot, quieter and shorter (characters/jump/sys/footsteps.c)
-#define footstep_volume 0.35f
-#define footstep_length 0.6f
+// a footstep: the hit sound of the block underfoot, quieter and an octave up (characters/jump/sys/footsteps.c)
+#define footstep_volume 0.5f
+#define footstep_length 1.0f
+#define footstep_octave 12     // notes up: the hits are low (65 to 110 hz) and short, footsteps went unheard on small speakers
 uint zox_footsteps_played = 0;  // counted for tst footsteps
 entity spawn_footstep_sound(ecs* world, entity block, float3 position) {
     const entity sound = zox_valid(block) ? zox_get_link(world, block, HitSoundLink) : 0;
@@ -93,6 +94,8 @@ entity spawn_footstep_sound(ecs* world, entity block, float3 position) {
     effect.volume_max *= footstep_volume;
     effect.seconds_min *= footstep_length;
     effect.seconds_max *= footstep_length;
+    effect.note_min += footstep_octave;
+    effect.note_max += footstep_octave;
     const entity e = spawn_sound_effect_data(world, &effect);
     zox_footsteps_played++;
     if (e) {

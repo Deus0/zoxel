@@ -1,5 +1,4 @@
 #include "close_button.c"
 #include "header.c"
-#include "footer.c"
 #include "window.c"
 #include "list.c"

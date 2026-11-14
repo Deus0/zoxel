@@ -27,6 +27,8 @@
 #include "held_item.c"
 #include "id_window.c"
 #include "npcs_after_load.c"
+#include "window_toggle.c"
+#include "tooltip_gone.c"
 #include "vegetation_chunks.c"
 #include "music.c"
 // tst: player_spawn, a new realm spawns the player's character standing in the terrain
@@ -609,6 +611,8 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("id_window", zox_tst_id_window_ready, zox_tst_id_window_check, 120);
     zox_tst_add("npcs_after_load", zox_tst_npcs_after_load_ready, zox_tst_npcs_after_load_check, 180);
     zox_tst_set_setup("npcs_after_load", zox_tst_load_games_setup, 1);
+    zox_tst_add("window_toggle", zox_tst_window_toggle_ready, zox_tst_window_toggle_check, 120);
+    zox_tst_add("tooltip_gone", zox_tst_tooltip_gone_ready, zox_tst_tooltip_gone_check, 60);
     zox_tst_add("glow_light", zox_tst_glow_light_ready, zox_tst_glow_light_check, 120);
     zox_tst_add("block_table", zox_tst_town_homes_ready, zox_tst_block_table_check, 120);
     zox_tst_add("sky_clouds", zox_tst_sky_clouds_ready, zox_tst_sky_clouds_check, 120);

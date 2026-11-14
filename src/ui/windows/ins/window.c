@@ -1,5 +1,6 @@
-// NOTE: Spawns window with flat inputs and easy to edit
-entity3 spawn_window(
+// Spawns a window: a header on top, its body, a footer under it for its buttons (footer_height, 0 for none, its
+//  entity in footer), each a strip of its own (they don't overlap, their fills are see through)
+entity3 spawn_window_footer(
     ecs* world,
     entity prefab,
     entity prefab_body,
@@ -10,7 +11,9 @@ entity3 spawn_window(
     float2 anchor,
     byte header_font_size,
     byte2 header_padding,
-    void* on_closed)
+    void* on_closed,
+    int footer_height,
+    entity* footer)
 {
     entity3 output;
     color fill = window_fill;
@@ -58,8 +61,8 @@ entity3 spawn_window(
     {
         int2 body_position = (int2) {
             0,
-            body_size.y / 2
-        }; //  + 4
+            footer_height + body_size.y / 2
+        };
         float2 body_anchor = (float2) {
             0.5f,
             0
@@ -77,9 +80,20 @@ entity3 spawn_window(
         zox_set_unique_name(body, "body");
         output.z = body;
     }
+    // its footer, under its body
+    if (footer_height) {
+        const int2 footer_size = { body_size.x, footer_height };
+        const entity e2 = spawn_uic(world, prefab_element_frame, e, (float2) { 0.5f, 0 }, (int2) { 0, footer_height / 2 },
+            footer_size, footer_size, footer_fill, footer_outline);
+        zox_set_unique_name(e2, "footer");
+        zox_add(e2, WindowFooter);
+        if (footer) {
+            *footer = e2;
+        }
+    }
     // finish setting window
     int2 size = body_size;
-    size.y += header_height;
+    size.y += header_height + footer_height;
     // NOTE: [0,1] => [-0.5, +0.5]
     float2 anchor_shift = float2_sub(anchor, float2_half);
     position.x -= anchor_shift.x * size.x;
@@ -89,7 +103,17 @@ entity3 spawn_window(
     zox_setv(e, Anchor, anchor);
     // TODO: Fix WindowToTop by just checking reset WindowLayers when CanvasDirty is flagged - Flag CanvasDirty when new window Initializes
     zox_setv(parent, WindowToTop, e);
+    // every window pops in (ui_pop_in), and out when closed (ui_pop_out, toggles, close buttons)
+    ui_pop_in(world, e);
     return output;
+}
+
+// a window without a footer
+entity3 spawn_window(ecs* world, entity prefab, entity prefab_body, const char* header, entity parent, int2 position,
+    int2 body_size, float2 anchor, byte header_font_size, byte2 header_padding, void* on_closed)
+{
+    return spawn_window_footer(world, prefab, prefab_body, header, parent, position, body_size, anchor, header_font_size,
+        header_padding, on_closed, 0, NULL);
 }
 
 // OBSOLETE REMOVE

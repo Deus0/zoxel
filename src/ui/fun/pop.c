@@ -29,6 +29,7 @@ void ui_pop_out(ecs* world, entity e) {
     const entity tween = ui_shrink(world, e);
     if (tween) {
         zox_add(tween, AnimationDeletesTarget);
+        zox_add(e, UIClosing);
     }
 }
 

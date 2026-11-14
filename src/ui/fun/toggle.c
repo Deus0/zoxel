@@ -4,12 +4,12 @@ entity player_toggle_ui(
     entity e,
     entity (*spawn_ui)(ecs*, const entity))
 {
-    if (e == 0) {
+    // one popping out reads as closed (UIClosing), a new one opens
+    if (!zox_valid(e) || zox_has(e, UIClosing)) {
         return (*spawn_ui)(world, player);
-    } else {
-        zox_delete(e);
-        return 0;
     }
+    ui_pop_out(world, e);
+    return 0;
 }
 
 entity toggle_ui_with_id(
@@ -30,11 +30,10 @@ void toggle_ui(
     entity *e,
     entity (*spawn_ui)(ecs*, entity))
 {
-    if (*e == 0) {
-        entity e2 = (*spawn_ui)(world, canvas);
-        *e = e2;
+    if (!zox_valid(*e) || zox_has(*e, UIClosing)) {
+        *e = (*spawn_ui)(world, canvas);
     } else {
-        zox_delete(*e);
+        ui_pop_out(world, *e);
         *e = 0;
     }
 }
