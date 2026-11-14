@@ -60,3 +60,15 @@ static inline int region_population_at(ecs* world, entity region, int2 column_bl
     }
     return map->value[cell.x + cell.y * size.x];
 }
+
+// how many npcs a chunk rolls: its rate scaled by its column's population (unknown -1 is all of it), the fraction
+//  rounded by chance from its seed (the same chunk, the same count): rounded down, the wild's 4 * 40 / 255 was 0,
+//  no npcs out of towns
+static inline byte npc_spawn_count(byte rate, int population, uint seed) {
+    if (population < 0) {
+        return rate;
+    }
+    const float scaled = rate * population / 255.0f;
+    const byte whole = (byte) scaled;
+    return whole + (seed_range(seed * 31, 0, 1000) < (int) ((scaled - whole) * 1000));
+}

@@ -2,6 +2,7 @@
 //  - inside a town full (255), out in the wild the base, fading between over population_falloff blocks
 //  - the busiest of two towns counts, no towns is the base everywhere
 //  - spawn weights: towns mostly villagers and few monsters, the wild as each type's SpawnChance, animals the same
+//  - spawn counts: the wild rolls some npcs a chunk (rounded by chance, it rounded down to 0), towns all, unknown all
 //  - run: bash bsh/tst.sh population
 byte zox_tst_population_ready(ecs* world) {
     (void) world;
@@ -47,6 +48,20 @@ void zox_tst_population_check(ecs* world) {
     zox_tst_check(town[0] / town_total > 0.5f, "towns spawn [%.0f%%] villagers, most should be", 100 * town[0] / town_total);
     zox_tst_check(town[1] / town_total < 0.1f, "towns spawn [%.0f%%] monsters, few should be", 100 * town[1] / town_total);
     zox_tst_check(town[2] == wild[2], "animals spawn differently in towns");
+    // the wild still spawns some: a chunk at the base population, over many seeds, rolls about rate * base / 255 npcs
+    //  (rounded down it was 0 everywhere out of towns)
+    int wild_npcs = 0, town_npcs = 0;
+    for (uint seed = 1; seed <= 1000; seed++) {
+        wild_npcs += npc_spawn_count(4, population_base, seed * 7919);
+        town_npcs += npc_spawn_count(4, population_town, seed * 7919);
+    }
+    const float wild_expected = 4.0f * population_base / 255;
+    zox_log("[tst] [metric] npcs a chunk at rate 4: the wild [%.2f] (expected [%.2f]), a town [%.2f]",
+        wild_npcs / 1000.0f, wild_expected, town_npcs / 1000.0f);
+    zox_tst_check(fabsf(wild_npcs / 1000.0f - wild_expected) < 0.1f, "the wild rolls [%.2f] npcs a chunk, not about [%.2f]",
+        wild_npcs / 1000.0f, wild_expected);
+    zox_tst_check(town_npcs == 4000, "a town rolls [%i] npcs over 1000 chunks, not all 4 each", town_npcs);
+    zox_tst_check(npc_spawn_count(4, -1, 3) == 4, "an unknown population doesn't roll its whole rate");
 }
 
 void zox_tsts_npcs() {

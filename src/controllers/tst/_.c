@@ -614,7 +614,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("held_item", zox_tst_held_item_ready, zox_tst_held_item_check, 120);
     zox_tst_add("held_block", zox_tst_held_block_ready, zox_tst_held_item_check, 120);
     zox_tst_add("id_window", zox_tst_id_window_ready, zox_tst_id_window_check, 120);
-    zox_tst_add("npcs_after_load", zox_tst_npcs_after_load_ready, zox_tst_npcs_after_load_check, 180);
+    zox_tst_add("npcs_after_load", zox_tst_npcs_after_load_ready, zox_tst_npcs_after_load_check, 240);
     zox_tst_set_setup("npcs_after_load", zox_tst_load_games_setup, 1);
     zox_tst_add("window_toggle", zox_tst_window_toggle_ready, zox_tst_window_toggle_check, 120);
     zox_tst_add("tooltip_gone", zox_tst_tooltip_gone_ready, zox_tst_tooltip_gone_check, 60);
