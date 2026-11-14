@@ -12,7 +12,8 @@ static inline void fetch_nearby_chunks(
     chunks[OCTREE_INDEX3(sbyte3_zero)] = e;
     for (byte i = 0; i < 6; i++) {
         entity adjacent = neighbors[i];
-        if (!zox_valid(adjacent)) {
+        // alive but without its components: a chunk mid spawn or delete (sides.c guards it too), doc/bugs.md
+        if (!zox_valid(adjacent) || !zox_has(adjacent, ChunkNeighbors)) {
             continue;
         }
         sbyte3 adjacent_position = neighbor_offsets[i];
@@ -22,7 +23,7 @@ static inline void fetch_nearby_chunks(
         const entity* adjacent_neighbors = zox_getv(adjacent, ChunkNeighbors);
         for (byte j = 0; j < 6; j++) {
             entity neighbor = adjacent_neighbors[j];
-            if (!zox_valid(neighbor)) {
+            if (!zox_valid(neighbor) || !zox_has(neighbor, ChunkNeighbors)) {
                 continue;
             }
             sbyte3 neighbor_position = sbyte3_add(adjacent_position, neighbor_offsets[j]);
@@ -88,7 +89,7 @@ static inline void fetch_nearby_lights(
     lights[OCTREE_INDEX(0, 0, 0)] = root;
     for (byte i = 0; i < 6; i++) {
         entity adjacent = neighbors[i];
-        if (!zox_valid(adjacent)) {
+        if (!zox_valid(adjacent) || !zox_has(adjacent, ChunkNeighbors)) {
             continue;
         }
         const LightNode* nlights =

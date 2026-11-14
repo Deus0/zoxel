@@ -2,6 +2,11 @@
 void spawn_new_realm(ecs *world, entity player) {
     entity game = zox_get_parent(world, player);
     lint seed = get_unique_time_seed();
+    // the same land every run, i.e. to compare perf tests (zox_tst_seed=666 bash bsh/tst.sh perf_fly)
+    const char* tst_seed = getenv("zox_tst_seed");
+    if (tst_seed) {
+        seed = strtoll(tst_seed, NULL, 10);
+    }
     spawn_realm(
         world,
         game,
