@@ -58,12 +58,16 @@ static inline byte3 body_part_voxels(float3 scale, byte half) {
     return half ? (byte3) { (size.x + 1) / 2, (size.y + 1) / 2, (size.z + 1) / 2 } : size;
 }
 
-// the realm's cloth and trim colours for a piece of gear, from its seed
-static inline void realm_gear_colors(lint seed, color* cloth, color* trim) {
-    *cloth = color_rgb_to_color(seed_to_color_rgb_range(seed,
-        (float2) { 0, 360 }, (float2) { 35, 65 }, (float2) { 35, 55 }));
-    *trim = color_rgb_to_color(seed_to_color_rgb_range(seed + 1,
-        (float2) { 0, 360 }, (float2) { 20, 50 }, (float2) { 15, 30 }));
+// the realm's cloth and trim colours for a piece of gear, from its seed, against the realm's skin (realm_skin_hsv):
+//  dull (low saturation), a hue away from the skin's, light on dark skin and dark on light, the trim the cloth's hue
+//  the other way (it stands out from it)
+static inline void realm_gear_colors(lint realm_seed, lint seed, color* cloth, color* trim) {
+    const float3 skin = realm_skin_hsv(realm_seed);
+    const float hue = fmodf(skin.x + seed_range(seed, 120, 240), 360);
+    const byte light = skin.z < 44;
+    const float value = light ? seed_range(seed * 3, 50, 62) : seed_range(seed * 3, 20, 32);
+    *cloth = color_rgb_to_color(hsv_to_color_rgb((float3) { hue, seed_range(seed * 5, 14, 30), value }));
+    *trim = color_rgb_to_color(hsv_to_color_rgb((float3) { hue, seed_range(seed * 7, 10, 22), light ? value - 22 : value + 22 }));
 }
 
 // cubey gear, from blueprints at the chest's depth (body_parts.c), so its voxels line up with the body's
@@ -91,7 +95,7 @@ entity spawn_realm_shirt(ecs* world, entity realm, const char* name, lint seed_s
     const byte drop = bicep_size.y / 3;
     const lint seed = zox_getv(realm, Seed) * seed_shift;
     color cloth, trim;
-    realm_gear_colors(seed, &cloth, &trim);
+    realm_gear_colors(zox_getv(realm, Seed), seed, &cloth, &trim);
     const entity blueprint = spawn_blueprint_shirt(world, chest_nsize, shoulder_size, shoulder_y, nodegraph_max_depth,
         cloth, trim, margin, reach, arm_x > 0 ? arm_x : 0, bicep_size.x, drop);
     const entity shirt = spawn_realm_gear(world, realm, seed, name, zox_slot_shirt, blueprint);
@@ -109,7 +113,7 @@ entity spawn_realm_shorts(ecs* world, entity realm, const char* name, lint seed_
     const byte2 legs_x = { thigh_x - thigh_offset, thigh_x + thigh_offset };
     const lint seed = zox_getv(realm, Seed) * seed_shift;
     color cloth, trim;
-    realm_gear_colors(seed, &cloth, &trim);
+    realm_gear_colors(zox_getv(realm, Seed), seed, &cloth, &trim);
     const entity blueprint = spawn_blueprint_shorts(world, hips_size, thigh_size, legs_x, nodegraph_max_depth,
         cloth, trim, margin, zox_shorts_leg);
     const entity shorts = spawn_realm_gear(world, realm, seed, name, zox_slot_shorts, blueprint);
@@ -123,7 +127,7 @@ entity spawn_realm_shoes(ecs* world, entity realm, const char* name, lint seed_s
     const byte height = foot_size.y + 1;
     const lint seed = zox_getv(realm, Seed) * seed_shift;
     color cloth, trim;
-    realm_gear_colors(seed, &cloth, &trim);
+    realm_gear_colors(zox_getv(realm, Seed), seed, &cloth, &trim);
     const entity blueprint = spawn_blueprint_shoe(world, foot_size, nodegraph_max_depth, cloth, trim, margin, height);
     const entity shoes = spawn_realm_gear(world, realm, seed, name, zox_slot_shoes, blueprint);
     zox_add(shoes, Shoes);

@@ -4,6 +4,12 @@ const float3 player_chest_scale = { 0.5f, 0.54f, 0.44f };
 // a foot's blueprint scale, flat, a shoe covers it (spawn_realm_shoes)
 const float3 player_foot_scale = { 0.3f, 0.3f, 0.86f };
 
+// a realm's skin (hue, saturation, value), from its seed: its gear's colours are picked against it
+//  (realm_gear_colors, equipment.c)
+static inline float3 realm_skin_hsv(lint realm_seed) {
+    return seed_to_hsv(666 * realm_seed, (float2) { 0, 360 }, (float2) { 22, 66 }, (float2) { 22, 66 });
+}
+
 // NOTE: Confusing AF atm, nodegraphs use a set size, 32 atm, however the vox models spawn at any size, and fill gets scaled to those
 //      - so we have two sizes created per model
 // color skin_color = (color) { 200, 155, 133, 255 };
@@ -35,20 +41,7 @@ void bodys_realm_spawn_system(iter* it) {
             continue;
         }
         lint body_seed = 666 * seed->value;
-        color_rgb skin_color_rgb = seed_to_color_rgb_range(
-            body_seed,
-            (float2) {
-                0,
-                360
-            },
-            (float2) {
-                22,
-                66
-            },
-            (float2) {
-                22,
-                66
-            });
+        color_rgb skin_color_rgb = hsv_to_color_rgb(realm_skin_hsv(seed->value));
         float3 skin_hsv = color_rgb_to_hsv(skin_color_rgb);
         color skin_color = color_rgb_to_color(skin_color_rgb);
         float3 eye_hsv = (float3) {
