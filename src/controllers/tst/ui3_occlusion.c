@@ -17,7 +17,7 @@ int zox_tst_u3_far_red = -1, zox_tst_u3_far_blue = -1;
 int zox_tst_u3_ground = -1;     // the flat land's height (blocks)
 int zox_tst_u3_near_blue = -1;
 
-// pure red (channel 0) or blue (2) pixels in a screenshot (the frames; the land's are darker), -1 if there's none
+// pixels of a pure colour (red 0, green 1, blue 2) in a screenshot (the frames; the land's are darker), -1 if none
 static inline int zox_tst_u3_pixels(const char* path, int channel) {
     FILE* file = fopen(path, "rb");
     if (!file) {
@@ -31,7 +31,7 @@ static inline int zox_tst_u3_pixels(const char* path, int channel) {
     fgetc(file);
     unsigned char rgb[3];
     for (int i = 0; i < width * height && fread(rgb, 1, 3, file) == 3; i++) {
-        red += rgb[channel] > 220 && rgb[1] < 40 && rgb[2 - channel] < 40;
+        red += rgb[channel] > 220 && rgb[(channel + 1) % 3] < 40 && rgb[(channel + 2) % 3] < 40;
     }
     fclose(file);
     return red;
@@ -69,12 +69,18 @@ static inline float3 zox_tst_u3_along(ecs* world, entity camera, float distance)
     return float3_add(zox_getv(camera, Position3D), float3_scale(view, distance));
 }
 
+// a canvas with a frame of a colour on it, its layer
+static inline entity zox_tst_u3_frame_canvas(ecs* world, float3 at, color c, byte layer) {
+    const entity canvas = spawn_canvas3(world, prefab_canvas3, at, 2, int2_single(64));
+    const entity frame = spawn_element3(world, prefab_frame3, canvas, float2_centre, int2_zero, int2_single(64));
+    zox_setv(frame, FillColor, c);
+    zox_setv(frame, OutlineColor, c);
+    zox_setv(frame, Layer, layer);
+    return canvas;
+}
+
 static inline void zox_tst_u3_spawn(ecs* world, float3 at) {
-    zox_tst_u3_canvas = spawn_canvas3(world, prefab_canvas3, at, 2, int2_single(64));
-    const entity frame = spawn_element3(world, prefab_frame3, zox_tst_u3_canvas, float2_centre, int2_zero, int2_single(64));
-    zox_setv(frame, FillColor, ((color) { 255, 0, 0, 255 }));
-    zox_setv(frame, OutlineColor, ((color) { 255, 0, 0, 255 }));
-    zox_setv(frame, Layer, 2);
+    zox_tst_u3_canvas = zox_tst_u3_frame_canvas(world, at, (color) { 255, 0, 0, 255 }, 2);
     // a blue frame on it, a layer up (as text on a frame)
     const entity inner = spawn_element3(world, prefab_frame3, zox_tst_u3_canvas, float2_centre, int2_zero, int2_single(32));
     zox_setv(inner, FillColor, ((color) { 0, 0, 255, 255 }));

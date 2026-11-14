@@ -8,6 +8,10 @@ static inline void zox_gpu_disable_culling() {
     glDisable(GL_CULL_FACE);
 }
 
+static inline void zox_gpu_set_color_mask(byte is_color) {
+    glColorMask(is_color, is_color, is_color, is_color);
+}
+
 static inline void zox_gpu_set_depth_mask(byte is_depth_mask) {
     if (is_depth_mask) {
         glDepthMask(GL_TRUE);

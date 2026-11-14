@@ -5,6 +5,7 @@ entity shader_basic3_overlay;
 entity material_basic3D;
 
 #include "clones.c"
+#include "element3.c"
 
 void catch_basic3D_errors(char* function_name) {
 #ifdef is_catch_basic3D_errors

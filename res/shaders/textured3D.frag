@@ -1,5 +1,6 @@
 uniform vec4 fog_data;
 uniform float brightness;
+uniform float alpha_cutoff;    // 0 (see through pixels discarded), 0.5 writing a 3D ui's depth (only its solid parts)
 uniform sampler2D zexture;
 in float fog_level;
 in vec3 vertex_color_frag;
@@ -8,7 +9,7 @@ out vec4 frag_color;
 
 void main() {
     vec4 texture_color = texture(zexture, uv);
-    if (texture_color.a <= 0.0) {
+    if (texture_color.a <= alpha_cutoff) {
         discard;
     }
     vec3 mix_color = texture_color.xyz * vertex_color_frag * brightness;

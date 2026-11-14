@@ -3,8 +3,15 @@
 #include "spawn_text.c"
 #include "billboards.c"
 #include "mesh.c"
+#include "render.c"
 
 void zox_systems_elements3D(ecs *world) {
+    zox_render3_system(
+        2,
+        canvas3_render_system,
+        [in] rendering.RenderDisabled,
+        [none] layouts.Canvas3
+    );
     zox_system(
         layout3_mesh_begin_system,
         zoxp_initialize,

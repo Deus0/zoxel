@@ -12,8 +12,8 @@ static inline byte population_at(int2 global, const int2* town_centers, const by
         const float dx = fmaxf(0, abs(global.x - town_centers[i].x) - town_sizes[i].x / 2.0f);
         const float dy = fmaxf(0, abs(global.y - town_centers[i].y) - town_sizes[i].y / 2.0f);
         const float past = sqrtf(dx * dx + dy * dy);
-        const float near = population_base + (population_town - population_base) * fmaxf(0, 1 - past / population_falloff);
-        density = near > density ? near : density;
+        const float near_distance = population_base + (population_town - population_base) * fmaxf(0, 1 - past / population_falloff);
+        density = near_distance > density ? near_distance : density;
     }
     return (byte) density;
 }

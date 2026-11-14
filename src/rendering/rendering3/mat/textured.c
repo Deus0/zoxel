@@ -9,6 +9,7 @@ typedef struct {
     gint texture;
     gint fog_data;
     gint brightness;
+    gint alpha_cutoff;
 } MaterialTextured3D;
 zoxc_custom(MaterialTextured3D);
 
@@ -20,7 +21,8 @@ MaterialTextured3D create_MaterialTextured3D(guint material) {
         .mvp_matrix = zox_gpu_get_material_property(material, "mvp_matrix"),
         .texture = zox_gpu_get_material_property(material, "zexture"),
         .fog_data = zox_gpu_get_material_property(material, "fog_data"),
-        .brightness = zox_gpu_get_material_property(material, "brightness")
+        .brightness = zox_gpu_get_material_property(material, "brightness"),
+        .alpha_cutoff = zox_gpu_get_material_property(material, "alpha_cutoff")
     };
 }
 

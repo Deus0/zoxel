@@ -13,7 +13,6 @@
 #include "weights_initialize.c"
 #include "weights_upload.c"
 #include "weights_render.c"
-#include "element.c"
 
 void zox_systems_basics3(ecs* world) {
     zox_render3_system(
@@ -88,19 +87,6 @@ void zox_systems_basics3(ecs* world) {
         [in] rendering3.MaterialTextured3D,
         [none] rendering3.TexturedMesh3,
         [none] !core.Initialize,
-    );
-    zox_render3_system(
-        2,
-        element3_render_system,
-        [in] rendering.RenderDisabled,
-        [in] layouts.Layer,
-        [in] transforms.TransformMatrix,
-        [in] rendering.MeshGPULink,
-        [in] rendering.UvsGPULink,
-        [in] rendering.ColorsGPULink,
-        [in] rendering.TextureGPULink,
-        [none] rendering.SingleMaterial,
-        [none] !core.Initialize
     );
 #ifndef zox_disable_rendering_instances
     zox_render3_system(
