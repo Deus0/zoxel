@@ -26,9 +26,15 @@
 #include "ins/_.c"
 #include "sys/_.c"
 #include "fun/_.c"
+#ifdef zox_tests
+#include "tst/_.c"
+#endif
 
 void import_animations(ecs* world) {
     zox_module(animations);
     zox_components_animations(world);
     zox_systems_animations(world);
+#ifdef zox_tests
+    zox_tsts_animations(world);
+#endif
 }
