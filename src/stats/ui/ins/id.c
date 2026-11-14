@@ -53,10 +53,10 @@ entity spawn_player_menu_id(ecs* world, entity player) {
     const entity3 window = spawn_window(world, prefab_window, prefab_body, "Identity", canvas, int2_zero, size,
         float2_half, 6 * ui_scale, (byte2) { 6 * ui_scale, 3 * ui_scale }, NULL);
     zox_add(window.x, MenuId);
-    // its mug shot in a frame, a border round it
+    // its mug shot in a frame, a border round it in its text's colour (it stands out from the panel)
     const int border = 2 * ui_scale;
     const entity mug_frame = spawn_uic(world, prefab_element_frame, window.z, float2_half, (int2) { -size.x / 2 + margin + mug / 2, 0 },
-        int2_single(mug), int2_single(mug), header_fill, header_outline);
+        int2_single(mug), int2_single(mug), header_fill, button_font_fill);
     zox_set_unique_name(mug_frame, "mugshot_frame");
     spawn_character_mugshot(world, mug_frame, character, float2_half, int2_zero, int2_single(mug - border * 2));
     // its lines, each underlined across the widest
@@ -68,7 +68,7 @@ entity spawn_player_menu_id(ecs* world, entity player) {
         const int line_y = text_at.y - padding.y - (i + 1) * font_size - i * default_line_padding - default_line_padding / 2;
         const entity underline = spawn_uic(world, prefab_element_frame, window.z, float2_half,
             (int2) { text_at.x + line_width / 2, line_y }, (int2) { line_width, ui_scale }, (int2) { line_width, ui_scale },
-            header_outline, header_outline);
+            button_font_outline, button_font_outline);
         zox_set_unique_name(underline, "underline");
     }
     ui_pop_in(world, window.x);
