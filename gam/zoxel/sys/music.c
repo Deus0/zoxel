@@ -69,12 +69,16 @@ void town_music_entered(iter* it) {
     }
 }
 
+// not when it dies, or the game ended: its character deleted in a town played the overworld's over the menu music
 void town_music_left(iter* it) {
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        if (!zox_has(e, Dead)) {
-            play_realm_track(world, zox_get_link(world, e, RealmLink), 0);
+        const entity realm = zox_get_link(world, e, RealmLink);
+        const entity game = zox_valid(realm) ? zox_get_link(world, realm, GameLink) : 0;
+        if (zox_has(e, Dead) || game_ending(world, game)) {
+            continue;
         }
+        play_realm_track(world, realm, 0);
     }
 }

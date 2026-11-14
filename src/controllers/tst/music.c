@@ -87,12 +87,19 @@ byte zox_tst_music_crossfade_ready(ecs* world) {
             }
             break;
         }
-        default:
-            zox_tst_waiting = "the menu music to fade back in";
+        default: {
+            static char waiting2[160];
+            snprintf(waiting2, sizeof(waiting2), "the menu music to fade back in (playing [%s] enabled [%i] volume [%.2f], menu music volume [%.2f])",
+                zox_valid(playing) ? zox_getn(playing) : "none",
+                zox_valid(playing) ? zox_getv(playing, MusicEnabled) : -1,
+                zox_valid(playing) ? zox_getv(playing, MusicVolume) : -1.0f,
+                zox_valid(menu_music) ? zox_getv(menu_music, MusicVolume) : -1.0f);
+            zox_tst_waiting = waiting2;
             if (playing != menu_music || !zox_tst_music_full(world, menu_music)) {
                 return 0;
             }
             return 1;
+        }
     }
     zox_tst_music_stage++;
     zox_tst_music_frames = 0;

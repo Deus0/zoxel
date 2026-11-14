@@ -296,20 +296,20 @@ void zox_tst_model_shapes_check(ecs* world) {
                 zox_tst_check(worst >= 70, "the chest pinches to [%i]%% at layer [%i]: its parts don't join", worst, worst_y);
             }
             if (zox_tst_shapes_named(name, "cokie")) {
-                int chips[4] = { 0, 0, 0, 0 };
+                // voxels: 1 dough, 2 crumbs (the dough's second shade), 3 and 4 chips (its complement's two shades)
+                int chips[5] = { 0, 0, 0, 0, 0 };
                 for (int i = 0; i < g.length * g.length * g.length; i++) {
-                    if (g.voxels[i] < 4) {
+                    if (g.voxels[i] < 5) {
                         chips[g.voxels[i]]++;
                     }
                 }
-                zox_tst_check(chips[2] > 0 && chips[3] > 0, "the cookie has [%i] and [%i] chips of its two chocolates", chips[2], chips[3]);
-                // crumbs: dough voxels outside the cookie's flat body (its widest and deepest layer's extent)
+                zox_tst_check(chips[3] > 0 && chips[4] > 0, "the cookie has [%i] and [%i] chips of its two chocolates", chips[3], chips[4]);
                 int crumbs = 0;
                 for (int x = 0; x < g.length; x++)
                 for (int y = 0; y < g.length; y++)
                 for (int z = 0; z < g.length; z++) {
-                    // a crumb sits on the surface: dough touching air on 5 sides
-                    if (zox_tst_grid_get(&g, x, y, z) != 1) {
+                    // a crumb sits on the surface: touching air on 5 sides
+                    if (zox_tst_grid_get(&g, x, y, z) != 2) {
                         continue;
                     }
                     int air = 0;
@@ -321,13 +321,13 @@ void zox_tst_model_shapes_check(ecs* world) {
                     air += !zox_tst_grid_get(&g, x, y, z - 1);
                     crumbs += air == 5;
                 }
-                zox_log("[tst] cookie: chips [%i] [%i], crumbs [%i]", chips[2], chips[3], crumbs);
+                zox_log("[tst] cookie: chips [%i] [%i], crumbs [%i]", chips[3], chips[4], crumbs);
                 // the chips stand out from the dough: the hue turned round, or far brighter or darker
                 const ColorRGBs* colors = zox_get(vox, ColorRGBs);
-                zox_tst_check(colors->length >= 3, "the cookie has [%i] colours, not its dough and two chips", colors->length);
-                if (colors->length >= 3) {
+                zox_tst_check(colors->length >= 4, "the cookie has [%i] colours, not its two doughs and two chips", colors->length);
+                if (colors->length >= 4) {
                     const float3 dough = color_rgb_to_hsv(colors->value[0]);
-                    const float3 chip = color_rgb_to_hsv(colors->value[1]);
+                    const float3 chip = color_rgb_to_hsv(colors->value[2]);
                     float hue_apart = fabsf(dough.x - chip.x);
                     hue_apart = hue_apart > 180 ? 360 - hue_apart : hue_apart;
                     const float value_apart = fabsf(dough.z - chip.z);

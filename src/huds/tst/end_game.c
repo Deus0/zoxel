@@ -14,6 +14,7 @@
 #define zox_tst_end_game_rounds 3
 #define zox_tst_end_game_play_seconds 4.0
 #define zox_tst_end_game_settle_frames 120
+#define zox_tst_end_game_still_frames 30   // its counts unchanged this many frames
 #define zox_tst_end_game_heap_mb 32   // heap grew ~22mb a game (2026-11-13), flecs pools or a leak, todo
 int zox_tst_end_game_stage = 0;
 int zox_tst_end_game_round = 0;
@@ -30,7 +31,7 @@ typedef struct {
 } ZoxTstEndGameCounts;
 
 ZoxTstEndGameCounts zox_tst_end_game_after[zox_tst_end_game_rounds];
-// the live entities after the first round, the second round's extra ones are what leaked
+// the live entities after the round before, this round's extra ones are what leaked
 entity* zox_tst_end_game_alive = NULL;
 int zox_tst_end_game_alive_count = 0;
 
@@ -39,22 +40,39 @@ static int zox_tst_entity_compare(const void* a, const void* b) {
     return x < y ? -1 : (x > y);
 }
 
-// logs the entities alive now that weren't after the first round, grouped by their name and type
+// keeps the entities alive now, the next round's are compared with them
+static inline void zox_tst_end_game_snapshot(ecs* world) {
+    const ecs_entities_t all = ecs_get_entities(world);
+    free(zox_tst_end_game_alive);
+    zox_tst_end_game_alive_count = all.alive_count;
+    zox_tst_end_game_alive = malloc(sizeof(entity) * all.alive_count);
+    memcpy(zox_tst_end_game_alive, all.ids, sizeof(entity) * all.alive_count);
+    qsort(zox_tst_end_game_alive, all.alive_count, sizeof(entity), zox_tst_entity_compare);
+}
+
+// logs the entities alive now that weren't after the round before, grouped by their name and type, and how many
+//  of that round's are gone
 static inline void zox_tst_end_game_log_leaks(ecs* world) {
     const ecs_entities_t all = ecs_get_entities(world);
     if (!zox_tst_end_game_alive) {
-        zox_tst_end_game_alive_count = all.alive_count;
-        zox_tst_end_game_alive = malloc(sizeof(entity) * all.alive_count);
-        memcpy(zox_tst_end_game_alive, all.ids, sizeof(entity) * all.alive_count);
-        qsort(zox_tst_end_game_alive, all.alive_count, sizeof(entity), zox_tst_entity_compare);
+        zox_tst_end_game_snapshot(world);
         return;
     }
+    int gone = 0;
+    for (int i = 0; i < zox_tst_end_game_alive_count; i++) {
+        gone += !ecs_is_alive(world, zox_tst_end_game_alive[i]);
+    }
+    zox_log("[tst] [metric] end_game_cleanup [%i] entities of the round before gone", gone);
     char* groups[64];
     int counts[64];
     int groups_count = 0;
     for (int i = 0; i < all.alive_count; i++) {
         const entity e = all.ids[i];
         if (bsearch(&e, zox_tst_end_game_alive, zox_tst_end_game_alive_count, sizeof(entity), zox_tst_entity_compare)) {
+            continue;
+        }
+        // what the counts leave out (ui, what deletes itself)
+        if (zox_has(e, Element) || zox_has(e, GlyphIndex) || zox_has(e, DestroyInTime) || zox_has(e, AnimationTarget)) {
             continue;
         }
         // its name without the id, and its type
@@ -88,6 +106,7 @@ static inline void zox_tst_end_game_log_leaks(ecs* world) {
         zox_log("[tst] [metric] end_game_cleanup leaked [%i] %s", counts[g], groups[g]);
         free(groups[g]);
     }
+    zox_tst_end_game_snapshot(world);
 }
 
 #if defined(__GLIBC__)
@@ -228,6 +247,18 @@ byte zox_tst_end_game_ready(ecs* world) {
             zox_tst_waiting = "the main menu after ending the game, settled";
             if (!main_menu || state != zox_game_none || zox_tst_end_game_frames < zox_tst_end_game_settle_frames) {
                 return 0;
+            }
+            // settled: its counts still for a while (a slow machine was still deleting, or making the menu)
+            {
+                static int last[3] = { -1, -1, -1 };
+                static int still = 0;
+                const int now[3] = { ecs_get_entities(world).alive_count, zox_gpu_buffers_live, zox_gpu_textures_live };
+                still = memcmp(now, last, sizeof(now)) ? 0 : still + 1;
+                memcpy(last, now, sizeof(now));
+                if (still < zox_tst_end_game_still_frames) {
+                    return 0;
+                }
+                still = 0;
             }
             zox_tst_end_game_after[zox_tst_end_game_round] = zox_tst_end_game_count(world, canvas, "after");
             zox_tst_end_game_log_leaks(world);

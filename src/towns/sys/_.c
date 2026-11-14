@@ -47,7 +47,7 @@ void zox_systems_towns(ecs* world) {
     );
     zox_system_1(
         in_town_system,
-        zoxp_update,
+        zoxp_spawn,
         [in] transforms3.Position3D,
         [none] players.PlayerCharacter
     );

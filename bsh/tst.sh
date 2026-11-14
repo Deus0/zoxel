@@ -245,7 +245,12 @@ run_game() {
     wait "${pid}"
     local code=$?
     print_tst_lines
-    rm -rf /tmp/zoxel_nosaves_* 2> /dev/null
+    # only the folders of games no longer running (named by the game's pid): another test running at the same
+    #   time lost its save folder mid game (its saves failed, end_game_cleanup's rounds came out different)
+    local saves
+    for saves in /tmp/zoxel_nosaves_*; do
+        [[ -d "${saves}" ]] && ! kill -0 "${saves##*_}" 2> /dev/null && rm -rf "${saves}"
+    done
     if [[ ${onmali} == "1" ]]; then
         echo "!! software mode opened /dev/mali, killed (use --gpu for real gpu runs)" >> "${log}"
         return 127

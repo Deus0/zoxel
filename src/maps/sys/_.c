@@ -23,7 +23,7 @@ void zox_systems_maps(ecs* world) {
     );
     zox_system_1(
         map_view_system,
-        zoxp_update,
+        zoxp_spawn,
         [in] maps.MapBlocksPerTexel,
         [out] maps.MapDrawnAt,
         [out] maps.MapDrawnVersion,
