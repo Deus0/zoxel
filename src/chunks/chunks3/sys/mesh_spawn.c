@@ -4,6 +4,20 @@
 // NOTE: Finally spawn mesh if not already in children for that depth
 // NOTE: For now just spawn a child mesh per lod if it doesnt exist
 
+// does the chunk show a mesh (one not Disabled)
+static inline byte chunk_mesh_shown(ecs* world, entity chunk) {
+    iter it = zox_children(world, chunk);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count; i++) {
+            if (zox_has(it.entities[i], ChunkMesh) && !zox_has(it.entities[i], Disabled)) {
+                zox_children_end(it);
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
 // Call for each dirty flag
 // NOTE: We could just check if meshes needed to spawn first?
 static inline entity spawn_chunk_meshes(
@@ -137,8 +151,13 @@ void chunk_mesh_spawn_system(iter* it) {
             dbg_log);
         if (new_mesh) {
             timer->value = zox_current_time;
-            // NOTE: As this is not spawned for lod reasons
-            zox_remove(new_mesh, Disabled);
+            // a new chunk shows it as it builds; one showing another mesh swaps to it once it's ready (enabled now it
+            //  drew over the old one, dark until lit: tst lod_swap)
+            if (!chunk_mesh_shown(world, e)) {
+                zox_remove(new_mesh, Disabled);
+            } else if (!zox_has(e, ChunkLodDirty)) {
+                zox_setv(e, ChunkLodDirty, zox_chunk_lod_dirty_toggle);
+            }
         }
         if (dbg_log) {
             zox_log("Spawned Chunk Mesh on [%s] Depth [%i] Disabled [%i]",

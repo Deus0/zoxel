@@ -194,7 +194,6 @@ void zox_systems_chunks3(ecs *world) {
         zoxp_update,
         [in] chunks3.ChunkLodDirty,
         [in] rendering.RenderDepth,
-        [out] chunks.ChunkMeshTimer,
         [none] chunks.ChunkTextured,
         [none] !chunks.GenerateChunk,
         [none] !chunks.BuildChunkSides,

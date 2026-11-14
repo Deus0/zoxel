@@ -561,6 +561,7 @@ void zox_tst_screenshot_check(ecs* world) {
 }
 
 #include "perf.c"
+#include "lod_swap.c"
 #include "body_views.c"
 
 void zox_tsts_controllers(ecs* world) {
@@ -601,6 +602,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("npc_quests", zox_tst_npc_quests_ready, zox_tst_npc_quests_check, 120);
     zox_tst_add("perf_stream", zox_tst_perf_stream_ready, zox_tst_perf_stream_check, 180);
     zox_tst_add("perf_fly", zox_tst_perf_fly_ready, zox_tst_perf_fly_check, 120);
+    zox_tst_add("lod_swap", zox_tst_lod_swap_ready, zox_tst_lod_swap_check, 120);
     zox_tst_add("tables_stream", zox_tst_perf_stream_ready, zox_tst_tables_stream_check, 200);
     zox_tst_add("pipeline_syncs", zox_tst_player_spawn_ready, zox_tst_pipeline_syncs_check, 120);
     zox_tst_add("lines_render", zox_tst_lines_render_ready, zox_tst_lines_render_check, 120);

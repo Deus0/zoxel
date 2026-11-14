@@ -141,7 +141,7 @@ fi
 
 # runs the game with --tst <name>, output to <log>, returns its exit code
 # tests that need more terrain than --tiny (i.e. far lods to compare), the later --medium wins
-medium_tests=(lod_chunk_lights)
+medium_tests=(lod_chunk_lights lod_swap)
 # tests that screenshot the world, the hud hidden
 nohud_tests=(sky_clouds head_camera town_view held_item held_block)
 run_game() {
