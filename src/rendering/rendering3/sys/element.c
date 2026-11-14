@@ -1,12 +1,14 @@
-// NOTE: Renders our 3D uis
+// a 3D ui's layers (its frame, a bar's fill, its text) each nearer the camera than the one under it, in the world:
+//  element3_layer_offset, or element3_layer_offset_far of its distance when further (depth precision falls off with
+//  distance, fixed layers fought far off); a depth offset (glPolygonOffset, 5000 a layer) pulled far uis through walls
+const float element3_layer_offset = 0.01f;
+const float element3_layer_offset_far = 0.002f;
+
+// NOTE: Renders our 3D uis, depth tested like the world, each layer nudged toward the camera
 void element3_render_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     byte dbg_gl = 0;
-    float depth_base = 0;
-    float units_base = 0;
-    float depth_per_layer = 5000;
-    float units_per_layer = 0;
     entity material = material_textured3D;
     if (!material) {
         // zox_loge("[material_textured3D] missing in element3_render_system.");
@@ -54,8 +56,10 @@ void element3_render_system(iter* it) {
             has_set_material = 1;
             material_link = zox_getv(material, MaterialGPULink);
             attributes = zox_get(material, MaterialTextured3D);
-            zox_gpu_enable_polyoffset();
             zox_gpu_enable_blend();
+            // depth tested and written like the world (left from other passes, a layer could draw over the one above it)
+            zox_gpu_enable_depth_test();
+            zox_gpu_set_depth_mask(1);
             zox_gpu_material(material_link);
             //zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
             zox_gpu_float4(attributes->fog_data, get_fog_value());
@@ -65,8 +69,17 @@ void element3_render_system(iter* it) {
                 zox_log("Rendering Element3 Material [%s]: %i - Shader [%s]", zox_getn(material), material_link, zox_getn(shader));
             }
         }
+        // its layer, nudged toward the camera
+        float4x4 model = matrix->value;
+        const float3 at = matrix_to_position(model);
+        const float3 to_camera = float3_subtract(render_camera_position, at);
+        const float distance = float3_length(to_camera);
+        const float nudge = fmaxf(element3_layer_offset, element3_layer_offset_far * distance) * layer->value / fmaxf(distance, 0.0001f);
+        model.w.x += to_camera.x * nudge;
+        model.w.y += to_camera.y * nudge;
+        model.w.z += to_camera.z * nudge;
         float4x4 mvp_matrix = float4x4_multiply(
-            matrix->value,
+            model,
             render_camera_matrix);
         zox_gpu_float4x4(
             attributes->mvp_matrix,
@@ -77,10 +90,6 @@ void element3_render_system(iter* it) {
         opengl_enable_uv_buffer(attributes->vertex_uv, uvs->value);
         opengl_enable_color_buffer(attributes->vertex_color, colors->value);
         zox_gpu_bind_texture(texture->value);
-        // Offset Depth
-        float units = units_base + units_per_layer * layer->value;
-        float depth = depth_base + depth_per_layer * layer->value;
-        zox_gpu_polyoffset(-units, -depth);
         zox_gpu_render3(6);
         if (dbg_gl) {
             if (check_opengl_error_unlogged()) {
@@ -92,7 +101,7 @@ void element3_render_system(iter* it) {
             float4 rotation = matrix_to_rotation(matrix->value);
             float3 scale = matrix_to_scale(matrix->value);
             zox_log("Rendered Element3 [%s]", zox_getn(e));
-            zox_log(" - Depth [%f] Layer [%i]", depth, layer->value);
+            zox_log(" - Layer [%i]", layer->value);
             zox_log(" - P [%fx%fx%f]", position.x, position.y, position.z);
             zox_log(" - R [%fx%fx%fx%f]", rotation.x, rotation.y, rotation.z, rotation.w);
             zox_log(" - S [%fx%fx%f]", scale.x, scale.y, scale.z);
@@ -107,7 +116,6 @@ void element3_render_system(iter* it) {
         zox_gpu_reset_texture();
         zox_gpu_reset_mesh();
         zox_disable_material();
-        zox_gpu_disable_polyoffset();
     }
     zox_sys_on_end();
 } zoxd_system(element3_render_system);

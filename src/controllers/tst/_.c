@@ -25,6 +25,7 @@
 #include "town_enter.c"
 #include "map_pixel.c"
 #include "tooltip_flick.c"
+#include "ui3_occlusion.c"
 #include "town_build.c"
 #include "head_camera.c"
 #include "statbars_hide.c"
@@ -614,6 +615,8 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("town_enter", zox_tst_town_enter_ready, zox_tst_town_enter_check, 120);
     zox_tst_add("map_pixel", zox_tst_map_pixel_ready, zox_tst_map_pixel_check, 120);
     zox_tst_add("tooltip_flick", zox_tst_tooltip_flick_ready, zox_tst_tooltip_flick_check, 90);
+    zox_tst_add("ui3_occlusion", zox_tst_ui3_occlusion_ready, zox_tst_ui3_occlusion_check, 90);
+    zox_tst_set_setup("ui3_occlusion", zox_tst_ui3_occlusion_setup, 0);
     zox_tst_add("statbars_hide", zox_tst_statbars_hide_ready, zox_tst_statbars_hide_check, 120);
     zox_tst_add("held_item", zox_tst_held_item_ready, zox_tst_held_item_check, 120);
     zox_tst_add("held_block", zox_tst_held_block_ready, zox_tst_held_item_check, 120);
