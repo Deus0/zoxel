@@ -8,6 +8,8 @@
 #include "ao27.c"
 #include "locks.c"
 #include "voxel_at.c"
+#include "flatten.c"
+#include "gpu_mesh.c"
 
 // NOTE: Assumes node depth is lower than terrain (max depth)
 static inline float get_chunk_scale(

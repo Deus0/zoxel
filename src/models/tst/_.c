@@ -1,6 +1,7 @@
 #include "model_views.c"
 #include "nodes.c"
 #include "shapes.c"
+#include "gpu_mesh_views.c"
 
 void zox_tsts_models() {
     zox_tst_add("model_shapes", zox_tst_model_shapes_ready, zox_tst_model_shapes_check, 60);

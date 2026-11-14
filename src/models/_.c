@@ -72,5 +72,6 @@ void import_models(ecs* world) {
     add_hook_files_load(load_files_voxes);
 #ifdef zox_tests
     zox_tsts_models();
+    zox_tsts_models_gpu(world);
 #endif
 }
