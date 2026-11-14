@@ -104,6 +104,7 @@ static inline float zox_tst_qd_facing(ecs* world, entity character, entity targe
 
 // characters across the dialogue box, its lines wrap to it
 int zox_tst_qd_columns = 0;
+char zox_tst_qd_tracker[256];     // the quest tracker's text after taking the quest
 float zox_tst_qd_scale_min = 1;     // the window's smallest and biggest LocalScale1, popping in and out
 float zox_tst_qd_scale_max = 0;
 int zox_tst_qd_input_early = 0;     // frames playing (input back) while a dialogue window was still there
@@ -258,6 +259,15 @@ byte zox_tst_quest_dialogue_ready(ecs* world) {
             if (talk == 1 && !zox_tst_qd_jingle_notes) {
                 zox_tst_qd_jingle_notes = zox_count_types(SoundDelay);
             }
+            // after taking the quest, the tracker shows it by name (it showed (null), find: the wrong quest)
+            if (talk == 1 && !zox_tst_qd_tracker[0]) {
+                const entity tracker = zox_get_child_by_id(world, canvas, zox_id(QuestTracker));
+                char* shown = zox_valid(tracker) ? get_zext_text(zox_get(tracker, TextData)) : NULL;
+                snprintf(zox_tst_qd_tracker, sizeof(zox_tst_qd_tracker), "%s", shown ? shown : "-");
+                if (shown) {
+                    free(shown);
+                }
+            }
             zox_tst_waiting = "a talk";
             if (!zox_tst_qd_talk(world, talk)) {
                 return 0;
@@ -307,6 +317,11 @@ void zox_tst_quest_dialogue_check(ecs* world) {
     zox_log("[tst] [metric] dialogue window scale [%.2f to %.2f] (pops in from 0, overshoots 1)", zox_tst_qd_scale_min, zox_tst_qd_scale_max);
     zox_tst_check(zox_tst_qd_scale_min < 0.5f && zox_tst_qd_scale_max > 0.99f, "the dialogue window didn't pop in, its scale went [%.2f to %.2f]", zox_tst_qd_scale_min, zox_tst_qd_scale_max);
     zox_tst_check(!zox_tst_qd_input_early, "input came back [%i] frames before the dialogue window was gone", zox_tst_qd_input_early);
+    {
+        const entity quest = zox_tst_qd_quest(world, zox_tst_qd_npc);
+        const char* name = zox_valid(quest) && zox_has(quest, ZoxName) ? zox_getv(quest, ZoxName) : "?";
+        zox_tst_check(!strncmp(zox_tst_qd_tracker, name, strlen(name)), "after taking it, the tracker shows [%s], not [%s]", zox_tst_qd_tracker, name);
+    }
     zox_tst_check(zox_tst_qd_voices > 0, "the npc said its lines without a voice");
     zox_tst_check(zox_tst_qd_jingle_notes > 0, "taking the quest played no jingle");
 }
