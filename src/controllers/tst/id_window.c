@@ -1,5 +1,6 @@
 // tst: id_window, the player's id window: who they are a line each, their name first (stats/ui/ins/id.c)
 //  - unmade data reads none, a linked race reads its name (RaceLink)
+//  - its mug shot, a render frame of its head (stats/ui/ins/mugshot.c)
 //  - saves tst/id_window.ppm to look at
 //  - run: bash bsh/tst.sh id_window
 byte zox_tst_id_stage = 0;
@@ -48,9 +49,13 @@ byte zox_tst_id_window_ready(ecs* world) {
 }
 
 void zox_tst_id_window_check(ecs* world) {
-    (void) world;
     zox_log("[tst] id before [%s]", zox_tst_id_before);
     zox_tst_check(zox_valid(zox_tst_id_window) && zox_has(zox_tst_id_window, MenuId), "no id window");
+    // its mug shot, a render frame on its body
+    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity skeleton = get_skeleton(world, character);
+    zox_tst_check(zox_valid(skeleton) && zox_valid(zox_tst_id_window) &&
+        zox_valid(zox_get_child_by_id_recursive(world, zox_tst_id_window, zox_id(RenderTexture))), "the id window has no mug shot");
     zox_tst_check(strstr(zox_tst_id_before, "name ") == zox_tst_id_before && !strstr(zox_tst_id_before, "name none") && strstr(zox_tst_id_before, "\nlevel "), "it doesn't start with its name (from its seed) and level [%s]", zox_tst_id_before);
     zox_tst_check(strstr(zox_tst_id_before, "race none") && strstr(zox_tst_id_before, "class none") &&
         strstr(zox_tst_id_before, "job none") && strstr(zox_tst_id_before, "clan none"), "unmade data doesn't read none");

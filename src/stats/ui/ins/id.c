@@ -20,7 +20,8 @@ void character_id_text(ecs* world, entity character, char* text, int size) {
         character_id_link(world, character, zox_id(ClanLink)));
 }
 
-// the player's id window: who their character is (character_id_text), a line each, sized to its lines
+// the player's id window: their character's mug shot, who they are beside it (character_id_text), a line each, sized to
+//  its lines
 entity spawn_player_menu_id(ecs* world, entity player) {
     const entity canvas = zox_get_link(world, player, CanvasLink);
     const entity character = zox_get_link(world, player, CharacterLink);
@@ -42,14 +43,18 @@ entity spawn_player_menu_id(ecs* world, entity player) {
             columns = width;
         }
     }
+    // its mug shot left of its lines, a square as tall as them
+    const int lines_height = rows * font_size + (rows - 1) * default_line_padding + padding.y * 2;
+    const int mug = lines_height;
     const int2 size = {
-        columns * font_size + (padding.x + margin) * 2,
-        rows * font_size + (rows - 1) * default_line_padding + (padding.y + margin) * 2
+        mug + margin + columns * font_size + padding.x * 2 + margin * 2,
+        lines_height + margin * 2
     };
     const entity3 window = spawn_window(world, prefab_window, prefab_body, "Identity", canvas, int2_zero, size,
         float2_half, 6 * ui_scale, (byte2) { 6 * ui_scale, 3 * ui_scale }, NULL);
     zox_add(window.x, MenuId);
-    spawn_text(world, prefab_text, window.z, (int2) { -size.x / 2 + margin, size.y / 2 - margin }, float2_half,
+    spawn_character_mugshot(world, window.z, character, float2_half, (int2) { -size.x / 2 + margin + mug / 2, 0 }, int2_single(mug));
+    spawn_text(world, prefab_text, window.z, (int2) { -size.x / 2 + margin * 2 + mug, size.y / 2 - margin }, float2_half,
         font_size, zox_alignment_top_left, padding, text, button_font_fill, button_font_outline);
     ui_pop_in(world, window.x);
     return window.x;
