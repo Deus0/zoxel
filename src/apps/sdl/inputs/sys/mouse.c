@@ -38,6 +38,12 @@ void mouse_input_system(iter* it) {
         }
         int2 mouse_position = global_mouse_position;
         int2_flip_y(&mouse_position, screen_size);
+        // out of the window it's nowhere (sdl keeps its last place inside: what it hovered stayed hovered, its
+        //  tooltip stuck)
+        const byte in_window = SDL_GetMouseFocus() == zox_getv(app, SDLWindow);
+        if (!in_window) {
+            mouse_position = int2_hidden;
+        }
         if (zox_mouse_fake) {
             mouse_position = zox_mouse_fake_position;
         }
@@ -64,7 +70,9 @@ void mouse_input_system(iter* it) {
                 } else {
                     zox_muter(e2, ZevicePointerPosition, position);
                     zox_muter(e2, ZevicePointerDelta, delta);
-                    delta->value = int2_sub(mouse_position, position->value);
+                    // no jump leaving or coming back into the window
+                    const byte hidden = int2_equals(mouse_position, int2_hidden) || int2_equals(position->value, int2_hidden);
+                    delta->value = hidden ? int2_zero : int2_sub(mouse_position, position->value);
                     position->value = mouse_position;
                 }
             }

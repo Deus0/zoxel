@@ -65,6 +65,10 @@ void element_raycast_system(iter* it) {
         int2 position = ray_position->value;
         byte ray_in_viewport = is_in_canvas_viewport(&viewport, position);
         if (!ray_in_viewport) {
+            // off the canvas (out of the window): nothing's hovered (it kept its target, its tooltip stuck)
+            if (target->value) {
+                raycaster_select_element(world, e, 0);
+            }
             if (dbg_log >= 2) {
                 zox_log("(element_raycast_system) Ray not in viewport [%s] at [%ix%i]",
                     zox_getn(e),
