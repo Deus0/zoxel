@@ -62,6 +62,11 @@ Tests: [src/chunks/chunks3/tst/gpu_mesh.c](../../src/chunks/chunks3/tst/gpu_mesh
   second and every view drew them.
 - `gpu_light_views` (`bash bsh/gpu_lights.sh`, `--1080p` to see the difference): the same close up into the torch lit
   cave 4 times: unlit, face, vertex, pixel. Logs how many pixels pixel lighting changes from vertex lighting.
+- `gpu_light_stress` (`bash bsh/gpu_light_stress.sh`, `--visible` to watch for 20 seconds): terrain chunks at night
+  (`zox_tst_gpu_chunks`, default 4) re-shaped and re-lit every frame: the hills roll (voxel octree rebuilt,
+  `zox_tst_gpu_voxels=0` keeps them still), two torches move (a light flood and light octree rebuilt), both flattened,
+  meshed lit on the gpu, drawn with pixel light. Logs chunks updated a second and each part's time. Checks the last
+  animated frame's corner lights against `smooth_face_lights`.
 
 ## Measurements
 
@@ -78,6 +83,12 @@ Debug builds.
 | the chicken: upload and mesh (32³ grid), gpu | ~1.2ms | ~0.24ms |
 | 9 chickens remeshed every frame | ~130 a second at ~14fps | ~1100 a second at ~125fps |
 | 36 chickens remeshed every frame | ~250 a second at ~7fps | |
+| `gpu_light_stress`, 4 chunks re-shaped and re-lit every frame | ~25 chunks a second at ~6fps | |
+| a chunk of it: cpu voxels / cpu light flood / flatten / gpu upload and mesh | 4.7 / 7.8 / 0.7 / ~9ms | |
+| lights only (`zox_tst_gpu_voxels=0`) | ~29 chunks a second, flatten 0.3ms | |
+
+In the light stress the cpu's light flood (a simple one in the test, the game's flood fill is more) is the biggest
+cpu part, more than rebuilding the voxels: light flooding on the gpu is the next big step for realtime lights.
 
 So an animated chicken is ~0.5ms a frame on the Mali (half octree and flatten, half gpu), and the frame rate, not
 the meshing, was the limit at 9 models.
