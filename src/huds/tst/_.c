@@ -2,6 +2,7 @@
 #include "menus.c"
 #include "end_game.c"
 #include "mouse.c"
+#include "mouse_leave.c"
 #include "tooltips.c"
 #include "options.c"
 #include "scroll.c"
@@ -18,6 +19,8 @@ void zox_tsts_huds() {
     zox_tst_set_setup("menu_flow", NULL, 1);
     zox_tst_add("mouse_click", zox_tst_mouse_click_ready, zox_tst_mouse_click_check, 60);
     zox_tst_set_setup("mouse_click", NULL, 1);
+    zox_tst_add("mouse_leave", zox_tst_mouse_leave_ready, zox_tst_mouse_leave_check, 60);
+    zox_tst_set_setup("mouse_leave", NULL, 1);
     zox_tst_add("ui_leaks", zox_tst_ui_leaks_ready, zox_tst_ui_leaks_check, 120);
     zox_tst_set_setup("ui_leaks", NULL, 1);
     zox_tst_add("tooltips", zox_tst_tooltips_ready, zox_tst_tooltips_check, 60);
