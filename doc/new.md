@@ -55,3 +55,10 @@
 ## towns
 - villager tags for npcs in towns
 - they can have roles, like mayor, 'jobs' module
+
+## Doors
+- add door model, two blocks tall
+- when right click, swing open
+- collider to use mini voxels when rotating too there
+- door open close sound
+- save load open state

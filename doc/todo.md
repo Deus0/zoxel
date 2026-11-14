@@ -3,14 +3,38 @@
 - Also see: [bugs.md](bugs.md) (bugs and crashes), [refactors.md](refactors.md) (code to restructure),
   [optimize.md](optimize.md) (performance), [new.md](new.md) (new modules and features), [future.md](future.md) (bigger
   ideas), [new/caves.md](new/caves.md) (caves design)
+  
+# New Play test
+- Npcs are missing? - when i loaded game they were gone, outside town
+- Popup on uis look good, we should make this universal
+- Needs a similar animation when closing
+- Id and mirror ui lack a close button
+- shoes way too blocky, they come out at the back too far too
+- shoulders poke clothes, and limbs in general need polish on the organic shape
+- we should add in the wave form collapse for vox models, and generate hats off that, so they fit the heads (magic equipment in the story)
+- Cant hear footsteps
+- music in town and overworld should be different
+- add the toast ui when entering a new town
+- every npc has same quest, they shouldt all have quests
+- humanoids need more variation in town
+- add female variant humanoids
+- body and footer of ui overlap, due to transparency, we normally keep them seperate
+- q, g, y are all hard to read, double check fill and font generation
+- Tracks wrong quest when starts it, and when i open quest log, it shows none tracked
+- cokie still lacks crummbs
+- clothes colors on start gear: should be dull colors, but more contrasting to the skin
+- tooltip got stuck when mouse left it- fix, add test for this
+- stats panel dissapears, but we only need the statbars to, like per bar, not the entire thing
+- [09:03:03.671] [ERROR] Smooth Lights Error: Colors Past Limits [160] - Face [4] at Pos [2x3x3] Depth [2] of [2] is back as an error
+- tests are they in build? they shouldnt be included in release - add a zox_tests define?
+- map movement should be per pixel - and we should optimize it too
+- 3D uis are visible through buildings at distances, i was unsure how to fix this before
+- sky color should be blending when moving between biomes
 
 # Polish (play test notes, 2026-11-14)
 A polished core loop before more content.
-- Npcs without bones (slimes): tumble or turn towards the player like humanoids glance (heads: LookTarget, ai/sys/glance.c)
-- Tweens: an AnimationEndEvent (a function, like StreamEndEvent) called when one ends, AnimationDeletesTarget becomes
-  one handler of it (ui_pop_out passes a delete), anything can react to an animation finishing
-- Dialogue window layout in small windows: the box is too short, its Next button overlaps the text (460px test window)
-- Dialogue window: the Next button on a footer in the window, text truncation, scaling text to fit its options
+- Dialogue (not high priority): a line too long for its box is cut with ... (text_truncate), show it in parts instead
+  (Next shows the rest, the window animating between them), or scale its text to fit
 - Events: StreamEndEvent (and other function events) to observers
 - Population: more info per tunk (who lives there, counts), a level per region (like Trove), regions harder the
   further from the origin (world scale to decide)
@@ -23,11 +47,6 @@ A polished core loop before more content.
 - Highways between towns and regions
 - More natural mountains
 - Blocks: refactor them onto the realm, biomes pick theirs by random rules (still variety in dirts and others)
-- Vox items: fix their positions in the hand
-- Stat bars: hide health and other bars after a while without regen, show them again on change
-- Chest: worse now, too much detachment around the ribs
-- Shorts: not shorts shaped enough, more organic lining
-- Id ui: general info, race, class, job, title, level, clan
 - Github actions: builds there, to grab and test on a phone or whatever device
 
 # Now
@@ -310,6 +329,10 @@ A polished core loop before more content.
 	- super rare vox texture bug
 
 # Characters and Npcs
+- Noticing (post mvp, close by is fine for now): npcs notice you more naturally, by hearing your footsteps (louder running, nearer) or seeing you in a
+  vision cone (in front, in range, not behind walls); their glance (ai/sys/glance.c) and turning come after noticing
+- Boneless npcs (slimes, critters) turn their body to a player they notice (rotate_towards), steady: rotate_towards'
+  PD is underdamped (kP 4, kD 0.5), measure overshoot first; a tumble or hop fights stay_upright_system
 - Npcs remember where they were and walk back home: a despawned npc returns at its home now (NpcHome, its seed),
   it should come back where it was and path home, needs A* pathfinding and pathing octrees (none yet)
 	- pathing octrees: walkable space from the voxel octrees, coarse nodes for long paths
@@ -362,8 +385,8 @@ A polished core loop before more content.
 	- streaming should just work seperately to character positioning
 
 # Bodies and Animations
--x Shirt sat behind the chest: the body combined before the shirt's model finished generating (its size read as 64),
-  bodies wait for Generating models now (f0ad65340, tst body_views checks clothes are centred)
+- Tweens: an AnimationEndEvent (a function, like StreamEndEvent) called when one ends, AnimationDeletesTarget becomes
+  one handler of it (ui_pop_out passes a delete), anything can react to an animation finishing
 - First person camera doesn't adjust for the head's size: the head has a neck now, its eyes higher (head.c)
 - Body part seeds are `N * (i * spawn_count++)` (gam/zoxel/sys/body_parts.c), i is the realm's index: 0 in the
   first realm, every part the same seed, less variation (see tst model_variants)
@@ -451,6 +474,8 @@ A polished core loop before more content.
 	  a dropped tilted cube lands flat, a resting cube stays still, all at _10fps / _30fps too
 
 # Combat, Skills and Stats
+- Damage system refactor: more streamlined (one path from a hit to its damage, its sounds, its effects), with a stress
+  test for big npc battles (many npcs fighting at once: damage events, frame time, nothing lost or doubled)
 - We can just have a more general Damage/Defence type stats
 	- With Physical and Magical tags
 	- DamageStat, DefenceStat
@@ -546,6 +571,9 @@ A polished core loop before more content.
 	- Animate it more when talking to the npc
 
 # UI and Huds
+- Textures from blueprints (like models): frames, icons and others written as nodes, for reuse
+- Windows and headers: revamped texture generation, better frames, a bit more style
+- Render frames with alpha 1 (the opaque render texture material) show nothing, the alpha one works (mug shots use 0.95)
 - 16 printable ascii have no glyphs, i.e. ' (dialogue "I'm" shows ?), needs font art (tst text_data)
 - Font sometimes scrambled on ui
 - Text font just scrambled positions again - maybe it repositions before child index is set
@@ -742,6 +770,10 @@ A polished core loop before more content.
 	- XRRender Systems for them
 
 # Gizmos, Debug and Tools
+- A gizmo button in the "gizmos" ui for skeletons:
+   - toggle skeleton bones visuals
+   - toggle their transparency
+   - toggle a face view, to debug the meshes
 - add a mode where it shows block ids in item tooltips
 - for our model test - change mesh every 5 seconds to a variant model
 	- showcase variants
@@ -856,6 +888,9 @@ A polished core loop before more content.
 	- Maybe we just build spinlock into the octree types root, would be a massive refactor tho
 
 # Engine and Refactors
+- Memory: ~6mb still lost a test run (AddressSanitizer, build.sh --debug --memory: finalize_arrayd float3/float2/int
+  from other mesh builders, TextureData resizes, wav data), and flecs keeps a table for each humanoid's unique
+  children (~100kb each, tst humanoid_leak)
 - Heap grows ~22mb a game ended and started again (tst end_game_cleanup), entities, gpu buffers, textures and
   tables don't: trace allocations (glibc mtrace, or a flecs os api malloc hook) to tell a leak from flecs pools
 	- check if flecs can own our mesh data (vertices, indices, colors, uvs are malloc'd arrays in components):
