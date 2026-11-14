@@ -2,6 +2,7 @@
 #include "update.c"
 #include "arrow.c"
 #include "move.c"
+#include "view.c"
 
 void zox_systems_maps(ecs* world) {
     zox_system_1(
@@ -19,6 +20,18 @@ void zox_systems_maps(ecs* world) {
         [out] maps.MapPosition,
         [none] maps.Map,
         // [none] maps.Minimap
+    );
+    zox_system_1(
+        map_view_system,
+        zoxp_update,
+        [in] maps.MapBlocksPerTexel,
+        [out] maps.MapDrawnAt,
+        [out] maps.MapDrawnVersion,
+        [out] maps.MapDrawnWhole,
+        [out] maps.MapDrawnTime,
+        [out] textures.TextureData,
+        [out] rendering.TextureSize,
+        [none] maps.MapView
     );
     zox_system(
         map_arrow_system,

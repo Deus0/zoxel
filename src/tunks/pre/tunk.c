@@ -12,5 +12,6 @@ entity spawn_prefab_tunk(ecs *world, entity prefab) {
     zox_setv(e, Chunk3Stacked, 0);
     // Maps
     zox_setv(e, HeightMap, 0);
+    zox_setv(e, TunkMapColors, 0);
     return e;
 }

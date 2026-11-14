@@ -12,6 +12,11 @@ zoxc_hashmap(TunkLinks, int2);
 #define chunk3_stack_length render_distance_y_max * 2 + 1
 zoxc_array(Chunk3Stack, entity, chunk3_stack_length);
 zoxc_byte(Chunk3Stacked);
+// a tunk's top down colours (the first block from the top in each column, shaded by height), a side a power of two
+//  (its chunks' depth), made when a map needs them (tunk_map_colors), cleared when its chunks change
+zoxc_arrayd(TunkMapColors, color);
+// a terrain's maps redraw when this changes (a tunk's colours were cleared)
+zoxc_int(TunkMapsVersion);
 // Links
 zox_tag(TunkLink);
 
@@ -27,6 +32,8 @@ void zox_components_tunks(ecs *world) {
     zoxd_arrayd(HeightMap);
     zoxd(Chunk3Stack);
     zoxd_byte(Chunk3Stacked);
+    zoxd_arrayd(TunkMapColors);
+    zoxd_int(TunkMapsVersion);
     zoxd_hashmap(TunkLinks);
     // Links
     zoxd_nf_link(TunkLink);
