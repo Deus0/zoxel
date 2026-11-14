@@ -174,3 +174,25 @@ void quest_icon_click_event(iter* it) {
         }
     }
 }
+
+// A quest log icon filled with its quest (DataUpdate): the tracked quest's icon shows it's tracked, its overlay on
+//  (opening the log showed none tracked, only clicking set it)
+void quest_icon_tracked_event(iter* it) {
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        const entity quest = zox_get_link(world, e, DataLink);
+        if (!zox_valid(quest) || !zox_has(quest, Quest)) {
+            continue;
+        }
+        const entity character = zox_get_parent(world, quest);
+        if (!zox_valid(character) || zox_get_link(world, character, QuestTracked) != quest) {
+            continue;
+        }
+        zox_link(world, quest, QuestIconLink, e);
+        const entity overlay = zox_get_child_by_id(world, e, zox_id(IconOverlay));
+        if (overlay) {
+            zox_setv(overlay, RenderDisabled, 0);
+        }
+    }
+}

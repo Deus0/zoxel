@@ -66,6 +66,12 @@ byte zox_tst_quest_tracking_ready(ecs* world) {
         zox_tst_check(zox_get_link(world, character, QuestTracked) == quest, "quest [%i] isn't tracked after getting it", index + 1);
         zox_tst_check(zox_get_link(world, quest, QuestTrackerLink) == tracker, "quest [%i] isn't linked to the tracker", index + 1);
         zox_tst_check(zox_tst_quest_tracker_shows(world, tracker, quest), "the tracker doesn't show quest [%i]", index + 1);
+        // named like the realm quest it's from (it showed ?null?, as if the wrong quest)
+        const entity from = zox_getp(world, quest);
+        const char* name = zox_has(quest, ZoxName) ? zox_getv(quest, ZoxName) : "";
+        const char* from_name = zox_valid(from) && zox_has(from, ZoxName) ? zox_getv(from, ZoxName) : "";
+        zox_log("[tst] quest [%i] named [%s], from [%s]", index + 1, name, from_name);
+        zox_tst_check(from_name[0] && !strcmp(name, from_name), "quest [%i] is named [%s], not [%s] like its realm quest", index + 1, name, from_name);
         if (index == 1) {
             zox_tst_check(!zox_get_link(world, zox_tst_quest_given[0], QuestTrackerLink), "the first quest is still linked to the tracker");
             track_quest(world, character, 0);

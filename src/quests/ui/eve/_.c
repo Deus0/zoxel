@@ -24,6 +24,13 @@ void zox_events_quests_ui(ecs* world) {
         [none] slots.SlotUser,
         [none] interactions.Click, // event
     );
+    // the tracked quest's icon shows it, once filled
+    zox_on_add(
+        quest_icon_tracked_event,
+        [none] quests_ui.QuestIcon,
+        [none] slots.SlotUser,
+        [none] slots.DataUpdate,
+    );
     zox_on_add(
         quest_tracker_updated,
         [none] quests.Quest,

@@ -34,6 +34,9 @@ void track_quest(
         if (zox_valid(tracker)) {
             zox_link(world, quest, QuestTrackerLink, tracker);
         }
+        // its text again once it's whole (quest_tracker_updated): tracked as it's given, from a system its spawn is
+        //  deferred, no name or slay data yet (the tracker showed (null), find, the wrong quest)
+        zox_add(quest, Dirty);
     }
     if (!zox_valid(tracker)) {
         return;
