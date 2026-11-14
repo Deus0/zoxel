@@ -14,6 +14,9 @@ color_rgb override_sky_fill = color_rgb_red;
 #include "fun/_.c"
 #include "eve/_.c"
 #include "sys/_.c"
+#ifdef zox_tests
+#include "tst/_.c"
+#endif
 
 void import_weathers(ecs* world) {
     zox_module(weathers);
@@ -22,4 +25,7 @@ void import_weathers(ecs* world) {
     add_hook_load_shader(&zox_shaders_weather);
     add_hook_spawn_prefabs(zox_prefabs_weather);
     add_hook_spawn_prefabs(zox_events_weather);
+#ifdef zox_tests
+    zox_tsts_sky_blend(world);
+#endif
 }

@@ -1,5 +1,5 @@
 // a simple lerp animation system: a float component of its target, eased (AnimationEase), it can delete its target
-//  when done (AnimationDeletesTarget)
+//  when done (AnimationDeletesTarget); done it gets AnimationEnded (observe it), deleted the frame after
 void lerp_float_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
@@ -19,7 +19,8 @@ void lerp_float_system(iter* it) {
         zox_sys_i(AnimationDuration, length);
         zox_sys_i(LerpFloatFrom, from);
         zox_sys_i(LerpFloatTo, to);
-        if (!zox_valid(target->value)) {
+        // ended last frame (its observers have run), or its target's gone
+        if (!zox_valid(target->value) || zox_has(e, AnimationEnded)) {
             zox_delete(e);
             continue;
         }
@@ -40,7 +41,7 @@ void lerp_float_system(iter* it) {
             if (zox_has(e, AnimationDeletesTarget)) {
                 zox_delete(target->value);
             }
-            zox_delete(e);
+            zox_add(e, AnimationEnded);
         }
     }
     zox_sys_on_end();

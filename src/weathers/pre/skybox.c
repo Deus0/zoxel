@@ -18,6 +18,9 @@ entity spawn_prefab_skybox(ecs *world) {
     zox_setv(e, Color, color_white);
     zox_setv(e, ColorRGB, color_rgb_white);
     zox_add(e, SecondaryColorRGB);
+    zox_setv(e, SkyColorFrom, color_rgb_white);
+    zox_setv(e, SkyColorTarget, color_rgb_white);
+    zox_setv(e, SkyBlend, 1);
     zox_setv(e, Brightness, 1);
     zox_setv(e, Alpha, 1);
     prefab_set_mesh_indicies(

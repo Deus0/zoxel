@@ -91,32 +91,8 @@ void biome_link_system(iter* it) {
             zox_log("Inside new Biome [%s]",
                 zox_getn(biome));
         }
-        // Set Sky Colors
-        color_rgb sky_color = zox_getv(biome, BiomeSkyColor);
-        game_sky_color = sky_color;
-        game_sky_bottom_color = sky_color;
-        if (dbg_log) {
-            zox_log("Sky Color Set [%ix%ix%i]",
-                sky_color.r,
-                sky_color.g,
-                sky_color.b);
-        }
-        // Set cameras Fog
-        color_rgb fog_color = sky_color;
-        if (zox_has(e, FogColor)) {
-            zox_setv(e, FogColor, fog_color);
-            if (dbg_log) {
-                zox_log("   + Camera Fog [%s]",
-                    zox_getn(e));
-            }
-        } else {
-            entity camera = zox_get_link(world, e, CameraLink);
-            zox_setv(camera, FogColor, fog_color);
-            if (dbg_log) {
-                zox_log("   + Camera Fog [%s]",
-                    zox_getn(camera));
-            }
-        }
+        // the sky and fog blend to the biome's (blend_sky_to, sky_blend_system: it snapped)
+        const color_rgb sky_color = zox_getv(biome, BiomeSkyColor);
         entity realm = zox_get_parent_by_id(
             world,
             terrain,
@@ -137,11 +113,7 @@ void biome_link_system(iter* it) {
             zox_loge("Game has no skybox [%s]", zox_getn(game));
             continue;
         }
-        set_skybox_colors(
-            world,
-            skybox,
-            game_sky_color,
-            game_sky_bottom_color);
+        blend_sky_to(world, skybox, sky_color);
     }
     zox_sys_on_end();
 } zoxd_system(biome_link_system);

@@ -29,7 +29,8 @@ void zox_systems_biomes(ecs *world) {
         [in] tunks.BiomeMap,
         [none] tunks.Tunk
     );
-    zox_system(
+    // main thread: it starts the sky's blend (a tween, blend_sky_to)
+    zox_system_1(
         biome_link_system,
         zoxp_update,
         [in] streaming.StreamDirty,
