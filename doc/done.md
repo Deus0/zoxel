@@ -1,6 +1,26 @@
 # Done
 
 ## Moved from todo (2026-11-14)
+-x Character mug shots (a render frame of the head, stats/ui/ins/mugshot.c) in the id window, framed, lines underlined
+-x Chest came apart round the ribs when the arms swung: a vertex now moves with the bone it's deepest in, not the last
+  whose box reaches it (778 rib voxels moved with the shoulders); tst chest_weights
+-x Shorts rounded: the hips and each leg bevelled, a gap between the legs
+-x Player's character named from its seed again (generate_name, kept on load)
+-x Id window (taskbar, Identity): name, level, title, race, class, job, clan a line each, each from its link
+  (TitleLink, RaceLink, ClassLink, JobLink, ClanLink), none until they're made; tst id_window
+-x Dialogue window: a footer along its body for its buttons (spawn_footer, WindowFooter), its text above it, at least
+  its footer and two lines tall on small screens, text taller than its box cut with ... (text_truncate, text_rows)
+-x Town building helpers tested (tst town_build, drafted by the local AI from a spec, reviewed)
+-x Held and dropped vox items (cookies) sized and centred from their voxels: biggest side a block's width, their
+  voxels' middle on the hand, out of it by half their depth (vox_filled_bounds); tst held_item, held_block
+-x Shirt sat behind the chest: the body combined before the shirt's model finished generating (its size read as 64),
+  bodies wait for Generating models now (f0ad65340, tst body_views checks clothes are centred)
+-x Stat bars hide after 5 seconds without changing, pop back in when they change (AutoHide, ui_poke, auto_hide_system,
+  ui_shrink); tst statbars_hide
+-x Memory leak: array and queue components' move hooks dropped the old value when assigning (a skeleton mesh's arrays,
+  ~700kb a humanoid, a game left 22-46mb now 8mb); the npc glance read chunks' entities on a worker as they were
+  reallocated (now main thread); tests humanoid_leak, monster_leak; --nohumans; test runs check leaks before _exit
+  under AddressSanitizer
 -x Towns: a square in the middle (homes placed round it), roads from each home's door to it and from it to the gate,
   the gate on a random wall at a random spot (TownGateSide, TownGateAt), the rest of the town its natural ground
   (towns/fun/town.c); tst town_homes (off the square, door roads, gate on its wall)
