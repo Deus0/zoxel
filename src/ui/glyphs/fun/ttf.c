@@ -18,24 +18,28 @@ float4 get_glyph_bounds(const FT_GlyphSlot glyph) {
     return bounds;
 }
 
+// the bounds of the face's letters, digits and underscore (x min, x max, y min, y max), by character code: points are
+//  placed in them (glyph_point_to_byte2), the descenders (g j p q y) below the baseline included
 float4 get_face_bounds(FT_Face face) {
     byte initialized = 0;
-    float4 bounds;
-    for (int i = 0; i < face->num_glyphs; i++) {
-        if (!((i >= 48 && i <= 57) || (i >= 65 && i <= 90) || (i >= 97 && i <= 122) || i == 95)) continue;
-        if (i == 98) continue;
-        FT_Load_Glyph(face, i, FT_LOAD_DEFAULT); // Load the glyph
-        FT_GlyphSlot glyph = face->glyph;
-        const float4 glyph_bounds = get_glyph_bounds(glyph);
+    float4 bounds = float4_zero;
+    for (int c = 0; c < 128; c++) {
+        if (!((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_')) {
+            continue;
+        }
+        if (FT_Load_Glyph(face, FT_Get_Char_Index(face, (FT_ULong) c), FT_LOAD_DEFAULT)) {
+            continue;
+        }
+        const float4 glyph_bounds = get_glyph_bounds(face->glyph);
         if (!initialized) {
             initialized = 1;
             bounds = glyph_bounds;
-        } else {
-            if (glyph_bounds.x < bounds.x) bounds.x = glyph_bounds.x;
-            if (glyph_bounds.y > bounds.y) bounds.y = glyph_bounds.y;
-            if (glyph_bounds.z < bounds.z) bounds.z = glyph_bounds.z;
-            if ( glyph_bounds.w > bounds.w) bounds.w = glyph_bounds.w;
+            continue;
         }
+        bounds.x = fminf(bounds.x, glyph_bounds.x);
+        bounds.y = fmaxf(bounds.y, glyph_bounds.y);
+        bounds.z = fminf(bounds.z, glyph_bounds.z);
+        bounds.w = fmaxf(bounds.w, glyph_bounds.w);
     }
     return bounds;
 }
@@ -48,17 +52,16 @@ float2 get_glyph_margins(const FT_GlyphSlot glyph) {
     return (float2) { glyph->metrics.horiBearingX, glyph->metrics.horiBearingY };
 }
 
-byte2 glyph_point_to_byte2(FT_Vector point_, const int2 glyph_size, const float4 glyph_bounds) {
-    float2 point = (float2) { point_.x, point_.y };
-    point.x /= (float) glyph_bounds.y;
-    point.y /= (float) glyph_bounds.w;
-    // fix algorithm to be fine with 255
-    point.x *= 255;
-    point.y *= 255;
-    point.x = point.x * (1 - point_font_margins * 2) + point_font_margins;
-    point.y = point.y * (1 - point_font_margins * 2) + point_font_margins;
-    int2 point_i2 = float2_to_int2(point);
-    return int2_to_byte2(point_i2);
+// a point in the face's bounds (get_face_bounds) to 0 to 255 inside the font margins: below the baseline too (a
+//  descender's tail was negative, it wrapped to the top as a byte, g and y read as 8 and 9)
+byte2 glyph_point_to_byte2(FT_Vector point_, const int2 glyph_size, const float4 bounds) {
+    float2 point = {
+        (point_.x - bounds.x) / (bounds.y - bounds.x),
+        (point_.y - bounds.z) / (bounds.w - bounds.z)
+    };
+    point.x = 255 * (point.x * (1 - point_font_margins * 2) + point_font_margins);
+    point.y = 255 * (point.y * (1 - point_font_margins * 2) + point_font_margins);
+    return (byte2) { (byte) int_clamp((int) point.x, 0, 255), (byte) int_clamp((int) point.y, 0, 255) };
 }
 
 FT_UInt get_glyph_index(FT_Face face, const char charcode) {
