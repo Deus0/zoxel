@@ -31,6 +31,11 @@ void process_arguments_terrain(ecs *world, char* args[], int count) {
             render_distance_y = 3;
             zox_log("+ [medium terrain] [%ix%i]", terrain_lod_far, render_distance_y)
             zox_terrain_size_set_by_args();
+        } else if (strcmp(args[i], "--far") == 0 && i + 1 < count) {
+            // a far distance of its own, i.e. tests on the user's (--stress --far 8)
+            terrain_lod_far = (byte) atoi(args[++i]);
+            zox_log("+ [far terrain] [%i]", terrain_lod_far)
+            zox_terrain_size_set_by_args();
         } else if (strcmp(args[i], "--large") == 0) {
             terrain_lod_far = 12;
             render_distance_y = 4;

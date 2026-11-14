@@ -13,12 +13,12 @@
  *
  * */
 byte zox_terrain_chunk_lod_system = 0;
-// stream queue updates per second (was 1 per frame, so streaming slowed with the frame rate)
-float stream_updates_per_second = 60;
-byte stream_updates_max_per_frame = 2;  // so a long frame doesn't burst: a slow frame earned more updates, the
-                                         //  next spawned more chunks (6 columns) and was slow too, at 60fps it's 1
-double stream_update_max_wait = 2.0;    // seconds, an update queued longer goes before closer ones
-float stream_update_credit = 0;
+// the stream queue's budget a frame (lod changes and spawns, distance only updates are outside it), doc/tec/streaming.md
+float stream_update_ms = 2;
+byte stream_updates_max_per_frame = 8;
+float stream_update_aging = 1;  // tunks closer an update counts for each second it waited, so far ones aren't starved
+// slots the queue spent, by kind (tests log them: perf_fly), doc/tec/streaming.md
+int stream_slots_lod = 0, stream_slots_distance = 0, stream_slots_spawn = 0;
 // Initial core
 #include "set/_.c"
 #include "com/_.c"

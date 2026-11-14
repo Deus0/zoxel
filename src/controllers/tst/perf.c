@@ -25,8 +25,17 @@ int zox_tst_perf_tables_before_count = 0;
 int zox_tst_perf_generating = 0;
 int zox_tst_perf_siding = 0;
 int zox_tst_perf_meshing = 0;
+int zox_tst_perf_swapping = 0;     // chunks changing lod (ChunkLodDirty)
+int zox_tst_perf_queued = 0;       // tunk updates waiting in the stream queue
+
+static inline int zox_tst_stream_queued(ecs* world) {
+    return zox_valid(local_terrain) ? (int) zox_get(local_terrain, TerrainSpawnQueue)->count : 0;
+}
+
 static inline int zox_tst_perf_busy(ecs* world) {
     zox_tst_perf_generating = 0;
+    zox_tst_perf_swapping = 0;
+    zox_tst_perf_queued = zox_tst_stream_queued(world);
     zox_tst_perf_siding = 0;
     zox_tst_perf_meshing = 0;
     if (!zox_valid(local_terrain)) {
@@ -41,15 +50,70 @@ static inline int zox_tst_perf_busy(ecs* world) {
             }
             zox_tst_perf_generating += zox_has(chunk, GenerateChunk) && zox_getv(chunk, GenerateChunk);
             zox_tst_perf_siding += zox_has(chunk, BuildChunkSides);
+            zox_tst_perf_swapping += zox_has(chunk, ChunkLodDirty);
             iter it3 = zox_children(world, chunk);
             while (zox_children_next(it3)) {
                 for (int k = 0; k < it3.count; k++) {
-                    zox_tst_perf_meshing += zox_has(it3.entities[k], ChunkMesh) && zox_has(it3.entities[k], BuildMesh);
+                    const entity mesh = it3.entities[k];
+                    // old meshes (BuildDisabled, a swapped out lod) never build, they don't hold up streaming
+                    zox_tst_perf_meshing += zox_has(mesh, ChunkMesh) && zox_has(mesh, BuildMesh) && !zox_has(mesh, BuildDisabled);
                 }
             }
         }
     }
-    return zox_tst_perf_generating + zox_tst_perf_siding + zox_tst_perf_meshing;
+    return zox_tst_perf_generating + zox_tst_perf_siding + zox_tst_perf_meshing + zox_tst_perf_swapping + zox_tst_perf_queued;
+}
+
+// tunks within zox_tst_near_tunks of the streamer not at their lod yet: missing, an old distance, or a chunk mid swap
+//  (what the player sees lag: the land round them), doc/tec/streaming.md
+#define zox_tst_near_tunks 2
+int zox_tst_near_missing = 0, zox_tst_near_distance = 0, zox_tst_near_states[5];   // why they're pending
+int zox_tst_near_mesh = 0, zox_tst_near_lights = 0, zox_tst_near_mesh_lights = 0, zox_tst_near_blocked = 0;  // swaps waiting on
+static inline int zox_tst_near_pending(ecs* world, int2 stream) {
+    zox_tst_near_missing = zox_tst_near_distance = 0;
+    zox_tst_near_mesh = zox_tst_near_lights = zox_tst_near_mesh_lights = zox_tst_near_blocked = 0;
+    memset(zox_tst_near_states, 0, sizeof(zox_tst_near_states));
+    if (!zox_valid(local_terrain)) {
+        return 0;
+    }
+    const TunkLinks* tunks = zox_get(local_terrain, TunkLinks);
+    int pending = 0;
+    for (int x = -zox_tst_near_tunks; x <= zox_tst_near_tunks; x++)
+    for (int z = -zox_tst_near_tunks; z <= zox_tst_near_tunks; z++) {
+        const int2 position = { stream.x + x, stream.y + z };
+        const int distance = int2_distance(stream, position);
+        if (distance > zox_tst_near_tunks) {
+            continue;
+        }
+        const entity tunk = int2_hashmap_get(tunks->value, position);
+        if (!zox_valid(tunk)) {
+            pending++;
+            zox_tst_near_missing++;
+            continue;
+        }
+        if (zox_getv(tunk, RenderDistance) != distance) {
+            pending++;
+            zox_tst_near_distance++;
+            continue;
+        }
+        const Chunk3Stack* stack = zox_get(tunk, Chunk3Stack);
+        for (int k = 0; k < 2 * render_distance_y + 1; k++) {
+            if (zox_valid(stack->value[k]) && zox_has(stack->value[k], ChunkLodDirty)) {
+                pending++;
+                const entity chunk = stack->value[k];
+                zox_tst_near_states[zox_getv(chunk, ChunkLodDirty) % 5]++;
+                const entity mesh = zox_get_link(world, chunk, PreparingMesh);
+                if (zox_getv(chunk, ChunkLodDirty) == zox_chunk_lod_dirty_toggle && zox_valid(mesh)) {
+                    zox_tst_near_mesh += zox_has(mesh, BuildMesh) || zox_has(mesh, MeshDirty) || !zox_has(mesh, MeshBuilt);
+                    zox_tst_near_lights += zox_chunk_lighting_busy(world, chunk);
+                    zox_tst_near_mesh_lights += zox_chunk_mesh_lighting_busy(world, mesh);
+                    zox_tst_near_blocked += zox_has(chunk, GenerateChunk) || zox_has(chunk, BuildChunkSides);
+                }
+                break;
+            }
+        }
+    }
+    return pending;
 }
 
 byte zox_tst_perf_stream_ready(ecs* world) {
@@ -65,6 +129,13 @@ byte zox_tst_perf_stream_ready(ecs* world) {
     zox_tst_waiting = "streaming to settle after a step";
     const int busy = zox_tst_perf_busy(world);
     zox_tst_progress(zox_tst_perf_step * 100000.0 + busy);
+    // the first load settles before the first step, so each step counts only its own work and tables
+    if (!zox_tst_perf_step_time) {
+        zox_tst_perf_settled_frames = busy ? 0 : zox_tst_perf_settled_frames + 1;
+        if (zox_tst_perf_settled_frames < 3) {
+            return 0;
+        }
+    }
     if (zox_tst_perf_step_time) {
         const double elapsed = zox_current_time - zox_tst_perf_step_time;
         // streaming noticed the move: the camera streams from the chunk it's in
@@ -81,8 +152,8 @@ byte zox_tst_perf_stream_ready(ecs* world) {
         zox_tst_perf_settled_frames = busy || !streamed ? 0 : zox_tst_perf_settled_frames + 1;
         if (zox_tst_perf_settled_frames < 3) {
             if (elapsed > zox_tst_perf_step_max_seconds) {
-                zox_tst_check(0, "step [%i] didn't settle in [%.0fs], [%i] still busy: generating [%i] sides [%i] meshes [%i] (build disabled [%i])",
-                    zox_tst_perf_step, zox_tst_perf_step_max_seconds, busy,
+                zox_tst_check(0, "step [%i] didn't settle in [%.0fs], [%i] still busy: queued [%i] swapping [%i] generating [%i] sides [%i] meshes [%i] (build disabled [%i])",
+                    zox_tst_perf_step, zox_tst_perf_step_max_seconds, busy, zox_tst_perf_queued, zox_tst_perf_swapping,
                     zox_tst_perf_generating, zox_tst_perf_siding, zox_tst_perf_meshing, zox_count_types(BuildDisabled));
                 return 1;
             }
@@ -184,6 +255,52 @@ void zox_tst_tables_stream_check(ecs* world) {
 #define zox_tst_fly_chunks_per_second 1.0
 double zox_tst_fly_start = 0;
 float zox_tst_fly_height = 0;
+// near lod latency: from crossing into a tunk until the tunks near the player are at their lod (zox_tst_near_pending)
+double zox_tst_fly_crossed = 0;     // the oldest crossing not caught up with, 0 once caught up
+byte zox_tst_fly_streaming = 0;
+int2 zox_tst_fly_stream;
+int zox_tst_fly_crossings = 0, zox_tst_fly_caught = 0;
+double zox_tst_fly_latency_total = 0, zox_tst_fly_latency_most = 0;
+
+// once a second: the queue and its slots by kind; each crossing: how long the land near the player lags
+static inline void zox_tst_fly_stream_metrics(ecs* world) {
+    const entity camera = zox_valid(dbg_player) ? zox_get_link(world, dbg_player, CameraLink) : 0;
+    if (!zox_valid(camera) || !zox_has(camera, StreamPosition)) {
+        return;
+    }
+    const int3 stream3 = zox_getv(camera, StreamPosition);
+    const int2 stream = { stream3.x, stream3.z };
+    if (!zox_tst_fly_streaming) {
+        zox_tst_fly_streaming = 1;
+        zox_tst_fly_stream = stream;
+    } else if (stream.x != zox_tst_fly_stream.x || stream.y != zox_tst_fly_stream.y) {
+        zox_tst_fly_stream = stream;
+        zox_tst_fly_crossings++;
+        if (!zox_tst_fly_crossed) {
+            zox_tst_fly_crossed = zox_current_time;
+        }
+    }
+    const int pending = zox_tst_near_pending(world, stream);
+    if (zox_tst_fly_crossed && !pending) {
+        const double latency = zox_current_time - zox_tst_fly_crossed;
+        zox_tst_fly_latency_total += latency;
+        zox_tst_fly_latency_most = latency > zox_tst_fly_latency_most ? latency : zox_tst_fly_latency_most;
+        zox_tst_fly_caught++;
+        zox_tst_fly_crossed = 0;
+    }
+    static double logged = 0;
+    static int lod = 0, distance = 0, spawn = 0;
+    if (zox_current_time - logged >= 1.0) {
+        logged = zox_current_time;
+        zox_log("[tst] [metric] perf_fly queue [%i] slots lod [%i] distance [%i] spawn [%i] near pending [%i] (missing [%i] distance [%i] swaps generating [%i] spawning [%i] toggling [%i]: mesh [%i] lights [%i] mesh lights [%i] generating or sides [%i])",
+            zox_tst_stream_queued(world), stream_slots_lod - lod, stream_slots_distance - distance, stream_slots_spawn - spawn, pending,
+            zox_tst_near_missing, zox_tst_near_distance, zox_tst_near_states[1] + zox_tst_near_states[2], zox_tst_near_states[3], zox_tst_near_states[4],
+            zox_tst_near_mesh, zox_tst_near_lights, zox_tst_near_mesh_lights, zox_tst_near_blocked);
+        lod = stream_slots_lod;
+        distance = stream_slots_distance;
+        spawn = stream_slots_spawn;
+    }
+}
 
 byte zox_tst_perf_fly_ready(ecs* world) {
     if (!zox_tst_fly_start) {
@@ -195,6 +312,7 @@ byte zox_tst_perf_fly_ready(ecs* world) {
         zox_tst_fly_height = zox_getv(character, Position3D).y + 8 * zox_getv(local_terrain, BlockScale);
     }
     zox_tst_profile_frame(world);
+    zox_tst_fly_stream_metrics(world);
     const double elapsed = zox_current_time - zox_tst_fly_start;
     // npcs alive, once a second (counting walks every table)
     static int npcs_peak = 0;
@@ -236,5 +354,9 @@ byte zox_tst_perf_fly_ready(ecs* world) {
 }
 
 void zox_tst_perf_fly_check(ecs* world) {
+    // the number to lower: how long the land round the player lags behind a crossing
+    zox_log("[tst] [metric] perf_fly near lod latency: crossings [%i] caught up [%i] average [%.2fs] most [%.2fs] behind at the end [%.2fs]",
+        zox_tst_fly_crossings, zox_tst_fly_caught, zox_tst_fly_caught ? zox_tst_fly_latency_total / zox_tst_fly_caught : 0,
+        zox_tst_fly_latency_most, zox_tst_fly_crossed ? zox_current_time - zox_tst_fly_crossed : 0);
     zox_tst_profile_log(world, "perf_fly");
 }

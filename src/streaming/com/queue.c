@@ -563,48 +563,47 @@ static TerrainSpawnUpdate remove_closest_TerrainSpawnQueue(
     return empty;
 }
 
+// removes the update at index (the last moves into its place)
+static inline TerrainSpawnUpdate remove_at_TerrainSpawnQueue(
+    TerrainSpawnQueue* q,
+    size_t index)
+{
+    TerrainSpawnUpdate item = q->ptr[index];
+    size_t last = q->count - 1;
+    if (index != last) {
+        q->ptr[index] = q->ptr[last];
+    }
+    q->count--;
+    remove_TerrainSpawnQueueHash(q, item.position);
+    return item;
+}
+
 // Picks the next update without starving any, so streaming doesn't depend on frame rate
 //  - kills first (past terrain_lod_far), they're cheap and free memory
-//  - then any update waiting longer than max_wait, oldest first
-//  - otherwise the closest, so terrain near the streamer builds first
-//  - closest only used to starve far updates (unloads, npc despawns) while the streamer kept moving
+//  - otherwise the closest, aged: each second waited counts as aging tunks closer, so far ones still come
+//    (a hard "oldest first after 2s" let old far updates jump the near ones while flying)
 static TerrainSpawnUpdate remove_next_TerrainSpawnQueue(
     TerrainSpawnQueue* q,
     double now,
-    double max_wait)
+    float aging)
 {
     if (q->count == 0) {
         TerrainSpawnUpdate empty = {0};
         return empty;
     }
-    size_t closest = 0;
-    size_t oldest = 0;
-    size_t kill = q->count;
+    size_t pick = 0;
+    double best = 0;
     for (size_t i = 0; i < q->count; i++) {
         const TerrainSpawnUpdate* u = &q->ptr[i];
         if (u->distance > terrain_lod_far) {
-            kill = i;
+            pick = i;
             break;
         }
-        if (u->distance < q->ptr[closest].distance) {
-            closest = i;
+        const double score = u->distance - (now - u->queued) * aging;
+        if (!i || score < best) {
+            best = score;
+            pick = i;
         }
-        if (u->queued < q->ptr[oldest].queued) {
-            oldest = i;
-        }
     }
-    size_t pick = closest;
-    if (kill < q->count) {
-        pick = kill;
-    } else if (now - q->ptr[oldest].queued > max_wait) {
-        pick = oldest;
-    }
-    TerrainSpawnUpdate item = q->ptr[pick];
-    size_t last = q->count - 1;
-    if (pick != last) {
-        q->ptr[pick] = q->ptr[last];
-    }
-    q->count--;
-    remove_TerrainSpawnQueueHash(q, item.position);
-    return item;
+    return remove_at_TerrainSpawnQueue(q, pick);
 }

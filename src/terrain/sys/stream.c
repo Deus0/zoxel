@@ -73,18 +73,111 @@ void terrain_stream_system(iter* it) {
     zox_sys_on_end();
 } zoxd_system(terrain_stream_system);
 
+// sets a tunk's new distance on it and its chunks; a new lod also sets their depth and starts the chunks' lod swaps
+//  returns 0 if the distance is the same, 1 for only the distance, 2 if its lod changed
+static inline byte stream_tunk_distance(ecs* world, entity terrain, entity tunk, const Chunk3Stack* stack, byte new_distance) {
+    byte dbg_log = 0;
+    RenderDistance* tunk_distance = zox_mut(tunk, RenderDistance);
+    if (tunk_distance->value == new_distance) {
+        return 0;
+    }
+    tunk_distance->value = new_distance;
+    zox_setv(tunk, RenderDistanceDirty, 1);
+    byte new_tunk_render_depth = camera_distance_to_terrain_render_depth(new_distance);
+    RenderDepth* tunk_render_depth = zox_mut(tunk, RenderDepth);
+    byte tunk_render_depth_dirty = tunk_render_depth->value != new_tunk_render_depth;
+    if (tunk_render_depth_dirty) {
+        tunk_render_depth->value = new_tunk_render_depth;
+    }
+    /*if (lod->value == tunk_render_depth) {
+        continue;
+    }*/
+    TunkLod* lod = zox_mut(tunk, TunkLod);
+    if (new_tunk_render_depth > lod->value) {
+        lod->value = new_tunk_render_depth;
+        zox_setv(tunk, GenerateTunk, zox_generate_tunk_start);
+        if (dbg_log) {
+            zox_log("Tunk Depth [%s] Dist [%i] Depth [%i]",
+                zox_getn(tunk),
+                new_distance,
+                lod->value);
+        }
+    }
+    byte stack_i = 0;
+    for (short y = - render_distance_y; y <= render_distance_y; y++, stack_i++) {
+        entity chunk = stack->value[stack_i];
+#ifdef zox_safety_checks
+        if (!zox_valid(chunk)) {
+            zox_logw("[%s]'s Chunk missing at Y [%i]",
+                zox_getn(tunk),
+                y);
+            continue;
+        }
+#endif
+        zox_setm(chunk, RenderDistance, new_distance);
+        zox_setv(chunk, RenderDistanceDirty, zox_dirty_trigger);
+        if (!tunk_render_depth_dirty) {
+            continue;
+        }
+        zox_setm(chunk, RenderDepth, new_tunk_render_depth);
+        // NOTE: New component
+        zox_setv(chunk, ChunkLodDirty, zox_chunk_lod_dirty_start);
+        // Stop the active building
+        entity active_mesh = zox_get_link(world, chunk, ActiveMesh);
+        if (zox_valid(active_mesh) &&
+            !zox_has(active_mesh, BuildDisabled))
+        {
+            zox_add(active_mesh, BuildDisabled);
+        }
+        if (dbg_log >= 2) {
+            zox_log("   + Chunk [%s] Depth[%i]",
+                zox_getn(chunk),
+                new_tunk_render_depth);
+        }
+        // NOTE: Clears the light if depth is set to increase
+        if (zox_no_lights) {
+            continue;
+        }
+        byte node_depth = zox_getv(chunk, NodeDepth);
+        if (new_tunk_render_depth > node_depth) {
+            // NOTE: Causes flicker but needed for fixing lighting in older chunks
+            zox_muter(chunk, LightNode, lights);
+            lights->value = darklight;
+            collapse_LightNode(lights);
+            if (y == render_distance_y) {
+                zox_add(terrain, GenerateSunlight);
+            }
+        }
+    }
+    return tunk_render_depth_dirty ? 2 : 1;
+}
+
+// distance only updates (the lod stays) are cheap: applied to every queued tunk at once, outside the budget, so the
+//  budget goes to lod changes and spawns (most of a crossing's updates were distance only), doc/tec/streaming.md
+static inline void stream_queue_distances(ecs* world, entity terrain, TerrainSpawnQueue* queue) {
+    for (size_t i = 0; i < queue->count;) {
+        const TerrainSpawnUpdate* update = &queue->ptr[i];
+        const byte distance = update->distance;
+        const entity tunk = update->tunk;
+        if (!tunk || distance > terrain_lod_far || !zox_valid(tunk) ||
+            camera_distance_to_terrain_render_depth(distance) != zox_getv(tunk, RenderDepth))
+        {
+            i++;
+            continue;
+        }
+        remove_at_TerrainSpawnQueue(queue, i);
+        if (stream_tunk_distance(world, terrain, tunk, zox_get(tunk, Chunk3Stack), distance)) {
+            stream_slots_distance++;
+        }
+    }
+}
+
 void terrain_stream_queue_system(iter* it) {
     byte dbg_log = 0;
-    // a rate per second, credit builds with frame time so streaming speed doesn't follow the fps
-    stream_update_credit += stream_updates_per_second * zox_delta_time;
-    if (stream_update_credit > stream_updates_max_per_frame) {
-        stream_update_credit = stream_updates_max_per_frame;
-    }
-    uint max_process = (uint) stream_update_credit;
-    if (!max_process) {
-        return;
-    }
-    stream_update_credit -= max_process;
+    // a time budget a frame, so a fast machine streams faster and a slow frame doesn't spike; capped in count too,
+    //  since what it starts (generation, meshes) costs more later than spawning does now
+    const uint max_process = stream_updates_max_per_frame;
+    const double budget_start = get_time_ms();
     int3 size = (int3) {
         terrain_lod_far,
         render_distance_y,
@@ -123,10 +216,11 @@ void terrain_stream_queue_system(iter* it) {
         entity tilemap = zox_get_link(world, e, Tilemap);
         uint processed = 0;
         byte chunk_length = octree_size(depth->value);
-        while (queue->count && processed < max_process) {
+        stream_queue_distances(world, e, queue);
+        while (queue->count && processed < max_process && get_time_ms() - budget_start < stream_update_ms) {
 
             // TerrainSpawnUpdate update = remove_TerrainSpawnQueue(queue);
-            TerrainSpawnUpdate update = remove_next_TerrainSpawnQueue(queue, zox_current_time, stream_update_max_wait);
+            TerrainSpawnUpdate update = remove_next_TerrainSpawnQueue(queue, zox_current_time, stream_update_aging);
 
             int2 position2 = update.position;
             byte new_distance = update.distance;
@@ -155,77 +249,14 @@ void terrain_stream_queue_system(iter* it) {
                     zox_delete(tunk);
                     continue;
                 }
-                RenderDistance* tunk_distance = zox_mut(tunk, RenderDistance);
-                if (tunk_distance->value == new_distance) {
+                const byte changed = stream_tunk_distance(world, e, tunk, stack, new_distance);
+                if (!changed) {
                     continue;
                 }
-                tunk_distance->value = new_distance;
-                zox_setv(tunk, RenderDistanceDirty, 1);
-                byte new_tunk_render_depth = camera_distance_to_terrain_render_depth(new_distance);
-                RenderDepth* tunk_render_depth = zox_mut(tunk, RenderDepth);
-                byte tunk_render_depth_dirty = tunk_render_depth->value != new_tunk_render_depth;
-                if (tunk_render_depth_dirty) {
-                    tunk_render_depth->value = new_tunk_render_depth;
-                }
-                /*if (lod->value == tunk_render_depth) {
-                    continue;
-                }*/
-                TunkLod* lod = zox_mut(tunk, TunkLod);
-                if (new_tunk_render_depth > lod->value) {
-                    lod->value = new_tunk_render_depth;
-                    zox_setv(tunk, GenerateTunk, zox_generate_tunk_start);
-                    if (dbg_log) {
-                        zox_log("Tunk Depth [%s] Dist [%i] Depth [%i]",
-                            zox_getn(tunk),
-                            new_distance,
-                            lod->value);
-                    }
-                }
-                byte stack_i = 0;
-                for (short y = - render_distance_y; y <= render_distance_y; y++, stack_i++) {
-                    entity chunk = stack->value[stack_i];
-#ifdef zox_safety_checks
-                    if (!zox_valid(chunk)) {
-                        zox_logw("[%s]'s Chunk missing at Y [%i]",
-                            zox_getn(tunk),
-                            y);
-                        continue;
-                    }
-#endif
-                    zox_setm(chunk, RenderDistance, new_distance);
-                    zox_setv(chunk, RenderDistanceDirty, zox_dirty_trigger);
-                    if (!tunk_render_depth_dirty) {
-                        continue;
-                    }
-                    zox_setm(chunk, RenderDepth, new_tunk_render_depth);
-                    // NOTE: New component
-                    zox_setv(chunk, ChunkLodDirty, zox_chunk_lod_dirty_start);
-                    // Stop the active building
-                    entity active_mesh = zox_get_link(world, chunk, ActiveMesh);
-                    if (zox_valid(active_mesh) &&
-                        !zox_has(active_mesh, BuildDisabled))
-                    {
-                        zox_add(active_mesh, BuildDisabled);
-                    }
-                    if (dbg_log >= 2) {
-                        zox_log("   + Chunk [%s] Depth[%i]",
-                            zox_getn(chunk),
-                            new_tunk_render_depth);
-                    }
-                    // NOTE: Clears the light if depth is set to increase
-                    if (zox_no_lights) {
-                        continue;
-                    }
-                    byte node_depth = zox_getv(chunk, NodeDepth);
-                    if (new_tunk_render_depth > node_depth) {
-                        // NOTE: Causes flicker but needed for fixing lighting in older chunks
-                        zox_muter(chunk, LightNode, lights);
-                        lights->value = darklight;
-                        collapse_LightNode(lights);
-                        if (y == render_distance_y) {
-                            zox_add(e, GenerateSunlight);
-                        }
-                    }
+                if (changed == 2) {
+                    stream_slots_lod++;
+                } else {
+                    stream_slots_distance++;
                 }
                 processed++;
                 continue;
@@ -335,6 +366,7 @@ void terrain_stream_queue_system(iter* it) {
                 }
             }
             zox_set_ptr(tunk, Chunk3Stack, stack);
+            stream_slots_spawn++;
             processed++;
         }
     }
