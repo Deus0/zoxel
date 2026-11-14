@@ -97,8 +97,8 @@ void terrain_characters_spawn_system(iter* it) {
         byte character_spawn_rate = seed_range(seed->value, character_spawn_rate_min, character_spawn_rate_max);
         if (max_npcs) {
             character_spawn_rate = character_spawn_rate_max;
-        } else if (population >= 0) {
-            character_spawn_rate = (byte) (character_spawn_rate * population / 255);
+        } else {
+            character_spawn_rate = npc_spawn_count(character_spawn_rate, population, seed->value);
         }
         // each type's weight here: villagers in towns, monsters in the wild (fun/population.c)
         const float town = population_town_share(population);
