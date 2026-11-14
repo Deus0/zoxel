@@ -1,10 +1,8 @@
 // tst: parts, every body part item's model generated voxels, and its icon texture has pixels
 //  - bash bsh/tst.sh parts
-const double zox_tst_parts_settle = 5.0;   // seconds after parts spawn, for their model processes
 #define zox_tst_parts_max 128
 entity zox_tst_parts[zox_tst_parts_max];
 int zox_tst_parts_count = 0;
-double zox_tst_parts_first_seen = 0;
 
 int zox_tst_count_voxels(const VoxelNode* node) {
     if (is_closed_VoxelNode(node)) {
@@ -22,20 +20,34 @@ int zox_tst_count_voxels(const VoxelNode* node) {
     return 0;
 }
 
-byte zox_tst_parts_ready(ecs* world) {
-    (void) world;
-    zox_tst_waiting = "body part items (BodyItem) with a ModelLink";
-    if (!zox_tst_parts_count) {
+// done: its model generated (not Generating) and its icon baked (pixels, not waiting to run)
+//  (was 5s after the first part was seen, guessing they'd be done by then)
+byte zox_tst_part_done(ecs* world, entity item) {
+    const entity model = zox_get_link(world, item, ModelLink);
+    const entity texture = zox_get_link(world, item, TextureLink);
+    if (!zox_valid(model) || zox_has(model, Generating) || !zox_valid(texture) || !zox_has(texture, TextureData)) {
         return 0;
     }
-    if (!zox_tst_parts_first_seen) {
-        zox_tst_parts_first_seen = zox_current_time;
+    return zox_get(texture, TextureData)->length && zox_getv(texture, GenerateTexture) != zox_generate_texture_run;
+}
+
+byte zox_tst_parts_ready(ecs* world) {
+    int done = 0;
+    for (int i = 0; i < zox_tst_parts_count; i++) {
+        done += !zox_valid(zox_tst_parts[i]) || zox_tst_part_done(world, zox_tst_parts[i]);
     }
-    return zox_current_time - zox_tst_parts_first_seen >= zox_tst_parts_settle;
+    static char waiting[128];
+    snprintf(waiting, sizeof(waiting), "body part items generated with their icons: [%i/%i]", done, zox_tst_parts_count);
+    zox_tst_waiting = waiting;
+    zox_tst_progress(zox_tst_parts_count * 1000 + done);
+    return zox_tst_parts_count && done == zox_tst_parts_count;
 }
 
 void zox_tst_parts_check(ecs* world) {
     int checked = 0;
+    // each part's model seeded its own (its colours and sprinkles come from it): all seeds were 0, 2026-11-14
+    lint first_seed = 0;
+    byte seeds_differ = 0;
     for (int i = 0; i < zox_tst_parts_count; i++) {
         entity item = zox_tst_parts[i];
         if (!zox_valid(item)) {
@@ -45,14 +57,19 @@ void zox_tst_parts_check(ecs* world) {
         entity model = zox_get_link(world, item, ModelLink);
         zox_tst_check(zox_valid(model), "part [%s] has no ModelLink", zox_getn(item));
         if (zox_valid(model)) {
+            const lint seed = zox_has(model, Seed) ? zox_getv(model, Seed) : 0;
+            seeds_differ |= checked > 1 && seed != first_seed;
+            if (checked == 1) {
+                first_seed = seed;
+            }
             zox_tst_check(zox_has(model, VoxelNode), "part [%s] model [%s] has no VoxelNode",
                 zox_getn(item), zox_getn(model));
             if (zox_has(model, VoxelNode)) {
                 const VoxelNode* voxels = zox_get(model, VoxelNode);
                 const int count = zox_tst_count_voxels(voxels);
-                zox_log("[tst] part [%s] model [%s] voxels [%i] GenerateModel [%i]",
+                zox_log("[tst] part [%s] model [%s] voxels [%i] GenerateModel [%i] seed [%lld]",
                     zox_getn(item), zox_getn(model), count,
-                    zox_has(model, GenerateModel) ? zox_getv(model, GenerateModel) : -1);
+                    zox_has(model, GenerateModel) ? zox_getv(model, GenerateModel) : -1, (long long) seed);
                 zox_tst_check(count, "part [%s] model [%s] has no voxels", zox_getn(item), zox_getn(model));
             }
         }
@@ -71,6 +88,7 @@ void zox_tst_parts_check(ecs* world) {
     }
     zox_log("[tst] body parts [%i]", checked);
     zox_tst_check(checked, "no body parts");
+    zox_tst_check(checked < 2 || seeds_differ, "every body part model has the same seed [%lld]", (long long) first_seed);
 }
 
 // collects realm body part items, only while the test runs
