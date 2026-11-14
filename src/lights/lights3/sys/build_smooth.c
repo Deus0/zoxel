@@ -6,8 +6,9 @@
 //    same faces (sides set on air), and colors line up with the mesh's vertices
 //  - tst smooth_lights (the corner leak), terrain_render
 
-// colors past limits errors, the mesh didn't match its chunk's sides (checked by tests)
-uint zox_smooth_lights_errors = 0;
+// meshes found older than their chunk's sides (more faces to light than vertices), rebuilt: the sides changed after it
+//  was built, its BuildMesh not merged yet (it logged Colors Past Limits as an error), counted for tests
+uint zox_smooth_lights_stale = 0;
 
 // a face's two axes along it, a vertex is one step along each (signed by smooth_vertex_signs)
 static const sbyte3 smooth_face_axes[6][2] = {
@@ -154,9 +155,8 @@ static inline void zox_apply_smooth_lights(
             continue;
         }
         if (*ccount + voxel_face_vertices_length > colors->length) {
-            zox_smooth_lights_errors++;
-            zox_loge("Smooth Lights Error: Colors Past Limits [%i] - Face [%i] at Pos [%ix%ix%i] Depth [%i] of [%i]",
-                *ccount, direction, position.x, position.y, position.z, depth, target_depth);
+            // more faces than the mesh has: it's older than the sides (build_smooth_lights_system rebuilds it)
+            *ccount = colors->length + 1;
             return;
         }
         byte vertex_lights[4];
@@ -260,6 +260,13 @@ void build_smooth_lights_system(iter* it) {
             0);
         spin_unlock(&sides_lock->value);
         zox_remove(e, BuildMeshColors);
+        if (ccount > colors->length) {
+            // stale: rebuilt (it lights again after), the sides changed since
+            zox_smooth_lights_stale++;
+            zox_logw("[smooth lights] mesh [%s] older than its chunk's sides, rebuilding it", zox_getn(e));
+            zox_add(e, BuildMesh);
+            continue;
+        }
         zox_add(e, MeshColorsDirty);
         /*if (ccount > colors->length) {
             zox_logw("Color Verts Missmatch: [%s] Found [%i] Colors [%i]", zox_get_name(e), ccount, colors->length);
