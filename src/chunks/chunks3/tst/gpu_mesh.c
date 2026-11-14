@@ -1,4 +1,4 @@
-// tst: octree_flatten and gpu_mesh, gpu meshing's proof of concept (fun/flatten.c, fun/gpu_mesh.c, doc/tec/gpu_meshing.md)
+// tst: octree_flatten and gpu_mesh, gpu meshing's proof of concept (fun/flatten.c, fun/gpu_mesh.c, doc/plans/gpu_meshing.md)
 //  - octree_flatten: every voxel of a flattened octree reads back as getv_VoxelNode reads the octree, at its depth
 //      and at lower ones (lods), cpu only
 //  - gpu_mesh: the compute shader's mesh has exactly the faces a voxel by voxel reference has (a solid voxel's face

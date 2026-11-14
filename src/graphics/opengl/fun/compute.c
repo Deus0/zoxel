@@ -66,7 +66,7 @@ int test_compute_shader() {
 #endif
 }
 
-// # Compute: storage buffers, programs and dispatches (gpu meshing, doc/tec/gpu_meshing.md)
+// # Compute: storage buffers, programs and dispatches (gpu meshing, doc/plans/gpu_meshing.md)
 //  - needs OpenGL ES 3.1+ or OpenGL 4.3+ at runtime (the game asks for 3.0, drivers give their newest, i.e. 3.2)
 //  - storage buffers can also be bound as vertex and index buffers, so a compute pass can write a mesh to draw
 

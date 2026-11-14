@@ -1,4 +1,4 @@
-// A voxel octree flattened for the gpu (src/_/octrees/flatten.c, doc/tec/gpu_meshing.md)
+// A voxel octree flattened for the gpu (src/_/octrees/flatten.c, doc/plans/gpu_meshing.md)
 //  - tst octree_flatten checks every voxel reads back the same as getv_VoxelNode
 
 // returns the node count, the nodes malloced into *out (free them), 0 on failure

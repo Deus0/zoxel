@@ -5,7 +5,7 @@
 //  - dark: it now draws a different mesh never lit (no MeshColorsBuilt: its light colours never uploaded), a dark
 //      flash; one relighting still draws its last colours, fine
 //  - checks: no holes, no dark swaps; logs the swaps it saw (a run with none proves nothing)
-//  - the lod swap (chunk_mesh_transition_system) had timers to hide these, doc/tec/streaming.md (plan 6)
+//  - the lod swap (chunk_mesh_transition_system) had timers to hide these, doc/done/streaming.md (plan 6)
 //  - run: bash bsh/tst.sh lod_swap --stress --far 8 (zox_tst_seed=666 for the same land)
 #define zox_tst_ls_size 16384   // a power of two, over twice the chunks streamed (Far 8: ~2000)
 typedef struct {

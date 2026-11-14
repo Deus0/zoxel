@@ -153,7 +153,7 @@ static inline byte stream_tunk_distance(ecs* world, entity terrain, entity tunk,
 }
 
 // distance only updates (the lod stays) are cheap: applied to every queued tunk at once, outside the budget, so the
-//  budget goes to lod changes and spawns (most of a crossing's updates were distance only), doc/tec/streaming.md
+//  budget goes to lod changes and spawns (most of a crossing's updates were distance only), doc/done/streaming.md
 static inline void stream_queue_distances(ecs* world, entity terrain, TerrainSpawnQueue* queue) {
     for (size_t i = 0; i < queue->count;) {
         const TerrainSpawnUpdate* update = &queue->ptr[i];

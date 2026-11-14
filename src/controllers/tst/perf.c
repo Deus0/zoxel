@@ -65,7 +65,7 @@ static inline int zox_tst_perf_busy(ecs* world) {
 }
 
 // tunks within zox_tst_near_tunks of the streamer not at their lod yet: missing, an old distance, or a chunk mid swap
-//  (what the player sees lag: the land round them), doc/tec/streaming.md
+//  (what the player sees lag: the land round them), doc/done/streaming.md
 #define zox_tst_near_tunks 2
 int zox_tst_near_missing = 0, zox_tst_near_distance = 0, zox_tst_near_states[5];   // why they're pending
 int zox_tst_near_mesh = 0, zox_tst_near_lights = 0, zox_tst_near_mesh_lights = 0, zox_tst_near_blocked = 0;  // swaps waiting on

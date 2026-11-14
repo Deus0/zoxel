@@ -1,4 +1,4 @@
-// GPU meshing, proof of concept (doc/tec/gpu_meshing.md): a voxel octree to a mesh in a compute shader
+// GPU meshing, proof of concept (doc/plans/gpu_meshing.md): a voxel octree to a mesh in a compute shader
 //  - the octree is flattened (fun/flatten.c) and uploaded, one invocation per voxel walks it like walk_octree
 //  - each solid voxel's face next to air (or the chunk's edge, no neighbours yet) claims a slot by adding 6 to the
 //      index count of an indirect draw command, and writes its 4 vertices and 6 indices, unordered

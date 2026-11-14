@@ -1,4 +1,4 @@
-// Lights for gpu meshing (chunks3/fun/gpu_mesh.c, doc/tec/gpu_meshing.md)
+// Lights for gpu meshing (chunks3/fun/gpu_mesh.c, doc/plans/gpu_meshing.md)
 //  - a light octree flattened with max values: a coarse read is its leaves' brightest, as getv_nearby_max_LightNode
 //  - tst gpu_mesh_lights checks the gpu's corner lights against smooth_face_lights
 

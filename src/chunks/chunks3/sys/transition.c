@@ -49,7 +49,7 @@ static inline void chunk_mesh_show(ecs* world, entity chunk, entity target) {
     }
 }
 
-// swaps a chunk to its mesh at its RenderDepth once that's ready, what it shows drawing until then (doc/tec/streaming.md)
+// swaps a chunk to its mesh at its RenderDepth once that's ready, what it shows drawing until then (doc/done/streaming.md)
 //  - what's shown is what isn't Disabled (the renderer's truth): the ActiveMesh link lagged (chunk_mesh_spawn_system
 //    enables meshes it spawns), and hiding a mesh shown but not linked was a hole
 //  - the target is found from the depth every frame: a depth changing back mid swap (3 to 2 to 3) swapped to a stale one

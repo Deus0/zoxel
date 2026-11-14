@@ -1,6 +1,6 @@
 // 3D uis, a canvas at a time: its elements in layer order, painting over each other, depth tested against the world and
 //  the canvases drawn before; then its depth written (its solid parts), so later canvases go behind it
-//  - canvases aren't sorted (thousands), only each one's elements (under 100): doc/tec/uis.md (the translucency gotcha)
+//  - canvases aren't sorted (thousands), only each one's elements (under 100): doc/tech/uis.md (the translucency gotcha)
 //  - its elements come in tree order (a parent before its children), nearly layer order already: an insertion sort
 #define canvas3_elements_max 128
 

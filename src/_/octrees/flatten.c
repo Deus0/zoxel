@@ -1,4 +1,4 @@
-// Flattens an octree into one array of uints, the layout gpu shaders read (doc/tec/gpu_meshing.md)
+// Flattens an octree into one array of uints, the layout gpu shaders read (doc/plans/gpu_meshing.md)
 //  - a node is one uint: its value in bits 0-7, the index of its first child in bits 8-31 (0: no children)
 //  - node 0 is the root, a node's 8 children sit in a row, in octree order (x | y << 1 | z << 2, as
 //      byte3_octree_array_index), breadth first so a level's nodes are together

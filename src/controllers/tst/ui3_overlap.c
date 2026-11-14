@@ -1,5 +1,5 @@
 // tst: ui3_overlap, a 3D ui in front hides one behind it whichever draws first (canvases aren't sorted, each writes
-//  its depth after its layers: canvas3_render_system, doc/tec/uis.md)
+//  its depth after its layers: canvas3_render_system, doc/tech/uis.md)
 //  - on flat bare land (as ui3_occlusion), held up, looking a little down: a green canvas 8 blocks along the view, a
 //      red one 16 blocks along it (smaller on screen, wholly behind the green)
 //  - twice: the green spawned first, then the red first (the order they draw in)

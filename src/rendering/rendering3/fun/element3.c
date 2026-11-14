@@ -1,5 +1,5 @@
 // drawing 3D ui elements (textured quads), canvas by canvas (ui/elements3/sys/render.c): depth tested against the
-//  world, their layers in order, see doc/tec/uis.md
+//  world, their layers in order, see doc/tech/uis.md
 
 // starts drawing them: the textured material, blending, depth tested; returns its attributes, NULL without it
 const MaterialTextured3D* element3_draw_begin(ecs* world) {
