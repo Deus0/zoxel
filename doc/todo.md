@@ -5,26 +5,14 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
   
 # New Play test
-- Npcs are missing? - when i loaded game they were gone, outside town
-- Popup on uis look good, we should make this universal
-- Needs a similar animation when closing
-- Id and mirror ui lack a close button
-- shoes way too blocky, they come out at the back too far too
-- shoulders poke clothes, and limbs in general need polish on the organic shape
+- Npcs are missing? - when i loaded game they were gone, outside town (couldn't reproduce, tst npcs_after_load on
+  your save loads 57: more detail if it happens again)
+- limbs in general need polish on the organic shape (shoulders poking clothes fixed: tst chest_weights)
 - we should add in the wave form collapse for vox models, and generate hats off that, so they fit the heads (magic equipment in the story)
-- Cant hear footsteps
-- music in town and overworld should be different
-- add the toast ui when entering a new town
-- every npc has same quest, they shouldt all have quests
 - humanoids need more variation in town
 - add female variant humanoids
-- body and footer of ui overlap, due to transparency, we normally keep them seperate
-- q, g, y are all hard to read, double check fill and font generation
-- Tracks wrong quest when starts it, and when i open quest log, it shows none tracked
-- cokie still lacks crummbs
-- clothes colors on start gear: should be dull colors, but more contrasting to the skin
-- tooltip got stuck when mouse left it- fix, add test for this
-- stats panel dissapears, but we only need the statbars to, like per bar, not the entire thing
+- tooltip got stuck when mouse left it (in game): deleting the hovered element clears it (tst tooltip_gone), what
+  else? a hidden element, a closing window, the cursor leaving for the world
 - [09:03:03.671] [ERROR] Smooth Lights Error: Colors Past Limits [160] - Face [4] at Pos [2x3x3] Depth [2] of [2] is back as an error
 - tests are they in build? they shouldnt be included in release - add a zox_tests define?
 - map movement should be per pixel - and we should optimize it too
@@ -259,7 +247,7 @@ A polished core loop before more content.
 
 # Towns
 - Multi room homes: inner walls splitting a home into rooms, doors between them, rooms sized by the home
-- TownLinkSystem for Characters - Log when entering a town
+- InTown for every character (in_town_system is players only now): town buffs, villagers knowing their town
 - Towns: Average out heights between chunk neighbors
 - Towns: Place Roads during Maps based on Roads Children of Towns
 - Towns: Spawn Highways between towns
