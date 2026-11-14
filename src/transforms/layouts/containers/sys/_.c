@@ -12,7 +12,7 @@ void zox_systems_containers(ecs* world) {
     zox_system(
         list_system,
         zoxp_update,
-        [in] layouts.LayoutSize,
+        [out] layouts.LayoutSize,
         [in] containers.ListPadding,
         [in] containers.ListMargins,
         [in] containers.ListStart,

@@ -1,5 +1,8 @@
 // the player's stat bars each hide after this many seconds without changing (no regen, no damage)
 const float statbars_hide_time = 5;
+// the panel: its bars stacked, a gap between, a padding round them (a fitting list: hidden bars' gaps close)
+#define statbars_bar_padding ((int) (6 * ui_scale))
+#define statbars_panel_padding_y ((int) (4 * ui_scale))
 
 entity spawn_stats_panel(
     ecs* world,
@@ -38,11 +41,11 @@ entity spawn_stats_panel(
         100 * ui_scale,
         10 * ui_scale
     };
-    byte bar_padding = 6 * ui_scale;
+    byte bar_padding = statbars_bar_padding;
     int panel_height = total_bars * (bar_size.y + bar_padding) - bar_padding;
     byte2 panel_padding = (byte2) {
         6 * ui_scale,
-        4 * ui_scale
+        statbars_panel_padding_y
     };
     int2 size = (int2) {
         bar_size.x + panel_padding.x * 2,
@@ -70,6 +73,14 @@ entity spawn_stats_panel(
     entity body = e2.z;
     zox_set_unique_name(e, "statbars");
     zox_add(e,  StatBars);
+    // its bars a list fitting the shown ones (hidden bars' gaps close, the window shrinks, its top kept)
+    zox_setv(body, ListPadding, ((byte2) { 0, statbars_bar_padding }));
+    zox_setv(body, ListMargins, ((byte2) { panel_padding.x, panel_padding.y }));
+    zox_setv(body, ListStart, 0);
+    zox_setv(body, ListAlignment, zox_alignment_centre);
+    zox_add(body, ListFit);
+    zox_add(body, ListResizesParent);
+    zox_add(body, ListPositionDirty);
     // Now our bars
     int2 bar_position = (int2) {
         0,
@@ -99,10 +110,14 @@ entity spawn_stats_panel(
             float2_half,
             fill,
             label_font_size);
-        // each bar hidden while its stat doesn't change, shown while it does (statbar_system pokes it)
+        // each bar hidden while its stat doesn't change, shown while it does (statbar_system pokes it), but the soul
+        //  (its level) always shown; its slot kept for the list's order
         if (bar) {
-            zox_setv(bar, AutoHide, statbars_hide_time);
-            zox_setv(bar, AutoHideTime, zox_current_time);
+            zox_setv(bar, ChildIndex, i);
+            if (!zox_has(stat, StatLevel)) {
+                zox_setv(bar, AutoHide, statbars_hide_time);
+                zox_setv(bar, AutoHideTime, zox_current_time);
+            }
         }
         // zox_set_parent(world, statbar, body);
         bar_position.y -= bar_size.y + bar_padding;

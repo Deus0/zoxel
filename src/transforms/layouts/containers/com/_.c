@@ -5,6 +5,11 @@ zoxc_byte(ListStart);
 zoxc_byte(ListVisible);
 zoxc_byte(ListAlignment);
 zoxc_byte(ListIndent);
+// resizable lists: a hidden child (ListHidden, i.e. auto hidden) is skipped, its gap closed; a ListFit list fits its
+//  height to its shown children (its anchored edge kept), a ListResizesParent one grows its parent with it
+zox_tag(ListHidden);
+zox_tag(ListFit);
+zox_tag(ListResizesParent);
 // Grids
 zoxc_byte2(GridSize);
 zoxc_byte2(GridMargins);
@@ -22,6 +27,9 @@ void zox_components_containers(ecs* world) {
     zoxd_byte2(ListMargins);
     zoxd_byte2(ListPadding);
     zoxd_byte(ListIndent);
+    zoxd_tag(ListHidden);
+    zoxd_tag(ListFit);
+    zoxd_tag(ListResizesParent);
     // Grids
     zoxd_byte2(GridSize);
     zoxd_byte2(GridMargins);
