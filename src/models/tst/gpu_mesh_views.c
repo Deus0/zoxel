@@ -131,7 +131,7 @@ static inline void zox_tst_gpu_update(ecs* world) {
         const double seconds = zox_current_time - zox_tst_gpu_second_start;
         const int frames = zox_tst_gpu_second_frames;
         zox_tst_gpu_faces = gpu_mesher_read_faces(&zox_tst_gpu_meshers[0]);
-        zox_log("[tst] [metric] gpu_mesh_views second [%i]: [%.0f] models meshed a second ([%i] models, [%.1f] fps), cpu octree and flatten [%.2fms] a model, gpu mesh [%.2fms] a model, [%u] faces",
+        zox_log("[tst] [metric] gpu_mesh_views second [%i]: [%.0f] models meshed a second ([%i] models, [%.1f] fps), cpu octree and flatten [%.2fms] a model, gpu upload and mesh (not flattening) [%.2fms] a model, [%u] faces",
             zox_tst_gpu_seconds_logged, zox_tst_gpu_second_updates / seconds, zox_tst_gpu_models, frames / seconds,
             zox_tst_gpu_second_cpu_ms / (zox_tst_gpu_second_updates ? zox_tst_gpu_second_updates : 1),
             zox_tst_gpu_second_gpu_ms / (frames ? frames : 1), zox_tst_gpu_faces);
@@ -254,7 +254,7 @@ void gpu_mesh_views_render_system(iter* it) {
     }
     for (int i = 0; i < zox_tst_gpu_models; i++) {
         gpu_mesher_draw(&zox_tst_gpu_meshers[i], zox_tst_gpu_draw_program, render_camera_matrix,
-            zox_tst_gpu_model_position(i), zox_tst_gpu_scale, zox_tst_gpu_colors, zox_tst_gpu_colors_count);
+            zox_tst_gpu_model_position(i), zox_tst_gpu_scale, zox_tst_gpu_colors, zox_tst_gpu_colors_count, gpu_mesh_light_none);
     }
     zox_sys_on_end();
 } zoxd_system(gpu_mesh_views_render_system);

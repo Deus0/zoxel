@@ -4,6 +4,7 @@
 #include "tree.c"
 #include "components.c"
 #include "macros.c"
+#include "flatten.c"
 
 static inline byte3 get_scaled_size(
     byte depth,
