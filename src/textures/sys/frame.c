@@ -1,131 +1,67 @@
-static inline byte check_texture(color *data, int2 size, int2 pixel_position, color find_color, int distance) {
-    if (!int2_in_bounds(pixel_position, size)) {
-        return 0;
-    }
-    if (color_equal(find_color, data[int2_array_index(pixel_position, size)])) {
-        return 1;
-    }
-    if (distance >= 0) {
-        distance--;
-        if (check_texture(data, size, int2_down(pixel_position), find_color, distance)) {
-            return 1;
-        }
-        if (check_texture(data, size, int2_up(pixel_position), find_color, distance)) {
-            return 1;
-        }
-        if (check_texture(data, size, int2_left(pixel_position), find_color, distance)) {
-            return 1;
-        }
-        if (check_texture(data, size, int2_right(pixel_position), find_color, distance)) {
-            return 1;
-        }
-    }
-    return 0;
+// Frame textures (windows, headers, buttons, panels): a fill inside an outline, its corners cut
+//  - the fill a soft gradient, lighter at its top, darker at its bottom
+//  - a bevel just inside the outline: a highlight along its top and left, a shadow along its bottom and right, raised
+//  - a thin inner rule inset from the outline, its cut corners a lighter accent
+//  - noise over it (TextureAddNoise), a little grain
+#define frame_gradient 0.12f       // the fill lighter and darker by this at its top and bottom
+#define frame_bevel_light 1.25f
+#define frame_bevel_dark 0.75f
+#define frame_rule_shade 1.2f      // the inner rule, the outline lighter
+
+static inline color frame_shade(color c, float shade) {
+    return (color) {
+        (byte) fminf(255, c.r * shade),
+        (byte) fminf(255, c.g * shade),
+        (byte) fminf(255, c.b * shade),
+        c.a
+    };
+}
+
+static inline color frame_noise(color c, int amount) {
+    return (color) {
+        (byte) int_min(255, c.r + rand() % amount),
+        (byte) int_min(255, c.g + rand() % amount),
+        (byte) int_min(255, c.b + rand() % amount),
+        c.a
+    };
 }
 
 void generate_texture_frame(color* data, int2 size, color fill_color, color outline_color, byte frame_thickness, byte corner_size, byte is_noise) {
-    int index = 0;
-    int2 pixel_position = int2_zero;
-    for (pixel_position.y = 0; pixel_position.y < size.y; pixel_position.y++) {
-        for (pixel_position.x = 0; pixel_position.x < size.x; pixel_position.x++) {
-            int distance_to_corner_a = pixel_position.x + pixel_position.y;
-            int distance_to_corner_b = (size.x - 1 - pixel_position.x) + pixel_position.y;
-            int distance_to_corner_c = (size.x - 1 - pixel_position.x) + (size.y - 1 - pixel_position.y);
-            int distance_to_corner_d = pixel_position.x + (size.y - 1 - pixel_position.y);
-            if (distance_to_corner_a < corner_size || distance_to_corner_b < corner_size || distance_to_corner_c < corner_size || distance_to_corner_d < corner_size) {
-                data[index] = empty_color;
-            } else {
-                data[index] = fill_color;
-            }
-            index++;
-        }
-    }
-    // outline of frame
-    index = 0;
-    for (pixel_position.y = 0; pixel_position.y < size.y; pixel_position.y++) {
-        for (pixel_position.x = 0; pixel_position.x < size.x; pixel_position.x++) {
-            if (!color_equal(data[index], fill_color)) {
-                index++;
-                continue;
-            }
-            if (pixel_position.x < frame_thickness || pixel_position.y < frame_thickness || pixel_position.x > size.x - 1 - frame_thickness || pixel_position.y > size.y - 1 - frame_thickness) {
-                data[index] = outline_color;
-            }
-            // only floodfill check corners of the texture to save processing time
-            else if ((pixel_position.x < corner_size && pixel_position.y < corner_size) ||
-                (pixel_position.x > size.x - corner_size && pixel_position.y < corner_size) ||
-                (pixel_position.x > size.x - corner_size && pixel_position.y > size.y - corner_size) ||
-                (pixel_position.x < corner_size && pixel_position.y > size.y - corner_size)) {
-                if (check_texture(data, size, pixel_position, empty_color, frame_thickness)) {
-                    data[index] = outline_color;
-                }
-            }
-            index++;
-        }
-    }
-    // add noise to fill parts
-    if (is_noise) {
-        index = 0;
-        const int fill_noise_addition = 55;
-        const int outline_noise_addition = 25;
-        for (pixel_position.y = 0; pixel_position.y < size.y; pixel_position.y++) {
-            for (pixel_position.x = 0; pixel_position.x < size.x; pixel_position.x++) {
-                if (color_equal(data[index], fill_color)) {
-                    data[index].r += rand() % fill_noise_addition;
-                    data[index].g += rand() % fill_noise_addition;
-                    data[index].b += rand() % fill_noise_addition;
-                } else if (color_equal(data[index], outline_color)) {
-                    data[index].r += rand() % outline_noise_addition;
-                    data[index].g += rand() % outline_noise_addition;
-                    data[index].b += rand() % outline_noise_addition;
-                }
-                index++;
-            }
-        }
-    }
-}
-
-void generate_texture_frame2(color* data, int2 size, color fill_color, color outline_color, byte frame_thickness, byte corner_size, byte is_noise) {
-    const int width = size.x;
-    const int height = size.y;
-    const int fill_noise_addition = 55;
-    const int outline_noise_addition = 25;
+    const int width = size.x, height = size.y;
+    const int rule = frame_thickness + 2;       // the inner rule, two pixels in from the outline
+    const color rule_color = frame_shade(outline_color, frame_rule_shade);
     int index = 0;
     for (int y = 0; y < height; y++) {
-        int by = height - 1 - y;
+        const int by = height - 1 - y;
         for (int x = 0; x < width; x++, index++) {
-            int rx = width - 1 - x;
-            int d0 = x + y;
-            int d1 = rx + y;
-            int d2 = rx + by;
-            int d3 = x + by;
-            int corner_distance = d0;
-            if (d1 < corner_distance) corner_distance = d1;
-            if (d2 < corner_distance) corner_distance = d2;
-            if (d3 < corner_distance) corner_distance = d3;
+            const int rx = width - 1 - x;
+            const int corner_distance = int_min(int_min(x + y, rx + y), int_min(rx + by, x + by));
+            // how far in from its edge
+            const int in = int_min(int_min(x, y), int_min(rx, by));
             color c;
             if (corner_distance < corner_size) {
-                // Cut corners
                 c = empty_color;
-            } else if (x < frame_thickness || y < frame_thickness || x >= width - frame_thickness || y >= height - frame_thickness) {
-                // Outer border
-                c = outline_color;
-            } else if (corner_distance < corner_size + frame_thickness) {
-                // Outline around cut corners
-                c = outline_color;
-            } else {
-                c = fill_color;
-            }
-            if (is_noise) {
-                if (color_equal(c, fill_color)) {
-                    c.r += rand() % fill_noise_addition;
-                    c.g += rand() % fill_noise_addition;
-                    c.b += rand() % fill_noise_addition;
+            } else if (in < frame_thickness || corner_distance < corner_size + frame_thickness) {
+                // its outline, its cut corners a lighter accent
+                c = corner_distance < corner_size + frame_thickness ? frame_shade(outline_color, frame_rule_shade) : outline_color;
+                if (is_noise) {
+                    c = frame_noise(c, 25);
                 }
-                else if (color_equal(c, outline_color)) {
-                    c.r += rand() % outline_noise_addition;
-                    c.g += rand() % outline_noise_addition;
-                    c.b += rand() % outline_noise_addition;
+            } else {
+                // its fill: lighter at its top (y 0) to darker at its bottom
+                const float t = height > 1 ? (float) y / (height - 1) : 0;
+                float shade = 1 + frame_gradient * (1 - 2 * t);
+                // the bevel, just inside the outline
+                if (in == frame_thickness) {
+                    shade *= (y == frame_thickness || x == frame_thickness) ? frame_bevel_light : frame_bevel_dark;
+                }
+                c = frame_shade(fill_color, shade);
+                // the inner rule, inset from the outline (big enough frames)
+                if (in == rule && width > rule * 4 && height > rule * 4 && corner_distance >= corner_size + rule) {
+                    c = rule_color;
+                }
+                if (is_noise) {
+                    c = frame_noise(c, 55);
                 }
             }
             data[index] = c;
@@ -163,7 +99,7 @@ void frame_texture_system(iter* it) {
         }
         byte add_noise = zox_has(e, TextureAddNoise);
         resize_TextureData(data, length);
-        generate_texture_frame2(data->value, size->value, fill->value, outline->value, thickness->value, edge->value, add_noise);
+        generate_texture_frame(data->value, size->value, fill->value, outline->value, thickness->value, edge->value, add_noise);
         generate->value = zox_generate_texture_end;
         zox_add(e, TextureDirty);
         zox_sys_increment();

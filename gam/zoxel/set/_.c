@@ -1,18 +1,22 @@
 void zoxel_settings_uis() {
-    byte window_fill_alpha = 166;
+    // jrpg style: solid dark panels, bright crisp borders (they read against any sky, in vr too)
+    byte window_fill_alpha = 210;
     byte fill_alpha = 66;
     byte text_alpha = 172;
     byte text_outline_alpha = 222;
-    byte outline_alpha = 92;
-    byte outline_value = 1;
+    byte outline_alpha = 230;
+    byte outline_value = 205;
     // Windows
     window_outline = color_grayscale_a(outline_value, outline_alpha);
-    window_fill = (color) { 13, 22, 16, window_fill_alpha };
+    window_fill = (color) { 10, 18, 14, window_fill_alpha };
     // Headers
     header_outline = color_grayscale_a(outline_value, outline_alpha);
-    header_fill = (color) { 26, 44, 32, window_fill_alpha };
+    header_fill = (color) { 38, 70, 50, window_fill_alpha };
     header_font_outline = (color) { 158, 46, 237, text_outline_alpha };
     header_font_fill = (color) { 244, 33, 166, text_alpha };
+    // Footers, darker than the window, its buttons on it
+    footer_fill = (color) { 5, 10, 8, window_fill_alpha };
+    footer_outline = window_outline;
     header_fonto_thickness = 3;
     header_font_thickness = 1;
     // Close Buttons
