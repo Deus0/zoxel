@@ -12,12 +12,16 @@ float zox_physics_max_delta_time = 0.2f;
 #include "physics2/_.c"
 #include "physics3/_.c"
 #include "dbg/_.c"
+#ifdef zox_tests
 #include "tst/_.c"
+#endif
 
 void import_physics(ecs* world) {
     zox_module(physics);
     zox_components_physics(world);
     zox_add_module(physics2);
     zox_add_module(physics3);
+#ifdef zox_tests
     zox_tsts_physics();
+#endif
 }

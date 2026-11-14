@@ -1,4 +1,3 @@
-#include "clone.c"
 #include "model_views.c"
 #include "nodes.c"
 #include "shapes.c"

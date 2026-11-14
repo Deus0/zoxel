@@ -11,13 +11,17 @@ byte zox_disable_vegetation = 0;
 #include "pre/_.c"
 #include "fun/_.c"
 #include "sys/_.c"
+#ifdef zox_tests
 #include "tst/_.c"
+#endif
 
 void import_vegetation(ecs* world) {
     zox_module(vegetation);
     zox_components_vegetation(world);
     zox_systems_vegetation(world);
+#ifdef zox_tests
     zox_tsts_vegetation();
+#endif
     add_hook_spawn_prefabs(spawn_prefabs_vegetation);
     // add_hook_spawn_prefabs(spawn_prefabs_tunks);
     // zox_systems_tunks_debug(world);

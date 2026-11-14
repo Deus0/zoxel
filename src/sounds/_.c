@@ -18,7 +18,9 @@
 #include "bop/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
+#ifdef zox_tests
 #include "tst/_.c"
+#endif
 
 void import_sounds(ecs* world) {
     zox_module(sounds);
@@ -27,6 +29,8 @@ void import_sounds(ecs* world) {
     zox_module_dispose(dispose_sounds)
     add_hook_terminal_command(process_arguments_sounds);
     add_hook_files_load(load_files_sounds);
+#ifdef zox_tests
     zox_tsts_sounds();
+#endif
     add_hook_spawn_prefabs(spawn_prefabs_sounds);
 }

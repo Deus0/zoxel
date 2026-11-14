@@ -19,7 +19,10 @@
 #include "ins/_.c"
 #include "sys/_.c"
 #include "eve/_.c"
+#include "dbg/_.c"
+#ifdef zox_tests
 #include "tst/_.c"
+#endif
 
 void import_dialogues(ecs* world) {
     zox_module(dialogues);
@@ -27,5 +30,7 @@ void import_dialogues(ecs* world) {
     zox_systems_dialogues(world);
     add_hook_spawn_prefabs(zox_prefabs_dialogues);
     add_hook_spawn_prefabs(zox_events_dialogues);
+#ifdef zox_tests
     zox_tsts_dialogues();
+#endif
 }

@@ -21,7 +21,9 @@
 #include "sys/_.c"
 #include "dbg/_.c"
 #include "io/_.c"
+#ifdef zox_tests
 #include "tst/_.c"
+#endif
 
 void import_chunks3(ecs* world) {
     zox_module(chunks3);
@@ -30,12 +32,14 @@ void import_chunks3(ecs* world) {
     zox_systems_chunksio(world);
     zox_systems_chunks3_debug(world);
     add_hook_spawn_prefabs(spawn_prefabs_chunks);
+#ifdef zox_tests
     add_hook_files_load(zox_tests_chunks3);
     zox_tsts_chunks3_positions();
     zox_tsts_chunks3_io();
     zox_tsts_chunks3_sides();
     zox_tsts_chunks3_vox_mesh_grid();
     zox_tsts_icon_bake(world);
+#endif
 }
 
 
