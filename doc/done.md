@@ -1,6 +1,24 @@
 # Done
 
 ## Moved from todo (2026-11-14)
+-x Start gear colours: dull, a hue away from the skin's, light on dark skin and dark on light (realm_skin_hsv, realm_gear_colors)
+-x Cookie: crumbs in the dough's second shade (they were its own colour, unseen), a bite out of its edge
+-x Font: g q y p j get their tails below the baseline (the ttf conversion wrapped negative points round to the top as
+  bytes, g and y read as 8 and 9; its bounds now by character code), res/fonts/monocraft.zox reconverted
+-x Entering a town: InTown and TownLink on the player's character (in_town_system, cleared on leaving), a toast
+  "Welcome to <town>" (spawn_toast, huds), the town's own music (a second realm track, flute), the overworld's on
+  leaving (play_realm_track); tst town_enter
+-x Npc quests: a third of villagers give quests (by seed, the same after a load), three slay quests each with its
+  own dialogue (Slem Infestation, Slem Cull, Slem Scouting), a giver gives its dialogue's quest (QuestLink); tst
+  npc_quests
+-x Shoes shaped like shoes: low at the toe, up round the ankle at the heel, the heel under the leg (it stuck out
+  behind), a flatter, slimmer foot; arms no longer tear from their sleeves: a vertex outside every bone's box goes
+  with the nearest box, not the chest (an arm's front strip stayed still when it swung); tst chest_weights checks it
+-x Quest tracking: the tracker shows the quest given (it read the deferred instance: (null), Find [???]), the quest
+  log shows the tracked quest when opened (quest_icon_tracked_event); tst quest_log_tracked
+-x Play test ui: every window pops in and out, id and mirror windows close buttons, footers their own strip, stat
+  bars hide each on their own, footsteps an octave up and louder; npcs after loading couldn't be reproduced (tst
+  npcs_after_load); tst window_toggle, tooltip_gone
 -x Character mug shots (a render frame of the head, stats/ui/ins/mugshot.c) in the id window, framed, lines underlined
 -x Chest came apart round the ribs when the arms swung: a vertex now moves with the bone it's deepest in, not the last
   whose box reaches it (778 rib voxels moved with the shoulders); tst chest_weights
