@@ -9,6 +9,7 @@
 //      the same entities, buffers and textures, heap in use grown by less than zox_tst_end_game_heap_mb
 //      (heap, not resident memory, which counts what allocators keep after freeing)
 //  - logs each round's counts while playing and after, to find what leaked
+//  - the screen fades out before the realm goes (it vanished first)
 //  - run: bash bsh/tst.sh end_game_cleanup
 #define zox_tst_end_game_rounds 3
 #define zox_tst_end_game_play_seconds 4.0
@@ -17,6 +18,7 @@
 int zox_tst_end_game_stage = 0;
 int zox_tst_end_game_round = 0;
 int zox_tst_end_game_frames = 0;
+int zox_tst_end_game_unfaded = 0;   // times the realm went before the screen faded out
 double zox_tst_end_game_play_start = 0;
 
 typedef struct {
@@ -148,6 +150,19 @@ byte zox_tst_end_game_ready(ecs* world) {
         zox_tst_waiting = "the player's canvas";
         return 0;
     }
+    // the screen faded out before the realm went (it vanished, then faded): the overlay's alpha when it goes
+    {
+        static entity last_realm = 0;
+        const entity game = zox_get_parent(world, player);
+        const entity realm = zox_valid(game) ? zox_get_link(world, game, RealmLink) : 0;
+        if (last_realm && !zox_valid(realm)) {
+            const entity overlay = zox_get_child_by_id(world, canvas, zox_id(CanvasOverlay));
+            const float alpha = zox_valid(overlay) && zox_has(overlay, Alpha) ? zox_getv(overlay, Alpha) : -1;
+            zox_tst_end_game_unfaded += alpha < 0.95f;
+            zox_log("[tst] the realm went with the screen [%.2f] faded", alpha);
+        }
+        last_realm = realm;
+    }
     zox_tst_end_game_frames++;
     if (zox_tst_end_game_frames < zox_tst_menus_settle_frames) {
         return 0;
@@ -230,6 +245,7 @@ byte zox_tst_end_game_ready(ecs* world) {
 
 void zox_tst_end_game_check(ecs* world) {
     (void) world;
+    zox_tst_check(!zox_tst_end_game_unfaded, "[%i] times the realm went before the screen faded out", zox_tst_end_game_unfaded);
     zox_tst_check(zox_tst_end_game_round == zox_tst_end_game_rounds, "only [%i] of [%i] rounds ended",
         zox_tst_end_game_round, zox_tst_end_game_rounds);
     if (zox_tst_end_game_round < zox_tst_end_game_rounds) {
