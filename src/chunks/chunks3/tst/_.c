@@ -6,6 +6,7 @@
 #include "sides.c"
 #include "vox_mesh_grid.c"
 #include "icon_bake.c"
+#include "gpu_mesh.c"
 
 void zox_tests_chunks3(ecs* world) {
     // test_nodes(world, 1000, 5);
