@@ -17,5 +17,6 @@ void import_lights(ecs* world) {
     zox_add_module(lights3);
 #ifdef zox_tests
     zox_tsts_lights();
+    zox_tsts_lights_gpu(world);
 #endif
 }

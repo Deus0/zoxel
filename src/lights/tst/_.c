@@ -1,3 +1,4 @@
+#include "gpu.c"
 // tst: smooth_lights, a face's vertices are lit by the air around them (lights3/sys/build_smooth.c)
 //  - a vertex is the face's light, its two edges' and its corner's averaged (smooth_vertex_light)
 //  - a corner behind two solid edges doesn't leak its light round them, it counts as darklight

@@ -199,6 +199,10 @@ static inline void zox_gpu_compute_uniform_uint(guint program, const char* name,
     glUniform1ui(glGetUniformLocation(program, name), value);
 }
 
+static inline void zox_gpu_compute_uniform_uint_array(guint program, const char* name, const uint* values, int count) {
+    glUniform1uiv(glGetUniformLocation(program, name), count, values);
+}
+
 // runs the bound program over groups, then makes its writes visible to reads, draws and copies after it
 static inline void zox_gpu_compute_dispatch(uint groups_x, uint groups_y, uint groups_z) {
 #ifndef zox_disable_compute
@@ -265,8 +269,9 @@ guint zox_gpu_draw_program(const char* vertex_source, const char* fragment_sourc
 #endif
 }
 
-// a vertex array drawing vec4 vertices (attribute location) with uint indices, both storage buffers
-guint zox_gpu_storage_mesh_vao(guint vertices, guint indices, guint location) {
+// a vertex array drawing vec4 vertices (location) with uint indices, all storage buffers
+//  - extra: a uint a vertex at extra_location (an integer attribute), 0 for none
+guint zox_gpu_storage_mesh_vao(guint vertices, guint indices, guint location, guint extra, guint extra_location) {
 #ifndef zox_disable_compute
     guint vao = 0;
     glGenVertexArrays(1, &vao);
@@ -274,13 +279,18 @@ guint zox_gpu_storage_mesh_vao(guint vertices, guint indices, guint location) {
     glBindBuffer(GL_ARRAY_BUFFER, vertices);
     glEnableVertexAttribArray(location);
     glVertexAttribPointer(location, 4, GL_FLOAT, GL_FALSE, 0, 0);
+    if (extra) {
+        glBindBuffer(GL_ARRAY_BUFFER, extra);
+        glEnableVertexAttribArray(extra_location);
+        glVertexAttribIPointer(extra_location, 1, GL_UNSIGNED_INT, 0, 0);
+    }
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices);
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     return vao;
 #else
-    (void) vertices; (void) indices; (void) location;
+    (void) vertices; (void) indices; (void) location; (void) extra; (void) extra_location;
     return 0;
 #endif
 }
@@ -304,6 +314,10 @@ static inline void zox_gpu_draw_indirect(guint vao, guint command) {
 
 static inline void zox_gpu_program_float4x4(guint program, const char* name, float4x4 value) {
     glUniformMatrix4fv(glGetUniformLocation(program, name), 1, GL_FALSE, (const float*) &value);
+}
+
+static inline void zox_gpu_program_int(guint program, const char* name, int value) {
+    glUniform1i(glGetUniformLocation(program, name), value);
 }
 
 static inline void zox_gpu_program_float4(guint program, const char* name, float4 value) {

@@ -140,8 +140,8 @@ static inline void zox_tst_gpu_compare(GpuMesher* mesher, const VoxelNode* voxel
     for (uint f = 0; f < faces; f++) {
         const float4* v = &vertices[f * 4];
         const int w = (int) v[0].w;
-        const byte d = w / 256;
-        const byte voxel = w % 256;
+        const byte d = gpu_mesh_vertex_direction(w);
+        const byte voxel = gpu_mesh_vertex_voxel(w);
         // the voxel: the corners' smallest point, less the face's offset on its axis when it's a positive face
         float3 low = { v[0].x, v[0].y, v[0].z };
         for (byte c = 1; c < 4; c++) {
@@ -164,7 +164,8 @@ static inline void zox_tst_gpu_compare(GpuMesher* mesher, const VoxelNode* voxel
             const float a0 = axis == 0 ? v[0].x : (axis == 1 ? v[0].y : v[0].z);
             const float ac = axis == 0 ? v[c].x : (axis == 1 ? v[c].y : v[c].z);
             flat &= a0 == ac;
-            flat &= v[c].w == v[0].w;
+            // the same voxel and direction (the light and corner side differ per corner)
+            flat &= gpu_mesh_vertex_voxel((int) v[c].w) == voxel && gpu_mesh_vertex_direction((int) v[c].w) == d;
         }
         const uint* idx = &indices[f * 6];
         flat &= idx[0] == f * 4 && idx[1] == f * 4 + 1 && idx[2] == f * 4 + 2 && idx[3] == f * 4 && idx[4] == f * 4 + 2 && idx[5] == f * 4 + 3;
