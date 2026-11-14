@@ -7,11 +7,11 @@ int zox_tst_skeletons_stage = 0;
 int zox_tst_skeletons_frames = 0;
 entity zox_tst_skeletons[2];
 
-// the realm's humanoid character prefab (Boney, a quest giver)
+// the realm's humanoid character prefab (Boney, a villager)
 static inline entity zox_tst_realm_humanoid(ecs* world, entity realm) {
     entity found = 0;
     zox_each_link(world, realm, CharacterLinks, meta) {
-        if (zox_has(meta, QuestGiver)) {
+        if (zox_has(meta, Villager)) {
             found = meta;
         }
     }

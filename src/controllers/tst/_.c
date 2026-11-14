@@ -13,6 +13,7 @@
 #include "npc_glance.c"
 #include "humanoid_leak.c"
 #include "chest_weights.c"
+#include "npc_quests.c"
 #include "npc_attacks.c"
 #include "player_respawn.c"
 #include "footsteps.c"
@@ -592,6 +593,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("humanoid_leak", zox_tst_humanoid_leak_ready, zox_tst_humanoid_leak_check, 120);
     zox_tst_add("monster_leak", zox_tst_monster_leak_ready, zox_tst_humanoid_leak_check, 120);
     zox_tst_add("chest_weights", zox_tst_chest_weights_ready, zox_tst_chest_weights_check, 120);
+    zox_tst_add("npc_quests", zox_tst_npc_quests_ready, zox_tst_npc_quests_check, 120);
     zox_tst_add("perf_stream", zox_tst_perf_stream_ready, zox_tst_perf_stream_check, 180);
     zox_tst_add("perf_fly", zox_tst_perf_fly_ready, zox_tst_perf_fly_check, 120);
     zox_tst_add("tables_stream", zox_tst_perf_stream_ready, zox_tst_tables_stream_check, 200);
