@@ -1,5 +1,5 @@
 // tst: font_glyphs, draws the font's symbols big on the main menu and saves a screenshot
-//  - for looking at glyphs (i.e. ? and ! for quest markers), the test only checks it saved
+//  - for looking at glyphs (i.e. descenders: g q y p j beside a o d), the test only checks it saved
 //  - bash bsh/tst.sh font_glyphs, then look at tst/font_glyphs.ppm
 extern char zox_screenshot_request[256];
 int zox_tst_font_stage = 0;
@@ -21,7 +21,7 @@ byte zox_tst_font_glyphs_ready(ecs* world) {
         }
         zox_delete(main_menu);
         spawn_label(world, prefab_label2t, canvas, int2_zero, float2_half, byte2_single(8),
-            "? ! + = Ab", 48, zox_alignment_centre, 200,
+            "gqypj aod", 48, zox_alignment_centre, 200,
             button_fill, button_outline, button_font_fill, button_font_outline);
         zox_tst_font_stage = 1;
         zox_tst_font_frames = 0;
