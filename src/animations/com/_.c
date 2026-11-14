@@ -26,6 +26,7 @@ zoxc_double(AnimationStartTime);
 zoxc_float(AnimationDuration);
 zoxc_byte(AnimationEase);       // a tween's curve (zox_ease_*), linear without it
 zox_tag(AnimationDeletesTarget); // a tween deletes its target when done, i.e. a window closing
+zox_tag(AnimationEnded);          // a tween finished (its event, observe it: zox_on_add), it's deleted the frame after
 // Floats
 zoxc_float(LerpFloatFrom);
 zoxc_float(LerpFloatTo);
@@ -70,6 +71,7 @@ void zox_components_animations(ecs* world) {
     zoxd_float(AnimationDuration);
     zoxd_byte(AnimationEase);
     zoxd_tag(AnimationDeletesTarget);
+    zoxd_tag(AnimationEnded);
     zoxd_float(LerpFloatFrom);
     zoxd_float(LerpFloatTo);
     // Shakes
