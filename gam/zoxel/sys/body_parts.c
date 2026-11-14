@@ -66,7 +66,7 @@ void bodys_realm_spawn_system(iter* it) {
                 blueprint_size,
                 blueprint_depth,
                 skin_color);
-            lint seed = 888 * (i * spawn_count++);
+            lint seed = 888 * (body_seed + spawn_count++);
             byte model_depth = max_part_depth - 1 < 0 ? 0 : max_part_depth - 1;
             spawn_realm_body_part2(
                 world,
@@ -82,7 +82,7 @@ void bodys_realm_spawn_system(iter* it) {
         // Head
         {
             float3 blueprint_scale = float3_single(0.88f);
-            lint seed = 16663 * (i * spawn_count++);
+            lint seed = 16663 * (body_seed + spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
@@ -107,7 +107,7 @@ void bodys_realm_spawn_system(iter* it) {
         // Hips
         {
             float3 blueprint_scale = (float3) { 0.92f, 0.4f, 0.6f };
-            lint seed = 3363 * (i * spawn_count++);
+            lint seed = 3363 * (body_seed + spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
@@ -130,7 +130,7 @@ void bodys_realm_spawn_system(iter* it) {
         // Thigh
         {
             float3 blueprint_scale = (float3) { 0.42f, 0.76f, 0.42f };
-            lint seed = 3363 * (i * spawn_count++);
+            lint seed = 3363 * (body_seed + spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
@@ -153,7 +153,7 @@ void bodys_realm_spawn_system(iter* it) {
         // Calf
         {
             float3 blueprint_scale = (float3) { 0.34f, 0.92f, 0.34f };
-            lint seed = 3363 * (i * spawn_count++);
+            lint seed = 3363 * (body_seed + spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
@@ -176,7 +176,7 @@ void bodys_realm_spawn_system(iter* it) {
         // Feet
         {
             float3 blueprint_scale = (float3) { 0.36f, 0.42f, 0.86f };
-            lint seed = 3363 * (i * spawn_count++);
+            lint seed = 3363 * (body_seed + spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
@@ -199,7 +199,7 @@ void bodys_realm_spawn_system(iter* it) {
         // Shoulder
         {
             float3 blueprint_scale = (float3) { 0.6f, 0.4f, 0.4f };
-            lint seed = 3363 * (i * spawn_count++);
+            lint seed = 3363 * (body_seed + spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
@@ -222,7 +222,7 @@ void bodys_realm_spawn_system(iter* it) {
         // Bicep
         {
             float3 blueprint_scale = (float3) { 0.36f, 0.52f, 0.36f };
-            lint seed = 3363 * (i * spawn_count++);
+            lint seed = 3363 * (body_seed + spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
@@ -245,7 +245,7 @@ void bodys_realm_spawn_system(iter* it) {
         // Forearms
         {
             float3 blueprint_scale = (float3) { 0.36f, 0.62f, 0.36f };
-            lint seed = 3363 * (i * spawn_count++);
+            lint seed = 3363 * (body_seed + spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
@@ -268,7 +268,7 @@ void bodys_realm_spawn_system(iter* it) {
         // Hands
         {
             float3 blueprint_scale = (float3) { 0.32f, 0.42f, 0.18f };
-            lint seed = 3363 * (i * spawn_count++);
+            lint seed = 3363 * (body_seed + spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);
@@ -308,7 +308,7 @@ void bodys_realm_spawn_system(iter* it) {
                 blueprint_depth,
                 skin_color2);
             // Model Data
-            lint seed = 888 * (i * spawn_count++);
+            lint seed = 888 * (body_seed + spawn_count++);
             byte model_depth = max_part_depth - 1 < 0 ? 0 : max_part_depth - 1;
             spawn_realm_body_part2(
                 world,
@@ -324,7 +324,7 @@ void bodys_realm_spawn_system(iter* it) {
         // Head_2
         {
             float3 blueprint_scale = float3_single(0.76f);
-            lint seed = 16663 * (i * spawn_count++);
+            lint seed = 16663 * (body_seed + spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
             byte3 blueprint_size = byte3_scale3f(byte3_single(blueprint_length), blueprint_scale);

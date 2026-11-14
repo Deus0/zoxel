@@ -440,6 +440,30 @@ When you think:
 
 the filesystem should answer before the coffee goes cold.
 
+### Test Placement
+
+Put a test in the module whose code it checks, not the module whose data happens to exercise it.
+
+Use the lowest module that owns the behaviour and can see everything the test uses. Higher modules may still produce the data: a test can watch whatever the game spawns.
+
+For example, `icon_bake` checks that `vox_texture_system` waits for its model. Body part items give it the most icons to watch, but it lives in `chunks/chunks3/tst/`, beside the system, not in `parts/tst/`.
+
+```text
+coffee/
+    sys/
+        coffee_brew.c
+    tst/
+        coffee_brew.c    <- checks the brewing, wherever the beans came from
+```
+
+A test only goes higher when it needs that higher module itself, i.e. it spawns a player character or drives the menus.
+
+When you think:
+
+> "Which test covers this system?"
+
+the answer should be one folder away from the system.
+
 ## Naming
 
 Zox uses different naming conventions for different kinds of things.

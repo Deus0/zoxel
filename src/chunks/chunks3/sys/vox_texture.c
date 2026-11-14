@@ -206,9 +206,10 @@ void vox_texture_system(iter* it) {
                 zox_getn(e));
             continue;
         }
-        // NOTE: Delays the texture until its done
-        if (zox_has(vox, GenerateModel) &&
-            zox_getv(vox, GenerateModel))
+        // NOTE: Delays the texture until its done: a blueprint still running (Generating, spawn_process_model),
+        //  or a model generating from its type (GenerateModel)
+        if (zox_has(vox, Generating) ||
+            (zox_has(vox, GenerateModel) && zox_getv(vox, GenerateModel)))
         {
             if (dbg_log) {
                 zox_log("Texture [%s] waiting on model to generate [%s]",
