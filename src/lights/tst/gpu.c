@@ -12,20 +12,26 @@
 //      are lit), the 4 corner lights blended across the whole face (bottom right, pixel, bilinear)
 //  - border faces culled except the top, as cpu sides do with no neighbour chunk (edge_faces 0)
 
+// tst: gpu_light_stress, terrain chunks re-lit (and re-shaped) every frame, meshed lit on the gpu, to see the update rate
+//  - bash bsh/gpu_light_stress.sh (--visible to watch), tst/gpu_light_stress.png
+//  - night (a dim sky), each chunk two torches moving: one walking the cave in and out, one roaming over the hills
+//  - each frame, each chunk: its hills roll (voxel octree rebuilt, zox_tst_gpu_voxels=0 to keep them still), its
+//      lights flood again (light octree rebuilt), both flattened, uploaded and meshed lit, drawn with pixel light
+//  - zox_tst_gpu_chunks=<n> chunks (default 4, up to 16, the first 4 in view), zox_tst_gpu_seconds=<s> (default 6)
+//  - logs [tst] [metric] each second: chunks updated a second, fps, cpu voxels, cpu lights, flattening (a chunk), the gpu
+//      (one chunk, waited for)
+//  - checks: chunks updated every second, the last frame's corner lights match smooth_face_lights (chunk 0)
+
 #define zox_tst_gpu_light_depth 5
 
-// a terrain chunk: hills, a cave under them, sunlight down open columns, a torch in the cave, light spreading through
-//  air losing light_air_decay a step (as flood fills do, simpler), solids darklight
-static inline void zox_tst_gpu_light_scene(VoxelNode* voxels, LightNode* lights, byte depth) {
+// a terrain chunk's voxels at time: hills (rolling with time), a cave under them open to the front (+z)
+//  - solid: length^3 bytes, set where a voxel is (x, y, z order), for the light flood
+static inline void zox_tst_gpu_scene_voxels(VoxelNode* voxels, byte depth, float time, byte* solid) {
     const int length = octree_size(depth);
-    const int cells = length * length * length;
-    byte* solid = calloc(cells, 1);
-    byte* light = malloc(cells);
-    int* queue = malloc(sizeof(int) * cells * 7);
-    #define zox_tst_gpu_cell(x, y, z) (((x) * length + (y)) * length + (z))
+    memset(solid, 0, length * length * length);
     create_VoxelNode(voxels);
     for (int x = 0; x < length; x++) for (int z = 0; z < length; z++) {
-        const int height = (int) (length * (0.55f + 0.18f * sinf(x * 0.35f) + 0.12f * cosf(z * 0.27f + x * 0.1f)));
+        const int height = (int) (length * (0.55f + 0.18f * sinf(x * 0.35f + time * 1.5f) + 0.12f * cosf(z * 0.27f + x * 0.1f + time)));
         for (int y = 0; y < height && y < length; y++) {
             // the cave: a tunnel under the hills, open to the front (+z), into the middle
             const float cx = length * 0.5f, cy = length * 0.3f;
@@ -35,26 +41,38 @@ static inline void zox_tst_gpu_light_scene(VoxelNode* voxels, LightNode* lights,
             }
             const byte v = y < height - 4 ? 3 : (y < height - 1 ? 2 : 1);
             set_VoxelNode(voxels, depth, (byte3) { x, y, z }, v);
-            solid[zox_tst_gpu_cell(x, y, z)] = 1;
+            solid[(x * length + y) * length + z] = 1;
         }
     }
     optimize_reduce_VoxelNode(voxels);
+}
+
+// a chunk's lights: sky light down each open column, torches, spreading through air losing light_air_decay a step
+//  (as flood fills do, simpler), solids darklight
+static inline void zox_tst_gpu_scene_lights(LightNode* lights, byte depth, const byte* solid, byte sky, const int3* torches, int torches_count, byte torch_light) {
+    const int length = octree_size(depth);
+    const int cells = length * length * length;
+    byte* light = malloc(cells);
+    int* queue = malloc(sizeof(int) * cells * 7);
+    #define zox_tst_gpu_cell(x, y, z) (((x) * length + (y)) * length + (z))
     int head = 0, tail = 0;
-    for (int i = 0; i < cells; i++) {
-        light[i] = darklight;
-    }
-    // sunlight down each column until it hits something
+    memset(light, darklight, cells);
     for (int x = 0; x < length; x++) for (int z = 0; z < length; z++) {
         for (int y = length - 1; y >= 0 && !solid[zox_tst_gpu_cell(x, y, z)]; y--) {
-            light[zox_tst_gpu_cell(x, y, z)] = sunlight;
+            light[zox_tst_gpu_cell(x, y, z)] = sky;
             queue[tail++] = zox_tst_gpu_cell(x, y, z);
         }
     }
-    // a torch in the cave
-    const int torch = zox_tst_gpu_cell(length / 2, (int) (length * 0.3f), (int) (length * 0.55f));
-    if (!solid[torch]) {
-        light[torch] = 240;
-        queue[tail++] = torch;
+    for (int t = 0; t < torches_count; t++) {
+        const int3 p = torches[t];
+        if (p.x < 0 || p.y < 0 || p.z < 0 || p.x >= length || p.y >= length || p.z >= length) {
+            continue;
+        }
+        const int i = zox_tst_gpu_cell(p.x, p.y, p.z);
+        if (!solid[i] && light[i] < torch_light) {
+            light[i] = torch_light;
+            queue[tail++] = i;
+        }
     }
     while (head < tail && tail < cells * 7 - 6) {
         const int i = queue[head++];
@@ -84,9 +102,18 @@ static inline void zox_tst_gpu_light_scene(VoxelNode* voxels, LightNode* lights,
     }
     reduce_LightNode(lights);
     #undef zox_tst_gpu_cell
-    free(solid);
     free(light);
     free(queue);
+}
+
+// the static terrain chunk: hills in sunlight, a torch in the cave
+static inline void zox_tst_gpu_light_scene(VoxelNode* voxels, LightNode* lights, byte depth) {
+    const int length = octree_size(depth);
+    byte* solid = malloc(length * length * length);
+    zox_tst_gpu_scene_voxels(voxels, depth, 0, solid);
+    const int3 torch = { length / 2, (int) (length * 0.3f), (int) (length * 0.55f) };
+    zox_tst_gpu_scene_lights(lights, depth, solid, sunlight, &torch, 1, 240);
+    free(solid);
 }
 
 // smooth_lights' corner case, on a depth 2 chunk: a floor voxel, two solid edges, a bright corner between them
@@ -391,5 +418,239 @@ void zox_tsts_lights_gpu(ecs* world) {
     zox_render3_system(2,
         gpu_light_views_render_system,
         [none] lights.GpuLightViews
+    );
+}
+
+
+
+// # gpu_light_stress
+
+zox_tag(GpuLightStress);
+#define zox_tst_gpu_stress_max 16
+#define zox_tst_gpu_stress_sky 56          // night: a dim sky, so torches show on the hills
+#define zox_tst_gpu_stress_torch 255
+byte zox_tst_gpu_stress_stage = 0;
+int zox_tst_gpu_stress_count = 0;
+byte zox_tst_gpu_stress_voxels = 1;        // the hills roll, else only lights change
+GpuMesher zox_tst_gpu_stress_meshers[zox_tst_gpu_stress_max];
+uint zox_tst_gpu_stress_program = 0;
+byte zox_tst_gpu_stress_solidity[zox_light_solidity_length];
+byte* zox_tst_gpu_stress_solid[zox_tst_gpu_stress_max];         // each chunk's solid cells, for its light flood
+uint* zox_tst_gpu_stress_nodes[zox_tst_gpu_stress_max];         // each chunk's flat voxels (kept when they don't change)
+uint zox_tst_gpu_stress_nodes_count[zox_tst_gpu_stress_max];
+VoxelNode zox_tst_gpu_stress_last_voxels;   // chunk 0's last frame, checked at the end
+LightNode zox_tst_gpu_stress_last_lights;
+byte zox_tst_gpu_stress_has_last = 0;
+double zox_tst_gpu_stress_start = 0;
+double zox_tst_gpu_stress_seconds = 6;
+double zox_tst_gpu_stress_second_start = 0;
+int zox_tst_gpu_stress_second_updates = 0;
+int zox_tst_gpu_stress_second_frames = 0;
+double zox_tst_gpu_stress_ms_voxels = 0, zox_tst_gpu_stress_ms_lights = 0, zox_tst_gpu_stress_ms_flatten = 0, zox_tst_gpu_stress_ms_gpu = 0;
+int zox_tst_gpu_stress_seconds_logged = 0;
+int zox_tst_gpu_stress_seconds_updated = 0;
+
+static inline float3 zox_tst_gpu_stress_position(int i) {
+    return (float3) { zox_tst_gpu_light_spot.x + i * 20.0f, zox_tst_gpu_light_spot.y, zox_tst_gpu_light_spot.z + 40 };
+}
+
+// chunk i's two torches at time: one walking the cave in and out, one circling over the hills
+static inline void zox_tst_gpu_stress_torches(int i, double time, byte depth, const byte* solid, int3* torches) {
+    const int length = octree_size(depth);
+    const float t = (float) time + i * 1.7f;
+    torches[0] = (int3) { length / 2, (int) (length * 0.3f), (int) (length * (0.65f + 0.3f * sinf(t * 0.9f))) };
+    const int x = (int) (length * (0.5f + 0.35f * cosf(t * 0.7f)));
+    const int z = (int) (length * (0.5f + 0.35f * sinf(t * 0.7f)));
+    // just over the ground there
+    int y = length - 1;
+    while (y > 0 && !solid[(x * length + (y - 1)) * length + z]) {
+        y--;
+    }
+    torches[1] = (int3) { x, y + 1 < length ? y + 1 : length - 1, z };
+}
+
+// updates every chunk: voxels (if they roll), lights, flatten, mesh lit; logs a second's numbers once it passes
+static inline void zox_tst_gpu_stress_update(ecs* world) {
+    const byte depth = zox_tst_gpu_light_depth;
+    const double time = zox_current_time - zox_tst_gpu_stress_start;
+    const GpuMeshLighting lighting = gpu_mesh_lighting(zox_tst_gpu_stress_solidity);
+    GpuMeshLighting night = lighting;
+    night.sunlight = zox_tst_gpu_stress_sky;
+    for (int i = 0; i < zox_tst_gpu_stress_count; i++) {
+        double start = get_time_ms();
+        VoxelNode voxels;
+        const byte voxels_change = zox_tst_gpu_stress_voxels || !zox_tst_gpu_stress_nodes[i];
+        if (voxels_change) {
+            zox_tst_gpu_scene_voxels(&voxels, depth, (zox_tst_gpu_stress_voxels ? (float) time : 0) + i * 1.3f, zox_tst_gpu_stress_solid[i]);
+        }
+        zox_tst_gpu_stress_ms_voxels += get_time_ms() - start;
+        start = get_time_ms();
+        int3 torches[2];
+        zox_tst_gpu_stress_torches(i, time, depth, zox_tst_gpu_stress_solid[i], torches);
+        LightNode lights;
+        zox_tst_gpu_scene_lights(&lights, depth, zox_tst_gpu_stress_solid[i], zox_tst_gpu_stress_sky, torches, 2, zox_tst_gpu_stress_torch);
+        zox_tst_gpu_stress_ms_lights += get_time_ms() - start;
+        start = get_time_ms();
+        if (voxels_change) {
+            free(zox_tst_gpu_stress_nodes[i]);
+            zox_tst_gpu_stress_nodes_count[i] = flatten_VoxelNode(&voxels, &zox_tst_gpu_stress_nodes[i]);
+        }
+        uint* light_nodes = NULL;
+        const uint light_count = flatten_LightNode(&lights, &light_nodes);
+        zox_tst_gpu_stress_ms_flatten += get_time_ms() - start;
+        if (i == 0) {
+            zox_gpu_finish();
+        }
+        start = get_time_ms();
+        gpu_mesh_flat_lit(&zox_tst_gpu_stress_meshers[i], zox_tst_gpu_stress_nodes[i], zox_tst_gpu_stress_nodes_count[i],
+            light_nodes, light_count, depth, &night);
+        if (i == 0) {
+            zox_gpu_finish();
+            zox_tst_gpu_stress_ms_gpu += get_time_ms() - start;
+        }
+        free(light_nodes);
+        // chunk 0's frame kept for the check (its voxels rebuilt if they didn't change this frame)
+        if (i == 0) {
+            if (zox_tst_gpu_stress_has_last) {
+                close_VoxelNode(&zox_tst_gpu_stress_last_voxels);
+                close_LightNode(&zox_tst_gpu_stress_last_lights);
+            }
+            if (!voxels_change) {
+                byte* solid = malloc(octree_size(depth) * octree_size(depth) * octree_size(depth));
+                zox_tst_gpu_scene_voxels(&voxels, depth, i * 1.3f, solid);
+                free(solid);
+            }
+            zox_tst_gpu_stress_last_voxels = voxels;
+            zox_tst_gpu_stress_last_lights = lights;
+            zox_tst_gpu_stress_has_last = 1;
+        } else {
+            if (voxels_change) {
+                close_VoxelNode(&voxels);
+            }
+            close_LightNode(&lights);
+        }
+        zox_tst_gpu_stress_second_updates++;
+    }
+    zox_tst_gpu_stress_second_frames++;
+    if (zox_current_time - zox_tst_gpu_stress_second_start >= 1) {
+        const double seconds = zox_current_time - zox_tst_gpu_stress_second_start;
+        const int updates = zox_tst_gpu_stress_second_updates ? zox_tst_gpu_stress_second_updates : 1;
+        const int frames = zox_tst_gpu_stress_second_frames ? zox_tst_gpu_stress_second_frames : 1;
+        zox_log("[tst] [metric] gpu_light_stress second [%i]: [%.0f] chunks updated a second ([%i] chunks, [%.1f] fps), a chunk: cpu voxels [%.2fms] cpu lights [%.2fms] flatten [%.2fms] gpu upload and mesh [%.2fms], [%u] faces",
+            zox_tst_gpu_stress_seconds_logged, zox_tst_gpu_stress_second_updates / seconds, zox_tst_gpu_stress_count, zox_tst_gpu_stress_second_frames / seconds,
+            zox_tst_gpu_stress_ms_voxels / updates, zox_tst_gpu_stress_ms_lights / updates, zox_tst_gpu_stress_ms_flatten / updates,
+            zox_tst_gpu_stress_ms_gpu / frames, gpu_mesher_read_faces(&zox_tst_gpu_stress_meshers[0]));
+        zox_tst_gpu_stress_seconds_updated += zox_tst_gpu_stress_second_updates > 0;
+        zox_tst_gpu_stress_seconds_logged++;
+        zox_tst_gpu_stress_second_start = zox_current_time;
+        zox_tst_gpu_stress_second_updates = 0;
+        zox_tst_gpu_stress_second_frames = 0;
+        zox_tst_gpu_stress_ms_voxels = zox_tst_gpu_stress_ms_lights = zox_tst_gpu_stress_ms_flatten = zox_tst_gpu_stress_ms_gpu = 0;
+    }
+}
+
+byte zox_tst_gpu_light_stress_ready(ecs* world) {
+    zox_tst_progress(zox_tst_gpu_stress_stage * 100000 + zox_tst_gpu_stress_second_frames + zox_tst_gpu_stress_seconds_logged * 1000);
+    if (zox_tst_gpu_stress_stage == 0) {
+        zox_tst_waiting = "the app and a compute capable gl context";
+        if (!zox_valid(main_app) || !zox_valid(main_cameras[0]) || !zox_gpu_compute_supported()) {
+            return 0;
+        }
+        const char* count_text = getenv("zox_tst_gpu_chunks");
+        zox_tst_gpu_stress_count = count_text && count_text[0] ? atoi(count_text) : 4;
+        zox_tst_gpu_stress_count = zox_tst_gpu_stress_count < 1 ? 1 : (zox_tst_gpu_stress_count > zox_tst_gpu_stress_max ? zox_tst_gpu_stress_max : zox_tst_gpu_stress_count);
+        const char* seconds_text = getenv("zox_tst_gpu_seconds");
+        zox_tst_gpu_stress_seconds = seconds_text && seconds_text[0] ? atof(seconds_text) : 6;
+        const char* voxels_text = getenv("zox_tst_gpu_voxels");
+        zox_tst_gpu_stress_voxels = voxels_text && voxels_text[0] ? atoi(voxels_text) != 0 : 1;
+        memset(zox_tst_gpu_stress_solidity, 0, zox_light_solidity_length);
+        zox_tst_gpu_stress_solidity[0] = zox_tst_gpu_stress_solidity[1] = zox_tst_gpu_stress_solidity[2] = 1;
+        const int length = octree_size(zox_tst_gpu_light_depth);
+        for (int i = 0; i < zox_tst_gpu_stress_count; i++) {
+            zox_tst_check(gpu_mesher_create(&zox_tst_gpu_stress_meshers[i], length * length * length * 3), "gpu mesher [%i] couldn't be made", i);
+            zox_tst_gpu_stress_meshers[i].edge_faces = 0;
+            zox_tst_gpu_stress_solid[i] = malloc(length * length * length);
+            zox_tst_gpu_stress_nodes[i] = NULL;
+        }
+        zox_tst_gpu_stress_program = gpu_mesh_draw_program();
+        zox_tst_check(zox_tst_gpu_stress_program, "the gpu mesh draw program didn't compile");
+        if (!zox_tst_gpu_stress_program || !zox_tst_gpu_stress_meshers[0].program) {
+            return 1;
+        }
+        zox_log("[tst] gpu_light_stress: [%i] chunks of [%i]^3, voxels [%s], lights every frame",
+            zox_tst_gpu_stress_count, length, zox_tst_gpu_stress_voxels ? "rolling" : "still");
+        // a view of each of the first 4 chunks, from the front and above
+        for (int i = 0; i < 4; i++) {
+            const float3 centre = float3_add(zox_tst_gpu_stress_position(i), (float3) { 1, 0.8f, 1 });
+            const float3 eye = float3_add(centre, (float3) { 0.9f, 1.6f, 2.9f });
+            const entity camera = spawn_viewport_camera(world, main_app, eye, camera_look_at(eye, centre), 55, viewport_grid_cell(i, 2, 2));
+            zox_setv(camera, Color, ((color) { 24, 26, 40, 255 }));
+        }
+        nohud = 1;
+        const entity game_view = zox_get_link(world, main_cameras[0], RenderTextureLink);
+        if (zox_valid(game_view)) {
+            zox_setv(game_view, RenderDisabled, 1);
+        }
+        const entity e = zox_new();
+        zox_add(e, GpuLightStress);
+        zox_tst_gpu_stress_start = zox_current_time;
+        zox_tst_gpu_stress_second_start = zox_current_time;
+        zox_tst_gpu_stress_stage = 1;
+        return 0;
+    }
+    zox_tst_gpu_stress_update(world);
+    if (zox_tst_gpu_stress_stage == 1) {
+        zox_tst_waiting = "chunks re-lit and meshed on the gpu";
+        if (zox_current_time - zox_tst_gpu_stress_start < zox_tst_gpu_stress_seconds) {
+            return 0;
+        }
+        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("gpu_light_stress.ppm"));
+        zox_tst_gpu_stress_stage = 2;
+        return 0;
+    }
+    zox_tst_waiting = "the light stress screenshot";
+    return !zox_screenshot_request[0];
+}
+
+void zox_tst_gpu_light_stress_check(ecs* world) {
+    (void) world;
+    zox_tst_check(zox_tst_gpu_stress_seconds_logged && zox_tst_gpu_stress_seconds_updated == zox_tst_gpu_stress_seconds_logged,
+        "chunks updated in [%i] of [%i] seconds", zox_tst_gpu_stress_seconds_updated, zox_tst_gpu_stress_seconds_logged);
+    // the last frame, animated voxels and moved torches, still lit as smooth lighting lights it
+    if (zox_tst_gpu_stress_has_last) {
+        GpuMesher* mesher = &zox_tst_gpu_stress_meshers[0];
+        mesher->edge_faces = 1;
+        zox_tst_gpu_light_compare(mesher, &zox_tst_gpu_stress_last_voxels, &zox_tst_gpu_stress_last_lights,
+            zox_tst_gpu_stress_solidity, zox_tst_gpu_light_depth, "stress last frame");
+        close_VoxelNode(&zox_tst_gpu_stress_last_voxels);
+        close_LightNode(&zox_tst_gpu_stress_last_lights);
+    }
+    for (int i = 0; i < zox_tst_gpu_stress_count; i++) {
+        gpu_mesher_dispose(&zox_tst_gpu_stress_meshers[i]);
+        free(zox_tst_gpu_stress_solid[i]);
+        free(zox_tst_gpu_stress_nodes[i]);
+    }
+}
+
+void gpu_light_stress_render_system(iter* it) {
+    zox_sys_on_begin();
+    if (!zox_tst_gpu_stress_program) {
+        return;
+    }
+    const float scale = 2.0f / octree_size(zox_tst_gpu_light_depth);
+    for (int i = 0; i < zox_tst_gpu_stress_count; i++) {
+        gpu_mesher_draw(&zox_tst_gpu_stress_meshers[i], zox_tst_gpu_stress_program, render_camera_matrix,
+            zox_tst_gpu_stress_position(i), scale, zox_tst_gpu_light_colors, 3, gpu_mesh_light_pixel);
+    }
+    zox_sys_on_end();
+} zoxd_system(gpu_light_stress_render_system);
+
+void zox_tsts_lights_gpu_stress(ecs* world) {
+    zoxd_tag(GpuLightStress);
+    zox_tst_add("gpu_light_stress", zox_tst_gpu_light_stress_ready, zox_tst_gpu_light_stress_check, 120);
+    zox_tst_set_setup("gpu_light_stress", NULL, 1);
+    zox_render3_system(2,
+        gpu_light_stress_render_system,
+        [none] lights.GpuLightStress
     );
 }
