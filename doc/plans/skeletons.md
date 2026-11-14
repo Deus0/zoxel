@@ -1,0 +1,126 @@
+# Skeletons: Bone Weights From an Octree
+
+How a skeleton character's mesh vertices get their bones now, why that's fragile, and a plan to store each voxel's bone
+in an octree written when the parts merge. Written 2026-11-14 (claude2) from reading the code; nothing changed yet.
+
+Code: [src/parts/sys/combine.c](../../src/parts/sys/combine.c) (`body_combine_system`, `build_body_parts`),
+[src/chunks/chunks3/sys/combine.c](../../src/chunks/chunks3/sys/combine.c) (`combine_vox_system`),
+[src/parts/sys/bones.c](../../src/parts/sys/bones.c) (`character_bone_spawn_system`, `spawn_part_bones`),
+[src/bones/sys/generate.c](../../src/bones/sys/generate.c) (`generate_weights`),
+[src/bones/sys/skeleton_meshes.c](../../src/bones/sys/skeleton_meshes.c),
+[src/chunks/chunks3/sys/vox_lods.c](../../src/chunks/chunks3/sys/vox_lods.c) (`build_vox_mesh_at_depth`),
+[src/chunks/chunks3/sys/build_colored.c](../../src/chunks/chunks3/sys/build_colored.c) (the face builders),
+[res/shaders/bone.vert](../../res/shaders/bone.vert), tests `chest_weights`, `npc_skeletons`, `skeleton_render`.
+Also [character.md](../character.md), [body_equips.md](../body_equips.md).
+
+## How it works now
+
+1. **Combine** (`body_combine_system`, parts): walks the body's slots from the chest (`build_body_parts`), places each
+   part by its anchor (top, right, over...) and writes its `PartPosition` / `PartSize` on the slot. Clothes (anchor
+   over) go last among siblings so they draw over what they cover. The result is three parallel lists on the body's
+   vox: `CombineList` (each part's model vox), `CombinePositions`, `CombineDepths`. Then `BodyDirty` = bones.
+2. **Voxels** (`combine_vox_system`, chunks3): clears the vox's `VoxelNode`, and for each list entry copies every voxel
+   of that part's model into it at its position (colours merged into one palette). **This is the one place that knows
+   which part every voxel came from**, and it throws that away.
+3. **Bones** (`character_bone_spawn_system`, parts): deletes the old bones, walks the slots again (`spawn_part_bones`,
+   its own order) and spawns a bone per slot holding a part, except clothes. A bone's `BonePosition` is the slot's
+   centre, its `BoneSize` the part model's half size plus half a voxel. The `BoneLinks` index is the bone's index in
+   the shader. Then `SkeletonDirty`.
+4. **Meshes** (`skeleton_mesh_build_system`): builds a mesh per render depth from the vox (`build_vox_mesh_at_depth`:
+   4 vertices a face, no sharing), then `BuildMeshWeights`.
+5. **Weights** (`bone_index_generate_system2` → `generate_weights`): for every vertex, every bone gets a score from its
+   box (`bone_vertex_score`: inside, how deep, under 0; outside, how far). The lowest wins. One bone a vertex
+   (`BoneIndexes`, a byte), rigid: `bone.vert` takes `bone_matrix[bone_index]`. `SkeletonDirty` reweights every mesh
+   (`bone_index_generate_system`).
+
+## Problems with the boxes
+
+- **Boxes overlap, and the shapes aren't boxes.** A box is sized from the part's model size, padded, so neighbouring
+  boxes overlap at every joint, and a rounded chest or tapered limb doesn't fill its box. Each fix so far has been a
+  rule on top:
+  - "the last box that holds it" put 778 rib vertices on the shoulders, and the chest came apart when the arms swung
+    (fc4e0cf20: deepest box wins)
+  - "outside every box, the chest" left an arm's front strip still while its sleeve swung (33a5b7412: nearest box)
+  - clothes can't have a bone: a shirt's box, wider than the chest, took the shoulders' vertices (`spawn_part_bones`
+    returns 0 for anchor over), so clothes rely on lying inside the right boxes
+- **A vertex isn't a voxel.** A face's corners sit on its voxel's edges; on a part boundary a corner can score to the
+  next part's box, so one face can stretch across two bones. Which bone a face belongs to is known exactly (its voxel)
+  but recomputed from geometry.
+- **It ignores what the merge knew.** Overlaps, padding and "nearest" all try to recover which part a voxel came
+  from, which `combine_vox_system` had in hand.
+- **Cost:** vertices × bones per mesh per depth (a few thousand vertices × ~15 bones), again on every `SkeletonDirty`,
+  plus a pipeline stage (`BuildMeshWeights`) between building and uploading.
+- `BoneSize` is also used by `head_camera` (eye height) and `bone_render` (the debug boxes): those stay.
+
+## Proposal: a bone octree, written at the merge
+
+### Data
+
+- A `BoneNode` octree on the combined vox: `zoxc_octree_basic(BoneNode, byte, 0)`, like `LightNode` and `SidesOctree`
+  sit beside `VoxelNode`. A voxel's value is its bone's index + 1 (0 = none / air). Same depth as `VoxelNode`.
+- Locked with the vox's octree lock (`zox_octree_lock`): written and read together with `VoxelNode` (thread_safety.md).
+- Lods: a parent's value is the most common of its children, air skipped (`octree_children_mode`, what
+  `optimize_reduce_VoxelNode` does for voxels), so a mesh at a lower depth reads its voxel's bone the same way it
+  reads its colour. Reduce collapses whole regions of one bone (a forearm is one leaf), so it stays small.
+
+### Writing it (the merge)
+
+- `build_body_parts` (parts) already walks slots in an order with parents before children. Spawn the bones in that
+  same order (or record, per combine entry, the bone it will get), so each `CombineList` entry has a bone index.
+  Add `CombineBones` (a byte array beside `CombinePositions`, chunks3 so `combine_vox_system` can read it, filled by
+  parts: module order chunks3 < bones < parts holds):
+  - a part with a bone: its bone index + 1
+  - clothes (anchor over): 0, "the bone of what it covers"
+- `combine_vox_system`: when it places a voxel, also `set_BoneNode` at the same position:
+  - a part's voxel: its entry's bone
+  - a clothes voxel over a body voxel: keep the bone already there (the body was placed first)
+  - a clothes voxel past the body (a sleeve's outer layer, a skirt): the bone of the nearest body voxel, searched
+    outwards a voxel at a time up to a small radius (the clothes' thickness, 2-3); none found, its parent slot's bone
+  - after the loop: optimize + reduce the `BoneNode`, as voxels are
+- Bones then don't need boxes for weights at all. `BonePosition` stays (the pivot), `BoneSize` stays for the camera and
+  debug.
+
+### Reading it (the mesh build)
+
+- The face builders (`build_voxel_faces_colored` via `build_voxel_mesh_c` and the pyramid path
+  `build_voxel_mesh_grid`) know each face's voxel position at the target depth. With an optional `BoneNode` and a
+  bones array in `mesh_colored_build_data`, each face pushes its voxel's bone 4 times (`getv_BoneNode` at that
+  depth, or walked alongside the voxel node).
+- `skeleton_mesh_build_system` fills `BoneIndexes` while building, sets `SkeletonMeshDirty` itself, and
+  `BuildMeshWeights`, `bone_index_generate_system2` and `generate_weights` go. A `SkeletonDirty` with the same
+  voxels no longer reweights anything; a new body recombines, which rebuilds the meshes anyway.
+- Terrain and plain vox meshes pass no `BoneNode`, unchanged.
+
+## Analysis first (before changing weights)
+
+The ground truth exists at the merge, so measure the current weights against it before replacing them:
+
+1. Write `BoneNode` in `combine_vox_system` (and `CombineBones`) without using it yet.
+2. A test (`bone_octree`, or in `chest_weights`): spawn a humanoid in its usual clothes; for each skeleton mesh face,
+   compare `generate_weights`' bone with `BoneNode` at the face's voxel. Log how many faces differ, by bone pair
+   (chest/shoulder, shoulder/arm, thigh/hips, the shirt's sleeves) and by depth. Also check the octree itself: every
+   body voxel has a bone, each part's voxels have its bone, clothes voxels the bone under them.
+3. Then switch the mesh build to `BoneNode`, keep the test as the guard (every face's bone = its voxel's), and keep
+   `chest_weights` (arms and ribs move with the right bones).
+
+## Steps
+
+1. `BoneNode` component and `CombineBones`; bones spawned in combine order (or the entry → bone map). No behaviour
+   change. The analysis test above. One commit.
+2. Mesh build reads it; remove `generate_weights` and `BuildMeshWeights`. `chest_weights`, `npc_skeletons`,
+   `skeleton_render`, `body_views`, `head_camera`, `held_item` pass. One commit.
+3. Update body_equips.md (its "last bone whose box (1.2 times its size)" line is already out of date) and
+   character.md's pipeline line.
+
+## Open questions
+
+- **Joints:** a face is now wholly one bone (rigid). Between a chest voxel and a shoulder voxel the faces stay
+  together while still, but a swing can open a crack at the joint where today a stretched face hid it. If it shows:
+  give the vertices on a part boundary both bones (two indices and a weight, a shader change), or round joints in
+  the models. Worth checking in the analysis (count faces whose corners touch another bone's voxels).
+- **Lods:** the most common bone of 8 children can put a small part's tip (a finger, a hat brim) on its neighbour at
+  low depths. Far away, likely unseen.
+- **Clothes past the body:** is nearest the right rule for a skirt or a cape (they'd follow the thighs or chest)? A
+  slot could name its own bone later (capes, tails, hair).
+- **Held items** stay separate entities on the hand bone (`HandBoneLink`), unaffected.
+- **Animations exported to Blender** (todo.md) would want real per voxel bones: this gives them.

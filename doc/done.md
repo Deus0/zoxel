@@ -1,6 +1,14 @@
 # Done
 
 ## Moved from todo (2026-11-14)
+-x Lod swaps without flicker: no holes or dark chunks swapping lods flying, timers gone (tst lod_swap)
+-x Terrain streams 2.4x faster, the land near you keeps up flying (doc/done/streaming.md: plan 1 to 4), tst perf_fly
+  near lod latency; lights skip a neighbour chunk mid spawn (a crash)
+-x 3D uis drawn a canvas at a time: layers in order, then the canvas writes its depth (canvas3_render_system, no
+  depth offsets), tst ui3_overlap and ui3_occlusion; doc/tech/uis.md
+-x Map moves per block (one view, redrawn from each tunk's cached top down colours, 1ms), tst map_pixel
+-x Npcs out in the wild again (spawn rolls rounded down to 0 out of towns, npc_spawn_count); tooltips no longer stick
+  when the mouse leaves the window (tst mouse_leave), check in play
 -x Smooth Lights Colors Past Limits: a stale mesh (older than its sides) is rebuilt instead; tst tween_end (animations)
 -x Tests left out of release builds (zox_tests, set by --debug); tweens get an end event (AnimationEnded, observed)
 -x Sky blends between biomes (blend_sky_to, sky_blend_system), its fog with it; the gpu upload moved off the worker

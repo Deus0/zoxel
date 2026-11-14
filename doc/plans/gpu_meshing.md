@@ -168,7 +168,7 @@ Each step behind `zox_chunks3_gpu_meshing` and `zox_gpu_compute_supported()`, th
 4. **Textures.** Pass the tilemap's uvs as a uniform or buffer, the vertex shader picks them by voxel and direction,
    drawn with the terrain's textured shader (and its pixel light blend).
 5. **LODs and the swap.** Mesh at the chunk's `RenderDepth` (the depth uniform, light reads are already coarse maxes).
-   The mesh is ready the frame after its dispatch; the swap (doc/tec/streaming.md) can wait on a `glFenceSync`.
+   The mesh is ready the frame after its dispatch; the swap (doc/done/streaming.md) can wait on a `glFenceSync`.
 6. **Lights on the gpu.** A light change remeshes only lights (see Lighting design): keep the voxel nodes uploaded, upload the light nodes,
    rerun. Later flood light on the gpu too.
 7. **Merging** once the rest matches, keeping per pixel light detail (merge faces with equal corner lights only).

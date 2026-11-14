@@ -95,4 +95,9 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 | Quests | `quest_tracking` `quest_dialogue` |
 | Performance | `perf_stream` `perf_fly` `mass_spawn` `mass_delete` `physics2_perf` `physics3_perf` |
 
+Perf runs: compare on the same land and machine state. `zox_tst_seed=666` gives new games a fixed seed (random land
+swung perf_fly 319 to 851 frames), `--stress --far 8` the user's far distance, `--gpu` the real gpu (stop ollama first,
+it shares it), e.g. `zox_tst_seed=666 bash bsh/tst.sh perf_fly --gpu --stress --far 8`. perf_fly logs the queue, its
+slots by kind and the near lod latency (doc/done/streaming.md).
+
 The full list with descriptions: the comment at the top of each test, or `bash bsh/tst.sh list`.

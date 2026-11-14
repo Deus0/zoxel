@@ -20,3 +20,5 @@
 
 # Ideas
 - Can we hide behind mountains to improve culling?
+- 3D uis: canvas3_render_system gathers and sorts each canvas's elements every frame; keep the order on the canvas,
+  rebuilt when its children or layers change (doc/tech/uis.md)

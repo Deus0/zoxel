@@ -11,7 +11,52 @@ Code: [src/terrain/sys/stream.c](../../src/terrain/sys/stream.c) (the queue),
 [src/chunks/chunks3/fun/lods.c](../../src/chunks/chunks3/fun/lods.c) (distance to LOD),
 [src/controllers/tst/perf.c](../../src/controllers/tst/perf.c) (`perf_stream`).
 
-## Summary
+## Done (2026-11-14, claude2)
+
+Commits 13d754ac2 and ce67cddb9. Measured with `zox_tst_seed=666 bash bsh/tst.sh perf_fly --gpu --stress --far 8`
+(and perf_stream), debug build on deusmini (780M):
+
+| | old | now |
+|---|---|---|
+| perf_stream, a step settles (queue empty, lod swaps done) | 2.87s | 1.18s |
+| perf_fly frames in 20s | 753, 761 | 893, 893, 732 |
+| perf_fly crossings where the near land caught up (of 28) | 3, 2 | 25 to 27 |
+| perf_fly near land behind at the end | 16-18s | 0s |
+
+- Plan 1 (measure): perf_stream also waits for the queue, lod swaps (ChunkLodDirty) and the first load, and doesn't
+  count BuildDisabled meshes; perf_fly logs, once a second, the queue, the slots used by kind
+  (`stream_slots_lod/distance/spawn`) and the tunks within 2 not at their lod yet, and at the end the near lod latency;
+  `--far <n>`; `zox_tst_seed` for the same land each run.
+- Plan 2: distance only updates are applied to every queued tunk at once (`stream_queue_distances`), outside the budget.
+- Plan 3: picks the closest, aged (`stream_update_aging`, 1 tunk a second waited), no "oldest first after 2s".
+- Plan 4: 8 lod changes or spawns a frame within 2ms (`stream_updates_max_per_frame`, `stream_update_ms`). 2 a frame
+  was no better than before, 16 settled in 0.7s but overloaded what follows (flying fell to 533 frames, 16 of 28 caught
+  up). The 2ms never binds (the queue system averages 0.12ms): what the queue starts (generation, meshes) is the cost.
+- Plan 5 tried and reverted: `zox_sys_budget` (1ms) in place of the per call caps settled 18% faster on the gpu but
+  wasn't better flying, and on `--tiny` software rendering its steps grew to 17s: a per worker budget lets less run
+  than 2 a call across every table and worker when each chunk is slow (debug, llvmpipe). Try again with a budget
+  per system and frame, not per worker, and measure on a fixed seed.
+- Plan 6 (commit c3ba5f02d): tst `lod_swap` first (flying, every chunk every frame: a hole is a chunk that drew and
+  now draws nothing, its mesh hidden; dark is a swap to a mesh never lit, no `MeshColorsBuilt`). The old swap made 15
+  to 118 holes a flight (seed 666, Far 8), now 0, and 0 dark, at Far 16 too. Three causes:
+  - the target came from a `PreparingMesh` link set earlier: a depth going 3 to 2 to 3 mid swap swapped to the stale one
+    (now found from `RenderDepth` every frame)
+  - `ActiveMesh` didn't match what's drawn (`chunk_mesh_spawn_system` enables what it spawns without linking it), and
+    the swap hid a shown mesh to build it (now what isn't `Disabled` is what's shown)
+  - ready skipped `MeshColorsDirty` (colours built, not uploaded): the two 0.1s timers hid that, now gone
+  - also: a mesh spawned on `ChunkUpdate` while the chunk shows another goes through the swap (it drew over it, unlit)
+  - a step settles in 1.10s (was 1.18s); not counted as holes: a mesh rebuilt with no faces (a solid chunk covered)
+- Plan 7: no change. Rebuild triggers flag every mesh of a chunk, hidden ones too, and builds skip `BuildDisabled`:
+  the `BuildMesh` left on a hidden mesh is what marks it stale, so it rebuilds when its lod comes back. Clearing it
+  would show stale meshes. Lights skip hidden meshes already. perf_stream doesn't count them.
+- Checked, already right: new faces don't draw unlit, `textured_mesh_update_system` waits for `BuildMeshColors` (commit
+  723478c69), so geometry and its lit colours upload the same frame.
+- Cap 12 a frame was no better than 8 with the new swap. Left: some crossings still take 2-3s (the most), tunk map lods
+  (plan 8).
+- Noise: random land, ollama on the gpu, and back to back runs all moved perf numbers 2-3x. Fix the seed, stop
+  ollama, compare a few runs.
+
+## Summary (the analysis, before)
 
 1. **The stream queue is the bottleneck.** It handles 60 tunks a second, at most 2 a frame, and every crossing of a tunk
    queues the whole `(2·far+1)²` square. At Far 8 one crossing costs 145 queue slots: 2.4s at 60fps, longer at lower

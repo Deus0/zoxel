@@ -5,16 +5,13 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
   
 # New Play test
-- Npcs are missing? - when i loaded game they were gone, outside town (couldn't reproduce, tst npcs_after_load on
-  your save loads 57: more detail if it happens again)
 - limbs in general need polish on the organic shape (shoulders poking clothes fixed: tst chest_weights)
 - we should add in the wave form collapse for vox models, and generate hats off that, so they fit the heads (magic equipment in the story)
+    - import the flower, make 8 variations from this, its seed, and wave form collapse
+    - see how flowers use variant models - model groups  
 - humanoids need more variation in town
 - add female variant humanoids
-- tooltip got stuck when mouse left it (in game): deleting the hovered element clears it (tst tooltip_gone), what
-  else? a hidden element, a closing window, the cursor leaving for the world
-- map movement should be per pixel - and we should optimize it too
-- 3D uis are visible through buildings at distances, i was unsure how to fix this before
+-x 3D uis are visible through buildings at distances, i was unsure how to fix this before
 
 # Polish (play test notes, 2026-11-14)
 A polished core loop before more content.
@@ -23,7 +20,7 @@ A polished core loop before more content.
 - Events: StreamEndEvent (and other function events) to observers
 - Population: more info per tunk (who lives there, counts), a level per region (like Trove), regions harder the
   further from the origin (world scale to decide)
-- Bones: bone weights as octree data on skeletons (refactor)
+- Bones: bone weights as octree data on skeletons (refactor): plan in doc/plans/skeletons.md (analysis first)
 - IK on arms and legs, for more bending (a doc/tec doc first)
 - Towns: an age level, older towns are flatter (heights), bigger, with more buildings
 - Homes: tilted foundations for poor npcs (homes stand level now)
@@ -35,6 +32,61 @@ A polished core loop before more content.
 - Github actions: builds there, to grab and test on a phone or whatever device
 
 # Now
+## Play test (2026-11-15, from doc/playtesting.md)
+- Make toast ui for town closer to top
+- Cant talk to npcs when no action selected
+- player character looks at npc body and not their hea
+- new block destruction animations 
+    - Add simple generated cracks to darkness texture
+    - add a animated cube in cubes, that takes textures, makes a tilemap scroll, then it just animates through it (idk the specifics, think minecraft but unique every time you damage a block)
+    - start cracks where you hit
+    - make particles spew out of the block in the color of the mini voxels of the block
+    - when hitting side of block, make popups come out that way
+    - make popups better, curves, or maths magic, and color changing? idk exactly, make leet
+- add dialogue node - conditional node (in nodes)
+    - dialogue node choices
+    - add some options for replies in the games dialogues
+    - expand footer when there is options there
+- make the walking camera animation feel more natural
+    - just animate the head better and body
+    - add tremble in the gait
+    - think resident evil
+- dust particles when you land on ground
+- why does quest tracker say 'slay ???' issue with name?
+- add collect cookie quest
+- add quest reward nodes, give the player a hat
+- add + 3 strength and + 2 agility on the hat
+- quest tracker a bit high, it touches the map ui
+- Make ! yellow new quest
+    - ? gray, you have quest
+    - ? yellow, you can hand it in (objectives done)
+- road should sound heavier than dirt when you walk
+- add little particles when you walk on dirt
+- grass and mushroom placement doesnt feel natural enough i think
+- shoulders poking out of shirt, maybe go over limbs again and give it a art pass
+- tooltips stuck!
+- add an opening sound when you open a ui
+- crafting no implemented, add recipes and fix crafting ui
+    - make use of ui modules, if it lacks features, add them so we can implement it
+    - a recipe can link to items
+    - not sure if flecs can also have say a quantity in its links, like we need 9 dirts to make one super dirt?
+- add options in the pause ui (return, exit game, make it seccond)
+    - add options tests, they can regress, test in game too
+- Touch uis arnt always perfect size
+- Touch virtual joysticks are broken
+- add touch ui tests
+- Make equipment and body uis placed based on the body itself
+    - dynamically place the slot uis
+    - base on skeleton form
+    - remember you could be a dog or a 8 armed being, just keep it dynamic
+- Make placement animate voxels
+    - using blocks voxel data (of original vox) spawn in, fade in particles
+    - improve placement sound too
+- add synths instruments
+- add battle music, when in combat, sped up, pump blood
+- Sometimes when i alt tab, the raycasting breaks
+
+## Earlier
 - Create a chicken man head, similar to human one, red, white, or similar levels of color hue contrast, and a mohawk/father, beak, etc
 	- be creative
 	- use modelview test to iterate design of the blueprint
@@ -657,7 +709,7 @@ A polished core loop before more content.
 - Add ? and ! markers on the map
 	- ? new quest
 	- ! hand in quest
-- MapUI should move per pixel
+- (done: the map moves per block, one view drawn from cached tunk colours, tst map_pixel)
 - Maps
 	- Make maps use GridDirty instead of manually positioning
 	- Move pieces pixel by pixel around player - set centre position of map
@@ -687,7 +739,7 @@ A polished core loop before more content.
 - Add a compass symbol to show north etc
 
 # Rendering, Lights and Cameras
-- Mirrors: a mirror block or surface shows the world reflected (see [tec/cameras.md](tec/cameras.md))
+- Mirrors: a mirror block or surface shows the world reflected (see [tech/cameras.md](tech/cameras.md))
 	- a render camera per mirror, its view the player's camera reflected through the mirror's plane, drawn to the
 	  mirror's texture; an oblique near plane at the mirror so nothing behind it draws
 	- needs camera draw order (mirror cameras before the main one) and culling masks (the player's own body hidden

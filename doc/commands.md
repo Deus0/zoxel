@@ -54,6 +54,7 @@ On boards without desktop GL (i.e. the Mali boards), the game falls back to ES b
 | `--tiny` | terrain stream distance 3, height 3 | [terrain](../src/terrain/fun/terminal.c) |
 | `--medium` | terrain stream distance 6, height 3 | terrain |
 | `--large` | terrain stream distance 12, height 4 | terrain |
+| `--far <n>` | terrain stream distance n (height as set) | terrain |
 | `--freeroam` | free camera, not attached to the player character | [games](../src/games/dat/rules.c) |
 | `--nonpc` `--nonpcs` | no npcs spawn | [characters](../src/characters/set/_.c) |
 | `--noblockvoxes` `--nominivoxes` | no block voxes (minivoxes) | [models](../src/models/fun/_.c) |
