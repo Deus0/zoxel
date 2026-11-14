@@ -1,7 +1,7 @@
 zox_tag(Window);
 zox_tag(WindowBody);
 zox_tag(Header);
-zox_tag(WindowFooter);     // a strip along the bottom of a window's body, its buttons on it (ins/footer.c)
+zox_tag(WindowFooter);     // a strip under a window's body, its buttons on it (spawn_window_footer)
 zox_tag(CloseButton);
 zox_tag(WindowRaycastTarget);
 zoxc_byte(WindowLayer);

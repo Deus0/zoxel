@@ -24,11 +24,13 @@ zox_tag(MouseElement);
 zoxc_float(AutoHide);
 zoxc_double(AutoHideTime);     // when it was last poked
 zox_tag(AutoHidden);
+zox_tag(UIClosing);           // popping out, deleted once it has (ui_pop_out): a toggle reads it as closed
 
 void zox_components_elements(ecs *world) {
     zoxd_float(AutoHide);
     zoxd_double(AutoHideTime);
     zoxd_tag(AutoHidden);
+    zoxd_tag(UIClosing);
     zoxd_tag(Element);
     zoxd_tag(Element2D);
     zoxd_nf_link(ElementLink);

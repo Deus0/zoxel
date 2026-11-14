@@ -51,7 +51,7 @@ entity spawn_player_menu_id(ecs* world, entity player) {
         lines_height + margin * 2
     };
     const entity3 window = spawn_window(world, prefab_window, prefab_body, "Identity", canvas, int2_zero, size,
-        float2_half, 6 * ui_scale, (byte2) { 6 * ui_scale, 3 * ui_scale }, NULL);
+        float2_half, 6 * ui_scale, (byte2) { 6 * ui_scale, 3 * ui_scale }, &on_closed_taskbar_window);
     zox_add(window.x, MenuId);
     // its mug shot in a frame, a border round it in its text's colour (it stands out from the panel)
     const int border = 2 * ui_scale;
@@ -71,6 +71,5 @@ entity spawn_player_menu_id(ecs* world, entity player) {
             button_font_outline, button_font_outline);
         zox_set_unique_name(underline, "underline");
     }
-    ui_pop_in(world, window.x);
     return window.x;
 }

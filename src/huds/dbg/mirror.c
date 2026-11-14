@@ -89,7 +89,7 @@ entity zox_tst_render_texture_character(
         anchor,
         header_font_size,
         header_padding,
-        NULL);
+        &on_closed_taskbar_window);
     entity e = e2.x;
     entity body = e2.z;
     zox_add(e, MenuMirror);

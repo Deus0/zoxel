@@ -13,7 +13,7 @@ entity spawn_dialogue_ui(
     byte header_font_size = 14 * ui_scale;
     byte speech_font_size = 9 * ui_scale;
     byte button_font_size = 12 * ui_scale;
-    // its footer's height, its buttons on it (spawn_footer)
+    // its footer's height, its buttons on it (spawn_window_footer)
     const byte2 button_padding = byte2_single(4 * ui_scale);
     const int footer_margin = 2 * ui_scale;
     const int footer_height = button_font_size + button_padding.y * 2 + footer_margin * 2;
@@ -29,7 +29,10 @@ entity spawn_dialogue_ui(
                 zox_getv(character, ZoxName) :
                 "???";
     byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
-    entity3 e3 = spawn_window(
+    // its body the text, a footer under it for its buttons (a strip of its own, they don't overlap)
+    size.y -= footer_height;
+    entity footer = 0;
+    entity3 e3 = spawn_window_footer(
         world,
         prefab_window,
         prefab_body,
@@ -40,14 +43,13 @@ entity spawn_dialogue_ui(
         position_anchor,
         header_font_size,
         header_padding,
-        &on_closed_dialogue_ui);
+        &on_closed_dialogue_ui,
+        footer_height,
+        &footer);
     entity e = e3.x;
     entity body = e3.z;
     zox_add(e, DialogueUI);
     zox_add(e, NavigationWindow);
-    ui_pop_in(world, e);
-    // a footer along the body's bottom for its buttons, the text above it (they don't overlap in small windows)
-    const entity footer = spawn_footer(world, body, size, footer_height);
     // Speech Text
     {
         entity parent = body;
@@ -82,10 +84,8 @@ entity spawn_dialogue_ui(
             button_font_fill,
             button_font_outline);
         zox_set_unique_name(text_ui, "dialogue_text");
-        // inside the margins, above the footer, lines wrap to it (dialogue_speech_system)
-        int2 text_size = int2_sub(size, int2_multiply1(text_margins, 2));
-        text_size.y -= footer_height;
-        zox_setv(text_ui, LayoutSize, text_size);
+        // inside the margins, lines wrap to it (dialogue_speech_system)
+        zox_setv(text_ui, LayoutSize, int2_sub(size, int2_multiply1(text_margins, 2)));
         zox_link(world, e, DialogueLabel, text_ui);
     }
     // Next, on the footer's right

@@ -21,7 +21,7 @@ void on_closed_taskbar_window(
         zox_loge("Window [%s] Invalid [ToggleLink]",
             zox_getn(window));
     }
-    zox_delete(window);
+    ui_pop_out(world, window);
 }
 
 // NOTE: window has just spawned, we can only use set with it
