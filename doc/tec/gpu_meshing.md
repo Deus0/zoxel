@@ -108,6 +108,39 @@ the meshing, was the limit at 9 models.
   - per pixel light from the light octree itself (a 3D texture, trilinear), smooth across faces and voxels
   - coloured lights (a light octree per channel, or packed), and lights flooded on the gpu for realtime changes
 
+## Lighting design: what changes light, and what it costs
+
+Decided with the user (2026-11-14). Light stays in the light octrees (flood fill): every entity reads its light from
+them, so one lighting path keeps terrain, characters and models lit the same.
+
+| Light | How | When it costs |
+|---|---|---|
+| Placed torches, glow stones, lava | flood fill into the chunks' light octrees | when placed, broken, edited near, or streamed in |
+| A held torch (the player's, the only moving light for now) | the same flood fill, updated as it moves | when it crosses into another voxel |
+| The sun | flood fill now (sunlight down open columns) | when blocks change under the sky |
+
+A held torch moving:
+
+1. It crosses into another voxel (not every frame: a few times a second at walking speed).
+2. Dark flood its old light out, flood its new light in (the existing dark and light queues), in the few chunks its
+   reach touches (255 losing `light_air_decay` 32 a step is ~7 voxels: its chunk and maybe a neighbour or two).
+3. Those chunks re-mesh lights only: their voxel nodes stay uploaded, only their flat light octrees are uploaded, the
+   mesh is rerun (`gpu_mesh_flat_lit`, ~1.9ms a chunk on the Mali in `gpu_light_stress`, less batched).
+
+`gpu_light_stress` is the worst case on purpose (every chunk re-lit from scratch every frame): on the Mali a chunk's
+gpu part was ~1.9ms and its cpu part ~12.8ms (debug build: 4.5ms voxels, 7.7ms a whole chunk light flood, 0.6ms
+flattening), 68 chunk updates a second. A held torch needs a few chunks a move, and an incremental flood around one
+torch is a small part of a whole chunk's.
+
+Later, if wanted:
+- **A held torch test:** `gpu_light_stress` with one torch moving at walking speed across chunk borders, re-lighting
+  only the chunks it touches with an incremental flood, logging chunks a move and time a move.
+- **Day and night without re-lighting:** keep sky light (how open a spot is to the sky) and block light (torches) as
+  two values, the shader takes `max(sky × sun_brightness, block)`, a sunset is one uniform. Today one light value
+  holds both, so a darker sky would mean re-flooding every chunk.
+- **Flooding on the gpu:** for streaming many lit chunks in at once (a town's glow stones), many dirty chunks flooded
+  in one dispatch, the light grid never leaving the gpu.
+
 ## How it differs from the cpu path
 
 - **Chunk borders:** the cpu reads neighbour chunks' voxels and lights. The gpu has no neighbours yet: past the edge
@@ -136,7 +169,7 @@ Each step behind `zox_chunks3_gpu_meshing` and `zox_gpu_compute_supported()`, th
    drawn with the terrain's textured shader (and its pixel light blend).
 5. **LODs and the swap.** Mesh at the chunk's `RenderDepth` (the depth uniform, light reads are already coarse maxes).
    The mesh is ready the frame after its dispatch; the swap (doc/tec/streaming.md) can wait on a `glFenceSync`.
-6. **Lights on the gpu.** A light change remeshes only lights: keep the voxel nodes uploaded, upload the light nodes,
+6. **Lights on the gpu.** A light change remeshes only lights (see Lighting design): keep the voxel nodes uploaded, upload the light nodes,
    rerun. Later flood light on the gpu too.
 7. **Merging** once the rest matches, keeping per pixel light detail (merge faces with equal corner lights only).
 
