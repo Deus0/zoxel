@@ -37,6 +37,9 @@ void generate_weights(
         if (disable_bones) {
             continue;
         }
+        // of the bones it's in, the one it's deepest in (its distance from the middle over its size): a chest's rib
+        //  stays with the chest, not a shoulder whose box reaches over it (it came away when the arms swung)
+        float deepest = 1000000;
         for (int k = bones->length - 1; k >= 0; k--) {
             float3 lower = bones_bounds_lower[k];
             float3 upper = bones_bounds_upper[k];
@@ -48,11 +51,16 @@ void generate_weights(
                 position.z >= lower.z &&
                 position.z <= upper.z)
             {
+                const float3 c = bone_positions[k], s = bone_sizes[k];
+                const float depth = fmaxf(fabsf(position.x - c.x) / s.x, fmaxf(fabsf(position.y - c.y) / s.y, fabsf(position.z - c.z) / s.z));
+                if (depth >= deepest) {
+                    continue;
+                }
+                deepest = depth;
                 weights->value[j] = k;
                 /*if (k == 1) {
                  z ox_log("Bone *Vert Index Found: %i (vert %i)\n", k, j)
             }*/
-                break;
             }
             /*if (j >= verts->length - 100) {
              z ox_log("Bone Vert* Index Found: %i (vert %i)\n", k, j)
