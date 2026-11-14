@@ -1,6 +1,8 @@
 // the player's chest's blueprint scale, flatter front to back than across, its shirt is fitted to its blobs
 //  (spawn_realm_shirt, gam/zoxel/sys/equipment.c)
 const float3 player_chest_scale = { 0.5f, 0.54f, 0.44f };
+// a foot's blueprint scale, flat, a shoe covers it (spawn_realm_shoes)
+const float3 player_foot_scale = { 0.3f, 0.3f, 0.86f };
 
 // NOTE: Confusing AF atm, nodegraphs use a set size, 32 atm, however the vox models spawn at any size, and fill gets scaled to those
 //      - so we have two sizes created per model
@@ -175,7 +177,7 @@ void bodys_realm_spawn_system(iter* it) {
         }
         // Feet
         {
-            float3 blueprint_scale = (float3) { 0.36f, 0.42f, 0.86f };
+            float3 blueprint_scale = player_foot_scale;
             lint seed = 3363 * (body_seed + spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint

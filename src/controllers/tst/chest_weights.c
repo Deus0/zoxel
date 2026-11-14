@@ -1,6 +1,7 @@
 // tst: chest_weights, a humanoid's chest moves with its chest (bones/sys/generate.c): its vertices inside only the
-//  chest's own box are weighted to the chest, not a shoulder whose (enlarged) box reaches over its sides (the ribs
-//  came away from the body when the arms swung)
+//  chest's own box are weighted to the chest, not a shoulder whose box reaches over its sides (the ribs
+//  came away from the body when the arms swung), and its arms beside it don't move with it (any vertex outside every
+//  bone's box went with the chest: an arm's front strip stayed still, the sleeve tore when it swung)
 //  - spawns a humanoid by the player, waits for its body, checks its active skeleton mesh's weights
 //  - run: bash bsh/tst.sh chest_weights
 int zox_tst_cweights_frames = 0;
@@ -37,7 +38,7 @@ void zox_tst_chest_weights_check(ecs* world) {
     const MeshVertices* vertices = zox_get(mesh, MeshVertices);
     const BoneIndexes* weights = zox_get(mesh, BoneIndexes);
     // the chest: the first bone, the body's core, the rest hang off it
-    int inside_chest_only = 0, wrong = 0, shared_other = 0, deeper_in_chest = 0;
+    int inside_chest_only = 0, wrong = 0, shared_other = 0, deeper_in_chest = 0, beside = 0, beside_chest = 0;
     for (int i = 0; i < vertices->length && i < weights->length; i++) {
         const float3 p = vertices->value[i];
         byte inside[bones->length];
@@ -49,6 +50,12 @@ void zox_tst_chest_weights_check(ecs* world) {
         byte only_chest = inside[0];
         for (int k = 1; k < bones->length && only_chest; k++) {
             only_chest = !inside[k];
+        }
+        // beside the chest (an arm, a sleeve), past its side and level with it: never moved by the chest
+        const float3 cc = zox_getv(bones->value[0], BonePosition), cs = zox_getv(bones->value[0], BoneSize);
+        if (fabsf(p.x - cc.x) > cs.x * 1.2f && fabsf(p.y - cc.y) < cs.y) {
+            beside++;
+            beside_chest += weights->value[i] == 0;
         }
         if (only_chest) {
             inside_chest_only++;
@@ -71,4 +78,7 @@ void zox_tst_chest_weights_check(ecs* world) {
     zox_tst_check(inside_chest_only > 0, "no vertices only in the chest");
     zox_tst_check(!deeper_in_chest, "[%i] of the chest's vertices, deeper in it, move with another bone", deeper_in_chest);
     zox_tst_check(!wrong, "[%i] of the chest\x27s vertices move with another bone", wrong);
+    zox_log("[tst] [metric] chest_weights [%i] vertices beside the chest, [%i] moved by it", beside, beside_chest);
+    zox_tst_check(beside > 0, "no vertices beside the chest (its arms)");
+    zox_tst_check(!beside_chest, "[%i] vertices beside the chest (its arms) move with it, they tear when the arms swing", beside_chest);
 }

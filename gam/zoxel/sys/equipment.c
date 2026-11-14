@@ -117,10 +117,10 @@ entity spawn_realm_shorts(ecs* world, entity realm, const char* name, lint seed_
     return shorts;
 }
 
-// realm shoes: one shoe, worn on each foot, up all but its top voxel (the ankle shows)
+// realm shoes: one shoe, worn on each foot, its toe as tall as the foot, its heel a voxel up the ankle
 entity spawn_realm_shoes(ecs* world, entity realm, const char* name, lint seed_shift, byte margin) {
-    const byte3 foot_size = body_part_voxels((float3) { 0.36f, 0.42f, 0.86f }, 1);
-    const byte height = foot_size.y - 1;
+    const byte3 foot_size = body_part_voxels(player_foot_scale, 1);
+    const byte height = foot_size.y + 1;
     const lint seed = zox_getv(realm, Seed) * seed_shift;
     color cloth, trim;
     realm_gear_colors(seed, &cloth, &trim);
