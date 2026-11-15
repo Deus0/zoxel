@@ -7,7 +7,6 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
-- soul not first in the stats panel (c033af902 put health first, the soul last: the soul goes first)
 - you can place a bed with only one free block: placing now checks its whole box (a29383dda), check again
 - beds stay when the block under them is removed (they should go, see Blocks: despawn when what's under goes)
 - player character looks at npc body and not their head
