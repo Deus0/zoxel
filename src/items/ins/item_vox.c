@@ -29,11 +29,27 @@ entity spawn_item_vox_mesh(ecs* world, entity item) {
 
 // a vox item's model bounds in its mesh's units, from its solid voxels (vox_filled_bounds), 0 if it has none
 //  - its mesh puts voxel i at -bounds + i * BlockScale (build_vox_mesh_at_depth), bounds half its ChunkSize
+//  - a model whose voxels it can't read (grass: lods, its voxels on them) by its mesh's vertices (grass was left
+//    unscaled, half the size of a mushroom)
 byte item_vox_bounds(ecs* world, entity meta, float3* low, float3* high) {
     const entity model = zox_valid(meta) && zox_has(meta, ItemVox) ? zox_get_link(world, meta, ModelLink) : 0;
     int3 voxel_low, voxel_high;
-    if (!zox_valid(model) || !zox_has(model, BlockScale) || !vox_filled_bounds(world, model, &voxel_low, &voxel_high)) {
+    if (!zox_valid(model)) {
         return 0;
+    }
+    if (!zox_has(model, BlockScale) || !vox_filled_bounds(world, model, &voxel_low, &voxel_high)) {
+        const entity mesh = get_max_model_mesh(world, model);
+        const MeshVertices* vertices = zox_valid(mesh) && zox_has(mesh, MeshVertices) ? zox_get(mesh, MeshVertices) : NULL;
+        if (!vertices || !vertices->length) {
+            return 0;
+        }
+        *low = *high = vertices->value[0];
+        for (int i = 1; i < vertices->length; i++) {
+            const float3 v = vertices->value[i];
+            *low = (float3) { fminf(low->x, v.x), fminf(low->y, v.y), fminf(low->z, v.z) };
+            *high = (float3) { fmaxf(high->x, v.x), fmaxf(high->y, v.y), fmaxf(high->z, v.z) };
+        }
+        return 1;
     }
     const float scale = zox_getv(model, BlockScale);
     const float3 start = float3_scale(calculate_vox_bounds(zox_getv(model, ChunkSize), scale), -1);
