@@ -1,9 +1,12 @@
 // Sampling profiler: ZOX_SAMPLE=path, the main thread's backtrace every 2ms with its frame, written at exit
+//  - ZOX_SAMPLE_ALL=1 too: every thread, a sample each 10ms of cpu time the process uses (the workers' octree,
+//      meshing and light work), bash bsh/sample_report.sh <file> <binary> 1 counts every frame
 //  - for when perf isn't there and ptrace is restricted (ptrace_scope 1), summarise with bsh/sample_report.sh
 //  - found deleting walking every non fragmenting record (bsh/flecs_patches/04_nf_root_list.patch), see doc/commands.md
 #include <time.h>
 #include <signal.h>
 #include <unistd.h>
+#include <sys/time.h>
 #ifdef zox_linux
 #include <execinfo.h>
 #include <sys/syscall.h>
@@ -18,7 +21,8 @@ static volatile int zox_sample_count = 0;
 
 static void zox_sample_handler(int sig) {
     (void) sig;
-    const int i = zox_sample_count;
+    // any thread can be sampled (ZOX_SAMPLE_ALL)
+    const int i = __atomic_fetch_add(&zox_sample_count, 1, __ATOMIC_RELAXED);
     if (i >= zox_sample_max) {
         return;
     }
@@ -26,7 +30,6 @@ static void zox_sample_handler(int sig) {
     zox_sample_depths[i] = backtrace(zox_samples[i], zox_sample_depth);
 #endif
     zox_sample_frames[i] = ecs_run_count;
-    zox_sample_count = i + 1;
 }
 
 static void zox_sample_write() {
@@ -39,7 +42,8 @@ static void zox_sample_write() {
         return;
     }
     fprintf(f, "base %p\n", (void*) zox_sample_handler);
-    for (int i = 0; i < zox_sample_count; i++) {
+    const int count = zox_sample_count < zox_sample_max ? zox_sample_count : zox_sample_max;
+    for (int i = 0; i < count; i++) {
         fprintf(f, "s %u", zox_sample_frames[i]);
         for (int d = 0; d < zox_sample_depths[i]; d++) {
             fprintf(f, " %p", zox_samples[i][d]);
@@ -60,6 +64,12 @@ static void zox_sample_start() {
     sa.sa_handler = zox_sample_handler;
     sa.sa_flags = SA_RESTART;
     sigaction(SIGPROF, &sa, NULL);
+    if (getenv("ZOX_SAMPLE_ALL")) {
+        const struct itimerval every = { { 0, 10000 }, { 0, 10000 } };
+        setitimer(ITIMER_PROF, &every, NULL);
+        atexit(zox_sample_write);
+        return;
+    }
     struct sigevent sev = { 0 };
     sev.sigev_notify = SIGEV_THREAD_ID;
     sev._sigev_un._tid = syscall(SYS_gettid);

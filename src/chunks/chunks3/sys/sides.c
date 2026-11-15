@@ -407,7 +407,18 @@ void chunk_sides_system(iter* it) {
             }
 #ifdef zox_safety_checks
             if (!zox_has(e, NodeDepth) || !zox_has(e, VoxelNode)) {
-                zox_loge("Neighbor [%s] has invalid components", zox_getn(e));
+                // a deleted chunk's id was an npc's stat, alive (flecs revived it, patched: doc/flecs_patches.md,
+                //  instance child ids); should it show again, what it is and what the terrain's map holds say more
+                char* type = zox_type_string(e);
+                const int3 at = int3_add(zox_getv(it->entities[i], ChunkPosition), get_direction_int3(j));
+                const entity mapped = int3_hashmap_get(zox_get(zox_get_parent(world, it->entities[i]), ChunkLinks)->value, at);
+                zox_loge("Neighbor [%i] of [%s] isn't a chunk: id [%u] gen [%u], the map holds [%u] gen [%u], type [%.160s]",
+                    j, zox_sys_e_name, (uint) e, (uint) (e >> 32), (uint) mapped, (uint) (mapped >> 32), type ? type : "none");
+                free(type);
+                // no voxels, no lock: the lock array was left unset here, a segfault in zox_lock_voxel_trees
+                neighbor_depths[j] = 0;
+                neighbor_voxels[j] = NULL;
+                neighbor_locks[j] = NULL;
                 continue;
             }
 #endif

@@ -7,3 +7,4 @@
 #include "flowers.c"
 #include "orientation.c"
 #include "road.c"
+#include "furniture.c"

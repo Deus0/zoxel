@@ -162,6 +162,11 @@ void spawn_vodes_dive(
         byte3_to_int3(position),
         chunk_block_position);
     entity block = blocks[block_index];
+    // a model bigger than a block grows from this voxel, its base: its cube's corner at the voxel's, not centred on it
+    const byte extra = block_model_extra_depth(world, zox_get_link(world, block, ModelLink));
+    if (extra) {
+        positionf = float3_add(positionf, float3_single(((1 << extra) - 1) * 0.5f * data->terrain_block_scale));
+    }
     spawned_block_vox(
         world,
         octree,

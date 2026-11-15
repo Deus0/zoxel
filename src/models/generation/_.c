@@ -8,6 +8,7 @@
 #include "rubble.c"
 #include "wood.c"
 #include "noise.c"
+#include "furniture.c"
 
 void zox_systems_models_generation(ecs* world) {
     zox_system(
@@ -77,6 +78,17 @@ void zox_systems_models_generation(ecs* world) {
     );
     zox_system(
         bricks_model_generation_system,
+        zoxp_octree_write,
+        [in] core.Seed,
+        [in] colorz.Color,
+        [in] models.VoxType,
+        [out] chunks.GenerateModel,
+        [out] chunks3.VoxelNode,
+        [out] chunks.NodeDepth,
+        [out] colorz.ColorRGBs
+    );
+    zox_system(
+        furniture_model_generation_system,
         zoxp_octree_write,
         [in] core.Seed,
         [in] colorz.Color,

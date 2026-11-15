@@ -113,6 +113,19 @@ void blocks_realm_spawn_system(iter* it) {
             zox_setv(e2, BlockLight, 230);
             link_hit_sound(world, e2, e, &hit_sound_stone);
         }
+        // Furniture: models bigger than a block (doc/plans/multi_block_vox.md), after the others: their indices stay
+        for (byte j = 0; j < 2; j++) {
+            lint block_seed = seed->value + (seed_offset+=seed_shift);
+            const color wood_color = color_rgb_to_color(seed_to_color_rgb_range(block_seed,
+                (float2) { 15, 45 }, (float2) { 35, 65 }, (float2) { 30, 55 }));
+            char* name = j ? "door" : "bed";
+            const byte max_depth = block_depth_limits.y + 1;
+            entity model = spawn_model_lods_generated(world, e, name, j ? vox_type_door : vox_type_bed, wood_color, max_depth, block_seed);
+            entity e2 = spawn_realm_block_model(world, e, block_seed, name, wood_color, 1, max_depth, model, model, direction_front);
+            zox_setv(e2, BlockSize, (j ? (int3) { 1, 2, 1 } : (int3) { 2, 1, 1 }));
+            zox_add_id(e2, j ? zox_id(BlockDoor) : zox_id(BlockBed));
+            link_hit_sound(world, e2, e, &hit_sound_wood);
+        }
         zox_add(e, BlocksDirty);
         if (dbg_log) {
             zox_log("Realm [%s] Spawning [Blocks]", zox_get_name(e));

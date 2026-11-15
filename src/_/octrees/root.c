@@ -250,6 +250,50 @@ static inline byte octree_max_leaf_value(const void* node, size_t stride, size_t
     return max;
 }
 
+// A tree's voxels at target depth written into a grid of bytes (length a side, x then y then z), for systems that
+//  read most of a tree: one walk, then plain indexing (doc/tech/octrees.md)
+//  - the tree's corner sits at origin in the grid, cells outside the grid are skipped (a neighbour's border slab)
+//  - a closed or linked node fills its whole cube, as walk_octree reads it
+//  - leaf_max: an open node at the target depth gives its leaves' max (lights), else its own value
+static inline void octree_fill_grid(
+    const void* node,
+    size_t stride,
+    size_t type_offset,
+    byte depth,
+    byte target,
+    int3 position,
+    int3 origin,
+    byte* grid,
+    int length,
+    byte leaf_max)
+{
+    const int span = 1 << (target - depth);
+    const int3 start = { origin.x + position.x * span, origin.y + position.y * span, origin.z + position.z * span };
+    if (start.x >= length || start.y >= length || start.z >= length ||
+        start.x + span <= 0 || start.y + span <= 0 || start.z + span <= 0)
+    {
+        return;
+    }
+    const void* kids = depth < target ? octree_children(node, type_offset) : NULL;
+    if (kids) {
+        for (byte i = 0; i < octree_length; i++) {
+            const byte3 o = octree_positions[i];
+            octree_fill_grid(octree_child((void*) kids, i, stride), stride, type_offset, depth + 1, target,
+                (int3) { position.x * 2 + o.x, position.y * 2 + o.y, position.z * 2 + o.z }, origin, grid, length, leaf_max);
+        }
+        return;
+    }
+    const byte value = leaf_max ? octree_max_leaf_value(node, stride, type_offset) :
+        *(const byte*)((const char*) node + octree_value_offset);
+    const int x0 = start.x < 0 ? 0 : start.x, x1 = start.x + span > length ? length : start.x + span;
+    const int y0 = start.y < 0 ? 0 : start.y, y1 = start.y + span > length ? length : start.y + span;
+    const int z0 = start.z < 0 ? 0 : start.z, z1 = start.z + span > length ? length : start.z + span;
+    for (int x = x0; x < x1; x++)
+    for (int y = y0; y < y1; y++) {
+        memset(grid + (x * length + y) * length + z0, value, z1 - z0);
+    }
+}
+
 // NOTE: Gets voxel from neighbouring chunk if position crosses boundary
 //  - leaf_max: a node above the leaves (a coarse lod reading a detailed tree) gives its leaves' max, not its own value
 static inline byte octree_getv_nearby_ex(

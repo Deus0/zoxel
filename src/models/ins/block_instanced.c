@@ -1,3 +1,15 @@
+// A model bigger than a block (a bed: two blocks a side, a depth more, doc/plans/multi_block_vox.md)
+//  - how many depths past a block's it is
+static inline byte block_model_extra_depth(ecs* world, entity model) {
+    const byte depth = zox_valid(model) && zox_has(model, MaxRenderDepth) ? zox_getv(model, MaxRenderDepth) : 0;
+    return depth > block_depth_limits.y ? depth - block_depth_limits.y : 0;
+}
+
+//  - its render depth: the chunk's shifted by its extra depths, so it keeps a block's detail (the same voxels a block)
+static inline byte block_model_render_depth(ecs* world, entity model, byte render_depth) {
+    return render_depth <= block_depth_limits.y ? render_depth + block_model_extra_depth(world, model) : render_depth;
+}
+
 entity spawn_block_vox_instanced(
     ecs* world,
     entity prefab,
@@ -46,7 +58,7 @@ entity spawn_block_vox_instanced(
     zox_setv(e, BlockScale, scale);
     zox_set_link(world, e, ModelLink, model);
     zox_setv(e, MaxRenderDepth, mdepth);
-    zox_setv(e, RenderDepth, render_depth);
+    zox_setv(e, RenderDepth, block_model_render_depth(world, model, render_depth));
     zox_setv(e, RenderDisabled, render_disabled);
     zox_setv(e, Position3D, positionf);
     zox_setv(e, Scale1, scale);

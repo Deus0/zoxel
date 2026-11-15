@@ -27,6 +27,13 @@ Also [character.md](../character.md), [body_equips.md](../body_equips.md).
   the face's) among them blends in by its share: `BoneIndexes` is byte4 { bone, other, weight, 0 }, `bone.vert` mixes
   the two bone transforms. A plain joint plane meets at 50/50 from both sides, so the skin stays closed; an arm resting
   on the chest isn't joined to it and doesn't blend. 977 vertices blend on that humanoid.
+- Closed at every corner (2026-11-15, the user saw holes at the shoulders animating): a vertex takes the two bones
+  most of its corner's 8 voxels are, of those joined to its face's bone directly or through each other (chest,
+  shoulder, bicep), the lower bone first when equal, so every face at a corner gets the same two and weight. A face
+  merged across voxels can reach a corner none of its bone's voxels touch: it takes that corner's own bones (it gave
+  it the face's bone: 7 cracked corners a humanoid, both shoulders). A coarser lod's voxel takes the bone most of
+  its children are (`bone_parts_most`; an open node's own value is stale). `tst chest_weights` counts corners
+  whose faces move them differently: 0.
 - Cost: an octree walk a lookup made it 31-36ms a body; the parts are flattened to a grid at the mesh's depth once
   (`bone_parts_fill`), 6.4ms at worst (the box weights were 12ms), 0.15ms a frame on average.
 - Box weights (`bone_vertex_score`) are gone. `BoneSize` stays for the head camera and the debug boxes.

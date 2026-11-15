@@ -1,8 +1,8 @@
 // a vertex's bones from its vox's voxel parts (BoneNode), doc/done/skeletons.md
 //  - a face's bone: its voxel's (half a voxel behind its middle, the solid side) part's bone (CombineBones)
-//  - a joint: a vertex whose corner touches voxels of a bone joined to the face's (its parent or child) blends toward it
-//    by how many of the 8 it is, so where a chest meets a shoulder both sides meet halfway; an arm resting on the chest
-//    isn't joined to it and stays its own
+//  - a joint: a vertex's corner has 8 voxels, it takes the two bones most of them are, of those joined to the face's
+//    (parent or child, through each other too), weighted by their counts: the same for every face at the corner, so
+//    the skin stays closed; an arm resting on the chest isn't joined to it and stays its own
 //  - out: { bone, other bone, its weight 0-255, 0 }
 typedef struct {
     const byte* grid;   // each voxel's bone at depth (255 air), flattened from BoneNode once a mesh
@@ -23,6 +23,35 @@ static inline byte bone_parts_at(const bone_parts* b, int3 g) {
     return b->grid[(g.x * b->length + g.y) * b->length + g.z];
 }
 
+// the bone most of a node's solid children are (the lowest when equal), 255 if all air: a coarser lod's voxel takes
+//  it, an open node's own value is whatever it had before it opened (faces got another part's bone, tst chest_weights)
+static inline byte bone_parts_most(const CombineBones* table, const BoneNode* node) {
+    if (!has_children_BoneNode(node)) {
+        return !node->value ? 255 : node->value - 1 < table->length ? table->value[node->value - 1] : 0;
+    }
+    const BoneNode* kids = get_children_BoneNode(node);
+    byte bones[octree_length], counts[octree_length], count = 0, best = 255;
+    for (byte i = 0; i < octree_length; i++) {
+        const byte bone = bone_parts_most(table, &kids[i]);
+        if (bone == 255) {
+            continue;
+        }
+        byte j = 0;
+        while (j < count && bones[j] != bone) {
+            j++;
+        }
+        if (j == count) {
+            bones[count] = bone;
+            counts[count++] = 0;
+        }
+        counts[j]++;
+        if (best == 255 || counts[j] > counts[best] || (counts[j] == counts[best] && bone < bones[best])) {
+            best = j;
+        }
+    }
+    return best == 255 ? 255 : bones[best];
+}
+
 // BoneNode's bones into a grid at depth (an octree walk a lookup was 31ms a body, 8 a vertex)
 static inline void bone_parts_fill(byte* grid, int length, const CombineBones* table, const BoneNode* node, byte depth,
     byte target, int3 position)
@@ -36,7 +65,7 @@ static inline void bone_parts_fill(byte* grid, int length, const CombineBones* t
         }
         return;
     }
-    const byte bone = !node->value ? 255 : node->value - 1 < table->length ? table->value[node->value - 1] : 0;
+    const byte bone = bone_parts_most(table, node);
     const int span = 1 << (target - depth);
     const int3 start = { position.x * span, position.y * span, position.z * span };
     for (int x = start.x; x < start.x + span; x++)
@@ -64,35 +93,72 @@ static inline byte bone_parts_face(const bone_parts* b, const float3* v) {
     return back != 255 ? back : front != 255 ? front : 0;
 }
 
-// a vertex: its face's bone, blended toward a joined bone among its corner's 8 voxels
+// a vertex: the two bones most of its corner's 8 voxels belong to, of those joined to its face's (through each
+//  other too: a chest, shoulder and bicep meeting), weighted by their counts
+//  - every face at the corner picks the same two and weight, so the skin stays closed as they turn (a face blending
+//      only its own bone with its best neighbour cracked where three met, tst chest_weights)
 static inline byte4 bone_parts_vertex(const bone_parts* b, float3 p, byte bone) {
     const int3 k = { (int) roundf((p.x + b->bounds.x) / b->size), (int) roundf((p.y + b->bounds.y) / b->size),
         (int) roundf((p.z + b->bounds.z) / b->size) };
-    byte others[8], counts[8], kinds = 0, own = 0, best = 0;
+    byte kinds[8], counts[8], joined[8], count = 0;
     for (int i = 0; i < 8; i++) {
         const byte at = bone_parts_at(b, (int3) { k.x - 1 + (i & 1), k.y - 1 + ((i >> 1) & 1), k.z - 1 + ((i >> 2) & 1) });
-        if (at == bone) {
-            own++;
-            continue;
-        }
-        if (at == 255 || !bone_parts_joined(b, bone, at)) {
+        if (at == 255) {
             continue;
         }
         byte j = 0;
-        while (j < kinds && others[j] != at) {
+        while (j < count && kinds[j] != at) {
             j++;
         }
-        if (j == kinds) {
-            others[kinds] = at;
-            counts[kinds++] = 0;
+        if (j == count) {
+            kinds[count] = at;
+            counts[count] = 0;
+            joined[count++] = at == bone;
         }
         counts[j]++;
-        best = counts[j] > counts[best] ? j : best;
     }
-    if (!kinds) {
+    // a face wider than a voxel (merged) can reach a corner none of its bone's voxels touch: the corner's own then
+    byte found = 0;
+    for (byte i = 0; i < count; i++) {
+        found |= joined[i];
+    }
+    for (byte i = 0; i < count && !found; i++) {
+        joined[i] = 1;
+    }
+    // the corner's bones joined to the face's, directly or through another of them
+    for (byte grew = 1; grew;) {
+        grew = 0;
+        for (byte i = 0; i < count; i++)
+        for (byte j = 0; j < count && !joined[i]; j++) {
+            if (joined[j] && bone_parts_joined(b, kinds[i], kinds[j])) {
+                joined[i] = grew = 1;
+            }
+        }
+    }
+    // the two with the most voxels, the lower bone first when equal
+    byte first = 255, second = 255;
+    for (byte i = 0; i < count; i++) {
+        if (!joined[i]) {
+            continue;
+        }
+        if (first == 255 || counts[i] > counts[first] || (counts[i] == counts[first] && kinds[i] < kinds[first])) {
+            second = first;
+            first = i;
+        } else if (second == 255 || counts[i] > counts[second] || (counts[i] == counts[second] && kinds[i] < kinds[second])) {
+            second = i;
+        }
+    }
+    if (first == 255) {
         return (byte4) { bone, bone, 0, 0 };
     }
-    return (byte4) { bone, others[best], (byte) (255 * counts[best] / (own + counts[best])), 0 };
+    if (second == 255) {
+        return (byte4) { kinds[first], kinds[first], 0, 0 };
+    }
+    // the face's own bone first when it's one of them
+    if (kinds[second] == bone) {
+        return (byte4) { kinds[second], kinds[first], (byte) (255 * counts[first] / (counts[first] + counts[second])), 0 };
+    }
+    return (byte4) { kinds[first], kinds[second], (byte) (255 * counts[second] / (counts[first] + counts[second])), 0 };
 }
 
 // every vertex's bones, 4 a face (build_vox_mesh_at_depth), 0 if the vox has no parts

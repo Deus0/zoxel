@@ -53,6 +53,14 @@ flecs.c is patched by bsh/flecs_fix.sh after downloading, each patch has a ZOXEL
 - Repro: release build, `--tst perf_fly --maxnpcs --profile` with `ZOX_SAMPLE` (doc/commands.md), worst merge flying 18.6ms -> 11ms, slow frames (12ms+) 57 -> 9
 - Upstream: not reported yet
 
+### Instancing a prefab revived a deleted entity's handle
+
+- Marker: ZOXEL PATCH instance child ids
+- Problem: flecs_instantiate_alloc_child_id gives an instance's child the id at its prefab's offset (instance + (child - prefab)). When that id was a deleted entity's, it was made alive with the instance's generation, not a newer one, so the deleted entity's old handle could be alive again, as the new child. In game a deleted chunk's id became an npc's stat: its neighbours' links read alive ("Neighbor [(null)] has invalid components"), the lights and chunk_sides_system crashed on it.
+- Fix: the offset id is only taken when it was never used, else a recycled id (flecs_new_id, as when the id is alive), its generation above the deleted entity's.
+- Repro: bash bsh/tst.sh instance_id_reuse (plain flecs: new an entity at instance + offset, delete it, add (IsA, prefab) to the instance, the deleted handle is alive)
+- Upstream: not reported yet
+
 ## Writing an upstream PR
 
 - A minimal repro in plain flecs C (no zoxel macros), against flecs master, ideally as a flecs test

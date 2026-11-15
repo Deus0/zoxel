@@ -2,12 +2,9 @@
 - Part of the [todo](todo.md), done items go in [done.md](done.md). Tests: `bash bsh/tst.sh list`
 
 
-- healthbar is wrong orderin stats panel
 - top hat doesn't scale up when imported to depth of 5!
 	- add a top_hat.txt that has a -depth 4 value
 	- importer can then know to scale it up
-- cant talk / raycast to npcs when no action selected
-	- give raycast range for no actions
 
 ## Crashes
 - Big Terrain Disposal Bug
@@ -18,20 +15,10 @@
 	- I think we can just add a destroy tag, and then move destroy to another phase initialization issue
 
 ## Tests failing or flaky (full suite 2026-11-15)
-- Fail before claude2's 2026-11-14 changes too (checked on f96a61886): end_game_cleanup (+8 entities left, or the realm
-  went before the fade), music_crossfade (menu music never fades back in, times out), model_shapes (the cookie's
-  chips: hues 0 apart), pipeline_syncs (17 merges, over 11: biome_link_system, in_town_system, map_view_system run
-  on the main thread between multi threaded ones in zoxp_pre_physics)
 - Flaky: humanoid_leak (sometimes almost stops after round 1 and times out, else passes in 65s), npc_leash (the npc
   walks away from home, -x, passes and fails on the same commits), quest_dialogue (the first talk can take 15s+)
 
 ## Terrain & Chunks
-- A chunk alive without its components (ChunkNeighbors, NodeDepth) is seen as a neighbour: sides.c logs "Neighbor
-  [(null)] has invalid components", the lights crashed on it (guarded in fun/nearby.c, 2026-11-14). Mid spawn or mid
-  delete? Find which, and keep it out of neighbour arrays until it's whole (perf_fly --stress --far 8 hit it)
-- tables_stream fails on some land (zox_tst_seed=666: ~710 tables the first step, ~500 the second, over 300), with
-  the old queue too: a town streaming in early (npc families with (dialogues.Dialogue,*)). Make them not fragment,
-  or the limit per kind of land
 - Terrain Chunk faces missing when streaming
 	- update neighbors directly from the queue
 	- just rebuild their mesh, no need for voxelnodeupdate etc

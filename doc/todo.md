@@ -31,9 +31,60 @@ A polished core loop before more content.
 - Github actions: builds there, to grab and test on a phone or whatever device
 
 # Now
+## Play test (2026-11-15, third, from doc/playtesting.md)
+- holes still in skeleton
+    - make a test that poses the skeleton in several poses so can quickly inspect the results
+- add tab options, sort by general, input, graphics, advanced
+- go overe uis and add more tests in that module
+    - when you add in tabs
+    - keep tabs simple but reuseable
+- windowed mode, window is missing
+- write a test for binary size
+    - are tests shipped with release?
+    - done: tst binary_size logs the size, budget via zox_tst_binary_mb (log only until a number is picked)
+    - needs: a budget number from the user; check the release build (bsh/build.sh, no --debug) for test code in it
+    - try to reduce, propose if any bigger changes first
+- click slider in between to move it there
+    - like a normal slider ui
+    - same with scrollbars
+- scrollbar broken on hierarchy in editor
+- editor uis need close buttons
+- hierarchy scrollbar goes into header
+- text in buttons on inspector go outside the layoutsize
+    - make the scrollrect just have horizontal scroll too like normal scroll areas
+    - only when size exceeds
+    - so make inspector/hierarchy buttons resize with text
+- write up some editor module tests too
+    - making sure the data is all updating properly to the ui
+- Add realm names
+    - need ui input field / TextInputs
+    - block should block at position of new character
+- load names instead of ids in the load realm ui
+- sort load realm ui by latest played
+- add a cconfirm screen when deleting realm
+- ui sccale setting in settings should also set it as you set it
+    - needs: a design call first (live resize ends the slider drag, ui_settings_system only spawns on load)
+      then respawn the scale-dependent uis, or re-layout them, from src/ui/sys/settings.c
+    - so you can immediately see results
+- Lighting was broken - the inside of a house was mostly bright
+    - needs: a real save copy (zox_tst_save=<realm folder>, from the play machine) and where the house is
+    - then a tst load_light: load it, find the enclosed air in the house, compare to a sealed room's light
+    - light is not saved, it is rebuilt on load (src/lights/lights3/sys: refresh, sunlight, editing, flood)
+    - happens when loading game
+- raycast gizmos not cleared upon player death or exit realm
+
+## Play test (2026-11-15, second, from doc/playtesting.md)
+- tooltips still stuck sometimes
+- npc markers on the map, with their quest giver states
+- sway grass more when you walk through, and better foliage pass through sounds
+- street lamps on the streets: 2-3 blocks tall vox models, round at the end (think hollow knight), firefly
+  particles (regular ones for now); needs multi block vox models first (doc/plans/multi_block_vox.md: one entity
+  at the base, filler blocks above, only the fillers cross chunks)
+- patrol paths for npcs, and routines (need time of day, the day night cycle)
+- characters need io: dirty flagging, performant (thousands of npcs later), everything users can edit (items,
+  levels), future proof; a complex problem, a doc/plans doc first
+
 ## Play test (2026-11-15, from doc/playtesting.md)
-- Make toast ui for town closer to top
-- Cant talk to npcs when no action selected
 - player character looks at npc body and not their hea
 - new block destruction animations 
     - Add simple generated cracks to darkness texture
@@ -51,20 +102,16 @@ A polished core loop before more content.
     - add tremble in the gait
     - think resident evil
 - dust particles when you land on ground
-- why does quest tracker say 'slay ???' issue with name?
 - add collect cookie quest
 - add quest reward nodes, give the player a hat
 - add + 3 strength and + 2 agility on the hat
-- quest tracker a bit high, it touches the map ui
 - Make ! yellow new quest
     - ? gray, you have quest
     - ? yellow, you can hand it in (objectives done)
-- road should sound heavier than dirt when you walk
 - add little particles when you walk on dirt
 - grass and mushroom placement doesnt feel natural enough i think
 - shoulders poking out of shirt, maybe go over limbs again and give it a art pass
 - tooltips stuck!
-- add an opening sound when you open a ui
 - crafting no implemented, add recipes and fix crafting ui
     - make use of ui modules, if it lacks features, add them so we can implement it
     - a recipe can link to items
@@ -426,8 +473,6 @@ A polished core loop before more content.
 - First person camera doesn't adjust for the head's size: the head has a neck now, its eyes higher (head.c)
 - Body part seeds are `N * (i * spawn_count++)` (gam/zoxel/sys/body_parts.c), i is the realm's index: 0 in the
   first realm, every part the same seed, less variation (see tst model_variants)
-- tst arms_in_step fails every run, on HEAD too (2026-11-14): the shoulders swing out of step after one's raised;
-  check the test reads the two shoulder bones (clothes since may add bones), then arm_swing.c's slerp back
 - Fix timing of arm swing
 - arm should only slerp rotation - no setting
 - Fix arm, needs to not instantly rotate
@@ -924,6 +969,11 @@ A polished core loop before more content.
 	- Maybe we just build spinlock into the octree types root, would be a massive refactor tho
 
 # Engine and Refactors
+- A stress test with 100k terrain chunks, to try fewer states: a byte component (even one generate state in core)
+  instead of event tags added and removed. The tags fragment tables (each new table runs ~380 observers, 20k to 40k
+  moves a flight) but they let systems skip idle chunks entirely; a byte means every system checks 100k idle
+  chunks every frame, so idle frame time may go up. Measure both at the high end (idle frame time with 100k chunks
+  loaded, and flying) before changing anything (the user, 2026-11-15; numbers so far in doc/optimize.md)
 - Memory: ~6mb still lost a test run (AddressSanitizer, build.sh --debug --memory: finalize_arrayd float3/float2/int
   from other mesh builders, TextureData resizes, wav data), and flecs keeps a table for each humanoid's unique
   children (~100kb each, tst humanoid_leak)

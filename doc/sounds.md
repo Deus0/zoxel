@@ -20,7 +20,8 @@ Named effects in [src/sounds/fun/effects.c](../src/sounds/fun/effects.c), instru
 | `hit_sound_flesh` | impact | a body thump, and a grunt | characters |
 | `hit_sound_slime` | squelch | a wet bubble rising in pitch | slimes |
 | `hit_sound_stone` | knock | a dry click and inharmonic rings | stone, bricks, obsidian, dungeon walls |
-| `hit_sound_dirt` | thud | a low body falling in pitch, dull noise | dirt, grassy dirt, roads, debris |
+| `hit_sound_dirt` | thud | a low body falling in pitch, dull noise | dirt, grassy dirt, debris |
+| `hit_sound_road` | thud | lower, longer and louder than dirt: packed ground | roads |
 | `hit_sound_sand` | crunch | grainy noise | sand |
 | `hit_sound_wood` | tock | a hollow ring at 1 and 2.76 times its note | wood |
 | `hit_sound_leaves` | rustle | noise that swells and fades | leaves, grass, flowers |

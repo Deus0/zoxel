@@ -28,7 +28,8 @@ entity spawn_renderer_child(
     if (zox_has(parent, Rotation3D)) {
         zox_setv(e, Rotation3D, zox_getv(parent, Rotation3D));
     }
-    zox_set_parent(world, e, parent);
+    // non fragmenting: a character's renderer made tables of its own as a ChildOf child (tst tables_stream)
+    zox_set_parent_non_fragment(world, e, parent);
     zox_set_link(world, parent, RendererLink, e);
     return e;
 }

@@ -32,6 +32,7 @@ about 100 tables a chunk step (from 400 to 2500), its worst merges 38ms (from 14
 |---|---|
 | a terrain's chunks, a chunk's meshes | `chunks3/ins` |
 | a character's stats, skills and items | `stats/ins/user.c`, `skills/ins/user.c`, `items/ins/user.c` |
+| a character's skeleton, bones, combined vox and renderer | `bones/ins`, `bones/pre/bone.c`, `models/ins/vox_children.c`, `rendering/pre/renderer_child.c` |
 | ui elements, texts, glyphs, 3D ui and glyphs | `ui/ins/ui.c`, `ui/texts`, `ui/glyphs`, `ui/elements3` |
 
 It **needs flecs patched** (`bsh/flecs_fix.sh`, "ZOXEL PATCH nf parent", flecs 4.2.0): deleting a tree (a realm,

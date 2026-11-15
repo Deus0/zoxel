@@ -1,6 +1,33 @@
 # Done
 
 ## Moved from todo (2026-11-15)
+-x Bed and door models, bigger than a block (doc/plans/multi_block_vox.md, steps 1 and 2 of 5): generated models
+  two blocks a side (vox_type_bed, vox_type_door), blocks on the realm with a BlockSize, their block vox placed
+  from the base voxel's corner at a block's detail; tst furniture_models, furniture_place. Not yet: fillers,
+  rotation, the door's state
+-x From the other session (committed ba6c6e9c0 to ba6d09296): the town toast nearer the top, the quest tracker
+  under the minimap, the tracker's "slay ???", talking with no action selected, grass items as big as mushrooms,
+  road steps heavier (hit_sound_road), the health bar first in the stats panel, a sound when a ui opens
+  (sound_effect_ui_open), the starting find quest ("Find a Town": talk to anyone in a town, 3 cookies), npcs hop
+  up a one block step (tst npc_leash), four suite tests fixed
+-x Small playtest polish (grouped): grass vox items sized like mushrooms (`e240ed16d`, `tst item_sizes`); roads sound
+  heavier than dirt when walking (`49f575b11`); window open/toggle plays a sound (`fa6e61c24`, `tst window_toggle`);
+  npcs can be talked to/raycast without an action selected (`c4baafdfa`, `tst quest_dialogue`); health bar shown first
+  in the stats panel (`c033af902`, `tst statbars_hide`)
+-x Smooth lights light from a grid: a chunk's lights and voxels flattened once a mesh (octree_fill_grid), a face
+  indexes them (it walked a tree and took a lock 21 times a face); 2.6% to 1.8% of the cpu flying; tst
+  smooth_lights and lod_lights check the grid against the trees; doc/tech/octrees.md
+-x Holes at the shoulders when animating: 7 corners of a humanoid cracked, a merged face reaching past its own
+  bone's voxels gave its far corners its bone; every face at a corner now takes the corner's own two bones and
+  weight (through joined bones: chest, shoulder, bicep), coarser lods take a node's bone from its children; tst
+  chest_weights counts cracked corners (0); doc/done/skeletons.md
+-x A deleted entity's handle no longer comes back alive: instancing a prefab revived deleted ids for its children
+  (a flecs patch, doc/flecs_patches.md), a deleted chunk's id became an npc's stat and its neighbours' links read
+  alive ("Neighbor [(null)] has invalid components", crashes in the lights and chunk_sides_system flying), tst
+  instance_id_reuse; chunk_sides_system no longer leaves a lock unset for a neighbour that isn't a chunk
+-x tables_stream passes: child bones had a second, ChildOf parent (~45 tables a humanoid), a town's chunk step makes
+  244 tables, was 727
+-x tst arms_in_step passes (3 runs, and on the build before the bone parent fix: fixed earlier, not by it)
 -x Bones from the voxels, blended at joints: a BoneNode octree written at the merge, box weights gone (they gave
   6% of a humanoid's vertices the wrong bone at every joint), tst chest_weights; doc/done/skeletons.md
 

@@ -8,6 +8,8 @@ zox_tag(ChunkTerrain);
 // Vegetation
 zox_tag(BlockWood);
 zox_tag(BlockLeaves);      // a tree's canopy (vegetation/sys/chunks.c)
+zox_tag(BlockBed);         // 2 x 1 x 1 blocks (BlockSize), doc/plans/multi_block_vox.md
+zox_tag(BlockDoor);        // 1 x 2 x 1 blocks
 zox_tag(BlockGlowStone);   // glows (BlockLight), on homes' roofs (towns/sys/walls.c)
 zox_tag(BlockSoil);
 zox_tag(BlockSoilGrass);
@@ -35,6 +37,8 @@ void zox_components_terrain(ecs *world) {
     // Vegetation
     zoxd_tag(BlockWood);
     zoxd_tag(BlockLeaves);
+    zoxd_tag(BlockBed);
+    zoxd_tag(BlockDoor);
     zoxd_tag(BlockGlowStone);
     zoxd_tag(BlockSoil);
     zoxd_tag(BlockSoilGrass);

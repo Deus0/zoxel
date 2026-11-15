@@ -110,10 +110,9 @@ entity spawn_part_bones(
                 continue;
             }
             entity child_part = zox_get_link(world, e2, DataLink);
-            entity child_bone = spawn_part_bones(world, skeleton, bones, half_bounds, bscale, bone, position, e2, child_part, table, bone_index);
-            if (child_bone) {
-                zox_set_parent(world, child_bone, bone);
-            }
+            // its parent is set as it spawns (spawn_body_bone, non fragmenting): a ChildOf here too gave every
+            //  humanoid ~45 tables of its own (tst tables_stream)
+            spawn_part_bones(world, skeleton, bones, half_bounds, bscale, bone, position, e2, child_part, table, bone_index);
         }
     }
     return bone;

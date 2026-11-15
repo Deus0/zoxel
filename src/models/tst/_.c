@@ -2,6 +2,7 @@
 #include "nodes.c"
 #include "shapes.c"
 #include "gpu_mesh_views.c"
+#include "furniture.c"
 
 void zox_tsts_models() {
     zox_tst_add("model_shapes", zox_tst_model_shapes_ready, zox_tst_model_shapes_check, 60);
@@ -10,4 +11,6 @@ void zox_tsts_models() {
     zox_tst_set_setup("model_nodes", NULL, 1);
     zox_tst_add("model_views", zox_tst_model_views_ready, zox_tst_model_views_check, 60);
     zox_tst_set_setup("model_views", NULL, 1);
+    zox_tst_add("furniture_models", zox_tst_furniture_models_ready, zox_tst_furniture_models_check, 60);
+    zox_tst_set_setup("furniture_models", NULL, 1);
 }

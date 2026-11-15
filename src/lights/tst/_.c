@@ -5,6 +5,27 @@
 //  - on real octrees: a floor voxel's up face, two solid blocks on its edges, bright air in the corner between
 //  - past the chunks: the sky (sunlight) above, dark elsewhere
 //  - run: bash bsh/tst.sh smooth_lights
+// every face of every voxel at depth: the grid's vertex lights against the trees' (smooth_face_lights), mismatches
+static int zox_tst_smooth_grid_mismatches(const LightNode** lights, spinlock** lights_locks, const VoxelNode** voxels,
+    spinlock** voxels_locks, const byte* solidity, byte depth)
+{
+    smooth_grid grid = { 0 };
+    if (!smooth_grid_fill(&grid, lights, lights_locks, voxels, voxels_locks, depth)) {
+        return -1;
+    }
+    int mismatches = 0;
+    const byte length = octree_size(depth);
+    for (byte x = 0; x < length; x++) for (byte y = 0; y < length; y++) for (byte z = 0; z < length; z++)
+    for (byte direction = 0; direction < 6; direction++) {
+        byte from_trees[4], from_grid[4];
+        smooth_face_lights(lights, lights_locks, voxels, voxels_locks, solidity, (byte3) { x, y, z }, depth, direction, from_trees);
+        smooth_face_lights_grid(&grid, solidity, (byte3) { x, y, z }, direction, from_grid);
+        mismatches += memcmp(from_trees, from_grid, 4) != 0;
+    }
+    free(grid.lights);
+    return mismatches;
+}
+
 byte zox_tst_smooth_lights_ready(ecs* world) {
     (void) world;
     return 1;
@@ -68,6 +89,9 @@ void zox_tst_smooth_lights_check(ecs* world) {
     set_VoxelNode(v, depth, (byte3) { 3, 3, 3 }, 1);
     smooth_face_lights(lights, lights_locks, voxels, voxels_locks, solidity, (byte3) { 3, 3, 3 }, depth, direction_up, vertex_lights);
     zox_tst_check(vertex_lights[0] == sunlight && vertex_lights[2] == sunlight, "the sky over the chunk's top isn't sunlight [%i]", vertex_lights[0]);
+    // the flattened grid the meshes light from gives the same lights, every face
+    const int mismatches = zox_tst_smooth_grid_mismatches(lights, lights_locks, voxels, voxels_locks, solidity, depth);
+    zox_tst_check(!mismatches, "[%i] faces light differently from the grid than from the trees", mismatches);
     close_VoxelNode(v);
     close_LightNode(l);
 }
@@ -129,6 +153,11 @@ void zox_tst_lod_lights_check(ecs* world) {
     for (byte v = 0; v < 4; v++) {
         zox_tst_check(vertex_lights[v] > darklight * 2, "coarse vertex [%i] is dark [%i]", v, vertex_lights[v]);
     }
+    // the grid at the coarse depth and at the detailed one, across the two chunks
+    const int coarse_mismatches = zox_tst_smooth_grid_mismatches(lights, lights_locks, voxels, voxels_locks, solidity, coarse);
+    const int detail_mismatches = zox_tst_smooth_grid_mismatches(lights, lights_locks, voxels, voxels_locks, solidity, detail);
+    zox_tst_check(!coarse_mismatches && !detail_mismatches, "the grid lights [%i] coarse and [%i] detailed faces differently from the trees",
+        coarse_mismatches, detail_mismatches);
     for (byte c = 0; c < 2; c++) {
         close_VoxelNode(&voxel_trees[chunks[c]]);
         close_LightNode(&light_trees[chunks[c]]);

@@ -6,10 +6,25 @@
 	  (Identifier,Name)), PreInitialize and Initialize (each new entity moves 4 times), 3D label layout dirties
 	- DataUpdate 11k and TextureDirty 5k a run, what follows the dirties
 	- block decor and vox instances are ChildOf a chunk (a table per chunk), npc ui still a child, link it instead
-	- delete empty tables now and then (15k of 17k are empty after streaming)
+	- empty tables: deleting them (ecs_delete_empty_tables every 5s, tried 2026-11-15) halved perf_fly's frames
+	  (6000 to 2600): most are states entities pass through, deleted then made again (each new table runs ~380
+	  observers, one a cached query). Fewer states (tags added and removed as events: BuildChunkSides 40k moves a
+	  flight, BuildMesh 33k, MeshDirty 23k) would be the way, but those tags keep queries idle (below)
 	- lod meshes as non fragmenting children stalled terrain generation (perf_stream), still ChildOf, find why
 	- move other heavy systems from process counts to zox_sys_budget
 	- tst tables_stream (guarded at 300 tables a step), perf_stream, perf_fly
+- Where the cpu goes flying (2026-11-15, -O3 with tests, gpu, far 8, seed 666, ZOX_SAMPLE_ALL: every thread):
+	- 66% in workers, 34% the main thread; ~25% of all of it is flecs walking queries (ecs_worker_next 13.5%,
+	  ecs_query_iter 10.7%, flecs_query_is_trivial_cache_search 6.5% on its own: each of 16 workers walks every
+	  table a system's query matched, empty ones too), ecs_has_id 6.8%, alive checks 6.4%, ecs_get_id 6%
+	- octrees are not the cost: chunk_sides_system 8.2% (build_sides_dig 3.4%), flood_light 1.6%
+	- ~6000 frames in 20s; frames over 25ms: 173, then 94 to 111 with bones, the combined vox and the renderer
+	  child non fragmenting (tables in them 2849 to ~2000). What's left in them: app_gpu_end_system ~10ms (the
+	  swap, top system in 102 of 111), merges ~7ms
+	- the event tags stay (the user, 2026-11-15): they're there so queries idle on nothing, for larger draw
+	  distances; the gpu swap goes down with vulkan
+	- next: systems that mostly idle on fewer workers, the vox lod meshes and bake textures still ChildOf (33 and 42 tables in slow frames), quests and
+	  dialogue pairs a npc
 - greedy meshing for vox models
 
 - 2300 tables again, try reduce fragmentation

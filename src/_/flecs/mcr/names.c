@@ -19,6 +19,10 @@
 #define zox_getn(e)\
     (zox_valid(e) ? ecs_get_name(world, e) : "Invalid")
 
+// an entity's components as text, for logs saying what an unexpected entity is; the caller frees it
+#define zox_type_string(e)\
+    ecs_type_str(world, ecs_get_type(world, e))
+
 #define zox_sys_name() \
     ecs_get_name(it->world, it->system)
 

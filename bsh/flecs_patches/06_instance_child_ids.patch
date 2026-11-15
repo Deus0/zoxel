@@ -1,0 +1,17 @@
+--- a/inc/flecs/flecs.c	2026-11-15 06:59:25.299606206 +0800
++++ b/inc/flecs/flecs.c	2026-11-15 06:59:25.327878030 +0800
+@@ -64716,6 +64716,14 @@
+         return flecs_new_id(world);
+     }
+ 
++    /* ZOXEL PATCH instance child ids: an id that was a deleted entity's is
++     * made alive below with the instance's generation, not a newer one, so
++     * the deleted entity's old handle can be alive again as this child. Only
++     * take the offset id when it was never used, else a recycled one. */
++    if (flecs_entities_exists(world, instance_child)) {
++        return flecs_new_id(world);
++    }
++
+     instance_child = root_instance + prefab_offset;
+     flecs_entities_make_alive(world, instance_child);
+     flecs_entities_ensure(world, instance_child);

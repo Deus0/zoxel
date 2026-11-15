@@ -8,3 +8,6 @@
 #define vox_type_flowers 7
 #define vox_type_road 8
 #define vox_type_sand 9
+// two blocks a side, models/gen/furniture.c (doc/plans/multi_block_vox.md)
+#define vox_type_bed 10
+#define vox_type_door 11

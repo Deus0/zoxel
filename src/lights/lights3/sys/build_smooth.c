@@ -69,23 +69,126 @@ void smooth_face_lights(
     const sbyte3 face = neighbor_offsets[direction];
     const sbyte3 a = smooth_face_axes[direction][0];
     const sbyte3 b = smooth_face_axes[direction][1];
-    const byte face_light = getv_nearby_max_LightNode(lights, lights_locks, position, depth, face, oob);
+    // the 3 x 3 lights across the face and the 4 solids beside it, read once: the four vertices share them (it read
+    //  21 a face, 13 now, each a walk down a tree)
+    byte light[3][3], solid_a[2], solid_b[2];
+    for (sbyte sa = -1; sa <= 1; sa++)
+    for (sbyte sb = -1; sb <= 1; sb++) {
+        light[sa + 1][sb + 1] = getv_nearby_max_LightNode(lights, lights_locks, position, depth, smooth_offset(face, a, sa, b, sb), oob);
+    }
+    for (byte i = 0; i < 2; i++) {
+        const sbyte sign = i ? 1 : -1;
+        solid_a[i] = smooth_is_solid(voxels, voxels_locks, solidity, position, depth, smooth_offset(face, a, sign, b, 0));
+        solid_b[i] = smooth_is_solid(voxels, voxels_locks, solidity, position, depth, smooth_offset(face, a, 0, b, sign));
+    }
     for (byte v = 0; v < 4; v++) {
         const sbyte sa = smooth_vertex_signs[v][0], sb = smooth_vertex_signs[v][1];
-        const sbyte3 edge_a = smooth_offset(face, a, sa, b, 0);
-        const sbyte3 edge_b = smooth_offset(face, a, 0, b, sb);
-        const sbyte3 corner = smooth_offset(face, a, sa, b, sb);
-        vertex_lights[v] = smooth_vertex_light(
-            face_light,
-            getv_nearby_max_LightNode(lights, lights_locks, position, depth, edge_a, oob),
-            getv_nearby_max_LightNode(lights, lights_locks, position, depth, edge_b, oob),
-            getv_nearby_max_LightNode(lights, lights_locks, position, depth, corner, oob),
-            smooth_is_solid(voxels, voxels_locks, solidity, position, depth, edge_a),
-            smooth_is_solid(voxels, voxels_locks, solidity, position, depth, edge_b));
+        vertex_lights[v] = smooth_vertex_light(light[1][1], light[sa + 1][1], light[1][sb + 1], light[sa + 1][sb + 1],
+            solid_a[sa > 0], solid_b[sb > 0]);
+    }
+}
+
+// A chunk's lights and voxels at a mesh's depth with a voxel of border from its 26 neighbours, flattened once a
+//  mesh (octree_fill_grid): a face then indexes its 9 lights and 4 solids, it walked a tree and took a lock for
+//  each (13 a face, thousands of faces a chunk), doc/tech/octrees.md
+typedef struct {
+    byte* lights;
+    byte* voxels;
+    int length;         // the chunk's voxels a side at depth, + 2
+    byte present[27];   // which of the 27 chunks have lights, a missing one reads as past the world
+} smooth_grid;
+
+#define smooth_grid_depth_max 5
+
+static inline byte smooth_grid_fill(
+    smooth_grid* grid,
+    const LightNode** lights,
+    spinlock** lights_locks,
+    const VoxelNode** voxels,
+    spinlock** voxels_locks,
+    byte depth)
+{
+    if (depth > smooth_grid_depth_max) {
+        return 0;
+    }
+    const int size = octree_size(depth);
+    grid->length = size + 2;
+    const size_t cells = (size_t) grid->length * grid->length * grid->length;
+    grid->lights = malloc(cells * 2);
+    if (!grid->lights) {
+        return 0;
+    }
+    grid->voxels = grid->lights + cells;
+    // missing chunks are air
+    memset(grid->voxels, 0, cells);
+    for (sbyte z = -1; z <= 1; z++)
+    for (sbyte y = -1; y <= 1; y++)
+    for (sbyte x = -1; x <= 1; x++) {
+        const byte i = OCTREE_INDEX(x, y, z);
+        const int3 origin = { x * size + 1, y * size + 1, z * size + 1 };
+        grid->present[i] = lights[i] && lights_locks[i];
+        if (grid->present[i]) {
+            spin_lock(lights_locks[i]);
+            octree_fill_grid(lights[i], sizeof(LightNode), octree_type_offset_LightNode, 0, depth, int3_zero, origin,
+                grid->lights, grid->length, 1);
+            spin_unlock(lights_locks[i]);
+        }
+        if (voxels[i] && voxels_locks[i]) {
+            spin_lock(voxels_locks[i]);
+            octree_fill_grid(voxels[i], sizeof(VoxelNode), octree_type_offset_VoxelNode, 0, depth, int3_zero, origin,
+                grid->voxels, grid->length, 0);
+            spin_unlock(voxels_locks[i]);
+        }
+    }
+    return 1;
+}
+
+static inline byte smooth_grid_light(const smooth_grid* grid, byte3 position, sbyte3 offset, byte oob) {
+    const int x = position.x + offset.x + 1, y = position.y + offset.y + 1, z = position.z + offset.z + 1;
+    const int last = grid->length - 1;
+    if (!grid->present[OCTREE_INDEX(!x ? -1 : x == last, !y ? -1 : y == last, !z ? -1 : z == last)]) {
+        return oob;
+    }
+    return grid->lights[(x * grid->length + y) * grid->length + z];
+}
+
+static inline byte smooth_grid_solid(const smooth_grid* grid, const byte* solidity, byte3 position, sbyte3 offset) {
+    const byte voxel = grid->voxels[((position.x + offset.x + 1) * grid->length + position.y + offset.y + 1) * grid->length +
+        position.z + offset.z + 1];
+    return voxel && solidity[voxel - 1];
+}
+
+// smooth_face_lights from the grid, the same lights (tst smooth_lights compares them)
+static inline void smooth_face_lights_grid(
+    const smooth_grid* grid,
+    const byte* solidity,
+    byte3 position,
+    byte direction,
+    byte* vertex_lights)
+{
+    const byte oob = direction == direction_up ? sunlight : darklight;
+    const sbyte3 face = neighbor_offsets[direction];
+    const sbyte3 a = smooth_face_axes[direction][0];
+    const sbyte3 b = smooth_face_axes[direction][1];
+    byte light[3][3], solid_a[2], solid_b[2];
+    for (sbyte sa = -1; sa <= 1; sa++)
+    for (sbyte sb = -1; sb <= 1; sb++) {
+        light[sa + 1][sb + 1] = smooth_grid_light(grid, position, smooth_offset(face, a, sa, b, sb), oob);
+    }
+    for (byte i = 0; i < 2; i++) {
+        const sbyte sign = i ? 1 : -1;
+        solid_a[i] = smooth_grid_solid(grid, solidity, position, smooth_offset(face, a, sign, b, 0));
+        solid_b[i] = smooth_grid_solid(grid, solidity, position, smooth_offset(face, a, 0, b, sign));
+    }
+    for (byte v = 0; v < 4; v++) {
+        const sbyte sa = smooth_vertex_signs[v][0], sb = smooth_vertex_signs[v][1];
+        vertex_lights[v] = smooth_vertex_light(light[1][1], light[sa + 1][1], light[1][sb + 1], light[sa + 1][sb + 1],
+            solid_a[sa > 0], solid_b[sb > 0]);
     }
 }
 
 static inline void zox_apply_smooth_lights(
+    const smooth_grid* grid,
     spinlock** lights_locks,
     spinlock** voxels_locks,
     const LightNode** lights,
@@ -117,6 +220,7 @@ static inline void zox_apply_smooth_lights(
                 position,
                 octree_positions[i]);
             zox_apply_smooth_lights(
+                grid,
                 lights_locks,
                 voxels_locks,
                 lights,
@@ -160,7 +264,12 @@ static inline void zox_apply_smooth_lights(
             return;
         }
         byte vertex_lights[4];
-        smooth_face_lights(lights, lights_locks, voxels, voxels_locks, solidity, position, depth, direction, vertex_lights);
+        // a face above the mesh's depth (a closed node) reads the trees: the grid is at the mesh's depth
+        if (grid && depth == target_depth) {
+            smooth_face_lights_grid(grid, solidity, position, direction, vertex_lights);
+        } else {
+            smooth_face_lights(lights, lights_locks, voxels, voxels_locks, solidity, position, depth, direction, vertex_lights);
+        }
         for (byte v = 0; v < voxel_face_vertices_length; v++) {
             colors->value[(*ccount)++] = (color_rgb) { vertex_lights[v], vertex_lights[v], vertex_lights[v] };
         }
@@ -244,8 +353,11 @@ void build_smooth_lights_system(iter* it) {
             voxels_locks);
         update_light_solidity(world, zox_get_link(world, chunk, BlockManagerLink), &realm, solidity);
         uint ccount = 0;
+        smooth_grid grid = { 0 };
+        const byte has_grid = smooth_grid_fill(&grid, lights, lights_locks, voxels, voxels_locks, depth->value);
         spin_lock(&sides_lock->value);
         zox_apply_smooth_lights(
+            has_grid ? &grid : NULL,
             lights_locks,
             voxels_locks,
             lights,
@@ -259,6 +371,7 @@ void build_smooth_lights_system(iter* it) {
             depth->value,
             0);
         spin_unlock(&sides_lock->value);
+        free(grid.lights);
         zox_remove(e, BuildMeshColors);
         if (ccount > colors->length) {
             // stale: rebuilt (it lights again after), the sides changed since

@@ -54,6 +54,14 @@ set -euo pipefail
 #   - a new fix: edit inc/flecs/flecs.c, then diff -u a clean copy against it into the next numbered .patch
 #
 # Requirements: patch
+#
+#   Instancing a prefab revived a deleted entity's handle (ZOXEL PATCH instance child ids)
+#   - an instance's child takes the id at its prefab's offset (instance + (child - prefab)); an id that was
+#     a deleted entity's was made alive with the instance's generation, the deleted entity's old handle
+#     could be alive again as the new child (a deleted chunk's id became an npc's stat, its neighbours'
+#     links read alive, chunk_sides_system segfaulted)
+#   - Fix: the offset id only when it was never used, else a recycled one (a newer generation)
+#     - repro: bash bsh/tst.sh instance_id_reuse
 
 file=inc/flecs/flecs.c
 if [[ ! -f "${file}" ]]; then

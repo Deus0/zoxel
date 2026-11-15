@@ -43,6 +43,11 @@ void chunk_neighbors_system(iter* it) {
                 }
                 continue;
             }
+            // never link what isn't a chunk
+            if (!zox_has(neighbor, ChunkNeighbors)) {
+                zox_loge("[%s]'s neighbor [%i] in the map isn't a chunk: [%s]", zox_sys_e_name, j, zox_getn(neighbor));
+                continue;
+            }
             neighbors->value[j] = neighbor;
             // we can add ourself to the neighbor here
             byte neighbor_index = neighbor_indexes[j];zox_muter(neighbor, ChunkNeighbors, neighbor_neighbors);

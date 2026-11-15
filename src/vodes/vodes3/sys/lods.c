@@ -5,8 +5,10 @@ void set_vode_lods(ecs *world, const VoxelNode *node, byte render_depth) {
         entity e = get_entity_VoxelNode(node);
         if (zox_valid(e) && zox_has(e, RenderDepth)) {
             byte current_render_depth = zox_getv(e, RenderDepth);
-            if (current_render_depth != render_depth) {
-                zox_set(e, RenderDepth, { render_depth });
+            // a model bigger than a block keeps its extra depths (block_model_render_depth)
+            const byte depth = block_model_render_depth(world, zox_get_link(world, e, ModelLink), render_depth);
+            if (current_render_depth != depth) {
+                zox_set(e, RenderDepth, { depth });
                 zox_set(e, RenderDepthDirty, { zox_dirty_trigger });
             }
         }
