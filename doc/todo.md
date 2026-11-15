@@ -7,13 +7,14 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
-- npcs shouldnt jump randomly when you are talking *unless theyre hyper*
-- Item in hand dissapears when updating body - parts
-- Skeleton pose resets when we rebuild skeleton
 - player character looks at npc body and not their head
     - player still not facing npc when walking to them
+- npcs shouldnt jump randomly when you are talking *unless theyre hyper*
 - holes still in skeleton
     - make a test that poses the skeleton in several poses so can quickly inspect the results
+- When place above chunk - no mesh spawns
+	- add mesh spawn tests around this
+	- old report, need to verify, that chunks with no mesh can spawn one when placing a voxel in it
 - Crosshair will flicker siize too fast
     - give crossbar more natural animations when you see npc
     - seperate animation for the terrain or air
@@ -31,7 +32,6 @@
 	- also deleting while its spawning, causes crash
 	- I think we can just add a destroy tag, and then move destroy to another phase initialization issue
 - "[Landfill] Depth Invalid:" bug
-- When place above chunk - no mesh spawns
 - Flying in disabled chunk - disabled due to no voxels - causes player to be disabled
 - Top of world bugs
 	- blocks placed on top of world cause no face to show
@@ -316,13 +316,16 @@
 - add variant models for more block voxes
 
 # Models and Vox
+- Refactor Generation systems into nodegraphs, for block voxes
+	- bricks_model_generation_system for example
+	- this will let us reuse many of the same functions easier with node graphs
 - we should add in the wave form collapse for vox models, and generate hats off that, so they fit the heads (magic equipment in the story)
     - import the flower, make 8 variations from this, its seed, and wave form collapse
     - see how flowers use variant models - model groups  
 - Create a chicken man head, similar to human one, red, white, or similar levels of color hue contrast, and a mohawk/father, beak, etc
 	- be creative
 	- use modelview test to iterate design of the blueprint
-- cookies need crumbes, we need a sprinkle node for this
+-x cookies need crumbes, we need a sprinkle node for this
 - Node (Runner) Process Entity should shift the seed its using
 - Add SetSizeNode with min max properties
 	- min max get shifted depth to the depth of the model

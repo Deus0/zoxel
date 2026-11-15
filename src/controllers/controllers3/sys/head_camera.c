@@ -53,20 +53,24 @@ void place_camera_head_system(iter* it) {
             continue;
         }
         const float3 camera_offset = head_camera_offset(world, e, head_bone, block_scale);
-        float3 euler = (float3) { 0, 0, 0 };    // 180
-        if (is_camera_positive_z) {
-            euler.y = 180;
-        }
         // TODO: Make parenting a system in hierarchy to handle this
         zox_setv(camera, LocalPosition3D, camera_offset);
-        // TODO: Remove euler use
-        zox_setv(camera, Euler, euler);
-        zox_setv(camera, LocalRotation3D,
-            quaternion_from_euler(
-                float3_scale(
-                    euler,
-                    degrees_to_radians)));
-        zox_set_parent(world, camera, head_bone);
+        // the look (its pitch) is kept when it's already on the head, a body update (its bones rebuilt) put it back
+        //  there, a reset looked straight ahead again, and the raised arm follows the camera
+        if (zox_get_parent(world, camera) != head_bone) {
+            float3 euler = (float3) { 0, 0, 0 };    // 180
+            if (is_camera_positive_z) {
+                euler.y = 180;
+            }
+            // TODO: Remove euler use
+            zox_setv(camera, Euler, euler);
+            zox_setv(camera, LocalRotation3D,
+                quaternion_from_euler(
+                    float3_scale(
+                        euler,
+                        degrees_to_radians)));
+            zox_set_parent(world, camera, head_bone);
+        }
         if (dbg_log) {
             zox_log("Set Camera on Head (%s) at [%f]",
                 zox_getn(head_bone),

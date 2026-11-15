@@ -171,8 +171,10 @@ byte generate_weights_parts(ecs* world, entity vox, byte depth, const MeshVertic
         const entity parent = zox_get_parent(world, bones->value[k]);
         parents[k] = 255;
         for (int j = 0; j < bones->length; j++) {
+            // the first: a bone's other indexes (one gone, now its parent's) come after it (parts/sys/bones.c)
             if (bones->value[j] == parent) {
                 parents[k] = j;
+                break;
             }
         }
     }
@@ -229,7 +231,9 @@ void bone_index_generate_system(iter* it) {
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
                 entity mesh = it2.entities[j];
+                // a stale mesh's vertices are the old voxels, the new parts table would weight them wrong
                 if (!zox_has(mesh, SkeletonMesh) ||
+                    zox_has(mesh, SkeletonMeshStale) ||
                     zox_has(mesh, BuildMesh) ||
                     zox_has(mesh, BuildMeshWeights))
                 {
@@ -263,8 +267,19 @@ void bone_index_generate_system2(iter* it) {
             zox_loge("SkeletonMesh [%s] has no parent skeleton", zox_sys_e_name);
             continue;
         }
+        // its vertices are the old voxels when they've changed (the change reaches ChunkUpdate a couple of frames after
+        //  the parts table, and the stale tag after that): weighted with the new table they drew wrong (a flicker).
+        //  it keeps its old weights, a new mesh is built and weighted for the new voxels (skeleton_meshes.c)
+        const entity vox = get_skeleton_vox(world, skeleton);
+        if (zox_has(e, SkeletonMeshStale) ||
+            zox_has(vox, VoxelNodeDirty) ||
+            zox_has(vox, VoxelNodePostDirty) ||
+            zox_has(vox, ChunkUpdate))
+        {
+            continue;
+        }
         const BoneLinks* bones = zox_get(skeleton, BoneLinks);
-        generate_weights(world, e, get_skeleton_vox(world, skeleton), zox_getv(e, RenderDepth), verts, bones, weights);
+        generate_weights(world, e, vox, zox_getv(e, RenderDepth), verts, bones, weights);
         if (dbg_log) {
             zox_log("Weights Updated [%s] Bones [%i]",
                 zox_sys_e_name,

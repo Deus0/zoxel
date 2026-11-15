@@ -18,7 +18,9 @@ entity spawn_part_bones(
     entity slot,
     entity part,
     CombineBones* table,
-    byte parent_bone)
+    byte parent_bone,
+    entity* bone_slots,
+    byte* bone_parents)
 {
     byte dbg_log = 0;
     if (!zox_valid(slot)) {
@@ -60,6 +62,10 @@ entity spawn_part_bones(
     zox_set_unique_name(bone, "bbone");
     add_to_BoneLinks(bones, bone);
     const byte bone_index = bones->length - 1;
+    // its slot (what it is, kept over rebuilds) and parent, by index: zox_setv is deferred, read back as it spawns
+    zox_setv(bone, BoneSlot, slot);
+    bone_slots[bone_index] = slot;
+    bone_parents[bone_index] = parent == skeleton ? bone_index : parent_bone;
     part_bone_set(world, table, slot, bone_index);
     // TODO: FLip models around
     byte is_right_side = position.x < 0;
@@ -112,7 +118,8 @@ entity spawn_part_bones(
             entity child_part = zox_get_link(world, e2, DataLink);
             // its parent is set as it spawns (spawn_body_bone, non fragmenting): a ChildOf here too gave every
             //  humanoid ~45 tables of its own (tst tables_stream)
-            spawn_part_bones(world, skeleton, bones, half_bounds, bscale, bone, position, e2, child_part, table, bone_index);
+            spawn_part_bones(world, skeleton, bones, half_bounds, bscale, bone, position, e2, child_part, table, bone_index,
+                bone_slots, bone_parents);
         }
     }
     return bone;
@@ -142,7 +149,65 @@ void character_bone_spawn_system(iter* it) {
             continue;
         }
         BoneLinks* bones = zox_getm(skeleton, BoneLinks);
-        // NOTE: Deletes old bones, and old parts
+        // NOTE: Deletes old bones, and old parts, spawns new ones
+        // a bone keeps its index over a rebuild (matched by its slot), the index of one gone (a hat taken off) is its
+        //  parent's, and new ones go on the end: the old skeleton mesh draws until the new one swaps in, its weights
+        //  are by index, and every bone after the hat shifting down one drew it all glitched (tst bone_rebuild)
+        const int old_length = bones->length;
+        entity old_bones[zox_bones_max];
+        entity old_slots[zox_bones_max];
+        // the pose the old bones were in, and the world transform the skeleton draws with (TransformMatrix), else the
+        //  new bones draw a frame at identity before the transform systems reach them
+        typedef struct { float4 local; float4 rotation; float3 position; float4x4 matrix; } bone_pose;
+        bone_pose old_pose[zox_bones_max];
+        for (int k = 0; k < old_length && k < zox_bones_max; k++) {
+            const entity old_bone = bones->value[k];
+            old_bones[k] = old_bone;
+            old_slots[k] = 0;
+            old_pose[k] = (bone_pose) { quaternion_identity, quaternion_identity, float3_zero, float4x4_identity };
+            if (zox_valid(old_bone) && zox_has(old_bone, TransformMatrix)) {
+                old_slots[k] = zox_getv(old_bone, BoneSlot);
+                old_pose[k] = (bone_pose) {
+                    zox_getv(old_bone, LocalRotation3D),
+                    zox_getv(old_bone, Rotation3D),
+                    zox_getv(old_bone, Position3D),
+                    zox_getv(old_bone, TransformMatrix)
+                };
+            }
+        }
+        // what rides on the old bones (the camera on the head, a held item on the hand) is taken off them, and put on
+        //  the bone at the same index right away: the HeadBoneLink to the new head is deferred (still the old one), the
+        //  camera fell off, place_camera_head_system reset its look and the arm that follows it snapped
+        enum { riders_max = 16 };
+        entity riders[riders_max];
+        int rider_bones[riders_max];
+        int riders_length = 0;
+        for (int k = 0; k < old_length && k < zox_bones_max; k++) {
+            const entity old_bone = old_bones[k];
+            // an index that was its parent's (a bone gone) has its riders found at the parent's own index
+            byte first = 1;
+            for (int j = 0; j < k && first; j++) {
+                first = old_bones[j] != old_bone;
+            }
+            if (!first || !zox_valid(old_bone)) {
+                continue;
+            }
+            iter rit = zox_children(world, old_bone);
+            while (zox_children_next(rit)) {
+                for (int j = 0; j < rit.count; j++) {
+                    const entity rider = rit.entities[j];
+                    if (zox_has(rider, Bone) || riders_length >= riders_max) {
+                        continue;
+                    }
+                    riders[riders_length] = rider;
+                    rider_bones[riders_length++] = k;
+                }
+            }
+        }
+        for (int k = 0; k < riders_length; k++) {
+            zox_set_parent(world, riders[k], 0);
+        }
+        // the camera is kept even when it wasn't found on a bone
         entity camera = zox_get_child_by_id_recursive(world, e, zox_id(Camera));
         if (zox_valid(camera)) {
             zox_set_parent(world, camera, 0);
@@ -170,7 +235,114 @@ void character_bone_spawn_system(iter* it) {
             resize_CombineBones(table, zox_get(vox, CombineList)->length);
             memset(table->value, 0, table->length);
         }
-        spawn_part_bones(world, skeleton, bones, half_bounds, bscale->value, skeleton, float3_zero, chest_slot, chest_part, table, 0);
+        entity new_slots[256];
+        byte new_parents[256];
+        spawn_part_bones(world, skeleton, bones, half_bounds, bscale->value, skeleton, float3_zero, chest_slot, chest_part,
+            table, 0, new_slots, new_parents);
+        // the spawned bones (in spawn order) placed at their old indexes
+        const int new_length = bones->length;
+        entity spawned[256];
+        memcpy(spawned, bones->value, sizeof(entity) * new_length);
+        int placed[256 + zox_bones_max];    // a final index's spawned bone
+        byte matched[256 + zox_bones_max];  // it was the same bone (its pose carries over)
+        int primary[256];                   // a spawned bone's final index
+        for (int j = 0; j < new_length; j++) {
+            primary[j] = -1;
+        }
+        int length = 0;
+        if (old_length <= zox_bones_max) {
+            for (int k = 0; k < old_length; k++) {
+                int found = -1;
+                for (int j = 0; j < new_length && old_slots[k] && found < 0; j++) {
+                    if (new_slots[j] == old_slots[k] && primary[j] < 0) {
+                        found = j;
+                    }
+                }
+                matched[k] = found >= 0;
+                if (found < 0) {
+                    // gone: its parent's bone (before it, so already placed), the chest if none
+                    //  an index already its parent's (gone before) stays with that bone
+                    found = k ? placed[0] : 0;
+                    int from = -1;
+                    for (int j = 0; j < k && from < 0; j++) {
+                        if (old_bones[j] == old_bones[k]) {
+                            from = j;
+                        }
+                    }
+                    const entity old_parent = from < 0 && zox_valid(old_bones[k]) ? zox_get_parent(world, old_bones[k]) : 0;
+                    for (int j = 0; j < k && from < 0 && old_parent; j++) {
+                        if (old_bones[j] == old_parent) {
+                            from = j;
+                        }
+                    }
+                    if (from >= 0) {
+                        found = placed[from];
+                    }
+                } else {
+                    primary[found] = k;
+                }
+                placed[length++] = found;
+            }
+        }
+        for (int j = 0; j < new_length; j++) {
+            if (primary[j] < 0) {
+                matched[length] = 0;
+                primary[j] = length;
+                placed[length++] = j;
+            }
+        }
+        // too many for the shader (zox_bones_max), or it went wrong: the spawn order (the old mesh glitches until swapped)
+        byte stable = length <= zox_bones_max;
+        for (int j = 0; j < new_length && stable; j++) {
+            stable = primary[j] >= 0;
+        }
+        if (!stable) {
+            length = new_length;
+            for (int j = 0; j < new_length; j++) {
+                placed[j] = j;
+                primary[j] = j;
+                matched[j] = 0;
+            }
+        }
+        resize_BoneLinks(bones, length);
+        for (int k = 0; k < length; k++) {
+            bones->value[k] = spawned[placed[k]];
+        }
+        // the parts table points at the final indexes
+        for (int k = 0; table && k < table->length; k++) {
+            if (table->value[k] < new_length) {
+                table->value[k] = primary[table->value[k]];
+            }
+        }
+        // the pose carried over, a new bone (a hat put on) starts where its parent is
+        for (int j = 0; j < new_length; j++) {
+            const int k = primary[j];
+            int from = k < old_length && matched[k] ? k : -1;
+            if (from < 0) {
+                const int parent_final = primary[new_parents[j]];
+                from = parent_final < old_length && matched[parent_final] ? parent_final : -1;
+                if (from < 0) {
+                    continue;
+                }
+                zox_setv(spawned[j], Rotation3D, old_pose[from].rotation);
+                zox_setv(spawned[j], Position3D, old_pose[from].position);
+                zox_setv(spawned[j], TransformMatrix, old_pose[from].matrix);
+                continue;
+            }
+            zox_setv(spawned[j], LocalRotation3D, old_pose[from].local);
+            zox_setv(spawned[j], Rotation3D, old_pose[from].rotation);
+            zox_setv(spawned[j], Position3D, old_pose[from].position);
+            zox_setv(spawned[j], TransformMatrix, old_pose[from].matrix);
+        }
+        // the riders (the camera too) on the bone at their index (a hat's on the head)
+        for (int k = 0; k < riders_length; k++) {
+            if (stable && rider_bones[k] < length) {
+                zox_set_parent(world, riders[k], bones->value[rider_bones[k]]);
+            } else if (riders[k] != camera) {
+                zox_delete(riders[k]);  // the hold system makes a held item again
+            }
+            // else the camera is put on the new head when the skeleton updates (its look reset)
+        }
         body_dirty->value = zox_generate_body_end;
         zox_add(skeleton, SkeletonDirty);
     }

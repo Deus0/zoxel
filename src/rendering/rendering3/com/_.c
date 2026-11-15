@@ -2,6 +2,7 @@ zox_tag(Mesh3);
 zox_tag(MeshBasic3);
 zox_tag(TexturedMesh3);
 zox_tag(SkeletonMesh);
+zox_tag(SkeletonMeshStale);    // built from old voxels: drawn until its replacement is uploaded, then deleted
 zox_tag(MeshCloneLink);     // links a mesh clone to its source mesh
 zox_tag(MeshCloned);        // source mesh has clones linked to it
 zox_tag(SwayMesh);          // instance mesh renders with the sway shader (grass)
@@ -18,6 +19,7 @@ void zox_components_rendering3(ecs* world) {
     zoxd_tag(MeshBasic3);
     zoxd_tag(TexturedMesh3);
     zoxd_tag(SkeletonMesh);
+    zoxd_tag(SkeletonMeshStale);
     // Links
     zoxd_nf_link(MeshCloneLink);
     zoxd_tag(MeshCloned);

@@ -36,6 +36,7 @@
 #include "head_camera.c"
 #include "statbars_hide.c"
 #include "held_item.c"
+#include "bone_rebuild.c"
 #include "id_window.c"
 #include "npcs_after_load.c"
 #include "window_toggle.c"
@@ -631,6 +632,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("ui3_overlap", zox_tst_ui3_overlap_ready, zox_tst_ui3_overlap_check, 90);
     zox_tst_set_setup("ui3_overlap", zox_tst_ui3_overlap_setup, 0);
     zox_tst_add("statbars_hide", zox_tst_statbars_hide_ready, zox_tst_statbars_hide_check, 120);
+    zox_tst_add("bone_rebuild", zox_tst_rebuild_ready, zox_tst_rebuild_check, 120);
     zox_tst_add("held_item", zox_tst_held_item_ready, zox_tst_held_item_check, 120);
     zox_tst_add("held_block", zox_tst_held_block_ready, zox_tst_held_item_check, 120);
     zox_tst_add("item_sizes", zox_tst_item_sizes_ready, zox_tst_item_sizes_check, 120);

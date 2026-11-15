@@ -2,7 +2,9 @@
 //  - its owner (parent) holds RenderDepth and RenderDisabled, i.e. a character
 //  - like terrain chunk meshes, a mesh is spawned when its depth is first needed, then kept
 //  - the PreparingMesh builds while the ActiveMesh renders, then they swap
-//  - when voxels change, cached meshes are deleted and the active one rebuilds
+//  - when voxels change, cached meshes are deleted, the active one is marked stale and keeps drawing while a new
+//    one builds: rebuilt in place it drew the new index count over its old gpu buffers, and new weights a frame
+//    before the new vertices (a flicker)
 
 entity find_skeleton_mesh(
     ecs* world,
@@ -14,6 +16,7 @@ entity find_skeleton_mesh(
         for (int j = 0; j < it2.count; j++) {
             entity mesh = it2.entities[j];
             if (zox_has(mesh, SkeletonMesh) &&
+                !zox_has(mesh, SkeletonMeshStale) &&
                 zox_getv(mesh, RenderDepth) == depth)
             {
                 ecs_iter_fini(&it2);
@@ -63,7 +66,11 @@ void prepare_skeleton_mesh(
     byte dbg_log)
 {
     entity mesh = 0;
-    if (zox_valid(active) && zox_getv(active, RenderDepth) == depth) {
+    if (is_cache_valid &&
+        zox_valid(active) &&
+        !zox_has(active, SkeletonMeshStale) &&
+        zox_getv(active, RenderDepth) == depth)
+    {
         mesh = active;
     } else if (is_cache_valid) {
         mesh = find_skeleton_mesh(world, e, depth);
@@ -89,7 +96,7 @@ void prepare_skeleton_mesh(
     zox_link(world, e, PreparingMesh, mesh);
 }
 
-// Enables the prepared mesh, disables the rest
+// Enables the prepared mesh, disables the rest (deletes stale ones)
 void swap_skeleton_mesh(
     ecs* world,
     entity e,
@@ -108,18 +115,19 @@ void swap_skeleton_mesh(
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
             entity mesh = it2.entities[j];
-            if (mesh == preparing ||
-                !zox_has(mesh, SkeletonMesh) ||
-                zox_has(mesh, Disabled))
-            {
+            if (mesh == preparing || !zox_has(mesh, SkeletonMesh)) {
                 continue;
             }
-            zox_add(mesh, Disabled);
+            if (zox_has(mesh, SkeletonMeshStale)) {
+                zox_delete(mesh);
+            } else if (!zox_has(mesh, Disabled)) {
+                zox_add(mesh, Disabled);
+            }
         }
     }
 }
 
-// When voxels change, delete cached meshes and rebuild the active one
+// When voxels change, delete cached meshes, the active one draws until its replacement swaps in
 void refresh_skeleton_meshes(
     ecs* world,
     entity e,
@@ -133,8 +141,8 @@ void refresh_skeleton_meshes(
                 continue;
             }
             if (mesh == active) {
-                if (!zox_has(mesh, BuildMesh)) {
-                    zox_add(mesh, BuildMesh);
+                if (!zox_has(mesh, SkeletonMeshStale)) {
+                    zox_add(mesh, SkeletonMeshStale);
                 }
             } else {
                 zox_delete(mesh);

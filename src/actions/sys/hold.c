@@ -118,3 +118,33 @@ void active_action_hold_system(iter* it) {
     }
     zox_sys_on_end();
 } zoxd_system(active_action_hold_system);
+
+// the held item is a child of the hand bone, so rebuilding the body's bones (parts changing) deletes it:
+//  hold it again when the hand has none (the skeleton is there and its hand bone is made)
+void active_action_restore_system(iter* it) {
+    zox_sys_on_begin();
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(ActiveAction);
+    zox_sys_out(ActiveActionDirty);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(ActiveAction, aaction);
+        zox_sys_o(ActiveActionDirty, dirty);
+        if (dirty->value || !zox_valid(aaction->value) || !zox_has(aaction->value, Item)) {
+            continue;
+        }
+        entity skeleton = zox_get_link(world, e, SkeletonLink);
+        if (!zox_valid(skeleton)) {
+            continue;
+        }
+        entity hand = zox_get_link(world, skeleton, HandBoneLink);
+        if (!zox_valid(hand) ||
+            zox_valid(zox_get_child_by_id(world, hand, zox_id(HeldAction))))
+        {
+            continue;
+        }
+        dirty->value = zox_dirty_trigger;
+    }
+    zox_sys_on_end();
+} zoxd_system(active_action_restore_system);

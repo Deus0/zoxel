@@ -14,6 +14,14 @@ void zox_systems_actions(ecs* world) {
         [none] characters.Character,
     );
     zox_system(
+        active_action_restore_system,
+        zoxp_update,
+        [in] actions.ActiveAction,
+        [out] actions.ActiveActionDirty,
+        [none] bones.SkeletonOwner,
+        [none] characters.Character,
+    );
+    zox_system(
         action_activate_system,
         zoxp_update,
         [in] core.TriggerActionA,
