@@ -139,6 +139,13 @@ static inline float3 block_facing_axis(int3 size) {
     return size.x > size.z ? (float3) { -1, 0, 0 } : (float3) { 0, 0, 1 };
 }
 
+// a sized block's base for the cell aimed at, turned to direction: the aimed cell its near end, it sticks out away (a
+//  bed's base, its far end, the rest coming back to the aimed cell)
+static inline int3 block_base_from_target(int3 target, int3 size, byte direction) {
+    const int3 far_end = block_direction_offset(direction, (int3) { size.x - 1, 0, size.z - 1 });
+    return (int3) { target.x - far_end.x, target.y, target.z - far_end.z };
+}
+
 static inline byte block_direction_from_forward(float3 forward, int3 size) {
     return block_direction_from_forward_axis(forward, block_facing_axis(size));
 }

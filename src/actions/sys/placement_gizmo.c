@@ -37,8 +37,11 @@ void placement_gizmo_system(iter* it) {
         if (size.x > 1 || size.y > 1 || size.z > 1) {
             // its box, turned about the base cell as placing turns it
             float3 offset, half;
-            placement_box(size, block_direction_of_placer(world, e, size), &offset, &half);
-            centre = float3_add(centre, float3_scale(offset, scale));
+            const byte direction = block_direction_of_placer(world, e, size);
+            placement_box(size, direction, &offset, &half);
+            // from its base, where placing puts it for the aimed cell
+            const int3 base_shift = block_base_from_target(int3_zero, size, direction);
+            centre = float3_add(centre, float3_scale(float3_add(offset, int3_to_float3(base_shift)), scale));
             extents = float3_scale(half, scale);
             zox_setv(gizmo, Position3D, centre);
         }

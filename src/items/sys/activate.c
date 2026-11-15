@@ -46,8 +46,11 @@ void item_activate_system(iter* it) {
         // a bed or door fills its box, refused unless it's all air (multi_block_place)
         const entity terrain = zox_get_parent(world, chunk);
         // turned to the way the placer faces
-        const byte direction = block_direction_of_placer(world, user, zox_has(block, BlockSize) ? zox_getv(block, BlockSize) : (int3) { 1, 1, 1 });
-        if (!multi_block_place(world, terrain, zox_get_parent(world, terrain), chunk_block_position(world, chunk, positionl), block_index, direction)) {
+        const int3 size = zox_has(block, BlockSize) ? zox_getv(block, BlockSize) : (int3) { 1, 1, 1 };
+        const byte direction = block_direction_of_placer(world, user, size);
+        // the cell aimed at its near end, it sticks out away
+        const int3 base = block_base_from_target(chunk_block_position(world, chunk, positionl), size, direction);
+        if (!multi_block_place(world, terrain, zox_get_parent(world, terrain), base, block_index, direction)) {
             spawn_sound_effect(world, sound_effect_out_of_range, user);
             continue;
         }

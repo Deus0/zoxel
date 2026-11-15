@@ -8,9 +8,19 @@ byte zox_tst_fhits_stage = 0;
 int zox_tst_fhits_frames = 0;
 double zox_tst_fhits_time = 0;
 int3 zox_tst_fhits_bed, zox_tst_fhits_door;
+int3 zox_tst_fhits_doors[4];    // a door turned each way (0 is zox_tst_fhits_door)
 entity zox_tst_fhits_npcs[2];
 
 // a ray from origin straight down, its result
+static inline RaycastVoxelData zox_tst_fhits_ray_dir(ecs* world, entity terrain, entity realm, float3 origin, float3 normal, float range) {
+    RaycastVoxelData data = { 0 };
+    CharacterRaycast character_raycast = { 0 };
+    const byte depth = zox_getv(terrain, NodeDepth);
+    data.result = raycast_voxel_node(world, 0, zox_get(realm, BlockLinks), zox_get(terrain, ChunkLinks), int3_zero, float3_zero,
+        depth, int3_single(octree_size(depth)), 0, origin, normal, int3_zero, zox_getv(terrain, BlockScale), range, &data, &character_raycast);
+    return data;
+}
+
 static inline RaycastVoxelData zox_tst_fhits_ray(ecs* world, entity terrain, entity realm, float3 origin, float range) {
     RaycastVoxelData data = { 0 };
     CharacterRaycast character_raycast = { 0 };
@@ -50,6 +60,11 @@ byte zox_tst_furniture_hits_ready(ecs* world) {
             for (int h = 0; h < 8; h++) {
                 solid += zox_tst_ffill_at(world, terrain, bed, 0, h, 0) != 0 || zox_tst_ffill_at(world, terrain, bed, 1, h, 0) != 0 ||
                     zox_tst_ffill_at(world, terrain, door, 0, h, 0) != 0;
+                for (int k = 1; k < 4; k++) {
+                    for (int s = -1; s <= 1; s++) {
+                        solid += zox_tst_ffill_at(world, terrain, door, s, h, k * 3) != 0 || zox_tst_ffill_at(world, terrain, door, 0, h, k * 3 + s) != 0;
+                    }
+                }
             }
             if (solid) {
                 continue;
@@ -58,6 +73,11 @@ byte zox_tst_furniture_hits_ready(ecs* world) {
             const byte door_voxel = zox_getv(zox_tst_fplace_block(world, realm, zox_id(BlockDoor)), BlockIndex);
             zox_tst_check(zox_tst_place_supported(world, terrain, realm, bed, bed_voxel, 0), "the bed wasn't placed");
             zox_tst_check(zox_tst_place_supported(world, terrain, realm, door, door_voxel, 0), "the door wasn't placed");
+            zox_tst_fhits_doors[0] = door;
+            for (byte k = 1; k < 4; k++) {
+                zox_tst_fhits_doors[k] = (int3) { door.x, door.y, door.z + k * 3 };
+                zox_tst_check(zox_tst_place_supported(world, terrain, realm, zox_tst_fhits_doors[k], door_voxel, k), "door [%i] wasn't placed", k);
+            }
             zox_tst_fhits_bed = bed;
             zox_tst_fhits_door = door;
             zox_tst_fhits_stage = 1;
@@ -96,6 +116,24 @@ byte zox_tst_furniture_hits_ready(ecs* world) {
             zox_tst_check(voxel && voxel != filler, "the ray onto %s hit [%s]", names[i], ray.hit_block ? zox_getn(ray.hit_block) : "none");
             zox_tst_check(stop >= parts[i].y * scale - 0.01f && stop <= (parts[i].y + 1) * scale + 0.01f,
                 "the ray onto %s stopped at [%.2f] blocks, not in its cell [%i to %i]", names[i], stop / scale, parts[i].y, parts[i].y + 1);
+        }
+        // the door's top half from the side, both ways along x and z (looking at a door)
+        const byte door_voxel = zox_getv(zox_tst_fplace_block(world, realm, zox_id(BlockDoor)), BlockIndex);
+        const float3 sides[4] = { { 1, 0, 0 }, { -1, 0, 0 }, { 0, 0, 1 }, { 0, 0, -1 } };
+        for (byte k = 0; k < 4; k++)
+        for (byte j = 0; j < 4; j++) {
+            const int3 d = zox_tst_fhits_doors[k];
+            const float3 middle = zox_tst_fhits_middle((int3) { d.x, d.y + 1, d.z }, scale);
+            // from the next cell over (the doors are 3 apart), into it
+            const float3 from = float3_sub(middle, float3_scale(sides[j], 1.4f * scale));
+            const RaycastVoxelData ray = zox_tst_fhits_ray_dir(world, terrain, realm, from, sides[j], 2 * scale);
+            const float3 hit = float3_add(from, float3_scale(sides[j], ray.distance));
+            const int3 cell = real_position_to_block_position(float3_add(hit, float3_scale(sides[j], 0.001f)), scale);
+            zox_log("[tst] ray at door [%i]'s top from the side [%.0f %.0f]: result [%i] block [%s] cell [%i %i %i], its top [%i %i %i]", k, sides[j].x,
+                sides[j].z, ray.result, ray.hit_block ? zox_getn(ray.hit_block) : "none", cell.x, cell.y, cell.z, d.x, d.y + 1, d.z);
+            zox_tst_check(ray.hit_block && zox_getv(ray.hit_block, BlockIndex) == door_voxel && int3_equals(cell, (int3) { d.x, d.y + 1, d.z }),
+                "a ray at door [%i]'s top from the side [%.0f %.0f] hit [%s] in [%i %i %i], not its top", k, sides[j].x, sides[j].z,
+                ray.hit_block ? zox_getn(ray.hit_block) : "none", cell.x, cell.y, cell.z);
         }
         // drop an npc onto the bed's filler and one onto the door
         const entity humanoid = zox_tst_realm_humanoid(world, realm);

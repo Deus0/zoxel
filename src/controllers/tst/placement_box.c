@@ -2,8 +2,8 @@
 //  - a bed (2 x 1 x 1) turned each way: its box over its two cells (the base and its turned filler), 2 blocks long
 //    along x or z, 1 across; a door (1 x 2 x 1) any way: 1 x 2 x 1, half a block up from its base cell
 //  - the box matches multi_block_place's cells (block_direction_offset)
-//  - looking along x or z, a bed's other half is towards you (a half turn from away), a door faces you
-//    (block_direction_from_forward)
+//  - looking along x or z, a bed faces you and sticks out away (the aimed cell its near end, block_base_from_target),
+//    a door faces you on the aimed cell (block_direction_from_forward)
 //  - run: bash bsh/tst.sh placement_box
 byte zox_tst_placement_box_ready(ecs* world) {
     (void) world;
@@ -17,9 +17,17 @@ void zox_tst_placement_box_check(ecs* world) {
     const int3 expected_fillers[4] = { { 1, 0, 0 }, { 0, 0, 1 }, { -1, 0, 0 }, { 0, 0, -1 } };   // the way you look
     for (byte i = 0; i < 4; i++) {
         const int3 filler = block_direction_offset(block_direction_from_forward(forwards[i], (int3) { 2, 1, 1 }), (int3) { 1, 0, 0 });
-        // a bed's other half towards you (its base away)
-        zox_tst_check(int3_equals(filler, int3_scale(expected_fillers[i], -1)), "looking [%.1f %.1f %.1f], the bed's other half is [%i %i %i]",
+        // a bed faces you (its filler from its base back towards you), and sticks out away: its base one cell past the
+        //  aimed cell, so it covers the aimed cell and the one beyond
+        const byte bed_direction = block_direction_from_forward(forwards[i], (int3) { 2, 1, 1 });
+        zox_tst_check(int3_equals(filler, int3_scale(expected_fillers[i], -1)), "looking [%.1f %.1f %.1f], the bed's filler from its base is [%i %i %i]",
             forwards[i].x, forwards[i].y, forwards[i].z, filler.x, filler.y, filler.z);
+        const int3 base = block_base_from_target(int3_zero, (int3) { 2, 1, 1 }, bed_direction);
+        zox_tst_check(int3_equals(base, expected_fillers[i]) && int3_equals(int3_add(base, filler), int3_zero),
+            "looking [%.1f %.1f %.1f], the bed's base is [%i %i %i] from the aimed cell, its other half [%i %i %i]", forwards[i].x,
+            forwards[i].y, forwards[i].z, base.x, base.y, base.z, base.x + filler.x, base.y + filler.y, base.z + filler.z);
+        zox_tst_check(int3_equals(block_base_from_target(int3_zero, (int3) { 1, 2, 1 }, bed_direction), int3_zero),
+            "a door's base moved from the aimed cell");
         // a door's back (+z) that way, its front to you
         const int3 back = block_direction_offset(block_direction_from_forward(forwards[i], (int3) { 1, 2, 1 }), (int3) { 0, 0, 1 });
         zox_tst_check(int3_equals(back, expected_fillers[i]), "looking [%.1f %.1f %.1f], the door's back is [%i %i %i]",
