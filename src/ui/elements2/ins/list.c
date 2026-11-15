@@ -1,3 +1,4 @@
+extern void on_click_input_field(ecs*, ClickEventData);   // fun/input.c, after this
 static inline int2 calculate_header_size(
     byte length,
     byte font_size,
@@ -40,7 +41,7 @@ entity spawn_list(
             .render_disabled = !visible,
         };
         entity child = 0;
-        if (child_data.type == list_element_type_button) {
+        if (child_data.type == list_element_type_button || child_data.type == list_element_type_input) {
             child = spawn_button(
                 world,
                 prefab_button,
@@ -60,6 +61,10 @@ entity spawn_list(
                 zox_setv(child, ClickEvent, child_data.on_click.value);
             }
             zox_add(child, TextLabel);
+            if (child_data.type == list_element_type_input) {
+                zox_add(child, TextInput);
+                zox_setv(child, ClickEvent, &on_click_input_field);
+            }
             if (child_data.save_path) {
                 FolderPath path = { };
                 size_t len = strlen(child_data.save_path);

@@ -6,8 +6,15 @@
 #include "toggle_event.c"
 #include "toggle_state.c"
 #include "scrollbar_handle.c"
+#include "input.c"
 
 void zox_systems_elements2(ecs *world) {
+    // main thread (with the others in zoxp_spawn): it sets texts and the app's text input
+    zox_system_1(
+        input_field_system,
+        zoxp_spawn,
+        [in] inputs.Keyboard,
+    );
     zox_system(
         element_drag_system,
         zoxp_update,

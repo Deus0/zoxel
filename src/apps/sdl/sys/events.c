@@ -14,6 +14,14 @@ void sdl_events_system(iter* it) {
         return;
     }
     const SDLWindow* sdl_window = zox_get(e, SDLWindow);
+    // text input on while an input field is focused (input_field_system takes its typing)
+    if (zox_text_input_wanted != zox_sdl_text_input_active(sdl_window->value)) {
+        if (zox_text_input_wanted) {
+            zox_sdl_start_text_input(sdl_window->value);
+        } else {
+            zox_sdl_stop_text_input(sdl_window->value);
+        }
+    }
     SDL_PumpEvents();
     SDL_Event event = { 0 };
     while (SDL_PollEvent(&event)) {
@@ -71,6 +79,7 @@ void sdl_events_system(iter* it) {
                 zox_log("App Maximized");
             }
         } else if (sdl_event_text_input(&event)) {
+            add_text_typed(sdl_event_text(&event));
             if (dbg_log) {
                 zox_log("SDL Text Input: %s", sdl_event_text(&event));
             }

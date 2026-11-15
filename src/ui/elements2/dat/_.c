@@ -2,6 +2,7 @@
 #define list_element_type_slider 1
 #define list_element_type_toggle 2
 #define list_element_type_label 0
+#define list_element_type_input 3     // an input field, text its starting value (fun/input.c)
 #define zox_slider_type_float 0
 #define zox_slider_type_int 1
 
