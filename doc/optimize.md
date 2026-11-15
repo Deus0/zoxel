@@ -1,6 +1,11 @@
 # Optimizations
 - Part of the [todo](todo.md), done items go in [done.md](done.md)
 
+- Beds and doors (two blocks a side, 64 voxels, a depth more than a block): their first mesh build made frames a
+  second long in a debug software test (tst furniture_hits, 2026-11-16, npcs held 8 physics frames took 8s). Measure
+  in release on the gpu (perf_fly near placed beds); if it spikes there, build their lods off the main thread or
+  once a realm, as blocks' models are shared
+
 - Frame spikes, what's left after the chunk crossing lag (48 to 145ms, now ~20ms release on gpu, done.md):
 	- spawn bursts are the worst frames (merges 46ms, observers 47ms, debug): names (435 a frame, flecs indexes
 	  (Identifier,Name)), PreInitialize and Initialize (each new entity moves 4 times), 3D label layout dirties
