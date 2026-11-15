@@ -8,7 +8,8 @@
 #define zox_tst_hleak_rounds 4
 byte zox_tst_hleak_monster = 0;     // monster_leak: slimes instead, to compare
 int zox_tst_hleak_round = 0;
-int zox_tst_hleak_frames = 0;
+double zox_tst_hleak_start = 0;      // the round's start, its steps by time (frames were 0.6s each with the cpu shared)
+byte zox_tst_hleak_step = 0;
 entity zox_tst_hleak_npcs[zox_tst_hleak_count];
 double zox_tst_hleak_heap[zox_tst_hleak_rounds];
 
@@ -19,10 +20,14 @@ byte zox_tst_humanoid_leak_ready(ecs* world) {
         zox_tst_waiting = "playing";
         return 0;
     }
-    zox_tst_hleak_frames++;
-    zox_tst_progress(zox_tst_hleak_round * 1000 + zox_tst_hleak_frames);
+    if (!zox_tst_hleak_start) {
+        zox_tst_hleak_start = zox_current_time;
+    }
+    const double t = zox_current_time - zox_tst_hleak_start;
+    zox_tst_progress(zox_tst_hleak_round * 10 + zox_tst_hleak_step);
     zox_tst_waiting = "humanoids spawned and deleted";
-    if (zox_tst_hleak_frames == 30) {
+    if (zox_tst_hleak_step == 0 && t > 0.5) {
+        zox_tst_hleak_step++;
         const entity realm = zox_get_link(world, character, RealmLink);
         const entity terrain = zox_get_link(world, character, TerrainLink);
         // a humanoid, or a monster (slime) to compare
@@ -40,18 +45,20 @@ byte zox_tst_humanoid_leak_ready(ecs* world) {
             zox_tst_hleak_npcs[i] = spawn_character3_npc(world, humanoid, realm, terrain, i + 1, 0, 0, position,
                 quaternion_identity, NULL);
         }
-    } else if (zox_tst_hleak_frames == 150) {
+    } else if (zox_tst_hleak_step == 1 && t > 2.5) {
+        zox_tst_hleak_step++;
         for (int i = 0; i < zox_tst_hleak_count; i++) {
             if (zox_valid(zox_tst_hleak_npcs[i])) {
                 zox_delete(zox_tst_hleak_npcs[i]);
             }
         }
-    } else if (zox_tst_hleak_frames == 210) {
+    } else if (zox_tst_hleak_step == 2 && t > 3.5) {
         zox_tst_hleak_heap[zox_tst_hleak_round] = zox_tst_heap_mb();
         zox_log("[tst] [metric] humanoid_leak round [%i] heap [%.1fmb] entities [%i] tables [%i]", zox_tst_hleak_round + 1,
             zox_tst_hleak_heap[zox_tst_hleak_round], ecs_get_entities(world).alive_count, zox_get_tables_count(world));
         zox_tst_hleak_round++;
-        zox_tst_hleak_frames = 0;
+        zox_tst_hleak_step = 0;
+        zox_tst_hleak_start = 0;
     }
     return zox_tst_hleak_round >= zox_tst_hleak_rounds;
 }

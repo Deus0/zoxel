@@ -1,3 +1,4 @@
+extern int minimap_size;    // maps, included after quests
 entity spawn_quest_tracker(
     ecs* world,
     entity canvas,
@@ -25,10 +26,10 @@ entity spawn_quest_tracker(
         8
     };
     float2 anchor = float2_top_right;
-    // position under minimap
+    // under the minimap (its size grows with ui_scale, a fixed 236 touched it at ui_scale 3)
     int2 position = (int2) {
         -16,
-        -16 - 220
+        -(minimap_size + 16) * ui_scale - 16
     };
     // convert tracked quest, to label
     entity tracker = spawn_label(

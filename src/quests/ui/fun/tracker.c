@@ -16,6 +16,11 @@ const char* get_quest_tracker_text(
     int index = sprintf(text, "%s", name);
     if (zox_has(quest, SlayQuest)) {
         entity character = zox_get_link(world, quest, CharacterLink);
+        // a quest just given has its realm quest (IsA, its name) before its own link: that one's (it showed ???)
+        if (!zox_valid(character)) {
+            const entity from = ecs_get_target(world, quest, EcsIsA, 0);
+            character = zox_valid(from) ? zox_get_link(world, from, CharacterLink) : 0;
+        }
         const char* character_name =
             zox_valid(character) ?
             (zox_has(character, ZoxName) ?

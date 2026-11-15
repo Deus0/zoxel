@@ -1,3 +1,7 @@
+// an empty hand still reaches, to talk to npcs (its range was 0, no ray: talking needed an action selected)
+//  - a character starts with it (characters3/pre/character.c), its type stays 0 (no block outline)
+const float empty_hand_range = 1.5f;
+
 // NOTE: Uses slot index to equip a new action
 void active_action_range_system(iter* it) {
     zox_sys_on_begin();
@@ -19,7 +23,7 @@ void active_action_range_system(iter* it) {
         }
         float new_range;
         if (!zox_valid(aaction->value) || !zox_has(aaction->value, RaycastRange)) {
-            new_range = 0;
+            new_range = empty_hand_range;
         } else {
             new_range = zox_getv(aaction->value, RaycastRange);
         }

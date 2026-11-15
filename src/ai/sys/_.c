@@ -65,7 +65,10 @@ void zox_systems_npcs(ecs *world) {
         [in] ai.TargetPosition,
         [in] ai.MoveSpeed,
         [in] ai.MoveToBuffer,
+        [in] transforms3.Bounds3D,
+        [in] jumps.CanJump,
         [out] physics3.Acceleration3D,
+        [out] jumps.JumpState,
         [none] ai.Npc,
         [none] !physics.DisableMovement,
     );

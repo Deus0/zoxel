@@ -332,6 +332,9 @@ void zox_tst_quest_dialogue_check(ecs* world) {
         const entity quest = zox_tst_qd_quest(world, zox_tst_qd_npc);
         const char* name = zox_valid(quest) && zox_has(quest, ZoxName) ? zox_getv(quest, ZoxName) : "?";
         zox_tst_check(!strncmp(zox_tst_qd_tracker, name, strlen(name)), "after taking it, the tracker shows [%s], not [%s]", zox_tst_qd_tracker, name);
+        // and what to slay (it showed "Slay [???]": the slime's name missing)
+        zox_log("[tst] tracker: %s", zox_tst_qd_tracker);
+        zox_tst_check(!strstr(zox_tst_qd_tracker, "???"), "the tracker shows [%s], a ??? in it", zox_tst_qd_tracker);
     }
     zox_tst_check(zox_tst_qd_voices > 0, "the npc said its lines without a voice");
     zox_tst_check(zox_tst_qd_jingle_notes > 0, "taking the quest played no jingle");

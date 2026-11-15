@@ -1,3 +1,21 @@
+// a block in front of its feet (the step) with air above it, so it can climb it
+static inline byte npc_step_ahead(ecs* world, entity e, float3 position, float3 forward, float3 bounds) {
+    const entity terrain = zox_get_link(world, e, TerrainLink);
+    if (!zox_valid(terrain)) {
+        return 0;
+    }
+    const float scale = zox_getv(terrain, BlockScale);
+    const float reach = float_max(bounds.x, bounds.z) + scale * 0.5f;
+    const float3 step = {
+        position.x + forward.x * reach,
+        position.y - bounds.y + scale * 0.5f,
+        position.z + forward.z * reach
+    };
+    const float3 above = { step.x, step.y + scale, step.z };
+    return terrain_voxel_at(world, terrain, real_position_to_block_position(step, scale)) > 0 &&
+        terrain_voxel_at(world, terrain, real_position_to_block_position(above, scale)) == 0;
+}
+
 void move_forward_system(iter* it) {
     zox_sys_on_begin();
     const float target_angle = 45;
@@ -14,8 +32,12 @@ void move_forward_system(iter* it) {
     zox_sys_in(TargetPosition);
     zox_sys_in(MoveSpeed);
     zox_sys_in(MoveToBuffer);
+    zox_sys_in(Bounds3D);
+    zox_sys_in(CanJump);
     zox_sys_out(Acceleration3D);
+    zox_sys_out(JumpState);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(MoveForwards, moveForwards);
         zox_sys_i(Position3D, position);
         zox_sys_i(Rotation3D, rotation);
@@ -23,7 +45,10 @@ void move_forward_system(iter* it) {
         zox_sys_i(TargetPosition, target);
         zox_sys_i(MoveSpeed, speed);
         zox_sys_i(MoveToBuffer, buffer);
+        zox_sys_i(Bounds3D, bounds);
+        zox_sys_i(CanJump, can_jump);
         zox_sys_o(Acceleration3D, acceleration);
+        zox_sys_o(JumpState, jump);
         // only face target when commanded to
         if (!moveForwards->value) {
             continue;
@@ -75,6 +100,10 @@ void move_forward_system(iter* it) {
         float slowdown = fminf(1.0f, (distance - stop_threshold) / (slow_down_distance - stop_threshold));
         float3 movement_force = float3_scale(forward, speed->value * slowdown);
         acceleration->value = float3_add(acceleration->value, movement_force);
+        // a step in front of its feet, clear above: it hops up (no pathing yet, it got stuck in dips, tst npc_leash)
+        if (can_jump->value && !jump->value && npc_step_ahead(world, e, position->value, forward, bounds->value)) {
+            jump->value = zox_dirty_trigger;
+        }
     }
     zox_sys_on_end();
 } zoxd_system(move_forward_system);
