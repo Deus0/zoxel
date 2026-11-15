@@ -46,12 +46,9 @@ zoxc_state(CombineVox);
 zoxc_entitiesw(CombineList);
 zoxc_arrayd(CombinePositions, byte3);
 zoxc_arrayd(CombineDepths, byte);   // depth to sample each CombineList vox at
-// a block's own data in its chunk, for the few that have it (a bed's or door's direction, a door's state), fun/block_data.c
-typedef struct {
-    byte3 position;
-    byte value;
-} BlockData;
-zoxc_arrayd(BlockDatas, BlockData);
+// blocks' own data in their chunk, for the few that have it (a bed's direction, a door's state), fun/block_data.c:
+//  entries packed in one buffer, each its position (3 bytes), length (1) and data (length bytes)
+zoxc_arrayd(BlockDatas, byte);
 
 // ChunkLodDirty
 // - chunk_lod_system

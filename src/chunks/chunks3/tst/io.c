@@ -192,8 +192,8 @@ void zox_tst_block_table_remap_check(ecs* world) {
 }
 
 // tst: block_datas_io, a chunk's block datas (fun/block_data.c) saved after its octree and loaded back
-//  - set, changed and removed by position (set_block_data, 0 removes)
-//  - a chunk with two saves 3 + 2 * 4 bytes more than its octree, both back the same after loading
+//  - set, changed and removed by position (set_block_data, 0 removes), a 10 byte entry too
+//  - a chunk with two one byte entries saves 3 + 2 * 5 bytes more than its octree, both back after loading
 //  - a chunk with none saves its octree's bytes only (as before), loads none; an older file (octree only) loads none
 //  - run: bash bsh/tst.sh block_datas_io
 void zox_tst_block_datas_io_check(ecs* world) {
@@ -203,9 +203,15 @@ void zox_tst_block_datas_io_check(ecs* world) {
     set_block_data(&datas, (byte3) { 7, 7, 7 }, 2);
     set_block_data(&datas, (byte3) { 4, 5, 6 }, 10);
     set_block_data(&datas, (byte3) { 7, 7, 7 }, 0);
-    zox_tst_check(datas.length == 2 && get_block_data(&datas, (byte3) { 1, 2, 3 }) == 5 &&
+    // a longer one (a sign's text), set and removed between the others
+    set_block_data_bytes(&datas, (byte3) { 2, 2, 2 }, (const byte*) "hello sign", 10);
+    byte text_length = 0;
+    const byte* text = get_block_data_bytes(&datas, (byte3) { 2, 2, 2 }, &text_length);
+    zox_tst_check(text && text_length == 10 && !memcmp(text, "hello sign", 10), "a 10 byte entry read back [%i] bytes", text_length);
+    set_block_data_bytes(&datas, (byte3) { 2, 2, 2 }, NULL, 0);
+    zox_tst_check(count_block_datas(&datas) == 2 && get_block_data(&datas, (byte3) { 1, 2, 3 }) == 5 &&
         get_block_data(&datas, (byte3) { 4, 5, 6 }) == 10 && !get_block_data(&datas, (byte3) { 7, 7, 7 }),
-        "set, changed and removed: [%i] entries, values [%i %i %i]", datas.length, get_block_data(&datas, (byte3) { 1, 2, 3 }),
+        "set, changed and removed: [%i] entries, values [%i %i %i]", count_block_datas(&datas), get_block_data(&datas, (byte3) { 1, 2, 3 }),
         get_block_data(&datas, (byte3) { 4, 5, 6 }), get_block_data(&datas, (byte3) { 7, 7, 7 }));
     VoxelNode node;
     zox_tst_io_random_tree(&node, 800, 4);
@@ -216,7 +222,7 @@ void zox_tst_block_datas_io_check(ecs* world) {
     save_voxel_node(file, &node);
     save_block_datas(file, &datas);
     const long size = ftell(file);
-    zox_tst_check(size == octree_size_bytes + 3 + 2 * 4, "with two block datas it's [%li] bytes, its octree [%li]", size, octree_size_bytes);
+    zox_tst_check(size == octree_size_bytes + 3 + 2 * 5, "with two block datas it's [%li] bytes, its octree [%li]", size, octree_size_bytes);
     rewind(file);
     VoxelNode loaded;
     create_VoxelNode(&loaded);
@@ -225,8 +231,8 @@ void zox_tst_block_datas_io_check(ecs* world) {
     fclose(file);
     zox_tst_check(ok, "loading a chunk with block datas failed");
     zox_tst_check(!zox_tst_io_differences(&node, &loaded), "its octree loaded back different");
-    zox_tst_check(loaded_datas.length == 2 && get_block_data(&loaded_datas, (byte3) { 1, 2, 3 }) == 5 &&
-        get_block_data(&loaded_datas, (byte3) { 4, 5, 6 }) == 10, "its block datas loaded back as [%i] entries", loaded_datas.length);
+    zox_tst_check(count_block_datas(&loaded_datas) == 2 && get_block_data(&loaded_datas, (byte3) { 1, 2, 3 }) == 5 &&
+        get_block_data(&loaded_datas, (byte3) { 4, 5, 6 }) == 10, "its block datas loaded back as [%i] entries", count_block_datas(&loaded_datas));
     // with none: its octree only, as before
     BlockDatas none = zox_tst_datas_new();
     file = tmpfile();
