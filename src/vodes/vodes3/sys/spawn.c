@@ -10,7 +10,8 @@ void spawned_block_vox(
     float3 positionf,
     float scale,
     byte render_disabled,
-    byte render_depth)
+    byte render_depth,
+    float4 rotation)
 {
     if (!zox_has(block, BlockPrefabLink)) {
         return;
@@ -47,7 +48,8 @@ void spawned_block_vox(
             render_disabled,
             positionl,
             positionv,
-            positionf);
+            positionf,
+            rotation);
     } else {
         return;
     }
@@ -162,10 +164,15 @@ void spawn_vodes_dive(
         byte3_to_int3(position),
         chunk_block_position);
     entity block = blocks[block_index];
-    // a model bigger than a block grows from this voxel, its base: its cube's corner at the voxel's, not centred on it
+    // a model bigger than a block grows from this voxel, its base: its cube's corner at the voxel's, not centred on it,
+    //  turned about the base to its direction (its block data, items/fun/multi_block.c)
     const byte extra = block_model_extra_depth(world, zox_get_link(world, block, ModelLink));
+    byte direction = 0;
     if (extra) {
-        positionf = float3_add(positionf, float3_single(((1 << extra) - 1) * 0.5f * data->terrain_block_scale));
+        const byte block_data = zox_has(chunk, BlockDatas) ? get_block_data(zox_get(chunk, BlockDatas), position) : 0;
+        direction = block_data ? block_data - 1 : 0;
+        const float3 to_centre = float3_single(((1 << extra) - 1) * 0.5f * data->terrain_block_scale);
+        positionf = float3_add(positionf, float4_rotate_float3(block_direction_rotation(direction), to_centre));
     }
     spawned_block_vox(
         world,
@@ -178,7 +185,8 @@ void spawn_vodes_dive(
         positionf,
         data->chunk_scalev,
         data->render_disabled,
-        data->render_depth
+        data->render_depth,
+        block_direction_rotation(direction)
     );
     spawned_block_data spawned_data = (spawned_block_data) {
         .octree = octree,

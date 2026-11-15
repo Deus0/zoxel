@@ -115,7 +115,7 @@ void terrain_item_drop_system(iter* it) {
             }
             // a part of a bed or door: the rest goes too, only its base drops it
             if (!update.value) {
-                multi_block_removed(world, terrain, realm, chunk_block_position(world, e, update.position), voxel);
+                multi_block_removed(world, terrain, realm, chunk_block_position(world, e, update.position), voxel, update.old_data);
             }
             if (zox_has(block, BlockFiller)) {
                 continue;

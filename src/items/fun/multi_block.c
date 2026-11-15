@@ -1,7 +1,8 @@
 // blocks bigger than one (beds, doors, BlockSize): the base voxel holds the block, the rest of its box holds the
 //  realm's shared filler block (solid, draws nothing, BlockFiller), doc/plans/multi_block_vox.md
-//  - placing one fills its box, refused unless it's all air (multi_block_place), across chunk edges too
-//  - removing any part removes the rest (multi_block_removed): a filler finds its base, the base drops the item
+//  - placing one turns it to the placer's facing: its box turned about its base, its base's block data its direction,
+//    each filler's its offset back to its base (chunks3/fun/block_data.c); refused unless its box is all air
+//  - removing any part removes the rest (multi_block_removed): a filler its base, a base its fillers, the base drops it
 //  - main thread only: they write other chunks' queues
 
 // the chunk holding a world block position, and its local position there, 0 if it isn't loaded
@@ -28,15 +29,29 @@ static inline int3 chunk_block_position(ecs* world, entity chunk, byte3 local) {
     return (int3) { c.x * length + local.x, c.y * length + local.y, c.z * length + local.z };
 }
 
-static inline byte terrain_queue_voxel(ecs* world, entity terrain, int3 block, byte value) {
+static inline byte terrain_queue_voxel(ecs* world, entity terrain, int3 block, byte value, byte data) {
     byte3 local;
     const entity chunk = terrain_chunk_local(world, terrain, block, &local);
     if (!chunk) {
         return 0;
     }
     zox_muter(chunk, VoxelNodeQueue, queue);
-    a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = value, .position = local });
+    a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = value, .data = data, .position = local });
     return 1;
+}
+
+// a voxel's block data, 0 if none or its chunk isn't loaded
+static inline byte terrain_block_data_at(ecs* world, entity terrain, int3 block) {
+    byte3 local;
+    const entity chunk = terrain_chunk_local(world, terrain, block, &local);
+    if (!chunk || !zox_has(chunk, BlockDatas)) {
+        return 0;
+    }
+    spinlock* lock = zox_octree_lock(world, chunk);
+    zox_octree_lock_begin(lock);
+    const byte data = get_block_data(zox_get(chunk, BlockDatas), local);
+    zox_octree_lock_end(lock);
+    return data;
 }
 
 // the realm's block for a voxel value, 0 for air or none
@@ -65,64 +80,73 @@ static inline byte block_is_multi(int3 size) {
     return size.x > 1 || size.y > 1 || size.z > 1;
 }
 
-// places a block at base, a sized one with its fillers; 0 if any voxel of its box isn't air (or isn't loaded)
-byte multi_block_place(ecs* world, entity terrain, entity realm, int3 base, byte value) {
+// places a block at base, a sized one turned to direction with its fillers; 0 if any voxel of its box isn't air
+byte multi_block_place(ecs* world, entity terrain, entity realm, int3 base, byte value, byte direction) {
     const int3 size = block_size_of(world, realm_voxel_block(world, realm, value));
+    if (!block_is_multi(size)) {
+        if (terrain_voxel_at(world, terrain, base) != 0) {
+            return 0;
+        }
+        return terrain_queue_voxel(world, terrain, base, value, 0);
+    }
     const byte filler = realm_filler_voxel(world, realm);
-    if (block_is_multi(size) && !filler) {
+    if (!filler) {
         zox_loge("[multi_block_place] the realm has no filler block");
         return 0;
     }
     for (int x = 0; x < size.x; x++)
     for (int y = 0; y < size.y; y++)
     for (int z = 0; z < size.z; z++) {
-        if (terrain_voxel_at(world, terrain, (int3) { base.x + x, base.y + y, base.z + z }) != 0) {
+        const int3 o = block_direction_offset(direction, (int3) { x, y, z });
+        if (terrain_voxel_at(world, terrain, int3_add(base, o)) != 0) {
             return 0;
         }
     }
     for (int x = 0; x < size.x; x++)
     for (int y = 0; y < size.y; y++)
     for (int z = 0; z < size.z; z++) {
-        terrain_queue_voxel(world, terrain, (int3) { base.x + x, base.y + y, base.z + z }, x || y || z ? filler : value);
+        const int3 o = block_direction_offset(direction, (int3) { x, y, z });
+        if (!x && !y && !z) {
+            terrain_queue_voxel(world, terrain, base, value, 1 + direction);
+        } else {
+            terrain_queue_voxel(world, terrain, int3_add(base, o), filler, block_offset_encode(int3_scale(o, -1)));
+        }
     }
     return 1;
 }
 
-// a part of a sized block was removed (old its voxel): removes the rest, through its base
-void multi_block_removed(ecs* world, entity terrain, entity realm, int3 position, byte old) {
+// a part of a sized block was removed (old its voxel, old_data its block data): removes the rest
+void multi_block_removed(ecs* world, entity terrain, entity realm, int3 position, byte old, byte old_data) {
     const entity block = realm_voxel_block(world, realm, old);
     if (!zox_valid(block)) {
         return;
     }
     if (zox_has(block, BlockFiller)) {
-        // its base: a sized block below, behind or left of it whose box holds it (sizes are at most 2 for now)
-        for (int x = 0; x < 3; x++)
-        for (int y = 0; y < 3; y++)
-        for (int z = 0; z < 3; z++) {
-            if (!x && !y && !z) {
-                continue;
-            }
-            const int3 base = { position.x - x, position.y - y, position.z - z };
-            const int voxel = terrain_voxel_at(world, terrain, base);
-            const int3 size = block_size_of(world, realm_voxel_block(world, realm, voxel));
-            if (block_is_multi(size) && x < size.x && y < size.y && z < size.z) {
-                terrain_queue_voxel(world, terrain, base, 0);
-                return;
+        // its base, back by its offset
+        if (old_data) {
+            const int3 base = int3_add(position, block_offset_decode(old_data));
+            if (block_is_multi(block_size_of(world, realm_voxel_block(world, realm, terrain_voxel_at(world, terrain, base))))) {
+                terrain_queue_voxel(world, terrain, base, 0, 0);
             }
         }
         return;
     }
-    const int3 size = block_size_of(world, block);
-    if (!block_is_multi(size)) {
+    if (!block_is_multi(block_size_of(world, block))) {
         return;
     }
+    // its fillers: those round it whose offsets lead back here
     const byte filler = realm_filler_voxel(world, realm);
-    for (int x = 0; x < size.x; x++)
-    for (int y = 0; y < size.y; y++)
-    for (int z = 0; z < size.z; z++) {
+    const int r = block_offset_range;
+    for (int x = -r; x <= r; x++)
+    for (int y = -r; y <= r; y++)
+    for (int z = -r; z <= r; z++) {
         const int3 part = { position.x + x, position.y + y, position.z + z };
-        if ((x || y || z) && terrain_voxel_at(world, terrain, part) == filler) {
-            terrain_queue_voxel(world, terrain, part, 0);
+        if (!(x || y || z) || terrain_voxel_at(world, terrain, part) != filler) {
+            continue;
+        }
+        const byte data = terrain_block_data_at(world, terrain, part);
+        if (data && int3_equals(int3_add(part, block_offset_decode(data)), position)) {
+            terrain_queue_voxel(world, terrain, part, 0, 0);
         }
     }
 }

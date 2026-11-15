@@ -42,9 +42,9 @@ byte zox_tst_furniture_fillers_ready(ecs* world) {
             zox_tst_ffill_values[1] = zox_getv(blocks[1], BlockIndex);
             zox_tst_ffill_values[2] = realm_filler_voxel(world, realm);
             zox_tst_check(zox_tst_ffill_values[2], "the realm has no filler block");
-            zox_tst_check(multi_block_place(world, terrain, realm, bed, zox_tst_ffill_values[0]), "the bed wasn't placed");
-            zox_tst_check(multi_block_place(world, terrain, realm, door, zox_tst_ffill_values[1]), "the door wasn't placed");
-            zox_tst_check(multi_block_place(world, terrain, realm, edge, zox_tst_ffill_values[0]), "the bed across a chunk edge wasn't placed");
+            zox_tst_check(multi_block_place(world, terrain, realm, bed, zox_tst_ffill_values[0], 0), "the bed wasn't placed");
+            zox_tst_check(multi_block_place(world, terrain, realm, door, zox_tst_ffill_values[1], 0), "the door wasn't placed");
+            zox_tst_check(multi_block_place(world, terrain, realm, edge, zox_tst_ffill_values[0], 0), "the bed across a chunk edge wasn't placed");
             zox_tst_ffill_bed = bed;
             zox_tst_ffill_door = door;
             zox_tst_ffill_edge = edge;
@@ -71,10 +71,10 @@ byte zox_tst_furniture_fillers_ready(ecs* world) {
             "the bed across the chunk edge isn't the bed and the filler in the next chunk");
         const entity filler_block = realm_voxel_block(world, realm, filler);
         zox_tst_check(zox_getv(filler_block, BlockCollider) == zox_block_solid, "the filler isn't solid");
-        zox_tst_check(!multi_block_place(world, terrain, realm, (int3) { b.x + 1, b.y, b.z }, bed), "placing into the bed's filler wasn't refused");
+        zox_tst_check(!multi_block_place(world, terrain, realm, (int3) { b.x + 1, b.y, b.z }, bed, 0), "placing into the bed's filler wasn't refused");
         // break the bed's filler and the door's base
-        terrain_queue_voxel(world, terrain, (int3) { b.x + 1, b.y, b.z }, 0);
-        terrain_queue_voxel(world, terrain, d, 0);
+        terrain_queue_voxel(world, terrain, (int3) { b.x + 1, b.y, b.z }, 0, 0);
+        terrain_queue_voxel(world, terrain, d, 0, 0);
         zox_tst_ffill_stage = 2;
         zox_tst_ffill_frames = 0;
         return 0;

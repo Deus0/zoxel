@@ -102,3 +102,35 @@ byte load_block_datas(FILE* in, BlockDatas* datas) {
     }
     return 1;
 }
+
+// a placed bed's or door's turn, its base's block data: 1 + its direction (quarter turns about up, 0 to 3)
+//  - its fillers' data: 1 + their offset back to their base (block_offset_encode), so each finds its base exactly
+#define block_offset_range 2    // fillers within 2 blocks of their base each way (blocks up to 3 a side)
+
+// a direction's turn about up
+static inline float4 block_direction_rotation(byte direction) {
+    return quaternion_from_axis_angle(float3_up, (direction & 3) * (float) M_PI * 0.5f);
+}
+
+// an offset turned by a direction (as its model turns), in whole blocks
+static inline int3 block_direction_offset(byte direction, int3 offset) {
+    const float3 turned = float4_rotate_float3(block_direction_rotation(direction), int3_to_float3(offset));
+    return (int3) { (int) roundf(turned.x), (int) roundf(turned.y), (int) roundf(turned.z) };
+}
+
+// a facing's direction, its yaw to the nearest quarter turn
+static inline byte block_direction_from_rotation(float4 rotation) {
+    const int quarter = (int) roundf(quaternion_to_euler_y2(rotation) / ((float) M_PI * 0.5f));
+    return (byte) (((quarter % 4) + 4) % 4);
+}
+
+static inline byte block_offset_encode(int3 offset) {
+    const int r = block_offset_range, w = r * 2 + 1;
+    return (byte) (1 + (offset.x + r) + (offset.y + r) * w + (offset.z + r) * w * w);
+}
+
+static inline int3 block_offset_decode(byte data) {
+    const int r = block_offset_range, w = r * 2 + 1;
+    const int i = data - 1;
+    return (int3) { i % w - r, (i / w) % w - r, i / (w * w) - r };
+}

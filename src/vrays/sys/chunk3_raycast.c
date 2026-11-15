@@ -336,7 +336,16 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
                 if (ray_length_left < minivox_ray_length) {
                     minivox_ray_length = ray_length_left;
                 }
-                result = raycast_voxel_node(world, caster, NULL, NULL, int3_zero, block_position, minivox_render_depth, minivox_chunk_size, vox, ray_point, ray_normal, hit_normal, minivox_scalev, minivox_ray_length, data, character_raycast);
+                // a turned model (a bed facing its placer's way): the ray turned back into its frame, about its centre
+                float3 model_point = ray_point;
+                float3 model_normal = ray_normal;
+                if (zox_has(block_spawn, Rotation3D)) {
+                    const float4 unturn = quaternion_inverse(zox_getv(block_spawn, Rotation3D));
+                    const float3 centre = zox_getv(block_spawn, Position3D);
+                    model_point = float3_add(centre, float4_rotate_float3(unturn, float3_sub(ray_point, centre)));
+                    model_normal = float4_rotate_float3(unturn, ray_normal);
+                }
+                result = raycast_voxel_node(world, caster, NULL, NULL, int3_zero, block_position, minivox_render_depth, minivox_chunk_size, vox, model_point, model_normal, hit_normal, minivox_scalev, minivox_ray_length, data, character_raycast);
                 // We hit Grass!
                 if (result == rayhit_block_vox) {
                     data->distance += ray_distancef;

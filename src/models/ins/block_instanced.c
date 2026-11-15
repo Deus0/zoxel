@@ -20,7 +20,8 @@ entity spawn_block_vox_instanced(
     byte render_disabled,
     byte3 positionl,
     int3 positionv,
-    float3 positionf)
+    float3 positionf,
+    float4 rotation)
 {
     if (!zox_valid(vox)) {
         zox_loge("Invalid Block [vox] at [%s] - block [%s] at [%i] Vox for [spawn_block_vox_instanced]",
@@ -62,8 +63,13 @@ entity spawn_block_vox_instanced(
     zox_setv(e, RenderDisabled, render_disabled);
     zox_setv(e, Position3D, positionf);
     zox_setv(e, Scale1, scale);
-    zox_setv(e, TransformMatrix,
-        float4x4_position_scale(positionf, scale));
+    // turned (a bed facing its placer's way): its Rotation3D too, the ray turns into its frame by it
+    if (!float4_equals(rotation, quaternion_identity)) {
+        zox_setv(e, Rotation3D, rotation);
+        zox_setv(e, TransformMatrix, float4x4_transform_scale(positionf, rotation, scale));
+    } else {
+        zox_setv(e, TransformMatrix, float4x4_position_scale(positionf, scale));
+    }
     //zox_set(e, TransformMatrix, { float4x4_position(positionf) });
     // zox_set(e, TransformMatrix, { float4x4_transform_scale(positionf, quaternion_identity, 1) });
     // zox_set(e, TransformMatrix, { float4x4_transform(positionf, quaternion_identity) });

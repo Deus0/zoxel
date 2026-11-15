@@ -45,7 +45,9 @@ void item_activate_system(iter* it) {
         }
         // a bed or door fills its box, refused unless it's all air (multi_block_place)
         const entity terrain = zox_get_parent(world, chunk);
-        if (!multi_block_place(world, terrain, zox_get_parent(world, terrain), chunk_block_position(world, chunk, positionl), block_index)) {
+        // turned to the way the placer faces
+        const byte direction = block_direction_from_rotation(zox_getv(user, Rotation3D));
+        if (!multi_block_place(world, terrain, zox_get_parent(world, terrain), chunk_block_position(world, chunk, positionl), block_index, direction)) {
             spawn_sound_effect(world, sound_effect_out_of_range, user);
             continue;
         }

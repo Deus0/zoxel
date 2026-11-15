@@ -6,6 +6,7 @@ typedef struct {
     byte value;
     byte data;          // the voxel's block data (BlockDatas), 0 for none
     byte old_value;
+    byte old_data;      // its block data before, read after (a filler's offset to its base, multi_block_removed)
     byte state;
 } VoxelNodeUpdate;
 

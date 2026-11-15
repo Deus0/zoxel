@@ -44,6 +44,7 @@ void voxel_update_queue_system(iter* it) {
                 updated = 1;
                 // its block data with it, 0 clears a removed or replaced block's
                 if (datas) {
+                    update->old_data = get_block_data(datas, update->position);
                     set_block_data(datas, update->position, update->data);
                 }
                 /*if (old_value) {
