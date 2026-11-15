@@ -37,7 +37,7 @@ void placement_gizmo_system(iter* it) {
         if (size.x > 1 || size.y > 1 || size.z > 1) {
             // its box, turned about the base cell as placing turns it
             float3 offset, half;
-            placement_box(size, block_direction_of_placer(world, e), &offset, &half);
+            placement_box(size, block_direction_of_placer(world, e, size), &offset, &half);
             centre = float3_add(centre, float3_scale(offset, scale));
             extents = float3_scale(half, scale);
             zox_setv(gizmo, Position3D, centre);

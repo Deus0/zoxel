@@ -3,7 +3,8 @@
 //  - placing one turns it to the placer's facing: its box turned about its base, its base's block data its direction,
 //    each filler's its offset back to its base (chunks3/fun/block_data.c); refused unless its box is all air and
 //    solid ground is under each of its bottom cells
-//  - removing any part removes the rest (multi_block_removed): a filler its base, a base its fillers, the base drops it
+//  - removing any part removes the rest (multi_block_removed): a filler its base, a base its fillers, the base drops it;
+//    so does removing the ground under one
 //  - main thread only: they write other chunks' queues
 
 // the chunk holding a world block position, and its local position there, 0 if it isn't loaded
@@ -128,6 +129,12 @@ byte multi_block_place(ecs* world, entity terrain, entity realm, int3 base, byte
 
 // a part of a sized block was removed (old its voxel, old_data its block data): removes the rest
 void multi_block_removed(ecs* world, entity terrain, entity realm, int3 position, byte old, byte old_data) {
+    // the ground under a bed or door gone: the part above goes, the rest with it
+    const int3 above = { position.x, position.y + 1, position.z };
+    const entity above_block = realm_voxel_block(world, realm, terrain_voxel_at(world, terrain, above));
+    if (zox_valid(above_block) && (zox_has(above_block, BlockFiller) || block_is_multi(block_size_of(world, above_block)))) {
+        terrain_queue_voxel(world, terrain, above, 0, 0);
+    }
     const entity block = realm_voxel_block(world, realm, old);
     if (!zox_valid(block)) {
         return;

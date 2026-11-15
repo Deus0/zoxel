@@ -118,14 +118,13 @@ static inline int3 block_direction_offset(byte direction, int3 offset) {
     return (int3) { (int) roundf(turned.x), (int) roundf(turned.y), (int) roundf(turned.z) };
 }
 
-// a facing's direction: the turn that points a model's length (its +x) most along where it faces, so a bed lies
-//  away from its placer (its yaw alone laid it sideways)
-static inline byte block_direction_from_forward(float3 forward) {
+// a facing's direction: the turn that points a model's axis most along where it faces
+static inline byte block_direction_from_forward_axis(float3 forward, float3 axis) {
     byte best = 0;
     float best_dot = -2;
     for (byte d = 0; d < 4; d++) {
-        const float3 length = float4_rotate_float3(block_direction_rotation(d), (float3) { 1, 0, 0 });
-        const float dot = length.x * forward.x + length.z * forward.z;
+        const float3 turned = float4_rotate_float3(block_direction_rotation(d), axis);
+        const float dot = turned.x * forward.x + turned.z * forward.z;
         if (dot > best_dot) {
             best_dot = dot;
             best = d;
@@ -134,17 +133,26 @@ static inline byte block_direction_from_forward(float3 forward) {
     return best;
 }
 
-static inline byte block_direction_from_rotation(float4 rotation) {
-    return block_direction_from_forward(float4_rotate_float3(rotation, float3_forward));
+// the model axis a placed block points where its placer looks: a long one (a bed, longer along x) its length, away;
+//  else (a door) its back (+z), its front facing them (as a yaw turn faced it)
+static inline float3 block_facing_axis(int3 size) {
+    return size.x > size.z ? (float3) { 1, 0, 0 } : (float3) { 0, 0, 1 };
+}
+
+static inline byte block_direction_from_forward(float3 forward, int3 size) {
+    return block_direction_from_forward_axis(forward, block_facing_axis(size));
 }
 
 // where a placer looks: its camera's ray, else its body's facing
-static inline byte block_direction_of_placer(ecs* world, entity placer) {
+static inline byte block_direction_of_placer(ecs* world, entity placer, int3 size) {
     const entity camera = zox_get_link(world, placer, CameraLink);
+    float3 forward = float3_forward;
     if (zox_valid(camera) && zox_has(camera, RaycastNormal)) {
-        return block_direction_from_forward(zox_getv(camera, RaycastNormal));
+        forward = zox_getv(camera, RaycastNormal);
+    } else if (zox_has(placer, Rotation3D)) {
+        forward = float4_rotate_float3(zox_getv(placer, Rotation3D), float3_forward);
     }
-    return zox_has(placer, Rotation3D) ? block_direction_from_rotation(zox_getv(placer, Rotation3D)) : 0;
+    return block_direction_from_forward(forward, size);
 }
 
 static inline byte block_offset_encode(int3 offset) {

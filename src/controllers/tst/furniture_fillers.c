@@ -2,7 +2,8 @@
 //  - places (multi_block_place) a bed and a door in the player's chunk, and a bed at its edge whose other half is in
 //    the next chunk
 //  - their other voxels hold the filler, solid; placing into one is refused, and placing one over air
-//  - breaking the bed's filler takes its base too, breaking the door's base takes its top
+//  - breaking the bed's filler takes its base too, breaking the door's base takes its top, removing the ground under
+//    the edge bed takes it
 //  - run: bash bsh/tst.sh furniture_fillers
 byte zox_tst_ffill_stage = 0;
 int zox_tst_ffill_frames = 0;
@@ -111,6 +112,8 @@ byte zox_tst_furniture_fillers_ready(ecs* world) {
         // break the bed's filler and the door's base
         terrain_queue_voxel(world, terrain, (int3) { b.x + 1, b.y, b.z }, 0, 0);
         terrain_queue_voxel(world, terrain, d, 0, 0);
+        // and the ground under the edge bed's other half (in the next chunk)
+        terrain_queue_voxel(world, terrain, (int3) { e.x + 1, e.y - 1, e.z }, 0, 0);
         zox_tst_ffill_stage = 2;
         zox_tst_ffill_frames = 0;
         return 0;
@@ -123,6 +126,9 @@ byte zox_tst_furniture_fillers_ready(ecs* world) {
         "breaking the bed's filler left [%i %i]", zox_tst_ffill_at(world, terrain, b, 0, 0, 0), zox_tst_ffill_at(world, terrain, b, 1, 0, 0));
     zox_tst_check(!zox_tst_ffill_at(world, terrain, d, 0, 0, 0) && !zox_tst_ffill_at(world, terrain, d, 0, 1, 0),
         "breaking the door's base left [%i %i]", zox_tst_ffill_at(world, terrain, d, 0, 0, 0), zox_tst_ffill_at(world, terrain, d, 0, 1, 0));
+    const int3 e = zox_tst_ffill_edge;
+    zox_tst_check(!zox_tst_ffill_at(world, terrain, e, 0, 0, 0) && !zox_tst_ffill_at(world, terrain, e, 1, 0, 0),
+        "removing the ground under the edge bed left [%i %i]", zox_tst_ffill_at(world, terrain, e, 0, 0, 0), zox_tst_ffill_at(world, terrain, e, 1, 0, 0));
     zox_tst_ffill_stage = 3;
     return 1;
 }
