@@ -1,5 +1,10 @@
 // NOTE: The tooltip will shut down when no more uis are linked to it.
 // NOTE: This might of been when the selected dies too
+// SelectState runs trigger, active, idle while selected; 0 or the deselect states when not
+static inline byte tooltip_ui_is_selected(const byte state) {
+    return state >= zox_state_select_trigger && state <= zox_state_select_idle;
+}
+
 void tooltip_deselect_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = zox_log_tooltips;
@@ -15,7 +20,18 @@ void tooltip_deselect_system(iter* it) {
         }
         // check linked, if link found, continue
         if (zox_is_linked_any(world, e, TooltipLink)) {
-            continue;
+            // NOTE: a ui selected and deselected in the same frame (a fast mouse flick) unlinks
+            //  before its deferred link lands, so the link stays: let go of a ui no longer selected
+            const entity linked = zox_get_link(world, e, TooltipLink);
+            if (!zox_valid(linked)) {
+                zox_unlink(world, e, TooltipLink, linked);
+            } else if (zox_has(linked, SelectState) &&
+                !tooltip_ui_is_selected(zox_getv(linked, SelectState)))
+            {
+                zox_unlink(world, e, TooltipLink, linked);
+            } else {
+                continue;
+            }
         }
         // Clear text
         resize_TextData(data, 0);

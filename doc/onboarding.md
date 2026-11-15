@@ -214,7 +214,6 @@ Tasks are tracked in plain markdown:
 | File | Holds |
 |---|---|
 | [todo.md](todo.md) | tasks to do |
-| [bugs.md](bugs.md) | known bugs |
 | [refactors.md](refactors.md) | code that needs restructuring |
 | [optimize.md](optimize.md) | performance work |
 | [goals.md](goals.md) / [new.md](new.md) | bigger features and new modules |
@@ -222,7 +221,7 @@ Tasks are tracked in plain markdown:
 
 The loop:
 
-1. Pick a task from [todo.md](todo.md) or [bugs.md](bugs.md).
+1. Pick a task from [todo.md](todo.md).
 2. Find the module: search for a component or system name from the task (`grep -rn NpcSpawnZone src`).
 3. Read that module's `_.c` and `sys/_.c` first, to see what it owns and what runs.
 4. Make the change in the module's style. Logs help: `zox_log` in a debug build.
