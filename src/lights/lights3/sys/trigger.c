@@ -14,18 +14,10 @@ void chunk_colors_trigger_system(iter* it) {
         }
         // NOTE: was inverted (skipped its meshes, tagged its other children), so a chunk's own light
         //  changes only recolored its neighbors (tst block_vox_lights)
-        iter it2 = zox_children(world, e);
-        while (zox_children_next(it2)) {
-            for (int j = 0; j < it2.count; j++) {
-                entity e2 = it2.entities[j];
-                if (!zox_has(e2, ChunkMesh)) {
-                    continue;
-                }
-                zox_add(e2, BuildMeshColors);
-                if (dbg_log) {
-                    zox_log("Chunk Triggered Build [%s] > [%s]:[%s]", zox_getn(e), zox_getn(e2));
-                }
-            }
+        entity meshes[zox_chunk_meshes_max];
+        const uint count = get_chunk_meshes(world, e, meshes);
+        for (uint j = 0; j < count; j++) {
+            zox_add(meshes[j], BuildMeshColors);
         }
     }
     zox_sys_on_end();
@@ -51,18 +43,10 @@ void chunk_neighbor_light_trigger_system(iter* it) {
             if (!zox_valid(neighbor)) {
                 continue;
             }
-            iter it2 = zox_children(world, neighbor);
-            while (zox_children_next(it2)) {
-                for (int k = 0; k < it2.count; k++) {
-                    entity mesh = it2.entities[k];
-                    if (!zox_has(mesh, ChunkMesh)) {
-                        continue;
-                    }
-                    zox_add(mesh, BuildMeshColors);
-                    if (dbg_log) {
-                        zox_log("Neighbor Chunk Triggered Build [%s] > [%s]:[%s]", zox_getn(e), zox_getn(neighbor), zox_getn(mesh));
-                    }
-                }
+            entity meshes[zox_chunk_meshes_max];
+            const uint count = get_chunk_meshes(world, neighbor, meshes);
+            for (uint k = 0; k < count; k++) {
+                zox_add(meshes[k], BuildMeshColors);
             }
         }
     }

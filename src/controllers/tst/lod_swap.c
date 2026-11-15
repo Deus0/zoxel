@@ -28,14 +28,13 @@ static inline zox_tst_ls_slot* zox_tst_ls_find(zox_tst_ls_slot* map, entity chun
 
 // the mesh a chunk draws, 0 if none
 static inline entity zox_tst_ls_drawn(ecs* world, entity chunk) {
-    iter it = zox_children(world, chunk);
-    while (zox_children_next(it)) {
-        for (int i = 0; i < it.count; i++) {
-            const entity mesh = it.entities[i];
-            if (zox_has(mesh, ChunkMesh) && !zox_has(mesh, Disabled) && zox_has(mesh, MeshGPULink) &&
-                zox_get(mesh, MeshGPULink)->value.x && zox_getv(mesh, MeshRenderCount)) {
-                return mesh;
-            }
+    entity it_meshes[zox_chunk_meshes_max];
+    const uint it_count = get_chunk_meshes(world, chunk, it_meshes);
+    for (uint i = 0; i < it_count; i++) {
+        const entity mesh = it_meshes[i];
+        if (zox_has(mesh, ChunkMesh) && !zox_has(mesh, Disabled) && zox_has(mesh, MeshGPULink) &&
+            zox_get(mesh, MeshGPULink)->value.x && zox_getv(mesh, MeshRenderCount)) {
+            return mesh;
         }
     }
     return 0;
@@ -43,14 +42,12 @@ static inline entity zox_tst_ls_drawn(ecs* world, entity chunk) {
 
 // it shows a mesh that's built and up to date, with faces or not
 static inline byte zox_tst_ls_shows_built(ecs* world, entity chunk) {
-    iter it = zox_children(world, chunk);
-    while (zox_children_next(it)) {
-        for (int i = 0; i < it.count; i++) {
-            const entity m = it.entities[i];
-            if (zox_has(m, ChunkMesh) && !zox_has(m, Disabled) && zox_has(m, MeshBuilt) && !zox_has(m, BuildMesh) && !zox_has(m, MeshDirty)) {
-                zox_children_end(it);
-                return 1;
-            }
+    entity it_meshes[zox_chunk_meshes_max];
+    const uint it_count = get_chunk_meshes(world, chunk, it_meshes);
+    for (uint i = 0; i < it_count; i++) {
+        const entity m = it_meshes[i];
+        if (zox_has(m, ChunkMesh) && !zox_has(m, Disabled) && zox_has(m, MeshBuilt) && !zox_has(m, BuildMesh) && !zox_has(m, MeshDirty)) {
+            return 1;
         }
     }
     return 0;
@@ -67,18 +64,17 @@ static inline void zox_tst_ls_log_hole(ecs* world, entity chunk, entity old, byt
     int n = snprintf(text, sizeof(text), "hole [%i] why [%i] lod dirty [%i] depth [%i] node depth [%i] voxels [%s%i] meshes:",
         zox_tst_ls_holes, why, zox_has(chunk, ChunkLodDirty) ? zox_getv(chunk, ChunkLodDirty) : -1, zox_getv(chunk, RenderDepth),
         zox_getv(chunk, NodeDepth), has_children_VoxelNode(voxels) ? "split " : "solid ", voxels->value);
-    iter it = zox_children(world, chunk);
-    while (zox_children_next(it)) {
-        for (int j = 0; j < it.count && n < 480; j++) {
-            const entity m = it.entities[j];
-            if (!zox_has(m, ChunkMesh)) {
-                continue;
-            }
-            n += snprintf(text + n, sizeof(text) - n, " [%s d%i %s%s%s%s%s%s%s c%u]", m == old ? "old" : "", zox_getv(m, RenderDepth),
-                zox_has(m, Disabled) ? "D" : "", zox_has(m, BuildDisabled) ? "X" : "", zox_has(m, BuildMesh) ? "B" : "",
-                zox_has(m, MeshDirty) ? "M" : "", zox_has(m, MeshBuilt) ? "+" : "", zox_has(m, BuildMeshColors) ? "L" : "",
-                zox_has(m, MeshColorsDirty) ? "C" : "", zox_getv(m, MeshRenderCount));
+    entity it_meshes[zox_chunk_meshes_max];
+    const uint it_count = get_chunk_meshes(world, chunk, it_meshes);
+    for (uint j = 0; j < it_count && n < 480; j++) {
+        const entity m = it_meshes[j];
+        if (!zox_has(m, ChunkMesh)) {
+            continue;
         }
+        n += snprintf(text + n, sizeof(text) - n, " [%s d%i %s%s%s%s%s%s%s c%u]", m == old ? "old" : "", zox_getv(m, RenderDepth),
+            zox_has(m, Disabled) ? "D" : "", zox_has(m, BuildDisabled) ? "X" : "", zox_has(m, BuildMesh) ? "B" : "",
+            zox_has(m, MeshDirty) ? "M" : "", zox_has(m, MeshBuilt) ? "+" : "", zox_has(m, BuildMeshColors) ? "L" : "",
+            zox_has(m, MeshColorsDirty) ? "C" : "", zox_getv(m, MeshRenderCount));
     }
     zox_log("[tst] %s", text);
 }

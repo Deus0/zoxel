@@ -34,8 +34,8 @@ void zox_dbg_terrain_refresh_mesh_colors(ecs* world, ClickEventData data) {
                 // float4x4 matrix = zox_getv(e2, TransformMatrix);
                 // zox_set(e2, VoxelNodeDirty, { 1 });
                 // zox_set(e2, BuildChunkSides, { 1 });
-                entity meshes[8];
-                uint meshes_length = zox_get_children_by_id(world, e2, meshes, 8, zox_id(ChunkMesh));
+                entity meshes[zox_chunk_meshes_max];
+                uint meshes_length = get_chunk_meshes(world, e2, meshes);
                 for (int k = 0; k < meshes_length; k++) {
                     entity e3 = meshes[k];
                     zox_add(e3, BuildMeshColors);

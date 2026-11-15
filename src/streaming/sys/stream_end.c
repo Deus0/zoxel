@@ -68,27 +68,7 @@ void stream_end_system(iter* it) {
                     chunks_busy++;
                     continue;
                 }
-                // byte chunk_mesh_loading = 0;
-                // entity active_mesh = zox_getv(e2, ActiveMesh);
-                entity active_mesh = zox_get_link(world, e2, ActiveMesh);
-                byte chunk_mesh_loading =
-                    zox_valid(active_mesh) &&
-                        (zox_has(active_mesh, BuildMesh) ||
-                        zox_has(active_mesh, MeshDirty));
-                /*iter it3 = zox_children(world, e2);
-                while (zox_children_next(it3) && !chunk_mesh_loading) {
-                    for (int k = 0; k < it3.count && !chunk_mesh_loading; k++) {
-                        entity e3 = it3.entities[k];
-                        if (!zox_has(e3, ChunkMesh)) {
-                            continue;
-                        }
-                        if (zox_has(e3, BuildMesh) ||
-                            zox_has(e3, MeshDirty))
-                        {
-                            chunk_mesh_loading = 1;
-                        }
-                    }
-                }*/
+                byte chunk_mesh_loading = chunk_meshes_loading(world, e2);
                 if (chunk_mesh_loading) {
                     meshes_loading++;
                     chunks_loading++;

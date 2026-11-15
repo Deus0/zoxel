@@ -180,8 +180,9 @@ void chunk_textured_build_system(iter* it) {
         if (max_process && process_count > max_process) {
             break;
         }
-        // Get chunk data
-        entity chunk = zox_get_parent(world, e);
+        // Get chunk data: the mesh's material holds its sides, its chunk the voxels
+        entity material = zox_get_parent(world, e);
+        entity chunk = zox_valid(material) ? zox_get_parent(world, material) : 0;
 #ifdef zox_safety_checks
         if (!zox_valid(chunk)) {
             zox_loge("Chunk Parent Invalid for [%s]", zox_sys_e_name);
@@ -189,7 +190,7 @@ void chunk_textured_build_system(iter* it) {
         }
         if (!zox_has(chunk, NodeDepth) ||
             !zox_has(chunk, VoxelNode) ||
-            !zox_has(chunk, SidesOctree) ||
+            !zox_has(material, SidesOctree) ||
             !zox_has(chunk, VoxelNodeLock)
         ) {
             zox_loge("[build_textured] Chunk Components Invalid [%s]", zox_sys_e_name);
@@ -300,7 +301,7 @@ void chunk_textured_build_system(iter* it) {
         }
         const VoxelNode* voxels = zox_get(chunk, VoxelNode);
         VoxelNodeLock* voxels_lock = zox_mut(chunk, VoxelNodeLock);
-        const SidesOctree* sides = zox_get(chunk, SidesOctree);
+        const SidesOctree* sides = zox_get(material, SidesOctree);
         float block_scale = get_chunk_scale(
             depth->value,
             terrain_depth,

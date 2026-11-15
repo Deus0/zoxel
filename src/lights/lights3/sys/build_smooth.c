@@ -301,8 +301,9 @@ void build_smooth_lights_system(iter* it) {
         if (max_process && process_count > max_process) {
             break;
         }
-        // Get chunk data
-        entity chunk = zox_get_parent(world, e);
+        // Get chunk data: the mesh's material holds its sides
+        entity material = zox_get_parent(world, e);
+        entity chunk = zox_valid(material) ? zox_get_parent(world, material) : 0;
 #ifdef zox_safety_checks
         if (!zox_valid(chunk)) {
             zox_loge("Chunk Parent Invalid for [%s]", zox_getn(e));
@@ -327,8 +328,8 @@ void build_smooth_lights_system(iter* it) {
             }
             continue;
         }
-        const SidesOctree* sides = zox_get(chunk, SidesOctree);
-        SidesOctreeLock* sides_lock = zox_mut(chunk, SidesOctreeLock);
+        const SidesOctree* sides = zox_get(material, SidesOctree);
+        SidesOctreeLock* sides_lock = zox_mut(material, SidesOctreeLock);
         const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
         // const VoxelNode* root_voxels = zox_get(chunk, VoxelNode);
         entity nearby_chunks[27];

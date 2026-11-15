@@ -1,95 +1,66 @@
-// - its probably the mesh systems
+// Spawns a chunk's materials and their meshes (fun/materials.c)
+//  - a material for each block material in the chunk's voxels, when they change
+//  - a mesh per material at the chunk's depth, if it has none there
 
-// NOTE: Get a list of block ids in octree, then get a list of materials from that
-// NOTE: Finally spawn mesh if not already in children for that depth
-// NOTE: For now just spawn a child mesh per lod if it doesnt exist
-
-// does the chunk show a mesh (one not Disabled)
-static inline byte chunk_mesh_shown(ecs* world, entity chunk) {
-    iter it = zox_children(world, chunk);
-    while (zox_children_next(it)) {
-        for (int i = 0; i < it.count; i++) {
-            if (zox_has(it.entities[i], ChunkMesh) && !zox_has(it.entities[i], Disabled)) {
-                zox_children_end(it);
-                return 1;
-            }
+// does the material show a mesh (one not Disabled)
+static inline byte chunk_material_shown(ecs* world, entity material) {
+    entity meshes[zox_chunk_meshes_max];
+    const uint count = zox_get_children_by_id(world, material, meshes, zox_chunk_meshes_max, zox_id(ChunkMesh));
+    for (uint i = 0; i < count; i++) {
+        if (!zox_has(meshes[i], Disabled)) {
+            return 1;
         }
     }
     return 0;
 }
 
-// Call for each dirty flag
-// NOTE: We could just check if meshes needed to spawn first?
-static inline entity spawn_chunk_meshes(
+// a material's mesh at the depth, spawned if it has none: 0 if it had one
+static inline entity spawn_chunk_material_mesh(
+    ecs* world,
+    entity material,
+    entity tilemap,
+    byte depth,
+    float4x4 matrix,
+    byte render_disabled)
+{
+    entity active_mesh = zox_get_link(world, material, ActiveMesh);
+    if (zox_valid(active_mesh) && zox_getv(active_mesh, RenderDepth) == depth) {
+        return 0;
+    }
+    if (chunk_mesh_at_depth(world, material, depth)) {
+        return 0;
+    }
+    // Make sure old one isnt building
+    if (zox_valid(active_mesh) && !zox_has(active_mesh, BuildDisabled)) {
+        zox_add(active_mesh, BuildDisabled);
+    }
+    return spawn_chunk_mesh_textured(
+        world,
+        material,
+        matrix,
+        depth,
+        render_disabled,
+        tilemap);
+}
+
+// NOTE: When Depth changes or Voxels Generate, the materials and meshes that don't exist are spawned
+// returns the new meshes, a new material's shown as it builds (it shows nothing else)
+static inline byte spawn_chunk_meshes(
     ecs* world,
     entity e,
     const VoxelNode* voxels,
     spinlock* lock,
+    const byte* block_materials,
     byte depth,
     float4x4 matrix,
     byte render_disabled,
-    byte dbg_log)
+    byte* swaps)
 {
-    // return 0;
-    if (dbg_log >= 2) {
-        zox_log(" - Refreshing Chunks Meshes [%s] Depth [%i]", zox_getn(e), depth);
-    }
-    const byte is_cull_air = 1;
-    // check any solids
-    // TODO: Only spawn mesh if sides exist!
-    // TODO: If now air, and active mesh, we can destroy that mesh here
     spin_lock(lock);
-    byte is_empty_space = !voxels->value;
+    const byte mask = get_node_materials(voxels, block_materials);
     spin_unlock(lock);
-    if (is_cull_air && is_empty_space) {
-        if (dbg_log) {
-            zox_log(" - Chunk is Air for [%s] Depth [%i]", zox_getn(e), depth);
-        }
-        return 0;
-    }
-    entity active_mesh = zox_get_link(world, e, ActiveMesh);
-    if (zox_valid(active_mesh) &&
-        zox_getv(active_mesh, RenderDepth) == depth)
-    {
-        return 0;
-    }
-    // If already preparing and at target depth
-    entity preparing_mesh = zox_get_link(world, e, PreparingMesh);
-    if (zox_valid(preparing_mesh)) {
-        if (zox_getv(preparing_mesh, RenderDepth) == depth) {
-            return 0;
-        } //else {
-            // Preparation for Spawning new Mesh!
-            // if already preparing, and not at depth we seek
-            // zox_unlink(world, e, PreparingMesh, preparing_mesh);
-        //}
-    }
-    // See if we have required LOD mesh
-    entity lod_mesh = 0;
-    iter it2 = zox_children(world, e);
-    while (zox_children_next(it2)) {
-        for (int j = 0; j < it2.count; j++) {
-            entity mesh = it2.entities[j];
-            if (!zox_has(mesh, ChunkMesh)) {
-                continue;
-            }
-            if (zox_getv(mesh, RenderDepth) == depth) {
-                lod_mesh = mesh;
-                break;
-            }
-        }
-        if (lod_mesh) {
-            break;
-        }
-    }
-    // If we already have required LOD mesh
-    if (lod_mesh) {
-        // zox_link(world, e, PreparingMesh, lod_mesh);
-        if (dbg_log) {
-            zox_log(" - Chunk Mesh Existed for [%s] at depth [%i]",
-                zox_getn(e),
-                depth);
-        }
+    // air and vox models only: no faces
+    if (!(mask >> 1)) {
         return 0;
     }
     entity tilemap = zox_get_link(world, e, Tilemap);
@@ -97,33 +68,41 @@ static inline entity spawn_chunk_meshes(
         zox_loge("Tilemap Material is Invalid");
         return 0;
     }
-    // Make sure old one isnt building
-    if (zox_valid(active_mesh) && !zox_has(active_mesh, BuildDisabled)) {
-        zox_add(active_mesh, BuildDisabled);
+    byte spawned = 0;
+    for (byte i = 1; i < zox_block_materials; i++) {
+        if (!(mask & (1 << i))) {
+            continue;
+        }
+        entity material = get_chunk_material(world, e, i);
+        // a material spawned now isn't made until this system ends: its links and children can't be read yet
+        const byte is_new = !material;
+        if (is_new) {
+            material = spawn_chunk_material(world, e, i, tilemap);
+        }
+        const byte shown = !is_new && chunk_material_shown(world, material);
+        const entity mesh = is_new ?
+            spawn_chunk_mesh_textured(world, material, matrix, depth, render_disabled, tilemap) :
+            spawn_chunk_material_mesh(world, material, tilemap, depth, matrix, render_disabled);
+        if (!mesh) {
+            continue;
+        }
+        spawned++;
+        // a new chunk shows it as it builds; one showing another mesh swaps to it once it's ready (enabled now it
+        //  drew over the old one, dark until lit: tst lod_swap)
+        if (!shown) {
+            zox_remove(mesh, Disabled);
+        } else {
+            *swaps = 1;
+        }
     }
-    // NOTE: When Depth changes or Voxels Generate, if mesh doesnt exist we spawn new
-    entity e2 = spawn_chunk_mesh_textured(
-        world,
-        e,
-        matrix,
-        depth,
-        render_disabled,
-        tilemap);
-    if (dbg_log) {
-        zox_log(" - New Chunk Mesh for [%s] at depth [%i]",
-            zox_getn(e),
-            depth);
-    }
-    return e2;
+    return spawned;
 }
-
-// TODO: Keep a list of materials per chunk
-// TODO: Use sides instead of voxels for check if need mesh
-// If voxels changed, we need to spawn mesh for it
 
 void chunk_mesh_spawn_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
+    byte block_materials[256];
+    entity manager = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TransformMatrix);
@@ -140,22 +119,25 @@ void chunk_mesh_spawn_system(iter* it) {
         zox_sys_i(VoxelNode, voxels);
         zox_sys_o(VoxelNodeLock, lock);
         zox_sys_o(ChunkMeshTimer, timer);
-        entity new_mesh = spawn_chunk_meshes(
+        const entity chunk_manager = zox_get_link(world, e, BlockManagerLink);
+        if (!manager || manager != chunk_manager) {
+            manager = chunk_manager;
+            get_block_materials(world, manager, block_materials);
+        }
+        byte swaps = 0;
+        if (spawn_chunk_meshes(
             world,
             e,
             voxels,
             &lock->value,
+            block_materials,
             depth->value,
             matrix->value,
             render_disabled->value,
-            dbg_log);
-        if (new_mesh) {
+            &swaps))
+        {
             timer->value = zox_current_time;
-            // a new chunk shows it as it builds; one showing another mesh swaps to it once it's ready (enabled now it
-            //  drew over the old one, dark until lit: tst lod_swap)
-            if (!chunk_mesh_shown(world, e)) {
-                zox_remove(new_mesh, Disabled);
-            } else if (!zox_has(e, ChunkLodDirty)) {
+            if (swaps && !zox_has(e, ChunkLodDirty)) {
                 zox_setv(e, ChunkLodDirty, zox_chunk_lod_dirty_toggle);
             }
         }
@@ -172,6 +154,8 @@ void chunk_mesh_spawn_system(iter* it) {
 void chunk_mesh_spawn2_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
+    byte block_materials[256];
+    entity manager = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TransformMatrix);
@@ -193,16 +177,23 @@ void chunk_mesh_spawn2_system(iter* it) {
         if (dirty->value != zox_chunk_lod_dirty_spawn) {
             continue;
         }
-        entity new_mesh = spawn_chunk_meshes(
+        const entity chunk_manager = zox_get_link(world, e, BlockManagerLink);
+        if (!manager || manager != chunk_manager) {
+            manager = chunk_manager;
+            get_block_materials(world, manager, block_materials);
+        }
+        byte swaps = 0;
+        if (spawn_chunk_meshes(
             world,
             e,
             voxels,
             &lock->value,
+            block_materials,
             depth->value,
             matrix->value,
             render_disabled->value,
-            dbg_log);
-        if (new_mesh) {
+            &swaps))
+        {
             timer->value = zox_current_time;
         }
         dirty->value = zox_chunk_lod_dirty_toggle;

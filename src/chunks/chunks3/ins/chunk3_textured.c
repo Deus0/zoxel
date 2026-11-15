@@ -58,7 +58,6 @@ entity spawn_chunk3_textured(
     zox_setv(e, Bounds3D, bounds);
     // Initialize our spinlocks
     initialize_voxel_lock(world, e);
-    initialize_sides_lock(world, e);
     initialize_light_lock(world, e);
     return e;
 }

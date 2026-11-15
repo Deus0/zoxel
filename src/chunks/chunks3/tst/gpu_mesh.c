@@ -216,7 +216,7 @@ static inline void zox_tst_gpu_time(GpuMesher* mesher, const VoxelNode* voxels, 
     for (int r = 0; r < runs; r++) {
         SidesOctree sides;
         create_SidesOctree(&sides);
-        build_sides_dig(NULL, voxels, neighbors, neighbor_depths, voxels, &sides, depth, 0, byte3_zero, 0);
+        build_sides_dig(NULL, zox_block_material_solid, voxels, neighbors, neighbor_depths, voxels, &sides, depth, 0, byte3_zero, 0);
         collapse_SidesOctree(&sides);
     }
     const double cpu_sides_ms = (get_time_ms() - start) / runs;

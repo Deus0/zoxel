@@ -59,18 +59,17 @@ static inline byte zox_tst_bvl_chunk_settled(ecs* world, entity chunk) {
 static inline float zox_tst_bvl_mesh_colors(ecs* world, entity chunk) {
     double total = 0;
     int count = 0;
-    iter it2 = zox_children(world, chunk);
-    while (zox_children_next(it2)) {
-        for (int j = 0; j < it2.count; j++) {
-            const entity mesh = it2.entities[j];
-            if (!zox_has(mesh, ChunkMesh) || !zox_has(mesh, MeshColorRGBs)) {
-                continue;
-            }
-            const MeshColorRGBs* colors = zox_get(mesh, MeshColorRGBs);
-            for (int k = 0; k < colors->length; k++) {
-                total += colors->value[k].r;
-                count++;
-            }
+    entity it2_meshes[zox_chunk_meshes_max];
+    const uint it2_count = get_chunk_meshes(world, chunk, it2_meshes);
+    for (uint j = 0; j < it2_count; j++) {
+        const entity mesh = it2_meshes[j];
+        if (!zox_has(mesh, ChunkMesh) || !zox_has(mesh, MeshColorRGBs)) {
+            continue;
+        }
+        const MeshColorRGBs* colors = zox_get(mesh, MeshColorRGBs);
+        for (int k = 0; k < colors->length; k++) {
+            total += colors->value[k].r;
+            count++;
         }
     }
     return count ? (float) (total / count) : 0;

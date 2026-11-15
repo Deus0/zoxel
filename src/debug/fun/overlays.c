@@ -136,8 +136,8 @@ uint zox_dbg_ui_meshes(ecs* world, entity e, char* buffer, uint size, uint index
             if (!zox_has(e2, Chunk3)) {
                 continue;
             }
-            entity meshes[8];
-            uint meshes_length = zox_get_children_by_id(world, e2, meshes, 8, zox_id(ChunkMesh));
+            entity meshes[zox_chunk_meshes_max];
+            uint meshes_length = get_chunk_meshes(world, e2, meshes);
             if (!meshes_length) {
                 continue;
             }

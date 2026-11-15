@@ -88,8 +88,9 @@ byte is_adjacent_all_solid(
     byte side = reversed & 1;   // 0=negative side, 1=positive side
     // zox_log("axis [%i] side [%i] from direction [%i]", axis, side, reversed);
     // we need full distance here
-    return get_node_sides_all_solid(
-        solidity,
+    return get_node_sides_all_hide(
+        NULL,
+        zox_block_material_solid,
         adjacent_node,
         axis,
         side,
@@ -339,7 +340,7 @@ static inline byte vox_pyramid_adjacent_solid(const vox_pyramid* pyramid, byte d
         return 0;
     }
     const byte reversed = reverse_direction(direction);
-    return get_node_sides_all_solid(NULL, node, reversed >> 1, reversed & 1, 8);
+    return get_node_sides_all_hide(NULL, zox_block_material_solid, node, reversed >> 1, reversed & 1, 8);
 }
 
 static void build_voxel_faces_pyramid(

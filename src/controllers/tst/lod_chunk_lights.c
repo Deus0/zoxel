@@ -25,22 +25,21 @@ byte zox_tst_lod_chunk_lights_ready(ecs* world) {
 static inline byte zox_tst_lod_mesh(ecs* world, entity chunk, float* average, byte* depth, int* dark, int* vertices) {
     double total = 0;
     int count = 0;
-    iter it2 = zox_children(world, chunk);
-    while (zox_children_next(it2)) {
-        for (int j = 0; j < it2.count; j++) {
-            const entity mesh = it2.entities[j];
-            if (!zox_has(mesh, ChunkMesh) || !zox_has(mesh, MeshColorRGBs) || !zox_has(mesh, RenderDepth)) {
-                continue;
-            }
-            const MeshColorRGBs* colors = zox_get(mesh, MeshColorRGBs);
-            for (int k = 0; k < colors->length; k++) {
-                total += colors->value[k].r;
-                *dark += colors->value[k].r <= darklight;
-            }
-            count += colors->length;
-            *vertices += colors->length;
-            *depth = zox_getv(mesh, RenderDepth);
+    entity it2_meshes[zox_chunk_meshes_max];
+    const uint it2_count = get_chunk_meshes(world, chunk, it2_meshes);
+    for (uint j = 0; j < it2_count; j++) {
+        const entity mesh = it2_meshes[j];
+        if (!zox_has(mesh, ChunkMesh) || !zox_has(mesh, MeshColorRGBs) || !zox_has(mesh, RenderDepth)) {
+            continue;
         }
+        const MeshColorRGBs* colors = zox_get(mesh, MeshColorRGBs);
+        for (int k = 0; k < colors->length; k++) {
+            total += colors->value[k].r;
+            *dark += colors->value[k].r <= darklight;
+        }
+        count += colors->length;
+        *vertices += colors->length;
+        *depth = zox_getv(mesh, RenderDepth);
     }
     *average = count ? (float) (total / count) : 0;
     return count > 0;

@@ -51,13 +51,12 @@ static inline int zox_tst_perf_busy(ecs* world) {
             zox_tst_perf_generating += zox_has(chunk, GenerateChunk) && zox_getv(chunk, GenerateChunk);
             zox_tst_perf_siding += zox_has(chunk, BuildChunkSides);
             zox_tst_perf_swapping += zox_has(chunk, ChunkLodDirty);
-            iter it3 = zox_children(world, chunk);
-            while (zox_children_next(it3)) {
-                for (int k = 0; k < it3.count; k++) {
-                    const entity mesh = it3.entities[k];
-                    // old meshes (BuildDisabled, a swapped out lod) never build, they don't hold up streaming
-                    zox_tst_perf_meshing += zox_has(mesh, ChunkMesh) && zox_has(mesh, BuildMesh) && !zox_has(mesh, BuildDisabled);
-                }
+            entity it3_meshes[zox_chunk_meshes_max];
+            const uint it3_count = get_chunk_meshes(world, chunk, it3_meshes);
+            for (uint k = 0; k < it3_count; k++) {
+                const entity mesh = it3_meshes[k];
+                // old meshes (BuildDisabled, a swapped out lod) never build, they don't hold up streaming
+                zox_tst_perf_meshing += zox_has(mesh, ChunkMesh) && zox_has(mesh, BuildMesh) && !zox_has(mesh, BuildDisabled);
             }
         }
     }
@@ -102,7 +101,8 @@ static inline int zox_tst_near_pending(ecs* world, int2 stream) {
                 pending++;
                 const entity chunk = stack->value[k];
                 zox_tst_near_states[zox_getv(chunk, ChunkLodDirty) % 5]++;
-                const entity mesh = zox_get_link(world, chunk, PreparingMesh);
+                const entity material = get_chunk_material(world, chunk, zox_block_material_solid);
+                const entity mesh = material ? zox_get_link(world, material, PreparingMesh) : 0;
                 if (zox_getv(chunk, ChunkLodDirty) == zox_chunk_lod_dirty_toggle && zox_valid(mesh)) {
                     zox_tst_near_mesh += zox_has(mesh, BuildMesh) || zox_has(mesh, MeshDirty) || !zox_has(mesh, MeshBuilt);
                     zox_tst_near_lights += zox_chunk_lighting_busy(world, chunk);

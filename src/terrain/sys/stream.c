@@ -123,12 +123,7 @@ static inline byte stream_tunk_distance(ecs* world, entity terrain, entity tunk,
         // NOTE: New component
         zox_setv(chunk, ChunkLodDirty, zox_chunk_lod_dirty_start);
         // Stop the active building
-        entity active_mesh = zox_get_link(world, chunk, ActiveMesh);
-        if (zox_valid(active_mesh) &&
-            !zox_has(active_mesh, BuildDisabled))
-        {
-            zox_add(active_mesh, BuildDisabled);
-        }
+        chunk_meshes_stop_building(world, chunk);
         if (dbg_log >= 2) {
             zox_log("   + Chunk [%s] Depth[%i]",
                 zox_getn(chunk),

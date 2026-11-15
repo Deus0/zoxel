@@ -158,8 +158,6 @@ void zox_systems_chunks3(ecs *world) {
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
         [out] chunks3.VoxelNodeLock,
-        [out] chunks3.SidesOctree,
-        [out] chunks3.SidesOctreeLock,
         [none] chunks.ChunkTextured,
         [none] chunks.BuildChunkSides,
     );

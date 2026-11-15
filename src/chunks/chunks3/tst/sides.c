@@ -64,7 +64,7 @@ static inline void zox_tst_sides_build(
 {
     init_side_child_indices();
     create_SidesOctree(sides);
-    build_sides_dig(NULL, chunk, neighbors, neighbor_depths, chunk, sides, chunk_depth, 0, byte3_zero, 0);
+    build_sides_dig(NULL, zox_block_material_solid, chunk, neighbors, neighbor_depths, chunk, sides, chunk_depth, 0, byte3_zero, 0);
 }
 
 // faces pointing in direction, on the chunk's border in that direction, at render depth

@@ -186,7 +186,6 @@ uint zox_dbg_label_inside_chunk(
     byte depth = zox_getv(chunk, NodeDepth);
     byte render_depth = zox_getv(chunk, RenderDepth);
     const VoxelNode* voxels = zox_get(chunk, VoxelNode);
-    const SidesOctree* sides = zox_get(chunk, SidesOctree);
     byte lod_dirty = zox_has(chunk, ChunkLodDirty) ?
         zox_getv(chunk, ChunkLodDirty) :
         0;
@@ -207,7 +206,7 @@ uint zox_dbg_label_inside_chunk(
                 voxels->value);
         index += snprintf(buffer + index, size - index,
             " - Sides [%i]\n",
-                sides->value);
+                get_chunk_sides(world, chunk, 0, byte3_zero));
     }
     if (lod_dirty) {
         index += snprintf(buffer + index, size - index,
@@ -243,25 +242,21 @@ uint zox_dbg_label_inside_chunk(
     // Chunk Meshes
     // entity active_mesh = zox_getv(chunk, ActiveMesh);
     // entity preparing_mesh = zox_getv(chunk, PreparingMesh);
-    entity active_mesh = zox_get_link(world, chunk, ActiveMesh);
-    entity preparing_mesh = zox_get_link(world, chunk, PreparingMesh);
-    if (zox_valid(active_mesh)) {
-        index += snprintf(buffer + index, size - index,
-            "+ Active [%s]\n",
-            zox_getn(active_mesh));
+    entity chunk_materials[zox_block_materials];
+    const uint materials_length = get_chunk_materials(world, chunk, chunk_materials);
+    for (uint k = 0; k < materials_length; k++) {
+        const entity active_mesh = zox_get_link(world, chunk_materials[k], ActiveMesh);
+        const entity preparing_mesh = zox_get_link(world, chunk_materials[k], PreparingMesh);
+        index += snprintf(buffer + index, size - index, "Material [%i]\n", zox_getv(chunk_materials[k], BlockMaterial));
+        if (zox_valid(active_mesh)) {
+            index += snprintf(buffer + index, size - index, "+ Active [%s]\n", zox_getn(active_mesh));
+        }
+        if (zox_valid(preparing_mesh)) {
+            index += snprintf(buffer + index, size - index, "- Preparing [%s]\n", zox_getn(preparing_mesh));
+        }
     }
-    if (zox_valid(preparing_mesh)) {
-        index += snprintf(buffer + index, size - index,
-            "- Preparing [%s]\n",
-            zox_getn(preparing_mesh));
-    }
-    entity meshes[8];
-    uint meshes_length = zox_get_children_by_id(
-        world,
-        chunk,
-        meshes,
-        8,
-        zox_id(ChunkMesh));
+    entity meshes[zox_chunk_meshes_max];
+    uint meshes_length = get_chunk_meshes(world, chunk, meshes);
     index += snprintf(buffer + index, size - index,
         "Meshes [%i]\n",
         meshes_length);

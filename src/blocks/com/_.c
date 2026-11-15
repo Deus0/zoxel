@@ -11,6 +11,7 @@ zoxc_byte(BlockLight);      // light a block gives off, 0 none (glow stone), it 
 zox_tag(BlockTableDirty);   // a realm's block indices changed, its saved chunks remap (chunks3/io/sys/block_table.c)
 zoxc_byte(BlockModel);
 zoxc_byte(BlockCollider); // zox_block_air | zox_block_solid
+zoxc_byte(BlockMaterial);  // zox_block_material_*: what a cube block's faces draw with, and a ChunkMaterial's blocks
 zox_tag(BlocksDirty);
 zox_tag(BlocksTilemapUpdate);
 zoxc_byte(VoxBakeSide);
@@ -54,6 +55,7 @@ void zox_components_blocks(ecs *world) {
     zoxd_tag(BlockTableDirty);
     zoxd_byte(BlockModel);
     zoxd_byte(BlockCollider);
+    zoxd_byte(BlockMaterial);
     zoxd_byte(VoxBakeSide);
     zoxd_byte(BlockVoxOffset);
     zoxd_byte(BlockIndex);

@@ -1,4 +1,5 @@
 zox_tag(Chunk3);
+zox_tag(ChunkMaterial);    // a chunk's child for one block material: its sides and lod meshes (fun/materials.c)
 zox_tag(NoiseChunk);
 zox_tag(ChunkDebugger);
 zox_tag(ColorChunk);
@@ -65,6 +66,7 @@ void zox_components_chunks3(ecs* world) {
     // zoxd_nf_tag
     // Types
     zoxd_tag(Chunk3);
+    zoxd_tag(ChunkMaterial);
     zoxd_tag(ColorChunk);
     zoxd_tag(LinkChunk);
     zoxd_tag(ChunkDebugger);

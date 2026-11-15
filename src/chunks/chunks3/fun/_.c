@@ -11,6 +11,7 @@
 #include "block_data.c"
 #include "flatten.c"
 #include "gpu_mesh.c"
+#include "materials.c"
 
 // NOTE: Assumes node depth is lower than terrain (max depth)
 static inline float get_chunk_scale(
