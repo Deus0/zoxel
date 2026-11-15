@@ -1,6 +1,7 @@
 // tst: furniture_hits, the ray and collisions find all of a bed and a door (fillers, items/fun/multi_block.c)
 //  - places a bed and a door in air with air above
-//  - rays straight down onto the bed's filler, the bed's base and the door's top stop there (raycast_voxel_node)
+//  - rays straight down onto the bed's filler, the bed's base and the door's top stop there on the bed's or door's own
+//    voxels (a filler's into its base's model, raycast_voxel_node)
 //  - an npc dropped onto the bed's filler and one onto the door rest on top, not falling through
 //  - run: bash bsh/tst.sh furniture_hits
 byte zox_tst_fhits_stage = 0;
@@ -91,8 +92,8 @@ byte zox_tst_furniture_hits_ready(ecs* world) {
             zox_log("[tst] ray onto %s: result [%i] block [%s] stopped at [%.2f] blocks, its cell [%i to %i]", names[i], ray.result,
                 ray.hit_block ? zox_getn(ray.hit_block) : "none", stop / scale, parts[i].y, parts[i].y + 1);
             zox_tst_check(ray.result != rayhit_none, "the ray onto %s hit nothing", names[i]);
-            zox_tst_check(i == 1 ? voxel != filler && voxel : voxel == filler, "the ray onto %s hit [%s]", names[i],
-                ray.hit_block ? zox_getn(ray.hit_block) : "none");
+            // the bed's or door's own voxels, a filler too (into its base's model)
+            zox_tst_check(voxel && voxel != filler, "the ray onto %s hit [%s]", names[i], ray.hit_block ? zox_getn(ray.hit_block) : "none");
             zox_tst_check(stop >= parts[i].y * scale - 0.01f && stop <= (parts[i].y + 1) * scale + 0.01f,
                 "the ray onto %s stopped at [%.2f] blocks, not in its cell [%i to %i]", names[i], stop / scale, parts[i].y, parts[i].y + 1);
         }
@@ -115,7 +116,19 @@ byte zox_tst_furniture_hits_ready(ecs* world) {
             zox_setv(zox_tst_fhits_npcs[i], Behaviour, zox_behaviour_idle);
         }
     }
-    return zox_current_time - zox_tst_fhits_time > 4;
+    // landed: both fallen from where they spawned and still (their physics can start late, a chunk not ready)
+    byte landed = 1;
+    for (byte i = 0; i < 2; i++) {
+        const entity npc = zox_tst_fhits_npcs[i];
+        if (!zox_valid(npc) || !zox_has(npc, Velocity3D)) {
+            continue;
+        }
+        const float top = i ? (zox_tst_fhits_door.y + 2) * scale : (zox_tst_fhits_bed.y + 1) * scale;
+        const float feet = zox_getv(npc, Position3D).y - zox_getv(npc, Bounds3D).y;
+        landed &= feet < top + 1.5f * scale && fabsf(zox_getv(npc, Velocity3D).y) < 0.01f;
+    }
+    const double waited = zox_current_time - zox_tst_fhits_time;
+    return (waited > 2 && landed) || waited > 15;
 }
 
 void zox_tst_furniture_hits_check(ecs* world) {

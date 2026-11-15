@@ -1,7 +1,7 @@
 // tst: furniture_rotation, a bed turned to each of four directions (items/fun/multi_block.c, block data)
 //  - placed with a direction: its filler in its turned cell, the filler's data its offset back to the base
 //  - its mesh as drawn (its TransformMatrix) covers its base and filler cells, no more
-//  - a ray straight down onto its base hits the bed
+//  - rays straight down onto its base and its filler hit the bed's voxels (the filler's through its base's model)
 //  - breaking one bed's filler takes its base, breaking another's base takes its filler
 //  - run: bash bsh/tst.sh furniture_rotation
 #define zox_tst_frot_beds 4
@@ -104,6 +104,15 @@ byte zox_tst_furniture_rotation_ready(ecs* world) {
             zox_tst_check(ray.result != rayhit_none && ray.hit_block && zox_getv(ray.hit_block, BlockIndex) == bed &&
                 stop >= base.y * scale - 0.01f && stop <= (base.y + 1) * scale + 0.01f,
                 "a ray onto bed [%i]'s base hit [%s] at [%.2f] blocks", i, ray.hit_block ? zox_getn(ray.hit_block) : "none", stop / scale);
+            // and onto its filler: into the bed's turned model, its mattress below the cell's top
+            float3 over_part = zox_tst_fhits_middle(part, scale);
+            over_part.y += 3 * scale;
+            const RaycastVoxelData ray2 = zox_tst_fhits_ray(world, terrain, realm, over_part, 6 * scale);
+            const float stop2 = over_part.y - ray2.distance;
+            zox_log("[tst] ray onto bed [%i]'s filler hit [%s] at [%.2f] blocks", i, ray2.hit_block ? zox_getn(ray2.hit_block) : "none", stop2 / scale);
+            zox_tst_check(ray2.hit_block && zox_getv(ray2.hit_block, BlockIndex) == bed && stop2 >= part.y * scale - 0.01f &&
+                stop2 < (part.y + 1) * scale - 0.01f, "a ray onto bed [%i]'s filler hit [%s] at [%.2f] blocks, not the bed in its cell", i,
+                ray2.hit_block ? zox_getn(ray2.hit_block) : "none", stop2 / scale);
         }
         // break bed 1's filler and bed 2's base
         terrain_queue_voxel(world, terrain, zox_tst_frot_filler(1, zox_tst_frot_bases[1]), 0, 0);

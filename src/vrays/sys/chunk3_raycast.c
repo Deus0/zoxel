@@ -263,6 +263,24 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
             if (raycasting_terrain) {
                 data->hit_block = hit_block;
             }
+            // a filler (a bed's other half): into its base's model, by its offset (block data), when its base is in this
+            //  chunk at full detail; else it stops it like a cube
+            if (zox_has(hit_block, BlockFiller) && !chunk_depth_reduction && zox_has(chunk, BlockDatas)) {
+                const byte offset_data = get_block_data(zox_get(chunk, BlockDatas), positionl);
+                const int3 offset = block_offset_decode(offset_data);
+                const int3 base = { positionl.x + offset.x, positionl.y + offset.y, positionl.z + offset.z };
+                if (offset_data && int3_in_bounds(base, byte3_to_int3(chunk_size))) {
+                    VoxelNode* base_node = getm_VoxelNode((VoxelNode*) root_voctree, int3_to_byte3(base), chunk_depth);
+                    const byte base_voxel = base_node ? base_node->value : 0;
+                    if (base_voxel && base_voxel <= voxels->length && zox_has(voxels->value[base_voxel - 1], BlockVox)) {
+                        node_voxel = base_node;
+                        hit_block = voxels->value[base_voxel - 1];
+                        if (raycasting_terrain) {
+                            data->hit_block = hit_block;
+                        }
+                    }
+                }
+            }
             // Raycast into minivox if hit voxel is marked as such, recurse deeper
             byte is_minivox = is_minivox = zox_has(hit_block, BlockVox);
             if (!is_minivox) {
