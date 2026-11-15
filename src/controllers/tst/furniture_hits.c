@@ -56,8 +56,8 @@ byte zox_tst_furniture_hits_ready(ecs* world) {
             }
             const byte bed_voxel = zox_getv(zox_tst_fplace_block(world, realm, zox_id(BlockBed)), BlockIndex);
             const byte door_voxel = zox_getv(zox_tst_fplace_block(world, realm, zox_id(BlockDoor)), BlockIndex);
-            zox_tst_check(multi_block_place(world, terrain, realm, bed, bed_voxel, 0), "the bed wasn't placed");
-            zox_tst_check(multi_block_place(world, terrain, realm, door, door_voxel, 0), "the door wasn't placed");
+            zox_tst_check(zox_tst_place_supported(world, terrain, realm, bed, bed_voxel, 0), "the bed wasn't placed");
+            zox_tst_check(zox_tst_place_supported(world, terrain, realm, door, door_voxel, 0), "the door wasn't placed");
             zox_tst_fhits_bed = bed;
             zox_tst_fhits_door = door;
             zox_tst_fhits_stage = 1;

@@ -118,10 +118,33 @@ static inline int3 block_direction_offset(byte direction, int3 offset) {
     return (int3) { (int) roundf(turned.x), (int) roundf(turned.y), (int) roundf(turned.z) };
 }
 
-// a facing's direction, its yaw to the nearest quarter turn
+// a facing's direction: the turn that points a model's length (its +x) most along where it faces, so a bed lies
+//  away from its placer (its yaw alone laid it sideways)
+static inline byte block_direction_from_forward(float3 forward) {
+    byte best = 0;
+    float best_dot = -2;
+    for (byte d = 0; d < 4; d++) {
+        const float3 length = float4_rotate_float3(block_direction_rotation(d), (float3) { 1, 0, 0 });
+        const float dot = length.x * forward.x + length.z * forward.z;
+        if (dot > best_dot) {
+            best_dot = dot;
+            best = d;
+        }
+    }
+    return best;
+}
+
 static inline byte block_direction_from_rotation(float4 rotation) {
-    const int quarter = (int) roundf(quaternion_to_euler_y2(rotation) / ((float) M_PI * 0.5f));
-    return (byte) (((quarter % 4) + 4) % 4);
+    return block_direction_from_forward(float4_rotate_float3(rotation, float3_forward));
+}
+
+// where a placer looks: its camera's ray, else its body's facing
+static inline byte block_direction_of_placer(ecs* world, entity placer) {
+    const entity camera = zox_get_link(world, placer, CameraLink);
+    if (zox_valid(camera) && zox_has(camera, RaycastNormal)) {
+        return block_direction_from_forward(zox_getv(camera, RaycastNormal));
+    }
+    return zox_has(placer, Rotation3D) ? block_direction_from_rotation(zox_getv(placer, Rotation3D)) : 0;
 }
 
 static inline byte block_offset_encode(int3 offset) {

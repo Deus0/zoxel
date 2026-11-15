@@ -1,7 +1,7 @@
 // tst: furniture_fillers, a bed or door fills its box with the shared filler block (items/fun/multi_block.c)
 //  - places (multi_block_place) a bed and a door in the player's chunk, and a bed at its edge whose other half is in
 //    the next chunk
-//  - their other voxels hold the filler, solid; placing into one is refused
+//  - their other voxels hold the filler, solid; placing into one is refused, and placing one over air
 //  - breaking the bed's filler takes its base too, breaking the door's base takes its top
 //  - run: bash bsh/tst.sh furniture_fillers
 byte zox_tst_ffill_stage = 0;
@@ -11,6 +11,40 @@ byte zox_tst_ffill_values[3];
 
 static inline int zox_tst_ffill_at(ecs* world, entity terrain, int3 p, int x, int y, int z) {
     return terrain_voxel_at(world, terrain, (int3) { p.x + x, p.y + y, p.z + z });
+}
+
+// a realm block that's solid ground (a cube with a collider, not a model or a filler)
+static inline byte zox_tst_ground_voxel(ecs* world, entity realm) {
+    const BlockLinks* blocks = zox_get(realm, BlockLinks);
+    for (int i = 0; i < blocks->length; i++) {
+        const entity b = blocks->value[i];
+        if (zox_valid(b) && !zox_has(b, BlockVox) && !zox_has(b, BlockFiller) &&
+            zox_has(b, BlockCollider) && zox_getv(b, BlockCollider) == zox_block_solid) {
+            return i + 1;
+        }
+    }
+    return 0;
+}
+
+// places a sized block with ground written under its bottom cells first (straight into the octree, so placing sees it)
+static inline byte zox_tst_place_supported(ecs* world, entity terrain, entity realm, int3 base, byte value, byte direction) {
+    const int3 size = block_size_of(world, realm_voxel_block(world, realm, value));
+    const byte ground = zox_tst_ground_voxel(world, realm);
+    for (int x = 0; x < size.x; x++)
+    for (int z = 0; z < size.z; z++) {
+        const int3 o = block_direction_offset(direction, (int3) { x, 0, z });
+        byte3 local;
+        const entity chunk = terrain_chunk_local(world, terrain, (int3) { base.x + o.x, base.y + o.y - 1, base.z + o.z }, &local);
+        if (!chunk) {
+            continue;
+        }
+        spinlock* lock = zox_octree_lock(world, chunk);
+        zox_octree_lock_begin(lock);
+        set_VoxelNode(zox_getm(chunk, VoxelNode), zox_getv(chunk, NodeDepth), local, ground);
+        zox_octree_lock_end(lock);
+        zox_add(chunk, VoxelNodeDirty);
+    }
+    return multi_block_place(world, terrain, realm, base, value, direction);
 }
 
 byte zox_tst_furniture_fillers_ready(ecs* world) {
@@ -42,9 +76,9 @@ byte zox_tst_furniture_fillers_ready(ecs* world) {
             zox_tst_ffill_values[1] = zox_getv(blocks[1], BlockIndex);
             zox_tst_ffill_values[2] = realm_filler_voxel(world, realm);
             zox_tst_check(zox_tst_ffill_values[2], "the realm has no filler block");
-            zox_tst_check(multi_block_place(world, terrain, realm, bed, zox_tst_ffill_values[0], 0), "the bed wasn't placed");
-            zox_tst_check(multi_block_place(world, terrain, realm, door, zox_tst_ffill_values[1], 0), "the door wasn't placed");
-            zox_tst_check(multi_block_place(world, terrain, realm, edge, zox_tst_ffill_values[0], 0), "the bed across a chunk edge wasn't placed");
+            zox_tst_check(zox_tst_place_supported(world, terrain, realm, bed, zox_tst_ffill_values[0], 0), "the bed wasn't placed");
+            zox_tst_check(zox_tst_place_supported(world, terrain, realm, door, zox_tst_ffill_values[1], 0), "the door wasn't placed");
+            zox_tst_check(zox_tst_place_supported(world, terrain, realm, edge, zox_tst_ffill_values[0], 0), "the bed across a chunk edge wasn't placed");
             zox_tst_ffill_bed = bed;
             zox_tst_ffill_door = door;
             zox_tst_ffill_edge = edge;
@@ -72,6 +106,8 @@ byte zox_tst_furniture_fillers_ready(ecs* world) {
         const entity filler_block = realm_voxel_block(world, realm, filler);
         zox_tst_check(zox_getv(filler_block, BlockCollider) == zox_block_solid, "the filler isn't solid");
         zox_tst_check(!multi_block_place(world, terrain, realm, (int3) { b.x + 1, b.y, b.z }, bed, 0), "placing into the bed's filler wasn't refused");
+        // over air: a bed two blocks above the door's top, nothing under it
+        zox_tst_check(!multi_block_place(world, terrain, realm, (int3) { d.x, d.y + 4, d.z }, bed, 0), "a bed over air wasn't refused");
         // break the bed's filler and the door's base
         terrain_queue_voxel(world, terrain, (int3) { b.x + 1, b.y, b.z }, 0, 0);
         terrain_queue_voxel(world, terrain, d, 0, 0);

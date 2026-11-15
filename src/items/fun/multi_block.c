@@ -1,7 +1,8 @@
 // blocks bigger than one (beds, doors, BlockSize): the base voxel holds the block, the rest of its box holds the
 //  realm's shared filler block (solid, draws nothing, BlockFiller), doc/plans/multi_block_vox.md
 //  - placing one turns it to the placer's facing: its box turned about its base, its base's block data its direction,
-//    each filler's its offset back to its base (chunks3/fun/block_data.c); refused unless its box is all air
+//    each filler's its offset back to its base (chunks3/fun/block_data.c); refused unless its box is all air and
+//    solid ground is under each of its bottom cells
 //  - removing any part removes the rest (multi_block_removed): a filler its base, a base its fillers, the base drops it
 //  - main thread only: they write other chunks' queues
 
@@ -80,6 +81,12 @@ static inline byte block_is_multi(int3 size) {
     return size.x > 1 || size.y > 1 || size.z > 1;
 }
 
+// a solid block (its collider) at a world block position
+static inline byte block_is_solid_at(ecs* world, entity terrain, entity realm, int3 block) {
+    const entity b = realm_voxel_block(world, realm, terrain_voxel_at(world, terrain, block));
+    return zox_valid(b) && (!zox_has(b, BlockCollider) || zox_getv(b, BlockCollider) != zox_block_air);
+}
+
 // places a block at base, a sized one turned to direction with its fillers; 0 if any voxel of its box isn't air
 byte multi_block_place(ecs* world, entity terrain, entity realm, int3 base, byte value, byte direction) {
     const int3 size = block_size_of(world, realm_voxel_block(world, realm, value));
@@ -99,6 +106,10 @@ byte multi_block_place(ecs* world, entity terrain, entity realm, int3 base, byte
     for (int z = 0; z < size.z; z++) {
         const int3 o = block_direction_offset(direction, (int3) { x, y, z });
         if (terrain_voxel_at(world, terrain, int3_add(base, o)) != 0) {
+            return 0;
+        }
+        // stood on ground: a solid block under each of its bottom cells (half a bed hung over air)
+        if (!y && !block_is_solid_at(world, terrain, realm, int3_add(base, (int3) { o.x, o.y - 1, o.z }))) {
             return 0;
         }
     }

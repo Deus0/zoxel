@@ -41,7 +41,7 @@ byte zox_tst_furniture_rotation_ready(ecs* world) {
             const byte bed = zox_getv(zox_tst_fplace_block(world, realm, zox_id(BlockBed)), BlockIndex);
             for (byte i = 0; i < zox_tst_frot_beds; i++) {
                 zox_tst_frot_bases[i] = (int3) { origin.x + spots[i].x, origin.y + y, origin.z + spots[i].y };
-                zox_tst_check(multi_block_place(world, terrain, realm, zox_tst_frot_bases[i], bed, i), "bed [%i] wasn't placed", i);
+                zox_tst_check(zox_tst_place_supported(world, terrain, realm, zox_tst_frot_bases[i], bed, i), "bed [%i] wasn't placed", i);
             }
             zox_tst_frot_stage = 1;
             zox_tst_frot_frames = 0;

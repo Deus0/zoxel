@@ -2,6 +2,7 @@
 //  - a bed (2 x 1 x 1) turned each way: its box over its two cells (the base and its turned filler), 2 blocks long
 //    along x or z, 1 across; a door (1 x 2 x 1) any way: 1 x 2 x 1, half a block up from its base cell
 //  - the box matches multi_block_place's cells (block_direction_offset)
+//  - looking along x or z, a bed lies away from you that way (block_direction_from_forward)
 //  - run: bash bsh/tst.sh placement_box
 byte zox_tst_placement_box_ready(ecs* world) {
     (void) world;
@@ -10,6 +11,14 @@ byte zox_tst_placement_box_ready(ecs* world) {
 
 void zox_tst_placement_box_check(ecs* world) {
     (void) world;
+    // looking along each way, a bed's other half is that way (it lay sideways, turned by yaw alone)
+    const float3 forwards[4] = { { 1, 0, 0.2f }, { 0, -0.3f, 1 }, { -1, 0.1f, 0 }, { 0.1f, 0, -1 } };
+    const int3 expected_fillers[4] = { { 1, 0, 0 }, { 0, 0, 1 }, { -1, 0, 0 }, { 0, 0, -1 } };
+    for (byte i = 0; i < 4; i++) {
+        const int3 filler = block_direction_offset(block_direction_from_forward(forwards[i]), (int3) { 1, 0, 0 });
+        zox_tst_check(int3_equals(filler, expected_fillers[i]), "looking [%.1f %.1f %.1f], the bed's other half is [%i %i %i]",
+            forwards[i].x, forwards[i].y, forwards[i].z, filler.x, filler.y, filler.z);
+    }
     for (byte direction = 0; direction < 4; direction++) {
         float3 offset, extents;
         placement_box((int3) { 2, 1, 1 }, direction, &offset, &extents);
