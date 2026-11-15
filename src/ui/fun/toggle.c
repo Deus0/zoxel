@@ -1,3 +1,5 @@
+uint zox_ui_open_sounds = 0;     // windows opened with their sound (tst window_toggle)
+
 entity player_toggle_ui(
     ecs *world,
     entity player,
@@ -6,6 +8,8 @@ entity player_toggle_ui(
 {
     // one popping out reads as closed (UIClosing), a new one opens
     if (!zox_valid(e) || zox_has(e, UIClosing)) {
+        spawn_sound_effect(world, sound_effect_ui_open, 0);
+        zox_ui_open_sounds++;
         return (*spawn_ui)(world, player);
     }
     ui_pop_out(world, e);

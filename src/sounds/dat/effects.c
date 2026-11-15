@@ -22,6 +22,7 @@ typedef enum {
     sound_effect_click,         // ui, in the middle
     sound_effect_click_rare,
     sound_effect_start,         // the start screen, on to the main menu
+    sound_effect_ui_open,       // a window opened (player_toggle_ui)
     sound_effect_end
 } SoundEffectType;
 

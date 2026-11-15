@@ -2,11 +2,13 @@
 //  - toggled open it pops in (its scale from 0 to 1), it has a close button
 //  - toggled again it pops out (UIClosing) and is deleted once it has
 //  - toggled while popping out, a new one opens (a closing one reads as closed)
+//  - each opening plays the ui open sound (zox_ui_open_sounds)
 //  - run: bash bsh/tst.sh window_toggle
 byte zox_tst_wt_stage = 0;
 double zox_tst_wt_time = 0;
 entity zox_tst_wt_window = 0;
 float zox_tst_wt_scale_min = 1, zox_tst_wt_scale_max = 0;
+uint zox_tst_wt_sounds = 0;
 byte zox_tst_wt_close_button = 0, zox_tst_wt_closing = 0, zox_tst_wt_deleted = 0, zox_tst_wt_reopened = 0;
 
 static inline entity zox_tst_wt_toggle(ecs* world) {
@@ -18,6 +20,7 @@ byte zox_tst_window_toggle_ready(ecs* world) {
         if (!zox_tst_player_spawn_ready(world)) {
             return 0;
         }
+        zox_tst_wt_sounds = zox_ui_open_sounds;
         zox_tst_wt_window = zox_tst_wt_toggle(world);
         zox_tst_wt_stage = 1;
         zox_tst_wt_time = zox_current_time;
@@ -63,4 +66,5 @@ void zox_tst_window_toggle_check(ecs* world) {
     zox_tst_check(zox_tst_wt_closing, "toggled again, it didn't pop out");
     zox_tst_check(zox_tst_wt_deleted, "it wasn't deleted after popping out");
     zox_tst_check(zox_tst_wt_reopened, "toggled while popping out, no new one opened");
+    zox_tst_check(zox_ui_open_sounds - zox_tst_wt_sounds == 2, "[%i] open sounds for its 2 openings", zox_ui_open_sounds - zox_tst_wt_sounds);
 }
