@@ -39,6 +39,7 @@
 #include "vegetation_chunks.c"
 #include "music.c"
 #include "item_sizes.c"
+#include "find_quest.c"
 // tst: player_spawn, a new realm spawns the player's character standing in the terrain
 //  - waits for the player's character, then lets it settle for a few seconds
 //  - the character's block is air (not stuck in the ground) and it hasn't fallen out of the world
@@ -627,6 +628,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("held_item", zox_tst_held_item_ready, zox_tst_held_item_check, 120);
     zox_tst_add("held_block", zox_tst_held_block_ready, zox_tst_held_item_check, 120);
     zox_tst_add("item_sizes", zox_tst_item_sizes_ready, zox_tst_item_sizes_check, 120);
+    zox_tst_add("find_quest", zox_tst_find_quest_ready, zox_tst_find_quest_check, 120);
     zox_tst_add("id_window", zox_tst_id_window_ready, zox_tst_id_window_check, 120);
     zox_tst_add("npcs_after_load", zox_tst_npcs_after_load_ready, zox_tst_npcs_after_load_check, 240);
     zox_tst_set_setup("npcs_after_load", zox_tst_load_games_setup, 1);

@@ -22,3 +22,4 @@ entity get_user_quest(
     }
     return user_quest;
 }
+#include "reward.c"

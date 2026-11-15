@@ -35,10 +35,8 @@ const char* get_quest_tracker_text(
             character_name,
             value,
             target);
-    } else {
-        index += sprintf(
-            text + index,
-            "\n- Find [???]");
+    } else if (zox_has(quest, FindQuest)) {
+        index += sprintf(text + index, "\n- Talk to someone in a town");
     }
     return text;
 }

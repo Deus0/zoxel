@@ -26,14 +26,11 @@
         }
         const char* name = zox_has(e2, ZoxName) ? zox_getv(e2, ZoxName) : zox_get_name(e2);
         char result[128];
-        // TODO: Get Objectives
-        if (zox_has(e2, SlayQuest)) {
-            entity character = zox_get_link(world, e2, CharacterLink);
-            // byte value = zox_getv(e2, QuestValue);
-            byte target = zox_getv(e2, QuestTarget);
-            sprintf(result, "%s\n- slay %s x%i", name, zox_get_name(character), target);
-        } else {
-            sprintf(result, "[%s]: find ???", name);
+        // its name and objective, as the tracker shows them
+        char* objective = (char*) get_quest_tracker_text(world, e2);
+        snprintf(result, sizeof(result), "%s", objective[0] ? objective : name);
+        if (objective[0]) {
+            free(objective);
         }
         set_tooltip_text(world, e, tooltip, result);
     }

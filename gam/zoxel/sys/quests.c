@@ -28,7 +28,25 @@ void quests_realm_spawn_system(iter* it) {
         if (state->value != zox_generate_realm_quests) {
             continue;
         }
-        spawn_realm_quest(world, prefab_quest, e, "Find Bob", "discord");
+        // the starting quest: find a town, talk to someone there, 3 cookies (quests_found_town)
+        {
+            const entity find = spawn_realm_quest(world, prefab_quest, e, "Find a Town", "discord");
+            zox_add(find, FindQuest);
+            entity cookie = 0;
+            iter items = zox_children(world, e);
+            while (zox_children_next(items)) {
+                for (int k = 0; k < items.count; k++) {
+                    const entity item = items.entities[k];
+                    if (zox_has(item, ItemConsumable) && zox_has(item, ZoxName) && !strcmp(zox_getv(item, ZoxName), "cokie")) {
+                        cookie = item;
+                    }
+                }
+            }
+            if (zox_valid(cookie)) {
+                zox_link(world, find, QuestRewardLink, cookie);
+                zox_setv(find, QuestRewardCount, 3);
+            }
+        }
         entity slime = 0;
         zox_each_link(world, e, CharacterLinks, character) {
             if (zox_has(character, CharacterSlime)) {
