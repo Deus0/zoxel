@@ -86,3 +86,22 @@ void realm_info_played(const char* folder, double now) {
     save_realm_info(folder, &info);
     realm_played_since = now;
 }
+
+// a seed typed as text: its number if it's all digits, else the text hashed (FNV-1a), the same text the same seed
+uint realm_seed_from_text(const char* text) {
+    if (!text || !text[0]) {
+        return 0;
+    }
+    byte digits = 1;
+    for (const char* c = text; *c && digits; c++) {
+        digits = *c >= '0' && *c <= '9';
+    }
+    if (digits) {
+        return (uint) strtoull(text, NULL, 10);
+    }
+    uint hash = 2166136261u;
+    for (const char* c = text; *c; c++) {
+        hash = (hash ^ (byte) *c) * 16777619u;
+    }
+    return hash;
+}

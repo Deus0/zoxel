@@ -145,8 +145,29 @@ byte zox_tst_menu_flow_ready(ecs* world) {
             }
             zox_tst_check(!main_menu, "new game: main menu wasn't closed");
             zox_tst_check(menus == 1, "new game: [%i] menus open, expected 1", menus);
-            // its name typed in its input field
-            input_field_set_value(world, zox_get_child_by_id_recursive(world, new_realm, zox_id(TextInput)), "Flow Lands");
+            // its name and seed typed in its input fields (a text seed, hashed: its realm made again with it)
+            {
+                entity name_field = 0, seed_field = 0;
+                menu_new_realm_fields(world, new_realm, &name_field, &seed_field);
+                zox_tst_check(name_field && seed_field, "the new realm menu has no name or seed field");
+                // randomised: a new seed, and a new name from it (the name was still the seed's)
+                char* seed_before = input_field_value(world, seed_field);
+                char* name_before = input_field_value(world, name_field);
+                on_randomise_new_realm_seed(world, (ClickEventData) { .clicker = player });
+                char* seed_after = input_field_value(world, seed_field);
+                char* name_after = input_field_value(world, name_field);
+                char expected_name[realm_name_length];
+                realm_default_name(realm_seed_from_text(seed_after), expected_name, sizeof(expected_name));
+                zox_log("[tst] randomised: seed [%s] to [%s], name [%s] to [%s]", seed_before, seed_after, name_before, name_after);
+                zox_tst_check(strcmp(seed_before, seed_after) && !strcmp(name_after, expected_name),
+                    "randomise: seed [%s] to [%s], name [%s] to [%s]", seed_before, seed_after, name_before, name_after);
+                free(seed_before);
+                free(name_before);
+                free(seed_after);
+                free(name_after);
+                input_field_set_value(world, name_field, "Flow Lands");
+                input_field_set_value(world, seed_field, "flow seed");
+            }
             if (!zox_tst_menus_click(world, player, new_realm, &on_confirmed_new_realm, "enter realm")) {
                 return 1;
             }
@@ -164,6 +185,9 @@ byte zox_tst_menu_flow_ready(ecs* world) {
                 const byte loaded = zox_valid(realm) && load_realm_info(zox_get(realm, FolderPath)->value, &info);
                 zox_tst_check(loaded && !strcmp(info.name, "Flow Lands") && info.seed == (uint) zox_getv(realm, Seed),
                     "the new realm's realm.txt has name [%s] seed [%u]", loaded ? info.name : "-", loaded ? info.seed : 0);
+                zox_tst_check(zox_valid(realm) && (uint) zox_getv(realm, Seed) == realm_seed_from_text("flow seed"),
+                    "the realm's seed is [%u], not the typed one's [%u]", zox_valid(realm) ? (uint) zox_getv(realm, Seed) : 0,
+                    realm_seed_from_text("flow seed"));
             }
             break;
         case 5:

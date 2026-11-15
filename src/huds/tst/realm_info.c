@@ -1,5 +1,6 @@
 // tst: realm_info, realms keep a name, seed, time played and when last played (realm.txt, saves/fun/realm_info.c)
 //  - realm.txt saved and loaded back
+//  - a seed from text: digits its number, other text hashed
 //  - time played as text (under a minute, 5m, 2h 5m)
 //  - the load menu: three realms, its buttons their names, last played first, each one's tooltip its seed and time
 //  - run: bash bsh/tst.sh realm_info
@@ -57,6 +58,11 @@ byte zox_tst_realm_info_ready(ecs* world) {
         zox_tst_check(load_realm_info(folder, &info), "realm.txt in [%s] didn't load", folder);
         zox_tst_check(info.seed == 11 && !strcmp(info.name, "Old Lands") && info.played == 7500 && info.last == now - 300,
             "realm.txt loaded back seed [%u] name [%s] played [%u] last [%ld]", info.seed, info.name, info.played, info.last);
+        // a seed from text: digits its number, text hashed, the same text the same seed
+        zox_tst_check(realm_seed_from_text("12345") == 12345, "the seed \"12345\" is [%u]", realm_seed_from_text("12345"));
+        zox_tst_check(realm_seed_from_text("zox lands") == realm_seed_from_text("zox lands") &&
+            realm_seed_from_text("zox lands") != realm_seed_from_text("zox landz") && realm_seed_from_text("zox lands"),
+            "text seeds aren't stable or distinct");
         // time played as text
         char text[32];
         realm_played_text(20, text, sizeof(text));

@@ -35,18 +35,90 @@ void enter_new_realm(ecs *world, entity player, const char* name) {
     free(save_dir);
 }
 
+// its two input fields, by their place in its list: the name, then the seed
+static inline void menu_new_realm_fields(ecs* world, entity e, entity* name, entity* seed) {
+    if (zox_has(e, TextInput)) {
+        const int index = zox_has(e, ChildIndex) ? zox_getv(e, ChildIndex) : 0;
+        if (!*name || (zox_has(*name, ChildIndex) && index < zox_getv(*name, ChildIndex))) {
+            if (*name) {
+                *seed = *name;
+            }
+            *name = e;
+        } else {
+            *seed = e;
+        }
+        return;
+    }
+    iter it = zox_children(world, e);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count; i++) {
+            menu_new_realm_fields(world, it.entities[i], name, seed);
+        }
+    }
+}
+
+// the name typed for the realm entered next (a new seed respawns its realm first, a frame later)
+char new_realm_name[realm_name_length];
+
+void delay_enter_named_realm(ecs *world, entity player) {
+    enter_new_realm(world, player, new_realm_name);
+}
+
 void on_confirmed_new_realm(ecs *world, ClickEventData event) {
     entity player = event.clicker;
     entity canvas = zox_get_link(world, player, CanvasLink);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuNewRealm));
-    // its name, typed in its input field
-    char* name = NULL;
+    entity game = zox_get_link(world, player, GameLink);
+    entity realm = zox_get_link(world, game, RealmLink);
+    new_realm_name[0] = 0;
+    uint seed = zox_valid(realm) ? (uint) zox_getv(realm, Seed) : 0;
     if (menu) {
-        name = input_field_value(world, zox_get_child_by_id_recursive(world, menu, zox_id(TextInput)));
+        entity name_field = 0, seed_field = 0;
+        menu_new_realm_fields(world, menu, &name_field, &seed_field);
+        char* name = input_field_value(world, name_field);
+        snprintf(new_realm_name, sizeof(new_realm_name), "%s", name);
+        free(name);
+        char* seed_text = input_field_value(world, seed_field);
+        if (seed_text[0]) {
+            seed = realm_seed_from_text(seed_text);
+        }
+        free(seed_text);
         input_field_unfocus(world);
         zox_delete(menu);
     }
-    enter_new_realm(world, event.clicker, name);
+    // a different seed typed: its realm made again with it, entered once it's linked
+    if (zox_valid(realm) && seed != (uint) zox_getv(realm, Seed)) {
+        zox_delete(realm);
+        spawn_realm(world, game, seed);
+        delay_event(world, &delay_enter_named_realm, player, 0.01);
+        return;
+    }
+    enter_new_realm(world, player, new_realm_name);
+}
+
+// a new random seed in its seed field, and a name from it if the name was still the old seed's
+void on_randomise_new_realm_seed(ecs *world, ClickEventData event) {
+    entity canvas = zox_get_link(world, event.clicker, CanvasLink);
+    entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuNewRealm));
+    entity name_field = 0, seed_field = 0;
+    menu_new_realm_fields(world, menu, &name_field, &seed_field);
+    if (!seed_field) {
+        return;
+    }
+    char* old_text = input_field_value(world, seed_field);
+    char old_name[realm_name_length];
+    realm_default_name(realm_seed_from_text(old_text), old_name, sizeof(old_name));
+    free(old_text);
+    const uint seed = get_unique_time_seed();
+    char text[16];
+    snprintf(text, sizeof(text), "%u", seed);
+    input_field_set_value(world, seed_field, text);
+    char* name = input_field_value(world, name_field);
+    if (!strcmp(name, old_name)) {
+        char new_name[realm_name_length];
+        realm_default_name(seed, new_name, sizeof(new_name));
+        input_field_set_value(world, name_field, new_name);
+    }
     free(name);
 }
 
@@ -76,82 +148,45 @@ entity spawn_menu_new_realm(
     if (!zox_valid(realm)) {
         return 0;
     }
-    lint seed = zox_getv(realm, Seed);
-    int2 size = (int2) { 128 * ui_scale, 96 * ui_scale };
-    float2 window_anchor = zox_huds_window_anchor;
-    byte header_font_size = zox_huds_header_font_size * ui_scale;
-    byte list_font_size = zox_huds_element_font_size * ui_scale;
-    byte2 list_padding = byte2_single(zox_huds_list_padding * ui_scale);
-    byte2 button_padding = (byte2) { 6 * ui_scale, 4 * ui_scale };
-    byte2 header_padding = (byte2) { 10 * ui_scale, 4 * ui_scale };
-    // more data
-    entity canvas = zox_get_link(world, player, CanvasLink);
-    const char* header_label = "Where"; // "New Realm";
-    int max_labels = huds_max_list_elements;
-    // # Window #
-    LayoutParentData canvas_data = { .e = canvas };
-    entity3 e3 = spawn_window(
-        world,
-        prefab_window,
-        prefab_body,
-        header_label,
-        canvas,
-        int2_zero,
-        size,
-        window_anchor,
-        header_font_size,
-        header_padding,
-        &on_cancelled_new_realm);
-    entity e = e3.x;
-    entity body = e3.z;
-    zox_add(e, MenuNewRealm);
-    zox_add(e, NavigationWindow);
-    // # List #
-    SpawnListElement elements[max_labels];
-    int elements_count = 0;
-    // its name, a typed one or one from its seed (shown in its tooltip)
+    const lint seed = zox_getv(realm, Seed);
+    const byte header_font_size = zox_huds_header_font_size * ui_scale;
+    const byte list_font_size = zox_huds_element_font_size * ui_scale;
+    // half the usual gap: its six rows fit a small screen (enter scrolled out of view at 460 pixels)
+    const byte2 padding = byte2_single(zox_huds_list_padding * ui_scale / 2);
+    // its name (one from its seed to start) and its seed, typed or randomised; the window fits its list
     char name[realm_name_length];
     realm_default_name((uint) seed, name, sizeof(name));
-    char seed_tooltip[32];
-    snprintf(seed_tooltip, sizeof(seed_tooltip), "seed %lu", seed);
-    elements[elements_count++] = (SpawnListElement) {
-        .type = list_element_type_input,
-        .text = name,
-        .tooltip = seed_tooltip,
+    char seed_text[16];
+    snprintf(seed_text, sizeof(seed_text), "%u", (uint) seed);
+    SpawnListElement elements[] = {
+        { .type = list_element_type_label, .text = "Name" },
+        { .type = list_element_type_input, .text = name },
+        { .type = list_element_type_label, .text = "Seed" },
+        { .type = list_element_type_input, .text = seed_text },
+        { .type = list_element_type_button, .text = "Randomise", .on_click = { &on_randomise_new_realm_seed } },
+        { .type = list_element_type_button, .text = "Enter", .on_click = { &on_confirmed_new_realm } },
     };
-    elements[elements_count++] = (SpawnListElement) {
-        .type = list_element_type_button,
-        .text = "Enter",
-        .on_click = { &on_confirmed_new_realm },
-    };
-    byte visible_count = elements_count;
-    LayoutParentData list_parent_data = { .e = body };
-    ElementSpawnData list_element_data = {
-        .prefab = prefab_list,
-        .size = size,
-        .anchor = float2_half,
-    };
-    SpawnList ui_list_data = (SpawnList) {
-        .elements = elements,
-        .count = elements_count,
-        .visible_count = visible_count,
-        .font_size = list_font_size,
-        .fill = (color) { 0, 0, 0, 0 },
-        .outline = (color) { 0, 255, 255, 55 },
-        .slider_height = 64,
-        .slider_padding = 64,
-        .button_padding = button_padding,
-        .padding = list_padding,
-        .margins = list_padding,
-    };
-    spawn_list(
+    const int elements_count = sizeof(elements) / sizeof(elements[0]);
+    entity e = spawn_window_list(
         world,
-        canvas_data,
-        list_parent_data,
-        list_element_data,
-        ui_list_data,
+        prefab_window,
+        player,
+        "Where",
+        header_font_size,
+        list_font_size,
+        (ClickEvent) { &on_cancelled_new_realm },
+        1,
+        0,
+        0,
         zox_alignment_centre,
-        NULL);
+        zox_huds_window_anchor,
+        padding,
+        NULL,
+        elements,
+        elements_count,
+        elements_count).x;
+    zox_add(e, MenuNewRealm);
+    zox_add(e, NavigationWindow);
     return e;
 }
 

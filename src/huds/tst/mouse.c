@@ -197,9 +197,13 @@ byte zox_tst_mouse_click_ready(ecs* world) {
             if (!zox_tst_mouse_hold(zox_tst_mouse_on_button, 0) || zox_tst_mouse_frames < zox_tst_mouse_layout_frames) {
                 return 0;
             }
+            const entity new_realm = zox_tst_menu(world, canvas, zox_id(MenuNewRealm));
+            // popped in (its scale overshoots 1 on the way, moving a button far from its middle, enter is low)
+            if (new_realm && zox_has(new_realm, LocalScale1) && fabsf(zox_getv(new_realm, LocalScale1) - 1) > 0.001f) {
+                return 0;
+            }
             zox_tst_check(!main_menu, "main menu wasn't closed after clicking new game");
             zox_tst_check(new_realms == 1, "after clicking new game once, [%i] new realm menus are open, expected 1", new_realms);
-            const entity new_realm = zox_tst_menu(world, canvas, zox_id(MenuNewRealm));
             zox_tst_mouse_enter = new_realm ? zox_tst_find_click(world, new_realm, &on_confirmed_new_realm) : 0;
             zox_tst_check(zox_tst_mouse_enter, "new realm menu has no enter button");
             if (!zox_tst_mouse_enter ||
