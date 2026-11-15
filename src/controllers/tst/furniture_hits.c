@@ -116,7 +116,8 @@ byte zox_tst_furniture_hits_ready(ecs* world) {
             zox_setv(zox_tst_fhits_npcs[i], Behaviour, zox_behaviour_idle);
         }
     }
-    // landed: both fallen from where they spawned and still (their physics can start late, a chunk not ready)
+    // landed: both fallen from where they spawned and still; they're held still their first 8 physics frames
+    //  (physics3d_disable_system), and frames here can take a second while the beds' meshes first build (software)
     byte landed = 1;
     for (byte i = 0; i < 2; i++) {
         const entity npc = zox_tst_fhits_npcs[i];
