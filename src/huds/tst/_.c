@@ -4,6 +4,7 @@
 #include "mouse.c"
 #include "mouse_leave.c"
 #include "tooltips.c"
+#include "tooltip_blink.c"
 #include "options.c"
 #include "scroll.c"
 #include "exit.c"
@@ -25,6 +26,8 @@ void zox_tsts_huds() {
     zox_tst_set_setup("ui_leaks", NULL, 1);
     zox_tst_add("tooltips", zox_tst_tooltips_ready, zox_tst_tooltips_check, 60);
     zox_tst_set_setup("tooltips", NULL, 1);
+    zox_tst_add("tooltip_blink", zox_tst_tooltip_blink_ready, zox_tst_tooltip_blink_check, 60);
+    zox_tst_set_setup("tooltip_blink", NULL, 1);
     zox_tst_add("options_toggle", zox_tst_options_toggle_ready, zox_tst_options_toggle_check, 60);
     zox_tst_set_setup("options_toggle", NULL, 1);
     zox_tst_add("scroll_wheel", zox_tst_scroll_wheel_ready, zox_tst_scroll_wheel_check, 60);

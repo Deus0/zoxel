@@ -1,6 +1,94 @@
 # Done
 
 ## Moved from todo (2026-11-15)
+-x Tooltips stuck: a ui selected and deselected in the same frame (a fast mouse flick) unlinked before its deferred link landed, the link and text stayed; the tooltip now lets go of a ui no longer selected (SelectState), tst tooltip_blink (stuck 5 of 10 before)
+-x Bug: Character shakes - smooth the physics - put to sleep when not moving
+-x Smooth the camera or sleep the physics cause it flickers the lighting
+-x Fix little teleport when loading player character
+-x Fix destruction material
+	-x use the depth offset instead
+	-x reduce z offset to 0
+-x Fix overlay of destruction materials for block destruction
+-x Destruction Material Flickering - increase depth until i fix it
+-x Bug: lines of selected block should render over destruction overlay
+-x Bug: died holding block, stuck to model?
+-x When dialogue animates - first fontt will flash...!
+-x Render frames with alpha 1 (the opaque render texture material) show nothing, the alpha one works (mug shots use 0.95)
+-x Font sometimes scrambled on ui
+-x Text font just scrambled positions again - maybe it repositions before child index is set
+-x Line2Ds are broken, need to add to new 2D render stack that sorts layers
+-x fix text label size when resizing - button size
+-x Slider UI isnt accounted for in list ui
+-x List ui calculating wrong cause sliders different heights then buttons!
+-x Fix Scale2 working on UIs
+-x Pause ui toggle not showing on spawn taskbar + pause
+-x stats panel didnt spawn when respawn
+-x Tooltips: If ui selects while didnt deselect..!
+	- select main menu header after button selects
+	- the tooltip updates to wrong one - shows load game when you  mouse move fast between uis
+	- it can show nothing selected even though log shows it set, teh issue therefor must be that it gets set and unset in same frame
+-x glyphs j and y fill solid, their outlines in res/fonts/monocraft.zox close the whole box (the fill follows the outlines, tst font_glyphs_fill, look at tst/font_fill.ppm)
+-x Glitchy depth fighting on 3D UIs, and on Block Destruction Materials
+-x Bug: Edge of map UI is glitchy
+-x Map UI slightly off still - the flipping part
+-x Map Arrow is backwards, but its pointing right way, when we move right in character, the map ui goes left... So rotation is flipped of map and arrow
+-x Sometimes the lighting doesnt propogate properly into the house
+-x Smooth out camera at low fps - its very glitchy
+-x skybox doesnt follow to main menu?
+-x PNG errors - convert rest to bmp
+-x corners of light still off (needs check solids)
+-x when moving between chunks can throw lights off
+	- i think due to light at lower depth is more sunny
+-x Fix light face on bigger lods, needs tojust pick brightest if at a lower division
+-x At start, terrain lights don't update in some chunks
+-x Gizmos: Selected Block Gizmo - is flickering - only when attached to character, if detatch is stops...
+-x Fix post procesing on android
+-x Fix Android Build - on arm pcs
+-x Fix viewport not resizing
+-x if building a tower up - shows invisible face
+	-x Its when its next to a chunk with no chunk meshes - it doesnt build the edge
+-x Fix Lighting Seems between Chunks, only sometimes??
+-x Vegetation seems off, when moving between LODs
+-x Fix Vegation not building at same scale
+-x Sometimes chunk didnt update until we destroyed a block from it
+-x When i spawn new chunk meshes, it breaks the old ones...!
+-x Terrain Chunk faces missing when streaming
+	-x update neighbors directly from the queue
+	-x just rebuild their mesh, no need for voxelnodeupdate etc
+	-x When streaming terrain - flag neighbor of updated chunks dirty
+		- the outside chunks have missing faces now
+		- move a little around chunks
+		- look at LOD horizon and notice chunk faces can be missing
+	-x Sometimes flying around we see missing faces now in chunks
+		- probably didnt trigger neighbors..
+	-x Im getting neighbor updates not triggering at map edges
+-x Bug: NPCs can spawn before the chunk is finished, which makes them fall through the chunkx
+-x Redo skinning, has overlapping issues if parts close atm
+	-x Cellular automata voxels around bone joints for better rotation
+	-x use octree data for bone indexes, so we can remember what part we placed the voxels from, then we can use this when building up the weights
+	-x we can probably blend them better between as well
+-x First person camera doesn't adjust for the head's size: the head has a neck now, its eyes higher (head.c)
+-x Fix timing of arm swing
+-x arm should only slerp rotation - no setting
+-x Fix jumps working same at diff time deltas
+	- physics, we just need to give it the same accelaration juice
+-x Bug: Taskbar toggle not deactivated when window closes (80ec42f82, tst window_toggle)
+-x Windows no longer close taskbar toggle (80ec42f82, tst window_toggle)
+-x Bug: The 3D uis are flickering due to depth fighting atm (f96a61886 bda4636c5, tst ui3_overlap)
+-x Fix the layering of the 3D UIs, text and such has depth issues (f96a61886 bda4636c5, tst ui3_occlusion)
+-x Smooth Lights Error: Colors Past Limits [n] (logged during terrain load, seen in most tst runs) (d36ca556a)
+	- [17:32:51.562] [ERROR] Smooth Lights Error: Colors Past Limits [1200] - Face [5] at Pos [12x8x13] Depth [4] of [4]
+-x fix end game fade out, really bad atm (5fb34823a, tst end_game_cleanup)
+-x Main Menu music missing (spawn_menu_music, on the game, crossfades with the realm's)
+-x Fix music importer (make convert, tst music_file)
+-x Music load error on linux (the note count was read as a size_t, tst music_file)
+-x Sound effects quiet in game (too low for small speakers, tst sound_balance)
+-x Quest givers say "You did well..." without giving a quest (NodeLink was exclusive, tst quest_dialogue)
+-x healthbar isnt first still in the panel, soul ended up last (c033af902, tst statbars_hide)
+	- soul needs to be first... lol
+-x 3D uis are visible through buildings at distances, i was unsure how to fix this before (bda4636c5, tst ui3_overlap)
+-x raycast gizmos not cleared upon player death or exit realm (d93eb8a4e, tst gizmo_owner)
+-x The map moves per block, one view drawn from cached tunk colours (tst map_pixel)
 -x Bed and door models, bigger than a block (doc/plans/multi_block_vox.md, steps 1 and 2 of 5): generated models
   two blocks a side (vox_type_bed, vox_type_door), blocks on the realm with a BlockSize, their block vox placed
   from the base voxel's corner at a block's detail; tst furniture_models, furniture_place. Not yet: fillers,

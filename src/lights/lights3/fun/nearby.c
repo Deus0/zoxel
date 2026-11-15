@@ -12,7 +12,7 @@ static inline void fetch_nearby_chunks(
     chunks[OCTREE_INDEX3(sbyte3_zero)] = e;
     for (byte i = 0; i < 6; i++) {
         entity adjacent = neighbors[i];
-        // alive but without its components: a chunk mid spawn or delete (sides.c guards it too), doc/bugs.md
+        // alive but without its components: a chunk mid spawn or delete (sides.c guards it too), doc/todo.md (Bugs)
         if (!zox_valid(adjacent) || !zox_has(adjacent, ChunkNeighbors)) {
             continue;
         }

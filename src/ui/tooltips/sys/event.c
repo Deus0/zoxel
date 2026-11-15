@@ -34,7 +34,7 @@ void tooltip_event_system(iter* it) {
         }*/
         entity tooltip = zox_get_link(world, e, TooltipLink);
         if (!zox_valid(tooltip)) {
-            return;
+            continue;
         }
         // TODO: Make another system that just uses TooltipText instead of event
         TooltipEventData data = {
