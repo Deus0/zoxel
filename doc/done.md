@@ -1,5 +1,8 @@
 # Done
 
+## 2026-11-16
+-x minimap flashes black when updating lods
+
 ## Moved from todo (2026-11-15)
 -x Tooltips stuck: a ui selected and deselected in the same frame (a fast mouse flick) unlinked before its deferred link landed, the link and text stayed; the tooltip now lets go of a ui no longer selected (SelectState), tst tooltip_blink (stuck 5 of 10 before)
 -x Bug: Character shakes - smooth the physics - put to sleep when not moving

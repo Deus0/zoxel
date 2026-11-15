@@ -10,7 +10,7 @@ static inline int map_floor_div(int a, int b) {
 }
 
 // draws the view round block at, returns 1 if every tunk it shows had its colours
-byte draw_map_view(ecs* world, entity terrain, int2 at, int texels, int blocks_per_texel, TextureData* data) {
+byte draw_map_view(ecs* world, entity terrain, int2 at, int texels, int blocks_per_texel, TextureData* data, const color* old, int2 old_at) {
     const int tunk_length = octree_size(zox_getv(terrain, NodeDepth));
     const TunkLinks* tunks = zox_get(terrain, TunkLinks);
     const int sx = zox_maps_flip_x ? -1 : 1, sz = zox_maps_flip_z ? -1 : 1;
@@ -33,7 +33,14 @@ byte draw_map_view(ecs* world, entity terrain, int2 at, int texels, int blocks_p
                 whole &= colors != NULL;
             }
             color c = color_black;
-            if (colors) {
+            if (!colors && old) {
+                // not made yet: keep what was drawn there before
+                const int ox = (block.x - old_at.x) / blocks_per_texel * sx + texels / 2;
+                const int oy = (block.y - old_at.y) / blocks_per_texel * sz + texels / 2;
+                if (ox >= 0 && ox < texels && oy >= 0 && oy < texels) {
+                    c = old[ox + oy * texels];
+                }
+            } else if (colors) {
                 const int lx = (block.x - tunk_position.x * tunk_length) * side / tunk_length;
                 const int lz = (block.y - tunk_position.y * tunk_length) * side / tunk_length;
                 c = colors->value[lx + lz * side];
@@ -86,11 +93,19 @@ void map_view_system(iter* it) {
         }
         const int tunk_length = octree_size(zox_getv(terrain, NodeDepth));
         const int texels = (2 * zox_getv(map, MapZoom) + 1) * tunk_length / bpt;
-        if (size->value.x != texels || data->length != texels * texels) {
+        color* old = NULL;
+        if (size->value.x == texels && data->length == texels * texels) {
+            old = malloc(sizeof(color) * data->length);
+            memcpy(old, data->value, sizeof(color) * data->length);
+        } else {
             size->value = int2_single(texels);
             resize_TextureData(data, texels * texels);
         }
-        drawn_whole->value = draw_map_view(world, terrain, int2_multiply1(texel, bpt), texels, bpt, data);
+        drawn_whole->value = draw_map_view(world, terrain, int2_multiply1(texel, bpt), texels, bpt, data,
+            old, int2_multiply1(drawn_at->value, bpt));
+        if (old) {
+            free(old);
+        }
         drawn_at->value = texel;
         drawn_version->value = version;
         drawn_time->value = zox_current_time;

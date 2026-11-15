@@ -113,7 +113,7 @@ byte zox_tst_map_pixel_ready(ecs* world) {
         TextureData scratch = { 0 };
         resize_TextureData(&scratch, n * n);
         const double start = current_time_in_seconds();
-        draw_map_view(world, terrain, int2_multiply1(drawn, zox_getv(view, MapBlocksPerTexel)), n, zox_getv(view, MapBlocksPerTexel), &scratch);
+        draw_map_view(world, terrain, int2_multiply1(drawn, zox_getv(view, MapBlocksPerTexel)), n, zox_getv(view, MapBlocksPerTexel), &scratch, NULL, int2_zero);
         zox_tst_mp_draw_ms = (current_time_in_seconds() - start) * 1000;
         resize_TextureData(&scratch, 0);
         // a chunk under the player changes

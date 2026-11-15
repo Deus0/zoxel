@@ -8,7 +8,6 @@
 
 ## Bugs
 - npcs shouldnt jump randomly when you are talking *unless theyre hyper*
-- minimap flashes black when updating lods
 - Item in hand dissapears when updating body - parts
 - Skeleton pose resets when we rebuild skeleton
 - player character looks at npc body and not their head
