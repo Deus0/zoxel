@@ -53,17 +53,10 @@ void zox_tst_load_games_setup() {
         char folder[640];
         snprintf(folder, sizeof(folder), "%s/realm_%03i", zox_tst_load_saves_path, i);
         mkdir(folder, 0755);
-        char file[700];
-        snprintf(file, sizeof(file), "%s/seed.dat", folder);
-        FILE* out = fopen(file, "wb");
-        if (out) {
-            SaveRealm save = { .seed = zox_tst_load_seed + i };
-            fwrite(&save, sizeof(SaveRealm), 1, out);
-            fclose(out);
-        }
-        // higher index is newer
-        struct utimbuf times = { now - 10000 + i, now - 10000 + i };
-        utime(folder, &times);
+        // higher index is newer (last played)
+        RealmInfo info = { .seed = zox_tst_load_seed + i, .last = now - 10000 + i };
+        snprintf(info.name, sizeof(info.name), "realm %i", i);
+        save_realm_info(folder, &info);
     }
     zox_log("[tst] made [%i] saves in [%s]", zox_tst_load_saves, zox_tst_load_saves_path);
     // zox_tst_save=<realm folder>: a copy of a real save becomes the newest, i.e. to reproduce a bad load
@@ -77,6 +70,11 @@ void zox_tst_load_games_setup() {
             zox_loge("[tst] couldn't copy save [%s]", real_save);
         } else {
             zox_log("[tst] newest save is a copy of [%s]", real_save);
+            // last played now, so it lists first
+            RealmInfo info;
+            load_realm_info(newest, &info);
+            info.last = (long) time(NULL);
+            save_realm_info(newest, &info);
         }
     }
 #endif

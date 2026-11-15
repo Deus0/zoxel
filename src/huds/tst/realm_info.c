@@ -1,5 +1,5 @@
 // tst: realm_info, realms keep a name, seed, time played and when last played (realm.txt, saves/fun/realm_info.c)
-//  - realm.txt saved and loaded back; an older save with only seed.dat gives its seed, no name
+//  - realm.txt saved and loaded back
 //  - time played as text (under a minute, 5m, 2h 5m)
 //  - the load menu: three realms, its buttons their names, last played first, each one's tooltip its seed and time
 //  - run: bash bsh/tst.sh realm_info
@@ -57,15 +57,6 @@ byte zox_tst_realm_info_ready(ecs* world) {
         zox_tst_check(load_realm_info(folder, &info), "realm.txt in [%s] didn't load", folder);
         zox_tst_check(info.seed == 11 && !strcmp(info.name, "Old Lands") && info.played == 7500 && info.last == now - 300,
             "realm.txt loaded back seed [%u] name [%s] played [%u] last [%ld]", info.seed, info.name, info.played, info.last);
-        // an older save, only seed.dat
-        snprintf(folder, sizeof(folder), "%s/old", saves);
-        mkdir(folder, 0755);
-        SaveRealm old = { .seed = 44 };
-        save_file_struct(folder, "seed.dat", &old, sizeof(SaveRealm));
-        struct utimbuf times = { now - 100000, now - 100000 };
-        utime(folder, &times);
-        zox_tst_check(load_realm_info(folder, &info) && info.seed == 44 && !info.name[0],
-            "an old save (seed.dat) gave seed [%u] name [%s]", info.seed, info.name);
         // time played as text
         char text[32];
         realm_played_text(20, text, sizeof(text));
@@ -93,9 +84,9 @@ byte zox_tst_realm_info_ready(ecs* world) {
     }
     entity buttons[8] = { 0 };
     const int count = zox_tst_realm_info_buttons(world, menu, buttons, 0);
-    const char* expected[] = { "Newest", "Middle", "Old Lands", "old" };
-    zox_tst_check(count == 4, "the load menu lists [%i] realms, not 4", count);
-    for (int i = 0; i < 4 && i < count; i++) {
+    const char* expected[] = { "Newest", "Middle", "Old Lands" };
+    zox_tst_check(count == 3, "the load menu lists [%i] realms, not 3", count);
+    for (int i = 0; i < 3 && i < count; i++) {
         const entity label = zox_get_child_by_id_recursive(world, buttons[i], zox_id(Text));
         char* name = zox_valid(label) ? get_zext_text(zox_get(label, TextData)) : NULL;
         const char* tooltip = zox_has(buttons[i], TooltipText) ? zox_get(buttons[i], TooltipText)->value : "";

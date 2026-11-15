@@ -8,7 +8,6 @@
 #include "save_dir.c"
 #include "saves.c"
 #include "io_macros.c"
-#include "realm_save.c"
 #include "game.c"
 
 static int ends_with(const char *str, const char *suffix) {

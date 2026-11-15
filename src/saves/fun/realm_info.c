@@ -1,5 +1,5 @@
 // a realm's info, realm.txt in its save folder: its seed, name, seconds played, when last played (unix time)
-//  - lines of "key value"; older saves have only seed.dat (load_realm_info reads its seed, the folder is its name)
+//  - lines of "key value"
 #define realm_name_length 32
 typedef struct {
     uint seed;
@@ -14,10 +14,7 @@ byte load_realm_info(const char* folder, RealmInfo* info) {
     FILE* file = path ? fopen(path, "r") : NULL;
     free(path);
     if (!file) {
-        SaveRealm old = { 0 };
-        const byte loaded = load_file_struct(folder, "seed.dat", &old, sizeof(SaveRealm));
-        info->seed = old.seed;
-        return loaded;
+        return 0;
     }
     char line[128];
     while (fgets(line, sizeof(line), file)) {
