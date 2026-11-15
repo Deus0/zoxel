@@ -133,10 +133,10 @@ static inline byte block_direction_from_forward_axis(float3 forward, float3 axis
     return best;
 }
 
-// the model axis a placed block points where its placer looks: a long one (a bed, longer along x) its length, away;
-//  else (a door) its back (+z), its front facing them (as a yaw turn faced it)
+// the model axis a placed block points where its placer looks: a long one (a bed, longer along x) -x, so its other
+//  half lies towards them and its base away (+x lay it backwards); else (a door) its back (+z), its front to them
 static inline float3 block_facing_axis(int3 size) {
-    return size.x > size.z ? (float3) { 1, 0, 0 } : (float3) { 0, 0, 1 };
+    return size.x > size.z ? (float3) { -1, 0, 0 } : (float3) { 0, 0, 1 };
 }
 
 static inline byte block_direction_from_forward(float3 forward, int3 size) {
