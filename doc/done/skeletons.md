@@ -37,6 +37,15 @@ Also [character.md](../character.md), [body_equips.md](../body_equips.md).
 - Cost: an octree walk a lookup made it 31-36ms a body; the parts are flattened to a grid at the mesh's depth once
   (`bone_parts_fill`), 6.4ms at worst (the box weights were 12ms), 0.15ms a frame on average.
 - Box weights (`bone_vertex_score`) are gone. `BoneSize` stays for the head camera and the debug boxes.
+- Holes as parts move apart (2026-11-16, tst `body_poses`, `bash bsh/poses.sh`): the body is one vox, so the faces
+  where two parts only touch (an arm against the chest, the shirt's hem on the thighs) were culled; moved apart, the
+  skin was open there (an arm raised opened the chest's side). Skeleton meshes now keep a face between voxels whose
+  bones aren't the same, parent or child (`vox_mesh_parts`, chunks3/sys/build_colored.c, both the grid and the octree
+  mesher: Block Res 5 is depth 8, past the grid's 7), and those parts don't shade each other's ao. A face's bone takes
+  its normal from its triangle's indicies (`bone_parts_face`): opposite faces list their corners in the same order,
+  so those new faces took the other part's bone. A joint's blend weight is the lower bone's share either way round
+  (rounding each order apart left hairline cracks bent 90 degrees). The test checks every edge of the rest mesh is
+  closed per joined piece (242 open before), no joint corner parts in 12 poses, and saves the poses' screenshots.
 - Later: the blend is a voxel wide (the corner); wider (sample further from the corner) if joints bend sharply;
   cloth simulation for capes and skirts (they follow the bone under them for now, the user is fine with that).
 

@@ -27,6 +27,44 @@ void add_voxel_face(
     }
 }
 
+// a skeleton's voxels' bones (bones/sys/skeleton_meshes.c): a face between two parts that only touch (not the same
+//  bone, its parent or child) is kept, each part its own skin there, else the culled faces left a hole as they moved
+//  apart (an arm raised opened the chest's side, tst body_poses); joints are blended (bones/sys/generate.c) and culled
+//  TEMPORARY: adds many faces unseen at rest, remove once bone weights are fixed properly (todo.md, Bodies)
+typedef struct {
+    const byte* grid;       // a voxel's bone at depth, 255 air: (x * length + y) * length + z
+    int length;             // voxels a side
+    byte depth;
+    const byte* parents;    // a bone's parent's index, 255 none
+    int bones;
+} vox_mesh_parts;
+
+static inline byte vox_mesh_parts_at(const vox_mesh_parts* parts, byte depth, int3 p) {
+    const byte shift = parts->depth > depth ? parts->depth - depth : 0;
+    p = (int3) { p.x << shift, p.y << shift, p.z << shift };
+    if (p.x < 0 || p.y < 0 || p.z < 0 || p.x >= parts->length || p.y >= parts->length || p.z >= parts->length) {
+        return 255;
+    }
+    return parts->grid[(p.x * parts->length + p.y) * parts->length + p.z];
+}
+
+// two voxels on bones that only touch
+static inline byte vox_mesh_parts_apart_at(const vox_mesh_parts* parts, byte depth, int3 p, int3 q) {
+    if (!parts) {
+        return 0;
+    }
+    const byte a = vox_mesh_parts_at(parts, depth, p);
+    const byte b = vox_mesh_parts_at(parts, depth, q);
+    if (a == 255 || b == 255 || a == b || a >= parts->bones || b >= parts->bones) {
+        return 0;
+    }
+    return parts->parents[a] != b && parts->parents[b] != a;
+}
+
+static inline byte vox_mesh_parts_apart(const vox_mesh_parts* parts, byte depth, int3 p, byte direction) {
+    return parts && vox_mesh_parts_apart_at(parts, depth, p, move_position(p, direction));
+}
+
 byte is_adjacent_all_solid(
     const byte* solidity,
     byte edge,
@@ -59,6 +97,7 @@ byte is_adjacent_all_solid(
 }
 
 void build_voxel_faces_colored(
+    const vox_mesh_parts* parts,
     const VoxelNode* root,
     const VoxelNode** noctrees,
     mesh_colored_build_data* mesh,
@@ -76,7 +115,8 @@ void build_voxel_faces_colored(
     byte edge = 0;
     byte nsolids[6];
     for (byte direction = 0; direction < 6; direction++) {
-        nsolids[direction] = is_adjacent_all_solid(NULL, edge, noctrees, root, byte3_to_int3(position), direction, depth);
+        nsolids[direction] = is_adjacent_all_solid(NULL, edge, noctrees, root, byte3_to_int3(position), direction, depth) &&
+            !vox_mesh_parts_apart(parts, depth, byte3_to_int3(position), direction);
     }
     // hidden voxels add no faces, skip their ao lookups (most of a solid model)
     if (nsolids[0] && nsolids[1] && nsolids[2] && nsolids[3] && nsolids[4] && nsolids[5]) {
@@ -100,7 +140,9 @@ void build_voxel_faces_colored(
                     naos[i] = 0;
                 } else {
                     const VoxelNode* noctree = get_VoxelNode(root, depth, int3_to_byte3(nposition));
-                    naos[i] = noctree ? noctree->value > 0 : edge;
+                    // another part that only touches doesn't shade it (its skin there shows as they move apart)
+                    naos[i] = noctree ? noctree->value > 0 &&
+                        !vox_mesh_parts_apart_at(parts, depth, byte3_to_int3(position), nposition) : edge;
                 }
                 i++;
             }
@@ -132,7 +174,8 @@ void build_voxel_faces_colored(
     }
 }
 
-void build_voxel_mesh_c(
+void build_voxel_mesh_parts_c(
+    const vox_mesh_parts* parts,
     const VoxelNode* root,
     const VoxelNode* voxels,
     const VoxelNode** noctrees,
@@ -169,7 +212,8 @@ void build_voxel_mesh_c(
             // Models dont have these set??
             const VoxelNode* child_voxels = has_vkids ? &vkids[i] : voxels;
             byte3 child_position = byte3_add(position, octree_positions[i]);
-            build_voxel_mesh_c(
+            build_voxel_mesh_parts_c(
+                parts,
                 root,
                 child_voxels,
                 noctrees,
@@ -198,6 +242,7 @@ void build_voxel_mesh_c(
     color_rgb voxel_color = vcolors->value[voxel];
     float3 positionf = byte3_to_float3(position);
     build_voxel_faces_colored(
+        parts,
         root,
         noctrees,
         mesh,
@@ -207,6 +252,25 @@ void build_voxel_mesh_c(
         bounds_offset,
         depth,
         position);
+}
+
+// the octree walk (a vox too deep for build_voxel_mesh_grid, chunks with neighbors)
+void build_voxel_mesh_c(
+    const VoxelNode* root,
+    const VoxelNode* voxels,
+    const VoxelNode** noctrees,
+    const byte* nrdepths,
+    const ColorRGBs* vcolors,
+    mesh_colored_build_data* mesh,
+    byte target_depth,
+    byte depth,
+    byte3 position,
+    float3 bounds_offset,
+    float scale,
+    byte is_split)
+{
+    build_voxel_mesh_parts_c(NULL, root, voxels, noctrees, nrdepths, vcolors, mesh, target_depth, depth, position,
+        bounds_offset, scale, is_split);
 }
 
 // Pyramid mesh building, for a vox without neighbors (models, skeletons)
@@ -280,6 +344,7 @@ static inline byte vox_pyramid_adjacent_solid(const vox_pyramid* pyramid, byte d
 
 static void build_voxel_faces_pyramid(
     const vox_pyramid* pyramid,
+    const vox_mesh_parts* parts,
     mesh_colored_build_data* mesh,
     color_rgb voxel_color,
     float scale,
@@ -291,7 +356,8 @@ static void build_voxel_faces_pyramid(
     byte nsolids[6];
     byte hidden = 1;
     for (byte direction = 0; direction < 6; direction++) {
-        nsolids[direction] = vox_pyramid_adjacent_solid(pyramid, depth, p, direction);
+        nsolids[direction] = vox_pyramid_adjacent_solid(pyramid, depth, p, direction) &&
+            !vox_mesh_parts_apart(parts, depth, p, direction);
         hidden &= nsolids[direction];
     }
     // hidden voxels add no faces
@@ -308,7 +374,9 @@ static void build_voxel_faces_pyramid(
                     continue;
                 }
                 const VoxelNode* node = vox_pyramid_get(pyramid, depth, p.x + x, p.y + y, p.z + z);
-                naos[i++] = node && node->value > 0;
+                // another part that only touches doesn't shade it (its skin there shows as they move apart)
+                naos[i++] = node && node->value > 0 &&
+                    !vox_mesh_parts_apart_at(parts, depth, p, (int3) { p.x + x, p.y + y, p.z + z });
             }
         }
     }
@@ -333,6 +401,7 @@ static void build_voxel_faces_pyramid(
 // build_voxel_mesh_c's walk, with pyramid lookups
 static void build_voxel_mesh_pyramid_dig(
     const vox_pyramid* pyramid,
+    const vox_mesh_parts* parts,
     const VoxelNode* voxels,
     const ColorRGBs* vcolors,
     mesh_colored_build_data* mesh,
@@ -363,6 +432,7 @@ static void build_voxel_mesh_pyramid_dig(
             const VoxelNode* child_voxels = has_vkids ? &vkids[i] : voxels;
             build_voxel_mesh_pyramid_dig(
                 pyramid,
+                parts,
                 child_voxels,
                 vcolors,
                 mesh,
@@ -383,11 +453,12 @@ static void build_voxel_mesh_pyramid_dig(
         zox_logw("Voxel Index OOB: %i >= %i", voxel, vcolors->length);
         return;
     }
-    build_voxel_faces_pyramid(pyramid, mesh, vcolors->value[voxel], scale, bounds_offset, depth, position);
+    build_voxel_faces_pyramid(pyramid, parts, mesh, vcolors->value[voxel], scale, bounds_offset, depth, position);
 }
 
-// returns 0 if it couldn't (use build_voxel_mesh_c)
+// returns 0 if it couldn't (use build_voxel_mesh_c), parts: a skeleton's (else NULL)
 byte build_voxel_mesh_grid(
+    const vox_mesh_parts* parts,
     const VoxelNode* root,
     const ColorRGBs* vcolors,
     mesh_colored_build_data* mesh,
@@ -409,7 +480,7 @@ byte build_voxel_mesh_grid(
         pyramid.levels[depth] = calloc(glength * glength * glength, sizeof(VoxelNode*));
     }
     fill_vox_pyramid(&pyramid, root, 0, int3_zero);
-    build_voxel_mesh_pyramid_dig(&pyramid, root, vcolors, mesh,
+    build_voxel_mesh_pyramid_dig(&pyramid, parts, root, vcolors, mesh,
         target_depth, 0, byte3_zero, bounds_offset, scale, is_split);
     for (byte depth = 0; depth <= target_depth; depth++) {
         free((void*) pyramid.levels[depth]);

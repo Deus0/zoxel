@@ -53,7 +53,7 @@ static void zox_tst_vox_mesh_grid_compare(const VoxelNode* vox, const ColorRGBs*
     build_voxel_mesh_c(vox, vox, noctrees, nrdepths, colors, &octree_mesh,
         depth, 0, byte3_zero, offset, scale, is_split);
     mesh_colored_build_data grid_mesh = zox_tst_vox_mesh_new();
-    const byte built = build_voxel_mesh_grid(vox, colors, &grid_mesh, node_depth, depth, offset, scale, is_split);
+    const byte built = build_voxel_mesh_grid(NULL, vox, colors, &grid_mesh, node_depth, depth, offset, scale, is_split);
     zox_tst_check(built, "depth [%i] split [%i]: the grid didn't build", depth, is_split);
     int octree_count, grid_count;
     zox_tst_vox_face* octree_faces = zox_tst_vox_faces(&octree_mesh, &octree_count);

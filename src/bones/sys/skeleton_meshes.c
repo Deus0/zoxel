@@ -235,14 +235,28 @@ void skeleton_mesh_build_system(iter* it) {
         zox_sys_o(MeshIndicies, indicies);
         zox_sys_o(MeshVertices, vertices);
         zox_sys_o(MeshColorRGBs, colors);
-        entity vox = get_skeleton_vox(world, zox_get_parent(world, e));
+        const entity skeleton = zox_get_parent(world, e);
+        entity vox = get_skeleton_vox(world, skeleton);
+        // its parts: faces between parts that only touch kept, each its own skin (an arm raised opened the chest)
+        vox_mesh_parts parts = { 0 };
+        const BoneLinks* bones = zox_valid(skeleton) && zox_has(skeleton, BoneLinks) ? zox_get(skeleton, BoneLinks) : NULL;
+        byte parents[256];
+        if (bones && bones->length && bones->length <= 256) {
+            parts.grid = skeleton_parts_grid(world, vox, rdepth->value, &parts.length);
+            parts.depth = !parts.grid ? 0 : rdepth->value > zox_getv(vox, NodeDepth) ? zox_getv(vox, NodeDepth) : rdepth->value;
+            bone_parents_fill(world, bones, parents);
+            parts.parents = parents;
+            parts.bones = bones->length;
+        }
         byte result = build_vox_mesh_at_depth(
             world,
             vox,
             rdepth->value,
+            parts.grid ? &parts : NULL,
             indicies,
             vertices,
             colors);
+        free((void*) parts.grid);
         zox_remove(e, BuildMesh);
         if (result == zox_vox_mesh_invalid) {
             zox_loge("SkeletonMesh [%s] has invalid skeleton owner vox", zox_sys_e_name);

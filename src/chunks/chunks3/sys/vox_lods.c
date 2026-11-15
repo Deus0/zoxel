@@ -33,10 +33,12 @@ void vox_lods_mesh_trigger_system(iter* it) {
 
 // Builds a colored mesh from a vox's max depth voxels, at a target depth
 //  - used by meshes that are children of their vox (VoxLodMesh, SkeletonMesh)
+// parts: a skeleton's voxels' bones, faces between parts that only touch kept (else NULL)
 byte build_vox_mesh_at_depth(
     ecs* world,
     entity vox,
     byte depth,
+    const vox_mesh_parts* parts,
     MeshIndicies* indicies,
     MeshVertices* vertices,
     MeshColorRGBs* colors)
@@ -81,6 +83,7 @@ byte build_vox_mesh_at_depth(
     spinlock* vlock = zox_octree_lock(world, vox);
     zox_octree_lock_begin(vlock);
     if (!build_voxel_mesh_grid(
+        parts,
         voxels,
         vcolors,
         &mesh,
@@ -89,7 +92,8 @@ byte build_vox_mesh_at_depth(
         position,
         cscale,
         is_split))
-    build_voxel_mesh_c(
+    build_voxel_mesh_parts_c(
+        parts,
         voxels,
         voxels,
         noctrees,
@@ -141,6 +145,7 @@ void vox_lod_mesh_build_system(iter* it) {
             world,
             vox,
             rdepth->value,
+            NULL,
             indicies,
             vertices,
             colors);

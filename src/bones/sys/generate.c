@@ -84,9 +84,12 @@ static inline byte bone_parts_joined(const bone_parts* b, byte x, byte y) {
 }
 
 // a face's bone: its voxel, behind its middle on whichever side is solid
-static inline byte bone_parts_face(const bone_parts* b, const float3* v) {
+//  - its normal from its first triangle (tri: its indicies less its first vertex's), not its vertices' order: opposite
+//      faces list their corners in the same order (mesh.c), only their indicies wind them the other way; a face
+//      between two parts (both sides solid, build_colored.c) took the other part's bone
+static inline byte bone_parts_face(const bone_parts* b, const float3* v, const int* tri) {
     const float3 c = float3_scale(float3_add(float3_add(v[0], v[1]), float3_add(v[2], v[3])), 0.25f);
-    const float3 n = float3_normalize(float3_cross(float3_sub(v[1], v[0]), float3_sub(v[2], v[0])));
+    const float3 n = float3_normalize(float3_cross(float3_sub(v[tri[1]], v[tri[0]]), float3_sub(v[tri[2]], v[tri[0]])));
     const float h = b->size * 0.5f;
     const byte front = bone_parts_at(b, bone_parts_grid(b, float3_add(c, float3_scale(n, h))));
     const byte back = bone_parts_at(b, bone_parts_grid(b, float3_sub(c, float3_scale(n, h))));
@@ -154,30 +157,58 @@ static inline byte4 bone_parts_vertex(const bone_parts* b, float3 p, byte bone) 
     if (second == 255) {
         return (byte4) { kinds[first], kinds[first], 0, 0 };
     }
+    // the weight from the lower bone's share, the other's is 255 less it: either order the same blend (rounding each
+    //  order's own share apart left a hairline crack where faces listed them the other way, tst body_poses sit)
+    const byte low = kinds[first] < kinds[second] ? first : second, high = low == first ? second : first;
+    const byte low_weight = (byte) ((255 * counts[low] + (counts[first] + counts[second]) / 2) / (counts[first] + counts[second]));
     // the face's own bone first when it's one of them
-    if (kinds[second] == bone) {
-        return (byte4) { kinds[second], kinds[first], (byte) (255 * counts[first] / (counts[first] + counts[second])), 0 };
-    }
-    return (byte4) { kinds[first], kinds[second], (byte) (255 * counts[second] / (counts[first] + counts[second])), 0 };
+    const byte lead = kinds[second] == bone ? second : first, other = lead == first ? second : first;
+    return (byte4) { kinds[lead], kinds[other], other == low ? low_weight : (byte) (255 - low_weight), 0 };
 }
 
-// every vertex's bones, 4 a face (build_vox_mesh_at_depth), 0 if the vox has no parts
-byte generate_weights_parts(ecs* world, entity vox, byte depth, const MeshVertices* verts, const BoneLinks* bones, byte4* out) {
-    if (!zox_valid(vox) || !zox_has(vox, BoneNode) || !zox_has(vox, CombineBones) || verts->length % 4) {
-        return 0;
-    }
-    byte parents[bones->length];
+// each bone's parent's index (255 none): the first index a bone is at, its others (one gone, now its parent's) come
+//  after it (parts/sys/bones.c)
+static inline void bone_parents_fill(ecs* world, const BoneLinks* bones, byte* parents) {
     for (int k = 0; k < bones->length; k++) {
         const entity parent = zox_get_parent(world, bones->value[k]);
         parents[k] = 255;
         for (int j = 0; j < bones->length; j++) {
-            // the first: a bone's other indexes (one gone, now its parent's) come after it (parts/sys/bones.c)
             if (bones->value[j] == parent) {
                 parents[k] = j;
                 break;
             }
         }
     }
+}
+
+// a skeleton mesh's voxels' bones at depth for its mesh (faces between parts that only touch are kept), the grid
+//  malloc'd (free it), NULL if the vox has no parts
+byte* skeleton_parts_grid(ecs* world, entity vox, byte depth, int* length) {
+    if (!zox_valid(vox) || !zox_has(vox, BoneNode) || !zox_has(vox, CombineBones) || !zox_get(vox, CombineBones)->length) {
+        return NULL;
+    }
+    const byte node_depth = zox_getv(vox, NodeDepth);
+    depth = depth > node_depth ? node_depth : depth;
+    *length = octree_size(depth);
+    byte* grid = malloc(*length * *length * *length);
+    spinlock* lock = zox_octree_lock(world, vox);
+    zox_octree_lock_begin(lock);
+    bone_parts_fill(grid, *length, zox_get(vox, CombineBones), zox_get(vox, BoneNode), 0, depth, int3_zero);
+    zox_octree_lock_end(lock);
+    return grid;
+}
+
+// every vertex's bones, 4 a face (build_vox_mesh_at_depth), 0 if the vox has no parts
+byte generate_weights_parts(ecs* world, entity vox, byte depth, const MeshIndicies* indicies, const MeshVertices* verts,
+    const BoneLinks* bones, byte4* out)
+{
+    if (!zox_valid(vox) || !zox_has(vox, BoneNode) || !zox_has(vox, CombineBones) || verts->length % 4 ||
+        !indicies || indicies->length != verts->length / 4 * 6)
+    {
+        return 0;
+    }
+    byte parents[bones->length];
+    bone_parents_fill(world, bones, parents);
     const byte node_depth = zox_getv(vox, NodeDepth);
     const float block_scale = zox_getv(vox, BlockScale);
     depth = depth > node_depth ? node_depth : depth;
@@ -200,7 +231,9 @@ byte generate_weights_parts(ecs* world, entity vox, byte depth, const MeshVertic
     bone_parts_fill(grid, length, table, zox_get(vox, BoneNode), 0, depth, int3_zero);
     zox_octree_lock_end(lock);
     for (int i = 0; i < verts->length; i += 4) {
-        const byte bone = bone_parts_face(&b, &verts->value[i]);
+        const int* face = &indicies->value[i / 4 * 6];
+        const int tri[3] = { face[0] - i, face[1] - i, face[2] - i };
+        const byte bone = bone_parts_face(&b, &verts->value[i], tri);
         for (int j = 0; j < 4; j++) {
             out[i + j] = bone_parts_vertex(&b, verts->value[i + j], bone);
         }
@@ -214,7 +247,8 @@ void generate_weights(ecs* world, entity e, entity vox, byte depth, const MeshVe
     BoneIndexes* weights)
 {
     resize_BoneIndexes(weights, verts->length);
-    if (disable_bones || !generate_weights_parts(world, vox, depth, verts, bones, weights->value)) {
+    const MeshIndicies* indicies = zox_has(e, MeshIndicies) ? zox_get(e, MeshIndicies) : NULL;
+    if (disable_bones || !generate_weights_parts(world, vox, depth, indicies, verts, bones, weights->value)) {
         memset(weights->value, 0, sizeof(byte4) * weights->length);
     }
     zox_add(e, SkeletonMeshDirty);

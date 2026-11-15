@@ -10,8 +10,14 @@
 - player character looks at npc body and not their head
     - player still not facing npc when walking to them
 - npcs shouldnt jump randomly when you are talking *unless theyre hyper*
-- holes still in skeleton
-    - make a test that poses the skeleton in several poses so can quickly inspect the results
+- clothes distorted when rotating arm
+	- issue is the way clothes are skinned
+	- we should set bone octrees on clothes by finding closest body part block, using flood fill distance
+- imported voxes - top hat doesn't scale up when imported to depth of 5!
+	- add a top_hat.txt that has a -depth 4 value
+	- importer can then know to scale it up
+	- make a imports.md that explains how to add to the import folders for users, inc file types
+- Sometimes when i alt tab, the raycasting UI breaks
 - When place above chunk - no mesh spawns
 	- add mesh spawn tests around this
 	- old report, need to verify, that chunks with no mesh can spawn one when placing a voxel in it
@@ -25,6 +31,7 @@
 - fix any warnings
 - disable logging when not tracing
 - Test disabling lods, option used by users
+- windowed mode, window decor is missing
 - Big Terrain Disposal Bug
 	- set render distance to 32
 	- terrain very big, and delete, it causes it to hang
@@ -41,20 +48,12 @@
 			- only small ones
 			- when im far away from origin
 			- super weird
-- Chunk Mesh failed deactivating... ? Keep eye on them
 - Mountains never clear their middle's vegetation: `mountain_distance < 2 / (mountain_radius * 3)` is integer
   division, always 0, meant radius / 3? (mountains/sys/maps.c)
-- Debug missing town wall parts, cuttoff, do minimaps next
-- imported voxes - top hat doesn't scale up when imported to depth of 5!
-	- add a top_hat.txt that has a -depth 4 value
-	- importer can then know to scale it up
-	- make a imports.md that explains how to add to the import folders for users, inc file types
 - Body part seeds are `N * (i * spawn_count++)` (gam/zoxel/sys/body_parts.c), i is the realm's index: 0 in the
   first realm, every part the same seed, less variation (see tst model_variants)
-- Fix Physics collision bug, by choosing collision side based on previous position
-- Physics clip issue now that my body is bigger than one block size
 - Fix / test unstuck system and test it with no clip
-- Long pause breaks physics - test big frame times
+	- like if we teleported into ground
 - Fix flickering issue of raycast
 	- maybe we should use a fixed rotation integral
 - aura particles are broken, they only spawn in same spot now
@@ -82,8 +81,7 @@
     - only when size exceeds
     - so make inspector/hierarchy buttons resize with text
 - Touch uis arnt always perfect size
-- Touch virtual joysticks are broken
-- Sometimes when i alt tab, the raycasting breaks
+	- Touch virtual joysticks are broken
 - Bug: Realm Generation: Memory leak somewhere, breaks during VoxGenerationSystem - color spawning - test with valgrind on x86 later
 - Loops endless - when exiting game now
 	- can test by spawning/destroying terrain in main menu
@@ -98,7 +96,6 @@
   tables don't: trace allocations (glibc mtrace, or a flecs os api malloc hook) to tell a leak from flecs pools
 	- check if flecs can own our mesh data (vertices, indices, colors, uvs are malloc'd arrays in components):
 	  flecs allocators or sparse/vector components with hooks, it might fix the heap growth and frees on delete
-- windowed mode, window decor is missing
 - Web:
 	- no save games
 	- no stats
@@ -408,6 +405,12 @@
 	- streaming should just work seperately to character positioning
 
 # Bodies and Animations
+- Remove the touching-parts faces (`vox_mesh_parts`, chunks3/sys/build_colored.c) once bone weights are fixed properly
+	- temporary fix for holes as parts move apart (tst body_poses): skeleton meshes keep faces between voxels on bones
+	  that only touch (arm on chest, shirt hem on thighs), and those parts don't shade each other's ao
+	- adds a lot of faces nobody sees at rest, plus a bone grid fill a mesh build (16MB at depth 8)
+	- the real fix is in the weights/skinning: then drop vox_mesh_parts and its parts argument from
+	  build_vox_mesh_at_depth / build_voxel_mesh_grid / build_voxel_mesh_parts_c, keep tst body_poses passing
 - might need resize character body (part) dimensions to fit the 2 block tall, 1 wide
 	- we can add taller characters too <= 3, 2 wide, etc with bigger doors later for other races
 - limbs in general need polish on the organic shape (shoulders poking clothes fixed: tst chest_weights)
