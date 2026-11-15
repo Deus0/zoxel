@@ -8,7 +8,6 @@
 
 ## Bugs
 - you can place a bed with only one free block: placing now checks its whole box (a29383dda), check again
-- beds stay when the block under them is removed (they should go, see Blocks: despawn when what's under goes)
 - player character looks at npc body and not their head
     - player still not facing npc when walking to them
 - npcs shouldnt jump randomly when you are talking *unless theyre hyper*
@@ -284,9 +283,6 @@
 - multi blocks (beds, doors):
 	- cant sleep in bed
 	- cant rotate / open doors
-	- it should despawn when you destroy whats under them
-		- like grass, bed, door etc
-		- needs a tag for this to check when its destroyed
 - Blocks: refactor them onto the realm, biomes pick theirs by random rules (still variety in dirts and others)
 - sway grass more when you walk through, and better foliage pass through sounds
 - new block destruction animations 
