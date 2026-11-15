@@ -309,7 +309,7 @@ void biome_blocks_system(iter* it) {
                 model,
                 dbg_log);
             zox_add(block, BlockRoad);
-            link_hit_sound(world, block, e, &hit_sound_dirt);
+            link_hit_sound(world, block, e, &hit_sound_road);
             zox_set(block, BlockHealth, { (float2) { 6, 10 } });
         }
         {

@@ -25,6 +25,7 @@ const SoundEffect hit_sound_flesh = { "flesh", instrument_impact, 34, 38, 0.1f, 
 const SoundEffect hit_sound_slime = { "slime", instrument_squelch, 40, 44, 0.18f, 0.22f, 1.7f, 1.9f };  // a wet squelch
 const SoundEffect hit_sound_stone = { "stone", instrument_knock, 45, 49, 0.1f, 0.12f, 2.5f, 2.7f };     // a dry knock
 const SoundEffect hit_sound_dirt = { "dirt", instrument_thud, 36, 40, 0.14f, 0.17f, 2.6f, 2.8f };       // a soft thud
+const SoundEffect hit_sound_road = { "road", instrument_thud, 30, 34, 0.17f, 0.2f, 3.3f, 3.5f };      // packed ground, heavier than dirt
 const SoundEffect hit_sound_sand = { "sand", instrument_crunch, 44, 48, 0.14f, 0.17f, 3.0f, 3.2f };     // a grainy crunch
 const SoundEffect hit_sound_wood = { "wood", instrument_tock, 43, 47, 0.14f, 0.16f, 2.8f, 3.0f };       // a hollow tock
 const SoundEffect hit_sound_leaves = { "leaves", instrument_rustle, 48, 52, 0.2f, 0.24f, 1.4f, 1.6f };  // a rustle, plants too
