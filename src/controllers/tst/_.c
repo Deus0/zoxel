@@ -27,6 +27,7 @@
 #include "tooltip_flick.c"
 #include "ui3_occlusion.c"
 #include "ui3_overlap.c"
+#include "gizmo_owner.c"
 #include "town_build.c"
 #include "head_camera.c"
 #include "statbars_hide.c"
@@ -575,6 +576,7 @@ void zox_tsts_controllers(ecs* world) {
         zox_tst_set_setup("screenshot", zox_tst_load_games_setup, 1);
     }
     (void) world;
+    zox_tst_add("gizmo_owner", zox_tst_gizmo_owner_ready, zox_tst_gizmo_owner_check, 30);
     zox_tst_add("player_spawn", zox_tst_player_spawn_ready, zox_tst_player_spawn_check, 60);
     zox_tst_add("continue_game", zox_tst_continue_game_ready, zox_tst_player_spawn_check, 90);
     zox_tst_set_setup("continue_game", zox_tst_load_games_setup, 1);

@@ -67,6 +67,7 @@ void raycast_gizmo_system(iter* it) {
                     }
                 }
                 zox_link(world, e, Gizmo, gizmo);
+                zox_link(world, gizmo, GizmoOwnerLink, e);
             } else {
                 zox_muter(gizmo, Position3D, position3);
                 if (!float3_equals(position3->value, position)) {

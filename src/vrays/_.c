@@ -1,6 +1,5 @@
 // VoxelRays into your heart <3
 // NOTE: Moved to src/ because needs terrain link now
-// TODO: Destroy Gizmo after left game
 // TODO: Sometimes gizmos broken on game load now - scales off
 
 #include "set/_.c"
