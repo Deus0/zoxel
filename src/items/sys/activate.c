@@ -43,11 +43,12 @@ void item_activate_system(iter* it) {
                 zox_getn(user));
             continue;
         }
-        zox_muter(chunk, VoxelNodeQueue, queue);
-        a_VoxelNodeQueue(queue, (VoxelNodeUpdate) {
-            .value = block_index,
-            .position = positionl
-        });
+        // a bed or door fills its box, refused unless it's all air (multi_block_place)
+        const entity terrain = zox_get_parent(world, chunk);
+        if (!multi_block_place(world, terrain, zox_get_parent(world, terrain), chunk_block_position(world, chunk, positionl), block_index)) {
+            spawn_sound_effect(world, sound_effect_out_of_range, user);
+            continue;
+        }
         quantity->value--;
         zox_add(e, QuantityDirty);
         zox_add(e, Dirty);

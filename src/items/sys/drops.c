@@ -113,6 +113,13 @@ void terrain_item_drop_system(iter* it) {
                     voxel - 1);
                 continue;
             }
+            // a part of a bed or door: the rest goes too, only its base drops it
+            if (!update.value) {
+                multi_block_removed(world, terrain, realm, chunk_block_position(world, e, update.position), voxel);
+            }
+            if (zox_has(block, BlockFiller)) {
+                continue;
+            }
             entity block_item = zox_get_link(world, block, ItemLink);
             if (!zox_valid(block_item)) {
                 zox_loge("block [%s] has no valid item", zox_get_name(block));

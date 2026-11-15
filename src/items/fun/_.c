@@ -109,3 +109,4 @@ byte add_one_item(ecs* world, entity to, entity from) {
     zox_add(from, QuantityDirty);
     return 1;
 }
+#include "multi_block.c"

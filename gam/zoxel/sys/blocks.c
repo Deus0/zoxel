@@ -126,6 +126,19 @@ void blocks_realm_spawn_system(iter* it) {
             zox_add_id(e2, j ? zox_id(BlockDoor) : zox_id(BlockBed));
             link_hit_sound(world, e2, e, &hit_sound_wood);
         }
+        // the filler: the rest of a bed's or door's box, solid, drawn by its base, no item (items/fun/multi_block.c)
+        {
+            SpawnBlock filler_data = {
+                .name = "filler",
+                .prefab = prefab_block_base,
+                .model_type = zox_block_vox,
+                .tag = zox_id(BlockFiller),
+                .color = color_white,
+            };
+            entity e2 = spawn_block_vox_meta(world, filler_data);
+            zox_set_parent(world, e2, e);
+            link_hit_sound(world, e2, e, &hit_sound_wood);
+        }
         zox_add(e, BlocksDirty);
         if (dbg_log) {
             zox_log("Realm [%s] Spawning [Blocks]", zox_get_name(e));
