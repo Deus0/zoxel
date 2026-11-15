@@ -899,8 +899,6 @@
     - requires input slots feature
 
 # Saves, Realms and Game States
-- new realm: its seed back as an input field (it went when its name came in), name and seed labels above them, a
-  button beside the seed to randomise it; a seed typed as text hashed to a number
 - Add realm names
     - need ui input field / TextInputs
     - block should block at position of new character
