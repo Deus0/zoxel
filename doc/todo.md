@@ -281,7 +281,6 @@
 
 # Blocks
 - rotate a bed or door before placing it (a key or the wheel); placing turns it to your facing now (52d6d0b3d)
-- the placement gizmo for a multi block: its whole box, turned to its direction
 - multi blocks (beds, doors):
 	- cant sleep in bed
 	- cant rotate / open doors
