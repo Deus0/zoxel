@@ -7,6 +7,9 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
+- soul not first in the stats panel (c033af902 put health first, the soul last: the soul goes first)
+- you can place a bed with only one free block: placing now checks its whole box (a29383dda), check again
+- beds stay when the block under them is removed (they should go, see Blocks: despawn when what's under goes)
 - player character looks at npc body and not their head
     - player still not facing npc when walking to them
 - npcs shouldnt jump randomly when you are talking *unless theyre hyper*
@@ -119,6 +122,7 @@
   walks away from home, -x, passes and fails on the same commits), quest_dialogue (the first talk can take 15s+)
 
 # Sounds and Music
+- different music per biome too
 - cant hear footsteps well unless very loud, maybe balance is off
 	- can turn down the music a little
 - add synths instruments
@@ -277,6 +281,8 @@
 - Spawn / Respawn point should be in a Home - facing outward
 
 # Blocks
+- rotate a bed or door before placing it (a key or the wheel); placing turns it to your facing now (52d6d0b3d)
+- the placement gizmo for a multi block: its whole box, turned to its direction
 - multi blocks (beds, doors):
 	- cant sleep in bed
 	- cant rotate / open doors
@@ -529,7 +535,11 @@
 - Add countdown timer on respawn
 
 # Items and Placing
+- a rare item: head2 rare
+    - a purple frame in its slot, a "Rare" line in its tooltip, 2D sparkles over its icon (like a shiny)
 - placement gizmo for multiple block placement should show more
+- a dirt recipe for a bed: 3 dirt along the bottom, 2 on the middle of the sides (a 3x3 grid, 9 slots and an output)
+    - taking the bed from the output uses the ingredients
 - crafting no implemented, add recipes and fix crafting ui
     - make use of ui modules, if it lacks features, add them so we can implement it
     - a recipe can link to items
@@ -560,6 +570,7 @@
 - Refactor OverlapEvent to Overlapped state with a system in items
 
 # Quests and Dialogue
+- a quest to craft a bed, the npc tells you how (the bed recipe, Items)
 - player feels no direction on start
 	- have an npc target you, and come up to you, and talk to you, when you first spawn
 	- you will have a tag for them to find you if they see you
@@ -889,6 +900,8 @@
     - requires input slots feature
 
 # Saves, Realms and Game States
+- new realm: its seed back as an input field (it went when its name came in), name and seed labels above them, a
+  button beside the seed to randomise it; a seed typed as text hashed to a number
 - Add realm names
     - need ui input field / TextInputs
     - block should block at position of new character
