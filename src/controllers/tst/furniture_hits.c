@@ -135,6 +135,40 @@ byte zox_tst_furniture_hits_ready(ecs* world) {
                 "a ray at door [%i]'s top from the side [%.0f %.0f] hit [%s] in [%i %i %i], not its top", k, sides[j].x, sides[j].z,
                 ray.hit_block ? zox_getn(ray.hit_block) : "none", cell.x, cell.y, cell.z);
         }
+        // like a player looking at a door: from eye height a few blocks off, at points across its top cell's face
+        int through = 0, aimed = 0;
+        for (byte k = 0; k < 4; k++)
+        for (byte j = 0; j < 4; j++)
+        for (int u = -1; u <= 1; u++)
+        for (int v = -1; v <= 1; v++) {
+            const int3 dd = zox_tst_fhits_doors[k];
+            const float3 normal_side = sides[j];
+            // at its face (a door's thin, along its panel the off middle rays pass it, as they should)
+            const int3 facing = block_direction_offset(k, (int3) { 0, 0, 1 });
+            if (fabsf(normal_side.x * facing.x + normal_side.z * facing.z) < 0.5f) {
+                continue;
+            }
+            const float3 across = { normal_side.z, 0, normal_side.x };
+            float3 target = zox_tst_fhits_middle((int3) { dd.x, dd.y + 1, dd.z }, scale);
+            target = float3_add(target, float3_scale(across, u * 0.3f * scale));
+            target.y += v * 0.3f * scale;
+            const float3 eye = float3_add(float3_sub(target, float3_scale(normal_side, 1.3f * scale)), (float3) { 0, 0.4f * scale, 0 });
+            const float3 to = float3_normalize(float3_sub(target, eye));
+            const RaycastVoxelData ray = zox_tst_fhits_ray_dir(world, terrain, realm, eye, to, 4 * scale);
+            const float3 hit = float3_add(eye, float3_scale(to, ray.distance));
+            const int3 cell = real_position_to_block_position(float3_add(hit, float3_scale(to, 0.001f)), scale);
+            aimed++;
+            const byte ok = ray.hit_block && zox_getv(ray.hit_block, BlockIndex) == door_voxel && int3_equals(cell, (int3) { dd.x, dd.y + 1, dd.z });
+            if (!ok) {
+                through++;
+                if (through <= 6) {
+                    zox_log("[tst] eye ray at door [%i] side [%.0f %.0f] point [%i %i]: result [%i] block [%s] cell [%i %i %i] (its top [%i %i %i])", k,
+                        normal_side.x, normal_side.z, u, v, ray.result, ray.hit_block ? zox_getn(ray.hit_block) : "none", cell.x, cell.y, cell.z, dd.x, dd.y + 1, dd.z);
+                }
+            }
+        }
+        zox_log("[tst] [metric] eye rays at doors' faces' tops: [%i] of [%i] missed", through, aimed);
+        zox_tst_check(!through, "[%i] of [%i] eye rays at doors' faces' tops didn't hit their top cell", through, aimed);
         // drop an npc onto the bed's filler and one onto the door
         const entity humanoid = zox_tst_realm_humanoid(world, realm);
         for (byte i = 0; i < 2; i++) {
