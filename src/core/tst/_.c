@@ -409,12 +409,14 @@ void process_arguments_tst(ecs* world, char* args[], int count) {
 #include "../../_/collections/tst/_.c"
 #include "../../_/flecs/tst/_.c"
 #include "../../_/maths/tst/_.c"
+#include "binary_size.c"  // after zox_tst_check
 
 
 void initialize_tst(ecs* world) {
     zox_tsts_octrees();
     zox_tsts_hashmaps();
     zox_tsts_maths();
+    zox_tst_add("binary_size", zox_tst_binary_size_ready, zox_tst_binary_size_check, 30);
     add_hook_terminal_command(process_arguments_tst);
     zox_system_immediate(
         zox_tst_system,
