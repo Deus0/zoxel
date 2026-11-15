@@ -3,8 +3,18 @@
 #include "select.c"
 #include "hold.c"
 #include "raycaster.c"
+#include "placement_gizmo.c"
 
 void zox_systems_actions(ecs* world) {
+    // main thread, after raycast_gizmo_system (vrays, same phase, registered first): it resizes the gizmo it placed
+    zox_system_1(
+        placement_gizmo_system,
+        zoxp_spawn,
+        [in] vrays.RaycastVoxelData,
+        [in] vrays.RaycastType,
+        [in] actions.ActiveAction,
+        [none] characters.Character
+    );
     zox_system(
         active_action_system,
         zoxp_update,
