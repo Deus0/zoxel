@@ -46,11 +46,8 @@
 - Mountains never clear their middle's vegetation: `mountain_distance < 2 / (mountain_radius * 3)` is integer
   division, always 0, meant radius / 3? (mountains/sys/maps.c)
 - Debug missing town wall parts, cuttoff, do minimaps next
-- multi blocks:
-	- the raycasting doesnt work on the multi block
-	- you can place new blocks over it, so placement isnt checking it
-		- its meant to be set in octree, clearly it wasnt
-	- physics not working on multiblock - extra block
+- multi blocks: fillers in (a29383dda), so the other half is solid, placement checks the box, breaking any part
+  breaks all; check in game that the ray and collisions hit the other half (the test checks its collider)
 - imported voxes - top hat doesn't scale up when imported to depth of 5!
 	- add a top_hat.txt that has a -depth 4 value
 	- importer can then know to scale it up

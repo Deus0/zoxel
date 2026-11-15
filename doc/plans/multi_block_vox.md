@@ -101,7 +101,7 @@ Steps, each with its test:
 2. **Size and anchor.** `BlockSize` (byte3, blocks) on the block; the vode's transform placed from the base voxel
    so the model covers base + size, not centred on one cube. tst: a bed and a door placed by a test, their mesh
    bounds in the world.
-3. **Fillers.** The two filler blocks on the realm; placing a sized block also queues its fillers (through
+3. **Fillers.** Done 2026-11-16 (a29383dda): one shared filler id, items/fun/multi_block.c, tst furniture_fillers. The two filler blocks on the realm; placing a sized block also queues its fillers (through
    `terrain_voxel_at` for a voxel in the next chunk), refused if any covered voxel isn't air; removing any part
    removes all, the base drops the item. tst: collide with the bed's second block and the door's top, break a
    filler, place across a chunk edge.
