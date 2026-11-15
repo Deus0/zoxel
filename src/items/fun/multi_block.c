@@ -4,7 +4,7 @@
 //    each filler's its offset back to its base (chunks3/fun/block_data.c); refused unless its box is all air and
 //    solid ground is under each of its bottom cells
 //  - removing any part removes the rest (multi_block_removed): a filler its base, a base its fillers, the base drops it;
-//    so does removing the ground under one
+//    so does removing the ground under one, or under grass and flowers (block_needs_ground)
 //  - main thread only: they write other chunks' queues
 
 // the chunk holding a world block position, and its local position there, 0 if it isn't loaded
@@ -127,12 +127,18 @@ byte multi_block_place(ecs* world, entity terrain, entity realm, int3 base, byte
     return 1;
 }
 
+// a block that stands on the one under it: a bed's or door's part, or a model you walk through (grass, flowers,
+//  debris), it goes when that does
+static inline byte block_needs_ground(ecs* world, entity block) {
+    return zox_valid(block) && (zox_has(block, BlockFiller) || block_is_multi(block_size_of(world, block)) ||
+        (zox_has(block, BlockVox) && zox_has(block, BlockCollider) && zox_getv(block, BlockCollider) == zox_block_air));
+}
+
 // a part of a sized block was removed (old its voxel, old_data its block data): removes the rest
+//  - and what stood on it (block_needs_ground): grass, flowers, a bed's part
 void multi_block_removed(ecs* world, entity terrain, entity realm, int3 position, byte old, byte old_data) {
-    // the ground under a bed or door gone: the part above goes, the rest with it
     const int3 above = { position.x, position.y + 1, position.z };
-    const entity above_block = realm_voxel_block(world, realm, terrain_voxel_at(world, terrain, above));
-    if (zox_valid(above_block) && (zox_has(above_block, BlockFiller) || block_is_multi(block_size_of(world, above_block)))) {
+    if (block_needs_ground(world, realm_voxel_block(world, realm, terrain_voxel_at(world, terrain, above)))) {
         terrain_queue_voxel(world, terrain, above, 0, 0);
     }
     const entity block = realm_voxel_block(world, realm, old);
