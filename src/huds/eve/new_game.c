@@ -33,7 +33,7 @@ void button_event_new_game(ecs *world, ClickEventData event) {
 }
 
 void delay_enter_new_realm(ecs *world, entity player) {
-    enter_new_realm(world, player);
+    enter_new_realm(world, player, NULL);
 }
 
 // --autostart: skips the menus, and enters a new realm

@@ -50,7 +50,11 @@ void game_state_end_huds(
         zox_loge("[game_state_end_huds] Invalid [realm]");
         return;
     }
-    // entity realm = zox_get_child_by_id(world, game, zox_id(Realm));
+    // its time played this session, and last played now (realm.txt)
+    if (zox_has(realm, FolderPath) && zox_get(realm, FolderPath)->value[0]) {
+        realm_info_played(zox_get(realm, FolderPath)->value, zox_current_time);
+    }
+    realm_played_since = 0;
     play_menu_music(world, game);
     iter it2 = zox_children(world, game);
     while (zox_children_next(it2)) {

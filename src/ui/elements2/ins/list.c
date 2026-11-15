@@ -138,6 +138,9 @@ entity spawn_list(
             zox_setv(toggle, OptionLabel, child_data.text);
             child = toggle;
         }
+        if (child && child_data.tooltip) {
+            zox_add_tooltip_text(world, child, child_data.tooltip);
+        }
         if (child) {
             zox_setv(child, ChildIndex, i);
             zox_set_parent_non_fragment(world, child, e);

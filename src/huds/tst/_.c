@@ -11,6 +11,7 @@
 #include "list.c"
 #include "layout.c"
 #include "font.c"
+#include "realm_info.c"
 
 void zox_tsts_huds() {
     zox_tsts_huds_load();
@@ -43,4 +44,6 @@ void zox_tsts_huds() {
     zox_tst_set_setup("ui_layout", NULL, 1);
     zox_tst_add("font_glyphs", zox_tst_font_glyphs_ready, zox_tst_font_glyphs_check, 60);
     zox_tst_set_setup("font_glyphs", NULL, 1);
+    zox_tst_add("realm_info", zox_tst_realm_info_ready, zox_tst_realm_info_check, 60);
+    zox_tst_set_setup("realm_info", NULL, 1);
 }

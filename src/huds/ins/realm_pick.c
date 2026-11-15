@@ -38,17 +38,16 @@ void button_event_load_confirm(
     }
     zox_delete(menu);
     zox_logv("Save Realm Path [%s]", path->value);
-    SaveRealm realm_save;
-    load_file_struct(
-        path->value,
-        "seed.dat",
-        &realm_save,
-        sizeof(SaveRealm));
+    RealmInfo info;
+    load_realm_info(path->value, &info);
+    // played from now, and last played now (realm.txt)
+    realm_played_since = 0;
+    realm_info_played(path->value, zox_current_time);
     // TODO: Spawn a realm here and window for it
     entity realm = spawn_realm(
         world,
         game,
-        realm_save.seed);
+        info.seed);
     zox_set_ptr(realm, FolderPath, path_copy);
     delay_event(
         world,
@@ -57,7 +56,7 @@ void button_event_load_confirm(
         0.01);
 }
 
-// newest save first, so a capped list keeps the latest saves
+// last played first (realm.txt, else its folder's time), so a capped list keeps the latest
 static inline time_t get_save_modified_time(const char* path) {
     struct stat st;
     if (stat(path, &st) != 0) {
@@ -69,6 +68,7 @@ static inline time_t get_save_modified_time(const char* path) {
 typedef struct {
     char* path;
     time_t modified;
+    RealmInfo info;
 } SaveDirSort;
 
 static int compare_save_dirs_newest(const void* a, const void* b) {
@@ -95,7 +95,9 @@ entity spawn_menu_load(ecs *world, entity player) {
     if (!get_save_games(game_name, &save_dirs, &saves_count)) {
         SaveDirSort sorted[256];
         for (int i = 0; i < saves_count; i++) {
-            sorted[i] = (SaveDirSort) { save_dirs[i], get_save_modified_time(save_dirs[i]) };
+            sorted[i] = (SaveDirSort) { .path = save_dirs[i] };
+            load_realm_info(save_dirs[i], &sorted[i].info);
+            sorted[i].modified = sorted[i].info.last ? (time_t) sorted[i].info.last : get_save_modified_time(save_dirs[i]);
         }
         qsort(sorted, saves_count, sizeof(SaveDirSort), compare_save_dirs_newest);
         if (saves_count > huds_max_list_elements) {
@@ -112,9 +114,20 @@ entity spawn_menu_load(ecs *world, entity player) {
                 free(sorted[i].path);
                 continue;
             }
-            // NOTE: the list takes save_path (frees it), text is freed below
+            // its name (older saves: its folder), its seed and time played hovering it
+            const RealmInfo* info = &sorted[i].info;
+            if (info->name[0]) {
+                free(folder);
+                folder = strdup(info->name);
+            }
+            char played[32];
+            realm_played_text(info->played, played, sizeof(played));
+            char* tooltip = malloc(64);
+            snprintf(tooltip, 64, "seed %u\nplayed %s", info->seed, played);
+            // NOTE: the list takes save_path (frees it), text and tooltip are freed below
             elements[elements_count++] = (SpawnListElement) {
                 .text = folder,
+                .tooltip = tooltip,
                 .save_path = sorted[i].path,
                 .on_click = { &button_event_load_confirm },
             };
@@ -146,6 +159,7 @@ entity spawn_menu_load(ecs *world, entity player) {
     // button labels copy their text
     for (int i = 0; i < elements_count; i++) {
         free((char*) elements[i].text);
+        free((char*) elements[i].tooltip);
     }
     return e;
 }

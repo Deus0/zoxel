@@ -1,5 +1,6 @@
-// Creates the new realms save folder, and starts loading the game
-void enter_new_realm(ecs *world, entity player) {
+// Creates the new realms save folder (its realm.txt: seed, name), and starts loading the game
+//  - name 0 gives it a name from its seed
+void enter_new_realm(ecs *world, entity player, const char* name) {
     entity game = zox_get_link(world, player, GameLink);
     entity realm = zox_get_link(world, game, RealmLink);
     lint seed = zox_getv(realm, Seed);
@@ -20,9 +21,14 @@ void enter_new_realm(ecs *world, entity player) {
     zox_set(game, GameStateTarget, { zox_game_load_start });
     // zox_logv("game_path [%s]", game_path);
     // zox_log("confirm new realm [%s] [%lu]", game_name, seed);
-    SaveRealm realm_save;
-    realm_save.seed = seed;
-    save_file_struct(save_dir, "seed.dat", &realm_save, sizeof(SaveRealm));
+    RealmInfo info = { .seed = (uint) seed, .last = (long) time(NULL) };
+    if (name && name[0]) {
+        snprintf(info.name, sizeof(info.name), "%s", name);
+    } else {
+        realm_default_name(info.seed, info.name, sizeof(info.name));
+    }
+    save_realm_info(save_dir, &info);
+    realm_played_since = zox_current_time;
     // Verbose Log
     zox_logv("Created new Saves Directory [%s]", save_dir);
     free(game_path);
@@ -33,10 +39,15 @@ void on_confirmed_new_realm(ecs *world, ClickEventData event) {
     entity player = event.clicker;
     entity canvas = zox_get_link(world, player, CanvasLink);
     entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuNewRealm));
+    // its name, typed in its input field
+    char* name = NULL;
     if (menu) {
+        name = input_field_value(world, zox_get_child_by_id_recursive(world, menu, zox_id(TextInput)));
+        input_field_unfocus(world);
         zox_delete(menu);
     }
-    enter_new_realm(world, event.clicker);
+    enter_new_realm(world, event.clicker, name);
+    free(name);
 }
 
 void on_cancelled_new_realm(ecs *world, ClickEventData event) {
@@ -98,15 +109,15 @@ entity spawn_menu_new_realm(
     // # List #
     SpawnListElement elements[max_labels];
     int elements_count = 0;
+    // its name, a typed one or one from its seed (shown in its tooltip)
+    char name[realm_name_length];
+    realm_default_name((uint) seed, name, sizeof(name));
+    char seed_tooltip[32];
+    snprintf(seed_tooltip, sizeof(seed_tooltip), "seed %lu", seed);
     elements[elements_count++] = (SpawnListElement) {
-        .type = list_element_type_label,
-        .text = "Seed",
-    };
-    char seed_label[32];
-    sprintf(seed_label, "[%lu]", seed);
-    elements[elements_count++] = (SpawnListElement) {
-        .type = list_element_type_label,
-        .text = seed_label,
+        .type = list_element_type_input,
+        .text = name,
+        .tooltip = seed_tooltip,
     };
     elements[elements_count++] = (SpawnListElement) {
         .type = list_element_type_button,

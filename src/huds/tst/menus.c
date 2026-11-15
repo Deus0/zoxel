@@ -145,6 +145,8 @@ byte zox_tst_menu_flow_ready(ecs* world) {
             }
             zox_tst_check(!main_menu, "new game: main menu wasn't closed");
             zox_tst_check(menus == 1, "new game: [%i] menus open, expected 1", menus);
+            // its name typed in its input field
+            input_field_set_value(world, zox_get_child_by_id_recursive(world, new_realm, zox_id(TextInput)), "Flow Lands");
             if (!zox_tst_menus_click(world, player, new_realm, &on_confirmed_new_realm, "enter realm")) {
                 return 1;
             }
@@ -153,6 +155,15 @@ byte zox_tst_menu_flow_ready(ecs* world) {
             zox_tst_waiting = "the game to start playing";
             if (!playing) {
                 return 0;
+            }
+            // its realm.txt has the typed name and its seed
+            {
+                const entity game = zox_get_link(world, player, GameLink);
+                const entity realm = zox_get_link(world, game, RealmLink);
+                RealmInfo info;
+                const byte loaded = zox_valid(realm) && load_realm_info(zox_get(realm, FolderPath)->value, &info);
+                zox_tst_check(loaded && !strcmp(info.name, "Flow Lands") && info.seed == (uint) zox_getv(realm, Seed),
+                    "the new realm's realm.txt has name [%s] seed [%u]", loaded ? info.name : "-", loaded ? info.seed : 0);
             }
             break;
         case 5:

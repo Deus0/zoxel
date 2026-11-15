@@ -25,6 +25,7 @@ typedef struct {
 typedef struct {
     byte type;
     const char* text;
+    const char* tooltip;     // shown hovering it
     char* save_path;
     // sliders
     float value;
