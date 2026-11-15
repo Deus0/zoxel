@@ -32,13 +32,13 @@ entity spawn_stats_panel(
             zox_getv(character, GenerateCharacter));
         return 0;
     }
-    // health first, the other bars in their order, the soul (its level) last: the children's order isn't fixed, health
-    //  came anywhere (a stable sort by kind)
+    // the soul (its level) first, then health, then the other bars in their order: the children's order isn't fixed
+    //  (a stable sort by kind)
     entity ordered[zox_children_capacity];
     uint ordered_length = 0;
     for (byte kind = 0; kind < 3; kind++) {
         for (uint i = 0; i < stats_length; i++) {
-            const byte stat_kind = zox_has(stats[i], StatHealth) ? 0 : zox_has(stats[i], StatLevel) ? 2 : 1;
+            const byte stat_kind = zox_has(stats[i], StatLevel) ? 0 : zox_has(stats[i], StatHealth) ? 1 : 2;
             if (stat_kind == kind) {
                 ordered[ordered_length++] = stats[i];
             }

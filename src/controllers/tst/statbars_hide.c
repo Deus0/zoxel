@@ -20,7 +20,7 @@ static inline entity zox_tst_statbars(ecs* world) {
 }
 
 // the panel's bars (AutoHide), how many are hidden, and the health bar
-int zox_tst_hide_health_index = -1;  // the health bar's place in the panel, first (it came anywhere)
+int zox_tst_hide_health_index = -1;  // the health bar's place in the panel, second after the soul (it came anywhere)
 
 static inline int zox_tst_hide_scan(ecs* world, entity e, int* hidden, entity* health) {
     int count = 0;
@@ -118,7 +118,7 @@ void zox_tst_statbars_hide_check(ecs* world) {
     (void) world;
     zox_log("[tst] [metric] statbars_hide [%i] bars, [%i] others hidden after a hit", zox_tst_hide_bars, zox_tst_hide_others);
     zox_tst_check(zox_tst_hide_hid, "the stat bars didn't all hide after [%.0f] seconds idle", statbars_hide_time);
-    zox_tst_check(zox_tst_hide_health_index == 0, "the health bar is [%i] in the panel, not first", zox_tst_hide_health_index);
+    zox_tst_check(zox_tst_hide_health_index == 1, "the health bar is [%i] in the panel, not second (after the soul)", zox_tst_hide_health_index);
     zox_tst_check(fabsf(zox_tst_hide_health - 1) < 0.01f, "hurt, the health bar came back at [%.2f], not 1", zox_tst_hide_health);
     zox_tst_check(zox_tst_hide_others == zox_tst_hide_bars - 1, "hurt, [%i] of [%i] bars stayed hidden, all but health should",
         zox_tst_hide_others, zox_tst_hide_bars);
