@@ -20,6 +20,8 @@ static inline entity zox_tst_statbars(ecs* world) {
 }
 
 // the panel's bars (AutoHide), how many are hidden, and the health bar
+int zox_tst_hide_health_index = -1;  // the health bar's place in the panel, first (it came anywhere)
+
 static inline int zox_tst_hide_scan(ecs* world, entity e, int* hidden, entity* health) {
     int count = 0;
     if (zox_has(e, AutoHide) && zox_has(e, Statbar)) {
@@ -91,6 +93,7 @@ byte zox_tst_statbars_hide_ready(ecs* world) {
             zox_tst_hide_height_idle = zox_getv(zox_get_child_by_id(world, panel, zox_id(WindowBody)), LayoutSize).y;
             snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("statbars_hide.ppm"));
             zox_tst_hide_bar_height = zox_valid(health) ? zox_getv(health, LayoutSize).y : 0;
+            zox_tst_hide_health_index = zox_valid(health) && zox_has(health, ChildIndex) ? zox_getv(health, ChildIndex) : -1;
             // hurt: its health changes, its bar pokes itself
             const entity character = zox_get_link(world, dbg_player, CharacterLink);
             const entity stat = zox_get_child_by_id(world, character, zox_id(StatHealth));
@@ -115,6 +118,7 @@ void zox_tst_statbars_hide_check(ecs* world) {
     (void) world;
     zox_log("[tst] [metric] statbars_hide [%i] bars, [%i] others hidden after a hit", zox_tst_hide_bars, zox_tst_hide_others);
     zox_tst_check(zox_tst_hide_hid, "the stat bars didn't all hide after [%.0f] seconds idle", statbars_hide_time);
+    zox_tst_check(zox_tst_hide_health_index == 0, "the health bar is [%i] in the panel, not first", zox_tst_hide_health_index);
     zox_tst_check(fabsf(zox_tst_hide_health - 1) < 0.01f, "hurt, the health bar came back at [%.2f], not 1", zox_tst_hide_health);
     zox_tst_check(zox_tst_hide_others == zox_tst_hide_bars - 1, "hurt, [%i] of [%i] bars stayed hidden, all but health should",
         zox_tst_hide_others, zox_tst_hide_bars);

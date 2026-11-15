@@ -32,6 +32,19 @@ entity spawn_stats_panel(
             zox_getv(character, GenerateCharacter));
         return 0;
     }
+    // health first, the other bars in their order, the soul (its level) last: the children's order isn't fixed, health
+    //  came anywhere (a stable sort by kind)
+    entity ordered[zox_children_capacity];
+    uint ordered_length = 0;
+    for (byte kind = 0; kind < 3; kind++) {
+        for (uint i = 0; i < stats_length; i++) {
+            const byte stat_kind = zox_has(stats[i], StatHealth) ? 0 : zox_has(stats[i], StatLevel) ? 2 : 1;
+            if (stat_kind == kind) {
+                ordered[ordered_length++] = stats[i];
+            }
+        }
+    }
+    memcpy(stats, ordered, sizeof(entity) * ordered_length);
     byte total_bars = 4; // TODO: Make dynamic
     // Sizing
     float2 position_anchor = float2_top_left;
