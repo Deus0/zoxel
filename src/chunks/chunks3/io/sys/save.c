@@ -35,11 +35,13 @@ void chunk3_save_system(iter* it) {
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkPosition);
     zox_sys_out(VoxelNodeLock);
+    zox_sys_in(BlockDatas);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(VoxelNode, node);
         zox_sys_i(ChunkPosition, position);
         zox_sys_o(VoxelNodeLock, lock);
+        zox_sys_i(BlockDatas, datas);
         // later add id/int3 there
         entity terrain = zox_get_parent(world, e);
 #ifdef zox_safety_checks
@@ -67,6 +69,7 @@ void chunk3_save_system(iter* it) {
         }
         spin_lock(&lock->value);
         save_voxel_node(file, node);
+        save_block_datas(file, datas);
         spin_unlock(&lock->value);
         if (fclose(file) != 0) {
             zox_loge("Failed to close file: %s", path);

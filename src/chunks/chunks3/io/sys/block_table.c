@@ -46,16 +46,21 @@ static inline byte block_table_remap_chunk(ecs* world, const char* path, const b
     }
     VoxelNode node;
     octree_create(&node, sizeof(VoxelNode), 0);
-    const byte loaded = load_voxel_node(world, in, &node);
+    BlockDatas datas = { 0 };
+    spinlock_init(&datas.lock);
+    const byte loaded = load_voxel_node(world, in, &node) && load_block_datas(in, &datas);
     fclose(in);
     if (loaded) {
         remap_VoxelNode(&node, remap);
         FILE* out = fopen(path, "wb");
         if (out) {
             save_voxel_node(out, &node);
+            // its block datas kept (a voxel's data stays with it, its index moved or not)
+            save_block_datas(out, &datas);
             fclose(out);
         }
     }
+    dispose_BlockDatas(&datas);
     close_VoxelNode(&node);
     return loaded;
 }

@@ -8,6 +8,7 @@
 #include "ao27.c"
 #include "locks.c"
 #include "voxel_at.c"
+#include "block_data.c"
 #include "flatten.c"
 #include "gpu_mesh.c"
 

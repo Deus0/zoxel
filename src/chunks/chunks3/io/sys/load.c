@@ -32,7 +32,8 @@ byte load_chunk(
     ecs* world,
     entity savegame,
     int3 position,
-    VoxelNode* node)
+    VoxelNode* node,
+    BlockDatas* datas)
 {
     char filename[128];
     get_chunk_filename(filename, position);
@@ -64,7 +65,7 @@ byte load_chunk(
     }
     // zox_log("Loading chunk from file: %s", path);
     // write_lock_VoxelNode(node);
-    byte success = load_voxel_node(world, file, node);
+    byte success = load_voxel_node(world, file, node) && load_block_datas(file, datas);
     // write_unlock_VoxelNode(node);
     if (fclose(file) != 0) {
         zox_loge("Failed to close file: %s", path);
@@ -86,11 +87,13 @@ void chunk3_load_system(iter* it) {
     zox_sys_in(ChunkPosition);
     zox_sys_out(NodeDepth);
     zox_sys_out(VoxelNode);
+    zox_sys_out(BlockDatas);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ChunkPosition, position);
         zox_sys_o(VoxelNode, voxels);
         zox_sys_o(NodeDepth, depth);
+        zox_sys_o(BlockDatas, datas);
         entity terrain = zox_get_parent(world, e);
 #ifdef zox_safety_checks
         if (!zox_valid(terrain)) {
@@ -119,7 +122,8 @@ void chunk3_load_system(iter* it) {
             world,
             realm,
             position->value,
-            voxels);
+            voxels,
+            datas);
         zox_octree_lock_end(write_lock);
         if (loaded) {
             depth->value = terrain_depth;

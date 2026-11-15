@@ -231,6 +231,7 @@ void zox_systems_chunks3(ecs *world) {
         [out] chunks3.VoxelNodeQueue,
         [out] chunks3.VoxelNode,
         [out] chunks3.VoxelNodeLock,
+        [out] ?chunks3.BlockDatas,
         [none] chunks3.Chunk3,
     );
     zox_system(

@@ -4,6 +4,7 @@
 typedef struct {
     byte3 position;
     byte value;
+    byte data;          // the voxel's block data (BlockDatas), 0 for none
     byte old_value;
     byte state;
 } VoxelNodeUpdate;

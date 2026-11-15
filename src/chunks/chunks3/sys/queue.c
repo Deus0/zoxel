@@ -9,12 +9,15 @@ void voxel_update_queue_system(iter* it) {
     zox_sys_out(VoxelNodeQueue);
     zox_sys_out(VoxelNode);
     zox_sys_out(VoxelNodeLock);
+    zox_sys_out(BlockDatas);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(NodeDepth, depth);
         zox_sys_o(VoxelNodeQueue, queue);
         zox_sys_o(VoxelNode, voxels);
         zox_sys_o(VoxelNodeLock, lock);
+        // optional: only terrain chunks have block datas (vox models don't)
+        BlockDatas* datas = BlockDatas_ ? &BlockDatas_[i] : NULL;
         byte updated = 0;
         for (int j = queue->count - 1; j >= 0; j--) {
             VoxelNodeUpdate* update = &queue->ptr[j];
@@ -39,6 +42,10 @@ void voxel_update_queue_system(iter* it) {
                 update->value))
             {
                 updated = 1;
+                // its block data with it, 0 clears a removed or replaced block's
+                if (datas) {
+                    set_block_data(datas, update->position, update->data);
+                }
                 /*if (old_value) {
                     a_VoxelDropQueue(drops, (VoxelDropElement) { .value = old_value, .pos = update.pos });
                 }*/

@@ -25,6 +25,7 @@
 #include "furniture.c"
 #include "furniture_fillers.c"
 #include "furniture_hits.c"
+#include "block_data_queue.c"
 #include "town_enter.c"
 #include "map_pixel.c"
 #include "tooltip_flick.c"
@@ -644,6 +645,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("furniture_place", zox_tst_furniture_place_ready, zox_tst_furniture_place_check, 120);
     zox_tst_add("furniture_fillers", zox_tst_furniture_fillers_ready, zox_tst_furniture_fillers_check, 120);
     zox_tst_add("furniture_hits", zox_tst_furniture_hits_ready, zox_tst_furniture_hits_check, 120);
+    zox_tst_add("block_data_queue", zox_tst_block_data_queue_ready, zox_tst_block_data_queue_check, 120);
     zox_tst_add("block_table", zox_tst_town_homes_ready, zox_tst_block_table_check, 120);
     zox_tst_add("sky_clouds", zox_tst_sky_clouds_ready, zox_tst_sky_clouds_check, 120);
     zox_tst_add("head_camera", zox_tst_head_camera_ready, zox_tst_head_camera_check, 120);

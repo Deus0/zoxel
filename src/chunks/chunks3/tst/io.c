@@ -137,8 +137,15 @@ void zox_tst_chunk_io_check(ecs* world) {
     }
 }
 
+// an empty BlockDatas (its lock ready)
+static inline BlockDatas zox_tst_datas_new() {
+    BlockDatas datas = { 0 };
+    spinlock_init(&datas.lock);
+    return datas;
+}
+
 // tst: block_table_remap, a saved chunk rewritten through a block remap (io/sys/block_table.c): each voxel its new
-//  index, a removed block air, the rest as they were
+//  index, a removed block air, the rest as they were, its block datas kept
 //  - run: bash bsh/tst.sh block_table_remap
 void zox_tst_block_table_remap_check(ecs* world) {
     VoxelNode original;
@@ -150,6 +157,11 @@ void zox_tst_block_table_remap_check(ecs* world) {
         return;
     }
     save_voxel_node(out, &original);
+    // a block data, kept through the remap
+    BlockDatas datas = zox_tst_datas_new();
+    set_block_data(&datas, (byte3) { 3, 4, 5 }, 6);
+    save_block_datas(out, &datas);
+    dispose_BlockDatas(&datas);
     fclose(out);
     byte remap[256];
     for (int i = 0; i < 256; i++) {
@@ -163,7 +175,11 @@ void zox_tst_block_table_remap_check(ecs* world) {
     VoxelNode loaded;
     create_VoxelNode(&loaded);
     load_voxel_node(world, in, &loaded);
+    BlockDatas loaded_datas = zox_tst_datas_new();
+    load_block_datas(in, &loaded_datas);
     fclose(in);
+    zox_tst_check(get_block_data(&loaded_datas, (byte3) { 3, 4, 5 }) == 6, "its block data wasn't kept through the remap");
+    dispose_BlockDatas(&loaded_datas);
     int wrong = 0;
     for (int i = 0; i < zox_tst_io_volume; i++) {
         const byte3 p = zox_tst_io_position(i);
@@ -175,7 +191,71 @@ void zox_tst_block_table_remap_check(ecs* world) {
     remove(path);
 }
 
+// tst: block_datas_io, a chunk's block datas (fun/block_data.c) saved after its octree and loaded back
+//  - set, changed and removed by position (set_block_data, 0 removes)
+//  - a chunk with two saves 3 + 2 * 4 bytes more than its octree, both back the same after loading
+//  - a chunk with none saves its octree's bytes only (as before), loads none; an older file (octree only) loads none
+//  - run: bash bsh/tst.sh block_datas_io
+void zox_tst_block_datas_io_check(ecs* world) {
+    BlockDatas datas = zox_tst_datas_new();
+    set_block_data(&datas, (byte3) { 1, 2, 3 }, 5);
+    set_block_data(&datas, (byte3) { 4, 5, 6 }, 9);
+    set_block_data(&datas, (byte3) { 7, 7, 7 }, 2);
+    set_block_data(&datas, (byte3) { 4, 5, 6 }, 10);
+    set_block_data(&datas, (byte3) { 7, 7, 7 }, 0);
+    zox_tst_check(datas.length == 2 && get_block_data(&datas, (byte3) { 1, 2, 3 }) == 5 &&
+        get_block_data(&datas, (byte3) { 4, 5, 6 }) == 10 && !get_block_data(&datas, (byte3) { 7, 7, 7 }),
+        "set, changed and removed: [%i] entries, values [%i %i %i]", datas.length, get_block_data(&datas, (byte3) { 1, 2, 3 }),
+        get_block_data(&datas, (byte3) { 4, 5, 6 }), get_block_data(&datas, (byte3) { 7, 7, 7 }));
+    VoxelNode node;
+    zox_tst_io_random_tree(&node, 800, 4);
+    long octree_size_bytes = 0;
+    byte* octree_bytes = zox_tst_io_save(&node, &octree_size_bytes);
+    // with block datas
+    FILE* file = tmpfile();
+    save_voxel_node(file, &node);
+    save_block_datas(file, &datas);
+    const long size = ftell(file);
+    zox_tst_check(size == octree_size_bytes + 3 + 2 * 4, "with two block datas it's [%li] bytes, its octree [%li]", size, octree_size_bytes);
+    rewind(file);
+    VoxelNode loaded;
+    create_VoxelNode(&loaded);
+    BlockDatas loaded_datas = zox_tst_datas_new();
+    const byte ok = load_voxel_node(world, file, &loaded) && load_block_datas(file, &loaded_datas);
+    fclose(file);
+    zox_tst_check(ok, "loading a chunk with block datas failed");
+    zox_tst_check(!zox_tst_io_differences(&node, &loaded), "its octree loaded back different");
+    zox_tst_check(loaded_datas.length == 2 && get_block_data(&loaded_datas, (byte3) { 1, 2, 3 }) == 5 &&
+        get_block_data(&loaded_datas, (byte3) { 4, 5, 6 }) == 10, "its block datas loaded back as [%i] entries", loaded_datas.length);
+    // with none: its octree only, as before
+    BlockDatas none = zox_tst_datas_new();
+    file = tmpfile();
+    save_voxel_node(file, &node);
+    save_block_datas(file, &none);
+    const long none_size = ftell(file);
+    zox_tst_check(none_size == octree_size_bytes, "with no block datas it's [%li] bytes, not its octree's [%li]", none_size, octree_size_bytes);
+    fclose(file);
+    // an older file, octree only, loads none
+    file = tmpfile();
+    fwrite(octree_bytes, 1, octree_size_bytes, file);
+    rewind(file);
+    VoxelNode old;
+    create_VoxelNode(&old);
+    BlockDatas old_datas = zox_tst_datas_new();
+    zox_tst_check(load_voxel_node(world, file, &old) && load_block_datas(file, &old_datas) && !old_datas.length,
+        "an older file loaded [%i] block datas", old_datas.length);
+    fclose(file);
+    free(octree_bytes);
+    dispose_BlockDatas(&datas);
+    dispose_BlockDatas(&loaded_datas);
+    dispose_BlockDatas(&old_datas);
+    collapse_VoxelNode(&node);
+    collapse_VoxelNode(&loaded);
+    collapse_VoxelNode(&old);
+}
+
 void zox_tsts_chunks3_io() {
+    zox_tst_add("block_datas_io", zox_tst_chunk_io_ready, zox_tst_block_datas_io_check, 30);
     zox_tst_add("chunk_io", zox_tst_chunk_io_ready, zox_tst_chunk_io_check, 30);
     zox_tst_add("block_table_remap", zox_tst_chunk_io_ready, zox_tst_block_table_remap_check, 30);
 }

@@ -32,6 +32,7 @@ entity spawn_prefab_chunk_textured(
     zox_add(e, ChunkMeshTimer);
     zox_setv(e, Bounds3D, float3_single(1));
     zox_setv(e, VoxelNodeQueue, 0);
+    zox_setv(e, BlockDatas, 0);
     zox_setv(e, BlockDamageQueue, 0);
     // Events
     zox_add(e, FindNeighbors);
