@@ -21,6 +21,7 @@ typedef struct xr_eye {
     uint32_t image_count;
     float4 fov;
     float4x4 matrix;
+    XrPosef pose;           // as located this frame, handed back to OpenXR on submit
     int2 image_size;
     GLuint fbo;
     GLuint rbo;
@@ -37,6 +38,7 @@ static xr_eye xr_eyes[2];
 #include "swapchains.c"
 #include "input.c"
 #include "time.c"
+#include "roam.c"
 
 static int xr_begin() {
     if (!egl_setup()) {

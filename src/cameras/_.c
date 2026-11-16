@@ -1,5 +1,7 @@
 // TODO: If Camera Distance > 500, use double precision for planes - it still flickers so we need to use for now
 byte is_camera_positive_z = 1;
+// XR is on: a headset (zox_xr, set by xr's import) or, later, the desktop simulator. Branch on this, not #ifdef zox_xr
+byte zox_xr_active = 0;
 /*#if defined(zox_web)
     byte zox_disable_post_processing = 1;
 #else

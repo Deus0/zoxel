@@ -28,37 +28,15 @@ static int xr_begin_frame() {
     return 1;
 }
 
-static inline XrCompositionLayerProjectionView zox_eye_to_xr_projection_view(
-    float4x4 eye_matrix,
-    float4 fov,
-    int2 image_size,
-    XrSwapchain swapchain
-) {
-    XrCompositionLayerProjectionView view = {
-        .type = XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW,
-        .pose = float4x4_to_xr_pose(eye_matrix),
-        .fov = float4_to_xr_fov(fov),
-        .subImage = {
-            .swapchain = swapchain,
-            .imageRect = {
-                .offset = { 0, 0 },
-                .extent = int2_to_xr2(image_size)
-            },
-            .imageArrayIndex = 0
-        }
-    };
-    return view;
-}
-
 static inline XrCompositionLayerProjectionView xr_end_eye(
-    float4x4 eye_matrix,
+    XrPosef pose,
     float4 fov,
     int2 image_size,
     XrSwapchain swapchain
 ) {
     return (XrCompositionLayerProjectionView) {
         .type = XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW,
-        .pose = float4x4_to_xr_pose(eye_matrix),
+        .pose = pose,   // the eye's pose as located (xrLocateViews), as OpenXR asks
         .fov = float4_to_xr_fov(fov),
         .subImage = {
             .swapchain = swapchain,
@@ -90,7 +68,7 @@ static void xr_end_frame() {
     XrCompositionLayerProjectionView projection_views[2];
     for (int i = 0; i < 2; i++) {
         projection_views[i] = xr_end_eye(
-            xr_eyes[i].matrix,
+            xr_eyes[i].pose,
             xr_eyes[i].fov,
             xr_eyes[i].image_size,
             xr_eyes[i].swapchain

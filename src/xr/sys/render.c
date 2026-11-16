@@ -40,10 +40,6 @@ void xr_camera_render_system(iter* it) {
     // NOTE: This one is regular one
     // glFrontFace(GL_CCW);
     color clear_color = (color) { 33, 38, 38, 255 };
-    float4x4 world_camera = float4x4_identity;
-    if (zox_valid(xr_camera)) {
-        world_camera = zox_getv(xr_camera, TransformMatrix);
-    }
     float near_distance = 0.01f;
     float far_distance = 800;
     byte running = 1;
@@ -61,6 +57,10 @@ void xr_camera_render_system(iter* it) {
         return;
     }
     xr_get_eyes();
+    xr_update_time();
+    // free roam: the sticks and the headset, the eyes on top of the roam's body
+    xr_roam_update(world, xr_camera, delta_time);
+    const float4x4 world_camera = xr_roam_body_matrix();
     for (int i = 0; i < 2; i++) {
         xr_eye eye = xr_eyes[i];
         // our actual render code here

@@ -67,6 +67,8 @@ static int xr_get_views(XrView views[2]) {
     return 1;
 }
 
+static float4 xr_head_rotation = { 0, 0, 0, 1 };   // the headset's, both eyes share it
+
 // NOTE: Gets Eye data and applies our camera transform to it
 static int xr_get_eyes() {
     XrView views[2];
@@ -79,6 +81,8 @@ static int xr_get_eyes() {
             &xr_eyes[i].matrix,
             &xr_eyes[i].fov
         );
+        xr_eyes[i].pose = views[i].pose;
     }
+    xr_head_rotation = xr_quaternion_to_float4(views[0].pose.orientation);
     return 1;
 }

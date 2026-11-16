@@ -31,34 +31,35 @@ void on_boot_game_ui(
         int2 viewport_position = screen_to_canvas_position(screen_size, screen_to_canvas);
         int2 svp_size = scale_viewport(vp_size);
         // hmmm
-#ifndef zox_xr
-        entity2 spawned_cameras = spawn_player_cameras(
-            world,
-            app,
-            player,
-            zox_game_camera_mode,
-            camera_position,
-            camera_rotation,
-            screen_to_canvas,
-            viewport_position,
-            svp_size,
-            vp_size);
-        entity game_camera = spawned_cameras.x;
-        entity ui_camera = spawned_cameras.y;
-        // remove these soon
-        main_cameras[i] = game_camera;
-        // hears 3D sounds (split screen: the first player's)
-        if (i == 0) {
-            zox_add(game_camera, SoundListener);
-        }
-        ui_cameras[i] = spawned_cameras.y;
-        set_camera_mode(
-            world,
-            game_camera,
-            zox_game_camera_mode);
-#else
+        // XR: its own camera renders each eye (xr/ins), no player or ui cameras
+        entity game_camera = 0;
         entity ui_camera = 0;
-#endif
+        if (!zox_xr_active) {
+            entity2 spawned_cameras = spawn_player_cameras(
+                world,
+                app,
+                player,
+                zox_game_camera_mode,
+                camera_position,
+                camera_rotation,
+                screen_to_canvas,
+                viewport_position,
+                svp_size,
+                vp_size);
+            game_camera = spawned_cameras.x;
+            ui_camera = spawned_cameras.y;
+            // remove these soon
+            main_cameras[i] = game_camera;
+            // hears 3D sounds (split screen: the first player's)
+            if (i == 0) {
+                zox_add(game_camera, SoundListener);
+            }
+            ui_cameras[i] = spawned_cameras.y;
+            set_camera_mode(
+                world,
+                game_camera,
+                zox_game_camera_mode);
+        }
         entity canvas = spawn_canvas(
             world,
             prefab_canvas,
@@ -154,9 +155,8 @@ void on_boot_game_ui(
                 player,
                 canvas);
         }
-#ifndef zox_xr
         // spawns a render texture ui and links to camera
-        if (!zox_disable_post_processing) {
+        if (!zox_xr_active && !zox_disable_post_processing) {
             // material_render_texture_rgba
             entity material = zox_game_render_texture_alpha ?
                 material_render_texture_rgba :
@@ -177,6 +177,5 @@ void on_boot_game_ui(
                 zox_add(texture, TextureRGB);
             }
         }
-#endif
     }
 }

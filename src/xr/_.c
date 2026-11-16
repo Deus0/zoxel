@@ -8,6 +8,8 @@
  *
  *  - OpenXR (zox_xr, Android): the session, eyes, swapchains, inputs, the render; what isn't OpenXR's goes in
  *    the modules it belongs to (cameras/fun projection_angles.c, free_roam.c), built and tested everywhere
+ *  - with OpenXR on it sets zox_xr_active (cameras/_.c), which other modules branch on at runtime, not #ifdef zox_xr
+ *  - free roam (fun/roam.c): the sticks move and turn the camera, the headset turns the head on top
  *  - tests of its shared parts: cameras/tst/xr.c; tst/cube.c is a standalone app (free roam among cubes), not part of the engine's build
  */
 #ifdef zox_xr
@@ -27,6 +29,7 @@ void import_xr(ecs* world) {
     zox_module(xr);
 #ifdef zox_xr
     zox_log("[XR] Engaged");
+    zox_xr_active = 1;
     zox_components_xr(world);
     zox_systems_xr(world);
     add_hook_spawn_prefabs(zox_spawn_prefabs_xr);
