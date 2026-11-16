@@ -997,6 +997,9 @@
 	- We should wrap all other sdl functions properly for glut
 
 # Tests
+- XR (doc/plans/xr.md): a desktop XR simulator first, then free roam in the engine, XR controllers as an input
+	device, a 3D ui mode, the player; build src/xr for Android (untouched by a compiler since the cleanup, no NDK on the
+	board); on a headset: the projection's flipped y with glFrontFace(GL_CW), and the mixed pose handed to OpenXR
 - Test realm: tests make their own data, not the game's (doc/coding_standards.md)
 	- a realm of a few hand made blocks (bricks, one plant) and one npc kind, no generation stages: the player's
 		character spawned on the test level (_/tst zox_tst_level_setup) still waits ~12s on the game's realm

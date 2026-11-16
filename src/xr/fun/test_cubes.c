@@ -109,7 +109,7 @@ static void xr_test_render_cubes(float4x4 vp_matrix) {
                 model.w.y = y * spacing;
                 model.w.z = z * spacing;
 
-                float4x4 mvp = matrix_multiply(vp_matrix, model);
+                float4x4 mvp = float4x4_multiply(model, vp_matrix);
 
                 glUniformMatrix4fv(
                     vp_location,

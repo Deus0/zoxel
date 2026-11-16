@@ -29,7 +29,6 @@ typedef struct xr_eye {
 static xr_eye xr_eyes[2];
 
 // for any math we didnt have in core yet
-#include "math.c"
 #include "egl.c"
 #include "helpers.c"
 #include "eyes.c"

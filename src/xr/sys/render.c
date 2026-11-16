@@ -84,16 +84,15 @@ void xr_camera_render_system(iter* it) {
         renderer_camera = 0;
         render_camera_fov = 90;
         // calculate our vp
-        float4x4 world_projection = xr_create_projection_matrix(
+        float4x4 world_projection = camera_projection_from_angles(
             eye.fov,
             near_distance,
             far_distance
         );
-        float4x4 world_eye = matrix_multiply(world_camera, eye.matrix);
+        float4x4 world_eye = float4x4_multiply(eye.matrix, world_camera);   // the eye, then the camera
         render_camera_position = float4x4_get_position(world_eye);
         float4x4 view_matrix = float4x4_inverse(world_eye);
-        render_camera_matrix = matrix_multiply(world_projection, view_matrix);
-        // render_camera_matrix = float4x4_multiply(world_projection, view_matrix);
+        render_camera_matrix = float4x4_multiply(view_matrix, world_projection);   // the view, then the projection
         renderer_fog_color = color_to_color_rgb(clear_color);
         for (byte j = 0; j < max_render_loop_orders; j++) {
             for (size_t k = 0; k < render3D_systems->size; k++) {
@@ -119,12 +118,7 @@ void xr_camera_render_system(iter* it) {
         // ui_transform.w.z = -2.0f;
         // float4x4 ui_view = float4x4_inverse(eye.matrix);
         // render_camera_matrix = ui_projection;
-        // render_camera_matrix = matrix_multiply(ui_projection, view_matrix);
-        render_camera_matrix =
-            matrix_multiply(
-                ui_projection,
-                matrix_multiply(view_matrix, ui_transform)
-            );
+        render_camera_matrix = float4x4_multiply(float4x4_multiply(ui_transform, view_matrix), ui_projection);
         render_camera_position = float3_zero;
         render_camera_fov = 0;
         renderer_camera = 0;

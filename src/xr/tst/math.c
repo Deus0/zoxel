@@ -269,3 +269,187 @@ float4x4 float4x4_inverse(const float4x4 matrix) {
     }
     return inv;
 }
+
+// a copy of cameras/fun/projection_angles.c camera_projection_from_angles
+static inline float4x4 xr_create_projection_matrix(
+    float4 fov,
+    float n,
+    float z
+) {
+    const float l = tanf(fov.x);
+    const float r = tanf(fov.y);
+    const float d = tanf(fov.z);
+    const float u = tanf(fov.w);
+    return (float4x4){
+        .x = {
+            2.0f / (r - l),
+            0,
+            0,
+            0
+        },
+        .y = {
+            0,
+            2.0f / (d - u),
+            0,
+            0
+        },
+        .z = {
+            (r + l) / (r - l),
+            (d + u) / (d - u),
+            -(z + n) / (z - n),
+            -1.0f
+        },
+        .w = {
+            0,
+            0,
+            -(2.0f * z * n) / (z - n),
+            0
+        }
+    };
+}
+
+// --------------------------------------------------
+// Copies for this standalone app only, until it's retired for an engine scene: the engine's own (_/maths),
+//  which xr/fun now uses, and xr/fun/math.c's old pose helpers this app calls
+// --------------------------------------------------
+
+static const float4x4 float4x4_zero = { 0 };
+
+static inline float4x4 float4x4_multiply(float4x4 a, float4x4 b) {
+    float4x4 c = float4x4_zero;
+    float* a2 = (float*) &a;
+    float* b2 = (float*) &b;
+    float* c2 = (float*) &c;
+    for (unsigned j = 0; j < 16; j++) {
+        unsigned i = j % 4;
+        unsigned j4 = j & 12;
+        c2[j] = a2[j4 + 0] * b2[i + 0] + a2[j4 + 1] * b2[i + 4]
+            + a2[j4 + 2] * b2[i + 8] + a2[j4 + 3] * b2[i + 12];
+    }
+    return c;
+}
+
+static inline float3 float4x4_get_position(float4x4 matrix) {
+    return (float3) { matrix.w.x, matrix.w.y, matrix.w.z };
+}
+
+static inline float4x4 float4x4_position(const float3 position) {
+    float4x4 matrix = float4x4_identity;
+    matrix.w.x = position.x;
+    matrix.w.y = position.y;
+    matrix.w.z = position.z;
+    return matrix;
+}
+
+static inline float4x4 float4x4_rotation(const float4 rotation) {
+    float4x4 m = float4x4_identity;
+    float xx = 2.0 * rotation.x * rotation.x;
+    float xy = 2.0 * rotation.x * rotation.y;
+    float xz = 2.0 * rotation.x * rotation.z;
+    float yy = 2.0 * rotation.y * rotation.y;
+    float yz = 2.0 * rotation.y * rotation.z;
+    float zz = 2.0 * rotation.z * rotation.z;
+    float wx = 2.0 * rotation.w * rotation.x;
+    float wy = 2.0 * rotation.w * rotation.y;
+    float wz = 2.0 * rotation.w * rotation.z;
+    m.x.x = (1.0 - yy - zz);
+    m.x.y = (xy + wz);
+    m.x.z = (xz - wy);
+    m.y.x = (xy - wz);
+    m.y.y = (1.0 - xx - zz);
+    m.y.z = (yz + wx);
+    m.z.x = (xz + wy);
+    m.z.y = (yz - wx);
+    m.z.z = (1.0 - xx - yy);
+    return m;
+}
+
+static inline float4x4 float4x4_transform(float3 position,float4 rotation) {
+    float4x4 position_matrix = float4x4_position(position);
+    float4x4 rotation_matrix = float4x4_rotation(float4_normalize(rotation));
+    return float4x4_multiply(rotation_matrix, position_matrix);
+}
+
+static inline float4x4 pr_to_matrix(
+    float3 position,
+    float4 rotation
+) {
+    const float x = rotation.x;
+    const float y = rotation.y;
+    const float z = rotation.z;
+    const float w = rotation.w;
+
+    const float xx = x * x;
+    const float yy = y * y;
+    const float zz = z * z;
+    const float xy = x * y;
+    const float xz = x * z;
+    const float yz = y * z;
+    const float wx = w * x;
+    const float wy = w * y;
+    const float wz = w * z;
+
+    return (float4x4) {
+        .x = {
+            1 - 2 * (yy + zz),
+            2 * (xy + wz),
+            2 * (xz - wy),
+            0
+        },
+        .y = {
+            2 * (xy - wz),
+            1 - 2 * (xx + zz),
+            2 * (yz + wx),
+            0
+        },
+        .z = {
+            2 * (xz + wy),
+            2 * (yz - wx),
+            1 - 2 * (xx + yy),
+            0
+        },
+        .w = {
+            position.x,
+            position.y,
+            position.z,
+            1
+        }
+    };
+}
+
+static float4x4 matrix_multiply(float4x4 a, float4x4 b) {
+    float4x4 result;
+    for (int column = 0; column < 4; column++) {
+        float4 bc =
+            column == 0 ? b.x :
+            column == 1 ? b.y :
+            column == 2 ? b.z :
+            b.w;
+        float4 *rc =
+            column == 0 ? &result.x :
+            column == 1 ? &result.y :
+            column == 2 ? &result.z :
+            &result.w;
+        rc->x =
+            a.x.x * bc.x +
+            a.y.x * bc.y +
+            a.z.x * bc.z +
+            a.w.x * bc.w;
+        rc->y =
+            a.x.y * bc.x +
+            a.y.y * bc.y +
+            a.z.y * bc.z +
+            a.w.y * bc.w;
+        rc->z =
+            a.x.z * bc.x +
+            a.y.z * bc.y +
+            a.z.z * bc.z +
+            a.w.z * bc.w;
+        rc->w =
+            a.x.w * bc.x +
+            a.y.w * bc.y +
+            a.z.w * bc.z +
+            a.w.w * bc.w;
+    }
+    return result;
+}

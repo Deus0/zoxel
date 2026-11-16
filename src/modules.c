@@ -230,7 +230,6 @@ void import_zox(ecs* world) {
     zox_add_module(imports);
     zox_add_module(editor);
 
-#ifdef zox_xr
+    // its maths and tests on every platform, OpenXR itself only with zox_xr
     zox_add_module(xr);
-#endif
 }

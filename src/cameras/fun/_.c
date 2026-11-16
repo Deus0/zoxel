@@ -4,3 +4,5 @@
 #include "camera.c"
 #include "debug.c"
 #include "filters.c"
+#include "projection_angles.c"
+#include "free_roam.c"

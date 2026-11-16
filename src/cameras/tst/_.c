@@ -522,6 +522,8 @@ void zox_tst_camera_downscale_check(ecs* world) {
     (void) world;
 }
 
+#include "xr.c"
+
 void zox_tsts_cameras() {
     zox_tst_add("camera_viewports", zox_tst_camera_ready_now, zox_tst_camera_viewports_check, 30);
     zox_tst_set_setup("camera_viewports", NULL, 1);
@@ -537,4 +539,10 @@ void zox_tsts_cameras() {
     zox_tst_set_setup("camera_split_screen", zox_tst_camera_split_screen_setup, 1);
     zox_tst_add("camera_downscale", zox_tst_camera_downscale_ready, zox_tst_camera_downscale_check, 30);
     zox_tst_set_setup("camera_downscale", zox_tst_camera_downscale_setup, 1);
+    zox_tst_add("camera_projection_angles", zox_tst_camera_ready_now, zox_tst_camera_projection_angles_check, 30);
+    zox_tst_set_setup("camera_projection_angles", NULL, 1);
+    zox_tst_add("camera_free_roam", zox_tst_camera_ready_now, zox_tst_camera_free_roam_check, 30);
+    zox_tst_set_setup("camera_free_roam", NULL, 1);
+    zox_tst_add("camera_xr_eyes", zox_tst_camera_ready_now, zox_tst_camera_xr_eyes_check, 30);
+    zox_tst_set_setup("camera_xr_eyes", NULL, 1);
 }

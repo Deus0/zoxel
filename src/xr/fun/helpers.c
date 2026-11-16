@@ -55,7 +55,7 @@ static inline float4x4 xr_view_to_matrix(XrView view) {
         xr_vector_to_float3(view.pose.position),
         xr_quaternion_to_float4(view.pose.orientation)
     );*/
-    return pr_to_matrix(
+    return float4x4_transform(
         xr_vector_to_float3(view.pose.position),
         xr_quaternion_to_float4(view.pose.orientation)
     );
@@ -105,13 +105,10 @@ static inline int2 xr_config_to_image_size(XrViewConfigurationView config) {
 }
 
 static inline XrPosef float4x4_to_xr_pose(float4x4 matrix) {
-    float3 position;
-    float4 rotation;
-    inverse_matrix_to_pr(
-        matrix,
-        &position,
-        &rotation
-    );
+    // the matrix's rotation, its inverse's position (as inverse_matrix_to_pr gave, checked equal): a mixed pose, check
+    //  on a headset whether OpenXR wants the eye's pose (its rotation and position) or the view's (both inverted)
+    const float4 rotation = matrix_to_rotation(matrix);
+    const float3 position = float4x4_get_position(float4x4_inverse(matrix));
     return (XrPosef) {
         .orientation = float4_to_xr_quaternion(rotation),
         .position = float3_to_xr_vector(position)
@@ -121,41 +118,3 @@ static inline XrPosef float4x4_to_xr_pose(float4x4 matrix) {
 // --------------------------------------------------
 // XR Math
 // --------------------------------------------------
-
-// n and z is near and far
-static float4x4 xr_create_projection_matrix(
-    float4 fov,
-    float n,
-    float z
-) {
-    const float l = tanf(fov.x);
-    const float r = tanf(fov.y);
-    const float d = tanf(fov.z);
-    const float u = tanf(fov.w);
-    return (float4x4){
-        .x = {
-            2.0f / (r - l),
-            0,
-            0,
-            0
-        },
-        .y = {
-            0,
-            2.0f / (d - u),
-            0,
-            0
-        },
-        .z = {
-            (r + l) / (r - l),
-            (d + u) / (d - u),
-            -(z + n) / (z - n),
-            -1.0f
-        },
-        .w = {
-            0,
-            0,
-            -(2.0f * z * n) / (z - n),
-            0
-        }
-    };
-}

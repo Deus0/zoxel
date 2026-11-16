@@ -15,7 +15,7 @@ void xr_projection_system(iter* it) {
         /*if (state->value != zox_dirty_active) {
             continue;
         }*/
-        projection->value = xr_create_projection_matrix(
+        projection->value = camera_projection_from_angles(
             fov,
             0.05f,
             100.0f
