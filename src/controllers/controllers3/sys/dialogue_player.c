@@ -68,10 +68,18 @@ void camera_player_state_system(iter* it) {
             zox_loge("Player's camera is invalid [%s]", zox_sys_e_name);
             continue;
         }
+        // cameras without post processing (XR's) have no blur or vignette
+        const byte post_processed = zox_has(camera, CameraBlur) && zox_has(camera, CameraVignette);
+        const byte main_menu_begin = state->value == zox_player_state_main_menu_begin;
+        if (main_menu_begin) {
+            state->value = zox_player_state_main_menu;
+        }
+        if (!post_processed) {
+            continue;
+        }
         if (state->value == zox_player_state_pause_begin) {
             zox_lerp_float(camera, CameraVignette, pause_vignette, 0.5f);
-        } else if (state->value == zox_player_state_main_menu_begin) {
-            state->value = zox_player_state_main_menu;
+        } else if (main_menu_begin) {
             zox_lerp_float(camera, CameraVignette, main_menu_vignette, 2.5f);
             zox_lerp_float(camera, CameraBlur, main_menu_blur, 2.5f);
         } else if (state->value == zox_player_state_play_begin) {

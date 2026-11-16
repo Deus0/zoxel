@@ -13,6 +13,8 @@ void spawn_new_realm(ecs *world, entity player) {
         seed);
 }
 
+void delay_enter_new_realm(ecs *world, entity player);
+
 void button_event_new_game(ecs *world, ClickEventData event) {
     entity player = event.clicker;
     entity canvas = zox_get_link(world, player, CanvasLink);
@@ -25,9 +27,10 @@ void button_event_new_game(ecs *world, ClickEventData event) {
         zox_delete(main_menu);
     }
     spawn_new_realm(world, player);
+    // 3D huds (XR) have no text input for the new realm menu's name and seed: in with the defaults
     delay_event(
         world,
-        &delay_spawn_menu_new_realm,
+        zox_huds3D ? &delay_enter_new_realm : &delay_spawn_menu_new_realm,
         player,
         0.01);
 }

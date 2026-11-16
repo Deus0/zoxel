@@ -25,9 +25,9 @@ byte zox_tst_xr_sim_eyes_ready(ecs* world) {
     if (zox_tst_xr_sim_frames == 1) {
         remove(zox_tst_path("xr_sim.ppm"));
         // stood above the flat ground, looking level
-        xr_roam.position = (float3) { 0, 6, 0 };
-        xr_roam.euler = float3_zero;
-        xr_roam_started = 1;
+        // placed as a game's start places it, the roam takes it up (fun/roam.c)
+        zox_setv(xr_camera, Position3D, ((float3) { 0, 6, 0 }));
+        zox_setv(xr_camera, Rotation3D, float4_identity);
         xr_sim_head_euler = float3_zero;
     }
     if (zox_tst_xr_sim_frames == 240) {

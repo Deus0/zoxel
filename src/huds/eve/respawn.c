@@ -53,7 +53,9 @@ void player_state_respawn_ui(ecs* world, entity player, byte state) {
             respawn_fade_in_time,
             respawn_fade_alpha,
             1);
-        zox_setv(camera, CameraBlur, death_blur);
+        if (zox_has(camera, CameraBlur)) {
+            zox_setv(camera, CameraBlur, death_blur);
+        }
         spawn_respawn_ui(
             world,
             canvas);
@@ -65,7 +67,9 @@ void player_state_respawn_ui(ecs* world, entity player, byte state) {
             zox_log("Destroying [RespawnUI] [%s]",
                 zox_getn(respawn_ui));
         }
-        zox_setv(camera, CameraBlur, 0);
+        if (zox_has(camera, CameraBlur)) {
+            zox_setv(camera, CameraBlur, 0);
+        }
         trigger_canvas_half_fade(
             world,
             canvas,

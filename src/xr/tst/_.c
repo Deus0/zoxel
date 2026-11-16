@@ -1,4 +1,4 @@
-// tests: the simulator's (sim.c), its controllers on the 3D menus (menu.c); the shared maths are tested in cameras (cameras/tst/xr.c)
+// tests: the simulator's (sim.c), its controllers on the 3D menus and into a game (menu.c); the shared maths are tested in cameras (cameras/tst/xr.c)
 //  - tst/cube.c, math.c, opengl.c, test_cubes.c are the standalone app's (bsh/android.sh --testxr), not these
 #include "sim.c"
 #include "menu.c"
@@ -6,4 +6,5 @@
 void zox_tsts_xr(ecs* world) {
     zox_tsts_xr_sim(world);
     zox_tsts_xr_menu(world);
+    zox_tsts_xr_play(world);
 }

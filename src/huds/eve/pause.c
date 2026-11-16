@@ -23,7 +23,9 @@ void player_state_pause_ui(ecs* world, entity player, byte state) {
             zox_log("[%s] Begin: Disposing Game UIs", state == zox_player_state_pause_begin ? "PauseBegin" : "RespawnBegin");
         }
         dispose_menu_game_touch(world, player);
-        zox_set(camera, CameraBlur, { pause_blur });
+        if (zox_has(camera, CameraBlur)) {
+            zox_set(camera, CameraBlur, { pause_blur });
+        }
         trigger_canvas_half_fade(
             world,
             canvas,
@@ -56,6 +58,8 @@ void player_state_pause_ui(ecs* world, entity player, byte state) {
         }
         trigger_canvas_half_fade(world, canvas, pause_fade_time, pause_fade_alpha, 0);
     } else if (state == zox_player_state_play_begin) {
-        zox_set(camera, CameraBlur, { 0 });
+        if (zox_has(camera, CameraBlur)) {
+            zox_set(camera, CameraBlur, { 0 });
+        }
     }
 }

@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-17
+-x Into a game with XR (tst xr_play, the simulator's controllers alone): New Game enters a realm with the defaults
+  while the huds are 3D (no text input for the realm menu); the XR camera has the game camera's parts (streaming:
+  terrain never loaded, raycasts: a crash) without its post processing; free roam takes up the camera when something
+  else places it (the game's start); blur and vignette only on cameras that have them (the dialogue's lerp crashed)
 -x XR controllers as input devices (doc/plans/xr.md step 3): a device a hand (prefab_device, XrController,
   XrHand), its pose in Position3D and Rotation3D, its stick and buttons as zevices, written by OpenXR (A B X Y menu,
   triggers, grips, aim poses) or the simulator's keys; they play as a gamepad, the right hand navigates and clicks

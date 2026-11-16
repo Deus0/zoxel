@@ -49,6 +49,9 @@ Then (2026-11-17, third pass):
 - **3D list ui** (step 4's start): spawn_list3, a canvas3 panel of 3D buttons, parented to the player's canvas
   so huds finds and closes it as a 2D menu. zox_huds3D (on with XR) spawns the start label and main menu as 3D
   ahead of the camera. tst xr_menu: A opens the main menu, navigation selects, the stick moves it
+- **into a game** (tst xr_play): New Game goes straight in (no 3D text input for the realm menu yet), the XR
+  camera streams terrain and raycasts as the game camera does, free roam starts at the spawn (it takes up the
+  camera whenever something else places it). No player yet: the head roams free (step 5 is the player)
 - to do: rays from the hands (pointer zevices) at 3D buttons, the options and pause menus as 3D lists, tooltips
 
 ## The plan
