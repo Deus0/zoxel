@@ -6,10 +6,16 @@ extern void button_event_attack(ecs *world, const ClickEventData event);
 entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas) {
     byte touch_buttons_count = 6;
     byte layer = max_layers2D - 10; // 1;
-    byte button_size = 66 * ui_scale;
-    byte bpadding = 8 * ui_scale;
-    byte2 screen_margins = byte2_single(button_size * 0.4f);
     int2 canvas_size = zox_getv(canvas, LayoutSize);
+    // at most a seventh of the screen's short side: on a small screen (or a big ui_scale) the buttons covered most of
+    //  it, every touch hit one, no joysticks (ints: as bytes 66 * ui_scale wrapped from ui_scale 4)
+    int button_size = 66 * ui_scale;
+    const int short_side = int_min(canvas_size.x, canvas_size.y);
+    if (short_side > 0 && button_size > short_side / 7) {
+        button_size = short_side / 7;
+    }
+    int bpadding = button_size * 8 / 66;
+    int2 screen_margins = int2_single((int) (button_size * 0.4f));
     int2 bsize = int2_single(button_size);
     entity e = spawn_layout2_on_canvas(world, p, canvas, int2_zero, canvas_size, float2_half);
     zox_name("menu_game_touch");

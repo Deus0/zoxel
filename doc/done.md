@@ -1,6 +1,13 @@
 # Done
 
 ## 2026-11-16
+-x Touch virtual joysticks are broken: the joystick system checked the finger's ElementLink, spawn_virtual_joystick
+  links the virtual joystick's, so it never dragged or let go (the stick stayed 0, its ui stuck)
+-x Touch uis arnt always perfect size: the touch buttons are at most a seventh of the screen's short side (on a
+  small screen they covered it, every touch hit one, i.e. pause), ints (a byte wrapped 66 * ui_scale from 4)
+-x add touch ui tests: fake fingers (zox_touch_fake, like the fake mouse); tst sdl_touch (a finger down, dragged,
+  up reaches its zevice), tst touch_play (in game: a tap switches to touch mode and its ui, the left joystick walks,
+  let go it goes, the right one turns); no "Device not attached to player" error at boot
 -x tst gpu_restore (rendering/tst): disposes and restores every gpu resource on the main menu, checks every gpu link
   is let go of and holds something again, no gl errors, the picture's average colour the same; it found the sky
   coming back magenta: the skybox never kept its menu colours (only set on the gpu), a restore set the prefab's

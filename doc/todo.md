@@ -85,8 +85,6 @@
     - make the scrollrect just have horizontal scroll too like normal scroll areas
     - only when size exceeds
     - so make inspector/hierarchy buttons resize with text
-- Touch uis arnt always perfect size
-	- Touch virtual joysticks are broken
 - Bug: Realm Generation: Memory leak somewhere, breaks during VoxGenerationSystem - color spawning - test with valgrind on x86 later
 - Loops endless - when exiting game now
 	- can test by spawning/destroying terrain in main menu
@@ -999,7 +997,6 @@
 - New Test: Spawns MeshViewer ui based on inside chunk data
 - write up some editor module tests too
     - making sure the data is all updating properly to the ui
-- add touch ui tests
 - A stress test with 100k terrain chunks, to try fewer states: a byte component (even one generate state in core)
   instead of event tags added and removed. The tags fragment tables (each new table runs ~380 observers, 20k to 40k
   moves a flight) but they let systems skip idle chunks entirely; a byte means every system checks 100k idle

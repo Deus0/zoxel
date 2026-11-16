@@ -3,23 +3,42 @@
 int touch_devices_count = 0;
 int touch_fingers_count = 0;
 
-SDL_Finger* find_finger(int id) {
+// the fingers down now: sdl's, or the fake ones (zox_touch_fake, tests), returns how many
+int touch_get_fingers(zox_touch_finger* fingers, int max) {
+    if (zox_touch_fake) {
+        const int count = zox_touch_fake_count < max ? zox_touch_fake_count : max;
+        for (int i = 0; i < count; i++) {
+            fingers[i] = zox_touch_fake_fingers[i];
+        }
+        return count;
+    }
+    int count = 0;
     for (int j = 0; j < touch_devices_count; j++) {
         SDL_TouchID touchscreen_id = sdl_get_touch_device(j);
         int fingers_count = sdl_get_touch_finger_count(touchscreen_id);
-        touch_fingers_count += fingers_count;
-        for (int k = 0; k < fingers_count; k++) {
+        for (int k = 0; k < fingers_count && count < max; k++) {
             SDL_Finger *finger = sdl_get_touch_finger(touchscreen_id, k);
             if (!finger) {
-                // zox_logw("Finger null at [%i] of [%i]", k, fingers_count);
                 continue;
             }
-            if (id == (finger->id + 1)) {
-                return finger;
-            }
+            fingers[count++] = (zox_touch_finger) { (int) finger->id, finger->x, finger->y };
         }
     }
-    return NULL;
+    return count;
+}
+
+// a finger down by its zevice id (its finger id + 1)
+byte find_finger(int id, zox_touch_finger* out) {
+    zox_touch_finger fingers[zox_children_capacity];
+    const int count = touch_get_fingers(fingers, zox_children_capacity);
+    touch_fingers_count = count;
+    for (int i = 0; i < count; i++) {
+        if (id == fingers[i].id + 1) {
+            *out = fingers[i];
+            return 1;
+        }
+    }
+    return 0;
 }
 
 byte sdl_extract_finger(ecs *world, int2 screen_size, entity e, byte dbg_log) {
@@ -50,9 +69,9 @@ byte sdl_extract_finger(ecs *world, int2 screen_size, entity e, byte dbg_log) {
             zox_log("Finger Pressed Last Frame [%s] - Value [%i]", zox_getn(e), clickedm->value);
         }
     }
-    touch_fingers_count = 0;
     int zevice_id = zox_getv(e, ID);
-    SDL_Finger* finger = find_finger(zevice_id);
+    zox_touch_finger finger_data;
+    zox_touch_finger* finger = find_finger(zevice_id, &finger_data) ? &finger_data : NULL;
     if (!finger) {
         zox_muter(e, ZevicePointer, clickedm);
         clickedm->value = 0;
@@ -89,40 +108,24 @@ byte touchscreen_has_id(ecs *world, const entity* fingers, uint length, int id) 
     return 0;
 }
 
-// NOTE: Uses fingers (device children) to check if id exists
-SDL_Finger* find_new_finger(ecs *world, const entity* fingers, uint length, byte dbg_log) {
-    if (dbg_log >= 3) {
-        zox_log("Touchscreens [%i]", touch_devices_count);
-    }
-    for (int i = 0; i < touch_devices_count; i++) {
-        SDL_TouchID touchscreen_id = sdl_get_touch_device(i);
-        int fingers_count = sdl_get_touch_finger_count(touchscreen_id);
-        touch_fingers_count += fingers_count;
-        if (dbg_log >= 2) {
-            zox_log("Touchscreen has fingers down [%i]", fingers_count);
-        }
-        for (uint k = 0; k < fingers_count; k++) {
-            SDL_Finger* finger = sdl_get_touch_finger(touchscreen_id, k);
-            if (!finger) {
-                zox_loge("Finger null at [%i] of [%i]", k, fingers_count);
-                continue;
-            }
-            int new_id = finger->id + 1;
-            if (!touchscreen_has_id(world, fingers, length, new_id)) {
-                return finger;
-            } else {
-                if (dbg_log >= 2) {
-                    zox_log("Touchscreen has finger [%i]", new_id);
-                }
-            }
+// a finger down that no zevice has yet (fingers: the device's children)
+byte find_new_finger(ecs *world, const entity* children, uint length, zox_touch_finger* out) {
+    zox_touch_finger fingers[zox_children_capacity];
+    const int count = touch_get_fingers(fingers, zox_children_capacity);
+    touch_fingers_count = count;
+    for (int i = 0; i < count; i++) {
+        if (!touchscreen_has_id(world, children, length, fingers[i].id + 1)) {
+            *out = fingers[i];
+            return 1;
         }
     }
-    return NULL;
+    return 0;
 }
 
 byte link_sdl_new_finger(ecs *world, int2 screen_size, const entity* children, uint children_length, entity e, byte dbg_log) {
     // get unused finger! find a finger that isn't used yet
-    SDL_Finger* finger = find_new_finger(world, children, children_length, dbg_log);
+    zox_touch_finger finger_data;
+    zox_touch_finger* finger = find_new_finger(world, children, children_length, &finger_data) ? &finger_data : NULL;
     if (!finger) {
         if (dbg_log >= 3) {
             zox_log("No new finger this frame");

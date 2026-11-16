@@ -108,12 +108,8 @@ void virtual_joystick_system(iter* it) {
             continue;
         }
         entity player = zox_get_parent(world, device);
-        if (!zox_valid(player) ||
-            !zox_has(player, Player))
-        {
-            zox_loge("Device not attached to player [%s] > [%s]",
-                zox_getn(device),
-                zox_getn(player));
+        // at boot the devices are on the app, till a player takes them (players/ins/player.c)
+        if (!zox_valid(player) || !zox_has(player, Player)) {
             continue;
         }
         entity canvas = zox_get_link(
@@ -123,7 +119,9 @@ void virtual_joystick_system(iter* it) {
         if (!zox_valid(canvas)) {
             continue;
         }
-        entity joystick_ui = zox_get_link(world, e, ElementLink);
+        // its joystick's ui (spawn_virtual_joystick links it to the virtual joystick, not the finger: checking the
+        //  finger's, it never dragged or let go)
+        entity joystick_ui = zox_get_link(world, joystick, ElementLink);
         if (zox_valid(joystick_ui)) {
             handle_touch_drag(
                 world,

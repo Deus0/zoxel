@@ -581,6 +581,7 @@ void zox_tst_screenshot_check(ecs* world) {
 #include "lod_swap.c"
 #include "body_views.c"
 #include "body_poses.c"
+#include "touch_play.c"
 
 void zox_tsts_controllers(ecs* world) {
     zox_tst_add("screenshot", zox_tst_screenshot_ready, zox_tst_screenshot_check, 90);
@@ -627,6 +628,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("tables_stream", zox_tst_perf_stream_ready, zox_tst_tables_stream_check, 200);
     zox_tst_add("pipeline_syncs", zox_tst_player_spawn_ready, zox_tst_pipeline_syncs_check, 120);
     zox_tst_add("lines_render", zox_tst_lines_render_ready, zox_tst_lines_render_check, 120);
+    zox_tst_add("touch_play", zox_tst_touch_play_ready, zox_tst_touch_play_check, 120);
     zox_tst_add("town_maps", zox_tst_town_maps_ready, zox_tst_town_maps_check, 120);
     zox_tst_add("town_maps_empty", zox_tst_town_maps_empty_ready, zox_tst_town_maps_empty_check, 120);
     zox_tst_add("region_zones", zox_tst_region_zones_ready, zox_tst_region_zones_check, 120);
