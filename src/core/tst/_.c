@@ -121,6 +121,18 @@ byte* zox_tst_load_ppm(const char* path, int2* size) {
     return pixels;
 }
 
+// saves rgb pixels (top row first) as a binary ppm, the screenshots' format
+byte zox_tst_save_ppm(const char* path, const byte* pixels, int2 size) {
+    FILE* file = fopen(path, "wb");
+    if (!file) {
+        return 0;
+    }
+    fprintf(file, "P6\n%i %i\n255\n", size.x, size.y);
+    fwrite(pixels, 1, (size_t) size.x * size.y * 3, file);
+    fclose(file);
+    return 1;
+}
+
 // copies a file, i.e. a screenshot kept under another name
 byte zox_tst_copy_file(const char* from, const char* to) {
     FILE* in = fopen(from, "rb");

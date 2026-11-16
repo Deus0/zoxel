@@ -135,6 +135,8 @@ void zox_tst_water_block_check(ecs* world) {
 //  - flies to the nearest ground under the sea (from the terrain's heights) and waits for it to stream in
 //  - every generated chunk at full detail near there, against its tunk's heights: a column whose ground is
 //      below the sea holds water from just over its ground up to the sea, and nothing over the sea is water
+//  - looking down from over open water, screenshots it twice half a second apart (tst/sea.ppm, sea_later.ppm):
+//      the view's middle is mostly water, and it moves
 //  - logs how much of the land is at or below each height (over 2048 blocks), to set the sea's level by
 //  - run: bash bsh/tst.sh sea_level
 int zox_tst_sea_lowest = 255, zox_tst_sea_columns = 0, zox_tst_sea_wrong = 0, zox_tst_sea_above = 0, zox_tst_sea_chunks = 0;
@@ -161,11 +163,21 @@ byte zox_tst_sea_level_ready(ecs* world) {
             for (int r = 0; r <= 600 && !zox_tst_sea_found; r += 8)
             for (int x = -r; x <= r && !zox_tst_sea_found; x += 8)
             for (int z = -r; z <= r && !zox_tst_sea_found; z += 8) {
-                if ((abs(x) != r && abs(z) != r) || terrain_height_at(&th, (int2) { start.x + x, start.y + z }) >= sea - 1) {
+                if (abs(x) != r && abs(z) != r) {
+                    continue;
+                }
+                // open water: the spot and 4 blocks round it under the sea, so it fills the view looking down
+                byte open = 1;
+                for (int k = 0; k < 5 && open; k++) {
+                    const int2 o = k == 0 ? int2_zero : (int2) { k == 1 ? 4 : k == 2 ? -4 : 0, k == 3 ? 4 : k == 4 ? -4 : 0 };
+                    open = terrain_height_at(&th, (int2) { start.x + x + o.x, start.y + z + o.y }) < sea - 1;
+                }
+                // and no town there (its homes stand over the water, its people turn the head)
+                if (!open || town_at(world, (int2) { start.x + x, start.y + z })) {
                     continue;
                 }
                 zox_tst_sea_found = 1;
-                zox_tst_sea_spot = (float3) { (start.x + x + 0.5f) * scale, (sea + 6) * scale, (start.y + z + 0.5f) * scale };
+                zox_tst_sea_spot = (float3) { (start.x + x + 0.5f) * scale, (sea + 4) * scale, (start.y + z + 0.5f) * scale };
             }
         }
         zox_log("[tst] sea_level: ground under the sea [%s] at block [%.0fx%.0f], from [%ix%i]", zox_tst_sea_found ? "found" : "not found",
@@ -179,6 +191,18 @@ byte zox_tst_sea_level_ready(ecs* world) {
     zox_tst_waiting = "the land under the sea to stream in";
     zox_setv(character, Position3D, zox_tst_sea_spot);
     zox_setv(character, Velocity3D, float3_zero);
+    // looking down at the water: the head camera's world rotation set (the head turns toward people, so a local
+    //  pitch alone can look anywhere): local = inverse(head) * the character's facing pitched down
+    {
+        const entity skeleton = get_skeleton(world, character);
+        const entity head = zox_valid(skeleton) ? zox_get_link(world, skeleton, HeadBoneLink) : 0;
+        const entity head_camera = zox_valid(head) ? zox_get_child_by_id(world, head, zox_id(Camera)) : 0;
+        if (zox_valid(head_camera) && zox_has(head, Rotation3D)) {
+            const float4 down = quaternion_rotate(zox_getv(character, Rotation3D),
+                euler_to_quaternion((float3) { -0.9f, is_camera_positive_z ? M_PI : 0, 0 }));  // (negative pitch looks down here)
+            zox_setv(head_camera, LocalRotation3D, quaternion_rotate(quaternion_inverse(zox_getv(head, Rotation3D)), down));
+        }
+    }
     const int3 chunk = real_position_to_chunk_position(zox_tst_sea_spot, octree_size(zox_getv(terrain, NodeDepth)), scale);
     const entity tunk = int2_hashmap_get(zox_get(terrain, TunkLinks)->value, (int2) { chunk.x, chunk.z });
     if (!zox_valid(tunk)) {
@@ -190,14 +214,34 @@ byte zox_tst_sea_level_ready(ecs* world) {
     if (zox_current_time - zox_tst_sea_streamed < 6) {
         return 0;
     }
-    // a look at it: tst/sea.ppm
+    // a look at it: tst/sea.ppm, and another half a second later (sea_later.ppm) to see it move
     static byte shot = 0;
-    if (!shot) {
-        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("sea.ppm"));
-        shot = 1;
+    {
+        const entity camera = zox_get_link(world, character, CameraLink);
+        const float3 view = zox_valid(camera) ? float4_rotate_float3(zox_getv(camera, Rotation3D), (float3) { 0, 0, -1 }) : float3_zero;
+        if (!shot) {
+            zox_log("[tst] sea_level: the camera looks along [%.2f %.2f %.2f] (y below 0 is down)", view.x, view.y, view.z);
+        }
+    }
+    static double shot_time = 0;
+    if (zox_screenshot_request[0]) {
         return 0;
     }
-    return !zox_screenshot_request[0];
+    if (shot == 0) {
+        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("sea.ppm"));
+        shot = 1;
+        shot_time = zox_current_time;
+        return 0;
+    }
+    if (shot == 1) {
+        if (zox_current_time - shot_time < 0.5) {
+            return 0;
+        }
+        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("sea_later.ppm"));
+        shot = 2;
+        return 0;
+    }
+    return 1;
 }
 
 void zox_tst_sea_level_check(ecs* world) {
@@ -239,6 +283,11 @@ void zox_tst_sea_level_check(ecs* world) {
                     zox_tst_sea_above += voxel == water_id;
                 } else if (global > height) {
                     // under the sea, over the ground: water (or what grew or was built there, never air)
+                    if (!voxel && !zox_tst_sea_wrong) {
+                        const int2 b = { at.x * length + x, at.z * length + z };
+                        zox_log("[tst] sea_level: air under the sea at block [%ix%ix%i], its ground [%i], a town there [%i]", b.x, global, b.y,
+                            height, town_at(world, b) != 0);
+                    }
                     zox_tst_sea_wrong += !voxel;
                     zox_tst_sea_columns += global == sea && voxel == water_id;
                 }
@@ -267,6 +316,30 @@ void zox_tst_sea_level_check(ecs* world) {
     }
     zox_log("[tst] [metric] sea_level [%i] chunks checked, sea at [%i], lowest ground [%i], [%i] columns under it, [%i] air under the sea, [%i] water over it",
         zox_tst_sea_chunks, sea, zox_tst_sea_lowest, zox_tst_sea_columns, zox_tst_sea_wrong, zox_tst_sea_above);
+    // the water moves on screen: the two screenshots' middles (looking down at the sea) differ
+    {
+        int2 a_size, b_size;
+        byte* a = zox_tst_load_ppm(zox_tst_path("sea.ppm"), &a_size);
+        byte* b = zox_tst_load_ppm(zox_tst_path("sea_later.ppm"), &b_size);
+        int changed = 0, blue = 0, pixels = 0;
+        if (a && b && a_size.x == b_size.x && a_size.y == b_size.y) {
+            for (int y = a_size.y * 3 / 8; y < a_size.y * 3 / 4; y++) for (int x = 0; x < a_size.x; x++) {
+                const byte* p = &a[(y * a_size.x + x) * 3];
+                const byte* q = &b[(y * a_size.x + x) * 3];
+                const byte is_blue = p[2] > p[0] + 40 && p[2] > p[1] + 20;
+                blue += is_blue;
+                changed += is_blue && abs(p[0] - q[0]) + abs(p[1] - q[1]) + abs(p[2] - q[2]) > 12;
+                pixels++;
+            }
+        }
+        zox_log("[tst] [metric] sea_level on screen: [%i%%] of the view's middle is water, [%i%%] of it changed in half a second",
+            pixels ? blue * 100 / pixels : 0, blue ? changed * 100 / blue : 0);
+        zox_tst_check(a && b, "the sea's screenshots weren't saved");
+        zox_tst_check(blue * 10 > pixels * 3, "under [30%%] of the view looking down at the sea is water ([%i] of [%i] pixels)", blue, pixels);
+        zox_tst_check(changed * 10 > blue, "the water on screen barely moved in half a second ([%i] of [%i] water pixels)", changed, blue);
+        free(a);
+        free(b);
+    }
     zox_tst_check(zox_tst_sea_found, "no ground under the sea within 600 blocks: the sea is too low for this land");
     zox_tst_check(zox_tst_sea_chunks > 10, "only [%i] generated chunks were found to check", zox_tst_sea_chunks);
     zox_tst_check(zox_tst_sea_columns > 0, "no water at the sea's level by ground under it");
