@@ -91,6 +91,14 @@ static inline void render_chunk_meshes(iter* it, byte transparent) {
                 1);
             initialized_material = 1;
         }
+        // a mesh with its own texture (a liquid's, not the tilemap's) binds it
+        if (transparent) {
+            const entity own = zox_get_link(world, e, MeshTextureLink);
+            const guint own_id = zox_valid(own) && zox_has(own, TextureGPULink) ? zox_getv(own, TextureGPULink) : 0;
+            if (own_id) {
+                zox_gpu_bind_texture(own_id);
+            }
+        }
         float4x4 mvp_matrix = float4x4_multiply(
             matrix->value,
             render_camera_matrix);

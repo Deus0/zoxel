@@ -25,6 +25,7 @@ typedef struct {
     const mesh_uvs_build_data* mesh_data;
     const TilemapUVs* tilemap_uvs;
     const byte* voxel_solidity;
+    byte whole_texture;     // a liquid's mesh: each face its own texture's whole, not a tilemap tile
 } terrain_build_data;
 
 // this takes 14ms on a 24core cpu, 6ms though during streaming
@@ -139,7 +140,7 @@ static inline void zox_terrain_building_dig(
         octree_face_data face = {
             .indicies = voxel_face_indicies_n + direction * voxel_face_indicies_length,
             .vertices = voxel_face_vertices_n[direction],
-            .uvs = &data.tilemap_uvs->value[face_uv_index],
+            .uvs = data.whole_texture ? voxel_face_uvs[direction] : &data.tilemap_uvs->value[face_uv_index],
         };
         zox_build_voxel_face(
             data.mesh_data,
@@ -317,6 +318,7 @@ void chunk_textured_build_system(iter* it) {
         // build out mesh data
         terrain_build_data data = {
             .tilemap_uvs = tilemap_uvs,
+            .whole_texture = zox_has(material, BlockMaterial) && zox_getv(material, BlockMaterial) == zox_block_material_liquid,
             .voxel_solidity = solidity,
             .mesh_data = &mesh_data,
         };

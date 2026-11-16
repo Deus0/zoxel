@@ -122,37 +122,35 @@ void zox_tst_block_frames_check(ecs* world) {
     zox_tst_check(animated, "the realm has no animated blocks");
 }
 
-// tst: water_tile, the water's texture fills its tile in the tilemap, at any Block Res (it filled a quarter at 5:
-//  its texture kept the boot size while the other blocks' grew)
+// tst: water_tile, the water's texture is its own: off the tilemap, on the gpu, a block texture's size at any Block Res
+//  (on the tilemap at Block Res 5 it filled a quarter of its tile, its texture kept the boot size)
 //  - no player: a realm of its own (world_only.c); run it with zox_tst_settings=<a settings.cfg> for its Block Res
 //  - run: bash bsh/tst.sh water_tile
 byte zox_tst_water_tile_ready(ecs* world) {
     if (!zox_tst_world_ready(world)) {
         return 0;
     }
-    zox_tst_waiting = "the realm's tilemap and its water animation";
+    zox_tst_waiting = "the realm's tilemap and the water texture";
     const entity tilemap = zox_get_link(world, zox_tst_world_realm, Tilemap);
-    return zox_valid(tilemap) && !zox_getv(tilemap, GenerateTexture) && zox_get(tilemap, TilemapAnimations)->length;
+    const entity water = zox_get_child_by_id(world, zox_tst_world_realm, zox_id(BlockWater));
+    const entity texture = zox_valid(water) ? zox_get_child_by_id(world, water, zox_id(Texture)) : 0;
+    return zox_valid(tilemap) && !zox_getv(tilemap, GenerateTexture) && zox_valid(texture) && !zox_getv(texture, GenerateTexture) &&
+        zox_getv(texture, TextureGPULink);
 }
 
 void zox_tst_water_tile_check(ecs* world) {
     const entity tilemap = zox_get_link(world, zox_tst_world_realm, Tilemap);
-    const TilemapAnimations* animations = zox_get(tilemap, TilemapAnimations);
-    const int2 tiles = zox_getv(tilemap, TilemapSize), map_size = zox_getv(tilemap, TextureSize);
-    const int2 tile = { map_size.x / tiles.x, map_size.y / tiles.y };
-    const TextureData* data = zox_get(tilemap, TextureData);
-    for (int i = 0; i < animations->length; i++) {
-        const TilemapAnimation animation = animations->value[i];
-        const int2 size = zox_getv(animation.texture, TextureSize);
-        int blank = 0;
-        for (int y = 0; y < tile.y; y++) for (int x = 0; x < tile.x; x++) {
-            const color c = data->value[(animation.position.y + y) * map_size.x + animation.position.x + x];
-            blank += c.r == 255 && c.g == 255 && c.b == 255;
-        }
-        zox_log("[tst] [metric] water_tile Block Res [%i]: its tile [%ix%i], its texture [%ix%i], [%i] of the tile blank", block_depth, tile.x,
-            tile.y, size.x, size.y, blank);
-        zox_tst_check(size.x == tile.x && size.y == tile.y, "the texture is [%ix%i] in a [%ix%i] tile", size.x, size.y, tile.x, tile.y);
-        zox_tst_check(!blank, "[%i] of its tile's [%i] pixels are blank: it shows at a part of its face", blank, tile.x * tile.y);
+    const entity water = zox_get_child_by_id(world, zox_tst_world_realm, zox_id(BlockWater));
+    const entity texture = zox_valid(water) ? zox_get_child_by_id(world, water, zox_id(Texture)) : 0;
+    zox_tst_check(zox_valid(texture), "the water block has no texture");
+    if (!zox_valid(texture)) {
+        return;
     }
-    zox_tst_check(animations->length, "the tilemap has no animated tile");
+    const int2 size = zox_getv(texture, TextureSize);
+    const byte on_tilemap = zox_is_linked(world, tilemap, TilemapTextureLinks, texture);
+    zox_log("[tst] [metric] water_tile Block Res [%i]: its texture [%ix%i], on the tilemap [%i], gpu [%i]", block_depth, size.x, size.y,
+        on_tilemap, zox_getv(texture, TextureGPULink));
+    zox_tst_check(!on_tilemap, "the water texture is on the tilemap");
+    zox_tst_check(size.x == powers_of_two[block_depth] && size.y == size.x, "the water texture is [%ix%i], a block's is [%i]", size.x, size.y,
+        powers_of_two[block_depth]);
 }

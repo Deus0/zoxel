@@ -30,16 +30,10 @@ zox_tag(TextureLink);
 zox_tag(TilemapTextureLinks); // links a tilemap to all its block textures, in order
 zoxc_arrayd(TextureData, color)
 zoxc_arrayd(TilemapUVs, float2)
-// animated textures: every frame's pixels back to back, TextureData the one shown; a tilemap shows them moving
+// animated textures: every frame's pixels back to back, TextureData the one shown (texture_animate_system)
 zoxc_arrayd(TextureFrames, color)
 zoxc_float(TextureFrameRate);   // frames a second
-// a tilemap's animated tiles: the texture, its tile's pixel position, the frame it shows
-typedef struct {
-    entity texture;
-    int2 position;
-    byte frame;
-} TilemapAnimation;
-zoxc_arrayd(TilemapAnimations, TilemapAnimation)
+zoxc_byte(TextureFrame);        // the frame it shows (texture_animate_system)
 
 // the frame an animation shows at a time
 static inline byte texture_frame_at(double time, float rate, int count) {
@@ -76,7 +70,7 @@ void zox_components_textures(ecs* world) {
     zoxd_arrayd(TilemapUVs);
     zoxd_arrayd(TextureFrames);
     zoxd_float(TextureFrameRate);
-    zoxd_arrayd(TilemapAnimations);
+    zoxd_byte(TextureFrame);
     // Generation Types (obsolete)
     zoxd_tag(NoiseTexture);
     zoxd_tag(IconTexture);

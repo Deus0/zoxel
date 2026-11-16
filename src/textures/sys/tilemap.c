@@ -21,14 +21,12 @@ void tilemap_generation_system(iter* it) {
     zox_sys_out(GenerateTexture);
     zox_sys_out(TextureSize);
     zox_sys_out(TextureData);
-    zox_sys_out(TilemapAnimations);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TilemapSize, map_size);
         zox_sys_o(GenerateTexture, generate);
         zox_sys_o(TextureSize, size);
         zox_sys_o(TextureData, data);
-        zox_sys_o(TilemapAnimations, animations);
         if (generate->value != zox_generate_texture_run) {
             continue;
         }
@@ -98,7 +96,6 @@ void tilemap_generation_system(iter* it) {
         resize_TextureData(data, size->value.x * size->value.y);
         int2 texture_position = int2_zero;
         memset(data->value, 255, data->length * sizeof(color));
-        resize_TilemapAnimations(animations, 0);
         texture_index = 0;
         while (1) {
             entity texture = zox_get_link_index(
@@ -125,12 +122,6 @@ void tilemap_generation_system(iter* it) {
                 continue;
             }
             tilemap_blit(data->value, size->value, tilemap_position, texture_data->value, texture_size);
-            // its tile moves (tilemap_animate_system)
-            if (zox_has(texture, TextureFrames) && zox_has(texture, TextureFrameRate)) {
-                const int at = animations->length;
-                resize_TilemapAnimations(animations, at + 1);
-                animations->value[at] = (TilemapAnimation) { texture, tilemap_position, 0 };
-            }
         }
         generate->value = zox_generate_texture_uvs;
         zox_add(e, TextureDirty);

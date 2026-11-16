@@ -33,5 +33,9 @@ entity spawn_prefab_texture_water(ecs *world, int2 texture_size) {
     zox_setv(e, Seed, 666);
     zox_setv(e, GenerateTexture, zox_generate_texture_run);
     zox_setv(e, FillColor, ((color) { 40, 110, 200, zox_water_alpha }));
+    // its own gpu texture (not on the tilemap: liquid meshes draw it), the frame it shows
+    zox_setv(e, TextureGPULink, 0);
+    zox_setv(e, TextureFrame, 255);
+    zox_add(e, PreInitialize);
     return e;
 }

@@ -31,6 +31,19 @@ entity spawn_chunk_mesh_textured(
     zox_link(world, e2, MaterialLink, tilemap);
     if (block_material == zox_block_material_liquid) {
         zox_add(e2, TransparentMesh);
+        // its own texture: the realm's liquid block's (not on the tilemap)
+        const entity realm = zox_get_link(world, tilemap, RealmLink);
+        const BlockLinks* blocks = zox_valid(realm) && zox_has(realm, BlockLinks) ? zox_get(realm, BlockLinks) : NULL;
+        for (int i = 0; blocks && i < blocks->length; i++) {
+            const entity block = blocks->value[i];
+            if (zox_valid(block) && zox_has(block, BlockMaterial) && zox_getv(block, BlockMaterial) == zox_block_material_liquid) {
+                const entity texture = zox_get_child_by_id(world, block, zox_id(Texture));
+                if (zox_valid(texture)) {
+                    zox_link(world, e2, MeshTextureLink, texture);
+                }
+                break;
+            }
+        }
     }
     zox_set_parent_non_fragment(world, e2, parent);
     return e2;

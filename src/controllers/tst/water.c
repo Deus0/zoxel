@@ -1,6 +1,7 @@
 // tst: water_block, the realm's water: see through, walked through, its texture moves
 //  - the realm has a water block: a liquid material, an air collider, light passing
-//  - its tilemap tile animates: the tilemap's pixels there change over time
+//  - its texture is its own (not on the tilemap), on the gpu, its pixels changing as it animates; its mesh links it
+//      and its faces' uvs span it
 //  - placed in an all air chunk: two water blocks side by side in a pool of bricks open at the top (so they stay)
 //      water draws a blended mesh (TransparentMesh) with only its faces against air (its tops): none between the
 //      waters or against the bricks; the bricks keep their faces against the water
@@ -10,30 +11,15 @@ double zox_tst_water_time = 0;
 entity zox_tst_water_chunk = 0;
 uint zox_tst_water_pixels = 0;
 
-// a tilemap tile's pixels summed, to see it change
-static inline uint zox_tst_water_tile(ecs* world, entity tilemap, int2 position, int2 size) {
-    const TextureData* data = zox_get(tilemap, TextureData);
-    const int2 map_size = zox_getv(tilemap, TextureSize);
+// a texture's pixels summed, to see it change
+static inline uint zox_tst_water_pixels_sum(ecs* world, entity texture) {
+    const TextureData* data = zox_get(texture, TextureData);
     uint sum = 0;
-    for (int y = 0; y < size.y; y++) for (int x = 0; x < size.x; x++) {
-        const color c = data->value[(position.y + y) * map_size.x + position.x + x];
-        sum += c.r * 3 + c.g * 5 + c.b * 7 + (x + y * size.x) * (c.r + c.g + c.b);
+    for (int i = 0; i < data->length; i++) {
+        const color c = data->value[i];
+        sum += c.r * 3 + c.g * 5 + c.b * 7 + i * (c.r + c.g + c.b);
     }
     return sum;
-}
-
-// the realm's tilemap's water tile: its animation, 0 if none
-static inline const TilemapAnimation* zox_tst_water_animation(ecs* world, entity tilemap) {
-    if (!zox_valid(tilemap) || !zox_has(tilemap, TilemapAnimations)) {
-        return NULL;
-    }
-    const TilemapAnimations* animations = zox_get(tilemap, TilemapAnimations);
-    for (int i = 0; i < animations->length; i++) {
-        if (zox_valid(animations->value[i].texture) && zox_has(animations->value[i].texture, WaterTexture)) {
-            return &animations->value[i];
-        }
-    }
-    return NULL;
 }
 
 // a chunk's shown meshes' vertices, the see through ones and the rest
@@ -100,10 +86,9 @@ byte zox_tst_water_block_ready(ecs* world) {
             a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = zox_getv(is_water ? water : bricks, BlockIndex),
                 .position = (byte3) { zox_tst_water_pool[i].x, zox_tst_water_pool[i].y, zox_tst_water_pool[i].z } });
         }
-        const entity tilemap = zox_get_link(world, zox_tst_water_chunk, Tilemap);
-        const TilemapAnimation* animation = zox_tst_water_animation(world, tilemap);
-        if (animation) {
-            zox_tst_water_pixels = zox_tst_water_tile(world, tilemap, animation->position, zox_getv(animation->texture, TextureSize));
+        const entity texture = zox_get_child_by_id(world, water, zox_id(Texture));
+        if (zox_valid(texture)) {
+            zox_tst_water_pixels = zox_tst_water_pixels_sum(world, texture);
         }
         zox_tst_water_stage = 1;
         zox_tst_water_time = zox_current_time;
@@ -129,44 +114,34 @@ void zox_tst_water_block_check(ecs* world) {
     zox_tst_check(zox_getv(water, BlockMaterial) == zox_block_material_liquid, "water isn't a liquid material");
     zox_tst_check(zox_getv(water, BlockCollider) == zox_block_air, "water isn't walked through");
     zox_tst_check(zox_getv(water, BlockLightPass), "water stops light");
-    // its tile moves
-    const entity tilemap = zox_get_link(world, zox_tst_water_chunk, Tilemap);
-    const TilemapAnimation* animation = zox_tst_water_animation(world, tilemap);
-    zox_tst_check(animation != NULL, "the tilemap has no water animation");
-    if (animation) {
-        const uint now = zox_tst_water_tile(world, tilemap, animation->position, zox_getv(animation->texture, TextureSize));
-        const TextureFrames* frames = zox_get(animation->texture, TextureFrames);
-        const int2 size = zox_getv(animation->texture, TextureSize);
-        zox_log("[tst] [metric] water_block tile at [%ix%i]: [%i] frames, frame now [%i], pixels [%u] then [%u]", animation->position.x,
-            animation->position.y, frames->length / (size.x * size.y), animation->frame, zox_tst_water_pixels, now);
+    // its own texture, off the tilemap, on the gpu, moving
+    const entity texture = zox_get_child_by_id(world, water, zox_id(Texture));
+    zox_tst_check(zox_valid(texture) && zox_has(texture, TextureFrames), "water has no animated texture");
+    if (zox_valid(texture) && zox_has(texture, TextureFrames)) {
+        const entity tilemap = zox_get_link(world, zox_tst_water_chunk, Tilemap);
+        const byte on_tilemap = zox_is_linked(world, tilemap, TilemapTextureLinks, texture);
+        const uint now = zox_tst_water_pixels_sum(world, texture);
+        const TextureFrames* frames = zox_get(texture, TextureFrames);
+        const int2 size = zox_getv(texture, TextureSize);
+        zox_log("[tst] [metric] water_block its texture [%ix%i] gpu [%i] on the tilemap [%i]: [%i] frames, showing [%i], pixels [%u] then [%u]",
+            size.x, size.y, zox_getv(texture, TextureGPULink), on_tilemap, frames->length / (size.x * size.y), zox_getv(texture, TextureFrame),
+            zox_tst_water_pixels, now);
+        zox_tst_check(!on_tilemap, "the water texture is on the tilemap: it should draw alone");
+        zox_tst_check(zox_getv(texture, TextureGPULink), "the water texture has no gpu texture");
         zox_tst_check(frames->length / (size.x * size.y) == zox_water_frames, "water has [%i] frames, not [%i]", frames->length / (size.x * size.y), zox_water_frames);
-        zox_tst_check(now != zox_tst_water_pixels, "the water tile didn't change in [%.1fs]", zox_current_time - zox_tst_water_time);
-        // it fills its tile: a tile is the tilemap's size over its tiles a side, none of it left blank (white)
-        const int2 tiles = zox_getv(tilemap, TilemapSize), map_size = zox_getv(tilemap, TextureSize);
-        const int2 tile = { map_size.x / tiles.x, map_size.y / tiles.y };
-        const TextureData* data = zox_get(tilemap, TextureData);
-        int blank = 0;
-        for (int y = 0; y < tile.y; y++) for (int x = 0; x < tile.x; x++) {
-            const color c = data->value[(animation->position.y + y) * map_size.x + animation->position.x + x];
-            blank += c.r == 255 && c.g == 255 && c.b == 255;
-        }
-        zox_log("[tst] [metric] water_block its tile [%ix%i], its texture [%ix%i], [%i] blank pixels in the tile", tile.x, tile.y, size.x, size.y, blank);
-        zox_tst_check(!blank, "[%i] of the water tile's [%i] pixels are blank: its texture doesn't fill its tile", blank, tile.x * tile.y);
-        zox_tst_check(size.x == tile.x && size.y == tile.y && size.x == powers_of_two[block_depth],
-            "the water texture is [%ix%i], its tile [%ix%i], a block's texture [%i]: it would show at a part of its face", size.x, size.y,
-            tile.x, tile.y, powers_of_two[block_depth]);
+        zox_tst_check(now != zox_tst_water_pixels, "the water texture didn't change in [%.1fs]", zox_current_time - zox_tst_water_time);
+        zox_tst_check(size.x == powers_of_two[block_depth], "the water texture is [%i] across, a block's [%i]", size.x, powers_of_two[block_depth]);
     }
     // its faces
     int vertices, solid, water_meshes;
     zox_tst_water_vertices(world, zox_tst_water_chunk, &vertices, &solid, &water_meshes);
     zox_log("[tst] [metric] water_block meshes: water [%i] ([%i] faces, [%i] meshes), bricks [%i] ([%i] faces)", vertices, vertices / 4,
         water_meshes, solid, solid / 4);
-    // its faces' uvs span its tile: a face's uvs across a tile's share of the tilemap each way
+    // its faces' uvs span its whole texture, its mesh linked to it
     {
         entity meshes[zox_chunk_meshes_max];
         const uint count = get_chunk_meshes(world, zox_tst_water_chunk, meshes);
-        const entity tilemap = zox_get_link(world, zox_tst_water_chunk, Tilemap);
-        const int2 tiles = zox_getv(tilemap, TilemapSize);
+        const int2 tiles = int2_one;
         for (uint i = 0; i < count; i++) {
             if (zox_has(meshes[i], Disabled) || !zox_has(meshes[i], TransparentMesh) || !zox_has(meshes[i], MeshUVs)) {
                 continue;
@@ -181,9 +156,10 @@ void zox_tst_water_block_check(ecs* world) {
                 }
                 const float2 span = { (hi.x - lo.x) * tiles.x, (hi.y - lo.y) * tiles.y };
                 if (f == 0) {
-                    zox_log("[tst] [metric] water_block a face's uvs span [%.3f x %.3f] tiles (tilemap [%ix%i] tiles)", span.x, span.y, tiles.x, tiles.y);
+                    zox_log("[tst] [metric] water_block a face's uvs span [%.3f x %.3f] of its texture, linked to it [%i]", span.x, span.y, zox_get_link(world, meshes[i], MeshTextureLink) == texture);
+                    zox_tst_check(zox_get_link(world, meshes[i], MeshTextureLink) == texture, "the water mesh doesn't link the water texture");
                 }
-                zox_tst_check(fabsf(span.x - 1) < 0.01f && fabsf(span.y - 1) < 0.01f, "a water face's uvs span [%.3f x %.3f] of its tile, not all of it",
+                zox_tst_check(fabsf(span.x - 1) < 0.01f && fabsf(span.y - 1) < 0.01f, "a water face's uvs span [%.3f x %.3f] of its texture, not all of it",
                     span.x, span.y);
             }
         }

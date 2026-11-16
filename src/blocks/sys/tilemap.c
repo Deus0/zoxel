@@ -16,8 +16,10 @@ void realm_tilemap_system(iter* it) {
         byte generating = 0;
         for (int j = 0; j < blocks->length; j++) {
             entity block = blocks->value[j];
+            // liquids aren't on the tilemap: their meshes draw their own texture (water: it animates alone)
             if (!zox_valid(block) ||
-                !zox_has(block, BlockBaked)
+                !zox_has(block, BlockBaked) ||
+                (zox_has(block, BlockMaterial) && zox_getv(block, BlockMaterial) == zox_block_material_liquid)
             ) {
                 continue;
             }
@@ -49,8 +51,10 @@ void realm_tilemap_system(iter* it) {
         uint tilemap_textures_length = 0;
         for (int j = 0; j < blocks->length; j++) {
             entity block = blocks->value[j];
+            // liquids aren't on the tilemap: their meshes draw their own texture (water: it animates alone)
             if (!zox_valid(block) ||
-                !zox_has(block, BlockBaked)
+                !zox_has(block, BlockBaked) ||
+                (zox_has(block, BlockMaterial) && zox_getv(block, BlockMaterial) == zox_block_material_liquid)
             ) {
                 continue;
             }

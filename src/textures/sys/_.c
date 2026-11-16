@@ -4,7 +4,7 @@
 #include "fill.c"
 #include "frame.c"
 #include "tilemap.c"
-#include "tilemap_animate.c"
+#include "texture_animate.c"
 #include "water.c"
 #include "mouse.c"
 #include "icon.c"
@@ -84,17 +84,17 @@ void zox_systems_textures(ecs *world) {
         [out] textures.GenerateTexture,
         [out] rendering.TextureSize,
         [out] textures.TextureData,
-        [out] textures.TilemapAnimations,
         [none] textures.Tilemap
     );
     zox_system(
-        tilemap_animate_system,
+        texture_animate_system,
         zoxp_update,
         [in] rendering.TextureSize,
+        [in] textures.TextureFrames,
+        [in] textures.TextureFrameRate,
         [in] textures.GenerateTexture,
-        [out] textures.TilemapAnimations,
-        [out] textures.TextureData,
-        [none] textures.Tilemap
+        [out] textures.TextureFrame,
+        [out] textures.TextureData
     );
     zox_system(
         water_texture_system,

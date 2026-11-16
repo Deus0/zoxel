@@ -50,7 +50,9 @@ void zox_tst_tilemap_check_tilemap(ecs* world, entity tilemap) {
     int expected = 0;
     for (int j = 0; j < blocks->length; j++) {
         entity block = blocks->value[j];
-        if (!zox_valid(block) || !zox_has(block, BlockBaked)) {
+        // liquids draw their own texture, off the tilemap (blocks/sys/tilemap.c)
+        if (!zox_valid(block) || !zox_has(block, BlockBaked) ||
+            (zox_has(block, BlockMaterial) && zox_getv(block, BlockMaterial) == zox_block_material_liquid)) {
             continue;
         }
         iter it2 = zox_children(world, block);
