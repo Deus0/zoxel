@@ -9,7 +9,6 @@
 ## Bugs
 - quest tracker ui bugs out sometimes: shows null
 - the cookie gather quest failed
-- water block's uvs are off: its texture shows at a quarter of its size
 - name input in new realm ui doesn't resize
 	- it should have a max too and if it goes over, it should shrink font size - add a tag for this property
 - Lighting flickers again when we destroy a block (water block refactor regression)

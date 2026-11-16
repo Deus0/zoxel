@@ -1,6 +1,7 @@
 # Done
 
 ## 2026-11-16
+-x Water's texture fills its block's face (it was a quarter of it with Block Res 5: its texture kept the boot size)
 -x Touch virtual joysticks are broken: the joystick system checked the finger's ElementLink, spawn_virtual_joystick
   links the virtual joystick's, so it never dragged or let go (the stick stayed 0, its ui stuck)
 -x Touch uis arnt always perfect size: the touch buttons are at most a seventh of the screen's short side (on a
