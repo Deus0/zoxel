@@ -18,9 +18,9 @@
 - A square patch of water lighter than the rest with a straight edge, looking down at a lake (tst sea_level's
   tst/sea.ppm, seed 666): a lighting seam between chunks, or one lit after the others?
   	- probably related to the lighting issues at boot, see other bug of light in homes stills
-- Towns can stand in the sea: a town on sunken ground keeps its homes over the water and clears air under the sea
-  (seen on the map, and tst sea_level counts its air voxels apart); towns should pick land above the sea, or raise
-  their ground over it
+- Towns can stand in the sea or a lake: a town on sunken ground keeps its homes over the water and clears air under
+  the sea (seen on the map, tst sea_level counts its air voxels apart), and a town square sat in the middle of a
+  lake (tst lakes, seed 666, block 101x36); towns should pick land away from water, or raise their ground over it
 - clothes distorted when rotating arm
 	- issue is the way clothes are skinned
 	- we should set bone octrees on clothes by finding closest body part block, using flood fill distance
@@ -171,7 +171,7 @@
 # Terrain and Chunks
 - Flying's slowest frames now: new tables while streaming (16%), colored chunk meshes (9%), tst perf_fly
 - Water in the world (the block, its rippling texture and blended meshes are in, tst water_block)
-	- (done: a sea at 18, tst sea_level) lakes above the sea in hollows, rivers later
+	- (done: a sea at 18, lakes in bowls, doc/tech/water.md) rivers later
 	- flowing: water spreads into air beside and below it, a few blocks
 	- sorting: blended chunk meshes drawn far to near, so water seen through water looks right
 - Underwater

@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-16
+-x Lakes: a bowl carved into the land in some 64 block cells, full to a block under its rim, nothing growing in it,
+  towns and mountains kept out (a town square sat in one, a mountain filled another); tst lakes; doc/tech/water.md
 -x Water's texture fills its block's face (it was a quarter of it with Block Res 5: its texture kept the boot size)
 -x Touch virtual joysticks are broken: the joystick system checked the finger's ElementLink, spawn_virtual_joystick
   links the virtual joystick's, so it never dragged or let go (the stick stayed 0, its ui stuck)
