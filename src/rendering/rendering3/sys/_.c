@@ -25,6 +25,7 @@ void zox_systems_basics3(ecs* world) {
         [in] rendering.ColorsGPULink,
         [in] rendering.MeshRenderCount,
         [none] rendering.ChunkMesh,
+        [none] !rendering.TransparentMesh,
         [none] !core.Disabled,
         // [none] !core.Initialize,
     );
@@ -43,6 +44,20 @@ void zox_systems_basics3(ecs* world) {
         [in] rendering3.MaterialBasic3D,
         [none] rendering3.MeshBasic3,
         [none] !core.Initialize,
+    );
+    // water: after the solid things and the sky, blended over them
+    zox_render3_system(
+        2,
+        chunk3_transparent_render_system,
+        [in] rendering.RenderDisabled,
+        [in] transforms.TransformMatrix,
+        [in] rendering.MeshGPULink,
+        [in] rendering.UvsGPULink,
+        [in] rendering.ColorsGPULink,
+        [in] rendering.MeshRenderCount,
+        [none] rendering.ChunkMesh,
+        [none] rendering.TransparentMesh,
+        [none] !core.Disabled,
     );
     // characters
     zox_render3_system(

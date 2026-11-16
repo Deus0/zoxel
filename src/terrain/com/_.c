@@ -21,6 +21,7 @@ zox_tag(BlockObsidian);
 zox_tag(BlockBricks);
 zox_tag(BlockFlower);
 zox_tag(BlockRoad);
+zox_tag(BlockWater);       // a liquid (BlockMaterial): see through, walked through, it flows (terrain/water)
 #include "spawn2.c"
 
 entity get_linked_terrain(ecs* world, entity e) {
@@ -51,4 +52,5 @@ void zox_components_terrain(ecs *world) {
     zoxd_tag(BlockBricks);
     zoxd_tag(BlockFlower);
     zoxd_tag(BlockRoad);
+    zoxd_tag(BlockWater);
 }

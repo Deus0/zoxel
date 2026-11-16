@@ -6,6 +6,7 @@ zox_tag(SingleMaterial);
 zox_tag(RendererInstance);
 zox_tag(VoxMesh);
 zox_tag(ChunkMesh);
+zox_tag(TransparentMesh);   // drawn blended, after the solid ones (a water chunk mesh)
 // Events
 zox_tag(DisableDepthTest);
 zox_tag(MeshClearCache);
@@ -76,6 +77,7 @@ void zox_components_rendering(ecs *world) {
     zoxd_tag(RendererInstance);
     zoxd_tag(VoxMesh);
     zoxd_tag(ChunkMesh);
+    zoxd_tag(TransparentMesh);
     // Properties
     zoxd_tag(DisableDepthTest);
     zoxd_tag(MeshClearCache);

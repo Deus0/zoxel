@@ -16,6 +16,7 @@ zox_tag(TextureAddNoise);
 zox_tag(TextureRGB);
 zox_tag(ArrowTexture);
 zox_tag(PlusTexture);
+zox_tag(WaterTexture);      // animated ripples (gen/water.c)
 zoxc_byte(GenerateTexture);
 zoxc_byte(OutlineThickness);
 zoxc_byte(FrameCorner);
@@ -29,6 +30,21 @@ zox_tag(TextureLink);
 zox_tag(TilemapTextureLinks); // links a tilemap to all its block textures, in order
 zoxc_arrayd(TextureData, color)
 zoxc_arrayd(TilemapUVs, float2)
+// animated textures: every frame's pixels back to back, TextureData the one shown; a tilemap shows them moving
+zoxc_arrayd(TextureFrames, color)
+zoxc_float(TextureFrameRate);   // frames a second
+// a tilemap's animated tiles: the texture, its tile's pixel position, the frame it shows
+typedef struct {
+    entity texture;
+    int2 position;
+    byte frame;
+} TilemapAnimation;
+zoxc_arrayd(TilemapAnimations, TilemapAnimation)
+
+// the frame an animation shows at a time
+static inline byte texture_frame_at(double time, float rate, int count) {
+    return count > 0 ? (byte) ((long) (time * rate) % count) : 0;
+}
 // zoxc_entities(TextureLinks)
 // Voxes
 zox_tag(VoxTexture);
@@ -58,6 +74,9 @@ void zox_components_textures(ecs* world) {
     zoxd_nf_links(TilemapTextureLinks);
     zoxd_arrayd(TextureData);
     zoxd_arrayd(TilemapUVs);
+    zoxd_arrayd(TextureFrames);
+    zoxd_float(TextureFrameRate);
+    zoxd_arrayd(TilemapAnimations);
     // Generation Types (obsolete)
     zoxd_tag(NoiseTexture);
     zoxd_tag(IconTexture);
@@ -72,4 +91,5 @@ void zox_components_textures(ecs* world) {
     zoxd_tag(CenterVoxTexture);
     zoxd_tag(ArrowTexture);
     zoxd_tag(PlusTexture);
+    zoxd_tag(WaterTexture);
 }

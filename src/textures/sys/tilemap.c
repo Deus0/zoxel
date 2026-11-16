@@ -2,6 +2,15 @@
 // todo: support for multiple sizes, would have to place them in? or something
 extern entity get_block_link(ecs*, entity);
 
+// copies a texture's pixels into a tilemap at a pixel position
+static inline void tilemap_blit(color* data, int2 size, int2 position, const color* pixels, int2 texture_size) {
+    for (int y = 0; y < texture_size.y && position.y + y < size.y; y++) {
+        for (int x = 0; x < texture_size.x && position.x + x < size.x; x++) {
+            data[(position.y + y) * size.x + position.x + x] = pixels[y * texture_size.x + x];
+        }
+    }
+}
+
 // NOTE: Relies on texture size
 void tilemap_generation_system(iter* it) {
     zox_sys_on_begin();
@@ -12,12 +21,14 @@ void tilemap_generation_system(iter* it) {
     zox_sys_out(GenerateTexture);
     zox_sys_out(TextureSize);
     zox_sys_out(TextureData);
+    zox_sys_out(TilemapAnimations);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TilemapSize, map_size);
         zox_sys_o(GenerateTexture, generate);
         zox_sys_o(TextureSize, size);
         zox_sys_o(TextureData, data);
+        zox_sys_o(TilemapAnimations, animations);
         if (generate->value != zox_generate_texture_run) {
             continue;
         }
@@ -87,6 +98,7 @@ void tilemap_generation_system(iter* it) {
         resize_TextureData(data, size->value.x * size->value.y);
         int2 texture_position = int2_zero;
         memset(data->value, 255, data->length * sizeof(color));
+        resize_TilemapAnimations(animations, 0);
         texture_index = 0;
         while (1) {
             entity texture = zox_get_link_index(
@@ -109,28 +121,15 @@ void tilemap_generation_system(iter* it) {
                 texture_position.x * unit_size.x,
                 texture_position.y * unit_size.y
             };
-            // tod: refactor - make this into a function
-            int2 pixel_position = int2_zero;
-            for (pixel_position.x = 0; pixel_position.x < texture_size.x; pixel_position.x++) {
-                for (pixel_position.y = 0; pixel_position.y < texture_size.y; pixel_position.y++) {
-                    int2 tilemap_pixel_position = int2_add(pixel_position, tilemap_position);
-                    int tilemap_index = int2_array_index(
-                        tilemap_pixel_position,
-                        size->value);
-                    if (tilemap_index >= data->length) {
-                        zox_loge("tilemap_index [%i] >= data->length [%i]",
-                            tilemap_index,
-                            data->length);
-                        continue;
-                    }
-                    int pixel_index = int2_array_index(
-                        pixel_position,
-                        texture_size);
-                    if (pixel_index >= texture_data->length) {
-                        continue;
-                    }
-                    data->value[tilemap_index] = texture_data->value[pixel_index];
-                }
+            if (texture_data->length < texture_size.x * texture_size.y) {
+                continue;
+            }
+            tilemap_blit(data->value, size->value, tilemap_position, texture_data->value, texture_size);
+            // its tile moves (tilemap_animate_system)
+            if (zox_has(texture, TextureFrames) && zox_has(texture, TextureFrameRate)) {
+                const int at = animations->length;
+                resize_TilemapAnimations(animations, at + 1);
+                animations->value[at] = (TilemapAnimation) { texture, tilemap_position, 0 };
             }
         }
         generate->value = zox_generate_texture_uvs;

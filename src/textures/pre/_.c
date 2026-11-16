@@ -5,6 +5,7 @@
 entity prefab_texture;
 entity prefab_texture_noise;
 entity prefab_tilemap;
+entity prefab_texture_water;
 
 extern byte block_depth;
 
@@ -12,6 +13,7 @@ void spawn_prefabs_textures_core(ecs *world) {
     int2 size = int2_single(powers_of_two[block_depth]);
     prefab_texture = spawn_prefab_texture(world, size);
     prefab_texture_noise = spawn_prefab_texture_noise(world, size);
+    prefab_texture_water = spawn_prefab_texture_water(world, size);
 
     prefab_tilemap = spawn_prefab_tilemap(world);
 }

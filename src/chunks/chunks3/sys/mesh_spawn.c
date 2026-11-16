@@ -19,6 +19,7 @@ static inline entity spawn_chunk_material_mesh(
     ecs* world,
     entity material,
     entity tilemap,
+    byte block_material,
     byte depth,
     float4x4 matrix,
     byte render_disabled)
@@ -40,7 +41,8 @@ static inline entity spawn_chunk_material_mesh(
         matrix,
         depth,
         render_disabled,
-        tilemap);
+        tilemap,
+        block_material);
 }
 
 // NOTE: When Depth changes or Voxels Generate, the materials and meshes that don't exist are spawned
@@ -81,8 +83,8 @@ static inline byte spawn_chunk_meshes(
         }
         const byte shown = !is_new && chunk_material_shown(world, material);
         const entity mesh = is_new ?
-            spawn_chunk_mesh_textured(world, material, matrix, depth, render_disabled, tilemap) :
-            spawn_chunk_material_mesh(world, material, tilemap, depth, matrix, render_disabled);
+            spawn_chunk_mesh_textured(world, material, matrix, depth, render_disabled, tilemap, i) :
+            spawn_chunk_material_mesh(world, material, tilemap, i, depth, matrix, render_disabled);
         if (!mesh) {
             continue;
         }

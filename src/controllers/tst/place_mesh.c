@@ -25,6 +25,24 @@ static inline int zox_tst_pmesh_vertices(ecs* world, entity chunk, int* shown) {
     return vertices;
 }
 
+// an all air chunk one to three over the player, streamed with its block voxes spawned, not updating: 0 if none yet
+static inline entity zox_tst_air_chunk(ecs* world, entity character, entity terrain) {
+    const int length = octree_size(zox_getv(terrain, NodeDepth));
+    const int3 position = real_position_to_chunk_position(zox_getv(character, Position3D), length, zox_getv(terrain, BlockScale));
+    for (byte up = 1; up <= 3; up++) {
+        const entity chunk = int3_hashmap_get(zox_get(terrain, ChunkLinks)->value, (int3) { position.x, position.y + up, position.z });
+        if (!zox_valid(chunk) || !zox_has(chunk, BlocksSpawned) || zox_has(chunk, ChunkUpdate)) {
+            continue;
+        }
+        const VoxelNode* voxels = zox_get(chunk, VoxelNode);
+        int shown;
+        if (!has_children_VoxelNode(voxels) && !voxels->value && !zox_tst_pmesh_vertices(world, chunk, &shown)) {
+            return chunk;
+        }
+    }
+    return 0;
+}
+
 byte zox_tst_place_mesh_ready(ecs* world) {
     if (!zox_tst_player_spawn_ready(world)) {
         return 0;
@@ -34,20 +52,8 @@ byte zox_tst_place_mesh_ready(ecs* world) {
     zox_tst_progress(zox_tst_pmesh_stage * 1000 + (int) (zox_current_time - zox_tst_pmesh_time));
     if (zox_tst_pmesh_stage == 0) {
         zox_tst_waiting = "an all air chunk over the player";
-        const byte depth = zox_getv(terrain, NodeDepth);
-        const int length = octree_size(depth);
-        int3 position = real_position_to_chunk_position(zox_getv(character, Position3D), length, zox_getv(terrain, BlockScale));
-        for (byte up = 1; up <= 3 && !zox_tst_pmesh_chunk; up++) {
-            const entity chunk = int3_hashmap_get(zox_get(terrain, ChunkLinks)->value, (int3) { position.x, position.y + up, position.z });
-            if (!zox_valid(chunk) || !zox_has(chunk, BlocksSpawned) || zox_has(chunk, ChunkUpdate)) {
-                continue;
-            }
-            const VoxelNode* voxels = zox_get(chunk, VoxelNode);
-            int shown;
-            if (!has_children_VoxelNode(voxels) && !voxels->value && !zox_tst_pmesh_vertices(world, chunk, &shown)) {
-                zox_tst_pmesh_chunk = chunk;
-            }
-        }
+        const int length = octree_size(zox_getv(terrain, NodeDepth));
+        zox_tst_pmesh_chunk = zox_tst_air_chunk(world, character, terrain);
         if (!zox_tst_pmesh_chunk) {
             return 0;
         }

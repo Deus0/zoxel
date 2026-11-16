@@ -1,5 +1,6 @@
 // TODO: For each chunk render, we use linked tilemap GPU data
-void chunk3_textured_render_system(iter* it) {
+// draws chunk meshes with their tilemap; see through ones (TransparentMesh: water) blended, both faces, after the rest
+static inline void render_chunk_meshes(iter* it, byte transparent) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     byte dbg_gl = 0;
@@ -73,6 +74,10 @@ void chunk3_textured_render_system(iter* it) {
                 }
                 continue;
             }
+            if (transparent) {
+                zox_gpu_enable_blend();
+                zox_gpu_disable_culling();
+            }
             zox_gpu_material(material_id);
             zox_gpu_bind_texture(texture_id);
             /*zox_gpu_float4x4(
@@ -137,7 +142,19 @@ void chunk3_textured_render_system(iter* it) {
         zox_gpu_reset_texture();
         zox_gpu_reset_mesh();
         zox_disable_material();
+        if (transparent) {
+            zox_gpu_disable_blend();
+            zox_gpu_enable_culling();
+        }
     }
     zox_sys_on_end();
+}
+
+void chunk3_textured_render_system(iter* it) {
+    render_chunk_meshes(it, 0);
 } zoxd_system(chunk3_textured_render_system);
+
+void chunk3_transparent_render_system(iter* it) {
+    render_chunk_meshes(it, 1);
+} zoxd_system(chunk3_transparent_render_system);
 

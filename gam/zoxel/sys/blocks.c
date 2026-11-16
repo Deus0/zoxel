@@ -139,6 +139,16 @@ void blocks_realm_spawn_system(iter* it) {
             zox_set_parent(world, e2, e);
             link_hit_sound(world, e2, e, &hit_sound_wood);
         }
+        // water: see through, walked through, its texture moves; last, the blocks before it keep their indices
+        {
+            lint block_seed = seed->value + (seed_offset+=seed_shift);
+            const color water_color = (color) { 40, 110, 200, zox_water_alpha };
+            entity e2 = spawn_realm_block_textured(world, e, prefab_texture_water, block_seed, "water", water_color);
+            zox_add(e2, BlockWater);
+            zox_setv(e2, BlockMaterial, zox_block_material_liquid);
+            zox_setv(e2, BlockCollider, zox_block_air);
+            zox_setv(e2, BlockLightPass, 1);
+        }
         zox_add(e, BlocksDirty);
         if (dbg_log) {
             zox_log("Realm [%s] Spawning [Blocks]", zox_get_name(e));

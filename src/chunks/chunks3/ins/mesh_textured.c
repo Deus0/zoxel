@@ -20,7 +20,8 @@ entity spawn_chunk_mesh_textured(
     float4x4 matrix,
     byte depth,
     byte render_disabled,
-    entity tilemap)
+    entity tilemap,
+    byte block_material)
 {
     entity e2 = zox_ins(world, prefab_chunk_mesh_textured);
     zox_set_unique_name(e2, "chunk_mesh");
@@ -28,6 +29,9 @@ entity spawn_chunk_mesh_textured(
     zox_setv(e2, RenderDepth, depth);
     zox_setv(e2, RenderDisabled, render_disabled);
     zox_link(world, e2, MaterialLink, tilemap);
+    if (block_material == zox_block_material_liquid) {
+        zox_add(e2, TransparentMesh);
+    }
     zox_set_parent_non_fragment(world, e2, parent);
     return e2;
 }
