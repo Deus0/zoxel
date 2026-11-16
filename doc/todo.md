@@ -7,10 +7,9 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
-- Towns can stand in the sea: a town on sunken ground keeps its homes over the water (seen on the map, seed 1);
-  towns should pick land above the sea, or raise their ground over it
-- tst sea_level once found 9 air voxels under the sea (seed 2, not again in 8 runs); it logs the first one's block
-  and whether a town is there, if it shows again
+- Towns can stand in the sea: a town on sunken ground keeps its homes over the water and clears air under the sea
+  (seen on the map, and tst sea_level counts its air voxels apart); towns should pick land above the sea, or raise
+  their ground over it
 - you can place a bed with only one free block: placing now checks its whole box (a29383dda), check again
 - player character looks at npc body and not their head
     - player still not facing npc when walking to them
