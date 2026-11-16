@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-16
+-x tst gpu_restore (rendering/tst): disposes and restores every gpu resource on the main menu, checks every gpu link
+  is let go of and holds something again, no gl errors, the picture's average colour the same; it found the sky
+  coming back magenta: the skybox never kept its menu colours (only set on the gpu), a restore set the prefab's
 -x Sometimes when i alt tab, the raycasting UI breaks: fullscreen minimizes on focus loss (rendering and time
   stopped), wayland may never send restored, so focus gained restores too; back in, the mouse counts as in the
   window with keyboard focus and the pointer inside (sdl may not give mouse focus till it moves); tst sdl_alt_tab,

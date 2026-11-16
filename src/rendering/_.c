@@ -19,6 +19,9 @@ byte zox_new_ui_renderer = 1;
 #include "rendering2/_.c"
 #include "rendering3/_.c"
 #include "cameras/_.c"
+#ifdef zox_tests
+    #include "tst/_.c"
+#endif
 
 byte initialize_rendering(byte render_backend) {
     if (test_graphics() == EXIT_FAILURE) {
@@ -74,5 +77,8 @@ void import_rendering(ecs* world) {
         zoxp_begin,
         0
     );
+#ifdef zox_tests
+    zox_tsts_rendering();
+#endif
 }
 

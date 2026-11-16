@@ -76,7 +76,7 @@
         - Or didnt regenerate after?
 - Fix No post processing mode / Rawdog Camera Mode
 - Cube mesh doesnt restore on alt tab - gpu restore issue?
-    - add tests for gpu dispose and restore
+    - tst gpu_restore (menu, dispose and restore with the gl context kept) restores it fine: android's lost context?
 - FIX: Set CubeLines Faces based on VoxelSides thats generated, then make sure it Renders Over Top of the overlays - disabled depth
 - Fix chunk bounds debug visuals - the lines debugger
 - scrollbar broken on hierarchy in editor
