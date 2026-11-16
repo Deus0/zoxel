@@ -1,6 +1,14 @@
 // NOTE: SDL doesn't do multiple mouses
 // NOTE: This flips mouse position to match our engine
 
+// is the mouse in the window (else it's nowhere: what it hovered unhovers, its tooltip goes)
+//  - alt tabbing back in (the pointer already over it, always when fullscreen), sdl may not give it mouse focus till
+//    the pointer moves (wayland), so it's in while the window has keyboard focus and the pointer's inside it
+byte sdl_mouse_in_window(byte mouse_focus, byte keyboard_focus, int2 position, int2 size) {
+    const byte in_bounds = position.x >= 0 && position.y >= 0 && position.x < size.x && position.y < size.y;
+    return mouse_focus || (keyboard_focus && in_bounds);
+}
+
 void mouse_input_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
@@ -40,12 +48,9 @@ void mouse_input_system(iter* it) {
         int2_flip_y(&mouse_position, screen_size);
         // out of the window it's nowhere (sdl keeps its last place inside: what it hovered stayed hovered, its
         //  tooltip stuck)
-        //  - alt tabbing back in (the pointer already over it), sdl may not give it mouse focus till the pointer
-        //    leaves and comes back, so it's in while the window has keyboard focus and the pointer's inside it
         SDL_Window* window = zox_getv(app, SDLWindow);
-        const byte in_bounds = global_mouse_position.x >= 0 && global_mouse_position.y >= 0 &&
-            global_mouse_position.x < screen_size.x && global_mouse_position.y < screen_size.y;
-        const byte in_window = SDL_GetMouseFocus() == window || (SDL_GetKeyboardFocus() == window && in_bounds);
+        const byte in_window = sdl_mouse_in_window(SDL_GetMouseFocus() == window, SDL_GetKeyboardFocus() == window,
+            global_mouse_position, screen_size);
         if (!in_window) {
             mouse_position = int2_hidden;
         }

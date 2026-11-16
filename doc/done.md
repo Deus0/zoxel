@@ -1,6 +1,12 @@
 # Done
 
 ## 2026-11-16
+-x Sometimes when i alt tab, the raycasting UI breaks: fullscreen minimizes on focus loss (rendering and time
+  stopped), wayland may never send restored, so focus gained restores too; back in, the mouse counts as in the
+  window with keyboard focus and the pointer inside (sdl may not give mouse focus till it moves); tst sdl_alt_tab,
+  sdl_mouse_focus
+-x SDL tests: sdl_window (window, its size, gl context), sdl_resize, sdl_quit (apps/sdl/tst), sdl_text_input
+  (ui/elements2/tst)
 -x you can place a bed with only one free block: placing now checks its whole box (a29383dda), check again
 -x player character looks at npc body and not their head
     - player still not facing npc when walking to them

@@ -7,10 +7,15 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
-- Sometimes when i alt tab, the raycasting UI breaks
+- name input in new realm ui doesn't resize
+	- it should have a max too and if it goes over, it should shrink font size - add a tag for this property
 - Lighting flickers again when we destroy a block (water block refactor regression)
+	- wait this happens only when loading a new realm
+	- the loading broke tilemap due to water
+	- not occuring in new games, can ignore i think?
 - A square patch of water lighter than the rest with a straight edge, looking down at a lake (tst sea_level's
   tst/sea.ppm, seed 666): a lighting seam between chunks, or one lit after the others?
+  	- probably related to the lighting issues at boot, see other bug of light in homes stills
 - Towns can stand in the sea: a town on sunken ground keeps its homes over the water and clears air under the sea
   (seen on the map, and tst sea_level counts its air voxels apart); towns should pick land above the sea, or raise
   their ground over it
@@ -118,6 +123,18 @@
 - Flaky: humanoid_leak (sometimes almost stops after round 1 and times out, else passes in 65s), npc_leash (the npc
   walks away from home, -x, passes and fails on the same commits), quest_dialogue (the first talk can take 15s+)
 
+# Refactors
+- Move blocks from biome spawning back to realm
+	- we need rules that make each biome feel unique still
+	- we also still need variety of blocks to feel abundance
+- merge mesh building code from colored voxes and terrain vox
+	- uv placement would be a seperate system
+- refactor generation to use nodegraphs
+	- textures
+	- block vox models
+	- flesh out node processes to have more functions, using observers and nodes
+	- write more tests to maintain this
+
 # Sounds and Music
 - different music per biome too
 - cant hear footsteps well unless very loud, maybe balance is off
@@ -211,6 +228,7 @@
 - ChunkColoredBuildSystem
 - Ref: Remake RenderDepthDirty for TerrainChunks, setting per system instead of zoxc_state
 - make it fade between lod chunks instead of instance switch, so its less jarring visually
+
 
 # Generation, Biomes and Regions
 - Population: more info per tunk (who lives there, counts), a level per region (like Trove), regions harder the
@@ -732,6 +750,7 @@
 - Add a compass symbol to show north etc
 
 # Rendering, Lights and Cameras
+- Darken sunlight as it goes underwater
 - Vulkan renderer
 	- initial vulkan implementation
 	- vox model rendering

@@ -106,7 +106,15 @@ void zox_tst_input_field_check(ecs* world) {
         zox_tst_input_after);
 }
 
+#ifdef zox_sdl3
+    #include "sdl_text.c"
+#endif
+
 void zox_tsts_elements2() {
     zox_tst_add("input_field", zox_tst_input_field_ready, zox_tst_input_field_check, 60);
     zox_tst_set_setup("input_field", NULL, 1);
+#ifdef zox_sdl3
+    zox_tst_add("sdl_text_input", zox_tst_sdl_text_input_ready, zox_tst_sdl_text_input_check, 30);
+    zox_tst_set_setup("sdl_text_input", NULL, 1);
+#endif
 }

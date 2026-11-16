@@ -30,6 +30,9 @@ void import_sdl(ecs* world) {
     add_hook_spawn_prefabs(spawn_prefabs_sdl);
     initialize_sounds();
     zox_add_module(sdl_inputs);
+#ifdef zox_tests
+    zox_tsts_sdl();
+#endif
     // Setting idk
     // SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
     if (is_on_phosh()) {

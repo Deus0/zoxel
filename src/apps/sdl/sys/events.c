@@ -85,9 +85,9 @@ void sdl_events_system(iter* it) {
             }
         } else if (sdl_event_window_focus_gained(&event)) {
             enable_time();
-#ifdef zox_android
+            // back from a minimize (fullscreen minimizes on focus loss) too: wayland may never send restored,
+            //  and it stayed frozen (not rendering, time paused). Does nothing if nothing was disposed
             opengl_restore_resources(world);
-#endif
             if (dbg_log) {
                 zox_log("App Gained Focus [%s]",
                 zox_getn(e));
