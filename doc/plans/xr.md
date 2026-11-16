@@ -43,7 +43,9 @@ Most XR work isn't about the headset: two eyes, a head pose, controllers, rays a
 without one.
 
 - an `xr_runtime` interface: begin a frame, get two eyes (pose, fov, image size), the controllers' state,
-  submit. OpenXR implements it on Android. A simulator implements it everywhere else: two eyes 64mm apart,
+  submit. OpenXR implements it on Android and, later, desktop Linux (SteamVR / Monado, and Steam Frame's ARM
+  Linux), so keep the OpenXR backend free of Android-only code (the loader, the GL binding and the swapchain
+  sit behind small platform calls). A simulator implements it everywhere else: two eyes 64mm apart,
   a fixed headset fov, the head turned by the mouse, controllers from a gamepad or keyboard
 - `--xr-sim` draws both eyes side by side in the window, through the same render path a headset uses
 - tests: `xr_sim_eyes` (two eyes drawn, each with its own view: screenshot halves differ by parallax, not
@@ -54,11 +56,15 @@ without one.
 ### 2. A free roam camera in the engine
 
 - a free roam camera mode (cameras): `free_roam_step` each frame from the active input's two sticks, the head's
-  rotation from the runtime (identity without one). Desktop gets a fly camera from it too (gamepad or WASD)
+  rotation from the runtime (identity without one). Head and sticks combine, as in cube.c: the right stick
+  turns the body (yaw), the headset turns the head on top of it, and the left stick moves along where the head
+  looks. Desktop already has a free roam camera; it becomes this mode, with the head's rotation identity (or
+  the mouse, in the simulator), so one code path serves both
 - the XR camera parents the eyes: eye pose, then the camera (camera_xr_eyes checks the order)
 - retire tst/cube.c once the engine does what it does: its free roam cubes become a test level scene
   (`zox_tst_level_setup` with the camera in free roam)
-- tests: `xr_free_roam` on the simulator: sticks held, the camera moves as camera_free_roam says, the eyes follow
+- tests: `xr_free_roam` on the simulator: sticks held, the camera moves as camera_free_roam says, the eyes
+  follow; the head turned 90 degrees with the left stick held forward moves sideways from the body's facing
 
 ### 3. XR inputs as an input device
 
@@ -92,7 +98,7 @@ controller is one more device, so the existing controllers work without knowing 
 
 ### 6. Keeping every platform working
 
-- builds: desktop, web, Android and Android XR built for every commit that touches cameras, inputs, ui or
+- builds: desktop, web, Android, Android XR and (once it exists) desktop Linux XR built for every commit that touches cameras, inputs, ui or
   xr (an NDK on the dev board, or a CI runner)
 - the simulator tests run on desktop with the rest; a headset check list for what only a headset shows
   (comfort, the y flip, tracking, the swapchain's format)
