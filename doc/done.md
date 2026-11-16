@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-16
+-x Water off the tilemap: its own texture and gpu texture, liquid meshes bind it, it animates alone (the whole
+  tilemap was uploaded 8 times a second); the quarter size water (Block Res 5) reproduced and checked, tst water_tile
 -x Flowing water: an edit next to water fills it, water falls and spreads 4 blocks, tst water_flow
 -x A realm without a save folder no longer saves its chunks beside the binary (the tests' realms did, the next run
   loaded them)
