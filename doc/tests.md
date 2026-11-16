@@ -107,3 +107,6 @@ The full list with descriptions: the comment at the top of each test, or `bash b
 - An animated block (water): `bash bsh/tst.sh block_frames` -> tst/blocks/<block>_frames.ppm, its frames in a row,
   its first tiled 2 x 2 (seams) and its last then first (the loop); checks they change, loop and tile
 - Water in the world: `bash bsh/tst.sh sea_level` -> tst/sea.ppm and sea_later.ppm, looking down at open water
+- A view of the world without the player: spawn_viewport_camera, prefab_add_streamer on it with StreamLink to the
+  terrain and StreamerLevel 1 (0 streams regions and towns only), unlink the game cameras' StreamLink (terrain
+  streams round the last streamer to move), nohud and the game view's RenderDisabled (tst sea_level)
