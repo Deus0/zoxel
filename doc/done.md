@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-16
+-x you can place a bed with only one free block: placing now checks its whole box (a29383dda), check again
+-x player character looks at npc body and not their head
+    - player still not facing npc when walking to them
+-x npcs shouldnt jump randomly when you are talking *unless theyre hyper*
 -x Blocks checked by eye: the bed and door with bsh/model.sh; tst block_frames for animated blocks (water's 16 frames
   side by side, they loop and tile); tst sea_level looks down at open water and sees it move
 -x A sea: ground below 18 is under water up to it (heights/sys/landfill.c terrain_sea_height), about a tenth of the

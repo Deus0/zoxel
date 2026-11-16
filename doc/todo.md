@@ -7,15 +7,13 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
+- Sometimes when i alt tab, the raycasting UI breaks
+- Lighting flickers again when we destroy a block (water block refactor regression)
 - A square patch of water lighter than the rest with a straight edge, looking down at a lake (tst sea_level's
   tst/sea.ppm, seed 666): a lighting seam between chunks, or one lit after the others?
 - Towns can stand in the sea: a town on sunken ground keeps its homes over the water and clears air under the sea
   (seen on the map, and tst sea_level counts its air voxels apart); towns should pick land above the sea, or raise
   their ground over it
-- you can place a bed with only one free block: placing now checks its whole box (a29383dda), check again
-- player character looks at npc body and not their head
-    - player still not facing npc when walking to them
-- npcs shouldnt jump randomly when you are talking *unless theyre hyper*
 - clothes distorted when rotating arm
 	- issue is the way clothes are skinned
 	- we should set bone octrees on clothes by finding closest body part block, using flood fill distance
@@ -23,7 +21,6 @@
 	- add a top_hat.txt that has a -depth 4 value
 	- importer can then know to scale it up
 	- make a imports.md that explains how to add to the import folders for users, inc file types
-- Sometimes when i alt tab, the raycasting UI breaks
 - Crosshair will flicker siize too fast
     - give crossbar more natural animations when you see npc
     - seperate animation for the terrain or air
