@@ -20,7 +20,7 @@ void import_vegetation(ecs* world) {
     zox_components_vegetation(world);
     zox_systems_vegetation(world);
 #ifdef zox_tests
-    zox_tsts_vegetation();
+    zox_tsts_vegetation(world);
 #endif
     add_hook_spawn_prefabs(spawn_prefabs_vegetation);
     // add_hook_spawn_prefabs(spawn_prefabs_tunks);

@@ -34,6 +34,6 @@ void import_musics(ecs* world) {
     add_hook_spawn_prefabs(spawn_prefabs_musics);
     zox_add_module(playlists);
 #ifdef zox_tests
-    zox_tsts_musics();
+    zox_tsts_musics(world);
 #endif
 }

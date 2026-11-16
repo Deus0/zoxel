@@ -18,6 +18,6 @@ void import_lines3(ecs* world) {
     zox_components_lines3(world);
     zox_systems_lines3(world);
 #ifdef zox_tests
-    zox_tsts_lines3();
+    zox_tsts_lines3(world);
 #endif
 }

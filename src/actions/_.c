@@ -14,10 +14,17 @@ byte test_actions_skills = 0;
 #include "ui/_.c"
 #include "sys/_.c"
 
+#ifdef zox_tests
+#include "tst/_.c"
+#endif
+
 void import_actions(ecs* world) {
     zox_module(actions);
     zox_components_actions(world);
     zox_systems_actions(world);
     add_hook_spawn_prefabs(spawn_prefabs_actions);
     zox_add_module(actions_ui);
+#ifdef zox_tests
+    zox_tsts_actions(world);
+#endif
 }

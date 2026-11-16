@@ -1515,3 +1515,8 @@ Disabling Lods means:
 - Water splash (doc/tech/water_extras.md task 1)
 	- InsideBlockDirty observer: a splash and sound falling into water (faster than 2 a second), a small one coming out
 	- test: water_splash
+- Tests out of controllers/tst, each to the lowest module it checks (doc/coding_standards.md Test Placement)
+	- controllers/tst keeps only controller tests (input, menus) and the player and world fixtures
+	- terrain tests on air_chunk.c (no player), block_data_queue too; body_views a skeleton character, not the player's
+	- add_item_to_slot_manager moved from pickups to items/fun (quests reached up for it)
+	- tests: maths_matrices, maths_bounds, dynamic_arrays, transform_hierarchy, euler_limits, grass_overlap

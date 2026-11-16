@@ -1,45 +1,10 @@
-#include "links.c"
 #include "wheel.c"
 #include "split.c"
 #include "punch.c"
-#include "pop.c"
-#include "quest.c"
-#include "quest_dialogue.c"
-#include "clothes.c"
-#include "lod_chunk_lights.c"
-#include "chest_weights.c"
-#include "player_respawn.c"
-#include "footsteps.c"
-#include "arms_in_step.c"
-#include "pipeline_syncs.c"
-#include "lines_render.c"
-#include "furniture.c"
-#include "furniture_fillers.c"
-#include "furniture_hits.c"
-#include "block_data_queue.c"
-#include "furniture_rotation.c"
-#include "placement_box.c"
-#include "ground_removed.c"
-#include "map_pixel.c"
 #include "tooltip_flick.c"
-#include "ui3_occlusion.c"
-#include "ui3_overlap.c"
-#include "gizmo_owner.c"
-#include "head_camera.c"
 extern char zox_screenshot_request[256];
 #include "world_only.c"
-#include "streamers.c"
-#include "statbars_hide.c"
-#include "held_item.c"
-#include "bone_rebuild.c"
-#include "id_window.c"
-#include "window_toggle.c"
-#include "tooltip_gone.c"
-#include "quest_log_tracked.c"
-#include "vegetation_chunks.c"
 #include "music.c"
-#include "item_sizes.c"
-#include "find_quest.c"
 // tst: player_spawn, a new realm spawns the player's character standing in the terrain
 //  - waits for the player's character, then lets it settle for a few seconds
 //  - the character's block is air (not stuck in the ground) and it hasn't fallen out of the world
@@ -262,266 +227,6 @@ byte zox_tst_continue_game_ready(ecs* world) {
     return zox_tst_player_spawn_ready(world);
 }
 
-// tst: stream_npcs, the player walks across chunks, npcs spawn and despawn with their chunks
-//  - after the player spawns, moves its character one chunk at a time around a loop
-//  - after each step settles, checks every chunk and npc:
-//      - a chunk's linked npcs are alive, and no npc is linked from two chunks
-//      - every npc in the realm belongs to a chunk (no orphans left by despawning)
-//      - a chunk whose spawn zone settled inactive has no npcs left
-//      - npcs of chunks that stayed active survive the step (walking used to despawn + respawn them)
-//      - a deleted npc's 3D uis (ElementLinks) are deleted too
-//  - by the end, npcs were both spawned and despawned (by going inactive, or by their chunk unloading)
-//  - a crash while streaming fails it (bash bsh/tst.sh stream_npcs --gdb for a backtrace)
-static const sbyte2 zox_tst_stream_path[] = {
-    { 1, 0 }, { 1, 0 }, { 1, 0 }, { 1, 0 },
-    { 0, 1 }, { 0, 1 },
-    { -1, 0 }, { -1, 0 }, { -1, 0 }, { -1, 0 },
-    { 0, -1 }, { 0, -1 },
-};
-#define zox_tst_stream_steps (int) (sizeof(zox_tst_stream_path) / sizeof(sbyte2))
-const double zox_tst_stream_step_seconds = 3.0;
-int zox_tst_stream_step = -1;   // -1 waiting for the player to spawn
-double zox_tst_stream_step_time = 0;
-int zox_tst_stream_most_npcs = 0;
-int zox_tst_stream_despawned_chunks = 0;    // chunks seen going inactive after having npcs
-int zox_tst_stream_failed_steps = 0;
-// last verify's npcs (with their chunk) and their 3D uis, to check what changed after a step
-typedef struct {
-    entity chunk;
-    entity npc;
-} zox_tst_stream_pair;
-#define zox_tst_stream_max_pairs 8192
-zox_tst_stream_pair zox_tst_stream_npcs_before[zox_tst_stream_max_pairs];
-int zox_tst_stream_npcs_before_count = 0;
-zox_tst_stream_pair zox_tst_stream_uis_before[zox_tst_stream_max_pairs];  // chunk field holds the npc's ui element
-int zox_tst_stream_uis_before_count = 0;
-#define zox_tst_stream_max_chunks 4096
-entity zox_tst_stream_had_npcs[zox_tst_stream_max_chunks];
-int zox_tst_stream_had_npcs_count = 0;
-
-static inline byte zox_tst_stream_had_npcs_has(entity chunk) {
-    for (int i = 0; i < zox_tst_stream_had_npcs_count; i++) {
-        if (zox_tst_stream_had_npcs[i] == chunk) {
-            return 1;
-        }
-    }
-    return 0;
-}
-
-void zox_tst_stream_verify(ecs* world, const char* label) {
-    const entity terrain = local_terrain;
-    const entity realm = zox_valid(terrain) ? zox_get_parent(world, terrain) : 0;
-    if (!zox_valid(realm)) {
-        zox_tst_check(0, "[%s] no terrain or realm", label);
-        return;
-    }
-    // npcs linked from chunks
-    static entity linked[8192];
-    int linked_count = 0;
-    int chunks = 0;
-    int active_chunks = 0;
-    int dead_links = 0;
-    int double_links = 0;
-    int inactive_with_npcs = 0;
-    char first_error[256] = { 0 };
-    iter it2 = zox_children(world, terrain);
-    while (zox_children_next(it2)) {
-        for (int j = 0; j < it2.count; j++) {
-            const entity chunk = it2.entities[j];
-            if (!zox_valid(chunk) || !zox_has(chunk, NpcSpawnZone)) {
-                continue;
-            }
-            chunks++;
-            const byte active = zox_getv(chunk, NpcSpawnZone);
-            const byte dirty = zox_getv(chunk, NpcSpawnZoneDirty);
-            active_chunks += active;
-            int npcs = 0;
-            zox_each_link(world, chunk, ChunkCharacters, npc) {
-                npcs++;
-                if (!zox_valid(npc)) {
-                    if (!dead_links++) snprintf(first_error, sizeof(first_error), "chunk [%s] links a dead npc", zox_getn(chunk));
-                    continue;
-                }
-                for (int k = 0; k < linked_count; k++) {
-                    if (linked[k] == npc) {
-                        if (!double_links++) snprintf(first_error, sizeof(first_error), "npc [%s] linked from two chunks", zox_getn(npc));
-                    }
-                }
-                if (linked_count < 8192) {
-                    linked[linked_count++] = npc;
-                }
-            }
-            if (npcs && !zox_tst_stream_had_npcs_has(chunk) && zox_tst_stream_had_npcs_count < zox_tst_stream_max_chunks) {
-                zox_tst_stream_had_npcs[zox_tst_stream_had_npcs_count++] = chunk;
-            }
-            if (!active && !dirty) {
-                if (npcs) {
-                    if (!inactive_with_npcs++) snprintf(first_error, sizeof(first_error), "inactive chunk [%s] still has [%i] npcs", zox_getn(chunk), npcs);
-                } else if (zox_tst_stream_had_npcs_has(chunk)) {
-                    zox_tst_stream_despawned_chunks++;
-                    // count each despawn once
-                    for (int k = 0; k < zox_tst_stream_had_npcs_count; k++) {
-                        if (zox_tst_stream_had_npcs[k] == chunk) {
-                            zox_tst_stream_had_npcs[k] = zox_tst_stream_had_npcs[--zox_tst_stream_had_npcs_count];
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    // chunks that had npcs and were unloaded also despawned them (orphans below checks they're gone)
-    //  - npcs stay active one chunk past their spawn range, which can be past the stream range
-    for (int k = zox_tst_stream_had_npcs_count - 1; k >= 0; k--) {
-        if (!zox_valid(zox_tst_stream_had_npcs[k])) {
-            zox_tst_stream_despawned_chunks++;
-            zox_tst_stream_had_npcs[k] = zox_tst_stream_had_npcs[--zox_tst_stream_had_npcs_count];
-        }
-    }
-    // npcs in the realm that no chunk owns
-    int npcs_total = 0;
-    int orphans = 0;
-    iter it3 = zox_children(world, realm);
-    while (zox_children_next(it3)) {
-        for (int j = 0; j < it3.count; j++) {
-            const entity npc = it3.entities[j];
-            // NOTE: the realm's character metas are prefab npcs, they aren't spawned by chunks
-            if (!zox_valid(npc) || !zox_has(npc, Npc) || zox_is_prefab(npc)) {
-                continue;
-            }
-            npcs_total++;
-            byte owned = 0;
-            for (int k = 0; k < linked_count; k++) {
-                if (linked[k] == npc) {
-                    owned = 1;
-                    break;
-                }
-            }
-            if (!owned && !orphans++) {
-                snprintf(first_error, sizeof(first_error), "npc [%s] isn't owned by any chunk", zox_getn(npc));
-            }
-        }
-    }
-    if (npcs_total > zox_tst_stream_most_npcs) {
-        zox_tst_stream_most_npcs = npcs_total;
-    }
-    // npcs of chunks that stayed active must survive the step (no despawn + respawn when walking)
-    int flickered = 0;
-    for (int k = 0; k < zox_tst_stream_npcs_before_count; k++) {
-        const zox_tst_stream_pair pair = zox_tst_stream_npcs_before[k];
-        if (zox_valid(pair.npc) || !zox_valid(pair.chunk)) {
-            continue;
-        }
-        if (zox_getv(pair.chunk, NpcSpawnZone) && !zox_getv(pair.chunk, NpcSpawnZoneDirty)) {
-            if (!flickered++) snprintf(first_error, sizeof(first_error),
-                "chunk [%s] stayed active but its npc was deleted (despawned and respawned)", zox_getn(pair.chunk));
-        }
-    }
-    // a deleted npc's 3D uis go with it
-    int ui_orphans = 0;
-    for (int k = 0; k < zox_tst_stream_uis_before_count; k++) {
-        const entity npc = zox_tst_stream_uis_before[k].npc;
-        const entity ui = zox_tst_stream_uis_before[k].chunk;
-        if (!zox_valid(npc) && zox_valid(ui)) {
-            if (!ui_orphans++) snprintf(first_error, sizeof(first_error),
-                "ui [%s] outlived its deleted npc", zox_getn(ui));
-        }
-    }
-    // remember this verify's npcs and uis for the next one
-    zox_tst_stream_npcs_before_count = 0;
-    zox_tst_stream_uis_before_count = 0;
-    iter it4 = zox_children(world, terrain);
-    while (zox_children_next(it4)) {
-        for (int j = 0; j < it4.count; j++) {
-            const entity chunk = it4.entities[j];
-            if (!zox_valid(chunk) || !zox_has(chunk, NpcSpawnZone)) {
-                continue;
-            }
-            const byte settled_active = zox_getv(chunk, NpcSpawnZone) && !zox_getv(chunk, NpcSpawnZoneDirty);
-            zox_each_link(world, chunk, ChunkCharacters, npc) {
-                if (!zox_valid(npc)) {
-                    continue;
-                }
-                if (settled_active && zox_tst_stream_npcs_before_count < zox_tst_stream_max_pairs) {
-                    zox_tst_stream_npcs_before[zox_tst_stream_npcs_before_count++] = (zox_tst_stream_pair) { chunk, npc };
-                }
-                zox_each_link(world, npc, ElementLinks, ui) {
-                    if (zox_valid(ui) && zox_tst_stream_uis_before_count < zox_tst_stream_max_pairs) {
-                        zox_tst_stream_uis_before[zox_tst_stream_uis_before_count++] = (zox_tst_stream_pair) { ui, npc };
-                    }
-                }
-            }
-        }
-    }
-    const int errors = dead_links + double_links + inactive_with_npcs + orphans + flickered + ui_orphans;
-    zox_log("[tst] [%s] chunks [%i] active [%i] npcs [%i] linked [%i] errors: dead [%i] double [%i] inactive [%i] orphans [%i] flickered [%i] ui orphans [%i]",
-        label, chunks, active_chunks, npcs_total, linked_count, dead_links, double_links, inactive_with_npcs, orphans, flickered, ui_orphans);
-    zox_tst_check(!errors, "[%s] [%i] npc errors, first: %s", label, errors, first_error);
-    if (errors) {
-        zox_tst_stream_failed_steps++;
-    }
-}
-
-byte zox_tst_stream_npcs_ready(ecs* world) {
-    if (zox_tst_stream_step == -1) {
-        if (!zox_tst_player_spawn_ready(world)) {
-            return 0;
-        }
-        zox_tst_stream_step = 0;
-        zox_tst_stream_step_time = zox_current_time;
-        zox_tst_stream_verify(world, "spawned");
-        return 0;
-    }
-    zox_tst_waiting = "the player to walk the chunk loop";
-    zox_tst_progress(zox_tst_stream_step);
-    if (zox_current_time - zox_tst_stream_step_time < zox_tst_stream_step_seconds) {
-        return 0;
-    }
-    // unlink callbacks run next frame (i.e. a deleted chunk's npcs), check once they've run
-    if (zox_unlinks_count) {
-        return 0;
-    }
-    if (zox_tst_stream_step > 0) {
-        char label[32];
-        snprintf(label, sizeof(label), "step %i", zox_tst_stream_step);
-        zox_tst_stream_verify(world, label);
-        if (zox_tst_stream_failed_steps >= 3) {
-            return 1;
-        }
-    }
-    if (zox_tst_stream_step >= zox_tst_stream_steps) {
-        return 1;
-    }
-    const entity character = zox_tst_spawn_character(world);
-    zox_tst_check(character, "player character is gone at step [%i]", zox_tst_stream_step);
-    if (!character) {
-        return 1;
-    }
-    // move one chunk, a little up so it lands on the new ground
-    const entity terrain = local_terrain;
-    const float scale = zox_getv(terrain, BlockScale);
-    const float chunk_length = octree_size(zox_getv(terrain, NodeDepth)) * scale;
-    const sbyte2 direction = zox_tst_stream_path[zox_tst_stream_step];
-    float3 position = zox_getv(character, Position3D);
-    position.x += direction.x * chunk_length;
-    position.z += direction.y * chunk_length;
-    position.y += scale * 2;
-    zox_setv(character, Position3D, position);
-    zox_tst_stream_step++;
-    zox_tst_stream_step_time = zox_current_time;
-    return 0;
-}
-
-void zox_tst_stream_npcs_check(ecs* world) {
-    (void) world;
-    zox_log("[tst] [metric] stale meshes rebuilt when lit while streaming [%u]", zox_smooth_lights_stale);
-    zox_log("[tst] most npcs at once [%i], chunks that despawned their npcs [%i]",
-        zox_tst_stream_most_npcs, zox_tst_stream_despawned_chunks);
-    zox_tst_check(zox_tst_stream_step >= zox_tst_stream_steps, "only walked [%i] of [%i] steps", zox_tst_stream_step, zox_tst_stream_steps);
-    zox_tst_check(zox_tst_stream_most_npcs > 0, "no npcs ever spawned");
-    zox_tst_check(zox_tst_stream_despawned_chunks > 0, "no chunk ever despawned its npcs while walking");
-}
-
 // tst: screenshot, saves what the player sees after spawning to tst/screenshot.ppm
 //  - for looking at the rendering (i.e. lighting), bash bsh/tst.sh screenshot, then convert to png
 //  - waits zox_tst_screenshot_wait after the player settles, so lights and meshes finish
@@ -566,76 +271,22 @@ void zox_tst_screenshot_check(ecs* world) {
     }
 }
 
-#include "perf.c"
-#include "lod_swap.c"
-#include "body_views.c"
-#include "body_poses.c"
 #include "touch_play.c"
 
 void zox_tsts_controllers(ecs* world) {
+    zox_tsts_music(world);
     zox_tst_add("player_spawn", zox_tst_player_spawn_ready, zox_tst_player_spawn_check, 60);
-    zox_tst_add("pipeline_syncs", zox_tst_player_spawn_ready, zox_tst_pipeline_syncs_check, 120);
     zox_tst_add("continue_game", zox_tst_continue_game_ready, zox_tst_player_spawn_check, 90);
     zox_tst_set_setup("continue_game", zox_tst_load_games_setup, 1);
     zox_tst_add("screenshot", zox_tst_screenshot_ready, zox_tst_screenshot_check, 90);
-    zox_tst_add("body_views", zox_tst_body_views_ready, zox_tst_body_views_check, 120);
-    zox_tst_set_setup("body_views", NULL, 1);
-    zox_tst_add("body_poses", zox_tst_body_poses_ready, zox_tst_body_poses_check, 240);
-    zox_tst_set_setup("body_poses", NULL, 1);
     const char* real_save = getenv("zox_tst_save");
     if (real_save && real_save[0]) {
         zox_tst_set_setup("screenshot", zox_tst_load_games_setup, 1);
     }
     (void) world;
-    zox_tst_add("gizmo_owner", zox_tst_gizmo_owner_ready, zox_tst_gizmo_owner_check, 30);
-    zox_tst_add("links_cleanup", zox_tst_links_cleanup_ready, zox_tst_links_cleanup_check, 30);
-    zox_tst_add("stream_npcs", zox_tst_stream_npcs_ready, zox_tst_stream_npcs_check, 95);
     zox_tst_add("action_wheel", zox_tst_action_wheel_ready, zox_tst_action_wheel_check, 60);
     zox_tst_add("item_split", zox_tst_item_split_ready, zox_tst_item_split_check, 90);
     zox_tst_add("resume_no_punch", zox_tst_resume_no_punch_ready, zox_tst_resume_no_punch_check, 90);
-    zox_tst_add("pickup_pop", zox_tst_pickup_pop_ready, zox_tst_pickup_pop_check, 90);
-    zox_tst_add("quest_tracking", zox_tst_quest_tracking_ready, zox_tst_quest_tracking_check, 90);
-    zox_tst_add("quest_dialogue", zox_tst_quest_dialogue_ready, zox_tst_quest_dialogue_check, 120);
-    zox_tst_add("clothes", zox_tst_clothes_ready, zox_tst_clothes_check, 120);
-    zox_tst_add("player_respawn", zox_tst_player_respawn_ready, zox_tst_player_respawn_check, 120);
-    zox_tst_add("footsteps", zox_tst_footsteps_ready, zox_tst_footsteps_check, 120);
-    zox_tst_add("arms_in_step", zox_tst_arms_in_step_ready, zox_tst_arms_in_step_check, 120);
-    zox_tst_add("lod_chunk_lights", zox_tst_lod_chunk_lights_ready, zox_tst_lod_chunk_lights_check, 120);
-    zox_tst_add("chest_weights", zox_tst_chest_weights_ready, zox_tst_chest_weights_check, 120);
-    zox_tst_add("perf_stream", zox_tst_perf_stream_ready, zox_tst_perf_stream_check, 180);
-    zox_tst_add("perf_fly", zox_tst_perf_fly_ready, zox_tst_perf_fly_check, 120);
-    zox_tst_add("lod_swap", zox_tst_lod_swap_ready, zox_tst_lod_swap_check, 120);
-    zox_tst_add("tables_stream", zox_tst_perf_stream_ready, zox_tst_tables_stream_check, 200);
-    zox_tst_add("lines_render", zox_tst_lines_render_ready, zox_tst_lines_render_check, 120);
     zox_tst_add("touch_play", zox_tst_touch_play_ready, zox_tst_touch_play_check, 120);
-    zox_tst_add("map_pixel", zox_tst_map_pixel_ready, zox_tst_map_pixel_check, 120);
     zox_tst_add("tooltip_flick", zox_tst_tooltip_flick_ready, zox_tst_tooltip_flick_check, 90);
-    zox_tst_add("ui3_occlusion", zox_tst_ui3_occlusion_ready, zox_tst_ui3_occlusion_check, 90);
-    zox_tst_set_setup("ui3_occlusion", zox_tst_ui3_occlusion_setup, 0);
-    zox_tst_add("ui3_overlap", zox_tst_ui3_overlap_ready, zox_tst_ui3_overlap_check, 90);
-    zox_tst_set_setup("ui3_overlap", zox_tst_ui3_overlap_setup, 0);
-    zox_tst_add("statbars_hide", zox_tst_statbars_hide_ready, zox_tst_statbars_hide_check, 120);
-    zox_tst_add("bone_rebuild", zox_tst_rebuild_ready, zox_tst_rebuild_check, 120);
-    zox_tst_add("held_item", zox_tst_held_item_ready, zox_tst_held_item_check, 120);
-    zox_tst_add("held_block", zox_tst_held_block_ready, zox_tst_held_item_check, 120);
-    zox_tst_add("item_sizes", zox_tst_item_sizes_ready, zox_tst_item_sizes_check, 120);
-    zox_tst_add("find_quest", zox_tst_find_quest_ready, zox_tst_find_quest_check, 120);
-    zox_tst_add("id_window", zox_tst_id_window_ready, zox_tst_id_window_check, 120);
-    zox_tst_add("window_toggle", zox_tst_window_toggle_ready, zox_tst_window_toggle_check, 120);
-    zox_tst_add("tooltip_gone", zox_tst_tooltip_gone_ready, zox_tst_tooltip_gone_check, 60);
-    zox_tst_add("quest_log_tracked", zox_tst_quest_log_tracked_ready, zox_tst_quest_log_tracked_check, 90);
-    zox_tst_add("furniture_place", zox_tst_furniture_place_ready, zox_tst_furniture_place_check, 120);
-    zox_tst_add("two_streamers", zox_tst_two_streamers_ready, zox_tst_two_streamers_check, 120);
-    zox_tst_set_setup("two_streamers", NULL, 1);
-    zox_tst_add("furniture_fillers", zox_tst_furniture_fillers_ready, zox_tst_furniture_fillers_check, 120);
-    zox_tst_add("furniture_hits", zox_tst_furniture_hits_ready, zox_tst_furniture_hits_check, 120);
-    zox_tst_add("block_data_queue", zox_tst_block_data_queue_ready, zox_tst_block_data_queue_check, 120);
-    zox_tst_add("furniture_rotation", zox_tst_furniture_rotation_ready, zox_tst_furniture_rotation_check, 180);
-    zox_tst_add("placement_box", zox_tst_placement_box_ready, zox_tst_placement_box_check, 30);
-    zox_tst_add("ground_removed", zox_tst_ground_removed_ready, zox_tst_ground_removed_check, 120);
-    zox_tst_set_setup("placement_box", NULL, 1);
-    zox_tst_add("head_camera", zox_tst_head_camera_ready, zox_tst_head_camera_check, 120);
-    zox_tst_add("vegetation_chunks", zox_tst_vegetation_chunks_ready, zox_tst_vegetation_chunks_check, 120);
-    zox_tst_add("music_crossfade", zox_tst_music_crossfade_ready, zox_tst_music_crossfade_check, 120);
-    zox_tst_set_setup("music_crossfade", NULL, 1);
 }

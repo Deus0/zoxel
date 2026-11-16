@@ -12,6 +12,10 @@
 #include "sys/_.c"
 
 // Equipment includes Gear and Body parts in one
+#ifdef zox_tests
+#include "tst/_.c"
+#endif
+
 void import_equipment(ecs* world) {
     zox_module(equipment);
     zox_components_equipment(world);
@@ -24,4 +28,7 @@ void import_equipment(ecs* world) {
         .texture_name = "taskbar_equipment",
         .tooltip_text = "Equipment"
     });
+#ifdef zox_tests
+    zox_tsts_equipment(world);
+#endif
 }

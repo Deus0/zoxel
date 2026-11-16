@@ -9,6 +9,8 @@
 #include "prefab_variants.c"
 #include "id_reuse.c"
 
+#include "pipeline_syncs.c"
+
 void zox_tsts_flecs(ecs* world) {
     zox_components_tst_links(world);
     zox_components_tst_children(world);
@@ -33,4 +35,5 @@ void zox_tsts_flecs(ecs* world) {
     zox_tst_set_setup("prefab_variants", NULL, 1);
     zox_tst_add("instance_id_reuse", zox_tst_instance_id_reuse_ready, zox_tst_instance_id_reuse_check, 30);
     zox_tst_set_setup("instance_id_reuse", NULL, 1);
+    zox_tsts_pipeline_syncs(world);
 }

@@ -15,6 +15,11 @@
 
 #include "town_enter.c"
 
+
+#include "ui3_occlusion.c"
+
+#include "ui3_overlap.c"
+
 void zox_tsts_huds(ecs* world) {
     zox_tsts_huds_load();
     zox_tst_add("menu_flow", zox_tst_menu_flow_ready, zox_tst_menu_flow_check, 120);
@@ -49,4 +54,6 @@ void zox_tsts_huds(ecs* world) {
     zox_tst_add("realm_info", zox_tst_realm_info_ready, zox_tst_realm_info_check, 60);
     zox_tst_set_setup("realm_info", NULL, 1);
     zox_tsts_town_enter(world);
+    zox_tsts_ui3_occlusion(world);
+    zox_tsts_ui3_overlap(world);
 }

@@ -1,5 +1,6 @@
 #include "label.c"
 #include "linked.c"
+#include "slot_manager.c"
 
 byte can_stack_items(ecs* world, entity a, entity b) {
     if (!zox_valid(a) || !zox_valid(b)) {

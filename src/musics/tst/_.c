@@ -4,6 +4,7 @@
 //      but loaded as a size_t, so the music never loaded)
 //  - a file claiming more than MAX_NOTES notes is clamped (it used to overflow the notes array)
 //  - run: bash bsh/tst.sh music_file
+
 byte zox_tst_music_file_ready(ecs* world) {
     (void) world;
     return 1;
@@ -508,7 +509,7 @@ void zox_tst_sound_balance_check(ecs* world) {
     free(mix);
 }
 
-void zox_tsts_musics() {
+void zox_tsts_musics(ecs* world) {
     zox_tst_add("music_timing", zox_tst_music_timing_ready, zox_tst_music_timing_check, 30);
     zox_tst_set_setup("music_timing", NULL, 1);
     zox_tst_add("sound_balance", zox_tst_sound_balance_ready, zox_tst_sound_balance_check, 60);

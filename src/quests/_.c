@@ -24,8 +24,8 @@
 #include "fun/_.c"
 #include "sys/_.c"
 #include "eve/_.c"
-#include "tst/_.c"
 #include "ui/_.c"
+#include "tst/_.c"
 
 void import_quests(ecs* world) {
     zox_module(quests);
@@ -34,4 +34,7 @@ void import_quests(ecs* world) {
     add_hook_spawn_prefabs(zox_prefabs_quests);
     add_hook_spawn_prefabs(zox_events_quests);
     zox_add_module(quests_ui);
+#ifdef zox_tests
+    zox_tsts_quests(world);
+#endif
 }

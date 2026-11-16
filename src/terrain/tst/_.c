@@ -6,6 +6,13 @@
 #include "water_splash.c"
 #include "block_frames.c"
 
+#include "streamers.c"
+
+#include "lod_chunk_lights.c"
+
+#include "perf.c"
+#include "lod_swap.c"
+
 void zox_tsts_terrain(ecs* world) {
     zox_tsts_tilemap(world);
     zox_tst_add("place_mesh", zox_tst_place_mesh_ready, zox_tst_place_mesh_check, 120);
@@ -20,4 +27,8 @@ void zox_tsts_terrain(ecs* world) {
     zox_tst_set_setup("block_frames", NULL, 1);
     zox_tst_add("water_tile", zox_tst_water_tile_ready, zox_tst_water_tile_check, 60);
     zox_tst_set_setup("water_tile", NULL, 1);
+    zox_tsts_streamers(world);
+    zox_tsts_lod_chunk_lights(world);
+    zox_tsts_lod_swap(world);
+    zox_tsts_perf(world);
 }

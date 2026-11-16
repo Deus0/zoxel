@@ -41,6 +41,10 @@ float minimap_alpha = 0.46f;
 #include "sys/_.c"
 #include "eve/_.c"
 
+#ifdef zox_tests
+#include "tst/_.c"
+#endif
+
 void import_maps(ecs* world) {
     zox_module(maps);
     zox_components_maps(world);
@@ -54,4 +58,7 @@ void import_maps(ecs* world) {
         .texture_name = "taskbar_map",
         .tooltip_text = "Map"
     });
+#ifdef zox_tests
+    zox_tsts_maps(world);
+#endif
 }

@@ -19,6 +19,10 @@ float  combat_regen_mul = 0.25f;
 #include "dbg/_.c"
 #include "eve/_.c"
 
+#ifdef zox_tests
+#include "tst/_.c"
+#endif
+
 void import_stats(ecs* world) {
     zox_module(stats);
     zox_components_stats(world);
@@ -26,4 +30,7 @@ void import_stats(ecs* world) {
     add_hook_spawn_prefabs(spawn_prefabs_stats);
     add_hook_spawn_prefabs(zox_events_stats);
     zox_add_module(statsui);
+#ifdef zox_tests
+    zox_tsts_stats(world);
+#endif
 }

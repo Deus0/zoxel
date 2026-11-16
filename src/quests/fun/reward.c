@@ -1,7 +1,6 @@
 // quest rewards and the find quest
 //  - a realm quest rewards QuestRewardCount of its QuestRewardLink item, given as it's handed in
 //  - the find quest (FindQuest): talking to anyone inside a town finishes and hands it in (quests_found_town)
-extern byte add_item_to_slot_manager(ecs*, entity, entity, entity, byte);
 
 // gives a character its quest's reward (its realm quest's, a user quest is an instance of it), the actionbar first
 void give_quest_reward(ecs* world, entity character, entity user_quest) {

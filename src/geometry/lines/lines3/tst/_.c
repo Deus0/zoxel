@@ -9,6 +9,8 @@ static entity zox_tst_lines_line2 = 0;
 static entity zox_tst_lines_line3 = 0;
 static double zox_tst_lines_start_time = 0;
 
+#include "lines_render.c"
+
 byte zox_tst_lines_spawn_ready(ecs* world) {
     if (zox_tst_lines_line1 == 0) {
         float3 a = (float3) { 1, 2, 3 };
@@ -49,7 +51,7 @@ void zox_tst_lines_spawn_check(ecs* world) {
     }
 }
 
-void zox_tsts_lines3() {
+void zox_tsts_lines3(ecs* world) {
     zox_tst_add("lines_spawn", zox_tst_lines_spawn_ready, zox_tst_lines_spawn_check, 30);
+    zox_tsts_lines_render(world);
 }
-

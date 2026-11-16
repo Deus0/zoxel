@@ -109,3 +109,8 @@ byte zox_tst_music_crossfade_ready(ecs* world) {
 void zox_tst_music_crossfade_check(ecs* world) {
     (void) world;
 }
+
+void zox_tsts_music(ecs* world) {
+    zox_tst_add("music_crossfade", zox_tst_music_crossfade_ready, zox_tst_music_crossfade_check, 120);
+    zox_tst_set_setup("music_crossfade", NULL, 1);
+}

@@ -24,4 +24,7 @@ void import_items(ecs* world) {
     zox_add_module(items_ui);
     add_hook_spawn_prefabs(zox_prefabs_items);
     add_hook_spawn_prefabs(zox_events_items);
+#ifdef zox_tests
+    zox_tsts_items(world);
+#endif
 }

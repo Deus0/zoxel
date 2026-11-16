@@ -10,6 +10,10 @@ byte zox_no_humanoids = 0;
 #include "characters3/_.c"
 #include "fun/buttons.c"
 
+#ifdef zox_tests
+#include "tst/_.c"
+#endif
+
 void import_characters(ecs* world) {
     zox_module(characters);
     zox_components_characters(world);
@@ -18,4 +22,7 @@ void import_characters(ecs* world) {
     zox_add_module(jumps);
     zox_add_module(characters2);
     zox_add_module(characters3);
+#ifdef zox_tests
+    zox_tsts_characters(world);
+#endif
 }

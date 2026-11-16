@@ -48,4 +48,7 @@ void import_ui(ecs* world) {
     zox_add_module(touch);
     zox_add_module(render_textures);
     zox_add_module(ui_containers);
+#ifdef zox_tests
+    zox_tsts_ui(world);
+#endif
 }

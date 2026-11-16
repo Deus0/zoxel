@@ -12,6 +12,8 @@
 - name input in new realm ui doesn't resize
 	- it should have a max too and if it goes over, it should shrink font size - add a tag for this property
 - Lighting flickers again when we destroy a block (water block refactor regression)
+- furniture_place stalls (fails before the test move too): tst furniture_place
+- perf_stream and tables_stream sometimes fail: lod swaps don't settle in 20s (flaky before the test move too)
 - grass shows overlapping copies, two lods at once (maybe rare): tst grass_overlap (vodes3/tst) sees no copies at the
 	same position yet, compare by block cell next (an offset copy, i.e. another lod's scale)
 	- wait this happens only when loading a new realm
@@ -126,11 +128,6 @@
   walks away from home, -x, passes and fails on the same commits), quest_dialogue (the first talk can take 15s+)
 
 # Refactors
-- Tests out of controllers/tst (46 files left, npcs, towns, sky, huds, terrain moved): each to the lowest module it checks (doc/coding_standards.md Test Placement),
-	npc ones to npcs, ui to ui, quests to quests, bodies to bones, items to items; split a file when its tests differ
-	- tests that only need terrain: a world of their own and a streamer (zox_tst_world_ready), not the player
-	- (done: water_block, place_mesh, block_frames, water_flow, water_splash on air_chunk.c, terrain/tst) grass_overlap
-		still on the player: block voxes only spawn while a game plays (vodes_spawn_system)
 - Move blocks from biome spawning back to realm
 	- we need rules that make each biome feel unique still
 	- we also still need variety of blocks to feel abundance

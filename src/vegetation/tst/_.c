@@ -8,6 +8,8 @@
 #define zox_tst_veg_area 512
 #define zox_tst_veg_seed 31337
 
+#include "vegetation_chunks.c"
+
 byte zox_tst_vegetation_ready(ecs* world) {
     (void) world;
     return 1;
@@ -82,7 +84,8 @@ void zox_tst_vegetation_cover_check(ecs* world) {
     }
 }
 
-void zox_tsts_vegetation() {
+void zox_tsts_vegetation(ecs* world) {
     zox_tst_add("vegetation_trees", zox_tst_vegetation_ready, zox_tst_vegetation_trees_check, 30);
     zox_tst_add("vegetation_cover", zox_tst_vegetation_ready, zox_tst_vegetation_cover_check, 30);
+    zox_tsts_vegetation_chunks(world);
 }

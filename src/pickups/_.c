@@ -30,6 +30,10 @@ const double pickup_pop_seconds = 0.35;
 #include "sys/_.c"
 #include "dbg/_.c"
 
+#ifdef zox_tests
+#include "tst/_.c"
+#endif
+
 void import_pickups(ecs* world) {
     zox_module(pickups);
     zoxd_tag(Pickup);
@@ -42,4 +46,7 @@ void import_pickups(ecs* world) {
     zoxd_double(PickupPopTime);
     zox_systems_pickups(world);
     add_hook_spawn_prefabs(spawn_prefabs_pickups);
+#ifdef zox_tests
+    zox_tsts_pickups(world);
+#endif
 }
