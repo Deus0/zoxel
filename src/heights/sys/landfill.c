@@ -1,7 +1,10 @@
 // TODO: Multiply by the world height
-short terrain_sand_height = 6; // 16;
+short terrain_sand_height = 7; // 16; a block of beach over the sea
 short terrain_grass_height = 7; // 18;
 short terrain_stone_height = 18; // 32;
+// the sea: ground below it is under water up to it, 0 none; the land is mostly 17 to 30 high (tst sea_level logs it),
+//  at 18 about a tenth is under water, the sand above it its shores
+short terrain_sea_height = 6;
 
 // TODO: Refactor heightmaps into quadtrees.
 // TODO: Build terrain with recursive region fill instead of per-voxel writes.
@@ -18,6 +21,7 @@ void landfill_chunk_system(iter* it) {
     byte max_process = !zox_disable_process_skips ? terrain_depth : 0;
     short sand_height = terrain_sand_height * render_distance_y;
     short stone_height = terrain_stone_height * render_distance_y;
+    const short sea_height = terrain_sea_height * render_distance_y;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkPosition);
@@ -131,6 +135,8 @@ void landfill_chunk_system(iter* it) {
                 zox_get_name(realm));
         }
 #endif
+        const entity water = zox_get_child_by_id(world, realm, zox_id(BlockWater));
+        const byte water_id = sea_height && zox_valid(water) ? zox_getv(water, BlockIndex) : 0;
         // set our variables for our loop
         entity biome = 0;
         byte soil_id = 0;
@@ -157,6 +163,16 @@ void landfill_chunk_system(iter* it) {
                 }
 #endif
                 byte height = height_map->value[map_index];
+                // the sea over ground below it: water from the ground's top up to the sea, in this chunk
+                if (water_id && height < sea_height && sea_height >= chunk_block_position.y) {
+                    const int water_start = int_max((height + 1 - chunk_block_position.y) >> shift, 0);
+                    const int water_end = int_min((sea_height - chunk_block_position.y) >> shift, length - 1);
+                    spin_lock(&lock->value);
+                    for (int y = water_start; y <= water_end; y++) {
+                        set_clean_VoxelNode(voctree, build_depth, (byte3) { position.x, y, position.z }, water_id);
+                    }
+                    spin_unlock(&lock->value);
+                }
                 // Ignore fill if too high
                 if (height < chunk_block_position.y) {
                     continue;

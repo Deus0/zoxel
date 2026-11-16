@@ -24,6 +24,7 @@
 #include "town_maps.c"
 #include "furniture.c"
 #include "place_mesh.c"
+extern char zox_screenshot_request[256];
 #include "water.c"
 #include "furniture_fillers.c"
 #include "furniture_hits.c"
@@ -655,6 +656,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("furniture_place", zox_tst_furniture_place_ready, zox_tst_furniture_place_check, 120);
     zox_tst_add("place_mesh", zox_tst_place_mesh_ready, zox_tst_place_mesh_check, 120);
     zox_tst_add("water_block", zox_tst_water_block_ready, zox_tst_water_block_check, 120);
+    zox_tst_add("sea_level", zox_tst_sea_level_ready, zox_tst_sea_level_check, 120);
     zox_tst_add("furniture_fillers", zox_tst_furniture_fillers_ready, zox_tst_furniture_fillers_check, 120);
     zox_tst_add("furniture_hits", zox_tst_furniture_hits_ready, zox_tst_furniture_hits_check, 120);
     zox_tst_add("block_data_queue", zox_tst_block_data_queue_ready, zox_tst_block_data_queue_check, 120);

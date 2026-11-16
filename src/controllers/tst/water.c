@@ -130,3 +130,146 @@ void zox_tst_water_block_check(ecs* world) {
     zox_tst_check(vertices == 9 * 4, "the water has [%i] faces, not its 9 outside ones (none between its blocks or against the bricks)", vertices / 4);
     zox_tst_check(solid == 6 * 4, "the bricks have [%i] faces, not all 6 (its face against the water shows)", solid / 4);
 }
+
+// tst: sea_level, ground below the sea is under water up to it (heights/sys/landfill.c terrain_sea_height)
+//  - flies to the nearest ground under the sea (from the terrain's heights) and waits for it to stream in
+//  - every generated chunk at full detail near there, against its tunk's heights: a column whose ground is
+//      below the sea holds water from just over its ground up to the sea, and nothing over the sea is water
+//  - logs how much of the land is at or below each height (over 2048 blocks), to set the sea's level by
+//  - run: bash bsh/tst.sh sea_level
+int zox_tst_sea_lowest = 255, zox_tst_sea_columns = 0, zox_tst_sea_wrong = 0, zox_tst_sea_above = 0, zox_tst_sea_chunks = 0;
+
+double zox_tst_sea_begin = 0, zox_tst_sea_streamed = 0;
+float3 zox_tst_sea_spot;
+byte zox_tst_sea_found = 0;
+
+byte zox_tst_sea_level_ready(ecs* world) {
+    if (!zox_tst_player_spawn_ready(world)) {
+        return 0;
+    }
+    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity terrain = zox_get_link(world, character, TerrainLink);
+    const float scale = zox_getv(terrain, BlockScale);
+    if (!zox_tst_sea_begin) {
+        zox_tst_sea_begin = zox_current_time;
+        // the nearest ground under the sea, from the terrain's heights, out to 600 blocks
+        TerrainHeights th;
+        const int sea = terrain_sea_height * render_distance_y;
+        const float3 p = zox_getv(character, Position3D);
+        const int2 start = { (int) floorf(p.x / scale), (int) floorf(p.z / scale) };
+        if (sea && terrain_heights_begin(world, terrain, &th)) {
+            for (int r = 0; r <= 600 && !zox_tst_sea_found; r += 8)
+            for (int x = -r; x <= r && !zox_tst_sea_found; x += 8)
+            for (int z = -r; z <= r && !zox_tst_sea_found; z += 8) {
+                if ((abs(x) != r && abs(z) != r) || terrain_height_at(&th, (int2) { start.x + x, start.y + z }) >= sea - 1) {
+                    continue;
+                }
+                zox_tst_sea_found = 1;
+                zox_tst_sea_spot = (float3) { (start.x + x + 0.5f) * scale, (sea + 6) * scale, (start.y + z + 0.5f) * scale };
+            }
+        }
+        zox_log("[tst] sea_level: ground under the sea [%s] at block [%.0fx%.0f], from [%ix%i]", zox_tst_sea_found ? "found" : "not found",
+            zox_tst_sea_spot.x / scale, zox_tst_sea_spot.z / scale, start.x, start.y);
+    }
+    zox_tst_progress((int) (zox_current_time - zox_tst_sea_begin));
+    if (!zox_tst_sea_found) {
+        return 1;
+    }
+    // held over it while its land streams in, then a while for its chunks to generate
+    zox_tst_waiting = "the land under the sea to stream in";
+    zox_setv(character, Position3D, zox_tst_sea_spot);
+    zox_setv(character, Velocity3D, float3_zero);
+    const int3 chunk = real_position_to_chunk_position(zox_tst_sea_spot, octree_size(zox_getv(terrain, NodeDepth)), scale);
+    const entity tunk = int2_hashmap_get(zox_get(terrain, TunkLinks)->value, (int2) { chunk.x, chunk.z });
+    if (!zox_valid(tunk)) {
+        return zox_current_time - zox_tst_sea_begin > 40;
+    }
+    if (!zox_tst_sea_streamed) {
+        zox_tst_sea_streamed = zox_current_time;
+    }
+    if (zox_current_time - zox_tst_sea_streamed < 6) {
+        return 0;
+    }
+    // a look at it: tst/sea.ppm
+    static byte shot = 0;
+    if (!shot) {
+        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("sea.ppm"));
+        shot = 1;
+        return 0;
+    }
+    return !zox_screenshot_request[0];
+}
+
+void zox_tst_sea_level_check(ecs* world) {
+    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity terrain = zox_get_link(world, character, TerrainLink);
+    const entity realm = zox_get_link(world, character, RealmLink);
+    const entity water = zox_get_child_by_id(world, realm, zox_id(BlockWater));
+    zox_tst_check(zox_valid(water), "the realm has no water block");
+    if (!zox_valid(water)) {
+        return;
+    }
+    const byte water_id = zox_getv(water, BlockIndex);
+    const byte depth = zox_getv(terrain, NodeDepth);
+    const int length = octree_size(depth);
+    const int sea = terrain_sea_height * render_distance_y;
+    const int3 center = real_position_to_chunk_position(zox_getv(character, Position3D), length, zox_getv(terrain, BlockScale));
+    for (int cx = -2; cx <= 2; cx++) for (int cz = -2; cz <= 2; cz++) for (int cy = -render_distance_y; cy <= render_distance_y; cy++) {
+        const int3 at = { center.x + cx, cy, center.z + cz };
+        const entity chunk = int3_hashmap_get(zox_get(terrain, ChunkLinks)->value, at);
+        if (!zox_valid(chunk) || !zox_has(chunk, NodeDepth) || zox_getv(chunk, NodeDepth) != depth ||
+            (zox_has(chunk, GenerateChunk) && zox_getv(chunk, GenerateChunk)) || zox_has(chunk, Edited)) {
+            continue;
+        }
+        const entity tunk = zox_get_link(world, chunk, TunkLink);
+        const HeightMap* heights = zox_valid(tunk) ? zox_get(tunk, HeightMap) : NULL;
+        if (!heights || heights->length != length * length) {
+            continue;
+        }
+        zox_tst_sea_chunks++;
+        const int bottom = at.y * length;
+        const VoxelNode* voxels = zox_get(chunk, VoxelNode);
+        for (int x = 0; x < length; x++) for (int z = 0; z < length; z++) {
+            const int height = heights->value[z * length + x];
+            zox_tst_sea_lowest = height < zox_tst_sea_lowest ? height : zox_tst_sea_lowest;
+            for (int y = 0; y < length; y++) {
+                const int global = bottom + y;
+                const byte voxel = getv_VoxelNode(voxels, depth, (byte3) { x, y, z });
+                if (global > sea) {
+                    zox_tst_sea_above += voxel == water_id;
+                } else if (global > height) {
+                    // under the sea, over the ground: water (or what grew or was built there, never air)
+                    zox_tst_sea_wrong += !voxel;
+                    zox_tst_sea_columns += global == sea && voxel == water_id;
+                }
+            }
+        }
+    }
+    // the land's heights over a wide area (every 8 blocks over 2048), to pick the sea's level from
+    {
+        TerrainHeights th;
+        int counts[256] = { 0 }, total = 0;
+        if (terrain_heights_begin(world, terrain, &th)) {
+            for (int x = -1024; x < 1024; x += 8) for (int z = -1024; z < 1024; z += 8) {
+                counts[int_clamp(terrain_height_at(&th, (int2) { x, z }), 0, 255)]++;
+                total++;
+            }
+            int below = 0;
+            char line[512] = { 0 };
+            for (int h = 0; h < 64 && total; h++) {
+                below += counts[h];
+                if (h % 3 == 2) {
+                    snprintf(line + strlen(line), sizeof(line) - strlen(line), " %i:%i%%", h, below * 100 / total);
+                }
+            }
+            zox_log("[tst] [metric] sea_level land at or below a height, of [%i] samples:%s", total, line);
+        }
+    }
+    zox_log("[tst] [metric] sea_level [%i] chunks checked, sea at [%i], lowest ground [%i], [%i] columns under it, [%i] air under the sea, [%i] water over it",
+        zox_tst_sea_chunks, sea, zox_tst_sea_lowest, zox_tst_sea_columns, zox_tst_sea_wrong, zox_tst_sea_above);
+    zox_tst_check(zox_tst_sea_found, "no ground under the sea within 600 blocks: the sea is too low for this land");
+    zox_tst_check(zox_tst_sea_chunks > 10, "only [%i] generated chunks were found to check", zox_tst_sea_chunks);
+    zox_tst_check(zox_tst_sea_columns > 0, "no water at the sea's level by ground under it");
+    zox_tst_check(!zox_tst_sea_wrong, "[%i] voxels under the sea and over the ground are air", zox_tst_sea_wrong);
+    zox_tst_check(!zox_tst_sea_above, "[%i] water voxels are over the sea", zox_tst_sea_above);
+}

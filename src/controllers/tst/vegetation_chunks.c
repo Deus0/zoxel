@@ -36,6 +36,9 @@ void zox_tst_vegetation_chunks_check(ecs* world) {
     const lint seed = zox_getv(terrain, Seed);
     const int chunk_length = octree_size(terrain_depth);
     int trees = 0, crossing = 0, no_trunk = 0, no_leaves = 0;
+    // under the sea the voxel over the ground is water, not a trunk
+    const entity water = zox_get_child_by_id(world, zox_get_parent(world, terrain), zox_id(BlockWater));
+    const int water_id = zox_valid(water) ? zox_getv(water, BlockIndex) : -1;
     iter it2 = zox_children(world, terrain);
     while (zox_children_next(it2)) {
         for (int i = 0; i < it2.count; i++) {
@@ -68,7 +71,7 @@ void zox_tst_vegetation_chunks_check(ecs* world) {
                     if (trunk < 0 || leaf < 0 || ground <= 0) {
                         continue;
                     }
-                    if (!trunk) {
+                    if (!trunk || trunk == water_id) {
                         continue;   // not drawn here (towns clear them, too low or high), not a chunk issue
                     }
                     trees++;
