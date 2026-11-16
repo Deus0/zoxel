@@ -38,6 +38,11 @@ byte find_position_in_terrain(
             zox_player_spawn_blocked = reason;
             return 0;
         }
+        // a chunk being deleted (streamed away) has lost its voxels: wait, like a missing one
+        if (!zox_has(chunk, VoxelNode) || !zox_has(chunk, NodeDepth)) {
+            zox_player_spawn_blocked = "a chunk in the column is being deleted";
+            return 0;
+        }
         const VoxelNode* chunkd = zox_get(chunk, VoxelNode);
         node_depth = zox_getv(chunk, NodeDepth);
         if (find_random_position_on_ground(
