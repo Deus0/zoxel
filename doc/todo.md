@@ -7,6 +7,9 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
+- quest tracker ui bugs out sometimes: shows null
+- the cookie gather quest failed
+- water block's uvs are off: its texture shows at a quarter of its size
 - name input in new realm ui doesn't resize
 	- it should have a max too and if it goes over, it should shrink font size - add a tag for this property
 - Lighting flickers again when we destroy a block (water block refactor regression)
@@ -369,6 +372,7 @@
 - make voxel item textures 2 pixels larger, one is outline, one is air
 
 # Characters and Npcs
+- npcs in towns wear random hats (a third none), hats generated per realm with nodegraphs
 - humanoids need more variation in town
 - add female variant humanoids
 - patrol paths for npcs, and routines (need time of day, the day night cycle)
@@ -486,6 +490,7 @@
 	- reimport animation back in
 
 # Physics and Movement
+- faster fly speed (check the fly perf tests after, they fly at a set speed)
 - dust particles when you land on ground
 - add little particles when you walk on dirt
 - add rotated character per voxel selection for raycasts, similar to how we do for grass
@@ -578,6 +583,8 @@
 - Refactor OverlapEvent to Overlapped state with a system in items
 
 # Quests and Dialogue
+- the starting quest (find a town) tracked from the start
+- a coin model, given for the find town quest
 - a quest to craft a bed, the npc tells you how (the bed recipe, Items)
 - player feels no direction on start
 	- have an npc target you, and come up to you, and talk to you, when you first spawn
@@ -713,6 +720,9 @@
 - I really should just link player to a canvas 3D - then i can spawn/remove from that normally
 
 # Map
+- markers on the minimap (npcs, quest givers, as above)
+- a town marker at the minimap's edge with a town icon, hinting where to go (needs map markers, and edge markers
+  for important ones)
 - npc markers on the map, with their quest giver states
 - Add markers on map uis
 	- npcs
@@ -748,6 +758,8 @@
 - Add a compass symbol to show north etc
 
 # Rendering, Lights and Cameras
+- clouds can be a bit dark
+- dust particles in the air round the terrain (ergo proxy, dystopian vibes)
 - Darken sunlight as it goes underwater
 - Vulkan renderer
 	- initial vulkan implementation
@@ -909,6 +921,7 @@
     - requires input slots feature
 
 # Saves, Realms and Game States
+- save data for characters: only what changed from their base, low cost on disk, a stress test
 - Add realm names
     - need ui input field / TextInputs
     - block should block at position of new character
