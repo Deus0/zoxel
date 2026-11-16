@@ -152,7 +152,7 @@
 # Terrain and Chunks
 - Flying's slowest frames now: new tables while streaming (16%), colored chunk meshes (9%), tst perf_fly
 - Water in the world (the block, its rippling texture and blended meshes are in, tst water_block)
-	- generation places it: lakes in low land, a sea level, rivers later
+	- (done: a sea at 18, tst sea_level) lakes above the sea in hollows, rivers later
 	- flowing: water spreads into air beside and below it, a few blocks
 	- sorting: blended chunk meshes drawn far to near, so water seen through water looks right
 - Underwater

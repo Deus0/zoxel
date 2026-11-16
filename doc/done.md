@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-16
+-x A sea: ground below 18 is under water up to it (heights/sys/landfill.c terrain_sea_height), about a tenth of the
+  land; sand moved up to 21 for its shores (the land is mostly 17 to 30 high, tst sea_level logs its spread); tst
+  sea_level flies to the nearest sunken ground, checks its water and screenshots it (tst/sea.ppm)
 -x Water blocks: a liquid material (chunk materials, 50299a0cf), walked through, light passes, an animated ripple
   texture (16 frames tiling in space and time, moved in the tilemap: tilemap_animate_system), its chunk meshes
   drawn blended after the solid ones, both faces (chunk3_transparent_render_system); faces between waters and
