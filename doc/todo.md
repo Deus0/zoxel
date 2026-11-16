@@ -166,7 +166,7 @@
 	- reuse base instrument waveforms (sin tables, harmonics) instead of generating every note
 	- noise and modulation as a processing pass while playing, in the mixer
 	- instruments as entities: their settings and cached wavetables as components, notes link to them
-- Musicians' mistakes: now and then a wrong note (a neighbour), quickly corrected, a little out of time
+- Musicians' mistakes: niow and then a wrong note (a neighbour), quickly corrected, a little out of time
 	- in perform_song, tst music_compose allows them (it checks every note is in key)
 	- noise and detuning added to a note after it's made, per instrument entity
 - Opt: sound_generate_system by using preset sound data + mods
