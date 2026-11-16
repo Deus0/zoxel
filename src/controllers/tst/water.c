@@ -132,10 +132,10 @@ void zox_tst_water_block_check(ecs* world) {
 }
 
 // tst: sea_level, ground below the sea is under water up to it (heights/sys/landfill.c terrain_sea_height)
-//  - flies to the nearest ground under the sea (from the terrain's heights) and waits for it to stream in
-//  - every generated chunk at full detail near there, against its tunk's heights: a column whose ground is
+//  - a camera of its own (no player) over the nearest open water, streaming the land round it, looking down
+//  - every generated chunk at full detail round there, against its tunk's heights: a column whose ground is
 //      below the sea holds water from just over its ground up to the sea, and nothing over the sea is water
-//  - looking down from over open water, screenshots it twice half a second apart (tst/sea.ppm, sea_later.ppm):
+//  - screenshots it twice half a second apart (tst/sea.ppm, sea_later.ppm):
 //      the view's middle is mostly water, and it moves
 //  - logs how much of the land is at or below each height (over 2048 blocks), to set the sea's level by
 //  - run: bash bsh/tst.sh sea_level
@@ -144,85 +144,114 @@ int zox_tst_sea_lowest = 255, zox_tst_sea_columns = 0, zox_tst_sea_wrong = 0, zo
 double zox_tst_sea_begin = 0, zox_tst_sea_streamed = 0;
 float3 zox_tst_sea_spot;
 byte zox_tst_sea_found = 0;
+entity zox_tst_sea_camera = 0;
 
+// the realm's water block's index, 0 if none
+static inline byte zox_tst_sea_water_id(ecs* world, entity terrain) {
+    const entity water = zox_get_child_by_id(world, zox_get_parent(world, terrain), zox_id(BlockWater));
+    return zox_valid(water) ? zox_getv(water, BlockIndex) : 0;
+}
+
+// a camera of its own (no player): over the nearest open water, looking down at it, streaming the land round it
 byte zox_tst_sea_level_ready(ecs* world) {
-    if (!zox_tst_player_spawn_ready(world)) {
+    // the game started (its player placed: taking over streaming before, the spawn search read chunks being deleted)
+    if (!zox_tst_sea_begin && !zox_tst_player_spawn_ready(world)) {
         return 0;
     }
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
-    const entity terrain = zox_get_link(world, character, TerrainLink);
+    const entity terrain = local_terrain;
+    zox_tst_waiting = "a game's terrain";
+    TerrainHeights th;
+    if (!zox_valid(terrain) || !zox_has(terrain, ChunkLinks) || !terrain_heights_begin(world, terrain, &th) ||
+        !zox_valid(main_app))
+    {
+        return 0;
+    }
     const float scale = zox_getv(terrain, BlockScale);
+    const int sea = terrain_sea_height * render_distance_y;
     if (!zox_tst_sea_begin) {
         zox_tst_sea_begin = zox_current_time;
-        // the nearest ground under the sea, from the terrain's heights, out to 600 blocks
-        TerrainHeights th;
-        const int sea = terrain_sea_height * render_distance_y;
-        const float3 p = zox_getv(character, Position3D);
-        const int2 start = { (int) floorf(p.x / scale), (int) floorf(p.z / scale) };
-        if (sea && terrain_heights_begin(world, terrain, &th)) {
-            for (int r = 0; r <= 600 && !zox_tst_sea_found; r += 8)
-            for (int x = -r; x <= r && !zox_tst_sea_found; x += 8)
-            for (int z = -r; z <= r && !zox_tst_sea_found; z += 8) {
-                if (abs(x) != r && abs(z) != r) {
-                    continue;
-                }
-                // open water: the spot and 4 blocks round it under the sea, so it fills the view looking down
-                byte open = 1;
-                for (int k = 0; k < 5 && open; k++) {
-                    const int2 o = k == 0 ? int2_zero : (int2) { k == 1 ? 4 : k == 2 ? -4 : 0, k == 3 ? 4 : k == 4 ? -4 : 0 };
-                    open = terrain_height_at(&th, (int2) { start.x + x + o.x, start.y + z + o.y }) < sea - 1;
-                }
-                // and no town there (its homes stand over the water, its people turn the head)
-                if (!open || town_at(world, (int2) { start.x + x, start.y + z })) {
-                    continue;
-                }
-                zox_tst_sea_found = 1;
-                zox_tst_sea_spot = (float3) { (start.x + x + 0.5f) * scale, (sea + 4) * scale, (start.y + z + 0.5f) * scale };
+        // the nearest open water to the origin, from the terrain's heights: the spot and 4 blocks round it under the
+        //  sea (so it fills the view), no town there
+        for (int r = 0; r <= 600 && sea && !zox_tst_sea_found; r += 8)
+        for (int x = -r; x <= r && !zox_tst_sea_found; x += 8)
+        for (int z = -r; z <= r && !zox_tst_sea_found; z += 8) {
+            if (abs(x) != r && abs(z) != r) {
+                continue;
+            }
+            byte open = 1;
+            for (int k = 0; k < 5 && open; k++) {
+                const int2 o = k == 0 ? int2_zero : (int2) { k == 1 ? 4 : k == 2 ? -4 : 0, k == 3 ? 4 : k == 4 ? -4 : 0 };
+                open = terrain_height_at(&th, (int2) { x + o.x, z + o.y }) < sea - 1;
+            }
+            if (!open || town_at(world, (int2) { x, z })) {
+                continue;
+            }
+            zox_tst_sea_found = 1;
+            zox_tst_sea_spot = (float3) { (x + 0.5f) * scale, (sea + 1) * scale, (z + 0.5f) * scale };
+        }
+        // no old screenshots read as this run's
+        remove(zox_tst_path("sea.ppm"));
+        remove(zox_tst_path("sea_later.ppm"));
+        zox_log("[tst] sea_level: open water [%s] at block [%.0fx%.0f]", zox_tst_sea_found ? "found" : "not found",
+            zox_tst_sea_spot.x / scale, zox_tst_sea_spot.z / scale);
+        if (!zox_tst_sea_found) {
+            return 1;
+        }
+        // 8 blocks up and 5 back, looking down at it; drawn alone on the screen (no hud, no game view)
+        const float3 eye = float3_add(zox_tst_sea_spot, (float3) { 0, 8 * scale, 5 * scale });
+        zox_tst_sea_camera = spawn_viewport_camera(world, main_app, eye, camera_look_at(eye, zox_tst_sea_spot), 70,
+            viewport_grid_cell(0, 1, 1));
+        prefab_add_streamer(world, zox_tst_sea_camera);
+        zox_set_link(world, zox_tst_sea_camera, StreamLink, terrain);
+        // 1 streams the land itself (0 regions and towns only)
+        zox_setv(zox_tst_sea_camera, StreamerLevel, 1);
+        // the only streamer: terrain streams round one (the last to move decides what's kept), the game's own camera
+        //  stops streaming
+        for (int i = 0; i < main_cameras_count; i++) {
+            if (zox_valid(main_cameras[i]) && zox_has(main_cameras[i], StreamLink)) {
+                zox_set_link(world, main_cameras[i], StreamLink, 0);
             }
         }
-        zox_log("[tst] sea_level: ground under the sea [%s] at block [%.0fx%.0f], from [%ix%i]", zox_tst_sea_found ? "found" : "not found",
-            zox_tst_sea_spot.x / scale, zox_tst_sea_spot.z / scale, start.x, start.y);
-    }
-    zox_tst_progress((int) (zox_current_time - zox_tst_sea_begin));
-    if (!zox_tst_sea_found) {
-        return 1;
-    }
-    // held over it while its land streams in, then a while for its chunks to generate
-    zox_tst_waiting = "the land under the sea to stream in";
-    zox_setv(character, Position3D, zox_tst_sea_spot);
-    zox_setv(character, Velocity3D, float3_zero);
-    // looking down at the water: the head camera's world rotation set (the head turns toward people, so a local
-    //  pitch alone can look anywhere): local = inverse(head) * the character's facing pitched down
-    {
-        const entity skeleton = get_skeleton(world, character);
-        const entity head = zox_valid(skeleton) ? zox_get_link(world, skeleton, HeadBoneLink) : 0;
-        const entity head_camera = zox_valid(head) ? zox_get_child_by_id(world, head, zox_id(Camera)) : 0;
-        if (zox_valid(head_camera) && zox_has(head, Rotation3D)) {
-            const float4 down = quaternion_rotate(zox_getv(character, Rotation3D),
-                euler_to_quaternion((float3) { -0.9f, is_camera_positive_z ? M_PI : 0, 0 }));  // (negative pitch looks down here)
-            zox_setv(head_camera, LocalRotation3D, quaternion_rotate(quaternion_inverse(zox_getv(head, Rotation3D)), down));
+        nohud = 1;
+        const entity game_view = zox_valid(main_cameras[0]) ? zox_get_link(world, main_cameras[0], RenderTextureLink) : 0;
+        if (zox_valid(game_view)) {
+            zox_setv(game_view, RenderDisabled, 1);
         }
     }
-    const int3 chunk = real_position_to_chunk_position(zox_tst_sea_spot, octree_size(zox_getv(terrain, NodeDepth)), scale);
-    const entity tunk = int2_hashmap_get(zox_get(terrain, TunkLinks)->value, (int2) { chunk.x, chunk.z });
-    if (!zox_valid(tunk)) {
-        return zox_current_time - zox_tst_sea_begin > 40;
-    }
+    zox_tst_progress((int) (zox_current_time - zox_tst_sea_begin));
+    // until the chunk at the sea's level there shows a water mesh, then a while for its neighbours and lights
+    zox_tst_waiting = "the land under the camera to stream in and show its water";
+    const int3 chunk_position = real_position_to_chunk_position(zox_tst_sea_spot, octree_size(zox_getv(terrain, NodeDepth)), scale);
+    const entity chunk = int3_hashmap_get(zox_get(terrain, ChunkLinks)->value, chunk_position);
     if (!zox_tst_sea_streamed) {
+        int water = 0, solid = 0, meshes = 0;
+        if (zox_valid(chunk)) {
+            zox_tst_water_vertices(world, chunk, &water, &solid, &meshes);
+        }
+        if (!water) {
+            if (zox_current_time - zox_tst_sea_begin > 60) {
+                entity meshes[zox_chunk_meshes_max];
+                const uint count = zox_valid(chunk) ? get_chunk_meshes(world, chunk, meshes) : 0;
+                zox_log("[tst] sea_level: chunk [%ix%ix%i] [%s] depth [%i] generate [%i] meshes [%i] stream [%ix%ix%i]",
+                    chunk_position.x, chunk_position.y, chunk_position.z, zox_valid(chunk) ? zox_getn(chunk) : "none",
+                    zox_valid(chunk) ? zox_getv(chunk, NodeDepth) : -1, zox_valid(chunk) && zox_has(chunk, GenerateChunk) ? zox_getv(chunk, GenerateChunk) : -1,
+                    count, zox_getv(zox_tst_sea_camera, StreamPosition).x, zox_getv(zox_tst_sea_camera, StreamPosition).y, zox_getv(zox_tst_sea_camera, StreamPosition).z);
+                for (uint i = 0; i < count; i++) {
+                    zox_log("[tst]   mesh [%s] disabled [%i] transparent [%i] vertices [%i] depth [%i]", zox_getn(meshes[i]), zox_has(meshes[i], Disabled),
+                        zox_has(meshes[i], TransparentMesh), zox_has(meshes[i], MeshVertices) ? zox_get(meshes[i], MeshVertices)->length : -1,
+                        zox_getv(meshes[i], RenderDepth));
+                }
+                return 1;
+            }
+            return 0;
+        }
         zox_tst_sea_streamed = zox_current_time;
     }
-    if (zox_current_time - zox_tst_sea_streamed < 6) {
+    if (zox_current_time - zox_tst_sea_streamed < 4) {
         return 0;
     }
     // a look at it: tst/sea.ppm, and another half a second later (sea_later.ppm) to see it move
     static byte shot = 0;
-    {
-        const entity camera = zox_get_link(world, character, CameraLink);
-        const float3 view = zox_valid(camera) ? float4_rotate_float3(zox_getv(camera, Rotation3D), (float3) { 0, 0, -1 }) : float3_zero;
-        if (!shot) {
-            zox_log("[tst] sea_level: the camera looks along [%.2f %.2f %.2f] (y below 0 is down)", view.x, view.y, view.z);
-        }
-    }
     static double shot_time = 0;
     if (zox_screenshot_request[0]) {
         return 0;
@@ -245,19 +274,16 @@ byte zox_tst_sea_level_ready(ecs* world) {
 }
 
 void zox_tst_sea_level_check(ecs* world) {
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
-    const entity terrain = zox_get_link(world, character, TerrainLink);
-    const entity realm = zox_get_link(world, character, RealmLink);
-    const entity water = zox_get_child_by_id(world, realm, zox_id(BlockWater));
-    zox_tst_check(zox_valid(water), "the realm has no water block");
-    if (!zox_valid(water)) {
+    const entity terrain = local_terrain;
+    const byte water_id = zox_valid(terrain) ? zox_tst_sea_water_id(world, terrain) : 0;
+    zox_tst_check(water_id, "the realm has no water block");
+    if (!water_id) {
         return;
     }
-    const byte water_id = zox_getv(water, BlockIndex);
     const byte depth = zox_getv(terrain, NodeDepth);
     const int length = octree_size(depth);
     const int sea = terrain_sea_height * render_distance_y;
-    const int3 center = real_position_to_chunk_position(zox_getv(character, Position3D), length, zox_getv(terrain, BlockScale));
+    const int3 center = real_position_to_chunk_position(zox_tst_sea_spot, length, zox_getv(terrain, BlockScale));
     for (int cx = -2; cx <= 2; cx++) for (int cz = -2; cz <= 2; cz++) for (int cy = -render_distance_y; cy <= render_distance_y; cy++) {
         const int3 at = { center.x + cx, cy, center.z + cz };
         const entity chunk = int3_hashmap_get(zox_get(terrain, ChunkLinks)->value, at);
