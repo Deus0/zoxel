@@ -11,6 +11,7 @@ entity spawn_prefab_terrain(ecs *world) {
     zox_add(e, RegionLinks);
     zox_add(e, TunkLinks);
     zox_add(e, ChunkLinks);
+    zox_setv(e, WaterFlows, 0);
     // Stream Event
     zox_setv(e, EventInput, 0);
     zox_setv(e, StreamEndEvent, NULL);

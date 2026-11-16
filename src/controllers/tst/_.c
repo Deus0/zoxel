@@ -665,6 +665,8 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_set_setup("sea_level", NULL, 1);
     zox_tst_add("lakes", zox_tst_lakes_ready, zox_tst_lakes_check, 120);
     zox_tst_set_setup("lakes", NULL, 1);
+    zox_tst_add("water_flow", zox_tst_water_flow_ready, zox_tst_water_flow_check, 120);
+    zox_tst_set_setup("water_flow", NULL, 1);
     zox_tst_add("block_frames", zox_tst_block_frames_ready, zox_tst_block_frames_check, 90);
     zox_tst_add("two_streamers", zox_tst_two_streamers_ready, zox_tst_two_streamers_check, 120);
     zox_tst_set_setup("two_streamers", NULL, 1);

@@ -10,9 +10,26 @@
 // Streaming
 // #include "stream_death.c"
 #include "stream.c"
+#include "water_flow.c"
 
 // Note: Updates on VoxelNode has to be done in PostLoad, away from use of Voxels, due to the cleaning step
 void zox_systems_terrain(ecs *world) {
+    // flowing water (water_flow.c): main thread, it writes other chunks' queues and its terrain's flows
+    zox_system_1(
+        water_flow_edits_system,
+        zoxp_update,
+        [in] chunks3.ChunkPosition,
+        [in] chunks.NodeDepth,
+        [in] chunks3.VoxelNodeQueue,
+        [none] chunks3.VoxelNodePostDirty,
+        [none] terrains.TerrainChunk,
+    );
+    zox_system_1(
+        water_flow_system,
+        zoxp_update,
+        [out] terrains.WaterFlows,
+        [none] terrains.Terrain,
+    );
     zox_system(
         chunk_link_system,
         zoxp_update,

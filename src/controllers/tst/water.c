@@ -1,9 +1,9 @@
 // tst: water_block, the realm's water: see through, walked through, its texture moves
 //  - the realm has a water block: a liquid material, an air collider, light passing
 //  - its tilemap tile animates: the tilemap's pixels there change over time
-//  - placed in an all air chunk: two water blocks side by side and bricks at one end
-//      water draws a blended mesh (TransparentMesh) with only its outside faces: not between the two waters, nor
-//      against the bricks (9 faces); the bricks keep their face against the water (6 faces)
+//  - placed in an all air chunk: two water blocks side by side in a pool of bricks open at the top (so they stay)
+//      water draws a blended mesh (TransparentMesh) with only its faces against air (its tops): none between the
+//      waters or against the bricks; the bricks keep their faces against the water
 //  - run: bash bsh/tst.sh water_block
 byte zox_tst_water_stage = 0;
 double zox_tst_water_time = 0;
@@ -55,6 +55,24 @@ static inline void zox_tst_water_vertices(ecs* world, entity chunk, int* water, 
     }
 }
 
+// the pool: x y z, and w 1 for water: the waters at 4 and 5 (y 8, z 8), bricks under, beside and at their ends
+#define zox_tst_water_pool_count 10
+const int4 zox_tst_water_pool[zox_tst_water_pool_count] = {
+    { 4, 8, 8, 1 }, { 5, 8, 8, 1 },
+    { 4, 7, 8, 0 }, { 5, 7, 8, 0 }, { 3, 8, 8, 0 }, { 6, 8, 8, 0 },
+    { 4, 8, 7, 0 }, { 5, 8, 7, 0 }, { 4, 8, 9, 0 }, { 5, 8, 9, 0 } };
+
+// what's in the pool at a position: 2 water, 1 a brick, 0 air
+static inline byte zox_tst_water_pool_at(int x, int y, int z) {
+    for (byte i = 0; i < zox_tst_water_pool_count; i++) {
+        const int4 p = zox_tst_water_pool[i];
+        if (p.x == x && p.y == y && p.z == z) {
+            return p.w ? 2 : 1;
+        }
+    }
+    return 0;
+}
+
 byte zox_tst_water_block_ready(ecs* world) {
     if (!zox_tst_player_spawn_ready(world)) {
         return 0;
@@ -75,10 +93,13 @@ byte zox_tst_water_block_ready(ecs* world) {
         if (!zox_valid(water) || !zox_valid(bricks)) {
             return 1;
         }
+        // two water blocks in a pool of bricks open at the top, so they neither fall nor spread (water_flow.c)
         VoxelNodeQueue* queue = zox_getm(zox_tst_water_chunk, VoxelNodeQueue);
-        a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = zox_getv(water, BlockIndex), .position = (byte3) { 4, 8, 8 } });
-        a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = zox_getv(water, BlockIndex), .position = (byte3) { 5, 8, 8 } });
-        a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = zox_getv(bricks, BlockIndex), .position = (byte3) { 6, 8, 8 } });
+        for (byte i = 0; i < zox_tst_water_pool_count; i++) {
+            const byte is_water = zox_tst_water_pool[i].w;
+            a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = zox_getv(is_water ? water : bricks, BlockIndex),
+                .position = (byte3) { zox_tst_water_pool[i].x, zox_tst_water_pool[i].y, zox_tst_water_pool[i].z } });
+        }
         const entity tilemap = zox_get_link(world, zox_tst_water_chunk, Tilemap);
         const TilemapAnimation* animation = zox_tst_water_animation(world, tilemap);
         if (animation) {
@@ -168,8 +189,24 @@ void zox_tst_water_block_check(ecs* world) {
         }
     }
     zox_tst_check(water_meshes == 1, "[%i] see through meshes shown, not one", water_meshes);
-    zox_tst_check(vertices == 9 * 4, "the water has [%i] faces, not its 9 outside ones (none between its blocks or against the bricks)", vertices / 4);
-    zox_tst_check(solid == 6 * 4, "the bricks have [%i] faces, not all 6 (its face against the water shows)", solid / 4);
+    // the faces expected: water's only against air (its tops), a brick's against air and against water
+    int water_faces = 0, brick_faces = 0;
+    for (byte i = 0; i < zox_tst_water_pool_count; i++) {
+        const int4 p = zox_tst_water_pool[i];
+        for (byte d = 0; d < 6; d++) {
+            const sbyte3 o = neighbor_offsets[d];
+            const byte beside = zox_tst_water_pool_at(p.x + o.x, p.y + o.y, p.z + o.z);
+            if (p.w) {
+                water_faces += beside == 0;
+            } else {
+                brick_faces += beside != 1;
+            }
+        }
+    }
+    zox_tst_check(vertices == water_faces * 4, "the water has [%i] faces, not its [%i] against air (none between its blocks or against the bricks)",
+        vertices / 4, water_faces);
+    zox_tst_check(solid == brick_faces * 4, "the bricks have [%i] faces, not their [%i] against air and water (their faces against water show)",
+        solid / 4, brick_faces);
 }
 
 // tst: sea_level, ground below the sea is under water up to it (heights/sys/landfill.c terrain_sea_height)
@@ -575,4 +612,134 @@ void zox_tst_lakes_check(ecs* world) {
     if (file) {
         fclose(file);
     }
+}
+
+// tst: water_flow, water falls and spreads, so far (terrain/sys/water_flow.c)
+//  - no player: a realm and terrain of its own (world_only.c), a streamer; in an all air chunk at full detail, a
+//      floor of bricks 13 x 13 (local y 3), then water 2 blocks over its middle
+//  - it falls to the floor (local y 4) and spreads over it, as far as zox_water_flow_steps: the blocks in that
+//      reach of the middle (Manhattan) are water at y 4, none past it; its fall stays water
+//  - then a brick under the water dug out: the water drains down the hole, to the chunk's bottom
+//  - run: bash bsh/tst.sh water_flow
+byte zox_tst_flow_stage = 0;
+double zox_tst_flow_time = 0;
+entity zox_tst_flow_chunk = 0;
+entity zox_tst_flow_streamer = 0;
+
+byte zox_tst_water_flow_ready(ecs* world) {
+    const entity terrain = zox_tst_world_ready(world);
+    if (!terrain) {
+        return 0;
+    }
+    const byte depth = zox_getv(terrain, NodeDepth);
+    const int length = octree_size(depth);
+    zox_tst_progress(zox_tst_flow_stage * 100 + (int) (zox_current_time - zox_tst_flow_time));
+    if (!zox_tst_flow_streamer) {
+        zox_tst_flow_streamer = spawn_streamer(world, prefab_streamer, terrain, float3_zero);
+        zox_setv(zox_tst_flow_streamer, StreamerLevel, 1);
+        // at the origin its stream position hasn't moved: dirty, so it streams
+        zox_setv(zox_tst_flow_streamer, StreamDirty, zox_dirty_trigger);
+        zox_setv(zox_tst_flow_streamer, StreamDirty2, zox_dirty_trigger);
+        zox_tst_flow_time = zox_current_time;
+    }
+    if (zox_tst_flow_stage == 0) {
+        zox_tst_waiting = "an all air chunk at full detail";
+        for (int y = render_distance_y; y > 0 && !zox_tst_flow_chunk; y--) {
+            const entity chunk = int3_hashmap_get(zox_get(terrain, ChunkLinks)->value, (int3) { 0, y, 0 });
+            if (!zox_valid(chunk) || !zox_has(chunk, VoxelNodeQueue) || zox_getv(chunk, NodeDepth) != depth ||
+                (zox_has(chunk, GenerateChunk) && zox_getv(chunk, GenerateChunk)))
+            {
+                continue;
+            }
+            const VoxelNode* voxels = zox_get(chunk, VoxelNode);
+            if (!has_children_VoxelNode(voxels) && !voxels->value) {
+                zox_tst_flow_chunk = chunk;
+            }
+        }
+        if (!zox_tst_flow_chunk) {
+            if (zox_current_time - zox_tst_flow_time > 60) {
+                for (int y = render_distance_y; y > 0; y--) {
+                    const entity chunk = int3_hashmap_get(zox_get(terrain, ChunkLinks)->value, (int3) { 0, y, 0 });
+                    zox_log("[tst] water_flow: chunk [0x%ix0] [%s] depth [%i] of [%i] generate [%i] voxels open [%i] value [%i]", y,
+                        zox_valid(chunk) ? zox_getn(chunk) : "none", zox_valid(chunk) ? zox_getv(chunk, NodeDepth) : -1, depth,
+                        zox_valid(chunk) && zox_has(chunk, GenerateChunk) ? zox_getv(chunk, GenerateChunk) : -1,
+                        zox_valid(chunk) ? has_children_VoxelNode(zox_get(chunk, VoxelNode)) : -1, zox_valid(chunk) ? zox_get(chunk, VoxelNode)->value : -1);
+                }
+                return 1;
+            }
+            return 0;
+        }
+        const entity bricks = zox_get_child_by_id(world, zox_tst_world_realm, zox_id(BlockBricks));
+        VoxelNodeQueue* queue = zox_getm(zox_tst_flow_chunk, VoxelNodeQueue);
+        for (int x = 1; x <= 13; x++) for (int z = 1; z <= 13; z++) {
+            a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = zox_getv(bricks, BlockIndex), .position = (byte3) { x, 3, z } });
+        }
+        zox_tst_flow_stage = 1;
+        zox_tst_flow_time = zox_current_time;
+        return 0;
+    }
+    if (zox_tst_flow_stage == 1) {
+        zox_tst_waiting = "the floor, then the water dropped on it";
+        if (zox_current_time - zox_tst_flow_time < 1) {
+            return 0;
+        }
+        const entity water = zox_get_child_by_id(world, zox_tst_world_realm, zox_id(BlockWater));
+        VoxelNodeQueue* queue = zox_getm(zox_tst_flow_chunk, VoxelNodeQueue);
+        a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = zox_getv(water, BlockIndex), .position = (byte3) { 7, 6, 7 } });
+        zox_tst_flow_stage = 2;
+        zox_tst_flow_time = zox_current_time;
+        return 0;
+    }
+    if (zox_tst_flow_stage == 2) {
+        zox_tst_waiting = "the water to fall and spread";
+        if (zox_current_time - zox_tst_flow_time < 5) {
+            return 0;
+        }
+        // then a brick dug out from under the water (2 from the middle): the water drains down the hole
+        VoxelNodeQueue* queue = zox_getm(zox_tst_flow_chunk, VoxelNodeQueue);
+        a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = 0, .position = (byte3) { 7, 3, 9 } });
+        zox_tst_flow_stage = 3;
+        zox_tst_flow_time = zox_current_time;
+        return 0;
+    }
+    zox_tst_waiting = "the water to drain down the hole";
+    (void) length;
+    return zox_current_time - zox_tst_flow_time > 3;
+}
+
+void zox_tst_water_flow_check(ecs* world) {
+    zox_tst_check(zox_tst_flow_stage == 3, "no all air chunk at full detail was found");
+    if (zox_tst_flow_stage != 3) {
+        return;
+    }
+    const entity terrain = zox_tst_world_terrain;
+    const byte depth = zox_getv(terrain, NodeDepth);
+    const VoxelNode* voxels = zox_get(zox_tst_flow_chunk, VoxelNode);
+    const int water_id = zox_tst_sea_water_id(world, terrain);
+    int inside = 0, inside_water = 0, outside_water = 0;
+    for (int x = 1; x <= 13; x++) for (int z = 1; z <= 13; z++) {
+        const byte is_water = getv_VoxelNode(voxels, depth, (byte3) { x, 4, z }) == water_id;
+        if (abs(x - 7) + abs(z - 7) <= zox_water_flow_steps) {
+            inside++;
+            inside_water += is_water;
+        } else {
+            outside_water += is_water;
+        }
+    }
+    const byte fall = getv_VoxelNode(voxels, depth, (byte3) { 7, 5, 7 }) == water_id && getv_VoxelNode(voxels, depth, (byte3) { 7, 6, 7 }) == water_id;
+    int above = 0;
+    for (int x = 1; x <= 13; x++) for (int z = 1; z <= 13; z++) for (int y = 5; y <= 8; y++) {
+        above += !(x == 7 && z == 7) && getv_VoxelNode(voxels, depth, (byte3) { x, y, z }) == water_id;
+    }
+    zox_log("[tst] [metric] water_flow on the floor: [%i] of [%i] in reach water, [%i] past it; its fall water [%i], [%i] elsewhere over the floor",
+        inside_water, inside, outside_water, fall, above);
+    zox_tst_check(inside_water == inside, "only [%i] of the [%i] blocks within [%i] of the middle filled", inside_water, inside, zox_water_flow_steps);
+    zox_tst_check(!outside_water, "[%i] blocks past [%i] of the middle filled: it spread too far", outside_water, zox_water_flow_steps);
+    zox_tst_check(fall, "the water's fall isn't water");
+    zox_tst_check(!above, "[%i] water blocks over the floor beside the fall: it spread before landing", above);
+    // the dug hole and the air under it filled
+    const byte hole = getv_VoxelNode(voxels, depth, (byte3) { 7, 3, 9 }) == water_id;
+    const byte under = getv_VoxelNode(voxels, depth, (byte3) { 7, 2, 9 }) == water_id && getv_VoxelNode(voxels, depth, (byte3) { 7, 0, 9 }) == water_id;
+    zox_log("[tst] [metric] water_flow the dug hole water [%i], the air under it down the chunk water [%i]", hole, under);
+    zox_tst_check(hole && under, "the water didn't drain down the dug hole (the hole [%i], under it [%i])", hole, under);
 }

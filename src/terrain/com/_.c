@@ -22,6 +22,14 @@ zox_tag(BlockBricks);
 zox_tag(BlockFlower);
 zox_tag(BlockRoad);
 zox_tag(BlockWater);       // a liquid (BlockMaterial): see through, walked through, it flows (terrain/water)
+// water flowing on a terrain (sys/water_flow.c): a block to check when its time comes, and how far the water has
+//  spread sideways to reach it
+typedef struct {
+    int3 block;
+    byte steps;
+    double at;
+} WaterFlow;
+zoxc_arrayd(WaterFlows, WaterFlow)
 #include "spawn2.c"
 
 entity get_linked_terrain(ecs* world, entity e) {
@@ -53,4 +61,5 @@ void zox_components_terrain(ecs *world) {
     zoxd_tag(BlockFlower);
     zoxd_tag(BlockRoad);
     zoxd_tag(BlockWater);
+    zoxd_arrayd(WaterFlows);
 }
