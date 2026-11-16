@@ -132,7 +132,8 @@ void zox_tst_water_block_check(ecs* world) {
 }
 
 // tst: sea_level, ground below the sea is under water up to it (heights/sys/landfill.c terrain_sea_height)
-//  - a camera of its own (no player) over the nearest open water, streaming the land round it, looking down
+//  - no player: a realm and terrain of its own (world_only.c), one camera over the nearest open water to the
+//      origin, streaming the land round it, looking down at it, drawn alone
 //  - every generated chunk at full detail round there, against its tunk's heights: a column whose ground is
 //      below the sea holds water from just over its ground up to the sea, and nothing over the sea is water
 //  - screenshots it twice half a second apart (tst/sea.ppm, sea_later.ppm):
@@ -154,16 +155,10 @@ static inline byte zox_tst_sea_water_id(ecs* world, entity terrain) {
 
 // a camera of its own (no player): over the nearest open water, looking down at it, streaming the land round it
 byte zox_tst_sea_level_ready(ecs* world) {
-    // the game started (its player placed: taking over streaming before, the spawn search read chunks being deleted)
-    if (!zox_tst_sea_begin && !zox_tst_player_spawn_ready(world)) {
-        return 0;
-    }
-    const entity terrain = local_terrain;
-    zox_tst_waiting = "a game's terrain";
+    // no player: a realm and terrain of its own (world_only.c), streamed only round this camera
+    const entity terrain = zox_tst_world_ready(world);
     TerrainHeights th;
-    if (!zox_valid(terrain) || !zox_has(terrain, ChunkLinks) || !terrain_heights_begin(world, terrain, &th) ||
-        !zox_valid(main_app))
-    {
+    if (!terrain || !terrain_heights_begin(world, terrain, &th)) {
         return 0;
     }
     const float scale = zox_getv(terrain, BlockScale);
@@ -205,7 +200,6 @@ byte zox_tst_sea_level_ready(ecs* world) {
         zox_set_link(world, zox_tst_sea_camera, StreamLink, terrain);
         // 1 streams the land itself (0 regions and towns only)
         zox_setv(zox_tst_sea_camera, StreamerLevel, 1);
-        // a second streamer: the game's camera keeps streaming round the player (terrain streams round both)
         nohud = 1;
         const entity game_view = zox_valid(main_cameras[0]) ? zox_get_link(world, main_cameras[0], RenderTextureLink) : 0;
         if (zox_valid(game_view)) {
@@ -268,7 +262,7 @@ byte zox_tst_sea_level_ready(ecs* world) {
 }
 
 void zox_tst_sea_level_check(ecs* world) {
-    const entity terrain = local_terrain;
+    const entity terrain = zox_tst_world_terrain;
     const byte water_id = zox_valid(terrain) ? zox_tst_sea_water_id(world, terrain) : 0;
     zox_tst_check(water_id, "the realm has no water block");
     if (!water_id) {
