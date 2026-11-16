@@ -107,6 +107,8 @@ The full list with descriptions: the comment at the top of each test, or `bash b
 - An animated block (water): `bash bsh/tst.sh block_frames` -> tst/blocks/<block>_frames.ppm, its frames in a row,
   its first tiled 2 x 2 (seams) and its last then first (the loop); checks they change, loop and tile
 - Water in the world: `bash bsh/tst.sh sea_level` -> tst/sea.ppm and sea_later.ppm, looking down at open water
-- A view of the world without the player: spawn_viewport_camera, prefab_add_streamer on it with StreamLink to the
-  terrain and StreamerLevel 1 (0 streams regions and towns only), nohud and the game view's RenderDisabled (tst
-  sea_level); the terrain streams round every streamer (tst two_streamers)
+- The world without a player: zox_tst_world_ready (src/controllers/tst/world_only.c) makes a realm and terrain on
+  the main menu (register the test with zox_tst_set_setup(name, NULL, 1)); nothing streams until the test adds a
+  streamer: spawn_streamer, or a camera (spawn_viewport_camera, prefab_add_streamer, StreamLink to the terrain),
+  with StreamerLevel 1 (0 streams regions and towns only); for a picture, nohud and the menu view's RenderDisabled
+  (tst sea_level: one camera; tst two_streamers: two streamers, the terrain streams round each)
