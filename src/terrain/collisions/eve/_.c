@@ -14,9 +14,9 @@ void zox_events_terrain_collisions(ecs* world) {
     zox_on_add(
         water_splash_event,
         [in] blocks.InsideBlock,
-        [in] transforms3.Position3D,
+        [in] blocks.InsideBlockPosition,
         [in] physics3.Velocity3D,
-        [out] blocks.InsideBlockLast,
+        [out] terrains.InsideBlockLast,
         [none] blocks.InsideBlockDirty,
     );
 }

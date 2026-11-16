@@ -1512,3 +1512,6 @@ Disabling Lods means:
 	- block_vox_lights_system relights a chunk's (and its neighbors') minivoxes on LightNodeDirty
 	- fixed chunk_colors_trigger_system being inverted: a chunk's own light changes didn't recolor its own meshes
 	- tests: block_vox_lights (game), block_vox_light_sampling (logic)
+- Water splash (doc/tech/water_extras.md task 1)
+	- InsideBlockDirty observer: a splash and sound falling into water (faster than 2 a second), a small one coming out
+	- test: water_splash

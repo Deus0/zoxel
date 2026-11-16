@@ -176,7 +176,6 @@
 	- sorting: blended chunk meshes drawn far to near, so water seen through water looks right
 - Underwater
 	- change filter of camera - add block - sky darkened
-	- add splash when entering water
 	- reduce gravity
 	- allow jumping inside water
 - Remove trigger system for lods
