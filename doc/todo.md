@@ -7,6 +7,8 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
+- A square patch of water lighter than the rest with a straight edge, looking down at a lake (tst sea_level's
+  tst/sea.ppm, seed 666): a lighting seam between chunks, or one lit after the others?
 - Towns can stand in the sea: a town on sunken ground keeps its homes over the water and clears air under the sea
   (seen on the map, and tst sea_level counts its air voxels apart); towns should pick land above the sea, or raise
   their ground over it
