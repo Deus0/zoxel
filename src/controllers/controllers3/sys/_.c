@@ -9,6 +9,7 @@
 #include "actions.c"
 #include "dialogue_begin.c"
 #include "dialogue_player.c"
+#include "dialogue_face.c"
 #include "dialogue_exit.c"
 #include "dialogue_end.c"
 #include "head_camera.c"
@@ -97,6 +98,12 @@ void zox_systems_controllers3(ecs *world) {
         zoxp_spawn, // zoxp_update,
         [in] players.PlayerStateDirty,
         [out] players.PlayerState
+    );
+    zox_system(
+        dialogue_face_system,
+        zoxp_update,
+        [in] players.PlayerState,
+        [none] players.Player
     );
     zox_system(
         dialogue_exit_system,

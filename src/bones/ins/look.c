@@ -14,3 +14,10 @@ float3 look_point(ecs* world, entity e) {
     const entity head = zox_valid(skeleton) ? zox_get_link(world, skeleton, HeadBoneLink) : 0;
     return zox_getv(zox_valid(head) ? head : e, Position3D);
 }
+
+// who a character's head is looking at (a speaker, in a dialogue), else 0
+entity looking_at(ecs* world, entity character) {
+    const entity skeleton = get_skeleton(world, character);
+    const entity head = zox_valid(skeleton) ? zox_get_link(world, skeleton, HeadBoneLink) : 0;
+    return zox_valid(head) ? zox_getv(head, LookTarget) : 0;
+}
