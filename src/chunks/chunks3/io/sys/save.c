@@ -60,6 +60,10 @@ void chunk3_save_system(iter* it) {
         char filename[128];
         get_chunk_filename(filename, position->value);
         const FolderPath* game_path = zox_get(realm, FolderPath);
+        // a realm without a folder isn't saved (it wrote beside the binary)
+        if (!game_path || !game_path->value[0]) {
+            continue;
+        }
         char* path = join_path(game_path->value, filename);
         FILE* file = fopen(path, "wb");
         if (file == NULL) {

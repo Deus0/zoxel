@@ -21,6 +21,17 @@ static inline entity zox_tst_world_ready(ecs* world) {
         const char* seed_text = getenv("zox_tst_seed");
         const lint seed = seed_text && seed_text[0] ? atol(seed_text) : 666;
         zox_tst_world_realm = spawn_realm(world, local_game, seed);
+        // a save folder of its own, in the run's (--nosaves: thrown away): without one its chunks saved beside the
+        //  binary and the next run loaded them
+        char home_path[max_path_characters];
+        get_home_directory(home_path, sizeof(home_path));
+        char* game_path = join_paths(home_path, game_name);
+        create_new_directory(game_path);
+        char* save_dir = join_paths(game_path, "tst_world");
+        create_new_directory(save_dir);
+        set_FolderPath(world, zox_tst_world_realm, save_dir);
+        free(save_dir);
+        free(game_path);
         zox_setv(zox_tst_world_realm, GenerateRealm, zox_generate_realm_start);
         return 0;
     }

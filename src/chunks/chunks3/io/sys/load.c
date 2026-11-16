@@ -39,6 +39,10 @@ byte load_chunk(
     get_chunk_filename(filename, position);
     // sprintf(filename, "chunk_%i_%i_%i.dat", position.x, position.y, position.z);
     const FolderPath* game_path = zox_get(savegame, FolderPath);
+    // a realm without a folder has nothing saved (it read files beside the binary)
+    if (game_path && !game_path->value[0]) {
+        return 0;
+    }
     if (!game_path) {
         zox_loge("[load_chunk] Invalid FolderPath [%s]",
             zox_getn(savegame));
