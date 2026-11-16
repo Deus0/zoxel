@@ -101,3 +101,9 @@ it shares it), e.g. `zox_tst_seed=666 bash bsh/tst.sh perf_fly --gpu --stress --
 slots by kind and the near lod latency (doc/done/streaming.md).
 
 The full list with descriptions: the comment at the top of each test, or `bash bsh/tst.sh list`.
+
+## Looking at blocks and models
+- A model or block model: `bash bsh/model.sh <name>` (tst model_views, 4 views on gray) -> tst/models/<name>.png
+- An animated block (water): `bash bsh/tst.sh block_frames` -> tst/blocks/<block>_frames.ppm, its frames in a row,
+  its first tiled 2 x 2 (seams) and its last then first (the loop); checks they change, loop and tile
+- Water in the world: `bash bsh/tst.sh sea_level` -> tst/sea.ppm and sea_later.ppm, looking down at open water

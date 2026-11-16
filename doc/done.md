@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-16
+-x Blocks checked by eye: the bed and door with bsh/model.sh; tst block_frames for animated blocks (water's 16 frames
+  side by side, they loop and tile); tst sea_level looks down at open water and sees it move
 -x A sea: ground below 18 is under water up to it (heights/sys/landfill.c terrain_sea_height), about a tenth of the
   land; sand moved up to 21 for its shores (the land is mostly 17 to 30 high, tst sea_level logs its spread); tst
   sea_level flies to the nearest sunken ground, checks its water and screenshots it (tst/sea.ppm)
