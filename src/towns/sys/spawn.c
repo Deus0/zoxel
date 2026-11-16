@@ -55,6 +55,8 @@ void region_towns_system(iter* it) {
         // the region's placement zones (mountains, earlier towns), each town a rect apart from them (regions/fun/zones.c)
         RegionZones zones;
         region_zones_find(world, e, &zones);
+        // the region's lakes too (heights/fun lakes), so no town stands in one (tst lakes)
+        region_zones_add_lakes(world, terrain, block_position->value, block_size->value, &zones);
         for (int j = 0; j < spawn_count; j++) {
             int2 town_position;
             byte2 town_size;

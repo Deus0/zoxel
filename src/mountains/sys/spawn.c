@@ -33,6 +33,8 @@ void region_mountain_system(iter* it) {
         // the region's placement zones, each mountain a circle apart from them (regions/fun/zones.c)
         RegionZones zones;
         region_zones_find(world, e, &zones);
+        // the region's lakes too, so no mountain fills one (tst lakes)
+        region_zones_add_lakes(world, terrain, block_position->value, block_size->value, &zones);
         for (int j = 0; j < spawn_count; j++) {
             int2 mountain_position;
             byte radius;

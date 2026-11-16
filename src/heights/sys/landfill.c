@@ -136,7 +136,13 @@ void landfill_chunk_system(iter* it) {
         }
 #endif
         const entity water = zox_get_child_by_id(world, realm, zox_id(BlockWater));
-        const byte water_id = sea_height && zox_valid(water) ? zox_getv(water, BlockIndex) : 0;
+        const byte water_id = zox_valid(water) ? zox_getv(water, BlockIndex) : 0;
+        // lakes: their levels, one a cell (a chunk spans 4 cells at most), worked out once a chunk
+        TerrainHeights th;
+        const byte has_lakes = water_id && terrain_heights_begin(world, terrain, &th);
+        int2 lake_cells[4];
+        int lake_levels[4];
+        byte lake_count = 0;
         // set our variables for our loop
         entity biome = 0;
         byte soil_id = 0;
@@ -163,10 +169,29 @@ void landfill_chunk_system(iter* it) {
                 }
 #endif
                 byte height = height_map->value[map_index];
-                // the sea over ground below it: water from the ground's top up to the sea, in this chunk
-                if (water_id && height < sea_height && sea_height >= chunk_block_position.y) {
+                // the sea, or a lake, over ground below it: water from the ground's top up to it, in this chunk
+                int water_level = sea_height;
+                if (has_lakes) {
+                    const int2 global = { chunk_block_position.x + (position.x << shift), chunk_block_position.z + (position.z << shift) };
+                    TerrainLake lake;
+                    if (terrain_lake_in_cell(&th, global, &lake) && terrain_lake_dip(&lake, global)) {
+                        byte j = 0;
+                        while (j < lake_count && !int2_equals(lake_cells[j], lake.centre)) {
+                            j++;
+                        }
+                        if (j == lake_count && lake_count < 4) {
+                            lake_cells[j] = lake.centre;
+                            lake_levels[j] = terrain_lake_level(&th, &lake);
+                            lake_count++;
+                        }
+                        if (j < lake_count && lake_levels[j] > water_level) {
+                            water_level = lake_levels[j];
+                        }
+                    }
+                }
+                if (water_id && water_level && height < water_level && water_level >= chunk_block_position.y) {
                     const int water_start = int_max((height + 1 - chunk_block_position.y) >> shift, 0);
-                    const int water_end = int_min((sea_height - chunk_block_position.y) >> shift, length - 1);
+                    const int water_end = int_min((water_level - chunk_block_position.y) >> shift, length - 1);
                     spin_lock(&lock->value);
                     for (int y = water_start; y <= water_end; y++) {
                         set_clean_VoxelNode(voctree, build_depth, (byte3) { position.x, y, position.z }, water_id);

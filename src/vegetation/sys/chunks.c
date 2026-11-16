@@ -62,6 +62,9 @@ void vegetation_chunk3_system(iter* it) {
         byte is_max_depth = build_depth == terrain_depth;
         byte length = octree_size(build_depth);
         int3 chunk_block_position = chunk_position_to_block_position(chunk_position->value, terrain_depth);
+        // lakes' bowls grow nothing (heights/fun lakes): no trees out of the water
+        TerrainHeights lake_th;
+        const byte has_lakes = terrain_heights_begin(world, terrain, &lake_th);
         int2 map_size = int2_single(length);
         byte hmultiplier = powers_of_two[terrain_depth - build_depth];
         const BiomeMap* biome_map = zox_get(tunk, BiomeMap);
@@ -102,6 +105,13 @@ void vegetation_chunk3_system(iter* it) {
                     biome_map->value[index] :
                     0;
                 byte veggie = vegetation_map->value[index];
+                if (has_lakes) {
+                    const int2 global = { chunk_block_position.x + position.x * hmultiplier, chunk_block_position.z + position.z * hmultiplier };
+                    TerrainLake lake;
+                    if (terrain_lake_in_cell(&lake_th, global, &lake) && terrain_lake_dip(&lake, global)) {
+                        continue;
+                    }
+                }
                 // NOTE: No need for vegetation under the sea
                 //  (maybe some sea weed later)
                 if (veggie == zox_vegetation_dirt) {

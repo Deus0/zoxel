@@ -408,3 +408,171 @@ void zox_tst_sea_level_check(ecs* world) {
     zox_tst_check(!zox_tst_sea_wrong, "[%i] voxels under the sea and over the ground are air, out of towns", zox_tst_sea_wrong);
     zox_tst_check(!zox_tst_sea_above, "[%i] water voxels are over the sea", zox_tst_sea_above);
 }
+
+// tst: lakes, lakes above the sea sit in bowls carved into the land, full to a block under their rim
+//  - no player: a realm and terrain of its own (world_only.c), one camera over the nearest lake above the sea to the
+//      origin (from the terrain's heights: heights/fun lakes), looking down at it, tst/lake.ppm
+//  - its chunks against the heights: in the bowl, water from the ground up to the lake's level, none over it; every
+//      water voxel at its surface has water or ground beside it on all 4 sides (it doesn't hang over air)
+//  - run: bash bsh/tst.sh lakes
+double zox_tst_lake_begin = 0, zox_tst_lake_streamed = 0;
+TerrainLake zox_tst_lake;
+int zox_tst_lake_level = 0;
+byte zox_tst_lake_found = 0;
+entity zox_tst_lake_camera = 0;
+
+byte zox_tst_lakes_ready(ecs* world) {
+    const entity terrain = zox_tst_world_ready(world);
+    TerrainHeights th;
+    if (!terrain || !terrain_heights_begin(world, terrain, &th)) {
+        return 0;
+    }
+    const float scale = zox_getv(terrain, BlockScale);
+    const int sea = terrain_sea_height * render_distance_y;
+    if (!zox_tst_lake_begin) {
+        zox_tst_lake_begin = zox_current_time;
+        remove(zox_tst_path("lake.ppm"));
+        // the nearest cell with a lake above the sea, its middle under water
+        for (int r = 0; r <= 12 && !zox_tst_lake_found; r++)
+        for (int x = -r; x <= r && !zox_tst_lake_found; x++)
+        for (int z = -r; z <= r && !zox_tst_lake_found; z++) {
+            if (abs(x) != r && abs(z) != r) {
+                continue;
+            }
+            TerrainLake lake;
+            if (!terrain_lake_in_cell(&th, (int2) { x * zox_lake_cell, z * zox_lake_cell }, &lake)) {
+                continue;
+            }
+            const int level = terrain_lake_level(&th, &lake);
+            if (level <= sea + 1 || terrain_height_at(&th, lake.centre) >= level) {
+                continue;
+            }
+
+            zox_tst_lake = lake;
+            zox_tst_lake_level = level;
+            zox_tst_lake_found = 1;
+        }
+        zox_log("[tst] lakes: a lake [%s] at block [%ix%i], radius [%i] depth [%i] level [%i] (the sea [%i])", zox_tst_lake_found ? "found" : "not found",
+            zox_tst_lake.centre.x, zox_tst_lake.centre.y, zox_tst_lake.radius, zox_tst_lake.depth, zox_tst_lake_level, sea);
+        if (!zox_tst_lake_found) {
+            return 1;
+        }
+        const float3 spot = { (zox_tst_lake.centre.x + 0.5f) * scale, (zox_tst_lake_level + 1) * scale, (zox_tst_lake.centre.y + 0.5f) * scale };
+        const float3 eye = float3_add(spot, (float3) { 0, (zox_tst_lake.radius + 4) * scale, zox_tst_lake.radius * scale });
+        zox_tst_lake_camera = spawn_viewport_camera(world, main_app, eye, camera_look_at(eye, spot), 70, viewport_grid_cell(0, 1, 1));
+        prefab_add_streamer(world, zox_tst_lake_camera);
+        zox_set_link(world, zox_tst_lake_camera, StreamLink, terrain);
+        zox_setv(zox_tst_lake_camera, StreamerLevel, 1);
+        nohud = 1;
+        const entity game_view = zox_valid(main_cameras[0]) ? zox_get_link(world, main_cameras[0], RenderTextureLink) : 0;
+        if (zox_valid(game_view)) {
+            zox_setv(game_view, RenderDisabled, 1);
+        }
+    }
+    zox_tst_progress((int) (zox_current_time - zox_tst_lake_begin));
+    zox_tst_waiting = "the lake's land to stream in and show its water";
+    const float3 centre = { zox_tst_lake.centre.x * scale, zox_tst_lake_level * scale, zox_tst_lake.centre.y * scale };
+    const int3 chunk_position = real_position_to_chunk_position(centre, octree_size(zox_getv(terrain, NodeDepth)), scale);
+    const entity chunk = int3_hashmap_get(zox_get(terrain, ChunkLinks)->value, chunk_position);
+    if (!zox_tst_lake_streamed) {
+        int water = 0, solid = 0, meshes = 0;
+        if (zox_valid(chunk)) {
+            zox_tst_water_vertices(world, chunk, &water, &solid, &meshes);
+        }
+        if (!water) {
+            return zox_current_time - zox_tst_lake_begin > 60;
+        }
+        zox_tst_lake_streamed = zox_current_time;
+    }
+    if (zox_current_time - zox_tst_lake_streamed < 4) {
+        return 0;
+    }
+    static byte shot = 0;
+    if (zox_screenshot_request[0]) {
+        return 0;
+    }
+    if (!shot) {
+        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("lake.ppm"));
+        shot = 1;
+        return 0;
+    }
+    return 1;
+}
+
+// a voxel at a block position from full detail generated chunks, -1 if not there
+static inline int zox_tst_lake_voxel(ecs* world, entity terrain, int3 block) {
+    const byte depth = zox_getv(terrain, NodeDepth);
+    const byte length = octree_size(depth);
+    const int3 chunk_position = block_position_to_positionc(block, byte3_single(length));
+    const entity chunk = int3_hashmap_get(zox_get(terrain, ChunkLinks)->value, chunk_position);
+    if (!zox_valid(chunk) || !zox_has(chunk, NodeDepth) || zox_getv(chunk, NodeDepth) != depth ||
+        (zox_has(chunk, GenerateChunk) && zox_getv(chunk, GenerateChunk)) || zox_has(chunk, Edited))
+    {
+        return -1;
+    }
+    return getv_VoxelNode(zox_get(chunk, VoxelNode), depth, get_positionl_byte3(block, byte3_single(length)));
+}
+
+void zox_tst_lakes_check(ecs* world) {
+    zox_tst_check(zox_tst_lake_found, "no lake above the sea within 12 cells of the origin");
+    const entity terrain = zox_tst_world_terrain;
+    if (!zox_tst_lake_found || !zox_valid(terrain)) {
+        return;
+    }
+    const int water_id = zox_tst_sea_water_id(world, terrain);
+    TerrainHeights th;
+    terrain_heights_begin(world, terrain, &th);
+    const TerrainLake* lake = &zox_tst_lake;
+    const int level = zox_tst_lake_level;
+    int columns = 0, wrong = 0, above = 0, surface = 0, hanging = 0, unchecked = 0, in_towns = 0;
+    for (int x = -lake->radius; x <= lake->radius; x++) for (int z = -lake->radius; z <= lake->radius; z++) {
+        const int2 column = { lake->centre.x + x, lake->centre.y + z };
+        if (!terrain_lake_dip(lake, column)) {
+            continue;
+        }
+        // towns build over lakes (a known bug, todo.md), their columns counted apart
+        if (town_at(world, column)) {
+            in_towns++;
+            continue;
+        }
+        const int ground = terrain_height_at(&th, column);
+        const int over = zox_tst_lake_voxel(world, terrain, (int3) { column.x, level + 1, column.y });
+        if (over < 0) {
+            unchecked++;
+            continue;
+        }
+        above += over == water_id;
+        if (ground >= level) {
+            continue;
+        }
+        columns++;
+        for (int y = ground + 1; y <= level; y++) {
+            const int v = zox_tst_lake_voxel(world, terrain, (int3) { column.x, y, column.y });
+            if (v >= 0 && v != water_id && !wrong) {
+                const entity block = v ? zox_get_parent(world, terrain) : 0;
+                const BlockLinks* blocks = zox_valid(block) ? zox_get(block, BlockLinks) : NULL;
+                zox_log("[tst] lakes: block [%ix%ix%i] is [%s] (voxel %i) not water, the ground there [%i]", column.x, y, column.y,
+                    blocks && v - 1 < blocks->length ? zox_getn(blocks->value[v - 1]) : "air", v, ground);
+            }
+            wrong += v >= 0 && v != water_id;
+        }
+        // its surface held in: water or ground on all 4 sides
+        surface++;
+        const int2 sides[4] = { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } };
+        for (byte k = 0; k < 4; k++) {
+            const int2 side = { column.x + sides[k].x, column.y + sides[k].y };
+            hanging += !town_at(world, side) && !zox_tst_lake_voxel(world, terrain, (int3) { side.x, level, side.y });
+        }
+    }
+    zox_log("[tst] [metric] lakes: [%i] columns under its water, [%i] voxels in them not water, [%i] water over its level, [%i] surface sides over air, [%i] columns not loaded, [%i] in towns",
+        columns, wrong, above, hanging, unchecked, in_towns);
+    zox_tst_check(columns > 10, "only [%i] columns are under the lake", columns);
+    zox_tst_check(!wrong, "[%i] voxels under the lake's level in its bowl aren't water", wrong);
+    zox_tst_check(!above, "[%i] water voxels are over the lake's level", above);
+    zox_tst_check(!hanging, "[%i] sides of the lake's surface are open to air: it spills", hanging);
+    FILE* file = fopen(zox_tst_path("lake.ppm"), "rb");
+    zox_tst_check(file, "the lake's screenshot wasn't saved");
+    if (file) {
+        fclose(file);
+    }
+}
