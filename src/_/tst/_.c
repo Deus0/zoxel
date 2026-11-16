@@ -367,6 +367,39 @@ void zox_tst_system(iter* it) {
     zox_sys_on_end();
 } zoxd_system(zox_tst_system);
 
+// The test level (doc/coding_standards.md): tiny, flat, empty; tests spawn what they need into it
+//  - a module adds how it shrinks (zox_tst_add_level), i.e. terrain makes the land flat and one chunk far, towns,
+//      plants, block voxes and streamed npcs switch off
+//  - a test asks for it: zox_tst_set_setup(name, zox_tst_level_setup, 0); it's applied at boot, after the terminal
+//      arguments (tst.sh's --tiny would set the terrain's size over it)
+typedef void (*zox_tst_level_fun)();
+#define zox_tst_level_max 32
+zox_tst_level_fun zox_tst_level_funs[zox_tst_level_max];
+int zox_tst_level_count = 0;
+byte zox_tst_level = 0;
+
+void zox_tst_add_level(zox_tst_level_fun fun) {
+    if (zox_tst_level_count < zox_tst_level_max) {
+        zox_tst_level_funs[zox_tst_level_count++] = fun;
+    }
+}
+
+void zox_tst_level_setup() {
+    zox_tst_level = 1;
+}
+
+void zox_tst_level_boot(ecs* world, entity app) {
+    (void) world;
+    (void) app;
+    if (!zox_tst_level) {
+        return;
+    }
+    for (int i = 0; i < zox_tst_level_count; i++) {
+        zox_tst_level_funs[i]();
+    }
+    zox_log("+ [tst] the test level: [%i] modules shrunk", zox_tst_level_count);
+}
+
 void process_arguments_tst(ecs* world, char* args[], int count) {
     for (int i = 1; i < count; i++) {
         if (strcmp(args[i], "--profile-ms") == 0 && i + 1 < count) {
@@ -438,6 +471,7 @@ void initialize_tst(ecs* world) {
     zox_tsts_maths();
     zox_tst_add("binary_size", zox_tst_binary_size_ready, zox_tst_binary_size_check, 30);
     add_hook_terminal_command(process_arguments_tst);
+    add_hook_on_boot(zox_tst_level_boot);
     zox_system_immediate(
         zox_tst_system,
         zoxp_dbg_end,

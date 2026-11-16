@@ -73,4 +73,5 @@ void zox_tst_player_respawn_check(ecs* world) {
 
 void zox_tsts_player_respawn(ecs* world) {
     zox_tst_add("player_respawn", zox_tst_player_respawn_ready, zox_tst_player_respawn_check, 120);
+    zox_tst_set_setup("player_respawn", zox_tst_level_setup, 0);
 }

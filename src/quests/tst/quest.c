@@ -92,4 +92,5 @@ void zox_tst_quest_tracking_check(ecs* world) {
 
 void zox_tsts_quest(ecs* world) {
     zox_tst_add("quest_tracking", zox_tst_quest_tracking_ready, zox_tst_quest_tracking_check, 90);
+    zox_tst_set_setup("quest_tracking", zox_tst_level_setup, 0);
 }

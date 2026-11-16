@@ -27,9 +27,19 @@ byte zox_disable_mountains = 0;
 #include "ins/_.c"
 #include "sys/_.c"
 
+#ifdef zox_tests
+// the test level (_/tst zox_tst_add_level): no mountains
+void zox_tst_level_mountains() {
+    zox_disable_mountains = 1;
+}
+#endif
+
 void import_mountains(ecs* world) {
     zox_module(mountains);
     zox_components_mountains(world);
     zox_systems_mountains(world);
     add_hook_spawn_prefabs(zox_define_prefabs_mountains);
+#ifdef zox_tests
+    zox_tst_add_level(zox_tst_level_mountains);
+#endif
 }

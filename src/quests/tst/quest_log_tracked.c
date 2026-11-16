@@ -71,4 +71,5 @@ void zox_tst_quest_log_tracked_check(ecs* world) {
 
 void zox_tsts_quest_log_tracked(ecs* world) {
     zox_tst_add("quest_log_tracked", zox_tst_quest_log_tracked_ready, zox_tst_quest_log_tracked_check, 90);
+    zox_tst_set_setup("quest_log_tracked", zox_tst_level_setup, 0);
 }

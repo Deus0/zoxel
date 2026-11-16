@@ -71,4 +71,5 @@ void zox_tst_window_toggle_check(ecs* world) {
 
 void zox_tsts_window_toggle(ecs* world) {
     zox_tst_add("window_toggle", zox_tst_window_toggle_ready, zox_tst_window_toggle_check, 120);
+    zox_tst_set_setup("window_toggle", zox_tst_level_setup, 0);
 }

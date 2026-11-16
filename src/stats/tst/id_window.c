@@ -64,4 +64,5 @@ void zox_tst_id_window_check(ecs* world) {
 
 void zox_tsts_id_window(ecs* world) {
     zox_tst_add("id_window", zox_tst_id_window_ready, zox_tst_id_window_check, 120);
+    zox_tst_set_setup("id_window", zox_tst_level_setup, 0);
 }

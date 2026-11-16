@@ -59,4 +59,5 @@ void zox_tst_head_camera_check(ecs* world) {
 
 void zox_tsts_head_camera(ecs* world) {
     zox_tst_add("head_camera", zox_tst_head_camera_ready, zox_tst_head_camera_check, 120);
+    zox_tst_set_setup("head_camera", zox_tst_level_setup, 0);
 }

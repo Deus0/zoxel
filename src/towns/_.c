@@ -25,6 +25,13 @@ byte zox_disable_homes = 0;
 #include "tst/_.c"
 #endif
 
+#ifdef zox_tests
+// the test level (_/tst zox_tst_add_level): no towns
+void zox_tst_level_towns() {
+    zox_disable_towns = 1;
+}
+#endif
+
 void import_towns(ecs* world) {
     zox_module(towns);
     zox_components_towns(world);
@@ -33,5 +40,8 @@ void import_towns(ecs* world) {
     zox_systems_towns_debug(world);
 #ifdef zox_tests
     zox_tsts_towns(world);
+#endif
+#ifdef zox_tests
+    zox_tst_add_level(zox_tst_level_towns);
 #endif
 }

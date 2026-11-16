@@ -15,6 +15,13 @@ byte zox_disable_vegetation = 0;
 #include "tst/_.c"
 #endif
 
+#ifdef zox_tests
+// the test level (_/tst zox_tst_add_level): no plants or trees
+void zox_tst_level_vegetation() {
+    zox_disable_vegetation = 1;
+}
+#endif
+
 void import_vegetation(ecs* world) {
     zox_module(vegetation);
     zox_components_vegetation(world);
@@ -25,4 +32,7 @@ void import_vegetation(ecs* world) {
     add_hook_spawn_prefabs(spawn_prefabs_vegetation);
     // add_hook_spawn_prefabs(spawn_prefabs_tunks);
     // zox_systems_tunks_debug(world);
+#ifdef zox_tests
+    zox_tst_add_level(zox_tst_level_vegetation);
+#endif
 }

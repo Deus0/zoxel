@@ -16,8 +16,18 @@ byte zox_disable_vodes = 0;
 #include "com/_.c"
 #include "vodes3/_.c"
 
+#ifdef zox_tests
+// the test level (_/tst zox_tst_add_level): no block voxes (grass, flowers)
+void zox_tst_level_vodes() {
+    zox_disable_vodes = 1;
+}
+#endif
+
 void import_vodes(ecs* world) {
     zox_module(vodes);
     zoxd_components_vodes(world);
     zox_add_module(vodes3);
+#ifdef zox_tests
+    zox_tst_add_level(zox_tst_level_vodes);
+#endif
 }

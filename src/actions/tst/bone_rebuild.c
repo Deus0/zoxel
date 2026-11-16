@@ -220,4 +220,5 @@ void zox_tst_rebuild_check(ecs* world) {
 
 void zox_tsts_bone_rebuild(ecs* world) {
     zox_tst_add("bone_rebuild", zox_tst_rebuild_ready, zox_tst_rebuild_check, 120);
+    zox_tst_set_setup("bone_rebuild", zox_tst_level_setup, 0);
 }

@@ -27,4 +27,5 @@ void zox_tst_gizmo_owner_check(ecs* world) {
 
 void zox_tsts_gizmo_owner(ecs* world) {
     zox_tst_add("gizmo_owner", zox_tst_gizmo_owner_ready, zox_tst_gizmo_owner_check, 30);
+    zox_tst_set_setup("gizmo_owner", zox_tst_level_setup, 0);
 }

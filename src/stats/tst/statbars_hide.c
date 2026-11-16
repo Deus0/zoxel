@@ -136,4 +136,5 @@ void zox_tst_statbars_hide_check(ecs* world) {
 
 void zox_tsts_statbars_hide(ecs* world) {
     zox_tst_add("statbars_hide", zox_tst_statbars_hide_ready, zox_tst_statbars_hide_check, 120);
+    zox_tst_set_setup("statbars_hide", zox_tst_level_setup, 0);
 }

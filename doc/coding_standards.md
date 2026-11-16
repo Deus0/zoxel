@@ -474,6 +474,14 @@ Keep a test as small as it can be: use only what it checks, so the whole suite s
 - a whole game and the player only when the test is about them
 - wait on a condition, not a fixed time; a few frames, not seconds
 
+Tests make their own data, they don't assume the game's:
+
+- spawn the blocks, npcs, items and quests a test needs (a brick block, one villager), not the realm's generated
+  ones, so a change to the game's content never breaks a test that isn't about it
+- a test level, not the game's world: tiny (one chunk of render distance), flat, no block voxes unless the test
+  is about them, its npcs spawned where the test wants them (think a test level in a game's dev build)
+- only a test about the game's content (its generation, its realm data) reads the game's data
+
 When you think:
 
 > "Which test covers this system?"

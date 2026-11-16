@@ -239,4 +239,5 @@ void zox_tst_clothes_check(ecs* world) {
 
 void zox_tsts_clothes(ecs* world) {
     zox_tst_add("clothes", zox_tst_clothes_ready, zox_tst_clothes_check, 120);
+    zox_tst_set_setup("clothes", zox_tst_level_setup, 0);
 }

@@ -86,4 +86,5 @@ void zox_tst_pickup_pop_check(ecs* world) {
 
 void zox_tsts_pop(ecs* world) {
     zox_tst_add("pickup_pop", zox_tst_pickup_pop_ready, zox_tst_pickup_pop_check, 90);
+    zox_tst_set_setup("pickup_pop", zox_tst_level_setup, 0);
 }

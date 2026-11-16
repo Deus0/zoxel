@@ -35,6 +35,16 @@ int stream_slots_lod = 0, stream_slots_distance = 0, stream_slots_spawn = 0;
 #include "tst/_.c"
 #endif
 
+#ifdef zox_tests
+// the test level (_/tst zox_tst_add_level): flat land, one chunk far
+void zox_tst_level_terrain() {
+    zox_flatlands = 1;
+    terrain_lod_far = 1;
+    render_distance_y = 1;
+    zox_terrain_size_set_by_args();
+}
+#endif
+
 void import_terrains(ecs* world) {
     zox_module(terrains);
     zox_components_terrain(world);
@@ -46,4 +56,7 @@ void import_terrains(ecs* world) {
     add_hook_spawn_prefabs(spawn_prefabs_terrain);
     add_hook_spawn_prefabs(zox_events_terrain);
     zox_add_module(terrain_collisions);
+#ifdef zox_tests
+    zox_tst_add_level(zox_tst_level_terrain);
+#endif
 }

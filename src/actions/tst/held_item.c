@@ -119,5 +119,7 @@ void zox_tst_held_item_check(ecs* world) {
 
 void zox_tsts_held_item(ecs* world) {
     zox_tst_add("held_item", zox_tst_held_item_ready, zox_tst_held_item_check, 120);
+    zox_tst_set_setup("held_item", zox_tst_level_setup, 0);
     zox_tst_add("held_block", zox_tst_held_block_ready, zox_tst_held_item_check, 120);
+    zox_tst_set_setup("held_block", zox_tst_level_setup, 0);
 }

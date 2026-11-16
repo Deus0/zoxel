@@ -186,6 +186,8 @@ void zox_tst_npc_leash_check(ecs* world) {
 
 void zox_tsts_npc_attacks(ecs* world) {
     zox_tst_add("npc_attacks", zox_tst_npc_attacks_ready, zox_tst_npc_attacks_check, 120);
+    zox_tst_set_setup("npc_attacks", zox_tst_level_setup, 0);
     zox_tst_add("region_population", zox_tst_region_population_ready, zox_tst_region_population_check, 120);
     zox_tst_add("npc_leash", zox_tst_npc_leash_ready, zox_tst_npc_leash_check, 120);
+    zox_tst_set_setup("npc_leash", zox_tst_level_setup, 0);
 }

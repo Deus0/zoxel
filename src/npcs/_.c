@@ -16,6 +16,13 @@
 #include "tst/_.c"
 #endif
 
+#ifdef zox_tests
+// the test level (_/tst zox_tst_add_level): no npcs streamed in, a test spawns its own
+void zox_tst_level_npcs() {
+    disable_npcs = 1;
+}
+#endif
+
 void import_npcs(ecs* world) {
     zox_module(npcs);
     zox_components_characters3_terrain(world);
@@ -24,4 +31,7 @@ void import_npcs(ecs* world) {
     zox_tsts_npcs(world);
 #endif
     add_hook_spawn_prefabs(spawn_prefabs_characters3_terrain);
+#ifdef zox_tests
+    zox_tst_add_level(zox_tst_level_npcs);
+#endif
 }

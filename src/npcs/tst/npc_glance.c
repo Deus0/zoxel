@@ -1,6 +1,7 @@
 // tst: npc_glance, a humanoid npc's head turns to the player walking by (ai/sys/glance.c, bones/sys/head_look.c)
 //  - spawns one 2 in front of the player facing them, across a chunk's edge (it sees into neighbour chunks), its head looks at the player and faces them
 //  - the player moves away, its head looks ahead again
+//  - on the test level (_/tst zox_tst_level_setup): tiny, flat, no streamed npcs
 //  - run: bash bsh/tst.sh npc_glance
 int zox_tst_glance_stage = 0;
 int zox_tst_glance_frames = 0;
@@ -62,7 +63,8 @@ byte zox_tst_npc_glance_ready(ecs* world) {
             const float3 to = float3_normalize(float3_sub(look_point(world, character), zox_getv(head, Position3D)));
             zox_tst_glance_facing = float_max(zox_tst_glance_facing, float3_dot(forward, to));
         }
-        if ((zox_tst_glance_seen && zox_tst_glance_frames > 120) || zox_tst_glance_frames > 600) {
+        // straight at them, or its best over two seconds (it may wander and turn its body)
+        if ((zox_tst_glance_seen && (zox_tst_glance_facing > 0.95f || zox_tst_glance_frames > 120)) || zox_tst_glance_frames > 600) {
             // the player walks away
             float3 position = zox_getv(character, Position3D);
             position.x += 24;
@@ -88,4 +90,5 @@ void zox_tst_npc_glance_check(ecs* world) {
 
 void zox_tsts_npc_glance(ecs* world) {
     zox_tst_add("npc_glance", zox_tst_npc_glance_ready, zox_tst_npc_glance_check, 120);
+    zox_tst_set_setup("npc_glance", zox_tst_level_setup, 0);
 }

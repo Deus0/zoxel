@@ -15,6 +15,7 @@
 - arms swing out of step on a character that isn't the player's: tst arms_in_step on characters/tst/character.c (a
 	skeleton character in the void, PlayerCharacter) sums its shoulders' swings to 0.2 to 0.6 (the player's pass), even
 	before the raise; something besides arm_swing moves its shoulders?
+- furniture_hits is flaky: some door top rays miss now and then, once the app closed mid test
 - furniture_place stalls (fails before the test move too): tst furniture_place
 - perf_stream and tables_stream sometimes fail: lod swaps don't settle in 20s (flaky before the test move too)
 - grass shows overlapping copies, two lods at once (maybe rare): tst grass_overlap (vodes3/tst) sees no copies at the
@@ -996,6 +997,18 @@
 	- We should wrap all other sdl functions properly for glut
 
 # Tests
+- Test realm: tests make their own data, not the game's (doc/coding_standards.md)
+	- a realm of a few hand made blocks (bricks, one plant) and one npc kind, no generation stages: the player's
+		character spawned on the test level (_/tst zox_tst_level_setup) still waits ~12s on the game's realm
+		generation (biomes, models, items, characters, quests, music; gam/zoxel/sys)
+	- terrain_collisions builds its realm by hand already; player tests need autostart's new game to take it
+	- then npc_glance and the npc tests spawn the test's own npc, not the realm's generated humanoid
+- More tests on the test level (zox_tst_level_setup: flat, one chunk far, no towns, plants, block voxes or
+	streamed npcs), or no game at all: npc_attacks, the furniture tests (a ray from a fixed point, not the
+	player's), head_camera, the quest and stats ui tests
+	- on it now: npc_glance, npc_attacks, npc_leash, head_camera, pickup_pop, the quest, stats and held item tests,
+		clothes, bone_rebuild, gizmo_owner, player_respawn
+	- not yet: furniture_hits and rotation (they want block voxes), quest_dialogue (the app closed)
 - add a test for streaming between chunks, this can be reused to test its speed for optmization too
 - Test WaveFunctionCollapse
 - Spawn NPC - Humanoid -Test
