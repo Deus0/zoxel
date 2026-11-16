@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-16
+-x Water blocks: a liquid material (chunk materials, 50299a0cf), walked through, light passes, an animated ripple
+  texture (16 frames tiling in space and time, moved in the tilemap: tilemap_animate_system), its chunk meshes
+  drawn blended after the solid ones, both faces (chunk3_transparent_render_system); faces between waters and
+  against solids hidden, a solid's face against water kept; tst water_block. Nothing places water yet
 -x Placing a block in an all air chunk gives it a mesh: not reproduced (a mesh within ~1s, 3 runs), tst place_mesh
   guards it (a block in the middle and one in the corner)
 -x minimap flashes black when updating lods

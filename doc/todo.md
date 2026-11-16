@@ -151,11 +151,10 @@
 
 # Terrain and Chunks
 - Flying's slowest frames now: new tables while streaming (16%), colored chunk meshes (9%), tst perf_fly
-- Water Blocks / Chunk Materials
-	- seperate out subchunks by material (with sides per material)
-	- keep a list of materials when blocks update - refresh this list
-	- move meshes underneath Subchunk's
-	- generate sides if block is linked to water or not
+- Water in the world (the block, its rippling texture and blended meshes are in, tst water_block)
+	- generation places it: lakes in low land, a sea level, rivers later
+	- flowing: water spreads into air beside and below it, a few blocks
+	- sorting: blended chunk meshes drawn far to near, so water seen through water looks right
 - Underwater
 	- change filter of camera - add block - sky darkened
 	- add splash when entering water
