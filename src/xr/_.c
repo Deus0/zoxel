@@ -8,7 +8,8 @@
  *
  *  - XR is on (zox_xr_active, cameras/_.c) with a headset (zox_xr) or the simulator (--xr-sim); other modules
  *    branch on it at runtime, not #ifdef zox_xr
- *  - pre, ins: the xr camera (XrCamera), spawned at boot while XR is on
+ *  - pre, ins: the xr camera (XrCamera) and controllers (XrController, a device a hand), spawned at boot while XR is on
+ *  - the ui: huds spawns its menus as 3D lists (zox_huds3D), navigated and clicked by the controllers
  *  - fun: shared by both: free roam (the sticks move and turn it, the headset turns the head on top), an eye's render
  *  - openxr (zox_xr, Android): the session, eyes, swapchains, inputs, a headset's frame (openxr/render.c)
  *  - sim: the simulator, both eyes side by side in the window, the head and sticks from the keyboard
@@ -19,11 +20,13 @@
 #ifdef zox_xr
 #include "openxr/_.c"
 #endif
+#include "com/_.c"
 #include "pre/_.c"
 #include "ins/_.c"
 #include "fun/_.c"
 #include "sim/_.c"
 #ifdef zox_xr
+#include "openxr/controller.c"
 #include "openxr/render.c"
 
 void module_dispose_xr(ecs *world, void *ctx) {
@@ -35,13 +38,17 @@ void module_dispose_xr(ecs *world, void *ctx) {
 void import_xr(ecs* world) {
     zox_module(xr);
     add_hook_terminal_command(process_arguments_xr);
+    zoxd_tag(XrController);
+    zoxd_byte(XrHand);
     add_hook_spawn_prefabs(zox_spawn_prefabs_xr);
     add_hook_on_boot(xr_spawn_camera);
+    add_hook_on_boot(xr_sim_feed_devices);
     zox_systems_xr_sim(world);
     zox_tsts_xr(world);
 #ifdef zox_xr
     zox_log("[XR] Engaged");
     zox_xr_active = 1;
+    zox_huds3D = 1;
     zox_systems_openxr(world);
     zox_module_dispose(module_dispose_xr);
 #endif

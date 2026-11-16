@@ -39,6 +39,18 @@ Then (2026-11-17, second pass):
   Android. A headset still has to show: the swapchain format, tracking, stick directions, comfort
 - the 2D ui pass is gone from the XR render (it was commented out); the menu is spawned once, by huds
 
+Then (2026-11-17, third pass):
+
+- **XR controllers** (step 3): a device a hand, derived from the device prefab, its pose in Position3D and
+  Rotation3D, its stick and buttons as zevices (no state outside the ecs). OpenXR binds A B X Y, menu, triggers,
+  grips and the aim poses (Oculus Touch); the simulator's keys fill them (W A S D the left stick, arrows the right,
+  space or enter A, backspace B, escape menu). They play as a gamepad: the right hand navigates and clicks (A or
+  its trigger). Free roam reads its sticks from them, only while playing (in menus the sticks are the menus')
+- **3D list ui** (step 4's start): spawn_list3, a canvas3 panel of 3D buttons, parented to the player's canvas
+  so huds finds and closes it as a 2D menu. zox_huds3D (on with XR) spawns the start label and main menu as 3D
+  ahead of the camera. tst xr_menu: A opens the main menu, navigation selects, the stick moves it
+- to do: rays from the hands (pointer zevices) at 3D buttons, the options and pause menus as 3D lists, tooltips
+
 ## The plan
 
 Each step works on every platform before the next, and each has tests that run on desktop.

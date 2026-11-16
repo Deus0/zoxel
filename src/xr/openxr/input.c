@@ -11,9 +11,9 @@
 // values with a deadzone applied. Game/player logic such as
 // movement, rotation, inversion, and flight is handled elsewhere.
 //
-// Current bindings:
-//   Left stick  -> Move
-//   Right stick -> Turn
+// Current bindings (Oculus Touch):
+//   Left stick  -> Move,  Right stick -> Turn
+//   A B (right), X Y menu (left), each hand's trigger and grip (values), each hand's aim pose
 //
 // Flow:
 //   xr_input_init()
@@ -29,6 +29,13 @@ static const float stick_deadzone = 0.15f;
 static XrActionSet input_action_set = XR_NULL_HANDLE;
 static XrAction move_action = XR_NULL_HANDLE;
 static XrAction turn_action = XR_NULL_HANDLE;
+static XrAction primary_action = XR_NULL_HANDLE;    // A right, X left
+static XrAction secondary_action = XR_NULL_HANDLE;  // B right, Y left
+static XrAction menu_action = XR_NULL_HANDLE;       // left
+static XrAction trigger_action = XR_NULL_HANDLE;
+static XrAction grip_action = XR_NULL_HANDLE;
+static XrAction aim_action = XR_NULL_HANDLE;
+static XrSpace aim_spaces[2] = { XR_NULL_HANDLE, XR_NULL_HANDLE };
 static XrPath left_hand_path = XR_NULL_PATH;
 static XrPath right_hand_path = XR_NULL_PATH;
 
@@ -37,6 +44,23 @@ static float xr_apply_deadzone(float value) {
         return 0;
     }
     return value;
+}
+
+static int xr_create_action(XrAction* action, const char* name, XrActionType type, const XrPath* subaction_paths) {
+    XrActionCreateInfo info = {
+        .type = XR_TYPE_ACTION_CREATE_INFO,
+        .next = NULL,
+        .actionType = type,
+        .countSubactionPaths = 2,
+        .subactionPaths = subaction_paths
+    };
+    strncpy(info.actionName, name, XR_MAX_ACTION_NAME_SIZE - 1);
+    strncpy(info.localizedActionName, name, XR_MAX_LOCALIZED_ACTION_NAME_SIZE - 1);
+    return xr_check_result(xrCreateAction(input_action_set, &info, action), name);
+}
+
+static int xr_path(const char* name, XrPath* path) {
+    return xr_check_result(xrStringToPath(xr_instance, name, path), name);
 }
 
 static int xr_input_init(void) {
@@ -143,22 +167,54 @@ static int xr_input_init(void) {
     )) {
         return 0;
     }
-    const XrActionSuggestedBinding bindings[] = {
-        {
-            .action = move_action,
-            .binding = left_thumbstick
-        },
-        {
-            .action = turn_action,
-            .binding = right_thumbstick
+    if (!xr_create_action(&primary_action, "primary", XR_ACTION_TYPE_BOOLEAN_INPUT, subaction_paths) ||
+        !xr_create_action(&secondary_action, "secondary", XR_ACTION_TYPE_BOOLEAN_INPUT, subaction_paths) ||
+        !xr_create_action(&menu_action, "menu", XR_ACTION_TYPE_BOOLEAN_INPUT, subaction_paths) ||
+        !xr_create_action(&trigger_action, "trigger", XR_ACTION_TYPE_FLOAT_INPUT, subaction_paths) ||
+        !xr_create_action(&grip_action, "grip", XR_ACTION_TYPE_FLOAT_INPUT, subaction_paths) ||
+        !xr_create_action(&aim_action, "aim", XR_ACTION_TYPE_POSE_INPUT, subaction_paths)) {
+        return 0;
+    }
+    XrPath paths[11];
+    const char* path_names[11] = {
+        "/user/hand/right/input/a/click",
+        "/user/hand/right/input/b/click",
+        "/user/hand/left/input/x/click",
+        "/user/hand/left/input/y/click",
+        "/user/hand/left/input/menu/click",
+        "/user/hand/left/input/trigger/value",
+        "/user/hand/right/input/trigger/value",
+        "/user/hand/left/input/squeeze/value",
+        "/user/hand/right/input/squeeze/value",
+        "/user/hand/left/input/aim/pose",
+        "/user/hand/right/input/aim/pose",
+    };
+    for (int i = 0; i < 11; i++) {
+        if (!xr_path(path_names[i], &paths[i])) {
+            return 0;
         }
+    }
+    const XrActionSuggestedBinding bindings[] = {
+        { .action = move_action, .binding = left_thumbstick },
+        { .action = turn_action, .binding = right_thumbstick },
+        { .action = primary_action, .binding = paths[0] },
+        { .action = secondary_action, .binding = paths[1] },
+        { .action = primary_action, .binding = paths[2] },
+        { .action = secondary_action, .binding = paths[3] },
+        { .action = menu_action, .binding = paths[4] },
+        { .action = trigger_action, .binding = paths[5] },
+        { .action = trigger_action, .binding = paths[6] },
+        { .action = grip_action, .binding = paths[7] },
+        { .action = grip_action, .binding = paths[8] },
+        { .action = aim_action, .binding = paths[9] },
+        { .action = aim_action, .binding = paths[10] },
     };
     result = xrSuggestInteractionProfileBindings(xr_instance,
         &(XrInteractionProfileSuggestedBinding){
             .type = XR_TYPE_INTERACTION_PROFILE_SUGGESTED_BINDING,
             .next = NULL,
             .interactionProfile = touch_profile,
-            .countSuggestedBindings = 2,
+            .countSuggestedBindings = sizeof(bindings) / sizeof(bindings[0]),
             .suggestedBindings = bindings
         }
     );
@@ -166,6 +222,20 @@ static int xr_input_init(void) {
         "xrSuggestInteractionProfileBindings"
     )) {
         return 0;
+    }
+    const XrPath hands[2] = { left_hand_path, right_hand_path };
+    for (int i = 0; i < 2; i++) {
+        result = xrCreateActionSpace(xr_session,
+            &(XrActionSpaceCreateInfo){
+                .type = XR_TYPE_ACTION_SPACE_CREATE_INFO,
+                .action = aim_action,
+                .subactionPath = hands[i],
+                .poseInActionSpace = { .orientation = { 0, 0, 0, 1 } }
+            },
+            &aim_spaces[i]);
+        if (!xr_check_result(result, "xrCreateActionSpace(aim)")) {
+            return 0;
+        }
     }
     // after session i guess
     // For XR Inputs
@@ -247,4 +317,42 @@ static float2 xr_get_right_stick(void) {
         stick.y = xr_apply_deadzone(state.currentState.y);
     }
     return stick;
+}
+
+// a hand's boolean action (hand: 0 left, 1 right)
+static int xr_get_bool(XrAction action, int hand) {
+    XrActionStateBoolean state = { .type = XR_TYPE_ACTION_STATE_BOOLEAN };
+    XrResult result = xrGetActionStateBoolean(xr_session,
+        &(XrActionStateGetInfo){
+            .type = XR_TYPE_ACTION_STATE_GET_INFO,
+            .action = action,
+            .subactionPath = hand ? right_hand_path : left_hand_path
+        },
+        &state);
+    return XR_SUCCEEDED(result) && state.isActive && state.currentState;
+}
+
+static float xr_get_float(XrAction action, int hand) {
+    XrActionStateFloat state = { .type = XR_TYPE_ACTION_STATE_FLOAT };
+    XrResult result = xrGetActionStateFloat(xr_session,
+        &(XrActionStateGetInfo){
+            .type = XR_TYPE_ACTION_STATE_GET_INFO,
+            .action = action,
+            .subactionPath = hand ? right_hand_path : left_hand_path
+        },
+        &state);
+    return XR_SUCCEEDED(result) && state.isActive ? state.currentState : 0;
+}
+
+// a hand's aim pose in the tracking space at a time, returns whether it's tracked
+static int xr_get_aim(int hand, XrTime time, XrPosef* pose) {
+    XrSpaceLocation location = { .type = XR_TYPE_SPACE_LOCATION };
+    XrResult result = xrLocateSpace(aim_spaces[hand], space, time, &location);
+    if (!XR_SUCCEEDED(result) ||
+        !(location.locationFlags & XR_SPACE_LOCATION_POSITION_VALID_BIT) ||
+        !(location.locationFlags & XR_SPACE_LOCATION_ORIENTATION_VALID_BIT)) {
+        return 0;
+    }
+    *pose = location.pose;
+    return 1;
 }

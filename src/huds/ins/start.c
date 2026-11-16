@@ -22,19 +22,9 @@ entity spawn_menu_start(
     color font_outline = button_font_outline;
     entity e;
     if (zox_huds3D) {
-        entity camera = zox_get_link(world, player, CameraLink);
-        if (!zox_valid(camera) ||
-            !zox_has(camera, Position3D) ||
-            !zox_has(camera, Rotation3D)
-        ) {
-            zox_loge("Camera Invalid in [spawn_menu_start]");
-            return 0;
-        }
-        float3 position = zox_getv(camera, Position3D);
-        float4 rotation = zox_getv(camera, Rotation3D);
-        float canvas_scale = 0.06f;
-        float distance = 1; // 0.5f;
-        float3 spawn_position = move_along_direction(position, rotation, -distance);
+        float3 spawn_position;
+        float4 rotation;
+        huds3_pose(world, player, huds3_distance, &spawn_position, &rotation);
         e = spawn_label3(
             world,
             text,
@@ -48,7 +38,7 @@ entity spawn_menu_start(
             0).x;
         zox_setv(e, Position3D, spawn_position);
         zox_setv(e, Rotation3D, rotation);
-        zox_setv(e, Scale1, canvas_scale);
+        zox_setv(e, Scale1, huds3_label_height);
     } else {
        e = spawn_label(
            world,

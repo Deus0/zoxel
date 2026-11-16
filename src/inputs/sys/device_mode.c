@@ -30,7 +30,7 @@ void device_switch_system(iter* it) {
         while (zox_children_next(it2) && !using_current) {
             for (int j = 0; j < it2.count && !using_current; j++) {
                 entity e2 = it2.entities[j];
-                if (!zox_has(e2, Device)) {
+                if (!zox_has(e2, Device) || zox_has(e2, DeviceFeeder)) {
                     continue;
                 }
                 if (mode->value == zox_device_mode_keyboardmouse) {
@@ -81,6 +81,9 @@ void device_switch_system(iter* it) {
                 if (dbg_log >= 2) {
                     zox_log("   Device %i: %s", j, zox_get_name(e2));
                 }
+                if (zox_has(e2, DeviceFeeder)) {
+                    continue;
+                }
                 if (mode->value != zox_device_mode_keyboardmouse) {
                     if (zox_has(e2, Keyboard)) {
                         const Keyboard* keyboard = zox_get(e2, Keyboard);
@@ -115,6 +118,9 @@ void device_switch_system(iter* it) {
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
                 entity e2 = it2.entities[j];
+                if (zox_has(e2, DeviceFeeder)) {
+                    continue;
+                }
                 if (new_mode == zox_device_mode_keyboardmouse) {
                     byte enabled =
                         zox_has(e2, Keyboard) ||

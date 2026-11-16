@@ -28,6 +28,7 @@ void xr_spawn_camera(ecs* world, entity app) {
         screen_to_canvas);
     zox_link(world, player, CameraLink, xr_camera);
     main_cameras[0] = xr_camera;
+    xr_spawn_controllers(world, player);
     zox_add(xr_camera, SoundListener);
     zox_log("[XR] Spawned camera at [%fx%fx%f]",
         camera_position.x,

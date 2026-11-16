@@ -3,13 +3,21 @@
 //  - the same per eye render (fun/eye_render.c) and free roam (fun/roam.c) as a headset, so what's right here
 //      is right there, bar OpenXR itself (doc/plans/xr.md)
 //  - the head: Q E turn it, R F tilt it; the sticks: W A S D the left (moves), arrows the right (turns)
+//  - the buttons: space or enter A, backspace B, escape menu; the hands held ahead of the head, either side
+//  - the keyboard and mouse feed the controllers (DeviceFeeder), they're not a device mode of their own
 //  - eyes 64mm apart, each with a headset-like fov, a little wider on its outer side
 byte zox_xr_sim = 0;
 #define xr_sim_eye_distance 0.064f
 #define xr_sim_fov_up 0.8f              // radians, up and down
 #define xr_sim_head_speed 1.5f          // radians a second
+#define xr_sim_hand_side 0.2f           // metres, the hands from the head
+#define xr_sim_hand_drop 0.3f
+#define xr_sim_hand_ahead 0.4f
 
 static float3 xr_sim_head_euler = { 0, 0, 0 };
+// scripted presses (tests), held on top of the keys: the right hand's A and stick
+byte xr_sim_script_a = 0;
+float2 xr_sim_script_stick = { 0, 0 };
 
 void process_arguments_xr(ecs* world, char* args[], int count) {
     (void) world;
@@ -17,6 +25,7 @@ void process_arguments_xr(ecs* world, char* args[], int count) {
         if (!strcmp(args[i], "--xr-sim")) {
             zox_xr_sim = 1;
             zox_xr_active = 1;
+            zox_huds3D = 1;
             zox_log("[XR] simulator on");
         }
     }
@@ -40,6 +49,74 @@ static inline float xr_sim_axis(const PhysicalButton* negative, const PhysicalBu
     return (float) positive->is_pressed - (float) negative->is_pressed;
 }
 
+// whether the simulator holds a hand's button, from its key
+static byte xr_sim_button(const Keyboard* keyboard, byte type) {
+    switch (type) {
+        case zox_btn_a: return xr_sim_script_a || keyboard->space.is_pressed || keyboard->enter.is_pressed;
+        case zox_btn_b: return keyboard->backspace.is_pressed;
+        case zox_btn_start: return keyboard->escape.is_pressed;
+        default: return 0;
+    }
+}
+
+// the keyboard into each XR controller's zevices and pose, as a headset's would be; the head turned
+void xr_sim_controllers_system(iter* it) {
+    zox_sys_on_begin();
+    zox_sys_world();
+    if (!zox_xr_sim || !zox_valid(local_keyboard)) {
+        return;
+    }
+    const Keyboard* keyboard = zox_get(local_keyboard, Keyboard);
+    const float delta = (float) zox_delta_time;
+    xr_sim_head_euler.y += xr_sim_axis(&keyboard->e, &keyboard->q) * xr_sim_head_speed * delta;
+    xr_sim_head_euler.x += xr_sim_axis(&keyboard->f, &keyboard->r) * xr_sim_head_speed * delta;
+    const float4 head_rotation = quaternion_from_euler(xr_sim_head_euler);
+    zox_sys_begin();
+    zox_sys_in(XrHand);
+    zox_sys_out(DeviceHasInput);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(XrHand, hand);
+        zox_sys_o(DeviceHasInput, has_input);
+        const byte left = hand->value == xr_hand_left;
+        const float2 stick = left ?
+            (float2) { xr_sim_axis(&keyboard->a, &keyboard->d), xr_sim_axis(&keyboard->s, &keyboard->w) } :
+            float2_add(xr_sim_script_stick, (float2) { xr_sim_axis(&keyboard->left, &keyboard->right), xr_sim_axis(&keyboard->down, &keyboard->up) });
+        byte any = stick.x != 0 || stick.y != 0;
+        iter it2 = zox_children(world, e);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                const entity e2 = it2.entities[j];
+                if (zox_has(e2, ZeviceStick)) {
+                    xr_controller_stick_set(world, e2, stick);
+                } else if (zox_has(e2, ZeviceButton)) {
+                    const byte held = xr_sim_button(keyboard, zox_getv(e2, DeviceButtonType));
+                    xr_controller_button(world, e2, held);
+                    any |= held;
+                }
+            }
+        }
+        has_input->value = any;
+        const float3 offset = { left ? -xr_sim_hand_side : xr_sim_hand_side, -xr_sim_hand_drop, -xr_sim_hand_ahead };
+        xr_controller_pose(world, e, float4_rotate_float3(head_rotation, offset), head_rotation);
+    }
+    zox_sys_on_end();
+} zoxd_system(xr_sim_controllers_system);
+
+// the keyboard and mouse feed the controllers, they never switch the device mode themselves
+void xr_sim_feed_devices(ecs* world, entity app) {
+    (void) app;
+    if (!zox_xr_sim) {
+        return;
+    }
+    if (zox_valid(local_keyboard)) {
+        zox_add(local_keyboard, DeviceFeeder);
+    }
+    if (zox_valid(local_mouse)) {
+        zox_add(local_mouse, DeviceFeeder);
+    }
+}
+
 void xr_sim_render_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
@@ -47,15 +124,9 @@ void xr_sim_render_system(iter* it) {
         return;
     }
     const float delta = (float) zox_delta_time;
-    float2 move = float2_zero;
-    float2 turn = float2_zero;
-    if (zox_valid(local_keyboard)) {
-        const Keyboard* keyboard = zox_get(local_keyboard, Keyboard);
-        move = (float2) { xr_sim_axis(&keyboard->a, &keyboard->d), xr_sim_axis(&keyboard->s, &keyboard->w) };
-        turn = (float2) { xr_sim_axis(&keyboard->left, &keyboard->right), xr_sim_axis(&keyboard->down, &keyboard->up) };
-        xr_sim_head_euler.y += xr_sim_axis(&keyboard->e, &keyboard->q) * xr_sim_head_speed * delta;
-        xr_sim_head_euler.x += xr_sim_axis(&keyboard->f, &keyboard->r) * xr_sim_head_speed * delta;
-    }
+    const byte roaming = xr_roam_input_enabled(world);
+    const float2 move = roaming ? xr_controller_stick(world, xr_hand_left) : float2_zero;
+    const float2 turn = roaming ? xr_controller_stick(world, xr_hand_right) : float2_zero;
     const float4 head_rotation = quaternion_from_euler(xr_sim_head_euler);
     xr_roam_update(world, xr_camera, move, turn, head_rotation, delta);
     const float4x4 body = xr_roam_body_matrix();
@@ -68,5 +139,12 @@ void xr_sim_render_system(iter* it) {
 } zoxd_system(xr_sim_render_system);
 
 void zox_systems_xr_sim(ecs* world) {
+    zox_system_1(
+        xr_sim_controllers_system,
+        zoxp_inputs_extract,
+        [in] xr.XrHand,
+        [out] inputs.DeviceHasInput,
+        [none] xr.XrController
+    );
     zox_system_1(xr_sim_render_system, zoxp_render, 0);
 }

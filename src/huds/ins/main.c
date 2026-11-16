@@ -74,56 +74,82 @@ entity spawn_main_menu(
     }
     ClickEvent close_event = { NULL };
     entity spawned[elements_count];
-    entity3 e3 = spawn_window_list(
-        world,
-        prefab_window,
-        player,
-        header_text,
-        header_font_size,
-        list_font_size,
-        close_event,
-        0,
-        0,
-        0,
-        window_alignment,
-        window_anchor,
-        padding,
-        spawned,
-        elements,
-        elements_count,
-        elements_count);
-    entity e = e3.x;
+    entity e;
+    entity header = 0;
+    if (zox_huds3D) {
+        float3 position;
+        float4 rotation;
+        huds3_pose(world, player, huds3_distance, &position, &rotation);
+        entity canvas = zox_get_link(world, player, CanvasLink);
+        e = spawn_list3(
+            world,
+            canvas,
+            position,
+            rotation,
+            huds3_menu_height,
+            header_text,
+            header_font_size,
+            list_font_size,
+            elements,
+            elements_count,
+            spawned);
+    } else {
+        entity3 e3 = spawn_window_list(
+            world,
+            prefab_window,
+            player,
+            header_text,
+            header_font_size,
+            list_font_size,
+            close_event,
+            0,
+            0,
+            0,
+            window_alignment,
+            window_anchor,
+            padding,
+            spawned,
+            elements,
+            elements_count,
+            elements_count);
+        e = e3.x;
+        header = e3.z;
+    }
     zox_set_unique_name(e, "main_menu");
     zox_add(e, MenuMain);
     zox_add(e, NavigationWindow);
-    entity header = e3.z;
-    zox_add_tooltip_text(world, header, "v0.0.1");
-    // zox_set(e3.z, TooltipEvent, { &tooltip_event_zoxel_header });
-    // NOTE: For some reason it was throwing errors if i didnt check the outputs here? for entities....
-    int j = 0;
-    if (can_load) {
-        entity load_button = spawned[j++];
-        zox_add_tooltip_text(
-            world,
-            load_button,
-            "Load Game");
+    if (header) {
+        zox_add_tooltip_text(world, header, "v0.0.1");
     }
-    entity b2 = spawned[j++];
-    zox_add_tooltip_text(
-        world,
-        b2,
-        "New Game");
-    entity b3 = spawned[j++];
-    zox_add_tooltip_text(
-        world,
-        b3,
-        "Options");
-    if (can_exit) {
-        entity exit_button = spawned[j++];
+    // zox_set(e3.z, TooltipEvent, { &tooltip_event_zoxel_header });
+    // tooltips are 2D, a 3D list has none yet
+    if (!zox_huds3D) {
+        // NOTE: For some reason it was throwing errors if i didnt check the outputs here? for entities....
+        int j = 0;
+        if (can_load) {
+            entity load_button = spawned[j++];
+            zox_add_tooltip_text(
+                world,
+                load_button,
+                "Load Game");
+        }
+        entity b2 = spawned[j++];
         zox_add_tooltip_text(
             world,
-            exit_button,
-            "Exit Game");
+            b2,
+            "New Game");
+        entity b3 = spawned[j++];
+        zox_add_tooltip_text(
+            world,
+            b3,
+            "Options");
+        if (can_exit) {
+            entity exit_button = spawned[j++];
+            zox_add_tooltip_text(
+                world,
+                exit_button,
+                "Exit Game");
+        }
     }
     for (int i = 0; i < elements_count; i++) {
         zox_set_unique_name(spawned[i], "main_menu_button");

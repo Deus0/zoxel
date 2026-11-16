@@ -1,3 +1,4 @@
+#include "huds3.c"
 #include "menu_main.c"
 #include "menu_options.c"
 #include "menu_paused.c"

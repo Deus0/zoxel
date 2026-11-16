@@ -1,5 +1,13 @@
 # Done
 
+## 2026-11-17
+-x XR controllers as input devices (doc/plans/xr.md step 3): a device a hand (prefab_device, XrController,
+  XrHand), its pose in Position3D and Rotation3D, its stick and buttons as zevices, written by OpenXR (A B X Y menu,
+  triggers, grips, aim poses) or the simulator's keys; they play as a gamepad, the right hand navigates and clicks
+  (A or its trigger); the simulator's keyboard and mouse feed them (DeviceFeeder), not a device mode of their own
+-x 3D list ui (spawn_list3, button3): a header and buttons on a canvas3 panel, navigated and clicked as a 2D list;
+  with XR on (zox_huds3D) the start label and the main menu are 3D, ahead of the camera, A on the start opens it;
+  the XR camera is a Camera3 (billboards face it); tst xr_menu; tst xr_sim_eyes checks upright by colour, not green
 ## 2026-11-16
 -x Water off the tilemap: its own texture and gpu texture, liquid meshes bind it, it animates alone (the whole
   tilemap was uploaded 8 times a second); the quarter size water (Block Res 5) reproduced and checked, tst water_tile

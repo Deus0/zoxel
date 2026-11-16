@@ -1,5 +1,6 @@
 #include "element3.c"
 #include "frame.c"
+#include "button3.c"
 #include "glyph.c"
 #include "label3D.c"
 #include "popup3D.c"
@@ -8,7 +9,8 @@
 #include "canvas3.c"
 #include "canvas3_textured.c"
 entity prefab_element3;
-entity prefab_frame3;;
+entity prefab_frame3;
+entity prefab_button3;
 entity prefab_text3;
 entity prefab_zigel3;
 entity prefab_label3D;
@@ -21,6 +23,7 @@ void spawn_prefabs_elements3D(ecs *world) {
     prefab_element3 = spawn_prefab_element3(world, prefab_layout3_child);
     // Elements
     prefab_frame3 = spawn_prefab_frame3(world, prefab_element3);
+    prefab_button3 = spawn_prefab_button3(world, prefab_frame3);
     prefab_zigel3 = spawn_prefab_glyph(world, prefab_element3);
     prefab_text3 = spawn_prefab_text(
         world,

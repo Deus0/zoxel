@@ -7,6 +7,9 @@ zox_tag(Finger);
 zox_tag(ZeviceBumper);
 zox_tag(MousePointer);
 zox_tag(DeviceNavigator);
+// fills another device (the XR simulator's keyboard and mouse fill its controller): never a device mode of its
+//  own, never disabled by one
+zox_tag(DeviceFeeder);
 // zoxc_byte(DeviceDisabled);
 // zoxc_byte(ZeviceDisabled);
 zoxc_byte(ZeviceButton);
@@ -40,6 +43,7 @@ void zox_components_inputs(ecs *world) {
     zoxd_tag(ZeviceBumper);
     zoxd_tag(MousePointer);
     zoxd_tag(DeviceNavigator);
+    zoxd_tag(DeviceFeeder);
     zoxd(Keyboard);
     // zoxd_byte(DeviceDisabled);
     // zoxd_byte(ZeviceDisabled);

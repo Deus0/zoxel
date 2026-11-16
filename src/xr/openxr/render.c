@@ -1,6 +1,6 @@
 // A headset's frame: OpenXR's events and frame, free roam from its sticks and head, each eye into its swapchain
 //  - runs in zoxp_render, after the transforms; no need to time it, it runs the render systems inside it
-//  - TODO (doc/plans/xr.md step 4): the ui as 3D panels, not the 2D pass
+//  - the ui is 3D panels (huds while zox_huds3D), drawn with the other 3D render systems
 void xr_camera_render_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
@@ -14,12 +14,10 @@ void xr_camera_render_system(iter* it) {
     }
     xr_get_eyes();
     xr_update_time();
-    float2 move = float2_zero;
-    float2 turn = float2_zero;
-    if (xr_update_input()) {
-        move = xr_get_left_stick();
-        turn = xr_get_right_stick();
-    }
+    // the sticks drive the menus while one's open (fun/controller.c), the actions synced as the inputs were read
+    const byte roaming = xr_roam_input_enabled(world);
+    const float2 move = roaming ? xr_controller_stick(world, xr_hand_left) : float2_zero;
+    const float2 turn = roaming ? xr_controller_stick(world, xr_hand_right) : float2_zero;
     xr_roam_update(world, xr_camera, move, turn, xr_head_rotation, delta_time);
     const float4x4 body = xr_roam_body_matrix();
     for (int i = 0; i < 2; i++) {
@@ -36,5 +34,12 @@ void xr_camera_render_system(iter* it) {
 } zoxd_system(xr_camera_render_system);
 
 void zox_systems_openxr(ecs* world) {
+    zox_system_1(
+        xr_openxr_controllers_system,
+        zoxp_inputs_extract,
+        [in] xr.XrHand,
+        [out] inputs.DeviceHasInput,
+        [none] xr.XrController
+    );
     zox_system_1(xr_camera_render_system, zoxp_render, 0);
 }
