@@ -31,13 +31,13 @@ byte zox_tst_sky_clouds_ready(ecs* world) {
         if (!zox_tst_player_spawn_ready(world)) {
             return 0;
         }
-        const entity character = zox_get_link(world, dbg_player, CharacterLink);
+        const entity character = zox_tst_player_character(world);
         zox_tst_clouds_ground = zox_getv(character, Position3D).y;
         zox_tst_clouds_stage = 1;
         zox_tst_clouds_time = zox_current_time;
     }
     zox_tst_waiting = "clouds, then the sky screenshot";
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity character = zox_tst_player_character(world);
     float3 position = zox_getv(character, Position3D);
     position.y = zox_tst_clouds_ground + 40;
     zox_setv(character, Position3D, position);
@@ -105,7 +105,7 @@ float zox_tst_clouds_share(const char* path) {
 }
 
 void zox_tst_sky_clouds_check(ecs* world) {
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity character = zox_tst_player_character(world);
     const entity realm = zox_get_link(world, character, RealmLink);
     zox_tst_check(zox_has(realm, CloudCentre), "the realm has no clouds (no CloudCentre)");
     const int count = zox_tst_realm_clouds(world, realm, NULL);
@@ -122,4 +122,8 @@ void zox_tst_sky_clouds_check(ecs* world) {
     zox_tst_check(share >= 0, "no screenshot saved");
     zox_tst_check(share > 0.2f, "no cloud in the sky looking up, [%.2f%%] of the band", share);
     zox_log("[tst] [metric] sky_clouds [%.1f%%] of the sky band is cloud, [%i] clouds, drifted [%.1f]", share, count, moved);
+}
+
+void zox_tsts_clouds(ecs* world) {
+    zox_tst_add("sky_clouds", zox_tst_sky_clouds_ready, zox_tst_sky_clouds_check, 120);
 }

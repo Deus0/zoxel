@@ -85,3 +85,7 @@ void zox_tst_npc_glance_check(ecs* world) {
     zox_tst_check(zox_tst_glance_facing > 0.8f, "the npc's head faced the player [%.2f], not at them", zox_tst_glance_facing);
     zox_tst_check(!zox_tst_glance_after, "the npc's head still looks at the player after they left");
 }
+
+void zox_tsts_npc_glance(ecs* world) {
+    zox_tst_add("npc_glance", zox_tst_npc_glance_ready, zox_tst_npc_glance_check, 120);
+}

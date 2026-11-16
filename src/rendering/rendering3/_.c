@@ -1,6 +1,6 @@
 byte transparent_meshes = 0;
 byte zox_grass_animation = 1;           // setting: "Grass Animation"
-float zox_grass_sway_strength = 0.04f;  // world units the grass tips move
+float zox_grass_sway_strength = 0.07f;  // world units the grass tips move
 // draw counters, only ever increase, read by tests (rendering3/tst)
 uint zox_drawn_skeleton_meshes = 0;
 uint zox_drawn_vox_instances = 0;

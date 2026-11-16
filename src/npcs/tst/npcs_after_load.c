@@ -48,7 +48,7 @@ byte zox_tst_npcs_after_load_ready(ecs* world) {
     }
     zox_tst_waiting = "npcs after loading";
     zox_tst_progress((int) (zox_current_time - zox_tst_nal_spawned));
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity character = zox_tst_player_character(world);
     const entity terrain = zox_get_link(world, character, TerrainLink);
     const float scale = zox_getv(terrain, BlockScale);
     if (zox_tst_nal_spot < 0) {
@@ -139,4 +139,9 @@ void zox_tst_npcs_after_load_check(ecs* world) {
     }
     // (14 at the wild spot on the play test save, 1 before: one wandered from a town)
     zox_tst_check(wild_npcs >= 4 * wild_spots, "[%i] npcs at [%i] spots out in the wild, under 4 a spot", wild_npcs, wild_spots);
+}
+
+void zox_tsts_npcs_after_load(ecs* world) {
+    zox_tst_add("npcs_after_load", zox_tst_npcs_after_load_ready, zox_tst_npcs_after_load_check, 240);
+    zox_tst_set_setup("npcs_after_load", zox_tst_load_games_setup, 1);
 }

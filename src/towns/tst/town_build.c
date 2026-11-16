@@ -67,3 +67,7 @@ void zox_tst_town_build_check(ecs* world) {
 
     zox_log("[tst] [metric] town_build checked turns, spans, home ground, roads");
 }
+
+void zox_tsts_town_build(ecs* world) {
+    zox_tst_add("town_build", zox_tst_town_build_ready, zox_tst_town_build_check, 30);
+}

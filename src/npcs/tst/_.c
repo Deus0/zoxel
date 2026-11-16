@@ -4,6 +4,22 @@
 //  - spawn weights: towns mostly villagers and few monsters, the wild as each type's SpawnChance, animals the same
 //  - spawn counts: the wild rolls some npcs a chunk (rounded by chance, it rounded down to 0), towns all, unknown all
 //  - run: bash bsh/tst.sh population
+#include "npc_skeletons.c"
+
+#include "npc_attacks.c"
+
+#include "npc_glance.c"
+
+#include "npc_quests.c"
+
+#include "npcs_after_load.c"
+
+#include "npc_stats.c"
+
+#include "humanoid_leak.c"
+
+#include "hit_sound_links.c"
+
 byte zox_tst_population_ready(ecs* world) {
     (void) world;
     return 1;
@@ -64,6 +80,14 @@ void zox_tst_population_check(ecs* world) {
     zox_tst_check(npc_spawn_count(4, -1, 3) == 4, "an unknown population doesn't roll its whole rate");
 }
 
-void zox_tsts_npcs() {
+void zox_tsts_npcs(ecs* world) {
     zox_tst_add("population", zox_tst_population_ready, zox_tst_population_check, 30);
+    zox_tsts_npc_attacks(world);
+    zox_tsts_npc_glance(world);
+    zox_tsts_npc_quests(world);
+    zox_tsts_npcs_after_load(world);
+    zox_tsts_npc_skeletons(world);
+    zox_tsts_npc_stats(world);
+    zox_tsts_humanoid_leak(world);
+    zox_tsts_hit_sound_links(world);
 }

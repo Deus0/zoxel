@@ -76,3 +76,8 @@ void zox_tst_humanoid_leak_check(ecs* world) {
     // ~100kb each is left: flecs keeps a table for each humanoid's unique children (bones), the leak was ~700kb each
     zox_tst_check(grew < 3, "the heap grew [%.2fmb] a round of [%i] humanoids spawned and deleted", grew, zox_tst_hleak_count);
 }
+
+void zox_tsts_humanoid_leak(ecs* world) {
+    zox_tst_add("humanoid_leak", zox_tst_humanoid_leak_ready, zox_tst_humanoid_leak_check, 120);
+    zox_tst_add("monster_leak", zox_tst_monster_leak_ready, zox_tst_humanoid_leak_check, 120);
+}

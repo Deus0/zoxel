@@ -3,7 +3,6 @@
 //  - it goes into battle, attacks (Behaviour), triggers its skill, and the player's health drops
 //  - logs where the chain stops: battle, behaviour, skill, its ray's hit, the player's health
 //  - run: bash bsh/tst.sh npc_attacks
-byte zox_tst_player_spawn_ready(ecs* world);   // in _.c, after this is included
 byte zox_tst_attacks_stage = 0;
 int zox_tst_attacks_frames = 0;
 double zox_tst_attacks_time = 0;
@@ -69,7 +68,7 @@ byte zox_tst_npc_attacks_ready(ecs* world) {
 }
 
 void zox_tst_npc_attacks_check(ecs* world) {
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity character = zox_tst_player_character(world);
     const float health = zox_tst_attacks_player_health(world, character);
     zox_log("[tst] player health [%.1f] from [%.1f] after [%.1fs]", health, zox_tst_attacks_health,
         zox_current_time - zox_tst_attacks_time);
@@ -85,7 +84,7 @@ byte zox_tst_region_population_ready(ecs* world) {
 }
 
 void zox_tst_region_population_check(ecs* world) {
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity character = zox_tst_player_character(world);
     const entity terrain = zox_get_link(world, character, TerrainLink);
     const int chunk_length = octree_size(zox_getv(terrain, NodeDepth));
     // the region under the player's tunk
@@ -131,7 +130,7 @@ byte zox_tst_npc_leash_ready(ecs* world) {
     if (!zox_tst_player_spawn_ready(world)) {
         return 0;
     }
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity character = zox_tst_player_character(world);
     if (!zox_tst_leash_npc) {
         const entity realm = zox_get_link(world, character, RealmLink);
         const entity humanoid = zox_tst_realm_humanoid(world, realm);
@@ -183,4 +182,10 @@ void zox_tst_npc_leash_check(ecs* world) {
     zox_tst_check(now < zox_tst_leash_start - 1.5f, "the npc didn't head home, [%.1f] to [%.1f] away", zox_tst_leash_start, now);
     const float3 v = zox_getv(npc, Velocity3D);
     zox_tst_check(v.x > 0, "the npc isn't walking towards its home (+x), velocity x [%.2f]", v.x);
+}
+
+void zox_tsts_npc_attacks(ecs* world) {
+    zox_tst_add("npc_attacks", zox_tst_npc_attacks_ready, zox_tst_npc_attacks_check, 120);
+    zox_tst_add("region_population", zox_tst_region_population_ready, zox_tst_region_population_check, 120);
+    zox_tst_add("npc_leash", zox_tst_npc_leash_ready, zox_tst_npc_leash_check, 120);
 }

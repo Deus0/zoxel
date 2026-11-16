@@ -21,7 +21,7 @@ bash bsh/tst.sh <name> --nobuild         # rerun without building
   `zox_tst_settings=$HOME/.config/zoxel/settings.cfg bash bsh/tst.sh clothes` (a finer Block Res doubles every model).
   Load tests also take `zox_tst_save=<realm folder>`, a copy of a real save.
 - `make run` is the release build, tests the dev one: a release-only bug needs the release binary (`make prerelease`).
-- The harness is [src/core/tst/_.c](../src/core/tst/_.c), the runner [bsh/tst.sh](../bsh/tst.sh).
+- The harness is [src/_/tst/_.c](../src/_/tst/_.c), the runner [bsh/tst.sh](../bsh/tst.sh).
 
 ## Writing one
 

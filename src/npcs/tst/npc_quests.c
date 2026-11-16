@@ -61,3 +61,7 @@ void zox_tst_npc_quests_check(ecs* world) {
     zox_tst_check(kinds > 1, "every quest giver gives the same quest");
     zox_tst_check(!mismatched, "[%i] quest givers don't have the quest their dialogue gives", mismatched);
 }
+
+void zox_tsts_npc_quests(ecs* world) {
+    zox_tst_add("npc_quests", zox_tst_npc_quests_ready, zox_tst_npc_quests_check, 120);
+}

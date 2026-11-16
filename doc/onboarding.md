@@ -201,7 +201,7 @@ bash bsh/tst.sh <name> --gdb    # backtrace on a crash
 - Tests run the real game with `--tst <name>`, hidden, with software rendering, capped memory and a timeout.
   A bad run can't freeze the machine. `--gpu` / `--visible` use the real GPU.
 - Tests are written in a module's `tst/` folder and registered with `zox_tst_add(name, ready, check, timeout)`.
-  The harness is [src/core/tst/_.c](../src/core/tst/_.c).
+  The harness is [src/_/tst/_.c](../src/_/tst/_.c).
 - When you fix a bug, add a test that would have caught it.
 - Writing tests, patterns and every test by area: [tests.md](tests.md).
 - To reproduce a bad save: `zox_tst_save=<realm save folder> bash bsh/tst.sh continue_game`.

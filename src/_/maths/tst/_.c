@@ -2,7 +2,7 @@
 //  - known answers (right handed axes, 90 degree turns) and identities over many seeded random
 //      inputs (composition, inverse, lengths kept), so a regression shows as a mismatch
 //  - one check per property (not per sample), with the worst sample logged
-//  - included from src/core/tst/_.c, as "_" is below the tst harness, ready on the first frame
+//  - included from src/_/tst/_.c, as "_" is below the tst harness, ready on the first frame
 //  - run: bash bsh/tst.sh maths_quaternions (or maths_vectors)
 
 #define zox_tst_maths_samples 1000
@@ -245,7 +245,12 @@ void zox_tst_maths_quaternions_check(ecs* world) {
     zox_tst_maths_expect(rotate_p, 0, "quaternion_rotate_quaternion_p matches quaternion_rotate");
 }
 
+#include "matrices.c"
+#include "bounds.c"
+
 void zox_tsts_maths() {
     zox_tst_add("maths_vectors", zox_tst_maths_ready, zox_tst_maths_vectors_check, 30);
     zox_tst_add("maths_quaternions", zox_tst_maths_ready, zox_tst_maths_quaternions_check, 30);
+    zox_tst_add("maths_matrices", zox_tst_maths_ready, zox_tst_maths_matrices_check, 30);
+    zox_tst_add("maths_bounds", zox_tst_maths_ready, zox_tst_maths_bounds_check, 30);
 }

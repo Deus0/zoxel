@@ -8,7 +8,7 @@ entity zox_tst_world_realm = 0;
 entity zox_tst_world_terrain = 0;
 
 // the terrain once its realm has generated, 0 until then
-static inline entity zox_tst_world_ready(ecs* world) {
+entity zox_tst_world_ready(ecs* world) {
     zox_tst_world_frames++;
     if (zox_valid(zox_tst_world_terrain)) {
         return zox_tst_world_terrain;

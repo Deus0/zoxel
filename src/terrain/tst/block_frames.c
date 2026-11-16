@@ -4,16 +4,17 @@
 //      (the loop's join)
 //  - checks: each frame differs from the next, the last leads into the first like any two frames do, and a tile's
 //      right edge leads into its left (and bottom into top) like any two columns do: it loops and tiles
+//  - no player: a realm of its own (world_only.c)
 //  - run: bash bsh/tst.sh block_frames
 #define zox_tst_bframes_scale 4
 
 byte zox_tst_block_frames_ready(ecs* world) {
-    if (!zox_tst_player_spawn_ready(world)) {
+    // a realm of its own (world_only.c), no player
+    if (!zox_tst_world_ready(world)) {
         return 0;
     }
     zox_tst_waiting = "the animated blocks' textures to generate";
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
-    const BlockLinks* blocks = zox_get(zox_get_link(world, character, RealmLink), BlockLinks);
+    const BlockLinks* blocks = zox_get(zox_tst_world_realm, BlockLinks);
     for (int i = 0; i < blocks->length; i++) {
         const entity texture = zox_get_child_by_id(world, blocks->value[i], zox_id(TextureFrames));
         if (zox_valid(texture) && zox_getv(texture, GenerateTexture)) {
@@ -48,8 +49,7 @@ static inline void zox_tst_bframes_blit(byte* image, int2 image_size, int2 at, c
 }
 
 void zox_tst_block_frames_check(ecs* world) {
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
-    const BlockLinks* blocks = zox_get(zox_get_link(world, character, RealmLink), BlockLinks);
+    const BlockLinks* blocks = zox_get(zox_tst_world_realm, BlockLinks);
     int animated = 0;
     mkdir(zox_tst_path("blocks"), 0755);
     for (int i = 0; i < blocks->length; i++) {

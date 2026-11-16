@@ -31,10 +31,11 @@ const SoundEffect hit_sound_road = { "road", instrument_thud, 30, 34, 0.17f, 0.2
 const SoundEffect hit_sound_sand = { "sand", instrument_crunch, 44, 48, 0.14f, 0.17f, 3.0f, 3.2f };     // a grainy crunch
 const SoundEffect hit_sound_wood = { "wood", instrument_tock, 43, 47, 0.14f, 0.16f, 2.8f, 3.0f };       // a hollow tock
 const SoundEffect hit_sound_leaves = { "leaves", instrument_rustle, 48, 52, 0.2f, 0.24f, 1.4f, 1.6f };  // a rustle, plants too
+const SoundEffect hit_sound_water = { "water", instrument_squelch, 34, 38, 0.2f, 0.25f, 1.4f, 1.6f };   // a soft splash
 // all of them, for tests
 const SoundEffect* hit_sounds[] = { &hit_sound_flesh, &hit_sound_slime, &hit_sound_stone, &hit_sound_dirt,
-    &hit_sound_sand, &hit_sound_wood, &hit_sound_leaves };
-#define hit_sounds_count 7
+    &hit_sound_sand, &hit_sound_wood, &hit_sound_leaves, &hit_sound_road, &hit_sound_water };    // tests read them by index: add at the end
+#define hit_sounds_count 9
 
 // a sound picked within an effect's ranges
 static inline entity spawn_sound_effect_data(ecs* world, const SoundEffect* effect) {

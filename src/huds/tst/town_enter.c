@@ -62,7 +62,7 @@ byte zox_tst_town_enter_ready(ecs* world) {
     }
     zox_tst_waiting = "in and out of a town";
     zox_tst_progress(zox_tst_te_stage);
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity character = zox_tst_player_character(world);
     const entity realm = zox_get_link(world, character, RealmLink);
     const float scale = zox_getv(zox_get_link(world, character, TerrainLink), BlockScale);
     const int2 center = zox_getv(zox_tst_te_town, BlockPosition2);
@@ -126,4 +126,8 @@ void zox_tst_town_enter_check(ecs* world) {
     zox_tst_check(zox_tst_te_out, "the character out of the town is still InTown");
     zox_tst_check(zox_tst_te_unlinked, "the character out of the town still has its TownLink");
     zox_tst_check(zox_tst_te_track_out == 0, "out of the town track [%i] plays, not the overworld's (0)", zox_tst_te_track_out);
+}
+
+void zox_tsts_town_enter(ecs* world) {
+    zox_tst_add("town_enter", zox_tst_town_enter_ready, zox_tst_town_enter_check, 120);
 }

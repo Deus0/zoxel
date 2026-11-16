@@ -45,6 +45,14 @@ zox_tst* zox_tst_active = NULL;
 int zox_tst_fails = 0;
 int zox_tst_checks = 0;
 const char* zox_tst_waiting = ""; // set by ready functions, logged on timeout
+// the player fixture, defined in controllers/tst (it spawns the player): tests in lower modules wait on the player the
+//  game spawns through these, so they live beside what they check (doc/coding_standards.md Test Placement)
+byte zox_tst_player_spawn_ready(ecs* world);    // 1 once the player's character stands in the terrain
+entity zox_tst_player_character(ecs* world);    // the player's character, 0 if none
+// a world without a player (controllers/tst/world_only.c): a realm of its own and its terrain, 0 until generated
+entity zox_tst_world_ready(ecs* world);
+extern entity zox_tst_world_realm;
+extern entity zox_tst_world_terrain;
 // fail fast: errors logged since the test started, over this ends it (--tst-errors <n>)
 uint zox_tst_errors_max = 100;
 uint zox_tst_errors_start = 0;
@@ -417,10 +425,10 @@ void process_arguments_tst(ecs* world, char* args[], int count) {
 }
 
 // module tests below core (the "_" module), registered here as they can't see the harness
-#include "../../_/octrees/tst/_.c"
-#include "../../_/collections/tst/_.c"
-#include "../../_/flecs/tst/_.c"
-#include "../../_/maths/tst/_.c"
+#include "../octrees/tst/_.c"
+#include "../collections/tst/_.c"
+#include "../flecs/tst/_.c"
+#include "../maths/tst/_.c"
 #include "binary_size.c"  // after zox_tst_check
 
 

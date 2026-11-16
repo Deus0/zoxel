@@ -5,7 +5,7 @@
 //  - only hashes are stored, so keys in a streaming window must never share a hash:
 //      int3 over a 129 x 15 x 129 window, int2 over 513 x 513, and generated texture names
 //  - run: bash bsh/tst.sh hashmaps
-//  - included from src/core/tst/_.c, as "_" is below the tst harness
+//  - included from src/_/tst/_.c, as "_" is below the tst harness
 
 static int zox_tst_compare_uint(const void* a, const void* b) {
     const uint x = *(const uint*) a;
@@ -133,6 +133,9 @@ void zox_tst_hashmaps_check(ecs* world) {
     free(hashes);
 }
 
+#include "dynamic_arrays.c"
+
 void zox_tsts_hashmaps() {
     zox_tst_add("hashmaps", zox_tst_hashmaps_ready, zox_tst_hashmaps_check, 30);
+    zox_tst_add("dynamic_arrays", zox_tst_hashmaps_ready, zox_tst_dynamic_arrays_check, 30);
 }

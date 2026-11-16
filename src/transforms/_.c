@@ -11,6 +11,9 @@
 #include "transforms2/_.c"
 #include "transforms3/_.c"
 #include "layouts/_.c"
+#ifdef zox_tests
+#include "tst/_.c"
+#endif
 
 void import_transforms(ecs* world) {
     zox_module(transforms);
@@ -19,4 +22,7 @@ void import_transforms(ecs* world) {
     zox_add_module(transforms2);
     zox_add_module(transforms3);
     zox_add_module(layouts);
+#ifdef zox_tests
+    zox_tsts_transforms(world);
+#endif
 }

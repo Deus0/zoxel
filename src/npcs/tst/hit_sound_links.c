@@ -62,3 +62,7 @@ void zox_tst_hit_sound_links_check(ecs* world) {
     zox_tst_check(!unlinked, "[%i] of [%i] blocks have no hit sound", unlinked, blocks->length);
     zox_tst_check(!stone_wrong && !dirt_wrong, "stone [%i] or dirt [%i] blocks sound wrong", stone_wrong, dirt_wrong);
 }
+
+void zox_tsts_hit_sound_links(ecs* world) {
+    zox_tst_add("hit_sound_links", zox_tst_hit_sound_links_ready, zox_tst_hit_sound_links_check, 120);
+}

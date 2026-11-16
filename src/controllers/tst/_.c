@@ -5,23 +5,14 @@
 #include "pop.c"
 #include "quest.c"
 #include "quest_dialogue.c"
-#include "npc_stats.c"
-#include "hit_sound_links.c"
 #include "clothes.c"
 #include "lod_chunk_lights.c"
-#include "npc_skeletons.c"
-#include "npc_glance.c"
-#include "humanoid_leak.c"
 #include "chest_weights.c"
-#include "npc_quests.c"
-#include "npc_attacks.c"
 #include "player_respawn.c"
 #include "footsteps.c"
 #include "arms_in_step.c"
 #include "pipeline_syncs.c"
 #include "lines_render.c"
-#include "clouds.c"
-#include "town_maps.c"
 #include "furniture.c"
 #include "furniture_fillers.c"
 #include "furniture_hits.c"
@@ -29,26 +20,19 @@
 #include "furniture_rotation.c"
 #include "placement_box.c"
 #include "ground_removed.c"
-#include "town_enter.c"
 #include "map_pixel.c"
 #include "tooltip_flick.c"
 #include "ui3_occlusion.c"
 #include "ui3_overlap.c"
 #include "gizmo_owner.c"
-#include "town_build.c"
 #include "head_camera.c"
-#include "place_mesh.c"
 extern char zox_screenshot_request[256];
 #include "world_only.c"
-#include "water.c"
-#include "water_splash.c"
-#include "block_frames.c"
 #include "streamers.c"
 #include "statbars_hide.c"
 #include "held_item.c"
 #include "bone_rebuild.c"
 #include "id_window.c"
-#include "npcs_after_load.c"
 #include "window_toggle.c"
 #include "tooltip_gone.c"
 #include "quest_log_tracked.c"
@@ -140,6 +124,10 @@ static inline entity zox_tst_spawn_character(ecs* world) {
     }
     const entity character = zox_get_link(world, player, CharacterLink);
     return zox_valid(character) && zox_has(character, Position3D) ? character : 0;
+}
+
+entity zox_tst_player_character(ecs* world) {
+    return zox_tst_spawn_character(world);
 }
 
 byte zox_tst_player_spawn_ready(ecs* world) {
@@ -585,6 +573,10 @@ void zox_tst_screenshot_check(ecs* world) {
 #include "touch_play.c"
 
 void zox_tsts_controllers(ecs* world) {
+    zox_tst_add("player_spawn", zox_tst_player_spawn_ready, zox_tst_player_spawn_check, 60);
+    zox_tst_add("pipeline_syncs", zox_tst_player_spawn_ready, zox_tst_pipeline_syncs_check, 120);
+    zox_tst_add("continue_game", zox_tst_continue_game_ready, zox_tst_player_spawn_check, 90);
+    zox_tst_set_setup("continue_game", zox_tst_load_games_setup, 1);
     zox_tst_add("screenshot", zox_tst_screenshot_ready, zox_tst_screenshot_check, 90);
     zox_tst_add("body_views", zox_tst_body_views_ready, zox_tst_body_views_check, 120);
     zox_tst_set_setup("body_views", NULL, 1);
@@ -596,9 +588,6 @@ void zox_tsts_controllers(ecs* world) {
     }
     (void) world;
     zox_tst_add("gizmo_owner", zox_tst_gizmo_owner_ready, zox_tst_gizmo_owner_check, 30);
-    zox_tst_add("player_spawn", zox_tst_player_spawn_ready, zox_tst_player_spawn_check, 60);
-    zox_tst_add("continue_game", zox_tst_continue_game_ready, zox_tst_player_spawn_check, 90);
-    zox_tst_set_setup("continue_game", zox_tst_load_games_setup, 1);
     zox_tst_add("links_cleanup", zox_tst_links_cleanup_ready, zox_tst_links_cleanup_check, 30);
     zox_tst_add("stream_npcs", zox_tst_stream_npcs_ready, zox_tst_stream_npcs_check, 95);
     zox_tst_add("action_wheel", zox_tst_action_wheel_ready, zox_tst_action_wheel_check, 60);
@@ -607,39 +596,18 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("pickup_pop", zox_tst_pickup_pop_ready, zox_tst_pickup_pop_check, 90);
     zox_tst_add("quest_tracking", zox_tst_quest_tracking_ready, zox_tst_quest_tracking_check, 90);
     zox_tst_add("quest_dialogue", zox_tst_quest_dialogue_ready, zox_tst_quest_dialogue_check, 120);
-    zox_tst_add("npc_stats", zox_tst_npc_stats_ready, zox_tst_npc_stats_check, 120);
-    zox_tst_add("hit_sound_links", zox_tst_hit_sound_links_ready, zox_tst_hit_sound_links_check, 120);
     zox_tst_add("clothes", zox_tst_clothes_ready, zox_tst_clothes_check, 120);
-    zox_tst_add("npc_attacks", zox_tst_npc_attacks_ready, zox_tst_npc_attacks_check, 120);
-    zox_tst_add("region_population", zox_tst_region_population_ready, zox_tst_region_population_check, 120);
-    zox_tst_add("npc_leash", zox_tst_npc_leash_ready, zox_tst_npc_leash_check, 120);
     zox_tst_add("player_respawn", zox_tst_player_respawn_ready, zox_tst_player_respawn_check, 120);
     zox_tst_add("footsteps", zox_tst_footsteps_ready, zox_tst_footsteps_check, 120);
     zox_tst_add("arms_in_step", zox_tst_arms_in_step_ready, zox_tst_arms_in_step_check, 120);
     zox_tst_add("lod_chunk_lights", zox_tst_lod_chunk_lights_ready, zox_tst_lod_chunk_lights_check, 120);
-    zox_tst_add("npc_skeletons", zox_tst_npc_skeletons_ready, zox_tst_npc_skeletons_check, 120);
-    zox_tst_add("npc_glance", zox_tst_npc_glance_ready, zox_tst_npc_glance_check, 120);
-    zox_tst_add("humanoid_leak", zox_tst_humanoid_leak_ready, zox_tst_humanoid_leak_check, 120);
-    zox_tst_add("monster_leak", zox_tst_monster_leak_ready, zox_tst_humanoid_leak_check, 120);
     zox_tst_add("chest_weights", zox_tst_chest_weights_ready, zox_tst_chest_weights_check, 120);
-    zox_tst_add("npc_quests", zox_tst_npc_quests_ready, zox_tst_npc_quests_check, 120);
     zox_tst_add("perf_stream", zox_tst_perf_stream_ready, zox_tst_perf_stream_check, 180);
     zox_tst_add("perf_fly", zox_tst_perf_fly_ready, zox_tst_perf_fly_check, 120);
     zox_tst_add("lod_swap", zox_tst_lod_swap_ready, zox_tst_lod_swap_check, 120);
     zox_tst_add("tables_stream", zox_tst_perf_stream_ready, zox_tst_tables_stream_check, 200);
-    zox_tst_add("pipeline_syncs", zox_tst_player_spawn_ready, zox_tst_pipeline_syncs_check, 120);
     zox_tst_add("lines_render", zox_tst_lines_render_ready, zox_tst_lines_render_check, 120);
     zox_tst_add("touch_play", zox_tst_touch_play_ready, zox_tst_touch_play_check, 120);
-    zox_tst_add("town_maps", zox_tst_town_maps_ready, zox_tst_town_maps_check, 120);
-    zox_tst_add("town_maps_empty", zox_tst_town_maps_empty_ready, zox_tst_town_maps_empty_check, 120);
-    zox_tst_add("region_zones", zox_tst_region_zones_ready, zox_tst_region_zones_check, 120);
-    zox_tst_add("home_roofs", zox_tst_region_zones_ready, zox_tst_home_roofs_check, 120);
-    zox_tst_add("town_build", zox_tst_town_build_ready, zox_tst_town_build_check, 30);
-    zox_tst_add("town_homes", zox_tst_town_homes_ready, zox_tst_town_homes_check, 120);
-    zox_tst_add("home_glow", zox_tst_home_glow_ready, zox_tst_home_glow_check, 120);
-    zox_tst_add("home_foundations", zox_tst_home_glow_ready, zox_tst_home_foundations_check, 120);
-    zox_tst_add("town_view", zox_tst_town_view_ready, zox_tst_town_view_check, 120);
-    zox_tst_add("town_enter", zox_tst_town_enter_ready, zox_tst_town_enter_check, 120);
     zox_tst_add("map_pixel", zox_tst_map_pixel_ready, zox_tst_map_pixel_check, 120);
     zox_tst_add("tooltip_flick", zox_tst_tooltip_flick_ready, zox_tst_tooltip_flick_check, 90);
     zox_tst_add("ui3_occlusion", zox_tst_ui3_occlusion_ready, zox_tst_ui3_occlusion_check, 90);
@@ -653,24 +621,10 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("item_sizes", zox_tst_item_sizes_ready, zox_tst_item_sizes_check, 120);
     zox_tst_add("find_quest", zox_tst_find_quest_ready, zox_tst_find_quest_check, 120);
     zox_tst_add("id_window", zox_tst_id_window_ready, zox_tst_id_window_check, 120);
-    zox_tst_add("npcs_after_load", zox_tst_npcs_after_load_ready, zox_tst_npcs_after_load_check, 240);
-    zox_tst_set_setup("npcs_after_load", zox_tst_load_games_setup, 1);
     zox_tst_add("window_toggle", zox_tst_window_toggle_ready, zox_tst_window_toggle_check, 120);
     zox_tst_add("tooltip_gone", zox_tst_tooltip_gone_ready, zox_tst_tooltip_gone_check, 60);
     zox_tst_add("quest_log_tracked", zox_tst_quest_log_tracked_ready, zox_tst_quest_log_tracked_check, 90);
-    zox_tst_add("glow_light", zox_tst_glow_light_ready, zox_tst_glow_light_check, 120);
     zox_tst_add("furniture_place", zox_tst_furniture_place_ready, zox_tst_furniture_place_check, 120);
-    zox_tst_add("place_mesh", zox_tst_place_mesh_ready, zox_tst_place_mesh_check, 120);
-    zox_tst_add("water_block", zox_tst_water_block_ready, zox_tst_water_block_check, 120);
-    zox_tst_add("sea_level", zox_tst_sea_level_ready, zox_tst_sea_level_check, 120);
-    zox_tst_set_setup("sea_level", NULL, 1);
-    zox_tst_add("lakes", zox_tst_lakes_ready, zox_tst_lakes_check, 120);
-    zox_tst_set_setup("lakes", NULL, 1);
-    zox_tst_add("water_flow", zox_tst_water_flow_ready, zox_tst_water_flow_check, 120);
-    zox_tst_set_setup("water_flow", NULL, 1);
-    zox_tst_add("block_frames", zox_tst_block_frames_ready, zox_tst_block_frames_check, 90);
-    zox_tst_add("water_tile", zox_tst_water_tile_ready, zox_tst_water_tile_check, 60);
-    zox_tst_set_setup("water_tile", NULL, 1);
     zox_tst_add("two_streamers", zox_tst_two_streamers_ready, zox_tst_two_streamers_check, 120);
     zox_tst_set_setup("two_streamers", NULL, 1);
     zox_tst_add("furniture_fillers", zox_tst_furniture_fillers_ready, zox_tst_furniture_fillers_check, 120);
@@ -680,11 +634,8 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("placement_box", zox_tst_placement_box_ready, zox_tst_placement_box_check, 30);
     zox_tst_add("ground_removed", zox_tst_ground_removed_ready, zox_tst_ground_removed_check, 120);
     zox_tst_set_setup("placement_box", NULL, 1);
-    zox_tst_add("block_table", zox_tst_town_homes_ready, zox_tst_block_table_check, 120);
-    zox_tst_add("sky_clouds", zox_tst_sky_clouds_ready, zox_tst_sky_clouds_check, 120);
     zox_tst_add("head_camera", zox_tst_head_camera_ready, zox_tst_head_camera_check, 120);
     zox_tst_add("vegetation_chunks", zox_tst_vegetation_chunks_ready, zox_tst_vegetation_chunks_check, 120);
     zox_tst_add("music_crossfade", zox_tst_music_crossfade_ready, zox_tst_music_crossfade_check, 120);
     zox_tst_set_setup("music_crossfade", NULL, 1);
-    zox_tst_add("water_splash", water_splash_ready, water_splash_check, 60);
 }

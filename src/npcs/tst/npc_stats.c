@@ -94,3 +94,7 @@ void zox_tst_npc_stats_check(ecs* world) {
     zox_tst_check(wrong_parent == 0, "[%i] stats aren't their npc's children", wrong_parent);
     zox_tst_check(not_full == 0, "[%i] npc energy or mana don't start full", not_full);
 }
+
+void zox_tsts_npc_stats(ecs* world) {
+    zox_tst_add("npc_stats", zox_tst_npc_stats_ready, zox_tst_npc_stats_check, 120);
+}

@@ -15,9 +15,11 @@
 // Note: Updates on VoxelNode has to be done in PostLoad, away from use of Voxels, due to the cleaning step
 void zox_systems_terrain(ecs *world) {
     // flowing water (water_flow.c): main thread, it writes other chunks' queues and its terrain's flows
+    //  - in zoxp_render with the other main thread systems: in zoxp_update, after multi threaded ones, it added two
+    //    merges (tst pipeline_syncs); still before zoxp_pre_end clears VoxelNodePostDirty, its edits apply next frame
     zox_system_1(
         water_flow_edits_system,
-        zoxp_update,
+        zoxp_render,
         [in] chunks3.ChunkPosition,
         [in] chunks.NodeDepth,
         [in] chunks3.VoxelNodeQueue,
@@ -26,7 +28,7 @@ void zox_systems_terrain(ecs *world) {
     );
     zox_system_1(
         water_flow_system,
-        zoxp_update,
+        zoxp_render,
         [out] terrains.WaterFlows,
         [none] terrains.Terrain,
     );

@@ -6,6 +6,9 @@
 #include "com/_.c"
 #include "pre/_.c"
 #include "sys/_.c"
+#ifdef zox_tests
+#include "tst/_.c"
+#endif
 
 void import_sky(ecs* world) {
     zox_module(sky);
@@ -13,4 +16,7 @@ void import_sky(ecs* world) {
     zox_systems_sky(world);
     add_hook_load_shader(&zox_shaders_sky);
     add_hook_spawn_prefabs(zox_prefabs_sky);
+#ifdef zox_tests
+    zox_tsts_sky(world);
+#endif
 }

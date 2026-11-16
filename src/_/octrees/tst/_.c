@@ -1,7 +1,7 @@
 // tst: octrees, pure logic tests for src/_/octrees (no world, no terrain, no gpu)
 //  - checked against a dense byte array reference, so any walk/set/reduce bug shows as a mismatch
 //  - run: bash bsh/tst.sh octree_set_get (or any name below), bash bsh/tst.sh all
-//  - included from src/core/tst/_.c, as "_" is below the tst harness
+//  - included from src/_/tst/_.c, as "_" is below the tst harness
 //  - every test is ready on the first frame, they never wait for the game
 
 // same layout as VoxelNode: children ptr first, value after it, then type

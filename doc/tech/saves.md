@@ -8,7 +8,7 @@ save formats change without keeping older saves loading. Every format has an io 
 - Saves root: `~/.local/share/zoxel` (Linux), `%USERPROFILE%\AppData\Local\zoxel` (Windows), the app's files dir
   (Android). Tests use `/tmp/zoxel_nosaves_<pid>` (`--nosaves`, src/saves/fun/terminal.c), deleted after the run.
 - One folder a realm, named by its seed: `<root>/zoxel/<seed>/`. Its path is the realm's `FolderPath`.
-- `~/.config/zoxel/settings.cfg`: the player's settings (src/core/settings), not part of a realm.
+- `~/.config/zoxel/settings.cfg`: the player's settings (src/_/settings), not part of a realm.
 
 ## A realm's files
 

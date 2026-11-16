@@ -1,6 +1,6 @@
 // tst: water_splash, falling into water splashes, climbing out splashes small (terrain/collisions/eve/water_splash.c)
-//  - in an all air chunk over the player: a 3 x 3 pool of water 3 deep, a brick floor and walls round it
-//  - the character dropped from 4 blocks over its middle: a splash going in (zox_water_splashes_in counts it)
+//  - in an all air chunk (air_chunk.c, no player): a 3 x 3 pool of water 3 deep, a brick floor and walls round it
+//  - a bare body (physics, InsideBlock) dropped from 4 blocks over its middle: a splash going in (zox_water_splashes_in counts it)
 //  - then lifted 2 blocks over its surface: another, small, coming out
 //  - run: bash bsh/tst.sh water_splash
 byte zox_tst_splash_stage = 0;
@@ -20,20 +20,37 @@ static inline byte zox_tst_splash_pool_at(int x, int y, int z) {
     return 2;
 }
 
+entity zox_tst_splash_body = 0;
+
+// a bare body (no character): it falls (physics3), knows the block it's in (inside.c), splashes (water_splash.c)
+static inline entity zox_tst_splash_spawn_body(ecs* world, entity terrain, float3 position) {
+    const float scale = zox_getv(terrain, BlockScale);
+    const entity e = zox_new();
+    zox_set(e, Position3D, { position });
+    zox_set(e, Rotation3D, { quaternion_identity });
+    zox_set(e, Bounds3D, { float3_scale((float3) { 0.4f, 0.9f, 0.4f }, scale) });
+    zox_set(e, Velocity3D, { float3_zero });
+    zox_set(e, Acceleration3D, { float3_zero });
+    zox_set(e, Gravity3D, { zox_default_gravity });
+    zox_set(e, Grounded, { 0 });
+    zox_set(e, InsideBlock, { 0 });
+    zox_set(e, InsideBlockPosition, { int3_zero });
+    zox_set(e, InsideBlockLast, { 0 });
+    zox_set_link(world, e, TerrainLink, terrain);
+    return e;
+}
+
 byte water_splash_ready(ecs* world) {
-    if (!zox_tst_player_spawn_ready(world)) {
+    const entity air = zox_tst_streamed_air_chunk(world);
+    if (!air) {
         return 0;
     }
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
-    const entity terrain = zox_get_link(world, character, TerrainLink);
-    const entity realm = zox_get_link(world, character, RealmLink);
+    const entity terrain = zox_tst_world_terrain;
+    const entity realm = zox_tst_world_realm;
+    const entity body = zox_tst_splash_body;
     zox_tst_progress(zox_tst_splash_stage * 1000 + (int) (zox_current_time - zox_tst_splash_time));
     if (zox_tst_splash_stage == 0) {
-        zox_tst_waiting = "an all air chunk over the player";
-        zox_tst_splash_chunk = zox_tst_air_chunk(world, character, terrain);
-        if (!zox_tst_splash_chunk) {
-            return 0;
-        }
+        zox_tst_splash_chunk = air;
         const entity water = zox_get_child_by_id(world, realm, zox_id(BlockWater));
         const entity bricks = zox_get_child_by_id(world, realm, zox_id(BlockBricks));
         zox_tst_check(zox_valid(water) && zox_valid(bricks), "the realm has no water or bricks block");
@@ -60,15 +77,14 @@ byte water_splash_ready(ecs* world) {
         if (zox_current_time - zox_tst_splash_time < 1 || zox_has(zox_tst_splash_chunk, ChunkUpdate)) {
             return zox_current_time - zox_tst_splash_time > 15;
         }
-        zox_water_splash_watch = character;
-        zox_setv(character, Position3D, zox_tst_splash_drop);
-        zox_setv(character, Velocity3D, float3_zero);
+        zox_tst_splash_body = zox_tst_splash_spawn_body(world, terrain, zox_tst_splash_drop);
+        zox_water_splash_watch = zox_tst_splash_body;
         zox_tst_splash_stage = 2;
         zox_tst_splash_time = zox_current_time;
         return 0;
     }
     if (zox_tst_splash_stage == 2) {
-        zox_tst_waiting = "the character to fall in and splash";
+        zox_tst_waiting = "the body to fall in and splash";
         // a while to fall in and settle, then out
         if (zox_current_time - zox_tst_splash_time < 2.5) {
             return 0;
@@ -76,8 +92,8 @@ byte water_splash_ready(ecs* world) {
         zox_tst_splash_in = zox_water_splashes_in;
         // straight up, 2 blocks over the surface (local y 10)
         const float scale = zox_getv(terrain, BlockScale);
-        zox_setv(character, Position3D, float3_add(zox_tst_splash_drop, (float3) { 0, -2 * scale, 0 }));
-        zox_setv(character, Velocity3D, float3_zero);
+        zox_setv(body, Position3D, float3_add(zox_tst_splash_drop, (float3) { 0, -2 * scale, 0 }));
+        zox_setv(body, Velocity3D, float3_zero);
         zox_tst_splash_stage = 3;
         zox_tst_splash_time = zox_current_time;
         return 0;
@@ -96,4 +112,7 @@ void water_splash_check(ecs* world) {
     zox_tst_check(zox_tst_splash_stage == 3, "the test stopped at stage [%i]", zox_tst_splash_stage);
     zox_tst_check(zox_tst_splash_in == 1, "[%i] splashes falling into the water, not one", zox_tst_splash_in);
     zox_tst_check(zox_tst_splash_out == 1, "[%i] splashes coming out of the water, not one", zox_tst_splash_out);
+    if (zox_valid(zox_tst_splash_body)) {
+        zox_delete(zox_tst_splash_body);
+    }
 }

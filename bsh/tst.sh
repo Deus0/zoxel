@@ -12,7 +12,7 @@
 #     still opengl es 3.0 (--gles), the same render path the game takes on mali
 #   --stress: full terrain stream distance, tests default to --tiny terrain
 #   --keepsaves: saves to the real save folder, tests default to --nosaves (a /tmp folder, deleted after)
-# Tests are added with zox_tst_add in a module's tst folder (see src/core/tst/_.c)
+# Tests are added with zox_tst_add in a module's tst folder (see src/_/tst/_.c)
 # Safety: low priority, memory capped and killed on timeout, so a bad run can't freeze the pc
 #   override with zox_tst_timeout=<seconds> zox_tst_memory=<size> zox_tst_log_max=<bytes>
 #   also killed if the machine's MemAvailable drops below zox_tst_mem_floor (KB, default 1GB of the 8GB board),
@@ -95,7 +95,7 @@ if [[ ${gpu} == "0" ]]; then
 fi
 root="$(pwd)"
 # tst/: logs, and the files tests write to look at (screenshots, wavs), gitignored
-#   the game finds it from zox_tst_dir (src/core/tst/_.c zox_tst_path)
+#   the game finds it from zox_tst_dir (src/_/tst/_.c zox_tst_path)
 log_dir="${root}/tst"
 mkdir -p "${log_dir}"
 export zox_tst_dir="${log_dir}"

@@ -1,5 +1,5 @@
 // Flecs wrapper tests, checking the claims in doc/links.md and doc/children.md
-//  - included from src/core/tst/_.c, as "_" is below the tst harness
+//  - included from src/_/tst/_.c, as "_" is below the tst harness
 //  - registered from import_core, as test relations and tags need the world
 #include "links.c"
 #include "children.c"

@@ -148,6 +148,7 @@ void blocks_realm_spawn_system(iter* it) {
             zox_setv(e2, BlockMaterial, zox_block_material_liquid);
             zox_setv(e2, BlockCollider, zox_block_air);
             zox_setv(e2, BlockLightPass, 1);
+            link_hit_sound(world, e2, e, &hit_sound_water);
         }
         zox_add(e, BlocksDirty);
         if (dbg_log) {

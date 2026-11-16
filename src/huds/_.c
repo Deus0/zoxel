@@ -49,7 +49,7 @@ void import_huds(ecs* world) {
     add_hook_on_boot(on_boot_game_ui);
     add_hook_terminal_command(process_arguments_huds);
 #ifdef zox_tests
-    zox_tsts_huds();
+    zox_tsts_huds(world);
 #endif
     spawn_taskbar_manager(world);
     add_taskbar_button(world, (TaskbarData) {

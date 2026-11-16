@@ -13,7 +13,9 @@
 #include "font.c"
 #include "realm_info.c"
 
-void zox_tsts_huds() {
+#include "town_enter.c"
+
+void zox_tsts_huds(ecs* world) {
     zox_tsts_huds_load();
     zox_tst_add("menu_flow", zox_tst_menu_flow_ready, zox_tst_menu_flow_check, 120);
     zox_tst_add("end_game_cleanup", zox_tst_end_game_ready, zox_tst_end_game_check, 180);
@@ -46,4 +48,5 @@ void zox_tsts_huds() {
     zox_tst_set_setup("font_glyphs", NULL, 1);
     zox_tst_add("realm_info", zox_tst_realm_info_ready, zox_tst_realm_info_check, 60);
     zox_tst_set_setup("realm_info", NULL, 1);
+    zox_tsts_town_enter(world);
 }

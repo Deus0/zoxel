@@ -161,7 +161,7 @@ byte zox_tst_region_zones_ready(ecs* world) {
 }
 
 void zox_tst_region_zones_check(ecs* world) {
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity character = zox_tst_player_character(world);
     const entity terrain = zox_get_link(world, character, TerrainLink);
     const int chunk_length = octree_size(zox_getv(terrain, NodeDepth));
     const int3 chunk = real_position_to_chunk_position(zox_getv(character, Position3D), chunk_length, zox_getv(terrain, BlockScale));
@@ -243,7 +243,7 @@ void zox_tst_home_roofs_check(ecs* world) {
 
 // the region of the player's column
 static inline entity zox_tst_player_region(ecs* world) {
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity character = zox_tst_player_character(world);
     const entity terrain = zox_get_link(world, character, TerrainLink);
     const int chunk_length = octree_size(zox_getv(terrain, NodeDepth));
     const int3 chunk = real_position_to_chunk_position(zox_getv(character, Position3D), chunk_length, zox_getv(terrain, BlockScale));
@@ -318,7 +318,7 @@ byte zox_tst_home_glow_ready(ecs* world) {
 }
 
 void zox_tst_home_glow_check(ecs* world) {
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity character = zox_tst_player_character(world);
     const entity terrain = zox_get_link(world, character, TerrainLink);
     const entity realm = zox_get_link(world, character, RealmLink);
     const entity glow = zox_get_child_by_id(world, realm, zox_id(BlockGlowStone));
@@ -392,7 +392,7 @@ byte zox_tst_glow_light_ready(ecs* world) {
     if (!zox_tst_player_spawn_ready(world)) {
         return 0;
     }
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity character = zox_tst_player_character(world);
     const entity terrain = zox_get_link(world, character, TerrainLink);
     const double t = zox_current_time - zox_tst_glow_time;
     zox_tst_progress(zox_tst_glow_stage);
@@ -480,7 +480,7 @@ void zox_tst_glow_light_check(ecs* world) {
 //  folder, a line a block, in BlockLinks order
 //  - run: bash bsh/tst.sh block_table
 void zox_tst_block_table_check(ecs* world) {
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity character = zox_tst_player_character(world);
     const entity realm = zox_get_link(world, character, RealmLink);
     zox_tst_check(zox_has(realm, FolderPath), "the realm has no folder");
     if (!zox_has(realm, FolderPath)) {
@@ -509,7 +509,7 @@ void zox_tst_block_table_check(ecs* world) {
 //  - its doorway open, facing any way (HomeFacing, built in its own frame, fun/build.c)
 //  - run: bash bsh/tst.sh home_foundations
 void zox_tst_home_foundations_check(ecs* world) {
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity character = zox_tst_player_character(world);
     const entity terrain = zox_get_link(world, character, TerrainLink);
     const float3 player = float3_divide_float(zox_getv(character, Position3D), zox_getv(terrain, BlockScale));
     const entity region = zox_tst_player_region(world);
@@ -597,7 +597,7 @@ byte zox_tst_town_view_ready(ecs* world) {
     }
     zox_tst_waiting = "the town view";
     zox_tst_progress(zox_tst_town_view_stage);
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
+    const entity character = zox_tst_player_character(world);
     const entity terrain = zox_get_link(world, character, TerrainLink);
     const float scale = zox_getv(terrain, BlockScale);
     // over the town nearest the player, looking down
@@ -644,4 +644,17 @@ byte zox_tst_town_view_ready(ecs* world) {
 void zox_tst_town_view_check(ecs* world) {
     (void) world;
     zox_tst_check(zox_tst_clouds_share(zox_tst_path("town_view.ppm")) >= 0, "no screenshot saved");
+}
+
+void zox_tsts_town_maps(ecs* world) {
+    zox_tst_add("town_maps", zox_tst_town_maps_ready, zox_tst_town_maps_check, 120);
+    zox_tst_add("town_maps_empty", zox_tst_town_maps_empty_ready, zox_tst_town_maps_empty_check, 120);
+    zox_tst_add("region_zones", zox_tst_region_zones_ready, zox_tst_region_zones_check, 120);
+    zox_tst_add("home_roofs", zox_tst_region_zones_ready, zox_tst_home_roofs_check, 120);
+    zox_tst_add("town_homes", zox_tst_town_homes_ready, zox_tst_town_homes_check, 120);
+    zox_tst_add("home_glow", zox_tst_home_glow_ready, zox_tst_home_glow_check, 120);
+    zox_tst_add("home_foundations", zox_tst_home_glow_ready, zox_tst_home_foundations_check, 120);
+    zox_tst_add("town_view", zox_tst_town_view_ready, zox_tst_town_view_check, 120);
+    zox_tst_add("glow_light", zox_tst_glow_light_ready, zox_tst_glow_light_check, 120);
+    zox_tst_add("block_table", zox_tst_town_homes_ready, zox_tst_block_table_check, 120);
 }

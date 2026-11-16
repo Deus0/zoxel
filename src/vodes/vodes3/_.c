@@ -25,5 +25,6 @@ void import_vodes3(ecs* world) {
     add_hook_spawn_prefabs(zox_events_vodes3);
 #ifdef zox_tests
     zox_tsts_vodes3();
+    zox_tsts_grass_overlap(world);
 #endif
 }

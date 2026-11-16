@@ -8,7 +8,8 @@
  *
  *  Notes
  *
- *      - "_" Shall only contain definitions
+ *      - the lowest module: plain c (logs, maths, collections, flecs wrappers), then core.c, the first flecs module
+ *        (components, systems, timing, settings, events, tests)
  *
  *  TODO
  *
@@ -122,3 +123,6 @@ void initialize_zox(ecs* world) {
     add_to_update_loop(update_web_canvas);
 #endif*/
 }
+
+// core: the first flecs module, on top of the plain c above (it was src/core)
+#include "core.c"

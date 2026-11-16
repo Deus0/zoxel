@@ -456,7 +456,23 @@ coffee/
         coffee_brew.c    <- checks the brewing, wherever the beans came from
 ```
 
-A test only goes higher when it needs that higher module itself, i.e. it spawns a player character or drives the menus.
+Always use the lowest module possible. A test never goes higher just because it needs a world to run in:
+
+- no player needed: most tests only need terrain streamed, so use a world of its own and a streamer or camera
+  (`zox_tst_world_ready`, `spawn_streamer`), and a bare body (Position3D, Bounds3D, Velocity3D) for physics
+- a player needed: `zox_tst_player_spawn_ready` and `zox_tst_player_character` are declared in `src/_/tst`, so a
+  lower module waits on the player the game spawns without seeing `CharacterLink`
+- needing something from a higher module (i.e. `town_at`): the lowest module that sees it, or split the test
+
+`controllers/tst` is for controller tests only: input driving the player, the camera, the menus.
+
+Keep a test as small as it can be: use only what it checks, so the whole suite stays quick.
+
+- pure logic first: no world, no gpu, ready on the first frame (maths, collections, octrees)
+- then bare entities: spawn just the components the system reads (transform_hierarchy, terrain_collisions)
+- then a world of its own and a streamer (air_chunk.c), not a new game with a player, npcs and towns
+- a whole game and the player only when the test is about them
+- wait on a condition, not a fixed time; a few frames, not seconds
 
 When you think:
 

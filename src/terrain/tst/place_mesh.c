@@ -1,6 +1,6 @@
 // tst: place_mesh, placing a block in a chunk with no mesh (all air) gives it one (todo.md Bugs: "When place above
 //  chunk - no mesh spawns")
-//  - finds an all air chunk over the player (streamed, its block voxes spawned), places a bricks block in its middle
+//  - in an all air chunk (air_chunk.c: a world of its own, no player), places a bricks block in its middle
 //      and one in its corner (a chunk edge, its neighbours have to show the faces they share)
 //  - within a few seconds the chunk has a shown mesh (not Disabled) with faces, and its material's mesh is at the
 //      chunk's depth
@@ -25,40 +25,17 @@ static inline int zox_tst_pmesh_vertices(ecs* world, entity chunk, int* shown) {
     return vertices;
 }
 
-// an all air chunk one to three over the player, streamed with its block voxes spawned, not updating: 0 if none yet
-static inline entity zox_tst_air_chunk(ecs* world, entity character, entity terrain) {
-    const int length = octree_size(zox_getv(terrain, NodeDepth));
-    const int3 position = real_position_to_chunk_position(zox_getv(character, Position3D), length, zox_getv(terrain, BlockScale));
-    for (byte up = 1; up <= 3; up++) {
-        const entity chunk = int3_hashmap_get(zox_get(terrain, ChunkLinks)->value, (int3) { position.x, position.y + up, position.z });
-        if (!zox_valid(chunk) || !zox_has(chunk, BlocksSpawned) || zox_has(chunk, ChunkUpdate)) {
-            continue;
-        }
-        const VoxelNode* voxels = zox_get(chunk, VoxelNode);
-        int shown;
-        if (!has_children_VoxelNode(voxels) && !voxels->value && !zox_tst_pmesh_vertices(world, chunk, &shown)) {
-            return chunk;
-        }
-    }
-    return 0;
-}
-
 byte zox_tst_place_mesh_ready(ecs* world) {
-    if (!zox_tst_player_spawn_ready(world)) {
+    const entity air = zox_tst_streamed_air_chunk(world);
+    if (!air) {
         return 0;
     }
-    const entity character = zox_get_link(world, dbg_player, CharacterLink);
-    const entity terrain = zox_get_link(world, character, TerrainLink);
+    const entity terrain = zox_tst_world_terrain;
     zox_tst_progress(zox_tst_pmesh_stage * 1000 + (int) (zox_current_time - zox_tst_pmesh_time));
     if (zox_tst_pmesh_stage == 0) {
-        zox_tst_waiting = "an all air chunk over the player";
         const int length = octree_size(zox_getv(terrain, NodeDepth));
-        zox_tst_pmesh_chunk = zox_tst_air_chunk(world, character, terrain);
-        if (!zox_tst_pmesh_chunk) {
-            return 0;
-        }
-        const entity realm = zox_get_link(world, character, RealmLink);
-        const entity bricks = zox_get_child_by_id(world, realm, zox_id(BlockBricks));
+        zox_tst_pmesh_chunk = air;
+        const entity bricks = zox_tst_air_block(world, zox_id(BlockBricks));
         zox_tst_check(zox_valid(bricks), "the realm has no bricks");
         if (!zox_valid(bricks)) {
             return 1;
@@ -81,7 +58,7 @@ byte zox_tst_place_mesh_ready(ecs* world) {
 
 void zox_tst_place_mesh_check(ecs* world) {
     const entity chunk = zox_tst_pmesh_chunk;
-    zox_tst_check(zox_valid(chunk), "no all air chunk was found over the player");
+    zox_tst_check(zox_valid(chunk), "no all air chunk streamed in");
     if (!zox_valid(chunk)) {
         return;
     }

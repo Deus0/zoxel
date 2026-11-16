@@ -69,3 +69,7 @@ void zox_tst_npc_skeletons_check(ecs* world) {
         zox_tst_check(zox_valid(skeleton), "the npc %s has no skeleton", names[i]);
     }
 }
+
+void zox_tsts_npc_skeletons(ecs* world) {
+    zox_tst_add("npc_skeletons", zox_tst_npc_skeletons_ready, zox_tst_npc_skeletons_check, 120);
+}

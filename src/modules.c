@@ -8,7 +8,6 @@
  */
 
 // depth 0: foundation
-#include "core/_.c"
 #include "transforms/_.c"
 #include "networking/_.c"
 #include "screens/_.c"

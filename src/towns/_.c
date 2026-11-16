@@ -21,6 +21,9 @@ byte zox_disable_homes = 0;
 #include "fun/town.c"
 #include "sys/_.c"
 #include "dbg/_.c"
+#ifdef zox_tests
+#include "tst/_.c"
+#endif
 
 void import_towns(ecs* world) {
     zox_module(towns);
@@ -28,4 +31,7 @@ void import_towns(ecs* world) {
     zox_systems_towns(world);
     add_hook_spawn_prefabs(zox_define_prefabs_towns);
     zox_systems_towns_debug(world);
+#ifdef zox_tests
+    zox_tsts_towns(world);
+#endif
 }

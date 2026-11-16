@@ -97,15 +97,15 @@ Usually run through `bash bsh/tst.sh`, see [Onboarding](onboarding.md#6-tests).
 | Flag | Effect | Source |
 |---|---|---|
 | `--profile` | logs every frame over 25ms: its systems, merges, observers, commands, and the components moved most |
-| `--profile-ms <ms>` | the frame time `--profile` logs over, i.e. 16 for 60fps | core/tst | [core/tst](../src/core/tst/profile.c) |
+| `--profile-ms <ms>` | the frame time `--profile` logs over, i.e. 16 for 60fps | _/tst | [_/tst](../src/_/tst/profile.c) |
 | `--maxnpcs` | every chunk spawns the most npcs, a worst case to profile (`tst perf_fly`) | characters |
-| `--nouis` | no name labels or healthbars over characters, to compare | core/tst |
+| `--nouis` | no name labels or healthbars over characters, to compare | _/tst |
 | `ZOX_SAMPLE=<file>` (env) | samples the main thread's stack every 2ms, `bash bsh/sample_report.sh <file> <binary>` shows where slow frames go (no perf needed) | _/flecs |
 | `ZOX_SAMPLE_ALL=1` (env, with `ZOX_SAMPLE`) | samples every thread, one each 10ms of cpu time (workers: sides, meshing, lights, flecs iteration), `bash bsh/sample_report.sh <file> <binary> 1` counts every frame | _/flecs |
-| `--tst <name>` | runs one test, exits 0 on pass, 1 on fail | [core/tst](../src/core/tst/_.c) |
-| `--tst list` | prints every test name and exits | core/tst |
-| `--tst-errors <n>` | fails a test once it logs this many errors (default 100) | core/tst |
-| `--tst-timescale <f>` | scales test timeouts, i.e. 2 for slow software rendering | core/tst |
+| `--tst <name>` | runs one test, exits 0 on pass, 1 on fail | [_/tst](../src/_/tst/_.c) |
+| `--tst list` | prints every test name and exits | _/tst |
+| `--tst-errors <n>` | fails a test once it logs this many errors (default 100) | _/tst |
+| `--tst-timescale <f>` | scales test timeouts, i.e. 2 for slow software rendering | _/tst |
 | `--blackplague` | damages every npc every 5s, a stress test for deaths and cleanup | [skills](../src/skills/tst/plague.c) |
 
 ## Handy Combinations

@@ -44,7 +44,10 @@ void expand_capacity_##data_type##_array_d(data_type##_##array_d* dynamic_array,
 void add_block_to_##data_type##_array_d(data_type##_array_d* dynamic_array, const data_type block[], byte length) {\
     size_t required_capacity = dynamic_array->size + length; \
     if (required_capacity > dynamic_array->capacity) { \
-        dynamic_array->capacity *= 2;\
+        /* doubled until the run fits (doubling once overflowed a run longer than the capacity) */ \
+        size_t capacity = dynamic_array->capacity ? dynamic_array->capacity : 1; \
+        while (capacity < required_capacity) capacity *= 2; \
+        dynamic_array->capacity = capacity; \
         dynamic_array->data = zox_realloc(dynamic_array->data, dynamic_array->capacity * sizeof(data_type));\
     }\
     memcpy(dynamic_array->data + dynamic_array->size, block, length * sizeof(data_type)); \
@@ -58,7 +61,6 @@ void add_block_to##_##data_type##_##array_d2(data_type##_##array_d* dynamic_arra
         dynamic_array->data = zox_realloc(dynamic_array->data, dynamic_array->capacity * sizeof(data_type));\
     }\
     memcpy(dynamic_array->data + dynamic_array->size, block, length * sizeof(data_type));\
-    for (byte i = 0; i < length; i++) dynamic_array->data[dynamic_array->size + i] = block[i];\
     dynamic_array->size += length; \
 }\
 \
