@@ -1,9 +1,38 @@
 // tst: hit_sound_links, blocks and npcs link what they sound like hit (sounds/bop/hits.c, doc/sounds.md)
 //  - every realm block kind links a sound entity with its effect, stone ones a knock, dirt a thud
 //  - every npc links its kind's sound, slimes a squelch, the rest voiced flesh (they grunt)
+//  - one npc of each kind spawned in the void of a realm of its own (no game, no player)
 //  - run: bash bsh/tst.sh hit_sound_links
+entity zox_tst_hsl_npcs[16];
+int zox_tst_hsl_count = 0;
+int zox_tst_hsl_frames = 0;
+
 byte zox_tst_hit_sound_links_ready(ecs* world) {
-    return zox_tst_npc_stats_ready(world);
+    // one npc of each of the realm's kinds, in the void of a realm of its own (no game, no player)
+    entity realm, terrain;
+    if (!zox_tst_npc_world(world, &realm, &terrain)) {
+        return 0;
+    }
+    zox_tst_hsl_frames++;
+    zox_tst_progress(zox_tst_hsl_frames);
+    if (!zox_tst_hsl_count) {
+        float3 position = zox_tst_npc_void;
+        zox_each_link(world, realm, CharacterLinks, meta) {
+            if (zox_tst_hsl_count < 16) {
+                position.x += 2;
+                zox_tst_hsl_npcs[zox_tst_hsl_count] = spawn_character3_npc(world, meta, realm, terrain, zox_tst_hsl_count + 1, 0, 0,
+                    position, quaternion_identity, NULL);
+                zox_tst_hsl_count++;
+            }
+        }
+        return 0;
+    }
+    zox_tst_waiting = "the npcs to initialize";
+    int ready = 0;
+    for (int i = 0; i < zox_tst_hsl_count; i++) {
+        ready += zox_valid(zox_tst_hsl_npcs[i]) && zox_tst_npc_ready(world, zox_tst_hsl_npcs[i]);
+    }
+    return ready == zox_tst_hsl_count || zox_tst_hsl_frames > 600;
 }
 
 void zox_tst_hit_sound_links_check(ecs* world) {
@@ -65,4 +94,5 @@ void zox_tst_hit_sound_links_check(ecs* world) {
 
 void zox_tsts_hit_sound_links(ecs* world) {
     zox_tst_add("hit_sound_links", zox_tst_hit_sound_links_ready, zox_tst_hit_sound_links_check, 120);
+    zox_tst_set_setup("hit_sound_links", NULL, 1);
 }

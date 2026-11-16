@@ -1,3 +1,4 @@
+#include "character.c"
 #include "arms_in_step.c"
 #include "head_camera.c"
 #include "footsteps.c"

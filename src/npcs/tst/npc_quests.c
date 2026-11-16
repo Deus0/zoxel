@@ -8,22 +8,19 @@ int zox_tst_nq_frames = 0;
 entity zox_tst_nq_npcs[zox_tst_nq_count];
 
 byte zox_tst_npc_quests_ready(ecs* world) {
-    const entity player = dbg_player;
-    const entity character = zox_valid(player) ? zox_get_link(world, player, CharacterLink) : 0;
-    if (!zox_valid(character) || zox_getv(player, PlayerState) != zox_player_state_playing) {
-        zox_tst_waiting = "playing";
+    entity realm, terrain;
+    if (!zox_tst_npc_world(world, &realm, &terrain)) {
         return 0;
     }
     zox_tst_nq_frames++;
     zox_tst_progress(zox_tst_nq_frames);
     zox_tst_waiting = "the villagers' dialogues";
     if (zox_tst_nq_frames == 10) {
-        const entity realm = zox_get_link(world, character, RealmLink);
         const entity humanoid = zox_tst_realm_humanoid(world, realm);
-        const float3 at = zox_getv(character, Position3D);
+        const float3 at = zox_tst_npc_void;
         for (int i = 0; i < zox_tst_nq_count; i++) {
             const float3 position = { at.x + 2 + (i % 6), at.y, at.z + 2 + i / 6 };
-            zox_tst_nq_npcs[i] = spawn_character3_npc(world, humanoid, realm, zox_get_link(world, character, TerrainLink),
+            zox_tst_nq_npcs[i] = spawn_character3_npc(world, humanoid, realm, terrain,
                 1000 + i * 7919, 1, 0, position, quaternion_identity, NULL);
         }
     }
@@ -64,4 +61,5 @@ void zox_tst_npc_quests_check(ecs* world) {
 
 void zox_tsts_npc_quests(ecs* world) {
     zox_tst_add("npc_quests", zox_tst_npc_quests_ready, zox_tst_npc_quests_check, 120);
+    zox_tst_set_setup("npc_quests", NULL, 1);
 }

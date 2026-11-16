@@ -12,6 +12,9 @@
 - name input in new realm ui doesn't resize
 	- it should have a max too and if it goes over, it should shrink font size - add a tag for this property
 - Lighting flickers again when we destroy a block (water block refactor regression)
+- arms swing out of step on a character that isn't the player's: tst arms_in_step on characters/tst/character.c (a
+	skeleton character in the void, PlayerCharacter) sums its shoulders' swings to 0.2 to 0.6 (the player's pass), even
+	before the raise; something besides arm_swing moves its shoulders?
 - furniture_place stalls (fails before the test move too): tst furniture_place
 - perf_stream and tables_stream sometimes fail: lod swaps don't settle in 20s (flaky before the test move too)
 - grass shows overlapping copies, two lods at once (maybe rare): tst grass_overlap (vodes3/tst) sees no copies at the

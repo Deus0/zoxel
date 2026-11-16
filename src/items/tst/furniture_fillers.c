@@ -1,5 +1,5 @@
 // tst: furniture_fillers, a bed or door fills its box with the shared filler block (items/fun/multi_block.c)
-//  - places (multi_block_place) a bed and a door in the player's chunk, and a bed at its edge whose other half is in
+//  - places (multi_block_place) a bed and a door in an all air chunk (air_chunk.c, no game, no player), and a bed at its edge whose other half is in
 //    the next chunk
 //  - their other voxels hold the filler, solid; placing into one is refused, and placing one over air
 //  - breaking the bed's filler takes its base too, breaking the door's base takes its top, removing the ground under
@@ -49,19 +49,20 @@ static inline byte zox_tst_place_supported(ecs* world, entity terrain, entity re
 }
 
 byte zox_tst_furniture_fillers_ready(ecs* world) {
-    if (!zox_tst_player_spawn_ready(world)) {
+    // an all air chunk (terrain/tst/air_chunk.c): no game, no player
+    const entity air = zox_tst_streamed_air_chunk(world);
+    if (!air) {
         return 0;
     }
-    const entity character = zox_tst_player_character(world);
-    const entity terrain = zox_get_link(world, character, TerrainLink);
-    const entity realm = zox_get_link(world, character, RealmLink);
+    const entity terrain = zox_tst_world_terrain;
+    const entity realm = zox_tst_world_realm;
     zox_tst_ffill_frames++;
     zox_tst_progress(zox_tst_ffill_stage * 1000 + zox_tst_ffill_frames);
     if (zox_tst_ffill_stage == 0) {
         zox_tst_waiting = "air for a bed, a door and a bed across a chunk edge";
         const byte depth = zox_getv(terrain, NodeDepth);
         const int length = octree_size(depth);
-        const int3 chunk = real_position_to_chunk_position(zox_getv(character, Position3D), length, zox_getv(terrain, BlockScale));
+        const int3 chunk = zox_getv(air, ChunkPosition);
         const int3 origin = { chunk.x * length, chunk.y * length, chunk.z * length };
         for (int y = 0; y < length - 2; y++) {
             const int3 bed = { origin.x + 2, origin.y + y, origin.z + 8 };
@@ -140,4 +141,5 @@ void zox_tst_furniture_fillers_check(ecs* world) {
 
 void zox_tsts_furniture_fillers(ecs* world) {
     zox_tst_add("furniture_fillers", zox_tst_furniture_fillers_ready, zox_tst_furniture_fillers_check, 120);
+    zox_tst_set_setup("furniture_fillers", NULL, 1);
 }

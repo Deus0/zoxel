@@ -536,7 +536,6 @@ void chunk_colors_build_system(iter* it) {
             nrdepths[j] = n ? zox_getv(n, RenderDepth) : 0;
         }
         ushort vlength = octree_size(ndepth->value);
-        int3 chunk_size = int3_single(vlength);
         float3 bounds = calculate_vox_bounds(
             csize->value, // chunk_size,
             scale->value);

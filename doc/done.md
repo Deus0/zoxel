@@ -1520,3 +1520,9 @@ Disabling Lods means:
 	- terrain tests on air_chunk.c (no player), block_data_queue too; body_views a skeleton character, not the player's
 	- add_item_to_slot_manager moved from pickups to items/fun (quests reached up for it)
 	- tests: maths_matrices, maths_bounds, dynamic_arrays, transform_hierarchy, euler_limits, grass_overlap
+- Tests made smaller, no game or player where they don't need one (about 2 to 12s each, a game start is 25s+)
+	- characters/tst/character.c: a skeleton character in a realm of its own (footsteps on an air chunk floor)
+	- npcs/tst: zox_tst_npc_world, npcs spawned in the void of a realm of its own (npc_skeletons, npc_quests,
+		humanoid_leak, monster_leak, chest_weights, hit_sound_links)
+	- tooltip_gone on the menus, item_sizes on a realm of its own, furniture_fillers and ground_removed on an air chunk
+	- perf_fly logs the characters peak (InsideBlock), not npcs

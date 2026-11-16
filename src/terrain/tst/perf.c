@@ -323,6 +323,20 @@ byte zox_tst_perf_fly_ready(ecs* world) {
     zox_tst_profile_frame(world);
     zox_tst_fly_stream_metrics(world);
     const double elapsed = zox_current_time - zox_tst_fly_start;
+    // characters alive (the player and npcs: InsideBlock, set on every character), once a second (counting walks
+    //  every table)
+    static int characters_peak = 0;
+    static double characters_counted = 0;
+    if (zox_current_time - characters_counted >= 1.0) {
+        characters_counted = zox_current_time;
+        const int characters = zox_count_types(InsideBlock);
+        if (characters > characters_peak) {
+            characters_peak = characters;
+        }
+    }
+    if (elapsed >= zox_tst_fly_seconds) {
+        zox_log("[tst] [metric] perf_fly characters peak [%i]", characters_peak);
+    }
     zox_tst_waiting = "flying across the terrain";
     zox_tst_progress(elapsed);
     if (elapsed >= zox_tst_fly_seconds) {

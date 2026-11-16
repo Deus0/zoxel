@@ -2,25 +2,26 @@
 //  block_needs_ground), and drop their items as breaking them does
 //  - placed on ground (written under them), the ground under each removed: they're air a few frames after
 //  - a solid block on ground stays when its ground goes (only what stands on it falls)
+//  - in an all air chunk (terrain/tst/air_chunk.c): no game, no player
 //  - run: bash bsh/tst.sh ground_removed
 byte zox_tst_ground_stage = 0;
 int zox_tst_ground_frames = 0;
 int3 zox_tst_ground_cells[3];   // grass, a flower, a solid block
 
 byte zox_tst_ground_removed_ready(ecs* world) {
-    if (!zox_tst_player_spawn_ready(world)) {
+    // an all air chunk (terrain/tst/air_chunk.c): no game, no player
+    const entity air = zox_tst_streamed_air_chunk(world);
+    if (!air) {
         return 0;
     }
-    const entity character = zox_tst_player_character(world);
-    const entity terrain = zox_get_link(world, character, TerrainLink);
-    const entity realm = zox_get_link(world, character, RealmLink);
+    const entity terrain = zox_tst_world_terrain;
+    const entity realm = zox_tst_world_realm;
     zox_tst_ground_frames++;
     zox_tst_progress(zox_tst_ground_stage * 1000 + zox_tst_ground_frames);
     if (zox_tst_ground_stage == 0) {
         zox_tst_waiting = "air for grass, a flower and a block";
-        const float scale = zox_getv(terrain, BlockScale);
         const int length = octree_size(zox_getv(terrain, NodeDepth));
-        const int3 chunk = real_position_to_chunk_position(zox_getv(character, Position3D), length, scale);
+        const int3 chunk = zox_getv(air, ChunkPosition);
         const int3 origin = { chunk.x * length, chunk.y * length, chunk.z * length };
         for (int y = 1; y < length * 2 - 2; y++) {
             int solid = 0;
@@ -72,4 +73,5 @@ void zox_tst_ground_removed_check(ecs* world) {
 
 void zox_tsts_ground_removed(ecs* world) {
     zox_tst_add("ground_removed", zox_tst_ground_removed_ready, zox_tst_ground_removed_check, 120);
+    zox_tst_set_setup("ground_removed", NULL, 1);
 }

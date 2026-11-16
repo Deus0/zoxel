@@ -159,7 +159,7 @@ static inline byte4 bone_parts_vertex(const bone_parts* b, float3 p, byte bone) 
     }
     // the weight from the lower bone's share, the other's is 255 less it: either order the same blend (rounding each
     //  order's own share apart left a hairline crack where faces listed them the other way, tst body_poses sit)
-    const byte low = kinds[first] < kinds[second] ? first : second, high = low == first ? second : first;
+    const byte low = kinds[first] < kinds[second] ? first : second;
     const byte low_weight = (byte) ((255 * counts[low] + (counts[first] + counts[second]) / 2) / (counts[first] + counts[second]));
     // the face's own bone first when it's one of them
     const byte lead = kinds[second] == bone ? second : first, other = lead == first ? second : first;

@@ -14,10 +14,8 @@ entity zox_tst_hleak_npcs[zox_tst_hleak_count];
 double zox_tst_hleak_heap[zox_tst_hleak_rounds];
 
 byte zox_tst_humanoid_leak_ready(ecs* world) {
-    const entity player = dbg_player;
-    const entity character = zox_valid(player) ? zox_get_link(world, player, CharacterLink) : 0;
-    if (!zox_valid(character) || zox_getv(player, PlayerState) != zox_player_state_playing) {
-        zox_tst_waiting = "playing";
+    entity realm, terrain;
+    if (!zox_tst_npc_world(world, &realm, &terrain)) {
         return 0;
     }
     if (!zox_tst_hleak_start) {
@@ -28,8 +26,6 @@ byte zox_tst_humanoid_leak_ready(ecs* world) {
     zox_tst_waiting = "humanoids spawned and deleted";
     if (zox_tst_hleak_step == 0 && t > 0.5) {
         zox_tst_hleak_step++;
-        const entity realm = zox_get_link(world, character, RealmLink);
-        const entity terrain = zox_get_link(world, character, TerrainLink);
         // a humanoid, or a monster (slime) to compare
         entity humanoid = zox_tst_realm_humanoid(world, realm);
         if (zox_tst_hleak_monster) {
@@ -39,7 +35,7 @@ byte zox_tst_humanoid_leak_ready(ecs* world) {
                 }
             }
         }
-        float3 position = zox_getv(character, Position3D);
+        float3 position = zox_tst_npc_void;
         for (int i = 0; i < zox_tst_hleak_count; i++) {
             position.x += (i % 5) * 0.5f;
             zox_tst_hleak_npcs[i] = spawn_character3_npc(world, humanoid, realm, terrain, i + 1, 0, 0, position,
@@ -79,5 +75,7 @@ void zox_tst_humanoid_leak_check(ecs* world) {
 
 void zox_tsts_humanoid_leak(ecs* world) {
     zox_tst_add("humanoid_leak", zox_tst_humanoid_leak_ready, zox_tst_humanoid_leak_check, 120);
+    zox_tst_set_setup("humanoid_leak", NULL, 1);
     zox_tst_add("monster_leak", zox_tst_monster_leak_ready, zox_tst_humanoid_leak_check, 120);
+    zox_tst_set_setup("monster_leak", NULL, 1);
 }

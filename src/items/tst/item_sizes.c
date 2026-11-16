@@ -1,14 +1,45 @@
 // tst: item_sizes, vox items (cookies, grass, mushrooms) held or dropped are as big as each other
 //  - each realm item with a vox model: its model's solid voxels' extent (item_vox_extent, what scales it) and its
 //      mesh's vertices' extent, logged; they match, or it's scaled by the wrong size (grass was half a mushroom)
+//  - a realm of its own (world_only.c, no game, no player)
 //  - run: bash bsh/tst.sh item_sizes
+int zox_tst_item_sizes_frames = 0;
+
+// the realm's vox items with a mesh
+static inline int zox_tst_item_sizes_meshed(ecs* world, entity realm) {
+    int count = 0;
+    iter it = zox_children(world, realm);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count; i++) {
+            const entity item = it.entities[i];
+            if (zox_has(item, Item) && zox_has(item, ItemVox)) {
+                const entity mesh = get_max_model_mesh(world, zox_get_link(world, item, ModelLink));
+                count += zox_valid(mesh) && zox_has(mesh, MeshVertices) && zox_get(mesh, MeshVertices)->length;
+            }
+        }
+    }
+    return count;
+}
+
 byte zox_tst_item_sizes_ready(ecs* world) {
-    return zox_tst_player_spawn_ready(world);
+    // a realm of its own (world_only.c, no game, no player), its items' meshes built: the count steady a second
+    if (!zox_tst_world_ready(world) || zox_getv(zox_tst_world_realm, GenerateRealm)) {
+        return 0;
+    }
+    zox_tst_waiting = "the realm's vox items' meshes";
+    static int last = -1;
+    static double steady = 0;
+    const int count = zox_tst_item_sizes_meshed(world, zox_tst_world_realm);
+    zox_tst_progress(count);
+    if (count != last) {
+        last = count;
+        steady = zox_current_time;
+    }
+    return count >= 2 && zox_current_time - steady > 1;
 }
 
 void zox_tst_item_sizes_check(ecs* world) {
-    const entity character = zox_tst_player_character(world);
-    const entity realm = zox_get_link(world, character, RealmLink);
+    const entity realm = zox_tst_world_realm;
     int count = 0;
     iter it = zox_children(world, realm);
     while (zox_children_next(it)) {
@@ -50,4 +81,5 @@ void zox_tst_item_sizes_check(ecs* world) {
 
 void zox_tsts_item_sizes(ecs* world) {
     zox_tst_add("item_sizes", zox_tst_item_sizes_ready, zox_tst_item_sizes_check, 120);
+    zox_tst_set_setup("item_sizes", NULL, 1);
 }

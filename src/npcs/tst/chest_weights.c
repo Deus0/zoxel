@@ -5,21 +5,16 @@ int zox_tst_cweights_frames = 0;
 entity zox_tst_cweights_npc = 0;
 
 byte zox_tst_chest_weights_ready(ecs* world) {
-    const entity player = dbg_player;
-    const entity character = zox_valid(player) ? zox_get_link(world, player, CharacterLink) : 0;
-    if (!zox_valid(character) || zox_getv(player, PlayerState) != zox_player_state_playing) {
-        zox_tst_waiting = "playing";
+    entity realm, terrain;
+    if (!zox_tst_npc_world(world, &realm, &terrain)) {
         return 0;
     }
     zox_tst_cweights_frames++;
     zox_tst_progress(zox_tst_cweights_frames);
     zox_tst_waiting = "a humanoid's body";
     if (zox_tst_cweights_frames == 10) {
-        const entity realm = zox_get_link(world, character, RealmLink);
-        float3 position = zox_getv(character, Position3D);
-        position.x += 2;
         zox_tst_cweights_npc = spawn_character3_npc(world, zox_tst_realm_humanoid(world, realm), realm,
-            zox_get_link(world, character, TerrainLink), 1, 0, 0, position, quaternion_identity, NULL);
+            terrain, 1, 0, 0, zox_tst_npc_void, quaternion_identity, NULL);
     }
     return zox_tst_cweights_frames > 150;
 }
@@ -145,4 +140,5 @@ void zox_tst_chest_weights_check(ecs* world) {
 
 void zox_tsts_chest_weights(ecs* world) {
     zox_tst_add("chest_weights", zox_tst_chest_weights_ready, zox_tst_chest_weights_check, 120);
+    zox_tst_set_setup("chest_weights", NULL, 1);
 }
