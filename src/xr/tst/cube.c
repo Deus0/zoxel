@@ -2,7 +2,6 @@
 // Includes
 // --------------------------------------------------
 
-#include "../_.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include <SDL3/SDL_opengles2.h>
@@ -40,7 +39,7 @@ static void zox_loge(const char *format, ...)
     va_end(args);
 }
 
-#include "../fun/_.c"
+#include "../openxr/_.c"
 
 // --------------------------------------------------
 // Globals

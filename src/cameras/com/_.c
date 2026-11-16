@@ -3,6 +3,7 @@ zox_tag(CameraLink);
 zox_tag(Camera2);
 zox_tag(Camera3);
 zox_tag(CameraUI);
+zox_tag(XrCamera);          // renders per eye (xr: a headset or the simulator), not as a screen camera
 zox_tag(ElementBillboard);
 zox_tag(Perspective);
 zox_tag(Orthographic);
@@ -37,6 +38,7 @@ zoxc_dirty(Attach);
 
 void zox_components_cameras(ecs *world) {
     zoxd_tag(Camera);
+    zoxd_tag(XrCamera);
     zoxd_nf_link(CameraLink);
     zoxd_tag(Camera2);
     zoxd_tag(Camera3);

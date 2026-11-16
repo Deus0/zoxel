@@ -1,9 +1,8 @@
 // A projection from four angles (radians from straight ahead, left and down negative): OpenXR gives each eye
 //  its own, not one fov, an eye's view isn't centred
 //  - x: the left and right edges map to -1 and 1 (tst camera_projection_angles)
-//  - y: as written the up edge maps to -1 and down to 1 (2 / (tan down - tan up)); OpenXR's GL samples have it the
-//      other way. xr/sys/render.c sets glFrontFace(GL_CW) ("XR triangle direction"), which a flipped y needs: the
-//      two may cancel, check on a headset before changing either
+//  - y: the up edge maps to 1 and down to -1, as OpenXR's GL samples and the engine's cameras (it was flipped, drawn
+//      upside down with GL_CW to keep the faces: tst xr_sim_eyes, the ground under the horizon)
 //  - near and far are distances, depth maps near to -1 and far to 1
 static inline float4x4 camera_projection_from_angles(
     float4 fov,
@@ -23,13 +22,13 @@ static inline float4x4 camera_projection_from_angles(
         },
         .y = {
             0,
-            2.0f / (d - u),
+            2.0f / (u - d),
             0,
             0
         },
         .z = {
             (r + l) / (r - l),
-            (d + u) / (d - u),
+            (u + d) / (u - d),
             -(z + n) / (z - n),
             -1.0f
         },

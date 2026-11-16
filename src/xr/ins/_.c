@@ -1,6 +1,10 @@
 entity xr_camera;
 
+// XR's camera: free roamed (fun/roam.c), rendered per eye (fun/eye_render.c), not as a screen camera (XrCamera)
 void xr_spawn_camera(ecs* world, entity app) {
+    if (!zox_xr_active) {
+        return;
+    }
     // get players underneath app?
     byte camera_mode = zox_game_camera_mode;
     float fov = get_camera_state_fov(camera_mode);
@@ -29,6 +33,5 @@ void xr_spawn_camera(ecs* world, entity app) {
         camera_position.x,
         camera_position.y,
         camera_position.z);
-    // Spawn start ui
-    spawn_menu_start(world, player, 0);
+    // the start menu is huds' (on_boot_game_ui), on a canvas without a camera while XR is on
 }

@@ -21,17 +21,23 @@ Cleaned up now:
   OpenXR's samples are "b, then a": use the engine's, in its order
 - the xr module is always imported (its OpenXR parts behind `zox_xr`)
 
-Found, needing a headset to settle:
+Then (2026-11-17, second pass):
 
-- **y is flipped** in the projection (`2 / (tan down - tan up)`, up maps to -1; tst camera_projection_angles logs
-  it), and render.c sets `glFrontFace(GL_CW)` for "XR triangle direction". A flipped y reverses winding, so the
-  two likely cancel. Fix both together: y the usual way (`2 / (tan up - tan down)`) and `GL_CCW` like the rest
-  of the engine, then look.
-- **The pose handed back to OpenXR is mixed** (xr/fun/helpers.c `float4x4_to_xr_pose`): the matrix's rotation
-  with its inverse's position. OpenXR wants each eye's pose as located (`views[i].pose`); passing those straight
-  back is simplest and right.
-- None of src/xr has been compiled since this cleanup: there's no Android NDK on the dev board. Build with
-  `bash bsh/android.sh zoxel opengl sdl --debug --xr` before anything else.
+- **y was flipped**: `camera_projection_from_angles` mapped up to -1 and render.c drew with `glFrontFace(GL_CW)`.
+  On the simulator that drew the world upside down with its faces inside out (the ground on top, magenta backs).
+  Fixed: y up, `GL_CCW` as every other camera; tst xr_sim_eyes checks the ground is under the horizon
+- **the pose handed back to OpenXR** was mixed (the matrix's rotation, its inverse's position). Each eye's located
+  pose (`views[i].pose`) is now kept and submitted as is
+- **free roam in the engine**: xr/fun/roam.c, the left stick moves where the head looks, the right turns the body,
+  the headset turns the head on top. The camera entity follows (streaming, sound)
+- **layout**: xr/openxr (OpenXR only, behind `zox_xr`, tst/cube.c builds from it alone), xr/fun (shared: free roam,
+  an eye's render), xr/sim (the simulator), xr/pre and ins (the xr camera). `XrCamera` is in cameras and the screen
+  render skips it. `zox_xr_active` replaced `#ifdef zox_xr` in huds and the skybox
+- **the simulator** (`--xr-sim`, step 1's first half): both eyes side by side, the head on Q E (turn) R F (tilt),
+  the sticks on W A S D and the arrows. Uses the same eye render and free roam as a headset
+- src/xr compiles (syntax checked on the board with the OpenXR SDK's headers and `-Dzox_xr`), not yet built for
+  Android. A headset still has to show: the swapchain format, tracking, stick directions, comfort
+- the 2D ui pass is gone from the XR render (it was commented out); the menu is spawned once, by huds
 
 ## The plan
 
@@ -47,11 +53,10 @@ without one.
   Linux), so keep the OpenXR backend free of Android-only code (the loader, the GL binding and the swapchain
   sit behind small platform calls). A simulator implements it everywhere else: two eyes 64mm apart,
   a fixed headset fov, the head turned by the mouse, controllers from a gamepad or keyboard
-- `--xr-sim` draws both eyes side by side in the window, through the same render path a headset uses
-- tests: `xr_sim_eyes` (two eyes drawn, each with its own view: screenshot halves differ by parallax, not
-  content), `xr_sim_frame` (begin, eyes, submit in order, every frame)
-- replace the `#ifdef zox_xr` splits in huds, skybox and main with a runtime `zox_xr_active`, so the simulator
-  takes the same branches a headset does
+- done: `--xr-sim` draws both eyes side by side through the same eye render a headset uses; `zox_xr_active`
+  replaced the `#ifdef zox_xr` splits (main.c keeps its own: they're platform start up); tst `xr_sim_eyes`
+- to do: the `xr_runtime` interface proper (the simulator and OpenXR still each have their own frame system), the
+  mouse turning the head, controllers from a gamepad, `xr_sim_frame` (begin, eyes, submit in order)
 
 ### 2. A free roam camera in the engine
 

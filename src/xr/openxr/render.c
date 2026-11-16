@@ -1,0 +1,40 @@
+// A headset's frame: OpenXR's events and frame, free roam from its sticks and head, each eye into its swapchain
+//  - runs in zoxp_render, after the transforms; no need to time it, it runs the render systems inside it
+//  - TODO (doc/plans/xr.md step 4): the ui as 3D panels, not the 2D pass
+void xr_camera_render_system(iter* it) {
+    zox_sys_on_begin();
+    zox_sys_world();
+    byte running = 1;
+    if (!xr_can_render(&running)) {
+        if (!running) {
+            zox_log("[XR] session ended, ending the game");
+            engine_end();
+        }
+        return;
+    }
+    xr_get_eyes();
+    xr_update_time();
+    float2 move = float2_zero;
+    float2 turn = float2_zero;
+    if (xr_update_input()) {
+        move = xr_get_left_stick();
+        turn = xr_get_right_stick();
+    }
+    xr_roam_update(world, xr_camera, move, turn, xr_head_rotation, delta_time);
+    const float4x4 body = xr_roam_body_matrix();
+    for (int i = 0; i < 2; i++) {
+        const xr_eye eye = xr_eyes[i];
+        if (!xr_eye_render_begin(eye.swapchain, eye.images, eye.fbo)) {
+            zox_loge("[XR] xr_eye_render_begin failed");
+            continue;
+        }
+        xr_render_eye(world, eye.matrix, eye.fov, body, float2_zero, int2_to_float2(eye.image_size));
+        xr_eye_render_end(eye.swapchain);
+    }
+    xr_end_frame();
+    zox_sys_on_end();
+} zoxd_system(xr_camera_render_system);
+
+void zox_systems_openxr(ecs* world) {
+    zox_system_1(xr_camera_render_system, zoxp_render, 0);
+}

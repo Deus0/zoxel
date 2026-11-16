@@ -1,9 +1,8 @@
 // tst: camera_projection_angles, a projection from four angles (cameras/fun/projection_angles.c, OpenXR's eyes)
 //  - symmetric (45 degrees each side) and off centre (a headset's eye: wider to its outside): a point on each edge
-//      of its view, 2 ahead, lands on that edge (x -1 and 1, y 1 and -1 apart), the near and far planes at depth
+//      of its view, 2 ahead, lands on that edge (x and y -1 and 1), the near and far planes at depth
 //      -1 and 1
-//  - logs which way y goes: it's flipped as written (up to -1), with glFrontFace(GL_CW) in xr/sys/render.c that
-//      may cancel; checked on a headset before either changes
+//  - y goes up: the up edge at 1 (it was flipped, the world drawn upside down)
 //  - run: bash bsh/tst.sh camera_projection_angles
 static inline float3 zox_tst_xr_ndc(float4x4 projection, float3 p) {
     const float4 clip = float4x4_multiply_float4(projection, (float4) { p.x, p.y, p.z, 1 });
@@ -25,12 +24,12 @@ void zox_tst_camera_projection_angles_check(ecs* world) {
         const float3 up = zox_tst_xr_ndc(projection, (float3) { 0, tanf(a.w) * d, -d });
         const float3 at_near = zox_tst_xr_ndc(projection, (float3) { 0, 0, -near });
         const float3 at_far = zox_tst_xr_ndc(projection, (float3) { 0, 0, -far });
-        zox_log("[tst] [metric] camera_projection_angles %s: left [%.3f] right [%.3f] down [%.3f] up [%.3f] (y %s) near [%.3f] far [%.3f]",
-            names[i], left.x, right.x, down.y, up.y, up.y < 0 ? "flipped, up is -1" : "up is 1", at_near.z, at_far.z);
+        zox_log("[tst] [metric] camera_projection_angles %s: left [%.3f] right [%.3f] down [%.3f] up [%.3f] near [%.3f] far [%.3f]",
+            names[i], left.x, right.x, down.y, up.y, at_near.z, at_far.z);
         zox_tst_check(fabsf(left.x + 1) < 1e-4f && fabsf(right.x - 1) < 1e-4f, "%s: the left and right edges land at [%.3f] [%.3f], not -1 and 1",
             names[i], left.x, right.x);
-        zox_tst_check(fabsf(fabsf(down.y) - 1) < 1e-4f && fabsf(fabsf(up.y) - 1) < 1e-4f && fabsf(up.y + down.y) < 1e-4f,
-            "%s: the down and up edges land at [%.3f] [%.3f], not either side's edge", names[i], down.y, up.y);
+        zox_tst_check(fabsf(down.y + 1) < 1e-4f && fabsf(up.y - 1) < 1e-4f,
+            "%s: the down and up edges land at [%.3f] [%.3f], not -1 and 1", names[i], down.y, up.y);
         zox_tst_check(fabsf(at_near.z + 1) < 1e-3f && fabsf(at_far.z - 1) < 1e-3f, "%s: near and far depths [%.3f] [%.3f], not -1 and 1",
             names[i], at_near.z, at_far.z);
     }
@@ -85,7 +84,7 @@ void zox_tst_camera_free_roam_check(ecs* world) {
         float3_length(float3_sub(curve_30, curve_120)));
 }
 
-// tst: camera_xr_eyes, an eye placed by the camera (xr/sys/render.c: the eye's pose, then the camera's)
+// tst: camera_xr_eyes, an eye placed by the camera (xr/fun/eye_render.c: the eye's pose, then the camera's)
 //  - eyes 64mm apart, the camera moved and turned: each eye is the camera's position plus its offset turned by the
 //      camera, both level and the distance apart kept, along the camera's right
 //  - run: bash bsh/tst.sh camera_xr_eyes

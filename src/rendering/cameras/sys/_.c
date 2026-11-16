@@ -45,7 +45,8 @@ void zox_systems_rendering_cameras(ecs *world) {
         [in] cameras.ScreenPosition,
         [in] core.PixelSize,
         [in] colorz.FogColor,
-        [none] !cameras.CameraUI
+        [none] !cameras.CameraUI,
+        [none] !cameras.XrCamera
     );
     zox_system_1(
         camera_render_ui_system,
