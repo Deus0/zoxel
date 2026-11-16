@@ -19,6 +19,7 @@ const SoundEffect sound_effects[sound_effect_end] = {
     [sound_effect_click_rare] = { "click rare", instrument_harp, 52, 52, 0.4f, 0.5f, 1.2f, 1.4f },
     [sound_effect_start] = { "start", instrument_piano, 40, 40, 2.8f, 2.8f, 1.1f, 1.3f },
     [sound_effect_ui_open] = { "ui open", instrument_harp, 47, 50, 0.25f, 0.3f, 0.8f, 1.0f },
+    [sound_effect_splash] = { "splash", instrument_squelch, 34, 38, 0.3f, 0.4f, 1.8f, 2.2f },
 };
 
 // materials, what a hit sounds like by what it hits (doc/sounds.md), kinds link one (link_hit_sound)

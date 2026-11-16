@@ -1,5 +1,6 @@
 
 #include "inside_block.c"
+#include "water_splash.c"
 
 void zox_events_terrain_collisions(ecs* world) {
     zox_on_add(
@@ -9,5 +10,13 @@ void zox_events_terrain_collisions(ecs* world) {
         [out] blocks.InsideBlockTime,
         [none] blocks.BlockSoundTrigger,
         [none] blocks.InsideBlockUpdate,
+    );
+    zox_on_add(
+        water_splash_event,
+        [in] blocks.InsideBlock,
+        [in] transforms3.Position3D,
+        [in] physics3.Velocity3D,
+        [out] blocks.InsideBlockLast,
+        [none] blocks.InsideBlockDirty,
     );
 }

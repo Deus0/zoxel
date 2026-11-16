@@ -1,5 +1,5 @@
 // extern entity spawn_dialogue_tree(ecs*, entity, char*);
-extern entity spawn_node_speech(ecs*, char*);
+extern entity spawn_node_speech(ecs*, const char*);
 
 entity2 spawn_dialogue_tree_texts(
     ecs* world,

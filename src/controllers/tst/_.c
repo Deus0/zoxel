@@ -41,6 +41,7 @@
 extern char zox_screenshot_request[256];
 #include "world_only.c"
 #include "water.c"
+#include "water_splash.c"
 #include "block_frames.c"
 #include "streamers.c"
 #include "statbars_hide.c"
@@ -685,4 +686,5 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("vegetation_chunks", zox_tst_vegetation_chunks_ready, zox_tst_vegetation_chunks_check, 120);
     zox_tst_add("music_crossfade", zox_tst_music_crossfade_ready, zox_tst_music_crossfade_check, 120);
     zox_tst_set_setup("music_crossfade", NULL, 1);
+    zox_tst_add("water_splash", water_splash_ready, water_splash_check, 120);
 }

@@ -30,6 +30,7 @@ typedef struct {
     double at;
 } WaterFlow;
 zoxc_arrayd(WaterFlows, WaterFlow)
+zoxc_byte(InsideBlockLast);
 #include "spawn2.c"
 
 entity get_linked_terrain(ecs* world, entity e) {
@@ -62,4 +63,5 @@ void zox_components_terrain(ecs *world) {
     zoxd_tag(BlockRoad);
     zoxd_tag(BlockWater);
     zoxd_arrayd(WaterFlows);
+    zoxd_byte(InsideBlockLast);
 }
