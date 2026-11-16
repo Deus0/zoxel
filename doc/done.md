@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-16
+-x Placing a block in an all air chunk gives it a mesh: not reproduced (a mesh within ~1s, 3 runs), tst place_mesh
+  guards it (a block in the middle and one in the corner)
 -x minimap flashes black when updating lods
 -x Item in hand dissapears when updating body - parts
 -x Skeleton pose resets when we rebuild skeleton

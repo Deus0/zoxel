@@ -19,9 +19,6 @@
 	- importer can then know to scale it up
 	- make a imports.md that explains how to add to the import folders for users, inc file types
 - Sometimes when i alt tab, the raycasting UI breaks
-- When place above chunk - no mesh spawns
-	- add mesh spawn tests around this
-	- old report, need to verify, that chunks with no mesh can spawn one when placing a voxel in it
 - Crosshair will flicker siize too fast
     - give crossbar more natural animations when you see npc
     - seperate animation for the terrain or air
