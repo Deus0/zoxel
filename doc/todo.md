@@ -172,7 +172,7 @@
 - Flying's slowest frames now: new tables while streaming (16%), colored chunk meshes (9%), tst perf_fly
 - Water in the world (the block, its rippling texture and blended meshes are in, tst water_block)
 	- (done: a sea at 18, lakes in bowls, doc/tech/water.md) rivers later
-	- flowing: water spreads into air beside and below it, a few blocks
+	- (done: flowing, it falls and spreads 4, doc/tech/water.md) water levels, thinner as it spreads, and draining
 	- sorting: blended chunk meshes drawn far to near, so water seen through water looks right
 - Underwater
 	- change filter of camera - add block - sky darkened

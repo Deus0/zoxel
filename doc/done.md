@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-16
+-x Flowing water: an edit next to water fills it, water falls and spreads 4 blocks, tst water_flow
+-x A realm without a save folder no longer saves its chunks beside the binary (the tests' realms did, the next run
+  loaded them)
 -x Lakes: a bowl carved into the land in some 64 block cells, full to a block under its rim, nothing growing in it,
   towns and mountains kept out (a town square sat in one, a mountain filled another); tst lakes; doc/tech/water.md
 -x Water's texture fills its block's face (it was a quarter of it with Block Res 5: its texture kept the boot size)

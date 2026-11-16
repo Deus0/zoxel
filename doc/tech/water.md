@@ -39,19 +39,33 @@ How water works now: the block, how it's drawn, the sea and lakes, and how it's 
 - Nothing grows in a bowl (vegetation skips its columns); towns and mountains keep out of lakes
   (`region_zones_add_lakes` adds them to a region's placement zones before those are placed).
 
+## Flowing
+
+- src/terrain/sys/water_flow.c. A chunk just edited (`VoxelNodePostDirty`) adds its edited blocks to its terrain's
+  `WaterFlows`; `water_flow_system` takes up to 64 due a frame:
+  - air with water over it or beside it fills with water;
+  - water falls into air under it, else spreads to air beside it, at most 4 blocks (`zox_water_flow_steps`) from
+    where the flow began; a step every quarter second (`zox_water_flow_time`).
+- Flowing water's own edits are marked (`VoxelNodeUpdate.flowed`) and start no flow, so it stops. Dug out of a
+  lake's side, a lake fills the hole and spreads 4 into a tunnel; the lake itself never drains (water doesn't move,
+  only fills).
+- Generated water (landfill) doesn't flow: only edits do.
+
 ## Tests
 
 - `water_block`: placed water and bricks, the faces, the blended mesh, the tile animating and filling its tile, its
   faces' uvs spanning it.
 - `block_frames`: every animated block's frames side by side (tst/blocks/<block>_frames.ppm), they change, loop and
   tile.
+- `water_flow`: no player; water dropped on a brick floor lands and covers the blocks within 4 of where it landed,
+  then a brick dug from under it drains it down the hole.
 - `sea_level` and `lakes`: no player, a realm and terrain of their own (src/controllers/tst/world_only.c), one camera
   over the nearest open water or lake, its land streamed round it, looking down (tst/sea.ppm, tst/lake.ppm); its
   water checked against the heights. `zox_tst_sea_near=1` looks at the sea from close.
 
 ## Not yet
 
-- Flowing water (spreading into air beside and below it), rivers.
+- Rivers; water with levels (thinner as it spreads, Minecraft style) and draining; flowing across a chunk not loaded.
 - Blended meshes drawn far to near (water seen through water).
 - Underwater: a darker view, splashes, swimming, sounds muffled.
 - Towns on sunken ground by the sea (todo.md Bugs).
