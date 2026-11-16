@@ -120,12 +120,53 @@ void zox_tst_water_block_check(ecs* world) {
             animation->position.y, frames->length / (size.x * size.y), animation->frame, zox_tst_water_pixels, now);
         zox_tst_check(frames->length / (size.x * size.y) == zox_water_frames, "water has [%i] frames, not [%i]", frames->length / (size.x * size.y), zox_water_frames);
         zox_tst_check(now != zox_tst_water_pixels, "the water tile didn't change in [%.1fs]", zox_current_time - zox_tst_water_time);
+        // it fills its tile: a tile is the tilemap's size over its tiles a side, none of it left blank (white)
+        const int2 tiles = zox_getv(tilemap, TilemapSize), map_size = zox_getv(tilemap, TextureSize);
+        const int2 tile = { map_size.x / tiles.x, map_size.y / tiles.y };
+        const TextureData* data = zox_get(tilemap, TextureData);
+        int blank = 0;
+        for (int y = 0; y < tile.y; y++) for (int x = 0; x < tile.x; x++) {
+            const color c = data->value[(animation->position.y + y) * map_size.x + animation->position.x + x];
+            blank += c.r == 255 && c.g == 255 && c.b == 255;
+        }
+        zox_log("[tst] [metric] water_block its tile [%ix%i], its texture [%ix%i], [%i] blank pixels in the tile", tile.x, tile.y, size.x, size.y, blank);
+        zox_tst_check(!blank, "[%i] of the water tile's [%i] pixels are blank: its texture doesn't fill its tile", blank, tile.x * tile.y);
+        zox_tst_check(size.x == tile.x && size.y == tile.y && size.x == powers_of_two[block_depth],
+            "the water texture is [%ix%i], its tile [%ix%i], a block's texture [%i]: it would show at a part of its face", size.x, size.y,
+            tile.x, tile.y, powers_of_two[block_depth]);
     }
     // its faces
     int vertices, solid, water_meshes;
     zox_tst_water_vertices(world, zox_tst_water_chunk, &vertices, &solid, &water_meshes);
     zox_log("[tst] [metric] water_block meshes: water [%i] ([%i] faces, [%i] meshes), bricks [%i] ([%i] faces)", vertices, vertices / 4,
         water_meshes, solid, solid / 4);
+    // its faces' uvs span its tile: a face's uvs across a tile's share of the tilemap each way
+    {
+        entity meshes[zox_chunk_meshes_max];
+        const uint count = get_chunk_meshes(world, zox_tst_water_chunk, meshes);
+        const entity tilemap = zox_get_link(world, zox_tst_water_chunk, Tilemap);
+        const int2 tiles = zox_getv(tilemap, TilemapSize);
+        for (uint i = 0; i < count; i++) {
+            if (zox_has(meshes[i], Disabled) || !zox_has(meshes[i], TransparentMesh) || !zox_has(meshes[i], MeshUVs)) {
+                continue;
+            }
+            const MeshUVs* uvs = zox_get(meshes[i], MeshUVs);
+            for (int f = 0; f + 3 < uvs->length && f < 4 * 9; f += 4) {
+                float2 lo = uvs->value[f], hi = uvs->value[f];
+                for (int k = 1; k < 4; k++) {
+                    const float2 u = uvs->value[f + k];
+                    lo = (float2) { u.x < lo.x ? u.x : lo.x, u.y < lo.y ? u.y : lo.y };
+                    hi = (float2) { u.x > hi.x ? u.x : hi.x, u.y > hi.y ? u.y : hi.y };
+                }
+                const float2 span = { (hi.x - lo.x) * tiles.x, (hi.y - lo.y) * tiles.y };
+                if (f == 0) {
+                    zox_log("[tst] [metric] water_block a face's uvs span [%.3f x %.3f] tiles (tilemap [%ix%i] tiles)", span.x, span.y, tiles.x, tiles.y);
+                }
+                zox_tst_check(fabsf(span.x - 1) < 0.01f && fabsf(span.y - 1) < 0.01f, "a water face's uvs span [%.3f x %.3f] of its tile, not all of it",
+                    span.x, span.y);
+            }
+        }
+    }
     zox_tst_check(water_meshes == 1, "[%i] see through meshes shown, not one", water_meshes);
     zox_tst_check(vertices == 9 * 4, "the water has [%i] faces, not its 9 outside ones (none between its blocks or against the bricks)", vertices / 4);
     zox_tst_check(solid == 6 * 4, "the bricks have [%i] faces, not all 6 (its face against the water shows)", solid / 4);
@@ -193,7 +234,9 @@ byte zox_tst_sea_level_ready(ecs* world) {
             return 1;
         }
         // 8 blocks up and 5 back, looking down at it; drawn alone on the screen (no hud, no game view)
-        const float3 eye = float3_add(zox_tst_sea_spot, (float3) { 0, 8 * scale, 5 * scale });
+        // zox_tst_sea_near: 2 blocks up and 1 back, to see a block's texture close
+        const byte near = getenv("zox_tst_sea_near") != NULL;
+        const float3 eye = float3_add(zox_tst_sea_spot, near ? (float3) { 0, 2 * scale, 1 * scale } : (float3) { 0, 8 * scale, 5 * scale });
         zox_tst_sea_camera = spawn_viewport_camera(world, main_app, eye, camera_look_at(eye, zox_tst_sea_spot), 70,
             viewport_grid_cell(0, 1, 1));
         prefab_add_streamer(world, zox_tst_sea_camera);

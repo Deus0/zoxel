@@ -41,6 +41,9 @@ entity spawn_realm_block_textured(
     zox_set_parent(world, e, parent);
     entity texture = zox_ins(world, prefab_texture);
     zox_set_unique_name(texture, name);
+    // the size of every block's texture now: the Block Res setting resizes the block texture prefabs, not this one's
+    //  (a 16 pixel water texture in 32 pixel tiles showed at a quarter of its face)
+    zox_setv(texture, TextureSize, int2_single(powers_of_two[block_depth]));
     zox_setv(texture, Seed, seed);
     zox_setv(texture, FillColor, primary);
     zox_setv(texture, ChildIndex, 0);
