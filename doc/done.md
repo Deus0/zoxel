@@ -1,6 +1,12 @@
 # Done
 
 ## 2026-11-17
+-x arms choppy turning and walking: the guard's reach was measured between bones of two frames (the shoulder carried
+  to now, the elbow not), short by the body's move, the guard pulled in and out; tst guard_steady (0.39 of reach off,
+  now 0.03); the guard aims by the head and camera's turn this frame, not the hierarchy's last
+-x XR hand upside down: the hand onto the controller's turn was the shortest turn down to forward, its thumb side
+  ending down; now its front goes up the controller's up (ik_hand_rest_to_target); tst arm_reach checks the roll
+-x XR pause on Y as well as the menu button (headsets keep theirs); xr_continue only in test builds (make run failed)
 -x XR the real neck: the headset's eyes swing about the player's neck as they look about; only the neck's moves
   count now (xr_neck_room): its x z walks the body (looking down slid it forward), its y lowers the view (crouching;
   looking down dropped the eyes into the chest); the simulator's head turns about a neck; tst xr_body checks both

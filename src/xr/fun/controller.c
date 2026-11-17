@@ -6,6 +6,7 @@
 //      simulator (sim/)
 //  - Gamepad: the device mode they play as; DeviceNavigator: the right hand's, it navigates (its stick) and clicks
 //  - the right hand: stick, A, B, grip (RB), trigger (RT); the left: stick, X, Y, grip (LB), trigger (LT), menu
+//    (start: pauses; on a headset its menu button or Y, openxr/controller.c)
 //  - the right trigger clicks as A does (point and pull, as on a headset), its source writes both
 //  - sticks as SDL's gamepads have them (x flipped from OpenXR's), xr_controller_stick flips them back
 

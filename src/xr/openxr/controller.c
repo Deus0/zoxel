@@ -11,7 +11,8 @@ static byte xr_openxr_button(byte hand, byte type) {
         case zox_btn_b:
         case zox_btn_y:
             return xr_get_bool(secondary_action, hand);
-        case zox_btn_start: return xr_get_bool(menu_action, hand);
+        // pause: the menu button, or Y (a headset's menu button is often the system's, unseen by the app)
+        case zox_btn_start: return xr_get_bool(menu_action, hand) || (!hand && xr_get_bool(secondary_action, hand));
         case zox_btn_lb:
         case zox_btn_rb:
             return xr_get_float(grip_action, hand) >= xr_trigger_cutoff;

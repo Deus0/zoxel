@@ -73,19 +73,28 @@ void punch_ik_system(iter* it) {
         }
         float3 facing = float3_forward;
         float flip = 1;     // a camera faces -z, its x the body's flipped
+        // where the body is now (physics moved it after the hierarchy placed the bones), the head and camera
+        //  turned as they are this frame (their local turns: the look, a mouse's pitch), not the hierarchy's
+        //  last (a frame behind the view: the guard juddered in it turning, tst guard_steady)
+        const skeleton_now now = skeleton_now_get(world, e);
+        const entity head_parent = zox_get_parent(world, head);
+        float4 head_rotation = quaternion_rotate(
+            skeleton_now_rotation(&now, zox_valid(head_parent) && zox_has(head_parent, Rotation3D) ?
+                zox_getv(head_parent, Rotation3D) : zox_getv(head, Rotation3D)),
+            zox_valid(head_parent) && zox_has(head_parent, Rotation3D) ? zox_getv(head, LocalRotation3D) : quaternion_identity);
         const entity camera = zox_get_child_by_id(world, head, zox_id(Camera));
         if (zox_valid(camera)) {
-            head = camera;
+            head_rotation = quaternion_rotate(head_rotation, zox_getv(camera, LocalRotation3D));
             facing = float3_backward;
             flip = -1;
         }
-        // where the body is now (physics moved it after the hierarchy placed the bones)
-        const skeleton_now now = skeleton_now_get(world, e);
-        const float4 head_rotation = skeleton_now_rotation(&now, zox_getv(head, Rotation3D));
         const float3 look = float4_rotate_float3(head_rotation, facing);
         const float3 from = skeleton_now_point(&now, zox_getv(shoulder, Position3D));
+        // the arm's length from its bones as the hierarchy left them, all last frame's: from the shoulder carried to
+        //  now to an elbow not carried it read short by however far the body moved or turned since, the guard
+        //  (a share of the reach) pulled in and out turning and walking (choppy, tst guard_steady)
         const float3 elbow = zox_getv(arm.bones[arm.length - 2], Position3D);
-        const float reach = float3_distance(from, elbow) +
+        const float reach = float3_distance(zox_getv(shoulder, Position3D), elbow) +
             float3_distance(elbow, zox_getv(arm.bones[arm.length - 1], Position3D));
         const float p = punching ? (float) (passed / speed->value) : 1;
         const float out = punching ? ik_punch_distance(p) : ik_punch_guard;

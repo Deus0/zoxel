@@ -1,7 +1,8 @@
 // tst: arm_reach, the player's right arm reaches a point with ik (bones/ik) using the skeleton's own bones
 //  - holds the right shoulder (IKHeld, as XR hands do) on a point ahead of and below it, within its reach
 //  - its hand bone lands on the point, its elbow bends (the forearm turned)
-//  - turned as the target rotation (IKTargetRotation, an XR controller's): the hand's rest down along its forward
+//  - turned as the target rotation (IKTargetRotation, an XR controller's): the hand's rest down along its forward,
+//    its front (thumb side) up
 //  - run: bash bsh/tst.sh arm_reach
 double zox_tst_arm_reach_start = 0;
 float3 zox_tst_arm_reach_target;
@@ -69,6 +70,12 @@ void zox_tst_arm_reach_check(ecs* world) {
     const float turn = float3_dot(pointing, wanted);
     zox_log("[tst] arm_reach: hand points along its target [%.4f]", turn);
     zox_tst_check(turn > 0.99f, "the hand didn't turn to its target [%f]", turn);
+    // its front (the thumb's side) up the target's up, as a held controller's (it was upside down)
+    const float3 front = float4_rotate_float3(zox_getv(hand, Rotation3D), (float3) { 0, 0, 1 });
+    const float3 up = float4_rotate_float3(zox_getv(shoulder, IKTargetRotation), float3_up);
+    const float roll = float3_dot(front, up);
+    zox_log("[tst] arm_reach: hand's front along its target's up [%.4f]", roll);
+    zox_tst_check(roll > 0.99f, "the hand is rolled off its target [%f] (upside down at -1)", roll);
 }
 
 void zox_tsts_arm_reach(ecs* world) {
