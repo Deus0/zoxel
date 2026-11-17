@@ -6,10 +6,13 @@ void game_state_load(ecs* world, entity game, byte state) {
     if (state == zox_game_state_the_end || state == zox_game_none) {
         huds3_dark = 0;     // left mid load
     }
+    if (state == zox_game_load_start && zox_huds3D) {
+        huds3_dark = 1;     // fading to black (huds3_dark_system) as the menu goes, before loading begins
+    }
     if (!is_spawn && !is_destroy) {
         return;
     }
-    huds3_dark = is_spawn && zox_huds3D;
+    huds3_dark = is_spawn && zox_huds3D;   // lit again, faded in, at load end
     iter it2 = zox_children(world, game);
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {

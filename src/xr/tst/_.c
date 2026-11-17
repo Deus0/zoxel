@@ -5,6 +5,7 @@
 #include "room.c"
 #include "body.c"
 #include "frustum.c"
+#include "continue.c"
 
 void zox_tsts_xr(ecs* world) {
     zox_tsts_xr_sim(world);
@@ -13,4 +14,5 @@ void zox_tsts_xr(ecs* world) {
     zox_tsts_xr_room(world);
     zox_tsts_xr_body(world);
     zox_tsts_xr_frustum(world);
+    zox_tsts_xr_continue(world);
 }

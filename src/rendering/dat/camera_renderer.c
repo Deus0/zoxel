@@ -16,8 +16,15 @@ static inline float get_fog_density() {
         0;
 }
 
+// 0 to 1, the 3D view faded to black (XR loading: huds3_darkness): the fog darkens and thickens, the far first
+//  - 3D uis render without it (the loading label stays lit)
+float render_darkness = 0;
+#define render_darkness_density 60.0f   // the fog's density fully dark: black a few cm out
+
 static inline float4 get_fog_value() {
-    return float4_from_float3(color_rgb_to_float3(renderer_fog_color), get_fog_density());
+    const float dark = render_darkness;
+    const float3 fog = float3_scale(color_rgb_to_float3(renderer_fog_color), 1 - dark);
+    return float4_from_float3(fog, get_fog_density() + render_darkness_density * dark * dark * dark * dark);
 }
 
 void set_camera_fog_color(ecs* world, color_rgb fog) {

@@ -32,6 +32,7 @@ void zox_systems_game_ui(ecs *world) {
         [in] inputs.DeviceMode,
         [none] players.Player
     );
+    zox_system_1(huds3_dark_system, zoxp_update, 0);
     // main thread: it reads the camera
     zox_system_1(
         huds3_follow_system,

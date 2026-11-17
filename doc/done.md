@@ -1,6 +1,12 @@
 # Done
 
 ## 2026-11-17
+-x XR continue and pause: the load menu and pause menu are 3D lists on 3D huds (they were 2D, unseen in a headset),
+  a save goes straight in (no realm menu); tst xr_continue: continue, the newest save, pause by the menu button, return
+-x XR loading fades: to black as loading starts and back after (huds3_darkness, rendering's render_darkness: the
+  clear colour and fog darken, the fog thickening so the far goes first, 3D uis unfaded); tst xr_play checks both ways
+-x XR device mode: the keyboard, mouse and touchscreen are feeders on a headset too, only the controllers (and
+  gamepads) switch it; tst xr_body checks the controllers enabled playing
 -x XR frustum culling: the xr camera culled by the desktop's FieldOfView and the window's aspect, not its eyes; now
   it projects from FieldOfViewAngles (cameras), the union of both eyes' off centre angles plus a margin (the eyes'
   offset, the head turning before they draw), set each frame from the headset's eyes or the simulator's

@@ -54,7 +54,7 @@ void import_xr(ecs* world) {
     zoxd_byte(XrHand);
     add_hook_spawn_prefabs(zox_spawn_prefabs_xr);
     add_hook_on_boot(xr_spawn_camera);
-    add_hook_on_boot(xr_sim_feed_devices);
+    add_hook_on_boot(xr_feed_devices);
     zox_systems_xr_hands(world);
     zox_systems_xr_body(world);
     zox_systems_xr_scale(world);

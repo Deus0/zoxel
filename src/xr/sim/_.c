@@ -18,6 +18,7 @@ static float3 xr_sim_head_euler = { 0, 0, 0 };
 // scripted presses (tests), held on top of the keys: the right hand's A and stick, the left's stick, the head's
 //  place in the room (walking in it) and turn
 byte xr_sim_script_a = 0;
+byte xr_sim_script_start = 0;    // the left hand's menu button
 float2 xr_sim_script_stick = { 0, 0 };
 float2 xr_sim_script_left_stick = { 0, 0 };
 float3 xr_sim_script_head_position = { 0, 0, 0 };
@@ -58,7 +59,7 @@ static byte xr_sim_button(const Keyboard* keyboard, byte type) {
     switch (type) {
         case zox_btn_a: return xr_sim_script_a || keyboard->space.is_pressed || keyboard->enter.is_pressed;
         case zox_btn_b: return keyboard->backspace.is_pressed;
-        case zox_btn_start: return keyboard->escape.is_pressed;
+        case zox_btn_start: return xr_sim_script_start || keyboard->escape.is_pressed;
         default: return 0;
     }
 }
@@ -109,17 +110,20 @@ void xr_sim_controllers_system(iter* it) {
     zox_sys_on_end();
 } zoxd_system(xr_sim_controllers_system);
 
-// the keyboard and mouse feed the controllers, they never switch the device mode themselves
-void xr_sim_feed_devices(ecs* world, entity app) {
+// XR plays by its controllers: the keyboard, mouse and touchscreen never switch the device mode (DeviceFeeder), on
+//  the simulator they feed the controllers, on a headset they're stray (Android's pointer and touch events flipped
+//  the mode off the gamepad, Disabled the controllers: in game the stick didn't walk, start didn't pause, while
+//  the menus, reading the sticks direct, still worked)
+void xr_feed_devices(ecs* world, entity app) {
     (void) app;
-    if (!zox_xr_sim) {
+    if (!zox_xr_active) {
         return;
     }
-    if (zox_valid(local_keyboard)) {
-        zox_add(local_keyboard, DeviceFeeder);
-    }
-    if (zox_valid(local_mouse)) {
-        zox_add(local_mouse, DeviceFeeder);
+    const entity devices[] = { local_keyboard, local_mouse, local_touchscreen };
+    for (int i = 0; i < 3; i++) {
+        if (zox_valid(devices[i])) {
+            zox_add(devices[i], DeviceFeeder);
+        }
     }
 }
 

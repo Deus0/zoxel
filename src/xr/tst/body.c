@@ -9,6 +9,8 @@
 //    scaled
 //  - the left stick walks the character, at speed straight away and stopped straight away (no inertia), each
 //    frame's move steady over its dt (friction on: its drag flickering with Grounded made bumps); walking 0.3m in the room moves it 0.3m
+//  - the device mode is the controllers': they're enabled playing, the keyboard, mouse and touchscreen feeders
+//    (on a headset Android's stray pointer events switched the mode off them, the stick didn't walk)
 //  - run: bash bsh/tst.sh xr_body
 int zox_tst_xr_body_frames = 0;
 float zox_tst_xr_body_worst_eyes = 0;       // the view's eyes from the camera, worst
@@ -165,6 +167,17 @@ byte zox_tst_xr_body_ready(ecs* world) {
 }
 
 void zox_tst_xr_body_check(ecs* world) {
+    for (byte i = 0; i < 2; i++) {
+        zox_tst_check(zox_valid(xr_controllers[i]) && !zox_has(xr_controllers[i], Disabled), "the xr controller [%i] is disabled playing", i);
+    }
+    {
+        entity devices[zox_children_capacity];
+        const uint length = zox_get_children_by_id(world, zox_players[0], devices, zox_children_capacity, zox_id(Device));
+        for (uint j = 0; j < length; j++) {
+            zox_tst_check(zox_has(devices[j], XrController) || zox_has(devices[j], DeviceFeeder),
+                "the device [%s] can switch the device mode off the xr controllers", zox_getn(devices[j]));
+        }
+    }
     zox_log("[tst] xr_body: eyes off the camera [%.4f], facing turned [%.5f], look [%.4f], walked [%.3f], room [%.3f]",
         zox_tst_xr_body_worst_eyes, zox_tst_xr_body_facing_turn, zox_tst_xr_body_look, zox_tst_xr_body_walked, zox_tst_xr_body_room);
     zox_tst_check(zox_tst_xr_body_worst_eyes < 0.02f, "the eyes left the camera by [%f]", zox_tst_xr_body_worst_eyes);

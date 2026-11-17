@@ -8,13 +8,16 @@
 #define xr_near_distance 0.01f
 #define xr_far_distance 800.0f
 const color xr_clear_color = (color) { 33, 38, 38, 255 };
-const color xr_dark_color = (color) { 0, 0, 0, 255 };
-// - dark (huds3_dark, loading): black, only the 3D uis drawn (the "Loading" label), not the world as it loads
+// - darkness (render_darkness, huds3_darkness: loading fades to black and back): the clear colour and the fog darken
+//   (the fog thickens, the far goes first); fully dark only the 3D uis are drawn (the "Loading" label), not the
+//   world as it loads; the 3D uis never darken
 
 void xr_render_eye(ecs* world, float4x4 eye, float4 fov, float4x4 body, float2 viewport_position, float2 viewport_size, byte flip_y) {
     zox_gpu_set_viewport(viewport_position, viewport_size);
-    const byte dark = huds3_dark;
-    const color clear = dark ? xr_dark_color : xr_clear_color;
+    const float darkness = render_darkness;
+    const byte dark = darkness >= 1;
+    const float lit = 1 - darkness;
+    const color clear = { xr_clear_color.r * lit, xr_clear_color.g * lit, xr_clear_color.b * lit, 255 };
     zox_gpu_set_clear_color(color_to_float4(clear));
     zox_gpu_clear_rect(viewport_position, viewport_size);
     zox_gpu_enable_depth_test();
@@ -36,17 +39,20 @@ void xr_render_eye(ecs* world, float4x4 eye, float4 fov, float4x4 body, float2 v
     const float4x4 world_eye = float4x4_multiply(eye, body);    // the eye, then the body
     render_camera_position = float4x4_get_position(world_eye);
     render_camera_matrix = float4x4_multiply(float4x4_inverse(world_eye), projection);   // the view, then the projection
-    renderer_fog_color = color_to_color_rgb(clear);
+    renderer_fog_color = color_to_color_rgb(xr_clear_color);   // darkened in get_fog_value
     for (byte j = 0; j < max_render_loop_orders; j++) {
         for (size_t k = 0; k < render3D_systems->size; k++) {
             const entity system = render3D_systems->data[k];
-            if (dark && system != zox_id(canvas3_render_system)) {
+            const byte ui = system == zox_id(canvas3_render_system);
+            if (dark && !ui) {
                 continue;
             }
+            render_darkness = ui ? 0 : darkness;
             const byte order = zox_has(system, RenderOrder) ? zox_getv(system, RenderOrder) : 0;
             if (order == j) {
                 ecs_run(world, system, 0, NULL);
             }
         }
     }
+    render_darkness = darkness;
 }

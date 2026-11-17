@@ -96,14 +96,17 @@ void zox_tsts_xr_menu(ecs* world) {
 //  - A on the start menu, A on the main menu's first button (New Game: tests have no saves), in with the
 //      defaults (no realm menu, 3D huds have no text input)
 //  - loading: the view dark (huds3_dark) with a 3D "Loading" label ahead (a Canvas3), each eye black but for it
-//      (tst/xr_load.ppm); gone and lit once playing
+//      (tst/xr_load.ppm); gone and lit once playing; fading both ways (part dark frames going in and coming out)
 //  - playing: the game state, the xr camera still the one rendering, both eyes drawing (tst/xr_play.ppm)
 //  - run: bash bsh/tst.sh xr_play
 int zox_tst_xr_play_stage = 0;
 int zox_tst_xr_play_frames = 0;
 byte zox_tst_xr_play_playing = 0;
 byte zox_tst_xr_play_load3 = 0;         // the load ui seen, a 3D one, the view dark
-int zox_tst_xr_play_load_shot = 0;      // frames into loading, the screenshot asked for at 30
+int zox_tst_xr_play_load_shot = 0;      // frames fully dark loading, the screenshot asked for at 10
+int zox_tst_xr_play_fade_in = 0;        // frames part dark, darkening
+int zox_tst_xr_play_fade_out = 0;       // frames part dark, lightening
+float zox_tst_xr_play_darkness = 0;
 
 static inline void zox_tst_xr_play_next() {
     zox_tst_xr_play_stage++;
@@ -121,6 +124,17 @@ byte zox_tst_xr_play_ready(ecs* world) {
     zox_tst_xr_play_frames++;
     // A held for a few frames, then let go (a click is its release)
     xr_sim_script_a = zox_tst_xr_play_frames >= 20 && zox_tst_xr_play_frames < 24 && zox_tst_xr_play_stage < 2;
+    {
+        const float darkness = huds3_darkness;
+        if (darkness > 0 && darkness < 1) {
+            if (darkness > zox_tst_xr_play_darkness) {
+                zox_tst_xr_play_fade_in++;
+            } else if (darkness < zox_tst_xr_play_darkness) {
+                zox_tst_xr_play_fade_out++;
+            }
+        }
+        zox_tst_xr_play_darkness = darkness;
+    }
     switch (zox_tst_xr_play_stage) {
         case 0:
             zox_tst_waiting = "the start menu";
@@ -143,7 +157,7 @@ byte zox_tst_xr_play_ready(ecs* world) {
                 const entity load_ui = zox_get_child_by_id(world, canvas, zox_id(LoadUI));
                 if (zox_valid(load_ui)) {
                     zox_tst_xr_play_load3 |= zox_has(load_ui, Canvas3) && huds3_dark;
-                    if (++zox_tst_xr_play_load_shot == 30) {
+                    if (huds3_darkness >= 1 && ++zox_tst_xr_play_load_shot == 10) {
                         remove(zox_tst_path("xr_load.ppm"));
                         snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("xr_load.ppm"));
                     }
@@ -184,7 +198,10 @@ static inline void zox_tst_xr_dark_eye(const byte* pixels, int2 size, int eye, f
 void zox_tst_xr_play_check(ecs* world) {
     zox_tst_check(zox_tst_xr_play_playing, "never playing");
     zox_tst_check(zox_tst_xr_play_load3, "loading had no 3D load ui on a dark view");
-    zox_tst_check(!huds3_dark, "still dark playing");
+    zox_tst_check(!huds3_dark && huds3_darkness == 0 && render_darkness == 0, "still dark playing [%.2f]", huds3_darkness);
+    zox_log("[tst] xr_play: faded in over [%i] frames, out over [%i]", zox_tst_xr_play_fade_in, zox_tst_xr_play_fade_out);
+    zox_tst_check(zox_tst_xr_play_fade_in >= 3, "loading cut to black, no fade in [%i frames]", zox_tst_xr_play_fade_in);
+    zox_tst_check(zox_tst_xr_play_fade_out >= 3, "loading cut from black, no fade out [%i frames]", zox_tst_xr_play_fade_out);
     zox_tst_check(!zox_valid(zox_get_child_by_id(world, zox_get_link(world, zox_players[0], CanvasLink), zox_id(LoadUI))), "the load ui is up playing");
     {
         int2 size;
