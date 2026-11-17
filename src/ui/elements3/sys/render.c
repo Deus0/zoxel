@@ -2,14 +2,19 @@
 //  the canvases drawn before; then its depth written (its solid parts), so later canvases go behind it
 //  - canvases aren't sorted (thousands), only each one's elements (under 100): doc/tech/uis.md (the translucency gotcha)
 //  - its elements come in tree order (a parent before its children), nearly layer order already: an insertion sort
-#define canvas3_elements_max 128
+//  - a hidden element (RenderDisabled) hides its children too, i.e. a scrolled list's rows (texts set their own
+//      RenderDisabled when respawned)
+#define canvas3_elements_max 512
 
-// its elements under e, in tree order
+// its shown elements under e, in tree order
 static inline int canvas3_gather(ecs* world, entity e, entity* elements, int count) {
     iter it = zox_children(world, e);
     while (zox_children_next(it)) {
         for (int i = 0; i < it.count; i++) {
             const entity e2 = it.entities[i];
+            if (zox_has(e2, RenderDisabled) && zox_getv(e2, RenderDisabled)) {
+                continue;
+            }
             if (count < canvas3_elements_max && zox_has(e2, Element3) && zox_has(e2, Layer)) {
                 elements[count++] = e2;
             }

@@ -4,6 +4,10 @@
 //      among the canvas's children); 2D layout and raycasts skip it (no Position2), layout3 places its children
 //  - sizes in canvas pixels, as a 2D list's; scale: the panel's height in metres (layout3 spans a canvas3 one high)
 //  - buttons: their text, on_click and tooltip, returned in spawned (count of them)
+//  - the buttons are a list as a 2D list's (list3_list under the panel, by ChildIndex): list_system places them,
+//      list_render_dirty_system shows ListVisible of them from ListStart. Over list3_rows_max buttons it scrolls,
+//      navigation keeping the selection in view (scroll_list_to_child), as a 2D list's
+#define list3_rows_max 8
 #define list3_margin 8
 #define list3_spacing 4
 #define list3_button_padding_x 8
@@ -34,11 +38,12 @@ entity spawn_list3(
         max_characters * font_size + list3_button_padding_x * 2,
         font_size + list3_button_padding_y * 2
     };
+    const byte rows = count > list3_rows_max ? list3_rows_max : count;
     const int header_height = header_length ? header_font_size + list3_header_padding * 2 : 0;
     const int2 size = {
         int_max(button_size.x, header_length * header_font_size + list3_header_padding * 2) + list3_margin * 2,
         list3_margin * 2 + header_height + (header_length ? list3_spacing : 0) +
-            count * button_size.y + (count > 0 ? (count - 1) * list3_spacing : 0)
+            rows * button_size.y + (rows > 0 ? (rows - 1) * list3_spacing : 0)
     };
     entity e = spawn_canvas3(world, prefab_canvas3, position, scale, size);
     zox_set_unique_name(e, "list3");
@@ -70,10 +75,24 @@ entity spawn_list3(
         zox_set_unique_name(text, "list3_header");
         y -= header_height + list3_spacing;
     }
+    // the buttons' list, below the header
+    const int list_height = rows * button_size.y + (rows > 0 ? (rows - 1) * list3_spacing : 0);
+    entity list = spawn_ui(world, prefab_layout3_child, panel, float2_centre, (int2) { 0, y - list_height / 2 },
+        (int2) { size.x - list3_margin * 2, list_height }, int2_zero);
+    zox_set_unique_name(list, "list3_list");
+    zox_setv(list, ListPadding, ((byte2) { 0, list3_spacing }));
+    zox_setv(list, ListMargins, byte2_zero);
+    zox_setv(list, ListAlignment, zox_alignment_centre);
+    zox_setv(list, ListStart, 0);
+    zox_setv(list, ListVisible, rows);
+    zox_add(list, ListPositionDirty);
     for (byte i = 0; i < count; i++) {
-        const int2 local = { 0, y - button_size.y / 2 };
-        entity button = spawn_uic(world, prefab_button3, panel, float2_centre, local, button_size, button_size, button_fill, button_outline);
+        // placed now (list_system places them again), the rows past the shown ones hidden
+        const int2 local = { 0, list_height / 2 - button_size.y / 2 - i * (button_size.y + list3_spacing) };
+        entity button = spawn_uic(world, prefab_button3, list, float2_centre, local, button_size, button_size, button_fill, button_outline);
         zox_setv(button, Layer, 1);
+        zox_setv(button, ChildIndex, i);
+        zox_setv(button, RenderDisabled, i >= rows);
         zox_setv(button, ClickEvent, elements[i].on_click.value);
         zox_set_unique_name(button, "list3_button");
         entity text = spawn_text(
@@ -93,7 +112,6 @@ entity spawn_list3(
         if (spawned) {
             spawned[i] = button;
         }
-        y -= button_size.y + list3_spacing;
     }
     return e;
 }

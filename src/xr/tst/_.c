@@ -7,6 +7,7 @@
 #include "lean.c"
 #include "frustum.c"
 #include "reach.c"
+#include "options.c"
 #ifdef zox_tests
 #include "continue.c"     // load_games' saves (huds tests, zox_tests only)
 #endif
@@ -20,6 +21,7 @@ void zox_tsts_xr(ecs* world) {
     zox_tsts_xr_lean(world);
     zox_tsts_xr_frustum(world);
     zox_tsts_xr_reach(world);
+    zox_tsts_xr_options(world);
 #ifdef zox_tests
     zox_tsts_xr_continue(world);
 #endif

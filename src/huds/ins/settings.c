@@ -65,6 +65,9 @@ entity spawn_menu_options(
     int2 position,
     float2 anchor)
 {
+    if (zox_huds3D) {
+        return spawn_menu_options3(world, player);     // a 3D list (XR)
+    }
     byte dbg_log = 0;
     byte window_alignment = zox_huds_window_alignment;
     float2 window_anchor = zox_huds_window_anchor;

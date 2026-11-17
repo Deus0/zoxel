@@ -89,8 +89,9 @@ static int compare_save_dirs_newest(const void* a, const void* b) {
     return strcmp(((const SaveDirSort*) a)->path, ((const SaveDirSort*) b)->path);
 }
 
-// 3D huds: the newest saves (no scrolling a 3D list yet) and back, each save's button its FolderPath
-#define menu_load3_saves 6
+// 3D huds: the saves (newest first, the list scrolls as it's navigated: spawn_list3) and back, each save's button
+//  its FolderPath
+#define menu_load3_saves 64
 
 entity spawn_menu_load3(ecs* world, entity player, const char* header, byte header_font_size, byte font_size,
     SpawnListElement* elements, int count)

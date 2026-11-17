@@ -1,6 +1,12 @@
 # Done
 
 ## 2026-11-17
+-x XR options: a 3D list of the settings (the 2D window was unseen in a headset), A flips a toggle or steps a slider
+  (round past its end), the stick left and right steps a selected slider, its row's text kept to its value
+-x 3D lists scroll: over 8 rows, navigating keeps the selection shown (scroll_list_to_child, 2D scrollviews too, their
+  handle with it); a 3D list's buttons are a 2D list's (list_system, list_render_dirty_system, by ChildIndex); a
+  hidden 3D element hides its children, a canvas3 draws up to 512 (glyphs overflowed 128); the 3D saves list shows
+  every save, not the newest 6; tst xr_options (scrolls, a slider, Back; screenshot tst/xr_options.ppm)
 -x XR loading transitions: the eyes close (dark lids from the top and bottom, curved, the middle first: xr_eye_lids,
   scissored clears after the world), shut only the "Loading" label is drawn, fading in (element3_brightness), the eyes
   open once loaded and the camera's on the body (huds3_dark_hold: it teleported there in view, a pop); the fog fade

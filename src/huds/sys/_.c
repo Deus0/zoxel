@@ -33,6 +33,13 @@ void zox_systems_game_ui(ecs *world) {
         [none] players.Player
     );
     zox_system_1(huds3_dark_system, zoxp_update, 0);
+    // main thread: it sets settings and texts
+    zox_system_1(
+        huds3_options_stick_system,
+        zoxp_update,
+        [in] core.EntityTarget,
+        [none] ui.NavigatorState
+    );
     // main thread: it reads the camera
     zox_system_1(
         huds3_follow_system,

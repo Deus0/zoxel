@@ -183,6 +183,7 @@ void element_navigation_system(iter* it) {
                 world,
                 e,
                 target);
+            scroll_list_to_child(world, target);    // a list's hidden element scrolled into view (2D and 3D)
             if (timer->value < -ui_navigation_timing / 2) {
                 timer->value = ui_navigation_timing;
             } else {

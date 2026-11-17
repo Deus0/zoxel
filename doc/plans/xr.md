@@ -52,7 +52,9 @@ Then (2026-11-17, third pass):
 - **into a game** (tst xr_play): New Game goes straight in (no 3D text input for the realm menu yet), the XR
   camera streams terrain and raycasts as the game camera does, free roam starts at the spawn (it takes up the
   camera whenever something else places it). No player yet: the head roams free (step 5 is the player)
-- to do: rays from the hands (pointer zevices) at 3D buttons, the options and pause menus as 3D lists, tooltips
+- the options and pause menus are 3D lists; a 3D list is a 2D list's (list_system, list_render_dirty_system) under
+  its panel and scrolls as it's navigated (scroll_list_to_child, shared with 2D scrollviews), over 8 rows
+- to do: rays from the hands (pointer zevices) at 3D buttons, tooltips
 
 Then (2026-11-17, lag and room scale):
 
