@@ -22,9 +22,10 @@ entity spawn_list(
     entity* elements)
 {
     byte slider_handle_width = 16 * ui_scale;
-    zox_instance(element_data.prefab);
+    zox_instance(ui_prefab_for(world, element_data.prefab, parent_data.e));     // its 3D twin under a 3D parent
     zox_name("list");
     set_element_spawn_data(world, e, canvas_data, parent_data, element_data);
+    ui_layer3_set(world, e, parent_data.e);
     zox_setv(e, ListAlignment, alignment);
     zox_setv(e, ListVisible, list_data.visible_count);
     zox_setv(e, ListMargins, list_data.margins);

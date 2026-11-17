@@ -43,6 +43,7 @@ void spawn_prefabs_twins3(ecs* world) {
     const entity body = spawn_prefab_body(world, frame3);
     prefab3_twin(world, prefab_body, body);
     prefab3_twin(world, prefab_grid, spawn_prefab_grid(world, body));
+    prefab3_twin(world, prefab_list, spawn_prefab_list(world, prefab_layout3_child));
     // scrollviews: an invisible panel, its scrollbar and handle
     prefab3_twin(world, prefab_layout2, prefab_layout3_child);
     prefab3_twin(world, prefab_scrollbar, spawn_prefab_scrollbar(world, frame3));

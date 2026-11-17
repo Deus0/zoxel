@@ -76,24 +76,7 @@ entity spawn_main_menu(
     entity spawned[elements_count];
     entity e;
     entity header = 0;
-    if (zox_huds3D) {
-        float3 position;
-        float4 rotation;
-        huds3_pose(world, player, huds3_distance, &position, &rotation);
-        entity canvas = zox_get_link(world, player, CanvasLink);
-        e = spawn_list3(
-            world,
-            canvas,
-            position,
-            rotation,
-            huds3_menu_height,
-            header_text,
-            header_font_size,
-            list_font_size,
-            elements,
-            elements_count,
-            spawned);
-    } else {
+    {
         entity3 e3 = spawn_window_list(
             world,
             prefab_window,
@@ -122,8 +105,7 @@ entity spawn_main_menu(
         zox_add_tooltip_text(world, header, "v0.0.1");
     }
     // zox_set(e3.z, TooltipEvent, { &tooltip_event_zoxel_header });
-    // tooltips are 2D, a 3D list has none yet
-    if (!zox_huds3D) {
+    {
         // NOTE: For some reason it was throwing errors if i didnt check the outputs here? for entities....
         int j = 0;
         if (can_load) {
