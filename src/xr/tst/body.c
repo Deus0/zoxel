@@ -5,14 +5,19 @@
 //    roam never takes the camera up (it did each frame, folding the head's turn into the body)
 //  - walking in the room at a wall: the body stops at it (physics, collisions), not through
 //  - the hands on their controllers: walking, a hand stays where it is on the body as standing (it trailed a frame)
-//  - everything tracked is scaled to the body (its height over the player's): 0.3m walked in the room moves it 0.3m
-//    scaled
+//  - everything tracked is scaled to the body (its height over the player's): leaning 0.3m in the room moves the
+//    eyes 0.3m scaled
 //  - the left stick walks the character, at speed straight away and stopped straight away (no inertia), each
-//    frame's move steady over its dt (friction on: its drag flickering with Grounded made bumps); walking 0.3m in the room moves it 0.3m
+//    frame's move steady over its dt (friction on: its drag flickering with Grounded made bumps)
 //  - the device mode is the controllers': they're enabled playing, the keyboard, mouse and touchscreen feeders
 //    (on a headset Android's stray pointer events switched the mode off them, the stick didn't walk)
-//  - looking about (the simulator's head turning about a neck, as a person's) doesn't move the body; crouching 0.3m
-//    lowers the view 0.3m scaled from the head bone's eyes, the body stays
+//  - looking about (the simulator's head turning about a neck, as a person's) doesn't move the body
+//  - leaning 0.3m in the room: the eyes go 0.3m (scaled), the upper body leaning (the head bone with them), the body
+//    moving only past the lean's reach (it slid the upright body, the eyes sank into the chest bending)
+//  - turning round in the room (the head 180 degrees): the body turns after it, to within xr_body_follow_angle, the
+//    room (and the view) still in the world (the head bone twisted round alone)
+//  - leaning 0.8m at a headset's frame rate (dt 1/72): the body moves only what's past the lean's reach, scaled
+//  - crouching 0.3m: the eyes go 0.3m lower (scaled), the hips dropped, the knees bent, the body stays
 //  - the body's feet are planted (PlantFeet): looking about they stay where they are in the world
 //  - run: bash bsh/tst.sh xr_body
 int zox_tst_xr_body_frames = 0;
@@ -37,7 +42,27 @@ float4 zox_tst_xr_body_facing;
 float3 zox_tst_xr_body_from;
 float3 zox_tst_xr_body_look_from;
 float zox_tst_xr_body_look_drift = -1;      // the body moved, looking about
-float zox_tst_xr_body_crouch = 0;           // the view's eyes below the camera (the head bone's), crouched
+float zox_tst_xr_body_crouch = 0;           // the view's eyes lowered, crouched
+float zox_tst_xr_body_crouch_knee = 1;      // a calf's w crouched (bent: under 1)
+float zox_tst_xr_body_crouch_drop = 0;      // the hips' drop crouched
+float3 zox_tst_xr_body_eyes_from;
+float3 zox_tst_xr_body_head_from;
+float zox_tst_xr_body_lean_eyes = 0;        // the eyes moved leaning 0.3m
+float zox_tst_xr_body_lean_head = 0;        // the head bone moved leaning
+float zox_tst_xr_body_lean_max = 0;         // the lean's reach in the room
+float4 zox_tst_xr_body_turn_room;           // the room on the world before turning round
+float zox_tst_xr_body_turned = 0;           // the body's turn after the head turned round (radians)
+float zox_tst_xr_body_turn_room_moved = 1;  // the room's turn on the world as the body turned (radians, 0 still)
+float zox_tst_xr_body_far_moved = -1;       // leaning 0.8m at a headset's frame rate: the body moved
+
+static inline float3 zox_tst_xr_body_eyes() {
+    return float4x4_get_position(float4x4_multiply(
+        float4x4_transform(float3_scale(xr_head_now_position, xr_view_scale), xr_head_now_rotation), xr_view_body));
+}
+
+static inline float zox_tst_xr_body_across(float3 a, float3 b) {
+    return sqrtf((a.x - b.x) * (a.x - b.x) + (a.z - b.z) * (a.z - b.z));
+}
 float zox_tst_xr_body_crouch_drift = -1;
 float3 zox_tst_xr_body_feet[2];
 float zox_tst_xr_body_feet_moved = -1;      // the planted feet moved in the world, looking about
@@ -158,11 +183,19 @@ byte zox_tst_xr_body_ready(ecs* world) {
     }
     if (f == 240) {
         zox_tst_xr_body_from = zox_getv(character, Position3D);
+        zox_tst_xr_body_eyes_from = zox_tst_xr_body_eyes();
+        zox_tst_xr_body_head_from = zox_getv(xr_body_head(world, xr_camera), Position3D);
         xr_sim_script_head_position = (float3) { 0.3f, 0, 0 };
     }
     if (f == 250) {
         const float3 moved = float3_sub(zox_getv(character, Position3D), zox_tst_xr_body_from);
         zox_tst_xr_body_room = sqrtf(moved.x * moved.x + moved.z * moved.z);
+        zox_tst_xr_body_lean_eyes = zox_tst_xr_body_across(zox_tst_xr_body_eyes(), zox_tst_xr_body_eyes_from);
+        zox_tst_xr_body_lean_head = zox_tst_xr_body_across(zox_getv(xr_body_head(world, xr_camera), Position3D), zox_tst_xr_body_head_from);
+        spine_bones spine;
+        if (spine_bones_find(world, get_skeleton(world, character), &spine)) {
+            zox_tst_xr_body_lean_max = xr_body_lean_max(world, &spine, xr_body_scale(world, character));
+        }
         xr_sim_script_head_position = float3_zero;
     }
     // a wall: a pillar of bricks 1m ahead along the room's x, then the head walks 2m at it in the room
@@ -201,17 +234,51 @@ byte zox_tst_xr_body_ready(ecs* world) {
     }
     if (f == 450) {
         zox_tst_xr_body_from = zox_getv(character, Position3D);
+        zox_tst_xr_body_eyes_from = zox_tst_xr_body_eyes();
         xr_sim_script_head_position = (float3) { 0, -0.3f, 0 };
     }
     if (f == 480) {
-        const float3 eyes = float4x4_get_position(float4x4_multiply(
-            float4x4_transform(float3_scale(xr_head_now_position, xr_view_scale), xr_head_now_rotation), xr_view_body));
-        zox_tst_xr_body_crouch = zox_getv(xr_camera, Position3D).y - eyes.y;
+        zox_tst_xr_body_crouch = zox_tst_xr_body_eyes_from.y - zox_tst_xr_body_eyes().y;
+        const entity skeleton = get_skeleton(world, character);
+        zox_tst_xr_body_crouch_drop = zox_has(skeleton, HipsDrop) ? zox_getv(skeleton, HipsDrop) : 0;
+        const BoneLinks* bones = zox_get(skeleton, BoneLinks);
+        ik_leg leg;
+        for (int i = 0; bones && i < bones->length; i++) {
+            if (zox_valid(bones->value[i]) && zox_has(bones->value[i], ThighBone) && ik_leg_find(world, bones->value[i], &leg)) {
+                zox_tst_xr_body_crouch_knee = float_min(zox_tst_xr_body_crouch_knee, fabsf(zox_getv(leg.calf, LocalRotation3D).w));
+            }
+        }
         const float3 drift = float3_sub(zox_getv(character, Position3D), zox_tst_xr_body_from);
         zox_tst_xr_body_crouch_drift = sqrtf(drift.x * drift.x + drift.z * drift.z);
         xr_sim_script_head_position = float3_zero;
     }
-    return f > 490;
+    if (f == 495) {
+        zox_tst_xr_body_facing = zox_getv(character, Rotation3D);
+        zox_tst_xr_body_turn_room = xr_body_rotation(world, character);
+    }
+    if (f >= 500 && f < 560) {
+        xr_sim_head_euler.y = (float) M_PI;     // turned round in the room
+    }
+    if (f == 559) {
+        const float4 now = zox_getv(character, Rotation3D);
+        zox_tst_xr_body_turned = 2 * acosf(float_min(1, fabsf(float4_dot(now, zox_tst_xr_body_facing))));
+        zox_tst_xr_body_turn_room_moved = 2 * acosf(float_min(1, fabsf(float4_dot(xr_body_rotation(world, character), zox_tst_xr_body_turn_room))));
+        xr_sim_head_euler = float3_zero;
+    }
+    // a headset's frame rate from here
+    if (f >= 572 && f < 620) {
+        zox_delta_time_override = 1.0 / 72.0;
+        zox_delta_time_override_count = 2;
+    }
+    if (f == 580) {
+        zox_tst_xr_body_from = zox_getv(character, Position3D);
+        xr_sim_script_head_position = (float3) { -0.8f, 0, 0 };     // away from the wall
+    }
+    if (f == 610) {
+        zox_tst_xr_body_far_moved = zox_tst_xr_body_across(zox_getv(character, Position3D), zox_tst_xr_body_from);
+        xr_sim_script_head_position = float3_zero;
+    }
+    return f > 625;
 }
 
 void zox_tst_xr_body_check(ecs* world) {
@@ -224,6 +291,22 @@ void zox_tst_xr_body_check(ecs* world) {
         zox_tst_check(zox_tst_xr_body_feet_moved >= 0 && zox_tst_xr_body_feet_moved < 0.01f, "looking about the feet moved [%f]", zox_tst_xr_body_feet_moved);
         zox_tst_check(zox_tst_xr_body_look_drift >= 0 && zox_tst_xr_body_look_drift < 0.01f, "looking about moved the body [%f]", zox_tst_xr_body_look_drift);
         zox_tst_check(fabsf(zox_tst_xr_body_crouch - 0.3f * scale) < 0.02f, "crouching 0.3m lowered the eyes [%f]", zox_tst_xr_body_crouch);
+        zox_log("[tst] xr_body: crouched, the hips dropped [%.3f], a knee w [%.3f]", zox_tst_xr_body_crouch_drop, zox_tst_xr_body_crouch_knee);
+        zox_tst_check(zox_tst_xr_body_crouch_drop > 0.05f, "crouching didn't drop the hips [%f]", zox_tst_xr_body_crouch_drop);
+        zox_tst_check(zox_tst_xr_body_crouch_knee < 0.99f, "crouching didn't bend the knees [%f]", zox_tst_xr_body_crouch_knee);
+        zox_log("[tst] xr_body: turned round, the body turned [%.3f] (want [%.3f]), the room moved [%.4f]",
+            zox_tst_xr_body_turned, (float) M_PI - xr_body_follow_angle, zox_tst_xr_body_turn_room_moved);
+        zox_tst_check(fabsf(zox_tst_xr_body_turned - ((float) M_PI - xr_body_follow_angle)) < 0.05f, "turning round, the body turned [%f]", zox_tst_xr_body_turned);
+        zox_tst_check(zox_tst_xr_body_turn_room_moved < 0.01f, "turning round, the room swung [%f]", zox_tst_xr_body_turn_room_moved);
+        const float far_moves = (0.8f - zox_tst_xr_body_lean_max) * scale;
+        zox_log("[tst] xr_body: leaning 0.8m at 72 fps the body moved [%.3f] (want [%.3f])", zox_tst_xr_body_far_moved, far_moves);
+        zox_tst_check(fabsf(zox_tst_xr_body_far_moved - far_moves) < 0.02f, "leaning 0.8m at 72 fps moved the body [%f], not [%f]", zox_tst_xr_body_far_moved, far_moves);
+        const float body_moves = float_max(0, 0.3f - zox_tst_xr_body_lean_max) * scale;
+        zox_log("[tst] xr_body: leaning 0.3m (reach [%.3f]) the eyes went [%.3f] (want [%.3f]), the head bone [%.3f], the body [%.3f] (want [%.3f])",
+            zox_tst_xr_body_lean_max, zox_tst_xr_body_lean_eyes, 0.3f * scale, zox_tst_xr_body_lean_head, zox_tst_xr_body_room, body_moves);
+        zox_tst_check(fabsf(zox_tst_xr_body_lean_eyes - 0.3f * scale) < 0.02f, "leaning 0.3m moved the eyes [%f]", zox_tst_xr_body_lean_eyes);
+        zox_tst_check(fabsf(zox_tst_xr_body_lean_head - zox_tst_xr_body_lean_eyes) < 0.02f, "leaning, the head bone [%f] isn't with the eyes [%f]", zox_tst_xr_body_lean_head, zox_tst_xr_body_lean_eyes);
+        zox_tst_check(fabsf(zox_tst_xr_body_room - body_moves) < 0.02f, "leaning 0.3m moved the body [%f], not [%f]", zox_tst_xr_body_room, body_moves);
         zox_tst_check(zox_tst_xr_body_crouch_drift >= 0 && zox_tst_xr_body_crouch_drift < 0.01f, "crouching moved the body [%f]", zox_tst_xr_body_crouch_drift);
     }
     for (byte i = 0; i < 2; i++) {
@@ -259,7 +342,6 @@ void zox_tst_xr_body_check(ecs* world) {
     const float scale = xr_body_scale(world, xr_body_character(world));
     zox_log("[tst] xr_body: scale [%.3f] (the character [%.3f] tall, the player [%.2f])", scale, scale * xr_player_height, xr_player_height);
     zox_tst_check(scale > 0.4f && scale < 0.8f, "the scale [%f] isn't a 1m character's over a 1.7m player's", scale);
-    zox_tst_check(fabsf(zox_tst_xr_body_room - 0.3f * scale) < 0.02f, "walking 0.3m in the room moved it [%f], not [%f]", zox_tst_xr_body_room, 0.3f * scale);
 }
 
 void zox_tsts_xr_body(ecs* world) {

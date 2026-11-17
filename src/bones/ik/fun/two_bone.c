@@ -30,3 +30,14 @@ static inline void ik_two_bone(float3 root, float a, float b, float3 target, flo
     *elbow = float3_add(root, float3_add(float3_scale(dir, a * cos_root), float3_scale(bend, a * sin_root)));
     *end = float3_add(root, float3_scale(dir, d));
 }
+
+// q's twist about axis (unit): its turn about the axis alone (swing twist split), identity if it has none
+static inline float4 quaternion_twist(float4 q, float3 axis) {
+    const float d = q.x * axis.x + q.y * axis.y + q.z * axis.z;
+    float4 twist = { axis.x * d, axis.y * d, axis.z * d, q.w };
+    const float length = sqrtf(twist.x * twist.x + twist.y * twist.y + twist.z * twist.z + twist.w * twist.w);
+    if (length < 0.00001f) {
+        return quaternion_identity;
+    }
+    return (float4) { twist.x / length, twist.y / length, twist.z / length, twist.w / length };
+}

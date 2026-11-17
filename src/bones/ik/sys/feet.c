@@ -1,14 +1,17 @@
 // Feet planted (PlantFeet on a skeleton: XR's body): each foot stays where it's planted in the world as the body
 //  shifts over it (the legs angle, leg_ik.c), stepping back under the hips when it's too far from there
 //  - a foot's rest: where it stands with its leg straight, under its hip, now (ik_leg_rest)
-//  - too far (feet_step_distance of the leg's length, across the ground) it steps there: an arc over feet_step_time,
+//  - too far (feet_step_distance of the leg's length, across the ground; feet_settle_distance with the body still,
+//    the feet shuffle back under it after moving, a step lands where the hip was) it steps there: an arc over feet_step_time,
 //    landing on the rest as it is then; one foot at a time, the farther first
-//  - its height follows the rest's (the ground under the body), only across the ground is it held
+//  - its height follows the rest's (the ground under the body, less the hips' drop), only across the ground is held
 //  - walking (fast) or in the air (falling, jumping) the walk's swing has the legs: the weight eases off, and back on planting the
 //    feet afresh where they stand
 //  - zoxp_trails: after physics moved the body, before the solve (zoxp_layouts)
 #define feet_step_distance 0.3f     // of the leg's length, from its rest, across the ground
 #define feet_step_time 0.25f        // seconds
+#define feet_settle_distance 0.05f  // of the leg's length: still, a foot this far off its rest steps home
+#define feet_still_speed 0.05f      // metres a second across the ground: the body still
 #define feet_step_lift 0.15f        // of the leg's length, the step's arc
 #define feet_walk_speed 0.8f        // metres a second: faster the swing has the legs
 #define feet_weight_rate 10.0f
@@ -36,8 +39,12 @@ void feet_plant_system(iter* it) {
         }
         const float3 velocity = zox_has(owner, Velocity3D) ? zox_getv(owner, Velocity3D) : float3_zero;
         // in the air by its fall or jump, not Grounded (it flickers on seams: the feet let go and replanted)
+        const float speed = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
+        const float step_distance = speed < feet_still_speed ? feet_settle_distance : feet_step_distance;
         const byte planting = fabsf(velocity.y) < feet_air_speed && sqrtf(velocity.x * velocity.x + velocity.z * velocity.z) < feet_walk_speed;
         const skeleton_now now = skeleton_now_get(world, e);
+        // dropped hips (crouching) lower the thighs, not the ground the feet stand on
+        const float drop = zox_has(e, HipsDrop) ? zox_getv(e, HipsDrop) : 0;
         ik_leg legs[feet_legs_max];
         float3 rests[feet_legs_max];
         float lengths[feet_legs_max];
@@ -49,6 +56,7 @@ void feet_plant_system(iter* it) {
                 continue;
             }
             rests[count] = ik_leg_rest(world, &legs[count], &now);
+            rests[count].y += drop;
             lengths[count] = ik_leg_length(world, &legs[count]);
             stepping |= zox_getv(thigh, FootStep) > 0;
             count++;
@@ -64,7 +72,7 @@ void feet_plant_system(iter* it) {
             const float3 plant = zox_getv(thigh, FootPlant);
             const float dx = plant.x - rests[j].x, dz = plant.z - rests[j].z;
             const float far = sqrtf(dx * dx + dz * dz) / lengths[j];
-            if (far > feet_step_distance && far > farthest) {
+            if (far > step_distance && far > farthest) {
                 farthest = far;
                 step = j;
             }

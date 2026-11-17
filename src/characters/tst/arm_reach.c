@@ -2,10 +2,11 @@
 //  - holds the right shoulder (IKHeld, as XR hands do) on a point ahead of and below it, within its reach
 //  - its hand bone lands on the point, its elbow bends (the forearm turned)
 //  - turned as the target rotation (IKTargetRotation, an XR controller's): the hand's rest down along its forward,
-//    its front (thumb side) up
+//    its front (thumb side) up, rolled about it the forearm takes half the twist (a wrist turning)
 //  - run: bash bsh/tst.sh arm_reach
 double zox_tst_arm_reach_start = 0;
 float3 zox_tst_arm_reach_target;
+#define zox_tst_arm_reach_roll 1.2f
 
 static entity zox_tst_arm_reach_hand(ecs* world, entity shoulder) {
     ik_arm arm;
@@ -40,8 +41,9 @@ byte zox_tst_arm_reach_ready(ecs* world) {
     }
     if (!zox_has(shoulder, IKHeld)) {
         zox_add(shoulder, IKHeld);
-        zox_setv(shoulder, IKTargetRotation, facing);
     }
+    // rolled about its forward, as a wrist turned: the forearm takes half the twist
+    zox_setv(shoulder, IKTargetRotation, quaternion_rotate(facing, quaternion_from_axis_angle(float3_backward, zox_tst_arm_reach_roll)));
     zox_getm(shoulder, IKTarget)->value = zox_tst_arm_reach_target;
     zox_getm(shoulder, IKWeight)->value = 1;
     zox_tst_waiting = "the arm to reach";
@@ -76,6 +78,15 @@ void zox_tst_arm_reach_check(ecs* world) {
     const float roll = float3_dot(front, up);
     zox_log("[tst] arm_reach: hand's front along its target's up [%.4f]", roll);
     zox_tst_check(roll > 0.99f, "the hand is rolled off its target [%f] (upside down at -1)", roll);
+    // the wrist's turn shared: the forearm's twist about its line, and the hand's on it, each about half
+    const float3 line = float3_normalize(zox_getv(hand, LocalPosition3D));
+    const float4 forearm_twist = quaternion_twist(zox_getv(elbow, LocalRotation3D), line);
+    const float4 hand_twist = quaternion_twist(zox_getv(hand, LocalRotation3D), line);
+    const float forearm_angle = 2 * acosf(float_min(1, fabsf(forearm_twist.w)));
+    const float hand_angle = 2 * acosf(float_min(1, fabsf(hand_twist.w)));
+    zox_log("[tst] arm_reach: the wrist's twist, the forearm [%.3f] the hand [%.3f] radians", forearm_angle, hand_angle);
+    zox_tst_check(forearm_angle > 0.1f && fabsf(forearm_angle - hand_angle) < 0.25f * float_max(forearm_angle, hand_angle),
+        "the forearm didn't share the wrist's twist [%f] [%f]", forearm_angle, hand_angle);
 }
 
 void zox_tsts_arm_reach(ecs* world) {

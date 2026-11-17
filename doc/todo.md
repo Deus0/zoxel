@@ -9,6 +9,12 @@
 ## Bugs
 - XR lag, what's left (the frame's start and the hands' timing are fixed, see done.md): needs a headset to confirm;
 	if it's still laggy, read the headset's frame timing log ([XR] fps, openxr/render.c)
+- XR loading screen polish (play test): the fade to black doesn't blacken properly in the headset; instead an eyes
+	closing animation, a dark round shape coming in from the bottom and the top closing the view to darkness, then
+	fade in the loading label; the view pops when the camera teleports (game start: the body's spawn) under it
+	(huds/eve/load.c, huds3_dark_system, xr/fun/eye_render.c)
+- XR lean feels 2-3 times larger than real life (play test, on the build that slid the whole body): tst xr_body has
+	it 1:1 scaled at 72 fps, the body now leans its spine first (xr_lean_angle_max); check again in the headset
 - quest tracker ui bugs out sometimes: shows null
 - the cookie gather quest failed
 - name input in new realm ui doesn't resize

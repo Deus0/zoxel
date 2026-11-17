@@ -8,6 +8,7 @@
 //  - runs after physics and the drivers (zoxp_layouts), before the hierarchy: the bones' world positions are its
 //    last frame's, carried to where the body is now (skeleton_now), so a moving body's hand stays on its target
 #define ik_elbow_return_rate 18.0f
+#define ik_forearm_twist 0.5f       // of the hand's twist about the forearm, the forearm's
 
 // the hand at rest onto its target's turn: its rest down (the arm's line) along the target's forward (-z), its rest
 //  front (+z, the thumb's side, arms hanging) up (+y), as a held controller's; half a turn about (0, 1, 1)
@@ -92,7 +93,13 @@ void arm_ik_system(iter* it) {
             const float4 elbow_world = quaternion_rotate(elbow_parent, elbow_ik);
             const float4 hand_world = quaternion_rotate(zox_getv(e, IKTargetRotation), ik_hand_rest_to_target());
             const float4 hand_ik = quaternion_rotate(quaternion_inverse(elbow_world), hand_world);
-            zox_getm(hand, LocalRotation3D)->value = quaternion_normalize2(quaternion_slerp(quaternion_identity, hand_ik, w));
+            // the forearm takes a share of the hand's twist about it (a wrist turning turns the forearm, not the
+            //  hand alone); turned about its own line the hand stays where it is
+            const float4 forearm_twist = quaternion_slerp(quaternion_identity,
+                quaternion_twist(hand_ik, float3_normalize(lower_rest)), ik_forearm_twist);
+            elbow_rotation->value = quaternion_normalize2(quaternion_slerp(quaternion_identity, quaternion_rotate(elbow_ik, forearm_twist), w));
+            const float4 hand_twisted = quaternion_rotate(quaternion_inverse(forearm_twist), hand_ik);
+            zox_getm(hand, LocalRotation3D)->value = quaternion_normalize2(quaternion_slerp(quaternion_identity, hand_twisted, w));
         }
     }
     zox_sys_on_end();

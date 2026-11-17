@@ -1,6 +1,15 @@
 # Done
 
 ## 2026-11-17
+-x XR body leans and crouches: the real neck off the hips leans the upper body about them (SpineLean, bones/ik
+  sys/spine.c: the chest turned about the hips' pivot, the hips kept upright) up to 40 degrees, past it the body
+  moves and the feet step; lower than the lean has it the hips drop (HipsDrop, the knees bend), past 0.45 of the leg
+  the view itself; it slid the whole upright body, bending the eyes sank into the chest; tst xr_body leans, crouches,
+  and leans past the reach at 72 fps (1:1 scaled)
+-x XR body turns after the head: past 1 radian off it the body turns, the room turned back on it (xr_body_room_turn)
+  so the view stays; tst xr_body turns round
+-x feet settle back under a still body (feet_settle_distance); tst feet_planted leans the spine, walks by velocity
+-x the wrist's twist shared: the forearm takes half the hand's twist about it (ik_forearm_twist); tst arm_reach
 -x leg ik and planted feet: a thigh's IKTarget is its foot (two bone: thigh, calf the knee, foot kept level);
   PlantFeet on a skeleton (XR's body) holds each foot where it's planted as the body shifts, stepping back under the
   hip in an arc when past 0.3 of the leg's length, one foot at a time; walking fast or in the air (by vertical
