@@ -1000,9 +1000,10 @@
 	- We should wrap all other sdl functions properly for glut
 
 # XR
-- Punch in VR as a motion (inspired by Sword Art Online): the punch skill shows the movement (a ghost of the arm's ik
-	path, bones/ik/sys/punch.c), the player follows it with their controller, and a close match does extra damage;
-	the hand's path against the punch's over its swing time scores it
+- Punch in VR as a motion (inspired by Sword Art Online): the player's hands always drive the body's arms (xr/fun/hands.c,
+	the body has to match the real hands or it disorientates), the punch skill only shows the movement (a ghost of the
+	arm's ik path, bones/ik/sys/punch.c) and scores the real hand's path against it over its swing time: a close match
+	does extra damage
 
 # Tests
 - XR (doc/plans/xr.md): rays from the hands at 3D ui, every menu as a 3D list, the player; build src/xr for Android (untouched by a compiler since the cleanup, no NDK on the

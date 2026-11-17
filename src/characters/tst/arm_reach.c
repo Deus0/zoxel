@@ -1,6 +1,7 @@
 // tst: arm_reach, the player's right arm reaches a point with ik (bones/ik) using the skeleton's own bones
 //  - holds the right shoulder (IKHeld, as XR hands do) on a point ahead of and below it, within its reach
 //  - its hand bone lands on the point, its elbow bends (the forearm turned)
+//  - turned as the target rotation (IKTargetRotation, an XR controller's): the hand's rest down along its forward
 //  - run: bash bsh/tst.sh arm_reach
 double zox_tst_arm_reach_start = 0;
 float3 zox_tst_arm_reach_target;
@@ -38,6 +39,7 @@ byte zox_tst_arm_reach_ready(ecs* world) {
     }
     if (!zox_has(shoulder, IKHeld)) {
         zox_add(shoulder, IKHeld);
+        zox_setv(shoulder, IKTargetRotation, facing);
     }
     zox_getm(shoulder, IKTarget)->value = zox_tst_arm_reach_target;
     zox_getm(shoulder, IKWeight)->value = 1;
@@ -62,6 +64,11 @@ void zox_tst_arm_reach_check(ecs* world) {
     zox_log("[tst] arm_reach: hand misses by [%.4f] of reach [%.4f], elbow w [%.3f]", miss, reach, bend.w);
     zox_tst_check(miss < reach * 0.05f, "the hand missed its target by [%f] (reach [%f])", miss, reach);
     zox_tst_check(fabsf(bend.w) < 0.999f, "the elbow didn't bend");
+    const float3 pointing = float4_rotate_float3(zox_getv(hand, Rotation3D), float3_down);
+    const float3 wanted = float4_rotate_float3(zox_getv(shoulder, IKTargetRotation), float3_backward);
+    const float turn = float3_dot(pointing, wanted);
+    zox_log("[tst] arm_reach: hand points along its target [%.4f]", turn);
+    zox_tst_check(turn > 0.99f, "the hand didn't turn to its target [%f]", turn);
 }
 
 void zox_tsts_arm_reach(ecs* world) {

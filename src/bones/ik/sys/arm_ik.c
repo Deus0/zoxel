@@ -3,7 +3,8 @@
 //  - lengths from the bones' world positions (they don't change as they turn), directions at rest from their local
 //    positions, so any scale works; bones between the shoulder and elbow are taken at rest
 //  - the elbow bends down, back and out from the body, from the chest's facing
-//  - weight 0: the elbow eases back straight, the shoulder is left to its animation
+//  - with IKTargetRotation the hand turns to it too (XR: the body's hand matches the real one)
+//  - weight 0: the elbow and hand ease back straight, the shoulder is left to its animation
 //  - the shoulder's world position is last frame's (the hierarchy runs after), a moving body lags its hand a frame
 #define ik_elbow_return_rate 18.0f
 
@@ -38,6 +39,13 @@ void arm_ik_system(iter* it) {
                 elbow_rotation->value = quaternion_normalize2(
                     quaternion_slerp(elbow_rotation->value, quaternion_identity, return_t));
             }
+            if (zox_has(e, IKTargetRotation)) {
+                LocalRotation3D* hand_rotation = zox_getm(hand, LocalRotation3D);
+                if (!float4_equals(hand_rotation->value, quaternion_identity)) {
+                    hand_rotation->value = quaternion_normalize2(
+                        quaternion_slerp(hand_rotation->value, quaternion_identity, return_t));
+                }
+            }
             continue;
         }
         const entity parent = zox_get_parent(world, e);
@@ -69,6 +77,14 @@ void arm_ik_system(iter* it) {
             float4_rotate_float3(quaternion_inverse(elbow_parent), float3_sub(hand_point, elbow_point)));
         rotation->value = quaternion_normalize2(quaternion_slerp(rotation->value, shoulder_ik, w));
         elbow_rotation->value = quaternion_normalize2(quaternion_slerp(quaternion_identity, elbow_ik, w));
+        if (zox_has(e, IKTargetRotation)) {
+            // the hand's world turn: the target's, its rest down onto the target's forward; local to the elbow's turn
+            const float4 elbow_world = quaternion_rotate(elbow_parent, elbow_ik);
+            const float4 down_to_forward = quaternion_from_to(float3_down, float3_backward);
+            const float4 hand_world = quaternion_rotate(zox_getv(e, IKTargetRotation), down_to_forward);
+            const float4 hand_ik = quaternion_rotate(quaternion_inverse(elbow_world), hand_world);
+            zox_getm(hand, LocalRotation3D)->value = quaternion_normalize2(quaternion_slerp(quaternion_identity, hand_ik, w));
+        }
     }
     zox_sys_on_end();
 } zoxd_system(arm_ik_system);
