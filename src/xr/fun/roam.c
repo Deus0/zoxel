@@ -36,13 +36,30 @@ static inline void xr_roam_step(free_roam* roam, float2 move, float2 turn, float
 // the eyes' body this frame: on the character in a game (fun/body.c), else the roam flown by the sticks
 static float4x4 xr_view_body;
 
+// the eyes kept shut (huds3_dark_hold) entering a game until the camera's on the body: loaded, the camera teleports
+//  to it (a pop, play test); once on it this game, never again (a body gone later doesn't black the view)
+static byte xr_body_seen = 0;
+
+static inline void xr_dark_hold_update(ecs* world, byte on_body) {
+    const entity player = zox_players[0];
+    const entity game = zox_valid(player) ? zox_get_link(world, player, GameLink) : 0;
+    const byte state = zox_valid(game) ? zox_getv(game, GameState) : zox_game_none;
+    if (state == zox_game_none || state == zox_game_load_start || state >= zox_game_state_the_end) {
+        xr_body_seen = 0;
+    }
+    xr_body_seen |= on_body;
+    huds3_dark_hold = !on_body && !xr_body_seen && state >= zox_game_load_start && state <= zox_game_state_playing;
+}
+
 static void xr_roam_update(ecs* world, entity camera, float2 move, float2 turn, float4 head_rotation, float3 head_position, float delta) {
     xr_head_now_rotation = head_rotation;
     xr_head_now_position = head_position;
     if (xr_body_view(world, camera, head_rotation, head_position, &xr_view_body)) {
         xr_roam_started = 0;    // out of the game, the roam takes the camera up where it's left
+        xr_dark_hold_update(world, 1);
         return;
     }
+    xr_dark_hold_update(world, 0);
     xr_view_scale = 1;
     if (xr_roam_started && zox_valid(camera) && !float3_equals(zox_getv(camera, Position3D), xr_roam_written)) {
         xr_roam_started = 0;

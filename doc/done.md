@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-17
+-x XR loading transitions: the eyes close (dark lids from the top and bottom, curved, the middle first: xr_eye_lids,
+  scissored clears after the world), shut only the "Loading" label is drawn, fading in (element3_brightness), the eyes
+  open once loaded and the camera's on the body (huds3_dark_hold: it teleported there in view, a pop); the fog fade
+  didn't blacken a headset's view; tst xr_play screenshots the lids closing (tst/xr_lids.ppm), checks no early open
 -x XR bending: the spine solved from the real neck (xr_spine_solve): closer than the spine is long it bends, the hips
   back (HipsShift, was HipsDrop) and the chest pitched down to ~110 degrees, then crouches; farther it leans; past the
   body's reach across the ground the body moves; the view takes what's left so the eyes stay the player's; it leaned

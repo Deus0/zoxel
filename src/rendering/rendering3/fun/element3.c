@@ -1,6 +1,8 @@
 // drawing 3D ui elements (textured quads), canvas by canvas (ui/elements3/sys/render.c): depth tested against the
 //  world, their layers in order, see doc/tech/uis.md
 
+float element3_brightness = 1;   // the 3D uis' brightness, all of them (a label fading in from the dark: XR loading)
+
 // starts drawing them: the textured material, blending, depth tested; returns its attributes, NULL without it
 const MaterialTextured3D* element3_draw_begin(ecs* world) {
     if (!material_textured3D) {
@@ -11,7 +13,7 @@ const MaterialTextured3D* element3_draw_begin(ecs* world) {
     zox_gpu_enable_depth_test();
     zox_gpu_material(zox_getv(material_textured3D, MaterialGPULink));
     zox_gpu_float4(attributes->fog_data, get_fog_value());
-    zox_gpu_float(attributes->brightness, 1);
+    zox_gpu_float(attributes->brightness, element3_brightness);
     zox_gpu_float(attributes->alpha_cutoff, 0);
     return attributes;
 }

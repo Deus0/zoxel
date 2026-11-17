@@ -96,7 +96,9 @@ void zox_tsts_xr_menu(ecs* world) {
 //  - A on the start menu, A on the main menu's first button (New Game: tests have no saves), in with the
 //      defaults (no realm menu, 3D huds have no text input)
 //  - loading: the view dark (huds3_dark) with a 3D "Loading" label ahead (a Canvas3), each eye black but for it
-//      (tst/xr_load.ppm); gone and lit once playing; fading both ways (part dark frames going in and coming out)
+//      (tst/xr_load.ppm); gone and lit once playing; the eyes closing and opening over frames, not cut
+//  - closing: the lids in from the top and bottom, the world between (tst/xr_lids.ppm)
+//  - the eyes don't open before the camera's on the body (it teleports there: a pop)
 //  - playing: the game state, the xr camera still the one rendering, both eyes drawing (tst/xr_play.ppm)
 //  - run: bash bsh/tst.sh xr_play
 int zox_tst_xr_play_stage = 0;
@@ -107,6 +109,8 @@ int zox_tst_xr_play_load_shot = 0;      // frames fully dark loading, the screen
 int zox_tst_xr_play_fade_in = 0;        // frames part dark, darkening
 int zox_tst_xr_play_fade_out = 0;       // frames part dark, lightening
 float zox_tst_xr_play_darkness = 0;
+byte zox_tst_xr_play_lids_shot = 0;
+int zox_tst_xr_play_opened_early = 0;   // frames the eyes opened with the camera off the body
 
 static inline void zox_tst_xr_play_next() {
     zox_tst_xr_play_stage++;
@@ -129,7 +133,13 @@ byte zox_tst_xr_play_ready(ecs* world) {
         if (darkness > 0 && darkness < 1) {
             if (darkness > zox_tst_xr_play_darkness) {
                 zox_tst_xr_play_fade_in++;
+                if (!zox_tst_xr_play_lids_shot && darkness < 0.3f && !zox_screenshot_request[0]) {
+                    zox_tst_xr_play_lids_shot = 1;
+                    remove(zox_tst_path("xr_lids.ppm"));
+                    snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("xr_lids.ppm"));
+                }
             } else if (darkness < zox_tst_xr_play_darkness) {
+                zox_tst_xr_play_opened_early += !xr_body_head(world, xr_camera);
                 zox_tst_xr_play_fade_out++;
             }
         }
@@ -199,7 +209,31 @@ void zox_tst_xr_play_check(ecs* world) {
     zox_tst_check(zox_tst_xr_play_playing, "never playing");
     zox_tst_check(zox_tst_xr_play_load3, "loading had no 3D load ui on a dark view");
     zox_tst_check(!huds3_dark && huds3_darkness == 0 && render_darkness == 0, "still dark playing [%.2f]", huds3_darkness);
-    zox_log("[tst] xr_play: faded in over [%i] frames, out over [%i]", zox_tst_xr_play_fade_in, zox_tst_xr_play_fade_out);
+    zox_log("[tst] xr_play: closed over [%i] frames, opened over [%i], opened off the body [%i]", zox_tst_xr_play_fade_in, zox_tst_xr_play_fade_out, zox_tst_xr_play_opened_early);
+    zox_tst_check(zox_tst_xr_play_opened_early == 0, "the eyes opened before the camera was on the body [%i frames]", zox_tst_xr_play_opened_early);
+    {
+        int2 size;
+        byte* pixels = zox_tst_load_ppm(zox_tst_path("xr_lids.ppm"), &size);
+        zox_tst_check(pixels != NULL, "no screenshot tst/xr_lids.ppm (the eyes closing)");
+        if (pixels) {
+            // the left eye: its top and bottom rows black, its middle the world
+            const int half = size.x / 2;
+            int top_black = 0, bottom_black = 0, middle_lit = 0;
+            for (int x = half / 4; x < half * 3 / 4; x++) {
+                const byte* t = zox_tst_ppm_pixel(pixels, size, x, size.y - 2);
+                const byte* b = zox_tst_ppm_pixel(pixels, size, x, 1);
+                const byte* m = zox_tst_ppm_pixel(pixels, size, x, size.y / 2);
+                top_black += t[0] + t[1] + t[2] < 12;
+                bottom_black += b[0] + b[1] + b[2] < 12;
+                middle_lit += m[0] + m[1] + m[2] >= 12;
+            }
+            const int across = half / 2;
+            zox_log("[tst] xr_play: closing, the top row black [%i] the bottom [%i] the middle lit [%i] of [%i]", top_black, bottom_black, middle_lit, across);
+            zox_tst_check(top_black > across * 0.9f && bottom_black > across * 0.9f, "closing, no lids at the top and bottom [%i] [%i]", top_black, bottom_black);
+            zox_tst_check(middle_lit > across * 0.9f, "closing, the middle's shut already [%i]", middle_lit);
+            free(pixels);
+        }
+    }
     zox_tst_check(zox_tst_xr_play_fade_in >= 3, "loading cut to black, no fade in [%i frames]", zox_tst_xr_play_fade_in);
     zox_tst_check(zox_tst_xr_play_fade_out >= 3, "loading cut from black, no fade out [%i frames]", zox_tst_xr_play_fade_out);
     zox_tst_check(!zox_valid(zox_get_child_by_id(world, zox_get_link(world, zox_players[0], CanvasLink), zox_id(LoadUI))), "the load ui is up playing");

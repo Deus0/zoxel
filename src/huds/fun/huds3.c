@@ -15,14 +15,19 @@ void huds3_pose(ecs* world, entity player, float distance, float3* position, flo
     *position = move_along_direction(*position, *rotation, -distance);
 }
 
-// loading on 3D huds: the view darkened to black (a headset's eyes draw only the 3D uis, xr/fun/eye_render.c) and a
-//  3D label "Loading" ahead of the head, following it (huds3_follow_system); 2D loading fades its canvas instead
+// loading on 3D huds: the eyes close (dark lids from the top and bottom, a headset's eyes: xr/fun/eye_render.c), then
+//  only a 3D label "Loading" is drawn, fading in ahead of the head and following it (huds3_follow_system); the eyes
+//  open once loaded and the camera's on the body (huds3_dark_hold); 2D loading fades its canvas instead
+//  - the fog fading the world to black didn't blacken a headset's view (play test)
 byte huds3_dark = 0;
-float huds3_darkness = 0;               // eased to huds3_dark, rendering's render_darkness
-double huds3_dark_held = 0;             // lit again only after this long unlit: the body settles on its spawn first
-#define huds3_dark_fade_in 0.6f         // seconds to black
-#define huds3_dark_fade_out 1.2f        // seconds from black
-#define huds3_dark_hold 0.4f
+byte huds3_dark_hold = 0;               // kept closed: the camera isn't on the body yet (xr: it teleports there, a pop)
+float huds3_darkness = 0;               // the eyes closing, 0 open to 1 shut (huds3_dark_system)
+float huds3_label_fade = 0;             // the label, 0 unseen to 1 lit, once shut
+double huds3_dark_held = 0;             // opened only after this long unheld: the body settles on its spawn first
+#define huds3_dark_close 0.45f          // seconds to close
+#define huds3_dark_open 0.6f            // seconds to open
+#define huds3_dark_hold_time 0.4f
+#define huds3_label_fade_time 0.4f
 #define huds3_follow_speed 4.0f     // per second, the label catching up with where the head looks
 
 // eases e towards its pose ahead of its player's camera
