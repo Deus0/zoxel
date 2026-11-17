@@ -7,6 +7,9 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
+- XR feels laggy (playtesters, next task): find the delay in the pipeline, i.e. a pose read a frame late (controller
+	poses at zoxp_inputs_extract, the eye render's head pose, arm ik reads its shoulder's last frame position,
+	bones/ik/sys/arm_ik.c), the frame's predicted display time, or too much per eye
 - quest tracker ui bugs out sometimes: shows null
 - the cookie gather quest failed
 - name input in new realm ui doesn't resize
@@ -995,6 +998,11 @@
 - Make Glut Build work
 	- Glut should spawn a window
 	- We should wrap all other sdl functions properly for glut
+
+# XR
+- Punch in VR as a motion (inspired by Sword Art Online): the punch skill shows the movement (a ghost of the arm's ik
+	path, bones/ik/sys/punch.c), the player follows it with their controller, and a close match does extra damage;
+	the hand's path against the punch's over its swing time scores it
 
 # Tests
 - XR (doc/plans/xr.md): rays from the hands at 3D ui, every menu as a 3D list, the player; build src/xr for Android (untouched by a compiler since the cleanup, no NDK on the

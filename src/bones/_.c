@@ -3,6 +3,7 @@
  * | Zox Module: Bones                                    |
  * |                                                      |
  * |  Skeletons - Joints - Poses - Animation - Hierarchy  |
+ |  ik: arms reaching for a point (ik/_.c)              |
  * |                                                      |
  * +------------------------------------------------------+
  */
@@ -14,11 +15,13 @@
 #include "sys/_.c"
 #include "fun/_.c"
 #include "eve/_.c"
+#include "ik/_.c"
 
 void import_bones(ecs* world) {
     zox_module(bones);
     zox_components_bones(world);
     zox_systems_bones(world);
+    zox_add_module(ik);
     add_hook_spawn_prefabs(spawn_prefabs_bones);
     add_hook_spawn_prefabs(zox_events_bones);
 }

@@ -83,6 +83,8 @@ entity spawn_part_bones(
         zox_add(bone, ShoulderBone);
         zox_setv(bone, SwingState, 1);
         zox_setv(bone, SwingAngle, 110);
+        zox_setv(bone, IKTarget, float3_zero);  // its hand reaches with ik (bones/ik), off until a driver weighs in
+        zox_setv(bone, IKWeight, 0);
         // NOTE: For Right Shoulder
         if (is_right_side) {
             zox_link(world, skeleton, ShoulderBoneLink, bone);

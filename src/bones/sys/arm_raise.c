@@ -1,10 +1,7 @@
-// NOTE: Simply raises arm up
+// NOTE: Simply raises arm up, a punch reaches out on top of it with ik (bones/ik/sys/punch.c)
 void shoulder_raise_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
-    float swing_angle_x = -28;
-    float swing_angle_y = 14;
-    float swing_angle_z = 8;
     const float follow_rate = 25.0f;    // how fast the arm slerps to its raised target
     float delta = zox_delta_time;
     if (delta > 0.1f) {
@@ -46,23 +43,6 @@ void shoulder_raise_system(iter* it) {
         float3 target = (float3) {
             -euler.x - 115 * degrees_to_radians,
             0, 0 };
-        if (zox_has(e, SwingStart)) {
-            float swing_speed = zox_getv(e, SwingSpeed);
-            double time_passed = zox_current_time - zox_getv(e, SwingStart);
-            if (time_passed < swing_speed) {
-                float swing_bonus = (1 + sin(M_PI * (time_passed / swing_speed)));
-                target.x += swing_angle_x * swing_bonus * degrees_to_radians;
-                target.y += swing_angle_y * swing_bonus * degrees_to_radians;
-                target.z += swing_angle_z * swing_bonus * degrees_to_radians;
-                if (dbg_log) {
-                    zox_log("Swinging: Time Passed [%f], Angle [%fx%f], Speed [%f]",
-                        time_passed,
-                        swing_angle_x * swing_bonus,
-                        swing_angle_y * swing_bonus,
-                        swing_speed);
-                }
-            }
-        }
         euler = target;
         rotation->value = quaternion_normalize2(
             quaternion_slerp(rotation->value, euler_to_quaternion(euler), follow_t));

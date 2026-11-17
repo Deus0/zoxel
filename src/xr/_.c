@@ -10,7 +10,7 @@
  *    branch on it at runtime, not #ifdef zox_xr
  *  - pre, ins: the xr camera (XrCamera) and controllers (XrController, a device a hand), spawned at boot while XR is on
  *  - the ui: huds spawns its menus as 3D lists (zox_huds3D), navigated and clicked by the controllers
- *  - fun: shared by both: free roam (the sticks move and turn it, the headset turns the head on top), an eye's render
+ *  - fun: shared by both: the hands (the body's arms reach the controllers, bones/ik), free roam (the sticks move and turn it, the headset turns the head on top), an eye's render
  *  - openxr (zox_xr, Android): the session, eyes, swapchains, inputs, a headset's frame (openxr/render.c)
  *  - sim: the simulator, both eyes side by side in the window, the head and sticks from the keyboard
  *  - shared maths in cameras (fun/projection_angles.c, free_roam.c), tested there (cameras/tst/xr.c); tst/cube.c is
@@ -54,6 +54,7 @@ void import_xr(ecs* world) {
     add_hook_spawn_prefabs(zox_spawn_prefabs_xr);
     add_hook_on_boot(xr_spawn_camera);
     add_hook_on_boot(xr_sim_feed_devices);
+    zox_systems_xr_hands(world);
     zox_systems_xr_sim(world);
     zox_tsts_xr(world);
 #ifdef zox_xr

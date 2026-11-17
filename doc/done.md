@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-17
+-x Arm IK (bones/ik, a submodule): a shoulder's IKTarget and IKWeight bend its arm with the skeleton's own bones
+  (shoulder, the hand's parent as the elbow, the hand), two bone ik solved analytically, blended over the swing and
+  raise; a punch reaches the right arm where the head looks (replacing arm_raise's swing wobble); XR hands hold
+  each shoulder on its controller (IKHeld, waits on the XR player body); tst ik_two_bone, arm_reach
 -x Into a game with XR (tst xr_play, the simulator's controllers alone): New Game enters a realm with the defaults
   while the huds are 3D (no text input for the realm menu); the XR camera has the game camera's parts (streaming:
   terrain never loaded, raycasts: a crash) without its post processing; free roam takes up the camera when something
