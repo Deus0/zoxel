@@ -2,16 +2,19 @@
 //  - a punch (SwingStart, SwingSpeed: skills/sys/melee.c, items) over its swing time: the hand pulls back (the
 //    elbow bent), drives out to nearly the arm's full reach where the head looks, in towards the body's middle,
 //    then recovers to the guard
-//  - raised (RaiseShoulder: an item or skill held) the hand rests ahead in a guard, the elbow relaxed, not locked
+//  - raised (RaiseShoulder: an item or skill held) the hand rests ahead where the head looks, a little up and in, the
+//    elbow relaxed, not locked; a first person camera sees it (held low by the chest it was out of view: the arm
+//    looked gone)
 //  - the weight eases on and off, so the arm never snaps; lowered and not punching it returns to its swing
 //  - the head's facing is +z, a first person camera on it faces -z
 //  - a held shoulder (IKHeld, XR hands) is left be: the real hand moves it
 //  - written in place, not deferred, so the solve (arm_ik.c) reads it this frame
-#define ik_punch_guard 0.62f        // of the arm's reach, the hand's rest raised
-#define ik_punch_pull 0.45f         // pulled back before it strikes
+#define ik_punch_guard 0.85f        // of the arm's reach, the hand's rest raised: out where it's seen in first person
+#define ik_punch_pull 0.6f          // pulled back before it strikes
 #define ik_punch_strike 0.97f       // the punch's reach
 #define ik_punch_inwards 0.18f      // the strike leans in to the body's middle, of its reach
-#define ik_punch_drop 0.12f         // the guard rests a little low, of its reach
+#define ik_punch_guard_inwards 0.12f    // the guard a little in, as the old raise held it
+#define ik_punch_lift 0.4f          // the guard a little above the look, so it's seen (the old raise aimed it up)
 #define ik_punch_weight_rate 12.0f  // how fast the weight eases on and off
 
 static inline float ik_smoothstep(float a, float b, float x) {
@@ -87,10 +90,11 @@ void punch_ik_system(iter* it) {
         const float strike = punching ? ik_smoothstep(0.3f, 0.5f, p) * (1 - ik_smoothstep(0.55f, 1, p)) : 0;
         const float in_sign = (zox_getv(shoulder, LocalPosition3D).x < 0 ? 1 : -1) * flip;
         const float3 side = float4_rotate_float3(head_rotation, (float3) { in_sign, 0, 0 });
-        const float3 down = float3_down;
         float3 target = float3_add(from, float3_scale(look, out * reach));
-        target = float3_add(target, float3_scale(side, ik_punch_inwards * strike * reach));
-        target = float3_add(target, float3_scale(down, ik_punch_drop * (1 - strike) * reach));
+        const float3 up = float4_rotate_float3(head_rotation, float3_up);
+        target = float3_add(target, float3_scale(side,
+            (ik_punch_guard_inwards + (ik_punch_inwards - ik_punch_guard_inwards) * strike) * reach));
+        target = float3_add(target, float3_scale(up, ik_punch_lift * (1 - strike) * reach));
         zox_getm(shoulder, IKTarget)->value = target;
         weight->value += (1 - weight->value) * weight_t;
     }

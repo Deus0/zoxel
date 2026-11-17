@@ -1,7 +1,8 @@
 # Done
 
 ## 2026-11-17
--x Arms bend in normal play (bones/ik/sys/punch.c): a raised arm holds a guard (elbow relaxed), a punch pulls back
+-x Arms bend in normal play (bones/ik/sys/punch.c): a raised arm holds a guard ahead, a little up and in, seen in
+  first person (held low by the chest it looked gone, a dead hang) with the elbow relaxed, a punch pulls back
   with the elbow bent, strikes out to near full reach in towards the body's middle, recovers; weights ease on and
   off; tst punch_motion
 -x XR lag: the headset's frame begins at the top of the engine's frame (xr_frame_begin_system, zoxp_begin), so the
