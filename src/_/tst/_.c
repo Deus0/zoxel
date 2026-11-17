@@ -458,18 +458,22 @@ void process_arguments_tst(ecs* world, char* args[], int count) {
 }
 
 // module tests below core (the "_" module), registered here as they can't see the harness
+#ifdef zox_tests
 #include "../octrees/tst/_.c"
 #include "../collections/tst/_.c"
 #include "../flecs/tst/_.c"
 #include "../maths/tst/_.c"
 #include "binary_size.c"  // after zox_tst_check
+#endif
 
 
 void initialize_tst(ecs* world) {
+#ifdef zox_tests
     zox_tsts_octrees();
     zox_tsts_hashmaps();
     zox_tsts_maths();
     zox_tst_add("binary_size", zox_tst_binary_size_ready, zox_tst_binary_size_check, 30);
+#endif
     add_hook_terminal_command(process_arguments_tst);
     add_hook_on_boot(zox_tst_level_boot);
     zox_system_immediate(
