@@ -11,6 +11,11 @@ entity spawn_render_frame(
     float downscale,    // 2/4
     float alpha)
 {
+    if (ui_is3D(world, parent)) {
+        // a 3D window's (3D huds): none yet, its camera drawing into a texture broke the eyes' 3D uis (all of them
+        //  vanished while one was open), and a render texture is a 2D element (doc/plans/xr.md: render textures in 3D)
+        return 0;
+    }
     byte is_camera_filtering = 1;
     byte is_alpha = alpha != 1;
     color background = (color) {

@@ -1,3 +1,10 @@
+// 3D huds (on while XR is): menus and windows as panels in the world ahead of the player (canvas3s), not on the
+//  2D canvas; spawn_window builds one so (ui_window3_pose places it), its elements the 3D twins of its 2D prefabs
+//  (ui_prefab_for, windows/pre/twins.c)
+byte zox_huds3D = 0;
+// where a 3D window spawns for a canvas's player (huds/fun/huds3.c huds3_pose), set by huds
+void (*ui_window3_pose)(ecs* world, entity canvas, float3* position, float4* rotation) = NULL;
+#define ui_window3_metres_per_pixel 0.0045f     // a 3D window's height in metres, of its canvas pixels (ui_scale 1)
 // windows
 // color window_color = { 48, 42, 36, 255 };
 color window_fill = { 255, 22, 22, 99 };

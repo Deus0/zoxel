@@ -17,6 +17,9 @@ void tooltipee_initialize_system(iter* it) {
             canvas,
             zox_id(Tooltip));
         if (!zox_valid(tooltip)) {
+            if (zox_has(canvas, Canvas3)) {
+                continue;   // a 3D window: no tooltips in 3D yet (doc/plans/xr.md)
+            }
             zox_loge("Tooltip not found in Canvas [%s]", zox_getn(canvas));
             return;
         }

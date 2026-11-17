@@ -1,6 +1,14 @@
 # Done
 
 ## 2026-11-18
+-x 3D windows beside the 2D ones: on 3D huds every taskbar ui (status, identity, skills, items, body, gear, actions,
+  quests, crafting, map, mirror) opens as a panel ahead of the player, from its same spawn code: spawn_window builds a
+  canvas3 root (ui_window3_pose), spawn_ui, spawn_text and spawn_header swap a 2D prefab for its 3D twin under a 3D
+  parent (Prefab3, made by the 2D prefab's own function on a 3D base: windows/pre/twins.c), the 3D ones spawned this
+  frame remembered (deferred: their components aren't there yet); per parent, so a game's 2D and 3D uis live side by
+  side; no tooltips or render textures in 3D yet (the mirror's empty, the identity's mug shot blank: their camera
+  broke the eyes' 3D uis); the navigator leaves a ui it moved into (already open: the action bar) open; tst
+  xr_navigator steps RB round every ui, each 3D (screenshots tst/xr_window_<n>.ppm)
 -x navigator: LB and RB (a headset's grips) step through the taskbar's uis while paused, one open at a time, the
   gamepad's selection in the new one (huds/sys/navigator.c); the taskbar a 3D row above the menus on 3D huds
   (spawn_taskbar3, the 2D taskbar's frames and toggle: taskbar_frame_toggle); the 2D window stack skips 3D lists

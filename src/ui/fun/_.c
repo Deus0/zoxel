@@ -1,3 +1,4 @@
+#include "prefab3.c"
 #include "anchor.c"
 #include "canvas.c"
 #include "element_render.c"

@@ -1,6 +1,7 @@
 // Core Elements
 zox_tag(Element);
 zox_tag(Element2D);
+zoxc_entity(Prefab3);       // a 2D prefab's 3D twin, spawned instead under a 3D parent (ui_prefab_for)
 zox_tag(ElementLink);      // links to a UI element, i.e. a zevices virtual joystick
 zox_tag(ElementLinks);     // links to many UI elements, i.e. a characters 3D UIs
 zox_tag(UIHolderLink);     // a 3D UI links to its holder, it is deleted with it
@@ -27,6 +28,7 @@ zox_tag(AutoHidden);
 zox_tag(UIClosing);           // popping out, deleted once it has (ui_pop_out): a toggle reads it as closed
 
 void zox_components_elements(ecs *world) {
+    zoxd_entity(Prefab3);
     zoxd_float(AutoHide);
     zoxd_double(AutoHideTime);
     zoxd_tag(AutoHidden);

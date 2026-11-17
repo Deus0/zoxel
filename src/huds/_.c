@@ -6,7 +6,6 @@
  * |                                                          |
  * +----------------------------------------------------------+
  */
-byte zox_huds3D = 0;
 // NOTE: For some reason non alpha breaks it
 byte zox_game_render_texture_alpha = 1;
 const byte huds_max_list_elements = 128;
@@ -38,6 +37,7 @@ byte zox_disable_screen_fader = 0;
 
 void import_huds(ecs* world) {
     zox_module(huds);
+    ui_window3_pose = huds3_window_pose;
     // zox_module_dispose(dispose_gameui);
     add_hook_spawn_prefabs(spawn_prefabs_game_ui);
     // initialize_TaskbarData();

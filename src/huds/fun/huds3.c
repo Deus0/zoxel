@@ -15,6 +15,11 @@ void huds3_pose(ecs* world, entity player, float distance, float3* position, flo
     *position = move_along_direction(*position, *rotation, -distance);
 }
 
+// a 3D window ahead of its canvas's player (spawn_window on 3D huds: ui_window3_pose)
+void huds3_window_pose(ecs* world, entity canvas, float3* position, float4* rotation) {
+    huds3_pose(world, zox_get_link(world, canvas, PlayerLink), huds3_distance, position, rotation);
+}
+
 // loading on 3D huds: the eyes close (dark lids from the top and bottom, a headset's eyes: xr/fun/eye_render.c), then
 //  only a 3D label "Loading" is drawn, fading in ahead of the head and following it (huds3_follow_system); the eyes
 //  open once loaded and the camera's on the body (huds3_dark_hold); 2D loading fades its canvas instead

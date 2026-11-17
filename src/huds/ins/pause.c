@@ -26,6 +26,7 @@ entity spawn_menu_paused(ecs *world, entity player) {
         zox_set_unique_name(e, "menu_paused");
         zox_add(e, MenuPaused);
         zox_add(e, NavigationWindow);
+        link_window_to_taskbar(world, e, zox_get_link(world, player, CanvasLink), zox_id(MenuPaused));   // its frame lit
         return e;
     }
     e = spawn_window_list(

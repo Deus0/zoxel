@@ -15,9 +15,11 @@ entity spawn_text(
     if (font_resolution < zox_texts_min_resolution) {
         font_resolution = zox_texts_min_resolution;
     }
+    prefab = ui_prefab_for(world, prefab, parent);
     zox_instance(prefab);
     zox_name("text");
     zox_set_parent_non_fragment(world, e, parent);  // per parent tables otherwise (tst tables_stream)
+    ui_layer3_set(world, e, parent);
     zox_set(e, Anchor, { position_anchor });
     zox_set(e, LayoutPosition, { position });
     zox_set(e, TextFontSize, { font_size });

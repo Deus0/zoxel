@@ -1,6 +1,8 @@
 // The navigator: LB and RB (a headset's grips) step through the taskbar's uis while paused, one open at a time
-//  - the open one (the first frame active, in the row's order: ChildIndex) closes, the one beside it opens,
-//      wrapping round; none open, RB opens the first, LB the last
+//  - the one the navigator's in (the one it last opened, else its selection's window, else the first open in the
+//      row's order: ChildIndex) closes,
+//      the one beside it opens, wrapping round; none open, RB opens the first, LB the last
+//  - others stay open (a hud, i.e. the action bar, is a taskbar ui too); one beside it already open is moved into
 //  - each through the taskbar's own toggle (taskbar_frame_toggle), so its frames light as a click lights them
 //  - the new ui is the NavigationWindow and the navigators' selections are cleared: they select its first element
 //      (element_navigation_begin_system), so a gamepad reaches every ui, not only the one it began in
@@ -37,6 +39,9 @@ static int navigator_frames(ecs* world, entity canvas, entity* frames) {
     return count;
 }
 
+static entity navigator_opened = 0;     // the ui it last opened or moved into (the local player's)
+static byte navigator_opened_kept = 0;  // it was open already (a hud: the action bar): left open when moved off
+
 // steps the player's taskbar uis by direction (1 RB, -1 LB), returns the ui opened
 entity navigator_shift(ecs* world, entity player, int direction) {
     const entity canvas = zox_get_link(world, player, CanvasLink);
@@ -48,23 +53,52 @@ entity navigator_shift(ecs* world, entity player, int direction) {
     if (!count) {
         return 0;
     }
+    entity devices[zox_children_capacity];
+    const uint length = zox_get_children_by_id(world, player, devices, zox_children_capacity, zox_id(DeviceNavigator));
+    // the window the selection's in
+    entity selected_window = 0;
+    for (uint i = 0; i < length && !selected_window; i++) {
+        const entity target = zox_getv(devices[i], EntityTarget);
+        selected_window = zox_valid(target) ? zox_get_parent_by_id(world, target, zox_id(Window)) : 0;
+    }
     int current = -1;
-    for (int i = 0; i < count; i++) {
-        if (zox_getv(frames[i], ActiveState)) {
-            if (current < 0) {
+    if (zox_valid(navigator_opened) && !zox_has(navigator_opened, UIClosing)) {
+        for (int i = 0; i < count && current < 0; i++) {
+            if (zox_getv(frames[i], ActiveState) && zox_has_id(navigator_opened, zox_getv(frames[i], TaskbarWindowID))) {
                 current = i;
             }
-            taskbar_frame_toggle(world, frames[i], player);     // closed, one open at a time
+        }
+    }
+    for (int i = 0; i < count && current < 0; i++) {
+        if (zox_getv(frames[i], ActiveState) && zox_valid(selected_window) &&
+            zox_has_id(selected_window, zox_getv(frames[i], TaskbarWindowID))) {
+            current = i;
+        }
+    }
+    for (int i = 0; i < count && current < 0; i++) {
+        if (zox_getv(frames[i], ActiveState)) {
+            current = i;
         }
     }
     const int next = current < 0 ? (direction > 0 ? 0 : count - 1) : (current + direction + count) % count;
-    const entity window = taskbar_frame_toggle(world, frames[next], player);
+    const byte current_kept = navigator_opened_kept && zox_valid(navigator_opened) && current >= 0 &&
+        zox_has_id(navigator_opened, zox_getv(frames[current], TaskbarWindowID));
+    if (current >= 0 && current != next && !current_kept) {
+        taskbar_frame_toggle(world, frames[current], player);  // closed
+    }
+    entity window = 0;
+    navigator_opened_kept = zox_getv(frames[next], ActiveState);
+    if (navigator_opened_kept) {
+        // open already: moved into, left open after
+        window = zox_get_child_by_id(world, canvas, zox_getv(frames[next], TaskbarWindowID));
+    } else {
+        window = taskbar_frame_toggle(world, frames[next], player);
+    }
     if (zox_valid(window)) {
         zox_add(window, NavigationWindow);
     }
+    navigator_opened = window;
     // the navigators select within the new ui
-    entity devices[zox_children_capacity];
-    const uint length = zox_get_children_by_id(world, player, devices, zox_children_capacity, zox_id(DeviceNavigator));
     for (uint i = 0; i < length; i++) {
         raycaster_select_element(world, devices[i], 0);
     }

@@ -8,6 +8,7 @@ entity spawn_ui(
     int2 size,
     int2 texture_size)
 {
+    prefab = ui_prefab_for(world, prefab, parent);
     zox_instance(prefab);
     zox_name("ui");
     zox_setv(e, Anchor, anchor);
@@ -16,6 +17,7 @@ entity spawn_ui(
     zox_setv(e, TextureSize, texture_size);
     if (parent) {
         zox_set_parent_non_fragment(world, e, parent);  // per parent tables otherwise (tst tables_stream)
+        ui_layer3_set(world, e, parent);
     }
     return e;
 }

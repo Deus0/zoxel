@@ -7,6 +7,9 @@
     }
     entity tooltip = zox_get_child_by_id(world, canvas, zox_id(Tooltip));
     if (!zox_valid(tooltip)) {
+        if (zox_has(canvas, Canvas3)) {
+            return;     // a 3D window: no tooltips in 3D yet
+        }
         zox_loge("Tooltip not found in Canvas [%s]", zox_get_name(canvas));
         return;
     }

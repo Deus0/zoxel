@@ -1,5 +1,8 @@
 // Spawns a window: a header on top, its body, a footer under it for its buttons (footer_height, 0 for none, its
 //  entity in footer), each a strip of its own (they don't overlap, their fills are see through)
+//  - 3D huds (zox_huds3D): a canvas3 ahead of the player (ui_window3_pose), still a child of the 2D canvas (found,
+//      toggled and closed as a 2D window is); its header, body and footer, and whatever the caller spawns in them,
+//      are their 2D prefabs' 3D twins (ui_prefab_for), so a window's spawn code is the same for both
 entity3 spawn_window_footer(
     ecs* world,
     entity prefab,
@@ -18,10 +21,27 @@ entity3 spawn_window_footer(
     entity3 output;
     color fill = window_fill;
     color outline = window_outline;
-    zox_instance(prefab);
+    const byte is3D = zox_huds3D;
+    entity e;
+    if (is3D) {
+        float3 position3 = float3_zero;
+        float4 rotation3 = quaternion_identity;
+        if (ui_window3_pose) {
+            ui_window3_pose(world, parent, &position3, &rotation3);
+        }
+        e = spawn_canvas3(world, prefab_canvas3, position3, 1, body_size);
+        zox_setv(e, Rotation3D, rotation3);
+        zox_add(e, Window);
+        zox_add(e, PreInitialize);  // as a 2D window's: its spawn systems run (Initialize next: a map's, a taskbar's link)
+        zox_set_parent(world, e, parent);
+        ui3_root_spawned(e);
+        on_closed = NULL;   // no close button: nothing points at it (a gamepad's B closes it)
+    } else {
+        e = zox_ins(world, prefab);    // zox_instance would declare its own e
+        zox_set_parent_non_fragment(world, e, parent);
+    }
     output.x = e;
     zox_set_unique_name(e, header);
-    zox_set_parent_non_fragment(world, e, parent);
     byte header_height = 0;
     // NOTE: Header Anchored to top of window
     {
@@ -94,6 +114,11 @@ entity3 spawn_window_footer(
     // finish setting window
     int2 size = body_size;
     size.y += header_height + footer_height;
+    if (is3D) {
+        zox_setv(e, LayoutSize, size);
+        zox_setv(e, Scale1, size.y * ui_window3_metres_per_pixel / (ui_scale > 0 ? ui_scale : 1));
+        return output;
+    }
     // NOTE: [0,1] => [-0.5, +0.5]
     float2 anchor_shift = float2_sub(anchor, float2_half);
     position.x -= anchor_shift.x * size.x;

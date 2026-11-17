@@ -55,9 +55,10 @@ Then (2026-11-17, third pass):
 - the options and pause menus are 3D lists; a 3D list is a 2D list's (list_system, list_render_dirty_system) under
   its panel and scrolls as it's navigated (scroll_list_to_child, shared with 2D scrollviews), over 8 rows
 - paused, the taskbar's a 3D row above the menus; the grips (LB, RB) step through its uis (huds/sys/navigator.c).
-  Only the pause menu is 3D yet: the others (inventory, stats, skills, quests, crafting, the mirror) open as 2D
-  windows, unseen in a headset
-- to do: rays from the hands (pointer zevices) at 3D buttons, tooltips, the taskbar's uis as 3D
+  Every taskbar ui opens 3D (spawn_window's canvas3, the 2D prefabs' 3D twins: ui/fun/prefab3.c)
+- to do: rays from the hands (pointer zevices) at 3D buttons, tooltips in 3D, render textures in 3D (the mirror,
+  the identity's mug shot: a render camera broke the eyes' 3D uis), the 3D windows' grids navigable (their frames
+  aren't NavigationElements: a gamepad's selection doesn't reach the items)
 
 Then (2026-11-17, lag and room scale):
 

@@ -21,9 +21,10 @@ entity spawn_header(
         // Left Alignment
         text_position.x = ((font_size * string_length) / 2) + padding.x / 2;
     }
-    zox_instance(prefab_header);
+    zox_instance(ui_prefab_for(world, prefab_header, parent));
     zox_name("header");
     zox_set_parent_non_fragment(world, e, parent);
+    ui_layer3_set(world, e, parent);
     zox_setv(e, LayoutPosition, position);
     zox_setv(e, LayoutSize, size);
     zox_setv(e, Anchor, anchor);

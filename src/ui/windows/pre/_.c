@@ -2,6 +2,7 @@
 #include "header.c"
 #include "body.c"
 #include "close_button.c"
+#include "twins.c"
 
 entity prefab_window;
 entity prefab_window_textured;
@@ -48,4 +49,5 @@ void spawn_prefabs_windows(ecs* world) {
     prefab_grid = spawn_prefab_grid(
         world,
         prefab_body);
+    spawn_prefabs_twins3(world);
 }

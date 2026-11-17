@@ -23,6 +23,10 @@ entity spawn_character_mugshot(ecs* world, entity parent, entity character, floa
     const float3 camera_at = float3_add(head_at, (float3) { 0, head_size.y * 0.3f, fmaxf(head_size.x, head_size.y) * 4 });
     // alpha under 1: the alpha render texture material (the opaque one shows nothing, todo), the gray behind it clear
     const entity frame = spawn_render_frame(world, parent, anchor, position, size, copy, camera_at, quaternion_identity, 1, 0.95f);
+    if (!frame) {
+        zox_delete(copy);   // none in a 3D window yet (spawn_render_frame)
+        return 0;
+    }
     zox_set_unique_name(frame, "mugshot");
     zox_set_parent(world, copy, frame);
     return frame;
