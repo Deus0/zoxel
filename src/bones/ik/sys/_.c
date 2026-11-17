@@ -2,12 +2,13 @@
 #include "punch.c"
 
 void zox_systems_ik(ecs* world) {
-    // a punch reaches its arm where the head looks
+    // the right arm's guard while raised, a punch as a motion
     zox_system(
         punch_ik_system,
         zoxp_update,
         [in] bones.SwingStart,
         [in] bones.SwingSpeed,
+        [in] bones.RaiseShoulder,
         [none] bones.Skeleton
     );
     // after the drivers and the arm's swing and raise (zoxp_update), so a target lands the frame it's written,

@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-17
+-x Arms bend in normal play (bones/ik/sys/punch.c): a raised arm holds a guard (elbow relaxed), a punch pulls back
+  with the elbow bent, strikes out to near full reach in towards the body's middle, recovers; weights ease on and
+  off; tst punch_motion
 -x XR lag: the headset's frame begins at the top of the engine's frame (xr_frame_begin_system, zoxp_begin), so the
   controllers' poses are predicted for this frame's display time (they were the last frame's, the hands a frame
   behind); a frame the runtime said not to render is ended (it was left open, breaking its frame pacing); every
