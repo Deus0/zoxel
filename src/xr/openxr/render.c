@@ -4,10 +4,51 @@
 //  - the render runs in zoxp_render, after the transforms; it runs the render systems inside it
 //  - the eyes are located last thing before drawing, the freshest head for the display time
 //  - the ui is 3D panels (huds while zox_huds3D), drawn with the other 3D render systems
+// frame timing, logged every 2s (logcat, tag zoxel): where a headset's frame goes, to find what's slow
+//  - wait: in xrWaitFrame (the runtime pacing us: high is fine, we're early), sim: the engine's frame between the
+//    wait and the eyes, eyes: drawing both, late: frames whose display time skipped past one (dropped frames)
+static double xr_timing_wait = 0, xr_timing_sim = 0, xr_timing_eyes = 0, xr_timing_since = 0, xr_timing_mark = 0;
+static int xr_timing_frames = 0, xr_timing_late = 0;
+static XrTime xr_timing_last_display = 0;
+
+static inline double xr_timing_now() {
+    struct timespec t;
+    clock_gettime(CLOCK_MONOTONIC, &t);
+    return t.tv_sec + t.tv_nsec * 1e-9;
+}
+
+static void xr_timing_frame_end(double eyes_start) {
+    const double now = xr_timing_now();
+    xr_timing_eyes += now - eyes_start;
+    xr_timing_frames++;
+    const XrTime display = xr_frame_state.predictedDisplayTime;
+    const XrTime period = xr_frame_state.predictedDisplayPeriod;
+    if (xr_timing_last_display && period > 0 && display - xr_timing_last_display > period + period / 2) {
+        xr_timing_late++;
+    }
+    xr_timing_last_display = display;
+    if (!xr_timing_since) {
+        xr_timing_since = now;
+    }
+    if (now - xr_timing_since >= 2) {
+        const float n = (float) xr_timing_frames;
+        zox_log("[XR] fps [%.1f] (display %.1f hz) ms: wait [%.2f] sim [%.2f] eyes [%.2f], late frames [%i]",
+            n / (now - xr_timing_since), period > 0 ? 1e9 / (double) period : 0,
+            1000 * xr_timing_wait / n, 1000 * xr_timing_sim / n, 1000 * xr_timing_eyes / n, xr_timing_late);
+        xr_timing_wait = xr_timing_sim = xr_timing_eyes = 0;
+        xr_timing_frames = xr_timing_late = 0;
+        xr_timing_since = now;
+    }
+}
+
 void xr_frame_begin_system(iter* it) {
     zox_sys_on_begin();
     byte running = 1;
-    if (xr_frame_start(&running) && xr_get_eyes()) {
+    const double wait_start = xr_timing_now();
+    const byte begun = xr_frame_start(&running);
+    xr_timing_mark = xr_timing_now();
+    xr_timing_wait += xr_timing_mark - wait_start;
+    if (begun && xr_get_eyes()) {
         // the head for this frame's body (the head bone), located again just before the eyes draw
         xr_head_now_rotation = xr_head_rotation;
         xr_head_now_position = xr_head_position;
@@ -25,6 +66,8 @@ void xr_camera_render_system(iter* it) {
     if (!xr_frame_begun) {
         return;
     }
+    const double eyes_start = xr_timing_now();
+    xr_timing_sim += eyes_start - xr_timing_mark;
     xr_update_time();
     if (!xr_get_eyes()) {
         xr_end_frame();
@@ -50,6 +93,7 @@ void xr_camera_render_system(iter* it) {
         glFrontFace(GL_CCW);
     }
     xr_end_frame();
+    xr_timing_frame_end(eyes_start);
     zox_sys_on_end();
 } zoxd_system(xr_camera_render_system);
 

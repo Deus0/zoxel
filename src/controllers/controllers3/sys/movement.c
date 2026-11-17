@@ -25,6 +25,24 @@ float debug_thickness = 2.0f;
 extern entity spawn_line3(ecs*, float3, float3, float, double);
 #endif
 
+// the ground velocity straight from the stick (XR): its x z at the walk's top speed along the character's facing,
+//  its y (falling, jumping) kept
+static inline void player3d_move_direct(ecs* world, entity character, float2 stick, byte is_running) {
+    float3 local = { stick.x * max_velocity3D.x, 0, -stick.y * max_velocity3D.y };
+    if (is_camera_positive_z) {
+        local.x *= -1;
+        local.z *= -1;
+    }
+    if (is_running) {
+        local.x *= run_speed;
+        local.z *= run_speed;
+    }
+    const float3 world_velocity = float4_rotate_float3(zox_getv(character, Rotation3D), local);
+    Velocity3D* velocity = zox_getm(character, Velocity3D);
+    velocity->value.x = world_velocity.x;
+    velocity->value.z = world_velocity.z;
+}
+
 void player3d_move_system(iter* it) {
     zox_sys_on_begin();
     init_delta_time();
@@ -107,6 +125,12 @@ void player3d_move_system(iter* it) {
                 if (keyboard->d.is_pressed) left_stick.x += 1;
                 if (keyboard->left_shift.is_pressed) is_running = 1;
             }
+        }
+        // a headset walks without inertia: the stick sets the ground velocity, at speed the frame it's pushed,
+        //  stopped the frame it's let go (accelerating up and friction coasting down felt like lag, and sickens)
+        if (zox_xr_active && !zox_getv(character, FlyMode)) {
+            player3d_move_direct(world, character, left_stick, is_running);
+            continue;
         }
         if (left_stick.x == 0 && left_stick.y == 0) {
             continue;

@@ -1002,8 +1002,11 @@
 
 # XR
 - XR body, what's left (xr/fun/body.c): walking in the room moves the character straight (no collisions: it can
-	walk into a wall), push it through physics instead; snap turning as an option (smooth stick turns sicken some);
-	confirm on a headset
+	walk into a wall), push it through physics instead; confirm on a headset
+- XR turning option in settings: smooth (the default, the right stick turns the body left and right) or snap turns
+	(smooth turns sicken some players)
+- XR walking speed: friction still trims the stick's set velocity each frame (~80% of top speed at 30 fps, ~92% at
+	72), so it varies a little with the frame rate (controllers3/sys/movement.c player3d_move_direct)
 - XR hands from the grip pose (where the hand holds the controller), not the aim pose (the pointer's ray): bind
 	/input/grip/pose (xr/openxr/input.c), a second pose on the controller for the arms
 - Punch in VR as a motion (inspired by Sword Art Online): the player's hands always drive the body's arms (xr/fun/hands.c,

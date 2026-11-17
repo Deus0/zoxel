@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-17
+-x XR walking without inertia: the left stick sets the ground velocity (at speed at once, stopped at once), the
+  acceleration and friction coast felt like lag; the headset logs its frame timing every 2s (fps, ms waiting,
+  simulating, drawing the eyes, late frames) to find what's slow on it
 -x XR body fought the head (playtest: laggy moving, head turns fighting the body): in a game the xr camera rides
   the character's head bone, the roam took it up every frame (the hierarchy moved it), folding the head's turn into
   the body's and pulling against the sticks. Now the character is the body (xr/fun/body.c): the sticks move and

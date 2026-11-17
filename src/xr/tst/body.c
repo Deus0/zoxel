@@ -3,7 +3,7 @@
 //  - the head turn: the character's facing stays, its head bone turns, the camera (on it) looks where the head does
 //  - the eyes ride the character: the view's eyes (the body, then the head) are at the camera every frame, and the
 //    roam never takes the camera up (it did each frame, folding the head's turn into the body)
-//  - the left stick walks the character; walking 0.3m in the room moves it 0.3m
+//  - the left stick walks the character, at speed straight away and stopped straight away (no inertia); walking 0.3m in the room moves it 0.3m
 //  - run: bash bsh/tst.sh xr_body
 int zox_tst_xr_body_frames = 0;
 float zox_tst_xr_body_worst_eyes = 0;       // the view's eyes from the camera, worst
@@ -11,6 +11,8 @@ float zox_tst_xr_body_facing_turn = 0;      // the character's facing, turned by
 float zox_tst_xr_body_look = 0;             // the camera's look on the head's (1 the same)
 float zox_tst_xr_body_walked = 0;           // by the stick
 float zox_tst_xr_body_room = 0;             // by the room
+float zox_tst_xr_body_started = 0;          // the ground speed 3 frames into the stick (no inertia: at speed)
+float zox_tst_xr_body_stopped = 1;          // 3 frames after it's let go (stopped)
 float4 zox_tst_xr_body_facing;
 float3 zox_tst_xr_body_from;
 
@@ -57,6 +59,15 @@ byte zox_tst_xr_body_ready(ecs* world) {
     if (f >= 150 && f < 210) {
         xr_sim_script_left_stick = (float2) { 0, 1 };
     }
+    if (f == 153 || f == 213) {
+        const float3 v = zox_getv(character, Velocity3D);
+        const float speed = sqrtf(v.x * v.x + v.z * v.z);
+        if (f == 153) {
+            zox_tst_xr_body_started = speed;
+        } else {
+            zox_tst_xr_body_stopped = speed;
+        }
+    }
     if (f == 210) {
         xr_sim_script_left_stick = float2_zero;
         const float3 moved = float3_sub(zox_getv(character, Position3D), zox_tst_xr_body_from);
@@ -80,6 +91,9 @@ void zox_tst_xr_body_check(ecs* world) {
     zox_tst_check(zox_tst_xr_body_worst_eyes < 0.02f, "the eyes left the camera by [%f]", zox_tst_xr_body_worst_eyes);
     zox_tst_check(zox_tst_xr_body_facing_turn < 0.0001f, "the head's turn turned the body [%f]", zox_tst_xr_body_facing_turn);
     zox_tst_check(zox_tst_xr_body_look > 0.99f, "the camera doesn't look where the head does [%f]", zox_tst_xr_body_look);
+    zox_log("[tst] xr_body: speed 3 frames in [%.3f] of [%.3f], 3 frames after [%.3f]", zox_tst_xr_body_started, max_velocity3D.y, zox_tst_xr_body_stopped);
+    zox_tst_check(zox_tst_xr_body_started > max_velocity3D.y * 0.8f, "the stick ramped up, not at speed [%f]", zox_tst_xr_body_started);
+    zox_tst_check(zox_tst_xr_body_stopped < 0.05f, "let go it coasted [%f]", zox_tst_xr_body_stopped);
     zox_tst_check(zox_tst_xr_body_walked > 0.3f, "the left stick didn't walk the character [%f]", zox_tst_xr_body_walked);
     zox_tst_check(fabsf(zox_tst_xr_body_room - 0.3f) < 0.05f, "walking 0.3m in the room moved it [%f]", zox_tst_xr_body_room);
 }
