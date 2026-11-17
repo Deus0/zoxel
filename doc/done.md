@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-17
+-x XR walking through physics: walking in the room is the body's velocity for the frame (xr_room_walk_system,
+  before physics), walls stop it (it moved the character straight through them); the stick and room velocities are
+  scaled against the frame's drag (physics3_drag_compensation), friction kept: drag flickering with Grounded on
+  seams made the walk's speed bump; tst xr_body: steady speed per frame, a wall stops the room's walk
 -x XR walking without inertia: the left stick sets the ground velocity (at speed at once, stopped at once), the
   acceleration and friction coast felt like lag; the headset logs its frame timing every 2s (fps, ms waiting,
   simulating, drawing the eyes, late frames) to find what's slow on it

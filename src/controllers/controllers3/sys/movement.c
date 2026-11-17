@@ -26,7 +26,8 @@ extern entity spawn_line3(ecs*, float3, float3, float, double);
 #endif
 
 // the ground velocity straight from the stick (XR): its x z at the walk's top speed along the character's facing,
-//  its y (falling, jumping) kept
+//  its y (falling, jumping) kept; scaled against this frame's drag, so it moves the same each frame (friction
+//  kept, physics3_drag_compensation)
 static inline void player3d_move_direct(ecs* world, entity character, float2 stick, byte is_running) {
     float3 local = { stick.x * max_velocity3D.x, 0, -stick.y * max_velocity3D.y };
     if (is_camera_positive_z) {
@@ -37,7 +38,8 @@ static inline void player3d_move_direct(ecs* world, entity character, float2 sti
         local.x *= run_speed;
         local.z *= run_speed;
     }
-    const float3 world_velocity = float4_rotate_float3(zox_getv(character, Rotation3D), local);
+    const float3 world_velocity = float3_scale(float4_rotate_float3(zox_getv(character, Rotation3D), local),
+        physics3_drag_compensation(world, character));
     Velocity3D* velocity = zox_getm(character, Velocity3D);
     velocity->value.x = world_velocity.x;
     velocity->value.z = world_velocity.z;

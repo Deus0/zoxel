@@ -3,7 +3,9 @@
 //  - the head turn: the character's facing stays, its head bone turns, the camera (on it) looks where the head does
 //  - the eyes ride the character: the view's eyes (the body, then the head) are at the camera every frame, and the
 //    roam never takes the camera up (it did each frame, folding the head's turn into the body)
-//  - the left stick walks the character, at speed straight away and stopped straight away (no inertia); walking 0.3m in the room moves it 0.3m
+//  - walking in the room at a wall: the body stops at it (physics, collisions), not through
+//  - the left stick walks the character, at speed straight away and stopped straight away (no inertia), each
+//    frame's move steady over its dt (friction on: its drag flickering with Grounded made bumps); walking 0.3m in the room moves it 0.3m
 //  - run: bash bsh/tst.sh xr_body
 int zox_tst_xr_body_frames = 0;
 float zox_tst_xr_body_worst_eyes = 0;       // the view's eyes from the camera, worst
@@ -13,6 +15,13 @@ float zox_tst_xr_body_walked = 0;           // by the stick
 float zox_tst_xr_body_room = 0;             // by the room
 float zox_tst_xr_body_started = 0;          // the ground speed 3 frames into the stick (no inertia: at speed)
 float zox_tst_xr_body_stopped = 1;          // 3 frames after it's let go (stopped)
+float zox_tst_xr_body_speed_min = 1000;     // each frame's move over its dt, walking: steady (no bumps)
+float zox_tst_xr_body_speed_max = 0;
+float zox_tst_xr_body_dt_last = 0;          // read at zoxp_dbg_end it's the next frame's dt: the last one's is this frame's
+float3 zox_tst_xr_body_last;
+float zox_tst_xr_body_wall_moved = -1;      // walked 2m in the room at a wall 1m away: how far it got
+byte zox_tst_xr_body_wall_built = 0;
+float3 zox_tst_xr_body_wall_dir;
 float4 zox_tst_xr_body_facing;
 float3 zox_tst_xr_body_from;
 
@@ -59,9 +68,20 @@ byte zox_tst_xr_body_ready(ecs* world) {
     if (f >= 150 && f < 210) {
         xr_sim_script_left_stick = (float2) { 0, 1 };
     }
+    {
+        const float3 p = zox_getv(character, Position3D);
+        if (f >= 153 && f < 210 && zox_tst_xr_body_dt_last > 0) {
+            const float3 d = float3_sub(p, zox_tst_xr_body_last);
+            const float speed = sqrtf(d.x * d.x + d.z * d.z) / zox_tst_xr_body_dt_last;
+            zox_tst_xr_body_speed_min = float_min(zox_tst_xr_body_speed_min, speed);
+            zox_tst_xr_body_speed_max = float_max(zox_tst_xr_body_speed_max, speed);
+        }
+        zox_tst_xr_body_last = p;
+        zox_tst_xr_body_dt_last = (float) zox_delta_time;
+    }
     if (f == 153 || f == 213) {
-        const float3 v = zox_getv(character, Velocity3D);
-        const float speed = sqrtf(v.x * v.x + v.z * v.z);
+        // the speed it moved this frame (its velocity is after drag: the next frame's is set again)
+        const float speed = f == 153 ? zox_tst_xr_body_speed_max : sqrtf(zox_getv(character, Velocity3D).x * zox_getv(character, Velocity3D).x + zox_getv(character, Velocity3D).z * zox_getv(character, Velocity3D).z);
         if (f == 153) {
             zox_tst_xr_body_started = speed;
         } else {
@@ -82,7 +102,41 @@ byte zox_tst_xr_body_ready(ecs* world) {
         zox_tst_xr_body_room = sqrtf(moved.x * moved.x + moved.z * moved.z);
         xr_sim_script_head_position = float3_zero;
     }
-    return f > 250;
+    // a wall: a pillar of bricks 1m ahead along the room's x, then the head walks 2m at it in the room
+    if (f == 260) {
+        const entity terrain = zox_get_link(world, character, TerrainLink);
+        const entity realm = zox_get_link(world, character, RealmLink);
+        const entity bricks = zox_valid(realm) ? zox_get_child_by_id(world, realm, zox_id(BlockBricks)) : 0;
+        if (zox_valid(terrain) && zox_valid(bricks)) {
+            const float scale = zox_getv(terrain, BlockScale);
+            zox_tst_xr_body_wall_dir = float3_normalize(float4_rotate_float3(xr_body_rotation(world, character), (float3) { 1, 0, 0 }));
+            zox_tst_xr_body_from = zox_getv(character, Position3D);
+            // a slab 1m to 1.75m ahead, 2m wide, from under the feet to 2.5m up (clear of the body: one built
+            //  around it walked it out through the wall)
+            const byte index = zox_getv(bricks, BlockIndex);
+            const float3 side = float3_cross(float3_up, zox_tst_xr_body_wall_dir);
+            int placed = 0;
+            for (float ahead = 1.0f; ahead <= 1.75f; ahead += scale * 0.5f) {
+                for (float across = -1; across <= 1; across += scale * 0.5f) {
+                    for (float up = -1; up <= 2.5f; up += scale * 0.5f) {
+                        const float3 p = float3_add(zox_tst_xr_body_from, float3_add(float3_add(
+                            float3_scale(zox_tst_xr_body_wall_dir, ahead), float3_scale(side, across)), (float3) { 0, up, 0 }));
+                        placed += terrain_queue_voxel(world, terrain, real_position_to_block_position(p, scale), index, 0);
+                    }
+                }
+            }
+            zox_tst_xr_body_wall_built = placed > 0;
+            zox_log("[tst] xr_body: a wall of [%i] bricks, block scale [%f]", placed, scale);
+        }
+    }
+    if (f > 320 && f <= 420) {
+        xr_sim_script_head_position = (float3) { (f - 320) * 0.02f, 0, 0 };
+    }
+    if (f == 440) {
+        zox_tst_xr_body_wall_moved = float3_dot(float3_sub(zox_getv(character, Position3D), zox_tst_xr_body_from), zox_tst_xr_body_wall_dir);
+        xr_sim_script_head_position = float3_zero;
+    }
+    return f > 440;
 }
 
 void zox_tst_xr_body_check(ecs* world) {
@@ -92,13 +146,19 @@ void zox_tst_xr_body_check(ecs* world) {
     zox_tst_check(zox_tst_xr_body_facing_turn < 0.0001f, "the head's turn turned the body [%f]", zox_tst_xr_body_facing_turn);
     zox_tst_check(zox_tst_xr_body_look > 0.99f, "the camera doesn't look where the head does [%f]", zox_tst_xr_body_look);
     zox_log("[tst] xr_body: speed 3 frames in [%.3f] of [%.3f], 3 frames after [%.3f]", zox_tst_xr_body_started, max_velocity3D.y, zox_tst_xr_body_stopped);
-    zox_tst_check(zox_tst_xr_body_started > max_velocity3D.y * 0.8f, "the stick ramped up, not at speed [%f]", zox_tst_xr_body_started);
+    zox_log("[tst] xr_body: walking speed per frame [%.4f to %.4f]", zox_tst_xr_body_speed_min, zox_tst_xr_body_speed_max);
+    zox_tst_check(zox_tst_xr_body_speed_min > max_velocity3D.y * 0.97f && zox_tst_xr_body_speed_max < max_velocity3D.y * 1.03f,
+        "walking speed bumped, [%f to %f] of [%f]", zox_tst_xr_body_speed_min, zox_tst_xr_body_speed_max, max_velocity3D.y);
+    zox_tst_check(zox_tst_xr_body_started > max_velocity3D.y * 0.97f, "the stick ramped up, not at speed [%f]", zox_tst_xr_body_started);
     zox_tst_check(zox_tst_xr_body_stopped < 0.05f, "let go it coasted [%f]", zox_tst_xr_body_stopped);
     zox_tst_check(zox_tst_xr_body_walked > 0.3f, "the left stick didn't walk the character [%f]", zox_tst_xr_body_walked);
+    zox_log("[tst] xr_body: walked 2m in the room at a wall 1m away, got [%.3f]", zox_tst_xr_body_wall_moved);
+    zox_tst_check(zox_tst_xr_body_wall_built, "no wall built");
+    zox_tst_check(zox_tst_xr_body_wall_moved > 0.2f && zox_tst_xr_body_wall_moved < 0.95f, "the room's walk went [%f] at a wall 1m away", zox_tst_xr_body_wall_moved);
     zox_tst_check(fabsf(zox_tst_xr_body_room - 0.3f) < 0.05f, "walking 0.3m in the room moved it [%f]", zox_tst_xr_body_room);
 }
 
 void zox_tsts_xr_body(ecs* world) {
-    zox_tst_add("xr_body", zox_tst_xr_body_ready, zox_tst_xr_body_check, 120);
+    zox_tst_add("xr_body", zox_tst_xr_body_ready, zox_tst_xr_body_check, 150);
     zox_tst_set_setup("xr_body", zox_tst_xr_sim_setup, 1);
 }

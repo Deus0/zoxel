@@ -74,7 +74,8 @@ void xr_sim_controllers_system(iter* it) {
     xr_sim_head_euler.y += xr_sim_axis(&keyboard->e, &keyboard->q) * xr_sim_head_speed * delta;
     xr_sim_head_euler.x += xr_sim_axis(&keyboard->f, &keyboard->r) * xr_sim_head_speed * delta;
     const float4 head_rotation = quaternion_from_euler(xr_sim_head_euler);
-    xr_head_now_rotation = head_rotation;   // the head bone turns with it this frame (fun/body.c)
+    xr_head_now_rotation = head_rotation;   // the head bone turns with it, the room walks it, this frame (fun/body.c)
+    xr_head_now_position = xr_sim_script_head_position;
     zox_sys_begin();
     zox_sys_in(XrHand);
     zox_sys_out(DeviceHasInput);

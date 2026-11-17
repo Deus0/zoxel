@@ -5,7 +5,13 @@
 //    head's turn into the body's, the body fought the head)
 //  - the eyes: the character's facing (its +z the tracking space's -z), at its neck (the head bone's pivot), the
 //    head's turn swinging the eyes about it (the camera's offset from the head), the headset's pose on top
-//  - walking in the real room (the head's tracked x z) moves the character, so the body stays under the head
+//  - walking in the real room (the head's tracked x z) moves the character through physics, with collisions: each
+//    frame's step is its velocity for that frame (xr_room_walk_system, zoxp_update, before physics), so walls stop
+//    it in the frame it's taken; a step a wall stops is still used up, the view stays with the body (no seeing
+//    through walls, the room slides back instead)
+//  - friction kept: the stick and room velocities are scaled against this frame's drag (physics3_drag_compensation),
+//    so the body moves exactly as asked each frame; drag came and went with Grounded (it flickers on seams),
+//    spiking the walk's speed: bumps
 //  - the head bone turns as the headset does (xr_head_bone_system), the voxel head matches and the camera on it
 //    (raycasts) looks where the head looks; its breathing bob is taken off (bobbing eyes sicken)
 //  - xr_head_now_*: the head's latest tracked pose, written by a headset (openxr/render.c) or the simulator (sim/)
@@ -43,33 +49,50 @@ static byte xr_body_view(ecs* world, entity camera, float4 head_rotation, float3
         return 0;
     }
     const float4 rotation = xr_body_rotation(world, character);
-    // the room's walk since the last frame moves the character, the body under the head
     const float3 room = { head_position.x, 0, head_position.z };
-    float3 step = float3_zero;
-    if (xr_body_room_started) {
-        step = float4_rotate_float3(rotation, float3_sub(room, xr_body_room_last));
-        if (float3_length(step) > 0.5f) {
-            step = float3_zero;     // a tracking jump (lost, recentred), not a step
-        }
-    }
-    xr_body_room_last = room;
-    xr_body_room_started = 1;
-    if (step.x != 0 || step.z != 0) {
-        Position3D* position = zox_getm(character, Position3D);
-        position->value = float3_add(position->value, step);
-    }
-    // the neck, this frame's step on top (the hierarchy placed it before the step)
-    const float3 neck = float3_add(zox_getv(head, Position3D), step);
+    // the neck, where physics moved the character this frame (the room's step included, xr_room_walk_system)
+    const float3 neck = zox_getv(head, Position3D);
     // the eyes' offset from the neck, in the head's space (+z its face), turned to the tracking space's
     const float3 offset = float4_rotate_float3(quaternion_inverse(zox_getv(head, Rotation3D)),
         float3_sub(zox_getv(camera, Position3D), zox_getv(head, Position3D)));
     const float3 eyes = float4_rotate_float3(quaternion_rotate(rotation, head_rotation),
         float4_rotate_float3(xr_body_turn_around(), offset));
-    // the room's x z is the character's now, so it's taken off: the eyes stay at the neck as it walks
+    // the room's x z went to the character (as far as walls let it), so it's taken off: the eyes stay with the body
     const float3 position = float3_sub(float3_add(neck, eyes), float4_rotate_float3(rotation, room));
     *body = float4x4_transform(position, rotation);
     return 1;
 }
+
+// the room's walk moves the character through physics: the head's x z step since the last frame, turned to the
+//  body's facing, as velocity over this frame's dt (the one physics steps it by), added to the stick's (set first,
+//  controllers3/sys/movement.c player3d_move_direct); a tracking jump (lost, recentred) isn't a step
+void xr_room_walk_system(iter* it) {
+    zox_sys_on_begin();
+    zox_sys_world();
+    const entity character = xr_body_character(world);
+    if (!zox_xr_active || !zox_valid(character) || !xr_body_head(world, xr_camera)) {
+        xr_body_room_started = 0;
+        return;
+    }
+    const float3 room = { xr_head_now_position.x, 0, xr_head_now_position.z };
+    float3 step = float3_zero;
+    if (xr_body_room_started) {
+        step = float4_rotate_float3(xr_body_rotation(world, character), float3_sub(room, xr_body_room_last));
+        if (float3_length(step) > 0.5f) {
+            step = float3_zero;
+        }
+    }
+    xr_body_room_last = room;
+    xr_body_room_started = 1;
+    const float dt = zox_delta_time;
+    if (dt > 0 && (step.x != 0 || step.z != 0) && !zox_has(character, DisableMovement)) {
+        Velocity3D* velocity = zox_getm(character, Velocity3D);
+        const float scale = physics3_drag_compensation(world, character) / dt;
+        velocity->value.x += step.x * scale;
+        velocity->value.z += step.z * scale;
+    }
+    zox_sys_on_end();
+} zoxd_system(xr_room_walk_system);
 
 // the player's head bone turns as the headset: the body's facing, the head's turn, turned back to the bone's +z
 //  - in the character's space (the chest and neck unturned): the turn around, the head's, the turn around back
@@ -95,5 +118,7 @@ void xr_head_bone_system(iter* it) {
 } zoxd_system(xr_head_bone_system);
 
 void zox_systems_xr_body(ecs* world) {
+    // after the stick's velocity (controllers, imported before), before physics
+    zox_system_1(xr_room_walk_system, zoxp_update, 0);
     zox_system_1(xr_head_bone_system, zoxp_post_update, 0);
 }

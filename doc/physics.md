@@ -106,6 +106,12 @@ nothing ever sweeps from an old position to a new one. With drag, an exact step 
 not `v_end * dt`, so the collision corrects for that (exact under drag alone). Forces leave it off by at most
 `|a| dt² / 2` (5cm at 10fps, 1.4mm at 60fps), well within the push-out's reach.
 
+## Setting a velocity each frame
+
+Movement that sets a velocity rather than pushing (XR walking, `player3d_move_direct`, `xr_room_walk_system`)
+scales it by `physics3_drag_compensation`: the drag the body gets this frame (ground or air, by `Grounded`) would
+otherwise trim it, by an amount that changes as `Grounded` flickers on seams (the walk bumps).
+
 ## Gotchas
 
 - **`zox_delta_time` is a frame stale.** `iterate_time_system` runs at `zoxp_end`, so frame N's physics uses
