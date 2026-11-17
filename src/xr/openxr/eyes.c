@@ -68,6 +68,7 @@ static int xr_get_views(XrView views[2]) {
 }
 
 static float4 xr_head_rotation = { 0, 0, 0, 1 };   // the headset's, both eyes share it
+static float3 xr_head_position = { 0, 0, 0 };      // the headset's in the tracking space, between the eyes: walking in the room
 
 // NOTE: Gets Eye data and applies our camera transform to it
 static int xr_get_eyes() {
@@ -84,5 +85,8 @@ static int xr_get_eyes() {
         xr_eyes[i].pose = views[i].pose;
     }
     xr_head_rotation = xr_quaternion_to_float4(views[0].pose.orientation);
+    xr_head_position = float3_scale(float3_add(
+        xr_vector_to_float3(views[0].pose.position),
+        xr_vector_to_float3(views[1].pose.position)), 0.5f);
     return 1;
 }

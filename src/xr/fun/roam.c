@@ -1,9 +1,14 @@
-// The XR camera flown in free roam: the sticks move and turn it, the headset turns the head on top
+// The XR camera flown in free roam: the sticks move and turn it, the headset turns and moves the head on top
 //  - free_roam_step (cameras/fun/free_roam.c): the left stick moves where the head looks, the right turns the body
-//  - the eyes render from the roam's transform (its body), each eye's pose on top (fun/eye_render.c)
-//  - the camera entity follows, at the head's place and facing, so streaming and sound follow the headset
-//  - the same for a headset (openxr/render.c) and the simulator (sim/)
-//  - the camera moved by something else (a game's start places it at the spawn, a teleport): the roam takes it up
+//  - the roam is the play space's origin in the world (its body); the head is tracked in it: turning the head and
+//    walking in the real room (head_position) move it about the body
+//  - the eyes render from the body, each eye's pose on top (fun/eye_render.c), so they had the room already, but
+//    the camera entity sat at the body: streaming, sound and raycasts stayed at the room's centre as you walked.
+//    It's at the head now (xr_roam_head), where a player's character follows too (doc/plans/xr.md step 5)
+//  - the stick turns about the head, not the room's centre (walked away from it, a turn swung you around it)
+//  - the same for a headset (openxr/render.c) and the simulator (sim/, no room: its head stays at the centre)
+//  - the camera moved by something else (a game's start places it at the spawn, a teleport): the roam takes it up,
+//    the head where it was put
 static free_roam xr_roam;
 static byte xr_roam_started = 0;
 static float3 xr_roam_written;     // where it last put the camera
@@ -12,19 +17,37 @@ static inline float4x4 xr_roam_body_matrix() {
     return float4x4_transform(xr_roam.position, free_roam_rotation(&xr_roam));
 }
 
-static void xr_roam_update(ecs* world, entity camera, float2 move, float2 turn, float4 head_rotation, float delta) {
+// the head in the world: the body, then the head's place in the room
+static inline float3 xr_roam_head(const free_roam* roam, float3 head_position) {
+    return float3_add(roam->position, float4_rotate_float3(free_roam_rotation(roam), head_position));
+}
+
+// a step of the sticks, turning about the head (the room swings around it), moving along where it looks
+//  - free_roam_step turns the body and moves it by the stick; the body then shifts by the head's offset turned
+//    before less after, so the head is where it was plus the stick's move
+static inline void xr_roam_step(free_roam* roam, float2 move, float2 turn, float4 head_rotation, float3 head_position, float delta) {
+    const float3 offset_before = float4_rotate_float3(free_roam_rotation(roam), head_position);
+    free_roam_step(roam, move, turn, head_rotation, delta);
+    const float3 offset_after = float4_rotate_float3(free_roam_rotation(roam), head_position);
+    roam->position = float3_add(roam->position, float3_sub(offset_before, offset_after));
+}
+
+static void xr_roam_update(ecs* world, entity camera, float2 move, float2 turn, float4 head_rotation, float3 head_position, float delta) {
     if (xr_roam_started && zox_valid(camera) && !float3_equals(zox_getv(camera, Position3D), xr_roam_written)) {
         xr_roam_started = 0;
     }
     if (!xr_roam_started && zox_valid(camera)) {
-        xr_roam.position = zox_getv(camera, Position3D);
+        // the head where the camera was put
         xr_roam.euler = quaternion_to_euler(zox_getv(camera, Rotation3D));
+        xr_roam.position = float3_sub(zox_getv(camera, Position3D),
+            float4_rotate_float3(free_roam_rotation(&xr_roam), head_position));
         xr_roam_started = 1;
     }
-    free_roam_step(&xr_roam, move, turn, head_rotation, delta);
+    xr_roam_step(&xr_roam, move, turn, head_rotation, head_position, delta);
     if (zox_valid(camera)) {
-        zox_setv(camera, Position3D, xr_roam.position);
-        xr_roam_written = xr_roam.position;
+        const float3 head = xr_roam_head(&xr_roam, head_position);
+        zox_setv(camera, Position3D, head);
+        xr_roam_written = head;
         zox_setv(camera, Rotation3D, quaternion_rotate(free_roam_rotation(&xr_roam), head_rotation));
     }
 }

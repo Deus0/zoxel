@@ -54,6 +54,18 @@ Then (2026-11-17, third pass):
   camera whenever something else places it). No player yet: the head roams free (step 5 is the player)
 - to do: rays from the hands (pointer zevices) at 3D buttons, the options and pause menus as 3D lists, tooltips
 
+Then (2026-11-17, lag and room scale):
+
+- the frame begins first (xr_frame_begin_system, zoxp_begin): xrWaitFrame paces the engine's frame and everything
+  after it reads this frame's predicted display time (the controllers read the last frame's); a frame not to be
+  rendered is still ended; the eyes are located last, just before drawing
+- room scale: the camera entity is at the head (the roam's body, then the head's tracked place), turns pivot on the
+  head (tst xr_room_scale); the player's character follows it once there is one (step 5)
+- OpenXR gives the head and the controllers' poses; the body is the engine's: its arms reach the controllers with
+  ik (bones/ik, xr/fun/hands.c)
+- desktop syntax check of src/xr/openxr: OpenXR-SDK's headers and a jni.h stub, `-Dzox_xr -DXR_USE_PLATFORM_ANDROID
+  -DXR_USE_GRAPHICS_API_OPENGL_ES -fsyntax-only`
+
 ## The plan
 
 Each step works on every platform before the next, and each has tests that run on desktop.

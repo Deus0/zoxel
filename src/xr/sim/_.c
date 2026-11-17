@@ -128,7 +128,7 @@ void xr_sim_render_system(iter* it) {
     const float2 move = roaming ? xr_controller_stick(world, xr_hand_left) : float2_zero;
     const float2 turn = roaming ? xr_controller_stick(world, xr_hand_right) : float2_zero;
     const float4 head_rotation = quaternion_from_euler(xr_sim_head_euler);
-    xr_roam_update(world, xr_camera, move, turn, head_rotation, delta);
+    xr_roam_update(world, xr_camera, move, turn, head_rotation, float3_zero, delta);
     const float4x4 body = xr_roam_body_matrix();
     const int2 window = zox_getv(main_app, WindowSize);
     const float2 half = { window.x / 2, window.y };

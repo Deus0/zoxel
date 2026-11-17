@@ -1,6 +1,7 @@
 // A headset's controllers into each XR controller's zevices and pose (fun/controller.c), as the inputs are read
 //  - syncs OpenXR's actions once a frame, then each hand's stick, buttons and aim pose
-//  - the pose: the aim, where the hand points (rays at 3D ui), at the frame's predicted time
+//  - the pose: the aim, where the hand points (rays at 3D ui), at this frame's predicted display time (the frame
+//    begins before the inputs, openxr/render.c), the same time the eyes draw at
 static byte xr_openxr_button(byte hand, byte type) {
     switch (type) {
         case zox_btn_a:
@@ -52,7 +53,7 @@ void xr_openxr_controllers_system(iter* it) {
         }
         has_input->value = any;
         XrPosef pose;
-        if (xr_get_aim(right, xr_frame_state.predictedDisplayTime, &pose)) {
+        if (xr_frame_begun && xr_get_aim(right, xr_frame_state.predictedDisplayTime, &pose)) {
             xr_controller_pose(world, e, xr_vector_to_float3(pose.position), xr_quaternion_to_float4(pose.orientation));
         }
     }

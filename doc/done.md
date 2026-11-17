@@ -1,6 +1,12 @@
 # Done
 
 ## 2026-11-17
+-x XR lag: the headset's frame begins at the top of the engine's frame (xr_frame_begin_system, zoxp_begin), so the
+  controllers' poses are predicted for this frame's display time (they were the last frame's, the hands a frame
+  behind); a frame the runtime said not to render is ended (it was left open, breaking its frame pacing); every
+  OpenXR event read a frame, not one
+-x XR room scale: the head's tracked position moves the camera entity (streaming, sound, raycasts followed the room's
+  centre), stick turns turn about the head, not the room's centre; tst xr_room_scale
 -x Arm IK (bones/ik, a submodule): a shoulder's IKTarget and IKWeight bend its arm with the skeleton's own bones
   (shoulder, the hand's parent as the elbow, the hand), two bone ik solved analytically, blended over the swing and
   raise; a punch reaches the right arm where the head looks (replacing arm_raise's swing wobble); XR hands hold
