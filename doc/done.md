@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-18
+-x tooltips under the selected ui for every navigating device: a 2D tooltip follows the mouse with the mouse, while
+  navigating (a gamepad, a Steam Deck, keyboard navigation) it's under the selected ui (tooltip_navigated_system,
+  after the mouse's); tst navigator_grid checks it
 -x navigational grids: a datagrid's icons are NavigationElements, the stick steps them (x one along, y a row:
   element_navigation_system); tst navigator_grid (a window of its own, minimal)
 -x 3D tooltips: each 3D window has its own, its uis link to it as a 2D canvas's do, shown centred under the selected ui

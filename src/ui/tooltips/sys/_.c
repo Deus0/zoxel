@@ -3,8 +3,19 @@
 #include "link.c"
 #include "unlink.c"
 #include "follow3.c"
+#include "navigated.c"
 
 void zox_systems_tooltips(ecs* world) {
+    // after mouse_element_system (zoxp_update: it'd put it back at the mouse), before the layouts: navigating, under
+    //  the selected ui instead
+    zox_system(
+        tooltip_navigated_system,
+        zoxp_post_update,
+        [in] layouts.Anchor,
+        [out] layouts.LayoutPosition,
+        [none] tooltips.Tooltip,
+        [none] ui.MouseElement,
+    );
     // multi threaded: it writes only its own transform (reads its ui's and window's)
     zox_system(
         tooltip3_follow_system,

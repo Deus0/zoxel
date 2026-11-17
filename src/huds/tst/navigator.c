@@ -245,9 +245,11 @@ void zox_tst_navigator_check(ecs* world) {
 
 // tst: navigator_grid, a gamepad's stick steps a grid (element_navigation_system): a window of 4 x 3 frames, their
 //  icons NavigationElements as a datagrid's; the first selected, the stick right one along, down a row (4); the
-//  stick's x as SDL's (right is -x)
+//  stick's x as SDL's (right is -x); the selected icon's tooltip under it (tooltip_navigated_system), not at the
+//  still mouse
 #define zox_tst_nav2_grid_size ((byte2) { 4, 3 })
 entity zox_tst_nav2_grid = 0;
+int2 zox_tst_nav2_tip_off = { 999, 999 };   // the tooltip's top right from the selected icon's bottom right
 
 static entity zox_tst_nav2_grid_spawn(ecs* world, entity canvas) {
     const byte2 cells = zox_tst_nav2_grid_size;
@@ -264,6 +266,7 @@ static entity zox_tst_nav2_grid_spawn(ecs* world, entity canvas) {
         const entity3 spawn = spawn_frame(world, prefab_frame, prefab_icon, 0, e3.z, int2_zero, int2_single(frame),
             int2_single(frame - 8), 0, i);
         zox_add(spawn.y, NavigationElement);
+        zox_add_tooltip_text(world, spawn.y, "a cell");
         if (!first) {
             first = spawn.y;
         }
@@ -310,6 +313,16 @@ byte zox_tst_navigator_grid_ready(ecs* world) {
             }
             if (f == 90) {
                 zox_tst_nav2_grid_down = zox_tst_nav2_grid_index(world, zox_tst_nav2_grid);
+                const entity canvas = zox_get_link(world, player, CanvasLink);
+                const entity tooltip = zox_get_child_by_id(world, canvas, zox_id(Tooltip));
+                const entity icon = zox_getv(zox_tst_pad, EntityTarget);
+                CanvasViewport viewport;
+                if (zox_valid(tooltip) && zox_valid(icon) && get_canvas_viewport(world, canvas, &viewport) &&
+                    zox_has(tooltip, Position2) && zox_has(icon, Position2)) {
+                    const int4 t = get_element_pointer_bounds(world, &viewport, tooltip, zox_getv(tooltip, Position2), zox_getv(tooltip, LayoutSize));
+                    const int4 b = get_element_pointer_bounds(world, &viewport, icon, zox_getv(icon, Position2), zox_getv(icon, LayoutSize));
+                    zox_tst_nav2_tip_off = (int2) { t.y - b.y, t.w - b.z };
+                }
                 return 1;
             }
             return 0;
@@ -324,6 +337,9 @@ void zox_tst_navigator_grid_check(ecs* world) {
         zox_tst_nav2_grid_right, zox_tst_nav2_grid_down);
     zox_tst_check(zox_tst_nav2_grid_first == 0, "the first icon isn't selected [%i]", zox_tst_nav2_grid_first);
     zox_tst_check(zox_tst_nav2_grid_right == 1, "the stick right went to [%i], not [1]", zox_tst_nav2_grid_right);
+    zox_log("[tst] navigator_grid: the tooltip's top right from the icon's bottom right [%i %i]", zox_tst_nav2_tip_off.x, zox_tst_nav2_tip_off.y);
+    zox_tst_check(abs(zox_tst_nav2_tip_off.x) <= 3 && zox_tst_nav2_tip_off.y <= 0 && zox_tst_nav2_tip_off.y >= -8,
+        "the tooltip isn't under the selected icon [%i %i]", zox_tst_nav2_tip_off.x, zox_tst_nav2_tip_off.y);
     zox_tst_check(zox_tst_nav2_grid_down == 1 + columns, "the stick down went to [%i], not a row down [%i]",
         zox_tst_nav2_grid_down, 1 + columns);
 }

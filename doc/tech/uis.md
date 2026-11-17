@@ -123,6 +123,16 @@ skipped when nothing 3D spawned this frame (2D's spawns pay nothing).
 - Steps are by place in the window's NavigationElements; a grid's icons are spawned row by row, so one along is +1
   and a row is +columns.
 
+# Tooltips while navigating (2D)
+
+- A 2D canvas's tooltip follows the mouse (`MouseElement`, `mouse_element_system`); while the player navigates (a
+  gamepad, keyboard navigation) it sits under the selected ui instead, its top right at the ui's bottom right
+  (`tooltip_navigated_system`): the mouse is still, so the tooltip sat where it last was (a corner on a Steam Deck).
+- It runs in `zoxp_post_update`, after the mouse's (`zoxp_update`: in the same phase the mouse's ran after and put
+  it back), before the layouts.
+- Its top right corner lands half its size past its `LayoutPosition` (beside a mouse's cursor), so that's taken off.
+- Tested in `navigator_grid` (the tooltip under the icon the stick moved to).
+
 # Tooltips in 3D
 
 - A 2D canvas has one tooltip following the mouse; each 3D window gets its own (spawned by `spawn_window`, from
