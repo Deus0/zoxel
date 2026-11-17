@@ -20,15 +20,6 @@ entity spawn_menu_paused(ecs *world, entity player) {
         .on_click = { &button_event_end_game },
     };
     entity e;
-    if (zox_huds3D) {
-        e = spawn_huds3_list(world, player, menu_paused_header_label, zox_huds_header_font_size * ui_scale,
-            list_font_size, elements, elements_count, NULL);
-        zox_set_unique_name(e, "menu_paused");
-        zox_add(e, MenuPaused);
-        zox_add(e, NavigationWindow);
-        link_window_to_taskbar(world, e, zox_get_link(world, player, CanvasLink), zox_id(MenuPaused));   // its frame lit
-        return e;
-    }
     e = spawn_window_list(
         world,
         prefab_window,
