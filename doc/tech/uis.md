@@ -85,6 +85,9 @@ skipped when nothing 3D spawned this frame (2D's spawns pay nothing).
 
 # 3D lists and scrolling
 
+3D lists are 2D list windows (`spawn_window_list`) on 3D huds: spawn_list3 and its menus' branches are gone. What
+follows (list3's own) is history, kept for its learnings: the list systems, scrolling and the stack are the same.
+
 - `spawn_list3` (windows/ins/list3.c): a canvas3 window, a header, and its buttons in a list container laid out by the
   2D list systems (`list_system` places them by `ChildIndex` from `ListStart`, `list_render_dirty_system` shows
   `ListVisible` of them).

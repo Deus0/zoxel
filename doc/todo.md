@@ -996,8 +996,6 @@
 
 # XR
 - UI consolidation (2D and 3D from the same code, doc/tech/uis.md), each removing a 3D-only copy:
-	1. done (main, pause, saves through spawn_window_list); spawn_list3 stays for the 3D options until 4, then goes
-	2. done (spawn_taskbar on 3D huds); its size in 3D: bigger than spawn_taskbar3's (about an eye's width), tune
 	3. one "under the selected ui" tooltip rule: tooltip3_follow_system (3D) and tooltip_navigated_system (2D)
 	4. the 3D options (huds/ins/settings3.c): the 2D options window in 3D, once sliders and toggles have 3D twins
 		(the stick's left and right stepping a slider, as the 3D rows do now)
