@@ -41,6 +41,11 @@ float3 xr_body_view_off = { 0, 0, 0 };  // the real neck past where the body's r
 #define xr_bend_angle_max 1.9f          // radians, the upper body bending down (the neck closer)
 #define xr_bend_back_max 0.45f          // of the spine's length, the hips back bending
 #define xr_crouch_max 0.45f             // of the leg's length, the hips' drop crouching
+// looking down (the head pitched below the horizon, the neck still): the upper body pitched forward from the hips,
+//  the hips back, out from under the eyes (the voxel chest's deeper than a person's: the eyes swung down into it)
+#define xr_look_bend_start 0.35f        // radians below the horizon before it bends
+#define xr_look_bend_rate 1.2f          // the upper body's pitch per radian past it
+#define xr_look_bend_max 0.95f          // radians, the most it pitches looking down
 #define xr_body_slack 0.02f             // the body's space, the real neck past the body's reach across the ground
                                         //  before the body moves after it
 #define xr_body_view_off_max 0.1f       // the body's space, the most the view leaves the body's neck
@@ -201,7 +206,7 @@ static byte xr_body_view(ecs* world, entity camera, float4 head_rotation, float3
 //  - closer: bending, the hips back (away from the neck across the ground, behind if it's straight over them) to
 //    xr_bend_back_max, then crouching, the hips down to crouch_max, the line pitched down to it (to
 //    xr_bend_angle_max from up)
-static float3 xr_spine_solve(float3 line, float3 neck, float crouch_max, float3* to_neck, float3* shift) {
+static float3 xr_spine_solve(float3 line, float3 neck, float crouch_max, float bend_min, float3* to_neck, float3* shift) {
     const float length = float3_length(line);
     const float3 across = { neck.x, 0, neck.z };
     const float out = float3_length(across);
@@ -225,6 +230,18 @@ static float3 xr_spine_solve(float3 line, float3 neck, float crouch_max, float3*
         const float3 flat = { direction.x, 0, direction.z };
         const float3 side = float3_length(flat) > 0.0001f ? float3_normalize(flat) : way;
         direction = float3_add(float3_scale(side, sinf(max_angle)), (float3) { 0, cosf(max_angle), 0 });
+    }
+    // looking down: pitched forward at least bend_min (the body's +z), the hips back under it: the neck lower, the
+    //  view takes the difference (xr_body_view_off)
+    const float pitch = asinf(float_max(-1, float_min(1, direction.z)));
+    if (bend_min > 0 && pitch < bend_min) {
+        direction = (float3) { 0, cosf(bend_min), sinf(bend_min) };
+        // the hips (the shift: from their pivot at rest) behind the neck, down if the neck's low (the knees bend),
+        //  never up (the legs straight already)
+        *shift = (float3) {
+            neck.x,
+            float_min(shift->y, neck.y - cosf(bend_min) * length),
+            float_min(shift->z, neck.z - sinf(bend_min) * length) };
     }
     *to_neck = float3_scale(direction, length);
     return float3_add(*shift, *to_neck);
@@ -274,6 +291,10 @@ void xr_room_walk_system(iter* it) {
     // the chest's line, hips to neck, at rest (the chest's space is the skeleton's unleaned)
     const float3 line = float3_sub(zox_getv(spine.head, LocalPosition3D), zox_getv(spine.hips, LocalPosition3D));
     const float4 room_to_body = xr_body_room_to_body();
+    // looking down: how far the upper body pitches forward (the head below the horizon, room -z ahead)
+    const float3 head_ahead = float4_rotate_float3(xr_head_now_rotation, (float3) { 0, 0, -1 });
+    const float look_down = asinf(float_max(-1, float_min(1, -head_ahead.y)));
+    const float look_bend = float_min(xr_look_bend_max, float_max(0, (look_down - xr_look_bend_start) * xr_look_bend_rate));
     float3 to_neck, shift, wanted, reached;
     float3 step = float3_zero;
     for (int i = 0; i < 3; i++) {
@@ -281,7 +302,7 @@ void xr_room_walk_system(iter* it) {
         const float3 off = float4_rotate_float3(room_to_body,
             float3_scale((float3) { neck_room.x - xr_body_hips_room.x, neck_room.y, neck_room.z - xr_body_hips_room.z }, scale));
         wanted = float3_add(line, off);
-        reached = xr_spine_solve(line, wanted, xr_crouch_max * leg, &to_neck, &shift);
+        reached = xr_spine_solve(line, wanted, xr_crouch_max * leg, look_bend, &to_neck, &shift);
         // past the body's reach across the ground: the hips move after the neck
         const float3 past = { wanted.x - reached.x, 0, wanted.z - reached.z };
         const float far = float3_length(past);

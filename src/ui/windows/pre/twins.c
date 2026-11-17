@@ -2,6 +2,8 @@
 //  base (an element3, a frame3: drawn by a canvas3), so a 2D window's spawn code builds it in 3D unchanged
 //  (spawn_window on 3D huds, spawn_ui, spawn_text)
 //  - the bases are Elements too: selection, clicking and active states (ui/interaction) are every element's
+entity prefab_element3_twin;     // the 3D twins' base element: later modules make theirs on it (render textures)
+entity prefab_frame3_twin;       // and their base frame (tooltips)
 extern entity prefab_header;
 extern entity prefab_body;
 extern entity prefab_grid;
@@ -17,10 +19,12 @@ void spawn_prefabs_twins3(ecs* world) {
     zox_set_unique_name(element3, "prefab_element3_twin");
     zox_add(element3, Element);
     zox_setv(element3, Layer, 1);
+    prefab_element3_twin = element3;
     entity frame3 = zox_prefab_from_parent(world, prefab_frame3);
     zox_set_unique_name(frame3, "prefab_frame3_twin");
     zox_add(frame3, Element);
     zox_setv(frame3, Layer, 1);
+    prefab_frame3_twin = frame3;
     prefab3_twin(world, prefab_element, element3);
     prefab3_twin(world, prefab_element_frame, frame3);
     prefab3_twin(world, prefab_text, prefab_text3);

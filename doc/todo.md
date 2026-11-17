@@ -1000,6 +1000,12 @@
 	- We should wrap all other sdl functions properly for glut
 
 # XR
+- 3D raycasting uis: rays from the hands (the controllers' aim poses, their pointer zevices) at 3D uis (canvas3
+	panels, the 3D windows), hovered, clicked and dragged as a mouse's are, a ray drawn from each hand; tooltips on
+	hover; then a 3D window's close button
+- 3D tooltips look wrong: shown (text set, centred under the selected ui: tst xr_navigator) but drawn as a thin dark
+	strip, no text visible (tst/xr_tooltip.ppm): its frame texture and glyphs (a 3D twin of prefab_label2t's text with a
+	frame3 behind it, huds/pre/_.c), check its LayoutSize, its glyphs' layers and facing
 - XR body, what's left (xr/fun/body.c): confirm on a headset
 - XR scale: the voxel character is about 1m tall, the player's real arms and height aren't: controllers sit out of
 	the character's arm reach (its arms point at them, straight). Scale the tracking space to the character (the

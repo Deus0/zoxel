@@ -22,6 +22,7 @@ byte xr_sim_script_a = 0;
 byte xr_sim_script_start = 0;    // the left hand's menu button
 byte xr_sim_script_lb = 0;       // the left grip (LB)
 byte xr_sim_script_rb = 0;       // the right grip (RB)
+byte xr_sim_script_rt = 0;       // the right trigger (RT: the action)
 float2 xr_sim_script_stick = { 0, 0 };
 float2 xr_sim_script_left_stick = { 0, 0 };
 float3 xr_sim_script_head_position = { 0, 0, 0 };
@@ -131,6 +132,7 @@ static byte xr_sim_button(ecs* world, byte hand, byte type) {
         case zox_btn_start: return xr_sim_script_start || keyboard->escape.is_pressed;
         case zox_btn_lb: return xr_sim_script_lb;
         case zox_btn_rb: return xr_sim_script_rb;
+        case zox_btn_rt: return xr_sim_script_rt;
         default: return 0;
     }
 }

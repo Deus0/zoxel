@@ -1,6 +1,24 @@
 # Done
 
 ## 2026-11-18
+-x navigational grids: a datagrid's icons are NavigationElements, the stick steps them (x one along, y a row:
+  element_navigation_system); tst navigator_grid (a window of its own, minimal)
+-x 3D tooltips: each 3D window has its own, its uis link to it as a 2D canvas's do, shown centred under the selected ui
+  (tooltip3_follow_system, multithreaded: a main thread one in zoxp_update shifted the pipeline's sync points and the
+  mirror found no character mesh); xr_navigator selects the action bar's punch and checks its tooltip (it doesn't look
+  right yet: doc/todo.md)
+-x doc/tech/uis.md: one current doc for uis (3D layers and depth, 2D and 3D from the same code, lists, the navigator,
+  grids, tooltips, render textures, gotchas, testing); doc/plans/xr.md points to it
+-x navigator tests for every navigator: tst navigator (a gamepad in 2D: start pauses with the selection in the pause
+  menu, RB and LB step, every ui opens; the test's gamepad a device without SDL: prefab_gamepad's SDL controller
+  closed it) beside xr_navigator (a headset's grips, 3D)
+-x render textures in 3D windows (the mirror, the identity's mug shot): their camera and what it films keep their own
+  transforms (DisableParentTransform: the window's 3D hierarchy moved the camera onto it, every 3D ui vanished, and
+  the mesh away from it, blank); prefab_render_texture's 3D twin
+-x XR looking down: the eyes swung down into the chest (the neck still, a voxel chest deeper than a person's); the
+  upper body pitches forward and the hips go back as the head pitches below the horizon (xr_look_bend), at once (no
+  physics step, no view delay), the eyes the player's; tst xr_look_down
+-x XR actions: the right trigger punches and places a block with the 3D action bar up; tst xr_actions
 -x 3D windows beside the 2D ones: on 3D huds every taskbar ui (status, identity, skills, items, body, gear, actions,
   quests, crafting, map, mirror) opens as a panel ahead of the player, from its same spawn code: spawn_window builds a
   canvas3 root (ui_window3_pose), spawn_ui, spawn_text and spawn_header swap a 2D prefab for its 3D twin under a 3D

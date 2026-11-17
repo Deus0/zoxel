@@ -46,19 +46,12 @@ Then (2026-11-17, third pass):
   grips and the aim poses (Oculus Touch); the simulator's keys fill them (W A S D the left stick, arrows the right,
   space or enter A, backspace B, escape menu). They play as a gamepad: the right hand navigates and clicks (A or
   its trigger). Free roam reads its sticks from them, only while playing (in menus the sticks are the menus')
-- **3D list ui** (step 4's start): spawn_list3, a canvas3 panel of 3D buttons, parented to the player's canvas
-  so huds finds and closes it as a 2D menu. zox_huds3D (on with XR) spawns the start label and main menu as 3D
-  ahead of the camera. tst xr_menu: A opens the main menu, navigation selects, the stick moves it
+- **3D uis** (step 4): the menus, windows, taskbar, tooltips and navigation in 3D are the 2D ones' code, documented
+  in [doc/tech/uis.md](../tech/uis.md) (3D windows and prefab twins, 3D lists, the navigator, grids, tooltips)
 - **into a game** (tst xr_play): New Game goes straight in (no 3D text input for the realm menu yet), the XR
   camera streams terrain and raycasts as the game camera does, free roam starts at the spawn (it takes up the
   camera whenever something else places it). No player yet: the head roams free (step 5 is the player)
-- the options and pause menus are 3D lists; a 3D list is a 2D list's (list_system, list_render_dirty_system) under
-  its panel and scrolls as it's navigated (scroll_list_to_child, shared with 2D scrollviews), over 8 rows
-- paused, the taskbar's a 3D row above the menus; the grips (LB, RB) step through its uis (huds/sys/navigator.c).
-  Every taskbar ui opens 3D (spawn_window's canvas3, the 2D prefabs' 3D twins: ui/fun/prefab3.c)
-- to do: rays from the hands (pointer zevices) at 3D buttons, tooltips in 3D, render textures in 3D (the mirror,
-  the identity's mug shot: a render camera broke the eyes' 3D uis), the 3D windows' grids navigable (their frames
-  aren't NavigationElements: a gamepad's selection doesn't reach the items)
+- to do: rays from the hands (pointer zevices) at 3D uis: [doc/todo.md](../todo.md) (3D raycasting uis)
 
 Then (2026-11-17, lag and room scale):
 
@@ -133,7 +126,8 @@ controller is one more device, so the existing controllers work without knowing 
   overlay. XR forces it on, desktop can turn it on to test (`--ui3d`)
 - pointing: the controller's ray hits a 3D canvas, its element is hovered and clicked, as a mouse's is. The
   ray is a pointer device (zevice_pointer), so tooltips, clicks and drags work unchanged
-- the menus, pause and inventory each spawn as a 3D panel a metre ahead, turned to face the head
+- the menus, pause and inventory each spawn as a 3D panel a metre ahead, turned to face the head (done:
+  doc/tech/uis.md, zox_huds3D rather than a --ui3d mode)
 - tests (simulator or `--ui3d`): `ui3d_menu` (the start menu is a 3D canvas in front of the camera, a ray at
   its new game button starts a game), `ui3d_pointer` (hover and click through a ray, a tooltip shows)
   ui3_occlusion and ui3_overlap already check 3D ui draws right against the world

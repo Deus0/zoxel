@@ -115,6 +115,15 @@ entity3 spawn_window_footer(
     int2 size = body_size;
     size.y += header_height + footer_height;
     if (is3D) {
+        // its own tooltip (a 2D canvas has one for all): its uis link to it as a 2D canvas's do (the nearest Canvas),
+        //  shown under the selected one (tooltip3_follow_system)
+        if (zox_valid(ui_window3_tooltip_prefab)) {
+            const entity tooltip = spawn_tooltip(world, ui_window3_tooltip_prefab, e, 0, 0);
+            zox_add(tooltip, DisableParentTransform);
+            // centred where it's put (a 2D one's top right corner sits at the mouse)
+            zox_setv(tooltip, MeshAlignment, zox_alignment_centre);
+            zox_setv(tooltip, TextAlignment, zox_alignment_centre);
+        }
         zox_setv(e, LayoutSize, size);
         zox_setv(e, Scale1, size.y * ui_window3_metres_per_pixel / (ui_scale > 0 ? ui_scale : 1));
         return output;

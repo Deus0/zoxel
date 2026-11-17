@@ -4,6 +4,8 @@
 //  - RB: the frame after it lit, the pause menu's not (it closed: a hud, the action bar, stays open); LB: the pause
 //    frame lit again, the menu back
 //  - screenshot paused, the taskbar over the menu: tst/xr_navigator.ppm
+//  - on the skills window its punch's icon is selected (as navigation or a hand's ray will): its window's 3D tooltip
+//    shows its text under it (tst/xr_tooltip.ppm)
 //  - then RB round every ui: each opens 3D (a Canvas3 with 3D elements: spawn_window's 3D twins), a screenshot each
 //    (tst/xr_window_<n>.ppm)
 //  - run: bash bsh/tst.sh xr_navigator
@@ -19,6 +21,9 @@ byte zox_tst_xr_nav_menu_back = 0;
 int zox_tst_xr_nav_round = 0;           // the uis stepped to by RB round the taskbar
 int zox_tst_xr_nav_round_3d = 0;        // of them, opened 3D
 char zox_tst_xr_nav_flat[256] = "";     // the ones that weren't
+entity zox_tst_xr_nav_icon = 0;          // the skill icon selected
+byte zox_tst_xr_nav_icon_found = 0;
+byte zox_tst_xr_nav_tooltip = 0;         // its tooltip shown, its text, under it
 
 // the ui open for the lit frame (not one closing)
 static entity zox_tst_xr_nav_open_ui(ecs* world, entity canvas) {
@@ -147,6 +152,41 @@ byte zox_tst_xr_navigator_ready(ecs* world) {
                     return 1;
                 }
                 xr_sim_script_rb = at >= 2 && at < 6;
+                {
+                    // the skills window: an icon holding a skill selected, its tooltip under it
+                    const entity open = zox_tst_xr_nav_open_ui(world, canvas);
+                    if (zox_valid(open) && zox_has(open, MenuSkills)) {
+                        if (at == 44) {
+                            // a skill's icon in a 3D window (the action bar's punch: the test level's skill book shows none)
+                            entity icons[256];
+                            const uint n = zox_get_children_by_id_recursive(world, canvas, icons, 256, zox_id(Tooltipper), 0);
+                            zox_tst_xr_nav_icon = 0;
+                            for (uint q = 0; q < n && !zox_tst_xr_nav_icon; q++) {
+                                const entity data = zox_get_link(world, icons[q], DataLink);
+                                if (zox_valid(data) && zox_has(data, Skill) && zox_has(zox_get_parent_by_id(world, icons[q], zox_id(Canvas)), Canvas3)) {
+                                    zox_tst_xr_nav_icon = icons[q];
+                                }
+                            }
+                            if (zox_valid(zox_tst_xr_nav_icon)) {
+                                zox_tst_xr_nav_icon_found = 1;
+                                raycaster_select_element(world, xr_controllers[xr_hand_right], zox_tst_xr_nav_icon);
+                            }
+                        } else if (at == 56 && zox_valid(zox_tst_xr_nav_icon)) {
+                            const entity icon_window = zox_get_parent_by_id(world, zox_tst_xr_nav_icon, zox_id(Canvas));
+                            const entity tooltip = zox_get_child_by_id(world, icon_window, zox_id(Tooltip));
+                            if (zox_valid(tooltip)) {
+                                const TextData* text = zox_get(tooltip, TextData);
+                                const float4 rotation = zox_getv(icon_window, Rotation3D);
+                                const float3 off = float4_rotate_float3(quaternion_inverse(rotation),
+                                    float3_sub(zox_getv(tooltip, Position3D), zox_getv(zox_tst_xr_nav_icon, Position3D)));
+                                zox_log("[tst] xr_navigator: the tooltip's text [%i] long, shown [%i], from its icon [%.3f %.3f]",
+                                    text->length, !zox_getv(tooltip, RenderDisabled), off.x, off.y);
+                                zox_tst_xr_nav_tooltip = text->length > 0 && !zox_getv(tooltip, RenderDisabled) && off.y < 0 && fabsf(off.x) < 0.01f;
+                            }
+                            snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("xr_tooltip.ppm"));
+                        }
+                    }
+                }
                 if (at == 40) {
                     const entity ui = zox_tst_xr_nav_open_ui(world, canvas);
                     zox_tst_xr_nav_round++;
@@ -181,6 +221,8 @@ void zox_tst_xr_navigator_check(ecs* world) {
     zox_tst_check(zox_tst_xr_nav_rb_closed, "after RB the pause menu's frame is still lit");
     zox_tst_check(zox_tst_xr_nav_lb_lit == zox_tst_xr_nav_paused_lit, "LB lit [%i], not back to the pause menu's", zox_tst_xr_nav_lb_lit);
     zox_tst_check(zox_tst_xr_nav_menu_back, "LB didn't bring the pause menu back");
+    zox_tst_check(zox_tst_xr_nav_icon_found, "no skill icon to select");
+    zox_tst_check(zox_tst_xr_nav_tooltip, "the skill icon's 3D tooltip didn't show under it");
     zox_log("[tst] xr_navigator: round the taskbar, [%i] of [%i] uis 3D, not:%s", zox_tst_xr_nav_round_3d, zox_tst_xr_nav_round, zox_tst_xr_nav_flat);
     zox_tst_check(zox_tst_xr_nav_round == count && zox_tst_xr_nav_round_3d == count, "[%i] of [%i] uis opened 3D, not:%s",
         zox_tst_xr_nav_round_3d, count, zox_tst_xr_nav_flat);

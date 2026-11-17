@@ -19,6 +19,7 @@
 #include "ui3_occlusion.c"
 
 #include "ui3_overlap.c"
+#include "navigator.c"
 
 void zox_tsts_huds(ecs* world) {
     zox_tsts_huds_load();
@@ -56,4 +57,5 @@ void zox_tsts_huds(ecs* world) {
     zox_tsts_town_enter(world);
     zox_tsts_ui3_occlusion(world);
     zox_tsts_ui3_overlap(world);
+    zox_tsts_navigator(world);
 }

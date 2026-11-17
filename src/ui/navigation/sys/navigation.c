@@ -1,3 +1,16 @@
+// the grid a navigated element's in (a datagrid's icon: icon, frame, grid), its columns, 0 if none
+static inline byte navigation_grid_columns(ecs* world, entity e) {
+    for (int depth = 0; depth < 3 && zox_valid(e); depth++) {
+        e = zox_get_parent(world, e);
+        if (zox_valid(e) && zox_has(e, GridSize)) {
+            return zox_getv(e, GridSize).x;
+        }
+    }
+    return 0;
+}
+
+// the stick steps the selection through its window's NavigationElements: up and down one, in a grid (a datagrid's
+//  icons) left and right one and up and down a row (its columns); a stick's x as SDL has it, right is -x
 // todo: fix this, EntityTarget moved to zevices
 void element_navigation_system(iter* it) {
     zox_sys_on_begin();
@@ -81,8 +94,12 @@ void element_navigation_system(iter* it) {
                 left_stick.y,
                 timer->value);
         }
+        // in a grid the stick's x steps too (elsewhere it's the selection's own: a slider's)
+        const byte columns = navigation_grid_columns(world, current->value);
+        const byte sideways = columns && float_abs(left_stick.x) > float_abs(left_stick.y);
+        const float amount = sideways ? float_abs(left_stick.x) : float_abs(left_stick.y);
         // If no input
-        if (float_abs(left_stick.y) <= restore_joystick_cutoff) {
+        if (amount <= restore_joystick_cutoff) {
             timer->value = 0;
             if (state->value) {
                 state->value = 0;
@@ -97,7 +114,7 @@ void element_navigation_system(iter* it) {
             continue;
         }
         // If no input, reset timer
-        else if (float_abs(left_stick.y) < ui_navigation_joystick_cutoff) {
+        else if (amount < ui_navigation_joystick_cutoff) {
             timer->value = 0;
             continue;
         }
@@ -142,23 +159,24 @@ void element_navigation_system(iter* it) {
         }
         // zox_log("Going Down Town [%i] -> %f", selected_index, left_stick.y);
         entity target = 0;
-        sbyte direction = 0;
-        if (left_stick.y >= ui_navigation_joystick_cutoff) {
-            direction = -1;
-            //target = children[selected_index - 1];
+        int direction = 0;
+        if (sideways) {
+            direction = left_stick.x < 0 ? 1 : -1;
+        } else if (left_stick.y >= ui_navigation_joystick_cutoff) {
+            direction = columns ? -columns : -1;
         } else if (left_stick.y <= -ui_navigation_joystick_cutoff) {
-            direction = 1;
-            //target = children[selected_index + 1];
+            direction = columns ? columns : 1;
         }
         if (!direction) {
             continue;
         }
         // TODO: Get closest uis and their directions for directional navigation
         // This is just a quick fix
-        selected_index += direction;
-        if (selected_index < 0 || selected_index >= children_length) {
+        const int next_index = (int) selected_index + direction;
+        if (next_index < 0 || next_index >= (int) children_length) {
             continue;
         }
+        selected_index = (sbyte) next_index;
         if (zox_has(current->value, ChildIndex)) {
             // NOTE: Gets neighbor if indexes are set like a list, very rigid
             for (int j = 0; j < children_length; j++) {

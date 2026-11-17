@@ -11,11 +11,6 @@ entity spawn_render_frame(
     float downscale,    // 2/4
     float alpha)
 {
-    if (ui_is3D(world, parent)) {
-        // a 3D window's (3D huds): none yet, its camera drawing into a texture broke the eyes' 3D uis (all of them
-        //  vanished while one was open), and a render texture is a 2D element (doc/plans/xr.md: render textures in 3D)
-        return 0;
-    }
     byte is_camera_filtering = 1;
     byte is_alpha = alpha != 1;
     color background = (color) {
@@ -66,6 +61,14 @@ entity spawn_render_frame(
     zox_link(world, ui, MaterialLink, material);
     zox_link(world, camera, MaterialLink, material);
     zox_set_parent(world, camera, ui);
+    // in a 3D window the camera and what it films are in its 3D tree: kept where they are (the hierarchy placed them
+    //  on the window: the mesh away from its camera, blank, the camera on the window, every 3D ui vanished)
+    if (ui_is3D(world, parent)) {
+        zox_add(camera, DisableParentTransform);
+        if (zox_valid(target)) {
+            zox_add(target, DisableParentTransform);
+        }
+    }
     // Set down tree?
     if (is_camera_filtering) {
         zox_add(camera, CameraFilter);

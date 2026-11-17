@@ -19,7 +19,9 @@ entity spawn_render_texture(
         size,
         texture_size);
     zox_name("render_texture");
-    zox_setv(e, Layer, layer);
+    if (!ui_is3D(world, parent)) {
+        zox_setv(e, Layer, layer);  // a 3D one's is above its parent's (spawn_ui)
+    }
     zox_link(world, e, MaterialLink, material);
     zox_set_link(world, camera, RenderTextureLink, e);
     zox_link(world, e, CameraLink, camera);

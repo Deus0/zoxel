@@ -4,6 +4,7 @@
 byte zox_huds3D = 0;
 // where a 3D window spawns for a canvas's player (huds/fun/huds3.c huds3_pose), set by huds
 void (*ui_window3_pose)(ecs* world, entity canvas, float3* position, float4* rotation) = NULL;
+entity ui_window3_tooltip_prefab = 0;    // each 3D window's tooltip (huds: prefab_tooltip, its 3D twin), none without
 #define ui_window3_metres_per_pixel 0.0045f     // a 3D window's height in metres, of its canvas pixels (ui_scale 1)
 // windows
 // color window_color = { 48, 42, 36, 255 };

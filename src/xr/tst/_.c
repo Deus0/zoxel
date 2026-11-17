@@ -10,6 +10,8 @@
 #include "options.c"
 #include "grip.c"
 #include "navigator.c"
+#include "look_down.c"
+#include "actions.c"
 #ifdef zox_tests
 #include "continue.c"     // load_games' saves (huds tests, zox_tests only)
 #endif
@@ -26,6 +28,8 @@ void zox_tsts_xr(ecs* world) {
     zox_tsts_xr_options(world);
     zox_tsts_xr_grip(world);
     zox_tsts_xr_navigator(world);
+    zox_tsts_xr_look_down(world);
+    zox_tsts_xr_actions(world);
 #ifdef zox_tests
     zox_tsts_xr_continue(world);
 #endif

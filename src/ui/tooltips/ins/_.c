@@ -40,8 +40,12 @@ entity spawn_tooltip(
     zox_name("tooltip");
     zox_setv(e, RenderDisabled, 1);
     zox_setv(e, OutlineThickness, 0);
-    zox_set_link(world, e, DeviceLink, device);
-    zox_set_link(world, e, ZeviceLink, zevice);
+    if (zox_valid(device)) {
+        zox_set_link(world, e, DeviceLink, device);     // a 3D window's has none (shown under its selected ui)
+    }
+    if (zox_valid(zevice)) {
+        zox_set_link(world, e, ZeviceLink, zevice);
+    }
     /*
     if (zox_valid(local_mouse)) {
         entity pointer = zox_get_child_by_id(

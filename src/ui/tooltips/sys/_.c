@@ -2,8 +2,19 @@
 #include "event.c"
 #include "link.c"
 #include "unlink.c"
+#include "follow3.c"
 
 void zox_systems_tooltips(ecs* world) {
+    // multi threaded: it writes only its own transform (reads its ui's and window's)
+    zox_system(
+        tooltip3_follow_system,
+        zoxp_update,
+        [in] layouts.LayoutSize,
+        [out] transforms3.Position3D,
+        [out] transforms3.Rotation3D,
+        [none] tooltips.Tooltip,
+        [none] transforms.DisableParentTransform,
+    );
     zox_system(
         tooltip_deselect_system,
         zoxp_update,

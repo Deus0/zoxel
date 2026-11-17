@@ -86,6 +86,7 @@ entity spawn_datagrid(
             entity text = spawn.z;
             if (icon) {
                 zox_add(icon, DataUI);
+                zox_add(icon, NavigationElement);   // a gamepad's stick steps the grid (element_navigation_system)
                 zox_add(icon, ClickOnPress);    // picks up / places items on press, like a drag
                 zox_add(icon, SlotUser);
                 zox_add(icon, DataDirty);
