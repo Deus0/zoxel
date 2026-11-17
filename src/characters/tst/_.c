@@ -3,6 +3,7 @@
 #include "arm_reach.c"
 #include "punch_motion.c"
 #include "guard_steady.c"
+#include "feet_planted.c"
 #include "head_camera.c"
 #include "footsteps.c"
 
@@ -11,6 +12,7 @@ void zox_tsts_characters(ecs* world) {
     zox_tsts_arm_reach(world);
     zox_tsts_punch_motion(world);
     zox_tsts_guard_steady(world);
+    zox_tsts_feet_planted(world);
     zox_tsts_head_camera(world);
     zox_tsts_footsteps(world);
 }

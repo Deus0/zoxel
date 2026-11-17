@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-17
+-x leg ik and planted feet: a thigh's IKTarget is its foot (two bone: thigh, calf the knee, foot kept level);
+  PlantFeet on a skeleton (XR's body) holds each foot where it's planted as the body shifts, stepping back under the
+  hip in an arc when past 0.3 of the leg's length, one foot at a time; walking fast or in the air (by vertical
+  speed, Grounded flickers) the swing has the legs; tst feet_planted, xr_body checks the feet looking about
 -x arms choppy turning and walking: the guard's reach was measured between bones of two frames (the shoulder carried
   to now, the elbow not), short by the body's move, the guard pulled in and out; tst guard_steady (0.39 of reach off,
   now 0.03); the guard aims by the head and camera's turn this frame, not the hierarchy's last

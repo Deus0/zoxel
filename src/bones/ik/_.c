@@ -12,6 +12,8 @@
  *  - the weight blends over the arm's other animation (swing, raise), so ik eases on and off
  *  - drivers write the target and weight: a punch (sys/punch.c) reaches where the head looks, XR hands
  *    (xr/fun/hands.c) put each hand on its controller
+ *  - legs too (sys/leg_ik.c, a thigh's IKTarget its foot): planted feet (sys/feet.c, PlantFeet on a skeleton, XR's
+ *    body) hold as the body shifts over them, stepping back under it when it's too far
  */
 #include "com/_.c"
 #include "fun/_.c"

@@ -13,6 +13,7 @@
 //    (on a headset Android's stray pointer events switched the mode off them, the stick didn't walk)
 //  - looking about (the simulator's head turning about a neck, as a person's) doesn't move the body; crouching 0.3m
 //    lowers the view 0.3m scaled from the head bone's eyes, the body stays
+//  - the body's feet are planted (PlantFeet): looking about they stay where they are in the world
 //  - run: bash bsh/tst.sh xr_body
 int zox_tst_xr_body_frames = 0;
 float zox_tst_xr_body_worst_eyes = 0;       // the view's eyes from the camera, worst
@@ -38,6 +39,23 @@ float3 zox_tst_xr_body_look_from;
 float zox_tst_xr_body_look_drift = -1;      // the body moved, looking about
 float zox_tst_xr_body_crouch = 0;           // the view's eyes below the camera (the head bone's), crouched
 float zox_tst_xr_body_crouch_drift = -1;
+float3 zox_tst_xr_body_feet[2];
+float zox_tst_xr_body_feet_moved = -1;      // the planted feet moved in the world, looking about
+byte zox_tst_xr_body_feet_planting = 0;
+
+// the body's two feet in the world, 0 without two legs
+static byte zox_tst_xr_body_feet_get(ecs* world, entity character, float3* feet) {
+    const entity skeleton = get_skeleton(world, character);
+    const BoneLinks* bones = zox_valid(skeleton) ? zox_get(skeleton, BoneLinks) : NULL;
+    byte count = 0;
+    ik_leg leg;
+    for (int i = 0; bones && i < bones->length && count < 2; i++) {
+        if (zox_valid(bones->value[i]) && zox_has(bones->value[i], ThighBone) && ik_leg_find(world, bones->value[i], &leg)) {
+            feet[count++] = zox_getv(leg.foot, Position3D);
+        }
+    }
+    return count == 2;
+}
 
 byte zox_tst_xr_body_ready(ecs* world) {
     if (zox_tst_xr_play_stage < 3) {
@@ -88,6 +106,13 @@ byte zox_tst_xr_body_ready(ecs* world) {
     }
     if (f == 60) {
         zox_tst_xr_body_look_from = zox_getv(character, Position3D);
+        zox_tst_xr_body_feet_planting = zox_has(get_skeleton(world, character), PlantFeet) && zox_tst_xr_body_feet_get(world, character, zox_tst_xr_body_feet);
+    }
+    if (f == 129 && zox_tst_xr_body_feet_planting) {
+        float3 feet[2];
+        if (zox_tst_xr_body_feet_get(world, character, feet)) {
+            zox_tst_xr_body_feet_moved = float_max(float3_distance(feet[0], zox_tst_xr_body_feet[0]), float3_distance(feet[1], zox_tst_xr_body_feet[1]));
+        }
     }
     if (f == 129) {
         const float3 drift = float3_sub(zox_getv(character, Position3D), zox_tst_xr_body_look_from);
@@ -194,6 +219,9 @@ void zox_tst_xr_body_check(ecs* world) {
         const float scale = xr_body_scale(world, xr_body_character(world));
         zox_log("[tst] xr_body: looking about the body moved [%.4f], crouched 0.3m the eyes [%.3f] lower (want [%.3f]), the body moved [%.4f]",
             zox_tst_xr_body_look_drift, zox_tst_xr_body_crouch, 0.3f * scale, zox_tst_xr_body_crouch_drift);
+        zox_log("[tst] xr_body: the feet planted [%i], moved looking about [%.4f]", zox_tst_xr_body_feet_planting, zox_tst_xr_body_feet_moved);
+        zox_tst_check(zox_tst_xr_body_feet_planting, "the body's feet aren't planted");
+        zox_tst_check(zox_tst_xr_body_feet_moved >= 0 && zox_tst_xr_body_feet_moved < 0.01f, "looking about the feet moved [%f]", zox_tst_xr_body_feet_moved);
         zox_tst_check(zox_tst_xr_body_look_drift >= 0 && zox_tst_xr_body_look_drift < 0.01f, "looking about moved the body [%f]", zox_tst_xr_body_look_drift);
         zox_tst_check(fabsf(zox_tst_xr_body_crouch - 0.3f * scale) < 0.02f, "crouching 0.3m lowered the eyes [%f]", zox_tst_xr_body_crouch);
         zox_tst_check(zox_tst_xr_body_crouch_drift >= 0 && zox_tst_xr_body_crouch_drift < 0.01f, "crouching moved the body [%f]", zox_tst_xr_body_crouch_drift);

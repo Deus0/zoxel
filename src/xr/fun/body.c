@@ -14,6 +14,8 @@
 //    spiking the walk's speed: bumps
 //  - the head bone turns as the headset does (xr_head_bone_system), the voxel head matches and the camera on it
 //    (raycasts) looks where the head looks; its breathing bob is taken off (bobbing eyes sicken)
+//  - the feet planted (PlantFeet, bones/ik sys/feet.c): the neck's walk shifts the body over them, the legs angle,
+//    a foot steps back under it leaning too far; walking by the stick the walk's swing has the legs
 //  - the real neck (xr_neck_room): the headset is the eyes, which swing about the player's neck as they look about
 //    (down: forward and lower); the body's head bone swings the eyes about the character's neck already, so only
 //    the neck's moves count: its x z walks the body (leaning, stepping; looking down slid the body forward), its y
@@ -119,6 +121,12 @@ void xr_room_walk_system(iter* it) {
     if (!zox_xr_active || !zox_valid(character) || !xr_body_head(world, xr_camera)) {
         xr_body_room_started = 0;
         return;
+    }
+    // the body's feet stay planted as the neck's walk shifts it, stepping under it when it leans too far (bones/ik
+    //  sys/feet.c): leaning angles the legs, it doesn't slide the feet
+    const entity skeleton = get_skeleton(world, character);
+    if (zox_valid(skeleton) && !zox_has(skeleton, PlantFeet)) {
+        zox_add(skeleton, PlantFeet);
     }
     const float3 neck = xr_neck_room(xr_head_now_rotation, xr_head_now_position);
     const float3 room = { neck.x, 0, neck.z };

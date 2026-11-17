@@ -102,6 +102,11 @@ entity spawn_part_bones(
         zox_add(bone, ThighBone);
         zox_set(bone, SwingState, { 1 });
         zox_set(bone, SwingAngle, { 60 });
+        zox_setv(bone, IKTarget, float3_zero);  // its foot plants with ik (bones/ik), off until a skeleton plants its feet
+        zox_setv(bone, IKWeight, 0);
+        zox_setv(bone, FootPlant, float3_zero);
+        zox_setv(bone, FootStepFrom, float3_zero);
+        zox_setv(bone, FootStep, 0);
         // zox_log("Added ThighBone to Part's Bone [%s]", zox_get_name(part));
     }
     if (dbg_log) {
