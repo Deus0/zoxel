@@ -40,26 +40,53 @@ static inline float4 xr_body_rotation(ecs* world, entity character) {
     return quaternion_rotate(zox_getv(character, Rotation3D), xr_body_turn_around());
 }
 
-// the eyes' body on the character, returns whether the camera's on one; moves it by the room's walk
-static byte xr_body_view(ecs* world, entity camera, float4 head_rotation, float3 head_position, float4x4* body) {
+// the body the eyes and hands are on, in the world: the tracking space's origin and facing
+typedef struct {
+    float3 position;
+    float4 rotation;
+} xr_body_frame;
+
+static inline float4x4 xr_body_frame_matrix(xr_body_frame frame) {
+    return float4x4_transform(frame.position, frame.rotation);
+}
+
+// a pose tracked in the room (a controller's) into the world, on the body
+static inline float3 xr_body_frame_point(xr_body_frame frame, float3 tracked) {
+    return float3_add(frame.position, float4_rotate_float3(frame.rotation, tracked));
+}
+
+// the body on the character, where it is now, returns whether the camera's on one
+//  - the neck (the head bone's pivot) and the eyes' offset from it are where the hierarchy put them, carried to
+//    where physics has moved the character since (skeleton_now), so it's right before the hierarchy runs too
+//  - the room's x z went to the character (as far as walls let it, xr_room_walk_system), so it's taken off: the
+//    eyes stay with the body
+static byte xr_body_frame_get(ecs* world, entity camera, float4 head_rotation, float3 head_position, xr_body_frame* frame) {
     const entity head = xr_body_head(world, camera);
     const entity character = xr_body_character(world);
     if (!zox_valid(head) || !zox_valid(character)) {
-        xr_body_room_started = 0;
         return 0;
     }
+    const skeleton_now now = skeleton_now_get(world, get_skeleton(world, character));
     const float4 rotation = xr_body_rotation(world, character);
     const float3 room = { head_position.x, 0, head_position.z };
-    // the neck, where physics moved the character this frame (the room's step included, xr_room_walk_system)
-    const float3 neck = zox_getv(head, Position3D);
+    const float3 neck = skeleton_now_point(&now, zox_getv(head, Position3D));
     // the eyes' offset from the neck, in the head's space (+z its face), turned to the tracking space's
     const float3 offset = float4_rotate_float3(quaternion_inverse(zox_getv(head, Rotation3D)),
         float3_sub(zox_getv(camera, Position3D), zox_getv(head, Position3D)));
     const float3 eyes = float4_rotate_float3(quaternion_rotate(rotation, head_rotation),
         float4_rotate_float3(xr_body_turn_around(), offset));
-    // the room's x z went to the character (as far as walls let it), so it's taken off: the eyes stay with the body
-    const float3 position = float3_sub(float3_add(neck, eyes), float4_rotate_float3(rotation, room));
-    *body = float4x4_transform(position, rotation);
+    frame->position = float3_sub(float3_add(neck, eyes), float4_rotate_float3(rotation, room));
+    frame->rotation = rotation;
+    return 1;
+}
+
+// the eyes' body on the character, returns whether the camera's on one
+static byte xr_body_view(ecs* world, entity camera, float4 head_rotation, float3 head_position, float4x4* body) {
+    xr_body_frame frame;
+    if (!xr_body_frame_get(world, camera, head_rotation, head_position, &frame)) {
+        return 0;
+    }
+    *body = xr_body_frame_matrix(frame);
     return 1;
 }
 

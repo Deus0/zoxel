@@ -5,7 +5,8 @@
 //  - the elbow bends down, back and out from the body, from the chest's facing
 //  - with IKTargetRotation the hand turns to it too (XR: the body's hand matches the real one)
 //  - weight 0: the elbow and hand ease back straight, the shoulder is left to its animation
-//  - the shoulder's world position is last frame's (the hierarchy runs after), a moving body lags its hand a frame
+//  - runs after physics and the drivers (zoxp_layouts), before the hierarchy: the bones' world positions are its
+//    last frame's, carried to where the body is now (skeleton_now), so a moving body's hand stays on its target
 #define ik_elbow_return_rate 18.0f
 
 void arm_ik_system(iter* it) {
@@ -48,11 +49,13 @@ void arm_ik_system(iter* it) {
             }
             continue;
         }
+        const skeleton_now now = skeleton_now_get(world, zox_get_link(world, e, SkeletonLink));
         const entity parent = zox_get_parent(world, e);
-        const float4 parent_rotation = zox_valid(parent) && zox_has(parent, Rotation3D) ?
-            zox_getv(parent, Rotation3D) : quaternion_identity;
-        const float3 shoulder_point = position->value;
-        const float a = float3_distance(shoulder_point, zox_getv(elbow, Position3D));
+        const float4 parent_rotation = skeleton_now_rotation(&now, zox_valid(parent) && zox_has(parent, Rotation3D) ?
+            zox_getv(parent, Rotation3D) : quaternion_identity);
+        const float3 shoulder_point = skeleton_now_point(&now, position->value);
+        // lengths don't change with where it is
+        const float a = float3_distance(position->value, zox_getv(elbow, Position3D));
         const float b = float3_distance(zox_getv(elbow, Position3D), zox_getv(hand, Position3D));
         const float3 upper_rest = ik_arm_rest(world, &arm, 0, elbow_index);
         const float3 lower_rest = ik_arm_rest(world, &arm, elbow_index, hand_index);

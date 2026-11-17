@@ -8,9 +8,7 @@
 
 ## Bugs
 - XR lag, what's left (the frame's start and the hands' timing are fixed, see done.md): needs a headset to confirm;
-	arm ik reads its shoulder's last frame position (bones/ik/sys/arm_ik.c), a walking body's hand trails its
-	controller a frame (the character's position is written by physics, then the room's walk in the render); if it's
-	still laggy, time each eye's render on the headset (too much drawn per eye, the view distance)
+	if it's still laggy, read the headset's frame timing log ([XR] fps, openxr/render.c)
 - quest tracker ui bugs out sometimes: shows null
 - the cookie gather quest failed
 - name input in new realm ui doesn't resize
@@ -1002,6 +1000,9 @@
 
 # XR
 - XR body, what's left (xr/fun/body.c): confirm on a headset
+- XR scale: the voxel character is about 1m tall, the player's real arms and height aren't: controllers sit out of
+	the character's arm reach (its arms point at them, straight). Scale the tracking space to the character (the
+	world feels bigger), or the hands' offsets from the head by its arm length, or the character to the player
 - XR turning option in settings: smooth (the default, the right stick turns the body left and right) or snap turns
 	(smooth turns sicken some players)
 

@@ -4,6 +4,7 @@
 //  - the eyes ride the character: the view's eyes (the body, then the head) are at the camera every frame, and the
 //    roam never takes the camera up (it did each frame, folding the head's turn into the body)
 //  - walking in the room at a wall: the body stops at it (physics, collisions), not through
+//  - the hands on their controllers: walking, a hand stays where it is on the body as standing (it trailed a frame)
 //  - the left stick walks the character, at speed straight away and stopped straight away (no inertia), each
 //    frame's move steady over its dt (friction on: its drag flickering with Grounded made bumps); walking 0.3m in the room moves it 0.3m
 //  - run: bash bsh/tst.sh xr_body
@@ -19,6 +20,9 @@ float zox_tst_xr_body_speed_min = 1000;     // each frame's move over its dt, wa
 float zox_tst_xr_body_speed_max = 0;
 float zox_tst_xr_body_dt_last = 0;          // read at zoxp_dbg_end it's the next frame's dt: the last one's is this frame's
 float3 zox_tst_xr_body_last;
+float3 zox_tst_xr_body_hand_still;          // the right hand in the body's space, standing
+byte zox_tst_xr_body_hand_seen = 0;
+float zox_tst_xr_body_hand_walking = -1;    // walking, its worst shift from standing (a frame behind, the walk's step)
 float zox_tst_xr_body_wall_moved = -1;      // walked 2m in the room at a wall 1m away: how far it got
 byte zox_tst_xr_body_wall_built = 0;
 float3 zox_tst_xr_body_wall_dir;
@@ -44,18 +48,35 @@ byte zox_tst_xr_body_ready(ecs* world) {
             float4x4_transform(xr_sim_script_head_position, xr_head_now_rotation), xr_view_body));
         const float d = float3_distance(eyes, zox_getv(xr_camera, Position3D));
         // the stick and room steps move it a frame ahead of the hierarchy, so only while still
-        if ((f < 150) && d > zox_tst_xr_body_worst_eyes) {
+        if ((f < 130) && d > zox_tst_xr_body_worst_eyes) {
             zox_tst_xr_body_worst_eyes = d;
+        }
+    }
+    {
+        const entity shoulder = xr_hands_shoulder(world, get_skeleton(world, character), xr_hand_right);
+        ik_arm arm;
+        xr_body_frame frame;
+        if (zox_valid(shoulder) && zox_has(shoulder, IKHeld) && ik_arm_find(world, shoulder, &arm) &&
+            xr_body_frame_get(world, xr_camera, xr_head_now_rotation, xr_head_now_position, &frame)) {
+            const float3 hand = float4_rotate_float3(quaternion_inverse(frame.rotation),
+                float3_sub(zox_getv(arm.bones[arm.length - 1], Position3D), frame.position));
+            if (f > 140 && f < 150) {
+                zox_tst_xr_body_hand_still = hand;
+                zox_tst_xr_body_hand_seen = 1;
+            }
+            if (f > 156 && f < 208 && zox_tst_xr_body_hand_seen) {
+                zox_tst_xr_body_hand_walking = float_max(zox_tst_xr_body_hand_walking, float3_distance(hand, zox_tst_xr_body_hand_still));
+            }
         }
     }
     if (f == 60) {
         zox_tst_xr_body_facing = zox_getv(character, Rotation3D);
     }
-    if (f > 60 && f < 150) {
+    if (f > 60 && f < 130) {
         xr_sim_head_euler.y = 0.8f;     // looked left
         xr_sim_head_euler.x = 0.3f;     // and up
     }
-    if (f == 149) {
+    if (f == 129) {
         const float4 now = zox_getv(character, Rotation3D);
         zox_tst_xr_body_facing_turn = 1 - fabsf(float4_dot(now, zox_tst_xr_body_facing));
         // the camera looks (-z) where the head does: the body, then the head
@@ -63,6 +84,8 @@ byte zox_tst_xr_body_ready(ecs* world) {
         const float3 want = float4_rotate_float3(quaternion_rotate(xr_body_rotation(world, character), xr_head_now_rotation), float3_backward);
         zox_tst_xr_body_look = float3_dot(look, want);
         xr_sim_head_euler = float3_zero;
+    }
+    if (f == 149) {
         zox_tst_xr_body_from = zox_getv(character, Position3D);
     }
     if (f >= 150 && f < 210) {
@@ -152,6 +175,9 @@ void zox_tst_xr_body_check(ecs* world) {
     zox_tst_check(zox_tst_xr_body_started > max_velocity3D.y * 0.97f, "the stick ramped up, not at speed [%f]", zox_tst_xr_body_started);
     zox_tst_check(zox_tst_xr_body_stopped < 0.05f, "let go it coasted [%f]", zox_tst_xr_body_stopped);
     zox_tst_check(zox_tst_xr_body_walked > 0.3f, "the left stick didn't walk the character [%f]", zox_tst_xr_body_walked);
+    zox_log("[tst] xr_body: walking, the right hand shifted on the body by [%.4f] from standing", zox_tst_xr_body_hand_walking);
+    zox_tst_check(zox_tst_xr_body_hand_walking >= 0, "no right hand held on its controller");
+    zox_tst_check(zox_tst_xr_body_hand_walking < 0.005f, "walking, the hand trails its controller by [%f]", zox_tst_xr_body_hand_walking);
     zox_log("[tst] xr_body: walked 2m in the room at a wall 1m away, got [%.3f]", zox_tst_xr_body_wall_moved);
     zox_tst_check(zox_tst_xr_body_wall_built, "no wall built");
     zox_tst_check(zox_tst_xr_body_wall_moved > 0.2f && zox_tst_xr_body_wall_moved < 0.95f, "the room's walk went [%f] at a wall 1m away", zox_tst_xr_body_wall_moved);

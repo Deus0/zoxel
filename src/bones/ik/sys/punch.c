@@ -8,7 +8,8 @@
 //  - the weight eases on and off, so the arm never snaps; lowered and not punching it returns to its swing
 //  - the head's facing is +z, a first person camera on it faces -z
 //  - a held shoulder (IKHeld, XR hands) is left be: the real hand moves it
-//  - written in place, not deferred, so the solve (arm_ik.c) reads it this frame
+//  - written in place, not deferred, so the solve (arm_ik.c) reads it this frame; after physics (zoxp_trails), from
+//    where the body is now
 #define ik_punch_guard 0.85f        // of the arm's reach, the hand's rest raised: out where it's seen in first person
 #define ik_punch_pull 0.6f          // pulled back before it strikes
 #define ik_punch_strike 0.97f       // the punch's reach
@@ -78,9 +79,11 @@ void punch_ik_system(iter* it) {
             facing = float3_backward;
             flip = -1;
         }
-        const float4 head_rotation = zox_getv(head, Rotation3D);
+        // where the body is now (physics moved it after the hierarchy placed the bones)
+        const skeleton_now now = skeleton_now_get(world, e);
+        const float4 head_rotation = skeleton_now_rotation(&now, zox_getv(head, Rotation3D));
         const float3 look = float4_rotate_float3(head_rotation, facing);
-        const float3 from = zox_getv(shoulder, Position3D);
+        const float3 from = skeleton_now_point(&now, zox_getv(shoulder, Position3D));
         const float3 elbow = zox_getv(arm.bones[arm.length - 2], Position3D);
         const float reach = float3_distance(from, elbow) +
             float3_distance(elbow, zox_getv(arm.bones[arm.length - 1], Position3D));

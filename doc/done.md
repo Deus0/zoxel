@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-17
+-x XR hands on the body: controllers' tracked poses kept and put on the body after physics (zoxp_trails), the arms
+  solved after it (zoxp_layouts) from bones carried to where the body is now (skeleton_now); in a game they were on
+  the roam (left behind once the character became the body), and walking trailed them a frame; the punch the same;
+  tst xr_body: walking, the hand doesn't move on the body
 -x XR walking through physics: walking in the room is the body's velocity for the frame (xr_room_walk_system,
   before physics), walls stop it (it moved the character straight through them); the stick and room velocities are
   scaled against the frame's drag (physics3_drag_compensation), friction kept: drag flickering with Grounded on

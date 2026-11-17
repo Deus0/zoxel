@@ -57,11 +57,25 @@ float2 xr_controller_stick(ecs* world, byte hand) {
     return float2_zero;
 }
 
-// the hand in the world: its tracked pose (in the head's tracking space) on top of the roam's body
+// each hand's pose as tracked, in the room (the tracking space), kept for the hands' ik (fun/hands.c): it puts them
+//  on the body after physics has moved it, where the controller entities' poses were set before it moved
+float3 xr_hand_tracked_position[2];
+float4 xr_hand_tracked_rotation[2] = { { 0, 0, 0, 1 }, { 0, 0, 0, 1 } };
+byte xr_hand_tracked[2];
+
+// the hand in the world: its tracked pose on top of the body (the character in a game, fun/body.c, else the roam)
 void xr_controller_pose(ecs* world, entity device, float3 position, float4 rotation) {
-    const float4 body = free_roam_rotation(&xr_roam);
-    zox_setv(device, Position3D, float3_add(xr_roam.position, float4_rotate_float3(body, position)));
-    zox_setv(device, Rotation3D, quaternion_rotate(body, rotation));
+    const byte hand = zox_getv(device, XrHand) ? 1 : 0;
+    xr_hand_tracked_position[hand] = position;
+    xr_hand_tracked_rotation[hand] = rotation;
+    xr_hand_tracked[hand] = 1;
+    xr_body_frame frame;
+    if (!xr_body_frame_get(world, xr_camera, xr_head_now_rotation, xr_head_now_position, &frame)) {
+        frame.position = xr_roam.position;
+        frame.rotation = free_roam_rotation(&xr_roam);
+    }
+    zox_setv(device, Position3D, xr_body_frame_point(frame, position));
+    zox_setv(device, Rotation3D, quaternion_rotate(frame.rotation, rotation));
 }
 
 // sticks drive the menus while one's open, so the head doesn't fly off from them
