@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-17
+-x XR the real neck: the headset's eyes swing about the player's neck as they look about; only the neck's moves
+  count now (xr_neck_room): its x z walks the body (looking down slid it forward), its y lowers the view (crouching;
+  looking down dropped the eyes into the chest); the simulator's head turns about a neck; tst xr_body checks both
 -x XR continue and pause: the load menu and pause menu are 3D lists on 3D huds (they were 2D, unseen in a headset),
   a save goes straight in (no realm menu); tst xr_continue: continue, the newest save, pause by the menu button, return
 -x XR loading fades: to black as loading starts and back after (huds3_darkness, rendering's render_darkness: the

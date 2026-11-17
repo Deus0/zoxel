@@ -14,11 +14,24 @@
 //    spiking the walk's speed: bumps
 //  - the head bone turns as the headset does (xr_head_bone_system), the voxel head matches and the camera on it
 //    (raycasts) looks where the head looks; its breathing bob is taken off (bobbing eyes sicken)
+//  - the real neck (xr_neck_room): the headset is the eyes, which swing about the player's neck as they look about
+//    (down: forward and lower); the body's head bone swings the eyes about the character's neck already, so only
+//    the neck's moves count: its x z walks the body (leaning, stepping; looking down slid the body forward), its y
+//    lowers the view (crouching; looking down dropped the eyes into the chest)
 //  - xr_head_now_*: the head's latest tracked pose, written by a headset (openxr/render.c) or the simulator (sim/)
 float4 xr_head_now_rotation = { 0, 0, 0, 1 };
 float3 xr_head_now_position = { 0, 0, 0 };
-static float3 xr_body_room_last;        // the head's x z in the room, last frame
+static float3 xr_body_room_last;        // the neck's x z in the room, last frame
 static byte xr_body_room_started = 0;
+
+// the eyes from the neck's pivot, in the head's space (-z ahead): up and forward of it
+#define xr_neck_to_eyes ((float3) { 0, 0.10f, -0.08f })
+
+// the player's neck in the room, from the head's tracked pose, from where it is with the head level at the origin
+//  (OpenXR's local space starts there): still as the head turns about it
+static inline float3 xr_neck_room(float4 head_rotation, float3 head_position) {
+    return float3_add(float3_sub(head_position, float4_rotate_float3(head_rotation, xr_neck_to_eyes)), xr_neck_to_eyes);
+}
 
 static inline float4 xr_body_turn_around() {
     return quaternion_from_euler((float3) { 0, M_PI, 0 });
@@ -59,8 +72,9 @@ static inline float3 xr_body_frame_point(xr_body_frame frame, float3 tracked) {
 // the body on the character, where it is now, returns whether the camera's on one
 //  - the neck (the head bone's pivot) and the eyes' offset from it are where the hierarchy put them, carried to
 //    where physics has moved the character since (skeleton_now), so it's right before the hierarchy runs too
-//  - the room's x z went to the character (as far as walls let it, xr_room_walk_system), so it's taken off: the
-//    eyes stay with the body
+//  - the eyes are the tracked eyes from the head's tracked place (their spread, turning with the head) on the
+//    character's eyes (the head bone's swing about its neck), lowered by the real neck's crouch; the neck's x z
+//    went to the character (as far as walls let it, xr_room_walk_system)
 static byte xr_body_frame_get(ecs* world, entity camera, float4 head_rotation, float3 head_position, xr_body_frame* frame) {
     const entity head = xr_body_head(world, camera);
     const entity character = xr_body_character(world);
@@ -70,14 +84,15 @@ static byte xr_body_frame_get(ecs* world, entity camera, float4 head_rotation, f
     const skeleton_now now = skeleton_now_get(world, get_skeleton(world, character));
     const float4 rotation = xr_body_rotation(world, character);
     const float scale = xr_body_scale(world, character);
-    const float3 room = { head_position.x * scale, 0, head_position.z * scale };
+    const float crouch = xr_neck_room(head_rotation, head_position).y * scale;
     const float3 neck = skeleton_now_point(&now, zox_getv(head, Position3D));
     // the eyes' offset from the neck, in the head's space (+z its face), turned to the tracking space's
     const float3 offset = float4_rotate_float3(quaternion_inverse(zox_getv(head, Rotation3D)),
         float3_sub(zox_getv(camera, Position3D), zox_getv(head, Position3D)));
     const float3 eyes = float4_rotate_float3(quaternion_rotate(rotation, head_rotation),
         float4_rotate_float3(xr_body_turn_around(), offset));
-    frame->position = float3_sub(float3_add(neck, eyes), float4_rotate_float3(rotation, room));
+    const float3 off = float3_sub((float3) { 0, crouch, 0 }, float3_scale(head_position, scale));
+    frame->position = float3_add(float3_add(neck, eyes), float4_rotate_float3(rotation, off));
     frame->rotation = rotation;
     frame->scale = scale;
     return 1;
@@ -94,7 +109,7 @@ static byte xr_body_view(ecs* world, entity camera, float4 head_rotation, float3
     return 1;
 }
 
-// the room's walk moves the character through physics: the head's x z step since the last frame, turned to the
+// the room's walk moves the character through physics: the neck's x z step since the last frame (xr_neck_room), turned to the
 //  body's facing, as velocity over this frame's dt (the one physics steps it by), added to the stick's (set first,
 //  controllers3/sys/movement.c player3d_move_direct); a tracking jump (lost, recentred) isn't a step
 void xr_room_walk_system(iter* it) {
@@ -105,7 +120,8 @@ void xr_room_walk_system(iter* it) {
         xr_body_room_started = 0;
         return;
     }
-    const float3 room = { xr_head_now_position.x, 0, xr_head_now_position.z };
+    const float3 neck = xr_neck_room(xr_head_now_rotation, xr_head_now_position);
+    const float3 room = { neck.x, 0, neck.z };
     float3 step = float3_zero;
     if (xr_body_room_started) {
         step = float4_rotate_float3(xr_body_rotation(world, character),

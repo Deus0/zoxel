@@ -11,6 +11,8 @@
 //    frame's move steady over its dt (friction on: its drag flickering with Grounded made bumps); walking 0.3m in the room moves it 0.3m
 //  - the device mode is the controllers': they're enabled playing, the keyboard, mouse and touchscreen feeders
 //    (on a headset Android's stray pointer events switched the mode off them, the stick didn't walk)
+//  - looking about (the simulator's head turning about a neck, as a person's) doesn't move the body; crouching 0.3m
+//    lowers the view 0.3m scaled from the head bone's eyes, the body stays
 //  - run: bash bsh/tst.sh xr_body
 int zox_tst_xr_body_frames = 0;
 float zox_tst_xr_body_worst_eyes = 0;       // the view's eyes from the camera, worst
@@ -32,6 +34,10 @@ byte zox_tst_xr_body_wall_built = 0;
 float3 zox_tst_xr_body_wall_dir;
 float4 zox_tst_xr_body_facing;
 float3 zox_tst_xr_body_from;
+float3 zox_tst_xr_body_look_from;
+float zox_tst_xr_body_look_drift = -1;      // the body moved, looking about
+float zox_tst_xr_body_crouch = 0;           // the view's eyes below the camera (the head bone's), crouched
+float zox_tst_xr_body_crouch_drift = -1;
 
 byte zox_tst_xr_body_ready(ecs* world) {
     if (zox_tst_xr_play_stage < 3) {
@@ -49,7 +55,7 @@ byte zox_tst_xr_body_ready(ecs* world) {
     if (f > 60) {
         // the eyes in the view at the camera: the view's body, the head's centre on top (the sim's eyes straddle it)
         const float3 eyes = float4x4_get_position(float4x4_multiply(
-            float4x4_transform(float3_scale(xr_sim_script_head_position, xr_view_scale), xr_head_now_rotation), xr_view_body));
+            float4x4_transform(float3_scale(xr_head_now_position, xr_view_scale), xr_head_now_rotation), xr_view_body));
         const float d = float3_distance(eyes, zox_getv(xr_camera, Position3D));
         // the stick and room steps move it a frame ahead of the hierarchy, so only while still
         if ((f < 130) && d > zox_tst_xr_body_worst_eyes) {
@@ -80,7 +86,12 @@ byte zox_tst_xr_body_ready(ecs* world) {
         xr_sim_head_euler.y = 0.8f;     // looked left
         xr_sim_head_euler.x = 0.3f;     // and up
     }
+    if (f == 60) {
+        zox_tst_xr_body_look_from = zox_getv(character, Position3D);
+    }
     if (f == 129) {
+        const float3 drift = float3_sub(zox_getv(character, Position3D), zox_tst_xr_body_look_from);
+        zox_tst_xr_body_look_drift = sqrtf(drift.x * drift.x + drift.z * drift.z);
         const float4 now = zox_getv(character, Rotation3D);
         zox_tst_xr_body_facing_turn = 1 - fabsf(float4_dot(now, zox_tst_xr_body_facing));
         // the camera looks (-z) where the head does: the body, then the head
@@ -163,10 +174,30 @@ byte zox_tst_xr_body_ready(ecs* world) {
         zox_tst_xr_body_wall_moved = float3_dot(float3_sub(zox_getv(character, Position3D), zox_tst_xr_body_from), zox_tst_xr_body_wall_dir);
         xr_sim_script_head_position = float3_zero;
     }
-    return f > 440;
+    if (f == 450) {
+        zox_tst_xr_body_from = zox_getv(character, Position3D);
+        xr_sim_script_head_position = (float3) { 0, -0.3f, 0 };
+    }
+    if (f == 480) {
+        const float3 eyes = float4x4_get_position(float4x4_multiply(
+            float4x4_transform(float3_scale(xr_head_now_position, xr_view_scale), xr_head_now_rotation), xr_view_body));
+        zox_tst_xr_body_crouch = zox_getv(xr_camera, Position3D).y - eyes.y;
+        const float3 drift = float3_sub(zox_getv(character, Position3D), zox_tst_xr_body_from);
+        zox_tst_xr_body_crouch_drift = sqrtf(drift.x * drift.x + drift.z * drift.z);
+        xr_sim_script_head_position = float3_zero;
+    }
+    return f > 490;
 }
 
 void zox_tst_xr_body_check(ecs* world) {
+    {
+        const float scale = xr_body_scale(world, xr_body_character(world));
+        zox_log("[tst] xr_body: looking about the body moved [%.4f], crouched 0.3m the eyes [%.3f] lower (want [%.3f]), the body moved [%.4f]",
+            zox_tst_xr_body_look_drift, zox_tst_xr_body_crouch, 0.3f * scale, zox_tst_xr_body_crouch_drift);
+        zox_tst_check(zox_tst_xr_body_look_drift >= 0 && zox_tst_xr_body_look_drift < 0.01f, "looking about moved the body [%f]", zox_tst_xr_body_look_drift);
+        zox_tst_check(fabsf(zox_tst_xr_body_crouch - 0.3f * scale) < 0.02f, "crouching 0.3m lowered the eyes [%f]", zox_tst_xr_body_crouch);
+        zox_tst_check(zox_tst_xr_body_crouch_drift >= 0 && zox_tst_xr_body_crouch_drift < 0.01f, "crouching moved the body [%f]", zox_tst_xr_body_crouch_drift);
+    }
     for (byte i = 0; i < 2; i++) {
         zox_tst_check(zox_valid(xr_controllers[i]) && !zox_has(xr_controllers[i], Disabled), "the xr controller [%i] is disabled playing", i);
     }
