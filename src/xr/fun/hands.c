@@ -41,21 +41,23 @@ static float3 xr_hands_target(ecs* world, entity skeleton, entity shoulder, byte
     }
     const float player = xr_player_height / 1.7f;
     const float4 lean = zox_has(skeleton, SpineLean) ? zox_getv(skeleton, SpineLean) : quaternion_identity;
-    const float drop = zox_has(skeleton, HipsDrop) ? zox_getv(skeleton, HipsDrop) : 0;
+    const float3 shift = zox_has(skeleton, HipsShift) ? zox_getv(skeleton, HipsShift) : float3_zero;
     // the player's shoulder in the room
     const float3 neck = float3_sub(xr_head_now_position, float4_rotate_float3(xr_head_now_rotation, xr_neck_to_eyes));
     float3 side = float3_scale(xr_player_shoulder, player);
     side.x *= hand == xr_hand_right ? -1 : 1;
     const float3 player_shoulder = float3_add(neck,
         float4_rotate_float3(quaternion_inverse(xr_body_room_to_body()), float4_rotate_float3(lean, side)));
-    // the body's shoulder in the world, now
+    // the body's shoulder in the world, now, at rest (the arm's ik moves it after a target past its reach: from where
+    //  it's moved the target went with it each frame, short again)
+    const float3 shoulder_rest = zox_has(shoulder, RestPosition3D) ? zox_getv(shoulder, RestPosition3D) : zox_getv(shoulder, LocalPosition3D);
     const skeleton_now now = skeleton_now_get(world, skeleton);
     float3 body_shoulder = skeleton_now_point(&now, zox_getv(shoulder, Position3D));
     spine_bones spine;
     if (zox_has(skeleton, SpineLean) && spine_bones_find(world, skeleton, &spine) && zox_has(spine.chest, RestPosition3D) &&
         zox_get_parent(world, shoulder) == spine.chest) {
         body_shoulder = float3_add(now.now_position, float4_rotate_float3(now.now_rotation,
-            spine_point_local(world, &spine, zox_getv(shoulder, LocalPosition3D), lean, drop)));
+            spine_point_local(world, &spine, shoulder_rest, lean, shift)));
     }
     const float3 elbow = zox_getv(arm.bones[arm.length - 2], Position3D);
     const float reach = float3_distance(zox_getv(shoulder, Position3D), elbow) +

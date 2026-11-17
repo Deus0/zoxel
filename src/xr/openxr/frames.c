@@ -108,7 +108,10 @@ static void xr_end_frame() {
 }
 
 
+extern byte xr_recentred;
+
 // OpenXR's events, all of them (one a frame let them back up), the session started and stopped as they say
+//  - the player recentring (the system's button): the tracking space moves, the body takes it up (fun/body.c)
 static void xr_poll_events(byte* running) {
     for (;;) {
         XrEventDataBuffer event_buffer = { .type = XR_TYPE_EVENT_DATA_BUFFER };
@@ -119,6 +122,11 @@ static void xr_poll_events(byte* running) {
         if (result != XR_SUCCESS) {
             zox_loge("[XR] xrPollEvent failed: %d", result);
             return;
+        }
+        if (event_buffer.type == XR_TYPE_EVENT_DATA_REFERENCE_SPACE_CHANGE_PENDING) {
+            zox_log("[XR] the tracking space was recentred");
+            xr_recentred = 1;
+            continue;
         }
         if (event_buffer.type != XR_TYPE_EVENT_DATA_SESSION_STATE_CHANGED) {
             continue;

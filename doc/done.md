@@ -1,6 +1,15 @@
 # Done
 
 ## 2026-11-17
+-x XR bending: the spine solved from the real neck (xr_spine_solve): closer than the spine is long it bends, the hips
+  back (HipsShift, was HipsDrop) and the chest pitched down to ~110 degrees, then crouches; farther it leans; past the
+  body's reach across the ground the body moves; the view takes what's left so the eyes stay the player's; it leaned
+  only by the neck's x z (bending read as leaning forward, the body walked forward); tst xr_lean bends
+-x XR turning eases after the head from 20 degrees (at once past 52), recentring (a headset's reference space event)
+  turns the body by the room's turn, the head straight on it, the view still; tst xr_lean recentres
+-x arms reach past their length up and out: the shoulder moves after the target (ik_shoulder_reach, 0.2 of the reach),
+  the XR hands retarget from its rest (from where it moved, the target went with it); tst xr_reach up_far, side_far
+-x tst xr_lean: xr_body's later phases (crouch, turn round, 72 fps, bend, recentre), xr_body ran past the test's time
 -x tst ik_poses: the ik rig posing a character (reaching up, out, ahead, down, wrists rolled, leaning ahead and to
   the side, crouching, both): hands on target, feet where they stood, crouched the knees ahead and the hips lower,
   the neck the lean's way; bash bsh/ik_poses.sh saves tst/ik_poses.png

@@ -14,12 +14,12 @@ void zox_systems_ik(ecs* world) {
         [in] bones.RaiseShoulder,
         [none] bones.Skeleton
     );
-    // the upper body leaning about the hips, the hips dropped (XR's body bending and crouching)
+    // the upper body leaning about the hips, the hips shifted (XR's body bending and crouching)
     zox_system(
         spine_lean_system,
         zoxp_trails,
         [in] SpineLean,
-        [in] HipsDrop,
+        [in] HipsShift,
         [none] bones.Skeleton
     );
     // feet planted as the body shifts (PlantFeet: XR's body), stepping when far

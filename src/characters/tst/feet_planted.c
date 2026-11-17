@@ -71,7 +71,7 @@ byte zox_tst_feet_planted_ready(ecs* world) {
                     zox_tst_feet_under[i] = zox_tst_feet_in_body(world, character, zox_tst_feet_world[i]);
                 }
                 zox_setv(skeleton, SpineLean, quaternion_from_euler((float3) { 0.4f, 0, 0.2f }));
-                zox_setv(skeleton, HipsDrop, 0);
+                zox_setv(skeleton, HipsShift, float3_zero);
                 zox_tst_feet_leg = ik_leg_length(world, &legs[0]);
                 zox_tst_feet_stage++;
             }

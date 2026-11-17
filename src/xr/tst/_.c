@@ -4,6 +4,7 @@
 #include "menu.c"
 #include "room.c"
 #include "body.c"
+#include "lean.c"
 #include "frustum.c"
 #include "reach.c"
 #ifdef zox_tests
@@ -16,6 +17,7 @@ void zox_tsts_xr(ecs* world) {
     zox_tsts_xr_play(world);
     zox_tsts_xr_room(world);
     zox_tsts_xr_body(world);
+    zox_tsts_xr_lean(world);
     zox_tsts_xr_frustum(world);
     zox_tsts_xr_reach(world);
 #ifdef zox_tests

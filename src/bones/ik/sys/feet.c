@@ -4,7 +4,7 @@
 //  - too far (feet_step_distance of the leg's length, across the ground; feet_settle_distance with the body still,
 //    the feet shuffle back under it after moving, a step lands where the hip was) it steps there: an arc over feet_step_time,
 //    landing on the rest as it is then; one foot at a time, the farther first
-//  - its height follows the rest's (the ground under the body, less the hips' drop), only across the ground is held
+//  - its height follows the rest's (the ground under the body, the hips' shift taken off), only across the ground held
 //  - walking (fast) or in the air (falling, jumping) the walk's swing has the legs: the weight eases off, and back on planting the
 //    feet afresh where they stand
 //  - zoxp_trails: after physics moved the body, before the solve (zoxp_layouts)
@@ -43,8 +43,9 @@ void feet_plant_system(iter* it) {
         const float step_distance = speed < feet_still_speed ? feet_settle_distance : feet_step_distance;
         const byte planting = fabsf(velocity.y) < feet_air_speed && sqrtf(velocity.x * velocity.x + velocity.z * velocity.z) < feet_walk_speed;
         const skeleton_now now = skeleton_now_get(world, e);
-        // dropped hips (crouching) lower the thighs, not the ground the feet stand on
-        const float drop = zox_has(e, HipsDrop) ? zox_getv(e, HipsDrop) : 0;
+        // shifted hips (bending, crouching) move the thighs, not where the feet stand
+        const float3 shift = zox_has(e, HipsShift) ?
+            float4_rotate_float3(now.now_rotation, zox_getv(e, HipsShift)) : float3_zero;
         ik_leg legs[feet_legs_max];
         float3 rests[feet_legs_max];
         float lengths[feet_legs_max];
@@ -56,7 +57,7 @@ void feet_plant_system(iter* it) {
                 continue;
             }
             rests[count] = ik_leg_rest(world, &legs[count], &now);
-            rests[count].y += drop;
+            rests[count] = float3_sub(rests[count], shift);
             lengths[count] = ik_leg_length(world, &legs[count]);
             stepping |= zox_getv(thigh, FootStep) > 0;
             count++;

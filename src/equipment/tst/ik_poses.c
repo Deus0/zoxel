@@ -2,7 +2,7 @@
 //  - bash bsh/ik_poses.sh, then look at tst/ik_poses.png (a row a pose, 4 views: +z, +x, -z, above)
 //  - the body_views setup (a character of the player's kind in the void, 4 viewport cameras); its animations left on,
 //      the rig's inputs set a pose: the arms' IKTarget (held, IKHeld), IKTargetRotation, the skeleton's SpineLean and
-//      HipsDrop, its feet planted (PlantFeet); a screenshot a pose: tst/ik_poses/<n>_<pose>.ppm
+//      HipsShift, its feet planted (PlantFeet); a screenshot a pose: tst/ik_poses/<n>_<pose>.ppm
 //  - checks each pose: a held hand on its target; the feet where they stood at rest (planted, on the ground) leaning
 //      and crouching; crouched the hips lower and the knees bent ahead (not back, nor out); leaning the neck went the
 //      lean's way
@@ -16,6 +16,7 @@ typedef struct {
     float roll[2];          // its turn about its forward (a wrist), radians
     float3 lean;            // the spine's lean, euler radians (x ahead, z to the side)
     float crouch;           // the hips' drop, of the leg's length
+    float back;             // the hips back, of the leg's length (bending)
 } zox_tst_ik_pose;
 
 const zox_tst_ik_pose zox_tst_ik_poses[] = {
@@ -105,7 +106,7 @@ static void zox_tst_ik_poses_set(ecs* world, entity character, entity skeleton, 
     ik_leg legs[2];
     const float leg = zox_tst_ik_poses_legs(world, skeleton, legs) ? ik_leg_length(world, &legs[0]) : 0.4f;
     zox_setv(skeleton, SpineLean, quaternion_from_euler(pose->lean));
-    zox_setv(skeleton, HipsDrop, pose->crouch * leg);
+    zox_setv(skeleton, HipsShift, ((float3) { 0, -pose->crouch * leg, -pose->back * leg }));
 }
 
 static void zox_tst_ik_poses_measure(ecs* world, entity character, entity skeleton, int index) {

@@ -3,12 +3,15 @@
 //  - lengths from the bones' world positions (they don't change as they turn), directions at rest from their local
 //    positions, so any scale works; bones between the shoulder and elbow are taken at rest
 //  - the elbow bends down, back and out from the body, from the chest's facing
+//  - a target past the arm's reach moves the shoulder after it (ik_shoulder_reach), as a person's shrugs reaching up
+//    and pushes out reaching out: the arm alone fell short up and out (its rest place kept, RestPosition3D)
 //  - with IKTargetRotation the hand turns to it too (XR: the body's hand matches the real one, ik_hand_rest_to_target)
 //  - weight 0: the elbow and hand ease back straight, the shoulder is left to its animation
 //  - runs after physics and the drivers (zoxp_layouts), before the hierarchy: the bones' world positions are its
 //    last frame's, carried to where the body is now (skeleton_now), so a moving body's hand stays on its target
 #define ik_elbow_return_rate 18.0f
 #define ik_forearm_twist 0.5f       // of the hand's twist about the forearm, the forearm's
+#define ik_shoulder_reach 0.2f      // of the arm's reach, the shoulder moving after a target past it (a shrug, a push)
 
 // the hand at rest onto its target's turn: its rest down (the arm's line) along the target's forward (-z), its rest
 //  front (+z, the thumb's side, arms hanging) up (+y), as a held controller's; half a turn about (0, 1, 1)
@@ -44,6 +47,9 @@ void arm_ik_system(iter* it) {
         LocalRotation3D* elbow_rotation = zox_getm(elbow, LocalRotation3D);
         const float w = weight->value < 0 ? 0 : (weight->value > 1 ? 1 : weight->value);
         if (w <= 0.001f) {
+            if (zox_has(e, RestPosition3D)) {
+                zox_getm(e, LocalPosition3D)->value = zox_getv(e, RestPosition3D);
+            }
             if (!float4_equals(elbow_rotation->value, quaternion_identity)) {
                 elbow_rotation->value = quaternion_normalize2(
                     quaternion_slerp(elbow_rotation->value, quaternion_identity, return_t));
@@ -61,10 +67,25 @@ void arm_ik_system(iter* it) {
         const entity parent = zox_get_parent(world, e);
         const float4 parent_rotation = skeleton_now_rotation(&now, zox_valid(parent) && zox_has(parent, Rotation3D) ?
             zox_getv(parent, Rotation3D) : quaternion_identity);
-        const float3 shoulder_point = skeleton_now_point(&now, position->value);
         // lengths don't change with where it is
         const float a = float3_distance(position->value, zox_getv(elbow, Position3D));
         const float b = float3_distance(zox_getv(elbow, Position3D), zox_getv(hand, Position3D));
+        // the shoulder at rest, moved after a target past the arm's reach
+        LocalPosition3D* local = zox_getm(e, LocalPosition3D);
+        if (!zox_has(e, RestPosition3D)) {
+            zox_setv(e, RestPosition3D, local->value);
+        }
+        const float3 rest = zox_has(e, RestPosition3D) ? zox_getv(e, RestPosition3D) : local->value;
+        const float3 rest_point = zox_valid(parent) && zox_has(parent, Position3D) ?
+            float3_add(skeleton_now_point(&now, zox_getv(parent, Position3D)), float4_rotate_float3(parent_rotation, rest)) :
+            skeleton_now_point(&now, position->value);
+        const float3 to_target = float3_sub(target->value, rest_point);
+        const float target_distance = float3_length(to_target);
+        float shrug = target_distance - (a + b) * 0.999f;
+        shrug = shrug < 0 ? 0 : float_min(shrug, ik_shoulder_reach * (a + b)) * w;
+        const float3 moved = target_distance > 0.0001f ? float3_scale(to_target, shrug / target_distance) : float3_zero;
+        local->value = float3_add(rest, float4_rotate_float3(quaternion_inverse(parent_rotation), moved));
+        const float3 shoulder_point = float3_add(rest_point, moved);
         const float3 upper_rest = ik_arm_rest(world, &arm, 0, elbow_index);
         const float3 lower_rest = ik_arm_rest(world, &arm, elbow_index, hand_index);
         if (a < 0.0001f || b < 0.0001f || float3_length(upper_rest) < 0.0001f || float3_length(lower_rest) < 0.0001f) {
