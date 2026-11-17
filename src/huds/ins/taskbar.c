@@ -138,6 +138,7 @@ static void taskbar_spawn_frames(
 }
 
 #define taskbar3_above 0.36f        // metres above the menus' middle, on 3D huds
+#define taskbar3_height 0.09f       // metres high (a window's own height in 3D made it about an eye's width)
 
 entity spawn_taskbar(
     ecs* world,
@@ -192,6 +193,7 @@ entity spawn_taskbar(
         float4 rotation;
         ui_window3_pose(world, canvas, &position, &rotation);
         zox_setv(e, Position3D, float3_add(position, float4_rotate_float3(rotation, (float3) { 0, taskbar3_above, 0 })));
+        zox_setv(e, Scale1, taskbar3_height);
     }
     return e;
 }
