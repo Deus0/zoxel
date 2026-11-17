@@ -35,6 +35,17 @@ void module_dispose_xr(ecs *world, void *ctx) {
 #endif
 #include "tst/_.c"
 
+// a headset draws two eyes at a high refresh rate, so its defaults are lighter than the desktop's (a saved
+//  settings.cfg still wins): a shorter view, no grass animation, fewer npcs closer in
+static inline void xr_lower_graphics_defaults() {
+    terrain_lod_near = 2;
+    terrain_lod_far = 4;
+    render_distance_y = 2;
+    zox_grass_animation = 0;
+    character_spawn_rate_max = 2;
+    character_spawn_distance = 1;
+}
+
 void import_xr(ecs* world) {
     zox_module(xr);
     add_hook_terminal_command(process_arguments_xr);
@@ -49,6 +60,7 @@ void import_xr(ecs* world) {
     zox_log("[XR] Engaged");
     zox_xr_active = 1;
     zox_huds3D = 1;
+    xr_lower_graphics_defaults();
     zox_systems_openxr(world);
     zox_module_dispose(module_dispose_xr);
 #endif
