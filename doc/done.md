@@ -1,6 +1,11 @@
 # Done
 
 ## 2026-11-18
+-x navigator: LB and RB (a headset's grips) step through the taskbar's uis while paused, one open at a time, the
+  gamepad's selection in the new one (huds/sys/navigator.c); the taskbar a 3D row above the menus on 3D huds
+  (spawn_taskbar3, the 2D taskbar's frames and toggle: taskbar_frame_toggle); the 2D window stack skips 3D lists
+  (crashed on a 2D window opened over one); gamepad navigation starts in the newest open window, not a closing one,
+  and a window with nothing to select isn't an error; tst xr_navigator (screenshot tst/xr_navigator.ppm)
 -x XR runtime: one interface (xr/fun/runtime.c) for a headset (openxr/runtime.c) and the simulator (sim/): the
   frame, the head and eyes, the controllers' sticks, buttons and poses run through one set of systems, not two
   copies (openxr/render.c, openxr/controller.c and the simulator's own systems gone)

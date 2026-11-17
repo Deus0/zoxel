@@ -24,8 +24,7 @@ void raycaster_select_first_button(ecs *world, entity e, entity window) {
     // entity button = find_child_with_mtag_rec(world, window, zox_id(NavigationElement), zox_id(Header), zox_id(CloseButton));
     entity button = zox_get_child_by_id_recursive(world, window, zox_id(NavigationElement));
     if (!button) {
-        zox_loge("Window has no NavigationElements [%s]", zox_get_name(window));
-        return;
+        return;     // nothing in it to select (i.e. a stats window), or its elements not spawned yet
     }
     // zox_log("Navigation Beginning on Window [%s] element [%s]", zox_get_name(window), zox_get_name(button));
     raycaster_select_element(world, e, button);
@@ -66,7 +65,17 @@ void element_navigation_begin_system(iter* it) {
             // zox_logw("Canvas is missing from Player");
             continue;
         }
-        entity window = zox_get_child_by_id(world, canvas, zox_id(NavigationWindow));
+        // the newest open one: a closing one (UIClosing, popping out) is skipped
+        entity window = 0;
+        iter it2 = zox_children(world, canvas);
+        while (zox_children_next(it2)) {
+            for (int j = 0; j < it2.count; j++) {
+                const entity e2 = it2.entities[j];
+                if (zox_has(e2, NavigationWindow) && !zox_has(e2, UIClosing)) {
+                    window = e2;
+                }
+            }
+        }
         if (!window) {
             continue;
         }

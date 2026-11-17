@@ -54,7 +54,10 @@ Then (2026-11-17, third pass):
   camera whenever something else places it). No player yet: the head roams free (step 5 is the player)
 - the options and pause menus are 3D lists; a 3D list is a 2D list's (list_system, list_render_dirty_system) under
   its panel and scrolls as it's navigated (scroll_list_to_child, shared with 2D scrollviews), over 8 rows
-- to do: rays from the hands (pointer zevices) at 3D buttons, tooltips
+- paused, the taskbar's a 3D row above the menus; the grips (LB, RB) step through its uis (huds/sys/navigator.c).
+  Only the pause menu is 3D yet: the others (inventory, stats, skills, quests, crafting, the mirror) open as 2D
+  windows, unseen in a headset
+- to do: rays from the hands (pointer zevices) at 3D buttons, tooltips, the taskbar's uis as 3D
 
 Then (2026-11-17, lag and room scale):
 

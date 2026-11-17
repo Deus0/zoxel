@@ -34,7 +34,11 @@ void player_state_pause_ui(ecs* world, entity player, byte state) {
             1);
     } else if (state == zox_player_state_paused) {
         if (game_ui_has_taskbar) {
-            spawn_taskbar(world, canvas);
+            if (zox_huds3D) {
+                spawn_taskbar3(world, canvas, player);
+            } else {
+                spawn_taskbar(world, canvas);
+            }
         }
         delay_event(
             world,

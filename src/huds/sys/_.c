@@ -3,6 +3,7 @@
 #include "menu_game.c"
 #include "crosshair.c"
 #include "load3.c"
+#include "navigator.c"
 
 void zox_systems_game_ui(ecs *world) {
     zox_system(
@@ -33,6 +34,13 @@ void zox_systems_game_ui(ecs *world) {
         [none] players.Player
     );
     zox_system_1(huds3_dark_system, zoxp_update, 0);
+    // main thread: it opens and closes uis
+    zox_system_1(
+        navigator_shift_system,
+        zoxp_update,
+        [in] players.PlayerState,
+        [none] players.Player
+    );
     // main thread: it sets settings and texts
     zox_system_1(
         huds3_options_stick_system,
