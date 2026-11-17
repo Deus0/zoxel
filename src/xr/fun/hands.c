@@ -25,6 +25,45 @@ static entity xr_hands_shoulder(ecs* world, entity skeleton, byte hand) {
     return 0;
 }
 
+// the player's shoulder from their neck (in the body's space, as a 1.7m player's: the right on -x), their arm's
+//  length shoulder to grip; scaled by their height (XR Height)
+#define xr_player_shoulder ((float3) { 0.19f, -0.10f, 0 })
+#define xr_player_arm 0.6f
+
+// the hand's target, from the shoulders: the body's shoulder (leaned as it is now), the player's hand off their own
+//  shoulder (from their neck, the body's facing and lean), scaled by the body's arm over theirs; a full arm is a full
+//  arm every way (from the eyes, the body's shoulders lower, further back and wider than the player's scaled: its
+//  arm overreached up and ahead, the hand short of the controller, half bent down and out, tst xr_reach)
+static float3 xr_hands_target(ecs* world, entity skeleton, entity shoulder, byte hand, xr_body_frame frame) {
+    ik_arm arm;
+    if (!ik_arm_find(world, shoulder, &arm)) {
+        return xr_body_frame_point(frame, xr_hand_tracked_position[hand]);
+    }
+    const float player = xr_player_height / 1.7f;
+    const float4 lean = zox_has(skeleton, SpineLean) ? zox_getv(skeleton, SpineLean) : quaternion_identity;
+    const float drop = zox_has(skeleton, HipsDrop) ? zox_getv(skeleton, HipsDrop) : 0;
+    // the player's shoulder in the room
+    const float3 neck = float3_sub(xr_head_now_position, float4_rotate_float3(xr_head_now_rotation, xr_neck_to_eyes));
+    float3 side = float3_scale(xr_player_shoulder, player);
+    side.x *= hand == xr_hand_right ? -1 : 1;
+    const float3 player_shoulder = float3_add(neck,
+        float4_rotate_float3(quaternion_inverse(xr_body_room_to_body()), float4_rotate_float3(lean, side)));
+    // the body's shoulder in the world, now
+    const skeleton_now now = skeleton_now_get(world, skeleton);
+    float3 body_shoulder = skeleton_now_point(&now, zox_getv(shoulder, Position3D));
+    spine_bones spine;
+    if (zox_has(skeleton, SpineLean) && spine_bones_find(world, skeleton, &spine) && zox_has(spine.chest, RestPosition3D) &&
+        zox_get_parent(world, shoulder) == spine.chest) {
+        body_shoulder = float3_add(now.now_position, float4_rotate_float3(now.now_rotation,
+            spine_point_local(world, &spine, zox_getv(shoulder, LocalPosition3D), lean, drop)));
+    }
+    const float3 elbow = zox_getv(arm.bones[arm.length - 2], Position3D);
+    const float reach = float3_distance(zox_getv(shoulder, Position3D), elbow) +
+        float3_distance(elbow, zox_getv(arm.bones[arm.length - 1], Position3D));
+    const float3 out = float3_scale(float3_sub(xr_hand_tracked_position[hand], player_shoulder), reach / (xr_player_arm * player));
+    return float3_add(body_shoulder, float4_rotate_float3(frame.rotation, out));
+}
+
 void xr_hands_ik_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
@@ -49,7 +88,7 @@ void xr_hands_ik_system(iter* it) {
         } else {
             zox_getm(shoulder, IKTargetRotation)->value = rotation;
         }
-        zox_getm(shoulder, IKTarget)->value = xr_body_frame_point(frame, xr_hand_tracked_position[hand]);
+        zox_getm(shoulder, IKTarget)->value = xr_hands_target(world, skeleton, shoulder, hand, frame);
         zox_getm(shoulder, IKWeight)->value = 1;
     }
     zox_sys_on_end();

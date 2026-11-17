@@ -25,11 +25,16 @@ static inline float3 spine_chest_position(float3 rest, float3 hips, float4 lean,
     return float3_sub(float3_add(rest, float3_sub(hips, float4_rotate_float3(lean, hips))), (float3) { 0, drop, 0 });
 }
 
-// the neck (the head bone's pivot) in the skeleton's space for a lean and drop, from the chest's rest
-static inline float3 spine_neck_local(ecs* world, const spine_bones* bones, float4 lean, float drop) {
+// a point on the chest (local to it: a child bone's place) in the skeleton's space for a lean and drop
+static inline float3 spine_point_local(ecs* world, const spine_bones* bones, float3 on_chest, float4 lean, float drop) {
     const float3 rest = zox_has(bones->chest, RestPosition3D) ? zox_getv(bones->chest, RestPosition3D) : zox_getv(bones->chest, LocalPosition3D);
     const float3 chest = spine_chest_position(rest, zox_getv(bones->hips, LocalPosition3D), lean, drop);
-    return float3_add(chest, float4_rotate_float3(lean, zox_getv(bones->head, LocalPosition3D)));
+    return float3_add(chest, float4_rotate_float3(lean, on_chest));
+}
+
+// the neck (the head bone's pivot) in the skeleton's space for a lean and drop
+static inline float3 spine_neck_local(ecs* world, const spine_bones* bones, float4 lean, float drop) {
+    return spine_point_local(world, bones, zox_getv(bones->head, LocalPosition3D), lean, drop);
 }
 
 void spine_lean_system(iter* it) {

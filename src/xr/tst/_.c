@@ -5,6 +5,7 @@
 #include "room.c"
 #include "body.c"
 #include "frustum.c"
+#include "reach.c"
 #ifdef zox_tests
 #include "continue.c"     // load_games' saves (huds tests, zox_tests only)
 #endif
@@ -16,6 +17,7 @@ void zox_tsts_xr(ecs* world) {
     zox_tsts_xr_room(world);
     zox_tsts_xr_body(world);
     zox_tsts_xr_frustum(world);
+    zox_tsts_xr_reach(world);
 #ifdef zox_tests
     zox_tsts_xr_continue(world);
 #endif

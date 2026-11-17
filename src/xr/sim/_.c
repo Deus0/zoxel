@@ -22,6 +22,8 @@ byte xr_sim_script_start = 0;    // the left hand's menu button
 float2 xr_sim_script_stick = { 0, 0 };
 float2 xr_sim_script_left_stick = { 0, 0 };
 float3 xr_sim_script_head_position = { 0, 0, 0 };
+float3 xr_sim_script_hands[2];          // the hands' places in the room (tests), while xr_sim_script_hands_on
+byte xr_sim_script_hands_on = 0;
 
 void process_arguments_xr(ecs* world, char* args[], int count) {
     (void) world;
@@ -110,6 +112,10 @@ void xr_sim_controllers_system(iter* it) {
             }
         }
         has_input->value = any;
+        if (xr_sim_script_hands_on) {
+            xr_controller_pose(world, e, xr_sim_script_hands[left ? 0 : 1], quaternion_identity);
+            continue;
+        }
         const float3 offset = { left ? -xr_sim_hand_side : xr_sim_hand_side, -xr_sim_hand_drop, -xr_sim_hand_ahead };
         xr_controller_pose(world, e, float4_rotate_float3(head_rotation, offset), head_rotation);
     }

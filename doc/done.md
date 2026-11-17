@@ -1,6 +1,11 @@
 # Done
 
 ## 2026-11-17
+-x XR arms reach every way: the hands' targets from the shoulders (the player's from their neck, the body's facing
+  and lean; the body's leaned as it is now), the player's arm scaled to the body's; from the eyes the body's
+  shoulders (lower, further back, wider) overreached up and ahead (the hand short of the controller) and bent down
+  and out (0.8 of reach); tst xr_reach: 0.8 of a real arm is 0.8 every way, the hand on its target; the simulator
+  takes scripted hands
 -x XR body leans and crouches: the real neck off the hips leans the upper body about them (SpineLean, bones/ik
   sys/spine.c: the chest turned about the hips' pivot, the hips kept upright) up to 40 degrees, past it the body
   moves and the feet step; lower than the lean has it the hips drop (HipsDrop, the knees bend), past 0.45 of the leg
