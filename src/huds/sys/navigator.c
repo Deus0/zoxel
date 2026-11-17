@@ -6,7 +6,7 @@
 //  - each through the taskbar's own toggle (taskbar_frame_toggle), so its frames light as a click lights them
 //  - the new ui is the NavigationWindow and the navigators' selections are cleared: they select its first element
 //      (element_navigation_begin_system), so a gamepad reaches every ui, not only the one it began in
-//  - 2D and 3D taskbars alike (spawn_taskbar, spawn_taskbar3)
+//  - 2D and 3D taskbars alike (spawn_taskbar: spawn_window, 3D on 3D huds)
 #define navigator_frames_max 32
 
 // the taskbar's frames in the row's order

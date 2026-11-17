@@ -1,5 +1,5 @@
 // The taskbar: a frame a ui (TaskbarData, taskbar_manager), its icon toggles it; a frame's ActiveState is its ui open
-//  - 3D huds (zox_huds3D): the same frames on a canvas3 row above the menus (spawn_taskbar3), its panel the body
+//  - 3D huds (zox_huds3D): spawn_window makes it a panel ahead of the player, raised above the menus
 //  - LB and RB (a headset's grips) step through its uis, one open at a time (huds/sys/navigator.c)
 
 // toggles a taskbar frame's ui for the player, returns it if opened
@@ -137,41 +137,7 @@ static void taskbar_spawn_frames(
     }
 }
 
-// 3D huds: the taskbar a row of frames on a canvas3 above the menus (huds3_pose), a child of the canvas as the 2D
-//  one is (found and closed the same), its panel the body (WindowBody: its frames found as the 2D one's)
-#define taskbar3_height 0.09f       // metres
-#define taskbar3_above 0.36f        // metres above the menus' middle
-
-entity spawn_taskbar3(
-    ecs* world,
-    entity canvas,
-    entity player)
-{
-    const byte taskbar_count = zox_get_children_count(world, taskbar_manager);
-    const int frame_size = default_frame_size / 4;
-    const int icon_size = default_icon_size / 4;
-    const int padding = 4;
-    const int margin = 6;
-    const int2 size = {
-        (frame_size + padding) * taskbar_count - padding + margin * 2,
-        frame_size + margin * 2
-    };
-    float3 position;
-    float4 rotation;
-    huds3_pose(world, player, huds3_distance, &position, &rotation);
-    position = float3_add(position, float4_rotate_float3(rotation, (float3) { 0, taskbar3_above, 0 }));
-    entity e = spawn_canvas3(world, prefab_canvas3, position, taskbar3_height, size);
-    zox_set_unique_name(e, "taskbar");
-    zox_setv(e, Rotation3D, rotation);
-    zox_add(e, Taskbar);
-    zox_set_parent(world, e, canvas);
-    entity body = spawn_uic(world, prefab_frame3, e, float2_centre, int2_zero, size, size, window_fill, window_outline);
-    zox_set_unique_name(body, "taskbar_body");
-    zox_add(body, WindowBody);
-    taskbar_spawn_frames(world, canvas, body, prefab_taskbar_frame3, prefab_taskbar_icon3,
-        frame_size, icon_size, padding, taskbar_count);
-    return e;
-}
+#define taskbar3_above 0.36f        // metres above the menus' middle, on 3D huds
 
 entity spawn_taskbar(
     ecs* world,
@@ -220,6 +186,13 @@ entity spawn_taskbar(
     zox_set_unique_name(e, "taskbar");
     zox_add(e, Taskbar);
     taskbar_spawn_frames(world, canvas, body, prefab_frame, prefab_icon, frame_size, icon_size, padding.x, taskbar_count);
+    // 3D huds: the window's a panel ahead of the player (spawn_window); raised above the menus
+    if (zox_huds3D && ui_window3_pose) {
+        float3 position;
+        float4 rotation;
+        ui_window3_pose(world, canvas, &position, &rotation);
+        zox_setv(e, Position3D, float3_add(position, float4_rotate_float3(rotation, (float3) { 0, taskbar3_above, 0 })));
+    }
     return e;
 }
 

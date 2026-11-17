@@ -1,5 +1,5 @@
 // tst: xr_navigator, paused in a game on the simulator, the taskbar's a 3D row above the pause menu, and the grips
-//  (LB, RB) step through its uis one at a time (huds/sys/navigator.c, huds/ins/taskbar.c spawn_taskbar3)
+//  (LB, RB) step through its uis one at a time (huds/sys/navigator.c, huds/ins/taskbar.c spawn_taskbar)
 //  - the menu button pauses: the taskbar's a Canvas3, its pause frame lit (the pause menu open)
 //  - RB: the frame after it lit, the pause menu's not (it closed: a hud, the action bar, stays open); LB: the pause
 //    frame lit again, the menu back

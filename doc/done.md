@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-18
+-x ui consolidation 1 and 2: the main, pause and saves menus' 3D branches gone (spawn_window_list builds them in 3D:
+  spawn_button, spawn_list and the scrollview swap to 3D twins), spawn_taskbar3 and its prefabs gone (spawn_taskbar
+  on 3D huds, raised above the menus); spawn_list3 kept for the 3D options until they're the 2D window
 -x 3D grids show their selection (each element's Brightness drawn: element3_draw, SelectedBrighter as 2D's); 3D lists
   have a 2D list's scrollbar (spawn_scrollview's 3D twins), its handle following navigation (scroll_list_to_child read
   the scrollview link with zox_has: links are pairs, it never found one, 2D's too); every canvas3 a 3D root for its
