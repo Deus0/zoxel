@@ -133,7 +133,7 @@ void xr_sim_render_system(iter* it) {
     const int2 window = zox_getv(main_app, WindowSize);
     const float2 half = { window.x / 2, window.y };
     for (byte i = 0; i < 2; i++) {
-        xr_render_eye(world, xr_sim_eye_matrix(i, head_rotation), xr_sim_eye_fov(i, half.x / half.y), body, (float2) { i * half.x, 0 }, half);
+        xr_render_eye(world, xr_sim_eye_matrix(i, head_rotation), xr_sim_eye_fov(i, half.x / half.y), body, (float2) { i * half.x, 0 }, half, 0);
     }
     zox_sys_on_end();
 } zoxd_system(xr_sim_render_system);

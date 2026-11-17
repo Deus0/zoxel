@@ -20,15 +20,17 @@ void xr_camera_render_system(iter* it) {
     const float2 turn = roaming ? xr_controller_stick(world, xr_hand_right) : float2_zero;
     xr_roam_update(world, xr_camera, move, turn, xr_head_rotation, delta_time);
     const float4x4 body = xr_roam_body_matrix();
+    glFrontFace(GL_CW);     // y flipped into the swapchain images (fun/eye_render.c), so the winding too
     for (int i = 0; i < 2; i++) {
         const xr_eye eye = xr_eyes[i];
         if (!xr_eye_render_begin(eye.swapchain, eye.images, eye.fbo)) {
             zox_loge("[XR] xr_eye_render_begin failed");
             continue;
         }
-        xr_render_eye(world, eye.matrix, eye.fov, body, float2_zero, int2_to_float2(eye.image_size));
+        xr_render_eye(world, eye.matrix, eye.fov, body, float2_zero, int2_to_float2(eye.image_size), 1);
         xr_eye_render_end(eye.swapchain);
     }
+    glFrontFace(GL_CCW);
     xr_end_frame();
     zox_sys_on_end();
 } zoxd_system(xr_camera_render_system);
