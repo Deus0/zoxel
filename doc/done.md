@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-17
+-x XR frustum culling: the xr camera culled by the desktop's FieldOfView and the window's aspect, not its eyes; now
+  it projects from FieldOfViewAngles (cameras), the union of both eyes' off centre angles plus a margin (the eyes'
+  offset, the head turning before they draw), set each frame from the headset's eyes or the simulator's
+  (xr/fun/cull.c); tst xr_frustum: the eyes' view edges inside the camera's planes, the head turned about
 -x XR loading: on 3D huds the view darkens to black (huds3_dark, the eyes draw only the 3D uis) with a 3D "Loading"
   label easing ahead of the head (huds3_follow_system); the world isn't seen loading; tst xr_play screenshots it
   (tst/xr_load.ppm: each eye black but for the label), lit and gone once playing

@@ -10,6 +10,7 @@ zox_tag(Orthographic);
 zoxc_byte(CameraState);
 zoxc_byte(CameraViewing);
 zoxc_float(FieldOfView);
+zoxc_float4(FieldOfViewAngles);   // radians left, right, down, up: projected from these, not FieldOfView and the aspect (XR's eyes)
 zoxc_float(CameraNearDistance);
 zoxc_float(CameraFarDistance);
 zox_tag(CameraTarget);     // camera -> the entity it follows
@@ -50,6 +51,7 @@ void zox_components_cameras(ecs *world) {
     zoxd_byte(CameraState);
     zoxd_byte(CameraViewing);
     zoxd_float(FieldOfView);
+    zoxd_float4(FieldOfViewAngles);
     zoxd_float(CameraNearDistance);
     zoxd_float(CameraFarDistance);
     zoxd_int2(ScreenPosition);

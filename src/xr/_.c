@@ -11,6 +11,7 @@
  *  - pre, ins: the xr camera (XrCamera) and controllers (XrController, a device a hand), spawned at boot while XR is on
  *  - the ui: huds spawns its menus as 3D lists (zox_huds3D), navigated and clicked by the controllers
  *  - fun: shared by both: the hands (the body's arms reach the controllers, bones/ik), free roam (the sticks move and turn it, the headset turns the head on top), an eye's render
+ *  - culling: the xr camera's frustum is both eyes' views in one (fun/cull.c, FieldOfViewAngles), tst xr_frustum
  *  - openxr (zox_xr, Android): the session, eyes, swapchains, inputs, a headset's frame (openxr/render.c)
  *  - sim: the simulator, both eyes side by side in the window, the head and sticks from the keyboard
  *  - shared maths in cameras (fun/projection_angles.c, free_roam.c), tested there (cameras/tst/xr.c); tst/cube.c is

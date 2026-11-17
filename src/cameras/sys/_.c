@@ -22,7 +22,16 @@ void zox_systems_cameras(ecs *world) {
         [in] cameras.CameraNearDistance,
         [in] cameras.CameraFarDistance,
         [out] cameras.ProjectionMatrix,
-        [none] cameras.Perspective
+        [none] cameras.Perspective,
+        [none] !cameras.FieldOfViewAngles
+    );
+    zox_system(
+        projection_angles_system,
+        zoxp_update,
+        [in] cameras.FieldOfViewAngles,
+        [in] cameras.CameraNearDistance,
+        [in] cameras.CameraFarDistance,
+        [out] cameras.ProjectionMatrix
     );
     zox_system(
         orthographic_matrix_system,

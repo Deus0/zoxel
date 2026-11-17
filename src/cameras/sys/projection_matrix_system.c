@@ -77,3 +77,21 @@ void projection_matrix_system(iter* it) {
     }
     zox_sys_on_end();
 } zoxd_system(projection_matrix_system);
+
+// a camera seeing by four angles (FieldOfViewAngles), off centre: XR's, both eyes' views in one (culling, streaming)
+void projection_angles_system(iter* it) {
+    zox_sys_on_begin();
+    zox_sys_begin();
+    zox_sys_in(FieldOfViewAngles);
+    zox_sys_in(CameraNearDistance);
+    zox_sys_in(CameraFarDistance);
+    zox_sys_out(ProjectionMatrix);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_i(FieldOfViewAngles, angles);
+        zox_sys_i(CameraNearDistance, near_distance);
+        zox_sys_i(CameraFarDistance, far_distance);
+        zox_sys_o(ProjectionMatrix, projection);
+        projection->value = camera_projection_from_angles(angles->value, near_distance->value, far_distance->value);
+    }
+    zox_sys_on_end();
+} zoxd_system(projection_angles_system);

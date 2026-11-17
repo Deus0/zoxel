@@ -4,3 +4,5 @@
 #define xr_trigger_cutoff 0.75f
 zox_tag(XrController);
 zoxc_byte(XrHand);
+// the xr camera's culling angles (FieldOfViewAngles) before its eyes are known, wide (fun/cull.c)
+#define xr_cull_angles_default (float4) { -1.0f, 1.0f, -1.0f, 1.0f }

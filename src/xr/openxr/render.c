@@ -43,6 +43,7 @@ static void xr_timing_frame_end(double eyes_start) {
 
 void xr_frame_begin_system(iter* it) {
     zox_sys_on_begin();
+    zox_sys_world();
     byte running = 1;
     const double wait_start = xr_timing_now();
     const byte begun = xr_frame_start(&running);
@@ -52,6 +53,7 @@ void xr_frame_begin_system(iter* it) {
         // the head for this frame's body (the head bone), located again just before the eyes draw
         xr_head_now_rotation = xr_head_rotation;
         xr_head_now_position = xr_head_position;
+        xr_cull_set(world, xr_eyes[0].fov, xr_eyes[1].fov);
     }
     if (!running) {
         zox_log("[XR] session ended, ending the game");
