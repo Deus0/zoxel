@@ -97,7 +97,8 @@ void player3_rotate_system(iter* it) {
             euler.x = right_stick.y * gamepad_rotate_multiplier_y;
             euler.y = right_stick.x * gamepad_rotate_multiplier_x;
         }
-        if (camera_mode == zox_camera_state_third_person) {
+        // a headset looks up and down itself (xr/fun/body.c turns the head), a stick's pitch would fight it
+        if (camera_mode == zox_camera_state_third_person || zox_xr_active) {
             euler.x = 0;
         }
         if (!euler.x && !euler.y) {

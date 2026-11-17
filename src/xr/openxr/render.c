@@ -7,7 +7,11 @@
 void xr_frame_begin_system(iter* it) {
     zox_sys_on_begin();
     byte running = 1;
-    xr_frame_start(&running);
+    if (xr_frame_start(&running) && xr_get_eyes()) {
+        // the head for this frame's body (the head bone), located again just before the eyes draw
+        xr_head_now_rotation = xr_head_rotation;
+        xr_head_now_position = xr_head_position;
+    }
     if (!running) {
         zox_log("[XR] session ended, ending the game");
         engine_end();
@@ -32,7 +36,7 @@ void xr_camera_render_system(iter* it) {
     const float2 turn = roaming ? xr_controller_stick(world, xr_hand_right) : float2_zero;
     xr_roam_update(world, xr_camera, move, turn, xr_head_rotation, xr_head_position, delta_time);
     if (xr_frame_state.shouldRender) {
-        const float4x4 body = xr_roam_body_matrix();
+        const float4x4 body = xr_view_body;
         glFrontFace(GL_CW);     // y flipped into the swapchain images (fun/eye_render.c), so the winding too
         for (int i = 0; i < 2; i++) {
             const xr_eye eye = xr_eyes[i];

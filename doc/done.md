@@ -1,6 +1,12 @@
 # Done
 
 ## 2026-11-17
+-x XR body fought the head (playtest: laggy moving, head turns fighting the body): in a game the xr camera rides
+  the character's head bone, the roam took it up every frame (the hierarchy moved it), folding the head's turn into
+  the body's and pulling against the sticks. Now the character is the body (xr/fun/body.c): the sticks move and
+  turn it (as a gamepad), the eyes ride its neck with the headset's pose on top, walking in the room moves it, its
+  head bone turns as the headset (the voxel head matches, raycasts look where you look), no head bob, no stick
+  pitch in XR; tst xr_body
 -x Arms bend in normal play (bones/ik/sys/punch.c): a raised arm holds a guard ahead, a little up and in, seen in
   first person (held low by the chest it looked gone, a dead hang) with the elbow relaxed, a punch pulls back
   with the elbow bent, strikes out to near full reach in towards the body's middle, recovers; weights ease on and

@@ -7,6 +7,7 @@
 //    It's at the head now (xr_roam_head), where a player's character follows too (doc/plans/xr.md step 5)
 //  - the stick turns about the head, not the room's centre (walked away from it, a turn swung you around it)
 //  - the same for a headset (openxr/render.c) and the simulator (sim/, no room: its head stays at the centre)
+//  - in a game the character is the body instead (fun/body.c): the eyes ride it, the sticks move it as a gamepad
 //  - the camera moved by something else (a game's start places it at the spawn, a teleport): the roam takes it up,
 //    the head where it was put
 static free_roam xr_roam;
@@ -32,7 +33,16 @@ static inline void xr_roam_step(free_roam* roam, float2 move, float2 turn, float
     roam->position = float3_add(roam->position, float3_sub(offset_before, offset_after));
 }
 
+// the eyes' body this frame: on the character in a game (fun/body.c), else the roam flown by the sticks
+static float4x4 xr_view_body;
+
 static void xr_roam_update(ecs* world, entity camera, float2 move, float2 turn, float4 head_rotation, float3 head_position, float delta) {
+    xr_head_now_rotation = head_rotation;
+    xr_head_now_position = head_position;
+    if (xr_body_view(world, camera, head_rotation, head_position, &xr_view_body)) {
+        xr_roam_started = 0;    // out of the game, the roam takes the camera up where it's left
+        return;
+    }
     if (xr_roam_started && zox_valid(camera) && !float3_equals(zox_getv(camera, Position3D), xr_roam_written)) {
         xr_roam_started = 0;
     }
@@ -44,6 +54,7 @@ static void xr_roam_update(ecs* world, entity camera, float2 move, float2 turn, 
         xr_roam_started = 1;
     }
     xr_roam_step(&xr_roam, move, turn, head_rotation, head_position, delta);
+    xr_view_body = xr_roam_body_matrix();
     if (zox_valid(camera)) {
         const float3 head = xr_roam_head(&xr_roam, head_position);
         zox_setv(camera, Position3D, head);

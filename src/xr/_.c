@@ -55,6 +55,7 @@ void import_xr(ecs* world) {
     add_hook_on_boot(xr_spawn_camera);
     add_hook_on_boot(xr_sim_feed_devices);
     zox_systems_xr_hands(world);
+    zox_systems_xr_body(world);
     zox_systems_xr_sim(world);
     zox_tsts_xr(world);
 #ifdef zox_xr

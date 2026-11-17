@@ -9,7 +9,7 @@
 ## Bugs
 - XR lag, what's left (the frame's start and the hands' timing are fixed, see done.md): needs a headset to confirm;
 	arm ik reads its shoulder's last frame position (bones/ik/sys/arm_ik.c), a walking body's hand trails its
-	controller a frame, fix with the XR player body (it decides when the character's position is written); if it's
+	controller a frame (the character's position is written by physics, then the room's walk in the render); if it's
 	still laggy, time each eye's render on the headset (too much drawn per eye, the view distance)
 - quest tracker ui bugs out sometimes: shows null
 - the cookie gather quest failed
@@ -1001,9 +1001,9 @@
 	- We should wrap all other sdl functions properly for glut
 
 # XR
-- The player's body in XR (doc/plans/xr.md step 5): the character stands under the head (the xr camera, at the head
-	in the world, xr/fun/roam.c): walking in the real room and the sticks both move it; its arms on the controllers
-	(xr/fun/hands.c, already wired), its head bone turned as the headset
+- XR body, what's left (xr/fun/body.c): walking in the room moves the character straight (no collisions: it can
+	walk into a wall), push it through physics instead; snap turning as an option (smooth stick turns sicken some);
+	confirm on a headset
 - XR hands from the grip pose (where the hand holds the controller), not the aim pose (the pointer's ray): bind
 	/input/grip/pose (xr/openxr/input.c), a second pose on the controller for the arms
 - Punch in VR as a motion (inspired by Sword Art Online): the player's hands always drive the body's arms (xr/fun/hands.c,

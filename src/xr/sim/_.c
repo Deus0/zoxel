@@ -15,9 +15,12 @@ byte zox_xr_sim = 0;
 #define xr_sim_hand_ahead 0.4f
 
 static float3 xr_sim_head_euler = { 0, 0, 0 };
-// scripted presses (tests), held on top of the keys: the right hand's A and stick
+// scripted presses (tests), held on top of the keys: the right hand's A and stick, the left's stick, the head's
+//  place in the room (walking in it) and turn
 byte xr_sim_script_a = 0;
 float2 xr_sim_script_stick = { 0, 0 };
+float2 xr_sim_script_left_stick = { 0, 0 };
+float3 xr_sim_script_head_position = { 0, 0, 0 };
 
 void process_arguments_xr(ecs* world, char* args[], int count) {
     (void) world;
@@ -71,6 +74,7 @@ void xr_sim_controllers_system(iter* it) {
     xr_sim_head_euler.y += xr_sim_axis(&keyboard->e, &keyboard->q) * xr_sim_head_speed * delta;
     xr_sim_head_euler.x += xr_sim_axis(&keyboard->f, &keyboard->r) * xr_sim_head_speed * delta;
     const float4 head_rotation = quaternion_from_euler(xr_sim_head_euler);
+    xr_head_now_rotation = head_rotation;   // the head bone turns with it this frame (fun/body.c)
     zox_sys_begin();
     zox_sys_in(XrHand);
     zox_sys_out(DeviceHasInput);
@@ -80,7 +84,7 @@ void xr_sim_controllers_system(iter* it) {
         zox_sys_o(DeviceHasInput, has_input);
         const byte left = hand->value == xr_hand_left;
         const float2 stick = left ?
-            (float2) { xr_sim_axis(&keyboard->a, &keyboard->d), xr_sim_axis(&keyboard->s, &keyboard->w) } :
+            float2_add(xr_sim_script_left_stick, (float2) { xr_sim_axis(&keyboard->a, &keyboard->d), xr_sim_axis(&keyboard->s, &keyboard->w) }) :
             float2_add(xr_sim_script_stick, (float2) { xr_sim_axis(&keyboard->left, &keyboard->right), xr_sim_axis(&keyboard->down, &keyboard->up) });
         byte any = stick.x != 0 || stick.y != 0;
         iter it2 = zox_children(world, e);
@@ -128,8 +132,8 @@ void xr_sim_render_system(iter* it) {
     const float2 move = roaming ? xr_controller_stick(world, xr_hand_left) : float2_zero;
     const float2 turn = roaming ? xr_controller_stick(world, xr_hand_right) : float2_zero;
     const float4 head_rotation = quaternion_from_euler(xr_sim_head_euler);
-    xr_roam_update(world, xr_camera, move, turn, head_rotation, float3_zero, delta);
-    const float4x4 body = xr_roam_body_matrix();
+    xr_roam_update(world, xr_camera, move, turn, head_rotation, xr_sim_script_head_position, delta);
+    const float4x4 body = xr_view_body;
     const int2 window = zox_getv(main_app, WindowSize);
     const float2 half = { window.x / 2, window.y };
     for (byte i = 0; i < 2; i++) {

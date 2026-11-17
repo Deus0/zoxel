@@ -66,6 +66,12 @@ Then (2026-11-17, lag and room scale):
 - desktop syntax check of src/xr/openxr: OpenXR-SDK's headers and a jni.h stub, `-Dzox_xr -DXR_USE_PLATFORM_ANDROID
   -DXR_USE_GRAPHICS_API_OPENGL_ES -fsyntax-only`
 
+Then (2026-11-17, the body):
+
+- in a game the character is the body (xr/fun/body.c): the eyes ride its neck, the headset on top; its head bone
+  turns as the headset; walking in the room moves it; the sticks move and turn it as a gamepad. The roam flies only
+  outside a game. tst xr_body
+
 ## The plan
 
 Each step works on every platform before the next, and each has tests that run on desktop.

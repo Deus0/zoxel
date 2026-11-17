@@ -3,10 +3,12 @@
 #include "sim.c"
 #include "menu.c"
 #include "room.c"
+#include "body.c"
 
 void zox_tsts_xr(ecs* world) {
     zox_tsts_xr_sim(world);
     zox_tsts_xr_menu(world);
     zox_tsts_xr_play(world);
     zox_tsts_xr_room(world);
+    zox_tsts_xr_body(world);
 }
