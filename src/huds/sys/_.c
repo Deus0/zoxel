@@ -2,6 +2,7 @@
 #include "terminal.c"
 #include "menu_game.c"
 #include "crosshair.c"
+#include "load3.c"
 
 void zox_systems_game_ui(ecs *world) {
     zox_system(
@@ -30,5 +31,12 @@ void zox_systems_game_ui(ecs *world) {
         zoxp_spawn,
         [in] inputs.DeviceMode,
         [none] players.Player
+    );
+    // main thread: it reads the camera
+    zox_system_1(
+        huds3_follow_system,
+        zoxp_update,
+        [none] huds.LoadUI,
+        [none] layouts.Canvas3
     );
 }

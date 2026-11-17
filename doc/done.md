@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-17
+-x XR loading: on 3D huds the view darkens to black (huds3_dark, the eyes draw only the 3D uis) with a 3D "Loading"
+  label easing ahead of the head (huds3_follow_system); the world isn't seen loading; tst xr_play screenshots it
+  (tst/xr_load.ppm: each eye black but for the label), lit and gone once playing
 -x XR scale: the player's real height (setting "XR Height", 1.7m) onto the character's (~1m): the eyes, their
   distance apart, the room's walk and the hands are scaled by the character's height over the player's (fun/scale.c),
   so the world looks the character's size and the hands land in its reach; 1 in menus (roam); tst xr_body checks it

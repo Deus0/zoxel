@@ -95,11 +95,15 @@ void zox_tsts_xr_menu(ecs* world) {
 // tst: xr_play, into a game with XR on the simulator, by the controllers alone
 //  - A on the start menu, A on the main menu's first button (New Game: tests have no saves), in with the
 //      defaults (no realm menu, 3D huds have no text input)
+//  - loading: the view dark (huds3_dark) with a 3D "Loading" label ahead (a Canvas3), each eye black but for it
+//      (tst/xr_load.ppm); gone and lit once playing
 //  - playing: the game state, the xr camera still the one rendering, both eyes drawing (tst/xr_play.ppm)
 //  - run: bash bsh/tst.sh xr_play
 int zox_tst_xr_play_stage = 0;
 int zox_tst_xr_play_frames = 0;
 byte zox_tst_xr_play_playing = 0;
+byte zox_tst_xr_play_load3 = 0;         // the load ui seen, a 3D one, the view dark
+int zox_tst_xr_play_load_shot = 0;      // frames into loading, the screenshot asked for at 30
 
 static inline void zox_tst_xr_play_next() {
     zox_tst_xr_play_stage++;
@@ -135,6 +139,16 @@ byte zox_tst_xr_play_ready(ecs* world) {
             return 0;
         case 2:
             zox_tst_waiting = "playing";
+            {
+                const entity load_ui = zox_get_child_by_id(world, canvas, zox_id(LoadUI));
+                if (zox_valid(load_ui)) {
+                    zox_tst_xr_play_load3 |= zox_has(load_ui, Canvas3) && huds3_dark;
+                    if (++zox_tst_xr_play_load_shot == 30) {
+                        remove(zox_tst_path("xr_load.ppm"));
+                        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("xr_load.ppm"));
+                    }
+                }
+            }
             if (zox_valid(game) && zox_getv(game, GameState) == zox_game_state_playing) {
                 zox_tst_xr_play_playing = 1;
                 zox_tst_xr_play_next();
@@ -151,8 +165,42 @@ byte zox_tst_xr_play_ready(ecs* world) {
     return 0;
 }
 
+// an eye's share of black pixels, and of bright ones (the label's)
+static inline void zox_tst_xr_dark_eye(const byte* pixels, int2 size, int eye, float* black, float* lit) {
+    const int half = size.x / 2;
+    int blacks = 0, lits = 0;
+    for (int y = 0; y < size.y; y++) {
+        for (int x = 0; x < half; x++) {
+            const byte* p = zox_tst_ppm_pixel(pixels, size, x + eye * half, y);
+            const int sum = p[0] + p[1] + p[2];
+            blacks += sum < 12;
+            lits += sum > 60;
+        }
+    }
+    *black = blacks / ((float) half * size.y);
+    *lit = lits / ((float) half * size.y);
+}
+
 void zox_tst_xr_play_check(ecs* world) {
     zox_tst_check(zox_tst_xr_play_playing, "never playing");
+    zox_tst_check(zox_tst_xr_play_load3, "loading had no 3D load ui on a dark view");
+    zox_tst_check(!huds3_dark, "still dark playing");
+    zox_tst_check(!zox_valid(zox_get_child_by_id(world, zox_get_link(world, zox_players[0], CanvasLink), zox_id(LoadUI))), "the load ui is up playing");
+    {
+        int2 size;
+        byte* pixels = zox_tst_load_ppm(zox_tst_path("xr_load.ppm"), &size);
+        zox_tst_check(pixels != NULL, "no screenshot tst/xr_load.ppm");
+        if (pixels) {
+            for (int i = 0; i < 2; i++) {
+                float black, lit;
+                zox_tst_xr_dark_eye(pixels, size, i, &black, &lit);
+                zox_log("[tst] xr_play: loading, eye [%i] black [%.3f] label [%.4f]", i, black, lit);
+                zox_tst_check(black > 0.8f, "loading, eye [%i] isn't dark [%.3f black]", i, black);
+                zox_tst_check(lit > 0.002f, "loading, eye [%i] shows no label [%.4f]", i, lit);
+            }
+            free(pixels);
+        }
+    }
     zox_tst_check(main_cameras[0] == xr_camera, "the main camera isn't the xr camera");
     int2 size;
     byte* pixels = zox_tst_load_ppm(zox_tst_path("xr_play.ppm"), &size);
