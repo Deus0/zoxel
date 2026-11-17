@@ -90,8 +90,13 @@ without one.
   a fixed headset fov, the head turned by the mouse, controllers from a gamepad or keyboard
 - done: `--xr-sim` draws both eyes side by side through the same eye render a headset uses; `zox_xr_active`
   replaced the `#ifdef zox_xr` splits (main.c keeps its own: they're platform start up); tst `xr_sim_eyes`
-- to do: the `xr_runtime` interface proper (the simulator and OpenXR still each have their own frame system), the
-  mouse turning the head, controllers from a gamepad, `xr_sim_frame` (begin, eyes, submit in order)
+- done: the `xr_runtime` interface (xr/fun/runtime.c): frame begin, locate (the head and both eyes), inputs (sticks,
+  buttons, each hand's aim and grip), each eye begun, drawn and ended, the frame ended. One set of systems runs it
+  (xr_frame_begin_system, xr_controllers_system, xr_render_system); OpenXR (openxr/runtime.c) and the simulator
+  (sim/) are its backends, in the same order a frame
+- the hands: the body's hands reach the grip (where the controller's held, /input/grip/pose), the controller's
+  pose is the aim (where it points, rays at 3D ui); tst xr_grip
+- to do: the mouse turning the head, controllers from a gamepad
 
 ### 2. A free roam camera in the engine
 

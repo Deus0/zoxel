@@ -13,7 +13,8 @@
 //
 // Current bindings (Oculus Touch):
 //   Left stick  -> Move,  Right stick -> Turn
-//   A B (right), X Y menu (left), each hand's trigger and grip (values), each hand's aim pose
+//   A B (right), X Y menu (left), each hand's trigger and grip (values), each hand's aim pose (where it points)
+//   and grip pose (where it's held)
 //
 // Flow:
 //   xr_input_init()
@@ -35,7 +36,9 @@ static XrAction menu_action = XR_NULL_HANDLE;       // left
 static XrAction trigger_action = XR_NULL_HANDLE;
 static XrAction grip_action = XR_NULL_HANDLE;
 static XrAction aim_action = XR_NULL_HANDLE;
+static XrAction grip_pose_action = XR_NULL_HANDLE;
 static XrSpace aim_spaces[2] = { XR_NULL_HANDLE, XR_NULL_HANDLE };
+static XrSpace grip_spaces[2] = { XR_NULL_HANDLE, XR_NULL_HANDLE };
 static XrPath left_hand_path = XR_NULL_PATH;
 static XrPath right_hand_path = XR_NULL_PATH;
 
@@ -172,11 +175,12 @@ static int xr_input_init(void) {
         !xr_create_action(&menu_action, "menu", XR_ACTION_TYPE_BOOLEAN_INPUT, subaction_paths) ||
         !xr_create_action(&trigger_action, "trigger", XR_ACTION_TYPE_FLOAT_INPUT, subaction_paths) ||
         !xr_create_action(&grip_action, "grip", XR_ACTION_TYPE_FLOAT_INPUT, subaction_paths) ||
-        !xr_create_action(&aim_action, "aim", XR_ACTION_TYPE_POSE_INPUT, subaction_paths)) {
+        !xr_create_action(&aim_action, "aim", XR_ACTION_TYPE_POSE_INPUT, subaction_paths) ||
+        !xr_create_action(&grip_pose_action, "grip_pose", XR_ACTION_TYPE_POSE_INPUT, subaction_paths)) {
         return 0;
     }
-    XrPath paths[11];
-    const char* path_names[11] = {
+    XrPath paths[13];
+    const char* path_names[13] = {
         "/user/hand/right/input/a/click",
         "/user/hand/right/input/b/click",
         "/user/hand/left/input/x/click",
@@ -188,8 +192,10 @@ static int xr_input_init(void) {
         "/user/hand/right/input/squeeze/value",
         "/user/hand/left/input/aim/pose",
         "/user/hand/right/input/aim/pose",
+        "/user/hand/left/input/grip/pose",
+        "/user/hand/right/input/grip/pose",
     };
-    for (int i = 0; i < 11; i++) {
+    for (int i = 0; i < 13; i++) {
         if (!xr_path(path_names[i], &paths[i])) {
             return 0;
         }
@@ -208,6 +214,8 @@ static int xr_input_init(void) {
         { .action = grip_action, .binding = paths[8] },
         { .action = aim_action, .binding = paths[9] },
         { .action = aim_action, .binding = paths[10] },
+        { .action = grip_pose_action, .binding = paths[11] },
+        { .action = grip_pose_action, .binding = paths[12] },
     };
     result = xrSuggestInteractionProfileBindings(xr_instance,
         &(XrInteractionProfileSuggestedBinding){
@@ -234,6 +242,17 @@ static int xr_input_init(void) {
             },
             &aim_spaces[i]);
         if (!xr_check_result(result, "xrCreateActionSpace(aim)")) {
+            return 0;
+        }
+        result = xrCreateActionSpace(xr_session,
+            &(XrActionSpaceCreateInfo){
+                .type = XR_TYPE_ACTION_SPACE_CREATE_INFO,
+                .action = grip_pose_action,
+                .subactionPath = hands[i],
+                .poseInActionSpace = { .orientation = { 0, 0, 0, 1 } }
+            },
+            &grip_spaces[i]);
+        if (!xr_check_result(result, "xrCreateActionSpace(grip)")) {
             return 0;
         }
     }
@@ -344,10 +363,13 @@ static float xr_get_float(XrAction action, int hand) {
     return XR_SUCCEEDED(result) && state.isActive ? state.currentState : 0;
 }
 
-// a hand's aim pose in the tracking space at a time, returns whether it's tracked
-static int xr_get_aim(int hand, XrTime time, XrPosef* pose) {
+// a hand's pose (its action space's) in the tracking space at a time, returns whether it's tracked
+static int xr_locate_hand(XrSpace hand_space, XrTime time, XrPosef* pose) {
+    if (hand_space == XR_NULL_HANDLE) {
+        return 0;
+    }
     XrSpaceLocation location = { .type = XR_TYPE_SPACE_LOCATION };
-    XrResult result = xrLocateSpace(aim_spaces[hand], space, time, &location);
+    XrResult result = xrLocateSpace(hand_space, space, time, &location);
     if (!XR_SUCCEEDED(result) ||
         !(location.locationFlags & XR_SPACE_LOCATION_POSITION_VALID_BIT) ||
         !(location.locationFlags & XR_SPACE_LOCATION_ORIENTATION_VALID_BIT)) {
@@ -355,4 +377,14 @@ static int xr_get_aim(int hand, XrTime time, XrPosef* pose) {
     }
     *pose = location.pose;
     return 1;
+}
+
+// where a hand points (rays at 3D ui)
+static int xr_get_aim(int hand, XrTime time, XrPosef* pose) {
+    return xr_locate_hand(aim_spaces[hand], time, pose);
+}
+
+// where a hand holds its controller (the body's hand)
+static int xr_get_grip(int hand, XrTime time, XrPosef* pose) {
+    return xr_locate_hand(grip_spaces[hand], time, pose);
 }

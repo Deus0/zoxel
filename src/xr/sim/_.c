@@ -1,4 +1,5 @@
-// The XR simulator: a headset on the desktop, both eyes side by side in the window (--xr-sim)
+// The XR simulator: a headset on the desktop, both eyes side by side in the window (--xr-sim), an xr_runtime
+//  (fun/runtime.c) as OpenXR's is
 //  - turns zox_xr_active on, so it takes every branch a headset does (no player or ui cameras, the xr camera)
 //  - the same per eye render (fun/eye_render.c) and free roam (fun/roam.c) as a headset, so what's right here
 //      is right there, bar OpenXR itself (doc/plans/xr.md)
@@ -24,6 +25,9 @@ float2 xr_sim_script_left_stick = { 0, 0 };
 float3 xr_sim_script_head_position = { 0, 0, 0 };
 float3 xr_sim_script_hands[2];          // the hands' places in the room (tests), while xr_sim_script_hands_on
 byte xr_sim_script_hands_on = 0;
+float3 xr_sim_script_aims[2];           // the hands' aims (tests), apart from their grips, while xr_sim_script_aims_on
+float4 xr_sim_script_aim_rotations[2] = { { 0, 0, 0, 1 }, { 0, 0, 0, 1 } };
+byte xr_sim_script_aims_on = 0;
 
 void process_arguments_xr(ecs* world, char* args[], int count) {
     (void) world;
@@ -62,8 +66,63 @@ static inline float xr_sim_axis(const PhysicalButton* negative, const PhysicalBu
     return (float) positive->is_pressed - (float) negative->is_pressed;
 }
 
-// whether the simulator holds a hand's button, from its key
-static byte xr_sim_button(const Keyboard* keyboard, byte type) {
+static inline const Keyboard* xr_sim_keyboard(ecs* world) {
+    return zox_valid(local_keyboard) ? zox_get(local_keyboard, Keyboard) : NULL;
+}
+
+static inline float4 xr_sim_head_rotation() {
+    return quaternion_from_euler(xr_sim_head_euler);
+}
+
+// the frame: the head turned by its keys
+static byte xr_sim_frame_begin(ecs* world, byte* running) {
+    (void) running;
+    const Keyboard* keyboard = xr_sim_keyboard(world);
+    if (!keyboard) {
+        return 0;
+    }
+    const float delta = (float) zox_delta_time;
+    xr_sim_head_euler.y += xr_sim_axis(&keyboard->e, &keyboard->q) * xr_sim_head_speed * delta;
+    xr_sim_head_euler.x += xr_sim_axis(&keyboard->f, &keyboard->r) * xr_sim_head_speed * delta;
+    return 1;
+}
+
+// both eyes side by side in the window
+static byte xr_sim_locate(ecs* world, float4* head_rotation, float3* head_position, xr_eye_view eyes[2]) {
+    if (!zox_valid(main_app) || !zox_has(main_app, WindowSize)) {
+        return 0;
+    }
+    *head_rotation = xr_sim_head_rotation();
+    *head_position = xr_sim_head_place(*head_rotation);
+    const int2 window = zox_getv(main_app, WindowSize);
+    const float2 half = { window.x / 2, window.y };
+    for (byte i = 0; i < 2; i++) {
+        eyes[i] = (xr_eye_view) {
+            .matrix = xr_sim_eye_matrix(i, *head_rotation),
+            .fov = xr_sim_eye_fov(i, half.x / half.y),
+            .viewport_position = { i * half.x, 0 },
+            .viewport_size = half,
+        };
+    }
+    return 1;
+}
+
+static byte xr_sim_inputs(ecs* world) {
+    return xr_sim_keyboard(world) != NULL;
+}
+
+static float2 xr_sim_stick(ecs* world, byte hand) {
+    const Keyboard* keyboard = xr_sim_keyboard(world);
+    if (hand == xr_hand_left) {
+        return float2_add(xr_sim_script_left_stick, (float2) { xr_sim_axis(&keyboard->a, &keyboard->d), xr_sim_axis(&keyboard->s, &keyboard->w) });
+    }
+    return float2_add(xr_sim_script_stick, (float2) { xr_sim_axis(&keyboard->left, &keyboard->right), xr_sim_axis(&keyboard->down, &keyboard->up) });
+}
+
+// whether the simulator holds a hand's button, from its key (the right hand's A, the left's menu)
+static byte xr_sim_button(ecs* world, byte hand, byte type) {
+    (void) hand;
+    const Keyboard* keyboard = xr_sim_keyboard(world);
     switch (type) {
         case zox_btn_a: return xr_sim_script_a || keyboard->space.is_pressed || keyboard->enter.is_pressed;
         case zox_btn_b: return keyboard->backspace.is_pressed;
@@ -72,55 +131,73 @@ static byte xr_sim_button(const Keyboard* keyboard, byte type) {
     }
 }
 
-// the keyboard into each XR controller's zevices and pose, as a headset's would be; the head turned
-void xr_sim_controllers_system(iter* it) {
-    zox_sys_on_begin();
-    zox_sys_world();
-    if (!zox_xr_sim || !zox_valid(local_keyboard)) {
-        return;
+// a hand's grip: held ahead of the head, to its side (or where a test puts it)
+static byte xr_sim_hand(ecs* world, byte hand, float3* position, float4* rotation) {
+    (void) world;
+    const byte left = hand == xr_hand_left;
+    if (xr_sim_script_hands_on) {
+        *position = xr_sim_script_hands[left ? 0 : 1];
+        *rotation = quaternion_identity;
+        return 1;
     }
-    const Keyboard* keyboard = zox_get(local_keyboard, Keyboard);
-    const float delta = (float) zox_delta_time;
-    xr_sim_head_euler.y += xr_sim_axis(&keyboard->e, &keyboard->q) * xr_sim_head_speed * delta;
-    xr_sim_head_euler.x += xr_sim_axis(&keyboard->f, &keyboard->r) * xr_sim_head_speed * delta;
-    const float4 head_rotation = quaternion_from_euler(xr_sim_head_euler);
-    xr_head_now_rotation = head_rotation;   // the head bone turns with it, the room walks it, this frame (fun/body.c)
-    xr_head_now_position = xr_sim_head_place(head_rotation);
-    zox_sys_begin();
-    zox_sys_in(XrHand);
-    zox_sys_out(DeviceHasInput);
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
-        zox_sys_i(XrHand, hand);
-        zox_sys_o(DeviceHasInput, has_input);
-        const byte left = hand->value == xr_hand_left;
-        const float2 stick = left ?
-            float2_add(xr_sim_script_left_stick, (float2) { xr_sim_axis(&keyboard->a, &keyboard->d), xr_sim_axis(&keyboard->s, &keyboard->w) }) :
-            float2_add(xr_sim_script_stick, (float2) { xr_sim_axis(&keyboard->left, &keyboard->right), xr_sim_axis(&keyboard->down, &keyboard->up) });
-        byte any = stick.x != 0 || stick.y != 0;
-        iter it2 = zox_children(world, e);
-        while (zox_children_next(it2)) {
-            for (int j = 0; j < it2.count; j++) {
-                const entity e2 = it2.entities[j];
-                if (zox_has(e2, ZeviceStick)) {
-                    xr_controller_stick_set(world, e2, stick);
-                } else if (zox_has(e2, ZeviceButton)) {
-                    const byte held = xr_sim_button(keyboard, zox_getv(e2, DeviceButtonType));
-                    xr_controller_button(world, e2, held);
-                    any |= held;
-                }
-            }
-        }
-        has_input->value = any;
-        if (xr_sim_script_hands_on) {
-            xr_controller_pose(world, e, xr_sim_script_hands[left ? 0 : 1], quaternion_identity);
-            continue;
-        }
-        const float3 offset = { left ? -xr_sim_hand_side : xr_sim_hand_side, -xr_sim_hand_drop, -xr_sim_hand_ahead };
-        xr_controller_pose(world, e, float4_rotate_float3(head_rotation, offset), head_rotation);
+    const float4 head_rotation = xr_sim_head_rotation();
+    const float3 offset = { left ? -xr_sim_hand_side : xr_sim_hand_side, -xr_sim_hand_drop, -xr_sim_hand_ahead };
+    *position = float4_rotate_float3(head_rotation, offset);
+    *rotation = head_rotation;
+    return 1;
+}
+
+// where a hand points: its grip's pose, unless a test puts it apart (a headset's aim is ahead of the grip, tilted)
+static byte xr_sim_aim(ecs* world, byte hand, float3* position, float4* rotation) {
+    if (xr_sim_script_aims_on) {
+        *position = xr_sim_script_aims[hand ? 1 : 0];
+        *rotation = xr_sim_script_aim_rotations[hand ? 1 : 0];
+        return 1;
     }
-    zox_sys_on_end();
-} zoxd_system(xr_sim_controllers_system);
+    return xr_sim_hand(world, hand, position, rotation);
+}
+
+static float xr_sim_delta(ecs* world) {
+    (void) world;
+    return (float) zox_delta_time;
+}
+
+static byte xr_sim_should_render(ecs* world) {
+    (void) world;
+    return rendering;
+}
+
+static byte xr_sim_eye_begin(ecs* world, byte eye) {
+    (void) world;
+    (void) eye;
+    return 1;
+}
+
+static void xr_sim_eye_end(ecs* world, byte eye) {
+    (void) world;
+    (void) eye;
+}
+
+static void xr_sim_frame_end(ecs* world) {
+    (void) world;
+}
+
+const xr_runtime xr_sim_runtime = {
+    .name = "simulator",
+    .frame_begin = xr_sim_frame_begin,
+    .locate = xr_sim_locate,
+    .inputs = xr_sim_inputs,
+    .stick = xr_sim_stick,
+    .button = xr_sim_button,
+    .aim = xr_sim_aim,
+    .grip = xr_sim_hand,
+    .delta = xr_sim_delta,
+    .should_render = xr_sim_should_render,
+    .eye_begin = xr_sim_eye_begin,
+    .eye_end = xr_sim_eye_end,
+    .frame_end = xr_sim_frame_end,
+    .flip_y = 0,
+};
 
 // XR plays by its controllers: the keyboard, mouse and touchscreen never switch the device mode (DeviceFeeder), on
 //  the simulator they feed the controllers, on a headset they're stray (Android's pointer and touch events flipped
@@ -137,37 +214,4 @@ void xr_feed_devices(ecs* world, entity app) {
             zox_add(devices[i], DeviceFeeder);
         }
     }
-}
-
-void xr_sim_render_system(iter* it) {
-    zox_sys_on_begin();
-    zox_sys_world();
-    if (!zox_xr_sim || !rendering || !zox_valid(main_app) || !zox_has(main_app, WindowSize)) {
-        return;
-    }
-    const float delta = (float) zox_delta_time;
-    const byte roaming = xr_roam_input_enabled(world);
-    const float2 move = roaming ? xr_controller_stick(world, xr_hand_left) : float2_zero;
-    const float2 turn = roaming ? xr_controller_stick(world, xr_hand_right) : float2_zero;
-    const float4 head_rotation = quaternion_from_euler(xr_sim_head_euler);
-    xr_roam_update(world, xr_camera, move, turn, head_rotation, xr_sim_head_place(head_rotation), delta);
-    const float4x4 body = xr_view_body;
-    const int2 window = zox_getv(main_app, WindowSize);
-    const float2 half = { window.x / 2, window.y };
-    xr_cull_set(world, xr_sim_eye_fov(0, half.x / half.y), xr_sim_eye_fov(1, half.x / half.y));
-    for (byte i = 0; i < 2; i++) {
-        xr_render_eye(world, xr_sim_eye_matrix(i, head_rotation), xr_sim_eye_fov(i, half.x / half.y), body, (float2) { i * half.x, 0 }, half, 0);
-    }
-    zox_sys_on_end();
-} zoxd_system(xr_sim_render_system);
-
-void zox_systems_xr_sim(ecs* world) {
-    zox_system_1(
-        xr_sim_controllers_system,
-        zoxp_inputs_extract,
-        [in] xr.XrHand,
-        [out] inputs.DeviceHasInput,
-        [none] xr.XrController
-    );
-    zox_system_1(xr_sim_render_system, zoxp_render, 0);
 }

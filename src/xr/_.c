@@ -10,10 +10,12 @@
  *    branch on it at runtime, not #ifdef zox_xr
  *  - pre, ins: the xr camera (XrCamera) and controllers (XrController, a device a hand), spawned at boot while XR is on
  *  - the ui: huds spawns its menus as 3D lists (zox_huds3D), navigated and clicked by the controllers
+ *  - the runtime (fun/runtime.c): a headset's (openxr/runtime.c) or the simulator's (sim/), one interface, so the
+ *    frame, the controllers (aim and grip) and the eyes run through the same systems
  *  - fun: shared by both: the hands (the body's arms reach the controllers, bones/ik), free roam (the sticks move and turn it, the headset turns the head on top), an eye's render
  *  - culling: the xr camera's frustum is both eyes' views in one (fun/cull.c, FieldOfViewAngles), tst xr_frustum
- *  - openxr (zox_xr, Android): the session, eyes, swapchains, inputs, a headset's frame (openxr/render.c)
- *  - sim: the simulator, both eyes side by side in the window, the head and sticks from the keyboard
+ *  - openxr (zox_xr, Android): the session, eyes, swapchains, inputs, a headset's runtime (openxr/runtime.c)
+ *  - sim: the simulator's runtime, both eyes side by side in the window, the head and sticks from the keyboard
  *  - shared maths in cameras (fun/projection_angles.c, free_roam.c), tested there (cameras/tst/xr.c); tst/cube.c is
  *    a standalone app (free roam among cubes), not part of the engine's build
  *  - plan: doc/plans/xr.md
@@ -27,8 +29,7 @@
 #include "fun/_.c"
 #include "sim/_.c"
 #ifdef zox_xr
-#include "openxr/controller.c"
-#include "openxr/render.c"
+#include "openxr/runtime.c"
 
 void module_dispose_xr(ecs *world, void *ctx) {
     xr_end();
@@ -58,14 +59,14 @@ void import_xr(ecs* world) {
     zox_systems_xr_hands(world);
     zox_systems_xr_body(world);
     zox_systems_xr_scale(world);
-    zox_systems_xr_sim(world);
+    zox_systems_xr_runtime(world);
     zox_tsts_xr(world);
 #ifdef zox_xr
     zox_log("[XR] Engaged");
     zox_xr_active = 1;
     zox_huds3D = 1;
     xr_lower_graphics_defaults();
-    zox_systems_openxr(world);
+    xr_runtime_now = &xr_openxr_runtime;
     zox_module_dispose(module_dispose_xr);
 #endif
 }

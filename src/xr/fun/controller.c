@@ -1,12 +1,12 @@
 // XR controllers as input devices, one a hand, each a device (inputs) with its pose, so the ui navigates and
 //  clicks, and the device mode switches, as a gamepad's do, without the rest of the engine knowing about XR
 //  (doc/plans/xr.md step 3)
-//  - the state is the device's: its zevices (a stick, buttons) and its pose (Position3D, Rotation3D, the hand in
-//      the world: the roam's body, then the hand), written each frame by a headset (openxr/controller.c) or the
-//      simulator (sim/)
+//  - the state is the device's: its zevices (a stick, buttons) and its pose (Position3D, Rotation3D, the hand's aim in
+//      the world: the roam's body, then the hand), written each frame from the runtime (fun/runtime.c: a headset's,
+//      openxr/runtime.c, or the simulator's, sim/); the hand's grip is kept apart, for the body's hands
 //  - Gamepad: the device mode they play as; DeviceNavigator: the right hand's, it navigates (its stick) and clicks
 //  - the right hand: stick, A, B, grip (RB), trigger (RT); the left: stick, X, Y, grip (LB), trigger (LT), menu
-//    (start: pauses; on a headset its menu button or Y, openxr/controller.c)
+//    (start: pauses; on a headset its menu button or Y, openxr/runtime.c)
 //  - the right trigger clicks as A does (point and pull, as on a headset), its source writes both
 //  - sticks as SDL's gamepads have them (x flipped from OpenXR's), xr_controller_stick flips them back
 
@@ -58,18 +58,23 @@ float2 xr_controller_stick(ecs* world, byte hand) {
     return float2_zero;
 }
 
-// each hand's pose as tracked, in the room (the tracking space), kept for the hands' ik (fun/hands.c): it puts them
-//  on the body after physics has moved it, where the controller entities' poses were set before it moved
+// each hand's grip as tracked (where it holds the controller), in the room (the tracking space), kept for the hands'
+//  ik (fun/hands.c): it puts them on the body after physics has moved it, where the controller entities' poses were
+//  set before it moved
 float3 xr_hand_tracked_position[2];
 float4 xr_hand_tracked_rotation[2] = { { 0, 0, 0, 1 }, { 0, 0, 0, 1 } };
 byte xr_hand_tracked[2];
 
-// the hand in the world: its tracked pose on top of the body (the character in a game, fun/body.c, else the roam)
-void xr_controller_pose(ecs* world, entity device, float3 position, float4 rotation) {
-    const byte hand = zox_getv(device, XrHand) ? 1 : 0;
+void xr_hand_track(byte hand, float3 position, float4 rotation) {
+    hand = hand ? 1 : 0;
     xr_hand_tracked_position[hand] = position;
     xr_hand_tracked_rotation[hand] = rotation;
     xr_hand_tracked[hand] = 1;
+}
+
+// the controller device's pose, its aim (where it points: rays at 3D ui) in the world: tracked on top of the body
+//  (the character in a game, fun/body.c, else the roam)
+void xr_controller_pose(ecs* world, entity device, float3 position, float4 rotation) {
     xr_body_frame frame;
     if (!xr_body_frame_get(world, xr_camera, xr_head_now_rotation, xr_head_now_position, &frame)) {
         frame.position = xr_roam.position;

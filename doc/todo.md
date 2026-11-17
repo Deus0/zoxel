@@ -1007,8 +1007,6 @@
 - XR turning option in settings: smooth (the default, the right stick turns the body left and right) or snap turns
 	(smooth turns sicken some players)
 
-- XR hands from the grip pose (where the hand holds the controller), not the aim pose (the pointer's ray): bind
-	/input/grip/pose (xr/openxr/input.c), a second pose on the controller for the arms
 - Punch in VR as a motion (inspired by Sword Art Online): the player's hands always drive the body's arms (xr/fun/hands.c,
 	the body has to match the real hands or it disorientates), the punch skill only shows the movement (a ghost of the
 	arm's ik path, bones/ik/sys/punch.c) and scores the real hand's path against it over its swing time: a close match

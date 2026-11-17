@@ -1,5 +1,12 @@
 # Done
 
+## 2026-11-18
+-x XR runtime: one interface (xr/fun/runtime.c) for a headset (openxr/runtime.c) and the simulator (sim/): the
+  frame, the head and eyes, the controllers' sticks, buttons and poses run through one set of systems, not two
+  copies (openxr/render.c, openxr/controller.c and the simulator's own systems gone)
+-x XR hands from the grip pose (where the controller's held, /input/grip/pose), the controller's pose (rays) from the
+  aim; tst xr_grip (the body's hand on the grip with the aim apart)
+
 ## 2026-11-17
 -x XR options: a 3D list of the settings (the 2D window was unseen in a headset), A flips a toggle or steps a slider
   (round past its end), the stick left and right steps a selected slider, its row's text kept to its value
