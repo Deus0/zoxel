@@ -16,9 +16,10 @@ entity spawn_scrollbar(
     int2 handle_size = (int2) { size.x, handle_height };
     int2 handle_position = (int2) { 0, (size.y - handle_height) / 2 };
     // top of scroll
-    zox_instance(prefab_scrollbar);
+    zox_instance(ui_prefab_for(world, prefab_scrollbar, parent));    // its 3D twin under a 3D parent
     zox_name("scrollbar");
     zox_set_parent_non_fragment(world, e, parent);
+    ui_layer3_set(world, e, parent);
     zox_setv(e, LayoutPosition, position);
     zox_setv(e, LayoutSize, size);
     zox_setv(e, Anchor, position_anchor);

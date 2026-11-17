@@ -13,9 +13,10 @@ entity spawn_handle(
     color outline,
     byte direction)
 {
-    zox_instance(prefab);
+    zox_instance(ui_prefab_for(world, prefab, parent));    // its 3D twin under a 3D parent
     zox_name("handle");
     zox_set_parent_non_fragment(world, e, parent);
+    ui_layer3_set(world, e, parent);
     zox_set(e, LayoutPosition, { position });
     zox_set(e, LayoutSize, { size });
     zox_set(e, Anchor, { position_anchor });

@@ -23,6 +23,7 @@ int zox_tst_xr_nav_round_3d = 0;        // of them, opened 3D
 char zox_tst_xr_nav_flat[256] = "";     // the ones that weren't
 entity zox_tst_xr_nav_icon = 0;          // the skill icon selected
 byte zox_tst_xr_nav_icon_found = 0;
+float zox_tst_xr_nav_icon_bright = 0;   // the selected icon's brightness (SelectedBrighter, drawn in 3D: element3_draw)
 byte zox_tst_xr_nav_tooltip = 0;         // its tooltip shown, its text, under it
 
 // the ui open for the lit frame (not one closing)
@@ -181,6 +182,7 @@ byte zox_tst_xr_navigator_ready(ecs* world) {
                                     float3_sub(zox_getv(tooltip, Position3D), zox_getv(zox_tst_xr_nav_icon, Position3D)));
                                 zox_log("[tst] xr_navigator: the tooltip's text [%i] long, shown [%i], from its icon [%.3f %.3f]",
                                     text->length, !zox_getv(tooltip, RenderDisabled), off.x, off.y);
+                                zox_tst_xr_nav_icon_bright = zox_has(zox_tst_xr_nav_icon, Brightness) ? zox_getv(zox_tst_xr_nav_icon, Brightness) : 0;
                                 zox_tst_xr_nav_tooltip = text->length > 0 && !zox_getv(tooltip, RenderDisabled) && off.y < 0 && fabsf(off.x) < 0.01f;
                             }
                             snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("xr_tooltip.ppm"));
@@ -223,6 +225,7 @@ void zox_tst_xr_navigator_check(ecs* world) {
     zox_tst_check(zox_tst_xr_nav_menu_back, "LB didn't bring the pause menu back");
     zox_tst_check(zox_tst_xr_nav_icon_found, "no skill icon to select");
     zox_tst_check(zox_tst_xr_nav_tooltip, "the skill icon's 3D tooltip didn't show under it");
+    zox_tst_check(zox_tst_xr_nav_icon_bright > 1, "the selected 3D icon isn't brighter [%.2f]", zox_tst_xr_nav_icon_bright);
     zox_log("[tst] xr_navigator: round the taskbar, [%i] of [%i] uis 3D, not:%s", zox_tst_xr_nav_round_3d, zox_tst_xr_nav_round, zox_tst_xr_nav_flat);
     zox_tst_check(zox_tst_xr_nav_round == count && zox_tst_xr_nav_round_3d == count, "[%i] of [%i] uis opened 3D, not:%s",
         zox_tst_xr_nav_round_3d, count, zox_tst_xr_nav_flat);

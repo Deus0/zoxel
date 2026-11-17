@@ -15,10 +15,11 @@ entity spawn_scrollview(
     int max,
     byte scrollbar_visible)
 {
-    zox_instance(prefab_layout2);
+    zox_instance(ui_prefab_for(world, prefab_layout2, parent));    // its 3D twin under a 3D parent
     zox_name("scrollview");
     zox_add(e, Scrollview);
     zox_set_parent_non_fragment(world, e, parent);
+    ui_layer3_set(world, e, parent);
     zox_setv(e, LayoutPosition, position);
     zox_setv(e, LayoutSize, size);
     zox_setv(e, Anchor, anchor);

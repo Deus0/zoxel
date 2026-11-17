@@ -3,6 +3,7 @@
 #   bash bsh/tst.sh all [--nobuild] [extra game args]     (make tests)
 #   bash bsh/tst.sh <name> [--nobuild] [extra game args]  (make test name=<name>)
 #   bash bsh/tst.sh list
+#   bash bsh/tst.sh code_stats [--save]   (src's size per module: bsh/code_stats.sh)
 #   --repeat <n>: runs the test(s) n times, for intermittent bugs (i.e. player_spawn --repeat 5)
 #   --gdb: runs under gdb, prints a backtrace on crash
 #   --visible: shows the window (no --background) on the real gpu, i.e. to compare gpu memory
@@ -23,6 +24,10 @@ set -uo pipefail
 
 name="${1:-all}"
 shift || true
+# code_stats: src's size per module, no game run (bsh/code_stats.sh)
+if [[ "${name}" == "code_stats" ]]; then
+    exec bash bsh/code_stats.sh "$@"
+fi
 build=1
 gdb=0
 stress=0

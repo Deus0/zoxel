@@ -15,7 +15,8 @@ byte zox_tst_xr_options_clicked = 0;        // A changed the first setting, its 
 byte zox_tst_xr_options_slid = 0;           // the stick stepped a slider, its text with it
 byte zox_tst_xr_options_back = 0;
 byte zox_tst_xr_options_scrolled = 0;       // its list's ListStart moved off 0
-byte zox_tst_xr_options_hidden = 0;         // a selected row hidden (not scrolled to) a while
+byte zox_tst_xr_options_hidden = 0;
+byte zox_tst_xr_options_handle_end = 0;     // scrolled to its end, the scrollbar's handle at its bottom         // a selected row hidden (not scrolled to) a while
 int zox_tst_xr_options_hidden_frames = 0;
 int zox_tst_xr_options_shot = 0;            // the frame Back was first selected
 int zox_tst_xr_options_moves = 0;
@@ -165,6 +166,18 @@ byte zox_tst_xr_options_ready(ecs* world) {
             }
             if (zox_valid(target) && zox_has(target, ClickEvent) && zox_getv(target, ClickEvent) == &button_event_menu_main) {
                 xr_sim_script_stick = float2_zero;
+                if (f == zox_tst_xr_options_shot + 10) {
+                    // the scrollbar's handle at its bottom (scroll_list_to_child moves it, as a 2D list's)
+                    const entity list = zox_get_parent(world, target);
+                    const entity scrollview = zox_valid(list) ? zox_get_link(world, list, ScrollviewLink) : 0;
+                    const entity handle = zox_valid(scrollview) ? get_scrollview_handle(world, scrollview) : 0;
+                    const entity bar = zox_valid(handle) ? zox_get_parent(world, handle) : 0;
+                    if (zox_valid(bar)) {
+                        const int travel = zox_getv(bar, LayoutSize).y - zox_getv(handle, LayoutSize).y;
+                        zox_tst_xr_options_handle_end = zox_getv(handle, LayoutPosition).y <= -travel / 2 + 1;
+                        zox_log("[tst] xr_options: the handle at [%i] of its travel [%i]", zox_getv(handle, LayoutPosition).y, travel);
+                    }
+                }
                 // scrolled to its end, Back selected: a screenshot (tst/xr_options.ppm), then A
                 if (!zox_tst_xr_options_shot) {
                     zox_tst_xr_options_shot = f;
@@ -190,6 +203,7 @@ void zox_tst_xr_options_check(ecs* world) {
     zox_tst_check(zox_tst_xr_options_slid, "the stick didn't step the slider (or its text)");
     zox_tst_check(zox_tst_xr_options_scrolled, "the list didn't scroll as it was navigated down");
     zox_tst_check(!zox_tst_xr_options_hidden, "a selected row stayed hidden (the list didn't scroll to it)");
+    zox_tst_check(zox_tst_xr_options_handle_end, "scrolled to its end, the scrollbar's handle isn't at its bottom");
     zox_tst_check(zox_tst_xr_options_back, "Back didn't return to the main menu");
 }
 

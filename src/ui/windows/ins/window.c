@@ -34,7 +34,6 @@ entity3 spawn_window_footer(
         zox_add(e, Window);
         zox_add(e, PreInitialize);  // as a 2D window's: its spawn systems run (Initialize next: a map's, a taskbar's link)
         zox_set_parent(world, e, parent);
-        ui3_root_spawned(e);
         on_closed = NULL;   // no close button: nothing points at it (a gamepad's B closes it)
     } else {
         e = zox_ins(world, prefab);    // zox_instance would declare its own e

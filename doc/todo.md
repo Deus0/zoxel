@@ -1000,6 +1000,14 @@
 	- We should wrap all other sdl functions properly for glut
 
 # XR
+- UI consolidation (2D and 3D from the same code, doc/tech/uis.md), each removing a 3D-only copy:
+	1. spawn_list3 and the menus' zox_huds3D branches (main, pause, saves): spawn_window_list builds them in 3D through
+		the prefab twins already (header, body, list, scrollbar); tsts xr_menu xr_options xr_continue xr_navigator
+	2. spawn_taskbar3: spawn_taskbar (spawn_window: 3D on 3D huds), only its place above the menus differs (the pose hook)
+	3. one "under the selected ui" tooltip rule: tooltip3_follow_system (3D) and tooltip_navigated_system (2D)
+	4. the 3D options (huds/ins/settings3.c): the 2D options window in 3D, once sliders and toggles have 3D twins
+		(the stick's left and right stepping a slider, as the 3D rows do now)
+	- check the size after each: bash bsh/tst.sh code_stats (baseline doc/code_stats.txt)
 - 3D raycasting uis: rays from the hands (the controllers' aim poses, their pointer zevices) at 3D uis (canvas3
 	panels, the 3D windows), hovered, clicked and dragged as a mouse's are, a ray drawn from each hand; tooltips on
 	hover; then a 3D window's close button

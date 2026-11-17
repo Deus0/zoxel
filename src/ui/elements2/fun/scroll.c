@@ -123,7 +123,7 @@ byte scroll_list_to_child(
     if (new_start == start) {
         return 0;
     }
-    const entity scrollview = zox_has(list, ScrollviewLink) ? zox_get_link(world, list, ScrollviewLink) : 0;
+    const entity scrollview = zox_get_link(world, list, ScrollviewLink);   // a link (a pair): zox_has doesn't see it
     if (zox_valid(scrollview)) {
         return set_scrollview_start(world, scrollview, new_start, 1);
     }

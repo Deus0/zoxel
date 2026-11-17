@@ -1,6 +1,12 @@
 # Done
 
 ## 2026-11-18
+-x 3D grids show their selection (each element's Brightness drawn: element3_draw, SelectedBrighter as 2D's); 3D lists
+  have a 2D list's scrollbar (spawn_scrollview's 3D twins), its handle following navigation (scroll_list_to_child read
+  the scrollview link with zox_has: links are pairs, it never found one, 2D's too); every canvas3 a 3D root for its
+  children's twins (spawn_canvas3); tst xr_options checks the handle, xr_navigator the brightness
+-x code stats: bash bsh/tst.sh code_stats (bsh/code_stats.sh): src's size per module (code, tests, comments, files),
+  the biggest files, the change since the baseline (doc/code_stats.txt, --save), growth over 5% flagged
 -x tooltips under the selected ui for every navigating device: a 2D tooltip follows the mouse with the mouse, while
   navigating (a gamepad, a Steam Deck, keyboard navigation) it's under the selected ui (tooltip_navigated_system,
   after the mouse's); tst navigator_grid checks it

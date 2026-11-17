@@ -31,6 +31,9 @@ void element3_draw(ecs* world, entity e, const MaterialTextured3D* attributes) {
         return;
     }
     zox_gpu_float4x4(attributes->mvp_matrix, float4x4_multiply(zox_getv(e, TransformMatrix), render_camera_matrix));
+    // its own brightness (a selected icon brighter: SelectedBrighter, as a 2D one's) on all of theirs
+    const float brightness = zox_has(e, Brightness) ? zox_getv(e, Brightness) : 1;
+    zox_gpu_float(attributes->brightness, element3_brightness * brightness);
     zox_gpu_bind_buffer_element(mesh_x);
     opengl_enable_vertex_buffer(attributes->vertex_position, mesh_y);
     opengl_enable_uv_buffer(attributes->vertex_uv, uvs);
