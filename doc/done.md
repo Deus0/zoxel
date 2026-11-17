@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-17
+-x tst ik_poses: the ik rig posing a character (reaching up, out, ahead, down, wrists rolled, leaning ahead and to
+  the side, crouching, both): hands on target, feet where they stood, crouched the knees ahead and the hips lower,
+  the neck the lean's way; bash bsh/ik_poses.sh saves tst/ik_poses.png
 -x XR arms reach every way: the hands' targets from the shoulders (the player's from their neck, the body's facing
   and lean; the body's leaned as it is now), the player's arm scaled to the body's; from the eyes the body's
   shoulders (lower, further back, wider) overreached up and ahead (the hand short of the controller) and bent down
