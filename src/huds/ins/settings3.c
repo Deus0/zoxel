@@ -1,5 +1,5 @@
 // The options as a 3D list (3D huds, XR: the 2D window was unseen in a headset): the settings, a row each
-//  ("Name [value]", toggles On or Off), and Back (the main menu); it scrolls as it's navigated (spawn_list3)
+//  ("Name [value]", toggles On or Off), and Back (the main menu); it scrolls as it's navigated (spawn_window_list)
 //  - A on a toggle flips it, on a slider steps it up (past its end round to its start); the navigating stick left and
 //    right steps a selected slider down and up (huds3_options_stick_system), as a 2D slider's drag sets it
 //  - a row's setting is its SettingLink, as the 2D window's elements
@@ -113,8 +113,11 @@ entity spawn_menu_options3(ecs* world, entity player) {
     }
     elements[length++] = (SpawnListElement) { .text = "Back", .on_click = { &button_event_menu_main } };
     entity rows[menu_options3_max + 1];
-    const entity e = spawn_huds3_list(world, player, "Ponder", zox_huds_header_font_size * ui_scale,
-        zox_huds_element_font_size * ui_scale, elements, length, rows);
+    // a 2D list window (3D on 3D huds: spawn_window), 8 rows shown, the rest scrolled to
+    const entity e = spawn_window_list(world, prefab_window, player, "Ponder", zox_huds_header_font_size * ui_scale,
+        zox_huds_element_font_size * ui_scale, (ClickEvent) { NULL }, 0, 0, 0, zox_huds_window_alignment,
+        zox_huds_window_anchor, byte2_single(zox_huds_list_padding * ui_scale), rows, elements, length,
+        length < 8 ? length : 8).x;
     for (int i = 0; i < count; i++) {
         zox_set(rows[i], SettingLink, { settings[i] });
     }

@@ -4,7 +4,7 @@
 //  - A on its first setting: the setting's value changes, its row's text shows it
 //  - the stick down to a slider, then right: its value steps up (or stays at its end), its text shows it
 //  - the stick down to Back, A: the main menu again; the list scrolled on the way (more rows than it shows), its
-//    selection always shown (spawn_list3, scroll_list_to_child)
+//    selection always shown (spawn_window_list, scroll_list_to_child)
 //  - run: bash bsh/tst.sh xr_options (screenshot: the list scrolled to Back, xr_options.ppm)
 int zox_tst_xr_options_stage = 0;
 int zox_tst_xr_options_frames = 0;

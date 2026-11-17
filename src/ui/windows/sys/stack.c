@@ -124,7 +124,7 @@ void canvas_stack_system(iter* it) {
                 entity e2 = it2.entities[j];
                 if (!zox_valid(e2) ||
                     !zox_has(e2, Window) ||
-                    !zox_has(e2, WindowLayer) ||   // a 3D list (spawn_list3): not stacked on the 2D canvas
+                    !zox_has(e2, WindowLayer) ||   // a 3D window (a canvas3): not stacked on the 2D canvas
                     zox_has(e2, IgnoreCanvasStack))
                 {
                     continue;

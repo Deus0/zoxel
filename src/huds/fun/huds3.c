@@ -1,7 +1,6 @@
 // 3D huds (zox_huds3D, on while XR is): menus as panels in the world, ahead of the player's camera
 //  - before the camera's spawned (huds boot before xr's camera), the main menu camera's spot, where it spawns
 #define huds3_distance 1.2f        // metres ahead
-#define huds3_menu_height 0.5f     // a list's height in metres
 #define huds3_label_height 0.06f
 
 void huds3_pose(ecs* world, entity player, float distance, float3* position, float4* rotation) {
@@ -49,30 +48,3 @@ void huds3_follow(ecs* world, entity e, float delta) {
     zox_setv(e, Rotation3D, quaternion_slerp(zox_getv(e, Rotation3D), rotation, t));
 }
 
-// a menu as a 3D list ahead of the player's camera, a child of their canvas (found and closed as its 2D twin)
-entity spawn_huds3_list(
-    ecs* world,
-    entity player,
-    const char* header,
-    byte header_font_size,
-    byte font_size,
-    const SpawnListElement* elements,
-    byte count,
-    entity* spawned)
-{
-    float3 position;
-    float4 rotation;
-    huds3_pose(world, player, huds3_distance, &position, &rotation);
-    return spawn_list3(
-        world,
-        zox_get_link(world, player, CanvasLink),
-        position,
-        rotation,
-        huds3_menu_height,
-        header,
-        header_font_size,
-        font_size,
-        elements,
-        count,
-        spawned);
-}

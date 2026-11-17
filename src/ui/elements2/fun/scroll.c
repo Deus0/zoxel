@@ -95,7 +95,7 @@ byte set_scrollview_start(
 }
 
 // scrolls a list so its element (a child, by ChildIndex) shows, i.e. navigated to below its shown ones; a 2D list's
-//  scrollbar handle with it, a 3D list (spawn_list3) has none. Returns 1 if it moved
+//  scrollbar handle with it, a 3D list's too. Returns 1 if it moved
 byte scroll_list_to_child(
     ecs* world,
     entity element)
