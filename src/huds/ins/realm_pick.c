@@ -89,36 +89,6 @@ static int compare_save_dirs_newest(const void* a, const void* b) {
     return strcmp(((const SaveDirSort*) a)->path, ((const SaveDirSort*) b)->path);
 }
 
-// 3D huds: the saves (newest first, the list scrolls as it's navigated: spawn_list3) and back, each save's button
-//  its FolderPath
-#define menu_load3_saves 64
-
-entity spawn_menu_load3(ecs* world, entity player, const char* header, byte header_font_size, byte font_size,
-    SpawnListElement* elements, int count)
-{
-    SpawnListElement list[menu_load3_saves + 1];
-    byte listed = 0;
-    for (int i = 0; i < count && listed < menu_load3_saves; i++) {
-        list[listed++] = elements[i];
-    }
-    list[listed++] = (SpawnListElement) {
-        .text = "Back",
-        .on_click = { &button_event_load_cancel },
-    };
-    entity spawned[menu_load3_saves + 1];
-    const entity e = spawn_huds3_list(world, player, header, header_font_size, font_size, list, listed, spawned);
-    for (int i = 0; i < count; i++) {
-        if (i < listed - 1) {
-            FolderPath path = { };
-            snprintf(path.value, sizeof(path.value), "%s", elements[i].save_path);
-            zox_set_ptr(spawned[i], FolderPath, path);
-        }
-        free(elements[i].save_path);
-        elements[i].save_path = NULL;
-    }
-    return e;
-}
-
 entity spawn_menu_load(ecs *world, entity player) {
     const char* header_label = "Which";
     byte visible_count = 4;
@@ -173,10 +143,7 @@ entity spawn_menu_load(ecs *world, entity player) {
         }
         free(save_dirs);
     }
-    entity e;
-    if (zox_huds3D) {
-        e = spawn_menu_load3(world, player, header_label, header_font_size, list_font_size, elements, elements_count);
-    } else e = spawn_window_list(
+    entity e = spawn_window_list(
         world,
         prefab_window,
         player,
