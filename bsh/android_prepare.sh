@@ -43,7 +43,7 @@ gradle_version="8.10.2"
 java_major_required="17"
 
 # Google command-line tools
-cmdline_tools_version="11076708"
+cmdline_tools_version="15859902"
 cmdline_tools_zip="commandlinetools-linux-${cmdline_tools_version}_latest.zip"
 cmdline_tools_url="https://dl.google.com/android/repository/${cmdline_tools_zip}"
 
@@ -196,32 +196,26 @@ mkdir -p "${and_path}/tools"
 # ============================================================
 
 sdkmanager_path="${sdk_path}/cmdline-tools/latest/bin/sdkmanager"
+cmdline_tools_marker="${sdk_path}/cmdline-tools/latest/.zoxel-version"
 
-if [[ ! -x "${sdkmanager_path}" ]]; then
-    echo "> Downloading Android command-line tools"
-    echo "  ${cmdline_tools_zip}"
+if [[ ! -x "${sdkmanager_path}" ]] || \
+   [[ ! -f "${cmdline_tools_marker}" ]] || \
+   [[ "$(cat "${cmdline_tools_marker}")" != "${cmdline_tools_version}" ]]; then
+
+    echo "> Installing Android command-line tools ${cmdline_tools_version}"
 
     cmdline_zip="${tmp_path}/${cmdline_tools_zip}"
 
-    curl -L \
-        --fail \
-        --progress-bar \
-        "${cmdline_tools_url}" \
-        -o "${cmdline_zip}"
-
-    echo "> Installing Android command-line tools"
+    curl -L --fail --progress-bar "${cmdline_tools_url}" -o "${cmdline_zip}"
 
     rm -rf "${sdk_path}/cmdline-tools"
-
     mkdir -p "${sdk_path}/cmdline-tools"
 
-    unzip -q \
-        "${cmdline_zip}" \
-        -d "${sdk_path}/cmdline-tools"
+    unzip -q "${cmdline_zip}" -d "${sdk_path}/cmdline-tools"
 
-    mv \
-        "${sdk_path}/cmdline-tools/cmdline-tools" \
-        "${sdk_path}/cmdline-tools/latest"
+    mv "${sdk_path}/cmdline-tools/cmdline-tools" "${sdk_path}/cmdline-tools/latest"
+
+    printf "%s\n" "${cmdline_tools_version}" > "${sdk_path}/cmdline-tools/latest/.zoxel-version"
 else
     echo "+ Android command-line tools already installed"
 fi
@@ -265,8 +259,17 @@ echo "> Installing Android SDK components"
 
 ndk_manager_path="${sdk_path}/ndk/${android_ndk_version}"
 
-if [[ ! -d "${ndk_manager_path}" ]]; then
-    echo "> Installing Android NDK ${android_ndk_version}"
+ndk_is_valid=false
+for ndk_crt in "${ndk_manager_path}"/toolchains/llvm/prebuilt/*/sysroot/usr/lib/aarch64-linux-android/"${android_api}"/crtbegin_so.o; do
+    if [[ -x "${ndk_manager_path}/ndk-build" ]] && \n       [[ -f "${ndk_crt}" ]] && \n       [[ -f "${ndk_crt%crtbegin_so.o}crtend_so.o" ]]; then
+        ndk_is_valid=true
+        break
+    fi
+done
+
+if [[ ! -d "${ndk_manager_path}" ]] || [[ "${ndk_is_valid}" != true ]]; then
+    echo "> Installing or repairing Android NDK ${android_ndk_version}"
+    rm -rf "${ndk_manager_path}"
 
     if [[ "${host_arch}" == "aarch64" ]]; then
         ndk_url="https://github.com/HomuHomu833/android-ndk-custom/releases/download/r28/android-ndk-r28c-aarch64-linux-musl.tar.xz"
@@ -301,6 +304,25 @@ if [[ ! -d "${ndk_manager_path}" ]]; then
 else
     echo "+ Android NDK already installed"
 fi
+
+# Verify NDK installation
+
+ndk_crt_found=false
+
+for ndk_crt in "${ndk_manager_path}"/toolchains/llvm/prebuilt/*/sysroot/usr/lib/aarch64-linux-android/"${android_api}"/crtbegin_so.o; do
+    if [[ -f "${ndk_crt}" ]] &&        [[ -f "${ndk_crt%crtbegin_so.o}crtend_so.o" ]]; then
+        ndk_crt_found=true
+        break
+    fi
+done
+
+if [[ ! -x "${ndk_manager_path}/ndk-build" ]] ||    [[ "${ndk_crt_found}" != true ]]; then
+    echo "ERROR: NDK installation is incomplete."
+    echo "Missing ndk-build or Android ARM64 CRT files."
+    exit 1
+fi
+
+echo "+ NDK installation verified"
 
 # Stable project-local NDK path.
 #
