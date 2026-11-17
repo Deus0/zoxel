@@ -44,8 +44,9 @@ float4 xr_sim_eye_fov(byte eye, float aspect) {
 
 // the eye in the head's space: the head turned, the eye to its side
 float4x4 xr_sim_eye_matrix(byte eye, float4 head_rotation) {
+    // the head's place in the room (walking in it, scripted) then the eye's side of it, as a headset's eyes are
     const float3 offset = { (eye == 0 ? -0.5f : 0.5f) * xr_sim_eye_distance, 0, 0 };
-    return float4x4_transform(float4_rotate_float3(head_rotation, offset), head_rotation);
+    return float4x4_transform(float3_add(xr_sim_script_head_position, float4_rotate_float3(head_rotation, offset)), head_rotation);
 }
 
 static inline float xr_sim_axis(const PhysicalButton* negative, const PhysicalButton* positive) {

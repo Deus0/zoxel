@@ -25,6 +25,10 @@ void xr_render_eye(ecs* world, float4x4 eye, float4 fov, float4x4 body, float2 v
         projection.z.y = -projection.z.y;
         projection.w.y = -projection.w.y;
     }
+    // the eye's tracked place scaled to the body (fun/scale.c): its height, its distance from the other eye
+    eye.w.x *= xr_view_scale;
+    eye.w.y *= xr_view_scale;
+    eye.w.z *= xr_view_scale;
     const float4x4 world_eye = float4x4_multiply(eye, body);    // the eye, then the body
     render_camera_position = float4x4_get_position(world_eye);
     render_camera_matrix = float4x4_multiply(float4x4_inverse(world_eye), projection);   // the view, then the projection

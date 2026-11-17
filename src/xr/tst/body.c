@@ -5,6 +5,8 @@
 //    roam never takes the camera up (it did each frame, folding the head's turn into the body)
 //  - walking in the room at a wall: the body stops at it (physics, collisions), not through
 //  - the hands on their controllers: walking, a hand stays where it is on the body as standing (it trailed a frame)
+//  - everything tracked is scaled to the body (its height over the player's): 0.3m walked in the room moves it 0.3m
+//    scaled
 //  - the left stick walks the character, at speed straight away and stopped straight away (no inertia), each
 //    frame's move steady over its dt (friction on: its drag flickering with Grounded made bumps); walking 0.3m in the room moves it 0.3m
 //  - run: bash bsh/tst.sh xr_body
@@ -45,7 +47,7 @@ byte zox_tst_xr_body_ready(ecs* world) {
     if (f > 60) {
         // the eyes in the view at the camera: the view's body, the head's centre on top (the sim's eyes straddle it)
         const float3 eyes = float4x4_get_position(float4x4_multiply(
-            float4x4_transform(xr_sim_script_head_position, xr_head_now_rotation), xr_view_body));
+            float4x4_transform(float3_scale(xr_sim_script_head_position, xr_view_scale), xr_head_now_rotation), xr_view_body));
         const float d = float3_distance(eyes, zox_getv(xr_camera, Position3D));
         // the stick and room steps move it a frame ahead of the hierarchy, so only while still
         if ((f < 130) && d > zox_tst_xr_body_worst_eyes) {
@@ -181,7 +183,11 @@ void zox_tst_xr_body_check(ecs* world) {
     zox_log("[tst] xr_body: walked 2m in the room at a wall 1m away, got [%.3f]", zox_tst_xr_body_wall_moved);
     zox_tst_check(zox_tst_xr_body_wall_built, "no wall built");
     zox_tst_check(zox_tst_xr_body_wall_moved > 0.2f && zox_tst_xr_body_wall_moved < 0.95f, "the room's walk went [%f] at a wall 1m away", zox_tst_xr_body_wall_moved);
-    zox_tst_check(fabsf(zox_tst_xr_body_room - 0.3f) < 0.05f, "walking 0.3m in the room moved it [%f]", zox_tst_xr_body_room);
+    // scaled to the body: the character's height over the player's (fun/scale.c)
+    const float scale = xr_body_scale(world, xr_body_character(world));
+    zox_log("[tst] xr_body: scale [%.3f] (the character [%.3f] tall, the player [%.2f])", scale, scale * xr_player_height, xr_player_height);
+    zox_tst_check(scale > 0.4f && scale < 0.8f, "the scale [%f] isn't a 1m character's over a 1.7m player's", scale);
+    zox_tst_check(fabsf(zox_tst_xr_body_room - 0.3f * scale) < 0.02f, "walking 0.3m in the room moved it [%f], not [%f]", zox_tst_xr_body_room, 0.3f * scale);
 }
 
 void zox_tsts_xr_body(ecs* world) {

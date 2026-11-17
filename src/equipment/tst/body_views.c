@@ -102,6 +102,10 @@ byte zox_tst_body_views_ready(ecs* world) {
             zox_setv(game_view, RenderDisabled, 1);
         }
         zox_log("[tst] body: half size [%.2f %.2f %.2f], views [%.2f] away", bounds.x, bounds.y, bounds.z, distance);
+        // a humanoid fits 2 blocks tall and 1 wide (a door's way; XR plays one): blocks are 32 of its voxels
+        const float block = 32 * vox_model_scale;
+        zox_tst_check(bounds.y * 2 <= 2 * block + 0.001f, "the body is [%.3f] tall, over 2 blocks [%.3f]", bounds.y * 2, 2 * block);
+        zox_tst_check(float_max(bounds.x, bounds.z) * 2 <= block + 0.001f, "the body is [%.3f] wide, over a block [%.3f]", float_max(bounds.x, bounds.z) * 2, block);
         zox_tst_body_views_stage = 3;
         zox_tst_body_views_frames = 0;
         return 0;

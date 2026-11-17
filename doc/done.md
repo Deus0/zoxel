@@ -1,6 +1,11 @@
 # Done
 
 ## 2026-11-17
+-x XR scale: the player's real height (setting "XR Height", 1.7m) onto the character's (~1m): the eyes, their
+  distance apart, the room's walk and the hands are scaled by the character's height over the player's (fun/scale.c),
+  so the world looks the character's size and the hands land in its reach; 1 in menus (roam); tst xr_body checks it
+-x body fits 2 blocks tall, 1 wide (a door's way): head and calves smaller, arms longer to reach as a person's;
+  tst body_views checks the bounds
 -x XR hands on the body: controllers' tracked poses kept and put on the body after physics (zoxp_trails), the arms
   solved after it (zoxp_layouts) from bones carried to where the body is now (skeleton_now); in a game they were on
   the roam (left behind once the character became the body), and walking trailed them a frame; the punch the same;

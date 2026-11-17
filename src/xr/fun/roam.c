@@ -43,6 +43,7 @@ static void xr_roam_update(ecs* world, entity camera, float2 move, float2 turn, 
         xr_roam_started = 0;    // out of the game, the roam takes the camera up where it's left
         return;
     }
+    xr_view_scale = 1;
     if (xr_roam_started && zox_valid(camera) && !float3_equals(zox_getv(camera, Position3D), xr_roam_written)) {
         xr_roam_started = 0;
     }

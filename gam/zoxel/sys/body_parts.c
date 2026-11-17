@@ -76,7 +76,7 @@ void bodys_realm_spawn_system(iter* it) {
         }
         // Head
         {
-            float3 blueprint_scale = float3_single(0.88f);
+            float3 blueprint_scale = float3_single(0.82f);    // a humanoid fits 2 blocks tall, its hat too (tst body_views)
             lint seed = 16663 * (body_seed + spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
@@ -147,7 +147,7 @@ void bodys_realm_spawn_system(iter* it) {
         }
         // Calf
         {
-            float3 blueprint_scale = (float3) { 0.34f, 0.92f, 0.34f };
+            float3 blueprint_scale = (float3) { 0.34f, 0.86f, 0.34f };
             lint seed = 3363 * (body_seed + spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
@@ -216,7 +216,7 @@ void bodys_realm_spawn_system(iter* it) {
         }
         // Bicep
         {
-            float3 blueprint_scale = (float3) { 0.36f, 0.52f, 0.36f };
+            float3 blueprint_scale = (float3) { 0.36f, 0.56f, 0.36f };  // arms reach as a person's do, for the body (XR hands)
             lint seed = 3363 * (body_seed + spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint
@@ -239,7 +239,7 @@ void bodys_realm_spawn_system(iter* it) {
         }
         // Forearms
         {
-            float3 blueprint_scale = (float3) { 0.36f, 0.62f, 0.36f };
+            float3 blueprint_scale = (float3) { 0.36f, 0.66f, 0.36f };
             lint seed = 3363 * (body_seed + spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint

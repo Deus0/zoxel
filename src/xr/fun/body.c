@@ -44,6 +44,7 @@ static inline float4 xr_body_rotation(ecs* world, entity character) {
 typedef struct {
     float3 position;
     float4 rotation;
+    float scale;        // tracked positions scaled to the body (fun/scale.c)
 } xr_body_frame;
 
 static inline float4x4 xr_body_frame_matrix(xr_body_frame frame) {
@@ -52,7 +53,7 @@ static inline float4x4 xr_body_frame_matrix(xr_body_frame frame) {
 
 // a pose tracked in the room (a controller's) into the world, on the body
 static inline float3 xr_body_frame_point(xr_body_frame frame, float3 tracked) {
-    return float3_add(frame.position, float4_rotate_float3(frame.rotation, tracked));
+    return float3_add(frame.position, float4_rotate_float3(frame.rotation, float3_scale(tracked, frame.scale)));
 }
 
 // the body on the character, where it is now, returns whether the camera's on one
@@ -68,7 +69,8 @@ static byte xr_body_frame_get(ecs* world, entity camera, float4 head_rotation, f
     }
     const skeleton_now now = skeleton_now_get(world, get_skeleton(world, character));
     const float4 rotation = xr_body_rotation(world, character);
-    const float3 room = { head_position.x, 0, head_position.z };
+    const float scale = xr_body_scale(world, character);
+    const float3 room = { head_position.x * scale, 0, head_position.z * scale };
     const float3 neck = skeleton_now_point(&now, zox_getv(head, Position3D));
     // the eyes' offset from the neck, in the head's space (+z its face), turned to the tracking space's
     const float3 offset = float4_rotate_float3(quaternion_inverse(zox_getv(head, Rotation3D)),
@@ -77,6 +79,7 @@ static byte xr_body_frame_get(ecs* world, entity camera, float4 head_rotation, f
         float4_rotate_float3(xr_body_turn_around(), offset));
     frame->position = float3_sub(float3_add(neck, eyes), float4_rotate_float3(rotation, room));
     frame->rotation = rotation;
+    frame->scale = scale;
     return 1;
 }
 
@@ -87,6 +90,7 @@ static byte xr_body_view(ecs* world, entity camera, float4 head_rotation, float3
         return 0;
     }
     *body = xr_body_frame_matrix(frame);
+    xr_view_scale = frame.scale;
     return 1;
 }
 
@@ -104,7 +108,8 @@ void xr_room_walk_system(iter* it) {
     const float3 room = { xr_head_now_position.x, 0, xr_head_now_position.z };
     float3 step = float3_zero;
     if (xr_body_room_started) {
-        step = float4_rotate_float3(xr_body_rotation(world, character), float3_sub(room, xr_body_room_last));
+        step = float4_rotate_float3(xr_body_rotation(world, character),
+            float3_scale(float3_sub(room, xr_body_room_last), xr_body_scale(world, character)));
         if (float3_length(step) > 0.5f) {
             step = float3_zero;
         }

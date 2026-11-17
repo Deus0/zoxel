@@ -73,6 +73,7 @@ void xr_controller_pose(ecs* world, entity device, float3 position, float4 rotat
     if (!xr_body_frame_get(world, xr_camera, xr_head_now_rotation, xr_head_now_position, &frame)) {
         frame.position = xr_roam.position;
         frame.rotation = free_roam_rotation(&xr_roam);
+        frame.scale = 1;
     }
     zox_setv(device, Position3D, xr_body_frame_point(frame, position));
     zox_setv(device, Rotation3D, quaternion_rotate(frame.rotation, rotation));

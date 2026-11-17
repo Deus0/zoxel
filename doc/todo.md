@@ -437,8 +437,7 @@
 	- adds a lot of faces nobody sees at rest, plus a bone grid fill a mesh build (16MB at depth 8)
 	- the real fix is in the weights/skinning: then drop vox_mesh_parts and its parts argument from
 	  build_vox_mesh_at_depth / build_voxel_mesh_grid / build_voxel_mesh_parts_c, keep tst body_poses passing
-- might need resize character body (part) dimensions to fit the 2 block tall, 1 wide
-	- we can add taller characters too <= 3, 2 wide, etc with bigger doors later for other races
+- taller characters too <= 3 blocks, 2 wide, etc with bigger doors later for other races
 - limbs in general need polish on the organic shape (shoulders poking clothes fixed: tst chest_weights)
 - IK on arms and legs, for more bending (a doc/tec doc first)
 - shoulders poking out of shirt, maybe go over limbs again and give it a art pass
