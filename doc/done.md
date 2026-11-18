@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-18
+-x taskbar icons had no tooltips (2D or 3D): a has check left prefab_icon's without its TooltipEvent; tst tooltip_flick
+  passes again, the 3D tooltip's text checked unclipped in the simulator (xr_navigator --xr-sim, tst/xr_tooltip.ppm)
 -x the XR simulator's window is 1440x720 (each eye square, a square window squeezed each eye to a thin strip)
   unless --1080p: bash bsh/tst.sh screenshot --xr-sim saves both eyes side by side (doc/tests.md)
 -x 3D tooltips show their text: its glyphs sat at the world's origin (the hierarchy skipped a DisableParentTransform's
