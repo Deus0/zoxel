@@ -7,6 +7,7 @@
 #include "head_camera.c"
 #include "footsteps.c"
 #include "swim.c"
+#include "doorway.c"
 
 void zox_tsts_characters(ecs* world) {
     zox_tsts_arms_in_step(world);
@@ -17,4 +18,5 @@ void zox_tsts_characters(ecs* world) {
     zox_tsts_head_camera(world);
     zox_tsts_footsteps(world);
     zox_tsts_swim(world);
+    zox_tsts_doorway(world);
 }

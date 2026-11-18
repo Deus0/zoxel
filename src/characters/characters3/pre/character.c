@@ -40,6 +40,7 @@ entity spawn_prefab_character3(ecs *world) {
     // physics3
     zox_add(e, Moveable);
     zox_add(e, Frictioned);
+    zox_add(e, UprightCollider);   // its arms pass a doorway, turning doesn't widen it (tst doorway)
     zox_setv(e, LastPosition3D, float3_zero);
     zox_setv(e, LastUnstuck3, float3_zero);
     zox_setv(e, InitializePhysics3D, 0);

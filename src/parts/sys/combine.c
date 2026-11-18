@@ -281,6 +281,51 @@ byte body_parts_generating(ecs* world, entity slot) {
     return 0;
 }
 
+// an entry's height at the depth it's sampled at
+static inline int body_part_height(ecs* world, const CombineList* voxes, const CombineDepths* depths, int k) {
+    const entity vox = voxes->value[k];
+    int3 size = zox_getv(vox, ChunkSize);
+    if (depths->value[k] < zox_getv(vox, NodeDepth)) {
+        size = get_vox_size_at_depth(size, zox_getv(vox, NodeDepth), depths->value[k]);
+    }
+    return size.y;
+}
+
+// on top of what it's on, or of something that is (a hat on the head on the chest)
+static inline byte body_slot_on_top(ecs* world, entity slot) {
+    for (; zox_valid(slot) && zox_has(slot, SlotAnchor); slot = zox_get_parent(world, slot)) {
+        if (zox_getv(slot, SlotAnchor) == body_anchor_top) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// a body is at most 2 blocks tall (a door's height): past it, the head and what's on it (a hat) sink into the neck
+static inline void body_parts_fit_height(ecs* world, CombinePositions* positions, const CombineList* voxes,
+    const CombineDepths* depths, const entity_array_d* slots_used, byte3* body_size)
+{
+    const int max_height = octree_size(block_depth + 2);    // a meter of the body's voxels (body_combine_system)
+    int top = 0;
+    for (int k = 0; k < positions->length; k++) {
+        top = int_max(top, positions->value[k].y + body_part_height(world, voxes, depths, k));
+    }
+    const int over = top - max_height;
+    if (over <= 0) {
+        return;
+    }
+    for (int k = 0; k < positions->length; k++) {
+        const entity slot = slots_used->data[k];
+        if (!body_slot_on_top(world, slot)) {
+            continue;
+        }
+        positions->value[k].y -= over;
+        zox_muter(slot, PartPosition, slot_position);
+        slot_position->value.y -= over;
+    }
+    body_size->y -= over;
+}
+
 void body_combine_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
@@ -322,6 +367,7 @@ void body_combine_system(iter* it) {
         resize_CombineOver(overs, 0);
         entity_array_d* slots_used = create_entity_array_d(1);
         build_body_parts(world, chest_slot, voxes, positions, depths, overs, slots_used, &body_size->value, &max_depth, dbg_log);
+        body_parts_fit_height(world, positions, voxes, depths, slots_used, &body_size->value);
         // each entry's parent entry (its slot's parent slot's), joined parts may touch (combine_vox_system)
         CombineParents* parents = zox_getm(vox, CombineParents);
         resize_CombineParents(parents, 0);

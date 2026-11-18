@@ -380,6 +380,8 @@ static byte collision_sweep_axis(const collision_terrain* terrain, collision_chu
 // ---------------------------------------------------------------------------
 
 // NOTE: Detects intersections with voxel chunks
+#define upright_collider_width 0.6f    // of a block, an UprightCollider's footprint at most
+
 void terrain_collision_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
@@ -424,7 +426,13 @@ void terrain_collision_system(iter* it) {
         const float half_block = block_scale * 0.5f;
         const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
         const collision_terrain terrain_data = { world, blocks, chunks, terrain_depth, block_scale };
-        const float3 half_extents = float4_rotate_bounds(rotation->value, bounds->value);
+        float3 half_extents = float4_rotate_bounds(rotation->value, bounds->value);
+        // a character: an upright box that doesn't turn with it, its footprint narrower than its arms (they'd catch a
+        //  doorway's sides: a body is nearly a block wide, turned 45 degrees its box is 1.4)
+        if (zox_has(e, UprightCollider)) {
+            const float half = float_min(float_min(bounds->value.x, bounds->value.z), upright_collider_width * half_block);
+            half_extents = (float3) { half, bounds->value.y, half };
+        }
 
         // the move this frame, worked back from the velocity, no stored state (teleports are safe)
         //  - an exact step (see physics/fun) isn't velocity * dt when drag slows it mid frame:
