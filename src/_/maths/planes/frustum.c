@@ -12,6 +12,16 @@ static inline byte is_outside_plane(const plane p, const float3 point) {
     return (float3_dot(p.normal, point) - p.distance) > frustum_epsilon;
 }
 
+// a sphere partly or wholly inside 6 planes (a camera's, CameraPlanes: their normals face in)
+static inline byte is_sphere_in_frustum(const plane* planes, float3 center, float radius) {
+    for (int i = 0; i < 6; i++) {
+        if (float3_dot(planes[i].normal, center) - planes[i].distance < -radius) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
 // checks if any part of bounds is inside 6 planes
 
 byte is_in_frustum(const plane *planes, bounds b, byte inwards) {

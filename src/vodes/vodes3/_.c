@@ -26,5 +26,6 @@ void import_vodes3(ecs* world) {
 #ifdef zox_tests
     zox_tsts_vodes3();
     zox_tsts_grass_overlap(world);
+    zox_tsts_vox_instances_stress();
 #endif
 }

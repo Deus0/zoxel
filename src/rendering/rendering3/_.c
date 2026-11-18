@@ -6,6 +6,7 @@ float zox_grass_sway_strength = 0.07f;  // world units the grass tips move
 uint zox_drawn_skeleton_meshes = 0;
 uint zox_drawn_vox_instances = 0;
 uint zox_drawn_chunks = 0;
+double zox_vox_instance_render_ms = 0;    // vox_instance_render_system's time, summed (tst vox_instances_stress)
 
 #include "dat/_.c"
 #include "mat/_.c"

@@ -5,6 +5,14 @@ static inline void zox_gpu_ubo_set_matricies(guint id, gsizei length, const void
     glBufferSubData(GL_UNIFORM_BUFFER, 0, length * sizeof(float4x4), ptr);
 }
 
+// as set, its storage orphaned first (fresh, its capacity): the draw before can still read the old, no stall waiting
+//  for it (filling one buffer again while the gpu reads it made the driver wait, tst vox_instances_stress)
+static inline void zox_gpu_ubo_stream_matricies(guint id, gsizei length, gsizei capacity, const void* ptr) {
+    glBindBuffer(GL_UNIFORM_BUFFER, id);
+    glBufferData(GL_UNIFORM_BUFFER, capacity * sizeof(float4x4), NULL, GL_DYNAMIC_DRAW);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, length * sizeof(float4x4), ptr);
+}
+
 static inline void zox_gpu_ubo_initialize_matricies(guint id, guint binding_point, gsizei length) {
     glBindBuffer(GL_UNIFORM_BUFFER, id);
     glBufferData(GL_UNIFORM_BUFFER, sizeof(float4x4) * length, NULL, GL_DYNAMIC_DRAW);

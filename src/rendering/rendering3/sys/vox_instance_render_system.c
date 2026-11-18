@@ -1,13 +1,51 @@
-// todo:
-//   create vbo for instance stuff like particles
-//   create instanced mesh prefab and spawn for grass - just has to have a tag, transform data, and point to a mesh to render
-// atm renders about 2k per frame
-// when registering a new instance entity:
-// create a renderer data:
-//      - material
-//      - ubo link
-//      - transform list
-// extern string_hashmap *files_hashmap_voxes;
+// Draws a mesh's instances (vox_instance_render_system): grass, minivoxes, characters
+//  - each mesh one command: its instances' model matrices, drawn instanced, a uniform buffer's worth at a time
+//    (zox_get_safe_ubo_size: past it the buffer overflowed, gl errors and missing instances, tst vox_instances_stress)
+//  - instances outside the camera's view aren't sent (a sphere against its planes, CameraPlanes), each mesh's radius
+//    its farthest vertex from its centre, once a frame
+//  - the commands and their matrix lists are kept between frames (rendering is on the main thread), not made and
+//    freed every frame
+#define zox_instance_meshes_max 64
+InstanceRenderCommand zox_instance_commands[zox_instance_meshes_max];
+float zox_instance_radius[zox_instance_meshes_max];
+int zox_instance_commands_count = 0;
+int zox_instance_ubo_max = 0;
+
+// a mesh's bounding radius: its farthest vertex from its centre (instances are placed by it), 1 if it has none
+static inline float instance_mesh_radius(ecs* world, entity mesh) {
+    const MeshVertices* vertices = zox_has(mesh, MeshVertices) ? zox_get(mesh, MeshVertices) : NULL;
+    if (!vertices || !vertices->length) {
+        return 1;
+    }
+    float most = 0;
+    for (int i = 0; i < vertices->length; i++) {
+        const float3 v = vertices->value[i];
+        most = float_max(most, v.x * v.x + v.y * v.y + v.z * v.z);
+    }
+    return sqrtf(most) + 0.1f;  // and the sway (grass tips move zox_grass_sway_strength)
+}
+
+// the command for a mesh this frame, a new one if it has none (-1 when full)
+static inline int instance_command_of(ecs* world, entity mesh, byte sway) {
+    for (int i = 0; i < zox_instance_commands_count; i++) {
+        if (zox_instance_commands[i].mesh == mesh) {
+            return i;
+        }
+    }
+    if (zox_instance_commands_count == zox_instance_meshes_max) {
+        return -1;
+    }
+    const int i = zox_instance_commands_count++;
+    InstanceRenderCommand* command = &zox_instance_commands[i];
+    if (!command->transforms) {
+        command->transforms = create_float4x4_array_d(256);
+    }
+    command->transforms->size = 0;
+    command->mesh = mesh;
+    command->sway = sway;
+    zox_instance_radius[i] = instance_mesh_radius(world, mesh);
+    return i;
+}
 
 // Draws one mesh for all its instances, material must already be bound
 static inline void render_vox_instance_command(
@@ -18,7 +56,7 @@ static inline void render_vox_instance_command(
     guint ubo)
 {
     entity mesh = command.mesh;
-    if (!command.transforms || !zox_valid(mesh)) {
+    if (!command.transforms || !command.transforms->size || !zox_valid(mesh)) {
         return;
     }
     if (!zox_has(mesh, MeshIndicies)) {
@@ -47,13 +85,15 @@ static inline void render_vox_instance_command(
     zox_gpu_bind_buffer_element(gpumesh->value.x);
     opengl_enable_vertex_buffer(vertex_position, gpumesh->value.y);
     opengl_enable_color_buffer(vertex_color, gpucolors->value);
-    int render_count = command.transforms->size;
-    zox_gpu_ubo_set_matricies(
-        ubo,
-        render_count,
-        command.transforms->data);
-    zox_gpu_render_triangles_instanced(meshIndicies->length, render_count);
-    zox_drawn_vox_instances += render_count;
+    // a uniform buffer's worth a draw
+    const int count = command.transforms->size;
+    const int batch = zox_instance_ubo_max > 0 ? zox_instance_ubo_max : count;
+    for (int start = 0; start < count; start += batch) {
+        const int render_count = count - start < batch ? count - start : batch;
+        zox_gpu_ubo_stream_matricies(ubo, render_count, batch, command.transforms->data + start);
+        zox_gpu_render_triangles_instanced(meshIndicies->length, render_count);
+    }
+    zox_drawn_vox_instances += count;
     zox_gpu_ubo_reset();
     zox_gpu_disable_attribute(vertex_color);
     zox_gpu_disable_attribute(vertex_position);
@@ -63,12 +103,11 @@ static inline void render_vox_instance_command(
 // Renders Characters and Mimuvoxes
 void vox_instance_render_system(iter* it) {
     zox_sys_on_begin();
+    const double render_begin = get_time_ms();
 #ifndef zox_disable_ubos
     if (!material_vox_instance) {
         return;
     }
-    uint max_meshes = 16;
-    uint max_transforms = 2048;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TransformMatrix);
@@ -81,16 +120,18 @@ void vox_instance_render_system(iter* it) {
     }
     const UboGPULink* ubo = zox_get(material_vox_instance, UboGPULink);
     if (!ubo->value) {
-        // zox_log(" ! error with material_vox_instance uboGPULink.\n")
         return;
+    }
+    if (!zox_instance_ubo_max) {
+        zox_instance_ubo_max = zox_get_safe_ubo_size();
     }
     const MaterialVoxInstance* material_attributes = zox_get(material_vox_instance, MaterialVoxInstance);
-    InstanceRenderCommand_array_d* commands = create_InstanceRenderCommand_array_d(max_meshes);
-    if (!commands->data) {
-        // errored out
-        zox_loge("(vox_instance_render_system) commands->data malloc failed");
-        return;
-    }
+    // the camera's view to cull by, none for one without planes (XR's eyes: renderer_camera is 0)
+    const plane* planes = zox_valid(renderer_camera) && zox_has(renderer_camera, CameraPlanes) ?
+        zox_get(renderer_camera, CameraPlanes)->value : NULL;
+    zox_instance_commands_count = 0;
+    entity last_mesh = 0;
+    int index = -1;
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(RenderDisabled, disabled);
         zox_sys_i(TransformMatrix, matrix);
@@ -103,36 +144,29 @@ void vox_instance_render_system(iter* it) {
             continue;
         }
         camera_filtering_check();
-        int index = 0;
-        if (!has_mesh(commands, instance, &index)) {
+        // a table's instances are mostly the same mesh in a row
+        if (instance != last_mesh) {
             // NOTE: sway meshes (grass) use the sway material, if animation is on
-            byte sway = zox_grass_animation &&
-                material_vox_instance_sway &&
-                zox_has(instance, SwayMesh);
-            InstanceRenderCommand command = {
-                .mesh = instance,
-                .sway = sway,
-                .transforms = create_float4x4_array_d(max_transforms)
-            };
-            if (!command.transforms) {
-                // errored out
-                zox_loge("(vox_instance_render_system) command.transforms malloc failed");
-                break;
-            }
-            InstanceRenderCommand_array_d_add(commands, command);
-            index = commands->size - 1;
+            const byte sway = zox_grass_animation && material_vox_instance_sway && zox_has(instance, SwayMesh);
+            index = instance_command_of(world, instance, sway);
+            last_mesh = instance;
         }
-        InstanceRenderCommand command = commands->data[index];
-        if (!command.transforms) {
-            zox_loge("(vox_instance_render_system) command.transforms malloc failed");
-            break;
+        if (index < 0) {
+            continue;
+        }
+        // outside the view: not sent (its radius scaled as the instance is, a column of its matrix)
+        if (planes) {
+            const float3 center = { matrix->value.w.x, matrix->value.w.y, matrix->value.w.z };
+            const float scale = float3_length((float3) { matrix->value.x.x, matrix->value.x.y, matrix->value.x.z });
+            if (!is_sphere_in_frustum(planes, center, zox_instance_radius[index] * scale)) {
+                continue;
+            }
         }
         // model matrices, the shaders apply the camera (sway moves verts in world space first)
         //  - the unused bottom row x carries the brightness, i.e. the light at a minivox
         float4x4 instance_matrix = matrix->value;
         instance_matrix.x.w = brightness->value;
-        float4x4_array_d_add(command.transforms, instance_matrix);
-        commands->data[index] = command;
+        float4x4_array_d_add(zox_instance_commands[index].transforms, instance_matrix);
     }
     // Static vox instances
     zox_gpu_material(material_link);
@@ -140,8 +174,8 @@ void vox_instance_render_system(iter* it) {
     zox_gpu_float(material_attributes->brightness, 1);
     zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
     byte has_sway = 0;
-    for (size_t i = 0; i < commands->size; i++) {
-        InstanceRenderCommand command = commands->data[i];
+    for (int i = 0; i < zox_instance_commands_count; i++) {
+        InstanceRenderCommand command = zox_instance_commands[i];
         if (command.sway) {
             has_sway = 1;
             continue;
@@ -165,8 +199,8 @@ void vox_instance_render_system(iter* it) {
         zox_gpu_float4(sway_attributes->fog_data, get_fog_value());
         zox_gpu_float(sway_attributes->brightness, 1);
         zox_gpu_float4x4(sway_attributes->camera_matrix, render_camera_matrix);
-        for (size_t i = 0; i < commands->size; i++) {
-            InstanceRenderCommand command = commands->data[i];
+        for (int i = 0; i < zox_instance_commands_count; i++) {
+            InstanceRenderCommand command = zox_instance_commands[i];
             if (!command.sway) {
                 continue;
             }
@@ -187,14 +221,9 @@ void vox_instance_render_system(iter* it) {
                 ubo->value);
         }
     }
-    // cleanup
-    for (size_t i = 0; i < commands->size; i++) {
-        InstanceRenderCommand command = commands->data[i];
-        dispose_float4x4_array_d(command.transforms);
-    }
-    dispose_InstanceRenderCommand_array_d(commands);
     zox_disable_material();
     catch_basic3D_errors("vox_instance_render_system");
+    zox_vox_instance_render_ms += get_time_ms() - render_begin;
 #endif
     zox_sys_on_end();
 } zoxd_system(vox_instance_render_system);

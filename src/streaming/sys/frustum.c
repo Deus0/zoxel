@@ -60,24 +60,6 @@ void set_entity_render_disabled(
 
 }
 
-byte is_sphere_in_frustum(
-    const plane* planes,
-    float3 center,
-    float radius)
-{
-    for (int i = 0; i < 6; i++) {
-        float dist =
-            float3_dot(
-                planes[i].normal,
-                center)
-            - planes[i].distance;
-        if (dist < -radius) {
-            return 0; // sphere is completely outside
-        }
-    }
-    return 1;
-}
-
 // Fast AABB cull using positive-vertex trick (drop-in replacement)
 byte aabb_in_frustum_fast(
     const plane *planes,

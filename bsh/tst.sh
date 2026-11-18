@@ -12,6 +12,8 @@
 #     mali faults in a test run once crashed gnome-shell and logged the user out (2026-11-11)
 #     still opengl es 3.0 (--gles), the same render path the game takes on mali
 #   --stress: full terrain stream distance, tests default to --tiny terrain
+#   --release: an optimised build with the tests in it (bin/tst_release), for performance numbers (perf_fly,
+#     vox_instances_stress): debug builds are -O0, their cpu times are many times a player's
 #   --keepsaves: saves to the real save folder, tests default to --nosaves (a /tmp folder, deleted after)
 # Tests are added with zox_tst_add in a module's tst folder (see src/_/tst/_.c)
 # Safety: low priority, memory capped and killed on timeout, so a bad run can't freeze the pc
@@ -34,6 +36,7 @@ stress=0
 keepsaves=0
 visible=0
 gpu=0
+release=0
 repeat=1
 args=()
 next_is_repeat=0
@@ -54,6 +57,8 @@ for arg in "$@"; do
         gpu=1
     elif [[ "${arg}" == "--gpu" ]]; then
         gpu=1
+    elif [[ "${arg}" == "--release" ]]; then
+        release=1
     elif [[ "${arg}" == "--keepsaves" ]]; then
         keepsaves=1
     else
@@ -121,7 +126,15 @@ fi
 
 mkdir -p "${log_dir}"
 
-if [[ ${build} == "1" ]]; then
+if [[ ${build} == "1" && ${release} == "1" ]]; then
+    echo "> building release, with the tests"
+    if ! (ulimit -v 4500000; zox_extra_dflags="-Dzox_tests" nice -n 19 bash bsh/build.sh zoxel --release --logs \
+        --out tst_release > "${log_dir}/build.log" 2>&1); then
+        grep -m 20 "error" "${log_dir}/build.log"
+        echo "!! build failed, see [tst/build.log]"
+        exit 2
+    fi
+elif [[ ${build} == "1" ]]; then
     echo "> building debug"
     # cap the compiler too, it's a single big translation unit
     if ! (ulimit -v 4500000; nice -n 19 bash bsh/build.sh zoxel --debug --logs > "${log_dir}/build.log" 2>&1); then
@@ -132,6 +145,7 @@ if [[ ${build} == "1" ]]; then
 fi
 
 bin=$(ls -t bin/zoxel_*_dev/zoxel-dev.bin 2>/dev/null | head -1)
+[[ ${release} == "1" ]] && bin="bin/tst_release/tst_release.bin"
 if [[ -z "${bin}" ]]; then
     echo "!! no dev binary found in [bin/zoxel_*_dev]"
     exit 2
