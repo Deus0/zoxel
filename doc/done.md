@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-18
+-x mountains clear their middle third of vegetation (mountain_clears_vegetation): the check was
+  `distance < 2 / (radius * 3)`, integer division, 0, nothing cleared; tst mountain_vegetation
 -x aura particles: an aura turned on spawned an emitter it never kept (ParticlesEmitter unlinked), so turning it off
   removed nothing and each turn on added another, their particles never stopping; linked now; tst aura_particles
   (a real aura on a character: on, moved, off, on again)

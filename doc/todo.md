@@ -69,8 +69,6 @@
 			- only small ones
 			- when im far away from origin
 			- super weird
-- Mountains never clear their middle's vegetation: `mountain_distance < 2 / (mountain_radius * 3)` is integer
-  division, always 0, meant radius / 3? (mountains/sys/maps.c)
 - Body part seeds are `N * (i * spawn_count++)` (gam/zoxel/sys/body_parts.c), i is the realm's index: 0 in the
   first realm, every part the same seed, less variation (see tst model_variants)
 - Fix / test unstuck system and test it with no clip
