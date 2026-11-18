@@ -927,6 +927,8 @@
     - requires input slots feature
 
 # Saves, Realms and Game States
+- export / import button for game data (saves, settings), on android too: a new signing key or a reinstall wipes the
+  app's data, so players need a way to keep their saves
 - save data for characters: only what changed from their base, low cost on disk, a stress test
 - Add realm names
     - need ui input field / TextInputs
