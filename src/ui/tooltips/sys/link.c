@@ -10,7 +10,7 @@ void tooltipee_initialize_system(iter* it) {
             e,
             zox_id(Canvas));
         if (!zox_valid(canvas)) {
-            return;
+            continue;   // was return: one without a canvas skipped the rest
         }
         entity tooltip = zox_get_child_by_id(
             world,
@@ -18,10 +18,10 @@ void tooltipee_initialize_system(iter* it) {
             zox_id(Tooltip));
         if (!zox_valid(tooltip)) {
             if (zox_has(canvas, Canvas3)) {
-                continue;   // a 3D window: no tooltips in 3D yet (doc/plans/xr.md)
+                continue;   // a 3D window without its own tooltip (ui_window3_tooltip_prefab unset)
             }
             zox_loge("Tooltip not found in Canvas [%s]", zox_getn(canvas));
-            return;
+            continue;
         }
         zox_link(world, e, TooltipLink, tooltip);
         if (dbg_log) {

@@ -21,6 +21,14 @@
   (body_parts_fit_height); narrower shoulders (0.4 of a blueprint across, were 0.6: 0.97 blocks wide, now 0.78); a
   body's bounds are its flesh (FleshSize, the merge's parts without clothes: a sleeve doesn't catch a doorway); tst
   doorway (centred, zox_tst_doorway_off=0.1 off it)
+-x taskbar icons had no tooltips (2D or 3D): a has check left prefab_icon's without its TooltipEvent; tst tooltip_flick
+  passes again, the 3D tooltip's text checked unclipped in the simulator (xr_navigator --xr-sim, tst/xr_tooltip.ppm)
+-x the XR simulator's window is 1440x720 (each eye square, a square window squeezed each eye to a thin strip)
+  unless --1080p: bash bsh/tst.sh screenshot --xr-sim saves both eyes side by side (doc/tests.md)
+-x 3D tooltips show their text: its glyphs sat at the world's origin (the hierarchy skipped a DisableParentTransform's
+  children), now it keeps its own transform and places its children from it (its own scale kept, or its parent's
+  passed on); 1cm nearer than its window (4mm hid it behind the frame); a ui without a canvas or tooltip no longer
+  stops the rest linking theirs (tst xr_navigator checks its glyphs are on it)
 -x the new realm menu's name field resizes to what's typed (it stayed its spawn size, a long name ran off the
   screen): a TextFit tag (its TextFitFontSize, TextFitWidth) sizes its field to it and shrinks its font past the
   list's width, on every list input field (tst realm_name_input); names stay at most input_field_max_length (24)

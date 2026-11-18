@@ -104,12 +104,11 @@ static void taskbar_spawn_frames(
                 isize);
             zox_set_unique_name(icon, "taskbar_icon");
             zox_setv(icon, ClickEvent, &taskbar_button_click_event);
-            if (zox_has(icon, TooltipEvent)) {
-                zox_setv(icon, TooltipEvent, &tooltip_text_event);
-                char tooltip_text[64];
-                sprintf(tooltip_text, "%s", data->tooltip_text);
-                set_TooltipText(world, icon, tooltip_text);
-            }
+            // its tooltip, 2D and 3D (added here: prefab_icon has none, a has check left every taskbar icon without one)
+            zox_setv(icon, TooltipEvent, &tooltip_text_event);
+            char tooltip_text[64];
+            sprintf(tooltip_text, "%s", data->tooltip_text);
+            set_TooltipText(world, icon, tooltip_text);
             clone_texture_file_to_entity(
                 world,
                 icon,

@@ -34,7 +34,8 @@ Then (2026-11-17, second pass):
   an eye's render), xr/sim (the simulator), xr/pre and ins (the xr camera). `XrCamera` is in cameras and the screen
   render skips it. `zox_xr_active` replaced `#ifdef zox_xr` in huds and the skybox
 - **the simulator** (`--xr-sim`, step 1's first half): both eyes side by side, the head on Q E (turn) R F (tilt),
-  the sticks on W A S D and the arrows. Uses the same eye render and free roam as a headset
+  the sticks on W A S D and the arrows. Uses the same eye render and free roam as a headset. Its window is 1440x720
+  (each eye square) unless `--1080p`; `bash bsh/tst.sh screenshot --xr-sim` saves both eyes to `tst/screenshot.ppm`
 - src/xr compiles (syntax checked on the board with the OpenXR SDK's headers and `-Dzox_xr`), not yet built for
   Android. A headset still has to show: the swapchain format, tracking, stick directions, comfort
 - the 2D ui pass is gone from the XR render (it was commented out); the menu is spawned once, by huds
