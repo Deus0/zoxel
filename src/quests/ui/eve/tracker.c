@@ -48,16 +48,14 @@ void quest_tracker_updated(iter* it) {
         if (!tracker) {
             continue;
         }
-        char* text = (char*) get_quest_tracker_text(world, e);
-        byte dirty = set_entity_text(world, tracker, text);
+        char* text = get_quest_tracker_text(world, e);
+        byte dirty = set_entity_text(world, tracker, text ? text : "");
         if (dbg_log) {
             zox_log("Tracked Quest Updated [%s], Dirty [%i], Text [%s]",
                 zox_getn(e),
                 dirty,
                 text);
         }
-        if (text[0]) {
-            free(text);
-        }
+        free(text);
     }
 }

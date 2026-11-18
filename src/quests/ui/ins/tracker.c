@@ -16,10 +16,7 @@ entity spawn_quest_tracker(
         return 0;
     }
     entity quest = zox_get_link(world, character, QuestTracked);
-    char* text = "";
-    if (quest) {
-        text = (char*) get_quest_tracker_text(world, quest);
-    }
+    char* text = get_quest_tracker_text(world, quest);
     // with the ui scale (it was 12 and 12x8 at any): a split screen's is smaller (player_ui_scale_begin), 12 at 2.45
     byte font_size = 5 * ui_scale;
     byte2 padding = (byte2) {
@@ -40,7 +37,7 @@ entity spawn_quest_tracker(
         position,
         anchor,
         padding,
-        text, // "Quest Tracker",
+        text ? text : "", // "Quest Tracker",
         font_size,
         zox_alignment_top_right,
         0,
@@ -57,7 +54,7 @@ entity spawn_quest_tracker(
         if (!old_tracker) {
             zox_link(world, quest, QuestTrackerLink, tracker);
         }
-        free(text);
     }
+    free(text);
     return tracker;
 }

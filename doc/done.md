@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-18
+-x quest tracker showed (null): an unnamed quest or slay target printed its missing entity name, now its ZoxName,
+  its realm quest's, its entity name or ???; its text is always allocated (an invalid quest's literal "" was freed
+  as a tracker spawned) (tst quest_tracker_text)
 -x imported voxes: a .txt beside a .vox says the depth it was made at ("depth 4"), it's scaled up to depth 5 on
   import, so the top hat (and cavalier and bowler hats) aren't half size on a Block Res 5 body; only .vox files are
   read as voxes; doc/imports.md (tst vox_import)
