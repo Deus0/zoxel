@@ -764,10 +764,8 @@
 - Add a compass symbol to show north etc
 
 # Rendering, Lights and Cameras
-- Global shaders and materials to entities, like the rest (Shader, Material, ShaderGPULink, MaterialGPULink): the
-  lines (line2D, line3D, line3D_instanced), particle3D and the 2D square instance material (shader2D_basic,
-  square2DMaterial) with their meshes and buffers; then the gpu dispose / restore walks cover them and their hooks
-  go (geometry/lines, particles3, rendering2)
+- Plain gl buffers still kept in globals, remade by gpu_restore hooks: the line instance buffers (lines3), particle
+  instance buffers (particles3), the 2D textured square mesh (rendering2); could be mesh entities
 - grass meshes: a tall grass block is 18k triangles at full detail (tst vox_instances_stress --gpu --release logs
   it), each stalk voxel its own shade so no faces merge; one colour a stalk would let its sides merge into a few
   quads (asked the user first: it changes the grass's look); greedy meshing plan: doc/tech/chunks3.md

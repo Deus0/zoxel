@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-20
+-x Global shaders to entities: the lines' (2D, 3D, 3D instanced) and particles' shader and material are entities
+  (spawn_material_source), their uniform locations components (MaterialLine2D, MaterialLine3D,
+  MaterialLine3DInstanced, MaterialParticle3D) relocated on a restore; removed the 2D square instance material
+  (instance_render2_system was never registered)
 -x A gpu restore looks up the materials' uniform locations again (zox_gpu_relocate), they were the old program's;
   tst gpu_restore scrambles material_basic3D's and checks they come back. opengl_mode is in graphics now (dat/opengl_mode.c)
 -x Opengl es (android, tests) logged GL_INVALID_ENUM every frame: GL_POLYGON_OFFSET_LINE and GL_PROGRAM_POINT_SIZE
