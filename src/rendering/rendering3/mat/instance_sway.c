@@ -47,6 +47,7 @@ entity spawn_material_vox_instance_sway(ecs* world) {
         zox_loge("vox instance sway material failed to initialize")
         return 0;
     }
+    bind_instance_matrices(material);
     const MaterialVoxInstanceSway data = create_MaterialVoxInstanceSway(material);
     zox_set_data(e, MaterialVoxInstanceSway, data)
     material_vox_instance_sway = e;

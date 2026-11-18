@@ -1,5 +1,4 @@
 zoxc_guint(MaterialGPULink);
-zoxc_guint(MaterialInstancedGPULink);
 
 ECS_DTOR(MaterialGPULink, ptr, {
     zox_dispose_material(ptr->value);

@@ -1,5 +1,15 @@
 // Settings
 
+// opengl es (android, tests): it has no line polygon offset, and point sizes are always the shader's
+static inline byte zox_gpu_is_es() {
+    static int is_es = -1;
+    if (is_es < 0) {
+        const char* version = (const char*) glGetString(GL_VERSION);
+        is_es = version && strstr(version, "OpenGL ES") != NULL;
+    }
+    return is_es;
+}
+
 static inline void zox_gpu_enable_culling() {
     glEnable(GL_CULL_FACE);
 }
@@ -57,11 +67,13 @@ static inline void zox_gpu_polyoffset(float a, float b) {
 }
 
 static inline void zox_gpu_enable_polyoffset_lines() {
-    glEnable(GL_POLYGON_OFFSET_LINE);
-    // GLenum error = glGetError();
-    // printf("polygon offset line error: 0x%x\n", error);
+    if (!zox_gpu_is_es()) {
+        glEnable(GL_POLYGON_OFFSET_LINE);
+    }
 }
 
 static inline void zox_gpu_disable_polyoffset_lines() {
-    glDisable(GL_POLYGON_OFFSET_LINE);
+    if (!zox_gpu_is_es()) {
+        glDisable(GL_POLYGON_OFFSET_LINE);
+    }
 }

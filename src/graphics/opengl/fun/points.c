@@ -1,5 +1,7 @@
 static inline void zox_gpu_enable_points() {
-    glEnable(GL_PROGRAM_POINT_SIZE);
+    if (!zox_gpu_is_es()) {
+        glEnable(GL_PROGRAM_POINT_SIZE);
+    }
 }
 
 static inline void zox_gpu_render_points(gsizei length) {

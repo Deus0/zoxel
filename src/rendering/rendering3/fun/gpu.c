@@ -23,11 +23,12 @@ void gpu_restore_rendering3(ecs* world) {
         zox_add(e, SkeletonMeshDirty);
     zox_disposed_end(disposed_bone_indexes);
 #ifndef zox_disable_rendering_instances
+    // the materials relinked (gpu_restore_rendering), their blocks bound again
+    if (zox_valid(material_vox_instance)) bind_instance_matrices(zox_getv(material_vox_instance, MaterialGPULink));
+    if (zox_valid(material_vox_instance_sway)) bind_instance_matrices(zox_getv(material_vox_instance_sway, MaterialGPULink));
     zox_each_begin(UboGPULink);
-        const MaterialVoxInstance* data = zox_get(e, MaterialVoxInstance);
-        if (!data) continue;
         zox_each_o(UboGPULink, ubo);
-        ubo->value = generate_ubo(data->matrices);
+        ubo->value = generate_ubo(zox_instance_matrices_binding);
     zox_each_end();
 #endif
 }

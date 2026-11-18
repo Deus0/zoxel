@@ -1,7 +1,3 @@
-guint create_shader_compute() {
-    return glCreateShader(GL_COMPUTE_SHADER);
-}
-
 static inline void zox_gpu_dispose_shader(guint id) {
     if (id) {
         glDeleteShader(id);

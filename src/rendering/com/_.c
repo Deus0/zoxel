@@ -57,7 +57,6 @@ zoxc_arrayd(MeshColorRGBs, color_rgb);
 #include "uvs_gpu_link.c"
 #include "colors_gpu_link.c"
 #include "shader_gpu_link.c"
-#include "compute_shader.c"
 // Events
 zox_tag(BuildMesh);
 zox_tag(BuildMeshWeights);
@@ -131,10 +130,6 @@ void zox_components_rendering(ecs *world) {
     zoxd_arrayd(MeshColors);
     zoxd_arrayd(MeshColorRGBs);
     // GPU Links
-    zoxd(MaterialInstancedGPULink);
-    // Old
-    zoxd_guint_dest_old(ComputeShaderLink);
-    // New
     zoxd_guint_dest(MaterialGPULink);
     zoxd_guint_dest(TextureGPULink);
     zoxd_guint2_dest(MeshGPULink);

@@ -19,6 +19,13 @@ static inline void zox_gpu_ubo_initialize_matricies(guint id, guint binding_poin
     glBindBufferBase(GL_UNIFORM_BUFFER, binding_point, id);
 }
 
+// a program's uniform block reads the buffer bound at binding (glBindBufferBase); lost when the program relinks
+static inline void zox_gpu_ubo_block_binding(guint program, guint block_index, guint binding) {
+    if (block_index != GL_INVALID_INDEX) {
+        glUniformBlockBinding(program, block_index, binding);
+    }
+}
+
 static inline void zox_gpu_ubo_reset() {
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }

@@ -29,6 +29,7 @@ void zox_systems_render_textures(ecs* world) {
         [none] cameras.RenderTexture,
         [none] rendering.RenderTextureDirty,
         [none] !core.Initialize,
+        [none] !core.PreInitialize,     // its texture is made the frame after (Initialize)
     );
     zox_system_1(
         camera_material_system,

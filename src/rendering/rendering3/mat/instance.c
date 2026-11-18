@@ -2,6 +2,16 @@
 //  also LODing support
 entity shader_vox_instance = 0;
 entity material_vox_instance = 0;
+#define zox_instance_matrices_binding 0    // the InstanceMatrices ubo's binding, both vox instance materials read it
+
+// the material's InstanceMatrices block reads the instance ubo, set again after a relink (a gpu restore)
+static inline void bind_instance_matrices(guint material) {
+#ifndef zox_disable_ubos
+    zox_gpu_ubo_block_binding(material, zox_gpu_get_material_uniform(material, "InstanceMatrices"), zox_instance_matrices_binding);
+#else
+    (void) material;
+#endif
+}
 
 typedef struct {
     gint vertex_position;
@@ -41,7 +51,7 @@ uint generate_ubo(gint binding_point) {
     // glBindBufferBase(GL_UNIFORM_BUFFER, binding_point, ubo);
     // glBindBuffer(GL_UNIFORM_BUFFER, 0); // Unbind after allocation
 
-    zox_logv(" + spawned ubo: %i binded to block index %i", ubo, binding_point);
+    zox_logv(" + spawned ubo: %i bound at [%i]", ubo, binding_point);
     return ubo;
 #else
     return 0;
@@ -77,7 +87,8 @@ entity spawn_material_vox_instance(ecs* world) {
     }
     const MaterialVoxInstance materialVoxInstance =  create_MaterialVoxInstance(material);
     zox_set_data(e, MaterialVoxInstance, materialVoxInstance)
-    guint ubo = generate_ubo(materialVoxInstance.matrices);
+    bind_instance_matrices(material);
+    guint ubo = generate_ubo(zox_instance_matrices_binding);
     zox_setv(e, UboGPULink, ubo);
     material_vox_instance = e;
     shader_vox_instance = shader;
