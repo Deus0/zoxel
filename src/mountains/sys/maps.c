@@ -1,3 +1,8 @@
+// a mountain's middle third grows nothing (rock), past it vegetation as the land around
+static inline byte mountain_clears_vegetation(int distance, int radius) {
+    return distance < radius / 3;
+}
+
 // NOTE: Adds height to the heightmap using region mountains
 void mountain_map_system(iter* it) {
     zox_sys_on_begin();
@@ -87,7 +92,7 @@ void mountain_map_system(iter* it) {
                     }
                     height_map->value[index] = int_clamp(value, 0, render_distance_y * terrain_length - 1);
                     // Clear Vegetation for middle of mountains
-                    if (!zox_disable_vegetation && mountain_distance < 2 / (mountain_radius * 3)) {
+                    if (!zox_disable_vegetation && mountain_clears_vegetation(mountain_distance, mountain_radius)) {
                         vegetation_map->value[index] = 0;
                     }
                 }
