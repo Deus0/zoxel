@@ -162,7 +162,10 @@ fi
 # tests that need more terrain than --tiny (i.e. far lods to compare), the later --medium wins
 medium_tests=(lod_chunk_lights lod_swap)
 # tests that screenshot the world, the hud hidden
-nohud_tests=(sky_clouds head_camera town_view wall_view held_item held_block)
+nohud_tests=(sky_clouds head_camera town_view held_item held_block)
+# tests that take the readme's screenshots: a far, tall world at 1080p, no hud or labels, the same seed (zox_tst_seed
+#   overrides it), more time to stream, their shots converted to doc/screenshot/ after
+aesthetic_tests=(aesthetic_town)
 run_game() {
     local tst="$1"
     local log="$2"
@@ -170,13 +173,20 @@ run_game() {
     local test_args=()
     [[ " ${medium_tests[*]} " == *" ${tst} "* ]] && test_args=(--medium)
     [[ " ${nohud_tests[*]} " == *" ${tst} "* ]] && test_args+=(--nohud)
+    local seconds="${timeout_seconds}"
+    local seed_env=()
+    if [[ " ${aesthetic_tests[*]} " == *" ${tst} "* ]]; then
+        test_args+=(--far 16 --vertical 4 --1080p --nohud --nouis)
+        seed_env=(env "zox_tst_seed=${zox_tst_seed:-2}")
+        seconds=$(( timeout_seconds > 300 ? timeout_seconds : 300 ))
+    fi
     if [[ ${gdb} == "1" ]]; then
         debugger=(gdb -q -batch -ex "handle SIGPIPE nostop" -ex run -ex bt --args)
     fi
     # exec, so $! is timeout's pid, and killing it takes the game down with it
     (
         cd "${bin_dir}" &&
-        exec timeout -k 5 "${timeout_seconds}" "${cap[@]}" "${soft_env[@]}" nice -n 10 \
+        exec timeout -k 5 "${seconds}" "${cap[@]}" "${seed_env[@]}" "${soft_env[@]}" nice -n 10 \
             "${debugger[@]}" "./${bin_name}" --tst "${tst}" --autostart "${mode_args[@]}" "${args[@]}" "${test_args[@]}" \
             > "${log}" 2>&1
     ) &
@@ -285,6 +295,21 @@ run_game() {
     return ${code}
 }
 
+# the aesthetic tests' shots (tst/aesthetic/*.ppm) to doc/screenshot/*.jpg, half size
+aesthetic_convert() {
+    if ! command -v magick > /dev/null; then
+        echo "    !! no magick (imagemagick), the shots stay in tst/aesthetic/"
+        return
+    fi
+    mkdir -p "${root}/doc/screenshot"
+    local ppm
+    for ppm in "${log_dir}"/aesthetic/*.ppm; do
+        [[ -f "${ppm}" ]] || continue
+        local jpg="${root}/doc/screenshot/$(basename "${ppm}" .ppm).jpg"
+        magick "${ppm}" -resize 50% -quality 88 "${jpg}" && echo "    + ${jpg#${root}/}"
+    done
+}
+
 # runs one test, prints its [tst] lines, keeps the log if it failed
 run_tst() {
     local tst="$1"
@@ -311,6 +336,9 @@ run_tst() {
         echo "    !! segfault, backtrace:"
         grep -aoP "${bin_name}\(\+\K0x[0-9a-f]+" "${log}" | head -25 | \
             xargs -r addr2line -f -C -e "${bin}" | paste - - | sed 's/^/    /'
+    fi
+    if [[ ${code} == "0" && " ${aesthetic_tests[*]} " == *" ${tst} "* ]]; then
+        aesthetic_convert
     fi
     if [[ ${code} == "125" ]]; then
         echo "    !! killed, log passed ${log_max} bytes (log spam)"

@@ -7,6 +7,10 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
+- the sky has horizontal streaks in screenshots at 1080p (tst aesthetic_town, doc/screenshot/wall.jpg), upper middle
+	of the sky (2026-11-18)
+- --vertical over 4 smashed the stack (terrain_stream_queue_system, Chunk3Stack is render_distance_y_max * 2 + 1),
+	clamped to 4 now; a taller world needs a bigger max (2026-11-18)
 - tst touch_play is flaky: the left stick up, it walked 0.35 in 3 of 10 runs (1.1 to 4.1 in the others, needs > 1),
 	where the character spawns decides it (since players spawn at their homes? 2026-11-18), and a run stalled
 - tst lint_systems: chunk3_textured_render_system (src/rendering/rendering3/sys/render_chunks.c:184) has no

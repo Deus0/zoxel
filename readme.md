@@ -13,7 +13,7 @@
 A procedural voxel RPG about exploration, discovery, and the strange things
 that exist beyond the edge of the known world.
 
-![Looking out from a town's wall: homes, roads, villagers, and the land beyond](doc/screenshot.jpg)
+![On a town wall: the town to one side, lakes and wilds to the other](doc/screenshot/wall.jpg)
 
 The land is vast. Mountains rise from forests, villages appear in the
 wilderness, dungeons lie beneath the earth, and creatures wander through the
