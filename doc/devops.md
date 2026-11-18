@@ -35,7 +35,7 @@
 		  a lost key means installed apks can't be updated, only reinstalled
 	- without the secrets each run makes a new key: the apk installs, but uninstall the old one before updating
 - android.sh patches SDL's android-project (copied to and/<game>/) for each build:
-	- app id org.<game> (org.zoxel), debug builds org.zoxel.debug, the java namespace stays org.libsdl.app
+	- app id org.<game> (org.zoxel), xr builds org.zoxel.xr, debug builds .debug on the end, the java namespace stays org.libsdl.app
 	- versionCode is the build date (20261118), versionName 2026.11.18, so a newer apk updates an older one
 	- launcher icons: gam/<game>/android/res/mipmap-*/ic_launcher.png replace sdl's, made from res/textures/game.bmp
 	  (the window icon) with a clear background, after changing it: bash bsh/android_icons.sh (needs imagemagick)

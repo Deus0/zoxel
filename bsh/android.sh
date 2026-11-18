@@ -744,11 +744,12 @@ sed -i \
 # Application ID / version
 #
 # namespace stays org.libsdl.app (SDL's java classes live there), the app id is our own,
-# debug builds get .debug so they install next to a release
+# xr builds get .xr, debug builds .debug, so they install next to a release
 # version: the build date, so each build updates over the last
 # ============================================================
 
 package_name="org.${game_name}"
+[[ "${is_xr}" == "1" ]] && package_name="${package_name}.xr"
 [[ "${profile}" == "debug" ]] && package_name="${package_name}.debug"
 version_code="$(date +%Y%m%d)"
 version_name="$(date +%Y.%m.%d)"
