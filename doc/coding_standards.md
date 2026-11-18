@@ -573,6 +573,12 @@ Flecs is used through the `zox_` macros in `src/_/flecs/mcr/`, raw flecs stays i
   points or phase changes for it. Use an observer, or ask; `tst pipeline_syncs` counts the merges.
 - flecs.c itself is patched by `bsh/flecs_fix.sh`, each patch in [flecs_patches.md](flecs_patches.md).
 
+## Commits
+
+- Short messages: one lower case line saying what changed, i.e. `terrain scales with the stream height`.
+- The details (why, how, what a value means, what a test checks) go in the code's comments, where the next reader
+  finds them, not in the commit.
+
 ## General Principle
 
 Zox code should be organized around responsibility.
