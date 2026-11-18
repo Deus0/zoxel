@@ -24,5 +24,9 @@ mkdir -p tst
 check prerelease --logs --timings --release
 check release --release
 zox_extra_dflags="-Dnear= -Dfar= -Dzox_tests" check windows_names --syntax
+# the windows build itself, where its cross compiler is installed (mingw)
+if command -v x86_64-w64-mingw32-gcc > /dev/null 2>&1; then
+    check windows --windows --release
+fi
 echo "[tst] [lint_builds] $([[ ${failed} == 0 ]] && echo PASSED || echo FAILED) [${builds}] builds, [${failed}] failed"
 [[ ${failed} == 0 ]]
