@@ -62,8 +62,8 @@ void main() {
         vec3(noise),
         NOISE_STRENGTH);
 
-    // Under water: reds and greens soaked up, the view deep blue
-    frag_color = mix(frag_color, frag_color * vec3(0.35, 0.7, 1.1) + vec3(0.0, 0.03, 0.08), tint);
+    // Under water: reds and greens soaked up a little, the view blue (light: it multiplies the dark)
+    frag_color = mix(frag_color, frag_color * vec3(0.6, 0.82, 1.05) + vec3(0.0, 0.03, 0.07), tint);
 
     // Vignette
     float vignette_smoothness = 0.8;

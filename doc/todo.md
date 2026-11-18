@@ -37,11 +37,6 @@
 - XR lean feels 2-3 times larger than real life (play test, on the build that slid the whole body): tst xr_body has
 	it 1:1 scaled at 72 fps, the body now leans its spine first (xr_lean_angle_max); check again in the headset
 - the cookie gather quest failed
-- Lighting flickers again when we destroy a block (water block refactor regression)
-	- not seen by tst dig_light (2026-11-18): a sunlit surface block dug, in a chunk's middle and on its edge
-	  (zox_tst_dig_edge=1), Block Res 4 and 5: the hole's faces show lit (the upload waits for their colours), the
-	  faces around keep their light; needs where it shows (dark places, a cave, a house, near water, at night?)
-	- the dug block's faces stay about 7 frames before the rebuilt mesh replaces them, relit as the light comes in
 - tst furniture_place stalls on "air in the player's chunk" (2026-11-18, also without the water level changes)
 - furniture_hits is flaky: some door top rays miss now and then, once the app closed mid test
 - perf_stream and tables_stream sometimes fail: lod swaps don't settle in 20s (flaky before the test move too)
@@ -197,7 +192,6 @@
 - sound_generate_system - uses too much still
 - Add damage and sound if you land strongly
 - Change music track when dialogue starts too
-- Underwater: Dampen music sounds
 
 # Terrain and Chunks
 - Flying's slowest frames now: new tables while streaming (16%), colored chunk meshes (9%), tst perf_fly

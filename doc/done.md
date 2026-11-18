@@ -9,6 +9,8 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x Lighting flickered destroying a block (water block refactor): fixed, not seen since (tst dig_light)
+-x Under water the blue tint lighter: it multiplied the dark down too much
 -x Light flooding into water dims more: 24 a block over the air's 32 (light_flood_decay), tst water_light
 -x The gpu mesher draws flowing water at its level too (gpu_mesher_set_heights), tst gpu_mesh
 -x Under water the view is tinted deep blue (CameraTint, eased, the render texture's shader), tst underwater
