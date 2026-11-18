@@ -229,6 +229,7 @@ byte zox_tst_continue_game_ready(ecs* world) {
 
 // tst: screenshot, saves what the player sees after spawning to tst/screenshot.ppm
 //  - for looking at the rendering (i.e. lighting), bash bsh/tst.sh screenshot, then convert to png
+//  - the XR simulator's two eyes side by side: bash bsh/tst.sh screenshot --xr-sim
 //  - waits zox_tst_screenshot_wait after the player settles, so lights and meshes finish
 //  - zox_tst_save=<realm folder> loads a copy of a real save instead (same place every run, for before / after)
 extern char zox_screenshot_request[256];

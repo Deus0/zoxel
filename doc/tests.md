@@ -62,6 +62,8 @@ void zox_tsts_my_module() {
   plays. To hear one: `--sounds`, to record one: `SDL_AUDIO_DRIVER=disk` (see [audio.md](audio.md)).
 - **Files to look at**: write a `.wav` or a screenshot to `tst/` with `zox_tst_path("song.wav")` (makes sub folders,
   `zox_tst_path("models/cokie.ppm")`), never a hardcoded path: the game runs from `bin/<build>/`, tst.sh passes the folder.
+- **A screenshot of a game**: `bash bsh/tst.sh screenshot` (`tst/screenshot.ppm`), `--xr-sim` for the XR simulator's
+  two eyes side by side (a 1440x720 window, each eye square).
 - **Looking at a character**: `bash bsh/body.sh` (your settings, i.e. Block Res 5), then `tst/body_views.png`: a
   dressed character in the void from 4 viewports (src/controllers/tst/body_views.c).
 - **Looking at a model**: `bash bsh/model.sh <name>` (iterating a blueprint: edit, run, look at

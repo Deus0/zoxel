@@ -39,6 +39,11 @@ void process_arguments_xr(ecs* world, char* args[], int count) {
             zox_xr_sim = 1;
             zox_xr_active = 1;
             zox_huds3D = 1;
+            // a window twice as wide as high, each eye square side by side (a square one squeezed each eye to a
+            //  thin strip, i.e. bash bsh/tst.sh screenshot --xr-sim), unless one's set (--1080p)
+            if (!window_size_override.x) {
+                window_size_override = (int2) { 1440, 720 };
+            }
             zox_log("[XR] simulator on");
         }
     }

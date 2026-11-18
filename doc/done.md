@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-18
+-x the XR simulator's window is 1440x720 (each eye square, a square window squeezed each eye to a thin strip)
+  unless --1080p: bash bsh/tst.sh screenshot --xr-sim saves both eyes side by side (doc/tests.md)
 -x 3D tooltips show their text: its glyphs sat at the world's origin (the hierarchy skipped a DisableParentTransform's
   children), now it keeps its own transform and places its children from it (its own scale kept, or its parent's
   passed on); 1cm nearer than its window (4mm hid it behind the frame); a ui without a canvas or tooltip no longer
