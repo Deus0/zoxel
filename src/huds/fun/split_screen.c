@@ -2,6 +2,45 @@
 //  their own, side by side (one column each, viewport_grid_cell)
 //  - joined players (join_player) get their cameras and canvas as a game loads, and lose them back at the main menu
 
+// a split screen's uis are scaled to its width: a half screen's are half, laid out as a full screen's are, and no
+//  bigger than fits split_screen_hud_width across it (they overlapped, the stats over the minimap)
+float player_ui_scale_saved = 0;
+// the top huds side by side at ui scale 1, with slack: the stats panel (~111) and the minimap (80)
+#define split_screen_hud_width 220
+
+static inline float get_canvas_ui_fraction(ecs* world, entity canvas) {
+    if (!zox_valid(canvas) || !zox_has(canvas, ScreenToCanvas)) {
+        return 1;
+    }
+    const float4 cell = zox_getv(canvas, ScreenToCanvas);
+    const float width = cell.x;    // its width of the window's (viewport_grid_cell)
+    return width > 0 && width < 1 ? width : 1;
+}
+
+void player_ui_scale_begin(ecs* world, entity player) {
+    player_ui_scale_saved = ui_scale;
+    const entity canvas = zox_get_link(world, player, CanvasLink);
+    const float fraction = get_canvas_ui_fraction(world, canvas);
+    if (fraction >= 1) {
+        return;
+    }
+    ui_scale *= fraction;
+    // its canvas's width (LayoutSize is a frame behind a split, the window's share is now)
+    if (zox_valid(main_app) && zox_has(main_app, WindowSize)) {
+        const float width = zox_getv(main_app, WindowSize).x * fraction;
+        const float fits = width / split_screen_hud_width;
+        if (ui_scale > fits) {
+            ui_scale = fits;
+        }
+    }
+}
+
+void player_ui_scale_end(ecs* world, entity player) {
+    (void) world;
+    (void) player;
+    ui_scale = player_ui_scale_saved;
+}
+
 // places each player's cameras and canvas in their cell of the window
 void layout_player_screens(
     ecs* world,

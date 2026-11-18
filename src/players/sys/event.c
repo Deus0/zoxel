@@ -1,3 +1,7 @@
+// around a player's state hooks, i.e. huds scales the uis they spawn to a split screen's (player_ui_scale_begin)
+void (*player_state_event_begin)(ecs*, entity) = NULL;
+void (*player_state_event_end)(ecs*, entity) = NULL;
+
 // NOTE: Sets to playing when resuming from pause
 void player_state_event_system(iter* it) {
     zox_sys_on_begin();
@@ -19,6 +23,9 @@ void player_state_event_system(iter* it) {
             zox_loge("PlayerStateEvent is null");
             continue;
         }*/
+        if (player_state_event_begin) {
+            player_state_event_begin(world, e);
+        }
         for (int j = 0; j < event->count; j++) {
             if (event->value[j].fun == NULL) {
                 zox_loge("Player [%s] StateEvent Null [%i]",
@@ -34,6 +41,9 @@ void player_state_event_system(iter* it) {
                 world,
                 e,
                 state->value);
+        }
+        if (player_state_event_end) {
+            player_state_event_end(world, e);
         }
     }
     zox_sys_on_end();

@@ -1,11 +1,12 @@
 extern char zox_screenshot_request[256];
 // tst: split_screen, local coop: a second player joins on the main menu, the screen splits only in game
-//  - on the main menu a second player joins (join_player, as a gamepad's A does): the join ui at the bottom shows
-//      P1 and P2, the second player has no cameras or canvas, one camera fills the window
+//  - a test gamepad (zox_tst_spawn_pad) of the first player's, who isn't using it: its A on the main menu joins a
+//      second player with it (the first player stays on theirs), the join ui at the bottom shows P1 and P2, the
+//      second player has no cameras or canvas, one camera fills the window
 //  - new game > enter realm: as it loads the second player gets its cameras and canvas, each player's in their half
-//      of the window, and a character each
+//      of the window, and a character each (their huds don't overlap: tst split_screen_huds)
 //  - pause > end game > the main menu: the second player's screen goes, the first player's fills the window again
-//  - it leaves (unjoin_player, as its B does): the join ui shows P1 alone
+//  - its B leaves: the gamepad is the first player's again, the join ui shows P1 alone
 //  - run: bash bsh/tst.sh split_screen
 int zox_tst_sscreen_stage = 0;
 int zox_tst_sscreen_frames = 0;
@@ -78,10 +79,14 @@ byte zox_tst_split_screen_ready(ecs* world) {
             if (!zox_tst_main_menu(world, player, canvas)) {
                 return 0;
             }
-            zox_tst_check(join_player(world, zox_get_link(world, player, GameLink), 0) != 0, "the second player couldn't join");
+            memset(zox_tst_pad_held, 0, sizeof(zox_tst_pad_held));
+            zox_tst_pad = zox_tst_spawn_pad(world, player);
             break;
         case 1:
             zox_tst_waiting = "the join ui to show both players";
+            // A, a few frames on
+            zox_tst_pad_held[zox_btn_a] = zox_tst_sscreen_frames >= zox_tst_menus_settle_frames + 5 &&
+                zox_tst_sscreen_frames < zox_tst_menus_settle_frames + 9;
             if (zox_tst_sscreen_join_labels(world, canvas) != 2) {
                 if (zox_tst_sscreen_frames <= 120) {
                     return 0;
@@ -90,6 +95,11 @@ byte zox_tst_split_screen_ready(ecs* world) {
                 return 1;
             }
             zox_tst_check(players_playing == 2, "[%i] players after joining", players_playing);
+            if (players_playing == 2) {
+                zox_tst_check(zox_get_link(world, zox_players[1], GamepadLink) == zox_tst_pad, "the second player didn't join with the gamepad");
+                zox_tst_check(zox_get_parent(world, zox_tst_pad) == zox_players[1], "the gamepad isn't the second player's");
+            }
+            zox_tst_check(zox_getv(player, DeviceMode) != zox_device_mode_gamepad, "the first player switched to the gamepad that joined");
             zox_tst_check(!zox_get_link(world, zox_players[1], CanvasLink) && !zox_get_link(world, zox_players[1], CameraLink),
                 "the second player has a screen on the main menu");
             zox_tst_sscreen_check_screens(world, 1, "main menu");
@@ -119,6 +129,7 @@ byte zox_tst_split_screen_ready(ecs* world) {
             }
             zox_tst_sscreen_check_screens(world, 2, "in game");
             zox_tst_check(zox_valid(zox_get_link(world, zox_players[1], CharacterLink)), "the second player has no character");
+
             snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("split_screen.ppm"));
             button_event_pause_game(world, (ClickEventData) { .clicker = player });
             break;
@@ -140,10 +151,12 @@ byte zox_tst_split_screen_ready(ecs* world) {
                 "the second player's screen stayed after the game");
             zox_tst_sscreen_check_screens(world, 1, "back at the main menu");
             zox_tst_check(zox_tst_sscreen_join_labels(world, canvas) == 2, "the join ui doesn't show both players again");
-            unjoin_player(world, zox_players[1]);
             break;
         case 6:
             zox_tst_waiting = "the join ui to show the first player alone";
+            // B, a few frames on
+            zox_tst_pad_held[zox_btn_b] = zox_tst_sscreen_frames >= zox_tst_menus_settle_frames + 5 &&
+                zox_tst_sscreen_frames < zox_tst_menus_settle_frames + 9;
             if (zox_tst_sscreen_join_labels(world, canvas) != 1) {
                 if (zox_tst_sscreen_frames <= 120) {
                     return 0;
@@ -152,6 +165,8 @@ byte zox_tst_split_screen_ready(ecs* world) {
                 return 1;
             }
             zox_tst_check(players_playing == 1, "[%i] players after leaving", players_playing);
+            zox_tst_check(zox_get_parent(world, zox_tst_pad) == player, "the gamepad isn't the first player's again");
+            zox_tst_pad_held[zox_btn_b] = 0;
             return 1;
     }
     zox_tst_sscreen_next();

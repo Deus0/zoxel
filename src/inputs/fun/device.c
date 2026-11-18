@@ -37,3 +37,19 @@ byte mouse_is_any_input(ecs *world, entity e) {
     }
     return 0;
 }
+
+// a device's button of a type (zox_btn_*) is down
+static inline byte device_button_down(ecs* world, entity device, byte type) {
+    byte pressed = 0;
+    iter it2 = zox_children(world, device);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count && !pressed; j++) {
+            const entity e = it2.entities[j];
+            pressed = zox_has(e, ZeviceButton) && zox_has(e, DeviceButtonType) &&
+                zox_getv(e, DeviceButtonType) == type &&
+                (devices_get_pressed(zox_getv(e, ZeviceButton)) ||
+                devices_get_pressed_this_frame(zox_getv(e, ZeviceButton)));
+        }
+    }
+    return pressed;
+}
