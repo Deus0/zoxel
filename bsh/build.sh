@@ -397,6 +397,8 @@ if [[ ${is_fonts} == "1" ]]; then
     libs+=" $(pkg-config --libs freetype2)"
 fi
 
+# extra defines from the environment, i.e. zox_extra_dflags="-Dnear= -Dfar=" (bsh/lint_builds.sh: windows' macros)
+dflags+=" ${zox_extra_dflags-}"
 ${compiler} ${cflags} ${sources} -o "${bin_path}" ${includes} ${dflags} ${libs}
 echo "+ Completed Build [${bin_path}]"
 

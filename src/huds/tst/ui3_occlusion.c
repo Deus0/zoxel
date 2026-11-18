@@ -162,8 +162,8 @@ byte zox_tst_ui3_occlusion_ready(ecs* world) {
         zox_tst_u3_hidden_red = zox_tst_u3_pixels(zox_tst_path("ui3_hidden.ppm"), 0);
         // far off but in front of the ground: its layers apart (blue on red)
         //  (lifted 10 blocks, over the trees and roofs that stood in front of it)
-        const float3 far = zox_tst_u3_along(world, camera, (zox_tst_u3_hidden_distance - 20) * scale);
-        zox_setv(zox_tst_u3_canvas, Position3D, ((float3) { far.x, far.y + 10 * scale, far.z }));
+        const float3 distant = zox_tst_u3_along(world, camera, (zox_tst_u3_hidden_distance - 20) * scale);
+        zox_setv(zox_tst_u3_canvas, Position3D, ((float3) { distant.x, distant.y + 10 * scale, distant.z }));
         zox_tst_u3_stage = 3;
         zox_tst_u3_frames = 0;
         return 0;

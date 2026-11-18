@@ -11,19 +11,19 @@ static inline float3 zox_tst_xr_ndc(float4x4 projection, float3 p) {
 
 void zox_tst_camera_projection_angles_check(ecs* world) {
     (void) world;
-    const float near = 0.05f, far = 100, d = 2;
+    const float near_plane = 0.05f, far_plane = 100, d = 2;
     // left, right, down, up
     const float4 angles[2] = { { -M_PI / 4, M_PI / 4, -M_PI / 4, M_PI / 4 }, { -0.9f, 0.7f, -0.8f, 0.75f } };
     const char* names[2] = { "symmetric", "off centre" };
     for (int i = 0; i < 2; i++) {
         const float4 a = angles[i];
-        const float4x4 projection = camera_projection_from_angles(a, near, far);
+        const float4x4 projection = camera_projection_from_angles(a, near_plane, far_plane);
         const float3 left = zox_tst_xr_ndc(projection, (float3) { tanf(a.x) * d, 0, -d });
         const float3 right = zox_tst_xr_ndc(projection, (float3) { tanf(a.y) * d, 0, -d });
         const float3 down = zox_tst_xr_ndc(projection, (float3) { 0, tanf(a.z) * d, -d });
         const float3 up = zox_tst_xr_ndc(projection, (float3) { 0, tanf(a.w) * d, -d });
-        const float3 at_near = zox_tst_xr_ndc(projection, (float3) { 0, 0, -near });
-        const float3 at_far = zox_tst_xr_ndc(projection, (float3) { 0, 0, -far });
+        const float3 at_near = zox_tst_xr_ndc(projection, (float3) { 0, 0, -near_plane });
+        const float3 at_far = zox_tst_xr_ndc(projection, (float3) { 0, 0, -far_plane });
         zox_log("[tst] [metric] camera_projection_angles %s: left [%.3f] right [%.3f] down [%.3f] up [%.3f] near [%.3f] far [%.3f]",
             names[i], left.x, right.x, down.y, up.y, at_near.z, at_far.z);
         zox_tst_check(fabsf(left.x + 1) < 1e-4f && fabsf(right.x - 1) < 1e-4f, "%s: the left and right edges land at [%.3f] [%.3f], not -1 and 1",

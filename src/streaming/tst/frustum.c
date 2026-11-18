@@ -12,9 +12,9 @@ typedef struct {
     float4x4 view_projection;
 } zox_tst_frustum;
 
-zox_tst_frustum zox_tst_frustum_make(float3 position, float4 rotation, float aspect, float fov, float far) {
+zox_tst_frustum zox_tst_frustum_make(float3 position, float4 rotation, float aspect, float fov, float far_distance) {
     zox_tst_frustum f;
-    f.view_projection = zox_tst_camera_view_projection(position, rotation, aspect, fov, far);
+    f.view_projection = zox_tst_camera_view_projection(position, rotation, aspect, fov, far_distance);
     double3 corners[8];
     calculate_frustum_corners_d3(f.view_projection, corners);
     calculate_frustum_bounds_d3(corners, &f.bounds);

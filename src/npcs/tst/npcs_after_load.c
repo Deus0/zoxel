@@ -17,17 +17,17 @@ int zox_tst_nal_spot_tunk[zox_tst_nal_spots], zox_tst_nal_spot_region[zox_tst_na
 
 // npcs within distance blocks of p across the ground (any height)
 static inline int zox_tst_nal_count_near(ecs* world, float3 p, float distance) {
-    int near = 0;
+    int count = 0;
     ecs_iter_t it = ecs_each_id(world, zox_id(Npc));
     while (ecs_each_next(&it)) {
         for (int i = 0; i < it.count; i++) {
             if (zox_has(it.entities[i], Position3D)) {
                 const float3 n = zox_getv(it.entities[i], Position3D);
-                near += float2_distance((float2) { n.x, n.z }, (float2) { p.x, p.z }) < distance;
+                count += float2_distance((float2) { n.x, n.z }, (float2) { p.x, p.z }) < distance;
             }
         }
     }
-    return near;
+    return count;
 }
 
 // the population (0 to 255) of the chunk column at p

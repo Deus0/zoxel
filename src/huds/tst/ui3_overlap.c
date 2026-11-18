@@ -47,10 +47,10 @@ byte zox_tst_ui3_overlap_ready(ecs* world) {
         if (zox_tst_uo_frames < 30) {
             return 0;
         }
-        const float3 near = zox_tst_u3_along(world, camera, 8 * scale), far = zox_tst_u3_along(world, camera, 16 * scale);
-        const entity green = round ? 0 : zox_tst_u3_frame_canvas(world, near, (color) { 0, 255, 0, 255 }, 1);
-        const entity red = zox_tst_u3_frame_canvas(world, far, (color) { 255, 0, 0, 255 }, 1);
-        zox_tst_uo_canvases[0] = round ? zox_tst_u3_frame_canvas(world, near, (color) { 0, 255, 0, 255 }, 1) : green;
+        const float3 close = zox_tst_u3_along(world, camera, 8 * scale), distant = zox_tst_u3_along(world, camera, 16 * scale);
+        const entity green = round ? 0 : zox_tst_u3_frame_canvas(world, close, (color) { 0, 255, 0, 255 }, 1);
+        const entity red = zox_tst_u3_frame_canvas(world, distant, (color) { 255, 0, 0, 255 }, 1);
+        zox_tst_uo_canvases[0] = round ? zox_tst_u3_frame_canvas(world, close, (color) { 0, 255, 0, 255 }, 1) : green;
         zox_tst_uo_canvases[1] = red;
         zox_tst_uo_stage++;
         zox_tst_uo_frames = 0;

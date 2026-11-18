@@ -26,10 +26,10 @@ float4x4 zox_tst_camera_view_projection(
     float4 rotation,
     float aspect,
     float fov,
-    float far)
+    float far_distance)
 {
     float4x4 projection;
-    calculate_perspective_projection_matrix(&projection, aspect, camera_near_distance, far, fov);
+    calculate_perspective_projection_matrix(&projection, aspect, camera_near_distance, far_distance, fov);
     const float4x4 view = float4x4_inverse(float4x4_transform(position, rotation));
     return float4x4_multiply(view, projection);
 }
@@ -272,8 +272,8 @@ byte zox_tst_camera_viewport_spawn_ready(ecs* world) {
         zox_tst_viewport_check_sizes(world, zox_tst_viewport_window, "spawned");
         // each camera's own far distance (CameraFarDistance), set on one
         for (int i = 0; i < zox_tst_viewports; i++) {
-            const float far = zox_getv(zox_tst_viewport_cameras[i], CameraFarDistance);
-            zox_tst_check(far == camera_far_distance, "viewport camera [%i] far distance [%f], the default is [%f]", i, far, camera_far_distance);
+            const float far_distance = zox_getv(zox_tst_viewport_cameras[i], CameraFarDistance);
+            zox_tst_check(far_distance == camera_far_distance, "viewport camera [%i] far distance [%f], the default is [%f]", i, far_distance, camera_far_distance);
         }
         zox_setv(zox_tst_viewport_cameras[0], CameraFarDistance, 10);
         // resize the window, the way sdl's resize event does
@@ -350,8 +350,8 @@ void zox_tst_camera_orthographic_check(ecs* world) {
         const float4x4 projection = calculate_orthographic_matrix(size);
         const float4 corner = camera_project_point(projection, (float3) { 0.5f * aspect, 0.5f, 0 });
         const float4 other = camera_project_point(projection, (float3) { -0.5f * aspect, -0.5f, 0 });
-        const float4 near = camera_project_point(projection, (float3) { 0, 0, 0.9f });
-        const float4 far = camera_project_point(projection, (float3) { 0, 0, -0.9f });
+        const float4 near_point = camera_project_point(projection, (float3) { 0, 0, 0.9f });
+        const float4 far_point = camera_project_point(projection, (float3) { 0, 0, -0.9f });
         // no perspective: distance doesn't shrink things
         const float4 deep = camera_project_point(projection, (float3) { 0.25f, 0.25f, -0.9f });
         const float4 shallow = camera_project_point(projection, (float3) { 0.25f, 0.25f, 0.9f });
@@ -359,8 +359,8 @@ void zox_tst_camera_orthographic_check(ecs* world) {
             "[%ix%i] the view's top right lands at [%f %f]", size.x, size.y, corner.x, corner.y);
         zox_tst_check(fabsf(other.x + 1) + fabsf(other.y + 1) < zox_tst_camera_epsilon,
             "[%ix%i] the view's bottom left lands at [%f %f]", size.x, size.y, other.x, other.y);
-        zox_tst_check(near.z > -1 && near.z < 1 && far.z > -1 && far.z < 1 && near.z < far.z,
-            "[%ix%i] depths out of order or range: near [%f] far [%f]", size.x, size.y, near.z, far.z);
+        zox_tst_check(near_point.z > -1 && near_point.z < 1 && far_point.z > -1 && far_point.z < 1 && near_point.z < far_point.z,
+            "[%ix%i] depths out of order or range: near [%f] far [%f]", size.x, size.y, near_point.z, far_point.z);
         zox_tst_check(fabsf(deep.x - shallow.x) + fabsf(deep.y - shallow.y) < zox_tst_camera_epsilon,
             "[%ix%i] orthographic shrinks with distance", size.x, size.y);
     }

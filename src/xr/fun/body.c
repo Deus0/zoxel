@@ -305,11 +305,11 @@ void xr_room_walk_system(iter* it) {
         reached = xr_spine_solve(line, wanted, xr_crouch_max * leg, look_bend, &to_neck, &shift);
         // past the body's reach across the ground: the hips move after the neck
         const float3 past = { wanted.x - reached.x, 0, wanted.z - reached.z };
-        const float far = float3_length(past);
-        if (far <= xr_body_slack) {
+        const float beyond = float3_length(past);
+        if (beyond <= xr_body_slack) {
             break;
         }
-        const float3 move_body = float3_scale(past, (far - xr_body_slack) / far);
+        const float3 move_body = float3_scale(past, (beyond - xr_body_slack) / beyond);
         const float3 move_room = float3_scale(float4_rotate_float3(quaternion_inverse(room_to_body), move_body), 1 / scale);
         xr_body_hips_room = float3_add(xr_body_hips_room, (float3) { move_room.x, 0, move_room.z });
         step = float3_add(step, float4_rotate_float3(zox_getv(character, Rotation3D), move_body));

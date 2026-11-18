@@ -72,9 +72,9 @@ void feet_plant_system(iter* it) {
             }
             const float3 plant = zox_getv(thigh, FootPlant);
             const float dx = plant.x - rests[j].x, dz = plant.z - rests[j].z;
-            const float far = sqrtf(dx * dx + dz * dz) / lengths[j];
-            if (far > step_distance && far > farthest) {
-                farthest = far;
+            const float reach = sqrtf(dx * dx + dz * dz) / lengths[j];
+            if (reach > step_distance && reach > farthest) {
+                farthest = reach;
                 step = j;
             }
         }
