@@ -193,7 +193,7 @@ void bodys_realm_spawn_system(iter* it) {
         }
         // Shoulder
         {
-            float3 blueprint_scale = (float3) { 0.6f, 0.4f, 0.4f };
+            float3 blueprint_scale = (float3) { 0.4f, 0.4f, 0.4f };  // narrow, the body fits a doorway (tst doorway)
             lint seed = 3363 * (body_seed + spawn_count++);
             byte model_depth = max_part_depth - 2 < 0 ? 0 : max_part_depth - 2;
             // Spawn Blueprint

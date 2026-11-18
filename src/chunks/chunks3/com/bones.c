@@ -16,4 +16,5 @@ create_octree_reducer(BoneNode);
 create_octree_optimizer(BoneNode, 1);
 zoxc_arrayd(CombineOver, byte);     // 1 if the entry covers what's under it (clothes, anchor over)
 zoxc_arrayd(CombineBones, byte);    // an entry's bone index
+zoxc_int3(FleshSize);               // the size of its parts without the clothes over them (bounds, collisions)
 zoxc_arrayd(CombineParents, byte);  // an entry's parent entry + 1 (0 none): parts joined to each other, the rest kept apart

@@ -1,13 +1,14 @@
 // tst: doorway, a character walks through a doorway 1 block wide and 2 tall (a body fits: tst body_views)
 //  - a character (character.c) on a brick floor in an air chunk (air_chunk.c, no game, no player): a brick wall across x 8
 //    (z 2..13, y 4..7) with a doorway at z 7, y 4 and 5 (the 2 blocks over the floor)
-//  - walked at it along +x (its velocity, as footsteps does) for a few seconds, turned 30 degrees off it, a fifth of a block
-//    off the doorway's middle (a player never lines up exactly)
+//  - walked at it along +x (its velocity, as footsteps does) for a few seconds, facing it, at the doorway's middle
+//    (zox_tst_doorway_off=0.1: a tenth of a block off it)
 //  - it's through: past the wall (x over 9), on the floor still
 //  - run: bash bsh/tst.sh doorway (and with your settings, Block Res 5: zox_tst_settings=~/.config/zoxel/settings.cfg)
 byte zox_tst_doorway_stage = 0;
 double zox_tst_doorway_time = 0;
 float zox_tst_doorway_x = 0, zox_tst_doorway_start_x = 0;
+float zox_tst_doorway_off = 7;  // the doorway's middle (block 7), zox_tst_doorway_off=<blocks> walks up off it
 
 static inline byte zox_tst_doorway_at(int x, int y, int z) {
     if (y == 3) {
@@ -55,11 +56,14 @@ byte zox_tst_doorway_ready(ecs* world) {
         if (zox_getv(e, Grounded) != ground_state_grounded) {
             return 0;
         }
-        // facing about +x, near the doorway's middle
+        // facing +x, at the doorway's middle (or off it)
+        if (getenv("zox_tst_doorway_off")) {
+            zox_tst_doorway_off = 7 + atof(getenv("zox_tst_doorway_off"));
+        }
         float3 position = zox_getv(e, Position3D);
-        position.z = zox_tst_air_position(world, chunk, (float3) { 0, 0, 7.2f }).z;   // off the middle, as a player walks up
+        position.z = zox_tst_air_position(world, chunk, (float3) { 0, 0, zox_tst_doorway_off }).z;   // off the middle, as a player walks up
         zox_setv(e, Position3D, position);
-        zox_setv(e, Rotation3D, quaternion_from_euler((float3) { 0, -60 * degreesToRadians, 0 }));   // 30 off: turning mustn't widen it
+        zox_setv(e, Rotation3D, quaternion_from_euler((float3) { 0, -90 * degreesToRadians, 0 }));
         zox_tst_doorway_start_x = zox_tst_doorway_x;
         zox_tst_doorway_stage = 3;
         zox_tst_doorway_time = zox_current_time;

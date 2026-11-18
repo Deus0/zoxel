@@ -212,6 +212,8 @@ void combine_vox_system(iter* it) {
             over = NULL;
         }
         combine_parts_pending pending = { 0 };
+        // its flesh: the parts' voxels, clothes left out (FleshSize: its bounds collide by them, not a sleeve's)
+        int3 flesh_low = int3_single(255), flesh_high = int3_single(-1);
         const CombineParents* parents = zox_has(e, CombineParents) ? zox_get(e, CombineParents) : NULL;
         if (parents && parents->length != voxes->length) {
             parents = NULL;
@@ -332,6 +334,10 @@ void combine_vox_system(iter* it) {
                             continue;
                         }
                         set_VoxelNode(voctree, ndepth->value, positionb, value);
+                        if (!is_over) {
+                            flesh_low = int3_min_each(flesh_low, ushort3_to_int3(position));
+                            flesh_high = int3_max_each(flesh_high, ushort3_to_int3(position));
+                        }
                         if (parts) {
                             combine_part_set(parts, &pending, ushort3_to_int3(position), j, is_over);
                         }
@@ -359,6 +365,9 @@ void combine_vox_system(iter* it) {
         }
         zox_octree_lock_end(write_lock);
         csize->value = new_csize;
+        if (zox_has(e, FleshSize)) {
+            zox_setv(e, FleshSize, flesh_high.x >= 0 ? int3_sub(flesh_high, flesh_low) : new_csize);
+        }
         // NOTE: Vox data is always at max depth, its owners RenderDepth picks the mesh
         rdepth->value = ndepth->value;
         zox_add(e, VoxelNodeDirty);

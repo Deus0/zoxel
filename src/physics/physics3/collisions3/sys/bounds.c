@@ -82,8 +82,10 @@ void vox_link_bounds3_grow_system(iter* it) {
         if (!zox_valid(vox) || !zox_has(vox, VoxelNodePostDirty)) {
             continue;
         }
+        // a body's flesh, not its clothes (FleshSize, combine_vox_system): a sleeve doesn't catch a doorway
+        const int3 flesh = zox_has(vox, FleshSize) ? zox_getv(vox, FleshSize) : int3_zero;
         float3 new_bounds = calculate_vox_bounds(
-            zox_getv(vox, ChunkSize),
+            flesh.y ? flesh : zox_getv(vox, ChunkSize),
             zox_getv(vox, BlockScale));
         if (grow_bounds3(world, e, bounds, dirty, new_bounds) && dbg_log) {
             zox_log("[%s] Bounds from Vox [%fx%fx%f]", zox_sys_e_name, new_bounds.x, new_bounds.y, new_bounds.z);
