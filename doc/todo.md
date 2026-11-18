@@ -12,6 +12,9 @@
   gpu_restore_game (2026-11-20)
 - at boot render_texture_initialize_system logs "Invalid [TextureGPULink]" once on a render texture (tst
   gpu_restore_game's log, before any restore, 2026-11-20)
+- tst sky_clouds fails: "no cloud in the sky looking up" (0.07% of the band), on 31a2c2740 too (2026-11-20)
+- tst lint_systems fails: chunk3_textured_render_system and chunk3_transparent_render_system
+  (rendering3/sys/render_chunks.c) have no zox_sys_on_begin / zox_sys_on_end (2026-11-20)
 - deleting a disabled entity (a hidden lod mesh) leaked its gpu buffers and textures: the gpu links' OnRemove
   observers skip disabled entities; fix waits on an ok for EcsQueryMatchDisabled (zox_observe_disabled), tst
   gpu_links (2026-11-20)

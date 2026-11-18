@@ -83,9 +83,6 @@ UIs
     - atm theyre a bit spread through different state events
     - For example screen fader is in 3 events
     
-## Refactor Restore/Dispose GPU Systems
-    - just make one big function that uses queries and calls those functions
-    
 ## Refactor Events/Properties To Tags
 	* make event tag
 	* add/remove instead of set
@@ -110,7 +107,6 @@ UIs
 	
 ## Refactor Reactionary Systems to Events
 	- Tooltip Systems
-	- Restore/Dispose -> Query Functions
 	- Settings Spawning - InitializeEvent on App
     
 ## Remove old links

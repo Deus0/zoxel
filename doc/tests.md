@@ -92,7 +92,7 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 | Terrain | `biome_heights` `biome_map` `region_place` `region_place_prior` `region_zones` `town_homes` `home_roofs` `home_glow` `glow_light` `town_maps` `town_maps_empty` `vegetation_trees` `vegetation_cover` `vegetation_chunks` |
 | Textures | `texture_noise` `texture_outline` |
 | Lights | `smooth_lights` `lod_lights` `lod_chunk_lights` `block_vox_lights` `block_vox_light_sampling` |
-| Rendering | `lines_spawn` `lines_render` `skeleton_render` `vox_instance_render` `terrain_render` `block_vox_light_sampling` `block_vox_lights` `screenshot` `model_views` `body_views` |
+| Rendering | `gpu_restore` `gpu_restore_game` `gpu_links` (gpu objects let go of and made again, live counts) `lines_spawn` `lines_render` `skeleton_render` `vox_instance_render` `terrain_render` `block_vox_light_sampling` `block_vox_lights` `screenshot` `model_views` `body_views` |
 | Models | `model_nodes` (fill, box, paint, sprinkle on voxels) `model_shapes` (realm models: one piece, mirrored, head's neck and eyes, chest without a pinch, cookie chips and crumbs) |
 | Cameras | `camera_viewports` `camera_projection` `camera_orthographic` `camera_look_at` `camera_viewport_spawn` `camera_split_screen` `camera_downscale` `camera_frustum` `camera_filter` |
 | Sound and music | `sound_mixer` `sound_formats` `sound_instruments` `sound_balance` `voice_sounds` `hit_sounds` `hit_sound_links` `music_*` |

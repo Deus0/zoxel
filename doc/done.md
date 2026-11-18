@@ -1,5 +1,13 @@
 # Done
 
+## 2026-11-20
+-x Gpu restore and dispose are functions, not systems: each module adds a gpu_dispose / gpu_restore hook that walks
+  its gpu links (zox_each_begin), disabled entities too, not prefabs; a restore makes again only what the dispose
+  let go of (making the rest leaked); it also restores the lines, particles and 2D square materials, bone index
+  buffers and the instance ubo (all stayed dead after android's lost context); the sky no longer sets colours on a
+  disposed material; live counts for shaders, programs, fbos and rbos; tst gpu_restore checks them, tst
+  gpu_restore_game (in a game), tst gpu_links (bare entities)
+
 ## 2026-11-19
 -x Light flooding into water dims more: 24 a block over the air's 32 (light_flood_decay), tst water_light
 -x The gpu mesher draws flowing water at its level too (gpu_mesher_set_heights), tst gpu_mesh
