@@ -30,7 +30,7 @@
 	  distances; the gpu swap goes down with vulkan
 	- next: systems that mostly idle on fewer workers, the vox lod meshes and bake textures still ChildOf (33 and 42 tables in slow frames), quests and
 	  dialogue pairs a npc
-- greedy meshing for vox models
+- greedy meshing for vox models, then terrain: the plan, AO and the steps in [tech/chunks3.md](tech/chunks3.md)
 
 -x 2300 tables again, try reduce fragmentation
 

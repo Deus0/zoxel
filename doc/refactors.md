@@ -19,7 +19,7 @@
 	- merged mesh face building
 	- uv pass in a seperate system
 	- ao in a seperate system
-- add greedy mesh for vox models
+- add greedy mesh for vox models (plan: [tech/chunks3.md](tech/chunks3.md), Greedy meshing)
 	- needs to have smaller quads around corners to maintain ao visuals
 -x Turn quest slayer into an event (zox_event_quest_slay, an observer in quests/eve)
     - Make observer function for callbacks
