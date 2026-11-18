@@ -25,6 +25,8 @@ static inline byte terrain_water_at(ecs* world, entity terrain, float3 position)
     return height < level / (float) zox_water_level_source;
 }
 
+#define camera_tint_ease 8.0f    // a second, the tint eases in and out in about a third of one
+
 void camera_underwater_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
@@ -41,6 +43,14 @@ void camera_underwater_system(iter* it) {
         const byte under = terrain_water_at(world, terrain, position->value);
         if (e == main_cameras[0]) {
             sound_underwater = under;
+        }
+        // the view tinted blue (its render texture's shader), eased in and out
+        if (zox_has(e, CameraTint)) {
+            const float tint = zox_getv(e, CameraTint);
+            const float eased = tint + ((under ? 1 : 0) - tint) * (1 - expf(-camera_tint_ease * zox_delta_time));
+            if (fabsf(eased - tint) > 0.0001f || (!under && tint > 0 && eased < 0.001f)) {
+                zox_setv(e, CameraTint, eased < 0.001f ? 0 : eased);
+            }
         }
         if (under == zox_has(e, Underwater)) {
             continue;

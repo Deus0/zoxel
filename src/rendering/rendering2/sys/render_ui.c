@@ -116,6 +116,9 @@ void render_uis(ecs* world, ui_render_queue* uis) {
                         zox_log("- Set Material Vignette [%i] to [%f]", property_id, property_value);
                     }
                 }
+                if (zox_has(material, MaterialTint) && zox_has(material, CameraTint)) {
+                    zox_gpu_float(zox_getv(material, MaterialTint), zox_getv(material, CameraTint));
+                }
                 zox_gpu_enable_blend();
                 zox_gpu_enable_depth_test();
                 zox_gpu_set_depth_mask(0);

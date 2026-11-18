@@ -1,5 +1,9 @@
 # Done
 
+## 2026-11-19
+-x Under water the view is tinted deep blue (CameraTint, eased, the render texture's shader), tst underwater
+-x The player swims as npcs do: jump in water strokes up (it waited for CanJump), tst swim steadier
+
 ## 2026-11-18
 -x Water levels, Minecraft style: water is a source, flowing water a block a level (water 7 to 1), a level less a
   block as it spreads, falls as 7, drains when nothing feeds it (a source taken out drains all it fed); drawn

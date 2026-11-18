@@ -26,6 +26,9 @@ void camera_material_system(iter* it) {
         }*/
         zox_setv(material, CameraBlur, blur->value);
         zox_setv(material, CameraVignette, vignette->value);
+        if (zox_has(e, CameraTint)) {
+            zox_setv(material, CameraTint, zox_getv(e, CameraTint));
+        }
         if (dbg_log) {
             zox_log("Camera [%s] Set Material [%s] to [%fx%f]",
                 zox_getn(e),

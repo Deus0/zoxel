@@ -4,6 +4,7 @@ uniform float alpha;
 uniform sampler2D zexture;
 uniform float blur;
 uniform float vignette;
+uniform float tint;     // under water, 0 to 1: deep blue
 out vec4 frag_color;
 
 // === constants ===
@@ -77,6 +78,9 @@ void main() {
         frag_color.rgb,
         vec3(noise),
         NOISE_STRENGTH);
+
+    // Under water: reds and greens soaked up, the view deep blue
+    frag_color.rgb = mix(frag_color.rgb, frag_color.rgb * vec3(0.35, 0.7, 1.1) + vec3(0.0, 0.03, 0.08), tint);
 
     // Vignette
     float vignette_smoothness = 0.8;

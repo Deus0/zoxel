@@ -106,6 +106,9 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
 - `camera_render3_system` sets `render_underwater` for the camera it draws: `get_fog_value` turns the fog blue and
   thick (src/rendering/dat/camera_renderer.c, fully blue about 9 blocks out); skybox.frag covers the sky with a thick
   fog too (so the sky doesn't show through the water).
+- A camera drawn through its render texture (the game's, not viewports or XR eyes) eases its `CameraTint` to 1
+  under water and back to 0 out of it (about a third of a second): res/shaders/render_texture_rgb.frag soaks up
+  reds and greens, deep blue (tst underwater: the player's camera, tst/underwater.ppm).
 - The first main camera's sets `sound_underwater` (src/sounds/set/volume.c): sound effects at 60%, music at 30%,
   and the mixer muffles the whole mix (src/sounds/mix/mixer.c): a 500hz low pass, two one pole stages, eased in and
   out over about 45ms; tst sound_mixer checks a high tone is cut and a low one passes.

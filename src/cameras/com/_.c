@@ -33,6 +33,7 @@ zox_tag(RenderTexture);
 zox_tag(RenderTextureLink);    // camera -> the render texture it draws to
 zoxc_float(CameraBlur);
 zoxc_float(CameraVignette);
+zoxc_float(CameraTint);     // under water: the view tinted deep blue, 0 to 1 (eased, terrain/sys/water_view.c)
 // Properties
 zox_tag(CanRoam);
 zox_tag(Roaming);
@@ -71,6 +72,7 @@ void zox_components_cameras(ecs *world) {
     zoxd_nf_link(RenderTextureLink);
     zoxd_float(CameraBlur);
     zoxd_float(CameraVignette);
+    zoxd_float(CameraTint);
     // Filters
     zoxd_tag(CameraFilter);
     zoxd_nf_link(CameraRenderer);
