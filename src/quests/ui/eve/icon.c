@@ -78,11 +78,9 @@ void quest_icon_tooltip_event(iter* it) {
         uint index = 0;
         char text[256];
         // its name and objective, as the tracker shows them
-        char* objective = (char*) get_quest_tracker_text(world, quest);
-        index += snprintf(index + text, sizeof(text), "%s", objective[0] ? objective : quest_name);
-        if (objective[0]) {
-            free(objective);
-        }
+        char* objective = get_quest_tracker_text(world, quest);
+        index += snprintf(index + text, sizeof(text), "%s", objective && objective[0] ? objective : quest_name);
+        free(objective);
         if (zox_has(quest, QuestHandedin)) {
             index += sprintf(
                 index + text,

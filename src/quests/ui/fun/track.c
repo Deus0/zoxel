@@ -42,11 +42,9 @@ void track_quest(
         return;
     }
     if (zox_valid(quest)) {
-        char* text = (char*) get_quest_tracker_text(world, quest);
-        set_entity_text(world, tracker, text);
-        if (text[0]) {
-            free(text);
-        }
+        char* text = get_quest_tracker_text(world, quest);
+        set_entity_text(world, tracker, text ? text : "");
+        free(text);
     } else {
         set_entity_text(world, tracker, "");
     }

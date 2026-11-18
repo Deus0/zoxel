@@ -27,11 +27,9 @@
         const char* name = zox_has(e2, ZoxName) ? zox_getv(e2, ZoxName) : zox_get_name(e2);
         char result[128];
         // its name and objective, as the tracker shows them
-        char* objective = (char*) get_quest_tracker_text(world, e2);
-        snprintf(result, sizeof(result), "%s", objective[0] ? objective : name);
-        if (objective[0]) {
-            free(objective);
-        }
+        char* objective = get_quest_tracker_text(world, e2);
+        snprintf(result, sizeof(result), "%s", objective && objective[0] ? objective : name);
+        free(objective);
         set_tooltip_text(world, e, tooltip, result);
     }
     zox_sys_on_end();

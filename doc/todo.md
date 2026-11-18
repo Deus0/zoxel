@@ -11,7 +11,6 @@
 	if it's still laggy, read the headset's frame timing log ([XR] fps, openxr/render.c)
 - XR lean feels 2-3 times larger than real life (play test, on the build that slid the whole body): tst xr_body has
 	it 1:1 scaled at 72 fps, the body now leans its spine first (xr_lean_angle_max); check again in the headset
-- quest tracker ui bugs out sometimes: shows null
 - the cookie gather quest failed
 - name input in new realm ui doesn't resize
 	- it should have a max too and if it goes over, it should shrink font size - add a tag for this property
