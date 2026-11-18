@@ -43,24 +43,9 @@ void zox_event_give_quest(iter* it) {
             track_quest(world, quest_taker, user_quest);
             particles_color = (color) { 155, 155, 155, 88 };
             spawn_jingle(world, jingle_quest_taken);
-            if (zox_valid(marker)) {
-                // Link Marker of NPC to player characters quest
-                zox_link(world, user_quest, MarkerLink, marker);
-                zox_link(world, marker, QuestLink, user_quest);
-                // set to ?
-                entity text = zox_get_child_by_id_recursive(
-                    world,
-                    marker,
-                    zox_id(Text));
-                if (text) {
-                    set_entity_text(
-                        world,
-                        text,
-                        quest_marker_doing);
-                } else {
-                    zox_loge("Marker text not found");
-                }
-            }
+            // Link Marker of NPC to player characters quest
+            link_quest_marker(world, user_quest, marker);
+            set_quest_marker(world, marker, user_quest);
         } else if (zox_has(node, NodeHandinQuest)) {
             entity user_quest = get_user_quest(world, quest_taker, quest);
             zox_add(user_quest, QuestHandedin);

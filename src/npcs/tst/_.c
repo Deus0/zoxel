@@ -15,6 +15,7 @@
 #include "npc_glance.c"
 
 #include "npc_quests.c"
+#include "quest_marker.c"
 
 #include "npcs_after_load.c"
 
@@ -94,6 +95,7 @@ void zox_tsts_npcs(ecs* world) {
     zox_tsts_npc_attacks(world);
     zox_tsts_npc_glance(world);
     zox_tsts_npc_quests(world);
+    zox_tsts_quest_marker(world);
     zox_tsts_npcs_after_load(world);
     zox_tsts_npc_skeletons(world);
     zox_tsts_npc_stats(world);

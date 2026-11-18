@@ -15,9 +15,11 @@
 *
 */
 // quest marker over an npc's head
-#define quest_marker_available "?"  // has a quest to give
-#define quest_marker_doing "+"      // you have its quest
-#define quest_marker_done "!"       // you can hand its quest in
+#define quest_marker_available "!"  // has a quest to give (yellow)
+#define quest_marker_doing "?"      // you have its quest (gray)
+#define quest_marker_done "?"       // you can hand its quest in (yellow)
+#define quest_marker_fill color_yellow
+#define quest_marker_doing_fill color_gray
 #include "com/_.c"
 #include "pre/_.c"
 #include "ins/_.c"

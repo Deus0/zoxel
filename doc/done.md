@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-18
+-x quest markers: ! yellow has a quest to give, ? gray you have it, ? yellow you can hand it in; a quest giver
+  respawning from its seed (chunk unload/load) shows the player's state of its quest, not ! again (tst quest_marker)
 -x ui consolidation 1 and 2: the main, pause and saves menus' 3D branches gone (spawn_window_list builds them in 3D:
   spawn_button, spawn_list and the scrollview swap to 3D twins), spawn_taskbar3 and its prefabs gone (spawn_taskbar
   on 3D huds, raised above the menus); spawn_list3 kept for the 3D options until they're the 2D window

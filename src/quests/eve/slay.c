@@ -15,6 +15,10 @@ void check_quest_slay(
         const QuestTarget* target_value = zox_get(quest, QuestTarget);
         if (value->value < target_value->value) {
             value->value++;
+            // done before Dirty, so the marker update sees it
+            if (value->value == target_value->value) {
+                zox_add(quest, QuestDone);
+            }
             zox_add(quest, Dirty);
             zox_add(quest, DataDirty);
             // if complete, we should set full here
@@ -24,7 +28,6 @@ void check_quest_slay(
                     zox_getn(target));
             }
             if (value->value == target_value->value) {
-                zox_add(quest, QuestDone);
                 if (dbg_log) {
                     zox_log("Quest [%s]'s Slay Count Maxxed [%s]",
                         zox_getn(quest),

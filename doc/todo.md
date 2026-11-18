@@ -27,6 +27,7 @@
 	- wait this happens only when loading a new realm
 	- the loading broke tilemap due to water
 	- not occuring in new games, can ignore i think?
+	- i think this can trigger still but its super rare, maybe race bug with lod changes
 - A square patch of water lighter than the rest with a straight edge, looking down at a lake (tst sea_level's
   tst/sea.ppm, seed 666): a lighting seam between chunks, or one lit after the others?
   	- probably related to the lighting issues at boot, see other bug of light in homes stills
@@ -609,9 +610,6 @@
 - add collect cookie quest
 - add quest reward nodes, give the player a hat
 - add + 3 strength and + 2 agility on the hat
-- Make ! yellow new quest
-    - ? gray, you have quest
-    - ? yellow, you can hand it in (objectives done)
 - Add rewards on quest handin
 	- Goal: Give 20 xp for handing in quest
 	- Quest Rewards - More Cookies - Particles
@@ -1096,3 +1094,4 @@
 	- it will compile that file with zoxels src and flecs
 	- it outputs a test for claude to use
 - Add 2D rendering testss
+- reduce time of quests tests - just spawn minimal entities, spawn realm children manually, seperate world etc
