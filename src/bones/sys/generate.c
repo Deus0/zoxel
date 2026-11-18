@@ -181,23 +181,6 @@ static inline void bone_parents_fill(ecs* world, const BoneLinks* bones, byte* p
     }
 }
 
-// a skeleton mesh's voxels' bones at depth for its mesh (faces between parts that only touch are kept), the grid
-//  malloc'd (free it), NULL if the vox has no parts
-byte* skeleton_parts_grid(ecs* world, entity vox, byte depth, int* length) {
-    if (!zox_valid(vox) || !zox_has(vox, BoneNode) || !zox_has(vox, CombineBones) || !zox_get(vox, CombineBones)->length) {
-        return NULL;
-    }
-    const byte node_depth = zox_getv(vox, NodeDepth);
-    depth = depth > node_depth ? node_depth : depth;
-    *length = octree_size(depth);
-    byte* grid = malloc(*length * *length * *length);
-    spinlock* lock = zox_octree_lock(world, vox);
-    zox_octree_lock_begin(lock);
-    bone_parts_fill(grid, *length, zox_get(vox, CombineBones), zox_get(vox, BoneNode), 0, depth, int3_zero);
-    zox_octree_lock_end(lock);
-    return grid;
-}
-
 // every vertex's bones, 4 a face (build_vox_mesh_at_depth), 0 if the vox has no parts
 byte generate_weights_parts(ecs* world, entity vox, byte depth, const MeshIndicies* indicies, const MeshVertices* verts,
     const BoneLinks* bones, byte4* out)

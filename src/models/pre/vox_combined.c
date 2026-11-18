@@ -9,6 +9,7 @@ entity spawn_prefab_vox_combined(ecs *world, entity prefab) {
     zox_add(e, CombineDepths);
     zox_add(e, CombineOver);
     zox_add(e, CombineBones);
+    zox_add(e, CombineParents);
     zox_setv(e, BoneNode, 0);
     return e;
 }

@@ -1,6 +1,5 @@
 #include "settings.c"
 #include "generate.c"
-#include "paint.c"
 #include "bone_render.c"
 #include "head_bob.c"
 #include "head_look.c"

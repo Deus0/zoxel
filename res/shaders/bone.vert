@@ -5,8 +5,15 @@ uniform mat4 mvp_matrix;
 uniform mat4 bone_matrix[32];
 uniform vec3 bone_positions[32];
 uniform vec4 fog_data;
+uniform float paint_weights;  // 1: coloured by bone, mixed at joints by weight (the Paint Weights setting)
 out vec3 vertex_color_frag;
 out float fog_blend;
+
+// a bone's paint: hues spread by the golden ratio, so neighbouring bones differ
+vec3 bone_paint(int bone) {
+    float hue = fract(float(bone) * 0.618034);
+    return clamp(abs(fract(hue + vec3(0.0, 2.0 / 3.0, 1.0 / 3.0)) * 6.0 - 3.0) - 1.0, 0.0, 1.0) * 0.8 + 0.2;
+}
 
 void main() {
     // blended at joints: moved by both bones, by the second's weight
@@ -16,7 +23,7 @@ void main() {
     vec4 position_b = bone_matrix[b] * vec4(vertex_position - bone_positions[b], 1);
     vec4 final_position = mix(position_a, position_b, bone_index.z);
     gl_Position = mvp_matrix * final_position;
-    vertex_color_frag = vertex_color;
+    vertex_color_frag = paint_weights > 0.5 ? mix(bone_paint(a), bone_paint(b), bone_index.z) : vertex_color;
     float fog_level = gl_Position.z * gl_Position.z;
     fog_blend = min(1.0, 1.1 - exp2(-fog_data.w * fog_level));
 }

@@ -1,4 +1,5 @@
 byte transparent_meshes = 0;
+byte paint_weights = 0;     // skeleton meshes coloured by their bones (bone.vert), the Paint Weights setting, tst body_weights
 byte zox_grass_animation = 1;           // setting: "Grass Animation"
 float zox_grass_sway_strength = 0.07f;  // world units the grass tips move
 // draw counters, only ever increase, read by tests (rendering3/tst)

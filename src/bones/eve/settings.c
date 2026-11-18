@@ -3,7 +3,7 @@ void zox_settings_bones(ecs* world, entity app) {
         spawn_setting_byte(world, app, "Disable Bones", disable_bones);
         spawn_setting_byte(world, app, "Transparent Mesh", transparent_meshes);
         spawn_setting_byte(world, app, "Bone Gizmos", render_bones);
-        spawn_setting_byte(world, app, "Paint Weights", paint_bone_weights);
+        spawn_setting_byte(world, app, "Paint Weights", paint_weights);
 #endif
 }
 
@@ -29,7 +29,7 @@ void zox_settings_dirty_bones(iter* it) {
             } else if (!strcmp(name->value, "Bones Gizmos")) {
                 render_bones = value;
             } else if (!strcmp(name->value, "Paint Weights")) {
-                paint_bone_weights = value;
+                paint_weights = value;
             }
         }
     }

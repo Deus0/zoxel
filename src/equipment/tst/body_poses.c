@@ -12,6 +12,11 @@
 //  - the screenshots also get the background showing inside the body painted magenta (a patch the flood from a view's
 //      edges can't reach): only a hint, a narrow gap between an arm and the chest is one too
 //  - logs the bones (role, parent, position), the cracks and holes a pose
+// tst: body_weights, the same poses with the skin painted by bone (paint_weights, bone.vert: a colour a bone, mixed at
+//  joints by weight), to see which bone moves each part of the body and its clothes: tst/body_weights/<n>_<pose>.ppm
+//  - bash bsh/poses.sh --weights, then tst/body_weights.png
+//  - a clothes voxel's colour should be the body part's under it: a sleeve the arm's, the shorts' legs the thighs'
+//  - the body_poses checks too: the clothes' parts crawling along them (combine_parts_resolve) left 242 open edges
 #define zox_tst_poses_views 4
 #define zox_tst_poses_settle 12     // frames a pose is held before its screenshot
 #define zox_tst_poses_bones_max 64
@@ -58,6 +63,7 @@ entity zox_tst_poses_bones[zox_tst_poses_bones_max];
 byte zox_tst_poses_roles[zox_tst_poses_bones_max];
 int zox_tst_poses_bones_length = 0;
 char zox_tst_poses_files[16][512];
+byte zox_tst_poses_painted = 0;     // body_weights: painted by bone, saved to tst/body_weights
 
 // each bone's role from its tags (before they're taken off), the shins: a thigh's child that isn't one
 static inline void zox_tst_poses_find(ecs* world, entity skeleton) {
@@ -177,6 +183,22 @@ typedef struct {
     byte axis;      // the axis it runs along
 } zox_tst_poses_edge;
 
+// a skeleton mesh's voxels' bones at depth (each face's bone), the grid malloc'd (free it), NULL if the vox has no parts
+static inline byte* zox_tst_poses_parts_grid(ecs* world, entity vox, byte depth, int* length) {
+    if (!zox_valid(vox) || !zox_has(vox, BoneNode) || !zox_has(vox, CombineBones) || !zox_get(vox, CombineBones)->length) {
+        return NULL;
+    }
+    const byte node_depth = zox_getv(vox, NodeDepth);
+    depth = depth > node_depth ? node_depth : depth;
+    *length = octree_size(depth);
+    byte* grid = malloc(*length * *length * *length);
+    spinlock* lock = zox_octree_lock(world, vox);
+    zox_octree_lock_begin(lock);
+    bone_parts_fill(grid, *length, zox_get(vox, CombineBones), zox_get(vox, BoneNode), 0, depth, int3_zero);
+    zox_octree_lock_end(lock);
+    return grid;
+}
+
 static int zox_tst_poses_edge_compare(const void* x, const void* y) {
     const zox_tst_poses_edge* e = x;
     const zox_tst_poses_edge* f = y;
@@ -189,7 +211,7 @@ static inline void zox_tst_poses_open_edges(ecs* world, entity skeleton, entity 
     const entity vox = get_skeleton_vox(world, skeleton);
     const byte depth = zox_getv(mesh, RenderDepth);
     int length = 0;
-    byte* grid = skeleton_parts_grid(world, vox, depth, &length);
+    byte* grid = zox_tst_poses_parts_grid(world, vox, depth, &length);
     if (!grid) {
         zox_tst_check(0, "the skeleton's vox has no parts");
         return;
@@ -491,7 +513,8 @@ byte zox_tst_body_poses_ready(ecs* world) {
     }
     if (zox_tst_poses_frames == zox_tst_poses_settle) {
         char name[128];
-        snprintf(name, sizeof(name), "body_poses/%02i_%s.ppm", zox_tst_poses_index, pose->name);
+        snprintf(name, sizeof(name), "%s/%02i_%s.ppm", zox_tst_poses_painted ? "body_weights" : "body_poses",
+            zox_tst_poses_index, pose->name);
         snprintf(zox_tst_poses_files[zox_tst_poses_index], sizeof(zox_tst_poses_files[0]), "%s", zox_tst_path(name));
         snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_poses_files[zox_tst_poses_index]);
     } else if (zox_tst_poses_frames > zox_tst_poses_settle && !zox_screenshot_request[0]) {
@@ -601,7 +624,15 @@ void zox_tst_body_poses_check(ecs* world) {
         posed_with_holes, zox_tst_poses_count, total);
 }
 
+byte zox_tst_body_weights_ready(ecs* world) {
+    zox_tst_poses_painted = 1;
+    paint_weights = 1;
+    return zox_tst_body_poses_ready(world);
+}
+
 void zox_tsts_body_poses(ecs* world) {
     zox_tst_add("body_poses", zox_tst_body_poses_ready, zox_tst_body_poses_check, 240);
     zox_tst_set_setup("body_poses", NULL, 1);
+    zox_tst_add("body_weights", zox_tst_body_weights_ready, zox_tst_body_poses_check, 240);
+    zox_tst_set_setup("body_weights", NULL, 1);
 }

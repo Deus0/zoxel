@@ -322,6 +322,13 @@ void body_combine_system(iter* it) {
         resize_CombineOver(overs, 0);
         entity_array_d* slots_used = create_entity_array_d(1);
         build_body_parts(world, chest_slot, voxes, positions, depths, overs, slots_used, &body_size->value, &max_depth, dbg_log);
+        // each entry's parent entry (its slot's parent slot's), joined parts may touch (combine_vox_system)
+        CombineParents* parents = zox_getm(vox, CombineParents);
+        resize_CombineParents(parents, 0);
+        for (int k = 0; k < slots_used->size; k++) {
+            const entity parent_slot = zox_get_parent(world, slots_used->data[k]);
+            add_to_CombineParents(parents, zox_valid(parent_slot) && zox_has(parent_slot, PartIndex) ? zox_getv(parent_slot, PartIndex) : 0);
+        }
         dispose_entity_array_d(slots_used);
         // NOTE: Keep at consistent scale
         // TODO: We should make this same scale as npcs

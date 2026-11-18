@@ -92,6 +92,7 @@ void zox_components_chunks3(ecs* world) {
     zoxd_octree(BoneNode);
     zoxd_arrayd(CombineOver);
     zoxd_arrayd(CombineBones);
+    zoxd_arrayd(CombineParents);
     zoxd(SidesOctreeLock);
     zoxd_entitiesw(ChunkEntities);
     zoxd_nf_link(ChunkLink);

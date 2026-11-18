@@ -145,3 +145,11 @@ static inline float3 float3_from_int3(const int3 input) {
 static inline int3 int3_single(int value) {
     return (int3) { value, value, value };
 }
+
+static inline int3 int3_max_each(const int3 a, const int3 b) {
+    return (int3) { a.x > b.x ? a.x : b.x, a.y > b.y ? a.y : b.y, a.z > b.z ? a.z : b.z };
+}
+
+static inline int3 int3_min_each(const int3 a, const int3 b) {
+    return (int3) { a.x < b.x ? a.x : b.x, a.y < b.y ? a.y : b.y, a.z < b.z ? a.z : b.z };
+}

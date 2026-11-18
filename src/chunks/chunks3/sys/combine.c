@@ -1,66 +1,158 @@
+// each voxel's part while combining (its entry + 1, 0 air), a flat grid the body's size: its lookups are array reads,
+//  the octree walks made the combine 2.4 times slower; written to the BoneNode once at the end
+typedef struct {
+    byte* cells;
+    int3 size;
+} combine_parts;
+
+static inline byte combine_parts_get(const combine_parts* parts, int3 p) {
+    if (p.x < 0 || p.y < 0 || p.z < 0 || p.x >= parts->size.x || p.y >= parts->size.y || p.z >= parts->size.z) {
+        return 0;
+    }
+    return parts->cells[(p.x * parts->size.y + p.y) * parts->size.z + p.z];
+}
+
+static inline void combine_parts_set(combine_parts* parts, int3 p, byte part) {
+    parts->cells[(p.x * parts->size.y + p.y) * parts->size.z + p.z] = part;
+}
+
 // clothes voxels past the body, their part found after every part is placed
 typedef struct {
-    byte3* positions;
+    int3* positions;
     byte* entries;
     int count;
     int capacity;
 } combine_parts_pending;
 
 #define combine_part_unset 255
-#define combine_part_search 3   // voxels out from a clothes voxel to look for the body under it (its thickness)
 
 // a voxel's part: its entry's, or for clothes (over), the part it covers, else found later (the nearest body part)
-static inline void combine_part_set(BoneNode* parts, combine_parts_pending* pending, byte depth, byte3 position, byte entry, byte is_over) {
+static inline void combine_part_set(combine_parts* parts, combine_parts_pending* pending, int3 position, byte entry, byte is_over) {
     if (!is_over) {
-        set_BoneNode(parts, depth, position, entry + 1);
+        combine_parts_set(parts, position, entry + 1);
         return;
     }
     // over a part already (or waiting already)
-    if (getv_BoneNode(parts, depth, position)) {
+    if (combine_parts_get(parts, position)) {
         return;
     }
     if (pending->count == pending->capacity) {
         pending->capacity = pending->capacity ? pending->capacity * 2 : 64;
-        pending->positions = realloc(pending->positions, pending->capacity * sizeof(byte3));
+        pending->positions = realloc(pending->positions, pending->capacity * sizeof(int3));
         pending->entries = realloc(pending->entries, pending->capacity);
     }
     pending->positions[pending->count] = position;
     pending->entries[pending->count++] = entry;
-    set_BoneNode(parts, depth, position, combine_part_unset);
+    combine_parts_set(parts, position, combine_part_unset);
 }
 
-// a clothes voxel past the body takes the nearest body voxel's part (a sleeve's outside its arm's), searched out a
-//  shell at a time; none near, its own entry (CombineBones gives it its parent's bone)
-static inline void combine_parts_resolve(BoneNode* parts, combine_parts_pending* pending, byte depth) {
-    const int length = octree_size(depth);
-    for (int i = 0; i < pending->count; i++) {
-        const byte3 p = pending->positions[i];
-        // a part placed after it took it (a leg after a glove)
-        if (getv_BoneNode(parts, depth, p) != combine_part_unset) {
+// two parts (entries + 1) joined: the same, or one the other's parent (CombineParents); any if there are no parents
+static inline byte combine_parts_joined(const CombineParents* parents, byte a, byte b) {
+    if (a == b || !parents) {
+        return 1;
+    }
+    const byte parent_a = a - 1 < parents->length ? parents->value[a - 1] : 0;
+    const byte parent_b = b - 1 < parents->length ? parents->value[b - 1] : 0;
+    return parent_a == b || parent_b == a;
+}
+
+// a part's voxel there would touch (or be over) a part it isn't joined to: left out, a gap between them, so neither
+//  part's faces there are culled and each skin stays closed as they move apart (the faces between touching parts
+//  were kept before, many unseen ones, tst body_poses)
+static inline byte combine_part_touches(const combine_parts* parts, const CombineParents* parents, int3 p, byte part) {
+    for (byte d = 0; d < 7; d++) {
+        const byte other = combine_parts_get(parts, d == 6 ? p : int3_add(p, get_direction_int3(d)));
+        if (other && other != combine_part_unset && !combine_parts_joined(parents, part, other)) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// a clothes voxel's part: the most of its 6 neighbours' that are set (ties: the lower entry), 0 if none are
+static inline byte combine_part_neighbours(const combine_parts* parts, int3 p) {
+    byte found[6];
+    byte counts[6];
+    byte kinds = 0;
+    for (byte d = 0; d < 6; d++) {
+        const byte part = combine_parts_get(parts, int3_add(p, get_direction_int3(d)));
+        if (!part || part == combine_part_unset) {
             continue;
         }
-        byte found = 0;
-        for (int r = 1; r <= combine_part_search && !found; r++) {
-            for (int x = -r; x <= r && !found; x++)
-            for (int y = -r; y <= r && !found; y++)
-            for (int z = -r; z <= r && !found; z++) {
-                if (abs(x) != r && abs(y) != r && abs(z) != r) {
-                    continue;
-                }
-                const int3 q = { p.x + x, p.y + y, p.z + z };
-                if (q.x < 0 || q.y < 0 || q.z < 0 || q.x >= length || q.y >= length || q.z >= length) {
-                    continue;
-                }
-                const byte part = getv_BoneNode(parts, depth, (byte3) { q.x, q.y, q.z });
-                if (part && part != combine_part_unset) {
-                    found = part;
+        byte k = 0;
+        while (k < kinds && found[k] != part) {
+            k++;
+        }
+        if (k == kinds) {
+            found[kinds] = part;
+            counts[kinds++] = 0;
+        }
+        counts[k]++;
+    }
+    byte best = 0;
+    for (byte k = 0; k < kinds; k++) {
+        if (!best || counts[k] > counts[best - 1] || (counts[k] == counts[best - 1] && found[k] < found[best - 1])) {
+            best = k + 1;
+        }
+    }
+    return best ? found[best - 1] : 0;
+}
+
+// clothes voxels past the body take the part of the body they're nearest to through the clothes: a flood out from
+//  the body a layer at a time (a sleeve's outside its arm's, the shorts' legs their thighs'); each layer reads only the
+//  layers before it, so a part can't crawl along the clothes in the loop's order. Not touching the body (through the
+//  clothes), its own entry (CombineBones gives it its parent's bone)
+static inline void combine_parts_resolve(combine_parts* parts, VoxelNode* voxels, const CombineParents* parents, combine_parts_pending* pending, byte depth) {
+    byte* layer = malloc(pending->count ? pending->count : 1);
+    byte changed = 1;
+    while (changed) {
+        changed = 0;
+        for (int i = 0; i < pending->count; i++) {
+            const int3 p = pending->positions[i];
+            // a part placed after it took it (a leg after a glove), or resolved a layer before
+            layer[i] = combine_parts_get(parts, p) != combine_part_unset ? 0 : combine_part_neighbours(parts, p);
+        }
+        for (int i = 0; i < pending->count; i++) {
+            if (layer[i]) {
+                combine_parts_set(parts, pending->positions[i], layer[i]);
+                changed = 1;
+            }
+        }
+    }
+    for (int i = 0; i < pending->count; i++) {
+        if (combine_parts_get(parts, pending->positions[i]) == combine_part_unset) {
+            combine_parts_set(parts, pending->positions[i], pending->entries[i] + 1);
+        }
+    }
+    // then clothes touching a part they aren't joined to are left out (both sides, so it's the same either way round)
+    for (int i = 0; i < pending->count; i++) {
+        const byte part = combine_parts_get(parts, pending->positions[i]);
+        layer[i] = part && combine_part_touches(parts, parents, pending->positions[i], part);
+    }
+    for (int i = 0; i < pending->count; i++) {
+        if (layer[i]) {
+            set_VoxelNode(voxels, depth, int3_to_byte3(pending->positions[i]), 0);
+            combine_parts_set(parts, pending->positions[i], 0);
+        }
+    }
+    free(layer);
+    free(pending->positions);
+    free(pending->entries);
+}
+
+// the grid written to the BoneNode, its voxels' parts
+static inline void combine_parts_write(const combine_parts* parts, BoneNode* nodes, byte depth) {
+    int3 p;
+    for (p.x = 0; p.x < parts->size.x; p.x++) {
+        for (p.y = 0; p.y < parts->size.y; p.y++) {
+            for (p.z = 0; p.z < parts->size.z; p.z++) {
+                const byte part = combine_parts_get(parts, p);
+                if (part) {
+                    set_BoneNode(nodes, depth, int3_to_byte3(p), part);
                 }
             }
         }
-        set_BoneNode(parts, depth, p, found ? found : pending->entries[i] + 1);
     }
-    free(pending->positions);
-    free(pending->entries);
 }
 
 void combine_vox_system(iter* it) {
@@ -114,15 +206,37 @@ void combine_vox_system(iter* it) {
         voctree->value = 0;
         collapse_VoxelNode(voctree);
         // each voxel's part, for its bone (BoneNode, doc/done/skeletons.md)
-        BoneNode* parts = zox_has(e, BoneNode) ? zox_getm(e, BoneNode) : NULL;
+        BoneNode* bone_nodes = zox_has(e, BoneNode) ? zox_getm(e, BoneNode) : NULL;
         const CombineOver* over = zox_has(e, CombineOver) ? zox_get(e, CombineOver) : NULL;
         if (over && over->length != voxes->length) {
             over = NULL;
         }
         combine_parts_pending pending = { 0 };
-        if (parts) {
-            parts->value = 0;
-            collapse_BoneNode(parts);
+        const CombineParents* parents = zox_has(e, CombineParents) ? zox_get(e, CombineParents) : NULL;
+        if (parents && parents->length != voxes->length) {
+            parents = NULL;
+        }
+        combine_parts parts_grid = { 0 };
+        combine_parts* parts = NULL;
+        if (bone_nodes) {
+            bone_nodes->value = 0;
+            collapse_BoneNode(bone_nodes);
+            // the body's size from its entries (each placed at its position, its model's size)
+            for (byte j = 0; j < voxes->length; j++) {
+                const entity vox = voxes->value[j];
+                if (!zox_valid(vox) || !zox_has(vox, ChunkSize) || !zox_has(vox, NodeDepth)) {
+                    continue;
+                }
+                int3 vox_size = zox_getv(vox, ChunkSize);
+                if (depths && depths->value[j] < zox_getv(vox, NodeDepth)) {
+                    vox_size = get_vox_size_at_depth(vox_size, zox_getv(vox, NodeDepth), depths->value[j]);
+                }
+                parts_grid.size = int3_max_each(parts_grid.size, int3_add(byte3_to_int3(positions->value[j]), vox_size));
+            }
+            const int length = octree_size(ndepth->value);
+            parts_grid.size = int3_min_each(parts_grid.size, (int3) { length, length, length });
+            parts_grid.cells = calloc((size_t) parts_grid.size.x * parts_grid.size.y * parts_grid.size.z + 1, 1);
+            parts = &parts_grid;
         }
         for (byte j = 0; j < voxes->length; j++) {
             entity vox = voxes->value[j];
@@ -213,9 +327,13 @@ void combine_vox_system(iter* it) {
                             continue;
                         }
                         byte3 positionb = ushort3_to_byte3(position);
+                        const byte is_over = over && over->value[j];
+                        if (parts && !is_over && combine_part_touches(parts, parents, ushort3_to_int3(position), j + 1)) {
+                            continue;
+                        }
                         set_VoxelNode(voctree, ndepth->value, positionb, value);
                         if (parts) {
-                            combine_part_set(parts, &pending, ndepth->value, positionb, j, over && over->value[j]);
+                            combine_part_set(parts, &pending, ushort3_to_int3(position), j, is_over);
                         }
                         // Expands the size of our vox
                         if (position.x >= new_csize.x) {
@@ -234,8 +352,10 @@ void combine_vox_system(iter* it) {
             // zox_log(" + vox %i [%s] c[%i] at [%ix%ix%i] of s[%ix%ix%i]", j, zox_get_name(vox), acolors->length, vposition.x, vposition.y, vposition.z, vox_size.x, vox_size.y, vox_size.z);
         }
         if (parts) {
-            combine_parts_resolve(parts, &pending, ndepth->value);
-            optimize_reduce_BoneNode(parts);
+            combine_parts_resolve(parts, voctree, parents, &pending, ndepth->value);
+            combine_parts_write(parts, bone_nodes, ndepth->value);
+            optimize_reduce_BoneNode(bone_nodes);
+            free(parts->cells);
         }
         zox_octree_lock_end(write_lock);
         csize->value = new_csize;

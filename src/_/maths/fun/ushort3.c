@@ -7,3 +7,6 @@ static inline byte3 ushort3_to_byte3(ushort3 a) {
         a.z > 255 ? 255 : a.z
     };
 }
+static inline int3 ushort3_to_int3(ushort3 a) {
+    return (int3) { a.x, a.y, a.z };
+}
