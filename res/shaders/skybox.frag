@@ -8,8 +8,17 @@ uniform float time;
 uniform vec3 sky_top_color;
 uniform vec3 sky_bottom_color;
 
-float rand(vec2 co) {
-    return fract(sin(dot(co, vec2(12.9898,78.233))) * 43758.5453);
+// a hash without sin: fract(sin(big)) lost its precision as time grew, the sky's noise turned to streaks
+float rand(vec2 p) {
+    vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+    p3 += dot(p3, p3.yzx + 33.33);
+    return fract((p3.x + p3.y) * p3.z);
+}
+
+// the animated noise, per pixel on screen, shifted each frame, its input kept small
+//  - mesh_pos.xy was flat on the cube's x faces (only y changes there): rows of one value, streaks
+float sky_noise() {
+    return rand(gl_FragCoord.xy + floor(fract(time * 0.37) * 1024.0));
 }
 
 vec3 sky_gradient(vec3 color) {
@@ -23,7 +32,7 @@ vec3 sky_gradient(vec3 color) {
             color.x += to_mid_power;
             color.y += to_mid_power;
             color.z += to_mid_power;
-            float noise2 = rand(time * mesh_pos.xy);
+            float noise2 = sky_noise();
             color -= vec3(noise2) * 1.4;
         }
     }
@@ -49,7 +58,7 @@ void main() {
     frag_color = sky_gradient(frag_color);
 
     // Small animated variation.
-    float noise = rand(time * mesh_pos.xy);
+    float noise = sky_noise();
     frag_color += vec3((noise * 0.2) - 0.1);
 
     // a thick fog (under water, or the view fading to dark) covers the sky too; the open air's thin fog leaves it
