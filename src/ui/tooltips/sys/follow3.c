@@ -1,9 +1,10 @@
 // A 3D window's tooltip (spawn_window on 3D huds) under the ui it's showing: centred below it, a little gap, a
 //  little nearer the eye, turned as its window is
 //  - its window's metres a pixel: the canvas3 is Scale1 metres high, LayoutSize pixels
-//  - its own transform (DisableParentTransform): placed here, its glyphs on it by the hierarchy
+//  - its own transform (DisableParentTransform): placed here, its glyphs on it by the hierarchy (set_position_rotation_
+//      scale_recursive keeps its transform, places its children from it)
 #define tooltip3_gap 2            // canvas pixels between the ui and its tooltip
-#define tooltip3_nearer 0.004f    // metres towards the eye, over the window
+#define tooltip3_nearer 0.01f     // metres towards the eye, over the window (4mm had its top half hidden behind its window's frame at low resolution)
 
 void tooltip3_follow_system(iter* it) {
     zox_sys_on_begin();

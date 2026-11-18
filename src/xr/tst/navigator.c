@@ -25,6 +25,7 @@ entity zox_tst_xr_nav_icon = 0;          // the skill icon selected
 byte zox_tst_xr_nav_icon_found = 0;
 float zox_tst_xr_nav_icon_bright = 0;   // the selected icon's brightness (SelectedBrighter, drawn in 3D: element3_draw)
 byte zox_tst_xr_nav_tooltip = 0;         // its tooltip shown, its text, under it
+int zox_tst_xr_nav_glyphs_off = 1;       // its tooltip's glyphs not on it (none checked yet: 1)
 
 // the ui open for the lit frame (not one closing)
 static entity zox_tst_xr_nav_open_ui(ecs* world, entity canvas) {
@@ -182,6 +183,29 @@ byte zox_tst_xr_navigator_ready(ecs* world) {
                                     float3_sub(zox_getv(tooltip, Position3D), zox_getv(zox_tst_xr_nav_icon, Position3D)));
                                 zox_log("[tst] xr_navigator: the tooltip's text [%i] long, shown [%i], from its icon [%.3f %.3f]",
                                     text->length, !zox_getv(tooltip, RenderDisabled), off.x, off.y);
+                                // its glyphs on it (they sat at the world's origin: the hierarchy skipped a DisableParentTransform's
+                                //  children), within its width
+                                {
+                                    const int2 tip_size = zox_getv(tooltip, LayoutSize);
+                                    const float half_width = zox_getv(icon_window, LayoutSize).y > 0 ?
+                                        tip_size.x * 0.5f * zox_getv(icon_window, Scale1) / zox_getv(icon_window, LayoutSize).y : 0;
+                                    int glyphs = 0;
+                                    zox_tst_xr_nav_glyphs_off = 0;
+                                    iter it9 = zox_children(world, tooltip);
+                                    while (zox_children_next(it9)) {
+                                        for (int q = 0; q < it9.count; q++) {
+                                            const entity glyph = it9.entities[q];
+                                            if (!zox_has(glyph, Position3D)) {
+                                                continue;
+                                            }
+                                            const float distance = float3_distance(zox_getv(glyph, Position3D), zox_getv(tooltip, Position3D));
+                                            glyphs++;
+                                            zox_tst_xr_nav_glyphs_off += distance > half_width + 0.01f;
+                                        }
+                                    }
+                                    zox_log("[tst] xr_navigator: the tooltip's glyphs [%i], off it [%i]", glyphs, zox_tst_xr_nav_glyphs_off);
+                                    zox_tst_xr_nav_glyphs_off += glyphs == 0;
+                                }
                                 zox_tst_xr_nav_icon_bright = zox_has(zox_tst_xr_nav_icon, Brightness) ? zox_getv(zox_tst_xr_nav_icon, Brightness) : 0;
                                 zox_tst_xr_nav_tooltip = text->length > 0 && !zox_getv(tooltip, RenderDisabled) && off.y < 0 && fabsf(off.x) < 0.01f;
                             }
@@ -225,6 +249,7 @@ void zox_tst_xr_navigator_check(ecs* world) {
     zox_tst_check(zox_tst_xr_nav_menu_back, "LB didn't bring the pause menu back");
     zox_tst_check(zox_tst_xr_nav_icon_found, "no skill icon to select");
     zox_tst_check(zox_tst_xr_nav_tooltip, "the skill icon's 3D tooltip didn't show under it");
+    zox_tst_check(!zox_tst_xr_nav_glyphs_off, "the 3D tooltip's text isn't on it (its glyphs elsewhere, or none)");
     zox_tst_check(zox_tst_xr_nav_icon_bright > 1, "the selected 3D icon isn't brighter [%.2f]", zox_tst_xr_nav_icon_bright);
     zox_log("[tst] xr_navigator: round the taskbar, [%i] of [%i] uis 3D, not:%s", zox_tst_xr_nav_round_3d, zox_tst_xr_nav_round, zox_tst_xr_nav_flat);
     zox_tst_check(zox_tst_xr_nav_round == count && zox_tst_xr_nav_round_3d == count, "[%i] of [%i] uis opened 3D, not:%s",

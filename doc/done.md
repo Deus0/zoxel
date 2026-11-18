@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-18
+-x 3D tooltips show their text: its glyphs sat at the world's origin (the hierarchy skipped a DisableParentTransform's
+  children), now it keeps its own transform and places its children from it (its own scale kept, or its parent's
+  passed on); 1cm nearer than its window (4mm hid it behind the frame); a ui without a canvas or tooltip no longer
+  stops the rest linking theirs (tst xr_navigator checks its glyphs are on it)
 -x the new realm menu's name field resizes to what's typed (it stayed its spawn size, a long name ran off the
   screen): a TextFit tag (its TextFitFontSize, TextFitWidth) sizes its field to it and shrinks its font past the
   list's width, on every list input field (tst realm_name_input); names stay at most input_field_max_length (24)

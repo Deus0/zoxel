@@ -10,9 +10,14 @@ static inline void set_position_rotation_scale_recursive(
         return;
     }
 #endif
-    if (zox_has(e, DisableTransform) || zox_has(e, DisableParentTransform)) {
+    if (zox_has(e, DisableTransform)) {
         return;
     }
+    // places itself (its transform is its own, i.e. a 3D window's tooltip), its children still from it: they were
+    //  skipped, a 3D tooltip's glyphs sat at the world's origin
+    //  - its own scale kept (a 3D window's render target, a character, kept its size), without one its parent's
+    //      passes to its children (the tooltip's glyphs sized by its window)
+    const byte own_transform = zox_has(e, DisableParentTransform);
     if (!zox_has(e, Position3D) || !zox_has(e, Rotation3D)) {
         // zox_loge("Transform Components Invalid [%s]", zox_getn(e));
         return;
@@ -35,14 +40,21 @@ static inline void set_position_rotation_scale_recursive(
                 float3_single(zox_getv(e, LocalScale1)) :
                 float3_one);
     // world_position = parent_position + parent_rotation * (parent_scale * local_position)
-    float3 world_position = float3_add(
+    float3 world_position = own_transform ? zox_getv(e, Position3D) : float3_add(
         parent_position,
             float4_rotate_float3(parent_rotation,
                 float3_multiply(local_position, parent_scale)));
-    float4 world_rotation = quaternion_rotate(parent_rotation, local_rotation);
+    float4 world_rotation = own_transform ? zox_getv(e, Rotation3D) : quaternion_rotate(parent_rotation, local_rotation);
     float3 world_scale = zox_has(e, DisableParentScale) ?
         local_scale :
         float3_multiply(parent_scale, local_scale);
+    if (own_transform) {
+        world_scale = zox_has(e, Scale3) ?
+            zox_getv(e, Scale3) :
+            (zox_has(e, Scale1) ?
+                float3_single(zox_getv(e, Scale1)) :
+                parent_scale);
+    }
     Position3D* old_position = zox_getm(e, Position3D);
     if (!float3_equals(world_position, old_position->value))
     {
