@@ -52,7 +52,7 @@ void device_mode_ui_system(iter* it) {
         zox_sys_i(LastDeviceMode, old);
         zox_sys_i(DeviceMode, new);
         if (!dirty->value) {
-            return;
+            continue;
         }
         entity game = zox_get_link(world, e, GameLink);
         entity canvas = zox_get_link(world, e, CanvasLink);
@@ -76,7 +76,14 @@ void device_mode_ui_system(iter* it) {
             }
             mouse_visible = 0;
         }
-        set_mouse_visible(mouse_visible);
+        // the mouse is the first player's
+        if (e == zox_players[0]) {
+            set_mouse_visible(mouse_visible);
+        }
+        // joined players have no canvas on the menus (their screens spawn in game)
+        if (!zox_valid(canvas)) {
+            continue;
+        }
         spawn_device_gizmo(
             world,
             canvas,

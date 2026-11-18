@@ -1,6 +1,11 @@
 # Done
 
 ## 2026-11-18
+-x local coop: on the main menu players join with a gamepad's A (one the first player isn't using) and leave with
+  its B, the players show at the bottom centre (P1 P2 next to their device's icon, "A join" while a gamepad can);
+  split screen reworked: the second player's cameras and canvas spawn only as a game loads, back at the main menu
+  they go and the first player's screen fills the window (--splitscreen joins a second player at boot) (tst
+  split_screen, camera_split_screen)
 -x the starting quest (find a town) tracked from the start, the tracker shows it (tst find_quest checks it)
 -x quest markers: ! yellow has a quest to give, ? gray you have it, ? yellow you can hand it in; a quest giver
   respawning from its seed (chunk unload/load) shows the player's state of its quest, not ! again (tst quest_marker)

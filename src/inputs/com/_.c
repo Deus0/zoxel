@@ -31,6 +31,7 @@ zoxc_int2(ZeviceWheel);
 zox_tag(DeviceLink);       // links to a device, i.e. from its zevices
 zox_tag(ZeviceLink);       // links to a zevice, i.e. a pointer
 zox_tag(VirtualZeviceLink);
+zox_tag(GamepadLink);      // a player's gamepad, the one it switched to gamepad with (more can join as players)
 #include "keyboard.c"
 
 void zox_components_inputs(ecs *world) {
@@ -66,4 +67,5 @@ void zox_components_inputs(ecs *world) {
     zoxd_nf_link(DeviceLink);
     zoxd_nf_link(ZeviceLink);
     zoxd_nf_link(VirtualZeviceLink);
+    zoxd_nf_link(GamepadLink);
 }

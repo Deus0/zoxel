@@ -1,4 +1,9 @@
 void main_menu_event_delay(ecs *world, entity e) {
+    // joined players have no menus, their screens go (local coop)
+    if (e != zox_players[0]) {
+        return;
+    }
+    end_split_screen(world);
     spawn_main_menu(
         world,
         e,

@@ -2,31 +2,29 @@
 extern entity spawn_menu_start(ecs*, entity, entity);
 extern void autostart_new_realm(ecs*, entity);
 
-// NOTE: Runs on boot, spawns game cameras, uis
-void on_boot_game_ui(
+// spawns a player's screen: its game and ui cameras, canvas, mouse, fader and render texture
+//  - index of count players, side by side
+//  - the first player's at boot (with the start menu), the others' as a game starts (split screen, game_state_split_screen)
+void spawn_player_screen(
     ecs *world,
-    entity app)
+    entity app,
+    entity player,
+    int i,
+    int count,
+    byte is_boot)
 {
     byte dbg_log = 0;
-    // Headless has none
-    if (!zox_valid(app) || !zox_has(app, WindowSize)) {
-        zox_logv("No spawning Cameras and Canvases");
-        return;
-    }
-    set_main_cameras(players_playing);
     float3 camera_position = main_menu_camera_position;
     float4 camera_rotation = main_menu_camera_rotation;
     int2 screen_size = zox_getv(app, WindowSize);
-    for (int i = 0; i < players_playing; i++) {
-        // TODO: Use player children of app
-        entity player = zox_players[i];
+    {
         if (dbg_log) {
             zox_log("Spawning App [%s] Player [%s] Game UI",
                 zox_getn(app),
                 zox_getn(player));
         }
         // split screen: side by side, one column each
-        const float4 screen_to_canvas = viewport_grid_cell(i, players_playing, 1);
+        const float4 screen_to_canvas = viewport_grid_cell(i, count, 1);
         int2 vp_size = screen_to_canvas_size(screen_size, screen_to_canvas);
         int2 viewport_position = screen_to_canvas_position(screen_size, screen_to_canvas);
         int2 svp_size = scale_viewport(vp_size);
@@ -68,6 +66,13 @@ void on_boot_game_ui(
             screen_to_canvas,
             app);
         zox_set_unique_name(canvas, "game_canvas");
+        // the app's canvas stays the first player's (spawn_canvas links it to the newest)
+        if (i != 0) {
+            const entity first_canvas = zox_get_link(world, zox_players[0], CanvasLink);
+            if (zox_valid(first_canvas)) {
+                zox_link(world, app, CanvasLink, first_canvas);
+            }
+        }
         zox_link(world, player, CanvasLink, canvas);
         zox_link(world, canvas, PlayerLink, player);
         zox_link(world, canvas, Player, player);
@@ -90,54 +95,57 @@ void on_boot_game_ui(
             canvas,
             local_mouse,
             mouse_pointer);
-        // custom cursor
-        // SDL_ShowCursor(SDL_DISABLE);
-        entity texture_mouse = string_hashmap_get(files_hashmap_textures, new_string_data("cursor"));
-        if (!texture_mouse) {
-            zox_loge("[cursor] mouse texture not found");
+        // the mouse's cursor and held icon: the first player's, the keyboard and mouse stay with them
+        if (i == 0) {
+            // custom cursor
+            // SDL_ShowCursor(SDL_DISABLE);
+            entity texture_mouse = string_hashmap_get(files_hashmap_textures, new_string_data("cursor"));
+            if (!texture_mouse) {
+                zox_loge("[cursor] mouse texture not found");
+            }
+            byte mouse_ui_size = 8 * ui_scale;
+            entity mouse_ui = spawn_mouse_icon(
+                world,
+                prefab_element,
+                canvas,
+                max_layers2D - 2,
+                float2_zero,
+                mouse_ui_size,
+                local_mouse,
+                mouse_pointer);
+            zox_set_unique_name(mouse_ui, "mouse_ui");
+            zox_add(mouse_ui, MouseElement);
+            zox_setv(mouse_ui, MeshAlignment, zox_alignment_top_left);
+            clone_texture_data_scale(
+                world,
+                mouse_ui,
+                texture_mouse,
+                int2_single(mouse_ui_size));
+            zox_set(mouse_ui, LayoutSize, { int2_single(mouse_ui_size) });
+            zox_add(mouse_ui, LayoutSizeDirty);
+            zox_add(mouse_ui, LayoutPositionDirty);
+            if (local_mouse) {
+                zox_link(world, local_mouse, TextureLink, mouse_ui);
+                // zox_setv(local_mouse, TextureLink, mouse_ui);
+            } else {
+                zox_loge("No Local Mouse for our UI");
+            }
+            // Mouse Pickup UI
+            int icon_size = (default_icon_size / 4) * ui_scale;
+            entity e2 = spawn_mouse_icon(
+                world,
+                prefab_element,
+                canvas,
+                max_layers2D - 3,
+                float2_half,
+                icon_size,
+                local_mouse,
+                mouse_pointer);
+            zox_set_unique_name(e2, "data_mouse");
+            zox_add(e2, DataMouse);
+            entity empty_texture = string_hashmap_get(files_hashmap_textures, new_string_data("empty"));
+            clone_texture_data(world, e2, empty_texture);
         }
-        byte mouse_ui_size = 8 * ui_scale;
-        entity mouse_ui = spawn_mouse_icon(
-            world,
-            prefab_element,
-            canvas,
-            max_layers2D - 2,
-            float2_zero,
-            mouse_ui_size,
-            local_mouse,
-            mouse_pointer);
-        zox_set_unique_name(mouse_ui, "mouse_ui");
-        zox_add(mouse_ui, MouseElement);
-        zox_setv(mouse_ui, MeshAlignment, zox_alignment_top_left);
-        clone_texture_data_scale(
-            world,
-            mouse_ui,
-            texture_mouse,
-            int2_single(mouse_ui_size));
-        zox_set(mouse_ui, LayoutSize, { int2_single(mouse_ui_size) });
-        zox_add(mouse_ui, LayoutSizeDirty);
-        zox_add(mouse_ui, LayoutPositionDirty);
-        if (local_mouse) {
-            zox_link(world, local_mouse, TextureLink, mouse_ui);
-            // zox_setv(local_mouse, TextureLink, mouse_ui);
-        } else {
-            zox_loge("No Local Mouse for our UI");
-        }
-        // Mouse Pickup UI
-        int icon_size = (default_icon_size / 4) * ui_scale;
-        entity e2 = spawn_mouse_icon(
-            world,
-            prefab_element,
-            canvas,
-            max_layers2D - 3,
-            float2_half,
-            icon_size,
-            local_mouse,
-            mouse_pointer);
-        zox_set_unique_name(e2, "data_mouse");
-        zox_add(e2, DataMouse);
-        entity empty_texture = string_hashmap_get(files_hashmap_textures, new_string_data("empty"));
-        clone_texture_data(world, e2, empty_texture);
         if (!zox_disable_screen_fader) {
             spawn_canvas_overlay(
                 world,
@@ -147,7 +155,9 @@ void on_boot_game_ui(
         }
         // main menu ui
         // NOTE: tests that check the menus (zox_tst_menus) ignore --autostart
-        if (zox_autostart && !zox_tst_menus) {
+        if (!is_boot) {
+            // in game: its game ui spawns with its player state
+        } else if (zox_autostart && !zox_tst_menus) {
             autostart_new_realm(world, player);
         } else {
             spawn_menu_start(
@@ -178,4 +188,18 @@ void on_boot_game_ui(
             }
         }
     }
+}
+
+// NOTE: Runs on boot, spawns the first player's cameras and ui (more players split the screen in game)
+void on_boot_game_ui(
+    ecs *world,
+    entity app)
+{
+    // Headless has none
+    if (!zox_valid(app) || !zox_has(app, WindowSize)) {
+        zox_logv("No spawning Cameras and Canvases");
+        return;
+    }
+    set_main_cameras(1);
+    spawn_player_screen(world, app, zox_players[0], 0, 1, 1);
 }

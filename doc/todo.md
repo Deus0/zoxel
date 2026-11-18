@@ -593,6 +593,7 @@
 - Refactor OverlapEvent to Overlapped state with a system in items
 
 # Quests and Dialogue
+- the starting quest (find a town) tracked from the start
 - a coin model, given for the find town quest
 - a quest to craft a bed, the npc tells you how (the bed recipe, Items)
 - player feels no direction on start
@@ -960,6 +961,10 @@
 - Remove Realm Links components, just use Children
 - Replace Generate components (GenerateTexture, GenerateRealm, GenerateTunk) with core one
 - Add GenerateProgress, and add to it when generate state begins, remove when ends
+
+# Local Coop
+- Add tests for local coop
+- use second camera only in game for second player / inputs too or whatever
 
 # Engine and Refactors
 - Events: StreamEndEvent (and other function events) to observers

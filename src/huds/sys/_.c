@@ -4,6 +4,7 @@
 #include "crosshair.c"
 #include "load3.c"
 #include "navigator.c"
+#include "player_join.c"
 
 void zox_systems_game_ui(ecs *world) {
     zox_system(
@@ -26,6 +27,13 @@ void zox_systems_game_ui(ecs *world) {
         [in] inputs.LastDeviceMode,
         [in] inputs.DeviceMode,
         [none] players.Player,
+    );
+    // main thread: players join and leave, its ui spawns
+    zox_system_1(
+        player_join_system,
+        zoxp_spawn,
+        [in] players.PlayerState,
+        [none] players.Player
     );
     zox_system_1(
         player_terminal_system,
