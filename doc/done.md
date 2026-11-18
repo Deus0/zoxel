@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-18
+-x imported voxes: a .txt beside a .vox says the depth it was made at ("depth 4"), it's scaled up to depth 5 on
+  import, so the top hat (and cavalier and bowler hats) aren't half size on a Block Res 5 body; only .vox files are
+  read as voxes; doc/imports.md (tst vox_import)
 -x local coop: joining and leaving tested with a test gamepad's A and B (tst split_screen), A on the main menu no
   longer switches the first player to a gamepad it joins with (gamepad_a_joins); split screen huds scaled to their
   half and to fit (player_ui_scale_begin), the quest tracker's font scales with the ui (it was 12 at any), the
