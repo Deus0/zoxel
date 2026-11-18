@@ -104,6 +104,32 @@ static inline byte set_entity_text(
     }
 }
 
+// recolours a text: new glyphs take its FontFillColor, spawned glyphs regenerate with it
+static inline void set_entity_text_fill(
+    ecs* world,
+    entity e,
+    color fill)
+{
+    if (!zox_valid(e) || !zox_has(e, FontFillColor)) {
+        return;
+    }
+    if (color_equal(zox_getv(e, FontFillColor), fill)) {
+        return;
+    }
+    zox_setv(e, FontFillColor, fill);
+    iter it2 = zox_children(world, e);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            const entity glyph = it2.entities[j];
+            if (!zox_has(glyph, FillColor) || !zox_has(glyph, GenerateTexture)) {
+                continue;
+            }
+            zox_setv(glyph, FillColor, fill);
+            zox_setv(glyph, GenerateTexture, zox_generate_texture_run);
+        }
+    }
+}
+
 int get_zexts_count(ecs *world) {
     return zox_count_types(Text);
 }

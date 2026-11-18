@@ -4,7 +4,6 @@ void marker_spawn_system(iter* it) {
     // TODO: Check if has quest to give
     // TODO: Use texture quad instead - simpler
     byte dbg_log = 0;
-    color fill = color_yellow;
     color outline = color_black;
     zox_sys_world();
     zox_sys_begin();
@@ -27,21 +26,20 @@ void marker_spawn_system(iter* it) {
             }
             continue;
         }
-        char* text = quest_marker_available;
+        // seeded npcs respawn with the same quest: show the player's state of it (respawns showed !)
+        const entity user_quest = get_players_user_quest(world, e);
+        const char* text = get_quest_marker_text(world, user_quest);
+        if (!text) {
+            continue;   // handed in
+        }
         entity marker = spawn_marker(
             world,
             e,
-            text,
-            fill,
+            (char*) text,
+            get_quest_marker_fill(world, user_quest),
             outline);
         zox_link(world, e, ElementLinks, marker);
-        // link quest to marker
-        /*entity quest = zox_get_child_by_id(
-            world,
-            e,
-            zox_id(QuestGiving));*/
-        // zox_link(world, quest, MarkerLink, marker);
-        // zox_link(world, marker, QuestLink, quest);
+        link_quest_marker(world, user_quest, marker);
         if (dbg_log) {
             zox_log("Spawned Marker Label on [%s]: %s",
                 zox_getn(e),
