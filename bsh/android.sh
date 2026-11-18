@@ -865,72 +865,9 @@ keystore_alias="${game_name}"
 
 if [[ "${profile}" == "release" && "${signed}" == "1" ]]; then
 
-    echo ""
-    echo "> Configuring release signing"
-
-    mkdir -p "${keystore_dir}"
-    chmod 700 "${keystore_dir}"
-
-    # --------------------------------------------------------
-    # Password
-    # --------------------------------------------------------
-
-    if [[ ! -f "${keystore_password_file}" ]]; then
-        echo "- Creating keystore password"
-
-        keystore_password="$(head -c 32 /dev/urandom | base64)"
-
-        printf '%s\n' "${keystore_password}" \
-            > "${keystore_password_file}"
-
-        chmod 600 "${keystore_password_file}"
-
-        echo "- Password created:"
-        echo "  ${keystore_password_file}"
-    else
-        keystore_password="$(<"${keystore_password_file}")"
-    fi
-
-    if [[ -z "${keystore_password}" ]]; then
-        echo ""
-        echo "ERROR: Keystore password file is empty:"
-        echo "  ${keystore_password_file}"
-        exit 1
-    fi
-
-    # --------------------------------------------------------
-    # Keystore
-    # --------------------------------------------------------
-
-    if [[ ! -f "${keystore_path}" ]]; then
-
-        echo ""
-        echo "- Release keystore not found"
-        echo "- Creating:"
-        echo "  ${keystore_path}"
-
-        keytool \
-            -genkeypair \
-            -v \
-            -keystore "${keystore_path}" \
-            -storepass "${keystore_password}" \
-            -keypass "${keystore_password}" \
-            -alias "${keystore_alias}" \
-            -keyalg RSA \
-            -keysize 2048 \
-            -validity 10000 \
-            -dname "CN=${app_name}"
-
-        chmod 600 "${keystore_path}"
-
-        echo "+ Release keystore created"
-
-    else
-
-        echo "- Release keystore found:"
-        echo "  ${keystore_path}"
-
-    fi
+    # makes the keystore and password once (bsh/android_keys.sh), then reuses them
+    bash "${root}/bsh/android_keys.sh" "${game_name}"
+    keystore_password="$(head -n 1 "${keystore_password_file}")"
 
     # --------------------------------------------------------
     # Gradle signing configuration

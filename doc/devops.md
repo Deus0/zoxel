@@ -29,9 +29,10 @@
 	- start it by hand: actions, build, run workflow, on master
 - caches ext/ + lib/ and inc/flecs, a lib or flecs script change rebuilds them
 - android: android_prepare.sh downloads the sdk, ndk and gradle into and/ (cached), android.sh signs the apk
-	- with your key if the repo has the secrets ANDROID_KEYSTORE (base64 of ~/.config/zox_keys/zoxel.keystore)
-	  and ANDROID_KEYSTORE_PASSWORD (the first line of zoxel.password), github, settings, secrets, actions
-	- without them each run makes a new key: the apk installs, but uninstall the old one before updating
+	- with your key once it's saved as github secrets: bash bsh/android_keys.sh --github (needs gh, github-cli)
+		- android_keys.sh makes the key once in ~/.config/zox_keys (android.sh calls it too), back those files up:
+		  a lost key means installed apks can't be updated, only reinstalled
+	- without the secrets each run makes a new key: the apk installs, but uninstall the old one before updating
 - android.sh patches SDL's android-project (copied to and/<game>/) for each build:
 	- app id org.<game> (org.zoxel), debug builds org.zoxel.debug, the java namespace stays org.libsdl.app
 	- versionCode is the build date (20261118), versionName 2026.11.18, so a newer apk updates an older one
