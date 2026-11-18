@@ -29,6 +29,8 @@ void aura_particles_system(iter* it) {
                 // bounds.x = 2 * range->value;
                 float3 bounds = float3_single(range->value);
                 particles = spawn_particle3D_emitter(world, user, aura_spawn_rate, bounds, colorr->value);
+                // kept, so turning it off removes them (unlinked, each turn on added another: tst aura_particles)
+                zox_link(world, e, ParticlesEmitter, particles);
             }
         } else {
             // destroy them

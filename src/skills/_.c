@@ -27,4 +27,7 @@ void import_skills(ecs* world) {
     // add_hook_spawn_prefabs(zox_events_skills);
     zox_add_module(skills_ui);
     zox_add_module(auras);
+#ifdef zox_tests
+    zox_tsts_aura_particles(world);
+#endif
 }
