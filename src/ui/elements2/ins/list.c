@@ -43,7 +43,7 @@ entity spawn_list(
         };
         entity child = 0;
         if (child_data.type == list_element_type_button || child_data.type == list_element_type_input) {
-            child = spawn_button(
+            const entity2 button = spawn_button(
                 world,
                 prefab_button,
                 e,
@@ -57,7 +57,8 @@ entity spawn_list(
                 button_fill,
                 button_outline,
                 button_font_fill,
-                button_font_outline).x;
+                button_font_outline);
+            child = button.x;
             if (child_data.on_click.value) {
                 zox_setv(child, ClickEvent, child_data.on_click.value);
             }
@@ -65,6 +66,14 @@ entity spawn_list(
             if (child_data.type == list_element_type_input) {
                 zox_add(child, TextInput);
                 zox_setv(child, ClickEvent, &on_click_input_field);
+                // it fits what's typed: sized to it, its font smaller past the list's width, or the screen's
+                //  (a long name ran off the screen)
+                const int list_width = element_data.size.x - list_data.margins.x * 2;
+                const int canvas_width = canvas_data.size.x * 3 / 4;
+                const int fit_width = list_width > 0 ? list_width : canvas_width;
+                zox_add(button.y, TextFit);
+                zox_setv(button.y, TextFitFontSize, list_data.font_size);
+                zox_setv(button.y, TextFitWidth, fit_width);
             }
             if (child_data.save_path) {
                 FolderPath path = { };
