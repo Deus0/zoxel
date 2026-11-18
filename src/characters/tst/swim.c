@@ -109,10 +109,16 @@ byte zox_tst_swim_ready(ecs* world) {
         return 0;
     }
     zox_tst_waiting = "the character to climb out onto the shore";
-    zox_tst_swim_hold_jump(world, e);
     const int3 c = zox_getv(chunk, ChunkPosition);
     const int length = octree_size(zox_getv(terrain, NodeDepth));
     zox_tst_swim_end_x = position.x / scale - c.x * length;
+    // jump held till it's on the shore, then let go (held, it hopped on the land: not grounded when looked at)
+    if (zox_tst_swim_end_x > 2) {
+        zox_tst_swim_hold_jump(world, e);
+    }
+    if (zox_current_time - zox_tst_swim_time > 3) {
+        zox_tst_swim_grounded |= zox_getv(e, Grounded) != 0 && zox_tst_swim_end_x < 4;
+    }
     // walking at the shore (-x), until it's on it (the land is 4 wide)
     float3 velocity = zox_getv(e, Velocity3D);
     velocity.x = zox_tst_swim_end_x > 2 ? -1.5f : 0;
@@ -121,7 +127,6 @@ byte zox_tst_swim_ready(ecs* world) {
         return 0;
     }
     zox_tst_swim_out = !zox_has(e, InWater);
-    zox_tst_swim_grounded = zox_getv(e, Grounded) != 0;
     return 1;
 }
 

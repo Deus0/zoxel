@@ -18,11 +18,12 @@ static inline byte swim_at_shore(ecs* world, entity e) {
     if (terrain_voxel_at(world, terrain, above) != 0) {
         return 0;
     }
-    const int water = zox_getv(e, InsideBlock);
+    WaterLevels levels;
+    water_levels_get(world, zox_get_parent(world, terrain), &levels);
     const int3 sides[4] = { int3_left, int3_right, int3_forward, int3_backward };
     for (byte i = 0; i < 4; i++) {
         const int voxel = terrain_voxel_at(world, terrain, int3_add(above, sides[i]));
-        if (voxel > 0 && voxel != water) {
+        if (voxel > 0 && !voxel_is_water(&levels, voxel)) {
             return 1;
         }
     }

@@ -26,7 +26,8 @@ void player3d_jump_system(iter* it) {
         if (jump_state) {
             continue;
         }*/
-        if (!zox_getv(character, CanJump)) { // || can_jump >= jump_cooldown_state) {
+        // jumps on the ground, swims in water (held, a stroke a frame), as npcs do
+        if (!zox_getv(character, CanJump) && !zox_has(character, InWater)) {
             continue;
         }
         byte is_jump_triggered = 0;
