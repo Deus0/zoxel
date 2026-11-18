@@ -27,6 +27,8 @@ void import_rendering3(ecs* world) {
     zox_tsts_rendering3(world);
 #endif
     add_hook_load_shader(&spawn_shaders_basics3D);
+    add_hook_gpu_dispose(gpu_dispose_rendering3);
+    add_hook_gpu_restore(gpu_restore_rendering3);
     add_hook_spawn_prefabs(&zox_prefabs_rendering3);
     add_hook_spawn_prefabs(&zox_events_rendering3);
 }

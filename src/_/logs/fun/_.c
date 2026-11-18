@@ -9,6 +9,10 @@ unsigned int zox_log_errors_count = 0;
 int zox_gpu_buffers_live = 0;
 int zox_gpu_textures_live = 0;
 int zox_gpu_buffers_freed = 0;
+int zox_gpu_shaders_live = 0;
+int zox_gpu_programs_live = 0;
+int zox_gpu_fbos_live = 0;
+int zox_gpu_rbos_live = 0;
 
 #ifdef zox_logs
 

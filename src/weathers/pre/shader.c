@@ -18,6 +18,9 @@ void set_skybox_material_color(
     color_rgb top_color,
     color_rgb bottom_color)
 {
+    if (!material) {
+        return; // disposed (minimized), the restore sets the colours it kept (ColorRGB)
+    }
     float3 top_colorf = color_rgb_to_float3(top_color);
     float3 bottom_colorf = color_rgb_to_float3(bottom_color);
     zox_gpu_material(material);

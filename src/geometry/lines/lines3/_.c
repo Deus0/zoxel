@@ -14,6 +14,8 @@ const float line_frame_timing = 1 / 10.0f;
 void import_lines3(ecs* world) {
     zox_module(lines3);
     add_hook_load_shader(&spawn_shaders_lines3D);
+    add_hook_gpu_dispose(dispose_shader_line3D);
+    add_hook_gpu_restore(spawn_shaders_lines3D);
     add_hook_spawn_prefabs(spawn_prefabs_lines3D);
     zox_components_lines3(world);
     zox_systems_lines3(world);

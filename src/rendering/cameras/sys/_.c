@@ -2,7 +2,6 @@
 #include "render3.c"
 #include "camera_render_ui_system.c"
 #include "init.c"
-#include "gpu.c"
 
 void zox_systems_rendering_cameras(ecs *world) {
     // restore
@@ -14,26 +13,6 @@ void zox_systems_rendering_cameras(ecs *world) {
         [out] render_cameras.RenderBufferLink,
         [none] cameras.RenderCamera,
         [none] core.Initialize,
-    );
-    // Render Camera
-    zox_gpu_restore_system(
-        render_buffer_restore_system,
-        [in] core.PixelSize,
-        [out] FrameBufferLink,
-        [out] RenderBufferLink
-    );
-    zox_gpu_restore_system(
-        render_texture_restore_system,
-        [none] cameras.RenderTexture,
-        [none] !rendering.RenderTextureDirty,
-    );
-    zox_gpu_dispose_system(
-        frame_buffer_dispose_system,
-        [out] FrameBufferLink
-    );
-    zox_gpu_dispose_system(
-        render_buffer_dispose_system,
-        [out] RenderBufferLink
     );
     // rendering
     zox_system_1(

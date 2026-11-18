@@ -1,7 +1,10 @@
 // Materials
 
 static inline void zox_dispose_material(guint value) {
-    if (value) glDeleteProgram(value);
+    if (value) {
+        glDeleteProgram(value);
+        zox_gpu_programs_live--;
+    }
 }
 
 static inline gint zox_gpu_get_material_property(guint id, const char* name) {

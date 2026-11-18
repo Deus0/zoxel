@@ -6,6 +6,15 @@ guint line2D_color_location;
 guint line2D_depth_location;
 guint line2D_camera_matrix_location;
 
+void dispose_shader_line2D(ecs* world) {
+    (void) world;
+    zox_gpu_dispose_shader(line2D_shader.x);
+    zox_gpu_dispose_shader(line2D_shader.y);
+    zox_dispose_material(line2D_material);
+    line2D_shader = guint2_zero;
+    line2D_material = 0;
+}
+
 void spawn_shader_line2D(ecs *world) {
     char* vert = get_shader_source(world, "line2.vert");
     char* frag = get_shader_source(world, "line2.frag");

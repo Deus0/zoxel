@@ -79,7 +79,6 @@ void initialize_zoxel_settings(ecs* world) {
     // graphs
     zox_visualize_sounds = 0;
     // logs
-    is_log_gpu_restore = 0;
     // regen_rate = 10;
     // zox_camera_state_free | zox_camera_state_first_person | zox_camera_state_third_person | zox_camera_state_ortho | zox_camera_state_topdown | zox_camera_state_2D
     zox_game_camera_mode = zox_camera_state_first_person;

@@ -81,9 +81,12 @@ int initialize_shader_particle3D(ecs *world) {
     return EXIT_SUCCESS;
 }
 
-void dispose_shader_particle3D() {
+void dispose_shader_particle3D(ecs* world) {
+    (void) world;
     zox_gpu_dispose_shader(particle3D_shader.x);
     zox_gpu_dispose_shader(particle3D_shader.y);
     zox_dispose_material(particle3D_material);
     cleanup_particle_gpu_instancing();
+    particle3D_shader = guint2_zero;
+    particle3D_material = 0;
 }

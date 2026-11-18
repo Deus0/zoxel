@@ -1,13 +1,8 @@
-#include "dispose.c"
-#include "restore.c"
 #include "initialize.c"
 #include "lod_instance_system.c"
 #include "settings.c"
 
 void zox_systems_rendering(ecs *world) {
-    zox_systems_rendering_dispose(world);
-    zox_systems_rendering_restore(world);
-    // other
     zox_system_1(
         initialize_mesh_system,
         zoxp_gpu_upload,

@@ -23,6 +23,7 @@ void import_weathers(ecs* world) {
     zox_components_weather(world);
     zox_systems_weather(world);
     add_hook_load_shader(&zox_shaders_weather);
+    add_hook_gpu_restore(gpu_restore_weathers);
     add_hook_spawn_prefabs(zox_prefabs_weather);
     add_hook_spawn_prefabs(zox_events_weather);
 #ifdef zox_tests

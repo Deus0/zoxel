@@ -10,7 +10,6 @@
 #include "icon.c"
 #include "arrow.c"
 #include "plus.c"
-#include "gpu.c"
 
 void zox_systems_textures(ecs *world) {
     zox_system(
@@ -126,10 +125,5 @@ void zox_systems_textures(ecs *world) {
         [none] textures.TextureDirty,
         [none] !textures.TextureRGB,
         [none] !core.Initialize,
-    );
-    zox_gpu_restore_system(
-        texture_data_restore_system,
-        [none] textures.TextureData,
-        [none] textures.Texture
     );
 }

@@ -28,6 +28,8 @@ void dispose_square_mesh() {
     zox_gpu_dispose_buffer(global_mesh2.x);
     zox_gpu_dispose_buffer(global_mesh2.y);
     zox_gpu_dispose_buffer(global_mesh_uvs);
+    global_mesh2 = guint2_zero;
+    global_mesh_uvs = 0;
 }
 
 void initialize_square_mesh_textured() {

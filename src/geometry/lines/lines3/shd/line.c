@@ -21,10 +21,13 @@ guint line3D_instanced_data_buffer;     // LineData3D (start, end) per line
 guint line3D_instanced_color_buffer;    // Color per line
 int line3D_instanced_capacity = 0;      // lines the buffers hold, grows
 
-void dispose_shader_line3D() {
+void dispose_shader_line3D(ecs* world) {
+    (void) world;
     zox_gpu_dispose_shader(line3D_shader.x);
     zox_gpu_dispose_shader(line3D_shader.y);
     zox_dispose_material(line3D_material);
+    line3D_shader = guint2_zero;
+    line3D_material = 0;
     if (line3D_instanced_material) {
         zox_gpu_dispose_shader(line3D_instanced_shader.x);
         zox_gpu_dispose_shader(line3D_instanced_shader.y);
@@ -33,6 +36,8 @@ void dispose_shader_line3D() {
         zox_gpu_dispose_buffer(line3D_instanced_data_buffer);
         zox_gpu_dispose_buffer(line3D_instanced_color_buffer);
         line3D_instanced_capacity = 0;
+        line3D_instanced_shader = guint2_zero;
+        line3D_instanced_material = 0;
     }
 }
 

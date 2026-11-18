@@ -30,5 +30,6 @@ void import_textures(ecs* world) {
     zox_tsts_textures();
 #endif
     add_hook_spawn_prefabs(spawn_prefabs_textures_core);
+    add_hook_gpu_restore(gpu_restore_textures);
     zox_add_module(textures_io);
 }

@@ -1,9 +1,16 @@
 #include "updates.c"
 
 // for now until I move it all to ecs
-void rendering_dispose_basic_shaders2D() {
+// the 2D square meshes and instance material, let go of and made again with the gpu
+void gpu_dispose_rendering2(ecs* world) {
+    (void) world;
     dispose_shader2D_instance_material();
     dispose_square_mesh();
+}
+
+void gpu_restore_rendering2(ecs* world) {
+    initialize_square_mesh_textured();
+    load_instance2D_material(world);
 }
 
 // spawns after, when opengl loads

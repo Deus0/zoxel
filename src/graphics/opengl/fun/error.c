@@ -58,3 +58,12 @@ byte check_opengl_error_unlogged() {
     }
     return is_error;
 }
+
+// the opengl errors since last asked, as bits (1 << (code - GL_INVALID_ENUM)), unlogged: tests tell new ones from old
+int zox_gpu_error_bits() {
+    int bits = 0;
+    for (GLenum code = glGetError(); code != GL_NO_ERROR; code = glGetError()) {
+        bits |= 1 << ((code - GL_INVALID_ENUM) & 15);
+    }
+    return bits;
+}

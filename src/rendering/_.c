@@ -58,7 +58,10 @@ void import_rendering(ecs* world) {
     zox_module(rendering);
     initialize_render_loop();
     initialize_hook_load_shader();
-    initialize_gpu_systems();
+    initialize_hook_gpu_dispose();
+    initialize_hook_gpu_restore();
+    add_hook_gpu_dispose(gpu_dispose_rendering);
+    add_hook_gpu_restore(gpu_restore_rendering);
     // ecs defines
     zox_components_rendering(world);
     zox_systems_rendering(world);

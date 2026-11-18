@@ -5,14 +5,14 @@ byte test_opengl_shaders() {
         zox_loge("Cannot create shader (vertex) [%i]", GL_VERTEX_SHADER);
         return 1;
     }
-    zox_gpu_dispose_shader(shader_vertex);
+    glDeleteShader(shader_vertex);
 
     uint shader_fragment = glCreateShader(GL_FRAGMENT_SHADER);
     if (!shader_fragment) {
         zox_loge("Cannot create shader (fragment) [%i]", GL_FRAGMENT_SHADER);
         return 1;
     }
-    zox_gpu_dispose_shader(shader_fragment);
+    glDeleteShader(shader_fragment);
 
     return 0;   // no errors
 }

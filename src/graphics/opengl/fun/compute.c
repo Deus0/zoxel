@@ -57,7 +57,7 @@ int test_compute_shader() {
         return EXIT_FAILURE;
     } else {
         zox_log("    > compute shader creation success");
-        zox_gpu_dispose_shader(compute_shader);
+        glDeleteShader(compute_shader);
         return EXIT_SUCCESS;
     }
 #else

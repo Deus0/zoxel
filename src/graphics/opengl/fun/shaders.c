@@ -3,7 +3,10 @@ guint create_shader_compute() {
 }
 
 static inline void zox_gpu_dispose_shader(guint id) {
-    glDeleteShader(id);
+    if (id) {
+        glDeleteShader(id);
+        zox_gpu_shaders_live--;
+    }
 }
 
 byte initialize_material(guint material, guint vert_shader, guint frag_shader) {
@@ -53,6 +56,7 @@ guint spawn_gpu_material_program(guint2 shader) {
         glDeleteProgram(material);
         return 0;
     }
+    zox_gpu_programs_live++;
     return material;
 }
 
@@ -83,9 +87,11 @@ byte compile_shader(GLenum shader_type, guint* output, const gchar* buffer) {
         zox_loge("Shader not created of type [%i]", shader_type);
         return 1;
     }
+    zox_gpu_shaders_live++;
     glShaderSource(shader, 1, (const gchar **) &buffer, NULL);
     glCompileShader(shader);
     if (check_shader_compile_status(shader)) {
+        zox_gpu_dispose_shader(shader);
         return 1;
     }
     *output = shader;
@@ -104,6 +110,7 @@ guint2 zox_gpu_compile_shader(const gchar* vert_buffer, const gchar* frag_buffer
     }
     if (compile_shader(GL_FRAGMENT_SHADER, &shader.y, frag_buffer)) {
         zox_loge("[compile_shader] frag\n\n[%s]\n", frag_buffer);
+        zox_gpu_dispose_shader(shader.x);
         return guint2_zero;
     }
     zox_logv("> Compiled shader: %ix%i", shader.x, shader.y);

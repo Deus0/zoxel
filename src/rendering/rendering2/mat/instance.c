@@ -9,6 +9,8 @@ void dispose_shader2D_instance_material() {
     zox_gpu_dispose_buffer(squareMesh.x);
     zox_gpu_dispose_buffer(squareMesh.y);
     zox_dispose_material(square2DMaterial);
+    shader2D_basic = squareMesh = guint2_zero;
+    square2DMaterial = 0;
 }
 
 void initialize_mesh() {

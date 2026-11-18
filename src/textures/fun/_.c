@@ -3,3 +3,4 @@
 #include "clear.c"
 #include "outline.c"
 #include "swap.c"
+#include "gpu.c"

@@ -113,3 +113,14 @@ void refresh_weather(ecs* world) {
             menu_sky_bottom_color);
     }
 }
+
+// the restored skybox material gets its colours again (they're only on the gpu)
+void gpu_restore_weathers(ecs* world) {
+    zox_each_begin(Skybox);
+        const MaterialGPULink* material = zox_get(e, MaterialGPULink);
+        const ColorRGB* top = zox_get(e, ColorRGB);
+        const SecondaryColorRGB* bottom = zox_get(e, SecondaryColorRGB);
+        if (!material || !material->value || !top || !bottom) continue;
+        set_skybox_material_color(material->value, top->value, bottom->value);
+    zox_each_end();
+}

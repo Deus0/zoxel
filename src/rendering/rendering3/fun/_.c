@@ -6,6 +6,7 @@ entity material_basic3D;
 
 #include "clones.c"
 #include "element3.c"
+#include "gpu.c"
 
 void catch_basic3D_errors(char* function_name) {
 #ifdef is_catch_basic3D_errors

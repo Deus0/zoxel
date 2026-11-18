@@ -5,6 +5,8 @@
 //  - disposes: every gpu link is let go of (0), it stops rendering
 //  - restores: as many gpu links hold something as before, no opengl errors, a screenshot like the one before (its
 //    average colour: the sky came back magenta, the skybox didn't keep its menu colours)
+//  - live gpu objects (buffers, textures, shaders, programs, fbos, rbos): none after disposing (a lost context
+//    leaves anything kept dead, i.e. a global material), as many after restoring as before (no leaks)
 //  - run: bash bsh/tst.sh gpu_restore
 extern char zox_screenshot_request[256];
 #define zox_tst_gr_types 8
@@ -17,6 +19,11 @@ int zox_tst_gr_restored[zox_tst_gr_types];
 int zox_tst_gr_stage = 0;
 int zox_tst_gr_frames = 0;
 byte zox_tst_gr_stopped = 0, zox_tst_gr_rendering = 0, zox_tst_gr_errors = 0;
+#define zox_tst_gr_kinds 6
+const char* zox_tst_gr_kind_names[zox_tst_gr_kinds] = { "buffers", "textures", "shaders", "programs", "fbos", "rbos" };
+int zox_tst_gr_live_before[zox_tst_gr_kinds];
+int zox_tst_gr_live_disposed[zox_tst_gr_kinds];
+int zox_tst_gr_live_restored[zox_tst_gr_kinds];
 float zox_tst_gr_moves = 0, zox_tst_gr_changed = 0;   // average colour changes (0 to 765): on its own, and by a restore
 
 // how many of a gpu link's entities hold something
@@ -45,6 +52,13 @@ void zox_tst_gr_count(ecs* world, int* counts) {
     zox_tst_gr_count_links(MaterialGPULink, link->value);
     zox_tst_gr_count_links(FrameBufferLink, link->value);
     zox_tst_gr_count_links(RenderBufferLink, link->value);
+}
+
+// live gpu objects of each kind (counted as made and let go of, src/_/logs)
+void zox_tst_gr_live(int* counts) {
+    const int live[zox_tst_gr_kinds] = { zox_gpu_buffers_live, zox_gpu_textures_live, zox_gpu_shaders_live,
+        zox_gpu_programs_live, zox_gpu_fbos_live, zox_gpu_rbos_live };
+    memcpy(counts, live, sizeof(live));
 }
 
 void zox_tst_gr_screenshot(const char* file) {
@@ -116,9 +130,11 @@ byte zox_tst_gpu_restore_ready(ecs* world) {
         }
         zox_tst_gr_moves = zox_tst_gr_compare("gpu_restore_a.ppm", "gpu_restore_b.ppm");
         zox_tst_gr_count(world, zox_tst_gr_before);
+        zox_tst_gr_live(zox_tst_gr_live_before);
         check_opengl_error("gpu_restore before");
         opengl_dispose_resources(world);
         zox_tst_gr_count(world, zox_tst_gr_disposed);
+        zox_tst_gr_live(zox_tst_gr_live_disposed);
         zox_tst_gr_stopped = !rendering;
         zox_tst_gr_stage = 3;
         zox_tst_gr_frames = 0;
@@ -143,6 +159,7 @@ byte zox_tst_gpu_restore_ready(ecs* world) {
             return 0;
         }
         zox_tst_gr_count(world, zox_tst_gr_restored);
+        zox_tst_gr_live(zox_tst_gr_live_restored);
         zox_tst_gr_screenshot("gpu_restore_c.ppm");
         zox_tst_gr_stage = 5;
         zox_tst_gr_frames = 0;
@@ -164,6 +181,14 @@ void zox_tst_gpu_restore_check(ecs* world) {
         zox_tst_check(zox_tst_gr_disposed[i] == 0, "disposed, [%i] %s still hold something", zox_tst_gr_disposed[i], zox_tst_gr_names[i]);
         zox_tst_check(zox_tst_gr_restored[i] >= zox_tst_gr_before[i], "restored, [%i] %s hold something, [%i] did before",
             zox_tst_gr_restored[i], zox_tst_gr_names[i], zox_tst_gr_before[i]);
+    }
+    for (int i = 0; i < zox_tst_gr_kinds; i++) {
+        zox_log("[tst] [metric] live %s: [%i] before, [%i] disposed, [%i] restored", zox_tst_gr_kind_names[i],
+            zox_tst_gr_live_before[i], zox_tst_gr_live_disposed[i], zox_tst_gr_live_restored[i]);
+        zox_tst_check(zox_tst_gr_live_disposed[i] == 0, "disposed, [%i] %s still live (kept outside the gpu links?)",
+            zox_tst_gr_live_disposed[i], zox_tst_gr_kind_names[i]);
+        zox_tst_check(zox_tst_gr_live_restored[i] <= zox_tst_gr_live_before[i], "restored, [%i] %s live, [%i] before (leaked)",
+            zox_tst_gr_live_restored[i], zox_tst_gr_kind_names[i], zox_tst_gr_live_before[i]);
     }
     zox_tst_check(zox_tst_gr_before[0] > 0 && zox_tst_gr_before[3] > 0, "nothing on the gpu to test (no meshes or textures)");
     zox_tst_check(zox_tst_gr_stopped, "disposed, it kept rendering");

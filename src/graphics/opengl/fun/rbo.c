@@ -44,6 +44,7 @@ static inline void check_opengl_rbo(guint rbo) {
 static inline guint zox_gpu_create_rbo() {
     guint id;
     glGenRenderbuffers(1, &id);
+    zox_gpu_rbos_live++;
     if (dbg_log_rbo) {
         zox_log("Generated RBO [%i]", id);
     }
@@ -58,6 +59,7 @@ static inline void zox_gpu_dispose_rbo(guint id) {
         zox_log("Disposing RBO [%i]", id);
     }
     glDeleteRenderbuffers(1, &id);
+    zox_gpu_rbos_live--;
 }
 
 static inline void zox_gpu_set_rbo_size(guint id, int2 size) {

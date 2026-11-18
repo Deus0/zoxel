@@ -29,7 +29,7 @@ entity spawn_skybox(
         gpu_material,
         menu_sky_color,
         menu_sky_bottom_color);
-    // kept on it too: a gpu restore (skybox_restore_system) sets them again from these (it went white and magenta,
+    // kept on it too: a gpu restore (gpu_restore_weathers) sets them again from these (it went white and magenta,
     //  the prefab's), and sky_blend_system blends from and to them
     zox_setv(e, ColorRGB, menu_sky_color);
     zox_setv(e, SecondaryColorRGB, menu_sky_bottom_color);

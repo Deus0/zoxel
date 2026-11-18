@@ -36,6 +36,7 @@ static inline byte check_opengl_frame_buffer_status() {
 static inline uint zox_gpu_create_fbo() {
     guint id;
     glGenFramebuffers(1, &id);
+    zox_gpu_fbos_live++;
     if (dbg_log_fbo) {
         zox_log("Generated FBO [%i]", id);
     }
@@ -50,6 +51,7 @@ static inline void zox_gpu_dispose_fbo(guint id) {
         zox_log("Disposing FBO [%i]", id);
     }
     glDeleteFramebuffers(1, &id);
+    zox_gpu_fbos_live--;
 }
 
 static inline void zox_gpu_reset_fbo() {
