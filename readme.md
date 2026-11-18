@@ -13,64 +13,41 @@
 A procedural voxel RPG about exploration, discovery, and the strange things
 that exist beyond the edge of the known world.
 
-The land is vast.
+![Looking out from a town's wall: homes, roads, villagers, and the land beyond](doc/screenshot.jpg)
 
-Mountains rise from forests. Villages appear in the wilderness. Dungeons lie
-beneath the earth. Creatures wander through the night.
+The land is vast. Mountains rise from forests, villages appear in the
+wilderness, dungeons lie beneath the earth, and creatures wander through the
+night.
 
-You begin with very little.
-
-Go see what is out there.
+You begin with very little. Go see what is out there.
 
 
 ## Explore
 
-Zoxel is built around a simple idea:
-
-**give the player a world worth getting lost in.**
+Zoxel is built around one idea: **give the player a world worth getting lost in.**
 
 Explore forests, mountains, caves, towns, ruins, and the wilderness between
-them.
-
-Discover places that were not built specifically for you.
-
-Follow roads into unfamiliar territory.
-Climb over mountains.
-Descend into the dark.
-Find something that was never marked on a map.
+them. Follow roads into unfamiliar territory, climb over mountains, descend
+into the dark, and find something that was never marked on a map.
 
 The world is generated procedurally, so there is always somewhere else to go.
 
 
 ## A World of Voxels
 
-Everything begins with the world.
+Everything begins with the world. Terrain is built from voxels, a landscape
+that stretches far beyond what you can see, and you can change all of it.
 
-Terrain is constructed from voxels, forming a living landscape that can stretch
-far beyond what you can see.
+Build. Explore. Fight. Gather. Travel.
 
-Build.
-Explore.
-Fight.
-Gather.
-Travel.
-
-The world is not a collection of levels.
-
-It is a place.
+The world is not a collection of levels. It is a place.
 
 
 ## Become Part of It
 
-As you explore, your character grows.
-
-Find equipment.
-Develop skills.
-Improve your stats.
-Take on quests.
-Meet strange characters.
-Fight creatures.
-Discover what the world has hidden away.
+As you explore, your character grows. Find equipment, develop skills, improve
+your stats, take on quests, meet strange characters, fight creatures, and
+discover what the world has hidden away.
 
 Your journey is yours to shape.
 
@@ -78,43 +55,25 @@ Your journey is yours to shape.
 ## What's Inside
 
 - 🌲 Procedural voxel worlds
-- 🗺️ Exploration and discovery
-- 🏘️ Towns and settlements
-- ⛰️ Mountains, forests, caves, and wilderness
+- 🏘️ Walled towns, homes, and roads
+- ⛰️ Mountains, forests, lakes, caves, and wilderness
 - ⚔️ Combat
 - 🎒 Items and equipment
-- 📈 Character stats
-- ✨ Skills
-- 📜 Quests
-- 🧙 Characters and dialogue
-- 🌍 A world built to be explored
+- 📈 Character stats and ✨ skills
+- 📜 Quests, 🧙 characters, and dialogue
+- 🎮 Split screen local co-op
 
 
-## The World Is Open
+## Play
 
-Zoxel is free and open source.
-
-The game is built in C with a lightweight architecture and an ECS foundation,
-but you do not need to understand any of that to play it.
-
-If you want to explore the code, however, everything is there.
-
-Zoxel is released under the GPL.
-
-
-## Play Zoxel
-
-The latest playable builds can be found on itch.io:
-
-https://deus0.itch.io/zoxel
+The latest builds are on itch.io: https://deus0.itch.io/zoxel
 
 
 ## Build From Source
 
-The project is being actively developed and the world is still growing
-
-Source:
-https://codeberg.org/deus/zoxel
+Zoxel is free and open source, released under the GPL. It's written in C with
+[flecs](https://github.com/SanderMertens/flecs) (an ECS) and SDL, and is being
+actively developed: the world is still growing.
 
 ```bash
 git clone https://codeberg.org/deus/zoxel
@@ -122,6 +81,9 @@ cd zoxel
 ./bsh/flecs.sh
 ./bsh/build.sh
 ```
+
+Source: https://codeberg.org/deus/zoxel
+
 
 ## Docs
 
@@ -143,14 +105,13 @@ up a task.
 - [Architecture](doc/architecture.md): events vs systems, and other
   design guidelines
 - [Coding Standards](doc/coding_standards.md): code style and conventions
+- [Tests](doc/tests.md): writing and running tests
+
 
 ## Follow Development
 
-Mastodon:
-https://mastodon.gamedev.place/@deus
-
-Twitter:
-https://x.com/deusxyz
+- Mastodon: https://mastodon.gamedev.place/@deus
+- Twitter: https://x.com/deusxyz
 
 ---
 
