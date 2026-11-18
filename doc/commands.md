@@ -56,7 +56,7 @@ On boards without desktop GL (i.e. the Mali boards), the game falls back to ES b
 | `--medium` | terrain stream distance 6, height 3 | terrain |
 | `--large` | terrain stream distance 12, height 4 | terrain |
 | `--far <n>` | terrain stream distance n (height as set) | terrain |
-| `--vertical <n>` | terrain stream height n, the land's highest grows with it (heights are bytes: past 255 blocks only more sky) | terrain |
+| `--vertical <n>` | terrain stream height n: the land scales with it (n / 4: taller, hills and lakes wider, the sea with them), heights are bytes (255 at most) | terrain |
 | `--freeroam` | free camera, not attached to the player character | [games](../src/games/dat/rules.c) |
 | `--nonpc` `--nonpcs` | no npcs spawn | [characters](../src/characters/set/_.c) |
 | `--noblockvoxes` `--nominivoxes` | no block voxes (minivoxes) | [models](../src/models/fun/_.c) |

@@ -1,5 +1,5 @@
 // tst: aesthetic_town, the readme's screenshots from a town's wall, to refresh them as the game grows
-//  - the town nearest the player, the wall across from its gate, the camera freed (as free roam does) onto it:
+//  - the town nearest the player (any region), the wall across from its gate, the camera freed (as free roam does) onto it:
 //      wall: along the wall top, the player standing on it, the town to one side, the wild to the other
 //      inside: from the wall's inner edge, over the town and on to the far wall
 //      outside: from its outer edge, out over the land
@@ -35,17 +35,18 @@ static inline int2 zox_tst_aesthetic_step(int2 from, int2 direction, int steps) 
     return (int2) { from.x + direction.x * steps, from.y + direction.y * steps };
 }
 
-// the town nearest the player
+// the town nearest the player, in any region (a big world's player may land before towns spawn, not at a home)
 static inline entity zox_tst_aesthetic_find_town(ecs* world, entity character, float scale) {
-    const entity region = zox_tst_player_region(world);
-    entity towns[zox_children_capacity];
-    const uint count = zox_valid(region) ? zox_get_children_by_id(world, region, towns, zox_children_capacity, zox_id(Town)) : 0;
     const float3 p = zox_getv(character, Position3D);
     const int2 player = { p.x / scale, p.z / scale };
     entity nearest = 0;
-    for (uint i = 0; i < count; i++) {
-        if (!nearest || int2_distance(zox_getv(towns[i], BlockPosition2), player) < int2_distance(zox_getv(nearest, BlockPosition2), player)) {
-            nearest = towns[i];
+    ecs_iter_t it = ecs_each_id(world, zox_id(Town));
+    while (ecs_each_next(&it)) {
+        for (int i = 0; i < it.count; i++) {
+            const entity town = it.entities[i];
+            if (zox_has(town, BlockPosition2) && (!nearest || int2_distance(zox_getv(town, BlockPosition2), player) < int2_distance(zox_getv(nearest, BlockPosition2), player))) {
+                nearest = town;
+            }
         }
     }
     return nearest;
@@ -61,14 +62,14 @@ byte zox_tst_aesthetic_town_ready(ecs* world) {
         if (!zox_tst_aesthetic_time) {
             zox_tst_aesthetic_time = zox_current_time;
         }
-        zox_tst_waiting = "a town in the player's region";
+        zox_tst_waiting = "a town";
         zox_tst_progress((int) (zox_current_time - zox_tst_aesthetic_time));
         zox_tst_aesthetic_town = zox_tst_aesthetic_find_town(world, character, zox_getv(zox_get_link(world, character, TerrainLink), BlockScale));
         if (!zox_valid(zox_tst_aesthetic_town)) {
             if (zox_current_time - zox_tst_aesthetic_time < 60) {
                 return 0;
             }
-            zox_tst_check(0, "no town in the player's region");
+            zox_tst_check(0, "no town");
             return 1;
         }
         zox_tst_aesthetic_stage = 1;

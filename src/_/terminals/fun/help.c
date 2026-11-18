@@ -37,7 +37,7 @@ void print_help_menu(const char* arg0) {
         "        --medium            terrain stream distance 6, height 3\n"
         "        --large             terrain stream distance 12, height 4\n"
         "        --fog <n>           the Fog setting, 0 to 1 (i.e. 0.03 to see far)\n"
-        "        --vertical <n>      terrain stream height n, taller land\n"
+        "        --vertical <n>      terrain stream height n, the land scaled with it\n"
         "        --freeroam          free camera, not attached to the character\n"
         "        --nonpcs            no npcs (--nonpc)\n"
         "        --nohumans          no humanoid npcs (villagers)\n"

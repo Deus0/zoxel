@@ -10,6 +10,11 @@ const byte terrain_lod_far_min = 1;
 const byte terrain_lod_far_max = 64;  // options, min + percentage*max
 byte terrain_lod_far_buffer = 2;    // buffer the near to far - adds a minimum low lods
 const byte render_distance_y_min = 1;
+// the land's scale: its heights, hills' spread, biomes and lakes grow with the stream height, the sea with them
+//  (heights/sys/landfill.c), so a taller world feels the same, bigger; 1 at the default 4
+static inline float terrain_world_scale() {
+    return render_distance_y / 4.0f;
+}
 const byte render_distance_y_slider_max = 16;   // the settings slider's end only, --vertical goes past it
 float settings_terrain_lod_start = 0.25f;
 extern int get_characters_count(ecs *world);

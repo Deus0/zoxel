@@ -43,7 +43,12 @@ static inline int terrain_height_base(const TerrainHeights* th, int2 global_posi
 //  under its rim's lowest point, so it stays in its bowl (doc/tech/water.md)
 //  - its centre is seeded, far enough in that the bowl stays in its cell: a column only asks its own cell
 //  - one under the sea is only a dip: the sea fills it
-#define zox_lake_cell 64
+#define zox_lake_cell_base 64
+// a lake's cell, radius and depth grow with the land (terrain_world_scale)
+static inline int zox_lake_cell_size() {
+    return (int) (zox_lake_cell_base * terrain_world_scale());
+}
+#define zox_lake_cell zox_lake_cell_size()
 #define zox_lake_chance 30          // percent of cells
 #define zox_lake_rim_samples 16
 typedef struct {
@@ -71,8 +76,9 @@ static inline byte terrain_lake_in_cell(const TerrainHeights* th, int2 global_po
     if (lake_hash(cx, cy, th->seed, 1) % 100 >= zox_lake_chance) {
         return 0;
     }
-    lake->radius = 8 + lake_hash(cx, cy, th->seed, 2) % 8;
-    lake->depth = 3 + lake_hash(cx, cy, th->seed, 3) % 3;
+    const float scale = terrain_world_scale();
+    lake->radius = (byte) ((8 + lake_hash(cx, cy, th->seed, 2) % 8) * scale);
+    lake->depth = (byte) ((3 + lake_hash(cx, cy, th->seed, 3) % 3) * scale);
     const int margin = lake->radius + 2, span = zox_lake_cell - margin * 2;
     lake->centre = (int2) { cx * zox_lake_cell + margin + (int) (lake_hash(cx, cy, th->seed, 4) % span),
         cy * zox_lake_cell + margin + (int) (lake_hash(cx, cy, th->seed, 5) % span) };

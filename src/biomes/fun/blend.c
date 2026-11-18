@@ -22,8 +22,9 @@ typedef struct {
 
 // a column's climate: temperature and moisture, 0 to 1
 static inline float2 get_biome_climate(int2 global_position, byte terrain_length, lint seed) {
-    const double x = noise_positiver2 + (global_position.x / ((float) terrain_length));
-    const double y = noise_positiver2 + (global_position.y / ((float) terrain_length));
+    const float spread = terrain_length * terrain_world_scale();
+    const double x = noise_positiver2 + (global_position.x / spread);
+    const double y = noise_positiver2 + (global_position.y / spread);
     return (float2) {
         (float) perlin_octaves(x, y, zox_biome_climate_frequency, seed, zox_biome_climate_octaves),
         (float) perlin_octaves(x, y, zox_biome_climate_frequency, seed + 7919, zox_biome_climate_octaves)
@@ -82,10 +83,11 @@ static inline byte get_biome_index(int2 global_position, byte terrain_length, li
 
 // one biome's height at a column, unclamped
 static inline float get_biome_height(int2 global_position, byte terrain_length, lint seed, float frequency) {
-    const double perlin_x = noise_positiver2 + (global_position.x / ((float) terrain_length));
-    const double perlin_y = noise_positiver2 + (global_position.y / ((float) terrain_length));
+    const float scale = terrain_world_scale();
+    const double perlin_x = noise_positiver2 + (global_position.x / (terrain_length * scale));
+    const double perlin_y = noise_positiver2 + (global_position.y / (terrain_length * scale));
     const double perlin_value = perlin_octaves(perlin_x, perlin_y, frequency, seed, zox_terrain_octaves);
-    return (float) (perlin_value * terrain_length * zox_terrain_height_multiplier);
+    return (float) (perlin_value * terrain_length * zox_terrain_height_multiplier * scale);
 }
 
 // the terrain's height at a column, the biomes near it blended by their weights (blend 0: the nearest only)
