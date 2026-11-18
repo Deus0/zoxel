@@ -11,7 +11,6 @@
 	ui camera stay half width (230x460, not 460x460), and the join ui doesn't show both players again
 - Windows build broken: near and far are macros in the windows headers (minwindef.h), rename any near/far names in
 	the code, and add "no near or far names" to doc/coding_standards.md
-- body still too big, it can't fit through a 2 tall, 1 wide door
 - XR lag, what's left (the frame's start and the hands' timing are fixed, see done.md): needs a headset to confirm;
 	if it's still laggy, read the headset's frame timing log ([XR] fps, openxr/render.c)
 - XR lean feels 2-3 times larger than real life (play test, on the build that slid the whole body): tst xr_body has
@@ -39,7 +38,6 @@
 	- play test: make sure buildings don't place on water
 - play test the clothes' skinning (fixed 2026-11-18, doc/done/skeletons.md): sleeves, shorts, the shirt moving with
   the parts under them; Paint Weights (debug settings) shows each bone's colour, bash bsh/poses.sh --weights
-- the body is [1.016] tall at Block Res 5, over 2 blocks (tst body_poses with your settings, bash bsh/poses.sh)
 - Crosshair will flicker siize too fast
     - give crossbar more natural animations when you see npc
     - seperate animation for the terrain or air

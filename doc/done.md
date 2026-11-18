@@ -1,6 +1,11 @@
 # Done
 
 ## 2026-11-18
+-x the body fits a doorway (play test: too big for a 2 tall, 1 wide door): it was 2 blocks and a hat's top tall at
+  Block Res 5 (131 voxels of 128), the head and what's on it now sink into the neck past 2 blocks
+  (body_parts_fit_height); and characters hit terrain as an UprightCollider: an upright box that doesn't turn with
+  them, 0.6 of a block across (their box was the whole body, arms and all, 0.97 wide, turned 45 degrees 1.4), so a
+  player off the doorway's middle or turned got stuck on its sides; tst doorway (a fifth of a block off, turned 30)
 -x the new realm menu's name field resizes to what's typed (it stayed its spawn size, a long name ran off the
   screen): a TextFit tag (its TextFitFontSize, TextFitWidth) sizes its field to it and shrinks its font past the
   list's width, on every list input field (tst realm_name_input); names stay at most input_field_max_length (24)
