@@ -185,7 +185,7 @@ run_game() {
     local seed_env=()
     if [[ " ${aesthetic_tests[*]} " == *" ${tst} "* ]]; then
         test_args+=(--far 16 --vertical 4 --fog 0.025 --1080p --nohud --nouis)
-        seed_env=(env "zox_tst_seed=${zox_tst_seed:-391559643}")
+        seed_env=(env "zox_tst_seed=${zox_tst_seed:-375758414}")
         seconds=$(( timeout_seconds > 300 ? timeout_seconds : 300 ))
     fi
     if [[ ${gdb} == "1" ]]; then

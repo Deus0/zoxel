@@ -7,6 +7,8 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
+- tst aesthetic_town isn't repeatable: the same seed (375758414) framed a different town or land on another run
+	(2026-11-19)
 - the sky has horizontal streaks in screenshots at 1080p (tst aesthetic_town, doc/screenshot/wall.jpg), upper middle
 	of the sky (2026-11-18)
 - --vertical over 4 smashed the stack (terrain_stream_queue_system, Chunk3Stack is render_distance_y_max * 2 + 1),
