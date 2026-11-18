@@ -33,6 +33,7 @@ jobs:
           echo "changed=${changed}" >> "$GITHUB_OUTPUT"
 
   build:
+    name: ${{ matrix.target }}
     needs: check
     if: needs.check.outputs.changed == 'true'
     runs-on: ubuntu-latest
