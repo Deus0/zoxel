@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-20
+-x Deleting a disabled entity (a hidden lod mesh) leaked its gpu buffers and textures: the gpu links' OnRemove
+  observers skipped disabled entities, zoxd_dest uses zox_observe_disabled now (EcsQueryMatchDisabled), tst gpu_links
 -x Gpu restore and dispose are functions, not systems: each module adds a gpu_dispose / gpu_restore hook that walks
   its gpu links (zox_each_begin), disabled entities too, not prefabs; a restore makes again only what the dispose
   let go of (making the rest leaked); it also restores the lines, particles and 2D square materials, bone index
