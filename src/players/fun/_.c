@@ -24,6 +24,16 @@ static inline void setup_player(
     add_player(world, game, e);
 }
 
+// a player's place in zox_players (0 if it isn't one)
+static inline byte get_player_index(entity e) {
+    for (byte i = 0; i < players_playing; i++) {
+        if (zox_players[i] == e) {
+            return i;
+        }
+    }
+    return 0;
+}
+
 // local coop: a player joins with a device (a gamepad), no cameras or canvas until a game starts (huds)
 //  - device 0 joins with none (--splitscreen without a gamepad, tests)
 entity join_player(

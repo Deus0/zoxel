@@ -3,6 +3,7 @@ entity spawn_prefab_skybox(ecs *world) {
     zox_prefab_name("skybox");
     zox_add(e, Skybox);
     zox_add(e, IgnoreParentRotation);
+    zox_add(e, RenderAtCamera);
     zox_setv(e, Position3D, float3_zero);
     zox_setv(e, Rotation3D, float4_identity);
     zox_setv(e, Scale1, 1);

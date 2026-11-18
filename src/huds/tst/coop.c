@@ -1,0 +1,151 @@
+// tsts for local coop (--splitscreen, a second player joined at boot), the screens: tst split_screen, the huds:
+//  tst split_screen_huds, the land round two streamers: tst coop_streamers
+int zox_tst_coop_frames = 0;
+
+void zox_tst_coop_level_setup() {
+    zox_tst_level_setup();
+    is_split_screen = 1;
+}
+
+void zox_tst_coop_setup() {
+    is_split_screen = 1;
+}
+
+// both players' characters, once spawned
+static inline byte zox_tst_coop_playing(ecs* world) {
+    if (!zox_tst_player_spawn_ready(world)) {
+        return 0;
+    }
+    zox_tst_waiting = "the second player playing";
+    return players_playing >= 2 && zox_getv(zox_players[1], PlayerState) == zox_player_state_playing &&
+        zox_valid(zox_get_link(world, zox_players[1], CharacterLink));
+}
+
+// tst: coop_skybox, split screen: the skybox is drawn round each camera (RenderAtCamera)
+//  - it was the first camera's child, drawn there: the second player, a way off, saw it from outside, the world past
+//      its walls, cut off
+//  - the test level, the players side by side: each main camera's last skybox was drawn at its own position
+//  - run: bash bsh/tst.sh coop_skybox
+byte zox_tst_coop_skybox_ready(ecs* world) {
+    if (!zox_tst_coop_playing(world)) {
+        return 0;
+    }
+    zox_tst_coop_frames++;
+    // a frame's draws from here
+    if (zox_tst_coop_frames == 60) {
+        for (int i = 0; i < max_cameras; i++) {
+            render_at_camera_drawn[i] = (float3) { 99999, 99999, 99999 };
+        }
+    }
+    return zox_tst_coop_frames >= 70;
+}
+
+void zox_tst_coop_skybox_check(ecs* world) {
+    const entity skybox = zox_valid(local_game) ? zox_get_link(world, local_game, Skybox) : 0;
+    zox_tst_check(zox_valid(skybox), "no skybox");
+    if (zox_valid(skybox)) {
+        zox_tst_check(zox_has(skybox, RenderAtCamera), "the skybox isn't drawn round each camera");
+    }
+    zox_tst_check(main_cameras_count == 2, "[%i] main cameras, expected 2", main_cameras_count);
+    if (main_cameras_count < 2 || !zox_valid(main_cameras[0]) || !zox_valid(main_cameras[1])) {
+        return;
+    }
+    const float3 a = zox_getv(main_cameras[0], Position3D);
+    const float3 b = zox_getv(main_cameras[1], Position3D);
+    zox_log("[tst] cameras at [%.1fx%.1fx%.1f] and [%.1fx%.1fx%.1f], [%.1f] apart", a.x, a.y, a.z, b.x, b.y, b.z, float3_distance(a, b));
+    zox_tst_check(float3_distance(a, b) > 1, "the players' cameras are [%.2f] apart, the test can't tell their skyboxes apart",
+        float3_distance(a, b));
+    for (int i = 0; i < 2; i++) {
+        const float3 camera = zox_getv(main_cameras[i], Position3D);
+        const float3 drawn = render_at_camera_drawn[i];
+        // the camera moves a little between its draw and now (head bob)
+        zox_tst_check(float3_distance(camera, drawn) < 0.5f, "camera [%i]'s skybox drawn at [%.1fx%.1fx%.1f], [%.1f] from it",
+            i + 1, drawn.x, drawn.y, drawn.z, float3_distance(camera, drawn));
+    }
+}
+
+// tst: coop_homes, a new game with two players: they spawn in the same town, each in front of their own home's door
+//  - each picked a random region and town, so they started far apart; a home each (player_town_finder_system)
+//  - a whole world (towns aren't in the test level), seed zox_tst_seed
+//  - run: bash bsh/tst.sh coop_homes
+entity zox_tst_coop_homes[2];
+float zox_tst_coop_home_distances[2];
+uint zox_tst_coop_town_homes = 0;
+
+// the home whose door front column is closest to a position (in blocks, x and z), of the terrain's towns
+static inline entity zox_tst_coop_closest_home(ecs* world, entity terrain, float3 position, float* distance) {
+    const float scale = zox_getv(terrain, BlockScale);
+    const float2 at = (float2) { position.x / scale, position.z / scale };
+    entity closest = 0;
+    *distance = 99999;
+    entity regions[zox_children_capacity];
+    const uint regions_count = zox_get_children_by_id(world, terrain, regions, zox_children_capacity, zox_id(Region));
+    for (uint r = 0; r < regions_count; r++) {
+        entity towns[zox_children_capacity];
+        const uint towns_count = zox_get_children_by_id(world, regions[r], towns, zox_children_capacity, zox_id(Town));
+        for (uint t = 0; t < towns_count; t++) {
+            entity homes[zox_children_capacity];
+            const uint homes_count = zox_get_children_by_id(world, towns[t], homes, zox_children_capacity, zox_id(Home));
+            for (uint h = 0; h < homes_count; h++) {
+                const int2 door = home_door_front(world, homes[h]);
+                // the column's middle
+                const float dx = door.x + 0.5f - at.x, dz = door.y + 0.5f - at.y;
+                const float d = sqrtf(dx * dx + dz * dz);
+                if (d < *distance) {
+                    *distance = d;
+                    closest = homes[h];
+                }
+            }
+        }
+    }
+    return closest;
+}
+
+byte zox_tst_coop_homes_ready(ecs* world) {
+    if (!zox_tst_coop_playing(world)) {
+        return 0;
+    }
+    // where they spawned, before they move
+    const entity terrain = local_terrain;
+    for (int i = 0; i < 2; i++) {
+        const entity character = zox_get_link(world, zox_players[i], CharacterLink);
+        zox_tst_coop_homes[i] = zox_valid(terrain) && zox_valid(character) ?
+            zox_tst_coop_closest_home(world, terrain, zox_getv(character, Position3D), &zox_tst_coop_home_distances[i]) : 0;
+    }
+    if (zox_valid(zox_tst_coop_homes[0])) {
+        entity homes[zox_children_capacity];
+        zox_tst_coop_town_homes = zox_get_children_by_id(world, zox_get_parent(world, zox_tst_coop_homes[0]), homes,
+            zox_children_capacity, zox_id(Home));
+    }
+    return 1;
+}
+
+void zox_tst_coop_homes_check(ecs* world) {
+    for (int i = 0; i < 2; i++) {
+        zox_tst_check(zox_valid(zox_tst_coop_homes[i]), "player [%i] has no home near (no towns?)", i + 1);
+        if (zox_valid(zox_tst_coop_homes[i])) {
+            zox_log("[tst] player [%i] spawned [%.1f] blocks from [%s]'s door, of [%s]", i + 1, zox_tst_coop_home_distances[i],
+                zox_get_name(zox_tst_coop_homes[i]), zox_get_name(zox_get_parent(world, zox_tst_coop_homes[i])));
+            zox_tst_check(zox_tst_coop_home_distances[i] < 1.5f, "player [%i] spawned [%.1f] blocks from the closest home's door",
+                i + 1, zox_tst_coop_home_distances[i]);
+        }
+    }
+    if (!zox_valid(zox_tst_coop_homes[0]) || !zox_valid(zox_tst_coop_homes[1])) {
+        return;
+    }
+    zox_tst_check(zox_get_parent(world, zox_tst_coop_homes[0]) == zox_get_parent(world, zox_tst_coop_homes[1]),
+        "the players spawned in different towns");
+    zox_log("[tst] their town has [%i] homes", zox_tst_coop_town_homes);
+    if (zox_tst_coop_town_homes >= 2) {
+        zox_tst_check(zox_tst_coop_homes[0] != zox_tst_coop_homes[1], "both players spawned at the same home, of [%i]",
+            zox_tst_coop_town_homes);
+    }
+}
+
+void zox_tsts_coop(ecs* world) {
+    (void) world;
+    zox_tst_add("coop_skybox", zox_tst_coop_skybox_ready, zox_tst_coop_skybox_check, 120);
+    zox_tst_set_setup("coop_skybox", zox_tst_coop_level_setup, 0);
+    zox_tst_add("coop_homes", zox_tst_coop_homes_ready, zox_tst_coop_homes_check, 150);
+    zox_tst_set_setup("coop_homes", zox_tst_coop_setup, 0);
+}

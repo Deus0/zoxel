@@ -1,5 +1,41 @@
 // TODO Mark neighbors of spawning chunks as Dirty (NeighborsDirty)
 
+#define terrain_streamers_max 16
+
+// the chunk columns of a terrain's streamers that load land (StreamerLevel 1+)
+static inline byte terrain_stream_points(ecs* world, ecs_query_t* query, entity terrain, int2* points) {
+    byte count = 0;
+    zox_sys_query_begin();
+    while (zox_sys_query_loop()) {
+        zox_sys_begin_2();
+        zox_sys_in_2(StreamDirty);    // the filter's fields in order (streamers, terrain/sys/_.c)
+        zox_sys_in_2(StreamerLevel);
+        zox_sys_in_2(StreamPosition);
+        for (int j = 0; j < it2.count; j++) {
+            zox_sys_i_2(StreamerLevel, level);
+            zox_sys_i_2(StreamPosition, point);
+            if (level->value >= 1 && count < terrain_streamers_max &&
+                zox_get_link(world, it2.entities[j], StreamLink) == terrain) {
+                points[count++] = (int2) { point->value.x, point->value.z };
+            }
+        }
+    }
+    zox_sys_query_end();
+    return count;
+}
+
+// a column's distance to its closest streamer (local coop: one streamer set the columns round it to its own distance
+//  while another was closer, so their lods fought each time either moved, tst coop_streamers)
+static inline int terrain_stream_distance(int2 position, int distance, const int2* points, byte count) {
+    for (byte k = 0; k < count; k++) {
+        const int other = int2_distance(points[k], position);
+        if (other < distance) {
+            distance = other;
+        }
+    }
+    return distance;
+}
+
 // NOTE: Uses hash queue to add new positions to spawning
 void terrain_stream_system(iter* it) {
     byte dbg_log = 0;
@@ -18,6 +54,8 @@ void terrain_stream_system(iter* it) {
         zox_sys_e();
         zox_sys_i(TunkLinks, tunks);
         zox_sys_o(TerrainSpawnQueue, queue);
+        int2 points[terrain_streamers_max];
+        const byte points_count = terrain_stream_points(world, query, e, points);
         zox_sys_query_begin();
         while (zox_sys_query_loop()) {
             zox_sys_begin_2();
@@ -55,9 +93,9 @@ void terrain_stream_system(iter* it) {
                             .tunk = tunk,
                             .level = level->value,
                             .position = tunk_position,
-                            .distance = int2_distance(
-                                stream_position2,
-                                tunk_position),
+                            .distance = level->value >= 1 ?
+                                terrain_stream_distance(tunk_position, int2_distance(stream_position2, tunk_position), points, points_count) :
+                                int2_distance(stream_position2, tunk_position),
                             .time = zox_current_time,
                         });
                     if (dbg_log && added) {

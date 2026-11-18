@@ -1,4 +1,7 @@
 // NOTE: Rendering Skybox atm and debug cube
+// where each main camera last drew a RenderAtCamera mesh (tst coop_skybox)
+float3 render_at_camera_drawn[max_cameras];
+
 void basic3_render_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_gl = 0;
@@ -59,8 +62,19 @@ void basic3_render_system(iter* it) {
             zox_gpu_enable_blend();
         }
         zox_gpu_material(material->value);
+        float4x4 model = matrix->value;
+        // the skybox: one for every camera, each drawn round its own (in split screen the second player saw the
+        //  first's from outside, the world past its walls)
+        if (zox_has(e, RenderAtCamera)) {
+            model.w = (float4) { render_camera_position.x, render_camera_position.y, render_camera_position.z, model.w.w };
+            for (int c = 0; c < main_cameras_count; c++) {
+                if (main_cameras[c] == renderer_camera) {
+                    render_at_camera_drawn[c] = (float3) { model.w.x, model.w.y, model.w.z };
+                }
+            }
+        }
         float4x4 mvp_matrix = float4x4_multiply(
-            matrix->value,
+            model,
             render_camera_matrix);
         zox_gpu_float4x4(
             attributes->mvp_matrix,

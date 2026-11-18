@@ -37,6 +37,12 @@ static inline int2 home_half_local(const TownHome* h) {
     return h->facing & 1 ? (int2) { h->half.y, h->half.x } : (int2) { h->half.x, h->half.y };
 }
 
+// the column in front of a home's door, a step out on its steps (where a player spawns, tst coop_homes)
+static inline int2 home_door_front(ecs* world, entity home) {
+    const TownHome h = town_home(world, home);
+    return int2_add(h.center, build_turn(h.facing, 0, home_half_local(&h).y + 2));
+}
+
 // the homes of a chunk's region whose columns cross the chunk (x from, to inclusive, z too)
 static inline byte town_homes_in(ecs* world, entity region, int2 from, int2 to, TownHome* homes) {
     byte count = 0;

@@ -16,47 +16,60 @@ byte find_position_in_terrain(
     byte node_depth = 0;
     byte found_position = 0;
     byte3 in_chunk_position = byte3_zero;
-    for (sbyte y = render_distance_y; y >= -render_distance_y; y--) {
-        chunk_position.y = y;
-        chunk = int3_hashmap_get(chunks->value, chunk_position);
-        // NOTE: a missing chunk may still be streaming in, search lower ones
-        //  - this retries every frame, so missing chunks only report every few seconds (it spammed 7 lines a frame)
-        if (!zox_valid(chunk)) {
-            static double last_missing_log = 0;
-            if (zox_current_time - last_missing_log > 5.0) {
-                last_missing_log = zox_current_time;
-                zox_logw("Spawn finder: missing Chunk at [%ix%ix%i], Chunks [%i]",
-                    chunk_position.x, chunk_position.y, chunk_position.z,
-                    count_int3_hashmap(chunks->value));
+    // its own column first (a home's door), then anywhere in its chunk
+    const byte length = octree_size(terrain_depth);
+    const byte2 column = (byte2) { ((block_position.x % length) + length) % length, ((block_position.z % length) + length) % length };
+    for (byte pass = 0; pass < 2 && !found_position; pass++) {
+        const byte exact = !pass;
+        voxel_node_above = NULL;
+        for (sbyte y = render_distance_y; y >= -render_distance_y; y--) {
+            chunk_position.y = y;
+            chunk = int3_hashmap_get(chunks->value, chunk_position);
+            // NOTE: a missing chunk may still be streaming in, search lower ones
+            //  - this retries every frame, so missing chunks only report every few seconds (it spammed 7 lines a frame)
+            if (!zox_valid(chunk)) {
+                static double last_missing_log = 0;
+                if (zox_current_time - last_missing_log > 5.0) {
+                    last_missing_log = zox_current_time;
+                    zox_logw("Spawn finder: missing Chunk at [%ix%ix%i], Chunks [%i]",
+                        chunk_position.x, chunk_position.y, chunk_position.z,
+                        count_int3_hashmap(chunks->value));
+                }
+                continue;
             }
-            continue;
+            // If generating, we wait until done
+            if (zox_has(chunk, GenerateChunk)) {
+                static char reason[96];
+                snprintf(reason, sizeof(reason), "chunk [%ix%ix%i] generating [%i]", chunk_position.x, chunk_position.y, chunk_position.z, zox_getv(chunk, GenerateChunk));
+                zox_player_spawn_blocked = reason;
+                return 0;
+            }
+            // a chunk being deleted (streamed away) has lost its voxels: wait, like a missing one
+            if (!zox_has(chunk, VoxelNode) || !zox_has(chunk, NodeDepth)) {
+                zox_player_spawn_blocked = "a chunk in the column is being deleted";
+                return 0;
+            }
+            const VoxelNode* chunkd = zox_get(chunk, VoxelNode);
+            node_depth = zox_getv(chunk, NodeDepth);
+            const byte ground = exact && node_depth == terrain_depth ?
+                find_position_on_ground(chunkd, voxel_node_above, node_depth, column) : 255;
+            if (ground != 255) {
+                in_chunk_position = (byte3) { column.x, ground, column.y };
+                found_position = 1;
+                break;
+            }
+            if (!exact && find_random_position_on_ground(
+                chunkd,
+                voxel_node_above,
+                node_depth,
+                200,
+                &in_chunk_position))
+            {
+                found_position = 1;
+                break;
+            }
+            voxel_node_above = chunkd;
         }
-        // If generating, we wait until done
-        if (zox_has(chunk, GenerateChunk)) {
-            static char reason[96];
-            snprintf(reason, sizeof(reason), "chunk [%ix%ix%i] generating [%i]", chunk_position.x, chunk_position.y, chunk_position.z, zox_getv(chunk, GenerateChunk));
-            zox_player_spawn_blocked = reason;
-            return 0;
-        }
-        // a chunk being deleted (streamed away) has lost its voxels: wait, like a missing one
-        if (!zox_has(chunk, VoxelNode) || !zox_has(chunk, NodeDepth)) {
-            zox_player_spawn_blocked = "a chunk in the column is being deleted";
-            return 0;
-        }
-        const VoxelNode* chunkd = zox_get(chunk, VoxelNode);
-        node_depth = zox_getv(chunk, NodeDepth);
-        if (find_random_position_on_ground(
-            chunkd,
-            voxel_node_above,
-            node_depth,
-            200,
-            &in_chunk_position))
-        {
-            // zox_log("Found Position for Player [%i] of [%i] at [%ix%ix%i]", i, render_distance_y, in_chunk_position.x, in_chunk_position.y, in_chunk_position.z);
-            found_position = 1;
-            break;
-        }
-        voxel_node_above = chunkd;
     }
     if (!found_position) {
         zox_player_spawn_blocked = "no ground found in column";

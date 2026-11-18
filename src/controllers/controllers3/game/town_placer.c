@@ -1,3 +1,6 @@
+// the town new players spawn in, the first player's (local coop, tst coop_homes)
+entity player_spawn_town = 0;
+
 // NOTE: For new placement of characters, we wait for region/towns to spawn, then we find a position in one of the towns
 void player_town_finder_system(iter* it) {
     zox_sys_on_begin();
@@ -67,35 +70,50 @@ void player_town_finder_system(iter* it) {
             }
             continue;
         }
-        entity region = regions[rand_range(0, regions_length)];
-#ifdef zox_safety_checks
-        if (!zox_valid(region)) {
+        // local coop: every player in the first one's town, each at their own home
+        //  - the others wait for the first to pick it (players run on other threads, they picked their own)
+        const byte player_index = get_player_index(e);
+        if (player_index && zox_valid(zox_players[0]) && zox_getv(zox_players[0], PlayerState) == zox_player_state_new) {
             continue;
         }
-        if (!zox_has(region, GenerateRegion)) {
-            zox_loge("Region Missing GenerateRegion");
-            continue;
-        }
-#endif
-        if (zox_getv(region, GenerateRegion)) {
-            if (dbg_log) {
-                zox_log("Terrain Loading Regions... (player_town_finder_system)");
+        entity town = player_spawn_town;
+        if (!zox_valid(town) || zox_get_parent(world, zox_get_parent(world, town)) != terrain) {
+            // a town of any region's, once they've all generated (a random region often had none)
+            byte regions_busy = 0;
+            entity towns[zox_children_capacity];
+            uint towns_length = 0;
+            for (uint j = 0; j < regions_length && !regions_busy; j++) {
+                const entity region = regions[j];
+                if (!zox_valid(region) || !zox_has(region, GenerateRegion) || zox_getv(region, GenerateRegion)) {
+                    regions_busy = 1;
+                    break;
+                }
+                towns_length += zox_get_children_by_id(world, region, towns + towns_length,
+                    zox_children_capacity - towns_length, zox_id(Town));
             }
+            if (regions_busy) {
+                continue;
+            }
+            town = towns_length ? towns[rand_range(0, towns_length)] : 0;
+            player_spawn_town = town;
+        }
+        // its homes spawn a frame after it
+        if (town && zox_has(town, GenerateTown) && zox_getv(town, GenerateTown)) {
             continue;
         }
-        int3 town_position = int3_zero;
-        town_position.y = 8;
-        entity town = 0;
-        entity towns[zox_children_capacity];
-        uint towns_length = zox_get_children_by_id(world, region, towns, zox_children_capacity, zox_id(Town));
-        if (towns_length) {
-            town = towns[rand_range(0, towns_length)];
-            int2 town_position2 = zox_getv(town, BlockPosition2);
+        // no town: side by side (they spawn on their own column)
+        int3 town_position = (int3) { player_index * 3, 8, 0 };
+        if (town) {
+            const int2 town_position2 = zox_getv(town, BlockPosition2);
             town_position.x = town_position2.x;
             town_position.z = town_position2.y;
-        } else {
-            if (dbg_log) {
-                zox_log("player_town_finder_system: Terrain Region [%s] has no Towns", zox_get_name(region));
+            entity homes[zox_children_capacity];
+            const uint homes_length = zox_get_children_by_id(world, town, homes, zox_children_capacity, zox_id(Home));
+            const entity home = homes_length ? homes[player_index % homes_length] : 0;
+            if (home) {
+                const int2 door = home_door_front(world, home);
+                town_position.x = door.x;
+                town_position.z = door.y;
             }
         }
         float terrain_block_scale = zox_getv(terrain, BlockScale);
@@ -106,9 +124,15 @@ void player_town_finder_system(iter* it) {
         zox_setv(camera, Position3D, spawn_position);
         zox_setv(camera, StreamDirty, zox_dirty_trigger);
         zox_setv(camera, StreamerLevel, 1);
-        // Clear spawn queue
+        // Clear spawn queue (the other players' streamers queue theirs again, their land went missing)
         zox_muter(terrain, TerrainSpawnQueue, queue);
         clear_TerrainSpawnQueue(queue);
+        for (int j = 0; j < players_playing; j++) {
+            const entity other = zox_get_link(world, zox_players[j], CameraLink);
+            if (zox_valid(other) && other != camera && zox_has(other, StreamDirty)) {
+                zox_setv(other, StreamDirty, zox_dirty_trigger);
+            }
+        }
         // zox_set(terrain, Loaded, { zox_load_begin });
         if (dbg_log) {
             byte2 town_size2 = town ? zox_getv(town, TownSize) : byte2_zero;
