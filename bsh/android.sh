@@ -9,7 +9,7 @@ set -euo pipefail
 #    bash bsh/android.sh zoxel opengl sdl --debug --install --logs --verbose
 # Debug
 # bash bsh/android.sh zoxel --debug --install
-# Optimized release, unsigned
+# Optimized release, unsigned (zip/zoxel_android_arm_unsigned_<date>.apk)
 # bash bsh/android.sh zoxel --release --unsigned
 # Optimized release, signed
 # bash bsh/android.sh zoxel --release --signed
@@ -104,6 +104,7 @@ date_str=$(date +%Y_%m_%d)
 
 apk_path="${apk_dir}/${game_name}_android_arm"
 [[ "${is_xr}" == "1" ]] && apk_path="${apk_path}_xr"
+[[ "${profile}" == "release" && "${signed}" == "0" ]] && apk_path="${apk_path}_unsigned"
 apk_path="${apk_path}_${date_str}.apk"
 
 # make our export folder
@@ -733,26 +734,26 @@ sed -i \
     "${app_gradle}"
 
 # ============================================================
-# Application ID / namespace
+# Application ID / version
+#
+# namespace stays org.libsdl.app (SDL's java classes live there), the app id is our own,
+# debug builds get .debug so they install next to a release
+# version: the build date, so each build updates over the last
 # ============================================================
 
-# package_name="org.zox.${game_name}"
-package_name="org.libsdl.app"
+package_name="org.${game_name}"
+[[ "${profile}" == "debug" ]] && package_name="${package_name}.debug"
+version_code="$(date +%Y%m%d)"
+version_name="$(date +%Y.%m.%d)"
 
-if [[ "${profile}" == "debug" ]]; then
-    package_name="${package_name}.debug"
-fi
+sed -i \
+    -e "/defaultConfig[[:space:]]*{/a\\        applicationId \"${package_name}\"" \
+    -e "s/versionCode [0-9]*/versionCode ${version_code}/" \
+    -e "s/versionName \".*\"/versionName \"${version_name}\"/" \
+    "${app_gradle}"
 
 echo "- Application ID [${package_name}]"
-
-#sed -i \
-#    "s|namespace[[:space:]]*=.*|namespace = \"${package_name}\"|" \
-#    "${app_gradle}"
-
-#sed -i \
-#    "/defaultConfig[[:space:]]*{/a\\
-#        applicationId \"${package_name}\"" \
-#    "${app_gradle}"
+echo "- Version [${version_name}] [${version_code}]"
 
 # ============================================================
 # Resources

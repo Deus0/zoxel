@@ -12,6 +12,7 @@
 | linux x64, release | bash bsh/docker.sh --release --x64 | zip/zoxel_linux_x64_opengl_sdl_<date>.zip |
 | windows x64 | bash bsh/windows.sh --release | zip/zoxel_windows_x64_opengl_sdl_<date>.zip |
 | android arm | bash bsh/android_prepare.sh, then bash bsh/android.sh zoxel --release --signed | zip/zoxel_android_arm_<date>.apk |
+| android arm, unsigned | bash bsh/android.sh zoxel --release --unsigned | zip/zoxel_android_arm_unsigned_<date>.apk |
 | all platforms + itch.io | bash bsh/release.sh | zip/, then bsh/itch.sh uploads |
 
 - a clean checkout fetches what it needs, ext/ lib/ inc/ zip/ are gitignored
@@ -31,6 +32,9 @@
 	- with your key if the repo has the secrets ANDROID_KEYSTORE (base64 of ~/.config/zox_keys/zoxel.keystore)
 	  and ANDROID_KEYSTORE_PASSWORD (the first line of zoxel.password), github, settings, secrets, actions
 	- without them each run makes a new key: the apk installs, but uninstall the old one before updating
+- android.sh patches SDL's android-project (copied to and/<game>/) for each build:
+	- app id org.<game> (org.zoxel), debug builds org.zoxel.debug, the java namespace stays org.libsdl.app
+	- versionCode is the build date (20261118), versionName 2026.11.18, so a newer apk updates an older one
 - codeberg doesn't run it yet, see doc/todo.md Devops
 
 ## Todo

@@ -103,7 +103,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.gradle/caches
-          key: gradle-${{ hashFiles('bsh/android.sh') }}
+          key: gradle-${{ hashFiles('bsh/android_prepare.sh') }}
       - name: cache flecs
         uses: actions/cache@v4
         with:
