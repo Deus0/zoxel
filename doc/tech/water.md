@@ -57,9 +57,11 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
 - Water placed in a beam (flowing too): a `zox_light_type_dim_start` dark beam from it down, then each voxel relit a
   liquid dimmer (a flood at its new light); it carries on into the chunk below (`zox_light_type_dim`). Water taken
   out (drained): a sunbeam from it down at the beam over it, brighter.
+- Light flooding sideways into a liquid loses `light_water_decay` on top of the air's (32 + 24 a block,
+  `light_flood_decay`): a lake lit from its side darkens fast.
 - A chunk's beams wait until it's generated (`GenerateChunk` before `zox_generate_terrain_sunlight`): the top
   chunk's beams went down into chunks still empty and lit them as air, their water too.
-- Tests: `water_light` (a pool filled a layer at a time, drained, covered: exact values), `lakes` (a generated
+- Tests: `water_light` (a pool filled a layer at a time, drained, covered and lit from the side: exact values), `lakes` (a generated
   lake's floor darker than its surface, darker than the air over it).
 
 ## Flowing
@@ -137,5 +139,4 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
 - Rivers; flowing across a chunk not loaded; currents (flowing water pushing what's in it); a falling column shows
   its side faces' tops full, not sloped.
 - Blended faces within one chunk mesh aren't sorted; meshes in different tables aren't sorted against each other.
-- Flood light (sideways) through water isn't dimmed more than through air.
 - Towns on sunken ground by the sea (todo.md Bugs).

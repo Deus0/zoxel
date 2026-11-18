@@ -3,7 +3,8 @@
 //  - filled a layer at a time from the bottom (each placed water dims the beam under it): its middle column is one
 //      light_dim less each block down, the air over it full sunlight
 //  - its top layer taken out (drained): the two left are lit a block brighter
-//  - a brick over its middle (in the beam): the column under it is darker than the beam was
+//  - a brick over its middle (in the beam): the column under it is lit from the beams beside it, a flood step (into
+//      water light_water_decay more than air)
 //  - run: bash bsh/tst.sh water_light
 byte zox_tst_wlight_stage = 0;
 double zox_tst_wlight_time = 0;
@@ -108,6 +109,11 @@ void zox_tst_water_light_check(ecs* world) {
     zox_tst_check(d[0] == sunlight && d[1] == sunlight, "drained: the air over the water is lit [%i, %i], not full sunlight", d[0], d[1]);
     zox_tst_check(d[2] == light_dim(sunlight, darklight) && d[3] == light_dim(d[2], darklight),
         "drained: the water left is lit [%i, %i], not [%i, %i]", d[2], d[3], light_dim(sunlight, darklight), light_dim(light_dim(sunlight, darklight), darklight));
-    zox_tst_check(c[1] < d[1] && c[2] < d[2] && c[3] < d[3], "covered: under the brick isn't darker [%i %i %i] than before [%i %i %i]",
-        c[1], c[2], c[3], d[1], d[2], d[3]);
+    // covered: lit from the beams beside it, a flood step each (light_flood_decay: more into water)
+    const byte side[3] = { sunlight, light_dim(sunlight, darklight), light_dim(light_dim(sunlight, darklight), darklight) };
+    for (byte i = 1; i < 4; i++) {
+        const byte expected = light_flood_decay(side[i - 1], i == 1 ? 0 : 1, (const byte[]) { 1 }, light_air_decay, darklight);
+        zox_tst_check(c[i] == expected, "covered: [%i] under the brick is lit [%i], not [%i] (a flood step from the beam beside it)",
+            i, c[i], expected);
+    }
 }

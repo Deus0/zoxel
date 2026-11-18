@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-19
+-x Light flooding into water dims more: 24 a block over the air's 32 (light_flood_decay), tst water_light
+-x The gpu mesher draws flowing water at its level too (gpu_mesher_set_heights), tst gpu_mesh
 -x Under water the view is tinted deep blue (CameraTint, eased, the render texture's shader), tst underwater
 -x The player swims as npcs do: jump in water strokes up (it waited for CanJump), tst swim steadier
 

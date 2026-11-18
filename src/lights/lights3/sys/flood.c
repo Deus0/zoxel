@@ -22,6 +22,7 @@ static inline byte flood_light(
     byte min_light,
     byte air_decay,
     const byte* solidity,
+    const byte* liquids,
     uint* flooded)
 {
     byte dirty = 0;
@@ -63,8 +64,8 @@ static inline byte flood_light(
             if (neighbor_voxel && solidity[neighbor_voxel - 1]) {
                 continue; // solid: hard stop
             }
-            // air decay
-            byte decayed_light = (light > air_decay) ? (byte)(light - air_decay) : 0;
+            // air decay, more into water
+            byte decayed_light = light_flood_decay(light, neighbor_voxel, liquids, air_decay, min_light);
             if (decayed_light <= min_light) {
                 continue;
             }
@@ -95,9 +96,7 @@ static inline byte flood_light(
         if (voxel && solidity[voxel - 1]) {
             continue;
         }
-        byte decayed_light = (light > air_decay) ?
-            (byte) (light - air_decay) :
-            min_light;
+        byte decayed_light = light_flood_decay(light, voxel, liquids, air_decay, min_light);
         spin_lock(lightlock);
         byte current_light = getv_LightNode(
             lights,
@@ -132,6 +131,7 @@ static inline byte flood_light(
             min_light,
             air_decay,
             solidity,
+            liquids,
             flooded);
     }
     return dirty;
@@ -153,6 +153,9 @@ void light_flood_system(iter* it) {
     entity realm = 0;
     byte solidity[zox_light_solidity_length];
     memset(solidity, 1, zox_light_solidity_length);
+    entity liquids_realm = 0;
+    byte liquids[zox_light_solidity_length];
+    memset(liquids, 0, zox_light_solidity_length);
     for (int i = 0; i < it->count && flooded < max_flooding; i++) {
         zox_sys_e();
         zox_sys_i(VoxelNode, root_vnode);
@@ -173,6 +176,7 @@ void light_flood_system(iter* it) {
             zox_get_link(world, e, BlockManagerLink),
             &realm,
             solidity);
+        update_light_liquids(world, zox_get_link(world, e, BlockManagerLink), &liquids_realm, liquids);
         const VoxelNode* neighbor_voxels[6];
         const LightNode* neighbor_lights[6];
         spinlock* neighbor_locks[6];
@@ -260,6 +264,7 @@ void light_flood_system(iter* it) {
                 darklight,
                 light_air_decay,
                 solidity,
+                liquids,
                 &flooded))
             {
                 dirty = 1;

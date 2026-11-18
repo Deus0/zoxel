@@ -82,6 +82,12 @@ static inline byte light_dim(byte light, byte min_light) {
     return light > light_water_decay + min_light ? light - light_water_decay : min_light;
 }
 
+// light flooding into a voxel, a step from light: less air_decay, and light_water_decay more into a liquid
+static inline byte light_flood_decay(byte light, byte voxel, const byte* liquids, byte air_decay, byte min_light) {
+    const byte decay = air_decay + (voxel && liquids[voxel - 1] ? light_water_decay : 0);
+    return light > decay + min_light ? light - decay : min_light;
+}
+
 // the light a sunbeam brings down into pos from above, 0 if none reaches it
 //  - a beam is full sunlight in air, light_dim'd in each liquid under it; there's no marker, so it walks up the
 //    column (into the chunk above too) while each voxel's light is what the beam would give it, until full sunlight
