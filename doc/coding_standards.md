@@ -535,6 +535,10 @@ import_coffee()
 
 That distinction makes the code easier to scan without requiring special syntax or ceremony.
 
+Never name anything `near` or `far`. Windows' headers define both as empty macros (minwindef.h), so
+`const float far = 100;` becomes `const float = 100;` and the Windows build fails. Name what it is instead:
+`near_plane`, `far_distance`, `close`, `distant`. `bash bsh/tst.sh lint_builds` compiles with them defined.
+
 ## Macros End With ;
 
 A macro used as a statement doesn't hold its own `;`, the call does, so it reads like a function call.

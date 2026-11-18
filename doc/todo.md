@@ -9,8 +9,8 @@
 ## Bugs
 - tst split_screen fails 3 of 45 checks (since a822f67b0, local coop): back at the main menu the game camera and its
 	ui camera stay half width (230x460, not 460x460), and the join ui doesn't show both players again
-- Windows build broken: near and far are macros in the windows headers (minwindef.h), rename any near/far names in
-	the code, and add "no near or far names" to doc/coding_standards.md
+- tst xr_frustum fails 1 of 2 checks: "an eye sees [0.156] of its distance past the culling frustum" (failing at
+	edab0901f already, before 2026-11-18's work)
 - XR lag, what's left (the frame's start and the hands' timing are fixed, see done.md): needs a headset to confirm;
 	if it's still laggy, read the headset's frame timing log ([XR] fps, openxr/render.c)
 - XR lean feels 2-3 times larger than real life (play test, on the build that slid the whole body): tst xr_body has

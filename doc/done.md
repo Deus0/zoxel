@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-18
+-x windows build: near and far are empty macros in windows' headers (minwindef.h), 2 names in the game (ik feet,
+  xr body) and 7 tests used them; renamed, the rule in doc/coding_standards.md (Naming), and lint_builds compiles a
+  syntax only build with them defined (build.sh reads zox_extra_dflags) so a new one fails there
 -x the body fits a doorway (play test: too big for a 2 tall, 1 wide door): it was 2 blocks and a hat's top tall at
   Block Res 5 (131 voxels of 128), the head and what's on it now sink into the neck past 2 blocks
   (body_parts_fit_height); and characters hit terrain as an UprightCollider: an upright box that doesn't turn with
