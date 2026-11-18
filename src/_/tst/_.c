@@ -58,7 +58,7 @@ uint zox_tst_errors_max = 100;
 uint zox_tst_errors_start = 0;
 // fail fast: a waiting test reports progress with zox_tst_progress, no change for this long fails it
 double zox_tst_stall_seconds = 20;
-// scales every test's timeout, i.e. software rendering runs slower (--tst-timescale <f>)
+// scales every test's timeout and stall time, i.e. software rendering runs slower (--tst-timescale <f>)
 double zox_tst_timescale = 1;
 double zox_tst_progress_value = 0;
 double zox_tst_progress_time = 0;
@@ -304,9 +304,9 @@ void zox_tst_update(ecs* world) {
         zox_tst_end("");
         return;
     }
-    if (zox_tst_progress_used && zox_current_time - zox_tst_progress_time > zox_tst_stall_seconds) {
+    if (zox_tst_progress_used && zox_current_time - zox_tst_progress_time > zox_tst_stall_seconds * zox_tst_timescale) {
         zox_tst_fails++;
-        zox_loge("[tst] stalled, no progress for [%.0fs] waiting for: %s", zox_tst_stall_seconds, zox_tst_waiting);
+        zox_loge("[tst] stalled, no progress for [%.0fs] waiting for: %s", zox_tst_stall_seconds * zox_tst_timescale, zox_tst_waiting);
         zox_tst_end("stalled, failing fast");
         return;
     }

@@ -57,8 +57,17 @@ byte zox_tst_aesthetic_town_ready(ecs* world) {
         if (!zox_tst_player_spawn_ready(world)) {
             return 0;
         }
+        // a big world spawns its towns after the player lands: waits for one, a minute at most
+        if (!zox_tst_aesthetic_time) {
+            zox_tst_aesthetic_time = zox_current_time;
+        }
+        zox_tst_waiting = "a town in the player's region";
+        zox_tst_progress((int) (zox_current_time - zox_tst_aesthetic_time));
         zox_tst_aesthetic_town = zox_tst_aesthetic_find_town(world, character, zox_getv(zox_get_link(world, character, TerrainLink), BlockScale));
         if (!zox_valid(zox_tst_aesthetic_town)) {
+            if (zox_current_time - zox_tst_aesthetic_time < 60) {
+                return 0;
+            }
             zox_tst_check(0, "no town in the player's region");
             return 1;
         }
