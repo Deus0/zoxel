@@ -1108,6 +1108,6 @@
 - write bsh/test.sh that takes in test name
 	- it will find the test in the modules tst folders
 	- it will compile that file with zoxels src and flecs
-	- it outputs a test for claude to use
+	- it outputs a test to run
 - Add 2D rendering testss
 - reduce time of quests tests - just spawn minimal entities, spawn realm children manually, seperate world etc
