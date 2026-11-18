@@ -195,9 +195,15 @@ bash bsh/tst.sh player_spawn    # build debug + run one test
 bash bsh/tst.sh all             # run every test
 bash bsh/tst.sh stream_npcs --repeat 5   # for intermittent bugs
 bash bsh/tst.sh <name> --gdb    # backtrace on a crash
+zox_tst_dir=tst/mine bash bsh/tst.sh <name>   # your own logs and build, beside someone else's runs
 ```
 
-- Exit code 0 means pass. A failed run's log is kept in `tst/<name>_failed_*.log`.
+- **Sharing the repo with another person or agent running tests? Always set `zox_tst_dir`.** Without it every run
+  builds into the same `bin/zoxel_*_dev/` binary and logs to `tst/`: another run's build deletes your binary mid test
+  and your run fails for no reason. With `zox_tst_dir=tst/mine` the logs go to `tst/mine/` and the build to
+  `bin/tst_mine/`.
+
+- Exit code 0 means pass. A failed run's log is kept in `tst/<name>_failed_*.log` (or under your `zox_tst_dir`).
 - Tests run the real game with `--tst <name>`, hidden, with software rendering, capped memory and a timeout.
   A bad run can't freeze the machine. `--gpu` / `--visible` use the real GPU.
 - Tests are written in a module's `tst/` folder and registered with `zox_tst_add(name, ready, check, timeout)`.

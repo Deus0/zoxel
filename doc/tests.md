@@ -9,12 +9,18 @@ bash bsh/tst.sh all                      # run every test (before every commit)
 bash bsh/tst.sh stream_npcs --repeat 5   # intermittent bugs
 bash bsh/tst.sh <name> --gdb             # a backtrace on a crash
 bash bsh/tst.sh <name> --nobuild         # rerun without building
+zox_tst_dir=tst/mine bash bsh/tst.sh <name>   # your own logs and build
 ```
+
+- **Another person or agent testing in the same repo? Always set `zox_tst_dir`.** Otherwise runs share one binary
+  (`bin/zoxel_*_dev/`) and `tst/`: another run's build deletes your binary mid test. `zox_tst_dir=tst/mine` logs to
+  `tst/mine/` and builds to `bin/tst_mine/` (`zox_tst_out=<name>` names the build).
 
 - Exit code 0 is a pass. A failed run's log is kept: `tst/<name>_failed_*.log`.
 - Tests run hidden (`--background`), silent, with software rendering, capped memory and a timeout.
 - tst.sh builds `--debug --logs`. Testing a `--profiler` build with `--nobuild` adds merges (pipeline_syncs fails on it)
-- Tests run on `--tiny` terrain, ones in `medium_tests` (bsh/tst.sh) on `--medium` (far lods to compare).
+- Tests run on `--tiny` terrain, ones in `medium_tests` (bsh/tst.sh) on `--medium` (far lods to compare), ones in
+  `aesthetic_tests` (the readme's screenshots, doc/screenshot/) far and tall, little fog, 1080p, seed 2.
 - Tests render in software (mesa llvmpipe, offscreen). The egl device is picked by machine: 0 on x86, 2 on the
   arm board. Override it with `zox_tst_egl_device=<n>` ("Invalid EGL device is requested" means a wrong one).
 - Tests use their own settings (defaults, i.e. Block Res 4). To run like real play, copy real ones in:
