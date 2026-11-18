@@ -97,7 +97,10 @@ void device_switch_system(iter* it) {
                     }
                 }
                 if (mode->value != zox_device_mode_gamepad) {
-                    if (zox_has(e2, Gamepad) && zox_getv(e2, DeviceHasInput)) {
+                    // its A joins a player on the main menu (gamepad_a_joins), another button switches to it
+                    if (zox_has(e2, Gamepad) && zox_getv(e2, DeviceHasInput) &&
+                        !(gamepad_a_joins && device_button_down(world, e2, zox_btn_a)))
+                    {
                         new_mode = zox_device_mode_gamepad;
                         // its gamepad: other gamepads can join as players (player_join_system)
                         zox_link(world, e, GamepadLink, e2);

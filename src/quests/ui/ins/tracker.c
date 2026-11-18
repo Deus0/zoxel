@@ -20,10 +20,11 @@ entity spawn_quest_tracker(
     if (quest) {
         text = (char*) get_quest_tracker_text(world, quest);
     }
-    byte font_size = 12;
+    // with the ui scale (it was 12 and 12x8 at any): a split screen's is smaller (player_ui_scale_begin), 12 at 2.45
+    byte font_size = 5 * ui_scale;
     byte2 padding = (byte2) {
-        12,
-        8
+        5 * ui_scale,
+        3 * ui_scale
     };
     float2 anchor = float2_top_right;
     // under the minimap (its size grows with ui_scale, a fixed 236 touched it at ui_scale 3)

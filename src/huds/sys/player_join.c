@@ -3,23 +3,10 @@
 //      (a gamepad plugged in later is the app's)
 //  - the join ui: each player at the bottom centre, P1 P2.. next to their device's icon, and a hint to join
 //      while a gamepad can
+//  - joins and leaves on the button being down: a gamepad moves player as it does, so it can't repeat
+//  - while it's up A doesn't switch the first player to a gamepad (gamepad_a_joins), another button does
 //  - their screens spawn as a game starts (split_screen.c)
 int player_join_ui_shown = -1;  // the players and devices the join ui shows, -1 none
-
-// the gamepad's button of a type was pressed this frame
-static inline byte gamepad_pressed(ecs* world, entity gamepad, byte type) {
-    byte pressed = 0;
-    iter it2 = zox_children(world, gamepad);
-    while (zox_children_next(it2)) {
-        for (int j = 0; j < it2.count && !pressed; j++) {
-            const entity e = it2.entities[j];
-            pressed = zox_has(e, ZeviceButton) && zox_has(e, DeviceButtonType) &&
-                zox_getv(e, DeviceButtonType) == type &&
-                devices_get_pressed_this_frame(zox_getv(e, ZeviceButton));
-        }
-    }
-    return pressed;
-}
 
 // the gamepads that can join: the app's, and the first player's but the one it uses
 static inline uint get_joinable_gamepads(ecs* world, entity first, entity* gamepads, uint capacity) {
@@ -42,6 +29,11 @@ static inline uint get_joinable_gamepads(ecs* world, entity first, entity* gamep
         }
     }
     return count;
+}
+
+// its device mode, none the frame it joins (its spawn is deferred)
+static inline byte get_player_device_mode(ecs* world, entity player) {
+    return zox_valid(player) && zox_has(player, DeviceMode) ? zox_getv(player, DeviceMode) : zox_device_mode_none;
 }
 
 static inline const char* device_mode_texture(byte mode) {
@@ -89,7 +81,7 @@ void spawn_player_join_ui(ecs* world, entity canvas, byte can_join) {
             zox_set_unique_name(icon, "player_join_icon");
             zox_add(icon, PlayerJoinUI);
             zox_setv(icon, Layer, max_layers2D - 4);
-            clone_texture_file_to_entity(world, icon, (char*) device_mode_texture(zox_getv(zox_players[i], DeviceMode)));
+            clone_texture_file_to_entity(world, icon, (char*) device_mode_texture(get_player_device_mode(world, zox_players[i])));
         } else {
             snprintf(text, sizeof(text), "A join");
         }
@@ -118,6 +110,7 @@ void player_join_system(iter* it) {
         const byte on_main_menu = state->value == zox_player_state_main_menu && zox_valid(canvas) &&
             zox_valid(game) && zox_getv(game, GameState) == zox_game_none &&
             zox_valid(zox_get_child_by_id(world, canvas, zox_id(MenuMain)));
+        gamepad_a_joins = on_main_menu;
         if (!on_main_menu) {
             if (player_join_ui_shown != -1) {
                 despawn_player_join_ui(world, canvas);
@@ -128,14 +121,14 @@ void player_join_system(iter* it) {
         entity gamepads[16];
         uint gamepads_count = get_joinable_gamepads(world, e, gamepads, 16);
         for (uint j = 0; j < gamepads_count; j++) {
-            if (gamepad_pressed(world, gamepads[j], zox_btn_a)) {
+            if (device_button_down(world, gamepads[j], zox_btn_a)) {
                 join_player(world, game, gamepads[j]);
             }
         }
         for (int j = players_playing - 1; j >= 1; j--) {
             const entity player = zox_players[j];
             const entity gamepad = zox_get_link(world, player, GamepadLink);
-            if (zox_valid(gamepad) && gamepad_pressed(world, gamepad, zox_btn_b)) {
+            if (zox_valid(gamepad) && device_button_down(world, gamepad, zox_btn_b)) {
                 unjoin_player(world, player);
             }
         }
@@ -144,7 +137,7 @@ void player_join_system(iter* it) {
         const byte can_join = gamepads_count > 0 && players_playing < max_players;
         int shown = can_join;
         for (int j = 0; j < players_playing; j++) {
-            shown = shown * 7 + 1 + zox_getv(zox_players[j], DeviceMode);
+            shown = shown * 7 + 1 + get_player_device_mode(world, zox_players[j]);
         }
         if (shown != player_join_ui_shown) {
             despawn_player_join_ui(world, canvas);

@@ -1,6 +1,11 @@
 # Done
 
 ## 2026-11-18
+-x local coop: joining and leaving tested with a test gamepad's A and B (tst split_screen), A on the main menu no
+  longer switches the first player to a gamepad it joins with (gamepad_a_joins); split screen huds scaled to their
+  half and to fit (player_ui_scale_begin), the quest tracker's font scales with the ui (it was 12 at any), the
+  stats no longer cover the minimap (tst split_screen_huds); a newly joined player's device mode read the frame it
+  joined crashed the join ui
 -x local coop: on the main menu players join with a gamepad's A (one the first player isn't using) and leave with
   its B, the players show at the bottom centre (P1 P2 next to their device's icon, "A join" while a gamepad can);
   split screen reworked: the second player's cameras and canvas spawn only as a game loads, back at the main menu
