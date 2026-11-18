@@ -23,6 +23,11 @@
 -x the starting quest (find a town) tracked from the start, the tracker shows it (tst find_quest checks it)
 -x quest markers: ! yellow has a quest to give, ? gray you have it, ? yellow you can hand it in; a quest giver
   respawning from its seed (chunk unload/load) shows the player's state of its quest, not ! again (tst quest_marker)
+-x clothes' skinning: clothes voxels take the body part they're nearest to through the clothes (a flood out from the
+  body a layer at a time, not the first found, which crawled along them), parts not joined kept a voxel apart
+  (CombineParents), the touching-parts double faces (vox_mesh_parts) removed; Paint Weights works again (bone.vert
+  colours by bone); tst body_weights (bash bsh/poses.sh --weights); the tests list holds 512 (256 was full, the
+  last test, xr_continue, was dropped) (doc/done/skeletons.md)
 -x swimming: InWater with the splash, swim_system (it floats, drags, jump strokes up), jump out at a shore, half
   speed walking; the view under water blue and thick fog (cameras.Underwater, render_underwater, the sky too), sounds
   muffled (sound_underwater); see through chunk meshes drawn far to near (render_chunk_order); tst swim, chunk_order,

@@ -13,7 +13,7 @@ Code: [src/parts/sys/combine.c](../../src/parts/sys/combine.c) (`body_combine_sy
 [res/shaders/bone.vert](../../res/shaders/bone.vert), tests `chest_weights`, `npc_skeletons`, `skeleton_render`.
 Also [character.md](../character.md), [body_equips.md](../body_equips.md).
 
-## Done (2026-11-15, commit ee11b43a3)
+## Done (2026-11-15, commit ee11b43a3; clothes and double faces 2026-11-18, below)
 
 - Analysis first (chest_weights, a humanoid, its active mesh): every one of 5382 solid voxels got a part, and the box
   weights gave 1153 of 18268 vertices another bone than their voxel's, at every joint: chest for hips 149, chest for a
@@ -46,6 +46,17 @@ Also [character.md](../character.md), [body_equips.md](../body_equips.md).
   so those new faces took the other part's bone. A joint's blend weight is the lower bone's share either way round
   (rounding each order apart left hairline cracks bent 90 degrees). The test checks every edge of the rest mesh is
   closed per joined piece (242 open before), no joint corner parts in 12 poses, and saves the poses' screenshots.
+- Clothes' parts and no double faces (2026-11-18, the user's play test: skinning very deformed). The painted view
+  (tst `body_weights`, `bash bsh/poses.sh --weights`, the Paint Weights setting: bone.vert colours each vertex by its
+  bones) showed sleeves split diagonally between shoulder and bicep, a thigh's part up the shorts into the shirt: a
+  clothes voxel past the body took the first part found within 3 voxels, in loop order, and one resolved counted for
+  the next, so parts crawled along the clothes. Now `combine_parts_resolve` floods out from the body a layer at a
+  time (a voxel takes the most of its 6 neighbours' parts from the layers before), so each clothes voxel takes the
+  part it's nearest to through the clothes. With the parts clean, the touching-parts faces (`vox_mesh_parts`) went:
+  parts not joined (`CombineParents`, an entry's parent entry, set by parts) never touch, a voxel's gap left between
+  them (a body voxel isn't placed there, a clothes voxel is taken out), so every culled face is between joined parts.
+  body_poses: 0 open edges at Block Res 4 and 5 (242 with the old resolve, no double faces). The combine works on a
+  flat grid of parts the body's size (octree lookups made it 26ms, now 12ms at Block Res 5, it was 11ms).
 - Later: the blend is a voxel wide (the corner); wider (sample further from the corner) if joints bend sharply;
   cloth simulation for capes and skirts (they follow the bone under them for now, the user is fine with that).
 

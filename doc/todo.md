@@ -35,11 +35,9 @@
   the sea (seen on the map, tst sea_level counts its air voxels apart), and a town square sat in the middle of a
   lake (tst lakes, seed 666, block 101x36); towns should pick land away from water, or raise their ground over it
 	- play test: make sure buildings don't place on water
-- clothes distorted when rotating arm
-	- play test: skinning is very deformed, fix the previous hack (vox_mesh_parts) and the clothes' weights
-	- a test that checks painted weights visually (a ppm of each bone's weights in colour)
-	- issue is the way clothes are skinned
-	- we should set bone octrees on clothes by finding closest body part block, using flood fill distance
+- play test the clothes' skinning (fixed 2026-11-18, doc/done/skeletons.md): sleeves, shorts, the shirt moving with
+  the parts under them; Paint Weights (debug settings) shows each bone's colour, bash bsh/poses.sh --weights
+- the body is [1.016] tall at Block Res 5, over 2 blocks (tst body_poses with your settings, bash bsh/poses.sh)
 - Crosshair will flicker siize too fast
     - give crossbar more natural animations when you see npc
     - seperate animation for the terrain or air
@@ -442,12 +440,6 @@
 	- streaming should just work seperately to character positioning
 
 # Bodies and Animations
-- Remove the touching-parts faces (`vox_mesh_parts`, chunks3/sys/build_colored.c) once bone weights are fixed properly
-	- temporary fix for holes as parts move apart (tst body_poses): skeleton meshes keep faces between voxels on bones
-	  that only touch (arm on chest, shirt hem on thighs), and those parts don't shade each other's ao
-	- adds a lot of faces nobody sees at rest, plus a bone grid fill a mesh build (16MB at depth 8)
-	- the real fix is in the weights/skinning: then drop vox_mesh_parts and its parts argument from
-	  build_vox_mesh_at_depth / build_voxel_mesh_grid / build_voxel_mesh_parts_c, keep tst body_poses passing
 - taller characters too <= 3 blocks, 2 wide, etc with bigger doors later for other races
 - limbs in general need polish on the organic shape (shoulders poking clothes fixed: tst chest_weights)
 - IK on arms and legs, for more bending (a doc/tec doc first)
@@ -882,7 +874,7 @@
 - Remove Debug options and just put in Gizmos
 	- Transparent Meshes
 	- Render Bones
-	- Paint Bone Weights
+	- Paint Bone Weights (the Paint Weights debug setting, paint_weights)
 	- Disable NPCs
 - F6 key to toggle bone render debugs
 - Make a easy way to add hotkey functionality
