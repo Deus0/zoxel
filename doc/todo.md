@@ -77,7 +77,6 @@
 	- like if we teleported into ground
 - Fix flickering issue of raycast
 	- maybe we should use a fixed rotation integral
-- aura particles are broken, they only spawn in same spot now
 - 16 printable ascii have no glyphs, i.e. ' (dialogue "I'm" shows ?), needs font art (tst text_data)
 - debug label - the font will dissapear sometimes and reappear
 	- Looks like a memory issue causing the mashes to dissapear? when streaming

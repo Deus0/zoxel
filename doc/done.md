@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-18
+-x aura particles: an aura turned on spawned an emitter it never kept (ParticlesEmitter unlinked), so turning it off
+  removed nothing and each turn on added another, their particles never stopping; linked now; tst aura_particles
+  (a real aura on a character: on, moved, off, on again)
 -x windows build: near and far are empty macros in windows' headers (minwindef.h), 2 names in the game (ik feet,
   xr body) and 7 tests used them; renamed, the rule in doc/coding_standards.md (Naming), and lint_builds compiles a
   syntax only build with them defined (build.sh reads zox_extra_dflags) so a new one fails there
