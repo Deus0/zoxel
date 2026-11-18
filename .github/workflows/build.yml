@@ -159,9 +159,11 @@ jobs:
     permissions:
       contents: write
     steps:
+      # skip-decompress: the zips stay zips (it unzipped our game zips into zips/)
       - uses: actions/download-artifact@v8
         with:
           path: zips
+          skip-decompress: true
           merge-multiple: true
       - name: release
         env:
@@ -170,5 +172,5 @@ jobs:
         run: |
           gh release delete nightly --cleanup-tag --yes || true
           gh release create nightly zips/* --prerelease --target "${{ github.sha }}" \
-            --title "nightly $(date -u +%Y-%m-%d)" \
-            --notes "daily build of master at ${{ github.sha }}"
+            --title "zoxel-nightly" \
+            --notes "daily build of master, $(date -u +%Y-%m-%d), at ${{ github.sha }}"

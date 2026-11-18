@@ -1,7 +1,7 @@
 # Devops
 
 ## Get a build
-- latest daily build: github releases, "nightly" (linux x64, linux arm and windows x64 zips, android arm apks: phone and xr)
+- latest daily build: github releases, "zoxel-nightly" (tag nightly) (linux x64, linux arm and windows x64 zips, android arm apks: phone and xr)
 - any commit or branch: github actions, its build run, artifacts (kept 14 days)
 
 ## Build locally
