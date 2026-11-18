@@ -165,12 +165,20 @@ jobs:
           path: zips
           skip-decompress: true
           merge-multiple: true
+      # one release (tag nightly) with the newest builds, its files swapped: uploads first, then the old ones go,
+      #  never deleted, a failed upload leaves the last builds there (versioned releases come later)
       - name: release
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          gh release delete nightly --cleanup-tag --yes || true
-          gh release create nightly zips/* --prerelease --target "${{ github.sha }}" \
-            --title "zoxel-nightly" \
-            --notes "daily build of master, $(date -u +%Y-%m-%d), at ${{ github.sha }}"
+          sha="${{ github.sha }}"
+          gh release view nightly > /dev/null 2>&1 || \
+            gh release create nightly --prerelease --target "${sha}" --title "zoxel-nightly" --notes "first build"
+          gh release upload nightly zips/* --clobber
+          new=" $(cd zips && echo *) "
+          gh release view nightly --json assets --jq '.assets[].name' | while read -r name; do
+            [[ "${new}" == *" ${name} "* ]] || gh release delete-asset nightly "${name}" --yes
+          done
+          gh api -X PATCH "repos/${GH_REPO}/git/refs/tags/nightly" -f sha="${sha}" -F force=true > /dev/null
+          gh release edit nightly --title "zoxel-nightly" --notes "daily build of master, $(date -u +%Y-%m-%d), at ${sha}"

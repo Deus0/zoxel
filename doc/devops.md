@@ -1,7 +1,8 @@
 # Devops
 
 ## Get a build
-- latest daily build: github releases, "zoxel-nightly" (tag nightly) (linux x64, linux arm and windows x64 zips, android arm apks: phone and xr)
+- daily builds: github releases, "zoxel-nightly" (tag nightly): linux x64, linux arm and windows x64 zips, android arm
+  apks (phone and xr), the newest only (versioned releases later)
 - any commit or branch: github actions, its build run, artifacts (kept 14 days)
 
 ## Build locally
@@ -26,7 +27,8 @@
 - github actions, .github/workflows/build.yml, ubuntu:24.04 containers (same as docker.sh)
 - every push and pull request: builds linux x64, linux arm (github's arm runner, natively), windows x64, android arm
   and android xr (--xr, OpenXR from bsh/xr.sh), uploads the zips and apks as artifacts
-- daily at 03:17 utc: builds master, replaces the nightly release, skipped if master didn't change
+- daily at 03:17 utc: builds master, swaps the nightly release's files (new ones uploaded first, then the old
+  ones deleted, the tag moved), skipped if master didn't change
 	- start it by hand: actions, build, run workflow, on master
 - caches ext/ + lib/ and inc/flecs, a lib or flecs script change rebuilds them
 - android: android_prepare.sh downloads the sdk, ndk and gradle into and/ (cached), android.sh signs the apk
