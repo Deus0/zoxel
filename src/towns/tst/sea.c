@@ -339,6 +339,21 @@ static inline int zox_tst_lake_voxel(ecs* world, entity terrain, int3 block) {
     return getv_VoxelNode(zox_get(chunk, VoxelNode), depth, get_positionl_byte3(block, byte3_single(length)));
 }
 
+// a light at a block position, like zox_tst_lake_voxel, -1 if not there
+static inline int zox_tst_lake_light(ecs* world, entity terrain, int3 block) {
+    if (zox_tst_lake_voxel(world, terrain, block) < 0) {
+        return -1;
+    }
+    const byte depth = zox_getv(terrain, NodeDepth);
+    const byte length = octree_size(depth);
+    const int3 chunk_position = block_position_to_positionc(block, byte3_single(length));
+    const entity chunk = int3_hashmap_get(zox_get(terrain, ChunkLinks)->value, chunk_position);
+    if (!zox_has(chunk, LightNode)) {
+        return -1;
+    }
+    return getv_LightNode(zox_get(chunk, LightNode), depth, get_positionl_byte3(block, byte3_single(length)));
+}
+
 void zox_tst_lakes_check(ecs* world) {
     zox_tst_check(zox_tst_lake_found, "no lake above the sea within 12 cells of the origin");
     const entity terrain = zox_tst_world_terrain;
@@ -396,6 +411,21 @@ void zox_tst_lakes_check(ecs* world) {
     zox_tst_check(!wrong, "[%i] voxels under the lake's level in its bowl aren't water", wrong);
     zox_tst_check(!above, "[%i] water voxels are over the lake's level", above);
     zox_tst_check(!hanging, "[%i] sides of the lake's surface are open to air: it spills", hanging);
+    // sunlight dims down through it (light_water_decay a block): its floor darker than its surface, darker than the air
+    const int2 middle = lake->centre;
+    const int floor = terrain_height_at(&th, middle) + 1;
+    if (!town_at(world, middle) && floor < level) {
+        const int air = zox_tst_lake_light(world, terrain, (int3) { middle.x, level + 1, middle.y });
+        const int top = zox_tst_lake_light(world, terrain, (int3) { middle.x, level, middle.y });
+        const int bottom = zox_tst_lake_light(world, terrain, (int3) { middle.x, floor, middle.y });
+        zox_log("[tst] [metric] lakes light at its middle: the air over it [%i], its surface [%i], its floor [%i] (%i deep)",
+            air, top, bottom, level - floor + 1);
+        zox_tst_check(air >= 0 && top >= 0 && bottom >= 0, "the lake's middle isn't loaded to read its light");
+        zox_tst_check(top < air, "the lake's surface is lit [%i], not dimmer than the air over it [%i]", top, air);
+        zox_tst_check(bottom < top, "the lake's floor is lit [%i], not dimmer than its surface [%i]", bottom, top);
+    } else {
+        zox_log("[tst] lakes: its middle is in a town or a block deep, its light not checked");
+    }
     FILE* file = fopen(zox_tst_path("lake.ppm"), "rb");
     zox_tst_check(file, "the lake's screenshot wasn't saved");
     if (file) {

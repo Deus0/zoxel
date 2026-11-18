@@ -1,6 +1,12 @@
 # Done
 
 ## 2026-11-18
+-x Sunlight dims in water: 24 a block (light_water_decay), a beam known by its light, not by being full sunlight
+  (light_beam_above, dark_sunbeam carries the light it expects); placed water relights the beam under it dimmer,
+  drained water brighter; the dark flood clears per voxel (a beam beside it stayed lit); doc/tech/water.md Light
+  (tst water_light, lakes on seeds 1, 2, 5)
+-x Sunbeams lit chunks still generating (before landfill) as air, their water and caves too: they wait for it now
+-x Under water the sounds are muffled, not just quieter: a 500hz low pass on the mix, eased (tst sound_mixer)
 -x local coop, terrain lods fought (laggy): a streamer moving set every column round it to its own distance, even
   ones another streamer was closer to, so the lods swapped each time either moved; a column's distance is now its
   closest streamer's (terrain_stream_distance), and a player starting no longer drops the other players' queued

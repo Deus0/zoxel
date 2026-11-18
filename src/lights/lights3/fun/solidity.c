@@ -52,3 +52,80 @@ static inline void update_light_emission(
         emission[j] = zox_valid(block) && zox_has(block, BlockLight) ? zox_getv(block, BlockLight) : 0;
     }
 }
+
+// Caches which blocks are liquids (water), indexed by voxel - 1, like solidity: sunbeams dim in them
+static inline void update_light_liquids(
+    ecs* world,
+    entity manager,
+    entity* cached_manager,
+    byte* liquids)
+{
+    if (*cached_manager == manager) {
+        return;
+    }
+    *cached_manager = manager;
+    memset(liquids, 0, zox_light_solidity_length);
+    if (!zox_valid(manager) || !zox_has(manager, BlockLinks)) {
+        return;
+    }
+    const BlockLinks* blocks = zox_get(manager, BlockLinks);
+    const int length = blocks->length < zox_light_solidity_length ? blocks->length : zox_light_solidity_length;
+    for (int j = 0; j < length; j++) {
+        const entity block = blocks->value[j];
+        liquids[j] = zox_valid(block) && zox_has(block, BlockMaterial) &&
+            zox_getv(block, BlockMaterial) == zox_block_material_liquid;
+    }
+}
+
+// a sunbeam's light after passing one liquid block
+static inline byte light_dim(byte light, byte min_light) {
+    return light > light_water_decay + min_light ? light - light_water_decay : min_light;
+}
+
+// the light a sunbeam brings down into pos from above, 0 if none reaches it
+//  - a beam is full sunlight in air, light_dim'd in each liquid under it; there's no marker, so it walks up the
+//    column (into the chunk above too) while each voxel's light is what the beam would give it, until full sunlight
+static inline byte light_beam_above(
+    const VoxelNode* vnode,
+    const LightNode* lnode,
+    const VoxelNode* up_vnode,
+    const LightNode* up_lnode,
+    byte depth,
+    byte3 pos,
+    byte min_light,
+    const byte* solidity,
+    const byte* liquids)
+{
+    const int length = octree_size(depth);
+    byte first = 0;
+    byte below_light = 0;
+    byte below_liquid = 0;
+    for (int y = pos.y + 1; y < 2 * length; y++) {
+        const byte up = y >= length;
+        const VoxelNode* v = up ? up_vnode : vnode;
+        const LightNode* l = up ? up_lnode : lnode;
+        if (!l) {
+            return 0;
+        }
+        const byte3 p = { pos.x, up ? y - length : y, pos.z };
+        const byte voxel = v ? getv_VoxelNode(v, depth, p) : 0;
+        if (voxel && solidity[voxel - 1]) {
+            return 0;
+        }
+        const byte light = getv_LightNode(l, depth, p);
+        if (!first) {
+            if (light <= min_light) {
+                return 0;
+            }
+            first = light;
+        } else if (below_light != (below_liquid ? light_dim(light, min_light) : light)) {
+            return 0;
+        }
+        if (light == sunlight) {
+            return first;
+        }
+        below_light = light;
+        below_liquid = voxel && liquids[voxel - 1];
+    }
+    return 0;
+}

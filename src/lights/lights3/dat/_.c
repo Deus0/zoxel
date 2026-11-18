@@ -1,6 +1,8 @@
 #define zox_light_type_beam_start 0
 #define zox_light_type_beam 1
 #define zox_light_type_flood 2
+#define zox_light_type_dim_start 3     // water placed at pos: its beam relit dimmed
+#define zox_light_type_dim 4           // continued from the chunk above, relit dimmed
 
 typedef struct {
     void* ptr;

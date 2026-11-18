@@ -40,6 +40,8 @@
 - A square patch of water lighter than the rest with a straight edge, looking down at a lake (tst sea_level's
   tst/sea.ppm, seed 666): a lighting seam between chunks, or one lit after the others?
   	- probably related to the lighting issues at boot, see other bug of light in homes stills
+	- maybe fixed 2026-11-18: sunbeams lit chunks still generating as air (their water too), they wait now; check
+	  tst/sea.ppm again
 - Towns can stand in the sea or a lake: a town on sunken ground keeps its homes over the water and clears air under
   the sea (seen on the map, tst sea_level counts its air voxels apart), and a town square sat in the middle of a
   lake (tst lakes, seed 666, block 101x36); towns should pick land away from water, or raise their ground over it
@@ -187,8 +189,6 @@
 	- (done: a sea at 18, lakes in bowls, doc/tech/water.md) rivers later
 	- (done: flowing, it falls and spreads 4, doc/tech/water.md) water levels, thinner as it spreads, and draining
 	- (done: swimming, the blue view under it, muffled sounds, meshes far to near: tst swim, chunk_order)
-	- light dimming with depth (doc/tech/water_extras.md task 4): sunbeams need a marker other than full sunlight
-	  first (water.md Not yet)
 	- play test swimming: sinking speed, the stroke up, climbing out onto a shore, the underwater fog's thickness
 - Remove trigger system for lods
 	- just update neighbor of updating chunks inside stream systems
@@ -774,7 +774,6 @@
   quads (asked the user first: it changes the grass's look); greedy meshing plan: doc/tech/chunks3.md
 - clouds can be a bit dark
 - dust particles in the air round the terrain (ergo proxy, dystopian vibes)
-- Darken sunlight as it goes underwater
 - Vulkan renderer
 	- initial vulkan implementation
 	- vox model rendering

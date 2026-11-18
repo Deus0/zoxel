@@ -6,6 +6,7 @@ byte zox_debug_lights = 0;
 byte darklight = 16;        // min light
 // NOTE: Hello Darkness my old friend!
 byte light_air_decay = 32; // 32;
+byte light_water_decay = 24;    // a sunbeam's light lost in each liquid block it passes (doc/tech/water.md)
 byte light_propogation_distance = 12;
 byte darklight_propogation_distance = 64;  // just keep going?
 byte zox_is_log_lighting = 0;

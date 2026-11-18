@@ -43,6 +43,25 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
 - Nothing grows in a bowl (vegetation skips its columns); towns and mountains keep out of lakes
   (`region_zones_add_lakes` adds them to a region's placement zones before those are placed).
 
+## Light
+
+- A sunbeam loses `light_water_decay` (24, lights3/set) in each liquid block it passes (`light_dim`, lights3/fun/
+  solidity.c, the liquids table `update_light_liquids` beside solidity): full sunlight in air over it, 231 in the top
+  water, 207 under it, and so on to `darklight`. A lake's floor is darker than its beach.
+- There's no beam marker: a beam is known by its light. `light_beam_above` walks up a column (into the chunk above
+  too) while each voxel's light is what a beam would give it, until full sunlight; edits use it to find the beam over
+  them (voxel_light_system, editing.c).
+- `dark_sunbeam` (dark.c) carries the light it expects down the column (dimmed in each liquid) and darkens while it
+  matches; each voxel's dark flood clears light a step dimmer than that voxel had, so a beam beside it as deep in
+  water stays.
+- Water placed in a beam (flowing too): a `zox_light_type_dim_start` dark beam from it down, then each voxel relit a
+  liquid dimmer (a flood at its new light); it carries on into the chunk below (`zox_light_type_dim`). Water taken
+  out (drained): a sunbeam from it down at the beam over it, brighter.
+- A chunk's beams wait until it's generated (`GenerateChunk` before `zox_generate_terrain_sunlight`): the top
+  chunk's beams went down into chunks still empty and lit them as air, their water too.
+- Tests: `water_light` (a pool filled a layer at a time, drained, covered: exact values), `lakes` (a generated
+  lake's floor darker than its surface, darker than the air over it).
+
 ## Flowing
 
 - src/terrain/sys/water_flow.c. A chunk just edited (`VoxelNodePostDirty`) adds its edited blocks to its terrain's
@@ -84,6 +103,7 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
 - `water_tile`: the water texture off the tilemap, a block texture's size, at any Block Res.
 - `block_frames`: every animated block's frames side by side (tst/blocks/<block>_frames.ppm), they change, loop and
   tile.
+- `water_light`: a pool in sunlight filled a layer at a time, each a light_dim dimmer down; its top drained; covered.
 - `water_flow`: no player; water dropped on a brick floor lands and covers the blocks within 4 of where it landed,
   then a brick dug from under it drains it down the hole.
 - `swim`: a character dropped in a pool sinks slower than 1m a second, swims up to the surface holding jump (not
@@ -97,9 +117,6 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
 ## Not yet
 
 - Rivers; water with levels (thinner as it spreads, Minecraft style) and draining; flowing across a chunk not loaded.
-- Light dimming with depth (water_extras.md task 4): sunbeams mark themselves by full sunlight (dark_sunbeam stops at
-  any other light, a placed block starts a dark beam only under full sunlight), so dimmed beams need another marker
-  first.
 - Blended faces within one chunk mesh aren't sorted; meshes in different tables aren't sorted against each other.
-- Water placed by flowing doesn't dim light.
+- Flood light (sideways) through water isn't dimmed more than through air.
 - Towns on sunken ground by the sea (todo.md Bugs).

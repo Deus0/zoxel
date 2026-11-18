@@ -23,6 +23,10 @@ void voxel_light_system(iter* it) {
     entity emission_realm = 0;
     byte emission[zox_light_solidity_length];
     memset(emission, 0, zox_light_solidity_length);
+    // liquids dim the sunbeams through them, water placed or drained relights the beam under it
+    entity liquids_realm = 0;
+    byte liquids[zox_light_solidity_length];
+    memset(liquids, 0, zox_light_solidity_length);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(VoxelNodeQueue, input_queue);
@@ -44,8 +48,12 @@ void voxel_light_system(iter* it) {
             &realm,
             solidity);
         update_light_emission(world, zox_get_link(world, e, BlockManagerLink), &emission_realm, emission);
+        update_light_liquids(world, zox_get_link(world, e, BlockManagerLink), &liquids_realm, liquids);
         const LightNode* nnodesl[6];
         fetch_neightbor_light_nodes(world, neighbors, nnodesl);
+        const VoxelNode* nnodesv[6];
+        fetch_neightbor_voxel_nodes(world, neighbors, nnodesv);
+        const VoxelNode* root_vnode = zox_get(e, VoxelNode);
         for (size_t j = 0; j < input_queue->count; j++) {
             VoxelNodeUpdate update = input_queue->ptr[j];
             // once an edit, after it's set (old_value known): each was handled every frame it queued, before it was
@@ -69,11 +77,13 @@ void voxel_light_system(iter* it) {
                 }
                 const LightNode* above = get_neighbor_LightNode(root_lnode, nnodesl, direction_up, update.position, depth->value);
                 byte light_above = above ? above->value : 0;
-                if (light_above == sunlight) {
-                    // if y, we do y + 1
+                const byte beam = light_beam_above(root_vnode, root_lnode, nnodesv[direction_up], nnodesl[direction_up],
+                    depth->value, update.position, darklight, solidity, liquids);
+                if (beam) {
+                    // the beam comes down through it (a dug block, or drained water: brighter now)
                     a_SunlightQueue(sun_queue, (SunlightUpdate) {
                         .pos = update.position,
-                        .light = sunlight,
+                        .light = beam,
                         .depth = depth->value
                     });
                     if (dbg_log) {
@@ -82,7 +92,7 @@ void voxel_light_system(iter* it) {
                             update.position.x,
                             update.position.y,
                             update.position.z,
-                            sunlight);
+                            beam);
                     }
                     // set dark light, as it was filled up
                     // set_LightNode(root_lnode, depth->value, update.position, sunlight, 0);
@@ -142,6 +152,20 @@ void voxel_light_system(iter* it) {
                             .distance = light_propogation_distance });
                     }
                 }
+                const byte beam = light_beam_above(root_vnode, root_lnode, nnodesv[direction_up], nnodesl[direction_up],
+                    depth->value, update.position, darklight, solidity, liquids);
+                if (liquids[update.value - 1]) {
+                    // water placed in a beam: the beam from it down is a liquid dimmer
+                    if (beam && getv_LightNode(root_lnode, depth->value, update.position) == beam) {
+                        a_DarkQueue(dark_queue, (DarkUpdate) {
+                            .type = zox_light_type_dim_start,
+                            .pos = update.position,
+                            .depth = depth->value,
+                            .light = beam
+                        });
+                    }
+                    continue;
+                }
                 if (!solidity[update.value - 1]) {
                     continue;
                 }
@@ -170,15 +194,7 @@ void voxel_light_system(iter* it) {
                         });
                 }
                 // NOTE: DarkBeam needs to Process first (so we add last), otherwise its stomped by nearby sun? idk but it works!
-                const LightNode* above = get_neighbor_LightNode(
-                    root_lnode,
-                    nnodesl,
-                    direction_up,
-                    update.position,
-                    depth->value
-                );
-                byte light_above = above ? above->value : 0;
-                if (light_above == sunlight) {
+                if (beam) {
                     // if y, we do y + 1
                     if (dbg_log) {
                         zox_log("[%s] Placed Block: + Darkbeam [%ix%ix%i] l[%i]",
@@ -188,12 +204,14 @@ void voxel_light_system(iter* it) {
                             update.position.z,
                             darklight);
                     }
+                    // the beam's light at it before (dimmer if it was water), the beam under it is cleared from there
+                    const byte was_liquid = update.old_value && liquids[update.old_value - 1];
                     a_DarkQueue(dark_queue,
                         (DarkUpdate) {
                             .type = zox_light_type_beam_start,
                             .pos = update.position,
                             .depth = depth->value,
-                            .light = light_above
+                            .light = was_liquid ? light_dim(beam, darklight) : beam
                         });
                 }
                 // set dark light, as it was filled up
