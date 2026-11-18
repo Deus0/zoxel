@@ -1,5 +1,3 @@
-float fog_settings_mul = 0.048f;
-
 void rendering_settings_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();

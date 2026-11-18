@@ -4,7 +4,7 @@
 //      inside: from the wall's inner edge, over the town and on to the far wall
 //      outside: from its outer edge, out over the land
 //  - each to tst/aesthetic/<shot>.ppm, bsh/tst.sh converts them to doc/screenshot/<shot>.jpg
-//  - run: bash bsh/tst.sh aesthetic_town (tst.sh adds a far, tall world, 1080p, no hud or labels, seed 2)
+//  - run: bash bsh/tst.sh aesthetic_town (tst.sh adds a far, tall world, 1080p, little fog, no hud or labels, seed 2)
 #define zox_tst_aesthetic_shots 3
 const char* zox_tst_aesthetic_names[zox_tst_aesthetic_shots] = { "wall", "inside", "outside" };
 byte zox_tst_aesthetic_stage = 0;
@@ -110,7 +110,6 @@ byte zox_tst_aesthetic_town_ready(ecs* world) {
         zox_setv(camera, Position3D, eye);
         zox_setv(camera, Rotation3D, camera_look_at(eye, target));
     }
-    fog_density = 0.003f;
     // the first waits for the far land, the others for the camera to settle
     if (zox_current_time - zox_tst_aesthetic_time < (shot ? 3 : 30)) {
         return 0;

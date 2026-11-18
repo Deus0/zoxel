@@ -105,8 +105,10 @@ if [[ ${gpu} == "0" ]]; then
 fi
 root="$(pwd)"
 # tst/: logs, and the files tests write to look at (screenshots, wavs), gitignored
-#   the game finds it from zox_tst_dir (src/_/tst/_.c zox_tst_path)
-log_dir="${root}/tst"
+#   the game finds it from zox_tst_dir (src/_/tst/_.c zox_tst_path); set it to keep a run's files apart from
+#   another's running at the same time, i.e. zox_tst_dir=tst/mine
+log_dir="${zox_tst_dir:-${root}/tst}"
+[[ "${log_dir}" != /* ]] && log_dir="${root}/${log_dir}"
 mkdir -p "${log_dir}"
 export zox_tst_dir="${log_dir}"
 # lint_* tests are scripts (bsh/<name>.sh), not the game: conventions, i.e. lint_systems
@@ -163,7 +165,7 @@ fi
 medium_tests=(lod_chunk_lights lod_swap)
 # tests that screenshot the world, the hud hidden
 nohud_tests=(sky_clouds head_camera town_view held_item held_block)
-# tests that take the readme's screenshots: a far, tall world at 1080p, no hud or labels, the same seed (zox_tst_seed
+# tests that take the readme's screenshots: a far, tall world at 1080p, little fog (to see the mountains), no hud or labels, the same seed (zox_tst_seed
 #   overrides it), more time to stream, their shots converted to doc/screenshot/ after
 aesthetic_tests=(aesthetic_town)
 run_game() {
@@ -176,7 +178,7 @@ run_game() {
     local seconds="${timeout_seconds}"
     local seed_env=()
     if [[ " ${aesthetic_tests[*]} " == *" ${tst} "* ]]; then
-        test_args+=(--far 16 --vertical 4 --1080p --nohud --nouis)
+        test_args+=(--far 16 --vertical 4 --fog 0.025 --1080p --nohud --nouis)
         seed_env=(env "zox_tst_seed=${zox_tst_seed:-2}")
         seconds=$(( timeout_seconds > 300 ? timeout_seconds : 300 ))
     fi

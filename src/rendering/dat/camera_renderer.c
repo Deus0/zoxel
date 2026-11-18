@@ -9,6 +9,7 @@ byte render_camera_fov;
 // fog
 byte is_render_fog = 1;
 float fog_density = 0.03f; // 0326f;
+float fog_settings_mul = 0.048f;   // the Fog setting (0 to 1) to fog_density
 
 static inline float get_fog_density() {
     return is_render_fog ?
