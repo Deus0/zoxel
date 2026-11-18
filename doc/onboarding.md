@@ -228,7 +228,36 @@ The loop:
 5. Run the related test, then `bash bsh/tst.sh all`.
 6. Move the item to [done.md](done.md), then commit.
 
-## 8. Where Next
+## 8. Git
+
+- Work on `master`, small commits, short lower case messages (`fixed windows build errors`). Several people (and
+  Claudes) commit here: check `git status` and `git log` first, and only commit your own files, by path.
+- Pull with rebase, so the history stays one line: `git config pull.rebase true` (a plain pull merged and split it).
+- **Two remotes in one.** `origin` fetches from GitHub, but pushes to GitHub *and* Codeberg:
+
+  ```bash
+  git remote -v
+  # origin  git@github.com:deus0/zoxel.git (fetch)
+  # origin  git@github.com:deus0/zoxel.git (push)
+  # origin  git@codeberg.org:deus/zoxel.git (push)
+  ```
+
+  So `git push origin master` sends to both, but `git pull` only sees GitHub. If a push lands on one and is
+  refused by the other (it's behind, someone pushed only there), the two drift apart and every later push stalls.
+- **When they've drifted**, don't force push. Bring the other one in, then push to both:
+
+  ```bash
+  git fetch git@codeberg.org:deus/zoxel.git master   # what Codeberg has (FETCH_HEAD)
+  git log --oneline HEAD..FETCH_HEAD                  # commits only it has
+  git merge FETCH_HEAD                                # or rebase unpushed work onto it
+  git fetch origin && git merge origin/master         # and GitHub's, if it has any of its own
+  git push origin master                              # now a fast forward on both
+  ```
+
+  To check they match: `git ls-remote git@github.com:deus0/zoxel.git master` and the same for Codeberg give the
+  same hash.
+
+## 9. Where Next
 
 - [Architecture](architecture.md): events vs systems
 - [Coding Standards](coding_standards.md): folders, naming, components and systems in depth
