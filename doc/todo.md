@@ -17,6 +17,10 @@
 	it 1:1 scaled at 72 fps, the body now leans its spine first (xr_lean_angle_max); check again in the headset
 - the cookie gather quest failed
 - Lighting flickers again when we destroy a block (water block refactor regression)
+	- not seen by tst dig_light (2026-11-18): a sunlit surface block dug, in a chunk's middle and on its edge
+	  (zox_tst_dig_edge=1), Block Res 4 and 5: the hole's faces show lit (the upload waits for their colours), the
+	  faces around keep their light; needs where it shows (dark places, a cave, a house, near water, at night?)
+	- the dug block's faces stay about 7 frames before the rebuilt mesh replaces them, relit as the light comes in
 - arms swing out of step on a character that isn't the player's: tst arms_in_step on characters/tst/character.c (a
 	skeleton character in the void, PlayerCharacter) sums its shoulders' swings to 0.2 to 0.6 (the player's pass), even
 	before the raise; something besides arm_swing moves its shoulders?
