@@ -1,6 +1,5 @@
 
 uint channel_sample_rate = 44100;
-#include "dat/_.c"
 #include "wrp/_.c"
 #include "set/_.c"
 #include "com/_.c"

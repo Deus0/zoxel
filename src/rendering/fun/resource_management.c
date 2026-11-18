@@ -50,3 +50,12 @@ void opengl_restore_resources(ecs *world) {
         skip_time_to_current();
     }
 }
+
+// a material's cached uniform locations (T, made by create_T) looked up again: a restore relinked its program
+#define zox_gpu_relocate(T)\
+    zox_each_begin(T);\
+        const MaterialGPULink* material = zox_get(e, MaterialGPULink);\
+        if (!material || !material->value) continue;\
+        zox_each_o(T, data);\
+        *data = create_##T(material->value);\
+    zox_each_end()

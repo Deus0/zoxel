@@ -2,12 +2,7 @@
 
 // opengl es (android, tests): it has no line polygon offset, and point sizes are always the shader's
 static inline byte zox_gpu_is_es() {
-    static int is_es = -1;
-    if (is_es < 0) {
-        const char* version = (const char*) glGetString(GL_VERSION);
-        is_es = version && strstr(version, "OpenGL ES") != NULL;
-    }
-    return is_es;
+    return opengl_mode == zox_opengl_es;
 }
 
 static inline void zox_gpu_enable_culling() {

@@ -1,4 +1,4 @@
-// different opengl modes with sdl
+// the opengl the app asked sdl for (core or es), set by the platform and --gles, sdl falls back to es
 #define zox_opengl_core 0
 #define zox_opengl_es 1
 #define zox_opengl_compatibility 2

@@ -5,6 +5,7 @@
  *
  * */
 byte zox_render_lines = 0;
+#include "dat/opengl_mode.c"
 
 #ifdef zox_opengl
     #include "opengl/_.c"

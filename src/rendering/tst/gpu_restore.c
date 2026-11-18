@@ -7,6 +7,7 @@
 //    average colour: the sky came back magenta, the skybox didn't keep its menu colours)
 //  - live gpu objects (buffers, textures, shaders, programs, fbos, rbos): none after disposing (a lost context
 //    leaves anything kept dead, i.e. a global material), as many after restoring as before (no leaks)
+//  - a material's uniform locations are looked up again (scrambled before, the same as at first after)
 //  - run: bash bsh/tst.sh gpu_restore
 extern char zox_screenshot_request[256];
 #define zox_tst_gr_types 8
@@ -24,6 +25,8 @@ const char* zox_tst_gr_kind_names[zox_tst_gr_kinds] = { "buffers", "textures", "
 int zox_tst_gr_live_before[zox_tst_gr_kinds];
 int zox_tst_gr_live_disposed[zox_tst_gr_kinds];
 int zox_tst_gr_live_restored[zox_tst_gr_kinds];
+MaterialBasic3D zox_tst_gr_locations;      // material_basic3D's, before
+byte zox_tst_gr_relocated = 0;
 float zox_tst_gr_moves = 0, zox_tst_gr_changed = 0;   // average colour changes (0 to 765): on its own, and by a restore
 
 // how many of a gpu link's entities hold something
@@ -132,6 +135,9 @@ byte zox_tst_gpu_restore_ready(ecs* world) {
         zox_tst_gr_count(world, zox_tst_gr_before);
         zox_tst_gr_live(zox_tst_gr_live_before);
         check_opengl_error("gpu_restore before");
+        MaterialBasic3D* locations = zox_get_mut(material_basic3D, MaterialBasic3D);
+        zox_tst_gr_locations = *locations;
+        memset(locations, 0xee, sizeof(MaterialBasic3D));
         opengl_dispose_resources(world);
         zox_tst_gr_count(world, zox_tst_gr_disposed);
         zox_tst_gr_live(zox_tst_gr_live_disposed);
@@ -147,6 +153,7 @@ byte zox_tst_gpu_restore_ready(ecs* world) {
         }
         opengl_restore_resources(world);
         zox_tst_gr_rendering = rendering;
+        zox_tst_gr_relocated = !memcmp(zox_get(material_basic3D, MaterialBasic3D), &zox_tst_gr_locations, sizeof(MaterialBasic3D));
         zox_tst_gr_stage = 4;
         zox_tst_gr_frames = 0;
         return 0;
@@ -194,6 +201,7 @@ void zox_tst_gpu_restore_check(ecs* world) {
     zox_tst_check(zox_tst_gr_stopped, "disposed, it kept rendering");
     zox_tst_check(zox_tst_gr_rendering, "restored, it isn't rendering");
     zox_tst_check(!zox_tst_gr_errors, "opengl errors after restoring");
+    zox_tst_check(zox_tst_gr_relocated, "restored, material_basic3D's uniform locations weren't looked up again");
     zox_log("[tst] [metric] screenshots' average colour: [%.1f] changed on its own, [%.1f] after a restore (tst/gpu_restore_b.ppm, c)",
         zox_tst_gr_moves, zox_tst_gr_changed);
     zox_tst_check(zox_tst_gr_changed <= zox_tst_gr_moves + 12, "restored, the picture's average colour changed [%.1f] (on its own [%.1f])",
