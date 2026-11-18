@@ -1,10 +1,9 @@
-extern void button_event_switch_action(ecs *world, const ClickEventData event);
-extern void button_event_switch_action2(ecs *world, const ClickEventData event);
 extern void button_event_jump(ecs *world, const ClickEventData event);
 extern void button_event_attack(ecs *world, const ClickEventData event);
 
 entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas) {
-    byte touch_buttons_count = 6;
+    // actions are picked by tapping their icon in the actionbar (actions/ui/fun touch_select_action)
+    byte touch_buttons_count = 4;
     byte layer = max_layers2D - 10; // 1;
     int2 canvas_size = zox_getv(canvas, LayoutSize);
     // at most a seventh of the screen's short side: on a small screen (or a big ui_scale) the buttons covered most of
@@ -28,35 +27,27 @@ entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas)
     color coutline = (color) { 40, 40, 40, 130 };
     char* tnames[] = {
         "taskbar_paused",
-        "touch_switch",
         "touch_speak",
         "touch_jump",
-        "touch_switch",
         "touch_attack",
     };
     ClickEvent onclicks[] = {
         (ClickEvent) { &button_event_pause_game },
-        (ClickEvent) { &button_event_switch_action2 },
         (ClickEvent) { &button_event_speak },
         (ClickEvent) { &button_event_jump },
-        (ClickEvent) { &button_event_switch_action },
         (ClickEvent) { &button_event_attack },
     };
     float2 banchors[] = {
         float2_bottom_left,
         float2_bottom_left,
-        float2_bottom_left,
-        float2_bottom_right,
         float2_bottom_right,
         float2_bottom_right,
     };
     int2 bpositions[] = {
         (int2) { bposition.x, bposition.y },
         (int2) { bposition.x, bposition.y + (button_size + bpadding)  },
-        (int2) { bposition.x, bposition.y + 2 * (button_size + bpadding) },
         (int2) { -bposition.x, bposition.y },
         (int2) { -bposition.x, bposition.y + (button_size + bpadding)  },
-        (int2) { -bposition.x, bposition.y + 2 * (button_size + bpadding)  },
     };
     for (byte i = 0; i < touch_buttons_count; i++) {
         entity texture = string_hashmap_get(files_hashmap_textures, new_string_data(tnames[i]));

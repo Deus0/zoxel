@@ -3,6 +3,7 @@
 extern byte can_stack_items(ecs*, entity, entity);
 extern byte stack_items(ecs*, entity, entity);
 extern byte is_action_frame(ecs*, entity);
+extern byte touch_select_action(ecs*, entity, entity);
 extern byte can_place_icon_in_skill_frame(ecs*, entity, entity);
 extern byte can_place_icon_in_item_frame(ecs*, entity, entity);
 // Equipment
@@ -45,6 +46,10 @@ void data_ui_click_system(iter* it) {
         entity mouse_data = zox_get_link(world, mouse_ui, DataLink);
         byte mouse_data_empty = !zox_valid(mouse_data);
         byte clicked_data_empty = !zox_valid(data);
+        // touch play: a tap selects the action instead of picking it up (actions/ui/fun)
+        if (mouse_data_empty && touch_select_action(world, zox_getv(e, Clicker), zox_get_parent(world, e))) {
+            continue;
+        }
         // If both empty
         if (mouse_data_empty && clicked_data_empty) {
             if (dbg_log) {

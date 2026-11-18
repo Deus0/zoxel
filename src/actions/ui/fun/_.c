@@ -1,3 +1,15 @@
+// a player swapped its action (set_character_action adds ActionSwapped): its sound
+//  - added from worker threads too (a touch tap's click system), the observer runs at the merge on the main thread
+//  - a non fragmenting tag, so removing it here doesn't move the character's table
+void on_action_swapped(iter* it) {
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        spawn_sound_from_file_name(world, prefab_sound, "swap_action", 0, get_volume_sfx());
+        zox_remove(e, ActionSwapped);
+    }
+}
+
 void set_character_action(
     ecs *world,
     entity character,
@@ -11,12 +23,7 @@ void set_character_action(
         return;
     }
     zox_setv(character, ActionIndex, index);
-    spawn_sound_from_file_name(
-        world,
-        prefab_sound,
-        "swap_action",
-        0,
-        get_volume_sfx());
+    zox_add(character, ActionSwapped);
     if (dbg_log) {
         zox_log("[set_character_action] Action Set [%s]:[%i]",
             zox_getn(character),
@@ -135,11 +142,16 @@ void player_action_ui_move(
         index);
 }
 
-void button_event_switch_action(ecs *world, ClickEventData event) {
-    player_action_ui_move(world, event.clicker, 1);
+// touch play: a tap on an action's frame selects it (there's no mouse to drag with, paused it drags as before)
+//  - called from the icon click (ui/containers/sys/click.c), returns 1 if it selected
+byte touch_select_action(ecs *world, entity player, entity frame) {
+    if (!zox_valid(player) || !is_action_frame(world, frame) || !zox_has(frame, ChildIndex)) {
+        return 0;
+    }
+    const byte is_touch = zox_getv(player, DeviceMode) == zox_device_mode_touchscreen || zox_dbg_touch_with_mouse;
+    if (!is_touch || zox_getv(player, PlayerState) == zox_player_state_paused) {
+        return 0;
+    }
+    set_player_action(world, player, zox_getv(frame, ChildIndex));
+    return 1;
 }
-
-void button_event_switch_action2(ecs *world, ClickEventData event) {
-    player_action_ui_move(world, event.clicker, -1);
-}
-

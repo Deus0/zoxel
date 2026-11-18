@@ -273,6 +273,7 @@ void zox_tst_screenshot_check(ecs* world) {
 }
 
 #include "touch_play.c"
+#include "touch_actions.c"
 
 void zox_tsts_controllers(ecs* world) {
     zox_tsts_music(world);
@@ -289,5 +290,6 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("item_split", zox_tst_item_split_ready, zox_tst_item_split_check, 90);
     zox_tst_add("resume_no_punch", zox_tst_resume_no_punch_ready, zox_tst_resume_no_punch_check, 90);
     zox_tst_add("touch_play", zox_tst_touch_play_ready, zox_tst_touch_play_check, 120);
+    zox_tst_add("touch_actions", zox_tst_touch_actions_ready, zox_tst_touch_actions_check, 90);
     zox_tst_add("tooltip_flick", zox_tst_tooltip_flick_ready, zox_tst_tooltip_flick_check, 90);
 }
