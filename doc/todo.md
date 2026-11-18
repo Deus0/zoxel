@@ -7,6 +7,9 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
+- Windows build broken: near and far are macros in the windows headers (minwindef.h), rename any near/far names in
+	the code, and add "no near or far names" to doc/coding_standards.md
+- body still too big, it can't fit through a 2 tall, 1 wide door
 - XR lag, what's left (the frame's start and the hands' timing are fixed, see done.md): needs a headset to confirm;
 	if it's still laggy, read the headset's frame timing log ([XR] fps, openxr/render.c)
 - XR lean feels 2-3 times larger than real life (play test, on the build that slid the whole body): tst xr_body has
@@ -31,7 +34,10 @@
 - Towns can stand in the sea or a lake: a town on sunken ground keeps its homes over the water and clears air under
   the sea (seen on the map, tst sea_level counts its air voxels apart), and a town square sat in the middle of a
   lake (tst lakes, seed 666, block 101x36); towns should pick land away from water, or raise their ground over it
+	- play test: make sure buildings don't place on water
 - clothes distorted when rotating arm
+	- play test: skinning is very deformed, fix the previous hack (vox_mesh_parts) and the clothes' weights
+	- a test that checks painted weights visually (a ppm of each bone's weights in colour)
 	- issue is the way clothes are skinned
 	- we should set bone octrees on clothes by finding closest body part block, using flood fill distance
 - Crosshair will flicker siize too fast
@@ -179,11 +185,10 @@
 - Water in the world (the block, its rippling texture and blended meshes are in, tst water_block)
 	- (done: a sea at 18, lakes in bowls, doc/tech/water.md) rivers later
 	- (done: flowing, it falls and spreads 4, doc/tech/water.md) water levels, thinner as it spreads, and draining
-	- sorting: blended chunk meshes drawn far to near, so water seen through water looks right
-- Underwater
-	- change filter of camera - add block - sky darkened
-	- reduce gravity
-	- allow jumping inside water
+	- (done: swimming, the blue view under it, muffled sounds, meshes far to near: tst swim, chunk_order)
+	- light dimming with depth (doc/tech/water_extras.md task 4): sunbeams need a marker other than full sunlight
+	  first (water.md Not yet)
+	- play test swimming: sinking speed, the stroke up, climbing out onto a shore, the underwater fog's thickness
 - Remove trigger system for lods
 	- just update neighbor of updating chunks inside stream systems
 	- atm the faces stay sometimes between lods
@@ -278,6 +283,9 @@
 	- So we dont generate maps for far away chunks
 
 # Towns
+- play test: make towns feel more natural (less grid like)
+- 3 block tall lamps around towns (see street lamps below)
+- windows in homes, a transparent block that light passes through, only in some home types
 - spawn doors and beds in houses
 - Towns: an age level, older towns are flatter (heights), bigger, with more buildings
 - Homes: tilted foundations for poor npcs (homes stand level now)
@@ -300,10 +308,17 @@
 - Spawn / Respawn point should be in a Home - facing outward
 
 # Blocks
+- play test: particles when you hit blocks (see new block destruction animations below)
 - rotate a bed or door before placing it (a key or the wheel); placing turns it to your facing now (52d6d0b3d)
 - multi blocks (beds, doors):
 	- cant sleep in bed
+		- sleep in a bed: close the eyes, a button to leave (the sleep ui), open the eyes when you get up
+		- animate getting onto the bed with the bones (ik)
+		- the eyes close/open animation in 2D too (a screen fade, as the eyelids)
 	- cant rotate / open doors
+		- door swing animation from its hinge, the hinge close to the block's edge
+		- generated door open sounds
+		- physics: pass through it when it's fully open
 - Blocks: refactor them onto the realm, biomes pick theirs by random rules (still variety in dirts and others)
 - sway grass more when you walk through, and better foliage pass through sounds
 - new block destruction animations 
@@ -454,6 +469,7 @@
 - Begin animating arm when attack starts
 	- atm it is delayed until mid attack
 - time punch animation when first click?
+	- play test: the punch looks like a slap now, add a wind up and a better swing
 	- warmup of skill first
 	- then punch begins
 	- punch swings
@@ -995,6 +1011,17 @@
 	- We should wrap all other sdl functions properly for glut
 
 # XR
+- play test (3D huds in XR):
+	- the stats panel, actionbar, minimap spawn in the same spot
+		- stats panel: spawn it over your right hand when you look at it for a few seconds, fade out after
+	- the actionbar should stay below your head, so you see it when you look down; it didn't follow the player
+	- minimap: remove it in XR for now (the map is there), keep it in the normal game
+	- the uis sometimes spawn overlapping the taskbar
+	- uis spawned in 3D are not always in front of the camera
+	- billboards: align them to the camera, not rotated like now; tests for billboards, polish them
+	- the navigator should close uis on resume (we can't move them out of the way like with a mouse)
+	- fix tooltips in 3D (see 3D tooltips look wrong below)
+	- last: a 3D mouse option, switching to it when the stick moves it
 - UI consolidation (2D and 3D from the same code, doc/tech/uis.md), each removing a 3D-only copy:
 	3. one "under the selected ui" tooltip rule: tooltip3_follow_system (3D) and tooltip_navigated_system (2D)
 	4. the 3D options (huds/ins/settings3.c): the 2D options window in 3D, once sliders and toggles have 3D twins

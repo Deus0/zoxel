@@ -23,6 +23,12 @@
 -x the starting quest (find a town) tracked from the start, the tracker shows it (tst find_quest checks it)
 -x quest markers: ! yellow has a quest to give, ? gray you have it, ? yellow you can hand it in; a quest giver
   respawning from its seed (chunk unload/load) shows the player's state of its quest, not ! again (tst quest_marker)
+-x swimming: InWater with the splash, swim_system (it floats, drags, jump strokes up), jump out at a shore, half
+  speed walking; the view under water blue and thick fog (cameras.Underwater, render_underwater, the sky too), sounds
+  muffled (sound_underwater); see through chunk meshes drawn far to near (render_chunk_order); tst swim, chunk_order,
+  sea_level with zox_tst_sea_under=1 (doc/tech/water.md)
+-x the crosshair system no longer logs an error a frame for a player character without a player (the tests'
+  characters: footsteps failed fast on it)
 -x spawn_list3 and spawn_huds3_list gone: the 3D options are a spawn_window_list too; the 3D taskbar 0.09m high again
   (taskbar3_height: a window's own height made it about an eye's width)
 -x ui consolidation 1 and 2: the main, pause and saves menus' 3D branches gone (spawn_window_list builds them in 3D:

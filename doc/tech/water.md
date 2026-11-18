@@ -1,6 +1,6 @@
 # Water
 
-How water works now: the block, how it's drawn, the sea and lakes, and how it's tested.
+How water works now: the block, how it's drawn, the sea and lakes, swimming, the view under it, and how it's tested.
 
 ## The block
 
@@ -10,7 +10,8 @@ How water works now: the block, how it's drawn, the sea and lakes, and how it's 
   against air and other see through materials that aren't water, so there are no faces between water blocks or
   against solids, and a solid keeps its face against water (the sea floor shows through).
 - Its chunk meshes are tagged `TransparentMesh` and drawn by `chunk3_transparent_render_system`, after the solid
-  ones and the sky, blended, both faces (src/rendering/rendering3/sys/render_chunks.c).
+  ones and the sky, blended, both faces (src/rendering/rendering3/sys/render_chunks.c), far to near from the camera
+  (`render_chunk_order`, within a table) so water seen through water blends over it.
 
 ## Its texture
 
@@ -54,6 +55,26 @@ How water works now: the block, how it's drawn, the sea and lakes, and how it's 
   only fills).
 - Generated water (landfill) doesn't flow: only edits do.
 
+## Swimming
+
+- `InWater` (a tag, src/terrain/com): added and removed with the splash (collisions/eve/water_splash.c), when the
+  body's `InsideBlock` (its lower body, inside.c) goes into or out of water.
+- `swim_system` (src/characters/jump/sys/swim.c), in water: holds up 85% of its gravity (it sinks slowly, about 0.4m
+  a second) and drags its velocity (3 a second: a fall into water slows softly); a jump is a stroke up
+  (`jump_state_swim`, 12m/s/s, about 3.5m a second at most), held it swims up to the surface and bobs there.
+- `jump_system`: in water it can always "jump" (swim); grounded on the bottom it jumps as on land; at the surface
+  with a solid block beside the air over it (`swim_at_shore`) it jumps out, onto the shore.
+- Walking in water is half speed (`swim_speed`, player3d_move_system and the XR direct move).
+
+## Under water
+
+- `camera_underwater_system` (src/terrain/sys/water_view.c): a 3D camera in a water block (`terrain_water_at`) gets
+  `Underwater` (src/cameras/com). XR's eyes check their own in xr/fun/eye_render.c.
+- `camera_render3_system` sets `render_underwater` for the camera it draws: `get_fog_value` turns the fog blue and
+  thick (src/rendering/dat/camera_renderer.c, fully blue about 9 blocks out); skybox.frag covers the sky with a thick
+  fog too (so the sky doesn't show through the water).
+- The first main camera's sets `sound_underwater` (src/sounds/set/volume.c): sound effects at 60%, music at 30%.
+
 ## Tests
 
 - `water_block`: placed water in a brick pool, the faces, the blended mesh, its own texture (off the tilemap, on the
@@ -63,13 +84,20 @@ How water works now: the block, how it's drawn, the sea and lakes, and how it's 
   tile.
 - `water_flow`: no player; water dropped on a brick floor lands and covers the blocks within 4 of where it landed,
   then a brick dug from under it drains it down the hole.
+- `swim`: a character dropped in a pool sinks slower than 1m a second, swims up to the surface holding jump (not
+  far over it), and climbs out onto a shore; `terrain_water_at` in the pool and over it.
+- `chunk_order`: see through chunk meshes drawn far to near, opaque ones as they come.
 - `sea_level` and `lakes`: no player, a realm and terrain of their own (src/controllers/tst/world_only.c), one camera
   over the nearest open water or lake, its land streamed round it, looking down (tst/sea.ppm, tst/lake.ppm); its
-  water checked against the heights. `zox_tst_sea_near=1` looks at the sea from close.
+  water checked against the heights. `zox_tst_sea_near=1` looks at the sea from close, `zox_tst_sea_under=1` from
+  under it (tst/sea.ppm shows the underwater fog).
 
 ## Not yet
 
 - Rivers; water with levels (thinner as it spreads, Minecraft style) and draining; flowing across a chunk not loaded.
-- Blended meshes drawn far to near (water seen through water).
-- Underwater: a darker view, splashes, swimming, sounds muffled.
+- Light dimming with depth (water_extras.md task 4): sunbeams mark themselves by full sunlight (dark_sunbeam stops at
+  any other light, a placed block starts a dark beam only under full sunlight), so dimmed beams need another marker
+  first.
+- Blended faces within one chunk mesh aren't sorted; meshes in different tables aren't sorted against each other.
+- Sounds muffled, not filtered (a low pass would sound more like water); water placed by flowing doesn't dim light.
 - Towns on sunken ground by the sea (todo.md Bugs).

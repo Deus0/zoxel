@@ -1,5 +1,8 @@
 # Water extras: a step by step guide
 
+Status 2026-11-18: tasks 1, 2, 3 and 5 are done (2, 3 and 5 differently from below, see [water.md](water.md):
+Swimming, Under water). Task 4 (light) is still to do, and needs a fix first: see water.md, Not yet.
+
 Five things water still needs, each one a small task done on its own: **splash**, **water physics**, **the
 underwater overlay**, **light dampening** and **sound dampening**. Read [water.md](water.md) first: it says how water
 works now.
