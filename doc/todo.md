@@ -1007,7 +1007,7 @@
 
 # Devops
 - Github actions: more targets in .github/workflows/build.yml (see doc/devops.md)
-	- linux arm, web, xr
+	- web
 	- a versioned release when a v* tag is pushed
 - Codeberg: run the same builds there (forgejo actions), it's a push remote too
 

@@ -1,7 +1,7 @@
 # Devops
 
 ## Get a build
-- latest daily build: github releases, "nightly" (linux x64 and windows x64 zips, android arm apk)
+- latest daily build: github releases, "nightly" (linux x64, linux arm and windows x64 zips, android arm apks: phone and xr)
 - any commit or branch: github actions, its build run, artifacts (kept 14 days)
 
 ## Build locally
@@ -24,7 +24,8 @@
 
 ## CI
 - github actions, .github/workflows/build.yml, ubuntu:24.04 containers (same as docker.sh)
-- every push and pull request: builds linux x64, windows x64 and android arm, uploads the zips and apk as artifacts
+- every push and pull request: builds linux x64, linux arm (github's arm runner, natively), windows x64, android arm
+  and android xr (--xr, OpenXR from bsh/xr.sh), uploads the zips and apks as artifacts
 - daily at 03:17 utc: builds master, replaces the nightly release, skipped if master didn't change
 	- start it by hand: actions, build, run workflow, on master
 - caches ext/ + lib/ and inc/flecs, a lib or flecs script change rebuilds them

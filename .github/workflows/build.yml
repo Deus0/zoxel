@@ -1,4 +1,4 @@
-# builds linux x64, windows x64 and android arm in ubuntu 24.04, the same as bsh/docker.sh (packages from bsh/deps.sh)
+# builds linux x64 and arm, windows x64, android arm (phone and xr) in ubuntu 24.04, the same as bsh/docker.sh (packages from bsh/deps.sh)
 #   push / pull request: builds, zips are artifacts on the run's page
 #   once a day: builds master and replaces the nightly release, skipped if master didn't change
 name: build
@@ -36,16 +36,23 @@ jobs:
     name: ${{ matrix.target }}
     needs: check
     if: needs.check.outputs.changed == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     container: ubuntu:24.04
     strategy:
       fail-fast: false
       matrix:
         include:
           - target: linux_x64
+            runner: ubuntu-latest
             deps: ''
             build: bash bsh/build.sh --release --package --x64 --docker
+          # github's arm runner, built natively
+          - target: linux_arm
+            runner: ubuntu-24.04-arm
+            deps: ''
+            build: bash bsh/build.sh --release --package --arm --docker
           - target: windows_x64
+            runner: ubuntu-latest
             deps: --windows
             build: bash bsh/windows.sh --release
     steps:
@@ -99,7 +106,7 @@ jobs:
             and/sdk
             and/gradle
             ext
-          key: android-${{ hashFiles('bsh/android_prepare.sh', 'bsh/libs-download.sh') }}
+          key: android-${{ hashFiles('bsh/android_prepare.sh', 'bsh/libs-download.sh', 'bsh/xr.sh') }}
       - name: cache gradle
         uses: actions/cache@v4
         with:
@@ -128,6 +135,8 @@ jobs:
           printf '%s\n' "${KEYSTORE_PASSWORD}" > ~/.config/zox_keys/zoxel.password
       - name: build
         run: bash bsh/android.sh zoxel --release --signed
+      - name: build xr
+        run: bash bsh/android.sh zoxel --release --signed --xr
       - uses: actions/upload-artifact@v4
         with:
           name: zoxel_android_arm
