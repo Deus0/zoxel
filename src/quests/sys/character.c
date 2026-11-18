@@ -1,3 +1,4 @@
+extern void track_quest(ecs*, entity, entity);
 void character_player_quests_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
@@ -35,12 +36,14 @@ void character_player_quests_system(iter* it) {
         }
         //  TODO: Go through quest objectives, if Slay objective, add to characters SlayEvent component, storing entity and function
         // TODO: When character slay, itll check objective inside the hook function, did player kill slime? itll compare the character with objective data
-        {
+        // tracked from the start (the tracker spawns with play, from QuestTracked)
+        track_quest(
+            world,
+            e,
             spawn_quest_doing(
                 world,
                 e,
-                player_start_quest);
-        }
+                player_start_quest));
     }
     zox_sys_on_end();
 } zoxd_system(character_player_quests_system);

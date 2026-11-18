@@ -1,6 +1,7 @@
 # Done
 
 ## 2026-11-18
+-x the starting quest (find a town) tracked from the start, the tracker shows it (tst find_quest checks it)
 -x quest markers: ! yellow has a quest to give, ? gray you have it, ? yellow you can hand it in; a quest giver
   respawning from its seed (chunk unload/load) shows the player's state of its quest, not ! again (tst quest_marker)
 -x ui consolidation 1 and 2: the main, pause and saves menus' 3D branches gone (spawn_window_list builds them in 3D:

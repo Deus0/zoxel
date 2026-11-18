@@ -1,5 +1,5 @@
 // tst: find_quest, the starting quest: find a town, talk to someone there, 3 cookies (quests/fun/reward.c)
-//  - the player starts with it, the tracker says what to do (it said Find [???])
+//  - the player starts with it tracked (it wasn't), the tracker says what to do (it said Find [???])
 //  - talking outside a town (quests_found_town) doesn't finish it
 //  - inside one (InTown) it's done and handed in, and the character has 3 more cookies
 //  - run: bash bsh/tst.sh find_quest
@@ -58,11 +58,22 @@ byte zox_tst_find_quest_ready(ecs* world) {
         if (!zox_valid(zox_tst_find_quest)) {
             return zox_tst_find_frames > 300;
         }
-        char* text = (char*) get_quest_tracker_text(world, zox_tst_find_quest);
-        snprintf(zox_tst_find_tracker, sizeof(zox_tst_find_tracker), "%s", text);
-        if (text[0]) {
-            free(text);
+        zox_tst_waiting = "the find quest tracked";
+        const entity player = zox_get_link(world, character, PlayerLink);
+        const entity canvas = zox_valid(player) ? zox_get_link(world, player, CanvasLink) : 0;
+        const entity tracker = zox_valid(canvas) ? zox_get_child_by_id(world, canvas, zox_id(QuestTracker)) : 0;
+        if (!zox_valid(tracker) || !zox_get(tracker, TextData)->length) {
+            if (zox_tst_find_frames > 300) {
+                zox_tst_check(0, "the quest tracker shows nothing at the start");
+                return 1;
+            }
+            return 0;
         }
+        zox_tst_check(zox_get_link(world, character, QuestTracked) == zox_tst_find_quest, "the find quest isn't tracked at the start");
+        zox_tst_check(zox_get_link(world, zox_tst_find_quest, QuestTrackerLink) == tracker, "the find quest isn't linked to the tracker");
+        char* text = get_zext_text((TextData*) zox_get(tracker, TextData));
+        snprintf(zox_tst_find_tracker, sizeof(zox_tst_find_tracker), "%s", text);
+        free(text);
         zox_tst_find_cookies = zox_tst_find_count_cookies(world, character);
         // outside a town
         zox_remove(character, InTown);

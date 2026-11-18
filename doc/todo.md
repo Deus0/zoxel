@@ -593,7 +593,6 @@
 - Refactor OverlapEvent to Overlapped state with a system in items
 
 # Quests and Dialogue
-- the starting quest (find a town) tracked from the start
 - a coin model, given for the find town quest
 - a quest to craft a bed, the npc tells you how (the bed recipe, Items)
 - player feels no direction on start
