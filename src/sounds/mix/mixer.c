@@ -5,8 +5,11 @@
 //  - finished voices are freed on the main thread, when the next sound plays
 //  - when every voice is busy, the one closest to finishing makes way
 //  - a voice can wait before it starts (delay, in samples), so a jingle's notes are timed exactly
+//  - under water (sound_underwater) the mix is muffled: a low pass, two one pole stages, eased in and out
 #define mixer_voices_max 64
 #define mixer_limit_knee 0.8f
+#define mixer_muffle_cutoff 500.0f  // hz, under water
+#define mixer_muffle_ease 0.0005f   // per sample, about 45ms to ease the filter in or out
 
 #ifndef zox_sdl
     // no audio device, nothing renders on another thread
@@ -28,6 +31,8 @@ typedef struct {
 
 static MixerVoice mixer_voices[mixer_voices_max];
 float mixer_volume = 1;     // master gain of the mix
+float mixer_muffle = 1;     // the low pass's coefficient, 1 open (the sound as it is)
+static float mixer_muffle_state[4];    // the two stages' left and right
 
 // the listener, from the entity tagged SoundListener (the game camera)
 byte sound_listener_active = 0;
@@ -171,8 +176,16 @@ void zox_mixer_render(float* out, int frames) {
         }
     }
     zox_audio_unlock();
-    for (int j = 0; j < frames * 2; j++) {
-        out[j] = mixer_limit(out[j] * mixer_volume);
+    const float muffled = 1 - expf(-2 * M_PI * mixer_muffle_cutoff / sound_sample_rate);
+    const float target = sound_underwater ? muffled : 1;
+    float* state = mixer_muffle_state;
+    for (int j = 0; j < frames; j++) {
+        mixer_muffle += (target - mixer_muffle) * mixer_muffle_ease;
+        for (int c = 0; c < 2; c++) {
+            state[c] += (out[2 * j + c] - state[c]) * mixer_muffle;
+            state[2 + c] += (state[c] - state[2 + c]) * mixer_muffle;
+            out[2 * j + c] = mixer_limit(state[2 + c] * mixer_volume);
+        }
     }
 }
 
@@ -203,6 +216,8 @@ void dispose_mixer() {
         }
         mixer_voices[i] = (MixerVoice) { 0 };
     }
+    memset(mixer_muffle_state, 0, sizeof(mixer_muffle_state));
+    mixer_muffle = 1;
     sound_listener_active = 0;
     zox_audio_unlock();
 }

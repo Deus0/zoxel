@@ -73,7 +73,9 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
 - `camera_render3_system` sets `render_underwater` for the camera it draws: `get_fog_value` turns the fog blue and
   thick (src/rendering/dat/camera_renderer.c, fully blue about 9 blocks out); skybox.frag covers the sky with a thick
   fog too (so the sky doesn't show through the water).
-- The first main camera's sets `sound_underwater` (src/sounds/set/volume.c): sound effects at 60%, music at 30%.
+- The first main camera's sets `sound_underwater` (src/sounds/set/volume.c): sound effects at 60%, music at 30%,
+  and the mixer muffles the whole mix (src/sounds/mix/mixer.c): a 500hz low pass, two one pole stages, eased in and
+  out over about 45ms; tst sound_mixer checks a high tone is cut and a low one passes.
 
 ## Tests
 
@@ -99,5 +101,5 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
   any other light, a placed block starts a dark beam only under full sunlight), so dimmed beams need another marker
   first.
 - Blended faces within one chunk mesh aren't sorted; meshes in different tables aren't sorted against each other.
-- Sounds muffled, not filtered (a low pass would sound more like water); water placed by flowing doesn't dim light.
+- Water placed by flowing doesn't dim light.
 - Towns on sunken ground by the sea (todo.md Bugs).

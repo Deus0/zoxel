@@ -205,9 +205,31 @@ void zox_tst_sound_instruments_check(ecs* world) {
 //  - a 3D sound to the listener's right is louder on the right, turning around swaps them
 //  - further is quieter, past sound_max_distance it doesn't play
 //  - voices free when they finish, a full mixer makes way for a new sound, the limiter keeps it under 1
+//  - under water (sound_underwater) a high tone is muffled, a low one passes, out of it the high one is back
 //  - run: bash bsh/tst.sh sound_mixer
 #define zox_tst_mixer_length 1000
 static float zox_tst_mixer_out[2 * zox_tst_mixer_length];
+
+// plays a 0.5 tone of hz for half a second, returns the left peak of its last 1000 samples (the filter eased)
+static inline float zox_tst_mixer_tone_peak(float hz) {
+    const uint length = sound_sample_rate / 2;
+    float* samples = malloc(length * sizeof(float));
+    for (uint j = 0; j < length; j++) {
+        samples[j] = 0.5f * sinf(2 * M_PI * hz * j / sound_sample_rate);
+    }
+    zox_mixer_stop_all();
+    zox_mixer_play(samples, length, NULL);
+    free(samples);
+    float peak = 0;
+    for (uint done = 0; done + zox_tst_mixer_length < length; done += zox_tst_mixer_length) {
+        zox_mixer_render(zox_tst_mixer_out, zox_tst_mixer_length);
+        peak = 0;
+        for (int j = 0; j < zox_tst_mixer_length; j++) {
+            peak = fmaxf(peak, fabsf(zox_tst_mixer_out[2 * j]));
+        }
+    }
+    return peak;
+}
 
 // plays a constant 0.5 sound, renders one frame of it, returns its left and right
 static inline SoundGains zox_tst_mixer_hear(const float3* source) {
@@ -312,6 +334,21 @@ void zox_tst_sound_mixer_check(ecs* world) {
         peak = fmaxf(peak, fabsf(zox_tst_mixer_out[j]));
     }
     zox_tst_check(peak <= 1 && peak > 0.9f, "loud mixing peaks at [%.3f]", peak);
+    // muffled under water
+    const byte underwater_was = sound_underwater;
+    const float high_open = zox_tst_mixer_tone_peak(6000);
+    sound_underwater = 1;
+    const float high_under = zox_tst_mixer_tone_peak(6000);
+    const float low_under = zox_tst_mixer_tone_peak(100);
+    sound_underwater = 0;
+    const float high_out = zox_tst_mixer_tone_peak(6000);
+    sound_underwater = underwater_was;
+    zox_log("  - a 6000hz tone peaks [%.3f], under water [%.3f], out again [%.3f]; 100hz under water [%.3f]",
+        high_open, high_under, high_out, low_under);
+    zox_tst_check(high_open > 0.45f, "a 6000hz tone plays [%.3f], not 0.5", high_open);
+    zox_tst_check(high_under < 0.05f, "under water a 6000hz tone plays [%.3f], not muffled", high_under);
+    zox_tst_check(low_under > 0.4f, "under water a 100hz tone plays [%.3f], muffled too much", low_under);
+    zox_tst_check(high_out > 0.45f, "out of water a 6000hz tone plays [%.3f], still muffled", high_out);
     zox_mixer_stop_all();
     dispose_mixer();
     if (listener_was) {
