@@ -2,6 +2,9 @@
 
 
 // TODO: Add Region Position to Town Positions
+#define town_dry_attempts 16        // places tried for a town on dry land
+#define town_dry_seed_shift 7919
+
 // NOTE: Spawns X Towns per region
 void region_towns_system(iter* it) {
     zox_sys_on_begin();
@@ -57,11 +60,26 @@ void region_towns_system(iter* it) {
         region_zones_find(world, e, &zones);
         // the region's lakes too (heights/fun lakes), so no town stands in one (tst lakes)
         region_zones_add_lakes(world, terrain, block_position->value, block_size->value, &zones);
+        // and on dry land: a place with ground under the sea or a lake is tried again elsewhere (todo.md: towns stood
+        //  in the sea, their homes over the water)
+        TerrainHeights th;
+        const byte has_heights = terrain_heights_begin(world, terrain, &th);
+        const int sea = terrain_sea_height * render_distance_y;
         for (int j = 0; j < spawn_count; j++) {
             int2 town_position;
             byte2 town_size;
-            if (!region_zones_place_rect(&zones, seed->value + j * seed_shift, block_position->value, block_size->value,
-                region_padding, min_size, max_size, town_padding, max_attempts, &town_position, &town_size)) {
+            byte placed = 0;
+            for (int k = 0; k < town_dry_attempts && !placed; k++) {
+                if (!region_zones_place_rect(&zones, seed->value + j * seed_shift + k * town_dry_seed_shift, block_position->value,
+                    block_size->value, region_padding, min_size, max_size, town_padding, max_attempts, &town_position, &town_size)) {
+                    break;
+                }
+                placed = !has_heights || !terrain_rect_over_water(&th, town_position, town_size, sea);
+                if (!placed) {
+                    zones.rects--;  // not this one, its place freed
+                }
+            }
+            if (!placed) {
                 continue;
             }
             lint town_seed = position_seed2(seed->value, town_position);

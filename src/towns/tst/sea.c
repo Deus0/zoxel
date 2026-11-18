@@ -155,17 +155,22 @@ void zox_tst_sea_level_check(ecs* world) {
         zox_tst_sea_chunks++;
         const int bottom = at.y * length;
         const VoxelNode* voxels = zox_get(chunk, VoxelNode);
+        // a lake's water stands over the sea: a column's own water level (the sea's, or its lake's)
+        TerrainHeights th;
+        const byte has_th = terrain_heights_begin(world, terrain, &th);
         for (int x = 0; x < length; x++) for (int z = 0; z < length; z++) {
             const int height = heights->value[z * length + x];
             zox_tst_sea_lowest = height < zox_tst_sea_lowest ? height : zox_tst_sea_lowest;
+            const int2 column = { at.x * length + x, at.z * length + z };
+            const int water_level = has_th ? terrain_water_level_at(&th, column, sea) : sea;
             for (int y = 0; y < length; y++) {
                 const int global = bottom + y;
                 const byte voxel = getv_VoxelNode(voxels, depth, (byte3) { x, y, z });
                 if (global > sea) {
-                    zox_tst_sea_above += voxel == water_id;
+                    zox_tst_sea_above += voxel == water_id && global > water_level;
                 } else if (global > height) {
                     // under the sea, over the ground: water (or what grew or was built there, never air)
-                    // towns clear their ground's air (todo.md Bugs: towns in the sea), counted apart
+                    // towns keep off the sea (towns/sys/spawn.c), any air in one counted
                     const int2 b = { at.x * length + x, at.z * length + z };
                     if (!voxel && town_at(world, b)) {
                         zox_tst_sea_town_air++;
@@ -230,7 +235,8 @@ void zox_tst_sea_level_check(ecs* world) {
     zox_tst_check(zox_tst_sea_found, "no ground under the sea within 600 blocks: the sea is too low for this land");
     zox_tst_check(zox_tst_sea_chunks > 10, "only [%i] generated chunks were found to check", zox_tst_sea_chunks);
     zox_tst_check(zox_tst_sea_columns > 0, "no water at the sea's level by ground under it");
-    zox_log("[tst] [metric] sea_level [%i] air voxels under the sea in towns (towns in the sea, a known bug)", zox_tst_sea_town_air);
+    zox_log("[tst] [metric] sea_level [%i] air voxels under the sea in towns", zox_tst_sea_town_air);
+    zox_tst_check(!zox_tst_sea_town_air, "[%i] air voxels under the sea in towns: a town stands in the sea", zox_tst_sea_town_air);
     zox_tst_check(!zox_tst_sea_wrong, "[%i] voxels under the sea and over the ground are air, out of towns", zox_tst_sea_wrong);
     zox_tst_check(!zox_tst_sea_above, "[%i] water voxels are over the sea", zox_tst_sea_above);
 }
@@ -371,7 +377,7 @@ void zox_tst_lakes_check(ecs* world) {
         if (!terrain_lake_dip(lake, column)) {
             continue;
         }
-        // towns build over lakes (a known bug, todo.md), their columns counted apart
+        // towns keep out of lakes (towns/sys/spawn.c), any in one counted
         if (town_at(world, column)) {
             in_towns++;
             continue;
@@ -408,6 +414,7 @@ void zox_tst_lakes_check(ecs* world) {
     zox_log("[tst] [metric] lakes: [%i] columns under its water, [%i] voxels in them not water, [%i] water over its level, [%i] surface sides over air, [%i] columns not loaded, [%i] in towns",
         columns, wrong, above, hanging, unchecked, in_towns);
     zox_tst_check(columns > 10, "only [%i] columns are under the lake", columns);
+    zox_tst_check(!in_towns, "[%i] of the lake's columns are in a town", in_towns);
     zox_tst_check(!wrong, "[%i] voxels under the lake's level in its bowl aren't water", wrong);
     zox_tst_check(!above, "[%i] water voxels are over the lake's level", above);
     zox_tst_check(!hanging, "[%i] sides of the lake's surface are open to air: it spills", hanging);

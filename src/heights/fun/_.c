@@ -118,15 +118,28 @@ static inline int terrain_water_level_at(const TerrainHeights* th, int2 global_p
     return level > sea ? level : sea;
 }
 
+// is any ground in a rect (centre, size) under water, the sea's or a lake's: sampled every 4 blocks and its edges
+static inline byte terrain_rect_over_water(const TerrainHeights* th, int2 centre, byte2 size, int sea) {
+    const int2 low = { centre.x - size.x / 2, centre.y - size.y / 2 };
+    for (int x = 0; x <= size.x; x += 4) for (int y = 0; y <= size.y; y += 4) {
+        const int2 column = { low.x + (x < size.x ? x : size.x - 1), low.y + (y < size.y ? y : size.y - 1) };
+        if (terrain_height_at(th, column) < terrain_water_level_at(th, column, sea)) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 // a region's lakes as placement zones (circles, regions/fun/zones.c), so mountains and towns keep out of them
 static inline void region_zones_add_lakes(ecs* world, entity terrain, int2 region_position, int2 region_size, RegionZones* zones) {
     TerrainHeights th;
     if (!terrain_heights_begin(world, terrain, &th)) {
         return;
     }
+    // a cell more round it: a lake in a cell beside the region reaches into it
     const int4 cells = {
-        lake_floor_div(region_position.x, zox_lake_cell), lake_floor_div(region_position.x + region_size.x, zox_lake_cell),
-        lake_floor_div(region_position.y, zox_lake_cell), lake_floor_div(region_position.y + region_size.y, zox_lake_cell) };
+        lake_floor_div(region_position.x, zox_lake_cell) - 1, lake_floor_div(region_position.x + region_size.x, zox_lake_cell) + 1,
+        lake_floor_div(region_position.y, zox_lake_cell) - 1, lake_floor_div(region_position.y + region_size.y, zox_lake_cell) + 1 };
     for (int cx = cells.x; cx <= cells.y; cx++) for (int cy = cells.z; cy <= cells.w; cy++) {
         TerrainLake lake;
         if (zones->circles < region_zones_max && terrain_lake_in_cell(&th, (int2) { cx * zox_lake_cell, cy * zox_lake_cell }, &lake)) {

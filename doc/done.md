@@ -11,6 +11,12 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x Towns stood in the sea or a lake (homes over the water, air cleared under the sea): a town's place is tried again
+  if any of its ground (every 4 blocks) is under the sea or a lake (terrain_rect_over_water), lakes from the cells
+  round a region kept out too; tst sea_level checks no town air under the sea, lakes no lake columns in towns
+  (seeds 1, 2, 5, 666); sea_level's water over the sea leaves lakes out (seed 5 counted a lake's)
+-x A square patch of water lighter than the rest (seed 666, tst/sea.ppm): gone, the sunbeams lit chunks still
+  generating (fixed 2026-11-18)
 -x Lighting flickered destroying a block (water block refactor): fixed, not seen since (tst dig_light)
 -x Under water the blue tint lighter: it multiplied the dark down too much
 -x Light flooding into water dims more: 24 a block over the air's 32 (light_flood_decay), tst water_light

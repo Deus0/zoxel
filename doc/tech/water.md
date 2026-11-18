@@ -41,7 +41,9 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
   one under the sea is just a dip the sea fills.
 - Landfill fills water to the higher of the sea and the column's lake (each lake's level worked out once a chunk).
 - Nothing grows in a bowl (vegetation skips its columns); towns and mountains keep out of lakes
-  (`region_zones_add_lakes` adds them to a region's placement zones before those are placed).
+  (`region_zones_add_lakes` adds them, from the region's cells and those round it, to its placement zones), and a
+  town whose ground is anywhere under the sea or a lake is placed again elsewhere (`terrain_rect_over_water`,
+  towns/sys/spawn.c).
 
 ## Light
 
@@ -139,4 +141,3 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
 - Rivers; flowing across a chunk not loaded; currents (flowing water pushing what's in it); a falling column shows
   its side faces' tops full, not sloped.
 - Blended faces within one chunk mesh aren't sorted; meshes in different tables aren't sorted against each other.
-- Towns on sunken ground by the sea (todo.md Bugs).
