@@ -1,6 +1,13 @@
 # Done
 
 ## 2026-11-20
+-x Opengl es (android, tests) logged GL_INVALID_ENUM every frame: GL_POLYGON_OFFSET_LINE and GL_PROGRAM_POINT_SIZE
+  aren't in es, skipped there (zox_gpu_is_es)
+-x At boot a render texture logged "Invalid [TextureGPULink]": it spawns PreInitialize, its texture is made the frame
+  after, render_texture_initialize_system skips PreInitialize too
+-x The instance ubo's block is bound explicitly (glUniformBlockBinding, binding 0, both vox instance materials), and
+  again after a restore relinks them; it only worked as InstanceMatrices happened to be block 0
+-x Removed unused ComputeShaderLink and MaterialInstancedGPULink
 -x Deleting a disabled entity (a hidden lod mesh) leaked its gpu buffers and textures: the gpu links' OnRemove
   observers skipped disabled entities, zoxd_dest uses zox_observe_disabled now (EcsQueryMatchDisabled), tst gpu_links
 -x Gpu restore and dispose are functions, not systems: each module adds a gpu_dispose / gpu_restore hook that walks

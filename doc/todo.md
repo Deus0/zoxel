@@ -7,11 +7,6 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
-- opengl es (tests, android) logs GL_INVALID_ENUM every frame: glEnable(GL_POLYGON_OFFSET_LINE) and
-  glEnable(GL_PROGRAM_POINT_SIZE) aren't in es (graphics/opengl/fun/settings.c, points.c), seen by tst
-  gpu_restore_game (2026-11-20)
-- at boot render_texture_initialize_system logs "Invalid [TextureGPULink]" once on a render texture (tst
-  gpu_restore_game's log, before any restore, 2026-11-20)
 - tst sky_clouds fails: "no cloud in the sky looking up" (0.07% of the band), on 31a2c2740 too (2026-11-20)
 - tst lint_systems fails: chunk3_textured_render_system and chunk3_transparent_render_system
   (rendering3/sys/render_chunks.c) have no zox_sys_on_begin / zox_sys_on_end (2026-11-20)
@@ -769,6 +764,11 @@
 - Add a compass symbol to show north etc
 
 # Rendering, Lights and Cameras
+- Global shaders and materials to entities, like the rest (Shader, Material, ShaderGPULink, MaterialGPULink): the
+  lines (line2D, line3D, line3D_instanced), particle3D and the 2D square instance material (shader2D_basic,
+  square2DMaterial) with their meshes and buffers; then the gpu dispose / restore walks cover them and their hooks
+  go (geometry/lines, particles3, rendering2). Also their uniform locations: cached at spawn, not looked up again
+  after a restore relinks them (the same for the entity materials, MaterialTextured3D and the like)
 - grass meshes: a tall grass block is 18k triangles at full detail (tst vox_instances_stress --gpu --release logs
   it), each stalk voxel its own shade so no faces merge; one colour a stalk would let its sides merge into a few
   quads (asked the user first: it changes the grass's look); greedy meshing plan: doc/tech/chunks3.md
