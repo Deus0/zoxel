@@ -556,6 +556,23 @@ Refer to things by their entity, not by an id or kind number looked up later.
 - Tags mark what an entity is (`HitSoundVoiced`, `BlockStone`), not a byte compared against constants.
 - e.g. a block links its hit sound entity (`HitSoundLink`, [sounds.md](sounds.md)), no lookup by material id.
 
+## Flecs
+
+Flecs is used through the `zox_` macros in `src/_/flecs/mcr/`, raw flecs stays inside `src/_/flecs/`.
+
+- Types: `ecs`, `entity`, `iter`, `query` (`src/_/flecs/_.c`), not `ecs_world_t`, `ecs_entity_t`, `ecs_iter_t`,
+  `ecs_query_t`. A parameter can keep the name the macros expect: `query* query` for `zox_sys_query_begin()`.
+- Calls: `zox_add`, `zox_setv`, `zox_get_link`.., not `ecs_*` in module code. Missing one? Add a macro to `mcr/`.
+- A flecs feature the code doesn't use yet (custom events, `ecs_enqueue`, new traits) needs an ok first.
+- Observers over systems for reacting to a change. Register with `zox_on_add` / `zox_observer`, write the callback
+  like a system: `zox_sys_world()`, `zox_sys_e()` in the loop (i.e. `src/ai/eve/settings.c`).
+- One-off events: a non fragmenting tag (`zoxd_nf_tag`) added when it happens, an observer acts and removes it. It
+  runs on the main thread at the merge, so it can spawn, i.e. `ActionSwapped` (`src/actions/ui`) plays the swap
+  sound for a tap handled on a worker thread. Non fragmenting tags stay out of system queries.
+- Don't move systems around to make a side effect work: no `zox_system` to `zox_system_1` (main thread), new sync
+  points or phase changes for it. Use an observer, or ask; `tst pipeline_syncs` counts the merges.
+- flecs.c itself is patched by `bsh/flecs_fix.sh`, each patch in [flecs_patches.md](flecs_patches.md).
+
 ## General Principle
 
 Zox code should be organized around responsibility.
