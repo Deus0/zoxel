@@ -7,8 +7,14 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
-- tst aesthetic_town isn't repeatable: the same seed (375758414) framed a different town or land on another run
-	(2026-11-19)
+- opengl es (tests, android) logs GL_INVALID_ENUM every frame: glEnable(GL_POLYGON_OFFSET_LINE) and
+  glEnable(GL_PROGRAM_POINT_SIZE) aren't in es (graphics/opengl/fun/settings.c, points.c), seen by tst
+  gpu_restore_game (2026-11-20)
+- at boot render_texture_initialize_system logs "Invalid [TextureGPULink]" once on a render texture (tst
+  gpu_restore_game's log, before any restore, 2026-11-20)
+- deleting a disabled entity (a hidden lod mesh) leaked its gpu buffers and textures: the gpu links' OnRemove
+  observers skip disabled entities; fix waits on an ok for EcsQueryMatchDisabled (zox_observe_disabled), tst
+  gpu_links (2026-11-20)
 - the sky has horizontal streaks in screenshots at 1080p (tst aesthetic_town, doc/screenshot/wall.jpg), upper middle
 	of the sky (2026-11-18)
 - --vertical over 4 smashed the stack (terrain_stream_queue_system, Chunk3Stack is render_distance_y_max * 2 + 1),
@@ -101,6 +107,8 @@
 - Fix No post processing mode / Rawdog Camera Mode
 - Cube mesh doesnt restore on alt tab - gpu restore issue?
     - tst gpu_restore (menu, dispose and restore with the gl context kept) restores it fine: android's lost context?
+    - 2026-11-20: a restore missed the lines, particles and 2D square materials (globals), bone index buffers, the
+      instance ubo and disabled (lod) meshes, all fixed; play test on android again
 - FIX: Set CubeLines Faces based on VoxelSides thats generated, then make sure it Renders Over Top of the overlays - disabled depth
 - Fix chunk bounds debug visuals - the lines debugger
 - scrollbar broken on hierarchy in editor
