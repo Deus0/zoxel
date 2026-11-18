@@ -995,9 +995,9 @@
     - zox_has, safety_checks, catch them during testing
 
 # Devops
-- Github actions: builds there, to grab and test on a phone or whatever device
-	- windows and linux x64 first (same ubuntu 24.04 + packages as bsh/docker.sh), nightly release
-	- later: linux arm, web, android, xr
+- Github actions: more targets in .github/workflows/build.yml (see doc/devops.md)
+	- linux arm, web, android, xr
+	- a versioned release when a v* tag is pushed
 - Codeberg: run the same builds there (forgejo actions), it's a push remote too
 
 # Platforms

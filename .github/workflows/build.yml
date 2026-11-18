@@ -1,0 +1,100 @@
+# builds linux x64 and windows x64 in ubuntu 24.04, the same as bsh/docker.sh (packages from bsh/deps.sh)
+#   push / pull request: builds, zips are artifacts on the run's page
+#   once a day: builds master and replaces the nightly release, skipped if master didn't change
+name: build
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.check.outputs.changed }}
+    steps:
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          changed=true
+          if [[ "${{ github.event_name }}" == "schedule" ]]; then
+            nightly="$(gh api "repos/${{ github.repository }}/git/ref/tags/nightly" --jq .object.sha 2>/dev/null || true)"
+            [[ "${nightly}" == "${{ github.sha }}" ]] && changed=false
+          fi
+          echo "changed=${changed}" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: check
+    if: needs.check.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    container: ubuntu:24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: linux_x64
+            deps: ''
+            build: bash bsh/build.sh --release --package --x64 --docker
+          - target: windows_x64
+            deps: --windows
+            build: bash bsh/windows.sh --release
+    steps:
+      - uses: actions/checkout@v4
+      - name: packages
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          apt-get update
+          apt-get install -y $(bash bsh/deps.sh ${{ matrix.deps }})
+      - name: cache libs
+        uses: actions/cache@v4
+        with:
+          path: |
+            ext
+            lib
+          key: libs-${{ matrix.target }}-${{ hashFiles('bsh/libs-download.sh', 'bsh/libs-compile.sh', 'bsh/deps.sh') }}
+      - name: cache flecs
+        uses: actions/cache@v4
+        with:
+          path: inc/flecs
+          key: flecs-${{ hashFiles('bsh/flecs.sh', 'bsh/flecs_fix.sh', 'bsh/flecs_patches/*') }}
+      - name: flecs
+        run: bash bsh/flecs.sh
+      - name: build
+        run: ${{ matrix.build }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zoxel_${{ matrix.target }}
+          path: zip/*.zip
+          if-no-files-found: error
+          retention-days: 14
+
+  nightly:
+    needs: build
+    if: github.ref == 'refs/heads/master' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: zips
+          merge-multiple: true
+      - name: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release delete nightly --cleanup-tag --yes || true
+          gh release create nightly zips/*.zip --prerelease --target "${{ github.sha }}" \
+            --title "nightly $(date -u +%Y-%m-%d)" \
+            --notes "daily build of master at ${{ github.sha }}"

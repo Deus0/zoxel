@@ -61,51 +61,8 @@ fi
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
-# Build tools
-build_packages=(
-    build-essential
-    cmake
-    zip
-    pkg-config
-)
-
-# OpenGL
-opengl_packages=(
-    libgl1-mesa-dev
-)
-
-# X11 desktop windowing
-# X11 desktop windowing
-x11_packages=(
-    libx11-dev
-    libxext-dev
-    libxrandr-dev
-    libxinerama-dev
-    libxcursor-dev
-    libxi-dev
-    libxfixes-dev
-    libxss-dev
-    libxtst-dev
-)
-
-# Wayland desktop windowing
-wayland_packages=(
-    libwayland-dev
-    libxkbcommon-dev
-)
-
-# ALSA audio
-audio_packages=(
-    libasound2-dev
-)
-
-packages=(
-    "${build_packages[@]}"
-    "${opengl_packages[@]}"
-    "${x11_packages[@]}"
-    "${wayland_packages[@]}"
-    "${audio_packages[@]}"
-)
+# Build packages, shared with .github/workflows/build.yml
+mapfile -t packages < <(bash "${PROJECT_DIR}/bsh/deps.sh" "${ARGS[@]}")
 
 # ARM cross compiler
 if [[ " ${ARGS[*]} " == *" --arm "* ]] &&
