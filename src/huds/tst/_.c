@@ -21,6 +21,7 @@
 #include "ui3_overlap.c"
 #include "navigator.c"
 #include "split_screen.c"
+#include "realm_name.c"
 
 void zox_tsts_huds(ecs* world) {
     zox_tsts_huds_load();
@@ -28,6 +29,8 @@ void zox_tsts_huds(ecs* world) {
     zox_tst_add("end_game_cleanup", zox_tst_end_game_ready, zox_tst_end_game_check, 180);
     zox_tst_set_setup("end_game_cleanup", NULL, 1);
     zox_tst_set_setup("menu_flow", NULL, 1);
+    zox_tst_add("realm_name_input", zox_tst_realm_name_input_ready, zox_tst_realm_name_input_check, 60);
+    zox_tst_set_setup("realm_name_input", NULL, 1);
     zox_tst_add("split_screen", zox_tst_split_screen_ready, zox_tst_split_screen_check, 180);
     zox_tst_set_setup("split_screen", zox_tst_level_setup, 1);
     zox_tst_add("mouse_click", zox_tst_mouse_click_ready, zox_tst_mouse_click_check, 60);

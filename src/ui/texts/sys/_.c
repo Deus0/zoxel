@@ -2,6 +2,7 @@
 #include "spawn.c"
 #include "text_panel.c"
 #include "text_panel_child.c"
+#include "fit.c"
 #include "positions.c"
 #include "update.c"
 #include "animate.c"
@@ -39,6 +40,17 @@ void zox_systems_texts(ecs *world) {
         [none] texts.Text,
         [none] !texts.TextWrap,
         [none] core.Update,
+    );
+    // main thread: it deletes glyphs a new font size respawns
+    zox_system_1(
+        text_fit_system,
+        zoxp_spawn,
+        [in] texts.TextData,
+        [in] texts.TextPadding,
+        [in] texts.TextFitFontSize,
+        [in] texts.TextFitWidth,
+        [out] texts.TextFontSize,
+        [none] texts.TextFit,
     );
     zox_system_1(
         glyph_spawn_system,

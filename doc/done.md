@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-18
+-x the new realm menu's name field resizes to what's typed (it stayed its spawn size, a long name ran off the
+  screen): a TextFit tag (its TextFitFontSize, TextFitWidth) sizes its field to it and shrinks its font past the
+  list's width, on every list input field (tst realm_name_input); names stay at most input_field_max_length (24)
 -x quest tracker showed (null): an unnamed quest or slay target printed its missing entity name, now its ZoxName,
   its realm quest's, its entity name or ???; its text is always allocated (an invalid quest's literal "" was freed
   as a tracker spawned) (tst quest_tracker_text)
