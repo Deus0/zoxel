@@ -3,7 +3,7 @@
 #define terrain_streamers_max 16
 
 // the chunk columns of a terrain's streamers that load land (StreamerLevel 1+)
-static inline byte terrain_stream_points(ecs* world, ecs_query_t* query, entity terrain, int2* points) {
+static inline byte terrain_stream_points(ecs* world, query* query, entity terrain, int2* points) {
     byte count = 0;
     zox_sys_query_begin();
     while (zox_sys_query_loop()) {

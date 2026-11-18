@@ -41,7 +41,7 @@ void stat_icon_label_event(iter* it) {
 }
 
 // Labels that display data, used to find a stats labels
-ecs_query_t* stat_labels_query = NULL;
+query* stat_labels_query = NULL;
 
 // Stat became DataDirty, update its linked labels
 void stat_dirty_labels_event(iter* it) {
