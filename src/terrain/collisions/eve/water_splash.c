@@ -1,4 +1,5 @@
 // a splash going into water (falling fast) and a small one coming out: particles and a sound at the water's surface
+// and InWater while in it (it swims: characters/jump/sys/swim.c)
 // on InsideBlockDirty (inside.c), InsideBlockLast keeps the block it was in before
 // counted for one character, for tst water_splash
 entity zox_water_splash_watch = 0;
@@ -43,6 +44,11 @@ void water_splash_event(iter* it) {
         const byte leaving = was == water_index && inside->value != water_index;
         if (!entering && !leaving) {
             continue;
+        }
+        if (entering) {
+            zox_add(e, InWater);
+        } else {
+            zox_remove(e, InWater);
         }
         // the top of the block it went in (or came out of, the one under it)
         const float scale = zox_getv(terrain, BlockScale);

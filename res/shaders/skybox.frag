@@ -51,4 +51,7 @@ void main() {
     // Small animated variation.
     float noise = rand(time * mesh_pos.xy);
     frag_color += vec3((noise * 0.2) - 0.1);
+
+    // a thick fog (under water, or the view fading to dark) covers the sky too; the open air's thin fog leaves it
+    frag_color = mix(frag_color, fog_data.xyz, clamp((fog_data.w - 0.01) * 25.0, 0.0, 1.0));
 }

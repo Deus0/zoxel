@@ -31,6 +31,7 @@ typedef struct {
 } WaterFlow;
 zoxc_arrayd(WaterFlows, WaterFlow)
 zoxc_byte(InsideBlockLast);
+zox_tag(InWater);           // its lower body is in water (InsideBlock, collisions/eve/water_splash.c): it swims
 #include "spawn2.c"
 
 entity get_linked_terrain(ecs* world, entity e) {
@@ -64,4 +65,5 @@ void zox_components_terrain(ecs *world) {
     zoxd_tag(BlockWater);
     zoxd_arrayd(WaterFlows);
     zoxd_byte(InsideBlockLast);
+    zoxd_tag(InWater);
 }

@@ -1,3 +1,4 @@
+#include "swim.c"
 #include "jump_state.c"
 #include "force.c"
 #include "jump_begin.c"
@@ -32,6 +33,17 @@ void zox_systems_jump(ecs* world) {
         [out] jumps.LandState,
         [out] jumps.Jump,
      );
+    // in water, after the forces: it floats, drags, strokes up (its forces land next frame, as the jump's)
+    zox_system(
+        swim_system,
+        zoxp_physics,
+        [in] jumps.JumpState,
+        [in] physics3.Velocity3D,
+        [in] physics3.Gravity3D,
+        [out] physics3.Acceleration3D,
+        [none] terrains.InWater,
+        [none] !physics.DisableMovement
+    );
     zox_system(
         jump_force_system,
         zoxp_physics,

@@ -30,6 +30,7 @@ void camera_render3_system(iter* it) {
         render_camera_matrix = matrix->value;
         render_camera_position = position->value;
         renderer_fog_color = fog->value;
+        render_underwater = zox_has(e, Underwater);
         // set render objects
         uint fbo = zox_has(e, FrameBufferLink) ?
             zox_getv(e, FrameBufferLink) :
@@ -84,5 +85,6 @@ void camera_render3_system(iter* it) {
             zox_gpu_reset_fbo();
         }
     }
+    render_underwater = 0;
     zox_sys_on_end();
 } zoxd_system(camera_render3_system);

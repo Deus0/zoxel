@@ -21,10 +21,17 @@ static inline float get_fog_density() {
 float render_darkness = 0;
 #define render_darkness_density 60.0f   // the fog's density fully dark: black a few cm out
 
+// the camera drawing now is under water (cameras.Underwater, set in camera_render3_system): a thick blue fog
+byte render_underwater = 0;
+const color_rgb render_underwater_color = { 28, 72, 120 };
+#define render_underwater_density 0.15f   // fully blue about 5m out, 9 blocks (fog is 1.1 - 2^(-density * z^2))
+
 static inline float4 get_fog_value() {
     const float dark = render_darkness;
-    const float3 fog = float3_scale(color_rgb_to_float3(renderer_fog_color), 1 - dark);
-    return float4_from_float3(fog, get_fog_density() + render_darkness_density * dark * dark * dark * dark);
+    const color_rgb color = render_underwater ? render_underwater_color : renderer_fog_color;
+    const float3 fog = float3_scale(color_rgb_to_float3(color), 1 - dark);
+    const float density = render_underwater ? render_underwater_density : get_fog_density();
+    return float4_from_float3(fog, density + render_darkness_density * dark * dark * dark * dark);
 }
 
 void set_camera_fog_color(ecs* world, color_rgb fog) {

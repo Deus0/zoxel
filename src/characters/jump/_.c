@@ -2,6 +2,7 @@
 #define jump_state_trigger  1
 #define jump_state_active   2
 #define jump_state_end   3
+#define jump_state_swim  4  // a swim stroke up, a jump triggered in water (sys/swim.c)
 
 #define land_state_none 0
 #define land_state_begin 1

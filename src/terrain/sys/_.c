@@ -11,6 +11,7 @@
 // #include "stream_death.c"
 #include "stream.c"
 #include "water_flow.c"
+#include "water_view.c"
 
 // Note: Updates on VoxelNode has to be done in PostLoad, away from use of Voxels, due to the cleaning step
 void zox_systems_terrain(ecs *world) {
@@ -31,6 +32,14 @@ void zox_systems_terrain(ecs *world) {
         zoxp_render,
         [out] terrains.WaterFlows,
         [none] terrains.Terrain,
+    );
+    // main thread: it sets sound_underwater, the camera's tag changes its table
+    zox_system_1(
+        camera_underwater_system,
+        zoxp_update,
+        [in] transforms3.Position3D,
+        [none] cameras.ViewProjectionMatrix,
+        [none] !cameras.CameraUI,
     );
     zox_system(
         chunk_link_system,

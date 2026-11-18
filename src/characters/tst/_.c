@@ -6,6 +6,7 @@
 #include "feet_planted.c"
 #include "head_camera.c"
 #include "footsteps.c"
+#include "swim.c"
 
 void zox_tsts_characters(ecs* world) {
     zox_tsts_arms_in_step(world);
@@ -15,4 +16,5 @@ void zox_tsts_characters(ecs* world) {
     zox_tsts_feet_planted(world);
     zox_tsts_head_camera(world);
     zox_tsts_footsteps(world);
+    zox_tsts_swim(world);
 }

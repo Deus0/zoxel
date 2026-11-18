@@ -38,6 +38,9 @@ static inline void player3d_move_direct(ecs* world, entity character, float2 sti
         local.x *= run_speed;
         local.z *= run_speed;
     }
+    if (zox_has(character, InWater)) {
+        local = float3_scale(local, swim_speed);
+    }
     const float3 world_velocity = float3_scale(float4_rotate_float3(zox_getv(character, Rotation3D), local),
         physics3_drag_compensation(world, character));
     Velocity3D* velocity = zox_getm(character, Velocity3D);
@@ -191,6 +194,9 @@ void player3d_move_system(iter* it) {
                 max_speed.x *= fly_run_speed;
                 max_speed.y *= fly_run_speed;
             }
+        }
+        if (zox_has(character, InWater)) {
+            max_speed = float2_multiply1(max_speed, swim_speed);
         }
         float3 movement_real_z = float4_rotate_float3(movement_rotation, (float3) { 0, 0, movement.z });
         movement_real_z.y = 0;

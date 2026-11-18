@@ -1,5 +1,25 @@
 // TODO: For each chunk render, we use linked tilemap GPU data
 // draws chunk meshes with their tilemap; see through ones (TransparentMesh: water) blended, both faces, after the rest
+
+// the draw order: as they come, or far to near from the camera (see through ones: water seen through water blends
+//  over it, not hidden by the nearer one's depth), an insertion sort of a table's meshes
+static inline void render_chunk_order(const TransformMatrix* matrices, int count, byte far_first, int* order) {
+    float distances[count];
+    for (int n = 0; n < count; n++) {
+        order[n] = n;
+        distances[n] = far_first ? float3_distance_squared(matrix_to_position(matrices[n].value), render_camera_position) : 0;
+    }
+    for (int n = 1; far_first && n < count; n++) {
+        const int index = order[n];
+        int m = n - 1;
+        while (m >= 0 && distances[order[m]] < distances[index]) {
+            order[m + 1] = order[m];
+            m--;
+        }
+        order[m + 1] = index;
+    }
+}
+
 static inline void render_chunk_meshes(iter* it, byte transparent) {
     zox_sys_on_begin();
     byte dbg_log = 0;
@@ -16,7 +36,10 @@ static inline void render_chunk_meshes(iter* it, byte transparent) {
     zox_sys_in(UvsGPULink);
     zox_sys_in(ColorsGPULink);
     zox_sys_in(MeshRenderCount);
-    for (int i = 0; i < it->count; i++) {
+    int order[it->count];
+    render_chunk_order(TransformMatrix_, it->count, transparent, order);
+    for (int n = 0; n < it->count; n++) {
+        const int i = order[n];
         zox_sys_e();
         zox_sys_i(RenderDisabled, disabled);
         zox_sys_i(TransformMatrix, matrix);

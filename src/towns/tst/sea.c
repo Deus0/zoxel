@@ -56,9 +56,13 @@ byte zox_tst_sea_level_ready(ecs* world) {
         }
         // 8 blocks up and 5 back, looking down at it; drawn alone on the screen (no hud, no game view)
         // zox_tst_sea_near: 2 blocks up and 1 back, to see a block's texture close
-        const byte near = getenv("zox_tst_sea_near") != NULL;
-        const float3 eye = float3_add(zox_tst_sea_spot, near ? (float3) { 0, 2 * scale, 1 * scale } : (float3) { 0, 8 * scale, 5 * scale });
-        zox_tst_sea_camera = spawn_viewport_camera(world, main_app, eye, camera_look_at(eye, zox_tst_sea_spot), 70,
+        // zox_tst_sea_under: 2 blocks under the surface, looking along it (the underwater fog, terrain/sys/water_view.c)
+        const byte close = getenv("zox_tst_sea_near") != NULL;
+        const byte under = getenv("zox_tst_sea_under") != NULL;
+        const float3 eye = float3_add(zox_tst_sea_spot, under ? (float3) { 0, -2 * scale, 0 } :
+            close ? (float3) { 0, 2 * scale, 1 * scale } : (float3) { 0, 8 * scale, 5 * scale });
+        const float3 look = under ? float3_add(zox_tst_sea_spot, (float3) { 0, -1 * scale, -6 * scale }) : zox_tst_sea_spot;
+        zox_tst_sea_camera = spawn_viewport_camera(world, main_app, eye, camera_look_at(eye, look), 70,
             viewport_grid_cell(0, 1, 1));
         prefab_add_streamer(world, zox_tst_sea_camera);
         zox_set_link(world, zox_tst_sea_camera, StreamLink, terrain);
@@ -218,7 +222,8 @@ void zox_tst_sea_level_check(ecs* world) {
             pixels ? blue * 100 / pixels : 0, blue ? changed * 100 / blue : 0);
         zox_tst_check(a && b, "the sea's screenshots weren't saved");
         zox_tst_check(blue * 10 > pixels * 3, "under [30%%] of the view looking down at the sea is water ([%i] of [%i] pixels)", blue, pixels);
-        zox_tst_check(changed * 10 > blue, "the water on screen barely moved in half a second ([%i] of [%i] water pixels)", changed, blue);
+        // under it (zox_tst_sea_under) the fog hides the surface's ripples
+        zox_tst_check(getenv("zox_tst_sea_under") || changed * 10 > blue, "the water on screen barely moved in half a second ([%i] of [%i] water pixels)", changed, blue);
         free(a);
         free(b);
     }

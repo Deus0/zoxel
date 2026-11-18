@@ -71,9 +71,11 @@ void jump_system(iter* it) {
         zox_sys_o(LandState, landed);
         zox_sys_o(Jump, jump);
         // zox_log("Jumper [%s]: Grounded [%i] JumpState [%i] CanJump [%i] LandState [%i]", zox_getn(e), grounded->value, jump_state->value, can_jump->value, landed->value);
+        // in water (InWater) jump swims up (swim.c), or at the surface by a shore jumps out onto it
+        const byte swimming = zox_has(e, InWater);
         // Jump trigger
         if (jump_state->value == jump_state_trigger) {
-            if (grounded->value) {
+            if (grounded->value || (swimming && swim_at_shore(world, e))) {
                 jump_state->value = jump_state_active;
                 can_jump->value = 0;
                 landed->value = land_state_begin;
@@ -82,17 +84,16 @@ void jump_system(iter* it) {
                     zox_log("Jump Begins for [%s]", zox_getn(e));
                 }
             } else {
-                jump_state->value = jump_state_none;
+                jump_state->value = swimming ? jump_state_swim : jump_state_none;
             }
         }
-        // Active only lasts for one frame
-        else if (jump_state->value == jump_state_active) {
+        // Active (and a swim stroke) only lasts for one frame
+        else if (jump_state->value == jump_state_active || jump_state->value == jump_state_swim) {
             jump_state->value = jump_state_none;
         }
-        // Can jump whenever grounded and not currently jumping
-        can_jump->value = grounded->value &&
-            jump_state->value == jump_state_none &&
-            landed->value == land_state_none;
+        // Can jump whenever grounded and not currently jumping, swim whenever in water
+        can_jump->value = jump_state->value == jump_state_none &&
+            ((grounded->value && landed->value == land_state_none) || swimming);
         // ### LANDINGS ###
         // Landed End
         if (landed->value == land_state_end) {

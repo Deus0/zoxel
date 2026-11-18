@@ -38,8 +38,7 @@ void raycast_crosshair_system(iter* it) {
         zox_sys_i(RaycastVoxelData, data);
         entity player = zox_get_link(world, e, PlayerLink);
         if (!zox_valid(player)) {
-            zox_loge("Player has no canvas");
-            continue;
+            continue;   // a player's body without its player (tests' characters: characters/tst/character.c)
         }
         entity canvas = zox_get_link(world, player, CanvasLink);
         if (!zox_valid(canvas)) {
