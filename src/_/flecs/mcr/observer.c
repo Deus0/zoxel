@@ -36,12 +36,17 @@ void zox_observer_internal(
     ecs_iter_action_t callback,
     ecs_entity_t event,
     const char* expr,
+    ecs_flags32_t query_flags,
     const char* file,
-    int line,
-    ...);
+    int line);
 
 #define zox_observe_expr(function, tag, _expr) {\
-    zox_observer_internal(world, #function, function, tag, _expr, __FILE__, __LINE__);\
+    zox_observer_internal(world, #function, function, tag, _expr, 0, __FILE__, __LINE__);\
+}
+
+// one that sees disabled entities too (a system and a plain observer skip them), i.e. freeing a hidden mesh's gpu buffers
+#define zox_observe_disabled(function, tag, ...) {\
+    zox_observer_internal(world, #function, function, tag, #__VA_ARGS__, EcsQueryMatchDisabled, __FILE__, __LINE__);\
 }
 
 #define zox_observe(function, tag, ...)\
@@ -55,13 +60,14 @@ void zox_observer_internal(
     ecs_iter_action_t callback,
     ecs_entity_t event,
     const char* expr,
+    ecs_flags32_t query_flags,
     const char* file,
-    int line,
-    ...)
+    int line)
 {
     ecs_observer_desc_t desc = {
         .query = {
-            .expr = expr
+            .expr = expr,
+            .flags = query_flags
         },
         .callback = callback,
         .events = { event }
@@ -98,6 +104,7 @@ void zox_observer_internal(
         callback, \
         event, \
         #__VA_ARGS__, \
+        0, \
         __FILE__, \
         __LINE__)
 

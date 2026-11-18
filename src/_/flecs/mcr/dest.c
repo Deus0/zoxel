@@ -3,7 +3,7 @@
 
 #define zoxd_dest(T)\
     zoxd(T);\
-    zox_observe(on_destroyed_##T, EcsOnRemove, [out] T) /* OnRemove fires on delete too, flecs never emits EcsOnDelete (a cleanup policy) */
+    zox_observe_disabled(on_destroyed_##T, EcsOnRemove, [out] T) /* OnRemove fires on delete too, flecs never emits EcsOnDelete (a cleanup policy); disabled ones too, or a hidden mesh's buffers leaked */
 
 #define zoxd_dest_old(T)\
     zoxd(T);\

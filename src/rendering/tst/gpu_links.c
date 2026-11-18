@@ -1,5 +1,5 @@
 // tst: gpu_links, entities' gpu links give back what they hold (live counts, src/_/logs), no world
-//  - deleting an entity lets go of its buffers and texture
+//  - deleting an entity lets go of its buffers and texture, a disabled one's too (a hidden lod mesh)
 //  - a gpu dispose lets go of a disabled entity's links too, a restore makes them again (a system skips disabled
 //    entities: a hidden mesh kept a dead buffer through android's lost context), a prefab's stay empty
 //  - run: bash bsh/tst.sh gpu_links
@@ -37,17 +37,19 @@ byte zox_tst_gpu_links_held(ecs* world, entity e, byte held) {
 
 void zox_tst_gpu_links_check(ecs* world) {
     const int buffers = zox_gpu_buffers_live, textures = zox_gpu_textures_live;
-    // deleting gives them back
+    // deleting gives them back, disabled or not
     entity a = zox_tst_gpu_links_spawn(world, 0);
-    zox_tst_check(zox_gpu_buffers_live == buffers + 4 && zox_gpu_textures_live == textures + 1,
-        "spawned a mesh, [%i] buffers [%i] textures live, was [%i] [%i]", zox_gpu_buffers_live, zox_gpu_textures_live, buffers, textures);
+    entity b = zox_tst_gpu_links_spawn(world, 1);
+    zox_tst_check(zox_gpu_buffers_live == buffers + 8 && zox_gpu_textures_live == textures + 2,
+        "spawned two meshes, [%i] buffers [%i] textures live, was [%i] [%i]", zox_gpu_buffers_live, zox_gpu_textures_live, buffers, textures);
     zox_delete(a);
-    zox_tst_check(zox_gpu_buffers_live == buffers, "deleted, [%i] buffers live, [%i] before",
+    zox_delete(b);
+    zox_tst_check(zox_gpu_buffers_live == buffers, "deleted, [%i] buffers live, [%i] before (a disabled entity's kept?)",
         zox_gpu_buffers_live, buffers);
     zox_tst_check(zox_gpu_textures_live == textures, "deleted, [%i] textures live, [%i] before", zox_gpu_textures_live, textures);
     // a dispose and restore, disabled ones too, not prefabs
     a = zox_tst_gpu_links_spawn(world, 0);
-    const entity b = zox_tst_gpu_links_spawn(world, 1);
+    b = zox_tst_gpu_links_spawn(world, 1);
     entity prefab;
     {
         zox_prefab();
@@ -68,7 +70,6 @@ void zox_tst_gpu_links_check(ecs* world) {
     zox_tst_check(zox_gpu_buffers_live == buffers_spawned && zox_gpu_textures_live == textures_spawned,
         "restored, [%i] buffers [%i] textures live, [%i] [%i] before", zox_gpu_buffers_live, zox_gpu_textures_live,
         buffers_spawned, textures_spawned);
-    zox_enable(b);  // a disabled one's leak on delete: doc/todo.md Bugs
     zox_delete(a);
     zox_delete(b);
     zox_delete(prefab);
