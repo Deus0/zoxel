@@ -4,12 +4,13 @@
 //    - cells line up with tunks (zox_tree_cell divides a chunk's length) and a canopy reaches zox_tree_canopy,
 //      less than the margin, so a tree and its leaves stay in its tunk, a chunk draws whole trees
 //  - ground cover: the biome's shares (DirtChance, GrassChance, WeedsChance tall grass, FlowerChance), picked by a
-//    seeded number a column, nudged by low noise so tall grass and flowers grow in patches
+//    seeded number a column; tall grass and flowers grow in clumps: low noise scales their shares from none to
+//    twice (the average holds), open grass between (all one mass of tall grass looked unnatural)
 #define zox_tree_cell 8
 #define zox_tree_margin 2
 #define zox_tree_canopy 2
-#define zox_vegetation_patch_frequency 0.08
-#define zox_vegetation_patch 0.35f      // how much patches nudge the cover
+#define zox_vegetation_clump 6          // blocks between a clump field's points: clumps a few blocks across
+#define zox_vegetation_clump_sharpness 3.0f  // how sharp a clump's edge is (1 soft, higher all or nothing)
 
 static inline uint vegetation_hash(int x, int y, lint seed, uint salt) {
     uint h = (uint) x * 374761393u + (uint) y * 668265263u + (uint) seed * 2246822519u + salt * 3266489917u;
@@ -57,21 +58,31 @@ static inline byte is_canopy(int dx, int dy, int dz) {
     return dx * dx + dz * dz + 2 * dy * dy <= zox_tree_canopy * zox_tree_canopy + 1 && dy >= -1 && dy <= 1;
 }
 
+// a clump field, 0 to 1 and even about a half (so shares scaled by it hold on average): seeded values on a grid
+//  zox_vegetation_clump apart, smoothly blended between
+static inline float vegetation_clump_field(int2 p, lint seed) {
+    const int cx = vegetation_floor_div(p.x, zox_vegetation_clump), cy = vegetation_floor_div(p.y, zox_vegetation_clump);
+    float tx = (p.x - cx * zox_vegetation_clump) / (float) zox_vegetation_clump;
+    float ty = (p.y - cy * zox_vegetation_clump) / (float) zox_vegetation_clump;
+    tx = tx * tx * (3 - 2 * tx);
+    ty = ty * ty * (3 - 2 * ty);
+    const float a = vegetation_random01(cx, cy, seed, 6), b = vegetation_random01(cx + 1, cy, seed, 6);
+    const float c = vegetation_random01(cx, cy + 1, seed, 6), d = vegetation_random01(cx + 1, cy + 1, seed, 6);
+    return (a + (b - a) * tx) * (1 - ty) + (c + (d - c) * tx) * ty;
+}
+
 // a column's ground cover from the biome's shares: dirt, grass, weeds (tall grass), flowers, the rest grass
 static inline byte get_ground_cover(int2 global_position, byte terrain_length, lint seed, const float shares[4]) {
-    const double x = noise_positiver2 + (global_position.x / ((float) terrain_length));
-    const double y = noise_positiver2 + (global_position.y / ((float) terrain_length));
-    // the noise clusters around its middle, spread to -1..1 for the nudge
-    double patch = (perlin_octaves(x, y, zox_vegetation_patch_frequency, seed + 31, 3) - 0.5) * 5;
-    patch = patch < -1 ? -1 : (patch > 1 ? 1 : patch);
-    // wrapped, not clamped: a uniform number shifted and wrapped stays uniform, so the shares hold (clamping piled
-    //  columns into dirt), neighbours still shift together into patches
-    float u = vegetation_random01(global_position.x, global_position.y, seed, 5) + (float) patch * zox_vegetation_patch;
-    u -= floorf(u);
-    const byte covers[4] = { zox_vegetation_dirt, zox_vegetation_grass, zox_vegetation_weeds, zox_vegetation_flowers };
+    (void) terrain_length;
+    // clumps: tall grass and flowers from none to twice their share (symmetric about 1, the shares hold), the rest grass
+    const float clump = clampf(1 + (vegetation_clump_field(global_position, seed) - 0.5f) * 2 * zox_vegetation_clump_sharpness, 0, 2);
+    // grass last, what's left: in a clump the others take more of the column, never past it
+    const float local[3] = { shares[0], shares[2] * clump, shares[3] * clump };
+    const float u = vegetation_random01(global_position.x, global_position.y, seed, 5);
+    const byte covers[3] = { zox_vegetation_dirt, zox_vegetation_weeds, zox_vegetation_flowers };
     float sum = 0;
-    for (byte i = 0; i < 4; i++) {
-        sum += shares[i];
+    for (byte i = 0; i < 3; i++) {
+        sum += local[i];
         if (u < sum) {
             return covers[i];
         }

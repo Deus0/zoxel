@@ -3,7 +3,8 @@
 //  - each tree's canopy stays inside its cell (so a chunk draws whole trees), trees a cell near the biome's chance
 //  - the same seed, the same trees
 //  - run: bash bsh/tst.sh vegetation_trees
-// tst: vegetation_cover, ground cover follows a biome's shares, grasslands are grassy (lots of tall grass)
+// tst: vegetation_cover, ground cover follows a biome's shares, tall grass grows in clumps with open grass between
+//  - clumped: a tall grass column's neighbour is tall grass more often than its share (1.3 times), the map's corner logged
 //  - run: bash bsh/tst.sh vegetation_cover
 #define zox_tst_veg_area 512
 #define zox_tst_veg_seed 31337
@@ -62,15 +63,20 @@ void zox_tst_vegetation_trees_check(ecs* world) {
 void zox_tst_vegetation_cover_check(ecs* world) {
     (void) world;
     // grasslands, desert, jungle (gam/zoxel/sys/biomes.c)
-    const float biomes[3][4] = { { 0.02f, 0.28f, 0.55f, 0.10f }, { 0.70f, 0.20f, 0.06f, 0.01f }, { 0.02f, 0.18f, 0.62f, 0.14f } };
+    const float biomes[3][4] = { { 0.02f, 0.53f, 0.30f, 0.10f }, { 0.70f, 0.20f, 0.06f, 0.01f }, { 0.02f, 0.40f, 0.40f, 0.14f } };
     const char* names[3] = { "grasslands", "desert", "jungle" };
     for (byte b = 0; b < 3; b++) {
         int counts[5] = { 0 };
-        int total = 0;
+        int total = 0, weeds_next = 0, weeds_pairs = 0;
         for (int x = 0; x < zox_tst_veg_area; x++) {
             for (int y = 0; y < zox_tst_veg_area; y++) {
                 counts[get_ground_cover((int2) { x * 3, y * 3 }, 16, zox_tst_veg_seed + b, biomes[b])]++;
                 total++;
+                // a column and the next one along: are tall grass neighbours more common than chance?
+                if (get_ground_cover((int2) { x, y }, 16, zox_tst_veg_seed + b, biomes[b]) == zox_vegetation_weeds) {
+                    weeds_pairs++;
+                    weeds_next += get_ground_cover((int2) { x + 1, y }, 16, zox_tst_veg_seed + b, biomes[b]) == zox_vegetation_weeds;
+                }
             }
         }
         const float dirt = (float) counts[zox_vegetation_dirt] / total;
@@ -81,6 +87,21 @@ void zox_tst_vegetation_cover_check(ecs* world) {
         // patches move columns between neighbours, the shares hold within a margin
         zox_tst_check(fabsf(dirt - biomes[b][0]) < 0.08f, "%s dirt [%.2f], share [%.2f]", names[b], dirt, biomes[b][0]);
         zox_tst_check(fabsf(weeds - biomes[b][2]) < 0.08f, "%s tall grass [%.2f], share [%.2f]", names[b], weeds, biomes[b][2]);
+        const float together = weeds_pairs ? (float) weeds_next / weeds_pairs : 0;
+        zox_log("[tst] [metric] vegetation_cover %s: tall grass beside tall grass [%.2f] (alone [%.2f])", names[b], together, weeds);
+        zox_tst_check(together > weeds * 1.3f, "%s tall grass doesn't clump: beside each other [%.2f], share [%.2f]", names[b], together, weeds);
+        // a map of a corner, every column: # tall grass, * flowers, . grass, _ dirt
+        if (b == 0) {
+            for (int y = 0; y < 24; y++) {
+                char line[73];
+                for (int x = 0; x < 72; x++) {
+                    const byte cover = get_ground_cover((int2) { x, y }, 16, zox_tst_veg_seed + b, biomes[b]);
+                    line[x] = cover == zox_vegetation_weeds ? '#' : cover == zox_vegetation_flowers ? '*' : cover == zox_vegetation_dirt ? '_' : '.';
+                }
+                line[72] = 0;
+                zox_log("[tst] %s", line);
+            }
+        }
     }
 }
 

@@ -7,9 +7,8 @@ entity spawn_model_grass(
 {
     byte length = octree_size(max_depth);
     srand(seed);
-    uint place_count = rand_range(
-        (length * 0.2f) * length * length,
-        length * length * (length * 0.6f));
+    // stalks: 12 to 22 percent of its columns (it filled most columns, a solid mass of them)
+    uint place_count = rand_range(length * length * 0.12f, length * length * 0.22f);
     if (place_count == 0) {
         place_count = 1;
     }

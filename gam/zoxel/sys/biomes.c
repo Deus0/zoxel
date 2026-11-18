@@ -27,8 +27,8 @@ void biomes_realm_spawn_system(iter* it) {
             add_to_BiomeLinks(biomes, e2);
             // ground cover shares (the rest is grass) and a tree's chance a cell (vegetation/fun)
             zox_set(e2, DirtChance, { 0.02f });
-            zox_set(e2, GrassChance, { 0.28f });
-            zox_set(e2, WeedsChance, { 0.55f });
+            zox_set(e2, GrassChance, { 0.53f });
+            zox_set(e2, WeedsChance, { 0.30f });
             zox_set(e2, FlowerChance, { 0.10f });
             zox_set(e2, TreeChance, { 0.45f });
             zox_set(e2, BiomeHeightFrequency, { 0.13f });
@@ -61,8 +61,8 @@ void biomes_realm_spawn_system(iter* it) {
             zox_set_parent(world, e2, e);
             add_to_BiomeLinks(biomes, e2);
             zox_set(e2, DirtChance, { 0.02f });
-            zox_set(e2, GrassChance, { 0.18f });
-            zox_set(e2, WeedsChance, { 0.62f });
+            zox_set(e2, GrassChance, { 0.40f });
+            zox_set(e2, WeedsChance, { 0.40f });
             zox_set(e2, FlowerChance, { 0.14f });
             zox_set(e2, TreeChance, { 0.85f });
             zox_set(e2, BiomeHeightFrequency, { 0.369f });

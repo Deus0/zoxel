@@ -1,53 +1,3 @@
-void build_vox_heights(
-    VoxelNode* voxels,
-    byte depth,
-    byte2 range,
-    byte max_height)
-{
-    short length = octree_size(depth);
-    byte3 position;
-    for (position.x = 0; position.x < length; position.x++) {
-        for (position.z = 0; position.z < length; position.z++) {
-            byte height = rand_range(0, max_height);
-            for (position.y = 0; position.y < height; position.y++) {
-                byte value = rand_range(range.x, range.y);
-                set_voxel_safe(voxels, depth, position, value);
-            }
-        }
-    }
-}
-
-// NOTE: This is quite laggy atm due to the large amounts of rand()s
-// NOTE: Simulates more natural random placement
-/*void build_vox_scatter(
-    VoxelNode* voxels,
-    byte depth,
-    byte2 range,
-    byte max_height,
-    uint count)
-{
-    byte length = octree_size(depth);
-    byte heights[length][length];
-    memset(heights, 0, sizeof(heights));
-    for (uint i = 0; i < count; i++) {
-        byte x = rand() % length;
-        byte z = rand() % length;
-        if (heights[x][z] < max_height) {
-            heights[x][z]++;
-        }
-    }
-    byte3 position;
-    for (position.x = 0; position.x < length; position.x++) {
-        for (position.z = 0; position.z < length; position.z++) {
-            byte height = heights[position.x][position.z];
-            for (position.y = 0; position.y < height; position.y++) {
-                byte value = rand_range(range.x, range.y);
-                set_voxel_safe(voxels, depth, position, value);
-            }
-        }
-    }
-}*/
-
 static inline uint scatter_rand(uint* state) {
     uint x = *state;
     x ^= x << 13;
@@ -65,65 +15,42 @@ static inline byte scatter_rand_byte(
     return min + (byte)(scatter_rand(state) % (uint)(max - min + 1));
 }
 
-void build_vox_scatter(
+// tufts of grass: count stalks, each a column of its own (stalks between them, not every column filled: a carpet of
+//  them looked like a mass), tallest near the block's middle, seeded by the model
+//  - a stalk's height: max_height times 0.35 to 1, less out towards the edges (half at a corner)
+//  - its voxels a colour each from range, so a stalk shades along it
+void build_vox_tufts(
     VoxelNode* voxels,
     byte depth,
     byte2 range,
     byte max_height,
-    uint count)
+    uint count,
+    uint seed)
 {
-    byte length = octree_size(depth);
-    byte heights[length][length];
-    memset(heights, 0, sizeof(heights));
-
-    uint state = 0x9e3779b9u;
-
-    uint seed = (uint) count;
-    seed ^= ((uint) depth << 24);
-    seed ^= ((uint) range.x << 16);
-    seed ^= ((uint) range.y << 8);
-    seed ^= max_height;
-    state ^= seed * 747796405u;
-
-    uint mask = (uint) length - 1;
-
-    uint max_count = (uint) length * (uint) length * (uint) max_height;
-    if (count > max_count) {
-        count = max_count;
+    const byte length = octree_size(depth);
+    const uint mask = (uint) length - 1;
+    uint state = 0x9e3779b9u ^ (seed * 747796405u) ^ ((uint) depth << 24);
+    if (count > (uint) length * length) {
+        count = (uint) length * length;
     }
-
-    for (uint i = 0; i < count; i++) {
-        uint random = scatter_rand(&state);
-
-        byte x = (byte)(random & mask);
-        byte z = (byte)((random >> 8) & mask);
-
-        if (heights[x][z] < max_height) {
-            heights[x][z]++;
+    byte filled[length][length];
+    memset(filled, 0, sizeof(filled));
+    const float half = (length - 1) * 0.5f;
+    uint tries = count * 8;
+    for (uint placed = 0; placed < count && tries; tries--) {
+        const uint random = scatter_rand(&state);
+        const byte x = (byte) (random & mask);
+        const byte z = (byte) ((random >> 8) & mask);
+        if (filled[x][z]) {
+            continue;
         }
-        else {
-            i--;
-        }
-    }
-
-    byte3 position;
-
-    for (position.x = 0; position.x < length; position.x++) {
-        for (position.z = 0; position.z < length; position.z++) {
-            byte height = heights[position.x][position.z];
-
-            for (position.y = 0; position.y < height; position.y++) {
-                byte value = scatter_rand_byte(
-                    &state,
-                    range.x,
-                    range.y);
-
-                set_voxel_safe(
-                    voxels,
-                    depth,
-                    position,
-                    value);
-            }
+        filled[x][z] = 1;
+        placed++;
+        const float out = float_max(float_abs(x - half), float_abs(z - half)) / half;    // 0 middle, 1 edge
+        const float tall = (0.35f + 0.65f * (scatter_rand(&state) % 1000) / 1000.0f) * (1 - 0.5f * out);
+        const byte height = (byte) int_max(1, (int) (max_height * tall));
+        for (byte y = 0; y < height; y++) {
+            set_voxel_safe(voxels, depth, (byte3) { x, y, z }, scatter_rand_byte(&state, range.x, range.y));
         }
     }
 }
@@ -175,16 +102,16 @@ void rubble_model_system(iter* it) {
         // its octree locked while written, readers can run alongside (thread_safety.md)
         spinlock* write_lock = zox_octree_lock(world, e);
         zox_octree_lock_begin(write_lock);
-        // build_vox_heights(node, node_depth, vrange, max_height);
         uint count = zox_has(e, RubbleCount) ?
             zox_getv(e, RubbleCount) :
             200;
-        build_vox_scatter(
+        build_vox_tufts(
             node,
             node_depth,
             vrange,
             max_height,
-            count);
+            count,
+            (uint) seed->value);
         // Outlines
         if (zox_block_outlines) {
             add_to_ColorRGBs(colors, color_rgb_black);
