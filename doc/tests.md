@@ -9,11 +9,11 @@ bash bsh/tst.sh all                      # run every test (before every commit)
 bash bsh/tst.sh stream_npcs --repeat 5   # intermittent bugs
 bash bsh/tst.sh <name> --gdb             # a backtrace on a crash
 bash bsh/tst.sh <name> --nobuild         # rerun without building
-zox_tst_dir=tst/mine bash bsh/tst.sh <name>   # logs to tst/mine/, builds to bin/tst_mine/
 ```
 
 - `zox_tst_dir=<dir>`: tst.sh writes logs and test files there instead of `tst/`, and builds to `bin/tst_<dir>/`
-  instead of `bin/zoxel_*_dev/` (`zox_tst_out=<name>` names that build).
+  instead of `bin/zoxel_*_dev/` (`zox_tst_out=<name>` names that build), i.e. to keep two runs in one checkout from
+  rebuilding each other's binary.
 
 - Exit code 0 is a pass. A failed run's log is kept: `tst/<name>_failed_*.log`.
 - Tests run hidden (`--background`), silent, with software rendering, capped memory and a timeout.
