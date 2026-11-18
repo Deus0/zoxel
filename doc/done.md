@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-20
+-x A gpu restore looks up the materials' uniform locations again (zox_gpu_relocate), they were the old program's;
+  tst gpu_restore scrambles material_basic3D's and checks they come back. opengl_mode is in graphics now (dat/opengl_mode.c)
 -x Opengl es (android, tests) logged GL_INVALID_ENUM every frame: GL_POLYGON_OFFSET_LINE and GL_PROGRAM_POINT_SIZE
   aren't in es, skipped there (zox_gpu_is_es)
 -x At boot a render texture logged "Invalid [TextureGPULink]": it spawns PreInitialize, its texture is made the frame
