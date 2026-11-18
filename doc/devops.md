@@ -1,7 +1,7 @@
 # Devops
 
 ## Get a build
-- latest daily build: github releases, "nightly" (linux x64 and windows x64 zips)
+- latest daily build: github releases, "nightly" (linux x64 and windows x64 zips, android arm apk)
 - any commit or branch: github actions, its build run, artifacts (kept 14 days)
 
 ## Build locally
@@ -11,6 +11,7 @@
 | linux x64, dev | bash bsh/build.sh | bin/zoxel_linux_x64_opengl_sdl_dev/ |
 | linux x64, release | bash bsh/docker.sh --release --x64 | zip/zoxel_linux_x64_opengl_sdl_<date>.zip |
 | windows x64 | bash bsh/windows.sh --release | zip/zoxel_windows_x64_opengl_sdl_<date>.zip |
+| android arm | bash bsh/android_prepare.sh, then bash bsh/android.sh zoxel --release --signed | zip/zoxel_android_arm_<date>.apk |
 | all platforms + itch.io | bash bsh/release.sh | zip/, then bsh/itch.sh uploads |
 
 - a clean checkout fetches what it needs, ext/ lib/ inc/ zip/ are gitignored
@@ -22,10 +23,14 @@
 
 ## CI
 - github actions, .github/workflows/build.yml, ubuntu:24.04 containers (same as docker.sh)
-- every push and pull request: builds linux x64 and windows x64, uploads the zips as artifacts
+- every push and pull request: builds linux x64, windows x64 and android arm, uploads the zips and apk as artifacts
 - daily at 03:17 utc: builds master, replaces the nightly release, skipped if master didn't change
 	- start it by hand: actions, build, run workflow, on master
 - caches ext/ + lib/ and inc/flecs, a lib or flecs script change rebuilds them
+- android: android_prepare.sh downloads the sdk, ndk and gradle into and/ (cached), android.sh signs the apk
+	- with your key if the repo has the secrets ANDROID_KEYSTORE (base64 of ~/.config/zox_keys/zoxel.keystore)
+	  and ANDROID_KEYSTORE_PASSWORD (the first line of zoxel.password), github, settings, secrets, actions
+	- without them each run makes a new key: the apk installs, but uninstall the old one before updating
 - codeberg doesn't run it yet, see doc/todo.md Devops
 
 ## Todo

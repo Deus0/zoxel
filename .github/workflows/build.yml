@@ -1,4 +1,4 @@
-# builds linux x64 and windows x64 in ubuntu 24.04, the same as bsh/docker.sh (packages from bsh/deps.sh)
+# builds linux x64, windows x64 and android arm in ubuntu 24.04, the same as bsh/docker.sh (packages from bsh/deps.sh)
 #   push / pull request: builds, zips are artifacts on the run's page
 #   once a day: builds master and replaces the nightly release, skipped if master didn't change
 name: build
@@ -78,8 +78,64 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  android:
+    needs: check
+    if: needs.check.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    container: ubuntu:24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: packages
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          apt-get update
+          apt-get install -y $(bash bsh/deps.sh --android)
+      - name: cache sdk
+        uses: actions/cache@v4
+        with:
+          path: |
+            and/sdk
+            and/gradle
+            ext
+          key: android-${{ hashFiles('bsh/android_prepare.sh', 'bsh/libs-download.sh') }}
+      - name: cache gradle
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/caches
+          key: gradle-${{ hashFiles('bsh/android.sh') }}
+      - name: cache flecs
+        uses: actions/cache@v4
+        with:
+          path: inc/flecs
+          key: flecs-${{ hashFiles('bsh/flecs.sh', 'bsh/flecs_fix.sh', 'bsh/flecs_patches/*') }}
+      - name: flecs
+        run: bash bsh/flecs.sh
+      - name: sdl3
+        run: bash bsh/libs-download.sh --sdl3
+      - name: sdk, ndk, gradle
+        run: bash bsh/android_prepare.sh
+      # signs with the repo's keystore if its secrets are set (doc/devops.md), else android.sh makes a new key
+      - name: keystore
+        env:
+          KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          [[ -z "${KEYSTORE}" ]] && { echo "no keystore secret, using a new key"; exit 0; }
+          mkdir -p ~/.config/zox_keys
+          echo "${KEYSTORE}" | base64 -d > ~/.config/zox_keys/zoxel.keystore
+          printf '%s\n' "${KEYSTORE_PASSWORD}" > ~/.config/zox_keys/zoxel.password
+      - name: build
+        run: bash bsh/android.sh zoxel --release --signed
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zoxel_android_arm
+          path: zip/*.apk
+          if-no-files-found: error
+          retention-days: 14
+
   nightly:
-    needs: build
+    needs: [build, android]
     if: github.ref == 'refs/heads/master' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     permissions:
@@ -95,6 +151,6 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           gh release delete nightly --cleanup-tag --yes || true
-          gh release create nightly zips/*.zip --prerelease --target "${{ github.sha }}" \
+          gh release create nightly zips/* --prerelease --target "${{ github.sha }}" \
             --title "nightly $(date -u +%Y-%m-%d)" \
             --notes "daily build of master at ${{ github.sha }}"
