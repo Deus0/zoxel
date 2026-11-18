@@ -761,6 +761,9 @@
 - Add a compass symbol to show north etc
 
 # Rendering, Lights and Cameras
+- grass meshes: a tall grass block is 18k triangles at full detail (tst vox_instances_stress --gpu --release logs
+  it), each stalk voxel its own shade so no faces merge; one colour a stalk would let its sides merge into a few
+  quads (asked the user first: it changes the grass's look)
 - clouds can be a bit dark
 - dust particles in the air round the terrain (ergo proxy, dystopian vibes)
 - Darken sunlight as it goes underwater

@@ -1,6 +1,14 @@
 # Done
 
 ## 2026-11-18
+-x vox instance rendering (lag on the khadas): a mesh's instances were sent in one go, past the uniform buffer's
+  size (zox_get_safe_ubo_size: 1024 on llvmpipe, 256 on some mobile gpus) it overflowed, gl errors and missing
+  grass; now batched to it, the buffer orphaned before each batch (filling it again while the gpu read it stalled);
+  instances outside the camera's view aren't sent (is_sphere_in_frustum, now in maths/planes); the command lists
+  kept between frames; tst vox_instances_stress (1000 to 16000 grass, half behind the camera), bash bsh/tst.sh
+  <name> --release (an optimised build with the tests: debug's -O0 cpu times mislead). On the 780M, release: the
+  render system under 1ms at 16000, the frame 117ms all in view, 60ms half behind: the grass mesh's 18k triangles
+  a block are the cost now
 -x grass more natural, less of a mass: tall grass in clumps with open grass between (a clump field 6 blocks apart
   scales tall grass and flowers from none to twice their share, the shares hold), grasslands 0.55 to 0.30 tall
   grass, jungle 0.62 to 0.40; a tall grass block is tufts: 12 to 22% of its columns a stalk each, tallest in the
