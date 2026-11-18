@@ -7,6 +7,8 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
+- tst split_screen fails 3 of 45 checks (since a822f67b0, local coop): back at the main menu the game camera and its
+	ui camera stay half width (230x460, not 460x460), and the join ui doesn't show both players again
 - Windows build broken: near and far are macros in the windows headers (minwindef.h), rename any near/far names in
 	the code, and add "no near or far names" to doc/coding_standards.md
 - body still too big, it can't fit through a 2 tall, 1 wide door
