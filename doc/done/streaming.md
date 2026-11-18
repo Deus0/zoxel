@@ -11,7 +11,7 @@ Code: [src/terrain/sys/stream.c](../../src/terrain/sys/stream.c) (the queue),
 [src/chunks/chunks3/fun/lods.c](../../src/chunks/chunks3/fun/lods.c) (distance to LOD),
 [src/controllers/tst/perf.c](../../src/controllers/tst/perf.c) (`perf_stream`).
 
-## Done (2026-11-14, claude2)
+## Done (2026-11-14)
 
 Commits 13d754ac2 and ce67cddb9. Measured with `zox_tst_seed=666 bash bsh/tst.sh perf_fly --gpu --stress --far 8`
 (and perf_stream), debug build on deusmini (780M):

@@ -1,7 +1,7 @@
 # Skeletons: Bone Weights From an Octree
 
 How a skeleton character's mesh vertices get their bones now, why that's fragile, and a plan to store each voxel's bone
-in an octree written when the parts merge. Written 2026-11-14 (claude2) from reading the code, done 2026-11-15 (below).
+in an octree written when the parts merge. Written 2026-11-14 from reading the code, done 2026-11-15 (below).
 
 Code: [src/parts/sys/combine.c](../../src/parts/sys/combine.c) (`body_combine_system`, `build_body_parts`),
 [src/chunks/chunks3/sys/combine.c](../../src/chunks/chunks3/sys/combine.c) (`combine_vox_system`),

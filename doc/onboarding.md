@@ -230,8 +230,8 @@ The loop:
 
 ## 8. Git
 
-- Work on `master`, small commits, short lower case messages (`fixed windows build errors`). Several people (and
-  Claudes) commit here: check `git status` and `git log` first, and only commit your own files, by path.
+- Work on `master`, small commits, short lower case messages (`fixed windows build errors`). Several people commit
+  here: check `git status` and `git log` first, and only commit your own files, by path.
 - Pull with rebase, so the history stays one line: `git config pull.rebase true` (a plain pull merged and split it).
 - **Two remotes in one.** `origin` fetches from GitHub, but pushes to GitHub *and* Codeberg:
 
