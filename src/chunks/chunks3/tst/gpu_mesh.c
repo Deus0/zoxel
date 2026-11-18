@@ -252,6 +252,39 @@ void zox_tst_gpu_mesh_check(ecs* world) {
         }
         collapse_VoxelNode(&voxels);
     }
+    // a lower block (flowing water, its height 3 eighths): one alone, its top and its sides' tops at 3 / 8; one under
+    //  it (no top showing) full
+    {
+        byte heights[255] = { 0 };
+        heights[1] = 3;     // voxel 2
+        gpu_mesher_set_heights(&mesher, heights);
+        VoxelNode voxels = { 0 };
+        const byte small = 2;
+        set_VoxelNode(&voxels, small, (byte3) { 1, 0, 1 }, 2);
+        set_VoxelNode(&voxels, small, (byte3) { 1, 1, 1 }, 2);
+        set_VoxelNode(&voxels, small, (byte3) { 2, 0, 2 }, 2);
+        gpu_mesh_VoxelNode(&mesher, &voxels, small);
+        const uint faces = gpu_mesher_read_faces(&mesher);
+        float4 vertices[4 * 32];
+        zox_gpu_storage_read(mesher.vertices, 0, sizeof(float4) * 4 * (faces < 32 ? faces : 32), vertices);
+        int lowered = 0, wrong = 0;
+        for (uint i = 0; i < 4 * faces && i < 4 * 32; i++) {
+            const float y = vertices[i].y;
+            const float fraction = y - floorf(y);
+            if (fabsf(fraction - 3 / 8.0f) < 0.001f) {
+                lowered++;
+            } else if (fraction != 0) {
+                wrong++;
+            }
+        }
+        // the alone block (2,0,2): its top's 4 and its 4 sides' tops (2 each): 12 corners at 3/8; the column's top
+        //  block (1,1,1): the same at 1 + 3/8, 12 more
+        zox_log("[tst] [metric] gpu_mesh heights: [%i] faces, [%i] corners at 3/8 of a block, [%i] at other heights", faces, lowered, wrong);
+        zox_tst_check(lowered == 24 && !wrong, "a lower block's corners: [%i] at its height (not 24), [%i] wrong", lowered, wrong);
+        memset(heights, 0, sizeof(heights));
+        gpu_mesher_set_heights(&mesher, heights);
+        collapse_VoxelNode(&voxels);
+    }
     gpu_mesher_dispose(&mesher);
 }
 

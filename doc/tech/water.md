@@ -84,8 +84,8 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
   and spreads 7 into a tunnel.
 - Flowing water's own edits are marked (`VoxelNodeUpdate.flowed`): they start no flows of their own and drop nothing.
 - Drawn thinner (chunks3/sys/build_textured.c, `heights` from BlockWaterLevel): a flowing block's top face and its
-  sides' tops at level / 8 of a block, unless water is over it (no top face, drawn full). The gpu mesher
-  (zox_chunks3_gpu_meshing, off) doesn't lower them.
+  sides' tops at level / 8 of a block, unless water is over it (no top face, drawn full). The gpu mesher (a proof
+  of concept, off) does the same from `gpu_mesher_set_heights` (tst gpu_mesh).
 - Generated water (landfill) doesn't flow: only edits do.
 
 ## Swimming
@@ -135,7 +135,7 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
 ## Not yet
 
 - Rivers; flowing across a chunk not loaded; currents (flowing water pushing what's in it); a falling column shows
-  its side faces' tops full, not sloped; the gpu mesher draws flowing water full height.
+  its side faces' tops full, not sloped.
 - Blended faces within one chunk mesh aren't sorted; meshes in different tables aren't sorted against each other.
 - Flood light (sideways) through water isn't dimmed more than through air.
 - Towns on sunken ground by the sea (todo.md Bugs).

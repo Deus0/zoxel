@@ -14,6 +14,8 @@
 //  - the vertex, light and index buffers are plain gl buffers, the command an indirect draw's: gpu_mesher_draw draws
 //      the mesh with no copy back to the cpu (tst gpu_mesh_views, gpu_light_views)
 //  - meshing at a lower depth than the octree's is a lod, as getv_VoxelNode reads it (a node's value)
+//  - lower blocks (flowing water): heights, 4 bits a block in eighths (0 full, gpu_mesher_set_heights), its top and
+//      its sides' tops at its height when its top shows (as chunks3 build_textured.c)
 //  - no textures, no neighbour chunks, no merging of faces yet
 //  - needs compute (OpenGL ES 3.1+, OpenGL 4.3+): gpu_mesher_create returns 0 without it, cpu meshing stays
 
@@ -31,6 +33,7 @@ typedef struct {
     size_t nodes_size;  // bytes the nodes buffer holds
     size_t lights_size;
     uint vao;           // drawing the vertices and indices, made on the first draw
+    uint heights[32];   // a block's height in eighths, 4 bits a block (voxel v at bits (v - 1) * 4), 0 full
 } GpuMesher;
 
 // lighting for gpu_mesh_flat_lit, as smooth lighting has it (lights3)
@@ -71,6 +74,7 @@ static const char* zox_gpu_mesh_source =
 "uniform uint darklight;\n"
 "uniform uint sunlight;\n"
 "uniform uint solid[8];\n"
+"uniform uint heights[32];\n"
 "\n"
 "bool outside(ivec3 p) {\n"
 "    return any(lessThan(p, ivec3(0))) || any(greaterThanEqual(p, ivec3(1 << depth)));\n"
@@ -168,6 +172,10 @@ static const char* zox_gpu_mesh_source =
 "    if (voxel == 0u) {\n"
 "        return;\n"
 "    }\n"
+"    // a lower block (flowing water): its top at its height, when its top shows\n"
+"    uint height = (heights[(voxel - 1u) >> 3] >> (((voxel - 1u) & 7u) * 4u)) & 15u;\n"
+"    ivec3 up = p + directions[3];\n"
+"    bool lowered = height != 0u && (outside(up) || voxel_at(up) == 0u);\n"
 "    for (int d = 0; d < 6; d++) {\n"
 "        ivec3 n = p + directions[d];\n"
 "        if (outside(n) ? (edge_faces == 0 && d != 3) : voxel_at(n) != 0u) {\n"
@@ -181,6 +189,9 @@ static const char* zox_gpu_mesh_source =
 "        uint v = face * 4u;\n"
 "        for (int c = 0; c < 4; c++) {\n"
 "            vec3 corner = corners[d * 4 + c];\n"
+"            if (lowered && corner.y > 0.5) {\n"
+"                corner.y = float(height) / 8.0;\n"
+"            }\n"
 "            int s = (corner[axis_a[d]] > 0.5 ? 1 : 0) | (corner[axis_b[d]] > 0.5 ? 2 : 0);\n"
 "            uint light = (face_light4 >> (8 * s)) & 255u;\n"
 "            float w = float(voxel) + float(d) * 256.0 + float(light) * 2048.0 + float(s) * 524288.0;\n"
@@ -282,6 +293,14 @@ void gpu_mesher_dispose(GpuMesher* mesher) {
     memset(mesher, 0, sizeof(GpuMesher));
 }
 
+// a block's height in eighths, by block index - 1 (255 of them, BlockWaterLevel under 8: flowing water), 0 full
+static inline void gpu_mesher_set_heights(GpuMesher* mesher, const byte* heights) {
+    memset(mesher->heights, 0, sizeof(mesher->heights));
+    for (int i = 0; i < 255; i++) {
+        mesher->heights[i >> 3] |= (uint) (heights[i] & 15) << ((i & 7) * 4);
+    }
+}
+
 // writes nodes into a storage buffer, growing it if needed
 static inline void gpu_mesher_upload(uint buffer, size_t* buffer_size, const uint* nodes, uint count) {
     const size_t size = (size_t) count * sizeof(uint);
@@ -307,6 +326,7 @@ void gpu_mesh_flat_lit(GpuMesher* mesher, const uint* nodes, uint count, const u
     zox_gpu_compute_uniform_uint(mesher->program, "max_faces", mesher->max_faces);
     zox_gpu_compute_uniform_int(mesher->program, "lit", lit);
     zox_gpu_compute_uniform_int(mesher->program, "edge_faces", mesher->edge_faces);
+    zox_gpu_compute_uniform_uint_array(mesher->program, "heights", mesher->heights, 32);
     if (lit) {
         zox_gpu_compute_uniform_uint(mesher->program, "darklight", lighting->darklight);
         zox_gpu_compute_uniform_uint(mesher->program, "sunlight", lighting->sunlight);
@@ -390,6 +410,7 @@ byte gpu_mesher_create(GpuMesher* mesher, uint max_faces) {
     return 0;
 }
 void gpu_mesher_dispose(GpuMesher* mesher) { memset(mesher, 0, sizeof(GpuMesher)); }
+static inline void gpu_mesher_set_heights(GpuMesher* mesher, const byte* heights) { }
 void gpu_mesh_flat_lit(GpuMesher* mesher, const uint* nodes, uint count, const uint* light_nodes, uint light_count, byte depth, const GpuMeshLighting* lighting) { }
 void gpu_mesh_flat(GpuMesher* mesher, const uint* nodes, uint count, byte depth) { }
 byte gpu_mesh_VoxelNode(GpuMesher* mesher, const VoxelNode* voxels, byte depth) { return 0; }
