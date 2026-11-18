@@ -21,11 +21,7 @@
 	  (zox_tst_dig_edge=1), Block Res 4 and 5: the hole's faces show lit (the upload waits for their colours), the
 	  faces around keep their light; needs where it shows (dark places, a cave, a house, near water, at night?)
 	- the dug block's faces stay about 7 frames before the rebuilt mesh replaces them, relit as the light comes in
-- arms swing out of step on a character that isn't the player's: tst arms_in_step on characters/tst/character.c (a
-	skeleton character in the void, PlayerCharacter) sums its shoulders' swings to 0.2 to 0.6 (the player's pass), even
-	before the raise; something besides arm_swing moves its shoulders?
 - furniture_hits is flaky: some door top rays miss now and then, once the app closed mid test
-- furniture_place stalls (fails before the test move too): tst furniture_place
 - perf_stream and tables_stream sometimes fail: lod swaps don't settle in 20s (flaky before the test move too)
 - grass shows overlapping copies, two lods at once (maybe rare): tst grass_overlap (vodes3/tst) sees no copies at the
 	same position yet, compare by block cell next (an offset copy, i.e. another lod's scale)
@@ -69,8 +65,6 @@
 			- only small ones
 			- when im far away from origin
 			- super weird
-- Body part seeds are `N * (i * spawn_count++)` (gam/zoxel/sys/body_parts.c), i is the realm's index: 0 in the
-  first realm, every part the same seed, less variation (see tst model_variants)
 - Fix / test unstuck system and test it with no clip
 	- like if we teleported into ground
 - Fix flickering issue of raycast

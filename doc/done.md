@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-18
+-x marked off, fixed earlier and left in the todo: arms out of step on a character not the player's (tst arms_in_step
+  passes), furniture_place stalling (passes), body part seeds (now body_seed + spawn_count, not the realm's index)
 -x mountains clear their middle third of vegetation (mountain_clears_vegetation): the check was
   `distance < 2 / (radius * 3)`, integer division, 0, nothing cleared; tst mountain_vegetation
 -x aura particles: an aura turned on spawned an emitter it never kept (ParticlesEmitter unlinked), so turning it off
