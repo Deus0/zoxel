@@ -972,7 +972,8 @@
 - Add GenerateProgress, and add to it when generate state begins, remove when ends
 
 # Local Coop
-- Add tests for local coop
+- columns left behind a moving streamer aren't removed: only the ones it reaches past the far lod are (corners),
+  the one straight behind it stays (terrain_stream_system)
 - use second camera only in game for second player / inputs too or whatever
 
 # Engine and Refactors

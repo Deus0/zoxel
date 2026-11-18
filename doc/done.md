@@ -1,6 +1,15 @@
 # Done
 
 ## 2026-11-18
+-x local coop, terrain lods fought (laggy): a streamer moving set every column round it to its own distance, even
+  ones another streamer was closer to, so the lods swapped each time either moved; a column's distance is now its
+  closest streamer's (terrain_stream_distance), and a player starting no longer drops the other players' queued
+  land (their streamers queue it again) (tst coop_streamers: 539 frames of swapped lods before, 0 after)
+-x local coop, the skybox: it was the first camera's child, the second player saw its walls and the world cut off
+  past them; RenderAtCamera (rendering) draws it round each camera (tst coop_skybox)
+-x local coop, spawning: every player in the first one's town (any loaded region's, a random region often had
+  none), each in front of their own home's door (home_door_front, the spawn finder tries that column first)
+  (tst coop_homes)
 -x vox instance rendering (lag on the khadas): a mesh's instances were sent in one go, past the uniform buffer's
   size (zox_get_safe_ubo_size: 1024 on llvmpipe, 256 on some mobile gpus) it overflowed, gl errors and missing
   grass; now batched to it, the buffer orphaned before each batch (filling it again while the gpu read it stalled);
