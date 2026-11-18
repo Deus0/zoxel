@@ -5,7 +5,7 @@
 //  - camera_viewport_spawn: spawn_viewport_camera in a 2x2 grid, sized, projected, resized with
 //      the window, and forgotten by the app once deleted
 //  - camera_orthographic: the orthographic projection, a unit high view, no perspective
-//  - camera_split_screen: --splitscreen's two players, cameras and canvases in their halves, resized
+//  - camera_split_screen: --splitscreen's second player has no screen on the menus (one camera, the window's)
 //  - camera_downscale: viewport_downscale 4 (web), render cameras at a quarter, screen cameras full size
 //  - camera_frustum (src/streaming/tst/frustum.c): which boxes a camera sees, the chunk culling check
 //  - camera_filter (src/geometry/tst/filter.c): CameraFilter / CameraRenderer, who draws what
@@ -389,71 +389,33 @@ void zox_tst_camera_resize_window(ecs* world, int2 size) {
     zox_add(main_app, WindowSizeDirty);
 }
 
-// tst: camera_split_screen, --splitscreen: two players side by side, each its own game and ui camera and canvas
-//  - placed in their halves, follow a window resize; the menus, no game
+// tst: camera_split_screen, --splitscreen on the menus: the second player has joined, but the screen is the first
+//  player's alone (it splits in game, tst split_screen): one game and one ui camera filling the window, the second
+//  player has no cameras or canvas
 byte zox_tst_splitscreen_stage = 0;
 int zox_tst_splitscreen_frames = 0;
-int2 zox_tst_splitscreen_window;
 
 void zox_tst_camera_split_screen_setup() {
     is_split_screen = 1;
 }
 
-void zox_tst_splitscreen_check_cells(ecs* world, int2 window, const char* label) {
-    for (int i = 0; i < 2; i++) {
-        const float4 cell = viewport_grid_cell(i, 2, 1);
-        zox_tst_camera_in_cell(world, main_cameras[i], window, cell, label);
-        zox_tst_camera_in_cell(world, ui_cameras[i], window, cell, label);
-        const entity canvas = zox_get_link(world, zox_players[i], CanvasLink);
-        zox_tst_check(zox_valid(canvas), "%s: player [%i] has no canvas", label, i);
-        if (zox_valid(canvas)) {
-            const int2 size = zox_getv(canvas, LayoutSize);
-            const int2 expected = screen_to_canvas_size(window, cell);
-            zox_tst_check(int2_equals(size, expected), "%s: player [%i]'s canvas [%ix%i], expected [%ix%i]",
-                label, i, size.x, size.y, expected.x, expected.y);
-        }
-    }
-}
-
 byte zox_tst_camera_split_screen_ready(ecs* world) {
     zox_tst_splitscreen_frames++;
-    zox_tst_progress(zox_tst_splitscreen_stage * 1000 + zox_tst_splitscreen_frames);
-    if (zox_tst_splitscreen_stage == 0) {
-        zox_tst_waiting = "both players' cameras";
-        if (zox_tst_splitscreen_frames < 10 || !zox_valid(main_app) || !zox_valid(main_cameras[0]) || !zox_valid(main_cameras[1])) {
-            return 0;
-        }
-        zox_tst_splitscreen_window = zox_getv(main_app, WindowSize);
-        zox_tst_check(main_cameras_count == 2, "[%i] main cameras for split screen", main_cameras_count);
-        zox_tst_check(main_cameras[0] != main_cameras[1] && ui_cameras[0] != ui_cameras[1], "players share a camera");
-        for (int i = 0; i < 2; i++) {
-            zox_tst_check(zox_get_link(world, zox_players[i], CameraLink) == main_cameras[i],
-                "player [%i]'s camera isn't its game camera", i);
-            zox_tst_check(zox_is_linked(world, main_app, ViewportCamera, main_cameras[i]) &&
-                zox_is_linked(world, main_app, ViewportCamera, ui_cameras[i]),
-                "player [%i]'s cameras aren't the app's viewports", i);
-        }
-        zox_tst_splitscreen_check_cells(world, zox_tst_splitscreen_window, "spawned");
-        zox_tst_camera_resize_window(world, (int2) { 1001, 601 });
-        zox_tst_splitscreen_stage = 1;
-        zox_tst_splitscreen_frames = 0;
+    zox_tst_progress(zox_tst_splitscreen_frames);
+    zox_tst_waiting = "the first player's cameras";
+    if (zox_tst_splitscreen_frames < 10 || !zox_valid(main_app) || !zox_valid(main_cameras[0])) {
         return 0;
     }
-    zox_tst_waiting = "the split screen to resize";
-    if (zox_tst_splitscreen_stage == 1) {
-        if (zox_tst_splitscreen_frames < 5) {
-            return 0;
-        }
-        zox_tst_splitscreen_check_cells(world, (int2) { 1001, 601 }, "resized");
-        zox_tst_camera_resize_window(world, zox_tst_splitscreen_window);
-        zox_tst_splitscreen_stage = 2;
-        zox_tst_splitscreen_frames = 0;
-        return 0;
+    const int2 window = zox_getv(main_app, WindowSize);
+    zox_tst_check(players_playing == 2, "[%i] players, --splitscreen joins a second", players_playing);
+    zox_tst_check(main_cameras_count == 1, "[%i] main cameras on the menus, one until a game starts", main_cameras_count);
+    zox_tst_check(!main_cameras[1] && !ui_cameras[1], "a second camera on the menus");
+    zox_tst_camera_in_cell(world, main_cameras[0], window, viewport_grid_cell(0, 1, 1), "menus");
+    zox_tst_camera_in_cell(world, ui_cameras[0], window, viewport_grid_cell(0, 1, 1), "menus");
+    if (players_playing == 2) {
+        zox_tst_check(!zox_get_link(world, zox_players[1], CameraLink), "the second player has a camera on the menus");
+        zox_tst_check(!zox_get_link(world, zox_players[1], CanvasLink), "the second player has a canvas on the menus");
     }
-    if (zox_tst_splitscreen_frames < 5) {
-        return 0;
-    }
-    zox_tst_splitscreen_check_cells(world, zox_tst_splitscreen_window, "restored");
     return 1;
 }
 

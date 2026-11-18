@@ -15,6 +15,7 @@ void zox_events_huds(ecs* world) {
     add_to_GameStateEvent(game_event, game_state_fader);
     add_to_GameStateEvent(game_event, game_state_end_huds);
     add_to_GameStateEvent(game_event, game_state_load);
+    add_to_GameStateEvent(game_event, game_state_split_screen);
     zox_muter(prefab_player, PlayerStateEvent, player_event);
     add_to_PlayerStateEvent(player_event, player_state_pause_ui);
     add_to_PlayerStateEvent(player_event, player_state_respawn_ui);

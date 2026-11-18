@@ -7,6 +7,7 @@
 #include "start.c"
 #include "pause.c"
 #include "game_ui.c"
+#include "split_screen.c"
 
 /*void dispose_gameui(ecs *world, void *ctx) {
     (void) world;

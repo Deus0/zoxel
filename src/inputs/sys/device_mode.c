@@ -99,6 +99,8 @@ void device_switch_system(iter* it) {
                 if (mode->value != zox_device_mode_gamepad) {
                     if (zox_has(e2, Gamepad) && zox_getv(e2, DeviceHasInput)) {
                         new_mode = zox_device_mode_gamepad;
+                        // its gamepad: other gamepads can join as players (player_join_system)
+                        zox_link(world, e, GamepadLink, e2);
                     }
                 }
                 if (mode->value != zox_device_mode_touchscreen) {
