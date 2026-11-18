@@ -7,6 +7,14 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
+- tst touch_play is flaky: the left stick up, it walked 0.35 in 3 of 10 runs (1.1 to 4.1 in the others, needs > 1),
+	where the character spawns decides it (since players spawn at their homes? 2026-11-18), and a run stalled
+- tst lint_systems: chunk3_textured_render_system (src/rendering/rendering3/sys/render_chunks.c:184) has no
+	zox_sys_on_begin() / zox_sys_on_end() (2026-11-18)
+- tst pipeline_syncs fails 2 of 3: 21 merges (over 11), 4 main thread systems between multi threaded ones:
+	camera_underwater_system (pre_physics), xr_room_walk_system, xr_head_bone_system, xr_hands_ik_system (2026-11-18)
+- tst sound_balance fails 4 of 68: on small speakers click, splash, stone and water are only 1.5 to 2x the music
+	under them (2026-11-18)
 - tst split_screen fails 3 of 45 checks (since a822f67b0, local coop): back at the main menu the game camera and its
 	ui camera stay half width (230x460, not 460x460), and the join ui doesn't show both players again
 - tst xr_frustum fails 1 of 2 checks: "an eye sees [0.156] of its distance past the culling frustum" (failing at
