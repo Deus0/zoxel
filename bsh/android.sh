@@ -495,6 +495,13 @@ mkdir -p "${staging_path}"
 cp -a "${sdl_android}/." "${staging_path}/"
 echo "- SDL Android project copied"
 
+# the game's launcher icons (gam/<game>/android/res/mipmap-*/ic_launcher.png) over sdl's,
+#  made from res/textures/game.bmp (the window icon) by bsh/android_icons.sh
+if [[ -d "${gam_path}/android/res" ]]; then
+    cp -a "${gam_path}/android/res/." "${staging_path}/app/src/main/res/"
+    echo "- Game icons copied"
+fi
+
 
 # ============================================================
 # OpenXR

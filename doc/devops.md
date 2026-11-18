@@ -36,6 +36,8 @@
 - android.sh patches SDL's android-project (copied to and/<game>/) for each build:
 	- app id org.<game> (org.zoxel), debug builds org.zoxel.debug, the java namespace stays org.libsdl.app
 	- versionCode is the build date (20261118), versionName 2026.11.18, so a newer apk updates an older one
+	- launcher icons: gam/<game>/android/res/mipmap-*/ic_launcher.png replace sdl's, made from res/textures/game.bmp
+	  (the window icon) with a clear background, after changing it: bash bsh/android_icons.sh (needs imagemagick)
 - codeberg doesn't run it yet, see doc/todo.md Devops
 
 ## Todo
