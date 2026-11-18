@@ -106,9 +106,15 @@ fi
 root="$(pwd)"
 # tst/: logs, and the files tests write to look at (screenshots, wavs), gitignored
 #   the game finds it from zox_tst_dir (src/_/tst/_.c zox_tst_path); set it to keep a run's files apart from
-#   another's running at the same time, i.e. zox_tst_dir=tst/mine
+#   another's running at the same time, i.e. zox_tst_dir=tst/mine (its build goes to bin/tst_mine/ too)
 log_dir="${zox_tst_dir:-${root}/tst}"
 [[ "${log_dir}" != /* ]] && log_dir="${root}/${log_dir}"
+# with its own zox_tst_dir a run builds its own binary too (bin/tst_<dir>/), so another run's build can't remove or
+#   change it mid test; zox_tst_out names it
+out_name="${zox_tst_out:-}"
+[[ -z "${out_name}" && -n "${zox_tst_dir:-}" ]] && out_name="tst_$(basename "${log_dir}")"
+out_args=()
+[[ -n "${out_name}" ]] && out_args=(--out "${out_name}")
 mkdir -p "${log_dir}"
 export zox_tst_dir="${log_dir}"
 # lint_* tests are scripts (bsh/<name>.sh), not the game: conventions, i.e. lint_systems
@@ -133,20 +139,21 @@ if [[ ${build} == "1" && ${release} == "1" ]]; then
     if ! (ulimit -v 4500000; zox_extra_dflags="-Dzox_tests" nice -n 19 bash bsh/build.sh zoxel --release --logs \
         --out tst_release > "${log_dir}/build.log" 2>&1); then
         grep -m 20 "error" "${log_dir}/build.log"
-        echo "!! build failed, see [tst/build.log]"
+        echo "!! build failed, see [${log_dir#${root}/}/build.log]"
         exit 2
     fi
 elif [[ ${build} == "1" ]]; then
     echo "> building debug"
     # cap the compiler too, it's a single big translation unit
-    if ! (ulimit -v 4500000; nice -n 19 bash bsh/build.sh zoxel --debug --logs > "${log_dir}/build.log" 2>&1); then
+    if ! (ulimit -v 4500000; nice -n 19 bash bsh/build.sh zoxel --debug --logs "${out_args[@]}" > "${log_dir}/build.log" 2>&1); then
         grep -m 20 "error" "${log_dir}/build.log"
-        echo "!! build failed, see [tst/build.log]"
+        echo "!! build failed, see [${log_dir#${root}/}/build.log]"
         exit 2
     fi
 fi
 
 bin=$(ls -t bin/zoxel_*_dev/zoxel-dev.bin 2>/dev/null | head -1)
+[[ -n "${out_name}" ]] && bin="bin/${out_name}/${out_name}.bin" && [[ ! -f "${bin}" ]] && bin=""
 [[ ${release} == "1" ]] && bin="bin/tst_release/tst_release.bin"
 if [[ -z "${bin}" ]]; then
     echo "!! no dev binary found in [bin/zoxel_*_dev]"
