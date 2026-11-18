@@ -1,6 +1,11 @@
 # Done
 
 ## 2026-11-18
+-x grass more natural, less of a mass: tall grass in clumps with open grass between (a clump field 6 blocks apart
+  scales tall grass and flowers from none to twice their share, the shares hold), grasslands 0.55 to 0.30 tall
+  grass, jungle 0.62 to 0.40; a tall grass block is tufts: 12 to 22% of its columns a stalk each, tallest in the
+  middle (build_vox_tufts, seeded by the model; it filled most columns, every variant alike); tst vegetation_cover
+  (clumped), grass_tufts
 -x marked off, fixed earlier and left in the todo: arms out of step on a character not the player's (tst arms_in_step
   passes), furniture_place stalling (passes), body part seeds (now body_seed + spawn_count, not the realm's index)
 -x mountains clear their middle third of vegetation (mountain_clears_vegetation): the check was
