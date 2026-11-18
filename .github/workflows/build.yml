@@ -56,7 +56,7 @@ jobs:
             deps: --windows
             build: bash bsh/windows.sh --release
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: packages
         env:
           DEBIAN_FRONTEND: noninteractive
@@ -64,14 +64,14 @@ jobs:
           apt-get update
           apt-get install -y $(bash bsh/deps.sh ${{ matrix.deps }})
       - name: cache libs
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ext
             lib
           key: libs-${{ matrix.target }}-${{ hashFiles('bsh/libs-download.sh', 'bsh/libs-compile.sh', 'bsh/deps.sh') }}
       - name: cache flecs
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: inc/flecs
           key: flecs-${{ hashFiles('bsh/flecs.sh', 'bsh/flecs_fix.sh', 'bsh/flecs_patches/*') }}
@@ -79,10 +79,11 @@ jobs:
         run: bash bsh/flecs.sh
       - name: build
         run: ${{ matrix.build }}
-      - uses: actions/upload-artifact@v4
+      # the zip as it is (archive: false), not zipped again, named by its file
+      - uses: actions/upload-artifact@v7
         with:
-          name: zoxel_${{ matrix.target }}
           path: zip/*.zip
+          archive: false
           if-no-files-found: error
           retention-days: 14
 
@@ -92,7 +93,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: packages
         env:
           DEBIAN_FRONTEND: noninteractive
@@ -100,7 +101,7 @@ jobs:
           apt-get update
           apt-get install -y $(bash bsh/deps.sh --android)
       - name: cache sdk
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             and/sdk
@@ -108,12 +109,12 @@ jobs:
             ext
           key: android-${{ hashFiles('bsh/android_prepare.sh', 'bsh/libs-download.sh', 'bsh/xr.sh') }}
       - name: cache gradle
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.gradle/caches
           key: gradle-${{ hashFiles('bsh/android_prepare.sh') }}
       - name: cache flecs
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: inc/flecs
           key: flecs-${{ hashFiles('bsh/flecs.sh', 'bsh/flecs_fix.sh', 'bsh/flecs_patches/*') }}
@@ -137,10 +138,17 @@ jobs:
         run: bash bsh/android.sh zoxel --release --signed
       - name: build xr
         run: bash bsh/android.sh zoxel --release --signed --xr
-      - uses: actions/upload-artifact@v4
+      # each apk as it is (archive: false uploads one file)
+      - uses: actions/upload-artifact@v7
         with:
-          name: zoxel_android_arm
-          path: zip/*.apk
+          path: zip/zoxel_android_arm_2*.apk
+          archive: false
+          if-no-files-found: error
+          retention-days: 14
+      - uses: actions/upload-artifact@v7
+        with:
+          path: zip/zoxel_android_arm_xr_*.apk
+          archive: false
           if-no-files-found: error
           retention-days: 14
 
@@ -151,7 +159,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           path: zips
           merge-multiple: true
