@@ -105,12 +105,11 @@ if [[ ${gpu} == "0" ]]; then
 fi
 root="$(pwd)"
 # tst/: logs, and the files tests write to look at (screenshots, wavs), gitignored
-#   the game finds it from zox_tst_dir (src/_/tst/_.c zox_tst_path); set it to keep a run's files apart from
-#   another's running at the same time, i.e. zox_tst_dir=tst/mine (its build goes to bin/tst_mine/ too)
+#   the game finds it from zox_tst_dir (src/_/tst/_.c zox_tst_path); set, i.e. zox_tst_dir=tst/mine, logs go there
+#   and the build to bin/tst_mine/
 log_dir="${zox_tst_dir:-${root}/tst}"
 [[ "${log_dir}" != /* ]] && log_dir="${root}/${log_dir}"
-# with its own zox_tst_dir a run builds its own binary too (bin/tst_<dir>/), so another run's build can't remove or
-#   change it mid test; zox_tst_out names it
+# with zox_tst_dir set the build goes to bin/tst_<dir>/, zox_tst_out names it
 out_name="${zox_tst_out:-}"
 [[ -z "${out_name}" && -n "${zox_tst_dir:-}" ]] && out_name="tst_$(basename "${log_dir}")"
 out_args=()
