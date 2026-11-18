@@ -19,7 +19,7 @@ zox_tst_dir=tst/mine bash bsh/tst.sh <name>   # logs to tst/mine/, builds to bin
 - Tests run hidden (`--background`), silent, with software rendering, capped memory and a timeout.
 - tst.sh builds `--debug --logs`. Testing a `--profiler` build with `--nobuild` adds merges (pipeline_syncs fails on it)
 - Tests run on `--tiny` terrain, ones in `medium_tests` (bsh/tst.sh) on `--medium` (far lods to compare), ones in
-  `aesthetic_tests` (the readme's screenshots, doc/screenshot/) far and tall, little fog, 1080p, seed 2.
+  `aesthetic_tests` (the readme's screenshots, doc/screenshot/) far and tall, little fog, 1080p, seed 391559643 (hills behind its town).
 - Tests render in software (mesa llvmpipe, offscreen). The egl device is picked by machine: 0 on x86, 2 on the
   arm board. Override it with `zox_tst_egl_device=<n>` ("Invalid EGL device is requested" means a wrong one).
 - Tests use their own settings (defaults, i.e. Block Res 4). To run like real play, copy real ones in:
