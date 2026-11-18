@@ -94,8 +94,8 @@
                     lod->value);
             }
         }
-        byte stack_i = 0;
-        for (short y = - render_distance_y; y <= render_distance_y; y++, stack_i++) {
+        for (int stack_i = 0; stack_i < stack->length; stack_i++) {
+            const int y = stack_i - stack->length / 2;
             entity chunk = stack->value[stack_i];
 #ifdef zox_safety_checks
             if (!zox_valid(chunk)) {

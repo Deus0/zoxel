@@ -8,9 +8,9 @@ zoxc_int2(TunkPosition);
 zoxc_arrayd(BiomeMap, byte);
 zoxc_arrayd(HeightMap, byte);
 zoxc_hashmap(TunkLinks, int2);
-// NOTE: this has to be used with render_distance_y
-#define chunk3_stack_length render_distance_y_max * 2 + 1
-zoxc_array(Chunk3Stack, entity, chunk3_stack_length);
+// a tunk's chunks bottom to top, render_distance_y * 2 + 1 of them when it spawned (its own length, the setting can
+//  change after): index k is chunk y k - length / 2
+zoxc_arrayd(Chunk3Stack, entity);
 zoxc_byte(Chunk3Stacked);
 // a tunk's top down colours (the first block from the top in each column, shaded by height), a side a power of two
 //  (its chunks' depth), made when a map needs them (tunk_map_colors), cleared when its chunks change
@@ -30,7 +30,7 @@ void zox_components_tunks(ecs *world) {
     zoxd_int2(TunkPosition);
     zoxd_arrayd(BiomeMap);
     zoxd_arrayd(HeightMap);
-    zoxd(Chunk3Stack);
+    zoxd_arrayd(Chunk3Stack);
     zoxd_byte(Chunk3Stacked);
     zoxd_arrayd(TunkMapColors);
     zoxd_int(TunkMapsVersion);

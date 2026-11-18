@@ -121,7 +121,7 @@ byte zox_tst_map_pixel_ready(ecs* world) {
         const int3 chunk_at = real_position_to_chunk_position(zox_tst_mp_at, chunk_length, scale);
         const entity tunk = int2_hashmap_get(zox_get(terrain, TunkLinks)->value, (int2) { chunk_at.x, chunk_at.z });
         const Chunk3Stack* stack = zox_valid(tunk) ? zox_get(tunk, Chunk3Stack) : NULL;
-        const entity chunk = stack ? stack->value[0] : 0;
+        const entity chunk = stack && stack->length ? stack->value[0] : 0;
         zox_tst_mp_version = zox_tst_mp_maps_version(world, terrain);
         if (zox_valid(chunk)) {
             zox_add(chunk, VoxelNodeDirty);

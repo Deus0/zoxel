@@ -109,7 +109,7 @@ byte zox_tst_npcs_after_load_ready(ecs* world) {
     zox_tst_nal_spot_chunks[s] = 0;
     if (zox_valid(tunk)) {
         const Chunk3Stack* stack = zox_get(tunk, Chunk3Stack);
-        for (int k = 0; k < chunk3_stack_length; k++) {
+        for (int k = 0; k < stack->length; k++) {
             zox_tst_nal_spot_chunks[s] += zox_valid(stack->value[k]) && zox_has(stack->value[k], CharactersSpawned);
         }
     }

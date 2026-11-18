@@ -10,8 +10,6 @@
 - tst sky_clouds fails: "no cloud in the sky looking up" (0.07% of the band), on 31a2c2740 too (2026-11-20)
 - tst lint_systems fails: chunk3_textured_render_system and chunk3_transparent_render_system
   (rendering3/sys/render_chunks.c) have no zox_sys_on_begin / zox_sys_on_end (2026-11-20)
-- --vertical over 4 smashed the stack (terrain_stream_queue_system, Chunk3Stack is render_distance_y_max * 2 + 1),
-	clamped to 4 now; a taller world needs a bigger max (2026-11-18)
 - tst touch_play is flaky: the left stick up, it walked 0.35 in 3 of 10 runs (1.1 to 4.1 in the others, needs > 1),
 	where the character spawns decides it (since players spawn at their homes? 2026-11-18), and a run stalled
 - tst lint_systems: chunk3_textured_render_system (src/rendering/rendering3/sys/render_chunks.c:184) has no

@@ -14,9 +14,12 @@ byte tunk_map_colors(ecs* world, entity tunk) {
         return 0;
     }
     const Chunk3Stack* stack = zox_get(tunk, Chunk3Stack);
-    const VoxelNode* stackv[render_distance_y * 2 + 1];
+    if (!stack->length) {
+        return 0;
+    }
+    const VoxelNode* stackv[stack->length];
     byte chunk_depth = 0;
-    for (int k = render_distance_y * 2; k >= 0; k--) {
+    for (int k = stack->length - 1; k >= 0; k--) {
         const entity chunk = stack->value[k];
         stackv[k] = 0;
         if (!zox_valid(chunk)) {
@@ -39,7 +42,7 @@ byte tunk_map_colors(ecs* world, entity tunk) {
         block_colors[k] = zox_valid(blocks->value[k]) ? zox_getv(blocks->value[k], Color) : color_black;
     }
     const int side = powers_of_two[chunk_depth];
-    const float height_div = render_distance_y * 2 * side;
+    const float height_div = (stack->length - 1) * side;
     zox_muter(tunk, TunkMapColors, cache);
     resize_TunkMapColors(cache, side * side);
     byte3 position = byte3_zero;
@@ -47,8 +50,8 @@ byte tunk_map_colors(ecs* world, entity tunk) {
         for (position.z = 0; position.z < side; position.z++) {
             // from the top of the world, down to the first block
             byte top_voxel = 0;
-            byte top_height = 255;
-            for (int k = render_distance_y * 2; k >= 0 && !top_voxel; k--) {
+            int top_height = 255;
+            for (int k = stack->length - 1; k >= 0 && !top_voxel; k--) {
                 if (!stackv[k]) {
                     continue;
                 }

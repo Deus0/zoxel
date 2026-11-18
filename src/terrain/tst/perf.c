@@ -96,7 +96,7 @@ static inline int zox_tst_near_pending(ecs* world, int2 stream) {
             continue;
         }
         const Chunk3Stack* stack = zox_get(tunk, Chunk3Stack);
-        for (int k = 0; k < 2 * render_distance_y + 1; k++) {
+        for (int k = 0; k < stack->length; k++) {
             if (zox_valid(stack->value[k]) && zox_has(stack->value[k], ChunkLodDirty)) {
                 pending++;
                 const entity chunk = stack->value[k];

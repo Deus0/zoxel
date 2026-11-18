@@ -3,7 +3,6 @@ byte vox_lod_near = 1;
 byte terrain_lod_near = 3;      // also character far
 byte terrain_lod_far = 16;       // 1 | 2 | 4 | 8 | 16
 byte render_distance_y = 3;     // vertical
-#define render_distance_y_max 4
 byte disable_terrain_lods = 0;
 byte terrain_lod_near_min = 1;
 byte terrain_lod_near_max = 8;
@@ -11,6 +10,7 @@ const byte terrain_lod_far_min = 1;
 const byte terrain_lod_far_max = 64;  // options, min + percentage*max
 byte terrain_lod_far_buffer = 2;    // buffer the near to far - adds a minimum low lods
 const byte render_distance_y_min = 1;
+const byte render_distance_y_slider_max = 16;   // the settings slider's end only, --vertical goes past it
 float settings_terrain_lod_start = 0.25f;
 extern int get_characters_count(ecs *world);
 extern int count_entities_npc(ecs *world);

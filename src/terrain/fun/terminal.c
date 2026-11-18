@@ -37,9 +37,9 @@ void process_arguments_terrain(ecs *world, char* args[], int count) {
             zox_log("+ [far terrain] [%i]", terrain_lod_far)
             zox_terrain_size_set_by_args();
         } else if (strcmp(args[i], "--vertical") == 0 && i + 1 < count) {
-            // chunks streamed up and down, the land's highest is this many chunks tall (heights/fun), up to render_distance_y_max
-            // at most render_distance_y_max, a tunk's chunk stack is that tall (tunks/com, 5 smashed the stack)
-            render_distance_y = (byte) int_min(atoi(args[++i]), render_distance_y_max);
+            // chunks streamed up and down, the land's highest is this many chunks tall (heights/fun, heights are bytes:
+            //  past 255 blocks only more sky)
+            render_distance_y = (byte) atoi(args[++i]);
             zox_log("+ [vertical terrain] [%i]", render_distance_y)
             zox_terrain_size_set_by_args();
         } else if (strcmp(args[i], "--large") == 0) {

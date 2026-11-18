@@ -13,7 +13,7 @@ void tunk_end_system(iter* it) {
         if (generate->value != zox_generate_tunk_end) {
             continue;
         }
-        for (int j = -render_distance_y, k = 0; j <= render_distance_y; j++, k++) {
+        for (int k = 0; k < stack->length; k++) {
             entity chunk3 = stack->value[k];
             if (!zox_valid(chunk3)) {
                 continue;

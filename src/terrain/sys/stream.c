@@ -141,8 +141,8 @@ static inline byte stream_tunk_distance(ecs* world, entity terrain, entity tunk,
                 lod->value);
         }
     }
-    byte stack_i = 0;
-    for (short y = - render_distance_y; y <= render_distance_y; y++, stack_i++) {
+    for (int stack_i = 0; stack_i < stack->length; stack_i++) {
+        const int y = stack_i - stack->length / 2;
         entity chunk = stack->value[stack_i];
 #ifdef zox_safety_checks
         if (!zox_valid(chunk)) {
@@ -269,8 +269,8 @@ void terrain_stream_queue_system(iter* it) {
                 entity tunk = update.tunk;
                 const Chunk3Stack* stack = zox_get(tunk, Chunk3Stack);
                 if (is_kill) {
-                    int k = 0;
-                    for (int j = -render_distance_y; j <= render_distance_y; j++, k++) {
+                    for (int k = 0; k < stack->length; k++) {
+                        const int j = k - stack->length / 2;
                         entity chunk = stack->value[k];
                         if (!zox_valid(chunk)) {
                             continue;
@@ -371,7 +371,8 @@ void terrain_stream_queue_system(iter* it) {
             // continue;
             // Spawn chunks per Tunk, if new!
             Chunk3Stack stack = (Chunk3Stack) { 0 };
-            byte stack_i = 0;
+            initialize_Chunk3Stack(&stack, size.y * 2 + 1);
+            int stack_i = 0;
             for (int y = - size.y; y <= size.y; y++, stack_i++) {
                 int3 chunk_position = (int3) {
                     update.position.x,
@@ -403,7 +404,8 @@ void terrain_stream_queue_system(iter* it) {
                         chunk_position.x, chunk_position.y, chunk_position.z, update.distance);
                 }
             }
-            zox_set_ptr(tunk, Chunk3Stack, stack);
+            zox_set_ptr(tunk, Chunk3Stack, stack);  // copied in
+            dispose_Chunk3Stack(&stack);
             stream_slots_spawn++;
             processed++;
         }

@@ -33,8 +33,8 @@ void tunk2_death_system(iter* it) {
         }
         // Remove Chunks too
         zox_muter(terrain, ChunkLinks, chunks);
-        int k = 0;
-        for (int j = -render_distance_y; j <= render_distance_y; j++, k++) {
+        for (int k = 0; k < stack->length; k++) {
+            const int j = k - stack->length / 2;
             entity chunk = stack->value[k];
             if (!zox_valid(chunk)) {
                 continue;
