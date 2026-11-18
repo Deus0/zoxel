@@ -33,6 +33,7 @@
 	  (zox_tst_dig_edge=1), Block Res 4 and 5: the hole's faces show lit (the upload waits for their colours), the
 	  faces around keep their light; needs where it shows (dark places, a cave, a house, near water, at night?)
 	- the dug block's faces stay about 7 frames before the rebuilt mesh replaces them, relit as the light comes in
+- tst furniture_place stalls on "air in the player's chunk" (2026-11-18, also without the water level changes)
 - furniture_hits is flaky: some door top rays miss now and then, once the app closed mid test
 - perf_stream and tables_stream sometimes fail: lod swaps don't settle in 20s (flaky before the test move too)
 - grass shows overlapping copies, two lods at once (maybe rare): tst grass_overlap (vodes3/tst) sees no copies at the
@@ -191,7 +192,9 @@
 - Flying's slowest frames now: new tables while streaming (16%), colored chunk meshes (9%), tst perf_fly
 - Water in the world (the block, its rippling texture and blended meshes are in, tst water_block)
 	- (done: a sea at 18, lakes in bowls, doc/tech/water.md) rivers later
-	- (done: flowing, it falls and spreads 4, doc/tech/water.md) water levels, thinner as it spreads, and draining
+	- (done: flowing with levels, thinner as it spreads, drains, doc/tech/water.md Flowing)
+	- play test water levels: dig by a lake, pour water down a hill, take a source away (does it look right as it
+	  drains? the falling column's sides)
 	- (done: swimming, the blue view under it, muffled sounds, meshes far to near: tst swim, chunk_order)
 	- play test swimming: sinking speed, the stroke up, climbing out onto a shore, the underwater fog's thickness
 - Remove trigger system for lods

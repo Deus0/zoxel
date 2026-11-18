@@ -22,11 +22,10 @@ zox_tag(BlockBricks);
 zox_tag(BlockFlower);
 zox_tag(BlockRoad);
 zox_tag(BlockWater);       // a liquid (BlockMaterial): see through, walked through, it flows (terrain/water)
-// water flowing on a terrain (sys/water_flow.c): a block to check when its time comes, and how far the water has
-//  spread sideways to reach it
+zox_tag(BlockWaterFlowing); // water spread from a source, a level of it (BlockWaterLevel 1 to 7): it drains
+// water flowing on a terrain (sys/water_flow.c): a block to check when its time comes
 typedef struct {
     int3 block;
-    byte steps;
     double at;
 } WaterFlow;
 zoxc_arrayd(WaterFlows, WaterFlow)
@@ -63,6 +62,7 @@ void zox_components_terrain(ecs *world) {
     zoxd_tag(BlockFlower);
     zoxd_tag(BlockRoad);
     zoxd_tag(BlockWater);
+    zoxd_tag(BlockWaterFlowing);
     zoxd_arrayd(WaterFlows);
     zoxd_byte(InsideBlockLast);
     zoxd_tag(InWater);

@@ -7,6 +7,9 @@ zox_tag(BlockInvinsible);
 zox_tag(BlockCanGroup);
 zox_tag(SingleTextureBlock);
 zoxc_byte(BlockLightPass);
+#define zox_water_level_source 8
+zoxc_byte(BlockWaterLevel); // water's depth in eighths of a block (terrain/sys/water_flow.c): a source 8, flowing 7 to 1,
+                            //  a flowing block's top is drawn at its level (chunks3 build_textured.c)
 zoxc_byte(BlockLight);      // light a block gives off, 0 none (glow stone), it floods out of its sides
 zox_tag(BlockTableDirty);   // a realm's block indices changed, its saved chunks remap (chunks3/io/sys/block_table.c)
 zoxc_byte(BlockModel);
@@ -51,6 +54,7 @@ void zox_components_blocks(ecs *world) {
     zoxd_tag(BlockSoundTrigger);
     zoxd_nf_tag(SingleTextureBlock);
     zoxd_byte(BlockLightPass);
+    zoxd_byte(BlockWaterLevel);
     zoxd_byte(BlockLight);
     zoxd_tag(BlockTableDirty);
     zoxd_byte(BlockModel);

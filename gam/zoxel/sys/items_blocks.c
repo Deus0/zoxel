@@ -29,8 +29,8 @@ void items_realm_spawn_system(iter* it) {
                     zox_get_name(block));
                 continue;
             }
-            // fillers (a bed's other half) aren't items
-            if (zox_has(block, BlockFiller)) {
+            // fillers (a bed's other half) and flowing water aren't items
+            if (zox_has(block, BlockFiller) || zox_has(block, BlockWaterFlowing)) {
                 continue;
             }
             entity item = spawn_block_item(

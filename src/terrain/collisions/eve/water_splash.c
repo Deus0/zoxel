@@ -35,13 +35,12 @@ void water_splash_event(iter* it) {
         if (!zox_valid(terrain)) {
             continue;
         }
-        const entity water = zox_get_child_by_id(world, zox_get_parent(world, terrain), zox_id(BlockWater));
-        if (!zox_valid(water)) {
+        WaterLevels levels;
+        if (!water_levels_get(world, zox_get_parent(world, terrain), &levels)) {
             continue;
         }
-        const byte water_index = zox_getv(water, BlockIndex);
-        const byte entering = was != water_index && inside->value == water_index;
-        const byte leaving = was == water_index && inside->value != water_index;
+        const byte entering = !voxel_is_water(&levels, was) && voxel_is_water(&levels, inside->value);
+        const byte leaving = voxel_is_water(&levels, was) && !voxel_is_water(&levels, inside->value);
         if (!entering && !leaving) {
             continue;
         }

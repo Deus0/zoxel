@@ -99,7 +99,8 @@ void terrain_item_drop_system(iter* it) {
         const BlockLinks* blocks = zox_get(realm, BlockLinks);
         for (int j = drops->count - 1; j >= 0; j--) {
             VoxelNodeUpdate update = drops->ptr[j];
-            if (update.state != zox_voxel_queue_post) {
+            // flowing water's own edits (filling, draining) drop nothing
+            if (update.state != zox_voxel_queue_post || update.flowed) {
                 continue;
             }
             byte voxel = update.old_value;
@@ -117,7 +118,7 @@ void terrain_item_drop_system(iter* it) {
             if (!update.value) {
                 multi_block_removed(world, terrain, realm, chunk_block_position(world, e, update.position), voxel, update.old_data);
             }
-            if (zox_has(block, BlockFiller)) {
+            if (zox_has(block, BlockFiller) || zox_has(block, BlockWaterFlowing)) {
                 continue;
             }
             entity block_item = zox_get_link(world, block, ItemLink);

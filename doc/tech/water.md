@@ -64,14 +64,28 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
 
 ## Flowing
 
-- src/terrain/sys/water_flow.c. A chunk just edited (`VoxelNodePostDirty`) adds its edited blocks to its terrain's
-  `WaterFlows`; `water_flow_system` takes up to 64 due a frame:
-  - air with water over it or beside it fills with water;
-  - water falls into air under it, else spreads to air beside it, at most 4 blocks (`zox_water_flow_steps`) from
-    where the flow began; a step every quarter second (`zox_water_flow_time`).
-- Flowing water's own edits are marked (`VoxelNodeUpdate.flowed`) and start no flow, so it stops. Dug out of a
-  lake's side, a lake fills the hole and spreads 4 into a tunnel; the lake itself never drains (water doesn't move,
-  only fills).
+- Levels, Minecraft style: `water` (BlockWater) is a source, `BlockWaterLevel` 8, it never moves (the sea, lakes,
+  placed water). Flowing water is a block a level, `water 7` to `water 1` (BlockWaterFlowing, gam/zoxel/sys/
+  blocks.c, after water so the blocks before keep their indices): no texture of their own (the see through mesh
+  binds the first liquid's, water's), no items, they drop nothing.
+- `WaterLevels` (terrain/fun/water.c): a realm's water voxels by level and levels by voxel; `voxel_is_water`.
+  Swimming, the splash and the view under water take any level (`terrain_water_at`: a flowing block only up to
+  its level, unless water is over it).
+- src/terrain/sys/water_flow.c: a block's water is what flows into it: from water over it 7 (it falls); else from
+  the water beside it that lies on something (not air, not flowing), a level less (a source gives 7). Falling water
+  doesn't spread sideways, only where it lands.
+- A chunk just edited (`VoxelNodePostDirty`) adds its edited blocks and the six round each to its terrain's
+  `WaterFlows`; `water_flow_system` takes up to 64 due a frame: a block of air or flowing water takes the level
+  flowing into it (filling, rising, or lowering), and when it changed the blocks round it are checked a step
+  (`zox_water_flow_time`, a quarter second) later. A block already waiting waits till the later time (else it was
+  checked before the change round it landed, and lost).
+- Draining: water with nothing feeding it drops to what its neighbours give it, a level less each step, until it's
+  gone. A source taken out drains all it fed; a lake (sources) never drains, dug out of its side it fills the hole
+  and spreads 7 into a tunnel.
+- Flowing water's own edits are marked (`VoxelNodeUpdate.flowed`): they start no flows of their own and drop nothing.
+- Drawn thinner (chunks3/sys/build_textured.c, `heights` from BlockWaterLevel): a flowing block's top face and its
+  sides' tops at level / 8 of a block, unless water is over it (no top face, drawn full). The gpu mesher
+  (zox_chunks3_gpu_meshing, off) doesn't lower them.
 - Generated water (landfill) doesn't flow: only edits do.
 
 ## Swimming
@@ -104,8 +118,9 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
 - `block_frames`: every animated block's frames side by side (tst/blocks/<block>_frames.ppm), they change, loop and
   tile.
 - `water_light`: a pool in sunlight filled a layer at a time, each a light_dim dimmer down; its top drained; covered.
-- `water_flow`: no player; water dropped on a brick floor lands and covers the blocks within 4 of where it landed,
-  then a brick dug from under it drains it down the hole.
+- `water_flow`: no player; a source over a brick floor falls, lands and spreads a level less a block (7 - d, none past
+  6), its mesh draws the levels' tops at their heights; a brick dug from under it, it falls down the hole; the source
+  taken out, it all drains.
 - `swim`: a character dropped in a pool sinks slower than 1m a second, swims up to the surface holding jump (not
   far over it), and climbs out onto a shore; `terrain_water_at` in the pool and over it.
 - `chunk_order`: see through chunk meshes drawn far to near, opaque ones as they come.
@@ -116,7 +131,8 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
 
 ## Not yet
 
-- Rivers; water with levels (thinner as it spreads, Minecraft style) and draining; flowing across a chunk not loaded.
+- Rivers; flowing across a chunk not loaded; currents (flowing water pushing what's in it); a falling column shows
+  its side faces' tops full, not sloped; the gpu mesher draws flowing water full height.
 - Blended faces within one chunk mesh aren't sorted; meshes in different tables aren't sorted against each other.
 - Flood light (sideways) through water isn't dimmed more than through air.
 - Towns on sunken ground by the sea (todo.md Bugs).

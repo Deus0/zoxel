@@ -25,6 +25,7 @@ typedef struct {
     const mesh_uvs_build_data* mesh_data;
     const TilemapUVs* tilemap_uvs;
     const byte* voxel_solidity;
+    const byte* heights;    // a block's height in eighths, by block index - 1 (BlockWaterLevel: flowing water), 0 full
     byte whole_texture;     // a liquid's mesh: each face its own texture's whole, not a tilemap tile
 } terrain_build_data;
 
@@ -132,14 +133,28 @@ static inline void zox_terrain_building_dig(
     float3_scale_p(&positionf, scale);
     // NOTE: UVIndex is calculated by block index * 6 for faces
     uint block_uv_index = block_index * 6 * 4;
+    // a lower block (flowing water): its top, and its sides' tops, at its height, unless water's over it (no top face)
+    const byte eighths = data.heights[block_index];
+    const byte lowered = eighths && (sides->value & (1 << (direction_up + 1)));
+    float3 lowered_vertices[4];
     for (byte direction = 0; direction < 6; direction++) {
         if (!(sides->value & (1 << (direction + 1)))) {
             continue;
         }
         uint face_uv_index = block_uv_index + direction * 4;
+        const float3* vertices = voxel_face_vertices_n[direction];
+        if (lowered) {
+            for (byte k = 0; k < 4; k++) {
+                lowered_vertices[k] = vertices[k];
+                if (lowered_vertices[k].y > 0) {
+                    lowered_vertices[k].y = eighths / (float) zox_water_level_source;
+                }
+            }
+            vertices = lowered_vertices;
+        }
         octree_face_data face = {
             .indicies = voxel_face_indicies_n + direction * voxel_face_indicies_length,
-            .vertices = voxel_face_vertices_n[direction],
+            .vertices = vertices,
             .uvs = data.whole_texture ? voxel_face_uvs[direction] : &data.tilemap_uvs->value[face_uv_index],
         };
         zox_build_voxel_face(
@@ -160,6 +175,8 @@ void chunk_textured_build_system(iter* it) {
     entity cached_blocks_parent = 0;
     byte solidity[255];
     memset(solidity, 1, 255);
+    byte heights[255];
+    memset(heights, 0, 255);
     entity tilemap_cache = 0;
     const TilemapUVs* tilemap_uvs = NULL;
     zox_sys_on_begin();
@@ -258,8 +275,12 @@ void chunk_textured_build_system(iter* it) {
 #endif
             cached_blocks_parent = blocks_parent;
             memset(solidity, 1, blocks->length);
-            for (int j = 0; j < blocks->length; j++) {
+            memset(heights, 0, 255);
+            for (int j = 0; j < blocks->length && j < 255; j++) {
                 entity block = blocks->value[j];
+                if (zox_valid(block) && zox_has(block, BlockWaterLevel) && zox_getv(block, BlockWaterLevel) < zox_water_level_source) {
+                    heights[j] = zox_getv(block, BlockWaterLevel);
+                }
                 if (!zox_valid(block) ||
                     !zox_has(block, BlockModel))
                 {
@@ -320,6 +341,7 @@ void chunk_textured_build_system(iter* it) {
             .tilemap_uvs = tilemap_uvs,
             .whole_texture = zox_has(material, BlockMaterial) && zox_getv(material, BlockMaterial) == zox_block_material_liquid,
             .voxel_solidity = solidity,
+            .heights = heights,
             .mesh_data = &mesh_data,
         };
         zox_terrain_building_dig(

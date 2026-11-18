@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-18
+-x Water levels, Minecraft style: water is a source, flowing water a block a level (water 7 to 1), a level less a
+  block as it spreads, falls as 7, drains when nothing feeds it (a source taken out drains all it fed); drawn
+  thinner, a flowing top at level / 8; flowing edits drop nothing; a check waiting is pushed later, not lost
+  (doc/tech/water.md Flowing, tst water_flow)
 -x Sunlight dims in water: 24 a block (light_water_decay), a beam known by its light, not by being full sunlight
   (light_beam_above, dark_sunbeam carries the light it expects); placed water relights the beam under it dimmer,
   drained water brighter; the dark flood clears per voxel (a beam beside it stayed lit); doc/tech/water.md Light

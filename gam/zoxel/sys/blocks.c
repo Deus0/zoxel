@@ -145,10 +145,31 @@ void blocks_realm_spawn_system(iter* it) {
             const color water_color = (color) { 40, 110, 200, zox_water_alpha };
             entity e2 = spawn_realm_block_textured(world, e, prefab_texture_water, block_seed, "water", water_color);
             zox_add(e2, BlockWater);
+            zox_setv(e2, BlockWaterLevel, zox_water_level_source);
             zox_setv(e2, BlockMaterial, zox_block_material_liquid);
             zox_setv(e2, BlockCollider, zox_block_air);
             zox_setv(e2, BlockLightPass, 1);
             link_hit_sound(world, e2, e, &hit_sound_water);
+            // flowing water, a block a level (7 to 1, thinner as it spreads, terrain/sys/water_flow.c), after it: no
+            //  texture of their own (liquid meshes bind the first liquid's, water's), no items
+            for (byte level = zox_water_level_source - 1; level >= 1; level--) {
+                char name[16];
+                snprintf(name, sizeof(name), "water %i", level);
+                entity e3 = zox_ins(world, prefab_block);
+                set_ZoxName(world, e3, name);
+                zox_set_unique_name(e3, name);
+                zox_setv(e3, Seed, block_seed + level);
+                zox_setv(e3, Color, water_color);
+                zox_add(e3, BlockBaked);
+                zox_add(e3, SingleTextureBlock);
+                zox_add(e3, BlockWaterFlowing);
+                zox_setv(e3, BlockWaterLevel, level);
+                zox_setv(e3, BlockMaterial, zox_block_material_liquid);
+                zox_setv(e3, BlockCollider, zox_block_air);
+                zox_setv(e3, BlockLightPass, 1);
+                zox_set_parent(world, e3, e);
+                link_hit_sound(world, e3, e, &hit_sound_water);
+            }
         }
         zox_add(e, BlocksDirty);
         if (dbg_log) {
