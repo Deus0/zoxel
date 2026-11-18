@@ -11,9 +11,9 @@
 void import_lines2(ecs* world) {
     zox_module(lines2);
     add_hook_load_shader(&spawn_shader_line2D);
-    add_hook_gpu_dispose(dispose_shader_line2D);
-    add_hook_gpu_restore(spawn_shader_line2D);
+    add_hook_gpu_restore(gpu_restore_lines2);
     add_hook_spawn_prefabs(spawn_prefabs_lines2D);
     zox_components_lines2(world);
+    zoxd(MaterialLine2D);
     zox_systems_line2(world);
 }

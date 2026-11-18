@@ -39,3 +39,18 @@ entity spawn_shader_new(ecs *world, int shader_index, guint2* ids) {
     zox_set(e, ShaderGPULink, { *ids });
     return e;
 }
+
+// a shader from its source files and a material of it, named; 0 if either fails
+entity spawn_material_source(ecs *world, char* name, char* vert, char* frag, guint* gpu_material) {
+    *gpu_material = 0;
+    const entity shader = spawn_shader_source(world, name, vert, frag);
+    if (!shader) {
+        return 0;
+    }
+    const entity e = spawn_material(world, shader, gpu_material);
+    if (!*gpu_material) {
+        zox_loge("[%s] material failed", name);
+    }
+    zox_name(name);
+    return e;
+}

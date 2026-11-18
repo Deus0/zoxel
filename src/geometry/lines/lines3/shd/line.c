@@ -1,44 +1,62 @@
 // uses custom fadeout with fog!
-guint2 line3D_shader;
-guint line3D_material;
-guint line3D_position_location;
-guint line3D_color_location;
-guint line3D_camera_matrix_location;
-guint line3D_fog_data_location;
+//  - its shader and material are entities (restored with the rest), their uniform locations a component on the material
+typedef struct {
+    gint position;
+    gint color;
+    gint camera_matrix;
+    gint fog_data;
+} MaterialLine3D;
+zoxc_custom(MaterialLine3D);
+
+MaterialLine3D create_MaterialLine3D(guint material) {
+    return (MaterialLine3D) {
+        .position = zox_gpu_get_material_attribute(material, "position"),
+        .color = zox_gpu_get_material_property(material, "color"),
+        .camera_matrix = zox_gpu_get_material_property(material, "camera_matrix"),
+        .fog_data = zox_gpu_get_material_property(material, "fog_data")
+    };
+}
 
 // instanced: every line in one draw, like particles (line3D_instanced.vert)
 //  - line_t is per vertex (0, 1), the line's start, end and color are per instance
-guint2 line3D_instanced_shader;
-guint line3D_instanced_material;
-guint line3D_instanced_t_location;
-guint line3D_instanced_start_location;
-guint line3D_instanced_end_location;
-guint line3D_instanced_color_location;
-guint line3D_instanced_camera_matrix_location;
-guint line3D_instanced_fog_data_location;
+typedef struct {
+    gint t;
+    gint start;
+    gint end;
+    gint color;
+    gint camera_matrix;
+    gint fog_data;
+} MaterialLine3DInstanced;
+zoxc_custom(MaterialLine3DInstanced);
+
+MaterialLine3DInstanced create_MaterialLine3DInstanced(guint material) {
+    return (MaterialLine3DInstanced) {
+        .t = zox_gpu_get_material_attribute(material, "line_t"),
+        .start = zox_gpu_get_material_attribute(material, "line_start"),
+        .end = zox_gpu_get_material_attribute(material, "line_end"),
+        .color = zox_gpu_get_material_attribute(material, "line_color"),
+        .camera_matrix = zox_gpu_get_material_property(material, "camera_matrix"),
+        .fog_data = zox_gpu_get_material_property(material, "fog_data")
+    };
+}
+
+entity material_line3D = 0;
+entity material_line3D_instanced = 0;
 guint line3D_instanced_t_buffer;
 guint line3D_instanced_data_buffer;     // LineData3D (start, end) per line
 guint line3D_instanced_color_buffer;    // Color per line
 int line3D_instanced_capacity = 0;      // lines the buffers hold, grows
 
-void dispose_shader_line3D(ecs* world) {
-    (void) world;
-    zox_gpu_dispose_shader(line3D_shader.x);
-    zox_gpu_dispose_shader(line3D_shader.y);
-    zox_dispose_material(line3D_material);
-    line3D_shader = guint2_zero;
-    line3D_material = 0;
-    if (line3D_instanced_material) {
-        zox_gpu_dispose_shader(line3D_instanced_shader.x);
-        zox_gpu_dispose_shader(line3D_instanced_shader.y);
-        zox_dispose_material(line3D_instanced_material);
-        zox_gpu_dispose_buffer(line3D_instanced_t_buffer);
-        zox_gpu_dispose_buffer(line3D_instanced_data_buffer);
-        zox_gpu_dispose_buffer(line3D_instanced_color_buffer);
-        line3D_instanced_capacity = 0;
-        line3D_instanced_shader = guint2_zero;
-        line3D_instanced_material = 0;
+// the line material bound, its fog and camera set: its locations
+static inline const MaterialLine3D* line3D_material_begin(ecs* world) {
+    const MaterialLine3D* line3D = zox_valid(material_line3D) ? zox_get(material_line3D, MaterialLine3D) : NULL;
+    if (line3D) {
+        zox_gpu_material(zox_getv(material_line3D, MaterialGPULink));
+        zox_gpu_enable_attribute(line3D->position);
+        zox_gpu_float4(line3D->fog_data, get_fog_value());
+        zox_gpu_float4x4(line3D->camera_matrix, render_camera_matrix);
     }
+    return line3D;
 }
 
 // the instance buffers hold at least count lines
@@ -58,25 +76,9 @@ static inline void line3D_instanced_reserve(int count) {
     line3D_instanced_capacity = capacity;
 }
 
-int initialize_shader_line3D_instanced(ecs *world) {
-    char* vert = get_shader_source(world, "line3D_instanced.vert");
-    char* frag = get_shader_source(world, "line3D_instanced.frag");
-    line3D_instanced_shader = zox_gpu_compile_shader(vert, frag);
-    if (guint2_equals(line3D_instanced_shader, guint2_zero)) {
-        zox_loge("line3D_instanced_shader has failed")
-        return EXIT_FAILURE;
-    }
-    line3D_instanced_material = spawn_gpu_material_program(line3D_instanced_shader);
-    if (!line3D_instanced_material) {
-        zox_loge("=> [initialize_shader_line3D_instanced] Failed:\n%s", vert);
-        return EXIT_FAILURE;
-    }
-    line3D_instanced_t_location = zox_gpu_get_material_attribute(line3D_instanced_material, "line_t");
-    line3D_instanced_start_location = zox_gpu_get_material_attribute(line3D_instanced_material, "line_start");
-    line3D_instanced_end_location = zox_gpu_get_material_attribute(line3D_instanced_material, "line_end");
-    line3D_instanced_color_location = zox_gpu_get_material_attribute(line3D_instanced_material, "line_color");
-    line3D_instanced_camera_matrix_location = zox_gpu_get_material_property(line3D_instanced_material, "camera_matrix");
-    line3D_instanced_fog_data_location = zox_gpu_get_material_property(line3D_instanced_material, "fog_data");
+// the instance buffers, plain gl buffers: made with the gpu, let go of with it (gpu_dispose / gpu_restore hooks)
+void spawn_line3D_instanced_buffers(ecs* world) {
+    (void) world;
     // a line's two vertices, the same for every instance
     const float ts[2] = { 0, 1 };
     line3D_instanced_t_buffer = zox_gpu_create_buffer();
@@ -85,31 +87,47 @@ int initialize_shader_line3D_instanced(ecs *world) {
     line3D_instanced_data_buffer = zox_gpu_create_buffer();
     line3D_instanced_color_buffer = zox_gpu_create_buffer();
     zox_gpu_bind_buffer_array(0);
+    line3D_instanced_capacity = 0;
     line3D_instanced_reserve(256);
-    return EXIT_SUCCESS;
 }
 
-int initialize_shader_line3D(ecs *world) {
-    char* vert = get_shader_source(world, "line3D.vert");
-    char* frag = get_shader_source(world, "line3D.frag");
-    line3D_shader = zox_gpu_compile_shader(vert, frag);
-    if (guint2_equals(line3D_shader, guint2_zero)) {
-        zox_loge("line3D_shader has failed")
-        return EXIT_FAILURE;
+void dispose_line3D_instanced_buffers(ecs* world) {
+    (void) world;
+    zox_gpu_dispose_buffer(line3D_instanced_t_buffer);
+    zox_gpu_dispose_buffer(line3D_instanced_data_buffer);
+    zox_gpu_dispose_buffer(line3D_instanced_color_buffer);
+    line3D_instanced_t_buffer = line3D_instanced_data_buffer = line3D_instanced_color_buffer = 0;
+    line3D_instanced_capacity = 0;
+}
+
+void initialize_shader_line3D(ecs *world) {
+    guint material;
+    material_line3D = spawn_material_source(world, "material_line3D", "line3D.vert", "line3D.frag", &material);
+    if (material) {
+        const MaterialLine3D data = create_MaterialLine3D(material);
+        zox_set_data(material_line3D, MaterialLine3D, data);
     }
-    line3D_material = spawn_gpu_material_program((guint2) { line3D_shader.x, line3D_shader.y });
-    if (!line3D_material) {
-        zox_loge("=> [initialize_shader_line3D] Failed:\n%s", vert);
-        return EXIT_FAILURE;
-    }
-    line3D_position_location = zox_gpu_get_material_attribute(line3D_material, "position");
-    line3D_color_location = zox_gpu_get_material_property(line3D_material, "color");
-    line3D_camera_matrix_location = zox_gpu_get_material_property(line3D_material, "camera_matrix");
-    line3D_fog_data_location = zox_gpu_get_material_property(line3D_material, "fog_data");
 #if !defined(zox_disable_instancing)
-    if (initialize_shader_line3D_instanced(world) != EXIT_SUCCESS) {
-        line3D_instanced_material = 0;
+    const entity e = spawn_material_source(world, "material_line3D_instanced", "line3D_instanced.vert", "line3D_instanced.frag", &material);
+    if (material) {
+        const MaterialLine3DInstanced data = create_MaterialLine3DInstanced(material);
+        zox_set_data(e, MaterialLine3DInstanced, data);
+        material_line3D_instanced = e;
+        spawn_line3D_instanced_buffers(world);
     }
 #endif
-    return EXIT_SUCCESS;
+}
+
+void gpu_dispose_lines3(ecs* world) {
+    if (material_line3D_instanced) {
+        dispose_line3D_instanced_buffers(world);
+    }
+}
+
+void gpu_restore_lines3(ecs* world) {
+    zox_gpu_relocate(MaterialLine3D);
+    zox_gpu_relocate(MaterialLine3DInstanced);
+    if (material_line3D_instanced) {
+        spawn_line3D_instanced_buffers(world);
+    }
 }

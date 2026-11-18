@@ -8,10 +8,11 @@ void quad_line_render_system(iter* it) {
     zox_sys_in(Rotation3D);
     zox_sys_in(QuadLineSize);
     camera_filtering_begin();
-    zox_gpu_material(line3D_material);
-    zox_gpu_enable_attribute(line3D_position_location);
-    zox_gpu_float4(line3D_fog_data_location, get_fog_value());
-    zox_gpu_float4x4(line3D_camera_matrix_location, render_camera_matrix);
+    const MaterialLine3D* line3D = line3D_material_begin(world);
+    if (!line3D) {
+        zox_sys_on_end();
+        return;
+    }
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(LineThickness, thickness);
         zox_sys_i(Color, fill);
@@ -23,7 +24,7 @@ void quad_line_render_system(iter* it) {
         float3 p = position->value;
         zox_gpu_line_thickness(thickness->value * get_viewport_scale());
         // color_rgb lines_color = color_to_color_rgb(colorr->value);
-        zox_gpu_color(line3D_color_location, fill->value);
+        zox_gpu_color(line3D->color, fill->value);
         // get corners of cube
         float3 top_right = (float3) { b.x, b.y, b.z };
         float3 top_left = (float3) { - b.x, b.y, b.z };
@@ -38,12 +39,12 @@ void quad_line_render_system(iter* it) {
         float3_add_float3_p(&top_right2, p);
         float3_add_float3_p(&top_left2, p);
         // top
-        zox_gpu_line(top_left, top_right);
-        zox_gpu_line(top_left2, top_right2);
-        zox_gpu_line(top_left, top_left2);
-        zox_gpu_line(top_right, top_right2);
+        zox_gpu_line(line3D->position, top_left, top_right);
+        zox_gpu_line(line3D->position, top_left2, top_right2);
+        zox_gpu_line(line3D->position, top_left, top_left2);
+        zox_gpu_line(line3D->position, top_right, top_right2);
     }
-    zox_gpu_disable_attribute(line3D_position_location);
+    zox_gpu_disable_attribute(line3D->position);
     zox_disable_material();
     zox_sys_on_end();
 } zoxd_system(quad_line_render_system);

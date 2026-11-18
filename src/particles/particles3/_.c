@@ -27,9 +27,10 @@ void import_particles3(ecs* world) {
     zox_module(particles3);
     zoxd_tag(Particle3D);
     zoxd_tag(Particle3DEmitter);
+    zoxd(MaterialParticle3D);
     zox_systems_particles3(world);
     add_hook_load_shader(&spawn_shaders_particles3D);
-    add_hook_gpu_dispose(dispose_shader_particle3D);
-    add_hook_gpu_restore(spawn_shaders_particles3D);
+    add_hook_gpu_dispose(gpu_dispose_particles3);
+    add_hook_gpu_restore(gpu_restore_particles3);
     add_hook_spawn_prefabs(spawn_prefabs_particles3D);
 }

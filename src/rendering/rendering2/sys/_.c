@@ -1,7 +1,6 @@
 #include "upload_basic.c"
 #include "upload_textured.c"
 #include "render_basic.c"
-#include "render_instance.c"
 #include "render_ui.c"
 
 void zox_systems_basics2D(ecs *world) {

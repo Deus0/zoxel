@@ -32,7 +32,8 @@ void line3d_render_system(iter* it) {
     camera_filtering_begin();
     zox_gpu_enable_blend();
 #if !defined(zox_disable_instancing)
-    if (line3D_instanced_material) {
+    const MaterialLine3DInstanced* instanced = zox_valid(material_line3D_instanced) ? zox_get(material_line3D_instanced, MaterialLine3DInstanced) : NULL;
+    if (instanced && line3D_instanced_t_buffer) {
         // the lines this camera draws: all, or copied when it filters them
         const LineData3D* data = LineData3D_;
         const Color* colors = Color_;
@@ -65,38 +66,38 @@ void line3d_render_system(iter* it) {
                 width += thickness->value / (distance > 0.01f ? distance : 0.01f);
             }
             zox_gpu_line_thickness((width / it->count) * get_viewport_scale());
-            zox_gpu_material(line3D_instanced_material);
-            zox_gpu_float4(line3D_instanced_fog_data_location, get_fog_value());
-            zox_gpu_float4x4(line3D_instanced_camera_matrix_location, render_camera_matrix);
+            zox_gpu_material(zox_getv(material_line3D_instanced, MaterialGPULink));
+            zox_gpu_float4(instanced->fog_data, get_fog_value());
+            zox_gpu_float4x4(instanced->camera_matrix, render_camera_matrix);
             line3D_instanced_reserve(count);
             // per vertex: 0 or 1 along the line
             zox_gpu_bind_buffer_array(line3D_instanced_t_buffer);
-            zox_gpu_set_attribute_floatx(line3D_instanced_t_location, (void*) 0, 1);
-            zox_gpu_enable_attribute(line3D_instanced_t_location);
+            zox_gpu_set_attribute_floatx(instanced->t, (void*) 0, 1);
+            zox_gpu_enable_attribute(instanced->t);
             // per line: start and end, interleaved in LineData3D
             zox_gpu_bind_buffer_array(line3D_instanced_data_buffer);
             zox_gpu_set_sub_buffer_bytes(sizeof(LineData3D) * count, data);
-            zox_gpu_set_attribute_float3_strided(line3D_instanced_start_location, sizeof(LineData3D), 0);
-            zox_gpu_set_attribute_float3_strided(line3D_instanced_end_location, sizeof(LineData3D), sizeof(float3));
-            zox_gpu_enable_attribute(line3D_instanced_start_location);
-            zox_gpu_enable_attribute(line3D_instanced_end_location);
-            zox_gpu_attribute_divisor(line3D_instanced_start_location, 1);
-            zox_gpu_attribute_divisor(line3D_instanced_end_location, 1);
+            zox_gpu_set_attribute_float3_strided(instanced->start, sizeof(LineData3D), 0);
+            zox_gpu_set_attribute_float3_strided(instanced->end, sizeof(LineData3D), sizeof(float3));
+            zox_gpu_enable_attribute(instanced->start);
+            zox_gpu_enable_attribute(instanced->end);
+            zox_gpu_attribute_divisor(instanced->start, 1);
+            zox_gpu_attribute_divisor(instanced->end, 1);
             // per line: color
             zox_gpu_bind_buffer_array(line3D_instanced_color_buffer);
             zox_gpu_set_sub_buffer_bytes(sizeof(Color) * count, colors);
-            zox_gpu_set_attribute_color(line3D_instanced_color_location, (void*) 0);
-            zox_gpu_enable_attribute(line3D_instanced_color_location);
-            zox_gpu_attribute_divisor(line3D_instanced_color_location, 1);
+            zox_gpu_set_attribute_color(instanced->color, (void*) 0);
+            zox_gpu_enable_attribute(instanced->color);
+            zox_gpu_attribute_divisor(instanced->color, 1);
             zox_gpu_render_lines_instanced(count);
             // resets
-            zox_gpu_attribute_divisor(line3D_instanced_color_location, 0);
-            zox_gpu_attribute_divisor(line3D_instanced_end_location, 0);
-            zox_gpu_attribute_divisor(line3D_instanced_start_location, 0);
-            zox_gpu_disable_attribute(line3D_instanced_color_location);
-            zox_gpu_disable_attribute(line3D_instanced_end_location);
-            zox_gpu_disable_attribute(line3D_instanced_start_location);
-            zox_gpu_disable_attribute(line3D_instanced_t_location);
+            zox_gpu_attribute_divisor(instanced->color, 0);
+            zox_gpu_attribute_divisor(instanced->end, 0);
+            zox_gpu_attribute_divisor(instanced->start, 0);
+            zox_gpu_disable_attribute(instanced->color);
+            zox_gpu_disable_attribute(instanced->end);
+            zox_gpu_disable_attribute(instanced->start);
+            zox_gpu_disable_attribute(instanced->t);
             zox_gpu_bind_buffer_array(0);
             zox_disable_material();
             line3D_count(count, 1);
@@ -107,10 +108,12 @@ void line3d_render_system(iter* it) {
     }
 #endif
     // a draw a line
-    zox_gpu_material(line3D_material);
-    zox_gpu_float4(line3D_fog_data_location, get_fog_value());
-    zox_gpu_float4x4(line3D_camera_matrix_location, render_camera_matrix);
-    zox_gpu_enable_attribute(line3D_position_location);
+    const MaterialLine3D* line3D = line3D_material_begin(world);
+    if (!line3D) {
+        zox_gpu_disable_blend();
+        zox_sys_on_end();
+        return;
+    }
     uint drawn = 0;
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(LineData3D, data);
@@ -121,12 +124,12 @@ void line3d_render_system(iter* it) {
         float3 position_b = (float3) { data->value.w, data->value.u,  data->value.v };
         float distance = float3_length(float3_sub(render_camera_position, float3_mid(position_a, position_b)));
         zox_gpu_line_thickness((thickness->value / distance) * get_viewport_scale());
-        zox_gpu_set_attribute_float3(line3D_position_location, &data->value);
-        zox_gpu_color(line3D_color_location, fill->value);
+        zox_gpu_set_attribute_float3(line3D->position, &data->value);
+        zox_gpu_color(line3D->color, fill->value);
         zox_gpu_render_lines(2);
         drawn++;
     }
-    zox_gpu_disable_attribute(line3D_position_location);
+    zox_gpu_disable_attribute(line3D->position);
     zox_disable_material();
     zox_gpu_disable_blend();
     line3D_count(drawn, drawn);

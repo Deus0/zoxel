@@ -8,11 +8,19 @@ void line2D_render_iteration(iter *it, byte is_element_line) {
     if (zox_new_ui_renderer) {
         zox_gpu_enable_depth_test();
     }
-    // material
-    zox_gpu_material(line2D_material);
-    zox_gpu_enable_attribute(line2D_position_location);
-    zox_gpu_float4x4(line2D_camera_matrix_location, render_camera_matrix);
     zox_sys_world();
+    // material
+    const MaterialLine2D* line2D = zox_valid(material_line2D) ? zox_get(material_line2D, MaterialLine2D) : NULL;
+    if (!line2D) {
+        zox_gpu_disable_blend();
+        if (zox_new_ui_renderer) {
+            zox_gpu_disable_depth_test();
+        }
+        return;
+    }
+    zox_gpu_material(zox_getv(material_line2D, MaterialGPULink));
+    zox_gpu_enable_attribute(line2D->position);
+    zox_gpu_float4x4(line2D->camera_matrix, render_camera_matrix);
     zox_sys_begin();
     zox_sys_in(LinePoints2);
     zox_sys_in(LineThickness);
@@ -34,11 +42,11 @@ void line2D_render_iteration(iter *it, byte is_element_line) {
             }
         }
         float depth = depth_begin + layer->value * depth_per_layer;
-        zox_gpu_float(line2D_depth_location, depth);
+        zox_gpu_float(line2D->depth, depth);
         zox_gpu_line_thickness(thickness->value);
-        // zox_gpu_set_attribute_float2(line2D_position_location, &line);
+        // zox_gpu_set_attribute_float2(line2D->position, &line);
         float values[] = { line->start.x, line->start.y, line->end.x, line->end.y };
-        zox_gpu_set_attribute_float2(line2D_position_location, values);
+        zox_gpu_set_attribute_float2(line2D->position, values);
         /*float values[] = {
             line->value.x,
             line->value.y,
@@ -47,9 +55,9 @@ void line2D_render_iteration(iter *it, byte is_element_line) {
             line->value.w,
             depth
         };
-        zox_gpu_set_attribute_float3(line2D_position_location, values);*/
+        zox_gpu_set_attribute_float3(line2D->position, values);*/
         float4 color_f4 = color_to_float4(line_color->value);
-        zox_gpu_float4(line2D_color_location, color_f4);
+        zox_gpu_float4(line2D->color, color_f4);
         zox_gpu_render_lines(2);
         if (dbg_log) {
             zox_log("Rendered Line2 [%s] Layer [%i]", zox_getn(e), layer->value);
@@ -58,7 +66,7 @@ void line2D_render_iteration(iter *it, byte is_element_line) {
         // zox_log("line_color: %ix%ix%ix%i", line_color->value.r, line_color->value.g, line_color->value.b, line_color->value.a);
         // zox_log("color_f4: %fx%fx%fx%f", color_f4.x, color_f4.y, color_f4.z, color_f4.w);
     }
-    zox_gpu_disable_attribute(line2D_position_location);
+    zox_gpu_disable_attribute(line2D->position);
     zox_disable_material();
     zox_gpu_disable_blend();
     if (zox_new_ui_renderer) {

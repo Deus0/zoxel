@@ -3,16 +3,13 @@ const float cube_lines_length = 1.0f;
 // TODO: Use Instancing here, lags!
 void cube_line_render_system(iter* it) {
     zox_sys_on_begin();
-    zox_gpu_material(line3D_material);
-    zox_gpu_enable_attribute(line3D_position_location);
-    zox_gpu_float4(
-        line3D_fog_data_location,
-        get_fog_value());
-    zox_gpu_float4x4(
-        line3D_camera_matrix_location,
-        render_camera_matrix);
-    zox_gpu_enable_polyoffset_lines();
     zox_sys_world();
+    const MaterialLine3D* line3D = line3D_material_begin(world);
+    if (!line3D) {
+        zox_sys_on_end();
+        return;
+    }
+    zox_gpu_enable_polyoffset_lines();
     zox_sys_begin();
     zox_sys_in(DebugCubeLines);
     zox_sys_in(LineThickness);
@@ -43,7 +40,7 @@ void cube_line_render_system(iter* it) {
             p = float3_add(p, (bounds->value));
         }
         zox_gpu_line_thickness(thickness->value * get_viewport_scale());
-        zox_gpu_color(line3D_color_location, fill->value);
+        zox_gpu_color(line3D->color, fill->value);
         byte depth_test_disabled =
             zox_has(e, DisableDepthTest) ?
                 1 :
@@ -61,19 +58,19 @@ void cube_line_render_system(iter* it) {
             float3 up_vector = (float3) { 0, cube_lines_length, 0 };
             float4_rotate_float3_p(rotation->value, &up_vector);
             float3_add_float3_p(&up_vector, p);
-            zox_gpu_line(p, up_vector);
+            zox_gpu_line(line3D->position, p, up_vector);
             // forward axis
             // set_line3D_color(lines_color);
             float3 forward_vector = (float3) { 0, 0, cube_lines_length };
             float4_rotate_float3_p(rotation->value, &forward_vector);
             float3_add_float3_p(&forward_vector, p);
-            zox_gpu_line(p, forward_vector);
+            zox_gpu_line(line3D->position, p, forward_vector);
             // right axis
             // set_line3D_color(lines_color);
             float3 right_vector = (float3) { cube_lines_length, 0, 0 };
             float4_rotate_float3_p(rotation->value, &right_vector);
             float3_add_float3_p(&right_vector, p);
-            zox_gpu_line(p, right_vector);
+            zox_gpu_line(line3D->position, p, right_vector);
         } else {
             // get corners of cube
             float3 top_right = (float3) { b.x, b.y, b.z };
@@ -110,46 +107,46 @@ void cube_line_render_system(iter* it) {
             float3_add_float3_p(&bottom_right2, p);
             float3_add_float3_p(&bottom_left2, p);
             // top
-            zox_gpu_line(top_left, top_right);
-            zox_gpu_line(top_left2, top_right2);
-            zox_gpu_line(top_left, top_left2);
-            zox_gpu_line(top_right, top_right2);
+            zox_gpu_line(line3D->position, top_left, top_right);
+            zox_gpu_line(line3D->position, top_left2, top_right2);
+            zox_gpu_line(line3D->position, top_left, top_left2);
+            zox_gpu_line(line3D->position, top_right, top_right2);
             // bottom
-            zox_gpu_line(bottom_left, bottom_right);
-            zox_gpu_line(bottom_left2, bottom_right2);
-            zox_gpu_line(bottom_left, bottom_left2);
-            zox_gpu_line(bottom_right, bottom_right2);
+            zox_gpu_line(line3D->position, bottom_left, bottom_right);
+            zox_gpu_line(line3D->position, bottom_left2, bottom_right2);
+            zox_gpu_line(line3D->position, bottom_left, bottom_left2);
+            zox_gpu_line(line3D->position, bottom_right, bottom_right2);
             // vertical
-            zox_gpu_line(bottom_right, top_right);
-            zox_gpu_line(bottom_left, top_left);
-            zox_gpu_line(bottom_right2, top_right2);
-            zox_gpu_line(bottom_left2, top_left2);*/
+            zox_gpu_line(line3D->position, bottom_right, top_right);
+            zox_gpu_line(line3D->position, bottom_left, top_left);
+            zox_gpu_line(line3D->position, bottom_right2, top_right2);
+            zox_gpu_line(line3D->position, bottom_left2, top_left2);*/
 
             float shrink = zox_has(e, CubeLineShrink) ? zox_getv(e, CubeLineShrink) : 1;
             byte sides = zox_has(e, CubeLineSides) ? zox_getv(e, CubeLineSides) : 255;
             // top
             if (sides & (1 << (direction_up + 1))) {
-                zox_gpu_quad_lines(p, top_left, top_right, top_left2, top_right2, (float3) { shrink, 1, shrink }, (float3) { 0, extrude, 0 });
+                zox_gpu_quad_lines(line3D->position, p, top_left, top_right, top_left2, top_right2, (float3) { shrink, 1, shrink }, (float3) { 0, extrude, 0 });
             }
             // bottom
             if (sides & (1 << (direction_down + 1))) {
-                zox_gpu_quad_lines(p, bottom_left, bottom_right, bottom_left2, bottom_right2, (float3) { shrink, 1, shrink },  (float3) { 0, -extrude, 0 });
+                zox_gpu_quad_lines(line3D->position, p, bottom_left, bottom_right, bottom_left2, bottom_right2, (float3) { shrink, 1, shrink },  (float3) { 0, -extrude, 0 });
             }
             // back
             if (sides & (1 << (direction_back + 1))) {
-                zox_gpu_quad_lines(p, top_left2, top_right2, bottom_left2, bottom_right2, (float3) { shrink, shrink, 1 },  (float3) { 0, 0, -extrude });
+                zox_gpu_quad_lines(line3D->position, p, top_left2, top_right2, bottom_left2, bottom_right2, (float3) { shrink, shrink, 1 },  (float3) { 0, 0, -extrude });
             }
             // front
             if (sides & (1 << (direction_front + 1))) {
-                zox_gpu_quad_lines(p, top_left, top_right, bottom_left, bottom_right, (float3) { shrink, shrink, 1 },  (float3) { 0, 0, extrude });
+                zox_gpu_quad_lines(line3D->position, p, top_left, top_right, bottom_left, bottom_right, (float3) { shrink, shrink, 1 },  (float3) { 0, 0, extrude });
             }
             // left
             if (sides & (1 << (direction_left + 1))) {
-                zox_gpu_quad_lines(p, top_left, bottom_left, top_left2, bottom_left2, (float3) { 1, shrink, shrink }, (float3) { -extrude, 0, 0 });
+                zox_gpu_quad_lines(line3D->position, p, top_left, bottom_left, top_left2, bottom_left2, (float3) { 1, shrink, shrink }, (float3) { -extrude, 0, 0 });
             }
             // right
             if (sides & (1 << (direction_right + 1))) {
-                zox_gpu_quad_lines(p, top_right, bottom_right, top_right2, bottom_right2, (float3) { 1, shrink, shrink }, (float3) { extrude, 0, 0 });
+                zox_gpu_quad_lines(line3D->position, p, top_right, bottom_right, top_right2, bottom_right2, (float3) { 1, shrink, shrink }, (float3) { extrude, 0, 0 });
             }
             /*if (depth_bias) {
                 zox_gpu_polyoffset(0, 0);
@@ -164,7 +161,7 @@ void cube_line_render_system(iter* it) {
         zox_sys_increment();
     }
     zox_gpu_disable_polyoffset_lines();
-    zox_gpu_disable_attribute(line3D_position_location);
+    zox_gpu_disable_attribute(line3D->position);
     zox_disable_material();
     zox_sys_on_end();
 } zoxd_system(cube_line_render_system);

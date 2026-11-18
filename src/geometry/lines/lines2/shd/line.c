@@ -1,35 +1,32 @@
-guint2 line2D_shader;
-guint line2D_shader_frag;
-guint line2D_material;
-gint line2D_position_location;
-guint line2D_color_location;
-guint line2D_depth_location;
-guint line2D_camera_matrix_location;
+// 2D lines' material, an entity (restored with the rest), its uniform locations a component on it
+typedef struct {
+    gint position;
+    gint color;
+    gint depth;
+    gint camera_matrix;
+} MaterialLine2D;
+zoxc_custom(MaterialLine2D);
 
-void dispose_shader_line2D(ecs* world) {
-    (void) world;
-    zox_gpu_dispose_shader(line2D_shader.x);
-    zox_gpu_dispose_shader(line2D_shader.y);
-    zox_dispose_material(line2D_material);
-    line2D_shader = guint2_zero;
-    line2D_material = 0;
+MaterialLine2D create_MaterialLine2D(guint material) {
+    return (MaterialLine2D) {
+        .position = zox_gpu_get_material_attribute(material, "position"),
+        .color = zox_gpu_get_material_property(material, "color"),
+        .depth = zox_gpu_get_material_property(material, "depth"),
+        .camera_matrix = zox_gpu_get_material_property(material, "camera_matrix")
+    };
 }
 
+entity material_line2D = 0;
+
 void spawn_shader_line2D(ecs *world) {
-    char* vert = get_shader_source(world, "line2.vert");
-    char* frag = get_shader_source(world, "line2.frag");
-    line2D_shader = zox_gpu_compile_shader(vert, frag);
-    if (guint2_equals(line2D_shader, guint2_zero)) {
-        zox_loge("line2D_shader has failed")
-        return;
+    guint material;
+    material_line2D = spawn_material_source(world, "material_line2D", "line2.vert", "line2.frag", &material);
+    if (material) {
+        const MaterialLine2D data = create_MaterialLine2D(material);
+        zox_set_data(material_line2D, MaterialLine2D, data);
     }
-    line2D_material = spawn_gpu_material_program((guint2) { line2D_shader.x, line2D_shader.y });
-    if (!line2D_material) {
-        zox_loge("=> [spawn_shader_line2D] Failed:\n%s", vert);
-        return;
-    }
-    line2D_position_location = zox_gpu_get_material_attribute(line2D_material, "position");
-    line2D_color_location = zox_gpu_get_material_property(line2D_material, "color");
-    line2D_depth_location = zox_gpu_get_material_property(line2D_material, "depth");
-    line2D_camera_matrix_location = zox_gpu_get_material_property(line2D_material, "camera_matrix");
+}
+
+void gpu_restore_lines2(ecs* world) {
+    zox_gpu_relocate(MaterialLine2D);
 }
