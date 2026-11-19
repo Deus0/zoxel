@@ -24,6 +24,18 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x Split screen: one player in a dialogue or asleep darkened every screen: the game views shared one render texture
+  material, its vignette, blur and lids uniforms the last camera's. Each joined player's view has its own material
+  (spawn_material_render_texture_from, the shader shared); its shader was parented to a gpu id, now its material
+-x A lighter dialogue vignette (dialogue_vignette 3.1 to 1.8)
+-x Local coop: a player's device only switches on its disconnect screen (DeviceLost, device_switch_coop): the
+  keyboard or a spare gamepad took the first player off its gamepad
+-x Doors hang on their block's front edge (build_vox_door, door_hinge_z), swinging from the corner into their block,
+  not from its middle
+-x The guard looking up: the hand went over and behind the head, out of view, the arm locked straight and spun half
+  round. Looking up it's posed level then turned up about the eyes, kept in its level reach (in along its line from
+  the eyes); the shoulder's ik turn fixes the arm's twist too (ik_turn_to: the elbow to the pole, not the shortest
+  turn). tst guard_pitch. In a dialogue the head looks up at the speaker, the arm rose with it
 -x Crouching: hold left control, or a gamepad's left stick pushed in toggles it (controllers3/sys/movement.c,
   CrouchState on the skeleton): the thighs tip ahead 55 degrees, the knees twice it, the feet level, the body down by
   what the legs lost (the head and a first person camera 17cm lower), slower (0.45 of the walk), no running; the body's

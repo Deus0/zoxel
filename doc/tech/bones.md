@@ -83,6 +83,11 @@ Code: [src/bones](../../src/bones) (the skeleton, its animation state and system
   middle, up, and the body's twist. Marks (`SwingMark`) are its events, the first the hit.
 - The guard (raised, `swing_guard`): out 0.7, in 0.15, up 0.35, 0.8 of the reach, the elbow bent ~75 degrees. At 0.95
   the arm was held up straight, a salute from outside. It's still in the first person view (tst punch_motion).
+- Looking up a pose is placed as looking level, then turned up about the eyes and kept within its level reach (in
+  along its line from the eyes): turned about the shoulder with the head's up, the hand went over and behind the head
+  (tst guard_pitch). Looking down it turns about the shoulder.
+- The shoulder's ik turn (`ik_turn_to`) maps the upper arm's line and its rest front (+z, where the forearm folds) to
+  the hand's side: the shortest turn from hanging spun the arm about itself reaching up.
 - The off hand (`has_off`, `off_back`, `off_out`): in a punch the left fist comes up, reaches ahead as the right winds
   up, pulls back to the chin as it lands (the recoil), and stays up `swing_off_linger` after, so it doesn't drop
   between punches. `swing_off` gives it the swing's timing with its own poses.

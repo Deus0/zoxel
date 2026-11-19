@@ -7,6 +7,9 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
+- the second player flying away, off the minimap, crashed it (play test 2026-11-19), not reproduced: tst
+	coop_map_markers flies them 6000 blocks off (tiny, the whole world, --stress) without a crash. Which build and
+	platform, was the map open, flying up or along?
 - tst sky_clouds fails: "no cloud in the sky looking up" (0.07% of the band), on 31a2c2740 too (2026-11-20)
 - tst lint_systems fails: chunk3_textured_render_system and chunk3_transparent_render_system
   (rendering3/sys/render_chunks.c) have no zox_sys_on_begin / zox_sys_on_end (2026-11-20)
