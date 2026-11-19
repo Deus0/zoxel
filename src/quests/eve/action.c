@@ -49,6 +49,7 @@ void zox_event_give_quest(iter* it) {
         } else if (zox_has(node, NodeHandinQuest)) {
             entity user_quest = get_user_quest(world, quest_taker, quest);
             zox_add(user_quest, QuestHandedin);
+            log_quest_done(world, quest_taker, user_quest);
             give_quest_reward(world, quest_taker, user_quest);
             particles_color = (color) { 255, 220, 0, 88 };
             spawn_jingle(world, jingle_quest_handed_in);

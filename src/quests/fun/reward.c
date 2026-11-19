@@ -13,9 +13,20 @@ void give_quest_reward(ecs* world, entity character, entity user_quest) {
     if (!add_item_to_slot_manager(world, zox_get_child_by_id(world, character, zox_id(Actionbar)), character, item, count)) {
         add_item_to_slot_manager(world, zox_get_child_by_id(world, character, zox_id(Inventory)), character, item, count);
     }
+    // the player's log says so
+    char text[96];
+    snprintf(text, sizeof(text), "Reward: %i %s", count, zox_has(item, ZoxName) ? zox_getv(item, ZoxName) : "?");
+    game_log(world, zox_get_link(world, character, PlayerLink), text);
 }
 
-// a character talking to someone in a town: its find quests are done and handed in, rewarded, a toast says so
+// the player's log: a quest done (handed in)
+void log_quest_done(ecs* world, entity character, entity user_quest) {
+    char text[96];
+    snprintf(text, sizeof(text), "Quest done: %s", zox_has(user_quest, ZoxName) ? zox_getv(user_quest, ZoxName) : "?");
+    game_log(world, zox_get_link(world, character, PlayerLink), text);
+}
+
+// a character talking to someone in a town: its find quests are done and handed in, rewarded, its log says so
 void quests_found_town(ecs* world, entity character) {
     if (!zox_valid(character) || !zox_has(character, InTown)) {
         return;
@@ -30,14 +41,9 @@ void quests_found_town(ecs* world, entity character) {
             zox_add(user_quest, QuestDone);
             zox_add(user_quest, QuestHandedin);
             zox_add(user_quest, Dirty);
+            log_quest_done(world, character, user_quest);
             give_quest_reward(world, character, user_quest);
             spawn_jingle(world, jingle_quest_handed_in);
-            const entity player = zox_get_link(world, character, PlayerLink);
-            if (zox_valid(player)) {
-                char text[64];
-                snprintf(text, sizeof(text), "Quest done: %s", zox_has(user_quest, ZoxName) ? zox_getv(user_quest, ZoxName) : "?");
-                spawn_toast(world, zox_get_link(world, player, CanvasLink), text);
-            }
         }
     }
 }

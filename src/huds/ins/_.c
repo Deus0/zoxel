@@ -13,5 +13,6 @@
 #include "respawn.c"
 #include "load.c"
 #include "toast.c"
+#include "game_log.c"
 // Editor
 #include "terminal.c"
