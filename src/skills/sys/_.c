@@ -4,6 +4,7 @@
 #include "character.c"
 #include "melee.c"
 #include "shoot.c"
+#include "pounce.c"
 #include "projectile_hit.c"
 
 void zox_systems_skills(ecs *world) {
@@ -37,6 +38,19 @@ void zox_systems_skills(ecs *world) {
         [in] skills.SkillDamage,
         [in] skills.SkillDamageMax,
         [none] skills.Shoot
+    );
+    zox_system_1(
+        pounce_system,
+        zoxp_spawn,
+        [in] skills.PounceStart,
+        [in] skills.PounceSkill,
+        [in] transforms3.Position3D,
+        [in] transforms3.Rotation3D,
+        [in] physics.Grounded,
+        [in] vrays.RaycastVoxelData,
+        [out] skills.PounceStage,
+        [out] transforms3.Scale3,
+        [out] physics3.Velocity3D
     );
     zox_system_1(
         projectile_hit_system,

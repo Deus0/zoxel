@@ -81,8 +81,8 @@ void skills_realm_spawn_system(iter* it) {
                 damage.x,
                 damage.y,
                 range,
-                energy,
-                1,
+                mana,
+                1,          // its mana
                 0.5f,
                 0.5f);
         }

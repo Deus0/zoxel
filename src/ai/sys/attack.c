@@ -33,7 +33,7 @@ void attack_system(iter* it) {
             continue;
         }
         zox_set(e, RaycastAim, { threat->value });
-        const float2 reach = npc_skill_reach(world, action->value);
+        const float2 reach = npc_skill_reach(world, e, action->value);
         if (reach.x > 0) {
             buffer->value = 0.5f * (reach.x + reach.y);
             target->value = threat->value;

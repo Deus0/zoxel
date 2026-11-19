@@ -10,7 +10,6 @@ void melee_system(iter* it) {
     zox_sys_in(Activate);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e()
-        zox_sys_i(SkillCost, cost);
         zox_sys_i(Activate, active);
         if (active->value != zox_dirty_active) {
             continue;
@@ -35,42 +34,17 @@ void melee_system(iter* it) {
                 zox_get_name(user));
             continue;
         }
-        // does have resource
-        // an npc's stats are copies of its kind's, a step further from the realm's (tst npc_attacks)
-        const entity resource = get_user_stat_from_realm(world, user, zox_get_link(world, e, SkillResource));
-        // TODO: move cost use into activation system
-        // resource cost
-        if (!disable_skill_costs) {
-            if (!zox_valid(resource) ||
-                !zox_has(resource, StatValue)) {
-                if (dbg_log) {
-                    zox_log("User [%s] has Invalid Skill Resource", zox_get_name(user));
-                }
-                continue;
-            }
-            float lresource = zox_getv(resource, StatValue);
-            if (lresource < cost->value) {
-                if (dbg_log) {
-                    zox_log("User [%s] needs more [%s] [%f]",
-                        zox_get_name(user),
-                        zox_get_name(resource),
-                        lresource);
-                }
-                spawn_sound_effect(world, sound_effect_no_resource, user);
-                continue;
-            }
-            // this should be muter -> instant use
-            lresource = lresource - cost->value;
-            zox_setv(resource, StatValue, lresource);
-            if (dbg_log) {
-                zox_log("User [%s] Skill Cost Subtracted [%f]",
-                    zox_getn(user),
-                    lresource);
-            }
+        if (!skill_pay_cost(world, e, user)) {
+            continue;
         }
         // the swing over its SwingTime (attack speed): its windup is animation, it hits at its hit mark (melee_hit,
         //  eve/melee_hit.c)
-        skeleton_swing_begin(world, user, e, zox_current_time, zox_getv(e, SwingTime), zox_swing_punch, float3_zero);
+        //  one without a skeleton (a slime) pounces at it (sys/pounce.c)
+        if (zox_valid(get_skeleton(world, user))) {
+            skeleton_swing_begin(world, user, e, zox_current_time, zox_getv(e, SwingTime), zox_swing_punch, float3_zero);
+        } else {
+            pounce_begin(world, user, e);
+        }
     }
     zox_sys_on_end();
 } zoxd_system(melee_system);

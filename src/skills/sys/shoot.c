@@ -35,7 +35,9 @@ void shoot_system(iter* it) {
             }
             continue;
         }
-        // entity rresource = zox_get_link(world, e, SkillResource);
+        if (!skill_pay_cost(world, e, user)) {
+            continue;
+        }
         float3 position;
         float4 rotation;
         entity skeleton = get_skeleton(world, user);

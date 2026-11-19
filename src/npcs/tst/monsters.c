@@ -1,0 +1,173 @@
+// tst: monster_sight, slimes attack the players they see (ai/sys/sight.c)
+//  - two slimes 5 away: one facing the player, one facing away (out of its view cone, past its sense)
+//  - the one facing goes into battle with the player as its attacker, unhit; the other stays at peace
+//  - run: bash bsh/tst.sh monster_sight
+// tst: slime_pounce, a slime's melee is a pounce (skills/sys/pounce.c)
+//  - a slime beside the player in battle squashes down (its Scale3 under 0.8 high), leaps and hurts the player
+//  - the camera freed to its side: tst/slime_pounce/squash.ppm and leap.ppm, to look at
+//  - run: bash bsh/tst.sh slime_pounce
+entity zox_tst_monsters[2];
+byte zox_tst_monsters_stage = 0;
+double zox_tst_monsters_time = 0;
+float zox_tst_monsters_health = 0;
+float zox_tst_monsters_squash = 1;      // the slime's lowest height scale
+byte zox_tst_monsters_shots = 0;        // squash, leap
+
+static inline entity zox_tst_realm_slime(ecs* world, entity realm) {
+    entity found = 0;
+    zox_each_link(world, realm, CharacterLinks, meta) {
+        if (zox_has(meta, Monster)) {
+            found = meta;
+        }
+    }
+    return found;
+}
+
+// a rotation about up whose ahead (quaternion_to_normal) is closest to a direction
+static inline float4 zox_tst_facing(float3 direction) {
+    float4 best = quaternion_identity;
+    float best_dot = -2;
+    for (int a = 0; a < 360; a += 5) {
+        const float4 q = quaternion_from_euler((float3) { 0, a * degrees_to_radians, 0 });
+        const float d = float3_dot(quaternion_to_normal(q), direction);
+        if (d > best_dot) {
+            best_dot = d;
+            best = q;
+        }
+    }
+    return best;
+}
+
+static inline float zox_tst_monsters_player_health(ecs* world) {
+    const entity health = zox_get_child_by_id(world, zox_tst_player_character(world), zox_id(StatHealth));
+    return zox_valid(health) ? zox_getv(health, StatValue) : -1;
+}
+
+// spawns count slimes beside the player at offsets, facing ways; 1 once they're ready
+static inline byte zox_tst_monsters_spawn(ecs* world, byte count, const float3* offsets, const float3* facings) {
+    const entity character = zox_tst_player_character(world);
+    if (zox_tst_monsters_stage == 0) {
+        const entity realm = zox_get_link(world, character, RealmLink);
+        const entity slime = zox_tst_realm_slime(world, realm);
+        if (!zox_valid(slime)) {
+            zox_tst_check(0, "the realm has no monster character prefab");
+            zox_tst_monsters_stage = 9;     // given up
+            return 1;
+        }
+        const float3 p = zox_getv(character, Position3D);
+        for (byte i = 0; i < count; i++) {
+            zox_tst_monsters[i] = spawn_character3_npc(world, slime, realm, zox_get_link(world, character, TerrainLink),
+                21 + i, 0, 0, float3_add(p, offsets[i]), zox_tst_facing(facings[i]), NULL);
+            zox_remove(zox_tst_monsters[i], Coward);
+            zox_setv(zox_tst_monsters[i], DefaultBehaviour, zox_behaviour_idle);
+        }
+        zox_tst_monsters_stage = 1;
+        return 0;
+    }
+    zox_tst_waiting = "the slimes to initialize";
+    for (byte i = 0; i < count; i++) {
+        const entity e = zox_tst_monsters[i];
+        if (!zox_valid(e) || zox_has(e, PreInitialize) || zox_has(e, Initialize)) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+byte zox_tst_monster_sight_ready(ecs* world) {
+    if (!zox_tst_player_spawn_ready(world)) {
+        return 0;
+    }
+    const float3 offsets[2] = { { 5, 0, 0 }, { -5, 0, 0 } };
+    const float3 facings[2] = { { -1, 0, 0 }, { -1, 0, 0 } };    // the first at the player, the second away
+    if (zox_tst_monsters_stage == 9) {
+        return 1;
+    }
+    if (zox_tst_monsters_stage < 2) {
+        if (zox_tst_monsters_spawn(world, 2, offsets, facings) && zox_tst_monsters_stage == 1) {
+            zox_tst_monsters_time = zox_current_time;
+            zox_tst_monsters_stage = 2;
+        }
+        return 0;
+    }
+    zox_tst_waiting = "the slime facing the player to attack";
+    const entity e = zox_tst_monsters[0];
+    return (zox_valid(e) && zox_getv(e, CombatState) == zox_combat_battle) || zox_current_time - zox_tst_monsters_time > 5;
+}
+
+void zox_tst_monster_sight_check(ecs* world) {
+    const entity character = zox_tst_player_character(world);
+    const entity seer = zox_tst_monsters[0], blind = zox_tst_monsters[1];
+    zox_tst_check(zox_valid(seer) && zox_valid(blind), "a slime is gone");
+    if (!zox_valid(seer) || !zox_valid(blind)) {
+        return;
+    }
+    zox_log("[tst] monster_sight facing [%i] attacker [%i], away [%i]", zox_getv(seer, CombatState),
+        zox_get_link(world, seer, AttackerLink) == character, zox_getv(blind, CombatState));
+    zox_tst_check(zox_getv(seer, CombatState) == zox_combat_battle, "the slime facing the player didn't attack, [%i]", zox_getv(seer, CombatState));
+    zox_tst_check(zox_get_link(world, seer, AttackerLink) == character, "the slime's attacker isn't the player");
+    zox_tst_check(zox_getv(blind, CombatState) == zox_combat_peace, "the slime facing away attacked, [%i]", zox_getv(blind, CombatState));
+}
+
+byte zox_tst_slime_pounce_ready(ecs* world) {
+    if (!zox_tst_player_spawn_ready(world)) {
+        return 0;
+    }
+    const float3 offsets[1] = { { 2, 0, 0 } };
+    const float3 facings[1] = { { -1, 0, 0 } };
+    if (zox_tst_monsters_stage == 9) {
+        return 1;
+    }
+    if (zox_tst_monsters_stage < 2) {
+        if (zox_tst_monsters_spawn(world, 1, offsets, facings) && zox_tst_monsters_stage == 1) {
+            zox_tst_monsters_health = zox_tst_monsters_player_health(world);
+            combat_on_hit(world, zox_tst_monsters[0], zox_tst_player_character(world));
+            zox_tst_monsters_time = zox_current_time;
+            zox_tst_monsters_stage = 2;
+        }
+        return 0;
+    }
+    zox_tst_waiting = "the slime to pounce on the player";
+    const entity e = zox_tst_monsters[0];
+    const entity camera = zox_get_link(world, dbg_player, CameraLink);
+    if (zox_valid(e) && zox_valid(camera)) {
+        // side on to the slime and the player
+        const float3 a = zox_getv(e, Position3D), b = zox_getv(zox_tst_player_character(world), Position3D);
+        const float3 mid = float3_scale(float3_add(a, b), 0.5f);
+        const float3 eye = float3_add(mid, (float3) { 0, 0.6f, 3.5f });
+        if (zox_get_parent(world, camera)) {
+            zox_set_parent(world, camera, 0);
+        }
+        zox_setv(camera, Position3D, eye);
+        zox_setv(camera, Rotation3D, camera_look_at(eye, mid));
+    }
+    if (zox_valid(e) && zox_has(e, Scale3)) {
+        const float3 scale = zox_getv(e, Scale3);
+        zox_tst_monsters_squash = float_min(zox_tst_monsters_squash, scale.y);
+        const byte shot = zox_tst_monsters_shots == 0 && scale.y < 0.65f ? 1 : zox_tst_monsters_shots == 1 && scale.y > 1.2f ? 2 : 0;
+        if (shot && !zox_screenshot_request[0]) {
+            snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s",
+                zox_tst_path(shot == 1 ? "slime_pounce/squash.ppm" : "slime_pounce/leap.ppm"));
+            zox_tst_monsters_shots = shot;
+        }
+    }
+    if (zox_screenshot_request[0]) {
+        return 0;
+    }
+    return zox_tst_monsters_player_health(world) < zox_tst_monsters_health || zox_current_time - zox_tst_monsters_time > 15;
+}
+
+void zox_tst_slime_pounce_check(ecs* world) {
+    const float health = zox_tst_monsters_player_health(world);
+    zox_log("[tst] slime_pounce squashed to [%.2f], player health [%.1f] from [%.1f] after [%.1fs]", zox_tst_monsters_squash,
+        health, zox_tst_monsters_health, zox_current_time - zox_tst_monsters_time);
+    zox_tst_check(zox_tst_monsters_squash < 0.8f, "the slime didn't squash, its height [%.2f]", zox_tst_monsters_squash);
+    zox_tst_check(health < zox_tst_monsters_health, "the slime didn't hurt the player in 15s");
+}
+
+void zox_tsts_monsters(ecs* world) {
+    zox_tst_add("monster_sight", zox_tst_monster_sight_ready, zox_tst_monster_sight_check, 120);
+    zox_tst_set_setup("monster_sight", zox_tst_level_setup, 0);
+    zox_tst_add("slime_pounce", zox_tst_slime_pounce_ready, zox_tst_slime_pounce_check, 120);
+    zox_tst_set_setup("slime_pounce", zox_tst_level_setup, 0);
+}

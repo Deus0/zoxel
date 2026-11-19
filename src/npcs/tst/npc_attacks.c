@@ -84,6 +84,16 @@ void zox_tst_npc_attacks_check(ecs* world) {
         zox_current_time - zox_tst_attacks_time);
     zox_tst_check(zox_valid(zox_tst_attacks_npc), "the npc is gone");
     zox_log("[tst] the player strafed [%.1f] away", zox_tst_attacks_moved);
+    // its shots spent its mana (shoot's SkillResource)
+    const entity npc = zox_tst_attacks_npc;
+    entity skills[16];
+    const uint count = zox_valid(npc) ? zox_get_children_by_id(world, npc, skills, 16, zox_id(Shoot)) : 0;
+    const entity mana = count ? get_user_stat_from_realm(world, npc, zox_get_link(world, skills[0], SkillResource)) : 0;
+    zox_tst_check(zox_valid(mana), "the npc has no shoot skill, or its resource stat");
+    if (zox_valid(mana)) {
+        zox_log("[tst] npc shoot's resource [%s] [%.1f] of [%.1f]", zox_get_name(mana), zox_getv(mana, StatValue), zox_getv(mana, StatValueMax));
+        zox_tst_check(zox_getv(mana, StatValue) < zox_getv(mana, StatValueMax), "the npc's shots spent no mana");
+    }
     zox_tst_check(zox_tst_attacks_moved > 1, "the player didn't strafe, [%.1f]", zox_tst_attacks_moved);
     zox_tst_check(health < zox_tst_attacks_health, "the npc didn't hurt the player in [%.0fs]", zox_tst_attacks_seconds);
 }

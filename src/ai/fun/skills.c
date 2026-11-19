@@ -3,6 +3,18 @@
 //  - none in reach: the nearest reach, it moves into it (attack_system)
 #define npc_skills_max 16
 #define npc_skill_keep 0.25f           // the current's score added, to keep it on a near tie
+#define npc_pounce_reach 2.5f          // a boneless npc's melee (a slime's pounce, skills/sys/pounce.c), it leaps
+
+// its skill's reach for it (a melee's when it has none), a boneless one's melee a pounce's
+static inline float2 npc_skill_reach(ecs* world, entity e, entity skill) {
+    if (!zox_valid(skill) || !zox_has(skill, SkillReach)) {
+        return (float2) { 0, 1.75f };
+    }
+    if (zox_has(skill, Melee) && !zox_valid(get_skeleton(world, e))) {
+        return (float2) { 0, npc_pounce_reach };
+    }
+    return zox_getv(skill, SkillReach);
+}
 
 static inline byte npc_can_afford(ecs* world, entity e, entity skill) {
     if (disable_skill_costs) {
@@ -22,7 +34,7 @@ entity npc_choose_skill(ecs* world, entity e, entity current, float distance) {
         if (!zox_has(skill, SkillReach)) {
             continue;
         }
-        const float2 reach = zox_getv(skill, SkillReach);
+        const float2 reach = npc_skill_reach(world, e, skill);
         const float gap = distance < reach.x ? reach.x - distance : distance > reach.y ? distance - reach.y : 0;
         float score;
         if (!npc_can_afford(world, e, skill)) {
@@ -40,7 +52,3 @@ entity npc_choose_skill(ecs* world, entity e, entity current, float distance) {
     return best;
 }
 
-// its skill's reach, a melee's when it has none
-static inline float2 npc_skill_reach(ecs* world, entity skill) {
-    return zox_valid(skill) && zox_has(skill, SkillReach) ? zox_getv(skill, SkillReach) : (float2) { 0, 1.75f };
-}

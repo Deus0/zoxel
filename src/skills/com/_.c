@@ -15,7 +15,10 @@ zoxc_float(SkillDamage);
 zoxc_float(SkillDamageMax);
 zoxc_float(SkillRange);
 zoxc_float(SkillCost);
-zoxc_float2(SkillReach);     // the distances it lands at (min, max): an npc picks its skill by it (ai/fun/skills.c)
+zoxc_float2(SkillReach);
+zoxc_double(PounceStart);    // a boneless user's melee (a slime's): its squash's start (sys/pounce.c)
+zoxc_byte(PounceStage);      // 0 squashing, 1 in the air, 2 its hit landed
+zoxc_entity(PounceSkill);    // the melee skill it pounces with     // the distances it lands at (min, max): an npc picks its skill by it (ai/fun/skills.c)
 
 void zox_components_skills(ecs* world) {
     zoxd_tag(Skill);
@@ -35,5 +38,8 @@ void zox_components_skills(ecs* world) {
     zoxd_float(SkillRange);
     zoxd_float(SkillCost);
     zoxd_float2(SkillReach);
+    zoxd_double(PounceStart);
+    zoxd_byte(PounceStage);
+    zoxd_entity(PounceSkill);
     zoxd_byte(SkillActive);
 }

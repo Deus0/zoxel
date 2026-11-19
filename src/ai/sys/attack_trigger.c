@@ -42,7 +42,7 @@ void attack_trigger_system(iter* it) {
         if (!zox_valid(skill) || zox_current_time < attack_at->value) {
             continue;
         }
-        const float2 reach = npc_skill_reach(world, skill);
+        const float2 reach = npc_skill_reach(world, e, skill);
         const float3 forward = quaternion_to_normal(rotation->value);
         if (distance < reach.x || distance > reach.y ||
             (distance > 0.01f && float3_dot(forward, float3_scale(to_threat, 1 / distance)) < npc_attack_facing)) {
