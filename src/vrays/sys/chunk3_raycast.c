@@ -495,8 +495,9 @@ void chunk3_raycast_system(iter* it) {
             ray_normal = zox_getv(camera, RaycastNormal);
         } else {
             ray_origin = zox_getv(e, Position3D);
-            float4 rotation = zox_getv(e, Rotation3D);
-            ray_normal = quaternion_to_normal(rotation);
+            ray_normal = zox_has(e, RaycastAim) ?
+                float3_normalize(float3_subtract(zox_getv(e, RaycastAim), ray_origin)) :
+                quaternion_to_normal(zox_getv(e, Rotation3D));
         }
         const BlockLinks* voxels = zox_get(realm, BlockLinks);
         float block_scale = zox_getv(terrain, BlockScale);

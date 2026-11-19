@@ -1,6 +1,8 @@
 // tst: npc_attacks, an npc the player hits fights back and hurts the player
-//  - spawns a humanoid npc beside the player (not a coward), hits it as the player would (combat_on_hit)
-//  - it goes into battle, attacks (Behaviour), triggers its skill, and the player's health drops
+//  - spawns a humanoid npc 5 away from the player (not a coward), hits it as the player would (combat_on_hit)
+//  - it goes into battle, chases and attacks (Behaviour), triggers its skill, and the player's health drops
+//  - the player strafes at a walk (zox_tst_attacks_strafe): the npc's turning lagged them, its ray along its facing
+//    missed every punch, now it aims at its threat (RaycastAim)
 //  - logs where the chain stops: battle, behaviour, skill, its ray's hit, the player's health
 //  - run: bash bsh/tst.sh npc_attacks
 byte zox_tst_attacks_stage = 0;
@@ -9,6 +11,7 @@ double zox_tst_attacks_time = 0;
 entity zox_tst_attacks_npc = 0;
 float zox_tst_attacks_health = 0;
 #define zox_tst_attacks_seconds 15.0
+#define zox_tst_attacks_strafe 4.0f   // the player side to side, units a second, turning every 2s
 
 static inline float zox_tst_attacks_player_health(ecs* world, entity character) {
     const entity health = zox_get_child_by_id(world, character, zox_id(StatHealth));
@@ -35,7 +38,7 @@ byte zox_tst_npc_attacks_ready(ecs* world) {
             return 1;
         }
         float3 position = zox_getv(character, Position3D);
-        position.x += 1.5f;
+        position.x += 5.0f;
         zox_tst_attacks_npc = spawn_character3_npc(world, humanoid, realm, terrain, 7, 0, 0, position, quaternion_identity, NULL);
         zox_remove(zox_tst_attacks_npc, Coward);
         zox_tst_attacks_stage = 1;
@@ -56,6 +59,9 @@ byte zox_tst_npc_attacks_ready(ecs* world) {
     }
     zox_tst_waiting = "the npc to hurt the player";
     const entity npc = zox_tst_attacks_npc;
+    float3 strafe = zox_getv(character, Position3D);
+    strafe.z += (fmod(zox_current_time - zox_tst_attacks_time, 4.0) < 2.0 ? 1 : -1) * zox_tst_attacks_strafe * zox_delta_time;
+    zox_setv(character, Position3D, strafe);
     const float health = zox_tst_attacks_player_health(world, character);
     if (zox_tst_attacks_frames % 60 == 0 && zox_valid(npc)) {
         const entity action = zox_has(npc, ActiveAction) ? zox_getv(npc, ActiveAction) : 0;
