@@ -5,13 +5,12 @@ static inline void set_tooltip_text(
     const char* text)
 {
     // NOTE: moving straight from one ui to the next, the old one's deselect unlink is still
-    //  deferred, so it's still linked here, that's expected: replace it
+    //  deferred, so it's still linked here, that's expected: the link replaces it (TooltipLink is exclusive)
+    //  - not unlinked first: the remove of the old one, deferred with the new link, dropped the new one too (stepping
+    //      on with a gamepad, every other ui had no tooltip)
     entity old_linked = zox_get_link(world, tooltip, TooltipLink);
-    if (old_linked) {
-        if (old_linked == ui) {
-            return;
-        }
-        zox_unlink(world, tooltip, TooltipLink, old_linked);
+    if (old_linked == ui) {
+        return;
     }
     // zox_log("Linking Tooltip [%s] => [%s]", zox_getn(tooltip), zox_getn(ui));
     // link tooltip new ui
