@@ -14,6 +14,8 @@
 	where the character spawns decides it (since players spawn at their homes? 2026-11-18), and a run stalled
 - tst lint_systems: chunk3_textured_render_system (src/rendering/rendering3/sys/render_chunks.c:184) has no
 	zox_sys_on_begin() / zox_sys_on_end() (2026-11-18)
+- tst player_spawn (flaky, about half) and continue_game fail: "character is inside a solid block [43]" (water) at
+	[0 18 0] or [1 18 0]; tst coop_homes: players [1] and [2] have no home near (no towns?); all on 3b3909d12 too (2026-11-19)
 - tst dig_light fails 1 of 2: "the hole's faces never showed (or not [5] of them: [1])", on 22d44c39c too (2026-11-19)
 - tst pipeline_syncs fails 2 of 3: 21 merges (over 11), 4 main thread systems between multi threaded ones:
 	camera_underwater_system (pre_physics), xr_room_walk_system, xr_head_bone_system, xr_hands_ik_system (2026-11-18)
@@ -309,7 +311,6 @@
 	- cant sleep in bed
 		- sleep in a bed: close the eyes, a button to leave (the sleep ui), open the eyes when you get up
 		- animate getting onto the bed with the bones (ik)
-		- loading's eyes (huds3_darkness, a global) onto the camera's CameraLids, 2D loading's canvas fade too
 		- after day and night: sleeping skips the night, sets your respawn point to the bed, heals while asleep
 	- play test doors (right click opens and closes them, vodes/doors): the swing's direction (to its back, away from
 	  whoever placed it), the creak and the shut, walking through; it's passable as soon as it starts opening and

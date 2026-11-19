@@ -24,6 +24,9 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x Loading closes the eyes by each player's camera's CameraLids, in 2D too (load_lids_system, was the 3D huds'
+  huds3_darkness global and 2D's canvas fades); the "Loading" label over them; it lets go once open (load_lids) so
+  sleeping has its own; removed the unused fog darkening (render_darkness); tst load_lids
 -x Swings as one table (bones/dat/swings.c): each kind's poses, its strike's ease and its marks (events); played by
   bones/ik/sys/swing.c (was ik/sys/punch.c); zox_ease_in_out, zox_ease_between in animations
 -x A swing's own time on skills and items (SwingTime, attack speed), separate from the cooldown; the melee tooltip

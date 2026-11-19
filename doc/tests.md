@@ -98,7 +98,7 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 | Cameras | `camera_viewports` `camera_projection` `camera_orthographic` `camera_look_at` `camera_viewport_spawn` `camera_split_screen` `camera_downscale` `camera_frustum` `camera_filter` `eyelids` |
 | Sound and music | `sound_mixer` `sound_formats` `sound_instruments` `sound_balance` `voice_sounds` `hit_sounds` `hit_sound_links` `music_*` |
 | Body and gear | `parts` `clothes` `npc_skeletons` |
-| Text and ui | `text_data` `text_order` `font_glyphs` `font_fill` `font_glyphs_fill` `texture_lines` `menu_flow` `mouse_click` `ui_leaks` `tooltips` `options_toggle` `scroll_wheel` `list_order` `ui_layout` `exit_menu` `exit_game` |
+| Text and ui | `text_data` `text_order` `font_glyphs` `font_fill` `font_glyphs_fill` `texture_lines` `menu_flow` `load_lids` `mouse_click` `ui_leaks` `tooltips` `options_toggle` `scroll_wheel` `list_order` `ui_layout` `exit_menu` `exit_game` |
 | Game | `load_games` `player_spawn` `continue_game` `end_game_cleanup` `stream_npcs` `npc_attacks` `population` `region_population` `npc_leash` `player_respawn` `footsteps` `arms_in_step` `parts` `action_wheel` `item_split` `resume_no_punch` `pickup_pop` `editor` `touch_play` `touch_actions` (a tap on an action icon selects it) |
 | Local coop | `coop_streamers` (terrain lods from the closest player's streamer) `coop_skybox` (a skybox round each camera) `coop_homes` (players spawn at their own homes in one town) |
 | Quests | `quest_tracking` `quest_dialogue` |
