@@ -84,16 +84,18 @@ variant. Nodes go between the first (size) and the last (end): more nodes there 
 - patches are 2 wide and 3 tall (`wfc_patch_size`): 3 a side keeps the details but only remakes a small source, 3 tall
   lets a leg see it goes on up
 - rules (`wfc_rule_*`): air outside the box, the floor, mirrored on x, one piece, anchored (a patch near where it is
-  in the source), shaped (favours the source's voxel at the same share of the box), feet (solid under the source's
-  feet, the piece standing on them)
+  in the source), shaped (favours the source's voxel at the same share of the box, its features collapsed first),
+  feet (solid under the source's feet, the piece standing on them), features (keeps every rare voxel: eyes, a beak,
+  a comb, anywhere near)
+- variety over accuracy: the anchor's slack is 0.2 of the box (at 0.05 they kept close to the source, at 0.1 features
+  were lost); the features rule, not a tight anchor, keeps a face
 - a contradiction tries the next seed (24 tries), then less of the feet, then the source stretched to the box
 - critters: 4 variants each of `chicken.vox` (chooks) and `mrpenguin.vox` (pengus) in every realm,
   `spawn_realm_critter_wfc` (gam/zoxel/sys/characters.c). To look at them:
   `zox_tst_model=pengu zox_tst_model_variants=1 bash bsh/tst.sh model_views`
-- the anchor's slack is 0.05 of the box: at 0.1 a chicken kept its eye 4 times in 12 and its comb rarely, at 0.05 7 in 12
-  and mostly its comb; looser lets small features (eyes, combs) go
-- to do: small features can still go (a pengu's face, 1 in 3); a box much flatter than the source can end as the
-  stretched source; a pengu takes up to 0.5s a variant (a bigger source, feet of 6 voxels: its feet rule retries)
+- each critter its own box range: pengus are never shorter than Mr Penguin (squashed, his face on top had no room)
+- to do: a box much smaller than the source can end as the stretched source (no room for its features); a pengu can
+  take up to a second a variant in a debug build (its tries lose a feature, then less of the feet is tried)
 
 ## Examples
 
