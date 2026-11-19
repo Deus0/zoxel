@@ -24,6 +24,10 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x Eating swings the hand to the mouth (zox_swing_eat), from the item's warmup (item_swing_system, blocks and food);
+  just under the first person view, in front of the face; tst swing_motion (was place_motion), eat_swing
+-x Placing a block the head turns part way to it (SwingTarget, the ray's hit; head_look, head_place_nudge), not a
+  first person head (its camera aims there already); tst place_glance
 -x Placing a block swings as a place, not a punch: the block lifted up by the head, then pressed out where you look
   (SwingKind on the skeleton, zox_swing_place), from the item's warmup (item_place_swing_system, skeleton_swing_begin);
   tst place_motion
