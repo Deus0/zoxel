@@ -454,16 +454,8 @@
     - only gear can do this, but the parts, you need to remove the end of limbs first
 - Tweens: an AnimationEndEvent (a function, like StreamEndEvent) called when one ends, AnimationDeletesTarget becomes
   one handler of it (ui_pop_out passes a delete), anything can react to an animation finishing
-- Begin animating arm when attack starts
-	- atm it is delayed until mid attack
-- time punch animation when first click?
-	- play test: the punch looks like a slap now, add a wind up and a better swing
-	- warmup of skill first
-	- then punch begins
-	- punch swings
-	- punch hits
-	- punch winds back
-	- skill coolsdown
+- Using an item (placing a block, eating) swings the arm at the use, after its warmup: start it with the warmup, as
+  melee does (skills/sys/melee_swing.c)
 - Animate ui for punch, overlay
 - Disable Switching Action when one is active
 - Global Cooldown When Switching

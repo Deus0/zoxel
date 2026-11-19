@@ -24,6 +24,10 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x A punch looked like a pat: its swing started at the hit (after the warmup), so it pulled back after contact. A
+  melee skill's warmup starts the swing now (melee_swing_system), the fist winds back low by the ribs, snaps out
+  (eased out) to the arm's full reach as the warmup ends and it hits, holds, then recovers (bones/ik/sys/punch.c);
+  tst punch_wind_up
 -x Towns stood in the sea or a lake (homes over the water, air cleared under the sea): a town's place is tried again
   if any of its ground (every 4 blocks) is under the sea or a lake (terrain_rect_over_water), lakes from the cells
   round a region kept out too; tst sea_level checks no town air under the sea, lakes no lake columns in towns
