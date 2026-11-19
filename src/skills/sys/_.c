@@ -3,6 +3,7 @@
 #include "toggle.c"
 #include "character.c"
 #include "melee.c"
+#include "melee_swing.c"
 #include "shoot.c"
 #include "projectile_hit.c"
 
@@ -19,6 +20,16 @@ void zox_systems_skills(ecs *world) {
         zoxp_update,
         [in] skills.SkillDamage,
         [none] skills.Dot
+    );
+    // a melee warmup starts its user's swing (the wind up before the hit)
+    zox_system_1(
+        melee_swing_system,
+        zoxp_update,
+        [in] timers.WarmupAt,
+        [in] timers.WarmupTime,
+        [in] timers.CooldownTime,
+        [in] skills.SkillCost,
+        [none] skills.Melee
     );
     // TODO: split into sound, resource and damage systems
     zox_system_1(

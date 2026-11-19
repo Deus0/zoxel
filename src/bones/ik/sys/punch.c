@@ -1,7 +1,7 @@
 // The right arm in normal play, with ik: a guard while it's raised, a punch as a motion (not a straight arm)
-//  - a punch (SwingStart, SwingSpeed: skills/sys/melee.c, items) over its swing time: the hand pulls back (the
-//    elbow bent), drives out to nearly the arm's full reach where the head looks, in towards the body's middle,
-//    then recovers to the guard
+//  - a punch (SwingStart, SwingSpeed: skills/sys/melee_swing.c from the warmup, items) over its swing time, the hit
+//    halfway (the warmup's end): the fist winds back low by the ribs (the elbow bent), snaps out to the arm's full
+//    reach where the head looks and in to the body's middle as it hits, holds a moment, then recovers to the guard
 //  - raised (RaiseShoulder: an item or skill held) the hand rests ahead where the head looks, a little up and in, the
 //    elbow relaxed, not locked; a first person camera sees it (held low by the chest it was out of view: the arm
 //    looked gone)
@@ -10,13 +10,21 @@
 //  - a held shoulder (IKHeld, XR hands) is left be: the real hand moves it
 //  - written in place, not deferred, so the solve (arm_ik.c) reads it this frame; after physics (zoxp_trails), from
 //    where the body is now
-#define ik_punch_guard 0.85f        // of the arm's reach, the hand's rest raised: out where it's seen in first person
-#define ik_punch_pull 0.6f          // pulled back before it strikes
-#define ik_punch_strike 0.97f       // the punch's reach
-#define ik_punch_inwards 0.18f      // the strike leans in to the body's middle, of its reach
-#define ik_punch_guard_inwards 0.12f    // the guard a little in, as the old raise held it
-#define ik_punch_lift 0.4f          // the guard a little above the look, so it's seen (the old raise aimed it up)
 #define ik_punch_weight_rate 12.0f  // how fast the weight eases on and off
+#define ik_punch_chambered 0.38f    // through the swing: wound back, the strike begins
+#define ik_punch_hit 0.5f           // landed (the warmup's end, melee.c hits)
+#define ik_punch_held 0.62f         // held out, the recovery begins
+
+// the hand's place, of the arm's reach: out along the look, in to the body's middle, up
+typedef struct {
+    float out;
+    float in;
+    float up;
+} ik_punch_pose;
+
+static const ik_punch_pose ik_punch_guard = { 0.85f, 0.12f, 0.4f };    // raised: out where it's seen in first person
+static const ik_punch_pose ik_punch_wound = { 0.45f, -0.04f, 0.05f };  // the fist pulled back low by the ribs
+static const ik_punch_pose ik_punch_strike = { 0.99f, 0.18f, 0 };      // the arm straight, in to the middle
 
 static inline float ik_smoothstep(float a, float b, float x) {
     float t = (x - a) / (b - a);
@@ -24,15 +32,29 @@ static inline float ik_smoothstep(float a, float b, float x) {
     return t * t * (3 - 2 * t);
 }
 
-// the hand's distance out over the punch, 0 to 1 through it: pull back, strike, recover to the guard
-static inline float ik_punch_distance(float p) {
-    if (p < 0.3f) {
-        return ik_punch_guard + (ik_punch_pull - ik_punch_guard) * ik_smoothstep(0, 0.3f, p);
+// fast then settling: the strike's snap
+static inline float ik_ease_out(float a, float b, float x) {
+    float t = 1 - (x - a) / (b - a);
+    t = t < 0 ? 0 : (t > 1 ? 1 : t);
+    return 1 - t * t * t;
+}
+
+static inline ik_punch_pose ik_punch_pose_lerp(ik_punch_pose a, ik_punch_pose b, float t) {
+    return (ik_punch_pose) { a.out + (b.out - a.out) * t, a.in + (b.in - a.in) * t, a.up + (b.up - a.up) * t };
+}
+
+// the hand's pose over the punch, 0 to 1 through it: wind up, strike, hold, recover to the guard
+static inline ik_punch_pose ik_punch_pose_at(float p) {
+    if (p < ik_punch_chambered) {
+        return ik_punch_pose_lerp(ik_punch_guard, ik_punch_wound, ik_smoothstep(0, ik_punch_chambered, p));
     }
-    if (p < 0.5f) {
-        return ik_punch_pull + (ik_punch_strike - ik_punch_pull) * ik_smoothstep(0.3f, 0.5f, p);
+    if (p < ik_punch_hit) {
+        return ik_punch_pose_lerp(ik_punch_wound, ik_punch_strike, ik_ease_out(ik_punch_chambered, ik_punch_hit, p));
     }
-    return ik_punch_strike + (ik_punch_guard - ik_punch_strike) * ik_smoothstep(0.55f, 1, p);
+    if (p < ik_punch_held) {
+        return ik_punch_strike;
+    }
+    return ik_punch_pose_lerp(ik_punch_strike, ik_punch_guard, ik_smoothstep(ik_punch_held, 1, p));
 }
 
 void punch_ik_system(iter* it) {
@@ -96,17 +118,14 @@ void punch_ik_system(iter* it) {
         const float3 elbow = zox_getv(arm.bones[arm.length - 2], Position3D);
         const float reach = float3_distance(zox_getv(shoulder, Position3D), elbow) +
             float3_distance(elbow, zox_getv(arm.bones[arm.length - 1], Position3D));
-        const float p = punching ? (float) (passed / speed->value) : 1;
-        const float out = punching ? ik_punch_distance(p) : ik_punch_guard;
-        // in to the body's middle (the right shoulder's on -x, in is +x) at the strike, low at the guard
-        const float strike = punching ? ik_smoothstep(0.3f, 0.5f, p) * (1 - ik_smoothstep(0.55f, 1, p)) : 0;
+        const ik_punch_pose pose = punching ? ik_punch_pose_at((float) (passed / speed->value)) : ik_punch_guard;
+        // in to the body's middle: the right shoulder's on -x, in is +x
         const float in_sign = (zox_getv(shoulder, LocalPosition3D).x < 0 ? 1 : -1) * flip;
         const float3 side = float4_rotate_float3(head_rotation, (float3) { in_sign, 0, 0 });
-        float3 target = float3_add(from, float3_scale(look, out * reach));
         const float3 up = float4_rotate_float3(head_rotation, float3_up);
-        target = float3_add(target, float3_scale(side,
-            (ik_punch_guard_inwards + (ik_punch_inwards - ik_punch_guard_inwards) * strike) * reach));
-        target = float3_add(target, float3_scale(up, ik_punch_lift * (1 - strike) * reach));
+        float3 target = float3_add(from, float3_scale(look, pose.out * reach));
+        target = float3_add(target, float3_scale(side, pose.in * reach));
+        target = float3_add(target, float3_scale(up, pose.up * reach));
         zox_getm(shoulder, IKTarget)->value = target;
         weight->value += (1 - weight->value) * weight_t;
     }

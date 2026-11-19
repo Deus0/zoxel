@@ -29,5 +29,6 @@ void import_skills(ecs* world) {
     zox_add_module(auras);
 #ifdef zox_tests
     zox_tsts_aura_particles(world);
+    zox_tsts_punch_wind_up(world);
 #endif
 }
