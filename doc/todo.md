@@ -14,6 +14,7 @@
 	where the character spawns decides it (since players spawn at their homes? 2026-11-18), and a run stalled
 - tst lint_systems: chunk3_textured_render_system (src/rendering/rendering3/sys/render_chunks.c:184) has no
 	zox_sys_on_begin() / zox_sys_on_end() (2026-11-18)
+- tst dig_light fails 1 of 2: "the hole's faces never showed (or not [5] of them: [1])", on 22d44c39c too (2026-11-19)
 - tst pipeline_syncs fails 2 of 3: 21 merges (over 11), 4 main thread systems between multi threaded ones:
 	camera_underwater_system (pre_physics), xr_room_walk_system, xr_head_bone_system, xr_hands_ik_system (2026-11-18)
 - tst sound_balance fails 4 of 68: on small speakers click, splash, stone and water are only 1.5 to 2x the music

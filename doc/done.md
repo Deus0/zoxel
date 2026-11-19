@@ -24,6 +24,10 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x The punch is instant: no cast (warmup 0), the press starts its swing, and it only damages at the swing's hit mark
+  (melee_hit, an observer: skills/eve/melee_hit.c), what's aimed at then; the windup is animation. The skeleton
+  links what's swung (SwingAction), eating's crumbs read the food from it. tst punch_wind_up (no hit before the mark,
+  one ~10 ms after); doc/plans/skill_timing.md
 -x Animation events: a swing passing its marks (a punch's hit, a place's set, eating's bites) sets SwingMark on the
   skeleton (bones/sys/swing_mark.c), observers react: eating's munch and crumbs are one (actions/eve/eat.c, was a
   system on the food's cooldown)

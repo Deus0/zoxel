@@ -2,7 +2,11 @@
 
 Skills and item uses timed like an mmo's (cast time, cooldown, a global cooldown). Instant ones (punch, place, eat) are
 animation based: the press starts a swing, the effect lands at the swing's impact. Timing must be exact for combat.
-Not started; open questions at the end.
+Started: the punch is instant (step 2). Open questions at the end.
+
+The user's answers (2026-11-19):
+- any cast (a warmup) shows a castbar
+- the punch only damages on its hit: its windup is just the swing's animation, not a cast
 
 ## Now
 
@@ -43,18 +47,22 @@ Not started; open questions at the end.
   when tweens need events too, see the AnimationEndEvent todo). Gameplay only starts a swing
   (`skeleton_swing_begin`) and reacts to its marks: animations are its crutches, it doesn't time itself off them.
 - Gameplay in its module: skills (melee hit), items (place; consumables as an `items/consumables` submodule: the
-  consume, the bite observer, with a `SwingItem` link on the skeleton so it needs no actions module).
+  consume, the bite observer; it reads the food from the skeleton's `SwingAction` now, so it needs no actions module).
 - Timers (`_/timing/timers`) stay generic: cast, cooldown, a global cooldown.
 
 ## Steps
 
 1. A swing's own length on skills and items (`SwingSpeed` on them), cooldown separate; tests: punch_wind_up's checks
    move to the press.
-2. Punch instant: its warmup 0, its swing from the press (an observer of the press), the hit an observer of the hit
-   mark (melee_system's hit moved there); tst: the damage lands at the mark's time, not a frame late.
+2. Done: punch instant, its warmup 0, its swing from the press (melee_system pays and starts it; still a system on
+   `Activate`, an observer of the press later), the hit an observer of the hit mark (melee_hit, skills/eve/melee_hit.c);
+   the skeleton has `SwingAction` (what's swung) for observers; tst punch_wind_up: no hit before the mark, one hit
+   ~10 ms after it. The swing's length is the cooldown until step 1.
 3. Place and eat the same (item_activate_system, item_consume_system to observers of their marks).
-4. `items/consumables` submodule, `SwingItem` on the skeleton.
+4. `items/consumables` submodule (the bite observer moves from actions/eve/eat.c).
 5. Global cooldown on the user (if wanted now), the actionbar shows it (skill_overlay_system).
+6. A castbar for casts (shoot and aura have a 0.5s warmup and none now): the user's cast, its skill's icon and name,
+   filling over its warmup.
 
 ## Questions
 
