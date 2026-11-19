@@ -1,5 +1,6 @@
 // an npc's skill for its threat at a distance, any skill with a reach (SkillReach), more skills just more choices
-//  - in reach and affordable: its average damage, its current a little more (it doesn't flick between equals)
+//  - in reach, affordable and ready: its average damage, its current a little more (it doesn't flick between equals)
+//  - cooling down (a slime's tentacle, 5s): below any ready one, so a long cooldown's skill is a now and then
 //  - none in reach: the nearest reach, it moves into it (attack_system)
 #define npc_skills_max 16
 #define npc_skill_keep 0.25f           // the current's score added, to keep it on a near tie
@@ -24,6 +25,11 @@ static inline byte npc_can_afford(ecs* world, entity e, entity skill) {
     return !zox_valid(resource) || zox_getv(resource, StatValue) >= zox_getv(skill, SkillCost);
 }
 
+// not cooling down (as action_activate_system's)
+static inline byte npc_skill_ready(ecs* world, entity skill) {
+    return !(zox_has(skill, CooldownState) && zox_getv(skill, CooldownState)) && !(zox_has(skill, CooldownAt) && zox_getv(skill, CooldownAt));
+}
+
 entity npc_choose_skill(ecs* world, entity e, entity current, float distance) {
     entity skills[npc_skills_max];
     const uint count = zox_get_children_by_id(world, e, skills, npc_skills_max, zox_id(Skill));
@@ -40,7 +46,9 @@ entity npc_choose_skill(ecs* world, entity e, entity current, float distance) {
         if (!npc_can_afford(world, e, skill)) {
             score = -1000 - gap;
         } else if (gap > 0) {
-            score = -gap;
+            score = -100 - gap;
+        } else if (!npc_skill_ready(world, skill)) {
+            score = -50 + (skill == current ? npc_skill_keep : 0);
         } else {
             score = 0.5f * (zox_getv(skill, SkillDamage) + zox_getv(skill, SkillDamageMax)) + (skill == current ? npc_skill_keep : 0);
         }

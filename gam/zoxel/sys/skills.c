@@ -86,6 +86,17 @@ void skills_realm_spawn_system(iter* it) {
                 0.5f,
                 0.5f);
         }
+        // Tentacle: a slime's whip, now and then (its long cooldown), more than its pounce
+        {
+            meta_skill_tentacle = spawn_realm_skill(world, e, prefab_skill_tentacle, "tentacle", "tentacle",
+                (color) { 110, 210, 120, 255 });
+            zox_link(world, meta_skill_tentacle, SkillResource, energy);
+            zox_setv(meta_skill_tentacle, SkillCost, 2);
+            zox_setv(meta_skill_tentacle, SkillDamage, 2);
+            zox_setv(meta_skill_tentacle, SkillDamageMax, 3);
+            zox_setv(meta_skill_tentacle, SkillRange, 4);
+            skill_set_cast(world, meta_skill_tentacle, 0, 5);
+        }
         // Aura Skill
         {
             color ecolor = (color) { 5, 5, 5, 122 };

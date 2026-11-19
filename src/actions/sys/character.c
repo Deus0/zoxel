@@ -27,6 +27,10 @@ void character_actions_spawn_system(iter* it) {
         if (meta_skill_shoot && zox_has(e, Villager)) {
             spawn_user_skill(world, e, meta_skill_shoot);
         }
+        // monsters (slimes) whip out a tentacle now and then
+        if (meta_skill_tentacle && zox_has(e, Monster)) {
+            spawn_user_skill(world, e, meta_skill_tentacle);
+        }
     }
     zox_sys_on_end();
 } zoxd_system(character_actions_spawn_system);

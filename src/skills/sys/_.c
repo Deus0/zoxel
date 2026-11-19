@@ -5,6 +5,7 @@
 #include "melee.c"
 #include "shoot.c"
 #include "pounce.c"
+#include "tentacle.c"
 #include "projectile_hit.c"
 
 void zox_systems_skills(ecs *world) {
@@ -38,6 +39,22 @@ void zox_systems_skills(ecs *world) {
         [in] skills.SkillDamage,
         [in] skills.SkillDamageMax,
         [none] skills.Shoot
+    );
+    zox_system_1(
+        tentacle_activate_system,
+        zoxp_spawn,
+        [in] timers.Activate,
+        [in] skills.SkillRange,
+        [none] skills.Tentacle
+    );
+    zox_system_1(
+        tentacle_system,
+        zoxp_spawn,
+        [in] skills.TentacleStart,
+        [in] skills.TentacleTip,
+        [in] skills.TentacleSkill,
+        [in] transforms3.Position3D,
+        [out] skills.TentacleHit
     );
     zox_system_1(
         pounce_system,
