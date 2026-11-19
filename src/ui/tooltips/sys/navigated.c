@@ -37,9 +37,17 @@ void tooltip_navigated_system(iter* it) {
         const int4 bounds = {
             (int) ((screen.x - viewport.position.x) * scale.x), (int) ((screen.y - viewport.position.x) * scale.x),
             (int) ((screen.z - viewport.position.y) * scale.y), (int) ((screen.w - viewport.position.y) * scale.y) };
-        // its top right corner lands half its size past its position (beside a mouse's cursor): taken off
+        // its top right corner is its position (MeshAlignment top right)
+        int2 output = { bounds.y, bounds.z - tooltip_navigated_gap };
+        // kept on its canvas: past its left edge it moves right, past its bottom above the ui (split screen's narrow
+        //  canvases cut it off)
         const int2 size = zox_getv(e, LayoutSize);
-        int2 output = { bounds.y - size.x / 2, bounds.z - tooltip_navigated_gap - size.y / 2 };
+        if (output.x - size.x < 0) {
+            output.x = size.x;
+        }
+        if (output.y - size.y < 0) {
+            output.y = bounds.w + tooltip_navigated_gap + size.y;
+        }
         output.x -= anchor->value.x * canvas_size.x;
         output.y -= anchor->value.y * canvas_size.y;
         if (!int2_equals(position->value, output)) {

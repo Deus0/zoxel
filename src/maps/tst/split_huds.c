@@ -12,18 +12,8 @@ void zox_tst_split_screen_huds_setup() {
 }
 
 // a hud's bounds on the screen: left, right, bottom, top
-//  - a top right aligned one (the quest tracker) reaches left and down from its position, get_element_pointer_bounds
-//      has it centred (alignment_to_scaler has no top right)
 static inline int4 zox_tst_shuds_rect(ecs* world, const CanvasViewport* viewport, entity e) {
-    const int2 size = zox_getv(e, LayoutSize);
-    int4 r = get_element_pointer_bounds(world, viewport, e, zox_getv(e, Position2), size);
-    if (zox_has(e, MeshAlignment) && zox_getv(e, MeshAlignment) == zox_alignment_top_right) {
-        r.x -= size.x / 2;
-        r.y -= size.x / 2;
-        r.z -= size.y / 2;
-        r.w -= size.y / 2;
-    }
-    return r;
+    return get_element_pointer_bounds(world, viewport, e, zox_getv(e, Position2), zox_getv(e, LayoutSize));
 }
 
 // the canvas's huds overlap each other, logs them

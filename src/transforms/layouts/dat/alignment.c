@@ -50,6 +50,13 @@ static inline float4 alignment_to_scaler(byte alignment) {
             1, 0,
             0, 1
         };
+    } else if (alignment == zox_alignment_top_right) {
+        // as the meshes are (primitive_square.c): without it a tooltip's bounds were centred, drawn half its size off
+        return (float4) { 1, 0, 1, 0 };
+    } else if (alignment == zox_alignment_top_left) {
+        return (float4) { 0, 1, 1, 0 };
+    } else if (alignment == zox_alignment_bottom_left) {
+        return (float4) { 0, 1, 0, 1 };
     }
     return (float4) { 0.5f, 0.5f, 0.5f, 0.5f };
 }
