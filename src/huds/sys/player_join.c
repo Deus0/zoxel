@@ -115,7 +115,11 @@ static void reclaim_gamepads(ecs* world) {
                 index = j;
             }
         }
-        if (index < 0 && players_playing && !given[0] && zox_getv(zox_players[0], DeviceMode) == zox_device_mode_none) {
+        // the first: without a device, or alone and without a gamepad (on the keyboard after its was unplugged, a
+        //  press on it switches it back, device_switch_system; it stayed the app's, out of its reach)
+        const byte first_lost = players_playing && zox_getv(zox_players[0], DeviceMode) == zox_device_mode_none;
+        const byte first_padless = players_playing == 1 && !zox_valid(zox_get_link(world, zox_players[0], GamepadLink));
+        if (index < 0 && !given[0] && (first_lost || first_padless)) {
             index = 0;
         }
         if (index < 0) {
@@ -123,11 +127,16 @@ static void reclaim_gamepads(ecs* world) {
         }
         given[index] = 1;
         const entity player = zox_players[index];
+        const byte lost = zox_getv(player, DeviceMode) == zox_device_mode_none;
         zox_set_parent(world, gamepads[g], player);
-        zox_remove(gamepads[g], Disabled);
         zox_set_link(world, player, GamepadLink, gamepads[g]);
-        zox_setv(player, DeviceMode, zox_device_mode_gamepad);
-        zox_remove(player, DeviceLost);
+        if (lost || index > 0) {
+            zox_remove(gamepads[g], Disabled);
+            zox_setv(player, DeviceMode, zox_device_mode_gamepad);
+            zox_remove(player, DeviceLost);
+        } else {
+            zox_add(gamepads[g], Disabled);
+        }
         zox_log("+ [coop] a gamepad plugged in, given to player [%i]", index + 1);
     }
 }
