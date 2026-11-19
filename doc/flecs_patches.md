@@ -61,6 +61,21 @@ flecs.c is patched by bsh/flecs_fix.sh after downloading, each patch has a ZOXEL
 - Repro: bash bsh/tst.sh instance_id_reuse (plain flecs: new an entity at instance + offset, delete it, add (IsA, prefab) to the instance, the deleted handle is alive)
 - Upstream: not reported yet
 
+## Bugs worked round, not patched
+
+### Removing (R, *) from a prefab's instance asserts
+
+- Problem: `ecs_remove_pair(world, e, R, EcsWildcard)` on an instance of a prefab that has a component, when R has a
+  size (a `zox_on_unlink` link: a 1 byte type with an on_remove hook), aborts: flecs.c
+  `assert(ecs_id_is_valid(world, id))` in ecs_table_get_column_index, from flecs_get_table_override, from
+  flecs_emit_on_set_for_override_on_remove. Removing a component, flecs looks for the prefab's value to set back, and
+  passes the wildcard on as the id. Deferred or not; a plain entity, or removing (R, target), is fine.
+- Found: a gamepad picking an item up, `zox_set_link(slot, DataLink, 0)` on an inventory slot (tst navigator_inventory)
+- Worked round: `zox_set_link(e, T, 0)` (src/_/flecs/mcr/pair.c) removes each target it has, not (T, *)
+- Repro: bash bsh/tst.sh flecs_wildcard_remove (each case in a forked child), it fails once flecs fixes it: then
+  zox_set_link can remove (T, *) again
+- Upstream: not reported yet
+
 ## Writing an upstream PR
 
 - A minimal repro in plain flecs C (no zoxel macros), against flecs master, ideally as a flecs test
