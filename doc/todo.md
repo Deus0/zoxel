@@ -440,6 +440,28 @@
 	- streaming should just work seperately to character positioning
 
 # Bodies and Animations
+- Crouch polish (doc/tech/bones.md, tst crouch, bash bsh/walk.sh)
+	- the upper body leans a little ahead crouched (the spine's lean is XR's now and owns the root's place: share it)
+	- a smaller collision body crouched (Bounds3D lower, stand up only with room above), to fit under low gaps
+	- crouched you don't walk off a ledge (stop at the edge, as sneaking does)
+	- first person: the camera takes part of the walk's head bob (3.5cm on a 1m body), a setting for it
+- Feel like a AAA game: weight, readable motion, the body reacting to the world (each with a gif test, tst walk_views)
+	- starts and stops: a lean into the first step, a settle when stopping, not the walk's blend alone
+	- turning: turn in place stepping (the feet planted past an angle), lean into turns walking and running
+	- running: its own gait (longer strides, lean ahead, arms bent 90 pumping), not the walk sped up
+	- feet on slopes and stairs: each foot's ik to the ground under it, the hips down to the lower foot
+	- landing: a squash on the knees by the fall's speed, a stumble past a height; a jump's crouch before it
+	- hit reactions: the body flinches from where it was hit (an additive turn of the spine and head, eased off), a
+	  stagger on a heavy hit, hit stop (a few frames held) on a landed punch for weight
+	- anticipation and follow through on every swing: the body winds up, overshoots, settles (dat/swings.c poses)
+	- look at: the head and then the spine turn to what the eyes look at (npcs to the player, the player to its aim)
+	- hands on the world: a hand on a door it opens, on a wall it walks by close, on a ledge it climbs
+	- idles: breathing (the chest's scale), weight shifts, a look around; each character kind its own
+	- death: a ragdoll (the bones to physics bodies, joints limited), or a fall animation into it
+	- first person viewmodel: the arms sway with the look's speed (inertia), bob with the steps, a recoil kick
+	- the camera: a small shake on hits and landings, a dip on landing, a kick on punching (settings to turn them down)
+	- silhouettes readable from far: poses that say what a character's doing (a raised guard, a wind up)
+	- additive layers: a breathing, a flinch, an aim on top of the walk, so they mix instead of fighting
 - taller characters too <= 3 blocks, 2 wide, etc with bigger doors later for other races
 - limbs in general need polish on the organic shape (shoulders poking clothes fixed: tst chest_weights)
 - IK on arms and legs, for more bending (a doc/tec doc first)
