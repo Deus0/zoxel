@@ -13,6 +13,7 @@ zox_tag(RespawnUI);
 zox_tag(LoadUI);
 zox_tag(MenuMirror);
 zox_tag(PlayerJoinUI);   // the main menu's local coop players (player_join_system)
+zox_tag(DisconnectUI);   // a player's gamepad unplugged, on its screen (huds/eve/disconnect.c)
 zox_tag(Toast);          // a short message at the top, gone after toast_seconds (spawn_toast)
 zoxc_byte(HitType);
 // Taskbar
@@ -34,6 +35,7 @@ void zox_components_game_ui(ecs *world) {
     zoxd_nf_tag(Crosshair);
     zoxd_nf_tag(RespawnUI);
     zoxd_nf_tag(PlayerJoinUI);
+    zoxd_nf_tag(DisconnectUI);
     zoxd_nf_tag(Toast);
     zoxd_nf_tag(LoadUI);
     zoxd_nf_tag(MenuMirror);

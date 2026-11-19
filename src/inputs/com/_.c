@@ -1,6 +1,7 @@
 zox_tag(Device);
 zox_tag(Zevice);
 zox_tag(Gamepad);
+zox_tag(DeviceLost);     // a player's gamepad was unplugged, until another reaches it (huds: the disconnect screen)
 zox_tag(Touchscreen);
 zox_tag(Mouse);
 zox_tag(Finger);
@@ -45,6 +46,7 @@ void zox_components_inputs(ecs *world) {
     zoxd_tag(MousePointer);
     zoxd_tag(DeviceNavigator);
     zoxd_tag(DeviceFeeder);
+    zoxd_tag(DeviceLost);
     zoxd(Keyboard);
     // zoxd_byte(DeviceDisabled);
     // zoxd_byte(ZeviceDisabled);

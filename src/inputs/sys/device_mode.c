@@ -118,6 +118,10 @@ void device_switch_system(iter* it) {
         if (!new_mode) {
             continue;
         }
+        // a device of its own again (the keyboard, the first player's): not lost any more
+        if (zox_has(e, DeviceLost)) {
+            zox_remove(e, DeviceLost);
+        }
         // set player links here if dirty
         it2 = zox_children(world, e);
         while (zox_children_next(it2)) {

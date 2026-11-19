@@ -127,6 +127,7 @@ static void reclaim_gamepads(ecs* world) {
         zox_remove(gamepads[g], Disabled);
         zox_set_link(world, player, GamepadLink, gamepads[g]);
         zox_setv(player, DeviceMode, zox_device_mode_gamepad);
+        zox_remove(player, DeviceLost);
         zox_log("+ [coop] a gamepad plugged in, given to player [%i]", index + 1);
     }
 }

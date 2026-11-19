@@ -60,6 +60,7 @@ void on_gamepad_disconnected(ecs* world, entity gamepad) {
     const entity player = zox_get_parent(world, gamepad);
     if (zox_valid(player) && zox_has(player, DeviceMode)) {
         zox_setv(player, DeviceMode, zox_device_mode_none);
+        zox_add(player, DeviceLost);
     }
     zox_delete(gamepad);
 }
