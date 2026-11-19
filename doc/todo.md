@@ -9,8 +9,7 @@
 ## Now (play test 2026-11-20)
 - houses: holes as windows (for now), doors as door blocks, a bed in each home
 - a bed sets its sleeper's respawn point
-- pause: one pause menu over the whole window in coop, any player drives it (now each screen has its own)
-- realm clock next steps: characters, animations, the world, timers onto the realm's time (doc/plans/realm_clock.md)
+- realm clock, later: animations, the world (sky, doors), timers and particles onto the realm's time (doc/plans/realm_clock.md)
 - a log window in the game menu with the game log's old lines (game_log keeps none yet)
 
 ## Bugs

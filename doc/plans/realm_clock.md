@@ -17,11 +17,14 @@ on. All of it is ECS: components on the entities, one system.
 - Physics moves bodies by their clock: an optional `[in] ?timing.ClockDelta` term, `physics_body_dt` (the frame's
   delta without one, i.e. particles); the terrain collision sweep too. tst realm_pause.
 
+- Npc ai (2026-11-20): wander (ClockDelta), random jumps (?ClockDelta), attack beats and combat time on the
+  character's ClockTime (`clock_time_of`). tst realm_pause checks npcs hold still paused.
+
 ## Next
 
 Systems still on `zox_delta_time` or `zox_current_time` that are game time, moved onto the clock a group at a time:
 
-1. characters: controllers' movement and turning, npc ai (wander, attack timing, sight), jump, footsteps
+1. characters: controllers' movement and turning, jump, footsteps
 2. animations: bones (walk phase, swings timed by `SwingStart` against `zox_current_time`, ik easing), head look
 3. the world: day and night (sky), weather, block damage, regen, doors swinging, beds
 4. timers: `delay_event`, `DestroyInTime`, cooldowns: game ones on the realm's time, ui ones on the frame's

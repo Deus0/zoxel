@@ -1,6 +1,12 @@
 # Done
 
 ## 2026-11-20
+-x One pause menu over the whole window for every player (huds/fun/pause_canvas.c): a shared canvas with its own ui
+  camera, spawned as the game pauses; each player links it too (CanvasLink is many now), so any gamepad navigates it
+  and the mouse clicks it; spawn_window_list_on puts a window on a canvas. With 3D huds (a headset) it stays on the
+  player's. tst coop_pause
+-x Npc ai on the realm clock: wandering, random jumps, attack beats (AttackAt) and combat time (LastCombatTime) by
+  ClockDelta and ClockTime (clock_time_of): paused they hold; tst realm_pause checks the npcs don't move
 -x The game menus (Y, R; a touch button) apart from pause (Start, Escape): the game goes on in a player's own menus,
   the first one opens for a gamepad or headset; the pause menu isn't a taskbar ui any more, its close resumes.
   tst navigator, navigator_inventory, xr_navigator (Y on the simulator) rewritten for it

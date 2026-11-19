@@ -1,6 +1,10 @@
 # Refactoring
 - Part of the [todo](todo.md), done items go in [done.md](done.md)
 
+- A player's canvases (CanvasLink is many since 2026-11-20: its own, and while paused the shared one, huds
+  pause_canvas.c): ~90 places take `zox_get_link(player, CanvasLink)` as "its canvas", flecs keeps no order for
+  the targets; a helper (the canvas whose PlayerLink is the player) swapped in as files are touched. Input already
+  walks all of them (ui navigation begin.c, interaction raycast.c); tst coop_pause checks the first is its own paused
 - Activated block states (a door open, later redstone power) to an activation octree a chunk, out of BlockDatas,
   which keeps data that doesn't change (directions, filler offsets): doc/tech/blocks.md "Planned"
 - Refactor all systems to use the void <T>(iter* it) { instead of the old macros, it fits better with c standards
