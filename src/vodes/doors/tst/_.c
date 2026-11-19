@@ -1,9 +1,9 @@
 // tst: doors, a door opens and closes (vodes/doors), in a game near its player (block voxes spawn only while it plays)
 //  - placed (turned a quarter) with ground under it, its block vox spawns closed: its parts solid to collisions
 //  - toggled through its top (a filler): both parts' block data open, collisions pass through both
-//  - its block vox swings a quarter turn about its hinge: the hinge stays, the door's middle ends half a block to its back
+//  - its sound plays (DoorSound handled); its block vox swings a quarter turn about its hinge: the hinge stays, the door's middle ends half a block to its back
 //  - its block datas saved and loaded keep the open state; its block vox respawned starts open, no swing
-//  - right clicked (TriggerActionB) with the player's ray on its base: closed, solid, swung back to rest
+//  - toggled again through its base: closed, solid, swung back to rest (a right click: tst block_activate)
 //  - run: bash bsh/tst.sh doors
 #define zox_tst_doors_direction 1
 byte zox_tst_doors_stage = 0;
@@ -100,7 +100,7 @@ byte zox_tst_doors_ready(ecs* world) {
         }
         zox_tst_doors_check_parts(world, terrain, realm, 0);
         zox_tst_doors_check_swing(world, zox_tst_doors_vode, block, 0);
-        zox_tst_check(door_toggle(world, terrain, realm, zox_tst_doors_top(), 0), "toggling the door through its top did nothing");
+        zox_tst_check(door_toggle(world, terrain, realm, zox_tst_doors_top()), "toggling the door through its top did nothing");
         zox_tst_doors_check_parts(world, terrain, realm, 1);
         zox_tst_doors_stage = 2;
         zox_tst_doors_time = zox_current_time;
@@ -115,6 +115,7 @@ byte zox_tst_doors_ready(ecs* world) {
         zox_tst_check(zox_current_time - zox_tst_doors_time >= door_swing_time * 0.9f, "it opened in [%.2fs], under its swing time",
             zox_current_time - zox_tst_doors_time);
         zox_tst_doors_check_swing(world, zox_tst_doors_vode, block, 1);
+        zox_tst_check(!zox_has(zox_tst_doors_vode, DoorSound), "its sound wasn't played (DoorSound still on it)");
         // its chunk's block datas through a file: the open state kept
         byte3 local;
         const entity chunk = terrain_chunk_local(world, terrain, zox_tst_doors_base, &local);
@@ -148,15 +149,7 @@ byte zox_tst_doors_ready(ecs* world) {
         }
         zox_tst_doors_vode = vode;
         zox_tst_doors_check_swing(world, vode, block, 1);
-        // closed as a player does: a right click (on_door_activate) with its ray on the door's base
-        byte3 local;
-        const entity chunk = terrain_chunk_local(world, terrain, zox_tst_doors_base, &local);
-        RaycastVoxelData* ray = zox_getm(character, RaycastVoxelData);
-        ray->result = rayhit_block_vox;
-        ray->chunk = chunk;
-        ray->positionl = local;
-        ray->distance = 0.5f * zox_getv(character, RaycastRange);
-        zox_setv(character, TriggerActionB, zox_dirty_trigger);
+        zox_tst_check(door_toggle(world, terrain, realm, zox_tst_doors_base), "toggling the door through its base did nothing");
         zox_tst_doors_check_parts(world, terrain, realm, 0);
         zox_tst_doors_stage = 4;
         zox_tst_doors_time = zox_current_time;

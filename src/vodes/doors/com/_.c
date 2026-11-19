@@ -4,6 +4,7 @@ zoxc_float(DoorSwing);          // 0 closed to 1 open, eased to DoorOpen (sys/sw
 zoxc_float3(DoorRestPosition);  // its centre closed
 zoxc_float4(DoorRestRotation);  // its turn closed (its direction)
 zoxc_float3(DoorHinge);         // its hinge from its centre, in its own frame
+zox_tag(DoorSound);             // toggled (door_toggle, maybe on a worker): on_door_sound plays its creak or thump, removes it
 
 void zox_components_doors(ecs* world) {
     zoxd_byte(DoorOpen);
@@ -11,4 +12,5 @@ void zox_components_doors(ecs* world) {
     zoxd_float3(DoorRestPosition);
     zoxd_float4(DoorRestRotation);
     zoxd_float3(DoorHinge);
+    zoxd_nf_tag(DoorSound);
 }

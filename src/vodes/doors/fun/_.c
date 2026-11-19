@@ -86,9 +86,9 @@ static inline byte door_base_at(ecs* world, entity terrain, entity realm, int3 b
     return zox_valid(b) && zox_has(b, BlockDoor);
 }
 
-// opens or closes the door with a part at block: every part's block data, its block vox swings, its sound
-//  - source: who opened it, the sound plays from the door (its block vox), from them if it has none
-byte door_toggle(ecs* world, entity terrain, entity realm, int3 block, entity source) {
+// opens or closes the door with a part at block: every part's block data, its block vox swings and sounds
+//  - from a worker too (block_activate_system): data under its chunks' locks, the rest deferred
+byte door_toggle(ecs* world, entity terrain, entity realm, int3 block) {
     int3 base;
     if (!door_base_at(world, terrain, realm, block, &base)) {
         return 0;
@@ -108,9 +108,18 @@ byte door_toggle(ecs* world, entity terrain, entity realm, int3 block, entity so
     const entity vode = terrain_vode_at(world, terrain, base);
     if (zox_valid(vode) && zox_has(vode, DoorOpen)) {
         zox_setv(vode, DoorOpen, open);
-        spawn_sound_effect_at(world, open ? sound_effect_door_open : sound_effect_door_close, zox_getv(vode, DoorRestPosition));
-    } else {
-        spawn_sound_effect(world, open ? sound_effect_door_open : sound_effect_door_close, source);
+        zox_add(vode, DoorSound);
     }
     return 1;
+}
+
+// a door toggled (DoorSound): its creak opening, its thump closing, from where it hangs; on the main thread (spawns)
+void on_door_sound(iter* it) {
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        spawn_sound_effect_at(world, zox_getv(e, DoorOpen) ? sound_effect_door_open : sound_effect_door_close,
+            zox_getv(e, DoorRestPosition));
+        zox_remove(e, DoorSound);
+    }
 }
