@@ -93,6 +93,44 @@ void spawn_player_join_ui(ecs* world, entity canvas, byte can_join) {
     }
 }
 
+// in game, a gamepad plugged in (the app's) goes to a player without one: one that lost its gamepad (unplugged,
+//  on_gamepad_disconnected), the joined players first, then the first if it has no device (it has the keyboard too)
+//  - it went to the app, only joining on the main menu took it: an unplugged player's gamepad back did nothing
+static void reclaim_gamepads(ecs* world) {
+    entity gamepads[16];
+    uint count = 0;
+    iter it2 = zox_children(world, main_app);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count && count < 16; j++) {
+            if (zox_has(it2.entities[j], Gamepad)) {
+                gamepads[count++] = it2.entities[j];
+            }
+        }
+    }
+    byte given[max_players] = { 0 };    // this frame (the links are deferred)
+    for (uint g = 0; g < count; g++) {
+        int index = -1;
+        for (int j = 1; j < players_playing && index < 0; j++) {
+            if (!given[j] && !zox_valid(zox_get_link(world, zox_players[j], GamepadLink))) {
+                index = j;
+            }
+        }
+        if (index < 0 && players_playing && !given[0] && zox_getv(zox_players[0], DeviceMode) == zox_device_mode_none) {
+            index = 0;
+        }
+        if (index < 0) {
+            return;
+        }
+        given[index] = 1;
+        const entity player = zox_players[index];
+        zox_set_parent(world, gamepads[g], player);
+        zox_remove(gamepads[g], Disabled);
+        zox_set_link(world, player, GamepadLink, gamepads[g]);
+        zox_setv(player, DeviceMode, zox_device_mode_gamepad);
+        zox_log("+ [coop] a gamepad plugged in, given to player [%i]", index + 1);
+    }
+}
+
 void player_join_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
@@ -114,6 +152,9 @@ void player_join_system(iter* it) {
         if (!on_main_menu) {
             if (player_join_ui_shown != -1) {
                 despawn_player_join_ui(world, canvas);
+            }
+            if (zox_valid(game) && zox_getv(game, GameState) != zox_game_none) {
+                reclaim_gamepads(world);
             }
             continue;
         }

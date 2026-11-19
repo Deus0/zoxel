@@ -192,13 +192,7 @@ void gamepad_extract_system(iter* it) {
             if (dbg_log) {
                 zox_log("SdlGameController Disconnected [%s]", zox_get_name(e));
             }
-            entity player = zox_get_parent(world, e);
-            if (zox_valid(player)) {
-                zox_setv(player, DeviceMode, zox_device_mode_none);
-            } else {
-                zox_loge("No player parent of gamepad..");
-            }
-            zox_delete(e);
+            on_gamepad_disconnected(world, e);
             continue;
         }
         // Fetch
