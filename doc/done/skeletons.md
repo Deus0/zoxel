@@ -70,8 +70,11 @@ Also [character.md](../character.md), [body_equips.md](../body_equips.md).
    of that part's model into it at its position (colours merged into one palette). **This is the one place that knows
    which part every voxel came from**, and it throws that away.
 3. **Bones** (`character_bone_spawn_system`, parts): deletes the old bones, walks the slots again (`spawn_part_bones`,
-   its own order) and spawns a bone per slot holding a part, except clothes. A bone's `BonePosition` is the slot's
-   centre, its `BoneSize` the part model's half size plus half a voxel. The `BoneLinks` index is the bone's index in
+   its own order) and spawns a bone per slot holding a part, except clothes. A bone's `BonePosition` is its pivot, the
+   joint with its parent's part (`part_bone_pivot`: between the two parts' facing sides, on the axis they're furthest
+   apart on, the middle of their overlap on the others; the chest, the root, its centre), `BoneCentre` the slot's
+   centre, its `BoneSize` the part model's half size plus half a voxel. At their centres the limbs turned about their
+   middles: a bent elbow pulled the forearm a gap off the upper arm, the skin between in strips (tst punch_views). The `BoneLinks` index is the bone's index in
    the shader. Then `SkeletonDirty`.
 4. **Meshes** (`skeleton_mesh_build_system`): builds a mesh per render depth from the vox (`build_vox_mesh_at_depth`:
    4 vertices a face, no sharing), then `BuildMeshWeights`.
