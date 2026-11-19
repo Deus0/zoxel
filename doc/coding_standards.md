@@ -293,6 +293,28 @@ Components are the pieces of state. Systems are where those pieces begin to move
 
 Avoid encoding unnecessary behavior into component definitions. Keep the data model clean so that systems can operate on it naturally.
 
+### Generic Components and Tags
+
+Fewer components is a goal. Before adding one, look for a generic one that already holds that kind of value, and
+organise with tags:
+
+* **Generic values, tags for meaning.** A burn's rate is `Damage` (a float, combat's) tagged `DamagePerSecond`, lasting
+  `DamageTime`, not a `BurnRate` and a `BurnTime`. A skill that burns is tagged `Burn`.
+* **Reuse core's.** `Target` (the entity it targets: a camera's character, a pointer's ui, an npc's sight), `Count`,
+  `Busy`, timing's `DestroyInTime`; and the modules' `Color`, `Bounds3D`, `Gravity3D`, `Scale3`.
+* **Tags, not byte states.** Systems filter on tags: `SkillHit` added when a hit is tried, not a stage byte of 2.
+* **One value each.** Never pack different meanings into a struct or a vector. A `float2` of one range (min, max) is
+  fine; a rate and a duration in one is not.
+* **Derive, don't store.** A heading from a target position, an attacker's position through its link, a particle
+  count from the time.
+
+```c
+zox_add(skill, Burn);                   // its hits burn
+zox_set(skill, Damage, { 0.5f });       // generic
+zox_add(skill, DamagePerSecond);        // what the Damage means
+zox_set(skill, DamageTime, { 5 });
+```
+
 ## System Files
 
 Systems use lowercase snake_case function names.
