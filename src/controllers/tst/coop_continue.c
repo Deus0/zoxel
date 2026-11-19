@@ -52,3 +52,53 @@ void zox_tst_coop_continue_check(ecs* world) {
         zox_tst_check(distance < 1, "player [%i] spawned [%.1f] blocks from its save's position", i + 1, distance);
     }
 }
+
+// tst: coop_join_continue, a saved game continued with a new second player (only player.dat): it starts at a home in
+//  the town closest to the first (the first loaded, picked no town: the second picked a random one)
+//  - run: bash bsh/tst.sh coop_join_continue
+void zox_tst_coop_join_continue_setup() {
+    zox_tst_load_games_setup();
+    terrain_sea_height = 0;     // the sea lowered: towns keep off water, most of the world was under it (no towns)
+    is_split_screen = 1;
+    char folder[640];
+    snprintf(folder, sizeof(folder), "%s/realm_%03i", zox_tst_load_saves_path, zox_tst_load_saves - 1);
+    const SaveDataCharacter save = { .position = zox_tst_coop_continue_positions[0], .euler = float3_zero };
+    save_file_struct(folder, "player.dat", &save, sizeof(SaveDataCharacter));
+}
+
+// the town closest to a position (x and z, in blocks), of the terrain's
+static inline entity zox_tst_closest_town(ecs* world, entity terrain, float3 position) {
+    const float scale = zox_getv(terrain, BlockScale);
+    entity closest = 0;
+    float best = 0;
+    entity regions[zox_children_capacity];
+    const uint regions_count = zox_get_children_by_id(world, terrain, regions, zox_children_capacity, zox_id(Region));
+    for (uint r = 0; r < regions_count; r++) {
+        entity towns[zox_children_capacity];
+        const uint count = zox_get_children_by_id(world, regions[r], towns, zox_children_capacity, zox_id(Town));
+        for (uint t = 0; t < count; t++) {
+            const int2 p = zox_getv(towns[t], BlockPosition2);
+            const float dx = p.x * scale - position.x, dz = p.y * scale - position.z;
+            if (!closest || dx * dx + dz * dz < best) {
+                best = dx * dx + dz * dz;
+                closest = towns[t];
+            }
+        }
+    }
+    return closest;
+}
+
+void zox_tst_coop_join_continue_check(ecs* world) {
+    zox_tst_check(players_playing == 2, "[%i] players, --splitscreen joins a second", players_playing);
+    const entity terrain = local_terrain;
+    const entity town = zox_tst_closest_town(world, terrain, zox_tst_coop_continue_spawned[0]);
+    zox_tst_check(zox_valid(town), "no town in the world (the test can't tell)");
+    float distance = 0;
+    const entity home = zox_tst_coop_closest_home(world, terrain, zox_tst_coop_continue_spawned[1], &distance);
+    zox_log("[tst] the first at [%.1fx%.1f], its closest town [%s]; the second at [%.1fx%.1f], [%.1f] from [%s] of [%s]",
+        zox_tst_coop_continue_spawned[0].x, zox_tst_coop_continue_spawned[0].z, zox_get_name(town),
+        zox_tst_coop_continue_spawned[1].x, zox_tst_coop_continue_spawned[1].z, distance, zox_get_name(home),
+        zox_get_name(zox_get_parent(world, home)));
+    zox_tst_check(distance < 1.5f, "the second player isn't at a home's door, [%.1f] from one", distance);
+    zox_tst_check(zox_valid(home) && zox_get_parent(world, home) == town, "the second player isn't in the first's closest town");
+}

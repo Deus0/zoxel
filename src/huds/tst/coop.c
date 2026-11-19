@@ -11,6 +11,12 @@ void zox_tst_coop_setup() {
     is_split_screen = 1;
 }
 
+// a whole world with towns: the sea lowered (towns keep off water, most worlds were under it, none had towns)
+void zox_tst_coop_towns_setup() {
+    is_split_screen = 1;
+    terrain_sea_height = 0;
+}
+
 // both players' characters, once spawned
 static inline byte zox_tst_coop_playing(ecs* world) {
     if (!zox_tst_player_spawn_ready(world)) {
@@ -250,7 +256,7 @@ void zox_tsts_coop(ecs* world) {
     zox_tst_add("coop_skybox", zox_tst_coop_skybox_ready, zox_tst_coop_skybox_check, 120);
     zox_tst_set_setup("coop_skybox", zox_tst_coop_level_setup, 0);
     zox_tst_add("coop_homes", zox_tst_coop_homes_ready, zox_tst_coop_homes_check, 150);
-    zox_tst_set_setup("coop_homes", zox_tst_coop_setup, 0);
+    zox_tst_set_setup("coop_homes", zox_tst_coop_towns_setup, 0);
     zox_tst_add("coop_billboards", zox_tst_coop_billboards_ready, zox_tst_coop_billboards_check, 120);
     zox_tst_set_setup("coop_billboards", zox_tst_coop_level_setup, 0);
     zox_tst_add("coop_saves", zox_tst_coop_saves_ready, zox_tst_coop_saves_check, 120);

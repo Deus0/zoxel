@@ -292,6 +292,8 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_set_setup("coop_navigator", zox_tst_coop_navigator_setup, 0);
     zox_tst_add("coop_continue", zox_tst_coop_continue_ready, zox_tst_coop_continue_check, 120);
     zox_tst_set_setup("coop_continue", zox_tst_coop_continue_setup, 1);
+    zox_tst_add("coop_join_continue", zox_tst_coop_continue_ready, zox_tst_coop_join_continue_check, 150);
+    zox_tst_set_setup("coop_join_continue", zox_tst_coop_join_continue_setup, 1);
     zox_tst_add("screenshot", zox_tst_screenshot_ready, zox_tst_screenshot_check, 90);
     const char* real_save = getenv("zox_tst_save");
     if (real_save && real_save[0]) {
