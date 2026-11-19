@@ -298,8 +298,10 @@ Avoid encoding unnecessary behavior into component definitions. Keep the data mo
 Fewer components is a goal. Before adding one, look for a generic one that already holds that kind of value, and
 organise with tags:
 
-* **Generic values, tags for meaning.** A burn's rate is `Damage` (a float, combat's) tagged `DamagePerSecond`, lasting
-  `DamageTime`, not a `BurnRate` and a `BurnTime`. A skill that burns is tagged `Burn`.
+* **Generic values, tags for meaning.** A burn is a debuff entity tagged `Burn` (and `Dot`) with generic `Damage`,
+  `Rate` and `DamageTime`, not a `BurnRate` and a `BurnTime`.
+* **Shared things are the realm's, linked.** The realm spawns its debuffs (burn, poison) once; a skill links the ones it
+  puts on (`OnHitLinks`), and a hit instances them. Prefer an entity plus a link to copying data onto every user.
 * **Reuse core's.** `Target` (the entity it targets: a camera's character, a pointer's ui, an npc's sight), `Count`,
   `Busy`, timing's `DestroyInTime`; and the modules' `Color`, `Bounds3D`, `Gravity3D`, `Scale3`.
 * **Tags, not byte states.** Systems filter on tags: `SkillHit` added when a hit is tried, not a stage byte of 2.
@@ -309,10 +311,9 @@ organise with tags:
   count from the time.
 
 ```c
-zox_add(skill, Burn);                   // its hits burn
-zox_set(skill, Damage, { 0.5f });       // generic
-zox_add(skill, DamagePerSecond);        // what the Damage means
-zox_set(skill, DamageTime, { 5 });
+// the realm's burn: a prefab (a variant of prefab_burn: Dot, Burn), generic values
+const entity burn = spawn_realm_debuff(world, realm, prefab_burn, "burn", 0.5f, 1, 5, burn_color);  // Damage, Rate, DamageTime
+zox_link(world, shoot, OnHitLinks, burn);   // shoot's hits put an instance of it on who they hit
 ```
 
 ## System Files
