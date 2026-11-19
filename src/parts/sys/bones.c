@@ -124,12 +124,14 @@ entity spawn_part_bones(
     if (zox_has(part, Shoulder)) {
         zox_add(bone, ShoulderBone);
         zox_setv(bone, SwingState, 1);
-        zox_setv(bone, SwingAngle, 110);
+        zox_setv(bone, SwingAngle, 28);     // the walk's arm swing each way, degrees (110 swung them up level, a march)
         zox_setv(bone, IKTarget, float3_zero);  // its hand reaches with ik (bones/ik), off until a driver weighs in
         zox_setv(bone, IKWeight, 0);
-        // NOTE: For Right Shoulder
+        // the right swings (actions), the left is the off hand
         if (is_right_side) {
             zox_link(world, skeleton, ShoulderBoneLink, bone);
+        } else {
+            zox_link(world, skeleton, OffShoulderBoneLink, bone);
         }
     }
     if (zox_has(part, Hand)) {
@@ -143,7 +145,7 @@ entity spawn_part_bones(
     if (zox_has(part, Thigh)) {
         zox_add(bone, ThighBone);
         zox_set(bone, SwingState, { 1 });
-        zox_set(bone, SwingAngle, { 60 });
+        zox_set(bone, SwingAngle, { 25 });  // the walk's stride each way, degrees (60 scissored, tst walk_views)
         zox_setv(bone, IKTarget, float3_zero);  // its foot plants with ik (bones/ik), off until a skeleton plants its feet
         zox_setv(bone, IKWeight, 0);
         zox_setv(bone, FootPlant, float3_zero);

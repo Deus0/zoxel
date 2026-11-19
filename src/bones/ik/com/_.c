@@ -8,7 +8,6 @@ zoxc_float3(FootStepFrom);  // on a thigh bone: where its foot's step started
 zoxc_float(FootStep);       // on a thigh bone: its foot's step, 0 planted, rising to 1 as it lands
 zoxc_float4(SpineLean);     // on a skeleton: its chest turned about its hips (the upper body leaning), the hips upright
 zoxc_float3(HipsShift);     // on a skeleton: its hips moved in its space (bending: back; crouching: down), the feet stay
-zoxc_float3(RestPosition3D);    // on a bone the rig moves: its LocalPosition3D at rest (a chest leaning, sys/spine.c; a shoulder reaching, sys/arm_ik.c)
 
 void zox_components_ik(ecs* world) {
     zoxd_float3(IKTarget);
@@ -21,5 +20,4 @@ void zox_components_ik(ecs* world) {
     zoxd_float(FootStep);
     zoxd_float4(SpineLean);
     zoxd_float3(HipsShift);
-    zoxd_float3(RestPosition3D);
 }

@@ -3,6 +3,7 @@ zox_tag(Skeleton);
 zox_tag(PaintedSkeleton);
 zoxc_dirty(Skeleton);
 zoxc_float3(BoneSize);
+zoxc_float3(RestPosition3D);    // on a bone the rig moves: its LocalPosition3D at rest (a chest leaning, ik/sys/spine.c; a shoulder reaching, ik/sys/arm_ik.c)
 zoxc_float3(BoneCentre);    // its part's middle, the skeleton's space at rest (BonePosition is its pivot, the joint)
 zox_tag(HeadBone);
 zox_tag(HipsBone);
@@ -15,6 +16,7 @@ zox_tag(SkeletonOwner);    // has a skeleton child, linked with SkeletonLink
 zox_tag(HeadBoneLink);
 zox_tag(HandBoneLink);
 zox_tag(ShoulderBoneLink);
+zox_tag(OffShoulderBoneLink);      // the left shoulder, the off hand: its guard and recoil in a punch (ik/sys/swing.c)
 zoxc_byte(SwingState);
 zoxc_byte(SwingAngle);
 zoxc_float(SwingPhase);    // accumulated swing cycle, in radians
@@ -41,6 +43,7 @@ void zox_components_bones(ecs* world) {
     zoxd_tag(PaintedSkeleton);
     zoxd_float3(BoneSize);
     zoxd_float3(BoneCentre);
+    zoxd_float3(RestPosition3D);
     zoxd_tag(HeadBone);
     zoxd_tag(HipsBone);
     zoxd_tag(ArmBone);
@@ -52,6 +55,7 @@ void zox_components_bones(ecs* world) {
     zoxd_nf_link(HeadBoneLink);
     zoxd_nf_link(HandBoneLink);
     zoxd_nf_link(ShoulderBoneLink);
+    zoxd_nf_link(OffShoulderBoneLink);
     zoxd_byte(SwingState);
     zoxd_byte(SwingAngle);
     zoxd_float(SwingPhase);

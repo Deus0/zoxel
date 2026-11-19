@@ -7,7 +7,8 @@
 //  - punch.gif: two punches at the punch skill's speed (its SwingTime, 0.5s); punch_slow.gif: one over 2s, each part
 //      of it caught at the gif's frame rate (zox_tst_gif_fps, 20 by default)
 //  - checks each gif has frames, and the slow punch's hand: at the hit out near the arm's full reach, pulled back before
-//      it nearer than the guard
+//      it nearer than the guard; the off hand (the left) up with it, out as the right winds up, pulled back to the chin
+//      as it lands (the recoil)
 #define zox_tst_punch_views_guard 0.6       // seconds raised before a punch, and after it
 const char* zox_tst_punch_views_names[2] = { "punch", "punch_slow" };
 const float zox_tst_punch_views_speeds[2] = { 0.5f, 2.0f };
@@ -18,10 +19,11 @@ int zox_tst_punch_views_frames[2];
 float zox_tst_punch_views_guard_out = 0;    // the hand from the shoulder, of the arm's reach
 float zox_tst_punch_views_back_out = 1;
 float zox_tst_punch_views_hit_out = 0;
+float zox_tst_punch_views_off_back = 0;     // the off hand out of its reach, winding up (most)
+float zox_tst_punch_views_off_hit = 1;      // at the hit (least)
 
 // the hand from the shoulder, of the arm's reach
-static float zox_tst_punch_views_out(ecs* world, entity skeleton) {
-    const entity shoulder = zox_get_link(world, skeleton, ShoulderBoneLink);
+static float zox_tst_punch_views_arm_out(ecs* world, entity shoulder) {
     ik_arm arm;
     if (!zox_valid(shoulder) || !ik_arm_find(world, shoulder, &arm)) {
         return 0;
@@ -30,6 +32,10 @@ static float zox_tst_punch_views_out(ecs* world, entity skeleton) {
     const float3 el = zox_getv(arm.bones[arm.length - 2], Position3D);
     const float3 h = zox_getv(arm.bones[arm.length - 1], Position3D);
     return float3_distance(s, h) / (float3_distance(s, el) + float3_distance(el, h));
+}
+
+static float zox_tst_punch_views_out(ecs* world, entity skeleton) {
+    return zox_tst_punch_views_arm_out(world, zox_get_link(world, skeleton, ShoulderBoneLink));
 }
 
 static inline void zox_tst_punch_views_cameras(ecs* world, entity character) {
@@ -121,6 +127,13 @@ byte zox_tst_punch_views_ready(ecs* world) {
         if (p > hit - 0.02f && p < swings[zox_swing_punch].held_end && out > zox_tst_punch_views_hit_out) {
             zox_tst_punch_views_hit_out = out;
         }
+        const float off = zox_tst_punch_views_arm_out(world, zox_get_link(world, skeleton, OffShoulderBoneLink));
+        if (p > 0.2f && p < swings[zox_swing_punch].back_end + 0.02f && off > zox_tst_punch_views_off_back) {
+            zox_tst_punch_views_off_back = off;
+        }
+        if (p > hit - 0.02f && p < swings[zox_swing_punch].held_end && off < zox_tst_punch_views_off_hit) {
+            zox_tst_punch_views_off_hit = off;
+        }
     }
     if (t > punches * speed + zox_tst_punch_views_guard) {
         zox_tst_punch_views_frames[gif] = zox_gif_stop();
@@ -142,6 +155,10 @@ void zox_tst_punch_views_check(ecs* world) {
         zox_tst_punch_views_guard_out, zox_tst_punch_views_back_out, zox_tst_punch_views_hit_out);
     zox_tst_check(zox_tst_punch_views_back_out < zox_tst_punch_views_guard_out - 0.05f, "pulled back, the hand wasn't nearer than the guard [%f]", zox_tst_punch_views_back_out);
     zox_tst_check(zox_tst_punch_views_hit_out > 0.9f, "at the hit the arm wasn't out [%f]", zox_tst_punch_views_hit_out);
+    zox_log("[tst] punch_views: the off hand out of reach: winding up [%.3f], at the hit [%.3f]",
+        zox_tst_punch_views_off_back, zox_tst_punch_views_off_hit);
+    zox_tst_check(zox_tst_punch_views_off_back > 0.7f && zox_tst_punch_views_off_back < 0.95f, "winding up, the off hand wasn't up ahead, bent [%f]", zox_tst_punch_views_off_back);
+    zox_tst_check(zox_tst_punch_views_off_hit < zox_tst_punch_views_off_back - 0.1f, "at the hit, the off hand wasn't pulled back [%f]", zox_tst_punch_views_off_hit);
 }
 
 void zox_tsts_punch_views(ecs* world) {

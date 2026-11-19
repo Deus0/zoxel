@@ -5,8 +5,8 @@
 #include "head_look.c"
 #include "swing_mark.c"
 #include "init.c"
-#include "arm_control.c"
 #include "arm_swing.c"
+#include "arm_control.c"
 #include "arm_raise.c"
 #include "skeleton_meshes.c"
 zoxc_system_dirty(Skeleton);
@@ -76,24 +76,6 @@ void zox_systems_bones(ecs *world) {
         [out] bones.SwingPhase,
         [out] bones.SwingBlend,
         [none] bones.Skeleton
-    );
-    zox_system(
-        arm_swing_system,
-        zoxp_update,
-        [in] bones.SwingState,
-        [in] bones.SwingAngle,
-        [in] transforms3.LocalPosition3D,
-        [out] transforms3.LocalRotation3D,
-        [none] bones.ShoulderBone
-    );
-    zox_system(
-        leg_swing_system,
-        zoxp_update,
-        [in] bones.SwingState,
-        [in] bones.SwingAngle,
-        [in] transforms3.LocalPosition3D,
-        [out] transforms3.LocalRotation3D,
-        [none] bones.ThighBone
     );
     zox_system(
         shoulder_raise_system,

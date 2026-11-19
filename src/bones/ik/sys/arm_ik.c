@@ -50,7 +50,8 @@ void arm_ik_system(iter* it) {
             if (zox_has(e, RestPosition3D)) {
                 zox_getm(e, LocalPosition3D)->value = zox_getv(e, RestPosition3D);
             }
-            if (!float4_equals(elbow_rotation->value, quaternion_identity)) {
+            // straight again, unless the walk swings this arm (it bends the elbow, sys/arm_swing.c)
+            if (!(zox_has(e, SwingState) && zox_getv(e, SwingState)) && !float4_equals(elbow_rotation->value, quaternion_identity)) {
                 elbow_rotation->value = quaternion_normalize2(
                     quaternion_slerp(elbow_rotation->value, quaternion_identity, return_t));
             }
