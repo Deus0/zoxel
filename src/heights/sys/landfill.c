@@ -1,10 +1,10 @@
 // TODO: Multiply by the world height
-short terrain_sand_height = 7; // 16; a block of beach over the sea
+short terrain_sand_height = 6; // 16; a block of beach over the sea
 short terrain_grass_height = 7; // 18;
 short terrain_stone_height = 18; // 32;
-// the sea: ground below it is under water up to it, 0 none; the land is mostly 17 to 30 high (tst sea_level logs it),
-//  at 18 about a tenth is under water, the sand above it its shores
-short terrain_sea_height = 6;
+// the sea: ground below it is under water up to it, 0 none; the land is mostly 14 to 23 high (tst sea_level logs it),
+//  at 15 about a quarter is under water, the sand above it its shores (at 18 over half was: few dry places for towns)
+short terrain_sea_height = 5;
 
 // TODO: Refactor heightmaps into quadtrees.
 // TODO: Build terrain with recursive region fill instead of per-voxel writes.

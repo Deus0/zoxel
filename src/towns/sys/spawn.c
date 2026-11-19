@@ -4,6 +4,7 @@
 // TODO: Add Region Position to Town Positions
 #define town_dry_attempts 16        // places tried for a town on dry land
 #define town_dry_seed_shift 7919
+#define town_wet_most 0.15f       // of a town's ground under water at most (any made most worlds townless)
 
 // NOTE: Spawns X Towns per region
 void region_towns_system(iter* it) {
@@ -74,7 +75,7 @@ void region_towns_system(iter* it) {
                     block_size->value, region_padding, min_size, max_size, town_padding, max_attempts, &town_position, &town_size)) {
                     break;
                 }
-                placed = !has_heights || !terrain_rect_over_water(&th, town_position, town_size, sea);
+                placed = !has_heights || terrain_rect_wet_share(&th, town_position, town_size, sea) <= town_wet_most;
                 if (!placed) {
                     zones.rects--;  // not this one, its place freed
                 }

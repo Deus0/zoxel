@@ -124,16 +124,16 @@ static inline int terrain_water_level_at(const TerrainHeights* th, int2 global_p
     return level > sea ? level : sea;
 }
 
-// is any ground in a rect (centre, size) under water, the sea's or a lake's: sampled every 4 blocks and its edges
-static inline byte terrain_rect_over_water(const TerrainHeights* th, int2 centre, byte2 size, int sea) {
+// the share of a rect's columns (every 4th) under water, 0 to 1
+static inline float terrain_rect_wet_share(const TerrainHeights* th, int2 centre, byte2 size, int sea) {
     const int2 low = { centre.x - size.x / 2, centre.y - size.y / 2 };
+    int wet = 0, all = 0;
     for (int x = 0; x <= size.x; x += 4) for (int y = 0; y <= size.y; y += 4) {
         const int2 column = { low.x + (x < size.x ? x : size.x - 1), low.y + (y < size.y ? y : size.y - 1) };
-        if (terrain_height_at(th, column) < terrain_water_level_at(th, column, sea)) {
-            return 1;
-        }
+        wet += terrain_height_at(th, column) < terrain_water_level_at(th, column, sea);
+        all++;
     }
-    return 0;
+    return all ? (float) wet / all : 0;
 }
 
 // a region's lakes as placement zones (circles, regions/fun/zones.c), so mountains and towns keep out of them
