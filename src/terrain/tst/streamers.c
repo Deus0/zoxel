@@ -105,16 +105,16 @@ static inline entity zox_tst_coop_tunk(ecs* world, entity terrain, int2 position
 static inline int zox_tst_coop_wrong_distances(ecs* world, entity terrain, int* columns) {
     int wrong = 0;
     *columns = 0;
-    const int far = terrain_lod_far;
-    for (int x = -far; x <= (zox_tst_coop_streamers_count - 1) * zox_tst_coop_streamers_apart + far; x++)
-    for (int z = -far - 2; z <= far + 2; z++) {
+    const int lod_far = terrain_lod_far;
+    for (int x = -lod_far; x <= (zox_tst_coop_streamers_count - 1) * zox_tst_coop_streamers_apart + lod_far; x++)
+    for (int z = -lod_far - 2; z <= lod_far + 2; z++) {
         const int2 position = (int2) { x, z };
         int closest = 255;
         for (byte i = 0; i < zox_tst_coop_streamers_count; i++) {
             const int d = int2_distance(zox_tst_coop_point(world, i), position);
             closest = d < closest ? d : closest;
         }
-        const entity tunk = closest <= far ? zox_tst_coop_tunk(world, terrain, position) : 0;
+        const entity tunk = closest <= lod_far ? zox_tst_coop_tunk(world, terrain, position) : 0;
         if (!tunk) {
             continue;
         }
