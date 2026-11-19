@@ -26,7 +26,7 @@
 // --------------------------------------------------
 
 // Controllers
-static const float stick_deadzone = 0.15f;
+static const float xr_stick_deadzone = 0.15f;
 static XrActionSet input_action_set = XR_NULL_HANDLE;
 static XrAction move_action = XR_NULL_HANDLE;
 static XrAction turn_action = XR_NULL_HANDLE;
@@ -43,7 +43,7 @@ static XrPath left_hand_path = XR_NULL_PATH;
 static XrPath right_hand_path = XR_NULL_PATH;
 
 static float xr_apply_deadzone(float value) {
-    if (fabsf(value) < stick_deadzone) {
+    if (fabsf(value) < xr_stick_deadzone) {
         return 0;
     }
     return value;
