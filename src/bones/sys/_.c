@@ -38,6 +38,7 @@ void zox_systems_bones(ecs *world) {
         [in] SwingStart,
         [in] SwingSpeed,
         [in] SwingKind,
+        [in] SwingMark,
         [none] Skeleton
     );
     zox_system(

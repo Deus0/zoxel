@@ -11,4 +11,5 @@ void skeleton_swing_begin(ecs* world, entity user, entity action, double start, 
     zox_setv(skeleton, SwingKind, kind);
     zox_setv(skeleton, SwingTarget, at);
     zox_setv(skeleton, SwingAction, action);
+    zox_setv(skeleton, SwingMark, 0);   // its marks from its first (sys/swing_mark.c)
 }

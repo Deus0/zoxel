@@ -135,7 +135,8 @@ byte zox_tst_eat_swing_ready(ecs* world) {
         if (zox_valid(stat)) {
             zox_setv(stat, StatValue, 1);
         }
-        if (!zox_getv(zox_tst_eat_item, CooldownAt) && !zox_getv(zox_tst_eat_item, ActivateBegin) &&
+        if (!zox_getv(zox_tst_eat_item, CooldownAt) && !zox_getv(zox_tst_eat_item, CooldownState) &&
+            !zox_getv(zox_tst_eat_item, ActivateBegin) &&
             zox_current_time - start > zox_getv(zox_tst_eat_item, CooldownTime) + 0.1) {
             zox_setv(zox_tst_eat_item, ActivateBegin, zox_dirty_trigger);
             zox_tst_eat_presses++;
