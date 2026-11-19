@@ -71,9 +71,12 @@ void player_town_finder_system(iter* it) {
             continue;
         }
         // local coop: every player in the first one's town, each at their own home
-        //  - the others wait for the first to pick it (players run on other threads, they picked their own)
+        //  - the others wait for the first to pick it (players run on other threads, they picked their own), or to
+        //      load: it could still be loading as they got here, they picked their own then too
         const byte player_index = get_player_index(e);
-        if (player_index && zox_valid(zox_players[0]) && zox_getv(zox_players[0], PlayerState) == zox_player_state_new) {
+        const entity first = player_index ? zox_players[0] : 0;
+        const byte first_state = zox_valid(first) ? zox_getv(first, PlayerState) : zox_player_state_playing;
+        if (first_state == zox_player_state_loading || first_state == zox_player_state_new) {
             continue;
         }
         entity town = player_spawn_town;
@@ -95,6 +98,22 @@ void player_town_finder_system(iter* it) {
                 continue;
             }
             town = towns_length ? towns[rand_range(0, towns_length)] : 0;
+            // the first player loaded its game (picked none): the town closest to it
+            const entity first_camera = zox_valid(first) ? zox_get_link(world, first, CameraLink) : 0;
+            if (zox_valid(first_camera) && towns_length) {
+                const float scale = zox_getv(terrain, BlockScale);
+                const float3 at = zox_getv(first_camera, Position3D);
+                float closest = 0;
+                for (uint j = 0; j < towns_length; j++) {
+                    const int2 p = zox_getv(towns[j], BlockPosition2);
+                    const float dx = p.x * scale - at.x, dz = p.y * scale - at.z;
+                    const float d = dx * dx + dz * dz;
+                    if (j == 0 || d < closest) {
+                        closest = d;
+                        town = towns[j];
+                    }
+                }
+            }
             player_spawn_town = town;
         }
         // its homes spawn a frame after it
@@ -112,7 +131,8 @@ void player_town_finder_system(iter* it) {
             const entity home = homes_length ? homes[player_index % homes_length] : 0;
             if (home) {
                 const int2 door = home_door_front(world, home);
-                town_position.x = door.x;
+                // more players than homes: those sharing one stand beside each other, not in each other
+                town_position.x = door.x + (player_index / homes_length) * 2;
                 town_position.z = door.y;
             }
         }
