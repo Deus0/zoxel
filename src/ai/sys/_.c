@@ -1,6 +1,5 @@
 // debugs need systems to be _1 main thread
 byte is_debug_behaviour = 0;
-byte is_debug_target = 0;
 byte is_debug_rotate_towards = 0;
 byte is_debug_move_forwards = 0;
 byte is_debug_wander = 0;
@@ -12,7 +11,6 @@ byte is_debug_attack = 0;
 #include "behaviour_system.c"
 #include "rotate_towards_system.c"
 #include "move_forward_system.c"
-#include "target_set_system.c"
 #include "attack.c"
 #include "attack_trigger.c"
 #include "stay_upright_system.c"
@@ -56,12 +54,6 @@ void zox_systems_npcs(ecs *world) {
         [none] ai.Npc
     );
     zox_system_m(
-        threat_position_system,
-        !is_debug_target,
-        [out] ai.ThreatPosition,
-        [none] ai.Npc
-    );
-    zox_system_m(
         rotate_towards_system,
         !is_debug_rotate_towards,
         [in] ai.RotateTowards,
@@ -96,7 +88,6 @@ void zox_systems_npcs(ecs *world) {
         [in] ai.Behaviour,
         [in] transforms3.Position3D,
         [out] ai.TargetPosition,
-        [out] ai.WanderDirection,
         [none] ai.Npc,
         [none] !physics.DisableMovement,
     );
@@ -104,7 +95,6 @@ void zox_systems_npcs(ecs *world) {
         attack_system,
         !is_debug_attack,
         [in] ai.Behaviour,
-        [in] ai.ThreatPosition,
         [out] ai.TargetPosition,
         [in] transforms3.Position3D,
         [in] ai.AttackAt,
@@ -122,7 +112,6 @@ void zox_systems_npcs(ecs *world) {
         [out] core.TriggerActionA,
         [in] transforms3.Position3D,
         [in] transforms3.Rotation3D,
-        [in] ai.ThreatPosition,
         [out] ai.AttackAt,
         [none] ai.Npc,
         [none] !physics.DisableMovement,
@@ -132,7 +121,6 @@ void zox_systems_npcs(ecs *world) {
         !is_debug_flee,
         [in] ai.Behaviour,
         [in] transforms3.Position3D,
-        [in] ai.ThreatPosition,
         [out] ai.TargetPosition,
         [none] ai.Npc,
         [none] !physics.DisableMovement,

@@ -15,7 +15,6 @@ void attack_trigger_system(iter* it) {
     zox_sys_out(TriggerActionA);
     zox_sys_in(Position3D);
     zox_sys_in(Rotation3D);
-    zox_sys_in(ThreatPosition);
     zox_sys_out(AttackAt);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
@@ -25,12 +24,15 @@ void attack_trigger_system(iter* it) {
         zox_sys_o(TriggerActionA, trigger);
         zox_sys_i(Position3D, position);
         zox_sys_i(Rotation3D, rotation);
-        zox_sys_i(ThreatPosition, threat);
         zox_sys_o(AttackAt, attack_at);
         if (behaviour->value != zox_behaviour_attack || trigger->value || dirty->value) {
             continue;
         }
-        float3 to_threat = float3_subtract(threat->value, position->value);
+        float3 threat;
+        if (!npc_threat_position(world, e, &threat)) {
+            continue;
+        }
+        float3 to_threat = float3_subtract(threat, position->value);
         to_threat.y = 0;
         const float distance = float3_length(to_threat);
         const entity skill = npc_choose_skill(world, e, aaction->value, distance);

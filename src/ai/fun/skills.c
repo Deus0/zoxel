@@ -1,3 +1,13 @@
+// where its attacker is (AttackerLink), 0 without one
+static inline byte npc_threat_position(ecs* world, entity e, float3* position) {
+    const entity attacker = zox_get_link(world, e, AttackerLink);
+    if (!zox_valid(attacker) || !zox_has(attacker, Position3D)) {
+        return 0;
+    }
+    *position = zox_getv(attacker, Position3D);
+    return 1;
+}
+
 // an npc's skill for its threat at a distance, any skill with a reach (SkillReach), more skills just more choices
 //  - in reach, affordable and ready: its average damage, its current a little more (it doesn't flick between equals)
 //  - cooling down (a slime's tentacle, 5s): below any ready one, so a long cooldown's skill is a now and then

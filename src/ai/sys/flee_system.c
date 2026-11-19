@@ -6,19 +6,19 @@ void flee_system(iter* it) {
     zox_sys_begin();
     zox_sys_in(Behaviour);
     zox_sys_in(Position3D);
-    zox_sys_in(ThreatPosition);
     zox_sys_out(TargetPosition);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(Behaviour, behaviour);
         zox_sys_i(Position3D, position);
-        zox_sys_i(ThreatPosition, threat);
         zox_sys_o(TargetPosition, target);
-        // only flee if in “wander” mode and not frozen
-        if (behaviour->value != zox_behaviour_flee) {
+        // fleeing its attacker
+        float3 threat;
+        if (behaviour->value != zox_behaviour_flee || !npc_threat_position(world, e, &threat)) {
             continue;
         }
         // Compute flee direction
-        float3 away = float3_subtract(position->value, threat->value);
+        float3 away = float3_subtract(position->value, threat);
         float dist = float3_length(away) + 0.001f;
         float3 dir = float3_scale(away, 1.0f / dist);
 
@@ -47,7 +47,7 @@ void flee_system(iter* it) {
             // Show flee direction
             debug_linec(world, start, float3_add(start, float3_scale(flee_direction, debug_length)), color_rgb_black);
             // Line to threat
-            debug_linec(world, start, threat->value, color_rgb_white);
+            debug_linec(world, start, threat, color_rgb_white);
             // Target line
             debug_linec(world, start, target->value, color_rgb_red);
 

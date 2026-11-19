@@ -1,3 +1,5 @@
+// an npc wandering: its heading (to its TargetPosition, set wander_length ahead each frame) turned a little at random,
+//  its target set ahead along it again; past its leash it heads home
 void wander_system(iter* it) {
     zox_sys_on_begin();
     init_delta_time()
@@ -10,13 +12,11 @@ void wander_system(iter* it) {
     zox_sys_in(Behaviour)
     zox_sys_in(Position3D)
     zox_sys_out(TargetPosition)
-    zox_sys_out(WanderDirection)
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Behaviour, behaviour)
         zox_sys_i(Position3D, position)
         zox_sys_o(TargetPosition, target)
-        zox_sys_o(WanderDirection, wander)
         // only wander if in “wander” mode and not frozen
         if (behaviour->value != zox_behaviour_wander) {
             continue;
@@ -32,24 +32,30 @@ void wander_system(iter* it) {
             vertical_bias,
             jitter.y
         };
-        wander->value = float3_add(wander->value, jitter_vec);
-        wander->value = float3_normalize(wander->value);
+        // its heading: to its target, set ahead last frame (none, or one from another behaviour far off: any way)
+        float3 heading = float3_subtract(target->value, position->value);
+        heading.y = 0;
+        const float ahead = float3_length(heading);
+        if (ahead < 0.01f || ahead > wander_length * 2) {
+            heading = (float3) { (rand() % 100) * 0.01f - 0.5f, 0, (rand() % 100) * 0.01f - 0.5f };
+        }
+        heading = float3_normalize(float3_add(float3_normalize(heading), jitter_vec));
         // leashed: past it, it heads home (until A* and pathing octrees, todo)
         if (zox_has(e, HomePosition)) {
             const float3 home = zox_getv(e, HomePosition);
             const float3 to_home = { home.x - position->value.x, 0, home.z - position->value.z };
             if (to_home.x * to_home.x + to_home.z * to_home.z > leash * leash) {
-                wander->value = float3_normalize(to_home);
+                heading = float3_normalize(to_home);
             }
         }
 
         // Move slightly in that direction
-        target->value = float3_add(position->value, float3_scale(wander->value, wander_length));
+        target->value = float3_add(position->value, float3_scale(heading, wander_length));
 
         if (is_debug_wander) {
             const float debug_length = 1.0f;
             float3 start = position->value;
-            debug_linec(world, start, float3_add(start, float3_scale(wander->value, debug_length)), color_rgb_yellow);
+            debug_linec(world, start, float3_add(start, float3_scale(heading, debug_length)), color_rgb_yellow);
             debug_linec(world, start, target->value, color_rgb_cyan);
         }
     }

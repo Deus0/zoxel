@@ -11,8 +11,6 @@ entity spawn_prefab_character3_npc(ecs *world, entity prefab) {
     zox_set(e, MoveSpeed, { 4 });
     zox_set(e, MoveToBuffer, { default_npc_follow_distance }); // 0.45f
     zox_set(e, TargetPosition, { float3_zero });
-    zox_set(e, ThreatPosition, { float3_zero });
-    zox_set(e, WanderDirection, { float3_zero });
     zox_set(e, AttackAt, { 0 });
     zox_set(e, Target, { 0 });    // the closest player it sees (sys/sight.c)
     zox_set(e, RenderDisabled, { 1 });

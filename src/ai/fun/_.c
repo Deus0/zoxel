@@ -8,8 +8,6 @@ void set_character3_npc(ecs* world, entity c, byte npc) {
         zox_set(c, RotateTowards, { 0 });
         zox_set(c, MoveSpeed, { 4 });
         zox_set(c, TargetPosition, { float3_zero });
-        zox_set(c, ThreatPosition, { float3_zero });
-        zox_set(c, WanderDirection, { float3_zero });
     } else {
         zox_add(c, Npc);
         zox_add(c, Jumper);
@@ -19,8 +17,6 @@ void set_character3_npc(ecs* world, entity c, byte npc) {
         zox_remove(c, RotateTowards);
         zox_remove(c, MoveSpeed);
         zox_remove(c, TargetPosition);
-        zox_remove(c, ThreatPosition);
-        zox_remove(c, WanderDirection);
     }
 }
 

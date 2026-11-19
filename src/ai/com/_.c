@@ -9,8 +9,6 @@ zoxc_byte(RotateTowards);
 zoxc_float(MoveSpeed);
 zoxc_float(MoveToBuffer);
 zoxc_float3(TargetPosition);
-zoxc_float3(ThreatPosition);
-zoxc_float3(WanderDirection);
 zoxc_float3(HomePosition);       // where an npc lives (its spawn), wandering past the leash turns it home
 zoxc_double(AttackAt);           // its next swing not before, backing off from its threat till near it
 zox_tag(FollowTarget);     // npc -> the entity it follows
@@ -28,8 +26,6 @@ void zox_components_npcs(ecs* world) {
     zoxd_float(MoveSpeed);
     zoxd_float(MoveToBuffer);
     zoxd_float3(TargetPosition);
-    zoxd_float3(ThreatPosition);
-    zoxd_float3(WanderDirection);
     zoxd_double(AttackAt);
     zoxd_nf_link(FollowTarget);
 }

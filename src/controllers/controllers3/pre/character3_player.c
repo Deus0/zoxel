@@ -37,8 +37,6 @@ entity spawn_prefab_character3_player(
         zox_set(e, RotateTowards, { 0 });
         zox_set(e, MoveSpeed, { 4 });
         zox_set(e, TargetPosition, { float3_zero });
-        zox_set(e, ThreatPosition, { float3_zero });
-        zox_set(e, WanderDirection, { float3_zero });
     }
     // Spawn Actionbar slots
     entity actionbar = spawn_slots(world, e, 10);
