@@ -2,12 +2,15 @@
 //  - unplugged (on_gamepad_disconnected, as SDL's removed event): the player has no device
 //  - plugged in (a new gamepad, the app's, as SDL's added event): it's the second player's again (reclaim_gamepads),
 //      the first player's devices left be, and its stick walks the second player's character
+//  - the disconnect screen on its screen while unplugged (huds/eve/disconnect.c), gone plugged in
 //  - it went to the app, only the main menu's joining took one: the player had no way back
 //  - run: bash bsh/tst.sh coop_gamepad_reconnect
 int zox_tst_reconnect_stage = 0;
 double zox_tst_reconnect_time = 0;
 byte zox_tst_reconnect_lost = 0;        // the player had no device, unplugged
-byte zox_tst_reconnect_first_mode = 0;  // the first player's device mode, before
+byte zox_tst_reconnect_first_mode = 0;
+byte zox_tst_reconnect_screen = 0;     // the disconnect screen, unplugged
+byte zox_tst_reconnect_screen_first = 0;  // on the first player's screen (it shouldn't be)  // the first player's device mode, before
 float3 zox_tst_reconnect_start;
 float zox_tst_reconnect_walked = 0;
 
@@ -49,7 +52,18 @@ byte zox_tst_coop_gamepad_reconnect_ready(ecs* world) {
             if (t < 0.3) {
                 return 0;
             }
+            static byte shot = 0;
+            if (!shot && getenv("zox_tst_shot")) {
+                shot = 1;
+                snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("disconnect.ppm"));
+            }
+            if (t < 0.5) {
+                return 0;
+            }
             zox_tst_reconnect_lost = zox_getv(player, DeviceMode) == zox_device_mode_none;
+            zox_tst_reconnect_screen = zox_valid(zox_get_child_by_id(world, zox_get_link(world, player, CanvasLink), zox_id(DisconnectUI)));
+            zox_tst_reconnect_screen_first = zox_valid(zox_get_child_by_id(world, zox_get_link(world, zox_players[0], CanvasLink),
+                zox_id(DisconnectUI)));
             // plugged back in: a new gamepad, the app's
             zox_tst_pad = zox_tst_spawn_pad(world, main_app);
             zox_tst_reconnect_next();
@@ -86,6 +100,10 @@ void zox_tst_coop_gamepad_reconnect_check(ecs* world) {
         zox_tst_reconnect_lost, zox_valid(pad) ? zox_get_name(zox_get_parent(world, pad)) : "gone",
         zox_getv(player, DeviceMode), zox_tst_reconnect_walked);
     zox_tst_check(zox_tst_reconnect_lost, "unplugged, the second player still had a device");
+    zox_tst_check(zox_tst_reconnect_screen, "unplugged, no disconnect screen on the second player's screen");
+    zox_tst_check(!zox_tst_reconnect_screen_first, "unplugged, a disconnect screen on the first player's screen");
+    zox_tst_check(!zox_valid(zox_get_child_by_id(world, zox_get_link(world, player, CanvasLink), zox_id(DisconnectUI))),
+        "plugged back in, the disconnect screen stayed");
     zox_tst_check(zox_valid(pad) && zox_get_parent(world, pad) == player, "the plugged in gamepad isn't the second player's");
     zox_tst_check(zox_get_link(world, player, GamepadLink) == pad, "the second player isn't linked to the plugged in gamepad");
     zox_tst_check(zox_getv(player, DeviceMode) == zox_device_mode_gamepad, "the second player isn't using a gamepad again");
