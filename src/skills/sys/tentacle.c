@@ -2,12 +2,17 @@
 //  (RaycastAim, else ahead), piercing its attacker if they're still on its line, then back into its body
 //  - its tip set as it starts, so a step aside dodges it; it bulges in its body first (the wind up), a tell
 //  - a SkillUsing (its tip the SkillTarget, SkillStage 1 its hit tried)
-//  - its particles its user's children (Particle3D), laid along it each frame in their order
-#define tentacle_bits 30
+//  - its particles its user's children (Particle3D), laid along it each frame in their order: rings of strands down
+//    it, thick at its body and thin at its tip, twisting round; it arches up with a wave running down it, its tip
+//    curling as it's drawn back; dark at its root, light at its tip
+#define tentacle_segments 26
+#define tentacle_strands 3
+#define tentacle_bits (tentacle_segments * tentacle_strands)
+#define tentacle_root 0.14f         // its thickness at its body (a ring's radius), thinning to its tip
 #define tentacle_windup 0.2         // seconds bulging in its body
 #define tentacle_out 0.12           // spiking out
-#define tentacle_hold 0.12
-#define tentacle_back 0.3           // drawn back in
+#define tentacle_hold 0.18
+#define tentacle_back 0.35          // drawn back in
 #define tentacle_time (tentacle_windup + tentacle_out + tentacle_hold + tentacle_back)
 #define tentacle_pierce 0.55f       // its line to its attacker's centre, its hit lands
 
@@ -37,7 +42,11 @@ void tentacle_activate_system(iter* it) {
         skill_using_begin(world, user, e, tip);
         const color c = zox_has(e, Color) ? zox_getv(e, Color) : (color) { 110, 210, 120, 255 };
         for (int j = 0; j < tentacle_bits; j++) {
-            const entity bit = spawn_particle3(world, position, float3_zero, c);
+            // dark at its root, light at its tip
+            const float u = (float) (j / tentacle_strands) / (tentacle_segments - 1);
+            const float shade = 0.55f + 0.65f * u;
+            const color shaded = { (byte) float_min(255, c.r * shade), (byte) float_min(255, c.g * shade), (byte) float_min(255, c.b * shade), c.a };
+            const entity bit = spawn_particle3(world, position, float3_zero, shaded);
             zox_setv(bit, Gravity3D, float3_zero);
             zox_setv(bit, DestroyInTime, tentacle_time + 0.05f);
             zox_set_parent_non_fragment(world, bit, user);
@@ -95,20 +104,37 @@ void tentacle_system(iter* it) {
         const float extent = tentacle_extent(t);
         const float3 from = position->value;
         const float3 along = float3_subtract(tip->value, from);
+        const float3 ahead = float3_normalize(along);
         const float3 side = float3_normalize(float3_cross(along, float3_up));
-        // its particles along it, a wave down it; bulging round its body before it spikes out
+        const float3 up = float3_cross(side, ahead);
+        const float length = float3_length(along) * extent;
+        const float back = t > tentacle_windup + tentacle_out + tentacle_hold ?
+            (t - tentacle_windup - tentacle_out - tentacle_hold) / tentacle_back : 0;
         entity bits[tentacle_bits];
         const uint count = zox_get_children_by_id(world, e, bits, tentacle_bits, zox_id(Particle3D));
         for (uint j = 0; j < count; j++) {
-            const float u = count > 1 ? (float) j / (count - 1) : 0;
+            const int segment = j / tentacle_strands, strand = j % tentacle_strands;
+            const float u = (float) segment / (tentacle_segments - 1);
+            const float radius = tentacle_root * powf(1 - u, 1.3f) + 0.015f;
+            const float twist = strand * 2.094f + u * 5 + t * 8;
             float3 p;
             if (t < tentacle_windup) {
-                const float a = u * 12.566f + t * 20;
-                const float r = 0.12f + 0.1f * (t / tentacle_windup);
-                p = float3_add(from, (float3) { cosf(a) * r, 0.1f + sinf(u * 9.42f) * 0.08f, sinf(a) * r });
+                // a bulge swelling on its body, its strands swirling: the tell
+                const float k = t / tentacle_windup;
+                const float a = u * 9.42f + twist;
+                const float r = (0.1f + 0.12f * k) * (1 - 0.5f * u);
+                p = float3_add(from, (float3) { cosf(a) * r, 0.05f + u * 0.15f * k, sinf(a) * r });
             } else {
-                const float wave = sinf(u * 7 - t * 30) * 0.1f * u * (1 - u) * 4 * extent;
-                p = float3_add(float3_add(from, float3_scale(along, u * extent)), float3_scale(side, wave));
+                // its centre: out along it, arched up, a wave running down it, its tip curling as it's drawn back
+                const float d = u * length;
+                const float wave = sinf(u * 6 - t * 22) * 0.18f * u;
+                const float arch = sinf(u * 3.1416f) * 0.25f * length / (1 + length);
+                const float curl = back * u * u * u * 1.5f;
+                float3 centre = float3_add(from, float3_scale(ahead, d * cosf(curl)));
+                centre = float3_add(centre, float3_scale(up, arch + d * sinf(curl) * 0.6f));
+                centre = float3_add(centre, float3_scale(side, wave * extent));
+                // its strands round it, twisting
+                p = float3_add(centre, float3_add(float3_scale(side, cosf(twist) * radius), float3_scale(up, sinf(twist) * radius)));
             }
             zox_setv(bits[j], Position3D, p);
         }

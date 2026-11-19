@@ -9,7 +9,7 @@
 // tst: slime_tentacle, a slime whips its tentacle (skills/sys/tentacle.c)
 //  - a slime 3 away in battle (past its pounce, in its tentacle's reach): its tentacle's particles come out (its
 //    Particle3D children), and the player's health drops while it's out
-//  - tst/slime_tentacle/out.ppm, the tentacle at full stretch, to look at
+//  - tst/slime_tentacle/out.ppm and back.ppm, the tentacle at full stretch and drawn back, to look at
 //  - run: bash bsh/tst.sh slime_tentacle
 entity zox_tst_monsters[2];
 int zox_tst_tentacle_bits = 0;          // the most particles seen out
@@ -197,8 +197,8 @@ byte zox_tst_slime_tentacle_ready(ecs* world) {
     }
     const byte out = zox_has(e, SkillUsing) && zox_has(zox_getv(e, SkillUsing), Tentacle);
     if (out) {
-        entity bits[32];
-        const int count = (int) zox_get_children_by_id(world, e, bits, 32, zox_id(Particle3D));
+        entity bits[tentacle_bits + 8];
+        const int count = (int) zox_get_children_by_id(world, e, bits, tentacle_bits + 8, zox_id(Particle3D));
         zox_tst_tentacle_bits = count > zox_tst_tentacle_bits ? count : zox_tst_tentacle_bits;
         if (zox_tst_tentacle_before < 0) {
             zox_tst_tentacle_before = zox_tst_monsters_player_health(world);
@@ -216,9 +216,14 @@ byte zox_tst_slime_tentacle_ready(ecs* world) {
             zox_setv(camera, Position3D, eye);
             zox_setv(camera, Rotation3D, camera_look_at(eye, mid));
         }
+        // held out, then drawn back (its tip curling)
+        const double back_at = tentacle_windup + tentacle_out + tentacle_hold + tentacle_back * 0.4;
         if (t > tentacle_windup + tentacle_out && !zox_tst_monsters_shots && !zox_screenshot_request[0]) {
             snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("slime_tentacle/out.ppm"));
             zox_tst_monsters_shots = 1;
+        } else if (t > back_at && zox_tst_monsters_shots == 1 && !zox_screenshot_request[0]) {
+            snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("slime_tentacle/back.ppm"));
+            zox_tst_monsters_shots = 2;
         }
     } else if (zox_tst_tentacle_before >= 0) {
         zox_tst_tentacle_after = zox_tst_monsters_player_health(world);
