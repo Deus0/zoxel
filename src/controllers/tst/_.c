@@ -275,6 +275,7 @@ void zox_tst_screenshot_check(ecs* world) {
 }
 
 #include "touch_play.c"
+#include "coop_continue.c"
 #include "touch_actions.c"
 
 void zox_tsts_controllers(ecs* world) {
@@ -284,6 +285,8 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("underwater", zox_tst_underwater_ready, zox_tst_underwater_check, 90);
     zox_tst_add("continue_game", zox_tst_continue_game_ready, zox_tst_player_spawn_check, 90);
     zox_tst_set_setup("continue_game", zox_tst_load_games_setup, 1);
+    zox_tst_add("coop_continue", zox_tst_coop_continue_ready, zox_tst_coop_continue_check, 120);
+    zox_tst_set_setup("coop_continue", zox_tst_coop_continue_setup, 1);
     zox_tst_add("screenshot", zox_tst_screenshot_ready, zox_tst_screenshot_check, 90);
     const char* real_save = getenv("zox_tst_save");
     if (real_save && real_save[0]) {
