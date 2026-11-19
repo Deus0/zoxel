@@ -63,3 +63,37 @@ void spine_lean_system(iter* it) {
     }
     zox_sys_on_end();
 } zoxd_system(spine_lean_system);
+
+
+// A skeleton's upper body turned about its up (SpineTwist: a punch turning into its strike), over its lean
+//  - the chest turns, the hips turn back (the legs stay), and the head turns back by it: its look and a first person
+//    camera on it hold still; the head's own turn (head_look.c) is kept, only the twist's change is taken off it
+//  - the chest turns about its own place, over the hips (its rest place is kept by spine_lean_system)
+void spine_twist_system(iter* it) {
+    zox_sys_on_begin();
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(SpineTwist);
+    zox_sys_out(SpineTwistHead);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(SpineTwist, twist);
+        zox_sys_o(SpineTwistHead, head_twist);
+        if (!twist->value && !head_twist->value) {
+            continue;
+        }
+        spine_bones bones;
+        if (!spine_bones_find(world, e, &bones)) {
+            continue;
+        }
+        const float4 lean = zox_has(e, SpineLean) ? zox_getv(e, SpineLean) : quaternion_identity;
+        const float4 turn = quaternion_rotate(lean, quaternion_from_euler((float3) { 0, twist->value, 0 }));
+        zox_getm(bones.chest, LocalRotation3D)->value = turn;
+        zox_getm(bones.hips, LocalRotation3D)->value = quaternion_inverse(turn);
+        LocalRotation3D* head = zox_getm(bones.head, LocalRotation3D);
+        head->value = quaternion_normalize2(quaternion_rotate(
+            quaternion_from_euler((float3) { 0, head_twist->value - twist->value, 0 }), head->value));
+        head_twist->value = twist->value;
+    }
+    zox_sys_on_end();
+} zoxd_system(spine_twist_system);

@@ -1,5 +1,6 @@
 #include "drops.c"
 #include "activate.c"
+#include "place_swing.c"
 #include "consume.c"
 #include "character.c"
 #include "death.c"
@@ -26,6 +27,16 @@ void zox_systems_items(ecs* world) {
         zoxp_spawn,
         [in] characters.GenerateCharacter,
         [none] characters.Character,
+    );
+    // a block item's warmup starts its user's place swing
+    zox_system_1(
+        item_place_swing_system,
+        zoxp_update,
+        [in] timers.WarmupAt,
+        [in] timers.WarmupTime,
+        [in] timers.CooldownTime,
+        [in] items.Quantity,
+        [none] ItemBlock
     );
     // NOTE: Timing issues due to Queue Clearing
     zox_system_1(

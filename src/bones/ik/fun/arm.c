@@ -72,3 +72,12 @@ static inline float3 skeleton_now_point(const skeleton_now* s, float3 point) {
 static inline float4 skeleton_now_rotation(const skeleton_now* s, float4 rotation) {
     return quaternion_rotate(quaternion_rotate(s->now_rotation, s->last_inverse), rotation);
 }
+
+// a bone's world turn now; one on the skeleton itself (the chest) from its local turn this frame: a lean or twist set
+//  since the hierarchy placed it (a punch's twist is fast, a frame behind the hand missed its target)
+static inline float4 skeleton_now_bone_rotation(ecs* world, const skeleton_now* s, entity skeleton, entity bone) {
+    if (zox_get_parent(world, bone) == skeleton && zox_has(bone, LocalRotation3D)) {
+        return quaternion_rotate(s->now_rotation, zox_getv(bone, LocalRotation3D));
+    }
+    return skeleton_now_rotation(s, zox_getv(bone, Rotation3D));
+}

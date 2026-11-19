@@ -5,13 +5,15 @@
 #include "spine.c"
 
 void zox_systems_ik(ecs* world) {
-    // the right arm's guard while raised, a punch as a motion
+    // the right arm's guard while raised, a punch or place as a motion
     zox_system(
         punch_ik_system,
         zoxp_trails,
         [in] bones.SwingStart,
         [in] bones.SwingSpeed,
         [in] bones.RaiseShoulder,
+        [in] bones.SwingKind,
+        [out] bones.SpineTwist,
         [none] bones.Skeleton
     );
     // the upper body leaning about the hips, the hips shifted (XR's body bending and crouching)
@@ -20,6 +22,14 @@ void zox_systems_ik(ecs* world) {
         zoxp_trails,
         [in] SpineLean,
         [in] HipsShift,
+        [none] bones.Skeleton
+    );
+    // the upper body turned (a punch's), after its lean: the hips and head turned back
+    zox_system(
+        spine_twist_system,
+        zoxp_trails,
+        [in] bones.SpineTwist,
+        [out] bones.SpineTwistHead,
         [none] bones.Skeleton
     );
     // feet planted as the body shifts (PlantFeet: XR's body), stepping when far

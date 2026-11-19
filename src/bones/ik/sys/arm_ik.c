@@ -63,10 +63,11 @@ void arm_ik_system(iter* it) {
             }
             continue;
         }
-        const skeleton_now now = skeleton_now_get(world, zox_get_link(world, e, SkeletonLink));
+        const entity skeleton = zox_get_link(world, e, SkeletonLink);
+        const skeleton_now now = skeleton_now_get(world, skeleton);
         const entity parent = zox_get_parent(world, e);
-        const float4 parent_rotation = skeleton_now_rotation(&now, zox_valid(parent) && zox_has(parent, Rotation3D) ?
-            zox_getv(parent, Rotation3D) : quaternion_identity);
+        const float4 parent_rotation = zox_valid(parent) && zox_has(parent, Rotation3D) ?
+            skeleton_now_bone_rotation(world, &now, skeleton, parent) : skeleton_now_rotation(&now, quaternion_identity);
         // lengths don't change with where it is
         const float a = float3_distance(position->value, zox_getv(elbow, Position3D));
         const float b = float3_distance(zox_getv(elbow, Position3D), zox_getv(hand, Position3D));

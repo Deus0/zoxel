@@ -60,13 +60,9 @@ void item_activate_system(iter* it) {
         zox_add(e, DataDirty);
         // place block sound
         spawn_sound_effect(world, sound_effect_place, user);
-        entity skeleton = get_skeleton(world, user);
-        if (zox_valid(skeleton)) {
-            float swing_time =
-                zox_getv(e, WarmupTime) +
-                zox_getv(e, CooldownTime);
-            zox_setv(skeleton, SwingStart, zox_current_time);
-            zox_setv(skeleton, SwingSpeed, swing_time);
+        // the swing started with the warmup (place_swing.c), with none it starts here
+        if (zox_getv(e, WarmupTime) <= 0) {
+            skeleton_swing_begin(world, user, zox_current_time, zox_getv(e, CooldownTime), zox_swing_place);
         }
     }
     zox_sys_on_end();

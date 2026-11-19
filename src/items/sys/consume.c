@@ -57,14 +57,7 @@ void item_consume_system(iter* it) {
         zox_add(e, DataDirty);
         // consume sound
         spawn_sound_effect(world, sound_effect_consume, user);
-        entity skeleton = get_skeleton(world, user);
-        if (zox_valid(skeleton)) {
-            float swing_time =
-                zox_getv(e, WarmupTime) +
-                zox_getv(e, CooldownTime);
-            zox_setv(skeleton, SwingStart, zox_current_time);
-            zox_setv(skeleton, SwingSpeed, swing_time);
-        }
+        skeleton_swing_begin(world, user, zox_current_time, zox_getv(e, WarmupTime) + zox_getv(e, CooldownTime), zox_swing_punch);
         if (dbg_log) {
             zox_log("[%s] consumed [%s] +[%f] [%s] -> [%f]",
                 zox_getn(user),

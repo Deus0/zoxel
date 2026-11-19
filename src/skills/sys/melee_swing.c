@@ -1,6 +1,6 @@
 // NOTE: A melee skill's warmup starts its user's swing, so the wind up plays before the hit, not after it
 //  - the swing runs over warmup + cooldown from the warmup's start: the strike lands as the warmup ends (melee.c hits)
-//  - set once a warmup (SwingStart is its WarmupAt), out of energy it doesn't swing (melee.c plays no resource)
+//  - out of energy it doesn't swing (melee.c plays no resource)
 void melee_swing_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
@@ -19,8 +19,7 @@ void melee_swing_system(iter* it) {
             continue;
         }
         const entity user = zox_get_parent(world, e);
-        const entity skeleton = zox_valid(user) ? get_skeleton(world, user) : 0;
-        if (!zox_valid(skeleton) || zox_getv(skeleton, SwingStart) == at->value) {
+        if (!zox_valid(user)) {
             continue;
         }
         if (!disable_skill_costs) {
@@ -29,8 +28,7 @@ void melee_swing_system(iter* it) {
                 continue;
             }
         }
-        zox_setv(skeleton, SwingStart, at->value);
-        zox_setv(skeleton, SwingSpeed, warmup->value + cooldown->value);
+        skeleton_swing_begin(world, user, at->value, warmup->value + cooldown->value, zox_swing_punch);
     }
     zox_sys_on_end();
 } zoxd_system(melee_swing_system);

@@ -23,6 +23,11 @@ zoxc_byte(WalkState);
 zoxc_byte(WalkSpeed);
 zoxc_double(SwingStart);
 zoxc_float(SwingSpeed);
+zoxc_byte(SwingKind);       // the swing SwingStart starts: zox_swing_punch, zox_swing_place
+zoxc_float(SpineTwist);     // the upper body turned about its up, radians (a punch turning into its strike)
+zoxc_float(SpineTwistHead); // the twist the head was turned back by, last set (its look holds, ik/sys/spine.c)
+#define zox_swing_punch 0
+#define zox_swing_place 1
 zoxc_entity(LookTarget);
 zoxc_entity(BoneSlot);      // the slot a bone is from: a rebuild keeps its index (parts/sys/bones.c)
 #define zox_bones_max 32    // bone_matrix[32] in res/shaders/bone.vert    // on a head bone: it turns to look at it (its head, if it has one), 0 looks ahead
@@ -49,6 +54,9 @@ void zox_components_bones(ecs* world) {
     zoxd_float(SwingBlend);
     zoxd_double(SwingStart);
     zoxd_float(SwingSpeed);
+    zoxd_byte(SwingKind);
+    zoxd_float(SpineTwist);
+    zoxd_float(SpineTwistHead);
     zoxd_entity(LookTarget);
     zoxd_entity(BoneSlot);
     zoxd_byte(RaiseShoulder);
