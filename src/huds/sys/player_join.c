@@ -150,6 +150,7 @@ void player_join_system(iter* it) {
             zox_valid(game) && zox_getv(game, GameState) == zox_game_none &&
             zox_valid(zox_get_child_by_id(world, canvas, zox_id(MenuMain)));
         gamepad_a_joins = on_main_menu;
+        device_switch_coop = players_playing > 1;
         if (!on_main_menu) {
             if (player_join_ui_shown != -1) {
                 despawn_player_join_ui(world, canvas);

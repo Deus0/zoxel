@@ -24,6 +24,9 @@ void device_switch_system(iter* it) {
         if (dirty->value != 0) { // zox_dirty_trigger) {
             continue;
         }
+        if (device_switch_coop && !zox_has(e, DeviceLost)) {
+            continue;
+        }
         // first check if currently using selected inputs
         byte using_current = 0;
         iter it2 = zox_children(world, e);
