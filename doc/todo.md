@@ -7,23 +7,20 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
-- tst player_spawn fails 3 of 3 on 85ea794d3: "character is inside a solid block [43] at [0x18x0]" (2026-11-19)
 - tst sky_clouds fails: "no cloud in the sky looking up" (0.07% of the band), on 31a2c2740 too (2026-11-20)
 - tst lint_systems fails: chunk3_textured_render_system and chunk3_transparent_render_system
   (rendering3/sys/render_chunks.c) have no zox_sys_on_begin / zox_sys_on_end (2026-11-20)
 - tst touch_play is flaky: the left stick up, it walked 0.35 in 3 of 10 runs (1.1 to 4.1 in the others, needs > 1),
 	where the character spawns decides it (since players spawn at their homes? 2026-11-18), and a run stalled
-- tst lint_systems: chunk3_textured_render_system (src/rendering/rendering3/sys/render_chunks.c:184) has no
-	zox_sys_on_begin() / zox_sys_on_end() (2026-11-18)
-- tst player_spawn (flaky, about half) and continue_game fail: "character is inside a solid block [43]" (water) at
-	[0 18 0] or [1 18 0], on 3b3909d12 too (2026-11-19)
 - a crash switching windows (play test 2026-11-19), not reproduced: tst navigator_inventory and coop_navigator switch
 	fast (RB and LB) with an item in hand and a tooltip up; no core dump left. How were they switched (keys, mouse,
-	gamepad), in split screen?
-- most worlds have no towns: every place tried for one is 22% to 76% under the sea (terrain_sea_height 6), towns keep
-	off water since 77e33a45d (terrain_rect_over_water, any column wet); with none, players spawn at the no town
-	fallback, near [0 0], often in the sea (the player_spawn failures above). Lower the sea, or let towns level a
-	little water? tsts coop_homes and coop_join_continue lower it (terrain_sea_height = 0) (2026-11-19)
+	gamepad), in split screen? Maybe the gamepad item pick up abort (fixed in a179f4344); coop_respawn_navigator (a
+	death and respawn first) doesn't crash either
+- tst lint_builds: windows_names doesn't build, src/terrain/tst/streamers.c:108 "expected identifier or '(' before '='"
+	(2026-11-19)
+- tst quest_dialogue fails 2 of 20: after taking the quest the tracker shows [???], not its name (2026-11-19)
+- tst vegetation_chunks: no tree crosses a chunk's top, its across chunks case unchecked (2026-11-19)
+- tst camera_filter: camera C (unfiltered) drew the cube linked to A, 16 of 25 pixels changed (2026-11-19)
 - tst dig_light fails 1 of 2: "the hole's faces never showed (or not [5] of them: [1])", on 22d44c39c too (2026-11-19)
 - tst pipeline_syncs fails 2 of 3: 21 merges (over 11), 4 main thread systems between multi threaded ones:
 	camera_underwater_system (pre_physics), xr_room_walk_system, xr_head_bone_system, xr_hands_ik_system (2026-11-18)
