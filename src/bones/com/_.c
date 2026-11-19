@@ -3,6 +3,7 @@ zox_tag(Skeleton);
 zox_tag(PaintedSkeleton);
 zoxc_dirty(Skeleton);
 zoxc_float3(BoneSize);
+zoxc_float3(BoneCentre);    // its part's middle, the skeleton's space at rest (BonePosition is its pivot, the joint)
 zox_tag(HeadBone);
 zox_tag(HipsBone);
 zox_tag(ArmBone);
@@ -39,6 +40,7 @@ void zox_components_bones(ecs* world) {
     zoxd_tag(Skeleton);
     zoxd_tag(PaintedSkeleton);
     zoxd_float3(BoneSize);
+    zoxd_float3(BoneCentre);
     zoxd_tag(HeadBone);
     zoxd_tag(HipsBone);
     zoxd_tag(ArmBone);

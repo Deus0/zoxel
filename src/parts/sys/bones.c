@@ -6,7 +6,45 @@ static inline void part_bone_set(ecs* world, CombineBones* table, entity slot, b
     }
 }
 
+// a bone's pivot, its joint with its parent's part (centres and half sizes, the skeleton's space)
+//  - across the axis the two are furthest apart on (by their half sizes together): an arm under its shoulder at its
+//    top, a shoulder beside the chest at its inner side; halfway between their faces there (a gap or an overlap)
+//  - on the other axes the middle of where the two overlap, else the part's: a foot's ankle under its shin (not its
+//    toes' middle), a thigh's hip on its own line (not the hips' middle)
+//  - a part with many children has a joint each: every child finds its own with this part
+//  - at their middles a forearm turned about mid forearm, bending the elbow pulled it a gap off the upper arm and the
+//    skin between stretched into strips (tst punch_views)
+static inline float3 part_bone_pivot(float3 centre, float3 size, float3 parent_centre, float3 parent_size) {
+    const float* c = &centre.x;
+    const float* s = &size.x;
+    const float* pc = &parent_centre.x;
+    const float* ps = &parent_size.x;
+    float3 pivot = centre;
+    float* p = &pivot.x;
+    int axis = 0;
+    float furthest = -1;
+    for (int a = 0; a < 3; a++) {
+        const float apart = fabsf(pc[a] - c[a]) / (s[a] + ps[a] + 0.0001f);
+        if (apart > furthest) {
+            furthest = apart;
+            axis = a;
+        }
+    }
+    for (int a = 0; a < 3; a++) {
+        if (a == axis) {
+            const float side = pc[a] > c[a] ? 1 : -1;
+            p[a] = ((c[a] + side * s[a]) + (pc[a] - side * ps[a])) * 0.5f;
+        } else {
+            const float low = fmaxf(c[a] - s[a], pc[a] - ps[a]);
+            const float high = fminf(c[a] + s[a], pc[a] + ps[a]);
+            p[a] = low <= high ? (low + high) * 0.5f : c[a];
+        }
+    }
+    return pivot;
+}
+
 // Spawns a bone for the item part, and children
+//  - parent_position: the parent bone's pivot; parent_centre, parent_size: its part's middle and half size
 entity spawn_part_bones(
     ecs* world,
     entity skeleton,
@@ -15,6 +53,8 @@ entity spawn_part_bones(
     float bscale,
     entity parent,
     float3 parent_position,
+    float3 parent_centre,
+    float3 parent_size,
     entity slot,
     entity part,
     CombineBones* table,
@@ -53,12 +93,14 @@ entity spawn_part_bones(
     int3 vsize = get_item_model_size(world, part, vox);
     float3 size = float3_scale(int3_to_float3(vsize), bscale * 0.5f);
     size = float3_add(size, float3_single(bscale * 0.5f));
-    float3 position = float3_scale(byte3_to_float3(part_centre_position), bscale);
-    position = float3_sub(position, half_bounds);
-    position = float3_add(position, float3_single(bscale * 0.5f));
-    float3 local_position = float3_sub(position, parent_position);
-    // TODO: calculate local position by subtracting parent position
+    float3 centre = float3_scale(byte3_to_float3(part_centre_position), bscale);
+    centre = float3_sub(centre, half_bounds);
+    centre = float3_add(centre, float3_single(bscale * 0.5f));
+    // the root (the chest) turns about its middle
+    const float3 position = parent == skeleton ? centre : part_bone_pivot(centre, size, parent_centre, parent_size);
+    const float3 local_position = float3_sub(position, parent_position);
     entity bone = spawn_body_bone(world, prefab_bone, skeleton, parent, position, local_position, size);
+    zox_setv(bone, BoneCentre, centre);
     zox_set_unique_name(bone, "bbone");
     add_to_BoneLinks(bones, bone);
     const byte bone_index = bones->length - 1;
@@ -68,7 +110,7 @@ entity spawn_part_bones(
     bone_parents[bone_index] = parent == skeleton ? bone_index : parent_bone;
     part_bone_set(world, table, slot, bone_index);
     // TODO: FLip models around
-    byte is_right_side = position.x < 0;
+    byte is_right_side = centre.x < 0;
     if (zox_has(part, Head)) {
         zox_add(bone, HeadBone);
         zox_link(world, skeleton, HeadBoneLink, bone);
@@ -112,7 +154,7 @@ entity spawn_part_bones(
     if (dbg_log) {
         zox_log("Spawned Part [%s] Bone:", zox_get_name(part));
         zox_log("   # size  b [%ix%ix%i] f [%fx%fx%f]", vsize.x, vsize.y, vsize.z, size.x, size.y, size.z);
-        zox_log("   @ position b [%ix%ix%i] f [%fx%fx%f] l [%fx%fx%f]", part_centre_position.x, part_centre_position.y, part_centre_position.z, position.x, position.y, position.z, local_position.x, local_position.y, local_position.z);
+        zox_log("   @ pivot b [%ix%ix%i] f [%fx%fx%f] l [%fx%fx%f]", part_centre_position.x, part_centre_position.y, part_centre_position.z, position.x, position.y, position.z, local_position.x, local_position.y, local_position.z);
     }
     // Now Recursively add parts
     iter it2 = zox_children(world, slot);
@@ -125,7 +167,7 @@ entity spawn_part_bones(
             entity child_part = zox_get_link(world, e2, DataLink);
             // its parent is set as it spawns (spawn_body_bone, non fragmenting): a ChildOf here too gave every
             //  humanoid ~45 tables of its own (tst tables_stream)
-            spawn_part_bones(world, skeleton, bones, half_bounds, bscale, bone, position, e2, child_part, table, bone_index,
+            spawn_part_bones(world, skeleton, bones, half_bounds, bscale, bone, position, centre, size, e2, child_part, table, bone_index,
                 bone_slots, bone_parents);
         }
     }
@@ -244,7 +286,7 @@ void character_bone_spawn_system(iter* it) {
         }
         entity new_slots[256];
         byte new_parents[256];
-        spawn_part_bones(world, skeleton, bones, half_bounds, bscale->value, skeleton, float3_zero, chest_slot, chest_part,
+        spawn_part_bones(world, skeleton, bones, half_bounds, bscale->value, skeleton, float3_zero, float3_zero, float3_zero, chest_slot, chest_part,
             table, 0, new_slots, new_parents);
         // the spawned bones (in spawn order) placed at their old indexes
         const int new_length = bones->length;

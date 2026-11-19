@@ -4,26 +4,28 @@
 
 // the camera at the eyes, in front of the face (+z), and in front of whatever is under it (a thick chest, a shirt):
 //  bones in the head's column (covering its middle on x) push it forward, so looking down doesn't see inside the
-//  body. Bones' sizes are half their size, from BonePosition (the skeleton's pose)
+//  body. Bones' sizes are half their size, about their parts' middles (BoneCentre, the skeleton's pose); the offset
+//  is from the head's pivot (BonePosition, the neck)
 float3 head_camera_offset(ecs* world, entity skeleton, entity head_bone, float block_scale) {
-    const float3 head_position = zox_getv(head_bone, BonePosition);
+    const float3 head_centre = zox_getv(head_bone, BoneCentre);
     const float3 head_size = zox_getv(head_bone, BoneSize);
-    float front = head_position.z + head_size.z;
+    const float3 pivot = zox_getv(head_bone, BonePosition);
+    float front = head_centre.z + head_size.z;
     const BoneLinks* bones = zox_get(skeleton, BoneLinks);
     for (int i = 0; bones && i < bones->length; i++) {
         const entity bone = bones->value[i];
         if (!zox_valid(bone) || !zox_has(bone, BoneSize)) {
             continue;
         }
-        const float3 position = zox_getv(bone, BonePosition);
+        const float3 centre = zox_getv(bone, BoneCentre);
         const float3 size = zox_getv(bone, BoneSize);
-        if (fabsf(position.x - head_position.x) < size.x && position.z + size.z > front) {
-            front = position.z + size.z;
+        if (fabsf(centre.x - head_centre.x) < size.x && centre.z + size.z > front) {
+            front = centre.z + size.z;
         }
     }
     // eyes a little above the head's middle (parts/ins/head.c), a voxel in front of the face
-    const float z = front - head_position.z + block_scale;
-    return (float3) { 0, head_size.y * 0.15f, is_camera_positive_z ? z : -z };
+    const float z = front - pivot.z + block_scale;
+    return (float3) { head_centre.x - pivot.x, head_centre.y - pivot.y + head_size.y * 0.15f, is_camera_positive_z ? z : -z };
 }
 
 void place_camera_head_system(iter* it) {

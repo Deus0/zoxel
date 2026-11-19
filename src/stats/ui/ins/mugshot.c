@@ -18,7 +18,7 @@ entity spawn_character_mugshot(ecs* world, entity parent, entity character, floa
     zox_setv(copy, Position3D, at);
     zox_setv(copy, Rotation3D, quaternion_identity);
     // in front of its face, framing its head (bone sizes are half sizes)
-    const float3 head_at = float3_add(at, zox_getv(head, BonePosition));
+    const float3 head_at = float3_add(at, zox_getv(head, BoneCentre));
     const float3 head_size = zox_getv(head, BoneSize);
     const float3 camera_at = float3_add(head_at, (float3) { 0, head_size.y * 0.3f, fmaxf(head_size.x, head_size.y) * 4 });
     // alpha under 1: the alpha render texture material (the opaque one shows nothing, todo), the gray behind it clear

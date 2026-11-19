@@ -25,9 +25,12 @@ void bone_gizmo_system(iter* it) {
             pposition,
             4, 0.01,
             color_rgb_gray);
+        // its box about its part's middle, turned with it (the bone sits at its joint)
+        const float3 centre = float3_add(position->value, float4_rotate_float3(zox_getv(e, Rotation3D),
+            float3_sub(zox_getv(e, BoneCentre), zox_getv(e, BonePosition))));
         spawn_cube_lines(
             world,
-            position->value,
+            centre,
             float3_scale(size->value, 1),
             2,
             color_rgb_black,
