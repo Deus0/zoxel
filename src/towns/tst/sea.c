@@ -77,7 +77,9 @@ byte zox_tst_sea_level_ready(ecs* world) {
     zox_tst_progress((int) (zox_current_time - zox_tst_sea_begin));
     // until the chunk at the sea's level there shows a water mesh, then a while for its neighbours and lights
     zox_tst_waiting = "the land under the camera to stream in and show its water";
-    const int3 chunk_position = real_position_to_chunk_position(zox_tst_sea_spot, octree_size(zox_getv(terrain, NodeDepth)), scale);
+    // the chunk with the water's top (the spot is a block over it, a chunk up with the sea at a chunk's edge)
+    const float3 surface = float3_add(zox_tst_sea_spot, (float3) { 0, -2 * scale, 0 });
+    const int3 chunk_position = real_position_to_chunk_position(surface, octree_size(zox_getv(terrain, NodeDepth)), scale);
     const entity chunk = int3_hashmap_get(zox_get(terrain, ChunkLinks)->value, chunk_position);
     if (!zox_tst_sea_streamed) {
         int water = 0, solid = 0, meshes = 0;

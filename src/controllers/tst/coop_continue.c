@@ -58,7 +58,6 @@ void zox_tst_coop_continue_check(ecs* world) {
 //  - run: bash bsh/tst.sh coop_join_continue
 void zox_tst_coop_join_continue_setup() {
     zox_tst_load_games_setup();
-    terrain_sea_height = 0;     // the sea lowered: towns keep off water, most of the world was under it (no towns)
     is_split_screen = 1;
     char folder[640];
     snprintf(folder, sizeof(folder), "%s/realm_%03i", zox_tst_load_saves_path, zox_tst_load_saves - 1);
