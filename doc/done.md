@@ -1,6 +1,12 @@
 # Done
 
 ## 2026-11-20
+-x Doors facing their first way (direction 0) never swung: an unturned block vox has no Rotation3D, door_swing_system
+  needs it; their block data opened (passable), they stayed shut. door_on_spawned sets it. tst door_rays (two doors
+  side by side, rays across the first's face find it, closed and open); tst furniture_hits aims at the panel now
+-x A gamepad plugged back in didn't reach a lone player who'd used the keyboard since (it stayed the app's, A or
+  start did nothing): reclaim_gamepads gives it to them, disabled, a press switches to it. tst gamepad_reconnect_keyboard
+-x The ik through npcs' heads: the guard looking up (2026-11-19, tst guard_pitch)
 -x Global shaders to entities: the lines' (2D, 3D, 3D instanced) and particles' shader and material are entities
   (spawn_material_source), their uniform locations components (MaterialLine2D, MaterialLine3D,
   MaterialLine3DInstanced, MaterialParticle3D) relocated on a restore; removed the 2D square instance material

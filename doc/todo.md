@@ -6,7 +6,21 @@
   [optimize.md](optimize.md) (performance), [new.md](new.md) (new modules and features), [future.md](future.md) (bigger
   ideas), [new/caves.md](new/caves.md) (caves design)
 
+## Now (play test 2026-11-20)
+- houses: holes as windows (for now), doors as door blocks, a bed in each home
+- a bed sets its sleeper's respawn point
+- pause separate from the game menus (Y or R), so the game menus work in coop too; pause actually pauses the game
+- a toast for quest rewards: a log ui at the bottom left, new entries fading out
+
 ## Bugs
+- play test 2026-11-20:
+	- the quest tracker ui has no background panel
+	- cloth sticks to a forearm: part of the shirt follows it (cloth should stick together)
+	- the block in hand is on the wrist since the bones refactor
+	- the destruction material is missing in coop
+	- npc hits don't land on the player
+	- "talk to someone in town": the tracker didn't mark off the first quest
+	- players talk to each other, but the second player didn't take part
 - the second player flying away, off the minimap, crashed it (play test 2026-11-19), not reproduced: tst
 	coop_map_markers flies them 6000 blocks off (tiny, the whole world, --stress) without a crash. Which build and
 	platform, was the map open, flying up or along?
