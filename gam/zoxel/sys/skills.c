@@ -57,8 +57,8 @@ void skills_realm_spawn_system(iter* it) {
                 range,
                 energy,
                 punch_cost,
-                0.25f,
-                0.25f);
+                0,          // no cast: its windup is the swing's, it hits at the swing's hit
+                0.5f);      // the swing's length too, for now
             // strength boosts physical damage, which boosts punch
             if (zox_valid(physical_damage)) {
                 zox_link(world, e2, SkillDamageStat, physical_damage);

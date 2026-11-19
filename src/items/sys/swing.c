@@ -25,7 +25,7 @@ void item_swing_system(iter* it) {
         }
         const float time = warmup->value + cooldown->value;
         if (zox_has(e, ItemConsumable)) {
-            skeleton_swing_begin(world, user, at->value, time, zox_swing_eat, float3_zero);
+            skeleton_swing_begin(world, user, e, at->value, time, zox_swing_eat, float3_zero);
             continue;
         }
         if (!zox_has(e, ItemBlock) || !zox_has(user, RaycastVoxelData) || !zox_has(user, RaycastRange)) {
@@ -35,7 +35,7 @@ void item_swing_system(iter* it) {
         if (raycast->result != rayhit_terrain || raycast->distance > zox_getv(user, RaycastRange)) {
             continue;
         }
-        skeleton_swing_begin(world, user, at->value, time, zox_swing_place, raycast->hit);
+        skeleton_swing_begin(world, user, e, at->value, time, zox_swing_place, raycast->hit);
     }
     zox_sys_on_end();
 } zoxd_system(item_swing_system);

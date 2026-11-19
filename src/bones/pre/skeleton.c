@@ -15,6 +15,7 @@ entity spawn_prefab_skeleton(ecs *world) {
     zox_setv(e, SwingSpeed, 0);
     zox_setv(e, SwingKind, zox_swing_punch);
     zox_setv(e, SwingTarget, float3_zero);
+    zox_setv(e, SwingAction, 0);
     zox_setv(e, SwingMark, 0);
     zox_setv(e, SpineTwist, 0);
     zox_setv(e, SpineTwistHead, 0);

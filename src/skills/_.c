@@ -13,6 +13,7 @@
 #include "ins/_.c"
 #include "fun/_.c"
 #include "sys/_.c"
+#include "eve/_.c"
 #include "ui/_.c"
 #include "auras/_.c"
 #include "tst/_.c"
@@ -24,7 +25,7 @@ void import_skills(ecs* world) {
     add_hook_spawn_prefabs(spawn_prefabs_skills);
     zox_systems_blackplague(world);
     add_hook_terminal_command(process_arguments_skills);
-    // add_hook_spawn_prefabs(zox_events_skills);
+    zox_events_skills(world);
     zox_add_module(skills_ui);
     zox_add_module(auras);
 #ifdef zox_tests

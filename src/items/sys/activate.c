@@ -62,7 +62,7 @@ void item_activate_system(iter* it) {
         spawn_sound_effect(world, sound_effect_place, user);
         // the swing started with the warmup (swing.c), with none it starts here
         if (zox_getv(e, WarmupTime) <= 0) {
-            skeleton_swing_begin(world, user, zox_current_time, zox_getv(e, CooldownTime), zox_swing_place, float3_zero);
+            skeleton_swing_begin(world, user, e, zox_current_time, zox_getv(e, CooldownTime), zox_swing_place, float3_zero);
         }
     }
     zox_sys_on_end();

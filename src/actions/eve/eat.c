@@ -1,6 +1,6 @@
 // Eating's bites (SwingMark on an eat swing, bones/sys/swing_mark.c): a crunchy munch and crumbs in the food's colours
 //  (its model's palette) thrown out ahead of the face, the hand at the mouth
-//  - the food is the user's active action, the item held; the eat's own sound plays at its use (items/sys/consume.c)
+//  - the food is what's swung (SwingAction); the eat's own sound plays at its use (items/sys/consume.c)
 const SoundEffect eat_munch = { "munch", instrument_crunch, 48, 53, 0.08f, 0.11f, 2.2f, 2.6f };
 uint zox_eat_bites = 0;     // counted for tst eat_swing
 
@@ -21,7 +21,7 @@ void on_eat_bite(iter* it) {
             continue;
         }
         set_sound_source(world, spawn_sound_effect_data(world, &eat_munch), user);
-        const entity food = zox_has(user, ActiveAction) ? zox_getv(user, ActiveAction) : 0;
+        const entity food = zox_getv(e, SwingAction);
         const float3 face = float4_rotate_float3(zox_getv(head, Rotation3D), float3_forward);   // the face is +z
         const particle3_burst crumbs = {
             .position = float3_add(zox_getv(hand, Position3D), float3_scale(face, 0.05f)),
