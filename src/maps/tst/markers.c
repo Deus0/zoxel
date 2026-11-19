@@ -1,7 +1,8 @@
 // tst: coop_map_markers, split screen: the second player on the first one's minimap (map_marker_system)
 //  - the second player's character held at an offset from the first's, its marker on the first's minimap checked:
 //      4 blocks east, right of the middle; 4 blocks north (+z), up or down as the map's flipped (zox_maps_flip_z);
-//      far east, on the map's right edge, level with the middle
+//      far east, on the map's right edge, level with the middle; then flying away (6000 blocks over 300 frames)
+//      without a crash
 //  - run: bash bsh/tst.sh coop_map_markers
 int zox_tst_mm_stage = 0;
 int zox_tst_mm_frames = 0;
@@ -47,9 +48,18 @@ byte zox_tst_coop_map_markers_ready(ecs* world) {
     zox_tst_mm_view_size = zox_getv(view, LayoutSize);
     zox_tst_mm_ppb = (float) zox_tst_mm_view_size.x / (zox_getv(view, TextureSize).x * zox_getv(view, MapBlocksPerTexel));
     // the second held at an offset (blocks) from the first, up high so it doesn't fall
-    const float3 offsets[3] = { { 4, 0, 0 }, { 0, 0, 4 }, { 500, 0, 0 } };
+    const float3 offsets[4] = { { 4, 0, 0 }, { 0, 0, 4 }, { 500, 0, 0 }, { 0, 0, 0 } };
     const int stage = zox_tst_mm_stage;
     const float3 p = zox_getv(a, Position3D);
+    if (stage == 3) {
+        // flying away: its own minimap and stream move off the first's land (a crash, play test 2026-11-19)
+        const float away = 20.0f * zox_tst_mm_frames;
+        zox_setv(b, Position3D, ((float3) { p.x + away * scale, p.y, p.z + away * 0.5f * scale }));
+        zox_setv(b, Velocity3D, float3_zero);
+        zox_tst_progress(stage * 100 + zox_tst_mm_frames);
+        zox_tst_waiting = "the second player flying away";
+        return ++zox_tst_mm_frames >= 300 ? ++zox_tst_mm_stage : 0;
+    }
     zox_setv(b, Position3D, ((float3) { p.x + offsets[stage].x * scale, p.y, p.z + offsets[stage].z * scale }));
     zox_setv(b, Velocity3D, float3_zero);
     zox_tst_progress(stage * 100 + zox_tst_mm_frames);
@@ -66,7 +76,8 @@ byte zox_tst_coop_map_markers_ready(ecs* world) {
         zox_tst_mm_far = at;
     }
     zox_tst_mm_frames = 0;
-    return ++zox_tst_mm_stage >= 3;
+    zox_tst_mm_stage++;
+    return 0;
 }
 
 void zox_tst_coop_map_markers_check(ecs* world) {
