@@ -194,11 +194,12 @@ These matter more than they first look:
 - **Use the `zox_` wrappers, never Flecs directly.** `ecs_*` / `Ecs*` belong only in [src/_/flecs](../src/_/flecs).
   If a wrapper is missing, add one there.
 - **Few components, each one value.** Reduction is a key part of the design: reuse what exists before making a new
-  one. Look in core first ([src/_/com](../src/_/com/_.c): `EntityTarget`, `Count`, `Busy`, timing's
+  one. Look in core first ([src/_/com](../src/_/com/_.c): `Target`, `Count`, `Busy`, timing's
   `DestroyInTime`), then the modules you use (`Color`, `Bounds3D`, `Gravity3D`, `Scale3`, a link). Derive data you can
   work out (a heading from a target, a count from the time) rather than storing it. Keep each component one value:
-  never pack several into a struct or a vector of different meanings (no `float2` of min and max). Spot old code
-  that could share or drop components? Suggest it, but ask first: it changes the design.
+  never pack several into a struct or a vector of different meanings. Prefer tags to byte states (`SkillHit`, not a
+  stage of 2): systems filter on tags. Spot old code that could share or drop components? Suggest it, but ask first:
+  it changes the design.
 - **Links, not raw entity fields.** To point one entity at another, use `zox_link`, see [Links](links.md).
   For parents and children, see [Children](children.md).
 - **Cleanup goes in unlink callbacks** (`zox_on_unlink`), not at every place that deletes something.
