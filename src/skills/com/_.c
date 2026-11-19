@@ -8,6 +8,7 @@ zox_tag(Shoot);
 zox_tag(Tentacle);           // a whip of particles from its user's body, out at its aim and back (sys/tentacle.c)
 zox_tag(AuraDot);
 zox_tag(Poison);
+zox_tag(Burn);               // a short dot from a skill with SkillBurn (pre/burn.c)
 zox_tag(Spawner);
 zox_tag(SkillResource);
 zox_tag(SkillDamageStat);    // realm stat added to skill damage, ie physical damage
@@ -17,6 +18,7 @@ zoxc_float(SkillDamageMax);
 zoxc_float(SkillRange);
 zoxc_float(SkillCost);
 zoxc_float2(SkillReach);
+zoxc_float2(SkillBurn);      // its hits burn (damage a second, seconds), shoot's (pre/burn.c)
 zoxc_double(PounceStart);    // a boneless user's melee (a slime's): its squash's start (sys/pounce.c)
 zoxc_byte(PounceStage);      // 0 squashing, 1 in the air, 2 its hit landed
 zoxc_entity(PounceSkill);    // the melee skill it pounces with
@@ -32,6 +34,7 @@ void zox_components_skills(ecs* world) {
     zoxd_nf_link(SkillDamageStat);
     zoxd_tag(Dot);
     zoxd_tag(Poison);
+    zoxd_tag(Burn);
     zoxd_tag(SkillToggleable);
     zoxd_tag(SkillInstant);
     zoxd_tag(Skillbook);
@@ -45,6 +48,7 @@ void zox_components_skills(ecs* world) {
     zoxd_float(SkillRange);
     zoxd_float(SkillCost);
     zoxd_float2(SkillReach);
+    zoxd_float2(SkillBurn);
     zoxd_double(PounceStart);
     zoxd_byte(PounceStage);
     zoxd_entity(PounceSkill);

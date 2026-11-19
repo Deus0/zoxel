@@ -336,6 +336,103 @@ void zox_tst_npc_skill_switch_check(ecs* world) {
     zox_tst_check(zox_tst_switch_near, "the npc didn't pick punch beside the player");
 }
 
+// tst: shoot_burn, a shot burns who it hits (skills/pre/burn.c): a short dot, its skill's colour rising off them
+//  - a humanoid 5 away shoots the player; once hit, it's gone (only the burn hurts them after)
+//  - the player has a Burn with a particle stream, their health drops while it burns, it's gone in its time (2s)
+//  - tst/shoot_burn/burn.ppm, the player burning, from the side
+//  - run: bash bsh/tst.sh shoot_burn
+entity zox_tst_burn_npc = 0;
+byte zox_tst_burn_stage = 0;
+double zox_tst_burn_time = 0;
+float zox_tst_burn_health = 0;          // as the shot hit
+float zox_tst_burn_health_after = 0;    // as the burn ended
+byte zox_tst_burn_seen = 0;             // a Burn with its stream on the player
+byte zox_tst_burn_gone = 0;
+byte zox_tst_burn_trail = 0;            // a shot with its stream
+
+static inline entity zox_tst_burn_on(ecs* world, entity character) {
+    entity burns[8];
+    return zox_get_children_by_id(world, character, burns, 8, zox_id(Burn)) ? burns[0] : 0;
+}
+
+byte zox_tst_shoot_burn_ready(ecs* world) {
+    if (!zox_tst_player_spawn_ready(world)) {
+        return 0;
+    }
+    const entity character = zox_tst_player_character(world);
+    if (zox_tst_burn_stage == 0) {
+        const entity realm = zox_get_link(world, character, RealmLink);
+        const entity humanoid = zox_tst_realm_humanoid(world, realm);
+        if (!zox_valid(humanoid)) {
+            zox_tst_check(0, "the realm has no humanoid character prefab");
+            return 1;
+        }
+        float3 position = zox_getv(character, Position3D);
+        position.x += 5;
+        zox_tst_burn_npc = spawn_character3_npc(world, humanoid, realm, zox_get_link(world, character, TerrainLink),
+            31, 0, 0, position, quaternion_identity, NULL);
+        zox_remove(zox_tst_burn_npc, Coward);
+        zox_tst_burn_stage = 1;
+        return 0;
+    }
+    const entity npc = zox_tst_burn_npc;
+    if (zox_tst_burn_stage == 1) {
+        zox_tst_waiting = "the npc to initialize";
+        if (!zox_valid(npc) || zox_has(npc, PreInitialize) || zox_has(npc, Initialize) ||
+            !zox_valid(zox_get_child_by_id(world, npc, zox_id(Skill)))) {
+            return 0;
+        }
+        combat_on_hit(world, npc, character);
+        zox_tst_burn_time = zox_current_time;
+        zox_tst_burn_stage = 2;
+        return 0;
+    }
+    if (zox_tst_burn_stage == 2) {
+        zox_tst_waiting = "a shot to burn the player";
+        zox_tst_burn_trail |= zox_count_types(ParticlesPerSecond) > 0;     // only shots stream, before a burn
+        const entity burn = zox_tst_burn_on(world, character);
+        if (zox_valid(burn)) {
+            zox_tst_burn_seen = zox_has(burn, ParticlesPerSecond);
+            zox_tst_burn_health = zox_tst_attacks_player_health(world, character);
+            zox_delete(npc);
+            zox_tst_burn_time = zox_current_time;
+            zox_tst_burn_stage = 3;
+        }
+        return zox_current_time - zox_tst_burn_time > 15;
+    }
+    zox_tst_waiting = "the burn to end";
+    const entity camera = zox_get_link(world, dbg_player, CameraLink);
+    if (zox_valid(camera)) {
+        const float3 at = zox_getv(character, Position3D);
+        const float3 eye = float3_add(at, (float3) { 2.5f, 0.5f, 0 });
+        if (zox_get_parent(world, camera)) {
+            zox_set_parent(world, camera, 0);
+        }
+        zox_setv(camera, Position3D, eye);
+        zox_setv(camera, Rotation3D, camera_look_at(eye, at));
+    }
+    if (zox_current_time - zox_tst_burn_time > 0.8 && zox_tst_burn_stage == 3 && !zox_screenshot_request[0]) {
+        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("shoot_burn/burn.ppm"));
+        zox_tst_burn_stage = 4;
+    }
+    if (!zox_valid(zox_tst_burn_on(world, character)) && zox_tst_burn_stage == 4 && !zox_screenshot_request[0]) {
+        zox_tst_burn_gone = 1;
+        zox_tst_burn_health_after = zox_tst_attacks_player_health(world, character);
+        return 1;
+    }
+    return zox_current_time - zox_tst_burn_time > 6;
+}
+
+void zox_tst_shoot_burn_check(ecs* world) {
+    zox_log("[tst] shoot_burn trail [%i] burn [%i] health [%.2f] to [%.2f] gone [%i] after [%.1fs]", zox_tst_burn_trail,
+        zox_tst_burn_seen, zox_tst_burn_health, zox_tst_burn_health_after, zox_tst_burn_gone, zox_current_time - zox_tst_burn_time);
+    zox_tst_check(zox_tst_burn_trail, "no shot had a particle trail");
+    zox_tst_check(zox_tst_burn_seen, "the player wasn't burnt with particles off them");
+    zox_tst_check(zox_tst_burn_gone && zox_current_time - zox_tst_burn_time < 3, "the burn didn't end in its 2s");
+    zox_tst_check(zox_tst_burn_health_after < zox_tst_burn_health - 0.5f, "the burn didn't hurt, [%.2f] to [%.2f]",
+        zox_tst_burn_health, zox_tst_burn_health_after);
+}
+
 void zox_tsts_npc_attacks(ecs* world) {
     zox_tst_add("npc_attacks", zox_tst_npc_attacks_ready, zox_tst_npc_attacks_check, 120);
     zox_tst_set_setup("npc_attacks", zox_tst_level_setup, 0);
@@ -346,4 +443,6 @@ void zox_tsts_npc_attacks(ecs* world) {
     zox_tst_set_setup("npc_flee_hurt", zox_tst_level_setup, 0);
     zox_tst_add("npc_skill_switch", zox_tst_npc_skill_switch_ready, zox_tst_npc_skill_switch_check, 120);
     zox_tst_set_setup("npc_skill_switch", zox_tst_level_setup, 0);
+    zox_tst_add("shoot_burn", zox_tst_shoot_burn_ready, zox_tst_shoot_burn_check, 120);
+    zox_tst_set_setup("shoot_burn", zox_tst_level_setup, 0);
 }

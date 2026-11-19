@@ -7,5 +7,6 @@ entity spawn_prefab_shoot(ecs *world, entity prefab) {
     zox_set(e, SkillRange, { 0 });
     zox_set(e, SkillCost, { 0 });
     zox_set(e, SkillReach, { { 3, 10 } });      // a step back, its shot falls off past it
+    zox_set(e, SkillBurn, { { 0.75f, 2 } });    // a short burn on its hit
     return e;
 }

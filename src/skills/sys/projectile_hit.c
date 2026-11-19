@@ -77,6 +77,7 @@ void projectile_hit_system(iter* it) {
                     skill,
                     damage->value,
                     ray_normal);
+                burn_character(world, hit, user, skill);
             }
         } else if (data.voxel &&
             zox_valid(data.hit_block) &&

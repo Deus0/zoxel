@@ -1,7 +1,18 @@
 #include "emit.c"
+#include "stream.c"
 #include "render.c"
 
 void zox_systems_particles3(ecs* world) {
+    zox_system_1(
+        particle3_stream_system,
+        zoxp_spawn,
+        [in] particles3.ParticlesPerSecond,
+        [in] particles3.ParticleLife,
+        [in] particles3.ParticleSpread,
+        [in] particles3.ParticleRise,
+        [in] colorz.Color,
+        [out] particles3.ParticlesDue
+    );
     zox_system_1(
         particle3d_emit_system,
         zoxp_spawn,

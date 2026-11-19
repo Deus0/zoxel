@@ -45,8 +45,9 @@ void dots_system(iter* it) {
             }
             // Debuff Stat needs a StatLink here
             // assuming intelligence is like 4th stat attribute for now
+            // stronger either way: more damage (negative) or more healing, it lessened a damage before
             if (boost_stat) {
-                apply_damage += zox_getv(boost_stat, StatValue);
+                apply_damage += (damage->value < 0 ? -1 : 1) * zox_getv(boost_stat, StatValue);
             }
         }
         // the character being damaged by debuff
@@ -65,7 +66,10 @@ void dots_system(iter* it) {
             stat->value = stat_value_max;
         }
         // rememer last to give xp - wait this tick rate - warlocks will always get xp lmao
-        combat_on_hit(world, defender, attacker);
+        // its spawner may be gone (killed, a burn outlives its shooter)
+        if (zox_valid(attacker)) {
+            combat_on_hit(world, defender, attacker);
+        }
     }
     zox_sys_on_end();
 } zoxd_system(dots_system);
