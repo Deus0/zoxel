@@ -75,6 +75,7 @@ void zox_tsts_my_module() {
   finishes it (src/graphics/fun/gif.c, each frame its own 256 colours, held for the real time between frames). i.e.
   `bash bsh/punch.sh`: the punch from 4 angles, `tst/punch_views/punch.gif`, `punch_slow.gif` (2s) and
   `tst/punch_views.png` (its frames in a grid); `zox_tst_gif_fps=30` for more frames (20 by default).
+  `bash bsh/walk.sh`: the walk from 4 angles, `tst/walk_views/walk.gif` and `tst/walk_views.png`.
   `--bones` on any of these draws the bones over the body made see through and painted by bone.
 - **Looking at a model**: `bash bsh/model.sh <name>` (iterating a blueprint: edit, run, look at
   `tst/models/<name>.png`, ~45s with the build, ~10s `--nobuild`), or `zox_tst_model=<name> bash bsh/tst.sh model_views`, then `tst/model_views.ppm` (kept per model in `tst/models/<name>.ppm`): a realm
@@ -98,7 +99,7 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 | Terrain | `biome_heights` `biome_map` `region_place` `region_place_prior` `region_zones` `town_homes` `home_roofs` `home_glow` `glow_light` `town_maps` `town_maps_empty` `vegetation_trees` `vegetation_cover` `vegetation_chunks` |
 | Textures | `texture_noise` `texture_outline` |
 | Lights | `smooth_lights` `lod_lights` `lod_chunk_lights` `block_vox_lights` `block_vox_light_sampling` |
-| Rendering | `gpu_restore` `gpu_restore_game` `gpu_links` (gpu objects let go of and made again, live counts) `lines_spawn` `lines_render` `skeleton_render` `vox_instance_render` `terrain_render` `block_vox_light_sampling` `block_vox_lights` `screenshot` `model_views` `body_views` `punch_views` |
+| Rendering | `gpu_restore` `gpu_restore_game` `gpu_links` (gpu objects let go of and made again, live counts) `lines_spawn` `lines_render` `skeleton_render` `vox_instance_render` `terrain_render` `block_vox_light_sampling` `block_vox_lights` `screenshot` `model_views` `body_views` `punch_views` `walk_views` |
 | Models | `model_nodes` (fill, box, paint, sprinkle on voxels) `model_shapes` (realm models: one piece, mirrored, head's neck and eyes, chest without a pinch, cookie chips and crumbs) |
 | Cameras | `camera_viewports` `camera_projection` `camera_orthographic` `camera_look_at` `camera_viewport_spawn` `camera_split_screen` `camera_downscale` `camera_frustum` `camera_filter` `eyelids` |
 | Sound and music | `sound_mixer` `sound_formats` `sound_instruments` `sound_balance` `voice_sounds` `hit_sounds` `hit_sound_links` `music_*` |

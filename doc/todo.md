@@ -7,6 +7,7 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
+- tst player_spawn fails 3 of 3 on 85ea794d3: "character is inside a solid block [43] at [0x18x0]" (2026-11-19)
 - tst sky_clouds fails: "no cloud in the sky looking up" (0.07% of the band), on 31a2c2740 too (2026-11-20)
 - tst lint_systems fails: chunk3_textured_render_system and chunk3_transparent_render_system
   (rendering3/sys/render_chunks.c) have no zox_sys_on_begin / zox_sys_on_end (2026-11-20)
@@ -464,7 +465,6 @@
 - Base Speed of swing off walk speed and state - WalkSpeed (byte based on max speed)
 - Animations: Add Sine Scale on chest for breathing animation
 - Animations: Sine Bob + rotate the World Items
-- Head bob to move faster when walking
 - Footstep Prints on ground
 - Body / Equip Tooltips
 	- Add Slot Names to Body Parts + Equipment in tooltips

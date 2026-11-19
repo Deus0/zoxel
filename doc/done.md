@@ -24,6 +24,15 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x The off hand in a punch (OffShoulderBoneLink, swings' off_back / off_out, ik/sys/swing.c): the left fist comes up with
+  it, out ahead as the right winds up, pulled back to the chin as it lands (the recoil), up a moment after; tst
+  punch_views checks it
+-x The walk's gait (bones/sys/arm_control.c, arm_swing.c, tst walk_views, bash bsh/walk.sh): steps from the speed over
+  the stride (the feet skated at a fixed pace), strides 25 degrees (60 scissored) and arms 28 (110 swung them up level),
+  the swinging leg's knee lifts its foot, elbows soft; the body bobs over its stance foot (L (1 - cos) of its angle), so
+  that foot holds within 1cm (it rose and sank 16cm) and the head bobs 3.5cm in step (its random oscillation is gone);
+  the limbs are posed by arm_control with their skeleton (as systems of their own, split across workers, a leg read
+  the phase a frame late); RestPosition3D is a bones component now
 -x The bones debug view (Bones in the Gizmos debug ui, --bones): bone gizmos over the skeleton meshes see through and
   painted by bone; the boxes turn with their bones round their parts' middles, in their bone's paint; the Bone Gizmos
   setting never applied (its handler matched "Bones Gizmos")
