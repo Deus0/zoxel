@@ -1,6 +1,32 @@
 // Spawns a realm's characters as prefabs (npc kinds), with their stats
 //  - the player's come from the same helper, fill_character_base_stats, when it spawns (player_character_stats_system)
 //  - every character's stats are made here once, instances copy them (no stats spawned per npc)
+// a realm's critter kind of 4 models made from a vox file (source) by wave function collapse, returns its chance
+//  - each variant its own box: a share of the source's (wide 0.9 to 1.3, tall 0.8 to 1.2, deep 0.8 to 1.4)
+byte spawn_realm_critter_wfc(ecs* world, entity realm, entity prefab, const char* source_name, const char* name,
+    uint seed, byte chance, float soul, float health)
+{
+    const entity source = string_hashmap_get(files_hashmap_voxes, new_string_data(source_name));
+    if (!zox_valid(source)) {
+        return 0;
+    }
+    const byte variants = 4;
+    const entity nodegraph = spawn_model_nodegraph_wfc(world, realm, source, wfc_rules_all,
+        (float3) { 0.9f, 0.8f, 0.8f }, (float3) { 1.3f, 1.2f, 1.4f });
+    const entity model = spawn_blueprint_models(world, realm, nodegraph, seed, name,
+        zox_getv(source, NodeDepth), variants).x;
+    const entity e = spawn_character3_meta(world, prefab, realm, seed, name, chance);
+    zox_set_link(world, e, ModelLink, model);
+    zox_add(e, Critter);
+    link_hit_sound(world, e, realm, &hit_sound_flesh);
+    if (!is_characters_instanced) {
+        zox_add(e, CharacterUnique);
+    }
+    fill_character_base_stats(world, e, realm, soul, health, 0);
+    zox_link(world, realm, CharacterLinks, e);
+    return chance;
+}
+
 void character3_realm_spawn_system(iter* it) {
     zox_sys_on_begin();
     byte is_add_stats = 1;
@@ -174,29 +200,12 @@ void character3_realm_spawn_system(iter* it) {
             zox_link(world, e, CharacterLinks, e2);
             character_seed += seed_shift;
         }
-        // chooks: critters made from the chicken by wave function collapse (a blueprint, its variants each one)
-        const entity chicken = string_hashmap_get(files_hashmap_voxes, new_string_data("chicken"));
-        if (zox_valid(chicken)) {
-            const byte chook_variants = 4;
-            const entity nodegraph = spawn_model_nodegraph_wfc(world, e, chicken, wfc_rules_all,
-                (float3) { 0.9f, 0.8f, 0.8f }, (float3) { 1.3f, 1.2f, 1.4f });
-            const entity model = spawn_blueprint_models(world, e, nodegraph, character_seed, "chook",
-                zox_getv(chicken, NodeDepth), chook_variants).x;
-            const byte chance = mrpenguin_mode ? 0 : 10;
-            const entity e2 = spawn_character3_meta(world, prefab_character, e, character_seed, "chook", chance);
-            zox_set_link(world, e2, ModelLink, model);
-            zox_add(e2, Critter);
-            link_hit_sound(world, e2, e, &hit_sound_flesh);
-            if (!is_characters_instanced) {
-                zox_add(e2, CharacterUnique);
-            }
-            if (is_add_stats) {
-                fill_character_base_stats(world, e2, e, 1, 4, 0);
-            }
-            zox_link(world, e, CharacterLinks, e2);
-            chance_max += chance;
-            character_seed += seed_shift;
-        }
+        // critters made by wave function collapse from vox files (a blueprint, its 4 variants each one)
+        const byte wfc_chance = mrpenguin_mode ? 0 : 10;
+        chance_max += spawn_realm_critter_wfc(world, e, prefab_character, "chicken", "chook", character_seed, wfc_chance, 1, 4);
+        character_seed += seed_shift;
+        chance_max += spawn_realm_critter_wfc(world, e, prefab_character, "mrpenguin", "pengu", character_seed, wfc_chance, 2, 8);
+        character_seed += seed_shift;
         chance->value = chance_max;
         zox_logv("Realm [characters] [X] spawned");
     }

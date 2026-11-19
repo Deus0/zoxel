@@ -17,7 +17,7 @@
 #define wfc_rule_feet 64        // solid on the floor under the source's feet, and (one piece) it stands on them
 #define wfc_rule_feet_middle 128 // with feet: only under the middle of the source's feet (tried when all of them fail)
 #define wfc_rules_all 127
-#define wfc_anchor_slack 0.1f
+#define wfc_anchor_slack 0.05f
 #define wfc_shape_bias 1000
 #define wfc_tries 24
 #define wfc_n_max 3
