@@ -1,4 +1,28 @@
-// Tooltip Event for item icons
+// a skill's tooltip: its name, its type (instant, or cast and its time) and its numbers as they're used: damage, swing
+//  (attack speed), cooldown
+void skill_tooltip_text(ecs* world, entity e, char* text, int size) {
+    const char* name = zox_has(e, ZoxName) ? zox_getv(e, ZoxName) : zox_get_name(e);
+    int length = snprintf(text, size, "[%s] lvl [1]\n", name);
+    if (zox_has(e, SkillInstant)) {
+        length += snprintf(text + length, size - length, "instant");
+    } else if (zox_has(e, WarmupTime)) {
+        length += snprintf(text + length, size - length, "cast [%.2fs]", zox_getv(e, WarmupTime));
+    }
+    if (zox_has(e, CooldownTime)) {
+        length += snprintf(text + length, size - length, " cooldown [%.2fs]", zox_getv(e, CooldownTime));
+    }
+    length += snprintf(text + length, size - length, "\n");
+    if (zox_has(e, SkillDamage)) {
+        const float low = zox_getv(e, SkillDamage);
+        const float high = zox_has(e, SkillDamageMax) ? zox_getv(e, SkillDamageMax) : low;
+        length += snprintf(text + length, size - length, high > low ? "damage [%.0f-%.0f]" : "damage [%.0f]", low, high);
+    }
+    if (zox_has(e, SwingTime)) {
+        length += snprintf(text + length, size - length, " swing [%.2fs]", zox_getv(e, SwingTime));
+    }
+}
+
+// Tooltip Event for skill icons
 void skill_icon_tooltip_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
@@ -24,14 +48,8 @@ void skill_icon_tooltip_system(iter* it) {
             zox_loge("Tooltip not found in canvas");
             continue;
         }
-        const char* name = zox_has(e2, ZoxName) ? zox_getv(e2, ZoxName) : zox_get_name(e2);
         char result[256];
-        int length = snprintf(result, sizeof(result), "[%s] lvl [1]\n", name);
-        // its numbers, as they're used: damage, swing (attack speed), cooldown
-        if (zox_has(e2, Melee)) {
-            snprintf(result + length, sizeof(result) - length, "damage [%.0f-%.0f]\nswing [%.2fs] cooldown [%.2fs]\n",
-                zox_getv(e2, SkillDamage), zox_getv(e2, SkillDamageMax), zox_getv(e2, SwingTime), zox_getv(e2, CooldownTime));
-        }
+        skill_tooltip_text(world, e2, result, sizeof(result));
         set_tooltip_text(world, e, tooltip, result);
         // zox_log("Skill Tooltip [%s]", result);
     }

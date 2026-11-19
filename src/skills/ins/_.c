@@ -1,3 +1,4 @@
+#include "cast.c"
 #include "realm.c"
 #include "user.c"
 #include "melee.c"

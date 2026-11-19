@@ -2,6 +2,7 @@
 #include "held_item.c"
 #include "eat_swing.c"
 #include "place_hit.c"
+#include "castbar.c"
 #include "bone_rebuild.c"
 
 #include "placement_box.c"
@@ -12,5 +13,6 @@ void zox_tsts_actions(ecs* world) {
     zox_tsts_held_item(world);
     zox_tsts_eat_swing(world);
     zox_tsts_place_hit(world);
+    zox_tsts_castbar(world);
     zox_tsts_bone_rebuild(world);
 }

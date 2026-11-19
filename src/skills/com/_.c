@@ -1,5 +1,6 @@
 zox_tag(Skill);
 zox_tag(SkillToggleable);
+zox_tag(SkillInstant);       // no cast (no warmup): it happens on the press, its swing's hit lands it; else it's cast (a castbar)
 zox_tag(Skillbook);
 zox_tag(Dot);
 zox_tag(Melee);
@@ -22,6 +23,7 @@ void zox_components_skills(ecs* world) {
     zoxd_tag(Dot);
     zoxd_tag(Poison);
     zoxd_tag(SkillToggleable);
+    zoxd_tag(SkillInstant);
     zoxd_tag(Skillbook);
     zoxd_tag(Melee);
     zoxd_tag(Shoot);

@@ -2,8 +2,7 @@ entity spawn_realm_skill_aura(ecs *world, entity parent, entity prefab, const ch
     entity e = spawn_realm_skill(world, parent, prefab, name, tname, ecolor);
     zox_set(e, SkillDamage, { value });
     zox_set(e, SkillRange, { range });
-    zox_set(e, WarmupTime, { warmup });
-    zox_set(e, CooldownTime, { cooldown });
+    skill_set_cast(world, e, warmup, cooldown);
     zox_make_prefab(e);
     return e;
 }

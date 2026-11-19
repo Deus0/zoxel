@@ -25,8 +25,7 @@ entity spawn_realm_skill_shoot(
     zox_setv(e, SkillDamage, value);
     zox_setv(e, SkillDamageMax, vmax);
     zox_setv(e, SkillRange, range);
-    zox_setv(e, WarmupTime, warmup);
-    zox_setv(e, CooldownTime, cooldown);
+    skill_set_cast(world, e, warmup, cooldown);
     zox_setv(e, RaycastRange, range);
     return e;
 }

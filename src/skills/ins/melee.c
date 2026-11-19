@@ -20,8 +20,7 @@ entity spawn_realm_skill_melee(
     zox_set(e, SkillDamage, { value });
     zox_set(e, SkillDamageMax, { vmax });
     zox_set(e, SkillRange, { range });
-    zox_set(e, WarmupTime, { warmup });
-    zox_set(e, CooldownTime, { cooldown });
+    skill_set_cast(world, e, warmup, cooldown);
     zox_set(e, SwingTime, { swing });
     zox_set(e, RaycastRange, { range });
     return e;

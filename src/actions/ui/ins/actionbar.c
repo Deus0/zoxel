@@ -58,6 +58,7 @@ entity spawn_menu_actions(
         0,
         action_index);
     zox_add(e, MenuActions);
+    spawn_castbar(world, e, character, frame_size, label_font_size);
     return e;
 }
 
