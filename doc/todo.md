@@ -454,8 +454,8 @@
     - only gear can do this, but the parts, you need to remove the end of limbs first
 - Tweens: an AnimationEndEvent (a function, like StreamEndEvent) called when one ends, AnimationDeletesTarget becomes
   one handler of it (ui_pop_out passes a delete), anything can react to an animation finishing
-- Using an item (placing a block, eating) swings the arm at the use, after its warmup: start it with the warmup, as
-  melee does (skills/sys/melee_swing.c)
+- Eating swings the arm as a punch (items/sys/consume.c), at the use: a hand to mouth swing (a SwingKind), from the
+  warmup
 - Animate ui for punch, overlay
 - Disable Switching Action when one is active
 - Global Cooldown When Switching

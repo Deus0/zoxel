@@ -24,6 +24,12 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x Placing a block swings as a place, not a punch: the block lifted up by the head, then pressed out where you look
+  (SwingKind on the skeleton, zox_swing_place), from the item's warmup (item_place_swing_system, skeleton_swing_begin);
+  tst place_motion
+-x The punch turns the body: away winding up, into the strike (SpineTwist, spine_twist_system); the hips and head turn
+  back, so the legs and the first person view hold still (head_look keeps the twist off); arm ik reads the chest's
+  turn this frame (a frame behind, the hand missed its target); tst punch_wind_up checks both
 -x A punch looked like a pat: its swing started at the hit (after the warmup), so it pulled back after contact. A
   melee skill's warmup starts the swing now (melee_swing_system), the fist winds back low by the ribs, snaps out
   (eased out) to the arm's full reach as the warmup ends and it hits, holds, then recovers (bones/ik/sys/punch.c);
