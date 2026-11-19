@@ -14,12 +14,12 @@
 
 ## Bugs
 - play test 2026-11-20:
-	- the quest tracker ui has no background panel
+	- the quest tracker ui has no background panel (it has one in tst quest_dialogue, maybe it was the stale [???] tracker)
 	- cloth sticks to a forearm: part of the shirt follows it (cloth should stick together)
 	- the block in hand is on the wrist since the bones refactor
 	- the destruction material is missing in coop
 	- npc hits don't land on the player
-	- "talk to someone in town": the tracker didn't mark off the first quest
+	- "talk to someone in town": the tracker didn't mark off the first quest (likely the stale tracker, fixed 2026-11-20: check)
 	- players talk to each other, but the second player didn't take part
 - the second player flying away, off the minimap, crashed it (play test 2026-11-19), not reproduced: tst
 	coop_map_markers flies them 6000 blocks off (tiny, the whole world, --stress) without a crash. Which build and
@@ -35,7 +35,6 @@
 	death and respawn first) doesn't crash either
 - tst lint_builds: windows_names doesn't build, src/terrain/tst/streamers.c:108 "expected identifier or '(' before '='"
 	(2026-11-19)
-- tst quest_dialogue fails 2 of 20: after taking the quest the tracker shows [???], not its name (2026-11-19)
 - tst vegetation_chunks: no tree crosses a chunk's top, its across chunks case unchecked (2026-11-19)
 - tst camera_filter: camera C (unfiltered) drew the cube linked to A, 16 of 25 pixels changed (2026-11-19)
 - tst dig_light fails 1 of 2: "the hole's faces never showed (or not [5] of them: [1])", on 22d44c39c too (2026-11-19)

@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-20
+-x The quest tracker kept a quest's text from the frame it was given (???, tst quest_dialogue failed): track_quest
+  unlinked the old QuestTracked then linked the new, both deferred on an exclusive non fragmenting link, leaving
+  neither; and the Dirty observer ran before its tracker link was there. It relinks without unlinking (exclusive),
+  and redoes the text on Update too; a tracker spawning dirties its quest
 -x Doors facing their first way (direction 0) never swung: an unturned block vox has no Rotation3D, door_swing_system
   needs it; their block data opened (passable), they stayed shut. door_on_spawned sets it. tst door_rays (two doors
   side by side, rays across the first's face find it, closed and open); tst furniture_hits aims at the panel now
