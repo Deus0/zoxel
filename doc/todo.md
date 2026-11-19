@@ -1030,7 +1030,7 @@
 
 - Punch in VR as a motion (inspired by Sword Art Online): the player's hands always drive the body's arms (xr/fun/hands.c,
 	the body has to match the real hands or it disorientates), the punch skill only shows the movement (a ghost of the
-	arm's ik path, bones/ik/sys/punch.c) and scores the real hand's path against it over its swing time: a close match
+	arm's ik path, bones/ik/sys/swing.c, dat/swings.c) and scores the real hand's path against it over its swing time: a close match
 	does extra damage
 
 # Tests
