@@ -218,6 +218,16 @@ static inline float4 quaternion_from_axis_angle(float3 v, float a) {
     return q;
 }
 
+// q's facing without its roll: its yaw then pitch, looking where it looks (-z) with its right kept level
+//  - billboards face a camera this way, a VR head's tilt tilted them (billboard_system)
+static inline float4 quaternion_without_roll(float4 q) {
+    const float3 forward = float4_rotate_float3(q, (float3) { 0, 0, -1 });
+    const float yaw = atan2f(-forward.x, -forward.z);
+    const float pitch = asinf(fmaxf(-1, fminf(1, forward.y)));
+    return quaternion_rotate(quaternion_from_axis_angle((float3) { 0, 1, 0 }, yaw),
+        quaternion_from_axis_angle((float3) { 1, 0, 0 }, pitch));
+}
+
 // is there a way to do this with just quaternions without messing up the magnitude??
 static inline float4 get_delta_rotation(float4 quaternion, float magnitude) {
     //float4 normalized = quaternion_normalized(quaternion, magnitude);

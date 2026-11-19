@@ -141,6 +141,21 @@ void zox_tst_maths_quaternions_check(ecs* world) {
         const float3 d = float4_rotate_float3(quaternion_identity, (float3) { 1, 2, 3 });
         zox_tst_check(zox_tst_maths_error3(d, (float3) { 1, 2, 3 }) == 0, "identity moved a vector");
     }
+    // without its roll: it looks the same way, its right level (billboards facing a VR head, its tilt left out)
+    {
+        const float4 q = quaternion_rotate(quaternion_rotate(quaternion_from_axis_angle(y, 0.7f),
+            quaternion_from_axis_angle(x, -0.4f)), quaternion_from_axis_angle(z, 0.5f));
+        const float4 level = quaternion_without_roll(q);
+        const float3 a = float4_rotate_float3(q, (float3) { 0, 0, -1 });
+        const float3 b = float4_rotate_float3(level, (float3) { 0, 0, -1 });
+        const float3 right = float4_rotate_float3(level, x);
+        zox_tst_check(zox_tst_maths_error3(a, b) < zox_tst_maths_epsilon,
+            "without roll it looks [%f %f %f], not [%f %f %f]", b.x, b.y, b.z, a.x, a.y, a.z);
+        zox_tst_check(fabsf(right.y) < zox_tst_maths_epsilon, "without roll its right is [%f] off level", right.y);
+        const float4 same = quaternion_without_roll(quaternion_from_axis_angle(y, 0.7f));
+        const float3 c = float4_rotate_float3(same, x), d = float4_rotate_float3(quaternion_from_axis_angle(y, 0.7f), x);
+        zox_tst_check(zox_tst_maths_error3(c, d) < zox_tst_maths_epsilon, "a yaw alone changed without its roll");
+    }
     // bounds: turning a box a quarter about y swaps its x and z extents, 45 degrees mixes them
     {
         const float3 extents = { 1, 2, 3 };

@@ -43,7 +43,7 @@ void billboard_system(iter* it) {
             zox_sys_i_2(Rotation3D, camera_rotation);
             cameras[camera_count] = e2;
             camera_positions[camera_count] = camera_position->value;
-            camera_rotations[camera_count] = camera_rotation->value;
+            camera_rotations[camera_count] = quaternion_without_roll(camera_rotation->value);
             camera_count++;
         }
     }

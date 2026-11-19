@@ -25,7 +25,7 @@ static inline byte element3_billboard_turn(ecs* world, entity canvas, float4x4* 
         return 0;
     }
     const float4 built = zox_getv(canvas, Rotation3D);
-    const float4 camera = zox_getv(renderer_camera, Rotation3D);
+    const float4 camera = quaternion_without_roll(zox_getv(renderer_camera, Rotation3D));
     if (float4_equals(built, camera)) {
         return 0;
     }

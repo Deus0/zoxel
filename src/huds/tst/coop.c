@@ -191,7 +191,8 @@ void zox_tst_coop_saves_check(ecs* world) {
 // tst: coop_billboards, split screen: a 3D ui faces each camera that draws it, not only the closest one
 //  - billboard_system turns it to the closest camera; each camera's draw turns it on to face itself (element3_draw)
 //  - the test level, a canvas between the players, the second camera turned a quarter round
-//  - for each camera, the matrix it draws the canvas's frame with: facing as the camera does, at the same place
+//  - for each camera, the matrix it draws the canvas's frame with: facing as the camera does, at the same place, level
+//      (the camera's roll left out, a VR head's tilt tilted them)
 //  - run: bash bsh/tst.sh coop_billboards
 entity zox_tst_coop_billboard = 0;
 entity zox_tst_coop_billboard_frame = 0;
@@ -220,14 +221,16 @@ void zox_tst_coop_billboards_check(ecs* world) {
         return;
     }
     // the second camera looks another way (the players turned apart), until the next frame turns it back
-    zox_setv(main_cameras[1], Rotation3D, quaternion_from_euler((float3) { 0, degrees_to_radians * 90, 0 }));
+    //  and tilts its head (a VR head's roll), the billboard stays level
+    zox_setv(main_cameras[1], Rotation3D, quaternion_rotate(quaternion_from_axis_angle((float3) { 0, 1, 0 },
+        degrees_to_radians * 90), quaternion_from_axis_angle((float3) { 0, 0, 1 }, degrees_to_radians * 30)));
     const entity was = renderer_camera;
     const float4x4 built = zox_getv(frame, TransformMatrix);
     for (int i = 0; i < 2; i++) {
         renderer_camera = main_cameras[i];
         float4x4 turn;
         const float4x4 model = element3_billboard_turn(world, canvas, &turn) ? float4x4_multiply(built, turn) : built;
-        const float4x4 facing = float4x4_rotation(zox_getv(main_cameras[i], Rotation3D));
+        const float4x4 facing = float4x4_rotation(quaternion_without_roll(zox_getv(main_cameras[i], Rotation3D)));
         const float3 forward = float3_normalize((float3) { model.z.x, model.z.y, model.z.z });
         const float3 expected = float3_normalize((float3) { facing.z.x, facing.z.y, facing.z.z });
         const float moved = float3_distance((float3) { model.w.x, model.w.y, model.w.z }, (float3) { built.w.x, built.w.y, built.w.z });
@@ -235,6 +238,9 @@ void zox_tst_coop_billboards_check(ecs* world) {
             forward.x, forward.y, forward.z, expected.x, expected.y, expected.z, moved);
         zox_tst_check(float3_distance(forward, expected) < 0.01f, "camera [%i] draws the billboard facing another way", i + 1);
         zox_tst_check(moved < 0.01f, "camera [%i] draws the billboard [%.3f] from where it is", i + 1, moved);
+        const float3 right = float3_normalize((float3) { model.x.x, model.x.y, model.x.z });
+        zox_tst_check(fabsf(right.y) < 0.01f, "camera [%i] draws the billboard tilted, its right [%.2f] off level",
+            i + 1, right.y);
     }
     renderer_camera = was;
 }
