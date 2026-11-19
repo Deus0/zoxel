@@ -142,10 +142,58 @@ void zox_tst_coop_homes_check(ecs* world) {
     }
 }
 
+// tst: coop_saves, each player saves to its own file: player.dat, player2.dat
+//  - they all saved and loaded player.dat, a continued coop game put every player at the last one saved
+//  - waits until both files hold their character's position (it saves when it moves, character_save_system)
+//  - run: bash bsh/tst.sh coop_saves
+float zox_tst_coop_save_distances[2];
+
+byte zox_tst_coop_saves_ready(ecs* world) {
+    if (!zox_tst_coop_playing(world) || !zox_valid(local_realm)) {
+        return 0;
+    }
+    zox_tst_waiting = "both players' saves to hold their positions";
+    const FolderPath* path = zox_get(local_realm, FolderPath);
+    byte saved = 0;
+    for (int i = 0; i < 2; i++) {
+        char name[32];
+        SaveDataCharacter save;
+        const entity character = zox_get_link(world, zox_players[i], CharacterLink);
+        zox_tst_coop_save_distances[i] = 99999;
+        if (zox_valid(character) && load_file_struct(path->value, get_player_save_file(zox_players[i], name, sizeof(name)),
+            &save, sizeof(SaveDataCharacter))) {
+            zox_tst_coop_save_distances[i] = float3_distance(save.position, zox_getv(character, Position3D));
+            saved += zox_tst_coop_save_distances[i] < 0.1f;
+        }
+    }
+    return saved == 2;
+}
+
+void zox_tst_coop_saves_check(ecs* world) {
+    char name[32];
+    zox_tst_check(!strcmp(get_player_save_file(zox_players[0], name, sizeof(name)), "player.dat"),
+        "the first player saves to [%s]", name);
+    zox_tst_check(!strcmp(get_player_save_file(zox_players[1], name, sizeof(name)), "player2.dat"),
+        "the second player saves to [%s]", name);
+    for (int i = 0; i < 2; i++) {
+        zox_tst_check(zox_tst_coop_save_distances[i] < 0.1f, "player [%i]'s save is [%.2f] from its character",
+            i + 1, zox_tst_coop_save_distances[i]);
+    }
+    const entity a = zox_get_link(world, zox_players[0], CharacterLink);
+    const entity b = zox_get_link(world, zox_players[1], CharacterLink);
+    if (zox_valid(a) && zox_valid(b)) {
+        const float apart = float3_distance(zox_getv(a, Position3D), zox_getv(b, Position3D));
+        zox_log("[tst] the players are [%.1f] apart", apart);
+        zox_tst_check(apart > 0.5f, "the players are [%.2f] apart, the test can't tell their saves apart", apart);
+    }
+}
+
 void zox_tsts_coop(ecs* world) {
     (void) world;
     zox_tst_add("coop_skybox", zox_tst_coop_skybox_ready, zox_tst_coop_skybox_check, 120);
     zox_tst_set_setup("coop_skybox", zox_tst_coop_level_setup, 0);
     zox_tst_add("coop_homes", zox_tst_coop_homes_ready, zox_tst_coop_homes_check, 150);
     zox_tst_set_setup("coop_homes", zox_tst_coop_setup, 0);
+    zox_tst_add("coop_saves", zox_tst_coop_saves_ready, zox_tst_coop_saves_check, 120);
+    zox_tst_set_setup("coop_saves", zox_tst_coop_level_setup, 0);
 }

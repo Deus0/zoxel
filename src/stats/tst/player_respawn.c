@@ -4,17 +4,29 @@
 //  - its character is valid, not Dead, its health back at its max
 //  - first drafted by the local AI (opencode), its waits and stat names fixed
 //  - run: bash bsh/tst.sh player_respawn
+// tst: coop_respawn, the same for local coop's second player, the first keeps playing (bsh/tst.sh coop_respawn)
 byte zox_tst_respawn_stage = 0;
 int zox_tst_respawn_frames = 0;
 double zox_tst_respawn_time = 0;
 entity zox_tst_respawn_old_character = 0;
+byte zox_tst_respawn_index = 0;     // which of zox_players dies
+
 #define zox_tst_respawn_seconds 40.0     // the death screen is 16s (player_state_system), then a spawn
+
+void zox_tst_coop_respawn_setup() {
+    zox_tst_coop_level_setup();
+    zox_tst_respawn_index = 1;
+}
 
 byte zox_tst_player_respawn_ready(ecs* world) {
     if (zox_tst_respawn_stage == 0 && !zox_tst_player_spawn_ready(world)) {
         return 0;
     }
-    const entity player = dbg_player;
+    if (zox_tst_respawn_index >= players_playing) {
+        zox_tst_waiting = "the player to join";
+        return 0;
+    }
+    const entity player = zox_players[zox_tst_respawn_index];
     const entity character = zox_get_link(world, player, CharacterLink);
     const byte state = zox_getv(player, PlayerState);
     zox_tst_respawn_frames++;
@@ -53,8 +65,14 @@ byte zox_tst_player_respawn_ready(ecs* world) {
 }
 
 void zox_tst_player_respawn_check(ecs* world) {
-    const entity player = dbg_player;
+    const entity player = zox_players[zox_tst_respawn_index];
     const entity character = zox_get_link(world, player, CharacterLink);
+    if (zox_tst_respawn_index) {
+        const entity first = zox_get_link(world, zox_players[0], CharacterLink);
+        zox_tst_check(zox_getv(zox_players[0], PlayerState) == zox_player_state_playing, "the first player isn't playing");
+        zox_tst_check(zox_valid(first) && !zox_has(first, Dead), "the first player's character died too");
+        zox_tst_check(first != character, "both players have the same character");
+    }
     zox_tst_check(zox_tst_respawn_stage == 2, "the player never died (stage [%i])", zox_tst_respawn_stage);
     zox_tst_check(zox_getv(player, PlayerState) == zox_player_state_playing, "the player isn't playing again");
     zox_tst_check(zox_valid(character), "the player has no character");
@@ -74,4 +92,6 @@ void zox_tst_player_respawn_check(ecs* world) {
 void zox_tsts_player_respawn(ecs* world) {
     zox_tst_add("player_respawn", zox_tst_player_respawn_ready, zox_tst_player_respawn_check, 120);
     zox_tst_set_setup("player_respawn", zox_tst_level_setup, 0);
+    zox_tst_add("coop_respawn", zox_tst_player_respawn_ready, zox_tst_player_respawn_check, 120);
+    zox_tst_set_setup("coop_respawn", zox_tst_coop_respawn_setup, 0);
 }
