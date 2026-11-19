@@ -36,7 +36,7 @@ void zox_systems_npcs(ecs *world) {
         [in] ai.SightTarget,
         [none] ai.Npc
     );
-    zox_system_1(
+    zox_system(
         monster_aggro_system,
         zoxp_update,
         [in] ai.SightTarget,
