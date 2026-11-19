@@ -43,9 +43,11 @@ float3 xr_body_view_off = { 0, 0, 0 };  // the real neck past where the body's r
 #define xr_crouch_max 0.45f             // of the leg's length, the hips' drop crouching
 // looking down (the head pitched below the horizon, the neck still): the upper body pitched forward from the hips,
 //  the hips back, out from under the eyes (the voxel chest's deeper than a person's: the eyes swung down into it)
+//  - a little: the head turns at its neck (its joint), the eyes swing ahead of the chest by themselves; pitched far
+//    (0.95) the body's neck sank 9.5cm under the eyes (they stay the player's) and the head rose round them
 #define xr_look_bend_start 0.35f        // radians below the horizon before it bends
 #define xr_look_bend_rate 1.2f          // the upper body's pitch per radian past it
-#define xr_look_bend_max 0.95f          // radians, the most it pitches looking down
+#define xr_look_bend_max 0.3f           // radians, the most it pitches looking down
 #define xr_body_slack 0.02f             // the body's space, the real neck past the body's reach across the ground
                                         //  before the body moves after it
 #define xr_body_view_off_max 0.1f       // the body's space, the most the view leaves the body's neck
@@ -342,7 +344,10 @@ void xr_room_walk_system(iter* it) {
 } zoxd_system(xr_room_walk_system);
 
 // the player's head bone turns as the headset: the body's facing, the head's turn, turned back to the bone's +z
-//  - in the character's space (the chest and neck unturned): the turn around, the head's, the turn around back
+//  - in the character's space: the turn around, the head's, the turn around back; then off its parent's, the chest's
+//    lean (SpineLean, its local turn: bones/ik sys/spine.c), so the head turns as the headset whatever the chest does
+//    (it turned by both: looking down the chest pitched forward and the head past the eyes, they went through the
+//    head to its back, tst xr_look_down)
 //  - after the head's own systems (zoxp_update: head_look eases it to ahead), before the hierarchy
 void xr_head_bone_system(iter* it) {
     zox_sys_on_begin();
@@ -359,7 +364,8 @@ void xr_head_bone_system(iter* it) {
     if (zox_has(head, OscillatePosition3D)) {
         zox_remove(head, OscillatePosition3D);
     }
-    zox_getm(head, LocalRotation3D)->value = xr_body_head_local(xr_head_now_rotation);
+    const float4 lean = zox_has(skeleton, SpineLean) ? zox_getv(skeleton, SpineLean) : quaternion_identity;
+    zox_getm(head, LocalRotation3D)->value = quaternion_rotate(quaternion_inverse(lean), xr_body_head_local(xr_head_now_rotation));
     zox_sys_on_end();
 } zoxd_system(xr_head_bone_system);
 

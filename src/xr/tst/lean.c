@@ -21,11 +21,24 @@ byte zox_tst_xr_lean_ready(ecs* world) {
         zox_tst_xr_body_frames = 445;   // xr_body's script from where it ends
         zox_tst_xr_body_end = 700;
     }
+    if (zox_tst_xr_lean_started) {
+        char doing[32];
+        snprintf(doing, sizeof(doing), "frame %i", zox_tst_xr_body_frames);
+        zox_tst_xr_eyes_measure(world, doing);
+        if (zox_tst_xr_body_frames == 448) {
+            zox_tst_xr_eyes_screenshot("stand");
+        } else if (zox_tst_xr_body_frames == 478) {
+            zox_tst_xr_eyes_screenshot("crouch");
+        } else if (zox_tst_xr_body_frames == 668) {
+            zox_tst_xr_eyes_screenshot("bend");
+        }
+    }
     return zox_tst_xr_body_ready(world);
 }
 
 void zox_tst_xr_lean_check(ecs* world) {
     const float scale = xr_body_scale(world, xr_body_character(world));
+    zox_tst_xr_eyes_check("xr_lean");
         zox_tst_check(fabsf(zox_tst_xr_body_crouch - 0.3f * scale) < 0.02f, "crouching 0.3m lowered the eyes [%f]", zox_tst_xr_body_crouch);
         zox_log("[tst] xr_lean: crouched, the hips dropped [%.3f], a knee w [%.3f]", zox_tst_xr_body_crouch_drop, zox_tst_xr_body_crouch_knee);
         zox_tst_check(zox_tst_xr_body_crouch_drop > 0.05f, "crouching didn't drop the hips [%f]", zox_tst_xr_body_crouch_drop);
