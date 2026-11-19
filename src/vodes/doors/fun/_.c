@@ -39,6 +39,9 @@ void door_on_spawned(ecs* world, spawned_block_data* data) {
     zox_setv(e, DoorRestPosition, data->positionf);
     zox_setv(e, DoorRestRotation, rest_rotation);
     zox_setv(e, DoorHinge, hinge);
+    // a block vox not turned has no Rotation3D (spawn_block_vox_instanced): door_swing_system needs it, a door facing
+    //  that way never swung (its block data opened, it stayed shut)
+    zox_setv(e, Rotation3D, rest_rotation);
     if (open) {
         door_place(world, e, data->positionf, rest_rotation, hinge, 1, 1);  // instanced block voxes are scale 1
     }

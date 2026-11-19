@@ -133,7 +133,10 @@ void zox_tst_block_activate_check(ecs* world) {
     zox_tst_check(zox_tst_bact_stage == 7, "it stopped at stage [%i]", zox_tst_bact_stage);
 }
 
+#include "door_rays.c"
+
 void zox_tsts_activations(ecs* world) {
     zox_tst_add("block_activate", zox_tst_block_activate_ready, zox_tst_block_activate_check, 60);
     zox_tst_set_setup("block_activate", NULL, 1);
+    zox_tsts_door_rays(world);
 }
