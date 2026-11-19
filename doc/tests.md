@@ -106,7 +106,7 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 | Body and gear | `parts` `clothes` `npc_skeletons` |
 | Text and ui | `text_data` `text_order` `font_glyphs` `font_fill` `font_glyphs_fill` `texture_lines` `menu_flow` `load_lids` `mouse_click` `ui_leaks` `tooltips` `options_toggle` `scroll_wheel` `list_order` `ui_layout` `exit_menu` `exit_game` |
 | Game | `load_games` `player_spawn` `continue_game` `end_game_cleanup` `stream_npcs` `npc_attacks` `population` `region_population` `npc_leash` `player_respawn` `footsteps` `arms_in_step` `parts` `action_wheel` `item_split` `resume_no_punch` `crouch` `pickup_pop` `editor` `touch_play` `touch_actions` (a tap on an action icon selects it) |
-| Local coop | `coop_streamers` (terrain lods from the closest player's streamer) `coop_skybox` (a skybox round each camera) `coop_homes` (players spawn at their own homes in one town) |
+| Local coop | `coop_streamers` (terrain lods from the closest player's streamer) `coop_skybox` (a skybox round each camera) `coop_homes` (players spawn at their own homes in one town) `coop_saves` (each player its own save, player2.dat) `coop_respawn` (the second player dies and respawns, the first plays on) |
 | Quests | `quest_tracking` `quest_dialogue` |
 | Performance | `perf_stream` `perf_fly` `mass_spawn` `mass_delete` `physics2_perf` `physics3_perf` |
 
