@@ -14,5 +14,11 @@ void zox_events_items_ui(ecs* world) {
         [none] slots.SlotUser,
         [none] interactions.Select,
     );
+    zox_on_add(
+        item_icon_tooltip_update_event,
+        [none] elements2.Icon,
+        [none] slots.SlotUser,
+        [none] slots.DataUpdate,
+    );
 
 }
