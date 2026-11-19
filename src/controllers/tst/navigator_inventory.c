@@ -167,6 +167,13 @@ byte zox_tst_navigator_inventory_ready(ecs* world) {
             zox_tst_waiting = "the gamepad's mode, then start pausing";
             if (!moded) {
                 zox_tst_pad_held[zox_btn_y] = (f % 20) < 4;
+                // in coop a player keeps its device (device_switch_coop): the first on its gamepad from before the
+                //  second joined (at boot here, --splitscreen)
+                if (device_switch_coop && zox_getv(player, DeviceMode) != zox_device_mode_gamepad) {
+                    zox_setv(player, DeviceMode, zox_device_mode_gamepad);
+                    zox_set_link(world, player, GamepadLink, zox_tst_pad);
+                    zox_remove(zox_tst_pad, Disabled);
+                }
                 if (zox_getv(player, DeviceMode) == zox_device_mode_gamepad) {
                     moded = f;
                 }
