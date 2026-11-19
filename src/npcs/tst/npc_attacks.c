@@ -190,10 +190,72 @@ void zox_tst_npc_leash_check(ecs* world) {
     zox_tst_check(v.x > 0, "the npc isn't walking towards its home (+x), velocity x [%.2f]", v.x);
 }
 
+// tst: npc_flee_hurt, a fighter hurt badly flees its attacker (ai/sys/behaviour_system.c, npc_flee_health)
+//  - an npc 3 away, its health a fifth, hit by the player: it flees (not attacks) and gets further away
+//  - run: bash bsh/tst.sh npc_flee_hurt
+entity zox_tst_flee_npc = 0;
+double zox_tst_flee_time = 0;
+float zox_tst_flee_start = 0;
+
+static inline float zox_tst_flee_distance(ecs* world, entity npc) {
+    const float3 a = zox_getv(npc, Position3D), b = zox_getv(zox_tst_player_character(world), Position3D);
+    return sqrtf((a.x - b.x) * (a.x - b.x) + (a.z - b.z) * (a.z - b.z));
+}
+
+byte zox_tst_npc_flee_hurt_ready(ecs* world) {
+    if (!zox_tst_player_spawn_ready(world)) {
+        return 0;
+    }
+    const entity character = zox_tst_player_character(world);
+    if (!zox_tst_flee_npc) {
+        const entity realm = zox_get_link(world, character, RealmLink);
+        const entity humanoid = zox_tst_realm_humanoid(world, realm);
+        if (!zox_valid(humanoid)) {
+            zox_tst_check(0, "the realm has no humanoid character prefab");
+            return 1;
+        }
+        float3 position = zox_getv(character, Position3D);
+        position.x += 3;
+        zox_tst_flee_npc = spawn_character3_npc(world, humanoid, realm, zox_get_link(world, character, TerrainLink),
+            7, 0, 0, position, quaternion_identity, NULL);
+        zox_remove(zox_tst_flee_npc, Coward);
+        return 0;
+    }
+    const entity npc = zox_tst_flee_npc;
+    if (!zox_tst_flee_time) {
+        zox_tst_waiting = "the npc to initialize";
+        const entity health = zox_valid(npc) ? zox_get_child_by_id(world, npc, zox_id(StatHealth)) : 0;
+        if (!zox_valid(health) || zox_has(npc, PreInitialize) || zox_has(npc, Initialize)) {
+            return 0;
+        }
+        zox_setv(health, StatValue, 0.2f * zox_getv(health, StatValueMax));
+        combat_on_hit(world, npc, character);
+        zox_tst_flee_time = zox_current_time;
+        zox_tst_flee_start = zox_tst_flee_distance(world, npc);
+        return 0;
+    }
+    zox_tst_waiting = "the hurt npc to run";
+    return zox_current_time - zox_tst_flee_time > 3;
+}
+
+void zox_tst_npc_flee_hurt_check(ecs* world) {
+    const entity npc = zox_tst_flee_npc;
+    zox_tst_check(zox_valid(npc), "the npc is gone");
+    if (!zox_valid(npc)) {
+        return;
+    }
+    const float now = zox_tst_flee_distance(world, npc);
+    zox_log("[tst] [metric] npc_flee_hurt behaviour [%i] distance [%.1f] to [%.1f]", zox_getv(npc, Behaviour), zox_tst_flee_start, now);
+    zox_tst_check(zox_getv(npc, Behaviour) == zox_behaviour_flee, "the hurt npc's behaviour is [%i], not fleeing", zox_getv(npc, Behaviour));
+    zox_tst_check(now > zox_tst_flee_start + 2, "the hurt npc didn't run, [%.1f] to [%.1f] away", zox_tst_flee_start, now);
+}
+
 void zox_tsts_npc_attacks(ecs* world) {
     zox_tst_add("npc_attacks", zox_tst_npc_attacks_ready, zox_tst_npc_attacks_check, 120);
     zox_tst_set_setup("npc_attacks", zox_tst_level_setup, 0);
     zox_tst_add("region_population", zox_tst_region_population_ready, zox_tst_region_population_check, 120);
     zox_tst_add("npc_leash", zox_tst_npc_leash_ready, zox_tst_npc_leash_check, 120);
     zox_tst_set_setup("npc_leash", zox_tst_level_setup, 0);
+    zox_tst_add("npc_flee_hurt", zox_tst_npc_flee_hurt_ready, zox_tst_npc_flee_hurt_check, 120);
+    zox_tst_set_setup("npc_flee_hurt", zox_tst_level_setup, 0);
 }

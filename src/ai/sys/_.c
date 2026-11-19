@@ -88,6 +88,8 @@ void zox_systems_npcs(ecs *world) {
         [in] ai.Behaviour,
         [in] ai.ThreatPosition,
         [out] ai.TargetPosition,
+        [in] transforms3.Position3D,
+        [in] ai.AttackAt,
         [none] ai.Npc,
         [none] !physics.DisableMovement,
     );
@@ -98,6 +100,10 @@ void zox_systems_npcs(ecs *world) {
         [out] actions.ActiveAction,
         [out] actions.ActiveActionDirty,
         [out] core.TriggerActionA,
+        [in] transforms3.Position3D,
+        [in] transforms3.Rotation3D,
+        [in] ai.ThreatPosition,
+        [out] ai.AttackAt,
         [none] ai.Npc,
         [none] !physics.DisableMovement,
     );

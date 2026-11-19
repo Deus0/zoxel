@@ -1,3 +1,5 @@
+#define npc_flee_health 0.3f
+
 void behaviour_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
@@ -21,7 +23,10 @@ void behaviour_system(iter* it) {
         rotate->value = behaviour->value != zox_behaviour_idle;
         // only flee if in “wander” mode and not frozen
         if (combat->value == zox_combat_battle) {
-            const byte is_coward = zox_has(e, Coward);
+            // a coward flees, and a fighter hurt badly (npc_flee_health of its health), back in once it heals
+            const entity health = zox_get_child_by_id(world, e, zox_id(StatHealth));
+            const byte is_hurt = zox_valid(health) && zox_getv(health, StatValue) < npc_flee_health * zox_getv(health, StatValueMax);
+            const byte is_coward = zox_has(e, Coward) || is_hurt;
             if (is_coward && behaviour->value != zox_behaviour_flee) {
                 behaviour->value = zox_behaviour_flee;
                 move_speed->value = 8;
