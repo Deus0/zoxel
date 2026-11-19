@@ -17,3 +17,4 @@
 #include "generated.c"
 #include "slime.c"
 #include "cookie.c"
+#include "wfc.c"

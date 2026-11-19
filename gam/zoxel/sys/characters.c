@@ -174,6 +174,29 @@ void character3_realm_spawn_system(iter* it) {
             zox_link(world, e, CharacterLinks, e2);
             character_seed += seed_shift;
         }
+        // chooks: critters made from the chicken by wave function collapse (a blueprint, its variants each one)
+        const entity chicken = string_hashmap_get(files_hashmap_voxes, new_string_data("chicken"));
+        if (zox_valid(chicken)) {
+            const byte chook_variants = 4;
+            const entity nodegraph = spawn_model_nodegraph_wfc(world, e, chicken, wfc_rules_all,
+                (float3) { 0.9f, 0.8f, 0.8f }, (float3) { 1.3f, 1.2f, 1.4f });
+            const entity model = spawn_blueprint_models(world, e, nodegraph, character_seed, "chook",
+                zox_getv(chicken, NodeDepth), chook_variants).x;
+            const byte chance = mrpenguin_mode ? 0 : 10;
+            const entity e2 = spawn_character3_meta(world, prefab_character, e, character_seed, "chook", chance);
+            zox_set_link(world, e2, ModelLink, model);
+            zox_add(e2, Critter);
+            link_hit_sound(world, e2, e, &hit_sound_flesh);
+            if (!is_characters_instanced) {
+                zox_add(e2, CharacterUnique);
+            }
+            if (is_add_stats) {
+                fill_character_base_stats(world, e2, e, 1, 4, 0);
+            }
+            zox_link(world, e, CharacterLinks, e2);
+            chance_max += chance;
+            character_seed += seed_shift;
+        }
         chance->value = chance_max;
         zox_logv("Realm [characters] [X] spawned");
     }

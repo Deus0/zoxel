@@ -40,6 +40,7 @@ byte zox_block_outlines = 1;
 #define zox_model_node_box 5     // a fill as a box from a corner, voxel 0 cuts air (a shirt's neck)
 #define zox_model_node_sprinkle 6    // Count seeded dots of its voxel in the air on a surface (crumbs, sprinkles)
 #define zox_model_node_speckle 7     // Count seeded spots painted on a surface (chocolate chips, freckles)
+#define zox_model_node_wfc 8         // a new model from a source model's patches (wave function collapse, eve/wfc.c)
 #define zox_model_node_end 9
 
 #include "dat/_.c"
@@ -50,6 +51,7 @@ byte zox_block_outlines = 1;
 #include "fun/_.c"
 #include "gen/_.c"
 #include "sys/_.c"
+#include "eve/_.c"
 #include "io/_.c"
 #include "generation/_.c"
 #include "dbg/_.c"
@@ -67,6 +69,7 @@ void import_models(ecs* world) {
     zox_components_models(world);
     zox_systems_models(world);
     zox_systems_models_generation(world);
+    zox_events_models(world);
     add_hook_spawn_prefabs(spawn_prefabs_models);
     add_hook_terminal_command(process_arguments_voxes);
     add_hook_files_load(load_files_voxes);

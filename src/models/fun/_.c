@@ -80,6 +80,7 @@ static inline void shift_node_transform(byte model_depth, byte3* position, byte3
 #include "sphere.c"
 #include "ellipsoid.c"
 #include "cylinder.c"
+#include "wfc.c"
 
 
 void process_arguments_voxes(ecs *world, char* args[], int count) {

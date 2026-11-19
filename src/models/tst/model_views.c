@@ -5,6 +5,7 @@
 //      (top left +z, top right +x, bottom left -z, bottom right above at an angle)
 //  - zox_tst_model=<name> picks the model whose realm entity's name holds it, i.e. zox_tst_model=sword
 //      (the realm's models are logged), else the first one
+//  - zox_tst_model_variants=1: a model group's first 4 variants side by side, each from the same angle (chooks)
 //  - the 4 cameras draw straight to the screen on gray, each filtered (CameraFilter) to its own copy
 //      of the model (CameraRenderer), so no sky; the menu's view is hidden (nohud and its render texture)
 //  - checks: a screenshot before the model spawns and one after differ in the middle of every viewport
@@ -22,6 +23,7 @@ int zox_tst_model_views_frames = 0;
 entity zox_tst_model_views_cameras[zox_tst_model_views_count];
 entity zox_tst_model_views_source = 0;     // the realm entity holding the model
 entity zox_tst_model_views_mesh = 0;       // its model's mesh
+entity zox_tst_model_views_meshes[zox_tst_model_views_count];  // each view's mesh (variants: a variant each)
 entity zox_tst_model_views_clones[zox_tst_model_views_count];  // a copy of it for each view
 entity zox_tst_model_views_realm = 0;
 int zox_tst_model_views_models = 0;        // model meshes found last frame
@@ -131,6 +133,27 @@ entity zox_tst_model_views_pick(ecs* world, entity realm, int* models_count, byt
     return picked ? picked : first;
 }
 
+// each view's mesh: the model's, or with zox_tst_model_variants a variant each (the group's models, in turn)
+void zox_tst_model_views_pick_meshes(ecs* world, entity source) {
+    const char* variants = getenv("zox_tst_model_variants");
+    entity models[zox_tst_model_views_count] = { 0 };
+    uint count = 0;
+    const entity group = zox_has(source, ModelLink) ? zox_get_link(world, source, ModelLink) : source;
+    if (variants && variants[0] == '1' && zox_valid(group) && zox_has(group, ModelGroup)) {
+        count = zox_get_children_by_id(world, group, models, zox_tst_model_views_count, zox_id(Model));
+    }
+    for (int i = 0; i < zox_tst_model_views_count; i++) {
+        // its most detailed mesh, as an npc up close (get_max_model_mesh stops at block_depth, an icon's)
+        const entity model = count ? models[i % count] : 0;
+        const entity mesh = model ? get_lodded_model(world, model, zox_getv(model, MaxRenderDepth)) : 0;
+        const byte built = zox_valid(mesh) && zox_has(mesh, MeshIndicies) && zox_get(mesh, MeshIndicies)->length;
+        zox_tst_model_views_meshes[i] = built ? mesh : zox_tst_model_views_mesh;
+    }
+    if (count) {
+        zox_log("[tst] looking at [%i] variants of [%s]", count, zox_getn(group));
+    }
+}
+
 // the middle and size of a mesh, from its vertices
 void zox_tst_model_views_bounds(ecs* world, entity mesh, float3* centre, float* radius) {
     const MeshVertices* vertices = zox_get(mesh, MeshVertices);
@@ -194,11 +217,16 @@ byte zox_tst_model_views_ready(ecs* world) {
         }
         zox_tst_model_views_source = zox_tst_model_views_pick(world, zox_tst_model_views_realm, &count, 1);
         zox_tst_model_views_mesh = zox_tst_model_views_mesh_of(world, zox_tst_model_views_source);
+        zox_tst_model_views_pick_meshes(world, zox_tst_model_views_source);
+        const byte variants = zox_tst_model_views_meshes[1] != zox_tst_model_views_mesh;
         const float3 spot = zox_tst_model_views_spot;
         float3 centre;
         float radius;
         zox_tst_model_views_bounds(world, zox_tst_model_views_mesh, &centre, &radius);
         const float3 target = float3_add(spot, centre);
+        if (variants) {
+            radius *= 1.4f;     // the others can be bigger than the first
+        }
         const float fov = 50;
         // far enough that its bounding sphere fits the view, with a margin
         const float distance = radius / sinf(fov * 0.5f * degreesToRadians) * 1.15f;
@@ -208,7 +236,8 @@ byte zox_tst_model_views_ready(ecs* world) {
             { 0, 0.25f, -1 },
             { 0.6f, 1, 0.6f } };
         for (int i = 0; i < zox_tst_model_views_count; i++) {
-            const float3 position = float3_add(target, float3_scale(float3_normalize(directions[i]), distance));
+            const float3 direction = variants ? (float3) { 0.8f, 0.45f, 1 } : directions[i];
+            const float3 position = float3_add(target, float3_scale(float3_normalize(direction), distance));
             const entity camera = spawn_viewport_camera(
                 world,
                 main_app,
@@ -245,7 +274,7 @@ byte zox_tst_model_views_ready(ecs* world) {
         }
         // a copy of the model for each view, filtered to its camera
         for (int i = 0; i < zox_tst_model_views_count; i++) {
-            const entity clone = spawn_mesh3_clone(world, zox_tst_model_views_mesh);
+            const entity clone = spawn_mesh3_clone(world, zox_tst_model_views_meshes[i]);
             if (!clone) {
                 zox_tst_check(0, "couldn't copy the mesh of [%s]", zox_getn(zox_tst_model_views_source));
                 return 1;
