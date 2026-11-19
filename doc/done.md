@@ -24,6 +24,12 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x Animation events: a swing passing its marks (a punch's hit, a place's set, eating's bites) sets SwingMark on the
+  skeleton (bones/sys/swing_mark.c), observers react: eating's munch and crumbs are one (actions/eve/eat.c, was a
+  system on the food's cooldown)
+-x Particles from a vox: spawn_particle3_burst (particles3/fun/burst.c), each a colour of its palette; crumbs use it
+-x The swing starters (melee_swing_system, item_swing_system) ran on the main thread between threaded ones in update
+  (4 more merges, tst pipeline_syncs): in zoxp_spawn with the other main thread systems now
 -x Eating chews: three bites while the hand's at the mouth (over the food's cooldown), each a crunchy munch and
   crumbs in the food's colours thrown out ahead of the face (items/sys/chew.c); tst eat_swing counts the bites and
   saves tst/eat_swing.ppm mid chew. The eating hand sits a little lower and further out (it filled the view)
