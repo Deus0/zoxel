@@ -1,22 +1,22 @@
-// burn: a short damage over time (a Dot) on a character a skill with SkillBurn hits (shoot's), its skill's colour
+// burn: a slow damage over time (a Dot) on a character a skill with Burn hits (shoot's), its skill's colour
 //  rising off them (a particle stream), gone in its time (DestroyInTime); hit again, the same skill's burn starts over
 entity spawn_prefab_burn(ecs *world) {
     zox_prefab();
     zox_prefab_name("burn");
     zox_add(e, Dot);
-    zox_add(e, Burn);
+    zox_add(e, Burning);
     zox_setv(e, SkillDamage, 0);
     zox_setv(e, DestroyInTime, 0);
     return e;
 }
 
 entity burn_character(ecs* world, entity target, entity spawner, entity skill) {
-    if (!zox_valid(skill) || !zox_has(skill, SkillBurn) || !zox_valid(target) || zox_has(target, Dead)) {
+    if (!zox_valid(skill) || !zox_has(skill, Burn) || !zox_valid(target) || zox_has(target, Dead)) {
         return 0;
     }
-    const float2 burn = zox_getv(skill, SkillBurn);     // damage a second, seconds
+    const float2 burn = zox_getv(skill, Burn);     // damage a second, seconds
     entity debuffs[32];
-    const uint count = zox_get_children_by_id(world, target, debuffs, 32, zox_id(Burn));
+    const uint count = zox_get_children_by_id(world, target, debuffs, 32, zox_id(Burning));
     for (uint i = 0; i < count; i++) {
         if (zox_get_link(world, debuffs[i], Skill) == skill) {
             zox_setv(debuffs[i], DestroyInTime, burn.y);
