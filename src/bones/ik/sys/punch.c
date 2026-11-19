@@ -5,6 +5,7 @@
 //  - a punch: the fist winds back low by the ribs (the elbow bent) as the body turns away, then snaps out to the arm's
 //    full reach where the head looks and in to the body's middle, the body turning into it (SpineTwist, sys/spine.c)
 //  - a place: the block lifted up by the head, then pressed out and down where the head looks, a little turn
+//  - eating: drawn in by the chest, then up to the mouth, held there a while
 //  - raised (RaiseShoulder: an item or skill held) the hand rests ahead where the head looks, a little up and in, the
 //    elbow relaxed, not locked; a first person camera sees it (held low by the chest it was out of view: the arm
 //    looked gone)
@@ -43,6 +44,10 @@ static const ik_swing ik_swing_place = {
     { 0.55f, 0.02f, 0.55f, -0.08f },   // the block lifted up by the head
     { 0.95f, 0.06f, 0.05f, 0.15f },    // pressed out and down where the head looks (below it, the shoulder is)
     0.3f, 0.66f, 0 };
+static const ik_swing ik_swing_eat = {
+    { 0.7f, 0.2f, -0.05f, 0 },          // drawn in low by the chest
+    { 0.55f, 0.42f, 0.3f, -0.05f },     // at the mouth, under the eyes, in to the middle
+    0.2f, 0.82f, 0 };
 
 static inline float ik_smoothstep(float a, float b, float x) {
     float t = (x - a) / (b - a);
@@ -143,7 +148,8 @@ void punch_ik_system(iter* it) {
         const float3 elbow = zox_getv(arm.bones[arm.length - 2], Position3D);
         const float reach = float3_distance(zox_getv(shoulder, Position3D), elbow) +
             float3_distance(elbow, zox_getv(arm.bones[arm.length - 1], Position3D));
-        const ik_swing* swing = kind->value == zox_swing_place ? &ik_swing_place : &ik_swing_punch;
+        const ik_swing* swing = kind->value == zox_swing_place ? &ik_swing_place :
+            (kind->value == zox_swing_eat ? &ik_swing_eat : &ik_swing_punch);
         const ik_swing_pose pose = punching ? ik_swing_pose_at(swing, (float) (passed / speed->value)) : ik_punch_guard;
         // the right shoulder's on -x: in is +x, its side forward a turn up +y
         const float side_sign = zox_getv(shoulder, LocalPosition3D).x < 0 ? 1 : -1;

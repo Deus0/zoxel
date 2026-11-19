@@ -2,7 +2,8 @@
 #include "arms_in_step.c"
 #include "arm_reach.c"
 #include "punch_motion.c"
-#include "place_motion.c"
+#include "swing_motion.c"
+#include "place_glance.c"
 #include "guard_steady.c"
 #include "feet_planted.c"
 #include "head_camera.c"
@@ -14,7 +15,8 @@ void zox_tsts_characters(ecs* world) {
     zox_tsts_arms_in_step(world);
     zox_tsts_arm_reach(world);
     zox_tsts_punch_motion(world);
-    zox_tsts_place_motion(world);
+    zox_tsts_swing_motion(world);
+    zox_tsts_place_glance(world);
     zox_tsts_guard_steady(world);
     zox_tsts_feet_planted(world);
     zox_tsts_head_camera(world);

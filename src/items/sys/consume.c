@@ -57,7 +57,10 @@ void item_consume_system(iter* it) {
         zox_add(e, DataDirty);
         // consume sound
         spawn_sound_effect(world, sound_effect_consume, user);
-        skeleton_swing_begin(world, user, zox_current_time, zox_getv(e, WarmupTime) + zox_getv(e, CooldownTime), zox_swing_punch);
+        // the swing started with the warmup (swing.c), with none it starts here
+        if (zox_getv(e, WarmupTime) <= 0) {
+            skeleton_swing_begin(world, user, zox_current_time, zox_getv(e, CooldownTime), zox_swing_eat, float3_zero);
+        }
         if (dbg_log) {
             zox_log("[%s] consumed [%s] +[%f] [%s] -> [%f]",
                 zox_getn(user),

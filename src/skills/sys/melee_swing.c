@@ -28,7 +28,7 @@ void melee_swing_system(iter* it) {
                 continue;
             }
         }
-        skeleton_swing_begin(world, user, at->value, warmup->value + cooldown->value, zox_swing_punch);
+        skeleton_swing_begin(world, user, at->value, warmup->value + cooldown->value, zox_swing_punch, float3_zero);
     }
     zox_sys_on_end();
 } zoxd_system(melee_swing_system);
