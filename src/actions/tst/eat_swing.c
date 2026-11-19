@@ -1,6 +1,6 @@
 // tst: eat_swing, eating a cookie swings the arm to the mouth from the item's warmup (items/sys/swing.c, zox_swing_eat)
 //  - gives the player a cookie (held_item.c's), begins using it (ActivateBegin, as its key does)
-//  - in its warmup the skeleton's swing is eating, started at the warmup's start, over warmup + cooldown
+//  - in its warmup the skeleton's swing is eating, started at the warmup's start, over its swing time (SwingTime)
 //  - then it chews (actions/eve/eat.c, on the swing's marks): each of its bites (a munch, crumbs) once
 //  - its crumbs from its model's palette (particles3/fun/burst.c): the held cookie has one
 //  - saves tst/eat_swing.ppm after the second bite (the hand at the mouth, crumbs falling)
@@ -80,12 +80,12 @@ byte zox_tst_eat_swing_ready(ecs* world) {
 
 void zox_tst_eat_swing_check(ecs* world) {
     const entity e = zox_tst_eat_item;
-    const float expected = zox_valid(e) ? zox_getv(e, WarmupTime) + zox_getv(e, CooldownTime) : 0;
+    const float expected = zox_valid(e) ? zox_getv(e, SwingTime) : 0;
     zox_log("[tst] eat_swing: swung in the warmup [%i] kind [%i] over [%.3f]s of [%.3f]", zox_tst_eat_swung, zox_tst_eat_kind, zox_tst_eat_time, expected);
     zox_tst_check(zox_valid(e), "no cookie given to eat");
     zox_tst_check(zox_tst_eat_swung, "the swing didn't start with the cookie's warmup");
     zox_tst_check(zox_tst_eat_kind == zox_swing_eat, "the swing isn't eating [%i]", zox_tst_eat_kind);
-    zox_tst_check(fabsf(zox_tst_eat_time - expected) < 0.001f, "the swing isn't over warmup and cooldown [%f of %f]", zox_tst_eat_time, expected);
+    zox_tst_check(fabsf(zox_tst_eat_time - expected) < 0.001f, "the swing isn't over the food's swing time [%f of %f]", zox_tst_eat_time, expected);
     const byte bites = swings[zox_swing_eat].marks_count;
     const entity model = zox_valid(e) ? zox_get_link(world, e, ModelLink) : 0;
     const int palette = zox_valid(model) && zox_has(model, ColorRGBs) ? zox_get(model, ColorRGBs)->length : 0;

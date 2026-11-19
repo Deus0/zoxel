@@ -3,7 +3,7 @@
 //  back after contact looked like a pat; then a warmup timed the hit, a frame or two after the fist)
 //  - the player's arm raised (as holding the punch), its punch skill slowed (a 3s swing) and begun (ActivateBegin, as
 //    its key does)
-//  - the swing starts at the press, over the skill's cooldown, a punch, of that skill
+//  - the swing starts at the press, over the skill's swing time (SwingTime, its attack speed), a punch, of that skill
 //  - before the hit the hand is pulled back in (of the arm's reach, the guard's out 0.85), no hit yet; at the hit
 //    one hit, at the hit mark's time (within a frame or two), the hand out
 //  - the body turns away winding up, into the strike (SpineTwist): the shoulder goes forward, the first person
@@ -89,7 +89,7 @@ byte zox_tst_punch_wind_up_ready(ecs* world) {
     if (zox_tst_wind_stage == 0) {
         zox_tst_waiting = "the guard";
         if (t > 1.5) {
-            zox_setv(skill, CooldownTime, zox_tst_wind_seconds);
+            zox_setv(skill, SwingTime, zox_tst_wind_seconds);
             zox_setv(skill, ActivateBegin, zox_dirty_trigger);
             zox_tst_wind_hits_from = zox_melee_hits;
             zox_tst_wind_at = zox_current_time;
@@ -158,7 +158,7 @@ byte zox_tst_punch_wind_up_ready(ecs* world) {
 
 void zox_tst_punch_wind_up_check(ecs* world) {
     const entity skill = zox_tst_wind_skill;
-    const float expected = zox_valid(skill) ? zox_getv(skill, CooldownTime) : 0;
+    const float expected = zox_valid(skill) ? zox_getv(skill, SwingTime) : 0;
     zox_log("[tst] punch_wind_up: swung at the press [%i] over [%.3f]s of [%.3f], pulled in [%.3f] over [%i] frames, hit out [%.3f]",
         zox_tst_wind_swung, zox_tst_wind_swing_speed, expected, zox_tst_wind_pulled, zox_tst_wind_samples, zox_tst_wind_hit_out);
     zox_log("[tst] punch_wind_up: hits before the hit [%i], after [%i], [%.3f]s after its mark", zox_tst_wind_hits_early,
@@ -166,7 +166,7 @@ void zox_tst_punch_wind_up_check(ecs* world) {
     zox_tst_check(zox_valid(skill), "the player has no punch skill");
     zox_tst_check(zox_tst_wind_stage >= 2, "the punch never swung");
     zox_tst_check(zox_tst_wind_swung, "the swing at the press isn't a punch");
-    zox_tst_check(fabsf(zox_tst_wind_swing_speed - expected) < 0.001f, "the swing isn't over the cooldown [%f of %f]", zox_tst_wind_swing_speed, expected);
+    zox_tst_check(fabsf(zox_tst_wind_swing_speed - expected) < 0.001f, "the swing isn't over the skill's swing time [%f of %f]", zox_tst_wind_swing_speed, expected);
     zox_tst_check(zox_tst_wind_hits_early == 0, "it hit [%i] times before the swing's hit", zox_tst_wind_hits_early);
     zox_tst_check(zox_tst_wind_hits == 1, "it hit [%i] times at the swing's hit, not once", zox_tst_wind_hits);
     zox_tst_check(zox_tst_wind_hit_late >= 0 && zox_tst_wind_hit_late < 0.1, "the hit landed [%f]s from its mark", zox_tst_wind_hit_late);

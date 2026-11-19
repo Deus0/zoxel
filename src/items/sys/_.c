@@ -33,9 +33,8 @@ void zox_systems_items(ecs* world) {
         item_swing_system,
         zoxp_spawn,
         [in] timers.WarmupAt,
-        [in] timers.WarmupTime,
-        [in] timers.CooldownTime,
-        [in] items.Quantity
+        [in] items.Quantity,
+        [none] bones.SwingTime
     );
     // NOTE: Timing issues due to Queue Clearing
     zox_system_1(

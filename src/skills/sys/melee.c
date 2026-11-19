@@ -68,9 +68,9 @@ void melee_system(iter* it) {
                     lresource);
             }
         }
-        // the swing: its windup is animation, it hits at its hit mark (melee_hit, eve/melee_hit.c); its length the
-        //  cooldown for now (doc/plans/skill_timing.md: a swing's own speed)
-        skeleton_swing_begin(world, user, e, zox_current_time, zox_getv(e, CooldownTime), zox_swing_punch, float3_zero);
+        // the swing over its SwingTime (attack speed): its windup is animation, it hits at its hit mark (melee_hit,
+        //  eve/melee_hit.c)
+        skeleton_swing_begin(world, user, e, zox_current_time, zox_getv(e, SwingTime), zox_swing_punch, float3_zero);
     }
     zox_sys_on_end();
 } zoxd_system(melee_system);

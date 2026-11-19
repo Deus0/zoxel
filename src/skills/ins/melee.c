@@ -11,7 +11,8 @@ entity spawn_realm_skill_melee(
     entity resource,
     float cost,
     float warmup,
-    float cooldown)
+    float cooldown,
+    float swing)
 {
     entity e = spawn_realm_skill(world, parent, prefab, name, tname, ecolor);
     zox_link(world, e, SkillResource, resource);
@@ -21,6 +22,7 @@ entity spawn_realm_skill_melee(
     zox_set(e, SkillRange, { range });
     zox_set(e, WarmupTime, { warmup });
     zox_set(e, CooldownTime, { cooldown });
+    zox_set(e, SwingTime, { swing });
     zox_set(e, RaycastRange, { range });
     return e;
 }

@@ -29,6 +29,7 @@ entity spawn_item_consumable(
     zox_setv(e, RaycastRange, block_place_range);
     zox_setv(e, RaycastType, zox_raycast_type_none);  // only consumed, no gizmo
     zox_prefab_addc_user_timings(world, e);
+    zox_setv(e, SwingTime, 1.0f);   // to the mouth, bites
     // Consuming restores a stat
     zox_set(e, ConsumeValue, { consume_value });
     if (zox_valid(consume_stat)) {

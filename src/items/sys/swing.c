@@ -7,14 +7,10 @@ void item_swing_system(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(WarmupAt);
-    zox_sys_in(WarmupTime);
-    zox_sys_in(CooldownTime);
     zox_sys_in(Quantity);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(WarmupAt, at);
-        zox_sys_i(WarmupTime, warmup);
-        zox_sys_i(CooldownTime, cooldown);
         zox_sys_i(Quantity, quantity);
         if (!at->value || !quantity->value) {
             continue;
@@ -23,7 +19,7 @@ void item_swing_system(iter* it) {
         if (!zox_valid(user)) {
             continue;
         }
-        const float time = warmup->value + cooldown->value;
+        const float time = zox_getv(e, SwingTime);
         if (zox_has(e, ItemConsumable)) {
             skeleton_swing_begin(world, user, e, at->value, time, zox_swing_eat, float3_zero);
             continue;
