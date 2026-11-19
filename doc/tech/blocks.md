@@ -64,7 +64,7 @@ What the one byte holds today (`get_block_data` / `set_block_data`):
 
 `block_activate_system` (src/vodes/activations, multithreaded): an entity with `TriggerActionB`, `RaycastVoxelData`
 and `RaycastRange`, the frame its right click is active, its ray on a block in reach: the block's kind picks what
-happens, a door `door_toggle`, a bed (next) sleeping. tst block_activate.
+happens, a door `door_toggle`, a bed `character_sleep` (vodes/beds). tst block_activate.
 
 ## Doors now
 

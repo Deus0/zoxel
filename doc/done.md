@@ -24,6 +24,11 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x Sleeping in a bed (vodes/beds): a right click on one (block_activate_system) puts its character to sleep (Sleeping,
+  SleepBlock): lying on its back over the mattress, its head on the pillow, still (DisableMovement, DisableGravity,
+  NoClip, its velocity and forces zeroed); a player's eyes close (CameraLids), its mouse let go, an "Asleep" window
+  with "Wake"; waking (Waking, a one-off event) stands it beside the bed (ground under it first), the eyes open;
+  multi_block_base_at finds a sized block's base from any part; tst bed_sleep, block_activate clicks a bed
 -x Eating forever (a bug from d890c5569): at full health the eat swing played on every press and ate nothing (the
   swing started at the warmup, the eat refused a full stat). The press checks it can eat first (911eb2f63); tst
   eat_swing presses at full health (no swing, none eaten) and eats the stack until it's gone
