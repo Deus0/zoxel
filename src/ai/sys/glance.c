@@ -1,61 +1,25 @@
-// Npcs glance at players walking by: a humanoid npc's head (a skeleton with a head bone) looks at the closest player
-//  within reach, and ahead again once they leave (bones/sys/head_look.c turns it)
-//  - players in its chunk and its 6 neighbours (ChunkNeighbors), so it sees across a chunk's edge
+// Npcs glance at players: a humanoid npc's head (a skeleton with a head bone) looks at the player it sees (its
+//  SightTarget, sys/sight.c), and ahead again once it doesn't (bones/sys/head_look.c turns it)
 //  - not while following someone (FollowTarget, a dialogue: its speakers look at each other)
-//  - chunks' ChunkEntities change on workers (chunk_link_system), read under their lock (it reallocates them)
 //  - boneless npcs (slimes) don't, see the todo (tumble towards the player)
-const float npc_glance_distance = 3;
-
-// the closest player in a chunk, closer than closest (which it lowers)
-static inline entity glance_in_chunk(ecs* world, entity e, entity chunk, float3 position, float* closest) {
-    if (!zox_valid(chunk) || !zox_has(chunk, ChunkEntities)) {
-        return 0;
-    }
-    entity found = 0;
-    ChunkEntities* entities = (ChunkEntities*) zox_get(chunk, ChunkEntities);
-    spin_lock(&entities->lock);
-    for (int j = 0; j < entities->length; j++) {
-        const entity e2 = entities->value[j];
-        if (e2 == e || !zox_valid(e2) || !zox_valid(zox_get_link(world, e2, PlayerLink))) {
-            continue;
-        }
-        const float distance = float3_distance(position, zox_getv(e2, Position3D));
-        if (distance < *closest) {
-            *closest = distance;
-            found = e2;
-        }
-    }
-    spin_unlock(&entities->lock);
-    return found;
-}
-
 void npc_glance_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(Position3D);
+    zox_sys_in(SightTarget);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(Position3D, position);
+        zox_sys_i(SightTarget, sight);
         // following someone (its FollowTarget, set by a dialogue): its speakers look at each other
         if (zox_valid(zox_get_link(world, e, FollowTarget))) {
             continue;
         }
         const entity skeleton = get_skeleton(world, e);
         const entity head = zox_valid(skeleton) ? zox_get_link(world, skeleton, HeadBoneLink) : 0;
-        const entity chunk = zox_get_link(world, e, ChunkLink);
-        if (!zox_valid(head) || !zox_valid(chunk)) {
+        if (!zox_valid(head)) {
             continue;
         }
-        float closest = npc_glance_distance;
-        entity look = glance_in_chunk(world, e, chunk, position->value, &closest);
-        const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
-        for (byte j = 0; neighbors && j < chunk_neighbors_length; j++) {
-            const entity found = glance_in_chunk(world, e, neighbors->value[j], position->value, &closest);
-            if (found) {
-                look = found;
-            }
-        }
+        const entity look = zox_valid(sight->value) ? sight->value : 0;
         if (zox_getv(head, LookTarget) != look) {
             zox_setv(head, LookTarget, look);
         }

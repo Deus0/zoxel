@@ -17,21 +17,29 @@ byte is_debug_attack = 0;
 #include "attack_trigger.c"
 #include "stay_upright_system.c"
 #include "random_jumping.c"
-#include "glance.c"
 #include "sight.c"
+#include "glance.c"
 
 void zox_systems_npcs(ecs *world) {
     zox_system(
-        npc_glance_system,
-        zoxp_update,
-        [in] transforms3.Position3D,
-        [none] ai.Npc
-    );
-    zox_system_1(
         npc_sight_system,
         zoxp_update,
         [in] transforms3.Position3D,
         [in] transforms3.Rotation3D,
+        [in] transforms3.Bounds3D,
+        [out] ai.SightTarget,
+        [none] ai.Npc
+    );
+    zox_system(
+        npc_glance_system,
+        zoxp_update,
+        [in] ai.SightTarget,
+        [none] ai.Npc
+    );
+    zox_system_1(
+        monster_aggro_system,
+        zoxp_update,
+        [in] ai.SightTarget,
         [in] combat.CombatState,
         [none] ai.Npc,
         [none] characters.Monster
