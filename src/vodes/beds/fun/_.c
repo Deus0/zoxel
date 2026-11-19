@@ -1,0 +1,170 @@
+// Beds: sleeping in one, waking up
+#define sleep_lids_close 1.5f       // seconds for the eyes to close
+#define sleep_lids_open 0.8f        // and to open
+#define bed_mattress_height 0.5f    // of a block: the mattress's top (models/gen/furniture.c, 8 of 16)
+const char* sleep_ui_header = "Asleep";
+const char* sleep_ui_wake = "Wake";
+
+// a bed's direction, its base's block data
+static inline byte bed_direction(ecs* world, entity terrain, int3 base) {
+    return block_data_direction(terrain_block_data_at(world, terrain, base));
+}
+
+// lying on a bed: its middle, on the mattress; its up to the pillow (the base's end), its front to the sky
+//  - half_depth: the body's half thickness (front to back), it lies on its back that far over the mattress
+static inline void bed_lie_pose(byte direction, int3 base, float block, float half_depth, float3* position, float4* rotation) {
+    const int3 along = block_direction_offset(direction, (int3) { 1, 0, 0 });   // from its base to its other half
+    const float3 head = int3_to_float3(int3_scale(along, -1));
+    *position = (float3) {
+        (base.x + 0.5f + 0.5f * along.x) * block,
+        (base.y + bed_mattress_height) * block + half_depth,
+        (base.z + 0.5f + 0.5f * along.z) * block };
+    // on its back: its front (+z) turned to the sky, then about up so its up (now along -z) goes to the pillow
+    const float4 back = quaternion_from_to((float3) { 0, 0, 1 }, (float3) { 0, 1, 0 });
+    const float3 up = float4_rotate_float3(back, (float3) { 0, 1, 0 });
+    const float dot = up.x * head.x + up.z * head.z;
+    const float4 turn = dot < -0.99f ? quaternion_from_axis_angle((float3) { 0, 1, 0 }, (float) M_PI) :
+        quaternion_from_to(up, head);
+    *rotation = quaternion_rotate(turn, back);
+}
+
+// getting up: beside the bed's base (its front, else its back), two blocks of air, ground under it first; on the bed
+//  if both sides are blocked
+static inline void bed_stand_pose(ecs* world, entity terrain, entity realm, byte direction, int3 base, float block,
+    float half_height, float3* position, float4* rotation) {
+    int3 stand = { base.x, base.y + 1, base.z };
+    byte found = 0;
+    for (byte grounded = 1; !found && grounded < 2; grounded--) {
+        for (int side = -1; side <= 1 && !found; side += 2) {
+            const int3 at = int3_add(base, block_direction_offset(direction, (int3) { 0, 0, side }));
+            if (!terrain_voxel_at(world, terrain, at) && !terrain_voxel_at(world, terrain, (int3) { at.x, at.y + 1, at.z }) &&
+                (!grounded || block_is_solid_at(world, terrain, realm, (int3) { at.x, at.y - 1, at.z }))) {
+                stand = at;
+                found = 1;
+            }
+        }
+    }
+    *position = (float3) { (stand.x + 0.5f) * block, stand.y * block + half_height, (stand.z + 0.5f) * block };
+    *rotation = block_direction_rotation(direction);
+}
+
+// puts a character to sleep in the bed at base (from a worker too: deferred), on_sleeping does the rest
+void character_sleep(ecs* world, entity character, int3 base) {
+    if (zox_has(character, Sleeping)) {
+        return;
+    }
+    zox_set(character, SleepBlock, { base });
+    zox_add(character, Sleeping);
+}
+
+// wakes a sleeping character, on_waking does the rest
+void character_wake(ecs* world, entity character) {
+    if (zox_has(character, Sleeping)) {
+        zox_add(character, Waking);
+    }
+}
+
+void button_event_wake(ecs* world, ClickEventData event) {
+    character_wake(world, zox_get_link(world, event.clicker, CharacterLink));
+}
+
+static inline void sleep_mouse_lock(ecs* world, entity player, byte lock) {
+    const entity mouse = zox_get_child_by_id(world, player, zox_id(Mouse));
+    if (zox_valid(mouse)) {
+        zox_setv(mouse, MouseLock, lock);
+    }
+}
+
+static inline entity spawn_sleep_ui(ecs* world, entity player) {
+    SpawnListElement elements[1] = { { .text = sleep_ui_wake, .on_click = { &button_event_wake } } };
+    const entity e = spawn_window_list(world, prefab_window, player, sleep_ui_header,
+        zox_huds_element_font_size * ui_scale, zox_huds_element_font_size * ui_scale, (ClickEvent) { NULL }, 0, 0, 0,
+        zox_huds_window_alignment, zox_huds_window_anchor, byte2_single(zox_huds_list_padding * ui_scale), NULL,
+        elements, 1, 1).x;
+    zox_set_unique_name(e, "sleep_ui");
+    zox_add(e, SleepUI);
+    return e;
+}
+
+// fell asleep (Sleeping added): lies on its bed, still; a player's eyes close, its mouse let go, the "Wake" window
+void on_sleeping(iter* it) {
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        const entity terrain = zox_get_link(world, e, TerrainLink);
+        if (!zox_valid(terrain) || !zox_has(e, SleepBlock)) {
+            zox_remove(e, Sleeping);
+            continue;
+        }
+        const int3 base = zox_getv(e, SleepBlock);
+        const float block = zox_getv(terrain, BlockScale);
+        const float3 bounds = zox_has(e, Bounds3D) ? zox_getv(e, Bounds3D) : float3_single(0.5f * block);
+        float3 position;
+        float4 rotation;
+        bed_lie_pose(bed_direction(world, terrain, base), base, block, bounds.z, &position, &rotation);
+        zox_add(e, DisableMovement);
+        zox_add(e, DisableGravity);
+        zox_add(e, NoClip);
+        zox_setv(e, Position3D, position);
+        zox_setv(e, Rotation3D, rotation);
+        // and the forces from last frame (a swim stroke lands a frame later)
+        if (zox_has(e, Velocity3D)) {
+            zox_setv(e, Velocity3D, float3_zero);
+        }
+        if (zox_has(e, Acceleration3D)) {
+            zox_setv(e, Acceleration3D, float3_zero);
+        }
+        if (zox_has(e, Omega3D)) {
+            zox_setv(e, Omega3D, float3_zero);
+        }
+        const entity player = zox_get_link(world, e, PlayerLink);
+        if (!zox_valid(player)) {
+            continue;
+        }
+        const entity camera = zox_get_link(world, player, CameraLink);
+        if (zox_valid(camera) && zox_has(camera, CameraLids)) {
+            zox_lerp_float(camera, CameraLids, 1, sleep_lids_close);
+        }
+        sleep_mouse_lock(world, player, 0);
+        spawn_sleep_ui(world, player);
+    }
+}
+
+// woke up (Waking added): stands beside its bed, moves again; a player's eyes open, its mouse taken, the window gone
+void on_waking(iter* it) {
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_remove(e, Waking);
+        zox_remove(e, Sleeping);
+        zox_remove(e, DisableMovement);
+        zox_remove(e, DisableGravity);
+        zox_remove(e, NoClip);
+        const entity terrain = zox_get_link(world, e, TerrainLink);
+        if (zox_valid(terrain) && zox_has(e, SleepBlock)) {
+            const int3 base = zox_getv(e, SleepBlock);
+            const float block = zox_getv(terrain, BlockScale);
+            const float3 bounds = zox_has(e, Bounds3D) ? zox_getv(e, Bounds3D) : float3_single(0.5f * block);
+            float3 position;
+            float4 rotation;
+            bed_stand_pose(world, terrain, zox_get_parent(world, terrain), bed_direction(world, terrain, base), base, block, bounds.y,
+                &position, &rotation);
+            zox_setv(e, Position3D, position);
+            zox_setv(e, Rotation3D, rotation);
+        }
+        const entity player = zox_get_link(world, e, PlayerLink);
+        if (!zox_valid(player)) {
+            continue;
+        }
+        const entity camera = zox_get_link(world, player, CameraLink);
+        if (zox_valid(camera) && zox_has(camera, CameraLids)) {
+            zox_lerp_float(camera, CameraLids, 0, sleep_lids_open);
+        }
+        sleep_mouse_lock(world, player, 1);
+        const entity canvas = zox_get_link(world, player, CanvasLink);
+        const entity ui = zox_valid(canvas) ? zox_get_child_by_id(world, canvas, zox_id(SleepUI)) : 0;
+        if (zox_valid(ui)) {
+            zox_delete(ui);
+        }
+    }
+}

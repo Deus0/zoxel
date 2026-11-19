@@ -3,11 +3,13 @@
 //  - a door placed with ground under it; a clicker in front of its top (TriggerActionB, RaycastRange, a terrain link,
 //    no camera: chunk3_raycast_system casts from its own position along its facing)
 //  - out of reach (its range under the distance) a click does nothing; in reach it opens the door (both parts'
-//    block_data_open); turned away (its ray on air) nothing; facing it again it closes
+//    block_data_open); turned away onto a bed behind it: it sleeps there (Sleeping, SleepBlock the bed's base), the
+//    door left open; woken and put back, facing the door again it closes
 //  - run: bash bsh/tst.sh block_activate
 byte zox_tst_bact_stage = 0;
 int zox_tst_bact_frames = 0;
-int3 zox_tst_bact_base;
+int3 zox_tst_bact_base, zox_tst_bact_bed;
+float3 zox_tst_bact_at;
 entity zox_tst_bact_clicker = 0;
 
 static inline byte zox_tst_bact_open(ecs* world, entity terrain, int y) {
@@ -49,10 +51,15 @@ byte zox_tst_block_activate_ready(ecs* world) {
         zox_tst_bact_base = (int3) { chunk.x * length + 6, chunk.y * length + 4, chunk.z * length + 8 };
         const byte door = zox_getv(zox_tst_fplace_block(world, realm, zox_id(BlockDoor)), BlockIndex);
         zox_tst_check(zox_tst_place_supported(world, terrain, realm, zox_tst_bact_base, door, 0), "the door wasn't placed");
+        // a bed behind the clicker, at the door's top's height, its near face 1.5 blocks away
+        zox_tst_bact_bed = (int3) { zox_tst_bact_base.x, zox_tst_bact_base.y + 1, zox_tst_bact_base.z - 4 };
+        const byte bed = zox_getv(zox_tst_fplace_block(world, realm, zox_id(BlockBed)), BlockIndex);
+        zox_tst_check(zox_tst_place_supported(world, terrain, realm, zox_tst_bact_bed, bed, 0), "the bed wasn't placed");
         // two blocks in front (-z) of its top's centre, at that height
         const float3 top = float3_scale(int3_to_float3((int3) { zox_tst_bact_base.x, zox_tst_bact_base.y + 1, zox_tst_bact_base.z }), block);
         zox_tst_bact_clicker = zox_new();
-        zox_set(zox_tst_bact_clicker, Position3D, { float3_add(top, (float3) { 0.5f * block, 0.5f * block, -1.5f * block }) });
+        zox_tst_bact_at = float3_add(top, (float3) { 0.5f * block, 0.5f * block, -1.5f * block });
+        zox_set(zox_tst_bact_clicker, Position3D, { zox_tst_bact_at });
         zox_set(zox_tst_bact_clicker, Rotation3D, { zox_tst_bact_facing(1) });
         zox_set(zox_tst_bact_clicker, TriggerActionB, { 0 });
         zox_set(zox_tst_bact_clicker, RaycastRange, { 4 * block });
@@ -93,21 +100,33 @@ byte zox_tst_block_activate_ready(ecs* world) {
         return 0;
     }
     if (zox_tst_bact_stage == 4) {
-        zox_tst_check(zox_tst_bact_open(world, terrain, 0), "a click on air closed the door");
-        zox_tst_bact_click(world, 4 * block, 1);
+        zox_tst_check(zox_tst_bact_open(world, terrain, 0), "a click on the bed closed the door");
+        zox_tst_check(zox_has(zox_tst_bact_clicker, Sleeping), "a click on the bed didn't put it to sleep");
+        const int3 sleep = zox_has(zox_tst_bact_clicker, SleepBlock) ? zox_getv(zox_tst_bact_clicker, SleepBlock) : int3_zero;
+        zox_tst_check(int3_equals(sleep, zox_tst_bact_bed), "it sleeps at [%i %i %i], not the bed's base [%i %i %i]", sleep.x, sleep.y, sleep.z,
+            zox_tst_bact_bed.x, zox_tst_bact_bed.y, zox_tst_bact_bed.z);
+        character_wake(world, zox_tst_bact_clicker);
         zox_tst_bact_stage = 5;
+        zox_tst_bact_frames = 0;
+        return 0;
+    }
+    if (zox_tst_bact_stage == 5) {
+        zox_tst_check(!zox_has(zox_tst_bact_clicker, Sleeping), "woken, it's still asleep");
+        zox_setv(zox_tst_bact_clicker, Position3D, zox_tst_bact_at);
+        zox_tst_bact_click(world, 4 * block, 1);
+        zox_tst_bact_stage = 6;
         return 0;
     }
     zox_tst_check(!zox_tst_bact_open(world, terrain, 0) && !zox_tst_bact_open(world, terrain, 1),
         "a click on the door didn't close it, base [%i] top [%i]", zox_tst_bact_open(world, terrain, 0), zox_tst_bact_open(world, terrain, 1));
     zox_delete(zox_tst_bact_clicker);
-    zox_tst_bact_stage = 6;
+    zox_tst_bact_stage = 7;
     return 1;
 }
 
 void zox_tst_block_activate_check(ecs* world) {
     (void) world;
-    zox_tst_check(zox_tst_bact_stage == 6, "it stopped at stage [%i]", zox_tst_bact_stage);
+    zox_tst_check(zox_tst_bact_stage == 7, "it stopped at stage [%i]", zox_tst_bact_stage);
 }
 
 void zox_tsts_activations(ecs* world) {

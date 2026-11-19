@@ -22,8 +22,16 @@ void block_activate_system(iter* it) {
         }
         const entity terrain = zox_get_parent(world, ray->chunk);
         const entity realm = zox_get_parent(world, terrain);
-        const int3 block = chunk_block_position(world, ray->chunk, ray->positionl);
-        door_toggle(world, terrain, realm, block);
+        int3 base;
+        const entity kind = multi_block_base_at(world, terrain, realm, chunk_block_position(world, ray->chunk, ray->positionl), &base);
+        if (!kind) {
+            continue;
+        }
+        if (zox_has(kind, BlockDoor)) {
+            door_toggle(world, terrain, realm, base);
+        } else if (zox_has(kind, BlockBed)) {
+            character_sleep(world, e, base);
+        }
     }
     zox_sys_on_end();
 } zoxd_system(block_activate_system);

@@ -71,26 +71,12 @@ static inline entity terrain_vode_at(ecs* world, entity terrain, int3 block) {
     return node && is_linked_VoxelNode(node) ? get_entity_VoxelNode(node) : 0;
 }
 
-// a door's base from any of its parts (its base, or a filler back by its offset), 0 if it isn't a door's
-static inline byte door_base_at(ecs* world, entity terrain, entity realm, int3 block, int3* base) {
-    entity b = realm_voxel_block(world, realm, terrain_voxel_at(world, terrain, block));
-    *base = block;
-    if (zox_valid(b) && zox_has(b, BlockFiller)) {
-        const byte data = terrain_block_data_at(world, terrain, block);
-        if (!data) {
-            return 0;
-        }
-        *base = int3_add(block, block_offset_decode(data));
-        b = realm_voxel_block(world, realm, terrain_voxel_at(world, terrain, *base));
-    }
-    return zox_valid(b) && zox_has(b, BlockDoor);
-}
-
 // opens or closes the door with a part at block: every part's block data, its block vox swings and sounds
 //  - from a worker too (block_activate_system): data under its chunks' locks, the rest deferred
 byte door_toggle(ecs* world, entity terrain, entity realm, int3 block) {
     int3 base;
-    if (!door_base_at(world, terrain, realm, block, &base)) {
+    const entity kind = multi_block_base_at(world, terrain, realm, block, &base);
+    if (!kind || !zox_has(kind, BlockDoor)) {
         return 0;
     }
     const byte data = terrain_block_data_at(world, terrain, base);

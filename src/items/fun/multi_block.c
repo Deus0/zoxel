@@ -82,6 +82,21 @@ static inline byte block_is_multi(int3 size) {
     return size.x > 1 || size.y > 1 || size.z > 1;
 }
 
+// a sized block's base from any of its parts (itself, or a filler back by its offset): its block kind, 0 if none
+static inline entity multi_block_base_at(ecs* world, entity terrain, entity realm, int3 block, int3* base) {
+    entity b = realm_voxel_block(world, realm, terrain_voxel_at(world, terrain, block));
+    *base = block;
+    if (zox_valid(b) && zox_has(b, BlockFiller)) {
+        const byte data = terrain_block_data_at(world, terrain, block);
+        if (!data) {
+            return 0;
+        }
+        *base = int3_add(block, block_offset_decode(data));
+        b = realm_voxel_block(world, realm, terrain_voxel_at(world, terrain, *base));
+    }
+    return zox_valid(b) ? b : 0;
+}
+
 // a solid block (its collider) at a world block position
 static inline byte block_is_solid_at(ecs* world, entity terrain, entity realm, int3 block) {
     const entity b = realm_voxel_block(world, realm, terrain_voxel_at(world, terrain, block));

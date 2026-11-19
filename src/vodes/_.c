@@ -16,6 +16,7 @@ byte zox_disable_vodes = 0;
 #include "com/_.c"
 #include "vodes3/_.c"
 #include "doors/_.c"
+#include "beds/_.c"
 #include "activations/_.c"
 
 #ifdef zox_tests
@@ -30,6 +31,7 @@ void import_vodes(ecs* world) {
     zoxd_components_vodes(world);
     zox_add_module(vodes3);
     zox_add_module(doors);
+    zox_add_module(beds);
     zox_add_module(activations);
 #ifdef zox_tests
     zox_tst_add_level(zox_tst_level_vodes);
