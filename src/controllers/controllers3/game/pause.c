@@ -1,4 +1,4 @@
-// Player presses input which pauses game
+// Player presses input which pauses game (Start, Escape, Enter) or opens its own game menus (Y, R: the game going on)
 // NOTE: Must be paused or playing state to toggle pause!
 void player_pause_system(iter* it) {
     zox_sys_on_begin();
@@ -26,6 +26,7 @@ void player_pause_system(iter* it) {
             continue;
         }
         byte did_toggle_pause = 0;
+        byte did_toggle_menu = 0;
         entity devices[zox_children_capacity];
         uint length = zox_get_children_by_id(world, e, devices, zox_children_capacity, zox_id(Device));
         for (uint j = 0; j < length; j++) {
@@ -43,10 +44,11 @@ void player_pause_system(iter* it) {
                 }
                 if (zox_has(e3, ZeviceButton)) {
                     byte type = zox_getv(e3, DeviceButtonType);
-                    if (type == zox_btn_start) {
+                    if (type == zox_btn_start || type == zox_btn_y) {
                         byte value = zox_getv(e3, ZeviceButton);
                         if (devices_get_pressed_this_frame(value)) {
-                            did_toggle_pause = 1;
+                            did_toggle_pause |= type == zox_btn_start;
+                            did_toggle_menu |= type == zox_btn_y;
                         }
                     }
                 }
@@ -58,11 +60,19 @@ void player_pause_system(iter* it) {
                     did_toggle_pause = 1;
                     break;
                 }
+                if (keyboard->r.pressed_this_frame) {
+                    did_toggle_menu = 1;
+                }
             }
         }
+        // the player's own game menus (Y, R), the game going on: into its menu state and out
+        if (did_toggle_menu && !did_toggle_pause) {
+            toggle_game_menus(world, e);
+            continue;
+        }
+        // the game paused (Start, Escape), for every player: by the game's state (a player in its menus is paused)
         if (did_toggle_pause) {
-            byte is_paused = state->value == zox_player_state_paused; // game_state == zox_game_state_paused;
-            // byte is_paused = game_state == zox_game_state_paused;
+            byte is_paused = game_state == zox_game_state_paused;
             zox_setv(game, GameStateTarget,
                 is_paused ?
                     zox_game_state_playing :

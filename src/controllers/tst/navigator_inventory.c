@@ -1,4 +1,4 @@
-// tst: navigator_inventory, the real inventory on a gamepad: paused, RB to it, its first icon selected
+// tst: navigator_inventory, the real inventory on a gamepad: the game menus open (Y), RB to it, its first icon selected
 //  - the tooltip: shown with its background (the label's frame, not only its text), its top right at the icon's
 //      bottom right (tooltip_navigated_system)
 //  - items moved round the grid (A picks up, the stick right, A places, stacks, swaps): each tooltip shows its
@@ -164,9 +164,9 @@ byte zox_tst_navigator_inventory_ready(ecs* world) {
     static int moded = 0;
     switch (zox_tst_nav2_stage) {
         case 1:
-            zox_tst_waiting = "the gamepad's mode, then start pausing";
+            zox_tst_waiting = "the gamepad's mode, then Y opening the game menus";
             if (!moded) {
-                zox_tst_pad_held[zox_btn_y] = (f % 20) < 4;
+                zox_tst_pad_stick = (float2) { 0, (f % 20) < 4 ? 0.5f : 0 };   // a first touch (Y opens the menus)
                 // in coop a player keeps its device (device_switch_coop): the first on its gamepad from before the
                 //  second joined (at boot here, --splitscreen)
                 if (device_switch_coop && zox_getv(player, DeviceMode) != zox_device_mode_gamepad) {
@@ -179,7 +179,7 @@ byte zox_tst_navigator_inventory_ready(ecs* world) {
                 }
                 return f > 600;
             }
-            zox_tst_pad_held[zox_btn_start] = f >= moded + 20 && f < moded + 24;
+            zox_tst_pad_held[zox_btn_y] = f >= moded + 20 && f < moded + 24;
             if (f > moded + 60 && zox_getv(player, PlayerState) == zox_player_state_paused) {
                 zox_tst_nav2_next();
             }

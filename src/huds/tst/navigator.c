@@ -2,9 +2,10 @@
 //  - every navigator alike: a gamepad here, a headset's grips in xr_navigator (3D, on the simulator)
 //  - in a game on the test level, a gamepad (zox_tst_spawn_pad) given to the player, its buttons pressed in the
 //    inputs phase as a real one's are (zox_tst_pad_system)
-//  - start pauses: the pause menu's frame lit, the gamepad's selection in the pause menu
-//  - RB: the next frame lit, the pause menu's not; LB: back, the selection in the pause menu again
+//  - Y opens the game menus (the game going on): the first frame lit, its ui open
+//  - RB: the next frame lit, the first's not; LB: back
 //  - then RB round every ui: each one opens (not a closing one)
+//  - Start pauses the game: its pause menu (not a game menu, no taskbar frame), the selection in it; Start resumes
 //  - run: bash bsh/tst.sh navigator
 entity zox_tst_pad = 0;
 byte zox_tst_pad_held[16];              // by button type (zox_btn_*)
@@ -142,6 +143,11 @@ static inline entity zox_tst_nav2_open(ecs* world, entity canvas, int index) {
     return found;
 }
 
+byte zox_tst_nav2_menu_playing = 0;        // in the game menus the game wasn't paused
+byte zox_tst_nav2_pause_menu = 0;          // Start: the game paused, its pause menu up, the selection in it
+byte zox_tst_nav2_pause_off_taskbar = 0;   // the pause menu has no taskbar frame
+byte zox_tst_nav2_resumed = 0;             // Start again: playing, the pause menu gone
+
 byte zox_tst_navigator_ready(ecs* world) {
     if (zox_tst_nav2_stage == 0) {
         if (!zox_tst_player_spawn_ready(world)) {
@@ -153,34 +159,39 @@ byte zox_tst_navigator_ready(ecs* world) {
     }
     const entity player = zox_players[0];
     const entity canvas = zox_get_link(world, player, CanvasLink);
+    const entity game = zox_get_link(world, player, GameLink);
     const int f = ++zox_tst_nav2_frames;
     zox_tst_progress(zox_tst_nav2_stage * 1000 + f);
     memset(zox_tst_pad_held, 0, sizeof(zox_tst_pad_held));
+    zox_tst_pad_stick = float2_zero;
     switch (zox_tst_nav2_stage) {
         case 1:
-            zox_tst_waiting = "start pausing";
-            // a first touch switches the player to the gamepad (its press spent on that), then start
+            zox_tst_waiting = "Y opening the game menus";
+            // a first touch (the stick) switches the player to the gamepad, then Y
             {
                 static int moded = 0;
                 if (!moded) {
-                    zox_tst_pad_held[zox_btn_y] = (f % 20) < 4;
+                    zox_tst_pad_stick = (float2) { 0, (f % 20) < 4 ? 0.5f : 0 };
                     if (zox_getv(player, DeviceMode) == zox_device_mode_gamepad) {
                         moded = f;
                     }
                     return f > 600;
                 }
-                zox_tst_pad_held[zox_btn_start] = f >= moded + 20 && f < moded + 24;
+                zox_tst_pad_held[zox_btn_y] = f >= moded + 20 && f < moded + 24;
             }
             if (f > 60 && zox_getv(player, PlayerState) == zox_player_state_paused) {
                 entity frames[navigator_frames_max];
                 zox_tst_nav2_count = navigator_frames(world, canvas, frames);
-                for (int i = 0; i < zox_tst_nav2_count; i++) {
-                    if (zox_getv(frames[i], TaskbarWindowID) == zox_id(MenuPaused)) {
-                        zox_tst_nav2_pause = i;
+                zox_tst_nav2_pause = 0;     // the first game menu opens
+                zox_tst_nav2_menu_playing = zox_getv(game, GameState) == zox_game_state_playing;
+                // (the first, the mirror, has nothing to select)
+                if (zox_tst_nav2_lit(world, canvas, 0) || f > 200) {
+                    zox_tst_nav2_selected_paused = zox_tst_nav2_lit(world, canvas, 0);
+                    for (int i = 0; i < zox_tst_nav2_count; i++) {
+                        if (zox_getv(frames[i], TaskbarWindowID) == zox_id(MenuPaused)) {
+                            zox_tst_nav2_pause_off_taskbar = 2;     // it has one
+                        }
                     }
-                }
-                if (zox_tst_nav2_selected_in_pause(world, canvas) || f > 200) {
-                    zox_tst_nav2_selected_paused = zox_tst_nav2_selected_in_pause(world, canvas);
                     zox_tst_nav2_next();
                 }
             }
@@ -189,17 +200,15 @@ byte zox_tst_navigator_ready(ecs* world) {
             zox_tst_waiting = "RB";
             zox_tst_pad_held[zox_btn_rb] = f >= 2 && f < 6;
             if (f == 30) {
-                zox_tst_nav2_rb = zox_tst_nav2_count > 1 &&
-                    zox_tst_nav2_lit(world, canvas, (zox_tst_nav2_pause + 1) % zox_tst_nav2_count) &&
-                    !zox_tst_nav2_lit(world, canvas, zox_tst_nav2_pause);
+                zox_tst_nav2_rb = zox_tst_nav2_count > 1 && zox_tst_nav2_lit(world, canvas, 1) && !zox_tst_nav2_lit(world, canvas, 0);
                 zox_tst_nav2_next();
             }
             return 0;
         case 3:
             zox_tst_waiting = "LB";
             zox_tst_pad_held[zox_btn_lb] = f >= 2 && f < 6;
-            if (f >= 30 && (zox_tst_nav2_selected_in_pause(world, canvas) || f > 120)) {
-                zox_tst_nav2_lb = zox_tst_nav2_lit(world, canvas, zox_tst_nav2_pause) && zox_tst_nav2_selected_in_pause(world, canvas);
+            if (f >= 30) {
+                zox_tst_nav2_lb = zox_tst_nav2_lit(world, canvas, 0) && !zox_tst_nav2_lit(world, canvas, 1);
                 zox_tst_nav2_next();
             }
             return 0;
@@ -208,11 +217,12 @@ byte zox_tst_navigator_ready(ecs* world) {
             {
                 const int step = (f - 1) / 40, at = (f - 1) % 40;
                 if (step >= zox_tst_nav2_count) {
-                    return 1;
+                    zox_tst_nav2_next();
+                    return 0;
                 }
                 zox_tst_pad_held[zox_btn_rb] = at >= 2 && at < 6;
                 if (at == 30) {
-                    const int index = (zox_tst_nav2_pause + 1 + step) % zox_tst_nav2_count;
+                    const int index = (1 + step) % zox_tst_nav2_count;
                     zox_tst_nav2_round++;
                     if (zox_valid(zox_tst_nav2_open(world, canvas, index))) {
                         zox_tst_nav2_round_open++;
@@ -226,21 +236,42 @@ byte zox_tst_navigator_ready(ecs* world) {
                 }
             }
             return 0;
+        case 5:
+            zox_tst_waiting = "Start pausing the game";
+            zox_tst_pad_held[zox_btn_start] = f >= 2 && f < 6;
+            if (f > 30 && zox_getv(game, GameState) == zox_game_state_paused &&
+                (zox_tst_nav2_selected_in_pause(world, canvas) || f > 200)) {
+                zox_tst_nav2_pause_menu = zox_tst_nav2_selected_in_pause(world, canvas);
+                zox_tst_nav2_next();
+            }
+            return f > 300;
+        case 6:
+            zox_tst_waiting = "Start resuming";
+            zox_tst_pad_held[zox_btn_start] = f >= 2 && f < 6;
+            if (f > 60 && zox_getv(game, GameState) == zox_game_state_playing &&
+                !zox_valid(zox_get_child_by_id(world, canvas, zox_id(MenuPaused)))) {
+                zox_tst_nav2_resumed = 1;
+                return 1;
+            }
+            return f > 300;
     }
     return 0;
 }
 
 void zox_tst_navigator_check(ecs* world) {
     (void) world;
-    zox_log("[tst] navigator: [%i] frames, the pause one [%i], selected in it paused [%i], RB [%i], LB [%i], round [%i] of [%i] opened, not:%s",
-        zox_tst_nav2_count, zox_tst_nav2_pause, zox_tst_nav2_selected_paused, zox_tst_nav2_rb, zox_tst_nav2_lb,
-        zox_tst_nav2_round_open, zox_tst_nav2_round, zox_tst_nav2_closed);
-    zox_tst_check(zox_tst_nav2_pause >= 0, "paused, no taskbar frame for the pause menu");
-    zox_tst_check(zox_tst_nav2_selected_paused, "paused, the gamepad's selection isn't in the pause menu");
-    zox_tst_check(zox_tst_nav2_rb, "RB didn't step to the next ui (the pause menu's closed)");
-    zox_tst_check(zox_tst_nav2_lb, "LB didn't step back to the pause menu, the selection in it");
+    zox_log("[tst] navigator: [%i] frames, the first selected [%i], playing in the menus [%i], RB [%i], LB [%i], round [%i] of [%i] opened, not:%s; paused menu [%i], resumed [%i]",
+        zox_tst_nav2_count, zox_tst_nav2_selected_paused, zox_tst_nav2_menu_playing, zox_tst_nav2_rb, zox_tst_nav2_lb,
+        zox_tst_nav2_round_open, zox_tst_nav2_round, zox_tst_nav2_closed, zox_tst_nav2_pause_menu, zox_tst_nav2_resumed);
+    zox_tst_check(zox_tst_nav2_selected_paused, "Y: the first game menu isn't open");
+    zox_tst_check(zox_tst_nav2_menu_playing, "in the game menus the game was paused");
+    zox_tst_check(zox_tst_nav2_pause_off_taskbar != 2, "the pause menu is a game menu (a taskbar frame)");
+    zox_tst_check(zox_tst_nav2_rb, "RB didn't step to the next ui");
+    zox_tst_check(zox_tst_nav2_lb, "LB didn't step back to the first ui");
     zox_tst_check(zox_tst_nav2_round == zox_tst_nav2_count && zox_tst_nav2_round_open == zox_tst_nav2_count,
         "RB round the taskbar opened [%i] of [%i], not:%s", zox_tst_nav2_round_open, zox_tst_nav2_count, zox_tst_nav2_closed);
+    zox_tst_check(zox_tst_nav2_pause_menu, "Start: the game didn't pause with its pause menu, the selection in it");
+    zox_tst_check(zox_tst_nav2_resumed, "Start again didn't resume the game, the pause menu gone");
 }
 
 // tst: navigator_grid, a gamepad's stick steps a grid (element_navigation_system): a window of 4 x 3 frames, their

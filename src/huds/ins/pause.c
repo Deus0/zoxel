@@ -28,7 +28,7 @@ entity spawn_menu_paused(ecs *world, entity player) {
         header_font_size,
         list_font_size,
         (ClickEvent) {
-            &on_closed_taskbar_window
+            &button_event_return_to_game
         },
         1,
         0,
@@ -43,12 +43,6 @@ entity spawn_menu_paused(ecs *world, entity player) {
     zox_name("menu_paused");
     zox_add(e, MenuPaused);
     zox_add(e, NavigationWindow);
-    entity canvas = zox_get_link(world, player, CanvasLink);
-    link_window_to_taskbar(
-        world,
-        e,
-        canvas,
-        zox_id(MenuPaused));
     zox_add(e, PreInitialize);
     return e;
 }

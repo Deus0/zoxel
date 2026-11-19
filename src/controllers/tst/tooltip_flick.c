@@ -1,6 +1,6 @@
 // tst: tooltip_flick, flicking the mouse between two icons, the tooltip ends up showing the last one's text, its
 //  background shown and sized to it (in game its background didn't set, flicking between them)
-//  - in game, paused (the taskbar up, the mouse free): the fake mouse moves between two of its icons (different
+//  - in game, the game menus open (the taskbar up, the mouse free): the fake mouse moves between two of its icons (different
 //      tooltips) every frame,
 //      then rests on the second
 //  - checks: the tooltip's text is the second's, it's shown (RenderDisabled 0), its size fits its text
@@ -28,7 +28,7 @@ static inline int zox_tst_tf_find_all(ecs* world, entity e, entity* found, int c
 }
 
 byte zox_tst_tooltip_flick_ready(ecs* world) {
-    // spawned and settled before it starts (paused, the settle check can fail again)
+    // spawned and settled before it starts (in the menus, the settle check can fail again)
     if (!zox_tst_tf_stage && !zox_tst_tf_frames && !zox_tst_player_spawn_ready(world)) {
         return 0;
     }
@@ -38,9 +38,9 @@ byte zox_tst_tooltip_flick_ready(ecs* world) {
     static byte taskbar = 0;
     if (zox_tst_tf_stage == 0) {
         zox_tst_waiting = "two taskbar icons";
-        // paused: the taskbar up, the mouse free
+        // the game menus: the taskbar up, the mouse free
         if (!taskbar) {
-            button_event_pause_game(world, (ClickEventData) { .clicker = dbg_player });
+            toggle_game_menus(world, dbg_player);
             taskbar = 1;
             return 0;
         }
@@ -96,7 +96,7 @@ byte zox_tst_tooltip_flick_ready(ecs* world) {
             zox_getv(tooltip, TextPadding), default_line_padding);
         zox_tst_tf_sized = int2_equals(zox_tst_tf_size, zox_tst_tf_expected);
         zox_tst_mouse_end();
-        button_event_pause_game(world, (ClickEventData) { .clicker = dbg_player });
+        toggle_game_menus(world, dbg_player);
         return 1;
     }
     return 0;

@@ -3,7 +3,7 @@ extern void button_event_attack(ecs *world, const ClickEventData event);
 
 entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas) {
     // actions are picked by tapping their icon in the actionbar (actions/ui/fun touch_select_action)
-    byte touch_buttons_count = 4;
+    byte touch_buttons_count = 5;
     byte layer = max_layers2D - 10; // 1;
     int2 canvas_size = zox_getv(canvas, LayoutSize);
     // at most a seventh of the screen's short side: on a small screen (or a big ui_scale) the buttons covered most of
@@ -28,16 +28,19 @@ entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas)
     char* tnames[] = {
         "taskbar_paused",
         "touch_speak",
+        "taskbar_items",
         "touch_jump",
         "touch_attack",
     };
     ClickEvent onclicks[] = {
         (ClickEvent) { &button_event_pause_game },
         (ClickEvent) { &button_event_speak },
+        (ClickEvent) { &button_event_game_menus },     // the game menus, the game going on
         (ClickEvent) { &button_event_jump },
         (ClickEvent) { &button_event_attack },
     };
     float2 banchors[] = {
+        float2_bottom_left,
         float2_bottom_left,
         float2_bottom_left,
         float2_bottom_right,
@@ -46,6 +49,7 @@ entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas)
     int2 bpositions[] = {
         (int2) { bposition.x, bposition.y },
         (int2) { bposition.x, bposition.y + (button_size + bpadding)  },
+        (int2) { bposition.x, bposition.y + 2 * (button_size + bpadding)  },
         (int2) { -bposition.x, bposition.y },
         (int2) { -bposition.x, bposition.y + (button_size + bpadding)  },
     };

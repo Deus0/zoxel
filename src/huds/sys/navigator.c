@@ -105,6 +105,44 @@ entity navigator_shift(ecs* world, entity player, int direction) {
     return window;
 }
 
+// the player's game menus opened (Y, R): the row's first ui opens, the navigators' selections in it (a hud open
+//  already, the action bar, isn't where it starts: stepping from it opened the one after it)
+entity navigator_open_first(ecs* world, entity player) {
+    const entity canvas = zox_get_link(world, player, CanvasLink);
+    entity frames[navigator_frames_max];
+    if (!zox_valid(canvas) || !navigator_frames(world, canvas, frames)) {
+        return 0;
+    }
+    entity window = zox_getv(frames[0], ActiveState) ?
+        zox_get_child_by_id(world, canvas, zox_getv(frames[0], TaskbarWindowID)) : taskbar_frame_toggle(world, frames[0], player);
+    navigator_opened_kept = zox_getv(frames[0], ActiveState);
+    if (zox_valid(window)) {
+        zox_add(window, NavigationWindow);
+    }
+    navigator_opened = window;
+    entity devices[zox_children_capacity];
+    const uint length = zox_get_children_by_id(world, player, devices, zox_children_capacity, zox_id(DeviceNavigator));
+    for (uint i = 0; i < length; i++) {
+        raycaster_select_element(world, devices[i], 0);
+    }
+    return window;
+}
+
+// the first game menu opened, once the taskbar's frames are there and in order (spawned after it, ChildIndex), while
+//  still in the menus
+void delayed_open_game_menu(ecs* world, entity e) {
+    if (!zox_valid(e) || zox_getv(e, PlayerState) != zox_player_state_paused) {
+        return;
+    }
+    const entity canvas = zox_get_link(world, e, CanvasLink);
+    entity frames[navigator_frames_max];
+    if (!zox_valid(canvas) || !navigator_frames(world, canvas, frames)) {
+        delay_event(world, &delayed_open_game_menu, e, 0.05f);
+        return;
+    }
+    navigator_open_first(world, e);
+}
+
 // LB or RB pressed this frame on any of the player's devices
 void navigator_shift_system(iter* it) {
     zox_sys_on_begin();

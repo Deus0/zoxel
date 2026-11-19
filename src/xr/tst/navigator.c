@@ -1,9 +1,9 @@
-// tst: xr_navigator, paused in a game on the simulator, the taskbar's a 3D row above the pause menu, and the grips
-//  (LB, RB) step through its uis one at a time (huds/sys/navigator.c, huds/ins/taskbar.c spawn_taskbar)
-//  - the menu button pauses: the taskbar's a Canvas3, its pause frame lit (the pause menu open)
-//  - RB: the frame after it lit, the pause menu's not (it closed: a hud, the action bar, stays open); LB: the pause
-//    frame lit again, the menu back
-//  - screenshot paused, the taskbar over the menu: tst/xr_navigator.ppm
+// tst: xr_navigator, the game menus in a game on the simulator, the taskbar's a 3D row, and the grips (LB, RB) step
+//  through its uis one at a time (huds/sys/navigator.c, huds/ins/taskbar.c spawn_taskbar)
+//  - Y (the left hand's) opens the game menus: the taskbar's a Canvas3, its first frame lit (its ui open)
+//  - RB: the frame after it lit, the first's not (it closed: a hud, the action bar, stays open); LB: the first
+//    frame lit again
+//  - screenshot in the menus, the taskbar over the first ui: tst/xr_navigator.ppm
 //  - on the skills window its punch's icon is selected (as navigation or a hand's ray will): its window's 3D tooltip
 //    shows its text under it (tst/xr_tooltip.ppm)
 //  - then RB round every ui: each opens 3D (a Canvas3 with 3D elements: spawn_window's 3D twins), a screenshot each
@@ -75,17 +75,11 @@ static byte zox_tst_xr_nav_is_lit(ecs* world, entity canvas, int index) {
     return index >= 0 && index < count && zox_getv(frames[index], ActiveState);
 }
 
-// the paused frame's place in the row (MenuPaused's), -1 none
+// the first game menu's place in the row: Y opens it (the pause menu isn't a game menu); counts the row's frames
 static int zox_tst_xr_nav_pause_index(ecs* world, entity canvas) {
     entity frames[navigator_frames_max];
-    const int count = navigator_frames(world, canvas, frames);
-    zox_tst_xr_nav_frame_count = count;
-    for (int i = 0; i < count; i++) {
-        if (zox_getv(frames[i], TaskbarWindowID) == zox_id(MenuPaused)) {
-            return i;
-        }
-    }
-    return -1;
+    zox_tst_xr_nav_frame_count = navigator_frames(world, canvas, frames);
+    return 0;
 }
 
 byte zox_tst_xr_navigator_ready(ecs* world) {
@@ -98,16 +92,17 @@ byte zox_tst_xr_navigator_ready(ecs* world) {
     const int f = ++zox_tst_xr_nav_frames;
     zox_tst_progress(zox_tst_xr_nav_stage * 1000 + f);
     xr_sim_script_start = 0;
+    xr_sim_script_y = 0;
     xr_sim_script_lb = 0;
     xr_sim_script_rb = 0;
     switch (zox_tst_xr_nav_stage) {
         case 0:
-            zox_tst_waiting = "paused, the taskbar up";
-            xr_sim_script_start = f >= 20 && f < 24;
+            zox_tst_waiting = "Y, the game menus up";
+            xr_sim_script_y = f >= 20 && f < 24;
             {
                 const entity taskbar = zox_get_child_by_id(world, canvas, zox_id(Taskbar));
                 if (f > 40 && zox_valid(taskbar) && zox_getv(player, PlayerState) == zox_player_state_paused &&
-                    zox_valid(zox_get_child_by_id(world, canvas, zox_id(MenuPaused)))) {
+                    zox_tst_xr_nav_is_lit(world, canvas, 0)) {
                     zox_tst_xr_nav_taskbar3 = zox_has(taskbar, Canvas3);
                     const int pause = zox_tst_xr_nav_pause_index(world, canvas);
                     zox_tst_xr_nav_paused_lit = zox_tst_xr_nav_is_lit(world, canvas, pause) ? pause : -1;
@@ -141,8 +136,7 @@ byte zox_tst_xr_navigator_ready(ecs* world) {
             xr_sim_script_lb = f >= 2 && f < 6;
             if (f == 30) {
                 zox_tst_xr_nav_lb_lit = zox_tst_xr_nav_is_lit(world, canvas, zox_tst_xr_nav_paused_lit) ? zox_tst_xr_nav_paused_lit : -1;
-                const entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuPaused));
-                zox_tst_xr_nav_menu_back = zox_valid(menu) && !zox_has(menu, UIClosing);
+                zox_tst_xr_nav_menu_back = zox_tst_xr_nav_is_lit(world, canvas, 0);
                 zox_tst_xr_nav_next();
             }
             return 0;

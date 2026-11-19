@@ -52,13 +52,7 @@ void import_huds(ecs* world) {
     zox_tsts_huds(world);
 #endif
     spawn_taskbar_manager(world);
-    add_taskbar_button(world, (TaskbarData) {
-        .index = 0,
-        .spawn = &spawn_menu_paused,
-        .component_id = zox_id(MenuPaused),
-        .texture_name = "taskbar_paused",
-        .tooltip_text = "Pause Menu"
-    });
+    // the pause menu isn't a game menu: Start or Escape pauses the game (huds/eve/pause.c), Y or R opens the game menus
     add_taskbar_button(world, (TaskbarData) {
         .index = 10,
         .spawn = &zox_tst_render_texture_character,
