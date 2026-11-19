@@ -8,6 +8,7 @@
 #include "mass_delete.c"
 #include "prefab_variants.c"
 #include "id_reuse.c"
+#include "wildcard_remove.c"
 
 #include "pipeline_syncs.c"
 
@@ -16,6 +17,7 @@ void zox_tsts_flecs(ecs* world) {
     zox_components_tst_children(world);
     zox_components_tst_mass_spawn(world);
     zox_components_tst_prefab_variants(world);
+    zox_components_tst_wildcard_remove(world);
     zox_tst_add("links_api", zox_tst_links_api_ready, zox_tst_links_api_check, 30);
     zox_tst_add("children", zox_tst_children_ready, zox_tst_children_check, 30);
     zox_tst_add("nf_cascade", zox_tst_nf_ready, zox_tst_nf_cascade_check, 30);
@@ -35,5 +37,7 @@ void zox_tsts_flecs(ecs* world) {
     zox_tst_set_setup("prefab_variants", NULL, 1);
     zox_tst_add("instance_id_reuse", zox_tst_instance_id_reuse_ready, zox_tst_instance_id_reuse_check, 30);
     zox_tst_set_setup("instance_id_reuse", NULL, 1);
+    zox_tst_add("flecs_wildcard_remove", zox_tst_wildcard_remove_ready, zox_tst_wildcard_remove_check, 30);
+    zox_tst_set_setup("flecs_wildcard_remove", NULL, 1);
     zox_tsts_pipeline_syncs(world);
 }
