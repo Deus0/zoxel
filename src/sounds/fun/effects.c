@@ -20,6 +20,8 @@ const SoundEffect sound_effects[sound_effect_end] = {
     [sound_effect_start] = { "start", instrument_piano, 40, 40, 2.8f, 2.8f, 1.1f, 1.3f },
     [sound_effect_ui_open] = { "ui open", instrument_harp, 47, 50, 0.25f, 0.3f, 0.8f, 1.0f },
     [sound_effect_splash] = { "splash", instrument_squelch, 34, 38, 0.3f, 0.4f, 1.8f, 2.2f },
+    [sound_effect_door_open] = { "door open", instrument_creak, 33, 37, 0.45f, 0.55f, 1.6f, 1.8f },
+    [sound_effect_door_close] = { "door close", instrument_shut, 35, 39, 0.3f, 0.35f, 3.2f, 3.4f },
 };
 
 // materials, what a hit sounds like by what it hits (doc/sounds.md), kinds link one (link_hit_sound)

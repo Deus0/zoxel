@@ -170,7 +170,7 @@ void spawn_vodes_dive(
     byte direction = 0;
     if (extra) {
         const byte block_data = zox_has(chunk, BlockDatas) ? get_block_data(zox_get(chunk, BlockDatas), position) : 0;
-        direction = block_data ? block_data - 1 : 0;
+        direction = block_data_direction(block_data);
         const float3 to_centre = float3_single(((1 << extra) - 1) * 0.5f * data->terrain_block_scale);
         positionf = float3_add(positionf, float4_rotate_float3(block_direction_rotation(direction), to_centre));
     }

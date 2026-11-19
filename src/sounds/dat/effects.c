@@ -24,6 +24,8 @@ typedef enum {
     sound_effect_start,         // the start screen, on to the main menu
     sound_effect_ui_open,       // a window opened (player_toggle_ui)
     sound_effect_splash,
+    sound_effect_door_open,     // a creak (vodes/doors)
+    sound_effect_door_close,    // a thump and its latch
     sound_effect_end
 } SoundEffectType;
 

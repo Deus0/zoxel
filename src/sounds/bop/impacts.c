@@ -91,3 +91,28 @@ float rustle_sound(float time, float frequency) {
     const float twigs = 0.5f * impact_noise(time, frequency * 5, 1.1f);
     return (leaves + twigs) * swell;
 }
+
+// Doors (vodes/doors)
+
+// a door opening, a hinge's creak: stick and slip, a buzz at frequency gliding up and wavering, its loudness rough,
+//  through a hollow wooden ring
+float creak_sound(float time, float frequency) {
+    const float glide = 0.8f, waver = 0.04f;
+    const float phase = frequency * (time + glide * time * time) + waver * frequency * sinf(2 * M_PI * 5 * time) / (2 * M_PI * 5);
+    const float buzz = 2 * (phase - floorf(phase)) - 1;
+    const float rough = 0.55f + 0.45f * impact_noise(time, 40, 4.3f);
+    const float ring = 0.3f * sinf(2 * M_PI * frequency * 2.76f * time) * rough;
+    return (0.6f * buzz + ring) * rough;
+}
+
+// a door closing: a heavy wooden thump at frequency, falling a little, and the latch's click over it
+float shut_sound(float time, float frequency) {
+    const float drop = 0.5f, drop_rate = 20;
+    const float phase = 2 * M_PI * frequency * (time + drop * (1 - expf(-time * drop_rate)) / drop_rate);
+    const float body = sinf(phase) * expf(-time * 11);
+    const float wood = 0.5f * sinf(2 * M_PI * frequency * 2.76f * time) * expf(-time * 20);
+    const float slap = 0.7f * impact_noise(time, 2600, 5.1f) * expf(-time * 50);
+    const float latch_time = time - 0.05f;
+    const float latch = latch_time > 0 ? 0.5f * impact_noise(latch_time, 6000, 6.7f) * expf(-latch_time * 90) : 0;
+    return body + wood + slap + latch;
+}

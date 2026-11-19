@@ -57,6 +57,7 @@ typedef struct {
     int3 position;
     entity chunk;
     const VoxelNode* octree;
+    const BlockDatas* datas;    // its block datas, NULL if it has none (most chunks)
 } collision_chunk_cache;
 
 // Returns 1 if there is a chunk with voxels at chunk_position (and fills the cache), else 0.
@@ -73,6 +74,10 @@ static inline byte collision_chunk_select(ecs* world, collision_chunk_cache* cac
     if (cache->found) {
         cache->octree = zox_get(chunk, VoxelNode);
         cache->depth = zox_getv(chunk, NodeDepth);
+        cache->datas = zox_has(chunk, BlockDatas) ? zox_get(chunk, BlockDatas) : NULL;
+        if (cache->datas && !cache->datas->length) {
+            cache->datas = NULL;
+        }
     }
     return cache->found;
 }
@@ -155,7 +160,11 @@ static inline byte collision_block_solid(const collision_terrain* terrain, colli
     }
     const byte3 local_position = block_position_to_local_position(block_position, terrain->depth, cache->depth);
     const byte voxel = getv_VoxelNode(cache->octree, cache->depth, local_position);
-    return collision_is_voxel_solid(world, terrain->blocks, voxel);
+    if (!collision_is_voxel_solid(world, terrain->blocks, voxel)) {
+        return 0;
+    }
+    // an open door's part (block_data_open, vodes/doors) is walked through
+    return !cache->datas || !(get_block_data(cache->datas, local_position) & block_data_open);
 }
 
 // Is the block containing this point solid?

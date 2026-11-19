@@ -25,5 +25,7 @@
 #define instrument_tock 22       // wood
 #define instrument_squelch 23    // slime
 #define instrument_rustle 24     // leaves
-#define instrument_end 25
-#define instrument_piano_file 26   // the piano.wav sound file, re-pitched (not generated)
+#define instrument_creak 25      // a door opening
+#define instrument_shut 26       // a door closing
+#define instrument_end 27
+#define instrument_piano_file 28   // the piano.wav sound file, re-pitched (not generated)

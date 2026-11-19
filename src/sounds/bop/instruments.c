@@ -41,6 +41,8 @@ const InstrumentData instruments[instrument_end] = {
     [instrument_tock] = { "tock", tock_sound, 0.001f, 0.35f, 1 },
     [instrument_squelch] = { "squelch", squelch_sound, 0.004f, 0.4f, 1 },
     [instrument_rustle] = { "rustle", rustle_sound, 0.02f, 0.3f, 1 },
+    [instrument_creak] = { "creak", creak_sound, 0.03f, 0.3f, 1 },
+    [instrument_shut] = { "shut", shut_sound, 0.001f, 0.4f, 1 },
 };
 
 static inline byte is_instrument(byte instrument) {
