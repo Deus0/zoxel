@@ -16,3 +16,16 @@ static inline byte game_ending(ecs* world, entity game) {
     return !zox_valid(game) || zox_getv(game, GameState) >= zox_game_state_the_end ||
         zox_getv(game, GameStateTarget) >= zox_game_state_the_end;
 }
+
+// paused, the realm's clock stops (its ClockScale 0), all under it with it (timing/sys/clock.c); playing it runs again
+void game_state_realm_clock(ecs* world, entity game, byte state) {
+    const entity realm = zox_get_link(world, game, RealmLink);
+    if (!zox_valid(realm) || !zox_has(realm, ClockScale)) {
+        return;
+    }
+    if (state == zox_game_state_paused) {
+        zox_setv(realm, ClockScale, 0);
+    } else if (state == zox_game_state_playing) {
+        zox_setv(realm, ClockScale, 1);
+    }
+}

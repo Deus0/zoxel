@@ -6,6 +6,8 @@ entity spawn_prefab_projectile(ecs* world, entity prefab) {
     // Add Physics and Forward Vector
     zox_add(e, Moveable);
     zox_set(e, Velocity3D, { float3_zero });
+    zox_setv(e, ClockTime, 0);      // its terrain's (ClockLink, as it's shot)
+    zox_setv(e, ClockDelta, 0);
     zox_set(e, Acceleration3D, { float3_zero });
     zox_set(e, Gravity3D, { float3_multiply1(zox_default_gravity, 0.2f) });
     // its trail (coloured as it's shot)

@@ -3,16 +3,19 @@ float ground_friction3 = 6;
 float air_friction3 = 1;
 
 // moves bodies with an Acceleration3D: exact steps (see physics/fun), then clears the forces
+//  - by each body's clock (physics_body_dt): paused, its realm's is 0, it stays
 static inline void physics3_accelerate(iter* it, const float k, const float dt) {
-    const physics_step step = physics_step_new(k, dt);
+    const physics_step frame_step = physics_step_new(k, dt);
     zox_sys_begin();
     zox_sys_out(Acceleration3D);
     zox_sys_out(Velocity3D);
     zox_sys_out(Position3D);
+    zox_sys_in(ClockDelta);
     for (int i = 0; i < it->count; i++) {
         zox_sys_o(Acceleration3D, acceleration);
         zox_sys_o(Velocity3D, velocity);
         zox_sys_o(Position3D, position);
+        const physics_step step = ClockDelta_ ? physics_step_new(k, ClockDelta_[i].value) : frame_step;
         position->value = float3_add(position->value, physics_step_apply3(step, &velocity->value, acceleration->value));
         float3_make_zero(&acceleration->value);
     }
@@ -51,12 +54,15 @@ void friction3_system(iter* it) {
     zox_sys_out(Acceleration3D);
     zox_sys_out(Velocity3D);
     zox_sys_out(Position3D);
+    zox_sys_in(ClockDelta);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Grounded, grounded);
         zox_sys_o(Acceleration3D, acceleration);
         zox_sys_o(Velocity3D, velocity);
         zox_sys_o(Position3D, position);
-        const physics_step step = grounded->value ? ground : air;
+        const physics_step step = ClockDelta_ ?
+            physics_step_new(grounded->value ? ground_friction3 : air_friction3, ClockDelta_[i].value) :
+            (grounded->value ? ground : air);
         position->value = float3_add(position->value, physics_step_apply3(step, &velocity->value, acceleration->value));
         float3_make_zero(&acceleration->value);
     }

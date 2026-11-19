@@ -2,8 +2,16 @@
 #include "timers.c"
 #include "destroy_in_frame.c"
 #include "system_time.c"
+#include "clock.c"
 
 void zox_systems_timing(ecs* world) {
+    // first in the frame's update, before what moves by them
+    zox_system(
+        clock_system,
+        zoxp_update,
+        [out] timing.ClockTime,
+        [out] timing.ClockDelta,
+    );
     zox_system(
         timer_system,
         zoxp_update,

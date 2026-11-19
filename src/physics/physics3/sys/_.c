@@ -12,6 +12,7 @@
 //  - spin: rolling sets it, then an exact step of omega and rotation, angular drag included
 //  - forces added in zoxp_physics by later modules (i.e. jump_force_system) land next frame
 //  - each body moves in exactly one linear and one spin system, picked by its components
+//  - by its clock (?ClockDelta: its realm's, 0 paused), the frame's without one (physics_body_dt)
 void zox_systems_physics3(ecs *world) {
     zox_system(
         gravity3_system,
@@ -34,6 +35,7 @@ void zox_systems_physics3(ecs *world) {
         [out] physics3.Acceleration3D,
         [out] physics3.Velocity3D,
         [out] transforms3.Position3D,
+        [in] ?timing.ClockDelta,
         [none] !physics.Frictioned
     );
     zox_system(
@@ -42,6 +44,7 @@ void zox_systems_physics3(ecs *world) {
         [out] physics3.Acceleration3D,
         [out] physics3.Velocity3D,
         [out] transforms3.Position3D,
+        [in] ?timing.ClockDelta,
         [none] physics.Frictioned,
         [none] !physics.Grounded
     );
@@ -52,6 +55,7 @@ void zox_systems_physics3(ecs *world) {
         [out] physics3.Acceleration3D,
         [out] physics3.Velocity3D,
         [out] transforms3.Position3D,
+        [in] ?timing.ClockDelta,
         [none] physics.Frictioned
     );
     zox_system(
@@ -59,6 +63,7 @@ void zox_systems_physics3(ecs *world) {
         zoxp_physics,
         [in] physics3.Velocity3D,
         [out] transforms3.Position3D,
+        [in] ?timing.ClockDelta,
         [none] !physics3.Acceleration3D
     );
     // spin
@@ -70,6 +75,7 @@ void zox_systems_physics3(ecs *world) {
         [in] transforms3.Bounds3D,
         [in] transforms3.Rotation3D,
         [out] physics3.Omega3D,
+        [in] ?timing.ClockDelta,
         [none] physics3.Rolling3D,
         [none] !physics.Frictioned
     );
@@ -81,6 +87,7 @@ void zox_systems_physics3(ecs *world) {
         [in] transforms3.Bounds3D,
         [in] transforms3.Rotation3D,
         [out] physics3.Omega3D,
+        [in] ?timing.ClockDelta,
         [none] physics3.Rolling3D,
         [none] physics.Frictioned
     );
@@ -90,6 +97,7 @@ void zox_systems_physics3(ecs *world) {
         [out] physics3.Alpha3D,
         [out] physics3.Omega3D,
         [out] transforms3.Rotation3D,
+        [in] ?timing.ClockDelta,
         [none] !physics.Frictioned
     );
     zox_system(
@@ -98,6 +106,7 @@ void zox_systems_physics3(ecs *world) {
         [out] physics3.Alpha3D,
         [out] physics3.Omega3D,
         [out] transforms3.Rotation3D,
+        [in] ?timing.ClockDelta,
         [none] physics.Frictioned
     );
     zox_system(
@@ -105,6 +114,7 @@ void zox_systems_physics3(ecs *world) {
         zoxp_physics,
         [out] physics3.Omega3D,
         [out] transforms3.Rotation3D,
+        [in] ?timing.ClockDelta,
         [none] !physics3.Alpha3D,
         [none] !physics.Frictioned
     );
@@ -113,6 +123,7 @@ void zox_systems_physics3(ecs *world) {
         zoxp_physics,
         [out] physics3.Omega3D,
         [out] transforms3.Rotation3D,
+        [in] ?timing.ClockDelta,
         [none] !physics3.Alpha3D,
         [none] physics.Frictioned
     );

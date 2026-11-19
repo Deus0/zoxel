@@ -93,3 +93,9 @@ static inline void zox_physics_profile_reset() {
     __atomic_store_n(&zox_physics_profile_ns, 0, __ATOMIC_RELAXED);
     __atomic_store_n(&zox_physics_profile_bodies, 0, __ATOMIC_RELAXED);
 }
+
+// a body's seconds this frame: its clock's (ClockDelta, its realm's: 0 while paused, timing/sys/clock.c), the
+//  frame's without one (particles); a system's optional [in] ?timing.ClockDelta, its field NULL in tables without it
+static inline float physics_body_dt(const ClockDelta* clocks, int i) {
+    return clocks ? clocks[i].value : (float) zox_delta_time;
+}

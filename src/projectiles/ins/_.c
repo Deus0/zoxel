@@ -32,5 +32,8 @@ entity spawn_projectile(
         zox_get_link(world, user, TerrainLink) :
         0;
     zox_set_link(world, e, TerrainLink, terrain);
+    if (terrain) {
+        zox_link(world, e, ClockLink, terrain);
+    }
     return e;
 }

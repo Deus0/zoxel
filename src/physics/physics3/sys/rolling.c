@@ -17,6 +17,7 @@ static inline void physics3_roll(iter* it, const float c) {
     zox_sys_in(Bounds3D);
     zox_sys_in(Rotation3D);
     zox_sys_out(Omega3D);
+    zox_sys_in(ClockDelta);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Grounded, grounded);
         zox_sys_i(Velocity3D, velocity);
@@ -27,7 +28,13 @@ static inline void physics3_roll(iter* it, const float c) {
             continue;
         }
         const float3 world_omega = physics3_rolling_omega(velocity->value, bounds->value.y);
-        omega->value = float3_scale(physics3_world_to_body(rotation->value, world_omega), boost);
+        float body_boost = boost;
+        if (ClockDelta_) {
+            const float body_dt = ClockDelta_[i].value;
+            const physics_step body_step = physics_step_new(c, body_dt);
+            body_boost = body_step.g > 0 ? body_dt / body_step.g : 1;
+        }
+        omega->value = float3_scale(physics3_world_to_body(rotation->value, world_omega), body_boost);
     }
     zox_physics_profile_end();
 }

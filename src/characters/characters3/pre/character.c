@@ -12,6 +12,9 @@ entity spawn_prefab_character3(ecs *world) {
     zox_setv(e, Rotation3D, float4_identity);
     zox_setv(e, Scale1, 1);
     zox_setv(e, TransformMatrix, float4x4_identity);
+    // its clock, its terrain's (ClockLink, as it spawns): it moves by it, stopped paused
+    zox_setv(e, ClockTime, 0);
+    zox_setv(e, ClockDelta, 0);
     // Render State, children follow these
     zox_setv(e, RenderDisabled, 0);
     zox_setv(e, RenderDepth, 0);

@@ -31,6 +31,7 @@ entity spawn_terrain(
     zox_set_parent(world, e, realm);
     zox_link(world, e, RealmLink, realm);
     zox_link(world, realm, TerrainLink, e);
+    zox_link(world, e, ClockLink, realm);
     if (tilemap) {
         zox_link(world, e, Tilemap, tilemap);
         zox_link(world, tilemap, TerrainLink, e);

@@ -443,7 +443,13 @@ void terrain_collision_system(iter* it) {
         //      the sweep covers a little more) and ahead when against it (rising in a jump), well
         //      within the push-out's reach (collision_step_scale * half a block)
         const byte dragged = zox_has(e, Frictioned) && zox_has(e, Acceleration3D);
-        const float move_scale = dragged ? (grounded->value ? move_scale_ground : move_scale_air) : sweep_dt;
+        float move_scale = dragged ? (grounded->value ? move_scale_ground : move_scale_air) : sweep_dt;
+        // by its clock, as the physics stepped it (physics_body_dt): paused, it didn't move
+        if (sweep_dt > 0 && zox_has(e, ClockDelta)) {
+            const float body_dt = zox_getv(e, ClockDelta);
+            const physics_step body_step = physics_step_new(grounded->value ? ground_friction3 : air_friction3, body_dt);
+            move_scale = dragged ? (body_step.keep > 0 ? body_step.g / body_step.keep : body_dt) : body_dt;
+        }
         const float3 move = float3_scale(velocity->value, move_scale);
         float move_max = float_abs(move.x);
         if (float_abs(move.y) > move_max) move_max = float_abs(move.y);

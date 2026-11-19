@@ -9,10 +9,11 @@ void velocity3_system(iter* it) {
     zox_sys_begin();
     zox_sys_in(Velocity3D);
     zox_sys_out(Position3D);
+    zox_sys_in(ClockDelta);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Velocity3D, velocity);
         zox_sys_o(Position3D, position);
-        position->value = float3_add(position->value, float3_scale(velocity->value, zox_delta_time));
+        position->value = float3_add(position->value, float3_scale(velocity->value, physics_body_dt(ClockDelta_, i)));
     }
     zox_physics_profile_end();
     zox_sys_on_end();

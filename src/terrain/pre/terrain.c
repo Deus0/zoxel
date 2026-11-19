@@ -6,6 +6,9 @@ entity spawn_prefab_terrain(ecs *world) {
     zox_add(e, Loading);
     zox_setv(e, BlockScale, default_vox_scale);
     zox_setv(e, NodeDepth, 0);
+    // its clock, its realm's (ClockLink)
+    zox_setv(e, ClockTime, 0);
+    zox_setv(e, ClockDelta, 0);
     // Should we add transform late?
     // Links
     zox_add(e, RegionLinks);

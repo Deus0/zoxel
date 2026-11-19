@@ -24,12 +24,15 @@ static inline void physics3_spin(iter* it, const float c) {
     zox_sys_out(Alpha3D);
     zox_sys_out(Omega3D);
     zox_sys_out(Rotation3D);
+    zox_sys_in(ClockDelta);
     for (int i = 0; i < it->count; i++) {
         zox_sys_o(Alpha3D, alpha);
         zox_sys_o(Omega3D, omega);
         zox_sys_o(Rotation3D, rotation);
-        const float3 turn = physics_step_apply3(step, &omega->value, alpha->value);
-        physics3_turn(&rotation->value, turn, dt);
+        const float body_dt = physics_body_dt(ClockDelta_, i);
+        const physics_step body_step = ClockDelta_ ? physics_step_new(c, body_dt) : step;
+        const float3 turn = physics_step_apply3(body_step, &omega->value, alpha->value);
+        physics3_turn(&rotation->value, turn, body_dt);
         float3_make_zero(&alpha->value);
     }
     zox_physics_profile_end();
@@ -42,11 +45,14 @@ static inline void physics3_spin_free(iter* it, const float c) {
     zox_sys_begin();
     zox_sys_out(Omega3D);
     zox_sys_out(Rotation3D);
+    zox_sys_in(ClockDelta);
     for (int i = 0; i < it->count; i++) {
         zox_sys_o(Omega3D, omega);
         zox_sys_o(Rotation3D, rotation);
-        const float3 turn = physics_step_apply3(step, &omega->value, float3_zero);
-        physics3_turn(&rotation->value, turn, dt);
+        const float body_dt = physics_body_dt(ClockDelta_, i);
+        const physics_step body_step = ClockDelta_ ? physics_step_new(c, body_dt) : step;
+        const float3 turn = physics_step_apply3(body_step, &omega->value, float3_zero);
+        physics3_turn(&rotation->value, turn, body_dt);
     }
     zox_physics_profile_end();
 }

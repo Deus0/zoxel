@@ -1,3 +1,4 @@
+extern void game_state_realm_clock(ecs*, entity, byte);
 entity prefab_game;
 entity local_game;
 
@@ -5,4 +6,6 @@ entity local_game;
 
 void spawn_prefabs_games(ecs *world) {
     prefab_game = spawn_prefab_game(world);
+    zox_muter(prefab_game, GameStateEvent, game_event);
+    add_to_GameStateEvent(game_event, game_state_realm_clock);
 }

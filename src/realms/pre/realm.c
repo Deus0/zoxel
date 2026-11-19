@@ -5,6 +5,10 @@ entity spawn_prefab_realm(ecs* world) {
     zox_setv(e, Seed, 666);
     zox_setv(e, GenerateRealm, zox_generate_realm_none);
     zox_set(e, FolderPath, { 0 });
+    // its own time: its terrain's and all in it follow it, paused it stops (timing/sys/clock.c)
+    zox_setv(e, ClockTime, 0);
+    zox_setv(e, ClockDelta, 0);
+    zox_setv(e, ClockScale, 1);
     return e;
 }
 

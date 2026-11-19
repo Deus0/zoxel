@@ -57,6 +57,7 @@ static inline void setup_character3(
     }
     if (terrain) {
         zox_link(world, e, TerrainLink, terrain);
+        zox_link(world, e, ClockLink, terrain);
     }
     zox_setv(e, Seed, seed);
     // what it sounds like hit, its kind's realm sound (sounds/bop/hits.c)
