@@ -3,7 +3,7 @@ float main_menu_vignette = 2.2f;
 float main_menu_blur = 0.4f;
 float game_vignette = 1.0f;
 float game_blur = 0;
-float dialogue_vignette = 3.1f;
+float dialogue_vignette = 1.8f;
 float dialogue_blur = 0.3f;
 float pause_vignette = 2.2f;
 #include "pre/_.c"
