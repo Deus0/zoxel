@@ -35,7 +35,8 @@ void zox_components_layouts2(ecs* world) {
     zoxd_tag(Canvas3);
     zoxd_tag(BoundToCanvas);
     zoxd_tag(BoundToParent);
-    zoxd_nf_link(CanvasLink);
+    // many: a player's own canvas, and while paused the one it shares with every player (huds pause_canvas.c)
+    zoxd_nf_links(CanvasLink);
     zoxd_byte(Layer);
     zoxd_byte(BonusLayer);
     // local positions

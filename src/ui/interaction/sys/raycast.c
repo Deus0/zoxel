@@ -51,10 +51,20 @@ void element_raycast_system(iter* it) {
         if (!raycaster_mode) {
             continue;
         }
-        entity canvas = zox_get_link(
-            world,
-            player,
-            CanvasLink);
+        // its canvases (CanvasLink, many): its own (its PlayerLink is the player), and one it shares with every player
+        //  (the pause menu's, over the whole window): what's hit on that one is over its own
+        entity canvas = 0, shared_canvas = 0;
+        for (int k = 0; ; k++) {
+            const entity c = zox_get_link_index(world, player, CanvasLink, k);
+            if (!c) {
+                break;
+            }
+            if (zox_get_link(world, c, PlayerLink) == player) {
+                canvas = c;
+            } else {
+                shared_canvas = c;
+            }
+        }
         if (!zox_valid(canvas)) {
             continue;
         }
@@ -79,6 +89,10 @@ void element_raycast_system(iter* it) {
         }
         int ui_layer = -1;
         entity ui_selected = 0;
+        CanvasViewport shared_viewport;
+        const byte has_shared = zox_valid(shared_canvas) && get_canvas_viewport(world, shared_canvas, &shared_viewport);
+        int shared_layer = -1;
+        entity shared_selected = 0;
         zox_sys_query_begin();
         while (zox_sys_query_loop()) {
             zox_sys_begin_2();
@@ -96,17 +110,23 @@ void element_raycast_system(iter* it) {
                 }
                 entity e2 = it2.entities[j];
                 entity rcanvas = zox_get_parent_by_id(world, e2, zox_id(Canvas));
-                if (canvas != rcanvas) {
+                const byte on_shared = has_shared && rcanvas == shared_canvas;
+                if (canvas != rcanvas && !on_shared) {
                     continue;
                 }
                 int4 ui_bounds = get_element_pointer_bounds(
                     world,
-                    &viewport,
+                    on_shared ? &shared_viewport : &viewport,
                     e2,
                     position2->value,
                     lsize2->value);
                 byte was_raycasted = is_in_pointer_bounds(ui_bounds, position);
-                if (was_raycasted) {
+                if (was_raycasted && on_shared) {
+                    if (layer->value > shared_layer) {
+                        shared_layer = layer->value;
+                        shared_selected = e2;
+                    }
+                } else if (was_raycasted) {
                     if (layer->value > ui_layer) {
                         ui_layer = layer->value;
                         ui_selected = e2;
@@ -123,6 +143,9 @@ void element_raycast_system(iter* it) {
             }
         }
         zox_sys_query_end();
+        if (shared_selected) {
+            ui_selected = shared_selected;
+        }
         // if only exists to block others (like Window's)
         if (ui_selected && !zox_has(ui_selected, SelectState)) {
             ui_selected = 0;

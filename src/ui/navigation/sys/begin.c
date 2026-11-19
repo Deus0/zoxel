@@ -60,19 +60,26 @@ void element_navigation_begin_system(iter* it) {
         if (device_mode != zox_device_mode_gamepad) {
             continue;
         }
-        entity canvas = zox_get_link(world, player, CanvasLink);
-        if (!zox_valid(canvas)) {
-            // zox_logw("Canvas is missing from Player");
-            continue;
-        }
-        // the newest open one: a closing one (UIClosing, popping out) is skipped
+        // its canvases (CanvasLink, many): one it shares with every player first (not its own: its PlayerLink isn't the
+        //  player, the pause menu's), else the newest open one on its own; a closing one (UIClosing) skipped
         entity window = 0;
-        iter it2 = zox_children(world, canvas);
-        while (zox_children_next(it2)) {
-            for (int j = 0; j < it2.count; j++) {
-                const entity e2 = it2.entities[j];
-                if (zox_has(e2, NavigationWindow) && !zox_has(e2, UIClosing)) {
-                    window = e2;
+        for (byte pass = 0; pass < 2 && !window; pass++) {
+            for (int k = 0; !window; k++) {
+                const entity c = zox_get_link_index(world, player, CanvasLink, k);
+                if (!c) {
+                    break;
+                }
+                if ((zox_get_link(world, c, PlayerLink) != player) != !pass) {
+                    continue;
+                }
+                iter it2 = zox_children(world, c);
+                while (zox_children_next(it2)) {
+                    for (int j = 0; j < it2.count; j++) {
+                        const entity e2 = it2.entities[j];
+                        if (zox_has(e2, NavigationWindow) && !zox_has(e2, UIClosing)) {
+                            window = e2;
+                        }
+                    }
                 }
             }
         }

@@ -6,6 +6,7 @@
 #include "taskbar.c"
 #include "start.c"
 #include "pause.c"
+#include "pause_canvas.c"
 #include "game_ui.c"
 #include "split_screen.c"
 

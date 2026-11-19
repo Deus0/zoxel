@@ -118,6 +118,9 @@ static inline byte zox_tst_nav2_lit(ecs* world, entity canvas, int index) {
 
 // the gamepad's selection is within the canvas's MenuPaused
 static inline byte zox_tst_nav2_selected_in_pause(ecs* world, entity canvas) {
+    if (!zox_valid(canvas)) {
+        return 0;
+    }
     const entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuPaused));
     const entity target = zox_valid(zox_tst_pad) ? zox_getv(zox_tst_pad, Target) : 0;
     return zox_valid(menu) && zox_valid(target) && zox_get_parent_by_id(world, target, zox_id(Window)) == menu;
@@ -239,17 +242,17 @@ byte zox_tst_navigator_ready(ecs* world) {
         case 5:
             zox_tst_waiting = "Start pausing the game";
             zox_tst_pad_held[zox_btn_start] = f >= 2 && f < 6;
+            // the pause menu's on the shared canvas, one for every player (huds/fun/pause_canvas.c)
             if (f > 30 && zox_getv(game, GameState) == zox_game_state_paused &&
-                (zox_tst_nav2_selected_in_pause(world, canvas) || f > 200)) {
-                zox_tst_nav2_pause_menu = zox_tst_nav2_selected_in_pause(world, canvas);
+                (zox_tst_nav2_selected_in_pause(world, shared_canvas) || f > 200)) {
+                zox_tst_nav2_pause_menu = zox_tst_nav2_selected_in_pause(world, shared_canvas);
                 zox_tst_nav2_next();
             }
             return f > 300;
         case 6:
             zox_tst_waiting = "Start resuming";
             zox_tst_pad_held[zox_btn_start] = f >= 2 && f < 6;
-            if (f > 60 && zox_getv(game, GameState) == zox_game_state_playing &&
-                !zox_valid(zox_get_child_by_id(world, canvas, zox_id(MenuPaused)))) {
+            if (f > 60 && zox_getv(game, GameState) == zox_game_state_playing && !zox_valid(shared_canvas)) {
                 zox_tst_nav2_resumed = 1;
                 return 1;
             }

@@ -3,7 +3,8 @@ const char *menu_paused_header_label = "Still";
 const char* pause_label_confirm = "Wander";
 const char* pause_label_exit = "Leave";
 
-entity spawn_menu_paused(ecs *world, entity player) {
+// the pause menu, on a canvas (the shared one over the whole window: one for every player, huds/fun/pause_canvas.c)
+entity spawn_menu_paused(ecs *world, entity canvas) {
     byte window_alignment = zox_huds_window_alignment;
     float2 window_anchor = zox_huds_window_anchor;
     byte header_font_size = zox_huds_element_font_size * ui_scale;
@@ -20,10 +21,10 @@ entity spawn_menu_paused(ecs *world, entity player) {
         .on_click = { &button_event_end_game },
     };
     entity e;
-    e = spawn_window_list(
+    e = spawn_window_list_on(
         world,
         prefab_window,
-        player,
+        canvas,
         menu_paused_header_label,
         header_font_size,
         list_font_size,

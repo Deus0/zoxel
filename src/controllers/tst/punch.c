@@ -34,7 +34,7 @@ byte zox_tst_resume_no_punch_ready(ecs* world) {
             break;
         case 1: {
             zox_tst_waiting = "the pause menu";
-            const entity paused = zox_get_child_by_id(world, canvas, zox_id(MenuPaused));
+            const entity paused = get_pause_menu(world);
             if (!zox_valid(paused) || zox_tst_punch_frames < 10) {
                 return 0;
             }
@@ -57,7 +57,7 @@ byte zox_tst_resume_no_punch_ready(ecs* world) {
             zox_tst_waiting = "pressing return to game";
             // where the button is now (the menu settles its layout after spawning)
             if (zox_tst_punch_frames == 1) {
-                const entity paused = zox_get_child_by_id(world, canvas, zox_id(MenuPaused));
+                const entity paused = get_pause_menu(world);
                 const entity button = zox_valid(paused) ? zox_tst_find_click(world, paused, &button_event_return_to_game) : 0;
                 if (!button || !zox_tst_ui_pointer_position(world, canvas, button, &zox_tst_punch_on_return)) {
                     zox_tst_check(0, "pause menu has no return button on screen");

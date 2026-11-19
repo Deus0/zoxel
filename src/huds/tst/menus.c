@@ -25,7 +25,9 @@ static inline void zox_tst_menus_next() {
 
 // menus open on the canvas
 int zox_tst_menus_open(ecs* world, entity canvas) {
-    int count = 0;
+    // the pause menu's on the shared canvas (one for every player)
+    int count = canvas != shared_canvas && zox_valid(shared_canvas) &&
+        zox_valid(zox_get_child_by_id(world, shared_canvas, zox_id(MenuPaused))) ? 1 : 0;
     iter it2 = zox_children(world, canvas);
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
@@ -97,7 +99,7 @@ byte zox_tst_menu_flow_ready(ecs* world) {
     const entity main_menu = zox_tst_menu(world, canvas, zox_id(MenuMain));
     const entity options = zox_tst_menu(world, canvas, zox_id(MenuOptions));
     const entity new_realm = zox_tst_menu(world, canvas, zox_id(MenuNewRealm));
-    const entity paused = zox_tst_menu(world, canvas, zox_id(MenuPaused));
+    const entity paused = get_pause_menu(world);
     const int menus = zox_tst_menus_open(world, canvas);
     const byte state = zox_tst_game_state(world, player);
     const int lock = zox_tst_mouse_lock(world, player);

@@ -39,10 +39,11 @@ static inline int2 calculate_list_size(
 }
 
 // Returns window + list
-entity3 spawn_window_list(
+// on a canvas (spawn_window_list: its player's)
+entity3 spawn_window_list_on(
     ecs* world,
     entity prefab,
-    entity player,
+    entity canvas,
     const char *header,
     byte header_font_size,
     byte list_font_size,
@@ -58,7 +59,6 @@ entity3 spawn_window_list(
     byte elements_count,
     byte visible_count)
 {
-    entity canvas = zox_get_link(world, player, CanvasLink);
     if (!zox_valid(canvas)) {
         zox_loge("Invalid canvas in [spawn_window_list]");
         return (entity3) { 0, 0, 0 };
@@ -217,6 +217,17 @@ entity3 spawn_window_list(
         list,
         e2.y
     };
+}
+
+// on its player's canvas
+entity3 spawn_window_list(ecs* world, entity prefab, entity player, const char *header, byte header_font_size,
+    byte list_font_size, ClickEvent close_event, byte can_close, byte window_type, int min_width, byte alignment,
+    float2 position_anchor, byte2 padding, entity* elements2, SpawnListElement* elements, byte elements_count,
+    byte visible_count)
+{
+    return spawn_window_list_on(world, prefab, zox_get_link(world, player, CanvasLink), header, header_font_size,
+        list_font_size, close_event, can_close, window_type, min_width, alignment, position_anchor, padding, elements2,
+        elements, elements_count, visible_count);
 }
 
 // NOTE: This is for size position set window lists

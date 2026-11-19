@@ -66,12 +66,9 @@ void spawn_player_screen(
             screen_to_canvas,
             app);
         zox_set_unique_name(canvas, "game_canvas");
-        // the app's canvas stays the first player's (spawn_canvas links it to the newest)
-        if (i != 0) {
-            const entity first_canvas = zox_get_link(world, zox_players[0], CanvasLink);
-            if (zox_valid(first_canvas)) {
-                zox_link(world, app, CanvasLink, first_canvas);
-            }
+        // the app's canvas is the first player's
+        if (i == 0) {
+            zox_link(world, app, CanvasLink, canvas);
         }
         zox_link(world, player, CanvasLink, canvas);
         zox_link(world, canvas, PlayerLink, player);

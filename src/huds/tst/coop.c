@@ -247,6 +247,7 @@ void zox_tst_coop_billboards_check(ecs* world) {
 }
 
 #include "coop_crack.c"
+#include "coop_pause.c"
 
 void zox_tsts_coop(ecs* world) {
     (void) world;
@@ -254,6 +255,8 @@ void zox_tsts_coop(ecs* world) {
     zox_tst_set_setup("coop_skybox", zox_tst_coop_level_setup, 0);
     zox_tst_add("coop_block_crack", zox_tst_coop_block_crack_ready, zox_tst_coop_block_crack_check, 120);
     zox_tst_set_setup("coop_block_crack", zox_tst_coop_level_setup, 0);
+    zox_tst_add("coop_pause", zox_tst_coop_pause_ready, zox_tst_coop_pause_check, 120);
+    zox_tst_set_setup("coop_pause", zox_tst_coop_level_setup, 0);
     zox_tst_add("coop_homes", zox_tst_coop_homes_ready, zox_tst_coop_homes_check, 150);
     zox_tst_set_setup("coop_homes", zox_tst_coop_setup, 0);
     zox_tst_add("coop_billboards", zox_tst_coop_billboards_ready, zox_tst_coop_billboards_check, 120);

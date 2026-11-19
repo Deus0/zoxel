@@ -1,12 +1,7 @@
 extern void delayed_open_game_menu(ecs*, entity);
 // When player state changes, for player UI
-//  - paused: the game paused shows its pause menu (Start, Escape); a player's own game menus (Y, R) its taskbar
-
-void delayed_spawn_menu_paused(ecs* world, entity e) {
-    if (zox_valid(e)) {
-        spawn_menu_paused(world, e);
-    }
-}
+//  - paused: the game paused, its pause menu's one for all (huds/fun/pause_canvas.c); a player's own game menus (Y,
+//    R) its taskbar
 
 void player_state_pause_ui(ecs* world, entity player, byte state) {
     byte dbg_log = 0;
@@ -43,9 +38,7 @@ void player_state_pause_ui(ecs* world, entity player, byte state) {
         // the game paused (Start, Escape): its pause menu; else the player's game menus (Y, R), the game going on
         const entity game = zox_get_link(world, player, GameLink);
         if (zox_valid(game) && zox_getv(game, GameState) == zox_game_state_paused) {
-            if (!zox_valid(zox_get_child_by_id(world, canvas, zox_id(MenuPaused)))) {
-                delay_event(world, &delayed_spawn_menu_paused, player, 0.01f);
-            }
+            // the pause menu's one for all, on the shared canvas (game_state_pause_menu)
         } else if (game_ui_has_taskbar && !zox_valid(zox_get_child_by_id(world, canvas, zox_id(Taskbar)))) {
             spawn_taskbar(world, canvas);
             // the first game menu open for a gamepad (or a headset's hands) to select in; a mouse or touch clicks

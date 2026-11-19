@@ -71,7 +71,7 @@ byte zox_tst_split_screen_ready(ecs* world) {
     zox_tst_progress(zox_tst_sscreen_stage * 1000 + zox_tst_sscreen_frames);
     const entity main_menu = zox_tst_menu(world, canvas, zox_id(MenuMain));
     const entity new_realm = zox_tst_menu(world, canvas, zox_id(MenuNewRealm));
-    const entity paused = zox_tst_menu(world, canvas, zox_id(MenuPaused));
+    const entity paused = get_pause_menu(world);
     const byte state = zox_tst_game_state(world, player);
     switch (zox_tst_sscreen_stage) {
         case 0:

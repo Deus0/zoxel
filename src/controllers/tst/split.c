@@ -95,7 +95,7 @@ byte zox_tst_item_split_ready(ecs* world) {
             {
                 // the pause menu (spawned after a delay) sits over the middle of the screen,
                 //  closes it to reach the inventory
-                const entity paused = zox_get_child_by_id(world, canvas, zox_id(MenuPaused));
+                const entity paused = get_pause_menu(world);
                 if (!zox_valid(paused)) {
                     return 0;
                 }

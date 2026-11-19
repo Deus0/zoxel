@@ -189,7 +189,7 @@ byte zox_tst_end_game_ready(ecs* world) {
     zox_tst_progress(zox_tst_end_game_round * 100 + zox_tst_end_game_stage);
     const entity main_menu = zox_tst_menu(world, canvas, zox_id(MenuMain));
     const entity new_realm = zox_tst_menu(world, canvas, zox_id(MenuNewRealm));
-    const entity paused = zox_tst_menu(world, canvas, zox_id(MenuPaused));
+    const entity paused = get_pause_menu(world);
     const byte state = zox_tst_game_state(world, player);
     const byte playing = state == zox_game_state_playing &&
         zox_getv(player, PlayerState) == zox_player_state_playing;

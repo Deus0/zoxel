@@ -74,7 +74,7 @@ byte zox_tst_xr_continue_ready(ecs* world) {
         case 4:
             zox_tst_waiting = "the menu button to pause";
             {
-                const entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuPaused));
+                const entity menu = get_pause_menu(world);
                 if (zox_valid(menu) && f > 30) {
                     zox_tst_xr_continue_paused3 = zox_has(menu, Canvas3);
                     zox_tst_xr_continue_next();
@@ -84,7 +84,7 @@ byte zox_tst_xr_continue_ready(ecs* world) {
         case 5:
             zox_tst_waiting = "A on return, playing again";
             if (game_state == zox_game_state_playing && f > 24 &&
-                !zox_valid(zox_get_child_by_id(world, canvas, zox_id(MenuPaused)))) {
+                !zox_valid(get_pause_menu(world))) {
                 zox_tst_xr_continue_resumed = 1;
                 return 1;
             }

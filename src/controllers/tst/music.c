@@ -79,7 +79,7 @@ byte zox_tst_music_crossfade_ready(ecs* world) {
             break;
         case 3: {
             zox_tst_waiting = "the pause menu";
-            const entity paused = zox_get_child_by_id(world, canvas, zox_id(MenuPaused));
+            const entity paused = get_pause_menu(world);
             if (!zox_valid(paused)) {
                 return 0;
             }
