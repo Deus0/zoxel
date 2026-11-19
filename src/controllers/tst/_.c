@@ -279,6 +279,7 @@ void zox_tst_screenshot_check(ecs* world) {
 #include "coop_continue.c"
 #include "navigator_inventory.c"
 #include "gamepad_reconnect.c"
+#include "stick_deadzone.c"
 #include "touch_actions.c"
 
 void zox_tsts_controllers(ecs* world) {
@@ -291,8 +292,12 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_set_setup("continue_game", zox_tst_load_games_setup, 1);
     zox_tst_add("navigator_inventory", zox_tst_navigator_inventory_ready, zox_tst_navigator_inventory_check, 120);
     zox_tst_set_setup("navigator_inventory", zox_tst_level_setup, 0);
+    zox_tst_add("stick_deadzone", zox_tst_stick_deadzone_ready, zox_tst_stick_deadzone_check, 30);
+    zox_tst_set_setup("stick_deadzone", NULL, 1);
     zox_tst_add("coop_gamepad_reconnect", zox_tst_coop_gamepad_reconnect_ready, zox_tst_coop_gamepad_reconnect_check, 90);
     zox_tst_set_setup("coop_gamepad_reconnect", zox_tst_coop_level_setup, 0);
+    zox_tst_add("coop_respawn_navigator", zox_tst_navigator_inventory_ready, zox_tst_navigator_inventory_check, 180);
+    zox_tst_set_setup("coop_respawn_navigator", zox_tst_coop_respawn_navigator_setup, 0);
     zox_tst_add("coop_navigator", zox_tst_navigator_inventory_ready, zox_tst_navigator_inventory_check, 120);
     zox_tst_set_setup("coop_navigator", zox_tst_coop_navigator_setup, 0);
     zox_tst_add("coop_continue", zox_tst_coop_continue_ready, zox_tst_coop_continue_check, 120);

@@ -9,6 +9,16 @@
 // tst: coop_navigator, the same for split screen's second player (its viewport part way along the screen: its
 //  tooltips sat that far off), bash bsh/tst.sh coop_navigator
 byte zox_tst_navinv_player = 0;     // which of zox_players
+byte zox_tst_navinv_die = 0;        // coop_respawn_navigator: 1 dies first, 2 dying, 3 respawned
+entity zox_tst_navinv_dead = 0;     // its character before
+
+// tst: coop_respawn_navigator, the same as coop_navigator, the second player dying and respawning first (a crash
+//  switching windows played after a death), bash bsh/tst.sh coop_respawn_navigator
+void zox_tst_coop_respawn_navigator_setup() {
+    zox_tst_coop_level_setup();
+    zox_tst_navinv_player = 1;
+    zox_tst_navinv_die = 1;
+}
 
 void zox_tst_coop_navigator_setup() {
     zox_tst_coop_level_setup();
@@ -123,6 +133,30 @@ byte zox_tst_navigator_inventory_ready(ecs* world) {
     }
     const entity player = zox_players[zox_tst_navinv_player];
     const entity canvas = zox_get_link(world, player, CanvasLink);
+    if (zox_tst_navinv_die == 1 || zox_tst_navinv_die == 2) {
+        const entity character = zox_get_link(world, player, CharacterLink);
+        zox_tst_progress(9000 + zox_tst_navinv_die * 100 + (int) zox_current_time);
+        if (zox_tst_navinv_die == 1) {
+            zox_tst_waiting = "the player killed";
+            const entity health = zox_valid(character) ? zox_get_child_by_id(world, character, zox_id(StatHealth)) : 0;
+            if (zox_valid(health) && zox_getv(player, PlayerState) == zox_player_state_playing) {
+                zox_setv(health, StatValue, 0);
+                zox_tst_navinv_dead = character;
+                zox_tst_navinv_die = 2;
+            }
+            return 0;
+        }
+        zox_tst_waiting = "the player to respawn";
+        if (zox_getv(player, PlayerState) != zox_player_state_playing || !zox_valid(character) ||
+            character == zox_tst_navinv_dead || zox_has(character, Dead)) {
+            return 0;
+        }
+        zox_log("[tst] respawned as [%s]", zox_get_name(character));
+        zox_tst_navinv_fill(world, character);
+        zox_tst_navinv_die = 3;
+        zox_tst_nav2_frames = 0;
+        return 0;
+    }
     const int f = ++zox_tst_nav2_frames;
     zox_tst_progress(zox_tst_nav2_stage * 1000 + f);
     memset(zox_tst_pad_held, 0, sizeof(zox_tst_pad_held));
