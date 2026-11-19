@@ -24,6 +24,10 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x A castbar above the actionbar: fills over a cast (an action's warmup) with its name, hidden after; instant skills
+  tagged SkillInstant, skill tooltips say instant or cast [time]; tst castbar
+-x A long frame skipped swing marks (found from the frame's capped delta): bites and hits lost, a lost first bite ate
+  nothing; marks fire in order, each once; tst bite_hitch
 -x Beds: climbing on and lying down, getting up and off, eased (SleepMotion, sleep_motion_system after the physics):
   up onto the mattress with a hop, then onto its back; up onto its feet, then down beside the bed, moving again once
   off; held lying while asleep; tst bed_sleep checks the climb never jumps and stands on the mattress half way

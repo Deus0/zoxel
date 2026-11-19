@@ -2,7 +2,7 @@
 
 Skills and item uses timed like an mmo's (cast time, cooldown, a global cooldown). Instant ones (punch, place, eat) are
 animation based: the press starts a swing, the effect lands at the swing's impact. Timing must be exact for combat.
-Steps 1 to 4 done (punch, place and eat are instant, each a swing of its own time, hitting at its marks). Open
+Steps 1 to 4, 6 and 7 done (punch, place and eat are instant, each a swing of its own time, hitting at its marks). Open
 questions at the end.
 
 The user's answers (2026-11-19):
@@ -69,8 +69,11 @@ The user's answers (2026-11-19):
 4. Done: `items/consumables` (ConsumeValue, ConsumeStat, spawn_item_consumable, the press, the bites); the bones
    swings are one table (bones/dat/swings.c: poses, ease, marks), played by bones/ik/sys/swing.c.
 5. Global cooldown on the user (not decided), the actionbar shows it (skill_overlay_system).
-6. A castbar for casts (shoot and aura have a 0.5s warmup and none now): the user's cast, its skill's icon and name,
-   filling over its warmup.
+6. Done: a castbar above the actionbar (actions/ui, castbar_system), the cast's name, filling over its warmup, hidden
+   after (AutoHide); skills with no cast are tagged SkillInstant (skill_set_cast), their tooltips say instant or
+   cast [time] (skill_tooltip_text); tst castbar.
+7. Done: marks fire in order, each once (the next is SwingMark + 1): a hitch skipped them (found from the frame's
+   capped delta); tst bite_hitch.
 
 ## Questions
 
