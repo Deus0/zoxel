@@ -3,8 +3,8 @@
 //      wall: along the wall top, the player standing on it, the town to one side, the wild to the other
 //      inside: from the wall's inner edge, over the town and on to the far wall
 //      outside: from its outer edge, out over the land
-//  - each to tst/aesthetic/<shot>.ppm, bsh/tst.sh converts them to doc/screenshot/<shot>.jpg
-//  - run: bash bsh/tst.sh aesthetic_town (tst.sh adds a far, tall world, 1080p, little fog, no hud or labels, seed 375758414: bright, little water)
+//  - each to tst/aesthetic/<shot>.ppm; with --readme bsh/tst.sh converts them to doc/screenshot/<shot>.jpg
+//  - run: bash bsh/tst.sh aesthetic_town --readme (tst.sh adds a far, tall world, 1080p, little fog, no hud or labels, seed 375758414: bright, little water)
 #define zox_tst_aesthetic_shots 3
 const char* zox_tst_aesthetic_names[zox_tst_aesthetic_shots] = { "wall", "inside", "outside" };
 byte zox_tst_aesthetic_stage = 0;

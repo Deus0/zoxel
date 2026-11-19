@@ -14,6 +14,8 @@
 #   --stress: full terrain stream distance, tests default to --tiny terrain
 #   --release: an optimised build with the tests in it (bin/tst_release), for performance numbers (perf_fly,
 #     vox_instances_stress): debug builds are -O0, their cpu times are many times a player's
+#   --readme: the aesthetic tests (aesthetic_town) update the readme's screenshots in doc/screenshot/, without it
+#     they stay in tst/aesthetic/ (every full run rewrote them, the same shots a few pixels apart)
 #   --keepsaves: saves to the real save folder, tests default to --nosaves (a /tmp folder, deleted after)
 # Tests are added with zox_tst_add in a module's tst folder (see src/_/tst/_.c)
 # Safety: low priority, memory capped and killed on timeout, so a bad run can't freeze the pc
@@ -38,6 +40,7 @@ visible=0
 gpu=0
 release=0
 repeat=1
+readme=0
 args=()
 next_is_repeat=0
 for arg in "$@"; do
@@ -48,6 +51,8 @@ for arg in "$@"; do
         next_is_repeat=1
     elif [[ "${arg}" == "--nobuild" ]]; then
         build=0
+    elif [[ "${arg}" == "--readme" ]]; then
+        readme=1
     elif [[ "${arg}" == "--gdb" ]]; then
         gdb=1
     elif [[ "${arg}" == "--stress" ]]; then
@@ -172,7 +177,7 @@ medium_tests=(lod_chunk_lights lod_swap)
 # tests that screenshot the world, the hud hidden
 nohud_tests=(sky_clouds head_camera town_view held_item held_block eat_swing)
 # tests that take the readme's screenshots: a far, tall world at 1080p, little fog (to see the mountains), no hud or labels, the same seed (zox_tst_seed
-#   overrides it), more time to stream, their shots converted to doc/screenshot/ after
+#   overrides it), more time to stream, their shots converted to doc/screenshot/ after with --readme
 aesthetic_tests=(aesthetic_town)
 run_game() {
     local tst="$1"
@@ -345,7 +350,7 @@ run_tst() {
         grep -aoP "${bin_name}\(\+\K0x[0-9a-f]+" "${log}" | head -25 | \
             xargs -r addr2line -f -C -e "${bin}" | paste - - | sed 's/^/    /'
     fi
-    if [[ ${code} == "0" && " ${aesthetic_tests[*]} " == *" ${tst} "* ]]; then
+    if [[ ${code} == "0" && ${readme} == "1" && " ${aesthetic_tests[*]} " == *" ${tst} "* ]]; then
         aesthetic_convert
     fi
     if [[ ${code} == "125" ]]; then
