@@ -1,3 +1,9 @@
+// the other players' markers, by player: red, blue, gold, purple..
+const color map_marker_colors[] = {
+    { 255, 99, 99, 220 }, { 99, 166, 255, 220 }, { 255, 211, 77, 220 }, { 200, 120, 255, 220 },
+    { 255, 150, 60, 220 }, { 120, 255, 230, 220 } };
+#define map_marker_colors_count 6
+
 // Spawn a piece for now
 //  A ui and just use Clone TextureData from TunkTexture
 //  Link the map piece to a Tunk
@@ -140,6 +146,26 @@ void map_initialize_system(iter* it) {
             zox_setv(e3, Generate, zox_dirty_trigger);
             zox_setv(e3, OutlineThickness, arrow_thickness);
             zox_link(world, e3, PlayerLink, player);
+        }
+        // the other local players, a marker each, its colour by player (map_marker_system places them)
+        for (int j = 0; j < players_playing; j++) {
+            if (zox_players[j] == player || !zox_valid(zox_players[j])) {
+                continue;
+            }
+            const color fill = map_marker_colors[j % map_marker_colors_count];
+            const color outline = (color) { fill.r / 2, fill.g / 2, fill.b / 2, 233 };
+            const entity marker = spawn_uic(world, prefab_element, body, float2_half, int2_zero, arrow_size, arrow_size,
+                fill, outline);
+            zox_set_unique_name(marker, "map_party_marker");
+            zox_add(marker, MapMarker);
+            zox_add(marker, ArrowTexture);
+            zox_setv(marker, Layer, layer + 2);
+            zox_setv(marker, Rotation2, 0);
+            zox_setv(marker, LocalRotation2, 0);
+            zox_setv(marker, BonusLayer, 1);
+            zox_setv(marker, Generate, zox_dirty_trigger);
+            zox_setv(marker, OutlineThickness, arrow_thickness);
+            zox_link(world, marker, PlayerLink, zox_players[j]);
         }
     }
     zox_sys_on_end();

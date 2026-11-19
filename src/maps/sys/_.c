@@ -3,6 +3,7 @@
 #include "arrow.c"
 #include "move.c"
 #include "view.c"
+#include "marker.c"
 
 void zox_systems_maps(ecs* world) {
     zox_system_1(
@@ -32,6 +33,14 @@ void zox_systems_maps(ecs* world) {
         [out] textures.TextureData,
         [out] rendering.TextureSize,
         [none] maps.MapView
+    );
+    zox_system(
+        map_marker_system,
+        zoxp_update,
+        [in] layouts.LayoutSize,
+        [out] layouts.LayoutPosition,
+        [out] transforms2.LocalRotation2,
+        [none] maps.MapMarker
     );
     zox_system(
         map_arrow_system,
