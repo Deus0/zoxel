@@ -20,8 +20,8 @@ entity spawn_block_item(
     zox_set_unique_name(e, voxel_name->value);
     zox_add(e, ItemBlock);
     zox_prefab_addc_user_timings(world, e);
-    zox_setv(e, WarmupTime, 0.125f);
-    zox_setv(e, CooldownTime, 0.125f);
+    zox_setv(e, WarmupTime, 0);         // no cast: placed at its swing's hit
+    zox_setv(e, CooldownTime, 0.25f);
     zox_setv(e, SwingTime, 0.25f);
     zox_setv(e, RaycastRange, block_place_range);
     zox_setv(e, RaycastType, zox_raycast_type_place);

@@ -41,7 +41,7 @@ void zox_systems_items(ecs* world) {
         item_activate_system,
         zoxp_spawn,
         [in] timers.Activate,
-        [out] items.Quantity,
+        [in] items.Quantity,
         [none] ItemBlock
     );
     zox_system_1(
