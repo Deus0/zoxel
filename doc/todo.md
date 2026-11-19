@@ -16,7 +16,11 @@
 - tst lint_systems: chunk3_textured_render_system (src/rendering/rendering3/sys/render_chunks.c:184) has no
 	zox_sys_on_begin() / zox_sys_on_end() (2026-11-18)
 - tst player_spawn (flaky, about half) and continue_game fail: "character is inside a solid block [43]" (water) at
-	[0 18 0] or [1 18 0]; tst coop_homes: players [1] and [2] have no home near (no towns?); all on 3b3909d12 too (2026-11-19)
+	[0 18 0] or [1 18 0], on 3b3909d12 too (2026-11-19)
+- most worlds have no towns: every place tried for one is 22% to 76% under the sea (terrain_sea_height 6), towns keep
+	off water since 77e33a45d (terrain_rect_over_water, any column wet); with none, players spawn at the no town
+	fallback, near [0 0], often in the sea (the player_spawn failures above). Lower the sea, or let towns level a
+	little water? tsts coop_homes and coop_join_continue lower it (terrain_sea_height = 0) (2026-11-19)
 - tst dig_light fails 1 of 2: "the hole's faces never showed (or not [5] of them: [1])", on 22d44c39c too (2026-11-19)
 - tst pipeline_syncs fails 2 of 3: 21 merges (over 11), 4 main thread systems between multi threaded ones:
 	camera_underwater_system (pre_physics), xr_room_walk_system, xr_head_bone_system, xr_hands_ik_system (2026-11-18)
