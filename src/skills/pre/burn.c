@@ -1,5 +1,5 @@
 // burn: a slow damage over time (a Dot) on a character a skill with Burn hits (shoot's), its skill's colour
-//  rising off them (a particle stream), gone in its time (DestroyInTime); hit again, the same skill's burn starts over
+//  rising off them (a particle streamer, its child), gone in its time (DestroyInTime); hit again, the same skill's burn starts over
 entity spawn_prefab_burn(ecs *world) {
     zox_prefab();
     zox_prefab_name("burn");
@@ -7,6 +7,11 @@ entity spawn_prefab_burn(ecs *world) {
     zox_add(e, Burning);
     zox_setv(e, SkillDamage, 0);
     zox_setv(e, DestroyInTime, 0);
+    // placed on who it's on (its parent), so its flames (a streamer, its child) follow them
+    zox_setv(e, Position3D, float3_zero);
+    zox_setv(e, Rotation3D, quaternion_identity);
+    zox_setv(e, Color, color_white);
+    add_prefab_particle3_streamer(world, e, 24, 0.6f, float3_single(0.3f), 1.2f);
     return e;
 }
 
@@ -30,8 +35,6 @@ entity burn_character(ecs* world, entity target, entity spawner, entity skill) {
     zox_set_parent(world, e, target);
     zox_link(world, e, Spawner, spawner);
     zox_link(world, e, Skill, skill);
-    const float3 bounds = zox_has(target, Bounds3D) ? zox_getv(target, Bounds3D) : float3_single(0.5f);
-    add_particle3_stream(world, e, 24, 0.6f, float3_scale(bounds, 0.6f), 1.2f,
-        zox_has(skill, Color) ? zox_getv(skill, Color) : color_white);
+    zox_set(e, Color, { zox_has(skill, Color) ? zox_getv(skill, Color) : color_white });   // its flames' (its streamer's)
     return e;
 }

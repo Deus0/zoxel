@@ -34,3 +34,23 @@ entity spawn_particle3D_emitter_at(ecs *world, float3 position, int emit_rate, f
     return e;
 }
 
+
+// a streamer (sys/stream.c), by the second: a prefab child of a prefab (a projectile's trail, a burn's flames), its
+//  instances' copies follow them, in their Color; rate a second, each living life, in bounds (half extents), rising
+entity add_prefab_particle3_streamer(ecs* world, entity parent, float rate, float life, float3 bounds, float rise) {
+    const entity e = zox_prefab_variant(world, prefab_particle3D_emitter);
+    zox_add(e, ParticleStreamer);
+    zox_add(e, ParticleParentColor);
+    zox_set(e, ParticlesPerSecond, { rate });
+    zox_set(e, ParticlesDue, { 0 });
+    zox_set(e, ParticleLife, { life });
+    zox_set(e, ParticleRise, { rise });
+    zox_set(e, Bounds3D, { bounds });
+    zox_set_parent(world, e, parent);
+    return e;
+}
+
+// an instance's streamer (its prefab's copy), 0 none
+static inline entity get_particle3_streamer(ecs* world, entity e) {
+    return zox_get_child_by_id(world, e, zox_id(ParticleStreamer));
+}

@@ -346,7 +346,7 @@ byte zox_tst_burn_stage = 0;
 double zox_tst_burn_time = 0;
 float zox_tst_burn_health = 0;          // as the shot hit
 float zox_tst_burn_health_after = 0;    // as the burn ended
-byte zox_tst_burn_seen = 0;             // a Burning with its stream on the player
+byte zox_tst_burn_seen = 0;             // a Burning with its streamer on the player
 byte zox_tst_burn_gone = 0;
 byte zox_tst_burn_trail = 0;            // a shot with its stream
 
@@ -389,10 +389,13 @@ byte zox_tst_shoot_burn_ready(ecs* world) {
     }
     if (zox_tst_burn_stage == 2) {
         zox_tst_waiting = "a shot to burn the player";
-        zox_tst_burn_trail |= zox_count_types(ParticlesPerSecond) > 0;     // only shots stream, before a burn
+        zox_tst_burn_trail |= zox_count_types(ParticleStreamer) > 0;       // only shots stream, before a burn
         const entity burn = zox_tst_burn_on(world, character);
         if (zox_valid(burn)) {
-            zox_tst_burn_seen = zox_has(burn, ParticlesPerSecond);
+            // its flames: a streamer (its prefab's copy) in its colour, its skill's
+            const color c = zox_getv(burn, Color), s = zox_getv(zox_get_link(world, burn, Skill), Color);
+            zox_tst_burn_seen = zox_valid(get_particle3_streamer(world, burn)) && zox_has(get_particle3_streamer(world, burn), ParticleParentColor) &&
+                c.r == s.r && c.g == s.g && c.b == s.b;
             zox_tst_burn_health = zox_tst_attacks_player_health(world, character);
             zox_delete(npc);
             zox_tst_burn_time = zox_current_time;

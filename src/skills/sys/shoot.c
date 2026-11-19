@@ -91,7 +91,7 @@ void shoot_system(iter* it) {
         color projectile_color = zox_has(e, Color) ?
             zox_getv(e, Color) :
             color_white;
-        const entity projectile = spawn_projectile(
+        spawn_projectile(
             world,
             prefab_projectile,
             user,
@@ -102,10 +102,6 @@ void shoot_system(iter* it) {
             shoot_speed * range->value,
             damage,
             projectile_color);
-        // a trail in its skill's colour
-        if (projectile) {
-            add_particle3_stream(world, projectile, 50, 0.35f, float3_single(0.04f), 0.2f, projectile_color);
-        }
     }
     zox_sys_on_end();
 } zoxd_system(shoot_system);

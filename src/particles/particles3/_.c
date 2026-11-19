@@ -11,10 +11,11 @@
 #include "dat/settings.c"
 zox_tag(Particle3D);
 zox_tag(Particle3DEmitter);
-zoxc_float(ParticlesPerSecond);  // a stream of particles (sys/stream.c)
+zox_tag(ParticleStreamer);       // an emitter by the second, not by the frame (sys/stream.c)
+zox_tag(ParticleParentColor);    // a streamer in its parent's Color (a shot's, a burn's skill's)
+zoxc_float(ParticlesPerSecond);
 zoxc_float(ParticlesDue);        // its part of a particle carried to the next frame
 zoxc_float(ParticleLife);        // seconds each lives
-zoxc_float3(ParticleSpread);     // half extents they start in
 zoxc_float(ParticleRise);        // their speed up
 
 #include "sha/_.c"
@@ -33,10 +34,11 @@ void import_particles3(ecs* world) {
     zox_module(particles3);
     zoxd_tag(Particle3D);
     zoxd_tag(Particle3DEmitter);
+    zoxd_tag(ParticleStreamer);
+    zoxd_tag(ParticleParentColor);
     zoxd_float(ParticlesPerSecond);
     zoxd_float(ParticlesDue);
     zoxd_float(ParticleLife);
-    zoxd_float3(ParticleSpread);
     zoxd_float(ParticleRise);
     zoxd(MaterialParticle3D);
     zox_systems_particles3(world);
