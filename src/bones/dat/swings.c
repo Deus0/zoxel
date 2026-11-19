@@ -30,8 +30,10 @@ typedef struct {
     float marks[zox_swing_marks_max];   // through the swing, its first the hit
 } swing_data;
 
-// raised (an item or skill held): out where it's seen in first person, a little up and in
-const swing_pose swing_guard = { 0.85f, 0.12f, 0.4f, 0 };
+// raised (an item or skill held): a fighting guard, the fist ahead of the chin and the elbow bent down (at 0.95 of the
+//  reach the arm was held up straight, a salute from outside, tst punch_views), still in the first person view
+//  - 0.8 of the reach, the elbow ~75 degrees
+const swing_pose swing_guard = { 0.7f, 0.15f, 0.35f, 0 };
 
 const swing_data swings[zox_swing_kinds] = {
     [zox_swing_punch] = {
@@ -46,7 +48,7 @@ const swing_data swings[zox_swing_kinds] = {
         .marks_count = 1, .marks = { 0.5f } },      // the block set
     [zox_swing_eat] = {
         .back = { 0.7f, 0.2f, -0.05f, 0 },          // drawn in low by the chest
-        .out = { 0.62f, 0.4f, 0.22f, -0.05f },      // at the mouth, under the eyes, in to the middle
+        .out = { 0.5f, 0.45f, 0.3f, -0.05f },       // at the mouth, under the eyes, in to the middle
         .back_end = 0.2f, .held_end = 0.82f, .strike_ease = zox_ease_in_out,
         .marks_count = 3, .marks = { 0.5f, 0.65f, 0.8f } },   // bites, the first eats it
 };

@@ -14,6 +14,7 @@ byte zox_render_lines = 0;
 #else
     #include "headless/_.c"
 #endif
+#include "fun/gif.c"
 
 void import_graphics(ecs* world) {
     zox_module(graphics);

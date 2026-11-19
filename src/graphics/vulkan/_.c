@@ -3,6 +3,8 @@
     #include "fun/vulkan_setup.c"
 #endif
 
+static inline byte* zox_gpu_read_screen(int2 size) { return NULL; }
+
 byte initialize_vulkan() {
     // load shaders, vulkan load shader
     return EXIT_SUCCESS;

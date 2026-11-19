@@ -25,6 +25,7 @@ void app_gpu_end_system(iter* it) {
         }
         zox_screenshot_request[0] = 0;
     }
+    zox_gif_capture(zox_getv(main_app, WindowSize));
     SDL_GL_SwapWindow(window->value);
     if (background) {
         // a hidden window is never presented, so the gpu driver (mali on wayland) never
