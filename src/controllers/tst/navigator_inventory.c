@@ -3,6 +3,7 @@
 //      bottom right (tooltip_navigated_system)
 //  - items moved round the grid (A picks up, the stick right, A places, stacks, swaps): each tooltip shows its
 //      icon's item, none on an empty slot (it kept the old item's)
+//  - then an item in hand, RB and LB fast round every window (it crashed switching windows)
 //  - the stick down past its last row steps into the action bar (another window, element_navigation_system)
 //  - run: bash bsh/tst.sh navigator_inventory
 // tst: coop_navigator, the same for split screen's second player (its viewport part way along the screen: its
@@ -18,6 +19,7 @@ byte zox_tst_navinv_tip_shown = 0;
 byte zox_tst_navinv_tip_background = 0;
 byte zox_tst_navinv_opened = 0;
 byte zox_tst_navinv_actionbar = 0;
+byte zox_tst_navinv_switched = 0;    // switched windows fast and lived
 char zox_tst_navinv_last[64] = "";
 
 int zox_tst_navinv_moves = 0;
@@ -225,8 +227,26 @@ byte zox_tst_navigator_inventory_ready(ecs* world) {
                 if (at == 25) {
                     zox_tst_navinv_tip(world, canvas);
                 }
-                return f >= 30 * 5;
+                if (f >= 30 * 5) {
+                    zox_tst_nav2_next();
+                }
+                return 0;
             }
+        case 7:
+            // an item in hand (A on an action bar icon), then RB and LB fast round every window, twice: switching
+            //  windows crashed playing
+            zox_tst_waiting = "switching windows fast, an item in hand";
+            zox_tst_pad_held[zox_btn_a] = f >= 2 && f < 6;
+            if (f > 20) {
+                const int at = (f - 20) % 8;
+                const byte rb = ((f - 20) / 8) % 6 < 4;   // four right, two left
+                zox_tst_pad_held[rb ? zox_btn_rb : zox_btn_lb] = at < 3;
+            }
+            if (f > 20 + 8 * 6 * 4) {
+                zox_tst_navinv_switched = 1;
+                return 1;
+            }
+            return 0;
     }
     return 0;
 }
@@ -245,6 +265,7 @@ void zox_tst_navigator_inventory_check(ecs* world) {
     zox_tst_check(!zox_tst_navinv_tips_stale, "[%i] tooltips showed another item than their icon's (or one on an empty slot)",
         zox_tst_navinv_tips_stale);
     zox_tst_check(!zox_tst_navinv_tips_off, "[%i] tooltips weren't under their ui", zox_tst_navinv_tips_off);
+    zox_tst_check(zox_tst_navinv_switched, "never finished switching windows fast");
     zox_tst_check(zox_tst_navinv_actionbar, "the stick down from the inventory never reached the action bar, last in [%s]",
         zox_tst_navinv_last);
 }
