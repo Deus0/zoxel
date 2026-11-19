@@ -6,5 +6,6 @@ entity spawn_prefab_shoot(ecs *world, entity prefab) {
     zox_set(e, SkillDamageMax, { 0 });
     zox_set(e, SkillRange, { 0 });
     zox_set(e, SkillCost, { 0 });
+    zox_set(e, SkillReach, { { 3, 10 } });      // a step back, its shot falls off past it
     return e;
 }

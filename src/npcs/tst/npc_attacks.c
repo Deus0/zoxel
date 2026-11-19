@@ -1,8 +1,8 @@
 // tst: npc_attacks, an npc the player hits fights back and hurts the player
 //  - spawns a humanoid npc 5 away from the player (not a coward), hits it as the player would (combat_on_hit)
 //  - it goes into battle, chases and attacks (Behaviour), triggers its skill, and the player's health drops
-//  - the player strafes at a walk (zox_tst_attacks_strafe): the npc's turning lagged them, its ray along its facing
-//    missed every punch, now it aims at its threat (RaycastAim)
+//  - the player strafes at a walk (zox_tst_attacks_strafe, its velocity): the npc aims at its threat (RaycastAim), 5
+//    away it shoots (a humanoid), leading the player by its velocity
 //  - logs where the chain stops: battle, behaviour, skill, its ray's hit, the player's health
 //  - run: bash bsh/tst.sh npc_attacks
 byte zox_tst_attacks_stage = 0;
@@ -10,6 +10,8 @@ int zox_tst_attacks_frames = 0;
 double zox_tst_attacks_time = 0;
 entity zox_tst_attacks_npc = 0;
 float zox_tst_attacks_health = 0;
+float zox_tst_attacks_moved = 0;        // the player's strafing, its furthest from where it started
+float3 zox_tst_attacks_start;
 #define zox_tst_attacks_seconds 15.0
 #define zox_tst_attacks_strafe 4.0f   // the player side to side, units a second, turning every 2s
 
@@ -54,14 +56,16 @@ byte zox_tst_npc_attacks_ready(ecs* world) {
         zox_tst_attacks_health = zox_tst_attacks_player_health(world, character);
         combat_on_hit(world, npc, character);
         zox_tst_attacks_time = zox_current_time;
+        zox_tst_attacks_start = zox_getv(character, Position3D);
         zox_tst_attacks_stage = 2;
         return 0;
     }
     zox_tst_waiting = "the npc to hurt the player";
     const entity npc = zox_tst_attacks_npc;
-    float3 strafe = zox_getv(character, Position3D);
-    strafe.z += (fmod(zox_current_time - zox_tst_attacks_time, 4.0) < 2.0 ? 1 : -1) * zox_tst_attacks_strafe * zox_delta_time;
-    zox_setv(character, Position3D, strafe);
+    float3 strafe = zox_getv(character, Velocity3D);
+    strafe.z = (fmod(zox_current_time - zox_tst_attacks_time, 4.0) < 2.0 ? 1 : -1) * zox_tst_attacks_strafe;
+    zox_setv(character, Velocity3D, strafe);
+    zox_tst_attacks_moved = float_max(zox_tst_attacks_moved, float3_length(float3_subtract(zox_getv(character, Position3D), zox_tst_attacks_start)));
     const float health = zox_tst_attacks_player_health(world, character);
     if (zox_tst_attacks_frames % 60 == 0 && zox_valid(npc)) {
         const entity action = zox_has(npc, ActiveAction) ? zox_getv(npc, ActiveAction) : 0;
@@ -79,6 +83,8 @@ void zox_tst_npc_attacks_check(ecs* world) {
     zox_log("[tst] player health [%.1f] from [%.1f] after [%.1fs]", health, zox_tst_attacks_health,
         zox_current_time - zox_tst_attacks_time);
     zox_tst_check(zox_valid(zox_tst_attacks_npc), "the npc is gone");
+    zox_log("[tst] the player strafed [%.1f] away", zox_tst_attacks_moved);
+    zox_tst_check(zox_tst_attacks_moved > 1, "the player didn't strafe, [%.1f]", zox_tst_attacks_moved);
     zox_tst_check(health < zox_tst_attacks_health, "the npc didn't hurt the player in [%.0fs]", zox_tst_attacks_seconds);
 }
 
@@ -250,6 +256,76 @@ void zox_tst_npc_flee_hurt_check(ecs* world) {
     zox_tst_check(now > zox_tst_flee_start + 2, "the hurt npc didn't run, [%.1f] to [%.1f] away", zox_tst_flee_start, now);
 }
 
+// tst: npc_skill_switch, a humanoid npc picks its skill by its threat's distance (ai/fun/skills.c)
+//  - it has punch and shoot (humanoids, actions/sys/character.c); 6 away it shoots, the player beside it it punches
+//  - run: bash bsh/tst.sh npc_skill_switch
+entity zox_tst_switch_npc = 0;
+byte zox_tst_switch_stage = 0;
+double zox_tst_switch_time = 0;
+byte zox_tst_switch_far = 0;            // shoot picked far
+byte zox_tst_switch_near = 0;           // punch picked near
+
+static inline byte zox_tst_switch_action_is(ecs* world, entity npc, entity tag) {
+    const entity action = zox_getv(npc, ActiveAction);
+    return zox_valid(action) && zox_has_id(action, tag);
+}
+
+byte zox_tst_npc_skill_switch_ready(ecs* world) {
+    if (!zox_tst_player_spawn_ready(world)) {
+        return 0;
+    }
+    const entity character = zox_tst_player_character(world);
+    const entity npc = zox_tst_switch_npc;
+    if (zox_tst_switch_stage == 0) {
+        const entity realm = zox_get_link(world, character, RealmLink);
+        const entity humanoid = zox_tst_realm_humanoid(world, realm);
+        if (!zox_valid(humanoid)) {
+            zox_tst_check(0, "the realm has no humanoid character prefab");
+            return 1;
+        }
+        float3 position = zox_getv(character, Position3D);
+        position.x += 6;
+        zox_tst_switch_npc = spawn_character3_npc(world, humanoid, realm, zox_get_link(world, character, TerrainLink),
+            11, 0, 0, position, quaternion_identity, NULL);
+        zox_remove(zox_tst_switch_npc, Coward);
+        zox_tst_switch_stage = 1;
+        return 0;
+    }
+    if (zox_tst_switch_stage == 1) {
+        zox_tst_waiting = "the npc to initialize";
+        if (!zox_valid(npc) || zox_has(npc, PreInitialize) || zox_has(npc, Initialize) ||
+            !zox_valid(zox_get_child_by_id(world, npc, zox_id(Skill)))) {
+            return 0;
+        }
+        combat_on_hit(world, npc, character);
+        zox_tst_switch_time = zox_current_time;
+        zox_tst_switch_stage = 2;
+        return 0;
+    }
+    if (zox_tst_switch_stage == 2) {
+        zox_tst_waiting = "the npc to pick shoot, 6 away";
+        zox_tst_switch_far |= zox_tst_switch_action_is(world, npc, zox_id(Shoot));
+        if (zox_tst_switch_far || zox_current_time - zox_tst_switch_time > 4) {
+            // the player beside it
+            float3 p = zox_getv(npc, Position3D);
+            p.x -= 1;
+            zox_setv(character, Position3D, p);
+            zox_tst_switch_time = zox_current_time;
+            zox_tst_switch_stage = 3;
+        }
+        return 0;
+    }
+    zox_tst_waiting = "the npc to pick punch, beside it";
+    zox_tst_switch_near |= zox_tst_switch_action_is(world, npc, zox_id(Melee));
+    return zox_tst_switch_near || zox_current_time - zox_tst_switch_time > 4;
+}
+
+void zox_tst_npc_skill_switch_check(ecs* world) {
+    zox_log("[tst] npc_skill_switch far shoot [%i] near punch [%i]", zox_tst_switch_far, zox_tst_switch_near);
+    zox_tst_check(zox_tst_switch_far, "the npc didn't pick shoot 6 away");
+    zox_tst_check(zox_tst_switch_near, "the npc didn't pick punch beside the player");
+}
+
 void zox_tsts_npc_attacks(ecs* world) {
     zox_tst_add("npc_attacks", zox_tst_npc_attacks_ready, zox_tst_npc_attacks_check, 120);
     zox_tst_set_setup("npc_attacks", zox_tst_level_setup, 0);
@@ -258,4 +334,6 @@ void zox_tsts_npc_attacks(ecs* world) {
     zox_tst_set_setup("npc_leash", zox_tst_level_setup, 0);
     zox_tst_add("npc_flee_hurt", zox_tst_npc_flee_hurt_ready, zox_tst_npc_flee_hurt_check, 120);
     zox_tst_set_setup("npc_flee_hurt", zox_tst_level_setup, 0);
+    zox_tst_add("npc_skill_switch", zox_tst_npc_skill_switch_ready, zox_tst_npc_skill_switch_check, 120);
+    zox_tst_set_setup("npc_skill_switch", zox_tst_level_setup, 0);
 }

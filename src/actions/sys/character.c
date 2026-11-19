@@ -23,6 +23,10 @@ void character_actions_spawn_system(iter* it) {
                 }
             }
         }
+        // humanoid npcs shoot too, picking punch or shoot by their threat's distance (ai/fun/skills.c)
+        if (meta_skill_shoot && zox_has(e, Villager)) {
+            spawn_user_skill(world, e, meta_skill_shoot);
+        }
     }
     zox_sys_on_end();
 } zoxd_system(character_actions_spawn_system);

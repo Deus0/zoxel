@@ -90,6 +90,8 @@ void zox_systems_npcs(ecs *world) {
         [out] ai.TargetPosition,
         [in] transforms3.Position3D,
         [in] ai.AttackAt,
+        [in] actions.ActiveAction,
+        [out] ai.MoveToBuffer,
         [none] ai.Npc,
         [none] !physics.DisableMovement,
     );

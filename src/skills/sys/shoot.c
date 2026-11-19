@@ -1,8 +1,10 @@
 // Spawns a projectile from raycast point
+#define shoot_speed 10.0f      // a shot's speed a unit of its skill's range, a second
+#define npc_shot_lift 0.04f    // of its distance, aimed above its target, its shot falls
+
 void shoot_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
-    float default_power = 64;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Activate);
@@ -62,6 +64,21 @@ void shoot_system(iter* it) {
                 rotation = zox_getv(user, Rotation3D);
             }
         }
+        // one aiming (an npc at its threat, RaycastAim) shoots at it: where its attacker will be when the shot gets
+        //  there (its velocity), a little above as its shot falls (npc_shot_lift)
+        if (zox_has(user, RaycastAim)) {
+            float3 aim = zox_getv(user, RaycastAim);
+            const entity attacker = zox_get_link(world, user, AttackerLink);
+            if (zox_valid(attacker) && zox_has(attacker, Velocity3D)) {
+                const float flight = float3_length(float3_subtract(aim, position)) / (shoot_speed * range->value);
+                float3 velocity = zox_getv(attacker, Velocity3D);
+                velocity.y = 0;
+                aim = float3_add(aim, float3_scale(velocity, flight));
+            }
+            float3 to_aim = float3_subtract(aim, position);
+            to_aim.y += npc_shot_lift * float3_length(to_aim);
+            rotation = quaternion_from_between_vectors((float3) { 0, 0, -1 }, float3_normalize(to_aim));
+        }
         float damage = get_skill_damage(
             world,
             e,
@@ -80,7 +97,7 @@ void shoot_system(iter* it) {
             position,
             rotation,
             0.1f,
-            default_power * range->value,
+            shoot_speed * range->value,
             damage,
             projectile_color);
     }

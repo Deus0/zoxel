@@ -15,6 +15,7 @@ zoxc_float(SkillDamage);
 zoxc_float(SkillDamageMax);
 zoxc_float(SkillRange);
 zoxc_float(SkillCost);
+zoxc_float2(SkillReach);     // the distances it lands at (min, max): an npc picks its skill by it (ai/fun/skills.c)
 
 void zox_components_skills(ecs* world) {
     zoxd_tag(Skill);
@@ -33,5 +34,6 @@ void zox_components_skills(ecs* world) {
     zoxd_float(SkillDamageMax);
     zoxd_float(SkillRange);
     zoxd_float(SkillCost);
+    zoxd_float2(SkillReach);
     zoxd_byte(SkillActive);
 }

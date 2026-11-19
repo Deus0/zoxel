@@ -15,6 +15,7 @@ float default_npc_follow_distance = 0.45f;
 #include "sta/_.c"
 #include "pre/_.c"
 #include "ins/_.c"
+#include "fun/skills.c"   // before its systems, they pick skills by it
 #include "sys/_.c"
 #include "fun/_.c"
 #include "eve/_.c"
