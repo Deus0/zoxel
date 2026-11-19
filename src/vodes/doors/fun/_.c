@@ -1,6 +1,7 @@
 // Doors: opening, closing and where a swung door is
 #define door_swing_angle (-0.5f * (float) M_PI)    // a quarter turn, its free edge to its back (+z), away from its placer
 #define door_swing_time 0.4f                     // seconds to open or close
+#define door_hinge_z (3.0f / 16)                 // the door's middle in z, a block's 3/16 from its front (build_vox_door)
 
 // its centre and turn swung (0 closed to 1 open, eased): turned about its hinge
 static inline void door_swung(float3 rest, float4 rest_rotation, float3 hinge, float swing, float3* position, float4* rotation) {
@@ -21,8 +22,9 @@ static inline void door_place(ecs* world, entity e, float3 rest, float4 rest_rot
 }
 
 // a door's block vox spawned (a hook of vodes_spawn_system): its rest, its hinge, swung as its block data says
-//  - its model is two blocks a side from its base's corner, the door the base's x (0 to 1 block), thin about z 0.5:
-//    the hinge is on its x 0 edge, a block from the centre in x and half a block in z
+//  - its model is two blocks a side from its base's corner, the door the base's x (0 to 1 block), thin about
+//    door_hinge_z (its front edge, models/gen/furniture.c build_vox_door): the hinge is on its x 0 edge, a block from
+//    the centre in x and a block less door_hinge_z in z
 void door_on_spawned(ecs* world, spawned_block_data* data) {
     if (!zox_has(data->block, BlockDoor) || !data->octree || !is_linked_VoxelNode(data->octree)) {
         return;
@@ -31,7 +33,7 @@ void door_on_spawned(ecs* world, spawned_block_data* data) {
     const byte block_data = zox_has(data->chunk, BlockDatas) ? get_block_data(zox_get(data->chunk, BlockDatas), data->positionl) : 0;
     const byte open = (block_data & block_data_open) != 0;
     const float4 rest_rotation = block_direction_rotation(block_data_direction(block_data));
-    const float3 hinge = { -data->scale, 0, -0.5f * data->scale };
+    const float3 hinge = { -data->scale, 0, (door_hinge_z - 1) * data->scale };
     zox_setv(e, DoorOpen, open);
     zox_setv(e, DoorSwing, open);
     zox_setv(e, DoorRestPosition, data->positionf);

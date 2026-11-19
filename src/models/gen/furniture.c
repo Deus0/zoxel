@@ -39,10 +39,11 @@ void build_vox_bed(VoxelNode* node, byte depth) {
     furniture_fill(node, depth, (int3) { 9 * u, 9 * u, u }, (int3) { 11 * u, 10 * u, block - u }, furniture_sheet);
 }
 
-// a door, 1 x 2 x 1 blocks, thin in z, in the middle of its block
+// a door, 1 x 2 x 1 blocks, thin in z, on its block's front edge (its handle and braces just inside it): it swings
+//  from its hinge at the corner into its own block (vodes/doors door_on_spawned, door_hinge_z)
 void build_vox_door(VoxelNode* node, byte depth) {
     const int length = octree_size(depth), block = length / 2, u = block / 16 ? block / 16 : 1;
-    const int z0 = block / 2 - u, z1 = block / 2 + u;
+    const int z0 = 2 * u, z1 = 4 * u;
     // planks, every other one darker
     for (int x = 0; x < block; x += 4 * u) {
         furniture_fill(node, depth, (int3) { x, 0, z0 }, (int3) { x + 4 * u, length, z1 },

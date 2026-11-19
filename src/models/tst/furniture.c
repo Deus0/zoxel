@@ -1,6 +1,6 @@
 // tst: furniture_models, the bed and door models are bigger than a block (doc/plans/multi_block_vox.md)
 //  - generated at depth 6 (two blocks a side): the bed's voxels span 2 x 1 x 1 blocks, the door's 1 x 2 x 1,
-//      both from the cube's low corner (the base block), with all their colours used
+//      both from the cube's low corner (the base block), with all their colours used; the door thin on its front edge
 //  - run: bash bsh/tst.sh furniture_models
 entity zox_tst_furniture_bed = 0, zox_tst_furniture_door = 0;
 
@@ -57,6 +57,7 @@ void zox_tst_furniture_models_check(ecs* world) {
         max.x, max.y, max.z, kinds);
     zox_tst_check(solid > 0 && !min.x && !min.y, "the door doesn't start at its base block's corner");
     zox_tst_check(max.x == block && max.y == block * 2, "the door is [%i] by [%i] voxels, not 1 block by 2", max.x, max.y);
-    zox_tst_check(min.z > 0 && max.z < block && max.z - min.z <= block / 2, "the door is [%i] to [%i] deep, not thin inside its block", min.z, max.z);
+    // on its block's front edge, it swings from the corner (build_vox_door)
+    zox_tst_check(min.z == 0 && max.z <= block / 2, "the door is [%i] to [%i] deep, not thin on its block's front edge", min.z, max.z);
     zox_tst_check(kinds == 3, "the door uses [%i] colours, not its wood, dark wood and handle", kinds);
 }
