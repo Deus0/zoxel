@@ -1,7 +1,8 @@
 // tst: wfc, wave function collapse (fun/wfc.c) on a small made up source: a floor slab with pillars, red tops
 //  - only the source's voxels; every window of an output (air outside it) is one of the source's patches (3 and 2)
 //  - the same seed the same output, other seeds other outputs
-//  - rules: floor (row 0 solid somewhere), mirror (x mirrored), one piece (one piece, at least half the source)
+//  - rules: floor (row 0 solid somewhere), mirror (x mirrored), one piece (one piece, at least half the source),
+//      features (its rare voxel, the red tops, kept)
 //  - pure logic on the main menu; run: bash bsh/tst.sh wfc
 #define zox_tst_wfc_source_size (int3) { 9, 6, 9 }
 #define zox_tst_wfc_size (int3) { 14, 7, 12 }
@@ -65,7 +66,7 @@ void zox_tst_wfc_check(ecs* world) {
     byte* a = malloc(cells);
     byte* b = malloc(cells);
     // plain (air outside): every window a source patch, only its voxels
-    const byte rules = wfc_rule_air_border;
+    const ushort rules = wfc_rule_air_border;
     const int3 sides[3] = { { 2, 2, 2 }, { 3, 3, 3 }, wfc_patch_size };
     for (int j = 0; j < 3; j++) {
         const int3 n = sides[j];
@@ -108,6 +109,11 @@ void zox_tst_wfc_check(ecs* world) {
         unmirrored += a[x + y * size.x + z * size.x * size.y] != a[size.x - 1 - x + y * size.x + z * size.x * size.y];
     }
     zox_tst_check(!unmirrored, "[%i] voxels differ from their mirror", unmirrored);
+    int tops = 0;
+    for (int i = 0; i < cells; i++) {
+        tops += a[i] == 2;
+    }
+    zox_tst_check(tops > 0, "the source's feature (its red tops, a rare voxel) was lost");
     const int solid = zox_tst_wfc_solid(a, size);
     zox_tst_check(solid * 2 >= source_solid, "one piece kept [%i] voxels, under half the source's [%i]", solid, source_solid);
     memcpy(b, a, cells);

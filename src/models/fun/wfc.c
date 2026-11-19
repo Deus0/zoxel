@@ -16,8 +16,9 @@
 #define wfc_rule_shaped 32      // a cell favours patches like the source's voxel at its share of the box (wfc_shape_weight)
 #define wfc_rule_feet 64        // solid on the floor under the source's feet, and (one piece) it stands on them
 #define wfc_rule_feet_middle 128 // with feet: only under the middle of the source's feet (tried when all of them fail)
-#define wfc_rules_all 127
-#define wfc_anchor_slack 0.05f
+#define wfc_rule_features 256   // keeps every one of the source's features (rare voxels: eyes, a beak), anywhere near
+#define wfc_rules_all 383
+#define wfc_anchor_slack 0.2f
 #define wfc_shape_bias 1000
 #define wfc_tries 24
 #define wfc_n_max 3
@@ -35,6 +36,7 @@ typedef struct {
     byte* voxels;       // volume a patch, x + y * n.x + z * n.x * n.y
     float* weights;
     byte* floor;        // placed on the source's lowest solid row
+    byte rare[256];     // a voxel under a tenth of the source's: its features (eyes, a beak, a comb)
     int floor_y;
     float* place;       // 6 a patch: the lowest and highest share of the source's box it's placed on, per axis
     int* slab_lo[3];    // the id of a patch's lower slab on an axis (its side less the top layer)
@@ -93,10 +95,17 @@ wfc_patches wfc_patches_make(const byte* source, int3 size, int3 n) {
     p.offset = (int3) { -(n.x - 1) / 2, -(n.y - 1) / 2, -(n.z - 1) / 2 };
     p.middle = -p.offset.x - p.offset.y * n.x - p.offset.z * n.x * n.y;
     p.floor_y = size.y;
+    int voxel_counts[256] = { 0 };
+    int solid = 0;
     for (int i = 0; i < size.x * size.y * size.z; i++) {
         if (source[i]) {
             p.floor_y = int_min(p.floor_y, (i / size.x) % size.y);
+            voxel_counts[source[i]]++;
+            solid++;
         }
+    }
+    for (int v = 1; v < 256; v++) {
+        p.rare[v] = voxel_counts[v] && voxel_counts[v] * 10 < solid;
     }
     const int most = (size.x + 2) * (size.y + 2) * (size.z + 2);
     const int table_size = wfc_table_size(most);
@@ -199,7 +208,7 @@ static inline byte wfc_source_at(const wfc_patches* p, int3 cell, int3 full, int
 // whether patch k may sit on a cell: near where it is in the source, a floor one on the floor, what of it lies
 //  outside the box air, and what lies past the mirror's line the same as its mirror
 //  - size: the cells made (the lower half of full, mirrored)
-static byte wfc_patch_fits(const wfc_patches* p, int k, int3 cell, int3 size, int3 full, byte rules) {
+static byte wfc_patch_fits(const wfc_patches* p, int k, int3 cell, int3 size, int3 full, ushort rules) {
     const byte* v = p->voxels + k * p->volume;
     if (rules & wfc_rule_anchored) {
         const float share[3] = {
@@ -250,7 +259,7 @@ static byte wfc_patch_fits(const wfc_patches* p, int k, int3 cell, int3 size, in
 
 // shaped: how much more a patch is picked for the source's voxel at the cell's share of the box (wanted)
 //  - the same voxel most, then solid where it's solid (or air where air), then anything
-static inline float wfc_shape_weight(const wfc_patches* p, int k, byte wanted, byte rules) {
+static inline float wfc_shape_weight(const wfc_patches* p, int k, byte wanted, ushort rules) {
     const byte voxel = p->voxels[k * p->volume + p->middle];
     if (!(rules & wfc_rule_shaped)) {
         return 1;
@@ -343,7 +352,7 @@ static void wfc_propagate(wfc_state* s) {
 }
 
 // one try at filling cells (size) with patches, 0 on a contradiction
-static byte wfc_collapse(const wfc_patches* p, int3 size, int3 full, uint seed, byte rules, int* chosen) {
+static byte wfc_collapse(const wfc_patches* p, int3 size, int3 full, uint seed, ushort rules, int* chosen) {
     const int words = p->words;
     const int cells = size.x * size.y * size.z;
     wfc_state s = { .p = p, .size = size };
@@ -374,6 +383,13 @@ static byte wfc_collapse(const wfc_patches* p, int3 size, int3 full, uint seed, 
         }
         s.failed |= !s.remaining[c];
     }
+    // shaped: cells on the source's features (its rare voxels at their share of the box), collapsed first so a face
+    //  is placed while all around it is still open (last, it was often left no room: a pengu lost its face 1 in 3)
+    byte* feature = calloc(cells, 1);
+    for (int c = 0; c < cells && rules & wfc_rule_shaped; c++) {
+        const int3 cell = { c % size.x, (c / size.x) % size.y, c / (size.x * size.y) };
+        feature[c] = p->rare[wfc_source_at(p, cell, full, -1)];
+    }
     // patches with no support from a neighbour go
     for (int c = 0; c < cells && !s.failed; c++) {
         for (int axis = 0; axis < 3; axis++) {
@@ -395,14 +411,14 @@ static byte wfc_collapse(const wfc_patches* p, int3 size, int3 full, uint seed, 
     }
     wfc_propagate(&s);
     while (!s.failed) {
-        // the least sure cell left (a seeded nudge breaks ties)
+        // the least sure cell left (a seeded nudge breaks ties), shaped: where the source has a feature first
         int best = -1;
         float lowest = 0;
         for (int c = 0; c < cells; c++) {
             if (s.remaining[c] <= 1) {
                 continue;
             }
-            const float entropy = logf(s.sum[c]) - s.sum_log[c] / s.sum[c] +
+            const float entropy = logf(s.sum[c]) - s.sum_log[c] / s.sum[c] - (feature[c] ? 1000 : 0) +
                 (seed_rand(seed ^ (uint) c * 2654435761u) & 1023) * 0.000001f;
             if (best < 0 || entropy < lowest) {
                 best = c;
@@ -459,6 +475,7 @@ static byte wfc_collapse(const wfc_patches* p, int3 size, int3 full, uint seed, 
     free(s.sum_log);
     free(s.support);
     free(s.queue);
+    free(feature);
     return made;
 }
 
@@ -519,7 +536,7 @@ static int wfc_keep_one_piece(byte* out, int3 size, byte* grounded) {
 }
 
 // makes out (size) from source's patches (n, 2 or 3 a side); returns 1 if it did, else out is left empty
-byte wfc_generate(const byte* source, int3 source_size, byte* out, int3 size, uint seed, byte rules, int3 n) {
+byte wfc_generate(const byte* source, int3 source_size, byte* out, int3 size, uint seed, ushort rules, int3 n) {
     const int cells_out = size.x * size.y * size.z;
     memset(out, 0, cells_out);
     int source_solid = 0;
@@ -552,16 +569,32 @@ byte wfc_generate(const byte* source, int3 source_size, byte* out, int3 size, ui
         byte grounded;
         if (rules & wfc_rule_one_piece && (wfc_keep_one_piece(out, size, &grounded) * 2 < source_solid ||
             (rules & wfc_rule_feet && !grounded))) {
-            memset(out, 0, cells_out);
             made = 0;
+        }
+        if (made && rules & wfc_rule_features) {
+            byte kept[256] = { 0 };
+            for (int c = 0; c < cells_out; c++) {
+                kept[out[c]] = 1;
+            }
+            for (int v = 1; v < 256 && made; v++) {
+                made = !p.rare[v] || kept[v];
+            }
+        }
+        if (!made) {
+            memset(out, 0, cells_out);
         }
     }
     free(chosen);
     wfc_patches_dispose(&p);
-    // never made: with less of the feet, then the source stretched to the box (on its feet, rather than a block);
+    // never made: with less of the feet, then without (its features kept), then the source stretched to the box;
     //  without feet, in pieces rather than nothing
     if (!made && rules & wfc_rule_feet && !(rules & wfc_rule_feet_middle)) {
         return wfc_generate(source, source_size, out, size, seed, rules | wfc_rule_feet_middle, n);
+    }
+    if (!made && rules & wfc_rule_feet && rules & wfc_rule_features) {
+        if (wfc_generate(source, source_size, out, size, seed, rules & ~(wfc_rule_feet | wfc_rule_feet_middle), n)) {
+            return 1;
+        }
     }
     if (!made && rules & wfc_rule_feet) {
         for (int c = 0; c < cells_out; c++) {

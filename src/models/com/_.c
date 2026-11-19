@@ -13,7 +13,7 @@ zoxc_byte3(EyeSize);
 zoxc_byte(PlaceType);
 zoxc_byte(NodeVoxel);
 zoxc_byte(NodeColors);
-zoxc_byte(WfcRules);        // a wfc node's rules (wfc_rule_*, fun/wfc.c)
+zoxc_ushort(WfcRules);        // a wfc node's rules (wfc_rule_*, fun/wfc.c)
 // voxes
 zoxc_byte(VoxType);
 zoxc_byte(RubbleHeight);
@@ -38,7 +38,7 @@ void zox_components_models(ecs* world) {
     zoxd_byte(PlaceType);
     zoxd_byte(NodeVoxel);
     zoxd_byte(NodeColors);
-    zoxd_byte(WfcRules);
+    zoxd_ushort(WfcRules);
     // TODO: Voxes
     zoxd_byte(VoxType);
     zoxd_byte(RubbleHeight);
