@@ -42,6 +42,7 @@ byte zox_block_outlines = 1;
 #define zox_model_node_speckle 7     // Count seeded spots painted on a surface (chocolate chips, freckles)
 #define zox_model_node_wfc 8         // a new model from a source model's patches (wave function collapse, eve/wfc.c)
 #define zox_model_node_end 9
+#define zox_model_node_mutate 10      // the model's colours mutated by its seed (eve/mutate.c)
 
 #include "dat/_.c"
 #include "set/_.c"

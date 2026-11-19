@@ -81,6 +81,7 @@ static inline void shift_node_transform(byte model_depth, byte3* position, byte3
 #include "ellipsoid.c"
 #include "cylinder.c"
 #include "wfc.c"
+#include "mutate.c"
 
 
 void process_arguments_voxes(ecs *world, char* args[], int count) {

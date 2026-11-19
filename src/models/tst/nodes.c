@@ -5,6 +5,7 @@
 //  - sprinkle (raised): dots in air on the surface; speckle: spots in solid on the surface; both:
 //      the count asked, the same for a seed, different for another, dots snapped to their size, and a count
 //      over the places fills them all
+//  - mutate: a seed's colours the same, whites tint but stay light, blacks stay dark, hues turn by the model's turn
 //  - pure logic on the main menu; run: bash bsh/tst.sh model_nodes
 #define zox_tst_nodes_depth 4   // 16 voxels a side
 
@@ -191,9 +192,30 @@ void zox_tst_model_nodes_sprinkle(void) {
     close_VoxelNode(&e);
 }
 
+// mutate: the same seed the same colour, a white tints to the model's tint but stays light, a black stays dark, a
+//  colour's hue turns by the model's turn
+void zox_tst_model_nodes_mutate(void) {
+    const float3 range = { 40, 30, 0.15f };
+    const color_rgb white = { 245, 245, 240 };
+    const color_rgb black = { 20, 20, 20 };
+    const color_rgb red = { 220, 30, 40 };
+    const color_rgb a = mutate_color(white, 9, 25, 200, range);
+    const color_rgb b = mutate_color(white, 9, 25, 200, range);
+    zox_tst_check(a.r == b.r && a.g == b.g && a.b == b.b, "a seed mutated a white two ways");
+    const float3 tinted = color_rgb_to_hsv(a);
+    zox_tst_check(tinted.z > 75, "a white went dark [%.0f]", tinted.z);
+    zox_tst_check(tinted.y < 1 || fabsf(tinted.x - 200) < 20, "a white tinted to hue [%.0f], not the tint [200]", tinted.x);
+    zox_tst_check(color_rgb_to_hsv(mutate_color(black, 9, 25, 200, range)).z < 20, "a black went light");
+    const float hue = color_rgb_to_hsv(mutate_color(red, 9, 25, 200, range)).x;
+    const float red_hue = color_rgb_to_hsv(red).x;
+    const float turned = zox_fmod(hue - red_hue + 540, 360) - 180;
+    zox_tst_check(fabsf(turned - 25) < 5, "a red turned [%.0f] degrees, not the model's [25]", turned);
+}
+
 void zox_tst_model_nodes_check(ecs* world) {
     (void) world;
     zox_tst_model_nodes_ellipsoid();
     zox_tst_model_nodes_box_and_paint();
     zox_tst_model_nodes_sprinkle();
+    zox_tst_model_nodes_mutate();
 }

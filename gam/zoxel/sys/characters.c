@@ -11,7 +11,8 @@ byte spawn_realm_critter_wfc(ecs* world, entity realm, entity prefab, const char
         return 0;
     }
     const byte variants = 4;
-    const entity nodegraph = spawn_model_nodegraph_wfc(world, realm, source, wfc_rules_all, size_min, size_max);
+    const float3 mutation = { 60, 40, 0.2f };   // hue turn, saturation added (whites tint), lighter or darker
+    const entity nodegraph = spawn_model_nodegraph_wfc(world, realm, source, wfc_rules_all, size_min, size_max, mutation);
     const entity model = spawn_blueprint_models(world, realm, nodegraph, seed, name,
         zox_getv(source, NodeDepth), variants).x;
     const entity e = spawn_character3_meta(world, prefab, realm, seed, name, chance);
