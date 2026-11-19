@@ -75,6 +75,8 @@ void zox_systems_bones(ecs *world) {
         [in] bones.WalkState,
         [out] bones.SwingPhase,
         [out] bones.SwingBlend,
+        [in] bones.CrouchState,
+        [out] bones.CrouchBlend,
         [none] bones.Skeleton
     );
     zox_system(

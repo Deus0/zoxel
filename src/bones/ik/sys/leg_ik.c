@@ -2,7 +2,7 @@
 //  - lengths from the bones' world positions (one frame's), directions at rest from their local positions
 //  - the knee bends ahead (the body's +z), the foot kept level with the body's facing (flat on the ground)
 //  - the weight blends over the walk's swing (the thigh's); at 0 the calf and foot ease back straight, the calf left
-//    to the walk while it swings the leg (it bends the knee)
+//    and foot left to the walk while it swings the leg (it bends the knee, levels the foot crouching)
 //  - zoxp_layouts as arm_ik: after the drivers (sys/feet.c, zoxp_trails), before the hierarchy, from the bones
 //    carried to where the body is now (skeleton_now)
 #define ik_knee_return_rate 18.0f
@@ -35,7 +35,7 @@ void leg_ik_system(iter* it) {
             if (!(zox_has(e, SwingState) && zox_getv(e, SwingState)) && !float4_equals(calf_rotation->value, quaternion_identity)) {
                 calf_rotation->value = quaternion_normalize2(quaternion_slerp(calf_rotation->value, quaternion_identity, return_t));
             }
-            if (!float4_equals(foot_rotation->value, quaternion_identity)) {
+            if (!(zox_has(e, SwingState) && zox_getv(e, SwingState)) && !float4_equals(foot_rotation->value, quaternion_identity)) {
                 foot_rotation->value = quaternion_normalize2(quaternion_slerp(foot_rotation->value, quaternion_identity, return_t));
             }
             continue;

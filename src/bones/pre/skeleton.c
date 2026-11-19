@@ -1,7 +1,7 @@
 // A skeleton, spawned as a child of its owner, i.e. a character
 //  - bones are its children, linked with BoneLinks, HeadBoneLink, HandBoneLink, ShoulderBoneLink
 //  - a skeleton_mesh child per render depth, built from its owners vox (VoxLink)
-//  - holds animation state: WalkState, RaiseShoulder, SwingStart, SwingSpeed, SwingKind, SwingTarget, SpineTwist
+//  - holds animation state: WalkState, CrouchState, RaiseShoulder, SwingStart, SwingSpeed, SwingKind, SwingTarget, SpineTwist
 //  - its transform follows its owner
 entity spawn_prefab_skeleton(ecs *world) {
     zox_prefab();
@@ -11,6 +11,8 @@ entity spawn_prefab_skeleton(ecs *world) {
     // Animation
     zox_setv(e, RaiseShoulder, 0);
     zox_setv(e, WalkState, 0);
+    zox_setv(e, CrouchState, 0);
+    zox_setv(e, CrouchBlend, 0);
     zox_setv(e, SwingStart, 0);
     zox_setv(e, SwingSpeed, 0);
     zox_setv(e, SwingKind, zox_swing_punch);

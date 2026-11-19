@@ -23,6 +23,8 @@ zoxc_float(SwingPhase);    // accumulated swing cycle, in radians
 zoxc_float(SwingBlend);    // 0 idle -> 1 walking, smoothed
 zoxc_byte(RaiseShoulder);
 zoxc_byte(WalkState);
+zoxc_byte(CrouchState);     // on a skeleton: crouching, bit 1 held (a key), bit 2 toggled (a button): bones/sys/arm_control.c
+zoxc_float(CrouchBlend);    // 0 standing -> 1 crouched, smoothed
 zoxc_byte(WalkSpeed);
 zoxc_double(SwingStart);
 zoxc_float(SwingSpeed);
@@ -73,6 +75,8 @@ void zox_components_bones(ecs* world) {
     zoxd_entity(BoneSlot);
     zoxd_byte(RaiseShoulder);
     zoxd_byte(WalkState);
+    zoxd_byte(CrouchState);
+    zoxd_float(CrouchBlend);
     zoxd_byte(WalkSpeed);
     zoxd_dirty(Skeleton);
 }

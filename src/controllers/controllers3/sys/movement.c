@@ -75,6 +75,8 @@ void player3d_move_system(iter* it) {
             continue;
         }
         byte is_running = 0;
+        byte crouch_held = 0;       // the left control key held
+        byte crouch_toggled = 0;    // a gamepad's left stick pushed in this frame
         float2 left_stick = float2_zero;
         entity devices[zox_children_capacity];
         uint length = zox_get_children_by_id(
@@ -119,6 +121,8 @@ void player3d_move_system(iter* it) {
                         if (!is_running && devices_get_pressed(zeviceButton->value)) {
                             is_running = 1;
                         }
+                    } else if (type == zox_btn_left_stick_push && devices_get_pressed_this_frame(zox_getv(e3, ZeviceButton))) {
+                        crouch_toggled = 1;
                     }
                 }
             }
@@ -129,7 +133,25 @@ void player3d_move_system(iter* it) {
                 if (keyboard->a.is_pressed) left_stick.x += -1;
                 if (keyboard->d.is_pressed) left_stick.x += 1;
                 if (keyboard->left_shift.is_pressed) is_running = 1;
+                if (keyboard->left_control.is_pressed) crouch_held = 1;
             }
+        }
+        // crouching: held by the left control key, toggled by a gamepad's left stick pushed in (holding a stick in
+        //  while walking is awkward); the skeleton bends to it (bones/sys/arm_control.c), slower, no running. A
+        //  headset crouches by the player's own body (xr/fun/body.c)
+        byte crouching = 0;
+        const entity skeleton = get_skeleton(world, character);
+        if (!zox_xr_active && zox_valid(skeleton) && zox_has(skeleton, CrouchState)) {
+            CrouchState* crouch = zox_getm(skeleton, CrouchState);
+            byte value = crouch_held ? (crouch->value | 1) : (crouch->value & ~1);
+            if (crouch_toggled) {
+                value ^= 2;
+            }
+            crouch->value = value;
+            crouching = value != 0;
+        }
+        if (crouching) {
+            is_running = 0;
         }
         // a headset walks without inertia: the stick sets the ground velocity, at speed the frame it's pushed,
         //  stopped the frame it's let go (accelerating up and friction coasting down felt like lag, and sickens)
@@ -186,6 +208,11 @@ void player3d_move_system(iter* it) {
         // we also use a potential velocity based on a calculated new velocity
         // (although we dont know delta_time next frame)
         float2 max_speed = max_velocity3D;
+        if (crouching) {
+            max_speed = float2_multiply1(max_speed, crouch_speed);
+            movement.x *= crouch_speed;
+            movement.z *= crouch_speed;
+        }
         if (is_running) {
             if (!zox_getv(character, FlyMode)) {
                 max_speed.x *= run_speed;

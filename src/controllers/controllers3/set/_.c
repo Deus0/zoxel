@@ -1,6 +1,7 @@
 byte auto_player = 0;
 // shit remove this atm, it doubles up for coop
 double run_speed = 1.8;
+float crouch_speed = 0.45f;     // crouching, of the walk's speed
 double run_accceleration = 2.2;
 float backwards_multiplier = 0.8f;
 float2 player_movement_power = { 17, 19 };

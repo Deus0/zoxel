@@ -6,18 +6,25 @@
 //  - measures over its steps, in the body's space: the lower foot's height (steady: the stance foot stays on the
 //      ground as the body bobs over it), the knees' most bend (the swinging leg lifts its foot), the head's bob, the
 //      steps a second
+//  - then crouched (CrouchState), walking slower: walk_views/crouch.gif; the feet on the same ground, the head lower
 #define zox_tst_walk_views_settle 0.6       // seconds walking before the gif
 #define zox_tst_walk_views_seconds 2.5      // the gif
 #define zox_tst_walk_views_speed 1.4f       // metres a second, the player's walk (controllers3 max_velocity3D, a module above)
 int zox_tst_walk_views_stage = 0;
 double zox_tst_walk_views_time = 0;
-int zox_tst_walk_views_frames = 0;
-float zox_tst_walk_views_foot_low = 99, zox_tst_walk_views_foot_high = -99;    // the lower foot's height
-float zox_tst_walk_views_head_low = 99, zox_tst_walk_views_head_high = -99;
-float zox_tst_walk_views_knee = 0;          // the most bend, degrees
-float zox_tst_walk_views_thigh = 0;         // the most swing, degrees
-int zox_tst_walk_views_steps = 0;           // the lower foot changing sides
-int zox_tst_walk_views_lower = -1;
+#define zox_tst_walk_views_crouch_speed 0.6f    // crouched (controllers3 crouch_speed of the walk)
+typedef struct {
+    int frames;
+    float foot_low, foot_high;      // the lower foot's height
+    float head_low, head_high;
+    float knee;                     // the most bend, degrees
+    float thigh;                    // the most swing, degrees
+    int steps;                      // the lower foot changing sides
+    int lower;
+} zox_tst_walk_measures;
+#define zox_tst_walk_measures_start { 0, 99, -99, 99, -99, 0, 0, 0, -1 }
+zox_tst_walk_measures zox_tst_walk_views_walk = zox_tst_walk_measures_start;
+zox_tst_walk_measures zox_tst_walk_views_crouch = zox_tst_walk_measures_start;
 
 static inline float zox_tst_walk_views_angle(float4 q) {
     return 2 * acosf(fminf(1, fabsf(q.w))) * radians_to_degrees;
@@ -38,7 +45,7 @@ static inline void zox_tst_walk_views_cameras(ecs* world, entity character) {
     }
 }
 
-static inline void zox_tst_walk_views_measure(ecs* world, entity character, entity skeleton) {
+static inline void zox_tst_walk_views_measure(ecs* world, entity skeleton, zox_tst_walk_measures* m) {
     ik_leg legs[2];
     if (zox_tst_ik_poses_legs(world, skeleton, legs) != 2) {
         return;
@@ -48,21 +55,21 @@ static inline void zox_tst_walk_views_measure(ecs* world, entity character, enti
     float feet[2];
     for (int i = 0; i < 2; i++) {
         feet[i] = zox_getv(legs[i].foot, Position3D).y - body;
-        zox_tst_walk_views_knee = fmaxf(zox_tst_walk_views_knee, zox_tst_walk_views_angle(zox_getv(legs[i].calf, LocalRotation3D)));
-        zox_tst_walk_views_thigh = fmaxf(zox_tst_walk_views_thigh, zox_tst_walk_views_angle(zox_getv(legs[i].thigh, LocalRotation3D)));
+        m->knee = fmaxf(m->knee, zox_tst_walk_views_angle(zox_getv(legs[i].calf, LocalRotation3D)));
+        m->thigh = fmaxf(m->thigh, zox_tst_walk_views_angle(zox_getv(legs[i].thigh, LocalRotation3D)));
     }
     const int lower = feet[0] < feet[1] ? 0 : 1;
-    if (zox_tst_walk_views_lower >= 0 && lower != zox_tst_walk_views_lower) {
-        zox_tst_walk_views_steps++;
+    if (m->lower >= 0 && lower != m->lower) {
+        m->steps++;
     }
-    zox_tst_walk_views_lower = lower;
-    zox_tst_walk_views_foot_low = fminf(zox_tst_walk_views_foot_low, feet[lower]);
-    zox_tst_walk_views_foot_high = fmaxf(zox_tst_walk_views_foot_high, feet[lower]);
+    m->lower = lower;
+    m->foot_low = fminf(m->foot_low, feet[lower]);
+    m->foot_high = fmaxf(m->foot_high, feet[lower]);
     const entity head = zox_get_link(world, skeleton, HeadBoneLink);
     if (zox_valid(head)) {
         const float y = zox_getv(head, Position3D).y - body;
-        zox_tst_walk_views_head_low = fminf(zox_tst_walk_views_head_low, y);
-        zox_tst_walk_views_head_high = fmaxf(zox_tst_walk_views_head_high, y);
+        m->head_low = fminf(m->head_low, y);
+        m->head_high = fmaxf(m->head_high, y);
     }
 }
 
@@ -83,7 +90,9 @@ byte zox_tst_walk_views_ready(ecs* world) {
     position.y = zox_tst_body_views_spot.y;
     zox_setv(character, Position3D, position);
     zox_setv(character, Rotation3D, quaternion_identity);
-    zox_setv(character, Velocity3D, ((float3) { 0, 0, zox_tst_walk_views_stage ? zox_tst_walk_views_speed : 0 }));
+    const float speed = zox_tst_walk_views_stage >= 3 ? zox_tst_walk_views_crouch_speed : zox_tst_walk_views_speed;
+    zox_setv(character, Velocity3D, ((float3) { 0, 0, zox_tst_walk_views_stage ? speed : 0 }));
+    zox_setv(skeleton, CrouchState, zox_tst_walk_views_stage >= 3);
     zox_tst_walk_views_cameras(world, character);
     zox_tst_progress(zox_tst_walk_views_stage * 1000 + (zox_current_time - zox_tst_walk_views_time) * 10);
     if (zox_tst_walk_views_stage == 0) {
@@ -110,10 +119,30 @@ byte zox_tst_walk_views_ready(ecs* world) {
         zox_tst_walk_views_stage = 2;
         return 0;
     }
-    zox_tst_waiting = "the walk's gif";
-    zox_tst_walk_views_measure(world, character, skeleton);
+    if (zox_tst_walk_views_stage == 2) {
+        zox_tst_waiting = "the walk's gif";
+        zox_tst_walk_views_measure(world, skeleton, &zox_tst_walk_views_walk);
+        if (t > zox_tst_walk_views_settle + zox_tst_walk_views_seconds) {
+            zox_tst_walk_views_walk.frames = zox_gif_stop();
+            zox_tst_walk_views_stage = 3;
+            zox_tst_walk_views_time = zox_current_time;
+        }
+        return 0;
+    }
+    if (zox_tst_walk_views_stage == 3) {
+        zox_tst_waiting = "crouching";
+        if (t < zox_tst_walk_views_settle) {
+            return 0;
+        }
+        const char* env = getenv("zox_tst_gif_fps");
+        zox_gif_record(zox_tst_path("walk_views/crouch.gif"), env && env[0] ? atof(env) : 20);
+        zox_tst_walk_views_stage = 4;
+        return 0;
+    }
+    zox_tst_waiting = "the crouched walk's gif";
+    zox_tst_walk_views_measure(world, skeleton, &zox_tst_walk_views_crouch);
     if (t > zox_tst_walk_views_settle + zox_tst_walk_views_seconds) {
-        zox_tst_walk_views_frames = zox_gif_stop();
+        zox_tst_walk_views_crouch.frames = zox_gif_stop();
         return 1;
     }
     return 0;
@@ -122,18 +151,27 @@ byte zox_tst_walk_views_ready(ecs* world) {
 void zox_tst_walk_views_check(ecs* world) {
     (void) world;
     zox_gif_stop();
-    const float foot = zox_tst_walk_views_foot_high - zox_tst_walk_views_foot_low;
-    const float head = zox_tst_walk_views_head_high - zox_tst_walk_views_head_low;
-    const float steps = zox_tst_walk_views_steps / (float) zox_tst_walk_views_seconds;
+    const zox_tst_walk_measures* w = &zox_tst_walk_views_walk;
+    const zox_tst_walk_measures* c = &zox_tst_walk_views_crouch;
+    const float foot = w->foot_high - w->foot_low;
+    const float head = w->head_high - w->head_low;
     zox_log("[tst] walk_views: [%i] frames, [%.2f] steps a second, thighs swing [%.1f] degrees, knees bend [%.1f]",
-        zox_tst_walk_views_frames, steps, zox_tst_walk_views_thigh, zox_tst_walk_views_knee);
+        w->frames, w->steps / (float) zox_tst_walk_views_seconds, w->thigh, w->knee);
     zox_log("[tst] walk_views: the lower foot's height moves [%.3f], the head bobs [%.3f]", foot, head);
-    zox_tst_check(zox_tst_walk_views_frames >= 4, "[walk.gif] has [%i] frames", zox_tst_walk_views_frames);
+    zox_tst_check(w->frames >= 4, "[walk.gif] has [%i] frames", w->frames);
     // the old gait: 58 degree strides on straight legs, the feet 0.16 up and down through the ground, a head bob of its own
     zox_tst_check(foot < 0.03f, "the stance foot didn't stay on the ground, it moved [%f]", foot);
-    zox_tst_check(zox_tst_walk_views_knee > 25, "the knees didn't bend to lift the feet [%f]", zox_tst_walk_views_knee);
-    zox_tst_check(zox_tst_walk_views_thigh > 10 && zox_tst_walk_views_thigh < 40, "the stride is [%f] degrees", zox_tst_walk_views_thigh);
+    zox_tst_check(w->knee > 25, "the knees didn't bend to lift the feet [%f]", w->knee);
+    zox_tst_check(w->thigh > 10 && w->thigh < 40, "the stride is [%f] degrees", w->thigh);
     zox_tst_check(head > 0.005f && head < 0.06f, "the head bobbed [%f]", head);
+    // crouched: the feet on the same ground (the lower one at the walk's lowest), the head well down
+    const float ground = fmaxf(fabsf(c->foot_low - w->foot_low), fabsf(c->foot_high - w->foot_low));
+    const float down = (w->head_low + w->head_high) * 0.5f - (c->head_low + c->head_high) * 0.5f;
+    zox_log("[tst] walk_views: crouched [%i] frames, the lower foot off the walk's ground [%.3f], the head down [%.3f], knees bend [%.1f]",
+        c->frames, ground, down, c->knee);
+    zox_tst_check(c->frames >= 4, "[crouch.gif] has [%i] frames", c->frames);
+    zox_tst_check(ground < 0.03f, "crouched, the feet left the ground [%f]", ground);
+    zox_tst_check(down > 0.08f, "crouched, the head went down [%f]", down);
 }
 
 void zox_tsts_walk_views(ecs* world) {
