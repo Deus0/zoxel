@@ -98,10 +98,17 @@ void arm_ik_system(iter* it) {
         const float3 pole = float4_rotate_float3(parent_rotation, (float3) { out, -1, -0.6f });
         float3 elbow_point, hand_point;
         ik_two_bone(shoulder_point, a, b, target->value, pole, &elbow_point, &hand_point);
-        // the shoulder: its rest upper arm onto the shoulder to elbow, in the parent's space
+        // the shoulder: its rest upper arm onto the shoulder to elbow, in the parent's space, and its rest front (+z,
+        //  the way the forearm folds) to the hand's side of the upper arm: the elbow points to the pole; the shortest
+        //  turn alone spun the arm about itself, half a turn reaching up (the elbow straight, the arm round the head)
         const float4 parent_inverse = quaternion_inverse(parent_rotation);
-        const float4 shoulder_ik = quaternion_from_to(upper_rest,
-            float4_rotate_float3(parent_inverse, float3_sub(elbow_point, shoulder_point)));
+        const float3 upper = float4_rotate_float3(parent_inverse, float3_sub(elbow_point, shoulder_point));
+        float3 fold = ik_perpendicular(float4_rotate_float3(parent_inverse, float3_sub(hand_point, elbow_point)),
+            float3_normalize(upper));
+        if (float3_length(fold) < 0.001f * b) {
+            fold = float3_scale(float4_rotate_float3(parent_inverse, pole), -1);    // straight: away from the pole
+        }
+        const float4 shoulder_ik = ik_turn_to(upper_rest, float3_forward, upper, fold);
         // the elbow's parent in the world: the shoulder turned, then the bones between at their rotations
         float4 elbow_parent = quaternion_rotate(parent_rotation, shoulder_ik);
         for (byte j = 1; j < elbow_index; j++) {

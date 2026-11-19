@@ -29,8 +29,11 @@ static inline IKWeight* swing_weight_of(ecs* world, entity shoulder) {
 }
 
 // an arm's hand to a pose: from its shoulder (as the body is now), along the look, in to the body's middle, up
+//  - looking up, posed as looking level then turned up about the eyes, not the shoulder, and no further from the
+//    shoulder than the pose is level (in along its line from the eyes): turned about the shoulder its up went back with the head's, the hand over and
+//    behind the head, out of view, the arm locked straight (tst guard_pitch)
 static inline byte swing_arm_target(ecs* world, const skeleton_now* now, entity shoulder, float4 head_rotation,
-    float3 look, float flip, swing_pose pose)
+    float3 look, float flip, swing_pose pose, float3 eye)
 {
     ik_arm arm;
     if (!ik_arm_find(world, shoulder, &arm)) {
@@ -45,11 +48,27 @@ static inline byte swing_arm_target(ecs* world, const skeleton_now* now, entity 
         float3_distance(elbow, zox_getv(arm.bones[arm.length - 1], Position3D));
     // the right shoulder's on -x: in is +x
     const float side_sign = zox_getv(shoulder, LocalPosition3D).x < 0 ? 1 : -1;
-    const float3 side = float4_rotate_float3(head_rotation, (float3) { side_sign * flip, 0, 0 });
-    const float3 up = float4_rotate_float3(head_rotation, float3_up);
-    float3 target = float3_add(from, float3_scale(look, pose.out * reach));
+    const float3 level = float3_normalize((float3) { look.x, 0, look.z });
+    const byte looking_up = look.y > 0.001f && (look.x || look.z);
+    const float4 lift = looking_up ? quaternion_from_to(level, look) : quaternion_identity;
+    const float4 posed = looking_up ? quaternion_rotate(quaternion_inverse(lift), head_rotation) : head_rotation;
+    const float3 side = float4_rotate_float3(posed, (float3) { side_sign * flip, 0, 0 });
+    const float3 up = float4_rotate_float3(posed, float3_up);
+    float3 target = float3_add(from, float3_scale(looking_up ? level : look, pose.out * reach));
     target = float3_add(target, float3_scale(side, pose.in * reach));
     target = float3_add(target, float3_scale(up, pose.up * reach));
+    if (looking_up) {
+        target = float3_add(eye, float4_rotate_float3(lift, float3_sub(target, eye)));
+        // past it: in towards the eyes, so it keeps its place in view
+        const float most = sqrtf(pose.out * pose.out + pose.in * pose.in + pose.up * pose.up) * reach;
+        const float3 d = float3_sub(target, eye);
+        const float3 e = float3_sub(eye, from);
+        const float dd = float3_dot(d, d), ed = float3_dot(e, d);
+        const float discriminant = ed * ed - dd * (float3_dot(e, e) - most * most);
+        if (float3_distance(target, from) > most && dd > 0 && discriminant >= 0) {
+            target = float3_add(eye, float3_scale(d, (-ed + sqrtf(discriminant)) / dd));
+        }
+    }
     zox_getm(shoulder, IKTarget)->value = target;
     return 1;
 }
@@ -115,9 +134,10 @@ void swing_ik_system(iter* it) {
             flip = -1;
         }
         const float3 look = float4_rotate_float3(head_rotation, facing);
+        const float3 eye = skeleton_now_point(&now, zox_getv(zox_valid(camera) ? camera : head, Position3D));
         const float p = (float) (passed / speed->value);
         const swing_pose pose = swinging ? swing_pose_at(&swings[kind->value], p) : swing_guard;
-        if (!swing_arm_target(world, &now, shoulder, head_rotation, look, flip, pose)) {
+        if (!swing_arm_target(world, &now, shoulder, head_rotation, look, flip, pose, eye)) {
             continue;
         }
         const float side_sign = zox_getv(shoulder, LocalPosition3D).x < 0 ? 1 : -1;
@@ -125,7 +145,7 @@ void swing_ik_system(iter* it) {
         swing_weight_ease(weight, 1, weight_t);
         if (off_active) {
             const swing_data off = swing_off(&swings[kind->value]);
-            if (swing_arm_target(world, &now, off_shoulder, head_rotation, look, flip, swing_pose_at(&off, p > 1 ? 1 : p))) {
+            if (swing_arm_target(world, &now, off_shoulder, head_rotation, look, flip, swing_pose_at(&off, p > 1 ? 1 : p), eye)) {
                 swing_weight_ease(off_weight, 1, weight_t);
             }
         }

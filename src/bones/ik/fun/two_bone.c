@@ -41,3 +41,22 @@ static inline float4 quaternion_twist(float4 q, float3 axis) {
     }
     return (float4) { twist.x / length, twist.y / length, twist.z / length, twist.w / length };
 }
+
+// v without its part along axis (unit)
+static inline float3 ik_perpendicular(float3 v, float3 axis) {
+    return float3_sub(v, float3_scale(axis, float3_dot(v, axis)));
+}
+
+// a bone's turn from its rest line to a line, and its rest side to a side (about the line): both fixed, so the turn
+//  doesn't flip about the line as the shortest one (from to) does, half a turn round from its rest (an arm up)
+static inline float4 ik_turn_to(float3 rest_line, float3 rest_side, float3 line, float3 side) {
+    const float4 q = quaternion_from_to(rest_line, line);
+    const float3 axis = float3_normalize(line);
+    const float3 turned = ik_perpendicular(float4_rotate_float3(q, rest_side), axis);
+    const float3 wanted = ik_perpendicular(side, axis);
+    if (float3_length(turned) < 0.0001f || float3_length(wanted) < 0.0001f) {
+        return q;
+    }
+    const float angle = atan2f(float3_dot(float3_cross(turned, wanted), axis), float3_dot(turned, wanted));
+    return quaternion_rotate(quaternion_from_axis_angle(axis, angle), q);
+}

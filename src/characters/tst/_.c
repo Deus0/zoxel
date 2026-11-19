@@ -5,6 +5,7 @@
 #include "swing_motion.c"
 #include "place_glance.c"
 #include "guard_steady.c"
+#include "guard_pitch.c"
 #include "feet_planted.c"
 #include "head_camera.c"
 #include "footsteps.c"
@@ -18,6 +19,7 @@ void zox_tsts_characters(ecs* world) {
     zox_tsts_swing_motion(world);
     zox_tsts_place_glance(world);
     zox_tsts_guard_steady(world);
+    zox_tsts_guard_pitch(world);
     zox_tsts_feet_planted(world);
     zox_tsts_head_camera(world);
     zox_tsts_footsteps(world);
