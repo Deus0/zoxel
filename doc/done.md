@@ -24,6 +24,9 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x Beds: climbing on and lying down, getting up and off, eased (SleepMotion, sleep_motion_system after the physics):
+  up onto the mattress with a hop, then onto its back; up onto its feet, then down beside the bed, moving again once
+  off; held lying while asleep; tst bed_sleep checks the climb never jumps and stands on the mattress half way
 -x Sleeping in a bed (vodes/beds): a right click on one (block_activate_system) puts its character to sleep (Sleeping,
   SleepBlock): lying on its back over the mattress, its head on the pillow, still (DisableMovement, DisableGravity,
   NoClip, its velocity and forces zeroed); a player's eyes close (CameraLids), its mouse let go, an "Asleep" window

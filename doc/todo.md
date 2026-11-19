@@ -309,7 +309,7 @@
 - rotate a bed or door before placing it (a key or the wheel); placing turns it to your facing now (52d6d0b3d)
 - multi blocks (beds, doors):
 	- beds: sleeping lies you down, the eyes close, "Wake" stands you up (vodes/beds); play test it
-		- climb onto the bed and lie down, and back off it, eased (then the bones, ik: pushing up with the arms)
+		- the climb with the bones (ik): pushing up with the arms, a leg up onto the mattress
 		- npcs sleep in their homes' beds (character_sleep / character_wake)
 		- after day and night: sleeping skips the night, sets your respawn point to the bed, heals while asleep
 	- play test doors (right click opens and closes them, vodes/doors): the swing's direction (to its back, away from
