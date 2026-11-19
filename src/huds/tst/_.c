@@ -1,4 +1,5 @@
 #include "load.c"
+#include "load_lids.c"
 #include "menus.c"
 #include "end_game.c"
 #include "mouse.c"
@@ -26,6 +27,7 @@
 
 void zox_tsts_huds(ecs* world) {
     zox_tsts_huds_load();
+    zox_tsts_huds_load_lids();
     zox_tst_add("menu_flow", zox_tst_menu_flow_ready, zox_tst_menu_flow_check, 120);
     zox_tst_add("end_game_cleanup", zox_tst_end_game_ready, zox_tst_end_game_check, 180);
     zox_tst_set_setup("end_game_cleanup", NULL, 1);

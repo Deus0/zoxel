@@ -19,18 +19,18 @@ void huds3_window_pose(ecs* world, entity canvas, float3* position, float4* rota
     huds3_pose(world, zox_get_link(world, canvas, PlayerLink), huds3_distance, position, rotation);
 }
 
-// loading on 3D huds: the eyes close (dark lids from the top and bottom, a headset's eyes: xr/fun/eye_render.c), then
-//  only a 3D label "Loading" is drawn, fading in ahead of the head and following it (huds3_follow_system); the eyes
-//  open once loaded and the camera's on the body (huds3_dark_hold); 2D loading fades its canvas instead
+// loading: the eyes close (each player's camera's CameraLids: lids from the top and bottom, in 2D and a headset), the
+//  "Loading" label over them (2D, or 3D ahead of the head, following it: huds3_follow_system); they open once loaded
+//  and the camera's on the body (load_dark_hold), load_lids_system
 //  - the fog fading the world to black didn't blacken a headset's view (play test)
-byte huds3_dark = 0;
-byte huds3_dark_hold = 0;               // kept closed: the camera isn't on the body yet (xr: it teleports there, a pop)
-float huds3_darkness = 0;               // the eyes closing, 0 open to 1 shut (huds3_dark_system)
-float huds3_label_fade = 0;             // the label, 0 unseen to 1 lit, once shut
-double huds3_dark_held = 0;             // opened only after this long unheld: the body settles on its spawn first
-#define huds3_dark_close 0.45f          // seconds to close
-#define huds3_dark_open 0.6f            // seconds to open
-#define huds3_dark_hold_time 0.4f
+byte load_dark = 0;                     // loading: the eyes closing or shut
+byte load_dark_hold = 0;                // kept closed: the camera isn't on the body yet (xr: it teleports there, a pop)
+byte load_lids = 0;                     // loading drives the lids (closing, or opening after): sleeping's are its own
+float huds3_label_fade = 0;             // the 3D label, 0 unseen to 1 lit, once shut
+double load_dark_held = 0;              // opened only after this long unheld: the body settles on its spawn first
+#define load_dark_close 0.45f           // seconds to close
+#define load_dark_open 0.6f             // seconds to open
+#define load_dark_hold_time 0.4f
 #define huds3_label_fade_time 0.4f
 #define huds3_follow_speed 4.0f     // per second, the label catching up with where the head looks
 

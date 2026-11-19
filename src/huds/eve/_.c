@@ -12,7 +12,6 @@
 
 void zox_events_huds(ecs* world) {
     zox_muter(prefab_game, GameStateEvent, game_event);
-    add_to_GameStateEvent(game_event, game_state_fader);
     add_to_GameStateEvent(game_event, game_state_end_huds);
     add_to_GameStateEvent(game_event, game_state_load);
     add_to_GameStateEvent(game_event, game_state_split_screen);

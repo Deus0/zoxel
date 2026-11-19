@@ -8,7 +8,7 @@
 #define xr_near_distance 0.01f
 #define xr_far_distance 800.0f
 const color xr_clear_color = (color) { 33, 38, 38, 255 };
-// - the eyes closing (huds3_darkness, loading): dark lids from the top and the bottom over the world, their edges
+// - the eyes closing (its camera's CameraLids: loading, sleeping): dark lids from the top and the bottom over the world, their edges
 //   curved (the middle shuts first: xr_eye_lids); shut, only the 3D uis are drawn (the "Loading" label, fading in:
 //   huds3_label_fade), not the world as it loads; the 3D uis drawn over the lids
 //   - the fog fading the world to black didn't blacken a headset's view (play test)
@@ -47,8 +47,8 @@ static void xr_eye_lids(float2 position, float2 size, float closure, byte flip_y
 
 void xr_render_eye(ecs* world, float4x4 eye, float4 fov, float4x4 body, float2 viewport_position, float2 viewport_size, byte flip_y) {
     zox_gpu_set_viewport(viewport_position, viewport_size);
-    // loading's (huds3_darkness), or the camera's own (CameraLids: sleeping)
-    const float closure = float_max(huds3_darkness, zox_valid(xr_camera) && zox_has(xr_camera, CameraLids) ? zox_getv(xr_camera, CameraLids) : 0);
+    // its camera's lids (CameraLids: loading, sleeping)
+    const float closure = zox_valid(xr_camera) && zox_has(xr_camera, CameraLids) ? zox_getv(xr_camera, CameraLids) : 0;
     const byte shut = closure >= 1;
     const color clear = shut ? (color) { 0, 0, 0, 255 } : xr_clear_color;
     zox_gpu_set_clear_color(color_to_float4(clear));

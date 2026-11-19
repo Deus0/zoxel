@@ -95,7 +95,7 @@ void zox_tsts_xr_menu(ecs* world) {
 // tst: xr_play, into a game with XR on the simulator, by the controllers alone
 //  - A on the start menu, A on the main menu's first button (New Game: tests have no saves), in with the
 //      defaults (no realm menu, 3D huds have no text input)
-//  - loading: the view dark (huds3_dark) with a 3D "Loading" label ahead (a Canvas3), each eye black but for it
+//  - loading: the view dark (load_dark, the camera's CameraLids) with a 3D "Loading" label ahead (a Canvas3), each eye black but for it
 //      (tst/xr_load.ppm); gone and lit once playing; the eyes closing and opening over frames, not cut
 //  - closing: the lids in from the top and bottom, the world between (tst/xr_lids.ppm)
 //  - the eyes don't open before the camera's on the body (it teleports there: a pop)
@@ -129,7 +129,7 @@ byte zox_tst_xr_play_ready(ecs* world) {
     // A held for a few frames, then let go (a click is its release)
     xr_sim_script_a = zox_tst_xr_play_frames >= 20 && zox_tst_xr_play_frames < 24 && zox_tst_xr_play_stage < 2;
     {
-        const float darkness = huds3_darkness;
+        const float darkness = zox_getv(xr_camera, CameraLids);
         if (darkness > 0 && darkness < 1) {
             if (darkness > zox_tst_xr_play_darkness) {
                 zox_tst_xr_play_fade_in++;
@@ -166,8 +166,8 @@ byte zox_tst_xr_play_ready(ecs* world) {
             {
                 const entity load_ui = zox_get_child_by_id(world, canvas, zox_id(LoadUI));
                 if (zox_valid(load_ui)) {
-                    zox_tst_xr_play_load3 |= zox_has(load_ui, Canvas3) && huds3_dark;
-                    if (huds3_darkness >= 1 && ++zox_tst_xr_play_load_shot == 10) {
+                    zox_tst_xr_play_load3 |= zox_has(load_ui, Canvas3) && load_dark;
+                    if (zox_getv(xr_camera, CameraLids) >= 1 && ++zox_tst_xr_play_load_shot == 10) {
                         remove(zox_tst_path("xr_load.ppm"));
                         snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("xr_load.ppm"));
                     }
@@ -208,7 +208,7 @@ static inline void zox_tst_xr_dark_eye(const byte* pixels, int2 size, int eye, f
 void zox_tst_xr_play_check(ecs* world) {
     zox_tst_check(zox_tst_xr_play_playing, "never playing");
     zox_tst_check(zox_tst_xr_play_load3, "loading had no 3D load ui on a dark view");
-    zox_tst_check(!huds3_dark && huds3_darkness == 0 && render_darkness == 0, "still dark playing [%.2f]", huds3_darkness);
+    zox_tst_check(!load_dark && !load_lids && zox_getv(xr_camera, CameraLids) == 0, "still dark playing [%.2f]", zox_getv(xr_camera, CameraLids));
     zox_log("[tst] xr_play: closed over [%i] frames, opened over [%i], opened off the body [%i]", zox_tst_xr_play_fade_in, zox_tst_xr_play_fade_out, zox_tst_xr_play_opened_early);
     zox_tst_check(zox_tst_xr_play_opened_early == 0, "the eyes opened before the camera was on the body [%i frames]", zox_tst_xr_play_opened_early);
     {

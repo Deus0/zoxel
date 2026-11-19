@@ -41,7 +41,8 @@ void zox_systems_game_ui(ecs *world) {
         [in] inputs.DeviceMode,
         [none] players.Player
     );
-    zox_system_1(huds3_dark_system, zoxp_update, 0);
+    // main thread: it writes every player's camera
+    zox_system_1(load_lids_system, zoxp_update, 0);
     // main thread: it opens and closes uis
     zox_system_1(
         navigator_shift_system,

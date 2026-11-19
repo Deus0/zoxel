@@ -36,7 +36,7 @@ static inline void xr_roam_step(free_roam* roam, float2 move, float2 turn, float
 // the eyes' body this frame: on the character in a game (fun/body.c), else the roam flown by the sticks
 static float4x4 xr_view_body;
 
-// the eyes kept shut (huds3_dark_hold) entering a game until the camera's on the body: loaded, the camera teleports
+// the eyes kept shut (load_dark_hold) entering a game until the camera's on the body: loaded, the camera teleports
 //  to it (a pop, play test); once on it this game, never again (a body gone later doesn't black the view)
 static byte xr_body_seen = 0;
 
@@ -48,7 +48,7 @@ static inline void xr_dark_hold_update(ecs* world, byte on_body) {
         xr_body_seen = 0;
     }
     xr_body_seen |= on_body;
-    huds3_dark_hold = !on_body && !xr_body_seen && state >= zox_game_load_start && state <= zox_game_state_playing;
+    load_dark_hold = !on_body && !xr_body_seen && state >= zox_game_load_start && state <= zox_game_state_playing;
 }
 
 static void xr_roam_update(ecs* world, entity camera, float2 move, float2 turn, float4 head_rotation, float3 head_position, float delta) {
