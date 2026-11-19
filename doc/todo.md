@@ -309,10 +309,10 @@
 		- sleep in a bed: close the eyes, a button to leave (the sleep ui), open the eyes when you get up
 		- animate getting onto the bed with the bones (ik)
 		- the eyes close/open animation in 2D too (a screen fade, as the eyelids)
-	- cant rotate / open doors
-		- door swing animation from its hinge, the hinge close to the block's edge
-		- generated door open sounds
-		- physics: pass through it when it's fully open
+	- play test doors (right click opens and closes them, vodes/doors): the swing's direction (to its back, away from
+	  whoever placed it), the creak and the shut, walking through; it's passable as soon as it starts opening and
+	  solid as soon as it starts closing (someone in the doorway is pushed out)
+	- npcs open doors, and towns' homes get doors (spawn doors and beds in houses, Towns)
 - Blocks: refactor them onto the realm, biomes pick theirs by random rules (still variety in dirts and others)
 - sway grass more when you walk through, and better foliage pass through sounds
 - new block destruction animations 

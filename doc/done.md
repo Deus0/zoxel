@@ -24,6 +24,10 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x Doors open and close: a right click on one (TriggerActionB, on_door_activate) toggles block_data_open in its
+  parts' block data (saved with the chunk), its block vox swings a quarter turn about its hinge (door_swing_system),
+  spawned already swung when loaded, a creak opening and a thump with a latch closing (instruments creak, shut),
+  terrain collisions pass through an open door's parts (intersect2.c); tst doors (vodes/doors)
 -x Eating swings the hand to the mouth (zox_swing_eat), from the item's warmup (item_swing_system, blocks and food);
   just under the first person view, in front of the face; tst swing_motion (was place_motion), eat_swing
 -x Placing a block the head turns part way to it (SwingTarget, the ray's hit; head_look, head_place_nudge), not a

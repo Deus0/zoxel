@@ -26,6 +26,9 @@ Named effects in [src/sounds/fun/effects.c](../src/sounds/fun/effects.c), instru
 | `hit_sound_wood` | tock | a hollow ring at 1 and 2.76 times its note | wood |
 | `hit_sound_leaves` | rustle | noise that swells and fades | leaves, grass, flowers |
 
+Doors (vodes/doors) have two effects: `sound_effect_door_open`, a creak (a buzz gliding up, rough, through a wooden
+ring), and `sound_effect_door_close`, a shut (a heavy wooden thump and its latch's click).
+
 ## Linking
 
 - `link_hit_sound(world, e, parent, &hit_sound_stone)`: spawns the sound entity under `parent` (the realm or

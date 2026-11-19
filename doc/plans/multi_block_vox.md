@@ -108,7 +108,8 @@ Steps, each with its test:
 4. **Rotation.** The placer's facing picks one of four directions; the model turns about the base, its fillers go
    that way. Needs the direction stored for the placed block (below). tst: placed facing each way, the fillers and
    the mesh bounds follow.
-5. **Door state** (open, closed), after the above: the same store.
+5. **Door state** (open, closed), after the above: the same store. Done 2026-11-19 (vodes/doors): block_data_open
+   (128) on the base's and fillers' data, collisions skip a voxel with it, tst doors.
 
 ### Where a placed block's direction lives (needs the user's nod before step 4)
 
