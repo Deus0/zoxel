@@ -1,6 +1,15 @@
 # Done
 
 ## 2026-11-20
+-x Npc hits didn't land on the player: an npc's ray pointed along its body's facing, which lagged a moving player, so
+  every punch missed (tst npc_attacks, now with the player strafing). It aims at its attacker (RaycastAim)
+-x Start then RB on a gamepad crashed: the Character window's render texture read its new shader's gpu ids back while
+  deferred (null); they're passed in. Its window was a global, a second coop player's open closed the first's
+-x Npc combat: humanoids punch and shoot (picked by distance, SkillReach), swing in reach on an uneven beat, back off
+  and lunge, flee hurt; monsters attack who they see (npc sight, Target); slimes pounce (squash and leap) and whip a
+  tentacle; shots burn (the realm's burn, OnHitLinks), shots trail and burns flame (particle streamers). Shots were
+  1.4 a second (a one frame force), now launched at their speed. tsts npc_skill_switch, npc_flee_hurt, monster_sight,
+  slime_pounce, slime_tentacle, shoot_burn, aura_poison
 -x Game log (huds/ins/game_log.c): game_log(world, player, text) puts a line at the bottom left of that player's
   screen over the actionbar, older lines pushed up, each fading out after 6s, 6 at most. Quests done and their rewards
   log there (handed in by dialogue had nothing). tst game_log

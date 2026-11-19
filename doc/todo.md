@@ -18,7 +18,6 @@
 	- cloth sticks to a forearm: part of the shirt follows it (cloth should stick together)
 	- the crack overlay is missing in coop (the second player's screen), not reproduced: tst coop_block_crack shows
 		both players' cracks, software and --gpu. Hit by melee or a skill? Near the first player or far? Which build?
-	- npc hits don't land on the player
 	- "talk to someone in town": the tracker didn't mark off the first quest (likely the stale tracker, fixed 2026-11-20: check)
 	- players talk to each other, but the second player didn't take part
 - the second player flying away, off the minimap, crashed it (play test 2026-11-19), not reproduced: tst
@@ -587,6 +586,8 @@
 - Vitality should increase health stat
 - When equiping gear, add particles buff around character
 - remove StatLinks just use children and queries
+- debuffs scale with their skill's level: a debuff links its Skill, its Damage and Rate scaled by that skill's level
+  (the realm's burn and poison are the base, skills/fun/on_hit.c)
 - Add countdown timer on respawn
 
 # Items and Placing
