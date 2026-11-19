@@ -24,6 +24,11 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x Eating chews: three bites while the hand's at the mouth (over the food's cooldown), each a crunchy munch and
+  crumbs in the food's colours thrown out ahead of the face (items/sys/chew.c); tst eat_swing counts the bites and
+  saves tst/eat_swing.ppm mid chew. The eating hand sits a little lower and further out (it filled the view)
+-x Particles close to the camera drew huge (their size over their distance): no bigger than at one unit away
+  (particle3D.vert)
 -x Doors open and close: a right click on one (TriggerActionB, on_door_activate) toggles block_data_open in its
   parts' block data (saved with the chunk), its block vox swings a quarter turn about its hinge (door_swing_system),
   spawned already swung when loaded, a creak opening and a thump with a latch closing (instruments creak, shut),
