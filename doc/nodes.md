@@ -72,13 +72,15 @@ variant. Nodes go between the first (size) and the last (end): more nodes there 
 | fill / box / paint | an ellipsoid or box of a voxel, or paints solid voxels |
 | sprinkle / speckle | seeded dots on or in the surface |
 | wfc | a new model from a source model's patches (wave function collapse), its source's colours |
+| mutate | the model's colours by its seed: one hue turn for all, greys tint, each lighter or darker (`ColorMutation`) |
 | end | marks the model built |
 
 ### WFC (wave function collapse)
 
 [src/models/fun/wfc.c](../src/models/fun/wfc.c) is pure C (`wfc_generate`), the node is
 [src/models/eve/wfc.c](../src/models/eve/wfc.c) (an observer on `Begin`), the blueprint
-`spawn_model_nodegraph_wfc(world, parent, source, rules, size_min, size_max)`.
+`spawn_model_nodegraph_wfc(world, parent, source, rules, size_min, size_max, mutation)`: size, wfc, mutate (if
+`mutation` isn't zero), end. Critters use a mutation of 60 degrees, 40 saturation and a fifth lighter or darker.
 
 - the node: `ModelLink` its source model, `Shape3Size` the box (the source's, scaled by the size node), `WfcRules`
 - patches are 2 wide and 3 tall (`wfc_patch_size`): 3 a side keeps the details but only remakes a small source, 3 tall
