@@ -1,6 +1,6 @@
-// Eating's bites (SwingMark on an eat swing, bones/sys/swing_mark.c): a crunchy munch and crumbs in the food's colours
-//  (its model's palette) thrown out ahead of the face, the hand at the mouth
-//  - the food is what's swung (SwingAction); the eat's own sound plays at its use (items/sys/consume.c)
+// Eating's bites (SwingMark on an eat swing, bones/sys/swing_mark.c): the first eats it (item_consume), each a crunchy
+//  munch and crumbs in the food's colours (its model's palette) thrown out ahead of the face, the hand at the mouth
+//  - the food is what's swung (SwingAction); crumbs read its colours before it's eaten (the last one's deleted)
 const SoundEffect eat_munch = { "munch", instrument_crunch, 48, 53, 0.08f, 0.11f, 2.2f, 2.6f };
 uint zox_eat_bites = 0;     // counted for tst eat_swing
 
@@ -22,6 +22,7 @@ void on_eat_bite(iter* it) {
         }
         set_sound_source(world, spawn_sound_effect_data(world, &eat_munch), user);
         const entity food = zox_getv(e, SwingAction);
+        const entity model = zox_valid(food) ? zox_get_link(world, food, ModelLink) : 0;
         const float3 face = float4_rotate_float3(zox_getv(head, Rotation3D), float3_forward);   // the face is +z
         const particle3_burst crumbs = {
             .position = float3_add(zox_getv(hand, Position3D), float3_scale(face, 0.05f)),
@@ -31,12 +32,14 @@ void on_eat_bite(iter* it) {
             .life = 0.7f,
             .fallback = { 190, 140, 80, 255 },
             .count = 6 };
-        spawn_particle3_burst(world, zox_valid(food) ? zox_get_link(world, food, ModelLink) : 0, &crumbs,
-            (uint) (zox_current_time * 1000) + mark->value * 31);
+        spawn_particle3_burst(world, model, &crumbs, (uint) (zox_current_time * 1000) + mark->value * 31);
         zox_eat_bites++;
+        if (mark->value == 1 && zox_valid(food) && zox_has(food, ItemConsumable)) {
+            item_consume(world, food, user);
+        }
     }
 }
 
-void zox_events_actions(ecs* world) {
+void zox_events_consumables(ecs* world) {
     zox_observer(on_eat_bite, EcsOnSet, [in] bones.SwingMark, [none] bones.Skeleton);
 }

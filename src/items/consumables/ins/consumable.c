@@ -1,4 +1,4 @@
-// Spawns a item from a block! Can place these and throw them at your enemies
+// Spawns a consumable item: food, a model eaten to restore a stat
 entity spawn_item_consumable(
     ecs* world,
     entity parent,
@@ -24,12 +24,12 @@ entity spawn_item_consumable(
     zox_set_unique_name(e, name);
     zox_add(e, ItemVox);
     zox_add(e, ItemConsumable);
-    zox_setv(e, WarmupTime, 0.125f);
-    zox_setv(e, CooldownTime, 0.125f);
     zox_setv(e, RaycastRange, block_place_range);
     zox_setv(e, RaycastType, zox_raycast_type_none);  // only consumed, no gizmo
     zox_prefab_addc_user_timings(world, e);
-    zox_setv(e, SwingTime, 1.0f);   // to the mouth, bites
+    zox_setv(e, WarmupTime, 0);         // no cast: eaten at its swing's first bite
+    zox_setv(e, CooldownTime, 1.0f);
+    zox_setv(e, SwingTime, 1.0f);       // to the mouth, bites
     // Consuming restores a stat
     zox_set(e, ConsumeValue, { consume_value });
     if (zox_valid(consume_stat)) {
