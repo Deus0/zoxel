@@ -25,4 +25,5 @@ void import_bones(ecs* world) {
     zox_add_module(ik);
     add_hook_spawn_prefabs(spawn_prefabs_bones);
     add_hook_spawn_prefabs(zox_events_bones);
+    add_hook_terminal_command(process_arguments_bones);
 }

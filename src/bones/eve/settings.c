@@ -26,7 +26,7 @@ void zox_settings_dirty_bones(iter* it) {
                 disable_bones = value;
             } else if (!strcmp(name->value, "Transparent Mesh")) {
                 transparent_meshes = value;
-            } else if (!strcmp(name->value, "Bones Gizmos")) {
+            } else if (!strcmp(name->value, "Bone Gizmos")) {
                 render_bones = value;
             } else if (!strcmp(name->value, "Paint Weights")) {
                 paint_weights = value;

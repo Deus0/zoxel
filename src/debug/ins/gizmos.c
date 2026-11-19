@@ -21,7 +21,7 @@ void zox_dbg_ui_gizmos(ecs* world, int32_t keycode) {
     zox_log("   + spawning [zox_dbg_test_window] on player %s on canvas %s", zox_get_name(player), zox_get_name(canvas));
     // # List #
     int elements_count = 0;
-    byte visible_count = 6;
+    byte visible_count = 7;
     byte alignment = zox_alignment_centre;
     byte can_close = 1;
     byte header_font_size = 6 * ui_scale;
@@ -44,6 +44,10 @@ void zox_dbg_ui_gizmos(ecs* world, int32_t keycode) {
     elements[elements_count++] = (SpawnListElement) {
         .text = "Lights Gizmos",
         .on_click = { &zox_dbg_cycle_light_debug },
+    };
+    elements[elements_count++] = (SpawnListElement) {
+        .text = "Bones",
+        .on_click = { &bones_debug_toggle },
     };
     elements[elements_count++] = (SpawnListElement) {
         .text = "Intersects",
