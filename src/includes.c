@@ -61,16 +61,15 @@
 #endif
 #ifdef zox_vulkan
     #include <vulkan/vulkan.h>
-    #include <vulkan/vulkan_wayland.h>
 #endif
 // Windowing!
 #ifdef zox_sdl
     // SDL Windowing!
     #ifdef zox_vulkan
         #ifdef zox_sdl3
-            #include <SDL2/SDL_vulkan.h>
-        #else
             #include <SDL3/SDL_vulkan.h>
+        #else
+            #include <SDL_vulkan.h>
         #endif
     #endif
     #ifdef zox_sdl3

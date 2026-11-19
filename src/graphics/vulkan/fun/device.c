@@ -1,0 +1,167 @@
+// a queue family that draws (and presents to the surface, if there is one), -1 if none
+int vulkan_queue_family(VkPhysicalDevice physical) {
+    uint count = 0;
+    vkGetPhysicalDeviceQueueFamilyProperties(physical, &count, NULL);
+    VkQueueFamilyProperties* families = malloc(sizeof(VkQueueFamilyProperties) * count);
+    vkGetPhysicalDeviceQueueFamilyProperties(physical, &count, families);
+    int found = -1;
+    for (uint i = 0; i < count && found < 0; i++) {
+        VkBool32 presents = VK_TRUE;
+        if (vk_surface) {
+            vkGetPhysicalDeviceSurfaceSupportKHR(physical, i, vk_surface, &presents);
+        }
+        if ((families[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) && presents) {
+            found = i;
+        }
+    }
+    free(families);
+    return found;
+}
+
+// the best gpu that can draw: discrete, then integrated, then any (lavapipe, the software one tests use)
+byte vulkan_pick_physical() {
+    uint count = 0;
+    vkEnumeratePhysicalDevices(vk_instance, &count, NULL);
+    VkPhysicalDevice* devices = malloc(sizeof(VkPhysicalDevice) * count);
+    vkEnumeratePhysicalDevices(vk_instance, &count, devices);
+    int best_score = -1;
+    for (uint i = 0; i < count; i++) {
+        if (vulkan_queue_family(devices[i]) < 0) {
+            continue;
+        }
+        VkPhysicalDeviceProperties properties;
+        vkGetPhysicalDeviceProperties(devices[i], &properties);
+        const int score = properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ? 3 :
+            properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU ? 2 : 1;
+        if (score > best_score) {
+            best_score = score;
+            vk_physical = devices[i];
+        }
+    }
+    free(devices);
+    if (!vk_physical) {
+        zox_loge("[vulkan] no device can draw%s", vk_surface ? " to the window" : "");
+        return 0;
+    }
+    VkPhysicalDeviceProperties properties;
+    vkGetPhysicalDeviceProperties(vk_physical, &properties);
+    vk_on_gpu = properties.deviceType != VK_PHYSICAL_DEVICE_TYPE_CPU;
+    zox_log("+ vulkan device [%s] api [%i.%i]", properties.deviceName,
+        VK_API_VERSION_MAJOR(properties.apiVersion), VK_API_VERSION_MINOR(properties.apiVersion));
+    return 1;
+}
+
+byte vulkan_create_device() {
+    if (!vulkan_pick_physical()) {
+        return 0;
+    }
+    vk_queue_family = vulkan_queue_family(vk_physical);
+    const float priority = 1;
+    const VkDeviceQueueCreateInfo queue = {
+        .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+        .queueFamilyIndex = vk_queue_family,
+        .queueCount = 1,
+        .pQueuePriorities = &priority,
+    };
+    const char* swapchain = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+    const VkDeviceCreateInfo info = {
+        .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+        .queueCreateInfoCount = 1,
+        .pQueueCreateInfos = &queue,
+        .enabledExtensionCount = vk_surface ? 1 : 0,
+        .ppEnabledExtensionNames = &swapchain,
+    };
+    if (!vulkan_check(vkCreateDevice(vk_physical, &info, NULL, &vk_device), "vkCreateDevice")) {
+        return 0;
+    }
+    vkGetDeviceQueue(vk_device, vk_queue_family, 0, &vk_queue);
+    return 1;
+}
+
+// a memory type with the bits a resource allows and the properties asked for
+int vulkan_memory_type(uint allowed, VkMemoryPropertyFlags properties) {
+    VkPhysicalDeviceMemoryProperties memory;
+    vkGetPhysicalDeviceMemoryProperties(vk_physical, &memory);
+    for (uint i = 0; i < memory.memoryTypeCount; i++) {
+        if ((allowed & (1 << i)) && (memory.memoryTypes[i].propertyFlags & properties) == properties) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+// an image with its own memory, 0 if it couldn't
+byte vulkan_create_image(
+    VkExtent2D extent,
+    VkFormat format,
+    VkImageUsageFlags usage,
+    VkImage* image,
+    VkDeviceMemory* memory)
+{
+    const VkImageCreateInfo info = {
+        .sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
+        .imageType = VK_IMAGE_TYPE_2D,
+        .format = format,
+        .extent = { extent.width, extent.height, 1 },
+        .mipLevels = 1,
+        .arrayLayers = 1,
+        .samples = VK_SAMPLE_COUNT_1_BIT,
+        .tiling = VK_IMAGE_TILING_OPTIMAL,
+        .usage = usage,
+        .initialLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+    };
+    if (!vulkan_check(vkCreateImage(vk_device, &info, NULL, image), "vkCreateImage")) {
+        return 0;
+    }
+    VkMemoryRequirements needs;
+    vkGetImageMemoryRequirements(vk_device, *image, &needs);
+    const VkMemoryAllocateInfo allocate = {
+        .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+        .allocationSize = needs.size,
+        .memoryTypeIndex = vulkan_memory_type(needs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT),
+    };
+    if (!vulkan_check(vkAllocateMemory(vk_device, &allocate, NULL, memory), "vkAllocateMemory")) {
+        return 0;
+    }
+    vkBindImageMemory(vk_device, *image, *memory, 0);
+    return 1;
+}
+
+VkImageView vulkan_create_view(VkImage image, VkFormat format, VkImageAspectFlags aspect) {
+    const VkImageViewCreateInfo info = {
+        .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+        .image = image,
+        .viewType = VK_IMAGE_VIEW_TYPE_2D,
+        .format = format,
+        .subresourceRange = { aspect, 0, 1, 0, 1 },
+    };
+    VkImageView view = VK_NULL_HANDLE;
+    vulkan_check(vkCreateImageView(vk_device, &info, NULL, &view), "vkCreateImageView");
+    return view;
+}
+
+// a host visible buffer (read backs, uploads), 0 if it couldn't
+byte vulkan_create_host_buffer(VkDeviceSize size, VkBufferUsageFlags usage, VkBuffer* buffer, VkDeviceMemory* memory) {
+    const VkBufferCreateInfo info = {
+        .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+        .size = size,
+        .usage = usage,
+    };
+    if (!vulkan_check(vkCreateBuffer(vk_device, &info, NULL, buffer), "vkCreateBuffer")) {
+        return 0;
+    }
+    VkMemoryRequirements needs;
+    vkGetBufferMemoryRequirements(vk_device, *buffer, &needs);
+    const VkMemoryAllocateInfo allocate = {
+        .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+        .allocationSize = needs.size,
+        .memoryTypeIndex = vulkan_memory_type(needs.memoryTypeBits,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT),
+    };
+    if (!vulkan_check(vkAllocateMemory(vk_device, &allocate, NULL, memory), "vkAllocateMemory")) {
+        vkDestroyBuffer(vk_device, *buffer, NULL);
+        return 0;
+    }
+    vkBindBufferMemory(vk_device, *buffer, *memory, 0);
+    return 1;
+}

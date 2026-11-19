@@ -4,6 +4,7 @@
 #  - release without logs (make build, packages): no names, no log only code
 #  - windows names: windows' headers define near and far as empty macros (minwindef.h), a variable named either
 #    breaks the windows build; a syntax only build with them defined (and the tests) catches one here
+#  - vulkan (build.sh --vulkan): gl calls outside the opengl module don't link there
 #  - each builds into its own bin/lint_<name> (build.sh --out), so it doesn't touch the tests' binary
 #  - run by bash bsh/tst.sh lint_builds (and all), takes a few minutes
 cd "$(dirname "$0")/.." || exit 2
@@ -24,6 +25,10 @@ mkdir -p tst
 check prerelease --logs --timings --release
 check release --release
 zox_extra_dflags="-Dnear= -Dfar= -Dzox_tests" check windows_names --syntax
+# vulkan: raw gl outside src/graphics/opengl breaks it (its link has no gl), where the headers are (vulkan-headers)
+if [[ -f /usr/include/vulkan/vulkan.h ]]; then
+    check vulkan --vulkan --release
+fi
 # the windows build itself, where its cross compiler is installed (mingw)
 if command -v x86_64-w64-mingw32-gcc > /dev/null 2>&1; then
     check windows --windows --release

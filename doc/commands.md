@@ -41,7 +41,6 @@ and add it to this doc and to `--help` too.
 | `--es` `--opengles` | use OpenGL ES | [sdl](../src/apps/sdl/set/terminal.c) |
 | `--openglcore` | use desktop OpenGL core | sdl |
 | `-e` | OpenGL ES override for the renderer | [rendering](../src/rendering/fun/terminal.c) |
-| `-v` `--vulkan` | Vulkan backend (experimental) | rendering |
 | `--fog <n>` | the Fog setting (0 to 1, as in the menu), over the settings file's | [rendering](../src/rendering/fun/terminal.c) |
 | `--bones` | the bones debug view: bone gizmos (joint lines, boxes turned with their bones, in their paint) over the skeleton meshes see through and painted by bone, as the Gizmos debug ui's Bones (i.e. `bash bsh/punch.sh --bones`) | [bones](../src/bones/fun/debug.c) |
 | `--verbose` | verbose logs, i.e. prints `GL_VERSION` / `GL_RENDERER` | sdl |

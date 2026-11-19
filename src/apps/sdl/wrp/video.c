@@ -29,8 +29,8 @@ int initialize_video() {
         !strstr(renderer, "Software Rasterizer") &&
         !strstr(renderer, "SwiftShader");*/
     // NOTE: Detects software rendering
-#ifdef zox_web
-    using_gpu = 1;
+#if defined(zox_web) || defined(zox_vulkan)
+    using_gpu = 1;  // vulkan: set by its device (spawn_vulkan_on_window)
 #else
     const char* renderer = (const char*) glGetString(GL_RENDERER);
     using_gpu =
@@ -44,11 +44,6 @@ int initialize_video() {
         renderer);
 #endif
     print_sdl();
-#ifdef zox_vulkan
-    if (!load_vulkan_library()) {
-        return EXIT_FAILURE;
-    }
-#endif
     screens_count = zox_sdl_get_num_displays();
     if (screens_count == 1) {
         screen_index = 0;

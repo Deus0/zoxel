@@ -1,32 +1,31 @@
-#include "fun/vulkan_check.c"
-#ifdef zox_vulkan
-    #include "fun/vulkan_setup.c"
+/*
+ * +--------------------------------------------------------------+
+ * | Zox Module: Vulkan                                           |
+ * |                                                              |
+ * |  Instance - Device - Swapchain - Frames                      |
+ * |                                                              |
+ * |  Uses: Apps (the sdl window makes the surface)               |
+ * |                                                              |
+ * +--------------------------------------------------------------+
+ *  The renderer's zox_gpu_* calls (the opengl module's) on vulkan. A frame's command buffer opens at the first
+ *  call that draws and is submitted and presented at app_gpu_end_system. Calls not ported yet: fun/todo.c
+ */
+#include "set/_.c"
+#include "fun/_.c"
+#ifdef zox_tests
+    #include "tst/_.c"
 #endif
-
-static inline byte* zox_gpu_read_screen(int2 size) { return NULL; }
-
-byte initialize_vulkan() {
-    // load shaders, vulkan load shader
-    return EXIT_SUCCESS;
-}
-
-byte check_vulkan_suppport() {
-    const byte vulkan_supported = is_vulkan_supported();
-    if (vulkan_supported) {
-        zox_log(" > vulkan is supported");
-    } else {
-        zox_log(" ! vulkan not supported\n");
-    }
-    return vulkan_supported;
-}
 
 void dispose_vulkan(ecs *world, void *ctx) {
     (void) world;
     (void) ctx;
-    dispose_vulkan_globals();
+    vulkan_dispose();
 }
 
 void import_vulkan(ecs* world) {
     zox_module(vulkan);
     zox_module_dispose(dispose_vulkan);
+#ifdef zox_tests
+    zox_tsts_vulkan();
+#endif
 }

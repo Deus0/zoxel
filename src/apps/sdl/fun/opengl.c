@@ -26,11 +26,15 @@ void app_gpu_end_system(iter* it) {
         zox_screenshot_request[0] = 0;
     }
     zox_gif_capture(zox_getv(main_app, WindowSize));
+#ifdef zox_vulkan
+    vulkan_frame_end();
+#else
     SDL_GL_SwapWindow(window->value);
     if (background) {
         // a hidden window is never presented, so the gpu driver (mali on wayland) never
         // retires frames and keeps every freed/re-uploaded buffer, ~100MB/s until the pc freezes
-        glFinish();
+        zox_gpu_finish();
     }
+#endif
     zox_sys_on_end();
 } zoxd_system(app_gpu_end_system);

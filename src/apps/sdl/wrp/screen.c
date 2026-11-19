@@ -24,9 +24,14 @@ void zox_app_set_maximized(SDL_Window* window, byte maximized) {
 }
 
 SDL_WindowFlags zox_sdl_window_flags(byte fullscreen, byte maximized) {
+#ifdef zox_vulkan
+    // tests (--background) draw offscreen, no surface (sdl's offscreen driver may have no vulkan)
+    SDL_WindowFlags flags = (background ? 0 : SDL_WINDOW_VULKAN) | SDL_WINDOW_RESIZABLE;
+#else
     SDL_WindowFlags flags =
         SDL_WINDOW_OPENGL |
         SDL_WINDOW_RESIZABLE;
+#endif
         // SDL_WINDOW_SHOWN |
     if (fullscreen) {
         if (is_on_phosh()) {

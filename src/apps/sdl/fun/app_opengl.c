@@ -1,3 +1,4 @@
+#ifndef zox_vulkan
 // todo: get position2 to work
 entity spawn_app_sdl_opengl(
     ecs *world,
@@ -44,6 +45,7 @@ entity spawn_app_sdl_opengl(
 /*#ifdef zox_game
 extern const char* game_name;
 #endif*/
+#endif
 
 // uses modules: App, SDL, Rendering
 entity spawn_engine_app(ecs* world, const char* name) {
@@ -53,12 +55,20 @@ entity spawn_engine_app(ecs* world, const char* name) {
     }
     // Window creates and binds OpenGL Context too!
     zox_logv("Spawning SDL Window [%s]", name);
+#ifdef zox_vulkan
+    entity app = spawn_app_sdl(world, name, fullscreen, maximized, monitor);
+    if (app && !spawn_vulkan_on_window(zox_getv(app, SDLWindow))) {
+        running = 0;
+        app = 0;
+    }
+#else
     entity app = spawn_app_sdl_opengl(
         world,
         name,
         fullscreen,
         maximized,
         monitor);
+#endif
     if (!app) {
         zox_loge("[engine_spawn_window] failed");
         return 0;

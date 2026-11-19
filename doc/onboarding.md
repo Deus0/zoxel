@@ -10,7 +10,8 @@ need them.
 
 - Zoxel is a procedural voxel RPG written in **C (gnu99)**.
 - It's built on **[Flecs](https://www.flecs.dev)**, an ECS (Entity Component System) library.
-- It uses **SDL3** for windows, input and audio, and **OpenGL / OpenGL ES** for rendering.
+- It uses **SDL3** for windows, input and audio, and **OpenGL / OpenGL ES** for rendering (a Vulkan build is on its
+  way, [plans/vulkan.md](plans/vulkan.md)).
 - One codebase builds several games. The games live in [gam](../gam), and `zoxel` is the main one.
 
 ### ECS in 60 seconds

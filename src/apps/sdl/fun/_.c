@@ -3,7 +3,6 @@
 #include "hooks.c"
 #include "events.c"
 #include "app.c"
-#include "app_vulkan.c"
 #include "app_opengl.c"
 
 void dispose_apps_sdl(ecs *world, void *ctx) {

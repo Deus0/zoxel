@@ -33,12 +33,10 @@ byte initialize_rendering(byte render_backend) {
         rendering_initialized = 1;
         return EXIT_SUCCESS;
     }
-#ifdef zox_vulkan
     else if (render_backend == zox_render_backend_vulkan) {
         rendering_initialized = 1;
-        return initialize_vulkan(); // SDL_WINDOW_VULKAN
+        return EXIT_SUCCESS;
     }
-#endif
     else {
         zox_loge("! unknown render_backend")
         return EXIT_FAILURE;

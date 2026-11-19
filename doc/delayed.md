@@ -39,5 +39,4 @@
       - States?
       - Idk
 # Rendering
-- test vulkan build
 - push voxel data and generate mesh on gpu

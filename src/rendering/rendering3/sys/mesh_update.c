@@ -35,6 +35,7 @@ void mesh_update_system(iter* it) {
             if (check_opengl_error_unlogged()) {
                 zox_loge("(MeshUpdate) GL error uploading [%s]", zox_sys_e_name);
             }
+#ifdef zox_opengl
             // what actually landed on the GPU
             GLint ebo_size = 0;
             GLint vbo_size = 0;
@@ -47,6 +48,7 @@ void mesh_update_system(iter* it) {
             zox_log("   - GPU sizes: indices [%i / %i bytes] vertices [%i / %i bytes]",
                     ebo_size, indicies->length * (int) sizeof(int),
                     vbo_size, verts->length * (int) sizeof(float3));
+#endif
             if (indicies->length && indicies->value) {
                 int max_index = 0;
                 for (int j = 0; j < indicies->length; j++) {

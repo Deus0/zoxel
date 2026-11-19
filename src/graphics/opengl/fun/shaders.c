@@ -112,3 +112,23 @@ guint2 zox_gpu_compile_shader(const gchar* vert_buffer, const gchar* frag_buffer
     zox_logv("> Compiled shader: %ix%i", shader.x, shader.y);
     return shader;
 }
+
+// Prints every uniform/attribute the linked program actually exposes
+void zox_gpu_log_program_inputs(GLuint program, const char *shader_name) {
+    GLint count = 0;
+    GLint size;
+    GLenum type;
+    char name[128];
+    glGetProgramiv(program, GL_ACTIVE_UNIFORMS, &count);
+    zox_log("(%s) active uniforms [%i]", shader_name, count);
+    for (GLint i = 0; i < count; i++) {
+        glGetActiveUniform(program, (GLuint) i, sizeof(name), NULL, &size, &type, name);
+        zox_log("   - uniform [%s] at [%i]", name, glGetUniformLocation(program, name));
+    }
+    glGetProgramiv(program, GL_ACTIVE_ATTRIBUTES, &count);
+    zox_log("(%s) active attributes [%i]", shader_name, count);
+    for (GLint i = 0; i < count; i++) {
+        glGetActiveAttrib(program, (GLuint) i, sizeof(name), NULL, &size, &type, name);
+        zox_log("   - attribute [%s] at [%i]", name, glGetAttribLocation(program, name));
+    }
+}

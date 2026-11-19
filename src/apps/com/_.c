@@ -19,8 +19,5 @@ void zox_components_apps(ecs *world) {
     zoxd_int2(WindowPosition);
     zoxd_int2(WindowSizeRestore);
     zoxd_int2(WindowPositionRestore);
-#ifdef zox_vulkan
-    zoxd(VulkanSurface);
-#endif
     zoxd_dirty(WindowSize);
 }

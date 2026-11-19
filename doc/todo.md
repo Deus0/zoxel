@@ -806,11 +806,7 @@
   quads (asked the user first: it changes the grass's look); greedy meshing plan: doc/tech/chunks3.md
 - clouds can be a bit dark
 - dust particles in the air round the terrain (ergo proxy, dystopian vibes)
-- Vulkan renderer
-	- initial vulkan implementation
-	- vox model rendering
-	- shader imports
-	- tests for the vulkan window and shaders
+- Vulkan renderer: parts 2 to 5 of [plans/vulkan.md](plans/vulkan.md) (part 1, the build, window and frames, done)
 - make the walking camera animation feel more natural
     - just animate the head better and body
     - add tremble in the gait

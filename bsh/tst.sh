@@ -17,6 +17,7 @@
 #   --readme: the aesthetic tests (aesthetic_town) update the readme's screenshots in doc/screenshot/, without it
 #     they stay in tst/aesthetic/ (every full run rewrote them, the same shots a few pixels apart)
 #   --keepsaves: saves to the real save folder, tests default to --nosaves (a /tmp folder, deleted after)
+#   --vulkan: the vulkan build (bin/tst_vulkan), on lavapipe (mesa's software vulkan) unless --gpu
 # Tests are added with zox_tst_add in a module's tst folder (see src/_/tst/_.c)
 # Safety: low priority, memory capped and killed on timeout, so a bad run can't freeze the pc
 #   override with zox_tst_timeout=<seconds> zox_tst_memory=<size> zox_tst_log_max=<bytes>
@@ -41,6 +42,7 @@ gpu=0
 release=0
 repeat=1
 readme=0
+vulkan=0
 args=()
 next_is_repeat=0
 for arg in "$@"; do
@@ -66,6 +68,8 @@ for arg in "$@"; do
         release=1
     elif [[ "${arg}" == "--keepsaves" ]]; then
         keepsaves=1
+    elif [[ "${arg}" == "--vulkan" ]]; then
+        vulkan=1
     else
         args+=("${arg}")
     fi
@@ -104,6 +108,11 @@ if [[ ${gpu} == "0" ]]; then
         LIBGL_ALWAYS_SOFTWARE=1
         GALLIUM_DRIVER=llvmpipe
         EGL_PLATFORM=surfaceless)
+    # vulkan: lavapipe, mesa's software vulkan (vulkan-swrast)
+    if [[ ${vulkan} == "1" ]]; then
+        lavapipe=$(ls /usr/share/vulkan/icd.d/lvp_icd*.json 2> /dev/null | head -1)
+        soft_env+=(VK_DRIVER_FILES="${lavapipe}" VK_ICD_FILENAMES="${lavapipe}")
+    fi
     # llvmpipe streams terrain ~2x slower than mali (stream_npcs spawn 52s vs 20s)
     mode_args+=(--gles --tst-timescale 2)
     [[ -z "${zox_tst_timeout:-}" ]] && timeout_seconds=200
@@ -117,8 +126,11 @@ log_dir="${zox_tst_dir:-${root}/tst}"
 # with zox_tst_dir set the build goes to bin/tst_<dir>/, zox_tst_out names it
 out_name="${zox_tst_out:-}"
 [[ -z "${out_name}" && -n "${zox_tst_dir:-}" ]] && out_name="tst_$(basename "${log_dir}")"
+# the vulkan build has its own folder, so it's never taken for the opengl one
+[[ ${vulkan} == "1" && -z "${out_name}" ]] && out_name="tst_vulkan"
 out_args=()
 [[ -n "${out_name}" ]] && out_args=(--out "${out_name}")
+[[ ${vulkan} == "1" ]] && out_args+=(--vulkan)
 mkdir -p "${log_dir}"
 export zox_tst_dir="${log_dir}"
 # lint_* tests are scripts (bsh/<name>.sh), not the game: conventions, i.e. lint_systems
@@ -156,7 +168,7 @@ elif [[ ${build} == "1" ]]; then
     fi
 fi
 
-bin=$(ls -t bin/zoxel_*_dev/zoxel-dev.bin 2>/dev/null | head -1)
+bin=$(ls -t bin/zoxel_*_opengl_*_dev/zoxel-dev.bin 2>/dev/null | head -1)
 [[ -n "${out_name}" ]] && bin="bin/${out_name}/${out_name}.bin" && [[ ! -f "${bin}" ]] && bin=""
 [[ ${release} == "1" ]] && bin="bin/tst_release/tst_release.bin"
 if [[ -z "${bin}" ]]; then

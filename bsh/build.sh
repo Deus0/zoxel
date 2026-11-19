@@ -250,6 +250,12 @@ if [[ ${graphics_lib} == "opengl" ]]; then
     dflags+=" -Dzox_opengl"
 fi
 
+if [[ ${graphics_lib} == "vulkan" ]]; then
+    echo "+ Added [zox_vulkan]"
+    dflags+=" -Dzox_vulkan"
+    libs+=" -lvulkan"
+fi
+
 if [[ ${window_lib} == "sdl" ]]; then
     echo "+ Added [zox_sdl]"
     dflags+=" -Dzox_sdl"

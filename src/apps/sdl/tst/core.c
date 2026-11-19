@@ -44,6 +44,7 @@ void zox_tst_sdl_window_check(ecs* world) {
     if (!int2_equals(size, app_size)) {
         zox_log("[tst] sdl window [%ix%i] app WindowSize [%ix%i]", size.x, size.y, app_size.x, app_size.y);
     }
+#ifdef zox_opengl
     zox_tst_check(SDL_GL_GetCurrentWindow() == window, "the window's opengl context isn't current");
     zox_tst_check(SDL_GL_GetCurrentContext() != NULL, "no opengl context");
     const char* version = (const char*) glGetString(GL_VERSION);
@@ -51,6 +52,7 @@ void zox_tst_sdl_window_check(ecs* world) {
     if (version) {
         zox_log("[tst] opengl [%s]", version);
     }
+#endif
 }
 
 // sdl_resize

@@ -1,0 +1,191 @@
+// A frame: its command buffer opens at the first call that draws (vulkan_frame_begin), and
+// app_gpu_end_system submits and presents it (vulkan_frame_end)
+
+byte vulkan_create_frames() {
+    const VkCommandPoolCreateInfo pool = {
+        .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
+        .flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+        .queueFamilyIndex = vk_queue_family,
+    };
+    if (!vulkan_check(vkCreateCommandPool(vk_device, &pool, NULL, &vk_pool), "vkCreateCommandPool")) {
+        return 0;
+    }
+    const VkCommandBufferAllocateInfo allocate = {
+        .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+        .commandPool = vk_pool,
+        .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+        .commandBufferCount = vk_frames_max,
+    };
+    if (!vulkan_check(vkAllocateCommandBuffers(vk_device, &allocate, vk_commands), "vkAllocateCommandBuffers")) {
+        return 0;
+    }
+    const VkSemaphoreCreateInfo semaphore = { .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO };
+    const VkFenceCreateInfo fence = { .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO, .flags = VK_FENCE_CREATE_SIGNALED_BIT };
+    for (int i = 0; i < vk_frames_max; i++) {
+        vkCreateSemaphore(vk_device, &semaphore, NULL, &vk_acquired[i]);
+        vkCreateFence(vk_device, &fence, NULL, &vk_fences[i]);
+    }
+    return 1;
+}
+
+// the image to draw to: the swapchain's next, remade if it's out of date
+byte vulkan_acquire() {
+    if (vk_resized || !vk_framebuffers[0]) {
+        if (!vulkan_recreate_target()) {
+            return 0;
+        }
+    }
+    if (!vk_surface) {
+        vk_image = 0;
+        return 1;
+    }
+    VkResult result = vkAcquireNextImageKHR(vk_device, vk_swapchain, UINT64_MAX, vk_acquired[vk_frame],
+        VK_NULL_HANDLE, &vk_image);
+    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+        vk_resized = 1;
+        return 0;
+    }
+    return result == VK_SUCCESS || result == VK_SUBOPTIMAL_KHR;
+}
+
+// opens the frame if it isn't, 0 if there's nothing to draw to (minimised, not made)
+byte vulkan_frame_begin() {
+    if (vk_recording) {
+        return 1;
+    }
+    if (!vk_device) {
+        return 0;
+    }
+    if (!vk_submitted) {
+        vkWaitForFences(vk_device, 1, &vk_fences[vk_frame], VK_TRUE, UINT64_MAX);
+        if (!vulkan_acquire()) {
+            return 0;
+        }
+    }
+    const VkCommandBuffer commands = vk_commands[vk_frame];
+    vkResetCommandBuffer(commands, 0);
+    const VkCommandBufferBeginInfo begin = {
+        .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+        .flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
+    };
+    vkBeginCommandBuffer(commands, &begin);
+    const VkClearValue clears[2] = {
+        { .color = { .float32 = { vk_clear_color.x, vk_clear_color.y, vk_clear_color.z, vk_clear_color.w } } },
+        { .depthStencil = { 1, 0 } },
+    };
+    const VkRenderPassBeginInfo pass = {
+        .sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
+        .renderPass = vk_submitted ? vk_pass_load : vk_pass_clear,
+        .framebuffer = vk_framebuffers[vk_image],
+        .renderArea = { { 0, 0 }, vk_extent },
+        .clearValueCount = 2,
+        .pClearValues = clears,
+    };
+    vkCmdBeginRenderPass(commands, &pass, VK_SUBPASS_CONTENTS_INLINE);
+    vk_recording = 1;
+    return 1;
+}
+
+// submits what's recorded (the pass already ended): the frame's first submit waits for its image, the last
+// signals the present
+void vulkan_submit(byte last) {
+    const VkCommandBuffer commands = vk_commands[vk_frame];
+    vkEndCommandBuffer(commands);
+    const VkPipelineStageFlags stage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    const byte waits = vk_surface && !vk_submitted;
+    const byte signals = vk_surface && last;
+    const VkSubmitInfo submit = {
+        .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+        .waitSemaphoreCount = waits,
+        .pWaitSemaphores = &vk_acquired[vk_frame],
+        .pWaitDstStageMask = &stage,
+        .commandBufferCount = 1,
+        .pCommandBuffers = &commands,
+        .signalSemaphoreCount = signals,
+        .pSignalSemaphores = &vk_rendered[vk_image],
+    };
+    vkResetFences(vk_device, 1, &vk_fences[vk_frame]);
+    vulkan_check(vkQueueSubmit(vk_queue, 1, &submit, vk_fences[vk_frame]), "vkQueueSubmit");
+    vk_recording = 0;
+    vk_submitted = 1;
+}
+
+// submits and presents the frame (an empty one clears to vk_clear_color)
+void vulkan_frame_end() {
+    if (!vulkan_frame_begin()) {
+        return;
+    }
+    vkCmdEndRenderPass(vk_commands[vk_frame]);
+    vulkan_submit(1);
+    vk_submitted = 0;
+    if (vk_surface) {
+        const VkPresentInfoKHR present = {
+            .sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+            .waitSemaphoreCount = 1,
+            .pWaitSemaphores = &vk_rendered[vk_image],
+            .swapchainCount = 1,
+            .pSwapchains = &vk_swapchain,
+            .pImageIndices = &vk_image,
+        };
+        const VkResult result = vkQueuePresentKHR(vk_queue, &present);
+        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+            vk_resized = 1;
+        }
+    }
+    vk_frame = (vk_frame + 1) % vk_frames_max;
+    vk_frames_presented++;
+}
+
+// clears a rect of the target, in gl's coordinates (from the bottom left)
+void vulkan_clear_rect(float2 position, float2 size) {
+    if (!vulkan_frame_begin()) {
+        return;
+    }
+    const VkClearAttachment clears[2] = {
+        {
+            .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+            .colorAttachment = 0,
+            .clearValue.color = { .float32 = { vk_clear_color.x, vk_clear_color.y, vk_clear_color.z, vk_clear_color.w } },
+        },
+        { .aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT, .clearValue.depthStencil = { 1, 0 } },
+    };
+    const int x = int_max(0, (int) position.x);
+    const int y = int_max(0, (int) (vk_extent.height - position.y - size.y));
+    const VkClearRect rect = {
+        .rect = {
+            { x, y },
+            { int_min((int) size.x, vk_extent.width - x), int_min((int) size.y, vk_extent.height - y) },
+        },
+        .layerCount = 1,
+    };
+    if (rect.rect.extent.width > 0 && rect.rect.extent.height > 0) {
+        vkCmdClearAttachments(vk_commands[vk_frame], 2, clears, 1, &rect);
+    }
+}
+
+static inline void zox_gpu_set_clear_color(float4 clear) {
+    vk_clear_color = clear;
+}
+
+static inline void zox_gpu_clear_viewport() {
+    vulkan_clear_rect(float2_zero, (float2) { vk_extent.width, vk_extent.height });
+}
+
+static inline void zox_gpu_clear_rect(float2 position, float2 size) {
+    vulkan_clear_rect(position, size);
+}
+
+// waits for the gpu to finish all it was given (gl's glFinish)
+static inline void zox_gpu_finish() {
+    if (vk_device) {
+        vkDeviceWaitIdle(vk_device);
+    }
+}
+
+void vulkan_dispose_frames() {
+    for (int i = 0; i < vk_frames_max; i++) {
+        vkDestroySemaphore(vk_device, vk_acquired[i], NULL);
+        vkDestroyFence(vk_device, vk_fences[i], NULL);
+    }
+    vkDestroyCommandPool(vk_device, vk_pool, NULL);
+}

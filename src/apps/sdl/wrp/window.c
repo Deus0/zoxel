@@ -21,7 +21,9 @@ SDL_Window* create_sdl_window(
     }
     zox_logv("Created SDL Window [%s]", name);
     // SDL_SetWindowResizable(window, window_resizeable);
+#ifndef zox_vulkan
     SDL_GL_SwapWindow(window);
+#endif
     return window;
 }
 

@@ -28,7 +28,6 @@ void print_help_menu(const char* arg0) {
         "        --gles              opengl es, skips the desktop gl check\n"
         "        --es                opengl es (--opengles)\n"
         "        --openglcore        desktop opengl core\n"
-        "    -v  --vulkan            vulkan backend (experimental)\n"
         "        --verbose           verbose logs, i.e. the gl version and renderer\n"
         "\n"
         "  Game\n"
