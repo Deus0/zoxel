@@ -24,6 +24,12 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x XR: looking down the eyes went into the head (the user: the head through the body crouching or looking down): the
+  head bone turned by the headset on top of the chest's lean (its parent), and the look's bend (0.95 radians) sank the
+  body's neck 9.5cm under the eyes; the head's turn takes the lean off (xr_head_bone_system), the bend is 0.3 (the head
+  turns at its neck now, the eyes swing out ahead of the chest by themselves). tst xr_look_down crouches looking down
+  too; tst/eyes.c checks the eyes against every part, the head's and hat's too, each frame of xr_look_down and xr_lean
+  (2.2cm clear at worst), and screenshots what they see (tst/xr_eyes/)
 -x The off hand in a punch (OffShoulderBoneLink, swings' off_back / off_out, ik/sys/swing.c): the left fist comes up with
   it, out ahead as the right winds up, pulled back to the chin as it lands (the recoil), up a moment after; tst
   punch_views checks it
