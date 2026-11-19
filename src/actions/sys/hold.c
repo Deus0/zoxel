@@ -83,6 +83,11 @@ void active_action_hold_system(iter* it) {
             position.z = -item_mesh_size(world, meta, scale).z / 2.0f - 0.01f;
             // its voxels' middle on the hand (a model needn't fill its grid)
             position = float3_add(position, item_mesh_offset(world, meta, scale));
+            // in the hand, not at its pivot: the bone sits at its joint (the wrist), its part's middle off it (at
+            //  rest, so in the bone's own space), the item was on the wrist
+            if (zox_has(hand, BoneCentre) && zox_has(hand, BonePosition)) {
+                position = float3_add(position, float3_sub(zox_getv(hand, BoneCentre), zox_getv(hand, BonePosition)));
+            }
         }
         // entity texture = zox_get_link(world, aaction->value, TextureLink);
         entity mesh = spawn_item_mesh(world, bone_parent, meta, scale);

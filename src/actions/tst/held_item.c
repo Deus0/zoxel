@@ -103,8 +103,13 @@ void zox_tst_held_item_check(ecs* world) {
     const float3 middle = float3_scale(float3_mid(low, high), scale);
     const float3 size = float3_scale(float3_sub(high, low), scale);
     // where its voxels' middle is from the hand: centred across it, out of it by half its depth
+    // from the hand's middle, not its bone's pivot (the wrist since bones sit at joints: it was on the wrist)
+    const entity hand = zox_get_parent(world, zox_tst_held_mesh);
     const float3 local = zox_getv(zox_tst_held_mesh, LocalPosition3D);
-    const float3 centre = float3_add(middle, local);
+    const float3 pivot_off = zox_valid(hand) && zox_has(hand, BoneCentre) ?
+        float3_sub(zox_getv(hand, BoneCentre), zox_getv(hand, BonePosition)) : float3_zero;
+    zox_log("[tst] the hand's middle is [%.3f %.3f %.3f] from its pivot", pivot_off.x, pivot_off.y, pivot_off.z);
+    const float3 centre = float3_sub(float3_add(middle, local), pivot_off);
     const float off = sqrtf(centre.x * centre.x + centre.y * centre.y);
     const float out = -centre.z - size.z / 2;
     zox_log("[tst] [metric] held_item its middle [%.3f %.3f %.3f] from the hand, [%.3f] off centre, [%.3f] out of it, size [%.3f %.3f %.3f]",
