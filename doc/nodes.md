@@ -87,10 +87,13 @@ variant. Nodes go between the first (size) and the last (end): more nodes there 
   in the source), shaped (favours the source's voxel at the same share of the box), feet (solid under the source's
   feet, the piece standing on them)
 - a contradiction tries the next seed (24 tries), then less of the feet, then the source stretched to the box
-- chooks: 4 critter variants of `chicken.vox` in every realm (gam/zoxel/sys/characters.c). To look at them:
-  `zox_tst_model=chook zox_tst_model_variants=1 bash bsh/tst.sh model_views`
-- to do: the comb is often lost (it's small and on top, few patches); a box much flatter than the source can end
-  as the stretched source
+- critters: 4 variants each of `chicken.vox` (chooks) and `mrpenguin.vox` (pengus) in every realm,
+  `spawn_realm_critter_wfc` (gam/zoxel/sys/characters.c). To look at them:
+  `zox_tst_model=pengu zox_tst_model_variants=1 bash bsh/tst.sh model_views`
+- the anchor's slack is 0.05 of the box: at 0.1 a chicken kept its eye 4 times in 12 and its comb rarely, at 0.05 7 in 12
+  and mostly its comb; looser lets small features (eyes, combs) go
+- to do: small features can still go (a pengu's face, 1 in 3); a box much flatter than the source can end as the
+  stretched source; a pengu takes up to 0.5s a variant (a bigger source, feet of 6 voxels: its feet rule retries)
 
 ## Examples
 
