@@ -169,13 +169,36 @@ zox_delete(e)
 zox_log("x is [%i]", x) / zox_logw(...) / zox_loge(...)   // log, warning, error
 ```
 
+### Hierarchies
+
+Entities form trees with parents and children ([Children](children.md) has the details):
+
+- `zox_set_parent(world, child, parent)` makes a child, and `zox_set_parent_non_fragment` does the same without a
+  table per parent, for things there are many of (stats, skills, ui). Children are deleted with their parent.
+- Find children with `zox_get_children_by_id(world, e, out, capacity, zox_id(Tag))`, by a tag or component they
+  have, or with `zox_get_child_by_id`.
+- **Transforms follow parents.** A child's `Position3D` and `Rotation3D` come from its parent's, plus its
+  `LocalPosition3D` / `LocalRotation3D` (zero if it has none). `DisableParentTransform` keeps its own.
+- **Prefabs have children too.** Parent an entity to a prefab inside its prefab function (the gamepad prefab's
+  buttons, a projectile's particle trail), and every instance gets its own copy. Prefer this to spawning children by
+  hand after each instance.
+- **Inside a system, an instance's copied children aren't there yet** (flecs defers the spawn), so you can't set
+  data on them then. Give the child what it needs from its parent instead (a trail takes its projectile's `Color`).
+- A prefab of a prefab (a variant, `zox_prefab_child` / `zox_prefab_variant`) builds on its base by inheritance,
+  not as its child, and its instances get the base's children too.
+
 ## 5. House Rules
 
 These matter more than they first look:
 
 - **Use the `zox_` wrappers, never Flecs directly.** `ecs_*` / `Ecs*` belong only in [src/_/flecs](../src/_/flecs).
   If a wrapper is missing, add one there.
-- **Small components.** Prefer several singular components over one big struct.
+- **Few components, each one value.** Reduction is a key part of the design: reuse what exists before making a new
+  one. Look in core first ([src/_/com](../src/_/com/_.c): `EntityTarget`, `Count`, `Busy`, timing's
+  `DestroyInTime`), then the modules you use (`Color`, `Bounds3D`, `Gravity3D`, `Scale3`, a link). Derive data you can
+  work out (a heading from a target, a count from the time) rather than storing it. Keep each component one value:
+  never pack several into a struct or a vector of different meanings (no `float2` of min and max). Spot old code
+  that could share or drop components? Suggest it, but ask first: it changes the design.
 - **Links, not raw entity fields.** To point one entity at another, use `zox_link`, see [Links](links.md).
   For parents and children, see [Children](children.md).
 - **Cleanup goes in unlink callbacks** (`zox_on_unlink`), not at every place that deletes something.
