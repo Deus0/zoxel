@@ -1,7 +1,8 @@
 // a tentacle (Tentacle skill, a slime's): a whip of particles from its user's body, spiking out at what it aims at
 //  (RaycastAim, else ahead), piercing its attacker if they're still on its line, then back into its body
 //  - its tip set as it starts, so a step aside dodges it; it bulges in its body first (the wind up), a tell
-//  - its particles its user's children (TentacleBit, their place along it), laid along it each frame
+//  - a SkillUsing (its tip the SkillTarget, SkillStage 1 its hit tried)
+//  - its particles its user's children (Particle3D), laid along it each frame in their order
 #define tentacle_bits 30
 #define tentacle_windup 0.2         // seconds bulging in its body
 #define tentacle_out 0.12           // spiking out
@@ -24,7 +25,7 @@ void tentacle_activate_system(iter* it) {
             continue;
         }
         const entity user = zox_get_parent(world, e);
-        if (!zox_valid(user) || zox_has(user, Dead) || zox_has(user, TentacleStart) || !skill_pay_cost(world, e, user)) {
+        if (!zox_valid(user) || zox_has(user, Dead) || zox_has(user, SkillUsing) || !skill_pay_cost(world, e, user)) {
             continue;
         }
         const float3 position = zox_getv(user, Position3D);
@@ -33,16 +34,12 @@ void tentacle_activate_system(iter* it) {
             quaternion_to_normal(zox_getv(user, Rotation3D));
         const float length = float_min(float3_length(ahead) + 0.3f, range->value);
         const float3 tip = float3_add(position, float3_scale(float3_normalize(ahead), length));
-        zox_set(user, TentacleStart, { zox_current_time });
-        zox_set(user, TentacleTip, { tip });
-        zox_set(user, TentacleSkill, { e });
-        zox_set(user, TentacleHit, { 0 });
+        skill_using_begin(world, user, e, tip);
         const color c = zox_has(e, Color) ? zox_getv(e, Color) : (color) { 110, 210, 120, 255 };
         for (int j = 0; j < tentacle_bits; j++) {
             const entity bit = spawn_particle3(world, position, float3_zero, c);
             zox_setv(bit, Gravity3D, float3_zero);
             zox_setv(bit, DestroyInTime, tentacle_time + 0.05f);
-            zox_set(bit, TentacleBit, { (float) j / (tentacle_bits - 1) });
             zox_set_parent_non_fragment(world, bit, user);
         }
     }
@@ -79,18 +76,21 @@ void tentacle_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(TentacleStart);
-    zox_sys_in(TentacleTip);
-    zox_sys_in(TentacleSkill);
+    zox_sys_in(SkillUsing);
+    zox_sys_in(SkillUsedAt);
+    zox_sys_in(SkillTarget);
     zox_sys_in(Position3D);
-    zox_sys_out(TentacleHit);
+    zox_sys_out(SkillStage);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(TentacleStart, start);
-        zox_sys_i(TentacleTip, tip);
-        zox_sys_i(TentacleSkill, skill);
+        zox_sys_i(SkillUsing, skill);
+        zox_sys_i(SkillUsedAt, start);
+        zox_sys_i(SkillTarget, tip);
         zox_sys_i(Position3D, position);
-        zox_sys_o(TentacleHit, hit);
+        zox_sys_o(SkillStage, hit);
+        if (!zox_valid(skill->value) || !zox_has(skill->value, Tentacle)) {
+            continue;
+        }
         const float t = zox_current_time - start->value;
         const float extent = tentacle_extent(t);
         const float3 from = position->value;
@@ -98,9 +98,9 @@ void tentacle_system(iter* it) {
         const float3 side = float3_normalize(float3_cross(along, float3_up));
         // its particles along it, a wave down it; bulging round its body before it spikes out
         entity bits[tentacle_bits];
-        const uint count = zox_get_children_by_id(world, e, bits, tentacle_bits, zox_id(TentacleBit));
+        const uint count = zox_get_children_by_id(world, e, bits, tentacle_bits, zox_id(Particle3D));
         for (uint j = 0; j < count; j++) {
-            const float u = zox_getv(bits[j], TentacleBit);
+            const float u = count > 1 ? (float) j / (count - 1) : 0;
             float3 p;
             if (t < tentacle_windup) {
                 const float a = u * 12.566f + t * 20;
@@ -116,7 +116,7 @@ void tentacle_system(iter* it) {
         if (!hit->value && t >= tentacle_windup + tentacle_out) {
             hit->value = 1;
             const entity target = zox_get_link(world, e, AttackerLink);
-            if (zox_valid(target) && zox_has(target, Character3) && !zox_has(target, Dead) && zox_valid(skill->value) &&
+            if (zox_valid(target) && zox_has(target, Character3) && !zox_has(target, Dead) &&
                 tentacle_line_distance(zox_getv(target, Position3D), from, tip->value) < tentacle_pierce) {
                 const float damage = get_skill_damage(world, skill->value, e,
                     zox_getv(skill->value, SkillDamage), zox_getv(skill->value, SkillDamageMax));
@@ -124,10 +124,7 @@ void tentacle_system(iter* it) {
             }
         }
         if (t >= tentacle_time) {
-            zox_remove(e, TentacleStart);
-            zox_remove(e, TentacleTip);
-            zox_remove(e, TentacleSkill);
-            zox_remove(e, TentacleHit);
+            skill_using_end(world, e);
         }
     }
     zox_sys_on_end();

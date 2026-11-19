@@ -1,4 +1,4 @@
-// Npcs' sight (SightTarget): the closest player an npc sees, 0 none; what it does with it is up to others
+// Npcs' sight (their EntityTarget): the closest player an npc sees, 0 none; what it does with it is up to others
 //  - humanoids look at them (sys/glance.c), monsters attack them (monster_aggro_system)
 //  - seen: in its view cone (npc_sight_cone) within npc_sight_distance, or close by (npc_sense_distance) all round, with
 //    no block between its eye and them, sampled every half block in its terrain
@@ -67,13 +67,13 @@ void npc_sight_system(iter* it) {
     zox_sys_in(Position3D);
     zox_sys_in(Rotation3D);
     zox_sys_in(Bounds3D);
-    zox_sys_out(SightTarget);
+    zox_sys_out(EntityTarget);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Position3D, position);
         zox_sys_i(Rotation3D, rotation);
         zox_sys_i(Bounds3D, bounds);
-        zox_sys_o(SightTarget, sight);
+        zox_sys_o(EntityTarget, sight);
         const entity chunk = zox_get_link(world, e, ChunkLink);
         const entity terrain = zox_get_link(world, e, TerrainLink);
         if (!zox_valid(chunk) || !zox_valid(terrain)) {
@@ -103,11 +103,11 @@ void monster_aggro_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(SightTarget);
+    zox_sys_in(EntityTarget);
     zox_sys_in(CombatState);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(SightTarget, sight);
+        zox_sys_i(EntityTarget, sight);
         zox_sys_i(CombatState, combat);
         if (!zox_valid(sight->value)) {
             continue;

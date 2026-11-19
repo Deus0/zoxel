@@ -9,10 +9,9 @@ void zox_systems_particles3(ecs* world) {
         [in] transforms3.Position3D,
         [in] transforms3.Bounds3D,
         [in] colorz.Color,
-        [in] particles3.ParticlesPerSecond,
+        [in] particles.ParticleEmitRate,
         [in] particles3.ParticleLife,
-        [in] particles3.ParticleRise,
-        [out] particles3.ParticlesDue,
+        [in] physics3.Gravity3D,
         [none] particles3.ParticleStreamer
     );
     zox_system_1(

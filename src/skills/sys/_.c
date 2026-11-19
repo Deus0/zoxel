@@ -50,22 +50,22 @@ void zox_systems_skills(ecs *world) {
     zox_system_1(
         tentacle_system,
         zoxp_spawn,
-        [in] skills.TentacleStart,
-        [in] skills.TentacleTip,
-        [in] skills.TentacleSkill,
+        [in] skills.SkillUsing,
+        [in] skills.SkillUsedAt,
+        [in] skills.SkillTarget,
         [in] transforms3.Position3D,
-        [out] skills.TentacleHit
+        [out] skills.SkillStage
     );
     zox_system_1(
         pounce_system,
         zoxp_spawn,
-        [in] skills.PounceStart,
-        [in] skills.PounceSkill,
+        [in] skills.SkillUsing,
+        [in] skills.SkillUsedAt,
         [in] transforms3.Position3D,
         [in] transforms3.Rotation3D,
         [in] physics.Grounded,
         [in] vrays.RaycastVoxelData,
-        [out] skills.PounceStage,
+        [out] skills.SkillStage,
         [out] transforms3.Scale3,
         [out] physics3.Velocity3D
     );

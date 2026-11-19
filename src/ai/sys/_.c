@@ -27,19 +27,19 @@ void zox_systems_npcs(ecs *world) {
         [in] transforms3.Position3D,
         [in] transforms3.Rotation3D,
         [in] transforms3.Bounds3D,
-        [out] ai.SightTarget,
+        [out] core.EntityTarget,
         [none] ai.Npc
     );
     zox_system(
         npc_glance_system,
         zoxp_update,
-        [in] ai.SightTarget,
+        [in] core.EntityTarget,
         [none] ai.Npc
     );
     zox_system(
         monster_aggro_system,
         zoxp_update,
-        [in] ai.SightTarget,
+        [in] core.EntityTarget,
         [in] combat.CombatState,
         [none] ai.Npc,
         [none] characters.Monster

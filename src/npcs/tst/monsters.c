@@ -8,7 +8,7 @@
 //  - run: bash bsh/tst.sh slime_pounce
 // tst: slime_tentacle, a slime whips its tentacle (skills/sys/tentacle.c)
 //  - a slime 3 away in battle (past its pounce, in its tentacle's reach): its tentacle's particles come out (its
-//    TentacleBits), and the player's health drops while it's out
+//    Particle3D children), and the player's health drops while it's out
 //  - tst/slime_tentacle/out.ppm, the tentacle at full stretch, to look at
 //  - run: bash bsh/tst.sh slime_tentacle
 entity zox_tst_monsters[2];
@@ -195,16 +195,16 @@ byte zox_tst_slime_tentacle_ready(ecs* world) {
     if (!zox_valid(e)) {
         return 1;
     }
-    const byte out = zox_has(e, TentacleStart);
+    const byte out = zox_has(e, SkillUsing) && zox_has(zox_getv(e, SkillUsing), Tentacle);
     if (out) {
         entity bits[32];
-        const int count = (int) zox_get_children_by_id(world, e, bits, 32, zox_id(TentacleBit));
+        const int count = (int) zox_get_children_by_id(world, e, bits, 32, zox_id(Particle3D));
         zox_tst_tentacle_bits = count > zox_tst_tentacle_bits ? count : zox_tst_tentacle_bits;
         if (zox_tst_tentacle_before < 0) {
             zox_tst_tentacle_before = zox_tst_monsters_player_health(world);
         }
         // side on, a shot as it's held out
-        const float t = zox_current_time - zox_getv(e, TentacleStart);
+        const float t = zox_current_time - zox_getv(e, SkillUsedAt);
         const entity camera = zox_get_link(world, dbg_player, CameraLink);
         if (zox_valid(camera)) {
             const float3 a = zox_getv(e, Position3D), b = zox_getv(zox_tst_player_character(world), Position3D);

@@ -1,15 +1,15 @@
 // Npcs glance at players: a humanoid npc's head (a skeleton with a head bone) looks at the player it sees (its
-//  SightTarget, sys/sight.c), and ahead again once it doesn't (bones/sys/head_look.c turns it)
+//  EntityTarget, sys/sight.c), and ahead again once it doesn't (bones/sys/head_look.c turns it)
 //  - not while following someone (FollowTarget, a dialogue: its speakers look at each other)
 //  - boneless npcs (slimes) don't, see the todo (tumble towards the player)
 void npc_glance_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(SightTarget);
+    zox_sys_in(EntityTarget);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(SightTarget, sight);
+        zox_sys_i(EntityTarget, sight);
         // following someone (its FollowTarget, set by a dialogue): its speakers look at each other
         if (zox_valid(zox_get_link(world, e, FollowTarget))) {
             continue;

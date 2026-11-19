@@ -9,7 +9,7 @@ entity spawn_prefab_projectile(ecs* world, entity prefab) {
     zox_set(e, Acceleration3D, { float3_zero });
     zox_set(e, Gravity3D, { float3_multiply1(zox_default_gravity, 0.2f) });
     // its trail (coloured as it's shot)
-    add_prefab_particle3_streamer(world, e, 50, 0.35f, float3_single(0.04f), 0.2f);
+    add_prefab_particle3_streamer(world, e, 50, 0.35f, float3_single(0.04f), 0.4f);
     return e;
 }
 

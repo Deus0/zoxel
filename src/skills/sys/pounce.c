@@ -1,4 +1,4 @@
-// a pounce (fun/pounce.c): it squashes down, springs at what it aims at (RaycastAim, else ahead) stretched up, hits
+// a pounce (fun/pounce.c, a melee SkillUsing): it squashes down, springs at what it aims at (RaycastAim, else ahead) stretched up, hits
 //  the first character its ray finds close in the air (melee_hit, once), and is round again as it lands
 #define pounce_crouch 0.3           // seconds squashing down
 #define pounce_air 0.7              // seconds in the air at most
@@ -10,26 +10,29 @@ void pounce_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(PounceStart);
-    zox_sys_in(PounceSkill);
+    zox_sys_in(SkillUsing);
+    zox_sys_in(SkillUsedAt);
     zox_sys_in(Position3D);
     zox_sys_in(Rotation3D);
     zox_sys_in(Grounded);
     zox_sys_in(RaycastVoxelData);
-    zox_sys_out(PounceStage);
+    zox_sys_out(SkillStage);
     zox_sys_out(Scale3);
     zox_sys_out(Velocity3D);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(PounceStart, start);
-        zox_sys_i(PounceSkill, skill);
+        zox_sys_i(SkillUsing, skill);
+        zox_sys_i(SkillUsedAt, start);
         zox_sys_i(Position3D, position);
         zox_sys_i(Rotation3D, rotation);
         zox_sys_i(Grounded, grounded);
         zox_sys_i(RaycastVoxelData, ray);
-        zox_sys_o(PounceStage, stage);
+        zox_sys_o(SkillStage, stage);
         zox_sys_o(Scale3, scale);
         zox_sys_o(Velocity3D, velocity);
+        if (!zox_valid(skill->value) || !zox_has(skill->value, Melee)) {
+            continue;
+        }
         const float t = zox_current_time - start->value;
         if (stage->value == 0) {
             // squashing down, wider
@@ -55,9 +58,7 @@ void pounce_system(iter* it) {
             stage->value = 2;
         }
         if (k >= 1 || (grounded->value && t > pounce_crouch + 0.2f)) {
-            zox_remove(e, PounceStart);
-            zox_remove(e, PounceStage);
-            zox_remove(e, PounceSkill);
+            skill_using_end(world, e);
             zox_remove(e, Scale3);
         }
     }

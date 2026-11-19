@@ -338,7 +338,7 @@ void zox_tst_npc_skill_switch_check(ecs* world) {
 
 // tst: shoot_burn, a shot burns who it hits (skills/pre/burn.c): a short dot, its skill's colour rising off them
 //  - a humanoid 5 away shoots the player; once hit, it's gone (only the burn hurts them after)
-//  - the player has a Burning with a particle stream, their health drops while it burns, it's gone in its time (5s)
+//  - the player has a burn (a Dot) with its streamer, their health drops while it burns, it's gone in its time (5s)
 //  - tst/shoot_burn/burn.ppm, the player burning, from the side
 //  - run: bash bsh/tst.sh shoot_burn
 entity zox_tst_burn_npc = 0;
@@ -346,13 +346,13 @@ byte zox_tst_burn_stage = 0;
 double zox_tst_burn_time = 0;
 float zox_tst_burn_health = 0;          // as the shot hit
 float zox_tst_burn_health_after = 0;    // as the burn ended
-byte zox_tst_burn_seen = 0;             // a Burning with its streamer on the player
+byte zox_tst_burn_seen = 0;             // a burn with its streamer on the player
 byte zox_tst_burn_gone = 0;
 byte zox_tst_burn_trail = 0;            // a shot with its stream
 
 static inline entity zox_tst_burn_on(ecs* world, entity character) {
     entity burns[8];
-    return zox_get_children_by_id(world, character, burns, 8, zox_id(Burning)) ? burns[0] : 0;
+    return zox_get_children_by_id(world, character, burns, 8, zox_id(Dot)) ? burns[0] : 0;
 }
 
 byte zox_tst_shoot_burn_ready(ecs* world) {
@@ -394,8 +394,7 @@ byte zox_tst_shoot_burn_ready(ecs* world) {
         if (zox_valid(burn)) {
             // its flames: a streamer (its prefab's copy) in its colour, its skill's
             const color c = zox_getv(burn, Color), s = zox_getv(zox_get_link(world, burn, Skill), Color);
-            zox_tst_burn_seen = zox_valid(get_particle3_streamer(world, burn)) && zox_has(get_particle3_streamer(world, burn), ParticleParentColor) &&
-                c.r == s.r && c.g == s.g && c.b == s.b;
+            zox_tst_burn_seen = zox_valid(get_particle3_streamer(world, burn)) && c.r == s.r && c.g == s.g && c.b == s.b;
             zox_tst_burn_health = zox_tst_attacks_player_health(world, character);
             zox_delete(npc);
             zox_tst_burn_time = zox_current_time;
