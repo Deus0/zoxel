@@ -1,6 +1,8 @@
 // tst: eat_swing, eating a cookie swings the arm to the mouth from the item's warmup (items/sys/swing.c, zox_swing_eat)
 //  - gives the player a cookie (held_item.c's), begins using it (ActivateBegin, as its key does)
 //  - in its warmup the skeleton's swing is eating, started at the warmup's start, over warmup + cooldown
+//  - then it chews (items/sys/chew.c): each of its bites (a munch, crumbs) once, over the cooldown
+//  - saves tst/eat_swing.ppm after the second bite (the hand at the mouth, crumbs falling)
 //  - run: bash bsh/tst.sh eat_swing
 byte zox_tst_eat_stage = 0;
 entity zox_tst_eat_item = 0;
@@ -8,6 +10,7 @@ byte zox_tst_eat_swung = 0;
 byte zox_tst_eat_kind = 255;
 float zox_tst_eat_time = 0;
 double zox_tst_eat_at = 0;
+byte zox_tst_eat_cooled = 0;   // the cooldown seen begin and end
 
 byte zox_tst_eat_swing_ready(ecs* world) {
     if (!zox_tst_player_spawn_ready(world)) {
@@ -45,15 +48,33 @@ byte zox_tst_eat_swing_ready(ecs* world) {
         }
         return 0;
     }
-    zox_tst_waiting = "the cookie's warmup";
-    const double warmup_at = zox_getv(zox_tst_eat_item, WarmupAt);
-    if (warmup_at && zox_valid(skeleton) && zox_getv(skeleton, SwingStart) == warmup_at) {
-        zox_tst_eat_swung = 1;
-        zox_tst_eat_kind = zox_getv(skeleton, SwingKind);
-        zox_tst_eat_time = zox_getv(skeleton, SwingSpeed);
+    if (zox_current_time - zox_tst_eat_at > 5) {
         return 1;
     }
-    return zox_current_time - zox_tst_eat_at > 3;
+    if (zox_tst_eat_stage == 2) {
+        zox_tst_waiting = "the cookie's warmup";
+        const double warmup_at = zox_getv(zox_tst_eat_item, WarmupAt);
+        if (warmup_at && zox_valid(skeleton) && zox_getv(skeleton, SwingStart) == warmup_at) {
+            zox_tst_eat_swung = 1;
+            zox_tst_eat_kind = zox_getv(skeleton, SwingKind);
+            zox_tst_eat_time = zox_getv(skeleton, SwingSpeed);
+            zox_tst_eat_stage = 3;
+        }
+        return 0;
+    }
+    zox_tst_waiting = "the chewing";
+    const double cooling = zox_getv(zox_tst_eat_item, CooldownAt);
+    if (zox_tst_eat_stage == 3 && cooling) {
+        zox_tst_eat_stage = 4;
+    } else if (zox_tst_eat_stage == 4 && cooling && zox_current_time - cooling > 0.42 * zox_getv(zox_tst_eat_item, CooldownTime)) {
+        // just after the second bite: the hand at the mouth, crumbs falling
+        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("eat_swing.ppm"));
+        zox_tst_eat_stage = 5;
+    } else if (zox_tst_eat_stage >= 4 && !cooling) {
+        zox_tst_eat_cooled = 1;
+        return 1;
+    }
+    return 0;
 }
 
 void zox_tst_eat_swing_check(ecs* world) {
@@ -64,6 +85,9 @@ void zox_tst_eat_swing_check(ecs* world) {
     zox_tst_check(zox_tst_eat_swung, "the swing didn't start with the cookie's warmup");
     zox_tst_check(zox_tst_eat_kind == zox_swing_eat, "the swing isn't eating [%i]", zox_tst_eat_kind);
     zox_tst_check(fabsf(zox_tst_eat_time - expected) < 0.001f, "the swing isn't over warmup and cooldown [%f of %f]", zox_tst_eat_time, expected);
+    zox_log("[tst] eat_swing: chewed [%u] bites of [%i]", zox_eat_bites, eat_bites_count);
+    zox_tst_check(zox_tst_eat_cooled, "the cookie never cooled down");
+    zox_tst_check(zox_eat_bites == eat_bites_count, "chewed [%u] bites, not [%i]", zox_eat_bites, eat_bites_count);
 }
 
 void zox_tsts_eat_swing(ecs* world) {

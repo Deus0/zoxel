@@ -1,6 +1,7 @@
 #include "drops.c"
 #include "activate.c"
 #include "swing.c"
+#include "chew.c"
 #include "consume.c"
 #include "character.c"
 #include "death.c"
@@ -36,6 +37,14 @@ void zox_systems_items(ecs* world) {
         [in] timers.WarmupTime,
         [in] timers.CooldownTime,
         [in] items.Quantity
+    );
+    // eating chews: munches and crumbs at the mouth
+    zox_system_1(
+        eat_chew_system,
+        zoxp_update,
+        [in] timers.CooldownAt,
+        [in] timers.CooldownTime,
+        [none] ItemConsumable
     );
     // NOTE: Timing issues due to Queue Clearing
     zox_system_1(

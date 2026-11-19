@@ -46,7 +46,7 @@ static const ik_swing ik_swing_place = {
     0.3f, 0.66f, 0 };
 static const ik_swing ik_swing_eat = {
     { 0.7f, 0.2f, -0.05f, 0 },          // drawn in low by the chest
-    { 0.55f, 0.42f, 0.3f, -0.05f },     // at the mouth, under the eyes, in to the middle
+    { 0.62f, 0.4f, 0.22f, -0.05f },     // at the mouth, under the eyes, in to the middle
     0.2f, 0.82f, 0 };
 
 static inline float ik_smoothstep(float a, float b, float x) {
