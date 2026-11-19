@@ -9,6 +9,60 @@ static inline byte navigation_grid_columns(ecs* world, entity e) {
     return 0;
 }
 
+// an element's centre on the screen (pointer space, y up), 0 if it's not a shown 2D one
+static inline byte navigation_centre(ecs* world, const CanvasViewport* viewport, entity e, float2* centre) {
+    if (!zox_has(e, Position2) || !zox_has(e, LayoutSize) || (zox_has(e, RenderDisabled) && zox_getv(e, RenderDisabled))) {
+        return 0;
+    }
+    const int4 b = get_element_pointer_bounds(world, viewport, e, zox_getv(e, Position2), zox_getv(e, LayoutSize));
+    *centre = (float2) { (b.x + b.y) * 0.5f, (b.z + b.w) * 0.5f };
+    return 1;
+}
+
+// off its window's edge: the closest element that way in another open window of its canvas (the inventory's last
+//  row down to the action bar), 0 if none; dir is on the screen, y up
+static entity navigation_step_window(ecs* world, entity current, entity window, float2 dir) {
+    const entity canvas = zox_get_parent_by_id(world, window, zox_id(Canvas));
+    CanvasViewport viewport;
+    float2 from;
+    if (!zox_valid(canvas) || !get_canvas_viewport(world, canvas, &viewport) ||
+        !navigation_centre(world, &viewport, current, &from)) {
+        return 0;
+    }
+    entity best = 0;
+    float best_score = 0;
+    iter it = zox_children(world, canvas);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count; i++) {
+            const entity other = it.entities[i];
+            if (other == window || !zox_has(other, Window) || zox_has(other, UIClosing)) {
+                continue;
+            }
+            entity elements[zox_children_capacity];
+            const uint count = zox_get_children_by_id_recursive(world, other, elements, zox_children_capacity,
+                zox_id(NavigationElement), 0);
+            for (uint j = 0; j < count; j++) {
+                float2 to;
+                if (!navigation_centre(world, &viewport, elements[j], &to)) {
+                    continue;
+                }
+                const float2 d = { to.x - from.x, to.y - from.y };
+                const float along = d.x * dir.x + d.y * dir.y;
+                if (along <= 0) {
+                    continue;
+                }
+                // straight that way first: across counts double
+                const float score = along + 2 * float_abs(d.x * dir.y - d.y * dir.x);
+                if (!best || score < best_score) {
+                    best = elements[j];
+                    best_score = score;
+                }
+            }
+        }
+    }
+    return best;
+}
+
 // the stick steps the selection through its window's NavigationElements: up and down one, in a grid (a datagrid's
 //  icons) left and right one and up and down a row (its columns); a stick's x as SDL has it, right is -x
 // todo: fix this, EntityTarget moved to zevices
@@ -173,11 +227,12 @@ void element_navigation_system(iter* it) {
         // TODO: Get closest uis and their directions for directional navigation
         // This is just a quick fix
         const int next_index = (int) selected_index + direction;
+        // past its window's ends: into the next window that way
         if (next_index < 0 || next_index >= (int) children_length) {
-            continue;
-        }
-        selected_index = (sbyte) next_index;
-        if (zox_has(current->value, ChildIndex)) {
+            const float2 dir = sideways ? (float2) { direction, 0 } : (float2) { 0, direction < 0 ? 1 : -1 };
+            target = navigation_step_window(world, current->value, window, dir);
+        } else if (zox_has(current->value, ChildIndex)) {
+            selected_index = (sbyte) next_index;
             // NOTE: Gets neighbor if indexes are set like a list, very rigid
             for (int j = 0; j < children_length; j++) {
                 entity e2 = children[j];
@@ -194,7 +249,7 @@ void element_navigation_system(iter* it) {
                 }
             }
         } else {
-            target = children[selected_index];
+            target = children[next_index];
         }
         if (target && target != current->value) {
             raycaster_select_element(
