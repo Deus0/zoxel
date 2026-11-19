@@ -49,11 +49,14 @@ entity spawn_quest_tracker(
     zox_add(tracker, QuestTracker);
     // Link to player character for quests
     // player
+    // its text again once the quest's whole (quest_tracker_updated): the first quest's was read before its name, ???,
+    //  and its Dirty came before it had a tracker
     if (quest) {
         entity old_tracker = zox_get_link(world, quest, QuestTrackerLink);
         if (!old_tracker) {
             zox_link(world, quest, QuestTrackerLink, tracker);
         }
+        zox_add(quest, Dirty);
     }
     free(text);
     return tracker;

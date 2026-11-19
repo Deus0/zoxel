@@ -116,6 +116,8 @@ static inline float zox_tst_qd_facing(ecs* world, entity character, entity targe
 // characters across the dialogue box, its lines wrap to it
 int zox_tst_qd_columns = 0;
 char zox_tst_qd_tracker[256];     // the quest tracker's text after taking the quest
+int2 zox_tst_qd_tracker_size = { -1, -1 };  // its panel's size then
+byte zox_tst_qd_tracker_panel = 0;          // its panel drawn (not render disabled, a mesh)
 float zox_tst_qd_scale_min = 1;     // the window's smallest and biggest LocalScale1, popping in and out
 float zox_tst_qd_scale_max = 0;
 int zox_tst_qd_input_early = 0;     // frames playing (input back) while a dialogue window was still there
@@ -271,10 +273,18 @@ byte zox_tst_quest_dialogue_ready(ecs* world) {
                 zox_tst_qd_jingle_notes = zox_count_types(SoundDelay);
             }
             // after taking the quest, the tracker shows it by name (it showed (null), find: the wrong quest)
-            if (talk == 1 && !zox_tst_qd_tracker[0]) {
+            // (once it's tracked and its text redone: read before, it was the first quest's)
+            const entity tracked = zox_get_link(world, character, QuestTracked);
+            if (talk >= 1 && !zox_tst_qd_tracker[0] && zox_valid(tracked) && zox_has(tracked, SlayQuest) &&
+                !zox_has(tracked, Dirty) && !zox_has(tracked, Update)) {
                 const entity tracker = zox_get_child_by_id(world, canvas, zox_id(QuestTracker));
                 char* shown = zox_valid(tracker) ? get_zext_text(zox_get(tracker, TextData)) : NULL;
                 snprintf(zox_tst_qd_tracker, sizeof(zox_tst_qd_tracker), "%s", shown ? shown : "-");
+                if (zox_valid(tracker)) {
+                    zox_tst_qd_tracker_size = zox_getv(tracker, LayoutSize);
+                    zox_tst_qd_tracker_panel = !zox_getv(tracker, RenderDisabled) && zox_getv(tracker, MeshGPULink).x &&
+                        zox_tst_qd_tracker_size.x > 0 && zox_tst_qd_tracker_size.y > 0;
+                }
                 if (shown) {
                     free(shown);
                 }
@@ -334,6 +344,9 @@ void zox_tst_quest_dialogue_check(ecs* world) {
         zox_tst_check(!strncmp(zox_tst_qd_tracker, name, strlen(name)), "after taking it, the tracker shows [%s], not [%s]", zox_tst_qd_tracker, name);
         // and what to slay (it showed "Slay [???]": the slime's name missing)
         zox_log("[tst] tracker: %s", zox_tst_qd_tracker);
+        zox_log("[tst] tracker panel [%i], size [%ix%i]", zox_tst_qd_tracker_panel, zox_tst_qd_tracker_size.x, zox_tst_qd_tracker_size.y);
+        zox_tst_check(zox_tst_qd_tracker_panel, "the tracker's text has no panel behind it, size [%ix%i]", zox_tst_qd_tracker_size.x,
+            zox_tst_qd_tracker_size.y);
         zox_tst_check(!strstr(zox_tst_qd_tracker, "???"), "the tracker shows [%s], a ??? in it", zox_tst_qd_tracker);
     }
     zox_tst_check(zox_tst_qd_voices > 0, "the npc said its lines without a voice");

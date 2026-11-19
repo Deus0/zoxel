@@ -31,6 +31,14 @@ void zox_events_quests_ui(ecs* world) {
         [none] slots.SlotUser,
         [none] slots.DataUpdate,
     );
+    // on Update, the frame after Dirty (dirty_system): a quest just given is whole then, its tracker linked (on its
+    //  Dirty the link wasn't there yet, the tracker kept the ??? read as it was given)
+    zox_on_add(
+        quest_tracker_updated,
+        [none] quests.Quest,
+        [none] core.Update,
+    );
+    // and on Dirty: dirtied two frames running its Update stays (update_system), no add the second time
     zox_on_add(
         quest_tracker_updated,
         [none] quests.Quest,

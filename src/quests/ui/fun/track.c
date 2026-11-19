@@ -15,7 +15,11 @@ void track_quest(
     const entity tracker = zox_valid(canvas) ? zox_get_child_by_id(world, canvas, zox_id(QuestTracker)) : 0;
     const entity old_quest = zox_get_link(world, character, QuestTracked);
     if (zox_valid(old_quest) && old_quest != quest) {
-        zox_unlink(world, character, QuestTracked, old_quest);
+        // QuestTracked is exclusive, linking the new one replaces it: unlinked then linked (both deferred, non
+        //  fragmenting) it was left with neither, the tracker never updated again
+        if (!zox_valid(quest)) {
+            zox_unlink(world, character, QuestTracked, old_quest);
+        }
         const entity old_tracker = zox_get_link(world, old_quest, QuestTrackerLink);
         if (old_tracker) {
             zox_unlink(world, old_quest, QuestTrackerLink, old_tracker);
