@@ -111,6 +111,10 @@ byte zox_tst_block_activate_ready(ecs* world) {
         return 0;
     }
     if (zox_tst_bact_stage == 5) {
+        // off the bed (its climb)
+        if (zox_has(zox_tst_bact_clicker, SleepMotion)) {
+            return zox_tst_bact_frames > 600;
+        }
         zox_tst_check(!zox_has(zox_tst_bact_clicker, Sleeping), "woken, it's still asleep");
         zox_setv(zox_tst_bact_clicker, Position3D, zox_tst_bact_at);
         zox_tst_bact_click(world, 4 * block, 1);

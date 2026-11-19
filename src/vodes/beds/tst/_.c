@@ -1,17 +1,20 @@
 // tst: bed_sleep, the player sleeps in a bed and wakes (vodes/beds), in a game (its player, camera and canvas)
 //  - a bed placed (turned a quarter) with ground under it near the player; character_sleep, as a right click on it
+//  - stood beside it, it climbs on: never over 8 blocks a second (no jumps), standing on the mattress half way
 //  - asleep: still (DisableMovement, DisableGravity, NoClip), lying over the bed's middle on the mattress, its up to
 //    the pillow (the base's end), its front to the sky; a second later still there (no fall); its eyes shut
 //    (CameraLids 1), the "Wake" window up, its mouse let go
-//  - "Wake" (button_event_wake): moving again, standing upright beside the bed, out of its blocks, the eyes open,
-//    the window gone, its mouse taken
+//  - "Wake" (button_event_wake): held still while it gets off (a climb's time, never over 8 blocks a second), then moving again, standing
+//    upright beside the bed, out of its blocks; the eyes open, the window gone, its mouse taken
 //  - run: bash bsh/tst.sh bed_sleep
 #define zox_tst_bsleep_direction 1
 byte zox_tst_bsleep_stage = 0;
 int zox_tst_bsleep_frames = 0;
 double zox_tst_bsleep_time = 0;
 int3 zox_tst_bsleep_base;
-float3 zox_tst_bsleep_lying;
+float3 zox_tst_bsleep_lying, zox_tst_bsleep_last;
+float zox_tst_bsleep_step = 0;   // its fastest climbing, blocks a second
+byte zox_tst_bsleep_upright_middle = 0;   // seen standing on the mattress mid climb
 
 static inline entity zox_tst_bsleep_ui(ecs* world, entity player) {
     const entity canvas = zox_get_link(world, player, CanvasLink);
@@ -63,15 +66,35 @@ byte zox_tst_bed_sleep_ready(ecs* world) {
         if (zox_tst_bsleep_frames < 10 || !terrain_voxel_at(world, terrain, zox_tst_bsleep_base)) {
             return zox_tst_bsleep_frames > 600;
         }
+        // beside it first, in reach, as a player clicking it stands
+        const int3 side = int3_add(zox_tst_bsleep_base, block_direction_offset(zox_tst_bsleep_direction, (int3) { 0, 0, -1 }));
+        const float3 bounds = zox_getv(character, Bounds3D);
+        zox_setv(character, Position3D, ((float3) { (side.x + 0.5f) * block, side.y * block + bounds.y, (side.z + 0.5f) * block }));
+        zox_setv(character, Velocity3D, float3_zero);
         character_sleep(world, character, zox_tst_bsleep_base);
         zox_tst_bsleep_stage = 2;
         zox_tst_bsleep_frames = 0;
+        zox_tst_bsleep_time = zox_current_time;
+        zox_tst_bsleep_last = zox_getv(character, Position3D);
         return 0;
     }
     if (zox_tst_bsleep_stage == 2) {
-        if (zox_tst_bsleep_frames < 5) {
+        zox_tst_waiting = "climbing onto the bed";
+        const float3 now = zox_getv(character, Position3D);
+        zox_tst_bsleep_step = float_max(zox_tst_bsleep_step, float3_distance(now, zox_tst_bsleep_last) / block / (float) zox_delta_time);
+        zox_tst_bsleep_last = now;
+        const float t = (float) (zox_current_time - zox_tst_bsleep_time) / sleep_climb_time;
+        if (t > 0.45f && t < 0.55f) {
+            const float3 up = float4_rotate_float3(zox_getv(character, Rotation3D), (float3) { 0, 1, 0 });
+            zox_tst_bsleep_upright_middle |= up.y > 0.9f && now.y > (zox_tst_bsleep_base.y + bed_mattress_height) * block;
+        }
+        if (t < 1.2f) {
             return 0;
         }
+        zox_log("[tst] climbed on, its fastest [%.2f] blocks a second, upright on the mattress mid way [%i]", zox_tst_bsleep_step,
+            zox_tst_bsleep_upright_middle);
+        zox_tst_check(zox_tst_bsleep_step < 8, "it moved [%.2f] blocks a second climbing on: a jump", zox_tst_bsleep_step);
+        zox_tst_check(zox_tst_bsleep_upright_middle, "mid climb it wasn't standing on the mattress");
         zox_tst_check(zox_has(character, Sleeping) && zox_has(character, DisableMovement) && zox_has(character, DisableGravity) &&
             zox_has(character, NoClip), "asleep it isn't still: Sleeping [%i] DisableMovement [%i] DisableGravity [%i] NoClip [%i]",
             zox_has(character, Sleeping), zox_has(character, DisableMovement), zox_has(character, DisableGravity), zox_has(character, NoClip));
@@ -103,31 +126,42 @@ byte zox_tst_bed_sleep_ready(ecs* world) {
             return 0;
         }
         const float moved = float3_distance(zox_getv(character, Position3D), zox_tst_bsleep_lying);
-        const float3 p = zox_getv(character, Position3D), v = zox_getv(character, Velocity3D), a = zox_getv(character, Acceleration3D);
-        zox_log("[tst] asleep moved [%.3f %.3f %.3f] velocity [%.3f %.3f %.3f] acceleration [%.3f %.3f %.3f]", p.x - zox_tst_bsleep_lying.x,
-            p.y - zox_tst_bsleep_lying.y, p.z - zox_tst_bsleep_lying.z, v.x, v.y, v.z, a.x, a.y, a.z);
         zox_tst_check(moved < 0.01f * block, "asleep it moved [%.3f] blocks", moved / block);
         zox_tst_check(zox_getv(camera, CameraLids) >= 1, "asleep its eyes aren't shut [%.2f]", zox_getv(camera, CameraLids));
         button_event_wake(world, (ClickEventData) { .clicker = player });
         zox_tst_bsleep_stage = 4;
         zox_tst_bsleep_frames = 0;
+        zox_tst_bsleep_step = 0;
+        zox_tst_bsleep_last = zox_getv(character, Position3D);
         zox_tst_bsleep_time = zox_current_time;
         return 0;
     }
     if (zox_tst_bsleep_stage == 4) {
-        // stood up (a few frames: before it can fall, the test's floor is only under the bed)
-        if (zox_tst_bsleep_frames < 3) {
-            return 0;
+        // getting off: still held until off, then moving again, checked the frame it's off (before it can fall: the
+        //  test's floor is only under the bed)
+        zox_tst_waiting = "getting off the bed";
+        const float3 now = zox_getv(character, Position3D);
+        zox_tst_bsleep_step = float_max(zox_tst_bsleep_step, float3_distance(now, zox_tst_bsleep_last) / block / (float) zox_delta_time);
+        zox_tst_bsleep_last = now;
+        if (zox_has(character, SleepMotion)) {
+            if (!zox_has(character, DisableMovement) && zox_tst_bsleep_frames > 2) {
+                zox_tst_check(0, "getting off it can already move");
+                return 1;
+            }
+            return zox_current_time - zox_tst_bsleep_time > 5;
         }
+        zox_tst_check(zox_current_time - zox_tst_bsleep_time >= sleep_climb_time * 0.9f, "it was off in [%.2fs], under its climb",
+            zox_current_time - zox_tst_bsleep_time);
+        zox_log("[tst] got off, its fastest [%.2f] blocks a second", zox_tst_bsleep_step);
+        zox_tst_check(zox_tst_bsleep_step < 8, "it moved [%.2f] blocks a second getting off: a jump", zox_tst_bsleep_step);
         zox_tst_check(!zox_has(character, Sleeping) && !zox_has(character, DisableMovement) && !zox_has(character, DisableGravity) &&
             !zox_has(character, NoClip) && !zox_has(character, Waking), "awake it isn't moving again");
         const float3 up = float4_rotate_float3(zox_getv(character, Rotation3D), (float3) { 0, 1, 0 });
         zox_tst_check(up.y > 0.99f, "awake it isn't upright: up [%.2f %.2f %.2f]", up.x, up.y, up.z);
-        const int3 at = real_position_to_block_position(zox_getv(character, Position3D), block);
+        const int3 at = real_position_to_block_position(now, block);
         zox_tst_check(!block_is_solid_at(world, terrain, realm, at), "awake it's inside a solid block [%i] at [%i %i %i]",
             terrain_voxel_at(world, terrain, at), at.x, at.y, at.z);
-        const float3 p = zox_getv(character, Position3D);
-        const float across = sqrtf((p.x - zox_tst_bsleep_lying.x) * (p.x - zox_tst_bsleep_lying.x) + (p.z - zox_tst_bsleep_lying.z) * (p.z - zox_tst_bsleep_lying.z));
+        const float across = sqrtf((now.x - zox_tst_bsleep_lying.x) * (now.x - zox_tst_bsleep_lying.x) + (now.z - zox_tst_bsleep_lying.z) * (now.z - zox_tst_bsleep_lying.z));
         zox_tst_check(across < 1.5f * block, "awake it's [%.2f] blocks from the bed", across / block);
         zox_tst_bsleep_stage = 5;
         return 0;
