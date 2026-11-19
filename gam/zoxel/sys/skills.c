@@ -39,6 +39,9 @@ void skills_realm_spawn_system(iter* it) {
                 }
             }
         }
+        // the realm's debuffs, its skills link the ones they put on
+        const entity burn = spawn_realm_debuff(world, e, prefab_burn, "burn", 0.5f, 1, 5, (color) { 255, 140, 50, 255 });
+        const entity poison = spawn_realm_debuff(world, e, prefab_poison, "poison", base_death_aura_damage, 1, 0, (color) { 120, 60, 160, 255 });
         // Punch
         {
             color ecolor = (color) { 155, 155, 155, 255 };
@@ -85,6 +88,8 @@ void skills_realm_spawn_system(iter* it) {
                 1,          // its mana
                 0.5f,
                 0.5f);
+            // its hits burn: 0.5 a second for 5s
+            zox_link(world, meta_skill_shoot, OnHitLinks, burn);
         }
         // Tentacle: a slime's whip, now and then (its long cooldown), more than its pounce
         {
@@ -114,6 +119,8 @@ void skills_realm_spawn_system(iter* it) {
                 0.5f,
                 0.5f);
             meta_skill_aura_death = e2;
+            // it poisons who's in it
+            zox_link(world, e2, OnHitLinks, poison);
         }
 
         // testing

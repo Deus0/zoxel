@@ -2,3 +2,4 @@
 #include "damage.c"
 #include "cost.c"
 #include "pounce.c"
+#include "on_hit.c"

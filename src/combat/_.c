@@ -1,6 +1,5 @@
 zoxc_byte(CombatState);
 zoxc_float(Damage);
-zox_tag(DamagePerSecond);    // its Damage is a second's, over time (a burn's), not a hit's
 zoxc_double(LastCombatTime);
 zox_tag(AttackerLink);
 zox_tag(JustHit);    // event tag, added when hit, removed by observer
@@ -8,7 +7,6 @@ zox_tag(JustHit);    // event tag, added when hit, removed by observer
 void zox_components_combat(ecs* world) {
     zoxd_byte(CombatState);
     zoxd_float(Damage);
-    zoxd_tag(DamagePerSecond);
     zoxd_double(LastCombatTime);
     zoxd_nf_link(AttackerLink);
     zoxd_tag(JustHit);

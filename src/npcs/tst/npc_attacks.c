@@ -392,9 +392,8 @@ byte zox_tst_shoot_burn_ready(ecs* world) {
         zox_tst_burn_trail |= zox_count_types(ParticleStreamer) > 0;       // only shots stream, before a burn
         const entity burn = zox_tst_burn_on(world, character);
         if (zox_valid(burn)) {
-            // its flames: a streamer (its prefab's copy) in its colour, its skill's
-            const color c = zox_getv(burn, Color), s = zox_getv(zox_get_link(world, burn, Skill), Color);
-            zox_tst_burn_seen = zox_valid(get_particle3_streamer(world, burn)) && c.r == s.r && c.g == s.g && c.b == s.b;
+            // a burn (its realm's, linked from shoot's OnHitLinks), its flames a streamer (its prefab's copy)
+            zox_tst_burn_seen = zox_has(burn, Burn) && zox_valid(get_particle3_streamer(world, burn));
             zox_tst_burn_health = zox_tst_attacks_player_health(world, character);
             zox_delete(npc);
             zox_tst_burn_time = zox_current_time;
@@ -435,6 +434,67 @@ void zox_tst_shoot_burn_check(ecs* world) {
         zox_tst_burn_health, zox_tst_burn_health_after);
 }
 
+// tst: aura_poison, a death aura poisons who's in it (skills/auras/sys/collide.c): its realm's poison (OnHitLinks)
+//  - the player's character given the death aura, on; an npc 1.5 away gets a Poison dot, an instance of the realm's,
+//    and its health drops
+//  - run: bash bsh/tst.sh aura_poison
+entity zox_tst_poison_npc = 0;
+byte zox_tst_poison_stage = 0;
+double zox_tst_poison_time = 0;
+float zox_tst_poison_health = -1;
+byte zox_tst_poison_seen = 0;
+
+byte zox_tst_aura_poison_ready(ecs* world) {
+    if (!zox_tst_player_spawn_ready(world)) {
+        return 0;
+    }
+    const entity character = zox_tst_player_character(world);
+    if (zox_tst_poison_stage == 0) {
+        const entity realm = zox_get_link(world, character, RealmLink);
+        const entity humanoid = zox_tst_realm_humanoid(world, realm);
+        if (!zox_valid(humanoid) || !zox_valid(meta_skill_aura_death)) {
+            zox_tst_check(0, "the realm has no humanoid, or no death aura");
+            return 1;
+        }
+        float3 position = zox_getv(character, Position3D);
+        position.x += 1.5f;
+        zox_tst_poison_npc = spawn_character3_npc(world, humanoid, realm, zox_get_link(world, character, TerrainLink),
+            41, 0, 0, position, quaternion_identity, NULL);
+        zox_add(zox_tst_poison_npc, Coward);    // it runs, not fights
+        zox_setv(zox_tst_poison_npc, DefaultBehaviour, zox_behaviour_idle);
+        const entity aura = spawn_user_skill(world, character, meta_skill_aura_death);
+        zox_setv(aura, Activate, zox_dirty_trigger);
+        zox_tst_poison_time = zox_current_time;
+        zox_tst_poison_stage = 1;
+        return 0;
+    }
+    zox_tst_waiting = "the npc in the aura poisoned";
+    const entity npc = zox_tst_poison_npc;
+    if (!zox_valid(npc) || zox_has(npc, PreInitialize) || zox_has(npc, Initialize)) {
+        return 0;
+    }
+    const entity health = zox_get_child_by_id(world, npc, zox_id(StatHealth));
+    entity dots[8];
+    const uint count = zox_get_children_by_id(world, npc, dots, 8, zox_id(Dot));
+    for (uint i = 0; i < count; i++) {
+        zox_tst_poison_seen |= zox_has(dots[i], Poison) && zox_valid(zox_get_link(world, dots[i], Skill));
+    }
+    if (zox_valid(health) && zox_tst_poison_health < 0) {
+        zox_tst_poison_health = zox_getv(health, StatValue);
+    }
+    return (zox_tst_poison_seen && zox_valid(health) && zox_getv(health, StatValue) < zox_tst_poison_health - 0.5f) ||
+        zox_current_time - zox_tst_poison_time > 10;
+}
+
+void zox_tst_aura_poison_check(ecs* world) {
+    const entity npc = zox_tst_poison_npc;
+    const entity health = zox_valid(npc) ? zox_get_child_by_id(world, npc, zox_id(StatHealth)) : 0;
+    const float now = zox_valid(health) ? zox_getv(health, StatValue) : -1;
+    zox_log("[tst] aura_poison poisoned [%i] health [%.2f] to [%.2f]", zox_tst_poison_seen, zox_tst_poison_health, now);
+    zox_tst_check(zox_tst_poison_seen, "the npc in the aura got no poison");
+    zox_tst_check(now >= 0 && now < zox_tst_poison_health - 0.5f, "the poison didn't hurt, [%.2f] to [%.2f]", zox_tst_poison_health, now);
+}
+
 void zox_tsts_npc_attacks(ecs* world) {
     zox_tst_add("npc_attacks", zox_tst_npc_attacks_ready, zox_tst_npc_attacks_check, 120);
     zox_tst_set_setup("npc_attacks", zox_tst_level_setup, 0);
@@ -447,4 +507,6 @@ void zox_tsts_npc_attacks(ecs* world) {
     zox_tst_set_setup("npc_skill_switch", zox_tst_level_setup, 0);
     zox_tst_add("shoot_burn", zox_tst_shoot_burn_ready, zox_tst_shoot_burn_check, 120);
     zox_tst_set_setup("shoot_burn", zox_tst_level_setup, 0);
+    zox_tst_add("aura_poison", zox_tst_aura_poison_ready, zox_tst_aura_poison_check, 120);
+    zox_tst_set_setup("aura_poison", zox_tst_level_setup, 0);
 }

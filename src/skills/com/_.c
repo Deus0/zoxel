@@ -17,8 +17,9 @@ zoxc_float(SkillDamageMax);
 zoxc_float(SkillRange);
 zoxc_float(SkillCost);
 zoxc_float2(SkillReach);     // the distances it lands at (min, max): an npc picks its skill by it (ai/fun/skills.c)
-zox_tag(Burn);               // its hits burn for its DamageTime (pre/burn.c), shoot's
-zoxc_double(DamageTime);     // seconds its damage goes on (a burn's)
+zox_tag(Burn);               // a dot that burns (pre/burn.c)
+zoxc_double(DamageTime);     // seconds a debuff's damage goes on, 0 for as long as it's on (an aura's)
+zox_tag(OnHitLinks);         // skill -> its realm's debuffs it puts on who it hits or touches (fun/on_hit.c)
 zoxc_entity(SkillUsing);     // a user's skill in progress over time (a pounce, a tentacle), one at a time
 zoxc_double(SkillUsedAt);    // its start
 zox_tag(SkillReleased);      // a skill in use let go (a pounce leapt)
@@ -46,6 +47,7 @@ void zox_components_skills(ecs* world) {
     zoxd_float2(SkillReach);
     zoxd_tag(Burn);
     zoxd_double(DamageTime);
+    zoxd_nf_links(OnHitLinks);
     zoxd_entity(SkillUsing);
     zoxd_double(SkillUsedAt);
     zoxd_tag(SkillReleased);

@@ -6,17 +6,20 @@ void dots_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(SkillDamage);
+    zox_sys_in(Damage);
+    zox_sys_in(Rate);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(SkillDamage, damage);
+        zox_sys_i(Damage, damage);
+        zox_sys_i(Rate, rate);
         entity defender = zox_get_parent(world, e);
         if (!zox_valid(defender) ||
             zox_has(defender, Dead) ||
             !damage->value) {
             continue;
         }
-        float apply_damage = damage->value;
+        // its harm a second (below 0 it heals)
+        float apply_damage = damage->value * rate->value;
         // Modify Damage by Attackers Buffs
         // TODO: We should apply this when adding Debuffs
         entity attacker = zox_get_link(world, e, Spawner);
@@ -47,7 +50,7 @@ void dots_system(iter* it) {
             // assuming intelligence is like 4th stat attribute for now
             // stronger either way: more damage (negative) or more healing, it lessened a damage before
             if (boost_stat) {
-                apply_damage += (damage->value < 0 ? -1 : 1) * zox_getv(boost_stat, StatValue);
+                apply_damage += (apply_damage < 0 ? -1 : 1) * zox_getv(boost_stat, StatValue);
             }
         }
         // the character being damaged by debuff
@@ -59,7 +62,7 @@ void dots_system(iter* it) {
         // const entity health_stat = statLinks->value[0];
         float stat_value_max = zox_getv(health_stat, StatValueMax);
         zox_muter(health_stat, StatValue, stat);
-        stat->value += delta_time * apply_damage;
+        stat->value -= delta_time * apply_damage;
         if (stat->value < 0) {
             stat->value = 0;
         } else if (stat->value > stat_value_max) {

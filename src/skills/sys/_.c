@@ -19,7 +19,8 @@ void zox_systems_skills(ecs *world) {
     zox_system(
         dots_system,
         zoxp_update,
-        [in] skills.SkillDamage,
+        [in] combat.Damage,
+        [in] core.Rate,
         [none] skills.Dot
     );
     // TODO: split into sound, resource and damage systems

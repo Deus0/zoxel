@@ -19,3 +19,6 @@
 static inline entity zox_ins(ecs* world, entity prefab) {
     return ecs_new_w_pair(world, EcsIsA, prefab);
 }
+
+// an instance of this prefab (directly)
+#define zox_is_instance_of(e, prefab) ecs_has_pair(world, e, EcsIsA, prefab)

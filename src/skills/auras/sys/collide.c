@@ -67,15 +67,15 @@ void aura_dot_system(iter* it) {
                 // makes sure to check the debuff is linked to same character
                 // makes it so t two players can damage a character at once
                 if (distance <= range->value) {
-                    entity e3 = spawn_poison(
-                        world,
-                        e2,
-                        prefab_poison,
-                        user,
-                        e,
-                        damage->value);
-                    zox_add(e3, AuraDot);
-                    zox_set_parent(world, e3, e2);
+                    // its debuffs (its realm's poison), while they're in it (AuraDot)
+                    entity e3 = 0;
+                    zox_each_link(world, e, OnHitLinks, debuff) {
+                        e3 = spawn_debuff(world, debuff, e2, user, e);
+                        zox_add(e3, AuraDot);
+                    }
+                    if (!e3) {
+                        continue;
+                    }
                     if (dbg_log) {
                         zox_log("Added new dot [%s]", zox_get_name(e3));
                     }
