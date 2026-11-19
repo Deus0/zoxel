@@ -1,13 +1,13 @@
 #include "arm_ik.c"
-#include "punch.c"
+#include "swing.c"
 #include "leg_ik.c"
 #include "feet.c"
 #include "spine.c"
 
 void zox_systems_ik(ecs* world) {
-    // the right arm's guard while raised, a punch or place as a motion
+    // the right arm's guard while raised, a swing (dat/swings.c) as a motion
     zox_system(
-        punch_ik_system,
+        swing_ik_system,
         zoxp_trails,
         [in] bones.SwingStart,
         [in] bones.SwingSpeed,

@@ -10,7 +10,7 @@
  *    the shoulder turns the upper arm (shoulder to elbow), the elbow (the hand's parent, the forearm) turns the
  *    lower arm, two bone ik solved analytically (fun/two_bone.c), no new bones, whatever the arm is built of
  *  - the weight blends over the arm's other animation (swing, raise), so ik eases on and off
- *  - drivers write the target and weight: a punch (sys/punch.c) reaches where the head looks, XR hands
+ *  - drivers write the target and weight: a swing (sys/swing.c, dat/swings.c) reaches where the head looks, XR hands
  *    (xr/fun/hands.c) put each hand on its controller
  *  - legs too (sys/leg_ik.c, a thigh's IKTarget its foot): planted feet (sys/feet.c, PlantFeet on a skeleton, XR's
  *    body) hold as the body shifts over them, stepping back under it when it's too far

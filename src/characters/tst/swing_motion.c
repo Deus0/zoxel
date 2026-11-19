@@ -1,4 +1,4 @@
-// tst: swing_motion, placing a block and eating swing the arm as themselves, not a punch (bones/ik/sys/punch.c)
+// tst: swing_motion, placing a block and eating swing the arm as themselves, not a punch (bones/ik/sys/swing.c)
 //  - raised (as holding a block), then a slow place swing (3s): the hand lifts above the guard (the block raised by
 //    the head), then presses out and down below the look as it lands, the arm out near its reach
 //  - then a slow eat swing (3s): the hand comes to the mouth (near the head, under the eyes), far closer than the guard

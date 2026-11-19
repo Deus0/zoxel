@@ -23,15 +23,12 @@ zoxc_byte(WalkState);
 zoxc_byte(WalkSpeed);
 zoxc_double(SwingStart);
 zoxc_float(SwingSpeed);
-zoxc_byte(SwingKind);       // the swing SwingStart starts: zox_swing_punch, zox_swing_place, zox_swing_eat
+zoxc_byte(SwingKind);       // the swing SwingStart starts, one of swings (dat/swings.c)
 zoxc_byte(SwingMark);       // the mark a swing just passed (1 its first: a punch's hit, a bite): set as it passes, observers react
 zoxc_entity(SwingAction);   // what's swung: a skill or item (its hit's damage, eating's food), observers of the marks read it
 zoxc_float3(SwingTarget);   // the point in the world a swing is at (a place's block: the head turns to it), zero none
 zoxc_float(SpineTwist);     // the upper body turned about its up, radians (a punch turning into its strike)
 zoxc_float(SpineTwistHead); // the twist the head was turned back by, last set (its look holds, ik/sys/spine.c)
-#define zox_swing_punch 0
-#define zox_swing_place 1
-#define zox_swing_eat 2
 zoxc_entity(LookTarget);
 zoxc_entity(BoneSlot);      // the slot a bone is from: a rebuild keeps its index (parts/sys/bones.c)
 #define zox_bones_max 32    // bone_matrix[32] in res/shaders/bone.vert    // on a head bone: it turns to look at it (its head, if it has one), 0 looks ahead

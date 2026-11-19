@@ -1,4 +1,4 @@
-// tst: punch_motion, the player's punch bends its arm as a motion (bones/ik/sys/punch.c), not a straight arm
+// tst: punch_motion, the player's punch bends its arm as a motion (bones/ik/sys/swing.c), not a straight arm
 //  - raised (as holding the punch skill), then a slow punch (3s): pulled back the elbow bends more than the guard, at
 //    the strike the hand is out near the arm's full reach, and before it the guard's elbow is relaxed (bent some)
 //  - the guard is in the first person camera's view: the hand ahead of the camera, inside its sides

@@ -1,4 +1,4 @@
-// tst: guard_steady, the raised guard stays put in the first person view as the view turns (bones/ik/sys/punch.c)
+// tst: guard_steady, the raised guard stays put in the first person view as the view turns (bones/ik/sys/swing.c)
 //  - raised, settled, then the body turns steadily as a mouse look does and walks ahead, the pitch held
 //  - the hand in the camera's space stays where it settled (turning and walking the guard is still in view): the
 //    arm's reach was measured between bones of two frames (the shoulder carried to now, the elbow not), short by

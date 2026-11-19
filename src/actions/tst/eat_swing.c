@@ -86,7 +86,7 @@ void zox_tst_eat_swing_check(ecs* world) {
     zox_tst_check(zox_tst_eat_swung, "the swing didn't start with the cookie's warmup");
     zox_tst_check(zox_tst_eat_kind == zox_swing_eat, "the swing isn't eating [%i]", zox_tst_eat_kind);
     zox_tst_check(fabsf(zox_tst_eat_time - expected) < 0.001f, "the swing isn't over warmup and cooldown [%f of %f]", zox_tst_eat_time, expected);
-    const byte bites = swing_marks_of[zox_swing_eat].count;
+    const byte bites = swings[zox_swing_eat].marks_count;
     const entity model = zox_valid(e) ? zox_get_link(world, e, ModelLink) : 0;
     const int palette = zox_valid(model) && zox_has(model, ColorRGBs) ? zox_get(model, ColorRGBs)->length : 0;
     zox_log("[tst] eat_swing: chewed [%u] bites of [%i], crumbs from [%i] colours", zox_eat_bites, bites, palette);

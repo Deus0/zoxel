@@ -8,6 +8,7 @@
  * +------------------------------------------------------+
  */
 #include "sha/_.c"
+#include "dat/_.c"
 #include "com/_.c"
 #include "set/_.c"
 #include "pre/_.c"

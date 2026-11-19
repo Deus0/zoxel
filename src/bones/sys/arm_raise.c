@@ -1,4 +1,4 @@
-// NOTE: Simply raises arm up, a punch reaches out on top of it with ik (bones/ik/sys/punch.c)
+// NOTE: Simply raises arm up, a punch reaches out on top of it with ik (bones/ik/sys/swing.c)
 void shoulder_raise_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
