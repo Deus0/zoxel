@@ -1,6 +1,8 @@
 // tst: navigator_inventory, the real inventory on a gamepad: paused, RB to it, its first icon selected
 //  - the tooltip: shown with its background (the label's frame, not only its text), its top right at the icon's
 //      bottom right (tooltip_navigated_system)
+//  - items moved round the grid (A picks up, the stick right, A places, stacks, swaps): each tooltip shows its
+//      icon's item, none on an empty slot (it kept the old item's)
 //  - the stick down past its last row steps into the action bar (another window, element_navigation_system)
 //  - run: bash bsh/tst.sh navigator_inventory
 // tst: coop_navigator, the same for split screen's second player (its viewport part way along the screen: its
@@ -18,10 +20,12 @@ byte zox_tst_navinv_opened = 0;
 byte zox_tst_navinv_actionbar = 0;
 char zox_tst_navinv_last[64] = "";
 
+int zox_tst_navinv_moves = 0;
 int zox_tst_navinv_tips = 0;            // tooltips looked at, every step
 int zox_tst_navinv_tips_bare = 0;       // their text without the background
 int zox_tst_navinv_tips_off = 0;        // not under their icon
-int zox_tst_navinv_tips_missing = 0;    // a ui with a tooltip, none shown
+int zox_tst_navinv_tips_missing = 0;
+int zox_tst_navinv_tips_stale = 0;     // showing another item, or one on an empty slot    // a ui with a tooltip, none shown
 
 // the selection's tooltip: shown, with its background, under it
 static inline void zox_tst_navinv_tip(ecs* world, entity canvas) {
@@ -34,6 +38,10 @@ static inline void zox_tst_navinv_tip(ecs* world, entity canvas) {
     // an empty slot has none
     const entity slot = zox_get_link(world, icon, SlotLink);
     if (!zox_valid(slot) || !zox_is_linked_any(world, slot, DataLink)) {
+        if (zox_get(tooltip, TextData)->length) {
+            zox_tst_navinv_tips_stale++;
+            zox_log("[tst] step [%i] [%s] is empty, its tooltip still shows", zox_tst_navinv_moves, zox_get_name(icon));
+        }
         return;
     }
     zox_tst_navinv_tips++;
@@ -49,6 +57,17 @@ static inline void zox_tst_navinv_tip(ecs* world, entity canvas) {
     const int4 b = get_element_pointer_bounds(world, &viewport, icon, zox_getv(icon, Position2), zox_getv(icon, LayoutSize));
     const int2 off = { t.y - b.y, t.w - b.z };
     const byte under = abs(off.x) <= 3 && off.y <= 0 && off.y >= -8;
+    char* shown = get_zext_text(text);
+    char expected[128];
+    item_icon_tooltip_text(world, icon, expected, sizeof(expected));
+    if (strcmp(shown, expected)) {
+        zox_tst_navinv_tips_stale++;
+        zox_log("[tst] step [%i] [%s]'s tooltip isn't its item's", zox_tst_navinv_moves, zox_get_name(icon));
+    }
+    zox_log("[tst] step [%i] [%s] tooltip [%s] size [%ix%i] disabled [%i] gpu [%i]", zox_tst_navinv_moves,
+        zox_get_name(icon), shown, zox_getv(tooltip, LayoutSize).x, zox_getv(tooltip, LayoutSize).y,
+        zox_getv(tooltip, RenderDisabled), zox_getv(tooltip, MeshGPULink).x);
+    free(shown);
     zox_tst_navinv_tips_bare += !background;
     zox_tst_navinv_tips_off += !under;
     if (!background || !under) {
@@ -153,6 +172,27 @@ byte zox_tst_navigator_inventory_ready(ecs* world) {
             }
             return 0;
         case 4:
+            zox_tst_waiting = "items moved round the grid: A picks up, the stick right, A places";
+            {
+                // 8 steps of 30 frames: A, right, right, A, A, right, A, right
+                static const char steps[] = "ArrAAArAr";
+                const int step = (f - 1) / 30, at = (f - 1) % 30;
+                if (step >= (int) sizeof(steps) - 1) {
+                    zox_tst_nav2_next();
+                    return 0;
+                }
+                if (steps[step] == 'A') {
+                    zox_tst_pad_held[zox_btn_a] = at >= 2 && at < 6;
+                } else {
+                    zox_tst_pad_stick = at >= 2 && at < 8 ? (float2) { -1, 0 } : float2_zero;
+                }
+                if (at == 25) {
+                    zox_tst_navinv_moves++;
+                    zox_tst_navinv_tip(world, canvas);
+                }
+                return 0;
+            }
+        case 5:
             zox_tst_waiting = "the stick down into the action bar";
             {
                 const int at = (f - 1) % 30;
@@ -170,7 +210,7 @@ byte zox_tst_navigator_inventory_ready(ecs* world) {
                 }
                 return f > 30 * 10;
             }
-        case 5:
+        case 6:
             zox_tst_waiting = "the stick along the action bar";
             {
                 const int at = (f - 1) % 30;
@@ -197,6 +237,8 @@ void zox_tst_navigator_inventory_check(ecs* world) {
     zox_tst_check(zox_tst_navinv_tips >= 2, "only [%i] tooltips looked at", zox_tst_navinv_tips);
     zox_tst_check(!zox_tst_navinv_tips_missing, "[%i] uis navigated to showed no tooltip", zox_tst_navinv_tips_missing);
     zox_tst_check(!zox_tst_navinv_tips_bare, "[%i] tooltips showed their text without the background", zox_tst_navinv_tips_bare);
+    zox_tst_check(!zox_tst_navinv_tips_stale, "[%i] tooltips showed another item than their icon's (or one on an empty slot)",
+        zox_tst_navinv_tips_stale);
     zox_tst_check(!zox_tst_navinv_tips_off, "[%i] tooltips weren't under their ui", zox_tst_navinv_tips_off);
     zox_tst_check(zox_tst_navinv_actionbar, "the stick down from the inventory never reached the action bar, last in [%s]",
         zox_tst_navinv_last);
