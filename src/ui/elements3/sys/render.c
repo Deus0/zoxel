@@ -57,13 +57,15 @@ void canvas3_render_system(iter* it) {
                 return;
             }
         }
+        float4x4 turn_matrix;
+        const float4x4* turn = element3_billboard_turn(world, e, &turn_matrix) ? &turn_matrix : NULL;
         element3_draw_pass(attributes, 0);
         for (int a = 0; a < count; a++) {
-            element3_draw(world, elements[a], attributes);
+            element3_draw(world, elements[a], attributes, turn);
         }
         element3_draw_pass(attributes, 1);
         for (int a = 0; a < count; a++) {
-            element3_draw(world, elements[a], attributes);
+            element3_draw(world, elements[a], attributes, turn);
         }
     }
     if (attributes) {

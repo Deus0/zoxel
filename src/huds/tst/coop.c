@@ -188,12 +188,65 @@ void zox_tst_coop_saves_check(ecs* world) {
     }
 }
 
+// tst: coop_billboards, split screen: a 3D ui faces each camera that draws it, not only the closest one
+//  - billboard_system turns it to the closest camera; each camera's draw turns it on to face itself (element3_draw)
+//  - the test level, a canvas between the players, the second camera turned a quarter round
+//  - for each camera, the matrix it draws the canvas's frame with: facing as the camera does, at the same place
+//  - run: bash bsh/tst.sh coop_billboards
+entity zox_tst_coop_billboard = 0;
+entity zox_tst_coop_billboard_frame = 0;
+
+byte zox_tst_coop_billboards_ready(ecs* world) {
+    if (!zox_tst_coop_playing(world) || main_cameras_count < 2) {
+        return 0;
+    }
+    if (!zox_tst_coop_billboard) {
+        const float3 a = zox_getv(main_cameras[0], Position3D);
+        const float3 b = zox_getv(main_cameras[1], Position3D);
+        const float3 at = float3_add(float3_scale(float3_add(a, b), 0.5f), (float3) { 0, 1, 0 });
+        zox_tst_coop_billboard = spawn_canvas3(world, prefab_canvas3, at, 2, int2_single(64));
+        zox_tst_coop_billboard_frame = spawn_element3(world, prefab_frame3, zox_tst_coop_billboard, float2_centre,
+            int2_zero, int2_single(64));
+        zox_tst_coop_frames = 0;
+    }
+    zox_tst_waiting = "the billboard to turn";
+    return ++zox_tst_coop_frames >= 20;
+}
+
+void zox_tst_coop_billboards_check(ecs* world) {
+    const entity canvas = zox_tst_coop_billboard, frame = zox_tst_coop_billboard_frame;
+    zox_tst_check(zox_valid(canvas) && zox_valid(frame), "no billboard");
+    if (!zox_valid(canvas) || !zox_valid(frame)) {
+        return;
+    }
+    // the second camera looks another way (the players turned apart), until the next frame turns it back
+    zox_setv(main_cameras[1], Rotation3D, quaternion_from_euler((float3) { 0, degrees_to_radians * 90, 0 }));
+    const entity was = renderer_camera;
+    const float4x4 built = zox_getv(frame, TransformMatrix);
+    for (int i = 0; i < 2; i++) {
+        renderer_camera = main_cameras[i];
+        float4x4 turn;
+        const float4x4 model = element3_billboard_turn(world, canvas, &turn) ? float4x4_multiply(built, turn) : built;
+        const float4x4 facing = float4x4_rotation(zox_getv(main_cameras[i], Rotation3D));
+        const float3 forward = float3_normalize((float3) { model.z.x, model.z.y, model.z.z });
+        const float3 expected = float3_normalize((float3) { facing.z.x, facing.z.y, facing.z.z });
+        const float moved = float3_distance((float3) { model.w.x, model.w.y, model.w.z }, (float3) { built.w.x, built.w.y, built.w.z });
+        zox_log("[tst] camera [%i] draws it facing [%.2fx%.2fx%.2f], it faces [%.2fx%.2fx%.2f], moved [%.3f]", i + 1,
+            forward.x, forward.y, forward.z, expected.x, expected.y, expected.z, moved);
+        zox_tst_check(float3_distance(forward, expected) < 0.01f, "camera [%i] draws the billboard facing another way", i + 1);
+        zox_tst_check(moved < 0.01f, "camera [%i] draws the billboard [%.3f] from where it is", i + 1, moved);
+    }
+    renderer_camera = was;
+}
+
 void zox_tsts_coop(ecs* world) {
     (void) world;
     zox_tst_add("coop_skybox", zox_tst_coop_skybox_ready, zox_tst_coop_skybox_check, 120);
     zox_tst_set_setup("coop_skybox", zox_tst_coop_level_setup, 0);
     zox_tst_add("coop_homes", zox_tst_coop_homes_ready, zox_tst_coop_homes_check, 150);
     zox_tst_set_setup("coop_homes", zox_tst_coop_setup, 0);
+    zox_tst_add("coop_billboards", zox_tst_coop_billboards_ready, zox_tst_coop_billboards_check, 120);
+    zox_tst_set_setup("coop_billboards", zox_tst_coop_level_setup, 0);
     zox_tst_add("coop_saves", zox_tst_coop_saves_ready, zox_tst_coop_saves_check, 120);
     zox_tst_set_setup("coop_saves", zox_tst_coop_level_setup, 0);
 }

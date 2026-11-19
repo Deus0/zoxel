@@ -18,8 +18,24 @@ const MaterialTextured3D* element3_draw_begin(ecs* world) {
     return attributes;
 }
 
-// one element, if it's shown and on the gpu
-void element3_draw(ecs* world, entity e, const MaterialTextured3D* attributes) {
+// a billboard turned from the camera it faces (billboard_system, the closest) to the one drawing it (split screen):
+//  its world back into its frame, then out with this camera's rotation; 0 if it faces this one already
+static inline byte element3_billboard_turn(ecs* world, entity canvas, float4x4* turn) {
+    if (!zox_has(canvas, ElementBillboard) || !zox_valid(renderer_camera) || !zox_has(renderer_camera, Rotation3D)) {
+        return 0;
+    }
+    const float4 built = zox_getv(canvas, Rotation3D);
+    const float4 camera = zox_getv(renderer_camera, Rotation3D);
+    if (float4_equals(built, camera)) {
+        return 0;
+    }
+    const float3 position = zox_getv(canvas, Position3D);
+    *turn = float4x4_multiply(float4x4_inverse(float4x4_transform(position, built)), float4x4_transform(position, camera));
+    return 1;
+}
+
+// one element, if it's shown and on the gpu; turn: a billboard's, to face this camera (NULL none)
+void element3_draw(ecs* world, entity e, const MaterialTextured3D* attributes, const float4x4* turn) {
     if (zox_getv(e, RenderDisabled)) {
         return;
     }
@@ -30,7 +46,11 @@ void element3_draw(ecs* world, entity e, const MaterialTextured3D* attributes) {
     if (!mesh_x || !mesh_y || !uvs || !colors) {
         return;
     }
-    zox_gpu_float4x4(attributes->mvp_matrix, float4x4_multiply(zox_getv(e, TransformMatrix), render_camera_matrix));
+    float4x4 model = zox_getv(e, TransformMatrix);
+    if (turn) {
+        model = float4x4_multiply(model, *turn);
+    }
+    zox_gpu_float4x4(attributes->mvp_matrix, float4x4_multiply(model, render_camera_matrix));
     // its own brightness (a selected icon brighter: SelectedBrighter, as a 2D one's) on all of theirs
     const float brightness = zox_has(e, Brightness) ? zox_getv(e, Brightness) : 1;
     zox_gpu_float(attributes->brightness, element3_brightness * brightness);
