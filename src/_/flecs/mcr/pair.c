@@ -177,8 +177,17 @@ static inline void zox_set_link_internal(
 {
     if (target && zox_valid(target)) {
         ecs_add_pair(world, e, relation, target);
-    } else {
-        ecs_remove_pair(world, e, relation, EcsWildcard);
+        return;
+    }
+    // each target it has, not (relation, *): a deferred wildcard remove asserted in flecs' override check (a gamepad
+    //  picking an item up, its icon's DataLink cleared: tst navigator_inventory)
+    entity olds[8];
+    int count = 0;
+    for (entity old; count < 8 && (old = ecs_get_target(world, e, relation, count)); count++) {
+        olds[count] = old;
+    }
+    for (int i = 0; i < count; i++) {
+        ecs_remove_pair(world, e, relation, olds[i]);
     }
 }
 
