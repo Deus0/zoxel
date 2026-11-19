@@ -278,6 +278,7 @@ void zox_tst_screenshot_check(ecs* world) {
 #include "touch_play.c"
 #include "coop_continue.c"
 #include "navigator_inventory.c"
+#include "gamepad_reconnect.c"
 #include "touch_actions.c"
 
 void zox_tsts_controllers(ecs* world) {
@@ -290,6 +291,8 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_set_setup("continue_game", zox_tst_load_games_setup, 1);
     zox_tst_add("navigator_inventory", zox_tst_navigator_inventory_ready, zox_tst_navigator_inventory_check, 120);
     zox_tst_set_setup("navigator_inventory", zox_tst_level_setup, 0);
+    zox_tst_add("coop_gamepad_reconnect", zox_tst_coop_gamepad_reconnect_ready, zox_tst_coop_gamepad_reconnect_check, 90);
+    zox_tst_set_setup("coop_gamepad_reconnect", zox_tst_coop_level_setup, 0);
     zox_tst_add("coop_navigator", zox_tst_navigator_inventory_ready, zox_tst_navigator_inventory_check, 120);
     zox_tst_set_setup("coop_navigator", zox_tst_coop_navigator_setup, 0);
     zox_tst_add("coop_continue", zox_tst_coop_continue_ready, zox_tst_coop_continue_check, 120);
