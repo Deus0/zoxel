@@ -15,11 +15,13 @@ void gpu_restore_rendering2(ecs* world) {
         const MaterialGPULink* material = zox_get(e, MaterialGPULink);
         MaterialVignette* vignette = zox_get_mut(e, MaterialVignette);
         MaterialTint* tint = zox_get_mut(e, MaterialTint);
-        if (!material || !material->value || !vignette || !tint) continue;
+        MaterialLids* lids = zox_get_mut(e, MaterialLids);
+        if (!material || !material->value || !vignette || !tint || !lids) continue;
         zox_each_o(MaterialBlur, blur);
         blur->value = zox_gpu_get_material_property(material->value, "blur");
         vignette->value = zox_gpu_get_material_property(material->value, "vignette");
         tint->value = zox_gpu_get_material_property(material->value, "tint");
+        lids->value = zox_gpu_get_material_property(material->value, "lids");
     zox_each_end();
 }
 

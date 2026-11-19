@@ -5,6 +5,7 @@ uniform sampler2D zexture;
 uniform float blur;
 uniform float vignette;
 uniform float tint;     // under water, 0 to 1: deep blue
+uniform float lids;     // the eyes closing, 0 open to 1 shut
 out vec3 frag_color;
 
 // === constants ===
@@ -69,6 +70,17 @@ void main() {
     float vignette_smoothness = 0.8;
     float vignette_mask = smoothstep(1.0 - vignette_smoothness, 1.0, length(uv - vec2(0.5, 0.5)));
     frag_color *= 1.0 - vignette_mask * (vignette);
+
+    // Eyelids: dark from the top (0.6 of the way) and the bottom (0.4), the middle first (as xr/fun/eye_render.c)
+    if (lids > 0.0) {
+        float u = uv.x * 2.0 - 1.0;
+        float bulge = 1.0 + 0.35 * (1.0 - u * u);
+        float top = min(1.0, 0.6 * lids * bulge);
+        float bottom = min(1.0, 0.4 * lids * bulge);
+        float edge = 0.015;
+        float lid = max(smoothstep(1.0 - top - edge, 1.0 - top, uv.y), 1.0 - smoothstep(bottom, bottom + edge, uv.y));
+        frag_color *= lids >= 1.0 ? 0.0 : 1.0 - lid;
+    }
 
     // Apply Properties
     frag_color *= brightness;

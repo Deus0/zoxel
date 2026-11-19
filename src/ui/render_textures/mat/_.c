@@ -29,6 +29,7 @@ entity spawn_material_render_texture(ecs* world, byte is_alpha) {
     zox_link(world, e, ShaderLink, shader);
     zox_setv(e, CameraBlur, 0);
     zox_setv(e, CameraTint, 0);
+    zox_setv(e, CameraLids, 0);
     // Set material properties
     attributes_matrixui base_attributes = create_attributes_matrixui(material_id);
     zox_set_data(e, attributes_matrixui, base_attributes);
@@ -38,6 +39,8 @@ entity spawn_material_render_texture(ecs* world, byte is_alpha) {
         zox_gpu_get_material_property(material_id, "vignette"));
     zox_setv(e, MaterialTint,
         zox_gpu_get_material_property(material_id, "tint"));
+    zox_setv(e, MaterialLids,
+        zox_gpu_get_material_property(material_id, "lids"));
     return e;
 }
 

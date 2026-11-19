@@ -47,7 +47,8 @@ static void xr_eye_lids(float2 position, float2 size, float closure, byte flip_y
 
 void xr_render_eye(ecs* world, float4x4 eye, float4 fov, float4x4 body, float2 viewport_position, float2 viewport_size, byte flip_y) {
     zox_gpu_set_viewport(viewport_position, viewport_size);
-    const float closure = huds3_darkness;
+    // loading's (huds3_darkness), or the camera's own (CameraLids: sleeping)
+    const float closure = float_max(huds3_darkness, zox_valid(xr_camera) && zox_has(xr_camera, CameraLids) ? zox_getv(xr_camera, CameraLids) : 0);
     const byte shut = closure >= 1;
     const color clear = shut ? (color) { 0, 0, 0, 255 } : xr_clear_color;
     zox_gpu_set_clear_color(color_to_float4(clear));

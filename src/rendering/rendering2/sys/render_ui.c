@@ -119,6 +119,9 @@ void render_uis(ecs* world, ui_render_queue* uis) {
                 if (zox_has(material, MaterialTint) && zox_has(material, CameraTint)) {
                     zox_gpu_float(zox_getv(material, MaterialTint), zox_getv(material, CameraTint));
                 }
+                if (zox_has(material, MaterialLids) && zox_has(material, CameraLids)) {
+                    zox_gpu_float(zox_getv(material, MaterialLids), zox_getv(material, CameraLids));
+                }
                 zox_gpu_enable_blend();
                 zox_gpu_enable_depth_test();
                 zox_gpu_set_depth_mask(0);

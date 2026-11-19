@@ -8,6 +8,7 @@ entity spawn_prefab_camera3D(ecs *world, entity prefab) {
         zox_setv(e, CameraBlur, main_menu_blur);
         zox_setv(e, CameraVignette, main_menu_vignette);
         zox_setv(e, CameraTint, 0);
+        zox_setv(e, CameraLids, 0);
     }
     return e;
 }

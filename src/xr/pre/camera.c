@@ -11,5 +11,6 @@ entity spawn_prefab_xr_camera(ecs* world) {
     prefab_add_raycasts3D(world, e);    // the player's voxel raycasts start from it
     zox_add(e, BiomeLinker);
     zox_setv(e, FieldOfViewAngles, xr_cull_angles_default);    // its eyes' views, set each frame (fun/cull.c)
+    zox_setv(e, CameraLids, 0);                 // its eyes closing (eye_render.c: lids over each eye)
     return e;
 }
