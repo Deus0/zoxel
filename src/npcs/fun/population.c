@@ -26,10 +26,12 @@ static inline float population_town_share(int population) {
     return fminf(1, (float) (population - population_base) / (population_town - population_base));
 }
 
-// a character type's spawn weight in a chunk: villagers fill towns, monsters keep to the wild, critters (animals) as
-//  anywhere
-//  - the wild rolls as each type's SpawnChance, a town mostly villagers (a few monsters wander in)
-#define population_villager_boost 40.0f    // villagers weigh this many times more in a town
+// a character type's spawn weight in a chunk: villagers and critters (animals) busy towns, monsters keep to the wild
+//  - the wild rolls as each type's SpawnChance, a town villagers and critters (farm animals, pets), a few monsters
+//  - in the zoxel realm a town is about a third villagers, two thirds critters (it was two thirds villagers, towns
+//      felt too full of humanoids and short of animals, 2026-11-19)
+#define population_villager_boost 20.0f    // villagers weigh this many times more in a town (1 + it)
+#define population_critter_boost 1.0f      // critters weigh this many times more in a town (1 + it)
 #define population_monsters_in_town 0.1f   // monsters weigh this much in a town
 static inline float npc_spawn_weight(byte chance, byte villager, byte monster, float town) {
     if (villager) {
@@ -38,7 +40,7 @@ static inline float npc_spawn_weight(byte chance, byte villager, byte monster, f
     if (monster) {
         return chance * (1 - town * (1 - population_monsters_in_town));
     }
-    return chance;
+    return chance * (1 + town * population_critter_boost);
 }
 
 // a region's cells along a side: its blocks over a chunk's
