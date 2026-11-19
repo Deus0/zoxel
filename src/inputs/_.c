@@ -18,6 +18,9 @@
  * */
 const float bumper_button_cutoff = 0.98f;
 const float joystick_min_cutoff = 0.08f;
+// a stick's dead zone, round (of its length, 0 to 1): an old xbox controller's sticks rest a fifth off the middle (they
+//  drifted with 0.08 an axis), past it scaled from 0 so it doesn't jump (stick_deadzone)
+float gamepad_stick_deadzone = 0.2f;
 #include "set/_.c"
 #include "dat/_.c"
 #include "com/_.c"

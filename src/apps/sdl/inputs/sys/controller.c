@@ -19,11 +19,7 @@ float get_gamepad_axis_raw(
     byte dbg_log)
 {
     Sint16 raw_value = sdl_get_gamepad_axis(controller, axis);
-    // raw_value = apply_joystick_deadzone(axis, raw_value);
     float value = raw_value / 32768.0f;
-    if (float_abs(value) <= joystick_min_cutoff) {
-        value = 0.0f;
-    }
     if (value > 1) {
         value = 1;
     }
@@ -44,14 +40,10 @@ byte get_gamepad_axis(
     byte dbg_log)
 {
     float2 previous_value = stick->value;
-    stick->value.x = -get_gamepad_axis_raw(
-        controller,
-        axis_x,
-        dbg_log);
-    stick->value.y = -get_gamepad_axis_raw(
-        controller,
-        axis_y,
-        dbg_log);
+    const float2 raw = {
+        -get_gamepad_axis_raw(controller, axis_x, dbg_log),
+        -get_gamepad_axis_raw(controller, axis_y, dbg_log) };
+    stick->value = stick_deadzone(raw, gamepad_stick_deadzone);
     if (stick->value.x || stick->value.y) {
         //float_abs(stick->value.x) > stick_cutoff ||
         //float_abs(stick->value.y) > stick_cutoff) {
