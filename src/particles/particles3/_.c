@@ -16,6 +16,7 @@ zox_tag(Particle3DEmitter);
 #include "pre/_.c"
 #include "fun/debug.c"
 #include "fun/spawn.c"
+#include "fun/burst.c"
 #include "sys/_.c"
 #include "dbg/_.c"
 

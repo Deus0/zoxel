@@ -1,7 +1,6 @@
 #include "drops.c"
 #include "activate.c"
 #include "swing.c"
-#include "chew.c"
 #include "consume.c"
 #include "character.c"
 #include "death.c"
@@ -29,22 +28,14 @@ void zox_systems_items(ecs* world) {
         [in] characters.GenerateCharacter,
         [none] characters.Character,
     );
-    // an item's warmup starts its user's swing: a block's place, food's eating
+    // an item's warmup starts its user's swing: a block's place, food's eating (main thread, zoxp_spawn)
     zox_system_1(
         item_swing_system,
-        zoxp_update,
+        zoxp_spawn,
         [in] timers.WarmupAt,
         [in] timers.WarmupTime,
         [in] timers.CooldownTime,
         [in] items.Quantity
-    );
-    // eating chews: munches and crumbs at the mouth
-    zox_system_1(
-        eat_chew_system,
-        zoxp_update,
-        [in] timers.CooldownAt,
-        [in] timers.CooldownTime,
-        [none] ItemConsumable
     );
     // NOTE: Timing issues due to Queue Clearing
     zox_system_1(

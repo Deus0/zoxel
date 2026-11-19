@@ -21,10 +21,10 @@ void zox_systems_skills(ecs *world) {
         [in] skills.SkillDamage,
         [none] skills.Dot
     );
-    // a melee warmup starts its user's swing (the wind up before the hit)
+    // a melee warmup starts its user's swing (the wind up before the hit), with the main thread ones (zoxp_spawn)
     zox_system_1(
         melee_swing_system,
-        zoxp_update,
+        zoxp_spawn,
         [in] timers.WarmupAt,
         [in] timers.WarmupTime,
         [in] timers.CooldownTime,

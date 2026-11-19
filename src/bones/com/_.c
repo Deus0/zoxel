@@ -24,6 +24,7 @@ zoxc_byte(WalkSpeed);
 zoxc_double(SwingStart);
 zoxc_float(SwingSpeed);
 zoxc_byte(SwingKind);       // the swing SwingStart starts: zox_swing_punch, zox_swing_place, zox_swing_eat
+zoxc_byte(SwingMark);       // the mark a swing just passed (1 its first: a punch's hit, a bite): set as it passes, observers react
 zoxc_float3(SwingTarget);   // the point in the world a swing is at (a place's block: the head turns to it), zero none
 zoxc_float(SpineTwist);     // the upper body turned about its up, radians (a punch turning into its strike)
 zoxc_float(SpineTwistHead); // the twist the head was turned back by, last set (its look holds, ik/sys/spine.c)
@@ -58,6 +59,7 @@ void zox_components_bones(ecs* world) {
     zoxd_float(SwingSpeed);
     zoxd_byte(SwingKind);
     zoxd_float3(SwingTarget);
+    zoxd_byte(SwingMark);
     zoxd_float(SpineTwist);
     zoxd_float(SpineTwistHead);
     zoxd_entity(LookTarget);

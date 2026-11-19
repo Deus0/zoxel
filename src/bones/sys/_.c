@@ -3,6 +3,7 @@
 #include "bone_render.c"
 #include "head_bob.c"
 #include "head_look.c"
+#include "swing_mark.c"
 #include "init.c"
 #include "arm_control.c"
 #include "arm_swing.c"
@@ -28,6 +29,16 @@ void zox_systems_bones(ecs *world) {
         [out] rendering.MeshColorRGBs,
         [none] rendering3.SkeletonMesh,
         [none] rendering.BuildMesh,
+    );
+    // a swing passing its marks sets SwingMark (main thread: observers react, spawning sounds and particles); in the
+    //  spawn phase with the other main thread ones (in update its sync point split the threaded ones, tst bone_rebuild)
+    zox_system_1(
+        swing_mark_system,
+        zoxp_spawn,
+        [in] SwingStart,
+        [in] SwingSpeed,
+        [in] SwingKind,
+        [none] Skeleton
     );
     zox_system(
         head_look_system,
