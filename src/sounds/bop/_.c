@@ -5,6 +5,7 @@
 #include "violin.c"
 #include "ambient.c"
 #include "impacts.c"
+#include "synths.c"
 #include "instruments.c"
 #include "voice.c"
 #include "hits.c"

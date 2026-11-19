@@ -189,7 +189,11 @@ void zox_tst_sound_instruments_check(ecs* world) {
             instrument == instrument_harp ||
             instrument == instrument_music_box ||
             instrument == instrument_cello ||
-            instrument == instrument_choir;
+            instrument == instrument_choir ||
+            instrument == instrument_synth_pad ||
+            instrument == instrument_synth_glass ||
+            instrument == instrument_synth_bass ||
+            instrument == instrument_synth_lead;
         if (is_pitched) {
             const float pitch = zox_tst_instrument_pitch(samples, length, expected);
             zox_tst_check(fabsf(pitch - expected) / expected < 0.04f, "[%s] sounds at [%.1f] hz, expected [%.1f]", name, pitch, expected);

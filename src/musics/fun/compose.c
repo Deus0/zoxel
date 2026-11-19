@@ -17,7 +17,7 @@
 #define song_voice_pad 3
 #define song_motif_steps 16         // two bars
 #define song_max_motifs 4
-#define song_max_events 2048
+#define song_max_events 3072     // the menu theme's echoes take the most
 #define song_max_note_seconds 2.8f   // a sound's longest (MAX_SOUND_DATA)
 
 #define song_role_intro 0
@@ -268,6 +268,19 @@ static inline void song_add_event(Song* song, float start, float seconds, int no
         (byte) note, instrument, voice, volume };
 }
 
+// puts the events in order of start (an insertion sort, they're nearly sorted already)
+void song_sort_events(Song* song) {
+    for (uint i = 1; i < song->events_count; i++) {
+        const SongEvent event = song->events[i];
+        int j = (int) i - 1;
+        while (j >= 0 && song->events[j].start > event.start) {
+            song->events[j + 1] = song->events[j];
+            j--;
+        }
+        song->events[j + 1] = event;
+    }
+}
+
 // plays the composed grid like a player would, into timed notes (events)
 //  - a few milliseconds loose and a touch louder or softer, the first note right on time
 //  - a third of songs swing: off beats a little late
@@ -313,16 +326,7 @@ void perform_song(uint* rng, Song* song) {
             }
         }
     }
-    // in order of start (nearly sorted already, graces and strums move a little)
-    for (uint i = 1; i < song->events_count; i++) {
-        const SongEvent event = song->events[i];
-        int j = (int) i - 1;
-        while (j >= 0 && song->events[j].start > event.start) {
-            song->events[j + 1] = song->events[j];
-            j--;
-        }
-        song->events[j + 1] = event;
-    }
+    song_sort_events(song);
     song->seconds = song->steps_count * step_seconds;
 }
 

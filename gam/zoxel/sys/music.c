@@ -31,27 +31,19 @@ void music_realm_spawn_system(iter* it) {
     zox_sys_on_end();
 } zoxd_system(music_realm_spawn_system);
 
-// The main menu's music, on the game: the imported song (res/music, make convert), or a
-// generated one if it won't load, it crossfades with the realm's music (crossfade_music)
+// The main menu's music, on the game: the synth theme (compose_menu_theme), a new one each boot, or the
+// imported song (res/music, make convert) with menu_music_from_file, it crossfades with the realm's music
 void spawn_menu_music(ecs* world, entity app) {
     const entity game = zox_valid(app) ? zox_get_child_by_id(world, app, zox_id(Game)) : 0;
     if (!zox_valid(game)) {
         zox_loge("[spawn_menu_music] Invalid [game]");
         return;
     }
-    entity music = load_music_file(
-        world,
-        prefab_music_file,
-        prefab_note,
-        music_file_path);
+    entity music = menu_music_from_file ? load_music_file(world, prefab_music_file, prefab_note, music_file_path) : 0;
     if (!music) {
-        zox_loge("File Loading Failed [%s]", music_file_path);
-        music = spawn_music_generated(
-            world,
-            prefab_music_generated,
-            13666,
-            instrument_harp,
-            (float2) { 0.3f, 0.5f });
+        music = spawn_music_generated(world, prefab_music_generated, menu_theme_seed(), instrument_synth_lead,
+            (float2) { 0.2f, 0.2f });
+        zox_add(music, MenuTheme);
     }
     zox_set_parent(world, music, game);
     zox_set_link(world, game, MenuMusicLink, music);

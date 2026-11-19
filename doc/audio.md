@@ -59,6 +59,24 @@ spawn_sound_effect(world, sound_effect_click, 0);          // ui, in the middle
 - Spiky instruments (violin) hit their clip limit before they get loud. Fuller ones (square piano, flute,
   guitar, edm) carry better.
 
+## Synths
+
+[src/sounds/bop/synths.c](../src/sounds/bop/synths.c)
+
+Analog style instruments, written as whole notes (`instrument_note_function`): they keep oscillator phases and a
+filter's state through the note.
+
+| Instrument | Sound |
+|---|---|
+| `instrument_synth_pad` | three detuned saws, a filter slowly opening as it swells |
+| `instrument_synth_glass` | a struck fm tone, bright then a pure ring, for arpeggios |
+| `instrument_synth_bass` | a saw and a sine, a resonant filter plucked open then closing |
+| `instrument_synth_lead` | a hollow pulse, its width moving, scooping into its note, vibrato fading in |
+| `instrument_synth_wind` | noise whistling through a narrow band at its note |
+
+- Saws and pulses are band limited (polyblep), the filter is a state variable one (`synth_filter`, low and band pass).
+- A pulse's offset from its width is taken off: it put the whole mix off centre.
+
 ## Voices
 
 [src/sounds/bop/voice.c](../src/sounds/bop/voice.c), [src/dialogues/fun/voice.c](../src/dialogues/fun/voice.c)
@@ -90,8 +108,24 @@ Short tunes for moments: `spawn_jingle(world, jingle_level_up)`. Level up, quest
 - A music's notes are its ordered children. Each note has a start (`NoteStart`, seconds) and a length.
 - `music_play_system` moves the playhead (`MusicTime`) and plays every note it passes, so chords and
   overlapping notes play as they come. It loops after `MusicLength`.
-- The main menu plays the imported song (`res/music`, made with `make convert`). The realm plays a
-  generated one, and they crossfade (`crossfade_music`).
+- The main menu plays its synth theme (below). The realm plays generated songs, and they crossfade
+  (`crossfade_music`). The imported song (`res/music`, made with `make convert`) is kept: `menu_music_from_file`.
+
+### The menu theme
+
+[src/musics/fun/theme.c](../src/musics/fun/theme.c)
+
+A slow, dark synth piece (a lone planet's title screen), new each boot and each return to the menu, the same at heart.
+
+- **The call**, two bars in every theme (`theme_call`): up a fifth, the octave, falling to a minor sixth that sinks
+  back. It's what you remember.
+- **From the seed**: the key, a dark mode (aeolian, phrygian, harmonic minor), the tempo, the chords under the call,
+  the answer (two bars, left open, then turning home), the arpeggio's pattern, the floor plan.
+- **Sections**: intro (wind, a pad, the arpeggio coming in), main (the lead's call and answer), echo (glass plays it
+  over a choir), rise (all of it, a pulsing bass, a choir under the lead, bells), outro (thinning out, home).
+- Bright notes echo a dotted eighth later, quieter, like a big empty room.
+- A music tagged `MenuTheme` is composed by `compose_menu_theme`, others by `compose_song`. `play_menu_music` gives
+  a stopped theme a new seed (`menu_theme_seed`), so it's recomposed as it fades in.
 
 ### Composing
 
@@ -126,6 +160,7 @@ swing on some seeds, a few milliseconds of looseness. The same seed always compo
 | `sound_instruments` | every instrument generates, writes `tst/instruments/*.wav` |
 | `voice_sounds` | syllables, voices from seeds, pitch, vowels, consonants, writes `tst/voices.wav` |
 | `music_compose` | 20 seeds: form, key, chords, performance, writes `tst/song.wav` |
+| `music_theme` | 20 menu themes: the call in each, keys, modes, forms and answers vary, as loud as the realm's song, writes `tst/menu_theme.wav` |
 | `music_timing` | notes play on their starts, chords together, looping |
 
 - Tests run `--background`, which closes the audio device: they stay silent even when they turn sounds on.

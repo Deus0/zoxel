@@ -27,5 +27,11 @@
 #define instrument_rustle 24     // leaves
 #define instrument_creak 25      // a door opening
 #define instrument_shut 26       // a door closing
-#define instrument_end 27
-#define instrument_piano_file 28   // the piano.wav sound file, re-pitched (not generated)
+// synths (bop/synths.c)
+#define instrument_synth_pad 27
+#define instrument_synth_glass 28
+#define instrument_synth_bass 29
+#define instrument_synth_lead 30
+#define instrument_synth_wind 31
+#define instrument_end 32
+#define instrument_piano_file 33   // the piano.wav sound file, re-pitched (not generated)

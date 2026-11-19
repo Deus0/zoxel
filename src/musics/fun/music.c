@@ -78,9 +78,19 @@ void crossfade_music(
     zox_set_link(world, holder, MusicPlayingLink, music);
 }
 
-// the game's main menu music
+// a seed for the menu theme, a new one each boot and each return to the menu
+static inline uint menu_theme_seed() {
+    return get_unique_time_seed() + (uint) rand();
+}
+
+// the game's main menu music, a stopped menu theme is composed anew (music_generate_system) as it fades in
 void play_menu_music(ecs* world, entity game) {
-    crossfade_music(world, game, zox_get_link(world, game, MenuMusicLink));
+    const entity music = zox_get_link(world, game, MenuMusicLink);
+    if (zox_valid(music) && zox_has(music, MenuTheme) && !zox_getv(music, MusicEnabled)) {
+        zox_setv(music, Seed, menu_theme_seed());
+        zox_setv(music, GenerateMusic, 1);
+    }
+    crossfade_music(world, game, music);
 }
 
 // a track of the realm's in game music (its first playlist's): 0 the overworld, 1 in towns (gam/zoxel/sys/music.c),

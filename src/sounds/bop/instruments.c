@@ -13,7 +13,7 @@ typedef struct {
     float attack;       // seconds (0: the shared sound_attack_multiplier, of the length)
     float release;      // of the length, fades out at the end (0: the shared dampen)
     byte normalize;
-    instrument_note_function note;  // optional, used over sound for whole notes
+    instrument_note_function note;  // optional, used over sound for whole notes (synths have only this, and an attack)
 } InstrumentData;
 
 const InstrumentData instruments[instrument_end] = {
@@ -43,10 +43,15 @@ const InstrumentData instruments[instrument_end] = {
     [instrument_rustle] = { "rustle", rustle_sound, 0.02f, 0.3f, 1 },
     [instrument_creak] = { "creak", creak_sound, 0.03f, 0.3f, 1 },
     [instrument_shut] = { "shut", shut_sound, 0.001f, 0.4f, 1 },
+    [instrument_synth_pad] = { "synth_pad", NULL, 0.6f, 0.4f, 1, synth_pad_note },
+    [instrument_synth_glass] = { "synth_glass", NULL, 0.002f, 0.15f, 1, synth_glass_note },
+    [instrument_synth_bass] = { "synth_bass", NULL, 0.006f, 0.2f, 1, synth_bass_note },
+    [instrument_synth_lead] = { "synth_lead", NULL, 0.04f, 0.25f, 1, synth_lead_note },
+    [instrument_synth_wind] = { "synth_wind", NULL, 0.8f, 0.45f, 1, synth_wind_note },
 };
 
 static inline byte is_instrument(byte instrument) {
-    return instrument > instrument_none && instrument < instrument_end && instruments[instrument].sound;
+    return instrument > instrument_none && instrument < instrument_end && (instruments[instrument].sound || instruments[instrument].note);
 }
 
 // fills samples (mono, sound_sample_rate) with a note, returns 0 for an unknown instrument

@@ -509,6 +509,8 @@ void zox_tst_sound_balance_check(ecs* world) {
     free(mix);
 }
 
+#include "theme.c"
+
 void zox_tsts_musics(ecs* world) {
     zox_tst_add("music_timing", zox_tst_music_timing_ready, zox_tst_music_timing_check, 30);
     zox_tst_set_setup("music_timing", NULL, 1);
@@ -516,6 +518,8 @@ void zox_tsts_musics(ecs* world) {
     zox_tst_set_setup("sound_balance", NULL, 1);
     zox_tst_add("music_compose", zox_tst_music_compose_ready, zox_tst_music_compose_check, 60);
     zox_tst_set_setup("music_compose", NULL, 1);
+    zox_tst_add("music_theme", zox_tst_music_theme_ready, zox_tst_music_theme_check, 90);
+    zox_tst_set_setup("music_theme", NULL, 1);
     zox_tst_add("music_file", zox_tst_music_file_ready, zox_tst_music_file_check, 30);
     zox_tst_set_setup("music_file", NULL, 1);
     zox_tst_add("music_plays", zox_tst_music_plays_ready, zox_tst_music_plays_check, 60);

@@ -1,6 +1,7 @@
 #include "music.c"
 #include "playlist.c"
 #include "compose.c"
+#include "theme.c"
 
 void process_arguments_musics(ecs *world, char* args[], int count) {
     (void) world;

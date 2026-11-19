@@ -8,6 +8,8 @@ byte nomusic = 0;
 byte is_log_playlists = 0;
 // instrument_piano_file | instrument_piano
 const byte music_load_instrument = instrument_piano_file;
+// the main menu plays the imported song (res/music) instead of the composed theme (fun/theme.c)
+const byte menu_music_from_file = 0;
 float global_music_speed = 1;
 const double music_fade_seconds = 1.5;   // crossfading between the menu and game musics
 const int music_note_skip = 89;

@@ -1,11 +1,12 @@
-// tst: music_crossfade, the main menu plays the imported song, it crossfades with the game's music
-//  - from boot the game plays its menu music, the imported song (not the generated fallback)
+// tst: music_crossfade, the main menu plays its theme, it crossfades with the game's music
+//  - from boot the game plays its menu music, the synth theme (compose_menu_theme)
 //  - starting a game crossfades to the realm's music: the menu music fades out and stops
-//  - ending the game crossfades back to the menu music
+//  - ending the game crossfades back to the menu music, the theme composed anew (a new seed, its notes again)
 //  - run: bash bsh/tst.sh music_crossfade
 int zox_tst_music_stage = 0;
 int zox_tst_music_frames = 0;
 double zox_tst_music_time = 0;
+lint zox_tst_music_seed = 0;
 
 static inline entity zox_tst_music_playing(ecs* world, entity game) {
     return zox_get_link(world, game, MusicPlayingLink);
@@ -45,8 +46,8 @@ byte zox_tst_music_crossfade_ready(ecs* world) {
                 return 0;
             }
             zox_tst_check(playing == menu_music, "the main menu plays [%s], not its menu music", zox_valid(playing) ? zox_getn(playing) : "nothing");
-            zox_tst_check(!zox_has(menu_music, GenerateMusic) || !zox_getv(menu_music, GenerateMusic),
-                "the menu music is the generated fallback, the imported song didn't load");
+            zox_tst_check(zox_has(menu_music, MenuTheme), "the menu music isn't the menu theme");
+            zox_tst_music_seed = zox_getv(menu_music, Seed);
             zox_tst_check(zox_get_children_count(world, menu_music) > 0, "the menu music has no notes");
             if (!zox_tst_menus_click(world, player, main_menu, &button_event_new_game, "new game")) {
                 return 1;
@@ -98,6 +99,9 @@ byte zox_tst_music_crossfade_ready(ecs* world) {
             if (playing != menu_music || !zox_tst_music_full(world, menu_music)) {
                 return 0;
             }
+            zox_tst_check(zox_getv(menu_music, Seed) != zox_tst_music_seed, "the menu theme came back with its old seed");
+            zox_tst_check(!zox_getv(menu_music, GenerateMusic) && zox_get_children_count(world, menu_music) > 0,
+                "the menu theme wasn't composed again");
             return 1;
         }
     }

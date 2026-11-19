@@ -1,4 +1,4 @@
-// Generates a music's notes from its seed (compose_song, like a dungeon from its seed)
+// Generates a music's notes from its seed (compose_song, like a dungeon from its seed, or compose_menu_theme)
 //  - its notes are the performed song's events, each with its own start and length (they overlap)
 //  - its lead instrument is the music's InstrumentType, it loops after the song's length
 void music_generate_system(iter* it) {
@@ -27,7 +27,11 @@ void music_generate_system(iter* it) {
             zox_delete(old_notes.value[j]);
         }
         static Song song;
-        compose_song((uint) seed->value, instrument->value, &song);
+        if (zox_has(e, MenuTheme)) {
+            compose_menu_theme((uint) seed->value, &song);
+        } else {
+            compose_song((uint) seed->value, instrument->value, &song);
+        }
         speed->value = song.step_seconds;
         zox_set(e, MusicLength, { song.seconds });
         zox_set(e, MusicTime, { 0 });
