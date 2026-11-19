@@ -1,6 +1,12 @@
 # Done
 
 ## 2026-11-20
+-x The game menus (Y, R; a touch button) apart from pause (Start, Escape): the game goes on in a player's own menus,
+  the first one opens for a gamepad or headset; the pause menu isn't a taskbar ui any more, its close resumes.
+  tst navigator, navigator_inventory, xr_navigator (Y on the simulator) rewritten for it
+-x Pause stops the game: a realm clock (doc/plans/realm_clock.md), ClockTime, ClockDelta, ClockScale and ClockLink,
+  the realm's scale 0 paused; terrains, characters and projectiles follow it, physics and collisions move by it.
+  tst realm_pause
 -x Npc hits didn't land on the player: an npc's ray pointed along its body's facing, which lagged a moving player, so
   every punch missed (tst npc_attacks, now with the player strafing). It aims at its attacker (RaycastAim)
 -x Start then RB on a gamepad crashed: the Character window's render texture read its new shader's gpu ids back while
