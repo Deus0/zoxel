@@ -2,11 +2,18 @@
 //  - the player's character lifted a few blocks and pushed sideways, then the game paused (Start, its GameStateTarget)
 //  - paused: the realm's ClockScale 0, the terrain's and the character's ClockDelta 0, the character where it was a
 //    second later (no fall, no slide)
+//  - paused, no npc moves (their ai and physics on the realm's clock)
 //  - resumed: its clock runs again, it falls
 //  - run: bash bsh/tst.sh realm_pause
 int zox_tst_rp_stage = 0;
 double zox_tst_rp_time = 0;
 float3 zox_tst_rp_at;
+#define zox_tst_rp_npcs_max 64
+entity zox_tst_rp_npcs[zox_tst_rp_npcs_max];
+float3 zox_tst_rp_npc_at[zox_tst_rp_npcs_max];
+int zox_tst_rp_npcs_count = 0;
+float zox_tst_rp_npc_moved = -1;    // the most an npc moved paused
+
 float zox_tst_rp_scale = -1, zox_tst_rp_terrain_delta = -1, zox_tst_rp_delta = -1, zox_tst_rp_moved = -1, zox_tst_rp_fell = -1;
 
 byte zox_tst_realm_pause_ready(ecs* world) {
@@ -39,6 +46,18 @@ byte zox_tst_realm_pause_ready(ecs* world) {
                 return t > 10;
             }
             zox_tst_rp_at = zox_getv(character, Position3D);
+            // the npcs (characters but the player's) where they are (wandering, attacking: their ai and physics on the realm's clock)
+            {
+                ecs_iter_t itn = ecs_each_id(world, zox_id(Character));
+                while (ecs_each_next(&itn)) {
+                    for (int j = 0; j < itn.count && zox_tst_rp_npcs_count < zox_tst_rp_npcs_max; j++) {
+                        if (itn.entities[j] != character && zox_has(itn.entities[j], Position3D)) {
+                            zox_tst_rp_npcs[zox_tst_rp_npcs_count] = itn.entities[j];
+                            zox_tst_rp_npc_at[zox_tst_rp_npcs_count++] = zox_getv(itn.entities[j], Position3D);
+                        }
+                    }
+                }
+            }
             zox_tst_rp_stage = 2;
             zox_tst_rp_time = zox_current_time;
             return 0;
@@ -51,6 +70,13 @@ byte zox_tst_realm_pause_ready(ecs* world) {
             zox_tst_rp_terrain_delta = zox_getv(terrain, ClockDelta);
             zox_tst_rp_delta = zox_getv(character, ClockDelta);
             zox_tst_rp_moved = float3_distance(zox_getv(character, Position3D), zox_tst_rp_at);
+            zox_tst_rp_npc_moved = 0;
+            for (int j = 0; j < zox_tst_rp_npcs_count; j++) {
+                if (zox_valid(zox_tst_rp_npcs[j])) {
+                    zox_tst_rp_npc_moved = float_max(zox_tst_rp_npc_moved,
+                        float3_distance(zox_getv(zox_tst_rp_npcs[j], Position3D), zox_tst_rp_npc_at[j]));
+                }
+            }
             zox_tst_rp_at = zox_getv(character, Position3D);
             zox_setv(game, GameStateTarget, zox_game_state_playing);
             zox_tst_rp_stage = 3;
@@ -75,6 +101,8 @@ void zox_tst_realm_pause_check(ecs* world) {
     zox_tst_check(zox_tst_rp_terrain_delta == 0, "paused, the terrain's clock moved [%.4f]", zox_tst_rp_terrain_delta);
     zox_tst_check(zox_tst_rp_delta == 0, "paused, the character's clock moved [%.4f]", zox_tst_rp_delta);
     zox_tst_check(zox_tst_rp_moved >= 0 && zox_tst_rp_moved < 0.001f, "paused, the character moved [%.4f]", zox_tst_rp_moved);
+    zox_log("[tst] realm_pause: [%i] npcs, the most one moved paused [%.4f]", zox_tst_rp_npcs_count, zox_tst_rp_npc_moved);
+    zox_tst_check(zox_tst_rp_npc_moved < 0.001f, "paused, an npc moved [%.4f]", zox_tst_rp_npc_moved);
     zox_tst_check(zox_tst_rp_fell > 0.01f, "resumed, the character didn't fall [%.3f]", zox_tst_rp_fell);
 }
 

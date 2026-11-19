@@ -1,6 +1,6 @@
 // an attacking npc picks its skill for its threat's distance (npc_choose_skill: punch close, shoot further) and uses
 //  it when its threat is in that skill's reach and in front of it, its beat uneven (AttackAt): a swing, a step back,
-//  a lunge in (attack_system), not a swing at the air every cooldown
+//  a lunge in (attack_system), not a swing at the air every cooldown; its beat on its clock (ClockTime: paused it waits)
 #define npc_attack_facing 0.5f          // its threat within 60 degrees of its facing
 #define npc_attack_beat_min 0.8         // seconds from a swing to the next, at least
 #define npc_attack_beat_max 1.6
@@ -16,6 +16,7 @@ void attack_trigger_system(iter* it) {
     zox_sys_in(Position3D);
     zox_sys_in(Rotation3D);
     zox_sys_out(AttackAt);
+    zox_sys_in(ClockTime);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Behaviour, behaviour);
@@ -25,6 +26,7 @@ void attack_trigger_system(iter* it) {
         zox_sys_i(Position3D, position);
         zox_sys_i(Rotation3D, rotation);
         zox_sys_o(AttackAt, attack_at);
+        zox_sys_i(ClockTime, now);
         if (behaviour->value != zox_behaviour_attack || trigger->value || dirty->value) {
             continue;
         }
@@ -41,7 +43,7 @@ void attack_trigger_system(iter* it) {
             dirty->value = 1;
             continue;
         }
-        if (!zox_valid(skill) || zox_current_time < attack_at->value) {
+        if (!zox_valid(skill) || now->value < attack_at->value) {
             continue;
         }
         const float2 reach = npc_skill_reach(world, e, skill);
@@ -51,7 +53,7 @@ void attack_trigger_system(iter* it) {
             continue;
         }
         trigger->value = zox_dirty_trigger;
-        attack_at->value = zox_current_time + randf_range(npc_attack_beat_min, npc_attack_beat_max);
+        attack_at->value = now->value + randf_range(npc_attack_beat_min, npc_attack_beat_max);
     }
     zox_sys_on_end();
 } zoxd_system(attack_trigger_system);

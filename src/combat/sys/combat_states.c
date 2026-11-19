@@ -1,11 +1,14 @@
 const double exit_combat_time = 15.0;
 
+// leaving battle exit_combat_time after its last exchange, on its clock (clock_time_of: paused it doesn't)
 void combat_state_system(iter* it) {
     zox_sys_on_begin();
+    zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LastCombatTime);
     zox_sys_out(CombatState);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(LastCombatTime, last_time);
         zox_sys_o(CombatState, state);
         if (state->value == zox_combat_trigger_battle) {
@@ -14,7 +17,7 @@ void combat_state_system(iter* it) {
             state->value = zox_combat_battle;
         } else if (state->value == zox_combat_battle) {
             double time_since_combat =
-                zox_current_time - last_time->value;
+                clock_time_of(world, e) - last_time->value;
             if (time_since_combat >= exit_combat_time) {
                 state->value = zox_combat_trigger_leaving;
             }

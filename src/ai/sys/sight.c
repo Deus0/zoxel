@@ -115,7 +115,7 @@ void monster_aggro_system(iter* it) {
         if (combat->value == zox_combat_peace) {
             combat_on_hit(world, e, sight->value);
         } else if (combat->value == zox_combat_battle && zox_get_link(world, e, AttackerLink) == sight->value) {
-            zox_setv(e, LastCombatTime, zox_current_time);
+            zox_setv(e, LastCombatTime, clock_time_of(world, e));
         }
     }
     zox_sys_on_end();

@@ -88,6 +88,7 @@ void zox_systems_npcs(ecs *world) {
         [in] ai.Behaviour,
         [in] transforms3.Position3D,
         [out] ai.TargetPosition,
+        [in] timing.ClockDelta,
         [none] ai.Npc,
         [none] !physics.DisableMovement,
     );
@@ -100,6 +101,7 @@ void zox_systems_npcs(ecs *world) {
         [in] ai.AttackAt,
         [in] actions.ActiveAction,
         [out] ai.MoveToBuffer,
+        [in] timing.ClockTime,
         [none] ai.Npc,
         [none] !physics.DisableMovement,
     );
@@ -113,6 +115,7 @@ void zox_systems_npcs(ecs *world) {
         [in] transforms3.Position3D,
         [in] transforms3.Rotation3D,
         [out] ai.AttackAt,
+        [in] timing.ClockTime,
         [none] ai.Npc,
         [none] !physics.DisableMovement,
     );
@@ -136,6 +139,7 @@ void zox_systems_npcs(ecs *world) {
         zoxp_physics,
         [in] jumps.CanJump,
         [out] jumps.JumpState,
+        [in] ?timing.ClockDelta,
         [none] ai.Jumper
     );
     zox_system(

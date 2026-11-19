@@ -17,6 +17,11 @@ static inline float clock_delta_of(ecs* world, entity e) {
     return delta;
 }
 
+// an entity's time: its clock's (ClockTime, stopped while its realm's paused), else the frame's
+static inline double clock_time_of(ecs* world, entity e) {
+    return zox_valid(e) && zox_has(e, ClockTime) ? zox_getv(e, ClockTime) : zox_current_time;
+}
+
 void clock_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();

@@ -18,6 +18,7 @@ void combat_on_hit(
         zox_setv(e, CombatState, zox_combat_trigger_battle);
     }
     // any exchanges we update their timer
-    zox_setv(e, LastCombatTime, zox_current_time);
-    zox_setv(attacker, LastCombatTime, zox_current_time);
+    // on their clocks (ClockTime: paused it doesn't run out)
+    zox_setv(e, LastCombatTime, clock_time_of(world, e));
+    zox_setv(attacker, LastCombatTime, clock_time_of(world, attacker));
 }

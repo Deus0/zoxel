@@ -15,6 +15,7 @@ void attack_system(iter* it) {
     zox_sys_in(AttackAt);
     zox_sys_in(ActiveAction);
     zox_sys_out(MoveToBuffer);
+    zox_sys_in(ClockTime);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Behaviour, behaviour);
@@ -23,6 +24,7 @@ void attack_system(iter* it) {
         zox_sys_i(AttackAt, attack_at);
         zox_sys_i(ActiveAction, action);
         zox_sys_o(MoveToBuffer, buffer);
+        zox_sys_i(ClockTime, now);
         if (behaviour->value != zox_behaviour_attack) {
             if (zox_has(e, RaycastAim)) {
                 zox_remove(e, RaycastAim);
@@ -39,7 +41,7 @@ void attack_system(iter* it) {
         if (reach.x > 0) {
             buffer->value = 0.5f * (reach.x + reach.y);
             target->value = threat;
-        } else if (zox_current_time < attack_at->value - npc_attack_lunge) {
+        } else if (now->value < attack_at->value - npc_attack_lunge) {
             buffer->value = default_npc_follow_distance;
             // back and to its side (each npc its own, by its id), it circles as it backs off
             float3 away = float3_subtract(position->value, threat);

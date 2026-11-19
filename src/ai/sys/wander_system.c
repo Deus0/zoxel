@@ -1,26 +1,28 @@
 // an npc wandering: its heading (to its TargetPosition, set wander_length ahead each frame) turned a little at random,
 //  its target set ahead along it again; past its leash it heads home
+//  - by its clock (ClockDelta, its realm's): paused it doesn't turn
 void wander_system(iter* it) {
     zox_sys_on_begin();
-    init_delta_time()
     const float wander_length    = 5.0f;  // units per second
     const float vertical_bias   = 0.0f;   // how much to allow vertical wandering (usually 0 in flatland)
-    const float jitter_power    = 15 * delta_time;   // chaos factor
     const float leash = 12.0f;          // units from home before it turns back (no pathing yet, it walks straight)
     zox_sys_world()
     zox_sys_begin()
     zox_sys_in(Behaviour)
     zox_sys_in(Position3D)
     zox_sys_out(TargetPosition)
+    zox_sys_in(ClockDelta)
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Behaviour, behaviour)
         zox_sys_i(Position3D, position)
         zox_sys_o(TargetPosition, target)
-        // only wander if in “wander” mode and not frozen
-        if (behaviour->value != zox_behaviour_wander) {
+        zox_sys_i(ClockDelta, clock)
+        // only wander if in “wander” mode and not frozen (its clock stopped: paused)
+        if (behaviour->value != zox_behaviour_wander || clock->value <= 0) {
             continue;
         }
+        const float jitter_power = 15 * clock->value;   // chaos factor
         // Jittery direction vector
         float2 jitter = {
             ((rand() % 100) * 0.01f - 0.5f) * jitter_power,
