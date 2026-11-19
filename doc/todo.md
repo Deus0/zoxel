@@ -309,7 +309,7 @@
 	- cant sleep in bed
 		- sleep in a bed: close the eyes, a button to leave (the sleep ui), open the eyes when you get up
 		- animate getting onto the bed with the bones (ik)
-		- the eyes close/open animation in 2D too (a screen fade, as the eyelids)
+		- loading's eyes (huds3_darkness, a global) onto the camera's CameraLids, 2D loading's canvas fade too
 		- after day and night: sleeping skips the night, sets your respawn point to the bed, heals while asleep
 	- play test doors (right click opens and closes them, vodes/doors): the swing's direction (to its back, away from
 	  whoever placed it), the creak and the shut, walking through; it's passable as soon as it starts opening and

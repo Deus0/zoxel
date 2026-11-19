@@ -24,6 +24,9 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x Eyelids: CameraLids (0 open to 1 shut) on cameras closes the view from the top and the bottom, the middle first
+  (the headset's lid curve), in the render texture shaders; the headset's eyes close by it too (with loading's
+  huds3_darkness); tst eyelids (screenshots open, part shut and shut)
 -x One right click path for blocks: block_activate_system (vodes/activations, multithreaded) uses the block by its kind,
   doors moved onto it from their OnSet observer; a door's sound is a one-off event (DoorSound) as a worker can't
   spawn; tst block_activate (a raycaster clicking a door in and out of reach)
