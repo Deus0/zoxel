@@ -173,7 +173,8 @@ void spawn_player_screen(
                 material_render_texture_rgba :
                 material_render_texture_rgb;
             if (i > 0) {
-                material = spawn_material_render_texture_from(world, zox_get_link(world, material, ShaderLink));
+                const entity shader = zox_get_link(world, material, ShaderLink);
+                material = spawn_material_render_texture_from(world, shader, zox_getv(shader, ShaderGPULink));
             }
             zox_link(world, game_camera, MaterialLink, material);
             entity texture = spawn_render_texture(

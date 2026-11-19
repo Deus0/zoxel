@@ -1,5 +1,3 @@
-entity dbg_render_texture_character = 0;
-entity dbg_render_texture_mesh = 0;
 extern entity get_linked_character(ecs*, entity);
 
 entity zox_tst_render_texture_character(
@@ -17,13 +15,6 @@ entity zox_tst_render_texture_character(
     // byte is_camera_filtering = 1;
     // float downscale = 1;
     // byte layer = max_layers2D - 10;
-    if (zox_valid(dbg_render_texture_character)) {
-        zox_log("Deleting [dbg_render_texture_character]");
-        zox_delete(dbg_render_texture_character);
-        zox_delete(dbg_render_texture_mesh);
-        dbg_render_texture_character = 0;
-        return 0;
-    }
     if (!zox_valid(player)) {
         return 0;
     }
@@ -70,9 +61,7 @@ entity zox_tst_render_texture_character(
         world,
         mesh_clone,
         (float3) { 0, rotate_speed, 0 });
-    dbg_render_texture_mesh = mesh_clone;
     // focuses on actual character
-    // dbg_render_texture_mesh = character;
     // renderer_position = zox_getv(character, Position3D);
     // testing
     // renderer_position = zox_getv(character, Position3D);
@@ -104,7 +93,6 @@ entity zox_tst_render_texture_character(
         downscale,
         alpha);
     zox_set_parent(world, mesh_clone, ui);
-    dbg_render_texture_character = e;
     return e;
 }
 
