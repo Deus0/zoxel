@@ -4,11 +4,11 @@
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(DeviceLink);
-    zox_sys_in(EntityTarget);
+    zox_sys_in(Target);
     zox_sys_out(RaycasterResult);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(DeviceLink, device);
-        zox_sys_i(EntityTarget, target);
+        zox_sys_i(Target, target);
         zox_sys_o(RaycasterResult, result);
         if (zox_valid(device->value) && !zox_getv(device->value, DeviceDisabled)) {
             result->value = target->value;

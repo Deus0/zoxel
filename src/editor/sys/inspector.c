@@ -1,5 +1,5 @@
 // The inspector lists an entity: its name, parent, children, then a row per id (component, tag, pair)
-//  - every row targets the inspected entity (EntityTarget), and its id (ComponentTarget)
+//  - every row targets the inspected entity (Target), and its id (ComponentTarget)
 //  - inspector_label_system keeps the component rows' values up to date
 
 typedef struct {
@@ -91,18 +91,18 @@ int get_inspector_rows(
 
 void button_event_clicked_inspector(ecs *world, ClickEventData event) {
     const entity clicked = event.clicked;
-    if (!zox_has(clicked, ComponentTarget) || !zox_has(clicked, EntityTarget) || !zox_has(clicked, ComponentType)) {
+    if (!zox_has(clicked, ComponentTarget) || !zox_has(clicked, Target) || !zox_has(clicked, ComponentType)) {
         zox_loge("Clicked [%s] is not an inspector row", zox_get_name(clicked));
         return;
     }
     const byte type = zox_getv(clicked, ComponentType);
-    const entity target = zox_getv(clicked, EntityTarget);
+    const entity target = zox_getv(clicked, Target);
     const entity component = zox_getv(clicked, ComponentTarget);
     // an entity component (a link) inspects the entity it points at
     if (type != zox_type_entity || !zox_valid(component)) {
         return;
     }
-    const EntityTarget* link = zox_get_id(target, component);
+    const Target* link = zox_get_id(target, component);
     zox_logv("Inspector following [%s] -> [%s]", zox_get_name(component), link->value ? zox_get_name(link->value) : "None");
     inspector_select_target(world, event.clicker, link->value);
 }
@@ -113,12 +113,12 @@ void inspector_spawn_system(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(InspectorDirty);
-    zox_sys_in(EntityTarget);
+    zox_sys_in(Target);
     zox_sys_in(FontSize);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(InspectorDirty, dirty);
-        zox_sys_i(EntityTarget, target);
+        zox_sys_i(Target, target);
         zox_sys_i(FontSize, font_size);
         if (dirty->value != zox_dirty_active) {
             continue;
@@ -145,7 +145,7 @@ void inspector_spawn_system(iter* it) {
             zox_setv(button, TooltipEvent, &inspector_label_tooltip);
             zox_add(button, InspectorLabel);
             zox_setv(button, ComponentType, row.type);
-            zox_setv(button, EntityTarget, target->value);
+            zox_setv(button, Target, target->value);
             zox_setv(button, ComponentTarget, row.component);
             zox_setv(button, ClickEvent, on_click.value);
             free(row.text);

@@ -28,7 +28,7 @@ void zox_systems_editor(ecs *world) {
         zoxp_update,
         [in] rendering.RenderDisabled,
         [in] core.ComponentType,
-        [in] core.EntityTarget,
+        [in] core.Target,
         [in] core.ComponentTarget,
         [none] editor.InspectorLabel
     );
@@ -36,14 +36,14 @@ void zox_systems_editor(ecs *world) {
         hierarchy_spawn_system,
         zoxp_spawn,
         [in] editor.HierarchyUIDirty,
-        [in] core.EntityTarget,
+        [in] core.Target,
         [in] ui.ElementFontSize
     );
     zox_system_1(
         inspector_spawn_system,
         zoxp_spawn,
         [in] editor.InspectorDirty,
-        [in] core.EntityTarget,
+        [in] core.Target,
         [in] ui.FontSize
     );
     zox_system_1(

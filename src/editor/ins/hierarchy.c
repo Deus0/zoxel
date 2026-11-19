@@ -13,7 +13,7 @@ entity spawn_window_hierarchy(
     zox_set_name_spawned(world, window, "hierarchy");
     zox_add(window, HierarchyUI);
     zox_setv(window, ElementFontSize, font_size);
-    zox_setv(window, EntityTarget, root);
+    zox_setv(window, Target, root);
     // one row is active (highlighted) at a time
     zox_add(list, ActiveSingle);
     return window;

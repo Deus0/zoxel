@@ -7,11 +7,11 @@ void element_raycast_system(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ZevicePointerPosition);
-    zox_sys_out(EntityTarget);
+    zox_sys_out(Target);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ZevicePointerPosition, ray_position);
-        zox_sys_o(EntityTarget, target);
+        zox_sys_o(Target, target);
         /*if (disabled->value) {
             raycaster_select_element(
                 world,

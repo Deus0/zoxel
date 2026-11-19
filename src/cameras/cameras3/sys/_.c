@@ -12,7 +12,7 @@ void zox_systems_cameras3(ecs *world) {
     zox_system(
         camera_attach_system,
         zoxp_update,
-        [in] core.EntityTarget,
+        [in] core.Target,
         [none] cameras.AttachUpdate,
     );
 }

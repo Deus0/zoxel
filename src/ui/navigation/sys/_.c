@@ -6,7 +6,7 @@ void zox_systems_navigation(ecs* world) {
     zox_system(
         element_navigation_begin_system,
         zoxp_update,
-        [out] core.EntityTarget,
+        [out] core.Target,
         [none] inputs.DeviceNavigator,
         [none] !core.Disabled,
     );
@@ -15,7 +15,7 @@ void zox_systems_navigation(ecs* world) {
         zoxp_update,
         [out] ui.NavigatorState,
         [out] ui.NavigatorTimer,
-        [out] core.EntityTarget,
+        [out] core.Target,
         [none] inputs.DeviceNavigator,
         [none] !core.Disabled,
     );
@@ -23,7 +23,7 @@ void zox_systems_navigation(ecs* world) {
     zox_system(
         device_click_system,
         zoxp_update,
-        [in] core.EntityTarget,
+        [in] core.Target,
         [out] interactions.ClickingEntity,
         [none] inputs.DeviceNavigator,
         [none] !core.Disabled,

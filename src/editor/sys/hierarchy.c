@@ -12,11 +12,11 @@ void button_event_clicked_hierarchy(
     ClickEventData event)
 {
     const entity clicked = event.clicked;
-    if (!zox_has(clicked, EntityTarget)) {
+    if (!zox_has(clicked, Target)) {
         zox_loge("Clicked [%s] is not a hierarchy row", zox_get_name(clicked));
         return;
     }
-    inspector_select_target(world, event.clicker, zox_getv(clicked, EntityTarget));
+    inspector_select_target(world, event.clicker, zox_getv(clicked, Target));
     zox_setv(clicked, ActiveState, 1);
     zox_setv(clicked, ActiveStateDirty, zox_dirty_trigger);
 }
@@ -47,12 +47,12 @@ void hierarchy_spawn_system(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(HierarchyUIDirty);
-    zox_sys_in(EntityTarget);
+    zox_sys_in(Target);
     zox_sys_in(ElementFontSize);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(HierarchyUIDirty, dirty);
-        zox_sys_i(EntityTarget, target);
+        zox_sys_i(Target, target);
         zox_sys_i(ElementFontSize, font_size);
         if (dirty->value != zox_dirty_active) {
             continue;
@@ -80,7 +80,7 @@ void hierarchy_spawn_system(iter* it) {
                 editor_button_outline,
                 j);
             zox_setv(button, ClickEvent, on_click.value);
-            zox_setv(button, EntityTarget, rows[j].target);
+            zox_setv(button, Target, rows[j].target);
             zox_setv(button, ListIndent, rows[j].depth);
         }
         refresh_editor_list(world, list);

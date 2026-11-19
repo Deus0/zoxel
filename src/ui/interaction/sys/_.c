@@ -31,13 +31,13 @@ void zox_systems_interaction(ecs* world) {
         zoxp_update,
         raycast_query,
         [in] inputs.ZevicePointerPosition,
-        [out] core.EntityTarget,
+        [out] core.Target,
         [none] !core.Disabled,
     );
     zox_system(
         zevice_click_system,
         zoxp_update,
-        [in] core.EntityTarget,
+        [in] core.Target,
         [out] interactions.ClickingEntity,
         [none] inputs.Zevice,
         [none] !core.Disabled,
@@ -45,7 +45,7 @@ void zox_systems_interaction(ecs* world) {
     zox_system(
         keyboard_click_system,
         zoxp_update,
-        [in] core.EntityTarget,
+        [in] core.Target,
         [in] inputs.Keyboard,
         [out] interactions.ClickingEntity,
         [none] inputs.Device,

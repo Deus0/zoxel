@@ -54,7 +54,7 @@ void zox_systems_game_ui(ecs *world) {
     zox_system_1(
         huds3_options_stick_system,
         zoxp_update,
-        [in] core.EntityTarget,
+        [in] core.Target,
         [none] ui.NavigatorState
     );
     // main thread: it reads the camera

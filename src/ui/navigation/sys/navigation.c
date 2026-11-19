@@ -65,7 +65,7 @@ static entity navigation_step_window(ecs* world, entity current, entity window, 
 
 // the stick steps the selection through its window's NavigationElements: up and down one, in a grid (a datagrid's
 //  icons) left and right one and up and down a row (its columns); a stick's x as SDL has it, right is -x
-// todo: fix this, EntityTarget moved to zevices
+// todo: fix this, Target moved to zevices
 void element_navigation_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
@@ -74,10 +74,10 @@ void element_navigation_system(iter* it) {
     zox_sys_begin();
     zox_sys_out(NavigatorState);
     zox_sys_out(NavigatorTimer);
-    zox_sys_out(EntityTarget);
+    zox_sys_out(Target);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_o(EntityTarget, current);
+        zox_sys_o(Target, current);
         zox_sys_o(NavigatorState, state);
         zox_sys_o(NavigatorTimer, timer);
         // Navigation needs a current selection

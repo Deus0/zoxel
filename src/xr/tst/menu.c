@@ -17,7 +17,7 @@ static inline void zox_tst_xr_menu_next() {
 
 static inline entity zox_tst_xr_menu_target(ecs* world) {
     const entity right = xr_controllers[xr_hand_right];
-    return zox_valid(right) ? zox_getv(right, EntityTarget) : 0;
+    return zox_valid(right) ? zox_getv(right, Target) : 0;
 }
 
 byte zox_tst_xr_menu_ready(ecs* world) {

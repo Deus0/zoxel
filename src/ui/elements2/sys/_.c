@@ -42,7 +42,7 @@ void zox_systems_elements2(ecs *world) {
         scrollview_query,
         [in] inputs.ZeviceWheel,
         [in] inputs.ZevicePointerPosition,
-        [in] core.EntityTarget,
+        [in] core.Target,
         [none] !core.Disabled,
     );
     // make elements visible/invisible within list

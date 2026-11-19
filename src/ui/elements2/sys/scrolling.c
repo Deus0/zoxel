@@ -63,12 +63,12 @@ void scrollview_wheel_system(iter* it) {
     zox_sys_begin();
     zox_sys_in(ZeviceWheel);
     zox_sys_in(ZevicePointerPosition);
-    zox_sys_in(EntityTarget);
+    zox_sys_in(Target);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ZeviceWheel, wheel);
         zox_sys_i(ZevicePointerPosition, pointer);
-        zox_sys_i(EntityTarget, target);
+        zox_sys_i(Target, target);
         if (!wheel->value.y) {
             continue;
         }

@@ -133,11 +133,11 @@ void huds3_options_stick_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(EntityTarget);
+    zox_sys_in(Target);
     static float last_x = 0;
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(EntityTarget, target);
+        zox_sys_i(Target, target);
         const entity row = target->value;
         if (!zox_valid(row) || !zox_has(row, SettingLink) || !zox_has(row, Element3)) {
             continue;

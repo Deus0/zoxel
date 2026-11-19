@@ -36,10 +36,10 @@ void element_navigation_begin_system(iter* it) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_out(EntityTarget);
+    zox_sys_out(Target);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_o(EntityTarget, current);
+        zox_sys_o(Target, current);
         if (zox_valid(current->value)) {
             continue;
         }

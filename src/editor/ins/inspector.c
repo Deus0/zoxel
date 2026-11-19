@@ -11,6 +11,6 @@ entity spawn_inspector(
     zox_set_name_spawned(world, window, "inspector");
     zox_add(window, InspectorUI);
     zox_setv(window, FontSize, font_size);
-    zox_setv(window, EntityTarget, target);
+    zox_setv(window, Target, target);
     return window;
 }

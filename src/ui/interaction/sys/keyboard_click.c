@@ -7,12 +7,12 @@ void keyboard_click_system(iter* it) {
     }
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(EntityTarget);
+    zox_sys_in(Target);
     zox_sys_in(Keyboard);
     zox_sys_out(ClickingEntity);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(EntityTarget, target);
+        zox_sys_i(Target, target);
         zox_sys_i(Keyboard, keyboard);
         zox_sys_o(ClickingEntity, clickee);
         entity player = zox_get_link(world, e, PlayerLink);

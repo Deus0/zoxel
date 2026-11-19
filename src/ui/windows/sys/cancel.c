@@ -15,9 +15,9 @@ void cancel_menu_system(iter* it) {
         if (!zox_valid(device)) {
             continue;
         }
-        entity target = zox_has(device, EntityTarget) ? zox_getv(device, EntityTarget) : 0;
+        entity target = zox_has(device, Target) ? zox_getv(device, Target) : 0;
         if (!target) {
-            target = zox_has(e, EntityTarget) ? zox_getv(e, EntityTarget) : 0;
+            target = zox_has(e, Target) ? zox_getv(e, Target) : 0;
         }
         if (!zox_valid(target)) {
             // zox_log("No Raycast Target");
@@ -70,9 +70,9 @@ void keyboard_cancel_menu_system(iter* it) {
         zox_sys_i(Keyboard, keyboard);
         entity player = zox_get_parent(world, e);
         entity target = 0;
-        /*entity target = zox_has(player, EntityTarget) ? zox_getv(player, EntityTarget) : 0;
+        /*entity target = zox_has(player, Target) ? zox_getv(player, Target) : 0;
         if (!target) {
-            target = zox_has(e, EntityTarget) ? zox_getv(e, EntityTarget) : 0;
+            target = zox_has(e, Target) ? zox_getv(e, Target) : 0;
         }*/
         // NOTE: Should be on the mouse pointer
         if (!target) {
@@ -85,8 +85,8 @@ void keyboard_cancel_menu_system(iter* it) {
                     {
                         continue;
                     }
-                    if (zox_has(device, EntityTarget)) {
-                        target = zox_getv(e, EntityTarget);
+                    if (zox_has(device, Target)) {
+                        target = zox_getv(e, Target);
                         if (zox_valid(target)) {
                             break;
                         }
@@ -101,8 +101,8 @@ void keyboard_cancel_menu_system(iter* it) {
                             if (zox_has(zevice, Disabled)) {
                                 continue;
                             }
-                            if (zox_has(zevice, EntityTarget)) {
-                                target = zox_getv(zevice, EntityTarget);
+                            if (zox_has(zevice, Target)) {
+                                target = zox_getv(zevice, Target);
                                 if (zox_valid(target)) {
                                     break;
                                 }
@@ -123,7 +123,7 @@ void keyboard_cancel_menu_system(iter* it) {
         }
         if (!zox_valid(target)) {
             if (dbg_log) {
-                zox_log("Keyboard found no No EntityTarget");
+                zox_log("Keyboard found no No Target");
             }
             continue;
         }

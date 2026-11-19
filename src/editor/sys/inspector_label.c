@@ -5,13 +5,13 @@ void inspector_label_system(iter* it) {
     zox_sys_begin();
     zox_sys_in(RenderDisabled);
     zox_sys_in(ComponentType);
-    zox_sys_in(EntityTarget);
+    zox_sys_in(Target);
     zox_sys_in(ComponentTarget);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RenderDisabled, render_disabled);
         zox_sys_i(ComponentType, type);
-        zox_sys_i(EntityTarget, target);
+        zox_sys_i(Target, target);
         zox_sys_i(ComponentTarget, component);
         if (render_disabled->value) {
             continue;

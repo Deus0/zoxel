@@ -42,7 +42,7 @@ int zox_tst_navinv_tips_stale = 0;     // showing another item, or one on an emp
 // the selection's tooltip: shown, with its background, under it
 static inline void zox_tst_navinv_tip(ecs* world, entity canvas) {
     const entity tooltip = zox_get_child_by_id(world, canvas, zox_id(Tooltip));
-    const entity icon = zox_getv(zox_tst_pad, EntityTarget);
+    const entity icon = zox_getv(zox_tst_pad, Target);
     CanvasViewport viewport;
     if (!zox_valid(tooltip) || !zox_valid(icon) || !zox_has(icon, Tooltipper) || !get_canvas_viewport(world, canvas, &viewport)) {
         return;
@@ -112,7 +112,7 @@ static inline void zox_tst_navinv_fill(ecs* world, entity character) {
 }
 
 static inline entity zox_tst_navinv_target_window(ecs* world) {
-    const entity target = zox_valid(zox_tst_pad) ? zox_getv(zox_tst_pad, EntityTarget) : 0;
+    const entity target = zox_valid(zox_tst_pad) ? zox_getv(zox_tst_pad, Target) : 0;
     return zox_valid(target) ? zox_get_parent_by_id(world, target, zox_id(Window)) : 0;
 }
 
@@ -203,7 +203,7 @@ byte zox_tst_navigator_inventory_ready(ecs* world) {
             }
             if (f == 40) {
                 const entity tooltip = zox_get_child_by_id(world, canvas, zox_id(Tooltip));
-                const entity icon = zox_getv(zox_tst_pad, EntityTarget);
+                const entity icon = zox_getv(zox_tst_pad, Target);
                 CanvasViewport viewport;
                 zox_tst_navinv_tip(world, canvas);
                 if (zox_valid(tooltip) && zox_valid(icon) && get_canvas_viewport(world, canvas, &viewport)) {

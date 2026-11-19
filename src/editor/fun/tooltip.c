@@ -45,7 +45,7 @@ byte inspector_label_tooltip(
         set_entity_text(world, tooltip, text->value);
         return 1;
     }
-    const entity e = zox_getv(label, EntityTarget);
+    const entity e = zox_getv(label, Target);
     const entity cid = zox_getv(label, ComponentTarget);
     const int size = TooltipText_length;
     char text[TooltipText_length];

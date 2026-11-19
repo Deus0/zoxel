@@ -26,7 +26,7 @@ int zox_tst_nav2_grid_columns = 0;
 
 // the gamepad's selection's place among a window's NavigationElements, -1 not in it
 static inline int zox_tst_nav2_grid_index(ecs* world, entity window) {
-    const entity target = zox_valid(zox_tst_pad) ? zox_getv(zox_tst_pad, EntityTarget) : 0;
+    const entity target = zox_valid(zox_tst_pad) ? zox_getv(zox_tst_pad, Target) : 0;
     entity elements[256];
     const uint count = zox_valid(window) ? zox_get_children_by_id_recursive(world, window, elements, 256, zox_id(NavigationElement), 0) : 0;
     for (uint i = 0; i < count; i++) {
@@ -93,7 +93,7 @@ entity zox_tst_spawn_pad(ecs* world, entity player) {
     const entity e = zox_ins(world, prefab_device);
     zox_set_unique_name(e, "tst_gamepad");
     zox_add(e, Gamepad);
-    zox_setv(e, EntityTarget, 0);
+    zox_setv(e, Target, 0);
     prefab_add_navigator(world, e);
     zox_set_parent(world, e, player);
     const byte buttons[] = { zox_btn_a, zox_btn_b, zox_btn_y, zox_btn_lb, zox_btn_rb, zox_btn_start };
@@ -118,7 +118,7 @@ static inline byte zox_tst_nav2_lit(ecs* world, entity canvas, int index) {
 // the gamepad's selection is within the canvas's MenuPaused
 static inline byte zox_tst_nav2_selected_in_pause(ecs* world, entity canvas) {
     const entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuPaused));
-    const entity target = zox_valid(zox_tst_pad) ? zox_getv(zox_tst_pad, EntityTarget) : 0;
+    const entity target = zox_valid(zox_tst_pad) ? zox_getv(zox_tst_pad, Target) : 0;
     return zox_valid(menu) && zox_valid(target) && zox_get_parent_by_id(world, target, zox_id(Window)) == menu;
 }
 
@@ -315,7 +315,7 @@ byte zox_tst_navigator_grid_ready(ecs* world) {
                 zox_tst_nav2_grid_down = zox_tst_nav2_grid_index(world, zox_tst_nav2_grid);
                 const entity canvas = zox_get_link(world, player, CanvasLink);
                 const entity tooltip = zox_get_child_by_id(world, canvas, zox_id(Tooltip));
-                const entity icon = zox_getv(zox_tst_pad, EntityTarget);
+                const entity icon = zox_getv(zox_tst_pad, Target);
                 CanvasViewport viewport;
                 if (zox_valid(tooltip) && zox_valid(icon) && get_canvas_viewport(world, canvas, &viewport) &&
                     zox_has(tooltip, Position2) && zox_has(icon, Position2)) {

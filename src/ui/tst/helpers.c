@@ -138,7 +138,7 @@ entity zox_tst_mouse_pointer(
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
             const entity e = it2.entities[j];
-            if (zox_has(e, ZevicePointerPosition) && zox_has(e, EntityTarget)) {
+            if (zox_has(e, ZevicePointerPosition) && zox_has(e, Target)) {
                 zox_children_end(it2);
                 return e;
             }
@@ -153,7 +153,7 @@ entity zox_tst_mouse_target(
     entity player)
 {
     const entity pointer = zox_tst_mouse_pointer(world, player);
-    return zox_valid(pointer) ? zox_getv(pointer, EntityTarget) : 0;
+    return zox_valid(pointer) ? zox_getv(pointer, Target) : 0;
 }
 
 // the player's MouseLock, -1 if it has no mouse

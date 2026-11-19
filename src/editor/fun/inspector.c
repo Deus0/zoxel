@@ -15,10 +15,10 @@ byte set_inspector_target(
     entity inspector,
     entity target)
 {
-    if (zox_getv(inspector, EntityTarget) == target) {
+    if (zox_getv(inspector, Target) == target) {
         return 0;
     }
-    zox_setv(inspector, EntityTarget, target);
+    zox_setv(inspector, Target, target);
     zox_setv(inspector, InspectorDirty, zox_dirty_trigger);
     zox_logv("+ Inspector Target [%s]", zox_valid(target) ? zox_getn(target) : "None");
     return 1;

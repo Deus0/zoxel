@@ -32,7 +32,7 @@ void toggle_inspector_target(
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count && !inspector; j++) {
             const entity e = it2.entities[j];
-            if (zox_has(e, InspectorUI) && zox_getv(e, EntityTarget) == target) {
+            if (zox_has(e, InspectorUI) && zox_getv(e, Target) == target) {
                 inspector = e;
             }
         }

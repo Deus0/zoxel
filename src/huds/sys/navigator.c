@@ -58,7 +58,7 @@ entity navigator_shift(ecs* world, entity player, int direction) {
     // the window the selection's in
     entity selected_window = 0;
     for (uint i = 0; i < length && !selected_window; i++) {
-        const entity target = zox_getv(devices[i], EntityTarget);
+        const entity target = zox_getv(devices[i], Target);
         selected_window = zox_valid(target) ? zox_get_parent_by_id(world, target, zox_id(Window)) : 0;
     }
     int current = -1;

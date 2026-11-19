@@ -38,7 +38,7 @@ zoxc_fixed_string(ZoxName, 64);
 zox_tag(DestroyInFrame);
 // used for editor
 zoxc_byte(EntityDirty);
-zoxc_entity(EntityTarget);
+zoxc_entity(Target);         // the entity it targets: a camera its character, a pointer its ui, an npc who it sees
 zoxc_entity(ComponentTarget);
 zoxc_byte(ComponentType);
 // Measurements
@@ -101,7 +101,7 @@ void zox_components_core(ecs* world) {
     zoxd_tag(DestroyInFrame);
     // editor
     zoxd_byte(EntityDirty);
-    zoxd_entity(EntityTarget);
+    zoxd_entity(Target);
     zoxd_entity(ComponentTarget);
     zoxd_byte(ComponentType);
     // Measurements

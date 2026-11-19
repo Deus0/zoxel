@@ -5,11 +5,11 @@ void device_click_system(iter* it) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(EntityTarget);
+    zox_sys_in(Target);
     zox_sys_out(ClickingEntity);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(EntityTarget, target);
+        zox_sys_i(Target, target);
         zox_sys_o(ClickingEntity, clicking);
         if (!zox_valid(target->value) ||
             !zox_has(target->value, RenderDisabled) ||

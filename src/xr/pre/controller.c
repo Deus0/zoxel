@@ -8,7 +8,7 @@ entity spawn_prefab_xr_controller(ecs* world) {
     zox_add(e, XrController);
     zox_add(e, Gamepad);
     zox_setv(e, XrHand, 0);
-    zox_setv(e, EntityTarget, 0);
+    zox_setv(e, Target, 0);
     zox_setv(e, Position3D, float3_zero);
     zox_setv(e, Rotation3D, float4_identity);
     return e;

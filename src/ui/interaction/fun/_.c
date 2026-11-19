@@ -83,15 +83,15 @@ void set_raycast_target_children(
     if (!zox_valid(e)) {
         return;
     }
-    if (zox_has(e, EntityTarget)) {
-        entity last_target = zox_getv(e, EntityTarget);
+    if (zox_has(e, Target)) {
+        entity last_target = zox_getv(e, Target);
         if (zox_valid(last_target) &&
             zox_has(last_target, Selectable))
         {
             zox_setm(last_target, SelectState, zox_state_deselect_trigger);
             zox_add(last_target, TriggerDeselect);
         }
-        zox_setm(e, EntityTarget, target);
+        zox_setm(e, Target, target);
         if (zox_valid(target) &&
             zox_has(target, Selectable)
         ) {

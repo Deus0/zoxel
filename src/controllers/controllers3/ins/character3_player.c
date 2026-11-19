@@ -28,7 +28,7 @@ entity spawn_character3_player(
     // Player
     zox_link(world, e, PlayerLink, player);
     // camera
-    zox_setv(camera, EntityTarget, e);
+    zox_setv(camera, Target, e);
     zox_add(camera, AttachDirty);
     // New links
     zox_link(world, e, Player, player);

@@ -86,12 +86,12 @@ void virtual_joystick_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(EntityTarget);
+    zox_sys_in(Target);
     zox_sys_in(ZevicePointerPosition);
     zox_sys_in(ZevicePointer);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(EntityTarget, target);
+        zox_sys_i(Target, target);
         entity device = zox_get_link(world, e, DeviceLink);
         zox_sys_i(ZevicePointerPosition, position);
         zox_sys_i(ZevicePointer, clicked);

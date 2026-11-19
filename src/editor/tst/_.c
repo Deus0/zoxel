@@ -35,11 +35,11 @@ int zox_tst_editor_rows(ecs* world, entity list, entity target, int* wrong) {
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
             const entity row = it2.entities[j];
-            if (!zox_has(row, EntityTarget)) {
+            if (!zox_has(row, Target)) {
                 continue;
             }
             count++;
-            if (target && zox_getv(row, EntityTarget) != target) {
+            if (target && zox_getv(row, Target) != target) {
                 (*wrong)++;
             }
         }
@@ -83,7 +83,7 @@ byte zox_tst_editor_ready(ecs* world) {
             }
             zox_tst_check(rows <= hierarchy_max_elements, "hierarchy has [%i] rows, over the [%i] limit", rows, hierarchy_max_elements);
             // every row targets a unique, valid entity, the first one is the root
-            const entity root = zox_getv(hierarchy, EntityTarget);
+            const entity root = zox_getv(hierarchy, Target);
             int invalid = 0;
             int duplicates = 0;
             byte has_root = 0;
@@ -94,10 +94,10 @@ byte zox_tst_editor_ready(ecs* world) {
             while (zox_children_next(it2)) {
                 for (int j = 0; j < it2.count; j++) {
                     const entity row = it2.entities[j];
-                    if (!zox_has(row, EntityTarget)) {
+                    if (!zox_has(row, Target)) {
                         continue;
                     }
-                    const entity target = zox_getv(row, EntityTarget);
+                    const entity target = zox_getv(row, Target);
                     if (!zox_valid(target)) {
                         invalid++;
                         continue;
@@ -126,7 +126,7 @@ byte zox_tst_editor_ready(ecs* world) {
             if (!clickable) {
                 return 1;
             }
-            zox_tst_editor_target = zox_getv(clickable, EntityTarget);
+            zox_tst_editor_target = zox_getv(clickable, Target);
             zox_log("[tst] clicking hierarchy row [%s]", zox_getn(zox_tst_editor_target));
             zox_tst_click(world, player, clickable);
             break;
@@ -136,7 +136,7 @@ byte zox_tst_editor_ready(ecs* world) {
             // inspector rows: name, parent, children, then one per id, all targeting the entity
             zox_tst_waiting = zox_tst_editor_stage == 3 ? "the inspector, from the hierarchy" : "the inspector, retargeted";
             const entity list = zox_tst_editor_list(world, inspector);
-            if (!zox_valid(list) || zox_getv(inspector, EntityTarget) != zox_tst_editor_target) {
+            if (!zox_valid(list) || zox_getv(inspector, Target) != zox_tst_editor_target) {
                 return 0;
             }
             int wrong;
