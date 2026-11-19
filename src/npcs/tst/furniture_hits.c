@@ -1,6 +1,6 @@
 // tst: furniture_hits, the ray and collisions find all of a bed and a door (fillers, items/fun/multi_block.c)
 //  - places a bed and a door in air with air above
-//  - rays straight down onto the bed's filler, the bed's base and the door's top stop there on the bed's or door's own
+//  - rays straight down onto the bed's filler, the bed's base and the door's top (its panel, on its front edge) stop there on the bed's or door's own
 //    voxels (a filler's into its base's model, raycast_voxel_node)
 //  - an npc dropped onto the bed's filler and one onto the door rest on top, not falling through
 //  - run: bash bsh/tst.sh furniture_hits
@@ -34,6 +34,12 @@ static inline RaycastVoxelData zox_tst_fhits_ray(ecs* world, entity terrain, ent
 // a block's middle, in the world
 static inline float3 zox_tst_fhits_middle(int3 block, float scale) {
     return (float3) { (block.x + 0.5f) * scale, (block.y + 0.5f) * scale, (block.z + 0.5f) * scale };
+}
+
+// a door's panel in a cell (its middle across it): on its block's front edge (door_hinge_z), turned its way
+static inline float3 zox_tst_fhits_panel(int3 block, byte direction, float scale) {
+    const float3 off = float4_rotate_float3(block_direction_rotation(direction), (float3) { 0, 0, door_hinge_z - 0.5f });
+    return float3_add(zox_tst_fhits_middle(block, scale), float3_scale(off, scale));
 }
 
 byte zox_tst_furniture_hits_ready(ecs* world) {
@@ -104,7 +110,7 @@ byte zox_tst_furniture_hits_ready(ecs* world) {
         const char* names[3] = { "the bed's filler", "the bed's base", "the door's top" };
         const byte filler = realm_filler_voxel(world, realm);
         for (byte i = 0; i < 3; i++) {
-            float3 from = zox_tst_fhits_middle(parts[i], scale);
+            float3 from = i == 2 ? zox_tst_fhits_panel(parts[i], 0, scale) : zox_tst_fhits_middle(parts[i], scale);
             from.y += 3 * scale;
             const RaycastVoxelData ray = zox_tst_fhits_ray(world, terrain, realm, from, 6 * scale);
             const float stop = from.y - ray.distance;
@@ -123,7 +129,7 @@ byte zox_tst_furniture_hits_ready(ecs* world) {
         for (byte k = 0; k < 4; k++)
         for (byte j = 0; j < 4; j++) {
             const int3 d = zox_tst_fhits_doors[k];
-            const float3 middle = zox_tst_fhits_middle((int3) { d.x, d.y + 1, d.z }, scale);
+            const float3 middle = zox_tst_fhits_panel((int3) { d.x, d.y + 1, d.z }, k, scale);
             // from the next cell over (the doors are 3 apart), into it
             const float3 from = float3_sub(middle, float3_scale(sides[j], 1.4f * scale));
             const RaycastVoxelData ray = zox_tst_fhits_ray_dir(world, terrain, realm, from, sides[j], 2 * scale);
@@ -149,7 +155,7 @@ byte zox_tst_furniture_hits_ready(ecs* world) {
                 continue;
             }
             const float3 across = { normal_side.z, 0, normal_side.x };
-            float3 target = zox_tst_fhits_middle((int3) { dd.x, dd.y + 1, dd.z }, scale);
+            float3 target = zox_tst_fhits_panel((int3) { dd.x, dd.y + 1, dd.z }, k, scale);
             target = float3_add(target, float3_scale(across, u * 0.3f * scale));
             target.y += v * 0.3f * scale;
             const float3 eye = float3_add(float3_sub(target, float3_scale(normal_side, 1.3f * scale)), (float3) { 0, 0.4f * scale, 0 });
