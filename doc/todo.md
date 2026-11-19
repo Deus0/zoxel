@@ -17,6 +17,9 @@
 	zox_sys_on_begin() / zox_sys_on_end() (2026-11-18)
 - tst player_spawn (flaky, about half) and continue_game fail: "character is inside a solid block [43]" (water) at
 	[0 18 0] or [1 18 0], on 3b3909d12 too (2026-11-19)
+- a crash switching windows (play test 2026-11-19), not reproduced: tst navigator_inventory and coop_navigator switch
+	fast (RB and LB) with an item in hand and a tooltip up; no core dump left. How were they switched (keys, mouse,
+	gamepad), in split screen?
 - most worlds have no towns: every place tried for one is 22% to 76% under the sea (terrain_sea_height 6), towns keep
 	off water since 77e33a45d (terrain_rect_over_water, any column wet); with none, players spawn at the no town
 	fallback, near [0 0], often in the sea (the player_spawn failures above). Lower the sea, or let towns level a
