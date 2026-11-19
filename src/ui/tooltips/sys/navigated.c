@@ -29,8 +29,14 @@ void tooltip_navigated_system(iter* it) {
         if (!get_canvas_viewport(world, canvas, &viewport)) {
             continue;
         }
-        const int4 bounds = get_element_pointer_bounds(world, &viewport, ui, zox_getv(ui, Position2), zox_getv(ui, LayoutSize));
+        const int4 screen = get_element_pointer_bounds(world, &viewport, ui, zox_getv(ui, Position2), zox_getv(ui, LayoutSize));
         const int2 canvas_size = zox_getv(canvas, LayoutSize);
+        // the screen's pixels to its canvas's: split screen's second viewport starts part way along (its tooltips sat
+        //  that far off)
+        const float2 scale = { (float) canvas_size.x / viewport.size.x, (float) canvas_size.y / viewport.size.y };
+        const int4 bounds = {
+            (int) ((screen.x - viewport.position.x) * scale.x), (int) ((screen.y - viewport.position.x) * scale.x),
+            (int) ((screen.z - viewport.position.y) * scale.y), (int) ((screen.w - viewport.position.y) * scale.y) };
         // its top right corner lands half its size past its position (beside a mouse's cursor): taken off
         const int2 size = zox_getv(e, LayoutSize);
         int2 output = { bounds.y - size.x / 2, bounds.z - tooltip_navigated_gap - size.y / 2 };
