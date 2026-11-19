@@ -16,7 +16,6 @@ void pounce_system(iter* it) {
     zox_sys_in(Rotation3D);
     zox_sys_in(Grounded);
     zox_sys_in(RaycastVoxelData);
-    zox_sys_out(SkillStage);
     zox_sys_out(Scale3);
     zox_sys_out(Velocity3D);
     for (int i = 0; i < it->count; i++) {
@@ -27,14 +26,13 @@ void pounce_system(iter* it) {
         zox_sys_i(Rotation3D, rotation);
         zox_sys_i(Grounded, grounded);
         zox_sys_i(RaycastVoxelData, ray);
-        zox_sys_o(SkillStage, stage);
         zox_sys_o(Scale3, scale);
         zox_sys_o(Velocity3D, velocity);
         if (!zox_valid(skill->value) || !zox_has(skill->value, Melee)) {
             continue;
         }
         const float t = zox_current_time - start->value;
-        if (stage->value == 0) {
+        if (!zox_has(e, SkillReleased)) {
             // squashing down, wider
             const float s = float_min(t / pounce_crouch, 1);
             scale->value = (float3) { 1 + 0.3f * s, 1 - 0.4f * s, 1 + 0.3f * s };
@@ -47,15 +45,15 @@ void pounce_system(iter* it) {
             ahead.y = 0;
             ahead = float3_normalize(ahead);
             velocity->value = (float3) { ahead.x * pounce_leap, pounce_jump, ahead.z * pounce_leap };
-            stage->value = 1;
+            zox_add(e, SkillReleased);
             continue;
         }
         // in the air: stretched up, easing back round
         const float k = float_min((t - pounce_crouch) / pounce_air, 1);
         scale->value = (float3) { 1 - 0.15f * (1 - k), 1 + 0.3f * (1 - k), 1 - 0.15f * (1 - k) };
-        if (stage->value == 1 && ray->result == rayhit_character && ray->distance <= pounce_hit_reach) {
+        if (!zox_has(e, SkillHit) && ray->result == rayhit_character && ray->distance <= pounce_hit_reach) {
             melee_hit(world, skill->value, e);
-            stage->value = 2;
+            zox_add(e, SkillHit);
         }
         if (k >= 1 || (grounded->value && t > pounce_crouch + 0.2f)) {
             skill_using_end(world, e);

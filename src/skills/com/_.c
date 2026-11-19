@@ -17,10 +17,12 @@ zoxc_float(SkillDamageMax);
 zoxc_float(SkillRange);
 zoxc_float(SkillCost);
 zoxc_float2(SkillReach);     // the distances it lands at (min, max): an npc picks its skill by it (ai/fun/skills.c)
-zoxc_float2(Burn);           // its hits burn (damage a second, seconds), shoot's (pre/burn.c)
+zox_tag(Burn);               // its hits burn for its DamageTime (pre/burn.c), shoot's
+zoxc_double(DamageTime);     // seconds its damage goes on (a burn's)
 zoxc_entity(SkillUsing);     // a user's skill in progress over time (a pounce, a tentacle), one at a time
 zoxc_double(SkillUsedAt);    // its start
-zoxc_byte(SkillStage);       // how far along (each skill's own: in the air, its hit tried)
+zox_tag(SkillReleased);      // a skill in use let go (a pounce leapt)
+zox_tag(SkillHit);           // a skill in use tried its hit, once
 zoxc_float3(SkillTarget);    // where it's aimed, set as it starts (a tentacle's tip: a step aside dodges it)
 
 void zox_components_skills(ecs* world) {
@@ -42,10 +44,12 @@ void zox_components_skills(ecs* world) {
     zoxd_float(SkillRange);
     zoxd_float(SkillCost);
     zoxd_float2(SkillReach);
-    zoxd_float2(Burn);
+    zoxd_tag(Burn);
+    zoxd_double(DamageTime);
     zoxd_entity(SkillUsing);
     zoxd_double(SkillUsedAt);
-    zoxd_byte(SkillStage);
+    zoxd_tag(SkillReleased);
+    zoxd_tag(SkillHit);
     zoxd_float3(SkillTarget);
     zoxd_byte(SkillActive);
 }

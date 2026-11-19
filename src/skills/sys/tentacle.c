@@ -1,7 +1,7 @@
 // a tentacle (Tentacle skill, a slime's): a whip of particles from its user's body, spiking out at what it aims at
 //  (RaycastAim, else ahead), piercing its attacker if they're still on its line, then back into its body
 //  - its tip set as it starts, so a step aside dodges it; it bulges in its body first (the wind up), a tell
-//  - a SkillUsing (its tip the SkillTarget, SkillStage 1 its hit tried)
+//  - a SkillUsing (its tip the SkillTarget, SkillHit its hit tried)
 //  - its particles its user's children (Particle3D), laid along it each frame in their order: rings of strands down
 //    it, thick at its body and thin at its tip, twisting round; it arches up with a wave running down it, its tip
 //    curling as it's drawn back; dark at its root, light at its tip
@@ -89,14 +89,12 @@ void tentacle_system(iter* it) {
     zox_sys_in(SkillUsedAt);
     zox_sys_in(SkillTarget);
     zox_sys_in(Position3D);
-    zox_sys_out(SkillStage);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(SkillUsing, skill);
         zox_sys_i(SkillUsedAt, start);
         zox_sys_i(SkillTarget, tip);
         zox_sys_i(Position3D, position);
-        zox_sys_o(SkillStage, hit);
         if (!zox_valid(skill->value) || !zox_has(skill->value, Tentacle)) {
             continue;
         }
@@ -139,8 +137,8 @@ void tentacle_system(iter* it) {
             zox_setv(bits[j], Position3D, p);
         }
         // fully out: it pierces its attacker if they're on its line
-        if (!hit->value && t >= tentacle_windup + tentacle_out) {
-            hit->value = 1;
+        if (!zox_has(e, SkillHit) && t >= tentacle_windup + tentacle_out) {
+            zox_add(e, SkillHit);
             const entity target = zox_get_link(world, e, AttackerLink);
             if (zox_valid(target) && zox_has(target, Character3) && !zox_has(target, Dead) &&
                 tentacle_line_distance(zox_getv(target, Position3D), from, tip->value) < tentacle_pierce) {

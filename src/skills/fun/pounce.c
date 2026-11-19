@@ -1,11 +1,11 @@
-// a skill used over time (SkillUsing, SkillUsedAt, SkillStage, SkillTarget on its user): one at a time
+// a skill used over time (SkillUsing, SkillUsedAt, SkillTarget on its user, SkillReleased and SkillHit as it goes):
+//  one at a time
 static inline byte skill_using_begin(ecs* world, entity user, entity skill, float3 target) {
     if (zox_has(user, SkillUsing)) {
         return 0;
     }
     zox_set(user, SkillUsing, { skill });
     zox_set(user, SkillUsedAt, { zox_current_time });
-    zox_set(user, SkillStage, { 0 });
     zox_set(user, SkillTarget, { target });
     return 1;
 }
@@ -13,7 +13,8 @@ static inline byte skill_using_begin(ecs* world, entity user, entity skill, floa
 static inline void skill_using_end(ecs* world, entity user) {
     zox_remove(user, SkillUsing);
     zox_remove(user, SkillUsedAt);
-    zox_remove(user, SkillStage);
+    zox_remove(user, SkillReleased);
+    zox_remove(user, SkillHit);
     zox_remove(user, SkillTarget);
 }
 

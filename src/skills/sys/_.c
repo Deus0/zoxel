@@ -53,8 +53,7 @@ void zox_systems_skills(ecs *world) {
         [in] skills.SkillUsing,
         [in] skills.SkillUsedAt,
         [in] skills.SkillTarget,
-        [in] transforms3.Position3D,
-        [out] skills.SkillStage
+        [in] transforms3.Position3D
     );
     zox_system_1(
         pounce_system,
@@ -65,7 +64,6 @@ void zox_systems_skills(ecs *world) {
         [in] transforms3.Rotation3D,
         [in] physics.Grounded,
         [in] vrays.RaycastVoxelData,
-        [out] skills.SkillStage,
         [out] transforms3.Scale3,
         [out] physics3.Velocity3D
     );
