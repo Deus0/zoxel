@@ -100,7 +100,7 @@ void arm_control_system(iter* it) {
                 float upper, lower, thigh, knee;
                 if (zox_has(bones[j], ThighBone) && zox_getv(bones[j], SwingState) && walk_leg_heights(world, bones[j], &upper, &lower)) {
                     walk_leg_angles(zox_getv(bones[j], SwingAngle), zox_getv(bones[j], LocalPosition3D).x, phase->value,
-                        blend->value, crouch->value, &thigh, &knee);
+                        blend->value, crouch->value, 0, &thigh, &knee);
                     reach = fmaxf(reach, upper * cosf(thigh * degrees_to_radians) + lower * cosf((thigh + knee) * degrees_to_radians));
                 }
             }

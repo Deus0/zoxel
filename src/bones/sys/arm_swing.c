@@ -34,13 +34,15 @@ static inline void walk_bend(ecs* world, entity bone, float degrees, float t) {
 
 // a leg's walk this frame, degrees (x: less ahead, more back): its thigh's turn and its knee's bend
 //  - its side (x of its place: the right's -x) swings it against the other
-static inline void walk_leg_angles(float swing_angle, float side_x, float phase, float blend, float crouch,
+// lifted: the knee's lift as it swings ahead (posing the leg); without it, the leg as it carries the body (its bob:
+//  the lifted swinging leg counted as the longer one for a moment each step, two bumps a step, shaky walking)
+static inline void walk_leg_angles(float swing_angle, float side_x, float phase, float blend, float crouch, byte lifted,
     float* thigh, float* knee)
 {
     const float sign = side_x < 0 ? 1 : -1;
     const float ahead = -cosf(phase) * sign;    // > 0 swinging ahead (x falling)
     const float crouched = crouch * crouch_angle;
-    const float lift = walk_knee_lift * (1 - (1 - crouch_knee_lift) * crouch);
+    const float lift = lifted ? walk_knee_lift * (1 - (1 - crouch_knee_lift) * crouch) : 0;
     *thigh = sinf(phase) * sign * swing_angle * blend - crouched;
     *knee = 2 * crouched + blend * (walk_knee_bend + lift * fmaxf(0, ahead));
 }
@@ -54,7 +56,7 @@ static inline void walk_limb(ecs* world, entity e, float phase, float blend, flo
         // legs on their swing, not eased: the body bobs from it this frame (arm_control.c), eased they lagged it (at
         //  10 frames a second a whole step) and the stance foot rose and sank 8cm
         float thigh, knee;
-        walk_leg_angles(zox_getv(e, SwingAngle), zox_getv(e, LocalPosition3D).x, phase, blend, crouch, &thigh, &knee);
+        walk_leg_angles(zox_getv(e, SwingAngle), zox_getv(e, LocalPosition3D).x, phase, blend, crouch, 1, &thigh, &knee);
         zox_getm(e, LocalRotation3D)->value = euler_to_quaternion((float3) { thigh * degrees_to_radians, 0, 0 });
         // the knee: its shin, and its foot level again from the crouch
         walk_bend(world, child, knee, 1);
