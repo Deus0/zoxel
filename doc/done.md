@@ -24,6 +24,9 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x The bones debug view (Bones in the Gizmos debug ui, --bones): bone gizmos over the skeleton meshes see through and
+  painted by bone; the boxes turn with their bones round their parts' middles, in their bone's paint; the Bone Gizmos
+  setting never applied (its handler matched "Bones Gizmos")
 -x Bones turn at their joints, not their parts' middles (part_bone_pivot, parts/sys/bones.c): a bent elbow pulled the
   forearm a gap off the upper arm, the skin between stretched into strips (tst punch_views); legs swing from the hips,
   the head turns at the neck. BoneCentre keeps the part's middle (the head camera, look_point, the mugshot, the gizmo)

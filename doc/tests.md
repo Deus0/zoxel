@@ -75,6 +75,7 @@ void zox_tsts_my_module() {
   finishes it (src/graphics/fun/gif.c, each frame its own 256 colours, held for the real time between frames). i.e.
   `bash bsh/punch.sh`: the punch from 4 angles, `tst/punch_views/punch.gif`, `punch_slow.gif` (2s) and
   `tst/punch_views.png` (its frames in a grid); `zox_tst_gif_fps=30` for more frames (20 by default).
+  `--bones` on any of these draws the bones over the body made see through and painted by bone.
 - **Looking at a model**: `bash bsh/model.sh <name>` (iterating a blueprint: edit, run, look at
   `tst/models/<name>.png`, ~45s with the build, ~10s `--nobuild`), or `zox_tst_model=<name> bash bsh/tst.sh model_views`, then `tst/model_views.ppm` (kept per model in `tst/models/<name>.ppm`): a realm
   model from 4 viewports on gray (`spawn_viewport_camera`, `CameraFilter`, see [src/models/tst/model_views.c](../src/models/tst/model_views.c)).
