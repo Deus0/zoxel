@@ -41,6 +41,7 @@ static inline byte* zox_gpu_read_screen(int2 size) {
         0, 0, NULL, 0, NULL, 1, &barrier);
     vulkan_submit(0);
     vkWaitForFences(vk_device, 1, &vk_fences[vk_frame], VK_TRUE, UINT64_MAX);
+    vk_serial_done = vk_serial_submitted;
     byte* rgb = malloc((size_t) size.x * size.y * 3);
     const byte* rgba = NULL;
     vkMapMemory(vk_device, memory, 0, VK_WHOLE_SIZE, 0, (void**) &rgba);

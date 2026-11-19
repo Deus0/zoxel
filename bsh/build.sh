@@ -253,7 +253,7 @@ fi
 if [[ ${graphics_lib} == "vulkan" ]]; then
     echo "+ Added [zox_vulkan]"
     dflags+=" -Dzox_vulkan"
-    libs+=" -lvulkan"
+    libs+=" -lvulkan -lshaderc_shared"
 fi
 
 if [[ ${window_lib} == "sdl" ]]; then

@@ -805,7 +805,9 @@
   quads (asked the user first: it changes the grass's look); greedy meshing plan: doc/tech/chunks3.md
 - clouds can be a bit dark
 - dust particles in the air round the terrain (ergo proxy, dystopian vibes)
-- Vulkan renderer: parts 2 to 5 of [plans/vulkan.md](plans/vulkan.md) (part 1, the build, window and frames, done)
+- Vulkan renderer: parts 4 and 5 of [plans/vulkan.md](plans/vulkan.md) (render textures, compute), then its speed
+  (the numbers there: even with gl now)
+- gl builds' `using_gpu` is always 0: video.c reads GL_RENDERER before a context exists
 - make the walking camera animation feel more natural
     - just animate the head better and body
     - add tremble in the gait

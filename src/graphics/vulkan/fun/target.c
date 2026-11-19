@@ -97,6 +97,28 @@ VkExtent2D vulkan_surface_extent(const VkSurfaceCapabilitiesKHR* capabilities) {
     return extent;
 }
 
+// fifo waits for the screen (vsync, always there); without vsync mailbox, else immediate
+VkPresentModeKHR vulkan_pick_present_mode() {
+    if (vk_vsync) {
+        return VK_PRESENT_MODE_FIFO_KHR;
+    }
+    uint count = 0;
+    vkGetPhysicalDeviceSurfacePresentModesKHR(vk_physical, vk_surface, &count, NULL);
+    VkPresentModeKHR modes[16];
+    count = count < 16 ? count : 16;
+    vkGetPhysicalDeviceSurfacePresentModesKHR(vk_physical, vk_surface, &count, modes);
+    VkPresentModeKHR chosen = VK_PRESENT_MODE_FIFO_KHR;
+    for (uint i = 0; i < count; i++) {
+        if (modes[i] == VK_PRESENT_MODE_MAILBOX_KHR) {
+            return modes[i];
+        }
+        if (modes[i] == VK_PRESENT_MODE_IMMEDIATE_KHR) {
+            chosen = modes[i];
+        }
+    }
+    return chosen;
+}
+
 byte vulkan_create_swapchain() {
     VkSurfaceCapabilitiesKHR capabilities;
     vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vk_physical, vk_surface, &capabilities);
@@ -127,7 +149,7 @@ byte vulkan_create_swapchain() {
         .imageSharingMode = VK_SHARING_MODE_EXCLUSIVE,
         .preTransform = capabilities.currentTransform,
         .compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
-        .presentMode = VK_PRESENT_MODE_FIFO_KHR,    // vsync, always there
+        .presentMode = vulkan_pick_present_mode(),
         .clipped = VK_TRUE,
         .oldSwapchain = old,
     };
@@ -227,9 +249,17 @@ byte vulkan_create_target() {
 // after a resize, or when the swapchain says it's out of date
 byte vulkan_recreate_target() {
     vkDeviceWaitIdle(vk_device);
+    vk_serial_done = vk_serial_submitted;
     vulkan_dispose_framebuffers();
     vk_resized = 0;
     return vulkan_create_target();
+}
+
+void vulkan_set_vsync(byte value) {
+    if (value != vk_vsync) {
+        vk_vsync = value;
+        vk_resized = 1;
+    }
 }
 
 void vulkan_resize(int2 size) {

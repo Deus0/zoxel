@@ -9,7 +9,7 @@ bash bsh/tst.sh all                      # run every test (before every commit)
 bash bsh/tst.sh stream_npcs --repeat 5   # intermittent bugs
 bash bsh/tst.sh <name> --gdb             # a backtrace on a crash
 bash bsh/tst.sh <name> --nobuild         # rerun without building
-bash bsh/tst.sh vulkan_clear --vulkan    # the vulkan build (bin/tst_vulkan), on lavapipe
+bash bsh/tst.sh vulkan_clear --vulkan    # the vulkan build (bin/tst_vulkan), on lavapipe, --release: bin/tst_release_vulkan
 ```
 
 - `zox_tst_dir=<dir>`: tst.sh writes logs and test files there instead of `tst/`, and builds to `bin/tst_<dir>/`
@@ -102,7 +102,7 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 | Textures | `texture_noise` `texture_outline` |
 | Lights | `smooth_lights` `lod_lights` `lod_chunk_lights` `block_vox_lights` `block_vox_light_sampling` |
 | Vulkan | `vulkan_clear` (frames clear, read back, carry on after a read back; no validation errors), `--vulkan` only ([plans/vulkan.md](plans/vulkan.md)) |
-| Rendering | `gpu_restore` `gpu_restore_game` `gpu_links` (gpu objects let go of and made again, live counts) `lines_spawn` `lines_render` `skeleton_render` `vox_instance_render` `terrain_render` `block_vox_light_sampling` `block_vox_lights` `screenshot` `model_views` `body_views` `punch_views` `walk_views` |
+| Rendering | `render_fps` (frames a second standing still, either backend, numbers in [plans/vulkan.md](plans/vulkan.md)) `gpu_restore` `gpu_restore_game` `gpu_links` (gpu objects let go of and made again, live counts) `lines_spawn` `lines_render` `skeleton_render` `vox_instance_render` `terrain_render` `block_vox_light_sampling` `block_vox_lights` `screenshot` `model_views` `body_views` `punch_views` `walk_views` |
 | Models | `wfc` (wave function collapse: patches, seeds, rules) `model_nodes` (fill, box, paint, sprinkle on voxels) `model_shapes` (realm models: one piece, mirrored, head's neck and eyes, chest without a pinch, cookie chips and crumbs) |
 | Cameras | `camera_viewports` `camera_projection` `camera_orthographic` `camera_look_at` `camera_viewport_spawn` `camera_split_screen` `camera_downscale` `camera_frustum` `camera_filter` `eyelids` |
 | Sound and music | `sound_mixer` `sound_formats` `sound_instruments` `sound_balance` `voice_sounds` `hit_sounds` `hit_sound_links` `music_*` |

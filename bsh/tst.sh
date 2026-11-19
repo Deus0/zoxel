@@ -150,10 +150,14 @@ fi
 
 mkdir -p "${log_dir}"
 
+# the release build with tests, its own folder for vulkan
+release_name="tst_release"
+release_args=()
+[[ ${vulkan} == "1" ]] && release_name="tst_release_vulkan" && release_args=(--vulkan)
 if [[ ${build} == "1" && ${release} == "1" ]]; then
     echo "> building release, with the tests"
     if ! (ulimit -v 4500000; zox_extra_dflags="-Dzox_tests" nice -n 19 bash bsh/build.sh zoxel --release --logs \
-        --out tst_release > "${log_dir}/build.log" 2>&1); then
+        --out "${release_name}" "${release_args[@]}" > "${log_dir}/build.log" 2>&1); then
         grep -m 20 "error" "${log_dir}/build.log"
         echo "!! build failed, see [${log_dir#${root}/}/build.log]"
         exit 2
@@ -170,7 +174,7 @@ fi
 
 bin=$(ls -t bin/zoxel_*_opengl_*_dev/zoxel-dev.bin 2>/dev/null | head -1)
 [[ -n "${out_name}" ]] && bin="bin/${out_name}/${out_name}.bin" && [[ ! -f "${bin}" ]] && bin=""
-[[ ${release} == "1" ]] && bin="bin/tst_release/tst_release.bin"
+[[ ${release} == "1" ]] && bin="bin/${release_name}/${release_name}.bin"
 if [[ -z "${bin}" ]]; then
     echo "!! no dev binary found in [bin/zoxel_*_dev]"
     exit 2

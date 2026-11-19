@@ -105,6 +105,7 @@
                 zox_loge("Element2RenderSystem");
             }
         }
+#ifdef zox_opengl
         if (dbg_log >= 2) {
             // TODO: Move this to gpu code, debug texture - important
             GLint w = 0;
@@ -113,6 +114,7 @@
             glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
             zox_log("Rendering [%s] Texture %i size %ix%i", zox_get_name(e), texture->value, w, h);
         }
+#endif
         if (dbg_log == 1) {
             float2 local_position = zox_has(e, LocalPosition2) ? zox_getv(e, LocalPosition2) : float2_zero;
             zox_log("Rendering [%s] at L[%i] At [%.01fx%.01f]: Brightness [%f] Alpha [%f] Local [%.01fx%.01f]", zox_get_name(e), layer->value, position->value.x, position->value.y, brightness->value, alpha->value, local_position.x, local_position.y);

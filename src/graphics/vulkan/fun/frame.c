@@ -16,7 +16,9 @@ byte vulkan_create_frames() {
         .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
         .commandBufferCount = vk_frames_max,
     };
-    if (!vulkan_check(vkAllocateCommandBuffers(vk_device, &allocate, vk_commands), "vkAllocateCommandBuffers")) {
+    if (!vulkan_check(vkAllocateCommandBuffers(vk_device, &allocate, vk_commands), "vkAllocateCommandBuffers")
+        || !vulkan_check(vkAllocateCommandBuffers(vk_device, &allocate, vk_uploads), "vkAllocateCommandBuffers"))
+    {
         return 0;
     }
     const VkSemaphoreCreateInfo semaphore = { .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO };
@@ -57,7 +59,7 @@ byte vulkan_frame_begin() {
         return 0;
     }
     if (!vk_submitted) {
-        vkWaitForFences(vk_device, 1, &vk_fences[vk_frame], VK_TRUE, UINT64_MAX);
+        vulkan_frame_wait();
         if (!vulkan_acquire()) {
             return 0;
         }
@@ -83,14 +85,19 @@ byte vulkan_frame_begin() {
     };
     vkCmdBeginRenderPass(commands, &pass, VK_SUBPASS_CONTENTS_INLINE);
     vk_recording = 1;
+    vk_pipeline_bound = VK_NULL_HANDLE;
+    vk_dynamic_dirty = 1;
     return 1;
 }
 
-// submits what's recorded (the pass already ended): the frame's first submit waits for its image, the last
-// signals the present
+// submits what's recorded (the pass already ended), after the uploads: the frame's first submit waits for its
+// image, the last signals the present
 void vulkan_submit(byte last) {
-    const VkCommandBuffer commands = vk_commands[vk_frame];
-    vkEndCommandBuffer(commands);
+    const VkCommandBuffer buffers[2] = { vk_uploads[vk_frame], vk_commands[vk_frame] };
+    vkEndCommandBuffer(buffers[1]);
+    if (vk_uploading) {
+        vkEndCommandBuffer(buffers[0]);
+    }
     const VkPipelineStageFlags stage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
     const byte waits = vk_surface && !vk_submitted;
     const byte signals = vk_surface && last;
@@ -99,13 +106,15 @@ void vulkan_submit(byte last) {
         .waitSemaphoreCount = waits,
         .pWaitSemaphores = &vk_acquired[vk_frame],
         .pWaitDstStageMask = &stage,
-        .commandBufferCount = 1,
-        .pCommandBuffers = &commands,
+        .commandBufferCount = vk_uploading ? 2 : 1,
+        .pCommandBuffers = vk_uploading ? buffers : &buffers[1],
         .signalSemaphoreCount = signals,
         .pSignalSemaphores = &vk_rendered[vk_image],
     };
     vkResetFences(vk_device, 1, &vk_fences[vk_frame]);
     vulkan_check(vkQueueSubmit(vk_queue, 1, &submit, vk_fences[vk_frame]), "vkQueueSubmit");
+    vk_fence_serial[vk_frame] = ++vk_serial_submitted;
+    vk_uploading = 0;
     vk_recording = 0;
     vk_submitted = 1;
 }
@@ -133,6 +142,7 @@ void vulkan_frame_end() {
         }
     }
     vk_frame = (vk_frame + 1) % vk_frames_max;
+    vk_frame_waited = 0;
     vk_frames_presented++;
 }
 

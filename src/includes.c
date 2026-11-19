@@ -61,6 +61,7 @@
 #endif
 #ifdef zox_vulkan
     #include <vulkan/vulkan.h>
+    #include <shaderc/shaderc.h>
 #endif
 // Windowing!
 #ifdef zox_sdl

@@ -64,7 +64,16 @@ byte vulkan_create_device() {
         .pQueuePriorities = &priority,
     };
     const char* swapchain = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+    // gl's line widths and point sizes, where the gpu has them
+    VkPhysicalDeviceFeatures supported;
+    vkGetPhysicalDeviceFeatures(vk_physical, &supported);
+    const VkPhysicalDeviceFeatures features = {
+        .wideLines = supported.wideLines,
+        .largePoints = supported.largePoints,
+    };
+    vk_wide_lines = supported.wideLines;
     const VkDeviceCreateInfo info = {
+        .pEnabledFeatures = &features,
         .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
         .queueCreateInfoCount = 1,
         .pQueueCreateInfos = &queue,
@@ -88,6 +97,13 @@ int vulkan_memory_type(uint allowed, VkMemoryPropertyFlags properties) {
         }
     }
     return -1;
+}
+
+// host visible memory, on the gpu too where it can be (integrated gpus, resizable bar)
+int vulkan_host_memory_type(uint allowed) {
+    const VkMemoryPropertyFlags host = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+    const int local = vulkan_memory_type(allowed, host | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+    return local >= 0 ? local : vulkan_memory_type(allowed, host);
 }
 
 // an image with its own memory, 0 if it couldn't
@@ -155,8 +171,7 @@ byte vulkan_create_host_buffer(VkDeviceSize size, VkBufferUsageFlags usage, VkBu
     const VkMemoryAllocateInfo allocate = {
         .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
         .allocationSize = needs.size,
-        .memoryTypeIndex = vulkan_memory_type(needs.memoryTypeBits,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT),
+        .memoryTypeIndex = vulkan_host_memory_type(needs.memoryTypeBits),
     };
     if (!vulkan_check(vkAllocateMemory(vk_device, &allocate, NULL, memory), "vkAllocateMemory")) {
         vkDestroyBuffer(vk_device, *buffer, NULL);

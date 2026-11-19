@@ -126,6 +126,11 @@ void zox_sdl_dispose_surface(SDL_Surface *surface) {
 
 // ----------------------------------------
 
+#ifdef zox_vulkan
+void on_set_vsync(byte value) {
+    vulkan_set_vsync(value);
+}
+#else
 void on_set_vsync(byte value) {
     if (SDL_GL_SetSwapInterval(value)) {
         zox_logw("Unable to disable VSync: [%s] - Value [%i]", SDL_GetError(), value);
@@ -133,6 +138,7 @@ void on_set_vsync(byte value) {
         zox_logv("VSync [%s]", vsync ? "Enabled" : "Disabled");
     }
 }
+#endif
 
 // Screen
 
