@@ -24,6 +24,11 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x Crouching: hold left control, or a gamepad's left stick pushed in toggles it (controllers3/sys/movement.c,
+  CrouchState on the skeleton): the thighs tip ahead 55 degrees, the knees twice it, the feet level, the body down by
+  what the legs lost (the head and a first person camera 17cm lower), slower (0.45 of the walk), no running; the body's
+  bob now from each leg's real height (thigh and knee angles, its bone lengths), the feet within 2cm crouched or not.
+  tst crouch (L3 on a test gamepad), tst walk_views records walk_views/crouch.gif; a headset crouches by the body
 -x XR: looking down the eyes went into the head (the user: the head through the body crouching or looking down): the
   head bone turned by the headset on top of the chest's lean (its parent), and the look's bend (0.95 radians) sank the
   body's neck 9.5cm under the eyes; the head's turn takes the lean off (xr_head_bone_system), the bend is 0.3 (the head
