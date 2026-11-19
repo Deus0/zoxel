@@ -1,6 +1,8 @@
 # Refactoring
 - Part of the [todo](todo.md), done items go in [done.md](done.md)
 
+- Activated block states (a door open, later redstone power) to an activation octree a chunk, out of BlockDatas,
+  which keeps data that doesn't change (directions, filler offsets): doc/tech/blocks.md "Planned"
 - Refactor all systems to use the void <T>(iter* it) { instead of the old macros, it fits better with c standards
 	- they also need timer macros added around them, check already refactored systems for reference
 - Body parts by entities, not SlotType ids: realm parts found by find_slot_type, gear is by tag now (Hat, Shirt),
