@@ -24,6 +24,9 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x Eating forever (a bug from d890c5569): at full health the eat swing played on every press and ate nothing (the
+  swing started at the warmup, the eat refused a full stat). The press checks it can eat first (911eb2f63); tst
+  eat_swing presses at full health (no swing, none eaten) and eats the stack until it's gone
 -x Loading closes the eyes by each player's camera's CameraLids, in 2D too (load_lids_system, was the 3D huds'
   huds3_darkness global and 2D's canvas fades); the "Loading" label over them; it lets go once open (load_lids) so
   sleeping has its own; removed the unused fog darkening (render_darkness); tst load_lids
