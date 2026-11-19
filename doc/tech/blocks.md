@@ -46,8 +46,9 @@ What the one byte holds today (`get_block_data` / `set_block_data`):
   changes, cleared when it's removed or replaced. Placing a bed or door goes through here (`multi_block_place`).
 - `door_toggle` (vodes/doors/fun/_.c, `terrain_set_block_data`): straight into the chunk's buffer under its octree
   lock, the chunk marked `Edited`; the voxel stays. Not through the queue: the queue only writes data when its voxel
-  changes, and `drops.c` treats any queued update over a block as a break. It runs from an observer (on the main
-  thread), it doesn't have to: writes under the chunk's lock and deferred sets are safe from a worker.
+  changes, and `drops.c` treats any queued update over a block as a break. It runs on a worker
+  (`block_activate_system`, vodes/activations): writes under the chunk's lock and deferred sets are safe there;
+  spawning isn't (flecs asserts), so its sound is a one-off event (`DoorSound`, a non fragmenting tag, `on_door_sound`).
 
 ### Who reads it
 
@@ -58,6 +59,12 @@ What the one byte holds today (`get_block_data` / `set_block_data`):
 - terrain collisions (`collision_block_solid`, intersect2.c): a solid voxel with `block_data_open` is passed
   through. Only looked up in chunks that have block data; read without a lock, like the octree there (collisions and
   octree writes run in different phases).
+
+## Using a block (activations)
+
+`block_activate_system` (src/vodes/activations, multithreaded): an entity with `TriggerActionB`, `RaycastVoxelData`
+and `RaycastRange`, the frame its right click is active, its ray on a block in reach: the block's kind picks what
+happens, a door `door_toggle`, a bed (next) sleeping. tst block_activate.
 
 ## Doors now
 

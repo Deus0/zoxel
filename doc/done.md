@@ -24,6 +24,9 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x One right click path for blocks: block_activate_system (vodes/activations, multithreaded) uses the block by its kind,
+  doors moved onto it from their OnSet observer; a door's sound is a one-off event (DoorSound) as a worker can't
+  spawn; tst block_activate (a raycaster clicking a door in and out of reach)
 -x The punch is instant: no cast (warmup 0), the press starts its swing, and it only damages at the swing's hit mark
   (melee_hit, an observer: skills/eve/melee_hit.c), what's aimed at then; the windup is animation. The skeleton
   links what's swung (SwingAction), eating's crumbs read the food from it. tst punch_wind_up (no hit before the mark,
