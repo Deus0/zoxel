@@ -264,6 +264,7 @@ The loop:
 - [Links](links.md): `zox_link`, single and many links, unlink callbacks
 - [Children](children.md): parenting and child entities
 - [Characters](character.md): how characters are built (vox, renderer, skeleton)
+- [Bones and Animation](tech/bones.md): joints, the walk, crouching, swings, XR's body, looking at it (gifs, `--bones`)
 - [Body and Equipment](body_equips.md): body parts in slots, how a body is merged and boned, gear (hats, shirts)
 - [Audio](audio.md): the mixer, 3D sounds, effects, voices and music
 - [Sounds](sounds.md): what things sound like hit, realm sound entities, materials, grunts
