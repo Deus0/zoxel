@@ -1,6 +1,11 @@
 # Done
 
 ## 2026-11-20
+-x Game log (huds/ins/game_log.c): game_log(world, player, text) puts a line at the bottom left of that player's
+  screen over the actionbar, older lines pushed up, each fading out after 6s, 6 at most. Quests done and their rewards
+  log there (handed in by dialogue had nothing). tst game_log
+-x The held item sat on the wrist since bones sit at joints: it's off the hand bone by its part's middle (BoneCentre -
+  BonePosition); tst held_item measured from the bone's pivot, now from the hand's middle
 -x The quest tracker kept a quest's text from the frame it was given (???, tst quest_dialogue failed): track_quest
   unlinked the old QuestTracked then linked the new, both deferred on an exclusive non fragmenting link, leaving
   neither; and the Dirty observer ran before its tracker link was there. It relinks without unlinking (exclusive),

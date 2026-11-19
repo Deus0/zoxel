@@ -10,14 +10,14 @@
 - houses: holes as windows (for now), doors as door blocks, a bed in each home
 - a bed sets its sleeper's respawn point
 - pause separate from the game menus (Y or R), so the game menus work in coop too; pause actually pauses the game
-- a toast for quest rewards: a log ui at the bottom left, new entries fading out
+- a log window in the game menu with the game log's old lines (game_log keeps none yet)
 
 ## Bugs
 - play test 2026-11-20:
 	- the quest tracker ui has no background panel (it has one in tst quest_dialogue, maybe it was the stale [???] tracker)
 	- cloth sticks to a forearm: part of the shirt follows it (cloth should stick together)
-	- the block in hand is on the wrist since the bones refactor
-	- the destruction material is missing in coop
+	- the crack overlay is missing in coop (the second player's screen), not reproduced: tst coop_block_crack shows
+		both players' cracks, software and --gpu. Hit by melee or a skill? Near the first player or far? Which build?
 	- npc hits don't land on the player
 	- "talk to someone in town": the tracker didn't mark off the first quest (likely the stale tracker, fixed 2026-11-20: check)
 	- players talk to each other, but the second player didn't take part
