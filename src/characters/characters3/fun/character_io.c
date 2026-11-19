@@ -31,7 +31,8 @@
 void load_character_player(ecs *world, entity realm, entity e, float3* position, float3* euler, float4* rotation) {
     const FolderPath* path = zox_get(realm, FolderPath);
     SaveDataCharacter save;
-    if (load_file_struct(path->value, "player.dat", &save, sizeof(SaveDataCharacter))) {
+    char name[32];
+    if (load_file_struct(path->value, get_player_save_file(e, name, sizeof(name)), &save, sizeof(SaveDataCharacter))) {
         *position = save.position;
         *euler = save.euler;
         float map_bounds_y = render_distance_y * octree_size(terrain_depth);

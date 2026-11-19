@@ -34,6 +34,16 @@ static inline byte get_player_index(entity e) {
     return 0;
 }
 
+// a player's save file: player.dat, then player2.dat, player3.dat.. (local coop)
+static inline const char* get_player_save_file(entity player, char* name, uint size) {
+    const byte index = get_player_index(player);
+    if (!index) {
+        return "player.dat";
+    }
+    snprintf(name, size, "player%i.dat", index + 1);
+    return name;
+}
+
 // local coop: a player joins with a device (a gamepad), no cameras or canvas until a game starts (huds)
 //  - device 0 joins with none (--splitscreen without a gamepad, tests)
 entity join_player(

@@ -69,7 +69,9 @@ void character_save_system(iter* it) {
             continue;
         }
         const FolderPath* path = zox_get(realm, FolderPath);
-        if (save_file_struct(path->value, "player.dat", &data, sizeof(SaveDataCharacter))) {
+        char name[32];
+        const char* file = get_player_save_file(zox_get_link(world, e, PlayerLink), name, sizeof(name));
+        if (save_file_struct(path->value, file, &data, sizeof(SaveDataCharacter))) {
             hash->value = new_hash;
         }
         // zox_log("+ new hash detected at [%fx%fx%f] - %lu", position->value.x, position->value.y, position->value.z, hash)

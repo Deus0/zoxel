@@ -48,7 +48,8 @@ void player_state_game_begin(
     float3 position;
     float3 spawn_euler;
     float4 spawn_rotation;
-    byte is_new_game = !has_save_game_file(path->value, "player.dat");
+    char name[32];
+    byte is_new_game = !has_save_game_file(path->value, get_player_save_file(player, name, sizeof(name)));
     if (is_new_game) {
         // NOTE: Loads first regions in terrain
         position = (float3) { 8, 8.5f, 8 };
