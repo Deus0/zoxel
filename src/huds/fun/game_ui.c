@@ -167,10 +167,14 @@ void spawn_player_screen(
         }
         // spawns a render texture ui and links to camera
         if (!zox_xr_active && !zox_disable_post_processing) {
-            // material_render_texture_rgba
+            // each screen its own material: the camera's vignette, blur, tint and lids are uniforms on it (one shared,
+            //  a player in dialogue or asleep darkened every screen); the first's lives on, the others' go with it
             entity material = zox_game_render_texture_alpha ?
                 material_render_texture_rgba :
                 material_render_texture_rgb;
+            if (i > 0) {
+                material = spawn_material_render_texture_from(world, zox_get_link(world, material, ShaderLink));
+            }
             zox_link(world, game_camera, MaterialLink, material);
             entity texture = spawn_render_texture(
                 world,
@@ -185,6 +189,9 @@ void spawn_player_screen(
                 material);
             if (!zox_game_render_texture_alpha) {
                 zox_add(texture, TextureRGB);
+            }
+            if (i > 0) {
+                zox_set_parent(world, material, texture);
             }
         }
     }

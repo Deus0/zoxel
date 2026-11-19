@@ -1,6 +1,28 @@
 entity material_render_texture_rgb;
 entity material_render_texture_rgba;
 
+// a render texture's material from its shader: a material each, as its uniforms are its camera's (vignette, blur,
+//  tint, lids), so split screens share the shader, not the material
+entity spawn_material_render_texture_from(ecs* world, entity shader) {
+    guint material_id;
+    entity e = spawn_material_from_ids(world, shader, zox_getv(shader, ShaderGPULink), &material_id);
+    if (!e) {
+        zox_loge("[spawn_material_render_texture] failed to spawn e");
+        return 0;
+    }
+    zox_set_unique_name(e, "material_render_texture");
+    zox_setv(e, CameraBlur, 0);
+    zox_setv(e, CameraTint, 0);
+    zox_setv(e, CameraLids, 0);
+    attributes_matrixui base_attributes = create_attributes_matrixui(material_id);
+    zox_set_data(e, attributes_matrixui, base_attributes);
+    zox_setv(e, MaterialBlur, zox_gpu_get_material_property(material_id, "blur"));
+    zox_setv(e, MaterialVignette, zox_gpu_get_material_property(material_id, "vignette"));
+    zox_setv(e, MaterialTint, zox_gpu_get_material_property(material_id, "tint"));
+    zox_setv(e, MaterialLids, zox_gpu_get_material_property(material_id, "lids"));
+    return e;
+}
+
 entity spawn_material_render_texture(ecs* world, byte is_alpha) {
     char* frag_filename = is_alpha ?
         "render_texture_rgba.frag" :
@@ -18,29 +40,10 @@ entity spawn_material_render_texture(ecs* world, byte is_alpha) {
         return 0;
     }
     zox_set_unique_name(shader, "shader_render_texture");
-    guint material_id;
-    entity e = spawn_material_from_ids(world, shader, shader_ids, &material_id);
-    if (!e) {
-        zox_loge("[spawn_material_render_texture] failed to spawn e");
-        return 0;
+    const entity e = spawn_material_render_texture_from(world, shader);
+    if (e) {
+        zox_set_parent(world, shader, e);
     }
-    zox_set_unique_name(e, "material_render_texture");
-    zox_set_parent(world, shader, material_id);
-    zox_link(world, e, ShaderLink, shader);
-    zox_setv(e, CameraBlur, 0);
-    zox_setv(e, CameraTint, 0);
-    zox_setv(e, CameraLids, 0);
-    // Set material properties
-    attributes_matrixui base_attributes = create_attributes_matrixui(material_id);
-    zox_set_data(e, attributes_matrixui, base_attributes);
-    zox_setv(e, MaterialBlur,
-        zox_gpu_get_material_property(material_id, "blur"));
-    zox_setv(e, MaterialVignette,
-        zox_gpu_get_material_property(material_id, "vignette"));
-    zox_setv(e, MaterialTint,
-        zox_gpu_get_material_property(material_id, "tint"));
-    zox_setv(e, MaterialLids,
-        zox_gpu_get_material_property(material_id, "lids"));
     return e;
 }
 
