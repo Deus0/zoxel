@@ -80,6 +80,7 @@ void zox_tsts_my_module() {
 - **Looking at a model**: `bash bsh/model.sh <name>` (iterating a blueprint: edit, run, look at
   `tst/models/<name>.png`, ~45s with the build, ~10s `--nobuild`), or `zox_tst_model=<name> bash bsh/tst.sh model_views`, then `tst/model_views.ppm` (kept per model in `tst/models/<name>.ppm`): a realm
   model from 4 viewports on gray (`spawn_viewport_camera`, `CameraFilter`, see [src/models/tst/model_views.c](../src/models/tst/model_views.c)).
+  `zox_tst_model_variants=1` shows a model group's first 4 variants side by side instead (i.e. `zox_tst_model=chook`).
 
 ## When you fix a bug
 
@@ -100,7 +101,7 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 | Textures | `texture_noise` `texture_outline` |
 | Lights | `smooth_lights` `lod_lights` `lod_chunk_lights` `block_vox_lights` `block_vox_light_sampling` |
 | Rendering | `gpu_restore` `gpu_restore_game` `gpu_links` (gpu objects let go of and made again, live counts) `lines_spawn` `lines_render` `skeleton_render` `vox_instance_render` `terrain_render` `block_vox_light_sampling` `block_vox_lights` `screenshot` `model_views` `body_views` `punch_views` `walk_views` |
-| Models | `model_nodes` (fill, box, paint, sprinkle on voxels) `model_shapes` (realm models: one piece, mirrored, head's neck and eyes, chest without a pinch, cookie chips and crumbs) |
+| Models | `wfc` (wave function collapse: patches, seeds, rules) `model_nodes` (fill, box, paint, sprinkle on voxels) `model_shapes` (realm models: one piece, mirrored, head's neck and eyes, chest without a pinch, cookie chips and crumbs) |
 | Cameras | `camera_viewports` `camera_projection` `camera_orthographic` `camera_look_at` `camera_viewport_spawn` `camera_split_screen` `camera_downscale` `camera_frustum` `camera_filter` `eyelids` |
 | Sound and music | `sound_mixer` `sound_formats` `sound_instruments` `sound_balance` `voice_sounds` `hit_sounds` `hit_sound_links` `music_*` |
 | Body and gear | `parts` `clothes` `npc_skeletons` |

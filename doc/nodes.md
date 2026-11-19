@@ -59,6 +59,39 @@ should always choose.
    node (or picks a branch with `NextNodeLink`).
 3. A test: build a small graph in a test and walk it, like `tst node_graphs` or `tst quest_dialogue`.
 
+## Model nodes
+
+A model blueprint is a node graph run on a model: `spawn_blueprint_models(world, parent, graph, seed, name, depth,
+variants)` makes a model group and runs one process per variant, each with its own seed, so every node runs on every
+variant. Nodes go between the first (size) and the last (end): more nodes there are modifiers (colours, eyes).
+
+| Node | Does |
+|---|---|
+| size | the variant's box, a seeded ratio of the blueprint's length (`ModelSize` on the process) |
+| colors | adds seeded colours |
+| fill / box / paint | an ellipsoid or box of a voxel, or paints solid voxels |
+| sprinkle / speckle | seeded dots on or in the surface |
+| wfc | a new model from a source model's patches (wave function collapse), its source's colours |
+| end | marks the model built |
+
+### WFC (wave function collapse)
+
+[src/models/fun/wfc.c](../src/models/fun/wfc.c) is pure C (`wfc_generate`), the node is
+[src/models/eve/wfc.c](../src/models/eve/wfc.c) (an observer on `Begin`), the blueprint
+`spawn_model_nodegraph_wfc(world, parent, source, rules, size_min, size_max)`.
+
+- the node: `ModelLink` its source model, `Shape3Size` the box (the source's, scaled by the size node), `WfcRules`
+- patches are 2 wide and 3 tall (`wfc_patch_size`): 3 a side keeps the details but only remakes a small source, 3 tall
+  lets a leg see it goes on up
+- rules (`wfc_rule_*`): air outside the box, the floor, mirrored on x, one piece, anchored (a patch near where it is
+  in the source), shaped (favours the source's voxel at the same share of the box), feet (solid under the source's
+  feet, the piece standing on them)
+- a contradiction tries the next seed (24 tries), then less of the feet, then the source stretched to the box
+- chooks: 4 critter variants of `chicken.vox` in every realm (gam/zoxel/sys/characters.c). To look at them:
+  `zox_tst_model=chook zox_tst_model_variants=1 bash bsh/tst.sh model_views`
+- to do: the comb is often lost (it's small and on top, few patches); a box much flatter than the source can end
+  as the stretched source
+
 ## Examples
 
 - [gam/zoxel/sys/dialogues.c](../gam/zoxel/sys/dialogues.c): the quest giver's dialogue, speech with
@@ -72,5 +105,6 @@ should always choose.
 
 | Test | Checks |
 |---|---|
+| `wfc` | outputs only use the source's voxels and patches (2, 3 and 2x3x2), seeded, and with every rule: a floor, mirrored, one piece on its feet |
 | `node_graphs` | start, advance, branches keep their links, choosing a branch, the end, `Begin` once per node |
 | `quest_dialogue` | a quest giver: offer, already commanded, slay, reward and hand in, done |
