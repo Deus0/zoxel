@@ -7,6 +7,11 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Bugs
+- Bones turn about their part's middle, not its joint (spawn_part_bones, src/parts/sys/bones.c: a bone's position is
+  its part's centre): the forearm swings about mid forearm, so bending the elbow (the punch's guard and wind up, the
+  ik) pulls it a gap away from the upper arm and the skin between stretches into thin strips (bash bsh/punch.sh, the
+  right side view). Thighs, shins and the head too. Fix: the pivot on the part's face toward its parent; touches every
+  animation, the leg ik and the head camera, waiting on a yes (2026-11-19)
 - tst sky_clouds fails: "no cloud in the sky looking up" (0.07% of the band), on 31a2c2740 too (2026-11-20)
 - tst lint_systems fails: chunk3_textured_render_system and chunk3_transparent_render_system
   (rendering3/sys/render_chunks.c) have no zox_sys_on_begin / zox_sys_on_end (2026-11-20)

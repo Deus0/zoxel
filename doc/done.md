@@ -24,6 +24,12 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x A gif recorder (src/graphics/fun/gif.c): zox_gif_record(path, fps), zox_gif_stop(), frames taken before the
+  swap (zox_gpu_read_screen, which screenshots use too); tst punch_views and bash bsh/punch.sh record the punch from 4
+  angles
+-x The raised guard held the arm up straight (0.95 of its reach, a salute from outside): a fighting guard now, the
+  fist ahead of the chin, the elbow bent (0.8); eating brings the hand nearer the mouth (tst swing_motion measured it
+  against the guard)
 -x A castbar above the actionbar: fills over a cast (an action's warmup) with its name, hidden after; instant skills
   tagged SkillInstant, skill tooltips say instant or cast [time]; tst castbar
 -x A long frame skipped swing marks (found from the frame's capped delta): bites and hits lost, a lost first bite ate
