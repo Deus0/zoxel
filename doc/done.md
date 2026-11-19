@@ -24,6 +24,13 @@
   gpu_restore_game (in a game), tst gpu_links (bare entities)
 
 ## 2026-11-19
+-x Swings as one table (bones/dat/swings.c): each kind's poses, its strike's ease and its marks (events); played by
+  bones/ik/sys/swing.c (was ik/sys/punch.c); zox_ease_in_out, zox_ease_between in animations
+-x A swing's own time on skills and items (SwingTime, attack speed), separate from the cooldown; the melee tooltip
+  shows damage, swing and cooldown
+-x Placing a block and eating are instant: the press starts the swing, the block placed at its hit (items/eve/place.c),
+  the food eaten at its first bite; tst place_hit, eat_swing
+-x items/consumables submodule (stat, food spawn, eating); consumables set their timings then had them reset (0.5s)
 -x Eyelids: CameraLids (0 open to 1 shut) on cameras closes the view from the top and the bottom, the middle first
   (the headset's lid curve), in the render texture shaders; the headset's eyes close by it too (with loading's
   huds3_darkness); tst eyelids (screenshots open, part shut and shut)

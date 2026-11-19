@@ -2,11 +2,17 @@
 
 Skills and item uses timed like an mmo's (cast time, cooldown, a global cooldown). Instant ones (punch, place, eat) are
 animation based: the press starts a swing, the effect lands at the swing's impact. Timing must be exact for combat.
-Started: the punch is instant (step 2). Open questions at the end.
+Steps 1 to 4 done (punch, place and eat are instant, each a swing of its own time, hitting at its marks). Open
+questions at the end.
 
 The user's answers (2026-11-19):
 - any cast (a warmup) shows a castbar
 - the punch only damages on its hit: its windup is just the swing's animation, not a cast
+- impacts as events (observers of the swing's marks), consumables as an items submodule, the bones swing code made
+  ready for more skills (bones/dat/swings.c: one entry a swing)
+- attack speed by the skill, its numbers shown in its tooltip as they're used (as some games' skill descriptions
+  show their maths): the melee tooltip shows damage, swing and cooldown
+- a global cooldown: not decided; cancelling a swing: under consideration
 
 ## Now
 
@@ -52,15 +58,17 @@ The user's answers (2026-11-19):
 
 ## Steps
 
-1. A swing's own length on skills and items (`SwingSpeed` on them), cooldown separate; tests: punch_wind_up's checks
-   move to the press.
+1. Done: a swing's own length on skills and items (`SwingTime`, their attack speed: punch 0.5s, place 0.25s, eat 1s),
+   the cooldown separate; the melee tooltip shows damage, swing and cooldown.
 2. Done: punch instant, its warmup 0, its swing from the press (melee_system pays and starts it; still a system on
    `Activate`, an observer of the press later), the hit an observer of the hit mark (melee_hit, skills/eve/melee_hit.c);
    the skeleton has `SwingAction` (what's swung) for observers; tst punch_wind_up: no hit before the mark, one hit
    ~10 ms after it. The swing's length is the cooldown until step 1.
-3. Place and eat the same (item_activate_system, item_consume_system to observers of their marks).
-4. `items/consumables` submodule (the bite observer moves from actions/eve/eat.c).
-5. Global cooldown on the user (if wanted now), the actionbar shows it (skill_overlay_system).
+3. Done: place and eat the same: the press starts the swing, item_place at the place's hit (items/eve/place.c),
+   item_consume at the first bite (items/consumables/eve/eat.c); tst place_hit, eat_swing. item_swing_system gone.
+4. Done: `items/consumables` (ConsumeValue, ConsumeStat, spawn_item_consumable, the press, the bites); the bones
+   swings are one table (bones/dat/swings.c: poses, ease, marks), played by bones/ik/sys/swing.c.
+5. Global cooldown on the user (not decided), the actionbar shows it (skill_overlay_system).
 6. A castbar for casts (shoot and aura have a 0.5s warmup and none now): the user's cast, its skill's icon and name,
    filling over its warmup.
 
