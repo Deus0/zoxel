@@ -39,6 +39,7 @@ run_meshing() {
         local args=("${mode[@]}" "${backend[@]}" --nouis --nohud)
         [[ ${first} == 0 || ${build} == 0 || "${meshing}" == "gpu" ]] && args+=(--nobuild)
         [[ "${meshing}" == "gpu" ]] && args+=(--gpu_meshing)
+        [[ "${meshing}" == "cpu" ]] && args+=(--cpu_meshing)
         zox_tst_dir="${out}/${meshing}" zox_tst_out="tst_compare_meshing" \
             bash bsh/tst.sh "${tst}" "${args[@]}" > /dev/null 2>&1
         echo "  ${meshing} ${tst}: exit $?"

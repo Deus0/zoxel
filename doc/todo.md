@@ -844,11 +844,11 @@
 	- tst: a portal pair, the view through the entry matches a camera at the exit; a character walked through comes
 	  out the exit facing the same way relative to it
 - Cube lines (cube_line_render_system) and quad lines still draw an entity at a time: instance them too (gizmos)
-- Voxel meshing on the gpu, faster updates and less cpu load
-	- upload the voxels (a flat grid per depth like build_voxel_mesh_grid's pyramid, or the octree), a compute
-	  shader writes faces, ao and colors into the mesh buffers, no cpu mesh or upload
-	- chunks, vox models and skeletons, cpu meshing kept for tests and platforms without compute
-	- (tst vox_mesh_grid compares mesh builders, a gpu one could be checked against the cpu one)
+- Gpu meshing (doc/plans/gpu_meshing.md): terrain meshes on the gpu, vulkan's default (2026-11-20)
+	- opengl: off by default, it's slower there (perf_terrain far 32: idle -10% fps, far 8 streaming -16% fps,
+	  doc/metrics.md); its draw is every chunk's indirect draw from the main thread: fewer triangles (merging
+	  faces), or one multi draw indirect per terrain, then default it on (--gpu_meshing to try it)
+	- after: a lost gpu context (android gl) remakes gpu meshes, water on the gpu, vox models and skeletons
 - Light character models from the environment (like minivoxes)
 	- sample the LightNode at the character's voxel position (get_block_vox_light in vodes3/fun/lights.c), set Brightness
 	- update when the character moves to a new voxel, or its chunk's LightNodeDirty goes active

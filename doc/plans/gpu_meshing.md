@@ -55,10 +55,11 @@ Tests: [src/chunks/chunks3/tst/gpu_mesh.c](../../src/chunks/chunks3/tst/gpu_mesh
   gives ES 3.2, the Khadas' Mali too). `zox_gpu_compute_supported()` checks at runtime, and `zox_gles2`/web builds
   compile it out (`zox_disable_compute`): `gpu_mesher_create` returns 0 and cpu meshing stays.
 
-## In the game (`--gpu_meshing`, off by default)
+## In the game (vulkan's default, opengl's with `--gpu_meshing`)
 
 Solid chunk meshes are meshed on the gpu ([src/lights/lights3/sys/gpu_mesh.c](../../src/lights/lights3/sys/gpu_mesh.c)),
-water stays on the cpu. A setting, `zox_chunks3_gpu_meshing`; any test runs with it by adding `--gpu_meshing`.
+water stays on the cpu. A setting, `zox_chunks3_gpu_meshing`: on with vulkan, off with opengl (slower to draw there yet,
+doc/todo.md); `--gpu_meshing` and `--cpu_meshing` choose, for the game or any test.
 
 - A gpu chunk mesh is a `chunk_mesh_gpu` (a variant of the textured one) tagged `GpuMesh`, its own buffers in
   `MeshGPULink` (indices, vertices), `ColorsGPULink` (face lights), `MeshCommandGPULink`, with `MeshFaceRoom` and
