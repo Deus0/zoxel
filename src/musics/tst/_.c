@@ -50,6 +50,7 @@ void zox_tst_music_file_check(ecs* world) {
 }
 
 // tst: music_plays, the main menu's music plays: it steps through its notes, spawning sounds
+//  - passes as soon as it moved on a note and spawned a sound, not after a fixed wait
 //  - turns sounds back on (--background turns them off for tests)
 //  - run: bash bsh/tst.sh music_plays
 int zox_tst_music_plays_frames = 0;
@@ -74,8 +75,11 @@ byte zox_tst_music_plays_ready(ecs* world) {
         zox_tst_music_plays_start_note = zox_getv(music, MusicNote);
         zox_tst_music_plays_start_sounds = zox_count_types(Sound);
     }
-    zox_tst_waiting = "a few seconds of music";
-    return zox_current_time - zox_tst_music_plays_start > 3.0;
+    // ready once it moved on a note and spawned a sound, 3 seconds at most (the check then says which didn't)
+    zox_tst_waiting = "the music to move on a note and play it";
+    const byte moved = zox_getv(music, MusicNote) != zox_tst_music_plays_start_note;
+    const byte played = zox_count_types(Sound) > zox_tst_music_plays_start_sounds;
+    return (moved && played) || zox_current_time - zox_tst_music_plays_start > 3.0;
 }
 
 void zox_tst_music_plays_check(ecs* world) {
@@ -200,10 +204,8 @@ float* zox_tst_mix_song(const Song* song, float gain, uint* out_length) {
     return mix;
 }
 
-// renders a song into a .wav to listen to, normalized
-void zox_tst_render_song(const Song* song, const char* path) {
-    uint length;
-    float* mix = zox_tst_mix_song(song, 1, &length);
+// writes a mixed song (zox_tst_mix_song) to a .wav to listen to, normalized (in place)
+void zox_tst_write_song(float* mix, uint length, const char* path) {
     float peak = 0;
     for (uint j = 0; j < length; j++) {
         peak = fmaxf(peak, fabsf(mix[j]));
@@ -214,6 +216,13 @@ void zox_tst_render_song(const Song* song, const char* path) {
         }
     }
     zox_tst_write_wav(path, mix, length);
+}
+
+// renders a song into a .wav to listen to, normalized
+void zox_tst_render_song(const Song* song, const char* path) {
+    uint length;
+    float* mix = zox_tst_mix_song(song, 1, &length);
+    zox_tst_write_song(mix, length, path);
     free(mix);
 }
 

@@ -14,9 +14,9 @@ void zox_tst_vox_instance_check(ecs* world) {
     entity e = draws->candidate;
     entity mesh = zox_get_link(world, e, InstanceLink);
     const uint drawn = zox_drawn_vox_instances - draws->baseline;
-    zox_log("[tst] vox instance [%s] mesh [%s], drawn [%u] instances in [%.0fs]",
+    zox_log("[tst] vox instance [%s] mesh [%s], drawn [%u] instances within [%i] frames",
         zox_getn(e), zox_getn(mesh), drawn, zox_tst_draws_window);
-    zox_tst_check(drawn, "no vox instances drawn in [%.0fs]", zox_tst_draws_window);
+    zox_tst_check(drawn, "no vox instances drawn within [%i] frames", zox_tst_draws_window);
     if (drawn) {
         return;
     }

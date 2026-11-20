@@ -137,7 +137,7 @@ void zox_tst_skeleton_check_skeleton(ecs* world, entity skeleton) {
 void zox_tst_skeleton_check(ecs* world) {
     zox_tst_draws* draws = &zox_tst_skeleton_draws;
     const uint drawn = zox_drawn_skeleton_meshes - draws->baseline;
-    zox_tst_check(drawn, "no skeleton meshes drawn in [%.0fs]", zox_tst_draws_window);
+    zox_tst_check(drawn, "no skeleton meshes drawn within [%i] frames", zox_tst_draws_window);
     entity material = transparent_meshes ? material_bonet : material_bone;
     zox_tst_check(zox_valid(material) && zox_getv(material, MaterialGPULink),
         "bone material invalid or has no MaterialGPULink");
@@ -174,7 +174,7 @@ void zox_tst_skeleton_check(ecs* world) {
         }
         zox_tst_skeleton_check_skeleton(world, skeleton);
     }
-    zox_log("[tst] skeletons [%i] (hidden [%i], pending [%i]), meshes [%i], drawn [%u] in [%.0fs]",
+    zox_log("[tst] skeletons [%i] (hidden [%i], pending [%i]), meshes [%i], drawn [%u] within [%i] frames",
         checked_count, hidden, pending, zox_tst_skeleton_meshes_count, drawn, zox_tst_draws_window);
     zox_tst_check(checked_count - hidden - pending, "no visible built skeletons");
 }

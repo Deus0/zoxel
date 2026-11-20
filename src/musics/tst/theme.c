@@ -3,7 +3,8 @@
 //  - its notes are in order, inside the theme, under the events cap, it lasts a minute and a half to three
 //  - the same seed composes the same theme, seeds vary in key, mode, tempo, form and the answer
 //  - as loud as the realm's song (seed 666), the menu and the game crossfade at one volume
-//  - renders tst/menu_theme.wav and tst/menu_theme2.wav (two seeds), to listen to
+//  - writes tst/menu_theme.wav (seed 1, the mix it measured), to listen to; with zox_tst_listen=1 also
+//    tst/menu_theme2.wav (seed 2), rendered only then as nothing checks it (a song is ~2s to synthesize in debug)
 //  - run: bash bsh/tst.sh music_theme
 byte zox_tst_music_theme_ready(ecs* world) {
     (void) world;
@@ -119,9 +120,12 @@ void zox_tst_music_theme_check(ecs* world) {
     zox_log("[tst] theme [1]: [%.0fs], [%u] notes, tonic [%i], mode [%i], [%i] sections, rms [%.3f], the realm song's [%.3f] ([%.2fx])",
         song.seconds, song.events_count, song.tonic, song.mode, song.sections_count, theme_rms, realm_rms, ratio);
     zox_tst_check(ratio > 0.7f && ratio < 1.4f, "the menu theme is [%.2fx] as loud as the realm's song", ratio);
+    zox_tst_write_song(theme_mix, theme_length, zox_tst_path("menu_theme.wav"));
     free(theme_mix);
     free(realm_mix);
-    zox_tst_render_song(&song, zox_tst_path("menu_theme.wav"));
-    compose_menu_theme(2, &song);
-    zox_tst_render_song(&song, zox_tst_path("menu_theme2.wav"));
+    const char* listen = getenv("zox_tst_listen");
+    if (listen && listen[0] == '1') {
+        compose_menu_theme(2, &song);
+        zox_tst_render_song(&song, zox_tst_path("menu_theme2.wav"));
+    }
 }

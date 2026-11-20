@@ -3,8 +3,9 @@
 //  - while disposed (android's lost context, no gpu to make things on) nothing makes a gpu object
 //  - restored, no new opengl errors over the next frames (ones from before are left to their own bug)
 //  - run: bash bsh/tst.sh gpu_restore_game
+//  - frames, not seconds: a system that makes gpu objects (dirty meshes, textures) does so within a frame or two
+#define zox_tst_grg_stage_frames 10
 int zox_tst_grg_stage = 0, zox_tst_grg_frames = 0;
-double zox_tst_grg_time = 0;
 int zox_tst_grg_before[zox_tst_gr_kinds], zox_tst_grg_disposed[zox_tst_gr_kinds], zox_tst_grg_restored[zox_tst_gr_kinds];
 int zox_tst_grg_made[zox_tst_gr_kinds];     // the most made while disposed, over its frames
 int zox_tst_grg_errors = 0, zox_tst_grg_errors_before = 0;    // opengl errors seen (zox_gpu_error_bits)
@@ -15,12 +16,10 @@ byte zox_tst_gpu_restore_game_ready(ecs* world) {
         if (!zox_tst_player_spawn_ready(world)) {
             return 0;
         }
+        // a few frames in game first, opengl errors from before the restore are another bug's
         zox_tst_waiting = "the game to settle";
-        if (!zox_tst_grg_time) {
-            zox_tst_grg_time = zox_current_time;
-        }
-        if (zox_current_time - zox_tst_grg_time < 3) {
-            zox_tst_grg_errors_before |= zox_gpu_error_bits();
+        zox_tst_grg_errors_before |= zox_gpu_error_bits();
+        if (++zox_tst_grg_frames < zox_tst_grg_stage_frames) {
             return 0;
         }
         // in one frame: nothing else makes or lets go of anything between
@@ -44,7 +43,7 @@ byte zox_tst_gpu_restore_game_ready(ecs* world) {
                 zox_tst_grg_made[i] = live[i];
             }
         }
-        if (zox_tst_grg_frames < 60) {
+        if (zox_tst_grg_frames < zox_tst_grg_stage_frames) {
             return 0;
         }
         opengl_restore_resources(world);
@@ -54,14 +53,14 @@ byte zox_tst_gpu_restore_game_ready(ecs* world) {
     }
     zox_tst_waiting = "frames restored";
     zox_tst_grg_errors |= zox_gpu_error_bits();
-    if (zox_tst_grg_stage == 3 && zox_tst_grg_frames >= 60) {
+    if (zox_tst_grg_stage == 3 && zox_tst_grg_frames >= zox_tst_grg_stage_frames) {
         // then disposed for a while
         opengl_dispose_resources(world);
         zox_tst_grg_stage = 1;
         zox_tst_grg_frames = 0;
         return 0;
     }
-    return zox_tst_grg_stage == 2 && zox_tst_grg_frames >= 60;
+    return zox_tst_grg_stage == 2 && zox_tst_grg_frames >= zox_tst_grg_stage_frames;
 }
 
 void zox_tst_gpu_restore_game_check(ecs* world) {

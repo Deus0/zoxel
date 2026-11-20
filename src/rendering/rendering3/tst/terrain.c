@@ -14,9 +14,9 @@ void zox_tst_terrain_check(ecs* world) {
     zox_tst_draws* draws = &zox_tst_terrain_draws;
     entity e = draws->candidate;
     const uint drawn = zox_drawn_chunks - draws->baseline;
-    zox_log("[tst] chunk mesh [%s], drawn [%u] chunks in [%.0fs]",
+    zox_log("[tst] chunk mesh [%s], drawn [%u] chunks within [%i] frames",
         zox_getn(e), drawn, zox_tst_draws_window);
-    zox_tst_check(drawn, "no terrain chunks drawn in [%.0fs]", zox_tst_draws_window);
+    zox_tst_check(drawn, "no terrain chunks drawn within [%i] frames", zox_tst_draws_window);
     if (zox_has(e, MeshUVs)) {
         const MeshUVs* uvs = zox_get(e, MeshUVs);
         const MeshVertices* vertices = zox_get(e, MeshVertices);
@@ -68,6 +68,8 @@ void tst_terrain_render_probe_system(iter* it) {
 
 void zox_tsts_terrain_render(ecs* world) {
     zox_tst_add("terrain_render", zox_tst_terrain_ready, zox_tst_terrain_check, 90);
+    // the test level: flat, one chunk far, a chunk is all it draws
+    zox_tst_set_setup("terrain_render", zox_tst_level_setup, 0);
     // main thread, in zoxp_render with the other main thread systems: no merges of its own (tst pipeline_syncs)
     zox_system_1(
         tst_terrain_render_probe_system,
