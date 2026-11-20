@@ -1,4 +1,5 @@
 zox_tag(Terrain);
+zox_tag(TunkUnloading);     // a tunk the stream left, deleted a little a frame (sys/stream_unload.c), kept if it comes back
 zox_tag(TerrainLink);
 zox_tag(FlatTerrain);
 zox_tag(FlatlandChunk);
@@ -39,6 +40,7 @@ entity get_linked_terrain(ecs* world, entity e) {
 
 void zox_components_terrain(ecs *world) {
     zoxd_tag(Terrain);
+    zoxd_tag(TunkUnloading);
     zoxd_nf_link(TerrainLink);
     zoxd_tag(FlatTerrain);
     zoxd_tag(FlatlandChunk);

@@ -268,24 +268,15 @@ void terrain_stream_queue_system(iter* it) {
                 // TODO: Validate if safetychecks
                 entity tunk = update.tunk;
                 const Chunk3Stack* stack = zox_get(tunk, Chunk3Stack);
+                // left: unloaded a little a frame (sys/stream_unload.c); back before it's gone: kept
                 if (is_kill) {
-                    for (int k = 0; k < stack->length; k++) {
-                        const int j = k - stack->length / 2;
-                        entity chunk = stack->value[k];
-                        if (!zox_valid(chunk)) {
-                            continue;
-                        }
-                        int3 position3 = (int3) {
-                            position2.x,
-                            j,
-                            position2.y
-                        };
-                        int3_hashmap_remove(chunks->value, position3);
-                        zox_delete(chunk);
+                    if (!zox_has(tunk, TunkUnloading)) {
+                        zox_add(tunk, TunkUnloading);
                     }
-                    int2_hashmap_remove(tunks->value, position2);
-                    zox_delete(tunk);
                     continue;
+                }
+                if (zox_has(tunk, TunkUnloading)) {
+                    zox_remove(tunk, TunkUnloading);
                 }
                 const byte changed = stream_tunk_distance(world, e, tunk, stack, new_distance);
                 if (!changed) {

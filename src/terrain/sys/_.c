@@ -10,6 +10,7 @@
 // Streaming
 // #include "stream_death.c"
 #include "stream.c"
+#include "stream_unload.c"
 #include "water_flow.c"
 #include "water_view.c"
 
@@ -102,6 +103,14 @@ void zox_systems_terrain(ecs *world) {
         [out] tunks.TunkLinks,
         [out] chunks3.ChunkLinks,
         [none] terrains.Terrain,
+    );
+    // left land, a little a frame (sys/stream_unload.c): main thread, it edits its terrain's links
+    zox_system_1(
+        tunk_unload_system,
+        zoxp_spawn,
+        [in] tunks.TunkPosition,
+        [in] tunks.Chunk3Stack,
+        [none] terrains.TunkUnloading,
     );
     // Debug Terrains
 #ifdef zox_debug_chunk_bounds

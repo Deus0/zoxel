@@ -95,13 +95,22 @@ byte zox_tst_perf_terrain_ready(ecs* world) {
             return 0;
         }
         zox_tst_frames_log(&zox_tst_perf_terrain_frames, "perf_terrain idle");
-        // what it drew (tst/perf_terrain.ppm), taken as the stream begins
+        // what it drew (tst/perf_terrain.ppm): reading it back holds a frame (~60ms), so before the stream counts
         snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("perf_terrain.ppm"));
-        zox_tst_frames_begin(&zox_tst_perf_terrain_frames);
         zox_tst_perf_terrain_stage = 3;
-        zox_tst_perf_terrain_step = -1;
+        return 0;
     }
-    // stream: a step, then wait for it to settle; every frame profiled (what makes a streaming frame slow)
+    if (zox_tst_perf_terrain_stage == 3) {
+        zox_tst_waiting = "its view's screenshot";
+        if (zox_screenshot_request[0]) {
+            return 0;
+        }
+        zox_tst_frames_begin(&zox_tst_perf_terrain_frames);
+        zox_tst_perf_terrain_stage = 4;
+        zox_tst_perf_terrain_step = -1;
+        return 0;
+    }
+    // stream (stage 4): a step, then wait for it to settle; every frame profiled (what makes a streaming frame slow)
     zox_tst_profile_frame(world);
     zox_tst_waiting = "a stream step to settle";
     if (zox_tst_perf_terrain_step >= 0) {
