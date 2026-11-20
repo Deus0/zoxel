@@ -119,14 +119,11 @@ static inline int zox_tst_gpu_reference(const VoxelNode* voxels, byte depth, byt
     return count;
 }
 
-// the gpu mesh against the reference: each face once, matching it, its 4 corners the voxel's face
-static inline void zox_tst_gpu_compare(GpuMesher* mesher, const VoxelNode* voxels, byte depth, const char* name) {
+// the mesher's last mesh against a reference (expected: a byte a voxel's face), each face once, matching it, its 4
+//  corners the voxel's face
+static inline void zox_tst_gpu_compare_faces(GpuMesher* mesher, const VoxelNode* voxels, byte depth, const byte* expected, int reference, const char* name) {
     const int length = octree_size(depth);
-    const int cells = length * length * length;
-    byte* expected = calloc(cells * 6, 1);
-    byte* seen = calloc(cells * 6, 1);
-    const int reference = zox_tst_gpu_reference(voxels, depth, expected);
-    gpu_mesh_VoxelNode(mesher, voxels, depth);
+    byte* seen = calloc(length * length * length * 6, 1);
     const uint faces = gpu_mesher_read_faces(mesher);
     zox_tst_check(faces == (uint) reference, "[%s] depth [%i] gpu made [%u] faces, the reference has [%i]",
         name, depth, faces, reference);
@@ -187,8 +184,17 @@ static inline void zox_tst_gpu_compare(GpuMesher* mesher, const VoxelNode* voxel
     zox_log("[tst] [%s] depth [%i]: [%u] gpu faces, [%i] reference", name, depth, faces, reference);
     free(vertices);
     free(indices);
-    free(expected);
     free(seen);
+}
+
+// the gpu mesh of voxels against the voxel by voxel reference
+static inline void zox_tst_gpu_compare(GpuMesher* mesher, const VoxelNode* voxels, byte depth, const char* name) {
+    const int length = octree_size(depth);
+    byte* expected = calloc(length * length * length * 6, 1);
+    const int reference = zox_tst_gpu_reference(voxels, depth, expected);
+    gpu_mesh_VoxelNode(mesher, voxels, depth);
+    zox_tst_gpu_compare_faces(mesher, voxels, depth, expected, reference, name);
+    free(expected);
 }
 
 // times the gpu (the grid's fill, upload, mesh, wait) and the cpu's sides (chunk_sides_system's part of meshing) for one chunk
@@ -290,6 +296,80 @@ void zox_tst_gpu_mesh_check(ecs* world) {
     gpu_mesher_dispose(&mesher);
 }
 
+// # gpu_mesh_materials
+
+// a chunk material's mesh: hills of stone (solid), a pond (water, liquid) in them, block voxes (no cube faces) on
+//  them; each material meshed alone, against a reference with cpu sides' rule: a voxel of the material, its face
+//  shows unless its neighbour hides it (block_material_hides: solid, or the same material), the chunk's edge open
+static inline int zox_tst_gpu_material_reference(const VoxelNode* voxels, byte depth, const byte* materials, byte material, byte* faces) {
+    const int length = octree_size(depth);
+    int count = 0;
+    for (int x = 0; x < length; x++) for (int y = 0; y < length; y++) for (int z = 0; z < length; z++) {
+        if (materials[getv_VoxelNode(voxels, depth, (byte3) { x, y, z })] != material) {
+            continue;
+        }
+        for (byte d = 0; d < 6; d++) {
+            const int3 n = int3_add((int3) { x, y, z }, get_direction_int3(d));
+            const byte inside = n.x >= 0 && n.y >= 0 && n.z >= 0 && n.x < length && n.y < length && n.z < length;
+            const byte shows = !inside || !block_material_hides(materials[getv_VoxelNode(voxels, depth, int3_to_byte3(n))], material);
+            faces[((x * length + y) * length + z) * 6 + d] = shows;
+            count += shows;
+        }
+    }
+    return count;
+}
+
+byte zox_tst_gpu_materials_ready(ecs* world) {
+    return zox_tst_gpu_mesh_ready(world);
+}
+
+void zox_tst_gpu_materials_check(ecs* world) {
+    (void) world;
+    const byte depth = 4;
+    const int length = octree_size(depth);
+    GpuMesher mesher;
+    zox_tst_check(gpu_mesher_create(&mesher, length * length * length * 3), "the gpu mesher couldn't be made");
+    if (!mesher.program) {
+        return;
+    }
+    // voxel 1 stone, 2 water, 3 a block vox
+    byte materials[256];
+    memset(materials, zox_block_material_solid, 256);
+    materials[0] = zox_block_material_none;
+    materials[2] = zox_block_material_liquid;
+    materials[3] = zox_block_material_none;
+    VoxelNode voxels;
+    create_VoxelNode(&voxels);
+    for (int x = 0; x < length; x++) for (int z = 0; z < length; z++) {
+        const int height = 6 + (int) (3 * sinf(x * 0.5f) + 2 * cosf(z * 0.4f));
+        for (int y = 0; y < height; y++) {
+            set_VoxelNode(&voxels, depth, (byte3) { x, y, z }, 1);
+        }
+        // the pond fills the low ground to 6, a block vox on every fifth column's top
+        for (int y = height; y < 6; y++) {
+            set_VoxelNode(&voxels, depth, (byte3) { x, y, z }, 2);
+        }
+        if ((x * 7 + z * 3) % 5 == 0 && height >= 6) {
+            set_VoxelNode(&voxels, depth, (byte3) { x, height, z }, 3);
+        }
+    }
+    optimize_reduce_VoxelNode(&voxels);
+    const byte cases[2] = { zox_block_material_solid, zox_block_material_liquid };
+    const char* names[2] = { "stone", "water" };
+    byte* expected = malloc(length * length * length * 6);
+    for (byte c = 0; c < 2; c++) {
+        memset(expected, 0, length * length * length * 6);
+        const int reference = zox_tst_gpu_material_reference(&voxels, depth, materials, cases[c], expected);
+        zox_tst_check(reference, "[%s] has no faces in the reference", names[c]);
+        gpu_mesher_set_material(&mesher, materials, cases[c]);
+        gpu_mesh_VoxelNode(&mesher, &voxels, depth);
+        zox_tst_gpu_compare_faces(&mesher, &voxels, depth, expected, reference, names[c]);
+    }
+    free(expected);
+    collapse_VoxelNode(&voxels);
+    gpu_mesher_dispose(&mesher);
+}
+
 // # gpu_mesh_grow
 
 // a mesher sized by a guess too small: the mesh draws only what it wrote, its count comes back frames later without
@@ -358,4 +438,5 @@ void zox_tsts_chunks3_gpu_mesh() {
     zox_tst_add("octree_flatten", zox_tst_octree_flatten_ready, zox_tst_octree_flatten_check, 30);
     zox_tst_add("gpu_mesh", zox_tst_gpu_mesh_ready, zox_tst_gpu_mesh_check, 60);
     zox_tst_add("gpu_mesh_grow", zox_tst_gpu_grow_ready, zox_tst_gpu_grow_check, 60);
+    zox_tst_add("gpu_mesh_materials", zox_tst_gpu_materials_ready, zox_tst_gpu_materials_check, 60);
 }

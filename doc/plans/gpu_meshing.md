@@ -33,6 +33,9 @@ Tests: [src/chunks/chunks3/tst/gpu_mesh.c](../../src/chunks/chunks3/tst/gpu_mesh
      chunk without lights sunlight above and darklight elsewhere, solids from a 256 bit mask of the realm's solidity.
    - Each vertex also holds its face's 4 corner lights in one `uint`, so a fragment can blend them across the face.
    - `edge_faces` (default 1): a face into a missing chunk; 0 culls it except the top, as cpu sides do.
+   - **Materials** (`gpu_mesher_set_material`): a chunk material's mesh draws only its block material's voxels, a face
+     hidden by a neighbour that hides it (`block_material_hides`: solid, or the same material), two 256 bit masks
+     (`drawn`, `hides`); block voxes (no cube faces) are neither. All voxels by default (models).
 3. **Draw** (`gpu_mesher_draw`): the vertex, light and index buffers are bound as a vertex array and drawn with
    `glDrawElementsIndirect`, the index count read by the gpu from the command. Nothing comes back to the cpu. Colours
    from a palette, each direction a fixed shade, lit by `light_mode`:
@@ -58,6 +61,8 @@ Tests: [src/chunks/chunks3/tst/gpu_mesh.c](../../src/chunks/chunks3/tst/gpu_mesh
   against a voxel-by-voxel reference that looks into the neighbours, every corner light against `smooth_face_lights`
   over the 27; again with three missing (faces into them culled but the top). Fails when the shader ignores its
   neighbours (tried).
+- `gpu_mesh_materials`: stone hills, a pond of water and block voxes in one chunk, the stone mesh and the water mesh
+  each against a reference with cpu sides' rule (stone shows against water, water hides only water, voxes neither).
 - `gpu_mesh_grow`: a mesher with room for 16 faces meshes a terrain chunk: its draw has only those 16, the count comes
   back frames later without waiting and is the reference's, it grows, meshes again and has every face.
 - `octree_flatten`: 7 shapes (empty, one voxel, solid, sphere, noise, checkers, terrain hills) at depth 5, every voxel
@@ -173,7 +178,7 @@ Later, if wanted:
   so a face partly next to air can be culled. The gpu checks every voxel.
 - **Merging:** the cpu draws one quad per big node face, the gpu one per voxel face: more vertices for solid areas,
   more light detail.
-- **Not done:** textures (terrain uses the tilemap's uvs), transparent blocks beyond solidity, block voxes.
+- **Not done:** textures (terrain uses the tilemap's uvs).
 
 ## Plan for the game
 
