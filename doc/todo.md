@@ -807,6 +807,9 @@
   quads (asked the user first: it changes the grass's look); greedy meshing plan: doc/tech/chunks3.md
 - clouds can be a bit dark
 - dust particles in the air round the terrain (ergo proxy, dystopian vibes)
+- tst eyelids fails on gl and vulkan alike (2026-11-20): shut, a spot at [0.80 0.50] still lit 37 of 100
+- tst coop_pause fails (2026-11-20): gl "resumed, player 2's screen is still dark", vulkan "the shared canvas didn't
+  reuse a low id"; the pause fades changed today
 - vulkan release crashed once in 5 render_fps runs at far 8 with ZOX_VK_WORKERS=0 ("Segfault Detected" ~2s after
   the player spawned, 2026-11-20), never in debug: get a backtrace (a release build with -g)
 - Vulkan renderer: part 5 of [plans/vulkan.md](plans/vulkan.md) (compute, with gpu meshing); context loss passes its
