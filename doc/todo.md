@@ -41,8 +41,6 @@
 	camera_underwater_system (pre_physics), xr_room_walk_system, xr_head_bone_system, xr_hands_ik_system (2026-11-18)
 - tst sound_balance fails 4 of 68: on small speakers click, splash, stone and water are only 1.5 to 2x the music
 	under them (2026-11-18)
-- tst split_screen fails 3 of 45 checks (since a822f67b0, local coop): back at the main menu the game camera and its
-	ui camera stay half width (230x460, not 460x460), and the join ui doesn't show both players again
 - tst xr_frustum fails 1 of 2 checks: "an eye sees [0.156] of its distance past the culling frustum" (failing at
 	edab0901f already, before 2026-11-18's work)
 - XR lag, what's left (the frame's start and the hands' timing are fixed, see done.md): needs a headset to confirm;
