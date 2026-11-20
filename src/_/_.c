@@ -31,6 +31,7 @@
 #include "platforms/_.c"
 #include "terminals/_.c"
 #include "strings/_.c"
+#include "io/_.c"
 #include "pathing/_.c"
 #include "types/_.c"
 #include "sta/_.c"

@@ -76,16 +76,9 @@ const char* zox_tst_dir() {
     return dir && dir[0] ? dir : "../../tst";
 }
 
-static inline void zox_tst_mkdir(const char* path) {
-#ifdef zox_windows
-    mkdir(path);
-#else
-    mkdir(path, 0755);
-#endif
-}
-
 // a path in the tst folder, i.e. zox_tst_path("screenshot.ppm") or "models/cokie.ppm"
-//  - makes the folders on the way, so a test can write to it straight away
+//  - makes the folders on the way (zox_mkdir, _/io), so a test can write to it straight away
+//  - copy a file with zox_copy_file (_/io)
 //  - from a ring of buffers, a few can be held at once (copy one to keep it longer)
 #define zox_tst_paths 8
 const char* zox_tst_path(const char* name) {
@@ -100,7 +93,7 @@ const char* zox_tst_path(const char* name) {
         if (path[i] == '/' || i == start) {
             const char kept = path[i];
             path[i] = 0;
-            zox_tst_mkdir(path);
+            zox_mkdir(path);
             path[i] = kept;
         }
     }
@@ -139,28 +132,6 @@ byte zox_tst_save_ppm(const char* path, const byte* pixels, int2 size) {
     fwrite(pixels, 1, (size_t) size.x * size.y * 3, file);
     fclose(file);
     return 1;
-}
-
-// copies a file, i.e. a screenshot kept under another name
-byte zox_tst_copy_file(const char* from, const char* to) {
-    FILE* in = fopen(from, "rb");
-    if (!in) {
-        return 0;
-    }
-    FILE* out = fopen(to, "wb");
-    if (!out) {
-        fclose(in);
-        return 0;
-    }
-    char buffer[65536];
-    size_t read;
-    byte success = 1;
-    while ((read = fread(buffer, 1, sizeof(buffer), in)) > 0) {
-        success &= fwrite(buffer, 1, read, out) == read;
-    }
-    fclose(in);
-    fclose(out);
-    return success;
 }
 
 // the rgb pixel at x, y (top row first, as zox_tst_load_ppm loads) of a w wide image
@@ -436,9 +407,7 @@ void process_arguments_tst(ecs* world, char* args[], int count) {
                     }
                 }
             }
-            // flush every log line, so a crash doesn't lose the end of the log
-            setvbuf(stdout, NULL, _IOLBF, 0);
-            setvbuf(stderr, NULL, _IONBF, 0);
+            // every log line is flushed (so a crash doesn't lose the end of the log) from main's first line, --tst
         } else if (strcmp(args[i], "--tst-errors") == 0 && i + 1 < count) {
             zox_tst_errors_max = (uint) atoi(args[i + 1]);
         } else if (strcmp(args[i], "--tst-timescale") == 0 && i + 1 < count) {

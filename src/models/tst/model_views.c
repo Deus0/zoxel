@@ -328,7 +328,7 @@ void zox_tst_model_views_check(ecs* world) {
     zox_tst_check(pixels, "no model views screenshot [%s]", zox_tst_path(zox_tst_model_views_file));
     // kept by the model's name too
     if (pixels && !zox_tst_model_views_instanced) {
-        const byte copied = zox_tst_copy_file(
+        const byte copied = zox_copy_file(
             zox_tst_path(zox_tst_model_views_file),
             zox_tst_path(zox_tst_model_views_model_file));
         zox_tst_check(copied, "couldn't save [%s]", zox_tst_path(zox_tst_model_views_model_file));

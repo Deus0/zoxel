@@ -5,9 +5,6 @@
 //  - clicks continue on the main menu, checks the load list keeps the newest saves
 //  - clicks the newest save, checks its realm is spawned with that save's seed and path
 //  - run: bash bsh/tst.sh load_games
-#ifndef zox_windows
-    #include <utime.h>
-#endif
 #define zox_tst_load_saves (huds_max_list_elements + 12)
 #define zox_tst_load_seed 5000
 #define zox_tst_load_settle_frames 5
@@ -18,8 +15,13 @@ entity zox_tst_load_button = 0;
 const char* zox_tst_load_game_name = NULL;
 
 static inline int zox_tst_load_save_index(const char* path) {
-    const char* name = strrchr(path, '/');
-    name = name ? name + 1 : path;
+    // the folder's name, after the last / or \ (windows' save paths use char_slash)
+    const char* name = path;
+    for (const char* c = path; *c; c++) {
+        if (*c == '/' || *c == '\\') {
+            name = c + 1;
+        }
+    }
     int index = -1;
     if (sscanf(name, "realm_%d", &index) != 1) {
         return -1;
@@ -28,14 +30,9 @@ static inline int zox_tst_load_save_index(const char* path) {
 }
 
 void zox_tst_load_games_setup() {
-#ifdef zox_windows
-    zox_loge("[tst] load_games setup is posix only");
-#else
     char home[512];
     snprintf(home, sizeof(home), "%s", zox_tst_path("load_home"));
-    char command[1024];
-    snprintf(command, sizeof(command), "rm -rf '%s'", home);
-    if (system(command) != 0) {
+    if (has_path_directory(home) && !delete_dir(home)) {
         zox_logw("[tst] couldn't clear [%s]", home);
     }
     // NOTE: saves root is set before --nosaves is processed, which keeps it
@@ -43,8 +40,7 @@ void zox_tst_load_games_setup() {
     zox_tst_load_game_name = game_name;
     snprintf(zox_tst_load_saves_path, sizeof(zox_tst_load_saves_path),
         "%s/%s", home, game_name);
-    snprintf(command, sizeof(command), "mkdir -p '%s'", zox_tst_load_saves_path);
-    if (system(command) != 0) {
+    if (!zox_mkdirs(zox_tst_load_saves_path)) {
         zox_loge("[tst] couldn't make [%s]", zox_tst_load_saves_path);
         return;
     }
@@ -52,7 +48,7 @@ void zox_tst_load_games_setup() {
     for (int i = 0; i < zox_tst_load_saves; i++) {
         char folder[640];
         snprintf(folder, sizeof(folder), "%s/realm_%03i", zox_tst_load_saves_path, i);
-        zox_tst_mkdir(folder);
+        zox_mkdir(folder);
         // higher index is newer (last played)
         RealmInfo info = { .seed = zox_tst_load_seed + i, .last = now - 10000 + i };
         snprintf(info.name, sizeof(info.name), "realm %i", i);
@@ -65,8 +61,10 @@ void zox_tst_load_games_setup() {
     if (real_save && real_save[0]) {
         char newest[640];
         snprintf(newest, sizeof(newest), "%s/realm_%03i", zox_tst_load_saves_path, zox_tst_load_saves - 1);
-        snprintf(command, sizeof(command), "rm -rf '%s' && cp -r '%s' '%s' && touch '%s'", newest, real_save, newest, newest);
-        if (system(command) != 0) {
+        if (has_path_directory(newest)) {
+            delete_dir(newest);
+        }
+        if (!zox_copy_directory(real_save, newest)) {
             zox_loge("[tst] couldn't copy save [%s]", real_save);
         } else {
             zox_log("[tst] newest save is a copy of [%s]", real_save);
@@ -77,7 +75,6 @@ void zox_tst_load_games_setup() {
             save_realm_info(newest, &info);
         }
     }
-#endif
 }
 
 // counts descendants with a FolderPath, and finds the newest save's button

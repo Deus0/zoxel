@@ -52,7 +52,7 @@ static const char* get_settings_file(const char *app_name) {
     } else {
         strcpy(base_path, ".");
     }
-    mkdir(base_path);
+    zox_mkdir(base_path);
 #else
     const char* xdg = getenv("XDG_CONFIG_HOME");
     if (xdg && *xdg) {
@@ -62,7 +62,7 @@ static const char* get_settings_file(const char *app_name) {
     } else {
         strcpy(base_path, ".");
     }
-    mkdir(base_path, 0755);
+    zox_mkdir(base_path);
 #endif
     snprintf(final_path, sizeof(final_path), "%s%csettings.cfg", base_path, char_slash);
     return final_path;
@@ -82,9 +82,9 @@ static const char* get_settings_file(const char *app_name) {
         return "./settings.cfg";
     }
 #if zox_windows
-    mkdir(base_path);
+    zox_mkdir(base_path);
 #else
-    mkdir(base_path, 0755);
+    zox_mkdir(base_path);
 #endif
     snprintf(final_path, sizeof(final_path), "%s/settings.cfg", base_path);
     return final_path;

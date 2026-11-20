@@ -7,6 +7,12 @@
   sdl). Windowed again it's as the app was, maximized or its restore size (sdl3 left it unmaximized and screen size).
   zox_app_set_monitor centred the wrong way. tst sdl_window_mode, sdl_window_restore (--visible to see it)
 -x Windows release builds don't open a terminal beside the game (-mwindows, a gui program); debug and --logs keep it
+-x The file system the same on every platform (src/_/io): zox_mkdir, zox_mkdirs, zox_copy_file,
+  zox_copy_directory, zox_executable_path. mkdir had an #ifdef at each call (a mode on linux, none on windows) and
+  tests ran mkdir -p, rm -rf and cp through system(), which is cmd on windows: load_games, continue_game and four
+  more were posix only, realm_info and binary_size (/proc/self/exe) failed there
+-x Windows test runs shared one nosaves folder beside the game, so each test saw the ones before's saves: it's
+  %TEMP%/zoxel_nosaves_<pid> now (git bash's /tmp), tst.sh deletes it after (pid_alive, tasklist for windows pids)
 -x One pause menu over the whole window for every player (huds/fun/pause_canvas.c): a shared canvas with its own ui
   camera, spawned as the game pauses; each player links it too (CanvasLink is many now), so any gamepad navigates it
   and the mouse clicks it; spawn_window_list_on puts a window on a canvas. With 3D huds (a headset) it stays on the

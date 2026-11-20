@@ -2,8 +2,7 @@
 //  - checks it's a real file, and under zox_tst_binary_mb (env, in MB) when set; 0 or unset only logs
 //  - debug builds are bigger than release: compare like with like
 //  - run: bash bsh/tst.sh binary_size
-#include <sys/stat.h>
-
+//  - the binary is found with zox_executable_path (_/io): /proc/self/exe on linux, GetModuleFileName on windows
 byte zox_tst_binary_size_ready(ecs* world) {
     (void) world;
     return 1;
@@ -11,9 +10,11 @@ byte zox_tst_binary_size_ready(ecs* world) {
 
 void zox_tst_binary_size_check(ecs* world) {
     (void) world;
+    char path[1024];
     struct stat info;
-    zox_tst_check(stat("/proc/self/exe", &info) == 0, "couldn't stat the running binary");
-    if (stat("/proc/self/exe", &info) != 0) {
+    const byte found = zox_executable_path(path, sizeof(path)) && stat(path, &info) == 0;
+    zox_tst_check(found, "couldn't stat the running binary");
+    if (!found) {
         return;
     }
     const long long bytes = (long long) info.st_size;

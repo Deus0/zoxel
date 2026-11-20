@@ -53,7 +53,7 @@ void extract_android_assets(
         zox_loge("asset directory does not exist [%s]", source_path);
         return;
     }
-    if (!android_create_directory_r(destination_path)) {
+    if (!zox_mkdirs(destination_path)) {
         zox_loge("Failed Destination Directory [%s]", destination_path);
         return;
     }
@@ -117,7 +117,7 @@ void decompress_android_resources(const char* resources_path) {
     zox_logv("Deleting old Resources [%s]", resources_path);
     delete_directory_recursive(resources_path);
     zox_logv("Creating Export Path [%s]", resources_path);
-    if (!android_create_directory_r(resources_path)) {
+    if (!zox_mkdirs(resources_path)) {
         zox_loge("[decompress_android_resources]: could not create directory: %s", resources_path);
         return;
     }

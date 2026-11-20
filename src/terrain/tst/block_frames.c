@@ -51,7 +51,7 @@ static inline void zox_tst_bframes_blit(byte* image, int2 image_size, int2 at, c
 void zox_tst_block_frames_check(ecs* world) {
     const BlockLinks* blocks = zox_get(zox_tst_world_realm, BlockLinks);
     int animated = 0;
-    zox_tst_mkdir(zox_tst_path("blocks"));
+    zox_mkdir(zox_tst_path("blocks"));
     for (int i = 0; i < blocks->length; i++) {
         const entity block = blocks->value[i];
         const entity texture = zox_valid(block) ? zox_get_child_by_id(world, block, zox_id(TextureFrames)) : 0;

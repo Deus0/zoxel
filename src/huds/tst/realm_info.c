@@ -28,7 +28,7 @@ static inline int zox_tst_realm_info_buttons(ecs* world, entity e, entity* butto
 static inline void zox_tst_realm_info_make(const char* saves, const char* folder_name, RealmInfo info) {
     char folder[512];
     snprintf(folder, sizeof(folder), "%s/%s", saves, folder_name);
-    zox_tst_mkdir(folder);
+    zox_mkdir(folder);
     save_realm_info(folder, &info);
 }
 
@@ -44,9 +44,7 @@ byte zox_tst_realm_info_ready(ecs* world) {
         }
         char saves[512];
         get_save_directory(game_name, saves, sizeof(saves));
-        char command[600];
-        snprintf(command, sizeof(command), "mkdir -p '%s'", saves);
-        zox_tst_check(!system(command), "couldn't make [%s]", saves);
+        zox_tst_check(zox_mkdirs(saves), "couldn't make [%s]", saves);
         // saved and loaded back
         const long now = (long) time(NULL);
         zox_tst_realm_info_make(saves, "a", (RealmInfo) { .seed = 11, .name = "Old Lands", .played = 7500, .last = now - 300 });
