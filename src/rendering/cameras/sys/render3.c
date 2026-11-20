@@ -77,7 +77,7 @@ void camera_render3_system(iter* it) {
                             zox_getn(system),
                             j);
                     }
-                    ecs_run(world, system, 0, NULL);
+                    zox_gpu_run_system(world, system, zox_has(system, RenderParallel));
                 }
             }
         }

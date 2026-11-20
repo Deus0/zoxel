@@ -14,5 +14,6 @@
 #include "ubo.c"
 #include "state.c"
 #include "draw.c"
+#include "workers.c"
 #include "init.c"
 #include "todo.c"

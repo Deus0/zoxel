@@ -10,12 +10,20 @@ void vulkan_frame_wait() {
         vk_serial_done = vk_fence_serial[vk_frame];
     }
     vulkan_garbage_collect();
-    for (int i = 0; i < vk_pools_count[vk_frame]; i++) {
-        vkResetDescriptorPool(vk_device, vk_pools[vk_frame][i], 0);
+    // every context's: only the main thread waits, between frames, no worker records then
+    for (int c = 0; c < vk_contexts_max; c++) {
+        vk_context* context = &vk_contexts[c];
+        for (int i = 0; i < context->pools_count[vk_frame]; i++) {
+            vkResetDescriptorPool(vk_device, context->pools[vk_frame][i], 0);
+        }
+        if (context->command_pools[vk_frame]) {
+            vkResetCommandPool(vk_device, context->command_pools[vk_frame], 0);
+        }
+        context->pool_index = 0;
+        context->ring_index = 0;
+        context->ring_used = 0;
+        context->secondary_index = 0;
     }
-    vk_pool_index = 0;
-    vk_ring_index = 0;
-    vk_ring_used = 0;
     vk_ring_epoch++;
     vk_frame_waited = 1;
 }
@@ -27,29 +35,29 @@ byte vulkan_ring_push(const void* data, VkDeviceSize size, VkBuffer* buffer, uin
         return 0;
     }
     vulkan_frame_wait();
-    VkDeviceSize start = (vk_ring_used + vk_uniform_align - 1) / vk_uniform_align * vk_uniform_align;
+    VkDeviceSize start = (vk_ctx->ring_used + vk_uniform_align - 1) / vk_uniform_align * vk_uniform_align;
     if (start + size > vk_ring_size) {
-        vk_ring_index++;
+        vk_ctx->ring_index++;
         start = 0;
     }
-    if (vk_ring_index >= vk_rings_max) {
+    if (vk_ctx->ring_index >= vk_rings_max) {
         zox_loge("[vulkan] the frame's rings are full");
-        vk_ring_index = vk_rings_max - 1;
+        vk_ctx->ring_index = vk_rings_max - 1;
         return 0;
     }
-    if (vk_ring_index >= vk_rings_count[vk_frame]) {
-        const int i = vk_rings_count[vk_frame]++;
+    if (vk_ctx->ring_index >= vk_ctx->rings_count[vk_frame]) {
+        const int i = vk_ctx->rings_count[vk_frame]++;
         if (!vulkan_create_host_buffer(vk_ring_size, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT
             | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-            &vk_rings[vk_frame][i], &vk_rings_memory[vk_frame][i]))
+            &vk_ctx->rings[vk_frame][i], &vk_ctx->rings_memory[vk_frame][i]))
         {
             return 0;
         }
-        vkMapMemory(vk_device, vk_rings_memory[vk_frame][i], 0, VK_WHOLE_SIZE, 0, (void**) &vk_rings_mapped[vk_frame][i]);
+        vkMapMemory(vk_device, vk_ctx->rings_memory[vk_frame][i], 0, VK_WHOLE_SIZE, 0, (void**) &vk_ctx->rings_mapped[vk_frame][i]);
     }
-    memcpy(vk_rings_mapped[vk_frame][vk_ring_index] + start, data, size);
-    vk_ring_used = start + size;
-    *buffer = vk_rings[vk_frame][vk_ring_index];
+    memcpy(vk_ctx->rings_mapped[vk_frame][vk_ctx->ring_index] + start, data, size);
+    vk_ctx->ring_used = start + size;
+    *buffer = vk_ctx->rings[vk_frame][vk_ctx->ring_index];
     *offset = start;
     return 1;
 }
@@ -72,13 +80,13 @@ VkDescriptorPool vulkan_create_pool() {
 
 // a set from this frame's pools, another pool when they're full
 VkDescriptorSet vulkan_allocate_set(VkDescriptorSetLayout layout) {
-    while (vk_pool_index < vk_pools_max) {
-        if (vk_pool_index >= vk_pools_count[vk_frame]) {
-            vk_pools[vk_frame][vk_pools_count[vk_frame]++] = vulkan_create_pool();
+    while (vk_ctx->pool_index < vk_pools_max) {
+        if (vk_ctx->pool_index >= vk_ctx->pools_count[vk_frame]) {
+            vk_ctx->pools[vk_frame][vk_ctx->pools_count[vk_frame]++] = vulkan_create_pool();
         }
         const VkDescriptorSetAllocateInfo info = {
             .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
-            .descriptorPool = vk_pools[vk_frame][vk_pool_index],
+            .descriptorPool = vk_ctx->pools[vk_frame][vk_ctx->pool_index],
             .descriptorSetCount = 1,
             .pSetLayouts = &layout,
         };
@@ -86,7 +94,7 @@ VkDescriptorSet vulkan_allocate_set(VkDescriptorSetLayout layout) {
         if (vkAllocateDescriptorSets(vk_device, &info, &set) == VK_SUCCESS) {
             return set;
         }
-        vk_pool_index++;
+        vk_ctx->pool_index++;
     }
     zox_loge("[vulkan] the frame's descriptor pools are full");
     return VK_NULL_HANDLE;
@@ -109,15 +117,22 @@ VkCommandBuffer vulkan_upload_commands() {
 }
 
 void vulkan_dispose_rings() {
-    for (int f = 0; f < vk_frames_max; f++) {
-        for (int i = 0; i < vk_rings_count[f]; i++) {
-            vkDestroyBuffer(vk_device, vk_rings[f][i], NULL);
-            vkFreeMemory(vk_device, vk_rings_memory[f][i], NULL);
+    for (int c = 0; c < vk_contexts_max; c++) {
+        vk_context* context = &vk_contexts[c];
+        for (int f = 0; f < vk_frames_max; f++) {
+            for (int i = 0; i < context->rings_count[f]; i++) {
+                vkDestroyBuffer(vk_device, context->rings[f][i], NULL);
+                vkFreeMemory(vk_device, context->rings_memory[f][i], NULL);
+            }
+            for (int i = 0; i < context->pools_count[f]; i++) {
+                vkDestroyDescriptorPool(vk_device, context->pools[f][i], NULL);
+            }
+            if (context->command_pools[f]) {
+                vkDestroyCommandPool(vk_device, context->command_pools[f], NULL);
+            }
+            free(context->secondaries[f]);
         }
-        for (int i = 0; i < vk_pools_count[f]; i++) {
-            vkDestroyDescriptorPool(vk_device, vk_pools[f][i], NULL);
-        }
-        vk_rings_count[f] = 0;
-        vk_pools_count[f] = 0;
+        free(context->programs);
+        memset(context, 0, sizeof(vk_context));
     }
 }

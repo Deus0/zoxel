@@ -125,11 +125,11 @@ static inline void zox_gpu_clear_texture_rgb(guint id) {
 }
 
 static inline void zox_gpu_bind_texture(guint id) {
-    vk_texture_bound = id;
+    vk_ctx->texture_bound = id;
 }
 
 static inline void zox_gpu_reset_texture() {
-    vk_texture_bound = 0;
+    vk_ctx->texture_bound = 0;
 }
 
 byte vulkan_create_sampler() {

@@ -4,6 +4,9 @@ extern byte zox_disable_post_processing;   // cameras module, later
 //  - the target's made at the first frame (a minimised window has none to make)
 byte vulkan_initialize(int2 size) {
     vk_window_size = size;
+    vk_contexts[0].depth_write = 1;     // gl's defaults
+    vk_contexts[0].color_write = 1;
+    vk_contexts[0].line_width = 1;
     if (!vulkan_create_device() || !vulkan_create_frames()) {
         return 0;
     }
@@ -47,6 +50,7 @@ void vulkan_dispose_tables() {
 }
 
 void vulkan_dispose() {
+    vulkan_stop_workers();
     if (vk_device) {
         vkDeviceWaitIdle(vk_device);
         vk_serial_done = vk_serial_submitted;

@@ -50,6 +50,24 @@ byte vulkan_acquire() {
     return result == VK_SUCCESS || result == VK_SUBOPTIMAL_KHR;
 }
 
+// the frame's image as a pass's target: clearing it (vk_pass_clear) or carrying it on (vk_pass_load); contents
+// inline for draws, or secondary command buffers (fun/workers.c)
+void vulkan_pass_begin(VkCommandBuffer commands, VkRenderPass render_pass, VkSubpassContents contents) {
+    const VkClearValue clears[2] = {
+        { .color = { .float32 = { vk_clear_color.x, vk_clear_color.y, vk_clear_color.z, vk_clear_color.w } } },
+        { .depthStencil = { 1, 0 } },
+    };
+    const VkRenderPassBeginInfo pass = {
+        .sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
+        .renderPass = render_pass,
+        .framebuffer = vk_framebuffers[vk_image],
+        .renderArea = { { 0, 0 }, vk_extent },
+        .clearValueCount = 2,
+        .pClearValues = clears,
+    };
+    vkCmdBeginRenderPass(commands, &pass, contents);
+}
+
 // opens the frame if it isn't, 0 if there's nothing to draw to (minimised, not made)
 byte vulkan_frame_begin() {
     if (vk_recording) {
@@ -71,22 +89,11 @@ byte vulkan_frame_begin() {
         .flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
     };
     vkBeginCommandBuffer(commands, &begin);
-    const VkClearValue clears[2] = {
-        { .color = { .float32 = { vk_clear_color.x, vk_clear_color.y, vk_clear_color.z, vk_clear_color.w } } },
-        { .depthStencil = { 1, 0 } },
-    };
-    const VkRenderPassBeginInfo pass = {
-        .sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
-        .renderPass = vk_submitted ? vk_pass_load : vk_pass_clear,
-        .framebuffer = vk_framebuffers[vk_image],
-        .renderArea = { { 0, 0 }, vk_extent },
-        .clearValueCount = 2,
-        .pClearValues = clears,
-    };
-    vkCmdBeginRenderPass(commands, &pass, VK_SUBPASS_CONTENTS_INLINE);
+    vulkan_pass_begin(commands, vk_submitted ? vk_pass_load : vk_pass_clear, VK_SUBPASS_CONTENTS_INLINE);
     vk_recording = 1;
-    vk_pipeline_bound = VK_NULL_HANDLE;
-    vk_dynamic_dirty = 1;
+    vk_contexts[0].commands = commands;
+    vk_contexts[0].pipeline_bound = VK_NULL_HANDLE;
+    vk_contexts[0].dynamic_dirty = 1;
     return 1;
 }
 

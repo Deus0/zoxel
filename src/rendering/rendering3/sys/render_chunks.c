@@ -20,8 +20,9 @@ static inline void render_chunk_order(const TransformMatrix* matrices, int count
     }
 }
 
-static inline void render_chunk_meshes(iter* it, byte transparent) {
-    zox_sys_on_begin();
+// returns how many it drew (the systems count them, SystemProcessed)
+static inline uint render_chunk_meshes(iter* it, byte transparent) {
+    uint drawn = 0;
     byte dbg_log = 0;
     byte dbg_gl = 0;
     byte initialized_material = 0;
@@ -143,7 +144,7 @@ static inline void render_chunk_meshes(iter* it, byte transparent) {
             matrix->value);*/
         // Rendering!
         zox_gpu_render3(count->value);
-        zox_drawn_chunks++;
+        __atomic_add_fetch(&zox_drawn_chunks, 1, __ATOMIC_RELAXED);    // its parts can run on threads
         if (dbg_gl) {
             if (check_opengl_error_unlogged()) {
                 zox_loge("chunk3_textured_render_system");
@@ -164,7 +165,7 @@ static inline void render_chunk_meshes(iter* it, byte transparent) {
                 scale.y,
                 scale.z);
         }
-        zox_sys_increment();
+        drawn++;
     }
     if (initialized_material) {
         zox_gpu_disable_attribute(attributes->vertex_color);
@@ -178,14 +179,18 @@ static inline void render_chunk_meshes(iter* it, byte transparent) {
             zox_gpu_enable_culling();
         }
     }
-    zox_sys_on_end();
+    return drawn;
 }
 
 void chunk3_textured_render_system(iter* it) {
-    render_chunk_meshes(it, 0);
+    zox_sys_on_begin();
+    process_count += render_chunk_meshes(it, 0);
+    zox_sys_on_end();
 } zoxd_system(chunk3_textured_render_system);
 
 void chunk3_transparent_render_system(iter* it) {
-    render_chunk_meshes(it, 1);
+    zox_sys_on_begin();
+    process_count += render_chunk_meshes(it, 1);
+    zox_sys_on_end();
 } zoxd_system(chunk3_transparent_render_system);
 

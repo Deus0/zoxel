@@ -144,3 +144,14 @@ static inline entity zox_system_entity(ecs* world, entity id, const char* name, 
 
 #define zox_system_m(id_, multi_threaded_, ...)\
     zox_system_internal(id_, zoxp_update, multi_threaded_, 0, __VA_ARGS__)
+
+// runs a system now, on the calling thread (i.e. a camera's render systems)
+#define zox_run(world, system) ecs_run(world, system, 0, NULL)
+
+// runs part index of count of a system's entities, on a stage of its own (a thread recording draws, vulkan)
+#define zox_run_part(stage, system, index, count) ecs_run_worker(stage, system, index, count, 0, NULL)
+
+// a thread's stage of the world (stages are flecs' per thread command queues), and how many the world has
+#define zox_stage(world, index) ecs_get_stage(world, index)
+#define zox_stage_count(world) ecs_get_stage_count(world)
+#define zox_world_of(stage) ((ecs*) ecs_get_world(stage))

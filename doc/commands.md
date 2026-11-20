@@ -103,6 +103,7 @@ Usually run through `bash bsh/tst.sh`, see [Onboarding](onboarding.md#6-tests).
 | `--profile-ms <ms>` | the frame time `--profile` logs over, i.e. 16 for 60fps | _/tst | [_/tst](../src/_/tst/profile.c) |
 | `--maxnpcs` | every chunk spawns the most npcs, a worst case to profile (`tst perf_fly`) | characters |
 | `--nouis` | no name labels or healthbars over characters, to compare | _/tst |
+| `ZOX_VK_WORKERS=<n>` (env) | vulkan: at most n threads record parallel render systems (0: the main thread records all), to compare or debug | [vulkan](../src/graphics/vulkan/fun/workers.c) |
 | `ZOX_SAMPLE=<file>` (env) | samples the main thread's stack every 2ms, `bash bsh/sample_report.sh <file> <binary>` shows where slow frames go (no perf needed) | _/flecs |
 | `ZOX_SAMPLE_ALL=1` (env, with `ZOX_SAMPLE`) | samples every thread, one each 10ms of cpu time (workers: sides, meshing, lights, flecs iteration), `bash bsh/sample_report.sh <file> <binary> 1` counts every frame | _/flecs |
 | `--tst <name>` | runs one test, exits 0 on pass, 1 on fail | [_/tst](../src/_/tst/_.c) |

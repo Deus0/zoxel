@@ -107,12 +107,7 @@ typedef struct {
     VkPipelineLayout layout;
     vk_uniform* uniforms;
     int uniforms_count;
-    byte* data[2];              // each stage's default block, written by the uniform setters
-    int data_size[2];
-    byte data_dirty[2];
-    VkBuffer data_ring[2];      // where it was last copied this frame
-    uint data_offset[2];
-    ulong data_epoch[2];
+    int data_size[2];           // each stage's default block's bytes (its values are each context's, vk_program_state)
     vk_block blocks[vk_slots_max];
     int blocks_count;
     int samplers[vk_slots_max];         // their bindings
@@ -121,12 +116,22 @@ typedef struct {
     int inputs_count;
     vk_pipeline* pipelines;
     int pipelines_count;
+    byte live;
+} vk_program;
+
+// a program's uniform values as a context (a thread) set them, gl's per program uniforms
+typedef struct {
+    byte* data[2];              // each stage's default block, written by the uniform setters
+    byte data_dirty[2];
+    VkBuffer data_ring[2];      // where it was last copied this frame
+    uint data_offset[2];
+    ulong data_epoch[2];
     VkDescriptorSet set;        // the last set made this frame, reused while it matches
     ulong set_epoch;
     VkImageView set_view;       // a texture written again gets a new image, so its view, not its id
     VkBuffer set_buffers[vk_slots_max];
-    byte live;
-} vk_program;
+    ulong job;                  // the job it was last synced in (a worker's copy of the main thread's values)
+} vk_program_state;
 
 // a vertex attribute as gl's glVertexAttribPointer left it; buffer 0 is a client pointer (copied at the draw)
 typedef struct {
@@ -137,3 +142,50 @@ typedef struct {
     uint stride;
     uint divisor;
 } vk_attribute;
+
+#define vk_ring_size (4 << 20)
+#define vk_rings_max 16
+#define vk_pools_max 16
+#define vk_frames_max 2
+
+// what a thread records with: gl's bound state (as zox_gpu_* calls leave it), its command buffer, and per frame in
+// flight its ring, descriptor pools and secondary command buffers; the main thread's is vk_contexts[0]
+typedef struct {
+    uint program_bound;
+    uint array_bound;
+    uint element_bound;
+    uint texture_bound;
+    vk_attribute attributes[vk_slots_max];
+    byte blend;
+    byte depth_test;
+    byte depth_write;
+    byte cull;
+    byte color_write;
+    byte bias_fill;
+    byte bias_lines;
+    float bias_factor;
+    float bias_units;
+    float line_width;
+    float4 viewport;            // gl's: x, y from the bottom left, width, height
+    byte viewport_set;          // else the whole target
+    // recording
+    VkCommandBuffer commands;
+    VkPipeline pipeline_bound;
+    byte dynamic_dirty;
+    vk_program_state* programs; // by program id
+    uint programs_count;
+    // per frame in flight
+    VkBuffer rings[vk_frames_max][vk_rings_max];
+    VkDeviceMemory rings_memory[vk_frames_max][vk_rings_max];
+    byte* rings_mapped[vk_frames_max][vk_rings_max];
+    int rings_count[vk_frames_max];
+    int ring_index;
+    VkDeviceSize ring_used;
+    VkDescriptorPool pools[vk_frames_max][vk_pools_max];
+    int pools_count[vk_frames_max];
+    int pool_index;
+    VkCommandPool command_pools[vk_frames_max];
+    VkCommandBuffer* secondaries[vk_frames_max];
+    uint secondaries_count[vk_frames_max];
+    uint secondary_index;
+} vk_context;

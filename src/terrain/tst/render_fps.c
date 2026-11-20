@@ -15,11 +15,12 @@ uint zox_tst_render_fps_chunks = 0;
 uint zox_tst_render_fps_instances = 0;
 
 byte zox_tst_render_fps_ready(ecs* world) {
-    if (!zox_tst_player_spawn_ready(world)) {
-        return 0;
-    }
     const double now = get_time_ms();
     if (!zox_tst_render_fps_start) {
+        // only before counting: a player respawning mid count (a fall, an npc) stopped it, one 14s "frame"
+        if (!zox_tst_player_spawn_ready(world)) {
+            return 0;
+        }
         zox_tst_waiting = "streaming to settle";
         const int busy = zox_tst_perf_busy(world);
         zox_tst_progress(-busy);

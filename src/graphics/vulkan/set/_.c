@@ -1,5 +1,4 @@
 // one device and one window: a swapchain, or in --background runs (tests) an offscreen image, no surface
-#define vk_frames_max 2     // frames in flight
 #define vk_images_max 8
 
 VkInstance vk_instance;
@@ -60,19 +59,6 @@ ulong vk_ring_epoch;            // counts frames waited, a copy into the ring is
 VkCommandBuffer vk_uploads[vk_frames_max];
 byte vk_uploading;
 
-// per frame: a ring of host memory for uniforms and client vertex arrays, descriptor pools
-#define vk_ring_size (4 << 20)
-#define vk_rings_max 16
-#define vk_pools_max 16
-VkBuffer vk_rings[vk_frames_max][vk_rings_max];
-VkDeviceMemory vk_rings_memory[vk_frames_max][vk_rings_max];
-byte* vk_rings_mapped[vk_frames_max][vk_rings_max];
-int vk_rings_count[vk_frames_max];
-int vk_ring_index;              // the ring being filled this frame
-VkDeviceSize vk_ring_used;
-VkDescriptorPool vk_pools[vk_frames_max][vk_pools_max];
-int vk_pools_count[vk_frames_max];
-int vk_pool_index;
 VkDeviceSize vk_uniform_align;
 
 // the tables (dat/_.c)
@@ -89,29 +75,14 @@ vk_table vk_textures = { .size = sizeof(vk_texture) };
 vk_table vk_shaders = { .size = sizeof(vk_shader) };
 vk_table vk_programs = { .size = sizeof(vk_program) };
 
-// gl's bound state
-uint vk_program_bound;
-uint vk_array_bound;
-uint vk_element_bound;
-uint vk_texture_bound;
-vk_attribute vk_attributes[vk_slots_max];
 uint vk_ubo_points[vk_slots_max];       // gl's uniform buffer binding points, the buffer at each
-byte vk_blend;
-byte vk_depth_test;
-byte vk_depth_write = 1;
-byte vk_cull;
-byte vk_color_write = 1;
-byte vk_bias_fill;
-byte vk_bias_lines;
-float vk_bias_factor;
-float vk_bias_units;
-float vk_line_width = 1;
-float4 vk_viewport;             // gl's: x, y from the bottom left, width, height
-byte vk_viewport_set;           // else the whole target
 
-// what the command buffer has bound, set again when it changes
-VkPipeline vk_pipeline_bound;
-byte vk_dynamic_dirty;
+// each thread's context: the main thread's first, then the recording workers' (fun/workers.c)
+#define vk_contexts_max 17
+vk_context vk_contexts[vk_contexts_max];
+static __thread vk_context* vk_ctx = &vk_contexts[0];
+ulong vk_job;                   // counts split runs (vulkan_run_split), a worker resyncs its uniforms each
+pthread_mutex_t vk_lock = PTHREAD_MUTEX_INITIALIZER;   // what the workers share: slabs, garbage, pipelines
 
 // fallbacks: a zero vertex buffer (inputs with no attribute), a black texture, the sampler
 VkBuffer vk_zeros;

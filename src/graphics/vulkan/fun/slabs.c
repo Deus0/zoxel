@@ -42,7 +42,7 @@ static inline uint vk_slab_per_block(uint class) {
 }
 
 // a slot of at least bytes; handle 0 if it couldn't
-vk_allocation vulkan_slab_allocate(VkDeviceSize bytes) {
+vk_allocation vulkan_slab_allocate_locked(VkDeviceSize bytes) {
     vk_allocation allocation = { 0 };
     uint class = vk_slab_min;
     while (class <= vk_slab_max && vk_slab_size(class) < bytes) {
@@ -81,10 +81,19 @@ vk_allocation vulkan_slab_allocate(VkDeviceSize bytes) {
     return allocation;
 }
 
+// recording workers upload too (particles), so slots are taken and freed under vk_lock
+vk_allocation vulkan_slab_allocate(VkDeviceSize bytes) {
+    pthread_mutex_lock(&vk_lock);
+    const vk_allocation allocation = vulkan_slab_allocate_locked(bytes);
+    pthread_mutex_unlock(&vk_lock);
+    return allocation;
+}
+
 void vulkan_slab_free(uint handle) {
     if (!handle) {
         return;
     }
+    pthread_mutex_lock(&vk_lock);
     handle--;
     vk_slab_class* slabs = &vk_slabs[handle >> 24];
 
@@ -93,6 +102,7 @@ void vulkan_slab_free(uint handle) {
         slabs->free = realloc(slabs->free, sizeof(uint) * slabs->free_capacity);
     }
     slabs->free[slabs->free_count++] = handle & 0xFFFFFF;
+    pthread_mutex_unlock(&vk_lock);
 }
 
 void vulkan_dispose_slabs() {

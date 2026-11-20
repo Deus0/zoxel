@@ -61,8 +61,6 @@ byte vulkan_link(vk_program* program, const vk_shader* stages[2]) {
             bindings[bindings_count++] = (VkDescriptorSetLayoutBinding) { binding,
                 VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1, VK_SHADER_STAGE_ALL_GRAPHICS, NULL };
             program->data_size[s] = stage->block_size;
-            program->data[s] = calloc(1, stage->block_size + 16);
-            program->data_dirty[s] = 1;
             for (int m = 0; m < stage->members_count; m++) {
                 const int index = vulkan_uniform_add(program, stage->members[m].name);   // it reallocates
                 vk_uniform* uniform = &program->uniforms[index];
@@ -143,12 +141,18 @@ static inline void zox_gpu_dispose_program(guint id) {
     vkDestroyPipelineLayout(vk_device, program->layout, NULL);
     vkDestroyDescriptorSetLayout(vk_device, program->set_layout, NULL);
     free(program->uniforms);
-    free(program->data[0]);
-    free(program->data[1]);
+    for (int c = 0; c < vk_contexts_max; c++) {
+        if (id < vk_contexts[c].programs_count) {
+            vk_program_state* state = &vk_contexts[c].programs[id];
+            free(state->data[0]);
+            free(state->data[1]);
+            memset(state, 0, sizeof(vk_program_state));
+        }
+    }
     program->live = 0;
     vk_table_remove(&vk_programs, id);
-    if (vk_program_bound == id) {
-        vk_program_bound = 0;
+    if (vk_ctx->program_bound == id) {
+        vk_ctx->program_bound = 0;
     }
     zox_gpu_programs_live--;
 }
@@ -218,18 +222,51 @@ static inline guint zox_gpu_get_material_uniform(guint id, const char* name) {
 }
 
 static inline void zox_gpu_material(guint material) {
-    vk_program_bound = material;
+    vk_ctx->program_bound = material;
 }
 
 static inline void zox_disable_material() {
-    vk_program_bound = 0;
+    vk_ctx->program_bound = 0;
+}
+
+// this context's values for a program, made on first use; a worker's start as the main thread's are at each job
+//  (a split system draws on from the uniforms the main thread left, as gl would)
+vk_program_state* vulkan_program_state(uint id, const vk_program* program) {
+    vk_context* context = vk_ctx;
+    if (id >= context->programs_count) {
+        const uint count = id + 32;
+        context->programs = realloc(context->programs, sizeof(vk_program_state) * count);
+        memset(context->programs + context->programs_count, 0, sizeof(vk_program_state) * (count - context->programs_count));
+        context->programs_count = count;
+    }
+    vk_program_state* state = &context->programs[id];
+    const vk_program_state* main = context != &vk_contexts[0] && id < vk_contexts[0].programs_count ?
+        &vk_contexts[0].programs[id] : NULL;
+    const byte sync = main && state->job != vk_job;
+    for (byte s = 0; s < 2; s++) {
+        if (!program->data_size[s]) {
+            continue;
+        }
+        if (!state->data[s]) {
+            state->data[s] = calloc(1, program->data_size[s] + 16);
+            state->data_dirty[s] = 1;
+        }
+        if (sync && main->data[s]) {
+            memcpy(state->data[s], main->data[s], program->data_size[s]);
+            state->data_dirty[s] = 1;
+        }
+    }
+    state->job = vk_job;
+    return state;
 }
 
 // gl's glUniform: count elements of bytes each into every stage block the uniform is in
-void vulkan_uniform_write(vk_program* program, gint index, const void* data, int bytes, int count) {
+void vulkan_uniform_write(uint id, gint index, const void* data, int bytes, int count) {
+    const vk_program* program = vk_program_of(id);
     if (!program || index < 0 || index >= program->uniforms_count) {
         return;
     }
+    vk_program_state* state = vulkan_program_state(id, program);
     const vk_uniform* uniform = &program->uniforms[index];
     for (byte s = 0; s < 2; s++) {
         if (uniform->offset[s] < 0) {
@@ -241,14 +278,14 @@ void vulkan_uniform_write(vk_program* program, gint index, const void* data, int
             if (at + bytes > program->data_size[s]) {
                 break;
             }
-            memcpy(program->data[s] + at, (const byte*) data + k * bytes, bytes);
+            memcpy(state->data[s] + at, (const byte*) data + k * bytes, bytes);
         }
-        program->data_dirty[s] = 1;
+        state->data_dirty[s] = 1;
     }
 }
 
 static inline void vulkan_uniform_set(gint index, const void* data, int bytes, int count) {
-    vulkan_uniform_write(vk_program_of(vk_program_bound), index, data, bytes, count);
+    vulkan_uniform_write(vk_ctx->program_bound, index, data, bytes, count);
 }
 
 static inline void zox_gpu_int(gint index, int value) {
@@ -293,8 +330,7 @@ static inline void zox_gpu_color(gint index, color value) {
 }
 
 static inline void vulkan_program_set(guint id, const char* name, const void* data, int bytes, int count) {
-    vk_program* program = vk_program_of(id);
-    vulkan_uniform_write(program, vulkan_uniform_index(program, name), data, bytes, count);
+    vulkan_uniform_write(id, vulkan_uniform_index(vk_program_of(id), name), data, bytes, count);
 }
 
 static inline void zox_gpu_program_int(guint program, const char* name, int value) {

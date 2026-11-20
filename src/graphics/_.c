@@ -14,6 +14,13 @@ byte zox_render_lines = 0;
 #else
     #include "headless/_.c"
 #endif
+#ifndef zox_vulkan
+// a render system, run now on this thread (vulkan can split parallel ones across threads, fun/workers.c)
+static inline void zox_gpu_run_system(ecs* world, entity system, byte parallel) {
+    (void) parallel;
+    zox_run(world, system);
+}
+#endif
 #include "fun/screenshot.c"
 #include "fun/gif.c"
 

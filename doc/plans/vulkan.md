@@ -65,6 +65,16 @@ the backend under it changes. Code: [src/graphics/vulkan](../../src/graphics/vul
   buffers and texture's image view match (a texture written again gets a new image, its id stays). Inputs with no attribute read a zero buffer.
 - **Textures** (`textures.c`): rgba (rgb widened), copied in the frame's upload commands, submitted before it.
 - Vsync off picks mailbox, else immediate (`vulkan_set_vsync`, from the app's setting).
+- **Contexts** (`dat/_.c` `vk_context`, `vk_ctx` a thread's): gl's bound state, the command buffer, each program's
+  uniform values (`vk_program_state`), and per frame in flight the ring, descriptor pools and secondary buffers.
+- **Recording on threads** (`workers.c`, the user's option B, 2026-11-20): a render system registered with
+  `zox_render3_system_parallel` (tag `RenderParallel`, multi threaded so flecs splits it) is run by
+  `zox_gpu_run_system` in parts, one per worker thread (`zox_run_part` on stages 1 up, while flecs' own workers wait
+  for the single threaded camera loop). Each part starts from the main thread's state and records a secondary
+  command buffer; the main thread replays them in order in a pass restarted for them. On gl it's `zox_run`. Only
+  opaque chunks are parallel: sorted or stateful systems (water, instances) stay on the main thread.
+  `ZOX_VK_WORKERS=0` turns it off. Option A (render systems in the pipeline, each looping the cameras) wants a plan
+  of its own, later.
 
 ## Numbers (2026-11-20, the 780M, release, `render_fps`, no vsync, `--nopost`, seed 666)
 
@@ -73,6 +83,7 @@ the backend under it changes. Code: [src/graphics/vulkan](../../src/graphics/vul
 | far 3 | 431, 437, 456, 374 fps | 413, 409, 397, 349 fps |
 | far 32, before slabs | 249, 255 fps (1344 chunks drawn) | 236, 239 fps (1344 chunks) |
 | far 32, slabs | 211 fps (1344 chunks) | 226 fps (2291 chunks, 331 instances) |
+| far 32, one seed one world (2291 chunks), 3 runs | 174, 173, 147 (avg 165) | no workers 186, 170, 178 (avg 178); 8 workers 242, 195, 204 (avg 214, +30%) |
 
 - Even: rendering is about a quarter of the main thread on both (sampled, `ZOX_SAMPLE`), the rest is the game's
   systems; at far 32 a frame is ~4ms for ~1300 chunk draws.

@@ -88,31 +88,31 @@ void vulkan_buffer_sub_data(uint id, const void* data, VkDeviceSize bytes) {
 }
 
 static inline void zox_gpu_bind_buffer_element(guint v) {
-    vk_element_bound = v;
+    vk_ctx->element_bound = v;
 }
 
 static inline void zox_gpu_bind_buffer_array(guint v) {
-    vk_array_bound = v;
+    vk_ctx->array_bound = v;
 }
 
 static inline void zox_gpu_set_buffer_element(const void* ptr, gsize length) {
-    vulkan_buffer_data(vk_element_bound, ptr, length);
+    vulkan_buffer_data(vk_ctx->element_bound, ptr, length);
 }
 
 static inline void zox_gpu_set_buffer_array(const void* ptr, gsize length) {
-    vulkan_buffer_data(vk_array_bound, ptr, length);
+    vulkan_buffer_data(vk_ctx->array_bound, ptr, length);
 }
 
 static inline void zox_gpu_set_sub_buffer_float3(gsize length, const void* ptr) {
-    vulkan_buffer_sub_data(vk_array_bound, ptr, length * sizeof(float3));
+    vulkan_buffer_sub_data(vk_ctx->array_bound, ptr, length * sizeof(float3));
 }
 
 static inline void zox_gpu_set_sub_buffer_color(gsize length, const void* ptr) {
-    vulkan_buffer_sub_data(vk_array_bound, ptr, length * sizeof(color));
+    vulkan_buffer_sub_data(vk_ctx->array_bound, ptr, length * sizeof(color));
 }
 
 static inline void zox_gpu_set_sub_buffer_bytes(gsize bytes, const void* ptr) {
-    vulkan_buffer_sub_data(vk_array_bound, ptr, bytes);
+    vulkan_buffer_sub_data(vk_ctx->array_bound, ptr, bytes);
 }
 
 static inline void zox_gpu_array_buffer(guint link, gsize length, byte byte_size, void* ptr) {
@@ -124,8 +124,8 @@ static inline void zox_gpu_element_buffer(guint link, gsize length, byte byte_si
 }
 
 static inline void zox_gpu_reset_mesh() {
-    vk_element_bound = 0;
-    vk_array_bound = 0;
+    vk_ctx->element_bound = 0;
+    vk_ctx->array_bound = 0;
 }
 
 // Attributes: gl's glVertexAttribPointer reads the bound array buffer (or client memory when none is)
@@ -139,8 +139,8 @@ void vulkan_attribute(guint location, VkFormat format, uint stride, const void* 
     if (location >= vk_slots_max) {
         return;
     }
-    vk_attribute* attribute = &vk_attributes[location];
-    attribute->buffer = vk_array_bound;
+    vk_attribute* attribute = &vk_ctx->attributes[location];
+    attribute->buffer = vk_ctx->array_bound;
     attribute->pointer = pointer;
     attribute->format = format;
     attribute->stride = stride;
@@ -148,19 +148,19 @@ void vulkan_attribute(guint location, VkFormat format, uint stride, const void* 
 
 static inline void zox_gpu_disable_attribute(guint id) {
     if (id < vk_slots_max) {
-        vk_attributes[id].enabled = 0;
+        vk_ctx->attributes[id].enabled = 0;
     }
 }
 
 static inline void zox_gpu_enable_attribute(guint id) {
     if (id < vk_slots_max) {
-        vk_attributes[id].enabled = 1;
+        vk_ctx->attributes[id].enabled = 1;
     }
 }
 
 static inline void zox_gpu_attribute_divisor(guint id, guint value) {
     if (id < vk_slots_max) {
-        vk_attributes[id].divisor = value;
+        vk_ctx->attributes[id].divisor = value;
     }
 }
 
@@ -203,10 +203,10 @@ static inline void zox_gpu_set_attribute_float3_strided(guint id, gsizei stride,
 
 // a buffer as an attribute (and its enabling), as gl's helpers do
 static inline void vulkan_buffer_attribute(guint location, guint buffer, VkFormat format, uint stride) {
-    vk_array_bound = buffer;
+    vk_ctx->array_bound = buffer;
     zox_gpu_enable_attribute(location);
     vulkan_attribute(location, format, stride, NULL);
-    vk_array_bound = 0;
+    vk_ctx->array_bound = 0;
 }
 
 static inline void opengl_enable_vertex_buffer(guint shader_index, guint vertex_buffer) {

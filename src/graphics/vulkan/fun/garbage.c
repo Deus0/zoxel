@@ -36,11 +36,13 @@ void vulkan_garbage_add(vk_garbage_item item) {
         vulkan_destroy(item);
         return;
     }
+    pthread_mutex_lock(&vk_lock);
     if (vk_garbage_count == vk_garbage_capacity) {
         vk_garbage_capacity = vk_garbage_capacity ? vk_garbage_capacity * 2 : 256;
         vk_garbage = realloc(vk_garbage, sizeof(vk_garbage_item) * vk_garbage_capacity);
     }
     vk_garbage[vk_garbage_count++] = item;
+    pthread_mutex_unlock(&vk_lock);
 }
 
 void vulkan_garbage_collect() {

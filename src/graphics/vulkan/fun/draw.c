@@ -100,54 +100,60 @@ VkPipeline vulkan_create_pipeline(const vk_program* program, const vk_pipeline_k
     return pipeline;
 }
 
+// workers share programs' pipelines: found and made under vk_lock
 VkPipeline vulkan_pipeline_of(vk_program* program, const vk_pipeline_key* key) {
-    for (int i = 0; i < program->pipelines_count; i++) {
+    pthread_mutex_lock(&vk_lock);
+    VkPipeline pipeline = VK_NULL_HANDLE;
+    for (int i = 0; i < program->pipelines_count && !pipeline; i++) {
         if (memcmp(&program->pipelines[i].key, key, sizeof(vk_pipeline_key)) == 0) {
-            return program->pipelines[i].pipeline;
+            pipeline = program->pipelines[i].pipeline;
         }
     }
-    const VkPipeline pipeline = vulkan_create_pipeline(program, key);
     if (!pipeline) {
-        return VK_NULL_HANDLE;
+        pipeline = vulkan_create_pipeline(program, key);
+        if (pipeline) {
+            program->pipelines = realloc(program->pipelines, sizeof(vk_pipeline) * (program->pipelines_count + 1));
+            program->pipelines[program->pipelines_count++] = (vk_pipeline) { *key, pipeline };
+        }
     }
-    program->pipelines = realloc(program->pipelines, sizeof(vk_pipeline) * (program->pipelines_count + 1));
-    program->pipelines[program->pipelines_count++] = (vk_pipeline) { *key, pipeline };
+    pthread_mutex_unlock(&vk_lock);
     return pipeline;
 }
 
 // viewport (gl's flipped: y from the bottom, a negative height), scissor, line width, depth bias
 void vulkan_set_dynamic(VkCommandBuffer commands) {
     const float height = vk_extent.height;
-    const float4 gl = vk_viewport_set ? vk_viewport : (float4) { 0, 0, vk_extent.width, height };
+    const float4 gl = vk_ctx->viewport_set ? vk_ctx->viewport : (float4) { 0, 0, vk_extent.width, height };
     const VkViewport viewport = { gl.x, height - gl.y, gl.z, -gl.w, 0, 1 };
     const VkRect2D scissor = { { 0, 0 }, vk_extent };
     vkCmdSetViewport(commands, 0, 1, &viewport);
     vkCmdSetScissor(commands, 0, 1, &scissor);
-    vkCmdSetLineWidth(commands, vk_wide_lines ? vk_line_width : 1);
-    vkCmdSetDepthBias(commands, vk_bias_units, 0, vk_bias_factor);
-    vk_dynamic_dirty = 0;
+    vkCmdSetLineWidth(commands, vk_wide_lines ? vk_ctx->line_width : 1);
+    vkCmdSetDepthBias(commands, vk_ctx->bias_units, 0, vk_ctx->bias_factor);
+    vk_ctx->dynamic_dirty = 0;
 }
 
 // the program's uniforms (each stage's default block, its named blocks) and texture
-byte vulkan_bind_descriptors(vk_program* program, VkCommandBuffer commands) {
+byte vulkan_bind_descriptors(uint id, vk_program* program, VkCommandBuffer commands) {
+    vk_program_state* state = vulkan_program_state(id, program);
     VkBuffer buffers[vk_slots_max + 2];
     uint offsets[vk_slots_max + 2];
     int sizes[vk_slots_max + 2];
     int bindings[vk_slots_max + 2];
     int count = 0;
     for (byte s = 0; s < 2; s++) {
-        if (!program->data[s]) {
+        if (!state->data[s]) {
             continue;
         }
-        if (program->data_dirty[s] || program->data_epoch[s] != vk_ring_epoch) {
-            if (!vulkan_ring_push(program->data[s], program->data_size[s], &program->data_ring[s], &program->data_offset[s])) {
+        if (state->data_dirty[s] || state->data_epoch[s] != vk_ring_epoch) {
+            if (!vulkan_ring_push(state->data[s], program->data_size[s], &state->data_ring[s], &state->data_offset[s])) {
                 return 0;
             }
-            program->data_epoch[s] = vk_ring_epoch;
-            program->data_dirty[s] = 0;
+            state->data_epoch[s] = vk_ring_epoch;
+            state->data_dirty[s] = 0;
         }
-        buffers[count] = program->data_ring[s];
-        offsets[count] = program->data_offset[s];
+        buffers[count] = state->data_ring[s];
+        offsets[count] = state->data_offset[s];
         sizes[count] = program->data_size[s];
         bindings[count++] = s ? vk_binding_fragment_block : vk_binding_vertex_block;
     }
@@ -160,20 +166,20 @@ byte vulkan_bind_descriptors(vk_program* program, VkCommandBuffer commands) {
         sizes[count] = block->size;
         bindings[count++] = block->binding;
     }
-    vk_texture* texture = vk_texture_of(vk_texture_bound);
+    vk_texture* texture = vk_texture_of(vk_ctx->texture_bound);
     if (!texture || !texture->image) {
         texture = vk_texture_of(vk_texture_black);
     }
     if (program->samplers_count) {
         texture->used = vk_serial_recording();
     }
-    byte reuse = program->set && program->set_epoch == vk_ring_epoch && program->set_view == texture->view;
+    byte reuse = state->set && state->set_epoch == vk_ring_epoch && state->set_view == texture->view;
     for (int i = 0; reuse && i < count; i++) {
-        reuse = program->set_buffers[i] == buffers[i];
+        reuse = state->set_buffers[i] == buffers[i];
     }
     if (!reuse) {
-        program->set = vulkan_allocate_set(program->set_layout);
-        if (!program->set) {
+        state->set = vulkan_allocate_set(program->set_layout);
+        if (!state->set) {
             return 0;
         }
         VkDescriptorBufferInfo buffer_infos[vk_slots_max + 2];
@@ -182,50 +188,50 @@ byte vulkan_bind_descriptors(vk_program* program, VkCommandBuffer commands) {
         for (int i = 0; i < count; i++) {
             buffer_infos[i] = (VkDescriptorBufferInfo) { buffers[i], 0, sizes[i] };
             writes[writes_count++] = (VkWriteDescriptorSet) {
-                .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET, .dstSet = program->set, .dstBinding = bindings[i],
+                .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET, .dstSet = state->set, .dstBinding = bindings[i],
                 .descriptorCount = 1, .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC,
                 .pBufferInfo = &buffer_infos[i] };
-            program->set_buffers[i] = buffers[i];
+            state->set_buffers[i] = buffers[i];
         }
         const VkDescriptorImageInfo image = { vk_sampler, texture->view, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL };
         for (int i = 0; i < program->samplers_count; i++) {
             writes[writes_count++] = (VkWriteDescriptorSet) {
-                .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET, .dstSet = program->set,
+                .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET, .dstSet = state->set,
                 .dstBinding = program->samplers[i], .descriptorCount = 1,
                 .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, .pImageInfo = &image };
         }
         vkUpdateDescriptorSets(vk_device, writes_count, writes, 0, NULL);
-        program->set_epoch = vk_ring_epoch;
-        program->set_view = texture->view;
+        state->set_epoch = vk_ring_epoch;
+        state->set_view = texture->view;
     }
-    vkCmdBindDescriptorSets(commands, VK_PIPELINE_BIND_POINT_GRAPHICS, program->layout, 0, 1, &program->set,
+    vkCmdBindDescriptorSets(commands, VK_PIPELINE_BIND_POINT_GRAPHICS, program->layout, 0, 1, &state->set,
         count, offsets);
     return 1;
 }
 
 // everything a draw needs bound; vertices and instances size client arrays (copied to the ring), 0 to skip it
 byte vulkan_draw_begin(byte topology, uint vertices, uint instances) {
-    vk_program* program = vk_program_of(vk_program_bound);
+    vk_program* program = vk_program_of(vk_ctx->program_bound);
     if (!program || !vulkan_frame_begin()) {
         return 0;
     }
-    const VkCommandBuffer commands = vk_commands[vk_frame];
+    const VkCommandBuffer commands = vk_ctx->commands;
     const ulong serial = vk_serial_recording();
     vk_pipeline_key key;
     memset(&key, 0, sizeof(key));
     key.topology = topology;
-    key.blend = vk_blend;
-    key.depth_test = vk_depth_test;
-    key.depth_write = vk_depth_test && vk_depth_write;     // gl writes no depth with its test off
-    key.cull = vk_cull && topology == vk_topology_triangles;
-    key.color_write = vk_color_write;
-    key.depth_bias = topology == vk_topology_triangles ? vk_bias_fill : topology == vk_topology_lines ? vk_bias_lines : 0;
+    key.blend = vk_ctx->blend;
+    key.depth_test = vk_ctx->depth_test;
+    key.depth_write = vk_ctx->depth_test && vk_ctx->depth_write;     // gl writes no depth with its test off
+    key.cull = vk_ctx->cull && topology == vk_topology_triangles;
+    key.color_write = vk_ctx->color_write;
+    key.depth_bias = topology == vk_topology_triangles ? vk_ctx->bias_fill : topology == vk_topology_lines ? vk_ctx->bias_lines : 0;
     key.inputs_count = program->inputs_count;
     VkBuffer buffers[vk_slots_max];
     VkDeviceSize offsets[vk_slots_max];
     for (int i = 0; i < program->inputs_count; i++) {
         const int location = program->inputs[i].value;
-        const vk_attribute* attribute = location < vk_slots_max ? &vk_attributes[location] : NULL;
+        const vk_attribute* attribute = location < vk_slots_max ? &vk_ctx->attributes[location] : NULL;
         key.inputs[i].location = location;
         if (!attribute || !attribute->enabled) {
             // gl reads a constant for an input with no attribute: zeros here
@@ -261,14 +267,14 @@ byte vulkan_draw_begin(byte topology, uint vertices, uint instances) {
     if (!pipeline) {
         return 0;
     }
-    if (!vulkan_bind_descriptors(program, commands)) {
+    if (!vulkan_bind_descriptors(vk_ctx->program_bound, program, commands)) {
         return 0;
     }
-    if (pipeline != vk_pipeline_bound) {
+    if (pipeline != vk_ctx->pipeline_bound) {
         vkCmdBindPipeline(commands, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
-        vk_pipeline_bound = pipeline;
+        vk_ctx->pipeline_bound = pipeline;
     }
-    if (vk_dynamic_dirty) {
+    if (vk_ctx->dynamic_dirty) {
         vulkan_set_dynamic(commands);
     }
     if (program->inputs_count) {
@@ -279,11 +285,11 @@ byte vulkan_draw_begin(byte topology, uint vertices, uint instances) {
 
 // an indexed draw from the bound element buffer
 void vulkan_draw_indexed(byte topology, uint indices, uint instances) {
-    vk_buffer* elements = vk_buffer_of(vk_element_bound);
+    vk_buffer* elements = vk_buffer_of(vk_ctx->element_bound);
     if (!indices || !instances || !elements || !elements->buffer || !vulkan_draw_begin(topology, 0, instances)) {
         return;
     }
-    const VkCommandBuffer commands = vk_commands[vk_frame];
+    const VkCommandBuffer commands = vk_ctx->commands;
     elements->used = vk_serial_recording();
     vkCmdBindIndexBuffer(commands, elements->buffer, elements->offset, VK_INDEX_TYPE_UINT32);
     vkCmdDrawIndexed(commands, indices, instances, 0, 0, 0);
@@ -293,7 +299,7 @@ void vulkan_draw(byte topology, uint vertices, uint instances) {
     if (!vertices || !instances || !vulkan_draw_begin(topology, vertices, instances)) {
         return;
     }
-    vkCmdDraw(vk_commands[vk_frame], vertices, instances, 0, 0);
+    vkCmdDraw(vk_ctx->commands, vertices, instances, 0, 0);
 }
 
 static inline void zox_gpu_render(gsizei length) {

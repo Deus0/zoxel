@@ -1,5 +1,8 @@
 // Types
 zox_tag(Mesh);
+// a render system that can be split across threads (vulkan records each part apart): its draws need no order
+//  between its entities and it keeps no state across them (i.e. opaque chunks, not sorted see through ones)
+zox_tag(RenderParallel);
 zox_tag(Shader);
 zox_tag(Material);
 zox_tag(SingleMaterial);
@@ -72,6 +75,7 @@ static inline int2 get_texture_size(ecs* world, entity e) {
 
 void zox_components_rendering(ecs *world) {
     zoxd_tag(Mesh);
+    zoxd_tag(RenderParallel);
     zoxd_tag(Shader);
     zoxd_tag(Material);
     zoxd_tag(SingleMaterial);

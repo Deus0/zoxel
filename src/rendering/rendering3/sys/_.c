@@ -15,7 +15,7 @@
 #include "weights_render.c"
 
 void zox_systems_basics3(ecs* world) {
-    zox_render3_system(
+    zox_render3_system_parallel(
         0,
         chunk3_textured_render_system,
         [in] rendering.RenderDisabled,
