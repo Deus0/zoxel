@@ -3,7 +3,7 @@
 ## Get a build
 - daily builds: github and codeberg releases, "zoxel-nightly" (tag nightly), the newest only (versioned releases
   later); vulkan is the flagship, opengl the fallback:
-	- vulkan: windows x64, linux x64 and linux arm zips, android arm apk
+	- vulkan: windows x64, linux x64 and linux arm zips, android arm apks (phone and xr)
 	- opengl: windows x64, linux x64 and linux arm zips, android arm apks (phone and xr)
 - any commit or branch: github actions, its build run, artifacts (kept 14 days)
 
@@ -14,6 +14,7 @@
 | linux x64, vulkan, dev | bash bsh/build.sh zoxel --vulkan --debug --out zoxel_vulkan | bin/zoxel_vulkan/ ([plans/vulkan.md](plans/vulkan.md)) |
 | linux x64 / arm, vulkan | bash bsh/docker.sh --release --x64 --vulkan (CI: build.sh --release --package --docker --vulkan) | zip/zoxel_linux_x64_vulkan_sdl_<date>.zip (shaderc in it) |
 | android arm, vulkan | bash bsh/android.sh zoxel --release --signed --vulkan | zip/zoxel_android_arm_vulkan_<date>.apk |
+| android xr, vulkan | bash bsh/android.sh zoxel --release --signed --xr --vulkan (OpenXR's XR_KHR_vulkan_enable2) | zip/zoxel_android_arm_xr_vulkan_<date>.apk |
 | windows x64, vulkan | bash bsh/windows.sh --release --vulkan | zip/zoxel_windows_x64_vulkan_sdl_<date>.zip |
 | windows x64, opengl | bash bsh/windows.sh --release | zip/zoxel_windows_x64_opengl_sdl_<date>.zip |
 | linux x64, opengl, dev | bash bsh/build.sh | bin/zoxel_linux_x64_opengl_sdl_dev/ |
@@ -41,7 +42,8 @@
 ## CI
 - github actions, .github/workflows/build.yml, ubuntu:24.04 containers (same as docker.sh)
 - every push and pull request: builds vulkan first, windows x64, linux x64, linux arm (github's arm runner,
-  natively), android arm; then opengl, windows x64, linux x64, linux arm, android arm and android xr (--xr, OpenXR from bsh/xr.sh);
+  natively), android arm and android xr (--xr --vulkan); then opengl, windows x64, linux x64, linux arm, android arm and
+  android xr (--xr, OpenXR from bsh/xr.sh);
   uploads the zips and apks as artifacts
 - daily at 03:17 utc: builds master, swaps the nightly release's files (new ones uploaded first, then the old
   ones deleted, the tag moved), skipped if master didn't change

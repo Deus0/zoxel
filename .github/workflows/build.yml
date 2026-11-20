@@ -1,4 +1,4 @@
-# builds vulkan first (the flagship): windows x64, linux x64, linux arm, android arm; then opengl (the fallback): windows x64,
+# builds vulkan first (the flagship): windows x64, linux x64, linux arm, android arm (phone and xr); then opengl (the fallback): windows x64,
 #  linux x64, linux arm, android arm (phone and xr); web (webgl 2, tested in a headless browser); in ubuntu 24.04, the same as bsh/docker.sh (packages from bsh/deps.sh)
 #   push / pull request: builds, zips are artifacts on the run's page
 #   once a day: builds master and replaces the nightly release, skipped if master didn't change
@@ -153,10 +153,12 @@ jobs:
           mkdir -p ~/.config/zox_keys
           echo "${KEYSTORE}" | base64 -d > ~/.config/zox_keys/zoxel.keystore
           printf '%s\n' "${KEYSTORE_PASSWORD}" > ~/.config/zox_keys/zoxel.password
-      # vulkan first: builds the ndk's shaderc too (~10 minutes)
+      # vulkan first: builds the ndk's shaderc too (~10 minutes), the phone and xr (XR_KHR_vulkan_enable2)
       - name: build vulkan
         run: bash bsh/android.sh zoxel --release --signed --vulkan
-      # then opengl es, the phone and xr (xr is gl es only for now)
+      - name: build xr vulkan
+        run: bash bsh/android.sh zoxel --release --signed --xr --vulkan
+      # then opengl es, the phone and xr
       - name: build
         run: bash bsh/android.sh zoxel --release --signed
       - name: build xr
@@ -170,13 +172,19 @@ jobs:
           retention-days: 14
       - uses: actions/upload-artifact@v7
         with:
+          path: zip/zoxel_android_arm_xr_vulkan_*.apk
+          archive: false
+          if-no-files-found: error
+          retention-days: 14
+      - uses: actions/upload-artifact@v7
+        with:
           path: zip/zoxel_android_arm_2*.apk
           archive: false
           if-no-files-found: error
           retention-days: 14
       - uses: actions/upload-artifact@v7
         with:
-          path: zip/zoxel_android_arm_xr_*.apk
+          path: zip/zoxel_android_arm_xr_2*.apk
           archive: false
           if-no-files-found: error
           retention-days: 14
