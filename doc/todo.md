@@ -258,6 +258,14 @@
 
 
 # Generation, Biomes and Regions
+- Seeds: one seed should always make the same world
+	- done (594b25b10): rand has a state each thread (zox_rand, zox_srand), so block models seeding and drawing
+	  on workers no longer change each other (one seed made two worlds, tst screenshot alternated)
+	- left: what generates from zox_rand without zox_srand first takes the thread's last state, so depends on
+	  which thread and what ran before: find the world's generators that don't seed (towns, npcs, items, vegetation,
+	  dungeons, names) and seed each from the realm's seed and its position or id
+	- gameplay rand (ai, drops, particles, sounds) can stay unseeded
+	- a test: two runs of one seed, the realm's block colours, town positions and first npcs compared (seed_world)
 - Population: more info per tunk (who lives there, counts), a level per region (like Trove), regions harder the
   further from the origin (world scale to decide)
 - More natural mountains
@@ -807,8 +815,6 @@
 - dust particles in the air round the terrain (ergo proxy, dystopian vibes)
 - Vulkan renderer: parts 4 and 5 of [plans/vulkan.md](plans/vulkan.md) (render textures, compute), then its speed
   (the numbers there: even with gl now)
-- seeds: block models and everything seeded draw from a rand of their own each thread (zox_rand, 2026-11-20: one
-  seed made two worlds); gameplay rand (ai, drops, particles) isn't seeded, a run still plays out its own way
 - make the walking camera animation feel more natural
     - just animate the head better and body
     - add tremble in the gait
