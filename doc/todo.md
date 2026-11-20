@@ -37,8 +37,8 @@
 - tst vegetation_chunks: no tree crosses a chunk's top, its across chunks case unchecked (2026-11-19)
 - tst camera_filter: camera C (unfiltered) drew the cube linked to A, 16 of 25 pixels changed (2026-11-19)
 - tst dig_light fails 1 of 2: "the hole's faces never showed (or not [5] of them: [1])", on 22d44c39c too (2026-11-19)
-- tst pipeline_syncs fails 2 of 3: 21 merges (over 11), 4 main thread systems between multi threaded ones:
-	camera_underwater_system (pre_physics), xr_room_walk_system, xr_head_bone_system, xr_hands_ik_system (2026-11-18)
+- tst pipeline_syncs fails 1 of 3: 13 merges (over 11), load_lids_system, navigator_shift_system and
+	huds3_follow_system are main thread in pre_physics (2 merges); xr ones now off without a headset (2026-11-20)
 - tst sound_balance fails 4 of 68: on small speakers click, splash, stone and water are only 1.5 to 2x the music
 	under them (2026-11-18)
 - tst xr_frustum fails 1 of 2 checks: "an eye sees [0.156] of its distance past the culling frustum" (failing at
