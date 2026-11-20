@@ -75,6 +75,12 @@ for arg in "$@"; do
     fi
 done
 
+# windows host (git bash): no mesa or egl to render in software, so tests run hidden on the real gpu (--gpu), and
+#   the game is an .exe; no systemd or pgrep there, so the memory cap and its guards are off
+bin_ext="bin"
+case "$(uname -s)" in
+    MINGW*|MSYS*|CYGWIN*) gpu=1; bin_ext="exe" ;;
+esac
 timeout_seconds="${zox_tst_timeout:-100}"
 memory_max="${zox_tst_memory:-4G}"   # 8GB boards, often idle while tests run
 log_max="${zox_tst_log_max:-20000000}"  # 20MB, a healthy test logs a few KB
@@ -172,9 +178,9 @@ elif [[ ${build} == "1" ]]; then
     fi
 fi
 
-bin=$(ls -t bin/zoxel_*_opengl_*_dev/zoxel-dev.bin 2>/dev/null | head -1)
-[[ -n "${out_name}" ]] && bin="bin/${out_name}/${out_name}.bin" && [[ ! -f "${bin}" ]] && bin=""
-[[ ${release} == "1" ]] && bin="bin/${release_name}/${release_name}.bin"
+bin=$(ls -t bin/zoxel_*_opengl_*_dev/zoxel-dev.${bin_ext} 2>/dev/null | head -1)
+[[ -n "${out_name}" ]] && bin="bin/${out_name}/${out_name}.${bin_ext}" && [[ ! -f "${bin}" ]] && bin=""
+[[ ${release} == "1" ]] && bin="bin/${release_name}/${release_name}.${bin_ext}"
 if [[ -z "${bin}" ]]; then
     echo "!! no dev binary found in [bin/zoxel_*_dev]"
     exit 2
