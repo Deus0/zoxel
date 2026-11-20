@@ -12,6 +12,8 @@
 | linux x64, dev | bash bsh/build.sh | bin/zoxel_linux_x64_opengl_sdl_dev/ |
 | linux x64, vulkan (in progress) | bash bsh/build.sh zoxel --vulkan --debug --out zoxel_vulkan | bin/zoxel_vulkan/ ([plans/vulkan.md](plans/vulkan.md)) |
 | linux x64, release | bash bsh/docker.sh --release --x64 | zip/zoxel_linux_x64_opengl_sdl_<date>.zip |
+| linux x64 / arm, vulkan | bash bsh/docker.sh --release --x64 --vulkan (CI: build.sh --release --package --docker --vulkan) | zip/zoxel_linux_x64_vulkan_sdl_<date>.zip (shaderc in it) |
+| android arm, vulkan | bash bsh/android.sh zoxel --release --signed --vulkan | zip/zoxel_android_arm_vulkan_<date>.apk |
 | windows x64 | bash bsh/windows.sh --release | zip/zoxel_windows_x64_opengl_sdl_<date>.zip |
 | android arm | bash bsh/android_prepare.sh, then bash bsh/android.sh zoxel --release --signed | zip/zoxel_android_arm_<date>.apk |
 | android arm, unsigned | bash bsh/android.sh zoxel --release --unsigned | zip/zoxel_android_arm_unsigned_<date>.apk |

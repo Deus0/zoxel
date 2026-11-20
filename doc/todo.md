@@ -1050,6 +1050,9 @@
 	- We should wrap all other sdl functions properly for glut
 
 # XR
+- XR on vulkan: openxr has it (XR_KHR_vulkan_enable2), our xr code is gl es (egl context, gl swapchain images,
+  src/xr/openxr): a vulkan session and its swapchain images as the vulkan module's render targets; android.sh
+  --xr --vulkan errors until then
 - play test (3D huds in XR):
 	- the stats panel, actionbar, minimap spawn in the same spot
 		- stats panel: spawn it over your right hand when you look at it for a few seconds, fade out after

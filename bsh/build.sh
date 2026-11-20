@@ -313,11 +313,17 @@ if [[ ${graphics_lib} == "opengl" ]]; then
 fi
 
 # vulkan: the loader and shaderc (shaders compiled at load, doc/plans/vulkan.md); windows' loader is vulkan-1
+#  - shaderc static if its combined archive holds glslang too (a self built one); arch's and ubuntu's lean on the
+#    system's glslang and spirv-tools, so theirs is shared (pkg-config names it: arch shaderc_shared, ubuntu shaderc),
+#    and a --package zip carries it beside the binary (below)
 if [[ ${graphics_lib} == "vulkan" ]]; then
+    shaderc_static="$(${compiler} -print-file-name=libshaderc_combined.a)"
     if [[ ${os} == "windows" ]]; then
         libs+=" -lvulkan-1 -lshaderc_shared"
+    elif [[ -f "${shaderc_static}" ]] && nm --defined-only "${shaderc_static}" 2> /dev/null | grep -q 'InitializeProcess'; then
+        libs+=" -lvulkan ${shaderc_static} -lstdc++"
     else
-        libs+=" -lvulkan -lshaderc_shared"
+        libs+=" -lvulkan $(pkg-config --libs shaderc 2> /dev/null || echo -lshaderc_shared)"
     fi
 fi
 
@@ -436,6 +442,14 @@ if [[ ${package} == "1" ]]; then
     echo "  - Lib [${library}]"
 
     rm -f ${zip_name}
+
+    # vulkan: shaderc and what it needs (glslang, spirv-tools) beside the binary (it looks there, rpath $ORIGIN);
+    #  vulkan's loader is the system's, with its drivers
+    if [[ ${graphics_lib} == "vulkan" && ${os} == "linux" ]]; then
+        ldd "${bin_path}" | awk '/shaderc|glslang|SPIRV/ { print $3 }' | while read -r shared; do
+            [[ -f "${shared}" ]] && cp -L "${shared}" "${bin_folder}/" && echo "  - Lib [$(basename "${shared}")]"
+        done
+    fi
 
     (
         cd "${bin_folder}"

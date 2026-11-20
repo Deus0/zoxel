@@ -1,4 +1,4 @@
-# builds linux x64 and arm, windows x64, android arm (phone and xr) in ubuntu 24.04, the same as bsh/docker.sh (packages from bsh/deps.sh)
+# builds linux x64 and arm (opengl and vulkan), windows x64, android arm (phone, vulkan and xr) in ubuntu 24.04, the same as bsh/docker.sh (packages from bsh/deps.sh)
 #   push / pull request: builds, zips are artifacts on the run's page
 #   once a day: builds master and replaces the nightly release, skipped if master didn't change
 name: build
@@ -55,6 +55,17 @@ jobs:
             runner: ubuntu-latest
             deps: --windows
             build: bash bsh/windows.sh --release
+          # vulkan (doc/plans/vulkan.md), their zips carry shaderc beside the binary; libs as their opengl twin's
+          - target: linux_x64_vulkan
+            libs: linux_x64
+            runner: ubuntu-latest
+            deps: --vulkan
+            build: bash bsh/build.sh --release --package --x64 --docker --vulkan
+          - target: linux_arm_vulkan
+            libs: linux_arm
+            runner: ubuntu-24.04-arm
+            deps: --vulkan
+            build: bash bsh/build.sh --release --package --arm --docker --vulkan
     steps:
       - uses: actions/checkout@v7
       - name: packages
@@ -69,7 +80,7 @@ jobs:
           path: |
             ext
             lib
-          key: libs-${{ matrix.target }}-${{ hashFiles('bsh/libs-download.sh', 'bsh/libs-compile.sh', 'bsh/deps.sh') }}
+          key: libs-${{ matrix.libs || matrix.target }}-${{ hashFiles('bsh/libs-download.sh', 'bsh/libs-compile.sh', 'bsh/deps.sh') }}
       - name: cache flecs
         uses: actions/cache@v5
         with:
@@ -138,6 +149,9 @@ jobs:
         run: bash bsh/android.sh zoxel --release --signed
       - name: build xr
         run: bash bsh/android.sh zoxel --release --signed --xr
+      # vulkan: builds the ndk's shaderc too (~10 minutes)
+      - name: build vulkan
+        run: bash bsh/android.sh zoxel --release --signed --vulkan
       # each apk as it is (archive: false uploads one file)
       - uses: actions/upload-artifact@v7
         with:
@@ -148,6 +162,12 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           path: zip/zoxel_android_arm_xr_*.apk
+          archive: false
+          if-no-files-found: error
+          retention-days: 14
+      - uses: actions/upload-artifact@v7
+        with:
+          path: zip/zoxel_android_arm_vulkan_*.apk
           archive: false
           if-no-files-found: error
           retention-days: 14
