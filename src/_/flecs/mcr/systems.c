@@ -19,40 +19,8 @@ void zox_system_on_new(ecs* world, entity system) {
     // zox_statistics_systems++;
 }
 
-#ifdef zox_time_systems
-
-#define zox_sys_on_begin()\
-    uint process_count = 0; \
-    double system_time_begin = get_time_ms(); \
-    byte is_count_process = ecs_has(\
-        it->world,\
-        it->system,\
-        SystemProcessed)\
-
-#define zox_sys_on_end()\
-    double system_delta_time = get_time_ms() - system_time_begin;\
-    if (ecs_has(it->world, it->system, SystemDelta)) { \
-        double current_delta = ecs_get(it->world, it->system, SystemDelta)->value; \
-        if (system_delta_time > current_delta) { \
-            SystemDelta* system_delta = ecs_get_mut(\
-                it->world, it->system, SystemDelta); \
-            system_delta->value = system_delta_time; \
-        } \
-    } \
-    \
-    if (is_count_process && process_count) { \
-        int current = ecs_get(it->world, it->system, SystemProcessed)->value;\
-        if (process_count > current) {\
-            SystemProcessed* system_processed = ecs_get_mut(\
-                it->world, it->system, SystemProcessed); \
-            system_processed->value = process_count; \
-            /* ecs_set(it->world, it->system, SystemProcessed, { process_count }); */ \
-        }\
-    }
-
-#elif defined(zox_tests)
-
-// Each system's span this frame, for the tests' profiler (_/tst/profile.c): its first thread's start to its last
+// Each system's span this frame, for the profiler (_/tst/profile.c, also --profile in release builds, where nothing
+//  records them and it falls back to flecs' times); recorded by zox_sys_on_begin / on_end in test builds: its first thread's start to its last
 //  thread's end, in microseconds; a multi threaded system's real time in the frame, its threads' imbalance too (flecs'
 //  time_spent is its cpu time summed, the profiler divided it by the workers: a frame held by one thread's big item
 //  looked like nothing)
@@ -89,6 +57,39 @@ static inline void zox_system_span_add(int index, ulong begin, ulong end) {
     old = __atomic_load_n(&span->slice, __ATOMIC_RELAXED);
     while (slice > old && !__atomic_compare_exchange_n(&span->slice, &old, slice, 1, __ATOMIC_RELAXED, __ATOMIC_RELAXED)) { }
 }
+
+#ifdef zox_time_systems
+
+#define zox_sys_on_begin()\
+    uint process_count = 0; \
+    double system_time_begin = get_time_ms(); \
+    byte is_count_process = ecs_has(\
+        it->world,\
+        it->system,\
+        SystemProcessed)\
+
+#define zox_sys_on_end()\
+    double system_delta_time = get_time_ms() - system_time_begin;\
+    if (ecs_has(it->world, it->system, SystemDelta)) { \
+        double current_delta = ecs_get(it->world, it->system, SystemDelta)->value; \
+        if (system_delta_time > current_delta) { \
+            SystemDelta* system_delta = ecs_get_mut(\
+                it->world, it->system, SystemDelta); \
+            system_delta->value = system_delta_time; \
+        } \
+    } \
+    \
+    if (is_count_process && process_count) { \
+        int current = ecs_get(it->world, it->system, SystemProcessed)->value;\
+        if (process_count > current) {\
+            SystemProcessed* system_processed = ecs_get_mut(\
+                it->world, it->system, SystemProcessed); \
+            system_processed->value = process_count; \
+            /* ecs_set(it->world, it->system, SystemProcessed, { process_count }); */ \
+        }\
+    }
+
+#elif defined(zox_tests)
 
 #define zox_sys_on_begin(T)\
     uint process_count = 0;\
