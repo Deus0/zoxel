@@ -145,6 +145,9 @@
   walks away from home, -x, passes and fails on the same commits), quest_dialogue (the first talk can take 15s+)
 
 # Refactors
+- one io helper to make a folder on every platform: `mkdir` takes a mode on linux and android, only a path on windows,
+  so each caller has its own `#ifdef zox_windows` (settings/fun/save.c, saves/fun/terminal.c, pathing/fun/save_dir.c,
+  pathing/and/io.c) and the tests use `zox_tst_mkdir` (src/_/tst/_.c); move it to src/_/pathing, use it everywhere
 - Move blocks from biome spawning back to realm
 	- we need rules that make each biome feel unique still
 	- we also still need variety of blocks to feel abundance

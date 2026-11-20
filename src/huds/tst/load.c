@@ -52,7 +52,7 @@ void zox_tst_load_games_setup() {
     for (int i = 0; i < zox_tst_load_saves; i++) {
         char folder[640];
         snprintf(folder, sizeof(folder), "%s/realm_%03i", zox_tst_load_saves_path, i);
-        mkdir(folder, 0755);
+        zox_tst_mkdir(folder);
         // higher index is newer (last played)
         RealmInfo info = { .seed = zox_tst_load_seed + i, .last = now - 10000 + i };
         snprintf(info.name, sizeof(info.name), "realm %i", i);

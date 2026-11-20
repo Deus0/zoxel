@@ -174,7 +174,7 @@ byte zox_tst_ik_poses_ready(ecs* world) {
             zox_tst_progress(zox_current_time);
             return 0;
         }
-        mkdir(zox_tst_path("ik_poses"), 0755);
+        zox_tst_mkdir(zox_tst_path("ik_poses"));
         zox_add(skeleton, PlantFeet);
         zox_tst_ik_poses_stage = 1;
         zox_tst_ik_poses_frames = 0;

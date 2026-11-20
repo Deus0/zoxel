@@ -28,7 +28,7 @@ static inline int zox_tst_realm_info_buttons(ecs* world, entity e, entity* butto
 static inline void zox_tst_realm_info_make(const char* saves, const char* folder_name, RealmInfo info) {
     char folder[512];
     snprintf(folder, sizeof(folder), "%s/%s", saves, folder_name);
-    mkdir(folder, 0755);
+    zox_tst_mkdir(folder);
     save_realm_info(folder, &info);
 }
 
