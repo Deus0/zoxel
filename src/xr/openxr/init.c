@@ -1,12 +1,3 @@
-static inline int xr_check_result(XrResult result, const char *name) {
-    if (XR_FAILED(result)) {
-        zox_loge("[XR] %s failed: %d", name, result);
-        return 0;
-    }
-    // zox_log("[XR] %s", name);
-    return 1;
-}
-
 // --------------------------------------------------
 // XR Setup
 // --------------------------------------------------
@@ -25,54 +16,7 @@ static int xr_setup_system(void) {
     if (!xr_check_result(result, "xrGetSystem")) {
         return 0;
     }
-    XrGraphicsRequirementsOpenGLESKHR requirements = {
-        .type = XR_TYPE_GRAPHICS_REQUIREMENTS_OPENGL_ES_KHR
-    };
-    PFN_xrGetOpenGLESGraphicsRequirementsKHR get_requirements = NULL;
-    result = xrGetInstanceProcAddr(
-        xr_instance,
-        "xrGetOpenGLESGraphicsRequirementsKHR",
-        (PFN_xrVoidFunction *)&get_requirements
-    );
-    if (!xr_check_result(
-        result,
-        "xrGetInstanceProcAddr(xrGetOpenGLESGraphicsRequirementsKHR)"
-    )) {
-        return 0;
-    }
-    if (!get_requirements) {
-        zox_loge(
-
-            "[XR] OpenGL ES requirements function missing"
-        );
-        return 0;
-    }
-    result = get_requirements(
-        xr_instance,
-        system_id,
-        &requirements
-    );
-    if (!xr_check_result(
-        result,
-        "xrGetOpenGLESGraphicsRequirementsKHR"
-    )) {
-        return 0;
-    }
-    zox_log(
-        "[XR] GL min version: %u.%u",
-        XR_VERSION_MAJOR(requirements.minApiVersionSupported),
-        XR_VERSION_MINOR(requirements.minApiVersionSupported)
-    );
-    zox_log(
-        "[XR] GL max version: %u.%u",
-        XR_VERSION_MAJOR(requirements.maxApiVersionSupported),
-        XR_VERSION_MINOR(requirements.maxApiVersionSupported)
-    );
-    zox_log(
-        "[XR] GL actual: %s",
-        (const char *)glGetString(GL_VERSION)
-    );
-    return 1;
+    return xr_graphics_system();
 }
 
 static int xr_setup_views() {
@@ -122,22 +66,9 @@ static int xr_setup_views() {
 }
 
 static int xr_setup_session(void) {
-    zox_log(
-        "[XR] EGL display=%p config=%p context=%p",
-        (void *)egl_display,
-        (void *)egl_config,
-        (void *)egl_context
-    );
-    XrGraphicsBindingOpenGLESAndroidKHR binding = {
-        .type = XR_TYPE_GRAPHICS_BINDING_OPENGL_ES_ANDROID_KHR,
-        .next = NULL,
-        .display = egl_display,
-        .config = egl_config,
-        .context = egl_context
-    };
     XrSessionCreateInfo session_info = {
         .type = XR_TYPE_SESSION_CREATE_INFO,
-        .next = &binding,
+        .next = xr_graphics_binding(),
         .createFlags = 0,
         .systemId = system_id
     };
@@ -207,12 +138,10 @@ static int xr_setup_swapchains() {
         free(formats);
         return 0;
     }
-    int64_t format = formats[0];
-    for (uint32_t i = 0; i < format_count; i++) {
-        if (formats[i] == GL_RGBA8) {
-            format = GL_RGBA8;
-            break;
-        }
+    const int64_t format = xr_graphics_format(formats, format_count);
+    if (format < 0) {
+        free(formats);
+        return 0;
     }
     zox_log("[XR] Swapchain format: %lld", (long long) format);
     free(formats);
@@ -263,8 +192,7 @@ static int xr_setup_swapchains() {
             return 0;
         }
         for (uint32_t j = 0; j < xr_eyes[i].image_count; j++) {
-            xr_eyes[i].images[j].type =
-                XR_TYPE_SWAPCHAIN_IMAGE_OPENGL_ES_KHR;
+            xr_eyes[i].images[j].type = xr_image_type;
         }
         result = xrEnumerateSwapchainImages(
             xr_eyes[i].swapchain,
@@ -370,7 +298,7 @@ static int xr_init(void) {
         return 0;
     }
     int found_android = 0;
-    int found_opengles = 0;
+    int found_graphics = 0;
     for (uint32_t i = 0; i < returned_extension_count; i++) {
         if (strcmp(
             extensions[i].extensionName,
@@ -380,9 +308,9 @@ static int xr_init(void) {
         }
         if (strcmp(
             extensions[i].extensionName,
-            XR_KHR_OPENGL_ES_ENABLE_EXTENSION_NAME
+            xr_graphics_extension
         ) == 0) {
-            found_opengles = 1;
+            found_graphics = 1;
         }
     }
     free(extensions);
@@ -390,13 +318,13 @@ static int xr_init(void) {
         zox_loge( "[XR] Android extension unavailable");
         return 0;
     }
-    if (!found_opengles) {
-        zox_loge( "[XR] OpenGL ES extension unavailable");
+    if (!found_graphics) {
+        zox_loge("[XR] %s unavailable", xr_graphics_extension);
         return 0;
     }
     const char *enabled_extensions[] = {
         XR_KHR_ANDROID_CREATE_INSTANCE_EXTENSION_NAME,
-        XR_KHR_OPENGL_ES_ENABLE_EXTENSION_NAME
+        xr_graphics_extension
     };
     XrInstanceCreateInfoAndroidKHR android_info = {
         .type = XR_TYPE_INSTANCE_CREATE_INFO_ANDROID_KHR,
@@ -432,18 +360,5 @@ static void xr_shutdown() {
         xrDestroyInstance(xr_instance);
         xr_instance = XR_NULL_HANDLE;
         zox_log("[XR] Instance destroyed");
-    }
-}
-
-static void xr_init_cameras() {
-    // Iniitalize Camera OpenGL Data
-    for (int i = 0; i < 2; i++) {
-        initialize_camera_buffers(
-            &xr_eyes[i].fbo,
-            &xr_eyes[i].rbo);
-        set_camera_buffers_size(
-            xr_eyes[i].fbo,
-            xr_eyes[i].rbo,
-            xr_config_to_image_size(xr_eyes[i].config));
     }
 }

@@ -190,6 +190,7 @@ static inline void zox_gpu_dispose_fbo(guint id) {
 void vulkan_target_frame(VkRenderPass pass) {
     vk_fbo_bound = 0;
     vk_target_texture = 0;
+    vk_target_external = 0;
     vk_target_framebuffer = vk_framebuffers[vk_image];
     vk_target_extent = vk_extent;
     vulkan_pass_begin(vk_contexts[0].commands, pass, VK_SUBPASS_CONTENTS_INLINE);
@@ -238,6 +239,7 @@ static inline void zox_gpu_bind_fbo(guint id) {
     vkCmdEndRenderPass(vk_contexts[0].commands);
     vk_fbo_bound = id;
     vk_target_texture = 1;
+    vk_target_external = 0;
     vk_target_framebuffer = fbo->framebuffer;
     vk_target_extent = fbo->extent;
     vulkan_pass_begin(vk_contexts[0].commands, vk_pass_texture_begin, VK_SUBPASS_CONTENTS_INLINE);

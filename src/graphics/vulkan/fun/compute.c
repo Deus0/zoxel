@@ -287,7 +287,7 @@ static inline void zox_gpu_compute_dispatch(uint groups_x, uint groups_y, uint g
     vkCmdDispatch(commands, groups_x, groups_y, groups_z);
     vulkan_compute_barrier(commands, 1);
     if (in_frame) {
-        vulkan_pass_begin(commands, vk_target_texture ? vk_pass_texture_load : vk_pass_load, VK_SUBPASS_CONTENTS_INLINE);
+        vulkan_pass_begin(commands, vulkan_target_load_pass(), VK_SUBPASS_CONTENTS_INLINE);
         vk_contexts[0].pipeline_bound = VK_NULL_HANDLE;
         vk_contexts[0].dynamic_dirty = 1;
     }

@@ -73,6 +73,12 @@ void vulkan_pass_begin(VkCommandBuffer commands, VkRenderPass render_pass, VkSub
 
 void vulkan_target_frame(VkRenderPass pass);
 
+// the pass carrying on the bound target's drawing (after secondaries, a compute dispatch): the frame's, a render
+//  texture's, or an external target's (its image kept in the layout its owner takes back)
+static inline VkRenderPass vulkan_target_load_pass() {
+    return vk_target_external ? vk_pass_external_load : vk_target_texture ? vk_pass_texture_load : vk_pass_load;
+}
+
 // a render texture left bound: its pass ended, the frame's image the target again
 void vulkan_target_frame_if_texture() {
     if (vk_fbo_bound && vk_recording) {
@@ -104,6 +110,7 @@ byte vulkan_frame_begin() {
     vkBeginCommandBuffer(commands, &begin);
     vk_fbo_bound = 0;
     vk_target_texture = 0;
+    vk_target_external = 0;
     vk_target_framebuffer = vk_framebuffers[vk_image];
     vk_target_extent = vk_extent;
     vulkan_pass_begin(commands, vk_submitted ? vk_pass_load : vk_pass_clear, VK_SUBPASS_CONTENTS_INLINE);

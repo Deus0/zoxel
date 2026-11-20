@@ -20,6 +20,20 @@ int vulkan_queue_family(VkPhysicalDevice physical) {
 
 // the best gpu that can draw: discrete, then integrated, then any (lavapipe, the software one tests use)
 byte vulkan_pick_physical() {
+    // the one another api says (OpenXR: the headset's gpu)
+    if (vk_pick_physical_with) {
+        if (!vulkan_check(vk_pick_physical_with(&vk_physical), "pick physical device") || !vk_physical ||
+            vulkan_queue_family(vk_physical) < 0)
+        {
+            zox_loge("[vulkan] the device given can't draw");
+            return 0;
+        }
+        VkPhysicalDeviceProperties properties;
+        vkGetPhysicalDeviceProperties(vk_physical, &properties);
+        vk_on_gpu = properties.deviceType != VK_PHYSICAL_DEVICE_TYPE_CPU;
+        zox_log("+ vulkan device [%s] (given)", properties.deviceName);
+        return 1;
+    }
     uint count = 0;
     vkEnumeratePhysicalDevices(vk_instance, &count, NULL);
     VkPhysicalDevice* devices = malloc(sizeof(VkPhysicalDevice) * count);
@@ -85,7 +99,9 @@ byte vulkan_create_device() {
         .enabledExtensionCount = vk_surface ? 1 : 0,
         .ppEnabledExtensionNames = &swapchain,
     };
-    if (!vulkan_check(vkCreateDevice(vk_physical, &info, NULL, &vk_device), "vkCreateDevice")) {
+    const VkResult created = vk_create_device_with ? vk_create_device_with(vk_physical, &info, &vk_device) :
+        vkCreateDevice(vk_physical, &info, NULL, &vk_device);
+    if (!vulkan_check(created, "vkCreateDevice")) {
         return 0;
     }
     vkGetDeviceQueue(vk_device, vk_queue_family, 0, &vk_queue);

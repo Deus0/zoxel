@@ -8,6 +8,11 @@ VkPhysicalDevice vk_physical;
 VkDevice vk_device;
 VkQueue vk_queue;
 uint vk_queue_family;
+// another api making the instance and device instead (OpenXR's XR_KHR_vulkan_enable2, xr/openxr/vulkan.c): it adds
+//  the extensions it needs; unset, the backend makes its own
+VkResult (*vk_create_instance_with)(const VkInstanceCreateInfo* info, VkInstance* instance) = NULL;
+VkResult (*vk_pick_physical_with)(VkPhysicalDevice* physical) = NULL;
+VkResult (*vk_create_device_with)(VkPhysicalDevice physical, const VkDeviceCreateInfo* info, VkDevice* device) = NULL;
 byte vk_on_gpu;                 // not lavapipe (software)
 
 // the target, its images with one depth buffer
@@ -34,6 +39,9 @@ VkRenderPass vk_pass_texture_load;
 // what's drawn to now: the frame's image, or a render texture (an fbo bound, its passes and pipelines its own)
 uint vk_fbo_bound;
 byte vk_target_texture;
+byte vk_target_external;    // an external target's bound (OpenXR's eyes, fun/external.c)
+VkRenderPass vk_pass_external;          // an external target's, begun: its depth cleared
+VkRenderPass vk_pass_external_load;     // carried on after a split's secondaries (workers.c)
 VkFramebuffer vk_target_framebuffer;
 VkExtent2D vk_target_extent;
 

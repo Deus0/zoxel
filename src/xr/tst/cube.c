@@ -252,8 +252,9 @@ static void render_viewport(
 // NOTE: We can probably just use eye_matrix here
 static void xr_eye_render(
     float4x4 world_camera,
-    xr_eye eye)
+    byte i)
 {
+    const xr_eye eye = xr_eyes[i];
     float4x4 world_eye =
         matrix_multiply(world_camera, eye.matrix);
     float4x4 view_matrix =
@@ -263,9 +264,11 @@ static void xr_eye_render(
         eye.fov, 0.05f, 100.0f);
     float4x4 vp_matrix = matrix_multiply(projection, view_matrix);
     // our actual render code here
-    xr_eye_render_begin(eye.swapchain, eye.images, eye.fbo);
+    if (!xr_gl_eye_bind(i)) {
+        return;
+    }
     render_viewport(vp_matrix, eye.image_size);
-    xr_eye_render_end(eye.swapchain);
+    xr_gl_eye_unbind(i);
 }
 
 // --------------------------------------------------
@@ -299,7 +302,7 @@ int main(int argc, char **argv) {
             camera_position,
             camera_rotation);
         for (int i = 0; i < 2; i++) {
-            xr_eye_render(camera_transform, xr_eyes[i]);
+            xr_eye_render(camera_transform, i);
         }
         xr_end_frame();
     }

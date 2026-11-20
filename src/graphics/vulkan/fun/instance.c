@@ -68,7 +68,9 @@ byte vulkan_create_instance(const char* const* extensions, uint extensions_count
         .enabledLayerCount = validate,
         .ppEnabledLayerNames = &validation,
     };
-    if (!vulkan_check(vkCreateInstance(&info, NULL, &vk_instance), "vkCreateInstance")) {
+    const VkResult created = vk_create_instance_with ? vk_create_instance_with(&info, &vk_instance) :
+        vkCreateInstance(&info, NULL, &vk_instance);
+    if (!vulkan_check(created, "vkCreateInstance")) {
         return 0;
     }
     if (validate) {

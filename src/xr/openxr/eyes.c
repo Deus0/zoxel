@@ -1,34 +1,5 @@
 
 
-void initialize_camera_buffers(GLuint* fbo, GLuint* rbo) {
-    glGenFramebuffers(1, fbo);
-    glGenRenderbuffers(1, rbo);
-}
-
-void dispose_camera_buffers(GLuint* fbo, GLuint* rbo) {
-    glDeleteRenderbuffers(1, rbo);
-    glDeleteFramebuffers(1, fbo);
-}
-
-void set_camera_buffers_size(GLuint fbo, GLuint rbo, int2 size) {
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-    glRenderbufferStorage(
-        GL_RENDERBUFFER,
-        GL_DEPTH_COMPONENT24,
-        size.x,
-        size.y);
-    glFramebufferRenderbuffer(
-        GL_FRAMEBUFFER,
-        GL_DEPTH_ATTACHMENT,
-        GL_RENDERBUFFER,
-        rbo);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
-}
-
-
-
 // --------------------------------------------------
 // Grab eye data from our XR device
 // --------------------------------------------------

@@ -2,6 +2,15 @@
 // XR Helpers
 // --------------------------------------------------
 
+static inline int xr_check_result(XrResult result, const char *name) {
+    if (XR_FAILED(result)) {
+        zox_loge("[XR] %s failed: %d", name, result);
+        return 0;
+    }
+    // zox_log("[XR] %s", name);
+    return 1;
+}
+
 static inline XrQuaternionf float4_to_xr_quaternion(float4 v) {
     return (XrQuaternionf) { v.x, v.y, v.z, v.w };
 }

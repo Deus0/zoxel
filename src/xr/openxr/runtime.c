@@ -4,7 +4,8 @@
 //  - the eyes are located last thing before drawing, the freshest head for the display time
 //  - every begun frame is ended, with no layers when the runtime says not to render (openxr/frames.c)
 //  - the inputs: OpenXR's actions synced once a frame, then each hand's stick, buttons, aim and grip poses
-//  - a swapchain image is read top down, y flipped (fun/eye_render.c), its triangles clockwise
+//  - a swapchain image is read top down: gl's are drawn y flipped (fun/eye_render.c), their triangles clockwise;
+//    vulkan's are drawn as its frame is, already top down (openxr/vulkan.c)
 // frame timing, logged every 2s (logcat, tag zoxel): where a headset's frame goes, to find what's slow
 //  - wait: in xrWaitFrame (the runtime pacing us: high is fine, we're early), sim: the engine's frame between the
 //    wait and the eyes, eyes: drawing both, late: frames whose display time skipped past one (dropped frames)
@@ -143,19 +144,16 @@ static byte xr_openxr_should_render(ecs* world) {
 
 static byte xr_openxr_eye_begin(ecs* world, byte i) {
     (void) world;
-    const xr_eye eye = xr_eyes[i];
-    if (!xr_eye_render_begin(eye.swapchain, eye.images, eye.fbo)) {
-        zox_loge("[XR] xr_eye_render_begin failed");
+    if (!xr_graphics_eye_begin(i)) {
+        zox_loge("[XR] xr_graphics_eye_begin failed");
         return 0;
     }
-    glFrontFace(GL_CW);     // y flipped into the swapchain images (fun/eye_render.c), so the winding too
     return 1;
 }
 
 static void xr_openxr_eye_end(ecs* world, byte i) {
     (void) world;
-    glFrontFace(GL_CCW);
-    xr_eye_render_end(xr_eyes[i].swapchain);
+    xr_graphics_eye_end(i);
 }
 
 static void xr_openxr_frame_end(ecs* world) {
@@ -181,5 +179,5 @@ const xr_runtime xr_openxr_runtime = {
     .eye_begin = xr_openxr_eye_begin,
     .eye_end = xr_openxr_eye_end,
     .frame_end = xr_openxr_frame_end,
-    .flip_y = 1,
+    .flip_y = xr_graphics_flip_y,
 };

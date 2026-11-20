@@ -22,6 +22,10 @@
 - the second player flying away, off the minimap, crashed it (play test 2026-11-19), not reproduced: tst
 	coop_map_markers flies them 6000 blocks off (tiny, the whole world, --stress) without a crash. Which build and
 	platform, was the map open, flying up or along?
+- tst player_spawn on vulkan with gpu meshing fails 2 of 6: "character is inside a solid block [43]", likely the
+	check's timing (the gpu mesh lands a frame later), not a real spawn in a block (2026-11-20)
+- XR on vulkan (--xr --vulkan, openxr/vulkan.c) is untested in a headset: check the eyes draw upright, both eyes,
+	and the [XR] fps log against the gl es build (2026-11-21)
 - tst sky_clouds fails: "no cloud in the sky looking up" (0.07% of the band), on 31a2c2740 too (2026-11-20)
 - tst lint_systems fails: chunk3_textured_render_system and chunk3_transparent_render_system
   (rendering3/sys/render_chunks.c) have no zox_sys_on_begin / zox_sys_on_end (2026-11-20)

@@ -104,8 +104,12 @@ the backend under it changes. Code: [src/graphics/vulkan](../../src/graphics/vul
 ## Android
 
 `bash bsh/android.sh zoxel --vulkan --debug` (an `_vulkan` apk): links the ndk's vulkan loader and builds the ndk's
-shaderc sources static (the first build ~8 minutes), android 7 (api 24) up. Not with `--xr` (its swapchains are gl
-es).
+shaderc sources static (the first build ~8 minutes), android 7 (api 24) up.
+
+`--xr --vulkan` (an `_xr_vulkan` apk, src/xr/openxr/vulkan.c): OpenXR's XR_KHR_vulkan_enable2 makes the backend's
+instance and device (the `vk_*_with` hooks, set/_.c) and picks the headset's gpu; the frame is offscreen, each eye's
+swapchain image an external target (fun/external.c: R8G8B8A8 unorm, colour attachment layout in and out), each eye
+submitted before its image is released. Untested in a headset yet.
 
 ## Running
 

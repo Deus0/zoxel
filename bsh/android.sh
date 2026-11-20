@@ -99,8 +99,8 @@ fi
 [[ " $* " == *" --xr "* ]] && is_xr="1"
 [[ " $* " == *" --testxr "* ]] && testxr="1"
 [[ " $* " == *" --testsdl "* ]] && testsdl="1"
-if [[ "${gfx}" == "vulkan" && "${is_xr}" == "1" ]]; then
-    echo "ERROR: --xr is opengl es only (its swapchains, src/xr/openxr), build it without --vulkan"
+if [[ "${gfx}" == "vulkan" && "${testxr}" == "1" ]]; then
+    echo "ERROR: --testxr (xr/tst/cube.c) is opengl es only, build it without --vulkan"
     exit 1
 fi
 
@@ -472,7 +472,12 @@ if [[ "${is_xr}" == "1" ]]; then
     echo "* Added [xr]"
     dflags+=" -Dzox_xr"
     dflags+=" -DXR_USE_PLATFORM_ANDROID"
-    dflags+=" -DXR_USE_GRAPHICS_API_OPENGL_ES"
+    # its swapchains' api (src/xr/openxr: gl.c or vulkan.c)
+    if [[ "${gfx}" == "vulkan" ]]; then
+        dflags+=" -DXR_USE_GRAPHICS_API_VULKAN"
+    else
+        dflags+=" -DXR_USE_GRAPHICS_API_OPENGL_ES"
+    fi
 fi
 
 # ============================================================
@@ -699,14 +704,6 @@ LOCAL_LDLIBS := ${libs}
 include \$(BUILD_SHARED_LIBRARY)
 EOF
 
-# vulkan: shaderc from the ndk's sources (sources/third_party/shaderc), glslang and spirv-tools with it
-if [[ "${gfx}" == "vulkan" ]]; then
-cat >> "${jni_src_path}/Android.mk" <<EOF
-
-\$(call import-module,third_party/shaderc)
-EOF
-fi
-
 # ------------------------------------------------------------
 # OpenXR prebuilt loader
 # ------------------------------------------------------------
@@ -747,6 +744,15 @@ $(printf '%s\n' "${sdl_mixer_flags[@]}")
 EOF
 
 echo "- Application.mk configured"
+
+# vulkan: shaderc from the ndk's sources (sources/third_party/shaderc), glslang and spirv-tools with it; last:
+#  import-module moves LOCAL_PATH to its own (the openxr loader's prebuilt found nothing after it)
+if [[ "${gfx}" == "vulkan" ]]; then
+cat >> "${jni_src_path}/Android.mk" <<EOF
+
+\$(call import-module,third_party/shaderc)
+EOF
+fi
 
 # ============================================================
 # Android minimum SDK
