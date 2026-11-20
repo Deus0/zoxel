@@ -88,6 +88,7 @@ the backend under it changes. Code: [src/graphics/vulkan](../../src/graphics/vul
 | far 32, before slabs | 249, 255 fps (1344 chunks drawn) | 236, 239 fps (1344 chunks) |
 | far 32, slabs | 211 fps (1344 chunks) | 226 fps (2291 chunks, 331 instances) |
 | far 32, one seed one world (2291 chunks), 3 runs | 174, 173, 147 (avg 165) | no workers 186, 170, 178 (avg 178); 8 workers 242, 195, 204 (avg 214, +30%) |
+| far 32, post processing on (render textures), 3 runs | 183, 193, 188 (avg 188) | 247, 219, 213 (avg 226, +20%) |
 
 - Even: rendering is about a quarter of the main thread on both (sampled, `ZOX_SAMPLE`), the rest is the game's
   systems; at far 32 a frame is ~4ms for ~1300 chunk draws.
