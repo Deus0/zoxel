@@ -11,8 +11,9 @@ the backend under it changes. Code: [src/graphics/vulkan](../../src/graphics/vul
   they set and, at a draw, finds or makes a `VkPipeline` for it (program, vertex layout, blend, depth, cull) and copies
   the program's uniforms into the frame's uniform buffer. No render system changes, all vulkan stays in its module.
 - **Shaders compiled at runtime with libshaderc**, the same path as gl: the engine builds the source (version,
-  defines) and compiles it at load. shaderc's relaxed vulkan rules put the shaders' loose `uniform`s into one uniform
-  block, so `res/shaders` compile unchanged (33 of 35 as files, the other 2 need the engine's `zox_ubo_max` define).
+  defines) and compiles it at load. The shaders' loose `uniform`s are gathered into one block a stage
+  (`vulkan_gather_uniforms`, what shaderc's relaxed rules do, which android's ndk shaderc is too old for), so
+  `res/shaders` compile unchanged.
   Uniform offsets and attribute locations are read from the SPIR-V.
 - **Tests draw offscreen.** With `--background` there's no surface: frames draw to one `VkImage` that screenshots and
   tests read back. A window gets a swapchain.
@@ -38,7 +39,7 @@ the backend under it changes. Code: [src/graphics/vulkan](../../src/graphics/vul
   since 1.1) flips y for every shader (front faces stay counter clockwise), and each vertex shader's `main` is
   renamed and wrapped so it ends with `gl_Position.z = (gl_Position.z + gl_Position.w) * 0.5`. Both stay in the
   vulkan module; no projection changes.
-- **Loose uniforms**: shaderc's relaxed rules (above).
+- **Loose uniforms**: gathered into a block, `zox_uniforms` (above).
 - **`gl_VertexID` / `gl_InstanceID`**: vulkan's are `gl_VertexIndex` / `gl_InstanceIndex`, defined to them in the
   source's prefix (draws start at instance 0, so they match).
 - **A frame**: gl draws as it's told; vulkan records into a command buffer. The frame opens at the first call that
@@ -48,6 +49,9 @@ the backend under it changes. Code: [src/graphics/vulkan](../../src/graphics/vul
 ## How the state tracker works (fun/)
 
 - **Tables** (`table.c`): buffers, textures, shaders, programs; a gl style id is an index, freed ones reused.
+- **Mesh memory**: where the gpu's memory is host visible and big (integrated gpus, resizable bar, lavapipe) meshes
+  are written in place; else (most discrete gpus, a 256MB window) they're in gpu only slabs, written through a
+  staging slot and a copy in the frame's upload commands (`vulkan_pick_meshes_staged`, `ZOX_VK_STAGING=1` forces it).
 - **Slabs** (`slabs.c`): a buffer is a slot in a 4MB block of its power of two size class (bigger ones a block
   each), so uploads don't allocate gpu memory; draws bind the block at the slot's offset.
 - **Serials** (`garbage.c`): each submission is numbered, a resource keeps the last one that read it. Written while
@@ -92,6 +96,12 @@ the backend under it changes. Code: [src/graphics/vulkan](../../src/graphics/vul
 - Slabs (`slabs.c`): mesh uploads used a `vkAllocateMemory` each, 29% of the main thread while far terrain streamed.
 - Next, in order (the user, 2026-11-20): recording draws on worker threads, then the rest of the parts, then gpu
   meshing. Device local buffers for discrete gpus with it.
+
+## Android
+
+`bash bsh/android.sh zoxel --vulkan --debug` (an `_vulkan` apk): links the ndk's vulkan loader and builds the ndk's
+shaderc sources static (the first build ~8 minutes), android 7 (api 24) up. Not with `--xr` (its swapchains are gl
+es).
 
 ## Running
 

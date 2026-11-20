@@ -67,7 +67,7 @@ void vulkan_texture_data(guint id, int2 size, const byte* rgba) {
         texture->used = 0;
     }
     const VkDeviceSize bytes = (VkDeviceSize) size.x * size.y * 4;
-    const vk_allocation staging = vulkan_slab_allocate(bytes);
+    const vk_allocation staging = vulkan_slab_allocate(bytes, 0);
     if (!staging.handle) {
         return;
     }

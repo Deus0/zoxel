@@ -37,18 +37,61 @@ static inline void zox_gpu_dispose_buffer(guint id) {
     zox_gpu_buffers_freed++;
 }
 
+// a copy recorded in the frame's upload commands (submitted before its draws), then a barrier: the next copy or
+// draw sees what it wrote
+void vulkan_copy_buffer(VkBuffer from, VkDeviceSize from_offset, VkBuffer to, VkDeviceSize to_offset, VkDeviceSize bytes) {
+    pthread_mutex_lock(&vk_lock);   // a recording worker can upload (particles)
+    const VkCommandBuffer commands = vulkan_upload_commands();
+    const VkBufferCopy copy = { from_offset, to_offset, bytes };
+    vkCmdCopyBuffer(commands, from, to, 1, &copy);
+    const VkMemoryBarrier barrier = {
+        .sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER,
+        .srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT,
+        .dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT | VK_ACCESS_TRANSFER_WRITE_BIT | VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT
+            | VK_ACCESS_INDEX_READ_BIT,
+    };
+    vkCmdPipelineBarrier(commands, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT
+        | VK_PIPELINE_STAGE_VERTEX_INPUT_BIT, 0, 1, &barrier, 0, NULL, 0, NULL);
+    pthread_mutex_unlock(&vk_lock);
+}
+
+// bytes into the buffer at offset: mapped, a memcpy; gpu only, through a staging slot and a copy
+void vulkan_buffer_write(vk_buffer* buffer, VkDeviceSize offset, const void* data, VkDeviceSize bytes) {
+    if (buffer->mapped) {
+        memcpy(buffer->mapped + offset, data, bytes);
+        return;
+    }
+    const vk_allocation staging = vulkan_slab_allocate(bytes, 0);
+    if (!staging.handle) {
+        return;
+    }
+    memcpy(staging.mapped, data, bytes);
+    vulkan_copy_buffer(staging.buffer, staging.offset, buffer->buffer, buffer->offset + offset, bytes);
+    // the copy is in the next submission: the staging slot freed after it, the buffer read by it
+    buffer->used = vk_serial_recording();
+    vulkan_garbage_add((vk_garbage_item) { .allocation = staging.handle, .serial = buffer->used });
+}
+
 // room for bytes, new memory if it's too small or still read (keep: the old bytes are copied over)
 byte vulkan_buffer_reserve(vk_buffer* buffer, VkDeviceSize bytes, byte keep) {
     if (buffer->buffer && bytes <= buffer->capacity && !vk_busy(buffer->used)) {
         return 1;
     }
     // a little over: R8G8B8 colors read as R8G8B8A8 on gpus without it read a byte past the last
-    const vk_allocation allocation = vulkan_slab_allocate((bytes > buffer->capacity ? bytes : buffer->capacity) + 16);
+    const vk_allocation allocation = vulkan_slab_allocate((bytes > buffer->capacity ? bytes : buffer->capacity) + 16,
+        vk_meshes_staged);
     if (!allocation.handle) {
         return 0;
     }
-    if (keep && buffer->mapped) {
-        memcpy(allocation.mapped, buffer->mapped, buffer->size);
+    ulong used = 0;
+    if (keep && buffer->size && buffer->buffer) {
+        if (buffer->mapped && allocation.mapped) {
+            memcpy(allocation.mapped, buffer->mapped, buffer->size);
+        } else {
+            vulkan_copy_buffer(buffer->buffer, buffer->offset, allocation.buffer, allocation.offset, buffer->size);
+            used = vk_serial_recording();
+            buffer->used = used;    // the old one's read by the copy
+        }
     }
     vulkan_buffer_release(buffer);
     buffer->buffer = allocation.buffer;
@@ -56,7 +99,7 @@ byte vulkan_buffer_reserve(vk_buffer* buffer, VkDeviceSize bytes, byte keep) {
     buffer->allocation = allocation.handle;
     buffer->mapped = allocation.mapped;
     buffer->capacity = allocation.size - 16;
-    buffer->used = 0;
+    buffer->used = used;
     return 1;
 }
 
@@ -67,7 +110,7 @@ void vulkan_buffer_data(uint id, const void* data, VkDeviceSize bytes) {
         return;
     }
     if (data && bytes) {
-        memcpy(buffer->mapped, data, bytes);
+        vulkan_buffer_write(buffer, 0, data, bytes);
     }
     buffer->size = bytes;
 }
@@ -81,7 +124,7 @@ void vulkan_buffer_sub_data(uint id, const void* data, VkDeviceSize bytes) {
     if (!vulkan_buffer_reserve(buffer, bytes > buffer->size ? bytes : buffer->size, 1)) {
         return;
     }
-    memcpy(buffer->mapped, data, bytes);
+    vulkan_buffer_write(buffer, 0, data, bytes);
     if (bytes > buffer->size) {
         buffer->size = bytes;
     }

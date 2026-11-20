@@ -10,6 +10,8 @@ byte vulkan_initialize(int2 size) {
     if (!vulkan_create_device() || !vulkan_create_frames()) {
         return 0;
     }
+    vk_meshes_staged = vulkan_pick_meshes_staged();
+    zox_log("+ vulkan meshes [%s]", vk_meshes_staged ? "gpu only, staged" : "host visible gpu memory");
     VkPhysicalDeviceProperties properties;
     vkGetPhysicalDeviceProperties(vk_physical, &properties);
     vk_uniform_align = properties.limits.minUniformBufferOffsetAlignment;

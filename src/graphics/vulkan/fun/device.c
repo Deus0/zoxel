@@ -180,3 +180,49 @@ byte vulkan_create_host_buffer(VkDeviceSize size, VkBufferUsageFlags usage, VkBu
     vkBindBufferMemory(vk_device, *buffer, *memory, 0);
     return 1;
 }
+
+// a gpu only buffer (meshes on gpus whose memory isn't host visible), 0 if it couldn't
+byte vulkan_create_device_buffer(VkDeviceSize size, VkBufferUsageFlags usage, VkBuffer* buffer, VkDeviceMemory* memory) {
+    const VkBufferCreateInfo info = {
+        .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+        .size = size,
+        .usage = usage,
+    };
+    if (!vulkan_check(vkCreateBuffer(vk_device, &info, NULL, buffer), "vkCreateBuffer")) {
+        return 0;
+    }
+    VkMemoryRequirements needs;
+    vkGetBufferMemoryRequirements(vk_device, *buffer, &needs);
+    const VkMemoryAllocateInfo allocate = {
+        .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+        .allocationSize = needs.size,
+        .memoryTypeIndex = vulkan_memory_type(needs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT),
+    };
+    if (!vulkan_check(vkAllocateMemory(vk_device, &allocate, NULL, memory), "vkAllocateMemory")) {
+        vkDestroyBuffer(vk_device, *buffer, NULL);
+        return 0;
+    }
+    vkBindBufferMemory(vk_device, *buffer, *memory, 0);
+    return 1;
+}
+
+// meshes staged (gpu only memory, written by copies) unless the gpu's memory is host visible and big: one memory
+// (integrated gpus, lavapipe) or resizable bar; a 256MB host visible window (most discrete gpus) isn't enough
+//  - ZOX_VK_STAGING=1 stages anyway (testing the path on any gpu)
+byte vulkan_pick_meshes_staged() {
+    const char* forced = getenv("ZOX_VK_STAGING");
+    if (forced && atoi(forced)) {
+        return 1;
+    }
+    VkPhysicalDeviceMemoryProperties memory;
+    vkGetPhysicalDeviceMemoryProperties(vk_physical, &memory);
+    const VkMemoryPropertyFlags direct = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
+        | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+    for (uint i = 0; i < memory.memoryTypeCount; i++) {
+        const VkMemoryType type = memory.memoryTypes[i];
+        if ((type.propertyFlags & direct) == direct && memory.memoryHeaps[type.heapIndex].size >= ((VkDeviceSize) 1 << 30)) {
+            return 0;
+        }
+    }
+    return 1;
+}
