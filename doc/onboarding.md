@@ -291,6 +291,18 @@ The loop:
 
 - Work on `master`, small commits, short lower case messages (`fixed windows build errors`). Several people commit
   here: check `git status` and `git log` first, and only commit your own files, by path.
+- **Commit messages:**
+  - The header (first line) is brief: 140 characters at most, lower case, what changed.
+  - Keep it to the change itself: nothing about how it was made, and no trailers at the end.
+  - Details go after a blank line, as dot points:
+
+  ```text
+  windows crashes logged with their module and offset
+
+  - the crash handler writes the faulting module and its offset
+  - test logs are unbuffered, so a crash keeps its last lines
+  ```
+
 - Pull with rebase, so the history stays one line: `git config pull.rebase true` (a plain pull merged and split it).
 - **Two remotes in one.** `origin` fetches from GitHub, but pushes to GitHub *and* Codeberg:
 
