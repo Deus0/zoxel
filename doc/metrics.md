@@ -20,6 +20,39 @@ Measured numbers, newest first: rendering speed per backend and how alike the ba
   `noise` each image's fine detail (a backend much noisier than the other is flagged: the vulkan sky's bug).
 - Where the time goes: `ZOX_SAMPLE=<file>`, then `bash bsh/sample_report.sh <file> <binary> 1`.
 
+## 2026-11-20, perf_terrain: terrain alone, cpu against gpu meshing (8443663f7)
+
+`perf_terrain`: a world of only terrain (no player, npcs, hud, particles), a streamer and a fixed camera; release on
+the 780M (`--gpu`), `zox_tst_seed=666 --stress`, **two runs each** (both shown). The cleanest terrain numbers here.
+
+| far 8 (vertical 3) | opengl cpu | opengl gpu | vulkan cpu | vulkan gpu |
+|---|---|---|---|---|
+| load: settled in | 0.59s, 0.56s | 0.57s, 0.59s | 0.57s, 0.56s | 0.56s, 0.57s |
+| idle: fps average | 661, 662 | 614, 626 (-6%) | 852, 830 | 834, 840 |
+| idle: 1% low | 418, 445 | 429, 427 | 540, 554 | 570, 572 |
+| idle: frame ms median, 99th, slowest | 1.49, 1.88, 3.6 | 1.60, 2.00, 4.7 | 1.17, 1.55, 3.1 | 1.18, 1.51, 3.3 |
+| stream: a step settles (average) | 0.262s, 0.243s | 0.243s, 0.257s | 0.241s, 0.241s | 0.253s, 0.257s |
+| stream: fps average, 1% low | 347-359, 85-87 | 294-298 (-16%), 79-84 | 374-378, 46 | 357-362 (-4%), 48 |
+| stream: frames under 30 fps | 0, 0 | 0, 0 | 1, 1 (a 62ms frame) | 1, 1 (a 62ms frame) |
+
+| far 32, vertical 4 | opengl cpu | opengl gpu | vulkan cpu | vulkan gpu |
+|---|---|---|---|---|
+| load: settled in | 8.35s, 8.25s | **7.58s, 7.56s** (-9%) | 8.37s, 8.25s | **6.78s, 6.84s** (-18%) |
+| idle: fps average | 390, 382 | 346, 347 (-10%) | 419, 422 | **457, 455** (+8%) |
+| idle: 1% low | 272, 267 | 243, 254 | 299, 311 | 326, 322 |
+| idle: frame ms median, 99th, slowest | 2.52-2.58, 3.3, 4.9-5.2 | 2.83, 3.7, 5.9-6.9 | 2.36, 2.9-3.0, 4.2-4.7 | 2.17, 2.8, 4.5-4.6 |
+| stream: a step settles (average) | 2.53s, 2.70s | 2.84s, 2.48s | 2.48s, 2.62s | 2.98s, 3.14s (+20%) |
+| stream: fps average, 1% low | 57, 56; 42, 41 | 52, 53; 35, 35 | 59, 58; 33, 34 | 59, 57; 35, 34 |
+| stream: frames under 30 fps | 0, 0 | 0, 0 | 1, 1 (a 66ms frame) | 1, 1 (a 66ms frame) |
+
+- Loading: gpu meshing loads a big world faster, vulkan 18%, opengl 9%; the same at far 8.
+- Idle: vulkan gpu draws far 32 8% faster than cpu meshes, level at far 8; opengl gpu draws 6-10% slower (its draw
+  isn't split, every chunk's indirect draw from the main thread).
+- Streaming: level at far 8; at far 32 vulkan gpu settles steps 20% slower here (perf_stream, with the game around
+  it, had it 12% faster: different land, the player's streamer), opengl about level; opengl gpu streams at 16% fewer
+  fps at far 8.
+- Every vulkan stream had one 62-66ms frame, cpu meshing too: not gpu meshing's, to look into.
+
 ## 2026-11-20, gpu meshing on both backends (doc/plans/gpu_meshing.md)
 
 Release builds on the 780M (`--gpu`), `zox_tst_seed=666 --stress --nouis`, one run each, `--gpu_meshing` for the gpu
