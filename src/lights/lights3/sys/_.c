@@ -8,6 +8,7 @@
 #include "build_smooth.c"
 #include "trigger.c"
 #include "trigger_mesh.c"
+#include "gpu_mesh.c"
 
 // Toggle the light systems
 void set_light_systems(ecs* world, byte is_lights) {
@@ -124,6 +125,46 @@ void zox_systems_lights3(ecs* world) {
         [none] rendering.BuildMeshColors,
         [none] !core.BuildDisabled,
         [none] !rendering.BuildMesh,
+        [none] !rendering.GpuMesh,
+    );
+    // gpu meshes (sys/gpu_mesh.c): on the main thread, with the gpu uploads
+    zox_system_1(
+        chunk_gpu_mesh_system,
+        zoxp_gpu_upload,
+        [in] rendering.RenderDepth,
+        [in] rendering.MeshGPULink,
+        [in] rendering.ColorsGPULink,
+        [out] rendering.MeshCommandGPULink,
+        [out] rendering.MeshFaceRoom,
+        [out] rendering.MeshFence,
+        [none] rendering.GpuMesh,
+        [none] rendering.BuildMesh,
+        [none] !core.BuildDisabled,
+    );
+    zox_system_1(
+        chunk_gpu_relight_system,
+        zoxp_gpu_upload,
+        [in] rendering.RenderDepth,
+        [in] rendering.MeshGPULink,
+        [in] rendering.ColorsGPULink,
+        [out] rendering.MeshCommandGPULink,
+        [out] rendering.MeshFaceRoom,
+        [out] rendering.MeshFence,
+        [none] rendering.GpuMesh,
+        [none] rendering.BuildMeshColors,
+        [none] !rendering.BuildMesh,
+        [none] !core.BuildDisabled,
+    );
+    zox_system_1(
+        chunk_gpu_mesh_count_system,
+        zoxp_gpu_upload,
+        [in] rendering.MeshGPULink,
+        [in] rendering.ColorsGPULink,
+        [in] rendering.MeshCommandGPULink,
+        [out] rendering.MeshFaceRoom,
+        [out] rendering.MeshFence,
+        [out] rendering.MeshRenderCount,
+        [none] rendering.GpuMesh,
     );
     /*zox_system(
         basic_lights_build_system,

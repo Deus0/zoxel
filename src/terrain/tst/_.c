@@ -15,6 +15,7 @@
 #include "perf.c"
 #include "lod_swap.c"
 #include "render_fps.c"
+#include "gpu_mesh.c"
 
 void zox_tsts_terrain(ecs* world) {
     zox_tsts_tilemap(world);
@@ -37,5 +38,6 @@ void zox_tsts_terrain(ecs* world) {
     zox_tsts_lod_chunk_lights(world);
     zox_tsts_lod_swap(world);
     zox_tsts_perf(world);
+    zox_tsts_terrain_gpu_mesh(world);
     zox_tst_add("render_fps", zox_tst_render_fps_ready, zox_tst_render_fps_check, 600);
 }

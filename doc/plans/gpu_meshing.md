@@ -55,6 +55,25 @@ Tests: [src/chunks/chunks3/tst/gpu_mesh.c](../../src/chunks/chunks3/tst/gpu_mesh
   gives ES 3.2, the Khadas' Mali too). `zox_gpu_compute_supported()` checks at runtime, and `zox_gles2`/web builds
   compile it out (`zox_disable_compute`): `gpu_mesher_create` returns 0 and cpu meshing stays.
 
+## In the game (`--gpu_meshing`, off by default)
+
+Solid chunk meshes are meshed on the gpu ([src/lights/lights3/sys/gpu_mesh.c](../../src/lights/lights3/sys/gpu_mesh.c)),
+water stays on the cpu. A setting, `zox_chunks3_gpu_meshing`; any test runs with it by adding `--gpu_meshing`.
+
+- A gpu chunk mesh is a `chunk_mesh_gpu` (a variant of the textured one) tagged `GpuMesh`, its own buffers in
+  `MeshGPULink` (indices, vertices), `ColorsGPULink` (face lights), `MeshCommandGPULink`, with `MeshFaceRoom` and
+  `MeshFence` (rendering/com/gpu_mesh.c). The cpu's mesh build, smooth lights, upload and draw skip it.
+- The existing dirty tags drive it: `BuildMesh` (voxels) and `BuildMeshColors` (lights) each dispatch it
+  (`chunk_gpu_mesh_system`, `chunk_gpu_relight_system`, main thread in `zoxp_gpu_upload` with the uploads, 2ms a
+  frame). Its grid is filled there from the 27 chunks, lit by the realm's solidity, its material's masks.
+- `chunk_gpu_mesh_count_system` reads its count once the fence passes: over its room it grows and gets `BuildMesh`,
+  else `MeshRenderCount` is its faces and it's `MeshBuilt` (what the lod swap waits for).
+- One compute program and one pair of grid buffers for all (the shared mesher). Without compute its meshes go back to
+  the cpu (`GpuMesh` removed).
+- Room starts at a face every two voxel columns: in `terrain_gpu_mesh` ~30% of meshes grow once, ~30% of the room is
+  used. It never shrinks yet.
+- Not yet: drawing them, textures, gpu restore (a lost context), shrinking.
+
 ## Tests
 
 - `gpu_mesh_neighbours`: 27 chunks of hills across their borders, the middle one meshed lit from its grid: its faces
@@ -63,6 +82,9 @@ Tests: [src/chunks/chunks3/tst/gpu_mesh.c](../../src/chunks/chunks3/tst/gpu_mesh
   neighbours (tried).
 - `gpu_mesh_materials`: stone hills, a pond of water and block voxes in one chunk, the stone mesh and the water mesh
   each against a reference with cpu sides' rule (stone shows against water, water hides only water, voxes neither).
+- `terrain_gpu_mesh` (terrain/tst): a world streamed with gpu meshing on; once every gpu mesh is built, each one's
+  faces against a reference from its chunk's grid (its chunk, depth, material and neighbours), none built on the cpu,
+  its draw count its faces. Logs the room used and how many grew.
 - `gpu_mesh_grow`: a mesher with room for 16 faces meshes a terrain chunk: its draw has only those 16, the count comes
   back frames later without waiting and is the reference's, it grows, meshes again and has every face.
 - `octree_flatten`: 7 shapes (empty, one voxel, solid, sphere, noise, checkers, terrain hills) at depth 5, every voxel

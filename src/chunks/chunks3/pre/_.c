@@ -5,6 +5,7 @@ entity prefab_chunk_mesh;
 entity prefab_static_chunk;
 entity prefab_chunk_textured;
 entity prefab_chunk_mesh_textured;
+entity prefab_chunk_mesh_gpu;
 entity prefab_chunk_material;
 
 void prefab_add_mesh_basic(ecs *world, entity e) {
@@ -29,6 +30,7 @@ void spawn_prefabs_chunks(ecs *world) {
     prefab_chunk_mesh_textured = spawn_prefab_chunk_mesh_textured(
         world,
         prefab_chunk_mesh);
+    prefab_chunk_mesh_gpu = spawn_prefab_chunk_mesh_gpu(world, prefab_chunk_mesh_textured);
     prefab_chunk_material = spawn_prefab_chunk_material(world);
     // Chunks
     prefab_chunk_base = spawn_prefab_chunk_base(world);

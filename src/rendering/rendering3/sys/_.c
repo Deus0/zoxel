@@ -25,6 +25,7 @@ void zox_systems_basics3(ecs* world) {
         [in] rendering.ColorsGPULink,
         [in] rendering.MeshRenderCount,
         [none] rendering.ChunkMesh,
+        [none] !rendering.GpuMesh,
         [none] !rendering.TransparentMesh,
         [none] !core.Disabled,
         // [none] !core.Initialize,
@@ -154,6 +155,7 @@ void zox_systems_basics3(ecs* world) {
         [out] rendering.MeshRenderCount,
         [none] rendering.MeshDirty,
         [none] rendering3.TexturedMesh3,
+        [none] !rendering.GpuMesh,
         [none] !core.Initialize,
     );
     // colors alone, not while new geometry waits (MeshDirty): its colors are the new mesh's, the gpu still draws the

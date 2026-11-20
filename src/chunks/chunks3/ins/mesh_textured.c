@@ -23,7 +23,9 @@ entity spawn_chunk_mesh_textured(
     entity tilemap,
     byte block_material)
 {
-    entity e2 = zox_ins(world, prefab_chunk_mesh_textured);
+    // solid blocks meshed on the gpu when it's on (water stays on the cpu, drawn blended)
+    const byte gpu = zox_chunks3_gpu_meshing && block_material == zox_block_material_solid;
+    entity e2 = zox_ins(world, gpu ? prefab_chunk_mesh_gpu : prefab_chunk_mesh_textured);
     zox_set_unique_name(e2, "chunk_mesh");
     zox_setv(e2, TransformMatrix, matrix);
     zox_setv(e2, RenderDepth, depth);

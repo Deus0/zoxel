@@ -243,5 +243,6 @@ void zox_systems_chunks3(ecs *world) {
         [none] rendering.ChunkMesh,
         [none] rendering.BuildMesh,
         [none] !core.BuildDisabled,
+        [none] !rendering.GpuMesh,
     );
 }

@@ -25,6 +25,17 @@ entity spawn_prefab_chunk_mesh_textured(
     return e;
 }
 
+// a chunk mesh meshed on the gpu (zox_chunks3_gpu_meshing, rendering/com/gpu_mesh.c): its cpu arrays stay empty
+entity spawn_prefab_chunk_mesh_gpu(ecs* world, entity prefab) {
+    entity e = zox_prefab_from_parent(world, prefab);
+    zox_set_unique_name(e, "chunk_mesh_gpu");
+    zox_add(e, GpuMesh);
+    zox_setv(e, MeshCommandGPULink, 0);
+    zox_setv(e, MeshFaceRoom, 0);
+    zox_setv(e, MeshFence, 0);
+    return e;
+}
+
 // a chunk's child for one block material, its sides, its lod meshes under it (fun/materials.c)
 entity spawn_prefab_chunk_material(ecs* world) {
     zox_prefab();

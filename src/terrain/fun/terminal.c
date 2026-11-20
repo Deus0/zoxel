@@ -21,7 +21,11 @@ static inline void zox_terrain_size_set_by_args() {
 void process_arguments_terrain(ecs *world, char* args[], int count) {
     (void) world;
     for (int i = 1; i < count; i++) {
-        if (strcmp(args[i], "--tiny") == 0) {
+        if (strcmp(args[i], "--gpu_meshing") == 0) {
+            // solid chunk meshes meshed by a compute shader (doc/plans/gpu_meshing.md)
+            zox_chunks3_gpu_meshing = 1;
+            zox_log("+ [gpu meshing] chunks meshed on the gpu")
+        } else if (strcmp(args[i], "--tiny") == 0) {
             terrain_lod_far = 3;
             render_distance_y = 3;
             zox_log("+ [tiny terrain] [%ix%i]", terrain_lod_far, render_distance_y)
