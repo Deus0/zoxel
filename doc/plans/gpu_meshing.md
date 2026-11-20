@@ -160,7 +160,7 @@ In the game (2026-11-20, release build, the 780M, opengl, `zox_tst_seed=666 --st
 |---|---|---|
 | `perf_stream`: a chunk step settles (average, slowest) | 0.246s, 0.275s | 0.279s, 0.318s |
 | `perf_stream`: slowest frame | 9.2ms (`chunk_sides_system` 3.4ms) | 8.9ms (`chunk_gpu_mesh_system` 2.0ms, its budget) |
-| `render_fps` far 8 | 378 fps | 368 fps |
+| `perf_idle` far 8 | 378 fps | 368 fps |
 
 - First run the gpu was 0.35s a step, 23ms frames: reading each mesh's count cost ~0.07ms (mapping a buffer in video
   memory), hundreds a frame. Fixed: the count in its own buffer the draws never read, made with a read hint

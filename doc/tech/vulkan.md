@@ -54,7 +54,7 @@ Gl and vulkan differences and how they're met: y down (a negative viewport; rend
 ## Tests
 
 `vulkan_clear`, `vulkan_shaders`, `sdl_vulkan_surface` (`--visible`), `particles_render`, `instance_views`,
-`render_fps`, and the whole render set runs on `--vulkan`: model_views, sky_clouds, underwater, lines_render,
+`perf_idle`, and the whole render set runs on `--vulkan`: model_views, sky_clouds, underwater, lines_render,
 body_views, terrain_render, skeleton_render, gpu_restore(_game), gpu_mesh(_views), gpu_mesh_lights, gpu_light_views.
 
 ## Left to do
@@ -65,7 +65,7 @@ body_views, terrain_render, skeleton_render, gpu_restore(_game), gpu_mesh(_views
 - **The slime's tentacle looks much weaker on android vulkan** (the user, 2026-11-20): not reproduced on desktop
   yet; find what draws it (lines, particles or a sway shader) and compare it with `compare_backends.sh` / a test
   view, and on the phone against the gl apk.
-- **A rare release crash**: once in 5 render_fps runs at far 8 with `ZOX_VK_WORKERS=0`, never in debug (doc/todo.md).
+- **A rare release crash**: once in 5 perf_idle runs at far 8 with `ZOX_VK_WORKERS=0`, never in debug (doc/todo.md).
 - **XR on vulkan**: openxr has it (`XR_KHR_vulkan_enable2`), our xr code is gl es (egl, gl swapchain images).
 - **Gpu meshing** (another session): compute works on vulkan as on gl; its game feature is doc/plans/gpu_meshing.md.
 - Speed ideas not taken: render systems in the pipeline looping cameras (option A, its own plan), push constants for

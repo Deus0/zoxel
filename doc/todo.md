@@ -806,7 +806,7 @@
 - tst eyelids fails on gl and vulkan alike (2026-11-20): shut, a spot at [0.80 0.50] still lit 37 of 100
 - tst coop_pause fails (2026-11-20): gl "resumed, player 2's screen is still dark", vulkan "the shared canvas didn't
   reuse a low id"; the pause fades changed today
-- vulkan release crashed once in 5 render_fps runs at far 8 with ZOX_VK_WORKERS=0 ("Segfault Detected" ~2s after
+- vulkan release crashed once in 5 perf_idle runs at far 8 with ZOX_VK_WORKERS=0 ("Segfault Detected" ~2s after
   the player spawned, 2026-11-20), never in debug: get a backtrace (a release build with -g)
 - android vulkan: the slime's tentacle looks much weaker than on gl (the user, 2026-11-20), see doc/tech/vulkan.md
 - Vulkan renderer (handover: [tech/vulkan.md](tech/vulkan.md)): every part of [plans/vulkan.md](plans/vulkan.md) in; on a real android phone: rotation, restore

@@ -83,7 +83,7 @@ the backend under it changes. Code: [src/graphics/vulkan](../../src/graphics/vul
   `ZOX_VK_WORKERS=0` turns it off. Option A (render systems in the pipeline, each looping the cameras) wants a plan
   of its own, later.
 
-## Numbers (2026-11-20, the 780M, release, `render_fps`, no vsync, `--nopost`, seed 666)
+## Numbers (2026-11-20, the 780M, release, `perf_idle`, no vsync, `--nopost`, seed 666)
 
 | | opengl | vulkan |
 |---|---|---|
@@ -113,7 +113,7 @@ es).
 bash bsh/build.sh zoxel --vulkan --debug --logs --out zoxel_vulkan   # bin/zoxel_vulkan/zoxel_vulkan.bin
 bash bsh/tst.sh vulkan_clear --vulkan                                # lavapipe, offscreen
 bash bsh/tst.sh vulkan_clear --vulkan --visible                      # the real gpu, a swapchain
-zox_tst_seed=666 bash bsh/tst.sh render_fps --gpu --release --novsync --nopost [--vulkan]   # frames a second
+zox_tst_seed=666 bash bsh/tst.sh perf_idle --gpu --release --novsync --nopost [--vulkan]   # frames a second
 ```
 
 - Build vulkan with `--out`, or into `bin/zoxel_*_vulkan_*`: tst.sh only takes `bin/zoxel_*_opengl_*_dev` as the

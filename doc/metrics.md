@@ -5,12 +5,13 @@ Measured numbers, newest first: rendering speed per backend and how alike the ba
 
 ## How to measure
 
-- **Speed**: `render_fps` (terrain/tst) waits for streaming to settle, then counts 8 seconds of frames standing still.
+- **Speed**: `perf_idle` (terrain/tst, was `render_fps`) waits for streaming to settle, then counts 8 seconds of frames
+  standing still (idle rendering); `perf_stream` times chunk steps settling as the player walks (stream remeshing).
   Release builds with the tests, the real gpu, no vsync, the same seed, alternating backends:
   ```bash
   zox_extra_dflags="-Dzox_tests" bash bsh/build.sh zoxel --release --logs --out perf_gl
   zox_extra_dflags="-Dzox_tests" bash bsh/build.sh zoxel --release --logs --vulkan --out perf_vk
-  cd bin/perf_vk && zox_tst_seed=666 ./perf_vk.bin --tst render_fps --autostart --far 32 --nosaves --novsync
+  cd bin/perf_vk && zox_tst_seed=666 ./perf_vk.bin --tst perf_idle --autostart --far 32 --nosaves --novsync
   ```
   Compare runs by their chunks and instances drawn too (the line's `chunks [n] instances [n]`): a different scene
   isn't a comparison. Other sessions' builds and tests on the machine slow a run, note the load.
@@ -21,30 +22,48 @@ Measured numbers, newest first: rendering speed per backend and how alike the ba
 
 ## 2026-11-20, gpu meshing on both backends (doc/plans/gpu_meshing.md)
 
-Release builds on the 780M (`--gpu`), `zox_tst_seed=666 --stress --far 8 --nouis`, one run each, `--gpu_meshing` for the
-gpu columns (solid chunk meshes on the gpu, water on the cpu). Diffs: `bash bsh/compare_meshing.sh [--vulkan]`.
+Release builds on the 780M (`--gpu`), `zox_tst_seed=666 --stress --nouis`, one run each, `--gpu_meshing` for the gpu
+columns (solid chunk meshes on the gpu, water on the cpu). Diffs: `bash bsh/compare_meshing.sh [--vulkan]`.
+
+**Idle rendering** (`perf_idle`, was `render_fps`: frames a second standing still once streaming settles)
 
 | | opengl cpu | opengl gpu | vulkan cpu | vulkan gpu |
 |---|---|---|---|---|
-| perf_stream: a chunk step settles (average) | 0.248s | 0.279s (+12%) | 0.229s | 0.646s (+182%) |
-| perf_stream: slowest step | 0.277s | 0.299s | 0.263s | 0.670s |
-| perf_stream: slowest frame | 9.1ms | 9.0ms | 8.2ms | 7.9ms |
-| render_fps far 8 | 383 | 368 (-4%) | 465 | 409 (-12%) |
-| render_fps: slowest frame | 4.7ms | 4.6ms | 4.1ms | 16.7ms |
-| terrain_meshing_view diff, cpu against gpu | | 0.049 | | 0.071 |
+| far 8: fps | 383 | 368 (-4%) | 465 | 409 (-12%) |
+| far 8: slowest frame | 4.7ms | 4.6ms | 4.1ms | 16.7ms |
+| far 32, vertical 4: fps | 245 | 238 (-3%) | 313 | 246 (-21%) |
+| far 32, vertical 4: slowest frame | 16.4ms | 16.7ms | 15.0ms | 16.8ms |
 
-- Vulkan gpu streams slowest: a mesh's count comes back ~3 frames after its dispatch (frames in flight, 1 on gl), and
-  a mesh that grows waits that again. A better first room guess, or reading counts a submission sooner, fix it.
-- Vulkan gpu draws slower: `chunk_gpu_render_system` runs on the main thread, the cpu terrain's records on 8 threads
-  (`zox_render3_system_parallel`); its vertex arrays and draw program are made while drawing, so it can't be split yet.
-- Each a face per voxel (more triangles than the cpu's merged quads): merging faces is planned.
+**Stream remeshing** (`perf_stream`: the player steps a chunk at a time, how long until streaming, lights and meshes
+settle)
+
+| | opengl cpu | opengl gpu | vulkan cpu | vulkan gpu |
+|---|---|---|---|---|
+| far 8: a step settles (average, slowest) | 0.248s, 0.277s | 0.279s, 0.299s | 0.229s, 0.263s | 0.646s, 0.670s |
+| far 8: slowest frame | 9.1ms | 9.0ms | 8.2ms | 7.9ms |
+| far 32, vertical 4: a step settles | 2.00s, 4.01s | **1.84s**, 3.93s (-8%) | 1.93s, 3.87s | 5.81s, 6.10s |
+| far 32, vertical 4: slowest frame | 9.3ms | 12.4ms | 9.3ms | 11.6ms |
+
+| `terrain_meshing_view` diff, cpu against gpu | opengl 0.049 | vulkan 0.071 |
+|---|---|---|
+
+- Opengl: gpu meshing streams faster at far 32 (more chunks, the cpu's sides and mesh builds are the bigger cost
+  there), a little slower at far 8; idle it draws 3-4% slower (a face per voxel: more triangles than the cpu's merged
+  quads, merging is planned).
+- Vulkan gpu streams ~3x slower: a mesh's count comes back ~3 frames after its dispatch (frames in flight, 1 on gl),
+  a mesh that grows waits that again. Fix: a better first room guess, counts read a submission sooner.
+- Vulkan gpu draws slower, worse with distance (-12% far 8, -21% far 32): `chunk_gpu_render_system` ran on the main
+  thread, the cpu terrain's draw on 8 worker threads. Next: the gpu draw only reads (its programs and vertex arrays
+  made by the mesh systems first) and is recorded in parts like the cpu's.
+- Found by these runs: far lods at depth 0 never meshed on the gpu (a 27 byte grid, dcc37b440) and had no buffers on
+  vulkan (c8443a1b7).
 
 ## 2026-11-20, after render textures, the alpha and particle fixes (174843555 and on)
 
 Machine: deusmini, Ryzen 9 7940HS, Radeon 780M (radv, mesa 26.2), 60GB. Release builds, `--novsync`, post processing
 on (the game's default), seed 666, load average ~4 (other sessions' work).
 
-| render_fps | opengl | vulkan |
+| perf_idle | opengl | vulkan |
 |---|---|---|
 | far 8 (~465 chunks, ~460 instances) | 275, 272, 269 (**272**) | 248, 265, 261 (**258**, -5%) |
 | far 32 (~2300 chunks, ~340 instances) | 187, 160, 181 (**176**) | 244, 238, 240 (**241**, +37%) |
@@ -72,7 +91,7 @@ on (the game's default), seed 666, load average ~4 (other sessions' work).
 
 ## 2026-11-20, earlier the same day (doc/plans/vulkan.md has each step)
 
-| render_fps far 32 | opengl | vulkan |
+| perf_idle far 32 | opengl | vulkan |
 |---|---|---|
 | first draws, no post processing | 249, 255 | 236, 239 |
 | slabs | 211 | 226 (a different scene) |
