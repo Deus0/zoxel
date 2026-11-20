@@ -4,6 +4,7 @@
 //  - its gamepad's selection goes into it (it has no window of its own open), A on its first button (Wander) resumes
 //    the game for both, the shared canvas gone
 //  - paused both players link the shared canvas too (CanvasLink, many): their first link is still their own canvas
+//  - each player's own canvas darkens paused and fades back resumed (the fades went to the shared canvas: one stayed dark)
 //  - a screenshot paused: tst/coop_pause.ppm
 //  - run: bash bsh/tst.sh coop_pause
 int zox_tst_cp_stage = 0;
@@ -11,7 +12,15 @@ int zox_tst_cp_frames = 0;
 int zox_tst_cp_menus = -1, zox_tst_cp_own_menus = -1;
 int2 zox_tst_cp_canvas_size, zox_tst_cp_window_size;
 byte zox_tst_cp_selected = 0, zox_tst_cp_resumed = 0;
+float zox_tst_cp_dark[2] = { -1, -1 }, zox_tst_cp_light[2] = { -1, -1 };    // each own overlay's alpha, paused and resumed
+double zox_tst_cp_resumed_time = 0;
 int zox_tst_cp_own_first = -1;     // players whose first CanvasLink is their own canvas, paused (the shared one's linked too)
+
+// a player's own canvas's overlay alpha (player_own_canvas)
+static inline float zox_tst_cp_overlay(ecs* world, byte i) {
+    const entity overlay = zox_get_child_by_id(world, player_own_canvas(world, zox_players[i]), zox_id(CanvasOverlay));
+    return zox_valid(overlay) ? zox_getv(overlay, Alpha) : -1;
+}
 
 static inline int zox_tst_cp_count_menus(ecs* world, entity canvas) {
     int count = 0;
@@ -80,11 +89,27 @@ byte zox_tst_coop_pause_ready(ecs* world) {
         case 2:
             zox_tst_waiting = "A on Wander, resuming";
             zox_tst_pad_held[zox_btn_a] = f >= 10 && f < 14;
+            if (f == 9) {
+                for (byte i = 0; i < 2; i++) {
+                    zox_tst_cp_dark[i] = zox_tst_cp_overlay(world, i);
+                }
+            }
             if (f > 40 && zox_getv(game, GameState) == zox_game_state_playing && !zox_valid(shared_canvas)) {
                 zox_tst_cp_resumed = 1;
-                return 1;
+                zox_tst_cp_resumed_time = zox_current_time;
+                zox_tst_cp_stage = 3;
+                return 0;
             }
             return f > 600;
+        case 3:
+            zox_tst_waiting = "both screens faded back";
+            if (zox_current_time - zox_tst_cp_resumed_time < pause_fade_time + 0.5) {
+                return 0;
+            }
+            for (byte i = 0; i < 2; i++) {
+                zox_tst_cp_light[i] = zox_tst_cp_overlay(world, i);
+            }
+            return 1;
     }
     return 1;
 }
@@ -102,4 +127,9 @@ void zox_tst_coop_pause_check(ecs* world) {
     zox_tst_check(zox_tst_cp_own_first == 2, "paused, [%i] of 2 players' canvas link (the first) is their own", zox_tst_cp_own_first);
     zox_tst_check(zox_tst_cp_selected, "the second player's gamepad didn't select in the shared pause menu");
     zox_tst_check(zox_tst_cp_resumed, "A on Wander didn't resume the game");
+    for (byte i = 0; i < 2; i++) {
+        zox_log("[tst] coop_pause: player [%i]'s overlay paused [%.2f] resumed [%.2f]", i + 1, zox_tst_cp_dark[i], zox_tst_cp_light[i]);
+        zox_tst_check(zox_tst_cp_dark[i] > 0, "paused, player [%i]'s screen isn't darkened [%.2f]", i + 1, zox_tst_cp_dark[i]);
+        zox_tst_check(zox_tst_cp_light[i] == 0, "resumed, player [%i]'s screen is still dark [%.2f]", i + 1, zox_tst_cp_light[i]);
+    }
 }
