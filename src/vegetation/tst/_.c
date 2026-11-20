@@ -10,6 +10,7 @@
 #define zox_tst_veg_seed 31337
 
 #include "vegetation_chunks.c"
+#include "vegetation_across.c"
 
 byte zox_tst_vegetation_ready(ecs* world) {
     (void) world;
@@ -108,5 +109,6 @@ void zox_tst_vegetation_cover_check(ecs* world) {
 void zox_tsts_vegetation(ecs* world) {
     zox_tst_add("vegetation_trees", zox_tst_vegetation_ready, zox_tst_vegetation_trees_check, 30);
     zox_tst_add("vegetation_cover", zox_tst_vegetation_ready, zox_tst_vegetation_cover_check, 30);
+    zox_tst_add("vegetation_across", zox_tst_vegetation_ready, zox_tst_vegetation_across_check, 30);
     zox_tsts_vegetation_chunks(world);
 }

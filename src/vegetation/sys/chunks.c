@@ -192,42 +192,8 @@ void vegetation_chunk3_system(iter* it) {
                     const int2 column = (int2) { chunk_block_position.x + position.x * hmultiplier,
                         chunk_block_position.z + position.z * hmultiplier };
                     const int trunk = get_tree_height(column, zox_getv(terrain, Seed));
-                    const int top = height + trunk;
-                    for (int h = 1; h <= trunk; h++) {
-                        const int global_y = height + h;
-                        if (global_y < chunk_block_position.y) {
-                            continue;
-                        }
-                        byte3 trunk_position = position;
-                        trunk_position.y = (global_y - chunk_block_position.y) / hmultiplier;
-                        if (trunk_position.y < length) {
-                            set_VoxelNode(voctree, build_depth, trunk_position, wood_id);
-                        }
-                    }
-                    if (leaves_id) {
-                        for (int dx = -zox_tree_canopy; dx <= zox_tree_canopy; dx++) {
-                            for (int dz = -zox_tree_canopy; dz <= zox_tree_canopy; dz++) {
-                                for (int dy = -1; dy <= 1; dy++) {
-                                    if (!is_canopy(dx, dy, dz)) {
-                                        continue;
-                                    }
-                                    const int lx = position.x + dx, lz = position.z + dz;
-                                    const int global_y = top + dy;
-                                    if (lx < 0 || lx >= length || lz < 0 || lz >= length || global_y < chunk_block_position.y) {
-                                        continue;
-                                    }
-                                    const int ly = (global_y - chunk_block_position.y) / hmultiplier;
-                                    if (ly >= length) {
-                                        continue;
-                                    }
-                                    const byte3 leaf_position = (byte3) { lx, ly, lz };
-                                    if (!getv_VoxelNode(voctree, build_depth, leaf_position)) {
-                                        set_VoxelNode(voctree, build_depth, leaf_position, leaves_id);
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    vegetation_draw_tree(voctree, build_depth, position, chunk_block_position.y, hmultiplier, height,
+                        trunk, wood_id, leaves_id);
                 } else if (veggie == zox_vegetation_flowers) {
                     if (flower_id) {
                         int global_y = height + 1;

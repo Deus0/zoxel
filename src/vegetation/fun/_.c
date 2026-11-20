@@ -58,6 +58,49 @@ static inline byte is_canopy(int dx, int dy, int dz) {
     return dx * dx + dz * dz + 2 * dy * dy <= zox_tree_canopy * zox_tree_canopy + 1 && dy >= -1 && dy <= 1;
 }
 
+// a tree's part inside one chunk (its bottom at chunk_y, global blocks): its trunk over the ground (height) and its
+//  canopy round the trunk's top, clipped to the chunk; the chunk above draws the rest (tst vegetation_across)
+static inline void vegetation_draw_tree(VoxelNode* voxels, byte depth, byte3 position, int chunk_y, byte hmultiplier,
+    int height, int trunk, byte wood_id, byte leaves_id)
+{
+    const byte length = octree_size(depth);
+    for (int h = 1; h <= trunk; h++) {
+        const int global_y = height + h;
+        if (global_y < chunk_y) {
+            continue;
+        }
+        byte3 trunk_position = position;
+        trunk_position.y = (global_y - chunk_y) / hmultiplier;
+        if (trunk_position.y < length) {
+            set_VoxelNode(voxels, depth, trunk_position, wood_id);
+        }
+    }
+    if (!leaves_id) {
+        return;
+    }
+    const int top = height + trunk;
+    for (int dx = -zox_tree_canopy; dx <= zox_tree_canopy; dx++)
+    for (int dz = -zox_tree_canopy; dz <= zox_tree_canopy; dz++)
+    for (int dy = -1; dy <= 1; dy++) {
+        if (!is_canopy(dx, dy, dz)) {
+            continue;
+        }
+        const int lx = position.x + dx, lz = position.z + dz;
+        const int global_y = top + dy;
+        if (lx < 0 || lx >= length || lz < 0 || lz >= length || global_y < chunk_y) {
+            continue;
+        }
+        const int ly = (global_y - chunk_y) / hmultiplier;
+        if (ly >= length) {
+            continue;
+        }
+        const byte3 leaf_position = (byte3) { lx, ly, lz };
+        if (!getv_VoxelNode(voxels, depth, leaf_position)) {
+            set_VoxelNode(voxels, depth, leaf_position, leaves_id);
+        }
+    }
+}
+
 // a clump field, 0 to 1 and even about a half (so shares scaled by it hold on average): seeded values on a grid
 //  zox_vegetation_clump apart, smoothly blended between
 static inline float vegetation_clump_field(int2 p, lint seed) {
