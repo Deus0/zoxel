@@ -344,6 +344,13 @@ static const char* zox_gpu_mesh_textured_fragment_source =
 "    frag_color = vec4(mix(color, fog_data.xyz, fog_blend), texel.a);\n"
 "}\n";
 
+// a grid's bytes uploaded: (2^depth + 2)^3 rounded up to whole uints (depth 0's 27 is 28), grids are made that big
+//  (every build: the grids are filled without compute too, web)
+static inline size_t gpu_mesh_grid_bytes(byte depth) {
+    const size_t length = octree_size(depth) + 2;
+    return (length * length * length + 3) & ~(size_t) 3;
+}
+
 #if (defined(zox_opengl) || defined(zox_vulkan)) && !defined(zox_disable_compute)
 
 // the textured chunk draw program, 0 without compute
@@ -439,12 +446,6 @@ static inline void gpu_mesher_set_uvs(GpuMesher* mesher, uint uvs) {
     }
     mesher->uvs = uvs;
     mesher->textured = uvs != 0;
-}
-
-// a grid's bytes uploaded: (2^depth + 2)^3 rounded up to whole uints (depth 0's 27 is 28), grids are made that big
-static inline size_t gpu_mesh_grid_bytes(byte depth) {
-    const size_t length = octree_size(depth) + 2;
-    return (length * length * length + 3) & ~(size_t) 3;
 }
 
 // meshes a chunk's grid at depth, the mesh stays on the gpu
