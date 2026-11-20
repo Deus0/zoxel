@@ -30,7 +30,7 @@ entity spawn_prefab_chunk_mesh_gpu(ecs* world, entity prefab) {
     entity e = zox_prefab_from_parent(world, prefab);
     zox_set_unique_name(e, "chunk_mesh_gpu");
     zox_add(e, GpuMesh);
-    zox_setv(e, MeshCommandGPULink, 0);
+    zox_setv(e, MeshCommandGPULink, guint2_zero);
     zox_setv(e, MeshFaceRoom, 0);
     zox_setv(e, MeshFence, 0);
     zox_setv(e, VaoGPULink, 0);

@@ -404,6 +404,10 @@ void chunk_sides_system(iter* it) {
             locked_voxel_locks);
         for (uint j = 0; j < materials_count; j++) {
             const entity material = chunk_materials[j];
+            // a gpu meshed material has no cpu sides (its mesh reads the voxels), its meshes are still triggered below
+            if (chunk_material_gpu(zox_getv(material, BlockMaterial))) {
+                continue;
+            }
             SidesOctree* sides = zox_mut(material, SidesOctree);
             spinlock* sides_lock = &(zox_mut(material, SidesOctreeLock)->value);
             spin_lock(sides_lock);

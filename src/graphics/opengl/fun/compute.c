@@ -149,6 +149,22 @@ guint zox_gpu_storage_buffer(size_t size, const void* data) {
 #endif
 }
 
+// a storage buffer the cpu reads back (a count): kept where reading it is cheap (a 4 byte read of a GL_DYNAMIC_COPY
+//  one, in video memory, was ~0.07ms, hundreds a frame streaming gpu meshes)
+guint zox_gpu_storage_buffer_read(size_t size, const void* data) {
+#ifndef zox_disable_compute
+    guint buffer = 0;
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffer);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, size, data, GL_STREAM_READ);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+    return buffer;
+#else
+    (void) size; (void) data;
+    return 0;
+#endif
+}
+
 // replaces a storage buffer's contents, growing it to size
 static inline void zox_gpu_storage_upload(guint buffer, size_t size, const void* data) {
 #ifndef zox_disable_compute
@@ -232,7 +248,8 @@ static inline ulong zox_gpu_fence() {
 // has the gpu passed the fence (it never waits), reads of what came before it won't stall then
 static inline byte zox_gpu_fence_done(ulong fence) {
 #ifndef zox_disable_compute
-    const GLenum state = glClientWaitSync((GLsync) (uintptr_t) fence, GL_SYNC_FLUSH_COMMANDS_BIT, 0);
+    // no flush: many fences are asked a frame, the frame's swap flushes them (a flush each was ~17ms a frame)
+    const GLenum state = glClientWaitSync((GLsync) (uintptr_t) fence, 0, 0);
     return state == GL_ALREADY_SIGNALED || state == GL_CONDITION_SATISFIED;
 #else
     (void) fence;

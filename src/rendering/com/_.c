@@ -144,7 +144,7 @@ void zox_components_rendering(ecs *world) {
     zoxd_guint_dest(ShaderGPULink);
     // gpu meshes
     zoxd_tag(GpuMesh);
-    zoxd_guint_dest(MeshCommandGPULink);
+    zoxd_guint2_dest(MeshCommandGPULink);
     zoxd_uint(MeshFaceRoom);
     zoxd_dest(MeshFence);
     zoxd_guint_dest(ComputeGPULink);

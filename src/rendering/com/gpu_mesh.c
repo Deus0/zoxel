@@ -1,10 +1,11 @@
 // A mesh meshed by a compute shader (doc/plans/gpu_meshing.md, chunks3/fun/gpu_mesh.c), not built on the cpu
 //  - MeshGPULink holds its indices (x) and vertices (y), ColorsGPULink its vertices' face lights, all written by
 //      the gpu, sized for MeshFaceRoom faces
-//  - MeshCommandGPULink: its indirect draw command, the gpu writes its index count (and the faces it wanted)
+//  - MeshCommandGPULink: x its indirect draw command (the gpu writes its index count), y the faces it wanted (its own
+//      buffer: reading one the draws use stalls till they're done)
 //  - MeshFence: after its last mesh, 0 once its count was read (then it grows if it didn't fit, or it's built)
 zox_tag(GpuMesh);
-zoxc_guint(MeshCommandGPULink);
+zoxc_guint2(MeshCommandGPULink);
 zoxc_uint(MeshFaceRoom);
 zoxc_ulong(MeshFence);
 
@@ -13,9 +14,10 @@ void on_destroyed_MeshCommandGPULink(iter* it) {
     zox_sys_out(MeshCommandGPULink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_o(MeshCommandGPULink, command);
-        if (command->value) {
-            zox_gpu_dispose_buffer(command->value);
-            command->value = 0;
+        if (command->value.x) {
+            zox_gpu_dispose_buffer(command->value.x);
+            zox_gpu_dispose_buffer(command->value.y);
+            command->value = guint2_zero;
         }
     }
 }

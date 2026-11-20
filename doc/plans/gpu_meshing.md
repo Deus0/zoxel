@@ -151,6 +151,21 @@ within a row's run):
 | a chunk of it: cpu voxels / cpu light flood / grid / gpu upload and mesh | 2.4 / 5.1 / 0.44 / 0.5ms | |
 | 9 chickens remeshed every frame | ~324 a second at ~36fps, 0.2ms a chicken | octree 0.08ms |
 
+In the game (2026-11-20, release build, the 780M, opengl, `zox_tst_seed=666 --stress --far 8 --nouis`):
+
+| What | cpu meshing | `--gpu_meshing` |
+|---|---|---|
+| `perf_stream`: a chunk step settles (average, slowest) | 0.246s, 0.275s | 0.279s, 0.318s |
+| `perf_stream`: slowest frame | 9.2ms (`chunk_sides_system` 3.4ms) | 8.9ms (`chunk_gpu_mesh_system` 2.0ms, its budget) |
+| `render_fps` far 8 | 378 fps | 368 fps |
+
+- First run the gpu was 0.35s a step, 23ms frames: reading each mesh's count cost ~0.07ms (mapping a buffer in video
+  memory), hundreds a frame. Fixed: the count in its own buffer the draws never read, made with a read hint
+  (`zox_gpu_storage_buffer_read`, ~2µs a read); the sides of gpu materials aren't built (`chunk_material_gpu`).
+- A 4ms dispatch budget didn't settle faster (0.281s) and made 11ms frames: what's left is latency (a frame for the
+  count, ~30% of new meshes grow and mesh again), not throughput.
+- Drawing a face a voxel costs ~3% fps at far 8 (more triangles than the cpu's merged quads): merging (plan step 7).
+
 So an animated chicken is ~0.5ms a frame on the Mali (half octree and flatten, half gpu), and the frame rate, not
 the meshing, was the limit at 9 models.
 

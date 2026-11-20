@@ -4,7 +4,7 @@
 //  - a face into a neighbour chunk shows when its voxel there is air, into a missing chunk as edge_faces says
 //  - each solid voxel's face next to air (or the chunk's edge, no neighbours yet) claims a slot by adding 6 to the
 //      index count of an indirect draw command, and writes its 4 vertices and 6 indices, unordered
-//  - every face is counted (faces_wanted, after the draw command), only the first max_faces are written and drawn:
+//  - every face is counted (faces_wanted, its own buffer: one the draws read stalls a read back), only the first max_faces are written and drawn:
 //      a mesher sized by a guess grows when the count comes back over it (gpu_mesher_counted, gpu_mesher_grow) and
 //      meshes again; 3 a voxel can't overflow (a chunk's most faces are its checkers, half its voxels showing all 6)
 //  - vertices are vec4: xyz the corner in voxels at the meshed depth, w packs (gpu_mesh_vertex_*):
@@ -30,6 +30,7 @@ typedef struct {
     uint program;
     uint voxels;        // the voxels grid, 4 bytes a uint (binding 0)
     uint command;       // DrawElementsIndirectCommand, its index count 6 a face (binding 1)
+    uint count;         // the faces the mesh wanted, read back (binding 8), never drawn from
     uint vertices;      // 4 vec4 a face (binding 2)
     uint indices;       // 6 uints a face (binding 3)
     uint lights;        // the lights grid (binding 4)
@@ -68,15 +69,17 @@ static inline byte gpu_mesh_vertex_direction(int w) { return (w >> 8) & 7; }
 static inline byte gpu_mesh_vertex_light(int w) { return (w >> 11) & 255; }
 static inline byte gpu_mesh_vertex_side(int w) { return (w >> 19) & 3; }
 
-// the indirect draw's count, instances, first, base vertex, base instance, then the faces the mesh wanted
-static const uint zox_gpu_mesh_command_reset[6] = { 0, 1, 0, 0, 0, 0 };
+// the indirect draw's count, instances, first, base vertex, base instance
+static const uint zox_gpu_mesh_command_reset[5] = { 0, 1, 0, 0, 0 };
+static const uint zox_gpu_mesh_count_reset = 0;
 
 #define zox_gpu_mesh_group_size 4   // invocations a group, per axis
 
 static const char* zox_gpu_mesh_source =
 "layout(local_size_x = 4, local_size_y = 4, local_size_z = 4) in;\n"
 "layout(std430, binding = 0) readonly buffer Voxels { uint voxels[]; };\n"
-"layout(std430, binding = 1) buffer Command { uint index_count; uint instance_count; uint first_index; uint base_vertex; uint base_instance; uint faces_wanted; };\n"
+"layout(std430, binding = 1) buffer Command { uint index_count; uint instance_count; uint first_index; uint base_vertex; uint base_instance; };\n"
+"layout(std430, binding = 8) buffer Count { uint faces_wanted; };\n"
 "layout(std430, binding = 2) writeonly buffer Vertices { vec4 vertices[]; };\n"
 "layout(std430, binding = 3) writeonly buffer Indices { uint indices[]; };\n"
 "layout(std430, binding = 4) readonly buffer Lights { uint lights[]; };\n"
@@ -373,6 +376,7 @@ byte gpu_mesher_create(GpuMesher* mesher, uint max_faces) {
     mesher->voxels = zox_gpu_storage_buffer(mesher->voxels_size, &zero);
     mesher->lights = zox_gpu_storage_buffer(mesher->lights_size, &zero);
     mesher->command = zox_gpu_storage_buffer(sizeof(zox_gpu_mesh_command_reset), zox_gpu_mesh_command_reset);
+    mesher->count = zox_gpu_storage_buffer_read(sizeof(uint), &zox_gpu_mesh_count_reset);
     mesher->vertices = zox_gpu_storage_buffer((size_t) max_faces * 4 * sizeof(float4), NULL);
     mesher->vertex_lights = zox_gpu_storage_buffer((size_t) max_faces * 4 * sizeof(uint), NULL);
     mesher->indices = zox_gpu_storage_buffer((size_t) max_faces * 6 * sizeof(uint), NULL);
@@ -386,6 +390,7 @@ void gpu_mesher_dispose(GpuMesher* mesher) {
         zox_gpu_dispose_buffer(mesher->voxels);
         zox_gpu_dispose_buffer(mesher->lights);
         zox_gpu_dispose_buffer(mesher->command);
+        zox_gpu_dispose_buffer(mesher->count);
         if (mesher->vao) {
             zox_gpu_dispose_vao(mesher->vao);
         }
@@ -456,6 +461,7 @@ static inline void gpu_mesher_upload(uint buffer, size_t* buffer_size, const byt
 //  - lights (the same layout), lights_present and lighting light it, NULL leaves it unlit (full light)
 void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, byte depth, uint present, uint lights_present, const GpuMeshLighting* lighting) {
     zox_gpu_storage_write(mesher->command, 0, sizeof(zox_gpu_mesh_command_reset), zox_gpu_mesh_command_reset);
+    zox_gpu_storage_write(mesher->count, 0, sizeof(uint), &zox_gpu_mesh_count_reset);
     if (!depth) {
         return;
     }
@@ -487,6 +493,7 @@ void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, by
     }
     zox_gpu_storage_bind(0, mesher->voxels);
     zox_gpu_storage_bind(1, mesher->command);
+    zox_gpu_storage_bind(8, mesher->count);
     zox_gpu_storage_bind(2, mesher->vertices);
     zox_gpu_storage_bind(3, mesher->indices);
     zox_gpu_storage_bind(4, mesher->lights);
@@ -523,7 +530,7 @@ byte gpu_mesher_counted(GpuMesher* mesher, uint* faces) {
     zox_gpu_fence_dispose(mesher->fence);
     mesher->fence = 0;
     *faces = 0;
-    zox_gpu_storage_read(mesher->command, 5 * sizeof(uint), sizeof(uint), faces);
+    zox_gpu_storage_read(mesher->count, 0, sizeof(uint), faces);
     return 1;
 }
 

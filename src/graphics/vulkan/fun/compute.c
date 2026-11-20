@@ -132,6 +132,11 @@ guint zox_gpu_storage_buffer(size_t size, const void* data) {
     return id;
 }
 
+// a storage buffer the cpu reads back: host visible as every storage buffer here
+guint zox_gpu_storage_buffer_read(size_t size, const void* data) {
+    return zox_gpu_storage_buffer(size, data);
+}
+
 static inline void zox_gpu_storage_upload(guint buffer, size_t size, const void* data) {
     vulkan_buffer_data(buffer, data, size);
 }

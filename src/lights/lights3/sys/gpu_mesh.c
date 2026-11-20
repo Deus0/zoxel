@@ -16,7 +16,7 @@ uint zox_chunk_gpu_meshes_grown = 0;   // meshes that didn't fit their room, mes
     (octree_size(smooth_grid_depth_max) + 2))
 
 // a mesher for one mesh: its terrain's program and grid buffers (ComputeGPULink, GridGPULink), the mesh's outputs
-static inline GpuMesher chunk_gpu_mesher(guint program, guint2 grid, guint2 mesh, guint lights, guint uvs, guint command, uint room, ulong fence) {
+static inline GpuMesher chunk_gpu_mesher(guint program, guint2 grid, guint2 mesh, guint lights, guint uvs, guint2 command, uint room, ulong fence) {
     GpuMesher mesher;
     memset(&mesher, 0, sizeof(GpuMesher));
     memset(mesher.drawn, 255, sizeof(mesher.drawn));
@@ -29,7 +29,8 @@ static inline GpuMesher chunk_gpu_mesher(guint program, guint2 grid, guint2 mesh
     mesher.vertices = mesh.y;
     mesher.vertex_lights = lights;
     mesher.vertex_uvs = uvs;
-    mesher.command = command;
+    mesher.command = command.x;
+    mesher.count = command.y;
     mesher.max_faces = room;
     mesher.fence = fence;
     mesher.edge_faces = 1;
@@ -134,8 +135,10 @@ static inline void chunk_gpu_mesh_dispatch(iter* it, entity tag) {
             continue;
         }
         zox_sys_budget_start(chunk_gpu_mesh);
-        if (!command->value) {
-            command->value = zox_gpu_storage_buffer(sizeof(zox_gpu_mesh_command_reset), zox_gpu_mesh_command_reset);
+        if (!command->value.x) {
+            command->value = (guint2) {
+                zox_gpu_storage_buffer(sizeof(zox_gpu_mesh_command_reset), zox_gpu_mesh_command_reset),
+                zox_gpu_storage_buffer_read(sizeof(uint), &zox_gpu_mesh_count_reset) };
         }
         GpuMesher mesher = chunk_gpu_mesher(program, grid_buffers, mesh->value, lights->value, uvs->value, command->value, room->value, fence->value);
         gpu_mesher_set_uvs(&mesher, tilemap_uvs);
@@ -229,8 +232,12 @@ void chunk_gpu_mesh_count_system(iter* it) {
             continue;
         }
         count->value = faces * 6;
+        // built and lit: its lights are written with its faces
         if (!zox_has(e, MeshBuilt)) {
             zox_add(e, MeshBuilt);
+        }
+        if (!zox_has(e, MeshColorsBuilt)) {
+            zox_add(e, MeshColorsBuilt);
         }
     }
     zox_sys_on_end();
@@ -269,7 +276,7 @@ void chunk_gpu_render_system(iter* it) {
         zox_sys_i(MeshRenderCount, count);
         zox_sys_o(VaoGPULink, vao);
         // built once (its count's read): a mesh meshed again draws its new faces from then
-        if (disabled->value || !count->value || !command->value) {
+        if (disabled->value || !count->value || !command->value.x) {
             continue;
         }
         camera_filtering_check();
@@ -308,7 +315,7 @@ void chunk_gpu_render_system(iter* it) {
         const float scale = get_chunk_scale(depth->value, terrain_depth, terrain_scale);
         zox_gpu_program_float4x4(program, "mvp_matrix", float4x4_multiply(matrix->value, render_camera_matrix));
         zox_gpu_program_float4(program, "transform", (float4) { 0, 0, 0, scale });
-        zox_gpu_draw_indirect(vao->value, command->value);
+        zox_gpu_draw_indirect(vao->value, command->value.x);
         __atomic_add_fetch(&zox_drawn_chunks, 1, __ATOMIC_RELAXED);
     }
     if (program) {

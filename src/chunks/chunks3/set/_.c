@@ -15,3 +15,8 @@ int fill_octree_random_rate3 = 30;
 //  lights3/sys/gpu_mesh.c), cpu meshing (sides, build_textured) stays as the fallback, also when the context has no
 //  compute (ES 3.1+): its meshes go back to the cpu; off by default, on with --gpu_meshing
 byte zox_chunks3_gpu_meshing = 0;
+
+// is a chunk material's mesh meshed on the gpu: its solid blocks, with gpu meshing on (water stays on the cpu)
+static inline byte chunk_material_gpu(byte block_material) {
+    return zox_chunks3_gpu_meshing && block_material == zox_block_material_solid;
+}

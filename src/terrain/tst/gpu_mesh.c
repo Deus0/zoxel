@@ -92,7 +92,7 @@ void zox_tst_gpu_terrain_check(ecs* world) {
         meshes++;
         const byte depth = zox_getv(e, RenderDepth);
         uint faces = 0;
-        zox_gpu_storage_read(zox_getv(e, MeshCommandGPULink), 5 * sizeof(uint), sizeof(uint), &faces);
+        zox_gpu_storage_read(zox_getv(e, MeshCommandGPULink).y, 0, sizeof(uint), &faces);
         faces_total += faces;
         room_total += zox_getv(e, MeshFaceRoom);
         cpu_built += zox_get(e, MeshVertices)->length != 0;
