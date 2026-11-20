@@ -32,6 +32,29 @@ void handle_segfault(int sig) {
     _exit(128 + sig);
 }
 
+#ifdef zox_windows
+// windows: a crash on any thread (signal(SIGSEGV) is the c runtime's, a crash in a driver's own thread skipped it):
+//  logs the exception, the module it was in and the offset there (addr2line -f -e <module> <offset> for ours)
+//  - nvoglv64 (nvidia's opengl) raises and handles access violations of its own, gdb stops on those: this only runs
+//    for ones nothing handled, the crash itself
+LONG WINAPI handle_unhandled_exception(EXCEPTION_POINTERS* info) {
+    const DWORD code = info->ExceptionRecord->ExceptionCode;
+    void* address = info->ExceptionRecord->ExceptionAddress;
+    char module[MAX_PATH] = "?";
+    HMODULE handle = NULL;
+    if (GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+        (LPCSTR) address, &handle)) {
+        GetModuleFileNameA(handle, module, sizeof(module));
+    }
+    zox_loge("Crash Detected [0x%08lx] at [%p] in [%s] +[0x%llx] (thread [%lu])", (unsigned long) code, address, module,
+        (unsigned long long) ((char*) address - (char*) handle), (unsigned long) GetCurrentThreadId());
+    fflush(stdout);
+    fflush(stderr);
+    _exit(128 + SIGSEGV);
+    return EXCEPTION_EXECUTE_HANDLER;
+}
+#endif
+
 void handle_terminal_close(int sig) {
     zox_log("...[%i]", sig)
     zox_log("# SOOooo you wanna deffffyyy my orders? heh..")
@@ -46,6 +69,9 @@ void main_loop(ecs *world) {
 #else
     signal(SIGINT, handle_terminal_close);     // Handles closing from control + c
     signal(SIGSEGV, handle_segfault);
+#ifdef zox_windows
+    SetUnhandledExceptionFilter(handle_unhandled_exception);
+#endif
     zox_sample_start();
     while (running) {
         update_ecs(world);

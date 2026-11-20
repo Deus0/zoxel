@@ -18,6 +18,18 @@
  * Initialize Rendering
 */
 int main(int argc, char* argv[]) {
+    // tests: every line out as it's logged, a crash while booting lost what was still buffered (only stderr was left)
+    //  - windows' c runtime takes _IOLBF as full buffering, so unbuffered there
+    for (int i = 1; i < argc; i++) {
+        if (!strcmp(argv[i], "--tst")) {
+#ifdef zox_windows
+            setvbuf(stdout, NULL, _IONBF, 0);
+#else
+            setvbuf(stdout, NULL, _IOLBF, 0);
+#endif
+            setvbuf(stderr, NULL, _IONBF, 0);
+        }
+    }
     zox_log("+ Starting Zox Engine +");
 #ifdef zox_android
     __android_log_print(ANDROID_LOG_INFO, "SDL", "Zoxel Android logging TEST");
