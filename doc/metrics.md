@@ -23,43 +23,57 @@ Measured numbers, newest first: rendering speed per backend and how alike the ba
 ## 2026-11-20, gpu meshing on both backends (doc/plans/gpu_meshing.md)
 
 Release builds on the 780M (`--gpu`), `zox_tst_seed=666 --stress --nouis`, one run each, `--gpu_meshing` for the gpu
-columns (solid chunk meshes on the gpu, water on the cpu). Diffs: `bash bsh/compare_meshing.sh [--vulkan]`.
+columns (solid chunk meshes on the gpu, water on the cpu), at 56b15125d (parallel gpu draw, grids uploaded new).
+How to read them: [tests.md](tests.md) "Reading the perf numbers". Diffs: `bash bsh/compare_meshing.sh [--vulkan]`.
 
-**Idle rendering** (`perf_idle`, was `render_fps`: frames a second standing still once streaming settles)
+**Idle rendering** (`perf_idle`: 8 seconds standing still once streaming settles)
 
-| | opengl cpu | opengl gpu | vulkan cpu | vulkan gpu |
+| far 8 (vertical 3) | opengl cpu | opengl gpu | vulkan cpu | vulkan gpu |
 |---|---|---|---|---|
-| far 8: fps | 383 | 368 (-4%) | 465 | 409 (-12%) |
-| far 8: slowest frame | 4.7ms | 4.6ms | 4.1ms | 16.7ms |
-| far 32, vertical 4: fps | 245 | 238 (-3%) | 313 | 246 (-21%) |
-| far 32, vertical 4: slowest frame | 16.4ms | 16.7ms | 15.0ms | 16.8ms |
-| after the parallel gpu draw: far 8 fps, slowest | | 364, 4.3ms | | 405, 7.2ms |
-| after the parallel gpu draw: far 32 fps | | | | **301** (-4%) |
+| frames in 8s | 2998 | 2907 | 3277 | 2984 |
+| fps average | 375 | 363 (-3%) | 410 | 373 (-9%) |
+| fps 1% low | 241 | 237 | 273 | 166 |
+| frame ms median | 2.63 | 2.74 | 2.41 | 2.48 |
+| frame ms 99th | 3.45 | 3.73 | 3.09 | 4.85 |
+| frame ms slowest | 6.52 | 5.53 | 6.24 | 14.41 |
 
-**Stream remeshing** (`perf_stream`: the player steps a chunk at a time, how long until streaming, lights and meshes
-settle)
-
-| | opengl cpu | opengl gpu | vulkan cpu | vulkan gpu |
+| far 32, vertical 4 | opengl cpu | opengl gpu | vulkan cpu | vulkan gpu |
 |---|---|---|---|---|
-| far 8: a step settles (average, slowest) | 0.248s, 0.277s | 0.279s, 0.299s | 0.229s, 0.263s | 0.646s, 0.670s |
-| far 8: slowest frame | 9.1ms | 9.0ms | 8.2ms | 7.9ms |
-| far 32, vertical 4: a step settles | 2.00s, 4.01s | **1.84s**, 3.93s (-8%) | 1.93s, 3.87s | 5.81s, 6.10s |
-| far 32, vertical 4: slowest frame | 9.3ms | 12.4ms | 9.3ms | 11.6ms |
+| frames in 8s | 1969 | 1713 | 2261 | 2030 |
+| fps average | 246 | 214 (-13%) | 283 | 254 (-10%) |
+| fps 1% low | 180 | 160 | 180 | 155 |
+| frame ms median | 4.02 | 4.65 | 3.49 | 3.71 |
+| frame ms 99th | 5.07 | 5.69 | 4.93 | 5.96 |
+| frame ms slowest | 6.03 | 7.34 | 7.81 | 8.69 |
 
-| `terrain_meshing_view` diff, cpu against gpu | opengl 0.049 | vulkan 0.071 |
+**Stream remeshing** (`perf_stream`: the player steps a chunk at a time, 6 steps, every frame while it streams)
+
+| far 8 (vertical 3) | opengl cpu | opengl gpu | vulkan cpu | vulkan gpu |
+|---|---|---|---|---|
+| a step settles: average (fastest, slowest) | 0.243s (0.231, 0.273) | 0.275s (0.254, 0.300) | 0.255s (0.236, 0.292) | 0.254s (0.239, 0.289) |
+| frames | 162 | 167 | 164 | 163 |
+| fps average, 1% low | 111, 54 | 102, 51 | 107, 52 | 107, 58 |
+| frame ms median, 99th, slowest | 8.4, 18.0, 18.7 | 9.4, 18.4, 19.8 | 8.9, 18.9, 19.1 | 9.0, 17.1, 17.4 |
+| frames under 60 fps, under 30 | 6, 0 | 6, 0 | 8, 0 | 4, 0 |
+
+| far 32, vertical 4 | opengl cpu | opengl gpu | vulkan cpu | vulkan gpu |
+|---|---|---|---|---|
+| a step settles: average (fastest, slowest) | 2.29s (1.59, 4.29) | **1.97s** (1.32, 4.22) | 2.06s (1.51, 4.16) | 2.14s (1.27, 4.45) |
+| frames | 587 | 516 | 587 | 516 |
+| fps average, 1% low | 43, 25 | 44, 30 | 48, 31 | 40, 25 |
+| frame ms median, 99th, slowest | 22.0, 37.2, 42.6 | 22.3, 33.1, 33.7 | 20.4, 31.3, 32.8 | 24.3, 35.4, 44.3 |
+| frames under 60 fps, under 30 | 586, 30 | 515, 5 | 586, 0 | 515, 20 |
+
+| `terrain_meshing_view` diff, cpu against gpu | opengl 0.051 | vulkan 0.034 |
 |---|---|---|
 
-- Opengl: gpu meshing streams faster at far 32 (more chunks, the cpu's sides and mesh builds are the bigger cost
-  there), a little slower at far 8; idle it draws 3-4% slower (a face per voxel: more triangles than the cpu's merged
-  quads, merging is planned).
-- Vulkan gpu streams ~3x slower: a mesh's count comes back ~3 frames after its dispatch (frames in flight, 1 on gl),
-  a mesh that grows waits that again. Fix: a better first room guess, counts read a submission sooner.
-- Vulkan gpu drew slower, worse with distance (-12% far 8, -21% far 32): `chunk_gpu_render_system` ran on the main
-  thread, the cpu terrain's draw on 8 worker threads. Now it only reads (its programs made with the compute one, its
-  vertex arrays when built, by the mesh systems) and is recorded in parts like the cpu's: far 32 -4%, the 16.7ms
-  spike (its draw program compiled mid frame) gone. Far 8 is still -13%: not the threads, likely its triangles.
-- Found by these runs: far lods at depth 0 never meshed on the gpu (a 27 byte grid, dcc37b440) and had no buffers on
-  vulkan (c8443a1b7).
+- Streaming: gpu meshing now matches cpu on both backends at far 8, and at far 32 opengl's settles 14% sooner with
+  fewer slow frames (5 under 30 fps against 30); vulkan's about matches.
+- Idle: gpu meshes draw 3-13% slower (a face per voxel: more triangles than the cpu's merged quads, merging is
+  planned); vulkan gpu at far 8 has a 14ms frame and a lower 1% low (166 against 273), to look into.
+- Fixed on the way: vulkan streamed ~3x slower (grids written into a buffer still read: vulkan copied its old 39KB
+  first, 0.18ms a mesh), far lods at depth 0 never meshed (dcc37b440, c8443a1b7), the gpu draw ran on the main thread
+  only (now recorded in parts on vulkan's workers).
 
 ## 2026-11-20, after render textures, the alpha and particle fixes (174843555 and on)
 
