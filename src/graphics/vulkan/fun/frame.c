@@ -32,6 +32,9 @@ byte vulkan_create_frames() {
 
 // the image to draw to: the swapchain's next, remade if it's out of date
 byte vulkan_acquire() {
+    if (vk_surface_lost) {
+        return 0;
+    }
     if (vk_resized || !vk_framebuffers[0]) {
         if (!vulkan_recreate_target()) {
             return 0;

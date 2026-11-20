@@ -72,6 +72,11 @@ byte vulkan_create_device() {
         .largePoints = supported.largePoints,
     };
     vk_wide_lines = supported.wideLines;
+    // without largePoints every point is 1 pixel (particles tiny): some phone gpus lack it, logged to tell
+    VkPhysicalDeviceProperties limits;
+    vkGetPhysicalDeviceProperties(vk_physical, &limits);
+    zox_log("+ vulkan points: large [%i] size [%.1f to %.1f], wide lines [%i]", supported.largePoints,
+        limits.limits.pointSizeRange[0], limits.limits.pointSizeRange[1], supported.wideLines);
     const VkDeviceCreateInfo info = {
         .pEnabledFeatures = &features,
         .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,

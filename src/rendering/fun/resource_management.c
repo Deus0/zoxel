@@ -37,12 +37,18 @@ void opengl_dispose_resources(ecs *world) {
         minimized = 1; // move this to a system and function for app! when implement multi apps
         updating_time = 0; // timesteps a bit low atm so pause while minimizing
         run_hook_gpu_dispose(world);
+#if defined(zox_vulkan) && defined(zox_android)
+        zox_sdl_vulkan_lost();  // android destroys the window's surface in the background
+#endif
     }
 }
 
 void opengl_restore_resources(ecs *world) {
     if (did_dispose_resources) {
         did_dispose_resources = 0;
+#if defined(zox_vulkan) && defined(zox_android)
+        zox_sdl_vulkan_found(zox_valid(main_app) && zox_has(main_app, SDLWindow) ? zox_getv(main_app, SDLWindow) : NULL);
+#endif
         run_hook_gpu_restore(world);
         rendering = 1;
         minimized = 0;

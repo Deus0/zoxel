@@ -15,12 +15,30 @@ const char* const* zox_sdl_vulkan_extensions(SDL_Window* window, uint* count) {
 #endif
 }
 
-byte zox_sdl_vulkan_surface(SDL_Window* window) {
+byte zox_sdl_vulkan_surface(SDL_Window* window, VkSurfaceKHR* surface) {
 #ifdef zox_sdl3
-    return SDL_Vulkan_CreateSurface(window, vk_instance, NULL, &vk_surface);
+    return SDL_Vulkan_CreateSurface(window, vk_instance, NULL, surface);
 #else
-    return SDL_Vulkan_CreateSurface(window, vk_instance, &vk_surface);
+    return SDL_Vulkan_CreateSurface(window, vk_instance, surface);
 #endif
+}
+
+// android takes the window's surface away in the background (opengl_dispose_resources), and back the window gets a
+// new one (opengl_restore_resources): the swapchain's made again for it
+void zox_sdl_vulkan_lost() {
+    vulkan_surface_lost();
+}
+
+void zox_sdl_vulkan_found(SDL_Window* window) {
+    if (!vk_surface_lost || !window) {
+        return;
+    }
+    VkSurfaceKHR surface = VK_NULL_HANDLE;
+    if (!zox_sdl_vulkan_surface(window, &surface)) {
+        zox_loge("[SDL_Vulkan_CreateSurface] coming back [%s]", SDL_GetError());
+        return;
+    }
+    vulkan_surface_found(surface);
 }
 
 byte spawn_vulkan_on_window(SDL_Window* window) {
@@ -43,7 +61,7 @@ byte spawn_vulkan_on_window(SDL_Window* window) {
     if (!vulkan_create_instance(extensions, count)) {
         return 0;
     }
-    if (!background && !zox_sdl_vulkan_surface(window)) {
+    if (!background && !zox_sdl_vulkan_surface(window, &vk_surface)) {
         zox_loge("[SDL_Vulkan_CreateSurface] [%s]", SDL_GetError());
         return 0;
     }

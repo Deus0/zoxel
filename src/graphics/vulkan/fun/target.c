@@ -255,6 +255,29 @@ byte vulkan_recreate_target() {
     return vulkan_create_target();
 }
 
+// android destroys the window's surface while the app's in the background: the swapchain and surface let go of,
+// frames skipped until vulkan_surface_found gives it a new one (a black screen on coming back, 2026-11-20)
+void vulkan_surface_lost() {
+    if (!vk_surface || !vk_device) {
+        return;
+    }
+    vkDeviceWaitIdle(vk_device);
+    vk_serial_done = vk_serial_submitted;
+    vulkan_dispose_framebuffers();
+    vkDestroySwapchainKHR(vk_device, vk_swapchain, NULL);
+    vk_swapchain = VK_NULL_HANDLE;
+    vkDestroySurfaceKHR(vk_instance, vk_surface, NULL);
+    vk_surface = VK_NULL_HANDLE;
+    vk_surface_lost = 1;
+}
+
+// the window's new surface (made by the app, sdl): the swapchain's made again at the next frame
+void vulkan_surface_found(VkSurfaceKHR surface) {
+    vk_surface = surface;
+    vk_surface_lost = 0;
+    vk_resized = 1;
+}
+
 void vulkan_set_vsync(byte value) {
     if (value != vk_vsync) {
         vk_vsync = value;

@@ -5,6 +5,7 @@
     #include "alt_tab.c"
     #include "core.c"
 #endif
+#include "vulkan_surface.c"
 
 void zox_tsts_sdl() {
     zox_tst_add("sdl_mouse_focus", zox_tst_sdl_mouse_focus_ready, zox_tst_sdl_mouse_focus_check, 30);
@@ -20,5 +21,8 @@ void zox_tsts_sdl() {
     zox_tst_set_setup("sdl_resize", NULL, 1);
     zox_tst_add("sdl_quit", zox_tst_sdl_quit_ready, zox_tst_sdl_quit_check, 60);
     zox_tst_set_exits("sdl_quit");
+#endif
+#ifdef zox_vulkan
+    zox_tst_add("sdl_vulkan_surface", zox_tst_sdl_vulkan_surface_ready, zox_tst_sdl_vulkan_surface_check, 60);
 #endif
 }
