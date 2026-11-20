@@ -58,6 +58,7 @@ byte vk_resized;                // the swapchain is remade before the next frame
 byte vk_extent_made;            // a swapchain was made, its size not yet given to the game (vulkan_take_extent)
 byte vk_surface_lost;           // android took the window's surface (the app in the background): no frames
 byte vk_vsync = 1;              // fifo, else mailbox or immediate (the app's vsync setting)
+#define vk_extent_check_frames 30    // the surface's size checked this often (fun/frame.c)
 int2 vk_window_size;            // when the surface doesn't say its size (wayland)
 float4 vk_clear_color = { 0, 0, 0, 1 };
 

@@ -169,9 +169,12 @@ void vulkan_frame_end() {
             .pImageIndices = &vk_image,
         };
         const VkResult result = vkQueuePresentKHR(vk_queue, &present);
+        // the surface's size checked when it says suboptimal, and every so often: android's first swapchain can be
+        //  the window's size before its rotation to landscape, scaled to the screen (squashed, the ratio opposite)
+        //  with no out of date or suboptimal to say so, till a rotation
         if (result == VK_ERROR_OUT_OF_DATE_KHR) {
             vk_resized = 1;
-        } else if (result == VK_SUBOPTIMAL_KHR) {
+        } else if (result == VK_SUBOPTIMAL_KHR || vk_frames_presented % vk_extent_check_frames == 0) {
             vulkan_check_extent();
         }
     }
