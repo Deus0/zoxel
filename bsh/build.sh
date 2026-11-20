@@ -3,6 +3,8 @@ set -euo pipefail
 
 # NOTE: Converts the shell flags into flags for our game code
 source bsh/get-compiler.sh
+# windows host: installs the toolchain if missing (winget), puts it on the PATH
+source bsh/deps_windows.sh
 
 # Check Flecs files
 if [[ ! -f "inc/flecs/flecs.h" || ! -f "inc/flecs/flecs.c" ]]; then
@@ -67,7 +69,8 @@ if [[ $# -gt 0 && ${1} != --* ]]; then
     game_name="$1"
 fi
 
-# Platform
+# Platform, a windows host builds for windows unless told --linux
+is_windows_host && os="windows"
 [[ " $* " == *" --linux "* ]] && os="linux"
 [[ " $* " == *" --windows "* ]] && os="windows"
 
@@ -155,6 +158,7 @@ elif [[ "${os}" == "windows" ]]; then
     dflags+=" -Dzox_windows"
     # libs+=" -lws2_32 -ldbghelp"
     libs="-Wl,--push-state,-Bstatic,-lwinpthread,--pop-state -lws2_32 -ldbghelp"
+    is_windows_host && install_windows_deps
     if ! command -v x86_64-w64-mingw32-gcc >/dev/null 2>&1; then
         echo "ERROR: MinGW x64 toolchain is required for Windows builds."
         echo "Missing: x86_64-w64-mingw32-gcc"
