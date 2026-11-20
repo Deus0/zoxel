@@ -304,7 +304,8 @@ guint zox_gpu_draw_program(const char* vertex_source, const char* fragment_sourc
 
 // a vertex array drawing vec4 vertices (location) with uint indices, all storage buffers
 //  - extra: a uint a vertex at extra_location (an integer attribute), 0 for none
-guint zox_gpu_storage_mesh_vao(guint vertices, guint indices, guint location, guint extra, guint extra_location) {
+//  - uvs: a vec2 a vertex at uvs_location, 0 for none
+guint zox_gpu_storage_mesh_vao(guint vertices, guint indices, guint location, guint extra, guint extra_location, guint uvs, guint uvs_location) {
 #ifndef zox_disable_compute
     guint vao = 0;
     glGenVertexArrays(1, &vao);
@@ -317,13 +318,18 @@ guint zox_gpu_storage_mesh_vao(guint vertices, guint indices, guint location, gu
         glEnableVertexAttribArray(extra_location);
         glVertexAttribIPointer(extra_location, 1, GL_UNSIGNED_INT, 0, 0);
     }
+    if (uvs) {
+        glBindBuffer(GL_ARRAY_BUFFER, uvs);
+        glEnableVertexAttribArray(uvs_location);
+        glVertexAttribPointer(uvs_location, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    }
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices);
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     return vao;
 #else
-    (void) vertices; (void) indices; (void) location; (void) extra; (void) extra_location;
+    (void) vertices; (void) indices; (void) location; (void) extra; (void) extra_location; (void) uvs; (void) uvs_location;
     return 0;
 #endif
 }

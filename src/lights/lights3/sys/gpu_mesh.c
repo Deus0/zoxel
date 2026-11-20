@@ -7,6 +7,7 @@
 //      (MeshFence): over the room it grows and meshes again, else it's MeshBuilt (a lod swap waits for that)
 //  - its terrain holds the compute program and the grid upload buffers (ComputeGPULink, GridGPULink), made on its first
 //      mesh, on the main thread with the other gpu uploads; no compute (ES 3.0): its meshes go back to the cpu
+//  - chunk_gpu_render_system draws them (texture, light, fog), its terrain's draw program in MaterialGPULink
 //  - tst terrain_gpu_mesh
 
 uint zox_chunk_gpu_meshes_grown = 0;   // meshes that didn't fit their room, meshed again (tests)
@@ -15,7 +16,7 @@ uint zox_chunk_gpu_meshes_grown = 0;   // meshes that didn't fit their room, mes
     (octree_size(smooth_grid_depth_max) + 2))
 
 // a mesher for one mesh: its terrain's program and grid buffers (ComputeGPULink, GridGPULink), the mesh's outputs
-static inline GpuMesher chunk_gpu_mesher(guint program, guint2 grid, guint2 mesh, guint lights, guint command, uint room, ulong fence) {
+static inline GpuMesher chunk_gpu_mesher(guint program, guint2 grid, guint2 mesh, guint lights, guint uvs, guint command, uint room, ulong fence) {
     GpuMesher mesher;
     memset(&mesher, 0, sizeof(GpuMesher));
     memset(mesher.drawn, 255, sizeof(mesher.drawn));
@@ -27,11 +28,29 @@ static inline GpuMesher chunk_gpu_mesher(guint program, guint2 grid, guint2 mesh
     mesher.indices = mesh.x;
     mesher.vertices = mesh.y;
     mesher.vertex_lights = lights;
+    mesher.vertex_uvs = uvs;
     mesher.command = command;
     mesher.max_faces = room;
     mesher.fence = fence;
     mesher.edge_faces = 1;
     return mesher;
+}
+
+// a tilemap's uvs on the gpu (its UvsGPULink, set on it), 0 while it generates
+static inline guint chunk_gpu_tilemap_uvs(ecs* world, entity tilemap) {
+    if (!zox_valid(tilemap) || !zox_has(tilemap, TilemapUVs) || zox_getv(tilemap, GenerateTexture)) {
+        return 0;
+    }
+    if (zox_has(tilemap, UvsGPULink) && zox_getv(tilemap, UvsGPULink)) {
+        return zox_getv(tilemap, UvsGPULink);
+    }
+    const TilemapUVs* uvs = zox_get(tilemap, TilemapUVs);
+    if (!uvs->value || !uvs->length) {
+        return 0;
+    }
+    const guint buffer = zox_gpu_storage_buffer(uvs->length * sizeof(float2), uvs->value);
+    zox_setv(tilemap, UvsGPULink, buffer);
+    return buffer;
 }
 
 // a terrain's program and grid buffers, made if it has none (set on it), 0 without compute
@@ -59,10 +78,13 @@ static inline void chunk_gpu_mesh_dispatch(iter* it, entity tag) {
     zox_sys_in(RenderDepth);
     zox_sys_in(MeshGPULink);
     zox_sys_in(ColorsGPULink);
+    zox_sys_in(UvsGPULink);
     zox_sys_out(MeshCommandGPULink);
     zox_sys_out(MeshFaceRoom);
     zox_sys_out(MeshFence);
     entity terrain_cached = 0;
+    entity tilemap_cached = 0;
+    guint tilemap_uvs = 0;
     guint program = 0;
     guint2 grid_buffers = guint2_zero;
     entity manager_cached = 0;
@@ -75,6 +97,7 @@ static inline void chunk_gpu_mesh_dispatch(iter* it, entity tag) {
         zox_sys_i(RenderDepth, depth);
         zox_sys_i(MeshGPULink, mesh);
         zox_sys_i(ColorsGPULink, lights);
+        zox_sys_i(UvsGPULink, uvs);
         zox_sys_o(MeshCommandGPULink, command);
         zox_sys_o(MeshFaceRoom, room);
         zox_sys_o(MeshFence, fence);
@@ -98,14 +121,24 @@ static inline void chunk_gpu_mesh_dispatch(iter* it, entity tag) {
             continue;
         }
         // its buffers are made by initialize_mesh_system and initialize_mesh_colors_system
-        if (!mesh->value.x || !mesh->value.y || !lights->value) {
+        if (!mesh->value.x || !mesh->value.y || !lights->value || !uvs->value) {
+            continue;
+        }
+        // its tilemap's uvs, it waits while that generates (as the cpu build does)
+        const entity tilemap = zox_get_link(world, chunk, Tilemap);
+        if (tilemap != tilemap_cached) {
+            tilemap_cached = tilemap;
+            tilemap_uvs = chunk_gpu_tilemap_uvs(world, tilemap);
+        }
+        if (!tilemap_uvs) {
             continue;
         }
         zox_sys_budget_start(chunk_gpu_mesh);
         if (!command->value) {
             command->value = zox_gpu_storage_buffer(sizeof(zox_gpu_mesh_command_reset), zox_gpu_mesh_command_reset);
         }
-        GpuMesher mesher = chunk_gpu_mesher(program, grid_buffers, mesh->value, lights->value, command->value, room->value, fence->value);
+        GpuMesher mesher = chunk_gpu_mesher(program, grid_buffers, mesh->value, lights->value, uvs->value, command->value, room->value, fence->value);
+        gpu_mesher_set_uvs(&mesher, tilemap_uvs);
         if (!room->value) {
             const uint length = octree_size(depth->value);
             gpu_mesher_grow(&mesher, length * length / 2);
@@ -165,6 +198,7 @@ void chunk_gpu_mesh_count_system(iter* it) {
     zox_sys_begin();
     zox_sys_in(MeshGPULink);
     zox_sys_in(ColorsGPULink);
+    zox_sys_in(UvsGPULink);
     zox_sys_in(MeshCommandGPULink);
     zox_sys_out(MeshFaceRoom);
     zox_sys_out(MeshFence);
@@ -173,6 +207,7 @@ void chunk_gpu_mesh_count_system(iter* it) {
         zox_sys_e();
         zox_sys_i(MeshGPULink, mesh);
         zox_sys_i(ColorsGPULink, lights);
+        zox_sys_i(UvsGPULink, uvs);
         zox_sys_i(MeshCommandGPULink, command);
         zox_sys_o(MeshFaceRoom, room);
         zox_sys_o(MeshFence, fence);
@@ -180,7 +215,7 @@ void chunk_gpu_mesh_count_system(iter* it) {
         if (!fence->value) {
             continue;
         }
-        GpuMesher mesher = chunk_gpu_mesher(0, guint2_zero, mesh->value, lights->value, command->value, room->value, fence->value);
+        GpuMesher mesher = chunk_gpu_mesher(0, guint2_zero, mesh->value, lights->value, uvs->value, command->value, room->value, fence->value);
         uint faces = 0;
         if (!gpu_mesher_counted(&mesher, &faces)) {
             continue;
@@ -200,3 +235,85 @@ void chunk_gpu_mesh_count_system(iter* it) {
     }
     zox_sys_on_end();
 } zoxd_system(chunk_gpu_mesh_count_system);
+
+// NOTE: Draws gpu chunk meshes, textured from their tilemap, straight from their gpu buffers (an indirect draw: the
+//  gpu's own index count); its terrain holds the draw program (MaterialGPULink), made on the first draw
+void chunk_gpu_render_system(iter* it) {
+    zox_sys_on_begin();
+    zox_sys_world();
+    camera_filtering_begin();
+    zox_sys_begin();
+    zox_sys_in(RenderDisabled);
+    zox_sys_in(RenderDepth);
+    zox_sys_in(TransformMatrix);
+    zox_sys_in(MeshGPULink);
+    zox_sys_in(ColorsGPULink);
+    zox_sys_in(UvsGPULink);
+    zox_sys_in(MeshCommandGPULink);
+    zox_sys_in(MeshRenderCount);
+    zox_sys_out(VaoGPULink);
+    entity terrain_cached = 0;
+    entity tilemap_cached = 0;
+    guint program = 0;
+    byte terrain_depth = 0;
+    float terrain_scale = 1;
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(RenderDisabled, disabled);
+        zox_sys_i(RenderDepth, depth);
+        zox_sys_i(TransformMatrix, matrix);
+        zox_sys_i(MeshGPULink, mesh);
+        zox_sys_i(ColorsGPULink, lights);
+        zox_sys_i(UvsGPULink, uvs);
+        zox_sys_i(MeshCommandGPULink, command);
+        zox_sys_i(MeshRenderCount, count);
+        zox_sys_o(VaoGPULink, vao);
+        // built once (its count's read): a mesh meshed again draws its new faces from then
+        if (disabled->value || !count->value || !command->value) {
+            continue;
+        }
+        camera_filtering_check();
+        const entity material = zox_get_parent(world, e);
+        const entity chunk = zox_valid(material) ? zox_get_parent(world, material) : 0;
+        const entity terrain = zox_valid(chunk) ? zox_get_parent(world, chunk) : 0;
+        if (!zox_valid(terrain)) {
+            continue;
+        }
+        if (terrain != terrain_cached) {
+            terrain_cached = terrain;
+            program = zox_has(terrain, MaterialGPULink) ? zox_getv(terrain, MaterialGPULink) : 0;
+            if (!program && (program = gpu_mesh_textured_program())) {
+                zox_setv(terrain, MaterialGPULink, program);
+            }
+            terrain_depth = zox_getv(terrain, NodeDepth);
+            terrain_scale = zox_getv(terrain, BlockScale);
+            if (program) {
+                zox_gpu_compute_use(program);
+                zox_gpu_program_float4(program, "fog_data", get_fog_value());
+                zox_gpu_program_float4(program, "shading", (float4) { 1, 0, 0, 0 });
+            }
+        }
+        if (!program) {
+            continue;
+        }
+        const entity tilemap = zox_get_link(world, e, MaterialLink);
+        if (tilemap != tilemap_cached) {
+            tilemap_cached = tilemap;
+            const guint texture = zox_valid(tilemap) && zox_has(tilemap, TextureGPULink) ? zox_getv(tilemap, TextureGPULink) : 0;
+            zox_gpu_bind_texture(texture);
+        }
+        if (!vao->value) {
+            vao->value = zox_gpu_storage_mesh_vao(mesh->value.y, mesh->value.x, 0, lights->value, 1, uvs->value, 2);
+        }
+        const float scale = get_chunk_scale(depth->value, terrain_depth, terrain_scale);
+        zox_gpu_program_float4x4(program, "mvp_matrix", float4x4_multiply(matrix->value, render_camera_matrix));
+        zox_gpu_program_float4(program, "transform", (float4) { 0, 0, 0, scale });
+        zox_gpu_draw_indirect(vao->value, command->value);
+        __atomic_add_fetch(&zox_drawn_chunks, 1, __ATOMIC_RELAXED);
+    }
+    if (program) {
+        zox_gpu_reset_texture();
+        zox_gpu_compute_use(0);
+    }
+    zox_sys_on_end();
+} zoxd_system(chunk_gpu_render_system);

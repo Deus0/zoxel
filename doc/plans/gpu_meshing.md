@@ -73,7 +73,15 @@ water stays on the cpu. A setting, `zox_chunks3_gpu_meshing`; any test runs with
   the cpu (`GpuMesh` removed).
 - Room starts at a face every two voxel columns: in `terrain_gpu_mesh` ~30% of meshes grow once, ~30% of the room is
   used. It never shrinks yet.
-- Not yet: drawing them, textures, gpu restore (a lost context), shrinking.
+- Textured: the compute shader writes each vertex's tilemap uv (the tilemap's `TilemapUVs` uploaded once into its
+  `UvsGPULink`, the mesh's uvs in its own `UvsGPULink`), the cpu's uv for the same block, direction and corner.
+- `chunk_gpu_render_system` draws them (order 1: after cpu terrain, before water) straight from their buffers with an
+  indirect draw: tilemap texel × light (the face's 4 corner lights blended across it), fog. Its terrain holds the draw
+  program (`MaterialGPULink`), each mesh its vertex array (`VaoGPULink`).
+- `bash bsh/compare_meshing.sh` (`--soft`, `--vulkan`): `terrain_meshing_view` (4 fixed views of a world's terrain,
+  no hud) with cpu meshing and with `--gpu_meshing`, a diff and a diff image (2026-11-20: 0.058 gl, 0.071 vulkan on
+  the 780M, under 0.08; the same blocks, textures and light).
+- Not yet: gpu restore (a lost context), shrinking, water, vox models.
 
 ## Tests
 
@@ -83,6 +91,8 @@ water stays on the cpu. A setting, `zox_chunks3_gpu_meshing`; any test runs with
   neighbours (tried).
 - `gpu_mesh_materials`: stone hills, a pond of water and block voxes in one chunk, the stone mesh and the water mesh
   each against a reference with cpu sides' rule (stone shows against water, water hides only water, voxes neither).
+- `gpu_mesh_uvs`: every gpu vertex's uv is the tilemap's the cpu takes for that block, direction and corner.
+- `terrain_meshing_view` (terrain/tst): the screenshot `bsh/compare_meshing.sh` compares.
 - `terrain_gpu_mesh` (terrain/tst): a world streamed with gpu meshing on; once every gpu mesh is built, each one's
   faces against a reference from its chunk's grid (its chunk, depth, material and neighbours), none built on the cpu,
   its draw count its faces. Logs the room used and how many grew.
@@ -201,7 +211,7 @@ Later, if wanted:
   so a face partly next to air can be culled. The gpu checks every voxel.
 - **Merging:** the cpu draws one quad per big node face, the gpu one per voxel face: more vertices for solid areas,
   more light detail.
-- **Not done:** textures (terrain uses the tilemap's uvs).
+- **Light across a face:** blended bilinearly (no diagonal seam), the cpu's across its two triangles.
 
 ## Plan for the game
 

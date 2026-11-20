@@ -22,7 +22,8 @@
 //      its sides' tops at its height when its top shows (as chunks3 build_textured.c)
 //  - a chunk material's mesh (gpu_mesher_set_material): only its block material's voxels, faces hidden as cpu sides
 //      hide them (block_material_hides), by two 256 bit masks
-//  - no textures, no merging of faces yet
+//  - textured (gpu_mesher_set_uvs): each vertex its tilemap uv, the cpu's for that block, direction and corner
+//  - no merging of faces yet
 //  - needs compute (OpenGL ES 3.1+, OpenGL 4.3+): gpu_mesher_create returns 0 without it, cpu meshing stays
 
 typedef struct {
@@ -33,6 +34,9 @@ typedef struct {
     uint indices;       // 6 uints a face (binding 3)
     uint lights;        // the lights grid (binding 4)
     uint vertex_lights; // a uint a vertex: its face's 4 corner lights (binding 5)
+    uint uvs;           // the tilemap's uvs, 24 a block: its 6 directions' 4 corners as the cpu's (binding 6), not its own
+    uint vertex_uvs;    // a vec2 a vertex, written when uvs are given (binding 7)
+    byte textured;      // uvs given (gpu_mesher_set_uvs)
     uint max_faces;     // room in the vertex, light and index buffers
     ulong fence;        // after the last mesh, 0 once its count was read (gpu_mesher_counted)
     byte edge_faces;    // faces into a missing chunk, 1: drawn, 0: culled except the top (as cpu sides do with no
@@ -77,6 +81,8 @@ static const char* zox_gpu_mesh_source =
 "layout(std430, binding = 3) writeonly buffer Indices { uint indices[]; };\n"
 "layout(std430, binding = 4) readonly buffer Lights { uint lights[]; };\n"
 "layout(std430, binding = 5) writeonly buffer VertexLights { uint vertex_lights[]; };\n"
+"layout(std430, binding = 6) readonly buffer Uvs { vec2 uvs[]; };\n"
+"layout(std430, binding = 7) writeonly buffer VertexUvs { vec2 vertex_uvs[]; };\n"
 "uniform int depth;\n"
 "uniform uint max_faces;\n"
 "uniform int lit;\n"
@@ -89,6 +95,8 @@ static const char* zox_gpu_mesh_source =
 "uniform uint heights[32];\n"
 "uniform uint drawn[8];\n"
 "uniform uint hides[8];\n"
+"uniform int textured;\n"
+"uniform uint face_corners[24];\n"
 "\n"
 "// does this mesh draw voxel v (its block material's), bit v - 1\n"
 "bool is_drawn(uint v) {\n"
@@ -220,6 +228,17 @@ static const char* zox_gpu_mesh_source =
 "        uint v = face * 4u;\n"
 "        for (int c = 0; c < 4; c++) {\n"
 "            vec3 corner = corners[d * 4 + c];\n"
+"            if (textured != 0) {\n"
+"                // the tilemap's uv for this corner: its block's, its direction's, the cpu's corner at it\n"
+"                uint bits = uint(corner.x > 0.5) | (uint(corner.y > 0.5) << 1) | (uint(corner.z > 0.5) << 2);\n"
+"                uint k = 0u;\n"
+"                for (uint j = 0u; j < 4u; j++) {\n"
+"                    if (face_corners[uint(d) * 4u + j] == bits) {\n"
+"                        k = j;\n"
+"                    }\n"
+"                }\n"
+"                vertex_uvs[v + uint(c)] = uvs[(voxel - 1u) * 24u + uint(d) * 4u + k];\n"
+"            }\n"
 "            if (lowered && corner.y > 0.5) {\n"
 "                corner.y = float(height) / 8.0;\n"
 "            }\n"
@@ -282,7 +301,57 @@ static const char* zox_gpu_mesh_fragment_source =
 "    frag_color = vec4(base * light, 1.0);\n"
 "}\n";
 
+// drawing a textured gpu chunk mesh, as textured3D draws a cpu one: the tilemap's texel times its light (its face's 4
+//  corner lights blended across the face, no diagonal seam), brightness and fog
+//  - transform: xyz unused, w a voxel's size; shading: x brightness
+static const char* zox_gpu_mesh_textured_vertex_source =
+"layout(location = 0) in vec4 vertex;\n"
+"layout(location = 1) in uint face_lights;\n"
+"layout(location = 2) in vec2 vertex_uv;\n"
+"uniform mat4 mvp_matrix;\n"
+"uniform vec4 transform;\n"
+"out float fog_level;\n"
+"out vec2 uv;\n"
+"out vec2 side;\n"
+"flat out vec4 corner_lights;\n"
+"void main() {\n"
+"    gl_Position = mvp_matrix * vec4(vertex.xyz * transform.w, 1.0);\n"
+"    fog_level = gl_Position.z * gl_Position.z;\n"
+"    uv = vertex_uv;\n"
+"    int s = (int(vertex.w + 0.5) >> 19) & 3;\n"
+"    side = vec2(float(s & 1), float(s >> 1));\n"
+"    corner_lights = vec4(float(face_lights & 255u), float((face_lights >> 8) & 255u),\n"
+"        float((face_lights >> 16) & 255u), float(face_lights >> 24)) / 255.0;\n"
+"}\n";
+static const char* zox_gpu_mesh_textured_fragment_source =
+"uniform vec4 fog_data;\n"
+"uniform vec4 shading;\n"
+"uniform sampler2D zexture;\n"
+"in float fog_level;\n"
+"in vec2 uv;\n"
+"in vec2 side;\n"
+"flat in vec4 corner_lights;\n"
+"out vec4 frag_color;\n"
+"void main() {\n"
+"    vec4 texel = texture(zexture, uv);\n"
+"    if (texel.a <= 0.0) {\n"
+"        discard;\n"
+"    }\n"
+"    float light = mix(mix(corner_lights.x, corner_lights.y, side.x), mix(corner_lights.z, corner_lights.w, side.x), side.y);\n"
+"    vec3 color = texel.rgb * light * shading.x;\n"
+"    float fog_blend = min(1.0, 1.1 - exp2(-fog_data.w * fog_level));\n"
+"    frag_color = vec4(mix(color, fog_data.xyz, fog_blend), texel.a);\n"
+"}\n";
+
 #if (defined(zox_opengl) || defined(zox_vulkan)) && !defined(zox_disable_compute)
+
+// the textured chunk draw program, 0 without compute
+uint gpu_mesh_textured_program() {
+    if (!zox_gpu_compute_supported()) {
+        return 0;
+    }
+    return zox_gpu_draw_program(zox_gpu_mesh_textured_vertex_source, zox_gpu_mesh_textured_fragment_source);
+}
 
 // a mesher with room for max_faces faces, 1 on success (needs a compute capable context)
 byte gpu_mesher_create(GpuMesher* mesher, uint max_faces) {
@@ -307,6 +376,7 @@ byte gpu_mesher_create(GpuMesher* mesher, uint max_faces) {
     mesher->vertices = zox_gpu_storage_buffer((size_t) max_faces * 4 * sizeof(float4), NULL);
     mesher->vertex_lights = zox_gpu_storage_buffer((size_t) max_faces * 4 * sizeof(uint), NULL);
     mesher->indices = zox_gpu_storage_buffer((size_t) max_faces * 6 * sizeof(uint), NULL);
+    mesher->vertex_uvs = zox_gpu_storage_buffer((size_t) max_faces * 4 * sizeof(float2), NULL);
     return 1;
 }
 
@@ -322,6 +392,7 @@ void gpu_mesher_dispose(GpuMesher* mesher) {
         zox_gpu_dispose_buffer(mesher->vertices);
         zox_gpu_dispose_buffer(mesher->vertex_lights);
         zox_gpu_dispose_buffer(mesher->indices);
+        zox_gpu_dispose_buffer(mesher->vertex_uvs);
         zox_gpu_fence_dispose(mesher->fence);
     }
     memset(mesher, 0, sizeof(GpuMesher));
@@ -349,6 +420,24 @@ static inline void gpu_mesher_set_material(GpuMesher* mesher, const byte* materi
             mesher->hides[(v - 1) >> 5] |= bit;
         }
     }
+}
+
+// the cpu's face corners (voxel_face_vertices_n, blocks/dat/mesh.c), bit 0 x, 1 y, 2 z: a corner's uv is the
+//  tilemap's at the cpu corner in the same place (uploaded once, made from the table on the first mesh)
+uint zox_gpu_mesh_face_corners[24];
+byte zox_gpu_mesh_face_corners_made = 0;
+
+// textured: uvs a storage buffer of the tilemap's uvs (TilemapUVs: 24 float2 a block), each vertex gets its uv
+static inline void gpu_mesher_set_uvs(GpuMesher* mesher, uint uvs) {
+    if (!zox_gpu_mesh_face_corners_made) {
+        for (byte i = 0; i < 24; i++) {
+            const float3 c = voxel_face_vertices_n[i / 4][i % 4];
+            zox_gpu_mesh_face_corners[i] = (c.x > 0.5f) | ((c.y > 0.5f) << 1) | ((c.z > 0.5f) << 2);
+        }
+        zox_gpu_mesh_face_corners_made = 1;
+    }
+    mesher->uvs = uvs;
+    mesher->textured = uvs != 0;
 }
 
 // writes bytes into a storage buffer, growing it if needed
@@ -387,6 +476,10 @@ void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, by
     zox_gpu_compute_uniform_uint_array(mesher->program, "heights", mesher->heights, 32);
     zox_gpu_compute_uniform_uint_array(mesher->program, "drawn", mesher->drawn, 8);
     zox_gpu_compute_uniform_uint_array(mesher->program, "hides", mesher->hides, 8);
+    zox_gpu_compute_uniform_int(mesher->program, "textured", mesher->textured);
+    if (mesher->textured) {
+        zox_gpu_compute_uniform_uint_array(mesher->program, "face_corners", zox_gpu_mesh_face_corners, 24);
+    }
     if (lit) {
         zox_gpu_compute_uniform_uint(mesher->program, "darklight", lighting->darklight);
         zox_gpu_compute_uniform_uint(mesher->program, "sunlight", lighting->sunlight);
@@ -398,6 +491,8 @@ void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, by
     zox_gpu_storage_bind(3, mesher->indices);
     zox_gpu_storage_bind(4, mesher->lights);
     zox_gpu_storage_bind(5, mesher->vertex_lights);
+    zox_gpu_storage_bind(6, mesher->uvs ? mesher->uvs : mesher->vertex_uvs);    // untextured: any buffer, unread
+    zox_gpu_storage_bind(7, mesher->vertex_uvs);
     const uint groups = (octree_size(depth) + zox_gpu_mesh_group_size - 1) / zox_gpu_mesh_group_size;
     zox_gpu_compute_dispatch(groups, groups, groups);
     zox_gpu_compute_use(0);
@@ -441,6 +536,7 @@ byte gpu_mesher_grow(GpuMesher* mesher, uint faces) {
     zox_gpu_storage_upload(mesher->vertices, (size_t) mesher->max_faces * 4 * sizeof(float4), NULL);
     zox_gpu_storage_upload(mesher->vertex_lights, (size_t) mesher->max_faces * 4 * sizeof(uint), NULL);
     zox_gpu_storage_upload(mesher->indices, (size_t) mesher->max_faces * 6 * sizeof(uint), NULL);
+    zox_gpu_storage_upload(mesher->vertex_uvs, (size_t) mesher->max_faces * 4 * sizeof(float2), NULL);
     zox_gpu_storage_write(mesher->command, 0, sizeof(zox_gpu_mesh_command_reset), zox_gpu_mesh_command_reset);
     return 1;
 }
@@ -469,7 +565,7 @@ void gpu_mesher_draw(GpuMesher* mesher, uint program, float4x4 camera_matrix, fl
         return;
     }
     if (!mesher->vao) {
-        mesher->vao = zox_gpu_storage_mesh_vao(mesher->vertices, mesher->indices, 0, mesher->vertex_lights, 1);
+        mesher->vao = zox_gpu_storage_mesh_vao(mesher->vertices, mesher->indices, 0, mesher->vertex_lights, 1, 0, 2);
     }
     float4 palette[zox_gpu_mesh_colors_max];
     for (int i = 0; i < zox_gpu_mesh_colors_max; i++) {
@@ -487,6 +583,7 @@ void gpu_mesher_draw(GpuMesher* mesher, uint program, float4x4 camera_matrix, fl
 
 #else
 
+uint gpu_mesh_textured_program() { return 0; }
 uint gpu_mesh_draw_program() { return 0; }
 void gpu_mesher_draw(GpuMesher* mesher, uint program, float4x4 camera_matrix, float3 position, float scale, const color_rgb* colors, int colors_count, byte light_mode) { }
 byte gpu_mesher_create(GpuMesher* mesher, uint max_faces) {
@@ -497,6 +594,7 @@ byte gpu_mesher_create(GpuMesher* mesher, uint max_faces) {
 void gpu_mesher_dispose(GpuMesher* mesher) { memset(mesher, 0, sizeof(GpuMesher)); }
 static inline void gpu_mesher_set_heights(GpuMesher* mesher, const byte* heights) { }
 static inline void gpu_mesher_set_material(GpuMesher* mesher, const byte* materials, byte material) { }
+static inline void gpu_mesher_set_uvs(GpuMesher* mesher, uint uvs) { }
 void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, byte depth, uint present, uint lights_present, const GpuMeshLighting* lighting) { }
 byte gpu_mesh_VoxelNode(GpuMesher* mesher, const VoxelNode* voxels, byte depth) { return 0; }
 uint gpu_mesher_read_faces(GpuMesher* mesher) { return 0; }

@@ -61,3 +61,18 @@ void on_destroyed_GridGPULink(iter* it) {
         }
     }
 }
+
+// a gpu mesh's vertex array (its vertices, face lights, uvs and indices), made on its first draw
+zoxc_guint(VaoGPULink);
+
+void on_destroyed_VaoGPULink(iter* it) {
+    zox_sys_begin();
+    zox_sys_out(VaoGPULink);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_o(VaoGPULink, vao);
+        if (vao->value) {
+            zox_gpu_dispose_vao(vao->value);
+            vao->value = 0;
+        }
+    }
+}

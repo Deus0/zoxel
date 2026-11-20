@@ -370,6 +370,80 @@ void zox_tst_gpu_materials_check(ecs* world) {
     gpu_mesher_dispose(&mesher);
 }
 
+// # gpu_mesh_uvs
+
+// each gpu vertex's uv is the tilemap's the cpu uses (build_textured): uvs[(voxel - 1) * 24 + direction * 4 + k], k
+//  the cpu's corner at the vertex (voxel_face_vertices_n); the test's uvs are their own index, so a uv says which it was
+void zox_tst_gpu_uvs_check(ecs* world) {
+    (void) world;
+    const byte depth = 4;
+    const int length = octree_size(depth);
+    GpuMesher mesher;
+    zox_tst_check(gpu_mesher_create(&mesher, length * length * length * 3), "the gpu mesher couldn't be made");
+    if (!mesher.program) {
+        return;
+    }
+    VoxelNode voxels;
+    zox_tst_gpu_fill(&voxels, depth, 3);    // a sphere of 3 blocks
+    float2 uvs[3 * 24];
+    for (int i = 0; i < 3 * 24; i++) {
+        uvs[i] = (float2) { i, 0.5f };
+    }
+    const uint uvs_buffer = zox_gpu_storage_buffer(sizeof(uvs), uvs);
+    gpu_mesher_set_uvs(&mesher, uvs_buffer);
+    gpu_mesh_VoxelNode(&mesher, &voxels, depth);
+    const uint faces = gpu_mesher_read_faces(&mesher);
+    zox_tst_check(faces, "no gpu faces");
+    float4* vertices = malloc(sizeof(float4) * 4 * (faces ? faces : 1));
+    float2* vertex_uvs = malloc(sizeof(float2) * 4 * (faces ? faces : 1));
+    if (faces) {
+        zox_gpu_storage_read(mesher.vertices, 0, sizeof(float4) * 4 * faces, vertices);
+        zox_gpu_storage_read(mesher.vertex_uvs, 0, sizeof(float2) * 4 * faces, vertex_uvs);
+    }
+    int wrong = 0;
+    for (uint f = 0; f < faces; f++) {
+        float3 low = { vertices[f * 4].x, vertices[f * 4].y, vertices[f * 4].z };
+        for (byte c = 1; c < 4; c++) {
+            low.x = fminf(low.x, vertices[f * 4 + c].x);
+            low.y = fminf(low.y, vertices[f * 4 + c].y);
+            low.z = fminf(low.z, vertices[f * 4 + c].z);
+        }
+        const int w = (int) vertices[f * 4].w;
+        const byte d = gpu_mesh_vertex_direction(w);
+        const byte voxel = gpu_mesh_vertex_voxel(w);
+        // the voxel's corner: the face's lowest, less one on its axis for a positive face
+        float3 p = low;
+        if (d & 1) {
+            if ((d >> 1) == 0) p.x--; else if ((d >> 1) == 1) p.y--; else p.z--;
+        }
+        for (byte c = 0; c < 4; c++) {
+            const float3 at = { vertices[f * 4 + c].x - p.x, vertices[f * 4 + c].y - p.y, vertices[f * 4 + c].z - p.z };
+            int k = -1;
+            for (byte j = 0; j < 4; j++) {
+                const float3 cpu = voxel_face_vertices_n[d][j];
+                if (cpu.x == at.x && cpu.y == at.y && cpu.z == at.z) {
+                    k = j;
+                }
+            }
+            const float want = (voxel - 1) * 24 + d * 4 + k;
+            if (k < 0 || vertex_uvs[f * 4 + c].x != want || vertex_uvs[f * 4 + c].y != 0.5f) {
+                if (!wrong) {
+                    zox_tst_check(0, "face [%u] voxel [%i] direction [%i] corner [%i]: uv [%.1f] not the cpu's [%.0f] (corner [%i])",
+                        f, voxel, d, c, vertex_uvs[f * 4 + c].x, want, k);
+                }
+                wrong++;
+            }
+        }
+    }
+    zox_tst_check(!wrong, "[%i] of [%u] vertices' uvs aren't the cpu's", wrong, faces * 4);
+    zox_log("[tst] gpu_mesh_uvs: [%u] faces, [%i] uvs the cpu's", faces, faces * 4 - wrong);
+    free(vertices);
+    free(vertex_uvs);
+    gpu_mesher_dispose(&mesher);
+    zox_gpu_dispose_buffer(uvs_buffer);
+    collapse_VoxelNode(&voxels);
+}
+
 // # gpu_mesh_grow
 
 // a mesher sized by a guess too small: the mesh draws only what it wrote, its count comes back frames later without
@@ -438,5 +512,6 @@ void zox_tsts_chunks3_gpu_mesh() {
     zox_tst_add("octree_flatten", zox_tst_octree_flatten_ready, zox_tst_octree_flatten_check, 30);
     zox_tst_add("gpu_mesh", zox_tst_gpu_mesh_ready, zox_tst_gpu_mesh_check, 60);
     zox_tst_add("gpu_mesh_grow", zox_tst_gpu_grow_ready, zox_tst_gpu_grow_check, 60);
+    zox_tst_add("gpu_mesh_uvs", zox_tst_gpu_mesh_ready, zox_tst_gpu_uvs_check, 60);
     zox_tst_add("gpu_mesh_materials", zox_tst_gpu_materials_ready, zox_tst_gpu_materials_check, 60);
 }
