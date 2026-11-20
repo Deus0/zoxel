@@ -5,6 +5,7 @@
 //  - idle: 8 seconds standing still once loaded (idle rendering)
 //  - stream: the streamer moves a chunk along x, 6 steps, each until it settles (stream remeshing)
 //  - tst/perf_terrain.ppm: its view once loaded
+//  - each step logs when each kind of work last ran (queued, generating, sides, meshes, lights, swaps): what held it up
 //  - logs each phase's frames (frames.c: fps average and 1% low, frame times, frames under 60 and 30 fps), the load
 //      and step times, and the chunk meshes (cpu and gpu) at the end; compare cpu and gpu meshing with --gpu_meshing
 //  - numbers: zox_tst_seed=666 bash bsh/tst.sh perf_terrain --release --gpu --stress --far 8 [--vulkan] [--gpu_meshing]
@@ -20,10 +21,21 @@ int zox_tst_perf_terrain_settled = 0;      // frames in a row with nothing busy
 int zox_tst_perf_terrain_step = 0;
 double zox_tst_perf_terrain_steps_total = 0, zox_tst_perf_terrain_steps_fastest = 0, zox_tst_perf_terrain_steps_slowest = 0;
 zox_tst_frames zox_tst_perf_terrain_frames;
+// when each kind of work was last busy in a step (seconds into it): queued, generating, sides, meshes, lights, swaps
+double zox_tst_perf_terrain_last[6];
+static const char* zox_tst_perf_terrain_kinds[6] = { "queued", "generating", "sides", "meshes", "lights", "swaps" };
 
 // settled: nothing busy for 3 frames in a row
 static inline byte zox_tst_perf_terrain_settle(ecs* world, entity terrain) {
     const int busy = zox_tst_terrain_busy(world, terrain);
+    const int kinds[6] = { zox_tst_perf_queued, zox_tst_perf_generating, zox_tst_perf_siding, zox_tst_perf_meshing,
+        zox_tst_perf_lighting, zox_tst_perf_swapping };
+    const double into = (get_time_ms() - zox_tst_perf_terrain_time) / 1000.0;
+    for (byte k = 0; k < 6; k++) {
+        if (kinds[k]) {
+            zox_tst_perf_terrain_last[k] = into;
+        }
+    }
     zox_tst_progress(zox_tst_perf_terrain_stage * 1000000.0 + zox_tst_perf_terrain_step * 100000.0 + busy);
     zox_tst_perf_terrain_settled = busy ? 0 : zox_tst_perf_terrain_settled + 1;
     return zox_tst_perf_terrain_settled >= 3;
@@ -99,6 +111,15 @@ byte zox_tst_perf_terrain_ready(ecs* world) {
         if (elapsed < 0.1 || zox_getv(zox_tst_perf_terrain_streamer, StreamDirty) || !zox_tst_perf_terrain_settle(world, terrain)) {
             return 0;
         }
+        // what held the step up: when each kind of work last ran
+        char held[256];
+        int length = 0;
+        for (byte k = 0; k < 6; k++) {
+            length += snprintf(held + length, sizeof(held) - length, " %s [%.2fs]", zox_tst_perf_terrain_kinds[k],
+                zox_tst_perf_terrain_last[k]);
+        }
+        zox_log("[tst] [metric] perf_terrain stream step [%i] settled in [%.3fs], last busy:%s", zox_tst_perf_terrain_step,
+            elapsed, held);
         zox_tst_perf_terrain_steps_total += elapsed;
         zox_tst_perf_terrain_steps_slowest = elapsed > zox_tst_perf_terrain_steps_slowest ? elapsed : zox_tst_perf_terrain_steps_slowest;
         zox_tst_perf_terrain_steps_fastest = !zox_tst_perf_terrain_steps_fastest || elapsed < zox_tst_perf_terrain_steps_fastest ?
@@ -119,6 +140,7 @@ byte zox_tst_perf_terrain_ready(ecs* world) {
     zox_setv(zox_tst_perf_terrain_streamer, Position3D, position);
     zox_tst_perf_terrain_time = now;
     zox_tst_perf_terrain_settled = 0;
+    memset(zox_tst_perf_terrain_last, 0, sizeof(zox_tst_perf_terrain_last));
     return 0;
 }
 
