@@ -10,6 +10,7 @@ extern char zox_screenshot_request[256];
 //  - run: bash bsh/tst.sh split_screen
 int zox_tst_sscreen_stage = 0;
 int zox_tst_sscreen_frames = 0;
+int zox_tst_sscreen_menu_frames = 0;
 
 static inline void zox_tst_sscreen_next() {
     zox_tst_sscreen_stage++;
@@ -144,7 +145,12 @@ byte zox_tst_split_screen_ready(ecs* world) {
             break;
         case 5:
             zox_tst_waiting = "the main menu after ending the game";
-            if (!main_menu || state != zox_game_none || zox_tst_sscreen_frames < 60) {
+            // its screens resize the frame after the menu spawns (viewport_resize_system): wait from the menu
+            if (!main_menu || state != zox_game_none) {
+                zox_tst_sscreen_menu_frames = 0;
+                return 0;
+            }
+            if (++zox_tst_sscreen_menu_frames < 60) {
                 return 0;
             }
             zox_tst_check(!zox_get_link(world, zox_players[1], CanvasLink) && !zox_get_link(world, zox_players[1], CameraLink),
