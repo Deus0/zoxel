@@ -5,6 +5,7 @@
 //  - idle: 8 seconds standing still once loaded (idle rendering)
 //  - stream: the streamer moves a chunk along x, 6 steps, each until it settles (stream remeshing)
 //  - tst/perf_terrain.ppm: its view once loaded
+//  - the stream's frames are profiled: its slowest frames and their systems, each system's slowest and average
 //  - each step logs when each kind of work last ran (queued, generating, sides, meshes, lights, swaps): what held it up
 //  - logs each phase's frames (frames.c: fps average and 1% low, frame times, frames under 60 and 30 fps), the load
 //      and step times, and the chunk meshes (cpu and gpu) at the end; compare cpu and gpu meshing with --gpu_meshing
@@ -97,7 +98,8 @@ byte zox_tst_perf_terrain_ready(ecs* world) {
         zox_tst_perf_terrain_stage = 3;
         zox_tst_perf_terrain_step = -1;
     }
-    // stream: a step, then wait for it to settle
+    // stream: a step, then wait for it to settle; every frame profiled (what makes a streaming frame slow)
+    zox_tst_profile_frame(world);
     zox_tst_waiting = "a stream step to settle";
     if (zox_tst_perf_terrain_step >= 0) {
         const double elapsed = (now - zox_tst_perf_terrain_time) / 1000.0;
@@ -133,6 +135,7 @@ byte zox_tst_perf_terrain_ready(ecs* world) {
             label, zox_tst_perf_terrain_steps, zox_tst_perf_terrain_steps_total / zox_tst_perf_terrain_steps,
             zox_tst_perf_terrain_steps_fastest, zox_tst_perf_terrain_steps_slowest);
         zox_tst_frames_log(&zox_tst_perf_terrain_frames, "perf_terrain stream");
+        zox_tst_profile_log(world, "perf_terrain stream");
         return 1;
     }
     float3 position = zox_getv(zox_tst_perf_terrain_streamer, Position3D);

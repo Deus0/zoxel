@@ -1,6 +1,6 @@
 // Frame times for the perf tests (perf_idle, perf_stream): every frame's time kept, then a summary anyone can read
 //  - frames and seconds, fps (average, and the 1% low: the slowest 1% of frames' average as fps), frame times
-//    (fastest, median, average, 99th percentile, slowest), frames over 16.7ms (under 60fps) and 33.3ms (under 30fps)
+//    (fastest, median, average, 99th percentile, slowest), frames missing 90 and 72 fps (vr headsets), 60 and 30
 //  - the label says what was measured: backend, far distance, cpu or gpu meshing
 #define zox_tst_frames_max 100000
 
@@ -51,9 +51,11 @@ static inline void zox_tst_frames_log(zox_tst_frames* frames, const char* name) 
     memcpy(sorted, frames->times, sizeof(double) * count);
     qsort(sorted, count, sizeof(double), zox_tst_frames_compare);
     double total = 0;
-    int over_60 = 0, over_30 = 0;
+    int over_90 = 0, over_72 = 0, over_60 = 0, over_30 = 0;
     for (int i = 0; i < count; i++) {
         total += sorted[i];
+        over_90 += sorted[i] > 1000.0 / 90;
+        over_72 += sorted[i] > 1000.0 / 72;
         over_60 += sorted[i] > 1000.0 / 60;
         over_30 += sorted[i] > 1000.0 / 30;
     }
@@ -69,6 +71,8 @@ static inline void zox_tst_frames_log(zox_tst_frames* frames, const char* name) 
         1000.0 / (low_total / low_count));
     zox_log("[tst] [metric] %s %s: frame ms fastest [%.2f] median [%.2f] average [%.2f] 99th [%.2f] slowest [%.2f]",
         name, label, sorted[0], sorted[count / 2], average, sorted[count - 1 - count / 100], sorted[count - 1]);
+    zox_log("[tst] [metric] %s %s: frames over 11.1ms (under 90fps, vr) [%i], over 13.9ms (under 72fps, vr) [%i]",
+        name, label, over_90, over_72);
     zox_log("[tst] [metric] %s %s: frames over 16.7ms (under 60fps) [%i], over 33.3ms (under 30fps) [%i]",
         name, label, over_60, over_30);
     free(sorted);
