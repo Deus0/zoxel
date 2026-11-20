@@ -58,7 +58,8 @@ void vulkan_texture_data(guint id, int2 size, const byte* rgba) {
         vulkan_texture_release(texture);
         const VkExtent2D extent = { size.x, size.y };
         if (!vulkan_create_image(extent, VK_FORMAT_R8G8B8A8_UNORM,
-            VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, &texture->image, &texture->memory))
+            VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+            &texture->image, &texture->memory))
         {
             return;
         }

@@ -29,8 +29,8 @@ the backend under it changes. Code: [src/graphics/vulkan](../../src/graphics/vul
 3. **Draws** (done): buffers, attributes (client arrays too), the pipeline cache, the per frame ring, viewport,
    blend, depth, cull, polygon offset, lines and points, textures, the instance matrix ubos. The game draws as on gl
    (tst screenshot, `--vulkan`), without post processing.
-4. **Render textures**: fbos (cameras rendering to textures, post processing), the gpu restore hooks. Until then
-   the vulkan module turns post processing off at its import (`--nopost` does the same on gl).
+4. **Render textures** (done): fbos and rbos (`targets.c`), cameras draw to textures and the post processing draws
+   them (blur, tint, lids). A render texture is drawn unflipped (gl's rows, bottom first), its pipelines clockwise.
 5. **Compute**: gpu meshing (doc/plans/gpu_meshing.md); off until then, chunks mesh on the cpu.
 
 ## Gl and vulkan differences, and how each is met

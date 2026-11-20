@@ -38,12 +38,13 @@ VkPipeline vulkan_create_pipeline(const vk_program* program, const vk_pipeline_k
         .viewportCount = 1,
         .scissorCount = 1,
     };
-    // gl's front faces are counter clockwise; the flipped viewport keeps them so on screen
+    // gl's front faces are counter clockwise; the flipped viewport keeps them so on screen, a render texture's
+    // unflipped one (gl's rows, bottom first) turns them clockwise
     const VkPipelineRasterizationStateCreateInfo raster = {
         .sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
         .polygonMode = VK_POLYGON_MODE_FILL,
         .cullMode = key->cull ? VK_CULL_MODE_BACK_BIT : VK_CULL_MODE_NONE,
-        .frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE,
+        .frontFace = key->target ? VK_FRONT_FACE_CLOCKWISE : VK_FRONT_FACE_COUNTER_CLOCKWISE,
         .depthBiasEnable = key->depth_bias,
         .lineWidth = 1,
     };
@@ -92,7 +93,7 @@ VkPipeline vulkan_create_pipeline(const vk_program* program, const vk_pipeline_k
         .pColorBlendState = &blend,
         .pDynamicState = &dynamic,
         .layout = program->layout,
-        .renderPass = vk_pass_clear,
+        .renderPass = key->target ? vk_pass_texture_begin : vk_pass_clear,
     };
     VkPipeline pipeline = VK_NULL_HANDLE;
     vulkan_check(vkCreateGraphicsPipelines(vk_device, VK_NULL_HANDLE, 1, &info, NULL, &pipeline),
@@ -122,10 +123,12 @@ VkPipeline vulkan_pipeline_of(vk_program* program, const vk_pipeline_key* key) {
 
 // viewport (gl's flipped: y from the bottom, a negative height), scissor, line width, depth bias
 void vulkan_set_dynamic(VkCommandBuffer commands) {
-    const float height = vk_extent.height;
-    const float4 gl = vk_ctx->viewport_set ? vk_ctx->viewport : (float4) { 0, 0, vk_extent.width, height };
-    const VkViewport viewport = { gl.x, height - gl.y, gl.z, -gl.w, 0, 1 };
-    const VkRect2D scissor = { { 0, 0 }, vk_extent };
+    const float height = vk_target_extent.height;
+    const float4 gl = vk_ctx->viewport_set ? vk_ctx->viewport : (float4) { 0, 0, vk_target_extent.width, height };
+    // the frame's image flipped to gl's y up; a render texture not, its rows bottom first as gl's are sampled
+    const VkViewport viewport = vk_target_texture ? (VkViewport) { gl.x, gl.y, gl.z, gl.w, 0, 1 } :
+        (VkViewport) { gl.x, height - gl.y, gl.z, -gl.w, 0, 1 };
+    const VkRect2D scissor = { { 0, 0 }, vk_target_extent };
     vkCmdSetViewport(commands, 0, 1, &viewport);
     vkCmdSetScissor(commands, 0, 1, &scissor);
     vkCmdSetLineWidth(commands, vk_wide_lines ? vk_ctx->line_width : 1);
@@ -220,6 +223,7 @@ byte vulkan_draw_begin(byte topology, uint vertices, uint instances) {
     vk_pipeline_key key;
     memset(&key, 0, sizeof(key));
     key.topology = topology;
+    key.target = vk_target_texture;
     key.blend = vk_ctx->blend;
     key.depth_test = vk_ctx->depth_test;
     key.depth_write = vk_ctx->depth_test && vk_ctx->depth_write;     // gl writes no depth with its test off

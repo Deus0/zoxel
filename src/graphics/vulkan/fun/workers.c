@@ -60,9 +60,9 @@ void vulkan_record_part(const vk_part* part) {
     context->dynamic_dirty = 1;
     const VkCommandBufferInheritanceInfo inherit = {
         .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO,
-        .renderPass = vk_pass_load,
+        .renderPass = vk_target_texture ? vk_pass_texture_load : vk_pass_load,
         .subpass = 0,
-        .framebuffer = vk_framebuffers[vk_image],
+        .framebuffer = vk_target_framebuffer,
     };
     const VkCommandBufferBeginInfo begin = {
         .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
@@ -154,10 +154,11 @@ static inline void zox_gpu_run_system(ecs* world, entity system, byte parallel) 
     // secondaries play in a pass of their own (a pass can't mix them with draws), then the main thread's carries on
     const VkCommandBuffer commands = vk_contexts[0].commands;
     vkCmdEndRenderPass(commands);
-    vulkan_pass_begin(commands, vk_pass_load, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
+    const VkRenderPass carry_on = vk_target_texture ? vk_pass_texture_load : vk_pass_load;
+    vulkan_pass_begin(commands, carry_on, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
     vkCmdExecuteCommands(commands, vk_workers_count, buffers);
     vkCmdEndRenderPass(commands);
-    vulkan_pass_begin(commands, vk_pass_load, VK_SUBPASS_CONTENTS_INLINE);
+    vulkan_pass_begin(commands, carry_on, VK_SUBPASS_CONTENTS_INLINE);
     vk_contexts[0].pipeline_bound = VK_NULL_HANDLE;
     vk_contexts[0].dynamic_dirty = 1;
 }

@@ -15,5 +15,6 @@
 #include "state.c"
 #include "draw.c"
 #include "workers.c"
+#include "targets.c"
 #include "init.c"
 #include "todo.c"

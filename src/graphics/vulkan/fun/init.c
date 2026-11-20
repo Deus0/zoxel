@@ -1,5 +1,3 @@
-extern byte zox_disable_post_processing;   // cameras module, later
-
 // after the instance (and the window's surface, vulkan_create_instance): the device, its frames and fallbacks
 //  - the target's made at the first frame (a minimised window has none to make)
 byte vulkan_initialize(int2 size) {
@@ -57,6 +55,7 @@ void vulkan_dispose() {
         vkDeviceWaitIdle(vk_device);
         vk_serial_done = vk_serial_submitted;
         vulkan_dispose_tables();
+        vulkan_dispose_targets();
         vulkan_garbage_dispose();
         vulkan_dispose_rings();
         vulkan_dispose_slabs();

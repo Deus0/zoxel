@@ -1,24 +1,12 @@
-// The zox_gpu_* calls not on vulkan yet: they do nothing (no render textures, no compute).
+// The zox_gpu_* calls not on vulkan yet: they do nothing (no compute).
 // Each part of the port moves its calls out of here (doc/plans/vulkan.md)
 
-byte zox_fbos_supported = 0;
 
 static inline byte zox_gpu_is_es() { return 0; }
 static inline byte check_opengl_error_unlogged() { return 0; }
 int check_opengl_error(char* function_name) { return 0; }
 static inline int zox_gpu_error_bits() { return 0; }
 byte zox_init_glew() { return EXIT_SUCCESS; }
-
-// part 4: render textures (cameras drawing to textures, post processing)
-static inline guint zox_gpu_create_fbo() { return 0; }
-static inline void zox_gpu_bind_fbo(guint id) { }
-static inline void zox_gpu_reset_fbo() { }
-static inline void zox_gpu_fbo_to_texture(guint fbo, guint texture) { }
-static inline void zox_gpu_link_fbo_rbo(guint fbo, guint rbo) { }
-static inline void zox_gpu_dispose_fbo(guint id) { }
-static inline guint zox_gpu_create_rbo() { return 0; }
-static inline void zox_gpu_set_rbo_size(guint id, int2 size) { }
-static inline void zox_gpu_dispose_rbo(guint id) { }
 
 // part 5: compute (gpu meshing); off, chunks mesh on the cpu
 static inline byte zox_gpu_compute_supported() { return 0; }

@@ -60,12 +60,22 @@ void vulkan_pass_begin(VkCommandBuffer commands, VkRenderPass render_pass, VkSub
     const VkRenderPassBeginInfo pass = {
         .sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
         .renderPass = render_pass,
-        .framebuffer = vk_framebuffers[vk_image],
-        .renderArea = { { 0, 0 }, vk_extent },
+        .framebuffer = vk_target_framebuffer,
+        .renderArea = { { 0, 0 }, vk_target_extent },
         .clearValueCount = 2,
         .pClearValues = clears,
     };
     vkCmdBeginRenderPass(commands, &pass, contents);
+}
+
+void vulkan_target_frame(VkRenderPass pass);
+
+// a render texture left bound: its pass ended, the frame's image the target again
+void vulkan_target_frame_if_texture() {
+    if (vk_fbo_bound && vk_recording) {
+        vkCmdEndRenderPass(vk_contexts[0].commands);
+        vulkan_target_frame(vk_pass_load);
+    }
 }
 
 // opens the frame if it isn't, 0 if there's nothing to draw to (minimised, not made)
@@ -89,6 +99,10 @@ byte vulkan_frame_begin() {
         .flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
     };
     vkBeginCommandBuffer(commands, &begin);
+    vk_fbo_bound = 0;
+    vk_target_texture = 0;
+    vk_target_framebuffer = vk_framebuffers[vk_image];
+    vk_target_extent = vk_extent;
     vulkan_pass_begin(commands, vk_submitted ? vk_pass_load : vk_pass_clear, VK_SUBPASS_CONTENTS_INLINE);
     vk_recording = 1;
     vk_contexts[0].commands = commands;
@@ -131,6 +145,7 @@ void vulkan_frame_end() {
     if (!vulkan_frame_begin()) {
         return;
     }
+    vulkan_target_frame_if_texture();
     vkCmdEndRenderPass(vk_commands[vk_frame]);
     vulkan_submit(1);
     vk_submitted = 0;
@@ -167,16 +182,17 @@ void vulkan_clear_rect(float2 position, float2 size) {
         { .aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT, .clearValue.depthStencil = { 1, 0 } },
     };
     const int x = int_max(0, (int) position.x);
-    const int y = int_max(0, (int) (vk_extent.height - position.y - size.y));
+    // a render texture's rows are gl's (bottom first), the frame's image's top first
+    const int y = int_max(0, vk_target_texture ? (int) position.y : (int) (vk_target_extent.height - position.y - size.y));
     const VkClearRect rect = {
         .rect = {
             { x, y },
-            { int_min((int) size.x, vk_extent.width - x), int_min((int) size.y, vk_extent.height - y) },
+            { int_min((int) size.x, vk_target_extent.width - x), int_min((int) size.y, vk_target_extent.height - y) },
         },
         .layerCount = 1,
     };
     if (rect.rect.extent.width > 0 && rect.rect.extent.height > 0) {
-        vkCmdClearAttachments(vk_commands[vk_frame], 2, clears, 1, &rect);
+        vkCmdClearAttachments(vk_contexts[0].commands, 2, clears, 1, &rect);
     }
 }
 
@@ -185,7 +201,7 @@ static inline void zox_gpu_set_clear_color(float4 clear) {
 }
 
 static inline void zox_gpu_clear_viewport() {
-    vulkan_clear_rect(float2_zero, (float2) { vk_extent.width, vk_extent.height });
+    vulkan_clear_rect(float2_zero, (float2) { vk_target_extent.width, vk_target_extent.height });
 }
 
 static inline void zox_gpu_clear_rect(float2 position, float2 size) {

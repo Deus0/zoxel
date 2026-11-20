@@ -4,6 +4,7 @@ static inline byte* zox_gpu_read_screen(int2 size) {
     if (size.x <= 0 || size.y <= 0 || !vulkan_frame_begin() || !vk_readable) {
         return NULL;
     }
+    vulkan_target_frame_if_texture();
     const VkCommandBuffer commands = vk_commands[vk_frame];
     const VkImage image = vk_images[vk_image];
     const uint width = vk_extent.width;

@@ -25,9 +25,6 @@ void dispose_vulkan(ecs *world, void *ctx) {
 
 void import_vulkan(ecs* world) {
     zox_module(vulkan);
-    // no render textures yet (part 4 of doc/plans/vulkan.md): cameras draw straight to the screen, before the
-    // camera prefabs are made
-    zox_disable_post_processing = 1;
     zox_module_dispose(dispose_vulkan);
 #ifdef zox_tests
     zox_tsts_vulkan();

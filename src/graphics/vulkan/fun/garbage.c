@@ -5,6 +5,7 @@ typedef struct {
     VkImage image;
     VkImageView view;
     VkDeviceMemory memory;
+    VkFramebuffer framebuffer;
     uint allocation;            // a slab slot
     ulong serial;
 } vk_garbage_item;
@@ -23,6 +24,7 @@ static inline byte vk_busy(ulong used) {
 }
 
 void vulkan_destroy(vk_garbage_item item) {
+    vkDestroyFramebuffer(vk_device, item.framebuffer, NULL);
     vkDestroyImageView(vk_device, item.view, NULL);
     vkDestroyImage(vk_device, item.image, NULL);
     vkDestroyBuffer(vk_device, item.buffer, NULL);

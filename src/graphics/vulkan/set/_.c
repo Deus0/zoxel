@@ -28,6 +28,14 @@ VkDeviceMemory vk_depth_memory;
 VkImageView vk_depth_view;
 VkRenderPass vk_pass_clear;     // opens a frame, clearing it
 VkRenderPass vk_pass_load;      // carries on a frame after a read back
+VkRenderPass vk_pass_texture_begin;     // a render texture's (fun/targets.c)
+VkRenderPass vk_pass_texture_load;
+
+// what's drawn to now: the frame's image, or a render texture (an fbo bound, its passes and pipelines its own)
+uint vk_fbo_bound;
+byte vk_target_texture;
+VkFramebuffer vk_target_framebuffer;
+VkExtent2D vk_target_extent;
 
 // frames in flight
 VkCommandPool vk_pool;
