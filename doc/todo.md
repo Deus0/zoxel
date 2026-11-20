@@ -37,8 +37,6 @@
 - tst dig_light fails 1 of 2: "the hole's faces never showed (or not [5] of them: [1])", on 22d44c39c too (2026-11-19)
 - tst pipeline_syncs fails 1 of 3: 13 merges (over 11), load_lids_system, navigator_shift_system and
 	huds3_follow_system are main thread in pre_physics (2 merges); xr ones now off without a headset (2026-11-20)
-- tst sound_balance fails 4 of 68: on small speakers click, splash, stone and water are only 1.5 to 2x the music
-	under them (2026-11-18)
 - tst xr_frustum fails 1 of 2 checks: "an eye sees [0.156] of its distance past the culling frustum" (failing at
 	edab0901f already, before 2026-11-18's work)
 - XR lag, what's left (the frame's start and the hands' timing are fixed, see done.md): needs a headset to confirm;
