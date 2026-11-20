@@ -18,7 +18,7 @@ const SoundEffect sound_effects[sound_effect_end] = {
     [sound_effect_click] = { "click", instrument_flute, 27, 33, 0.3f, 0.45f, 0.9f, 1.2f },
     [sound_effect_click_rare] = { "click rare", instrument_harp, 52, 52, 0.4f, 0.5f, 1.2f, 1.4f },
     [sound_effect_start] = { "start", instrument_piano, 40, 40, 2.8f, 2.8f, 1.1f, 1.3f },
-    [sound_effect_ui_open] = { "ui open", instrument_harp, 47, 50, 0.25f, 0.3f, 0.8f, 1.0f },
+    [sound_effect_ui_open] = { "ui open", instrument_harp, 47, 50, 0.25f, 0.3f, 1.0f, 1.2f },
     [sound_effect_splash] = { "splash", instrument_squelch, 34, 38, 0.3f, 0.4f, 1.8f, 2.2f },
     [sound_effect_door_open] = { "door open", instrument_creak, 33, 37, 0.45f, 0.55f, 1.6f, 1.8f },
     [sound_effect_door_close] = { "door close", instrument_shut, 35, 39, 0.3f, 0.35f, 3.2f, 3.4f },
@@ -27,13 +27,13 @@ const SoundEffect sound_effects[sound_effect_end] = {
 // materials, what a hit sounds like by what it hits (doc/sounds.md), kinds link one (link_hit_sound)
 const SoundEffect hit_sound_flesh = { "flesh", instrument_impact, 34, 38, 0.1f, 0.13f, 1.9f, 2.1f };    // a body
 const SoundEffect hit_sound_slime = { "slime", instrument_squelch, 40, 44, 0.18f, 0.22f, 1.7f, 1.9f };  // a wet squelch
-const SoundEffect hit_sound_stone = { "stone", instrument_knock, 45, 49, 0.1f, 0.12f, 2.5f, 2.7f };     // a dry knock
+const SoundEffect hit_sound_stone = { "stone", instrument_knock, 45, 49, 0.1f, 0.12f, 2.9f, 3.1f };     // a dry knock
 const SoundEffect hit_sound_dirt = { "dirt", instrument_thud, 36, 40, 0.14f, 0.17f, 2.6f, 2.8f };       // a soft thud
 const SoundEffect hit_sound_road = { "road", instrument_thud, 30, 34, 0.17f, 0.2f, 3.3f, 3.5f };      // packed ground, heavier than dirt
 const SoundEffect hit_sound_sand = { "sand", instrument_crunch, 44, 48, 0.14f, 0.17f, 3.0f, 3.2f };     // a grainy crunch
 const SoundEffect hit_sound_wood = { "wood", instrument_tock, 43, 47, 0.14f, 0.16f, 2.8f, 3.0f };       // a hollow tock
 const SoundEffect hit_sound_leaves = { "leaves", instrument_rustle, 48, 52, 0.2f, 0.24f, 1.4f, 1.6f };  // a rustle, plants too
-const SoundEffect hit_sound_water = { "water", instrument_squelch, 34, 38, 0.2f, 0.25f, 1.4f, 1.6f };   // a soft splash
+const SoundEffect hit_sound_water = { "water", instrument_squelch, 34, 38, 0.2f, 0.25f, 2.1f, 2.4f };   // a soft splash
 // all of them, for tests
 const SoundEffect* hit_sounds[] = { &hit_sound_flesh, &hit_sound_slime, &hit_sound_stone, &hit_sound_dirt,
     &hit_sound_sand, &hit_sound_wood, &hit_sound_leaves, &hit_sound_road, &hit_sound_water };    // tests read them by index: add at the end
