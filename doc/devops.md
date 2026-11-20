@@ -26,6 +26,8 @@
 - a clean checkout fetches what it needs, ext/ lib/ inc/ zip/ are gitignored
 	- flecs: bash bsh/flecs.sh, downloads 4.2.0 to inc/flecs and applies our [patches](flecs_patches.md)
 	- SDL: build.sh downloads (bsh/libs-download.sh) and compiles it (bsh/libs-compile.sh, cmake) into lib/<os>_<arc>
+	- windows vulkan: libs-download.sh --vulkan-windows gets msys2's vulkan headers, loader and shaderc packages into
+	  ext/vulkan_windows (needs zstd), shaderc's dll goes in the zip, vulkan-1.dll is windows' own
 - linux and windows use SDL3, windows cross compiled with mingw
 - web: web.sh fetches emscripten's sdk into web/ (gitignored) the first time, sdl3 is emscripten's port
 	- python: emsdk and emcc need it; on windows web.sh finds a real one or installs it with winget (user scope,

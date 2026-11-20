@@ -2,7 +2,7 @@
 set -euo pipefail
 # apt packages for ubuntu builds, one per line, shared by bsh/docker.sh and .github/workflows/build.yml
 #   bash bsh/deps.sh            linux x64
-#   bash bsh/deps.sh --windows  adds mingw for windows cross builds
+#   bash bsh/deps.sh --windows  adds mingw for windows cross builds, zstd for msys2 packages (windows vulkan)
 #   bash bsh/deps.sh --android  adds jdk 17 for gradle (bsh/android_prepare.sh gets the sdk, ndk and gradle)
 #   bash bsh/deps.sh --vulkan   adds vulkan's loader and shaderc (build.sh --vulkan)
 #   bash bsh/deps.sh --web      adds python, git and xz for emscripten's sdk (bsh/web.sh), venv for bsh/web_tst.sh
@@ -18,7 +18,7 @@ packages+=(libwayland-dev libxkbcommon-dev)
 # alsa audio
 packages+=(libasound2-dev)
 # windows cross compiler
-[[ " $* " == *" --windows "* ]] && packages+=(mingw-w64)
+[[ " $* " == *" --windows "* ]] && packages+=(mingw-w64 zstd)
 # vulkan: the loader's headers, shaderc (it brings glslang and spirv-tools)
 [[ " $* " == *" --vulkan "* ]] && packages+=(libvulkan-dev libshaderc-dev)
 # web: emsdk is python, cloned with git, its downloads are .tar.xz; playwright (web_tst.sh) in a venv

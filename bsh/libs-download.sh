@@ -10,6 +10,9 @@ sdl3_mixer_url="https://github.com/libsdl-org/SDL_mixer/archive/refs/tags/releas
 # as khadas as mason 1.3.2 only
 # mesa_url="https://archive.mesa3d.org/mesa-26.1.8.tar.xz"
 mesa_url="https://archive.mesa3d.org/mesa-25.1.9.tar.xz"
+# windows vulkan: msys2's mingw packages, the loader's import lib and headers, shaderc (its dll needs only windows' own)
+msys2_url="https://mirror.msys2.org/mingw/mingw64"
+vulkan_windows_packages="vulkan-headers-1~1.4.363.0-1 vulkan-loader-1~1.4.363.0-1 shaderc-2026.4-1"
 
 sdl_filepath="ext/sdl2.zip"
 sdl3_filepath="ext/sdl3.zip"
@@ -20,6 +23,7 @@ USE_GLEW=0
 USE_SDL_IMAGE=0
 USE_SDL_MIXER=0
 USE_MESA=0
+USE_VULKAN_WINDOWS=0
 
 for arg in "$@"; do
     case "$arg" in
@@ -40,6 +44,9 @@ for arg in "$@"; do
             ;;
         --mesa)
             USE_MESA=1
+            ;;
+        --vulkan-windows)
+            USE_VULKAN_WINDOWS=1
             ;;
     esac
 done
@@ -173,4 +180,20 @@ if [[ "$USE_MESA" -eq 1 ]]; then
         "$mesa_url" \
         "$mesa_filepath" \
         "ext/mesa"
+fi
+
+# Vulkan for windows: ext/vulkan_windows/mingw64 (include, lib, bin)
+
+if [[ "$USE_VULKAN_WINDOWS" -eq 1 ]]; then
+    mkdir -p ext/vulkan_windows
+    for package in ${vulkan_windows_packages}; do
+        file="mingw-w64-x86_64-${package}-any.pkg.tar.zst"
+        if [[ -f "ext/vulkan_windows/${file}" ]]; then
+            echo "+ Found [${file}]"
+            continue
+        fi
+        echo "-> Downloading [${file}]"
+        curl -fL "${msys2_url}/${file//\~/%7E}" -o "ext/vulkan_windows/${file}"
+        tar --zstd -xf "ext/vulkan_windows/${file}" -C ext/vulkan_windows mingw64
+    done
 fi

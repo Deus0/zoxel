@@ -328,7 +328,8 @@ fi
 if [[ ${graphics_lib} == "vulkan" ]]; then
     shaderc_static="$(${compiler} -print-file-name=libshaderc_combined.a)"
     if [[ ${os} == "windows" ]]; then
-        libs+=" -lvulkan-1 -lshaderc_shared"
+        includes+=" -Iext/vulkan_windows/mingw64/include"
+        libs+=" -Lext/vulkan_windows/mingw64/lib -lvulkan-1 -lshaderc_shared"
     elif [[ -f "${shaderc_static}" ]] && nm --defined-only "${shaderc_static}" 2> /dev/null | grep -q 'InitializeProcess'; then
         libs+=" -lvulkan ${shaderc_static} -lstdc++"
     else
@@ -375,6 +376,7 @@ if [[ "${window_lib}" == "sdl" && ${is_static} == "1" ]]; then
     [[ ${docker} == "1" ]] && lib_args+=" --docker"
     [[ ${is_mesa} == "1" ]] && lib_args+=" --mesa"
     [[ ${is_glew} == "1" ]] && lib_args+=" --glew"
+    [[ ${os} == "windows" && ${graphics_lib} == "vulkan" ]] && lib_args+=" --vulkan-windows"
     bsh/libs-download.sh ${lib_args}
     echo "--------------------------------------------"
     bsh/libs-compile.sh ${os} --${arc} ${lib_args}
@@ -416,6 +418,10 @@ ln -sfn "../../res" "${bin_folder}/res"
 if [[ "${window_lib}" == "sdl" && "${is_static}" == "1" ]]; then
     ln -sfn "../../${sdl_runtime}" \
         "${bin_folder}/$(basename "${sdl_runtime}")"
+fi
+# windows vulkan: shaderc's dll beside the exe (vulkan-1.dll is windows', with its drivers)
+if [[ ${os} == "windows" && ${graphics_lib} == "vulkan" ]]; then
+    ln -sfn "../../ext/vulkan_windows/mingw64/bin/libshaderc_shared.dll" "${bin_folder}/libshaderc_shared.dll"
 fi
 
 # font converter: reads raw/fonts ttfs with freetype, saves res/fonts .zox (bsh/convert.sh --fonts)

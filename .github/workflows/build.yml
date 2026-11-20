@@ -44,7 +44,7 @@ jobs:
       matrix:
         include:
           # vulkan first, the flagship (doc/plans/vulkan.md): their zips carry shaderc beside the binary
-          #  windows' own libs (its vulkan loader and shaderc are built, not the system's)
+          #  windows' own libs (its vulkan loader's import lib, headers and shaderc are msys2's, bsh/libs-download.sh)
           - target: windows_x64_vulkan
             runner: ubuntu-latest
             deps: --windows --vulkan
