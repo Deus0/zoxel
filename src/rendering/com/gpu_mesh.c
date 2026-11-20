@@ -31,3 +31,33 @@ void on_destroyed_MeshFence(iter* it) {
         }
     }
 }
+
+// a terrain's gpu meshing (lights3/sys/gpu_mesh.c): its chunks' compute program, and the grids they're uploaded
+//  through (x voxels, y lights), made on its first gpu mesh
+zoxc_guint(ComputeGPULink);
+zoxc_guint2(GridGPULink);
+
+void on_destroyed_ComputeGPULink(iter* it) {
+    zox_sys_begin();
+    zox_sys_out(ComputeGPULink);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_o(ComputeGPULink, program);
+        if (program->value) {
+            zox_gpu_dispose_program(program->value);
+            program->value = 0;
+        }
+    }
+}
+
+void on_destroyed_GridGPULink(iter* it) {
+    zox_sys_begin();
+    zox_sys_out(GridGPULink);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_o(GridGPULink, grid);
+        if (grid->value.x) {
+            zox_gpu_dispose_buffer(grid->value.x);
+            zox_gpu_dispose_buffer(grid->value.y);
+            grid->value = guint2_zero;
+        }
+    }
+}

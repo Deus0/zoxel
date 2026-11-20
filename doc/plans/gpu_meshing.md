@@ -68,7 +68,8 @@ water stays on the cpu. A setting, `zox_chunks3_gpu_meshing`; any test runs with
   frame). Its grid is filled there from the 27 chunks, lit by the realm's solidity, its material's masks.
 - `chunk_gpu_mesh_count_system` reads its count once the fence passes: over its room it grows and gets `BuildMesh`,
   else `MeshRenderCount` is its faces and it's `MeshBuilt` (what the lod swap waits for).
-- One compute program and one pair of grid buffers for all (the shared mesher). Without compute its meshes go back to
+- Its terrain holds the compute program and the grid upload buffers (`ComputeGPULink`, `GridGPULink`, each grid sized
+  for the deepest grid), made on its first gpu mesh, disposed with it. Without compute its meshes go back to
   the cpu (`GpuMesh` removed).
 - Room starts at a face every two voxel columns: in `terrain_gpu_mesh` ~30% of meshes grow once, ~30% of the room is
   used. It never shrinks yet.

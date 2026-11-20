@@ -147,4 +147,6 @@ void zox_components_rendering(ecs *world) {
     zoxd_guint_dest(MeshCommandGPULink);
     zoxd_uint(MeshFaceRoom);
     zoxd_dest(MeshFence);
+    zoxd_guint_dest(ComputeGPULink);
+    zoxd_guint2_dest(GridGPULink);
 }
