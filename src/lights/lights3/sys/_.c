@@ -181,20 +181,18 @@ void zox_systems_lights3(ecs* world) {
         [out] rendering.MeshFaceRoom,
         [out] rendering.MeshFence,
         [out] rendering.MeshRenderCount,
+        [out] rendering.VaoGPULink,
         [none] rendering.GpuMesh,
     );
-    zox_render3_system(
+    zox_render3_system_parallel(
         1,
         chunk_gpu_render_system,
         [in] rendering.RenderDisabled,
         [in] rendering.RenderDepth,
         [in] transforms.TransformMatrix,
-        [in] rendering.MeshGPULink,
-        [in] rendering.ColorsGPULink,
-        [in] rendering.UvsGPULink,
         [in] rendering.MeshCommandGPULink,
         [in] rendering.MeshRenderCount,
-        [out] rendering.VaoGPULink,
+        [in] rendering.VaoGPULink,
         [none] rendering.GpuMesh,
         [none] !core.Disabled,
     );

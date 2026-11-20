@@ -33,6 +33,8 @@ columns (solid chunk meshes on the gpu, water on the cpu). Diffs: `bash bsh/comp
 | far 8: slowest frame | 4.7ms | 4.6ms | 4.1ms | 16.7ms |
 | far 32, vertical 4: fps | 245 | 238 (-3%) | 313 | 246 (-21%) |
 | far 32, vertical 4: slowest frame | 16.4ms | 16.7ms | 15.0ms | 16.8ms |
+| after the parallel gpu draw: far 8 fps, slowest | | 364, 4.3ms | | 405, 7.2ms |
+| after the parallel gpu draw: far 32 fps | | | | **301** (-4%) |
 
 **Stream remeshing** (`perf_stream`: the player steps a chunk at a time, how long until streaming, lights and meshes
 settle)
@@ -52,9 +54,10 @@ settle)
   quads, merging is planned).
 - Vulkan gpu streams ~3x slower: a mesh's count comes back ~3 frames after its dispatch (frames in flight, 1 on gl),
   a mesh that grows waits that again. Fix: a better first room guess, counts read a submission sooner.
-- Vulkan gpu draws slower, worse with distance (-12% far 8, -21% far 32): `chunk_gpu_render_system` ran on the main
-  thread, the cpu terrain's draw on 8 worker threads. Next: the gpu draw only reads (its programs and vertex arrays
-  made by the mesh systems first) and is recorded in parts like the cpu's.
+- Vulkan gpu drew slower, worse with distance (-12% far 8, -21% far 32): `chunk_gpu_render_system` ran on the main
+  thread, the cpu terrain's draw on 8 worker threads. Now it only reads (its programs made with the compute one, its
+  vertex arrays when built, by the mesh systems) and is recorded in parts like the cpu's: far 32 -4%, the 16.7ms
+  spike (its draw program compiled mid frame) gone. Far 8 is still -13%: not the threads, likely its triangles.
 - Found by these runs: far lods at depth 0 never meshed on the gpu (a 27 byte grid, dcc37b440) and had no buffers on
   vulkan (c8443a1b7).
 

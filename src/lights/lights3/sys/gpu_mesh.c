@@ -56,7 +56,8 @@ static inline guint chunk_gpu_tilemap_uvs(ecs* world, entity tilemap) {
     return buffer;
 }
 
-// a terrain's program and grid buffers, made if it has none (set on it), 0 without compute
+// a terrain's compute program and grid buffers, made if it has none (set on it), with its draw program
+//  (MaterialGPULink: made here, before any draw, so the draw only reads), 0 without compute
 static inline guint chunk_gpu_terrain(ecs* world, entity terrain, guint2* grid) {
     guint program = zox_has(terrain, ComputeGPULink) ? zox_getv(terrain, ComputeGPULink) : 0;
     if (program) {
@@ -70,6 +71,7 @@ static inline guint chunk_gpu_terrain(ecs* world, entity terrain, guint2* grid) 
     *grid = (guint2) { zox_gpu_storage_buffer(zox_chunk_gpu_grid_bytes, NULL), zox_gpu_storage_buffer(zox_chunk_gpu_grid_bytes, NULL) };
     zox_setv(terrain, ComputeGPULink, program);
     zox_setv(terrain, GridGPULink, *grid);
+    zox_setv(terrain, MaterialGPULink, gpu_mesh_textured_program());
     return program;
 }
 
@@ -258,7 +260,7 @@ void chunk_gpu_mesh_system(iter* it) {
 } zoxd_system(chunk_gpu_mesh_system);
 
 // NOTE: Reads a gpu mesh's face count once the gpu's done (never waits): grows and meshes again if it didn't fit,
-//  else it's built
+//  else it's built, its vertex array made the first time (VaoGPULink: before any draw, so the draw only reads)
 void chunk_gpu_mesh_count_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
@@ -270,6 +272,7 @@ void chunk_gpu_mesh_count_system(iter* it) {
     zox_sys_out(MeshFaceRoom);
     zox_sys_out(MeshFence);
     zox_sys_out(MeshRenderCount);
+    zox_sys_out(VaoGPULink);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(MeshGPULink, mesh);
@@ -279,6 +282,7 @@ void chunk_gpu_mesh_count_system(iter* it) {
         zox_sys_o(MeshFaceRoom, room);
         zox_sys_o(MeshFence, fence);
         zox_sys_o(MeshRenderCount, count);
+        zox_sys_o(VaoGPULink, vao);
         if (!fence->value) {
             continue;
         }
@@ -296,6 +300,9 @@ void chunk_gpu_mesh_count_system(iter* it) {
             continue;
         }
         count->value = faces * 6;
+        if (!vao->value) {
+            vao->value = zox_gpu_storage_mesh_vao(mesh->value.y, mesh->value.x, 0, lights->value, 1, uvs->value, 2);
+        }
         // built and lit: its lights are written with its faces
         if (!zox_has(e, MeshBuilt)) {
             zox_add(e, MeshBuilt);
@@ -308,7 +315,8 @@ void chunk_gpu_mesh_count_system(iter* it) {
 } zoxd_system(chunk_gpu_mesh_count_system);
 
 // NOTE: Draws gpu chunk meshes, textured from their tilemap, straight from their gpu buffers (an indirect draw: the
-//  gpu's own index count); its terrain holds the draw program (MaterialGPULink), made on the first draw
+//  gpu's own index count), its terrain's draw program (MaterialGPULink); only reads, so vulkan records it in parts on
+//  its worker threads (zox_render3_system_parallel), gl runs it whole
 void chunk_gpu_render_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
@@ -317,12 +325,9 @@ void chunk_gpu_render_system(iter* it) {
     zox_sys_in(RenderDisabled);
     zox_sys_in(RenderDepth);
     zox_sys_in(TransformMatrix);
-    zox_sys_in(MeshGPULink);
-    zox_sys_in(ColorsGPULink);
-    zox_sys_in(UvsGPULink);
     zox_sys_in(MeshCommandGPULink);
     zox_sys_in(MeshRenderCount);
-    zox_sys_out(VaoGPULink);
+    zox_sys_in(VaoGPULink);
     entity terrain_cached = 0;
     entity tilemap_cached = 0;
     guint program = 0;
@@ -333,14 +338,11 @@ void chunk_gpu_render_system(iter* it) {
         zox_sys_i(RenderDisabled, disabled);
         zox_sys_i(RenderDepth, depth);
         zox_sys_i(TransformMatrix, matrix);
-        zox_sys_i(MeshGPULink, mesh);
-        zox_sys_i(ColorsGPULink, lights);
-        zox_sys_i(UvsGPULink, uvs);
         zox_sys_i(MeshCommandGPULink, command);
         zox_sys_i(MeshRenderCount, count);
-        zox_sys_o(VaoGPULink, vao);
-        // built once (its count's read): a mesh meshed again draws its new faces from then
-        if (disabled->value || !count->value || !command->value.x) {
+        zox_sys_i(VaoGPULink, vao);
+        // built once (its count's read, its vertex array made): a mesh meshed again draws its new faces from then
+        if (disabled->value || !count->value || !vao->value) {
             continue;
         }
         camera_filtering_check();
@@ -353,13 +355,10 @@ void chunk_gpu_render_system(iter* it) {
         if (terrain != terrain_cached) {
             terrain_cached = terrain;
             program = zox_has(terrain, MaterialGPULink) ? zox_getv(terrain, MaterialGPULink) : 0;
-            if (!program && (program = gpu_mesh_textured_program())) {
-                zox_setv(terrain, MaterialGPULink, program);
-            }
             terrain_depth = zox_getv(terrain, NodeDepth);
             terrain_scale = zox_getv(terrain, BlockScale);
             if (program) {
-                zox_gpu_compute_use(program);
+                zox_gpu_material(program);
                 zox_gpu_program_float4(program, "fog_data", get_fog_value());
                 zox_gpu_program_float4(program, "shading", (float4) { 1, 0, 0, 0 });
             }
@@ -373,9 +372,6 @@ void chunk_gpu_render_system(iter* it) {
             const guint texture = zox_valid(tilemap) && zox_has(tilemap, TextureGPULink) ? zox_getv(tilemap, TextureGPULink) : 0;
             zox_gpu_bind_texture(texture);
         }
-        if (!vao->value) {
-            vao->value = zox_gpu_storage_mesh_vao(mesh->value.y, mesh->value.x, 0, lights->value, 1, uvs->value, 2);
-        }
         const float scale = get_chunk_scale(depth->value, terrain_depth, terrain_scale);
         zox_gpu_program_float4x4(program, "mvp_matrix", float4x4_multiply(matrix->value, render_camera_matrix));
         zox_gpu_program_float4(program, "transform", (float4) { 0, 0, 0, scale });
@@ -384,7 +380,7 @@ void chunk_gpu_render_system(iter* it) {
     }
     if (program) {
         zox_gpu_reset_texture();
-        zox_gpu_compute_use(0);
+        zox_disable_material();
     }
     zox_sys_on_end();
 } zoxd_system(chunk_gpu_render_system);

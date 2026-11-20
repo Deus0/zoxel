@@ -79,8 +79,10 @@ water stays on the cpu. A setting, `zox_chunks3_gpu_meshing`; any test runs with
 - Textured: the compute shader writes each vertex's tilemap uv (the tilemap's `TilemapUVs` uploaded once into its
   `UvsGPULink`, the mesh's uvs in its own `UvsGPULink`), the cpu's uv for the same block, direction and corner.
 - `chunk_gpu_render_system` draws them (order 1: after cpu terrain, before water) straight from their buffers with an
-  indirect draw: tilemap texel × light (the face's 4 corner lights blended across it), fog. Its terrain holds the draw
-  program (`MaterialGPULink`), each mesh its vertex array (`VaoGPULink`).
+  indirect draw: tilemap texel × light (the face's 4 corner lights blended across it), fog. It only reads: its
+  terrain's draw program (`MaterialGPULink`) is made with the compute one by `chunk_gpu_mesh_system`, each mesh's
+  vertex array (`VaoGPULink`) by `chunk_gpu_mesh_count_system` when it's first built; so it's a
+  `zox_render3_system_parallel`, recorded in parts on vulkan's worker threads (gl runs it whole), as the cpu terrain.
 - `bash bsh/compare_meshing.sh` (`--soft`, `--vulkan`): `terrain_meshing_view` (4 fixed views of a world's terrain,
   no hud) with cpu meshing and with `--gpu_meshing`, a diff and a diff image (2026-11-20: 0.058 gl, 0.071 vulkan on
   the 780M, under 0.08; the same blocks, textures and light).
