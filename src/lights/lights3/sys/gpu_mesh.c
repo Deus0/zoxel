@@ -26,7 +26,6 @@ static inline GpuMesher chunk_gpu_mesher(guint program, guint2 grid, guint2 mesh
     mesher.program = program;
     mesher.voxels = grid.x;
     mesher.lights = grid.y;
-    mesher.voxels_size = mesher.lights_size = zox_chunk_gpu_grid_bytes;
     mesher.indices = mesh.x;
     mesher.vertices = mesh.y;
     mesher.vertex_lights = lights;

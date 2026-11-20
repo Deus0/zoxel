@@ -169,8 +169,25 @@ static inline ulong zox_gpu_fence() {
 }
 
 // has the gpu passed the fence (it never waits), reads of what came before it won't stall then
+//  - asks the frames' fences (vkGetFenceStatus), not only vk_serial_done: that moves when a frame's slot is waited on
+//    for reuse, ~3 frames after it ran (gpu meshes' counts came back 3 frames late, streaming ~3x slower than gl)
+//  - one queue finishes in order: a done submission means every serial up to its own is done
 static inline byte zox_gpu_fence_done(ulong fence) {
-    return !vk_busy(fence);
+    if (!vk_busy(fence)) {
+        return 1;
+    }
+    if (fence > vk_serial_submitted) {
+        return 0;
+    }
+    for (int f = 0; f < vk_frames_max; f++) {
+        if (vk_fence_serial[f] >= fence && vk_fences[f] && vkGetFenceStatus(vk_device, vk_fences[f]) == VK_SUCCESS) {
+            if (vk_fence_serial[f] > vk_serial_done) {
+                vk_serial_done = vk_fence_serial[f];
+            }
+            return 1;
+        }
+    }
+    return 0;
 }
 
 static inline void zox_gpu_fence_dispose(ulong fence) {

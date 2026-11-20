@@ -2,7 +2,8 @@
 //  - after the player spawns, moves its character one chunk at a time in a straight line
 //  - times each step until the terrain settles: streaming moved to the new chunk, and no chunks
 //      are generating, building sides or meshes
-//  - logs [tst] [metric] lines (step times, flecs tables) to compare runs, i.e. when optimizing
+//  - logs [tst] [metric] lines (step times, flecs tables, and the frames while stepping: frames.c's summary) to
+//      compare runs, i.e. when optimizing
 //      (software rendering in tests, so compare runs on the same machine)
 //  - profiles every frame while stepping: the slowest frames and the systems making them (lag spikes)
 //  - fails if a step never settles (streaming stuck)
@@ -13,6 +14,8 @@ int zox_tst_perf_step = -1;     // -1 waiting for the player to spawn
 double zox_tst_perf_step_time = 0;
 double zox_tst_perf_total = 0;
 double zox_tst_perf_slowest = 0;
+double zox_tst_perf_fastest = 0;
+zox_tst_frames zox_tst_perf_frames;   // every frame from the first step to the last settling
 int zox_tst_perf_settled_frames = 0;
 int zox_tst_perf_step_tables = 0;      // tables when the step began
 int zox_tst_perf_tables_most = 0;      // the most tables one step made
@@ -126,6 +129,9 @@ byte zox_tst_perf_stream_ready(ecs* world) {
         zox_tst_perf_step_time = 0;
     }
     zox_tst_profile_frame(world);
+    if (zox_tst_perf_step_time) {
+        zox_tst_frames_tick(&zox_tst_perf_frames);
+    }
     zox_tst_waiting = "streaming to settle after a step";
     const int busy = zox_tst_perf_busy(world);
     zox_tst_progress(zox_tst_perf_step * 100000.0 + busy);
@@ -187,10 +193,19 @@ byte zox_tst_perf_stream_ready(ecs* world) {
         if (elapsed > zox_tst_perf_slowest) {
             zox_tst_perf_slowest = elapsed;
         }
+        if (!zox_tst_perf_fastest || elapsed < zox_tst_perf_fastest) {
+            zox_tst_perf_fastest = elapsed;
+        }
         zox_tst_perf_step++;
         if (zox_tst_perf_step >= zox_tst_perf_steps) {
+            char label[128];
+            zox_tst_frames_label(label, sizeof(label));
+            zox_log("[tst] [metric] perf_stream %s: steps [%i] settle in seconds average [%.3f] fastest [%.3f] slowest [%.3f]",
+                label, zox_tst_perf_steps, zox_tst_perf_total / zox_tst_perf_steps, zox_tst_perf_fastest, zox_tst_perf_slowest);
             zox_log("[tst] [metric] perf_stream steps [%i] average [%.3fs] slowest [%.3fs] tables [%i]",
                 zox_tst_perf_steps, zox_tst_perf_total / zox_tst_perf_steps, zox_tst_perf_slowest, zox_get_tables_count(world));
+            zox_tst_frames_log(&zox_tst_perf_frames, "perf_stream");
+            zox_tst_frames_dispose(&zox_tst_perf_frames);
             zox_tst_profile_log(world, "perf_stream");
             return 1;
         }
@@ -208,6 +223,9 @@ byte zox_tst_perf_stream_ready(ecs* world) {
     position.x += chunk_length;
     position.y += scale * 2;
     zox_setv(character, Position3D, position);
+    if (!zox_tst_perf_step_time) {
+        zox_tst_frames_begin(&zox_tst_perf_frames);
+    }
     zox_tst_perf_step_time = zox_current_time;
     zox_tst_perf_settled_frames = 0;
     zox_tst_perf_step_tables = zox_get_tables_count(world);

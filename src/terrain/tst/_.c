@@ -12,6 +12,7 @@
 
 #include "lod_chunk_lights.c"
 
+#include "frames.c"
 #include "perf.c"
 #include "lod_swap.c"
 #include "perf_idle.c"

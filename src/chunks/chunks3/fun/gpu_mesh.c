@@ -42,8 +42,6 @@ typedef struct {
     ulong fence;        // after the last mesh, 0 once its count was read (gpu_mesher_counted)
     byte edge_faces;    // faces into a missing chunk, 1: drawn, 0: culled except the top (as cpu sides do with no
                         //  neighbour chunk, build_voxel_sides), 1 by default
-    size_t voxels_size; // bytes the voxels buffer holds
-    size_t lights_size;
     uint vao;           // drawing the vertices and indices, made on the first draw
     uint heights[32];   // a block's height in eighths, 4 bits a block (voxel v at bits (v - 1) * 4), 0 full
     uint drawn[8];      // voxels it draws, bit v - 1 (a chunk material's blocks), all by default
@@ -371,10 +369,8 @@ byte gpu_mesher_create(GpuMesher* mesher, uint max_faces) {
     mesher->edge_faces = 1;
     memset(mesher->drawn, 255, sizeof(mesher->drawn));
     memset(mesher->hides, 255, sizeof(mesher->hides));
-    mesher->voxels_size = sizeof(uint);
-    mesher->lights_size = sizeof(uint);
-    mesher->voxels = zox_gpu_storage_buffer(mesher->voxels_size, &zero);
-    mesher->lights = zox_gpu_storage_buffer(mesher->lights_size, &zero);
+    mesher->voxels = zox_gpu_storage_buffer(sizeof(uint), &zero);
+    mesher->lights = zox_gpu_storage_buffer(sizeof(uint), &zero);
     mesher->command = zox_gpu_storage_buffer(sizeof(zox_gpu_mesh_command_reset), zox_gpu_mesh_command_reset);
     mesher->count = zox_gpu_storage_buffer_read(sizeof(uint), &zox_gpu_mesh_count_reset);
     mesher->vertices = zox_gpu_storage_buffer((size_t) max_faces * 4 * sizeof(float4), NULL);
@@ -445,16 +441,6 @@ static inline void gpu_mesher_set_uvs(GpuMesher* mesher, uint uvs) {
     mesher->textured = uvs != 0;
 }
 
-// writes bytes into a storage buffer, growing it if needed
-static inline void gpu_mesher_upload(uint buffer, size_t* buffer_size, const byte* data, size_t size) {
-    if (size > *buffer_size) {
-        zox_gpu_storage_upload(buffer, size, data);
-        *buffer_size = size;
-    } else {
-        zox_gpu_storage_write(buffer, 0, size, data);
-    }
-}
-
 // a grid's bytes uploaded: (2^depth + 2)^3 rounded up to whole uints (depth 0's 27 is 28), grids are made that big
 static inline size_t gpu_mesh_grid_bytes(byte depth) {
     const size_t length = octree_size(depth) + 2;
@@ -470,10 +456,12 @@ void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, by
     zox_gpu_storage_write(mesher->command, 0, sizeof(zox_gpu_mesh_command_reset), zox_gpu_mesh_command_reset);
     zox_gpu_storage_write(mesher->count, 0, sizeof(uint), &zox_gpu_mesh_count_reset);
     const size_t cells = gpu_mesh_grid_bytes(depth);
-    gpu_mesher_upload(mesher->voxels, &mesher->voxels_size, voxels, cells);
+    // whole new bytes (gl's glBufferData): writing into the buffer an earlier dispatch still reads made vulkan copy its
+    //  old bytes to new memory first (~0.18ms a mesh, two 39KB grids), only to overwrite them
+    zox_gpu_storage_upload(mesher->voxels, cells, voxels);
     const byte lit = lights && lighting;
     if (lit) {
-        gpu_mesher_upload(mesher->lights, &mesher->lights_size, lights, cells);
+        zox_gpu_storage_upload(mesher->lights, cells, lights);
     }
     zox_gpu_compute_use(mesher->program);
     zox_gpu_compute_uniform_int(mesher->program, "depth", depth);
