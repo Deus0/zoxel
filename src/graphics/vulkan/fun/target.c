@@ -87,9 +87,15 @@ VkRenderPass vulkan_create_pass(byte clear) {
 }
 
 // the window's size in pixels, what the surface says unless it leaves it to us
+//  - android gives it in the device's own orientation, turned (currentTransform) when the screen's rotated: the
+//    swapchain is made upright (preTransform identity, the compositor turns it), so a quarter turn swaps its sides
 VkExtent2D vulkan_surface_extent(const VkSurfaceCapabilitiesKHR* capabilities) {
     if (capabilities->currentExtent.width != UINT32_MAX) {
-        return capabilities->currentExtent;
+        VkExtent2D extent = capabilities->currentExtent;
+        if (capabilities->currentTransform & (VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR | VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR)) {
+            extent = (VkExtent2D) { extent.height, extent.width };
+        }
+        return extent;
     }
     VkExtent2D extent = { vk_window_size.x, vk_window_size.y };
     extent.width = int_max(capabilities->minImageExtent.width, int_min(extent.width, capabilities->maxImageExtent.width));
@@ -147,7 +153,9 @@ byte vulkan_create_swapchain() {
         .imageArrayLayers = 1,
         .imageUsage = usage,
         .imageSharingMode = VK_SHARING_MODE_EXCLUSIVE,
-        .preTransform = capabilities.currentTransform,
+        // upright: the compositor turns it for a rotated screen (android); the game draws no turn of its own
+        .preTransform = (capabilities.supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR) ?
+            VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR : capabilities.currentTransform,
         .compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
         .presentMode = vulkan_pick_present_mode(),
         .clipped = VK_TRUE,
@@ -281,6 +289,20 @@ void vulkan_surface_found(VkSurfaceKHR surface) {
 void vulkan_set_vsync(byte value) {
     if (value != vk_vsync) {
         vk_vsync = value;
+        vk_resized = 1;
+    }
+}
+
+// suboptimal (android says it every frame for an upright swapchain on a rotated screen): made again only if the
+// surface's size changed, a rotation or a resize, not every frame
+void vulkan_check_extent() {
+    if (!vk_surface || !vk_swapchain) {
+        return;
+    }
+    VkSurfaceCapabilitiesKHR capabilities;
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vk_physical, vk_surface, &capabilities);
+    const VkExtent2D extent = vulkan_surface_extent(&capabilities);
+    if (extent.width != vk_extent.width || extent.height != vk_extent.height) {
         vk_resized = 1;
     }
 }

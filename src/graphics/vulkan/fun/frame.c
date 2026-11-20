@@ -162,8 +162,10 @@ void vulkan_frame_end() {
             .pImageIndices = &vk_image,
         };
         const VkResult result = vkQueuePresentKHR(vk_queue, &present);
-        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+        if (result == VK_ERROR_OUT_OF_DATE_KHR) {
             vk_resized = 1;
+        } else if (result == VK_SUBOPTIMAL_KHR) {
+            vulkan_check_extent();
         }
     }
     vk_frame = (vk_frame + 1) % vk_frames_max;
