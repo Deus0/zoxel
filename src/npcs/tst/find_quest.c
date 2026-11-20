@@ -1,5 +1,6 @@
 // tst: find_quest, the starting quest: find a town, talk to someone there, 3 cookies (quests/fun/reward.c)
-//  - the player starts with it tracked (it wasn't), the tracker says what to do (it said Find [???])
+//  - the player starts with it tracked (it wasn't), the tracker says what to do (it said Find [???]), a panel behind
+//    its text (play test: none at the start)
 //  - talking (quests_found_town) to a villager outside a town, or to a critter in one, doesn't finish it
 //  - to a villager inside one (wherever the player stands) it's done and handed in, the character has 3 more cookies
 //  - run: bash bsh/tst.sh find_quest
@@ -9,6 +10,9 @@ entity zox_tst_find_quest = 0;
 int zox_tst_find_cookies = 0;
 byte zox_tst_find_outside_done = 0;
 char zox_tst_find_tracker[256];
+entity zox_tst_find_tracker_e = 0;
+byte zox_tst_find_panel = 0;
+int2 zox_tst_find_panel_size;
 
 // the character's find quest (its user quest)
 static inline entity zox_tst_find_user_quest(ecs* world, entity character) {
@@ -87,6 +91,7 @@ byte zox_tst_find_quest_ready(ecs* world) {
         snprintf(zox_tst_find_tracker, sizeof(zox_tst_find_tracker), "%s", text);
         free(text);
         zox_tst_find_cookies = zox_tst_find_count_cookies(world, character);
+        zox_tst_find_tracker_e = tracker;
         zox_tst_find_stage = 1;
         zox_tst_find_frames = 0;
         return 0;
@@ -94,6 +99,19 @@ byte zox_tst_find_quest_ready(ecs* world) {
     if (zox_tst_find_stage == 1) {
         if (zox_tst_find_frames < 3) {
             return 0;
+        }
+        // its panel, a few frames after its text (its mesh)
+        const entity tracker = zox_tst_find_tracker_e;
+        if (zox_valid(tracker)) {
+            zox_tst_find_panel_size = zox_getv(tracker, LayoutSize);
+            // its mesh as big as its size (it stayed at 0x0: a LayoutSizeDirty lost, mcr/dirty.c)
+            const MeshVertices2D* vertices = zox_has(tracker, MeshVertices2D) ? zox_get(tracker, MeshVertices2D) : NULL;
+            float width = 0;
+            for (int k = 0; vertices && k < vertices->length; k++) {
+                width = fmaxf(width, fabsf(vertices->value[k].x - vertices->value[0].x));
+            }
+            zox_tst_find_panel = !zox_getv(tracker, RenderDisabled) && zox_getv(tracker, MeshGPULink).x &&
+                zox_tst_find_panel_size.x > 0 && zox_tst_find_panel_size.y > 0 && width > 0;
         }
         // a stand in npc: a villager far from every town, then a critter (no Villager) at a town's middle
         const entity terrain = zox_get_link(world, character, TerrainLink);
@@ -133,6 +151,8 @@ void zox_tst_find_quest_check(ecs* world) {
     }
     zox_log("[tst] find quest tracker: %s", zox_tst_find_tracker);
     zox_tst_check(!strstr(zox_tst_find_tracker, "???"), "the tracker shows [%s]", zox_tst_find_tracker);
+    zox_tst_check(zox_tst_find_panel, "the tracker's text has no panel behind it at the start, size [%ix%i]",
+        zox_tst_find_panel_size.x, zox_tst_find_panel_size.y);
     zox_tst_check(!zox_tst_find_outside_done, "talking to a villager outside a town, or a critter in one, finished it");
     zox_tst_check(zox_has(zox_tst_find_quest, QuestDone) && zox_has(zox_tst_find_quest, QuestHandedin),
         "talking to a villager in a town didn't finish and hand it in");

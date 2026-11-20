@@ -26,6 +26,8 @@ void T##_update_system(iter* it) { \
     } \
 } zoxd_system(T##_update_system)
 
+// Update stays a frame more on one dirtied again (both run in zoxp_remove: removing Update undid adding it,
+//  the second change was lost, i.e. a quest tracker's panel stayed 0x0, tst find_quest)
 #define zoxd_system_dirty(T) \
     zox_system(\
         T##_dirty_system,\
@@ -35,5 +37,6 @@ void T##_update_system(iter* it) { \
     zox_system(\
         T##_update_system,\
         zoxp_remove,\
-        [none] T##Update\
+        [none] T##Update,\
+        [none] !T##Dirty\
     )
