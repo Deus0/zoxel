@@ -220,6 +220,36 @@ static inline void zox_gpu_finish() {
     glFinish();
 }
 
+// a fence after everything sent so far: zox_gpu_fence_done says when the gpu passed it, without waiting
+static inline ulong zox_gpu_fence() {
+#ifndef zox_disable_compute
+    return (ulong) (uintptr_t) glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+#else
+    return 0;
+#endif
+}
+
+// has the gpu passed the fence (it never waits), reads of what came before it won't stall then
+static inline byte zox_gpu_fence_done(ulong fence) {
+#ifndef zox_disable_compute
+    const GLenum state = glClientWaitSync((GLsync) (uintptr_t) fence, GL_SYNC_FLUSH_COMMANDS_BIT, 0);
+    return state == GL_ALREADY_SIGNALED || state == GL_CONDITION_SATISFIED;
+#else
+    (void) fence;
+    return 1;
+#endif
+}
+
+static inline void zox_gpu_fence_dispose(ulong fence) {
+#ifndef zox_disable_compute
+    if (fence) {
+        glDeleteSync((GLsync) (uintptr_t) fence);
+    }
+#else
+    (void) fence;
+#endif
+}
+
 // # Drawing what a compute pass wrote: storage buffers as vertex and index buffers, an indirect draw command
 //  - no copy back to the cpu, the gpu reads its own index count (glDrawElementsIndirect, ES 3.1+ / GL 4.3+)
 

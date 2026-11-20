@@ -41,8 +41,13 @@ Tests: [src/chunks/chunks3/tst/gpu_mesh.c](../../src/chunks/chunks3/tst/gpu_mesh
    - `gpu_mesh_light_vertex`: each corner's light blended across the face's two triangles, as cpu meshes are lit
    - `gpu_mesh_light_pixel`: the 4 corner lights blended bilinearly across the whole face
 
-- Buffers are sized for `cells × 3` faces, the most a chunk can have (checkers: half its voxels showing all 6), so a
-  mesh can't overflow.
+- **Sizing by a guess** (2026-11-20): every face is counted (`faces_wanted`, a uint after the draw command), only the
+  first `max_faces` are written and drawn, so a mesher too small never draws garbage. A fence after each mesh
+  (`zox_gpu_fence`: a sync object on gl, the submission's serial on vulkan) lets `gpu_mesher_counted` read the count
+  without waiting, a frame later on gl, ~3 on vulkan; over `max_faces`, `gpu_mesher_grow` makes room for it and a
+  quarter more, and it meshes again. The guess for a mesh is its last count; an edit changes few faces, so it nearly
+  always fits and draws the frame it's meshed. Chosen over counting first (two passes and a frame before every mesh
+  shows). `cells × 3` faces can't overflow (checkers: half its voxels showing all 6), the tests size for it.
 - Needs compute: OpenGL ES 3.1+ or OpenGL 4.3+. The game asks for ES 3.0, but drivers give their newest (llvmpipe
   gives ES 3.2, the Khadas' Mali too). `zox_gpu_compute_supported()` checks at runtime, and `zox_gles2`/web builds
   compile it out (`zox_disable_compute`): `gpu_mesher_create` returns 0 and cpu meshing stays.
@@ -53,6 +58,8 @@ Tests: [src/chunks/chunks3/tst/gpu_mesh.c](../../src/chunks/chunks3/tst/gpu_mesh
   against a voxel-by-voxel reference that looks into the neighbours, every corner light against `smooth_face_lights`
   over the 27; again with three missing (faces into them culled but the top). Fails when the shader ignores its
   neighbours (tried).
+- `gpu_mesh_grow`: a mesher with room for 16 faces meshes a terrain chunk: its draw has only those 16, the count comes
+  back frames later without waiting and is the reference's, it grows, meshes again and has every face.
 - `octree_flatten`: 7 shapes (empty, one voxel, solid, sphere, noise, checkers, terrain hills) at depth 5, every voxel
   of the flat array reads back as the octree does, at depth 5, 4 and 3.
 - `gpu_mesh`: the same shapes meshed on the gpu at depth 5, 4 and 3, against a voxel-by-voxel reference: the same face
@@ -177,9 +184,8 @@ Each step behind `zox_chunks3_gpu_meshing` and `zox_gpu_compute_supported()`, th
 2. **Batching.** Many dirty chunks in one dispatch: one big nodes buffer with an offset per chunk, one command per
    chunk (`glMultiDrawElementsIndirect` on GL, a loop of indirect draws on ES). "Per terrain" would be this, the
    meshes stay per chunk.
-3. **Memory.** `cells × 3` faces is ~6MB of vertices a 32³ chunk, too much for a terrain. Pack a vertex into one or two
-   `uint`s (position 5+5+5 bits, direction, voxel, light, side) and build corners in the vertex shader, or count first
-   then allocate (a count pass, a prefix sum, a write pass) into one shared buffer.
+3. **Memory.** Sized to the mesh's faces (done, `gpu_mesh_grow`). Later, smaller: pack a face into a few `uint`s
+   (position 5+5+5 bits, direction, voxel, lights) and build corners in the vertex shader (memory only, not speed).
 4. **Textures.** Pass the tilemap's uvs as a uniform or buffer, the vertex shader picks them by voxel and direction,
    drawn with the terrain's textured shader (and its pixel light blend).
 5. **LODs and the swap.** Mesh at the chunk's `RenderDepth` (the depth uniform, light reads are already coarse maxes).

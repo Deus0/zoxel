@@ -156,6 +156,20 @@ static inline void zox_gpu_storage_bind(guint binding, guint buffer) {
     }
 }
 
+// a fence after what's recorded so far: its submission's serial (gl's glFenceSync)
+static inline ulong zox_gpu_fence() {
+    return vk_serial_recording();
+}
+
+// has the gpu passed the fence (it never waits), reads of what came before it won't stall then
+static inline byte zox_gpu_fence_done(ulong fence) {
+    return !vk_busy(fence);
+}
+
+static inline void zox_gpu_fence_dispose(ulong fence) {
+    (void) fence;
+}
+
 // what the gpu wrote (waits for it, as gl's read does), 1 if it could
 static inline byte zox_gpu_storage_read(guint id, size_t offset, size_t size, void* out) {
     vk_buffer* buffer = vk_buffer_of(id);

@@ -290,7 +290,72 @@ void zox_tst_gpu_mesh_check(ecs* world) {
     gpu_mesher_dispose(&mesher);
 }
 
+// # gpu_mesh_grow
+
+// a mesher sized by a guess too small: the mesh draws only what it wrote, its count comes back frames later without
+//  waiting (a fence), the mesher grows to it and the mesh again has every face
+#define zox_tst_gpu_grow_guess 16
+GpuMesher zox_tst_gpu_grow_mesher;
+VoxelNode zox_tst_gpu_grow_voxels;
+byte zox_tst_gpu_grow_stage = 0;
+int zox_tst_gpu_grow_frames = 0;
+uint zox_tst_gpu_grow_wanted = 0;
+
+byte zox_tst_gpu_grow_ready(ecs* world) {
+    (void) world;
+    zox_tst_progress(zox_tst_gpu_grow_stage * 1000 + zox_tst_gpu_grow_frames);
+    if (zox_tst_gpu_grow_stage == 0) {
+        zox_tst_waiting = "a compute capable gl context (OpenGL ES 3.1+ or OpenGL 4.3+)";
+        if (!zox_gpu_compute_supported()) {
+            return 0;
+        }
+        zox_tst_check(gpu_mesher_create(&zox_tst_gpu_grow_mesher, zox_tst_gpu_grow_guess), "the gpu mesher couldn't be made");
+        if (!zox_tst_gpu_grow_mesher.program) {
+            return 1;
+        }
+        zox_tst_gpu_fill(&zox_tst_gpu_grow_voxels, 5, 6);
+        gpu_mesh_VoxelNode(&zox_tst_gpu_grow_mesher, &zox_tst_gpu_grow_voxels, 5);
+        zox_tst_gpu_grow_stage = 1;
+        return 0;
+    }
+    zox_tst_waiting = "the mesh's face count back from the gpu";
+    zox_tst_gpu_grow_frames++;
+    return gpu_mesher_counted(&zox_tst_gpu_grow_mesher, &zox_tst_gpu_grow_wanted);
+}
+
+void zox_tst_gpu_grow_check(ecs* world) {
+    (void) world;
+    GpuMesher* mesher = &zox_tst_gpu_grow_mesher;
+    if (!mesher->program) {
+        return;
+    }
+    const byte depth = 5;
+    const int length = octree_size(depth);
+    byte* expected = calloc(length * length * length * 6, 1);
+    const int reference = zox_tst_gpu_reference(&zox_tst_gpu_grow_voxels, depth, expected);
+    free(expected);
+    zox_tst_check(zox_tst_gpu_grow_wanted == (uint) reference, "the count [%u] isn't the reference's [%i] faces",
+        zox_tst_gpu_grow_wanted, reference);
+    // only what fit was written, and only that is drawn
+    uint indices = 0;
+    zox_gpu_storage_read(mesher->command, 0, sizeof(uint), &indices);
+    zox_tst_check(indices == zox_tst_gpu_grow_guess * 6, "the draw has [%u] indices, [%i] faces fit",
+        indices, zox_tst_gpu_grow_guess);
+    uint again = 0;
+    zox_tst_check(!gpu_mesher_counted(mesher, &again), "a mesh's count read twice");
+    zox_tst_check(gpu_mesher_grow(mesher, zox_tst_gpu_grow_wanted) && mesher->max_faces >= zox_tst_gpu_grow_wanted,
+        "the mesher didn't grow to [%u] faces (room for [%u])", zox_tst_gpu_grow_wanted, mesher->max_faces);
+    zox_tst_check(!gpu_mesher_grow(mesher, zox_tst_gpu_grow_wanted), "the mesher grew when the faces fit");
+    // meshed again, every face (zox_tst_gpu_compare meshes and waits)
+    zox_tst_gpu_compare(mesher, &zox_tst_gpu_grow_voxels, depth, "grown");
+    zox_log("[tst] [metric] gpu_mesh_grow: [%u] faces counted [%i] frames after the mesh, room for [%i] grew to [%u]",
+        zox_tst_gpu_grow_wanted, zox_tst_gpu_grow_frames, zox_tst_gpu_grow_guess, mesher->max_faces);
+    collapse_VoxelNode(&zox_tst_gpu_grow_voxels);
+    gpu_mesher_dispose(mesher);
+}
+
 void zox_tsts_chunks3_gpu_mesh() {
     zox_tst_add("octree_flatten", zox_tst_octree_flatten_ready, zox_tst_octree_flatten_check, 30);
     zox_tst_add("gpu_mesh", zox_tst_gpu_mesh_ready, zox_tst_gpu_mesh_check, 60);
+    zox_tst_add("gpu_mesh_grow", zox_tst_gpu_grow_ready, zox_tst_gpu_grow_check, 60);
 }
