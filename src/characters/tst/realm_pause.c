@@ -14,6 +14,9 @@ float3 zox_tst_rp_npc_at[zox_tst_rp_npcs_max];
 int zox_tst_rp_npcs_count = 0;
 float zox_tst_rp_npc_moved = -1;    // the most an npc moved paused
 
+extern char zox_screenshot_request[256];
+#define zox_tst_rp_bright_min 40      // black was 20 to 25 (grain, the hud), the world 55 to 72
+byte zox_tst_rp_rotation_ok = 0;     // its rotation a number after (dt 0 made it NaN: a black screen)
 float zox_tst_rp_scale = -1, zox_tst_rp_terrain_delta = -1, zox_tst_rp_delta = -1, zox_tst_rp_moved = -1, zox_tst_rp_fell = -1;
 
 byte zox_tst_realm_pause_ready(ecs* world) {
@@ -88,7 +91,18 @@ byte zox_tst_realm_pause_ready(ecs* world) {
                 return 0;
             }
             zox_tst_rp_fell = zox_tst_rp_at.y - zox_getv(character, Position3D).y;
-            return 1;
+            {
+                const float4 r = zox_getv(character, Rotation3D);
+                zox_tst_rp_rotation_ok = isfinite(r.x) && isfinite(r.y) && isfinite(r.z) && isfinite(r.w);
+            }
+            // what's drawn: the world, not black
+            snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("realm_pause.ppm"));
+            zox_tst_rp_stage = 4;
+            zox_tst_rp_time = zox_current_time;
+            return 0;
+        case 4:
+            zox_tst_waiting = "the screenshot after resuming";
+            return t > 0.5;
     }
     return 1;
 }
@@ -104,6 +118,25 @@ void zox_tst_realm_pause_check(ecs* world) {
     zox_log("[tst] realm_pause: [%i] npcs, the most one moved paused [%.4f]", zox_tst_rp_npcs_count, zox_tst_rp_npc_moved);
     zox_tst_check(zox_tst_rp_npc_moved < 0.001f, "paused, an npc moved [%.4f]", zox_tst_rp_npc_moved);
     zox_tst_check(zox_tst_rp_fell > 0.01f, "resumed, the character didn't fall [%.3f]", zox_tst_rp_fell);
+    zox_tst_check(zox_tst_rp_rotation_ok, "resumed, the character's rotation isn't a number (NaN)");
+    // the middle half of the screen after resuming: its average brightness (the world was black, the hud drawn)
+    int2 size;
+    byte* pixels = zox_tst_load_ppm(zox_tst_path("realm_pause.ppm"), &size);
+    zox_tst_check(pixels != NULL, "no screenshot after resuming");
+    if (pixels) {
+        double sum = 0;
+        int count = 0;
+        for (int y = size.y / 4; y < size.y * 3 / 4; y++)
+        for (int x = size.x / 4; x < size.x * 3 / 4; x++) {
+            const byte* p = zox_tst_ppm_pixel(pixels, size, x, y);
+            sum += (p[0] + p[1] + p[2]) / 3.0;
+            count++;
+        }
+        const double brightness = count ? sum / count : 0;
+        zox_log("[tst] [metric] realm_pause: the screen's middle after resuming [%.1f] bright", brightness);
+        zox_tst_check(brightness > zox_tst_rp_bright_min, "resumed, the screen's middle is black [%.1f]", brightness);
+        free(pixels);
+    }
 }
 
 void zox_tsts_realm_pause(ecs* world) {

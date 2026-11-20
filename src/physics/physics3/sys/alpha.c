@@ -8,7 +8,8 @@
 // turns a rotation by a body frame rotation vector (axis * angle)
 static inline void physics3_turn(float4* rotation, const float3 turn, const float dt) {
     const float angle = float3_length(turn);
-    if (angle < 1e-6f * dt) {
+    // <=: paused, dt is 0 and so is the turn, 0 < 0 went on to divide by it (NaN rotations, a black screen)
+    if (angle <= 1e-6f * dt) {
         return; // no rotation this frame
     }
     quaternion_rotate_quaternion_p(rotation, quaternion_from_axis_angle(float3_scale(turn, 1.0f / angle), angle));
