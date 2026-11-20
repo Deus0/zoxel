@@ -67,34 +67,31 @@ void vulkan_texture_data(guint id, int2 size, const byte* rgba) {
         texture->used = 0;
     }
     const VkDeviceSize bytes = (VkDeviceSize) size.x * size.y * 4;
-    VkBuffer staging;
-    VkDeviceMemory staging_memory;
-    if (!vulkan_create_host_buffer(bytes, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, &staging, &staging_memory)) {
+    const vk_allocation staging = vulkan_slab_allocate(bytes);
+    if (!staging.handle) {
         return;
     }
-    byte* mapped;
-    vkMapMemory(vk_device, staging_memory, 0, VK_WHOLE_SIZE, 0, (void**) &mapped);
     if (rgba) {
-        memcpy(mapped, rgba, bytes);
+        memcpy(staging.mapped, rgba, bytes);
     } else {
-        memset(mapped, 0, bytes);
+        memset(staging.mapped, 0, bytes);
     }
-    vkUnmapMemory(vk_device, staging_memory);
     const VkCommandBuffer commands = vulkan_upload_commands();
     vulkan_image_barrier(commands, texture->image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
         VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_TRANSFER_WRITE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
         VK_PIPELINE_STAGE_TRANSFER_BIT);
     const VkBufferImageCopy copy = {
+        .bufferOffset = staging.offset,
         .imageSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 },
         .imageExtent = { size.x, size.y, 1 },
     };
-    vkCmdCopyBufferToImage(commands, staging, texture->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copy);
+    vkCmdCopyBufferToImage(commands, staging.buffer, texture->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copy);
     vulkan_image_barrier(commands, texture->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
         VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
         VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
     // the image and staging buffer are read by the submission that copies them
     texture->used = vk_serial_recording();
-    vulkan_garbage_add((vk_garbage_item) { .buffer = staging, .memory = staging_memory, .serial = vk_serial_recording() });
+    vulkan_garbage_add((vk_garbage_item) { .allocation = staging.handle, .serial = vk_serial_recording() });
 }
 
 static inline void zox_gpu_set_texture_color_rgba(guint id, int2 size, const void* ptr) {

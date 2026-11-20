@@ -1,9 +1,10 @@
 // What the gl style calls make: buffers, textures, shaders and programs, each in a table, an id its index (0 none)
 
-// a buffer, host visible and mapped (on integrated gpus that's device memory too)
+// a buffer: a slab's slot (fun/slabs.c), host visible and mapped (on integrated gpus that's device memory too)
 typedef struct {
-    VkBuffer buffer;
-    VkDeviceMemory memory;
+    VkBuffer buffer;            // the slab block's, the buffer's data from offset
+    VkDeviceSize offset;
+    uint allocation;            // the slot's handle
     byte* mapped;
     VkDeviceSize size;          // bytes written by the last upload
     VkDeviceSize capacity;
@@ -122,7 +123,7 @@ typedef struct {
     int pipelines_count;
     VkDescriptorSet set;        // the last set made this frame, reused while it matches
     ulong set_epoch;
-    uint set_texture;
+    VkImageView set_view;       // a texture written again gets a new image, so its view, not its id
     VkBuffer set_buffers[vk_slots_max];
     byte live;
 } vk_program;

@@ -48,6 +48,8 @@ the backend under it changes. Code: [src/graphics/vulkan](../../src/graphics/vul
 ## How the state tracker works (fun/)
 
 - **Tables** (`table.c`): buffers, textures, shaders, programs; a gl style id is an index, freed ones reused.
+- **Slabs** (`slabs.c`): a buffer is a slot in a 4MB block of its power of two size class (bigger ones a block
+  each), so uploads don't allocate gpu memory; draws bind the block at the slot's offset.
 - **Serials** (`garbage.c`): each submission is numbered, a resource keeps the last one that read it. Written while
   a submission still reads it, it gets new memory (gl's orphaning) and the old is destroyed when that one is done.
 - **The ring** (`ring.c`): per frame in flight, host memory for each draw's uniforms (a stage's default block,
@@ -60,7 +62,7 @@ the backend under it changes. Code: [src/graphics/vulkan](../../src/graphics/vul
   1, named blocks and samplers 2 up by name). A uniform's gl location is its index, written into each stage's block.
 - **Draws** (`draw.c`): the state (program, each input's format, stride and rate, topology, blend, depth, cull,
   colour write, bias) is a key; each program keeps its pipelines by key. A descriptor set is reused while its ring
-  buffers and texture match. Inputs with no attribute read a zero buffer.
+  buffers and texture's image view match (a texture written again gets a new image, its id stays). Inputs with no attribute read a zero buffer.
 - **Textures** (`textures.c`): rgba (rgb widened), copied in the frame's upload commands, submitted before it.
 - Vsync off picks mailbox, else immediate (`vulkan_set_vsync`, from the app's setting).
 
@@ -68,16 +70,17 @@ the backend under it changes. Code: [src/graphics/vulkan](../../src/graphics/vul
 
 | | opengl | vulkan |
 |---|---|---|
-| tiny terrain, 3 runs | 431, 437, 456 fps | 413, 409, 397 fps |
-| far 8 | 417, 339 fps | 396, 390 fps |
+| far 3 | 431, 437, 456, 374 fps | 413, 409, 397, 349 fps |
+| far 32, before slabs | 249, 255 fps (1344 chunks drawn) | 236, 239 fps (1344 chunks) |
+| far 32, slabs | 211 fps (1344 chunks) | 226 fps (2291 chunks, 331 instances) |
 
-Even: rendering is about a quarter of the main thread on both (sampled, `ZOX_SAMPLE`: gl's render systems 13% and
-its swap 10%; vulkan's 18% and its present 3%), the rest is the game's systems. Vulkan's win needs the renderer to
-be the bottleneck, and the tracker to do less a draw (`vulkan_draw_begin` is 8%): ways on, in order of payoff:
-- record draws on worker threads (secondary command buffers per camera or per system), gl can't
-- device local buffers with staging for meshes (all are host visible now, fine on an integrated gpu, slow on a
-  discrete one), one allocation for many buffers (each has its own now)
-- keep a draw's key and pipeline while its state doesn't change, push constants for the per draw matrix
+- Even: rendering is about a quarter of the main thread on both (sampled, `ZOX_SAMPLE`), the rest is the game's
+  systems; at far 32 a frame is ~4ms for ~1300 chunk draws.
+- The same seed doesn't always make the same scene (the last far 32 pair drew different chunk counts), so compare
+  runs by their chunks and instances drawn too.
+- Slabs (`slabs.c`): mesh uploads used a `vkAllocateMemory` each, 29% of the main thread while far terrain streamed.
+- Next, in order (the user, 2026-11-20): recording draws on worker threads, then the rest of the parts, then gpu
+  meshing. Device local buffers for discrete gpus with it.
 
 ## Running
 

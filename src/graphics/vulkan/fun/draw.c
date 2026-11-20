@@ -161,15 +161,13 @@ byte vulkan_bind_descriptors(vk_program* program, VkCommandBuffer commands) {
         bindings[count++] = block->binding;
     }
     vk_texture* texture = vk_texture_of(vk_texture_bound);
-    uint texture_id = vk_texture_bound;
     if (!texture || !texture->image) {
         texture = vk_texture_of(vk_texture_black);
-        texture_id = vk_texture_black;
     }
     if (program->samplers_count) {
         texture->used = vk_serial_recording();
     }
-    byte reuse = program->set && program->set_epoch == vk_ring_epoch && program->set_texture == texture_id;
+    byte reuse = program->set && program->set_epoch == vk_ring_epoch && program->set_view == texture->view;
     for (int i = 0; reuse && i < count; i++) {
         reuse = program->set_buffers[i] == buffers[i];
     }
@@ -198,7 +196,7 @@ byte vulkan_bind_descriptors(vk_program* program, VkCommandBuffer commands) {
         }
         vkUpdateDescriptorSets(vk_device, writes_count, writes, 0, NULL);
         program->set_epoch = vk_ring_epoch;
-        program->set_texture = texture_id;
+        program->set_view = texture->view;
     }
     vkCmdBindDescriptorSets(commands, VK_PIPELINE_BIND_POINT_GRAPHICS, program->layout, 0, 1, &program->set,
         count, offsets);
@@ -247,7 +245,7 @@ byte vulkan_draw_begin(byte topology, uint vertices, uint instances) {
             }
             buffer->used = serial;
             buffers[i] = buffer->buffer;
-            offsets[i] = (VkDeviceSize) (size_t) attribute->pointer;
+            offsets[i] = buffer->offset + (VkDeviceSize) (size_t) attribute->pointer;
         } else {
             // client memory: what this draw reads of it, copied now
             const uint count = attribute->divisor ? instances : vertices;
@@ -287,7 +285,7 @@ void vulkan_draw_indexed(byte topology, uint indices, uint instances) {
     }
     const VkCommandBuffer commands = vk_commands[vk_frame];
     elements->used = vk_serial_recording();
-    vkCmdBindIndexBuffer(commands, elements->buffer, 0, VK_INDEX_TYPE_UINT32);
+    vkCmdBindIndexBuffer(commands, elements->buffer, elements->offset, VK_INDEX_TYPE_UINT32);
     vkCmdDrawIndexed(commands, indices, instances, 0, 0, 0);
 }
 

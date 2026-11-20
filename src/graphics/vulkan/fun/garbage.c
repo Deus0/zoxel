@@ -5,6 +5,7 @@ typedef struct {
     VkImage image;
     VkImageView view;
     VkDeviceMemory memory;
+    uint allocation;            // a slab slot
     ulong serial;
 } vk_garbage_item;
 
@@ -26,6 +27,7 @@ void vulkan_destroy(vk_garbage_item item) {
     vkDestroyImage(vk_device, item.image, NULL);
     vkDestroyBuffer(vk_device, item.buffer, NULL);
     vkFreeMemory(vk_device, item.memory, NULL);
+    vulkan_slab_free(item.allocation);
 }
 
 // destroyed now if nothing reads it, else after serial is done

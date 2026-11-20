@@ -1,6 +1,7 @@
 #include "instance.c"
 #include "device.c"
 #include "table.c"
+#include "slabs.c"
 #include "garbage.c"
 #include "ring.c"
 #include "target.c"

@@ -14,11 +14,12 @@ static inline guint2 spawn_gpu_mesh_buffers() {
 }
 
 void vulkan_buffer_release(vk_buffer* buffer) {
-    if (buffer->buffer) {
-        vulkan_garbage_add((vk_garbage_item) { .buffer = buffer->buffer, .memory = buffer->memory, .serial = buffer->used });
+    if (buffer->allocation) {
+        vulkan_garbage_add((vk_garbage_item) { .allocation = buffer->allocation, .serial = buffer->used });
     }
     buffer->buffer = VK_NULL_HANDLE;
-    buffer->memory = VK_NULL_HANDLE;
+    buffer->allocation = 0;
+    buffer->offset = 0;
     buffer->mapped = NULL;
     buffer->capacity = 0;
 }
@@ -41,25 +42,20 @@ byte vulkan_buffer_reserve(vk_buffer* buffer, VkDeviceSize bytes, byte keep) {
     if (buffer->buffer && bytes <= buffer->capacity && !vk_busy(buffer->used)) {
         return 1;
     }
-    VkBuffer handle;
-    VkDeviceMemory memory;
     // a little over: R8G8B8 colors read as R8G8B8A8 on gpus without it read a byte past the last
-    const VkDeviceSize capacity = (bytes > buffer->capacity ? bytes : buffer->capacity) + 16;
-    if (!vulkan_create_host_buffer(capacity, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-        &handle, &memory))
-    {
+    const vk_allocation allocation = vulkan_slab_allocate((bytes > buffer->capacity ? bytes : buffer->capacity) + 16);
+    if (!allocation.handle) {
         return 0;
     }
-    byte* mapped;
-    vkMapMemory(vk_device, memory, 0, VK_WHOLE_SIZE, 0, (void**) &mapped);
     if (keep && buffer->mapped) {
-        memcpy(mapped, buffer->mapped, buffer->size);
+        memcpy(allocation.mapped, buffer->mapped, buffer->size);
     }
     vulkan_buffer_release(buffer);
-    buffer->buffer = handle;
-    buffer->memory = memory;
-    buffer->mapped = mapped;
-    buffer->capacity = capacity;
+    buffer->buffer = allocation.buffer;
+    buffer->offset = allocation.offset;
+    buffer->allocation = allocation.handle;
+    buffer->mapped = allocation.mapped;
+    buffer->capacity = allocation.size - 16;
     buffer->used = 0;
     return 1;
 }

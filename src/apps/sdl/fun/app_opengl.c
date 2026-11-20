@@ -30,6 +30,10 @@ entity spawn_app_sdl_opengl(
         return 0;
     }
     zox_setv(e, Context, context);
+    // software rendering (tests' llvmpipe) or a gpu: read once there's a context to ask
+    const char* renderer = (const char*) glGetString(GL_RENDERER);
+    using_gpu = renderer && !strstr(renderer, "llvmpipe") && !strstr(renderer, "softpipe")
+        && !strstr(renderer, "Software Rasterizer") && !strstr(renderer, "SwiftShader");
     // background runs are tests, log which driver they rendered on
     if (!is_verbose && !background) {
         return e;

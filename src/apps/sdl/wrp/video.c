@@ -19,30 +19,6 @@ int initialize_video() {
         return EXIT_FAILURE;
     }
     set_sdl_attributes();
-    // NOTE: Detects software rendering
-    /*const char* renderer = (const char*) glGetString(GL_RENDERER);
-    // const char* renderer = SDL_GetCurrentVideoDriver();
-    using_gpu =
-        renderer &&
-        !strstr(renderer, "llvmpipe") &&
-        !strstr(renderer, "softpipe") &&
-        !strstr(renderer, "Software Rasterizer") &&
-        !strstr(renderer, "SwiftShader");*/
-    // NOTE: Detects software rendering
-#if defined(zox_web) || defined(zox_vulkan)
-    using_gpu = 1;  // vulkan: set by its device (spawn_vulkan_on_window)
-#else
-    const char* renderer = (const char*) glGetString(GL_RENDERER);
-    using_gpu =
-        renderer &&
-        !strstr(renderer, "llvmpipe") &&
-        !strstr(renderer, "softpipe") &&
-        !strstr(renderer, "Software Rasterizer") &&
-        !strstr(renderer, "SwiftShader");
-    zox_logv("[SDL_INIT_VIDEO] GPU [%i] Renderer [%s]",
-        using_gpu,
-        renderer);
-#endif
     print_sdl();
     screens_count = zox_sdl_get_num_displays();
     if (screens_count == 1) {
