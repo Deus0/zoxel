@@ -316,6 +316,8 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("item_split", zox_tst_item_split_ready, zox_tst_item_split_check, 90);
     zox_tst_add("resume_no_punch", zox_tst_resume_no_punch_ready, zox_tst_resume_no_punch_check, 90);
     zox_tst_add("touch_play", zox_tst_touch_play_ready, zox_tst_touch_play_check, 120);
+    // the test level: no towns, it spawned at its home facing a wall now and then (walked [0.35])
+    zox_tst_set_setup("touch_play", zox_tst_level_setup, 0);
     zox_tst_add("touch_actions", zox_tst_touch_actions_ready, zox_tst_touch_actions_check, 90);
     zox_tst_add("tooltip_flick", zox_tst_tooltip_flick_ready, zox_tst_tooltip_flick_check, 90);
 }

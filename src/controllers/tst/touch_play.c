@@ -10,6 +10,7 @@ int zox_tst_tp_frames = 0;
 entity zox_tst_tp_joystick = 0;     // the first finger's virtual joystick zevice
 float3 zox_tst_tp_start;
 float zox_tst_tp_yaw = 0;
+double zox_tst_tp_walk_time = 0;
 byte zox_tst_tp_touch_mode = 0, zox_tst_tp_touch_ui = 0, zox_tst_tp_spawned = 0;
 float2 zox_tst_tp_stick;
 float zox_tst_tp_walked = 0, zox_tst_tp_turned = 0;
@@ -72,6 +73,7 @@ byte zox_tst_touch_play_ready(ecs* world) {
         }
         zox_tst_tp_spawned = zox_valid(zox_tst_tp_joystick) && zox_valid(zox_get_link(world, zox_tst_tp_joystick, ElementLink));
         zox_tst_tp_start = zox_getv(character, Position3D);
+        zox_tst_tp_walk_time = zox_current_time;
         zox_tst_tp_next(3);
     }
     if (zox_tst_tp_stage == 3) {
@@ -81,7 +83,8 @@ byte zox_tst_touch_play_ready(ecs* world) {
         if (zox_tst_tp_frames == 5 && zox_valid(zox_tst_tp_joystick)) {
             zox_tst_tp_stick = zox_getv(zox_tst_tp_joystick, ZeviceStick);
         }
-        if (zox_tst_tp_frames < 60) {
+        // held two seconds (not frames: the test level's fps is a few times the world's)
+        if (zox_current_time - zox_tst_tp_walk_time < 2.0) {
             return 0;
         }
         const float3 at = zox_getv(character, Position3D);
