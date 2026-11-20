@@ -253,7 +253,6 @@ fi
 if [[ ${graphics_lib} == "vulkan" ]]; then
     echo "+ Added [zox_vulkan]"
     dflags+=" -Dzox_vulkan"
-    libs+=" -lvulkan -lshaderc_shared"
 fi
 
 if [[ ${window_lib} == "sdl" ]]; then
@@ -310,6 +309,15 @@ if [[ ${graphics_lib} == "opengl" ]]; then
         fi
     else
         libs+=" -lEGL -lGLESv2"
+    fi
+fi
+
+# vulkan: the loader and shaderc (shaders compiled at load, doc/plans/vulkan.md); windows' loader is vulkan-1
+if [[ ${graphics_lib} == "vulkan" ]]; then
+    if [[ ${os} == "windows" ]]; then
+        libs+=" -lvulkan-1 -lshaderc_shared"
+    else
+        libs+=" -lvulkan -lshaderc_shared"
     fi
 fi
 
