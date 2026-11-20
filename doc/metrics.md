@@ -67,6 +67,19 @@ How to read them: [tests.md](tests.md) "Reading the perf numbers". Diffs: `bash 
 | `terrain_meshing_view` diff, cpu against gpu | opengl 0.051 | vulkan 0.034 |
 |---|---|---|
 
+**Vulkan, repeated runs** (76c5f2b3f: its spawn arrow's particles still alive during perf_idle, both lower than
+above for that). Single runs swung up to ~10%: the far 8 -9%, its 14ms frame and far 32's -10% above were noise.
+
+| vulkan | cpu meshing | gpu meshing |
+|---|---|---|
+| idle far 8: fps average (3 runs) | 324, 319, 337 | 320, 327, 329 |
+| idle far 8: 1% low, slowest frame | 234-248, 5.1-7.6ms | 226-261, 4.9-5.9ms |
+| idle far 32, vertical 4: fps average (2 runs) | 271, 275 | 272, 265 |
+| idle far 32: 1% low, frame ms median | 197-211, 3.62-3.68 | 202-215, 3.67-3.76 |
+| streaming far 32: a step settles (2 runs) | 2.02s, 1.98s | **1.76s, 1.74s** (-12%) |
+| streaming far 32: fps average, 1% low | 48.5-49.3, 31.2-31.8 | 48.5-49.1, 32.0-32.2 |
+| streaming far 32: frames under 30 fps | 0, 0 | 0, 0 |
+
 - Streaming: gpu meshing now matches cpu on both backends at far 8, and at far 32 opengl's settles 14% sooner with
   fewer slow frames (5 under 30 fps against 30); vulkan's about matches.
 - Idle: gpu meshes draw 3-13% slower (a face per voxel: more triangles than the cpu's merged quads, merging is
