@@ -298,6 +298,14 @@ void player_begin_system(iter* it) {
             world,
             spawn_position,
             (float3) { 0, 1, 0}, 0.2f, 6, 30);
+        // particles up the arrow, as long as it lives: to see them on a new device at a glance (their size, their
+        //  colour, see through), a colour each
+        const color arrow_colors[4] = { { 255, 60, 60, 255 }, { 60, 255, 60, 255 }, { 60, 120, 255, 255 }, { 255, 255, 255, 255 } };
+        for (byte j = 0; j < 4; j++) {
+            const float3 at = float3_add(spawn_position, (float3) { 0, 0.25f + j * 0.25f, 0 });
+            const entity emitter = spawn_particle3D_emitter_at(world, at, 30, (float3) { 0.15f, 0.05f, 0.15f }, arrow_colors[j]);
+            zox_set(emitter, DestroyInTime, { 30 });
+        }
         // Needs ui spawn after frame
         play_realm_music(world, realm);
         entity mouse = zox_get_child_by_id(world, e, zox_id(Mouse));
