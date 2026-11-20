@@ -42,6 +42,9 @@ int check_compute_shader_support() {
 
 // removed compute test for now, broke on android version
 void test_compute() {
+#ifdef zox_disable_compute
+    return;     // off on purpose (gles2, webgl 2), not an error
+#endif
     if (check_compute_shader_support() == EXIT_FAILURE) {
         zox_loge("opengl compute is not supported")
     } else {

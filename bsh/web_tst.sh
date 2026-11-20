@@ -9,6 +9,9 @@ set -euo pipefail
 # - each test's console in tst/web_<name>.log, exit 0 if all passed
 # - playwright and its chromium go in web/ (gitignored): web/tst_venv, web/playwright, the first run downloads them
 # - webgl in a headless browser is software (swiftshader), slow: keep web tests small
+# - the game gets --autostart --tiny --nosaves after --tst <name> (as tst.sh), zox_web_tst_args to change them
+# - zox_web_tst_timeout: seconds a test may take (120)
+# - known: eyelids fails on web (part shut, the middle [27 30] isn't under the lids), webgl's drawing differs
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${root}"
@@ -24,8 +27,9 @@ for arg in "$@"; do
         tests+=("${arg}")
     fi
 done
-# no player needed: maths, colours, then the menus' world (a camera and ui)
-[[ ${#tests[@]} -eq 0 ]] && tests=(colors_hsv maths_vectors maths_quaternions maths_matrices maths_bounds)
+# cheapest first: pure logic, bare entities, the menus, then a player on the test level (stats, a respawn)
+[[ ${#tests[@]} -eq 0 ]] && tests=(colors_hsv maths_vectors maths_quaternions maths_matrices maths_bounds
+    transform_hierarchy mass_spawn music_timing gpu_restore player_spawn held_item player_respawn)
 
 web_path="bin/zoxel_web_tst"
 if [[ "${build}" == "1" ]]; then
@@ -67,10 +71,11 @@ fi
 
 mkdir -p tst
 "${venv_python}" -I - "${root}/${web_path}" "${timeout}" "${root}/tst" "${tests[@]}" <<'PY'
-import functools, http.server, sys, threading, time, urllib.parse
+import functools, http.server, os, sys, threading, time, urllib.parse
 from playwright.sync_api import sync_playwright
 
 folder, timeout, log_dir, names = sys.argv[1], float(sys.argv[2]), sys.argv[3], sys.argv[4:]
+extra = os.environ.get("zox_web_tst_args", "--autostart --tiny --nosaves")  # the game args after --tst <name>, as tst.sh gives
 
 class Quiet(http.server.SimpleHTTPRequestHandler):
     def log_message(self, *args):
@@ -108,7 +113,7 @@ with sync_playwright() as playwright:
 
         page.on("console", on_console)
         page.on("pageerror", on_error)
-        args = urllib.parse.quote(f"--tst {name} --tiny --nosaves")
+        args = urllib.parse.quote(f"--tst {name} {extra}")
         start = time.time()
         page.goto(f"http://127.0.0.1:{port}/index.html?args={args}")
         while "v" not in result and time.time() - start < timeout:
