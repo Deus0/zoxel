@@ -231,7 +231,9 @@ void chunk_gpu_mesh_system(iter* it) {
         gpu_mesher_set_uvs(&mesher, tilemap_uvs);
         if (!room->value) {
             const uint size = octree_size(depth->value);
-            gpu_mesher_grow(&mesher, size * size / 2);
+            // a face every two voxel columns, at least a voxel's 6 (depth 0: none was no buffers, vulkan can't bind those)
+            const uint guess = size * size / 2;
+            gpu_mesher_grow(&mesher, guess > 6 ? guess : 6);
             room->value = mesher.max_faces;
         }
         const entity manager = zox_get_link(world, chunk, BlockManagerLink);
