@@ -126,8 +126,10 @@ void vulkan_reflect(vk_shader* shader) {
     const uint count = shader->count;
     const uint bound = words[3];
     // where each id's type, name, decorations are
-    uint* types = calloc(bound, sizeof(uint));          // a type or constant's instruction
-    uint* constants = types;
+    uint* types = calloc(bound, sizeof(uint));          // a type's instruction, by its id
+    uint* constants = calloc(bound, sizeof(uint));      // a constant's (array lengths), by its id: an OpConstant's
+                                                        //  first word is its type's id, keyed apart it overwrote the
+                                                        //  float type's, members measured 0 (blocks cut short)
     uint* names = calloc(bound, sizeof(uint));          // its OpName's string
     int* locations = calloc(bound, sizeof(int));        // the word of its Location literal
     int* bindings = calloc(bound, sizeof(int));
@@ -155,8 +157,10 @@ void vulkan_reflect(vk_shader* shader) {
             } else if (decoration == spv_builtin) {
                 builtins[target] = 1;
             }
-        } else if ((op >= spv_type_int && op <= spv_type_pointer) || op == spv_constant) {
+        } else if (op >= spv_type_int && op <= spv_type_pointer) {
             types[words[i + 1]] = i;
+        } else if (op == spv_constant) {
+            constants[words[i + 2]] = i;
         }
     }
     shader->block_word = -1;
@@ -233,6 +237,7 @@ void vulkan_reflect(vk_shader* shader) {
         }
     }
     free(types);
+    free(constants);
     free(names);
     free(locations);
     free(bindings);
