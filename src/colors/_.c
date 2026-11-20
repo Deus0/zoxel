@@ -12,6 +12,9 @@ zoxc_arrayd(ColorRGBs, color_rgb)
 #include "fun/_.c"
 #include "dat/_.c"
 #include "sys/_.c"
+#ifdef zox_tests
+#include "tst/hsv.c"
+#endif
 
 void spawn_prefabs_colors(ecs* world) {
     if (prefab_realm) {
@@ -30,4 +33,7 @@ void import_colorz(ecs* world) {
     zoxd_arrayd(Colors);
     zox_systems_colors(world);
     add_hook_spawn_prefabs(spawn_prefabs_colors);
+#ifdef zox_tests
+    zox_tsts_colors(world);
+#endif
 }

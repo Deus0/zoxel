@@ -7,6 +7,10 @@ float color_rgb_to_hue(color_rgb value) {
     float delta = (max - min);
     int multi = 60; // 42; // 60
     float hue = 0; // (int) ceil
+    // a grey has no hue: dividing by its zero delta gave NaN, and NaN to a byte is undefined (hsv_to_color_rgb)
+    if (delta == 0) {
+        return 0;
+    }
     if (red == max) {
         hue = (multi * ((green - blue) / delta)); //  % 6;
     } else if (green == max) {
@@ -87,15 +91,18 @@ color_rgb hsv_to_color_rgb(float3 hsv) {
     r += m;
     g += m;
     b += m;
-    r = ceil(r * 255);
-    g = ceil(g * 255);
-    b = ceil(b * 255);
+    // clamped to a byte: a float out of a byte's range made one is undefined, a saturation over 100 gave a channel
+    //  below 0; gcc wrapped it, clang (web, -O3) folded the realm's stat colours, saw it, and dropped the rest of
+    //  stats_realm_spawn_system as unreachable: the realm had no stats
+    r = clampf(ceil(r * 255), 0, 255);
+    g = clampf(ceil(g * 255), 0, 255);
+    b = clampf(ceil(b * 255), 0, 255);
     return (color_rgb) { (byte) r, (byte) g, (byte) b };
 }
 
 color_rgb color_rgb_saturate(color_rgb in, float sat) {
     float3 hsv = color_rgb_to_hsv(in);
-    hsv.y *= sat;
+    hsv.y = float_min(hsv.y * sat, 100);    // a percent
     return hsv_to_color_rgb(hsv);
 }
 

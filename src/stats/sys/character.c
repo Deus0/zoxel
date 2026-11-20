@@ -1,3 +1,27 @@
+// why a realm's stats weren't found: none made yet (children 0), made but not stats, or one of the four missing
+void log_realm_invalid_stats(ecs* world, entity realm) {
+    int children = 0;
+    int stats = 0;
+    byte soul = 0, health = 0, states = 0;
+    iter it2 = zox_children(world, realm);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            const entity stat = it2.entities[j];
+            children++;
+            if (!zox_has(stat, Stat)) {
+                continue;
+            }
+            stats++;
+            soul |= zox_has(stat, StatLevel);
+            health |= zox_has(stat, StatHealth);
+            states += zox_has(stat, StatState) ? 1 : 0;
+        }
+    }
+    zox_loge("the realm [%s] has invalid stats: [%i] children, [%i] stats, soul [%i] health [%i] states [%i] "
+        "(wants a soul, a health and two more states), generating [%i]", zox_get_name(realm), children, stats, soul,
+        health, states, zox_has(realm, GenerateRealm) ? zox_getv(realm, GenerateRealm) : -1);
+}
+
 // When health goes to 0, kill UserLink->value
 // Set Dead to 1
 void spawn_base_stats(
@@ -30,7 +54,7 @@ void spawn_base_stats(
         }
     }
     if (!zox_valid(realm_soul)) {
-        zox_loge("the realm has invalid stats")
+        log_realm_invalid_stats(world, realm);
         return;
     }
     // generate numbers here
@@ -217,7 +241,7 @@ static inline float npc_stat_start(ecs* world, const RealmBaseStats* stats, enti
 void fill_character_base_stats(ecs* world, entity character, entity realm, float soul, float health, byte is_player) {
     RealmBaseStats stats;
     if (!get_realm_base_stats(world, realm, &stats)) {
-        zox_loge("the realm has invalid stats");
+        log_realm_invalid_stats(world, realm);
         return;
     }
     for (int s = 0; s < stats.count; s++) {

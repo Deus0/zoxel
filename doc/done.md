@@ -1,6 +1,12 @@
 # Done
 
 ## 2026-11-21
+-x Web: characters had no stats (no damage, regen or levels), "the realm has invalid stats". The realm's stat colours
+  saturate by 1.4, past 100, so hsv_to_color_rgb made a channel below 0 and its float to byte was undefined: gcc
+  wrapped it (a slightly wrong colour), clang (emscripten, -O3) folded the constant colours, saw it, and dropped the
+  rest of stats_realm_spawn_system as unreachable, so the realm never got its stats. Channels clamp to a byte,
+  saturation to 100, a grey's hue is 0 (it was NaN). tst colors_hsv. Found by the system's strings missing from the
+  wasm; the error says what the realm has now (children, stats, which of the four)
 -x Windows, nvidia: a crash in about 1 of 3 game starts, an access violation in the driver's own thread
   (nvoglv64.dll +0xb8bf10, reading [0x1]). A chunk remeshed while its lights built (MeshDirty, BuildMeshColors) kept
   drawing its old mesh, but mesh_colors_gpu_system uploaded its new colors alone (MeshColorsDirty from the light
