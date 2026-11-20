@@ -64,4 +64,16 @@ byte initialize_pathing_web(
     return EXIT_SUCCESS;
 }
 
+#include <emscripten/html5.h>
+
+// is the browser's pointer locked to the canvas: it drops the lock on alt tab or escape, and sdl asks again on the
+//  next click, till then the mouse moves the cursor, not the camera (src/apps/sdl/inputs/sys/mouse.c)
+byte web_pointer_locked() {
+    EmscriptenPointerlockChangeEvent status;
+    if (emscripten_get_pointerlock_status(&status) != EMSCRIPTEN_RESULT_SUCCESS) {
+        return 0;
+    }
+    return status.isActive;
+}
+
 #endif

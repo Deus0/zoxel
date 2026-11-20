@@ -1,6 +1,16 @@
 # Done
 
 ## 2026-11-21
+-x Web: the camera spun after alt tabbing back (a 3 year old bug): the browser drops its pointer lock, sdl only asks
+  again on a click, and till then gives where the cursor is; the warp to the centre does nothing there, so each frame
+  read the cursor's distance from the centre as movement. Locked but not locked by the browser, the mouse doesn't
+  move the camera (web_pointer_locked), a click locks it again
+-x Web: mouse too fast windowed: the canvas was stretched by css but its pixels weren't the page's, so movement was
+  scaled; it fills the page now (SDL_WINDOW_FILL_DOCUMENT), its pixels follow the page's size
+-x Web: no save games: saves were in HOME, memory only (lost on a reload) and missing its folders. They're in /saves,
+  the browser's IndexedDB (IDBFS, src/_/platforms/web/pre.js), loaded before main and written back every 2 seconds
+-x Web builds on windows: web.sh finds or installs python (winget, user scope) for emscripten, only for web builds;
+  --logs for a release build that logs (the debug build is too slow to load a game in a browser)
 -x Web: characters had no stats (no damage, regen or levels), "the realm has invalid stats". The realm's stat colours
   saturate by 1.4, past 100, so hsv_to_color_rgb made a channel below 0 and its float to byte was undefined: gcc
   wrapped it (a slightly wrong colour), clang (emscripten, -O3) folded the constant colours, saw it, and dropped the

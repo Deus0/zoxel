@@ -6,6 +6,9 @@ set -euo pipefail
 #
 # Release
 #   bash bsh/web.sh zoxel --release
+#
+# Release with logs (the page's console, F12)
+#   bash bsh/web.sh zoxel --release --logs
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 date_str="$(date +%Y_%m_%d)"
@@ -45,7 +48,12 @@ if ! command -v git >/dev/null 2>&1; then
     exit 1
 fi
 
-if ! command -v python3 >/dev/null 2>&1; then
+# python: emsdk and emcc need it. a windows host finds or installs a real one (bsh/deps_windows.sh), only here, the
+#  other builds don't need it
+source "${root}/bsh/deps_windows.sh"
+if is_windows_host; then
+    install_windows_python
+elif ! command -v python3 >/dev/null 2>&1; then
     echo "ERROR: python3 not found."
     exit 1
 fi
@@ -130,6 +138,13 @@ else
     cflags+=" -O3 -DNDEBUG"
 fi
 
+# --logs: a release build that still logs (to the page's console, F12), as build.sh --logs; the debug build is too
+#  slow in a browser to load a game (-O0, verbose logs)
+if [[ " $* " == *" --logs "* && "${profile}" == "release" ]]; then
+    echo "+ Logs"
+    dflags+=" -Dzox_logs"
+fi
+
 trace_flags=()
 
 if [[ "${trace}" == "1" ]]; then
@@ -166,6 +181,8 @@ emcc \
     -s FULL_ES3=1 \
     -s ALLOW_MEMORY_GROWTH=1 \
     -s STACK_SIZE=1048576 \
+    -lidbfs.js \
+    --pre-js "${src_path}/_/platforms/web/pre.js" \
     --preload-file "${root}/res@/res" \
     -o "${web_path}/index.html"
 

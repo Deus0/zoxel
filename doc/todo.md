@@ -123,10 +123,9 @@
 	- check if flecs can own our mesh data (vertices, indices, colors, uvs are malloc'd arrays in components):
 	  flecs allocators or sparse/vector components with hooks, it might fix the heap growth and frees on delete
 - Web:
-	- no save games
-	- no stats
 	- npcs missing
-	- Dev version  stuck on load game
+	- Dev version stuck on load game (-O0 and verbose logs, too slow in a browser): bsh/web.sh --release --logs
+	  logs from a release build meanwhile
 - Android:
 	- Touch UI not showing up in game
 		- Fix touchscreen touch ui [player_state_touch_ui]

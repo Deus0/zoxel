@@ -13,6 +13,9 @@ void get_home_directory(char *path, size_t size) {
     } else {
         zox_loge("home_directory null [get_save_directory]")
     }
+#elif defined(zox_web)
+    // the browser's IndexedDB, mounted by src/_/platforms/web/pre.js; HOME is memory only, lost on a reload
+    snprintf(path, size, "/saves/");
 #elif defined(zox_android)
     // Android-specific code
     JNIEnv* env = zox_get_android_jni_env();
@@ -53,6 +56,8 @@ void get_save_directory(
     } else {
         zox_log(" ! home_directory null [get_save_directory]")
     }
+#elif defined(zox_web)
+    snprintf(path, size, "/saves/%s", game);
 #elif defined(zox_android)
     // Android-specific code
     JNIEnv* env = zox_get_android_jni_env();

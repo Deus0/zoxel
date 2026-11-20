@@ -20,12 +20,19 @@
 | linux x64, opengl | bash bsh/docker.sh --release --x64 | zip/zoxel_linux_x64_opengl_sdl_<date>.zip |
 | android arm, opengl es | bash bsh/android_prepare.sh, then bash bsh/android.sh zoxel --release --signed | zip/zoxel_android_arm_<date>.apk |
 | android arm, unsigned | bash bsh/android.sh zoxel --release --unsigned | zip/zoxel_android_arm_unsigned_<date>.apk |
+| web (webgl 2, emscripten) | bash bsh/web.sh zoxel --release (--logs: logs to the page's console, --package: a zip) | bin/zoxel_web/ (index.html), zip/zoxel_web_<date>.zip |
 | all platforms + itch.io | bash bsh/release.sh | zip/, then bsh/itch.sh uploads |
 
 - a clean checkout fetches what it needs, ext/ lib/ inc/ zip/ are gitignored
 	- flecs: bash bsh/flecs.sh, downloads 4.2.0 to inc/flecs and applies our [patches](flecs_patches.md)
 	- SDL: build.sh downloads (bsh/libs-download.sh) and compiles it (bsh/libs-compile.sh, cmake) into lib/<os>_<arc>
 - linux and windows use SDL3, windows cross compiled with mingw
+- web: web.sh fetches emscripten's sdk into web/ (gitignored) the first time, sdl3 is emscripten's port
+	- python: emsdk and emcc need it; on windows web.sh finds a real one or installs it with winget (user scope,
+	  bsh/deps_windows.sh install_windows_python), only for web builds
+	- play it: serve bin/zoxel_web (python -m http.server 8080 in it), open http://127.0.0.1:8080
+	- one thread (no -pthread), saves in the browser's IndexedDB (src/_/platforms/web/pre.js), the canvas fills the
+	  page (SDL_WINDOW_FILL_DOCUMENT), a click locks the mouse again after alt tab
 - docker.sh builds in ubuntu 24.04, older system libs so the build runs on more distros
 - bsh/deps.sh lists the apt packages, docker.sh and CI both use it, add new packages there
 
@@ -73,7 +80,6 @@
 		- builds libEGL.so and libGLESv2.so
 	- link lib/mesa to linux-x64 in build.sh
     	- don't package Mesa runtime libraries
-- Fix Webgl builds
 - Fix android on arm builds
 - Remove the mandatory arguments on ./bsh/android.sh
 - Make sure to tag docker libs properly as release

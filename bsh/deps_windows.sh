@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # windows host (git bash / msys): finds or installs the toolchain, then puts it on the PATH
-#   source bsh/deps_windows.sh     what build.sh does on a windows host
+#   source bsh/deps_windows.sh     what build.sh does on a windows host (and web.sh, for python)
 #   bash bsh/deps_windows.sh       just install
 # winlibs (winget) is gcc with posix threads (build.sh links winpthread), and it brings cmake, ninja and make
 #   for bsh/libs-compile.sh, so one package covers the whole build
@@ -61,7 +61,42 @@ install_windows_deps() {
     echo "+ Windows toolchain [$(command -v x86_64-w64-mingw32-gcc)]"
 }
 
-# run directly: install. sourced: build.sh calls install_windows_deps
+# python for emscripten (bsh/web.sh): emsdk and emcc are python scripts, they use EMSDK_PYTHON when it's set
+#   windows' python3 on the PATH is often the store's stub (WindowsApps), which opens the store instead of running,
+#   so a real one is found in the user's programs, or installed there with winget (user scope, no admin)
+python_id="Python.Python.3.12"
+
+find_windows_python() {
+    local programs
+    programs="$(cygpath -u "${LOCALAPPDATA}")/Programs/Python"
+    find "${programs}" -maxdepth 2 -type f -name python.exe 2> /dev/null | sort -V | tail -n 1
+}
+
+install_windows_python() {
+    if ! is_windows_host; then
+        return 0
+    fi
+    local python
+    python="$(find_windows_python)"
+    if [[ -z "${python}" ]]; then
+        if ! command -v winget > /dev/null 2>&1; then
+            echo "ERROR: winget is needed to install [${python_id}], or set EMSDK_PYTHON to a python.exe"
+            return 1
+        fi
+        echo "-> Installing [${python_id}] with winget (for emscripten)"
+        winget install --exact --id "${python_id}" --scope user --silent \
+            --accept-source-agreements --accept-package-agreements
+        python="$(find_windows_python)"
+        if [[ -z "${python}" ]]; then
+            echo "ERROR: installed [${python_id}] but found no python.exe in ${LOCALAPPDATA}/Programs/Python"
+            return 1
+        fi
+    fi
+    export EMSDK_PYTHON="${python}"
+    echo "+ Python [${python}]"
+}
+
+# run directly: install. sourced: build.sh calls install_windows_deps, web.sh install_windows_python
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     set -euo pipefail
     install_windows_deps

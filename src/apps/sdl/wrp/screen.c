@@ -33,6 +33,11 @@ SDL_WindowFlags zox_sdl_window_flags(byte fullscreen, byte maximized) {
         SDL_WINDOW_RESIZABLE;
 #endif
         // SDL_WINDOW_SHOWN |
+#if defined(zox_web) && defined(SDL_WINDOW_FILL_DOCUMENT)
+    // the canvas fills the page and its pixels follow the page's size: stretched by css alone its pixels weren't the
+    //  page's, so the mouse moved faster than the pointer (fine only in fullscreen, which sizes the canvas)
+    flags |= SDL_WINDOW_FILL_DOCUMENT;
+#endif
     if (fullscreen) {
         if (is_on_phosh()) {
             flags = flags | SDL_WINDOW_MAXIMIZED;

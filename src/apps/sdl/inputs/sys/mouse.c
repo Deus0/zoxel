@@ -81,7 +81,15 @@ void mouse_input_system(iter* it) {
                     zox_muter(e2, ZevicePointerPosition, position);
                     zox_muter(e2, ZevicePointerDelta, delta);
                     // no jump leaving or coming back into the window
-                    const byte hidden = int2_equals(mouse_position, int2_hidden) || int2_equals(position->value, int2_hidden);
+                    byte hidden = int2_equals(mouse_position, int2_hidden) || int2_equals(position->value, int2_hidden);
+#ifdef zox_web
+                    // locked but the browser's lock is lost (alt tab): sdl gives where the cursor is, not how far
+                    //  it moved, and the warp to the centre does nothing there, so every frame read the cursor's
+                    //  distance from the centre as movement and the camera spun; still till a click locks it again
+                    if (zox_has(e, MouseLock) && zox_getv(e, MouseLock) && !web_pointer_locked()) {
+                        hidden = 1;
+                    }
+#endif
                     delta->value = hidden ? int2_zero : int2_sub(mouse_position, position->value);
                     position->value = mouse_position;
                 }
