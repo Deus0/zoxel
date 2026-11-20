@@ -269,6 +269,9 @@
 	- spawns a dungeon core there
 	- slowly builds over time
 - let dungeon entity exist if its inside region of SimulationLod = 0 (so where player is and ones next to that)
+- Consolidate structure placement in generation: trees (vegetation_draw_tree), town walls, homes, roads, dungeons
+  each place a shape and clip it to the chunk drawing it, the same pattern written again each time: one way to
+  place a structure (where, its seed, its bounds) and draw a chunk's part of it, with one across chunks test
 - Structures across chunks: trees stay in their tunk by design (cells line up with tunks), their trunks and
   canopies cross chunks vertically fine (tst vegetation_across), but anything bigger than a cell (big trees,
   ruins, houses) needs planning before chunks draw it: place it in its region (regions/fun/place.c), each chunk
