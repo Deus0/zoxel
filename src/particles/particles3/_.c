@@ -21,6 +21,9 @@ zoxc_float(ParticleLife);        // seconds each lives
 #include "fun/burst.c"
 #include "sys/_.c"
 #include "dbg/_.c"
+#ifdef zox_tests
+    #include "tst/_.c"
+#endif
 
 void update_statistics_particles3D() {
     zox_statistics_particles3D = 0;
@@ -38,4 +41,7 @@ void import_particles3(ecs* world) {
     add_hook_gpu_dispose(gpu_dispose_particles3);
     add_hook_gpu_restore(gpu_restore_particles3);
     add_hook_spawn_prefabs(spawn_prefabs_particles3D);
+#ifdef zox_tests
+    zox_tsts_particles3(world);
+#endif
 }

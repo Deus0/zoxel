@@ -11,11 +11,14 @@
 //  - checks: a screenshot before the model spawns and one after differ in the middle of every viewport
 //      (fails if a viewport's camera didn't draw it, or one camera's clear wiped the others)
 //  - render code it leans on: spawn_viewport_camera, camera_look_at, viewport_grid_cell, zox_gpu_clear_rect
+// tst: instance_views, the same views of the model drawn instanced (vox_instance_render_system, its own shader:
+//  slimes and characters), tst/instance_views.ppm; both compared across backends by bsh/compare_backends.sh
 extern char zox_screenshot_request[256];
 extern byte nohud;
 #define zox_tst_model_views_count 4
 const char* zox_tst_model_views_empty_file = "model_views_empty.ppm";
 const char* zox_tst_model_views_file = "model_views.ppm";
+byte zox_tst_model_views_instanced = 0;     // instance_views: each view's copy an instance renderer of the mesh
 char zox_tst_model_views_model_file[192] = "";    // models/<name>.ppm, a copy kept per model
 const char* zox_tst_model_views_names[zox_tst_model_views_count] = { "+z", "+x", "-z", "above" };
 byte zox_tst_model_views_stage = 0;
@@ -274,12 +277,18 @@ byte zox_tst_model_views_ready(ecs* world) {
         }
         // a copy of the model for each view, filtered to its camera
         for (int i = 0; i < zox_tst_model_views_count; i++) {
-            const entity clone = spawn_mesh3_clone(world, zox_tst_model_views_meshes[i]);
-            if (!clone) {
-                zox_tst_check(0, "couldn't copy the mesh of [%s]", zox_getn(zox_tst_model_views_source));
-                return 1;
+            entity clone;
+            if (zox_tst_model_views_instanced) {
+                clone = zox_ins(world, prefab_renderer_instance);
+                zox_set_link(world, clone, InstanceLink, zox_tst_model_views_meshes[i]);
+            } else {
+                clone = spawn_mesh3_clone(world, zox_tst_model_views_meshes[i]);
+                if (!clone) {
+                    zox_tst_check(0, "couldn't copy the mesh of [%s]", zox_getn(zox_tst_model_views_source));
+                    return 1;
+                }
+                zox_add(clone, VoxMesh);
             }
-            zox_add(clone, VoxMesh);
             zox_set_unique_name(clone, "model_views_model");
             zox_setv(clone, Position3D, zox_tst_model_views_spot);
             zox_setv(clone, Rotation3D, quaternion_identity);
@@ -318,7 +327,7 @@ void zox_tst_model_views_check(ecs* world) {
     zox_tst_check(empty, "no empty views screenshot [%s]", zox_tst_path(zox_tst_model_views_empty_file));
     zox_tst_check(pixels, "no model views screenshot [%s]", zox_tst_path(zox_tst_model_views_file));
     // kept by the model's name too
-    if (pixels) {
+    if (pixels && !zox_tst_model_views_instanced) {
         const byte copied = zox_tst_copy_file(
             zox_tst_path(zox_tst_model_views_file),
             zox_tst_path(zox_tst_model_views_model_file));
@@ -353,4 +362,11 @@ void zox_tst_model_views_check(ecs* world) {
     }
     free(empty);
     free(pixels);
+}
+
+byte zox_tst_instance_views_ready(ecs* world) {
+    zox_tst_model_views_instanced = 1;
+    zox_tst_model_views_empty_file = "instance_views_empty.ppm";
+    zox_tst_model_views_file = "instance_views.ppm";
+    return zox_tst_model_views_ready(world);
 }
