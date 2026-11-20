@@ -158,6 +158,11 @@ elif [[ "${os}" == "windows" ]]; then
     dflags+=" -Dzox_windows"
     # libs+=" -lws2_32 -ldbghelp"
     libs="-Wl,--push-state,-Bstatic,-lwinpthread,--pop-state -lws2_32 -ldbghelp"
+    # a windowed program (no console window opening beside the game), unless it logs: debug and --logs builds keep
+    #   theirs, it's where zox_log goes run from the explorer
+    if [[ ${debug} == "0" && ${logs} == "0" ]]; then
+        libs+=" -mwindows"
+    fi
     is_windows_host && install_windows_deps
     if ! command -v x86_64-w64-mingw32-gcc >/dev/null 2>&1; then
         echo "ERROR: MinGW x64 toolchain is required for Windows builds."
