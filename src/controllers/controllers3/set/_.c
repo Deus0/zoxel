@@ -17,3 +17,4 @@ const double max_rotate_speed = 0.2; //  0.23;
 double fly_run_speed = 4.2;
 double fly_run_acc_y = 5.2;
 double fly_run_acc_xz = 15.2;
+byte auto_jump = 0;             // jumps up a block walked into (setting "Auto Jump"), on by default with a touchscreen
