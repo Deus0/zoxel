@@ -177,7 +177,8 @@ void zox_tst_profile_frame(ecs* world) {
         zox_measure_system_times(world);
     }
     const double now = get_time_ms();
-    const double frame_ms = zox_tst_profile_last_ms ? now - zox_tst_profile_last_ms - zox_tst_profile_excluded : 0;
+    const double excluded_ms = zox_tst_profile_excluded;
+    const double frame_ms = zox_tst_profile_last_ms ? now - zox_tst_profile_last_ms - excluded_ms : 0;
     zox_tst_profile_excluded = 0;
     zox_tst_profile_last_ms = now;
     int hint = 0;
@@ -244,7 +245,8 @@ void zox_tst_profile_frame(ecs* world) {
         zox_tst_profile_sum_merges += merge_ms;
         zox_tst_profile_sum_observers += emit_ms;
         zox_tst_profile_sum_pipeline += ecs_frame_ms;
-        zox_tst_profile_sum_progress += (world_times.frame - last.frame) * 1000.0;
+        // the test's own time ran inside flecs' frame too
+        zox_tst_profile_sum_progress += (world_times.frame - last.frame) * 1000.0 - excluded_ms;
         zox_tst_profile_sum_rematch += (world_times.rematch - last.rematch) * 1000.0;
         zox_tst_profile_sum_frames++;
     }
