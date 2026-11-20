@@ -58,6 +58,11 @@ int zox_sdl_get_current_display_mode(int monitor, SDL_DisplayMode* mode) {
     return SDL_GetCurrentDisplayMode(monitor, mode);
 }
 
+// a monitor's bounds (its index, 0 the first), 1 if found (sdl2: 0 is success)
+byte zox_sdl_get_display_bounds(byte monitor, SDL_Rect* bounds) {
+    return SDL_GetDisplayBounds(monitor, bounds) == 0;
+}
+
 int zox_sdl_get_num_displays()
 {
     return SDL_GetNumVideoDisplays();

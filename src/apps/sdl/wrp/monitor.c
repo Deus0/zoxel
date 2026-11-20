@@ -1,9 +1,8 @@
-
-
+// a monitor's bounds (zox_sdl_get_display_bounds, sdl2 and sdl3 differ), the first's if it has none
 SDL_Rect get_monitor_bounds(byte index) {
-    SDL_Rect b;
-    if (SDL_GetDisplayBounds(index, &b)) {
-        zox_loge("[SDL_GetDisplayBounds] Failed for %d: %s", index, SDL_GetError());
+    SDL_Rect b = { 0 };
+    if (!zox_sdl_get_display_bounds(index, &b)) {
+        zox_loge("[get_monitor_bounds] failed for [%d]: %s", index, SDL_GetError());
         if (index == 0) {
             return (SDL_Rect) { .w = 480, .h = 480 };
         } else {
@@ -27,22 +26,16 @@ byte zox_app_set_monitor(SDL_Window *window, byte index, byte center_window) {
     if (!window) {
         return 0;
     }
-    SDL_Rect b = get_monitor_bounds(index);
-    int2 position = (int2) { b.x, b.y };
-    if (center_window) {
-        int2 ws;
-        SDL_GetWindowSize(window, &ws.x, &ws.y);
-        position.x -= (b.w - ws.x) / 2;
-        position.y -= (b.h - ws.y) / 2;
-    }
+    int2 ws;
+    SDL_GetWindowSize(window, &ws.x, &ws.y);
+    const int2 position = calculate_monitor_position(index, center_window, ws);
     SDL_SetWindowPosition(window, position.x, position.y);
     if (is_log_monitors) {
         zox_log(" + zox_app_set_monitor [%i] at [%ix%i]", index, position.x, position.y)
-        zox_log("   + screen bounds [%ix%i]", b.x, b.y)
-        for (int i = 0; i <= 4; i++) {
+        for (int i = 0; i < zox_sdl_get_num_displays(); i++) {
             SDL_Rect b2;
-            if (!SDL_GetDisplayBounds(i, &b2)) {
-                zox_log(" - testing screen [%i] bounds [%ix%i - %ix%i]", i, b2.x, b2.y, b2.w, b2.h)
+            if (zox_sdl_get_display_bounds(i, &b2)) {
+                zox_log(" - screen [%i] bounds [%ix%i - %ix%i]", i, b2.x, b2.y, b2.w, b2.h)
             }
         }
     }

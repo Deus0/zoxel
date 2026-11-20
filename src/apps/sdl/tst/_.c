@@ -4,6 +4,7 @@
 #ifdef zox_sdl3
     #include "alt_tab.c"
     #include "core.c"
+    #include "window_mode.c"
 #endif
 #include "vulkan_surface.c"
 
@@ -19,6 +20,10 @@ void zox_tsts_sdl() {
     zox_tst_set_setup("sdl_window", NULL, 1);
     zox_tst_add("sdl_resize", zox_tst_sdl_resize_ready, zox_tst_sdl_resize_check, 60);
     zox_tst_set_setup("sdl_resize", NULL, 1);
+    zox_tst_add("sdl_window_mode", zox_tst_sdl_window_mode_ready, zox_tst_sdl_window_mode_check, 60);
+    zox_tst_set_setup("sdl_window_mode", NULL, 1);
+    zox_tst_add("sdl_window_restore", zox_tst_sdl_window_mode_ready, zox_tst_sdl_window_mode_check, 60);
+    zox_tst_set_setup("sdl_window_restore", zox_tst_sdl_window_restore_setup, 1);
     zox_tst_add("sdl_quit", zox_tst_sdl_quit_ready, zox_tst_sdl_quit_check, 60);
     zox_tst_set_exits("sdl_quit");
 #endif

@@ -134,9 +134,6 @@
 	- NOTE: Zoxel android release working now, was issue  with no safety checks Crash
 - Gamepad navigation faulty neighbors
     - Implement position checking for any interactable items in canvas tree
-- Windows:
-	- sdl3 window mode - it dissapears
-		- windowed mode bug
 - Linux (Khadas):
 	- Decor (SDL window edge) missing on khadas - try compile sdl together?
 		- test sdl window

@@ -1,6 +1,12 @@
 # Done
 
 ## 2026-11-20
+-x Sdl3 windows: back from fullscreen the window disappeared, off every display at -32760x16537 at the fullscreen size.
+  get_monitor_bounds called SDL_GetDisplayBounds with sdl2's index and success (0): sdl3 takes a display id and
+  returns true, so the failure read as success and the window went to garbage bounds (zox_sdl_get_display_bounds per
+  sdl). Windowed again it's as the app was, maximized or its restore size (sdl3 left it unmaximized and screen size).
+  zox_app_set_monitor centred the wrong way. tst sdl_window_mode, sdl_window_restore (--visible to see it)
+-x Windows release builds don't open a terminal beside the game (-mwindows, a gui program); debug and --logs keep it
 -x One pause menu over the whole window for every player (huds/fun/pause_canvas.c): a shared canvas with its own ui
   camera, spawned as the game pauses; each player links it too (CanvasLink is many now), so any gamepad navigates it
   and the mouse clicks it; spawn_window_list_on puts a window on a canvas. With 3D huds (a headset) it stays on the

@@ -120,6 +120,14 @@ void zox_sdl_gl_delete_context(SDL_GLContext context) {
     SDL_GL_DestroyContext(context);
 }
 
+// a monitor's bounds (its index, 0 the first), 1 if found
+//  - sdl3 takes a display id (0 isn't one) and returns true on success: sdl2's index and 0 for success read the
+//    failure as success, and the window went to garbage bounds (-32760x16537, off every display)
+byte zox_sdl_get_display_bounds(byte monitor, SDL_Rect* bounds) {
+    const SDL_DisplayID display_id = zox_sdl_get_display_id(monitor);
+    return display_id && SDL_GetDisplayBounds(display_id, bounds);
+}
+
 int zox_sdl_get_num_displays() {
     int count = 0;
     SDL_DisplayID *displays = SDL_GetDisplays(&count);

@@ -88,6 +88,15 @@ void zox_set_app_fullscreen(
         window->value,
         monitor,
         fullscreen);
+    // windowed: back as the app was, maximized or its own restore size and position; sdl3 left it unmaximized at
+    //  the fullscreen size (2560x1440 on a 2560x1440 screen, past the screen's edges, tst sdl_window_mode)
+    if (!fullscreen) {
+        if (zox_getv(e, WindowMaximized)) {
+            zox_app_set_maximized(window->value, 1);
+        } else {
+            on_sdl_window_restored(world, e);
+        }
+    }
 }
 
 // sdl implementation for maximized state
