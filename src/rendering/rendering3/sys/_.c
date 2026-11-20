@@ -156,12 +156,16 @@ void zox_systems_basics3(ecs* world) {
         [none] rendering3.TexturedMesh3,
         [none] !core.Initialize,
     );
+    // colors alone, not while new geometry waits (MeshDirty): its colors are the new mesh's, the gpu still draws the
+    //  old one, and fewer colors than its vertices crashed nvidia's driver (reading them from null), the full upload
+    //  (textured_mesh_update_system) sends both
     zox_system_1(
         mesh_colors_gpu_system,
         zoxp_gpu_upload,
         [in] rendering.ColorsGPULink,
         [in] rendering.MeshColorRGBs,
         [none] rendering.MeshColorsDirty,
+        [none] !rendering.MeshDirty,
         [none] !core.Initialize,
     );
     zox_system_1(

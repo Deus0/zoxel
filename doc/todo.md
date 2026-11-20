@@ -13,12 +13,6 @@
 - a log window in the game menu with the game log's old lines (game_log keeps none yet)
 
 ## Bugs
-- windows, nvidia: a crash in about 1 of 5 game runs, an access violation (0xc0000005) in the driver's own present
-	thread, nvoglv64.dll +0xb8bf10 (DrvPresentBuffers), a few seconds into a game (2026-11-20, RTX 5080, driver 621.24).
-	signal(SIGSEGV) missed it (not a c runtime thread): the tst branch's SetUnhandledExceptionFilter logs it ("Crash
-	Detected", engine.c). Seen in tst ground_removed, water_light, aesthetic_town; under gdb the same address. Leads:
-	gl called off the main thread, a buffer freed while a frame using it is queued, the gl probe windows
-	(supports_opengl_version makes and destroys a hidden window and context), hidden windows (--background) only?
 - play test 2026-11-20:
 	- cloth sticks to a forearm: part of the shirt follows it (cloth should stick together)
 	- the crack overlay is missing in coop (the second player's screen), not reproduced: tst coop_block_crack shows

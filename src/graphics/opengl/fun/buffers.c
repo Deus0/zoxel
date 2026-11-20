@@ -2,14 +2,23 @@ static inline guint zox_gpu_create_buffer() {
     guint o;
     glGenBuffers(1, &o);
     zox_gpu_buffers_live++;
+#ifdef zox_logs
+    zox_gl_buffer_made(o);
+#endif
     return o;
 }
 
 static inline void zox_gpu_bind_buffer_element(guint v) {
+#ifdef zox_logs
+    zox_gl_buffer_bound(v);
+#endif
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, v);
 }
 
 static inline void zox_gpu_bind_buffer_array(guint v) {
+#ifdef zox_logs
+    zox_gl_buffer_bound(v);
+#endif
     glBindBuffer(GL_ARRAY_BUFFER, v);
 }
 
@@ -24,6 +33,9 @@ static inline void zox_gpu_set_buffer_array(const void* ptr, gsize length) {
 static inline void zox_gpu_dispose_buffer(guint link) {
     if (link) {
         glDeleteBuffers(1, &link);
+#ifdef zox_logs
+        zox_gl_buffer_deleted(link);
+#endif
         zox_gpu_buffers_live--;
         zox_gpu_buffers_freed++;
     }

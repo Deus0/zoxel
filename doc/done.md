@@ -1,5 +1,15 @@
 # Done
 
+## 2026-11-21
+-x Windows, nvidia: a crash in about 1 of 3 game starts, an access violation in the driver's own thread
+  (nvoglv64.dll +0xb8bf10, reading [0x1]). A chunk remeshed while its lights built (MeshDirty, BuildMeshColors) kept
+  drawing its old mesh, but mesh_colors_gpu_system uploaded its new colors alone (MeshColorsDirty from the light
+  before): fewer colors than the old vertices (none for an emptied chunk), and nvidia, converting rgb8 vertex colors
+  on the cpu, read them from null. Colors alone wait for a mesh's new geometry now (!MeshDirty), the full upload
+  sends both. tst mesh_colors_wait. Found with zox_gl_sync=1 (src/_/platforms/tst/gl_thread.c: a glFinish before
+  each gl call, the crash logs the gl calls before it); dev builds also log gl off the main thread and buffers bound
+  after they were deleted (gl_buffers.c)
+
 ## 2026-11-20
 -x Sdl3 windows: back from fullscreen the window disappeared, off every display at -32760x16537 at the fullscreen size.
   get_monitor_bounds called SDL_GetDisplayBounds with sdl2's index and success (0): sdl3 takes a display id and

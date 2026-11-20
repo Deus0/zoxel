@@ -3,7 +3,7 @@
 //  - a condition, not a time: ready as soon as the counter goes up after a candidate is seen, or after the window
 //    (vox instances were drawn some frames after their renderer, a fixed 3 frames failed 1 run in 3)
 //  - on failure, diagnoses the candidate with the same skips its render system uses
-//  - bash bsh/tst.sh skeleton_render | vox_instance_render | terrain_render
+//  - bash bsh/tst.sh skeleton_render | vox_instance_render | terrain_render | mesh_colors_wait
 
 const int zox_tst_draws_settle = 3;    // frames a candidate must exist before the baseline
 const int zox_tst_draws_window = 120;  // frames, at most, to see it drawn (~2s)
@@ -43,9 +43,11 @@ void zox_tst_check_camera_filter(ecs* world, entity e) {
 #include "skeleton.c"
 #include "vox_instance.c"
 #include "terrain.c"
+#include "mesh_colors_wait.c"
 
 void zox_tsts_rendering3(ecs* world) {
     zox_tsts_skeleton_render(world);
     zox_tsts_vox_instance_render(world);
     zox_tsts_terrain_render(world);
+    zox_tsts_mesh_colors_wait(world);
 }

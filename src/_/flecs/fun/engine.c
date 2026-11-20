@@ -48,6 +48,15 @@ LONG WINAPI handle_unhandled_exception(EXCEPTION_POINTERS* info) {
     }
     zox_loge("Crash Detected [0x%08lx] at [%p] in [%s] +[0x%llx] (thread [%lu])", (unsigned long) code, address, module,
         (unsigned long long) ((char*) address - (char*) handle), (unsigned long) GetCurrentThreadId());
+    if (code == EXCEPTION_ACCESS_VIOLATION && info->ExceptionRecord->NumberParameters >= 2) {
+        const ULONG_PTR kind = info->ExceptionRecord->ExceptionInformation[0];
+        // i.e. reading [0x1]: a null pointer plus 1, not memory freed or overrun
+        zox_loge("  %s at [0x%llx]", kind == 0 ? "reading" : (kind == 1 ? "writing" : "executing"),
+            (unsigned long long) info->ExceptionRecord->ExceptionInformation[1]);
+    }
+#ifdef zox_logs
+    zox_gl_log_last();
+#endif
     fflush(stdout);
     fflush(stderr);
     _exit(128 + SIGSEGV);

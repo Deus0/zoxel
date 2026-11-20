@@ -36,6 +36,10 @@ static inline guint2 spawn_gpu_mesh_buffers() {
     guint2 result;
     glGenBuffers(2, &result.x);
     zox_gpu_buffers_live += 2;
+#ifdef zox_logs
+    zox_gl_buffer_made(result.x);
+    zox_gl_buffer_made(result.y);
+#endif
     return result;
 }
 

@@ -57,7 +57,25 @@
     #include <GLES2/gl2.h>
 #endif
 #ifdef zox_windows
+    #ifdef zox_logs
+        // every glew gl call checks it's on the main thread (src/_/platforms/tst/gl_thread.c)
+        void zox_gl_thread_check(const char* name);
+        void zox_gl_log_last();
+        #define GLEW_GET_FUN(x) (zox_gl_thread_check(#x), x)
+    #endif
     #include <GL/glew.h>
+    #ifdef zox_logs
+        // gl 1.1's calls aren't glew's, checked here (a macro naming itself calls the real function)
+        #define glDrawElements(...) (zox_gl_thread_check("glDrawElements"), glDrawElements(__VA_ARGS__))
+        #define glDrawArrays(...) (zox_gl_thread_check("glDrawArrays"), glDrawArrays(__VA_ARGS__))
+        #define glTexImage2D(...) (zox_gl_thread_check("glTexImage2D"), glTexImage2D(__VA_ARGS__))
+        #define glTexSubImage2D(...) (zox_gl_thread_check("glTexSubImage2D"), glTexSubImage2D(__VA_ARGS__))
+        #define glBindTexture(...) (zox_gl_thread_check("glBindTexture"), glBindTexture(__VA_ARGS__))
+        #define glDeleteTextures(...) (zox_gl_thread_check("glDeleteTextures"), glDeleteTextures(__VA_ARGS__))
+        #define glReadPixels(...) (zox_gl_thread_check("glReadPixels"), glReadPixels(__VA_ARGS__))
+        #define glClear(...) (zox_gl_thread_check("glClear"), glClear(__VA_ARGS__))
+        #define glViewport(...) (zox_gl_thread_check("glViewport"), glViewport(__VA_ARGS__))
+    #endif
 #endif
 #ifdef zox_vulkan
     #include <vulkan/vulkan.h>

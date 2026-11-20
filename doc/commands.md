@@ -106,6 +106,7 @@ Usually run through `bash bsh/tst.sh`, see [Onboarding](onboarding.md#6-tests).
 | `ZOX_VK_WORKERS=<n>` (env) | vulkan: at most n threads record parallel render systems (0: the main thread records all), to compare or debug | [vulkan](../src/graphics/vulkan/fun/workers.c) |
 | `ZOX_SAMPLE=<file>` (env) | samples the main thread's stack every 2ms, `bash bsh/sample_report.sh <file> <binary>` shows where slow frames go (no perf needed) | _/flecs |
 | `ZOX_SAMPLE_ALL=1` (env, with `ZOX_SAMPLE`) | samples every thread, one each 10ms of cpu time (workers: sides, meshing, lights, flecs iteration), `bash bsh/sample_report.sh <file> <binary> 1` counts every frame | _/flecs |
+| `zox_gl_sync=1` (env, windows dev builds) | a glFinish before every gl call: a crash in the driver's own thread then logs the gl calls before it and where they were made (addr2line), see [gl_thread.c](../src/_/platforms/tst/gl_thread.c) | _/platforms |
 | `--tst <name>` | runs one test, exits 0 on pass, 1 on fail | [_/tst](../src/_/tst/_.c) |
 | `--tst list` | prints every test name and exits | _/tst |
 | `--tst-errors <n>` | fails a test once it logs this many errors (default 100) | _/tst |

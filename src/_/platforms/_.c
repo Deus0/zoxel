@@ -5,3 +5,4 @@
  * */
 #include "fun/_.c"
 #include "dat/settings.c"
+#include "tst/_.c"

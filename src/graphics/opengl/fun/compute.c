@@ -136,6 +136,9 @@ guint zox_gpu_storage_buffer(size_t size, const void* data) {
 #ifndef zox_disable_compute
     guint buffer = 0;
     glGenBuffers(1, &buffer);
+#ifdef zox_logs
+    zox_gl_buffer_made(buffer);
+#endif
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffer);
     glBufferData(GL_SHADER_STORAGE_BUFFER, size, data, GL_DYNAMIC_COPY);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
