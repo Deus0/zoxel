@@ -14,7 +14,6 @@
 
 ## Bugs
 - play test 2026-11-20:
-	- the quest tracker ui has no background panel (it has one in tst quest_dialogue, maybe it was the stale [???] tracker)
 	- cloth sticks to a forearm: part of the shirt follows it (cloth should stick together)
 	- the crack overlay is missing in coop (the second player's screen), not reproduced: tst coop_block_crack shows
 		both players' cracks, software and --gpu. Hit by melee or a skill? Near the first player or far? Which build?
@@ -30,8 +29,6 @@
 	fast (RB and LB) with an item in hand and a tooltip up; no core dump left. How were they switched (keys, mouse,
 	gamepad), in split screen? Maybe the gamepad item pick up abort (fixed in a179f4344); coop_respawn_navigator (a
 	death and respawn first) doesn't crash either
-- tst lint_builds: windows_names doesn't build, src/terrain/tst/streamers.c:108 "expected identifier or '(' before '='"
-	(2026-11-19)
 - tst camera_filter: camera C (unfiltered) drew the cube linked to A, 16 of 25 pixels changed (2026-11-19)
 - tst dig_light fails 1 of 2: "the hole's faces never showed (or not [5] of them: [1])", on 22d44c39c too (2026-11-19)
 - tst pipeline_syncs fails 1 of 3: 13 merges (over 11), load_lids_system, navigator_shift_system and
