@@ -3,9 +3,9 @@
 //  - zox_tst_vox=<file> the vox file (res/voxes, no extension, default chicken), zox_tst_gpu_models=<n> how many
 //      (default 9, in a grid), zox_tst_gpu_seconds=<s> how long it runs (default 6)
 //  - each frame each model's voxels move in a wave, its octree is rebuilt (set_VoxelNode, as an edit would),
-//      flattened, uploaded and meshed by the compute shader (fun/gpu_mesh.c), then drawn straight from the gpu
+//      filled into a grid, uploaded and meshed by the compute shader (fun/gpu_mesh.c), then drawn straight from the gpu
 //      buffers by an indirect draw (gpu_mesh_views_render_system): no mesh comes back to the cpu
-//  - logs [tst] [metric] lines each second: models meshed a second, the cpu's part (octree and flatten) and the gpu's
+//  - logs [tst] [metric] lines each second: models meshed a second, the cpu's part (the octree) and the gpu's
 //      (one model, waited for), the frame time
 //  - 4 viewports on gray round the grid (spawn_viewport_camera), the menu's view hidden, as tst body_views
 //  - checks: models were meshed every second it ran, and each view drew them (its middle isn't all gray)
@@ -109,21 +109,18 @@ static inline void zox_tst_gpu_update(ecs* world) {
         const double cpu_start = get_time_ms();
         VoxelNode node;
         zox_tst_gpu_animate(&node, i, time);
-        uint* nodes = NULL;
-        const uint count = flatten_VoxelNode(&node, &nodes);
-        collapse_VoxelNode(&node);
         zox_tst_gpu_second_cpu_ms += get_time_ms() - cpu_start;
         // one model a frame is waited for, to time the gpu's part
         if (i == 0) {
             zox_gpu_finish();
         }
         const double gpu_start = get_time_ms();
-        gpu_mesh_flat(&zox_tst_gpu_meshers[i], nodes, count, zox_tst_gpu_depth);
+        gpu_mesh_VoxelNode(&zox_tst_gpu_meshers[i], &node, zox_tst_gpu_depth);
         if (i == 0) {
             zox_gpu_finish();
             zox_tst_gpu_second_gpu_ms += get_time_ms() - gpu_start;
         }
-        free(nodes);
+        collapse_VoxelNode(&node);
         zox_tst_gpu_second_updates++;
     }
     zox_tst_gpu_second_frames++;
@@ -131,7 +128,7 @@ static inline void zox_tst_gpu_update(ecs* world) {
         const double seconds = zox_current_time - zox_tst_gpu_second_start;
         const int frames = zox_tst_gpu_second_frames;
         zox_tst_gpu_faces = gpu_mesher_read_faces(&zox_tst_gpu_meshers[0]);
-        zox_log("[tst] [metric] gpu_mesh_views second [%i]: [%.0f] models meshed a second ([%i] models, [%.1f] fps), cpu octree and flatten [%.2fms] a model, gpu upload and mesh (not flattening) [%.2fms] a model, [%u] faces",
+        zox_log("[tst] [metric] gpu_mesh_views second [%i]: [%.0f] models meshed a second ([%i] models, [%.1f] fps), cpu octree [%.2fms] a model, grid fill, gpu upload and mesh [%.2fms] a model, [%u] faces",
             zox_tst_gpu_seconds_logged, zox_tst_gpu_second_updates / seconds, zox_tst_gpu_models, frames / seconds,
             zox_tst_gpu_second_cpu_ms / (zox_tst_gpu_second_updates ? zox_tst_gpu_second_updates : 1),
             zox_tst_gpu_second_gpu_ms / (frames ? frames : 1), zox_tst_gpu_faces);

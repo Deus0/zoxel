@@ -1,42 +1,44 @@
 // GPU meshing, proof of concept (doc/plans/gpu_meshing.md): a voxel octree to a mesh in a compute shader
-//  - the octree is flattened (fun/flatten.c) and uploaded, one invocation per voxel walks it like walk_octree
+//  - the chunk's voxels at the meshed depth as a grid of bytes with a voxel of border from its 26 neighbours
+//      (smooth lighting's grid, lights3/fun/smooth_grid.c) are uploaded, one invocation per voxel reads it
+//  - a face into a neighbour chunk shows when its voxel there is air, into a missing chunk as edge_faces says
 //  - each solid voxel's face next to air (or the chunk's edge, no neighbours yet) claims a slot by adding 6 to the
 //      index count of an indirect draw command, and writes its 4 vertices and 6 indices, unordered
 //  - max_faces of 3 a voxel can't overflow: a chunk's most faces are its checkers, half its voxels showing all 6
 //  - vertices are vec4: xyz the corner in voxels at the meshed depth, w packs (gpu_mesh_vertex_*):
 //      voxel (bits 0-7), direction (8-10), the corner's light (11-18), the corner's side of the face (19-20,
 //      bit 19 its +a side, bit 20 its +b side, a and b the face's axes as smooth_face_axes)
-//  - lit (gpu_mesh_flat_lit): a flat light octree too (max values, flatten_LightNode), each corner's light by
-//      smooth lighting's rule (smooth_face_lights): the face's, two edges' and the corner's lights averaged, a corner
-//      behind two solid edges is darklight, past the chunk sunlight above and darklight elsewhere
+//  - lit: the lights grid too (an open node its leaves' max), each corner's light by smooth lighting's rule
+//      (smooth_face_lights): the face's, two edges' and the corner's lights averaged, a corner behind two solid
+//      edges is darklight, in a chunk without lights sunlight above and darklight elsewhere
 //  - each vertex also gets its face's 4 corner lights in one uint (byte s = corner side s), so a fragment can blend
 //      them across the face (gpu_mesh_light_pixel) instead of across its two triangles
 //  - the vertex, light and index buffers are plain gl buffers, the command an indirect draw's: gpu_mesher_draw draws
 //      the mesh with no copy back to the cpu (tst gpu_mesh_views, gpu_light_views)
-//  - meshing at a lower depth than the octree's is a lod, as getv_VoxelNode reads it (a node's value)
+//  - meshing at a lower depth than the octree's is a lod: the grid is filled at that depth (a node's value)
 //  - lower blocks (flowing water): heights, 4 bits a block in eighths (0 full, gpu_mesher_set_heights), its top and
 //      its sides' tops at its height when its top shows (as chunks3 build_textured.c)
-//  - no textures, no neighbour chunks, no merging of faces yet
+//  - no textures, no merging of faces yet
 //  - needs compute (OpenGL ES 3.1+, OpenGL 4.3+): gpu_mesher_create returns 0 without it, cpu meshing stays
 
 typedef struct {
     uint program;
-    uint nodes;         // flat octree (binding 0)
+    uint voxels;        // the voxels grid, 4 bytes a uint (binding 0)
     uint command;       // DrawElementsIndirectCommand, its index count 6 a face (binding 1)
     uint vertices;      // 4 vec4 a face (binding 2)
     uint indices;       // 6 uints a face (binding 3)
-    uint lights;        // flat light octree (binding 4)
+    uint lights;        // the lights grid (binding 4)
     uint vertex_lights; // a uint a vertex: its face's 4 corner lights (binding 5)
     uint max_faces;
-    byte edge_faces;    // 1: faces on the chunk's edge are drawn, 0: culled except the top (as cpu sides do with
-                        //  no neighbour chunk, build_voxel_sides), 1 by default
-    size_t nodes_size;  // bytes the nodes buffer holds
+    byte edge_faces;    // faces into a missing chunk, 1: drawn, 0: culled except the top (as cpu sides do with no
+                        //  neighbour chunk, build_voxel_sides), 1 by default
+    size_t voxels_size; // bytes the voxels buffer holds
     size_t lights_size;
     uint vao;           // drawing the vertices and indices, made on the first draw
     uint heights[32];   // a block's height in eighths, 4 bits a block (voxel v at bits (v - 1) * 4), 0 full
 } GpuMesher;
 
-// lighting for gpu_mesh_flat_lit, as smooth lighting has it (lights3)
+// lighting for gpu_mesh_grid, as smooth lighting has it (lights3)
 typedef struct {
     byte darklight;     // the least light, solids and dark corners
     byte sunlight;      // past the chunk's top
@@ -61,7 +63,7 @@ static const uint zox_gpu_mesh_command_reset[5] = { 0, 1, 0, 0, 0 };   // count,
 
 static const char* zox_gpu_mesh_source =
 "layout(local_size_x = 4, local_size_y = 4, local_size_z = 4) in;\n"
-"layout(std430, binding = 0) readonly buffer Nodes { uint nodes[]; };\n"
+"layout(std430, binding = 0) readonly buffer Voxels { uint voxels[]; };\n"
 "layout(std430, binding = 1) buffer Command { uint index_count; uint instance_count; uint first_index; uint base_vertex; uint base_instance; };\n"
 "layout(std430, binding = 2) writeonly buffer Vertices { vec4 vertices[]; };\n"
 "layout(std430, binding = 3) writeonly buffer Indices { uint indices[]; };\n"
@@ -71,6 +73,8 @@ static const char* zox_gpu_mesh_source =
 "uniform uint max_faces;\n"
 "uniform int lit;\n"
 "uniform int edge_faces;\n"
+"uniform uint present;\n"
+"uniform uint lights_present;\n"
 "uniform uint darklight;\n"
 "uniform uint sunlight;\n"
 "uniform uint solid[8];\n"
@@ -80,43 +84,39 @@ static const char* zox_gpu_mesh_source =
 "    return any(lessThan(p, ivec3(0))) || any(greaterThanEqual(p, ivec3(1 << depth)));\n"
 "}\n"
 "\n"
-"// the voxel at p, at depth, as walk_octree reads it: a node without children is its whole cube\n"
-"uint voxel_at(ivec3 p) {\n"
-"    if (outside(p)) {\n"
-"        return 0u;\n"
-"    }\n"
-"    uint node = 0u;\n"
-"    for (int d = 0; d < depth; d++) {\n"
-"        uint children = nodes[node] >> 8;\n"
-"        if (children == 0u) {\n"
-"            break;\n"
-"        }\n"
-"        int shift = depth - d - 1;\n"
-"        uint index = uint((p.x >> shift) & 1) | (uint((p.y >> shift) & 1) << 1) | (uint((p.z >> shift) & 1) << 2);\n"
-"        node = children + index;\n"
-"    }\n"
-"    return nodes[node] & 255u;\n"
+"// the nearby chunk p is in (OCTREE_INDEX), p at most a voxel past the chunk\n"
+"uint chunk_of(ivec3 p) {\n"
+"    ivec3 s = ivec3(greaterThanEqual(p, ivec3(1 << depth))) - ivec3(lessThan(p, ivec3(0)));\n"
+"    return uint((s.z + 1) * 9 + (s.y + 1) * 3 + (s.x + 1));\n"
 "}\n"
 "\n"
-"// the light at p, an open node holds its leaves' max (a coarse read, getv_nearby_max_LightNode)\n"
+"// p's byte in the grids: x then y then z, a voxel of border\n"
+"uint cell(ivec3 p) {\n"
+"    int length = (1 << depth) + 2;\n"
+"    return uint(((p.x + 1) * length + p.y + 1) * length + p.z + 1);\n"
+"}\n"
+"\n"
+"// the voxel at p, a missing chunk's air\n"
+"uint voxel_at(ivec3 p) {\n"
+"    uint i = cell(p);\n"
+"    return (voxels[i >> 2] >> ((i & 3u) * 8u)) & 255u;\n"
+"}\n"
+"\n"
+"// is p in a chunk that isn't there\n"
+"bool missing(ivec3 p) {\n"
+"    return ((present >> chunk_of(p)) & 1u) == 0u;\n"
+"}\n"
+"\n"
+"// the light at p, past (sunlight above, darklight elsewhere) in a chunk without lights\n"
 "uint light_at(ivec3 p, uint past) {\n"
-"    if (outside(p)) {\n"
+"    if (((lights_present >> chunk_of(p)) & 1u) == 0u) {\n"
 "        return past;\n"
 "    }\n"
-"    uint node = 0u;\n"
-"    for (int d = 0; d < depth; d++) {\n"
-"        uint children = lights[node] >> 8;\n"
-"        if (children == 0u) {\n"
-"            break;\n"
-"        }\n"
-"        int shift = depth - d - 1;\n"
-"        uint index = uint((p.x >> shift) & 1) | (uint((p.y >> shift) & 1) << 1) | (uint((p.z >> shift) & 1) << 2);\n"
-"        node = children + index;\n"
-"    }\n"
-"    return lights[node] & 255u;\n"
+"    uint i = cell(p);\n"
+"    return (lights[i >> 2] >> ((i & 3u) * 8u)) & 255u;\n"
 "}\n"
 "\n"
-"// stops light: a voxel the realm calls solid (past the chunk is air)\n"
+"// stops light: a voxel the realm calls solid (a missing chunk is air)\n"
 "bool solid_at(ivec3 p) {\n"
 "    uint v = voxel_at(p);\n"
 "    if (v == 0u) {\n"
@@ -175,10 +175,11 @@ static const char* zox_gpu_mesh_source =
 "    // a lower block (flowing water): its top at its height, when its top shows\n"
 "    uint height = (heights[(voxel - 1u) >> 3] >> (((voxel - 1u) & 7u) * 4u)) & 15u;\n"
 "    ivec3 up = p + directions[3];\n"
-"    bool lowered = height != 0u && (outside(up) || voxel_at(up) == 0u);\n"
+"    bool lowered = height != 0u && voxel_at(up) == 0u;\n"
 "    for (int d = 0; d < 6; d++) {\n"
 "        ivec3 n = p + directions[d];\n"
-"        if (outside(n) ? (edge_faces == 0 && d != 3) : voxel_at(n) != 0u) {\n"
+"        // into a missing chunk: edge_faces 0 culls it (except the top, as cpu sides do), else it's air\n"
+"        if (outside(n) && missing(n) ? (edge_faces == 0 && d != 3) : voxel_at(n) != 0u) {\n"
 "            continue;\n"
 "        }\n"
 "        uint face = atomicAdd(index_count, 6u) / 6u;\n"
@@ -266,9 +267,9 @@ byte gpu_mesher_create(GpuMesher* mesher, uint max_faces) {
     const uint zero = 0;
     mesher->max_faces = max_faces;
     mesher->edge_faces = 1;
-    mesher->nodes_size = sizeof(uint);
+    mesher->voxels_size = sizeof(uint);
     mesher->lights_size = sizeof(uint);
-    mesher->nodes = zox_gpu_storage_buffer(mesher->nodes_size, &zero);
+    mesher->voxels = zox_gpu_storage_buffer(mesher->voxels_size, &zero);
     mesher->lights = zox_gpu_storage_buffer(mesher->lights_size, &zero);
     mesher->command = zox_gpu_storage_buffer(sizeof(zox_gpu_mesh_command_reset), zox_gpu_mesh_command_reset);
     mesher->vertices = zox_gpu_storage_buffer((size_t) max_faces * 4 * sizeof(float4), NULL);
@@ -280,7 +281,7 @@ byte gpu_mesher_create(GpuMesher* mesher, uint max_faces) {
 void gpu_mesher_dispose(GpuMesher* mesher) {
     if (mesher->program) {
         zox_gpu_dispose_program(mesher->program);
-        zox_gpu_dispose_buffer(mesher->nodes);
+        zox_gpu_dispose_buffer(mesher->voxels);
         zox_gpu_dispose_buffer(mesher->lights);
         zox_gpu_dispose_buffer(mesher->command);
         if (mesher->vao) {
@@ -301,62 +302,67 @@ static inline void gpu_mesher_set_heights(GpuMesher* mesher, const byte* heights
     }
 }
 
-// writes nodes into a storage buffer, growing it if needed
-static inline void gpu_mesher_upload(uint buffer, size_t* buffer_size, const uint* nodes, uint count) {
-    const size_t size = (size_t) count * sizeof(uint);
+// writes bytes into a storage buffer, growing it if needed
+static inline void gpu_mesher_upload(uint buffer, size_t* buffer_size, const byte* data, size_t size) {
     if (size > *buffer_size) {
-        zox_gpu_storage_upload(buffer, size, nodes);
+        zox_gpu_storage_upload(buffer, size, data);
         *buffer_size = size;
     } else {
-        zox_gpu_storage_write(buffer, 0, size, nodes);
+        zox_gpu_storage_write(buffer, 0, size, data);
     }
 }
 
-// uploads flat nodes (fun/flatten.c) and meshes them at depth, the mesh stays on the gpu
-//  - light_nodes (flatten_LightNode) and lighting light it, NULL leaves it unlit (full light)
-void gpu_mesh_flat_lit(GpuMesher* mesher, const uint* nodes, uint count, const uint* light_nodes, uint light_count, byte depth, const GpuMeshLighting* lighting) {
-    gpu_mesher_upload(mesher->nodes, &mesher->nodes_size, nodes, count);
-    const byte lit = light_nodes && light_count && lighting;
-    if (lit) {
-        gpu_mesher_upload(mesher->lights, &mesher->lights_size, light_nodes, light_count);
-    }
+// meshes a chunk's grid at depth (1 or more), the mesh stays on the gpu
+//  - voxels: (2^depth + 2)^3 bytes, x then y then z, a voxel of border from the neighbours (smooth_grid's layout)
+//  - present: bit OCTREE_INDEX set for each nearby chunk that has voxels (the middle's), a missing one is air
+//  - lights (the same layout), lights_present and lighting light it, NULL leaves it unlit (full light)
+void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, byte depth, uint present, uint lights_present, const GpuMeshLighting* lighting) {
     zox_gpu_storage_write(mesher->command, 0, sizeof(zox_gpu_mesh_command_reset), zox_gpu_mesh_command_reset);
+    if (!depth) {
+        return;
+    }
+    const size_t length = octree_size(depth) + 2;
+    const size_t cells = length * length * length;   // even length: a whole number of uints
+    gpu_mesher_upload(mesher->voxels, &mesher->voxels_size, voxels, cells);
+    const byte lit = lights && lighting;
+    if (lit) {
+        gpu_mesher_upload(mesher->lights, &mesher->lights_size, lights, cells);
+    }
     zox_gpu_compute_use(mesher->program);
     zox_gpu_compute_uniform_int(mesher->program, "depth", depth);
     zox_gpu_compute_uniform_uint(mesher->program, "max_faces", mesher->max_faces);
     zox_gpu_compute_uniform_int(mesher->program, "lit", lit);
     zox_gpu_compute_uniform_int(mesher->program, "edge_faces", mesher->edge_faces);
+    zox_gpu_compute_uniform_uint(mesher->program, "present", present);
+    zox_gpu_compute_uniform_uint(mesher->program, "lights_present", lights_present);
     zox_gpu_compute_uniform_uint_array(mesher->program, "heights", mesher->heights, 32);
     if (lit) {
         zox_gpu_compute_uniform_uint(mesher->program, "darklight", lighting->darklight);
         zox_gpu_compute_uniform_uint(mesher->program, "sunlight", lighting->sunlight);
         zox_gpu_compute_uniform_uint_array(mesher->program, "solid", lighting->solid, 8);
     }
-    zox_gpu_storage_bind(0, mesher->nodes);
+    zox_gpu_storage_bind(0, mesher->voxels);
     zox_gpu_storage_bind(1, mesher->command);
     zox_gpu_storage_bind(2, mesher->vertices);
     zox_gpu_storage_bind(3, mesher->indices);
     zox_gpu_storage_bind(4, mesher->lights);
     zox_gpu_storage_bind(5, mesher->vertex_lights);
-    const uint length = octree_size(depth);
-    const uint groups = (length + zox_gpu_mesh_group_size - 1) / zox_gpu_mesh_group_size;
+    const uint groups = (octree_size(depth) + zox_gpu_mesh_group_size - 1) / zox_gpu_mesh_group_size;
     zox_gpu_compute_dispatch(groups, groups, groups);
     zox_gpu_compute_use(0);
 }
 
-void gpu_mesh_flat(GpuMesher* mesher, const uint* nodes, uint count, byte depth) {
-    gpu_mesh_flat_lit(mesher, nodes, count, NULL, 0, depth, NULL);
-}
-
-// flattens and meshes a voxel octree at depth (its own, or lower for a lod), returns 1 on success
+// meshes a voxel octree alone (a model, no neighbours) at depth (its own, or lower for a lod), unlit, 1 on success
 byte gpu_mesh_VoxelNode(GpuMesher* mesher, const VoxelNode* voxels, byte depth) {
-    uint* nodes = NULL;
-    const uint count = flatten_VoxelNode(voxels, &nodes);
-    if (!count) {
+    const int length = octree_size(depth) + 2;
+    byte* grid = calloc((size_t) length * length * length, 1);
+    if (!grid) {
         return 0;
     }
-    gpu_mesh_flat(mesher, nodes, count, depth);
-    free(nodes);
+    octree_fill_grid(voxels, sizeof(VoxelNode), octree_type_offset_VoxelNode, 0, depth, int3_zero, (int3) { 1, 1, 1 },
+        grid, length, 0);
+    gpu_mesh_grid(mesher, grid, NULL, depth, 1u << OCTREE_INDEX(0, 0, 0), 0, NULL);
+    free(grid);
     return 1;
 }
 
@@ -411,8 +417,7 @@ byte gpu_mesher_create(GpuMesher* mesher, uint max_faces) {
 }
 void gpu_mesher_dispose(GpuMesher* mesher) { memset(mesher, 0, sizeof(GpuMesher)); }
 static inline void gpu_mesher_set_heights(GpuMesher* mesher, const byte* heights) { }
-void gpu_mesh_flat_lit(GpuMesher* mesher, const uint* nodes, uint count, const uint* light_nodes, uint light_count, byte depth, const GpuMeshLighting* lighting) { }
-void gpu_mesh_flat(GpuMesher* mesher, const uint* nodes, uint count, byte depth) { }
+void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, byte depth, uint present, uint lights_present, const GpuMeshLighting* lighting) { }
 byte gpu_mesh_VoxelNode(GpuMesher* mesher, const VoxelNode* voxels, byte depth) { return 0; }
 uint gpu_mesher_read_faces(GpuMesher* mesher) { return 0; }
 

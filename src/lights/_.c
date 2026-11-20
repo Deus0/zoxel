@@ -18,6 +18,7 @@ void import_lights(ecs* world) {
 #ifdef zox_tests
     zox_tsts_lights();
     zox_tsts_lights_gpu(world);
+    zox_tsts_lights_gpu_neighbours(world);
     zox_tsts_lights_gpu_stress(world);
 #endif
 }

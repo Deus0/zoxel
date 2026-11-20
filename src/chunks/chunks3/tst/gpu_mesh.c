@@ -1,4 +1,4 @@
-// tst: octree_flatten and gpu_mesh, gpu meshing's proof of concept (fun/flatten.c, fun/gpu_mesh.c, doc/plans/gpu_meshing.md)
+// tst: octree_flatten and gpu_mesh, gpu meshing (fun/flatten.c, fun/gpu_mesh.c, doc/plans/gpu_meshing.md)
 //  - octree_flatten: every voxel of a flattened octree reads back as getv_VoxelNode reads the octree, at its depth
 //      and at lower ones (lods), cpu only
 //  - gpu_mesh: the compute shader's mesh has exactly the faces a voxel by voxel reference has (a solid voxel's face
@@ -191,7 +191,7 @@ static inline void zox_tst_gpu_compare(GpuMesher* mesher, const VoxelNode* voxel
     free(seen);
 }
 
-// times the gpu (flatten, upload, mesh, wait) and the cpu's sides (chunk_sides_system's part of meshing) for one chunk
+// times the gpu (the grid's fill, upload, mesh, wait) and the cpu's sides (chunk_sides_system's part of meshing) for one chunk
 static inline void zox_tst_gpu_time(GpuMesher* mesher, const VoxelNode* voxels, byte depth, const char* name) {
     const int runs = 20;
     double start = get_time_ms();
@@ -200,15 +200,17 @@ static inline void zox_tst_gpu_time(GpuMesher* mesher, const VoxelNode* voxels, 
         zox_gpu_finish();
     }
     const double gpu_ms = (get_time_ms() - start) / runs;
-    uint* nodes = NULL;
-    const uint count = flatten_VoxelNode(voxels, &nodes);
+    const int length = octree_size(depth) + 2;
+    byte* grid = calloc((size_t) length * length * length, 1);
+    octree_fill_grid(voxels, sizeof(VoxelNode), octree_type_offset_VoxelNode, 0, depth, int3_zero, (int3) { 1, 1, 1 },
+        grid, length, 0);
     start = get_time_ms();
     for (int r = 0; r < runs; r++) {
-        gpu_mesh_flat(mesher, nodes, count, depth);
+        gpu_mesh_grid(mesher, grid, NULL, depth, 1u << OCTREE_INDEX(0, 0, 0), 0, NULL);
         zox_gpu_finish();
     }
     const double gpu_only_ms = (get_time_ms() - start) / runs;
-    free(nodes);
+    free(grid);
     const VoxelNode* neighbors[6] = { NULL };
     const byte neighbor_depths[6] = { depth, depth, depth, depth, depth, depth };
     init_side_child_indices();
@@ -220,7 +222,7 @@ static inline void zox_tst_gpu_time(GpuMesher* mesher, const VoxelNode* voxels, 
         collapse_SidesOctree(&sides);
     }
     const double cpu_sides_ms = (get_time_ms() - start) / runs;
-    zox_log("[tst] [metric] gpu_mesh [%s] depth [%i]: gpu [%.3fms] (without flattening [%.3fms]), cpu sides only [%.3fms]",
+    zox_log("[tst] [metric] gpu_mesh [%s] depth [%i]: gpu [%.3fms] (without the grid's fill [%.3fms]), cpu sides only [%.3fms]",
         name, depth, gpu_ms, gpu_only_ms, cpu_sides_ms);
 }
 

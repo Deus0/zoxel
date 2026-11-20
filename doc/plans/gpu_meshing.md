@@ -1,37 +1,38 @@
 # GPU Meshing
 
 Meshing voxel octrees in a compute shader instead of the cpu mesh builders, with cpu meshing kept as the fallback.
-What exists (a tested proof of concept with smooth lighting, 2026-11-14), what it measured, and the plan to put it in
-the game.
+What exists (a tested proof of concept with smooth lighting, 2026-11-14; neighbour chunks, 2026-11-20), what it
+measured, and the plan to put it in the game.
 
-Code: [src/_/octrees/flatten.c](../../src/_/octrees/flatten.c) (any octree → flat array),
-[src/chunks/chunks3/fun/flatten.c](../../src/chunks/chunks3/fun/flatten.c) (`flatten_VoxelNode`),
-[src/lights/lights3/fun/gpu.c](../../src/lights/lights3/fun/gpu.c) (`flatten_LightNode`, `gpu_mesh_lighting`),
+Code: [src/lights/lights3/fun/smooth_grid.c](../../src/lights/lights3/fun/smooth_grid.c) (`smooth_grid`: a chunk and
+a voxel of border from its 26 neighbours as bytes, shared with cpu smooth lighting),
+[src/lights/lights3/fun/gpu.c](../../src/lights/lights3/fun/gpu.c) (`gpu_mesh_smooth_grid`, `gpu_mesh_lighting`),
 [src/chunks/chunks3/fun/gpu_mesh.c](../../src/chunks/chunks3/fun/gpu_mesh.c) (the compute and draw shaders, `GpuMesher`),
 [src/graphics/opengl/fun/compute.c](../../src/graphics/opengl/fun/compute.c) (`zox_gpu_*` storage buffers, programs,
 dispatch, indirect draw), setting `zox_chunks3_gpu_meshing` ([src/chunks/chunks3/set/_.c](../../src/chunks/chunks3/set/_.c)).
 Tests: [src/chunks/chunks3/tst/gpu_mesh.c](../../src/chunks/chunks3/tst/gpu_mesh.c),
-[src/lights/tst/gpu.c](../../src/lights/tst/gpu.c),
+[src/lights/tst/gpu.c](../../src/lights/tst/gpu.c), [src/lights/tst/gpu_neighbours.c](../../src/lights/tst/gpu_neighbours.c),
 [src/models/tst/gpu_mesh_views.c](../../src/models/tst/gpu_mesh_views.c).
 
 ## How it works
 
-1. **Flatten** (`flatten_octree`): the octree becomes one `uint` array, breadth first. A node is its value (bits 0-7)
-   and the index of its first child (bits 8-31, 0 for none), its 8 children in a row in octree order
-   (`x | y << 1 | z << 2`). A node without children is its value for its whole cube, as `walk_octree` reads it, so
-   meshing at a lower depth is a LOD. Linked nodes are leaves. Light trees flatten with `max_values`: an open node holds
-   its leaves' brightest, as the cpu's coarse reads (`getv_nearby_max_LightNode`). A 32³ terrain-like chunk is ~7.7k
-   nodes (~30KB).
-2. **Mesh** (`gpu_mesh_flat_lit`): the nodes are uploaded to a storage buffer, one invocation per voxel walks them to
-   its voxel and its 6 neighbours (`voxel_at`, the same walk as `walk_octree`). Each solid voxel face next to air
+1. **Grid** (`smooth_grid_fill`, the same one cpu smooth lighting fills): the chunk's voxels and lights at the meshed
+   depth as bytes, `(2^depth + 2)³` of them, a voxel of border read from its 26 neighbours (`octree_fill_grid`). A
+   node above the depth is its value for its whole cube, as `walk_octree` reads it, so meshing at a lower depth is a
+   LOD; lights take an open node's brightest leaf (`getv_nearby_max_LightNode`). Which neighbours have voxels and
+   lights goes in two 27 bit masks (`present`, `lights_present`). A 16³ chunk's grid is 5.8KB a tree, a 32³'s 39KB.
+   (It replaced flattened octrees, `flatten_octree`, which needed a tree walk a read and had no neighbours: the gpu
+   part got several times faster, Measurements.)
+2. **Mesh** (`gpu_mesh_grid`): the grids are uploaded to storage buffers, one invocation per voxel reads its voxel and
+   its 6 neighbours, across the chunk's border too (`voxel_at`). Each solid voxel face next to air
    claims a slot by adding 6 to an indirect draw command's index count, and writes 4 vertices, 6 indices and 4 vertex
    lights. Vertices are `vec4`: the corner in voxels, `w` packs the voxel, direction, the corner's light and its side of
    the face (`gpu_mesh_vertex_*`).
-   - **Lit** (light nodes and a `GpuMeshLighting` given): each corner by smooth lighting's rule (`smooth_face_lights`):
-     the face's, its two edges' and its corner's lights averaged, a corner behind two solid edges is darklight, past
-     the chunk sunlight above and darklight elsewhere, solids from a 256 bit mask of the realm's solidity.
+   - **Lit** (the lights grid and a `GpuMeshLighting` given): each corner by smooth lighting's rule (`smooth_face_lights`):
+     the face's, its two edges' and its corner's lights averaged, a corner behind two solid edges is darklight, in a
+     chunk without lights sunlight above and darklight elsewhere, solids from a 256 bit mask of the realm's solidity.
    - Each vertex also holds its face's 4 corner lights in one `uint`, so a fragment can blend them across the face.
-   - `edge_faces` (default 1): 0 culls border faces except the top, as the cpu does with no neighbour chunk.
+   - `edge_faces` (default 1): a face into a missing chunk; 0 culls it except the top, as cpu sides do.
 3. **Draw** (`gpu_mesher_draw`): the vertex, light and index buffers are bound as a vertex array and drawn with
    `glDrawElementsIndirect`, the index count read by the gpu from the command. Nothing comes back to the cpu. Colours
    from a palette, each direction a fixed shade, lit by `light_mode`:
@@ -48,6 +49,10 @@ Tests: [src/chunks/chunks3/tst/gpu_mesh.c](../../src/chunks/chunks3/tst/gpu_mesh
 
 ## Tests
 
+- `gpu_mesh_neighbours`: 27 chunks of hills across their borders, the middle one meshed lit from its grid: its faces
+  against a voxel-by-voxel reference that looks into the neighbours, every corner light against `smooth_face_lights`
+  over the 27; again with three missing (faces into them culled but the top). Fails when the shader ignores its
+  neighbours (tried).
 - `octree_flatten`: 7 shapes (empty, one voxel, solid, sphere, noise, checkers, terrain hills) at depth 5, every voxel
   of the flat array reads back as the octree does, at depth 5, 4 and 3.
 - `gpu_mesh`: the same shapes meshed on the gpu at depth 5, 4 and 3, against a voxel-by-voxel reference: the same face
@@ -57,14 +62,14 @@ Tests: [src/chunks/chunks3/tst/gpu_mesh.c](../../src/chunks/chunks3/tst/gpu_mesh
   corner: smooth_lights' corner case, and a terrain chunk (hills in sunlight, a torch lit cave, its light tree reduced)
   at depth 5, 4 and 3. Each vertex's 4 face lights match too. Fails when the corner rule is dropped from the shader.
 - `gpu_mesh_views` (`bash bsh/gpu_mesh.sh`, `--visible` to watch on the real gpu): vox models (`zox_tst_vox`, default
-  chicken, `zox_tst_gpu_models` of them, default 9) ripple every frame: octree rebuilt, flattened, meshed on the gpu,
+  chicken, `zox_tst_gpu_models` of them, default 9) ripple every frame: octree rebuilt, meshed on the gpu from its grid,
   drawn from the gpu, 4 viewports, `tst/gpu_mesh_views.png`. Logs models meshed a second. Checks it meshed every
   second and every view drew them.
 - `gpu_light_views` (`bash bsh/gpu_lights.sh`, `--1080p` to see the difference): the same close up into the torch lit
   cave 4 times: unlit, face, vertex, pixel. Logs how many pixels pixel lighting changes from vertex lighting.
 - `gpu_light_stress` (`bash bsh/gpu_light_stress.sh`, `--visible` to watch for 20 seconds): terrain chunks at night
   (`zox_tst_gpu_chunks`, default 4) re-shaped and re-lit every frame: the hills roll (voxel octree rebuilt,
-  `zox_tst_gpu_voxels=0` keeps them still), two torches move (a light flood and light octree rebuilt), both flattened,
+  `zox_tst_gpu_voxels=0` keeps them still), two torches move (a light flood and light octree rebuilt), both filled into a grid,
   meshed lit on the gpu, drawn with pixel light. Logs chunks updated a second and each part's time. Checks the last
   animated frame's corner lights against `smooth_face_lights`.
 
@@ -89,6 +94,17 @@ Debug builds.
 
 In the light stress the cpu's light flood (a simple one in the test, the game's flood fill is more) is the biggest
 cpu part, more than rebuilding the voxels: light flooding on the gpu is the next big step for realtime lights.
+
+With the grid (2026-11-20, llvmpipe, the same tests; the cpu parts ran ~2× faster than the run above too, so compare
+within a row's run):
+
+| What | grid | cpu in the same run |
+|---|---|---|
+| 32³ terrain chunk: fill the grid, upload, mesh, wait | 0.59ms (0.26ms without the fill) | sides only 11.8ms |
+| 32³ terrain chunk lit | 0.95ms (unlit 0.58ms) | |
+| `gpu_light_stress`, 4 chunks every frame | ~64 chunks a second at ~16fps | |
+| a chunk of it: cpu voxels / cpu light flood / grid / gpu upload and mesh | 2.4 / 5.1 / 0.44 / 0.5ms | |
+| 9 chickens remeshed every frame | ~324 a second at ~36fps, 0.2ms a chicken | octree 0.08ms |
 
 So an animated chicken is ~0.5ms a frame on the Mali (half octree and flatten, half gpu), and the frame rate, not
 the meshing, was the limit at 9 models.
@@ -143,8 +159,9 @@ Later, if wanted:
 
 ## How it differs from the cpu path
 
-- **Chunk borders:** the cpu reads neighbour chunks' voxels and lights. The gpu has no neighbours yet: past the edge
-  is air (or culled with `edge_faces` 0), and its light is sunlight above, darklight elsewhere.
+- **Chunk borders:** both read the neighbours' voxels and lights. The gpu reads a neighbour at the meshed depth (its
+  grid), the cpu's sides check a more detailed neighbour's every voxel on that side (`get_node_sides_all_hide`): at a
+  border between lods the gpu may cull a face the cpu shows (step 5).
 - **Big nodes:** the cpu decides a big node's faces from neighbour nodes' values (`adjacent_node->value`, the mode),
   so a face partly next to air can be culled. The gpu checks every voxel.
 - **Merging:** the cpu draws one quad per big node face, the gpu one per voxel face: more vertices for solid areas,
@@ -155,10 +172,8 @@ Later, if wanted:
 
 Each step behind `zox_chunks3_gpu_meshing` and `zox_gpu_compute_supported()`, the cpu path unchanged, a test first.
 
-1. **Neighbours.** Updates stay per chunk. Give the shader its 6 neighbours' voxels and lights (26 for smooth light
-   corners): upload them flattened in the same buffers with an offset each, `voxel_at` and `light_at` step into a
-   neighbour past the edge. Test: `chunk_sides` and `smooth_lights` cases, gpu against cpu, face for face and light for
-   light.
+1. **Neighbours** (done, 2026-11-20): the shader reads smooth lighting's grid, a voxel of border from the 26
+   neighbours (`gpu_mesh_neighbours`).
 2. **Batching.** Many dirty chunks in one dispatch: one big nodes buffer with an offset per chunk, one command per
    chunk (`glMultiDrawElementsIndirect` on GL, a loop of indirect draws on ES). "Per terrain" would be this, the
    meshes stay per chunk.

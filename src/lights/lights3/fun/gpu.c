@@ -1,11 +1,7 @@
 // Lights for gpu meshing (chunks3/fun/gpu_mesh.c, doc/plans/gpu_meshing.md)
-//  - a light octree flattened with max values: a coarse read is its leaves' brightest, as getv_nearby_max_LightNode
+//  - the shader reads smooth lighting's grid (fun/smooth_grid.c): a chunk's voxels and lights with a voxel of border
+//      from its 26 neighbours, a coarse light its leaves' brightest, as getv_nearby_max_LightNode
 //  - tst gpu_mesh_lights checks the gpu's corner lights against smooth_face_lights
-
-// returns the node count, the nodes malloced into *out (free them), 0 on failure
-static inline uint flatten_LightNode(const LightNode* root, uint** out) {
-    return flatten_octree(root, sizeof(LightNode), octree_type_offset_LightNode, 1, out);
-}
 
 // gpu meshing's lighting from smooth lighting's: darklight, sunlight and which voxels stop light
 //  - solidity: zox_light_solidity_length bytes, voxel v stops light when solidity[v - 1] (realm_light_solidity)
@@ -17,4 +13,14 @@ static inline GpuMeshLighting gpu_mesh_lighting(const byte* solidity) {
         }
     }
     return lighting;
+}
+
+// meshes a chunk on the gpu from its smooth grid (smooth_grid_fill at depth), lighting NULL leaves it unlit
+static inline void gpu_mesh_smooth_grid(GpuMesher* mesher, const smooth_grid* grid, byte depth, const GpuMeshLighting* lighting) {
+    uint present = 0, lights_present = 0;
+    for (byte i = 0; i < 27; i++) {
+        present |= (uint) grid->voxels_present[i] << i;
+        lights_present |= (uint) grid->present[i] << i;
+    }
+    gpu_mesh_grid(mesher, grid->voxels, grid->lights, depth, present, lights_present, lighting);
 }
