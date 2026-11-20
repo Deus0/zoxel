@@ -1047,7 +1047,8 @@
 - Github actions: more targets in .github/workflows/build.yml (see doc/devops.md)
 	- web
 	- a versioned release when a v* tag is pushed
-- Codeberg: run the same builds there (forgejo actions), it's a push remote too
+- Codeberg: all the builds there (.forgejo/workflows/build.yml builds linux x64 vulkan and windows, copies the rest
+  from github), see doc/devops.md Todo
 
 # Platforms
 - Make Glut Build work

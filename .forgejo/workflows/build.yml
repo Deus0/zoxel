@@ -1,0 +1,141 @@
+# codeberg's nightly (forgejo actions, doc/devops.md): builds linux x64 vulkan and windows x64 here, copies the other
+#  builds from github's nightly (.github/workflows/build.yml), then replaces codeberg's nightly release
+#   once a day, after github's: skipped if master didn't change, or start it by hand (actions, build, run workflow)
+#   codeberg's runners are small (4 cpus, 8G, ~10 minutes each by fair use), so only two builds run here
+#   needs the CODEBERG_TOKEN secret: a codeberg token with write:repository, in the repo's settings, actions, secrets
+name: build
+
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: codeberg-tiny
+    outputs:
+      changed: ${{ steps.check.outputs.changed }}
+    steps:
+      - id: check
+        run: |
+          changed=true
+          if [[ "${{ github.event_name }}" == "schedule" ]]; then
+            nightly="$(git ls-remote "${{ github.server_url }}/${{ github.repository }}.git" refs/tags/nightly | cut -f1)"
+            [[ "${nightly}" == "${{ github.sha }}" ]] && changed=false
+          fi
+          echo "changed=${changed}" >> "$GITHUB_OUTPUT"
+
+  # ubuntu 24.04 as github's (and docker.sh), catthehacker's image as it has node for the actions
+  build:
+    name: ${{ matrix.target }}
+    needs: check
+    if: needs.check.outputs.changed == 'true'
+    runs-on: codeberg-medium
+    container: ghcr.io/catthehacker/ubuntu:act-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: linux_x64_vulkan
+            deps: --vulkan
+            build: bash bsh/build.sh --release --package --x64 --docker --vulkan
+          - target: windows_x64
+            deps: --windows
+            build: bash bsh/windows.sh --release
+    steps:
+      - uses: https://data.forgejo.org/actions/checkout@v4
+      - name: packages
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          apt-get update
+          apt-get install -y $(bash bsh/deps.sh ${{ matrix.deps }})
+      # the vulkan build's libs are the same as linux_x64's (as on github)
+      - name: cache libs
+        uses: https://data.forgejo.org/actions/cache@v4
+        with:
+          path: |
+            ext
+            lib
+          key: libs-${{ matrix.target }}-${{ hashFiles('bsh/libs-download.sh', 'bsh/libs-compile.sh', 'bsh/deps.sh') }}
+      - name: cache flecs
+        uses: https://data.forgejo.org/actions/cache@v4
+        with:
+          path: inc/flecs
+          key: flecs-${{ hashFiles('bsh/flecs.sh', 'bsh/flecs_fix.sh', 'bsh/flecs_patches/*') }}
+      - name: flecs
+        run: bash bsh/flecs.sh
+      - name: build
+        run: ${{ matrix.build }}
+      # forgejo's fork: github's upload-artifact v4 refuses to run off github
+      - uses: https://code.forgejo.org/forgejo/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}
+          path: zip/*.zip
+          if-no-files-found: error
+          retention-days: 14
+
+  nightly:
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    runs-on: codeberg-small
+    container: ghcr.io/catthehacker/ubuntu:act-24.04
+    env:
+      CODEBERG_TOKEN: ${{ secrets.CODEBERG_TOKEN }}
+      GITHUB_REPO: Deus0/zoxel
+    steps:
+      # the tag is moved by a git push (forgejo's api can't move one), with CODEBERG_TOKEN, not the checkout's
+      - uses: https://data.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: https://code.forgejo.org/forgejo/download-artifact@v4
+        with:
+          path: built
+      # the rest from github's nightly, all but what was built here
+      - name: copy github's
+        run: |
+          set -euo pipefail
+          mkdir -p zips
+          find built -type f -name '*.zip' -exec mv {} zips/ \;
+          github_sha="$(git ls-remote "https://github.com/${GITHUB_REPO}.git" refs/tags/nightly | cut -f1)"
+          echo "${github_sha}" > github_sha
+          curl -sfL "https://api.github.com/repos/${GITHUB_REPO}/releases/tags/nightly" | \
+            jq -r '.assets[] | [.name, .browser_download_url] | @tsv' | while IFS=$'\t' read -r name url; do
+              [[ "${name}" == zoxel_linux_x64_vulkan_* || "${name}" == zoxel_windows_x64_* ]] && continue
+              echo "copying ${name}"
+              curl -sfL -o "zips/${name}" "${url}"
+            done
+          ls -l zips
+      # as github's: uploads first, then the old files go, then the tag moves; a failed upload leaves the last builds
+      #  there. forgejo's api has no clobber, so the old files go by id
+      - name: release
+        run: |
+          set -euo pipefail
+          [[ -z "${CODEBERG_TOKEN}" ]] && { echo "no CODEBERG_TOKEN secret"; exit 1; }
+          sha="${{ github.sha }}"
+          api="${{ github.server_url }}/api/v1/repos/${{ github.repository }}"
+          auth="Authorization: token ${CODEBERG_TOKEN}"
+          release="$(curl -sf -H "${auth}" "${api}/releases/tags/nightly" || true)"
+          if [[ -z "${release}" ]]; then
+            release="$(jq -n --arg sha "${sha}" '{tag_name: "nightly", target_commitish: $sha, name: "zoxel-nightly",
+              body: "first build", prerelease: true}' | \
+              curl -sf -X POST -H "${auth}" -H "Content-Type: application/json" -d @- "${api}/releases")"
+          fi
+          id="$(jq -r .id <<< "${release}")"
+          old="$(jq -r '.assets[].id' <<< "${release}")"
+          for file in zips/*; do
+            echo "uploading ${file##*/}"
+            curl -sf -X POST -H "${auth}" -F "attachment=@${file}" \
+              "${api}/releases/${id}/assets?name=${file##*/}" > /dev/null
+          done
+          for asset in ${old}; do
+            curl -sf -X DELETE -H "${auth}" "${api}/releases/${id}/assets/${asset}"
+          done
+          server="${{ github.server_url }}"
+          repo="${{ github.repository }}"
+          git push --force "https://${repo%%/*}:${CODEBERG_TOKEN}@${server#https://}/${repo}.git" \
+            "${sha}:refs/tags/nightly"
+          notes="daily build of master, $(date -u +%Y-%m-%d), at ${sha}
+          linux x64 vulkan and windows x64 built here, the rest copied from github's nightly, at $(cat github_sha)"
+          jq -n --arg notes "${notes}" '{name: "zoxel-nightly", body: $notes, prerelease: true}' | \
+            curl -sf -X PATCH -H "${auth}" -H "Content-Type: application/json" -d @- "${api}/releases/${id}" > /dev/null

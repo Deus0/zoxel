@@ -1,7 +1,7 @@
 # Devops
 
 ## Get a build
-- daily builds: github releases, "zoxel-nightly" (tag nightly): linux x64, linux arm and windows x64 zips, android arm
+- daily builds: github and codeberg releases, "zoxel-nightly" (tag nightly): linux x64, linux arm and windows x64 zips, android arm
   apks (phone and xr), the newest only (versioned releases later)
 - any commit or branch: github actions, its build run, artifacts (kept 14 days)
 
@@ -44,9 +44,25 @@
 	- versionCode is the build date (20261118), versionName 2026.11.18, so a newer apk updates an older one
 	- launcher icons: gam/<game>/android/res/mipmap-*/ic_launcher.png replace sdl's, made from res/textures/game.bmp
 	  (the window icon) with a clear background, after changing it: bash bsh/android_icons.sh (needs imagemagick)
-- codeberg doesn't run it yet, see doc/todo.md Devops
+- codeberg: forgejo actions, .forgejo/workflows/build.yml, daily at 06:17 utc (after github's), skipped if master
+  didn't change, or start it by hand (actions, build, run workflow)
+	- builds linux x64 vulkan and windows x64 there, copies the rest from github's nightly release, then swaps
+	  codeberg's nightly release's files as github's does (the tag moved by a git push), the notes say both commits
+	- turn on actions: the repo's settings, units, overview, enable actions
+	- needs the CODEBERG_TOKEN secret: codeberg, settings, applications, a token with write:repository, saved in
+	  the repo's settings, actions, secrets
+	- codeberg's hosted runners are small (codeberg-medium: 4 cpus, 8G, ~10 minutes by fair use, no arm), so only two
+	  builds run there
+	- ubuntu 24.04 as catthehacker/ubuntu:act-24.04 (the actions need node), forgejo's upload/download-artifact
+	  forks (github's v4 refuses to run off github)
 
 ## Todo
+- speed up codeberg's builds (.forgejo/workflows/build.yml), to fit its runners' ~10 minutes and build more there
+	- time each step of a run, see where it goes (apt, libs compile, flecs, the build)
+	- a prebuilt image with deps.sh's packages, no apt-get each run
+	- check its cache works there (ext, lib, inc/flecs), else SDL is compiled every run
+	- then build the rest there too: linux x64 opengl, android (gradle and the ndk are slow), linux arm needs an arm
+	  runner (a self hosted one?)
 - we should put zoxel.bin in a sub folder with the right lib files
 - Fix x86 on arm builds
 	- add ext/mesa compile to libs-compile.sh
