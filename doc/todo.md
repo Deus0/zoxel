@@ -809,8 +809,8 @@
 - dust particles in the air round the terrain (ergo proxy, dystopian vibes)
 - vulkan release crashed once in 5 render_fps runs at far 8 with ZOX_VK_WORKERS=0 ("Segfault Detected" ~2s after
   the player spawned, 2026-11-20), never in debug: get a backtrace (a release build with -g)
-- Vulkan renderer: part 5 of [plans/vulkan.md](plans/vulkan.md) (compute, with gpu meshing); android's context
-  loss (gpu restore hooks) untested on vulkan
+- Vulkan renderer: part 5 of [plans/vulkan.md](plans/vulkan.md) (compute, with gpu meshing); context loss passes its
+  tests on vulkan, a real android phone untried
 - make the walking camera animation feel more natural
     - just animate the head better and body
     - add tremble in the gait

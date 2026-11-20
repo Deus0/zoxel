@@ -31,6 +31,7 @@ the backend under it changes. Code: [src/graphics/vulkan](../../src/graphics/vul
    (tst screenshot, `--vulkan`), without post processing.
 4. **Render textures** (done): fbos and rbos (`targets.c`), cameras draw to textures and the post processing draws
    them (blur, tint, lids). A render texture is drawn unflipped (gl's rows, bottom first), its pipelines clockwise.
+   Context loss (android): `gpu_restore` and `gpu_restore_game` pass on vulkan (2026-11-20).
 5. **Compute**: gpu meshing (doc/plans/gpu_meshing.md); off until then, chunks mesh on the cpu.
 
 ## Gl and vulkan differences, and how each is met
