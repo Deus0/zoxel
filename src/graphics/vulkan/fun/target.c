@@ -132,6 +132,10 @@ byte vulkan_create_swapchain() {
     if (!vk_extent.width || !vk_extent.height) {
         return 0;   // minimised, tried again next frame
     }
+    vk_extent_made = 1;
+    zox_log("+ vulkan swapchain [%ix%i] window [%ix%i] surface [%ix%i] turn [%i]", vk_extent.width, vk_extent.height,
+        vk_window_size.x, vk_window_size.y, capabilities.currentExtent.width, capabilities.currentExtent.height,
+        capabilities.currentTransform);
     const VkSurfaceFormatKHR format = vulkan_pick_surface_format();
     vk_color_format = format.format;
     uint images = capabilities.minImageCount + 1;
@@ -305,6 +309,18 @@ void vulkan_check_extent() {
     if (extent.width != vk_extent.width || extent.height != vk_extent.height) {
         vk_resized = 1;
     }
+}
+
+// a swapchain made since last asked, its size (what's drawn): the game's size follows it (apps/sdl events.c), once
+//  - android gave sdl's size unturned at start while the swapchain was upright: the viewport was off the frame till a
+//    rotation's resize
+byte vulkan_take_extent(int2* size) {
+    if (!vk_extent_made) {
+        return 0;
+    }
+    vk_extent_made = 0;
+    *size = (int2) { vk_extent.width, vk_extent.height };
+    return 1;
 }
 
 void vulkan_resize(int2 size) {

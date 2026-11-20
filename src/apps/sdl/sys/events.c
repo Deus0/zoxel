@@ -131,5 +131,15 @@ void sdl_events_system(iter* it) {
         // handle input events
         update_sdl_input(world, e, event);
     }
+#ifdef zox_vulkan
+    // the swapchain's size is what's drawn: the game's follows it when they differ (android started with sdl's size
+    //  unturned, the viewport off the frame till a rotation)
+    int2 frame_size;
+    if (vulkan_take_extent(&frame_size) && !int2_equals(frame_size, zox_getv(e, WindowSize))) {
+        zox_log("+ window size [%ix%i] follows the vulkan swapchain [%ix%i]", zox_getv(e, WindowSize).x,
+            zox_getv(e, WindowSize).y, frame_size.x, frame_size.y);
+        on_window_resized(world, e, frame_size, dbg_log);
+    }
+#endif
     zox_sys_on_end();
 } zoxd_system(sdl_events_system);

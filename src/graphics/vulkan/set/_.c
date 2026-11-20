@@ -47,6 +47,7 @@ uint vk_image;                  // the image drawn to this frame
 byte vk_recording;              // the frame's render pass is open
 byte vk_submitted;              // read back mid frame: submitted, the image still ours, not presented
 byte vk_resized;                // the swapchain is remade before the next frame
+byte vk_extent_made;            // a swapchain was made, its size not yet given to the game (vulkan_take_extent)
 byte vk_surface_lost;           // android took the window's surface (the app in the background): no frames
 byte vk_vsync = 1;              // fifo, else mailbox or immediate (the app's vsync setting)
 int2 vk_window_size;            // when the surface doesn't say its size (wayland)
