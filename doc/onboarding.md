@@ -297,6 +297,7 @@ The loop:
 - [Sounds](sounds.md): what things sound like hit, realm sound entities, materials, grunts
 - [Nodes](nodes.md): node graphs, how dialogue and quests walk them
 - [Tests](tests.md): writing tests, patterns, every test by area
+- [Metrics](metrics.md): rendering speed per backend and how alike they draw, a report a run
 - [Systems](systems.md): the phases in a frame, kinds of systems, budgets, profiling
 - [Thread Safety](thread_safety.md): workers, merges (sync points), octree phases and locks, `tst pipeline_syncs`
 - [Flecs Patches](flecs_patches.md): our fixes to flecs (bsh/flecs_fix.sh), why, repros, for upstream PRs

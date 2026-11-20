@@ -29,7 +29,8 @@ void vulkan_frame_wait() {
 }
 
 // copies bytes into this frame's ring: the buffer and offset it's at, 0 if it couldn't
-byte vulkan_ring_push(const void* data, VkDeviceSize size, VkBuffer* buffer, uint* offset) {
+// copies bytes of data into a reserved size of this frame's ring (a block's whole range, only its used part copied)
+byte vulkan_ring_push_part(const void* data, VkDeviceSize bytes, VkDeviceSize size, VkBuffer* buffer, uint* offset) {
     if (size > vk_ring_size) {
         zox_loge("[vulkan] [%lu] bytes is over the ring's size", (ulong) size);
         return 0;
@@ -55,11 +56,15 @@ byte vulkan_ring_push(const void* data, VkDeviceSize size, VkBuffer* buffer, uin
         }
         vkMapMemory(vk_device, vk_ctx->rings_memory[vk_frame][i], 0, VK_WHOLE_SIZE, 0, (void**) &vk_ctx->rings_mapped[vk_frame][i]);
     }
-    memcpy(vk_ctx->rings_mapped[vk_frame][vk_ctx->ring_index] + start, data, size);
+    memcpy(vk_ctx->rings_mapped[vk_frame][vk_ctx->ring_index] + start, data, bytes < size ? bytes : size);
     vk_ctx->ring_used = start + size;
     *buffer = vk_ctx->rings[vk_frame][vk_ctx->ring_index];
     *offset = start;
     return 1;
+}
+
+static inline byte vulkan_ring_push(const void* data, VkDeviceSize size, VkBuffer* buffer, uint* offset) {
+    return vulkan_ring_push_part(data, size, size, buffer, offset);
 }
 
 VkDescriptorPool vulkan_create_pool() {

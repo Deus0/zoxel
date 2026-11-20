@@ -10,6 +10,7 @@ typedef struct {
     VkDeviceSize capacity;
     ulong used;                 // the submission that last read it (vk_busy)
     byte* shadow;               // a uniform buffer's data, copied to the frame's ring when drawn
+    VkDeviceSize shadow_used;   // the bytes its last write filled (only they're copied, the block's range reserved)
     byte shadow_dirty;
     VkBuffer ring;              // and where it was copied this frame
     uint ring_offset;

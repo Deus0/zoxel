@@ -115,13 +115,15 @@ void vulkan_buffer_data(uint id, const void* data, VkDeviceSize bytes) {
     buffer->size = bytes;
 }
 
-// gl's glBufferSubData at the start of the buffer
+// gl's glBufferSubData at the start of the buffer, but a buffer moved (still read) keeps none of the old bytes past
+// the write: its callers (particles, instanced lines) draw only what they wrote each frame, and copying the rest
+// read back gpu memory every frame (14% of the main thread at far 8)
 void vulkan_buffer_sub_data(uint id, const void* data, VkDeviceSize bytes) {
     vk_buffer* buffer = vk_buffer_of(id);
     if (!buffer || !data || !bytes) {
         return;
     }
-    if (!vulkan_buffer_reserve(buffer, bytes > buffer->size ? bytes : buffer->size, 1)) {
+    if (!vulkan_buffer_reserve(buffer, bytes > buffer->size ? bytes : buffer->size, 0)) {
         return;
     }
     vulkan_buffer_write(buffer, 0, data, bytes);

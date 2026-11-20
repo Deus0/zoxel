@@ -16,6 +16,7 @@ void vulkan_ubo_write(guint id, gsizei length, gsizei capacity, const void* ptr)
     if (ptr) {
         memcpy(buffer->shadow, ptr, (size_t) length * sizeof(float4x4));
     }
+    buffer->shadow_used = (VkDeviceSize) length * sizeof(float4x4);
     buffer->shadow_dirty = 1;
 }
 
@@ -49,7 +50,8 @@ byte vulkan_ubo_ring(vk_buffer* buffer, VkBuffer* ring, uint* offset) {
         return 0;
     }
     if (buffer->shadow_dirty || buffer->ring_epoch != vk_ring_epoch) {
-        if (!vulkan_ring_push(buffer->shadow, buffer->size, &buffer->ring, &buffer->ring_offset)) {
+        // the instances drawn (a few of a 1024 matrix block, 64KB copied a draw before)
+        if (!vulkan_ring_push_part(buffer->shadow, buffer->shadow_used, buffer->size, &buffer->ring, &buffer->ring_offset)) {
             return 0;
         }
         buffer->ring_epoch = vk_ring_epoch;

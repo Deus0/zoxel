@@ -807,6 +807,8 @@
   quads (asked the user first: it changes the grass's look); greedy meshing plan: doc/tech/chunks3.md
 - clouds can be a bit dark
 - dust particles in the air round the terrain (ergo proxy, dystopian vibes)
+- vulkan release crashed once in 5 render_fps runs at far 8 with ZOX_VK_WORKERS=0 ("Segfault Detected" ~2s after
+  the player spawned, 2026-11-20), never in debug: get a backtrace (a release build with -g)
 - Vulkan renderer: part 5 of [plans/vulkan.md](plans/vulkan.md) (compute, with gpu meshing); android's context
   loss (gpu restore hooks) untested on vulkan
 - make the walking camera animation feel more natural
