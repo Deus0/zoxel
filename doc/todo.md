@@ -43,7 +43,6 @@
 	the player inside the walls); critters don't count. Talking still needs first person (dialogue_begin.c). Should
 	critters talk at all?
 - tst furniture_place stalls on "air in the player's chunk" (2026-11-18), passed 4 of 4 on 2026-11-20: rare or gone
-- furniture_hits is flaky: some door top rays miss now and then, once the app closed mid test
 - perf_stream and tables_stream sometimes fail: lod swaps don't settle in 20s (flaky before the test move too)
 - grass shows overlapping copies, two lods at once (maybe rare): tst grass_overlap (vodes3/tst) sees no copies at the
 	same position yet, compare by block cell next (an offset copy, i.e. another lod's scale)
@@ -1095,7 +1094,7 @@
 	player's), head_camera, the quest and stats ui tests
 	- on it now: npc_glance, npc_attacks, npc_leash, head_camera, pickup_pop, the quest, stats and held item tests,
 		clothes, bone_rebuild, gizmo_owner, player_respawn
-	- not yet: furniture_hits and rotation (they want block voxes), quest_dialogue (the app closed)
+	- not yet: block_vox_hits and furniture_rotation (they want block voxes), quest_dialogue (the app closed)
 - add a test for streaming between chunks, this can be reused to test its speed for optmization too
 - Test WaveFunctionCollapse
 - Spawn NPC - Humanoid -Test

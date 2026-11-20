@@ -2,7 +2,7 @@
 - Part of the [todo](todo.md), done items go in [done.md](done.md)
 
 - Beds and doors (two blocks a side, 64 voxels, a depth more than a block): their first mesh build made frames a
-  second long in a debug software test (tst furniture_hits, 2026-11-16, npcs held 8 physics frames took 8s). Measure
+  second long in a debug software test (tst block_vox_hits, 2026-11-16, npcs held 8 physics frames took 8s). Measure
   in release on the gpu (perf_fly near placed beds); if it spikes there, build their lods off the main thread or
   once a realm, as blocks' models are shared
 
