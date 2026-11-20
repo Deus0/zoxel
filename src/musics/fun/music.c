@@ -80,7 +80,7 @@ void crossfade_music(
 
 // a seed for the menu theme, a new one each boot and each return to the menu
 static inline uint menu_theme_seed() {
-    return get_unique_time_seed() + (uint) rand();
+    return get_unique_time_seed() + (uint) zox_rand();
 }
 
 // the game's main menu music, a stopped menu theme is composed anew (music_generate_system) as it fades in

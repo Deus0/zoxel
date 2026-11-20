@@ -42,7 +42,7 @@ void homes_spawn_system(iter* it) {
         // Have to corner the position for our finder function
         int2 town_size2 = byte2_to_int2(size->value);
         int2 town_position2 = int2_sub(position->value, int2_half(town_size2));
-        // from its seed, the same town has the same homes (rand() gave a different count each time)
+        // from its seed, the same town has the same homes (zox_rand() gave a different count each time)
         byte spawn_count = seed_range(seed->value * 7349, min_homes_count, max_homes_count);
         if (dbg_log) {
             zox_log("[%s] Is Spawning [%i] Homes", zox_get_name(e), spawn_count);

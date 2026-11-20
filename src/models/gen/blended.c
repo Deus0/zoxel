@@ -60,9 +60,9 @@ void build_vox_blended(
     byte3 voxel_position;
     for (voxel_position.x = 0; voxel_position.x < length; voxel_position.x++) {
         for (voxel_position.z = 0; voxel_position.z < length; voxel_position.z++) {
-            byte grass_height = grass_position - rand() % grass_height_chance;
+            byte grass_height = grass_position - zox_rand() % grass_height_chance;
             for (voxel_position.y = grass_height; voxel_position.y < length; voxel_position.y++) {
-                byte voxel = voxel_range.x + rand() % (voxel_range.y - voxel_range.x);
+                byte voxel = voxel_range.x + zox_rand() % (voxel_range.y - voxel_range.x);
                 // byte2 set_voxel = (byte2) { voxel, node_depth };
                 // byte3 temp_position = voxel_position;
                 // set_octree_voxel(voxels, &temp_position, &set_voxel, 0);

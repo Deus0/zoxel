@@ -36,7 +36,7 @@ void build_vox_road(ColorRGBs* colors, VoxelNode *voctree, byte depth, color_rgb
     for (int i = 0; i < unique_grass; i++) {
         color_rgb c = grass_base;
         color_rgb_multiply_float(&c, randf_range(0.65f, 1.45f));
-        if (rand() % 2) c.b += 25;
+        if (zox_rand() % 2) c.b += 25;
         add_to_ColorRGBs(colors, c);
     }
     // Cracks

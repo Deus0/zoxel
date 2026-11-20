@@ -52,7 +52,7 @@ void character_item_drop_system(iter* it) {
             }
         }
         // destroy voxel sound
-        // spawn_sound_generated(world, prefab_sound_generated, instrument_piano, note_frequencies[24 + rand() % 6], 0.4, 1.2f * get_volume_sfx());
+        // spawn_sound_generated(world, prefab_sound_generated, instrument_piano, note_frequencies[24 + zox_rand() % 6], 0.4, 1.2f * get_volume_sfx());
     }
     zox_sys_on_end();
 } zoxd_system(character_item_drop_system);

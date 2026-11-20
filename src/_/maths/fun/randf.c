@@ -1,9 +1,9 @@
 float randf() {
-    return (float)rand() / (float)RAND_MAX;
+    return (float)zox_rand() / (float)RAND_MAX;
 }
 
 /*float randf(float max) {
-    return (float) rand() / max;
+    return (float) zox_rand() / max;
 }*/
 
 // NOTE: Upper bound max is Exclusive
@@ -11,7 +11,7 @@ int rand_range(int min, int max) {
     if (max <= min) {
         return min;
     }
-    return min + rand() % (max - min);
+    return min + zox_rand() % (max - min);
 }
 
 float randf_range(float min, float max) {

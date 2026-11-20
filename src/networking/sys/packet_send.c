@@ -51,7 +51,7 @@ void fake_packet_send_system(iter* it) {
         send_buffer_2[0] = zox_packet_msg;
         send_buffer_2[1] = strlen(send_text);
         byte packet_size_2 = 2 + send_buffer_2[1];
-        byte packets_send_count = 1 + rand() % test_send_packet_length;
+        byte packets_send_count = 1 + zox_rand() % test_send_packet_length;
         if (dbg_log >= 2) {
             zox_log("[Packet] Sending [%i] packets to [%i.%i.%i.%i:%i]",
                 packets_send_count,
@@ -63,7 +63,7 @@ void fake_packet_send_system(iter* it) {
         }
         // test sending multiple times
         for (int j = 0; j < packets_send_count; j++) {
-            if (rand() % 100 >= 70) {
+            if (zox_rand() % 100 >= 70) {
                 // send text instead
                 int send_size = sendto(
                     socket->value,

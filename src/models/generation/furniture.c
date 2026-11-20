@@ -26,7 +26,7 @@ void furniture_model_generation_system(iter* it) {
         {
             continue;
         }
-        srand(seed->value);
+        zox_srand(seed->value);
         const color_rgb wood = color_to_color_rgb(fill->value);
         color_rgb wood_dark = wood;
         color_rgb_multiply_float(&wood_dark, fracture_dark_multiplier);

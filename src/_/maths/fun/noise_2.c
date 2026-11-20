@@ -93,9 +93,9 @@ void set_noise_seed(uint seed) {
     }
     global_seed = seed;
     // zox_log(" + seed set [%" PRIu32 "]\n", global_seed)
-    srand(seed);
+    zox_srand(seed);
     for (int i = 0; i < noise_values_length; i++) {
-        values[i] = (byte) rand() % 256; // (byte) random.NextInt(0, 255);
+        values[i] = (byte) zox_rand() % 256; // (byte) random.NextInt(0, 255);
     }
     // testing
     // float value = generate_noise_2D(float2_zero, 0.01f);

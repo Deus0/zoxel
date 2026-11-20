@@ -6,7 +6,7 @@ entity spawn_model_grass(
     color vox_color)
 {
     byte length = octree_size(max_depth);
-    srand(seed);
+    zox_srand(seed);
     // stalks: 12 to 22 percent of its columns (it filled most columns, a solid mass of them)
     uint place_count = rand_range(length * length * 0.12f, length * length * 0.22f);
     if (place_count == 0) {

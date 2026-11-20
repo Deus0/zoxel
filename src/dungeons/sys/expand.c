@@ -43,7 +43,7 @@ void dungeon_block_system(iter* it) {
         // int3 chunk_bounds = int3_single(powers_of_two[node_depth]);
         byte3 positionl = zox_getv(e, VoxelLocalPosition);
         // get closest grass block
-        // byte3 position = (byte3) { rand() % size.x, rand() % size.y, rand() % size.z };
+        // byte3 position = (byte3) { zox_rand() % size.x, zox_rand() % size.y, zox_rand() % size.z };
         if (!zox_valid(place->value)) {
             continue;
         }
@@ -56,7 +56,7 @@ void dungeon_block_system(iter* it) {
             zox_log("Dungeon Wall [%s]:[%i]", zox_get_name(place->value), place_id);
         }
         // Random chance to dissapear
-        if (rand() % 100 <= 2) {
+        if (zox_rand() % 100 <= 2) {
             place_id = 0;
         }
         // find next z position

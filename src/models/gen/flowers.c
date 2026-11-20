@@ -46,7 +46,7 @@ void build_vox_flowers(VoxelNode* voctree, byte depth, byte2 stem_range, byte2 p
             case 1: // cluster ball
                 for (sbyte dx = -1; dx <= 1; dx++) {
                     for (sbyte dz = -1; dz <= 1; dz++) {
-                        if (rand() % 2) {
+                        if (zox_rand() % 2) {
                             byte3 petal = { pos.x + dx, pos.y, pos.z + dz };
                             set_voxel_safe(voctree, depth, petal, flower_color);
                         }

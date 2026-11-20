@@ -34,7 +34,7 @@ entity spawn_main_menu(
     char *label_new;            // "fresh meat / Wander
     char *label_options;
     char *label_exit;
-    if (rand() % 100 >= 90) {
+    if (zox_rand() % 100 >= 90) {
         label_continue = "Old blood";     // "old blood";
         label_new = "Fresh meat";            // "fresh meat / Wander
         label_options = "Beep boops";

@@ -30,8 +30,8 @@ void PrintBobSpawnSystem(ecs *world) {
     for (int i = 0; i < bobSpawnCount; i++)
     {
         position2s[i].value = (float2) {
-            ((rand() % 101) / 100.0f) * positionBounds.y - (positionBounds.y / 2.0f),
-            ((rand() % 101) / 100.0f) * positionBounds.y - (positionBounds.y / 2.0f)
+            ((zox_rand() % 101) / 100.0f) * positionBounds.y - (positionBounds.y / 2.0f),
+            ((zox_rand() % 101) / 100.0f) * positionBounds.y - (positionBounds.y / 2.0f)
         };
         if (position2s[i].value.x < - positionBounds.x)
         {
@@ -52,8 +52,8 @@ void PrintBobSpawnSystem(ecs *world) {
         position2s[i].value.x += bobPosition.x;
         position2s[i].value.y += bobPosition.y;
         velocity2Ds[i].value = (float2) {
-            ((rand() % 101) / 100.0f) * velocityBounds.y - (velocityBounds.y / 2.0f),
-            ((rand() % 101) / 100.0f) * velocityBounds.y - (velocityBounds.y / 2.0f)
+            ((zox_rand() % 101) / 100.0f) * velocityBounds.y - (velocityBounds.y / 2.0f),
+            ((zox_rand() % 101) / 100.0f) * velocityBounds.y - (velocityBounds.y / 2.0f)
         };
         if (velocity2Ds[i].value.x < - velocityBounds.x)
         {
@@ -71,10 +71,10 @@ void PrintBobSpawnSystem(ecs *world) {
         {
             velocity2Ds[i].value.y = velocityBounds.x;
         }
-        torque2Ds[i].value = ((rand() % 101) / 100.0f) * torqueBounds - (torqueBounds / 2.0f);
-        scale1Ds[i].value = scaleBounds.x + ((rand() % 101) / 100.0f) * (scaleBounds.y - scaleBounds.x);
-        brightnesses[i].value = brightnessBounds.x + ((rand() % 101) / 100.0f) * (brightnessBounds.y - brightnessBounds.x);
-        destroyInTimes[i].value = lifeTime.x + ((rand() % 101) / 100.0f) *  (lifeTime.y - lifeTime.x);
+        torque2Ds[i].value = ((zox_rand() % 101) / 100.0f) * torqueBounds - (torqueBounds / 2.0f);
+        scale1Ds[i].value = scaleBounds.x + ((zox_rand() % 101) / 100.0f) * (scaleBounds.y - scaleBounds.x);
+        brightnesses[i].value = brightnessBounds.x + ((zox_rand() % 101) / 100.0f) * (brightnessBounds.y - brightnessBounds.x);
+        destroyInTimes[i].value = lifeTime.x + ((zox_rand() % 101) / 100.0f) *  (lifeTime.y - lifeTime.x);
     }
     const entity *bobArmy = ecs_bulk_init(world, &(ecs_bulk_desc_t)
     {

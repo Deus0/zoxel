@@ -119,7 +119,7 @@ void terrain_characters_spawn_system(iter* it) {
                 alive |= 1u << (zox_getv(npc, NpcHome) & 31);
             }
         }
-        srand(seed->value);
+        zox_srand(seed->value);
         byte spawned = 0;
         for (byte j = 0; j < character_spawn_rate; j++) {
             // Find Position First
@@ -131,7 +131,7 @@ void terrain_characters_spawn_system(iter* it) {
                 break;
             }
             // a random character type, by its weight here
-            float rolled = weights_total * (rand() / (RAND_MAX + 1.0f));
+            float rolled = weights_total * (zox_rand() / (RAND_MAX + 1.0f));
             entity meta = 0;
             for (uint k = 0; k < realm_characters_count && !meta; k++) {
                 rolled -= weights[k];
@@ -151,7 +151,7 @@ void terrain_characters_spawn_system(iter* it) {
             float3_scale_p(&position, cscale->value);
             float3_add_float3_p(&position, positionf->value); // chunk
             float3_add_float3_p(&position, float3_single(cscale->value * 0.5f));
-            float4 rotation = quaternion_from_euler((float3) { 0, (rand() % 361) * degreesToRadians, 0 });
+            float4 rotation = quaternion_from_euler((float3) { 0, (zox_rand() % 361) * degreesToRadians, 0 });
             if (alive & (1u << (j & 31))) {
                 continue;   // its rolls made (rand), it's still out there
             }

@@ -33,7 +33,7 @@
         }
         // TODO: Link properly to block
         spawn_sound_from_file_name(world, prefab_sound, "hit_grass", 0, get_volume_sfx());
-        // spawn_sound_generated(world, prefab_sound_generated, instrument_organ, note_frequencies[26 + rand() % 8], 0.4, 1.2f * get_volume_sfx());
+        // spawn_sound_generated(world, prefab_sound_generated, instrument_organ, note_frequencies[26 + zox_rand() % 8], 0.4, 1.2f * get_volume_sfx());
         // position
         entity e2 = spawn_particle3D_emitter_at(
             world,

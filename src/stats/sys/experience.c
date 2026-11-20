@@ -54,7 +54,7 @@ void experience_system(iter* it) {
             popup_color,
             popup_position,
             zox_popup_scale * 2,
-            7 + rand() % 3);
+            7 + zox_rand() % 3);
         // zox_log(" + [%s] has gained [%f] xp", zox_get_name(attacker), experience_gain)
     }
     zox_sys_on_end();

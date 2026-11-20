@@ -46,9 +46,9 @@ static inline color color_grayscale_a(byte v, byte a) {
 }
 
 static inline color color_mutate(color c, byte m) {
-    int dr = (int) c.r + (-m + rand() % (2 * m + 1));
-    int dg = (int) c.g + (-m + rand() % (2 * m + 1));
-    int db = (int) c.b + (-m + rand() % (2 * m + 1));
+    int dr = (int) c.r + (-m + zox_rand() % (2 * m + 1));
+    int dg = (int) c.g + (-m + zox_rand() % (2 * m + 1));
+    int db = (int) c.b + (-m + zox_rand() % (2 * m + 1));
     // Clamp to [0, 255]
     c.r = (byte) (dr < 0 ? 0 : (dr > 255 ? 255 : dr));
     c.g = (byte) (dg < 0 ? 0 : (dg > 255 ? 255 : dg));

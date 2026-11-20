@@ -72,7 +72,7 @@ void zox_tst_spawn_quest_giver_npc(
             zox_getn(realm));
         return;
     }
-    entity dialogue = dialogues[rand() % length];
+    entity dialogue = dialogues[zox_rand() % length];
     zox_link(world, e, Dialogue, dialogue);
     // its dialogue's quest to give
     const entity player_start_quest = zox_get_link(world, dialogue, QuestLink);

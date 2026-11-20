@@ -137,7 +137,7 @@ void vnoise3_spray_side(
                 byte penetration = rand_range(penetrations.x, penetrations.y);
                 for (byte p = 0; p < penetration; p++) {
                     position.y = size.y - 1 - p;
-                    int rando = rand() % 1000;
+                    int rando = zox_rand() % 1000;
                     if (rando > 600) {
                         break;
                     }
@@ -155,7 +155,7 @@ void vnoise3_spray_side(
                     } else {
                         position.x = size.x - 1 - p;
                     }
-                    int rando = rand() % 1000;
+                    int rando = zox_rand() % 1000;
                     if (rando > 300) {
                         break;
                     }
@@ -173,7 +173,7 @@ void vnoise3_spray_side(
                     } else {
                         position.z = size.z - 1 - p;
                     }
-                    int rando = rand() % 1000;
+                    int rando = zox_rand() % 1000;
                     if (rando > 300) {
                         break;
                     }
@@ -237,7 +237,7 @@ void decayed_model_system(iter* it) {
             1,
             unique_colors - 1
         };
-        srand(seed->value);
+        zox_srand(seed->value);
         for (int j = 0; j < unique_colors; j++) {
             color_rgb new_color = color_rgb_2;
             float m = randf_range(color_r.x, color_r.y);

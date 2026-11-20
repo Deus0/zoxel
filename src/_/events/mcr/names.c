@@ -17,7 +17,7 @@
         return NULL;
     }
     static char e_string[e_string_length];
-    lint_itoa(e_string, (long int) e); // (long int) (rand() % 100000));   //
+    lint_itoa(e_string, (long int) e); // (long int) (zox_rand() % 100000));   //
     int entity_name_length = strlen(name) + 1 + e_string_length + 1;
     char* entity_name = malloc(entity_name_length);
     for (int i = 0; i < entity_name_length; i++) {

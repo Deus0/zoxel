@@ -34,7 +34,7 @@ void process_node_model_generate_colors(
     // TODO: Reset colors at start of blueprint running
     // resize_ColorRGBs(colors, 0);
     for (byte i = 0; i < count; i++) {
-        // shades from the seed, the same model the same colours (was rand(), every run different)
+        // shades from the seed, the same model the same colours (was zox_rand(), every run different)
         float m = seed_rangef((uint) seed + i * 7919u + 17u, crange.x, crange.y);
         color_rgb ucolor = vcolor_rgb;
         color_rgb_multiply_float(&ucolor, m);

@@ -25,8 +25,8 @@ void wander_system(iter* it) {
         const float jitter_power = 15 * clock->value;   // chaos factor
         // Jittery direction vector
         float2 jitter = {
-            ((rand() % 100) * 0.01f - 0.5f) * jitter_power,
-            ((rand() % 100) * 0.01f - 0.5f) * jitter_power
+            ((zox_rand() % 100) * 0.01f - 0.5f) * jitter_power,
+            ((zox_rand() % 100) * 0.01f - 0.5f) * jitter_power
         };
 
         float3 jitter_vec = {
@@ -39,7 +39,7 @@ void wander_system(iter* it) {
         heading.y = 0;
         const float ahead = float3_length(heading);
         if (ahead < 0.01f || ahead > wander_length * 2) {
-            heading = (float3) { (rand() % 100) * 0.01f - 0.5f, 0, (rand() % 100) * 0.01f - 0.5f };
+            heading = (float3) { (zox_rand() % 100) * 0.01f - 0.5f, 0, (zox_rand() % 100) * 0.01f - 0.5f };
         }
         heading = float3_normalize(float3_add(float3_normalize(heading), jitter_vec));
         // leashed: past it, it heads home (until A* and pathing octrees, todo)
@@ -98,9 +98,9 @@ void wander_system(iter* it) {
         if (disableMovement->value || behaviour->value != zox_behaviour_wander) {
             continue;
         }
-        // float2 movement = { (rand() % 100) * 0.01f, (rand() % 100) * 0.01f };
-        float2 movement = { (rand() % 100) * 0.01f * pivot_power - pivot_power * 0.5f, (rand() % 100) * 0.01f };
-        float2 euler = { 0, (rand() % 100) * 0.01f * rotate_power - rotate_power * 0.5f };
+        // float2 movement = { (zox_rand() % 100) * 0.01f, (zox_rand() % 100) * 0.01f };
+        float2 movement = { (zox_rand() % 100) * 0.01f * pivot_power - pivot_power * 0.5f, (zox_rand() % 100) * 0.01f };
+        float2 euler = { 0, (zox_rand() % 100) * 0.01f * rotate_power - rotate_power * 0.5f };
         float3 move_vector = float4_rotate_float3(rotation3D->value, (float3) { movement.x, 0, movement.y });
         float3 rotated_velocity = float4_rotate_float3(float4_inverse(rotation3D->value), velocity3D->value);
         if (float_abs(rotated_velocity.x) < max_velocity.x * delta_time) {

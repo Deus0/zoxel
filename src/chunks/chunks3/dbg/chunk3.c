@@ -17,9 +17,9 @@ entity spawn_test_vox_at(
     byte depth = block_depth_limits.y;
     float spin = rand_range(2, 8);
     float3 euler = (float3) {
-        rand() % 100 > 50 ? spin : -spin,
-        rand() % 100 > 50 ? spin : -spin,
-        rand() % 100 > 50 ? spin : -spin
+        zox_rand() % 100 > 50 ? spin : -spin,
+        zox_rand() % 100 > 50 ? spin : -spin,
+        zox_rand() % 100 > 50 ? spin : -spin
     };
     int3 size = int3_single(powers_of_two[depth]);
     // spawn chunk3s

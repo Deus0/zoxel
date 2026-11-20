@@ -40,7 +40,7 @@ byte find_random_position_on_ground(
     byte length = powers_of_two_byte[depth];
     byte checks_count = 0;
     while (checks_count < max_checks) {
-        byte2 positionxz = (byte2) { rand() % length, rand() % length };
+        byte2 positionxz = (byte2) { zox_rand() % length, zox_rand() % length };
         byte y = find_position_on_ground(chunk, chunk_above, depth, positionxz);
         if (y != 255) {
             *position = (byte3) { positionxz.x, y, positionxz.y };

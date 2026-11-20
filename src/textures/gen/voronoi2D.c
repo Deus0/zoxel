@@ -45,10 +45,10 @@ void voronoi2D(color *pixels, const int2 size, const color base_color, color var
     for (int i = 0; i < points_length; i++) {
         points[i] = int2_zero;
         regionColors[i] = color_white;
-        int2 newPoint = (int2) { rand() % size.x, rand() % size.y };
+        int2 newPoint = (int2) { zox_rand() % size.x, zox_rand() % size.y };
         int count = 0;
         while (count <= 128) {
-            newPoint = (int2) { rand() % size.x, rand() % size.y };
+            newPoint = (int2) { zox_rand() % size.x, zox_rand() % size.y };
             byte isTooClose = 0;
             for (int j = i - 1; j >= 0; j--) {
                 int2 otherPoint = points[j];
@@ -65,9 +65,9 @@ void voronoi2D(color *pixels, const int2 size, const color base_color, color var
             count++;
         }
         points[i] = newPoint;
-        byte r = (byte)(base_color.r + (variance.r ? rand() % variance.r : 0));
-        byte g = (byte)(base_color.g + (variance.r ? rand() % variance.g : 0));
-        byte b = (byte)(base_color.b + (variance.r ? rand() % variance.b : 0));
+        byte r = (byte)(base_color.r + (variance.r ? zox_rand() % variance.r : 0));
+        byte g = (byte)(base_color.g + (variance.r ? zox_rand() % variance.g : 0));
+        byte b = (byte)(base_color.b + (variance.r ? zox_rand() % variance.b : 0));
         regionColors[i] = (color) { r, g, b, 255 };
 
         // zox_log("region color [%i] %ix%ix%i\n", i, r, g, b)

@@ -77,7 +77,7 @@ byte generate_instrument_samples(
             const float time = (float) (j / sample_rate_f);
             float value = data.sound(time, frequency);
             if (noise) {
-                value += noise * ((rand() / (float) RAND_MAX) * 2.0f - 1.0f);
+                value += noise * ((zox_rand() / (float) RAND_MAX) * 2.0f - 1.0f);
             }
             value *= envelope(time, seconds, attack, dampen) * volume;
             samples[j] = value;

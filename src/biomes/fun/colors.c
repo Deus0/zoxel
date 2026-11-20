@@ -4,9 +4,9 @@ byte realm_colors_count = 8;
 
 /*void generate_colors_old(lint seed, Colors *colors) {
 
-    srand((unsigned int) seed);
+    zox_srand((unsigned int) seed);
 
-    // byte biome_type = rand() % zox_biome_end;
+    // byte biome_type = zox_rand() % zox_biome_end;
     BiomeData biome = pick_biome(seed);
     terrain_frequency = biome.frequency;
 
@@ -17,9 +17,9 @@ byte realm_colors_count = 8;
     float3 obsidian_hsv = float6_rand_range(biome.obsidian);
     float3 sky_hsv = float6_rand_range(biome.sky);
     float3 wood_hsv = (float3) {
-            dirt_hsv.x + rand() % 30,
+            dirt_hsv.x + zox_rand() % 30,
             dirt_hsv.y - 10,
-            dirt_hsv.z + 10 + rand() % 10 };
+            dirt_hsv.z + 10 + zox_rand() % 10 };
 
 
     color dirt_color = hsv_to_color(dirt_hsv);
@@ -75,8 +75,8 @@ byte realm_colors_count = 8;
     const float3 stone_hsv = generate_hsv_v_s(stone_hue, stone_value, stone_saturation);*/
 
     /*float3 obsidian_hsv = (float3) {
-        rand() % 360,
-        8 + rand() % 8,
+        zox_rand() % 360,
+        8 + zox_rand() % 8,
         13
     };
     if (obsidian_hsv.x + 180 >= dirt_hsv.x + 180 - 45 && obsidian_hsv.x + 180 <= dirt_hsv.x + 180 + 45) {
@@ -110,7 +110,7 @@ byte realm_colors_count = 8;
 
     /*const int sand_hue_shift = 40;
     float3 sand_hsv = (float3) {
-        dirt_hsv.x - sand_hue_shift + (rand() % sand_hue_shift * 2),
-        18 + rand() % 8,
-        54 + rand() % 16
+        dirt_hsv.x - sand_hue_shift + (zox_rand() % sand_hue_shift * 2),
+        18 + zox_rand() % 8,
+        54 + zox_rand() % 16
     };*/

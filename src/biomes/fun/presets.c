@@ -165,9 +165,9 @@ BiomeData pick_biome(lint seed) {
         return zox_biomes[zox_biome_override - 1];
     }
 
-    srand((unsigned int) seed);
-    // byte biome_type = rand() % zox_biome_end;
-    float roll = (float)rand() / (float)RAND_MAX;
+    zox_srand((unsigned int) seed);
+    // byte biome_type = zox_rand() % zox_biome_end;
+    float roll = (float)zox_rand() / (float)RAND_MAX;
     float sum = 0.0f;
     for (byte i = 0; i < zox_biome_end; i++) {
         BiomeData biome = zox_biomes[i];

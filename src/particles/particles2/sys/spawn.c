@@ -21,22 +21,22 @@
     DestroyInTime *destroyInTimes = malloc(sizeof(DestroyInTime) * spawnCount);
     for (int i = 0; i < spawnCount; i++) {
         position2s[i].value = (float2) {
-            ((rand() % 101) / 100.0f) * positionBounds.y - (positionBounds.y / 2.0f),
-            ((rand() % 101) / 100.0f) * positionBounds.y - (positionBounds.y / 2.0f)
+            ((zox_rand() % 101) / 100.0f) * positionBounds.y - (positionBounds.y / 2.0f),
+            ((zox_rand() % 101) / 100.0f) * positionBounds.y - (positionBounds.y / 2.0f)
         };
         position2s[i].value.x += bobPosition.x;
         position2s[i].value.y += bobPosition.y;
-        velocity2Ds[i].value = (float2) { ((rand() % 101) / 100.0f) * 1.0f - 0.5f, ((rand() % 101) / 100.0f) * 1.0f - 0.5f };
+        velocity2Ds[i].value = (float2) { ((zox_rand() % 101) / 100.0f) * 1.0f - 0.5f, ((zox_rand() % 101) / 100.0f) * 1.0f - 0.5f };
         velocity2Ds[i].value = normalize2D(velocity2Ds[i].value);
         velocity2Ds[i].value = float2_multiply_float(velocity2Ds[i].value, (velocityBounds.y - velocityBounds.x));
         if (velocity2Ds[i].value.x < 0) velocity2Ds[i].value.x -= velocityBounds.x;
         else velocity2Ds[i].value.x += velocityBounds.x;
         if (velocity2Ds[i].value.y < 0) velocity2Ds[i].value.y -= velocityBounds.x;
         else velocity2Ds[i].value.y += velocityBounds.x;
-        torque2Ds[i].value = ((rand() % 101) / 100.0f) * torqueBounds - (torqueBounds / 2.0f);
-        scale1Ds[i].value = scaleBounds.x + ((rand() % 101) / 100.0f) * (scaleBounds.y - scaleBounds.x);
-        brightnesses[i].value = brightnessBounds.x + ((rand() % 101) / 100.0f) * (brightnessBounds.y - brightnessBounds.x);
-        destroyInTimes[i].value = lifeTime.x + ((rand() % 101) / 100.0f) *  (lifeTime.y - lifeTime.x);
+        torque2Ds[i].value = ((zox_rand() % 101) / 100.0f) * torqueBounds - (torqueBounds / 2.0f);
+        scale1Ds[i].value = scaleBounds.x + ((zox_rand() % 101) / 100.0f) * (scaleBounds.y - scaleBounds.x);
+        brightnesses[i].value = brightnessBounds.x + ((zox_rand() % 101) / 100.0f) * (brightnessBounds.y - brightnessBounds.x);
+        destroyInTimes[i].value = lifeTime.x + ((zox_rand() % 101) / 100.0f) *  (lifeTime.y - lifeTime.x);
     }
     // const entity *particles2DArray =
     ecs_bulk_init(world, &(ecs_bulk_desc_t) {

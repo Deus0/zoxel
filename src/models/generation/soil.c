@@ -77,7 +77,7 @@ void soil_model_system(iter* it) {
             1,
             unique_colors - 1
         };
-        srand(seed->value);
+        zox_srand(seed->value);
         for (int j = 0; j < unique_colors; j++) {
             colors->value[j] = color_rgb_2;
             float m = randf_range(color_r.x, color_r.y);

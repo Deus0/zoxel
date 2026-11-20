@@ -229,16 +229,16 @@ void voronoi3(
     }
     for (int i = 0; i < points_length; i++) {
         byte3 point = (byte3) {
-            rand() % length,
-            rand() % length,
-            rand() % length
+            zox_rand() % length,
+            zox_rand() % length,
+            zox_rand() % length
         };
         int count = 0;
         while (count <= 128) {
             point = (byte3) {
-                rand() % length,
-                rand() % length,
-                rand() % length
+                zox_rand() % length,
+                zox_rand() % length,
+                zox_rand() % length
             };
             byte isTooClose = 0;
             for (int j = i - 1; j >= 0; j--) {
@@ -260,7 +260,7 @@ void voronoi3(
             count++;
         }
         points[i] = point;
-        regions[i] = rand() % vregions;
+        regions[i] = zox_rand() % vregions;
     }
     for (position.x = 0; position.x < length; position.x++) {
         for (position.y = 0; position.y < length; position.y++) {

@@ -18,7 +18,7 @@ void sound_debug_system(iter* it) {
         if (triggerSound->value != zox_dirty_active) {
             continue;
         }
-        const double decay_time = soundData->length / sample_rate_f; // 6.0 + rand() % 6;
+        const double decay_time = soundData->length / sample_rate_f; // 6.0 + zox_rand() % 6;
         if (!has_begun) {   // draw axis
             has_begun = 1;
             const float line_length = 1.0f;

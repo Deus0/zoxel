@@ -27,7 +27,7 @@ void sound_generate_system(iter* it) {
             zox_logw("Sound Data missing in [sound_generate_system]");
             continue;
         }
-        float noise = sound_noise * (rand() % 101) / 100.0f;
+        float noise = sound_noise * (zox_rand() % 101) / 100.0f;
         if (!generate_instrument_samples(
             instrumentType->value,
             soundFrequency->value,

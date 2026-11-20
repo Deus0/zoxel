@@ -270,7 +270,7 @@ entity spawn_voice_syllable(ecs* world, const Voice* voice, char consonant, char
     if (!data.value) {
         return 0;
     }
-    data.length = generate_voice_syllable(voice, consonant, vowel, inflection, volume, (uint) rand(), data.value, max_length);
+    data.length = generate_voice_syllable(voice, consonant, vowel, inflection, volume, (uint) zox_rand(), data.value, max_length);
     zox_instance(prefab_sound);
     zox_name("voice");
     zox_set_ptr(e, SoundData, data);
@@ -313,7 +313,7 @@ entity spawn_voice_grunt(ecs* world, const Voice* speaker, float volume, entity 
     if (!data.value) {
         return 0;
     }
-    data.length = generate_voice_grunt(speaker, volume, (uint) rand(), data.value, max_length);
+    data.length = generate_voice_grunt(speaker, volume, (uint) zox_rand(), data.value, max_length);
     zox_instance(prefab_sound);
     zox_name("grunt");
     zox_set_ptr(e, SoundData, data);

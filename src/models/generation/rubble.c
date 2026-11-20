@@ -90,7 +90,7 @@ void rubble_model_system(iter* it) {
         color_rgb color_rgb_2 = color_to_color_rgb(fill->value);
         // colors to pick from
         byte2 vrange = (byte2) { 1, unique_colors - 1 };
-        srand(seed->value);
+        zox_srand(seed->value);
         for (int j = 0; j < unique_colors; j++) {
             color_rgb new_color = color_rgb_2;
             float m = randf_range(color_r.x, color_r.y);

@@ -8,7 +8,7 @@ entity spawn_character2(
     zox_setv(e, Position2, position);
     zox_setv(e, Scale1, 1);
     zox_setv(e, Brightness,
-        0.8f + ((rand() % 101) / 100.0f) * 0.6f);
+        0.8f + ((zox_rand() % 101) / 100.0f) * 0.6f);
     clone_texture_file_to_entity(
         world,
         e,

@@ -89,7 +89,7 @@ void sand_model_generation_system(iter* it) {
         }
         resize_ColorRGBs(colors, 0);
         color_rgb primary_rgb = color_to_color_rgb(fill->value);
-        srand(seed->value);
+        zox_srand(seed->value);
         // its octree locked while written, readers can run alongside (thread_safety.md)
         spinlock* write_lock = zox_octree_lock(world, e);
         zox_octree_lock_begin(write_lock);

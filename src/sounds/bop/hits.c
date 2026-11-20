@@ -73,7 +73,7 @@ void spawn_character_hit_sound(ecs* world, entity character) {
     spawn_hit_sound(world, character, sound_effect_hit, character);
     const entity sound = zox_get_link(world, character, HitSoundLink);
     const byte voiced = !zox_valid(sound) || zox_has(sound, HitSoundVoiced);
-    if (voiced && zox_has(character, Seed) && rand() % 4) {
+    if (voiced && zox_has(character, Seed) && zox_rand() % 4) {
         const Voice voice = voice_from_seed((uint) zox_getv(character, Seed));
         spawn_voice_grunt(world, &voice, 0.9f * get_volume_sfx(), character);
     }

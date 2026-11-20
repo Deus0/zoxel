@@ -15,7 +15,7 @@ void build_vox_tiles(VoxelNode *node, byte node_depth, byte2 color_range, byte b
                 byte in_brick_y = (pos.y % (brick_height + mortar_gap)) < brick_height;
                 byte in_brick_z = (pos.z % (brick_depth + mortar_gap)) < brick_depth;
                 if (in_brick_x && in_brick_y && in_brick_z) {
-                    const byte value = color_range.x + rand() % (color_range.y - color_range.x);
+                    const byte value = color_range.x + zox_rand() % (color_range.y - color_range.x);
                     set_VoxelNode(node, node_depth, pos, value);
                 } else {
                     set_VoxelNode(node, node_depth, pos, black_voxel); // Mortar

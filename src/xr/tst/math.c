@@ -13,7 +13,7 @@ static const float4x4 float4x4_identity = {
 };
 
 static float random_float(float min, float max) {
-    return min + (float)rand() / (float)RAND_MAX * (max - min);
+    return min + (float)zox_rand() / (float)RAND_MAX * (max - min);
 }
 
 static inline float3 float3_add(float3 a, float3 b) {

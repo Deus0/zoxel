@@ -15,11 +15,11 @@ void random_fill_octree(
                 depth);
         }
     } else {
-        if (rand() % 101 >= fill_octree_random_rate) {
+        if (zox_rand() % 101 >= fill_octree_random_rate) {
             node->value = 0;
-        } else if (rand() % 101 >= fill_octree_random_rate2) {
+        } else if (zox_rand() % 101 >= fill_octree_random_rate2) {
             node->value = 1;
-        } else if (rand() % 101 >= fill_octree_random_rate3) {
+        } else if (zox_rand() % 101 >= fill_octree_random_rate3) {
             node->value = 2;
         }
     }

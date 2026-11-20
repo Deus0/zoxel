@@ -22,10 +22,10 @@ entity spawn_character3_npc(
         position,
         rotation,
         name);
-    if (rand() % 100 <= 6) {
+    if (zox_rand() % 100 <= 6) {
         zox_setv(e, DefaultBehaviour, zox_behaviour_idle);
     }
-    if (rand() % 100 <= 14) {
+    if (zox_rand() % 100 <= 14) {
         zox_add(e, Coward);
     }
     return e;

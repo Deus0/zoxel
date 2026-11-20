@@ -24,8 +24,8 @@ void flee_system(iter* it) {
 
         // Add chaos
         float2 jitter = {
-            ((rand() % 100) * 0.01f - 0.5f) * jitter_power,
-            ((rand() % 100) * 0.01f - 0.5f) * jitter_power
+            ((zox_rand() % 100) * 0.01f - 0.5f) * jitter_power,
+            ((zox_rand() % 100) * 0.01f - 0.5f) * jitter_power
         };
 
         float3 flee_direction = {

@@ -19,7 +19,7 @@ static inline void setup_character3(
     entity model = zox_get_link(world, prefab, ModelLink);
     if (zox_valid(model)) {
         // If a ModelGroup, pick a random sub model
-        model = get_model_variant(world, model, rand());
+        model = get_model_variant(world, model, zox_rand());
         if (zox_has(model, MaxRenderDepth)) {
             max_depth = zox_getv(model, MaxRenderDepth);
         }

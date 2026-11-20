@@ -20,7 +20,7 @@ void random_jump3d_system(iter* it) {
             continue;
         }
         if (canJump->value) {
-            if (rand() % 10000 >= random_jump_chance) {
+            if (zox_rand() % 10000 >= random_jump_chance) {
                 jump->value = zox_dirty_trigger;
             }
         }

@@ -19,9 +19,9 @@ static inline color frame_shade(color c, float shade) {
 
 static inline color frame_noise(color c, int amount) {
     return (color) {
-        (byte) int_min(255, c.r + rand() % amount),
-        (byte) int_min(255, c.g + rand() % amount),
-        (byte) int_min(255, c.b + rand() % amount),
+        (byte) int_min(255, c.r + zox_rand() % amount),
+        (byte) int_min(255, c.g + zox_rand() % amount),
+        (byte) int_min(255, c.b + zox_rand() % amount),
         c.a
     };
 }

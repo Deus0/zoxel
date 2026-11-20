@@ -45,7 +45,7 @@ static inline byte is_tree_at(int2 global_position, lint seed, float tree_chance
         tree.x == global_position.x && tree.y == global_position.y;
 }
 
-// a tree's trunk height, seeded by its column (rand() wasn't the same each time, nor thread safe)
+// a tree's trunk height, seeded by its column (zox_rand() wasn't the same each time, nor thread safe)
 static inline byte get_tree_height(int2 global_position, lint seed) {
     return 3 + vegetation_hash(global_position.x, global_position.y, seed, 4) % 3;
 }

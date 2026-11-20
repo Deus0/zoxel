@@ -807,8 +807,8 @@
 - dust particles in the air round the terrain (ergo proxy, dystopian vibes)
 - Vulkan renderer: parts 4 and 5 of [plans/vulkan.md](plans/vulkan.md) (render textures, compute), then its speed
   (the numbers there: even with gl now)
-- the same seed (zox_tst_seed) doesn't always make the same scene: two worlds alternate between runs of tst
-  screenshot, render_fps at far 32 drew 1344 or 2291 chunks; it muddies perf comparisons
+- seeds: block models and everything seeded draw from a rand of their own each thread (zox_rand, 2026-11-20: one
+  seed made two worlds); gameplay rand (ai, drops, particles) isn't seeded, a run still plays out its own way
 - make the walking camera animation feel more natural
     - just animate the head better and body
     - add tremble in the gait

@@ -1,3 +1,4 @@
+#include "zox_rand.c"
 #include "byte.c"
 #include "byte2.c"
 #include "byte3.c"

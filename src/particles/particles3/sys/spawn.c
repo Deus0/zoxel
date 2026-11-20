@@ -16,18 +16,18 @@
     DestroyInTime *destroyInTimes = malloc(sizeof(DestroyInTime) * spawnCount);
     for (int i = 0; i < spawnCount; i++) {
         positions[i].value = (float3) {
-            ((rand() % 101) / 100.0f) * positionBounds.y - (positionBounds.y / 2.0f),
-            ((rand() % 101) / 100.0f) * positionBounds.y - (positionBounds.y / 2.0f),
-            ((rand() % 101) / 100.0f) * positionBounds.y - (positionBounds.y / 2.0f)
+            ((zox_rand() % 101) / 100.0f) * positionBounds.y - (positionBounds.y / 2.0f),
+            ((zox_rand() % 101) / 100.0f) * positionBounds.y - (positionBounds.y / 2.0f),
+            ((zox_rand() % 101) / 100.0f) * positionBounds.y - (positionBounds.y / 2.0f)
         };
         positions[i].value.x += bobPosition.x;
         positions[i].value.y += bobPosition.y;
         positions[i].value.z += bobPosition.z;
         // velocity
         velocity3Ds[i].value = (float3) {
-            ((rand() % 101) / 100.0f) * 1.0f - 0.5f,
-            ((rand() % 101) / 100.0f) * 1.0f - 0.5f,
-            ((rand() % 101) / 100.0f) * 1.0f - 0.5f
+            ((zox_rand() % 101) / 100.0f) * 1.0f - 0.5f,
+            ((zox_rand() % 101) / 100.0f) * 1.0f - 0.5f,
+            ((zox_rand() % 101) / 100.0f) * 1.0f - 0.5f
         };
         velocity3Ds[i].value = float3_normalize(velocity3Ds[i].value);
         velocity3Ds[i].value = float3_scale(velocity3Ds[i].value, (velocityBounds.y - velocityBounds.x));
@@ -46,10 +46,10 @@
         } else {
             velocity3Ds[i].value.z += velocityBounds.x;
         }
-        // torques[i].value = ((rand() % 101) / 100.0f) * torqueBounds - (torqueBounds / 2.0f);
-        scale1Ds[i].value = scaleBounds.x + ((rand() % 101) / 100.0f) * (scaleBounds.y - scaleBounds.x);
-        brightnesses[i].value = brightnessBounds.x + ((rand() % 101) / 100.0f) * (brightnessBounds.y - brightnessBounds.x);
-        destroyInTimes[i].value = lifeTime.x + ((rand() % 101) / 100.0f) *  (lifeTime.y - lifeTime.x);
+        // torques[i].value = ((zox_rand() % 101) / 100.0f) * torqueBounds - (torqueBounds / 2.0f);
+        scale1Ds[i].value = scaleBounds.x + ((zox_rand() % 101) / 100.0f) * (scaleBounds.y - scaleBounds.x);
+        brightnesses[i].value = brightnessBounds.x + ((zox_rand() % 101) / 100.0f) * (brightnessBounds.y - brightnessBounds.x);
+        destroyInTimes[i].value = lifeTime.x + ((zox_rand() % 101) / 100.0f) *  (lifeTime.y - lifeTime.x);
     }
     // const entity *particlesArray =
     ecs_bulk_init(world, &(ecs_bulk_desc_t) {

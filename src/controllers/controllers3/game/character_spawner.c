@@ -92,7 +92,7 @@ byte find_position_in_terrain(
     float4 rotation = quaternion_from_euler(
         (float3) {
             0,
-            (rand() % 361) * degreesToRadians,
+            (zox_rand() % 361) * degreesToRadians,
             0 });
     output->chunk = chunk;
     output->chunk_position = chunk_position;

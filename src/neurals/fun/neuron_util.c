@@ -69,7 +69,7 @@ void feed_brain_random_input(ecs *world, entity brain) {
     const BrainInputs *brain_inputs = zox_get(brain, BrainInputs);
     for (int i = 0; i < brain_inputs->length; i++) {
         const entity e = brain_inputs->value[i];
-        float s = (rand() % 101) * 0.01f;
+        float s = (zox_rand() % 101) * 0.01f;
         zox_set(e, Signal, { s });
     }
 }
@@ -88,7 +88,7 @@ void randomize_brain_weights(ecs *world, const entity brain) {
     const BrainLinks *links = zox_get(brain, BrainLinks);
     for (int i = 0; i < links->length; i++) {
         const entity e = links->value[i];
-        float w = (rand() % 101) * 0.01f;
+        float w = (zox_rand() % 101) * 0.01f;
         zox_set(e, Weight, { w });
     }
 }

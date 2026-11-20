@@ -28,9 +28,9 @@ entity spawn_dbg_chunk3_textured(
     // int3 size = int3_single(length);
     float spin = rand_range(2, 8);
     float3 euler = (float3) {
-        rand() % 100 > 50 ? spin : -spin,
-        rand() % 100 > 50 ? spin : -spin,
-        rand() % 100 > 50 ? spin : -spin
+        zox_rand() % 100 > 50 ? spin : -spin,
+        zox_rand() % 100 > 50 ? spin : -spin,
+        zox_rand() % 100 > 50 ? spin : -spin
     };
     entity tilemap = zox_valid(realm) ?
         zox_get_link(world, realm, Tilemap) :

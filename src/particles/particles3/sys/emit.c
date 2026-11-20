@@ -24,9 +24,9 @@ void emit_particle3Ds_slow(
         });
         seed += 3;
         float4 particle_color = color_to_float4(colorr);
-        // (float4) { (rand() % 100) * 0.01f, (rand() % 100) * 0.01f, (rand() % 100) * 0.01f, 0 };
+        // (float4) { (zox_rand() % 100) * 0.01f, (zox_rand() % 100) * 0.01f, (zox_rand() % 100) * 0.01f, 0 };
         // float4_multiply_float_p(&particle_color, 0.3f);
-        // particle_color.w += -0.2f + (rand() % 100) * 0.01f * 0.2f;
+        // particle_color.w += -0.2f + (zox_rand() % 100) * 0.01f * 0.2f;
         particle_color.w += seed_rangef(seed, -0.2f, 0.0f);
         seed += 1;
         spawn_particle3(
@@ -53,14 +53,14 @@ void emit_particle3Ds(ecs *world, const float3 spawn_position, const int spawn_c
     for (int i = 0; i < spawn_count; i++) {
         positions[i].value = spawn_position;
         float3_add_float3_p(&positions[i].value, (float3) {
-            ((rand() % 101) / 100.0f) * spawn_bounds.x - (spawn_bounds.x / 2.0f),
-            ((rand() % 101) / 100.0f) * spawn_bounds.y - (spawn_bounds.y / 2.0f),
-            ((rand() % 101) / 100.0f) * spawn_bounds.z - (spawn_bounds.z / 2.0f)
+            ((zox_rand() % 101) / 100.0f) * spawn_bounds.x - (spawn_bounds.x / 2.0f),
+            ((zox_rand() % 101) / 100.0f) * spawn_bounds.y - (spawn_bounds.y / 2.0f),
+            ((zox_rand() % 101) / 100.0f) * spawn_bounds.z - (spawn_bounds.z / 2.0f)
         });
         velocity3Ds[i].value = (float3) {
-            ((rand() % 101) / 100.0f) * 1.0f - 0.5f,
-            ((rand() % 101) / 100.0f) * 1.0f - 0.5f,
-            ((rand() % 101) / 100.0f) * 1.0f - 0.5f
+            ((zox_rand() % 101) / 100.0f) * 1.0f - 0.5f,
+            ((zox_rand() % 101) / 100.0f) * 1.0f - 0.5f,
+            ((zox_rand() % 101) / 100.0f) * 1.0f - 0.5f
         };
         velocity3Ds[i].value = float3_normalize(velocity3Ds[i].value);
         velocity3Ds[i].value = float3_scale(velocity3Ds[i].value, (velocityBounds.y - velocityBounds.x));
@@ -70,9 +70,9 @@ void emit_particle3Ds(ecs *world, const float3 spawn_position, const int spawn_c
         else velocity3Ds[i].value.y += velocityBounds.x;
         if (velocity3Ds[i].value.z < 0) velocity3Ds[i].value.z -= velocityBounds.x;
         else velocity3Ds[i].value.z += velocityBounds.x;
-        scale1Ds[i].value = scaleBounds.x + ((rand() % 101) / 100.0f) * (scaleBounds.y - scaleBounds.x);
-        brightnesses[i].value = brightnessBounds.x + ((rand() % 101) / 100.0f) * (brightnessBounds.y - brightnessBounds.x);
-        destroyInTimes[i].value = lifeTime.x + ((rand() % 101) / 100.0f) *  (lifeTime.y - lifeTime.x);
+        scale1Ds[i].value = scaleBounds.x + ((zox_rand() % 101) / 100.0f) * (scaleBounds.y - scaleBounds.x);
+        brightnesses[i].value = brightnessBounds.x + ((zox_rand() % 101) / 100.0f) * (brightnessBounds.y - brightnessBounds.x);
+        destroyInTimes[i].value = lifeTime.x + ((zox_rand() % 101) / 100.0f) *  (lifeTime.y - lifeTime.x);
     }
     // const entity *particlesArray =
     ecs_bulk_init(world, &(ecs_bulk_desc_t) {

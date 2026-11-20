@@ -36,7 +36,7 @@ void flowers_model_generation_system(iter* it) {
         // colors to pick from
         byte2 vrange = (byte2) { 1, unique_colors - 1 };
         // generates random colors based on primary color
-        srand(seed->value);
+        zox_srand(seed->value);
         for (int j = 0; j < unique_colors; j++) {
             color_rgb new_color = color_rgb_2;
             float m = randf_range(color_r.x, color_r.y);

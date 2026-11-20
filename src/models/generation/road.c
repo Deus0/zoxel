@@ -23,7 +23,7 @@
                     pos.z < bark_thickness || pos.z >= size.z - bark_thickness) {
                     byte v = rand_range(color_ids.x, color_ids.y);
                     // vertical streaking
-                    if ((pos.y + rand()) & 1) {
+                    if ((pos.y + zox_rand()) & 1) {
                         if (v > color_ids.x) {
                             v--;
                         }
@@ -46,7 +46,7 @@
                     if (v < color_ids.y) v++;
                 }
                 // vertical grain noise
-                if ((pos.y + rand()) & 1) {
+                if ((pos.y + zox_rand()) & 1) {
                     if (v > color_ids.x) v--;
                 }
                 set_VoxelNode(voctree, depth, pos, v);
@@ -463,7 +463,7 @@ void road_model_generation_system(iter* it) {
         resize_ColorRGBs(colors, 0);
         color_rgb primary_rgb = color_to_color_rgb(fill->value);
         // Generate Vox
-        srand(seed->value);
+        zox_srand(seed->value);
         // its octree locked while written, readers can run alongside (thread_safety.md)
         spinlock* write_lock = zox_octree_lock(world, e);
         zox_octree_lock_begin(write_lock);

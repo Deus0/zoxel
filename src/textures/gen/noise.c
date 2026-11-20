@@ -12,7 +12,7 @@ void generate_texture_noise(color* data, int2 size, byte texture_type, byte outl
         greenRange = (int2) { 37, 57 };  // 47
         blueRange = (int2) { 7, 27 };  // 17
         alphaRange = (int2) { 255, 256 };*/
-        // if (rand() % 100 >= 50) {
+        // if (zox_rand() % 100 >= 50) {
         color_min = fill_color;
         color_max = fill_color;
         // clamped, a channel under 24 or over 231 wrapped around (dark textures got bright specks)
@@ -41,23 +41,23 @@ void generate_texture_noise(color* data, int2 size, byte texture_type, byte outl
             /*redRange.x = redRange.y = 206 - 50;
             greenRange.x = greenRange.y = 179 - 50;
             blueRange.x = blueRange.y = 59 - 30;
-            redRange.x -= 10 + rand() % 30;
-            greenRange.x -= 10 + rand() % 30;
-            blueRange.x -= 10 + rand() % 20;*/
+            redRange.x -= 10 + zox_rand() % 30;
+            greenRange.x -= 10 + zox_rand() % 30;
+            blueRange.x -= 10 + zox_rand() % 20;*/
         } else if (texture_type == zox_texture_stone) {
             /*redRange.x = redRange.y = 100;
             greenRange.x = greenRange.y = 100;
             blueRange.x = blueRange.y = 100;
-            redRange.x -= 10 + rand() % 20;
-            greenRange.x -= 10 + rand() % 20;
-            blueRange.x -= 10 + rand() % 20;*/
+            redRange.x -= 10 + zox_rand() % 20;
+            greenRange.x -= 10 + zox_rand() % 20;
+            blueRange.x -= 10 + zox_rand() % 20;*/
         } else if (zox_texture_obsidian) {
             /*redRange.x = redRange.y = 42;
             greenRange.x = greenRange.y = 42;
             blueRange.x = blueRange.y = 42;
-            redRange.x -= 6 + rand() % 12;
-            greenRange.x -= 6 + rand() % 12;
-            blueRange.x -= 6 + rand() % 12;*/
+            redRange.x -= 6 + zox_rand() % 12;
+            greenRange.x -= 6 + zox_rand() % 12;
+            blueRange.x -= 6 + zox_rand() % 12;*/
         }
     }
     if (texture_type == zox_texture_graybox) {
@@ -82,16 +82,16 @@ void generate_texture_noise(color* data, int2 size, byte texture_type, byte outl
                     }
                 }
                 data[index] = color_min;
-                if (color_max.r != color_min.r) data[index].r += rand() % (color_max.r - color_min.r);
-                if (color_max.g != color_min.g) data[index].g += rand() % (color_max.g - color_min.g);
-                if (color_max.b != color_min.b) data[index].b += rand() % (color_max.b - color_min.b);
-                if (color_max.a != color_min.a) data[index].a += rand() % (color_max.a - color_min.a);
+                if (color_max.r != color_min.r) data[index].r += zox_rand() % (color_max.r - color_min.r);
+                if (color_max.g != color_min.g) data[index].g += zox_rand() % (color_max.g - color_min.g);
+                if (color_max.b != color_min.b) data[index].b += zox_rand() % (color_max.b - color_min.b);
+                if (color_max.a != color_min.a) data[index].a += zox_rand() % (color_max.a - color_min.a);
                 /*if (j >= textureSize->value.x / 2 && k < textureSize->value.y / 2) {
                     textureData->value[index].g *= 2;
                     textureData->value[index].b = textureData->value[index].r - 30;
                     textureData->value[index].r /= 2;
                 }*/
-                // textureData->value[index].a = rand() % 256;
+                // textureData->value[index].a = zox_rand() % 256;
                 // debug sides of textureData, starts at top left
                 if (texture_type == zox_texture_none) {
                     if (j == 0) {

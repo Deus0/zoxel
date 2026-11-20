@@ -9,9 +9,9 @@ entity spawn_prefab_animating_chunk(ecs *world, entity p) {
     initialize_ColorRGBs(&colors, 8);
     for (int i = 0; i < 8; i++) {
         colors.value[i] = (color_rgb) {
-            155 - (rand() % 60),
-            225 - (rand() % 60),
-            255 - (rand() % 60)
+            155 - (zox_rand() % 60),
+            225 - (zox_rand() % 60),
+            255 - (zox_rand() % 60)
         };
     }
     zox_set_ptr(e, ColorRGBs, colors);

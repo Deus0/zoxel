@@ -17,7 +17,7 @@ void build_brain_test(ecs *world, const entity e, const int2 size) {
     for (int x = 0; x < size.x; x++) {
         int neuron_index_next = k;
         for (int y = 0; y < size.y; y++) {
-            // const float weight = (rand() % 101) * 0.01f;
+            // const float weight = (zox_rand() % 101) * 0.01f;
             float2 position = (float2) { x, y };
             position = calculate_neuron_position(position, size.x, size.y);
             const entity e2 = spawn_neuron(world, prefab_neuron, e, position);
@@ -36,7 +36,7 @@ void build_brain_test(ecs *world, const entity e, const int2 size) {
             continue;
         }
         for (int y = 0; y < size.y; y++) {
-            const float weight = (rand() % 101) * 0.01f;
+            const float weight = (zox_rand() % 101) * 0.01f;
             const entity a = children->value[neuron_start_index + y];
             const entity b = children->value[neuron_index_next + y];
             const entity e2 = spawn_connection(world, prefab_connection, e, a, b, weight);
@@ -44,7 +44,7 @@ void build_brain_test(ecs *world, const entity e, const int2 size) {
             brain_links->value[l++] = e2;
         }
         for (int y = 1; y < size.y; y++) {
-            const float weight = (rand() % 101) * 0.01f;
+            const float weight = (zox_rand() % 101) * 0.01f;
             const entity a = children->value[neuron_start_index + y];
             const entity b = children->value[neuron_index_next + y - 1];
             const entity e2 = spawn_connection(world, prefab_connection, e, a, b, weight);
@@ -52,7 +52,7 @@ void build_brain_test(ecs *world, const entity e, const int2 size) {
             brain_links->value[l++] = e2;
         }
         for (int y = 0; y < size.y - 1; y++) {
-            const float weight = (rand() % 101) * 0.01f;
+            const float weight = (zox_rand() % 101) * 0.01f;
             const entity a = children->value[neuron_start_index + y];
             const entity b = children->value[neuron_index_next + y + 1];
             const entity e2 = spawn_connection(world, prefab_connection, e, a, b, weight);

@@ -32,8 +32,8 @@ entity spawn_block_vox_instanced(
     }
     // NOTE: Picks a random Model based on position seed
     // srand - pick the model randomly, off our position in world
-    srand(positionf.x * positionf.z * positionf.y);
-    entity model = get_model_variant(world, vox, rand());
+    zox_srand(positionf.x * positionf.z * positionf.y);
+    entity model = get_model_variant(world, vox, zox_rand());
     if (!zox_valid(model)) {
         zox_loge("Spawned BlockVoxInstance [%s::%lu] with Invalid Model [%lu] - block index [%i]",
             zox_get_name(prefab),

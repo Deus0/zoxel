@@ -93,7 +93,7 @@ static void spawn_cubes() {
         cube,
         GL_STATIC_DRAW
     );
-    srand((unsigned int)time(NULL));
+    zox_srand((unsigned int)time(NULL));
     for (int i = 0; i < CUBE_COUNT; i++) {
         cube_positions[i] = (float3) {
             random_float(cube_min.x, cube_max.x),

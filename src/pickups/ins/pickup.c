@@ -153,8 +153,8 @@ void pop_pickup(
     float scale)
 {
     const float radius = scale * 1.5f;
-    const float angle = (rand() % 360) * degrees_to_radians;
-    const float distance = radius * (0.5f + 0.5f * (rand() % 101) / 100.0f);
+    const float angle = (zox_rand() % 360) * degrees_to_radians;
+    const float distance = radius * (0.5f + 0.5f * (zox_rand() % 101) / 100.0f);
     const float3 end = (float3) {
         position.x + cosf(angle) * distance,
         position.y,

@@ -76,7 +76,7 @@ void generate_splotches_lines(
             if (int2_equal(splash_point, splash_point_check)) continue;
             splash_point = splash_point_check;
             // add noise later to this
-            int pointSize2 = splotch_size - 1; // rand() % splotch_size; // math.floor(random.NextFloat(pointSize.x, pointSize.y));
+            int pointSize2 = splotch_size - 1; // zox_rand() % splotch_size; // math.floor(random.NextFloat(pointSize.x, pointSize.y));
             // get surrounding pixels
             for (int k = -pointSize2; k <= pointSize2; k++) {
                 for (int l = -pointSize2; l <= pointSize2; l++) {

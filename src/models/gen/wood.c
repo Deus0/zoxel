@@ -17,9 +17,9 @@ void build_vox_wood(VoxelNode *voctree, byte depth, byte2 wood, byte2 bark) {
                 /* bark on XZ perimeter */
                 if (pos.x < bark_thickness || pos.x >= size.x - bark_thickness ||
                     pos.z < bark_thickness || pos.z >= size.z - bark_thickness) {
-                    byte v = bark.x + (rand() % bark_range);
+                    byte v = bark.x + (zox_rand() % bark_range);
                     /* vertical streaking */
-                    if ((pos.y + rand()) & 1) {
+                    if ((pos.y + zox_rand()) & 1) {
                         if (v > bark.x) {
                             v--;
                         }
@@ -34,7 +34,7 @@ void build_vox_wood(VoxelNode *voctree, byte depth, byte2 wood, byte2 bark) {
                 /* ring phase (density modulation, not hard bands) */
                 byte ring = (r2 / ring_period) & 1;
                 /* base wood color (always varied) */
-                byte v = wood.x + (rand() % wood_range);
+                byte v = wood.x + (zox_rand() % wood_range);
                 /* ring density bias */
                 if (ring) {
                     if (v > wood.x) v--;
@@ -42,7 +42,7 @@ void build_vox_wood(VoxelNode *voctree, byte depth, byte2 wood, byte2 bark) {
                     if (v < wood.y) v++;
                 }
                 /* vertical grain noise */
-                if ((pos.y + rand()) & 1) {
+                if ((pos.y + zox_rand()) & 1) {
                     if (v > wood.x) v--;
                 }
                 set_voxel_safe(voctree, depth, pos, v);

@@ -32,7 +32,7 @@ void build_vox_bricks(VoxelNode *voctree, byte depth, byte2 voxels, byte black) 
                 byte in_z = (pos.z % (brick_d + mortar)) < brick_d;
                 if (in_x && in_y && in_z) {
                     // random chip at edges
-                    byte chip = (rand() % 100) < chip_chance
+                    byte chip = (zox_rand() % 100) < chip_chance
                     && (
                         (sx % (brick_w + mortar) < 2) ||
                         (sx % (brick_w + mortar) >= brick_w-2) ||
@@ -42,7 +42,7 @@ void build_vox_bricks(VoxelNode *voctree, byte depth, byte2 voxels, byte black) 
                     if (chip) {
                         set_voxel_safe(voctree, depth, pos, black);
                     } else {
-                        byte voxel = voxels.x + rand() % (voxels.y - voxels.x);
+                        byte voxel = voxels.x + zox_rand() % (voxels.y - voxels.x);
                         set_voxel_safe(voctree, depth, pos, voxel);
                     }
                 } else {

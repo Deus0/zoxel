@@ -47,7 +47,7 @@ void vnoise3(
                 if (getv_VoxelNode(voctree, depth, position) == black_voxel) {
                     continue;
                 }
-                byte value = voxel_range.x + rand() % (voxel_range.y - voxel_range.x);
+                byte value = voxel_range.x + zox_rand() % (voxel_range.y - voxel_range.x);
                 set_voxel_safe(
                     voctree,
                     depth,
