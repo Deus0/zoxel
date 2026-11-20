@@ -97,17 +97,17 @@ byte zox_tst_furniture_rotation_ready(ecs* world) {
                 high.z < cells_high.z * scale + slack && high.x - low.x > 1.5f * scale * (part.x != base.x) &&
                 high.z - low.z > 1.5f * scale * (part.z != base.z), "bed [%i]'s mesh isn't over its two cells", i);
             // a ray down onto its base
-            float3 from = zox_tst_fhits_middle(base, scale);
+            float3 from = zox_tst_bvhits_middle(base, scale);
             from.y += 3 * scale;
-            const RaycastVoxelData ray = zox_tst_fhits_ray(world, terrain, realm, from, 6 * scale);
+            const RaycastVoxelData ray = zox_tst_bvhits_ray(world, terrain, realm, from, 6 * scale);
             const float stop = from.y - ray.distance;
             zox_tst_check(ray.result != rayhit_none && ray.hit_block && zox_getv(ray.hit_block, BlockIndex) == bed &&
                 stop >= base.y * scale - 0.01f && stop <= (base.y + 1) * scale + 0.01f,
                 "a ray onto bed [%i]'s base hit [%s] at [%.2f] blocks", i, ray.hit_block ? zox_getn(ray.hit_block) : "none", stop / scale);
             // and onto its filler: into the bed's turned model, its mattress below the cell's top
-            float3 over_part = zox_tst_fhits_middle(part, scale);
+            float3 over_part = zox_tst_bvhits_middle(part, scale);
             over_part.y += 3 * scale;
-            const RaycastVoxelData ray2 = zox_tst_fhits_ray(world, terrain, realm, over_part, 6 * scale);
+            const RaycastVoxelData ray2 = zox_tst_bvhits_ray(world, terrain, realm, over_part, 6 * scale);
             const float stop2 = over_part.y - ray2.distance;
             zox_log("[tst] ray onto bed [%i]'s filler hit [%s] at [%.2f] blocks", i, ray2.hit_block ? zox_getn(ray2.hit_block) : "none", stop2 / scale);
             zox_tst_check(ray2.hit_block && zox_getv(ray2.hit_block, BlockIndex) == bed && stop2 >= part.y * scale - 0.01f &&
