@@ -1,6 +1,6 @@
 // tst: touch_actions, playing with touch: a tap on an action's icon in the actionbar selects it
 //  - in a game, a fake finger tap first: it switches the device mode to touchscreen (the touch ui spawns, with 4
-//    buttons: pause, speak, jump, attack, no switch action buttons)
+//    buttons: pause, game menus, speak, jump, attack, no switch action buttons)
 //  - a tap on the third action's icon: the character's ActionIndex is 2, nothing is picked up (the mouse's data)
 //  - run: bash bsh/tst.sh touch_actions
 int zox_tst_ta_stage = 0;
@@ -77,7 +77,7 @@ byte zox_tst_touch_actions_ready(ecs* world) {
 void zox_tst_touch_actions_check(ecs* world) {
     (void) world;
     zox_tst_check(zox_tst_ta_touch_mode, "a tap didn't switch the device mode to touchscreen");
-    zox_tst_check(zox_tst_ta_buttons == 4, "the touch ui has [%i] buttons, not 4 (pause, speak, jump, attack)", zox_tst_ta_buttons);
+    zox_tst_check(zox_tst_ta_buttons == 5, "the touch ui has [%i] buttons, not 5 (pause, game menus, speak, jump, attack)", zox_tst_ta_buttons);
     zox_tst_check(zox_tst_ta_found, "no icon on screen for the actionbar's slot [%i]", zox_tst_ta_target);
     zox_tst_check(zox_tst_ta_index == zox_tst_ta_target, "tapped action [%i], the action is [%i]", zox_tst_ta_target, zox_tst_ta_index);
     zox_tst_check(!zox_tst_ta_held, "the tap picked the action up (the mouse holds it)");

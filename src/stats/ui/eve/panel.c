@@ -7,7 +7,8 @@ const float statbars_hide_time = 5;
 entity spawn_stats_panel(
     ecs* world,
     entity canvas,
-    entity character)
+    entity character,
+    int top)
 {
     if (!zox_valid(canvas)) {
         zox_loge("Invalid canvas in [spawn_game_ui_stats]");
@@ -64,7 +65,7 @@ entity spawn_stats_panel(
         bar_size.x + panel_padding.x * 2,
         panel_height + panel_padding.y * 2
     };
-    int2 position = int2_zero; // (int2) { 16 * ui_scale, - 16 * ui_scale };
+    int2 position = (int2) { 0, -top };   // under the touch ui's top row
     byte header_font_size = 4 * ui_scale;
     byte2 header_padding = (byte2) {
         10 * ui_scale,
@@ -161,10 +162,13 @@ void player_state_stats_ui(
         canvas,
         zox_id(StatBars));
     if (is_spawn && !zox_valid(statbars)) {
+        const byte mode = zox_getv(player, DeviceMode);
+        const byte touch = mode == zox_device_mode_touchscreen || zox_dbg_touch_with_mouse;
         spawn_stats_panel(
             world,
             canvas,
-            character);
+            character,
+            touch ? touch_top_row_height(world, canvas) : 0);
         if (dbg_log) {
             zox_log("Spawned Stats Panel for Player [%s]",
                     zox_getn(player));
