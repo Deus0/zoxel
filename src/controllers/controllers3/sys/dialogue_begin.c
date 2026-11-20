@@ -44,8 +44,8 @@ void dialogue_begin_system(iter* it) {
             zox_log("Cannot talk in combat with: %s", zox_get_name(npc));
             continue;
         }
-        // talking to someone in a town finishes the find quest
-        quests_found_town(world, character);
+        // talking to a villager in a town finishes the find quest
+        quests_found_town(world, character, npc);
         entity tree = zox_get_link(world, npc, Dialogue);
         // entity tree = zox_getv(npc, DialoguetreeLink);
         if (!zox_valid(tree)) {

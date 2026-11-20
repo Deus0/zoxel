@@ -28,7 +28,7 @@ void quests_realm_spawn_system(iter* it) {
         if (state->value != zox_generate_realm_quests) {
             continue;
         }
-        // the starting quest: find a town, talk to someone there, 3 cookies (quests_found_town)
+        // the starting quest: find a town, talk to a villager there, 3 cookies (quests_found_town)
         {
             const entity find = spawn_realm_quest(world, prefab_quest, e, "Find a Town", "discord");
             zox_add(find, FindQuest);

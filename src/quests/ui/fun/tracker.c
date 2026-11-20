@@ -48,7 +48,7 @@ char* get_quest_tracker_text(
         snprintf(text + index, 512 - index, "\n- Slay [%s] [%i/%i]",
             get_quest_tracker_name(world, character), value, target);
     } else if (zox_has(quest, FindQuest)) {
-        snprintf(text + index, 512 - index, "\n- Talk to someone in a town");
+        snprintf(text + index, 512 - index, "\n- Talk to a villager in a town");
     }
     return text;
 }

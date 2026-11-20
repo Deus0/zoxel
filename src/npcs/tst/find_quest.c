@@ -1,7 +1,7 @@
 // tst: find_quest, the starting quest: find a town, talk to someone there, 3 cookies (quests/fun/reward.c)
 //  - the player starts with it tracked (it wasn't), the tracker says what to do (it said Find [???])
-//  - talking outside a town (quests_found_town) doesn't finish it
-//  - inside one (InTown) it's done and handed in, and the character has 3 more cookies
+//  - talking (quests_found_town) to a villager outside a town, or to a critter in one, doesn't finish it
+//  - to a villager inside one (wherever the player stands) it's done and handed in, the character has 3 more cookies
 //  - run: bash bsh/tst.sh find_quest
 byte zox_tst_find_stage = 0;
 int zox_tst_find_frames = 0;
@@ -22,6 +22,18 @@ static inline entity zox_tst_find_user_quest(ecs* world, entity character) {
         }
     }
     return found;
+}
+
+// the realm's first town
+static inline entity zox_tst_find_town(ecs* world) {
+    entity town = 0;
+    ecs_iter_t it = ecs_each_id(world, zox_id(Town));
+    while (ecs_each_next(&it)) {
+        if (!town && it.count) {
+            town = it.entities[0];
+        }
+    }
+    return town;
 }
 
 // how many cookies its actionbar and inventory hold
@@ -75,8 +87,6 @@ byte zox_tst_find_quest_ready(ecs* world) {
         snprintf(zox_tst_find_tracker, sizeof(zox_tst_find_tracker), "%s", text);
         free(text);
         zox_tst_find_cookies = zox_tst_find_count_cookies(world, character);
-        // outside a town
-        zox_remove(character, InTown);
         zox_tst_find_stage = 1;
         zox_tst_find_frames = 0;
         return 0;
@@ -85,22 +95,30 @@ byte zox_tst_find_quest_ready(ecs* world) {
         if (zox_tst_find_frames < 3) {
             return 0;
         }
-        // only when it's really outside one (in_town_system adds it back each frame in a town)
-        if (!zox_has(character, InTown)) {
-            quests_found_town(world, character);
+        // a stand in npc: a villager far from every town, then a critter (no Villager) at a town's middle
+        const entity terrain = zox_get_link(world, character, TerrainLink);
+        const entity town = zox_tst_find_town(world);
+        zox_tst_check(zox_valid(town), "no town in the realm");
+        if (!zox_valid(town) || !zox_valid(terrain)) {
+            return 1;
         }
-        zox_add(character, InTown);
-        zox_tst_find_stage = 2;
-        zox_tst_find_frames = 0;
-        return 0;
-    }
-    if (zox_tst_find_stage == 2) {
-        if (zox_tst_find_frames < 3) {
-            return 0;
-        }
+        const float scale = zox_getv(terrain, BlockScale);
+        const int2 center = zox_getv(town, BlockPosition2);
+        const float3 inside = { (center.x + 0.5f) * scale, 0, (center.y + 0.5f) * scale };
+        const entity npc = zox_new();
+        zox_set_link(world, npc, TerrainLink, terrain);
+        zox_add(npc, Villager);
+        zox_setv(npc, Position3D, float3_add(inside, (float3) { 100000, 0, 0 }));
+        quests_found_town(world, character, npc);
+        zox_remove(npc, Villager);
+        zox_setv(npc, Position3D, inside);
+        quests_found_town(world, character, npc);
         zox_tst_find_outside_done = zox_has(zox_tst_find_quest, QuestDone);
-        quests_found_town(world, character);
-        zox_tst_find_stage = 3;
+        // the villager in the town
+        zox_add(npc, Villager);
+        quests_found_town(world, character, npc);
+        zox_delete(npc);
+        zox_tst_find_stage = 2;
         zox_tst_find_frames = 0;
         return 0;
     }
@@ -115,9 +133,9 @@ void zox_tst_find_quest_check(ecs* world) {
     }
     zox_log("[tst] find quest tracker: %s", zox_tst_find_tracker);
     zox_tst_check(!strstr(zox_tst_find_tracker, "???"), "the tracker shows [%s]", zox_tst_find_tracker);
-    zox_tst_check(!zox_tst_find_outside_done, "talking outside a town finished it");
+    zox_tst_check(!zox_tst_find_outside_done, "talking to a villager outside a town, or a critter in one, finished it");
     zox_tst_check(zox_has(zox_tst_find_quest, QuestDone) && zox_has(zox_tst_find_quest, QuestHandedin),
-        "talking in a town didn't finish and hand it in");
+        "talking to a villager in a town didn't finish and hand it in");
     const int cookies = zox_tst_find_count_cookies(world, character);
     zox_tst_check(cookies == zox_tst_find_cookies + 3, "[%i] cookies after, [%i] before, not 3 more", cookies, zox_tst_find_cookies);
 }

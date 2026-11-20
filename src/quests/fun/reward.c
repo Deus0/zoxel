@@ -26,9 +26,24 @@ void log_quest_done(ecs* world, entity character, entity user_quest) {
     game_log(world, zox_get_link(world, character, PlayerLink), text);
 }
 
-// a character talking to someone in a town: its find quests are done and handed in, rewarded, its log says so
-void quests_found_town(ecs* world, entity character) {
-    if (!zox_valid(character) || !zox_has(character, InTown)) {
+// a villager (humanoid, not a critter or slime) standing inside a town's walls
+static inline byte is_villager_in_town(ecs* world, entity npc) {
+    if (!zox_valid(npc) || !zox_has(npc, Villager) || !zox_has(npc, Position3D)) {
+        return 0;
+    }
+    const entity terrain = zox_get_link(world, npc, TerrainLink);
+    if (!zox_valid(terrain) || !zox_has(terrain, BlockScale)) {
+        return 0;
+    }
+    const float scale = zox_getv(terrain, BlockScale);
+    const float3 position = zox_getv(npc, Position3D);
+    return town_at(world, (int2) { (int) floorf(position.x / scale), (int) floorf(position.z / scale) }) != 0;
+}
+
+// a character talking to a villager in a town (wherever it stands): its find quests are done and handed in,
+//  rewarded, its log says so
+void quests_found_town(ecs* world, entity character, entity npc) {
+    if (!zox_valid(character) || !is_villager_in_town(world, npc)) {
         return;
     }
     iter it = zox_children(world, character);
