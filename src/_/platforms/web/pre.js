@@ -2,6 +2,12 @@
 //  a reload; get_save_directory puts them there on web (src/_/pathing/fun/save_dir.c)
 //   - loaded before main() (a run dependency), so the main menu sees them (its continue button)
 //   - written back every 2 seconds and when the page is hidden; syncfs only writes what changed
+// the page's ?args= are the game's command line, split on spaces: index.html?args=--tst%20colors_hsv (bsh/web_tst.sh)
+const zox_url_args = new URLSearchParams(location.search).get('args');
+if (zox_url_args) {
+    Module.arguments = zox_url_args.split(' ').filter(function (arg) { return arg.length > 0; });
+}
+
 Module.preRun = Module.preRun || [];
 Module.preRun.push(function () {
     FS.mkdir('/saves');

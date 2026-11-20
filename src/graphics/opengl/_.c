@@ -11,6 +11,11 @@ byte is_log_opengl = 0;
     #define zox_disable_geometry_shaders
 #endif
 
+// webgl 2 is es 3.0: no compute shaders, storage buffers or indirect draws (es 3.1)
+#if defined(zox_web) && !defined(zox_disable_compute)
+    #define zox_disable_compute
+#endif
+
 #include "dat/_.c"
 #include "fun/_.c"
 #include "tst/_.c"

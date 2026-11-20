@@ -9,6 +9,9 @@ set -euo pipefail
 #
 # Release with logs (the page's console, F12)
 #   bash bsh/web.sh zoxel --release --logs
+#
+# Tests: a release build with the tests and logs, in bin/<game>_web_tst (bsh/web_tst.sh runs them in a browser)
+#   bash bsh/web.sh zoxel --release --tests
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 date_str="$(date +%Y_%m_%d)"
@@ -17,11 +20,13 @@ profile="debug"
 run="0"
 trace="0"
 package="0"
+tests="0"
 
 [[ " $* " == *" --release "* ]] && profile="release"
 [[ " $* " == *" --run "* ]] && run="1"
 [[ " $* " == *" --trace "* ]] && trace="1"
 [[ " $* " == *" --package "* ]] && package="1"
+[[ " $* " == *" --tests "* ]] && tests="1"
 
 cd "${root}"
 
@@ -30,6 +35,7 @@ cd "${root}"
 # ============================================================
 
 web_path="${root}/bin/${game_name}_web"
+[[ "${tests}" == "1" ]] && web_path="${root}/bin/${game_name}_web_tst"
 src_path="${root}/src"
 gam_path="${root}/gam/${game_name}"
 flecs_path="${root}/inc/flecs"
@@ -140,9 +146,15 @@ fi
 
 # --logs: a release build that still logs (to the page's console, F12), as build.sh --logs; the debug build is too
 #  slow in a browser to load a game (-O0, verbose logs)
-if [[ " $* " == *" --logs "* && "${profile}" == "release" ]]; then
+if [[ " $* " == *" --logs "* && "${profile}" == "release" ]] || [[ "${tests}" == "1" ]]; then
     echo "+ Logs"
     dflags+=" -Dzox_logs"
+fi
+
+# --tests: the tst harness (--tst <name>, from the page's ?args=, src/_/platforms/web/pre.js)
+if [[ "${tests}" == "1" ]]; then
+    echo "+ Tests"
+    dflags+=" -Dzox_tests"
 fi
 
 trace_flags=()

@@ -1,5 +1,5 @@
 # builds vulkan first (the flagship): windows x64, linux x64, linux arm, android arm; then opengl (the fallback): windows x64,
-#  linux x64, linux arm, android arm (phone and xr); in ubuntu 24.04, the same as bsh/docker.sh (packages from bsh/deps.sh)
+#  linux x64, linux arm, android arm (phone and xr); web (webgl 2, tested in a headless browser); in ubuntu 24.04, the same as bsh/docker.sh (packages from bsh/deps.sh)
 #   push / pull request: builds, zips are artifacts on the run's page
 #   once a day: builds master and replaces the nightly release, skipped if master didn't change
 name: build
@@ -181,8 +181,56 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  # web (webgl 2, emscripten): the zip, then its tests in a headless browser (bsh/web_tst.sh, chromium)
+  web:
+    needs: check
+    if: needs.check.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    container: ubuntu:24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: packages
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          apt-get update
+          apt-get install -y $(bash bsh/deps.sh --web)
+      # emscripten's sdk (with its sdl3 port) and playwright's chromium, both in web/
+      - name: cache emsdk
+        uses: actions/cache@v5
+        with:
+          path: |
+            web/emsdk
+            web/playwright
+          key: web-${{ hashFiles('bsh/web.sh', 'bsh/web_tst.sh') }}
+      - name: cache flecs
+        uses: actions/cache@v5
+        with:
+          path: inc/flecs
+          key: flecs-${{ hashFiles('bsh/flecs.sh', 'bsh/flecs_fix.sh', 'bsh/flecs_patches/*') }}
+      - name: flecs
+        run: bash bsh/flecs.sh
+      - name: build
+        run: bash bsh/web.sh zoxel --release --package
+      - name: tests
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: bash bsh/web_tst.sh
+      - uses: actions/upload-artifact@v7
+        with:
+          path: zip/zoxel_web_*.zip
+          archive: false
+          if-no-files-found: error
+          retention-days: 14
+      - if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: web-tst-logs
+          path: tst/
+          retention-days: 14
+
   nightly:
-    needs: [build, android]
+    needs: [build, android, web]
     if: github.ref == 'refs/heads/master' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     permissions:

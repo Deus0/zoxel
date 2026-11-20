@@ -5,6 +5,7 @@ set -euo pipefail
 #   bash bsh/deps.sh --windows  adds mingw for windows cross builds
 #   bash bsh/deps.sh --android  adds jdk 17 for gradle (bsh/android_prepare.sh gets the sdk, ndk and gradle)
 #   bash bsh/deps.sh --vulkan   adds vulkan's loader and shaderc (build.sh --vulkan)
+#   bash bsh/deps.sh --web      adds python, git and xz for emscripten's sdk (bsh/web.sh), venv for bsh/web_tst.sh
 
 # build tools, curl/unzip/patch for bsh/flecs.sh and bsh/libs-download.sh
 packages=(build-essential cmake zip unzip curl patch pkg-config)
@@ -20,6 +21,8 @@ packages+=(libasound2-dev)
 [[ " $* " == *" --windows "* ]] && packages+=(mingw-w64)
 # vulkan: the loader's headers, shaderc (it brings glslang and spirv-tools)
 [[ " $* " == *" --vulkan "* ]] && packages+=(libvulkan-dev libshaderc-dev)
+# web: emsdk is python, cloned with git, its downloads are .tar.xz; playwright (web_tst.sh) in a venv
+[[ " $* " == *" --web "* ]] && packages+=(python3 python3-venv git xz-utils)
 # android, gradle needs jdk 17
 [[ " $* " == *" --android "* ]] && packages+=(openjdk-17-jdk-headless)
 
