@@ -99,11 +99,16 @@ fi
 [[ " $* " == *" --xr "* ]] && is_xr="1"
 [[ " $* " == *" --testxr "* ]] && testxr="1"
 [[ " $* " == *" --testsdl "* ]] && testsdl="1"
+if [[ "${gfx}" == "vulkan" && "${is_xr}" == "1" ]]; then
+    echo "ERROR: --xr is opengl es only (its swapchains, src/xr/openxr), build it without --vulkan"
+    exit 1
+fi
 
 date_str=$(date +%Y_%m_%d)
 
 apk_path="${apk_dir}/${game_name}_android_arm"
 [[ "${is_xr}" == "1" ]] && apk_path="${apk_path}_xr"
+[[ "${gfx}" == "vulkan" ]] && apk_path="${apk_path}_vulkan"
 [[ "${profile}" == "release" && "${signed}" == "0" ]] && apk_path="${apk_path}_unsigned"
 apk_path="${apk_path}_${date_str}.apk"
 
@@ -414,6 +419,8 @@ echo "- Found [${sdl_android}]"
 cflags="-std=gnu99 -fPIC"
 dflags="-Dzox_game=${game_name} -Dflecssource -Dzox_android -Dzox_safety_checks"
 libs="-llog -landroid -lm -lEGL -lGLESv3"
+# vulkan: the ndk's loader; shaderc (shaders compiled at load) is the ndk's source, built static (Android.mk)
+[[ "${gfx}" == "vulkan" ]] && libs="-llog -landroid -lm -lvulkan"
 includes="-I${flecs_path} -I${sdl_path}/include"
 
 if [[ "${profile}" == "debug" ]]; then
@@ -446,6 +453,11 @@ dflags+=" -Dzox_sdl3"
 if [[ "${gfx}" == "opengl" ]]; then
     echo "* Added [opengl]"
     dflags+=" -Dzox_opengl"
+fi
+
+if [[ "${gfx}" == "vulkan" ]]; then
+    echo "* Added [vulkan]"
+    dflags+=" -Dzox_vulkan"
 fi
 
 if [[ "${sdl_mixer}" == "1" ]]; then
@@ -674,12 +686,26 @@ LOCAL_SHARED_LIBRARIES += openxr_loader
 EOF
 fi
 
+if [[ "${gfx}" == "vulkan" ]]; then
+cat >> "${jni_src_path}/Android.mk" <<EOF
+LOCAL_STATIC_LIBRARIES := shaderc
+EOF
+fi
+
 cat >> "${jni_src_path}/Android.mk" <<EOF
 
 LOCAL_LDLIBS := ${libs}
 
 include \$(BUILD_SHARED_LIBRARY)
 EOF
+
+# vulkan: shaderc from the ndk's sources (sources/third_party/shaderc), glslang and spirv-tools with it
+if [[ "${gfx}" == "vulkan" ]]; then
+cat >> "${jni_src_path}/Android.mk" <<EOF
+
+\$(call import-module,third_party/shaderc)
+EOF
+fi
 
 # ------------------------------------------------------------
 # OpenXR prebuilt loader
@@ -728,7 +754,8 @@ echo "- Application.mk configured"
 
 app_gradle="${staging_path}/app/build.gradle"
 
-if [[ "${is_xr}" == "1" ]]; then
+# xr and vulkan need android 7 (api 24): vulkan's loader came then
+if [[ "${is_xr}" == "1" || "${gfx}" == "vulkan" ]]; then
     android_min_api="24"
 else
     android_min_api="21"
@@ -736,8 +763,11 @@ fi
 
 echo "- Minimum Android API [${android_min_api}]"
 
+# the native code's platform too: sdl's gradle passes android-21 to ndk-build, where vulkan's loader isn't
 sed -i \
-    "s/minSdkVersion [0-9]*/minSdkVersion ${android_min_api}/" \
+    -e "s/minSdkVersion [0-9]*/minSdkVersion ${android_min_api}/" \
+    -e "s/APP_PLATFORM=android-[0-9]*/APP_PLATFORM=android-${android_min_api}/" \
+    -e "s/ANDROID_PLATFORM=android-[0-9]*/ANDROID_PLATFORM=android-${android_min_api}/" \
     "${app_gradle}"
 
 # ============================================================

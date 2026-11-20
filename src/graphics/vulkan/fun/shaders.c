@@ -1,5 +1,5 @@
 // Shaders: the engine's gl source compiled to spir-v by shaderc, then read (reflected) for what the gl calls ask
-//  - relaxed vulkan rules put loose uniforms in a default block (gl_DefaultUniformBlock), each stage its own
+//  - loose uniforms are gathered in a block (zox_uniforms, vulkan_gather_uniforms), each stage its own
 //  - vulkan's clip space: each vertex shader ends by moving its depth from gl's -1 to 1 to vulkan's 0 to 1 (its
 //    main renamed, wrapped); y is flipped by the viewport (vulkan_viewport)
 
@@ -31,23 +31,70 @@ shaderc_compiler_t vk_shaderc;
 #define spv_uniform 2
 #define spv_output 3
 
-// the gl source as vulkan glsl: version 450, gl's vertex and instance ids, the vertex depth moved
+// the gl source's loose uniforms (one a line, not samplers or blocks) gathered into a block, zox_uniforms: vulkan
+// has no loose ones; shaderc's relaxed rules would do it, but android's ndk shaderc is too old for them
+//  - writes the source without those lines to body, returns the block (empty if it has none), both malloc'd
+char* vulkan_gather_uniforms(const char* source, char** body) {
+    const size_t length = strlen(source);
+    char* block = malloc(length + 64);
+    *body = malloc(length + 1);
+    char* members = block + sprintf(block, "layout(std140) uniform zox_uniforms {\n");
+    const char* members_start = members;
+    char* out = *body;
+    const char* line = source;
+    while (*line) {
+        const char* end = strchr(line, '\n');
+        end = end ? end + 1 : line + strlen(line);
+        const char* text = line;
+        while (*text == ' ' || *text == '\t') {
+            text++;
+        }
+        const char* semicolon = memchr(text, ';', end - text);
+        const byte loose = strncmp(text, "uniform ", 8) == 0 && semicolon && !memchr(text, '{', end - text)
+            && strncmp(text + 8, "sampler", 7) != 0;
+        if (loose) {
+            const size_t member = semicolon + 1 - (text + 8);
+            memcpy(members, text + 8, member);
+            members += member;
+            *members++ = '\n';
+            *out++ = '\n';     // the line kept as a blank, so errors' line numbers match
+        } else {
+            memcpy(out, line, end - line);
+            out += end - line;
+        }
+        line = end;
+    }
+    *out = 0;
+    if (members == members_start) {
+        block[0] = 0;
+    } else {
+        sprintf(members, "};\n");
+    }
+    return block;
+}
+
+// the gl source as vulkan glsl: version 450, gl's vertex and instance ids, loose uniforms in a block, the vertex
+// depth moved
 char* vulkan_shader_source(const char* source, byte fragment) {
     if (strncmp(source, "#version", 8) == 0) {
         const char* line_end = strchr(source, '\n');
         source = line_end ? line_end + 1 : source;
     }
+    char* body;
+    char* block = vulkan_gather_uniforms(source, &body);
     const char* prefix = "#version 450\n#define gl_VertexID gl_VertexIndex\n#define gl_InstanceID gl_InstanceIndex\n";
     const char* suffix = "\nvoid main() {\n    zox_main();\n    gl_Position.z = (gl_Position.z + gl_Position.w) * 0.5;\n}\n";
-    const char* main = fragment ? NULL : strstr(source, "void main");
-    const size_t length = strlen(prefix) + strlen(source) + strlen(suffix) + 8;
+    const char* main = fragment ? NULL : strstr(body, "void main");
+    const size_t length = strlen(prefix) + strlen(block) + strlen(body) + strlen(suffix) + 8;
     char* result = malloc(length);
     if (!main) {
-        snprintf(result, length, "%s%s", prefix, source);
-        return result;
+        snprintf(result, length, "%s%s%s", prefix, block, body);
+    } else {
+        snprintf(result, length, "%s%s%.*svoid zox_main%s%s", prefix, block, (int) (main - body), body,
+            main + strlen("void main"), suffix);
     }
-    snprintf(result, length, "%s%.*svoid zox_main%s%s", prefix, (int) (main - source), source,
-        main + strlen("void main"), suffix);
+    free(block);
+    free(body);
     return result;
 }
 
@@ -172,7 +219,7 @@ void vulkan_reflect(vk_shader* shader) {
                     size = end > size ? end : size;
                 }
             }
-            if (strcmp(block_name, "gl_DefaultUniformBlock") == 0) {
+            if (strcmp(block_name, "zox_uniforms") == 0) {
                 shader->block_word = bindings[id];
                 shader->block_size = size;
                 shader->members_count = members < vk_members_max ? members : vk_members_max;
@@ -201,7 +248,6 @@ uint vulkan_compile_stage(const char* source, byte fragment) {
     }
     char* glsl = vulkan_shader_source(source, fragment);
     shaderc_compile_options_t options = shaderc_compile_options_initialize();
-    shaderc_compile_options_set_vulkan_rules_relaxed(options, 1);
     shaderc_compile_options_set_auto_bind_uniforms(options, 1);
     shaderc_compile_options_set_auto_map_locations(options, 1);
     shaderc_compile_options_set_target_env(options, shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_1);
