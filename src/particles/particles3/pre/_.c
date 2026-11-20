@@ -5,7 +5,7 @@ entity prefab_particle3D_emitter;
 
 
 void spawn_shaders_particles3D(ecs *world) {
-    if (render_backend == zox_render_backend_opengl) {
+    if (render_backend != zox_render_backend_headless) {
         initialize_shader_particle3D(world);
     }
 }

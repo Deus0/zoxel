@@ -6,7 +6,7 @@
 byte zox_tst_gpu_links_ready(ecs* world) {
     (void) world;
     zox_tst_waiting = "rendering";
-    return rendering_initialized && render_backend == zox_render_backend_opengl;
+    return rendering_initialized && render_backend != zox_render_backend_headless;
 }
 
 // a mesh with uvs, colours and a texture, all on the gpu
