@@ -73,8 +73,32 @@ char* vulkan_gather_uniforms(const char* source, char** body) {
     return block;
 }
 
+// a fragment shader's rgb output (out vec3 name;): its name, the line made a plain vec3 in body; 0 if none
+//  - a vec3 output leaves the target's alpha undefined: gl drivers write 1, radv left garbage (a noisy sky and
+//    slimes on the 780M, blended and sampled by the post processing), so main is wrapped to write it as 1
+byte vulkan_rgb_output(char* body, char* name) {
+    char* line = body;
+    while (line && *line) {
+        char* text = line;
+        while (*text == ' ' || *text == '\t') {
+            text++;
+        }
+        if (strncmp(text, "out vec3 ", 9) == 0) {
+            const char* end = strchr(text + 9, ';');
+            if (end && end - (text + 9) < 47) {
+                snprintf(name, 48, "%.*s", (int) (end - (text + 9)), text + 9);
+                memset(text, ' ', 4);   // "out " blanked: a plain vec3 the wrapper reads
+                return 1;
+            }
+        }
+        line = strchr(line, '\n');
+        line = line ? line + 1 : NULL;
+    }
+    return 0;
+}
+
 // the gl source as vulkan glsl: version 450, gl's vertex and instance ids, loose uniforms in a block, the vertex
-// depth moved
+// depth moved, a fragment's rgb output written with alpha 1
 char* vulkan_shader_source(const char* source, byte fragment) {
     if (strncmp(source, "#version", 8) == 0) {
         const char* line_end = strchr(source, '\n');
@@ -83,8 +107,17 @@ char* vulkan_shader_source(const char* source, byte fragment) {
     char* body;
     char* block = vulkan_gather_uniforms(source, &body);
     const char* prefix = "#version 450\n#define gl_VertexID gl_VertexIndex\n#define gl_InstanceID gl_InstanceIndex\n";
-    const char* suffix = "\nvoid main() {\n    zox_main();\n    gl_Position.z = (gl_Position.z + gl_Position.w) * 0.5;\n}\n";
-    const char* main = fragment ? NULL : strstr(body, "void main");
+    char rgb[48];
+    const byte rgb_output = fragment && vulkan_rgb_output(body, rgb);
+    char suffix[192];
+    if (rgb_output) {
+        snprintf(suffix, sizeof(suffix), "\nlayout(location = 0) out vec4 zox_frag_out;\nvoid main() {\n    zox_main();\n"
+            "    zox_frag_out = vec4(%s, 1.0);\n}\n", rgb);
+    } else {
+        snprintf(suffix, sizeof(suffix), "\nvoid main() {\n    zox_main();\n"
+            "    gl_Position.z = (gl_Position.z + gl_Position.w) * 0.5;\n}\n");
+    }
+    const char* main = !fragment || rgb_output ? strstr(body, "void main") : NULL;
     const size_t length = strlen(prefix) + strlen(block) + strlen(body) + strlen(suffix) + 8;
     char* result = malloc(length);
     if (!main) {
