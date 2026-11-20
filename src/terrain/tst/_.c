@@ -16,6 +16,7 @@
 #include "perf.c"
 #include "lod_swap.c"
 #include "perf_idle.c"
+#include "perf_terrain.c"
 #include "gpu_mesh.c"
 
 void zox_tsts_terrain(ecs* world) {
@@ -40,5 +41,6 @@ void zox_tsts_terrain(ecs* world) {
     zox_tsts_lod_swap(world);
     zox_tsts_perf(world);
     zox_tsts_terrain_gpu_mesh(world);
+    zox_tsts_perf_terrain(world);
     zox_tst_add("perf_idle", zox_tst_perf_idle_ready, zox_tst_perf_idle_check, 600);
 }

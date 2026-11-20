@@ -112,7 +112,8 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 | Game | `load_games` `player_spawn` `continue_game` `end_game_cleanup` `stream_npcs` `npc_attacks` `population` `region_population` `npc_leash` `player_respawn` `footsteps` `arms_in_step` `parts` `action_wheel` `item_split` `resume_no_punch` `crouch` `walk_bob` (the head bobs once a step, smoothly) `auto_jump` (walking into a step jumps onto it) `pickup_pop` `editor` `touch_play` `touch_actions` (a tap on an action icon selects it) |
 | Local coop | `coop_streamers` (terrain lods from the closest player's streamer) `coop_skybox` (a skybox round each camera) `coop_homes` (players spawn at their own homes in one town) `coop_billboards` (3D uis face each camera that draws them) `coop_saves` (each player its own save, player2.dat) `coop_continue` (a saved coop game, each loads at its own position) `coop_gamepad_reconnect` (a gamepad unplugged and back in, its player gets it) `coop_join_continue` (a new second player in a loaded game, in the first one's town) `coop_map_markers` (the other player on the minimap, on its edge when far) `coop_navigator` (the second player navigates, its tooltips under its icons) `coop_respawn` (the second player dies and respawns, the first plays on) |
 | Quests | `quest_tracking` `quest_dialogue` |
-| Performance | `perf_idle` (idle rendering: frames a second standing still once streaming settles, either backend; was `render_fps`, numbers in [metrics.md](metrics.md)) `perf_stream` (stream remeshing: how long each chunk step takes to settle, the frames while it streams; reading
+| Performance | `perf_terrain` (terrain alone, no player, npcs, hud or particles: its load, 8 seconds idle, 6 stream steps,
+each phase's frames; the cleanest numbers for terrain and meshing, `tst/perf_terrain.ppm` its view) `perf_idle` (idle rendering: frames a second standing still once streaming settles, either backend; was `render_fps`, numbers in [metrics.md](metrics.md)) `perf_stream` (stream remeshing: how long each chunk step takes to settle, the frames while it streams; reading
 both: "Reading the perf numbers" below) `perf_fly` `mass_spawn` `mass_delete` `physics2_perf` `physics3_perf` |
 
 Perf runs: compare on the same land and machine state. `zox_tst_seed=666` gives new games a fixed seed (random land
@@ -122,7 +123,9 @@ slots by kind and the near lod latency (doc/done/streaming.md).
 
 ### Reading the perf numbers (perf_idle, perf_stream)
 
-Both log one block from `src/terrain/tst/frames.c`, labelled with what was measured (backend, far, vertical, cpu or
+`perf_terrain` logs the same block three times, `perf_terrain load`, `perf_terrain idle` and `perf_terrain stream`,
+with the load's settle time and the steps' (a world with only terrain in it: use it for terrain and meshing numbers,
+the others for the whole game). Both others log one block from `src/terrain/tst/frames.c`, labelled with what was measured (backend, far, vertical, cpu or
 gpu meshing). `perf_idle` measures 8 seconds standing still once streaming settles (idle rendering), `perf_stream`
 every frame from its first chunk step to its last settling (stream remeshing):
 
