@@ -47,8 +47,10 @@
 	if it's still laggy, read the headset's frame timing log ([XR] fps, openxr/render.c)
 - XR lean feels 2-3 times larger than real life (play test, on the build that slid the whole body): tst xr_body has
 	it 1:1 scaled at 72 fps, the body now leans its spine first (xr_lean_angle_max); check again in the headset
-- the cookie gather quest failed
-- tst furniture_place stalls on "air in the player's chunk" (2026-11-18, also without the water level changes)
+- the cookie gather quest failed: tsts find_quest, quest_dialogue, npc_quests pass (2026-11-20). Talking finishes it
+	only with the player's own character InTown (inside the walls, town_at) and in first person (dialogue_begin.c):
+	a villager talked to from outside the walls, or in third person, doesn't count
+- tst furniture_place stalls on "air in the player's chunk" (2026-11-18), passed 4 of 4 on 2026-11-20: rare or gone
 - furniture_hits is flaky: some door top rays miss now and then, once the app closed mid test
 - perf_stream and tables_stream sometimes fail: lod swaps don't settle in 20s (flaky before the test move too)
 - grass shows overlapping copies, two lods at once (maybe rare): tst grass_overlap (vodes3/tst) sees no copies at the
