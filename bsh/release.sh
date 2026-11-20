@@ -9,7 +9,7 @@ root="${PATH}"
 game="${1:-zoxel}"
 
 # Windows
-PATH="${root}" bash bsh/build.sh "${game}" --release --package --x64 --windows --sdl2
+PATH="${root}" bash bsh/build.sh "${game}" --release --package --x64 --windows
 
 # Linux
 # Needs docker to use a lower library.

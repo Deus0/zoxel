@@ -1,4 +1,5 @@
-# builds linux x64 and arm (opengl and vulkan), windows x64, android arm (phone, vulkan and xr) in ubuntu 24.04, the same as bsh/docker.sh (packages from bsh/deps.sh)
+# builds vulkan first (the flagship): windows x64, linux x64, linux arm, android arm; then opengl (the fallback): windows x64,
+#  linux x64, linux arm, android arm (phone and xr); in ubuntu 24.04, the same as bsh/docker.sh (packages from bsh/deps.sh)
 #   push / pull request: builds, zips are artifacts on the run's page
 #   once a day: builds master and replaces the nightly release, skipped if master didn't change
 name: build
@@ -42,30 +43,37 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - target: linux_x64
+          # vulkan first, the flagship (doc/plans/vulkan.md): their zips carry shaderc beside the binary
+          #  windows' own libs (its vulkan loader and shaderc are built, not the system's)
+          - target: windows_x64_vulkan
             runner: ubuntu-latest
-            deps: ''
-            build: bash bsh/build.sh --release --package --x64 --docker
-          # github's arm runner, built natively
-          - target: linux_arm
-            runner: ubuntu-24.04-arm
-            deps: ''
-            build: bash bsh/build.sh --release --package --arm --docker
-          - target: windows_x64
-            runner: ubuntu-latest
-            deps: --windows
-            build: bash bsh/windows.sh --release
-          # vulkan (doc/plans/vulkan.md), their zips carry shaderc beside the binary; libs as their opengl twin's
+            deps: --windows --vulkan
+            build: bash bsh/windows.sh --release --vulkan
+          # linux's libs as their opengl twin's (vulkan and shaderc are the system's)
           - target: linux_x64_vulkan
             libs: linux_x64
             runner: ubuntu-latest
             deps: --vulkan
             build: bash bsh/build.sh --release --package --x64 --docker --vulkan
+          # github's arm runner, built natively
           - target: linux_arm_vulkan
             libs: linux_arm
             runner: ubuntu-24.04-arm
             deps: --vulkan
             build: bash bsh/build.sh --release --package --arm --docker --vulkan
+          # then opengl, the fallback
+          - target: windows_x64
+            runner: ubuntu-latest
+            deps: --windows
+            build: bash bsh/windows.sh --release
+          - target: linux_x64
+            runner: ubuntu-latest
+            deps: ''
+            build: bash bsh/build.sh --release --package --x64 --docker
+          - target: linux_arm
+            runner: ubuntu-24.04-arm
+            deps: ''
+            build: bash bsh/build.sh --release --package --arm --docker
     steps:
       - uses: actions/checkout@v7
       - name: packages
@@ -145,14 +153,21 @@ jobs:
           mkdir -p ~/.config/zox_keys
           echo "${KEYSTORE}" | base64 -d > ~/.config/zox_keys/zoxel.keystore
           printf '%s\n' "${KEYSTORE_PASSWORD}" > ~/.config/zox_keys/zoxel.password
+      # vulkan first: builds the ndk's shaderc too (~10 minutes)
+      - name: build vulkan
+        run: bash bsh/android.sh zoxel --release --signed --vulkan
+      # then opengl es, the phone and xr (xr is gl es only for now)
       - name: build
         run: bash bsh/android.sh zoxel --release --signed
       - name: build xr
         run: bash bsh/android.sh zoxel --release --signed --xr
-      # vulkan: builds the ndk's shaderc too (~10 minutes)
-      - name: build vulkan
-        run: bash bsh/android.sh zoxel --release --signed --vulkan
       # each apk as it is (archive: false uploads one file)
+      - uses: actions/upload-artifact@v7
+        with:
+          path: zip/zoxel_android_arm_vulkan_*.apk
+          archive: false
+          if-no-files-found: error
+          retention-days: 14
       - uses: actions/upload-artifact@v7
         with:
           path: zip/zoxel_android_arm_2*.apk
@@ -162,12 +177,6 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           path: zip/zoxel_android_arm_xr_*.apk
-          archive: false
-          if-no-files-found: error
-          retention-days: 14
-      - uses: actions/upload-artifact@v7
-        with:
-          path: zip/zoxel_android_arm_vulkan_*.apk
           archive: false
           if-no-files-found: error
           retention-days: 14

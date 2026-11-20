@@ -1,7 +1,8 @@
-# codeberg's nightly (forgejo actions, doc/devops.md): builds linux x64 vulkan and windows x64 here, copies the other
-#  builds from github's nightly (.github/workflows/build.yml), then replaces codeberg's nightly release
+# codeberg's nightly (forgejo actions, doc/devops.md): builds windows x64 vulkan, linux x64 vulkan and windows x64
+#  (opengl) here, copies the other builds from github's nightly (.github/workflows/build.yml), then replaces
+#  codeberg's nightly release
 #   once a day, after github's: skipped if master didn't change, or start it by hand (actions, build, run workflow)
-#   codeberg's runners are small (4 cpus, 8G, ~10 minutes each by fair use), so only two builds run here
+#   codeberg's runners are small (4 cpus, 8G, ~10 minutes each by fair use), so only three builds run here
 #   needs the CODEBERG_TOKEN secret: a codeberg token with write:repository, in the repo's settings, actions, secrets
 name: build
 
@@ -36,6 +37,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # vulkan first, the flagship, then windows' opengl fallback
+          - target: windows_x64_vulkan
+            deps: --windows --vulkan
+            build: bash bsh/windows.sh --release --vulkan
           - target: linux_x64_vulkan
             deps: --vulkan
             build: bash bsh/build.sh --release --package --x64 --docker --vulkan
@@ -136,6 +141,6 @@ jobs:
           git push --force "https://${repo%%/*}:${CODEBERG_TOKEN}@${server#https://}/${repo}.git" \
             "${sha}:refs/tags/nightly"
           notes="daily build of master, $(date -u +%Y-%m-%d), at ${sha}
-          linux x64 vulkan and windows x64 built here, the rest copied from github's nightly, at $(cat github_sha)"
+          windows x64 (vulkan and opengl) and linux x64 vulkan built here, the rest copied from github's nightly, at $(cat github_sha)"
           jq -n --arg notes "${notes}" '{name: "zoxel-nightly", body: $notes, prerelease: true}' | \
             curl -sf -X PATCH -H "${auth}" -H "Content-Type: application/json" -d @- "${api}/releases/${id}" > /dev/null
