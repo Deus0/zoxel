@@ -4,6 +4,7 @@
 //  - its gamepad's selection goes into it (it has no window of its own open), A on its first button (Wander) resumes
 //    the game for both, the shared canvas gone
 //  - paused both players link the shared canvas too (CanvasLink, many): their first link is still their own canvas
+//  - the shared canvas reuses low ids (zox_tst_recycle_low_ids), as in a long game: sorted before the players' own
 //  - each player's own canvas darkens paused and fades back resumed (the fades went to the shared canvas: one stayed dark)
 //  - a screenshot paused: tst/coop_pause.ppm
 //  - run: bash bsh/tst.sh coop_pause
@@ -14,6 +15,8 @@ int2 zox_tst_cp_canvas_size, zox_tst_cp_window_size;
 byte zox_tst_cp_selected = 0, zox_tst_cp_resumed = 0;
 float zox_tst_cp_dark[2] = { -1, -1 }, zox_tst_cp_light[2] = { -1, -1 };    // each own overlay's alpha, paused and resumed
 double zox_tst_cp_resumed_time = 0;
+int zox_tst_cp_recycled = 0;
+entity zox_tst_cp_shared_id = 0, zox_tst_cp_own_id = 0;
 int zox_tst_cp_own_first = -1;     // players whose first CanvasLink is their own canvas, paused (the shared one's linked too)
 
 // a player's own canvas's overlay alpha (player_own_canvas)
@@ -54,6 +57,8 @@ byte zox_tst_coop_pause_ready(ecs* world) {
             zox_setv(player, DeviceMode, zox_device_mode_gamepad);
             zox_set_link(world, player, GamepadLink, zox_tst_pad);
             zox_remove(zox_tst_pad, Disabled);
+            // the shared camera and canvas take these as the game pauses
+            zox_tst_cp_recycled = zox_tst_recycle_low_ids(world, player_own_canvas(world, zox_players[0]), 2);
             zox_tst_cp_stage = 1;
             zox_tst_cp_frames = 0;
             return 0;
@@ -93,6 +98,8 @@ byte zox_tst_coop_pause_ready(ecs* world) {
                 for (byte i = 0; i < 2; i++) {
                     zox_tst_cp_dark[i] = zox_tst_cp_overlay(world, i);
                 }
+                zox_tst_cp_shared_id = shared_canvas;
+                zox_tst_cp_own_id = player_own_canvas(world, zox_players[0]);
             }
             if (f > 40 && zox_getv(game, GameState) == zox_game_state_playing && !zox_valid(shared_canvas)) {
                 zox_tst_cp_resumed = 1;
@@ -127,6 +134,9 @@ void zox_tst_coop_pause_check(ecs* world) {
     zox_tst_check(zox_tst_cp_own_first == 2, "paused, [%i] of 2 players' canvas link (the first) is their own", zox_tst_cp_own_first);
     zox_tst_check(zox_tst_cp_selected, "the second player's gamepad didn't select in the shared pause menu");
     zox_tst_check(zox_tst_cp_resumed, "A on Wander didn't resume the game");
+    zox_log("[tst] coop_pause: shared canvas [%lu], player 1's own [%lu]", zox_tst_cp_shared_id, zox_tst_cp_own_id);
+    zox_tst_check(zox_tst_cp_recycled == 2 && (uint) zox_tst_cp_shared_id < (uint) zox_tst_cp_own_id,
+        "the shared canvas [%lu] didn't reuse a low id (under [%lu])", zox_tst_cp_shared_id, zox_tst_cp_own_id);
     for (byte i = 0; i < 2; i++) {
         zox_log("[tst] coop_pause: player [%i]'s overlay paused [%.2f] resumed [%.2f]", i + 1, zox_tst_cp_dark[i], zox_tst_cp_light[i]);
         zox_tst_check(zox_tst_cp_dark[i] > 0, "paused, player [%i]'s screen isn't darkened [%.2f]", i + 1, zox_tst_cp_dark[i]);

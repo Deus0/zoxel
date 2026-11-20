@@ -168,6 +168,20 @@ static inline const byte* zox_tst_ppm_pixel(const byte* pixels, int2 size, int x
     return &pixels[((size_t) y * size.x + x) * 3];
 }
 
+// frees count ids under below's, so the next entities spawned reuse them (flecs takes the last freed first): like a
+//  long game's recycled ids, sorted before older entities' in a link's targets (zox_get_link gives the lowest); tests only
+static inline int zox_tst_recycle_low_ids(ecs* world, entity below, int count) {
+    int freed = 0;
+    for (entity id = 1000; id < (uint) below && freed < count; id++) {
+        if (!ecs_exists(world, id)) {
+            ecs_make_alive(world, id);
+            ecs_delete(world, id);
+            freed++;
+        }
+    }
+    return freed;
+}
+
 // how different two pixels are, 0 to 765
 static inline int zox_tst_pixel_difference(const byte* a, const byte* b) {
     return abs(a[0] - b[0]) + abs(a[1] - b[1]) + abs(a[2] - b[2]);
