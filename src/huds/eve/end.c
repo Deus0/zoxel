@@ -68,7 +68,7 @@ void game_state_end_huds(
             if (!zox_has(player, Player)) {
                 continue;
             }
-            entity canvas = zox_get_link(world, player, CanvasLink);
+            entity canvas = player_own_canvas(world, player);
             destroy_canvas_game_uis(world, canvas, dbg_log);
             // FadeOut
             if (delay_end) {

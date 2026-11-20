@@ -7,6 +7,17 @@ extern entity spawn_menu_paused(ecs*, entity);
 entity shared_canvas = 0;
 static entity shared_canvas_camera = 0;
 
+// a player's own canvas (its PlayerLink is them): zox_get_link gave any of its canvases, the lowest id first, and
+//  the shared one reuses low ids in a long game; the resume's fade went to it, its own stayed dark (tst menu_flow)
+entity player_own_canvas(ecs* world, entity player) {
+    zox_each_link(world, player, CanvasLink, canvas) {
+        if (zox_get_link(world, canvas, PlayerLink) == player) {
+            return canvas;
+        }
+    }
+    return 0;
+}
+
 void despawn_shared_canvas(ecs* world) {
     for (int i = 0; i < players_playing; i++) {
         if (zox_valid(shared_canvas) && zox_valid(zox_players[i])) {

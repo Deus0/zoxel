@@ -5,7 +5,7 @@ extern void delayed_open_game_menu(ecs*, entity);
 
 void player_state_pause_ui(ecs* world, entity player, byte state) {
     byte dbg_log = 0;
-    entity canvas = zox_get_link(world, player, CanvasLink);
+    entity canvas = player_own_canvas(world, player);
     entity camera = zox_get_link(world, player, CameraLink);
     if (!zox_valid(canvas)) {
         zox_loge("Canvas is missing for Player [%s]", zox_getn(player));

@@ -1,3 +1,4 @@
+extern entity player_own_canvas(ecs*, entity);
 // the game ends once the screen has faded out (the realm vanished, then it faded)
 //  - the delay could end before the fade did (0.86 faded): waits for its fade in step to finish
 void end_game_after_fade(ecs* world, entity player) {
@@ -5,7 +6,7 @@ void end_game_after_fade(ecs* world, entity player) {
     if (!zox_valid(game)) {
         return;
     }
-    const entity canvas = zox_get_link(world, player, CanvasLink);
+    const entity canvas = player_own_canvas(world, player);
     const entity overlay = zox_valid(canvas) ? zox_get_child_by_id(world, canvas, zox_id(CanvasOverlay)) : 0;
     // its first step fades in (trigger_canvas_fade_transition), then it's dark
     if (zox_valid(overlay) && zox_has(overlay, AnimationIndex) && zox_getv(overlay, AnimationIndex) == 0) {
@@ -27,7 +28,7 @@ void button_event_end_game(ecs *world, ClickEventData event) {
         return;
     }
     // fades out, then ends (game_state_end_huds keeps it dark while the realm goes, fades the menu in)
-    trigger_canvas_fade_transition(world, zox_get_link(world, player, CanvasLink), end_game_delay_fade, 1);
+    trigger_canvas_fade_transition(world, player_own_canvas(world, player), end_game_delay_fade, 1);
     delay_event(world, &end_game_after_fade, player, end_game_delay_fade);
 }
 

@@ -12,6 +12,8 @@
 //  - after every cycle, the canvas's entity count, live gpu buffers and textures match the baseline
 //  - run: bash bsh/tst.sh ui_leaks
 #define zox_tst_menus_settle_frames 5
+double zox_tst_menus_resumed_time = 0;
+entity zox_tst_menus_low_canvas = 0;     // a canvas link with a low id while paused, like a long game's shared canvas
 #define zox_tst_leaks_warmup 3
 #define zox_tst_leaks_cycles 30
 int zox_tst_menus_stage = 0;
@@ -208,21 +210,49 @@ byte zox_tst_menu_flow_ready(ecs* world) {
             zox_tst_check(state == zox_game_state_paused, "paused: game state is [%i], expected paused", state);
             zox_tst_check(menus == 1, "paused: [%i] menus open, expected 1", menus);
             zox_tst_check(lock == 0, "paused: mouse lock is [%i], expected unlocked", lock);
+            // the shared canvas reuses a low id in a long game: sorted first, the resume's fade went to it
+            // a free id under its own canvas's (ecs_new_low_id ran out of them)
+            for (entity id = 1000; id < (uint) player_own_canvas(world, player) && !zox_tst_menus_low_canvas; id++) {
+                if (!ecs_exists(world, id)) {
+                    ecs_make_alive(world, id);
+                    zox_tst_menus_low_canvas = id;
+                }
+            }
+            zox_link(world, player, CanvasLink, zox_tst_menus_low_canvas);
             if (!zox_tst_menus_click(world, player, paused, &button_event_return_to_game, "return to game")) {
                 return 1;
             }
             break;
         case 7:
             zox_tst_waiting = "the game to resume";
+            if (zox_tst_menus_low_canvas && zox_getv(player, PlayerState) != zox_player_state_paused &&
+                zox_getv(player, PlayerState) != zox_player_state_pause_begin) {
+                zox_unlink(world, player, CanvasLink, zox_tst_menus_low_canvas);
+                zox_delete(zox_tst_menus_low_canvas);
+                zox_tst_menus_low_canvas = 0;
+            }
             if (!playing || paused) {
                 return 0;
             }
             break;
         case 8:
             zox_tst_waiting = "the game to settle after resuming";
+            // past the fade back (pause_fade_time)
+            if (zox_tst_menus_frames == zox_tst_menus_settle_frames) {
+                zox_tst_menus_resumed_time = zox_current_time;
+            }
+            if (zox_current_time - zox_tst_menus_resumed_time < pause_fade_time + 0.5) {
+                return 0;
+            }
             zox_tst_check(menus == 0, "resumed: [%i] menus open, expected none", menus);
             zox_tst_check(!zox_tst_menu(world, canvas, zox_id(Taskbar)), "resumed: taskbar wasn't closed");
             zox_tst_check(lock == 1, "resumed: mouse lock is [%i], expected locked", lock);
+            {
+                // its own canvas faded back (it stayed dark)
+                const entity overlay = zox_get_child_by_id(world, player_own_canvas(world, player), zox_id(CanvasOverlay));
+                const float alpha = zox_valid(overlay) ? zox_getv(overlay, Alpha) : -1;
+                zox_tst_check(alpha == 0, "resumed: its canvas's overlay is still [%.2f] dark", alpha);
+            }
             zox_log("[tst] pausing again");
             button_event_pause_game(world, (ClickEventData) { .clicker = player });
             break;
