@@ -5,6 +5,8 @@ void prefab_add_streamer(ecs* world, entity e) {
     zox_set(e, StreamDirty, { 0 });
     zox_set(e, StreamPosition2, { int2_zero });
     zox_set(e, StreamDirty2, { 0 });
+    zox_set(e, StreamRow, { -1 });
+    zox_set(e, StreamSwept, { (int3) { INT32_MIN, INT32_MIN, INT32_MIN } });
     zox_set(e, BlockScale, { 0 });
     zox_set(e, NodeDepth, { 0 });
     // NOTE: Camera didnt have these initially before

@@ -82,6 +82,8 @@ void zox_systems_terrain(ecs *world) {
         [in] streaming.StreamDirty,
         [in] streaming.StreamerLevel,
         [in] streaming.StreamPosition,
+        [out] streaming.StreamRow,
+        [out] streaming.StreamSwept,
         [none] streaming.Streamer
     );
     zox_system_ctx(

@@ -36,14 +36,21 @@ static inline int terrain_stream_distance(int2 position, int distance, const int
     return distance;
 }
 
-// NOTE: Uses hash queue to add new positions to spawning
+// the row offset (z) of a sweep's row r: the centre first, then out each side (0, -1, 1, -2, 2 ..)
+static inline int terrain_stream_row_offset(int r) {
+    return r == 0 ? 0 : (r & 1 ? -(r + 1) / 2 : r / 2);
+}
+
+#define zox_terrain_stream_budget_ms 1.0   // queueing a sweep's rows, a frame (a terrain)
+
+// NOTE: Queues every column round a streamer that moved (StreamDirty) to spawn or update, spread over frames: rows of
+//  columns, the centre ones first, within a budget a frame (StreamRow: the next row, -1 none; StreamSwept: from where)
+//  - a sweep at far 32 is 65 x 65 columns (~6.6ms at once); it ran whole on all 3 frames of StreamDirty (trigger,
+//    active, end), now once a move, a little a frame
 void terrain_stream_system(iter* it) {
     byte dbg_log = 0;
-    int3 size = (int3) {
-        terrain_lod_far,
-        render_distance_y,
-        terrain_lod_far
-    };
+    const int size = terrain_lod_far;
+    const int rows = size * 2 + 1;
     zox_sys_on_begin();
     zox_sys_query();
     zox_sys_world();
@@ -56,53 +63,57 @@ void terrain_stream_system(iter* it) {
         zox_sys_o(TerrainSpawnQueue, queue);
         int2 points[terrain_streamers_max];
         const byte points_count = terrain_stream_points(world, query, e, points);
+        const double budget_start = get_time_ms();
         zox_sys_query_begin();
         while (zox_sys_query_loop()) {
             zox_sys_begin_2();
             zox_sys_in_2(StreamDirty);
             zox_sys_in_2(StreamerLevel);
             zox_sys_in_2(StreamPosition);
+            zox_sys_out_2(StreamRow);
+            zox_sys_out_2(StreamSwept);
             for (int j = 0; j < it2.count; j++) {
                 zox_sys_i_2(StreamDirty, dirty);
                 zox_sys_i_2(StreamerLevel, level);
-                entity terrain = zox_get_link(world, it2.entities[j], StreamLink);
                 zox_sys_i_2(StreamPosition, stream_position);
-                // NOTE: For some reason this was failing for StreamDirty flags
-                if (!dirty->value) {
+                zox_sys_o_2(StreamRow, row);
+                zox_sys_o_2(StreamSwept, swept);
+                if (zox_get_link(world, it2.entities[j], StreamLink) != e) {
                     continue;
                 }
-                if (terrain != e) {
+                // a sweep from where it is: when it's moved since its last (StreamSwept), or restreamed (StreamDirty
+                //  triggered: a game start, a town placed); waiting on one StreamDirty frame missed some (two_streamers)
+                if (!int3_equals(swept->value, stream_position->value) || dirty->value == zox_dirty_trigger) {
+                    swept->value = stream_position->value;
+                    row->value = 0;
+                }
+                if (row->value < 0) {
                     continue;
                 }
-                int2 stream_position2 = (int2) {
-                    stream_position->value.x,
-                    stream_position->value.z
-                };
-                int3 position = int3_zero;
-                for (position.x = stream_position->value.x - size.x; position.x <= stream_position->value.x + size.x; position.x++)
-                for (position.z = stream_position->value.z - size.z; position.z <= stream_position->value.z + size.z; position.z++)
-                {
-                    int2 tunk_position = (int2) {
-                        position.x,
-                        position.z
-                    };
-                    entity tunk = int2_hashmap_get(tunks->value, tunk_position);
-                    // NOTE: If tunk doesnt exist, spawn new terrain pillar here!
-                    byte added = add_or_set_TerrainSpawnQueue(queue,
-                        (TerrainSpawnUpdate) {
+                const int2 stream_position2 = (int2) { stream_position->value.x, stream_position->value.z };
+                while (row->value < rows && get_time_ms() - budget_start < zox_terrain_stream_budget_ms) {
+                    const int z = stream_position2.y + terrain_stream_row_offset(row->value);
+                    for (int x = stream_position2.x - size; x <= stream_position2.x + size; x++) {
+                        const int2 tunk_position = (int2) { x, z };
+                        const entity tunk = int2_hashmap_get(tunks->value, tunk_position);
+                        // NOTE: If tunk doesnt exist, spawn new terrain pillar here!
+                        const int distance = int2_distance(stream_position2, tunk_position);
+                        const byte added = add_or_set_TerrainSpawnQueue(queue, (TerrainSpawnUpdate) {
                             .tunk = tunk,
                             .level = level->value,
                             .position = tunk_position,
                             .distance = level->value >= 1 ?
-                                terrain_stream_distance(tunk_position, int2_distance(stream_position2, tunk_position), points, points_count) :
-                                int2_distance(stream_position2, tunk_position),
+                                terrain_stream_distance(tunk_position, distance, points, points_count) : distance,
                             .time = zox_current_time,
                         });
-                    if (dbg_log && added) {
-                        zox_log("Queueing Update: Tunk [%s] At [%ix%i]",
-                            zox_getn(tunk),
-                            tunk_position.x, tunk_position.y);
+                        if (dbg_log && added) {
+                            zox_log("Queueing Update: Tunk [%s] At [%ix%i]", zox_getn(tunk), x, z);
+                        }
                     }
+                    row->value++;
+                }
+                if (row->value >= rows) {
+                    row->value = -1;
                 }
             }
         }

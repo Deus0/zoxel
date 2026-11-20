@@ -140,6 +140,19 @@
 - Flaky: humanoid_leak (sometimes almost stops after round 1 and times out, else passes in 65s), npc_leash (the npc
   walks away from home, -x, passes and fails on the same commits), quest_dialogue (the first talk can take 15s+)
 
+# Optimization
+- Steady 120 fps (8.3ms a frame), streaming too (vr): tst perf_terrain, its stream's frames over 8.3ms and profile
+	- far 32 (2026-11-21): ~75 to 80 of ~1000 stream frames over 8.3ms, 10 to 11.5ms each: ~6ms of many small
+	  systems and a ~2.5 to 3ms merge (that frame's table changes), no one system spiking (the stream sweep was 6.6ms,
+	  spread over frames now)
+	- consolidate chunk dirty states into a DirtyState (byte bitmask, core): RenderDepthDirty, RenderDistanceDirty,
+	  LightNodeDirty, NpcSpawnZoneDirty, 2 bits each (trigger, active, end); present only while a bit's on, so their
+	  increment systems (~0.4ms a frame over every chunk) and readers only see dirty chunks, removed when all are off;
+	  more than 8 bits: a 16 bit DirtyState2. Setters from worker threads add a non fragmenting event tag, an observer
+	  ORs it in at the merge (two threads setting different bits in one byte lose one). Profile before and after
+	- then the build chain's tags (BuildChunkSides, BuildMesh, MeshDirty, ChunkLodDirty, ChunkUpdate, FindNeighbors):
+	  400 to 600 table moves a frame, most of the ~0.85ms merges and ~0.35ms observers an average frame
+
 # Refactors
 - Move blocks from biome spawning back to realm
 	- we need rules that make each biome feel unique still
