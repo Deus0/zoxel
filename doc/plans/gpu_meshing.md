@@ -63,9 +63,12 @@ water stays on the cpu. A setting, `zox_chunks3_gpu_meshing`; any test runs with
 - A gpu chunk mesh is a `chunk_mesh_gpu` (a variant of the textured one) tagged `GpuMesh`, its own buffers in
   `MeshGPULink` (indices, vertices), `ColorsGPULink` (face lights), `MeshCommandGPULink`, with `MeshFaceRoom` and
   `MeshFence` (rendering/com/gpu_mesh.c). The cpu's mesh build, smooth lights, upload and draw skip it.
-- The existing dirty tags drive it: `BuildMesh` (voxels) and `BuildMeshColors` (lights) each dispatch it
-  (`chunk_gpu_mesh_system`, `chunk_gpu_relight_system`, main thread in `zoxp_gpu_upload` with the uploads, 2ms a
-  frame). Its grid is filled there from the 27 chunks, lit by the realm's solidity, its material's masks.
+- The existing dirty tags drive it, as the cpu's build then upload: `BuildMesh` (voxels) and `BuildMeshColors`
+  (lights) fill its grids on worker threads (`chunk_gpu_grid_system`, `chunk_gpu_relight_system`, `zoxp_octree_read`
+  beside the cpu build and smooth lights, 3ms a thread a frame) into `GridVoxels`, `GridLights` (byte arrays),
+  `GridPresent`, `GridLightsPresent`, then `MeshDirty`: `chunk_gpu_mesh_system` (main thread, `zoxp_gpu_upload`, 2ms a
+  frame) uploads and dispatches them, lit by the realm's solidity, its material's masks, and frees them. A mesh's
+  main thread part is ~0.03ms (the dispatch ~0.02ms), a streaming burst ~60 meshes a frame.
 - `chunk_gpu_mesh_count_system` reads its count once the fence passes: over its room it grows and gets `BuildMesh`,
   else `MeshRenderCount` is its faces and it's `MeshBuilt` (what the lod swap waits for).
 - Its terrain holds the compute program and the grid upload buffers (`ComputeGPULink`, `GridGPULink`, each grid sized

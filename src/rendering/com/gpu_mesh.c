@@ -8,6 +8,11 @@ zox_tag(GpuMesh);
 zoxc_guint2(MeshCommandGPULink);
 zoxc_uint(MeshFaceRoom);
 zoxc_ulong(MeshFence);
+// its chunk's grids to mesh (lights3/fun/smooth_grid.c's layout), filled on worker threads, freed once dispatched
+zoxc_arrayd(GridVoxels, byte);
+zoxc_arrayd(GridLights, byte);
+zoxc_uint(GridPresent);         // nearby chunks with voxels, bit OCTREE_INDEX
+zoxc_uint(GridLightsPresent);   // nearby chunks with lights
 
 void on_destroyed_MeshCommandGPULink(iter* it) {
     zox_sys_begin();

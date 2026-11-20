@@ -34,6 +34,10 @@ entity spawn_prefab_chunk_mesh_gpu(ecs* world, entity prefab) {
     zox_setv(e, MeshFaceRoom, 0);
     zox_setv(e, MeshFence, 0);
     zox_setv(e, VaoGPULink, 0);
+    zox_add(e, GridVoxels);
+    zox_add(e, GridLights);
+    zox_setv(e, GridPresent, 0);
+    zox_setv(e, GridLightsPresent, 0);
     return e;
 }
 

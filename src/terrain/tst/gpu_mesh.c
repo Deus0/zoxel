@@ -23,7 +23,8 @@ static inline int zox_tst_gpu_terrain_count(ecs* world, int* settled) {
             continue;
         }
         count++;
-        *settled += !fence->value && zox_has(e, MeshBuilt) && !zox_has(e, BuildMesh) && !zox_has(e, BuildMeshColors);
+        *settled += !fence->value && zox_has(e, MeshBuilt) && !zox_has(e, BuildMesh) && !zox_has(e, BuildMeshColors) &&
+            !zox_has(e, MeshDirty);
     zox_each_end();
     return count;
 }

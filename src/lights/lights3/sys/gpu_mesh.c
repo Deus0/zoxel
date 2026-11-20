@@ -1,8 +1,9 @@
 // Gpu meshing of chunk meshes (doc/plans/gpu_meshing.md): a GpuMesh chunk mesh (zox_chunks3_gpu_meshing) is meshed
 //  by a compute shader from its chunk's smooth grid (fun/smooth_grid.c), lit, its material's blocks only; the cpu's
 //  mesh build and smooth lights skip it
-//  - BuildMesh (voxels changed) or BuildMeshColors (lights changed): its grid's filled and it's dispatched, the tag
-//      removed; its new faces draw from that frame
+//  - BuildMesh (voxels changed) or BuildMeshColors (lights changed): its grids are filled on worker threads
+//      (GridVoxels, GridLights, zoxp_octree_read), then MeshDirty: uploaded and dispatched on the main thread, the
+//      grids freed; its new faces draw from that frame
 //  - its room starts as a guess (a face every two voxel columns) and stays its size; its count comes back without waiting
 //      (MeshFence): over the room it grows and meshes again, else it's MeshBuilt (a lod swap waits for that)
 //  - its terrain holds the compute program and the grid upload buffers (ComputeGPULink, GridGPULink), made on its first
@@ -11,7 +12,8 @@
 //  - tst terrain_gpu_mesh
 
 uint zox_chunk_gpu_meshes_grown = 0;   // meshes that didn't fit their room, meshed again (tests)
-#define zox_chunk_gpu_mesh_budget_ms 2.0
+#define zox_chunk_gpu_mesh_budget_ms 2.0     // main thread, uploads and dispatches
+#define zox_chunk_gpu_grid_budget_ms 3.0     // a worker thread's, filling grids (as chunk sides)
 #define zox_chunk_gpu_grid_bytes ((octree_size(smooth_grid_depth_max) + 2) * (octree_size(smooth_grid_depth_max) + 2) * \
     (octree_size(smooth_grid_depth_max) + 2))
 
@@ -71,8 +73,89 @@ static inline guint chunk_gpu_terrain(ecs* world, entity terrain, guint2* grid) 
     return program;
 }
 
-// dispatches the meshes with tag (BuildMesh or BuildMeshColors), within a budget a frame
-static inline void chunk_gpu_mesh_dispatch(iter* it, entity tag) {
+// a byte array set to a grid's bytes (its old ones freed)
+#define chunk_gpu_grid_set(T, component, bytes, cells) {\
+    dispose_##T(component);\
+    initialize_##T(component, cells);\
+    if (component->value) {\
+        memcpy(component->value, bytes, cells);\
+    }\
+}
+
+// fills the meshes with tag (BuildMesh or BuildMeshColors): their chunk's voxels and lights at their depth with a voxel
+//  of border from the 26 around it (worker threads, reading the octrees as smooth lights does), then MeshDirty
+static inline void chunk_gpu_grid_fill(iter* it, entity tag) {
+    zox_sys_budget(chunk_gpu_grid, zox_chunk_gpu_grid_budget_ms);
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(RenderDepth);
+    zox_sys_out(GridVoxels);
+    zox_sys_out(GridLights);
+    zox_sys_out(GridPresent);
+    zox_sys_out(GridLightsPresent);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(RenderDepth, depth);
+        zox_sys_o(GridVoxels, voxels);
+        zox_sys_o(GridLights, lights);
+        zox_sys_o(GridPresent, present);
+        zox_sys_o(GridLightsPresent, lights_present);
+        if (zox_sys_budget_spent(chunk_gpu_grid)) {
+            break;
+        }
+        const entity material = zox_get_parent(world, e);
+        const entity chunk = zox_valid(material) ? zox_get_parent(world, material) : 0;
+        if (!zox_valid(chunk) || depth->value > zox_getv(chunk, NodeDepth) || depth->value > smooth_grid_depth_max) {
+            continue;
+        }
+        zox_sys_budget_start(chunk_gpu_grid);
+        entity nearby_chunks[27];
+        const LightNode* nearby_lights[27];
+        const VoxelNode* nearby_voxels[27];
+        spinlock* lights_locks[27];
+        spinlock* voxels_locks[27];
+        fetch_nearby_chunks(world, chunk, zox_get(chunk, ChunkNeighbors)->value, nearby_chunks);
+        fetch_nearby_lights(world, nearby_chunks, nearby_lights, lights_locks);
+        fetch_nearby_voxels(world, nearby_chunks, nearby_voxels, voxels_locks);
+        smooth_grid grid = { 0 };
+        if (smooth_grid_fill(&grid, nearby_lights, lights_locks, nearby_voxels, voxels_locks, depth->value)) {
+            const int cells = grid.length * grid.length * grid.length;
+            chunk_gpu_grid_set(GridVoxels, voxels, grid.voxels, cells);
+            chunk_gpu_grid_set(GridLights, lights, grid.lights, cells);
+            present->value = lights_present->value = 0;
+            for (byte j = 0; j < 27; j++) {
+                present->value |= (uint) grid.voxels_present[j] << j;
+                lights_present->value |= (uint) grid.present[j] << j;
+            }
+            zox_remove_id(e, tag);
+            if (tag == zox_id(BuildMesh) && zox_has(e, BuildMeshColors)) {
+                zox_remove(e, BuildMeshColors);
+            }
+            zox_add(e, MeshDirty);
+        }
+        free(grid.lights);
+        zox_sys_budget_end(chunk_gpu_grid);
+    }
+}
+
+// NOTE: Fills a gpu chunk mesh's grids when its voxels change
+void chunk_gpu_grid_system(iter* it) {
+    zox_sys_on_begin();
+    chunk_gpu_grid_fill(it, zox_id(BuildMesh));
+    zox_sys_on_end();
+} zoxd_system(chunk_gpu_grid_system);
+
+// NOTE: Fills a gpu chunk mesh's grids again when its lights change
+void chunk_gpu_relight_system(iter* it) {
+    zox_sys_on_begin();
+    chunk_gpu_grid_fill(it, zox_id(BuildMeshColors));
+    zox_sys_on_end();
+} zoxd_system(chunk_gpu_relight_system);
+
+// NOTE: Meshes a gpu chunk mesh from its grids (MeshDirty: filled), uploads and dispatches them, then frees them;
+//  main thread, with the other gpu uploads, within a budget a frame
+void chunk_gpu_mesh_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_budget(chunk_gpu_mesh, zox_chunk_gpu_mesh_budget_ms);
     zox_sys_world();
     zox_sys_begin();
@@ -80,6 +163,10 @@ static inline void chunk_gpu_mesh_dispatch(iter* it, entity tag) {
     zox_sys_in(MeshGPULink);
     zox_sys_in(ColorsGPULink);
     zox_sys_in(UvsGPULink);
+    zox_sys_out(GridVoxels);
+    zox_sys_out(GridLights);
+    zox_sys_in(GridPresent);
+    zox_sys_in(GridLightsPresent);
     zox_sys_out(MeshCommandGPULink);
     zox_sys_out(MeshFaceRoom);
     zox_sys_out(MeshFence);
@@ -99,6 +186,10 @@ static inline void chunk_gpu_mesh_dispatch(iter* it, entity tag) {
         zox_sys_i(MeshGPULink, mesh);
         zox_sys_i(ColorsGPULink, lights);
         zox_sys_i(UvsGPULink, uvs);
+        zox_sys_o(GridVoxels, grid_voxels);
+        zox_sys_o(GridLights, grid_lights);
+        zox_sys_i(GridPresent, present);
+        zox_sys_i(GridLightsPresent, lights_present);
         zox_sys_o(MeshCommandGPULink, command);
         zox_sys_o(MeshFaceRoom, room);
         zox_sys_o(MeshFence, fence);
@@ -108,7 +199,8 @@ static inline void chunk_gpu_mesh_dispatch(iter* it, entity tag) {
         const entity material = zox_get_parent(world, e);
         const entity chunk = zox_valid(material) ? zox_get_parent(world, material) : 0;
         const entity terrain = zox_valid(chunk) ? zox_get_parent(world, chunk) : 0;
-        if (!zox_valid(terrain) || depth->value > zox_getv(chunk, NodeDepth) || depth->value > smooth_grid_depth_max) {
+        const int length = octree_size(depth->value) + 2;
+        if (!zox_valid(terrain) || grid_voxels->length != length * length * length) {
             continue;
         }
         if (terrain != terrain_cached) {
@@ -118,6 +210,7 @@ static inline void chunk_gpu_mesh_dispatch(iter* it, entity tag) {
         if (!program) {
             // back to the cpu, its BuildMesh builds it there
             zox_remove(e, GpuMesh);
+            zox_remove(e, MeshDirty);
             zox_add(e, BuildMesh);
             continue;
         }
@@ -143,8 +236,8 @@ static inline void chunk_gpu_mesh_dispatch(iter* it, entity tag) {
         GpuMesher mesher = chunk_gpu_mesher(program, grid_buffers, mesh->value, lights->value, uvs->value, command->value, room->value, fence->value);
         gpu_mesher_set_uvs(&mesher, tilemap_uvs);
         if (!room->value) {
-            const uint length = octree_size(depth->value);
-            gpu_mesher_grow(&mesher, length * length / 2);
+            const uint size = octree_size(depth->value);
+            gpu_mesher_grow(&mesher, size * size / 2);
             room->value = mesher.max_faces;
         }
         const entity manager = zox_get_link(world, chunk, BlockManagerLink);
@@ -155,43 +248,18 @@ static inline void chunk_gpu_mesh_dispatch(iter* it, entity tag) {
         update_light_solidity(world, manager, &solidity_manager, solidity);
         gpu_mesher_set_material(&mesher, materials, zox_getv(material, BlockMaterial));
         mesher.edge_faces = 0;
-        // its chunk's voxels and lights with a voxel of border from the 26 around it
-        entity nearby_chunks[27];
-        const LightNode* nearby_lights[27];
-        const VoxelNode* nearby_voxels[27];
-        spinlock* lights_locks[27];
-        spinlock* voxels_locks[27];
-        fetch_nearby_chunks(world, chunk, zox_get(chunk, ChunkNeighbors)->value, nearby_chunks);
-        fetch_nearby_lights(world, nearby_chunks, nearby_lights, lights_locks);
-        fetch_nearby_voxels(world, nearby_chunks, nearby_voxels, voxels_locks);
-        smooth_grid grid = { 0 };
-        if (smooth_grid_fill(&grid, nearby_lights, lights_locks, nearby_voxels, voxels_locks, depth->value)) {
-            const GpuMeshLighting lighting = gpu_mesh_lighting(solidity);
-            gpu_mesh_smooth_grid(&mesher, &grid, depth->value, zox_no_lights ? NULL : &lighting);
-            fence->value = mesher.fence;
-            zox_remove_id(e, tag);
-            if (tag == zox_id(BuildMesh) && zox_has(e, BuildMeshColors)) {
-                zox_remove(e, BuildMeshColors);
-            }
-        }
-        free(grid.lights);
+        const GpuMeshLighting lighting = gpu_mesh_lighting(solidity);
+        const byte lit = !zox_no_lights && grid_lights->value;
+        gpu_mesh_grid(&mesher, grid_voxels->value, lit ? grid_lights->value : NULL, depth->value, present->value,
+            lights_present->value, lit ? &lighting : NULL);
+        fence->value = mesher.fence;
+        dispose_GridVoxels(grid_voxels);
+        dispose_GridLights(grid_lights);
+        zox_remove(e, MeshDirty);
         zox_sys_budget_end(chunk_gpu_mesh);
     }
-}
-
-// NOTE: Meshes a chunk mesh on the gpu when its voxels change
-void chunk_gpu_mesh_system(iter* it) {
-    zox_sys_on_begin();
-    chunk_gpu_mesh_dispatch(it, zox_id(BuildMesh));
     zox_sys_on_end();
 } zoxd_system(chunk_gpu_mesh_system);
-
-// NOTE: Meshes a chunk mesh on the gpu again when its lights change
-void chunk_gpu_relight_system(iter* it) {
-    zox_sys_on_begin();
-    chunk_gpu_mesh_dispatch(it, zox_id(BuildMeshColors));
-    zox_sys_on_end();
-} zoxd_system(chunk_gpu_relight_system);
 
 // NOTE: Reads a gpu mesh's face count once the gpu's done (never waits): grows and meshes again if it didn't fit,
 //  else it's built
