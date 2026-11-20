@@ -234,6 +234,38 @@ bash bsh/tst.sh <name> --gdb    # backtrace on a crash
 - To reproduce a bad save: `zox_tst_save=<realm save folder> bash bsh/tst.sh continue_game`.
   It loads a copy and never writes to the real save.
 
+### Small and fast: test only what you check
+
+A full run is over 300 tests, so a second saved in one test is minutes saved a day. Reduce a test to what it checks:
+everything else it spawns or waits for is time, and another way for it to fail for a reason that isn't its own.
+
+What a test starts with, cheapest first (times measured 2026-11-20, debug build):
+
+| A test needs | Ready | e.g. |
+|---|---|---|
+| nothing: pure logic | the first frame (the game's boot, ~0.5s) | maths, octrees, hashmaps |
+| bare entities, the components a system reads | a few frames | transform_hierarchy, mass_spawn |
+| the menus (`zox_tst_set_setup(name, NULL, 1)`): a camera, ui, sounds, no realm | under a second | gpu_restore, music_timing |
+| a world of its own and a streamer | a few seconds | air_chunk |
+| a player on the test level (`zox_tst_level_setup`) | ~6s | held_item |
+| a player in the whole game | ~6s, then the game streams | stream_npcs |
+
+- **No player unless it's about the player.** A player brings a realm, terrain, npcs and towns. A camera is
+  `main_cameras[0]` in the menus; a render test needs what it draws, not who's watching.
+- **A camera in a void.** To look at what a camera draws (post processing, lids, lines), use the menus' camera with
+  the skybox `Disabled` and a plain clear `Color` (tst eyelids, 0.2s; it waited for a player for 9s).
+- **Wait on a condition, not a time.** "Until the counter goes up" or "until the note moves on", not "3 seconds" or
+  "60 frames", with a cap so a broken build still fails fast. A fixed few frames isn't a condition either: some things
+  draw a few frames late, and the test turns flaky (vox_instance_render failed 1 run in 3 that way).
+- **Spawn many in one go** with `zox_bulk_spawn` (src/_/flecs/fun/system_times.c), straight into their table, unless
+  spawning one at a time is what's tested (mass_spawn). Test ready functions are immediate, so they can.
+- **No cleanup at the end.** `zox_tst_end` exits straight after the check.
+- **Write what you look at, once.** A screenshot or wav to check by eye is cheap. Rendering extra ones nothing checks
+  costs every run: put those behind a flag (like `--readme`).
+- **Measure it.** `tst/<name>.log` has timestamps: from `[tst] running` to `PASSED` is the test's own time.
+
+[Coding Standards](coding_standards.md) (Test Placement) has where a test goes and the lowest module it can live in.
+
 ## 7. Doing a Task
 
 Tasks are tracked in plain markdown:
