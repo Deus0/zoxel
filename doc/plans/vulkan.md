@@ -32,7 +32,9 @@ the backend under it changes. Code: [src/graphics/vulkan](../../src/graphics/vul
 4. **Render textures** (done): fbos and rbos (`targets.c`), cameras draw to textures and the post processing draws
    them (blur, tint, lids). A render texture is drawn unflipped (gl's rows, bottom first), its pipelines clockwise.
    Context loss (android): `gpu_restore` and `gpu_restore_game` pass on vulkan (2026-11-20).
-5. **Compute**: gpu meshing (doc/plans/gpu_meshing.md); off until then, chunks mesh on the cpu.
+5. **Compute** (done): compute programs, storage buffers, dispatch in gl's order (mid frame its pass paused round it),
+   the face count read back (waits), indirect draws from compute's buffers (`compute.c`). gpu_mesh, gpu_mesh_views,
+   gpu_mesh_lights and gpu_light_views pass; the views match gl (bsh/compare_backends.sh).
 
 ## Gl and vulkan differences, and how each is met
 

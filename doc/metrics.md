@@ -44,6 +44,8 @@ on (the game's default), seed 666, load average ~4 (other sessions' work).
 | screenshot | screenshot.ppm | 0.0140 | 0.0780 | 0.0784 |
 | body_views | body_views.ppm | 0.0108 | 0.0637 | 0.0637 |
 | font_glyphs | font_glyphs.ppm | 0.0669 | 0.0210 | 0.0215 |
+| gpu_mesh_views (compute) | gpu_mesh_views.ppm | 0.0114 | 0.0629 | 0.0629 |
+| gpu_light_views (compute) | gpu_light_views.ppm | 0.0004 | 0.0365 | 0.0365 |
 
 - All alike. The larger diffs are the scene moving between runs (npcs, particles), and font_glyphs' backdrop, a
   texture of random colours (not seeded).

@@ -16,5 +16,6 @@
 #include "draw.c"
 #include "workers.c"
 #include "targets.c"
+#include "compute.c"
 #include "init.c"
 #include "todo.c"

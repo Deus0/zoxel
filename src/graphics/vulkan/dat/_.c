@@ -9,6 +9,7 @@ typedef struct {
     VkDeviceSize size;          // bytes written by the last upload
     VkDeviceSize capacity;
     ulong used;                 // the submission that last read it (vk_busy)
+    byte host;                  // kept in host visible slabs (a storage buffer: read back), never staged
     byte* shadow;               // a uniform buffer's data, copied to the frame's ring when drawn
     VkDeviceSize shadow_used;   // the bytes its last write filled (only they're copied, the block's range reserved)
     byte shadow_dirty;
@@ -57,6 +58,8 @@ typedef struct {
     int blocks_count;
     vk_slot samplers[vk_slots_max];
     int samplers_count;
+    vk_slot storages[vk_slots_max];     // storage buffers (compute), value their binding
+    int storages_count;
     vk_slot inputs[vk_slots_max];
     int inputs_count;
     vk_slot outputs[vk_slots_max];
@@ -118,6 +121,10 @@ typedef struct {
     int inputs_count;
     vk_pipeline* pipelines;
     int pipelines_count;
+    byte compute;               // a compute program: one stage, its pipeline made with it (fun/compute.c)
+    VkPipeline compute_pipeline;
+    int storages[vk_slots_max];         // its storage buffers' bindings
+    int storages_count;
     byte live;
 } vk_program;
 

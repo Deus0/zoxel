@@ -56,6 +56,7 @@ void vulkan_dispose() {
         vk_serial_done = vk_serial_submitted;
         vulkan_dispose_tables();
         vulkan_dispose_targets();
+        vulkan_dispose_compute();
         vulkan_garbage_dispose();
         vulkan_dispose_rings();
         vulkan_dispose_slabs();

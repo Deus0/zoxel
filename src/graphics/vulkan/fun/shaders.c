@@ -30,6 +30,7 @@ shaderc_compiler_t vk_shaderc;
 #define spv_input 1
 #define spv_uniform 2
 #define spv_output 3
+#define spv_storage_buffer 12
 
 // the gl source's loose uniforms (one a line, not samplers or blocks) gathered into a block, zox_uniforms: vulkan
 // has no loose ones; shaderc's relaxed rules would do it, but android's ndk shaderc is too old for them
@@ -108,7 +109,7 @@ char* vulkan_shader_source(const char* source, byte fragment) {
     char* block = vulkan_gather_uniforms(source, &body);
     const char* prefix = "#version 450\n#define gl_VertexID gl_VertexIndex\n#define gl_InstanceID gl_InstanceIndex\n";
     char rgb[48];
-    const byte rgb_output = fragment && vulkan_rgb_output(body, rgb);
+    const byte rgb_output = fragment == 1 && vulkan_rgb_output(body, rgb);
     char suffix[192];
     if (rgb_output) {
         snprintf(suffix, sizeof(suffix), "\nlayout(location = 0) out vec4 zox_frag_out;\nvoid main() {\n    zox_main();\n"
@@ -117,7 +118,7 @@ char* vulkan_shader_source(const char* source, byte fragment) {
         snprintf(suffix, sizeof(suffix), "\nvoid main() {\n    zox_main();\n"
             "    gl_Position.z = (gl_Position.z + gl_Position.w) * 0.5;\n}\n");
     }
-    const char* main = !fragment || rgb_output ? strstr(body, "void main") : NULL;
+    const char* main = !fragment || rgb_output ? strstr(body, "void main") : NULL;  // a compute stage's is its own
     const size_t length = strlen(prefix) + strlen(block) + strlen(body) + strlen(suffix) + 8;
     char* result = malloc(length);
     if (!main) {
@@ -220,6 +221,13 @@ void vulkan_reflect(vk_shader* shader) {
             } else if (storage == spv_output && shader->outputs_count < vk_slots_max) {
                 shader->outputs[shader->outputs_count++] = slot;
             }
+        } else if (storage == spv_storage_buffer && blocks[pointee]) {
+            // a compute stage's storage buffer, at the binding its source gives
+            slot.value = bindings[id] ? (int) words[bindings[id]] : 0;
+            slot.word = bindings[id];
+            if (shader->storages_count < vk_slots_max) {
+                shader->storages[shader->storages_count++] = slot;
+            }
         } else if (storage == spv_uniform_constant && (type[0] & 0xFFFF) == spv_type_sampled_image) {
             slot.word = bindings[id];
             if (shader->samplers_count < vk_slots_max) {
@@ -279,7 +287,7 @@ void vulkan_reflect(vk_shader* shader) {
     free(builtins);
 }
 
-// a stage compiled and reflected, its id (0 if it failed, logged)
+// a stage compiled and reflected, its id (0 if it failed, logged); fragment: 0 vertex, 1 fragment, 2 compute
 uint vulkan_compile_stage(const char* source, byte fragment) {
     if (!vk_shaderc) {
         vk_shaderc = shaderc_compiler_initialize();
@@ -289,8 +297,10 @@ uint vulkan_compile_stage(const char* source, byte fragment) {
     shaderc_compile_options_set_auto_bind_uniforms(options, 1);
     shaderc_compile_options_set_auto_map_locations(options, 1);
     shaderc_compile_options_set_target_env(options, shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_1);
-    shaderc_compilation_result_t result = shaderc_compile_into_spv(vk_shaderc, glsl, strlen(glsl),
-        fragment ? shaderc_fragment_shader : shaderc_vertex_shader, fragment ? "frag" : "vert", "main", options);
+    const shaderc_shader_kind kind = fragment == 2 ? shaderc_compute_shader : fragment ? shaderc_fragment_shader :
+        shaderc_vertex_shader;
+    shaderc_compilation_result_t result = shaderc_compile_into_spv(vk_shaderc, glsl, strlen(glsl), kind,
+        fragment == 2 ? "comp" : fragment ? "frag" : "vert", "main", options);
     shaderc_compile_options_release(options);
     uint id = 0;
     if (shaderc_result_get_compilation_status(result) != shaderc_compilation_status_success) {

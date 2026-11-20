@@ -136,6 +136,7 @@ static inline void zox_gpu_dispose_program(guint id) {
         vkDestroyPipeline(vk_device, program->pipelines[i].pipeline, NULL);
     }
     free(program->pipelines);
+    vkDestroyPipeline(vk_device, program->compute_pipeline, NULL);
     vkDestroyShaderModule(vk_device, program->modules[0], NULL);
     vkDestroyShaderModule(vk_device, program->modules[1], NULL);
     vkDestroyPipelineLayout(vk_device, program->layout, NULL);

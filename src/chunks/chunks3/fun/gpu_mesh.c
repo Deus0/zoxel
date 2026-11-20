@@ -251,7 +251,7 @@ static const char* zox_gpu_mesh_fragment_source =
 "    frag_color = vec4(base * light, 1.0);\n"
 "}\n";
 
-#if defined(zox_opengl) && !defined(zox_disable_compute)
+#if (defined(zox_opengl) || defined(zox_vulkan)) && !defined(zox_disable_compute)
 
 // a mesher with room for max_faces faces, 1 on success (needs a compute capable context)
 byte gpu_mesher_create(GpuMesher* mesher, uint max_faces) {

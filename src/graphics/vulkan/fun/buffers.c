@@ -79,7 +79,7 @@ byte vulkan_buffer_reserve(vk_buffer* buffer, VkDeviceSize bytes, byte keep) {
     }
     // a little over: R8G8B8 colors read as R8G8B8A8 on gpus without it read a byte past the last
     const vk_allocation allocation = vulkan_slab_allocate((bytes > buffer->capacity ? bytes : buffer->capacity) + 16,
-        vk_meshes_staged);
+        vk_meshes_staged && !buffer->host);
     if (!allocation.handle) {
         return 0;
     }
@@ -281,6 +281,7 @@ uint vulkan_format_size(VkFormat format) {
         case VK_FORMAT_R8G8B8_UNORM: return 3;
         case VK_FORMAT_R8G8B8A8_UNORM: return 4;
         case VK_FORMAT_R32_SFLOAT: return 4;
+        case VK_FORMAT_R32_UINT: return 4;
         case VK_FORMAT_R32G32_SFLOAT: return 8;
         case VK_FORMAT_R32G32B32_SFLOAT: return 12;
         default: return 16;

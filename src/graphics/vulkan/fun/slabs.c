@@ -65,7 +65,8 @@ vk_allocation vulkan_slab_allocate_locked(VkDeviceSize bytes, byte device) {
             slabs->blocks = realloc(slabs->blocks, sizeof(vk_slab_block_t) * (slabs->blocks_count + 1));
             vk_slab_block_t* block = &slabs->blocks[slabs->blocks_count];
             const VkBufferUsageFlags usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT
-                | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+                | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT
+                | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT;     // compute
             const VkDeviceSize size = per_block * vk_slab_size(class);
             if (!(device ? vulkan_create_device_buffer(size, usage, &block->buffer, &block->memory)
                 : vulkan_create_host_buffer(size, usage, &block->buffer, &block->memory)))

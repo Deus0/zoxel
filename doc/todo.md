@@ -812,8 +812,8 @@
   reuse a low id"; the pause fades changed today
 - vulkan release crashed once in 5 render_fps runs at far 8 with ZOX_VK_WORKERS=0 ("Segfault Detected" ~2s after
   the player spawned, 2026-11-20), never in debug: get a backtrace (a release build with -g)
-- Vulkan renderer: part 5 of [plans/vulkan.md](plans/vulkan.md) (compute, with gpu meshing); context loss passes its
-  tests on vulkan, a real android phone untried
+- Vulkan renderer: every part of [plans/vulkan.md](plans/vulkan.md) in; on a real android phone: rotation, restore
+  and particle size (largePoints) untried
 - make the walking camera animation feel more natural
     - just animate the head better and body
     - add tremble in the gait

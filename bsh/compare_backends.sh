@@ -23,8 +23,8 @@ for arg in "$@"; do
     esac
 done
 # one a material or view: sky, vox models, instances (slimes), particles, lines, under water tint (render
-#  textures), the game (terrain, ui, post processing), bodies (bones), text
-[[ ${#tests[@]} == 0 ]] && tests=(sky_clouds model_views instance_views particles_render lines_render underwater screenshot body_views font_glyphs)
+#  textures), the game (terrain, ui, post processing), bodies (bones), text, gpu meshes (compute)
+[[ ${#tests[@]} == 0 ]] && tests=(sky_clouds model_views instance_views particles_render lines_render underwater screenshot body_views font_glyphs gpu_mesh_views gpu_light_views)
 if ! command -v magick > /dev/null; then
     echo "!! needs imagemagick (magick)"
     exit 2

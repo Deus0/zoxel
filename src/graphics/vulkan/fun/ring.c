@@ -68,14 +68,15 @@ static inline byte vulkan_ring_push(const void* data, VkDeviceSize size, VkBuffe
 }
 
 VkDescriptorPool vulkan_create_pool() {
-    const VkDescriptorPoolSize sizes[2] = {
+    const VkDescriptorPoolSize sizes[3] = {
         { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 4096 },
         { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 2048 },
+        { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1024 },      // compute's (fun/compute.c)
     };
     const VkDescriptorPoolCreateInfo info = {
         .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
         .maxSets = 2048,
-        .poolSizeCount = 2,
+        .poolSizeCount = 3,
         .pPoolSizes = sizes,
     };
     VkDescriptorPool pool = VK_NULL_HANDLE;
