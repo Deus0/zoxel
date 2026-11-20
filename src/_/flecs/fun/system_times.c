@@ -31,13 +31,14 @@ typedef struct {
     int64_t sets;
     int64_t observers;      // observer invocations (flecs' own too)
     int64_t tables;         // tables created
+    double rematch;         // cached queries matched again to new tables
 } ZoxWorldTimes;
 
 ZoxWorldTimes zox_world_times(ecs* world) {
     const ecs_world_info_t* info = ecs_get_world_info(world);
     return (ZoxWorldTimes) { info->frame_time_total, info->merge_time_total, info->emit_time_total,
         info->cmd.add_count, info->cmd.remove_count, info->cmd.delete_count, info->cmd.set_count + info->cmd.ensure_count,
-        info->observers_ran_total, info->table_create_total };
+        info->observers_ran_total, info->table_create_total, info->rematch_time_total };
 }
 
 // threads running multi threaded systems

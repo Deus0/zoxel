@@ -143,7 +143,14 @@ perf_stream [vulkan] far [8] vertical [3] meshing [gpu]: frames over 16.7ms (und
 - `fps average`: frames / seconds. `1% low`: the slowest 1% of frames' average, as fps (what stutter feels like).
 - `frame ms`: fastest, median (the usual frame), average, 99th percentile (1 frame in 100 is slower), slowest (the
   worst spike).
-- frames over 16.7ms and 33.3ms: frames that missed 60 and 30 fps.
+- frames over 8.3ms (120 fps, the target: steady frames, VR), 11.1ms and 13.9ms (90 and 72 fps, headsets), 16.7ms
+  and 33.3ms (60 and 30 fps).
+- the test's own time is left out (`zox_tst_frames_exclude`): perf_stream and perf_terrain walk every chunk each frame
+  to see if streaming settled, ~13ms a frame at far 32, which was counted as the game's before 2026-11-21.
+- profiled (perf_stream, perf_terrain's stream, `--profile`): a system's time is its longest run on one thread (its
+  biggest piece of work), the frame's systems time the union of their spans (`zox_sys_on_begin` to `zox_sys_on_end`,
+  test builds), an average frame split into systems, merges, observers and the rest, each slow frame's largest gap
+  between systems (a big merge shows there), and systems with no span (their time is only flecs' estimate).
 - `perf_idle` also logs the chunk meshes and vox instances a frame draws.
 
 For numbers to compare: a release build on the real gpu, the same seed and land, nothing else running:

@@ -1,7 +1,10 @@
 // A frame profiler for tests: finds what makes a frame slow (lag spikes)
 //  - zox_tst_profile_frame once a frame: the frame's time, and every system's time that frame
-//  - multi threaded systems' times are cpu time summed over workers, divided by the workers for real
-//      time (an estimate, workers can be uneven), the systems' real time is what spikes a frame
+//  - a system's time is its longest run on one thread this frame (zox_sys_on_begin to zox_sys_on_end: its biggest
+//      piece of work, what holds up the systems run with it); a system without one, flecs' time (multi threaded: its
+//      cpu time over the workers, an estimate)
+//  - the frame's systems time is the union of their spans (first thread's start to last thread's end), real time:
+//      workers run a phase's systems back to back, their spans overlap
 //  - tests render in software, so whole frames are slow, the systems' real time is the measure
 //  - remembers the slowest frames and each system's slowest frame
 //  - zox_tst_profile_log: the slowest frames with their slowest systems, the systems with the biggest frames
@@ -21,12 +24,17 @@ typedef struct {
     int worst_frame;
     double sum_ms;
     byte multi_threaded;
+    int span;           // its zox_system_spans index, -1 none
+    double unspanned_ms;    // flecs' time on frames it had no span (no zox_sys_on_begin / zox_sys_on_end)
 } ZoxTstProfileSystem;
 
 typedef struct {
     double ms;
     int frame;
     double wall_ms;     // the whole frame, rendering too
+    double gap_ms;      // its largest gap between systems, after gap_after, before gap_before
+    entity gap_after;
+    entity gap_before;
     entity top[zox_tst_profile_top];
     double top_ms[zox_tst_profile_top];
 } ZoxTstProfileFrame;
@@ -44,6 +52,70 @@ ZoxWorldTimes zox_tst_profile_world_last;
 double zox_tst_profile_observer_last[zox_observer_timings_max];
 double zox_tst_profile_observer_frame[zox_observer_timings_max];
 double zox_tst_profile_observer_worst[zox_observer_timings_max];
+
+// every frame's accounting summed (zox_tst_profile_log averages it): the whole frame, its systems (spans' union), flecs'
+//  merges (deferred changes applied) and observers, the rest (rendering waits, presenting, the loop)
+double zox_tst_profile_sum_wall = 0, zox_tst_profile_sum_systems = 0, zox_tst_profile_sum_merges = 0, zox_tst_profile_sum_observers = 0;
+double zox_tst_profile_sum_pipeline = 0;    // the pipeline's start (zoxp_dbg_begin) to the profiler's call
+double zox_tst_profile_sum_progress = 0, zox_tst_profile_sum_rematch = 0;   // flecs' whole frame, its query rematching
+int zox_tst_profile_sum_frames = 0;
+
+// the test's own time this frame (a settle check walking every chunk), left out of the frame's time
+double zox_tst_profile_excluded = 0;
+
+static inline void zox_tst_profile_exclude(double ms) {
+    zox_tst_profile_excluded += ms;
+}
+
+// this frame's system spans, their union is the systems' real time in it
+#define zox_tst_profile_spans_max 2048
+ulong zox_tst_profile_spans[zox_tst_profile_spans_max][3];   // begin, end, its system
+int zox_tst_profile_spans_count = 0;
+
+static inline void zox_tst_profile_span_add(ulong begin, ulong end, entity system) {
+    if (zox_tst_profile_spans_count < zox_tst_profile_spans_max) {
+        zox_tst_profile_spans[zox_tst_profile_spans_count][0] = begin;
+        zox_tst_profile_spans[zox_tst_profile_spans_count][1] = end;
+        zox_tst_profile_spans[zox_tst_profile_spans_count][2] = system;
+        zox_tst_profile_spans_count++;
+    }
+}
+
+static int zox_tst_profile_span_compare(const void* a, const void* b) {
+    const ulong x = ((const ulong*) a)[0], y = ((const ulong*) b)[0];
+    return x < y ? -1 : x > y;
+}
+
+// the frame's largest gap between systems' spans: no system running (flecs between them), after one, before the next
+double zox_tst_profile_gap_ms = 0;
+entity zox_tst_profile_gap_after = 0, zox_tst_profile_gap_before = 0;
+
+// the union of this frame's spans in ms (overlaps once), its largest gap, then cleared
+static inline double zox_tst_profile_spans_union() {
+    qsort(zox_tst_profile_spans, zox_tst_profile_spans_count, sizeof(zox_tst_profile_spans[0]), zox_tst_profile_span_compare);
+    ulong total = 0, begin = 0, end = 0;
+    entity end_system = 0;
+    zox_tst_profile_gap_ms = 0;
+    for (int i = 0; i < zox_tst_profile_spans_count; i++) {
+        if (i == 0 || zox_tst_profile_spans[i][0] > end) {
+            if (i > 0 && (zox_tst_profile_spans[i][0] - end) / 1000.0 > zox_tst_profile_gap_ms) {
+                zox_tst_profile_gap_ms = (zox_tst_profile_spans[i][0] - end) / 1000.0;
+                zox_tst_profile_gap_after = end_system;
+                zox_tst_profile_gap_before = (entity) zox_tst_profile_spans[i][2];
+            }
+            total += end - begin;
+            begin = zox_tst_profile_spans[i][0];
+            end = zox_tst_profile_spans[i][1];
+            end_system = (entity) zox_tst_profile_spans[i][2];
+        } else if (zox_tst_profile_spans[i][1] > end) {
+            end = zox_tst_profile_spans[i][1];
+            end_system = (entity) zox_tst_profile_spans[i][2];
+        }
+    }
+    total += end - begin;
+    zox_tst_profile_spans_count = 0;
+    return total / 1000.0;
+}
 
 static void zox_tst_profile_system(ecs* world, entity system, double seconds, byte multi_threaded, void* ctx) {
     int* hint = (int*) ctx;
@@ -66,11 +138,28 @@ static void zox_tst_profile_system(ecs* world, entity system, double seconds, by
         }
         *hint = zox_tst_profile_systems_count;
         found = &zox_tst_profile_systems[zox_tst_profile_systems_count++];
-        *found = (ZoxTstProfileSystem) { .system = system, .total = seconds, .worst_frame = -1, .multi_threaded = multi_threaded };
+        *found = (ZoxTstProfileSystem) { .system = system, .total = seconds, .worst_frame = -1, .multi_threaded = multi_threaded,
+            .span = zox_system_index(system) };
         (*hint)++;
         return;
     }
-    found->frame_ms = (seconds - found->total) * 1000.0 / (multi_threaded ? zox_worker_count(world) : 1);
+    // its span this frame (real time), else flecs' time
+    zox_system_span* span = found->span >= 0 ? &zox_system_spans[found->span] : NULL;
+    // (begin 0: not reset yet, the first frame)
+    if (span && span->end && span->begin && span->begin < span->end) {
+        found->frame_ms = span->slice / 1000.0;
+        zox_tst_profile_span_add(span->begin, span->end, system);
+    } else if (span && span->end) {
+        found->frame_ms = 0;    // it ran, too quick to see
+    } else {
+        found->frame_ms = (seconds - found->total) * 1000.0 / (multi_threaded ? zox_worker_count(world) : 1);
+        found->unspanned_ms += (seconds - found->total) * 1000.0;
+    }
+    if (span) {
+        span->begin = (ulong) -1;
+        span->end = 0;
+        span->slice = 0;
+    }
     found->total = seconds;
     found->sum_ms += found->frame_ms;
     if (found->frame_ms > found->worst_ms) {
@@ -88,7 +177,8 @@ void zox_tst_profile_frame(ecs* world) {
         zox_measure_system_times(world);
     }
     const double now = get_time_ms();
-    const double frame_ms = zox_tst_profile_last_ms ? now - zox_tst_profile_last_ms : 0;
+    const double frame_ms = zox_tst_profile_last_ms ? now - zox_tst_profile_last_ms - zox_tst_profile_excluded : 0;
+    zox_tst_profile_excluded = 0;
     zox_tst_profile_last_ms = now;
     int hint = 0;
     zox_each_system_time(world, zox_tst_profile_system, &hint);
@@ -140,8 +230,29 @@ void zox_tst_profile_frame(ecs* world) {
             }
         }
     }
+    // real time: the spans' union (overlapping systems once), plus systems without spans
+    const double spans_ms = zox_tst_profile_spans_union();
+    double unspanned_ms = 0;
+    for (int i = 0; i < zox_tst_profile_systems_count; i++) {
+        const ZoxTstProfileSystem* s = &zox_tst_profile_systems[i];
+        unspanned_ms += s->span < 0 ? s->frame_ms : 0;
+    }
+    ecs_ms = spans_ms + unspanned_ms;
+    if (frame_ms > 0) {
+        zox_tst_profile_sum_wall += frame_ms;
+        zox_tst_profile_sum_systems += ecs_ms;
+        zox_tst_profile_sum_merges += merge_ms;
+        zox_tst_profile_sum_observers += emit_ms;
+        zox_tst_profile_sum_pipeline += ecs_frame_ms;
+        zox_tst_profile_sum_progress += (world_times.frame - last.frame) * 1000.0;
+        zox_tst_profile_sum_rematch += (world_times.rematch - last.rematch) * 1000.0;
+        zox_tst_profile_sum_frames++;
+    }
     zox_tst_profile_ecs_worst_ms = fmax(zox_tst_profile_ecs_worst_ms, ecs_ms);
     frame.ms = ecs_ms;
+    frame.gap_ms = zox_tst_profile_gap_ms;
+    frame.gap_after = zox_tst_profile_gap_after;
+    frame.gap_before = zox_tst_profile_gap_before;
     // --profile: a slow frame while playing is logged with its slowest systems
     if (zox_profile_spikes && frame.wall_ms > zox_profile_spike_ms) {
         zox_log("[profile] frame [%i] took [%.1fms], ecs [%.1fms] merges [%.1fms] observers [%.1fms], systems [%.1fms]: %s [%.1fms], %s [%.1fms], %s [%.1fms]",
@@ -211,12 +322,26 @@ static int zox_tst_profile_compare(const void* a, const void* b) {
 void zox_tst_profile_log(ecs* world, const char* name) {
     zox_log("[tst] [metric] %s frames [%i], workers [%i], slowest frame of systems [%.1fms] (real time, est)", name,
         zox_tst_profile_frame_index, zox_worker_count(world), zox_tst_profile_ecs_worst_ms);
+    if (zox_tst_profile_sum_frames) {
+        const double n = zox_tst_profile_sum_frames;
+        const double wall = zox_tst_profile_sum_wall / n, systems = zox_tst_profile_sum_systems / n;
+        const double merges = zox_tst_profile_sum_merges / n, observers = zox_tst_profile_sum_observers / n;
+        const double pipeline = zox_tst_profile_sum_pipeline / n;
+        zox_log("[tst] [metric] %s an average frame [%.2fms]: systems [%.2fms] merges [%.2fms] observers [%.2fms] the rest [%.2fms] (rendering waits, presenting, the loop)",
+            name, wall, systems, merges, observers, wall - systems - merges - observers);
+        const double progress = zox_tst_profile_sum_progress / n, rematch = zox_tst_profile_sum_rematch / n;
+        zox_log("[tst] [metric] %s an average frame: flecs' progress [%.2fms] (its query rematching [%.2fms]), outside flecs [%.2fms]",
+            name, progress, rematch, wall - progress);
+    }
     for (int w = 0; w < zox_tst_profile_worst_frames && zox_tst_profile_frames[w].ms > 0; w++) {
         const ZoxTstProfileFrame* f = &zox_tst_profile_frames[w];
         zox_log("[tst] [metric] %s slow frame [%i] systems [%.1fms]: %s [%.1fms], %s [%.1fms], %s [%.1fms]", name, f->frame, f->ms,
             f->top[0] ? zox_get_name(f->top[0]) : "-", f->top_ms[0],
             f->top[1] ? zox_get_name(f->top[1]) : "-", f->top_ms[1],
             f->top[2] ? zox_get_name(f->top[2]) : "-", f->top_ms[2]);
+        zox_log("[tst] [metric] %s slow frame [%i] took [%.1fms], its largest gap between systems [%.1fms]: after %s, before %s",
+            name, f->frame, f->wall_ms, f->gap_ms, f->gap_after ? zox_get_name(f->gap_after) : "-",
+            f->gap_before ? zox_get_name(f->gap_before) : "-");
     }
     // what moved entities between tables most (adds and removes, each a table move and observer checks)
     {
@@ -238,6 +363,21 @@ void zox_tst_profile_log(ecs* world, const char* name) {
         zox_log("[tst] [metric] %s observer [%s] slowest frame [%.1fms] total [%.1fms] calls [%u]", name,
             zox_observer_timings[best].name, zox_tst_profile_observer_worst[best], zox_observer_timings[best].total_ms, zox_observer_timings[best].calls);
         zox_tst_profile_observer_worst[best] = -zox_tst_profile_observer_worst[best];   // listed
+    }
+    // systems with no spans (no zox_sys_on_begin / end): their time is only flecs' estimate, gaps in the timeline
+    for (int n = 0; n < 6; n++) {
+        int best = -1;
+        for (int i = 0; i < zox_tst_profile_systems_count; i++) {
+            if (zox_tst_profile_systems[i].unspanned_ms > 0.5 && (best < 0 || zox_tst_profile_systems[i].unspanned_ms > zox_tst_profile_systems[best].unspanned_ms)) {
+                best = i;
+            }
+        }
+        if (best < 0) {
+            break;
+        }
+        zox_log("[tst] [metric] %s system [%s] has no span: flecs' time [%.1fms] over [%i] frames (cpu time, all threads)", name,
+            zox_get_name(zox_tst_profile_systems[best].system), zox_tst_profile_systems[best].unspanned_ms, zox_tst_profile_frame_index);
+        zox_tst_profile_systems[best].unspanned_ms = -zox_tst_profile_systems[best].unspanned_ms;
     }
     qsort(zox_tst_profile_systems, zox_tst_profile_systems_count, sizeof(ZoxTstProfileSystem), zox_tst_profile_compare);
     for (int i = 0; i < 12 && i < zox_tst_profile_systems_count; i++) {

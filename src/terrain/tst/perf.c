@@ -150,7 +150,10 @@ byte zox_tst_perf_stream_ready(ecs* world) {
         zox_tst_frames_tick(&zox_tst_perf_frames);
     }
     zox_tst_waiting = "streaming to settle after a step";
+    // the walk over every chunk is the test's time, not the game's: left out of the frame times
+    const double busy_start = get_time_ms();
     const int busy = zox_tst_perf_busy(world);
+    zox_tst_frames_exclude(&zox_tst_perf_frames, get_time_ms() - busy_start);
     zox_tst_progress(zox_tst_perf_step * 100000.0 + busy);
     // the first load settles before the first step, so each step counts only its own work and tables
     if (!zox_tst_perf_step_time) {

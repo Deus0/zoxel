@@ -50,6 +50,60 @@ void zox_system_on_new(ecs* world, entity system) {
         }\
     }
 
+#elif defined(zox_tests)
+
+// Each system's span this frame, for the tests' profiler (_/tst/profile.c): its first thread's start to its last
+//  thread's end, in microseconds; a multi threaded system's real time in the frame, its threads' imbalance too (flecs'
+//  time_spent is its cpu time summed, the profiler divided it by the workers: a frame held by one thread's big item
+//  looked like nothing)
+//  - workers run a phase's multi threaded systems back to back, no barrier between: spans overlap, the frame's busy
+//    time is their union; a system's slice (its longest run on one thread) says which one holds the others up
+typedef struct {
+    ulong begin;    // the earliest start this frame, ULONG_MAX none
+    ulong end;      // the latest end this frame
+    ulong slice;    // its longest run on one thread this frame (its biggest piece of work)
+} zox_system_span;
+zox_system_span zox_system_spans[zox_max_systems];
+
+static inline ulong zox_span_now() {
+    return (ulong) (get_time_ms() * 1000.0);
+}
+
+// a system's index in zox_systems, -1 if it isn't one (looked up once a system, by its first run)
+static inline int zox_system_index(entity system) {
+    for (int i = 0; i < zox_systems_count; i++) {
+        if (zox_systems[i] == system) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+static inline void zox_system_span_add(int index, ulong begin, ulong end) {
+    zox_system_span* span = &zox_system_spans[index];
+    ulong old = __atomic_load_n(&span->begin, __ATOMIC_RELAXED);
+    while (begin < old && !__atomic_compare_exchange_n(&span->begin, &old, begin, 1, __ATOMIC_RELAXED, __ATOMIC_RELAXED)) { }
+    old = __atomic_load_n(&span->end, __ATOMIC_RELAXED);
+    while (end > old && !__atomic_compare_exchange_n(&span->end, &old, end, 1, __ATOMIC_RELAXED, __ATOMIC_RELAXED)) { }
+    const ulong slice = end - begin;
+    old = __atomic_load_n(&span->slice, __ATOMIC_RELAXED);
+    while (slice > old && !__atomic_compare_exchange_n(&span->slice, &old, slice, 1, __ATOMIC_RELAXED, __ATOMIC_RELAXED)) { }
+}
+
+#define zox_sys_on_begin(T)\
+    uint process_count = 0;\
+    static int zox_span_index = -2;\
+    if (zox_span_index == -2) {\
+        zox_span_index = zox_system_index(it->system);\
+    }\
+    const ulong zox_span_begin = zox_span_now()
+
+#define zox_sys_on_end(T)\
+    (void) process_count;\
+    if (zox_span_index >= 0) {\
+        zox_system_span_add(zox_span_index, zox_span_begin, zox_span_now());\
+    }
+
 #else
 
 #define zox_sys_on_begin(T)\

@@ -28,7 +28,10 @@ static const char* zox_tst_perf_terrain_kinds[6] = { "queued", "generating", "si
 
 // settled: nothing busy for 3 frames in a row
 static inline byte zox_tst_perf_terrain_settle(ecs* world, entity terrain) {
+    // the walk over every chunk is the test's time, not the game's: left out of the frame times
+    const double busy_start = get_time_ms();
     const int busy = zox_tst_terrain_busy(world, terrain);
+    zox_tst_frames_exclude(&zox_tst_perf_terrain_frames, get_time_ms() - busy_start);
     const int kinds[6] = { zox_tst_perf_queued, zox_tst_perf_generating, zox_tst_perf_siding, zox_tst_perf_meshing,
         zox_tst_perf_lighting, zox_tst_perf_swapping };
     const double into = (get_time_ms() - zox_tst_perf_terrain_time) / 1000.0;
