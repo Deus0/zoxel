@@ -33,6 +33,7 @@ void camera_underwater_system(iter* it) {
     const entity terrain = local_terrain;
     if (!zox_valid(terrain) || !zox_has(terrain, BlockScale)) {
         sound_underwater = 0;   // back at the menu
+        zox_sys_on_end();
         return;
     }
     zox_sys_begin();

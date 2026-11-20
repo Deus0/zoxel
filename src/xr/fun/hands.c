@@ -99,4 +99,16 @@ void xr_hands_ik_system(iter* it) {
 void zox_systems_xr_hands(ecs* world) {
     // after physics moved the body, before the arms' ik (zoxp_layouts)
     zox_system_1(xr_hands_ik_system, zoxp_trails, 0);
+    zox_set_enabled_id(ecs_id(xr_hands_ik_system), 0);
+}
+
+// the xr systems run only with a headset (or the simulator): zox_xr_active is set by now (arguments, tests' setup)
+void xr_systems_boot(ecs* world, entity app) {
+    (void) app;
+    if (!zox_xr_active) {
+        return;
+    }
+    zox_set_enabled_id(ecs_id(xr_room_walk_system), 1);
+    zox_set_enabled_id(ecs_id(xr_head_bone_system), 1);
+    zox_set_enabled_id(ecs_id(xr_hands_ik_system), 1);
 }

@@ -373,4 +373,7 @@ void zox_systems_xr_body(ecs* world) {
     // after the stick's velocity (controllers, imported before), before physics
     zox_system_1(xr_room_walk_system, zoxp_update, 0);
     zox_system_1(xr_head_bone_system, zoxp_post_update, 0);
+    // off without a headset (xr_systems_boot): main thread systems between multi threaded ones add merges
+    zox_set_enabled_id(ecs_id(xr_room_walk_system), 0);
+    zox_set_enabled_id(ecs_id(xr_head_bone_system), 0);
 }
