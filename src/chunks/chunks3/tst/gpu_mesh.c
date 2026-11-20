@@ -2,7 +2,7 @@
 //  - octree_flatten: every voxel of a flattened octree reads back as getv_VoxelNode reads the octree, at its depth
 //      and at lower ones (lods), cpu only
 //  - gpu_mesh: the compute shader's mesh has exactly the faces a voxel by voxel reference has (a solid voxel's face
-//      next to air or the chunk's edge), each once, with the right corners, at its depth and lower ones
+//      next to air or the chunk's edge), each once, with the right corners, at its depth and every lower one to 0
 //  - gpu_mesh logs [tst] [metric] lines: gpu mesh time vs the cpu's sides (chunk_sides_system's part of meshing)
 //  - run: bash bsh/tst.sh octree_flatten, bash bsh/tst.sh gpu_mesh
 
@@ -207,7 +207,7 @@ static inline void zox_tst_gpu_time(GpuMesher* mesher, const VoxelNode* voxels, 
     }
     const double gpu_ms = (get_time_ms() - start) / runs;
     const int length = octree_size(depth) + 2;
-    byte* grid = calloc((size_t) length * length * length, 1);
+    byte* grid = calloc(gpu_mesh_grid_bytes(depth), 1);
     octree_fill_grid(voxels, sizeof(VoxelNode), octree_type_offset_VoxelNode, 0, depth, int3_zero, (int3) { 1, 1, 1 },
         grid, length, 0);
     start = get_time_ms();
@@ -252,7 +252,8 @@ void zox_tst_gpu_mesh_check(ecs* world) {
     for (int c = 0; c < zox_tst_gpu_cases; c++) {
         VoxelNode voxels;
         zox_tst_gpu_fill(&voxels, depth, c);
-        for (int d = depth; d >= depth - 2; d--) {
+        // every lod down to 0, a chunk as one voxel (its grid 27 bytes, padded: it once never meshed, far lods stuck)
+        for (int d = depth; d >= 0; d--) {
             zox_tst_gpu_compare(&mesher, &voxels, d, zox_tst_gpu_case_names[c]);
         }
         if (c == 4 || c == 6) {

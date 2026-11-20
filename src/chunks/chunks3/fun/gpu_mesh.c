@@ -455,18 +455,21 @@ static inline void gpu_mesher_upload(uint buffer, size_t* buffer_size, const byt
     }
 }
 
-// meshes a chunk's grid at depth (1 or more), the mesh stays on the gpu
-//  - voxels: (2^depth + 2)^3 bytes, x then y then z, a voxel of border from the neighbours (smooth_grid's layout)
+// a grid's bytes uploaded: (2^depth + 2)^3 rounded up to whole uints (depth 0's 27 is 28), grids are made that big
+static inline size_t gpu_mesh_grid_bytes(byte depth) {
+    const size_t length = octree_size(depth) + 2;
+    return (length * length * length + 3) & ~(size_t) 3;
+}
+
+// meshes a chunk's grid at depth, the mesh stays on the gpu
+//  - voxels: gpu_mesh_grid_bytes(depth) bytes, x then y then z, a voxel of border from the neighbours (smooth_grid's
+//      layout, padded)
 //  - present: bit OCTREE_INDEX set for each nearby chunk that has voxels (the middle's), a missing one is air
 //  - lights (the same layout), lights_present and lighting light it, NULL leaves it unlit (full light)
 void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, byte depth, uint present, uint lights_present, const GpuMeshLighting* lighting) {
     zox_gpu_storage_write(mesher->command, 0, sizeof(zox_gpu_mesh_command_reset), zox_gpu_mesh_command_reset);
     zox_gpu_storage_write(mesher->count, 0, sizeof(uint), &zox_gpu_mesh_count_reset);
-    if (!depth) {
-        return;
-    }
-    const size_t length = octree_size(depth) + 2;
-    const size_t cells = length * length * length;   // even length: a whole number of uints
+    const size_t cells = gpu_mesh_grid_bytes(depth);
     gpu_mesher_upload(mesher->voxels, &mesher->voxels_size, voxels, cells);
     const byte lit = lights && lighting;
     if (lit) {
@@ -510,7 +513,7 @@ void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, by
 // meshes a voxel octree alone (a model, no neighbours) at depth (its own, or lower for a lod), unlit, 1 on success
 byte gpu_mesh_VoxelNode(GpuMesher* mesher, const VoxelNode* voxels, byte depth) {
     const int length = octree_size(depth) + 2;
-    byte* grid = calloc((size_t) length * length * length, 1);
+    byte* grid = calloc(gpu_mesh_grid_bytes(depth), 1);
     if (!grid) {
         return 0;
     }

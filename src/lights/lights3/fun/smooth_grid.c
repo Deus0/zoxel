@@ -26,11 +26,13 @@ static inline byte smooth_grid_fill(
     const int size = octree_size(depth);
     grid->length = size + 2;
     const size_t cells = (size_t) grid->length * grid->length * grid->length;
-    grid->lights = malloc(cells * 2);
+    // a pad after each (calloc): gpu meshing uploads whole uints (gpu_mesh_grid_bytes, depth 0's 27 is 28)
+    const size_t padded = (cells + 3) & ~(size_t) 3;
+    grid->lights = calloc(padded * 2, 1);
     if (!grid->lights) {
         return 0;
     }
-    grid->voxels = grid->lights + cells;
+    grid->voxels = grid->lights + padded;
     // missing chunks are air
     memset(grid->voxels, 0, cells);
     for (sbyte z = -1; z <= 1; z++)

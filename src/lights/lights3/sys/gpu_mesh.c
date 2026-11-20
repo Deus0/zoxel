@@ -110,7 +110,7 @@ static inline void chunk_gpu_grid_fill(iter* it, entity tag) {
         fetch_nearby_voxels(world, nearby_chunks, nearby_voxels, voxels_locks);
         smooth_grid grid = { 0 };
         if (smooth_grid_fill(&grid, nearby_lights, lights_locks, nearby_voxels, voxels_locks, depth->value)) {
-            const int cells = grid.length * grid.length * grid.length;
+            const int cells = gpu_mesh_grid_bytes(depth->value);
             resize_GridVoxels(voxels, cells);
             resize_GridLights(lights, cells);
             if (voxels->value && lights->value) {
@@ -194,8 +194,7 @@ void chunk_gpu_mesh_system(iter* it) {
         const entity material = zox_get_parent(world, e);
         const entity chunk = zox_valid(material) ? zox_get_parent(world, material) : 0;
         const entity terrain = zox_valid(chunk) ? zox_get_parent(world, chunk) : 0;
-        const int length = octree_size(depth->value) + 2;
-        if (!zox_valid(terrain) || grid_voxels->length != length * length * length) {
+        if (!zox_valid(terrain) || grid_voxels->length != (int) gpu_mesh_grid_bytes(depth->value)) {
             continue;
         }
         if (terrain != terrain_cached) {
