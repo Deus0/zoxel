@@ -73,15 +73,6 @@ static inline guint chunk_gpu_terrain(ecs* world, entity terrain, guint2* grid) 
     return program;
 }
 
-// a byte array set to a grid's bytes (its old ones freed)
-#define chunk_gpu_grid_set(T, component, bytes, cells) {\
-    dispose_##T(component);\
-    initialize_##T(component, cells);\
-    if (component->value) {\
-        memcpy(component->value, bytes, cells);\
-    }\
-}
-
 // fills the meshes with tag (BuildMesh or BuildMeshColors): their chunk's voxels and lights at their depth with a voxel
 //  of border from the 26 around it (worker threads, reading the octrees as smooth lights does), then MeshDirty
 static inline void chunk_gpu_grid_fill(iter* it, entity tag) {
@@ -120,8 +111,12 @@ static inline void chunk_gpu_grid_fill(iter* it, entity tag) {
         smooth_grid grid = { 0 };
         if (smooth_grid_fill(&grid, nearby_lights, lights_locks, nearby_voxels, voxels_locks, depth->value)) {
             const int cells = grid.length * grid.length * grid.length;
-            chunk_gpu_grid_set(GridVoxels, voxels, grid.voxels, cells);
-            chunk_gpu_grid_set(GridLights, lights, grid.lights, cells);
+            resize_GridVoxels(voxels, cells);
+            resize_GridLights(lights, cells);
+            if (voxels->value && lights->value) {
+                memcpy(voxels->value, grid.voxels, cells);
+                memcpy(lights->value, grid.lights, cells);
+            }
             present->value = lights_present->value = 0;
             for (byte j = 0; j < 27; j++) {
                 present->value |= (uint) grid.voxels_present[j] << j;
@@ -253,8 +248,8 @@ void chunk_gpu_mesh_system(iter* it) {
         gpu_mesh_grid(&mesher, grid_voxels->value, lit ? grid_lights->value : NULL, depth->value, present->value,
             lights_present->value, lit ? &lighting : NULL);
         fence->value = mesher.fence;
-        dispose_GridVoxels(grid_voxels);
-        dispose_GridLights(grid_lights);
+        resize_GridVoxels(grid_voxels, 0);
+        resize_GridLights(grid_lights, 0);
         zox_remove(e, MeshDirty);
         zox_sys_budget_end(chunk_gpu_mesh);
     }

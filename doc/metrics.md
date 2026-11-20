@@ -19,6 +19,26 @@ Measured numbers, newest first: rendering speed per backend and how alike the ba
   `noise` each image's fine detail (a backend much noisier than the other is flagged: the vulkan sky's bug).
 - Where the time goes: `ZOX_SAMPLE=<file>`, then `bash bsh/sample_report.sh <file> <binary> 1`.
 
+## 2026-11-20, gpu meshing on both backends (doc/plans/gpu_meshing.md)
+
+Release builds on the 780M (`--gpu`), `zox_tst_seed=666 --stress --far 8 --nouis`, one run each, `--gpu_meshing` for the
+gpu columns (solid chunk meshes on the gpu, water on the cpu). Diffs: `bash bsh/compare_meshing.sh [--vulkan]`.
+
+| | opengl cpu | opengl gpu | vulkan cpu | vulkan gpu |
+|---|---|---|---|---|
+| perf_stream: a chunk step settles (average) | 0.248s | 0.279s (+12%) | 0.229s | 0.646s (+182%) |
+| perf_stream: slowest step | 0.277s | 0.299s | 0.263s | 0.670s |
+| perf_stream: slowest frame | 9.1ms | 9.0ms | 8.2ms | 7.9ms |
+| render_fps far 8 | 383 | 368 (-4%) | 465 | 409 (-12%) |
+| render_fps: slowest frame | 4.7ms | 4.6ms | 4.1ms | 16.7ms |
+| terrain_meshing_view diff, cpu against gpu | | 0.049 | | 0.071 |
+
+- Vulkan gpu streams slowest: a mesh's count comes back ~3 frames after its dispatch (frames in flight, 1 on gl), and
+  a mesh that grows waits that again. A better first room guess, or reading counts a submission sooner, fix it.
+- Vulkan gpu draws slower: `chunk_gpu_render_system` runs on the main thread, the cpu terrain's records on 8 threads
+  (`zox_render3_system_parallel`); its vertex arrays and draw program are made while drawing, so it can't be split yet.
+- Each a face per voxel (more triangles than the cpu's merged quads): merging faces is planned.
+
 ## 2026-11-20, after render textures, the alpha and particle fixes (174843555 and on)
 
 Machine: deusmini, Ryzen 9 7940HS, Radeon 780M (radv, mesa 26.2), 60GB. Release builds, `--novsync`, post processing
