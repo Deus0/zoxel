@@ -5,7 +5,7 @@
 #   bash bsh/compare_meshing.sh --vulkan        the vulkan build
 #   bash bsh/compare_meshing.sh screenshot ...  only these tests
 #   --nobuild: the build as it is
-# Each test runs twice with the same build and seed (zox_tst_seed 666): cpu meshing, then --gpu_meshing, into
+# Each test runs twice, without uis or the hud (--nouis --nohud: only the world in its shots), with the same build and seed (zox_tst_seed 666): cpu meshing, then --gpu_meshing, into
 # tst/compare_meshing/<cpu|gpu>/; every screenshot is compared with imagemagick:
 #   - diff: the images' difference after a blur (dither and a pixel's shift don't count), 0 same to 1
 #   - a diff image beside them (tst/compare_meshing/<shot>_diff.png), differences in red
@@ -36,7 +36,7 @@ run_meshing() {
     local meshing="$1"; shift
     local first=1
     for tst in "${tests[@]}"; do
-        local args=("${mode[@]}" "${backend[@]}")
+        local args=("${mode[@]}" "${backend[@]}" --nouis --nohud)
         [[ ${first} == 0 || ${build} == 0 || "${meshing}" == "gpu" ]] && args+=(--nobuild)
         [[ "${meshing}" == "gpu" ]] && args+=(--gpu_meshing)
         zox_tst_dir="${out}/${meshing}" zox_tst_out="tst_compare_meshing" \
