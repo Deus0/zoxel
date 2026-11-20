@@ -78,9 +78,18 @@ done
 # windows host (git bash): no mesa or egl to render in software, so tests run hidden on the real gpu (--gpu), and
 #   the game is an .exe; no systemd or pgrep there, so the memory cap and its guards are off
 bin_ext="bin"
+windows=0
 case "$(uname -s)" in
-    MINGW*|MSYS*|CYGWIN*) gpu=1; bin_ext="exe" ;;
+    MINGW*|MSYS*|CYGWIN*) windows=1; gpu=1; bin_ext="exe" ;;
 esac
+# is a game's pid running: windows games have windows pids, which kill -0 (git bash's own) doesn't see
+pid_alive() {
+    if [[ ${windows} == "1" ]]; then
+        tasklist //FI "PID eq ${1}" //NH 2> /dev/null | grep -q " ${1} "
+    else
+        kill -0 "${1}" 2> /dev/null
+    fi
+}
 timeout_seconds="${zox_tst_timeout:-100}"
 memory_max="${zox_tst_memory:-4G}"   # 8GB boards, often idle while tests run
 log_max="${zox_tst_log_max:-20000000}"  # 20MB, a healthy test logs a few KB
@@ -91,7 +100,7 @@ mem_floor_kb="${zox_tst_mem_floor:-1000000}"
 if [[ ${stress} == "0" ]]; then
     args+=("--tiny")
 fi
-# saves go to /tmp/zoxel_nosaves_<pid>, so test runs don't fill the real save folder
+# saves go to /tmp/zoxel_nosaves_<pid> (on windows %TEMP%, the same folder), so test runs don't fill the real save folder
 if [[ ${keepsaves} == "0" ]]; then
     args+=("--nosaves")
 fi
@@ -313,7 +322,7 @@ run_game() {
     #   time lost its save folder mid game (its saves failed, end_game_cleanup's rounds came out different)
     local saves
     for saves in /tmp/zoxel_nosaves_*; do
-        [[ -d "${saves}" ]] && ! kill -0 "${saves##*_}" 2> /dev/null && rm -rf "${saves}"
+        [[ -d "${saves}" ]] && ! pid_alive "${saves##*_}" && rm -rf "${saves}"
     done
     if [[ ${onmali} == "1" ]]; then
         echo "!! software mode opened /dev/mali, killed (use --gpu for real gpu runs)" >> "${log}"
