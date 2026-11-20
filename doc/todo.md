@@ -32,7 +32,10 @@
 	death and respawn first) doesn't crash either
 - tst lint_builds: windows_names doesn't build, src/terrain/tst/streamers.c:108 "expected identifier or '(' before '='"
 	(2026-11-19)
-- tst vegetation_chunks: no tree crosses a chunk's top, its across chunks case unchecked (2026-11-19)
+- tst vegetation_chunks: no tree crosses a chunk's top, its across chunks case unchecked (2026-11-19): luck, 1 in 3
+	random runs has 2 crossing trees; seeds 666, 42, 1234, 7777, 375758414 have none, --medium neither (it reads full
+	detail chunks by the player, 3 to 15 trees): trees cross only at y 32, on hills. Needs a built case: a tree
+	column with its ground just under a chunk's top, both chunks checked (2026-11-20)
 - tst camera_filter: camera C (unfiltered) drew the cube linked to A, 16 of 25 pixels changed (2026-11-19)
 - tst dig_light fails 1 of 2: "the hole's faces never showed (or not [5] of them: [1])", on 22d44c39c too (2026-11-19)
 - tst pipeline_syncs fails 1 of 3: 13 merges (over 11), load_lids_system, navigator_shift_system and
