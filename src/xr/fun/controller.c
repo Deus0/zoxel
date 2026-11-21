@@ -27,17 +27,19 @@ static inline byte xr_button_next(byte old, byte pressed) {
 }
 
 // sets a held button on its zevice, pressed or released this frame on a change
+//  - in place, as gamepad_extract_system: main thread readers later in zoxp_spawn (navigator_shift_system) have
+//    no merge before them, a deferred set reached them a frame late, its press reset by then
 void xr_controller_button(ecs* world, entity zevice, byte held) {
     const byte old = zox_getv(zevice, ZeviceButton);
     const byte next = xr_button_next(old, held);
     if (next != old) {
-        zox_setv(zevice, ZeviceButton, next);
+        zox_setm(zevice, ZeviceButton, next);
     }
 }
 
 // sets a stick, as OpenXR has it (x right, y up)
 void xr_controller_stick_set(ecs* world, entity zevice, float2 stick) {
-    zox_setv(zevice, ZeviceStick, ((float2) { -stick.x, stick.y }));
+    zox_setm(zevice, ZeviceStick, ((float2) { -stick.x, stick.y }));
 }
 
 // a hand's stick, as OpenXR has it, read back from its zevice (free roam)

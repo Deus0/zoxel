@@ -68,7 +68,7 @@ void zox_tst_pad_system(iter* it) {
                 devices_set_is_pressed(&next, 1);
             }
             if (next != old) {
-                zox_setv(e2, ZeviceButton, next);
+                zox_setm(e2, ZeviceButton, next);
             }
             any |= held;
         }
@@ -78,13 +78,13 @@ void zox_tst_pad_system(iter* it) {
         while (zox_children_next(it3)) {
             for (int j = 0; j < it3.count; j++) {
                 if (zox_has(it3.entities[j], ZeviceStick)) {
-                    zox_setv(it3.entities[j], ZeviceStick, zox_tst_pad_stick);
+                    zox_setm(it3.entities[j], ZeviceStick, zox_tst_pad_stick);
                 }
             }
         }
         any |= zox_tst_pad_stick.x != 0 || zox_tst_pad_stick.y != 0;
     }
-    zox_setv(zox_tst_pad, DeviceHasInput, any);
+    zox_setm(zox_tst_pad, DeviceHasInput, any);
     zox_sys_on_end();
 } zoxd_system(zox_tst_pad_system);
 
@@ -381,7 +381,9 @@ void zox_tst_navigator_grid_check(ecs* world) {
 void zox_tsts_navigator(ecs* world) {
     zox_tst_add("navigator_grid", zox_tst_navigator_grid_ready, zox_tst_navigator_grid_check, 120);
     zox_tst_set_setup("navigator_grid", zox_tst_level_setup, 0);
-    zox_system_1(zox_tst_pad_system, zoxp_inputs_extract, 0);
+    // before the main thread readers in zoxp_spawn (navigator_shift_system), no merge between them: it writes in
+    //  place, as gamepad_extract_system does
+    zox_system_1(zox_tst_pad_system, zoxp_begin, 0);
     zox_tst_add("navigator", zox_tst_navigator_ready, zox_tst_navigator_check, 180);
     zox_tst_set_setup("navigator", zox_tst_level_setup, 0);
 }

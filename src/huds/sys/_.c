@@ -41,26 +41,27 @@ void zox_systems_game_ui(ecs *world) {
         [in] inputs.DeviceMode,
         [none] players.Player
     );
+    // main thread ones go in zoxp_spawn, with the rest: one in pre_physics split its workers (2 merges, tst pipeline_syncs)
     // main thread: it writes every player's camera
-    zox_system_1(load_lids_system, zoxp_update, 0);
+    zox_system_1(load_lids_system, zoxp_spawn, 0);
     // main thread: it opens and closes uis
     zox_system_1(
         navigator_shift_system,
-        zoxp_update,
+        zoxp_spawn,
         [in] players.PlayerState,
         [none] players.Player
     );
     // main thread: it sets settings and texts
     zox_system_1(
         huds3_options_stick_system,
-        zoxp_update,
+        zoxp_spawn,
         [in] core.Target,
         [none] ui.NavigatorState
     );
     // main thread: it reads the camera
     zox_system_1(
         huds3_follow_system,
-        zoxp_update,
+        zoxp_spawn,
         [none] huds.LoadUI,
         [none] layouts.Canvas3
     );

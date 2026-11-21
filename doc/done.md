@@ -1,6 +1,14 @@
 # Done
 
 ## 2026-11-21
+-x tst pipeline_syncs: 13 merges (over 11). The huds' main thread systems (load_lids, navigator_shift, huds3_follow,
+  huds3_options_stick) sat in pre_physics between multi threaded ones (2 merges); they're in zoxp_spawn with the rest.
+  There no merge comes between the input extracts and navigator_shift, so the inputs it reads write in place (as
+  gamepad_extract_system did): the xr controllers (zox_setm, and read in zoxp_begin, xr is imported after huds) and
+  the tests' pad (zoxp_begin). Deferred, a grip's press reached it a frame late, already reset
+-x tst camera_filter: the filtering was right (C drew only the right cube), the check counted any changed pixel and
+  C's view has film grain; it looks for the cube's red now
+-x tst lint_systems, sky_clouds, dig_light, xr_frustum pass again (3 of 3 runs each), fixed by earlier work
 -x Web: the camera spun after alt tabbing back (a 3 year old bug): the browser drops its pointer lock, sdl only asks
   again on a click, and till then gives where the cursor is; the warp to the centre does nothing there, so each frame
   read the cursor's distance from the centre as movement. Locked but not locked by the browser, the mouse doesn't

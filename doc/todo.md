@@ -26,19 +26,10 @@
 	check's timing (the gpu mesh lands a frame later), not a real spawn in a block (2026-11-20)
 - XR on vulkan (--xr --vulkan, openxr/vulkan.c) is untested in a headset: check the eyes draw upright, both eyes,
 	and the [XR] fps log against the gl es build (2026-11-21)
-- tst sky_clouds fails: "no cloud in the sky looking up" (0.07% of the band), on 31a2c2740 too (2026-11-20)
-- tst lint_systems fails: chunk3_textured_render_system and chunk3_transparent_render_system
-  (rendering3/sys/render_chunks.c) have no zox_sys_on_begin / zox_sys_on_end (2026-11-20)
 - a crash switching windows (play test 2026-11-19), not reproduced: tst navigator_inventory and coop_navigator switch
 	fast (RB and LB) with an item in hand and a tooltip up; no core dump left. How were they switched (keys, mouse,
 	gamepad), in split screen? Maybe the gamepad item pick up abort (fixed in a179f4344); coop_respawn_navigator (a
 	death and respawn first) doesn't crash either
-- tst camera_filter: camera C (unfiltered) drew the cube linked to A, 16 of 25 pixels changed (2026-11-19)
-- tst dig_light fails 1 of 2: "the hole's faces never showed (or not [5] of them: [1])", on 22d44c39c too (2026-11-19)
-- tst pipeline_syncs fails 1 of 3: 13 merges (over 11), load_lids_system, navigator_shift_system and
-	huds3_follow_system are main thread in pre_physics (2 merges); xr ones now off without a headset (2026-11-20)
-- tst xr_frustum fails 1 of 2 checks: "an eye sees [0.156] of its distance past the culling frustum" (failing at
-	edab0901f already, before 2026-11-18's work)
 - XR lag, what's left (the frame's start and the hands' timing are fixed, see done.md): needs a headset to confirm;
 	if it's still laggy, read the headset's frame timing log ([XR] fps, openxr/render.c)
 - XR lean feels 2-3 times larger than real life (play test, on the build that slid the whole body): tst xr_body has

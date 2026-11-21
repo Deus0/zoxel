@@ -158,9 +158,10 @@ void xr_render_system(iter* it) {
 void zox_systems_xr_runtime(ecs* world) {
     // first, so the inputs (zoxp_inputs_extract) read the controllers at the frame's display time
     zox_system_1(xr_frame_begin_system, zoxp_begin, 0);
+    // zoxp_begin, before every reader: the main thread ones in zoxp_spawn (navigator_shift_system, huds before xr)
     zox_system_1(
         xr_controllers_system,
-        zoxp_inputs_extract,
+        zoxp_begin,
         [in] xr.XrHand,
         [out] inputs.DeviceHasInput,
         [none] xr.XrController
