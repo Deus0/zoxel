@@ -179,3 +179,112 @@ void zox_tst_event_costs_check(ecs* world) {
     zox_tst_check(zox_tst_ec_events[6] >= zox_tst_ec_frames - 1, "the pair's reader saw [%i] of [%i] events",
         zox_tst_ec_events[6], zox_tst_ec_frames);
 }
+
+// tst: flecs_event_scaling, many events a frame: [n] entities tagged each frame by a system (deferred, as the game
+//  adds them), handled by an observer (on a tag, and on a non fragmenting one), a system (1 thread, then 4), or a
+//  pair; per event and per frame
+//  - observers run at the merge on the main thread, one call each; systems take a table's entities at once and can
+//      run on workers: this shows where each wins
+//  - checks every event was handled
+//  - run: bash bsh/tst.sh flecs_event_scaling
+#define zox_tst_es_max 10000
+#define zox_tst_es_sizes 5
+const int zox_tst_es_counts[zox_tst_es_sizes] = { 1, 10, 100, 1000, 10000 };
+ecs_entity_t zox_tst_es_entities[zox_tst_es_max];
+int zox_tst_es_n = 0;
+int zox_tst_es_wrong = 0;
+
+// tags the first n entities, a frame's events (deferred: lands at the merge after it)
+static void zox_tst_es_fire(ecs_iter_t* it) {
+    for (int i = 0; i < zox_tst_es_n; i++) {
+        ecs_add_id(it->stage, zox_tst_es_entities[i], zox_tst_ec_tags[0]);
+    }
+}
+
+// a system taking its tag off, on any thread (counted atomically)
+static void zox_tst_es_handle_mt(ecs_iter_t* it) {
+    for (int i = 0; i < it->count; i++) {
+        ecs_remove_id(it->stage, it->entities[i], zox_tst_ec_tags[0]);
+    }
+    __atomic_add_fetch(&zox_tst_ec_handled, it->count, __ATOMIC_RELAXED);
+}
+
+static ecs_entity_t zox_tst_es_system(ecs_world_t* w, ecs_entity_t phase, ecs_id_t id, ecs_iter_action_t callback,
+    ecs_id_t without, byte multi_threaded)
+{
+    ecs_system_desc_t desc = { 0 };
+    desc.entity = ecs_new(w);
+    ecs_add_pair(w, desc.entity, EcsDependsOn, phase);
+    if (id) {
+        desc.query.terms[0] = (ecs_term_t) { .id = id };
+    }
+    if (without) {
+        desc.query.terms[1] = (ecs_term_t) { .id = without, .oper = EcsNot };
+    }
+    desc.callback = callback;
+    desc.multi_threaded = multi_threaded;
+    return ecs_system_init(w, &desc);
+}
+
+// way: 0 observer, 1 system, 2 system on 4 threads, 3 pair, 4 observer on a non fragmenting tag (zoxd_nf_tag, the
+//  coding standards' one-off event: no table move); returns us a frame
+static double zox_tst_es_run(int way, int n) {
+    ecs_entity_t target = 0;
+    ecs_world_t* w = zox_tst_ec_world(&target);
+    for (int i = 0; i < n; i++) {
+        zox_tst_es_entities[i] = ecs_new(w);
+    }
+    zox_tst_es_n = n;
+    zox_tst_es_system(w, EcsOnLoad, 0, zox_tst_es_fire, 0, 0);
+    if (way == 0 || way == 4) {
+        if (way == 4) {
+            ecs_add_id(w, zox_tst_ec_tags[0], EcsDontFragment);
+        }
+        zox_tst_ec_observer(w, zox_tst_ec_tags[0], zox_tst_ec_handle);
+    } else if (way == 1 || way == 2) {
+        zox_tst_es_system(w, EcsOnUpdate, zox_tst_ec_tags[0], zox_tst_es_handle_mt, 0, way == 2);
+        if (way == 2) {
+            ecs_set_threads(w, 4);
+        }
+    } else {
+        zox_tst_ec_tags[0] = zox_tst_ec_dirty;  // the pair's TDirty is what's fired
+        zox_tst_es_system(w, EcsOnUpdate, zox_tst_ec_update, zox_tst_ec_pair_read, 0, 0);
+        zox_tst_es_system(w, EcsOnUpdate, zox_tst_ec_dirty, zox_tst_ec_pair_dirty, 0, 0);
+        zox_tst_es_system(w, EcsOnUpdate, zox_tst_ec_update, zox_tst_ec_pair_update, zox_tst_ec_dirty, 0);
+    }
+    const int frames = n >= 1000 ? 40 : 2000 / n + 40;
+    for (int f = 0; f < 5; f++) {
+        ecs_progress(w, 0);
+    }
+    zox_tst_ec_handled = 0;
+    const double start = zox_observer_now_ms();
+    for (int f = 0; f < frames; f++) {
+        ecs_progress(w, 0);
+    }
+    const double us = (zox_observer_now_ms() - start) * 1000.0 / frames;
+    // the pair's reader sees a frame's events a frame on; the rest the same frame
+    zox_tst_es_wrong += zox_tst_ec_handled < (frames - 1) * n || zox_tst_ec_handled > frames * n;
+    ecs_fini(w);
+    return us;
+}
+
+byte zox_tst_event_scaling_ready(ecs* world) {
+    (void) world;
+    return 1;
+}
+
+void zox_tst_event_scaling_check(ecs* world) {
+    (void) world;
+    const char* names[5] = { "observer", "system", "system 4 threads", "pair", "observer nf tag" };
+    for (int s = 0; s < zox_tst_es_sizes; s++) {
+        const int n = zox_tst_es_counts[s];
+        double us[5];
+        for (int way = 0; way < 5; way++) {
+            us[way] = zox_tst_es_run(way, n);
+        }
+        zox_log("[tst] [metric] flecs_event_scaling [%i] events a frame, per frame (per event): %s [%.1fus] (%.3f), %s [%.1fus] (%.3f), %s [%.1fus] (%.3f), %s [%.1fus] (%.3f), %s [%.1fus] (%.3f)",
+            n, names[0], us[0], us[0] / n, names[1], us[1], us[1] / n, names[2], us[2], us[2] / n, names[3], us[3], us[3] / n,
+            names[4], us[4], us[4] / n);
+    }
+    zox_tst_check(!zox_tst_es_wrong, "[%i] runs didn't handle every event", zox_tst_es_wrong);
+}

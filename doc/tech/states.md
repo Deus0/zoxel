@@ -9,7 +9,7 @@ first form in the list that fits.
 |---|---|---|---|
 | 1. A tag its reader removes | 1 tag | 0 (the reader's own) | one system reacts |
 | 2. The core `Dirty` / `Update` | 0 new | 0 new (shared) | several react, nothing else dirties that entity |
-| 3. An observer on a tag | 0-1 | 0 | a one-off event, the reaction light (camera attach, window resize) |
+| 3. An observer on a tag | 0-1 | 0 | a one-off event, few a frame, the reaction light (camera attach) |
 | 4. A pair, `zoxc_dirty(T)` | 2 tags | 2 | several readers in different phases, and the entity has other changes |
 | 5. A byte state, `zoxc_state(T)` | 1 byte | 1 (increment) | a machine with steps, or code reads "still pending" |
 
@@ -92,6 +92,26 @@ frames (debug build, 2026-11-21):
 - An idle system is nearly free (flecs skips an empty query), so a system count matters for reading the pipeline
   (and merges, tst pipeline_syncs) more than for speed.
 - For an event, an observer is cheapest, a pair dearest. Rerun the test before deciding on new numbers.
+
+### Many events a frame
+
+`tst flecs_event_scaling`: [n] entities tagged each frame by a system (deferred, as the game does), then handled
+(us a frame, debug build, 2026-11-21):
+
+| events a frame | observer | system | system, 4 threads | pair | observer, non fragmenting tag |
+|---|---|---|---|---|---|
+| 1 | 4.7 | 6.3 | 17.0 | 7.8 | 4.7 |
+| 10 | 15.3 | 16.2 | 31.6 | 19.0 | 15.6 |
+| 100 | 141 | 86 | 107 | 124 | 131 |
+| 1000 | 1284 | 821 | 809 | 1149 | 1226 |
+| 10000 | 12399 | 8466 | 7600 | 11755 | 12731 |
+
+- Observers scale linearly: ~1.3us an event at any count, no blow up. A system takes a table's entities in one
+  call: ~0.85us an event from ~100 a frame, a third cheaper. They cross at ~10 events a frame.
+- Threads barely help here: the cost is the tag's add and remove (commands merged on the main thread), not the
+  handler. A handler with real work (a mesh, a light) gains from a system's threads, an observer can't.
+- So: an **observer** for events that are few a frame (ui, settings, a camera, a sound, a player's action); a
+  **system** for ones that come in bulk (chunks streaming, meshes, lights: hundreds a frame) or carry heavy work.
 
 ## Timing
 
