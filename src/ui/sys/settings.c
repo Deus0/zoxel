@@ -5,7 +5,7 @@ void ui_settings(ecs* world, entity e) {
     spawn_setting_float(world, e, "UI Scale", ui_scale, (float2) { 0.5f, 3 });
 }
 
-// a setting changed (Update, the frame after its Dirty)
+// a setting changed (its Dirty, added again each frame it changes: a slider dragged)
 void ui_settings_on_dirty(iter* it) {
     zox_sys_world();
     zox_sys_begin();
@@ -25,7 +25,7 @@ void ui_settings_on_dirty(iter* it) {
     }
 }
 
-// spawned on the app (InitializeEvent), applied when one changes (an observer on Update)
+// spawned on the app (InitializeEvent), applied when one changes (an observer on Dirty)
 void ui_settings_events(ecs* world) {
     zox_muter(prefab_app, InitializeEvent, event);
     add_to_InitializeEvent(event, ui_settings);
@@ -33,6 +33,6 @@ void ui_settings_events(ecs* world) {
         ui_settings_on_dirty,
         [in] core.ZoxName,
         [none] settings.Setting,
-        [none] core.Update,
+        [none] core.Dirty,
     );
 }

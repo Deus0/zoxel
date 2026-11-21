@@ -8,6 +8,6 @@ void zox_events_lights(ecs* world) {
         lights_settings_observer_callback,
         [in] core.ZoxName,
         [none] settings.Setting,
-        [none] core.Update,
+        [none] core.Dirty,
     );
 }

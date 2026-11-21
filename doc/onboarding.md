@@ -367,6 +367,7 @@ The loop:
 - [Flecs Patches](flecs_patches.md): our fixes to flecs (bsh/flecs_fix.sh), why, repros, for upstream PRs
 - [Spawning](spawning.md): how entities are made, what it costs, keeping it cheap
 - [Game Design](gdd.md): the blend, the pillars, what's playable and planned
+- [Settings](tech/settings.md): a module's settings, how a change applies, save and load
 - [Commands](commands.md): every command line flag for the game binary
 - [Help](help.md): make targets
 - [Notes](notes.md): assorted engine notes

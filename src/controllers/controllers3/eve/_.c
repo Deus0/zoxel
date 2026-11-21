@@ -19,7 +19,7 @@ void zox_events_controllers(ecs* world) {
         auto_jump_settings_on_dirty,
         [in] core.ZoxName,
         [none] settings.Setting,
-        [none] core.Update,
+        [none] core.Dirty,
     );
     zox_observe(on_removed_dialogue_ui, EcsOnRemove, [none] dialogues.DialogueUI);
 }

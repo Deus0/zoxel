@@ -6,7 +6,7 @@ void sounds_settings(ecs* world, entity e) {
     spawn_setting_float(world, e, "SFX", volume_sfx, (float2) { 0, 1 });
 }
 
-// a setting changed (Update, the frame after its Dirty)
+// a setting changed (its Dirty, added again each frame it changes: a slider dragged)
 void sounds_settings_on_dirty(iter* it) {
     byte dbg_log = 0;
     zox_sys_world();
@@ -32,7 +32,7 @@ void sounds_settings_on_dirty(iter* it) {
     }
 }
 
-// spawned on the app (InitializeEvent), applied when one changes (an observer on Update)
+// spawned on the app (InitializeEvent), applied when one changes (an observer on Dirty)
 void sounds_settings_events(ecs* world) {
     zox_muter(prefab_app, InitializeEvent, event);
     add_to_InitializeEvent(event, sounds_settings);
@@ -40,6 +40,6 @@ void sounds_settings_events(ecs* world) {
         sounds_settings_on_dirty,
         [in] core.ZoxName,
         [none] settings.Setting,
-        [none] core.Update,
+        [none] core.Dirty,
     );
 }

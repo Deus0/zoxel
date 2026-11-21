@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-21
+-x Settings apply on Dirty, not Update: a slider dragged reached the game only on its first frame (Update stays on while
+  dirtied again, its observer didn't fire again). Every settings observer (15) is on Dirty now. Tests settings_spawn,
+  settings_drag, settings_load; doc/tech/settings.md
 -x Tooltips: a ui deselected closes its tooltip in an observer on Deselect (was a system every frame), dead code gone;
   the select stays a system (as an observer a fast flick lost the last icon's text). refactors.md: the systems style
   and CanvasData were already done

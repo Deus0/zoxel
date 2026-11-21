@@ -18,6 +18,6 @@ void zox_apps_events(ecs* world) {
         zox_settings_dirty_apps,
         [in] core.ZoxName,
         [none] settings.Setting,
-        [none] core.Update,
+        [none] core.Dirty,
     );
 }

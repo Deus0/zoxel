@@ -22,7 +22,7 @@ void xr_settings(ecs* world, entity e) {
     spawn_setting_float(world, e, "XR Height", xr_player_height, xr_player_height_range);
 }
 
-// a setting changed (Update, the frame after its Dirty)
+// a setting changed (its Dirty, added again each frame it changes: a slider dragged)
 void xr_settings_on_dirty(iter* it) {
     zox_sys_world();
     zox_sys_begin();
@@ -39,7 +39,7 @@ void xr_settings_on_dirty(iter* it) {
     }
 }
 
-// spawned on the app (InitializeEvent), applied when one changes (an observer on Update)
+// spawned on the app (InitializeEvent), applied when one changes (an observer on Dirty)
 void xr_settings_events(ecs* world) {
     zox_muter(prefab_app, InitializeEvent, event);
     add_to_InitializeEvent(event, xr_settings);
@@ -47,7 +47,7 @@ void xr_settings_events(ecs* world) {
         xr_settings_on_dirty,
         [in] core.ZoxName,
         [none] settings.Setting,
-        [none] core.Update,
+        [none] core.Dirty,
     );
 }
 

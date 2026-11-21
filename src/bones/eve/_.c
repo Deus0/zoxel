@@ -7,6 +7,6 @@ void zox_events_bones(ecs* world) {
         zox_settings_dirty_bones,
         [in] core.ZoxName,
         [none] settings.Setting,
-        [none] core.Update,
+        [none] core.Dirty,
     );
 }

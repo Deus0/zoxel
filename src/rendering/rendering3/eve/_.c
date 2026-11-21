@@ -8,7 +8,7 @@ void zox_events_rendering3(ecs* world) {
         rendering3_settings_observer_callback,
         [in] core.ZoxName,
         [none] settings.Setting,
-        [none] core.Update,
+        [none] core.Dirty,
     );
     // when a cloned mesh is rebuilt, copy its data into its clones
     zox_on_add(

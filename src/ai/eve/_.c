@@ -7,6 +7,6 @@ void zox_events_ai(ecs* world) {
         ai_settings_on_dirty,
         [in] core.ZoxName,
         [none] settings.Setting,
-        [none] core.Update,
+        [none] core.Dirty,
     );
 }

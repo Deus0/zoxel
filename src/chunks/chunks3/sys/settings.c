@@ -6,7 +6,7 @@ void chunks3_settings(ecs* world, entity e) {
     spawn_setting_byte(world, e, "GPU Meshing", zox_chunks3_gpu_meshing);
 }
 
-// a setting changed (Update, the frame after its Dirty)
+// a setting changed (its Dirty, added again each frame it changes: a slider dragged)
 void chunks3_settings_on_dirty(iter* it) {
     zox_sys_world();
     zox_sys_begin();
@@ -20,7 +20,7 @@ void chunks3_settings_on_dirty(iter* it) {
     }
 }
 
-// spawned on the app (InitializeEvent), applied when one changes (an observer on Update)
+// spawned on the app (InitializeEvent), applied when one changes (an observer on Dirty)
 void chunks3_settings_events(ecs* world) {
     zox_muter(prefab_app, InitializeEvent, event);
     add_to_InitializeEvent(event, chunks3_settings);
@@ -28,6 +28,6 @@ void chunks3_settings_events(ecs* world) {
         chunks3_settings_on_dirty,
         [in] core.ZoxName,
         [none] settings.Setting,
-        [none] core.Update,
+        [none] core.Dirty,
     );
 }

@@ -9,7 +9,7 @@ void streaming_settings(ecs* world, entity e) {
 #endif
 }
 
-// a setting changed (Update, the frame after its Dirty)
+// a setting changed (its Dirty, added again each frame it changes: a slider dragged)
 void streaming_settings_on_dirty(iter* it) {
     byte dbg_log = 0;
     zox_sys_world();
@@ -45,7 +45,7 @@ void streaming_settings_on_dirty(iter* it) {
     }
 }
 
-// spawned on the app (InitializeEvent), applied when one changes (an observer on Update)
+// spawned on the app (InitializeEvent), applied when one changes (an observer on Dirty)
 void streaming_settings_events(ecs* world) {
     zox_muter(prefab_app, InitializeEvent, event);
     add_to_InitializeEvent(event, streaming_settings);
@@ -53,6 +53,6 @@ void streaming_settings_events(ecs* world) {
         streaming_settings_on_dirty,
         [in] core.ZoxName,
         [none] settings.Setting,
-        [none] core.Update,
+        [none] core.Dirty,
     );
 }
