@@ -111,6 +111,9 @@ Usually run through `bash bsh/tst.sh`, see [Onboarding](onboarding.md#7-tests).
 | `zox_gl_sync=1` (env, windows dev builds) | a glFinish before every gl call: a crash in the driver's own thread then logs the gl calls before it and where they were made (addr2line), see [gl_thread.c](../src/_/platforms/tst/gl_thread.c) | _/platforms |
 | `--tst <name>` | runs one test, exits 0 on pass, 1 on fail | [_/tst](../src/_/tst/_.c) |
 | `--tst list` | prints every test name and exits | _/tst |
+| `--maps` | draws the maps of 3 x 3 regions round region 0, 0 (height, biome, vegetation, town, lod, overview) as images and quits: a world of its own, no player, tunks only (`bash bsh/tools/maps.sh [--seed n] [--chunks]`, into `tst/maps`) | [towns](../src/towns/dbg/maps_dump.c) |
+| `--maps-chunks` | `--maps` with chunks too, for the top blocks map | towns |
+| `--maps-seed <n>` / `--maps-out <folder>` | `--maps`' seed (666, the same seed draws the same maps) and where it writes | towns |
 | `--tst-errors <n>` | fails a test once it logs this many errors (default 100) | _/tst |
 | `--tst-timescale <f>` | scales test timeouts, i.e. 2 for slow software rendering | _/tst |
 | `--blackplague` | damages every npc every 5s, a stress test for deaths and cleanup | [skills](../src/skills/tst/plague.c) |

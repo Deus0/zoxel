@@ -2,6 +2,7 @@
 //  - turning a building's frame and back, the way each facing faces
 //  - a box's voxels in a chunk, at lods a thin box keeps a voxel
 //  - a home's ground: its floor under it and a block round it, steps from its door, turned with it
+//  - A*: straight over open ground, through a wall's gap, round a hill
 //  - town roads round a home in their way, to each door and the gate; a road's width and its ground's slope
 //  - a door's and a bed's pieces turned with their home, highway nodes in their cells
 //  - run: bash bsh/tst.sh town_build
@@ -55,6 +56,44 @@ void zox_tst_town_build_check(ecs* world) {
     zox_tst_check(home_ground_at(&turned, (int2) { 105, 100 }, 30) == 21, "home_ground_at turned +x");
     zox_tst_check(home_ground_at(&turned, (int2) { 100, 105 }, 30) == -1, "home_ground_at turned +z");
 
+    // A* (fun/astar.c): on flat open ground a straight line, through a wall's gap, round a hill
+    static PathGrid grid;
+    int3 points[path_points_max];
+    path_grid_begin(&grid, (int2) { 0, 0 }, (int2) { 32, 32 }, 1);
+    for (int i = 0; i < grid.size.x * grid.size.y; i++) {
+        grid.heights[i] = 10;
+        grid.costs[i] = path_cost_ground;
+    }
+    int count = path_find(&grid, (int2) { 2, 2 }, (int2) { 28, 20 }, points, path_points_max);
+    zox_tst_check(count == 2, "a path over flat open ground is [%i] points, not one straight segment", count);
+    // a wall across x 16, a gap at z 20 to 22
+    path_grid_rect(&grid, (int2) { 16, 9 }, (int2) { 0, 9 }, path_blocked);
+    path_grid_rect(&grid, (int2) { 16, 27 }, (int2) { 0, 4 }, path_blocked);
+    count = path_find(&grid, (int2) { 4, 4 }, (int2) { 28, 4 }, points, path_points_max);
+    int crossings_wrong = 0, through_gap = 0;
+    for (int k = 0; k + 1 < count; k++) {
+        const int steps = int_max(abs(points[k + 1].x - points[k].x), abs(points[k + 1].z - points[k].z)) * 2;
+        for (int m = 0; m <= steps; m++) {
+            const float f = steps ? (float) m / steps : 0;
+            const int2 g = { (int) roundf(points[k].x + (points[k + 1].x - points[k].x) * f), (int) roundf(points[k].z + (points[k + 1].z - points[k].z) * f) };
+            crossings_wrong += grid.costs[path_index(&grid, g)] == path_blocked;
+            through_gap += g.x == 16 && g.y >= 19 && g.y <= 23;
+        }
+    }
+    zox_tst_check(count >= 3 && !crossings_wrong && through_gap, "a path through a wall's gap: [%i] points, [%i] blocked crossed, [%i] in the gap",
+        count, crossings_wrong, through_gap);
+    // a hill across its way (20 high, x 12 to 20, z 0 to 24): it goes round
+    for (int i = 0; i < grid.size.x * grid.size.y; i++) {
+        const int2 c = { i % grid.size.x, i / grid.size.x };
+        grid.costs[i] = path_cost_ground;
+        grid.heights[i] = c.x >= 12 && c.x <= 20 && c.y <= 24 ? 30 : 10;
+    }
+    count = path_find(&grid, (int2) { 2, 4 }, (int2) { 30, 4 }, points, path_points_max);
+    int up_hill = 0;
+    for (int k = 0; k < count; k++) {
+        up_hill += points[k].y > 10;
+    }
+    zox_tst_check(count >= 3 && !up_hill, "a path over a hill: [%i] points, [%i] up it, not round it", count, up_hill);
     // a segment crossing a rect, missing it, and along its edge
     zox_tst_check(segment_crosses_rect((float2) { -10, 0 }, (float2) { 10, 0 }, (int2) { 0, 0 }, (float2) { 2, 2 }), "segment_crosses_rect across");
     zox_tst_check(!segment_crosses_rect((float2) { -10, 5 }, (float2) { 10, 5 }, (int2) { 0, 0 }, (float2) { 2, 2 }), "segment_crosses_rect past");
@@ -124,7 +163,7 @@ void zox_tst_town_build_check(ecs* world) {
         zox_tst_check(in.x == inward.x && in.z == inward.y, "the door faces out wrong, facing [%i]", facing);
     }
 
-    zox_log("[tst] [metric] town_build checked turns, spans, home ground, roads, furniture, highway nodes");
+    zox_log("[tst] [metric] town_build checked turns, spans, home ground, A*, roads, furniture, highway nodes");
 }
 
 void zox_tsts_town_build(ecs* world) {

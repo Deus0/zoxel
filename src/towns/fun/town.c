@@ -2,7 +2,8 @@
 //  - its gate: in one wall (TownGateSide) at a spot along it (TownGateAt), from its seed (town_gate_place)
 //  - its square: paved in its middle, its homes placed round it (homes_spawn_system)
 //  - its roads (town_roads_build, once its homes are placed): a waypoint graph inside its walls (a point jittered every
-//    town_waypoint_spacing blocks, none in homes), linked where a straight line misses every home; the shortest ways
+//    town_waypoint_spacing blocks, none in homes, and each home's corners a block past its margin, so a way round a
+//    home is always there), linked where a straight line misses every home; the shortest ways
 //    from its square to its gate and each door (one tree, so roads share their way), straightened; kept on it
 //    (RoadSegments), on the ground as it is (homes level their own)
 //  - its street lamps: at its square's corners, and beside its roads every town_lamp_spacing blocks along them, off
@@ -14,7 +15,7 @@
 #define town_square_half 4
 #define town_road_half 1
 #define town_waypoint_spacing 8
-#define town_waypoint_reach 13      // blocks a waypoint links to others within
+#define town_waypoint_reach 20      // blocks a waypoint links to others within
 #define town_waypoints_max 512
 
 // a town's gate from its seed: its wall (0 +z, 1 +x, 2 -z, 3 -x) and its spot along it (blocks from its middle,
@@ -96,6 +97,17 @@ void town_roads_build(uint seed, int2 center, byte2 size, byte wall_thickness, b
     for (byte i = 0; i < homes_count && count < town_waypoints_max; i++) {
         const int2 door = int2_add(homes[i].center, build_turn(homes[i].facing, 0, home_half_local(&homes[i]).y + 1));
         points[count++] = (float2) { door.x, door.y };
+    }
+    // each home's corners, round it
+    for (byte i = 0; i < homes_count; i++) {
+        for (byte c = 0; c < 4 && count < town_waypoints_max; c++) {
+            const int2 p = { homes[i].center.x + (c & 1 ? 1 : -1) * (homes[i].half.x + 2),
+                homes[i].center.y + (c & 2 ? 1 : -1) * (homes[i].half.y + 2) };
+            if (p.x >= inner_low.x && p.y >= inner_low.y && p.x <= inner_high.x && p.y <= inner_high.y &&
+                !town_in_home(homes, homes_count, p, 1)) {
+                points[count++] = (float2) { p.x, p.y };
+            }
+        }
     }
     for (int z = inner_low.y + 2; z <= inner_high.y - 2 && count < town_waypoints_max; z += town_waypoint_spacing)
     for (int x = inner_low.x + 2; x <= inner_high.x - 2 && count < town_waypoints_max; x += town_waypoint_spacing) {

@@ -166,13 +166,13 @@ static inline void highway_add(int2* ends, int* count, int max, int2 a, int2 b) 
     }
 }
 
-// a town's link: its gate, straight out, then to its nearest node left with a clear line (0 if none)
+// a town's link: its gate, straight out, then to its nearest node left with a clear line, 2 cells round (0 if none)
 static inline byte highway_town_link(Highways* h, const HighwayTown* t, int2* out, int2* node) {
     *out = int2_add(t->gate, int2_multiply1(build_turn(t->gate_side, 0, 1), highway_out));
     const int2 cell = { floor_div(out->x, highway_spacing), floor_div(out->y, highway_spacing) };
     int best = -1;
-    for (int y = -1; y <= 1; y++)
-    for (int x = -1; x <= 1; x++) {
+    for (int y = -2; y <= 2; y++)
+    for (int x = -2; x <= 2; x++) {
         int2 n;
         if (!highway_node(h, (int2) { cell.x + x, cell.y + y }, &n) || !highway_clear(h, *out, n)) {
             continue;
@@ -210,8 +210,8 @@ int highways_in_box(Highways* h, int2 low, int2 high, int2* ends, int max) {
             highway_add(ends, &count, max, a, b);
         }
     }
-    // the towns near it, their gates to their nodes (a town's link is under 2 lattice cells long)
-    const int reach = highway_spacing * 2;
+    // the towns near it, their gates to their nodes (a town's link is under 3 lattice cells long)
+    const int reach = highway_spacing * 3;
     const int region_blocks = octree_size(h->terrain_depth) * region_dividor;
     for (int y = floor_div(low.y - reach, region_blocks); y <= floor_div(high.y + reach, region_blocks); y++)
     for (int x = floor_div(low.x - reach, region_blocks); x <= floor_div(high.x + reach, region_blocks); x++) {

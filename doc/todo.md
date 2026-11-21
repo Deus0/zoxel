@@ -156,6 +156,12 @@
 # Refactors
 Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [done.md](done.md).
 
+## Tools out of the test harness (2026-11-22)
+- Move the looking tools into bsh/tools (doc/tools.md): body, poses, ik_poses, walk, punch, model, gpu_lights,
+  gpu_mesh, compare_backends, compare_meshing, sample_report, code_stats. Those that run a `*_views` test become a
+  game flag doing the job and quitting (as `--maps`, towns/dbg/maps_dump.c), the test then calls the same functions
+  and checks what they make (the views a test checks stay tests, the ones only looked at become tools)
+
 ## Next (2026-11-21)
 States, events and tags, by doc/tech/states.md (nf tags and observers for events, systems for heavy work, fewer tags;
 profile each, systems and observers counted together):

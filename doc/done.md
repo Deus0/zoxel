@@ -1,6 +1,13 @@
 # Done
 
 ## 2026-11-21
+-x A map tool: `bash bsh/tools/maps.sh` runs the game with `--maps` (towns/dbg/maps_dump.c): a world of its own, no
+  player, a stream point in the middle of region 0, 0, far 68 (the circle reaches the 9 regions' corners), tunks
+  only (zox_terrain_no_chunks; --chunks for the top blocks map), and writes tst/maps, a pixel a block: height, biome,
+  vegetation, town, lod, overview (heights, towns, highways, region borders). 17s, the same seed the same images
+  byte for byte. A* kept as a tool (towns/fun/astar.c, its checks in town_build). Found with it: doors boxed in by
+  neighbours had no town road (each home's corners are waypoints now), a town's highway link looks 2 lattice cells
+  round; coop_homes allows players sharing a home's door to stand 2 blocks apart (towns of one home)
 -x Roads and highways go round things, cheaply. Highways are a lattice over the world (towns/fun/highways.c): a node
   jittered every 128 blocks from the terrain's seed, linking east or north (some both), nodes and links near towns and mountains
   left out, each town's gate linked to its nearest node; a tunk works out the links crossing it from the nodes round

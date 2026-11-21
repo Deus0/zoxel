@@ -370,7 +370,12 @@ void terrain_stream_queue_system(iter* it) {
                     update.position.y,
                     update.distance);
             }
-            // continue;
+            // tunks only (towns/dbg/maps_dump.c, --maps): their maps generate, no chunks
+            if (zox_terrain_no_chunks) {
+                stream_slots_spawn++;
+                processed++;
+                continue;
+            }
             // Spawn chunks per Tunk, if new!
             Chunk3Stack stack = (Chunk3Stack) { 0 };
             initialize_Chunk3Stack(&stack, size.y * 2 + 1);

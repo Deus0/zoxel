@@ -127,7 +127,9 @@ void zox_tst_coop_homes_check(ecs* world) {
         if (zox_valid(zox_tst_coop_homes[i])) {
             zox_log("[tst] player [%i] spawned [%.1f] blocks from [%s]'s door, of [%s]", i + 1, zox_tst_coop_home_distances[i],
                 zox_get_name(zox_tst_coop_homes[i]), zox_get_name(zox_get_parent(world, zox_tst_coop_homes[i])));
-            zox_tst_check(zox_tst_coop_home_distances[i] < 1.5f, "player [%i] spawned [%.1f] blocks from the closest home's door",
+            // more players than homes: those sharing a door stand beside each other, 2 blocks along (town_placer.c)
+            const float most = 1.5f + (i >= zox_tst_coop_town_homes ? 2 * (i / int_max(zox_tst_coop_town_homes, 1)) : 0);
+            zox_tst_check(zox_tst_coop_home_distances[i] < most, "player [%i] spawned [%.1f] blocks from the closest home's door",
                 i + 1, zox_tst_coop_home_distances[i]);
         }
     }
