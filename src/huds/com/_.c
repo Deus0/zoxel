@@ -1,7 +1,6 @@
 zox_tag(MenuMain);
 zox_tag(MenuOptions);
 zox_tag(MenuPaused);
-zox_tag(MenuPlay);
 zox_tag(MenuPlayTouch);
 zox_tag(MenuStart);
 zox_tag(MenuLoad);
@@ -26,7 +25,6 @@ void zox_components_game_ui(ecs *world) {
     zoxd_nf_tag(MenuMain);
     zoxd_nf_tag(MenuOptions);
     zoxd_nf_tag(MenuPaused);
-    zoxd_nf_tag(MenuPlay);
     zoxd_nf_tag(MenuPlayTouch);
     zoxd_nf_link(MenuStart);
     zoxd_nf_tag(MenuLoad);
