@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-21
+-x Byte states to tags (one reader, set then read once): GenerateSound, ProcessSound, CombineVox, InspectorDirty,
+  HierarchyUIDirty, GlyphSpawnedDirty, AnimateTextEnded are tags their system matches and removes; their 7 increment
+  systems are gone; ItemDirty (never set) removed
 -x Settings apply on Dirty, not Update: a slider dragged reached the game only on its first frame (Update stays on while
   dirtied again, its observer didn't fire again). Every settings observer (15) is on Dirty now. Tests settings_spawn,
   settings_drag, settings_load; doc/tech/settings.md
