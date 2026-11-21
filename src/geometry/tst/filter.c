@@ -2,7 +2,8 @@
 //  (CameraRenderer), other cameras draw everything not linked to another camera
 //  - 3 viewport cameras looking at 2 cubes: the left linked to camera A, the right linked to none
 //      A (filtered): left, not right; B (filtered, nothing linked): neither; C (unfiltered): right, not left
-//  - checked on screenshots, before and after the cubes, at where each cube lands in each view
+//  - checked on screenshots, before and after the cubes, at where each cube lands in each view: red there now
+//      and not before (C's view has film grain, so any change was noise)
 //  - what model_views leans on (a copy of the model per view); also mirrors, minimaps, portraits
 //  - saves tst/camera_filter.ppm; run: bash bsh/tst.sh camera_filter
 extern char zox_screenshot_request[256];
@@ -114,9 +115,10 @@ void zox_tst_camera_filter_check(ecs* world) {
                         if (x + dx < 0 || y + dy < 0 || x + dx >= size.x || y + dy >= size.y) {
                             continue;
                         }
-                        changed += zox_tst_pixel_difference(
-                            zox_tst_ppm_pixel(pixels, size, x + dx, y + dy),
-                            zox_tst_ppm_pixel(empty, size, x + dx, y + dy)) > 24;
+                        // the cube's red, not any change: an unfiltered view's grain changes its pixels too
+                        const byte* seen_pixel = zox_tst_ppm_pixel(pixels, size, x + dx, y + dy);
+                        const byte* empty_pixel = zox_tst_ppm_pixel(empty, size, x + dx, y + dy);
+                        changed += seen_pixel[0] > seen_pixel[1] + 80 && empty_pixel[0] < empty_pixel[1] + 40;
                         total++;
                     }
                 }
