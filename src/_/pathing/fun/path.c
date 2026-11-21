@@ -382,10 +382,10 @@ byte initialize_pathing_native(
         *data_path,
         game_name,
         resources_path_game);
-    zox_log("game_name %s", game_name);
-    zox_log("data_path %s", *data_path);
-    zox_log("resources_path %s", *resources_path);
-    zox_log("resources_path_game %s", *resources_path_game);
+    zox_logv("game_name %s", game_name);
+    zox_logv("data_path %s", *data_path);
+    zox_logv("resources_path %s", *resources_path);
+    zox_logv("resources_path_game %s", *resources_path_game);
     if (*resources_path) {
         return EXIT_SUCCESS;
     }

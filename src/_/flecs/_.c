@@ -29,7 +29,7 @@ byte zox_dbg_observers = 0;
 #include "comm/state.c"
 
 ecs* zox_ecs(int argc, char* argv[]) {
-    zox_log("[zox_ecs]");
+    zox_logv("[zox_ecs]");
     ecs* world = ecs_init_w_args(
         argc,
         argv);

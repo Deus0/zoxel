@@ -21,6 +21,10 @@ int main(int argc, char* argv[]) {
     // tests: every line out as it's logged, a crash while booting lost what was still buffered (only stderr was left)
     //  - windows' c runtime takes _IOLBF as full buffering, so unbuffered there
     for (int i = 1; i < argc; i++) {
+        // first, so the boot's details log too (zox_logv)
+        if (!strcmp(argv[i], "--verbose")) {
+            is_verbose = 1;
+        }
         if (!strcmp(argv[i], "--tst")) {
 #ifdef zox_windows
             setvbuf(stdout, NULL, _IONBF, 0);
@@ -33,7 +37,7 @@ int main(int argc, char* argv[]) {
     zox_log("+ Starting Zox Engine +");
 #ifdef zox_android
     __android_log_print(ANDROID_LOG_INFO, "SDL", "Zoxel Android logging TEST");
-    zox_log("Log Test 2");
+    zox_logv("Log Test 2");
 #endif
     byte cores = get_cpu_count();    // gets our cpu core count
     set_cpu_tier2(cores);

@@ -82,7 +82,7 @@ void spawn_weather(ecs *world, entity app) {
         camera,
         shader_skybox);
     zox_link(world, game, Skybox, skybox);
-    zox_log("SPAWNED SKYBOX");
+    zox_logv("SPAWNED SKYBOX");
 }
 
 byte last_weather_state;

@@ -14,10 +14,10 @@ void process_arguments_apps(ecs *world, char* args[], int count) {
             is_split_screen = 1;
         } else if (strcmp(args[i], "--vsync") == 0 || strcmp(args[i], "--enablevsync") == 0) {
             vsync = 1;
-            zox_log("Enabled [vsync]");
+            zox_logv("Enabled [vsync]");
         } else if (strcmp(args[i], "--disablevsync") == 0 || strcmp(args[i], "--novsync") == 0) {
             vsync = 0;
-            zox_log("Disabled [vsync]");
+            zox_logv("Disabled [vsync]");
         } else if (strcmp(args[i], "--background") == 0) {
             background = 1;
             fullscreen = 0;
@@ -30,7 +30,7 @@ void process_arguments_apps(ecs *world, char* args[], int count) {
                 audio_enabled = 0;
             }
 #endif
-            zox_log("+ setting enabled [background]");
+            zox_logv("+ setting enabled [background]");
         } else if (strcmp(args[i], "--sounds") == 0) {
             // after --background, i.e. tests that listen (bash bsh/tst.sh <name> --sounds)
             nosounds = 0;
@@ -39,7 +39,7 @@ void process_arguments_apps(ecs *world, char* args[], int count) {
                 initialize_sounds();
             }
 #endif
-            zox_log("+ setting enabled [sounds]");
+            zox_logv("+ setting enabled [sounds]");
         } else if (strcmp(args[i], "--nodecor") == 0) {
             disable_apps_decor = 1;
         } else if (strcmp(args[i], "--1080p") == 0) {
@@ -53,7 +53,7 @@ void process_arguments_apps(ecs *world, char* args[], int count) {
         else if (strcmp(args[i], "--gles") == 0) {
             // skips the core probe, i.e. tests on mesa use the same es path as mali
             opengl_mode = zox_opengl_es;
-            zox_log("+ setting enabled [gles]");
+            zox_logv("+ setting enabled [gles]");
         }
 #endif
     }

@@ -596,6 +596,15 @@ Flecs is used through the `zox_` macros in `src/_/flecs/mcr/`, raw flecs stays i
   points or phase changes for it. Use an observer, or ask; `tst pipeline_syncs` counts the merges.
 - flecs.c itself is patched by `bsh/flecs_fix.sh`, each patch in [flecs_patches.md](flecs_patches.md).
 
+## Logs
+
+The default log stays short: what someone needs to see, and nothing every frame or every boot that's fine.
+
+- `zox_loge` / `zox_logw`: something's wrong. Expected cases aren't (a missing optional folder, an icon wayland refuses).
+- `zox_logv`: details for debugging (paths, settings chosen, events like a splash), only with `--verbose`.
+- `zox_log`: rare and worth reading every run, or behind a local `dbg_log` flag while debugging.
+- Release builds drop them all; tests log with `[tst]`.
+
 ## Commits
 
 - Short messages: one lower case line saying what changed, i.e. `terrain scales with the stream height`.

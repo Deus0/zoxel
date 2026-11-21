@@ -124,8 +124,8 @@ void traverse_directory(FileList* fileList, const char* directory, byte keep_ext
     // zox_log(" ! opening directory [%s]\n", directory)
     DIR* dp = opendir(directory);
     if (dp == NULL) {
-        zox_loge("[traverse_directory] null opendir dp [%s]", directory);
-        perror("        - ");
+        // a game without its own folder of these (gam/<game>/res/textures) is fine
+        zox_logv("[traverse_directory] no directory [%s]: %s", directory, strerror(errno));
         return;
     }
     zox_logv("Traversing [%s]", directory);

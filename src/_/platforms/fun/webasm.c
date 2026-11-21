@@ -58,8 +58,8 @@ byte initialize_pathing_web(
         return EXIT_FAILURE;
     }
 
-    zox_log("data_path %s", *data_path);
-    zox_log("resources_path %s", *resources_path);
+    zox_logv("data_path %s", *data_path);
+    zox_logv("resources_path %s", *resources_path);
 
     return EXIT_SUCCESS;
 }

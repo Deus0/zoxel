@@ -19,7 +19,7 @@ void process_arguments_saves(ecs *world, char* args[], int count) {
 #endif
             zox_mkdir(zox_saves_root);
         }
-        zox_log("+ [nosaves] saving to [%s]", zox_saves_root);
+        zox_logv("+ [nosaves] saving to [%s]", zox_saves_root);
         const char* real_settings = getenv("zox_tst_settings");
         if (real_settings && real_settings[0]) {
             char settings[1024];
@@ -27,7 +27,7 @@ void process_arguments_saves(ecs *world, char* args[], int count) {
             if (!zox_copy_file(real_settings, settings)) {
                 zox_loge("[nosaves] couldn't copy settings [%s]", real_settings);
             } else {
-                zox_log("+ [nosaves] settings are a copy of [%s]", real_settings);
+                zox_logv("+ [nosaves] settings are a copy of [%s]", real_settings);
             }
         }
     }

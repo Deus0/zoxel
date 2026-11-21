@@ -54,11 +54,11 @@ void water_splash_event(iter* it) {
         const int3 b = iposition->value;
         const float3 surface = { (b.x + 0.5f) * scale, (b.y + (entering ? 1 : 0)) * scale, (b.z + 0.5f) * scale };
         if (entering && velocity->value.y < -zox_water_splash_speed) {
-            zox_log("[splash] into water at [%.1f] a second", velocity->value.y);
+            zox_logv("[splash] into water at [%.1f] a second", velocity->value.y);
             water_splash_spawn(world, surface, 12, 200);
             zox_water_splashes_in += e == zox_water_splash_watch;
         } else if (leaving) {
-            zox_log("[splash] out of water");
+            zox_logv("[splash] out of water");
             water_splash_spawn(world, surface, 6, 100);
             zox_water_splashes_out += e == zox_water_splash_watch;
         }

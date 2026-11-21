@@ -54,8 +54,6 @@
     - rework this mode
     - make camera follow more naturally behind player
     - fix any edge cases with fps to third person modes so game feels same
-- fix any warnings
-- disable logging when not tracing
 - Test disabling lods, option used by users
 - windowed mode, window decor is missing
 - Big Terrain Disposal Bug
@@ -78,7 +76,6 @@
 	- like if we teleported into ground
 - Fix flickering issue of raycast
 	- maybe we should use a fixed rotation integral
-- 16 printable ascii have no glyphs, i.e. ' (dialogue "I'm" shows ?), needs font art (tst text_data)
 - debug label - the font will dissapear sometimes and reappear
 	- Looks like a memory issue causing the mashes to dissapear? when streaming
 - Lighting was broken - the inside of a house was mostly bright

@@ -1,6 +1,13 @@
 # Done
 
 ## 2026-11-21
+-x Logs minimal by default: boot paths, settings, terrain sizes, autostart, the skybox, splashes and a missing optional
+  folder log only with --verbose (zox_logv, gated at run time now, it was compiled out unless zox_verbose); --verbose
+  is read first thing in main. A minute of play logs ~10 lines. The rule is in coding_standards.md (Logs)
+-x No compiler warnings in debug builds, with or without logs (~230 before): unused variables and fields removed, logs
+  in builds without them keep their arguments used (never run), truncations in tests sized
+-x The 16 printable ascii without zigels (' " # $ & ( ) * ; @ ^ ` { | } ~) have them, from the ttf font: dialogue's
+  "I'm" showed "I?m". tst text_data checks every printable one round trips
 -x A deadlock in game (tst stream_npcs hung): npc sight held a chunk's entities lock while its lines locked octrees,
   the crosshair raycast held an octree while it took that entities lock. A merge between the two systems kept them
   apart until the huds' main thread systems left pre_physics. Sight copies the chunk's players out, lets the lock go,

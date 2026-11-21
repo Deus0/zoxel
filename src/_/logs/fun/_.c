@@ -28,18 +28,15 @@ int zox_gpu_rbos_live = 0;
     #define zox_log_errno(format, ...) \
         zox_log(format ": [%s]", __VA_ARGS__, strerror(errno))
 
-    #ifdef zox_verbose
-        #define zox_logv(...) \
-            if (is_verbose) \
-                zox_log_prefix(NULL, "[INFO] ", __VA_ARGS__)
-    #else
-        #define zox_logv(...) { }
-    #endif
+    // details for debugging: only with --verbose (or a zox_verbose build), the default log stays short
+    #define zox_logv(...) \
+        { if (is_verbose) zox_log_prefix(NULL, "", __VA_ARGS__); }
 
 #else
-    #define zox_log(...) { }
-    #define zox_logv(...) { }
-    #define zox_logw(...) { }
-    #define zox_loge(...) { }
+    // never run, its arguments still count as used (no unused variable warnings), the compiler drops it
+    #define zox_log(...) { if (0) zox_log_prefix(NULL, "", __VA_ARGS__); }
+    #define zox_logv(...) zox_log(__VA_ARGS__)
+    #define zox_logw(...) zox_log(__VA_ARGS__)
+    #define zox_loge(...) zox_log(__VA_ARGS__)
     #define zox_log_errno(format, ...) { }
 #endif

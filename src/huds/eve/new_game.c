@@ -53,7 +53,7 @@ void autostart_new_realm(ecs *world, entity player) {
             0.1);
         return;
     }
-    zox_log("+ [autostart] entering a new realm");
+    zox_logv("+ [autostart] entering a new realm");
     spawn_new_realm(world, player);
     delay_event(
         world,
