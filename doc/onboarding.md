@@ -53,6 +53,24 @@ Binaries go in `bin/zoxel_<os>_<arch>_..._dev/` (debug) and similar folders for 
 
 Release builds strip `zox_log`, so use a debug build when you want to see logs.
 
+### Platforms
+
+The engine builds for these, all from the same code:
+
+| Platform | Arch | Rendering | Build |
+|---|---|---|---|
+| Linux (and SteamOS) | x64, arm | OpenGL, Vulkan | `bash bsh/build.sh` (`--vulkan`), release zips with `bash bsh/docker.sh` |
+| Windows | x64 | OpenGL, Vulkan | `bash bsh/windows.sh` in git bash (installs gcc with winget if it's missing) |
+| Android | arm | OpenGL ES, Vulkan | `bash bsh/android.sh zoxel --release --signed` |
+| Android XR (OpenXR) | arm | OpenGL ES, Vulkan | `bash bsh/android.sh zoxel --release --signed --xr` |
+| Web (emscripten) | wasm | WebGL 2 | `bash bsh/web.sh zoxel --release` |
+
+- Windows headers define macros with common names (`far`, `near`, `min`, `max`): don't use them as identifiers,
+  or the Windows build breaks while Linux is fine. Build with `bsh/windows.sh` when you touch shared code.
+- Platform code sits behind `#ifdef` (`zox_windows`, `zox_linux`, `zox_android`, `zox_web`, `zox_xr`), so keep it out of
+  gameplay modules.
+- Every target, its output and CI's nightly builds: [DevOps](devops.md).
+
 Useful game flags (pass them to the binary, the full list is in [Commands](commands.md)):
 
 | Flag | Effect |

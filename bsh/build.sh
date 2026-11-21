@@ -3,6 +3,8 @@ set -euo pipefail
 
 # NOTE: Converts the shell flags into flags for our game code
 source bsh/get-compiler.sh
+# host_os, and archive helpers that work on each host
+source bsh/host.sh
 # windows host: installs the toolchain if missing (winget), puts it on the PATH
 source bsh/deps_windows.sh
 
@@ -70,7 +72,7 @@ if [[ $# -gt 0 && ${1} != --* ]]; then
 fi
 
 # Platform, a windows host builds for windows unless told --linux
-is_windows_host && os="windows"
+os="${host_os}"
 [[ " $* " == *" --linux "* ]] && os="linux"
 [[ " $* " == *" --windows "* ]] && os="windows"
 
@@ -153,7 +155,7 @@ if [[ "${os}" == "linux" ]]; then
     dflags+=" -Dzox_linux"
     libs+=" -lm -ldl"
 elif [[ "${os}" == "windows" ]]; then
-    is_glew="1"
+    [[ ${graphics_lib} == "opengl" ]] && is_glew="1"   # gl only: vulkan builds have no glew
     # compiler="x86_64-w64-mingw32-gcc"
     dflags+=" -Dzox_windows"
     # libs+=" -lws2_32 -ldbghelp"
@@ -466,18 +468,12 @@ if [[ ${package} == "1" ]]; then
         done
     fi
 
-    (
-        cd "${bin_folder}"
-        zip -q -r "${OLDPWD}/${zip_name}" .
-    )
-
+    zip_sources=("${bin_folder}" .)
     if [[ -d "gam/${game_name}/res" ]]; then
         echo "> Using Game Resources [gam/${game_name}/res]"
-        (
-            cd "gam/${game_name}"
-            zip -q -r "${OLDPWD}/${zip_name}" res
-        )
+        zip_sources+=("gam/${game_name}" res)
     fi
+    zip_folders "${zip_name}" "${zip_sources[@]}"
 
     #zip -j "${zip_name}" "${bin_path}"
     #zip -q -r "${zip_name}" res

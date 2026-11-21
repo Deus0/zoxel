@@ -54,7 +54,7 @@ LONG WINAPI handle_unhandled_exception(EXCEPTION_POINTERS* info) {
         zox_loge("  %s at [0x%llx]", kind == 0 ? "reading" : (kind == 1 ? "writing" : "executing"),
             (unsigned long long) info->ExceptionRecord->ExceptionInformation[1]);
     }
-#ifdef zox_logs
+#if defined(zox_logs) && !defined(zox_vulkan)   // gl calls only
     zox_gl_log_last();
 #endif
     fflush(stdout);

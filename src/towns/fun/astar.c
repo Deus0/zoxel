@@ -241,15 +241,15 @@ int path_find(const PathGrid* g, int2 a, int2 b, int3* points, int points_max) {
         // straightened: from each point, the farthest it sees clearly
         points[count++] = (int3) { line[0].x, heights[0], line[0].y };
         for (int k = 0; k < n - 1 && count < points_max;) {
-            int far = k + 1;
+            int farthest = k + 1;
             for (int m = n - 1; m > k + 1; m--) {
                 if (path_line_clear(g, line[k], heights[k], line[m], heights[m])) {
-                    far = m;
+                    farthest = m;
                     break;
                 }
             }
-            points[count++] = (int3) { line[far].x, heights[far], line[far].y };
-            k = far;
+            points[count++] = (int3) { line[farthest].x, heights[farthest], line[farthest].y };
+            k = farthest;
         }
         zox_free(line);
         zox_free(heights);

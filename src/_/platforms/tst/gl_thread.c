@@ -4,7 +4,7 @@
 //  - zox_gl_sync=1 (env): a glFinish before each gl call, so a crash in the driver's own thread (nvidia's threaded
 //    optimization) happens while the main thread waits on the call after the bad one, and the crash handler logs
 //    the last calls and where they were made (addr2line -f -e <exe> <offset>)
-#if defined(zox_windows) && defined(zox_logs)
+#if defined(zox_windows) && defined(zox_logs) && !defined(zox_vulkan)
 #define zox_gl_history 8
 static DWORD zox_gl_main_thread = 0;
 static volatile LONG zox_gl_off_thread_count = 0;

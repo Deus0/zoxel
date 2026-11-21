@@ -56,7 +56,7 @@
 #ifdef zox_gles2
     #include <GLES2/gl2.h>
 #endif
-#ifdef zox_windows
+#if defined(zox_windows) && !defined(zox_vulkan)   // glew: opengl builds only
     #ifdef zox_logs
         // every glew gl call checks it's on the main thread (src/_/platforms/tst/gl_thread.c)
         void zox_gl_thread_check(const char* name);

@@ -240,15 +240,15 @@ void town_roads_build(uint seed, const TownShape* shape, const TownHome* homes, 
         int straight_count = 0;
         straight[straight_count++] = (int3) { (int) way[0].x, -1, (int) way[0].y };
         for (int k = 0; k < length - 1;) {
-            int far = k + 1;
+            int farthest = k + 1;
             for (int m = length - 1; m > k + 1; m--) {
                 if (town_road_clear(way[k], way[m], homes, homes_count, shape)) {
-                    far = m;
+                    farthest = m;
                     break;
                 }
             }
-            straight[straight_count++] = (int3) { (int) way[far].x, -1, (int) way[far].y };
-            k = far;
+            straight[straight_count++] = (int3) { (int) way[farthest].x, -1, (int) way[farthest].y };
+            k = farthest;
         }
         road_segments_add(roads, straight, straight_count);
     }

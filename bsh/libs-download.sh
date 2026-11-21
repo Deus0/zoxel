@@ -184,16 +184,24 @@ fi
 
 # Vulkan for windows: ext/vulkan_windows/mingw64 (include, lib, bin)
 
+source bsh/host.sh
+
 if [[ "$USE_VULKAN_WINDOWS" -eq 1 ]]; then
     mkdir -p ext/vulkan_windows
     for package in ${vulkan_windows_packages}; do
         file="mingw-w64-x86_64-${package}-any.pkg.tar.zst"
-        if [[ -f "ext/vulkan_windows/${file}" ]]; then
+        path="ext/vulkan_windows/${file}"
+        # .done marks an extracted package, so a failed extract is tried again
+        if [[ -f "${path}.done" ]]; then
             echo "+ Found [${file}]"
             continue
         fi
-        echo "-> Downloading [${file}]"
-        curl -fL "${msys2_url}/${file//\~/%7E}" -o "ext/vulkan_windows/${file}"
-        tar --zstd -xf "ext/vulkan_windows/${file}" -C ext/vulkan_windows mingw64
+        if [[ ! -f "${path}" ]]; then
+            echo "-> Downloading [${file}]"
+            curl -fL "${msys2_url}/${file//\~/%7E}" -o "${path}"
+        fi
+        echo "-> Extracting [${file}]"
+        extract_zst "${path}" ext/vulkan_windows mingw64 || { rm -f "${path}"; exit 1; }
+        touch "${path}.done"
     done
 fi

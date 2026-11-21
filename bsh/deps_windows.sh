@@ -7,12 +7,7 @@
 
 winlibs_id="BrechtSanders.WinLibs.POSIX.UCRT"
 
-is_windows_host() {
-    case "$(uname -s)" in
-        MINGW*|MSYS*|CYGWIN*) return 0 ;;
-        *) return 1 ;;
-    esac
-}
+source "$(dirname "${BASH_SOURCE[0]}")/host.sh"
 
 # winget unzips winlibs into its packages folder: mingw64/bin holds gcc, cmake and ninja
 find_winlibs_bin() {
