@@ -9,6 +9,7 @@ entity spawn_prefab_tilemap(ecs *world) {
     zox_setv(e, TextureGPULink, 0);
     zox_setv(e, MaterialGPULink, 0);
     zox_setv(e, TilemapUVs, 0);
+    zox_setv(e, TilemapUVsGPULink, 0);  // its uvs for gpu meshing (lights3/sys/gpu_mesh.c), written in place
     zox_setv(e, GenerateTexture, 0);
     zox_add(e, PreInitialize);
     return e;

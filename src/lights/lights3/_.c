@@ -16,6 +16,8 @@ void import_lights3(ecs* world) {
     zox_components_lights3(world);
     zox_systems_lights3(world);
     zoxd_systems_light3_debug(world);
+    add_hook_gpu_dispose(gpu_dispose_gpu_meshing);
+    add_hook_gpu_restore(gpu_restore_gpu_meshing);    // after rendering's (its MeshDirty taken off gpu meshes)
     // initialize_settings_lights3(world);
 }
 

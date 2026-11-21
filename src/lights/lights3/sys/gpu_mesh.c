@@ -38,25 +38,30 @@ static inline GpuMesher chunk_gpu_mesher(guint program, guint2 grid, guint2 mesh
     return mesher;
 }
 
-// a tilemap's uvs on the gpu (its UvsGPULink, set on it), 0 while it generates
+// a tilemap's uvs on the gpu (its TilemapUVsGPULink, written in place), 0 while it generates
 static inline guint chunk_gpu_tilemap_uvs(ecs* world, entity tilemap) {
     if (!zox_valid(tilemap) || !zox_has(tilemap, TilemapUVs) || zox_getv(tilemap, GenerateTexture)) {
         return 0;
     }
-    if (zox_has(tilemap, UvsGPULink) && zox_getv(tilemap, UvsGPULink)) {
-        return zox_getv(tilemap, UvsGPULink);
+    if (!zox_has(tilemap, TilemapUVsGPULink)) {
+        return 0;
+    }
+    if (zox_getv(tilemap, TilemapUVsGPULink)) {
+        return zox_getv(tilemap, TilemapUVsGPULink);
     }
     const TilemapUVs* uvs = zox_get(tilemap, TilemapUVs);
     if (!uvs->value || !uvs->length) {
         return 0;
     }
     const guint buffer = zox_gpu_storage_buffer(uvs->length * sizeof(float2), uvs->value);
-    zox_setv(tilemap, UvsGPULink, buffer);
+    zox_get_mut(tilemap, TilemapUVsGPULink)->value = buffer;
     return buffer;
 }
 
-// a terrain's compute program and grid buffers, made if it has none (set on it), with its draw program
-//  (MaterialGPULink: made here, before any draw, so the draw only reads), 0 without compute
+// a terrain's compute program and grid buffers, made if it has none, with its draw program (MaterialGPULink: made
+//  here, before any draw, so the draw only reads), 0 without compute
+//  - written in place (its prefab holds them): set as new components on a new terrain, its first program was lost
+//    and made again, the first one leaked (tst gpu_restore_game)
 static inline guint chunk_gpu_terrain(ecs* world, entity terrain, guint2* grid) {
     guint program = zox_has(terrain, ComputeGPULink) ? zox_getv(terrain, ComputeGPULink) : 0;
     if (program) {
@@ -68,8 +73,8 @@ static inline guint chunk_gpu_terrain(ecs* world, entity terrain, guint2* grid) 
         return 0;
     }
     *grid = (guint2) { zox_gpu_storage_buffer(zox_chunk_gpu_grid_bytes, NULL), zox_gpu_storage_buffer(zox_chunk_gpu_grid_bytes, NULL) };
-    zox_setv(terrain, ComputeGPULink, program);
-    zox_setv(terrain, GridGPULink, *grid);
+    zox_get_mut(terrain, ComputeGPULink)->value = program;
+    zox_get_mut(terrain, GridGPULink)->value = *grid;
     zox_setv(terrain, MaterialGPULink, gpu_mesh_textured_program());
     return program;
 }
@@ -151,6 +156,10 @@ void chunk_gpu_relight_system(iter* it) {
 // NOTE: Meshes a gpu chunk mesh from its grids (MeshDirty: filled), uploads and dispatches them, then frees them;
 //  main thread, with the other gpu uploads, within a budget a frame
 void chunk_gpu_mesh_system(iter* it) {
+    // the gpu let go of (android's background): nothing's made till it's restored (fun/gpu_restore.c)
+    if (did_dispose_resources) {
+        return;
+    }
     zox_sys_on_begin();
     zox_sys_budget(chunk_gpu_mesh, zox_chunk_gpu_mesh_budget_ms);
     zox_sys_world();

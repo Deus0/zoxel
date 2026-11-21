@@ -9,6 +9,7 @@
 #include "trigger.c"
 #include "trigger_mesh.c"
 #include "gpu_mesh.c"
+#include "gpu_restore.c"
 
 // Toggle the light systems
 void set_light_systems(ecs* world, byte is_lights) {

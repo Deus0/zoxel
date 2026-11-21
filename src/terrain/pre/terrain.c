@@ -23,5 +23,9 @@ entity spawn_prefab_terrain(ecs *world) {
     zox_add(e, FlatTerrain);
 #endif
     zox_setv(e, TerrainSpawnQueue, 0);
+    // gpu meshing's (lights3/sys/gpu_mesh.c), made on its first gpu mesh: here so that's a set, not an add (an add at
+    //  its first mesh was lost, its program and grids made twice, one leaked)
+    zox_setv(e, ComputeGPULink, 0);
+    zox_setv(e, GridGPULink, guint2_zero);
     return e;
 }

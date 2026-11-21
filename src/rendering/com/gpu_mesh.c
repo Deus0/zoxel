@@ -69,6 +69,22 @@ void on_destroyed_GridGPULink(iter* it) {
     }
 }
 
+// a tilemap's uvs as a storage buffer for gpu meshing (24 a block), uploaded on its first gpu mesh: its own link, not
+//  UvsGPULink (the mesh initialize systems gave that a plain empty buffer, over the uploaded one, leaking it)
+zoxc_guint(TilemapUVsGPULink);
+
+void on_destroyed_TilemapUVsGPULink(iter* it) {
+    zox_sys_begin();
+    zox_sys_out(TilemapUVsGPULink);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_o(TilemapUVsGPULink, uvs);
+        if (uvs->value) {
+            zox_gpu_dispose_buffer(uvs->value);
+            uvs->value = 0;
+        }
+    }
+}
+
 // a gpu mesh's vertex array (its vertices, face lights, uvs and indices), made on its first draw
 zoxc_guint(VaoGPULink);
 
