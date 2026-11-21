@@ -1,7 +1,7 @@
 // tst: settings_apply, a setting changed reaches its module and is saved: each module's settings observer (an Update
 //  on a Setting) sets its global, the save writes the file once
 //  - one setting from each module that had a settings dirty system: rendering (Fog), sounds (Music), ui (UI Scale),
-//    models (Outlines), streaming (No Frustums), npcs (Npc Range), vodes (No Vodes)
+//    models (Outlines), streaming (No Frustums), npcs (Npc Range), vodes (No Vodes), chunks3 (GPU Meshing)
 //  - in npcs/tst: the lowest module that sees every one of them
 //  - run: bash bsh/tst.sh settings_apply
 int zox_tst_settings_stage = 0;
@@ -11,13 +11,14 @@ float zox_tst_settings_old_fog = 0;
 byte zox_tst_settings_old_outlines = 0;
 byte zox_tst_settings_old_frustums = 0;
 byte zox_tst_settings_old_vodes = 0;
+byte zox_tst_settings_old_gpu_meshing = 0;
 byte zox_tst_settings_range = 0;
 
 static inline byte zox_tst_settings_applied() {
     return fabsf(fog_density - 0.5f * fog_settings_mul) < 0.0001f && fabsf(volume_music - 0.5f) < 0.0001f &&
         fabsf(ui_scale - 1.5f) < 0.0001f && zox_block_outlines == !zox_tst_settings_old_outlines &&
         disable_frustum_culling == !zox_tst_settings_old_frustums && character_spawn_distance == zox_tst_settings_range &&
-        zox_disable_vodes == !zox_tst_settings_old_vodes;
+        zox_disable_vodes == !zox_tst_settings_old_vodes && zox_chunks3_gpu_meshing == !zox_tst_settings_old_gpu_meshing;
 }
 
 byte zox_tst_settings_apply_ready(ecs* world) {
@@ -32,6 +33,7 @@ byte zox_tst_settings_apply_ready(ecs* world) {
         zox_tst_settings_old_outlines = zox_block_outlines;
         zox_tst_settings_old_frustums = disable_frustum_culling;
         zox_tst_settings_old_vodes = zox_disable_vodes;
+        zox_tst_settings_old_gpu_meshing = zox_chunks3_gpu_meshing;
         zox_tst_settings_range = character_spawn_distance == character_spawn_distance_limits.x ?
             character_spawn_distance_limits.x + 1 : character_spawn_distance_limits.x;
         zox_tst_settings_found =
@@ -41,7 +43,8 @@ byte zox_tst_settings_apply_ready(ecs* world) {
             set_app_setting_byte(world, main_app, "Outlines", !zox_tst_settings_old_outlines) +
             set_app_setting_byte(world, main_app, "No Frustums", !zox_tst_settings_old_frustums) +
             set_app_setting_byte(world, main_app, "Npc Range", zox_tst_settings_range) +
-            set_app_setting_byte(world, main_app, "No Vodes", !zox_tst_settings_old_vodes);
+            set_app_setting_byte(world, main_app, "No Vodes", !zox_tst_settings_old_vodes) +
+            set_app_setting_byte(world, main_app, "GPU Meshing", !zox_tst_settings_old_gpu_meshing);
         zox_tst_settings_stage = 1;
         zox_tst_settings_frames = 0;
         return 0;
@@ -56,7 +59,7 @@ byte zox_tst_settings_apply_ready(ecs* world) {
 
 void zox_tst_settings_apply_check(ecs* world) {
     (void) world;
-    zox_tst_check(zox_tst_settings_found == 7, "found [%i] of [7] settings on the app", zox_tst_settings_found);
+    zox_tst_check(zox_tst_settings_found == 8, "found [%i] of [8] settings on the app", zox_tst_settings_found);
     zox_tst_check(fabsf(fog_density - 0.5f * fog_settings_mul) < 0.0001f, "Fog didn't set fog_density [%f]", fog_density);
     zox_tst_check(fabsf(volume_music - 0.5f) < 0.0001f, "Music didn't set volume_music [%f]", volume_music);
     zox_tst_check(fabsf(ui_scale - 1.5f) < 0.0001f, "UI Scale didn't set ui_scale [%f]", ui_scale);
@@ -66,6 +69,8 @@ void zox_tst_settings_apply_check(ecs* world) {
     zox_tst_check(character_spawn_distance == zox_tst_settings_range, "Npc Range [%i], not [%i]",
         character_spawn_distance, zox_tst_settings_range);
     zox_tst_check(zox_disable_vodes == !zox_tst_settings_old_vodes, "No Vodes didn't toggle [%i]", zox_disable_vodes);
+    zox_tst_check(zox_chunks3_gpu_meshing == !zox_tst_settings_old_gpu_meshing, "GPU Meshing didn't toggle [%i]",
+        zox_chunks3_gpu_meshing);
     // saved: the file has the new music volume
     FILE* file = fopen(get_settings_file(settings_game_name), "r");
     byte saved = 0;

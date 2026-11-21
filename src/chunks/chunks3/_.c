@@ -32,6 +32,7 @@ void import_chunks3(ecs* world) {
     zox_systems_chunksio(world);
     zox_systems_chunks3_debug(world);
     add_hook_spawn_prefabs(spawn_prefabs_chunks);
+    add_hook_spawn_prefabs(chunks3_settings_events);
 #ifdef zox_tests
     add_hook_files_load(zox_tests_chunks3);
     zox_tsts_chunks3_positions();

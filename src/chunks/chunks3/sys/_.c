@@ -10,6 +10,7 @@
 #include "combine.c"
 #include "bake_vox.c"
 #include "find_neighbor.c"
+#include "settings.c"
 #include "block_scale.c"
 #include "entities_lod.c"
 #include "move_bounds.c"
