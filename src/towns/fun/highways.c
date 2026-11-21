@@ -20,6 +20,7 @@ typedef struct {
     byte2 size;
     int2 gate;
     byte gate_side;
+    int2 out;           // straight out of its gate, highway_out blocks past its rect's edge (its wall curves inside it)
 } HighwayTown;
 
 typedef struct {
@@ -39,15 +40,17 @@ typedef struct {
     HighwayRegion regions[highway_regions_max];
     byte regions_count;
     byte waiting;           // a region round it is still placing its towns: draw later
+    int2 home;              // the region it's drawn for: its ring is spawned with it, waited on if missing
 } Highways;
 
-static inline void highways_begin(Highways* h, ecs* world, entity terrain) {
+static inline void highways_begin(Highways* h, ecs* world, entity terrain, int2 block) {
     h->world = world;
     h->terrain = terrain;
     h->seed = (uint) zox_getv(terrain, Seed);
     h->terrain_depth = zox_getv(terrain, NodeDepth);
     h->regions_count = 0;
     h->waiting = 0;
+    h->home = block_position_to_region_position(block, h->terrain_depth);
 }
 
 // the region a block is in, its towns (cached), NULL if it has none yet
@@ -64,6 +67,11 @@ static inline const HighwayRegion* highway_region(Highways* h, int2 block) {
     }
     const entity region = int2_hashmap_get(zox_get(h->terrain, RegionLinks)->value, position);
     if (!zox_valid(region)) {
+        // the stream spawns the regions round every region it streams (terrain/sys/stream.c): one of those is coming,
+        //  one farther may never (a town in the ring looks 2 cells past it): none of its towns then
+        if (abs(position.x - h->home.x) <= 1 && abs(position.y - h->home.y) <= 1) {
+            h->waiting = 1;
+        }
         return NULL;
     }
     const byte generate = zox_getv(region, GenerateRegion);
@@ -86,8 +94,10 @@ static inline const HighwayRegion* highway_region(Highways* h, int2 block) {
     entity towns[zox_children_capacity];
     const uint count = zox_get_children_by_id(world, region, towns, zox_children_capacity, zox_id(Town));
     for (uint i = 0; i < count && r->count < highway_towns_max; i++) {
-        r->towns[r->count++] = (HighwayTown) { zox_getv(towns[i], BlockPosition2), zox_getv(towns[i], TownSize),
-            town_gate_point(world, towns[i]), zox_getv(towns[i], TownGateSide) };
+        const TownShape shape = town_shape_of(world, towns[i]);
+        const int rect_out = (shape.gate_side & 1 ? zox_getv(towns[i], TownSize).x : zox_getv(towns[i], TownSize).y) / 2;
+        r->towns[r->count++] = (HighwayTown) { shape.center, zox_getv(towns[i], TownSize), shape.gate, shape.gate_side,
+            int2_add(shape.center, build_turn(shape.gate_side, shape.gate_along, rect_out + highway_out)) };
     }
     return r;
 }
@@ -129,9 +139,9 @@ static inline byte highway_links(uint seed, int2 cell) {
     return (a >> 1) % 8 < highway_loops ? 3 : (a & 1) ? 1 : 2;
 }
 
-// a straight highway from a to b misses the towns and mountains of both ends' regions (a link crosses one border at
-//  most)
-static inline byte highway_clear(Highways* h, int2 a, int2 b) {
+// a straight highway from a to b misses the towns and mountains (unless over_mountains) of both ends' regions (a link
+//  crosses one border at most)
+static inline byte highway_clear_over(Highways* h, int2 a, int2 b, byte over_mountains) {
     const HighwayRegion* regions[2] = { highway_region(h, a), highway_region(h, b) };
     for (byte k = 0; k < 2; k++) {
         for (byte i = 0; regions[k] && i < regions[k]->count; i++) {
@@ -141,7 +151,7 @@ static inline byte highway_clear(Highways* h, int2 a, int2 b) {
                 return 0;
             }
         }
-        for (byte i = 0; regions[k] && i < regions[k]->mountains_count; i++) {
+        for (byte i = 0; !over_mountains && regions[k] && i < regions[k]->mountains_count; i++) {
             float t;
             const int2 m = regions[k]->mountains[i];
             if (road_segment_distance((int3) { a.x, 0, a.y }, (int3) { b.x, 0, b.y }, (float2) { m.x, m.y }, &t) <=
@@ -151,6 +161,10 @@ static inline byte highway_clear(Highways* h, int2 a, int2 b) {
         }
     }
     return 1;
+}
+
+static inline byte highway_clear(Highways* h, int2 a, int2 b) {
+    return highway_clear_over(h, a, b, 0);
 }
 
 // a segment's box crosses low to high (blocks), its half width round it
@@ -166,15 +180,17 @@ static inline void highway_add(int2* ends, int* count, int max, int2 a, int2 b) 
     }
 }
 
-// a town's link: its gate, straight out, then to its nearest node left with a clear line, 2 cells round (0 if none)
+// a town's link: its gate, straight out, then to its nearest node left with a clear line, 2 cells round; over a
+//  mountain if no line misses them (a town with no highway was worse), 0 if none
 static inline byte highway_town_link(Highways* h, const HighwayTown* t, int2* out, int2* node) {
-    *out = int2_add(t->gate, int2_multiply1(build_turn(t->gate_side, 0, 1), highway_out));
+    *out = t->out;
     const int2 cell = { floor_div(out->x, highway_spacing), floor_div(out->y, highway_spacing) };
     int best = -1;
+    for (byte over = 0; over < 2 && best < 0; over++)
     for (int y = -2; y <= 2; y++)
     for (int x = -2; x <= 2; x++) {
         int2 n;
-        if (!highway_node(h, (int2) { cell.x + x, cell.y + y }, &n) || !highway_clear(h, *out, n)) {
+        if (!highway_node(h, (int2) { cell.x + x, cell.y + y }, &n) || !highway_clear_over(h, *out, n, over)) {
             continue;
         }
         const int d = abs(n.x - out->x) + abs(n.y - out->y);

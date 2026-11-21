@@ -1,7 +1,7 @@
 // tst: town_maps, towns draw into every tunk they cross, walls join up across tunk edges
 //  - each generated tunk at full detail: for every town in its region, every column of the tunk inside it
 //    (not region_tunk_box, which the maps use to draw)
-//  - its outer ring is wall (a wall, edge, spike or the gate), every column inside the town is marked
+//  - its wall's band (its curve, fun/town.c) is wall (a wall, edge, spike or the gate), every column inside it marked
 //  - counts towns crossing tunks, so walls drawn by more than one tunk are checked
 //  - run: bash bsh/tst.sh town_maps
 int zox_tst_town_maps_frames = 0;
@@ -50,6 +50,7 @@ void zox_tst_town_maps_check(ecs* world) {
             entity towns[zox_children_capacity];
             const uint towns_length = zox_get_children_by_id(world, rt.region, towns, zox_children_capacity, zox_id(Town));
             for (uint j = 0; j < towns_length; j++) {
+                const TownShape shape = town_shape_of(world, towns[j]);
                 const int2 center = zox_getv(towns[j], BlockPosition2);
                 const byte2 size = zox_getv(towns[j], TownSize);
                 const int left = center.x - size.x / 2, right = center.x + size.x / 2;
@@ -82,10 +83,11 @@ void zox_tst_town_maps_check(ecs* world) {
                             continue;
                         }
                         const byte value = town_map->value[int2_array_index(position, rt.map_size)];
+                        const float depth = town_shape_depth(&shape, g);
                         columns++;
-                        if (g.x == left || g.x == right || g.y == bottom || g.y == top) {
+                        if (depth >= 0 && depth < shape.thickness) {
                             ring_wrong += !zox_tst_is_town_wall(value);
-                        } else {
+                        } else if (depth >= shape.thickness) {
                             inside_unmarked += value == zox_town_type_none;
                         }
                     }
@@ -101,7 +103,7 @@ void zox_tst_town_maps_check(ecs* world) {
         tunks, towns_count, crossing, columns);
     zox_tst_check(towns_count > 0, "no towns drawn near the player in [%i] tunks", tunks);
     zox_tst_check(crossing > 0, "no town crosses tunks, the across tunks case isn't checked");
-    zox_tst_check(!ring_wrong, "[%i] columns on a town's outer ring aren't wall", ring_wrong);
+    zox_tst_check(!ring_wrong, "[%i] columns in a town's wall band aren't wall", ring_wrong);
     zox_tst_check(!inside_unmarked, "[%i] columns inside a town aren't marked", inside_unmarked);
 }
 
@@ -265,14 +267,27 @@ void zox_tst_town_homes_check(ecs* world) {
     entity towns[zox_children_capacity];
     const uint towns_count = zox_valid(region) ? zox_get_children_by_id(world, region, towns, zox_children_capacity, zox_id(Town)) : 0;
     int homes_total = 0, outside = 0, overlaps = 0, peaked = 0, on_square = 0, doors_off_road = 0, gates_off_wall = 0;
-    int road_segments = 0, roads_through_homes = 0;
+    int road_segments = 0, roads_through_homes = 0, homes_in_walls = 0;
     for (uint t = 0; t < towns_count; t++) {
         const int2 tc = zox_getv(towns[t], BlockPosition2);
         const byte2 ts = zox_getv(towns[t], TownSize);
         // its gate in a wall: on its edge, and its roads (fun/town.c)
         const int2 gate = town_gate_point(world, towns[t]);
-        gates_off_wall += abs(gate.x - tc.x) != ts.x / 2 && abs(gate.y - tc.y) != ts.y / 2;
+        const TownShape shape = town_shape_of(world, towns[t]);
+        gates_off_wall += town_shape_depth(&shape, gate) < 0 || town_shape_depth(&shape, gate) >= 1.5f;
         gates_off_wall += abs(gate.x - tc.x) > ts.x / 2 || abs(gate.y - tc.y) > ts.y / 2;
+        // its homes inside its walls' curve
+        {
+            entity hs[zox_children_capacity];
+            const uint hc = zox_get_children_by_id(world, towns[t], hs, zox_children_capacity, zox_id(Home));
+            for (uint a = 0; a < hc; a++) {
+                const TownHome h = town_home(world, hs[a]);
+                for (byte c = 0; c < 4; c++) {
+                    homes_in_walls += !town_inside(&shape, (int2) { h.center.x + (c & 1 ? 1 : -1) * h.half.x,
+                        h.center.y + (c & 2 ? 1 : -1) * h.half.y }, 0);
+                }
+            }
+        }
         const RoadSegments* roads = zox_get(towns[t], RoadSegments);
         road_segments += roads->length / 2;
         entity homes[zox_children_capacity];
@@ -314,6 +329,7 @@ void zox_tst_town_homes_check(ecs* world) {
     zox_tst_check(!on_square, "[%i] homes on their town's square", on_square);
     zox_tst_check(!doors_off_road, "[%i] homes' doors have no road", doors_off_road);
     zox_tst_check(!gates_off_wall, "[%i] gates aren't on their town's wall", gates_off_wall);
+    zox_tst_check(!homes_in_walls, "[%i] home corners in or past their town's walls", homes_in_walls);
 }
 
 // tst: home_glow, a home's glow stone is set into its roof and lights the room under it (towns/sys/walls.c)

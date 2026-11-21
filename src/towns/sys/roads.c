@@ -39,9 +39,9 @@ void town_roads_system(iter* it) {
         for (uint k = 0; k < count && homes_count < town_homes_max; k++) {
             homes[homes_count++] = town_home(world, children[k]);
         }
-        town_roads_build((uint) seed->value, position->value, size->value, thickness->value, gate_side->value,
-            town_gate_at(position->value, size->value, gate_side->value, (int) gate_at->value - 128), homes, homes_count,
-            roads, lamps);
+        const TownShape shape = town_shape(seed->value, position->value, size->value, thickness->value, gate_side->value,
+            (int) gate_at->value - 128);
+        town_roads_build((uint) seed->value, &shape, homes, homes_count, roads, lamps);
         generate->value = 0;
         zox_sys_budget_end(town_roads);
     }

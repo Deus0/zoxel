@@ -2,7 +2,6 @@
 //  - each home in the player's region drawn at full detail: a door in its doorway (its base, a filler over it whose
 //    block data leads back down) and a bed in its back corner (its base, a filler beside it)
 //  - each street lamp column drawn at full detail: the lamp on the ground, two fillers over it leading back down
-//  - its tunks have highway columns, roads between towns and out to the region's borders
 //  - run: bash bsh/tst.sh town_furniture
 
 // a voxel's block data in a loaded chunk at full detail, -1 if it isn't loaded or not at full detail
@@ -119,7 +118,6 @@ void zox_tst_town_furniture_check(ecs* world) {
     zox_tst_check(beds == homes, "[%i] of [%i] homes have no bed", homes - beds, homes);
     zox_tst_check(lamps > 0, "no street lamps drawn at full detail");
     zox_tst_check(lamps_ok == lamps, "[%i] of [%i] street lamps aren't a lamp with two fillers", lamps - lamps_ok, lamps);
-    zox_tst_check(highway_columns > 0, "no highways in the player's region's tunks");
 }
 
 // tst: lamp_light, a street lamp placed lights from its head (its top filler), removed it goes dark (lights3/sys/editing.c)
@@ -267,7 +265,8 @@ void zox_tst_lamp_light_check(ecs* world) {
 // tst: highways, the highways round the player (fun/highways.c) reach its region's towns and go round them
 //  - worked out as tunks do over a box round the player (highways_in_box), its regions' towns placed
 //  - each town in the player's region has a highway from its gate
-//  - along each segment a block at a time: none inside a town's walls or a mountain (the region's circles)
+//  - along each segment a block at a time: none inside a town's walls (their curve) or a mountain (the region's
+//    circles; a town's link may, if no other line is clear)
 //  - its drawn tunks at full detail mark each column on a highway's middle line (worked out again per tunk)
 //  - run: bash bsh/tst.sh highways
 byte zox_tst_highways_ready(ecs* world) {
@@ -283,7 +282,7 @@ void zox_tst_highways_check(ecs* world) {
     const entity region = zox_tst_player_region(world);
     const entity terrain = zox_get_parent(world, region);
     Highways h;
-    highways_begin(&h, world, terrain);
+    highways_begin(&h, world, terrain, zox_getv(region, BlockPosition2));
     const int2 start = zox_getv(region, BlockPosition2), size = zox_getv(region, BlockSize2);
     int2 ends[1024];
     const int count = highways_in_box(&h, start, int2_add(start, int2_sub(size, int2_one)), ends, 1024);
@@ -303,15 +302,22 @@ void zox_tst_highways_check(ecs* world) {
     for (int i = 0; i + 1 < count; i += 2) {
         const int2 a = ends[i], b = ends[i + 1];
         const int steps = int_max(abs(b.x - a.x), abs(b.y - a.y));
+        // a town's link may cross a mountain if no other line is clear (highway_town_link): mountains checked on the
+        //  lattice's links
+        byte town_link = 0;
+        for (byte r = 0; r < h.regions_count && !town_link; r++) {
+            for (byte k = 0; k < h.regions[r].count && !town_link; k++) {
+                town_link = int2_equals(a, h.regions[r].towns[k].out) || int2_equals(b, h.regions[r].towns[k].out);
+            }
+        }
         for (int k = 0; k <= steps; k++) {
             const float f = steps ? (float) k / steps : 0;
             const int2 g = { (int) roundf(a.x + (b.x - a.x) * f), (int) roundf(a.y + (b.y - a.y) * f) };
             for (uint t = 0; t < towns_count; t++) {
-                const int2 c = zox_getv(towns[t], BlockPosition2);
-                const byte2 s = zox_getv(towns[t], TownSize);
-                through_towns += abs(g.x - c.x) < s.x / 2 && abs(g.y - c.y) < s.y / 2;
+                const TownShape shape = town_shape_of(world, towns[t]);
+                through_towns += town_shape_depth(&shape, g) >= 0;
             }
-            for (uint z = 0; z < zones_count; z++) {
+            for (uint z = 0; z < zones_count && !town_link; z++) {
                 if (!zox_has(zones[z], Radius)) {
                     continue;
                 }
@@ -335,7 +341,7 @@ void zox_tst_highways_check(ecs* world) {
             }
             const TownMap* map = zox_get(tunk, TownMap);
             Highways th;
-            highways_begin(&th, world, terrain);
+            highways_begin(&th, world, terrain, rt.global_start);
             int2 tunk_ends[64];
             const int tunk_count = highways_in_box(&th, rt.global_start, int2_add(rt.global_start, int2_single(rt.length - 1)), tunk_ends, 64);
             for (int e2 = 0; e2 + 1 < tunk_count; e2 += 2) {

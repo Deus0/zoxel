@@ -217,6 +217,20 @@ static inline void stream_queue_distances(ecs* world, entity terrain, TerrainSpa
     }
 }
 
+// a terrain's region at a position, spawned if it has none yet (regions stay once spawned)
+static inline void terrain_region_ensure(ecs* world, entity terrain, RegionLinks* regions, lint seed, int2 region_position,
+    byte depth, int chunk_length)
+{
+    if (zox_valid(int2_hashmap_get(regions->value, region_position))) {
+        return;
+    }
+    const int2 block_position = region_position_to_block_position(region_position, depth);
+    const int2 block_size = int2_single(region_dividor * chunk_length);
+    const entity region = spawn_region(world, prefab_region, terrain, position_seed2(seed, region_position), region_position,
+        int2_one, block_position, block_size);
+    int2_hashmap_add(regions->value, region_position, region);
+}
+
 void terrain_stream_queue_system(iter* it) {
     byte dbg_log = 0;
     // a time budget a frame, so a fast machine streams faster and a slow frame doesn't spike; capped in count too,
@@ -307,41 +321,14 @@ void terrain_stream_queue_system(iter* it) {
             }
             // if spawn
             int2 region_position = tunk_position_to_region_position(update.position);
-            // NOTE: Spawn our region if it doesn't exist!
-            entity region = int2_hashmap_get(regions->value, region_position);
-            if (!zox_valid(region)) {
-                // Generate Seed from Terrain Seed
-                lint region_seed =
-                    position_seed2(
-                        seed->value,
-                        region_position);
-                int2 block_position =
-                    region_position_to_block_position(
-                        region_position,
-                        depth->value);
-                int2 block_size = (int2) {
-                    region_dividor * chunk_length,
-                    region_dividor * chunk_length
-                };
-                region = spawn_region(
-                    world,
-                    prefab_region,
-                    e,
-                    region_seed,
-                    region_position,
-                    int2_one,
-                    block_position,
-                    block_size);
-                int2_hashmap_add(
-                    regions->value,
-                    region_position,
-                    region);
-                if (dbg_log) {
-                    zox_log("New Region [%ix%i] Spawned",
-                        region_position.x,
-                        region_position.y);
-                }
+            // its region, and the regions round it: highways a tunk draws reach into its neighbours' (towns/fun/highways.c),
+            //  they're there to wait on, not missing (a tunk drawn before a neighbour came saw none of its towns)
+            for (int ry = 1; ry >= -1; ry--)
+            for (int rx = 1; rx >= -1; rx--) {
+                terrain_region_ensure(world, e, regions, seed->value, int2_add(region_position, (int2) { rx, ry }),
+                    depth->value, chunk_length);
             }
+            entity region = int2_hashmap_get(regions->value, region_position);
             if (update.level < 1) {
                 processed++;
                 continue;

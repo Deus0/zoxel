@@ -1,5 +1,12 @@
 # Done
 
+## 2026-11-22
+-x Town walls curve (fun/town.c town_shape): a rounded rect from the town's seed (a superellipse) pulled in by smooth
+  noise, its band, edges, spikes and gate from it; homes, roads, lamps and the gate keep inside it; highways link a
+  town's gate from its rect's edge, over a mountain if no line is clear. The stream spawns the regions round each
+  region it streams (highways look into them, a tunk waits on one coming, not on one 2 away). A more organic shape
+  next (todo.md)
+
 ## 2026-11-21
 -x A map tool: `bash bsh/tools/maps.sh` runs the game with `--maps` (towns/dbg/maps_dump.c): a world of its own, no
   player, a stream point in the middle of region 0, 0, far 68 (the circle reaches the 9 regions' corners), tunks

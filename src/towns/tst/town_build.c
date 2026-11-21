@@ -3,6 +3,7 @@
 //  - a box's voxels in a chunk, at lods a thin box keeps a voxel
 //  - a home's ground: its floor under it and a block round it, steps from its door, turned with it
 //  - A*: straight over open ground, through a wall's gap, round a hill
+//  - a town's wall: grown districts in its rect, not a box, its gate on it, the same from its seed
 //  - town roads round a home in their way, to each door and the gate; a road's width and its ground's slope
 //  - a door's and a bed's pieces turned with their home, highway nodes in their cells
 //  - run: bash bsh/tst.sh town_build
@@ -98,6 +99,30 @@ void zox_tst_town_build_check(ecs* world) {
     zox_tst_check(segment_crosses_rect((float2) { -10, 0 }, (float2) { 10, 0 }, (int2) { 0, 0 }, (float2) { 2, 2 }), "segment_crosses_rect across");
     zox_tst_check(!segment_crosses_rect((float2) { -10, 5 }, (float2) { 10, 5 }, (int2) { 0, 0 }, (float2) { 2, 2 }), "segment_crosses_rect past");
     zox_tst_check(!segment_crosses_rect((float2) { -10, -10 }, (float2) { -3, -3 }, (int2) { 0, 0 }, (float2) { 2, 2 }), "segment_crosses_rect short");
+    // a town's wall (fun/town.c): grown districts inside its rect, its corners cut, its gate on it, the same from its seed
+    {
+        int outside_rect = 0, boxes = 0;
+        for (lint seed = 1; seed < 40; seed++) {
+            const TownShape shape = town_shape(seed * 977, (int2) { 0, 0 }, (byte2) { 100, 70 }, 8, seed % 4, 0);
+            int inside = 0;
+            for (int x = -60; x <= 60; x++) for (int z = -45; z <= 45; z++) {
+                const byte in = town_shape_depth(&shape, (int2) { x, z }) >= 0;
+                inside += in;
+                outside_rect += in && (abs(x) > 50 || abs(z) > 35);
+            }
+            boxes += inside > 100 * 70 * 9 / 10;
+        }
+        zox_tst_check(!outside_rect, "[%i] of towns' walls' columns outside their rects", outside_rect);
+        zox_tst_check(boxes < 4, "[%i] of 39 towns fill their rects (boxes)", boxes);
+        const TownShape shape = town_shape(1234, (int2) { 0, 0 }, (byte2) { 100, 70 }, 8, 1, 3);
+        zox_tst_check(town_shape_depth(&shape, (int2) { 49, 34 }) < 0, "a town wall's corner isn't cut (a box)");
+        zox_tst_check(town_wall_value(&shape, shape.gate) == zox_town_type_gate, "its gate [%i %i] isn't in its wall [%i]",
+            shape.gate.x, shape.gate.y, town_wall_value(&shape, shape.gate));
+        zox_tst_check(town_shape_depth(&shape, int2_add(shape.gate, build_turn(1, 0, 1))) < 0, "its gate isn't on its outer edge");
+        zox_tst_check(town_wall_value(&shape, (int2) { 0, 0 }) == zox_town_type_road, "its middle isn't its square");
+        const TownShape again = town_shape(1234, (int2) { 0, 0 }, (byte2) { 100, 70 }, 8, 1, 3);
+        zox_tst_check(again.power == shape.power && int2_equals(again.gate, shape.gate), "a town wall isn't the same from its seed");
+    }
     // a town's roads (fun/town.c): a home stands between another's door and the square, its road goes round it
     {
         const TownHome homes[2] = {
@@ -106,7 +131,8 @@ void zox_tst_town_build_check(ecs* world) {
         };
         RoadSegments roads = { 0 };
         StreetLamps lamps = { 0 };
-        town_roads_build(1234, (int2) { 0, 0 }, (byte2) { 80, 80 }, 6, 0, (int2) { 0, 40 }, homes, 2, &roads, &lamps);
+        const TownShape shape = town_shape(1234, (int2) { 0, 0 }, (byte2) { 80, 80 }, 6, 0, 0);
+        town_roads_build(1234, &shape, homes, 2, &roads, &lamps);
         int crossing = 0, door_roads = 0, gate_road = 0;
         for (int i = 0; i + 1 < roads.length; i += 2) {
             const int3 a = roads.value[i], b = roads.value[i + 1];
@@ -115,7 +141,7 @@ void zox_tst_town_build_check(ecs* world) {
                     (float2) { homes[h].half.x - 0.5f, homes[h].half.y - 0.5f });
             }
             door_roads += (a.x == 0 && a.z == -18) || (a.x == 5 && a.z == -11);
-            gate_road += a.x == 0 && a.z == 40;
+            gate_road += a.x == shape.gate.x && a.z == shape.gate.y;
         }
         zox_tst_check(!crossing, "[%i] town road segments cross homes", crossing);
         zox_tst_check(door_roads == 2, "[%i] of 2 doors have a road", door_roads);
