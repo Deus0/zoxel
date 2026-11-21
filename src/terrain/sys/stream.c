@@ -170,6 +170,7 @@ static inline byte stream_tunk_distance(ecs* world, entity terrain, entity tunk,
             continue;
         }
         zox_setm(chunk, RenderDepth, new_tunk_render_depth);
+        chunk_neighbors_rebuild_sides(world, chunk);
         // NOTE: New component
         zox_setv(chunk, ChunkLodDirty, zox_chunk_lod_dirty_start);
         // Stop the active building

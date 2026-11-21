@@ -1,6 +1,12 @@
 # Done
 
 ## 2026-11-22
+-x Faces where lods meet are worked out against what the neighbour draws (chunks3/sys/sides.c chunk_drawn_depth: its
+  RenderDepth, its voxels can be deeper, NodeDepth only grows), and rebuilt when its lod changes (terrain/sys/stream.c);
+  they were against its deeper voxels, and not rebuilt: 2859 faces held that a neighbour hid, 5 now. A mesh rebuilds
+  after its sides even when it seemed built already (a deferred BuildMesh removal hid the request). The missing faces
+  seen walking about didn't show in tst stream_sides on master (its stream, no player): it checks every chunk's faces
+  at the depth it draws as the stream steps, and its neighbour links. Streaming unchanged (perf_stream 0.23s a step)
 -x Light sources relight, and doors stop light while shut. A covered hole's dark (the sun's, or a removed lamp's)
   flooded a room and took its glow stone's light, and nothing lit it back: the dark pass lights an emitter it meets
   again (lights3/sys/dark.c dark_relight_emitter). A loaded chunk's emitters were never lit (only edits and towns

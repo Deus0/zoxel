@@ -71,12 +71,15 @@ static inline byte get_adjacent_depth(
     }
 }
 
+// the node beside position, from a neighbour chunk past the edge: at neighbor_depth there when that's coarser (it
+//  draws that, a deeper tree than it draws gave faces against voxels it doesn't show: holes where lods met)
 static inline const VoxelNode* get_adjacentn_VoxelNode2(
     const VoxelNode** neighbors,
     const VoxelNode* vnode,
     int3 position,
     byte depth,
-    byte direction)
+    byte direction,
+    byte neighbor_depth)
 {
     if (!vnode) {
         return NULL;
@@ -91,6 +94,11 @@ static inline const VoxelNode* get_adjacentn_VoxelNode2(
         vnode = neighbors[direction];
         if (!vnode) {
             return NULL;
+        }
+        if (neighbor_depth < depth) {
+            const byte shift = depth - neighbor_depth;
+            return get_VoxelNode(vnode, neighbor_depth,
+                (byte3) { position.x >> shift, position.y >> shift, position.z >> shift });
         }
     }
     const VoxelNode* result =
@@ -116,12 +124,19 @@ static inline byte build_voxel_sides(
     byte direction)
 {
     int3 positioni = byte3_to_int3(position);
+    // Accounts for Dig vs Render Difference
+    byte adjacent_depth = get_adjacent_depth(
+        depth,
+        neighbor_depths,
+        positioni,
+        direction);
     const VoxelNode* adjacent_node = get_adjacentn_VoxelNode2(
         neighbor_voxels,
         root,
         positioni,
         depth,
-        direction);
+        direction,
+        adjacent_depth);
     // NOTE: Edge of World Voxels
     if (!adjacent_node) {
         // NOTE: Adds rendered facefor top of world
@@ -134,12 +149,6 @@ static inline byte build_voxel_sides(
         //if (nearby_lock != NULL) spin_unlock(nearby_lock);
         return 1;
     }
-    // Accounts for Dig vs Render Difference
-    byte adjacent_depth = get_adjacent_depth(
-        depth,
-        neighbor_depths,
-        positioni,
-        direction);
     if (adjacent_depth > depth) {
         byte dist = adjacent_depth - depth;
         SideInfo side = side_infos[direction];
@@ -334,6 +343,29 @@ static inline void zox_unlock_voxel_trees(
     }
 }
 
+// the depth a chunk draws at: its RenderDepth, no deeper than its voxels (NodeDepth only grows, a chunk the stream
+//  left keeps its detail and draws coarser); its neighbours' faces are worked out against this
+static inline byte chunk_drawn_depth(ecs* world, entity chunk) {
+    const byte node_depth = zox_getv(chunk, NodeDepth);
+    if (!zox_has(chunk, RenderDepth)) {
+        return node_depth;
+    }
+    const byte render_depth = zox_getv(chunk, RenderDepth);
+    return render_depth && render_depth < node_depth ? render_depth : node_depth;
+}
+
+// its neighbours rebuild their faces against it: it draws at another depth now (chunk_drawn_depth), a face it hid at
+//  its old depth stayed hidden (holes where lods met as you walked about)
+static inline void chunk_neighbors_rebuild_sides(ecs* world, entity chunk) {
+    const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
+    for (byte n = 0; n < chunk_neighbors_length; n++) {
+        const entity neighbor = neighbors->value[n];
+        if (zox_valid(neighbor) && zox_has(neighbor, Chunk3)) {
+            zox_add(neighbor, BuildChunkSides);
+        }
+    }
+}
+
 // NOTE: Keeps updated when voxels octree changes
 // NOTE: Calculates the sides of a voxel octree per material, into the chunk's materials (fun/materials.c)
 void chunk_sides_system(iter* it) {
@@ -390,7 +422,7 @@ void chunk_sides_system(iter* it) {
                 continue;
             }
 #endif
-            neighbor_depths[j] = zox_getv(e, NodeDepth);
+            neighbor_depths[j] = chunk_drawn_depth(world, e);
             neighbor_voxels[j] = zox_get(e, VoxelNode);
             neighbor_locks[j] = &(zox_mut(e, VoxelNodeLock)->value);
         }
@@ -431,13 +463,12 @@ void chunk_sides_system(iter* it) {
         if (dbg_log) {
             zox_log("Built Sides [%s]", zox_sys_e_name);
         }
-        // Triggers meshes to build now
+        // Triggers meshes to build now: added even when it seems built already, a mesh building this frame had its
+        //  BuildMesh's removal deferred, has() still saw it, and it kept the faces from before (holes as lods changed)
         entity meshes[zox_chunk_meshes_max];
         const uint meshes_count = get_chunk_meshes(world, e, meshes);
         for (uint j = 0; j < meshes_count; j++) {
-            if (!zox_has(meshes[j], BuildMesh)) {
-                zox_add(meshes[j], BuildMesh);
-            }
+            zox_add(meshes[j], BuildMesh);
         }
         zox_remove(e, BuildChunkSides);
         zox_sys_budget_end(sides);
