@@ -24,10 +24,12 @@ void process_arguments_terrain(ecs *world, char* args[], int count) {
         if (strcmp(args[i], "--gpu_meshing") == 0) {
             // solid chunk meshes meshed by a compute shader (doc/plans/gpu_meshing.md)
             zox_chunks3_gpu_meshing = 1;
+            zox_settings_set_by_args("GPU Meshing");
             zox_logv("+ [gpu meshing] chunks meshed on the gpu")
         } else if (strcmp(args[i], "--cpu_meshing") == 0) {
             // chunk meshes built on the cpu (vulkan meshes on the gpu by default)
             zox_chunks3_gpu_meshing = 0;
+            zox_settings_set_by_args("GPU Meshing");
             zox_logv("+ [cpu meshing] chunks meshed on the cpu")
         } else if (strcmp(args[i], "--tiny") == 0) {
             terrain_lod_far = 3;

@@ -5,22 +5,27 @@ void process_arguments_apps(ecs *world, char* args[], int count) {
             headless = 1;
         } else if (strcmp(args[i], "-w") == 0 || strcmp(args[i], "--windowed") == 0) {
             fullscreen = 0;
+            zox_settings_set_by_args("Fullscreen");
         } else if (strcmp(args[i], "-f") == 0 || strcmp(args[i], "--fullscreen") == 0) {
             fullscreen = 1;
             fullscreen_override = 1;
+            zox_settings_set_by_args("Fullscreen");
         } else if (strcmp(args[i], "-g") == 0 || strcmp(args[i], "--halfscreen") == 0) {
             halfscreen = 1;
         } else if (strcmp(args[i], "-s") == 0 || strcmp(args[i], "--splitscreen") == 0) {
             is_split_screen = 1;
         } else if (strcmp(args[i], "--vsync") == 0 || strcmp(args[i], "--enablevsync") == 0) {
             vsync = 1;
+            zox_settings_set_by_args("VSync");
             zox_logv("Enabled [vsync]");
         } else if (strcmp(args[i], "--disablevsync") == 0 || strcmp(args[i], "--novsync") == 0) {
             vsync = 0;
+            zox_settings_set_by_args("VSync");
             zox_logv("Disabled [vsync]");
         } else if (strcmp(args[i], "--background") == 0) {
             background = 1;
             fullscreen = 0;
+            zox_settings_set_by_args("Fullscreen");
             maximized = 0;
             nosounds = 1;
             // silent: tests turn sounds on to check them (music_plays), the device opened before args
@@ -45,6 +50,7 @@ void process_arguments_apps(ecs *world, char* args[], int count) {
         } else if (strcmp(args[i], "--1080p") == 0) {
             window_size_override = (int2) { 1920, 1080 };
             fullscreen = 0;
+            zox_settings_set_by_args("Fullscreen");
             maximized = 0;
         } else if (strcmp(args[i], "--nohud") == 0) {
             nohud = 1;

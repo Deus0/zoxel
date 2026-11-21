@@ -4,9 +4,11 @@ void arguments_ui(ecs *world, char* args[], int count) {
         if (strcmp(args[i], "-tu") == 0 || strcmp(args[i], "--tinyui") == 0) {
             zox_log("Tiny UI Mode Enabled");
             ui_scale = 1;
+            zox_settings_set_by_args("UI Scale");
         } else if (strcmp(args[i], "-su") == 0 || strcmp(args[i], "--smallui") == 0) {
             zox_log("Small UI Mode Enabled");
             ui_scale = 2;
+            zox_settings_set_by_args("UI Scale");
         }
     }
 }

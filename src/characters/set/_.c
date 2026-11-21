@@ -9,6 +9,7 @@ void process_arguments_characters(ecs *world, char* args[], int count) {
             strcmp(args[i], "--nonpcs") == 0)
         {
             disable_npcs = 1;
+            zox_settings_set_by_args("No Npcs");
         }
         if (strcmp(args[i], "--maxnpcs") == 0) {
             max_npcs = 1;
@@ -16,6 +17,7 @@ void process_arguments_characters(ecs *world, char* args[], int count) {
         // --nohumans: no humanoid npcs (villagers), i.e. to see what they cost (end_game_cleanup's memory)
         if (strcmp(args[i], "--nohumans") == 0) {
             zox_no_humanoids = 1;
+            zox_settings_set_by_args("No Humans");
         }
     }
 }
