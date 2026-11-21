@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-21
+-x Tooltips: a ui deselected closes its tooltip in an observer on Deselect (was a system every frame), dead code gone;
+  the select stays a system (as an observer a fast flick lost the last icon's text). refactors.md: the systems style
+  and CanvasData were already done
 -x Settings are events: the last 8 modules' settings systems (models, npcs, rendering, sounds, streaming, ui, vodes,
   xr) spawn their settings on the app's InitializeEvent and apply a change in an observer on Update (as ai, apps,
   bones and controllers did), 15 systems gone; SettingDirty (a byte state and its increment system) is gone, the save

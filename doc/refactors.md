@@ -7,8 +7,6 @@
   walks all of them (ui navigation begin.c, interaction raycast.c); tst coop_pause checks the first is its own paused
 - Activated block states (a door open, later redstone power) to an activation octree a chunk, out of BlockDatas,
   which keeps data that doesn't change (directions, filler offsets): doc/tech/blocks.md "Planned"
-- Refactor all systems to use the void <T>(iter* it) { instead of the old macros, it fits better with c standards
-	- they also need timer macros added around them, check already refactored systems for reference
 - Body parts by entities, not SlotType ids: realm parts found by find_slot_type, gear is by tag now (Hat, Shirt),
   and character_body_spawn_system's slot tree as data (parent, anchor, offset, part) walked once (doc/body_equips.md)
 - refactor GenerateModel to tag event
@@ -34,7 +32,8 @@
 	- split into sub chunks
 - Move blockVox from models into blocks
 	- just link it to model and tag it, no need to have it models
-- Make the tooltip systems into observer / events
+- Tooltip systems: a deselect closes by an observer (Deselect); the select stays a system, as an observer on Select a
+  fast flick lost the last icon's text (tst tooltip_flick); tooltip_deselect_system is the flick's safety net
 - Add locks onto all VoxelNode setters and getters
 -x Add observer function, when Dirty is added to setting, replace SettingsDirtySystem's
 - Refactor character mesh from its prefab
@@ -121,7 +120,6 @@ Input Refactor
     - Pause key - player_pause_system
 	
 ## Remove old structs
-	- CanvasData
 	- LayoutParentData
 	- ElementSpawnData
 

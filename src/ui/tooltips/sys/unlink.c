@@ -1,21 +1,5 @@
 
 
-/*void close_ui_related_tooltip(ecs* world, entity e) {
-    entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
-    if (!zox_valid(canvas)) {
-        return;
-    }
-    entity tooltip = zox_get_child_by_id(world, canvas, zox_id(Tooltip));
-    if (!zox_valid(tooltip)) {
-        if (zox_has(canvas, Canvas3)) {
-            return;     // a 3D window: no tooltips in 3D yet
-        }
-        zox_loge("Tooltip not found in Canvas [%s]", zox_get_name(canvas));
-        return;
-    }
-    set_entity_text(world, tooltip, "");
-}*/
-
 // NOTE: Windows are passed in, we should check all uis in tree?
 void close_ui_related_tooltip(ecs* world, entity e) {
     byte dbg_log = zox_log_tooltips;
@@ -44,37 +28,13 @@ void close_ui_related_tooltip(ecs* world, entity e) {
             break;
         }
     }
-    // TODO: Check Children
-    /*entity old_ui = zox_get_link(world, tooltip, TooltipLink);
-    if (old_ui == e) {
-        zox_unlink(world, tooltip, TooltipLink, old_ui);
-    }*/
 }
 
-// NOTE: Called by the UI element with a tooltip event on it
-void tooltipee_deselect_system(iter* it) {
-    zox_sys_on_begin();
+// a ui deselected closes its tooltip (an observer on Deselect)
+void tooltipee_deselect_event(iter* it) {
     zox_sys_world();
-    // zox_sys_begin();
-    // zox_sys_in(SelectState);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        /*zox_sys_i(SelectState, state);
-        if (state->value != zox_state_deselect_active) {
-            continue;
-        }*/
         close_ui_related_tooltip(world, e);
     }
-    zox_sys_on_end();
-} zoxd_system(tooltipee_deselect_system);
-
-        /*entity canvas = zox_get_parent_by_id(world, e, zox_id(Canvas));
-        if (!zox_valid(canvas)) {
-            continue;
-        }
-        entity tooltip = zox_get_child_by_id(world, canvas, zox_id(Tooltip));
-        if (!zox_valid(tooltip)) {
-            zox_loge("Tooltip not found in Canvas [%s]", zox_get_name(canvas));
-            continue;
-        }
-        set_entity_text(world, tooltip, "");*/
+}

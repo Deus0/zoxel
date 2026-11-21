@@ -40,21 +40,18 @@ void zox_systems_tooltips(ecs* world) {
         [none] tooltips.Tooltipper,
         [none] core.Initialize,
     );
-    zox_system(
-        tooltipee_deselect_system,
-        zoxp_update,
-        [none] ui.Element,
-        // [none] interactions.Selectable,
-        [none] tooltips.Tooltipper,
+    zox_on_add(
+        tooltipee_deselect_event,
         [none] interactions.Deselect,
-        //[in] interactions.SelectState,
-    );
-    zox_system(
-        tooltip_event_system,
-        zoxp_update,
-        // [in] interactions.SelectState,
-        [in] tooltips.TooltipEvent,
+        [none] ui.Element,
         [none] tooltips.Tooltipper,
+    );
+    // a system, not an observer on Select: a fast flick across icons lost the last one's text (tst tooltip_flick)
+    zox_system(
+        tooltip_select_system,
+        zoxp_update,
         [none] interactions.Select,
+        [none] tooltips.TooltipEvent,
+        [none] tooltips.Tooltipper,
     );
 }
