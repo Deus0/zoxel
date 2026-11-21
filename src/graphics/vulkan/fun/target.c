@@ -87,10 +87,17 @@ VkRenderPass vulkan_create_pass(byte clear) {
 }
 
 // the window's size in pixels, what the surface says unless it leaves it to us
-//  - android gives it in the device's own orientation, turned (currentTransform) when the screen's rotated: the
-//    swapchain is made upright (preTransform identity, the compositor turns it), so a quarter turn swaps its sides
+//  - android: the window's (sdl's, its rotations' resizes): its surface kept saying one size whichever way the screen
+//    was turned, its buffer stretched over the screen (portrait squashed into landscape, 2026-11-21); android takes any
+//    size and scales it to the window, upright (preTransform identity, the compositor turns it)
+//  - else what the surface says, a quarter turn (currentTransform) swapping its sides
 VkExtent2D vulkan_surface_extent(const VkSurfaceCapabilitiesKHR* capabilities) {
-    if (capabilities->currentExtent.width != UINT32_MAX) {
+#ifdef zox_android
+    const byte from_window = vk_window_size.x > 0 && vk_window_size.y > 0;
+#else
+    const byte from_window = 0;
+#endif
+    if (!from_window && capabilities->currentExtent.width != UINT32_MAX) {
         VkExtent2D extent = capabilities->currentExtent;
         if (capabilities->currentTransform & (VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR | VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR)) {
             extent = (VkExtent2D) { extent.height, extent.width };
