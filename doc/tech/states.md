@@ -176,7 +176,9 @@ Entities with 20 components:
 
 ## Refactor log, before and after
 
-How to measure one: `lint_systems` (systems registered), `pipeline_syncs` (systems in the game's pipeline, merges),
+How to measure one: `lint_systems` (systems and observers in the source), `pipeline_syncs` (the game's pipeline
+systems, observers registered, merges). Count observers with systems: both are code flecs runs, a system turned
+into an observer isn't one less thing to keep.
 and the tests the change drives, their own time (`[tst] running` to `PASSED` in tst/<name>.log). Those are mostly
 waits, so they show nothing got slower; the event costs themselves are in flecs_event_costs / flecs_event_scaling.
 
@@ -186,9 +188,13 @@ waits, so they show nothing got slower; the event costs themselves are in flecs_
 
   | | before | after |
   |---|---|---|
-  | systems (lint_systems) | 580 | 566 |
+  | systems + observers (lint_systems) | 580 + 86 = 666 | 566 + 96 = 662 |
   | the pipeline's systems / merges | 436 / 11 | 434 / 11 |
   | tags | Trigger + event, 8 | 4 |
   | navigator, mouse_click, tooltips (s) | 24.4, 1.35, 17.2 | 21.8, 1.31, 16.7 |
   | scroll_wheel, options_toggle, menu_flow (s) | 1.16, 0.82, 26.6 | 1.13, 0.81, 27.5 |
+
+- The day, 2026-11-21 (a7d8d3ff0 to 97b08de95): systems 606 to 566, observers 66 to 96, together 672 to 662; byte
+  states 32 to 19, the pairs' and event tags fewer (see above). Most systems became observers (they cost nothing
+  idle), the drop in total is the swap, remover and increment systems gone.
 

@@ -6,9 +6,10 @@
 #  - timed: zox_sys_on_begin() first, zox_sys_on_end() at the end (systems' times, the profiler), except in
 #    src/_ (the flecs layer is before core, where timed builds' get_time_ms and SystemProcessed are)
 #  - commented out code is skipped, prints each problem as file:line, exit 1 if any
+#  - counts systems and observers (both are work flecs runs), prints them
 #  - needs only bash, grep and awk
 cd "$(dirname "$0")/.." || exit 2
-files=$(grep -rlE 'zoxd_system\(' src gam)
+files=$(grep -rlE 'zoxd_system\(|zox_on_add\(|zox_observe[a-z_]*\(|zox_observer\(' src gam)
 # shellcheck disable=SC2086
 awk '
 FNR == 1 { in_comment = 0; fn = "" }
@@ -29,6 +30,8 @@ FNR == 1 { in_comment = 0; fn = "" }
         }
     }
     code = out
+    # observers registered (zox_on_add, zox_observe*, zox_observer), not their macros, not in tests: counted with systems
+    if (code ~ /(zox_on_add|zox_observe[a-z_]*|zox_observer)\(/ && code !~ /#define/ && FILENAME !~ /\/tst\//) observers++
     if (match(code, /^(static )?void [A-Za-z0-9_]+\(iter[^)]*\)[ \t]*\{/)) {
         decl = substr(code, RSTART, RLENGTH)
         sub(/^(static )?void /, "", decl)
@@ -57,6 +60,6 @@ FNR == 1 { in_comment = 0; fn = "" }
     }
 }
 END {
-    printf "[tst] [lint_systems] %s [%d] systems, [%d] problems\n", (problems ? "FAILED" : "PASSED"), systems, problems
+    printf "[tst] [lint_systems] %s [%d] systems, [%d] observers, [%d] problems\n", (problems ? "FAILED" : "PASSED"), systems, observers, problems
     exit (problems ? 1 : 0)
 }' ${files}
