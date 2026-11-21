@@ -97,7 +97,7 @@ To record what the game plays: `SDL_AUDIO_DRIVER=disk`, the mix goes to `sdlaudi
 
 ## Tests and Debugging
 
-Usually run through `bash bsh/tst.sh`, see [Onboarding](onboarding.md#6-tests).
+Usually run through `bash bsh/tst.sh`, see [Onboarding](onboarding.md#7-tests).
 
 | Flag | Effect | Source |
 |---|---|---|

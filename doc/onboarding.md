@@ -212,7 +212,27 @@ These matter more than they first look:
   Several streaming bugs came from this.
 - **Systems are multithreaded.** Flecs pipelines order them; don't add locks to dodge a race.
 
-## 6. Tests
+## 6. Logs
+
+The log stays short: someone reading it should see what matters, not every boot step. A minute of play logs about
+ten lines.
+
+| Call | For | Shown |
+|---|---|---|
+| `zox_loge(...)` | something is wrong (counted: a test fails after 100) | always |
+| `zox_logw(...)` | something is off but the game goes on | always |
+| `zox_log(...)` | rare lines worth reading every run | always |
+| `zox_logv(...)` | details: paths, settings chosen, events like a splash | only with `--verbose` |
+
+- Expected cases aren't errors: a missing optional folder, an icon wayland refuses. Use `zox_logv`, or nothing.
+- Nothing every frame. To trace a system while you debug it, a local flag keeps it quiet otherwise:
+  `byte dbg_log = 0;` then `if (dbg_log) zox_log(...)`.
+- Release builds drop every log (their arguments are never run). Debug builds with `--logs` show them, `--verbose`
+  adds the details.
+- Tests log with a `[tst]` prefix; tst.sh reads those lines, so keep that prefix for test output.
+- More in [Coding Standards](coding_standards.md) (Logs).
+
+## 7. Tests
 
 There's an automated test harness. Run it after changes, and **before every commit**:
 
@@ -266,7 +286,7 @@ What a test starts with, cheapest first (times measured 2026-11-20, debug build)
 
 [Coding Standards](coding_standards.md) (Test Placement) has where a test goes and the lowest module it can live in.
 
-## 7. Doing a Task
+## 8. Doing a Task
 
 Tasks are tracked in plain markdown:
 
@@ -283,11 +303,11 @@ The loop:
 1. Pick a task from [todo.md](todo.md).
 2. Find the module: search for a component or system name from the task (`grep -rn NpcSpawnZone src`).
 3. Read that module's `_.c` and `sys/_.c` first, to see what it owns and what runs.
-4. Make the change in the module's style. Logs help: `zox_log` in a debug build.
+4. Make the change in the module's style. Logs help: `zox_log` behind a `dbg_log` flag in a debug build (section 6).
 5. Run the related test, then `bash bsh/tst.sh all`.
 6. Move the item to [done.md](done.md), then commit.
 
-## 8. Git
+## 9. Git
 
 - Work on `master`, small commits, short lower case messages (`fixed windows build errors`). Several people commit
   here: check `git status` and `git log` first, and only commit your own files, by path.
@@ -328,7 +348,7 @@ The loop:
   To check they match: `git ls-remote git@github.com:deus0/zoxel.git master` and the same for Codeberg give the
   same hash.
 
-## 9. Where Next
+## 10. Where Next
 
 - [Architecture](architecture.md): events vs systems
 - [Coding Standards](coding_standards.md): folders, naming, components and systems in depth
