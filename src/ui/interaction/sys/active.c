@@ -1,6 +1,6 @@
-// an element made active or not (ActiveStateDirty, removed by element_active_link_system after): its outline
-void element_active_system(iter* it) {
-    zox_sys_on_begin();
+// an element made active or not: its outline (element_active_link_event removes ActiveStateDirty after)
+// an observer on ActiveStateDirty (non fragmenting, removed after)
+void element_active_event(iter* it) {
     zox_sys_begin();
     zox_sys_in(ActiveState);
     zox_sys_in(ElementOutlineColor);
@@ -16,5 +16,4 @@ void element_active_system(iter* it) {
         outline->value = state->value ? acolor->value : idle_outline->value;
         generate->value = zox_generate_texture_run;
     }
-    zox_sys_on_end();
-} zoxd_system(element_active_system);
+}

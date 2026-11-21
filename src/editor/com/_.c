@@ -16,8 +16,8 @@ void zox_components_editor(ecs* world) {
     zoxd_tag(InspectorLabel);
     zoxd_tag(InspectorUI);
     zoxd_tag(HierarchyUI);
-    zoxd_tag_event(HierarchyUIDirty);
-    zoxd_tag_event(InspectorDirty);
+    zoxd_nf_tag(HierarchyUIDirty);
+    zoxd_nf_tag(InspectorDirty);
     zoxd_tag(MaxSystemTimeLabel);
     zoxd_tag(FPSDisplay);
     zoxd_tag(GameDebugLabel);

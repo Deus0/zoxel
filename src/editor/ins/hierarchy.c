@@ -14,6 +14,7 @@ entity spawn_window_hierarchy(
     zox_add(window, HierarchyUI);
     zox_setv(window, ElementFontSize, font_size);
     zox_setv(window, Target, root);
+    zox_add(window, HierarchyUIDirty);    // last: its observer reads the target and font size
     // one row is active (highlighted) at a time
     zox_add(list, ActiveSingle);
     return window;

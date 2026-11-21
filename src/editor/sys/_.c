@@ -32,16 +32,14 @@ void zox_systems_editor(ecs *world) {
         [in] core.ComponentTarget,
         [none] editor.InspectorLabel
     );
-    zox_system_1(
-        hierarchy_spawn_system,
-        zoxp_spawn,
+    zox_on_add(
+        hierarchy_spawn_event,
         [in] core.Target,
         [in] ui.ElementFontSize,
         [none] editor.HierarchyUIDirty
     );
-    zox_system_1(
-        inspector_spawn_system,
-        zoxp_spawn,
+    zox_on_add(
+        inspector_spawn_event,
         [in] core.Target,
         [in] ui.FontSize,
         [none] editor.InspectorDirty

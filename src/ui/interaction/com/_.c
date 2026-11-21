@@ -78,7 +78,7 @@ void zox_components_interaction(ecs* world) {
     zoxd_byte(ClickDisabled);
     // Active
     zoxd_byte(ActiveState);
-    zoxd_tag_event(ActiveStateDirty);
+    zoxd_nf_tag(ActiveStateDirty);
     zoxd_color(ActiveColor);
     zoxd_nf_link(ActiveLink);
     zoxd_tag(ActiveSingle);

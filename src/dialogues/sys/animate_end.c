@@ -1,6 +1,6 @@
 // on the text entity, main thread: the next button pops in (ui_pop_in spawns a tween)
-void animate_text_end_system(iter* it) {
-    zox_sys_on_begin();
+// an observer on AnimateTextEnded (non fragmenting, removed after)
+void animate_text_end_event(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     for (int i = 0; i < it->count; i++) {
@@ -25,5 +25,4 @@ void animate_text_end_system(iter* it) {
             0);
         ui_pop_in(world, next_button);
     }
-    zox_sys_on_end();
-} zoxd_system(animate_text_end_system);
+}

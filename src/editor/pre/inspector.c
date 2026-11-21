@@ -3,6 +3,5 @@ entity spawn_prefab_inspector(ecs *world, entity p) {
     zox_prefab_name("inspector");
     zox_add(e, EditorElement);
     zox_setv(e, ElementFontSize, 16);
-    zox_add(e, InspectorDirty);
     return e;
 }

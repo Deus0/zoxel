@@ -1,6 +1,6 @@
 // the speaker babbles the dialogue as it types out, a syllable at a time, from where they stand (3D)
-void dialogue_sound_system(iter* it) {
-    zox_sys_on_begin();
+// an observer on GlyphSpawnedDirty (non fragmenting, removed after)
+void dialogue_sound_event(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(TargetText);
@@ -27,5 +27,4 @@ void dialogue_sound_system(iter* it) {
             }
         }
     }
-    zox_sys_on_end();
-} zoxd_system(dialogue_sound_system);
+}

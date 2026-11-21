@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-21
+-x Light events are non fragmenting tags and observers (measured cheapest, no table moves): InspectorDirty,
+  HierarchyUIDirty, GlyphSpawnedDirty, AnimateTextEnded, ActiveStateDirty; 6 systems gone (4 of them main thread in
+  zoxp_spawn; lint 586 to 580). The editor's windows add theirs at spawn, after their target (on the prefab, the
+  observer fired before it). Docs: architecture.md, coding standards, states.md
 -x Three dirty pairs are one tag each with an observer (the coding standards' one-off event): Attach, WindowSize and
   List, their 6 remover systems and 3 readers' systems gone (lint 589 to 586). Grid stays a pair: as an observer it
   laid icons out before their sizes settled (tst navigator_inventory). perf_fly couldn't tell them apart. The web

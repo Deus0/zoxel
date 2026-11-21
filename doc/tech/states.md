@@ -55,6 +55,8 @@ thread. Settings use it (doc/tech/settings.md).
 - Observe **`Dirty`**, not `Update`: `Update` stays on while an entity is dirtied again on the next frame, so its
   OnAdd doesn't fire again (a dragged slider applied only its first value, tst settings_drag).
 - Keep heavy work in systems (they run on workers, an observer doesn't).
+- Add the tag last, after setting what the observer reads, and not on a prefab: an instance fires as it's made,
+  before its spawn function set the rest (the editor's hierarchy never listed its rows, its Target wasn't set yet).
 - An observer runs the moment the tag lands, a frame sooner than a system on `Update`: check what it reads is ready
   (the grid's sizes weren't).
 
@@ -137,11 +139,12 @@ Entities with 20 components:
 
 ## Where things stand (2026-11-21)
 
-- Tags removed by their reader: `GenerateSound`, `ProcessSound`, `CombineVox`, `InspectorDirty`,
-  `HierarchyUIDirty`, `GlyphSpawnedDirty`, `AnimateTextEnded`, `ActiveStateDirty`
+- Tags removed by their reader, a system (heavy work, on workers): `GenerateSound`, `ProcessSound`, `CombineVox`
 - Core `Dirty` / `Update`: `TriggerSound` (on sounds), every setting's change (observers on `Dirty`), texts
 - Observers on a non fragmenting tag they remove: `AttachDirty` (camera_attach_event), `WindowSizeDirty`
-  (viewport_resize_event), `ListDirty` (scrollbar_handle_event); settings (on the core `Dirty`)
+  (viewport_resize_event), `ListDirty` (scrollbar_handle_event), `InspectorDirty`, `HierarchyUIDirty` (the editor's
+  spawns), `GlyphSpawnedDirty` (dialogue voices), `AnimateTextEnded`, `ActiveStateDirty` (element_active_event, then
+  element_active_link_event removes it); settings (on the core `Dirty`)
 - Pairs: `Skeleton`, `InsideBlock`, `ListPosition`, `LayoutPosition`, `LayoutSize` (several readers); `Grid` (one
   reader, but as an observer it laid its icons out before their sizes settled: tst navigator_inventory's tooltips
   showed the wrong item; its system reads them a frame on)

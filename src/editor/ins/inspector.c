@@ -12,5 +12,6 @@ entity spawn_inspector(
     zox_add(window, InspectorUI);
     zox_setv(window, FontSize, font_size);
     zox_setv(window, Target, target);
+    zox_add(window, InspectorDirty);      // last: its observer reads the target and font size
     return window;
 }

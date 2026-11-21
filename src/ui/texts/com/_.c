@@ -47,6 +47,6 @@ void zox_components_texts(ecs *world) {
     zoxd_double(AnimateTextBegin);
     zoxd_float(AnimateTextTime);
     zoxd_float2(AnimateTextTimeLimits);
-    zoxd_tag_event(GlyphSpawnedDirty);
-    zoxd_tag_event(AnimateTextEnded);
+    zoxd_nf_tag(GlyphSpawnedDirty);
+    zoxd_nf_tag(AnimateTextEnded);
 }

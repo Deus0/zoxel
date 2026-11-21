@@ -73,9 +73,8 @@ void zox_systems_interaction(ecs* world) {
         [none] ui.Element
     );
     // Active
-    zox_system(
-        element_active_system,
-        zoxp_update,
+    zox_on_add(
+        element_active_event,
         [in] interactions.ActiveState,
         [in] ui.ElementOutlineColor,
         [in] interactions.ActiveColor,
@@ -98,9 +97,8 @@ void zox_systems_interaction(ecs* world) {
         [out] interactions.DraggableState,
         [out] interactions.DraggingDelta
     );
-    zox_system(
-        element_active_link_system,
-        zoxp_update,
+    zox_on_add(
+        element_active_link_event,
         [in] interactions.ActiveState,
         [none] ui.Element,
         [none] interactions.ActiveStateDirty

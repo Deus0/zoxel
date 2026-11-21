@@ -41,8 +41,8 @@ void get_hierarchy_rows(
     }
 }
 
-void hierarchy_spawn_system(iter* it) {
-    zox_sys_on_begin();
+// an observer on HierarchyUIDirty (non fragmenting, removed after)
+void hierarchy_spawn_event(iter* it) {
     const ClickEvent on_click = (ClickEvent) { &button_event_clicked_hierarchy };
     zox_sys_world();
     zox_sys_begin();
@@ -82,5 +82,4 @@ void hierarchy_spawn_system(iter* it) {
         refresh_editor_list(world, list);
         zox_logv("Hierarchy [%s] refreshed with [%i] rows", zox_getn(target->value), count);
     }
-    zox_sys_on_end();
-} zoxd_system(hierarchy_spawn_system);
+}

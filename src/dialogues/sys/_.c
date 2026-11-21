@@ -11,9 +11,8 @@ void zox_systems_dialogues(ecs* world) {
         [none] dialogues.DialogueProcess,
         [none] core.Begin,
     );
-    zox_system_1(
-        animate_text_end_system,
-        zoxp_spawn,
+    zox_on_add(
+        animate_text_end_event,
         [none] dialogues.DialogueLabel,
         [none] texts.AnimateTextEnded
     );
@@ -23,9 +22,8 @@ void zox_systems_dialogues(ecs* world) {
         [in] characters.GenerateCharacter,
         [none] characters.Character,
     );
-    zox_system_1(
-        dialogue_sound_system,
-        zoxp_spawn,
+    zox_on_add(
+        dialogue_sound_event,
         [in] texts.TargetText,
         [in] texts.TextData,
         [out] dialogues.VoiceIndex,
