@@ -73,6 +73,26 @@ A byte: `zox_dirty_trigger` (1) → `active` (2) → `end` (3) → `none` (0), o
 - writers check "nonzero" to wait out a change in flight (the game state's 3 frame guard),
 - or code reads it as "still pending" (streaming).
 
+## What they cost
+
+`tst flecs_event_costs` (src/_/flecs/tst/event_costs.c) times each in a world of its own, single threaded, 4000
+frames (debug build, 2026-11-21):
+
+| | Cost |
+|---|---|
+| an idle system (matches nothing) | 0.007us a frame |
+| an idle observer | 0.001us a frame |
+| an idle byte state (its increment system on 20 entities) | 0.44us a frame, more with more entities |
+| an event handled by an observer that removes its tag | 1.3us |
+| an event handled by a system that removes its tag | 2.7us |
+| an event through a pair (TDirty, TUpdate, a reader) | 4.1us |
+
+- Byte states cost while nothing happens: their increment system walks every entity that has one, every frame.
+  Tags cost nothing until added.
+- An idle system is nearly free (flecs skips an empty query), so a system count matters for reading the pipeline
+  (and merges, tst pipeline_syncs) more than for speed.
+- For an event, an observer is cheapest, a pair dearest. Rerun the test before deciding on new numbers.
+
 ## Timing
 
 - A tag added in a system lands at the next merge: a reader in the same phase, before that merge, misses it this

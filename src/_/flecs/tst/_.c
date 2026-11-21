@@ -9,6 +9,7 @@
 #include "prefab_variants.c"
 #include "id_reuse.c"
 #include "wildcard_remove.c"
+#include "event_costs.c"
 
 #include "pipeline_syncs.c"
 
@@ -38,6 +39,7 @@ void zox_tsts_flecs(ecs* world) {
     zox_tst_add("instance_id_reuse", zox_tst_instance_id_reuse_ready, zox_tst_instance_id_reuse_check, 30);
     zox_tst_set_setup("instance_id_reuse", NULL, 1);
     zox_tst_add("flecs_wildcard_remove", zox_tst_wildcard_remove_ready, zox_tst_wildcard_remove_check, 30);
+    zox_tst_add("flecs_event_costs", zox_tst_event_costs_ready, zox_tst_event_costs_check, 60);
     zox_tst_set_setup("flecs_wildcard_remove", NULL, 1);
     zox_tsts_pipeline_syncs(world);
 }
