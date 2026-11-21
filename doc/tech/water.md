@@ -141,3 +141,14 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
 - Rivers; flowing across a chunk not loaded; currents (flowing water pushing what's in it); a falling column shows
   its side faces' tops full, not sloped.
 - Blended faces within one chunk mesh aren't sorted; meshes in different tables aren't sorted against each other.
+
+## Oil
+
+- `oil` (gam/zoxel/sys/blocks.c, `BlockOil`) is a liquid as water is: a source (level 8) and flowing blocks 7 to 1
+  (`BlockWaterFlowing`), walked through, light passing and dimmed in it, swum in, splashed.
+- Its own block material, `zox_block_material_oil` (`block_material_liquid` covers both): a chunk mesh of its own,
+  drawn blended with its own texture (the water's ripples, dark, from its colour). Faces draw between oil and water.
+- Liquids are families (terrain/fun/water.c `WaterLevels`): each source a liquid, its flowing blocks linked to it
+  (`LiquidLink`). A block takes the highest level flowing into it and that liquid (water before oil on a tie): oil
+  spreads as oil, water as water, neither turns into the other. tst oil_flow
+- Not in the world's generation yet: placed only.

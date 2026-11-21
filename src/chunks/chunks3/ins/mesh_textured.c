@@ -31,19 +31,20 @@ entity spawn_chunk_mesh_textured(
     zox_setv(e2, RenderDepth, depth);
     zox_setv(e2, RenderDisabled, render_disabled);
     zox_link(world, e2, MaterialLink, tilemap);
-    if (block_material == zox_block_material_liquid) {
+    if (block_material_liquid(block_material)) {
         zox_add(e2, TransparentMesh);
-        // its own texture: the realm's liquid block's (not on the tilemap)
+        // its own texture: the realm's first block of its material with one (its source's, not on the tilemap; a
+        //  flowing block has none, and can come first in BlockLinks)
         const entity realm = zox_get_link(world, tilemap, RealmLink);
         const BlockLinks* blocks = zox_valid(realm) && zox_has(realm, BlockLinks) ? zox_get(realm, BlockLinks) : NULL;
         for (int i = 0; blocks && i < blocks->length; i++) {
             const entity block = blocks->value[i];
-            if (zox_valid(block) && zox_has(block, BlockMaterial) && zox_getv(block, BlockMaterial) == zox_block_material_liquid) {
+            if (zox_valid(block) && zox_has(block, BlockMaterial) && zox_getv(block, BlockMaterial) == block_material) {
                 const entity texture = zox_get_child_by_id(world, block, zox_id(Texture));
                 if (zox_valid(texture)) {
                     zox_link(world, e2, MeshTextureLink, texture);
+                    break;
                 }
-                break;
             }
         }
     }

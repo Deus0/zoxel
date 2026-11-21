@@ -19,7 +19,7 @@ void realm_tilemap_system(iter* it) {
             // liquids aren't on the tilemap: their meshes draw their own texture (water: it animates alone)
             if (!zox_valid(block) ||
                 !zox_has(block, BlockBaked) ||
-                (zox_has(block, BlockMaterial) && zox_getv(block, BlockMaterial) == zox_block_material_liquid)
+                (zox_has(block, BlockMaterial) && block_material_liquid(zox_getv(block, BlockMaterial)))
             ) {
                 continue;
             }
@@ -54,7 +54,7 @@ void realm_tilemap_system(iter* it) {
             // liquids aren't on the tilemap: their meshes draw their own texture (water: it animates alone)
             if (!zox_valid(block) ||
                 !zox_has(block, BlockBaked) ||
-                (zox_has(block, BlockMaterial) && zox_getv(block, BlockMaterial) == zox_block_material_liquid)
+                (zox_has(block, BlockMaterial) && block_material_liquid(zox_getv(block, BlockMaterial)))
             ) {
                 continue;
             }

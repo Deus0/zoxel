@@ -171,6 +171,7 @@ void blocks_realm_spawn_system(iter* it) {
                 zox_setv(e3, BlockCollider, zox_block_air);
                 zox_setv(e3, BlockLightPass, 1);
                 zox_set_parent(world, e3, e);
+                zox_link(world, e3, LiquidLink, e2);
                 link_hit_sound(world, e3, e, &hit_sound_water);
             }
         }
@@ -203,6 +204,38 @@ void blocks_realm_spawn_system(iter* it) {
             zox_setv(e2, BlockLightPass, block_light_pass_open);
             zox_set_parent(world, e2, e);
             link_hit_sound(world, e2, e, &hit_sound_wood);
+        }
+        // oil: a liquid as water is (it flows, it's swum in), dark and its own mesh (zox_block_material_oil), its
+        //  flowing blocks after it; last, the blocks before it keep their indices
+        {
+            lint block_seed = seed->value + (seed_offset+=seed_shift);
+            const color oil_color = (color) { 26, 22, 18, 230 };
+            entity e2 = spawn_realm_block_textured(world, e, prefab_texture_water, block_seed, "oil", oil_color);
+            zox_add(e2, BlockOil);
+            zox_setv(e2, BlockWaterLevel, zox_water_level_source);
+            zox_setv(e2, BlockMaterial, zox_block_material_oil);
+            zox_setv(e2, BlockCollider, zox_block_air);
+            zox_setv(e2, BlockLightPass, 1);
+            link_hit_sound(world, e2, e, &hit_sound_water);
+            for (byte level = zox_water_level_source - 1; level >= 1; level--) {
+                char name[16];
+                snprintf(name, sizeof(name), "oil %i", level);
+                entity e3 = zox_ins(world, prefab_block);
+                set_ZoxName(world, e3, name);
+                zox_set_unique_name(e3, name);
+                zox_setv(e3, Seed, block_seed + level);
+                zox_setv(e3, Color, oil_color);
+                zox_add(e3, BlockBaked);
+                zox_add(e3, SingleTextureBlock);
+                zox_add(e3, BlockWaterFlowing);
+                zox_setv(e3, BlockWaterLevel, level);
+                zox_setv(e3, BlockMaterial, zox_block_material_oil);
+                zox_setv(e3, BlockCollider, zox_block_air);
+                zox_setv(e3, BlockLightPass, 1);
+                zox_set_parent(world, e3, e);
+                zox_link(world, e3, LiquidLink, e2);
+                link_hit_sound(world, e3, e, &hit_sound_water);
+            }
         }
         zox_add(e, BlocksDirty);
         if (dbg_log) {

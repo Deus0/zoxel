@@ -88,7 +88,7 @@ static inline void update_light_liquids(
     for (int j = 0; j < length; j++) {
         const entity block = blocks->value[j];
         liquids[j] = zox_valid(block) && zox_has(block, BlockMaterial) &&
-            zox_getv(block, BlockMaterial) == zox_block_material_liquid;
+            block_material_liquid(zox_getv(block, BlockMaterial));
     }
 }
 

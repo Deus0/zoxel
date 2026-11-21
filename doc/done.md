@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-22
+-x Oil: a liquid as water is (flows, swum in, light dims in it), dark, its own block material and mesh with its own
+  texture. Liquids are families now (WaterLevels, LiquidLink): oil spreads as oil, water as water. A liquid mesh
+  takes its texture from the first block of its material that has one (a flowing block could come first and leave
+  it without). Not generated in the world yet. tst oil_flow, doc/tech/water.md (Oil)
 -x The options menu has tabs: Video, Sound, World, Game and Debug, a strip of buttons over its list, a tab shown at a
   time, sliders first then toggles, each by name. Each setting is tagged with its tab where its module spawns it
   (SettingTab*, doc/tech/settings.md). The XR menu (huds/ins/settings3.c) still lists them all. tst options_tabs

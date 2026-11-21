@@ -3,6 +3,7 @@
 #include "place_mesh.c"
 #include "water.c"
 #include "water_flow.c"
+#include "oil.c"
 #include "water_splash.c"
 #include "water_light.c"
 #include "dig_light.c"
@@ -30,6 +31,8 @@ void zox_tsts_terrain(ecs* world) {
     zox_tst_set_setup("water_block", NULL, 1);
     zox_tst_add("water_flow", zox_tst_water_flow_ready, zox_tst_water_flow_check, 120);
     zox_tst_set_setup("water_flow", NULL, 1);
+    zox_tst_add("oil_flow", zox_tst_oil_flow_ready, zox_tst_oil_flow_check, 120);
+    zox_tst_set_setup("oil_flow", NULL, 1);
     zox_tst_add("water_splash", water_splash_ready, water_splash_check, 60);
     zox_tst_set_setup("water_splash", NULL, 1);
     zox_tst_add("water_light", zox_tst_water_light_ready, zox_tst_water_light_check, 120);

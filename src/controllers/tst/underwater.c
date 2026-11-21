@@ -31,7 +31,7 @@ byte zox_tst_underwater_ready(ecs* world) {
     water_levels_get(world, zox_get_parent(world, terrain), &levels);
     if (zox_tst_uwater_stage == 0) {
         zox_tst_uwater_block = real_position_to_block_position(zox_getv(camera, Position3D), zox_getv(terrain, BlockScale));
-        zox_tst_uwater_fill(world, terrain, levels.voxel[zox_water_level_source]);
+        zox_tst_uwater_fill(world, terrain, levels.voxel[0][zox_water_level_source]);
     } else if (zox_tst_uwater_stage == 1) {
         zox_tst_waiting = "the camera to go under water";
         if (since < 1.5) {

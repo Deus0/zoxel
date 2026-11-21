@@ -339,7 +339,7 @@ void chunk_textured_build_system(iter* it) {
         // build out mesh data
         terrain_build_data data = {
             .tilemap_uvs = tilemap_uvs,
-            .whole_texture = zox_has(material, BlockMaterial) && zox_getv(material, BlockMaterial) == zox_block_material_liquid,
+            .whole_texture = zox_has(material, BlockMaterial) && block_material_liquid(zox_getv(material, BlockMaterial)),
             .voxel_solidity = solidity,
             .heights = heights,
             .mesh_data = &mesh_data,

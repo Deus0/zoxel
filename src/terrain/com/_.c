@@ -24,7 +24,9 @@ zox_tag(BlockBricks);
 zox_tag(BlockFlower);
 zox_tag(BlockRoad);
 zox_tag(BlockWater);       // a liquid (BlockMaterial): see through, walked through, it flows (terrain/water)
-zox_tag(BlockWaterFlowing); // water spread from a source, a level of it (BlockWaterLevel 1 to 7): it drains
+zox_tag(BlockWaterFlowing); // a liquid spread from a source, a level of it (BlockWaterLevel 1 to 7): it drains
+zox_tag(BlockOil);          // a liquid as water is, dark (zox_block_material_oil: its own mesh and texture)
+zox_tag(LiquidLink);        // a flowing liquid's block to its source's (water's, oil's), fun/water.c
 // water flowing on a terrain (sys/water_flow.c): a block to check when its time comes
 typedef struct {
     int3 block;
@@ -67,6 +69,8 @@ void zox_components_terrain(ecs *world) {
     zoxd_tag(BlockRoad);
     zoxd_tag(BlockWater);
     zoxd_tag(BlockWaterFlowing);
+    zoxd_tag(BlockOil);
+    zoxd_nf_link(LiquidLink);
     zoxd_arrayd(WaterFlows);
     zoxd_byte(InsideBlockLast);
     zoxd_tag(InWater);

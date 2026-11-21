@@ -40,9 +40,11 @@ static inline void water_flow_add_around(WaterFlows* flows, int3 block, double a
     }
 }
 
-// the level water flows into a block from round it, 0 none
-static inline byte water_flow_into(ecs* world, entity terrain, const WaterLevels* levels, int3 block) {
-    if (voxel_is_water(levels, terrain_voxel_at(world, terrain, int3_add(block, int3_up)))) {
+// the level a liquid flows into a block from round it, 0 none, and which liquid (the highest's, water before oil)
+static inline byte water_flow_into(ecs* world, entity terrain, const WaterLevels* levels, int3 block, byte* liquid) {
+    const int above = terrain_voxel_at(world, terrain, int3_add(block, int3_up));
+    if (voxel_is_water(levels, above)) {
+        *liquid = levels->liquid[above];
         return zox_water_level_source - 1;
     }
     byte into = 0;
@@ -58,8 +60,9 @@ static inline byte water_flow_into(ecs* world, entity terrain, const WaterLevels
             continue;
         }
         const byte level = levels->level[voxel] - 1;
-        if (level > into) {
+        if (level > into || (level == into && levels->liquid[voxel] < *liquid)) {
             into = level;
+            *liquid = levels->liquid[voxel];
         }
     }
     return into > zox_water_level_source - 1 ? zox_water_level_source - 1 : into;
@@ -145,11 +148,13 @@ void water_flow_system(iter* it) {
             if (voxel < 0 || (voxel && !level) || level == zox_water_level_source) {
                 continue;
             }
-            const byte into = water_flow_into(world, e, &levels, flow.block);
-            if (into == level) {
+            byte liquid = level ? levels.liquid[voxel] : 0;
+            const byte into = water_flow_into(world, e, &levels, flow.block, &liquid);
+            const byte value = levels.voxel[liquid][into];
+            if (value == voxel) {
                 continue;
             }
-            if (water_flow_set(world, e, flow.block, levels.voxel[into])) {
+            if (water_flow_set(world, e, flow.block, value)) {
                 water_flow_add_around(flows, flow.block, next);
             }
         }
