@@ -30,6 +30,7 @@ typedef struct {
     byte door;      // its door, beds and their fillers (BlockDoor, BlockBed, BlockFiller), 0 for none
     byte bed;
     byte filler;
+    byte door_filler;   // its door's, it stops light while it's shut (block_filler_voxel)
 } HomeBlocks;
 
 static inline TownHome town_home(ecs* world, entity home) {
@@ -106,7 +107,7 @@ static inline void build_home(Building* b, const TownHome* h, const HomeBlocks* 
     build_box(b, (int3) { x, 2, -z }, (int3) { x, top - 1, z }, blocks->wall);
     // its doorway, in the middle of its front, a door in it: its face out, it swings in (its model's +z, inwards)
     build_box(b, (int3) { 0, 2, z }, (int3) { 0, 3, z }, 0);
-    build_multi(b, (int3) { 0, 2, z }, (int3) { 1, 2, 1 }, (int3) { 0, 0, 1 }, (int2) { 0, -1 }, blocks->door, blocks->filler);
+    build_multi(b, (int3) { 0, 2, z }, (int3) { 1, 2, 1 }, (int3) { 0, 0, 1 }, (int2) { 0, -1 }, blocks->door, blocks->door_filler);
     // a bed along its back wall, its pillow (its base, the model's -x end) at a side wall
     build_multi(b, (int3) { -x + 1, 2, -z + 1 }, (int3) { 2, 1, 1 }, (int3) { 1, 0, 0 }, (int2) { 1, 0 }, blocks->bed, blocks->filler);
     if (x >= home_two_beds) {

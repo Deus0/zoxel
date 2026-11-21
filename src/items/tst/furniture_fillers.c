@@ -1,4 +1,5 @@
-// tst: furniture_fillers, a bed or door fills its box with the shared filler block (items/fun/multi_block.c)
+// tst: furniture_fillers, a bed or door fills its box with a filler block (items/fun/multi_block.c): the shared one, a
+//  door its own (it stops light while it's shut, block_filler_voxel)
 //  - places (multi_block_place) a bed and a door in an all air chunk (air_chunk.c, no game, no player), and a bed at its edge whose other half is in
 //    the next chunk
 //  - their other voxels hold the filler, solid; placing into one is refused, and placing one over air
@@ -101,7 +102,8 @@ byte zox_tst_furniture_fillers_ready(ecs* world) {
             zox_tst_ffill_at(world, terrain, e, 0, 0, 0), zox_tst_ffill_at(world, terrain, e, 1, 0, 0), filler);
         zox_tst_check(zox_tst_ffill_at(world, terrain, b, 0, 0, 0) == bed && zox_tst_ffill_at(world, terrain, b, 1, 0, 0) == filler,
             "the bed's voxels aren't the bed and the filler");
-        zox_tst_check(zox_tst_ffill_at(world, terrain, d, 0, 0, 0) == door && zox_tst_ffill_at(world, terrain, d, 0, 1, 0) == filler,
+        zox_tst_check(zox_tst_ffill_at(world, terrain, d, 0, 0, 0) == door && zox_tst_ffill_at(world, terrain, d, 0, 1, 0) ==
+            block_filler_voxel(world, realm, realm_voxel_block(world, realm, door)),
             "the door's voxels aren't the door and the filler above");
         zox_tst_check(zox_tst_ffill_at(world, terrain, e, 0, 0, 0) == bed && zox_tst_ffill_at(world, terrain, e, 1, 0, 0) == filler,
             "the bed across the chunk edge isn't the bed and the filler in the next chunk");

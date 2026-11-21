@@ -6,7 +6,8 @@ zox_tag(BlockDungeon);
 zox_tag(BlockInvinsible);
 zox_tag(BlockCanGroup);
 zox_tag(SingleTextureBlock);
-zoxc_byte(BlockLightPass);
+zoxc_byte(BlockLightPass);   // 1 light passes it (water, minivoxes), 0 it stops light
+#define block_light_pass_open 2  //  passes only while its block data is open (a door and its filler, vodes/doors)
 #define zox_water_level_source 8
 zoxc_byte(BlockWaterLevel); // water's depth in eighths of a block (terrain/sys/water_flow.c): a source 8, flowing 7 to 1,
                             //  a flowing block's top is drawn at its level (chunks3 build_textured.c)

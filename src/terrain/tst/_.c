@@ -6,6 +6,7 @@
 #include "water_splash.c"
 #include "water_light.c"
 #include "dig_light.c"
+#include "glow_relight.c"
 #include "block_frames.c"
 
 #include "streamers.c"
@@ -33,6 +34,7 @@ void zox_tsts_terrain(ecs* world) {
     zox_tst_add("water_light", zox_tst_water_light_ready, zox_tst_water_light_check, 120);
     zox_tst_set_setup("water_light", NULL, 1);
     zox_tst_add("dig_light", zox_tst_dig_light_ready, zox_tst_dig_light_check, 120);
+    zox_tst_add("glow_relight", zox_tst_glow_relight_ready, zox_tst_glow_relight_check, 120);
     zox_tst_add("block_frames", zox_tst_block_frames_ready, zox_tst_block_frames_check, 90);
     zox_tst_set_setup("block_frames", NULL, 1);
     zox_tst_add("water_tile", zox_tst_water_tile_ready, zox_tst_water_tile_check, 60);

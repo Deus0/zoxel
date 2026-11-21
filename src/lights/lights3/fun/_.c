@@ -3,6 +3,8 @@
 #include "fetch.c"
 #include "nearby.c"
 #include "solidity.c"
+#include "emitters.c"
+#include "openings.c"
 #include "smooth_grid.c"
 #include "gpu.c"
 

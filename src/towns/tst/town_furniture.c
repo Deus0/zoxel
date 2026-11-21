@@ -60,7 +60,8 @@ void zox_tst_town_furniture_check(ecs* world) {
             const TownHome h = town_home(world, children[k]);
             const int2 half = home_half_local(&h);
             const int2 door = int2_add(h.center, build_turn(h.facing, 0, half.y));
-            const int door_ok = zox_tst_furniture_at(world, terrain, (int3) { door.x, h.floor + 2, door.y }, (int3) { 0, 1, 0 }, door_id, filler_id);
+            const int door_ok = zox_tst_furniture_at(world, terrain, (int3) { door.x, h.floor + 2, door.y }, (int3) { 0, 1, 0 }, door_id,
+                block_filler_voxel(world, realm, zox_get_child_by_id(world, realm, zox_id(BlockDoor))));
             const int2 bed = int2_add(h.center, build_turn(h.facing, -half.x + 1, -half.y + 1));
             const int2 bed_end = build_turn(h.facing, 1, 0);
             const int bed_ok = zox_tst_furniture_at(world, terrain, (int3) { bed.x, h.floor + 2, bed.y }, (int3) { bed_end.x, 0, bed_end.y }, bed_id, filler_id);

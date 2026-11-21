@@ -1,5 +1,6 @@
 #include "editing.c"
 #include "sunlight.c"
+#include "emitters.c"
 #include "lightbeam.c"
 #include "flood.c"
 #include "dark.c"
@@ -14,6 +15,7 @@
 // Toggle the light systems
 void set_light_systems(ecs* world, byte is_lights) {
     zox_set_enabled(sunlight_system, is_lights);
+    zox_set_enabled(emitter_light_system, is_lights);
     zox_set_enabled(light_beam_system, is_lights);
     zox_set_enabled(light_flood_system, is_lights);
     zox_set_enabled(dark_light_system, is_lights);
@@ -36,6 +38,16 @@ void zox_systems_lights3(ecs* world) {
         [none] chunks3.Chunk3,
         [none] lights3.SunnyChunk,
         [none] lights.GenerateSunlight,
+    );
+    zox_system(
+        emitter_light_system,
+        zoxp_update,
+        [in] chunks3.VoxelNode,
+        [in] chunks.NodeDepth,
+        [in] chunks3.ChunkNeighbors,
+        [out] lights3.LightQueue,
+        [none] chunks3.Chunk3,
+        [none] lights.GenerateEmitterLight,
     );
     zox_system(
         light_beam_system,

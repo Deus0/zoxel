@@ -1,9 +1,27 @@
+// an emitter the dark meets beside the voxel it darkened (position) lights it again: its light came from the
+//  emitter, the dark took it (a hole over it covered, the sun's dark flooding the room), and nothing else lit it back
+static inline void dark_relight_emitter(LightQueue* light_queue, const byte* glows, byte voxel, byte3 position, byte depth) {
+    if (!light_queue || !voxel || !glows[voxel - 1]) {
+        return;
+    }
+    spin_lock(&light_queue->lock);
+    a_LightQueue(light_queue, (LightUpdate) {
+        .light = emitter_side_light(glows[voxel - 1]),
+        .distance = light_propogation_distance,
+        .pos = position,
+        .depth = depth
+    });
+    spin_unlock(&light_queue->lock);
+}
+
 // Move darkbeam and dark propogation here
 static inline byte dark_flood_light(
     spinlock* lightlock,
     const VoxelNode* root_vnode,          // (READ)
+    const BlockDatas* datas,
     LightNode* root_lnode,                // (WRITE)
     const VoxelNode* n_root_vnodes[6],    // (READ-ONLY)
+    const BlockDatas* n_datas[6],
     const LightNode* n_root_lnodes[6],    // (READ-ONLY)
     LightQueue* n_light_queues[6],
     LightQueue* light_queue,
@@ -15,7 +33,8 @@ static inline byte dark_flood_light(
     byte distance,
     byte min_light,
     byte air_decay,
-    const byte* solidity)
+    const byte* solidity,
+    const byte* glows)
 {
     byte dirty = 0;
     if (!root_vnode || !root_lnode || distance == 0 || old_light <= min_light) {
@@ -44,7 +63,8 @@ static inline byte dark_flood_light(
             }
             if (n_root_vnode) {
                 byte voxel = getv_VoxelNode(n_root_vnode, depth, pos);
-                if (voxel && solidity[voxel - 1]) {
+                if (light_stops(solidity, n_datas[dir], voxel, pos)) {
+                    dark_relight_emitter(light_queue, glows, voxel, positionl, depth);
                     continue; // solid wall
                 }
             }
@@ -86,7 +106,8 @@ static inline byte dark_flood_light(
         }
         // --- in-chunk ---
         byte voxel = getv_VoxelNode(root_vnode, depth, pos);
-        if (voxel && solidity[voxel - 1]) {
+        if (light_stops(solidity, datas, voxel, pos)) {
+            dark_relight_emitter(light_queue, glows, voxel, positionl, depth);
             continue; // solid → stop (light passes water, so does its dark)
         }
         byte current_light = getv_LightNode(root_lnode, depth, pos);
@@ -112,8 +133,10 @@ static inline byte dark_flood_light(
             dark_flood_light(
                 lightlock,
                 root_vnode,
+                datas,
                 root_lnode,
                 n_root_vnodes,
+                n_datas,
                 n_root_lnodes,
                 n_light_queues,
                 light_queue,
@@ -125,7 +148,8 @@ static inline byte dark_flood_light(
                 distance - 1,
                 min_light,
                 air_decay,
-                solidity
+                solidity,
+                glows
             );
         } else {
             if (light_queue) {
@@ -169,8 +193,10 @@ byte dark_sunbeam(
     spinlock* lightlock,
     DarkQueue* queued,
     const VoxelNode* root_vnode,
+    const BlockDatas* datas,
     LightNode* root_lnode,
     const VoxelNode* n_root_vnodes[6],
+    const BlockDatas* n_datas[6],
     const LightNode* n_root_lnodes[6],
     LightQueue* n_light_queues[6],
     LightQueue* light_queue,
@@ -183,7 +209,8 @@ byte dark_sunbeam(
     byte air_decay,
     byte type,
     const byte* solidity,
-    const byte* liquids)
+    const byte* liquids,
+    const byte* glows)
 {
     byte dirty = 0;
     const int length = octree_size(depth);
@@ -201,7 +228,7 @@ byte dark_sunbeam(
         pos.y = y;
         if (!started || y != top) {
             const byte voxel = getv_VoxelNode(root_vnode, depth, pos);
-            if (voxel && solidity[voxel - 1]) {
+            if (light_stops(solidity, datas, voxel, pos)) {
                 beam_stopped = 1;
                 break;
             }
@@ -238,8 +265,10 @@ byte dark_sunbeam(
         if (dark_flood_light(
             lightlock,
             root_vnode,
+            datas,
             root_lnode,
             n_root_vnodes,
+            n_datas,
             n_root_lnodes,
             n_light_queues,
             light_queue,
@@ -251,7 +280,8 @@ byte dark_sunbeam(
             darklight_propogation_distance,
             min_light,
             air_decay,
-            solidity))
+            solidity,
+            glows))
         {
             dirty = 1;
         }
@@ -311,6 +341,12 @@ void dark_light_system(iter* it) {
     entity liquids_realm = 0;
     byte liquids[zox_light_solidity_length];
     memset(liquids, 0, zox_light_solidity_length);
+    // emitters the dark meets light again (dark_relight_emitter)
+    entity emission_realm = 0;
+    byte emission[zox_light_solidity_length];
+    byte3 emission_offset[zox_light_solidity_length];
+    byte glows[zox_light_solidity_length];
+    memset(glows, 0, zox_light_solidity_length);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(VoxelNode, root_vnode);
@@ -331,8 +367,16 @@ void dark_light_system(iter* it) {
             &realm,
             solidity);
         update_light_liquids(world, zox_get_link(world, e, BlockManagerLink), &liquids_realm, liquids);
+        const entity manager = zox_get_link(world, e, BlockManagerLink);
+        if (emission_realm != manager) {
+            update_light_emission(world, manager, &emission_realm, emission, emission_offset);
+            emission_from_voxel(emission, emission_offset, glows);
+        }
         const VoxelNode* nnodesv[6];
         fetch_neightbor_voxel_nodes(world, neighbors, nnodesv);
+        const BlockDatas* datas = zox_has(e, BlockDatas) ? zox_get(e, BlockDatas) : NULL;
+        const BlockDatas* ndatas[6];
+        fetch_neighbor_block_datas(world, neighbors, ndatas);
         const LightNode* nnodesl[6];
         fetch_neightbor_light_nodes(world, neighbors, nnodesl);
         LightQueue* n_light_queues[6];
@@ -373,8 +417,10 @@ void dark_light_system(iter* it) {
                 if (dark_flood_light(
                     &lightlock->value,
                     root_vnode,
+                    datas,
                     root_lnode,
                     nnodesv,
+                    ndatas,
                     nnodesl,
                     n_light_queues,
                     light_queue,
@@ -386,7 +432,8 @@ void dark_light_system(iter* it) {
                     update.distance,
                     darklight,
                     light_air_decay,
-                    solidity))
+                    solidity,
+                    glows))
                 {
                     dirty = 1;
                 }
@@ -404,8 +451,10 @@ void dark_light_system(iter* it) {
                     &lightlock->value,
                     dark_queued,
                     root_vnode,
+                    datas,
                     root_lnode,
                     nnodesv,
+                    ndatas,
                     nnodesl,
                     n_light_queues,
                     light_queue,
@@ -418,7 +467,8 @@ void dark_light_system(iter* it) {
                     light_air_decay,
                     update.type,
                     solidity,
-                    liquids))
+                    liquids,
+                    glows))
                 {
                     dirty = 1;
                 }

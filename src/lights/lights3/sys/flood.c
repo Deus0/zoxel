@@ -11,8 +11,10 @@ static inline byte flood_light(
     spinlock* lightlock,
     spinlock** neighbor_locks,
     const VoxelNode* voxels,
+    const BlockDatas* datas,
     LightNode* lights,
     const VoxelNode* neighbor_voxels[6],
+    const BlockDatas* neighbor_datas[6],
     const LightNode* neighbor_lights[6],
     LightQueue* n_queues[6],
     byte depth,
@@ -61,7 +63,7 @@ static inline byte flood_light(
                 neighbor_voxels2,
                 depth,
                 pos);
-            if (neighbor_voxel && solidity[neighbor_voxel - 1]) {
+            if (light_stops(solidity, neighbor_datas[dir], neighbor_voxel, pos)) {
                 continue; // solid: hard stop
             }
             // air decay, more into water
@@ -93,7 +95,7 @@ static inline byte flood_light(
         }
         // --- In-chunk: READ voxel, WRITE light in our own chunk only. ---
         byte voxel = getv_VoxelNode(voxels, depth, pos);
-        if (voxel && solidity[voxel - 1]) {
+        if (light_stops(solidity, datas, voxel, pos)) {
             continue;
         }
         byte decayed_light = light_flood_decay(light, voxel, liquids, air_decay, min_light);
@@ -120,8 +122,10 @@ static inline byte flood_light(
             lightlock,
             neighbor_locks,
             voxels,
+            datas,
             lights,
             neighbor_voxels,
+            neighbor_datas,
             neighbor_lights,
             n_queues,
             depth,
@@ -194,6 +198,9 @@ void light_flood_system(iter* it) {
             neighbor_locks);
         LightQueue* n_light_queues[6];
         fetch_neightbor_propogation_queues(world, neighbors, n_light_queues);
+        const BlockDatas* datas = zox_has(e, BlockDatas) ? zox_get(e, BlockDatas) : NULL;
+        const BlockDatas* neighbor_datas[6];
+        fetch_neighbor_block_datas(world, neighbors, neighbor_datas);
         byte dirty = 0;
         byte voxel_octree_depth = zox_getv(e, NodeDepth);
         while (flooded < max_flooding) {
@@ -218,7 +225,7 @@ void light_flood_system(iter* it) {
                 continue;
             }
             byte voxel = getv_VoxelNode(root_vnode, update.depth, update.pos);
-            if (voxel && solidity[voxel - 1]) {
+            if (light_stops(solidity, datas, voxel, update.pos)) {
                 if (dbg_log) {
                     zox_log("[%s]: Light Flood Canceled at [%ix%ix%i] l[%i] flooded [%i]",
                         zox_get_name(e),
@@ -253,8 +260,10 @@ void light_flood_system(iter* it) {
                 &lightlock->value,
                 neighbor_locks,
                 root_vnode,
+                datas,
                 root_lnode,
                 neighbor_voxels,
+                neighbor_datas,
                 neighbor_lights,
                 n_light_queues,
                 update.depth,

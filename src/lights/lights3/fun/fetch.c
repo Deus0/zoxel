@@ -80,3 +80,11 @@ void fetch_neighbors_light_locks(
                 NULL;
     }
 }
+
+// each side's chunk's block datas (a door's open state), NULL where it has none
+void fetch_neighbor_block_datas(ecs* world, const ChunkNeighbors* neighbors, const BlockDatas** datas) {
+    for (int i = 0; i < 6; i++) {
+        const entity e = neighbors->value[i];
+        datas[i] = zox_valid(e) && zox_has(e, BlockDatas) ? zox_get(e, BlockDatas) : NULL;
+    }
+}

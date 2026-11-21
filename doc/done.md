@@ -1,6 +1,14 @@
 # Done
 
 ## 2026-11-22
+-x Light sources relight, and doors stop light while shut. A covered hole's dark (the sun's, or a removed lamp's)
+  flooded a room and took its glow stone's light, and nothing lit it back: the dark pass lights an emitter it meets
+  again (lights3/sys/dark.c dark_relight_emitter). A loaded chunk's emitters were never lit (only edits and towns
+  lit them): a chunk's emitters light once its voxels are in, generated or loaded (GenerateEmitterLight,
+  lights3/sys/emitters.c), towns no longer seed their own. A door and its own filler (block_light_pass_open, its
+  filler picked by block_filler_voxel) stop light unless their block data is open; toggling one relights or darkens
+  it (lights3/fun/openings.c). Streaming unchanged (perf_stream settles 0.23s a step before and after). tst
+  glow_relight, door_light
 -x Town walls curve (fun/town.c town_shape): a rounded rect from the town's seed (a superellipse) pulled in by smooth
   noise, its band, edges, spikes and gate from it; homes, roads, lamps and the gate keep inside it; highways link a
   town's gate from its rect's edge, over a mountain if no line is clear. The stream spawns the regions round each

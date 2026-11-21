@@ -14,6 +14,7 @@ void sunny_chunk_generated_system(iter* it) {
         } else if (generate->value == zox_generate_terrain_sunlight) {
             generate->value = zox_generate_terrain_end2;
             zox_add(e, GenerateSunlight);
+            zox_add(e, GenerateEmitterLight);
         } else if (generate->value == zox_generate_terrain_end2) {
             zox_remove(e, GenerateChunk);
             zox_add(e, VoxelNodeDirty);
@@ -33,6 +34,9 @@ void chunk_generated_system(iter* it) {
         zox_sys_e();
         zox_sys_o(GenerateChunk, generate);
         if (generate->value == zox_generate_terrain_sunlight) {
+            if (!zox_no_lights) {
+                zox_add(e, GenerateEmitterLight);
+            }
             zox_add(e, VoxelNodeDirty);
             zox_remove(e, GenerateChunk);
             // zox_log("Generation Compplete [%s]", zox_sys_e_name);

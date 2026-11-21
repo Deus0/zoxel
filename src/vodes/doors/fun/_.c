@@ -96,6 +96,19 @@ byte door_toggle(ecs* world, entity terrain, entity realm, int3 block) {
         const byte part = !x && !y && !z ? 1 + direction : block_offset_encode(int3_scale(o, -1));
         terrain_set_block_data(world, terrain, int3_add(base, o), part | flag);
     }
+    // light through it only while it's open (block_light_pass_open), after every part's data is set
+    for (int y = 0; y < size.y; y++)
+    for (int x = 0; x < size.x; x++)
+    for (int z = 0; z < size.z; z++) {
+        byte3 local;
+        const entity chunk = terrain_chunk_local(world, terrain,
+            int3_add(base, block_direction_offset(direction, (int3) { x, y, z })), &local);
+        if (open) {
+            light_voxel_opened(world, chunk, local);
+        } else {
+            light_voxel_shut(world, chunk, local);
+        }
+    }
     const entity vode = terrain_vode_at(world, terrain, base);
     if (zox_valid(vode) && zox_has(vode, DoorOpen)) {
         zox_setv(vode, DoorOpen, open);

@@ -62,17 +62,6 @@ static inline entity realm_voxel_block(ecs* world, entity realm, int voxel) {
     return blocks && voxel > 0 && voxel <= blocks->length ? blocks->value[voxel - 1] : 0;
 }
 
-// the realm's filler voxel value, 0 if it has none
-byte realm_filler_voxel(ecs* world, entity realm) {
-    const BlockLinks* blocks = zox_valid(realm) ? zox_get(realm, BlockLinks) : NULL;
-    for (int i = 0; blocks && i < blocks->length; i++) {
-        if (zox_valid(blocks->value[i]) && zox_has(blocks->value[i], BlockFiller)) {
-            return i + 1;
-        }
-    }
-    return 0;
-}
-
 // a block's size in blocks, 1 x 1 x 1 for most
 static inline int3 block_size_of(ecs* world, entity block) {
     return zox_valid(block) && zox_has(block, BlockSize) ? zox_getv(block, BlockSize) : (int3) { 1, 1, 1 };
@@ -112,7 +101,7 @@ byte multi_block_place(ecs* world, entity terrain, entity realm, int3 base, byte
         }
         return terrain_queue_voxel(world, terrain, base, value, 0);
     }
-    const byte filler = realm_filler_voxel(world, realm);
+    const byte filler = block_filler_voxel(world, realm, realm_voxel_block(world, realm, value));
     if (!filler) {
         zox_loge("[multi_block_place] the realm has no filler block");
         return 0;
@@ -174,7 +163,7 @@ void multi_block_removed(ecs* world, entity terrain, entity realm, int3 position
         return;
     }
     // its fillers: those round it whose offsets lead back here
-    const byte filler = realm_filler_voxel(world, realm);
+    const byte filler = block_filler_voxel(world, realm, block);
     const int r = block_offset_range;
     for (int x = -r; x <= r; x++)
     for (int y = -r; y <= r; y++)

@@ -124,6 +124,9 @@ void blocks_realm_spawn_system(iter* it) {
             entity e2 = spawn_realm_block_model(world, e, block_seed, name, wood_color, 1, max_depth, model, model, direction_front);
             zox_setv(e2, BlockSize, (j ? (int3) { 1, 2, 1 } : (int3) { 2, 1, 1 }));
             zox_add_id(e2, j ? zox_id(BlockDoor) : zox_id(BlockBed));
+            if (j) {
+                zox_setv(e2, BlockLightPass, block_light_pass_open);    // light through it only while it's open
+            }
             link_hit_sound(world, e2, e, &hit_sound_wood);
         }
         // the filler: the rest of a bed's or door's box, solid, drawn by its base, no item (items/fun/multi_block.c)
@@ -185,6 +188,21 @@ void blocks_realm_spawn_system(iter* it) {
             zox_setv(e2, BlockLightOffset, ((byte3) { 0, 2, 0 }));
             zox_add(e2, BlockLamp);
             link_hit_sound(world, e2, e, &hit_sound_stone);
+        }
+        // a door's filler: as the filler, but it stops light while its door's shut (block_filler_voxel picks it for
+        //  blocks passing light so); last, the blocks before it keep their indices
+        {
+            SpawnBlock filler_data = {
+                .name = "door filler",
+                .prefab = prefab_block_base,
+                .model_type = zox_block_vox,
+                .tag = zox_id(BlockFiller),
+                .color = color_white,
+            };
+            entity e2 = spawn_block_vox_meta(world, filler_data);
+            zox_setv(e2, BlockLightPass, block_light_pass_open);
+            zox_set_parent(world, e2, e);
+            link_hit_sound(world, e2, e, &hit_sound_wood);
         }
         zox_add(e, BlocksDirty);
         if (dbg_log) {
