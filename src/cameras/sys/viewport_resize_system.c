@@ -1,10 +1,11 @@
-void viewport_resize_system(iter* it) {
-    zox_sys_on_begin();
+// an observer on WindowSizeDirty (a one-off event, removed here)
+void viewport_resize_event(iter* it) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(WindowSize);
     for (int i = 0; i < it->count; i++) {
+        zox_remove(it->entities[i], WindowSizeDirty);
         zox_sys_e();
         zox_sys_i(WindowSize, size);
         if (dbg_log) {
@@ -33,5 +34,4 @@ void viewport_resize_system(iter* it) {
             }
         }
     }
-    zox_sys_on_end();
-} zoxd_system(viewport_resize_system);
+}

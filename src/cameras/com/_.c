@@ -38,7 +38,7 @@ zoxc_float(CameraLids);     // the eyes closing, 0 open to 1 shut: lids from the
 // Properties
 zox_tag(CanRoam);
 zox_tag(Roaming);
-zoxc_dirty(Attach);
+zox_tag(AttachDirty);
 
 void zox_components_cameras(ecs *world) {
     zoxd_tag(Camera);
@@ -81,5 +81,5 @@ void zox_components_cameras(ecs *world) {
     // temp properties
     zoxd_nf_tag(CanRoam);
     zoxd_tag(Roaming);
-    zoxd_dirty(Attach);
+    zoxd_nf_tag(AttachDirty);
 }

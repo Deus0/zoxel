@@ -2,16 +2,13 @@
 #include "viewport_resize_system.c"
 #include "orthographic.c"
 #include "view_projection.c"
-zoxc_system_dirty(Attach);
 
 void zox_systems_cameras(ecs *world) {
-    zoxd_system_dirty(Attach);
-    zox_system(
-        viewport_resize_system,
-        zoxp_update,
+    zox_on_add(
+        viewport_resize_event,
         [in] apps.WindowSize,
         [none] apps.App,
-        [none] apps.WindowSizeUpdate,
+        [none] apps.WindowSizeDirty,
     );
     // View Matrixes
     zox_system(

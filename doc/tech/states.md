@@ -9,7 +9,7 @@ first form in the list that fits.
 |---|---|---|---|
 | 1. A tag its reader removes | 1 tag | 0 (the reader's own) | one system reacts |
 | 2. The core `Dirty` / `Update` | 0 new | 0 new (shared) | several react, nothing else dirties that entity |
-| 3. An observer on a tag | 0-1 | 0 | a light reaction, the moment it's set (settings) |
+| 3. An observer on a tag | 0-1 | 0 | a one-off event, the reaction light (camera attach, window resize) |
 | 4. A pair, `zoxc_dirty(T)` | 2 tags | 2 | several readers in different phases, and the entity has other changes |
 | 5. A byte state, `zoxc_state(T)` | 1 byte | 1 (increment) | a machine with steps, or code reads "still pending" |
 
@@ -42,12 +42,21 @@ zox_remove(e, GenerateSound);
 
 ### 3. An observer on a tag
 
+The coding standards' way for one-off events: a non fragmenting tag (`zoxd_nf_tag`) added when it happens, an
+observer acts and removes it (`camera_attach_event`: `zox_on_add(camera_attach_event, [in] core.Target,
+[none] cameras.AttachDirty)`, its loop starts `zox_remove(it->entities[i], AttachDirty)`). No system runs while
+nothing happens. A perf test (perf_fly, release) couldn't tell 3 such systems from observers (frames vary 25 to 37ms
+run to run), so pick by fewer components and systems.
+
+
 `zox_on_add(fn, [in] core.ZoxName, [none] settings.Setting, [none] core.Dirty)`, run at the merge, on the main
 thread. Settings use it (doc/tech/settings.md).
 
 - Observe **`Dirty`**, not `Update`: `Update` stays on while an entity is dirtied again on the next frame, so its
   OnAdd doesn't fire again (a dragged slider applied only its first value, tst settings_drag).
 - Keep heavy work in systems (they run on workers, an observer doesn't).
+- An observer runs the moment the tag lands, a frame sooner than a system on `Update`: check what it reads is ready
+  (the grid's sizes weren't).
 
 ### 4. A pair, `zoxc_dirty(T)`
 
@@ -78,8 +87,11 @@ A byte: `zox_dirty_trigger` (1) → `active` (2) → `end` (3) → `none` (0), o
 - Tags removed by their reader: `GenerateSound`, `ProcessSound`, `CombineVox`, `InspectorDirty`,
   `HierarchyUIDirty`, `GlyphSpawnedDirty`, `AnimateTextEnded`, `ActiveStateDirty`
 - Core `Dirty` / `Update`: `TriggerSound` (on sounds), every setting's change (observers on `Dirty`), texts
-- Pairs: `Skeleton`, `InsideBlock`, `ListPosition`, `LayoutPosition`, `LayoutSize` (several readers); `WindowSize`,
-  `Attach`, `Grid`, `List` have one reader each: candidates for form 1
+- Observers on a non fragmenting tag they remove: `AttachDirty` (camera_attach_event), `WindowSizeDirty`
+  (viewport_resize_event), `ListDirty` (scrollbar_handle_event); settings (on the core `Dirty`)
+- Pairs: `Skeleton`, `InsideBlock`, `ListPosition`, `LayoutPosition`, `LayoutSize` (several readers); `Grid` (one
+  reader, but as an observer it laid its icons out before their sizes settled: tst navigator_inventory's tooltips
+  showed the wrong item; its system reads them a frame on)
 - Bytes kept:
   - machines: `PlayerStateDirty`, `GameStateDirty`, `Generate`, `GenerateCharacter`, `PickedUp`
   - action timers: `ActivateBegin`, `WarmupState`, `Activate`, `CooldownState`, `TriggerActionA/B/E`,

@@ -54,11 +54,10 @@ void zox_systems_elements2(ecs *world) {
         [none] containers.ListPositionUpdate,
     );
     // resize handle when list dirty
-    zox_system(
-        scrollbar_handle_system,
-        zoxp_update,
+    zox_on_add(
+        scrollbar_handle_event,
         [in] containers.ListVisible,
-        [none] containers.ListUpdate,
+        [none] containers.ListDirty,
     );
     zox_system(
         elementbar_system,

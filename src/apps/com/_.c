@@ -7,7 +7,7 @@ zoxc_int2(WindowSize);
 zoxc_int2(WindowPosition);
 zoxc_int2(WindowSizeRestore);
 zoxc_int2(WindowPositionRestore);
-zoxc_dirty(WindowSize);
+zox_tag(WindowSizeDirty);
 
 void zox_components_apps(ecs *world) {
     zoxd_tag(App);
@@ -19,5 +19,5 @@ void zox_components_apps(ecs *world) {
     zoxd_int2(WindowPosition);
     zoxd_int2(WindowSizeRestore);
     zoxd_int2(WindowPositionRestore);
-    zoxd_dirty(WindowSize);
+    zoxd_nf_tag(WindowSizeDirty);
 }

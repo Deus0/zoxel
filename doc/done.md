@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-21
+-x Three dirty pairs are one tag each with an observer (the coding standards' one-off event): Attach, WindowSize and
+  List, their 6 remover systems and 3 readers' systems gone (lint 589 to 586). Grid stays a pair: as an observer it
+  laid icons out before their sizes settled (tst navigator_inventory). perf_fly couldn't tell them apart. The web
+  build set WindowSizeDirty as a byte, fixed. doc/tech/states.md
 -x More byte states gone: TriggerSound is the core Dirty/Update on a sound (players match Update, tst sound_trigger
   checks one reaches the mixer); ActiveStateDirty is a tag (elements get the core Dirty for texts), the link system
   removes it after the outline one; Bounds3Dirty and bounds3_enable_system gone (grow_bounds3 lets it move)

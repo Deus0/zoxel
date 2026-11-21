@@ -33,7 +33,7 @@ int2 get_webasm_screen_size() {
         // set_viewport_size(world, (int2) { canvas_size.x, canvas_size.y });
     if (!int2_equals(size, zox_getv(main_app, WindowSize)) {
         zox_set(main_app, WindowSize, { size });
-        zox_set(main_app, WindowSizeDirty, { zox_dirty_trigger });
+        zox_add(main_app, WindowSizeDirty);
         return 1;
     } else {
         return 0;

@@ -9,10 +9,9 @@ void zox_systems_cameras3(ecs *world) {
         [out] transforms3.Position3D,
         [none] cameras.Camera
     );
-    zox_system(
-        camera_attach_system,
-        zoxp_update,
+    zox_on_add(
+        camera_attach_event,
         [in] core.Target,
-        [none] cameras.AttachUpdate,
+        [none] cameras.AttachDirty,
     );
 }

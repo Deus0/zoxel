@@ -1,11 +1,12 @@
 // Resizes the scrollbar handle upon list updates
 // TODO: shouldn't this be on scrollarea resizes??
-void scrollbar_handle_system(iter* it) {
-    zox_sys_on_begin();
+// an observer on ListDirty (a one-off event, removed here)
+void scrollbar_handle_event(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ListVisible);
     for (int i = 0; i < it->count; i++) {
+        zox_remove(it->entities[i], ListDirty);
         zox_sys_i(ListVisible, visible);
         entity scrollview = zox_get_link(world, it->entities[i], ScrollviewLink);
         if (!zox_valid(scrollview)) {
@@ -41,5 +42,4 @@ void scrollbar_handle_system(iter* it) {
         //zox_log("   + new height [%i] scrollbar height [%i]", handle_height, scrollbar_size.y );
         //zox_log("   visible [%i] existing [%i]", visible->value, list_children_length);
     }
-    zox_sys_on_end();
-} zoxd_system(scrollbar_handle_system);
+}
