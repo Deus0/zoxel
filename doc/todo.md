@@ -13,6 +13,14 @@
 - a log window in the game menu with the game log's old lines (game_log keeps none yet)
 
 ## Bugs
+- full test run 2026-11-21 (320 tests): 5 failed, none from today's work
+	- end_game_cleanup fails every run: entities after ending a game differ from the round before (+8 to -208), also
+		on a7d8d3ff0 (before the day's work)
+	- lod_swap fails about 1 in 4: "[1] swaps drew a mesh with its light colours unbuilt (dark)", also before the
+		day's work (36f54ad2c)
+	- door_rays fails about 1 in 2: "closed, [0] rays at the door found its neighbour, [12] nothing"
+	- coop_pause: "the shared canvas didn't reuse a low id" (from 2026-11-20)
+	- quest_dialogue timed out once waiting for the player (the machine busy), passes alone
 - play test 2026-11-20:
 	- cloth sticks to a forearm: part of the shirt follows it (cloth should stick together)
 	- the crack overlay is missing in coop (the second player's screen), not reproduced: tst coop_block_crack shows
