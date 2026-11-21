@@ -110,18 +110,15 @@ void zox_systems_interaction(ecs* world) {
         [out] layouts.LayoutPosition,
         [none] ui.MouseElement
     );
-    zox_system_1(
-        click_sound_system,
-        zoxp_spawn,
+    zox_on_add(
+        click_sound_event,
         // [in] interactions.ClickState,
         [none] interactions.Click,
         [none] interactions.ClickMakeSound
     );
-    zox_system_1(
-        button_click_event_system,
-        zoxp_spawn,
+    zox_on_add(
+        button_click_event_event,
         [in] interactions.ClickEvent,
-        // [in] interactions.ClickState,
         [out] interactions.Clicker,
         [none] interactions.Click,
         [none] ui.Element,
@@ -138,47 +135,9 @@ void zox_systems_interaction(ecs* world) {
         [none] interactions.Select,
     );
 
-    zox_system(
-        trigger_deselect_system,
-        zoxp_remove,
-        [none] interactions.TriggerDeselect,
-    );
-    zox_system(
-        deselect_system,
-        zoxp_remove,
-        [none] interactions.Deselect,
-    );
-    // Clicks
-    zox_system(
-        trigger_click_system,
-        zoxp_remove,
-        [none] interactions.TriggerClick,
-    );
-    zox_system(
-        click_system,
-        zoxp_remove,
-        [none] interactions.Click,
-    );
-    // Right clicks
-    zox_system(
-        trigger_right_click_system,
-        zoxp_remove,
-        [none] interactions.TriggerRightClick,
-    );
-    zox_system(
-        right_click_system,
-        zoxp_remove,
-        [none] interactions.RightClick,
-    );
-    // Presses
-    zox_system(
-        trigger_press_system,
-        zoxp_remove,
-        [none] interactions.TriggerPress,
-    );
-    zox_system(
-        press_system,
-        zoxp_remove,
-        [none] interactions.Press,
-    );
+    // the ui events' cleanups
+    zox_on_add(deselect_cleanup_event, [none] interactions.Deselect);
+    zox_on_add(click_cleanup_event, [none] interactions.Click);
+    zox_on_add(right_click_cleanup_event, [none] interactions.RightClick);
+    zox_on_add(press_cleanup_event, [none] interactions.Press);
 }

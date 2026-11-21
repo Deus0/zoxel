@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-21
+-x Ui events Click, Deselect, Press and RightClick are one non fragmenting tag each: the Trigger tags and their 8
+  swap and remove systems gone, the 6 readers observers, a cleanup observer removes each (14 systems, 4 tags fewer).
+  Select, Begin, End, Exit keep their pairs (a system reader that needs them). Before and after in states.md
 -x Light events are non fragmenting tags and observers (measured cheapest, no table moves): InspectorDirty,
   HierarchyUIDirty, GlyphSpawnedDirty, AnimateTextEnded, ActiveStateDirty; 6 systems gone (4 of them main thread in
   zoxp_spawn; lint 586 to 580). The editor's windows add theirs at spawn, after their target (on the prefab, the

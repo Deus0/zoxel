@@ -29,13 +29,9 @@ zox_tag(ActiveLink);       // list -> its active element, only for ActiveSingle 
 // Events
 zox_tag(TriggerSelect);
 zox_tag(Select);
-zox_tag(TriggerDeselect);
 zox_tag(Deselect);
-zox_tag(TriggerClick);
 zox_tag(Click);
-zox_tag(TriggerRightClick);
 zox_tag(RightClick);       // right pressed this frame, i.e. splitting an item stack
-zox_tag(TriggerPress);
 zox_tag(Press);            // pressed this frame, i.e. bringing its window to the top
 
 typedef struct {
@@ -95,12 +91,8 @@ void zox_components_interaction(ecs* world) {
     // Events
     zoxd_tag_event(TriggerSelect);
     zoxd_tag_event(Select);
-    zoxd_tag_event(TriggerDeselect);
-    zoxd_tag_event(Deselect);
-    zoxd_tag_event(TriggerClick);
-    zoxd_tag_event(Click);
-    zoxd_tag_event(TriggerRightClick);
-    zoxd_tag_event(RightClick);
-    zoxd_tag_event(TriggerPress);
-    zoxd_tag_event(Press);
+    zoxd_nf_tag(Deselect);
+    zoxd_nf_tag(Click);
+    zoxd_nf_tag(RightClick);
+    zoxd_nf_tag(Press);
 }

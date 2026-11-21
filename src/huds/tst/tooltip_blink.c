@@ -54,7 +54,7 @@ byte zox_tst_tooltip_blink_ready(ecs* world) {
         zox_setm(button, SelectState, zox_state_select_trigger);
         zox_add(button, TriggerSelect);
         zox_setm(button, SelectState, zox_state_deselect_trigger);
-        zox_add(button, TriggerDeselect);
+        zox_add(button, Deselect);
         zox_tst_tb_stage = 3;
         zox_tst_tb_frames = 0;
         return 0;

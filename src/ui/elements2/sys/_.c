@@ -76,9 +76,8 @@ void zox_systems_elements2(ecs *world) {
         [in] layouts.LayoutPosition
     );
     // Main Thread needed due to nature of options
-    zox_system_1(
-        toggle_event_system,
-        zoxp_spawn,
+    zox_on_add(
+        toggle_event_event,
         //[in] interactions.ClickState,
         [in] interactions.Clicker,
         [in] interactions.ToggleEvent,

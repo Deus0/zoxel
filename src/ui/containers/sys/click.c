@@ -15,8 +15,8 @@ extern byte is_frame_body_part(ecs*, entity);
 extern byte is_data_body_part(ecs*, entity);
 
 // NOTE: Called from the clicked icon
-void data_ui_click_system(iter* it) {
-    zox_sys_on_begin();
+// an observer (the ui event: a non fragmenting tag, its cleanup observer removes it)
+void data_ui_click_event(iter* it) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -151,5 +151,4 @@ void data_ui_click_system(iter* it) {
             on_frame_updated_equipment(world, user);
         }
     }
-    zox_sys_on_end();
-} zoxd_system(data_ui_click_system);
+}

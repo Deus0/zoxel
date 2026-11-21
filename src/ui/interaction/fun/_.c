@@ -9,7 +9,7 @@ void on_element_clicked(
     if (zox_has(e, ClickDisabled) && zox_getv(e, ClickDisabled)) {
         return;
     }
-    zox_add(e, TriggerClick);
+    zox_add(e, Click);
     zox_setm(e, ClickState, zox_click_state_trigger_clicked);
     zox_setm(e, Clicker, player);
 }
@@ -41,7 +41,7 @@ void on_element_pressed(
     if (zox_has(e, ClickDisabled) && zox_getv(e, ClickDisabled)) {
         return;
     }
-    zox_add(e, TriggerPress);
+    zox_add(e, Press);
     if (zox_has(e, ClickOnPress)) {
         on_element_clicked(world, player, e);
     }
@@ -59,7 +59,7 @@ void on_element_right_pressed(
     if (zox_has(e, ClickDisabled) && zox_getv(e, ClickDisabled)) {
         return;
     }
-    zox_add(e, TriggerRightClick);
+    zox_add(e, RightClick);
     zox_setm(e, Clicker, player);
 }
 
@@ -89,7 +89,7 @@ void set_raycast_target_children(
             zox_has(last_target, Selectable))
         {
             zox_setm(last_target, SelectState, zox_state_deselect_trigger);
-            zox_add(last_target, TriggerDeselect);
+            zox_add(last_target, Deselect);
         }
         zox_setm(e, Target, target);
         if (zox_valid(target) &&

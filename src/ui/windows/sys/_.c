@@ -22,9 +22,8 @@ void zox_systems_windows(ecs* world) {
         [none] windows.Window,
         [none] windows.WindowLayerDirty
     );
-    zox_system(
-        window_element_clicked_system,
-        zoxp_update,
+    zox_on_add(
+        window_element_clicked_event,
         [none] ui.Element,
         [none] interactions.Press,    // to the top on press, not waiting for the click
     );

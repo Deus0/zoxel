@@ -33,8 +33,8 @@ static inline void set_mouse_data(
     }
 }
 
-void data_ui_right_click_system(iter* it) {
-    zox_sys_on_begin();
+// an observer (the ui event: a non fragmenting tag, its cleanup observer removes it)
+void data_ui_right_click_event(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     for (int i = 0; i < it->count; i++) {
@@ -88,5 +88,4 @@ void data_ui_right_click_system(iter* it) {
         zox_add(slot, DataDirty);
         zox_add(e, DataDirty);
     }
-    zox_sys_on_end();
-} zoxd_system(data_ui_right_click_system);
+}

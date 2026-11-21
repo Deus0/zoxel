@@ -150,7 +150,8 @@ Entities with 20 components:
 - Observers on a non fragmenting tag they remove: `AttachDirty` (camera_attach_event), `WindowSizeDirty`
   (viewport_resize_event), `ListDirty` (scrollbar_handle_event), `InspectorDirty`, `HierarchyUIDirty` (the editor's
   spawns), `GlyphSpawnedDirty` (dialogue voices), `AnimateTextEnded`, `ActiveStateDirty` (element_active_event, then
-  element_active_link_event removes it); settings (on the core `Dirty`)
+  element_active_link_event removes it); the ui's `Click`, `Deselect`, `Press`, `RightClick` (a cleanup observer
+  removes each); settings (on the core `Dirty`)
 - Pairs: `Skeleton`, `InsideBlock`, `ListPosition`, `LayoutPosition`, `LayoutSize` (several readers); `Grid` (one
   reader, but as an observer it laid its icons out before their sizes settled: tst navigator_inventory's tooltips
   showed the wrong item; its system reads them a frame on)
@@ -172,3 +173,22 @@ Entities with 20 components:
 | navigator, options_toggle | ActiveStateDirty: frames and toggles light |
 | menu_flow, end_game_cleanup | the game and player state machines |
 | pipeline_syncs, lint_systems | merges and systems |
+
+## Refactor log, before and after
+
+How to measure one: `lint_systems` (systems registered), `pipeline_syncs` (systems in the game's pipeline, merges),
+and the tests the change drives, their own time (`[tst] running` to `PASSED` in tst/<name>.log). Those are mostly
+waits, so they show nothing got slower; the event costs themselves are in flecs_event_costs / flecs_event_scaling.
+
+- 2026-11-21, ui events Click, Deselect, Press, RightClick: their Trigger tags and 8 swap / remove systems gone, the
+  6 readers observers (light ui work), a cleanup observer removes each. Select keeps its pair (tooltip_select_system
+  stays a system, a fast flick lost text as an observer); Begin / End / Exit too (model node readers are heavy).
+
+  | | before | after |
+  |---|---|---|
+  | systems (lint_systems) | 580 | 566 |
+  | the pipeline's systems / merges | 436 / 11 | 434 / 11 |
+  | tags | Trigger + event, 8 | 4 |
+  | navigator, mouse_click, tooltips (s) | 24.4, 1.35, 17.2 | 21.8, 1.31, 16.7 |
+  | scroll_wheel, options_toggle, menu_flow (s) | 1.16, 0.82, 26.6 | 1.13, 0.81, 27.5 |
+

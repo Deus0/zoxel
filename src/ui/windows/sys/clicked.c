@@ -1,5 +1,5 @@
-void window_element_clicked_system(iter* it) {
-    zox_sys_on_begin();
+// an observer (the ui event: a non fragmenting tag, its cleanup observer removes it)
+void window_element_clicked_event(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     // zox_sys_in(ClickState);
@@ -19,5 +19,4 @@ void window_element_clicked_system(iter* it) {
         }
         zox_set(canvas, WindowToTop, { window });
     }
-    zox_sys_on_end();
-} zoxd_system(window_element_clicked_system);
+}

@@ -1,5 +1,5 @@
-void toggle_event_system(iter* it) {
-    zox_sys_on_begin();
+// an observer (the ui event: a non fragmenting tag, its cleanup observer removes it)
+void toggle_event_event(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Clicker);
@@ -23,5 +23,4 @@ void toggle_event_system(iter* it) {
         (*event->value)(world, &data);
         // zox_log("Toggled the Toggle! I AM TOGGLER");
     }
-    zox_sys_on_end();
-} zoxd_system(toggle_event_system);
+}

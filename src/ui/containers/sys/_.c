@@ -6,18 +6,16 @@
 #include "state.c"
 
 void zox_systems_ui_containers(ecs* world) {
-    zox_system(
-        data_ui_click_system,
-        zoxp_update,
+    zox_on_add(
+        data_ui_click_event,
         // [in] interactions.ClickState,
         [none] interactions.Click,
         [none] slots.SlotUser,
         [none] ui_containers.DataUI,
     );
     // main thread, splitting a stack spawns an item
-    zox_system_1(
-        data_ui_right_click_system,
-        zoxp_update,
+    zox_on_add(
+        data_ui_right_click_event,
         // [in] interactions.ClickState,
         [none] interactions.RightClick,
         [none] slots.SlotUser,

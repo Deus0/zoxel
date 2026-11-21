@@ -1,6 +1,6 @@
 // NOTE: Runs the ClickEvent on Click, added on release (or on press for ClickOnPress), see on_element_pressed
-void button_click_event_system(iter* it) {
-    zox_sys_on_begin();
+// an observer (the ui event: a non fragmenting tag, its cleanup observer removes it)
+void button_click_event_event(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ClickEvent);
@@ -18,5 +18,4 @@ void button_click_event_system(iter* it) {
         };
         (*event->value)(world, event_data);
     }
-    zox_sys_on_end();
-} zoxd_system(button_click_event_system);
+}
