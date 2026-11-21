@@ -37,26 +37,36 @@ static inline byte npc_can_see(ecs* world, entity terrain, float3 eye, float3 fo
 }
 
 // the closest player it sees in a chunk, closer than closest (which it lowers)
+#define sight_chunk_players_max 8
+
+// the chunk's players are copied out under its entities lock, their lines checked after: the lines lock octrees, and a
+//  raycast holds an octree while it takes an entities lock (held both, the two deadlocked: tst stream_npcs)
 static inline entity sight_in_chunk(ecs* world, entity e, entity terrain, entity chunk, float3 eye, float3 forward, float* closest) {
     if (!zox_valid(chunk) || !zox_has(chunk, ChunkEntities)) {
         return 0;
     }
-    entity found = 0;
+    entity players[sight_chunk_players_max];
+    float3 targets[sight_chunk_players_max];
+    int count = 0;
     ChunkEntities* entities = (ChunkEntities*) zox_get(chunk, ChunkEntities);
     spin_lock(&entities->lock);
-    for (int j = 0; j < entities->length; j++) {
+    for (int j = 0; j < entities->length && count < sight_chunk_players_max; j++) {
         const entity e2 = entities->value[j];
         if (e2 == e || !zox_valid(e2) || !zox_valid(zox_get_link(world, e2, PlayerLink)) || zox_has(e2, Dead)) {
             continue;
         }
-        const float3 target = zox_getv(e2, Position3D);
-        const float distance = float3_distance(eye, target);
-        if (distance < *closest && npc_can_see(world, terrain, eye, forward, target)) {
-            *closest = distance;
-            found = e2;
-        }
+        players[count] = e2;
+        targets[count++] = zox_getv(e2, Position3D);
     }
     spin_unlock(&entities->lock);
+    entity found = 0;
+    for (int j = 0; j < count; j++) {
+        const float distance = float3_distance(eye, targets[j]);
+        if (distance < *closest && npc_can_see(world, terrain, eye, forward, targets[j])) {
+            *closest = distance;
+            found = players[j];
+        }
+    }
     return found;
 }
 

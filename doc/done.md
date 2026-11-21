@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-21
+-x A deadlock in game (tst stream_npcs hung): npc sight held a chunk's entities lock while its lines locked octrees,
+  the crosshair raycast held an octree while it took that entities lock. A merge between the two systems kept them
+  apart until the huds' main thread systems left pre_physics. Sight copies the chunk's players out, lets the lock go,
+  then checks its lines
 -x tst pipeline_syncs: 13 merges (over 11). The huds' main thread systems (load_lids, navigator_shift, huds3_follow,
   huds3_options_stick) sat in pre_physics between multi threaded ones (2 merges); they're in zoxp_spawn with the rest.
   There no merge comes between the input extracts and navigator_shift, so the inputs it reads write in place (as

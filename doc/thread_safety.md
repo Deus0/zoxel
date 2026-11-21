@@ -102,6 +102,9 @@ at the same time can follow a freed pointer, a segfault.
 
 - Lock every octree you read or write (`zox_octree_lock`), only for the walk, never across frames or while
   holding another (use `zox_lock_voxel_trees` for several).
+- Other spinlocks too (a chunk's `ChunkEntities` lock): never take an octree lock while holding one, copy out what you
+  need and let it go first. npc sight walked lines under it while a raycast held an octree and wanted it: a deadlock
+  (2026-11-21, tst stream_npcs hung once a merge between the two systems went).
 - Write octrees in `zoxp_octree_write` where you can, read them in `zoxp_octree_read` or later.
 - Never keep octree pointers across frames.
 - Spawning, deleting, adding or removing components from workers is deferred (commands), safe. Reading another
