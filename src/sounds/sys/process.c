@@ -5,21 +5,19 @@ void sound_process_system(iter* it) {
         return;
     }
     float default_frequency = 220; // 440;
+    zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(ProcessSound);
     zox_sys_in(SoundData);
     zox_sys_in(SoundVolume);
     zox_sys_in(SoundFrequency);
     zox_sys_out(TriggerSound);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(ProcessSound, processSound);
+        zox_sys_e();
         zox_sys_i(SoundData, soundData);
         zox_sys_i(SoundVolume, soundVolume);
         zox_sys_i(SoundFrequency, soundFrequency);
         zox_sys_o(TriggerSound, triggerSound);
-        if (processSound->value != zox_dirty_active) {
-            continue;
-        }
+        zox_remove(e, ProcessSound);
         if (!soundData->value) {
             zox_loge("Failed processing, no sound data");
             continue;

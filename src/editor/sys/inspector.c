@@ -112,17 +112,13 @@ void inspector_spawn_system(iter* it) {
     const ClickEvent on_click = (ClickEvent) { &button_event_clicked_inspector };
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(InspectorDirty);
     zox_sys_in(Target);
     zox_sys_in(FontSize);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(InspectorDirty, dirty);
         zox_sys_i(Target, target);
         zox_sys_i(FontSize, font_size);
-        if (dirty->value != zox_dirty_active) {
-            continue;
-        }
+        zox_remove(e, InspectorDirty);
         const entity list = get_editor_window_list(world, e);
         if (!list) {
             continue;

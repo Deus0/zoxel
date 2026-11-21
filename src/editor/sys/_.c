@@ -35,16 +35,16 @@ void zox_systems_editor(ecs *world) {
     zox_system_1(
         hierarchy_spawn_system,
         zoxp_spawn,
-        [in] editor.HierarchyUIDirty,
         [in] core.Target,
-        [in] ui.ElementFontSize
+        [in] ui.ElementFontSize,
+        [none] editor.HierarchyUIDirty
     );
     zox_system_1(
         inspector_spawn_system,
         zoxp_spawn,
-        [in] editor.InspectorDirty,
         [in] core.Target,
-        [in] ui.FontSize
+        [in] ui.FontSize,
+        [none] editor.InspectorDirty
     );
     zox_system_1(
         editor_input_system,

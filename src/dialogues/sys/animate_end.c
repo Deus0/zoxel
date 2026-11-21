@@ -3,13 +3,9 @@ void animate_text_end_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(AnimateTextEnded);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(AnimateTextEnded, ended);
-        if (ended->value != zox_dirty_active) {
-            continue;
-        }
+        zox_remove(e, AnimateTextEnded);
         entity window = zox_get_parent_by_id(
             world,
             e,

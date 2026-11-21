@@ -9,8 +9,6 @@ void animate_text_system(iter* it) {
     zox_sys_out(AnimateTextBegin);
     zox_sys_out(AnimateTextTime);
     zox_sys_out(TextData);
-    zox_sys_out(GlyphSpawnedDirty);
-    zox_sys_out(AnimateTextEnded);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(TargetText, target);
@@ -18,8 +16,6 @@ void animate_text_system(iter* it) {
         zox_sys_o(AnimateTextBegin, begin);
         zox_sys_o(AnimateTextTime, rate);
         zox_sys_o(TextData, data);
-        zox_sys_o(GlyphSpawnedDirty, spawned_dirty);
-        zox_sys_o(AnimateTextEnded, ended);
         if (!begin->value) {
             if (dbg_log >= 2) {
                 zox_log("AnimateTextBegin Not Started");
@@ -59,11 +55,11 @@ void animate_text_system(iter* it) {
         // zox_log("Setting Text Target [%s] [%i/%i]", target->value, animated_length, length);
         if (!is_zext_cut(data, target->value, new_length)) {
             set_zext_cut(data, target->value, new_length);
-            spawned_dirty->value = zox_dirty_trigger;
+            zox_add(e, GlyphSpawnedDirty);
             zox_add(e, Dirty);
             if (target_length == new_length) {
                 begin->value = 0;
-                ended->value = zox_dirty_trigger;
+                zox_add(e, AnimateTextEnded);
                 if (dbg_log) {
                     zox_log("Text Ended [%s] : Length [%i]",
                         target->value,

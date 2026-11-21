@@ -43,7 +43,7 @@ zoxc_byte(CloneVox);
 zox_tag(CloneVoxLink);
 zox_tag(VoxLink);          // links to a child vox that holds voxel data, i.e. a characters vox
 zox_tag(VoxOwner);         // has a child vox, linked with VoxLink
-zoxc_state(CombineVox);
+zox_tag(CombineVox);
 zoxc_entitiesw(CombineList);
 zoxc_arrayd(CombinePositions, byte3);
 zoxc_arrayd(CombineDepths, byte);   // depth to sample each CombineList vox at
@@ -104,7 +104,7 @@ void zox_components_chunks3(ecs* world) {
     zoxd_hashmap(ChunkLinks);
     // operations
     zoxd_byte(CloneVox);
-    zoxd_state(CombineVox);
+    zoxd_tag_event(CombineVox);
     zoxd_nf_link(CloneVoxLink);
     zoxd_nf_link(VoxLink);
     zoxd_tag(VoxOwner);

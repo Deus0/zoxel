@@ -3,7 +3,7 @@ byte sound_file_index = 0;
 entity spawn_prefab_sound_file_instance(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("sound_file_instance");
-    zox_set(e, ProcessSound, { zox_dirty_trigger });
+    zox_add(e, ProcessSound);
     return e;
 }
 
@@ -43,6 +43,6 @@ entity spawn_sound_from_file(ecs *world, entity prefab, entity src, float freque
     if (volume) {
         zox_set(e, SoundVolume, { volume });
     }
-    zox_set(e, ProcessSound, { zox_dirty_trigger });
+    zox_add(e, ProcessSound);
     return e;
 }

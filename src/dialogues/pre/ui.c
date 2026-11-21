@@ -6,8 +6,6 @@ entity spawn_prefab_dialogue_text(ecs *world, entity prefab) {
     zox_setv(e, AnimateTextBegin, 0);
     zox_setv(e, AnimateTextTime, 0.05f);
     zox_set(e, AnimateTextTimeLimits, {{ 0.03f, 0.08f }});
-    zox_setv(e, GlyphSpawnedDirty, 0);
-    zox_setv(e, AnimateTextEnded, 0);
     zox_setv(e, VoiceIndex, 0);
     // a fixed box its lines wrap to (dialogue_speech_system), not sized to its text
     zox_add(e, TextWrap);

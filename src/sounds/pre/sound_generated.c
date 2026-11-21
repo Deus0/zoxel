@@ -3,7 +3,7 @@ entity spawn_prefab_generated_sound(ecs *world, entity prefab) {
     zox_prefab_name("generated_sound");
     zox_set(e, SoundFrequency, { 0 });
     zox_set(e, InstrumentType, { 0 });
-    zox_set(e, GenerateSound, { zox_dirty_trigger });
+    zox_add(e, GenerateSound);
     return e;
 }
 

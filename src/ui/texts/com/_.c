@@ -22,8 +22,8 @@ zoxc_fixed_string(TargetText, 512);
 zoxc_double(AnimateTextBegin);
 zoxc_float(AnimateTextTime);
 zoxc_float2(AnimateTextTimeLimits);
-zoxc_state(GlyphSpawnedDirty);
-zoxc_state(AnimateTextEnded);
+zox_tag(GlyphSpawnedDirty);
+zox_tag(AnimateTextEnded);
 
 void zox_components_texts(ecs *world) {
     zoxd_tag(Text);
@@ -47,6 +47,6 @@ void zox_components_texts(ecs *world) {
     zoxd_double(AnimateTextBegin);
     zoxd_float(AnimateTextTime);
     zoxd_float2(AnimateTextTimeLimits);
-    zoxd_state(GlyphSpawnedDirty);
-    zoxd_state(AnimateTextEnded);
+    zoxd_tag_event(GlyphSpawnedDirty);
+    zoxd_tag_event(AnimateTextEnded);
 }

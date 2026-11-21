@@ -4,6 +4,6 @@ entity spawn_prefab_hierarchy(ecs *world, entity p) {
     zox_add(e, EditorElement);
     // zox_set(e, WindowType, { zox_window_hierarchy });
     zox_set(e, ElementFontSize, { 16 });
-    zox_set(e, HierarchyUIDirty, { zox_dirty_trigger });
+    zox_add(e, HierarchyUIDirty);
     return e;
 }

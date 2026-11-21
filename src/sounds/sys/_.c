@@ -8,12 +8,12 @@ void zox_systems_sounds(ecs *world) {
     zox_system(
         sound_process_system,
         zoxp_update,
-        [in] ProcessSound,
         [in] SoundData,
         [in] SoundVolume,
         [in] SoundFrequency,
         [out] TriggerSound,
-        [None] Sound
+        [None] Sound,
+        [none] ProcessSound
     );
     zox_system(
         sound_generate_system,
@@ -22,10 +22,10 @@ void zox_systems_sounds(ecs *world) {
         [in] SoundLength,
         [in] SoundFrequency,
         [in] SoundVolume,
-        [in] GenerateSound,
         [in] SoundData,
         [out] TriggerSound,
-        [none] Sound
+        [none] Sound,
+        [none] GenerateSound
     );
     add_system_process_counter(world, zox_id(sound_generate_system));
     zox_system_1(

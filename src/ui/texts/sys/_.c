@@ -17,8 +17,6 @@ void zox_systems_texts(ecs *world) {
         [out] texts.AnimateTextBegin,
         [out] texts.AnimateTextTime,
         [out] texts.TextData,
-        [out] texts.GlyphSpawnedDirty,
-        [out] texts.AnimateTextEnded,
         [none] texts.Text,
     );
     zox_system(

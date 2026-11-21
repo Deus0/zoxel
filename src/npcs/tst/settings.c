@@ -28,7 +28,7 @@ static inline byte zox_tst_settings_ready_app(ecs* world) {
     while (zox_children_next(it)) {
         for (int j = 0; j < it.count; j++) {
             const entity e = it.entities[j];
-            if (zox_has(e, Setting) && zox_has(e, ZoxName) && zox_get(e, ZoxName)->value &&
+            if (zox_has(e, Setting) && zox_has(e, ZoxName) &&
                 !strcmp(zox_get(e, ZoxName)->value, "Music")) {
                 return 1;
             }
@@ -63,7 +63,7 @@ byte zox_tst_settings_spawn_ready(ecs* world) {
             if (!zox_has(e, Setting)) {
                 continue;
             }
-            if (!zox_has(e, ZoxName) || !zox_get(e, ZoxName)->value) {
+            if (!zox_has(e, ZoxName)) {
                 zox_tst_settings_unnamed++;
                 continue;
             }

@@ -46,17 +46,13 @@ void hierarchy_spawn_system(iter* it) {
     const ClickEvent on_click = (ClickEvent) { &button_event_clicked_hierarchy };
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(HierarchyUIDirty);
     zox_sys_in(Target);
     zox_sys_in(ElementFontSize);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(HierarchyUIDirty, dirty);
         zox_sys_i(Target, target);
         zox_sys_i(ElementFontSize, font_size);
-        if (dirty->value != zox_dirty_active) {
-            continue;
-        }
+        zox_remove(e, HierarchyUIDirty);
         const entity list = get_editor_window_list(world, e);
         if (!list) {
             continue;

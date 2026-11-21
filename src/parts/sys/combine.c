@@ -383,7 +383,7 @@ void body_combine_system(iter* it) {
         body_dirty->value = zox_generate_body_bones;
         zox_setm(vox, NodeDepth, max_depth);
         zox_setm(vox, BlockScale, block_scale->value);
-        zox_setm(vox, CombineVox, zox_dirty_trigger);
+        zox_add(vox, CombineVox);
         // NOTE: Render at the depth for our chunks distance, like chunk_entities_lod_system
         zox_setm(e, MaxRenderDepth, max_depth);
         byte distance = 0;

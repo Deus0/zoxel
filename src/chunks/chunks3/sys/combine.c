@@ -161,7 +161,6 @@ void combine_vox_system(iter* it) {
     ushort max_colors = 255;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(CombineVox);
     zox_sys_in(CombineList);
     zox_sys_in(CombinePositions);
     zox_sys_out(ChunkSize);
@@ -171,7 +170,6 @@ void combine_vox_system(iter* it) {
     zox_sys_out(ColorRGBs);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(CombineVox, state);
         zox_sys_i(CombineList, voxes);
         zox_sys_i(CombinePositions, positions);
         zox_sys_o(ChunkSize, csize);
@@ -179,9 +177,7 @@ void combine_vox_system(iter* it) {
         zox_sys_o(RenderDepth, rdepth);
         zox_sys_o(VoxelNode, voctree);
         zox_sys_o(ColorRGBs, colors);
-        if (state->value != zox_dirty_active) {
-            continue;
-        }
+        zox_remove(e, CombineVox);
         if (voxes->length != positions->length) {
             zox_loge("Vox and Positions out of Sync, cannot combine.");
             continue;

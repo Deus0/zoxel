@@ -19,7 +19,7 @@ byte set_inspector_target(
         return 0;
     }
     zox_setv(inspector, Target, target);
-    zox_setv(inspector, InspectorDirty, zox_dirty_trigger);
+    zox_add(inspector, InspectorDirty);
     zox_logv("+ Inspector Target [%s]", zox_valid(target) ? zox_getn(target) : "None");
     return 1;
 }

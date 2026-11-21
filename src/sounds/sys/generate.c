@@ -4,25 +4,23 @@ void sound_generate_system(iter* it) {
     if (nosounds || !master_volume) {
         return;
     }
+    zox_sys_world();
     zox_sys_begin();
     zox_sys_in(InstrumentType);
     zox_sys_in(SoundLength);
     zox_sys_in(SoundFrequency);
     zox_sys_in(SoundVolume);
-    zox_sys_in(GenerateSound);
     zox_sys_in(SoundData);
     zox_sys_out(TriggerSound);
     for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
         zox_sys_i(SoundLength, soundLength);
         zox_sys_i(SoundFrequency, soundFrequency);
         zox_sys_i(InstrumentType, instrumentType);
         zox_sys_i(SoundVolume, soundVolume);
-        zox_sys_i(GenerateSound, generateSound);
         zox_sys_i(SoundData, soundData);
         zox_sys_o(TriggerSound, triggerSound);
-        if (generateSound->value != zox_dirty_active) {
-            continue;
-        }
+        zox_remove(e, GenerateSound);
         if (!soundData->value) {
             zox_logw("Sound Data missing in [sound_generate_system]");
             continue;

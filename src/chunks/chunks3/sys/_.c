@@ -73,7 +73,6 @@ void zox_systems_chunks3(ecs *world) {
     zox_system(
         combine_vox_system,
         zoxp_octree_write,
-        [in] chunks3.CombineVox,
         [in] chunks3.CombineList,
         [in] chunks3.CombinePositions,
         [out] chunks3.ChunkSize,
@@ -82,6 +81,7 @@ void zox_systems_chunks3(ecs *world) {
         [out] chunks3.VoxelNode,
         [out] colorz.ColorRGBs,
         [none] chunks3.Chunk3,
+        [none] chunks3.CombineVox
     );
     // Colored
     zox_system(

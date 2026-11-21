@@ -3,19 +3,15 @@ void dialogue_sound_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(GlyphSpawnedDirty);
     zox_sys_in(TargetText);
     zox_sys_in(TextData);
     zox_sys_out(VoiceIndex);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(GlyphSpawnedDirty, state);
         zox_sys_i(TargetText, target);
         zox_sys_i(TextData, data);
         zox_sys_o(VoiceIndex, next);
-        if (state->value != zox_dirty_active) {
-            continue;
-        }
+        zox_remove(e, GlyphSpawnedDirty);
         // every letter shown since the last one said (a slow frame shows a few)
         const int shown = data->length;
         if (next->value > shown) {
