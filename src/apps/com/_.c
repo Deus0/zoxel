@@ -9,7 +9,14 @@ zoxc_int2(WindowSizeRestore);
 zoxc_int2(WindowPositionRestore);
 zox_tag(WindowSizeDirty);
 
+// its settings, each its own tag (a setting's observer finds it by it, not its name)
+zox_tag(SettingFullscreen);
+zox_tag(SettingVsync);
+
 void zox_components_apps(ecs *world) {
+    zoxd_tag(SettingFullscreen);
+    zoxd_tag(SettingVsync);
+
     zoxd_tag(App);
     zoxd_nf_link(AppLink);
     zoxd_byte(WindowFullscreen);

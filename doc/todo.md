@@ -162,6 +162,10 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
   game flag doing the job and quitting (as `--maps`, towns/dbg/maps_dump.c), the test then calls the same functions
   and checks what they make (the views a test checks stay tests, the ones only looked at become tools)
 
+## RenderDisabled to tags (2026-11-22)
+- RenderDisabled a tag (Invisible), and one for not raycast or navigated to (DisableInteraction): it's a byte each
+  draw reads; a window's tabs (ui/windows/ins/tabs.c) hide theirs with it for now
+
 ## Tests in their own place (2026-11-22)
 - tests that span modules sit where the build order lets them, not with what they test: find them a module after
   the ones they use (a tst module last in the build)

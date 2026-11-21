@@ -1,9 +1,9 @@
 void zox_settings_bones(ecs* world, entity app) {
 #ifdef zox_debug_settings
-        spawn_setting_byte(world, app, "Disable Bones", disable_bones);
-        spawn_setting_byte(world, app, "Transparent Mesh", transparent_meshes);
-        spawn_setting_byte(world, app, "Bone Gizmos", render_bones);
-        spawn_setting_byte(world, app, "Paint Weights", paint_weights);
+        setting_tags(world, spawn_setting_byte(world, app, "Disable Bones", disable_bones), zox_id(SettingTabDebug), zox_id(SettingDisableBones));
+        setting_tags(world, spawn_setting_byte(world, app, "Transparent Mesh", transparent_meshes), zox_id(SettingTabDebug), zox_id(SettingTransparentMesh));
+        setting_tags(world, spawn_setting_byte(world, app, "Bone Gizmos", render_bones), zox_id(SettingTabDebug), zox_id(SettingBoneGizmos));
+        setting_tags(world, spawn_setting_byte(world, app, "Paint Weights", paint_weights), zox_id(SettingTabDebug), zox_id(SettingPaintWeights));
 #endif
 }
 
@@ -22,13 +22,13 @@ void zox_settings_dirty_bones(iter* it) {
                     name->value,
                     value);
             }
-            if (!strcmp(name->value, "Disable Bones")) {
+            if (zox_has(e, SettingDisableBones)) {
                 disable_bones = value;
-            } else if (!strcmp(name->value, "Transparent Mesh")) {
+            } else if (zox_has(e, SettingTransparentMesh)) {
                 transparent_meshes = value;
-            } else if (!strcmp(name->value, "Bone Gizmos")) {
+            } else if (zox_has(e, SettingBoneGizmos)) {
                 render_bones = value;
-            } else if (!strcmp(name->value, "Paint Weights")) {
+            } else if (zox_has(e, SettingPaintWeights)) {
                 paint_weights = value;
             }
         }

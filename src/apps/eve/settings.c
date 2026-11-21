@@ -1,14 +1,14 @@
 /*void zox_settings_apps(ecs* world, entity app) {
-    spawn_setting_byte(world, app, "Fullscreen", fullscreen);
-    spawn_setting_byte(world, app, "VSync", vsync);
+    zox_add(spawn_setting_byte(world, app, "Fullscreen", fullscreen), SettingTabVideo);
+    zox_add(spawn_setting_byte(world, app, "VSync", vsync), SettingTabVideo);
 }*/
 
 void zox_settings_apps(iter* it) {
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        spawn_setting_byte(world, e, "Fullscreen", fullscreen);
-        spawn_setting_byte(world, e, "VSync", vsync);
+        setting_tags(world, spawn_setting_byte(world, e, "Fullscreen", fullscreen), zox_id(SettingTabVideo), zox_id(SettingFullscreen));
+        setting_tags(world, spawn_setting_byte(world, e, "VSync", vsync), zox_id(SettingTabVideo), zox_id(SettingVsync));
     }
 }
 
@@ -27,7 +27,7 @@ void zox_settings_dirty_apps(iter* it) {
                     name->value,
                     value);
             }
-            if (!strcmp(name->value, "Fullscreen")) {
+            if (zox_has(e, SettingFullscreen)) {
                 fullscreen = value;
                 if (fullscreen_override) {
                     fullscreen = 1;
@@ -42,7 +42,7 @@ void zox_settings_dirty_apps(iter* it) {
                 } else {
                     zox_loge("App parent not found");
                 }
-            } else if (!strcmp(name->value, "VSync")) {
+            } else if (zox_has(e, SettingVsync)) {
                 vsync = value;
                 on_set_vsync(vsync);
             }

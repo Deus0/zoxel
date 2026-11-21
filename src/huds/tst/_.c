@@ -7,6 +7,7 @@
 #include "tooltips.c"
 #include "tooltip_blink.c"
 #include "options.c"
+#include "options_tabs.c"
 #include "scroll.c"
 #include "exit.c"
 #include "list.c"
@@ -61,6 +62,8 @@ void zox_tsts_huds(ecs* world) {
     zox_tst_set_exits("exit_game");
     zox_tst_add("list_order", zox_tst_list_order_ready, zox_tst_list_order_check, 60);
     zox_tst_set_setup("list_order", NULL, 1);
+    zox_tst_add("options_tabs", zox_tst_options_tabs_ready, zox_tst_options_tabs_check, 60);
+    zox_tst_set_setup("options_tabs", NULL, 1);
     zox_tst_add("ui_layout", zox_tst_ui_layout_ready, zox_tst_ui_layout_check, 90);
     zox_tst_set_setup("ui_layout", NULL, 1);
     zox_tst_add("font_glyphs", zox_tst_font_glyphs_ready, zox_tst_font_glyphs_check, 60);

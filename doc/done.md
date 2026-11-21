@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-22
+-x The options menu has tabs: Video, Sound, World, Game and Debug, a strip of buttons over its list, a tab shown at a
+  time, sliders first then toggles, each by name. Each setting is tagged with its tab where its module spawns it
+  (SettingTab*, doc/tech/settings.md). The XR menu (huds/ins/settings3.c) still lists them all. tst options_tabs
 -x Faces where lods meet are worked out against what the neighbour draws (chunks3/sys/sides.c chunk_drawn_depth: its
   RenderDepth, its voxels can be deeper, NodeDepth only grows), and rebuilt when its lod changes (terrain/sys/stream.c);
   they were against its deeper voxels, and not rebuilt: 2859 faces held that a neighbour hid, 5 now. A mesh rebuilds

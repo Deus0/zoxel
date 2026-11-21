@@ -1,7 +1,7 @@
 // its settings, spawned on the app (InitializeEvent)
 void rendering_settings(ecs* world, entity e) {
-    spawn_setting_float(world, e, "Fog", fog_density / fog_settings_mul, (float2) { 0, 1 });
-    spawn_setting_byte_slider(world, e, "Downscale", viewport_downscale, (byte2) { 1, 8 });
+    setting_tags(world, spawn_setting_float(world, e, "Fog", fog_density / fog_settings_mul, (float2) { 0, 1 }), zox_id(SettingTabVideo), zox_id(SettingFog));
+    setting_tags(world, spawn_setting_byte_slider(world, e, "Downscale", viewport_downscale, (byte2) { 1, 8 }), zox_id(SettingTabVideo), zox_id(SettingDownscale));
 }
 
 extern void on_set_viewport_scale(ecs*, entity);
@@ -20,7 +20,7 @@ void rendering_settings_on_dirty(iter* it) {
             if (dbg_log) {
                 zox_log("Float Setting [%s] Set [%f]", name->value, value);
             }
-            if (!strcmp(name->value, "Fog")) {
+            if (zox_has(e, SettingFog)) {
                 fog_density = value * fog_settings_mul;
             }
         } else if (zox_has(e, SettingByte)) {
@@ -28,7 +28,7 @@ void rendering_settings_on_dirty(iter* it) {
             if (dbg_log) {
                 zox_log("Byte Setting [%s] Set [%i]", name->value, value);
             }
-            if (!strcmp(name->value, "Downscale")) {
+            if (zox_has(e, SettingDownscale)) {
                 viewport_downscale = value;
                 entity app = zox_get_parent(world, e);
                 on_set_viewport_scale(world, app);

@@ -13,7 +13,7 @@ void vodes_settings_on_dirty(iter* it) {
             if (dbg_log) {
                 zox_log("Float Setting [%s] Set [%f]", name->value, value);
             }
-            if (!strcmp(name->value, "No Vodes")) {
+            if (zox_has(e, SettingNoVodes)) {
                 zox_disable_vodes = value;
             }
         }

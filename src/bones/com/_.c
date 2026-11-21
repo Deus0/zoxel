@@ -39,7 +39,18 @@ zoxc_entity(LookTarget);
 zoxc_entity(BoneSlot);      // the slot a bone is from: a rebuild keeps its index (parts/sys/bones.c)
 #define zox_bones_max 32    // bone_matrix[32] in res/shaders/bone.vert    // on a head bone: it turns to look at it (its head, if it has one), 0 looks ahead
 
+// its settings, each its own tag (a setting's observer finds it by it, not its name)
+zox_tag(SettingDisableBones);
+zox_tag(SettingTransparentMesh);
+zox_tag(SettingBoneGizmos);
+zox_tag(SettingPaintWeights);
+
 void zox_components_bones(ecs* world) {
+    zoxd_tag(SettingDisableBones);
+    zoxd_tag(SettingTransparentMesh);
+    zoxd_tag(SettingBoneGizmos);
+    zoxd_tag(SettingPaintWeights);
+
     zoxd_tag(Bone);
     zoxd_tag(Skeleton);
     zoxd_tag(PaintedSkeleton);

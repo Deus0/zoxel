@@ -27,7 +27,12 @@ zoxc_double(AutoHideTime);     // when it was last poked
 zox_tag(AutoHidden);
 zox_tag(UIClosing);           // popping out, deleted once it has (ui_pop_out): a toggle reads it as closed
 
+// its settings, each its own tag (a setting's observer finds it by it, not its name)
+zox_tag(SettingUIScale);
+
 void zox_components_elements(ecs *world) {
+    zoxd_tag(SettingUIScale);
+
     zoxd_entity(Prefab3);
     zoxd_float(AutoHide);
     zoxd_double(AutoHideTime);

@@ -23,7 +23,16 @@ zoxc_int(RubbleCount);
 zoxc_byte(VRegions);
 zoxc_float(VoxColorRange);
 
+// its settings, each its own tag (a setting's observer finds it by it, not its name)
+zox_tag(SettingBlockRes);
+zox_tag(SettingOutlines);
+zox_tag(SettingTerrainRes);
+
 void zox_components_models(ecs* world) {
+    zoxd_tag(SettingBlockRes);
+    zoxd_tag(SettingOutlines);
+    zoxd_tag(SettingTerrainRes);
+
     zoxd_tag(Model);
     zoxd_tag(ModelGroup);
     zoxd_tag(HueComplement);

@@ -16,7 +16,16 @@ zox_tag(HitSoundVoiced);        // a body that grunts when hit (in its voice)
 #include "sound_data.c"
 #include "sound_data_ref.c"
 
+// its settings, each its own tag (a setting's observer finds it by it, not its name)
+zox_tag(SettingVolume);
+zox_tag(SettingMusic);
+zox_tag(SettingSfx);
+
 void zox_components_sounds(ecs* world) {
+    zoxd_tag(SettingVolume);
+    zoxd_tag(SettingMusic);
+    zoxd_tag(SettingSfx);
+
     zoxd_tag(Sound);
     zoxd_byte(InstrumentType);
     zoxd_tag_event(GenerateSound);

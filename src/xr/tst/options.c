@@ -127,7 +127,7 @@ byte zox_tst_xr_options_ready(ecs* world) {
             zox_tst_waiting = "a slider selected";
             if (zox_valid(target) && zox_has(target, SettingLink) && f > 10) {
                 const entity setting = zox_getv(target, SettingLink);
-                if (zox_has(setting, SettingFloat) || zox_has(setting, SettingSlider)) {
+                if (!zox_has(setting, SettingToggle)) {
                     xr_sim_script_stick = float2_zero;
                     zox_tst_xr_options_setting = setting;
                     zox_tst_xr_options_before = zox_tst_xr_options_value(world, setting);

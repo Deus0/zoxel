@@ -2,3 +2,4 @@
 #include "header.c"
 #include "window.c"
 #include "list.c"
+#include "tabs.c"

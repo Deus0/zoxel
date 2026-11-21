@@ -1,7 +1,9 @@
 void ai_settings(ecs* world, entity app) {
-        spawn_setting_byte(world, app, "No Humans", zox_no_humanoids);
 #ifdef zox_debug_settings
-        // spawn_setting_byte(world, app, "No Npcs", disable_npcs);
+    setting_tags(world, spawn_setting_byte(world, app, "No Humans", zox_no_humanoids), zox_id(SettingTabDebug), zox_id(SettingNoHumans));
+#else
+    (void) world;
+    (void) app;
 #endif
 }
 
@@ -23,7 +25,7 @@ void ai_settings_on_dirty(iter* it) {
             /*if (!strcmp(name->value, "No Npcs")) {
                 disable_npcs = value;
             } else */
-            if (!strcmp(name->value, "No Humans")) {
+            if (zox_has(e, SettingNoHumans)) {
                 zox_no_humanoids = value;
             }
         }

@@ -1,5 +1,5 @@
 void app_initialize_rendering3(ecs* world, entity app) {
-    spawn_setting_byte(world, app, "Grass Animation", zox_grass_animation);
+    setting_tags(world, spawn_setting_byte(world, app, "Grass Animation", zox_grass_animation), zox_id(SettingTabVideo), zox_id(SettingGrassAnimation));
 }
 
 void rendering3_settings_observer_callback(iter* it) {
@@ -19,7 +19,7 @@ void rendering3_settings_observer_callback(iter* it) {
                 name->value,
                 value);
         }
-        if (!strcmp(name->value, "Grass Animation")) {
+        if (zox_has(e, SettingGrassAnimation)) {
             zox_grass_animation = value;
         }
     }

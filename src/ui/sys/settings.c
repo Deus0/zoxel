@@ -2,7 +2,8 @@
 //  - applies to uis spawned after it changes (respawning the options menu would end its slider drag)
 // its settings, spawned on the app (InitializeEvent)
 void ui_settings(ecs* world, entity e) {
-    spawn_setting_float(world, e, "UI Scale", ui_scale, (float2) { 0.5f, 3 });
+    // the bounds calculate_ui_scale sets it in: a big screen's 4 was out of the slider's 3
+    setting_tags(world, spawn_setting_float(world, e, "UI Scale", ui_scale, (float2) { 0.25f, 4 }), zox_id(SettingTabVideo), zox_id(SettingUIScale));
 }
 
 // a setting changed (its Dirty, added again each frame it changes: a slider dragged)
@@ -14,7 +15,7 @@ void ui_settings_on_dirty(iter* it) {
         zox_sys_e();
         zox_sys_i(ZoxName, name);
         if (!zox_has(e, SettingFloat) ||
-            strcmp(name->value, "UI Scale"))
+            !zox_has(e, SettingUIScale))
         {
             continue;
         }

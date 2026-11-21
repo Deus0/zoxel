@@ -74,7 +74,14 @@ static inline int2 get_texture_size(ecs* world, entity e) {
     return zox_getv(e, TextureSize);
 }
 
+// its settings, each its own tag (a setting's observer finds it by it, not its name)
+zox_tag(SettingFog);
+zox_tag(SettingDownscale);
+
 void zox_components_rendering(ecs *world) {
+    zoxd_tag(SettingFog);
+    zoxd_tag(SettingDownscale);
+
     zoxd_tag(Mesh);
     zoxd_tag(RenderParallel);
     zoxd_tag(Shader);

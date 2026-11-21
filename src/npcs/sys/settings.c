@@ -1,9 +1,9 @@
 // its settings, spawned on the app (InitializeEvent)
 void npcs_settings(ecs* world, entity e) {
-    spawn_setting_byte_slider(world, e, "Npc Spawn", character_spawn_rate_max ? character_spawn_rate_max - 1 : 0, character_spawn_rate_limits);
-    spawn_setting_byte_slider(world, e, "Npc Range", character_spawn_distance, character_spawn_distance_limits);
+    setting_tags(world, spawn_setting_byte_slider(world, e, "Npc Spawn", character_spawn_rate_max ? character_spawn_rate_max - 1 : 0, character_spawn_rate_limits), zox_id(SettingTabWorld), zox_id(SettingNpcSpawn));
+    setting_tags(world, spawn_setting_byte_slider(world, e, "Npc Range", character_spawn_distance, character_spawn_distance_limits), zox_id(SettingTabWorld), zox_id(SettingNpcRange));
 #ifdef zox_debug_settings
-    spawn_setting_byte(world, e, "No Npcs", disable_npcs);
+    setting_tags(world, spawn_setting_byte(world, e, "No Npcs", disable_npcs), zox_id(SettingTabDebug), zox_id(SettingNoNpcs));
     // spawn_setting_byte(world, e, "Smooth Lighting", zox_smooth_lighting);
 #endif
 }
@@ -19,11 +19,11 @@ void npcs_settings_on_dirty(iter* it) {
         zox_sys_i(ZoxName, name);
         if (zox_has(e, SettingByte)) {
             byte value = zox_getv(e, SettingByte);
-            if (!strcmp(name->value, "Npc Spawn")) {
+            if (zox_has(e, SettingNpcSpawn)) {
                 character_spawn_rate_max = value + 1;
-            } else if (!strcmp(name->value, "Npc Range")) {
+            } else if (zox_has(e, SettingNpcRange)) {
                 character_spawn_distance = value;
-            } else if (!strcmp(name->value, "No Npcs")) {
+            } else if (zox_has(e, SettingNoNpcs)) {
                 disable_npcs = value;
             }
             if (dbg_log) {

@@ -17,9 +17,15 @@ static inline float xr_body_scale(ecs* world, entity character) {
     return height > 0 ? height / xr_player_height : 1;
 }
 
-// its settings, spawned on the app (InitializeEvent)
+// its settings, spawned on the app (InitializeEvent): a headset's build only (zox_xr), regular builds and the
+//  simulator keep the default height
 void xr_settings(ecs* world, entity e) {
-    spawn_setting_float(world, e, "XR Height", xr_player_height, xr_player_height_range);
+#ifdef zox_xr
+    setting_tags(world, spawn_setting_float(world, e, "XR Height", xr_player_height, xr_player_height_range), zox_id(SettingTabGame), zox_id(SettingXRHeight));
+#else
+    (void) world;
+    (void) e;
+#endif
 }
 
 // a setting changed (its Dirty, added again each frame it changes: a slider dragged)
@@ -33,7 +39,7 @@ void xr_settings_on_dirty(iter* it) {
         if (!zox_has(e, SettingFloat)) {
             continue;
         }
-        if (!strcmp(name->value, "XR Height")) {
+        if (zox_has(e, SettingXRHeight)) {
             xr_player_height = zox_getv(e, SettingFloat);
         }
     }

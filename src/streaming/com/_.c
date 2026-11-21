@@ -11,7 +11,20 @@ zoxc_int3(StreamSwept); // the StreamPosition its last sweep was from: a sweep s
 zoxc_function(StreamEndEvent, void, ecs*, const entity);
 #include "queue.c"
 
+// its settings, each its own tag (a setting's observer finds it by it, not its name)
+zox_tag(SettingNearRD);
+zox_tag(SettingFarRD);
+zox_tag(SettingVerticalRD);
+zox_tag(SettingNoLods);
+zox_tag(SettingNoFrustums);
+
 void zox_components_streaming(ecs *world) {
+    zoxd_tag(SettingNearRD);
+    zoxd_tag(SettingFarRD);
+    zoxd_tag(SettingVerticalRD);
+    zoxd_tag(SettingNoLods);
+    zoxd_tag(SettingNoFrustums);
+
     zoxd_tag(Streamer);
     zoxd_tag(StreamedChunk);
     zoxd_byte(StreamerLevel);

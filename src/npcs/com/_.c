@@ -13,7 +13,16 @@ void on_unlink_ChunkCharacters(ecs* world, entity chunk, entity npc) {
     }
 }
 
+// its settings, each its own tag (a setting's observer finds it by it, not its name)
+zox_tag(SettingNpcSpawn);
+zox_tag(SettingNpcRange);
+zox_tag(SettingNoNpcs);
+
 void zox_components_characters3_terrain(ecs* world) {
+    zoxd_tag(SettingNpcSpawn);
+    zoxd_tag(SettingNpcRange);
+    zoxd_tag(SettingNoNpcs);
+
     zoxd_tag(CharactersSpawned);
     zoxd_byte(CharactersEverSpawned);
     zoxd_byte(NpcSpawnZone);

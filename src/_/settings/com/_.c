@@ -1,5 +1,14 @@
 zox_tag(Setting);
-zox_tag(SettingSlider);
+// its type, a tag each: a toggle (a byte on or off), a slider of a byte or a float in its bounds
+zox_tag(SettingToggle);
+zox_tag(SettingByteSlider);
+zox_tag(SettingFloatSlider);
+// the options menu's tab a setting shows on (huds/ins/settings.c), one each
+zox_tag(SettingTabVideo);
+zox_tag(SettingTabSound);
+zox_tag(SettingTabWorld);
+zox_tag(SettingTabGame);
+zox_tag(SettingTabDebug);
 zoxc_byte(SettingBit);
 zoxc_byte(SettingByte);
 zoxc_byte2(SettingByteBounds);
@@ -15,7 +24,14 @@ zoxc_byte(LoadSettings);
 
 void zox_components_settings(ecs* world) {
     zoxd_tag(Setting);
-    zoxd_tag(SettingSlider);
+    zoxd_tag(SettingToggle);
+    zoxd_tag(SettingByteSlider);
+    zoxd_tag(SettingFloatSlider);
+    zoxd_tag(SettingTabVideo);
+    zoxd_tag(SettingTabSound);
+    zoxd_tag(SettingTabWorld);
+    zoxd_tag(SettingTabGame);
+    zoxd_tag(SettingTabDebug);
     zoxd_byte(SettingBit);
     zoxd_byte(SettingByte);
     zoxd_byte2(SettingByteBounds);

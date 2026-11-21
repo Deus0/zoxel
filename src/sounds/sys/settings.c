@@ -1,9 +1,9 @@
 // NOTE: Add bone settings to our App!
 // its settings, spawned on the app (InitializeEvent)
 void sounds_settings(ecs* world, entity e) {
-    spawn_setting_float(world, e, "Volume", master_volume, (float2) { 0, 1 });
-    spawn_setting_float(world, e, "Music", volume_music, (float2) { 0, 1 });
-    spawn_setting_float(world, e, "SFX", volume_sfx, (float2) { 0, 1 });
+    setting_tags(world, spawn_setting_float(world, e, "Volume", master_volume, (float2) { 0, 1 }), zox_id(SettingTabSound), zox_id(SettingVolume));
+    setting_tags(world, spawn_setting_float(world, e, "Music", volume_music, (float2) { 0, 1 }), zox_id(SettingTabSound), zox_id(SettingMusic));
+    setting_tags(world, spawn_setting_float(world, e, "SFX", volume_sfx, (float2) { 0, 1 }), zox_id(SettingTabSound), zox_id(SettingSfx));
 }
 
 // a setting changed (its Dirty, added again each frame it changes: a slider dragged)
@@ -20,11 +20,11 @@ void sounds_settings_on_dirty(iter* it) {
             if (dbg_log) {
                 zox_log("SettingFloat [%s] Set [%f]", name->value, value);
             }
-            if (!strcmp(name->value, "Volume")) {
+            if (zox_has(e, SettingVolume)) {
                 master_volume = value;
-            } else if (!strcmp(name->value, "Music")) {
+            } else if (zox_has(e, SettingMusic)) {
                 volume_music = value;
-            } else if (!strcmp(name->value, "SFX")) {
+            } else if (zox_has(e, SettingSfx)) {
                 volume_sfx  = value;
             }
         }

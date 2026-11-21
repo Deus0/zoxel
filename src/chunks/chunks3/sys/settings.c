@@ -3,7 +3,7 @@
 //    by default (--gpu_meshing, --cpu_meshing); a chunk mesh takes it when it spawns, so a change shows on chunks
 //    loaded after (a new game, a restart), the ones loaded keep theirs (cpu and gpu meshes draw side by side)
 void chunks3_settings(ecs* world, entity e) {
-    spawn_setting_byte(world, e, "GPU Meshing", zox_chunks3_gpu_meshing);
+    setting_tags(world, spawn_setting_byte(world, e, "GPU Meshing", zox_chunks3_gpu_meshing), zox_id(SettingTabVideo), zox_id(SettingGpuMeshing));
 }
 
 // a setting changed (its Dirty, added again each frame it changes: a slider dragged)
@@ -14,7 +14,7 @@ void chunks3_settings_on_dirty(iter* it) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ZoxName, name);
-        if (zox_has(e, SettingByte) && !strcmp(name->value, "GPU Meshing")) {
+        if (zox_has(e, SettingByte) && zox_has(e, SettingGpuMeshing)) {
             zox_chunks3_gpu_meshing = zox_getv(e, SettingByte);
         }
     }

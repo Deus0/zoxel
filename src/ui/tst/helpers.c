@@ -32,7 +32,11 @@ static inline void zox_tst_click(
     entity button)
 {
     void (*on_click)(ecs*, ClickEventData) = zox_getv(button, ClickEvent);
+    // deferred, as click_event_system calls it inside a system: what it spawns isn't set until the frame's merge
+    //  (called straight, the options menu read its new window's sizes fine; clicked, they weren't there: it crashed)
+    zox_defer_begin();
     on_click(world, (ClickEventData) { .clicker = player, .clicked = button });
+    zox_defer_end();
 }
 
 // counts every descendant of e (not e itself)

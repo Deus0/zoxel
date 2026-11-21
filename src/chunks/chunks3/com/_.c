@@ -62,7 +62,12 @@ zoxc_arrayd(BlockDatas, byte);
 #define zox_chunk_lod_dirty_toggle 4
 #define zox_chunk_lod_dirty_end 0
 
+// its settings, each its own tag (a setting's observer finds it by it, not its name)
+zox_tag(SettingGpuMeshing);
+
 void zox_components_chunks3(ecs* world) {
+    zoxd_tag(SettingGpuMeshing);
+
     // zoxd_nf_tag
     // Types
     zoxd_tag(Chunk3);

@@ -1,9 +1,9 @@
 // its settings, spawned on the app (InitializeEvent)
 void models_settings(ecs* world, entity e) {
-    spawn_setting_byte_slider(world, e, "Block Res", block_depth, block_depth_limits);
-    spawn_setting_byte(world, e, "Outlines", zox_block_outlines);
+    setting_tags(world, spawn_setting_byte_slider(world, e, "Block Res", block_depth, block_depth_limits), zox_id(SettingTabWorld), zox_id(SettingBlockRes));
+    setting_tags(world, spawn_setting_byte(world, e, "Outlines", zox_block_outlines), zox_id(SettingTabVideo), zox_id(SettingOutlines));
 #ifdef zox_dev
-    spawn_setting_byte_slider(world, e, "Terrain Res", terrain_depth, terrain_depth_limits);
+    setting_tags(world, spawn_setting_byte_slider(world, e, "Terrain Res", terrain_depth, terrain_depth_limits), zox_id(SettingTabWorld), zox_id(SettingTerrainRes));
 #endif
 }
 
@@ -21,9 +21,9 @@ void models_settings_on_dirty(iter* it) {
             if (dbg_log) {
                 zox_log("Byte Setting [%s] Set [%i]", name->value, value);
             }
-            if (!strcmp(name->value, "Outlines")) {
+            if (zox_has(e, SettingOutlines)) {
                 zox_block_outlines = value;
-            } else if (!strcmp(name->value, "Block Res")) {
+            } else if (zox_has(e, SettingBlockRes)) {
                 block_depth = value;
                 int2 size = int2_single(powers_of_two[block_depth]);
                 int3 size3 = int3_single(powers_of_two[block_depth]);
@@ -35,7 +35,7 @@ void models_settings_on_dirty(iter* it) {
                 zox_set(prefab_vox_generated, ChunkSize, { size3 });
                 zox_set(prefab_block_vox, NodeDepth, { block_depth });
                 zox_set(prefab_block_vox, ChunkSize, { size3 });
-            } else if (!strcmp(name->value, "Terrain Res")) {
+            } else if (zox_has(e, SettingTerrainRes)) {
                 terrain_depth = value;
             }
         }

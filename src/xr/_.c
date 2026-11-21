@@ -52,6 +52,7 @@ void import_xr(ecs* world) {
     zox_module(xr);
     add_hook_terminal_command(process_arguments_xr);
     zoxd_tag(XrController);
+    zoxd_tag(SettingXRHeight);
     zoxd_byte(XrHand);
     add_hook_spawn_prefabs(zox_spawn_prefabs_xr);
     add_hook_on_boot(xr_spawn_camera);

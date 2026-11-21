@@ -13,7 +13,12 @@ zoxc_float3(BonePosition);      // Local to skeleton
 zoxc_arrayd(BoneIndexes, byte4);   // a vertex's bones: { bone, other bone, its weight 0-255, 0 } (bones/sys/generate.c)
 zoxc_arrayd(BoneLinks, entity);
 
+// its settings, each its own tag (a setting's observer finds it by it, not its name)
+zox_tag(SettingGrassAnimation);
+
 void zox_components_rendering3(ecs* world) {
+    zoxd_tag(SettingGrassAnimation);
+
     // Types
     zoxd_tag(Mesh3);
     zoxd_tag(MeshBasic3);

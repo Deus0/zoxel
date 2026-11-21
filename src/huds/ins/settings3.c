@@ -9,7 +9,7 @@
 // its row's text: its name and value
 static void setting3_label(ecs* world, entity setting, char* label, int length) {
     const ZoxName* name = zox_get(setting, ZoxName);
-    if (zox_has(setting, SettingByte) && zox_has(setting, SettingSlider)) {
+    if (zox_has(setting, SettingByteSlider)) {
         snprintf(label, length, "%s [%i]", name->value, zox_getv(setting, SettingByte));
     } else if (zox_has(setting, SettingByte)) {
         snprintf(label, length, "%s [%s]", name->value, zox_getv(setting, SettingByte) ? "On" : "Off");
@@ -22,7 +22,7 @@ static void setting3_label(ecs* world, entity setting, char* label, int length) 
 
 // a setting stepped (a toggle flipped), wrapping past its end or held at it; dirtied as the 2D window's do
 static void setting3_step(ecs* world, entity setting, int direction, byte wrap) {
-    if (zox_has(setting, SettingByte) && zox_has(setting, SettingSlider)) {
+    if (zox_has(setting, SettingByteSlider)) {
         const byte2 bounds = zox_getv(setting, SettingByteBounds);
         int value = (int) zox_getv(setting, SettingByte) + direction;
         if (value > bounds.y) {
@@ -158,7 +158,7 @@ void huds3_options_stick_system(iter* it) {
         const float right = -x;
         const byte pushed = fabsf(right) > ui_navigation_joystick_cutoff && fabsf(last_x) <= ui_navigation_joystick_cutoff;
         last_x = right;
-        if (pushed && (zox_has(setting, SettingSlider) || zox_has(setting, SettingFloat))) {
+        if (pushed && !zox_has(setting, SettingToggle)) {
             setting3_step(world, setting, right > 0 ? 1 : -1, 0);
         }
         setting3_relabel(world, row, setting);

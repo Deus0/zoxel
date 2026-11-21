@@ -15,6 +15,11 @@ byte set_app_setting_byte(
             }
             const ZoxName* setting_name = zox_get(e2, ZoxName);
             if (!strcmp(setting_name->value, name)) {
+                // in its bounds: a file from another version saved what it allowed (Downscale 255 crashed, release)
+                if (zox_has(e2, SettingByteBounds)) {
+                    const byte2 bounds = zox_getv(e2, SettingByteBounds);
+                    value = value < bounds.x ? bounds.x : value > bounds.y ? bounds.y : value;
+                }
                 zox_setm(e2, SettingByte, value);
                 zox_add(e2, Dirty);
                 zox_add(e2, Refresh);   // the save (setting_save_system on Update), once a frame
@@ -65,6 +70,10 @@ byte set_app_setting_float(
             }
             const ZoxName* setting_name = zox_get(e2, ZoxName);
             if (!strcmp(setting_name->value, name)) {
+                if (zox_has(e2, SettingFloatBounds)) {
+                    const float2 bounds = zox_getv(e2, SettingFloatBounds);
+                    value = value < bounds.x ? bounds.x : value > bounds.y ? bounds.y : value;
+                }
                 zox_setm(e2, SettingFloat, value);
                 zox_add(e2, Dirty);
                 zox_add(e2, Refresh);   // the save (setting_save_system on Update), once a frame
