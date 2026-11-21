@@ -7,10 +7,8 @@ out vec4 frag_color;
 
 void main() {
     gl_Position = camera_matrix * vec4(position, 1.0);
-    // float distance_to_camera = distance(vec3(0, 0, 0), gl_Position.xyz);
-    vec4 view_pos = camera_matrix * vec4(position, 1.0);
-    float distance_to_camera = length(view_pos.xyz);
-    gl_PointSize = thickness / max(distance_to_camera, 1.0);    // close up (crumbs at the mouth) no bigger than at 1
+    // a vox model's voxel in size: thickness is its pixels at depth 1, w the depth (in front of the near plane)
+    gl_PointSize = thickness / max(gl_Position.w, 0.05);
     fog_level = gl_Position.z;
     frag_color = color;
 }

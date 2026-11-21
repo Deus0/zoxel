@@ -5,6 +5,7 @@ float3 render_camera_position;
 color_rgb renderer_fog_color;
 byte renderer_layer = 0;
 byte render_camera_fov;
+float render_viewport_height = 1;    // the drawn view's height in pixels (points sized in the world: particles)
 
 // fog
 byte is_render_fog = 1;

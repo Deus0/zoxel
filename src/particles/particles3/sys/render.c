@@ -18,8 +18,9 @@ void particle3d_render_system(iter* it) {
     zox_gpu_material(zox_getv(material_particle3D, MaterialGPULink));
     zox_gpu_float4(particle3D->fog_data, get_fog_value());
     zox_gpu_float4x4(particle3D->camera_matrix, render_camera_matrix);
-    float fov_fixer = 90.0f / ((float) render_camera_fov);
-    zox_gpu_float(particle3D->thickness, fov_fixer * default_point_thickness * get_viewport_scale());
+    // a vox model's voxel in the world (vox_model_scale): its pixels at depth 1, the shader divides by the depth
+    const float fov = (render_camera_fov ? render_camera_fov : 90) * (float) M_PI / 180.0f;
+    zox_gpu_float(particle3D->thickness, vox_model_scale * render_viewport_height / (2 * tanf(fov / 2)));
     zox_sys_begin();
     zox_sys_in(Position3D);
     zox_sys_in(Color);
@@ -84,12 +85,6 @@ void particle3d_render_system(iter* it) {
 // const Scale1 *scale1D = &scale1Ds[i];
 // glVertexAttribPointer(particle3D->position, 3, GL_FLOAT, GL_FALSE, 0, position3D->value);
 // zox_gpu_float3(particle3D->position, position3D->value);
-// this keeps a consistent thickness
-// float distance_to_camera = float3_distance(camera_position, position3D->value);
-// float point_thickness = default_point_thickness - distance_to_camera / default_point_thickness;
-// float point_thickness = distance_to_camera / default_point_thickness;
-// glPointSize(point_thickness);
-// zox_log("   > distance [%f] - t[%f]\n", distance_to_camera, point_thickness);
 
     // zox_gpu_set_buffer_array(position3Ds. it->count * sizeof(float3));
     // glBufferData(GL_ARRAY_BUFFER, it->count * sizeof(float3), position3Ds, GL_STATIC_DRAW);

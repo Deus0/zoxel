@@ -40,6 +40,7 @@ void camera_render3_system(iter* it) {
             float2_zero :
             int2_to_float2(screen_position->value);
         const float2 viewport_size = int2_to_float2(screen_size->value);
+        render_viewport_height = viewport_size.y;
         if (fbo) {
             zox_gpu_bind_fbo(fbo);
         }

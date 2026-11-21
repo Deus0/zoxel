@@ -58,6 +58,7 @@ void xr_render_eye(ecs* world, float4x4 eye, float4 fov, float4x4 body, float2 v
     zox_gpu_disable_blend();
     renderer_camera = 0;
     render_camera_fov = 90;
+    render_viewport_height = viewport_size.y;
     float4x4 projection = camera_projection_from_angles(fov, xr_near_distance, xr_far_distance);
     if (flip_y) {
         projection.x.y = -projection.x.y;
