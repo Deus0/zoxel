@@ -2,9 +2,8 @@
 //  - turning a building's frame and back, the way each facing faces
 //  - a box's voxels in a chunk, at lods a thin box keeps a voxel
 //  - a home's ground: its floor under it and a block round it, steps from its door, turned with it
-//  - roads: the square and a road's legs, a road a few blocks wide
-//  - street lamps beside roads, a door's and a bed's pieces turned with their home, highway crossings shared by
-//    neighbouring regions
+//  - town roads round a home in their way, to each door and the gate; a road's width and its ground's slope
+//  - a door's and a bed's pieces turned with their home, highway nodes in their cells
 //  - run: bash bsh/tst.sh town_build
 byte zox_tst_town_build_ready(ecs* world) {
     (void) world;
@@ -56,22 +55,54 @@ void zox_tst_town_build_check(ecs* world) {
     zox_tst_check(home_ground_at(&turned, (int2) { 105, 100 }, 30) == 21, "home_ground_at turned +x");
     zox_tst_check(home_ground_at(&turned, (int2) { 100, 105 }, 30) == -1, "home_ground_at turned +z");
 
-    // roads: the square, a road and its width
-    TownRoads roads;
-    roads.square = (int2) { 0, 0 };
-    roads.count = 0;
-    town_road(&roads, (int2) { 0, 20 }, (int2) { 0, 0 }, 1);
-    zox_tst_check(town_is_road(&roads, (int2) { 0, 4 }) == 1, "town_is_road square");
-    zox_tst_check(town_is_road(&roads, (int2) { 0, 10 }) == 1, "town_is_road road");
-    zox_tst_check(town_is_road(&roads, (int2) { 1, 10 }) == 1, "town_is_road width");
-    zox_tst_check(town_is_road(&roads, (int2) { 2, 10 }) == 0, "town_is_road outside width");
-    zox_tst_check(town_is_road(&roads, (int2) { 10, 10 }) == 0, "town_is_road outside road");
-
-    // street lamps: at the square's corners, beside a road on the spacing, not off its end
-    zox_tst_check(town_is_lamp(&roads, (int2) { town_square_half + 1, town_square_half + 1 }), "town_is_lamp square corner");
-    zox_tst_check(town_is_lamp(&roads, (int2) { town_road_half + 1, town_lamp_spacing }), "town_is_lamp beside road");
-    zox_tst_check(!town_is_lamp(&roads, (int2) { town_road_half + 1, town_lamp_spacing + 1 }), "town_is_lamp off spacing");
-    zox_tst_check(!town_is_lamp(&roads, (int2) { town_road_half + 1, town_lamp_spacing * 2 }), "town_is_lamp past road end");
+    // a segment crossing a rect, missing it, and along its edge
+    zox_tst_check(segment_crosses_rect((float2) { -10, 0 }, (float2) { 10, 0 }, (int2) { 0, 0 }, (float2) { 2, 2 }), "segment_crosses_rect across");
+    zox_tst_check(!segment_crosses_rect((float2) { -10, 5 }, (float2) { 10, 5 }, (int2) { 0, 0 }, (float2) { 2, 2 }), "segment_crosses_rect past");
+    zox_tst_check(!segment_crosses_rect((float2) { -10, -10 }, (float2) { -3, -3 }, (int2) { 0, 0 }, (float2) { 2, 2 }), "segment_crosses_rect short");
+    // a town's roads (fun/town.c): a home stands between another's door and the square, its road goes round it
+    {
+        const TownHome homes[2] = {
+            { { 0, -22 }, { 3, 3 }, 0, 10, 0, 6 },     // its door +z at 0 -18, the square at 0 0
+            { { 0, -11 }, { 4, 2 }, 0, 10, 1, 6 },     // across the way, its door +x
+        };
+        RoadSegments roads = { 0 };
+        StreetLamps lamps = { 0 };
+        town_roads_build(1234, (int2) { 0, 0 }, (byte2) { 80, 80 }, 6, 0, (int2) { 0, 40 }, homes, 2, &roads, &lamps);
+        int crossing = 0, door_roads = 0, gate_road = 0;
+        for (int i = 0; i + 1 < roads.length; i += 2) {
+            const int3 a = roads.value[i], b = roads.value[i + 1];
+            for (byte h = 0; h < 2; h++) {
+                crossing += segment_crosses_rect((float2) { a.x, a.z }, (float2) { b.x, b.z }, homes[h].center,
+                    (float2) { homes[h].half.x - 0.5f, homes[h].half.y - 0.5f });
+            }
+            door_roads += (a.x == 0 && a.z == -18) || (a.x == 5 && a.z == -11);
+            gate_road += a.x == 0 && a.z == 40;
+        }
+        zox_tst_check(!crossing, "[%i] town road segments cross homes", crossing);
+        zox_tst_check(door_roads == 2, "[%i] of 2 doors have a road", door_roads);
+        zox_tst_check(gate_road, "no road through the gate");
+        zox_tst_check(lamps.length > 0, "no street lamps");
+        dispose_RoadSegments(&roads);
+        dispose_StreetLamps(&lamps);
+    }
+    // highways (fun/highways.c): a node in its cell's middle half, each node links on
+    int nodes_wrong = 0, links_none = 0;
+    for (int x = -4; x <= 4; x++) for (int y = -4; y <= 4; y++) {
+        const int2 n = highway_node_at(1234, (int2) { x, y });
+        const int2 in = { n.x - x * highway_spacing, n.y - y * highway_spacing };
+        nodes_wrong += in.x < highway_spacing / 4 || in.x >= highway_spacing * 3 / 4 || in.y < highway_spacing / 4 || in.y >= highway_spacing * 3 / 4;
+        links_none += !highway_links(1234, (int2) { x, y });
+    }
+    zox_tst_check(!nodes_wrong, "[%i] highway nodes out of their cell's middle", nodes_wrong);
+    zox_tst_check(!links_none, "[%i] highway nodes link nowhere", links_none);
+    // a road's width and its ground along a segment
+    RoadSegments segments = { 0 };
+    const int3 segment[2] = { { 0, 10, 0 }, { 10, 20, 0 } };
+    road_segments_add(&segments, segment, 2);
+    int height = 0;
+    zox_tst_check(road_segments_at(&segments, (int2) { 5, 1 }, 1.5f, &height) && height == 15, "road_segments_at middle [%i]", height);
+    zox_tst_check(!road_segments_at(&segments, (int2) { 5, 3 }, 1.5f, NULL), "road_segments_at past its width");
+    dispose_RoadSegments(&segments);
 
     // a door and a bed in a home facing +x: the door's filler over its base, the bed's beside it, data back to the base
     for (byte facing = 0; facing < 4; facing++) {
@@ -93,19 +124,7 @@ void zox_tst_town_build_check(ecs* world) {
         zox_tst_check(in.x == inward.x && in.z == inward.y, "the door faces out wrong, facing [%i]", facing);
     }
 
-    // highways: a border's crossing is the same from both regions sharing it
-    HighwayEnd a[4], c[4];
-    const int2 size = { 512, 512 };
-    highway_crossings(1234, (int2) { 0, 0 }, (int2) { 0, 0 }, size, a);
-    highway_crossings(1234, (int2) { 1, 0 }, (int2) { 512, 0 }, size, c);
-    zox_tst_check(a[1].at.y == c[0].at.y && a[1].at.x + 1 == c[0].at.x, "east crossing [%ix%i] west of next [%ix%i]",
-        a[1].at.x, a[1].at.y, c[0].at.x, c[0].at.y);
-    highway_crossings(1234, (int2) { 0, 1 }, (int2) { 0, 512 }, size, c);
-    zox_tst_check(a[3].at.x == c[2].at.x && a[3].at.y + 1 == c[2].at.y, "north crossing [%ix%i] south of next [%ix%i]",
-        a[3].at.x, a[3].at.y, c[2].at.x, c[2].at.y);
-    zox_tst_check(a[0].at.y >= 128 && a[0].at.y < 384, "crossing [%i] not in its border's middle half", a[0].at.y);
-
-    zox_log("[tst] [metric] town_build checked turns, spans, home ground, roads, lamps, furniture, crossings");
+    zox_log("[tst] [metric] town_build checked turns, spans, home ground, roads, furniture, highway nodes");
 }
 
 void zox_tsts_town_build(ecs* world) {

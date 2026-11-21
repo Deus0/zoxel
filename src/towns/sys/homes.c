@@ -6,7 +6,6 @@ void homes_spawn_system(iter* it) {
     uint max_attempts = 100;
     byte min_homes_count = 1;
     byte max_homes_count = 12;
-    byte2 padding = byte2_single(8);
     byte2 home_min_size = (byte2) { 5, 5 };
     byte2 home_max_size = (byte2) { 12, 12 };
     byte2 home_padding = byte2_single(4);
@@ -22,8 +21,8 @@ void homes_spawn_system(iter* it) {
         zox_sys_i(BlockPosition2, position);
         zox_sys_i(TownSize, size);
         zox_sys_o(GenerateTown, generate);
-        // Waits a frame for parent to set on mountains
-        if (!generate->value) {
+        // Waits a frame for parent to set on mountains; only its homes' step (its roads' step is sys/roads.c's)
+        if (generate->value != 1) {
             continue;
         }
         // byte spawn_count = seed_range(seed->value, towns_count.x, towns_count.y);
@@ -61,6 +60,8 @@ void homes_spawn_system(iter* it) {
         byte2 home_sizes[spawn_count + 1];
         home_positions[0] = position->value;
         home_sizes[0] = byte2_single(town_square_half * 2 + 1);
+        // clear of its walls, room for a road round them (8 left homes in walls up to 12 thick)
+        const byte2 padding = byte2_single(zox_getv(e, WallThickness) + 3);
         byte placed = 1;
         for (int k = 0; k < spawn_count; k++) {
             if (!region_place_rect(seed->value + k * 6151, town_position2, town_size2, padding, home_min_size, home_max_size, home_padding, home_positions, home_sizes, placed, NULL, NULL, 0, max_attempts)) {
@@ -75,7 +76,8 @@ void homes_spawn_system(iter* it) {
                 zox_log("   + Home [%ix%i] Size [%ix%i]", home_position.x, home_position.y, home_size.x, home_size.y);
             }
         }
-        generate->value = 0;
+        // its roads next, once its homes are in (sys/roads.c)
+        generate->value = town_generate_roads;
     }
     zox_sys_on_end();
 } zoxd_system(homes_spawn_system);

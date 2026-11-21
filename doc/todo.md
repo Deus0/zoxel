@@ -603,15 +603,14 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 - windows in homes, a transparent block that light passes through, only in some home types
 - Towns: an age level, older towns are flatter (heights), bigger, with more buildings
 - Homes: tilted foundations for poor npcs (homes stand level now)
-- Roads: they cut through a home in their way (the home wins), roads round homes, levelled with the ground
 - Homes: keep their door steps clear of neighbours (two homes close by, steps meet the other's levelled ground)
-- Highways: they stop at another town's walls when they cross one (marked only on ground no town holds), and climb
-  mountains column by column; route round towns and mountains, follow lakes' shores (only the sea is bridged)
+- Roads and highways: bridges over water (a causeway now, the ground filled up to the water's top); highways cut
+  round mountains by dropping nodes and links (a gap in the lattice), links could bend round instead;
+  npcs walking them between towns; highways' lattice links are straight lines, a bend at a midpoint from noise
 - street lamps: firefly particles round their heads (regular ones for now); a rounder model (think hollow knight)
 - Multi room homes: inner walls splitting a home into rooms, doors between them, rooms sized by the home
 - InTown for every character (in_town_system is players only now): town buffs, villagers knowing their town
 - Towns: Average out heights between chunk neighbors
-- Towns: Place Roads during Maps based on Roads Children of Towns
 - Towns: Set Block Links inside Homes, for Home Floor, Roof, Wall, Door blocks
 - Make homes built with different materials / Blocks
 - Make Road from middle of town to gate

@@ -16,11 +16,12 @@ byte zox_disable_towns = 0;
 byte zox_disable_homes = 0;
 #include "com/_.c"
 #include "pre/_.c"
-#include "ins/_.c"
 #include "fun/build.c"
 #include "fun/home.c"
+#include "fun/paths.c"
 #include "fun/town.c"
 #include "fun/highways.c"
+#include "ins/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
 #ifdef zox_tests

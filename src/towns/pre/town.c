@@ -12,5 +12,7 @@ entity spawn_prefab_town(ecs* world) {
     zox_setv(e, TownGateAt, 128);
     zox_set(e, WallHeight, { 2 });
     zox_set(e, WallThickness, { 3 });
+    zox_set(e, RoadSegments, { 0 });
+    zox_set(e, StreetLamps, { 0 });
     return e;
 }

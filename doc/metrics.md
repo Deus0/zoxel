@@ -20,6 +20,25 @@ Measured numbers, newest first: rendering speed per backend and how alike the ba
   `noise` each image's fine detail (a backend much noisier than the other is flagged: the vulkan sky's bug).
 - Where the time goes: `ZOX_SAMPLE=<file>`, then `bash bsh/sample_report.sh <file> <binary> 1`.
 
+## 2026-11-21, roads: noise node highways and town waypoint graphs (against de93d4c2c, before road paths)
+
+`perf_stream`, opengl, release with tests, `zox_tst_seed=666 --far 32 --vertical 4 --nosaves --novsync`, cpu meshing,
+other sessions' work running (load average 2 to 7). Alternated, base first.
+
+| | base (de93d4c2c) | roads |
+|---|---|---|
+| a step settles (2 runs) | 2.208s, 2.213s | 2.281s, 2.437s |
+| fps average, 1% low (2 runs) | 117.6, 54.2; 115.1, 52.8 | 112.7, 48.4; 109.4, 52.4 |
+| frame ms median (2 runs) | 7.84, 8.11 | 8.22, 8.44 |
+| with `--profile --profile-ms 12`: fps average, frames over 12ms | 100.6, 385 | 100.2, 301 |
+| town systems in the frames over 12ms | 0 | 2 (town_walls 1.7ms, town_map 0.5ms) |
+
+- Within noise: the plain runs read 3-5% slower, the profiled pair level (and fewer slow frames); the town systems
+  are in 2 of 301 slow frames.
+- Where the time went, in tests: a town's roads 0.04 to 0.17ms (its waypoint graph, once, on a worker); a tunk's
+  highways 0.04ms average, 0.06 most (the lattice nodes round it, their regions' towns). The A* version before it
+  (f7819671a, not measured this way) sampled the terrain over a grid: 1 to 9ms a town, 3 to 19ms a region.
+
 ## 2026-11-20, perf_terrain: terrain alone, cpu against gpu meshing (8443663f7)
 
 `perf_terrain`: a world of only terrain (no player, npcs, hud, particles), a streamer and a fixed camera; release on

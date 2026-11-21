@@ -1,3 +1,4 @@
+#define town_generate_roads 2      // GenerateTown: 1 its homes (homes_spawn_system), 2 its roads (sys/roads.c), 0 done
 #define zox_town_type_none 0
 #define zox_town_type_zone 1
 #define zox_town_type_wall 2

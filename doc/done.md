@@ -1,6 +1,16 @@
 # Done
 
 ## 2026-11-21
+-x Roads and highways go round things, cheaply. Highways are a lattice over the world (towns/fun/highways.c): a node
+  jittered every 128 blocks from the terrain's seed, linking east or north (some both), nodes and links near towns and mountains
+  left out, each town's gate linked to its nearest node; a tunk works out the links crossing it from the nodes round
+  it (0.04ms), no step, nothing stored, no region borders to agree on; level between their ends' heights, a
+  causeway over water. Town roads are a waypoint graph inside its walls (a point every 8 blocks, none in homes,
+  linked where a line misses every home), one shortest-path tree from the square to the gate and each door,
+  straightened (0.04 to 0.17ms a town, a GenerateTown step on a worker); on the ground as it is, homes' steps keep
+  theirs. The A* over sampled terrain before it cost 1 to 19ms (metrics.md). Fixed on the way: homes spawned twice
+  while their town waited on a later step, homes were placed into walls up to 12 thick. tst highways, town_homes
+  (roads round homes), town_build (a town's roads round a home, highway nodes)
 -x Towns have street lamps, homes doors and beds, regions highways. The lamp is a 1 x 3 x 1 block (vox_type_lamp, a
   4 block model cube, BlockLamp) beside town roads every 16 blocks and at the square's corners, its head lighting the
   street. Homes' doorways are a block wide and two tall with a door in them, a bed in the back corner (two in wide

@@ -2,6 +2,7 @@
 #include "maps.c"
 #include "walls.c"
 #include "homes.c"
+#include "roads.c"
 #include "in_town.c"
 
 void zox_systems_towns(ecs* world) {
@@ -44,6 +45,20 @@ void zox_systems_towns(ecs* world) {
         [in] blocks.BlockPosition2,
         [in] towns.TownSize,
         [out] towns.GenerateTown,
+        [none] towns.Town
+    );
+    zox_system(
+        town_roads_system,
+        zoxp_update,
+        [in] blocks.BlockPosition2,
+        [in] towns.TownSize,
+        [in] towns.WallThickness,
+        [in] towns.TownGateSide,
+        [in] towns.TownGateAt,
+        [in] core.Seed,
+        [out] towns.GenerateTown,
+        [out] towns.RoadSegments,
+        [out] towns.StreetLamps,
         [none] towns.Town
     );
     zox_system_1(
