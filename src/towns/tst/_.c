@@ -10,4 +10,5 @@ void zox_tsts_towns(ecs* world) {
     zox_tsts_town_maps(world);
     zox_tsts_town_build(world);
     zox_tst_add("aesthetic_town", zox_tst_aesthetic_town_ready, zox_tst_aesthetic_town_check, 240);
+    zox_tst_add("aesthetic_particles", zox_tst_aesthetic_particles_ready, zox_tst_aesthetic_particles_check, 240);
 }
