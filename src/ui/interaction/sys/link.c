@@ -4,13 +4,13 @@ void element_active_link_system(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ActiveState);
-    zox_sys_in(ActiveStateDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ActiveState, state);
-        zox_sys_i(ActiveStateDirty, dirty);
+        // the last reader of it (element_active_system runs before)
+        zox_remove(e, ActiveStateDirty);
         entity parent = zox_get_parent(world, e);
-        if (dirty->value != zox_dirty_active || !state->value) {
+        if (!state->value) {
             continue;
         }
         if (!zox_valid(parent) || !zox_has(parent, ActiveSingle)) {
@@ -23,7 +23,7 @@ void element_active_link_system(iter* it) {
         // resets last list active
         if (zox_valid(active)) {
             zox_set(active, ActiveState, { 0 });
-            zox_set(active, ActiveStateDirty, { zox_dirty_trigger });
+            zox_add(active, ActiveStateDirty);
         }
         // Link our active to our list
         zox_set_link(world, parent, ActiveLink, e);

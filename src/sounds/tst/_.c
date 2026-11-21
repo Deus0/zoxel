@@ -432,6 +432,7 @@ void zox_tst_jingles_check(ecs* world) {
 }
 
 #include "hits.c"
+#include "trigger.c"
 
 void zox_tsts_sounds() {
     zox_tst_add("jingles", zox_tst_jingles_ready, zox_tst_jingles_check, 30);
@@ -443,4 +444,5 @@ void zox_tsts_sounds() {
     zox_tst_add("sound_instruments", zox_tst_sound_instruments_ready, zox_tst_sound_instruments_check, 30);
     zox_tst_set_setup("sound_instruments", NULL, 1);
     zox_tsts_hits();
+    zox_tsts_sound_trigger();
 }

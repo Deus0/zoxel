@@ -51,20 +51,12 @@ void zox_systems_collisions3(ecs *world) {
         [in] chunks3.ChunkSize,
         [in] blocks.BlockScale,
         [out] transforms3.Bounds3D,
-        [out] transforms3.Bounds3Dirty,
         [none] chunks3.VoxelNodePostDirty,
     );
     zox_system(
         vox_link_bounds3_grow_system,
         zoxp_update,
         [out] transforms3.Bounds3D,
-        [out] transforms3.Bounds3Dirty,
         [none] chunks3.VoxOwner,
-    );
-    zox_system(
-        bounds3_enable_system,
-        zoxp_update,
-        [in] transforms3.Bounds3Dirty,
-        [none] physics.DisableMovement
     );
 }

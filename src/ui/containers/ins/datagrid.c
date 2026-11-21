@@ -105,7 +105,7 @@ entity spawn_datagrid(
             if (active_states) {
                 if (array_index == selected) {
                     zox_setv(spawn.x, ActiveState, 1);
-                    zox_setv(spawn.x, ActiveStateDirty, zox_dirty_trigger);
+                    zox_add(spawn.x, ActiveStateDirty);
                 }
             }
             array_index++;

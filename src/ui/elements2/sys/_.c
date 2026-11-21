@@ -84,7 +84,6 @@ void zox_systems_elements2(ecs *world) {
         [in] interactions.Clicker,
         [in] interactions.ToggleEvent,
         [out] interactions.ActiveState,
-        [out] interactions.ActiveStateDirty,
         [none] interactions.Click,
         [none] elements2.Toggle
     );

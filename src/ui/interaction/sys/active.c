@@ -1,24 +1,20 @@
-// animation system
+// an element made active or not (ActiveStateDirty, removed by element_active_link_system after): its outline
 void element_active_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
     zox_sys_in(ActiveState);
-    zox_sys_in(ActiveStateDirty);
     zox_sys_in(ElementOutlineColor);
     zox_sys_in(ActiveColor);
     zox_sys_out(OutlineColor);
     zox_sys_out(GenerateTexture);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ActiveState, state);
-        zox_sys_i(ActiveStateDirty, dirty);
         zox_sys_i(ElementOutlineColor, idle_outline);
         zox_sys_i(ActiveColor, acolor);
         zox_sys_o(OutlineColor, outline);
         zox_sys_o(GenerateTexture, generate);
-        if (dirty->value == zox_dirty_active) {
-            outline->value = state->value ? acolor->value : idle_outline->value;
-            generate->value = zox_generate_texture_run;
-        }
+        outline->value = state->value ? acolor->value : idle_outline->value;
+        generate->value = zox_generate_texture_run;
     }
     zox_sys_on_end();
 } zoxd_system(element_active_system);

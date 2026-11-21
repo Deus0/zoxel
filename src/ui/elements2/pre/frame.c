@@ -22,7 +22,6 @@ entity spawn_prefab_frame_toggleable(
     zox_setv(e, OutlineColor, outline);
     zox_setv(e, ElementOutlineColor, outline);
     zox_setv(e, ActiveState, 0);
-    zox_setv(e, ActiveStateDirty, 0);
     zox_setv(e, ActiveColor, active);
     return e;
 }

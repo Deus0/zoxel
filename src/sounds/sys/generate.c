@@ -11,7 +11,6 @@ void sound_generate_system(iter* it) {
     zox_sys_in(SoundFrequency);
     zox_sys_in(SoundVolume);
     zox_sys_in(SoundData);
-    zox_sys_out(TriggerSound);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(SoundLength, soundLength);
@@ -19,7 +18,6 @@ void sound_generate_system(iter* it) {
         zox_sys_i(InstrumentType, instrumentType);
         zox_sys_i(SoundVolume, soundVolume);
         zox_sys_i(SoundData, soundData);
-        zox_sys_o(TriggerSound, triggerSound);
         zox_remove(e, GenerateSound);
         if (!soundData->value) {
             zox_logw("Sound Data missing in [sound_generate_system]");
@@ -37,7 +35,7 @@ void sound_generate_system(iter* it) {
         {
             zox_logw("Unknown instrument [%i] in [sound_generate_system]", instrumentType->value);
         }
-        triggerSound->value = zox_dirty_trigger;
+        zox_add(e, Dirty);
         zox_logv("+ generated sound (%f)", soundVolume->value);
         zox_sys_increment();
     }

@@ -16,7 +16,7 @@ void on_closed_taskbar_window(
     if (zox_valid(toggle)) {
         /*zox_log("[on_closed_taskbar_window] Window [%s] has [Toggle] %s", zox_getn(window), zox_getn(toggle));*/
         zox_setv(toggle, ActiveState, 0);
-        zox_setv(toggle, ActiveStateDirty, zox_dirty_trigger);
+        zox_add(toggle, ActiveStateDirty);
     } else {
         zox_loge("Window [%s] Invalid [ToggleLink]",
             zox_getn(window));
@@ -86,7 +86,7 @@ void link_window_to_taskbar(
     if (zox_valid(toggle)) { //  && zox_has(toggle, Toggle)) {
         zox_link(world, window, ToggleLink, toggle);
         zox_setv(toggle, ActiveState, 1);
-        zox_setv(toggle, ActiveStateDirty, zox_dirty_trigger);
+        zox_add(toggle, ActiveStateDirty);
     } else {
         zox_loge("Window could not find Toggle [%s]",
             zox_getn(toggle));

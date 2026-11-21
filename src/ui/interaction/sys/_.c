@@ -77,12 +77,12 @@ void zox_systems_interaction(ecs* world) {
         element_active_system,
         zoxp_update,
         [in] interactions.ActiveState,
-        [in] interactions.ActiveStateDirty,
         [in] ui.ElementOutlineColor,
         [in] interactions.ActiveColor,
         [out] textures.OutlineColor,
         [out] textures.GenerateTexture,
-        [none] ui.Element
+        [none] ui.Element,
+        [none] interactions.ActiveStateDirty
     );
     zox_system(
         element_selected_brighter_system,
@@ -102,8 +102,8 @@ void zox_systems_interaction(ecs* world) {
         element_active_link_system,
         zoxp_update,
         [in] interactions.ActiveState,
-        [in] interactions.ActiveStateDirty,
-        [none] ui.Element
+        [none] ui.Element,
+        [none] interactions.ActiveStateDirty
     );
     zox_system(
         mouse_element_system,

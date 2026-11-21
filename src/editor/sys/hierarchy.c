@@ -18,7 +18,7 @@ void button_event_clicked_hierarchy(
     }
     inspector_select_target(world, event.clicker, zox_getv(clicked, Target));
     zox_setv(clicked, ActiveState, 1);
-    zox_setv(clicked, ActiveStateDirty, zox_dirty_trigger);
+    zox_add(clicked, ActiveStateDirty);
 }
 
 // adds e and its descendants (depth first), skipping glyphs, up to hierarchy_max_elements

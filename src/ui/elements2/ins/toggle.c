@@ -17,7 +17,7 @@ entity spawn_toggle(
     // TODO: Toggle Prefab
     zox_add(e, Toggle);
     zox_setv(e, ActiveState, value);
-    zox_setv(e, ActiveStateDirty, zox_dirty_trigger);
+    zox_add(e, ActiveStateDirty);
     zox_setv(e, ActiveColor, button_outline_active);
     return e;
 }

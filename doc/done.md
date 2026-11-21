@@ -1,6 +1,11 @@
 # Done
 
 ## 2026-11-21
+-x More byte states gone: TriggerSound is the core Dirty/Update on a sound (players match Update, tst sound_trigger
+  checks one reaches the mixer); ActiveStateDirty is a tag (elements get the core Dirty for texts), the link system
+  removes it after the outline one; Bounds3Dirty and bounds3_enable_system gone (grow_bounds3 lets it move)
+- kept as bytes: GameStateDirty (tags made the game clean up before the players saw the end: its 3 frame guard
+  matters), PlayerStateDirty, Generate, GenerateCharacter, the action timers, PickedUp, StreamDirty, the render ones
 -x Byte states to tags (one reader, set then read once): GenerateSound, ProcessSound, CombineVox, InspectorDirty,
   HierarchyUIDirty, GlyphSpawnedDirty, AnimateTextEnded are tags their system matches and removes; their 7 increment
   systems are gone; ItemDirty (never set) removed

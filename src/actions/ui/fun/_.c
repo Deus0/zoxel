@@ -84,10 +84,10 @@ void set_character_action(
         uint frame_index = zox_getv(child, ChildIndex);
         if (index != frame_index && state) {
             zox_setv(child, ActiveState, 0);
-            zox_setv(child, ActiveStateDirty, zox_dirty_trigger);
+            zox_add(child, ActiveStateDirty);
         } else if (index == frame_index && !state) {
             zox_setv(child, ActiveState, 1);
-            zox_setv(child, ActiveStateDirty, zox_dirty_trigger);
+            zox_add(child, ActiveStateDirty);
         }
         if (dbg_log) {
             zox_log("[%i] ActiveState", i);

@@ -22,7 +22,7 @@ zox_tag(DraggedLink);   // link to what the dragging moves
 zoxc_byte(DraggableState);
 // Active
 zoxc_byte(ActiveState);
-zoxc_state(ActiveStateDirty);
+zox_tag(ActiveStateDirty);
 zoxc_color(ActiveColor);
 zox_tag(ActiveSingle);
 zox_tag(ActiveLink);       // list -> its active element, only for ActiveSingle lists
@@ -78,7 +78,7 @@ void zox_components_interaction(ecs* world) {
     zoxd_byte(ClickDisabled);
     // Active
     zoxd_byte(ActiveState);
-    zoxd_state(ActiveStateDirty);
+    zoxd_tag_event(ActiveStateDirty);
     zoxd_color(ActiveColor);
     zoxd_nf_link(ActiveLink);
     zoxd_tag(ActiveSingle);

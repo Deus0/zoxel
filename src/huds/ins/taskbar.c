@@ -25,7 +25,7 @@ entity taskbar_frame_toggle(
         player);
     byte window_state = zox_valid(window);
     zox_setv(frame, ActiveState, window_state);
-    zox_setv(frame, ActiveStateDirty, zox_dirty_trigger);
+    zox_add(frame, ActiveStateDirty);
     if (window_state) {
         zox_link(world, window, ToggleLink, frame);
     }
@@ -120,7 +120,7 @@ static void taskbar_spawn_frames(
                 data->component_id);
             if (zox_valid(window)) {
                 zox_setv(frame, ActiveState, 1);
-                zox_setv(frame, ActiveStateDirty, zox_dirty_trigger);
+                zox_add(frame, ActiveStateDirty);
                 zox_link(world, window, ToggleLink, frame);
             }
             i++;

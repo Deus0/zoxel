@@ -11,13 +11,8 @@ void sound_debug_system(iter* it) {
     byte has_begun = 0;
     zox_sys_begin()
     zox_sys_in(SoundData)
-    zox_sys_in(TriggerSound)
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(TriggerSound, triggerSound)
         zox_sys_i(SoundData, soundData)
-        if (triggerSound->value != zox_dirty_active) {
-            continue;
-        }
         const double decay_time = soundData->length / sample_rate_f; // 6.0 + zox_rand() % 6;
         if (!has_begun) {   // draw axis
             has_begun = 1;

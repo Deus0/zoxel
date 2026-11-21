@@ -11,7 +11,6 @@ void zox_systems_sounds(ecs *world) {
         [in] SoundData,
         [in] SoundVolume,
         [in] SoundFrequency,
-        [out] TriggerSound,
         [None] Sound,
         [none] ProcessSound
     );
@@ -23,7 +22,6 @@ void zox_systems_sounds(ecs *world) {
         [in] SoundFrequency,
         [in] SoundVolume,
         [in] SoundData,
-        [out] TriggerSound,
         [none] Sound,
         [none] GenerateSound
     );
@@ -32,25 +30,25 @@ void zox_systems_sounds(ecs *world) {
         sound_debug_system,
         zoxp_spawn,
         [in] SoundData,
-        [in] TriggerSound,
-        [none] Sound
+        [none] Sound,
+        [none] core.Update
     );
     zox_system(
         sound_play_system,
         zoxp_update,
-        [in] TriggerSound,
         [in] SoundData,
         [in] ?SoundPosition,
         [in] ?SoundDelay,
-        [none] Sound
+        [none] Sound,
+        [none] core.Update
     );
     zox_system(
         sound_play_ref_system,
         zoxp_update,
-        [in] TriggerSound,
         [in] SoundDataRef,
         [in] ?SoundPosition,
-        [none] Sound
+        [none] Sound,
+        [none] core.Update
     );
     // main thread (the mixer's listener), in zoxp_render with the other main thread systems: no merges of its
     //  own, and the camera's final position this frame

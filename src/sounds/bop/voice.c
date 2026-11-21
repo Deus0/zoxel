@@ -275,7 +275,7 @@ entity spawn_voice_syllable(ecs* world, const Voice* voice, char consonant, char
     zox_name("voice");
     zox_set_ptr(e, SoundData, data);
     zox_set(e, SoundLength, { voice_syllable_length(voice) });
-    zox_set(e, TriggerSound, { zox_dirty_trigger });
+    zox_add(e, Dirty);
     set_sound_source(world, e, source);
     return e;
 }
@@ -318,7 +318,7 @@ entity spawn_voice_grunt(ecs* world, const Voice* speaker, float volume, entity 
     zox_name("grunt");
     zox_set_ptr(e, SoundData, data);
     zox_set(e, SoundLength, { voice_syllable_length(&voice) });
-    zox_set(e, TriggerSound, { zox_dirty_trigger });
+    zox_add(e, Dirty);
     set_sound_source(world, e, source);
     return e;
 }

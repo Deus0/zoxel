@@ -1,8 +1,6 @@
 zox_tag(Sound);
 zoxc_byte(InstrumentType);
 zox_tag(GenerateSound);        //! A state event for generating sounds
-// NOTE: renamed PlaySound to TriggerSound temporarily, cause of windows.h conflict
-zoxc_state(TriggerSound);         //! A state event for playing sounds
 zox_tag(ProcessSound);
 zoxc_float(SoundFrequency);     //! The frequency of the generated sound
 zoxc_float(SoundVolume);     //! The frequency of the generated sound
@@ -21,7 +19,6 @@ zox_tag(HitSoundVoiced);        // a body that grunts when hit (in its voice)
 void zox_components_sounds(ecs* world) {
     zoxd_tag(Sound);
     zoxd_byte(InstrumentType);
-    zoxd_state(TriggerSound);
     zoxd_tag_event(GenerateSound);
     zoxd_tag_event(ProcessSound);
     zoxd_double(SoundLength);

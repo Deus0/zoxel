@@ -9,7 +9,6 @@ entity prefab_game_debug_label;
 
 void prefab_add_active_state(ecs* world, entity e, color active) {
     zox_set(e, ActiveState, { 0 });
-    zox_set(e, ActiveStateDirty, { 0 });
     color base = zox_getv(e, OutlineColor);
     zox_set(e, ElementOutlineColor, { base });
     zox_set(e, ActiveColor, { active });

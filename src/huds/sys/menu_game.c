@@ -48,7 +48,7 @@ void taskbar_begin_system(iter* it) {
         }
         zox_link(world, e, ToggleLink, toggle);
         zox_setv(toggle, ActiveState, 1);
-        zox_setv(toggle, ActiveStateDirty, zox_dirty_trigger);
+        zox_add(toggle, ActiveStateDirty);
     }
     zox_sys_on_end();
 } zoxd_system(taskbar_begin_system);

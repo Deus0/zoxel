@@ -136,7 +136,7 @@ entity spawn_datagrid_slots2(
             if (active_states) {
                 if (array_index == selected) {
                     zox_setv(frame, ActiveState, 1);
-                    zox_setv(frame, ActiveStateDirty, zox_dirty_trigger);
+                    zox_add(frame, ActiveStateDirty);
                 }
             }
             array_index++;

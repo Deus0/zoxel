@@ -10,13 +10,11 @@ void sound_process_system(iter* it) {
     zox_sys_in(SoundData);
     zox_sys_in(SoundVolume);
     zox_sys_in(SoundFrequency);
-    zox_sys_out(TriggerSound);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(SoundData, soundData);
         zox_sys_i(SoundVolume, soundVolume);
         zox_sys_i(SoundFrequency, soundFrequency);
-        zox_sys_o(TriggerSound, triggerSound);
         zox_remove(e, ProcessSound);
         if (!soundData->value) {
             zox_loge("Failed processing, no sound data");
@@ -56,7 +54,7 @@ void sound_process_system(iter* it) {
         }
         memcpy(soundData->value, new_data, soundData->length * sizeof(float));
         free(new_data);
-        triggerSound->value = zox_dirty_trigger;
+        zox_add(e, Dirty);
         zox_logv("  -> updated sound frequency to [%f]", frequency_scale);
     }
     zox_sys_on_end();
