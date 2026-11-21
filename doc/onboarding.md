@@ -368,6 +368,7 @@ The loop:
 - [Spawning](spawning.md): how entities are made, what it costs, keeping it cheap
 - [Game Design](gdd.md): the blend, the pillars, what's playable and planned
 - [Settings](tech/settings.md): a module's settings, how a change applies, save and load
+- [States](tech/states.md): change events, tags over byte states, which form to use, timing
 - [Commands](commands.md): every command line flag for the game binary
 - [Help](help.md): make targets
 - [Notes](notes.md): assorted engine notes

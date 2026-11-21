@@ -1,0 +1,100 @@
+# States and Change Events
+
+How an entity says "this changed, react to it". The goal: few components, few systems, simple to follow. Pick the
+first form in the list that fits.
+
+## The forms, simplest first
+
+| Form | Components | Systems | Use when |
+|---|---|---|---|
+| 1. A tag its reader removes | 1 tag | 0 (the reader's own) | one system reacts |
+| 2. The core `Dirty` / `Update` | 0 new | 0 new (shared) | several react, nothing else dirties that entity |
+| 3. An observer on a tag | 0-1 | 0 | a light reaction, the moment it's set (settings) |
+| 4. A pair, `zoxc_dirty(T)` | 2 tags | 2 | several readers in different phases, and the entity has other changes |
+| 5. A byte state, `zoxc_state(T)` | 1 byte | 1 (increment) | a machine with steps, or code reads "still pending" |
+
+### 1. A tag its reader removes
+
+```c
+zox_tag(GenerateSound);                 // com
+zoxd_tag_event(GenerateSound);
+zox_add(e, GenerateSound);              // a writer
+zox_system(sound_generate_system, zoxp_update, [in] ..., [none] GenerateSound);
+// in the system, per entity:
+zox_remove(e, GenerateSound);
+```
+
+- `[none]` terms go last: fields are read by position (`zox_sys_in` order).
+- Two readers in one phase: the later one removes it (`ActiveStateDirty`: `element_active_system`, then
+  `element_active_link_system` removes it). Say so in a comment at the removal.
+- Tags set on a prefab are copied to its instances, so a prefab can start one dirty (the editor's inspector).
+
+### 2. The core `Dirty` / `Update`
+
+- Writers `zox_add(e, Dirty)`. `dirty_system` (zoxp_remove) swaps it for `Update`, `update_system` removes `Update`
+  a frame later.
+- Readers match the component that gives it meaning plus the tag: `[in] SoundData, [none] Sound, [none] core.Update`.
+- **`Dirty`** is on from the writer's merge to the end of that frame: the same frame, as a byte's "active" was.
+  **`Update`** is the whole next frame: safe for readers in an earlier phase than the writer (`TriggerSound`: sounds
+  generated in zoxp_update, played on `Update`).
+- Check nothing else dirties that entity first: ui elements get `Dirty` for their text, so a ui event needs its own
+  tag (form 1 or 4).
+
+### 3. An observer on a tag
+
+`zox_on_add(fn, [in] core.ZoxName, [none] settings.Setting, [none] core.Dirty)`, run at the merge, on the main
+thread. Settings use it (doc/tech/settings.md).
+
+- Observe **`Dirty`**, not `Update`: `Update` stays on while an entity is dirtied again on the next frame, so its
+  OnAdd doesn't fire again (a dragged slider applied only its first value, tst settings_drag).
+- Keep heavy work in systems (they run on workers, an observer doesn't).
+
+### 4. A pair, `zoxc_dirty(T)`
+
+`zoxc_dirty(T)` makes `TDirty` and `TUpdate`, `zoxc_system_dirty(T)` / `zoxd_system_dirty(T)` their two systems
+(src/_/flecs/mcr/dirty.c). Only when one tag isn't enough: readers in several phases on an entity with other kinds
+of change. Each pair costs 2 tags and 2 systems.
+
+### 5. A byte state, `zoxc_state(T)`
+
+A byte: `zox_dirty_trigger` (1) → `active` (2) → `end` (3) → `none` (0), one step a frame by its increment system
+(src/_/flecs/comm/state.c). Keep one when the steps are used:
+
+- something waits on `end` (the player state machine moves on at its third frame),
+- writers check "nonzero" to wait out a change in flight (the game state's 3 frame guard),
+- or code reads it as "still pending" (streaming).
+
+## Timing
+
+- A tag added in a system lands at the next merge: a reader in the same phase, before that merge, misses it this
+  frame (and sees it next run, unless it's `Dirty`, gone by then). Match `Update` or remove-it-yourself tags there.
+- A byte's "active" was the frame it was set (when its increment ran before the readers). `Dirty` matches that,
+  `Update` is a frame later.
+- Changing timing changes behaviour: tags in place of `GameStateDirty` let the game clean up (its camera gone)
+  before the players saw the end (tst menu_flow, end_game_cleanup). Test the flows a state drives.
+
+## Where things stand (2026-11-21)
+
+- Tags removed by their reader: `GenerateSound`, `ProcessSound`, `CombineVox`, `InspectorDirty`,
+  `HierarchyUIDirty`, `GlyphSpawnedDirty`, `AnimateTextEnded`, `ActiveStateDirty`
+- Core `Dirty` / `Update`: `TriggerSound` (on sounds), every setting's change (observers on `Dirty`), texts
+- Pairs: `Skeleton`, `InsideBlock`, `ListPosition`, `LayoutPosition`, `LayoutSize` (several readers); `WindowSize`,
+  `Attach`, `Grid`, `List` have one reader each: candidates for form 1
+- Bytes kept:
+  - machines: `PlayerStateDirty`, `GameStateDirty`, `Generate`, `GenerateCharacter`, `PickedUp`
+  - action timers: `ActivateBegin`, `WarmupState`, `Activate`, `CooldownState`, `TriggerActionA/B/E`,
+    `ActiveActionDirty`
+  - pending reads: `StreamDirty`, `StreamDirty2`, `NpcSpawnZoneDirty`, `LightNodeDirty`
+  - render events: `RenderDepthDirty`, `RenderDistanceDirty` (many writers and readers in lod streaming: a pair
+    would cost 2 systems more each, for no fewer components)
+- Gone: `ItemDirty`, `Bounds3Dirty` (and `bounds3_enable_system`), `SettingDirty`
+
+## Tests
+
+| Test | Covers |
+|---|---|
+| sound_trigger | a sound generated reaches the mixer (GenerateSound, then Dirty / Update) |
+| settings_drag | an observer on Dirty fires every frame a setting changes |
+| navigator, options_toggle | ActiveStateDirty: frames and toggles light |
+| menu_flow, end_game_cleanup | the game and player state machines |
+| pipeline_syncs, lint_systems | merges and systems |
