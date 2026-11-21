@@ -185,6 +185,8 @@ void zox_tst_event_costs_check(ecs* world) {
 //  pair; per event and per frame
 //  - observers run at the merge on the main thread, one call each; systems take a table's entities at once and can
 //      run on workers: this shows where each wins
+//  - twice: bare entities, then ones with [zox_tst_es_heavy] data components (a chunk, a character): a tag added
+//      or removed moves them between tables, copying every component, a non fragmenting one doesn't
 //  - checks every event was handled
 //  - run: bash bsh/tst.sh flecs_event_scaling
 #define zox_tst_es_max 10000
@@ -193,6 +195,9 @@ const int zox_tst_es_counts[zox_tst_es_sizes] = { 1, 10, 100, 1000, 10000 };
 ecs_entity_t zox_tst_es_entities[zox_tst_es_max];
 int zox_tst_es_n = 0;
 int zox_tst_es_wrong = 0;
+int zox_tst_es_components = 0;     // data components on each entity (a table move copies them all)
+#define zox_tst_es_heavy 20
+#define zox_tst_es_heavy_size 64
 
 // tags the first n entities, a frame's events (deferred: lands at the merge after it)
 static void zox_tst_es_fire(ecs_iter_t* it) {
@@ -231,8 +236,19 @@ static ecs_entity_t zox_tst_es_system(ecs_world_t* w, ecs_entity_t phase, ecs_id
 static double zox_tst_es_run(int way, int n) {
     ecs_entity_t target = 0;
     ecs_world_t* w = zox_tst_ec_world(&target);
+    ecs_entity_t components[zox_tst_es_heavy];
+    for (int c = 0; c < zox_tst_es_components; c++) {
+        ecs_component_desc_t desc = { 0 };
+        desc.entity = ecs_new(w);
+        desc.type.size = zox_tst_es_heavy_size;
+        desc.type.alignment = 8;
+        components[c] = ecs_component_init(w, &desc);
+    }
     for (int i = 0; i < n; i++) {
         zox_tst_es_entities[i] = ecs_new(w);
+        for (int c = 0; c < zox_tst_es_components; c++) {
+            ecs_add_id(w, zox_tst_es_entities[i], components[c]);
+        }
     }
     zox_tst_es_n = n;
     zox_tst_es_system(w, EcsOnLoad, 0, zox_tst_es_fire, 0, 0);
@@ -276,6 +292,10 @@ byte zox_tst_event_scaling_ready(ecs* world) {
 void zox_tst_event_scaling_check(ecs* world) {
     (void) world;
     const char* names[5] = { "observer", "system", "system 4 threads", "pair", "observer nf tag" };
+    for (int heavy = 0; heavy < 2; heavy++) {
+    zox_tst_es_components = heavy ? zox_tst_es_heavy : 0;
+    zox_log("[tst] [metric] flecs_event_scaling entities with [%i] components of [%i] bytes:", zox_tst_es_components,
+        heavy ? zox_tst_es_heavy_size : 0);
     for (int s = 0; s < zox_tst_es_sizes; s++) {
         const int n = zox_tst_es_counts[s];
         double us[5];
@@ -285,6 +305,7 @@ void zox_tst_event_scaling_check(ecs* world) {
         zox_log("[tst] [metric] flecs_event_scaling [%i] events a frame, per frame (per event): %s [%.1fus] (%.3f), %s [%.1fus] (%.3f), %s [%.1fus] (%.3f), %s [%.1fus] (%.3f), %s [%.1fus] (%.3f)",
             n, names[0], us[0], us[0] / n, names[1], us[1], us[1] / n, names[2], us[2], us[2] / n, names[3], us[3], us[3] / n,
             names[4], us[4], us[4] / n);
+    }
     }
     zox_tst_check(!zox_tst_es_wrong, "[%i] runs didn't handle every event", zox_tst_es_wrong);
 }

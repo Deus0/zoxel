@@ -9,7 +9,7 @@ first form in the list that fits.
 |---|---|---|---|
 | 1. A tag its reader removes | 1 tag | 0 (the reader's own) | one system reacts |
 | 2. The core `Dirty` / `Update` | 0 new | 0 new (shared) | several react, nothing else dirties that entity |
-| 3. An observer on a tag | 0-1 | 0 | a one-off event, few a frame, the reaction light (camera attach) |
+| 3. An observer on a non fragmenting tag | 1 | 0 | an event with a light reaction, any count (camera attach) |
 | 4. A pair, `zoxc_dirty(T)` | 2 tags | 2 | several readers in different phases, and the entity has other changes |
 | 5. A byte state, `zoxc_state(T)` | 1 byte | 1 (increment) | a machine with steps, or code reads "still pending" |
 
@@ -95,23 +95,36 @@ frames (debug build, 2026-11-21):
 
 ### Many events a frame
 
-`tst flecs_event_scaling`: [n] entities tagged each frame by a system (deferred, as the game does), then handled
-(us a frame, debug build, 2026-11-21):
+`tst flecs_event_scaling`: [n] entities tagged each frame by a system (deferred, as the game does), then handled,
+us a frame (debug build, 2026-11-21). Twice: bare entities, then ones with 20 components of 64 bytes (a chunk, a
+character), where a tag added or removed moves the entity to another table, copying every component.
 
-| events a frame | observer | system | system, 4 threads | pair | observer, non fragmenting tag |
+Bare entities:
+
+| events a frame | observer | system | system, 4 threads | pair | observer, nf tag |
 |---|---|---|---|---|---|
-| 1 | 4.7 | 6.3 | 17.0 | 7.8 | 4.7 |
-| 10 | 15.3 | 16.2 | 31.6 | 19.0 | 15.6 |
-| 100 | 141 | 86 | 107 | 124 | 131 |
-| 1000 | 1284 | 821 | 809 | 1149 | 1226 |
-| 10000 | 12399 | 8466 | 7600 | 11755 | 12731 |
+| 1 | 4.7 | 6.4 | 16.7 | 7.6 | 4.6 |
+| 100 | 122 | 86 | 106 | 124 | 125 |
+| 10000 | 12203 | 8590 | 7704 | 11826 | 12420 |
 
-- Observers scale linearly: ~1.3us an event at any count, no blow up. A system takes a table's entities in one
-  call: ~0.85us an event from ~100 a frame, a third cheaper. They cross at ~10 events a frame.
-- Threads barely help here: the cost is the tag's add and remove (commands merged on the main thread), not the
-  handler. A handler with real work (a mesh, a light) gains from a system's threads, an observer can't.
-- So: an **observer** for events that are few a frame (ui, settings, a camera, a sound, a player's action); a
-  **system** for ones that come in bulk (chunks streaming, meshes, lights: hundreds a frame) or carry heavy work.
+Entities with 20 components:
+
+| events a frame | observer | system | system, 4 threads | pair | observer, nf tag |
+|---|---|---|---|---|---|
+| 1 | 5.8 | 6.9 | 18.7 | 8.5 | **4.6** |
+| 10 | 24.1 | 22.4 | 37.2 | 28.2 | **15.4** |
+| 100 | 218 | 178 | 213 | 222 | **125** |
+| 1000 | 2226 | 1857 | 2061 | 2235 | **1234** |
+| 10000 | 23446 | 34403 | 33770 | 39631 | **12672** |
+
+- A non fragmenting tag (`zoxd_nf_tag`) doesn't move the entity: its observer stays at ~1.25us an event at any
+  count and any size. On real entities it's the cheapest at every count, 1.5 to 2.7 times under a system.
+- A normal tag moves the entity (twice: added, removed), so its cost grows with the entity's data: double on these,
+  and systems get worse in bulk (3.4us an event at 10000, cache misses on the moved data).
+- Systems only win on bare entities (they batch a table at once), or when the handler has heavy work for threads.
+- So: events are **a non fragmenting tag and an observer** that removes it, few or many a frame. A system when the
+  reaction is heavy work (a mesh, a light) that should run on workers, then a tag on what it should work on.
+- Non fragmenting tags stay out of system queries (coding standards), one more reason they pair with observers.
 
 ## Timing
 
