@@ -373,7 +373,7 @@ void zox_tst_lakes_check(ecs* world) {
     terrain_heights_begin(world, terrain, &th);
     const TerrainLake* lake = &zox_tst_lake;
     const int level = zox_tst_lake_level;
-    int columns = 0, wrong = 0, above = 0, surface = 0, hanging = 0, unchecked = 0, in_towns = 0;
+    int columns = 0, wrong = 0, above = 0, hanging = 0, unchecked = 0, in_towns = 0;
     for (int x = -lake->radius; x <= lake->radius; x++) for (int z = -lake->radius; z <= lake->radius; z++) {
         const int2 column = { lake->centre.x + x, lake->centre.y + z };
         if (!terrain_lake_dip(lake, column)) {
@@ -406,7 +406,6 @@ void zox_tst_lakes_check(ecs* world) {
             wrong += v >= 0 && v != water_id;
         }
         // its surface held in: water or ground on all 4 sides
-        surface++;
         const int2 sides[4] = { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } };
         for (byte k = 0; k < 4; k++) {
             const int2 side = { column.x + sides[k].x, column.y + sides[k].y };

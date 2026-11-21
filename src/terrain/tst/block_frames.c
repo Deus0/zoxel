@@ -68,10 +68,9 @@ void zox_tst_block_frames_check(ecs* world) {
         animated++;
         const char* name = zox_get_name(block);
         // each frame against the next, and the last against the first
-        long steps = 0, most = 0, least = -1;
+        long most = 0, least = -1;
         for (int f = 0; f + 1 < count; f++) {
             const long d = zox_tst_bframes_frames_diff(&frames->value[f * length], &frames->value[(f + 1) * length], length);
-            steps += d;
             most = d > most ? d : most;
             least = least < 0 || d < least ? d : least;
         }

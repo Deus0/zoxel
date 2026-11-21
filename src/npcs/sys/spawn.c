@@ -120,7 +120,6 @@ void terrain_characters_spawn_system(iter* it) {
             }
         }
         zox_srand(seed->value);
-        byte spawned = 0;
         for (byte j = 0; j < character_spawn_rate; j++) {
             // Find Position First
             byte3 in_chunk_position;
@@ -174,7 +173,6 @@ void terrain_characters_spawn_system(iter* it) {
             zox_link(world, e, ChunkCharacters, e2);
             zox_setv(e2, NpcHome, j);
             zox_setv(e2, HomePosition, position);
-            spawned++;
             npcs_spawned_this_frame++;
             if (dbg_length) {
                 spawn_arrow3D(

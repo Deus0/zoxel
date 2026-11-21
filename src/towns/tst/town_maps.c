@@ -333,7 +333,7 @@ void zox_tst_home_glow_check(ecs* world) {
     const entity region = zox_tst_player_region(world);
     entity towns[zox_children_capacity];
     const uint towns_count = zox_valid(region) ? zox_get_children_by_id(world, region, towns, zox_children_capacity, zox_id(Town)) : 0;
-    int found = 0, lit = 0, checked = 0;
+    int found = 0, lit = 0;
     for (uint t = 0; t < towns_count; t++) {
         entity homes[zox_children_capacity];
         const uint count = zox_get_children_by_id(world, towns[t], homes, zox_children_capacity, zox_id(Home));
@@ -345,7 +345,6 @@ void zox_tst_home_glow_check(ecs* world) {
                 if (terrain_voxel_at(world, terrain, block) != glow_id) {
                     continue;
                 }
-                checked++;
                 found++;
                 // the room under it is lit by it (roofed, the sun doesn't reach in, only through the door)
                 const int3 above = { c.x, y - 1, c.y };

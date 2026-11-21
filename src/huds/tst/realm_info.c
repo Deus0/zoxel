@@ -50,7 +50,7 @@ byte zox_tst_realm_info_ready(ecs* world) {
         zox_tst_realm_info_make(saves, "a", (RealmInfo) { .seed = 11, .name = "Old Lands", .played = 7500, .last = now - 300 });
         zox_tst_realm_info_make(saves, "b", (RealmInfo) { .seed = 22, .name = "Newest", .played = 300, .last = now - 10 });
         zox_tst_realm_info_make(saves, "c", (RealmInfo) { .seed = 33, .name = "Middle", .played = 20, .last = now - 100 });
-        char folder[512];
+        char folder[520];
         snprintf(folder, sizeof(folder), "%s/a", saves);
         RealmInfo info;
         zox_tst_check(load_realm_info(folder, &info), "realm.txt in [%s] didn't load", folder);

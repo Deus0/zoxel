@@ -67,7 +67,7 @@ byte zox_tst_tooltip_flick_ready(ecs* world) {
         if (found < 2) {
             return 0;
         }
-        snprintf(zox_tst_tf_text, sizeof(zox_tst_tf_text), "%s", zox_getv(zox_tst_tf_icons[1], TooltipText));
+        snprintf(zox_tst_tf_text, sizeof(zox_tst_tf_text), "%.127s", zox_getv(zox_tst_tf_icons[1], TooltipText));
         zox_tst_tf_stage = 1;
         zox_tst_tf_frames = 0;
         return 0;

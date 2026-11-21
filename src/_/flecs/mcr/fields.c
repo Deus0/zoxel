@@ -30,8 +30,9 @@
 #define zox_sys_e()\
     entity e = it->entities[i];
 
+// (void): systems with no fields begin too
 #define zox_sys_begin()\
-    byte fi = 0;
+    byte fi = 0; (void) fi;
 
 #define zox_sys_begin_at(sys_i)\
     byte fi = sys_i

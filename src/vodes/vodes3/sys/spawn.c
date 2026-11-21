@@ -151,7 +151,6 @@ void spawn_vodes_dive(
     // byte octree_depth = zox_getv(chunk, NodeDepth);
     // calculations
     // TODO: If loaded vox model, we need to scale based on the mesh we are using
-    float mesh_scale = data->chunk_scalev;
     float3 positionf = byte3_to_float3(position);
     positionf = float3_scale1(positionf, data->terrain_block_scale);
     positionf = float3_add(

@@ -7,6 +7,7 @@ void melee_system(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(SkillCost);
+    (void) SkillCost_;
     zox_sys_in(Activate);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e()

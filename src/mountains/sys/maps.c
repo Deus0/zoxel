@@ -35,9 +35,7 @@ void mountain_map_system(iter* it) {
         }
         const entity region = rt.region;
         const byte terrain_length = rt.terrain_length;
-        const byte length = rt.length;
         const int2 map_size = rt.map_size;
-        const int2 global_position_start = rt.global_start;
 #ifdef zox_safety_checks
         if (!height_map->length) {
             zox_logw("Invalid [height_map] in mountain_map_system");

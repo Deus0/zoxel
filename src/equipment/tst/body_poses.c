@@ -516,7 +516,7 @@ byte zox_tst_body_poses_ready(ecs* world) {
         snprintf(name, sizeof(name), "%s/%02i_%s.ppm", zox_tst_poses_painted ? "body_weights" : "body_poses",
             zox_tst_poses_index, pose->name);
         snprintf(zox_tst_poses_files[zox_tst_poses_index], sizeof(zox_tst_poses_files[0]), "%s", zox_tst_path(name));
-        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_poses_files[zox_tst_poses_index]);
+        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%.255s", zox_tst_poses_files[zox_tst_poses_index]);
     } else if (zox_tst_poses_frames > zox_tst_poses_settle && !zox_screenshot_request[0]) {
         zox_tst_poses_index++;
         zox_tst_poses_frames = 0;

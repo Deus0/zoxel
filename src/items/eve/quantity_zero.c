@@ -1,6 +1,5 @@
 //
 void quantity_zero_event(iter* it) {
-    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Quantity);

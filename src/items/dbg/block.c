@@ -5,7 +5,6 @@ void zox_tst_spawn_item_block(
     ecs *world,
     ClickEventData data)
 {
-    byte dbg_inspector = 1;
     if (zox_valid(zox_tst_item_block)) {
         zox_log("Cleaning Test [zox_tst_item_block]");
         zox_delete(zox_tst_item_block);

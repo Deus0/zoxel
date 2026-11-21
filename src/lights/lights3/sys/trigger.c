@@ -2,7 +2,6 @@
 // If queue empty + lightnode dirty, activate!
 void chunk_colors_trigger_system(iter* it) {
     zox_sys_on_begin();
-    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LightNodeDirty);
@@ -26,13 +25,11 @@ void chunk_colors_trigger_system(iter* it) {
 // NOTE: Generates lights again when the neighbor lights update
 void chunk_neighbor_light_trigger_system(iter* it) {
     zox_sys_on_begin();
-    byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(LightNodeDirty);
     zox_sys_in(ChunkNeighbors);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
         zox_sys_i(LightNodeDirty, dirty);
         zox_sys_i(ChunkNeighbors, neighbors);
         if (dirty->value != zox_dirty_active) {

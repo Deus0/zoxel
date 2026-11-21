@@ -6,9 +6,9 @@ void update_ecs(ecs *world) {
     if (flecs_log_level) {
         ecs_log_set_level(flecs_log_level);
     }
-    byte dbg_log = 0;
     // run_update_loop(world);
 #ifdef zox_logs
+    byte dbg_log = 0;
     static double last_merge = 0;
     static double last_rematch = 0;
     double t0 = current_time_in_seconds();

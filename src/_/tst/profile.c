@@ -328,7 +328,6 @@ void zox_tst_profile_log(ecs* world, const char* name) {
         const double n = zox_tst_profile_sum_frames;
         const double wall = zox_tst_profile_sum_wall / n, systems = zox_tst_profile_sum_systems / n;
         const double merges = zox_tst_profile_sum_merges / n, observers = zox_tst_profile_sum_observers / n;
-        const double pipeline = zox_tst_profile_sum_pipeline / n;
         zox_log("[tst] [metric] %s an average frame [%.2fms]: systems [%.2fms] merges [%.2fms] observers [%.2fms] the rest [%.2fms] (rendering waits, presenting, the loop)",
             name, wall, systems, merges, observers, wall - systems - merges - observers);
         const double progress = zox_tst_profile_sum_progress / n, rematch = zox_tst_profile_sum_rematch / n;

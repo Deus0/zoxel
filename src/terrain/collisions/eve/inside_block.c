@@ -1,5 +1,4 @@
 void terrain_callback_inside_block(iter* it) {
-    byte dbg_log = 0;
     double spawn_rate = 0.2;
     zox_sys_world();
     zox_sys_begin();

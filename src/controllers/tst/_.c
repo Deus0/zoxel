@@ -106,7 +106,7 @@ byte zox_tst_player_spawn_ready(ecs* world) {
     zox_tst_waiting = "the player's character to spawn in the terrain";
     if (!zox_tst_spawn_character(world)) {
         // streaming state in the waiting message, so a stall shows where it's stuck
-        static char waiting[256];
+        static char waiting[512];
         const entity camera = zox_valid(dbg_player) ? zox_get_link(world, dbg_player, CameraLink) : 0;
         if (zox_valid(camera) && zox_valid(local_terrain) && zox_has(camera, StreamPosition)) {
             const float scale = zox_getv(local_terrain, BlockScale);

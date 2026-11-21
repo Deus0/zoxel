@@ -156,7 +156,7 @@ static inline byte zox_tst_qd_talk(ecs* world, int talk) {
         spaced |= line[i] == ' ';
     }
     if (line[0] && (*count == 0 || strcmp(zox_tst_qd_lines[talk][*count - 1], line)) && *count < zox_tst_qd_max_lines) {
-        snprintf(zox_tst_qd_lines[talk][*count], 128, "%s", line);
+        snprintf(zox_tst_qd_lines[talk][*count], 128, "%.127s", line);
         zox_log("[tst] talk [%i] line [%i]: %s", talk, *count, line);
         (*count)++;
         zox_tst_qd_settled = 0;

@@ -36,10 +36,10 @@ void zox_tst_load_games_setup() {
         zox_logw("[tst] couldn't clear [%s]", home);
     }
     // NOTE: saves root is set before --nosaves is processed, which keeps it
-    snprintf(zox_saves_root, sizeof(zox_saves_root), "%s", home);
+    snprintf(zox_saves_root, sizeof(zox_saves_root), "%.255s", home);
     zox_tst_load_game_name = game_name;
     snprintf(zox_tst_load_saves_path, sizeof(zox_tst_load_saves_path),
-        "%s/%s", home, game_name);
+        "%.255s/%.255s", home, game_name);
     if (!zox_mkdirs(zox_tst_load_saves_path)) {
         zox_loge("[tst] couldn't make [%s]", zox_tst_load_saves_path);
         return;

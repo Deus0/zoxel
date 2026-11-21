@@ -81,7 +81,7 @@ void block_table_system(iter* it) {
         }
         zox_remove(e, BlockTableDirty);
         const FolderPath* folder = zox_get(e, FolderPath);
-        if (!folder->value || !folder->value[0]) {
+        if (!folder->value[0]) {
             continue;
         }
         char* path = join_path(folder->value, "blocks.txt");

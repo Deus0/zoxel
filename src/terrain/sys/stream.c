@@ -9,6 +9,7 @@ static inline byte terrain_stream_points(ecs* world, query* query, entity terrai
     while (zox_sys_query_loop()) {
         zox_sys_begin_2();
         zox_sys_in_2(StreamDirty);    // the filter's fields in order (streamers, terrain/sys/_.c)
+        (void) StreamDirtys_2;
         zox_sys_in_2(StreamerLevel);
         zox_sys_in_2(StreamPosition);
         for (int j = 0; j < it2.count; j++) {
@@ -271,7 +272,6 @@ void terrain_stream_queue_system(iter* it) {
             // TerrainSpawnUpdate update = remove_TerrainSpawnQueue(queue);
             TerrainSpawnUpdate update = remove_next_TerrainSpawnQueue(queue, zox_current_time, stream_update_aging);
 
-            int2 position2 = update.position;
             byte new_distance = update.distance;
             byte is_kill = new_distance > terrain_lod_far;
             // if update
