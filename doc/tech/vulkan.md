@@ -62,9 +62,6 @@ body_views, terrain_render, skeleton_render, gpu_restore(_game), gpu_mesh(_views
 - **On an android phone** (untried, no device here): rotation (upright swapchain), coming back from the background
   (the surface made again), particle size (`vulkan points: large [0]` would mean points are 1 pixel: draw them as
   quads there). A debug apk with `--logs` shows those lines in `adb logcat`.
-- **The slime's tentacle looks much weaker on android vulkan** (the user, 2026-11-20): not reproduced on desktop
-  yet; find what draws it (lines, particles or a sway shader) and compare it with `compare_backends.sh` / a test
-  view, and on the phone against the gl apk.
 - **A rare release crash**: once in 5 perf_idle runs at far 8 with `ZOX_VK_WORKERS=0`, never in debug (doc/todo.md).
 - **XR on vulkan**: openxr has it (`XR_KHR_vulkan_enable2`), our xr code is gl es (egl, gl swapchain images).
 - **Gpu meshing** (another session): compute works on vulkan as on gl; its game feature is doc/plans/gpu_meshing.md.

@@ -5,6 +5,9 @@
   the fragmenting pair for systems (texts, grids, the settings' save). The stat and item Dirty writes are back
   (events uis can use), quests react on Dirty alone (the Update twin gone). perf_stream and perf_fly no slower.
   doc/plans/core_dirty.md, states.md
+-x Slime's tentacle not drawn (android vulkan, and desktop too): particles became a vox voxel in size, its 78
+  dots 1 to 3 pixels, and faded over its life. Particles have a size in voxels (Scale1, an instance attribute), the
+  tentacle's 8 at its body to 4 at its tip, no fade; tst slime_tentacle checks its green is drawn
 -x Core Dirty audit (doc/plans/core_dirty.md): stats and items stop adding an unread Dirty (13 writes, the reader
   was dead code), sounds play from observers on Dirty (3 systems now observers). Quests keep Update (a quest just
   given links its tracker a frame later), texts and grids keep systems; a non fragmenting Dirty waits on texts

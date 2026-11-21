@@ -1110,7 +1110,6 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
   reuse a low id"; the pause fades changed today
 - vulkan release crashed once in 5 perf_idle runs at far 8 with ZOX_VK_WORKERS=0 ("Segfault Detected" ~2s after
   the player spawned, 2026-11-20), never in debug: get a backtrace (a release build with -g)
-- android vulkan: the slime's tentacle looks much weaker than on gl (the user, 2026-11-20), see doc/tech/vulkan.md
 - Vulkan renderer (handover: [tech/vulkan.md](tech/vulkan.md)): every part of [plans/vulkan.md](plans/vulkan.md) in; on a real android phone: rotation, restore
   and particle size (largePoints) untried
 - make the walking camera animation feel more natural

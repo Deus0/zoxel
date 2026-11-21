@@ -9,7 +9,8 @@
 // tst: slime_tentacle, a slime whips its tentacle (skills/sys/tentacle.c)
 //  - a slime 3 away in battle (past its pounce, in its tentacle's reach): its tentacle's particles come out (its
 //    Particle3D children), and the player's health drops while it's out
-//  - tst/slime_tentacle/out.ppm and back.ppm, the tentacle at full stretch and drawn back, to look at
+//  - tst/slime_tentacle/out.ppm and back.ppm, the tentacle at full stretch and drawn back: out.ppm has its green
+//    between the slime and the player (its particles drawn, not only spawned)
 //  - run: bash bsh/tst.sh slime_tentacle
 entity zox_tst_monsters[2];
 int zox_tst_tentacle_bits = 0;          // the most particles seen out
@@ -232,12 +233,32 @@ byte zox_tst_slime_tentacle_ready(ecs* world) {
     return zox_current_time - zox_tst_monsters_time > 12;
 }
 
+// green pixels in the strip between the player (left) and the slime (right), out of a hundred
+int zox_tst_tentacle_green(const char* file) {
+    int2 size;
+    byte* pixels = zox_tst_load_ppm(zox_tst_path(file), &size);
+    if (!pixels) {
+        return -1;
+    }
+    int count = 0, total = 0;
+    for (int y = size.y * 3 / 8; y < size.y * 13 / 24; y++) {
+        for (int x = size.x / 3; x < size.x * 2 / 3; x++, total++) {
+            const byte* p = zox_tst_ppm_pixel(pixels, size, x, y);
+            count += p[1] > p[0] + 40 && p[1] > p[2] + 30;
+        }
+    }
+    free(pixels);
+    return total ? count * 100 / total : 0;
+}
+
 void zox_tst_slime_tentacle_check(ecs* world) {
-    zox_log("[tst] slime_tentacle bits [%i], player health [%.1f] to [%.1f]", zox_tst_tentacle_bits,
-        zox_tst_tentacle_before, zox_tst_tentacle_after);
+    const int green = zox_tst_tentacle_green("slime_tentacle/out.ppm");
+    zox_log("[tst] slime_tentacle bits [%i], player health [%.1f] to [%.1f], green [%i%%]", zox_tst_tentacle_bits,
+        zox_tst_tentacle_before, zox_tst_tentacle_after, green);
     zox_tst_check(zox_tst_tentacle_before >= 0, "the slime didn't whip its tentacle in 12s");
     zox_tst_check(zox_tst_tentacle_bits == tentacle_bits, "its tentacle had [%i] particles, not [%i]", zox_tst_tentacle_bits, tentacle_bits);
     zox_tst_check(zox_tst_tentacle_after >= 0 && zox_tst_tentacle_after < zox_tst_tentacle_before, "its tentacle didn't hurt the player");
+    zox_tst_check(green >= 2, "its tentacle wasn't drawn: [%i%%] green between the slime and the player", green);
 }
 
 void zox_tsts_monsters(ecs* world) {
