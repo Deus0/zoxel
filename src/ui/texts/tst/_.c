@@ -146,7 +146,7 @@ byte zox_tst_text_data_ready(ecs* world) {
 void zox_tst_text_data_check(ecs* world) {
     (void) world;
     // round trips
-    // printable ascii the glyph set can't show (needs font art, so logged, not failed), i.e. '
+    // every printable ascii has a zigel (its glyph from the ttf font), i.e. ' in "I'm"
     char unsupported[128] = { 0 };
     int unsupported_count = 0;
     for (char c = 32; c < 127; c++) {
@@ -154,7 +154,7 @@ void zox_tst_text_data_check(ecs* world) {
             unsupported[unsupported_count++] = c;
         }
     }
-    zox_log("[tst] [%i] printable ascii without glyphs: [%s]", unsupported_count, unsupported);
+    zox_tst_check(!unsupported_count, "[%i] printable ascii without zigels: [%s]", unsupported_count, unsupported);
     const char* expected = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 .,!?-:\n";
     char failed[128] = { 0 };
     int failed_count = 0;

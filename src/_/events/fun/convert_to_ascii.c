@@ -100,6 +100,24 @@ char convert_to_ascii(byte input) {
 
     zoxel_convert_to_ascii('?')
 
+    // the rest of printable ascii (82 on), glyphs from the ttf font (the line font draws them as ?)
+    zoxel_convert_to_ascii('\"')
+    zoxel_convert_to_ascii('#')
+    zoxel_convert_to_ascii('$')
+    zoxel_convert_to_ascii('&')
+    zoxel_convert_to_ascii('\'')
+    zoxel_convert_to_ascii('(')
+    zoxel_convert_to_ascii(')')
+    zoxel_convert_to_ascii('*')
+    zoxel_convert_to_ascii(';')
+    zoxel_convert_to_ascii('@')
+    zoxel_convert_to_ascii('^')
+    zoxel_convert_to_ascii('`')
+    zoxel_convert_to_ascii('{')
+    zoxel_convert_to_ascii('|')
+    zoxel_convert_to_ascii('}')
+    zoxel_convert_to_ascii('~')
+
     return ' ';
 }
 
