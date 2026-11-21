@@ -3,6 +3,12 @@
 How an entity says "this changed, react to it". The goal: few components, few systems, simple to follow. Pick the
 first form in the list that fits.
 
+Fewer tags is less upkeep: each is a name to add, remove and keep in sync. Before a new one:
+
+- **No tag at all** when the writer can do the reaction itself: a plain function call, from code that isn't a
+  system (a spawn function, an observer, a ui event on the main thread).
+- **Reuse one**: the core `Dirty` / `Update` with the component that gives it meaning, not a tag per meaning.
+
 ## The forms, simplest first
 
 | Form | Components | Systems | Use when |
