@@ -36,10 +36,10 @@ typedef struct {
 // raised (an item or skill held): a fighting guard, the fist ahead of the chin and the elbow bent down (at 0.95 of the
 //  reach the arm was held up straight, a salute from outside, tst punch_views), still in the first person view
 //  - 0.8 of the reach, the elbow ~75 degrees
-//  - the hands kept out toward the shoulders' lines (in: a tenth of the reach or less), the view's middle left clear to see
-//    what's hit (in 0.15 to 0.24 had the fists near the crosshair, play test 2026-11-21); the guard ~38 degrees out of
-//    the view's 45 (tst punch_motion), further was out of view
-const swing_pose swing_guard = { 0.7f, 0.11f, 0.35f, 0 };
+//  - the hands kept out and down, the view's middle left clear to see what's hit (in 0.15 to 0.24 had the fists near
+//    the crosshair, play test 2026-11-21): the guard ~70% of the way to the right edge on 16:9, ~60% down (the fov's
+//    90 is up and down), still on a 4:3 screen (tst punch_motion)
+const swing_pose swing_guard = { 0.7f, -0.01f, 0.27f, 0 };
 
 const swing_data swings[zox_swing_kinds] = {
     [zox_swing_punch] = {
@@ -48,8 +48,8 @@ const swing_data swings[zox_swing_kinds] = {
         .back_end = 0.38f, .held_end = 0.62f, .strike_ease = zox_ease_out,
         .marks_count = 1, .marks = { 0.5f },        // the hit
         .has_off = 1,
-        .off_back = { 0.8f, 0.03f, 0.36f, 0 },      // the left reaching out ahead as the right winds up
-        .off_out = { 0.48f, 0.08f, 0.42f, 0 } },    // and pulled back by the chin as it lands (the recoil)
+        .off_back = { 0.8f, -0.03f, 0.25f, 0 },     // the left reaching out ahead as the right winds up
+        .off_out = { 0.5f, 0.0f, 0.3f, 0 } },       // and pulled back by the chin as it lands (the recoil)
     [zox_swing_place] = {
         .back = { 0.55f, 0.02f, 0.55f, -0.08f },    // the block lifted up by the head
         .out = { 0.95f, 0.02f, 0.05f, 0.15f },      // pressed out and down where the head looks (the shoulder's below it)

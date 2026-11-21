@@ -75,8 +75,8 @@ void zox_tst_guard_pitch_check(ecs* world) {
             continue;
         }
         if (zox_tst_gp_pitches[i] >= 0) {
-            // ahead (-z), within ~45 degrees each side and ~35 up and down (as punch_motion)
-            zox_tst_check(v.z < 0 && fabsf(v.x) < -v.z && fabsf(v.y) < -v.z * 0.7f,
+            // ahead (-z), on a 4:3 screen (as punch_motion)
+            zox_tst_check(v.z < 0 && fabsf(v.x) < -v.z * 1.33f && fabsf(v.y) < -v.z,
                 "looking [%.0f] degrees up the hand is out of view [%.3f %.3f %.3f]", zox_tst_gp_pitches[i], v.x, v.y, v.z);
         }
         zox_tst_check(zox_tst_gp_ahead[i] > 0, "looking [%.0f] degrees up the hand is behind the head [%.2f]",

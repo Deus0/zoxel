@@ -82,8 +82,10 @@ void zox_tst_punch_motion_check(ecs* world) {
     if (zox_tst_punch_has_camera) {
         const float3 v = zox_tst_punch_guard_seen;
         zox_log("[tst] punch_motion: the guard's hand in the camera [%.3f %.3f %.3f]", v.x, v.y, v.z);
-        // ahead (-z), within ~45 degrees each side and ~35 up and down
-        zox_tst_check(v.z < 0 && fabsf(v.x) < -v.z && fabsf(v.y) < -v.z * 0.7f, "the guard's hand is out of the first person view [%.3f %.3f %.3f]", v.x, v.y, v.z);
+        // ahead (-z), on a 4:3 screen (the fov's 90 is up and down: 45 degrees each way, 53 each side), and out to the
+        //  side: the view's middle left clear (over halfway out on 16:9, play test 2026-11-21)
+        zox_tst_check(v.z < 0 && fabsf(v.x) < -v.z * 1.33f && fabsf(v.y) < -v.z, "the guard's hand is out of the first person view [%.3f %.3f %.3f]", v.x, v.y, v.z);
+        zox_tst_check(fabsf(v.x) > -v.z * 0.9f, "the guard's hand is in the view's middle [%.3f %.3f %.3f]", v.x, v.y, v.z);
     }
     zox_tst_check(zox_tst_punch_strike_out > 0.85f, "the strike didn't reach out [%f]", zox_tst_punch_strike_out);
 }
