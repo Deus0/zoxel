@@ -24,6 +24,14 @@ void particle3d_render_system(iter* it) {
     zox_sys_begin();
     zox_sys_in(Position3D);
     zox_sys_in(Color);
+    zox_sys_in(Alpha);
+    // each one's colour see through a little, and its fade (Alpha, fadeout_system)
+    static Color colors[zox_max_particles3D];
+    const int count = it->count < zox_max_particles3D ? it->count : zox_max_particles3D;
+    for (int i = 0; i < count; i++) {
+        colors[i] = Color_[i];
+        colors[i].value.a = (byte) (colors[i].value.a * particle3_opacity * Alpha_[i].value);
+    }
 #if !defined(zox_disable_particles_gpu_instancing) && !defined(zox_disable_instancing)
     // position
     zox_gpu_bind_buffer_array(particle3D_instanced_position_buffer);
@@ -34,11 +42,11 @@ void particle3d_render_system(iter* it) {
     // Color Data
     zox_gpu_bind_buffer_array(particle3D_instanced_color_buffer);
     zox_gpu_set_attribute_color(particle3D->color, (void*) 0);
-    zox_gpu_set_sub_buffer_color(it->count, Color_);
+    zox_gpu_set_sub_buffer_color(count, colors);
     zox_gpu_enable_attribute(particle3D->color);
     zox_gpu_attribute_divisor(particle3D->color, 1);
     // draw
-    zox_gpu_render_points_instanced(it->count);
+    zox_gpu_render_points_instanced(count);
     // glDrawArraysInstanced(GL_POINTS, 0, 1, it->count);
     // resets
     zox_gpu_attribute_divisor(particle3D->color, 0); // Update per instance
@@ -49,11 +57,10 @@ void particle3d_render_system(iter* it) {
 #else
     zox_gpu_enable_attribute(particle3D->position);
     zox_gpu_enable_attribute(particle3D->color);
-    for (int i = 0; i < it->count; i++) {
+    for (int i = 0; i < count; i++) {
         zox_sys_i(Position3D, position);
-        zox_sys_i(Color, color);
         zox_gpu_set_attribute_float3(particle3D->position, &position->value);
-        zox_gpu_float4(particle3D->color, color_to_float4(color->value));
+        zox_gpu_float4(particle3D->color, color_to_float4(colors[i].value));
         zox_gpu_render_points(1);
         // zox_log("Rendering Point at [%fx%fx%f]", position->value.x, position->value.y, position->value.z);
     }

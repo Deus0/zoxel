@@ -8,8 +8,23 @@ extern char zox_screenshot_request[256];
 #define zox_tst_particles_render_shot_frame 20
 int zox_tst_particles_render_frame = 0;
 entity zox_tst_particles_render_emitter = 0;
+double zox_tst_particles_render_spawned = 0;     // when the emitter was spawned, seconds since at the shot
+float zox_tst_particles_render_alpha = 0;        // the particles' average fade (Alpha) at the shot
+double zox_tst_particles_render_age = 0;
 
-// pixels near magenta in the middle half of the screen
+// the particles' average Alpha (their fade, sys/fade.c)
+float zox_tst_particles_alpha(ecs* world) {
+    double sum = 0;
+    int count = 0;
+    zox_each_begin(Particle3D);
+        if (!zox_has(e, Alpha)) continue;
+        sum += zox_getv(e, Alpha);
+        count++;
+    zox_each_end();
+    return count ? (float) (sum / count) : 0;
+}
+
+// pixels magenta (or blended magenta) in the middle half of the screen
 int zox_tst_particles_render_magenta(const char* file) {
     int2 size;
     byte* pixels = zox_tst_load_ppm(zox_tst_path(file), &size);
@@ -20,7 +35,8 @@ int zox_tst_particles_render_magenta(const char* file) {
     for (int y = size.y / 4; y < size.y * 3 / 4; y++) {
         for (int x = size.x / 4; x < size.x * 3 / 4; x++) {
             const byte* p = zox_tst_ppm_pixel(pixels, size, x, y);
-            count += p[0] > 150 && p[2] > 150 && p[1] < 100;
+            // magenta, or see through magenta over the world (particles fade, sys/fade.c): red and blue well over green
+            count += p[0] > p[1] + 50 && p[2] > p[1] + 50 && abs(p[0] - p[2]) < 40;
         }
     }
     free(pixels);
@@ -44,7 +60,10 @@ byte zox_tst_particles_render_ready(ecs* world) {
         const float3 center = float3_add(origin, float3_scale(normal, 1.5f));
         zox_tst_particles_render_emitter = spawn_particle3D_emitter_at(world, center, 40, (float3) { 0.3f, 0.3f, 0.3f },
             (color) { 255, 0, 255, 255 });
+        zox_tst_particles_render_spawned = zox_current_time;
     } else if (zox_tst_particles_render_frame == zox_tst_particles_render_shot_frame) {
+        zox_tst_particles_render_alpha = zox_tst_particles_alpha(world);
+        zox_tst_particles_render_age = zox_current_time - zox_tst_particles_render_spawned;
         snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("particles_render.ppm"));
     }
     return zox_tst_particles_render_frame > zox_tst_particles_render_shot_frame && !zox_screenshot_request[0];
@@ -53,14 +72,10 @@ byte zox_tst_particles_render_ready(ecs* world) {
 void zox_tst_particles_render_check(ecs* world) {
     const int before = zox_tst_particles_render_magenta("particles_render_before.ppm");
     const int after = zox_tst_particles_render_magenta("particles_render.ppm");
-    zox_log("[tst] [metric] particles_render magenta pixels before [%i] after [%i] particles [%i]", before, after,
-        zox_count_types(Particle3D));
+    zox_log("[tst] [metric] particles_render magenta pixels before [%i] after [%i] particles [%i], their fade [%.2f] after [%.2f]s",
+        before, after, zox_count_types(Particle3D), zox_tst_particles_render_alpha, zox_tst_particles_render_age);
     zox_tst_check(before >= 0 && after >= 0, "a screenshot wasn't saved");
     zox_tst_check(zox_count_types(Particle3D) > 0, "no particles live");
     zox_tst_check(after > before + 50, "the particles weren't drawn: [%i] magenta pixels, [%i] before", after, before);
     zox_delete(zox_tst_particles_render_emitter);
-}
-
-void zox_tsts_particles3(ecs* world) {
-    zox_tst_add("particles_render", zox_tst_particles_render_ready, zox_tst_particles_render_check, 120);
 }

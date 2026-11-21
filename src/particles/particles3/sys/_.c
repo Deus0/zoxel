@@ -1,8 +1,14 @@
 #include "emit.c"
 #include "stream.c"
 #include "render.c"
+#include "fade.c"
 
 void zox_systems_particles3(ecs* world) {
+    zox_observer(particle3_fade_on_life, EcsOnSet,
+        [in] timing.DestroyInTime,
+        [out] animations.FadeOutTime,
+        [out] animations.AnimationStart,
+        [none] Particle3D);
     zox_system_1(
         particle3_stream_system,
         zoxp_spawn,
@@ -29,6 +35,7 @@ void zox_systems_particles3(ecs* world) {
         particle3d_render_system,
         [in] transforms3.Position3D,
         [in] colorz.Color,
+        [in] rendering.Alpha,
         [none] Particle3D
     );
 }

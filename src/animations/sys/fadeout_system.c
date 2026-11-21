@@ -22,7 +22,8 @@ void fadeout_system(iter* it) {
         } else if (animation_time > 1) {
             animation_time = 1;
         }
-        alpha->value = float_lerp(1, 0, animation_time);
+        // smoothstep: holds, then fades, then settles out (a straight line looked abrupt at both ends)
+        alpha->value = 1 - zox_ease((byte) zox_ease_in_out, (float) animation_time);
     }
     zox_sys_on_end();
 } zoxd_system(fadeout_system);

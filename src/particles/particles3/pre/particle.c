@@ -13,6 +13,10 @@ entity spawn_prefab_particle3(ecs *world) {
     zox_set(e, Brightness, { 1 });
     zox_set(e, Color, {{ 255, 0, 0, 125 }});
     zox_set(e, DestroyInTime, { 3 });
+    // fades out over its life (animations' fadeout_system, its length and start from its life: sys/fade.c)
+    zox_setv(e, FadeOutTime, 3);
+    zox_setv(e, AnimationStart, 0);
+    zox_setv(e, Alpha, 1);
     zox_set(e, Gravity3D, { (float3) { 0, 0.1f, 0 } });
     return e;
 }
