@@ -56,10 +56,13 @@ if [[ ! -x "${venv_python}" ]]; then
 fi
 if ! ls "${PLAYWRIGHT_BROWSERS_PATH}" 2> /dev/null | grep -q chromium; then
     echo "> installing chromium into [web/playwright]"
-    deps_flag=()
-    # linux ci: chromium's system libraries too
-    [[ "$(uname -s)" == "Linux" && "$(id -u)" == "0" ]] && deps_flag=(--with-deps)
-    "${venv_python}" -m playwright install "${deps_flag[@]}" chromium
+    "${venv_python}" -m playwright install chromium
+fi
+# linux ci (root): chromium's system libraries, every run: ci caches web/playwright but each container is fresh (a
+#  cached chromium found no libglib, 2026-11-21)
+if [[ "$(uname -s)" == "Linux" && "$(id -u)" == "0" ]]; then
+    echo "> installing chromium's system libraries"
+    "${venv_python}" -m playwright install-deps chromium
 fi
 
 mkdir -p tst
