@@ -592,6 +592,10 @@ Flecs is used through the `zox_` macros in `src/_/flecs/mcr/`, raw flecs stays i
 - One-off events: a non fragmenting tag (`zoxd_nf_tag`) added when it happens, an observer acts and removes it. It
   runs on the main thread at the merge, so it can spawn, i.e. `ActionSwapped` (`src/actions/ui`) plays the swap
   sound for a tap handled on a worker thread. Non fragmenting tags stay out of system queries.
+- Measured (tst flecs_event_scaling): that's the cheapest event at any count, a normal tag moves the entity's table
+  twice. Heavy reactions (meshes, lights, generation) stay systems, they spread over worker threads.
+- Byte states (`zoxc_state`) only for machines with steps: they cost every frame, idle or not. Which form for a
+  change, and what each costs: [tech/states.md](tech/states.md).
 - Don't move systems around to make a side effect work: no `zox_system` to `zox_system_1` (main thread), new sync
   points or phase changes for it. Use an observer, or ask; `tst pipeline_syncs` counts the merges.
 - flecs.c itself is patched by `bsh/flecs_fix.sh`, each patch in [flecs_patches.md](flecs_patches.md).

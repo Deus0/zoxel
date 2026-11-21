@@ -207,7 +207,9 @@ These matter more than they first look:
   For parents and children, see [Children](children.md).
 - **Cleanup goes in unlink callbacks** (`zox_on_unlink`), not at every place that deletes something.
   Deletion code shouldn't need to know what to clean up.
-- **Events for "when X happens", systems for "while X is true"**, see [Architecture](architecture.md).
+- **Events for "when X happens", systems for "while X is true"**, see [Architecture](architecture.md). An event is
+  a non fragmenting tag and an observer that removes it (measured cheapest); heavy work stays in systems, they run
+  on threads. [States](tech/states.md) has which form to use for a change.
 - **Don't depend on frame rate.** Scale by `zox_delta_time`, or use rates per second, not "N per frame".
   Several streaming bugs came from this.
 - **Systems are multithreaded.** Flecs pipelines order them; don't add locks to dodge a race.
