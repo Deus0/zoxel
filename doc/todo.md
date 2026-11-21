@@ -156,11 +156,6 @@
 # Refactors
 Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [done.md](done.md).
 
-## Regions as top level data (2026-11-22)
-- Regions unload like tunks (they stay once spawned now), spawned 2 regions round the streamer (now: the 3 x 3 round
-  each streamed tunk's region, for highways), with lod levels like tunks
-- Tunks drawn before a region 2 away came see none of its towns (highways at the stream's edge can differ)
-
 ## Tools out of the test harness (2026-11-22)
 - Move the looking tools into bsh/tools (doc/tools.md): body, poses, ik_poses, walk, punch, model, gpu_lights,
   gpu_mesh, compare_backends, compare_meshing, sample_report, code_stats. Those that run a `*_views` test become a
@@ -615,6 +610,10 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 - Towns: an age level, older towns are flatter (heights), bigger, with more buildings
 - Homes: tilted foundations for poor npcs (homes stand level now)
 - Homes: keep their door steps clear of neighbours (two homes close by, steps meet the other's levelled ground)
+- Regions as top level data (2026-11-22):
+	- Regions unload like tunks (they stay once spawned now), spawned 2 regions round the streamer (now: the 3 x 3 round
+	  each streamed tunk's region, for highways), with lod levels like tunks
+	- Tunks drawn before a region 2 away came see none of its towns (highways at the stream's edge can differ)
 - Town walls more organic (2026-11-22): the wall is a rounded rect with a little noise now (fun/town.c town_shape),
   still reads too regular. Next: grown from the seed, a blob of overlapping district rects (a core round the square,
   districts grown off it and each other), the wall the band in from its outside edge, the edge wobbled a block or two

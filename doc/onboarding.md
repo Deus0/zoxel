@@ -306,12 +306,14 @@ The loop:
 3. Read that module's `_.c` and `sys/_.c` first, to see what it owns and what runs.
 4. Make the change in the module's style. Logs help: `zox_log` behind a `dbg_log` flag in a debug build (section 6).
 5. Run the related test, then `bash bsh/tst.sh all`.
-6. Move the item to [done.md](done.md), then commit.
+6. Move the item to [done.md](done.md), then commit the task: its code, tests and docs in one commit.
 
 ## 9. Git
 
-- Work on `master`, small commits, short lower case messages (`fixed windows build errors`). Several people commit
-  here: check `git status` and `git log` first, and only commit your own files, by path.
+- Work on `master`, a commit per task: the task's code, its tests and its docs together, not a commit per step or
+  per fix along the way (fold those into the task's commit before pushing). Short lower case messages (`fixed windows
+  build errors`). Several people commit here: check `git status` and `git log` first, and only commit your own
+  files, by path.
 - **Commit messages:**
   - The header (first line) is brief: 140 characters at most, lower case, what changed.
   - Keep it to the change itself: nothing about how it was made, and no trailers at the end.
