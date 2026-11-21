@@ -56,7 +56,7 @@ void animate_text_system(iter* it) {
         if (!is_zext_cut(data, target->value, new_length)) {
             set_zext_cut(data, target->value, new_length);
             zox_add(e, GlyphSpawnedDirty);
-            zox_add(e, Dirty);
+            zox_add(e, Refresh);
             if (target_length == new_length) {
                 begin->value = 0;
                 zox_add(e, AnimateTextEnded);

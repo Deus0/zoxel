@@ -48,7 +48,7 @@ void fps_display_system(iter* it) {
         snprintf(buffer, sizeof(buffer), "%i [%i-%i]", frames_per_second, min, max);
         if (!is_zext(data, buffer)) {
             set_zext(data, buffer);
-            zox_add(e, Dirty);
+            zox_add(e, Refresh);
             if (dbg_log) {
                 zox_log("FPS updated [%s]", buffer);
             }

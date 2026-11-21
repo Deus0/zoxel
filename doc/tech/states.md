@@ -14,7 +14,7 @@ Fewer tags is less upkeep: each is a name to add, remove and keep in sync. Befor
 | Form | Components | Systems | Use when |
 |---|---|---|---|
 | 1. A tag its reader removes | 1 tag | 0 (the reader's own) | one system reacts |
-| 2. The core `Dirty` / `Update` | 0 new | 0 new (shared) | several react, nothing else dirties that entity |
+| 2. The core `Dirty` (event) / `Refresh` (systems) | 0 new | 0 new (shared) | the default for a change |
 | 3. An observer on a non fragmenting tag | 1 | 0 | an event with a light reaction, any count (camera attach) |
 | 4. A pair, `zoxc_dirty(T)` | 2 tags | 2 | several readers in different phases, and the entity has other changes |
 | 5. A byte state, `zoxc_state(T)` | 1 byte | 1 (increment) | a machine with steps, or code reads "still pending" |
@@ -35,7 +35,13 @@ zox_remove(e, GenerateSound);
   `element_active_link_system` removes it). Say so in a comment at the removal.
 - Tags set on a prefab are copied to its instances, so a prefab can start one dirty (the editor's inspector).
 
-### 2. The core `Dirty` / `Update`
+### 2. The core `Dirty` and `Refresh` / `Update`
+
+Since 2026-11-21 (doc/plans/core_dirty.md): **`Dirty` is an event** (non fragmenting: observers, removed by
+`dirty_cleanup_event`, no table moves, so mark anything that changed, uis and modules can react). **`Refresh`
+is for systems**: it becomes `Update` the frame after (fragmenting), for systems in any phase (texts, grids, the
+settings' save). Add `Dirty`, `Refresh`, or both. What follows is how it was, kept for the timing notes:
+
 
 - Writers `zox_add(e, Dirty)`. `dirty_system` (zoxp_remove) swaps it for `Update`, `update_system` removes `Update`
   a frame later.
@@ -152,9 +158,10 @@ Entities with 20 components:
   spawns), `GlyphSpawnedDirty` (dialogue voices), `AnimateTextEnded`, `ActiveStateDirty` (element_active_event, then
   element_active_link_event removes it); the ui's `Click`, `Deselect`, `Press`, `RightClick` (a cleanup observer
   removes each); settings (on the core `Dirty`)
-- Pairs: `Skeleton`, `InsideBlock`, `ListPosition`, `LayoutPosition`, `LayoutSize` (several readers); `Grid` (one
-  reader, but as an observer it laid its icons out before their sizes settled: tst navigator_inventory's tooltips
-  showed the wrong item; its system reads them a frame on)
+- Pairs: `Skeleton`, `ListPosition`, `LayoutSize` (readers are bulk work: layouts, meshes, characters streaming)
+- Core `Dirty` / `Update` also: grids (grid_system on Update; as an observer it laid icons out before their sizes
+  settled, tst navigator_inventory)
+- Non fragmenting with observers also: `InsideBlockDirty` (water splash, block step sounds, a cleanup)
 - Bytes kept:
   - machines: `PlayerStateDirty`, `GameStateDirty`, `Generate`, `GenerateCharacter`, `PickedUp`
   - action timers: `ActivateBegin`, `WarmupState`, `Activate`, `CooldownState`, `TriggerActionA/B/E`,
@@ -197,4 +204,18 @@ waits, so they show nothing got slower; the event costs themselves are in flecs_
 - The day, 2026-11-21 (a7d8d3ff0 to 97b08de95): systems 606 to 566, observers 66 to 96, together 672 to 662; byte
   states 32 to 19, the pairs' and event tags fewer (see above). Most systems became observers (they cost nothing
   idle), the drop in total is the swap, remover and increment systems gone.
+
+- 2026-11-21, the dirty pairs (doc/plans/dirty_pairs.md): LayoutPosition removed (21 writers, no live reader: each
+  add moved a table twice), Grid on the core Dirty / Update (one grid_system, laid out at spawn), InsideBlock one non
+  fragmenting tag with 2 observers and a cleanup (it read Update and fired once a walk through grass). Dead copies
+  of grid, glyph, layout, inside block sound and icon label systems removed.
+
+  | | before | LayoutPosition | Grid | InsideBlock |
+  |---|---|---|---|---|
+  | pipeline systems / observers (run time) | 436 / 107 | 434 / 107 | 431 / 107 | 430 / 108 |
+  | pairs (tags) | 6 (12) | 5 (10) | 4 (8) | 3 (6), +1 nf tag |
+  | perf_fly release, systems ms (2 runs) | 27.2, 21.5 | 22.4, 25.5 | 26.5, 19.4 | 22.0, 22.1 |
+
+  perf_fly varies 19 to 27ms run to run (its world, streaming), the same range after: no cost. lint_systems stays
+  566 (it skips systems made by macros, as the pairs' removers).
 

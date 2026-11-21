@@ -49,7 +49,6 @@ void elementbar_system(iter* it) {
             int2 new_position = { -(parent_size->value.x - new_size) / 2, 0 };
             // left aligned inside parent
             zox_setv(frontbar, LayoutPosition, new_position);
-            zox_add(frontbar, LayoutPositionDirty);
             zox_add(frontbar, LayoutSizeDirty);
             if (dbg_log) {
                 zox_log("Frontbar Dirty [%s] Size [%i] Parent Width [%i] Percentage [%f]",

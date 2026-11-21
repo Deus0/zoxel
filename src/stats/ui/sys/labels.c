@@ -14,7 +14,7 @@ void stat_text_system(iter* it) {
             const char* text = "-";
             if (!is_zext(data, text)) {
                 set_zext(data, text);
-                zox_add(e, Dirty);
+                zox_add(e, Refresh);
             }
             if (dbg_log) {
                 zox_loge("[%s] has invalid stat linked", zox_get_name(e));
@@ -79,7 +79,7 @@ void stat_text_system(iter* it) {
         }
         if (!is_zext(data, text)) {
             set_zext(data, text);
-            zox_add(e, Dirty);
+            zox_add(e, Refresh);
             if (dbg_log) {
                 entity holder = zox_get_parent(world, stat);
                 zox_log("[%s]'s Stat Text [%s]",

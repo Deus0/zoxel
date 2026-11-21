@@ -35,7 +35,7 @@ void tooltip_deselect_system(iter* it) {
         }
         // Clear text
         resize_TextData(data, 0);
-        zox_add(e, Dirty);
+        zox_add(e, Refresh);
         if (dbg_log) {
             zox_log("Tooltip is shutting down [%s]",
                 zox_getn(e));

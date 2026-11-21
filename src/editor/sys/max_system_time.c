@@ -47,7 +47,7 @@ void max_system_time_label_system(iter* it) {
                 data,
                 output,
                 text_length);
-            zox_add(e, Dirty);
+            zox_add(e, Refresh);
         }
     }
     zox_sys_on_end();

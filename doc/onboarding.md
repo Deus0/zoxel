@@ -294,8 +294,7 @@ Tasks are tracked in plain markdown:
 
 | File | Holds |
 |---|---|
-| [todo.md](todo.md) | tasks to do |
-| [refactors.md](refactors.md) | code that needs restructuring |
+| [todo.md](todo.md) | tasks to do, refactors in its own section |
 | [optimize.md](optimize.md) | performance work |
 | [goals.md](goals.md) / [new.md](new.md) | bigger features and new modules |
 | [done.md](done.md) | finished work: move items here, marked `-x`, with a line on the cause and fix |

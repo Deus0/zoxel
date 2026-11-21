@@ -36,6 +36,7 @@ void zox_systems_particles3(ecs* world) {
         [in] transforms3.Position3D,
         [in] colorz.Color,
         [in] rendering.Alpha,
+        [in] transforms.Scale1,
         [none] Particle3D
     );
 }

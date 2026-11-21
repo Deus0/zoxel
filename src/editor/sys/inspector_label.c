@@ -31,7 +31,7 @@ void inspector_label_system(iter* it) {
         char* label = fetch_component_label(world, target->value, component->value);
         zox_muter(text, TextData, text_data);
         if (set_text_component(text_data, label)) {
-            zox_add(text, Dirty);
+            zox_add(text, Refresh);
         }
         free(label);
     }

@@ -49,7 +49,6 @@ void map_marker_system(iter* it) {
         const int2 next = { (int) roundf(at.x), (int) roundf(at.y) };
         if (!int2_equals(position->value, next)) {
             position->value = next;
-            zox_add(e, LayoutPositionDirty);
         }
         float3 euler = quaternion_to_euler(zox_getv(other_character, Rotation3D));
         if (zox_maps_flip_z) {

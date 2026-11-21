@@ -19,7 +19,6 @@ static inline void list_grow(ecs* world, entity e, int delta) {
     if (anchor != 0.5f) {
         zox_muter(e, LayoutPosition, position);
         position->value.y += anchor < 0.5f ? delta / 2 : -delta / 2;
-        zox_add(e, LayoutPositionDirty);
     }
 }
 
@@ -54,7 +53,6 @@ void list_system(iter* it) {
                 if (anchor != 0.5f) {
                     zox_muter(e, LayoutPosition, position);
                     position->value.y += anchor < 0.5f ? delta / 2 : -delta / 2;
-                    zox_add(e, LayoutPositionDirty);
                 }
                 const entity parent = zox_get_parent(world, e);
                 if (zox_has(e, ListResizesParent) && zox_valid(parent) && zox_has(parent, LayoutSize)) {
@@ -84,7 +82,6 @@ void list_system(iter* it) {
                 list_position_y -= padding->value.y;
                 list_position_y -= child_size.y / 2;
             }
-            zox_add(e2, LayoutPositionDirty);
             zox_muter(e2, LayoutPosition, position);
             position->value.y = list_position_y;
             if (alignment->value == zox_alignment_left) {

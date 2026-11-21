@@ -10,7 +10,8 @@ zox_tag(DebugEntity);
 zox_tag(PreInitialize);
 zox_tag(Initialize);
 zox_tag(Generating);        // being made over frames, not done yet (i.e. a Model while its blueprint runs)
-zox_tag(Dirty);
+zox_tag(Dirty);     // an event: something changed (non fragmenting, observers react, dirty_cleanup_event removes it)
+zox_tag(Refresh);   // for systems: becomes Update the frame after (fragmenting), i.e. texts, grids
 zox_tag(Update);
 // Basic node states
 zox_tag(TriggerBegin);
@@ -72,7 +73,8 @@ void zox_components_core(ecs* world) {
     zoxd_tag_event(Initialize);
     zoxd_tag_event(Generating);
     zoxd_tag_event(PreInitialize);
-    zoxd_tag_event(Dirty);
+    zoxd_nf_tag(Dirty);
+    zoxd_tag_event(Refresh);
     zoxd_tag_event(Update);
     // Basic node states
     zoxd_tag_event(TriggerBegin);

@@ -32,7 +32,7 @@ void item_icon_label_event(iter* it) {
         // set text of quantity label
         if (!is_zext(text, result)) {
             set_zext(text, result);
-            zox_add(e, Dirty);
+            zox_add(e, Refresh);
             if (dbg_log) {
                 zox_log("Item Frame Label [%s] Set to [%s] Length [%i]",
                     zox_get_name(e),

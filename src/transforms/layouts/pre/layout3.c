@@ -8,7 +8,6 @@ entity spawn_prefab_layout3(ecs *world) {
     zox_set(e, Layer, { 0 });
     zox_set(e, LayoutPosition, { int2_zero });
     zox_set(e, LayoutSize, { int2_zero });
-    zox_add(e, LayoutPositionDirty);
     zox_add(e, LayoutSizeDirty);
     return e;
 }

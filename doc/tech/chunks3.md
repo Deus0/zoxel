@@ -71,7 +71,7 @@ the same across all of them, so the big quad's corners carry the same values as 
 - same colour (palette index) or, terrain, the same block (tile) and material
 - **the same 4 AO / light values on each face, and all 4 equal to each other** (a flat face: no crease darkening on
   it). A face with uneven corners (it sits in a crease, next to a wall, under an overhang) stays its own quad. That
-  is the "smaller quads around corners" of doc/refactors.md: AO is exactly where faces differ, so open floors and
+  is the "smaller quads around corners" of doc/todo.md (Refactors): AO is exactly where faces differ, so open floors and
   walls merge, creases keep their detail.
 - skeleton meshes: the same bone and no joint blend on it (faces at a joint keep their own quads)
 - the same lod depth (an octree node bigger than a voxel is already one quad, merge in units of the meshed depth)

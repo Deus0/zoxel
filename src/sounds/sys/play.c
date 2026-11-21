@@ -1,6 +1,6 @@
 // plays triggered sounds through the mixer, a sound with a SoundPosition plays in 3D
-void sound_play_system(iter* it) {
-    zox_sys_on_begin();
+// an observer (on the core Dirty: a sound triggered, its data ready)
+void sound_play_event(iter* it) {
     if (!audio_enabled || nosounds || zox_current_time <= 1) {
         return;
     }
@@ -17,11 +17,10 @@ void sound_play_system(iter* it) {
         zox_mixer_play_delayed(data->value, data->length, SoundPosition_ ? &SoundPosition_[i].value : NULL,
             SoundDelay_ ? SoundDelay_[i].value : 0);
     }
-    zox_sys_on_end();
-} zoxd_system(sound_play_system);
+}
 
-void sound_play_ref_system(iter* it) {
-    zox_sys_on_begin();
+// an observer (on the core Dirty: a sound triggered, its data ready)
+void sound_play_ref_event(iter* it) {
     if (!audio_enabled || nosounds || zox_current_time <= 1) {
         return;
     }
@@ -35,8 +34,7 @@ void sound_play_ref_system(iter* it) {
         }
         zox_mixer_play(sound->value, sound->length, SoundPosition_ ? &SoundPosition_[i].value : NULL);
     }
-    zox_sys_on_end();
-} zoxd_system(sound_play_ref_system);
+}
 
 // the listener (the game camera) moved or turned, 3D sounds follow it
 void sound_listener_system(iter* it) {

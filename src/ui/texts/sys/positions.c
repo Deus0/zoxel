@@ -45,57 +45,6 @@ int2 calculate_position(const byte *data, int length, int data_index, byte font_
 }
 
 // Centralized position setting for text zigels
-/*void glyph_position_system(iter* it) {
-    zox_sys_on_begin();
-    byte is_log = 0;
-    zox_sys_world();
-    zox_sys_begin();
-    zox_sys_in(ChildIndex);
-    zox_sys_out(GlyphDirty);
-    zox_sys_out(LayoutPosition);
-    zox_sys_out(LayoutPositionDirty);
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
-        zox_sys_i(ChildIndex, child_index);
-        zox_sys_o(GlyphDirty, zigel_dirty);
-        zox_sys_o(LayoutPosition, position);
-        zox_sys_o(LayoutPositionDirty, position_dirty);
-        if (zigel_dirty->value != zox_zigel_dirty_position) {
-            continue;
-        }
-        entity parent = zox_get_parent(world, e);
-#ifdef zox_safety_checks
-        if (!zox_valid(parent)) {
-            zox_loge("Glyph has no parent [%s]", zox_get_name(e));
-            continue;
-        }
-#endif
-        if (text_dirty != zox_dirty_end) {
-            continue;
-        }
-        const TextData* text_data = zox_get(parent, TextData);
-        byte font_size = zox_getv(parent, TextFontSize);
-        byte alignment = zox_getv(parent, TextAlignment);
-        byte2 padding = zox_getv(parent, TextPadding);
-        uint array_index = child_index_to_text_array_index(text_data->value, text_data->length, child_index->value);
-        if (array_index >= text_data->length) {
-            zox_loge("(glyph_position_system) [%s]: [%s] Has a array_index oob [%i] >= [%i] (child_index_to_text_array_index)", zox_getn(parent), zox_getn(e), array_index, text_data->length);
-            continue;
-        }
-        int2 new_position = calculate_position(text_data->value, text_data->length, array_index, font_size, alignment, padding, default_line_padding);
-        if (!int2_equals(position->value, new_position))
-        {
-            position->value = new_position;
-            position_dirty->value = zox_dirty_trigger;
-            if (is_log) {
-                zox_log("Positioned Glyph: [%s]:[%i] at [%ix%i]", zox_get_name(e), child_index->value, new_position.x, new_position.y);
-            }
-        }
-        zigel_dirty->value = zox_zigel_dirty_update;
-    }
-    zox_sys_on_end();
-} zoxd_system(glyph_position_system);*/
-
 // Centralized position setting for text zigels
 void texts_position_system(iter* it) {
     zox_sys_on_begin();
@@ -134,7 +83,6 @@ void texts_position_system(iter* it) {
                 zox_mut_begin(e2, LayoutPosition, lposition);
                 if (!int2_equals(lposition->value, position)) {
                     lposition->value = position;
-                    zox_add(e2, LayoutPositionDirty);
                     if (is_log) {
                         zox_log("Positioned [%i]  Glyph [%s]:[%i] at [%ix%i]", child_index, zox_getn(e2), j, position.x, position.y);
                     }

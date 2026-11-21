@@ -1,6 +1,5 @@
 #include "statbar.c"
 #include "labels.c"
-#include "icon_labels.c"
 #include "healthbars.c"
 #include "tooltip.c"
 #include "players.c"

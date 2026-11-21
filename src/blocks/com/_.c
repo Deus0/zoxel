@@ -37,7 +37,7 @@ zox_tag(BlockSoundTrigger);
 zoxc_entity(BlockSound);        // Links Block to a Sound
 zoxc_float2(BlockHealth);
 #include "queue.c"
-zoxc_dirty(InsideBlock);
+zox_tag(InsideBlockDirty);    // entered a block (a non fragmenting event: observers, a cleanup removes it)
 
 entity get_block_link(ecs* world, entity e) {
     return zox_get_link(world, e, BlockLink);
@@ -81,5 +81,5 @@ void zox_components_blocks(ecs *world) {
     zoxd_entity(BlockSound);
     zoxd_entities(BlockLinks);
     zoxd_queue(BlockDamageQueue);
-    zoxd_dirty(InsideBlock);
+    zoxd_nf_tag(InsideBlockDirty);
 }

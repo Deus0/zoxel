@@ -47,6 +47,7 @@ static void setting3_step(ecs* world, entity setting, int direction, byte wrap) 
         return;
     }
     zox_add(setting, Dirty);
+    zox_add(setting, Refresh);   // the save (setting_save_system on Update), once a frame
 }
 
 // a row's text from its setting (set deferred: the setting's new value is read back from what was set)
@@ -60,7 +61,7 @@ static void setting3_relabel(ecs* world, entity row, entity setting) {
     zox_muter(text, TextData, text_data);
     if (!is_zext(text_data, label)) {
         set_zext(text_data, label);
-        zox_add(text, Dirty);
+        zox_add(text, Refresh);
     }
 }
 

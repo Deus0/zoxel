@@ -1,6 +1,16 @@
 # Done
 
 ## 2026-11-21
+-x The core Dirty is an event: non fragmenting, observers, a cleanup observer removes it; Refresh / Update are
+  the fragmenting pair for systems (texts, grids, the settings' save). The stat and item Dirty writes are back
+  (events uis can use), quests react on Dirty alone (the Update twin gone). perf_stream and perf_fly no slower.
+  doc/plans/core_dirty.md, states.md
+-x Core Dirty audit (doc/plans/core_dirty.md): stats and items stop adding an unread Dirty (13 writes, the reader
+  was dead code), sounds play from observers on Dirty (3 systems now observers). Quests keep Update (a quest just
+  given links its tracker a frame later), texts and grids keep systems; a non fragmenting Dirty waits on texts
+-x Dirty pairs 6 to 3: LayoutPosition removed (nothing read it, 21 adds moved tables), grids on the core Dirty /
+  Update, InsideBlock a non fragmenting tag and observers (on Update it fired once a walk through grass). Profiled
+  each (states.md), dead copies of 5 systems gone
 -x Stats count observers too: lint_systems prints [n] observers (registrations in the source), pipeline_syncs the
   observers registered at run time; states.md's refactor log counts both (the day: 672 systems and observers to 662)
 -x Ui events Click, Deselect, Press and RightClick are one non fragmenting tag each: the Trigger tags and their 8

@@ -1,11 +1,9 @@
 #include "list.c"
 #include "grid.c"
 #include "list_element.c"
-zoxc_system_dirty(Grid);
 zoxc_system_dirty(ListPosition);
 
 void zox_systems_containers(ecs* world) {
-    zoxd_system_dirty(Grid);
     zoxd_system_dirty(ListPosition);
     zox_system(
         list_system,
@@ -24,7 +22,7 @@ void zox_systems_containers(ecs* world) {
         [in] containers.GridSize,
         [in] containers.GridPadding,
         [in] containers.GridMargins,
-        [none] containers.GridUpdate,
+        [none] core.Update,
     );
     // TODO: We should really tag these? ListElement
     zox_system(
@@ -33,6 +31,5 @@ void zox_systems_containers(ecs* world) {
         [in] layouts.LayoutSize,
         [out] layouts.LayoutPosition,
         [none] layouts.LayoutSizeUpdate,
-        // [none] layouts.LayoutPositionUpdate,
     );
 }

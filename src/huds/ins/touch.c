@@ -26,7 +26,6 @@ void touch_place_statbars(ecs* world, entity canvas, int top) {
     int2 position = zox_getv(statbars, LayoutPosition);
     position.y = -top - zox_getv(statbars, LayoutSize).y / 2;
     zox_setv(statbars, LayoutPosition, position);
-    zox_add(statbars, LayoutPositionDirty);
 }
 
 entity spawn_menu_game_touch(ecs *world, entity p, entity player, entity canvas) {

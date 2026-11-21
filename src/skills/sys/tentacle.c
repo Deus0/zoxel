@@ -8,6 +8,8 @@
 #define tentacle_segments 26
 #define tentacle_strands 3
 #define tentacle_bits (tentacle_segments * tentacle_strands)
+#define tentacle_thick 8.0f         // its particles' size in voxels at its body, to its tip
+#define tentacle_thin 4.0f
 #define tentacle_root 0.14f         // its thickness at its body (a ring's radius), thinning to its tip
 #define tentacle_windup 0.2         // seconds bulging in its body
 #define tentacle_out 0.12           // spiking out
@@ -48,6 +50,8 @@ void tentacle_activate_system(iter* it) {
             const color shaded = { (byte) float_min(255, c.r * shade), (byte) float_min(255, c.g * shade), (byte) float_min(255, c.b * shade), c.a };
             const entity bit = spawn_particle3(world, position, float3_zero, shaded);
             zox_setv(bit, Gravity3D, float3_zero);
+            zox_remove(bit, FadeOutTime);   // no fade, the render's slight see through only
+            zox_setv(bit, Scale1, tentacle_thick - (tentacle_thick - tentacle_thin) * u);
             zox_setv(bit, DestroyInTime, tentacle_time + 0.05f);
             zox_set_parent_non_fragment(world, bit, user);
         }

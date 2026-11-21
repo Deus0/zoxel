@@ -21,18 +21,19 @@ void zox_systems_core(ecs* world) {
         [none] core.Initialize,
     );
     zox_system(
-        dirty_system,
+        refresh_system,
         zoxp_remove,
-        [none] core.Dirty,
+        [none] core.Refresh,
     );
-    // !Dirty: both run deferred in zoxp_remove, so a Dirty on the frame after another queued
-    //  [remove Dirty, add Update, remove Update], losing the second update
+    zox_on_add(dirty_cleanup_event, [none] core.Dirty);
+    // !Refresh: both run deferred in zoxp_remove, so a Refresh on the frame after another queued
+    //  [remove Refresh, add Update, remove Update], losing the second update
     //  (i.e. a tooltip cleared then set on back to back frames kept its old glyphs, hidden)
     zox_system(
         update_system,
         zoxp_remove,
         [none] core.Update,
-        [none] !core.Dirty,
+        [none] !core.Refresh,
     );
     zox_system(
         trigger_begin_system,

@@ -36,7 +36,7 @@ entity spawn_text(
     if (length) {
         tdata.length = length;
         zox_set_ptr(e, TextData, tdata);
-        zox_add(e, Dirty);
+        zox_add(e, Refresh);
     }
     return e;
 }

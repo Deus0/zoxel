@@ -29,7 +29,6 @@ void list_element_position_system(iter* it) {
         } else {
             continue;
         }
-        zox_add(e, LayoutPositionDirty);
     }
     zox_sys_on_end();
 } zoxd_system(list_element_position_system);

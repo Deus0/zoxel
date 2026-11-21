@@ -18,7 +18,7 @@ void set_stat_icon_label(
     snprintf(result, label_text_capacity, "%i", (int) floor(value->value));
     if (!is_zext(text, result)) {
         set_zext(text, result);
-        zox_add(e, Dirty);
+        zox_add(e, Refresh);
         if (dbg_log) {
             zox_log("Stat Frame Label [%s] Set to [%s]",
                 zox_getn(e),

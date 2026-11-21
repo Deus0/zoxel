@@ -153,7 +153,7 @@ Each step sets the next by the character's `BodyDirty` and `GenerateCharacter`.
 
 ## Problems found
 
-Logged in [refactors.md](refactors.md). Fixed: the second hat never reached the inventory (an inverted check),
+Logged in [todo.md](todo.md) (Refactors). Fixed: the second hat never reached the inventory (an inverted check),
 `slot_names` was out of order, and calves had the thighs' slot types.
 
 - Realm parts are found by `SlotType` ids (`find_slot_type`), against

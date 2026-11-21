@@ -44,7 +44,6 @@ void set_scrollbar_handle_to_start(
     int2 position = zox_getv(handle, LayoutPosition);
     position.y = travel / 2 - (int) round(percentage * travel);
     zox_setv(handle, LayoutPosition, position);
-    zox_add(handle, LayoutPositionDirty);
 }
 
 // scrolls a list to start (clamped), returns 1 if it moved: list_system places its elements from start,

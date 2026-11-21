@@ -12,15 +12,6 @@ void zox_systems_terrain_collisions(ecs* world) {
         [out] blocks.InsideBlock,
         [out] blocks.InsideBlockPosition,
     );
-    /*zox_system_1(
-        inside_block_sound_system,
-        zoxp_spawn,
-        [in] blocks.InsideBlock,
-        [in] transforms3.Position3D,
-        [out] blocks.InsideBlockTime,
-        [none] blocks.BlockSoundTrigger,
-        [none] blocks.InsideBlockUpdate,
-    );*/
     zox_system(
         terrain_collision_system,
         zoxp_physics,

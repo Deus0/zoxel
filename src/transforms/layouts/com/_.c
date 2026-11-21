@@ -25,7 +25,6 @@ typedef struct {
 } LayoutLinePoints;
 zoxc_custom(LayoutLinePoints);
 // events
-zoxc_dirty(LayoutPosition);
 zoxc_dirty(LayoutSize);
 
 void zox_components_layouts2(ecs* world) {
@@ -53,6 +52,5 @@ void zox_components_layouts2(ecs* world) {
     zoxd_float2(LineAnchor);
     zoxd(LayoutLinePoints);
     // events
-    zoxd_dirty(LayoutPosition);
     zoxd_dirty(LayoutSize);
 }

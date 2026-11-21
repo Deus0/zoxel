@@ -7,7 +7,6 @@ void set_layout_dirty_recursive(
         return;
     }
     if (zox_has(e, LayoutPosition)) {
-        zox_add(e, LayoutPositionDirty);
     }
     if (zox_has(e, LayoutSize)) {
         zox_add(e, LayoutSizeDirty);

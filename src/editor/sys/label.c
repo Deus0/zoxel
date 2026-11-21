@@ -37,7 +37,7 @@ void debug_label_system(iter* it) {
         }
         if (!is_zext(data, buffer)) {
             set_zext(data, buffer);
-            zox_add(e, Dirty);
+            zox_add(e, Refresh);
             if (dbg_log) {
                 zox_log("Set Text to [%s]", buffer);
             }

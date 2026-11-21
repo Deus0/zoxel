@@ -9,7 +9,7 @@ void zox_events_terrain_collisions(ecs* world) {
         [in] transforms3.Position3D,
         [out] blocks.InsideBlockTime,
         [none] blocks.BlockSoundTrigger,
-        [none] blocks.InsideBlockUpdate,
+        [none] blocks.InsideBlockDirty,
     );
     zox_on_add(
         water_splash_event,
@@ -19,4 +19,6 @@ void zox_events_terrain_collisions(ecs* world) {
         [out] terrains.InsideBlockLast,
         [none] blocks.InsideBlockDirty,
     );
+    // last: both above see it, its removal lands after them (deferred)
+    zox_on_add(inside_block_cleanup_event, [none] blocks.InsideBlockDirty);
 }

@@ -28,7 +28,7 @@ void quest_icon_label_event(iter* it) {
         }
         if (!is_zext(text, result)) {
             set_zext(text, result);
-            zox_add(e, Dirty);
+            zox_add(e, Refresh);
             if (dbg_log) {
                 zox_log("Quest Frame Label [%s] Set to [%s]",
                     zox_getn(e),

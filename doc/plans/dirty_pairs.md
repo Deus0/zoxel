@@ -1,4 +1,4 @@
-# Plan: the last dirty pairs
+# Plan: the last dirty pairs (done 2026-11-21, results in tech/states.md's refactor log)
 
 The six `zoxc_dirty(T)` pairs left (`TDirty`, `TUpdate`, 2 remover systems each), audited 2026-11-21 by the rules in
 [tech/states.md](../tech/states.md): fewer tags, systems and observers together; light reactions observers on a

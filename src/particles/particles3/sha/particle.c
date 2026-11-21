@@ -2,6 +2,7 @@
 typedef struct {
     gint position;
     gint color;
+    gint size;
     gint camera_matrix;
     gint fog_data;
     gint thickness;
@@ -12,6 +13,7 @@ MaterialParticle3D create_MaterialParticle3D(guint material) {
     return (MaterialParticle3D) {
         .position = zox_gpu_get_material_attribute(material, "position"),
         .color = zox_gpu_get_material_attribute(material, "color"),
+        .size = zox_gpu_get_material_attribute(material, "size"),
         .camera_matrix = zox_gpu_get_material_property(material, "camera_matrix"),
         .fog_data = zox_gpu_get_material_property(material, "fog_data"),
         .thickness = zox_gpu_get_material_property(material, "thickness")
@@ -22,6 +24,7 @@ entity material_particle3D = 0;
 // instance buffers, plain gl buffers: made with the gpu, let go of with it (gpu_dispose / gpu_restore hooks)
 guint particle3D_instanced_position_buffer;
 guint particle3D_instanced_color_buffer;
+guint particle3D_instanced_size_buffer;
 
 void spawn_particle3D_buffers(ecs* world) {
     (void) world;
@@ -32,6 +35,9 @@ void spawn_particle3D_buffers(ecs* world) {
     particle3D_instanced_color_buffer = zox_gpu_create_buffer();
     zox_gpu_bind_buffer_array(particle3D_instanced_color_buffer);
     zox_gpu_set_buffer_array(NULL, sizeof(Color) * zox_max_particles3D);
+    particle3D_instanced_size_buffer = zox_gpu_create_buffer();
+    zox_gpu_bind_buffer_array(particle3D_instanced_size_buffer);
+    zox_gpu_set_buffer_array(NULL, sizeof(Scale1) * zox_max_particles3D);
     zox_gpu_bind_buffer_array(0);
 #endif
 }
@@ -40,7 +46,8 @@ void dispose_particle3D_buffers(ecs* world) {
     (void) world;
     zox_gpu_dispose_buffer(particle3D_instanced_position_buffer);
     zox_gpu_dispose_buffer(particle3D_instanced_color_buffer);
-    particle3D_instanced_position_buffer = particle3D_instanced_color_buffer = 0;
+    zox_gpu_dispose_buffer(particle3D_instanced_size_buffer);
+    particle3D_instanced_position_buffer = particle3D_instanced_color_buffer = particle3D_instanced_size_buffer = 0;
 }
 
 void initialize_shader_particle3D(ecs *world) {

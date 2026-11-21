@@ -60,7 +60,6 @@ entity game_log(ecs* world, entity player, const char* text) {
         int2 position = zox_getv(e, LayoutPosition);
         position.y += row;
         zox_setv(e, LayoutPosition, position);
-        zox_add(e, LayoutPositionDirty);
         if (position.y > bottom + size.y / 2 + row * (game_log_max - 1)) {
             game_log_end(world, e);
         }

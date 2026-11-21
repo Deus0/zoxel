@@ -32,7 +32,7 @@
         // set text of quantity label
         if (!is_zext(text, result)) {
             set_zext(text, result);
-            zox_add(e, Dirty);
+            zox_add(e, Refresh);
             if (dbg_log) {
                 zox_log("Item Frame Label [%s] Set to [%s]",
                     zox_get_name(e),

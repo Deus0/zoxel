@@ -17,6 +17,7 @@ byte set_app_setting_byte(
             if (!strcmp(setting_name->value, name)) {
                 zox_setm(e2, SettingByte, value);
                 zox_add(e2, Dirty);
+                zox_add(e2, Refresh);   // the save (setting_save_system on Update), once a frame
                 return 1;
             }
         }
@@ -41,6 +42,7 @@ byte set_app_setting_int(
             if (!strcmp(setting_name->value, name)) {
                 zox_setm(e2, SettingInt, value);
                 zox_add(e2, Dirty);
+                zox_add(e2, Refresh);   // the save (setting_save_system on Update), once a frame
                 return 1;
             }
         }
@@ -65,6 +67,7 @@ byte set_app_setting_float(
             if (!strcmp(setting_name->value, name)) {
                 zox_setm(e2, SettingFloat, value);
                 zox_add(e2, Dirty);
+                zox_add(e2, Refresh);   // the save (setting_save_system on Update), once a frame
                 return 1;
             }
         }

@@ -29,7 +29,7 @@
         }
         if (!is_zext(text, result)) {
             set_zext(text, result);
-            zox_add(e, Dirty);
+            zox_add(e, Refresh);
         }
     }
     zox_sys_on_end();

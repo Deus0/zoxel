@@ -1,3 +1,4 @@
+// on InsideBlockDirty, the frame it's added (walking block to block re-adds it: on Update it fired once)
 void terrain_callback_inside_block(iter* it) {
     double spawn_rate = 0.2;
     zox_sys_world();
@@ -5,7 +6,7 @@ void terrain_callback_inside_block(iter* it) {
     // cache voxels and colliders for speed
     const BlockLinks* blocks = get_first_terrain_voxels(it);
     if (!blocks) {
-        zox_loge("inside_block_sound_system: No BlockLinks");
+        zox_loge("terrain_callback_inside_block: No BlockLinks");
         return;
     }
     entity sounds[blocks->length];
@@ -49,3 +50,9 @@ void terrain_callback_inside_block(iter* it) {
     }
 }
 
+void inside_block_cleanup_event(iter* it) {
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        zox_remove(it->entities[i], InsideBlockDirty);
+    }
+}

@@ -2,7 +2,6 @@
 #include "right_click.c"
 #include "icon.c"
 #include "label.c"
-#include "clear.c"
 #include "state.c"
 
 void zox_systems_ui_containers(ecs* world) {
@@ -34,14 +33,6 @@ void zox_systems_ui_containers(ecs* world) {
         [none] ui_containers.DataUI,
         [none] slots.DataUpdate,
     );
-    /*zox_system(
-        icon_label_clear_system,
-        zoxp_update,
-        [out] texts.TextData,
-        [none] texts.Text,
-        [none] elements2.Label,
-        [none] slots.DataUpdate,
-    );*/
     zox_system(
         data_dirty_system,
         zoxp_remove,

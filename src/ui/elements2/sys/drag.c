@@ -55,7 +55,6 @@ void element_drag_system(iter* it) {
         }
         if (!int2_equals(position->value, new_position)) {
             position->value = new_position;
-            zox_add(e2, LayoutPositionDirty);
             if (dbg_log) {
                 zox_log("> dragging [%s] by %ix%i", zox_getn(e), delta->value.x, delta->value.y);
             }

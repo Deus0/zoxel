@@ -2,7 +2,7 @@
 
 ## Notes
 - Bugs first, then by module (play test notes first in each). Done items move to [done.md](done.md).
-- Also see: [refactors.md](refactors.md) (code to restructure),
+- Refactors are a section here (# Refactors). Also see:
   [optimize.md](optimize.md) (performance), [new.md](new.md) (new modules and features), [future.md](future.md) (bigger
   ideas), [new/caves.md](new/caves.md) (caves design)
 
@@ -154,6 +154,27 @@
 	  400 to 600 table moves a frame, most of the ~0.85ms merges and ~0.35ms observers an average frame
 
 # Refactors
+Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [done.md](done.md).
+
+## Next (2026-11-21)
+States, events and tags, by doc/tech/states.md (nf tags and observers for events, systems for heavy work, fewer tags;
+profile each, systems and observers counted together):
+- texts' dirty: keep the core Dirty / Update (doc/plans/core_dirty.md option 1) until texts show in a profile's
+  "moved most", then their own pair and a non fragmenting core Dirty (option 2)
+- the game and player states together (GameStateDirty, PlayerStateDirty: a 3 frame machine, tags made the game clean
+  up before the players saw the end): tag states (Paused, Playing..) with observers, the guard as its own step
+- the action timers (ActivateBegin, WarmupState, Activate, CooldownState, TriggerActionA/B/E, ActiveActionDirty):
+  are they steps, or tags with times
+- Select's pair (tooltip_select_system needs a system tag) and Begin / End / Exit (model node systems, heavy): keep,
+  or one fragmenting tag removed by a phase end system
+- a grid laid out again when its elements change (only at spawn now)
+- the bulk byte states (StreamDirty, StreamDirty2, NpcSpawnZoneDirty, LightNodeDirty, RenderDepthDirty,
+  RenderDistanceDirty): leave, unless a profile shows their increment systems
+- dead commented systems: find and remove the rest (5 removed 2026-11-21)
+
+Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap, door_rays.
+
+## Older
 - Move blocks from biome spawning back to realm
 	- we need rules that make each biome feel unique still
 	- we also still need variety of blocks to feel abundance
@@ -164,6 +185,274 @@
 	- block vox models
 	- flesh out node processes to have more functions, using observers and nodes
 	- write more tests to maintain this
+
+- A player's canvases (CanvasLink is many since 2026-11-20: its own, and while paused the shared one, huds
+  pause_canvas.c): ~90 places take `zox_get_link(player, CanvasLink)` as "its canvas", flecs keeps no order for
+  the targets; a helper (the canvas whose PlayerLink is the player) swapped in as files are touched. Input already
+  walks all of them (ui navigation begin.c, interaction raycast.c); tst coop_pause checks the first is its own paused
+- Activated block states (a door open, later redstone power) to an activation octree a chunk, out of BlockDatas,
+  which keeps data that doesn't change (directions, filler offsets): doc/tech/blocks.md "Planned"
+- Body parts by entities, not SlotType ids: realm parts found by find_slot_type, gear is by tag now (Hat, Shirt),
+  and character_body_spawn_system's slot tree as data (parent, anchor, offset, part) walked once (doc/body_equips.md)
+- refactor GenerateModel to tag event
+	- check any other bytes that can be tag events too
+	- the idea is to reduce idling systems when the game isnt using them
+- remove any hooks and keep it all inside flecs pipelines
+	- we want it consistent and easier to debug the logic
+	- ecs practices
+	- observers for reaction based logic
+- make text ascii instead of currently uses a custom indexing, ascii will make using strings easier with our text data
+- Merge the voxel build code
+	- same side octree building too
+	- merged mesh face building
+	- uv pass in a seperate system
+	- ao in a seperate system
+- add greedy mesh for vox models (plan: [tech/chunks3.md](tech/chunks3.md), Greedy meshing)
+	- needs to have smaller quads around corners to maintain ao visuals
+- Refactor character vox into sub entity
+- Single Vox for Grass
+	- split into sub chunks
+- Move blockVox from models into blocks
+	- just link it to model and tag it, no need to have it models
+- Tooltip systems: a deselect closes by an observer (Deselect); the select stays a system, as an observer on Select a
+  fast flick lost the last icon's text (tst tooltip_flick); tooltip_deselect_system is the flick's safety net
+- Add locks onto all VoxelNode setters and getters
+- Refactor character mesh from its prefab
+	- vox / vox instance will be child
+	- test function to set it as unique when decaying its mesh
+
+- Refactor the shaders and element render system
+- Refactor Block Model Spawning out of block_vox_meta functions
+- Refactor Texture Generation into Nodegraphs
+
+### Modules
+
+### Events
+- Refactor ([in] players.PlayerState) with new PlayerStateEvent listener
+- Refactor games.GameState systems into listener events GameStateEvent
+
+### Unsorted
+- Make MeshDirty + and other bytes tags
+- Make initialize systems just use an event / observer
+    - moving them to callbacks
+- make pickup collider a sub entity on player
+- Move the key events out of the test functions
+    - just add to a KeyListener component
+- Refactor GenerateChunk to Generate, Generating, etc
+	- GenerateModel
+- Make chunk datas more self contained
+    - dont use terraindepth, just use maxdepth property
+- Remove state components and just use tags + dontfrag
+- Refactor our timings from on system entities
+    - spawn a profile entity (dataset)
+
+### Android
+- move the keys into Apps folder on phone
+    - android keys
+    - build same apk from other machines using it
+
+### Custom Phases
+- remove update loops and just use systems as functions
+
+### UIs
+- Centralize different uis
+    - atm theyre a bit spread through different state events
+    - For example screen fader is in 3 events
+    
+### Refactor Events/Properties To Tags
+	* make event tag
+	* add/remove instead of set
+	* remove/add sysetm for a Update variant tag
+	* update systems use hte Update tag [none]
+	-o GenerateTexture
+	- PlayerStateDirty
+	- RenderLodDirty
+	- NpcSpawnZoneDirty
+	- ActiveActionDirty
+	- StreamDirty
+	- RenderDepthDirty
+	- ChunkLodDirty
+	- RenderDistanceDirty
+	- GlyphSpawnedDirty
+	
+### Refactor Properties
+- RenderDisabled
+- BlocksSpawned
+- ZeviceDisabled
+	
+### Refactor Reactionary Systems to Events
+	- Tooltip Systems
+	- Settings Spawning - InitializeEvent on App
+    
+### Remove old links
+	- BlockLinks (lookup table, voxel value - 1 is the index)
+	- BiomeLinks (lookup table, biome id is the index)
+	- Still zoxc_entity, need a decision:
+		- Target, ActiveAction, Clicker, ClickingEntity, WindowToTop, GlyphPrefab
+		- not links: ComponentTarget, TaskbarWindowID (component ids), EventInput/2 (event payloads), DungeonWallType
+	- Indexed arrays (order matters, not links): ModelLods, Chunk3Stack, ChunkNeighbors, Chunk2Neighbors, CombineList
+	- ChunkEntities (reverse of ChunkLink, could become links)
+	- Children + ParentLink (old hierarchy, move to ChildOf)
+
+### Input Refactor
+- Make input actions events instead of systems
+    - Pause key - player_pause_system
+	
+### Remove old structs
+	- LayoutParentData
+	- ElementSpawnData
+
+### Character Refactors
+- Refactor character mesh out of character - as child
+- Add character CombatState
+
+### Tags / Events
+- Use a generic Dirty tag, use for stats
+- Refactor RenderDepthDirty, RenderDistanceDirty
+- Refactor MeshDirty as tag
+- Refactor BuildMesh - tag - BuildSkeletonMesh after
+- FindNeighbors - make it trigger this on spawning - triggers neighbors if exists
+
+### Unsorted
+- SDL should be a module again
+    - it will just add onto the App prefab and events
+    - This makes it easier for Glut to be implemented or others 
+- Rename Cubes - Geometry
+- Move Bodys and Equipment to Parts with tags
+- Move Texture tag from rendering to Textures
+    - Just wrap gpu stuff in graphics, then do it all in textures before our rendering
+- Rename Rendering: Geometry, used for meshes
+- Rename LayoutSize as PixelSize, as well as ScreenSize, add to Core (generic af)
+- Refactor settings spawning back to hooks
+- Make Initialize a tag - dont fragment
+    - remove at end of frame
+- Make ChunkEntities use links instead of components
+- Remove DeviceLink from zevices, use parent
+- Remove Camera Datas - main_cameras ui_cameras
+- Remove DeviceLink from Zevice, use parent
+- Spawn finger entity during finger down - instead of just setting
+- We can refactor all the links between enttiies as pairs instead of components
+
+
+### Events
+- Move sound systems to events too
+    - pickup_sound_system
+    - land_sound_system
+- Remove state systems and just use event components with listeners
+
+### Devops
+- We need docker libraries to be seperated from regular ones
+    - for docker.sh - add docker tag in build.sh
+    - then make libs use seperate folder
+
+### Tooltips
+- Refactor Tooltips as events
+    - Make the event store multiple functions
+    # Probably the tooltips can all just be events - systems arnt needed for these
+
+### Apps
+- Move sdl/glut/glfw/headless into core as wrappers or not idk... we havnt actually wrapped yet!
+
+### Data
+- Remove build states when not building (60ms)
+    - chunk_mesh_colors_trigger_system
+    - ChunkTexturedBuildSystem
+    - SmoothLightsBuildSystem
+    - BuildMesh
+
+# Refactors
+- Refactor: Stream Terrain Chunks from terrain, not chunks, just spawn there
+	- Keep setting the lods in chunk systems though as can be multithreaded
+
+### Nodes
+- Add color hsv limits like the size later to the color node
+- Color node should set a reference name
+    - fill can use this instead of hard values
+
+### Ui
+- Refactor taskbar as entities and add the Mirror UI there
+    - so its easier to add the new mirror button
+
+### Skinning
+- Add BoneOctree
+- Set Bone values when we place items into body
+- Convert Bone values into weights instead of using sizes
+	
+### ChunkTextured Refactor
+- Spawn a Terrain chunk as test function
+- Spawn a TerrainChunk with no Mesh and child Renderer
+	- fix systems to work with new terrain chunk
+
+### Chunks
+- seperate Chunk into Chunk + Render
+- after chunk3 refactor, use a render per lod, instead of regenerating everytime
+- add local chunk lookups for block indexes
+	- Prevents Updates messing up Chunk Save Data
+
+### Chunk Refactor
+- Fade in Chunks
+- Spawn Hierarchy + inspector when we spawn our Vox Test
+- Spawn the Vox test without renderer, and use child as render
+	- refactor the mesh building functions for this use
+- Switching LOD Meshes should
+	- fade in and out the switch
+	- when fadeout completely they get disabled
+	- when fading in, they get enabled (entity enabling)
+- Refactor Chunk to Chunk + BlockMaterial + Lod Render
+- chunk = chunk + renders (seperate)
+- Generate sides per Chunk3Material (sub entity of Chunk3)
+- Spawn Chunk3Render entity per LOD level when RenderDepth set
+- Refactor models to just spawn one vox model and multiple render objects as children
+	- Make lods just use the same model, no need to create 5 models per slime
+	- just generate per each level - set with shapes per node level
+	
+### Extras
+
+- Refactor Settings to Entities
+- Move Damage outside of MeleeSystem and add a DamageQueue onto the terrain chunk
+- Change Settings / Options UI as entities data
+- Change Taskbar as entities data
+- Move TexturesSize + TexturesDirty to Textures module from Rendering
+- Remove any Hook use and just use system states
+- Reduce systems total
+
+### Refactors
+- Remove refactor Vodes spawn code
+- Replace Chunk VoxLinks with Parent calls
+- Refactor Model Lods -> one model, just create mesh per lod
+- Refactor 3D UIs to use 2D UI stuff
+- Remove struct use from spawn_block_vox_meta
+- Remove Duplicate UI prefabs
+- Remove structs from UI prefab use
+- Remove spawn_window_users use
+- Refactor Header Spawning to system
+- Remove all spawn_window_users's
+- Spawn character data from biomes
+- Compare raycasts based on priority
+	- Raycast Solid Blocks, Character, Non Solid Blocks (Grass)
+- make shape type and centering part of painting as well - use fill system just with diff byte for checks
+- refactor soil/blocks into nodegraphs for models
+- link nodegraphs to realm's nodegraphLinks
+- list uis should just reposition inside system when children dirty
+- taskbar data into entities
+- settings data into entities
+- remove sdl_image and use BMP imports
+- ~~remove sdl_mixer and use another simpler audio lib~~ (sdl audio, mixed in src/sounds/mix)
+- Refactor texture generation to blueprints
+- upgrade the texture for the item frames
+- Terrain loading and finishing should be overseen by GameState and not Player events
+- Move character/block name generation to system under new module Names
+- Remove any random delays, and make the state changes timed instead
+- Add a tooltip that just stores a string - no need for event every time
+
+# Future Ideas
+
+### Voxel Links Side Table
+- VoxelNode reuses `ptr` for children or an OctreeLink (type 255), so every octree function must check the node type (`octree_children` helper)
+- Idea: move links out of the octree into a per chunk table keyed by position + depth, then `ptr` always means children and every octree function is generic
+- VoxelNode could drop its `type` byte (stays 16 bytes from alignment anyway)
+- Cost: a table lookup to get a voxel's entity, instead of the octree walk
+- History: links used a table before and were moved into the octree, as the table had speed issues. Benchmark (stress test) before trying again
 
 # Sounds and Music
 - different music per biome too

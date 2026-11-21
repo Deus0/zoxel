@@ -44,7 +44,6 @@ void handle_touch_drag(
     pointer_position->value.x = delta_position.x;
     pointer_position->value.y = delta_position.y;
     int2_limit(&pointer_position->value, size_limits);
-    zox_add(joystick_pointer, LayoutPositionDirty);
     // Set Pointer Value
     zox_muter(virtual_joystick, ZeviceStick, stick);
     stick->value = (float2) {

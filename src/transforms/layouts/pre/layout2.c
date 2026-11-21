@@ -24,7 +24,6 @@ entity spawn_prefab_layout2(ecs *world) {
     // Local
     zox_set(e, LayoutPosition, { int2_zero });
     zox_set(e, LayoutSize, { int2_zero });
-    zox_add(e, LayoutPositionDirty);
     zox_add(e, LayoutSizeDirty);
     // Canvas
     zox_set(e, Anchor, { float2_zero });

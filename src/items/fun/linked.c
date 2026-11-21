@@ -15,6 +15,6 @@ void link_as_new_item(
         // Clear Label
         zox_muter(frame.z, TextData, text_data);
         dispose_TextData(text_data);
-        zox_add(frame.z, Dirty);
+        zox_add(frame.z, Refresh);
     }
 }

@@ -25,6 +25,7 @@ void particle3d_render_system(iter* it) {
     zox_sys_in(Position3D);
     zox_sys_in(Color);
     zox_sys_in(Alpha);
+    zox_sys_in(Scale1);
     // each one's colour see through a little, and its fade (Alpha, fadeout_system)
     static Color colors[zox_max_particles3D];
     const int count = it->count < zox_max_particles3D ? it->count : zox_max_particles3D;
@@ -45,25 +46,36 @@ void particle3d_render_system(iter* it) {
     zox_gpu_set_sub_buffer_color(count, colors);
     zox_gpu_enable_attribute(particle3D->color);
     zox_gpu_attribute_divisor(particle3D->color, 1);
+    // size, in voxels
+    zox_gpu_bind_buffer_array(particle3D_instanced_size_buffer);
+    zox_gpu_set_attribute_floatx(particle3D->size, (void*) 0, 1);
+    zox_gpu_set_sub_buffer_bytes(count * sizeof(Scale1), Scale1_);
+    zox_gpu_enable_attribute(particle3D->size);
+    zox_gpu_attribute_divisor(particle3D->size, 1);
     // draw
     zox_gpu_render_points_instanced(count);
     // glDrawArraysInstanced(GL_POINTS, 0, 1, it->count);
     // resets
     zox_gpu_attribute_divisor(particle3D->color, 0); // Update per instance
     zox_gpu_attribute_divisor(particle3D->position, 0); // Update per instance
+    zox_gpu_attribute_divisor(particle3D->size, 0);
+    zox_gpu_disable_attribute(particle3D->size);
     zox_gpu_disable_attribute(particle3D->color);
     zox_gpu_disable_attribute(particle3D->position);
     zox_gpu_bind_buffer_array(0);
 #else
     zox_gpu_enable_attribute(particle3D->position);
     zox_gpu_enable_attribute(particle3D->color);
+    zox_gpu_enable_attribute(particle3D->size);
     for (int i = 0; i < count; i++) {
         zox_sys_i(Position3D, position);
         zox_gpu_set_attribute_float3(particle3D->position, &position->value);
+        zox_gpu_set_attribute_floatx(particle3D->size, &Scale1_[i].value, 1);
         zox_gpu_float4(particle3D->color, color_to_float4(colors[i].value));
         zox_gpu_render_points(1);
         // zox_log("Rendering Point at [%fx%fx%f]", position->value.x, position->value.y, position->value.z);
     }
+    zox_gpu_disable_attribute(particle3D->size);
     zox_gpu_disable_attribute(particle3D->color);
     zox_gpu_disable_attribute(particle3D->position);
 #endif

@@ -49,7 +49,7 @@ void dialogue_speech_system(iter* it) {
         zox_setv(text_ui, VoiceIndex, 0);
         zox_muter(text_ui, TextData, text_data);
         resize_TextData(text_data, 0);
-        zox_add(text_ui, Dirty);
+        zox_add(text_ui, Refresh);
         zox_setv(text_ui, AnimateTextBegin, zox_current_time);
         set_children_by_id_byte(
             world,

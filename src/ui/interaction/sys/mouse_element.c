@@ -43,7 +43,6 @@ void mouse_element_system(iter* it) {
         output.y -= anchor->value.y * canvas_size.y;
         if (!int2_equals(position->value, output)) {
             position->value = output;
-            zox_add(e, LayoutPositionDirty);
         }
     }
     zox_sys_on_end();

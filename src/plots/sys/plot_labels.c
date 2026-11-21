@@ -22,7 +22,7 @@ void plot_label_system(iter* it) {
         buffer_index += snprintf(buffer + buffer_index, buffer_size - buffer_index, "Min %.0fms\nMax %.0fms\n", min, max);
         if (!is_zext(data, buffer)) {
             set_zext(data, buffer);
-            zox_add(e, Dirty);
+            zox_add(e, Refresh);
         }
     }
     zox_sys_on_end();

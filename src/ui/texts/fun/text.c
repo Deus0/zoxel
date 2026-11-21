@@ -97,7 +97,7 @@ static inline byte set_entity_text(
     zox_muter(e, TextData, text_data);
     if (!is_zext(text_data, text)) {
         set_zext(text_data, text);
-        zox_add(e, Dirty);
+        zox_add(e, Refresh);
         return 1;
     } else {
         return 0;

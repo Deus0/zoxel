@@ -7,7 +7,7 @@ entity spawn_prefab_particle3(ecs *world) {
     zox_add(e, DisableParentTransform);
     zox_set(e, Position3D, { float3_zero });
     // zox_set(e, Rotation3D, { quaternion_identity });
-    // zox_set(e, Scale1, { 1 });
+    zox_set(e, Scale1, { 1 });     // its size in voxels (the render's point size)
     zox_set(e, Velocity3D, { float3_zero });
     zox_set(e, Acceleration3D, { float3_zero });
     zox_set(e, Brightness, { 1 });
