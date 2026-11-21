@@ -58,15 +58,15 @@ static inline byte swing_arm_target(ecs* world, const skeleton_now* now, entity 
     target = float3_add(target, float3_scale(side, pose.in * reach));
     target = float3_add(target, float3_scale(up, pose.up * reach));
     if (looking_up) {
+        // turned up about the eyes, all the way: past the arm's reach the shoulder turns up to it, the hand along
+        //  its line from the shoulder, the arm reaching into the sky (pulled in to the eyes instead it came so
+        //  close it filled the view's centre looking at the sky; held back from the look the arm hung low, tst guard_pitch)
         target = float3_add(eye, float4_rotate_float3(lift, float3_sub(target, eye)));
-        // past it: in towards the eyes, so it keeps its place in view
-        const float most = sqrtf(pose.out * pose.out + pose.in * pose.in + pose.up * pose.up) * reach;
-        const float3 d = float3_sub(target, eye);
-        const float3 e = float3_sub(eye, from);
-        const float dd = float3_dot(d, d), ed = float3_dot(e, d);
-        const float discriminant = ed * ed - dd * (float3_dot(e, e) - most * most);
-        if (float3_distance(target, from) > most && dd > 0 && discriminant >= 0) {
-            target = float3_add(eye, float3_scale(d, (-ed + sqrtf(discriminant)) / dd));
+        const float most = 0.9f * reach;
+        const float3 d = float3_sub(target, from);
+        const float length = float3_length(d);
+        if (length > most) {
+            target = float3_add(from, float3_scale(d, most / length));
         }
     }
     zox_getm(shoulder, IKTarget)->value = target;

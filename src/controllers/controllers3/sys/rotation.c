@@ -122,18 +122,9 @@ void player3_rotate_system(iter* it) {
         if (!zox_valid(head_bone)) {
             continue;
         }
-        float2 euler_limit_x = (float2) { 89, 89 };
-        euler_limit_x = float2_mulf(euler_limit_x, degrees_to_radians);
         zox_muter(head_bone, LocalRotation3D, head_rotation);
-        float3 head_euler = quaternion_to_euler(head_rotation->value);
         // NOTE: Positive for headbone, negative for camera
-        head_euler.x += euler.x;
-        if (head_euler.x < -euler_limit_x.y) {
-            head_euler.x = -euler_limit_x.y;
-        } else if (head_euler.x > euler_limit_x.x)  {
-            head_euler.x = euler_limit_x.x;
-        }
-        head_rotation->value = euler_to_quaternion(head_euler);
+        head_rotation->value = camera_pitch_add(head_rotation->value, euler.x, 89 * degrees_to_radians);
     }
     zox_sys_on_end();
 } zoxd_system(player3_rotate_system);

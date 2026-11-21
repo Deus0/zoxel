@@ -53,6 +53,12 @@ void zox_tst_head_camera_check(ecs* world) {
     const float3 hs = zox_getv(head, BoneSize), hp = zox_getv(head, Position3D), cp = zox_getv(camera, Position3D), cl = zox_getv(camera, LocalPosition3D);
     const float4 r = zox_getv(character, Rotation3D);
     zox_log("[tst] head size [%.3f %.3f %.3f] at [%.3f %.3f %.3f] camera local [%.3f %.3f %.3f] at [%.3f %.3f %.3f] parent [%s] rot [%.2f %.2f %.2f %.2f] scale [%.3f]", hs.x, hs.y, hs.z, hp.x, hp.y, hp.z, cl.x, cl.y, cl.z, cp.x, cp.y, cp.z, zox_getn(zox_get_parent(world, camera)), r.x, r.y, r.z, r.w, zox_getv(character, BlockScale));
+    // the camera at the eyes: a little over the head's middle (head_camera_offset), not at its top
+    const float3 centre = bone_centre_now(world, head);
+    const float3 up = float4_rotate_float3(zox_getv(head, Rotation3D), float3_up);
+    const float height = float3_dot(float3_sub(cp, centre), up) / hs.y;     // hs is half its height
+    zox_log("[tst] head_camera: the camera [%.2f] of the head's half height over its middle", height);
+    zox_tst_check(height > -0.1f && height < 0.4f, "the camera is [%.2f] of the head's half height over its middle, not at the eyes", height);
     zox_tst_check(zox_tst_clouds_share(zox_tst_path("head_down.ppm")) >= 0, "no screenshot looking down");
     zox_tst_check(zox_tst_clouds_share(zox_tst_path("head_up.ppm")) >= 0, "no screenshot looking up");
 }

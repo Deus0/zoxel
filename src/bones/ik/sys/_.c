@@ -16,6 +16,12 @@ void zox_systems_ik(ecs* world) {
         [out] bones.SpineTwist,
         [none] bones.Skeleton
     );
+    // a first person look leaning the upper body (back looking up), before the lean's placed
+    zox_system(
+        look_lean_system,
+        zoxp_trails,
+        [none] bones.Skeleton
+    );
     // the upper body leaning about the hips, the hips shifted (XR's body bending and crouching)
     zox_system(
         spine_lean_system,
