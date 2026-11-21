@@ -5,7 +5,7 @@ void zox_systems_settings(ecs* world) {
     zox_system(
         setting_save_system,
         zoxp_update,
-        [in] settings.SettingDirty,
+        [none] core.Update,
         [none] settings.Setting
     );
     // Can we take in game name from App??

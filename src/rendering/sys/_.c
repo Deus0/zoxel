@@ -34,16 +34,6 @@ void zox_systems_rendering(ecs *world) {
         [in] rendering.RenderDepth,
         [none] rendering.RendererInstance
     );
-    zox_system_1(
-        rendering_settings_system,
-        zoxp_spawn,
-        [in] settings.LoadSettings,
-    );
-    zox_system(
-        rendering_settings_dirty_system,
-        zoxp_update,
-        [in] settings.SettingDirty,
-        [in] core.ZoxName,
-        [in] settings.Setting
-    );
+    // its settings: spawned on the app, applied when one changes (needs prefab_app)
+    add_hook_spawn_prefabs(rendering_settings_events);
 }

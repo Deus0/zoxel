@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-21
+-x Settings are events: the last 8 modules' settings systems (models, npcs, rendering, sounds, streaming, ui, vodes,
+  xr) spawn their settings on the app's InitializeEvent and apply a change in an observer on Update (as ai, apps,
+  bones and controllers did), 15 systems gone; SettingDirty (a byte state and its increment system) is gone, the save
+  runs on Update, one write for a frame's changes. tst settings_apply changes one of each and checks the file
 -x Logs minimal by default: boot paths, settings, terrain sizes, autostart, the skybox, splashes and a missing optional
   folder log only with --verbose (zox_logv, gated at run time now, it was compiled out unless zox_verbose); --verbose
   is read first thing in main. A minute of play logs ~10 lines. The rule is in coding_standards.md (Logs)

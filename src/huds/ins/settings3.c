@@ -46,7 +46,6 @@ static void setting3_step(ecs* world, entity setting, int direction, byte wrap) 
     } else {
         return;
     }
-    zox_set(setting, SettingDirty, { zox_dirty_trigger });
     zox_add(setting, Dirty);
 }
 

@@ -16,7 +16,6 @@ byte set_app_setting_byte(
             const ZoxName* setting_name = zox_get(e2, ZoxName);
             if (!strcmp(setting_name->value, name)) {
                 zox_setm(e2, SettingByte, value);
-                zox_set(e2, SettingDirty, { zox_dirty_trigger });
                 zox_add(e2, Dirty);
                 return 1;
             }
@@ -41,7 +40,6 @@ byte set_app_setting_int(
             const ZoxName* setting_name = zox_get(e2, ZoxName);
             if (!strcmp(setting_name->value, name)) {
                 zox_setm(e2, SettingInt, value);
-                zox_set(e2, SettingDirty, { zox_dirty_trigger });
                 zox_add(e2, Dirty);
                 return 1;
             }
@@ -66,7 +64,6 @@ byte set_app_setting_float(
             const ZoxName* setting_name = zox_get(e2, ZoxName);
             if (!strcmp(setting_name->value, name)) {
                 zox_setm(e2, SettingFloat, value);
-                zox_set(e2, SettingDirty, { zox_dirty_trigger });
                 zox_add(e2, Dirty);
                 return 1;
             }

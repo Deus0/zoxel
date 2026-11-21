@@ -37,7 +37,6 @@
 - Make the tooltip systems into observer / events
 - Add locks onto all VoxelNode setters and getters
 -x Add observer function, when Dirty is added to setting, replace SettingsDirtySystem's
-- Replace rest of [SettingsDirtySystem] with observer zox_on_add
 - Refactor character mesh from its prefab
 	- vox / vox instance will be child
 	- test function to set it as unique when decaying its mesh
@@ -50,14 +49,6 @@ Modules
 -x Move animate_text_system from dialogue to ui/texts
 
 Events
-- Refactor all 'SettingsSystem' into events on prefab_app
-	- streaming_settings_system
-	- sounds_settings_system
-	- RenderingSettingsSystem
-	- npcs_settings_system
-	- models_settings_system
-	- BonesSettingsSystem
-	- AiSettingsSystem
 - Refactor ([in] players.PlayerState) with new PlayerStateEvent listener
 - Refactor games.GameState systems into listener events GameStateEvent
 

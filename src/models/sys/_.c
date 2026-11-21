@@ -63,16 +63,6 @@ void zox_systems_models(ecs* world) {
         [none] models.ModelRun,
         [none] core.Begin,
     );
-    zox_system_1(
-        models_settings_system,
-        zoxp_spawn,
-        [in] settings.LoadSettings,
-    );
-    zox_system(
-        models_settings_dirty_system,
-        zoxp_update,
-        [in] settings.SettingDirty,
-        [in] core.ZoxName,
-        [in] settings.Setting
-    );
+    // its settings: spawned on the app, applied when one changes (needs prefab_app)
+    add_hook_spawn_prefabs(models_settings_events);
 }

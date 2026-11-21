@@ -687,7 +687,7 @@
     - like a normal slider ui
     - same with scrollbars
 - ui sccale setting in settings should also set it as you set it
-    - needs: a design call first (live resize ends the slider drag, ui_settings_system only spawns on load)
+    - needs: a design call first (live resize ends the slider drag, ui_settings_on_dirty sets ui_scale, used by uis spawned after)
       then respawn the scale-dependent uis, or re-layout them, from src/ui/sys/settings.c
     - so you can immediately see results
 - add options in the pause ui (return, exit game, make it seccond)

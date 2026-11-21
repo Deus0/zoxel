@@ -77,11 +77,6 @@ void zox_systems_vodes3(ecs* world) {
         [in] chunks3.ChunkNeighbors,
         [none] terrains.TerrainChunk,
     );
-    zox_system(
-        vodes_settings_dirty_system,
-        zoxp_update,
-        [in] settings.SettingDirty,
-        [in] core.ZoxName,
-        [in] settings.Setting
-    );
+    // its settings: spawned on the app, applied when one changes (needs prefab_app)
+    add_hook_spawn_prefabs(vodes_settings_events);
 }

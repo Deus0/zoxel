@@ -44,16 +44,6 @@ void zox_systems_streaming(ecs* world) {
         [none] saves.Loading,
     );
     // Settings
-    zox_system_1(
-        streaming_settings_system,
-        zoxp_spawn,
-        [in] settings.LoadSettings
-    );
-    zox_system(
-        streaming_settings_dirty_system,
-        zoxp_update,
-        [in] settings.SettingDirty,
-        [in] core.ZoxName,
-        [in] settings.Setting
-    );
+    // its settings: spawned on the app, applied when one changes (needs prefab_app)
+    add_hook_spawn_prefabs(streaming_settings_events);
 }

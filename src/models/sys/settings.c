@@ -1,37 +1,21 @@
-void models_settings_system(iter* it) {
-    zox_sys_on_begin();
-    zox_sys_world();
-    zox_sys_begin();
-    zox_sys_in(LoadSettings);
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
-        zox_sys_i(LoadSettings, load);
-        if (load->value != zox_load_settings_spawn) {
-            continue;
-        }
-        spawn_setting_byte_slider(world, e, "Block Res", block_depth, block_depth_limits);
-        spawn_setting_byte(world, e, "Outlines", zox_block_outlines);
+// its settings, spawned on the app (InitializeEvent)
+void models_settings(ecs* world, entity e) {
+    spawn_setting_byte_slider(world, e, "Block Res", block_depth, block_depth_limits);
+    spawn_setting_byte(world, e, "Outlines", zox_block_outlines);
 #ifdef zox_dev
-        spawn_setting_byte_slider(world, e, "Terrain Res", terrain_depth, terrain_depth_limits);
+    spawn_setting_byte_slider(world, e, "Terrain Res", terrain_depth, terrain_depth_limits);
 #endif
-    }
-    zox_sys_on_end();
-} zoxd_system(models_settings_system);
+}
 
-void models_settings_dirty_system(iter* it) {
-    zox_sys_on_begin();
+// a setting changed (Update, the frame after its Dirty)
+void models_settings_on_dirty(iter* it) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(SettingDirty);
     zox_sys_in(ZoxName);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(SettingDirty, state);
         zox_sys_i(ZoxName, name);
-        if (state->value != zox_dirty_active) {
-            continue;
-        }
         if (zox_has(e, SettingByte)) {
             byte value = zox_getv(e, SettingByte);
             if (dbg_log) {
@@ -56,5 +40,16 @@ void models_settings_dirty_system(iter* it) {
             }
         }
     }
-    zox_sys_on_end();
-} zoxd_system(models_settings_dirty_system);
+}
+
+// spawned on the app (InitializeEvent), applied when one changes (an observer on Update)
+void models_settings_events(ecs* world) {
+    zox_muter(prefab_app, InitializeEvent, event);
+    add_to_InitializeEvent(event, models_settings);
+    zox_on_add(
+        models_settings_on_dirty,
+        [in] core.ZoxName,
+        [none] settings.Setting,
+        [none] core.Update,
+    );
+}

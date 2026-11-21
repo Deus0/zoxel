@@ -17,6 +17,7 @@
 
 #include "npc_quests.c"
 #include "quest_marker.c"
+#include "settings_apply.c"
 
 #include "npcs_after_load.c"
 
@@ -108,6 +109,7 @@ void zox_tsts_npcs(ecs* world) {
     zox_tsts_chest_weights(world);
     zox_tsts_block_vox_hits(world);
     zox_tsts_furniture_rotation(world);
+    zox_tsts_settings_apply(world);
     zox_tsts_quest_dialogue(world);
     zox_tsts_find_quest(world);
     zox_tsts_links(world);

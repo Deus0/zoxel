@@ -4,17 +4,8 @@ void setting_save_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
     zox_sys_world();
-    zox_sys_begin();
-    zox_sys_in(SettingDirty);
-    entity dirty_app = 0;
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
-        zox_sys_i(SettingDirty, state);
-        if (state->value == zox_dirty_active) {
-            dirty_app = zox_get_parent(world, e);
-            break;
-        }
-    }
+    // changed ones (Update, the frame after their Dirty): one write for all of them
+    const entity dirty_app = it->count ? zox_get_parent(world, it->entities[0]) : 0;
     if (!dirty_app) {
         return;
     }

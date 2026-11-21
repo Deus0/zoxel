@@ -1,18 +1,13 @@
 
-void vodes_settings_dirty_system(iter* it) {
-    zox_sys_on_begin();
+// a setting changed (Update, the frame after its Dirty)
+void vodes_settings_on_dirty(iter* it) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(SettingDirty);
     zox_sys_in(ZoxName);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(SettingDirty, state);
         zox_sys_i(ZoxName, name);
-        if (state->value != zox_dirty_active) {
-            continue;
-        }
         if (zox_has(e, SettingByte)) {
             byte value = zox_getv(e, SettingByte);
             if (dbg_log) {
@@ -23,5 +18,14 @@ void vodes_settings_dirty_system(iter* it) {
             }
         }
     }
-    zox_sys_on_end();
-} zoxd_system(vodes_settings_dirty_system);
+}
+
+// spawned on the app (InitializeEvent), applied when one changes (an observer on Update)
+void vodes_settings_events(ecs* world) {
+    zox_on_add(
+        vodes_settings_on_dirty,
+        [in] core.ZoxName,
+        [none] settings.Setting,
+        [none] core.Update,
+    );
+}

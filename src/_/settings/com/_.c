@@ -1,6 +1,5 @@
 zox_tag(Setting);
 zox_tag(SettingSlider);
-zoxc_state(SettingDirty);
 zoxc_byte(SettingBit);
 zoxc_byte(SettingByte);
 zoxc_byte2(SettingByteBounds);
@@ -17,7 +16,6 @@ zoxc_byte(LoadSettings);
 void zox_components_settings(ecs* world) {
     zoxd_tag(Setting);
     zoxd_tag(SettingSlider);
-    zoxd_state(SettingDirty);
     zoxd_byte(SettingBit);
     zoxd_byte(SettingByte);
     zoxd_byte2(SettingByteBounds);

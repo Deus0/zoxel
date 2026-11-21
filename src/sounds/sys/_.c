@@ -62,16 +62,6 @@ void zox_systems_sounds(ecs *world) {
         [none] SoundListener
     );
     // Sound gen takes longer;
-    zox_system_1(
-        sounds_settings_system,
-        zoxp_spawn,
-        [in] settings.LoadSettings
-    );
-    zox_system(
-        sounds_settings_dirty_system,
-        zoxp_update,
-        [in] settings.SettingDirty,
-        [in] core.ZoxName,
-        [in] settings.Setting
-    );
+    // its settings: spawned on the app, applied when one changes (needs prefab_app)
+    add_hook_spawn_prefabs(sounds_settings_events);
 }

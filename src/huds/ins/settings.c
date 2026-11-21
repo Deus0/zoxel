@@ -12,7 +12,6 @@ void on_new_settings_toggle_toggled(
         return;
     }
     zox_set(e2, SettingByte, { data->value });
-    zox_set(e2, SettingDirty, { zox_dirty_trigger });
     zox_add(e2, Dirty);
     // zoxs_set_byte(world, name, data->value);
 }
@@ -46,7 +45,6 @@ void on_settings_slide(
         zox_set(e2, SettingFloat, { data->value });
         snprintf(new_text, 128, "%s [%.2f]", name->value, data->value);
     }
-    zox_set(e2, SettingDirty, { zox_dirty_trigger });
     zox_add(e2, Dirty);
     zox_muter(text, TextData, text_data);
     if (!is_zext(text_data, new_text)) {

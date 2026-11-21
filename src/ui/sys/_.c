@@ -14,18 +14,6 @@ void zox_systems_elements(ecs *world) {
         [in] AutoHideTime
     );
     // main thread, it spawns the setting
-    zox_system_1(
-        ui_settings_system,
-        zoxp_spawn,
-        [in] settings.LoadSettings
-    );
-    zox_system(
-        ui_settings_dirty_system,
-        zoxp_update,
-        [in] settings.SettingDirty,
-        [in] core.ZoxName,
-        [in] settings.Setting
-    );
     zox_system(
         canvas_resize_system,
         zoxp_update,
@@ -64,4 +52,6 @@ void zox_systems_elements(ecs *world) {
         [out] rendering.MeshVertices2D,
         [none] layouts.LayoutSizeUpdate,
     );
+    // its settings: spawned on the app, applied when one changes (needs prefab_app)
+    add_hook_spawn_prefabs(ui_settings_events);
 }

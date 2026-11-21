@@ -17,54 +17,41 @@ static inline float xr_body_scale(ecs* world, entity character) {
     return height > 0 ? height / xr_player_height : 1;
 }
 
-void xr_settings_system(iter* it) {
-    zox_sys_on_begin();
-    zox_sys_world();
-    zox_sys_begin();
-    zox_sys_in(LoadSettings);
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
-        zox_sys_i(LoadSettings, load);
-        if (load->value != zox_load_settings_spawn) {
-            continue;
-        }
-        spawn_setting_float(world, e, "XR Height", xr_player_height, xr_player_height_range);
-    }
-    zox_sys_on_end();
-} zoxd_system(xr_settings_system);
+// its settings, spawned on the app (InitializeEvent)
+void xr_settings(ecs* world, entity e) {
+    spawn_setting_float(world, e, "XR Height", xr_player_height, xr_player_height_range);
+}
 
-void xr_settings_dirty_system(iter* it) {
-    zox_sys_on_begin();
+// a setting changed (Update, the frame after its Dirty)
+void xr_settings_on_dirty(iter* it) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(SettingDirty);
     zox_sys_in(ZoxName);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(SettingDirty, state);
         zox_sys_i(ZoxName, name);
-        if (state->value != zox_dirty_active || !zox_has(e, SettingFloat)) {
+        if (!zox_has(e, SettingFloat)) {
             continue;
         }
         if (!strcmp(name->value, "XR Height")) {
             xr_player_height = zox_getv(e, SettingFloat);
         }
     }
-    zox_sys_on_end();
-} zoxd_system(xr_settings_dirty_system);
+}
+
+// spawned on the app (InitializeEvent), applied when one changes (an observer on Update)
+void xr_settings_events(ecs* world) {
+    zox_muter(prefab_app, InitializeEvent, event);
+    add_to_InitializeEvent(event, xr_settings);
+    zox_on_add(
+        xr_settings_on_dirty,
+        [in] core.ZoxName,
+        [none] settings.Setting,
+        [none] core.Update,
+    );
+}
 
 void zox_systems_xr_scale(ecs* world) {
-    // main thread: it spawns the setting
-    zox_system_1(
-        xr_settings_system,
-        zoxp_spawn,
-        [in] settings.LoadSettings,
-    );
-    zox_system(
-        xr_settings_dirty_system,
-        zoxp_update,
-        [in] settings.SettingDirty,
-        [in] core.ZoxName,
-        [in] settings.Setting
-    );
+    // its settings: spawned on the app, applied when one changes (needs prefab_app)
+    add_hook_spawn_prefabs(xr_settings_events);
 }
