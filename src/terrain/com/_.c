@@ -11,6 +11,7 @@ zox_tag(BlockWood);
 zox_tag(BlockLeaves);      // a tree's canopy (vegetation/sys/chunks.c)
 zox_tag(BlockBed);         // 2 x 1 x 1 blocks (BlockSize), doc/plans/multi_block_vox.md
 zox_tag(BlockDoor);        // 1 x 2 x 1 blocks
+zox_tag(BlockLamp);        // a street lamp, 1 x 3 x 1 blocks, its head lights (towns/sys/walls.c)
 zox_tag(BlockFiller);      // the rest of a bed or door: solid, drawn by the base (items/fun/multi_block.c)
 zox_tag(BlockGlowStone);   // glows (BlockLight), on homes' roofs (towns/sys/walls.c)
 zox_tag(BlockSoil);
@@ -52,6 +53,7 @@ void zox_components_terrain(ecs *world) {
     zoxd_tag(BlockLeaves);
     zoxd_tag(BlockBed);
     zoxd_tag(BlockDoor);
+    zoxd_tag(BlockLamp);
     zoxd_tag(BlockFiller);
     zoxd_tag(BlockGlowStone);
     zoxd_tag(BlockSoil);

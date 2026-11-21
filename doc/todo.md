@@ -7,7 +7,7 @@
   ideas), [new/caves.md](new/caves.md) (caves design)
 
 ## Now (play test 2026-11-20)
-- houses: holes as windows (for now), doors as door blocks, a bed in each home
+- houses: holes as windows (for now)
 - a bed sets its sleeper's respawn point
 - realm clock, later: animations, the world (sky, doors), timers and particles onto the realm's time (doc/plans/realm_clock.md)
 - a log window in the game menu with the game log's old lines (game_log keeps none yet)
@@ -590,7 +590,6 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 	- destroy regions
 	- Region lods
 	- region town/mountain links
-	- spawn straight highways between region towns
 - Add lookouts around map - just big ole scary towers
 - Create a fullscreen ui scroll view, render textures, of spinning vox models
 	- each one will be a part of a population
@@ -601,22 +600,18 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 
 # Towns
 - play test: make towns feel more natural (less grid like)
-- 3 block tall lamps around towns (see street lamps below)
 - windows in homes, a transparent block that light passes through, only in some home types
-- spawn doors and beds in houses
 - Towns: an age level, older towns are flatter (heights), bigger, with more buildings
 - Homes: tilted foundations for poor npcs (homes stand level now)
 - Roads: they cut through a home in their way (the home wins), roads round homes, levelled with the ground
 - Homes: keep their door steps clear of neighbours (two homes close by, steps meet the other's levelled ground)
-- Highways between towns and regions
-- street lamps on the streets: 2-3 blocks tall vox models, round at the end (think hollow knight), firefly
-  particles (regular ones for now); needs multi block vox models first (doc/plans/multi_block_vox.md: one entity
-  at the base, filler blocks above, only the fillers cross chunks)
+- Highways: they stop at another town's walls when they cross one (marked only on ground no town holds), and climb
+  mountains column by column; route round towns and mountains, follow lakes' shores (only the sea is bridged)
+- street lamps: firefly particles round their heads (regular ones for now); a rounder model (think hollow knight)
 - Multi room homes: inner walls splitting a home into rooms, doors between them, rooms sized by the home
 - InTown for every character (in_town_system is players only now): town buffs, villagers knowing their town
 - Towns: Average out heights between chunk neighbors
 - Towns: Place Roads during Maps based on Roads Children of Towns
-- Towns: Spawn Highways between towns
 - Towns: Set Block Links inside Homes, for Home Floor, Roof, Wall, Door blocks
 - Make homes built with different materials / Blocks
 - Make Road from middle of town to gate
@@ -635,7 +630,7 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 	- play test doors (right click opens and closes them, vodes/doors): the swing's direction (to its back, away from
 	  whoever placed it), the creak and the shut, walking through; it's passable as soon as it starts opening and
 	  solid as soon as it starts closing (someone in the doorway is pushed out)
-	- npcs open doors, and towns' homes get doors (spawn doors and beds in houses, Towns)
+	- npcs open doors
 - Blocks: refactor them onto the realm, biomes pick theirs by random rules (still variety in dirts and others)
 - sway grass more when you walk through, and better foliage pass through sounds
 - new block destruction animations 

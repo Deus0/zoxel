@@ -1,4 +1,4 @@
-// Furniture models, bigger than a block: a model's cube is two blocks a side (doc/plans/multi_block_vox.md)
+// Furniture models, bigger than a block: a model's cube is two blocks a side (a lamp's four) (doc/plans/multi_block_vox.md)
 //  - a block is half the model's length, u is a 16th of a block: shapes are in u, so any depth works
 //  - both sit in the cube's low corner: the base block is x, y, z from 0, the model grows from it
 
@@ -18,6 +18,9 @@ static inline void furniture_fill(VoxelNode* node, byte depth, int3 min, int3 ma
 #define furniture_pillow 4
 #define furniture_blanket 5
 #define furniture_metal 6
+#define lamp_metal_dark 1
+#define lamp_metal 2
+#define lamp_glow 3
 
 // a bed, 2 x 1 x 1 blocks, lying along x: the pillow end is the base block
 void build_vox_bed(VoxelNode* node, byte depth) {
@@ -57,4 +60,21 @@ void build_vox_door(VoxelNode* node, byte depth) {
     // a handle through it, a block up
     furniture_fill(node, depth, (int3) { block - 4 * u, block - 5 * u, z0 - 2 * u }, (int3) { block - 2 * u, block - 3 * u, z1 + 2 * u },
         furniture_metal);
+}
+
+// a street lamp, 1 x 3 x 1 blocks, in a cube four blocks a side: a plinth, a pole, a lantern of glowing glass, a cap
+void build_vox_lamp(VoxelNode* node, byte depth) {
+    const int block = octree_size(depth) / 4, u = block / 16 ? block / 16 : 1;
+    furniture_fill(node, depth, (int3) { 4 * u, 0, 4 * u }, (int3) { 12 * u, 2 * u, 12 * u }, lamp_metal_dark);
+    furniture_fill(node, depth, (int3) { 6 * u, 2 * u, 6 * u }, (int3) { 10 * u, 4 * u, 10 * u }, lamp_metal);
+    furniture_fill(node, depth, (int3) { 7 * u, 4 * u, 7 * u }, (int3) { 9 * u, 40 * u, 9 * u }, lamp_metal_dark);
+    // the lantern: a plate, glass with a post at each corner, a cap and a knob
+    furniture_fill(node, depth, (int3) { 5 * u, 40 * u, 5 * u }, (int3) { 11 * u, 41 * u, 11 * u }, lamp_metal);
+    furniture_fill(node, depth, (int3) { 5 * u, 41 * u, 5 * u }, (int3) { 11 * u, 46 * u, 11 * u }, lamp_glow);
+    for (byte i = 0; i < 4; i++) {
+        const int x = i & 1 ? 10 * u : 5 * u, z = i & 2 ? 10 * u : 5 * u;
+        furniture_fill(node, depth, (int3) { x, 41 * u, z }, (int3) { x + u, 46 * u, z + u }, lamp_metal_dark);
+    }
+    furniture_fill(node, depth, (int3) { 4 * u, 46 * u, 4 * u }, (int3) { 12 * u, 47 * u, 12 * u }, lamp_metal_dark);
+    furniture_fill(node, depth, (int3) { 6 * u, 47 * u, 6 * u }, (int3) { 10 * u, 48 * u, 10 * u }, lamp_metal_dark);
 }

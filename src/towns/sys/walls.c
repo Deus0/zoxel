@@ -1,4 +1,8 @@
-// Town walls, gates and roads from the town map, homes from fun/home.c
+#define town_glows_max 128      // glow stones and street lamp heads lit in a chunk
+
+// Town walls, gates, roads, street lamps and highways from the town map, homes from fun/home.c
+//  - a street lamp: its base on the ground, two fillers over it (items/fun/multi_block.c), its head lights the street
+//  - highways paved on the ground, or at the sea's top over water (a bridge)
 // NOTE: Uses Height Map + Town Map to spawn Town Walls in chunks
 void town_walls_system(iter* it) {
     zox_sys_on_begin();
@@ -11,12 +15,15 @@ void town_walls_system(iter* it) {
     zox_sys_in(ChunkPosition);
     zox_sys_out(GenerateChunk);
     zox_sys_out(VoxelNode);
+    zox_sys_out(BlockDatas);
+    const int sea = terrain_sea_height * render_distance_y;
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(NodeDepth, depth);
         zox_sys_i(ChunkPosition, cposition);
         zox_sys_o(GenerateChunk, generate);
         zox_sys_o(VoxelNode, voctree);
+        BlockDatas* datas = BlockDatas_ ? &BlockDatas_[i] : NULL;
         if (generate->value != zox_generate_terrain_towns) {
             continue;
         }
@@ -77,6 +84,14 @@ void town_walls_system(iter* it) {
         const entity glow = zox_get_child_by_id(world, realm, zox_id(BlockGlowStone));
         const byte glow_id = zox_valid(glow) ? zox_getv(glow, BlockIndex) : 0;
         const byte glow_light = zox_valid(glow) ? zox_getv(glow, BlockLight) : 0;
+        // furniture and street lamps, sized blocks (items/fun/multi_block.c), only at full detail with block data
+        const entity door = zox_get_child_by_id(world, realm, zox_id(BlockDoor));
+        const entity bed = zox_get_child_by_id(world, realm, zox_id(BlockBed));
+        const entity filler = zox_get_child_by_id(world, realm, zox_id(BlockFiller));
+        const entity lamp = zox_get_child_by_id(world, realm, zox_id(BlockLamp));
+        byte lamp_id = datas && zox_valid(lamp) ? zox_getv(lamp, BlockIndex) : 0;
+        const byte lamp_light = zox_valid(lamp) ? zox_getv(lamp, BlockLight) : 0;
+        const byte3 lamp_head = zox_valid(lamp) && zox_has(lamp, BlockLightOffset) ? zox_getv(lamp, BlockLightOffset) : byte3_zero;
         byte length = octree_size(build_depth);
         int3 chunk_block_position = chunk_position_to_block_position(cposition->value, terrain_depth);
         int2 map_size = int2_single(length); // max_chunk_length);
@@ -86,7 +101,8 @@ void town_walls_system(iter* it) {
         const byte homes_count = town_homes_in(world, zox_get_link(world, tunk, RegionLink),
             (int2) { chunk_block_position.x, chunk_block_position.z },
             (int2) { chunk_block_position.x + length * hmultiplier - 1, chunk_block_position.z + length * hmultiplier - 1 }, homes);
-        byte3 glow_positions[town_homes_max];
+        byte3 glow_positions[town_glows_max];
+        byte glow_lights[town_glows_max];
         byte glows = 0;
         // int chunk_position_y = chunk_block_position.y;
         byte gate_height = 6; // rand_range(4, 8);
@@ -106,7 +122,12 @@ void town_walls_system(iter* it) {
         entity biome = 0;
         byte road_id = 0;
         byte wood_id = bricks_id;
-        HomeBlocks blocks = { .wall = bricks_id, .floor = bricks_id, .roof = wood_id, .glow = glow_id };
+        HomeBlocks blocks = { .wall = bricks_id, .floor = bricks_id, .roof = wood_id, .glow = glow_id,
+            .door = zox_valid(door) ? zox_getv(door, BlockIndex) : 0, .bed = zox_valid(bed) ? zox_getv(bed, BlockIndex) : 0,
+            .filler = zox_valid(filler) ? zox_getv(filler, BlockIndex) : 0 };
+        if (!blocks.filler) {
+            lamp_id = 0;
+        }
         byte3 position;
         for (position.x = 0; position.x < length; position.x++) {
             for (position.z = 0; position.z < length; position.z++) {
@@ -156,6 +177,25 @@ void town_walls_system(iter* it) {
                 if (town_value == zox_town_type_road) {
                     // its roads and square paved, the rest of its ground left as it is
                     town_set_block(voctree, build_depth, &position, height, chunk_y, hmultiplier, length, road_id);
+                } else if (town_value == zox_town_type_highway) {
+                    town_set_block(voctree, build_depth, &position, int_max(height, sea), chunk_y, hmultiplier, length, road_id);
+                } else if (town_value == zox_town_type_lamp) {
+                    // its base and fillers, each with its block data (its direction, their offsets down to it)
+                    if (!lamp_id || hmultiplier != 1) {
+                        continue;
+                    }
+                    for (int h = 0; h < 3; h++) {
+                        if (town_set_block(voctree, build_depth, &position, height + 1 + h, chunk_y, hmultiplier, length, h ? blocks.filler : lamp_id)) {
+                            set_block_data(datas, position, h ? block_offset_encode((int3) { 0, -h, 0 }) : 1);
+                        }
+                    }
+                    // its head lights the street round it (BlockLightOffset, unturned: its direction is 0)
+                    const int head = height + 1 + lamp_head.y - chunk_y;
+                    const int head_x = position.x + lamp_head.x, head_z = position.z + lamp_head.z;
+                    if (lamp_light && head >= 0 && head < length && head_x < length && head_z < length && glows < town_glows_max) {
+                        glow_positions[glows] = (byte3) { head_x, head, head_z };
+                        glow_lights[glows++] = lamp_light;
+                    }
                 } else if (town_value == zox_town_type_wall || town_value == zox_town_type_wall_edge || town_value == zox_town_type_wall_spike) {
                     // walls, their edges a block higher, spikes two
                     const int top = wall_height + (town_value == zox_town_type_wall_edge) + (town_value == zox_town_type_wall_spike) * 2;
@@ -175,22 +215,27 @@ void town_walls_system(iter* it) {
             Building building;
             int3 glow_block;
             build_home(&building, &homes[k], &blocks, &glow_block);
-            build_in_chunk(voctree, build_depth, chunk_block_position, hmultiplier, length, &building);
+            build_in_chunk(voctree, datas, build_depth, chunk_block_position, hmultiplier, length, &building);
             const int3 glow_local = {
                 floor_div(glow_block.x - chunk_block_position.x, hmultiplier),
                 floor_div(glow_block.y - chunk_block_position.y, hmultiplier),
                 floor_div(glow_block.z - chunk_block_position.z, hmultiplier)
             };
-            if (glow_id && glows < town_homes_max && glow_local.x >= 0 && glow_local.y >= 0 && glow_local.z >= 0 &&
+            if (glow_id && glows < town_glows_max && glow_local.x >= 0 && glow_local.y >= 0 && glow_local.z >= 0 &&
                 glow_local.x < length && glow_local.y < length && glow_local.z < length) {
-                glow_positions[glows++] = int3_to_byte3(glow_local);
+                glow_positions[glows] = int3_to_byte3(glow_local);
+                glow_lights[glows++] = glow_light;
             }
         }
         zox_octree_lock_end(write_lock);
         // glow stones light the air on their sides (solid, the flood skips their own voxel), on the light queue of the
         //  chunk each side is in (a glow stone on a chunk's edge lights into its neighbour, as the flood does)
-        const ChunkNeighbors* glow_neighbors = glows && glow_light ? zox_get(e, ChunkNeighbors) : NULL;
-        for (byte g = 0; g < glows && glow_light; g++) {
+        const ChunkNeighbors* glow_neighbors = glows ? zox_get(e, ChunkNeighbors) : NULL;
+        for (byte g = 0; g < glows; g++) {
+            const byte light = glow_lights[g];
+            if (!light) {
+                continue;
+            }
             for (byte d = 0; d < 6; d++) {
                 const sbyte3 o = neighbor_offsets[d];
                 int3 p = { glow_positions[g].x + o.x, glow_positions[g].y + o.y, glow_positions[g].z + o.z };
@@ -204,7 +249,7 @@ void town_walls_system(iter* it) {
                 spin_lock(&light_queue->lock);
                 a_LightQueue(light_queue, (LightUpdate) {
                     .pos = int3_to_byte3(p), .depth = build_depth, .distance = light_propogation_distance,
-                    .light = glow_light > light_air_decay ? glow_light - light_air_decay : darklight });
+                    .light = light > light_air_decay ? light - light_air_decay : darklight });
                 spin_unlock(&light_queue->lock);
             }
         }

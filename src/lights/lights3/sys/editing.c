@@ -1,3 +1,34 @@
+// a light or dark update at a position from this chunk, in it or the chunk over it (a lamp's head), locked (an offset
+//  sideways out of the chunk is skipped):
+//  other chunks' floods write these queues too
+static inline void emitter_queue_light(LightQueue* own, LightQueue* up, int3 p, int length, LightUpdate update) {
+    LightQueue* queue = p.y < length ? own : up;
+    if (!queue || p.x < 0 || p.y < 0 || p.z < 0 || p.x >= length || p.y >= length * 2 || p.z >= length) {
+        return;
+    }
+    update.pos = (byte3) { p.x, p.y % length, p.z };
+    spin_lock(&queue->lock);
+    a_LightQueue(queue, update);
+    spin_unlock(&queue->lock);
+}
+
+static inline void emitter_queue_dark(DarkQueue* own, DarkQueue* up, int3 p, int length, DarkUpdate update) {
+    DarkQueue* queue = p.y < length ? own : up;
+    if (!queue || p.x < 0 || p.y < 0 || p.z < 0 || p.x >= length || p.y >= length * 2 || p.z >= length) {
+        return;
+    }
+    update.pos = (byte3) { p.x, p.y % length, p.z };
+    spin_lock(&queue->lock);
+    a_DarkQueue(queue, update);
+    spin_unlock(&queue->lock);
+}
+
+// where an emitter gives off its light: its voxel plus its offset, turned to its direction (its block data)
+static inline int3 emitter_position(byte3 position, byte3 offset, byte data) {
+    const int3 turned = block_direction_offset(block_data_direction(data), byte3_to_int3(offset));
+    return (int3) { position.x + turned.x, position.y + turned.y, position.z + turned.z };
+}
+
 //  Using the VoxelUpdateQueue, we add to the sunbeams and propogation
 // for now: check above voxel, if sun, create beam
 // TODO: Convert local position to terrain position (positionv)
@@ -22,7 +53,9 @@ void voxel_light_system(iter* it) {
     // light each block gives off, a removed emitter darkens what it lit, a placed one lights around it
     entity emission_realm = 0;
     byte emission[zox_light_solidity_length];
+    byte3 emission_offset[zox_light_solidity_length];
     memset(emission, 0, zox_light_solidity_length);
+    memset(emission_offset, 0, sizeof(emission_offset));
     // liquids dim the sunbeams through them, water placed or drained relights the beam under it
     entity liquids_realm = 0;
     byte liquids[zox_light_solidity_length];
@@ -47,13 +80,18 @@ void voxel_light_system(iter* it) {
             zox_get_link(world, e, BlockManagerLink),
             &realm,
             solidity);
-        update_light_emission(world, zox_get_link(world, e, BlockManagerLink), &emission_realm, emission);
+        update_light_emission(world, zox_get_link(world, e, BlockManagerLink), &emission_realm, emission, emission_offset);
         update_light_liquids(world, zox_get_link(world, e, BlockManagerLink), &liquids_realm, liquids);
         const LightNode* nnodesl[6];
         fetch_neightbor_light_nodes(world, neighbors, nnodesl);
         const VoxelNode* nnodesv[6];
         fetch_neightbor_voxel_nodes(world, neighbors, nnodesv);
         const VoxelNode* root_vnode = zox_get(e, VoxelNode);
+        const int length = octree_size(depth->value);
+        // the chunk over it, for a tall emitter's top there
+        const entity up_chunk = neighbors->value[direction_up];
+        LightQueue* up_light_queue = zox_valid(up_chunk) && zox_has(up_chunk, LightQueue) ? zox_getm(up_chunk, LightQueue) : NULL;
+        DarkQueue* up_dark_queue = zox_valid(up_chunk) && zox_has(up_chunk, DarkQueue) ? zox_getm(up_chunk, DarkQueue) : NULL;
         for (size_t j = 0; j < input_queue->count; j++) {
             VoxelNodeUpdate update = input_queue->ptr[j];
             // once an edit, after it's set (old_value known): each was handled every frame it queued, before it was
@@ -65,11 +103,12 @@ void voxel_light_system(iter* it) {
             if (!update.value) {
                 // a removed emitter (glow stone): darkness out from it at its light, the dark pass then refills from
                 //  the light left, not its own (its neighbours' light came from it, a flood from them kept it lit)
+                //  - from where it gave its light off (BlockLightOffset: a street lamp's head)
                 const byte emitted = update.old_value ? emission[update.old_value - 1] : 0;
                 if (emitted) {
-                    a_DarkQueue(dark_queue, (DarkUpdate) {
+                    const int3 at = emitter_position(update.position, emission_offset[update.old_value - 1], update.old_data);
+                    emitter_queue_dark(dark_queue, up_dark_queue, at, length, (DarkUpdate) {
                         .type = zox_light_type_flood,
-                        .pos = update.position,
                         .depth = depth->value,
                         .light = emitted,
                         .distance = darklight_propogation_distance
@@ -138,16 +177,14 @@ void voxel_light_system(iter* it) {
             else { // if (update.value) {
                 // a placed emitter lights the air on its sides a step down (solid, the flood skips its own voxel), a step
                 //  down so a removal's darkness (at its light) clears them, equal light counts as another source
+                //  - from its offset (BlockLightOffset: a street lamp's head, a filler over its base)
                 if (emission[update.value - 1]) {
-                    const int length = octree_size(depth->value);
+                    const int3 at = emitter_position(update.position, emission_offset[update.value - 1], update.data);
                     for (byte d = 0; d < 6; d++) {
                         const sbyte3 o = neighbor_offsets[d];
-                        const int3 p = { update.position.x + o.x, update.position.y + o.y, update.position.z + o.z };
-                        if (p.x < 0 || p.y < 0 || p.z < 0 || p.x >= length || p.y >= length || p.z >= length) {
-                            continue;
-                        }
-                        a_LightQueue(light_queue, (LightUpdate) {
-                            .pos = int3_to_byte3(p), .depth = depth->value,
+                        const int3 p = { at.x + o.x, at.y + o.y, at.z + o.z };
+                        emitter_queue_light(light_queue, up_light_queue, p, length, (LightUpdate) {
+                            .depth = depth->value,
                             .light = emission[update.value - 1] > light_air_decay ? emission[update.value - 1] - light_air_decay : darklight,
                             .distance = light_propogation_distance });
                     }

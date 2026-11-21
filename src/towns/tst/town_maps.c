@@ -501,15 +501,26 @@ void zox_tst_block_table_check(ecs* world) {
     free(path);
 }
 
+// a realm's block with a tag, its voxel value, 0 if none
+static inline int zox_tst_block_id(ecs* world, entity realm, entity tag) {
+    const entity block = zox_get_child_by_id(world, realm, tag);
+    return zox_valid(block) ? zox_getv(block, BlockIndex) : 0;
+}
+
 // tst: home_foundations, homes stand level on their ground (towns/fun/home.c): the ground under them levelled to
 //  their floor (the terrain at their middle), steps a block at a time from their doors
-//  - each home in full detail chunks (near the player): inside, its floor block is solid and the room over it air
+//  - each home in full detail chunks (near the player): inside, its floor block is solid and the room over it air or
+//    furniture (its beds)
 //  - in front of its door, the ground's top steps at most a block a column (until something built stands there)
-//  - its doorway open, facing any way (HomeFacing, built in its own frame, fun/build.c)
+//  - its doorway open or holding its door, facing any way (HomeFacing, built in its own frame, fun/build.c)
 //  - run: bash bsh/tst.sh home_foundations
 void zox_tst_home_foundations_check(ecs* world) {
     const entity character = zox_tst_player_character(world);
     const entity terrain = zox_get_link(world, character, TerrainLink);
+    const entity realm = zox_get_link(world, character, RealmLink);
+    const int door_id = zox_tst_block_id(world, realm, zox_id(BlockDoor));
+    const int bed_id = zox_tst_block_id(world, realm, zox_id(BlockBed));
+    const int filler_id = zox_tst_block_id(world, realm, zox_id(BlockFiller));
     const float3 player = float3_divide_float(zox_getv(character, Position3D), zox_getv(terrain, BlockScale));
     const entity region = zox_tst_player_region(world);
     entity towns[zox_children_capacity];
@@ -532,13 +543,15 @@ void zox_tst_home_foundations_check(ecs* world) {
             for (int x = h.center.x - h.half.x + 1; x < h.center.x + h.half.x; x++) {
                 for (int z = h.center.y - h.half.y + 1; z < h.center.y + h.half.y; z++) {
                     floors_wrong += terrain_voxel_at(world, terrain, (int3) { x, floor + 1, z }) == 0;
-                    rooms_filled += terrain_voxel_at(world, terrain, (int3) { x, floor + 2, z }) > 0;
+                    const int room = terrain_voxel_at(world, terrain, (int3) { x, floor + 2, z });
+                    rooms_filled += room > 0 && room != bed_id && room != filler_id;
                 }
             }
             // its doorway open, its steps from its floor block (floor + 1) out of it, the way it faces (its own frame)
             const int2 half = home_half_local(&h);
             const int2 door = int2_add(h.center, build_turn(h.facing, 0, half.y));
-            doors_shut += terrain_voxel_at(world, terrain, (int3) { door.x, floor + 2, door.y }) > 0;
+            const int doorway = terrain_voxel_at(world, terrain, (int3) { door.x, floor + 2, door.y });
+            doors_shut += doorway > 0 && doorway != door_id;
             for (int lx = -home_door_width / 2; lx <= home_door_width / 2; lx++) {
                 int last = floor + 1;
                 for (int d = 1; d <= home_steps; d++) {

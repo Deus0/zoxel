@@ -53,8 +53,8 @@ Nothing in drawing ties the model to its block's cube: the instance is a transfo
 2. Filler block: collides, no faces, no entity; a character can't walk through the top, the mesh has no faces
    for it (tst like terrain_collisions).
 3. Break and place rules, with the filler in the chunk above (a base at the top row of a chunk).
-4. The lamp: model (B's lane: the vox art, round ended), a light emitting head, towns place them along roads
-   (towns already place homes and roads into tunks).
+4. The lamp: done 2026-11-21 (BlockLamp, 1 x 3 x 1, models/gen/furniture.c build_vox_lamp), towns place them
+   beside roads, their head's light seeded at generation (towns/sys/walls.c). Its model cube is 4 blocks a side.
 5. Fireflies (particles, B's lane).
 
 ## Answered by the user (2026-11-15)

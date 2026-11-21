@@ -296,9 +296,14 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
             }
             if (zox_valid(block_spawn) && zox_has(block_spawn, Position3D)) {
                 // NOTE: Minivoxes are centred, so get cornered position, we offset
-                //  - a model bigger than a block (a bed, BlockSize) spans that many blocks a side from its base's corner
+                //  - a model bigger than a block (a bed, BlockSize) is a cube from its base's corner, its size up to a power
+                //    of two blocks a side (a lamp three tall is in a cube of four)
                 const int3 model_size = zox_has(hit_block, BlockSize) ? zox_getv(hit_block, BlockSize) : (int3) { 1, 1, 1 };
-                const float model_blocks = (float) int_max(model_size.x, int_max(model_size.y, model_size.z));
+                int model_cube = 1;
+                while (model_cube < int_max(model_size.x, int_max(model_size.y, model_size.z))) {
+                    model_cube <<= 1;
+                }
+                const float model_blocks = (float) model_cube;
                 float3 block_position = zox_getv(block_spawn, Position3D);
                 float3 ray_point = float3_add(ray_origin, float3_scale(ray_normal, ray_distancef));
                 float3_subtract_float3_p(&block_position, float3_single(0.5f * chunk_scalev * model_blocks));

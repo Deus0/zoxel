@@ -1,6 +1,16 @@
 # Done
 
 ## 2026-11-21
+-x Towns have street lamps, homes doors and beds, regions highways. The lamp is a 1 x 3 x 1 block (vox_type_lamp, a
+  4 block model cube, BlockLamp) beside town roads every 16 blocks and at the square's corners, its head lighting the
+  street. Homes' doorways are a block wide and two tall with a door in them, a bed in the back corner (two in wide
+  homes), written with their block data like placed ones (towns/fun/build.c pieces). Highways join each region's
+  towns gate to gate (nearest first) and run to one crossing on each border, from the terrain's seed and the border,
+  so neighbours meet; 5 wide, paved at the sea's top over water. The block ray sized a 3 tall model's cube as 3
+  blocks, now the power of two (4). tst town_furniture, town_build's new checks
+-x A placed street lamp lights from its head, not its base, and a removed one darkens from there: a tall emitter's
+  light comes from the block's BlockLightOffset (byte3, turned with it; the lamp's 0 2 0, lights3 update_light_emission), the chunk over it when its head is
+  there. tst lamp_light (lit from the base, over its head was three steps of decay down)
 -x The core Dirty is an event: non fragmenting, observers, a cleanup observer removes it; Refresh / Update are
   the fragmenting pair for systems (texts, grids, the settings' save). The stat and item Dirty writes are back
   (events uis can use), quests react on Dirty alone (the Update twin gone). perf_stream and perf_fly no slower.

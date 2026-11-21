@@ -171,6 +171,21 @@ void blocks_realm_spawn_system(iter* it) {
                 link_hit_sound(world, e3, e, &hit_sound_water);
             }
         }
+        // the street lamp: 1 x 3 x 1 blocks, in towns beside roads (towns/sys/walls.c), its light seeded at its head
+        //  there; last, the blocks before it keep their indices
+        {
+            lint block_seed = seed->value + (seed_offset+=seed_shift);
+            const color metal_color = color_rgb_to_color(seed_to_color_rgb_range(block_seed,
+                (float2) { 0, 360 }, (float2) { 5, 20 }, (float2) { 12, 22 }));
+            const byte max_depth = block_depth_limits.y + 2;
+            entity model = spawn_model_lods_generated(world, e, "street lamp", vox_type_lamp, metal_color, max_depth, block_seed);
+            entity e2 = spawn_realm_block_model(world, e, block_seed, "street lamp", metal_color, 1, max_depth, model, model, direction_front);
+            zox_setv(e2, BlockSize, ((int3) { 1, 3, 1 }));
+            zox_setv(e2, BlockLight, 220);
+            zox_setv(e2, BlockLightOffset, ((byte3) { 0, 2, 0 }));
+            zox_add(e2, BlockLamp);
+            link_hit_sound(world, e2, e, &hit_sound_stone);
+        }
         zox_add(e, BlocksDirty);
         if (dbg_log) {
             zox_log("Realm [%s] Spawning [Blocks]", zox_get_name(e));

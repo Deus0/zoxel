@@ -31,17 +31,20 @@ static inline void update_light_solidity(
 }
 
 // Caches the light each block gives off (BlockLight, 0 none), indexed by voxel - 1, like solidity
+//  - and where from, blocks from its voxel (BlockLightOffset: a street lamp's head), its voxel for most
 static inline void update_light_emission(
     ecs* world,
     entity manager,
     entity* cached_manager,
-    byte* emission)
+    byte* emission,
+    byte3* emission_offset)
 {
     if (*cached_manager == manager) {
         return;
     }
     *cached_manager = manager;
     memset(emission, 0, zox_light_solidity_length);
+    memset(emission_offset, 0, zox_light_solidity_length * sizeof(byte3));
     if (!zox_valid(manager) || !zox_has(manager, BlockLinks)) {
         return;
     }
@@ -50,6 +53,7 @@ static inline void update_light_emission(
     for (int j = 0; j < length; j++) {
         const entity block = blocks->value[j];
         emission[j] = zox_valid(block) && zox_has(block, BlockLight) ? zox_getv(block, BlockLight) : 0;
+        emission_offset[j] = emission[j] && zox_has(block, BlockLightOffset) ? zox_getv(block, BlockLightOffset) : byte3_zero;
     }
 }
 

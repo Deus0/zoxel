@@ -25,6 +25,7 @@ void zox_systems_towns(ecs* world) {
         [in] chunks3.ChunkPosition,
         [out] chunks.GenerateChunk,
         [out] chunks3.VoxelNode,
+        [out] ?chunks3.BlockDatas,
         [none] terrains.TerrainChunk
     );
     zox_system_1(

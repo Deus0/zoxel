@@ -36,11 +36,11 @@ static inline int2 region_tunk_global(const RegionTunk* t, int2 position) {
     };
 }
 
-// the map columns (from, to, inclusive) whose blocks are in center - half to center + half, 0 if none
-static inline byte region_tunk_box(const RegionTunk* t, int2 center, int2 half, int2* from, int2* to) {
+// the map columns (from, to, inclusive) whose blocks are in low to high (inclusive), 0 if none
+static inline byte region_tunk_range(const RegionTunk* t, int2 low_block, int2 high_block, int2* from, int2* to) {
     const int dd = t->depth_difference;
-    const int2 low = (int2) { center.x - half.x - t->global_start.x, center.y - half.y - t->global_start.y };
-    const int2 high = (int2) { center.x + half.x - t->global_start.x, center.y + half.y - t->global_start.y };
+    const int2 low = (int2) { low_block.x - t->global_start.x, low_block.y - t->global_start.y };
+    const int2 high = (int2) { high_block.x - t->global_start.x, high_block.y - t->global_start.y };
     // first column at or after low, last at or before high
     from->x = low.x <= 0 ? 0 : (low.x + dd - 1) / dd;
     from->y = low.y <= 0 ? 0 : (low.y + dd - 1) / dd;
@@ -49,4 +49,9 @@ static inline byte region_tunk_box(const RegionTunk* t, int2 center, int2 half, 
     if (to->x > t->length - 1) to->x = t->length - 1;
     if (to->y > t->length - 1) to->y = t->length - 1;
     return from->x <= to->x && from->y <= to->y;
+}
+
+// the map columns whose blocks are in center - half to center + half
+static inline byte region_tunk_box(const RegionTunk* t, int2 center, int2 half, int2* from, int2* to) {
+    return region_tunk_range(t, int2_sub(center, half), int2_add(center, half), from, to);
 }

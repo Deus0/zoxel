@@ -11,3 +11,4 @@
 // two blocks a side, models/gen/furniture.c (doc/plans/multi_block_vox.md)
 #define vox_type_bed 10
 #define vox_type_door 11
+#define vox_type_lamp 12    // four blocks a side, a street lamp three tall

@@ -3,6 +3,9 @@
 //  - its square: paved in its middle, its homes placed round it (homes_spawn_system)
 //  - its roads: from each home's door to the square, and from the square out to the gate, each two straight legs
 //    (out from the door or gate first, then across), a few blocks wide
+//  - its street lamps: at its square's corners, and beside its roads (a block past their +x or +z edge) every
+//    town_lamp_spacing blocks, on the world's grid so roads side by side share them
+#define town_lamp_spacing 16
 #define town_gate_width 4
 #define town_square_half 4
 #define town_road_half 1
@@ -63,6 +66,26 @@ static inline byte town_is_road(const TownRoads* r, int2 g) {
         const TownRoad* road = &r->roads[i];
         if (g.x >= int_min(road->a.x, road->b.x) - town_road_half && g.x <= int_max(road->a.x, road->b.x) + town_road_half &&
             g.y >= int_min(road->a.y, road->b.y) - town_road_half && g.y <= int_max(road->a.y, road->b.y) + town_road_half) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// a street lamp's column (on its zone, not a road: the caller checks roads first)
+static inline byte town_is_lamp(const TownRoads* r, int2 g) {
+    const int corner = town_square_half + 1, side = town_road_half + 1;
+    if (abs(g.x - r->square.x) == corner && abs(g.y - r->square.y) == corner) {
+        return 1;
+    }
+    for (byte i = 0; i < r->count; i++) {
+        const TownRoad* road = &r->roads[i];
+        const byte along_x = road->a.y == road->b.y;
+        const int across = along_x ? g.y - road->a.y : g.x - road->a.x;
+        const int along = along_x ? g.x : g.y;
+        const int from = along_x ? int_min(road->a.x, road->b.x) : int_min(road->a.y, road->b.y);
+        const int to = along_x ? int_max(road->a.x, road->b.x) : int_max(road->a.y, road->b.y);
+        if (across == side && along >= from && along <= to && floor_div(along, town_lamp_spacing) * town_lamp_spacing == along) {
             return 1;
         }
     }

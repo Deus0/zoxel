@@ -1,4 +1,5 @@
-// Generates furniture models: a bed (vox_type_bed) and a door (vox_type_door), models/gen/furniture.c
+// Generates furniture models: a bed (vox_type_bed), a door (vox_type_door) and a street lamp (vox_type_lamp),
+//  models/gen/furniture.c
 //  - colours from its seed: its fill is the wood, a darker wood, a pale sheet and pillow, a blanket in the wood's
 //      complement, a gray metal
 void furniture_model_generation_system(iter* it) {
@@ -22,8 +23,24 @@ void furniture_model_generation_system(iter* it) {
         zox_sys_o(NodeDepth, depth);
         zox_sys_o(ColorRGBs, colors);
         if (generate->value != zox_generate_model_run ||
-            (gentype->value != vox_type_bed && gentype->value != vox_type_door))
+            (gentype->value != vox_type_bed && gentype->value != vox_type_door && gentype->value != vox_type_lamp))
         {
+            continue;
+        }
+        if (gentype->value == vox_type_lamp) {
+            // a lamp: its fill the dark metal, a lighter one, a warm glass
+            color_rgb metal = color_to_color_rgb(fill->value);
+            color_rgb_multiply_float(&metal, 1.6f);
+            resize_ColorRGBs(colors, 0);
+            add_to_ColorRGBs(colors, color_to_color_rgb(fill->value));
+            add_to_ColorRGBs(colors, metal);
+            add_to_ColorRGBs(colors, ((color_rgb) { 255, 226, 150 }));
+            spinlock* lamp_lock = zox_octree_lock(world, e);
+            zox_octree_lock_begin(lamp_lock);
+            build_vox_lamp(node, depth->value);
+            zox_octree_lock_end(lamp_lock);
+            generate->value = zox_has(e, BakeModel) ? zox_generate_model_bake : zox_generate_model_end;
+            zox_add(e, VoxelNodeDirty);
             continue;
         }
         zox_srand(seed->value);

@@ -6,8 +6,11 @@
 //    its front
 //  - its roof: flat, or peaked (rising a block a column in from its long sides to a ridge, gable walls at its ends),
 //    in its biome's wood, a glow stone set into its middle (lights inside, shows outside)
+//  - a door in its doorway (a block wide, two tall), a bed in its back corner, a second in the other for a wide home
+//    (pieces, fun/build.c: written with their block data like a placed one, items/fun/multi_block.c)
 #define town_homes_max 64
-#define home_door_width 2
+#define home_door_width 2   // its steps and road, its doorway is a block wide
+#define home_two_beds 4     // its half width (across) from which it has two beds
 #define home_steps 6        // columns in front of its door stepping to the ground
 
 typedef struct {
@@ -24,6 +27,9 @@ typedef struct {
     byte floor;
     byte roof;      // its biome's wood
     byte glow;      // a glow stone in the roof, 0 for none
+    byte door;      // its door, beds and their fillers (BlockDoor, BlockBed, BlockFiller), 0 for none
+    byte bed;
+    byte filler;
 } HomeBlocks;
 
 static inline TownHome town_home(ecs* world, entity home) {
@@ -98,8 +104,14 @@ static inline void build_home(Building* b, const TownHome* h, const HomeBlocks* 
     build_box(b, (int3) { -x, 2, z }, (int3) { x, top - 1, z }, blocks->wall);
     build_box(b, (int3) { -x, 2, -z }, (int3) { -x, top - 1, z }, blocks->wall);
     build_box(b, (int3) { x, 2, -z }, (int3) { x, top - 1, z }, blocks->wall);
-    // its doorway, in the middle of its front, a lintel over it
-    build_box(b, (int3) { -home_door_width / 2, 2, z }, (int3) { home_door_width / 2, top - 2, z }, 0);
+    // its doorway, in the middle of its front, a door in it: its face out, it swings in (its model's +z, inwards)
+    build_box(b, (int3) { 0, 2, z }, (int3) { 0, 3, z }, 0);
+    build_multi(b, (int3) { 0, 2, z }, (int3) { 1, 2, 1 }, (int3) { 0, 0, 1 }, (int2) { 0, -1 }, blocks->door, blocks->filler);
+    // a bed along its back wall, its pillow (its base, the model's -x end) at a side wall
+    build_multi(b, (int3) { -x + 1, 2, -z + 1 }, (int3) { 2, 1, 1 }, (int3) { 1, 0, 0 }, (int2) { 1, 0 }, blocks->bed, blocks->filler);
+    if (x >= home_two_beds) {
+        build_multi(b, (int3) { x - 1, 2, -z + 1 }, (int3) { 2, 1, 1 }, (int3) { 1, 0, 0 }, (int2) { -1, 0 }, blocks->bed, blocks->filler);
+    }
     // its roof: flat, or layers rising to a ridge along its longer side, gables filling its ends
     int rise = 0;
     if (!h->style) {

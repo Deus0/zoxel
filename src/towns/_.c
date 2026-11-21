@@ -6,7 +6,8 @@
  *  Towns Have
  *      - Houses
  *      - Walls
- *      - Roads
+ *      - Roads, street lamps
+ *      - Highways between them (fun/highways.c)
  *      - NPCs
  *      - Respawn Points
  *
@@ -19,6 +20,7 @@ byte zox_disable_homes = 0;
 #include "fun/build.c"
 #include "fun/home.c"
 #include "fun/town.c"
+#include "fun/highways.c"
 #include "sys/_.c"
 #include "dbg/_.c"
 #ifdef zox_tests

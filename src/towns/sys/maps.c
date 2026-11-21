@@ -192,7 +192,8 @@ void town_map_system(iter* it) {
                     } else if (left_wall || right_wall || back_wall || front_wall) {
                         value = zox_town_type_wall;
                     } else {
-                        value = town_is_road(&roads, global_position) ? zox_town_type_road : zox_town_type_zone;
+                        value = town_is_road(&roads, global_position) ? zox_town_type_road :
+                            town_is_lamp(&roads, global_position) ? zox_town_type_lamp : zox_town_type_zone;
                     }
                     town_map->value[index] = value;
                     // NOTE: Towns remove all vegetation!
@@ -272,6 +273,27 @@ void town_map_system(iter* it) {
                         if (inside) {
                             town_map->value[index] = zox_town_type_home;
                         }
+                    }
+                }
+            }
+        }
+        // highways between its towns and out to its borders (fun/highways.c), on ground no town holds
+        Highways highways;
+        region_highways(world, region, &highways);
+        for (byte j = 0; j < highways.count; j++) {
+            int2 position, from, to;
+            if (!highway_leg_columns(&rt, &highways.legs[j], &from, &to)) {
+                continue;
+            }
+            for (position.x = from.x; position.x <= to.x; position.x++) {
+                for (position.y = from.y; position.y <= to.y; position.y++) {
+                    const int index = int2_array_index(position, map_size);
+                    if (town_map->value[index]) {
+                        continue;
+                    }
+                    town_map->value[index] = zox_town_type_highway;
+                    if (!zox_disable_vegetation) {
+                        vegetation_map->value[index] = 0;
                     }
                 }
             }
