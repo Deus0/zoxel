@@ -78,7 +78,7 @@ Each step sets the next by the character's `BodyDirty` and `GenerateCharacter`.
    - Each bone gets the slot's position and size, and is tagged by the part's tags (`Head`, `Shoulder`, `Hand`...).
    - Every mesh face takes its voxel's bone: the merge writes each voxel's part into `BoneNode`, and each part maps to
      its bone (`CombineBones`); vertices at a joint blend with the joined bone (`generate_weights`,
-     [done/skeletons.md](done/skeletons.md)).
+     [done/skeletons.md](../done/skeletons.md)).
    - Gear gets a bone too, as any slot holding an item does: a hat's bone is a child of the head's, so it moves
      with it. Clothes (anchor over) get none: their voxels take the bone of the part under them.
 
@@ -153,11 +153,11 @@ Each step sets the next by the character's `BodyDirty` and `GenerateCharacter`.
 
 ## Problems found
 
-Logged in [todo.md](todo.md) (Refactors). Fixed: the second hat never reached the inventory (an inverted check),
+Logged in [todo.md](../todo.md) (Refactors). Fixed: the second hat never reached the inventory (an inverted check),
 `slot_names` was out of order, and calves had the thighs' slot types.
 
 - Realm parts are found by `SlotType` ids (`find_slot_type`), against
-  [Entities, Not Ids](coding_standards.md#entities-not-ids).
+  [Entities, Not Ids](../engine/coding_standards.md#entities-not-ids).
   - Gear is found by tag now (`Hat`, `Shirt`).
   - Parts could be too, or the realm could link each part kind.
 - `character_body_spawn_system` is one long nested function. The slot tree could be data: a table of parent,

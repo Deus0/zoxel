@@ -3,16 +3,27 @@
 ## Notes
 - Bugs first, then by module (play test notes first in each). Done items move to [done.md](done.md).
 - Refactors are a section here (# Refactors). Also see:
-  [optimize.md](optimize.md) (performance), [new.md](new.md) (new modules and features), [future.md](future.md) (bigger
-  ideas), [new/caves.md](new/caves.md) (caves design)
+  [Optimizations](#optimizations) (performance), [New](#new) (new modules and features), [Delayed](#delayed), [Whimsy](#whimsy), [Future](#future) (bigger
+  ideas), [gdd/caves.md](gdd/caves.md) (caves design)
 
-## Now (play test 2026-11-20)
-- houses: holes as windows (for now)
+## Bugs
+- alt tabbing enough, input stops working when you get back
+	- particularly mouse raycasting
+- houses: add holes as windows (for now)
 - a bed sets its sleeper's respawn point
 - realm clock, later: animations, the world (sky, doors), timers and particles onto the realm's time (doc/plans/realm_clock.md)
 - a log window in the game menu with the game log's old lines (game_log keeps none yet)
-
-## Bugs
+- door open animation swings through nearby blocks
+- tentacles shouldnt pierce through terrain lol
+-x arm fix regressed arms, the shoulders need to rotate up, so arm reaches into the sky
+	-x the arm now is out the way, but it bends unnaturally to the side rather than feeling like a game hand
+- lod mesh seems - seem to have come back - moving around chunks, i see holes in the wall meshes, big ones arnt drawing faces next to small ones
+	- tested on vulkan
+-x The mirror no longer updating when the player mesh does, will need a test for that and a fix (when i update hat it stays the same as old hat), mirror ui
+- release builds have a ton of debug uis in them
+	- just finish the terminal ui
+	- it shoud have input field and log lines
+	- do a help and have all the ui stuff there, or /testui gizmos etc
 - full test run 2026-11-21 (320 tests): 5 failed, none from today's work
 	- end_game_cleanup fails every run: entities after ending a game differ from the round before (+8 to -208), also
 		on a7d8d3ff0 (before the day's work)
@@ -157,7 +168,7 @@
 Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [done.md](done.md).
 
 ## Tools out of the test harness (2026-11-22)
-- Move the looking tools into bsh/tools (doc/tools.md): body, poses, ik_poses, walk, punch, model, gpu_lights,
+- Move the looking tools into bsh/tools (doc/engine/tools.md): body, poses, ik_poses, walk, punch, model, gpu_lights,
   gpu_mesh, compare_backends, compare_meshing, sample_report, code_stats. Those that run a `*_views` test become a
   game flag doing the job and quitting (as `--maps`, towns/dbg/maps_dump.c), the test then calls the same functions
   and checks what they make (the views a test checks stay tests, the ones only looked at become tools)
@@ -210,7 +221,7 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 - Activated block states (a door open, later redstone power) to an activation octree a chunk, out of BlockDatas,
   which keeps data that doesn't change (directions, filler offsets): doc/tech/blocks.md "Planned"
 - Body parts by entities, not SlotType ids: realm parts found by find_slot_type, gear is by tag now (Hat, Shirt),
-  and character_body_spawn_system's slot tree as data (parent, anchor, offset, part) walked once (doc/body_equips.md)
+  and character_body_spawn_system's slot tree as data (parent, anchor, offset, part) walked once (doc/tech/body_equips.md)
 - refactor GenerateModel to tag event
 	- check any other bytes that can be tag events too
 	- the idea is to reduce idling systems when the game isnt using them
@@ -589,7 +600,7 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
   draws the voxels of the structures overlapping it, like towns into tunks (regions/fun/tunk.c)
 - --findtree: the player character walks to the nearest tree on its own, using the npc ai controller code (move to
   a target), so npcs can use it too (find a tree, a home, food), and a test can watch it get there
-- Caves (design in doc/new/caves.md): 3D noise first (and its test), then cheese and spaghetti carving, then worms
+- Caves (design in doc/gdd/caves.md): 3D noise first (and its test), then cheese and spaghetti carving, then worms
   planned by regions
 - Biomes could use their climate: hot ones drier blocks, cold ones snow on top, moisture for vegetation density
 - Tune zox_biome_blend (climate distance a blend fades over) by eye in game, 0.035 now
@@ -725,7 +736,7 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 	- and keep set in systems that upload them
 	- keep them all modular
 	- keep it all centralized in rendering so we dont have to do the same work everywhere
-- Eventually we need multi chunk characters, cause their updates lag (see future.md, multi chunk models)
+- Eventually we need multi chunk characters, cause their updates lag (see Future, multi chunk models)
 	- max depth 4-5 for mesh build times
 - Vox Frames - different vox models we swap between
 - make voxel item textures 2 pixels larger, one is outline, one is air
@@ -868,7 +879,7 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 - Dust Particles for jumping and landing
 - Add dust particles when we jump
 - Add standard ground dust particles
-- Tumbling: rotational physics from collisions, cubes tip, rock and roll on their own (see doc/physics.md)
+- Tumbling: rotational physics from collisions, cubes tip, rock and roll on their own (see doc/tech/physics.md)
 	- for cube particles, dropped items, knocked over things, so they land and settle realistically
 	- terrain collision pushes out and bounces but never makes spin, Rolling3D only spins like a ball
 	- contact point: where the body touches the voxel face (lowest corner / face of the rotated box)
@@ -1170,7 +1181,7 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 - Cube lines (cube_line_render_system) and quad lines still draw an entity at a time: instance them too (gizmos)
 - Gpu meshing (doc/plans/gpu_meshing.md): terrain meshes on the gpu, vulkan's default (2026-11-20)
 	- opengl: off by default, it's slower there (perf_terrain far 32: idle -10% fps, far 8 streaming -16% fps,
-	  doc/metrics.md); its draw is every chunk's indirect draw from the main thread: fewer triangles (merging
+	  doc/engine/metrics.md); its draw is every chunk's indirect draw from the main thread: fewer triangles (merging
 	  faces), or one multi draw indirect per terrain, then default it on (--gpu_meshing to try it)
 	- after: a lost gpu context (android gl) remakes gpu meshes, water on the gpu, vox models and skeletons
 - Light character models from the environment (like minivoxes)
@@ -1335,7 +1346,7 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 - Events: StreamEndEvent (and other function events) to observers
 - add a features.md with all features by module
 	- we can write whats missing / vs game engines
-- Thread safety (doc/thread_safety.md, tst pipeline_syncs):
+- Thread safety (doc/engine/thread_safety.md, tst pipeline_syncs):
 	- 10 merges (from 19), under 10: the transform chain is 5, billboards could rotate inside the hierarchy walk
 	- stream_npcs segfaulted once in a full suite run (before the octree barrier), watch for it
 - Refactor BlocksDirty to non state
@@ -1361,11 +1372,11 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
     - zox_has, safety_checks, catch them during testing
 
 # Devops
-- Github actions: more targets in .github/workflows/build.yml (see doc/devops.md)
+- Github actions: more targets in .github/workflows/build.yml (see doc/engine/devops.md)
 	- web
 	- a versioned release when a v* tag is pushed
 - Codeberg: all the builds there (.forgejo/workflows/build.yml builds linux x64 vulkan and windows, copies the rest
-  from github), see doc/devops.md Todo
+  from github), see doc/engine/devops.md Todo
 
 # Platforms
 - Make Glut Build work
@@ -1391,7 +1402,7 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 	3. one "under the selected ui" tooltip rule: tooltip3_follow_system (3D) and tooltip_navigated_system (2D)
 	4. the 3D options (huds/ins/settings3.c): the 2D options window in 3D, once sliders and toggles have 3D twins
 		(the stick's left and right stepping a slider, as the 3D rows do now)
-	- check the size after each: bash bsh/tst.sh code_stats (baseline doc/code_stats.txt)
+	- check the size after each: bash bsh/tst.sh code_stats (baseline doc/data/code_stats.txt)
 - 3D raycasting uis: rays from the hands (the controllers' aim poses, their pointer zevices) at 3D uis (canvas3
 	panels, the 3D windows), hovered, clicked and dragged as a mouse's are, a ray drawn from each hand; tooltips on
 	hover; then a 3D window's close button
@@ -1410,7 +1421,7 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 # Tests
 - XR (doc/plans/xr.md): rays from the hands at 3D ui, every menu as a 3D list, the player; build src/xr for Android (untouched by a compiler since the cleanup, no NDK on the
 	board); on a headset: the projection's flipped y with glFrontFace(GL_CW), and the mixed pose handed to OpenXR
-- Test realm: tests make their own data, not the game's (doc/coding_standards.md)
+- Test realm: tests make their own data, not the game's (doc/engine/coding_standards.md)
 	- a realm of a few hand made blocks (bricks, one plant) and one npc kind, no generation stages: the player's
 		character spawned on the test level (_/tst zox_tst_level_setup) still waits ~12s on the game's realm
 		generation (biomes, models, items, characters, quests, music; gam/zoxel/sys)
@@ -1445,7 +1456,7 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
   instead of event tags added and removed. The tags fragment tables (each new table runs ~380 observers, 20k to 40k
   moves a flight) but they let systems skip idle chunks entirely; a byte means every system checks 100k idle
   chunks every frame, so idle frame time may go up. Measure both at the high end (idle frame time with 100k chunks
-  loaded, and flying) before changing anything (the user, 2026-11-15; numbers so far in doc/optimize.md)
+  loaded, and flying) before changing anything (the user, 2026-11-15; numbers so far in # Optimizations)
 - add a table test, for when in game, check total flecs tables, this needs to be reduced to reduce our query times - can add this to tst module in src, it sits on top of engine
 - Test Pipeline sync points before i finish
 - write a test for binary size
@@ -1479,3 +1490,210 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 	- it outputs a test to run
 - Add 2D rendering testss
 - reduce time of quests tests - just spawn minimal entities, spawn realm children manually, seperate world etc
+
+# Optimizations
+- Part of the [todo](todo.md), done items go in [done.md](done.md)
+
+- Beds and doors (two blocks a side, 64 voxels, a depth more than a block): their first mesh build made frames a
+  second long in a debug software test (tst block_vox_hits, 2026-11-16, npcs held 8 physics frames took 8s). Measure
+  in release on the gpu (perf_fly near placed beds); if it spikes there, build their lods off the main thread or
+  once a realm, as blocks' models are shared
+
+- Frame spikes, what's left after the chunk crossing lag (48 to 145ms, now ~20ms release on gpu, done.md):
+	- spawn bursts are the worst frames (merges 46ms, observers 47ms, debug): names (435 a frame, flecs indexes
+	  (Identifier,Name)), PreInitialize and Initialize (each new entity moves 4 times), 3D label layout dirties
+	- DataUpdate 11k and TextureDirty 5k a run, what follows the dirties
+	- block decor and vox instances are ChildOf a chunk (a table per chunk), npc ui still a child, link it instead
+	- empty tables: deleting them (ecs_delete_empty_tables every 5s, tried 2026-11-15) halved perf_fly's frames
+	  (6000 to 2600): most are states entities pass through, deleted then made again (each new table runs ~380
+	  observers, one a cached query). Fewer states (tags added and removed as events: BuildChunkSides 40k moves a
+	  flight, BuildMesh 33k, MeshDirty 23k) would be the way, but those tags keep queries idle (below)
+	- lod meshes as non fragmenting children stalled terrain generation (perf_stream), still ChildOf, find why
+	- move other heavy systems from process counts to zox_sys_budget
+	- tst tables_stream (guarded at 300 tables a step), perf_stream, perf_fly
+- Where the cpu goes flying (2026-11-15, -O3 with tests, gpu, far 8, seed 666, ZOX_SAMPLE_ALL: every thread):
+	- 66% in workers, 34% the main thread; ~25% of all of it is flecs walking queries (ecs_worker_next 13.5%,
+	  ecs_query_iter 10.7%, flecs_query_is_trivial_cache_search 6.5% on its own: each of 16 workers walks every
+	  table a system's query matched, empty ones too), ecs_has_id 6.8%, alive checks 6.4%, ecs_get_id 6%
+	- octrees are not the cost: chunk_sides_system 8.2% (build_sides_dig 3.4%), flood_light 1.6%
+	- ~6000 frames in 20s; frames over 25ms: 173, then 94 to 111 with bones, the combined vox and the renderer
+	  child non fragmenting (tables in them 2849 to ~2000). What's left in them: app_gpu_end_system ~10ms (the
+	  swap, top system in 102 of 111), merges ~7ms
+	- the event tags stay (the user, 2026-11-15): they're there so queries idle on nothing, for larger draw
+	  distances; the gpu swap goes down with vulkan
+	- next: systems that mostly idle on fewer workers, the vox lod meshes and bake textures still ChildOf (33 and 42 tables in slow frames), quests and
+	  dialogue pairs a npc
+- greedy meshing for vox models, then terrain: the plan, AO and the steps in [tech/chunks3.md](tech/chunks3.md)
+
+-x 2300 tables again, try reduce fragmentation
+
+-x Streaming has a spike, make sure to display the biggest system spike per graph
+	-x write a test for streaming spikes: perf_stream, perf_fly (flying, --maxnpcs), --profile, ZOX_SAMPLE
+	  (doc/engine/commands.md)
+
+## Ideas
+- Can we hide behind mountains to improve culling?
+- 3D uis: canvas3_render_system gathers and sorts each canvas's elements every frame; keep the order on the canvas,
+  rebuilt when its children or layers change (doc/tech/uis.md)
+
+# New
+- Part of the [todo](todo.md), done items go in [done.md](done.md)
+- New modules and features
+
+### Quadpeds
+- add a second skeleton type, thats a four walker, and a wolf npc, so itd need new body parts etc
+	- this is an expansion of current body parts and animations
+	- we will need a head generated differently to current humanoid ones
+	- we should polish the blueprint system too that body parts use
+	- it also needs a tail, later we can add more bones per part, but for now itll still use the same simple methods
+
+### Turrets
+- Turrets are items
+- Can place like a minivox
+- They have seperate parts, so different entity
+	- base vox model
+	- cannon model
+- aim cannon at targets
+- instanced rendering
+- uses projectiles to hit nearby targets
+
+### Crafting
+- Fix Crafting and use Slots for them
+- Output Craft Slot, pickup only
+- Pickup item to change after any of the other slots change, using recipe data to match
+
+### Pets
+- Spawn mr penguin on screen
+- Give the ability to change his hat
+- Make a penguin module
+- Adds a penguin to taskbar
+- Adds a penguin render scene and 3 buttons to change his hat
+- remove any use of user macros from user data
+	- just reuse their prefabs and add tags
+- use functions like spawn_window, or spawn_user_grid inside those uis
+- Spawn label top left above stats - show block / npc selected
+- Generate a mouse texture - arrow
+- Maximize a window - button on map header
+- Resize window grabber at corner
+- move sand/wood/stone into biome blocks
+
+### genetics
+- Add dna, array of bytes, per npc
+- only for unique npcs
+- dna linked in their body parts too
+- its used as a seed, so all parts use it
+- population is at a region level, it has data for the entire coutn
+- npcs can breed and cross dna for their kids
+
+### affection
+- npcs can have affection or hostility for others
+- this can effect clan alignment
+- it will also increase chance for breeding
+
+### towns
+- villager tags for npcs in towns
+- they can have roles, like mayor, 'jobs' module
+
+### Doors
+- add door model, two blocks tall
+- when right click, swing open
+- collider to use mini voxels when rotating too there
+- door open close sound
+- save load open state
+
+# Delayed
+## Until Zoxel 2030
+	
+## 3D UI Refactor
+- Create a simple Canvas with Elements in each corner
+- Use same data but pass through layout3Ds, that use 3D rendering and transform data
+- Test will render the canvas in front of camera at different distances and rotations
+
+## Low Priority
+- Make MeshColorsDirty do similar check to MeshReady - MeshColorsReady
+    - fix it up in light3_build_system
+- Player Respawn Point Gizmos
+- Stream Level - Region only for initial game town spawning!
+- Tunk LOD Levels
+	- So we dont generate maps for far away chunks
+- Update frame texture outline when icon is selected!
+- Save/Load Realm Blocks + data to future proof updates
+- NPC RaycastRange add ActiveAction to NPCs - active_action_range_system
+- Long pause breaks physics - test big frame times
+- Refactor spawn_block_vox_meta and remove structs
+- Add Tooltips to Empty Slot Frames
+- Selected Text option - update the Glyph Colors
+- Refactor OverlapEvent to Overlapped state with a system in items
+- Add instancing to lines so we can test it easier t he lights
+- Debug Town Gizmo
+- Debug House Gizmo
+
+
+- Make Glut Build work
+	- Glut should spawn a window
+	- We should wrap all other sdl functions properly for glut
+- Fix No post processing mode / Rawdog Camera Mode
+	- add to settings
+- tools (this will help fix bugs)
+  - press 'f' while raycasting chunk to select it as debug target
+    - this will show the 'chunk ui' which shows all chunk info
+    - itll have a close button on it
+    - Stats
+      - Verts
+      - States?
+      - Idk
+## Rendering
+- push voxel data and generate mesh on gpu
+
+# Whimsy
+- everyone needs more
+
+- An npc should shift resolutions, when they have a debuff called unknown
+- An npc thats from the void dimension
+	- when its dying, its death animation is lowering its resolution
+- Add npc that dies when you talk to it
+	- death node in dialogue
+- Add cracked bricks, a weaker version of bricks, 1 / 8 chance to spawn on wall
+- Why cant i touch and drag two windows at once???
+	- with multiple fingers
+- Make a mushroom we can throw on ground
+	- does disease damage once it hits an npc
+- Create jingle, a bunch of sounds that play in sequence, can be spawned from events like sounds, when a new ui opens etc
+- Stress test mode - add a multiplying slime that dies fast
+
+# Future
+- Bigger ideas for later
+### Alien Languages
+- npcs speak their own languages, not english, for the alien world feeling (like hyperlight drifter)
+	- the dialogue box is a translator, what they say is translated, not spoken
+	- major cities speak a common tongue, the wilds their own languages
+- each language its own sounds: a set of phonemes, syllable shapes and rhythm
+	- voices already babble syllables (sounds/bop/voice.c, dialogues/fun/voice.c)
+	- a language could pick which consonants and vowels it uses, and how syllables are built (cv, cvc, ccv)
+	- the babble would follow the language, not the english letters
+- the translator could be imperfect: untranslated words shown in glyphs, learning a language translates more
+
+### Multi Chunk Models
+- if models grow past what a frame can mesh (a depth 5 mesh is ~5ms): models split into chunks, like Teardown
+	- cap a model chunk at depth 4 (16^3), bigger models are several chunks
+	- each chunk meshes on its own, so the mesh budget splits a model across frames
+	- an edit only rebuilds its chunk, how chunked voxel engines keep rebuilds small
+	- bones / skeleton meshes per chunk, lods per chunk
+
+# Zixel
+
+- Add tilemap
+	- create mesh based on solids
+	- apply textures
+- generate mesh using smooth terrain
+	- 2D marching cubes
+- paint in grass over soils
+- Add simple main menu - just play and exit
+- Restore material2 when restoring gpu resources
+- Make start cube only for zoxel
+	- add to boot event
+- Fix 2D grid
+- Tilemap
+	- chunks2
+-x Package /gam/zixel/res too
+-x when testing - test with local resources too

@@ -94,18 +94,12 @@ New to the code? Start with **[Onboarding](doc/onboarding.md)**: the big
 picture, building, the module layout, reading systems, tests, and how to pick
 up a task.
 
-- [Characters](doc/character.md): how characters are structured, their
-  children (voxes, renderers, skeletons), and tips for working with them
-- [Links](doc/links.md): pointing entities at each other with `zox_link`,
+- [Links](doc/engine/links.md): pointing entities at each other with `zox_link`,
   single and many links, and reacting to unlinks
-- [Children](doc/children.md): parenting, getting children, and ordered
-  children
-- [Commands](doc/commands.md): command line flags for the game binary
-  (`--autostart`, `--tiny`, `--nosaves`, tests and more)
-- [Architecture](doc/architecture.md): events vs systems, and other
-  design guidelines
-- [Coding Standards](doc/coding_standards.md): code style and conventions
-- [Tests](doc/tests.md): writing and running tests
+- [Tech](doc/tech/_.md): module technical docs (characters, children, blocks, water, uis and more)
+- [Engine](doc/engine/_.md): architecture, systems, spawning, commands, tools and more
+- [Coding Standards](doc/engine/coding_standards.md): code style and conventions
+- [Tests](doc/engine/tests.md): writing and running tests
 
 
 ## Follow Development

@@ -11,7 +11,7 @@
 
 | target | command | output |
 |---|---|---|
-| linux x64, vulkan, dev | bash bsh/build.sh zoxel --vulkan --debug --out zoxel_vulkan | bin/zoxel_vulkan/ ([plans/vulkan.md](plans/vulkan.md)) |
+| linux x64, vulkan, dev | bash bsh/build.sh zoxel --vulkan --debug --out zoxel_vulkan | bin/zoxel_vulkan/ ([plans/vulkan.md](../plans/vulkan.md)) |
 | linux x64 / arm, vulkan | bash bsh/docker.sh --release --x64 --vulkan (CI: build.sh --release --package --docker --vulkan) | zip/zoxel_linux_x64_vulkan_sdl_<date>.zip (shaderc in it) |
 | android arm, vulkan | bash bsh/android.sh zoxel --release --signed --vulkan | zip/zoxel_android_arm_vulkan_<date>.apk |
 | android xr, vulkan | bash bsh/android.sh zoxel --release --signed --xr --vulkan (OpenXR's XR_KHR_vulkan_enable2) | zip/zoxel_android_arm_xr_vulkan_<date>.apk |
@@ -97,5 +97,5 @@
 -x Screen Rotation event not working
 
 ## Windows
-- sdl_mixer is gone (audio is sdl's own, mixed in the engine, see [audio.md](audio.md)),
+- sdl_mixer is gone (audio is sdl's own, mixed in the engine, see [audio.md](../tech/audio.md)),
   libs-download.sh and libs-compile.sh still fetch and build it

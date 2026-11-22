@@ -79,12 +79,12 @@ An add event (`zox_on_add`) only fires when the tag **wasn't already there**.
 - A tag that lingers, or can be added again before it's removed, misses events. `Update` is one: a
   process dirtied again keeps its `Update`, so quest nodes hooked on it never ran.
 - Hook events on a tag added once per transition, i.e. `Begin` when a process moves to a node
-  (see [nodes.md](nodes.md)), or a state component going `zox_dirty_trigger` → `zox_dirty_active`.
+  (see [nodes.md](../tech/nodes.md)), or a state component going `zox_dirty_trigger` → `zox_dirty_active`.
 - When an event doesn't seem to fire, log at the top of the callback first: was it called at all?
 
 ## Which kind of event (measured)
 
-`tst flecs_event_costs` and `tst flecs_event_scaling` time each way (numbers in [tech/states.md](tech/states.md)):
+`tst flecs_event_costs` and `tst flecs_event_scaling` time each way (numbers in [tech/states.md](../tech/states.md)):
 
 - **An event is a non fragmenting tag (`zoxd_nf_tag`) and an observer that removes it.** It never moves the entity
   between tables, so it costs ~1.25us an event at any count and any entity size: the cheapest way at every count

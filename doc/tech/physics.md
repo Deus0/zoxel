@@ -138,7 +138,7 @@ otherwise trim it, by an amount that changes as `Grounded` flickers on seams (th
 
 ## Tests
 
-`bash bsh/tst.sh <name>`, see [tests.md](tests.md).
+`bash bsh/tst.sh <name>`, see [tests.md](../engine/tests.md).
 
 | Test | Checks |
 |---|---|

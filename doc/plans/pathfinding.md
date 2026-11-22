@@ -27,7 +27,7 @@ A chunk's walkable space, an octree like its voxels (`PathNode`), rebuilt when i
   - a flat field is a few big nodes, not 4096 cells
   - A* works on nodes, so a long path over open ground is a few steps
 - **Between chunks:** an edge cell's neighbour is in the next chunk. The nearby getter (`getv_nearby_*`, 27 chunks) already reads across.
-- **Built:** on a worker after a chunk's voxels generate or change, from the voxel octree. Its lock is held while reading (doc/thread_safety.md).
+- **Built:** on a worker after a chunk's voxels generate or change, from the voxel octree. Its lock is held while reading (doc/engine/thread_safety.md).
 - **Lods:** only full detail chunks near the player need it, the same ones npcs spawn in (`NpcSpawnZone`).
 
 ## Fields: a shared octree pulling and pushing

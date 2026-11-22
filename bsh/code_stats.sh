@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Code stats: src's size, per module (src/<module>), so it doesn't bloat unnoticed
-#   bash bsh/code_stats.sh            the stats, and each module's change since the baseline (doc/code_stats.txt)
+#   bash bsh/code_stats.sh            the stats, and each module's change since the baseline (doc/data/code_stats.txt)
 #   bash bsh/code_stats.sh --save     the stats saved as the new baseline (after a deliberate change, commit it)
 #   also: bash bsh/tst.sh code_stats
 # - lines: code (not blank, not only a comment), comments, blank; tests (a module's tst folders) counted apart
@@ -11,7 +11,7 @@ cd "$(dirname "$0")/.." || exit 1
 python3 -I - "$@" <<'PY'
 import os, sys, re
 save = "--save" in sys.argv
-baseline_path = "doc/code_stats.txt"
+baseline_path = "doc/data/code_stats.txt"
 def count(path):
     code = comment = blank = 0
     in_block = False

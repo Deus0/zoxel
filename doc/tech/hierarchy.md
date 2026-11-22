@@ -4,7 +4,7 @@ A child is an entity owned by its parent. The claims below are tested by `bash b
 
 Children are wrapped in `src/_/flecs/mcr/children.c`. Game code only uses the `zox_` wrappers. Never call `ecs_*` or use `Ecs*` ids outside `src/_/flecs`. If a wrapper is missing, add it there.
 
-For pointing at something you don't own, use a link instead. See [links.md](links.md).
+For pointing at something you don't own, use a link instead. See [links.md](../engine/links.md).
 
 ## Parenting
 
@@ -145,4 +145,4 @@ for (int i = 0; i < notes.length; i++) {
 
 - Model variants are children of their `ModelGroup`: `get_model_variant()` in `src/models/ins/vox_children.c`
 - Notes are ordered children of their music: `src/musics/pre/note.c`, `src/musics/sys/play.c`
-- Character children (voxes, renderers, skeletons): [character.md](character.md)
+- Character children (voxes, renderers, skeletons): [character.md](characters.md)

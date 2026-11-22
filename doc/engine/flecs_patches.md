@@ -41,7 +41,7 @@ flecs.c is patched by bsh/flecs_fix.sh after downloading, each patch has a ZOXEL
 - Marker: ZOXEL PATCH nf root list
 - Problem: flecs_entity_remove_non_fragmenting checked each record in the world's non fragmenting list for the entity, a pair link makes a record per target, 14k in game, so a delete was O(records). Deleting a chunk column and its npcs (thousands of entities) took 100-160ms merges flying (tst perf_fly).
 - Fix: a second list of roots (components, (R, *) wildcards, pairs whose relationship keeps no targets), an entity's pairs come from its (R, *) record's sparse targets, a delete visits ~70 records, not 14k. Worst frame flying 160ms -> 22ms (--maxnpcs). Applied by bsh/flecs_patches/04_nf_root_list.patch.
-- Found with the sampler (`ZOX_SAMPLE`, doc/commands.md): 82% of slow frames in this one function
+- Found with the sampler (`ZOX_SAMPLE`, doc/engine/commands.md): 82% of slow frames in this one function
 - Repro: release build, `--tst perf_fly --maxnpcs --profile` (bash bsh/tst.sh perf_fly --stress); a plain flecs repro is many pair targets (a record each) then deleting entities that have any non fragmenting id
 - Upstream: not reported yet
 
@@ -50,7 +50,7 @@ flecs.c is patched by bsh/flecs_fix.sh after downloading, each patch has a ZOXEL
 - Marker: ZOXEL PATCH nf root instantiate
 - Problem: flecs_instantiate_dont_fragment checked every record in the world's non fragmenting list (sparse_has on the prefab for each of ~14k), for every instance. It was 38% of slow frames flying (npcs and their parts spawning), sparse_has alone 29%.
 - Fix: walks the root list (from the nf root list patch), and the prefab's own targets of each relationship from its (R, *) record, the per record copy is unchanged (flecs_instantiate_dont_fragment_one). Applied by bsh/flecs_patches/05_nf_root_instantiate.patch.
-- Repro: release build, `--tst perf_fly --maxnpcs --profile` with `ZOX_SAMPLE` (doc/commands.md), worst merge flying 18.6ms -> 11ms, slow frames (12ms+) 57 -> 9
+- Repro: release build, `--tst perf_fly --maxnpcs --profile` with `ZOX_SAMPLE` (doc/engine/commands.md), worst merge flying 18.6ms -> 11ms, slow frames (12ms+) 57 -> 9
 - Upstream: not reported yet
 
 ### Instancing a prefab revived a deleted entity's handle

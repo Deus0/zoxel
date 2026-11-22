@@ -9,7 +9,7 @@ Links are wrapped in `src/_/flecs/mcr/pair.c` and declared with macros from `src
 | Use | When |
 |---|---|
 | **Link** | The entity points at something it doesn't own, i.e. `ChunkLink`, `DataLink`, `DeviceLink` |
-| **Child** | The entity owns it and it should die with it, i.e. a character's skeleton mesh, notes in a music. See [children.md](children.md) |
+| **Child** | The entity owns it and it should die with it, i.e. a character's skeleton mesh, notes in a music. See [children.md](../tech/hierarchy.md) |
 
 ## Declaring
 
@@ -38,7 +38,7 @@ void zox_components_example(ecs* world) {
 
 A single (exclusive) link holds one target: linking again replaces it. Only use one when there can never
 be two. A node's `NodeLink` was single by mistake, so every branch kept only its last choice (see
-[nodes.md](nodes.md)). When in doubt, use many.
+[nodes.md](../tech/nodes.md)). When in doubt, use many.
 
 ```c
 // link, replaces any old target

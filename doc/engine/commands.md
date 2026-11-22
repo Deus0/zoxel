@@ -7,7 +7,7 @@ Command line flags for the game binary. Pass any number of them, in any order:
 ```
 
 The binary lives in `bin/zoxel_<os>_<arch>_..._dev/` (debug) or the matching release folder,
-see [Onboarding](onboarding.md#2-build-and-run). Run it from its own folder, which is what
+see [Onboarding](../onboarding.md#2-build-and-run). Run it from its own folder, which is what
 `make rund` and `bsh/tst.sh` do.
 
 Each module parses its own flags, with a `process_arguments_*` function registered by
@@ -56,7 +56,7 @@ On boards without desktop GL (i.e. the Mali boards), the game falls back to ES b
 | `--tiny` | terrain stream distance 3, height 3 | [terrain](../src/terrain/fun/terminal.c) |
 | `--medium` | terrain stream distance 6, height 3 | terrain |
 | `--large` | terrain stream distance 12, height 4 | terrain |
-| `--gpu_meshing` | solid chunk meshes meshed by a compute shader (cpu meshing without compute), [plans/gpu_meshing.md](plans/gpu_meshing.md); vulkan's default | terrain |
+| `--gpu_meshing` | solid chunk meshes meshed by a compute shader (cpu meshing without compute), [plans/gpu_meshing.md](../plans/gpu_meshing.md); vulkan's default | terrain |
 | `--cpu_meshing` | chunk meshes built on the cpu; opengl's default | terrain |
 | `--far <n>` | terrain stream distance n (height as set) | terrain |
 | `--vertical <n>` | terrain stream height n: the land scales with it (n / 4: taller, hills and lakes wider, the sea with them), heights are bytes (255 at most) | terrain |
@@ -76,7 +76,7 @@ The terrain sizes override `Far RD` from your settings for that run.
 | `--sounds` | sounds on again after `--background`, i.e. to listen to a test | [apps](../src/apps/fun/arguments.c) |
 
 To record what the game plays: `SDL_AUDIO_DRIVER=disk`, the mix goes to `sdlaudio.raw` beside the binary
-(stereo float32, 44100hz). See [audio.md](audio.md).
+(stereo float32, 44100hz). See [audio.md](../tech/audio.md).
 
 ## Engine
 
@@ -97,7 +97,7 @@ To record what the game plays: `SDL_AUDIO_DRIVER=disk`, the mix goes to `sdlaudi
 
 ## Tests and Debugging
 
-Usually run through `bash bsh/tst.sh`, see [Onboarding](onboarding.md#7-tests).
+Usually run through `bash bsh/tst.sh`, see [Onboarding](../onboarding.md#7-tests).
 
 | Flag | Effect | Source |
 |---|---|---|

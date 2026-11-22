@@ -62,7 +62,7 @@ Underground spaces under the terrain, explored with the player's light, a home f
   noise first (3D simplex or perlin, seeded, octaves), with a test that it's continuous and in range
 - region placement (regions/fun/place.c) for worm starts, and the tunk pattern (regions/fun/tunk.c) for drawing
   a placed thing into the chunks it crosses
-- octree chunks with locks for writers (doc/thread_safety.md), carving is an octree write
+- octree chunks with locks for writers (doc/engine/thread_safety.md), carving is an octree write
 
 ## Performance
 - 3D noise per voxel is the cost: sample a coarse grid (every 4 voxels) and interpolate, skip chunks above the surface, skip air.

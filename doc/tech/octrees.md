@@ -60,19 +60,19 @@ neighbour reads. `zox_octree_functions` alone gives the functions without a comp
 
 A tree is read and written from worker threads (generation, sides, lights, meshing, the body merge). Each tree
 entity has a `VoxelNodeLock` spinlock; a system locks its own and its neighbours' in address order
-(`zox_lock_voxel_trees`, chunks3/sys/sides.c) so two chunks never wait on each other. doc/thread_safety.md has the
+(`zox_lock_voxel_trees`, chunks3/sys/sides.c) so two chunks never wait on each other. doc/engine/thread_safety.md has the
 rules. A neighbour link must be a chunk: one that wasn't left the lock unset and crashed (fixed 2026-11-15, the
-cause was flecs reviving a deleted id, doc/flecs_patches.md).
+cause was flecs reviving a deleted id, doc/engine/flecs_patches.md).
 
 ## Cost
 
 Flying at Far 8 on the 780M, an -O3 build with tests, fixed seed, every thread sampled (`ZOX_SAMPLE_ALL`,
-doc/commands.md):
+doc/engine/commands.md):
 
 - Octree work is about 8% of the cpu: `chunk_sides_system` 8.2% with `build_sides_dig` 3.4% inside it,
   `flood_light` 1.6%. Nothing else from the octrees was in the top 30 functions.
 - About 25% is flecs walking queries on 16 workers, the frames over 25ms are the gpu swap and merges
-  (doc/optimize.md). So the octrees are not what limits flying today.
+  (doc/todo.md, Optimizations). So the octrees are not what limits flying today.
 - Memory: 16 bytes a node, 128 a block of 8. A full depth 5 chunk (32^3) is 37449 nodes, ~600kb before `reduce`;
   terrain reduces well (uniform stone and air collapse), a noisy surface chunk doesn't.
 - A read is `depth` dependent loads (a cache miss each when cold). Systems that read every voxel of a tree

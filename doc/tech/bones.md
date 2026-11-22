@@ -6,7 +6,7 @@ learned making it look right.
 Code: [src/bones](../../src/bones) (the skeleton, its animation state and systems), [src/bones/ik](../../src/bones/ik)
 (arms, legs, the spine, planted feet), [src/parts/sys/bones.c](../../src/parts/sys/bones.c) (bones from body parts),
 [src/xr/fun/body.c](../../src/xr/fun/body.c) (a headset's body). Skinning and weights:
-[done/skeletons.md](../done/skeletons.md). Characters as a whole: [character.md](../character.md).
+[done/skeletons.md](../done/skeletons.md). Characters as a whole: [character.md](characters.md).
 
 ## The skeleton
 

@@ -16,7 +16,7 @@ the one before:
 | `zoxp_octree_write` | voxel octrees written (blocks placed, terrain generated) |
 | `zoxp_octree_read` | voxel octrees read (chunk sides, lights), no barrier: octrees are locked, see [thread_safety.md](thread_safety.md) |
 | `zoxp_pre_physics` | state and update (`zoxp_update`, `zoxp_state`, `zoxp_initialize`, inputs) |
-| `zoxp_physics` | physics, movement (`zoxp_post_update`, `zoxp_load`), see [physics.md](physics.md) |
+| `zoxp_physics` | physics, movement (`zoxp_post_update`, `zoxp_load`), see [physics.md](../tech/physics.md) |
 | `zoxp_trails` | things following others (trails), after a barrier (`zoxp_trails_sync`), as are the next four |
 | `zoxp_layouts` | ui layouts to local positions |
 | `zoxp_transform_hierarchy` | local to world transforms, down the hierarchy |

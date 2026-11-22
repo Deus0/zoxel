@@ -23,7 +23,7 @@ Most of a spawn's cost comes after the system, when flecs merges the frame's cha
 - **Tables.** Every new combination of components is a new table, and every new table is checked by every
   observer and query. `ChildOf` gives every parent's children their own tables, so many parents spawning
   children made hundreds of tables a frame. Use non fragmenting parents (`zox_set_parent_non_fragment`), see
-  [children.md](children.md).
+  [children.md](../tech/hierarchy.md).
 - **Moves.** Each component or tag added or removed moves an entity between tables, each move notifies
   observers. A spawn that sets ten components moves ten times, state tags (`Dirty`, `PreInitialize`) move twice.
 - **Names.** Naming an entity indexes it, names are for debugging, `ZoxName` is for labels in game.

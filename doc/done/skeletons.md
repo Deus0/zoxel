@@ -11,7 +11,7 @@ Code: [src/parts/sys/combine.c](../../src/parts/sys/combine.c) (`body_combine_sy
 [src/chunks/chunks3/sys/vox_lods.c](../../src/chunks/chunks3/sys/vox_lods.c) (`build_vox_mesh_at_depth`),
 [src/chunks/chunks3/sys/build_colored.c](../../src/chunks/chunks3/sys/build_colored.c) (the face builders),
 [res/shaders/bone.vert](../../res/shaders/bone.vert), tests `chest_weights`, `npc_skeletons`, `skeleton_render`.
-Also [character.md](../character.md), [body_equips.md](../body_equips.md).
+Also [character.md](../tech/characters.md), [body_equips.md](../tech/body_equips.md).
 
 ## Done (2026-11-15, commit ee11b43a3; clothes and double faces 2026-11-18, below)
 

@@ -145,5 +145,5 @@ of each slice. So build it as a pass over the slices after the walkers, not insi
 ### Measuring
 
 - `bash bsh/tst.sh vox_instances_stress --gpu --release`: triangles of a grass block, frame time at 1000 to 16000
-- `bash bsh/tst.sh perf_fly --release` (doc/optimize.md has the profiling): mesh build time while streaming
+- `bash bsh/tst.sh perf_fly --release` (doc/todo.md, Optimizations has the profiling): mesh build time while streaming
 - compare runs on the same machine, ollama stopped (it shares the gpu)

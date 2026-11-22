@@ -10,8 +10,9 @@ need them.
 
 - Zoxel is a procedural voxel RPG written in **C (gnu99)**.
 - It's built on **[Flecs](https://www.flecs.dev)**, an ECS (Entity Component System) library.
-- It uses **SDL3** for windows, input and audio, and **OpenGL / OpenGL ES** for rendering (a Vulkan build is on its
-  way, [plans/vulkan.md](plans/vulkan.md)).
+- It uses **SDL3** for windows, input and audio, and renders with **OpenGL / OpenGL ES** or **Vulkan**:
+  both backends draw everything and their screenshots match. OpenGL is the default,
+  build with `--vulkan` for Vulkan ([Vulkan](tech/vulkan.md)).
 - One codebase builds several games. The games live in [gam](../gam), and `zoxel` is the main one.
 
 ### ECS in 60 seconds
@@ -25,7 +26,7 @@ If ECS is new to you, this is all you need to start:
   You don't loop over the world yourself: you declare "I want entities with A and B", and Flecs hands you arrays of them.
 - A **prefab** is a template entity. New entities are instanced from prefabs, so they start with the right components.
 - An **event** reacts once when something happens, rather than checking every frame.
-  See [Architecture](architecture.md) for when to use an event and when to use a system.
+  See [Architecture](engine/architecture.md) for when to use an event and when to use a system.
 
 The whole game is entities: the window, the player, the camera, every chunk of
 terrain, every NPC, every UI button.
@@ -61,7 +62,7 @@ The engine builds for these, all from the same code:
 |---|---|---|---|
 | Linux (and SteamOS) | x64, arm | OpenGL, Vulkan | `bash bsh/build.sh` (`--vulkan`), release zips with `bash bsh/docker.sh` |
 | Windows | x64 | OpenGL, Vulkan | `bash bsh/windows.sh` in git bash (installs gcc with winget if it's missing) |
-| Android | arm | OpenGL ES, Vulkan | `bash bsh/android.sh zoxel --release --signed` |
+| Android | arm | OpenGL ES, Vulkan | `bash bsh/android.sh zoxel --release --signed` (`--vulkan`), see [Android](engine/android.md) |
 | Android XR (OpenXR) | arm | OpenGL ES, Vulkan | `bash bsh/android.sh zoxel --release --signed --xr` |
 | Web (emscripten) | wasm | WebGL 2 | `bash bsh/web.sh zoxel --release` |
 
@@ -69,9 +70,9 @@ The engine builds for these, all from the same code:
   or the Windows build breaks while Linux is fine. Build with `bsh/windows.sh` when you touch shared code.
 - Platform code sits behind `#ifdef` (`zox_windows`, `zox_linux`, `zox_android`, `zox_web`, `zox_xr`), so keep it out of
   gameplay modules.
-- Every target, its output and CI's nightly builds: [DevOps](devops.md).
+- Every target, its output and CI's nightly builds: [DevOps](engine/devops.md).
 
-Useful game flags (pass them to the binary, the full list is in [Commands](commands.md)):
+Useful game flags (pass them to the binary, the full list is in [Commands](engine/commands.md)):
 
 | Flag | Effect |
 |---|---|
@@ -93,11 +94,12 @@ src/
     <module>/       one folder per subsystem: npcs, terrain, chunks, ui, skills, combat...
 gam/                the games (zoxel, zixel, zedit...) built on the engine
 bsh/                build, package and test scripts
-doc/                these docs, plus the todo / bugs / done lists
+doc/                these docs: engine/ (how the engine works), tech/ (each module), gdd/ (game design),
+                    plans/, todo.md and done.md
 res/                resources (textures, models, sounds)
 ```
 
-There are about 90 modules. [modules.c](../src/modules.c) includes them in depth order,
+There are about 90 modules (`src` has 92 folders). [modules.c](../src/modules.c) includes them in depth order,
 from foundations (`core`, `transforms`, `inputs`) up to gameplay (`npcs`, `quests`, `combat`),
 so a module can use anything included before it.
 
@@ -129,7 +131,7 @@ The usual folders inside a module:
 [_.c](../src/npcs/_.c), then [sys/_.c](../src/npcs/sys/_.c), then
 [sys/can_spawn.c](../src/npcs/sys/can_spawn.c).
 
-[Coding Standards](coding_standards.md) has the full rules for folders, naming and layout.
+[Coding Standards](engine/coding_standards.md) has the full rules for folders, naming and layout.
 
 ## 4. Reading a System
 
@@ -171,7 +173,7 @@ void characters_can_spawn_system(iter* it) {
 ```
 
 Newer systems are written as plain functions, `void npc_spawn_system(iter* it) { ... } zoxd_system(npc_spawn_system);`,
-with the same `zox_sys_*` macros inside. [Coding Standards](coding_standards.md) shows that style.
+with the same `zox_sys_*` macros inside. [Coding Standards](engine/coding_standards.md) shows that style.
 
 The fields are **positional**: `zox_sys_in` / `zox_sys_out` must match the order in
 `zox_system`, and `[none]` terms go last.
@@ -190,7 +192,7 @@ zox_log("x is [%i]", x) / zox_logw(...) / zox_loge(...)   // log, warning, error
 
 ### Hierarchies
 
-Entities form trees with parents and children ([Children](children.md) has the details):
+Entities form trees with parents and children ([Children](tech/hierarchy.md) has the details):
 
 - `zox_set_parent(world, child, parent)` makes a child, and `zox_set_parent_non_fragment` does the same without a
   table per parent, for things there are many of (stats, skills, ui). Children are deleted with their parent.
@@ -219,13 +221,13 @@ These matter more than they first look:
   never pack several into a struct or a vector of different meanings. Organise with generic components and tags: a
   burn is a debuff tagged `Burn` with `Damage`, `Rate` and `DamageTime`, not a `BurnRate`; the realm spawns it once
   and skills link it. Prefer tags to byte states (`SkillHit`, not a
-  stage of 2): systems filter on tags. More in [Coding Standards](coding_standards.md) (Generic Components and Tags). Spot old code that could share or drop components? Suggest it, but ask first:
+  stage of 2): systems filter on tags. More in [Coding Standards](engine/coding_standards.md) (Generic Components and Tags). Spot old code that could share or drop components? Suggest it, but ask first:
   it changes the design.
-- **Links, not raw entity fields.** To point one entity at another, use `zox_link`, see [Links](links.md).
-  For parents and children, see [Children](children.md).
+- **Links, not raw entity fields.** To point one entity at another, use `zox_link`, see [Links](engine/links.md).
+  For parents and children, see [Children](tech/hierarchy.md).
 - **Cleanup goes in unlink callbacks** (`zox_on_unlink`), not at every place that deletes something.
   Deletion code shouldn't need to know what to clean up.
-- **Events for "when X happens", systems for "while X is true"**, see [Architecture](architecture.md). An event is
+- **Events for "when X happens", systems for "while X is true"**, see [Architecture](engine/architecture.md). An event is
   a non fragmenting tag and an observer that removes it (measured cheapest); heavy work stays in systems, they run
   on threads. [States](tech/states.md) has which form to use for a change.
 - **Don't depend on frame rate.** Scale by `zox_delta_time`, or use rates per second, not "N per frame".
@@ -250,7 +252,7 @@ ten lines.
 - Release builds drop every log (their arguments are never run). Debug builds with `--logs` show them, `--verbose`
   adds the details.
 - Tests log with a `[tst]` prefix; tst.sh reads those lines, so keep that prefix for test output.
-- More in [Coding Standards](coding_standards.md) (Logs).
+- More in [Coding Standards](engine/coding_standards.md) (Logs).
 
 ## 7. Tests
 
@@ -262,6 +264,7 @@ bash bsh/tst.sh player_spawn    # build debug + run one test
 bash bsh/tst.sh all             # run every test
 bash bsh/tst.sh stream_npcs --repeat 5   # for intermittent bugs
 bash bsh/tst.sh <name> --gdb    # backtrace on a crash
+bash bsh/tst.sh <name> --vulkan # the same test on the vulkan backend
 ```
 
 - Exit code 0 means pass. A failed run's log is kept in `tst/<name>_failed_*.log`.
@@ -270,7 +273,7 @@ bash bsh/tst.sh <name> --gdb    # backtrace on a crash
 - Tests are written in a module's `tst/` folder and registered with `zox_tst_add(name, ready, check, timeout)`.
   The harness is [src/_/tst/_.c](../src/_/tst/_.c).
 - When you fix a bug, add a test that would have caught it.
-- Writing tests, patterns, tst.sh's options and every test by area: [tests.md](tests.md).
+- Writing tests, patterns, tst.sh's options and every test by area: [tests.md](engine/tests.md).
 - To reproduce a bad save: `zox_tst_save=<realm save folder> bash bsh/tst.sh continue_game`.
   It loads a copy and never writes to the real save.
 
@@ -304,7 +307,7 @@ What a test starts with, cheapest first (times measured 2026-11-20, debug build)
   costs every run: put those behind a flag (like `--readme`).
 - **Measure it.** `tst/<name>.log` has timestamps: from `[tst] running` to `PASSED` is the test's own time.
 
-[Coding Standards](coding_standards.md) (Test Placement) has where a test goes and the lowest module it can live in.
+[Coding Standards](engine/coding_standards.md) (Test Placement) has where a test goes and the lowest module it can live in.
 
 ## 8. Doing a Task
 
@@ -313,8 +316,9 @@ Tasks are tracked in plain markdown:
 | File | Holds |
 |---|---|
 | [todo.md](todo.md) | tasks to do, refactors in its own section |
-| [optimize.md](optimize.md) | performance work |
-| [goals.md](goals.md) / [new.md](new.md) | bigger features and new modules |
+| [todo.md](todo.md#optimizations) | performance work |
+| [todo.md](todo.md#future) | bigger ideas for later |
+| [gdd.md](gdd.md#goals) / [todo.md](todo.md#new) | bigger features and new modules |
 | [done.md](done.md) | finished work: move items here, marked `-x`, with a line on the cause and fix |
 
 The loop:
@@ -371,27 +375,29 @@ The loop:
 
 ## 10. Where Next
 
-- [Architecture](architecture.md): events vs systems
-- [Coding Standards](coding_standards.md): folders, naming, components and systems in depth
-- [Links](links.md): `zox_link`, single and many links, unlink callbacks
-- [Children](children.md): parenting and child entities
-- [Characters](character.md): how characters are built (vox, renderer, skeleton)
+- [Architecture](engine/architecture.md): events vs systems
+- [Coding Standards](engine/coding_standards.md): folders, naming, components and systems in depth
+- [Links](engine/links.md): `zox_link`, single and many links, unlink callbacks
+- [Children](tech/hierarchy.md): parenting and child entities
+- [Characters](tech/characters.md): how characters are built (vox, renderer, skeleton)
 - [Bones and Animation](tech/bones.md): joints, the walk, crouching, swings, XR's body, looking at it (gifs, `--bones`)
-- [Body and Equipment](body_equips.md): body parts in slots, how a body is merged and boned, gear (hats, shirts)
-- [Audio](audio.md): the mixer, 3D sounds, effects, voices and music
-- [Sounds](sounds.md): what things sound like hit, realm sound entities, materials, grunts
-- [Nodes](nodes.md): node graphs, how dialogue and quests walk them
-- [Tests](tests.md): writing tests, patterns, every test by area
-- [Metrics](metrics.md): rendering speed per backend and how alike they draw, a report a run
-- [Tools](tools.md): scripts that look into the game (world generation's maps as images), bsh/tools
-- [Systems](systems.md): the phases in a frame, kinds of systems, budgets, profiling
-- [Thread Safety](thread_safety.md): workers, merges (sync points), octree phases and locks, `tst pipeline_syncs`
-- [Flecs Patches](flecs_patches.md): our fixes to flecs (bsh/flecs_fix.sh), why, repros, for upstream PRs
-- [Spawning](spawning.md): how entities are made, what it costs, keeping it cheap
+- [Body and Equipment](tech/body_equips.md): body parts in slots, how a body is merged and boned, gear (hats, shirts)
+- [Audio](tech/audio.md): the mixer, 3D sounds, effects, voices and music
+- [Sounds](tech/sounds.md): what things sound like hit, realm sound entities, materials, grunts
+- [Nodes](tech/nodes.md): node graphs, how dialogue and quests walk them
+- [Tests](engine/tests.md): writing tests, patterns, every test by area
+- [Metrics](engine/metrics.md): rendering speed per backend and how alike they draw, a report a run
+- [Tools](engine/tools.md): scripts that look into the game (world generation's maps as images), bsh/tools
+- [Systems](engine/systems.md): the phases in a frame, kinds of systems, budgets, profiling
+- [Thread Safety](engine/thread_safety.md): workers, merges (sync points), octree phases and locks, `tst pipeline_syncs`
+- [Flecs Patches](engine/flecs_patches.md): our fixes to flecs (bsh/flecs_fix.sh), why, repros, for upstream PRs
+- [Spawning](engine/spawning.md): how entities are made, what it costs, keeping it cheap
+- [Engine](engine/_.md) and [Tech](tech/_.md): the indexes of every engine and module doc
+- [Vulkan](tech/vulkan.md): the vulkan backend, how it works and how to test it
+- [Android](engine/android.md): building, installing and debugging the apks
 - [Game Design](gdd.md): the blend, the pillars, what's playable and planned
 - [Settings](tech/settings.md): a module's settings, how a change applies, save and load
 - [States](tech/states.md): change events, tags over byte states, which form to use, timing
-- [Commands](commands.md): every command line flag for the game binary
+- [Commands](engine/commands.md): every command line flag for the game binary
 - [Help](help.md): make targets
-- [Notes](notes.md): assorted engine notes
 - [Flecs docs](https://www.flecs.dev/flecs/): the ECS underneath, for when the wrappers aren't enough

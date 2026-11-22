@@ -1,7 +1,7 @@
 # Vulkan
 
 A handover: what the vulkan backend is, how it works, how to test it, and what's left. The plan and decisions it
-was built by: [plans/vulkan.md](../plans/vulkan.md); numbers: [metrics.md](../metrics.md).
+was built by: [plans/vulkan.md](../plans/vulkan.md); numbers: [metrics.md](../engine/metrics.md).
 
 ## What it is
 
@@ -15,7 +15,7 @@ render textures (post processing, lids, tint), and compute (gpu meshing). The ba
 
 ```bash
 bash bsh/build.sh zoxel --vulkan --release --out zoxel_vulkan        # bin/zoxel_vulkan/zoxel_vulkan.bin
-bash bsh/android.sh zoxel --vulkan --debug --logs --install          # android 7 (api 24) up, not with --xr
+bash bsh/android.sh zoxel --vulkan --debug --logs --install          # android 7 (api 24) up, --xr too (XR_KHR_vulkan_enable2)
 bash bsh/tst.sh <test> --vulkan [--gpu | --visible]                  # bin/tst_vulkan, lavapipe by default
 bash bsh/compare_backends.sh                                         # every material on both backends, real gpu
 ```

@@ -78,7 +78,7 @@ Module order matters: `chunks → physics → models → bones → characters �
 - A mesh per render depth is spawned **only when needed**, then cached, like terrain chunk meshes.
 - `PreparingMesh` builds while `ActiveMesh` renders. They swap when the prepared mesh is ready: `MeshBuilt` and no `BuildMesh` / `BuildMeshWeights` / `SkeletonMeshDirty` / `MeshDirty`.
 - When voxels change, cached meshes are deleted and the active mesh rebuilds in place.
-- Build pipeline: `BuildMesh` → `skeleton_mesh_build_system` → `BuildMeshWeights` → `bone_index_generate_system2` (each face its voxel's bone from the vox's `BoneNode`, blended at joints, [done/skeletons.md](done/skeletons.md)) → `SkeletonMeshDirty` → bone upload (adds `MeshBuilt`) → `MeshDirty` → mesh upload.
+- Build pipeline: `BuildMesh` → `skeleton_mesh_build_system` → `BuildMeshWeights` → `bone_index_generate_system2` (each face its voxel's bone from the vox's `BoneNode`, blended at joints, [done/skeletons.md](../done/skeletons.md)) → `SkeletonMeshDirty` → bone upload (adds `MeshBuilt`) → `MeshDirty` → mesh upload.
 - `SkeletonUpdate` (bones respawned) re-triggers weights on all of a skeleton's meshes.
 
 ---
@@ -95,11 +95,11 @@ Module order matters: `chunks → physics → models → bones → characters �
 - **Waiting on children:** systems that need a child (`body_combine_system`, `character_bone_spawn_system`) skip the entity until the link is valid, rather than consuming their dirty state.
 - **Writing to a child from a multithreaded system** with `zox_getm` is fine when each child belongs to one owner. Structural changes still go through deferred commands.
 - **Vox data `RenderDepth` is always max depth** (raycasts read it). The owner's `RenderDepth` picks which mesh to show.
-- **Links are flecs pairs** (`zox_link`, `zox_set_link`, `zox_get_link`), declared non-fragmenting so they don't split tables. See [links.md](links.md):
+- **Links are flecs pairs** (`zox_link`, `zox_set_link`, `zox_get_link`), declared non-fragmenting so they don't split tables. See [links.md](../engine/links.md):
   - `zoxd_nf_link`: one target, linking again replaces it (Exclusive).
   - `zoxd_nf_links`: many targets, iterate with `zox_each_link`, count with `zox_get_links_count`. Not kept in insertion order.
   - `zoxd_nf_link_owned`: the linking entity is deleted with its target (`UIHolderLink`: 3D UIs die with their character).
   - Links can't be used in system queries. Use a tag to select entities (i.e. `SkeletonOwner`, `DataUI`) and `zox_get_link` inside.
   - A link to a deleted entity is removed by flecs automatically. Use `zox_on_unlink` to react, see `on_unlink_ChunkLink`, `on_unlink_DataLink`.
-- **Owned lists are children** ([children.md](children.md)): model variants are children of their `ModelGroup` (`get_model_variant()`), and notes are ordered children of their music.
+- **Owned lists are children** ([children.md](hierarchy.md)): model variants are children of their `ModelGroup` (`get_model_variant()`), and notes are ordered children of their music.
 - **Untested paths:** `CharacterUnique` (only used when `is_characters_instanced` is 0).

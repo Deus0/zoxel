@@ -41,7 +41,7 @@ right and z down from the regions' low corner, in `tst/maps/`:
 
 ## Still in bsh, to move here
 
-These look at the game through the test harness (they run a `*_views` test): [todo.md](todo.md) has moving them.
+These look at the game through the test harness (they run a `*_views` test): [todo.md](../todo.md) has moving them.
 
 | Script | Runs | Saves |
 |---|---|---|

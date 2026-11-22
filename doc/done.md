@@ -378,7 +378,7 @@
   removed nothing and each turn on added another, their particles never stopping; linked now; tst aura_particles
   (a real aura on a character: on, moved, off, on again)
 -x windows build: near and far are empty macros in windows' headers (minwindef.h), 2 names in the game (ik feet,
-  xr body) and 7 tests used them; renamed, the rule in doc/coding_standards.md (Naming), and lint_builds compiles a
+  xr body) and 7 tests used them; renamed, the rule in doc/engine/coding_standards.md (Naming), and lint_builds compiles a
   syntax only build with them defined (build.sh reads zox_extra_dflags) so a new one fails there
 -x the body fits a doorway (play test: too big for a 2 tall, 1 wide door): it was 2 blocks and a hat's top tall at
   Block Res 5 (131 voxels of 128), the head and what's on it now sink into the neck past 2 blocks
@@ -388,7 +388,7 @@
 -x taskbar icons had no tooltips (2D or 3D): a has check left prefab_icon's without its TooltipEvent; tst tooltip_flick
   passes again, the 3D tooltip's text checked unclipped in the simulator (xr_navigator --xr-sim, tst/xr_tooltip.ppm)
 -x the XR simulator's window is 1440x720 (each eye square, a square window squeezed each eye to a thin strip)
-  unless --1080p: bash bsh/tst.sh screenshot --xr-sim saves both eyes side by side (doc/tests.md)
+  unless --1080p: bash bsh/tst.sh screenshot --xr-sim saves both eyes side by side (doc/engine/tests.md)
 -x 3D tooltips show their text: its glyphs sat at the world's origin (the hierarchy skipped a DisableParentTransform's
   children), now it keeps its own transform and places its children from it (its own scale kept, or its parent's
   passed on); 1cm nearer than its window (4mm hid it behind the frame); a ui without a canvas or tooltip no longer
@@ -401,7 +401,7 @@
   as a tracker spawned) (tst quest_tracker_text)
 -x imported voxes: a .txt beside a .vox says the depth it was made at ("depth 4"), it's scaled up to depth 5 on
   import, so the top hat (and cavalier and bowler hats) aren't half size on a Block Res 5 body; only .vox files are
-  read as voxes; doc/imports.md (tst vox_import)
+  read as voxes; doc/tech/imports.md (tst vox_import)
 -x local coop: joining and leaving tested with a test gamepad's A and B (tst split_screen), A on the main menu no
   longer switches the first player to a gamepad it joins with (gamepad_a_joins); split screen huds scaled to their
   half and to fit (player_ui_scale_begin), the quest tracker's font scales with the ui (it was 12 at any), the
@@ -436,7 +436,7 @@
   the scrollview link with zox_has: links are pairs, it never found one, 2D's too); every canvas3 a 3D root for its
   children's twins (spawn_canvas3); tst xr_options checks the handle, xr_navigator the brightness
 -x code stats: bash bsh/tst.sh code_stats (bsh/code_stats.sh): src's size per module (code, tests, comments, files),
-  the biggest files, the change since the baseline (doc/code_stats.txt, --save), growth over 5% flagged
+  the biggest files, the change since the baseline (doc/data/code_stats.txt, --save), growth over 5% flagged
 -x tooltips under the selected ui for every navigating device: a 2D tooltip follows the mouse with the mouse, while
   navigating (a gamepad, a Steam Deck, keyboard navigation) it's under the selected ui (tooltip_navigated_system,
   after the mouse's); tst navigator_grid checks it
@@ -744,7 +744,7 @@
   weight (through joined bones: chest, shoulder, bicep), coarser lods take a node's bone from its children; tst
   chest_weights counts cracked corners (0); doc/done/skeletons.md
 -x A deleted entity's handle no longer comes back alive: instancing a prefab revived deleted ids for its children
-  (a flecs patch, doc/flecs_patches.md), a deleted chunk's id became an npc's stat and its neighbours' links read
+  (a flecs patch, doc/engine/flecs_patches.md), a deleted chunk's id became an npc's stat and its neighbours' links read
   alive ("Neighbor [(null)] has invalid components", crashes in the lights and chunk_sides_system flying), tst
   instance_id_reuse; chunk_sides_system no longer leaves a lock unset for a neighbour that isn't a chunk
 -x tables_stream passes: child bones had a second, ChildOf parent (~45 tables a humanoid), a town's chunk step makes
@@ -854,7 +854,7 @@
 -x The rare terrain loading stall: a region with no towns left its tunks at the towns step forever (a continue
   skipped ending them), their chunks waited on them and the player's spawn on the chunks, tst town_maps_empty
 -x Lag spikes crossing chunks (48 to 145ms): non fragmenting children (400 to 2500 tables a step to ~100), flecs
-  patches, mesh and sides budgets, stat dirties; worst flying frame ~20ms (release, gpu), the rest in optimize.md
+  patches, mesh and sides budgets, stat dirties; worst flying frame ~20ms (release, gpu), the rest in todo.md (Optimizations)
 -x Player respawn test: dies, waits out the 16s death screen, respawns alive at full health (tst player_respawn,
   drafted by the local AI)
 -x zox_geter and zox_geter_value removed, 409 calls are zox_get and zox_getv now (const T* name = zox_get(e, T))
@@ -866,11 +866,11 @@
   of their axes, tst smooth_lights; tests run on x86 again (egl device by machine), npcs link their hit sounds
 -x Shirts with shapes: a boxy sleeved shirt (worn) and a tight sleeveless vest (inventory), box nodes in blueprints,
   clothes merge last; fixed: the second hat never reached the inventory, slot names out of order, calves' slot types
--x Body and equipment doc (doc/body_equips.md), a shirt: generated from a blueprint like body parts, worn in a
+-x Body and equipment doc (doc/tech/body_equips.md), a shirt: generated from a blueprint like body parts, worn in a
   shirt slot over the chest (anchor over, no bone of its own), players get the realm's, tst shirt
 -x Realm sounds: hits sound like what they hit, stone knocks, dirt thuds, sand crunches, wood tocks, leaves rustle,
   slimes squelch, bodies thump and grunt in their own voice (distorted), sound entities of the realm linked by
-  block and character kinds (doc/sounds.md), tst hit_sounds, hit_sound_links, sound_balance
+  block and character kinds (doc/tech/sounds.md), tst hit_sounds, hit_sound_links, sound_balance
 -x Font filling was off: outlines walking back over themselves (g, q) left parts empty, fill by the glyph's
   winding now, tst font_fill, font_glyphs_fill, texture tests (texture_noise caught dark noise wrapping bright)
 -x Trees spawned too rarely and in clumps: a jittered grid of tree cells (vegetation/fun), spaced 5+ apart, with leaves
@@ -880,7 +880,7 @@
 -x Tests for terrain generation: biome_heights, biome_map, region_place, town_maps, vegetation_trees,
   vegetation_cover, vegetation_chunks
 -x Flying spikes (78-164ms, tst perf_fly): deleting an entity walked all 14k non fragmenting records (flecs patch,
-  doc/flecs_patches.md), flying is 20-22ms worst now, even with --maxnpcs
+  doc/engine/flecs_patches.md), flying is 20-22ms worst now, even with --maxnpcs
 	-x npc spawning walked every non fragmenting record too (flecs patch), worst merge 18.6 -> 11ms
 -x Refactor town and mountain placement in regions: regions/fun/place.c (circles, rects, used by mountains,
   towns, homes, dungeons), regions/fun/tunk.c (a tunk's region setup, the columns a thing covers),
@@ -898,7 +898,7 @@
 -x LAG - 150 ms before now 50...
 	-x Disable ChunkMesh and just set Transform + position data
 	-x same for chunk
--x Refactor the sdl mixer into audio - using my own mixer code (src/sounds/mix, doc/audio.md)
+-x Refactor the sdl mixer into audio - using my own mixer code (src/sounds/mix, doc/tech/audio.md)
 -x Bug: Fix music on Main Menu (spawn_menu_music, crossfades with the realm's)
 -x Bug: Fix music loading properly (tst music_file)
 -x Dialogue: add sounds per syllable (npc voices, tst voice_sounds)
@@ -2087,7 +2087,7 @@ Disabling Lods means:
 	- fix: stream_end_system counts the near circle (get_stream_near_chunks_count)
 	- test: zox_tst_save=<realm folder> bash bsh/tst.sh continue_game loads a copy of a real save
 -x Onboarding doc for new users (doc/onboarding.md), linked from readme.md
--x Doc on command line flags for the binary (doc/commands.md), linked from readme.md and onboarding
+-x Doc on command line flags for the binary (doc/engine/commands.md), linked from readme.md and onboarding
 -x Some faces weren't culled between chunks (and some border faces went missing)
 	- cause: side_infos (src/_/octrees/data.c) had every side flipped, so when a chunk's node was coarser than
 	  its neighbor's voxels (lod chunks, lod seams), it checked the neighbor's far face instead of the touching one
@@ -2102,7 +2102,7 @@ Disabling Lods means:
 - Water splash (doc/tech/water_extras.md task 1)
 	- InsideBlockDirty observer: a splash and sound falling into water (faster than 2 a second), a small one coming out
 	- test: water_splash
-- Tests out of controllers/tst, each to the lowest module it checks (doc/coding_standards.md Test Placement)
+- Tests out of controllers/tst, each to the lowest module it checks (doc/engine/coding_standards.md Test Placement)
 	- controllers/tst keeps only controller tests (input, menus) and the player and world fixtures
 	- terrain tests on air_chunk.c (no player), block_data_queue too; body_views a skeleton character, not the player's
 	- add_item_to_slot_manager moved from pickups to items/fun (quests reached up for it)
@@ -2113,3 +2113,19 @@ Disabling Lods means:
 		humanoid_leak, monster_leak, chest_weights, hit_sound_links)
 	- tooltip_gone on the menus, item_sizes on a realm of its own, furniture_fillers and ground_removed on an air chunk
 	- perf_fly logs the characters peak (InsideBlock), not npcs
+-x UI 3Ds Lagging behind character 
+    - the ordering was the problem
+    - put trail_system, billboard_system, transform3_children_system onto main thread to temporary fix
+    
+-x Body lagging behind camera
+    - make sure phases there.. seperate timings
+    - write a simple cube append test
+        - cube will move forward, camera will ride i
+    - GOT IT: its actually todo with parenting
+    - when another humanoid exists, it will grab the wrong bones
+    - EcsParent vs EcsChildOf
+-x I made EcsChildOf default for now
+    - fixes body lagging behind camera
+    - fixed npc stats
+    - due to difference in prefab spawning
+

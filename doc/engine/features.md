@@ -1,5 +1,5 @@
 # Features
-- What each module does now, by module. Part of the [todo](todo.md) ("a features.md with all features by module").
+- What each module does now, by module. Part of the [todo](../todo.md) ("a features.md with all features by module").
 - A section a module: what it does, its components, its systems, and what's missing next to a game engine.
 - Drafted by the local ai a few modules a run, reviewed after: sections marked (draft) aren't checked yet.
 

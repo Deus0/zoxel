@@ -65,7 +65,7 @@ void zox_tsts_my_module() {
 - **The fake mouse**: [src/ui/tst/helpers.c](../src/ui/tst/helpers.c), `zox_tst_mouse(position, pressed)`,
   `zox_tst_find_click`, `zox_tst_ui_pointer_position`. Press and release on different frames.
 - **Listening**: tests run silent. A test can turn sounds on (`nosounds = 0`) to check sounds spawn, nothing
-  plays. To hear one: `--sounds`, to record one: `SDL_AUDIO_DRIVER=disk` (see [audio.md](audio.md)).
+  plays. To hear one: `--sounds`, to record one: `SDL_AUDIO_DRIVER=disk` (see [audio.md](../tech/audio.md)).
 - **Files to look at**: write a `.wav` or a screenshot to `tst/` with `zox_tst_path("song.wav")` (makes sub folders,
   `zox_tst_path("models/cokie.ppm")`), never a hardcoded path: the game runs from `bin/<build>/`, tst.sh passes the folder.
 - **A screenshot of a game**: `bash bsh/tst.sh screenshot` (`tst/screenshot.ppm`), `--xr-sim` for the XR simulator's
@@ -95,14 +95,14 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 | Lints (scripts, no game) | `lint_systems`: system names, signatures, timers (bsh/lint_systems.py) |
 | Core | `hashmaps` `links_api` `links_cleanup` `flecs_wildcard_remove` (a flecs bug worked round, fails once flecs fixes it) `children` `node_graphs` `spawn_queue` |
 | Maths | `maths_vectors` `maths_quaternions` |
-| Physics | `physics_steps` `physics2_motion` `physics2_rotation` `physics3_motion` `physics3_rotation` `terrain_collisions` (each also `_10fps` `_30fps`), see [physics.md](physics.md) |
+| Physics | `physics_steps` `physics2_motion` `physics2_rotation` `physics3_motion` `physics3_rotation` `terrain_collisions` (each also `_10fps` `_30fps`), see [physics.md](../tech/physics.md) |
 | Octrees and chunks | `octree_*` `chunk_positions` `chunk_io` `block_table` `block_table_remap` `chunk_sides` `vox_mesh_grid` `pipeline_syncs` `tilemap` |
 | Furniture | `furniture_place` `furniture_fillers` `furniture_rotation` `block_vox_hits` `block_data_queue` `block_datas_io` `doors` (open, close, swing, pass through, saved) `block_activate` (a right click uses a block) `bed_sleep` |
 | Terrain | `biome_heights` `biome_map` `region_place` `region_place_prior` `region_zones` `town_homes` `home_roofs` `home_glow` `glow_light` `town_maps` `town_maps_empty` `vegetation_trees` `vegetation_cover` `vegetation_chunks` `vegetation_across` |
 | Textures | `texture_noise` `texture_outline` |
 | Lights | `smooth_lights` `lod_lights` `lod_chunk_lights` `block_vox_lights` `block_vox_light_sampling` |
 | Backends | `bash bsh/compare_backends.sh [--soft] [tests]`: each screenshot test on opengl and vulkan (real gpu), a markdown table of how much they differ and how noisy each is, results in [metrics.md](metrics.md) |
-| Vulkan | `vulkan_clear` (frames clear, read back, carry on after a read back; no validation errors) `vulkan_shaders` (every program's uniforms inside its reflected blocks), `--vulkan` only ([plans/vulkan.md](plans/vulkan.md)) |
+| Vulkan | `vulkan_clear` (frames clear, read back, carry on after a read back; no validation errors) `vulkan_shaders` (every program's uniforms inside its reflected blocks), `--vulkan` only ([plans/vulkan.md](../plans/vulkan.md)) |
 | Rendering | `particles_render` (an emitter's magenta particles show in the view) `instance_views` (model_views drawn instanced, the vox instance shader) `gpu_restore` `gpu_restore_game` `gpu_links` (gpu objects let go of and made again, live counts) `lines_spawn` `lines_render` `skeleton_render` `vox_instance_render` `terrain_render` `mesh_colors_wait` (a remesh waiting on its lights keeps its old colors on the gpu) `block_vox_light_sampling` `block_vox_lights` `screenshot` `model_views` `body_views` `punch_views` `walk_views` |
 | Models | `wfc` (wave function collapse: patches, seeds, rules) `model_nodes` (fill, box, paint, sprinkle on voxels) `model_shapes` (realm models: one piece, mirrored, head's neck and eyes, chest without a pinch, cookie chips and crumbs) |
 | Cameras | `camera_viewports` `camera_projection` `camera_orthographic` `camera_look_at` `camera_viewport_spawn` `camera_split_screen` `camera_downscale` `camera_frustum` `camera_filter` `eyelids` |
