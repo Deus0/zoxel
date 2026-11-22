@@ -8,6 +8,7 @@ typedef struct {
     int length;         // the chunk's voxels a side at depth, + 2
     byte present[27];   // which of the 27 chunks have lights, a missing one reads as past the world
     byte voxels_present[27];    // which have voxels, a missing one is air (gpu meshing culls faces into it)
+    byte voxel_depths[27];      // set before a fill: the depth each draws at, its voxels no deeper (0: the grid's)
 } smooth_grid;
 
 #define smooth_grid_depth_max 5
@@ -50,8 +51,9 @@ static inline byte smooth_grid_fill(
         grid->voxels_present[i] = voxels[i] && voxels_locks[i];
         if (grid->voxels_present[i]) {
             spin_lock(voxels_locks[i]);
-            octree_fill_grid(voxels[i], sizeof(VoxelNode), octree_type_offset_VoxelNode, 0, depth, int3_zero, origin,
-                grid->voxels, grid->length, 0);
+            const byte stop = grid->voxel_depths[i] && grid->voxel_depths[i] < depth ? grid->voxel_depths[i] : depth;
+            octree_fill_grid_stop(voxels[i], sizeof(VoxelNode), octree_type_offset_VoxelNode, 0, depth, int3_zero, origin,
+                grid->voxels, grid->length, 0, stop);
             spin_unlock(voxels_locks[i]);
         }
     }

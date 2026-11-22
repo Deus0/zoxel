@@ -79,6 +79,14 @@ static inline guint chunk_gpu_terrain(ecs* world, entity terrain, guint2* grid) 
     return program;
 }
 
+// its neighbours' voxels at the depth they draw (chunk_drawn_depth): a face against voxels a coarser lod doesn't
+//  show was a hole where lods met (tst stream_gpu_sides)
+static inline void smooth_grid_drawn_depths(ecs* world, smooth_grid* grid, const entity* nearby_chunks) {
+    for (byte j = 0; j < 27; j++) {
+        grid->voxel_depths[j] = j != OCTREE_INDEX(0, 0, 0) && zox_valid(nearby_chunks[j]) ? chunk_drawn_depth(world, nearby_chunks[j]) : 0;
+    }
+}
+
 // fills the meshes with tag (BuildMesh or BuildMeshColors): their chunk's voxels and lights at their depth with a voxel
 //  of border from the 26 around it (worker threads, reading the octrees as smooth lights does), then MeshDirty
 static inline void chunk_gpu_grid_fill(iter* it, entity tag) {
@@ -115,6 +123,7 @@ static inline void chunk_gpu_grid_fill(iter* it, entity tag) {
         fetch_nearby_lights(world, nearby_chunks, nearby_lights, lights_locks);
         fetch_nearby_voxels(world, nearby_chunks, nearby_voxels, voxels_locks);
         smooth_grid grid = { 0 };
+        smooth_grid_drawn_depths(world, &grid, nearby_chunks);
         if (smooth_grid_fill(&grid, nearby_lights, lights_locks, nearby_voxels, voxels_locks, depth->value)) {
             const int cells = gpu_mesh_grid_bytes(depth->value);
             resize_GridVoxels(voxels, cells);

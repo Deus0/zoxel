@@ -255,7 +255,8 @@ static inline byte octree_max_leaf_value(const void* node, size_t stride, size_t
 //  - the tree's corner sits at origin in the grid, cells outside the grid are skipped (a neighbour's border slab)
 //  - a closed or linked node fills its whole cube, as walk_octree reads it
 //  - leaf_max: an open node at the target depth gives its leaves' max (lights), else its own value
-static inline void octree_fill_grid(
+//  - stop: no deeper than this (a neighbour drawn at a coarser lod), its nodes fill their cubes at target's scale
+static inline void octree_fill_grid_stop(
     const void* node,
     size_t stride,
     size_t type_offset,
@@ -265,7 +266,8 @@ static inline void octree_fill_grid(
     int3 origin,
     byte* grid,
     int length,
-    byte leaf_max)
+    byte leaf_max,
+    byte stop)
 {
     const int span = 1 << (target - depth);
     const int3 start = { origin.x + position.x * span, origin.y + position.y * span, origin.z + position.z * span };
@@ -274,12 +276,12 @@ static inline void octree_fill_grid(
     {
         return;
     }
-    const void* kids = depth < target ? octree_children(node, type_offset) : NULL;
+    const void* kids = depth < target && depth < stop ? octree_children(node, type_offset) : NULL;
     if (kids) {
         for (byte i = 0; i < octree_length; i++) {
             const byte3 o = octree_positions[i];
-            octree_fill_grid(octree_child((void*) kids, i, stride), stride, type_offset, depth + 1, target,
-                (int3) { position.x * 2 + o.x, position.y * 2 + o.y, position.z * 2 + o.z }, origin, grid, length, leaf_max);
+            octree_fill_grid_stop(octree_child((void*) kids, i, stride), stride, type_offset, depth + 1, target,
+                (int3) { position.x * 2 + o.x, position.y * 2 + o.y, position.z * 2 + o.z }, origin, grid, length, leaf_max, stop);
         }
         return;
     }
@@ -292,6 +294,12 @@ static inline void octree_fill_grid(
     for (int y = y0; y < y1; y++) {
         memset(grid + (x * length + y) * length + z0, value, z1 - z0);
     }
+}
+
+static inline void octree_fill_grid(const void* node, size_t stride, size_t type_offset, byte depth, byte target,
+    int3 position, int3 origin, byte* grid, int length, byte leaf_max)
+{
+    octree_fill_grid_stop(node, stride, type_offset, depth, target, position, origin, grid, length, leaf_max, target);
 }
 
 // NOTE: Gets voxel from neighbouring chunk if position crosses boundary

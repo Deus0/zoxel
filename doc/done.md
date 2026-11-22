@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-22
+-x Holes where lods met with gpu meshing (gl and vulkan), seen roaming: a gpu mesh's grid filled its neighbours'
+  border voxels at its own depth, a coarser neighbour's detail hid faces it didn't draw. Each neighbour fills at the
+  depth it draws (smooth_grid voxel_depths, octree_fill_grid_stop), as cpu sides do. tst stream_gpu_sides (112
+  meshes wrong before, none missing a face after)
 -x A door shut loaded open: a chunk saved only on a voxel's change (ChunkUpdate), and a door's toggle changes its
   block data alone, so the file kept the door as it was at the chunk's last edit. A block data change marks the chunk
   SaveDirty (vodes/doors terrain_set_block_data), chunk3_save_dirty_system saves it once. tst door_save reads its file
