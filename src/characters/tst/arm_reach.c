@@ -1,8 +1,9 @@
 // tst: arm_reach, the player's right arm reaches a point with ik (bones/ik) using the skeleton's own bones
 //  - holds the right shoulder (IKHeld, as XR hands do) on a point ahead of and below it, within its reach
 //  - its hand bone lands on the point, its elbow bends (the forearm turned)
-//  - turned as the target rotation (IKTargetRotation, an XR controller's): the hand's rest down along its forward,
-//    its front (thumb side) up, rolled about it the forearm takes half the twist (a wrist turning)
+//  - turned as the target rotation (IKTargetRotation, an XR controller's): the hand's fingers along its forward, its
+//    thumb up, its palm in (the anatomical rest: palm +z, the right thumb -x), rolled about it the forearm takes half
+//    the twist (a wrist turning)
 //  - run: bash bsh/tst.sh arm_reach
 double zox_tst_arm_reach_start = 0;
 float3 zox_tst_arm_reach_target;
@@ -72,12 +73,18 @@ void zox_tst_arm_reach_check(ecs* world) {
     const float turn = float3_dot(pointing, wanted);
     zox_log("[tst] arm_reach: hand points along its target [%.4f]", turn);
     zox_tst_check(turn > 0.99f, "the hand didn't turn to its target [%f]", turn);
-    // its front (the thumb's side) up the target's up, as a held controller's (it was upside down)
-    const float3 front = float4_rotate_float3(zox_getv(hand, Rotation3D), (float3) { 0, 0, 1 });
+    // its thumb up the target's up, as a held controller's (it was upside down): the right hand rests in the
+    //  anatomical position, its thumb its -x, its palm +z (bones/ik ik_hand_rest_to_target)
+    const float3 thumb = float4_rotate_float3(zox_getv(hand, Rotation3D), (float3) { -1, 0, 0 });
     const float3 up = float4_rotate_float3(zox_getv(shoulder, IKTargetRotation), float3_up);
-    const float roll = float3_dot(front, up);
-    zox_log("[tst] arm_reach: hand's front along its target's up [%.4f]", roll);
+    const float roll = float3_dot(thumb, up);
+    zox_log("[tst] arm_reach: hand's thumb along its target's up [%.4f]", roll);
     zox_tst_check(roll > 0.99f, "the hand is rolled off its target [%f] (upside down at -1)", roll);
+    // its palm in, the target's left (a right hand's grip, not a left's mirror)
+    const float3 palm = float4_rotate_float3(zox_getv(hand, Rotation3D), (float3) { 0, 0, 1 });
+    const float3 left = float4_rotate_float3(zox_getv(shoulder, IKTargetRotation), float3_left);
+    zox_log("[tst] arm_reach: hand's palm along its target's left [%.4f]", float3_dot(palm, left));
+    zox_tst_check(float3_dot(palm, left) > 0.99f, "the hand's palm isn't in [%f]", float3_dot(palm, left));
     // the wrist's turn shared: the forearm's twist about its line, and the hand's on it, each about half
     const float3 line = float3_normalize(zox_getv(hand, LocalPosition3D));
     const float4 forearm_twist = quaternion_twist(zox_getv(elbow, LocalRotation3D), line);

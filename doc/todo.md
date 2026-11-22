@@ -173,6 +173,16 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
   game flag doing the job and quitting (as `--maps`, towns/dbg/maps_dump.c), the test then calls the same functions
   and checks what they make (the views a test checks stay tests, the ones only looked at become tools)
 
+## The mouse turns the head, the camera rides it (2026-11-22)
+- the look's pitch is the first person camera's own turn on the head: the head bone stays straight ahead, so other
+  players see every player's head looking straight ahead (multiplayer), and what reads the look (the guard's swing,
+  the body's lean, the dialogue aim) finds the camera first
+- the mouse pitches the head (head_look_system's ahead), the camera on it at the eyes: the look is the character's
+  state, free roam keeps it with no copy (LookHeld, LookHeldEye and first_person_look go), the lean's head turn and
+  the dialogue's aim are turns of the one head
+- check: the camera's height and looking down into the body (head_camera_offset turns with the head about the
+  neck), tests pitching the camera (guard_pitch, free_roam_pose, dialogue_aim) pitch the head
+
 ## RenderDisabled to tags (2026-11-22)
 - RenderDisabled a tag (Invisible), and one for not raycast or navigated to (DisableInteraction): it's a byte each
   draw reads; a window's tabs (ui/windows/ins/tabs.c) hide theirs with it for now

@@ -206,7 +206,7 @@ fi
 # tests that need more terrain than --tiny (i.e. far lods to compare), the later --medium wins
 medium_tests=(lod_chunk_lights lod_swap stream_sides)
 # tests that screenshot the world, the hud hidden
-nohud_tests=(sky_clouds head_camera town_view held_item held_block eat_swing)
+nohud_tests=(sky_clouds head_camera town_view held_item held_block held_view eat_swing)
 # tests that take the readme's screenshots: a far, tall world at 1080p, little fog (to see the mountains), no hud or labels, the same seed (zox_tst_seed
 #   overrides it), more time to stream, their shots converted to doc/screenshot/ after with --readme
 aesthetic_tests=(aesthetic_town aesthetic_particles)

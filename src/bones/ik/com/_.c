@@ -1,5 +1,6 @@
 zoxc_float3(IKTarget);  // on a shoulder bone: the point in the world its hand reaches for (a thigh's: its foot)
 zoxc_float(IKWeight);   // on a shoulder bone: 0 its animation, 1 the hand on IKTarget (a thigh's: its foot)
+zoxc_float3(IKPole);           // on a shoulder bone, optional: the way its elbow points, in the world (a swing's: under the view), else down, back and out from the chest
 zoxc_float4(IKTargetRotation);   // on a shoulder bone, optional: the hand turns to it (an XR controller's), its rest down along its forward (-z)
 zox_tag(IKHeld);        // on a shoulder bone: a driver holds its target (XR hands), a punch leaves it be
 zox_tag(PlantFeet);     // on a skeleton: its feet stay planted in the world as the body shifts, stepping when far (sys/feet.c)
@@ -13,6 +14,7 @@ zox_tag(LookLean);          // on a skeleton: its first person look leans its up
 void zox_components_ik(ecs* world) {
     zoxd_float3(IKTarget);
     zoxd_float(IKWeight);
+    zoxd_float3(IKPole);
     zoxd_float4(IKTargetRotation);
     zoxd_tag(IKHeld);
     zoxd_tag(PlantFeet);

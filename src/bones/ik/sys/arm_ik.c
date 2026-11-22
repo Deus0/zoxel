@@ -2,7 +2,7 @@
 //  - the shoulder turns the upper arm (the shoulder to the elbow), the elbow (the hand's parent) the lower
 //  - lengths from the bones' world positions (they don't change as they turn), directions at rest from their local
 //    positions, so any scale works; bones between the shoulder and elbow are taken at rest
-//  - the elbow bends down, back and out from the body, from the chest's facing
+//  - the elbow bends toward IKPole (a swing's: under the view), else down, back and out from the body, from the chest's facing
 //  - a target past the arm's reach moves the shoulder after it (ik_shoulder_reach), as a person's shrugs reaching up
 //    and pushes out reaching out: the arm alone fell short up and out (its rest place kept, RestPosition3D)
 //  - with IKTargetRotation the hand turns to it too (XR: the body's hand matches the real one, ik_hand_rest_to_target)
@@ -13,11 +13,14 @@
 #define ik_forearm_twist 0.5f       // of the hand's twist about the forearm, the forearm's
 #define ik_shoulder_reach 0.2f      // of the arm's reach, the shoulder moving after a target past it (a shrug, a push)
 
-// the hand at rest onto its target's turn: its rest down (the arm's line) along the target's forward (-z), its rest
-//  front (+z, the thumb's side, arms hanging) up (+y), as a held controller's; half a turn about (0, 1, 1)
-//  - it was the shortest turn from down to forward, its front ending down: the hand upside down (thumb down)
-static inline float4 ik_hand_rest_to_target() {
-    return quaternion_from_axis_angle(float3_normalize((float3) { 0, 1, 1 }), (float) M_PI);
+// the hand at rest onto its target's turn (a controller's, a fist's): its fingers along the target's forward (-z), its
+//  thumb up (+y), the palm in (the handshake grip). A hand rests in the anatomical position: fingers down its length
+//  (-y), its palm ahead (+z, it's thinnest along z), its thumb out from the body (the right hand's -x, the left's +x);
+//  a left hand is a right's mirror, so its side picks its thumb (right: 1 for the right hand, on -x)
+//  - it took +z for the thumb, the same for both hands: a fist's palm faced up, a held block sat on its back
+static inline float4 ik_hand_rest_to_target(byte right) {
+    const float3 thumb = { right ? -1 : 1, 0, 0 };
+    return ik_turn_to((float3) { 0, -1, 0 }, thumb, (float3) { 0, 0, -1 }, float3_up);
 }
 
 void arm_ik_system(iter* it) {
@@ -95,7 +98,7 @@ void arm_ik_system(iter* it) {
         }
         // down, back and out from the body: the right shoulder is on -x (parts/sys/bones.c)
         const float out = zox_getv(e, LocalPosition3D).x < 0 ? -0.5f : 0.5f;
-        const float3 pole = float4_rotate_float3(parent_rotation, (float3) { out, -1, -0.6f });
+        const float3 pole = zox_has(e, IKPole) ? zox_getv(e, IKPole) : float4_rotate_float3(parent_rotation, (float3) { out, -1, -0.6f });
         float3 elbow_point, hand_point;
         ik_two_bone(shoulder_point, a, b, target->value, pole, &elbow_point, &hand_point);
         // the shoulder: its rest upper arm onto the shoulder to elbow, in the parent's space, and its rest front (+z,
@@ -121,7 +124,8 @@ void arm_ik_system(iter* it) {
         if (zox_has(e, IKTargetRotation)) {
             // the hand's world turn: the target's, its rest down onto the target's forward; local to the elbow's turn
             const float4 elbow_world = quaternion_rotate(elbow_parent, elbow_ik);
-            const float4 hand_world = quaternion_rotate(zox_getv(e, IKTargetRotation), ik_hand_rest_to_target());
+            const byte right = zox_getv(e, LocalPosition3D).x < 0;     // the right shoulder's on -x (parts/sys/bones.c)
+            const float4 hand_world = quaternion_rotate(zox_getv(e, IKTargetRotation), ik_hand_rest_to_target(right));
             const float4 hand_ik = quaternion_rotate(quaternion_inverse(elbow_world), hand_world);
             // the forearm takes a share of the hand's twist about it (a wrist turning turns the forearm, not the
             //  hand alone); turned about its own line the hand stays where it is

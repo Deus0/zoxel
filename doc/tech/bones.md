@@ -81,11 +81,30 @@ Code: [src/bones](../../src/bones) (the skeleton, its animation state and system
 - A swing (`SwingStart`, `SwingSpeed`, `SwingKind`) runs 0 to 1 over its action's `SwingTime`: from the guard back,
   out to its hit, held, recovered. Poses are the hand's place in the arm's reach: out along the look, in to the body's
   middle, up, and the body's twist. Marks (`SwingMark`) are its events, the first the hit.
-- The guard (raised, `swing_guard`): out 0.7, in 0.15, up 0.35, 0.8 of the reach, the elbow bent ~75 degrees. At 0.95
-  the arm was held up straight, a salute from outside. It's still in the first person view (tst punch_motion).
-- Looking up a pose is placed as looking level, then turned up about the eyes and kept within its level reach (in
-  along its line from the eyes): turned about the shoulder with the head's up, the hand went over and behind the head
-  (tst guard_pitch). Looking down it turns about the shoulder.
+- The guard (raised, `swing_guard`): out 0.7, the elbow bent, the fist turned a little in. At 0.95 the arm was held
+  up straight, a salute from outside. It's still in the first person view (tst punch_motion).
+- Holding an item (`HoldingItem` on the skeleton, set by actions/sys/hold.c) the guard is `swing_guard_held`: further
+  out, to the side and lower, the view kept clear of the held block (tst held_view). A swing goes from and back to
+  whichever guard it has.
+- Looking up a pose is placed as looking level, then turned up about the eyes, all the way; past the arm's reach the
+  hand is along its line from the shoulder (0.9 of the reach): the shoulder turns the arm up into the sky. Pulled in
+  to the eyes it filled the view's middle; held back from the look it hung low (tst guard_pitch).
+- A first person body leans back looking up (`look_lean_system`, `LookLean`: 0.4 of the look's pitch, at most 20
+  degrees), its head turned back by it in head_look_system so the view holds: the shoulder comes under the view, the
+  forearm in front of the camera, not beside it.
+- The hand: a hand rests in the anatomical position, its palm ahead (+z, it's thinnest along z), its fingers down
+  (-y), its thumb out from the body (the right hand's -x, the left's +x; a left hand is a right's mirror).
+  `ik_hand_rest_to_target(right)` turns the fingers along a target's forward and the thumb up: the palm in, a
+  handshake's grip (an XR controller's, a fist's). The swing sets the fist's turn (`IKTargetRotation`) along the arm,
+  the thumb up the view, rolled by its pose's `roll` (the thumb toward the body, the palm down: a quarter turn at a
+  punch's hit, tst punch_motion).
+- The elbow points to `IKPole` when set (a swing's: down the view, a little out), else down, back and out from the
+  chest: it bent out to the side reaching up.
+- A held item sits out of the palm (+z), upright along the thumb, its front along the fingers (actions/sys/hold.c).
+- Free roam (F1) keeps the pose: the camera leaving the head, the skeleton holds its look and its place on the head
+  (`LookHeld`, `LookHeldEye`), the swing and the lean read it through `first_person_look` (tst free_roam_pose).
+- A first person head aims from its camera (the eyes), not its neck: a dialogue's view is at the speaker's head's
+  middle, it was at its top (tst dialogue_aim).
 - The shoulder's ik turn (`ik_turn_to`) maps the upper arm's line and its rest front (+z, where the forearm folds) to
   the hand's side: the shortest turn from hanging spun the arm about itself reaching up.
 - The off hand (`has_off`, `off_back`, `off_out`): in a punch the left fist comes up, reaches ahead as the right winds

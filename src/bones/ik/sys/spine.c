@@ -52,12 +52,11 @@ float4 look_lean_now(ecs* world, entity skeleton) {
     if (!zox_valid(skeleton) || !zox_has(skeleton, LookLean)) {
         return quaternion_identity;
     }
-    const entity head = zox_get_link(world, skeleton, HeadBoneLink);
-    const entity camera = zox_valid(head) ? zox_get_child_by_id(world, head, zox_id(Camera)) : 0;
-    if (!zox_valid(camera)) {
+    float4 look;
+    if (!first_person_look(world, skeleton, zox_get_link(world, skeleton, HeadBoneLink), &look)) {
         return quaternion_identity;
     }
-    const float3 ahead = float4_rotate_float3(zox_getv(camera, LocalRotation3D), (float3) { 0, 0, -1 });
+    const float3 ahead = float4_rotate_float3(look, (float3) { 0, 0, -1 });
     const float pitch = asinf(float_max(-1, float_min(1, ahead.y)));
     const float lean = float_min(look_lean_most, float_max(0, pitch) * look_lean_share);
     return quaternion_from_euler((float3) { -lean, 0, 0 });
@@ -70,10 +69,11 @@ void look_lean_system(iter* it) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         const entity head = zox_get_link(world, e, HeadBoneLink);
-        const entity camera = zox_valid(head) ? zox_get_child_by_id(world, head, zox_id(Camera)) : 0;
+        float4 look;
+        const byte first_person = first_person_look(world, e, head, &look);
         const entity shoulder = zox_get_link(world, e, ShoulderBoneLink);
         const byte held = zox_valid(shoulder) && zox_has(shoulder, IKHeld);
-        if (!zox_valid(camera) || held) {
+        if (!first_person || held) {
             if (zox_has(e, LookLean)) {
                 zox_remove(e, LookLean);
                 zox_setv(e, SpineLean, quaternion_identity);

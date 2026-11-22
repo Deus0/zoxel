@@ -2,6 +2,7 @@
 //  - raised (as holding the punch skill), then a slow punch (3s): pulled back the elbow bends more than the guard, at
 //    the strike the hand is out near the arm's full reach, and before it the guard's elbow is relaxed (bent some)
 //  - the guard is in the first person camera's view: the hand ahead of the camera, inside its sides
+//  - at the hit the fist is flat: the palm down (the swing's roll, swings.c)
 //  - run: bash bsh/tst.sh punch_motion
 double zox_tst_punch_motion_start = 0;
 #define zox_tst_punch_seconds 3.0   // slow, so slow frames (software gl, Block Res 5) still land in each part
@@ -10,6 +11,8 @@ float zox_tst_punch_pull_bend = 1;
 float zox_tst_punch_strike_out = 0;     // the hand from the shoulder, of the arm's reach
 float3 zox_tst_punch_guard_seen = { 0, 0, 1 };    // the hand in the camera's space at the guard (it faces -z)
 byte zox_tst_punch_has_camera = 0;
+float3 zox_tst_punch_palm = { 0, 0, 0 };    // the hand's palm (its rest z, its thinnest) held out at the hit, in the body's space
+byte zox_tst_punch_palm_measured = 0;
 
 static float zox_tst_punch_motion_sample(ecs* world, entity shoulder, float* bend) {
     ik_arm arm;
@@ -70,6 +73,14 @@ byte zox_tst_punch_motion_ready(ecs* world) {
     if (p > 0.35 && p < 0.8 && out > zox_tst_punch_strike_out) {
         zox_tst_punch_strike_out = out;
     }
+    // held out at the hit (0.5 to 0.62): the palm's side
+    ik_arm arm;
+    if (p > 0.52 && p < 0.6 && ik_arm_find(world, shoulder, &arm)) {
+        const entity character = zox_tst_player_character(world);
+        zox_tst_punch_palm = float4_rotate_float3(quaternion_rotate(quaternion_inverse(zox_getv(character, Rotation3D)),
+            zox_getv(arm.bones[arm.length - 1], Rotation3D)), float3_forward);   // the palm: its rest +z (anatomical)
+        zox_tst_punch_palm_measured = 1;
+    }
     zox_tst_waiting = "the punch";
     return p > 1.1;
 }
@@ -88,6 +99,11 @@ void zox_tst_punch_motion_check(ecs* world) {
         zox_tst_check(fabsf(v.x) > -v.z * 0.9f, "the guard's hand is in the view's middle [%.3f %.3f %.3f]", v.x, v.y, v.z);
     }
     zox_tst_check(zox_tst_punch_strike_out > 0.85f, "the strike didn't reach out [%f]", zox_tst_punch_strike_out);
+    // landed the fist is flat: its palm down (it stood on edge, a chop)
+    const float3 palm = zox_tst_punch_palm;
+    zox_log("[tst] punch_motion: the palm at the hit [%.2f %.2f %.2f] (the body's space)", palm.x, palm.y, palm.z);
+    zox_tst_check(zox_tst_punch_palm_measured && palm.y < -0.8f, "at the hit the fist's palm isn't down [%.2f %.2f %.2f]",
+        palm.x, palm.y, palm.z);
 }
 
 void zox_tsts_punch_motion(ecs* world) {

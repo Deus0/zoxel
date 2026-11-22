@@ -9,13 +9,17 @@ double zox_tst_held_time = 0;
 entity zox_tst_held_mesh = 0;
 
 byte zox_tst_held_block = 0;     // held_block: a block item instead, to compare
+byte zox_tst_held_cube = 0;      // held_view: a plain block, a cube (no model of its own: dirt, not a door)
 
 static inline entity zox_tst_held_cookie(ecs* world, entity realm) {
     entity found = 0;
     iter it = zox_children(world, realm);
     while (zox_children_next(it)) {
         for (int i = 0; i < it.count; i++) {
-            const byte is_block = zox_has(it.entities[i], Item) && zox_valid(zox_get_link(world, it.entities[i], BlockLink));
+            byte is_block = zox_has(it.entities[i], Item) && zox_valid(zox_get_link(world, it.entities[i], BlockLink));
+            if (is_block && zox_tst_held_cube && item_vox_extent(world, it.entities[i]).x > 0) {
+                is_block = 0;
+            }
             if (zox_tst_held_block ? is_block : (zox_has(it.entities[i], ItemVox) && zox_has(it.entities[i], ItemConsumable))) {
                 found = it.entities[i];
             }
@@ -100,9 +104,12 @@ void zox_tst_held_item_check(ecs* world) {
         high = (float3) { fmaxf(high.x, vertices->value[i].x), fmaxf(high.y, vertices->value[i].y), fmaxf(high.z, vertices->value[i].z) };
     }
     const float scale = zox_getv(zox_tst_held_mesh, LocalScale1);
-    const float3 middle = float3_scale(float3_mid(low, high), scale);
-    const float3 size = float3_scale(float3_sub(high, low), scale);
-    // where its voxels' middle is from the hand: centred across it, out of it by half its depth
+    // in the hand's space: turned as it's held (upright along the thumb, actions/sys/hold.c)
+    const float4 turn = zox_getv(zox_tst_held_mesh, LocalRotation3D);
+    const float3 middle = float4_rotate_float3(turn, float3_scale(float3_mid(low, high), scale));
+    const float3 turned = float4_rotate_float3(turn, float3_scale(float3_sub(high, low), scale));
+    const float3 size = { fabsf(turned.x), fabsf(turned.y), fabsf(turned.z) };
+    // where its voxels' middle is from the hand: centred across it, out of its palm by half its depth
     // from the hand's middle, not its bone's pivot (the wrist since bones sit at joints: it was on the wrist)
     const entity hand = zox_get_parent(world, zox_tst_held_mesh);
     const float3 local = zox_getv(zox_tst_held_mesh, LocalPosition3D);
@@ -111,7 +118,7 @@ void zox_tst_held_item_check(ecs* world) {
     zox_log("[tst] the hand's middle is [%.3f %.3f %.3f] from its pivot", pivot_off.x, pivot_off.y, pivot_off.z);
     const float3 centre = float3_sub(float3_add(middle, local), pivot_off);
     const float off = sqrtf(centre.x * centre.x + centre.y * centre.y);
-    const float out = -centre.z - size.z / 2;
+    const float out = centre.z - size.z / 2;   // out of the palm (+z, the hand's anatomical front)
     zox_log("[tst] [metric] held_item its middle [%.3f %.3f %.3f] from the hand, [%.3f] off centre, [%.3f] out of it, size [%.3f %.3f %.3f]",
         centre.x, centre.y, centre.z, off, out, size.x, size.y, size.z);
     zox_tst_check(vertices->length, "the held item has no mesh");
@@ -127,4 +134,5 @@ void zox_tsts_held_item(ecs* world) {
     zox_tst_set_setup("held_item", zox_tst_level_setup, 0);
     zox_tst_add("held_block", zox_tst_held_block_ready, zox_tst_held_item_check, 120);
     zox_tst_set_setup("held_block", zox_tst_level_setup, 0);
+
 }

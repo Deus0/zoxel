@@ -70,6 +70,19 @@ static inline byte swing_arm_target(ecs* world, const skeleton_now* now, entity 
         }
     }
     zox_getm(shoulder, IKTarget)->value = target;
+    // a fist's hand, a punch's or a place's: its fingers along the arm, its thumb up the view, the palm in (the right
+    //  hand's left, ik_hand_rest_to_target), rolled by the pose: the thumb toward the body, the palm down (a punch's
+    //  end); not turned as the forearm rolled (looking up its palm faced ahead, a hand up against the sun)
+    const float3 view_up = float4_rotate_float3(head_rotation, float3_up);
+    const float3 line = float3_sub(target, from);
+    if (float3_length(line) > 0.0001f) {
+        const float4 fist = ik_turn_to((float3) { 0, 0, -1 }, float3_up, float3_normalize(line), view_up);
+        // the thumb rolled toward the body (the palm down), the right's toward the view's left
+        const float4 roll = quaternion_from_axis_angle((float3) { 0, 0, 1 }, pose.roll * side_sign);
+        zox_set(shoulder, IKTargetRotation, { quaternion_rotate(fist, roll) });
+    }
+    // its elbow under the arm (down the view), a little out: it bent out to the side reaching up
+    zox_set(shoulder, IKPole, { float3_add(float3_scale(view_up, -1), float3_scale(side, -0.3f)) });
     return 1;
 }
 
@@ -127,16 +140,25 @@ void swing_ik_system(iter* it) {
             skeleton_now_rotation(&now, zox_valid(head_parent) && zox_has(head_parent, Rotation3D) ?
                 zox_getv(head_parent, Rotation3D) : zox_getv(head, Rotation3D)),
             zox_valid(head_parent) && zox_has(head_parent, Rotation3D) ? zox_getv(head, LocalRotation3D) : quaternion_identity);
+        // a first person look: the camera's, or the one held while it roams (free roam: the pose stays)
         const entity camera = zox_get_child_by_id(world, head, zox_id(Camera));
-        if (zox_valid(camera)) {
-            head_rotation = quaternion_rotate(head_rotation, zox_getv(camera, LocalRotation3D));
+        float4 first_person;
+        const float4 head_world = head_rotation;
+        if (first_person_look(world, e, head, &first_person)) {
+            head_rotation = quaternion_rotate(head_rotation, first_person);
             facing = float3_backward;
             flip = -1;
         }
         const float3 look = float4_rotate_float3(head_rotation, facing);
-        const float3 eye = skeleton_now_point(&now, zox_getv(zox_valid(camera) ? camera : head, Position3D));
+        float3 eye = skeleton_now_point(&now, zox_getv(zox_valid(camera) ? camera : head, Position3D));
+        if (!zox_valid(camera) && zox_has(e, LookHeldEye)) {
+            // roaming: the eyes it posed from, its camera's place on its head
+            eye = float3_add(eye, float4_rotate_float3(head_world, zox_getv(e, LookHeldEye)));
+        }
         const float p = (float) (passed / speed->value);
-        const swing_pose pose = swinging ? swing_pose_at(&swings[kind->value], p) : swing_guard;
+        // its guard: further out holding an item (HoldingItem, actions/sys/hold.c)
+        const swing_pose guard = zox_has(e, HoldingItem) ? swing_guard_held : swing_guard;
+        const swing_pose pose = swinging ? swing_pose_at(&swings[kind->value], p, guard) : guard;
         if (!swing_arm_target(world, &now, shoulder, head_rotation, look, flip, pose, eye)) {
             continue;
         }
@@ -145,7 +167,7 @@ void swing_ik_system(iter* it) {
         swing_weight_ease(weight, 1, weight_t);
         if (off_active) {
             const swing_data off = swing_off(&swings[kind->value]);
-            if (swing_arm_target(world, &now, off_shoulder, head_rotation, look, flip, swing_pose_at(&off, p > 1 ? 1 : p), eye)) {
+            if (swing_arm_target(world, &now, off_shoulder, head_rotation, look, flip, swing_pose_at(&off, p > 1 ? 1 : p, swing_guard), eye)) {
                 swing_weight_ease(off_weight, 1, weight_t);
             }
         }

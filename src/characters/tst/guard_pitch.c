@@ -8,6 +8,7 @@
 //    sky it came in over the view's centre); at every pitch it's ahead of the head, not over and behind
 //    it, and the elbow is bent (it locked straight looking up, the shoulder turned half round)
 //  - looking up the body leans back: the forearm's middle in front of the camera, not beside it
+//  - its hand a fist's: the palm in (left), the thumb up the view, at every pitch up (it tilted back at the view)
 //  - from up 60 to up 85 the upper arm turns a little, not half a turn about itself (the shortest turn flipped it)
 //  - run: bash bsh/tst.sh guard_pitch
 #define zox_tst_gp_stages 6
@@ -22,6 +23,8 @@ float3 zox_tst_gp_forearm_seen[zox_tst_gp_stages]; // the forearm's middle in th
 float zox_tst_gp_roll[zox_tst_gp_stages];      // the head's roll about its forward (z), degrees, from the body's
 float zox_tst_gp_camera_roll[zox_tst_gp_stages];   // the camera's, its right from level
 byte zox_tst_gp_measured = 0;
+float3 zox_tst_gp_palm[zox_tst_gp_stages];     // the hand's palm in the camera's space (its rest +z)
+float3 zox_tst_gp_thumb[zox_tst_gp_stages];    // its thumb (the right hand's rest -x)
 
 byte zox_tst_guard_pitch_ready(ecs* world) {
     if (!zox_tst_player_spawn_ready(world)) {
@@ -89,6 +92,11 @@ byte zox_tst_guard_pitch_ready(ecs* world) {
     zox_tst_gp_roll[stage] = atan2f(float3_dot(body_right_on, head_up), float3_dot(body_right_on, head_right)) * radians_to_degrees;
     const float3 camera_right = float4_rotate_float3(zox_getv(camera, Rotation3D), float3_right);
     zox_tst_gp_camera_roll[stage] = asinf(float_max(-1, float_min(1, camera_right.y))) * radians_to_degrees;
+    // the right hand's axes in the camera's space, as it rests in the anatomical position: its palm +z, its thumb -x
+    //  (bones/ik ik_hand_rest_to_target)
+    const float4 hand_seen = quaternion_rotate(camera_inverse, zox_getv(arm.bones[arm.length - 1], Rotation3D));
+    zox_tst_gp_palm[stage] = float4_rotate_float3(hand_seen, float3_forward);
+    zox_tst_gp_thumb[stage] = float4_rotate_float3(hand_seen, (float3) { -1, 0, 0 });
     zox_tst_gp_measured |= 1 << stage;
     return 0;
 }
@@ -102,6 +110,17 @@ void zox_tst_guard_pitch_check(ecs* world) {
         const float3 ev = zox_tst_gp_elbow_seen[i], fv = zox_tst_gp_forearm_seen[i];
         zox_log("[tst] guard_pitch [%.0f]: elbow in view [%.3f %.3f %.3f] forearm [%.3f %.3f %.3f], head roll [%.1f] camera roll [%.1f]",
             zox_tst_gp_pitches[i], ev.x, ev.y, ev.z, fv.x, fv.y, fv.z, zox_tst_gp_roll[i], zox_tst_gp_camera_roll[i]);
+        const float3 pa = zox_tst_gp_palm[i], th = zox_tst_gp_thumb[i];
+        zox_log("[tst] guard_pitch [%.0f]: palm [%.2f %.2f %.2f] thumb [%.2f %.2f %.2f] in view",
+            zox_tst_gp_pitches[i], pa.x, pa.y, pa.z, th.x, th.y, th.z);
+        // a fist's hand (a punch's, a place's): the palm in (left, the right hand's), the thumb up; looking up its palm
+        //  tilted back at the view, a hand up against the sun
+        if (zox_tst_gp_pitches[i] >= 0 && (zox_tst_gp_measured & (1 << i))) {
+            // the palm in (the view's left), the thumb up (the guard's turned a little in): a right fist, not its
+            //  palm up at the view, nor a left hand's turn
+            zox_tst_check(pa.x < -0.8f && th.y > 0.6f, "looking [%.0f] degrees up the palm faces [%.2f %.2f %.2f], the thumb [%.2f %.2f %.2f], not in and up",
+                zox_tst_gp_pitches[i], pa.x, pa.y, pa.z, th.x, th.y, th.z);
+        }
         if (!(zox_tst_gp_measured & (1 << i))) {
             zox_tst_check(0, "the guard at [%.0f] degrees was never measured", zox_tst_gp_pitches[i]);
             continue;

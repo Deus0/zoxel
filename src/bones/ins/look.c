@@ -21,6 +21,21 @@ float3 look_point(ecs* world, entity e) {
     return zox_valid(head) ? bone_centre_now(world, head) : zox_getv(e, Position3D);
 }
 
+// a first person look: its camera's turn on the head (the mouse's pitch), or the one held while the camera roams
+//  (LookHeld, free roam: the body keeps its pose to be seen from outside); 0 if neither
+byte first_person_look(ecs* world, entity skeleton, entity head, float4* look) {
+    const entity camera = zox_valid(head) ? zox_get_child_by_id(world, head, zox_id(Camera)) : 0;
+    if (zox_valid(camera)) {
+        *look = zox_getv(camera, LocalRotation3D);
+        return 1;
+    }
+    if (zox_valid(skeleton) && zox_has(skeleton, LookHeld)) {
+        *look = zox_getv(skeleton, LookHeld);
+        return 1;
+    }
+    return 0;
+}
+
 // who a character's head is looking at (a speaker, in a dialogue), else 0
 entity looking_at(ecs* world, entity character) {
     const entity skeleton = get_skeleton(world, character);

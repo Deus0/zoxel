@@ -283,6 +283,7 @@ void zox_tst_screenshot_check(ecs* world) {
 #include "gamepad_reconnect_keyboard.c"
 #include "stick_deadzone.c"
 #include "touch_actions.c"
+#include "free_roam_pose.c"
 
 void zox_tsts_controllers(ecs* world) {
     zox_tsts_music(world);
@@ -322,4 +323,5 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_set_setup("touch_play", zox_tst_level_setup, 0);
     zox_tst_add("touch_actions", zox_tst_touch_actions_ready, zox_tst_touch_actions_check, 90);
     zox_tst_add("tooltip_flick", zox_tst_tooltip_flick_ready, zox_tst_tooltip_flick_check, 90);
+    zox_tst_add("free_roam_pose", zox_tst_free_roam_pose_ready, zox_tst_free_roam_pose_check, 60);
 }

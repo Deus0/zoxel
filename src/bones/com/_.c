@@ -35,6 +35,9 @@ zoxc_entity(SwingAction);   // what's swung: a skill or item (its hit's damage, 
 zoxc_float3(SwingTarget);   // the point in the world a swing is at (a place's block: the head turns to it), zero none
 zoxc_float(SpineTwist);     // the upper body turned about its up, radians (a punch turning into its strike)
 zoxc_float(SpineTwistHead); // the twist the head was turned back by, last set (its look holds, ik/sys/spine.c)
+zox_tag(HoldingItem);      // on a skeleton: its hand holds an item (actions/sys/hold.c), its guard further out (dat/swings.c)
+zoxc_float4(LookHeld);     // on a skeleton: its first person look held while its camera roams (free roam), the body keeps its pose
+zoxc_float3(LookHeldEye);  // on a skeleton: its camera's place on its head, held with LookHeld (the eyes it posed from)
 zoxc_entity(LookTarget);
 zoxc_entity(BoneSlot);      // the slot a bone is from: a rebuild keeps its index (parts/sys/bones.c)
 #define zox_bones_max 32    // bone_matrix[32] in res/shaders/bone.vert    // on a head bone: it turns to look at it (its head, if it has one), 0 looks ahead
@@ -46,6 +49,9 @@ zox_tag(SettingBoneGizmos);
 zox_tag(SettingPaintWeights);
 
 void zox_components_bones(ecs* world) {
+    zoxd_tag(HoldingItem);
+    zoxd_float4(LookHeld);
+    zoxd_float3(LookHeldEye);
     zoxd_tag(SettingDisableBones);
     zoxd_tag(SettingTransparentMesh);
     zoxd_tag(SettingBoneGizmos);

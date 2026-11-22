@@ -2,6 +2,13 @@ void set_camera_free(
     ecs *world,
     entity e)
 {
+    // its character's look held: the body keeps its pose, to be seen from outside (bones LookHeld)
+    const entity head = zox_get_parent(world, e);
+    const entity skeleton = zox_valid(head) && zox_has(head, Bone) ? zox_get_link(world, head, SkeletonLink) : 0;
+    if (zox_valid(skeleton)) {
+        zox_set(skeleton, LookHeld, { zox_getv(e, LocalRotation3D) });
+        zox_set(skeleton, LookHeldEye, { zox_getv(e, LocalPosition3D) });
+    }
     float4 rotation = zox_getv(e, Rotation3D);
     float3 euler = quaternion_to_euler(rotation);
     zox_add(e, EulerOverride);
@@ -43,6 +50,10 @@ void attach_camera_to_character(
     entity skeleton = get_skeleton(world, character);
     if (zox_valid(skeleton)) {
         zox_add(skeleton, SkeletonDirty);
+        if (zox_has(skeleton, LookHeld)) {
+            zox_remove(skeleton, LookHeld);     // its look the camera's again
+            zox_remove(skeleton, LookHeldEye);
+        }
     }
     if (local_mouse) {
         zox_setv(local_mouse, MouseLock, 1);

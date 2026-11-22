@@ -1,5 +1,11 @@
 extern entity spawn_item_mesh(ecs*, entity, entity, float);
 
+// a held item's turn in the (right) hand's rest space: its up (+y) along the thumb (-x), its front (-z) along the
+//  fingers (-y), so it's upright in a fist thumb up (bones/ik ik_hand_rest_to_target)
+static inline float4 held_item_rotation() {
+    return ik_turn_to(float3_up, (float3) { 0, 0, -1 }, (float3) { -1, 0, 0 }, (float3) { 0, -1, 0 });
+}
+
 // NOTE: Uses slot index to equip a new action
 void active_action_hold_system(iter* it) {
     zox_sys_on_begin();
@@ -70,6 +76,12 @@ void active_action_hold_system(iter* it) {
                     zox_getn(e));
             }
         }
+        // its guard further out while it holds an item (bones/dat/swings.c swing_guard_held)
+        if (spawn_held && !zox_has(skeleton, HoldingItem)) {
+            zox_add(skeleton, HoldingItem);
+        } else if (!spawn_held && zox_has(skeleton, HoldingItem)) {
+            zox_remove(skeleton, HoldingItem);
+        }
         if (!spawn_held) {
             continue;
         }
@@ -78,11 +90,17 @@ void active_action_hold_system(iter* it) {
             hand_position :
             body_position;
         entity meta = zox_getp(world, aaction->value);
-        // out of the hand by half its own depth (a flat cookie sits closer than a block)
+        // in the palm: the hand rests in the anatomical position (its palm +z, its fingers -y, the right thumb -x,
+        //  bones/ik ik_hand_rest_to_target), the item upright along the thumb, its front along the fingers, out of
+        //  the palm by half its depth (a flat cookie sits closer than a block); it sat out of the hand's back (-z)
+        float4 rotation = quaternion_identity;
         if (zox_valid(hand)) {
-            position.z = -item_mesh_size(world, meta, scale).z / 2.0f - 0.01f;
+            rotation = held_item_rotation();
+            const float3 size = item_mesh_size(world, meta, scale);
+            const float3 turned = float4_rotate_float3(rotation, size);
+            position = (float3) { 0, 0, fabsf(turned.z) / 2.0f + 0.01f };
             // its voxels' middle on the hand (a model needn't fill its grid)
-            position = float3_add(position, item_mesh_offset(world, meta, scale));
+            position = float3_add(position, float4_rotate_float3(rotation, item_mesh_offset(world, meta, scale)));
             // in the hand, not at its pivot: the bone sits at its joint (the wrist), its part's middle off it (at
             //  rest, so in the bone's own space), the item was on the wrist
             if (zox_has(hand, BoneCentre) && zox_has(hand, BonePosition)) {
@@ -109,6 +127,7 @@ void active_action_hold_system(iter* it) {
         if (mesh) {
             zox_add(mesh, HeldAction);
             zox_setv(mesh, LocalPosition3D, position);
+            zox_setv(mesh, LocalRotation3D, rotation);
             // zox_setv(mesh, LocalScale1, scale);
             zox_add(mesh, DisableParentScale);
         }
