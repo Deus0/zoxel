@@ -44,6 +44,28 @@ void give_character_all_items(ecs* world, entity e) {
     }
 }
 
+// slots enough for every realm item, beside those the inventory has (it was 64 in all, fewer than the realm's items:
+//  the last, oil, never given, tst all_items)
+void all_items_add_slots(ecs* world, entity character) {
+    const entity inventory = zox_get_child_by_id(world, character, zox_id(Inventory));
+    const entity realm = zox_get_link(world, character, RealmLink);
+    if (!zox_valid(inventory) || !zox_valid(realm)) {
+        return;
+    }
+    int items = 0;
+    iter it = zox_children(world, realm);
+    while (zox_children_next(it)) {
+        for (int j = 0; j < it.count; j++) {
+            items += zox_has(it.entities[j], Item);
+        }
+    }
+    entity slots[layouts2_children_capacity];
+    const int empty = zox_get_empty_slots(world, inventory, slots, layouts2_children_capacity);
+    int count = items - empty;
+    count = count < 0 ? 0 : count > 255 ? 255 : count;
+    add_more_slots(world, inventory, (byte) count);
+}
+
 // TODO: Work Item Slots better
 void zox_tst_all_items(ecs* world, ClickEventData data) {
     if (tst_all_items) {
@@ -58,12 +80,7 @@ void zox_tst_all_items(ecs* world, ClickEventData data) {
     if (!zox_valid(character)) {
         return;
     }
-    // TODO: Automatically add to slot when picking up a new item
-    //      - make event for picking up item, if fails, just drops into world?
-    // Get our Slots
-    // Add more slots - new grid length is 7
-    entity inventory = zox_get_child_by_id(world, character, zox_id(Inventory));
-    add_more_slots(world, inventory, (8 * 8) - 16);
+    all_items_add_slots(world, character);
     delay_event(world, &give_character_all_items, character, 1.0f);
     tst_all_items = 1;
 }
