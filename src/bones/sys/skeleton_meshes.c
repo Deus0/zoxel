@@ -108,6 +108,7 @@ void swap_skeleton_mesh(
         zox_unlink(world, e, ActiveMesh, active);
     }
     zox_link(world, e, ActiveMesh, preparing);
+    mesh_clones_move(world, active, preparing);     // a mirror's copy follows it
     if (zox_has(preparing, Disabled)) {
         zox_remove(preparing, Disabled);
     }

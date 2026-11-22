@@ -162,6 +162,13 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
   game flag doing the job and quitting (as `--maps`, towns/dbg/maps_dump.c), the test then calls the same functions
   and checks what they make (the views a test checks stay tests, the ones only looked at become tools)
 
+## Tests in their own place (2026-11-22)
+- tests that span modules sit where the build order lets them, not with what they test: find them a module after
+  the ones they use (a tst module last in the build)
+  - actions/tst/mirror_hat.c: the mirror (huds) following the body (equipment), huds builds before equipment
+  - vodes/doors/tst/door_sky.c and door_light.c use terrain/tst/glow_relight.c's room helpers
+  - items/tst/all.c, the all items cheat, lives in tests: a debug tool, tools out of the test harness
+
 ## Next (2026-11-21)
 States, events and tags, by doc/tech/states.md (nf tags and observers for events, systems for heavy work, fewer tags;
 profile each, systems and observers counted together):

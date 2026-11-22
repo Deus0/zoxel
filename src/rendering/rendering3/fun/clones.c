@@ -64,3 +64,49 @@ entity spawn_mesh3_clone(
     zox_add(clonee, MeshCloned);
     return e;
 }
+
+// a source's clones, those linked to it (MeshCloneLink), up to max
+static inline int mesh_clones_of(ecs* world, entity source, entity* clones, int max) {
+    int count = 0;
+    iter it = ecs_each_id(world, ecs_pair(zox_id(MeshCloneLink), source));
+    while (zox_each_next(it)) {
+        for (int j = 0; j < it.count; j++) {
+            if (count < max && it.entities[j] != source) {
+                clones[count++] = it.entities[j];
+            }
+        }
+    }
+    return count;
+}
+
+// a mesh swapped for another (a skeleton's rebuilt mesh, skeleton_meshes.c): its clones follow the new one, given its
+//  data now (a mirror, a mug shot kept the old mesh: the old hat, tst mirror_hat)
+void mesh_clones_move(ecs* world, entity from, entity to) {
+    if (!zox_valid(from) || !zox_valid(to) || from == to || !zox_has(from, MeshCloned)) {
+        return;
+    }
+    entity clones[64];
+    const int count = mesh_clones_of(world, from, clones, 64);
+    if (!count) {
+        return;
+    }
+    const MeshIndicies* indicies = zox_get(to, MeshIndicies);
+    const MeshVertices* verts = zox_get(to, MeshVertices);
+    const MeshColorRGBs* colors = zox_get(to, MeshColorRGBs);
+    for (int j = 0; j < count; j++) {
+        const entity clone = clones[j];
+        if (!zox_valid(clone) || !zox_has(clone, MeshIndicies)) {
+            continue;
+        }
+        zox_unlink(world, clone, MeshCloneLink, from);
+        zox_link(world, clone, MeshCloneLink, to);
+        if (indicies->value && verts->value && colors->value) {
+            clone_MeshIndicies(zox_get_mut(clone, MeshIndicies), indicies);
+            clone_MeshVertices(zox_get_mut(clone, MeshVertices), verts);
+            clone_MeshColorRGBs(zox_get_mut(clone, MeshColorRGBs), colors);
+            zox_setv(clone, MeshRenderCount, zox_getv(to, MeshRenderCount));
+            zox_add(clone, MeshDirty);
+        }
+    }
+    zox_add(to, MeshCloned);
+}
