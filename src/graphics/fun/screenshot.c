@@ -12,6 +12,13 @@ static inline byte zox_gpu_save_screenshot(const char* path, int2 size) {
     fprintf(file, "P6\n%i %i\n255\n", size.x, size.y);
     fwrite(pixels, 1, (size_t) size.x * size.y * 3, file);
     fclose(file);
+    // a png beside it, to look at (an image viewer opens it, a ppm few do)
+    const size_t length = strlen(path);
+    if (length > 4 && !strcmp(path + length - 4, ".ppm")) {
+        char png[1024];
+        snprintf(png, sizeof(png), "%.*s.png", (int) (length - 4), path);
+        zox_save_png(png, pixels, size.x, size.y);
+    }
     free(pixels);
     return 1;
 }

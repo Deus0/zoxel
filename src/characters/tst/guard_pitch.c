@@ -164,4 +164,5 @@ void zox_tst_guard_pitch_check(ecs* world) {
 
 void zox_tsts_guard_pitch(ecs* world) {
     zox_tst_add("guard_pitch", zox_tst_guard_pitch_ready, zox_tst_guard_pitch_check, 120);
+    zox_tst_set_setup("guard_pitch", zox_tst_void_setup, 1);    // the body alone, in the void
 }

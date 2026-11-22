@@ -54,6 +54,13 @@ void zox_tsts_my_module() {
 - **In game by default**: tests start with `--autostart`, straight into a new game.
 - **Menus**: `zox_tst_set_setup(name, NULL, 1)` runs through the main menu instead (no game).
   Pure logic tests (composing, octrees, mixing) use it too, they're quicker.
+- **The void**: `zox_tst_set_setup(name, zox_tst_void_setup, 1)`: the player's character alone, no game or terrain
+  (src/controllers/tst/void_player.c). From the main menu a realm of its own (its body parts and items) and the
+  player's character far past the menu's scene, kept there by its tags (`DisableGravity`, no `InsideBlock` or
+  raycast), its camera on its head in first person, the player set playing; `zox_tst_player_spawn_ready` and
+  `zox_tst_player_character` work as in a game. For tests of the body, its poses and what it holds, isolated from
+  streaming and physics, and without the terrain's wait: `held_view` `guard_pitch` `punch_motion` `free_roam_pose`
+  (more to move: todo.md, Tests).
 - **Exits**: `zox_tst_set_exits(name)` passes when the app closes itself (exit buttons).
 
 ## Patterns
@@ -66,11 +73,16 @@ void zox_tsts_my_module() {
   `zox_tst_find_click`, `zox_tst_ui_pointer_position`. Press and release on different frames.
 - **Listening**: tests run silent. A test can turn sounds on (`nosounds = 0`) to check sounds spawn, nothing
   plays. To hear one: `--sounds`, to record one: `SDL_AUDIO_DRIVER=disk` (see [audio.md](../tech/audio.md)).
-- **Files to look at**: write a `.wav` or a screenshot to `tst/` with `zox_tst_path("song.wav")` (makes sub folders,
-  `zox_tst_path("models/cokie.ppm")`), never a hardcoded path: the game runs from `bin/<build>/`, tst.sh passes the folder.
+- **Files to look at**: write a `.wav` or a screenshot with `zox_tst_path("song.wav")`: it goes in the test's own
+  folder, `tst/<test>/song.wav`, unless the name has one (`zox_tst_path("models/cokie.ppm")`), making the folders;
+  never a hardcoded path: the game runs from `bin/<build>/`, tst.sh passes the folder. A screenshot is a `.ppm`
+  (tests read it back) with a `.png` beside it to open (graphics/fun/screenshot.c, _/io/fun/png.c).
 - **A screenshot of a game**: `bash bsh/tst.sh screenshot` (`tst/screenshot.ppm`), `--xr-sim` for the XR simulator's
   two eyes side by side (a 1440x720 window, each eye square).
-- **Looking at a character**: `bash bsh/body.sh` (your settings, i.e. Block Res 5), then `tst/body_views.png`: a
+- **Looking at a held block in first person**: `bash bsh/tst.sh held_view`, then `tst/held_view/` (down, level,
+  up): a plain block held, in the void, checked in view, on the palm's side of the hand, clear of the view's middle
+  and upright (src/actions/tst/held_view.c).
+- **Looking at a character**: `bash bsh/body.sh` (your settings, i.e. Block Res 5), then `tst/body_views/body_views.png`: a
   dressed character in the void from 4 viewports (src/controllers/tst/body_views.c).
 - **Looking at an animation**: `zox_gif_record(path, fps)` records the screen from the next frame, `zox_gif_stop()`
   finishes it (src/graphics/fun/gif.c, each frame its own 256 colours, held for the real time between frames). i.e.
@@ -98,21 +110,21 @@ Add a test that would have caught it, then **check it does**: put the bug back, 
 | Physics | `physics_steps` `physics2_motion` `physics2_rotation` `physics3_motion` `physics3_rotation` `terrain_collisions` (each also `_10fps` `_30fps`), see [physics.md](../tech/physics.md) |
 | Octrees and chunks | `octree_*` `chunk_positions` `chunk_io` `block_table` `block_table_remap` `chunk_sides` `vox_mesh_grid` `pipeline_syncs` `tilemap` |
 | Furniture | `furniture_place` `furniture_fillers` `furniture_rotation` `block_vox_hits` `block_data_queue` `block_datas_io` `doors` (open, close, swing, pass through, saved) `block_activate` (a right click uses a block) `bed_sleep` |
-| Terrain | `biome_heights` `biome_map` `region_place` `region_place_prior` `region_zones` `town_homes` `home_roofs` `home_glow` `glow_light` `town_maps` `town_maps_empty` `vegetation_trees` `vegetation_cover` `vegetation_chunks` `vegetation_across` |
+| Terrain | `biome_heights` `biome_map` `region_place` `region_place_prior` `region_zones` `town_homes` `home_roofs` `home_glow` `glow_light` `town_maps` `town_maps_empty` `vegetation_trees` `vegetation_cover` `vegetation_chunks` `vegetation_across` `oil_flow` (oil a liquid of its own) |
 | Textures | `texture_noise` `texture_outline` |
-| Lights | `smooth_lights` `lod_lights` `lod_chunk_lights` `block_vox_lights` `block_vox_light_sampling` |
+| Lights | `smooth_lights` `lod_lights` `lod_chunk_lights` `block_vox_lights` `block_vox_light_sampling` `glow_relight` (a covered hole, a loaded chunk: glow stones light again) `door_light` (light through a door only open) `door_sky` (a door's light kept as a hole is dug and covered) |
 | Backends | `bash bsh/compare_backends.sh [--soft] [tests]`: each screenshot test on opengl and vulkan (real gpu), a markdown table of how much they differ and how noisy each is, results in [metrics.md](metrics.md) |
 | Vulkan | `vulkan_clear` (frames clear, read back, carry on after a read back; no validation errors) `vulkan_shaders` (every program's uniforms inside its reflected blocks), `--vulkan` only ([plans/vulkan.md](../plans/vulkan.md)) |
 | Rendering | `particles_render` (an emitter's magenta particles show in the view) `instance_views` (model_views drawn instanced, the vox instance shader) `gpu_restore` `gpu_restore_game` `gpu_links` (gpu objects let go of and made again, live counts) `lines_spawn` `lines_render` `skeleton_render` `vox_instance_render` `terrain_render` `mesh_colors_wait` (a remesh waiting on its lights keeps its old colors on the gpu) `block_vox_light_sampling` `block_vox_lights` `screenshot` `model_views` `body_views` `punch_views` `walk_views` |
 | Models | `wfc` (wave function collapse: patches, seeds, rules) `model_nodes` (fill, box, paint, sprinkle on voxels) `model_shapes` (realm models: one piece, mirrored, head's neck and eyes, chest without a pinch, cookie chips and crumbs) |
 | Cameras | `camera_viewports` `camera_projection` `camera_orthographic` `camera_look_at` `camera_viewport_spawn` `camera_split_screen` `camera_downscale` `camera_frustum` `camera_filter` `eyelids` |
 | Sound and music | `sound_mixer` `sound_formats` `sound_instruments` `sound_balance` `voice_sounds` `hit_sounds` `hit_sound_links` `music_*` |
-| Body and gear | `parts` `clothes` `npc_skeletons` |
-| Text and ui | `text_data` `text_order` `font_glyphs` `font_fill` `font_glyphs_fill` `texture_lines` `menu_flow` `load_lids` `mouse_click` `ui_leaks` `tooltips` `navigator_inventory` (a gamepad through the inventory, tooltips, down into the action bar) `options_toggle` `scroll_wheel` `list_order` `ui_layout` `exit_menu` `exit_game` |
+| Body and gear | `parts` `clothes` `npc_skeletons` `arm_reach` `guard_pitch` (the raised guard looking up and down) `punch_motion` (a fist flat at the hit) `held_view` (a held block from first person, in the void) `held_item` `held_block` `free_roam_pose` (the pose kept while the camera roams) `dialogue_aim` (the view at a speaker's head's middle) `mirror_hat` (the mirror follows a hat changed) |
+| Text and ui | `text_data` `text_order` `font_glyphs` `font_fill` `font_glyphs_fill` `texture_lines` `menu_flow` `load_lids` `mouse_click` `ui_leaks` `tooltips` `navigator_inventory` (a gamepad through the inventory, tooltips, down into the action bar) `options_toggle` `scroll_wheel` `list_order` `ui_layout` `exit_menu` `exit_game` `options_tabs` (the options menu's tabs, a window of tabs) `all_items` (the all items cheat gives every realm item) |
 | Game | `load_games` `player_spawn` `continue_game` `end_game_cleanup` `stream_npcs` `npc_attacks` `population` `region_population` `npc_leash` `player_respawn` `footsteps` `arms_in_step` `parts` `action_wheel` `item_split` `resume_no_punch` `crouch` `walk_bob` (the head bobs once a step, smoothly) `auto_jump` (walking into a step jumps onto it) `pickup_pop` `editor` `touch_play` `touch_actions` (a tap on an action icon selects it) |
 | Local coop | `coop_streamers` (terrain lods from the closest player's streamer) `coop_skybox` (a skybox round each camera) `coop_homes` (players spawn at their own homes in one town) `coop_billboards` (3D uis face each camera that draws them) `coop_saves` (each player its own save, player2.dat) `coop_continue` (a saved coop game, each loads at its own position) `coop_gamepad_reconnect` (a gamepad unplugged and back in, its player gets it) `coop_join_continue` (a new second player in a loaded game, in the first one's town) `coop_map_markers` (the other player on the minimap, on its edge when far) `coop_navigator` (the second player navigates, its tooltips under its icons) `coop_respawn` (the second player dies and respawns, the first plays on) |
 | Quests | `quest_tracking` `quest_dialogue` |
-| Streaming | `stream_unload` (land the stream leaves is unloaded a little a frame, kept if the streamer comes back first) |
+| Streaming | `stream_unload` (land the stream leaves is unloaded a little a frame, kept if the streamer comes back first) `stream_sides` (no faces missing where lods meet) |
 | Performance | `perf_terrain` (terrain alone, no player, npcs, hud or particles: its load, 8 seconds idle, 6 stream steps,
 each phase's frames; the cleanest numbers for terrain and meshing, `tst/perf_terrain.ppm` its view) `perf_idle` (idle rendering: frames a second standing still once streaming settles, either backend; was `render_fps`, numbers in [metrics.md](metrics.md)) `perf_stream` (stream remeshing: how long each chunk step takes to settle, the frames while it streams; reading
 both: "Reading the perf numbers" below) `perf_fly` `mass_spawn` `mass_delete` `physics2_perf` `physics3_perf` |

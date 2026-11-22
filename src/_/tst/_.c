@@ -41,6 +41,7 @@ zox_tst zox_tsts[zox_tsts_max];
 int zox_tsts_count = 0;
 const char* zox_tst_name = NULL;   // set by --tst <name>
 byte zox_tst_menus = 0;             // the running test wants menus, huds skips --autostart
+byte zox_tst_void = 0;              // the running test's player character is in the void (controllers/tst/void_player.c)
 zox_tst* zox_tst_active = NULL;
 int zox_tst_fails = 0;
 int zox_tst_checks = 0;
@@ -86,7 +87,12 @@ const char* zox_tst_path(const char* name) {
     static int next = 0;
     char* path = paths[next];
     next = (next + 1) % zox_tst_paths;
-    snprintf(path, sizeof(paths[0]), "%s/%s", zox_tst_dir(), name);
+    // in its test's folder (tst/held_view/held_view_level.ppm), unless it names one: each test's files together
+    if (!strchr(name, '/') && zox_tst_active && zox_tst_active->name) {
+        snprintf(path, sizeof(paths[0]), "%s/%s/%s", zox_tst_dir(), zox_tst_active->name, name);
+    } else {
+        snprintf(path, sizeof(paths[0]), "%s/%s", zox_tst_dir(), name);
+    }
     // each folder on the way, the tst folder included
     const size_t start = strlen(zox_tst_dir());
     for (size_t i = start; path[i]; i++) {
@@ -367,6 +373,12 @@ void zox_tst_add_level(zox_tst_level_fun fun) {
     if (zox_tst_level_count < zox_tst_level_max) {
         zox_tst_level_funs[zox_tst_level_count++] = fun;
     }
+}
+
+// a test's player character in the void, no game started (zox_tst_set_setup(name, zox_tst_void_setup, 1)): its
+//  zox_tst_player_spawn_ready spawns it there
+void zox_tst_void_setup() {
+    zox_tst_void = 1;
 }
 
 void zox_tst_level_setup() {

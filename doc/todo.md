@@ -1437,6 +1437,11 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 		generation (biomes, models, items, characters, quests, music; gam/zoxel/sys)
 	- terrain_collisions builds its realm by hand already; player tests need autostart's new game to take it
 	- then npc_glance and the npc tests spawn the test's own npc, not the realm's generated humanoid
+- Void tests (2026-11-22): tests that don't need terrain run with the player's character in the void
+	(zox_tst_void_setup, controllers/tst/void_player.c: no game or terrain, the body alone): held_view, guard_pitch,
+	punch_motion and free_roam_pose do; move the others that only pose or animate the body, hold items or open uis
+	(i.e. arm_reach, eat_swing, held_item, held_block, bone_rebuild, head_camera, the ui and stats tests) to save
+	their wait on the terrain
 - More tests on the test level (zox_tst_level_setup: flat, one chunk far, no towns, plants, block voxes or
 	streamed npcs), or no game at all: npc_attacks, the furniture tests (a ray from a fixed point, not the
 	player's), head_camera, the quest and stats ui tests

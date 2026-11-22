@@ -1,3 +1,4 @@
+#include "void_player.c"
 #include "wheel.c"
 #include "split.c"
 #include "punch.c"
@@ -100,6 +101,9 @@ entity zox_tst_player_character(ecs* world) {
 }
 
 byte zox_tst_player_spawn_ready(ecs* world) {
+    if (zox_tst_void) {
+        return zox_tst_void_player_ready(world);
+    }
     if (!zox_tst_spawn_start) {
         zox_tst_spawn_start = zox_current_time;
     }
@@ -324,4 +328,5 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("touch_actions", zox_tst_touch_actions_ready, zox_tst_touch_actions_check, 90);
     zox_tst_add("tooltip_flick", zox_tst_tooltip_flick_ready, zox_tst_tooltip_flick_check, 90);
     zox_tst_add("free_roam_pose", zox_tst_free_roam_pose_ready, zox_tst_free_roam_pose_check, 60);
+    zox_tst_set_setup("free_roam_pose", zox_tst_void_setup, 1);    // the body alone, in the void
 }

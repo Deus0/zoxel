@@ -108,4 +108,5 @@ void zox_tst_punch_motion_check(ecs* world) {
 
 void zox_tsts_punch_motion(ecs* world) {
     zox_tst_add("punch_motion", zox_tst_punch_motion_ready, zox_tst_punch_motion_check, 120);
+    zox_tst_set_setup("punch_motion", zox_tst_void_setup, 1);    // the body alone, in the void
 }

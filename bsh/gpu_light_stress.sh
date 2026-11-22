@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Stress tests gpu meshing with lights: terrain chunks at night re-lit by moving torches (and re-shaped) every frame,
 #   meshed lit on the gpu, drawn with pixel light (tst gpu_light_stress, doc/tec/gpu_meshing.md)
-#   logs chunks updated a second and each part's time, saves tst/gpu_light_stress.png
+#   logs chunks updated a second and each part's time, saves tst/gpu_light_stress/gpu_light_stress.png
 #   bash bsh/gpu_light_stress.sh                      4 chunks, 6 seconds, software rendering (as tests)
 #   bash bsh/gpu_light_stress.sh --visible            watch it on the real gpu (20 seconds)
 #   zox_tst_gpu_chunks=16 bash bsh/gpu_light_stress.sh   more chunks (up to 16, 4 in view)
@@ -14,11 +14,11 @@ fi
 output=$(bash bsh/tst.sh gpu_light_stress "$@" 2>&1)
 code=$?
 echo "${output}" | grep -a "gpu_light_stress\|stress last frame\|PASSED\|FAIL\|exit \[\|build failed" | sed 's/^.*\[tst\] //'
-if [[ -f tst/gpu_light_stress.ppm ]]; then
+if [[ -f tst/gpu_light_stress/gpu_light_stress.ppm ]]; then
     if command -v convert > /dev/null; then
-        convert tst/gpu_light_stress.ppm tst/gpu_light_stress.png && echo "> tst/gpu_light_stress.png"
+        convert tst/gpu_light_stress/gpu_light_stress.ppm tst/gpu_light_stress/gpu_light_stress.png && echo "> tst/gpu_light_stress/gpu_light_stress.png"
     else
-        echo "> tst/gpu_light_stress.ppm"
+        echo "> tst/gpu_light_stress/gpu_light_stress.ppm"
     fi
 fi
 exit ${code}
