@@ -4,6 +4,7 @@ typedef struct {
     entity_fun spawn;
     char *tooltip_text;
     char *texture_name;
+    byte hud;           // open in play too (the action bar): game uis closing leave it
 } TaskbarData;
 zoxc_custom(TaskbarData);
 

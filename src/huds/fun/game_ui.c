@@ -126,7 +126,10 @@ void spawn_player_screen(
             } else {
                 zox_loge("No Local Mouse for our UI");
             }
-            // Mouse Pickup UI
+        }
+        // the held item (picked up from a slot): every player's, on the mouse for the first player's mouse, else
+        //  top right (data_mouse_corner_system: a navigator has no pointer)
+        {
             int icon_size = (default_icon_size / 4) * ui_scale;
             entity e2 = spawn_mouse_icon(
                 world,
@@ -135,8 +138,8 @@ void spawn_player_screen(
                 max_layers2D - 3,
                 float2_half,
                 icon_size,
-                local_mouse,
-                mouse_pointer);
+                i == 0 ? local_mouse : 0,
+                i == 0 ? mouse_pointer : 0);
             zox_set_unique_name(e2, "data_mouse");
             zox_add(e2, DataMouse);
             entity empty_texture = string_hashmap_get(files_hashmap_textures, new_string_data("empty"));

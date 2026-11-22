@@ -48,6 +48,8 @@ void door_on_spawned(ecs* world, spawned_block_data* data) {
 }
 
 // a voxel's block data written straight to its chunk (not its queue: its voxel stays), the chunk saved as edited
+//  - SaveDirty saves it (chunk3_save_dirty_system): the chunk saves only on a voxel's change (ChunkUpdate) otherwise, a
+//    door toggled kept the state it had at its chunk's last edit (it loaded open, shut after)
 static inline byte terrain_set_block_data(ecs* world, entity terrain, int3 block, byte data) {
     byte3 local;
     const entity chunk = terrain_chunk_local(world, terrain, block, &local);
@@ -61,6 +63,9 @@ static inline byte terrain_set_block_data(ecs* world, entity terrain, int3 block
     zox_octree_lock_end(lock);
     if (!zox_has(chunk, Edited)) {
         zox_add(chunk, Edited);
+    }
+    if (!zox_has(chunk, SaveDirty)) {
+        zox_add(chunk, SaveDirty);
     }
     return 1;
 }

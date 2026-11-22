@@ -11,6 +11,9 @@ static inline GpuMeshLighting gpu_mesh_lighting(const byte* solidity) {
         if (solidity[i] && solidity[i] != light_solidity_base) {   // a filler stops light only over a shut door
             lighting.solid[i >> 5] |= 1u << (i & 31);
         }
+        if (solidity[i] == light_solidity_open || solidity[i] == light_solidity_base) {   // a door's parts (smooth_is_seal)
+            lighting.seals[i >> 5] |= 1u << (i & 31);
+        }
     }
     return lighting;
 }

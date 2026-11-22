@@ -59,6 +59,8 @@ sections  zero or more, until the file ends:
 - A chunk with no block data writes no section: its file is its octree only.
 - An unknown section id stops the read (a warning), so new sections can follow.
 - Only edited chunks save (`Edited`, chunk3_save_system); unedited ones regenerate from the realm's seed.
+- An edited chunk is written when a voxel changes (`ChunkUpdate`), or when only its block data changes (a door
+  toggled: `SaveDirty`, chunk3_save_dirty_system, written once).
 - Block data is written with its voxel (`VoxelNodeUpdate.data`, voxel_update_queue_system), under the chunk's
   octree lock, and cleared when the voxel changes.
 - tst: chunk_io (octrees), block_datas_io (sections, sizes), block_data_queue (in game: set, saved, loaded, cleared).

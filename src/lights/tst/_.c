@@ -5,6 +5,7 @@
 //  - a corner behind two solid edges doesn't leak its light round them, it counts as darklight
 //  - on real octrees: a floor voxel's up face, two solid blocks on its edges, bright air in the corner between
 //  - past the chunks: the sky (sunlight) above, dark elsewhere
+//  - a wall's face into a shut door: flat, the darkest open air round it (the room's), not the sunlit outside's
 //  - run: bash bsh/tst.sh smooth_lights
 // every face of every voxel at depth: the grid's vertex lights against the trees' (smooth_face_lights), mismatches
 static int zox_tst_smooth_grid_mismatches(const LightNode** lights, spinlock** lights_locks, const VoxelNode** voxels,
@@ -90,6 +91,29 @@ void zox_tst_smooth_lights_check(ecs* world) {
     set_VoxelNode(v, depth, (byte3) { 3, 3, 3 }, 1);
     smooth_face_lights(lights, lights_locks, voxels, voxels_locks, solidity, (byte3) { 3, 3, 3 }, depth, direction_up, vertex_lights);
     zox_tst_check(vertex_lights[0] == sunlight && vertex_lights[2] == sunlight, "the sky over the chunk's top isn't sunlight [%i]", vertex_lights[0]);
+    // a wall's face into a shut door (voxel 2, light_solidity_open), its filler over it, the floor under: the outside
+    //  (-x) sunlit, the room (+x) dark; flat, the room's light (its -x vertices averaged the outside in, lit by a door)
+    solidity[1] = light_solidity_open;
+    set_VoxelNode(v, depth, (byte3) { 2, 1, 2 }, 1);
+    set_VoxelNode(v, depth, (byte3) { 2, 1, 3 }, 2);
+    set_VoxelNode(v, depth, (byte3) { 2, 2, 3 }, 2);
+    for (byte x = 1; x <= 3; x++) {
+        set_VoxelNode(v, depth, (byte3) { x, 0, 3 }, 1);
+    }
+    set_LightNode(l, depth, (byte3) { 1, 1, 3 }, 200);
+    set_LightNode(l, depth, (byte3) { 1, 2, 3 }, 200);
+    smooth_face_lights(lights, lights_locks, voxels, voxels_locks, solidity, (byte3) { 2, 1, 2 }, depth, direction_front, vertex_lights);
+    zox_log("[tst] a wall's face into a shut door [%i] [%i] [%i] [%i]", vertex_lights[0], vertex_lights[1], vertex_lights[2], vertex_lights[3]);
+    for (byte i = 0; i < 4; i++) {
+        zox_tst_check(vertex_lights[i] == darklight, "a wall's face into a shut door took the outside's light, vertex [%i] [%i]", i,
+            vertex_lights[i]);
+    }
+    // the room lit too: its light
+    set_LightNode(l, depth, (byte3) { 3, 1, 3 }, 120);
+    set_LightNode(l, depth, (byte3) { 3, 2, 3 }, 120);
+    smooth_face_lights(lights, lights_locks, voxels, voxels_locks, solidity, (byte3) { 2, 1, 2 }, depth, direction_front, vertex_lights);
+    zox_tst_check(vertex_lights[0] == 120 && vertex_lights[2] == 120, "a wall's face into a door, both sides lit, is [%i] not [120]",
+        vertex_lights[0]);
     // the flattened grid the meshes light from gives the same lights, every face
     const int mismatches = zox_tst_smooth_grid_mismatches(lights, lights_locks, voxels, voxels_locks, solidity, depth);
     zox_tst_check(!mismatches, "[%i] faces light differently from the grid than from the trees", mismatches);

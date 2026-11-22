@@ -35,4 +35,15 @@ void zox_systems_chunksio(ecs* world) {
         [none] saves.Edited,
         [none] chunks3.ChunkUpdate,
     );
+    zox_system(
+        chunk3_save_dirty_system,
+        zoxp_save,
+        [in] chunks3.VoxelNode,
+        [in] chunks3.ChunkPosition,
+        [out] chunks3.VoxelNodeLock,
+        [in] chunks3.BlockDatas,
+        [none] chunks.ChunkTextured,
+        [none] saves.Saver,
+        [none] saves.SaveDirty,
+    );
 }

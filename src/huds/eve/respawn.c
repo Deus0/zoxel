@@ -39,6 +39,8 @@ void player_state_respawn_ui(ecs* world, entity player, byte state) {
         if (zox_valid(taskbar)) {
             zox_delete(taskbar);
         }
+        // its game uis too (the inventory left open on the respawn screen)
+        close_game_uis(world, canvas);
         entity touch_ui = zox_get_child_by_id(
             world,
             canvas,

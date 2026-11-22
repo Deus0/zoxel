@@ -5,6 +5,7 @@
 #include "load3.c"
 #include "navigator.c"
 #include "player_join.c"
+#include "data_mouse.c"
 
 void zox_systems_game_ui(ecs *world) {
     zox_system(
@@ -50,6 +51,15 @@ void zox_systems_game_ui(ecs *world) {
         zoxp_spawn,
         [in] players.PlayerState,
         [none] players.Player
+    );
+    // main thread: it sets links (the held item's icon off the mouse, top right for a navigator)
+    zox_system_1(
+        data_mouse_corner_system,
+        zoxp_spawn,
+        [in] layouts.Anchor,
+        [in] layouts.LayoutSize,
+        [out] layouts.LayoutPosition,
+        [none] ui_containers.DataMouse
     );
     // main thread: it sets settings and texts
     zox_system_1(

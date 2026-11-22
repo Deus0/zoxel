@@ -7,7 +7,6 @@
   ideas), [gdd/caves.md](gdd/caves.md) (caves design)
 
 ## Bugs
-- door loads as open when i close it
 - alt tab on windows, mouse lock stays locked
 - mouse now doesnt go over hte shared player canvas, make mouse on a seperate canvas over others
 - a home's room keeps some light after its glow stone goes, 1 run in 2 (tst home_dark: 28 to 134 in a few rooms,
@@ -1413,7 +1412,6 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 	- the uis sometimes spawn overlapping the taskbar
 	- uis spawned in 3D are not always in front of the camera
 	- billboards: align them to the camera, not rotated like now; tests for billboards, polish them
-	- the navigator should close uis on resume (we can't move them out of the way like with a mouse)
 	- fix tooltips in 3D (see 3D tooltips look wrong below)
 	- last: a 3D mouse option, switching to it when the stick moves it
 - UI consolidation (2D and 3D from the same code, doc/tech/uis.md), each removing a 3D-only copy:

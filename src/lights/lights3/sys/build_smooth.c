@@ -4,7 +4,10 @@
 //  - solids hold darklight, so vertices in creases darken (ambient occlusion)
 //  - walks the voxels (node) with the sides like the mesh builder (zox_terrain_building_dig), so both skip the
 //    same faces (sides set on air), and colors line up with the mesh's vertices
-//  - tst smooth_lights (the corner leak), terrain_render
+//  - a face into a door's part (light_solidity_open or _base: it stops light while shut, it's no cube) is lit flat by
+//    the darkest open air round it (smooth_seal_light): its 3 x 3 reached past the door's plane, a wall's side by a shut
+//    door took the sunlit outside's light at its edge while the room was dark (as block voxes, vodes3/fun/lights.c)
+//  - tst smooth_lights (the corner leak), terrain_render, door_light (the wall beside a shut door)
 
 // meshes found older than their chunk's sides (more faces to light than vertices), rebuilt: the sides changed after it
 //  was built, its BuildMesh not merged yet (it logged Colors Past Limits as an error), counted for tests
@@ -44,6 +47,25 @@ static inline byte smooth_is_solid(
     return voxel && solidity[voxel - 1] && solidity[voxel - 1] != light_solidity_base;
 }
 
+// a door's part: stops light only while shut (or over a shut door), drawn as a block vox, not a cube
+static inline byte smooth_is_seal(const byte* solidity, byte voxel) {
+    return voxel && (solidity[voxel - 1] == light_solidity_open || solidity[voxel - 1] == light_solidity_base);
+}
+
+// a face into a door's part: the darkest of the open air in the 3 x 3 across it (not solid, not a door's part), else
+//  the part's own light; open[sa][sb] says which pass light
+static inline byte smooth_seal_light(byte light[3][3], byte open[3][3]) {
+    byte darkest = 255, found = 0;
+    for (byte x = 0; x < 3; x++)
+    for (byte y = 0; y < 3; y++) {
+        if ((x != 1 || y != 1) && open[x][y] && light[x][y] < darkest) {
+            darkest = light[x][y];
+            found = 1;
+        }
+    }
+    return found ? darkest : light[1][1];
+}
+
 static inline sbyte3 smooth_offset(sbyte3 face, sbyte3 a, sbyte sign_a, sbyte3 b, sbyte sign_b) {
     return (sbyte3) {
         face.x + a.x * sign_a + b.x * sign_b,
@@ -76,6 +98,19 @@ void smooth_face_lights(
     for (sbyte sb = -1; sb <= 1; sb++) {
         light[sa + 1][sb + 1] = getv_nearby_max_LightNode(lights, lights_locks, position, depth, smooth_offset(face, a, sa, b, sb), oob);
     }
+    if (smooth_is_seal(solidity, getv_nearby_VoxelNode(voxels, voxels_locks, position, depth, face, 0))) {
+        byte open[3][3];
+        for (sbyte sa = -1; sa <= 1; sa++)
+        for (sbyte sb = -1; sb <= 1; sb++) {
+            const byte voxel = getv_nearby_VoxelNode(voxels, voxels_locks, position, depth, smooth_offset(face, a, sa, b, sb), 0);
+            open[sa + 1][sb + 1] = !voxel || !solidity[voxel - 1];
+        }
+        const byte sealed = smooth_seal_light(light, open);
+        for (byte v = 0; v < 4; v++) {
+            vertex_lights[v] = sealed;
+        }
+        return;
+    }
     for (byte i = 0; i < 2; i++) {
         const sbyte sign = i ? 1 : -1;
         solid_a[i] = smooth_is_solid(voxels, voxels_locks, solidity, position, depth, smooth_offset(face, a, sign, b, 0));
@@ -97,9 +132,13 @@ static inline byte smooth_grid_light(const smooth_grid* grid, byte3 position, sb
     return grid->lights[(x * grid->length + y) * grid->length + z];
 }
 
-static inline byte smooth_grid_solid(const smooth_grid* grid, const byte* solidity, byte3 position, sbyte3 offset) {
-    const byte voxel = grid->voxels[((position.x + offset.x + 1) * grid->length + position.y + offset.y + 1) * grid->length +
+static inline byte smooth_grid_voxel(const smooth_grid* grid, byte3 position, sbyte3 offset) {
+    return grid->voxels[((position.x + offset.x + 1) * grid->length + position.y + offset.y + 1) * grid->length +
         position.z + offset.z + 1];
+}
+
+static inline byte smooth_grid_solid(const smooth_grid* grid, const byte* solidity, byte3 position, sbyte3 offset) {
+    const byte voxel = smooth_grid_voxel(grid, position, offset);
     return voxel && solidity[voxel - 1] && solidity[voxel - 1] != light_solidity_base;
 }
 
@@ -119,6 +158,19 @@ static inline void smooth_face_lights_grid(
     for (sbyte sa = -1; sa <= 1; sa++)
     for (sbyte sb = -1; sb <= 1; sb++) {
         light[sa + 1][sb + 1] = smooth_grid_light(grid, position, smooth_offset(face, a, sa, b, sb), oob);
+    }
+    if (smooth_is_seal(solidity, smooth_grid_voxel(grid, position, face))) {
+        byte open[3][3];
+        for (sbyte sa = -1; sa <= 1; sa++)
+        for (sbyte sb = -1; sb <= 1; sb++) {
+            const byte voxel = smooth_grid_voxel(grid, position, smooth_offset(face, a, sa, b, sb));
+            open[sa + 1][sb + 1] = !voxel || !solidity[voxel - 1];
+        }
+        const byte sealed = smooth_seal_light(light, open);
+        for (byte v = 0; v < 4; v++) {
+            vertex_lights[v] = sealed;
+        }
+        return;
     }
     for (byte i = 0; i < 2; i++) {
         const sbyte sign = i ? 1 : -1;

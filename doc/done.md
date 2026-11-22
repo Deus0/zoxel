@@ -1,6 +1,25 @@
 # Done
 
 ## 2026-11-22
+-x A door shut loaded open: a chunk saved only on a voxel's change (ChunkUpdate), and a door's toggle changes its
+  block data alone, so the file kept the door as it was at the chunk's last edit. A block data change marks the chunk
+  SaveDirty (vodes/doors terrain_set_block_data), chunk3_save_dirty_system saves it once. tst door_save reads its file
+  back after each toggle
+-x The wall beside a shut door stayed lit in a dark room: smooth lighting averaged a face's 3 x 3 lights, and a wall's
+  side face looking into the door voxel reached past the door's plane to the sunlit outside. A face into a door's part
+  is lit flat by the darkest open air across it (lights3/sys/build_smooth.c smooth_seal_light, the gpu mesher's
+  seal_at: GpuMeshLighting seals). tst smooth_lights
+-x A shut door glowed in a dark room: a block vox took the brightest of its own voxel and its 6 sides, and a shut
+  door's voxel is dark, so it took the sunlit outside. One that stops light takes the darkest of its open sides now
+  (vodes3/fun/lights.c get_block_vox_light; solid sides, the wall round it, left out). tst door_light checks its
+  brightness, doc/tech/lighting.md (new: the lighting rules and passes)
+-x Coop: the second player couldn't pick up items. Only the first player's canvas had a held item icon (DataMouse, on
+  the mouse), and the click found none. Every player's screen has one now; a player not on the mouse (a navigator)
+  has it top right of its screen, not on a pointer it doesn't move (huds/sys/data_mouse.c)
+-x Game uis were left open on death, and for a navigator when the game menus closed (Y): only the taskbar went.
+  close_game_uis (huds/fun/taskbar.c) closes the taskbar's uis on death and on a navigator's resume, except a hud
+  (TaskbarData hud: the action bar). A mouse's stay open on resume, moved out of the way. tst coop_navigator and
+  navigator_inventory check the pickup, the icon's corner, and both closes
 -x Light leaked into homes with their doors shut, loaded from saves before the door filler (d7832485d): they kept the
   plain filler over each door, and it passed light, the door's top half let the sun in. The plain filler passes light
   as its base does now (block_light_pass_base): over a shut door it stops it, over a bed or lamp it passes as before

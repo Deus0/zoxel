@@ -62,6 +62,11 @@ void player_state_pause_ui(ecs* world, entity player, byte state) {
         if (zox_valid(taskbar)) {
             zox_delete(taskbar);
         }
+        // a navigator's game uis close with its menus (a mouse's stay, moved out of the way)
+        const byte mode = zox_has(player, DeviceMode) ? zox_getv(player, DeviceMode) : 0;
+        if (mode != zox_device_mode_keyboardmouse && mode != zox_device_mode_touchscreen) {
+            close_game_uis(world, canvas);
+        }
         trigger_canvas_half_fade(world, canvas, pause_fade_time, pause_fade_alpha, 0);
     } else if (state == zox_player_state_play_begin) {
         if (zox_has(camera, CameraBlur)) {

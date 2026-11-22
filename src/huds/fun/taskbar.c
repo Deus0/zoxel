@@ -92,3 +92,28 @@ void link_window_to_taskbar(
             zox_getn(toggle));
     }
 }
+
+// closes a canvas's game uis, the taskbar's (items, stats, the map..), but its huds (TaskbarData hud: the action bar)
+//  - on death, and on resume for a navigator (a gamepad can't move them out of the way as a mouse can)
+void close_game_uis(ecs* world, entity canvas) {
+    if (!zox_valid(canvas) || !zox_valid(taskbar_manager)) {
+        return;
+    }
+    iter it2 = zox_children(world, taskbar_manager);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            const entity e2 = it2.entities[j];
+            if (!zox_has(e2, TaskbarData)) {
+                continue;
+            }
+            const TaskbarData* data = zox_get(e2, TaskbarData);
+            if (data->hud || !zox_valid(data->component_id)) {
+                continue;
+            }
+            const entity window = zox_get_child_by_id(world, canvas, data->component_id);
+            if (zox_valid(window)) {
+                zox_delete(window);
+            }
+        }
+    }
+}

@@ -21,6 +21,7 @@ void import_actions_ui(ecs* world) {
         .spawn = &spawn_menu_actions,
         .component_id = zox_id(MenuActions),
         .texture_name = "taskbar_actions",
-        .tooltip_text = "Actionbar"
+        .tooltip_text = "Actionbar",
+        .hud = 1
     });
 }

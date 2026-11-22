@@ -53,6 +53,7 @@ typedef struct {
     byte darklight;     // the least light, solids and dark corners
     byte sunlight;      // past the chunk's top
     uint solid[8];      // voxel v stops light when bit v - 1 is set (the realm's solidity)
+    uint seals[8];      // a door's parts, bit v - 1: a face into one is lit flat by the darkest open air round it
 } GpuMeshLighting;
 
 // how gpu_mesher_draw lights a mesh
@@ -93,6 +94,7 @@ static const char* zox_gpu_mesh_source =
 "uniform uint darklight;\n"
 "uniform uint sunlight;\n"
 "uniform uint solid[8];\n"
+"uniform uint seals[8];\n"
 "uniform uint heights[32];\n"
 "uniform uint drawn[8];\n"
 "uniform uint hides[8];\n"
@@ -158,6 +160,16 @@ static const char* zox_gpu_mesh_source =
 "    return ((solid[i >> 5] >> (i & 31u)) & 1u) != 0u;\n"
 "}\n"
 "\n"
+"// a door's part: stops light only while shut, no cube (smooth_is_seal)\n"
+"bool seal_at(ivec3 p) {\n"
+"    uint v = voxel_at(p);\n"
+"    if (v == 0u) {\n"
+"        return false;\n"
+"    }\n"
+"    uint i = v - 1u;\n"
+"    return ((seals[i >> 5] >> (i & 31u)) & 1u) != 0u;\n"
+"}\n"
+"\n"
 "// left right down up back front (direction_left..direction_front)\n"
 "const ivec3 directions[6] = ivec3[6](ivec3(-1, 0, 0), ivec3(1, 0, 0), ivec3(0, -1, 0), ivec3(0, 1, 0), ivec3(0, 0, -1), ivec3(0, 0, 1));\n"
 "// a face's two axes along it (smooth_face_axes)\n"
@@ -183,6 +195,20 @@ static const char* zox_gpu_mesh_source =
 "    ivec3 a = unit(axis_a[d]);\n"
 "    ivec3 b = unit(axis_b[d]);\n"
 "    uint face_light = light_at(f, past);\n"
+"    // into a door's part: flat, the darkest open air across it (smooth_seal_light)\n"
+"    if (seal_at(f)) {\n"
+"        uint darkest = 256u;\n"
+"        for (int sa = -1; sa <= 1; sa++) {\n"
+"            for (int sb = -1; sb <= 1; sb++) {\n"
+"                ivec3 q = f + a * sa + b * sb;\n"
+"                if ((sa != 0 || sb != 0) && !solid_at(q) && !seal_at(q)) {\n"
+"                    darkest = min(darkest, light_at(q, past));\n"
+"                }\n"
+"            }\n"
+"        }\n"
+"        uint sealed = darkest > 255u ? face_light : darkest;\n"
+"        return sealed | (sealed << 8) | (sealed << 16) | (sealed << 24);\n"
+"    }\n"
 "    uint corners_light = 0u;\n"
 "    for (int s = 0; s < 4; s++) {\n"
 "        ivec3 edge_a = f + a * ((s & 1) != 0 ? 1 : -1);\n"
@@ -482,6 +508,7 @@ void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, by
         zox_gpu_compute_uniform_uint(mesher->program, "darklight", lighting->darklight);
         zox_gpu_compute_uniform_uint(mesher->program, "sunlight", lighting->sunlight);
         zox_gpu_compute_uniform_uint_array(mesher->program, "solid", lighting->solid, 8);
+        zox_gpu_compute_uniform_uint_array(mesher->program, "seals", lighting->seals, 8);
     }
     zox_gpu_storage_bind(0, mesher->voxels);
     zox_gpu_storage_bind(1, mesher->command);

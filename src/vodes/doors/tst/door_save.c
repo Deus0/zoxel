@@ -4,6 +4,8 @@
 //  - built: inside dark; opened and shut (door_toggle); saved (Edited, chunk3_save_system to its realm's folder), its block data and light wiped,
 //    loaded from the file as chunk3_load_system does (Loaded, its light from the sunlight step): inside dark, the door
 //    shut in its block data, outside sunlit
+//  - each toggle alone saved (a block data change, no voxel's: terrain_set_block_data's SaveDirty), the file read
+//    back after each: open, then shut (it saved only on a voxel's edit, the door loaded as it was then)
 //  - run: bash bsh/tst.sh door_save
 #define zox_tst_dsave_door_x 4
 byte zox_tst_dsave_stage = 0;
@@ -37,6 +39,26 @@ static inline void zox_tst_dsave_read(ecs* world, entity chunk, byte s) {
     const BlockDatas* datas = zox_get(chunk, BlockDatas);
     zox_tst_dsave_data[s][0] = get_block_data(datas, (byte3) { zox_tst_dsave_door_x, 4, 9 });
     zox_tst_dsave_data[s][1] = get_block_data(datas, (byte3) { zox_tst_dsave_door_x, 5, 9 });
+}
+
+byte zox_tst_dsave_file_open = 0;   // the file had the door open after it was opened
+int3 zox_tst_dsave_base;
+
+// the door's base block data in the chunk's file, 255 without one
+static inline byte zox_tst_dsave_file_data(ecs* world, entity chunk) {
+    VoxelNode voxels;
+    memset(&voxels, 0, sizeof(VoxelNode));
+    BlockDatas datas;
+    memset(&datas, 0, sizeof(BlockDatas));
+    byte data = 255;
+    if (load_chunk(world, zox_tst_world_realm, zox_getv(chunk, ChunkPosition), &voxels, &datas) && datas.value) {
+        data = get_block_data(&datas, (byte3) { zox_tst_dsave_door_x, 4, 9 });
+    }
+    close_VoxelNode(&voxels);
+    if (datas.value) {
+        free(datas.value);
+    }
+    return data;
 }
 
 static inline char* zox_tst_dsave_path(ecs* world, entity chunk) {
@@ -80,18 +102,53 @@ byte zox_tst_door_save_ready(ecs* world) {
         zox_tst_waiting = "the loaded chunk's light to start";
         return 0;
     }
-    if (zox_tst_dsave_stage != 2 && !zox_tst_room_settled(world, chunk, &zox_tst_dsave_settled)) {
+    if (zox_tst_dsave_stage != 2 && zox_tst_dsave_stage < 5 && !zox_tst_room_settled(world, chunk, &zox_tst_dsave_settled)) {
         zox_tst_waiting = zox_tst_dsave_stage == 1 ? "the room built" : "the loaded room's light";
         return 0;
     }
     if (zox_tst_dsave_stage == 1) {
+        // the built room saved (its voxels' edits), then opened alone (door_toggle, as a player does)
+        zox_tst_waiting = "the built room saved";
+        const byte data = zox_tst_dsave_file_data(world, chunk);
+        if (data == 255 || (data & block_data_open)) {
+            return zox_tst_dsave_frames > 600;
+        }
         zox_tst_dsave_read(world, chunk, 0);
-        // opened and shut again, as a player does (door_toggle), before it's saved
         const int3 c = zox_getv(chunk, ChunkPosition);
         const int length = octree_size(zox_getv(chunk, NodeDepth));
-        const int3 base = { c.x * length + zox_tst_dsave_door_x, c.y * length + 4, c.z * length + 9 };
-        zox_tst_check(door_toggle(world, zox_tst_world_terrain, realm, base), "opening the door did nothing");
-        zox_tst_check(door_toggle(world, zox_tst_world_terrain, realm, base), "shutting the door did nothing");
+        zox_tst_dsave_base = (int3) { c.x * length + zox_tst_dsave_door_x, c.y * length + 4, c.z * length + 9 };
+        zox_tst_check(door_toggle(world, zox_tst_world_terrain, realm, zox_tst_dsave_base), "opening the door did nothing");
+        zox_tst_dsave_stage = 5;
+        zox_tst_dsave_frames = 0;
+        return 0;
+    }
+    if (zox_tst_dsave_stage == 5) {
+        // its file has it open, then shut alone
+        zox_tst_waiting = "the door's opening saved";
+        const byte data = zox_tst_dsave_file_data(world, chunk);
+        if (data == 255 || !(data & block_data_open)) {
+            if (zox_tst_dsave_frames > 300) {
+                zox_tst_check(0, "opening the door wasn't saved, the file's data [%i]", data);
+                return 1;
+            }
+            return 0;
+        }
+        zox_tst_dsave_file_open = 1;
+        zox_tst_check(door_toggle(world, zox_tst_world_terrain, realm, zox_tst_dsave_base), "shutting the door did nothing");
+        zox_tst_dsave_stage = 6;
+        zox_tst_dsave_frames = 0;
+        return 0;
+    }
+    if (zox_tst_dsave_stage == 6) {
+        zox_tst_waiting = "the door's shutting saved";
+        const byte data = zox_tst_dsave_file_data(world, chunk);
+        if (data == 255 || (data & block_data_open)) {
+            if (zox_tst_dsave_frames > 300) {
+                zox_tst_check(0, "shutting the door wasn't saved, the file's data [%i]", data);
+                return 1;
+            }
+            return 0;
+        }
         zox_tst_dsave_stage = 2;
         zox_tst_dsave_frames = 0;
         return 0;
@@ -136,6 +193,7 @@ byte zox_tst_door_save_ready(ecs* world) {
 void zox_tst_door_save_check(ecs* world) {
     (void) world;
     zox_tst_check(zox_tst_dsave_stage == 4, "never got to the end, at stage [%i]", zox_tst_dsave_stage);
+    zox_tst_check(zox_tst_dsave_file_open, "the door's opening never reached its file");
     const char* names[2] = { "built", "loaded" };
     for (byte s = 0; s < 2; s++) {
         const byte3 a = zox_tst_dsave_at[s];

@@ -5,6 +5,10 @@
 //      icon's item, none on an empty slot (it kept the old item's)
 //  - then an item in hand, RB and LB fast round every window (it crashed switching windows)
 //  - the stick down past its last row steps into the action bar (another window, element_navigation_system)
+//  - A's pick up puts the item on the player's held icon (DataMouse, every player's canvas has one: the second's had
+//      none, it couldn't pick up), top right of its screen (data_mouse_corner_system: no mouse to follow)
+//  - Y closes the game menus and its uis with them, the action bar kept (a navigator can't move them out of the way)
+//  - Y opens them again, the player dies: its open ui closes (left open on the respawn screen)
 //  - run: bash bsh/tst.sh navigator_inventory
 // tst: coop_navigator, the same for split screen's second player (its viewport part way along the screen: its
 //  tooltips sat that far off), bash bsh/tst.sh coop_navigator
@@ -31,6 +35,11 @@ byte zox_tst_navinv_opened = 0;
 byte zox_tst_navinv_actionbar = 0;
 byte zox_tst_navinv_switched = 0;    // switched windows fast and lived
 char zox_tst_navinv_last[64] = "";
+byte zox_tst_navinv_held = 0;       // A picked up onto the canvas's held icon
+byte zox_tst_navinv_corner = 0;     // the held icon top right of its screen
+byte zox_tst_navinv_resumed = 0;    // Y closed the inventory, the action bar left
+byte zox_tst_navinv_death = 0;      // the open ui closed on death
+entity zox_tst_navinv_open = 0;     // the ui open as it died
 
 int zox_tst_navinv_moves = 0;
 int zox_tst_navinv_tips = 0;            // tooltips looked at, every step
@@ -240,6 +249,19 @@ byte zox_tst_navigator_inventory_ready(ecs* world) {
                     zox_tst_navinv_moves++;
                     zox_tst_navinv_tip(world, canvas);
                 }
+                // the first A: the item held, on the held icon top right
+                if (step == 0 && at == 25) {
+                    const entity held = zox_get_child_by_id(world, canvas, zox_id(DataMouse));
+                    zox_tst_navinv_held = zox_valid(held) && zox_valid(zox_get_link(world, held, DataLink));
+                    CanvasViewport viewport;
+                    if (zox_tst_navinv_held && get_canvas_viewport(world, canvas, &viewport)) {
+                        const int2 size = zox_getv(held, LayoutSize);
+                        const int4 b = get_element_pointer_bounds(world, &viewport, held, zox_getv(held, Position2), size);
+                        const int right = viewport.position.x + viewport.size.x, top = viewport.position.y + viewport.size.y;
+                        zox_tst_navinv_corner = b.y <= right && b.y > right - size.x * 2 && b.w <= top && b.w > top - size.y * 2;
+                        zox_log("[tst] held icon [%i %i %i %i], its screen's top right [%i %i]", b.x, b.y, b.z, b.w, right, top);
+                    }
+                }
                 return 0;
             }
         case 5:
@@ -285,9 +307,46 @@ byte zox_tst_navigator_inventory_ready(ecs* world) {
             }
             if (f > 20 + 8 * 6 * 4) {
                 zox_tst_navinv_switched = 1;
-                return 1;
+                zox_tst_nav2_next();
             }
             return 0;
+        case 8:
+            zox_tst_waiting = "Y closing the game menus";
+            // the ui open before: RB to the next if it's the action bar (a hud, it stays)
+            zox_tst_pad_held[zox_btn_rb] = f >= 2 && f < 6 && zox_valid(navigator_opened) && zox_has(navigator_opened, MenuActions);
+            if (f == 15) {
+                zox_tst_navinv_open = navigator_opened;
+                zox_tst_check(zox_valid(zox_tst_navinv_open) && !zox_has(zox_tst_navinv_open, MenuActions),
+                    "no game ui open before Y closed the menus");
+            }
+            zox_tst_pad_held[zox_btn_y] = f >= 20 && f < 24;
+            if (f > 60 && zox_getv(player, PlayerState) == zox_player_state_playing) {
+                zox_tst_navinv_resumed = !zox_valid(zox_tst_navinv_open) &&
+                    zox_valid(zox_get_child_by_id(world, canvas, zox_id(MenuActions)));
+                zox_tst_nav2_next();
+            }
+            return f > 600;
+        case 9:
+            zox_tst_waiting = "Y opening the game menus, then dying";
+            zox_tst_pad_held[zox_btn_y] = f >= 20 && f < 24;
+            if (f > 60 && zox_getv(player, PlayerState) == zox_player_state_paused && zox_valid(navigator_opened)) {
+                zox_tst_navinv_open = navigator_opened;
+                zox_tst_check(!zox_has(zox_tst_navinv_open, MenuActions), "the first game menu is the action bar (a hud)");
+                const entity character = zox_get_link(world, player, CharacterLink);
+                const entity health = zox_valid(character) ? zox_get_child_by_id(world, character, zox_id(StatHealth)) : 0;
+                if (zox_valid(health)) {
+                    zox_setv(health, StatValue, 0);
+                }
+                zox_tst_nav2_next();
+            }
+            return f > 600;
+        case 10:
+            zox_tst_waiting = "its open ui closed on death";
+            if (zox_valid(zox_get_child_by_id(world, canvas, zox_id(RespawnUI)))) {
+                zox_tst_navinv_death = !zox_valid(zox_tst_navinv_open);
+                return f > 5;
+            }
+            return f > 600;
     }
     return 0;
 }
@@ -307,6 +366,10 @@ void zox_tst_navigator_inventory_check(ecs* world) {
         zox_tst_navinv_tips_stale);
     zox_tst_check(!zox_tst_navinv_tips_off, "[%i] tooltips weren't under their ui", zox_tst_navinv_tips_off);
     zox_tst_check(zox_tst_navinv_switched, "never finished switching windows fast");
+    zox_tst_check(zox_tst_navinv_held, "A on an item didn't put it on the player's held icon");
+    zox_tst_check(zox_tst_navinv_corner, "the held icon isn't top right of the player's screen");
+    zox_tst_check(zox_tst_navinv_resumed, "Y closing the game menus left its ui open (or closed the action bar)");
+    zox_tst_check(zox_tst_navinv_death, "the game ui stayed open on death");
     zox_tst_check(zox_tst_navinv_actionbar, "the stick down from the inventory never reached the action bar, last in [%s]",
         zox_tst_navinv_last);
 }

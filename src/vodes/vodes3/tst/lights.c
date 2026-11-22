@@ -220,6 +220,18 @@ byte zox_tst_bvl_sampling_ready(ecs* world) {
     return 1;
 }
 
+// a block vox's light from raw lights, no voxels (every voxel passes light)
+static inline byte zox_tst_bvl_light(const LightNode* lights, const LightNode** neighbor_lights, byte depth, byte3 position) {
+    block_vox_lighting l;
+    memset(&l, 0, sizeof(l));
+    l.lights = lights;
+    l.depth = depth;
+    for (byte d = 0; d < 6; d++) {
+        l.neighbor_lights[d] = neighbor_lights[d];
+    }
+    return get_block_vox_light(&l, position);
+}
+
 void zox_tst_bvl_sampling_check(ecs* world) {
     (void) world;
     const byte depth = 3;
@@ -235,29 +247,29 @@ void zox_tst_bvl_sampling_check(ecs* world) {
     neighbors[direction_right] = &neighbor;
     // dark everywhere
     const byte3 middle = { 4, 4, 4 };
-    zox_tst_check(get_block_vox_light(&chunk, none, depth, middle) == darklight, "dark chunk didn't give darklight");
+    zox_tst_check(zox_tst_bvl_light(&chunk, none, depth, middle) == darklight, "dark chunk didn't give darklight");
     // one lit side wins, from each direction
     for (byte d = 0; d < 6; d++) {
         int3 side = move_position(byte3_to_int3(middle), d);
         set_LightNode(&chunk, depth, int3_to_byte3(side), 200);
-        const byte light = get_block_vox_light(&chunk, none, depth, middle);
+        const byte light = zox_tst_bvl_light(&chunk, none, depth, middle);
         zox_tst_check(light == 200, "lit side [%i] gave [%i], expected [200]", d, light);
         set_LightNode(&chunk, depth, int3_to_byte3(side), darklight);
     }
     // a diagonal doesn't count
     set_LightNode(&chunk, depth, (byte3) { 5, 5, 4 }, 200);
-    zox_tst_check(get_block_vox_light(&chunk, none, depth, middle) == darklight, "a diagonal voxel lit the minivox");
+    zox_tst_check(zox_tst_bvl_light(&chunk, none, depth, middle) == darklight, "a diagonal voxel lit the minivox");
     // its own voxel counts, i.e. light passing blocks later
     set_LightNode(&chunk, depth, middle, 120);
-    zox_tst_check(get_block_vox_light(&chunk, none, depth, middle) == 120, "its own voxel's light was ignored");
+    zox_tst_check(zox_tst_bvl_light(&chunk, none, depth, middle) == 120, "its own voxel's light was ignored");
     // on the +x edge: the neighbor's touching voxel lights it, its far voxel doesn't
     const byte3 edge = { length - 1, 2, 2 };
     set_LightNode(&neighbor, depth, (byte3) { length - 1, 2, 2 }, 250);
-    zox_tst_check(get_block_vox_light(&chunk, neighbors, depth, edge) == darklight, "the neighbor's far voxel lit an edge minivox");
+    zox_tst_check(zox_tst_bvl_light(&chunk, neighbors, depth, edge) == darklight, "the neighbor's far voxel lit an edge minivox");
     set_LightNode(&neighbor, depth, (byte3) { 0, 2, 2 }, 230);
-    zox_tst_check(get_block_vox_light(&chunk, neighbors, depth, edge) == 230, "the neighbor's touching voxel didn't light an edge minivox");
+    zox_tst_check(zox_tst_bvl_light(&chunk, neighbors, depth, edge) == 230, "the neighbor's touching voxel didn't light an edge minivox");
     // no neighbor chunk: only its own chunk
-    zox_tst_check(get_block_vox_light(&chunk, none, depth, edge) == darklight, "an edge minivox without a neighbor chunk wasn't darklight");
+    zox_tst_check(zox_tst_bvl_light(&chunk, none, depth, edge) == darklight, "an edge minivox without a neighbor chunk wasn't darklight");
     // brightness is light / 255, like terrain vertex colors
     zox_tst_check(fabsf(block_vox_light_to_brightness(255) - 1.0f) < 0.0001f, "full light isn't brightness 1");
     collapse_LightNode(&neighbor);

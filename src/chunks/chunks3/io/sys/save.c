@@ -82,3 +82,13 @@ void chunk3_save_system(iter* it) {
     }
     zox_sys_on_end();
 } zoxd_system(chunk3_save_system);
+
+// a chunk whose block data changed without a voxel's (a door toggled, terrain_set_block_data): saved once, SaveDirty
+//  taken off (chunk3_save_system saves only with ChunkUpdate, which rebuilds its mesh and block voxes)
+void chunk3_save_dirty_system(iter* it) {
+    chunk3_save_system(it);
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        zox_remove(it->entities[i], SaveDirty);
+    }
+} zoxd_system(chunk3_save_dirty_system);

@@ -2,6 +2,8 @@
 //  - the player's game; a sealed tunnel two tall under the ground (terrain tst glow_relight's room), a glow stone at
 //    one end, a door across it (its base and filler), the far side past it
 //  - shut: the far side dark; opened (door_toggle): lit through it; shut again: dark again, the glow side still lit
+//  - the door's block vox brightness (get_block_vox_brightness): shut, its darker side's (the far one's), not the glow
+//    side's (lit by its brightest side it glowed in a dark room); open, lit by the glow
 //  - run: bash bsh/tst.sh door_light
 #define zox_tst_door_light_x 3      // the door's x along the tunnel, the glow stone at 5, the far side at 1
 byte zox_tst_door_light_stage = 0;
@@ -10,11 +12,15 @@ entity zox_tst_door_light_chunk = 0;
 byte3 zox_tst_door_light_at;
 byte zox_tst_door_light_far[3];     // shut, open, shut again: the far side's light (its lower voxel)
 byte zox_tst_door_light_near[3];    // beside the glow stone
+float zox_tst_door_light_vox[3];    // the door's block vox brightness, its base and filler's brightest
 
 static inline void zox_tst_door_light_read(ecs* world, byte stage) {
     const byte3 a = zox_tst_door_light_at;
     zox_tst_door_light_far[stage] = zox_tst_room_light(world, zox_tst_door_light_chunk, (byte3) { a.x + 1, a.y - 1, a.z });
     zox_tst_door_light_near[stage] = zox_tst_room_light(world, zox_tst_door_light_chunk, (byte3) { a.x + 4, a.y, a.z });
+    const float base = get_block_vox_brightness(world, zox_tst_door_light_chunk, (byte3) { a.x + zox_tst_door_light_x, a.y - 1, a.z });
+    const float top = get_block_vox_brightness(world, zox_tst_door_light_chunk, (byte3) { a.x + zox_tst_door_light_x, a.y, a.z });
+    zox_tst_door_light_vox[stage] = base > top ? base : top;
 }
 
 static inline void zox_tst_door_light_toggle(ecs* world) {
@@ -76,6 +82,15 @@ void zox_tst_door_light_check(ecs* world) {
     zox_log("[tst] far side: shut [%i] open [%i] shut [%i], beside the glow stone [%i] [%i] [%i]",
         zox_tst_door_light_far[0], zox_tst_door_light_far[1], zox_tst_door_light_far[2],
         zox_tst_door_light_near[0], zox_tst_door_light_near[1], zox_tst_door_light_near[2]);
+    zox_log("[tst] the door's brightness: shut [%.2f] open [%.2f] shut [%.2f]",
+        zox_tst_door_light_vox[0], zox_tst_door_light_vox[1], zox_tst_door_light_vox[2]);
+    for (byte s = 0; s < 3; s += 2) {
+        zox_tst_check(zox_tst_door_light_vox[s] <= block_vox_light_to_brightness(zox_tst_door_light_far[s] + 2),
+            "the shut door is lit [%.2f], brighter than its dark side [%.2f]", zox_tst_door_light_vox[s],
+            block_vox_light_to_brightness(zox_tst_door_light_far[s]));
+    }
+    zox_tst_check(zox_tst_door_light_vox[1] > block_vox_light_to_brightness(darklight + 40), "the open door is dark [%.2f]",
+        zox_tst_door_light_vox[1]);
     for (byte s = 0; s < 3; s++) {
         zox_tst_check(zox_tst_door_light_near[s] > darklight + 150, "beside the glow stone is [%i]", zox_tst_door_light_near[s]);
     }
