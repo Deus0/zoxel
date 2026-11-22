@@ -169,7 +169,7 @@ void voxel_light_system(iter* it) {
                     }
                     continue;
                 }
-                if (!light_stops(solidity, datas, update.value, update.position)) {
+                if (!light_stops(solidity, datas, root_vnode, depth->value, update.value, update.position)) {
                     continue;
                 }
                 // TODO: We can add a dark beam here instead

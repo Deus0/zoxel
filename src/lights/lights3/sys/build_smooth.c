@@ -41,7 +41,7 @@ static inline byte smooth_is_solid(
     sbyte3 offset)
 {
     const byte voxel = getv_nearby_VoxelNode(voxels, voxels_locks, position, depth, offset, 0);
-    return voxel && solidity[voxel - 1];
+    return voxel && solidity[voxel - 1] && solidity[voxel - 1] != light_solidity_base;
 }
 
 static inline sbyte3 smooth_offset(sbyte3 face, sbyte3 a, sbyte sign_a, sbyte3 b, sbyte sign_b) {
@@ -100,7 +100,7 @@ static inline byte smooth_grid_light(const smooth_grid* grid, byte3 position, sb
 static inline byte smooth_grid_solid(const smooth_grid* grid, const byte* solidity, byte3 position, sbyte3 offset) {
     const byte voxel = grid->voxels[((position.x + offset.x + 1) * grid->length + position.y + offset.y + 1) * grid->length +
         position.z + offset.z + 1];
-    return voxel && solidity[voxel - 1];
+    return voxel && solidity[voxel - 1] && solidity[voxel - 1] != light_solidity_base;
 }
 
 // smooth_face_lights from the grid, the same lights (tst smooth_lights compares them)

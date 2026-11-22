@@ -63,7 +63,7 @@ static inline byte flood_light(
                 neighbor_voxels2,
                 depth,
                 pos);
-            if (light_stops(solidity, neighbor_datas[dir], neighbor_voxel, pos)) {
+            if (light_stops(solidity, neighbor_datas[dir], neighbor_voxels2, depth, neighbor_voxel, pos)) {
                 continue; // solid: hard stop
             }
             // air decay, more into water
@@ -95,7 +95,7 @@ static inline byte flood_light(
         }
         // --- In-chunk: READ voxel, WRITE light in our own chunk only. ---
         byte voxel = getv_VoxelNode(voxels, depth, pos);
-        if (light_stops(solidity, datas, voxel, pos)) {
+        if (light_stops(solidity, datas, voxels, depth, voxel, pos)) {
             continue;
         }
         byte decayed_light = light_flood_decay(light, voxel, liquids, air_decay, min_light);
@@ -225,7 +225,7 @@ void light_flood_system(iter* it) {
                 continue;
             }
             byte voxel = getv_VoxelNode(root_vnode, update.depth, update.pos);
-            if (light_stops(solidity, datas, voxel, update.pos)) {
+            if (light_stops(solidity, datas, root_vnode, update.depth, voxel, update.pos)) {
                 if (dbg_log) {
                     zox_log("[%s]: Light Flood Canceled at [%ix%ix%i] l[%i] flooded [%i]",
                         zox_get_name(e),

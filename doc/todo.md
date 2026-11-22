@@ -7,6 +7,12 @@
   ideas), [gdd/caves.md](gdd/caves.md) (caves design)
 
 ## Bugs
+- door loads as open when i close it
+- alt tab on windows, mouse lock stays locked
+- mouse now doesnt go over hte shared player canvas, make mouse on a seperate canvas over others
+- a home's room keeps some light after its glow stone goes, 1 run in 2 (tst home_dark: 28 to 134 in a few rooms,
+  fading from where it was, under it dark): the dark pass stops part way; a box built round sunlit air keeps the sun
+  too (tst door_load, 223 inside before it clears the tunnel)
 - alt tabbing enough, input stops working when you get back
 	- particularly mouse raycasting
 - houses: add holes as windows (for now)
@@ -192,6 +198,8 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
   the ones they use (a tst module last in the build)
   - actions/tst/mirror_hat.c: the mirror (huds) following the body (equipment), huds builds before equipment
   - vodes/doors/tst/door_sky.c and door_light.c use terrain/tst/glow_relight.c's room helpers
+  - door_light, door_sky and glow_relight to an air chunk (terrain/tst/air_chunk.c, as door_load): no player, a
+    few seconds less each
   - items/tst/all.c, the all items cheat, lives in tests: a debug tool, tools out of the test harness
 
 ## Next (2026-11-21)

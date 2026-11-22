@@ -63,7 +63,7 @@ static inline byte dark_flood_light(
             }
             if (n_root_vnode) {
                 byte voxel = getv_VoxelNode(n_root_vnode, depth, pos);
-                if (light_stops(solidity, n_datas[dir], voxel, pos)) {
+                if (light_stops(solidity, n_datas[dir], n_root_vnode, depth, voxel, pos)) {
                     dark_relight_emitter(light_queue, glows, voxel, positionl, depth);
                     continue; // solid wall
                 }
@@ -94,7 +94,7 @@ static inline byte dark_flood_light(
                 if (nqueue) {
                     spin_lock(&nqueue->lock);
                     a_LightQueue(nqueue, (LightUpdate) {
-                        .light = ncurrent_light,
+                        .light = darklight,     // floods from its own light then, not this (it may be dark by then)
                         .distance = light_propogation_distance,
                         .pos   = pos,
                         .depth = depth
@@ -106,7 +106,7 @@ static inline byte dark_flood_light(
         }
         // --- in-chunk ---
         byte voxel = getv_VoxelNode(root_vnode, depth, pos);
-        if (light_stops(solidity, datas, voxel, pos)) {
+        if (light_stops(solidity, datas, root_vnode, depth, voxel, pos)) {
             dark_relight_emitter(light_queue, glows, voxel, positionl, depth);
             continue; // solid → stop (light passes water, so does its dark)
         }
@@ -167,7 +167,7 @@ static inline byte dark_flood_light(
                 spin_lock(&light_queue->lock);
                 a_LightQueue(light_queue, (LightUpdate) {
                     // .type  = zox_light_type_flood,
-                    .light = decayed_light,
+                    .light = darklight,     // floods from its own light then: a beam beside it can go dark first (a roof placed at once), its stale light relit the room
                     .distance = light_propogation_distance,
                     .pos   = pos,
                     .depth = depth
@@ -228,7 +228,7 @@ byte dark_sunbeam(
         pos.y = y;
         if (!started || y != top) {
             const byte voxel = getv_VoxelNode(root_vnode, depth, pos);
-            if (light_stops(solidity, datas, voxel, pos)) {
+            if (light_stops(solidity, datas, root_vnode, depth, voxel, pos)) {
                 beam_stopped = 1;
                 break;
             }

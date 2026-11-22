@@ -25,7 +25,7 @@ byte sunbeam(
     for (int y = pos.y; y >= 0; y--) {
         pos.y = y;
         const byte voxel = getv_VoxelNode(root_vnode, depth, pos);
-        if (light_stops(solidity, datas, voxel, pos)) {
+        if (light_stops(solidity, datas, root_vnode, depth, voxel, pos)) {
             beam_stopped = 1;
             break;
         }

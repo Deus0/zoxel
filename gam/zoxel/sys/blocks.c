@@ -139,6 +139,8 @@ void blocks_realm_spawn_system(iter* it) {
                 .color = color_white,
             };
             entity e2 = spawn_block_vox_meta(world, filler_data);
+            // as its base passes light: a door's in an old save (before the door filler) stops it while shut
+            zox_setv(e2, BlockLightPass, block_light_pass_base);
             zox_set_parent(world, e2, e);
             link_hit_sound(world, e2, e, &hit_sound_wood);
         }

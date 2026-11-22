@@ -1,6 +1,14 @@
 # Done
 
 ## 2026-11-22
+-x Light leaked into homes with their doors shut, loaded from saves before the door filler (d7832485d): they kept the
+  plain filler over each door, and it passed light, the door's top half let the sun in. The plain filler passes light
+  as its base does now (block_light_pass_base): over a shut door it stops it, over a bed or lamp it passes as before
+  (lights3/fun/solidity.c light_stops, its base read from its block data; meshing still sees it as air).
+  A room shut round lit air (a door shut, a roof placed) kept its light: the dark pass queued refills from lights
+  beside it at their light then, a beam beside it went dark after and its stale light relit the room (223 inside a
+  sealed room). Refills start at darklight, the flood takes the voxel's light when it runs (lights3/sys/dark.c).
+  tst door_old_filler, door_save (a room in the void, shut, saved and loaded: dark)
 -x Oil: a liquid as water is (flows, swum in, light dims in it), dark, its own block material and mesh with its own
   texture. Liquids are families now (WaterLevels, LiquidLink): oil spreads as oil, water as water. A liquid mesh
   takes its texture from the first block of its material that has one (a flowing block could come first and leave
