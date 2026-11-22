@@ -8,6 +8,7 @@
 #include "block_vox_hits.c"
 #include "furniture_rotation.c"
 #include "quest_dialogue.c"
+#include "dialogue_aim.c"
 #include "find_quest.c"
 
 #include "npc_attacks.c"
@@ -96,6 +97,7 @@ void zox_tst_population_check(ecs* world) {
 }
 
 void zox_tsts_npcs(ecs* world) {
+    zox_tsts_dialogue_aim(world);
     zox_tst_add("population", zox_tst_population_ready, zox_tst_population_check, 30);
     zox_tsts_npc_attacks(world);
     zox_tsts_monsters(world);

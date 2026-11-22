@@ -40,10 +40,28 @@ static inline float3 spine_neck_local(ecs* world, const spine_bones* bones, floa
 
 // a first person player's body adapts to its look: looking up it leans back (of the look's pitch, up to a most), its
 //  shoulders under the view so the arm reaches up from below it into the sky, not in from the side (tst guard_pitch)
-//  - its head turns back by the lean (spine_lean_system): the camera on it keeps its look
+//  - its head turns back by the lean (head_look_system, look_lean_now): the camera on it keeps its look, and the
+//    head still turns to a speaker
 //  - not XR's (its body follows the headset, xr/fun/body.c: its shoulders held, IKHeld)
 #define look_lean_share 0.4f                            // of the look's pitch up
 #define look_lean_most (20 * degrees_to_radians)
+
+// a first person skeleton's lean now, from its camera's pitch (identity for one without LookLean): head_look_system
+//  turns the head back by it the same frame the chest leans by it
+float4 look_lean_now(ecs* world, entity skeleton) {
+    if (!zox_valid(skeleton) || !zox_has(skeleton, LookLean)) {
+        return quaternion_identity;
+    }
+    const entity head = zox_get_link(world, skeleton, HeadBoneLink);
+    const entity camera = zox_valid(head) ? zox_get_child_by_id(world, head, zox_id(Camera)) : 0;
+    if (!zox_valid(camera)) {
+        return quaternion_identity;
+    }
+    const float3 ahead = float4_rotate_float3(zox_getv(camera, LocalRotation3D), (float3) { 0, 0, -1 });
+    const float pitch = asinf(float_max(-1, float_min(1, ahead.y)));
+    const float lean = float_min(look_lean_most, float_max(0, pitch) * look_lean_share);
+    return quaternion_from_euler((float3) { -lean, 0, 0 });
+}
 
 void look_lean_system(iter* it) {
     zox_sys_on_begin();
@@ -68,10 +86,7 @@ void look_lean_system(iter* it) {
             zox_set(e, HipsShift, { float3_zero });
             continue;
         }
-        const float3 ahead = float4_rotate_float3(zox_getv(camera, LocalRotation3D), (float3) { 0, 0, -1 });
-        const float pitch = asinf(float_max(-1, float_min(1, ahead.y)));
-        const float lean = float_min(look_lean_most, float_max(0, pitch) * look_lean_share);
-        zox_setv(e, SpineLean, quaternion_from_euler((float3) { -lean, 0, 0 }));
+        zox_setv(e, SpineLean, look_lean_now(world, e));
     }
     zox_sys_on_end();
 } zoxd_system(look_lean_system);
@@ -98,13 +113,6 @@ void spine_lean_system(iter* it) {
         zox_getm(bones.chest, LocalRotation3D)->value = lean->value;
         zox_getm(bones.chest, LocalPosition3D)->value = spine_chest_position(rest, zox_getv(bones.hips, LocalPosition3D), lean->value, shift->value);
         zox_getm(bones.hips, LocalRotation3D)->value = quaternion_inverse(lean->value);
-        // a first person look's lean: the head turned back by it (and the twist so far, spine_twist_system turns
-        //  on from it), the camera's look held
-        if (zox_has(e, LookLean)) {
-            const float twist = zox_has(e, SpineTwistHead) ? zox_getv(e, SpineTwistHead) : 0;
-            zox_getm(bones.head, LocalRotation3D)->value = quaternion_rotate(quaternion_inverse(lean->value),
-                quaternion_from_euler((float3) { 0, -twist, 0 }));
-        }
     }
     zox_sys_on_end();
 } zoxd_system(spine_lean_system);
