@@ -31,7 +31,7 @@ void door_on_spawned(ecs* world, spawned_block_data* data) {
     }
     const entity e = get_entity_VoxelNode(data->octree);
     const byte block_data = zox_has(data->chunk, BlockDatas) ? get_block_data(zox_get(data->chunk, BlockDatas), data->positionl) : 0;
-    const byte open = (block_data & block_data_open) != 0;
+    const byte open = (block_data & block_data_active) != 0;
     const float4 rest_rotation = block_direction_rotation(block_data_direction(block_data));
     const float3 hinge = { -data->scale, 0, (door_hinge_z - 1) * data->scale };
     zox_setv(e, DoorOpen, open);
@@ -45,29 +45,6 @@ void door_on_spawned(ecs* world, spawned_block_data* data) {
     if (open) {
         door_place(world, e, data->positionf, rest_rotation, hinge, 1, 1);  // instanced block voxes are scale 1
     }
-}
-
-// a voxel's block data written straight to its chunk (not its queue: its voxel stays), the chunk saved as edited
-//  - SaveDirty saves it (chunk3_save_dirty_system): the chunk saves only on a voxel's change (ChunkUpdate) otherwise, a
-//    door toggled kept the state it had at its chunk's last edit (it loaded open, shut after)
-static inline byte terrain_set_block_data(ecs* world, entity terrain, int3 block, byte data) {
-    byte3 local;
-    const entity chunk = terrain_chunk_local(world, terrain, block, &local);
-    if (!chunk || !zox_has(chunk, BlockDatas)) {
-        return 0;
-    }
-    spinlock* lock = zox_octree_lock(world, chunk);
-    zox_octree_lock_begin(lock);
-    zox_muter(chunk, BlockDatas, datas);
-    set_block_data(datas, local, data);
-    zox_octree_lock_end(lock);
-    if (!zox_has(chunk, Edited)) {
-        zox_add(chunk, Edited);
-    }
-    if (!zox_has(chunk, SaveDirty)) {
-        zox_add(chunk, SaveDirty);
-    }
-    return 1;
 }
 
 // a voxel's block vox, 0 if none spawned
@@ -89,18 +66,9 @@ byte door_toggle(ecs* world, entity terrain, entity realm, int3 block) {
     if (!kind || !zox_has(kind, BlockDoor)) {
         return 0;
     }
-    const byte data = terrain_block_data_at(world, terrain, base);
-    const byte open = !(data & block_data_open);
-    const byte direction = block_data_direction(data);
+    const byte open = block_toggle(world, terrain, realm, base);
+    const byte direction = block_data_direction(terrain_block_data_at(world, terrain, base));
     const int3 size = block_size_of(world, realm_voxel_block(world, realm, terrain_voxel_at(world, terrain, base)));
-    const byte flag = open ? block_data_open : 0;
-    for (int x = 0; x < size.x; x++)
-    for (int y = 0; y < size.y; y++)
-    for (int z = 0; z < size.z; z++) {
-        const int3 o = block_direction_offset(direction, (int3) { x, y, z });
-        const byte part = !x && !y && !z ? 1 + direction : block_offset_encode(int3_scale(o, -1));
-        terrain_set_block_data(world, terrain, int3_add(base, o), part | flag);
-    }
     // light through it only while it's open (block_light_pass_open), after every part's data is set
     for (int y = 0; y < size.y; y++)
     for (int x = 0; x < size.x; x++)

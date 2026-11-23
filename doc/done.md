@@ -382,7 +382,7 @@
   saves tst/eat_swing.ppm mid chew. The eating hand sits a little lower and further out (it filled the view)
 -x Particles close to the camera drew huge (their size over their distance): no bigger than at one unit away
   (particle3D.vert)
--x Doors open and close: a right click on one (TriggerActionB, on_door_activate) toggles block_data_open in its
+-x Doors open and close: a right click on one (TriggerActionB, on_door_activate) toggles block_data_active in its
   parts' block data (saved with the chunk), its block vox swings a quarter turn about its hinge (door_swing_system),
   spawned already swung when loaded, a creak opening and a thump with a latch closing (instruments creak, shut),
   terrain collisions pass through an open door's parts (intersect2.c); tst doors (vodes/doors)

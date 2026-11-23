@@ -126,6 +126,7 @@ void blocks_realm_spawn_system(iter* it) {
             zox_add_id(e2, j ? zox_id(BlockDoor) : zox_id(BlockBed));
             if (j) {
                 zox_setv(e2, BlockLightPass, block_light_pass_open);    // light through it only while it's open
+                zox_setv(e2, BlockCollider, zox_block_open);            // walked through only while it's open
             }
             link_hit_sound(world, e2, e, &hit_sound_wood);
         }
@@ -204,6 +205,7 @@ void blocks_realm_spawn_system(iter* it) {
             };
             entity e2 = spawn_block_vox_meta(world, filler_data);
             zox_setv(e2, BlockLightPass, block_light_pass_open);
+            zox_setv(e2, BlockCollider, zox_block_open);
             zox_set_parent(world, e2, e);
             link_hit_sound(world, e2, e, &hit_sound_wood);
         }

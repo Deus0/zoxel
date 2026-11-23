@@ -9,8 +9,8 @@
  * +--------------------------------------------------------------+
  *
  *  - a door is a 1 x 2 x 1 block (BlockDoor, items/fun/multi_block.c): its base and a filler above
- *  - its open state is block_data_open in its parts' block data (chunks3/fun/block_data.c): saved with its chunk,
- *    and terrain collisions skip a voxel with it set (terrain/collisions/sys/intersect2.c)
+ *  - its open state is block_data_active in its parts' block data (chunks3/fun/block_data.c, toggled by block_toggle):
+ *    saved with its chunk, and terrain collisions skip it (its collider zox_block_open, terrain/collisions/sys/intersect2.c)
  *  - a right click on it toggles it (activations, door_toggle), with a creak or a thump
  *  - its block vox swings about its hinge to the state (sys/swing.c), spawned already swung (fun/_.c's hook)
  */

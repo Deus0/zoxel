@@ -110,7 +110,7 @@ byte zox_tst_door_save_ready(ecs* world) {
         // the built room saved (its voxels' edits), then opened alone (door_toggle, as a player does)
         zox_tst_waiting = "the built room saved";
         const byte data = zox_tst_dsave_file_data(world, chunk);
-        if (data == 255 || (data & block_data_open)) {
+        if (data == 255 || (data & block_data_active)) {
             return zox_tst_dsave_frames > 600;
         }
         zox_tst_dsave_read(world, chunk, 0);
@@ -126,7 +126,7 @@ byte zox_tst_door_save_ready(ecs* world) {
         // its file has it open, then shut alone
         zox_tst_waiting = "the door's opening saved";
         const byte data = zox_tst_dsave_file_data(world, chunk);
-        if (data == 255 || !(data & block_data_open)) {
+        if (data == 255 || !(data & block_data_active)) {
             if (zox_tst_dsave_frames > 300) {
                 zox_tst_check(0, "opening the door wasn't saved, the file's data [%i]", data);
                 return 1;
@@ -142,7 +142,7 @@ byte zox_tst_door_save_ready(ecs* world) {
     if (zox_tst_dsave_stage == 6) {
         zox_tst_waiting = "the door's shutting saved";
         const byte data = zox_tst_dsave_file_data(world, chunk);
-        if (data == 255 || (data & block_data_open)) {
+        if (data == 255 || (data & block_data_active)) {
             if (zox_tst_dsave_frames > 300) {
                 zox_tst_check(0, "shutting the door wasn't saved, the file's data [%i]", data);
                 return 1;
@@ -200,7 +200,7 @@ void zox_tst_door_save_check(ecs* world) {
         zox_log("[tst] %s: inside brightest [%i] at [%ix%ix%i], outside [%i], door data base [%i] filler [%i]", names[s],
             zox_tst_dsave_inside[s], a.x, a.y, a.z, zox_tst_dsave_outside[s], zox_tst_dsave_data[s][0], zox_tst_dsave_data[s][1]);
         zox_tst_check(zox_tst_dsave_outside[s] > darklight + 100, "%s: outside the door isn't lit [%i]", names[s], zox_tst_dsave_outside[s]);
-        zox_tst_check(!(zox_tst_dsave_data[s][0] & block_data_open) && !(zox_tst_dsave_data[s][1] & block_data_open),
+        zox_tst_check(!(zox_tst_dsave_data[s][0] & block_data_active) && !(zox_tst_dsave_data[s][1] & block_data_active),
             "%s: the door's open, data base [%i] filler [%i]", names[s], zox_tst_dsave_data[s][0], zox_tst_dsave_data[s][1]);
         zox_tst_check(zox_tst_dsave_inside[s] <= darklight, "%s: light inside the shut room [%i]", names[s], zox_tst_dsave_inside[s]);
     }

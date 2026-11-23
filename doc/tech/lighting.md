@@ -25,7 +25,7 @@ A block's `BlockLightPass` sets whether light goes through it. It is cached a re
 |---|---|---|
 | 0 (none) | 1 | stops it (stone, a glow stone too) |
 | 1 | 0 | passes (air, water, minivoxes) |
-| `block_light_pass_open` 2 | `light_solidity_open` | stops it unless its block data is `block_data_open` (a door and the door's filler) |
+| `block_light_pass_open` 2 | `light_solidity_open` | stops it unless its block data is `block_data_active` (a door and the door's filler) |
 | `block_light_pass_base` 3 | `light_solidity_base` | passes as its base does: the plain filler over a shut door stops it (doors from old saves), over anything else it passes |
 
 `light_stops(solidity, datas, voxels, depth, voxel, position)` is the one rule every pass uses: flood, dark, sunbeams,

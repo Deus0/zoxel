@@ -105,13 +105,15 @@ byte load_block_datas(FILE* in, BlockDatas* datas) {
 
 // a placed bed's or door's turn, its base's block data: 1 + its direction (quarter turns about up, 0 to 3)
 //  - its fillers' data: 1 + their offset back to their base (block_offset_encode), so each finds its base exactly
-//  - an open door: block_data_open set on its base and its fillers (vodes/doors), so collisions skip each part
+//  - block_data_active: a block switched on (an open door, a gravity cube flipping gravity), on its base and its
+//    fillers, toggled by a right click (items/fun/multi_block.c block_toggle); a block whose collider is zox_block_open
+//    (a door) is walked through while it's set
 #define block_offset_range 2    // fillers within 2 blocks of their base each way (blocks up to 3 a side)
-#define block_data_open 128     // above both: offsets go to 125, directions to 4
+#define block_data_active 128   // above both: offsets go to 125, directions to 4
 
 // a base's direction, from its block data (0 if none)
 static inline byte block_data_direction(byte data) {
-    return data & ~block_data_open ? ((data & ~block_data_open) - 1) & 3 : 0;
+    return data & ~block_data_active ? ((data & ~block_data_active) - 1) & 3 : 0;
 }
 
 // a direction's turn about up
@@ -176,6 +178,6 @@ static inline byte block_offset_encode(int3 offset) {
 
 static inline int3 block_offset_decode(byte data) {
     const int r = block_offset_range, w = r * 2 + 1;
-    const int i = (data & ~block_data_open) - 1;
+    const int i = (data & ~block_data_active) - 1;
     return (int3) { i % w - r, (i / w) % w - r, i / (w * w) - r };
 }

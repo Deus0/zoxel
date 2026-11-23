@@ -49,20 +49,19 @@ smallest and leaves the box clear. The box isn't changed: only where it's pushed
 // Helpers
 // ---------------------------------------------------------------------------
 
-// Voxel 0 and blocks with an air collider are passable.
-// A block without a BlockCollider counts as solid, an invalid block as passable.
-static inline byte collision_is_voxel_solid(ecs* world, const BlockLinks* blocks, byte voxel) {
+// A voxel's collider: voxel 0 and an invalid block are air, a block without a BlockCollider is solid.
+static inline byte collision_voxel_collider(ecs* world, const BlockLinks* blocks, byte voxel) {
     if (!voxel) {
-        return 0;
+        return zox_block_air;
     }
     entity block = blocks->value[voxel - 1];
     if (!zox_valid(block)) {
-        return 0;
+        return zox_block_air;
     }
     if (!zox_has(block, BlockCollider)) {
-        return 1;
+        return zox_block_solid;
     }
-    return zox_getv(block, BlockCollider) != zox_block_air;
+    return zox_getv(block, BlockCollider);
 }
 
 // Remembers the last chunk we looked at. Neighbouring voxels almost always share
@@ -177,11 +176,12 @@ static inline byte collision_block_solid(const collision_terrain* terrain, colli
     }
     const byte3 local_position = block_position_to_local_position(block_position, terrain->depth, cache->depth);
     const byte voxel = getv_VoxelNode(cache->octree, cache->depth, local_position);
-    if (!collision_is_voxel_solid(world, terrain->blocks, voxel)) {
+    const byte collider = collision_voxel_collider(world, terrain->blocks, voxel);
+    if (collider == zox_block_air) {
         return 0;
     }
-    // an open door's part (block_data_open, vodes/doors) is walked through
-    return !cache->datas || !(get_block_data(cache->datas, local_position) & block_data_open);
+    // an open door's part (zox_block_open, switched on: block_data_active) is walked through
+    return collider != zox_block_open || !cache->datas || !(get_block_data(cache->datas, local_position) & block_data_active);
 }
 
 // Is the block containing this point solid?

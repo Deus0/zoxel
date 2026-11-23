@@ -1,5 +1,5 @@
 // a door's block vox (fun/_.c door_on_spawned): where it rests closed, its hinge, and how far it's swung
-zoxc_byte(DoorOpen);            // 1 open, 0 closed: what it swings to (its base's block_data_open)
+zoxc_byte(DoorOpen);            // 1 open, 0 closed: what it swings to (its base's block_data_active)
 zoxc_float(DoorSwing);          // 0 closed to 1 open, eased to DoorOpen (sys/swing.c)
 zoxc_float3(DoorRestPosition);  // its centre closed
 zoxc_float4(DoorRestRotation);  // its turn closed (its direction)

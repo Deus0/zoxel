@@ -34,7 +34,7 @@ static inline void zox_tst_doors_check_parts(ecs* world, entity terrain, entity 
     const int3 parts[2] = { zox_tst_doors_base, zox_tst_doors_top() };
     for (byte i = 0; i < 2; i++) {
         const byte data = terrain_block_data_at(world, terrain, parts[i]);
-        zox_tst_check(((data & block_data_open) != 0) == open, "the door's %s has block data [%i], not %s", i ? "top" : "base", data,
+        zox_tst_check(((data & block_data_active) != 0) == open, "the door's %s has block data [%i], not %s", i ? "top" : "base", data,
             open ? "open" : "closed");
         zox_tst_check(zox_tst_doors_solid(world, terrain, realm, parts[i]) == !open, "the door's %s is %s to collisions",
             i ? "top" : "base", open ? "solid" : "passable");
@@ -130,7 +130,7 @@ byte zox_tst_doors_ready(ecs* world) {
             rewind(file);
             BlockDatas loaded = { 0 };
             zox_tst_check(load_block_datas(file, &loaded), "its block datas didn't load");
-            zox_tst_check(get_block_data(&loaded, local) & block_data_open, "the open state wasn't saved, loaded [%i]", get_block_data(&loaded, local));
+            zox_tst_check(get_block_data(&loaded, local) & block_data_active, "the open state wasn't saved, loaded [%i]", get_block_data(&loaded, local));
             zox_tst_check(loaded.length == zox_get(chunk, BlockDatas)->length, "loaded [%i] bytes of block data, saved [%i]",
                 loaded.length, zox_get(chunk, BlockDatas)->length);
             resize_BlockDatas(&loaded, 0);

@@ -30,7 +30,7 @@ static inline void update_light_solidity(
     }
 }
 
-// does the voxel at position stop light: solid, or a door's part shut (block_data_open, vodes/doors)
+// does the voxel at position stop light: solid, or a door's part shut (block_data_active, vodes/doors)
 //  - datas: its chunk's BlockDatas, NULL reads a door as shut
 //  - voxels: its chunk's, for a filler passing light as its base does (light_solidity_base): a plain filler over a shut
 //    door stops it (saves from before the door filler kept the plain one there, the door's top half let the sun in),
@@ -44,7 +44,7 @@ static inline byte light_stops(const byte* solidity, const BlockDatas* datas, co
     const byte kind = solidity[voxel - 1];
     if (kind == light_solidity_base) {
         const byte data = datas ? get_block_data(datas, position) : 0;
-        if (!data || (data & block_data_open) || !voxels) {
+        if (!data || (data & block_data_active) || !voxels) {
             return 0;
         }
         const int3 base = int3_add(byte3_to_int3(position), block_offset_decode(data));
@@ -58,7 +58,7 @@ static inline byte light_stops(const byte* solidity, const BlockDatas* datas, co
     if (kind != light_solidity_open) {
         return 1;
     }
-    return !datas || !(get_block_data(datas, position) & block_data_open);
+    return !datas || !(get_block_data(datas, position) & block_data_active);
 }
 
 // Caches the light each block gives off (BlockLight, 0 none), indexed by voxel - 1, like solidity

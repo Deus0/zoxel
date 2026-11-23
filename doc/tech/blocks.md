@@ -36,7 +36,7 @@ What the one byte holds today (`get_block_data` / `set_block_data`):
 |---|---|
 | a bed's or door's base | 1 + its direction (quarter turns about up, 0 to 3): 1 to 4 |
 | a filler (the rest of a bed or door) | 1 + its offset back to its base (`block_offset_encode`, 2 blocks each way): 1 to 125 |
-| an open door's base and fillers | the above + `block_data_open` (128) |
+| a block switched on: an open door's base and fillers, a gravity cube on | the above (0 for a plain block) + `block_data_active` (128) |
 
 `block_data_direction` and `block_offset_decode` mask out bit 128.
 
@@ -44,7 +44,7 @@ What the one byte holds today (`get_block_data` / `set_block_data`):
 
 - `voxel_update_queue_system` (zoxp_octree_write), with the voxel: a `VoxelNodeUpdate`'s `data`, set when its voxel
   changes, cleared when it's removed or replaced. Placing a bed or door goes through here (`multi_block_place`).
-- `door_toggle` (vodes/doors/fun/_.c, `terrain_set_block_data`): straight into the chunk's buffer under its octree
+- `block_toggle` (items/fun/multi_block.c, used by `door_toggle` and the gravity cube; `terrain_set_block_data`): straight into the chunk's buffer under its octree
   lock, the chunk marked `Edited`; the voxel stays. Not through the queue: the queue only writes data when its voxel
   changes, and `drops.c` treats any queued update over a block as a break. It runs on a worker
   (`block_activate_system`, vodes/activations): writes under the chunk's lock and deferred sets are safe there;
@@ -56,8 +56,8 @@ What the one byte holds today (`get_block_data` / `set_block_data`):
 - the door hook (`door_on_spawned`): a door's world block entity spawns open or closed.
 - `chunk3_raycast`: a filler's offset to its base, the ray goes into the base's model.
 - `multi_block_removed`: a removed part's fillers or base.
-- terrain collisions (`collision_block_solid`, intersect2.c): a solid voxel with `block_data_open` is passed
-  through. Only looked up in chunks that have block data; read without a lock, like the octree there (collisions and
+- terrain collisions (`collision_block_solid`, intersect2.c): a block whose `BlockCollider` is `zox_block_open` (a
+  door, its filler) with `block_data_active` is passed through; other blocks switched on stay solid. Only looked up in chunks that have block data; read without a lock, like the octree there (collisions and
   octree writes run in different phases).
 
 ## Using a block (activations)
@@ -68,7 +68,7 @@ happens, a door `door_toggle`, a bed `character_sleep` (vodes/beds). tst block_a
 
 ## Doors now
 
-- Open state: `block_data_open` on every part (the base's and fillers' bytes), so it's saved and collisions see it
+- Open state: `block_data_active` on every part (the base's and fillers' bytes), so it's saved and collisions see it
   without the entity.
 - The swing: on the world block entity (`DoorOpen`, `DoorSwing`, `DoorRestPosition`, `DoorRestRotation`,
   `DoorHinge`), set from the block data when it spawns, eased by `door_swing_system`.
