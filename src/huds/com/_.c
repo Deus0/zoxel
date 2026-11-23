@@ -10,6 +10,7 @@ zox_tag(MenuNewRealm);
 zox_tag(Crosshair);
 zox_tag(RespawnUI);
 zox_tag(LoadUI);
+zox_tag(LoadUIChunks);   // the load ui's second text, near chunks loaded: Chunks [loaded/near] (load_ui_chunks_system)
 zox_tag(MenuMirror);
 zox_tag(PlayerJoinUI);   // the main menu's local coop players (player_join_system)
 zox_tag(DisconnectUI);   // a player's gamepad unplugged, on its screen (huds/eve/disconnect.c)
@@ -38,6 +39,7 @@ void zox_components_game_ui(ecs *world) {
     zoxd_nf_tag(Toast);
     zoxd_nf_tag(GameLogLine);
     zoxd_nf_tag(LoadUI);
+    zoxd_nf_tag(LoadUIChunks);
     zoxd_nf_tag(MenuMirror);
     // Others
     zoxd_byte(HitType);

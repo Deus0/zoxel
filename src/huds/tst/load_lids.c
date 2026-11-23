@@ -2,11 +2,16 @@
 //  - from boot into a new game: its camera's lids watched each frame
 //  - while loading (load_dark) they reach shut (1), the "Loading" ui up; once playing and the player spawned, they
 //    open (0) and loading lets go of them (load_lids 0)
+//  - the load ui's second text, under it: Chunks [loaded/near] counting (load_ui_chunks_system), a shot of it in
+//    tst/load_ui.ppm
 //  - run: bash bsh/tst.sh load_lids
+extern char zox_screenshot_request[256];
 float zox_tst_lload_max = 0;
 byte zox_tst_lload_shut_loading = 0;
 byte zox_tst_lload_ui_shut = 0;
 double zox_tst_lload_spawned = 0;
+byte zox_tst_lload_chunks_counted = 0;  // its chunks text read a count past 0, under the load ui
+byte zox_tst_lload_shot = 0;
 
 byte zox_tst_load_lids_ready(ecs* world) {
     const entity player = zox_players[0];
@@ -16,7 +21,22 @@ byte zox_tst_load_lids_ready(ecs* world) {
         zox_tst_lload_max = float_max(zox_tst_lload_max, lids);
         zox_tst_lload_shut_loading |= load_dark && lids >= 1;
         const entity canvas = zox_get_link(world, player, CanvasLink);
-        zox_tst_lload_ui_shut |= lids >= 1 && zox_valid(canvas) && zox_valid(zox_get_child_by_id(world, canvas, zox_id(LoadUI)));
+        const entity load_ui = zox_valid(canvas) ? zox_get_child_by_id(world, canvas, zox_id(LoadUI)) : 0;
+        zox_tst_lload_ui_shut |= lids >= 1 && zox_valid(load_ui);
+        const entity chunks = zox_valid(load_ui) ? zox_get_child_by_id(world, load_ui, zox_id(LoadUIChunks)) : 0;
+        if (zox_valid(chunks) && zox_has(chunks, TextData) && zox_stream_end_loaded > 0 && !zox_tst_lload_chunks_counted) {
+            char* text = get_zext_text(zox_get(chunks, TextData));
+            uint loaded = 0, total = 0;
+            if (text && sscanf(text, "Chunks [%u/%u]", &loaded, &total) == 2 && loaded > 0 && total > 0) {
+                zox_tst_lload_chunks_counted = 1;
+                zox_log("[tst] load_lids: the load ui reads [%s]", text);
+            }
+            free(text);
+        }
+        if (zox_tst_lload_chunks_counted && !zox_tst_lload_shot && !zox_screenshot_request[0]) {
+            zox_tst_lload_shot = 1;
+            snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("load_ui.ppm"));
+        }
     }
     if (!zox_tst_player_spawn_ready(world)) {
         return 0;
@@ -37,6 +57,7 @@ void zox_tst_load_lids_check(ecs* world) {
         zox_tst_lload_shut_loading, zox_tst_lload_ui_shut, lids);
     zox_tst_check(zox_tst_lload_shut_loading, "the eyes never shut loading (most [%.2f])", zox_tst_lload_max);
     zox_tst_check(zox_tst_lload_ui_shut, "the load ui was never up with the eyes shut");
+    zox_tst_check(zox_tst_lload_chunks_counted, "the load ui's chunks text, under it, never counted chunks loaded");
     zox_tst_check(lids == 0 && !load_lids && !load_dark, "playing, the eyes aren't open [%.2f] (loading has them [%i])", lids, load_lids);
 }
 

@@ -3,6 +3,7 @@
 #include "menu_game.c"
 #include "crosshair.c"
 #include "load3.c"
+#include "load_chunks.c"
 #include "navigator.c"
 #include "player_join.c"
 #include "data_mouse.c"
@@ -67,6 +68,12 @@ void zox_systems_game_ui(ecs *world) {
         zoxp_spawn,
         [in] core.Target,
         [none] ui.NavigatorState
+    );
+    // main thread: it sets texts
+    zox_system_1(
+        load_ui_chunks_system,
+        zoxp_spawn,
+        [none] huds.LoadUIChunks
     );
     // main thread: it reads the camera
     zox_system_1(
