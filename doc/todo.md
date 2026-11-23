@@ -83,16 +83,12 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
 	- vegetation_chunks: no drawn trees near the player
 	- scroll_wheel: a notch down doesn't scroll (start stays 0)
 	- door_rays: closed, 0 of 12 rays at a door found its neighbour; since 2026-11-21
-	- stream_npcs: a chunk stayed active but its npc was deleted (steps 1, 7, 12), passed earlier today: villagers
-	  killing slimes now (villager_guard)? a death isn't a despawn
 - making them faster: the biggest test times first, a world of their own or the void where they don't need a player
   (onboarding "Small and fast"), keep the latest times to compare
 
 # Bugs
 - Block voxes never spawn on the test level (zox_tst_level_setup: BlocksSpawned stays off, even the player's chunk);
   tests of them run in a game (tst doors, gravity_cube_vode)
-- stream_npcs fails on master since d8e218a3a (npc speed and wits?, 2026-11-23): "chunk stayed active but its npc
-  was deleted (despawned and respawned)"
 - physics on lower lod chunks used to bug (not sure anymore, might still glitch)
 - alt tab on windows, mouse lock stays locked
 - mouse now doesnt go over hte shared player canvas, make mouse on a seperate canvas over others

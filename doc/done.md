@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-23
+-x tst stream_npcs failed "chunk stayed active but its npc was deleted": npcs die in fights now (villagers and slimes,
+  villager_guard), a death isn't a despawn. It marks npcs seen dying each frame and logs them
 -x A first person body never crouched or bobbed (tst crouch, walk_bob failed since f8c8d1ea9, 2026-11-22): leaning
   with its look, its chest's place is spine_lean_system's (from its rest place and HipsShift), and arm_control_system
   skipped lowering a root it doesn't own. A first person (LookLean) body's drop goes into its HipsShift now; ik's

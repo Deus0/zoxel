@@ -25,6 +25,7 @@ int zox_tst_stream_failed_steps = 0;
 typedef struct {
     entity chunk;
     entity npc;
+    byte died;      // seen dying (Dead, PreDeath): a death isn't a despawn (villagers fight slimes, villager_guard)
 } zox_tst_stream_pair;
 #define zox_tst_stream_max_pairs 8192
 zox_tst_stream_pair zox_tst_stream_npcs_before[zox_tst_stream_max_pairs];
@@ -145,13 +146,20 @@ void zox_tst_stream_verify(ecs* world, const char* label) {
     int flickered = 0;
     for (int k = 0; k < zox_tst_stream_npcs_before_count; k++) {
         const zox_tst_stream_pair pair = zox_tst_stream_npcs_before[k];
-        if (zox_valid(pair.npc) || !zox_valid(pair.chunk)) {
+        if (zox_valid(pair.npc) || !zox_valid(pair.chunk) || pair.died) {
             continue;
         }
         if (zox_getv(pair.chunk, NpcSpawnZone) && !zox_getv(pair.chunk, NpcSpawnZoneDirty)) {
             if (!flickered++) snprintf(first_error, sizeof(first_error),
                 "chunk [%s] stayed active but its npc was deleted (despawned and respawned)", zox_getn(pair.chunk));
         }
+    }
+    int died = 0;
+    for (int k = 0; k < zox_tst_stream_npcs_before_count; k++) {
+        died += zox_tst_stream_npcs_before[k].died;
+    }
+    if (died) {
+        zox_log("[tst] [%s] [%i] npcs died (fights), not despawns", label, died);
     }
     // a deleted npc's 3D uis go with it
     int ui_orphans = 0;
@@ -179,7 +187,7 @@ void zox_tst_stream_verify(ecs* world, const char* label) {
                     continue;
                 }
                 if (settled_active && zox_tst_stream_npcs_before_count < zox_tst_stream_max_pairs) {
-                    zox_tst_stream_npcs_before[zox_tst_stream_npcs_before_count++] = (zox_tst_stream_pair) { chunk, npc };
+                    zox_tst_stream_npcs_before[zox_tst_stream_npcs_before_count++] = (zox_tst_stream_pair) { chunk, npc, 0 };
                 }
                 zox_each_link(world, npc, ElementLinks, ui) {
                     if (zox_valid(ui) && zox_tst_stream_uis_before_count < zox_tst_stream_max_pairs) {
@@ -198,7 +206,18 @@ void zox_tst_stream_verify(ecs* world, const char* label) {
     }
 }
 
+// the npcs seen dying since the last verify, each frame (their deaths aren't despawns)
+static inline void zox_tst_stream_mark_deaths(ecs* world) {
+    for (int k = 0; k < zox_tst_stream_npcs_before_count; k++) {
+        zox_tst_stream_pair* pair = &zox_tst_stream_npcs_before[k];
+        if (!pair->died && zox_valid(pair->npc) && (zox_has(pair->npc, Dead) || zox_has(pair->npc, PreDeath))) {
+            pair->died = 1;
+        }
+    }
+}
+
 byte zox_tst_stream_npcs_ready(ecs* world) {
+    zox_tst_stream_mark_deaths(world);
     if (zox_tst_stream_step == -1) {
         if (!zox_tst_player_spawn_ready(world)) {
             return 0;
