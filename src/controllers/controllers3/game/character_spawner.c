@@ -109,6 +109,7 @@ entity game_start_player_new(
     entity terrain,
     entity camera,
     float3* spawned_position,
+    byte at_home,
     byte dbg_log)
 {
     lint realm_seed = zox_getv(realm, Seed);
@@ -117,7 +118,12 @@ entity game_start_player_new(
     int3 camera_block_position = real_position_to_block_position(camera_position, terrain_scale);
     lint character_seed = seed_rand(realm_seed);
     TerrainPlace placer;
-    if (!find_position_in_terrain(world, terrain, camera_block_position, &placer)) {
+    // a respawn at its bed (HomePosition, a respawn point) if its chunk is there, else the ground near the camera
+    const byte has_home = at_home && zox_has(player, HomePosition);
+    const float3 home = has_home ? zox_getv(player, HomePosition) : float3_zero;
+    if (has_home && terrain_voxel_at(world, terrain, real_position_to_block_position(home, terrain_scale)) >= 0) {
+        placer.position = home;
+    } else if (!find_position_in_terrain(world, terrain, camera_block_position, &placer)) {
         return 0;
     }
     // named from its seed (a loaded character keeps its seed, so its name)
@@ -255,6 +261,10 @@ void player_begin_system(iter* it) {
         byte is_new_game = !has_save_game_file(path->value, get_player_save_file(e, name, sizeof(name)));
         entity character;
         float3 spawn_position;
+        // a new game's player has no bed yet (its last game's was in another world)
+        if (zox_has(e, HomePosition)) {
+            zox_remove(e, HomePosition);
+        }
         if (!is_new_game) {
             character = game_start_player_load(
                 world,
@@ -278,6 +288,7 @@ void player_begin_system(iter* it) {
                 terrain,
                 camera,
                 &spawn_position,
+                0,
                 dbg_log);
             if (!character) {
                 if (dbg_log) {

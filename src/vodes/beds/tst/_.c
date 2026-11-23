@@ -239,7 +239,110 @@ void zox_tst_bed_wake_pad_check(ecs* world) {
     zox_tst_check(zox_tst_bwake_stage == 2 && !zox_has(character, Sleeping), "A didn't wake it");
 }
 
+// tst: bed_respawn, a bed heals faster and is where its sleeper respawns
+//  - health regenerates [sleep_regen_mul] times faster asleep than awake (each measured over 2s, from 1 health)
+//  - asleep: its player's HomePosition set beside the bed, a toast says so
+//  - woken, then killed: it respawns there (its new character within a block of it)
+//  - run: bash bsh/tst.sh bed_respawn
+byte zox_tst_brespawn_stage = 0;
+double zox_tst_brespawn_time = 0;
+float zox_tst_brespawn_awake = -1, zox_tst_brespawn_asleep = -1, zox_tst_brespawn_from = 0;
+byte zox_tst_brespawn_toast = 0;
+entity zox_tst_brespawn_dead = 0;
+float zox_tst_brespawn_off = -1;        // the new character from its respawn point
+
+static inline entity zox_tst_brespawn_health(ecs* world, entity character) {
+    return zox_get_child_by_id(world, character, zox_id(StatHealth));
+}
+
+byte zox_tst_bed_respawn_ready(ecs* world) {
+    if (!zox_tst_player_spawn_ready(world)) {
+        return 0;
+    }
+    const entity player = dbg_player;
+    const entity character = zox_get_link(world, player, CharacterLink);
+    const entity health = zox_valid(character) ? zox_tst_brespawn_health(world, character) : 0;
+    const double t = zox_current_time - zox_tst_brespawn_time;
+    zox_tst_progress(zox_tst_brespawn_stage * 1000 + (int) (t * 10));
+    switch (zox_tst_brespawn_stage) {
+        case 0:
+            zox_tst_waiting = "its health";
+            if (!zox_valid(health) || zox_getv(player, PlayerState) != zox_player_state_playing) {
+                return 0;
+            }
+            zox_setv(health, StatValue, 1);
+            zox_tst_brespawn_from = 1;
+            zox_tst_brespawn_time = zox_current_time;
+            zox_tst_brespawn_stage = 1;
+            return 0;
+        case 1:
+            zox_tst_waiting = "regenerating awake";
+            if (t < 2) {
+                return 0;
+            }
+            zox_tst_brespawn_awake = zox_getv(health, StatValue) - zox_tst_brespawn_from;
+            zox_setv(health, StatValue, 1);
+            {
+                const entity terrain = zox_get_link(world, character, TerrainLink);
+                character_sleep(world, character, real_position_to_block_position(zox_getv(character, Position3D),
+                    zox_getv(terrain, BlockScale)));
+            }
+            zox_tst_brespawn_time = zox_current_time;
+            zox_tst_brespawn_stage = 2;
+            return 0;
+        case 2:
+            zox_tst_waiting = "regenerating asleep";
+            if (!zox_tst_brespawn_toast) {
+                const entity toast = zox_get_child_by_id(world, zox_get_link(world, player, CanvasLink), zox_id(Toast));
+                zox_tst_brespawn_toast = zox_valid(toast);
+            }
+            if (t < 2) {
+                return 0;
+            }
+            zox_tst_brespawn_asleep = zox_getv(health, StatValue) - zox_tst_brespawn_from;
+            character_wake(world, character);
+            zox_tst_brespawn_time = zox_current_time;
+            zox_tst_brespawn_stage = 3;
+            return 0;
+        case 3:
+            zox_tst_waiting = "awake and playing, then killed";
+            if (zox_has(character, Sleeping) || zox_has(character, SleepMotion) ||
+                zox_getv(player, PlayerState) != zox_player_state_playing) {
+                return t > 10;
+            }
+            zox_tst_brespawn_dead = character;
+            zox_setv(health, StatValue, 0);
+            zox_tst_brespawn_time = zox_current_time;
+            zox_tst_brespawn_stage = 4;
+            return 0;
+        default:
+            zox_tst_waiting = "its respawn";
+            if (zox_valid(character) && character != zox_tst_brespawn_dead && !zox_has(character, Dead) &&
+                zox_getv(player, PlayerState) == zox_player_state_playing && zox_has(player, HomePosition)) {
+                zox_tst_brespawn_off = float3_distance(zox_getv(character, Position3D), zox_getv(player, HomePosition));
+                return 1;
+            }
+            return t > 30;
+    }
+}
+
+void zox_tst_bed_respawn_check(ecs* world) {
+    const entity player = dbg_player;
+    zox_log("[tst] bed_respawn stage [%i] regen over 2s awake [%.2f] asleep [%.2f], toast [%i] home [%i], respawned [%.2f] from it",
+        zox_tst_brespawn_stage, zox_tst_brespawn_awake, zox_tst_brespawn_asleep, zox_tst_brespawn_toast,
+        zox_has(player, HomePosition), zox_tst_brespawn_off);
+    zox_tst_check(zox_tst_brespawn_awake > 0, "it didn't regenerate awake [%.2f]", zox_tst_brespawn_awake);
+    zox_tst_check(zox_tst_brespawn_asleep > zox_tst_brespawn_awake * (sleep_regen_mul - 1), "asleep [%.2f] isn't [%.0f] times awake [%.2f]",
+        zox_tst_brespawn_asleep, sleep_regen_mul, zox_tst_brespawn_awake);
+    zox_tst_check(zox_has(player, HomePosition), "sleeping didn't set its respawn point");
+    zox_tst_check(zox_tst_brespawn_toast, "no toast for its respawn point");
+    zox_tst_check(zox_tst_brespawn_off >= 0 && zox_tst_brespawn_off < 1, "it respawned [%.2f] from its bed, not beside it",
+        zox_tst_brespawn_off);
+}
+
 void zox_tsts_beds(ecs* world) {
+    zox_tst_add("bed_respawn", zox_tst_bed_respawn_ready, zox_tst_bed_respawn_check, 120);
+    zox_tst_set_setup("bed_respawn", zox_tst_level_setup, 0);
     zox_tst_add("bed_wake_pad", zox_tst_bed_wake_pad_ready, zox_tst_bed_wake_pad_check, 120);
     zox_tst_set_setup("bed_wake_pad", zox_tst_level_setup, 0);
     zox_tst_add("bed_sleep", zox_tst_bed_sleep_ready, zox_tst_bed_sleep_check, 120);

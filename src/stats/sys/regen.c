@@ -57,6 +57,9 @@ void stat_regen_system(iter* it) {
         if (regen <= 0) {
             continue;
         }
+        if (zox_has_id(user, Sleeping)) {
+            regen *= sleep_regen_mul;
+        }
         // in combat?
         if (zox_has(stat, StatHealth)) {
             byte in_combat = zox_getv(user, CombatState) != zox_combat_peace;

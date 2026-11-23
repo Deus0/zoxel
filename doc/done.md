@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-23
+-x Beds rest you: asleep, a character regenerates 4 times faster (sleep_regen_mul), and a bed is its player's respawn
+  point (HomePosition, beside the bed, a toast "Respawn point set" when it moves); a respawn there if its chunk is
+  loaded, else near where it died as before. A new or loaded game clears it (not saved yet). tst bed_respawn
 -x A gamepad was stuck in bed, nothing selected: only windows tagged NavigationWindow were navigated. Every window is
   now (the tag gone), never while playing (it selected the action bar in game); asleep is a player state
   (zox_player_state_sleeping, its controls off), so "Wake" is selected and A wakes it. Dying asleep wakes it, its

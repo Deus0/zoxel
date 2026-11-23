@@ -14,7 +14,8 @@
  *  - a player asleep is in its sleeping state (zox_player_state_sleeping): its controls off, its window navigated
  *  - "Wake" (or character_wake, npcs later, or dying) adds Waking: on_waking stands it beside the bed, opens the eyes
  *  - getting on and off is a climb (SleepMotion, sleep_motion_system): up onto the mattress, then down onto its back
- *  - later: skipping the night (day and night), the respawn point, healing while asleep
+ *  - a player's respawn point (HomePosition, a toast when it moves), healing faster asleep (sleep_regen_mul)
+ *  - later: skipping the night (day and night), saving the respawn point
  */
 #include "com/_.c"
 #include "fun/_.c"

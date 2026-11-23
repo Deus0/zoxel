@@ -82,7 +82,7 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 - alt tabbing enough, input stops working when you get back
 	- particularly mouse raycasting
 - houses: add holes as windows (for now)
-- a bed sets its sleeper's respawn point
+- save a bed's respawn point (HomePosition on the player, lost on load)
 - realm clock, later: animations, the world (sky, doors), timers and particles onto the realm's time (doc/plans/realm_clock.md)
 - a log window in the game menu with the game log's old lines (game_log keeps none yet)
 - door open animation swings through nearby blocks

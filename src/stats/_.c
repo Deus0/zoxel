@@ -8,6 +8,8 @@
  *
  */
 float  combat_regen_mul = 0.25f;
+float  sleep_regen_mul = 4;     // asleep in a bed (vodes/beds) it regenerates this much faster
+extern entity Sleeping;
 #include "set/_.c"
 #include "dat/_.c"
 #include "com/_.c"

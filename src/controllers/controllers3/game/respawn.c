@@ -1,4 +1,4 @@
-extern entity game_start_player_new(ecs*, entity, entity, entity, entity, float3*, byte);
+extern entity game_start_player_new(ecs*, entity, entity, entity, entity, float3*, byte, byte);
 
 // NOTE: Detects character death and respawns when needed
 // TODO: Move spawning player out and use states instead
@@ -77,6 +77,7 @@ void player3_respawn_system(iter* it) {
                     terrain,
                     camera,
                     &spawned,
+                    1,      // at its bed, if it slept in one
                     dbg_log);
                 if (!zox_valid(character)) {
                     zox_loge("Respawn character failed");

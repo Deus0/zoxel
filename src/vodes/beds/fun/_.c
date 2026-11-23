@@ -6,6 +6,7 @@
 #define bed_mattress_height 0.5f    // of a block: the mattress's top (models/gen/furniture.c, 8 of 16)
 const char* sleep_ui_header = "Asleep";
 const char* sleep_ui_wake = "Wake";
+const char* sleep_respawn_set = "Respawn point set";
 
 // a bed's direction, its base's block data
 static inline byte bed_direction(ecs* world, entity terrain, int3 base) {
@@ -150,6 +151,14 @@ void on_sleeping(iter* it) {
         const entity camera = zox_get_link(world, player, CameraLink);
         if (zox_valid(camera) && zox_has(camera, CameraLids)) {
             zox_lerp_float(camera, CameraLids, 1, sleep_lids_close);
+        }
+        // its respawn point: beside the bed, where it gets up (a toast when it moves here)
+        float3 stand;
+        float4 facing;
+        bed_stand_pose(world, terrain, zox_get_parent(world, terrain), direction, base, block, bounds.y, &stand, &facing);
+        if (!zox_has(player, HomePosition) || float3_distance(zox_getv(player, HomePosition), stand) > 0.5f * block) {
+            zox_set(player, HomePosition, { stand });
+            spawn_toast(world, zox_get_link(world, player, CanvasLink), sleep_respawn_set);
         }
         sleep_mouse_lock(world, player, 0);
         spawn_sleep_ui(world, player);
