@@ -9,8 +9,10 @@ set -euo pipefail
 # - each test's console in tst/web_<name>.log, exit 0 if all passed
 # - playwright and its chromium go in web/ (gitignored): web/tst_venv, web/playwright, the first run downloads them
 # - webgl in a headless browser is software (swiftshader), slow: keep web tests small
-# - the game gets --autostart --tiny --nosaves after --tst <name> (as tst.sh), zox_web_tst_args to change them
-# - zox_web_tst_timeout: seconds a test may take (120)
+# - the game gets --autostart --tiny --nosaves --tst-timescale 2 after --tst <name> (as tst.sh, its timeouts doubled as
+#   tst.sh's --gles: swiftshader is slow, ci's more so), zox_web_tst_args to change them
+# - zox_web_tst_timeout: seconds a test may take in the browser (180, over a doubled 60s test's timeout)
+# - zox_web_tst_cpu: slows the page's cpu this many times (chromium's throttling), as a slow machine or ci, i.e. 4
 # - known: eyelids fails on web (part shut, the middle [27 30] isn't under the lids), webgl's drawing differs
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -18,7 +20,7 @@ cd "${root}"
 source bsh/deps_windows.sh
 
 build="1"
-timeout="${zox_web_tst_timeout:-120}"
+timeout="${zox_web_tst_timeout:-180}"
 tests=()
 for arg in "$@"; do
     if [[ "${arg}" == "--nobuild" ]]; then
@@ -75,7 +77,8 @@ import functools, http.server, os, sys, threading, time, urllib.parse
 from playwright.sync_api import sync_playwright
 
 folder, timeout, log_dir, names = sys.argv[1], float(sys.argv[2]), sys.argv[3], sys.argv[4:]
-extra = os.environ.get("zox_web_tst_args", "--autostart --tiny --nosaves")  # the game args after --tst <name>, as tst.sh gives
+extra = os.environ.get("zox_web_tst_args", "--autostart --tiny --nosaves --tst-timescale 2")  # the game args after --tst <name>, as tst.sh gives
+cpu = float(os.environ.get("zox_web_tst_cpu", "1"))  # cpu slowed this many times, as a slow machine
 
 class Quiet(http.server.SimpleHTTPRequestHandler):
     def log_message(self, *args):
@@ -92,6 +95,8 @@ with sync_playwright() as playwright:
         "--ignore-gpu-blocklist"])
     for name in names:
         page = browser.new_page()
+        if cpu > 1:
+            page.context.new_cdp_session(page).send("Emulation.setCPUThrottlingRate", {"rate": cpu})
         lines = []
         result = {}
 
