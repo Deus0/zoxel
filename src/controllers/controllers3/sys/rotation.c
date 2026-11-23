@@ -108,8 +108,10 @@ void player3_rotate_system(iter* it) {
         // effect characters euler
         zox_muter(character, Euler, character_euler);
         zox_muter(character, Rotation3D, character_rotation);
-        character_euler->value.y += euler.y;
-        character_rotation->value = quaternion_from_euler(character_euler->value);
+        character_euler->value.y += euler.y;   // its heading, saved (characters3 saving)
+        // turned about its own up (on a ceiling or a wall too: gravity_upright_system stands it on its gravity)
+        character_rotation->value = float4_normalize(quaternion_rotate(character_rotation->value,
+            quaternion_from_axis_angle(float3_up, euler.y)));
         // Set Rotation
         entity skeleton = get_skeleton(world, character);
         entity head_bone = zox_valid(skeleton) ?

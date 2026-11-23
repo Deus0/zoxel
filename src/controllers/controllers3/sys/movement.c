@@ -25,8 +25,13 @@ float debug_thickness = 2.0f;
 extern entity spawn_line3(ecs*, float3, float3, float, double);
 #endif
 
-// the ground velocity straight from the stick (XR): its x z at the walk's top speed along the character's facing,
-//  its y (falling, jumping) kept; scaled against this frame's drag, so it moves the same each frame (friction
+// a character's up, against its gravity (any direction: a gravity cube's flip), +y without one
+static inline float3 character_up(ecs* world, entity character) {
+    return physics3_up(zox_has(character, Gravity3D) ? zox_getv(character, Gravity3D) : float3_zero);
+}
+
+// the ground velocity straight from the stick (XR): along the ground at the walk's top speed, along the character's
+//  facing, its part along up (falling, jumping) kept; scaled against this frame's drag, so it moves the same each frame (friction
 //  kept, physics3_drag_compensation)
 static inline void player3d_move_direct(ecs* world, entity character, float2 stick, byte is_running) {
     float3 local = { stick.x * max_velocity3D.x, 0, -stick.y * max_velocity3D.y };
@@ -43,9 +48,9 @@ static inline void player3d_move_direct(ecs* world, entity character, float2 sti
     }
     const float3 world_velocity = float3_scale(float4_rotate_float3(zox_getv(character, Rotation3D), local),
         physics3_drag_compensation(world, character));
+    const float3 up = character_up(world, character);
     Velocity3D* velocity = zox_getm(character, Velocity3D);
-    velocity->value.x = world_velocity.x;
-    velocity->value.z = world_velocity.z;
+    velocity->value = float3_add(float3_scale(up, float3_dot(velocity->value, up)), physics3_flatten(world_velocity, up));
 }
 
 void player3d_move_system(iter* it) {
@@ -225,10 +230,10 @@ void player3d_move_system(iter* it) {
         if (zox_has(character, InWater)) {
             max_speed = float2_multiply1(max_speed, swim_speed);
         }
-        float3 movement_real_z = float4_rotate_float3(movement_rotation, (float3) { 0, 0, movement.z });
-        movement_real_z.y = 0;
-        float3 movement_real_x = float4_rotate_float3(movement_rotation, (float3) { movement.x, 0, 0 });
-        movement_real_x.y = 0;
+        // along the ground: flat against its up (its gravity's, any way)
+        const float3 up = character_up(world, character);
+        float3 movement_real_z = physics3_flatten(float4_rotate_float3(movement_rotation, (float3) { 0, 0, movement.z }), up);
+        float3 movement_real_x = physics3_flatten(float4_rotate_float3(movement_rotation, (float3) { movement.x, 0, 0 }), up);
         // NOTE: We use inverse to get the XZ velocity, local movement velocity aligned to character
         float4 inverse_rotation = float4_inverse(character_rotation);
         float3 velocity_local = float4_rotate_float3(inverse_rotation, velocity3D->value);

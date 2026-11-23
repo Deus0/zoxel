@@ -16,7 +16,7 @@
  *    (VoxelNodeDirty: generated, loaded, edited) and when a cube is toggled (gravity_dirty_around), by an observer
  *    (GravityDirty), on the main thread
  *  - a body with TerrainGravity (characters) takes its Gravity3D from the field where it is, every frame
- *    (terrain_gravity_system)
+ *    (terrain_gravity_system), and stands on it: its up turned to its gravity's (gravity_upright_system)
  *  - debug: the gizmos' Gravity button draws the fields round the camera (dbg.c)
  */
 #include "com.c"
@@ -39,6 +39,14 @@ void import_gravities(ecs* world) {
         [in] transforms3.Position3D,
         [out] physics3.Gravity3D,
         [none] gravities.TerrainGravity
+    );
+    zox_system(
+        gravity_upright_system,
+        zoxp_update,
+        [in] physics3.Gravity3D,
+        [out] transforms3.Rotation3D,
+        [none] gravities.TerrainGravity,
+        [none] !physics.DisableMovement     // laid on a bed (beds), held by something else
     );
     zoxd_systems_gravity_debug(world);
     add_hook_spawn_prefabs(prefab_add_gravity);

@@ -143,7 +143,13 @@ A terrain chunk has a `GravityOctree` beside its voxels, as its `LightOctree`: w
 - **Bodies**: one with the `TerrainGravity` tag (characters) takes its `Gravity3D` from the field at its centre every
   frame (`terrain_gravity_system`, zoxp_update), so a cube toggled under it flips it without it moving. A body
   without the tag keeps its own (particles, the physics tests').
-- A jump pushes against its gravity (`jump_force_system`, `physics3_up`).
+- A jump pushes against its gravity (`jump_force_system`, `physics3_up`), a swim stroke too.
+- **Standing on it**: `gravity_upright_system` turns a `TerrainGravity` body's up toward its gravity's, the shortest
+  arc at 9 radians a second (a flip in a third of a second), right over it rolls about its forward so it faces the
+  way it did; not while `DisableMovement` (laid on a bed). The first person camera rides its head, so it turns too.
+- **Moving on it**: the player turns about its own up (`player3_rotate_system`, its `Euler` kept for saves), walks
+  flat against its up (`physics3_flatten`, player3d_move_system), auto jumps over blocks along its up
+  (`physics3_up_block`), swims up its up, and its lower body (`InsideBlock`, water) is down its up.
 - **Debug**: the gizmos' Gravity button draws every node that doesn't pull down, coloured by direction, in the
   camera's chunk and a chunk round it (as the lights' button, which reaches as far now).
 - tst gravity_cube: a sphere exactly, across a chunk's side, overlaps, dug out, a body flipped and rising.
@@ -217,6 +223,5 @@ khadas board: about 150ns a 2D body a frame, 470ns a 3D body (2026-11-12).
 - Rolling is exact at constant speed. A rolling body slowing under friction slips a little within a frame.
 - Spin about a changing axis (alpha not along omega) is very close, not exact.
 - Bodies against each other: only sphere overlap events (`sphere_collide_system`, O(n²)), no response.
-- Movement, auto jump, swimming and the camera still take up as +y, and a character isn't turned to its up (it
-  stands on a ceiling feet first, upright); jumps, the physics and terrain collisions follow gravity.
+- Npcs' turning toward a target (ai rotate_towards) and the third person camera's offset still take up as +y.
 - Tumbling: collisions never make spin, so a cube can't tip, rock or roll over its edges (in doc/todo.md, Physics).

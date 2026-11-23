@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-23
+-x Characters stand on their gravity: turned to its up (gravity_upright_system, a ceiling's flip rolls them over
+  keeping their heading), the player turns about its own up, walks flat against it, auto jumps, swims and its lower
+  body along it. tst gravity_flip
 -x Gravity cube model: a blueprint (models/ins/block_blueprint.c), cyberpunk, seeded by its realm; blocks from
   blueprints bake once the model's done; colors nodes in an HSV range (ColorHSV), a traces node (circuits);
   model_views takes zox_tst_seed, tilemap can dump the atlas. tst gravity_cube_model

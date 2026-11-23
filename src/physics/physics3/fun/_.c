@@ -36,6 +36,20 @@ static inline byte physics3_up_axis(const float3 gravity, int* sign) {
     return axis;
 }
 
+// v without its part along up: a push along the ground under its gravity (walking on a wall or a ceiling)
+static inline float3 physics3_flatten(const float3 v, const float3 up) {
+    return float3_sub(v, float3_scale(up, float3_dot(v, up)));
+}
+
+// up as a step of one block, along the axis nearest it (physics3_up_axis): the block over one's head
+static inline int3 physics3_up_block(const float3 gravity) {
+    int sign = 1;
+    const byte axis = physics3_up_axis(gravity, &sign);
+    int3 up = int3_zero;
+    *int3_axis(&up, axis) = sign;
+    return up;
+}
+
 // a box's half extent along a direction (its radius rolling on a ground under that up)
 static inline float physics3_half_along(const float3 half_extents, const float3 direction) {
     return float_abs(direction.x) * half_extents.x + float_abs(direction.y) * half_extents.y + float_abs(direction.z) * half_extents.z;

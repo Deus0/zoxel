@@ -54,8 +54,8 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 - Gravity fields (terrain/gravity, 2026-11-23), more:
 	- particles and water flow pulled by the field too, driven top down (from the chunk's field to what's in it, not
 	  each particle looking it up) so it scales
-	- movement, auto jump, swimming and the camera along a character's up; turn its body to its up (it stands on a
-	  ceiling upright now)
+	- npcs turning toward a target (ai rotate_towards) and the third person camera along a character's up
+	- a test of walking on a wall (sideways gravity, a player's controls: only a ceiling's flip is tested)
 	- dropped items, pickups and npcs with TerrainGravity (npcs have it: characters), check they cope
 	- a sound and a look for a gravity cube switched on (it's a plain purple stone now)
 	- a test that a cube saved switched on flips gravity again once loaded (the load's VoxelNodeDirty rebuilds it)
@@ -67,6 +67,8 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 - Base blocks (stone, bricks, soil, sand) as blueprints (models/ins/block_blueprint.c, as the gravity cube)
 - Model nodes: one observer on Begin calling the node's function by its NodeType (a table), in place of a system or
   observer a node type each that all check every node (sys/fill.c, colors.c, size.c, eve/mutate.c, traces.c)
+
+- Maths: quaternion_normalized sets w to 0 (unused, remove it)
 
 # Bugs
 - stream_npcs fails on master since d8e218a3a (npc speed and wits?, 2026-11-23): "chunk stayed active but its npc

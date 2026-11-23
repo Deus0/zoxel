@@ -20,8 +20,9 @@ void inside_block_system(iter* it) {
         const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
         float terrain_scale = zox_getv(terrain, BlockScale);
         byte terrain_depth = zox_getv(terrain, NodeDepth);
-        float3 positionf = float3_add(position->value,
-            (float3) { 0, - bounds->value.y / 4.0f, 0 });
+        // its lower body: a quarter of its height down, against its up (its gravity's, any way)
+        const float3 up = physics3_up(zox_has(e, Gravity3D) ? zox_getv(e, Gravity3D) : float3_zero);
+        float3 positionf = float3_sub(position->value, float3_scale(up, physics3_half_along(bounds->value, up) / 4.0f));
         int3 positionv = real_position_to_block_position(positionf, terrain_scale);
         byte length = octree_size(terrain_depth);
         byte3 max_chunk_size = byte3_single(length);

@@ -14,14 +14,19 @@ static inline byte swim_at_shore(ecs* world, entity e) {
     if (!zox_valid(terrain) || !zox_has(e, InsideBlockPosition)) {
         return 0;
     }
-    const int3 above = int3_add(zox_getv(e, InsideBlockPosition), int3_up);
+    const int3 up = physics3_up_block(zox_has(e, Gravity3D) ? zox_getv(e, Gravity3D) : float3_zero);
+    const int3 above = int3_add(zox_getv(e, InsideBlockPosition), up);
     if (terrain_voxel_at(world, terrain, above) != 0) {
         return 0;
     }
     WaterLevels levels;
     water_levels_get(world, zox_get_parent(world, terrain), &levels);
-    const int3 sides[4] = { int3_left, int3_right, int3_forward, int3_backward };
-    for (byte i = 0; i < 4; i++) {
+    // the 4 sides round up
+    const int3 sides[6] = { int3_left, int3_right, int3_down, int3_up, int3_forward, int3_backward };
+    for (byte i = 0; i < 6; i++) {
+        if (int3_dot(sides[i], up) != 0) {
+            continue;
+        }
         const int voxel = terrain_voxel_at(world, terrain, int3_add(above, sides[i]));
         if (voxel > 0 && !voxel_is_water(&levels, voxel)) {
             return 1;
@@ -45,7 +50,7 @@ void swim_system(iter* it) {
         float3 force = float3_scale(gravity->value, -swim_buoyancy);
         float3_add_float3_p(&force, float3_scale(velocity->value, -swim_drag));
         if (jump->value == jump_state_trigger || jump->value == jump_state_swim) {
-            force.y += swim_power;
+            float3_add_float3_p(&force, float3_scale(physics3_up(gravity->value), swim_power));   // a stroke up, its up
         }
         float3_add_float3_p(&acceleration->value, force);
     }

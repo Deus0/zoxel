@@ -29,3 +29,34 @@ void terrain_gravity_system(iter* it) {
     }
     zox_sys_on_end();
 } zoxd_system(terrain_gravity_system);
+
+// a body with TerrainGravity stands on its gravity: its up turned toward its gravity's up, by the shortest arc (its
+//  heading kept), gravity_upright_speed radians a second; turned right over (a ceiling's flip), it rolls about its
+//  forward, so it faces the way it did
+#define gravity_upright_speed 9.0f      // a flip in about a third of a second
+void gravity_upright_system(iter* it) {
+    zox_sys_on_begin();
+    const float step_max = gravity_upright_speed * (float) zox_delta_time;
+    zox_sys_begin();
+    zox_sys_in(Gravity3D);
+    zox_sys_out(Rotation3D);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_i(Gravity3D, gravity);
+        zox_sys_o(Rotation3D, rotation);
+        const float3 target = physics3_up(gravity->value);
+        const float3 up = float4_rotate_float3(rotation->value, float3_up);
+        const float d = float3_dot(up, target);
+        if (d > 0.99999f) {
+            continue;
+        }
+        float3 axis = float3_cross(up, target);
+        if (float3_length(axis) < 1e-4f) {
+            axis = float4_rotate_float3(rotation->value, (float3) { 0, 0, 1 });   // right over: roll about forward
+        }
+        axis = float3_normalize(axis);
+        const float angle = acosf(d < -1 ? -1 : d);
+        const float turn = angle < step_max ? angle : step_max;
+        rotation->value = float4_normalize(quaternion_rotate(quaternion_from_axis_angle(axis, turn), rotation->value));
+    }
+    zox_sys_on_end();
+} zoxd_system(gravity_upright_system);
