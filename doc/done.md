@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-23
+-x tst coop_pause failed its own setup since 2026-11-20: low ids freed for the shared canvas were taken by entities
+  deleted since (deferred frees, LIFO reuse). Logged when it doesn't take; the players' first canvas link is checked
 -x tst chunk_mesh_flicker failed every run since it was written: a material's mean light dips as its faces change
   (849 on the cpu meshes, no flash seen in play), and any seam hole failed it. Dips are logged now (each face's light,
   gpu meshing, is the flash check), seams fail past 1 frame in 20 (the rare ones are in the todo, to fix)
