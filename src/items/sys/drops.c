@@ -4,7 +4,17 @@ extern entity2 spawn_pickup_block(ecs*, entity, float3, float);
 extern entity spawn_item_world(ecs*, entity, entity, float3, float);
 extern entity spawn_item_world_from_meta(ecs*, entity, entity, float3, float);
 
+extern entity BodyPart;
+
 // TODO: Move this over to Pickups
+
+// a dying character's body parts, rarely one dropped, more rarely two (it dropped its whole body, the user, 2026-11-23)
+//  - roll is 0 to 99; its other items (gear, its inventory) all drop
+#define drop_body_part_chance 8         // in a hundred, one part
+#define drop_body_parts_two_chance 2    // in a hundred, two
+static inline byte body_parts_dropped(int roll) {
+    return roll < drop_body_parts_two_chance ? 2 : roll < drop_body_part_chance ? 1 : 0;
+}
 
 // NOTE: For now we just drop BlockItems!
 // we should drop from actions too!
@@ -34,11 +44,25 @@ void character_item_drop_system(iter* it) {
             zox_log("Character dropping [%i] items", items_length);
         }
         entity realm = zox_get_link(world, e, RealmLink);
+        // its body parts kept aside, a few picked at random to drop (body_parts_dropped)
+        entity parts[capacity];
+        uint parts_length = 0, kept = 0;
+        for (uint j = 0; j < items_length; j++) {
+            if (zox_valid(items[j]) && zox_has_id(items[j], BodyPart)) {
+                parts[parts_length++] = items[j];
+            } else {
+                items[kept++] = items[j];
+            }
+        }
+        for (byte k = body_parts_dropped(zox_rand() % 100); k && parts_length; k--) {
+            const uint pick = zox_rand() % parts_length;
+            items[kept++] = parts[pick];
+            parts[pick] = parts[--parts_length];
+        }
+        items_length = kept;
         for (int j = 0; j < items_length; j++) {
             entity item = items[j];
-            if (!zox_valid(item) ) //||
-                //!zox_has(item, ItemBlock))
-            {
+            if (!zox_valid(item)) {
                 continue;
             }
             spawn_item_world(

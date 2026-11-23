@@ -5,6 +5,7 @@
 //  - spawn counts: the wild rolls some npcs a chunk (rounded by chance, it rounded down to 0), towns all, unknown all
 //  - run: bash bsh/tst.sh population
 #include "npc_skeletons.c"
+#include "body_drops.c"
 #include "block_vox_hits.c"
 #include "furniture_rotation.c"
 #include "quest_dialogue.c"
@@ -106,6 +107,7 @@ void zox_tsts_npcs(ecs* world) {
     zox_tsts_quest_marker(world);
     zox_tsts_npcs_after_load(world);
     zox_tsts_npc_skeletons(world);
+    zox_tsts_body_drops(world);
     zox_tsts_npc_stats(world);
     zox_tsts_humanoid_leak(world);
     zox_tsts_hit_sound_links(world);

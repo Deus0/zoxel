@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-23
+-x A dying character dropped every body part (17 of a villager's 18 items): one drops 6 deaths in 100, two 2 in 100
+  (body_parts_dropped), its gear and inventory all as before. tst body_drops
 -x Monsters spawned in towns (a tenth of their weight inside the walls): none inside now, fading in over the falloff
   past the walls (npc_spawn_weight). tst population
 -x Villagers fight monsters: their sight sees monsters before players (npc_sight_system), and a villager that sees one
