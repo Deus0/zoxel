@@ -76,6 +76,7 @@ void zox_systems_physics3(ecs *world) {
         [in] transforms3.Rotation3D,
         [out] physics3.Omega3D,
         [in] ?timing.ClockDelta,
+        [in] ?physics3.Gravity3D,
         [none] physics3.Rolling3D,
         [none] !physics.Frictioned
     );
@@ -88,6 +89,7 @@ void zox_systems_physics3(ecs *world) {
         [in] transforms3.Rotation3D,
         [out] physics3.Omega3D,
         [in] ?timing.ClockDelta,
+        [in] ?physics3.Gravity3D,
         [none] physics3.Rolling3D,
         [none] physics.Frictioned
     );

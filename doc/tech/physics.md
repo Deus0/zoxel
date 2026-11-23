@@ -76,14 +76,16 @@ Everything is in `zoxp_physics`, in this order:
 - **Push** (walk, swim, wind): add to `Acceleration3D` each frame you want it pushed. It's cleared every frame.
   Add, don't set, if more than one system pushes the same body.
 - **Kick** (jump, knockback, an explosion): change `Velocity3D` once.
-- **Gravity**: give it a `Gravity3D` (`zox_default_gravity`). The `DisableGravity` tag turns it off.
+- **Gravity**: give it a `Gravity3D` (`zox_default_gravity`), any direction. The `DisableGravity` tag turns it off
+  (its direction still says which way is up, for rolling and the ground).
 - **Friction**: the `Frictioned` tag plus a `Grounded` component. Drag is `ground_friction3` when
   grounded, `air_friction3` in the air. `Frictioned` also slows spin.
 - **Spin**: `Omega3D` is angular velocity, `Alpha3D` angular acceleration, both **in the body's frame**
   (`rotation = rotation * delta`). For a world space spin, i.e. a hit from the side, use
   `physics3_add_alpha_world(rotation, &alpha, world_alpha)`, or `physics3_world_to_body` / `physics3_body_to_world`.
 - **Rolling**: the `Rolling3D` tag (with `Grounded`, `Bounds3D`, `Omega3D`). While grounded it spins
-  `up × v / radius` (radius = `Bounds3D.y`), so the point touching the ground stays still.
+  `up × v / radius`, so the point touching the ground stays still. Up is against its `Gravity3D` (`physics3_up`,
+  +y without one), the radius its half extent along up (`physics3_half_along`).
 - **2D spin**: `Torque2D` is the angular **velocity** (it's named before `Alpha2D` existed), `Alpha2D` the
   acceleration. `Rotation2` stays within (-2π, 2π) spinning either way.
 
@@ -100,6 +102,24 @@ turned by `Rotation3D`) linked to a terrain (`TerrainLink`), not `NoClip`:
 3. **Last line of defence**: if the centre is still in a solid block, walk it back the way it came (or up).
 4. **Bounce**: velocity into a face is flipped and scaled by `bounce_lost_force` (x and z keep 32%, y 0).
 5. **Grounded**: `ground_state_grounded` on a top face, then `ground_state_leaving` for a frame, then `ground_state_air`.
+
+**Up is against the body's `Gravity3D`**, any direction, snapped to the nearest axis (`physics3_up_axis`, its
+biggest part for gravity off any axis, +y without gravity): a top face, the sweep's first axis, the bounce that
+stops a landing (`bounce_lost_force.y` along up, `.x` along the others) and the way out when stuck all follow it.
+The tests run turned (`terrain_collisions_up`, `_x`, `_z`, `terrain_ledges_x`): the same terrain and bodies with
+gravity +y, +x and -z, checked in the turned frame.
+
+**Ledges and gaps** (`collision_unblock`): a body moving into a block, pushed back off it sideways, is instead
+
+- lifted onto it, when the block's top is within `collision_step_up` (half a block) over its feet, and only with
+  gravity: landing on a step while pressed against a wall over it (a house's door a block up: a body 1.969 blocks
+  tall has 0.03 blocks of room, it used to be sent back off the step every time, `tst step_gap`)
+- slid sideways into a gap, up to `collision_slide` (a quarter block): a body 0.81 blocks wide used to get into a
+  gap a block wide only within 0.15 blocks of its middle
+- or both, whichever is the smallest move that leaves the box clear. A full block in front still stops it (a lift
+  of a whole block is past the limit), and a gap narrower than the box stays shut. Colliders keep their size.
+
+The sweep does the same when a sideways axis is blocked, with the rest of its move (up to a safe step) past it.
 
 **Where it started is worked back from the velocity, no stored position.** That keeps teleports safe:
 nothing ever sweeps from an old position to a new one. With drag, an exact step moves `v_end * g / keep`,
@@ -146,7 +166,10 @@ otherwise trim it, by an amount that changes as `Grounded` flickers on seams (th
 | `physics2_motion` `physics2_rotation` | 2D: drift, push, throw, friction, top speed, bounds, spin both ways, spin up |
 | `physics3_motion` | 3D: fall, push, slide, top speed, terminal velocity, spawn hold, `DisableGravity`, bounds |
 | `physics3_rotation` | spin, tilted spin, spin up, damped spin, unit length, tiny spin, rolling without slipping |
-| `terrain_collisions` | landing, 60 and 400 m/s falls, walls at 80-90 m/s, a ceiling at 40 m/s, seams, walking off an edge, buried spawns, jump height |
+| `physics3_gravity` | falling and terminal velocity with gravity along each axis both ways and off any axis |
+| `physics3_rolling_gravity` | rolling on walls and ceilings: up from gravity, the radius along it, no slip |
+| `terrain_collisions` | landing, 60 and 400 m/s falls, walls at 80-90 m/s, a ceiling at 40 m/s, seams, walking off an edge, buried spawns, jump height, a step a block tall stays a wall, sliding along a wall, a hole narrower than the body stays shut, one wider lets it through (`_up` `_x` `_z`: gravity turned) |
+| `terrain_ledges` | a body as big as a character (pushed as the controls push, jumping as a character) gets up a step into a gap 2 blocks tall, in its middle and off it, and into a flat gap off its middle (`_x`: gravity turned) |
 | `*_10fps` `*_30fps` | the same at another frame rate, 10fps is the biggest dt the engine allows |
 | `physics2_perf` `physics3_perf` | cpu time in the physics systems for 50,000 bodies |
 | `maths_vectors` `maths_quaternions` | vector and quaternion identities over 1000 random samples |
@@ -172,4 +195,6 @@ khadas board: about 150ns a 2D body a frame, 470ns a 3D body (2026-11-12).
 - Rolling is exact at constant speed. A rolling body slowing under friction slips a little within a frame.
 - Spin about a changing axis (alpha not along omega) is very close, not exact.
 - Bodies against each other: only sphere overlap events (`sphere_collide_system`, O(n²)), no response.
+- Movement, jumps, auto jump, swimming and the camera still take up as +y; gravity in any direction is only
+  the physics and terrain collisions so far.
 - Tumbling: collisions never make spin, so a cube can't tip, rock or roll over its edges (in doc/todo.md, Physics).

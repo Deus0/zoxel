@@ -27,7 +27,6 @@
 - Outline Rendering on Vox Models, dark outline
 - Day Night Cycle
 - New game for local coop - second player camera is off
-- Cant jump into doors, if im next to a block, and door is open above it, cant jump through
 - we should lower houses anyway so theyre on ground, but still be good to fix this
 - Navigator cant click on wake button - just make sure its selectable - with navigation - and auto selected on opened
 - Use waveform collapse on the slime model, like pengus and chooks, slems
@@ -55,6 +54,7 @@ profile each, systems and observers counted together):
 Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap, door_rays.
 
 # Bugs
+- walk_bob fails on master (2026-11-23, e026107c0): the head bobbed 0cm over 11 steps, turned 0 times
 - physics on lower lod chunks used to bug (not sure anymore, might still glitch)
 - alt tab on windows, mouse lock stays locked
 - mouse now doesnt go over hte shared player canvas, make mouse on a seperate canvas over others

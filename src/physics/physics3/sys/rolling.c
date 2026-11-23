@@ -1,5 +1,5 @@
 // Rolling3D: grounded bodies roll over the ground without slipping (balls, barrels, dropped loot)
-//  - radius is the half height, Bounds3D.y
+//  - up is against its Gravity3D (any direction, +y without one), radius its half extent along up
 //  - only while Grounded (ground_state_grounded), in the air it keeps the spin it had
 //      (Frictioned bodies slow it with omega_dissipation3)
 //  - runs before the spin systems, so it turns this frame
@@ -18,6 +18,7 @@ static inline void physics3_roll(iter* it, const float c) {
     zox_sys_in(Rotation3D);
     zox_sys_out(Omega3D);
     zox_sys_in(ClockDelta);
+    zox_sys_in(Gravity3D);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Grounded, grounded);
         zox_sys_i(Velocity3D, velocity);
@@ -27,7 +28,8 @@ static inline void physics3_roll(iter* it, const float c) {
         if (grounded->value != 1) { // ground_state_grounded
             continue;
         }
-        const float3 world_omega = physics3_rolling_omega(velocity->value, bounds->value.y);
+        const float3 up = physics3_up(Gravity3D_ ? Gravity3D_[i].value : float3_zero);
+        const float3 world_omega = physics3_rolling_omega(velocity->value, up, physics3_half_along(bounds->value, up));
         float body_boost = boost;
         if (ClockDelta_) {
             const float body_dt = ClockDelta_[i].value;

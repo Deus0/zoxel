@@ -82,7 +82,7 @@ static inline void zox_tst_body3_step(zox_tst_body3* b, const double delta_time)
     if (moves && b->rolling && b->has_grounded && b->grounded == 1) {
         const physics_step step = physics_step_new(c, dt);
         const float boost = step.g > 0 ? dt / step.g : 1;
-        b->omega = float3_scale(physics3_world_to_body(b->rotation, physics3_rolling_omega(b->velocity, b->bounds.y)), boost);
+        b->omega = float3_scale(physics3_world_to_body(b->rotation, physics3_rolling_omega(b->velocity, (float3) { 0, 1, 0 }, b->bounds.y)), boost);
     }
     if (moves) {
         const float3 turn = physics_step3(&b->omega, b->no_alpha ? float3_zero : b->alpha, c, dt);

@@ -1,6 +1,7 @@
 // Physics tests, accuracy and performance of the 2D and 3D physics systems
 //  - every test spawns its own bodies (no terrain, no game) and runs at a fixed dt
-//  - accuracy: physics2_motion, physics2_rotation, physics3_motion, physics3_rotation
+//  - accuracy: physics2_motion, physics2_rotation, physics3_motion, physics3_rotation, physics3_gravity,
+//      physics3_rolling_gravity (gravity in any direction)
 //      each also as _10fps and _30fps
 //  - the exact step on its own: physics_steps
 //  - performance: physics2_perf, physics3_perf
@@ -9,6 +10,7 @@
 #include "common.c"
 #include "physics2.c"
 #include "physics3.c"
+#include "gravity3.c"
 #include "perf.c"
 #include "steps.c"
 
@@ -29,6 +31,8 @@ void zox_tsts_physics() {
     zox_tst_add_physics("physics2_rotation", zox_tst_physics2_rotation_ready, zox_tst_physics2_rotation_check, 30);
     zox_tst_add_physics("physics3_motion", zox_tst_physics3_motion_ready, zox_tst_physics3_motion_check, 30);
     zox_tst_add_physics("physics3_rotation", zox_tst_physics3_rotation_ready, zox_tst_physics3_rotation_check, 30);
+    zox_tst_add_physics("physics3_gravity", zox_tst_physics3_gravity_ready, zox_tst_physics3_gravity_check, 30);
+    zox_tst_add_physics("physics3_rolling_gravity", zox_tst_physics3_rolling_gravity_ready, zox_tst_physics3_rolling_gravity_check, 30);
     zox_tst_add("physics2_perf", zox_tst_physics2_perf_ready, zox_tst_physics2_perf_check, 60);
     zox_tst_add("physics3_perf", zox_tst_physics3_perf_ready, zox_tst_physics3_perf_check, 60);
 }

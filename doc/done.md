@@ -1,6 +1,13 @@
 # Done
 
 ## 2026-11-23
+-x Couldn't jump up a block into a door (a house's floor a block up): a body 1.969 blocks tall has 0.03 blocks of room
+  in a gap 2 tall, and pressed against the wall over the step, the push-out sent it back off the step's top every
+  frame it fell past it. A body pushed back sideways off a block it's moving into is lifted onto it (half a block at
+  most) or slid into a gap beside it (a quarter block), if that's clear (collision_unblock). Gaps a block wide took a
+  body only within 0.15 blocks of their middle, 0.3 now. Up is against Gravity3D in any direction now (terrain
+  collisions, rolling). tst step_gap, terrain_ledges (stuck every run before), terrain_collisions_up/_x/_z,
+  physics3_gravity, physics3_rolling_gravity
 -x A far chunk's wall missing beside a near one (vulkan, gpu meshing), standing still: a gpu mesh's grid held a finer
   neighbour's border at the mesh's depth, its most common solid, so it hid faces where the neighbour draws air. A
   border cell is air where any voxel the neighbour draws against it doesn't hide the mesh (smooth_grid_borders), as cpu

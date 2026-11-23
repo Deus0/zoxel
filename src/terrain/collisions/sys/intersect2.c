@@ -13,6 +13,14 @@ checking every voxel layer on the way. A sweep never carries the entity deeper i
 it is already standing in: it pushes it back out instead. Then the normal push-out runs.
 Last line of defence: if the entity's centre still ends up inside a solid block, it is
 walked back the way it came (or straight up) until its box is clear.
+
+Up is against the body's Gravity3D, any direction, snapped to the nearest axis (+y without one): the ground
+(Grounded), the sweep's first axis, the bounce that stops a landing and the way out when stuck all follow it.
+
+Ledges and gaps (collision_unblock): a body moving into a block, pushed back off it sideways, is lifted onto it
+instead if its top is under collision_step_up of the body's feet (landing on a step while pressed against a wall
+over it, a house's door a block up), or slid sideways into a gap up to collision_slide away, or both, whichever is
+smallest and leaves the box clear. The box isn't changed: only where it's pushed out to.
 */
 
 // A frame's movement up to this fraction of min(half block, smallest entity half extent)
@@ -21,6 +29,15 @@ walked back the way it came (or straight up) until its box is clear.
 // discard BOTH voxels, which is itself a way to fall through.
 #ifndef collision_step_scale
 #define collision_step_scale 0.75f
+#endif
+
+// a body pushed back off a block is lifted onto it instead when its top is this many blocks (or less) over its feet
+#ifndef collision_step_up
+#define collision_step_up 0.5f
+#endif
+// or slid sideways this many blocks (or less) into a gap beside it
+#ifndef collision_slide
+#define collision_slide 0.25f
 #endif
 
 // Set to 1 to log every entity every frame (to see exactly what happens when something falls through).
@@ -204,7 +221,7 @@ static byte collision_box_blocked(const collision_terrain* terrain, collision_ch
 // Pushes a box centred at `position` out of every solid voxel it overlaps.
 // Returns the correction, it does not move anything itself.
 static collision_result collision_resolve(const collision_terrain* terrain, collision_chunk_cache* cache,
-        float3 position, float3 half_extents) {
+        float3 position, float3 half_extents, byte up_axis, int up_sign) {
     const float block_scale = terrain->block_scale;
     const float half_block = block_scale * 0.5f;
     const float3 to_center = float3_single(half_block);
@@ -257,8 +274,8 @@ static collision_result collision_resolve(const collision_terrain* terrain, coll
                 if (float_abs(push) > float_abs(*current)) {
                     *current = push;
                 }
-                if (axis == 1 && side > 0) {
-                    result.hit_ground = 1; // standing on the top face of a block
+                if (axis == up_axis && side == up_sign) {
+                    result.hit_ground = 1; // standing on the top face of a block (top: against gravity)
                 }
             }
         }
@@ -385,6 +402,70 @@ static byte collision_sweep_axis(const collision_terrain* terrain, collision_chu
 }
 
 // ---------------------------------------------------------------------------
+// Ledges and gaps
+// ---------------------------------------------------------------------------
+
+// A box at `position` is in a block it moved into along `axis`. Finds the smallest way out that isn't back:
+// a lift along up onto the block (its feet to the next block boundary over them, up to collision_step_up), a slide
+// along another axis into a gap (an edge to the next boundary, up to collision_slide), or a lift and a slide.
+// Returns 1 and the offset when the box there is clear.
+static byte collision_unblock(const collision_terrain* terrain, collision_chunk_cache* cache,
+        float3 position, float3 half_extents, byte axis, byte up_axis, int up_sign, byte can_lift, float3* offset) {
+    if (!collision_box_blocked(terrain, cache, position, half_extents)) {
+        return 0;   // not in anything
+    }
+    const float scale = terrain->block_scale;
+    const float skin = scale * 0.001f;
+    float3 lifts[2] = { float3_zero, float3_zero };
+    int lift_count = 1;
+    if (can_lift) {
+        const float feet = (float) up_sign * collision_axis_get(position, up_axis) - collision_axis_get(half_extents, up_axis);
+        const float lift = ceilf(feet / scale) * scale - feet;
+        if (lift > skin && lift <= collision_step_up * scale) {
+            *collision_axis_ptr(&lifts[1], up_axis) = (float) up_sign * lift;
+            lift_count = 2;
+        }
+    }
+    float3 slides[5] = { float3_zero };
+    int slide_count = 1;
+    for (byte b = 0; b < 3; b++) {
+        if (b == axis || b == up_axis) {
+            continue;
+        }
+        const float lower = collision_axis_get(position, b) - collision_axis_get(half_extents, b);
+        const float upper = collision_axis_get(position, b) + collision_axis_get(half_extents, b);
+        const float shifts[2] = { ceilf(lower / scale) * scale - lower, floorf(upper / scale) * scale - upper };
+        for (int k = 0; k < 2; k++) {
+            if (float_abs(shifts[k]) > skin && float_abs(shifts[k]) <= collision_slide * scale) {
+                slides[slide_count] = float3_zero;
+                *collision_axis_ptr(&slides[slide_count], b) = shifts[k];
+                slide_count++;
+            }
+        }
+    }
+    byte found = 0;
+    float best = 0;
+    for (int l = 0; l < lift_count; l++) {
+        for (int k = 0; k < slide_count; k++) {
+            if (!l && !k) {
+                continue;
+            }
+            const float3 move = float3_add(lifts[l], slides[k]);
+            const float length = float3_length(move);
+            if (found && length >= best) {
+                continue;
+            }
+            if (!collision_box_blocked(terrain, cache, float3_add(position, move), half_extents)) {
+                found = 1;
+                best = length;
+                *offset = move;
+            }
+        }
+    }
+    return found;
+}
+
+// ---------------------------------------------------------------------------
 // System
 // ---------------------------------------------------------------------------
 
@@ -434,6 +515,11 @@ void terrain_collision_system(iter* it) {
         const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
         const collision_terrain terrain_data = { world, blocks, chunks, terrain_depth, block_scale };
         const float3 half_extents = float4_rotate_bounds(rotation->value, bounds->value);
+        // up against its gravity, the nearest axis (+y without any); lifts onto ledges only with gravity
+        const float3 gravity = zox_has(e, Gravity3D) ? zox_getv(e, Gravity3D) : float3_zero;
+        int up_sign = 1;
+        const byte up_axis = physics3_up_axis(gravity, &up_sign);
+        const byte can_lift = gravity.x != 0 || gravity.y != 0 || gravity.z != 0;
 
         // the move this frame, worked back from the velocity, no stored state (teleports are safe)
         //  - an exact step (see physics/fun) isn't velocity * dt when drag slows it mid frame:
@@ -468,10 +554,10 @@ void terrain_collision_system(iter* it) {
 
         // Fast: the movement system may have carried the entity through a wall or floor.
         // Go back to where it started and redo the move one axis at a time, stopping at
-        // the first solid face. y goes first, so a falling entity lands before it slides.
+        // the first solid face. Up goes first, so a falling entity lands before it slides.
         if (fast) {
             pos = float3_subtract(pos, move);
-            const byte sweep_order[3] = { 1, 0, 2 };
+            const byte sweep_order[3] = { up_axis, up_axis == 0 ? 1 : 0, up_axis == 2 ? 1 : 2 };
             for (int o = 0; o < 3; o++) {
                 const byte axis = sweep_order[o];
                 const float wanted = collision_axis_get(move, axis);
@@ -482,8 +568,22 @@ void terrain_collision_system(iter* it) {
                 const byte blocked = collision_sweep_axis(&terrain_data, &cache, pos, half_extents, axis, &distance);
                 *collision_axis_ptr(&pos, axis) += distance;
                 if (blocked) {
-                    if (axis == 1 && wanted < 0) {
+                    if (axis == up_axis && wanted * (float) up_sign < 0) {
                         hit_ground = 1; // landed on the top face of a block
+                        bounce[axis] = 1; // we were moving into that face
+                        continue;
+                    }
+                    // sideways into a block: onto it or round it, the rest of the move (up to a safe step) past it
+                    float3 offset;
+                    const float rest = wanted - distance;
+                    float3 probe = pos;
+                    *collision_axis_ptr(&probe, axis) += rest > 0 ? float_min(rest, max_step) : float_max(rest, -max_step);
+                    if (axis != up_axis && collision_unblock(&terrain_data, &cache, probe, half_extents, axis, up_axis, up_sign, can_lift, &offset)) {
+                        pos = float3_add(probe, offset);
+                        if (collision_axis_get(offset, up_axis) * (float) up_sign > 0) {
+                            hit_ground = 1;
+                        }
+                        continue;
                     }
                     bounce[axis] = 1; // we were moving into that face
                 }
@@ -494,8 +594,20 @@ void terrain_collision_system(iter* it) {
 #endif
 
         // Push out of anything still overlapping (at normal speed this is the only step, as before).
-        const collision_result result = collision_resolve(&terrain_data, &cache, pos, half_extents);
-        const float3 c = result.correction;
+        const collision_result result = collision_resolve(&terrain_data, &cache, pos, half_extents, up_axis, up_sign);
+        float3 c = result.correction;
+        // pushed back sideways off a block it's moving into: onto it or round it instead, if that's clear
+        for (byte axis = 0; axis < 3; axis++) {
+            float3 offset;
+            if (axis != up_axis && collision_axis_get(c, axis) * collision_axis_get(velocity->value, axis) < 0 &&
+                    collision_unblock(&terrain_data, &cache, pos, half_extents, axis, up_axis, up_sign, can_lift, &offset)) {
+                c = offset;
+                if (collision_axis_get(offset, up_axis) * (float) up_sign > 0) {
+                    hit_ground = 1;
+                }
+                break;
+            }
+        }
         pos = float3_add(pos, c);
         if (result.hit_ground) {
             hit_ground = 1;
@@ -514,7 +626,8 @@ void terrain_collision_system(iter* it) {
             const float3 stuck = pos;
             byte freed = 0;
             for (int attempt = 0; attempt < 2 && !freed; attempt++) {
-                float3 back = { 0, step_length, 0 }; // straight up
+                float3 back = float3_zero; // straight up
+                *collision_axis_ptr(&back, up_axis) = (float) up_sign * step_length;
                 if (attempt == 0) {
                     if (move_max <= 0) {
                         continue;
@@ -563,9 +676,13 @@ void terrain_collision_system(iter* it) {
             hit_ground);
 #endif
 
-        if (bounce[0]) velocity->value.x *= -bounce_lost_force.x;
-        if (bounce[1]) velocity->value.y *= -bounce_lost_force.y;
-        if (bounce[2]) velocity->value.z *= -bounce_lost_force.z;
+        // what a bounce keeps: bounce_lost_force.y along up (0, landings don't bounce), .x along the others
+        for (byte axis = 0; axis < 3; axis++) {
+            if (bounce[axis]) {
+                *collision_axis_ptr(&velocity->value, axis) *= -(axis == up_axis ? bounce_lost_force.y :
+                    (up_axis == 1 ? collision_axis_get(bounce_lost_force, axis) : bounce_lost_force.x));
+            }
+        }
     }
     zox_sys_on_end();
 } zoxd_system(terrain_collision_system);
