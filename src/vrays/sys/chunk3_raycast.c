@@ -235,7 +235,7 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
         byte hit_voxel = 0;
         byte is_in_bounds = byte3_in_bounds(positionl, chunk_size);
         if (is_in_bounds) {
-            VoxelNode* sub_octree = getm_VoxelNode((VoxelNode*) root_voctree, positionl, chunk_depth);
+            VoxelNode* sub_octree = getm_VoxelNode((VoxelNode*) root_voctree, chunk_depth, positionl);
             hit_voxel = sub_octree ? sub_octree->value : 0;
             node_voxel = sub_octree;
         }
@@ -270,7 +270,7 @@ byte raycast_voxel_node(ecs *world, entity caster, const BlockLinks* voxels, con
                 const int3 offset = block_offset_decode(offset_data);
                 const int3 base = { positionl.x + offset.x, positionl.y + offset.y, positionl.z + offset.z };
                 if (offset_data && int3_in_bounds(base, byte3_to_int3(chunk_size))) {
-                    VoxelNode* base_node = getm_VoxelNode((VoxelNode*) root_voctree, int3_to_byte3(base), chunk_depth);
+                    VoxelNode* base_node = getm_VoxelNode((VoxelNode*) root_voctree, chunk_depth, int3_to_byte3(base));
                     const byte base_voxel = base_node ? base_node->value : 0;
                     if (base_voxel && base_voxel <= voxels->length && zox_has(voxels->value[base_voxel - 1], BlockVox)) {
                         node_voxel = base_node;

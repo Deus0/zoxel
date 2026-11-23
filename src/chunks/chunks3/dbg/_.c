@@ -1,5 +1,6 @@
 // extern entity spawn_inspector(ecs*, entity, entity, entity);
 
+#include "octree.c"
 #include "label.c"
 #include "memory.c"
 #include "lines.c"

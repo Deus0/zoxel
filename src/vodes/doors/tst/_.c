@@ -139,7 +139,7 @@ byte zox_tst_doors_ready(ecs* world) {
         // its block vox spawned again (as a chunk loading does): open from the start
         spinlock* lock = zox_octree_lock(world, chunk);
         zox_octree_lock_begin(lock);
-        destroy_node_link_VoxelNode(world, getm_VoxelNode(zox_getm(chunk, VoxelNode), local, zox_getv(chunk, NodeDepth)));
+        destroy_node_link_VoxelNode(world, getm_VoxelNode(zox_getm(chunk, VoxelNode), zox_getv(chunk, NodeDepth), local));
         zox_octree_lock_end(lock);
         zox_add(chunk, VoxelNodeDirty);
         zox_tst_doors_stage = 3;

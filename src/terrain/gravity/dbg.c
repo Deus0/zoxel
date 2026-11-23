@@ -8,23 +8,6 @@ static inline color_rgb gravity_debug_color(byte value) {
     return colors[value <= 6 ? value : 0];
 }
 
-static void gravity_debug_node(ecs* world, const GravityOctree* node, float3 position, float scale) {
-    const GravityOctree* kids = get_children_GravityOctree(node);
-    if (!kids) {
-        if (node->value != gravity_default) {
-            const float3 center = float3_add(position, float3_single(scale * 0.5f));
-            debug_cubec(world, center, float3_single(scale * debug_octree_padding), gravity_debug_color(node->value),
-                debug_octree_thickness);
-        }
-        return;
-    }
-    const float half = scale * 0.5f;
-    for (byte i = 0; i < 8; i++) {
-        const byte3 o = octree_positions[i];
-        gravity_debug_node(world, &kids[i], float3_add(position, (float3) { o.x * half, o.y * half, o.z * half }), half);
-    }
-}
-
 void gravity_debug_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
@@ -43,7 +26,9 @@ void gravity_debug_system(iter* it) {
         if (distance->value > 1) {
             continue;
         }
-        gravity_debug_node(world, field, position->value, scale->value * octree_size(depth->value));
+        const debug_octree_style style = { sizeof(GravityOctree), octree_type_offset_GravityOctree, 0, 0, depth->value,
+            gravity_default, 0, gravity_debug_color };
+        debug_octree(world, &style, field, NULL, position->value, scale->value * octree_size(depth->value));
     }
     zox_sys_on_end();
 } zoxd_system(gravity_debug_system);

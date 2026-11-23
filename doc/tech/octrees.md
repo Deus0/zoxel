@@ -34,11 +34,17 @@ Code: [src/_/octrees](../../src/_/octrees) (the generic functions, no world need
 | `LightOctree` | basic | light levels | `darklight` |
 | `SidesOctree` | basic | which faces of a voxel show | 0 |
 | `BoneNode` | basic | which body part a voxel came from (doc/done/skeletons.md) | 0 |
+| `GravityOctree` | basic | where gravity pulls (terrain/gravity, doc/tech/physics.md) | 0 (the realm's) |
 
 `zoxc_octree_basic(T, byte, default)` or `zoxc_octree_linked(...)` ([components.c](../../src/_/octrees/components.c))
 makes the component with its hooks (the tree is freed on remove, cloned on copy, moved on move) and its typed
 functions: `create_T`, `close_T`, `collapse_T`, `clone_T`, `get_children_T`, `has_children_T`, `getv_T`, setters,
 neighbour reads. `zox_octree_functions` alone gives the functions without a component, for tests.
+Every typed function takes `(node, depth, position)` in that order (`get_T`, `getv_T`, `getm_T`, `set_T`).
+
+Debug: `debug_octree` ([chunks3/dbg/octree.c](../../src/chunks/chunks3/dbg/octree.c)) draws any type as line cubes,
+a plain function given the type's node size and type offset, a colour function, the value to leave out and, for
+lights, the chunk's voxels to skip solids (tst octree_debug). The lights' and gravity's gizmos use it.
 
 ## Reading and writing
 

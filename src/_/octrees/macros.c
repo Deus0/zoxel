@@ -11,7 +11,7 @@ static inline byte getv_##T(const T* node, byte depth, byte3 position) { \
     return get_octree_value((const void*) node, depth, position, sizeof(T), offsetof(T, value), octree_type_offset_##T); \
 } \
 \
-static inline T* getm_##T(T* node, byte3 position, byte depth) { \
+static inline T* getm_##T(T* node, byte depth, byte3 position) { \
     return (T*) get_octree_mut((void*) node, depth, position, sizeof(T), octree_type_offset_##T); \
 }\
 \
@@ -160,28 +160,6 @@ void clone_at_depth_##T(T* dst, const T* src, byte target_depth, byte depth) {\
     }\
 }\
 \
-/* maybe make below function use this if it isn't in the non root node */\
-const T* get_adjacent_##T(const T** neighbors, const T* root, int3 position, byte depth, byte dir, byte *chunk_index) {\
-    if (depth >= 8) {\
-        return NULL;\
-    }\
-    position = move_position(position, dir); \
-    short length = octree_size(depth); \
-    if (position.x >= 0 && position.x < length && \
-        position.y >= 0 && position.y < length && \
-        position.z >= 0 && position.z < length) { \
-        return get_##T(root, depth, int3_to_byte3(position)); \
-        /*return gett_##T(node, position, depth);*/\
-    } else {\
-        /* special case for adjacent ptr, flips position and crosses to neighbor chunk */\
-        *chunk_index = dir + 1;\
-        const T* n = neighbors[dir]; \
-        position = reverse_position(position, dir, length); \
-        return get_##T(n, depth, int3_to_byte3(position)); \
-        /*return gett_##T(n, position, depth); */\
-    }\
-}\
-\
 const T* get_adjacentn_##T(\
     const T** neighbors, \
     const T* vnode, \
@@ -207,30 +185,23 @@ const T* get_adjacentn_##T(\
     return get_##T(vnode, depth, int3_to_byte3(position));\
 }
 
+// a linked tree's (VoxelNode's) links: a node holding an entity (a block vox) in place of children
 #define zox_node_add_link(name)\
 \
-static inline byte is_linked_unlocked_##name(const name *node) {\
-    return is_linked_##name(node);\
-}\
-\
-entity get_node_entity_unlocked_##name(const name *node) {\
-    return is_linked_unlocked_##name(node) ? ((OctreeLink*) node->ptr)->value : 0;\
-}\
-\
 static inline entity get_entity_##name(const name *node) {\
-    const entity e = ((OctreeLink*) node->ptr)->value;\
-    return e;\
+    return ((OctreeLink*) node->ptr)->value;\
+}\
+\
+entity get_node_entity_##name(const name *node) {\
+    return is_linked_##name(node) ? get_entity_##name(node) : 0;\
 }\
 \
 void link_node_##name(name* node, entity e) {\
-    /*write_lock_##name(node);*/\
-    /*if (node->type == node_type_closed) {*/\
     if (!node->ptr) {\
         node->type = node_type_instance;\
         node->ptr = zox_malloc(sizeof(OctreeLink));\
         *(OctreeLink*) node->ptr = (OctreeLink) { e };\
     }\
-    /*write_unlock_##name(node);*/\
 }\
 \
 byte dispose_node_link_##name(name *node) {\
@@ -244,24 +215,11 @@ byte destroy_node_link_##name(ecs *world, name *node) {\
     if (!node || !is_linked_##name(node)) {\
         return 0;\
     }\
-    /*write_lock_##name(node);*/\
-    byte did_destroy = 0;\
-    if (is_linked_##name(node)) {\
-        entity e = get_node_entity_unlocked_##name(node);\
-        \
-        if (zox_valid(e)) {\
-            zox_delete(e)\
-            did_destroy = 1;\
-        }\
-        \
-        octree_unlink(node, octree_type_offset_##name);\
+    const entity e = get_entity_##name(node);\
+    const byte did_destroy = zox_valid(e);\
+    if (did_destroy) {\
+        zox_delete(e)\
     }\
-    \
-    /*write_unlock_##name(node);*/\
+    octree_unlink(node, octree_type_offset_##name);\
     return did_destroy;\
-}\
-\
-entity get_node_entity_##name(const name *node) {\
-    const entity e = is_linked_unlocked_##name(node) ? ((OctreeLink*) node->ptr)->value : 0;\
-    return e;\
 }

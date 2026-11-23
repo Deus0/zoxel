@@ -10,8 +10,6 @@ create_octree_reducer(LightOctree);
 create_octree_optimizer(LightOctree, 0);
 create_optimize_by_max(LightOctree);
 create_node_neighbor(LightOctree);
-create_octree_line_debugger(LightOctree);
-create_octree_line_debugger_compare(LightOctree, VoxelNode);
 zoxc_byte(LightOctreeDepth);
 zoxc_state(LightOctreeDirty);
 

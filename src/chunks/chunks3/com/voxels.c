@@ -17,4 +17,3 @@ create_octree_optimizer(VoxelNode, 1);
 create_octree_queries(VoxelNode);
 create_octree_reducer(VoxelNode);
 create_node_neighbor(VoxelNode);
-create_octree_line_debugger(VoxelNode);

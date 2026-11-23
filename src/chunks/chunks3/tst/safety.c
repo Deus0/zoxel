@@ -155,10 +155,7 @@ static void zox_tst_chunks3_safety_cull(iter* it) {
             if (zoxt_chunks3_safety_locks) {
                 spin_lock(&lock->value);
             }
-            VoxelNode* branch = getm_VoxelNode(
-                vnode,
-                position,
-                depth);
+            VoxelNode* branch = getm_VoxelNode(vnode, depth, position);
 
             if (branch) {
                 collapse_VoxelNode(branch);

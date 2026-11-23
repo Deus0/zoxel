@@ -1,99 +1,4 @@
-static void debug_octree_node_compare(
-    ecs* world,
-    const LightOctree* node,
-    const VoxelNode* compare_node,
-    byte depth,
-    byte target_depth,
-    float3 position,
-    float scale,
-    byte ignore_value
-) {
-    if (!node) {
-        zox_loge("invalid node in debug_octree_node");
-        return;
-    }
-    const LightOctree** kids_ptr = (const LightOctree**) node;
-    const VoxelNode** compare_kids =
-        debugger_is_ignore_voxel && compare_node
-            ? (const VoxelNode**) compare_node
-            : NULL;
-
-    if (depth == target_depth || !*kids_ptr) {
-        // Ignore if solid
-        if (debugger_is_ignore_voxel && compare_node && compare_node->value) {
-            return;
-        }
-
-        byte v = node->value;
-        color_rgb col = { v, v, v };
-        float3 size = float3_single(scale * debug_octree_padding);
-        float3 rsize = float3_single(scale);
-        float3 center = float3_add(position, float3_half(rsize));
-        debug_cubec(world, center, size, col, debug_octree_thickness);
-        return;
-    }
-
-    const VoxelNode* child_compare = compare_node;
-    float child_scale = scale * 0.5f;
-
-    for (byte i = 0; i < 8; i++) {
-        const LightOctree* child =
-            (const LightOctree*)((const char*)(*kids_ptr) + i * sizeof(LightOctree));
-
-        if (!child) {
-            zox_loge("invalid child on octree");
-            continue;
-        }
-
-        byte3 offset = octree_positions[i];
-
-        float3 child_pos = float3_add(
-            position,
-            (float3) {
-                offset.x * child_scale,
-                offset.y * child_scale,
-                offset.z * child_scale
-            }
-        );
-
-        if (compare_kids && *compare_kids) {
-            child_compare =
-                (const VoxelNode*)((const char*)(*compare_kids) + i * sizeof(VoxelNode));
-        }
-
-        debug_octree_node_compare(
-            world,
-            child,
-            child_compare,
-            depth + 1,
-            target_depth,
-            child_pos,
-            child_scale,
-            ignore_value
-        );
-    }
-}
-
-static inline void debug_octree_compare(
-    ecs* world,
-    const LightOctree* root,
-    const VoxelNode* compare_root,
-    byte target_depth,
-    float3 root_position,
-    float root_scale,
-    byte ignore_value
-) {
-    debug_octree_node_compare(
-        world,
-        root,
-        compare_root,
-        0,
-        target_depth,
-        root_position,
-        root_scale,
-        ignore_value
-    );
-}
+byte debugger_is_ignore_voxel = 0;  // only air voxels' lights
 
 // NOTE: This compares voxel nodes to make sure it only renders cubes for air blocks
 void light_octree_debug_system(iter* it) {
@@ -126,8 +31,9 @@ void light_octree_debug_system(iter* it) {
         // TODO: Limit to distance from camera
         float chunk_scale = scale->value * powers_of_two[depth->value];
         // zox_log("debugin chunk at scale [%f]", chunk_scale);
-        // debug_octree_compare_LightOctree(world, lights, vnode, debug_depth, position->value, chunk_scale, sunlight);
-        debug_octree_compare(world, lights, vnode, debug_depth, position->value, chunk_scale, sunlight);
+        const debug_octree_style style = { sizeof(LightOctree), octree_type_offset_LightOctree, sizeof(VoxelNode),
+            octree_type_offset_VoxelNode, debug_depth, -1, debugger_is_ignore_voxel, octree_debug_grey };
+        debug_octree(world, &style, lights, vnode, position->value, chunk_scale);
         /*if (!lights->value && !lights->ptr) {
             zox_loge("Lights Dark [%s]", zox_sys_e_name);
         }*/

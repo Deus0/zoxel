@@ -12,7 +12,6 @@
  *
  * */
 #include "set/_.c"
-#include "mcr/_.c"
 #include "com/_.c"
 #include "dat/_.c"
 #include "fun/_.c"
@@ -41,6 +40,7 @@ void import_chunks3(ecs* world) {
     zox_tsts_chunks3_vox_mesh_grid();
     zox_tsts_icon_bake(world);
     zox_tsts_chunks3_gpu_mesh();
+    zox_tsts_chunks3_debug_octree();
 #endif
 }
 

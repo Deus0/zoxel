@@ -225,7 +225,7 @@ void zox_tst_octree_set_get_check(ecs* world) {
     TstNode* leaf = set_TstNode(&root, zox_tst_octree_depth, p, 2);
     zox_tst_check(leaf != NULL && leaf->value == 2, "set didn't return the leaf");
     zox_tst_check(get_TstNode(&root, zox_tst_octree_depth, p) == leaf, "get didn't find the set leaf");
-    zox_tst_check(getm_TstNode(&root, p, zox_tst_octree_depth) == leaf, "getm didn't find the set leaf");
+    zox_tst_check(getm_TstNode(&root, zox_tst_octree_depth, p) == leaf, "getm didn't find the set leaf");
     zox_tst_check(getv_TstNode(&root, zox_tst_octree_depth, p) == 2, "getv after set");
     zox_tst_check(getv_TstNode(&root, zox_tst_octree_depth, (byte3) { 4, 9, 30 }) == 4, "inherited sibling lost the parent value");
     zox_tst_check(getv_TstNode(&root, zox_tst_octree_depth, (byte3) { 0, 0, 0 }) == 4, "far voxel lost the root value");
