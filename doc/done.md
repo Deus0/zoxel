@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-23
+-x Slimes pounced fast with no pause at level 1: a movement speed stat (StatSpeed, its icon movement_speed, a player's
+  1, raised by agility; an npc's agility is its level, its speed from it: a slime 0.58) scales npcs' attack and flee speeds and the pounce (a slow one squashes longer, a tell, and leaps slower), and
+  npcs get the intelligence attribute (their level): they watch their threat before their first attack and between
+  attacks, 1.2s a slime, 0.3s a villager (npc_observe_time). tst npc_speed
 -x A slime's tentacle hit through walls: it hit if its attacker's centre was near its line. It stops short of the first
   block on its way now (tentacle_clear_length), and hits when one of its particles touches its attacker's bounds
   (tentacle_touches). tst slime_tentacle_wall (hurt through a wall before), slime_tentacle

@@ -1,5 +1,6 @@
 // a pounce (fun/pounce.c, a melee SkillUsing): it squashes down, springs at what it aims at (RaycastAim, else ahead) stretched up, hits
 //  the first character its ray finds close in the air (melee_hit, once), and is round again as it lands
+//  - by its speed stat (character_speed): a slow one (a low level slime) squashes longer, a tell, and leaps slower
 #define pounce_crouch 0.3           // seconds squashing down
 #define pounce_air 0.7              // seconds in the air at most
 #define pounce_leap 5.0f            // its speed at its target
@@ -32,11 +33,13 @@ void pounce_system(iter* it) {
             continue;
         }
         const float t = zox_current_time - start->value;
+        const float speed = character_speed(world, e);    // its children walked, only while it pounces
+        const float crouch = pounce_crouch / speed;
         if (!zox_has(e, SkillReleased)) {
             // squashing down, wider
-            const float s = float_min(t / pounce_crouch, 1);
+            const float s = float_min(t / crouch, 1);
             scale->value = (float3) { 1 + 0.3f * s, 1 - 0.4f * s, 1 + 0.3f * s };
-            if (t < pounce_crouch) {
+            if (t < crouch) {
                 continue;
             }
             float3 ahead = zox_has(e, RaycastAim) ?
@@ -44,18 +47,18 @@ void pounce_system(iter* it) {
                 quaternion_to_normal(rotation->value);
             ahead.y = 0;
             ahead = float3_normalize(ahead);
-            velocity->value = (float3) { ahead.x * pounce_leap, pounce_jump, ahead.z * pounce_leap };
+            velocity->value = (float3) { ahead.x * pounce_leap * speed, pounce_jump, ahead.z * pounce_leap * speed };
             zox_add(e, SkillReleased);
             continue;
         }
         // in the air: stretched up, easing back round
-        const float k = float_min((t - pounce_crouch) / pounce_air, 1);
+        const float k = float_min((t - crouch) / pounce_air, 1);
         scale->value = (float3) { 1 - 0.15f * (1 - k), 1 + 0.3f * (1 - k), 1 - 0.15f * (1 - k) };
         if (!zox_has(e, SkillHit) && ray->result == rayhit_character && ray->distance <= pounce_hit_reach) {
             melee_hit(world, skill->value, e);
             zox_add(e, SkillHit);
         }
-        if (k >= 1 || (grounded->value && t > pounce_crouch + 0.2f)) {
+        if (k >= 1 || (grounded->value && t > crouch + 0.2f)) {
             skill_using_end(world, e);
             zox_remove(e, Scale3);
         }

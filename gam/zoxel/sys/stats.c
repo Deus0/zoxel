@@ -5,6 +5,7 @@ float attribute_energy_scale = 2;
 float attribute_regen_scale = 0.5f;     // x regen_rate
 float attribute_damage_scale = 0.7f;
 float attribute_defence_scale = 0.5f;
+float attribute_speed_scale = 0.03f;    // of a player's speed (1)
 
 void stats_realm_spawn_system(iter* it) {
     zox_sys_on_begin();
@@ -104,6 +105,15 @@ void stats_realm_spawn_system(iter* it) {
         zox_add(physical_defence, StatDefence);
         zox_set(physical_defence, StatValue, { 0 });
         zox_link(world, physical_damage, StatDefenceLink, physical_defence);
+        entity movement_speed = spawn_realm_stat(
+            world,
+            e,
+            prefab_stat_base,
+            "movement speed",
+            "movement_speed",
+            color_rgb_white);
+        zox_add(movement_speed, StatSpeed);
+        zox_set(movement_speed, StatValue, { 1 });
         // Currencies
         entity stat_point = spawn_realm_stat(
             world,
@@ -152,6 +162,7 @@ void stats_realm_spawn_system(iter* it) {
             "intelligence",
             "intelligence",
             color_rgb_white);
+        zox_add(intelligence, StatIntelligence);
         entity wisdom = spawn_realm_stat(
             world,
             e,
@@ -166,6 +177,7 @@ void stats_realm_spawn_system(iter* it) {
             "agility",
             "agility",
             color_rgb_white);
+        zox_add(agility, StatAgility);
         entity dexterity = spawn_realm_stat(
             world,
             e,
@@ -196,6 +208,7 @@ void stats_realm_spawn_system(iter* it) {
         set_realm_stat_scale(world, energy_regen, dexterity, attribute_regen_scale);
         set_realm_stat_scale(world, physical_damage, strength, attribute_damage_scale);
         set_realm_stat_scale(world, physical_defence, endurance, attribute_defence_scale);
+        set_realm_stat_scale(world, movement_speed, agility, attribute_speed_scale);
         // Jobs
         // create regen stat
         // stats.value[i++] = spawn_stat_level_t(world, "farming", "farming", color_rgb_gray);

@@ -8,10 +8,9 @@
   
 # Dropbox (Sort These)
 - Make level 1 slimes weaker
-	- make movement by their movement speed stat
 	- theyre hard to hit atm
-	- when they are readying a hit, make slower
-	- curve difficulty by stats, which should be scaled by level too
+	- curve difficulty by stats, which should be scaled by level too (speed and intelligence are, 2026-11-23)
+	- npcs wander at the prefab's speed till their first battle (their speed stat is read as their behaviour changes)
 	- tentacle: stop at other characters on its way too (blocks stop it now)
 - Humanoids in town
 	- give them clothes too

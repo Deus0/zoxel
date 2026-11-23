@@ -193,7 +193,8 @@ static inline byte get_realm_base_stats(ecs* world, entity realm, RealmBaseStats
                 stats->mana = stat;
                 base = 1;
             }
-            base |= zox_has(stat, StatRegen) || zox_has(stat, StatBase);
+            base |= zox_has(stat, StatRegen) || zox_has(stat, StatBase) || zox_has(stat, StatIntelligence) ||
+                zox_has(stat, StatAgility);
             if (base && stats->count < zox_realm_base_stats_max) {
                 stats->all[stats->count++] = stat;
             }
@@ -229,6 +230,10 @@ static inline float npc_stat_start(ecs* world, const RealmBaseStats* stats, enti
         return *max = mana_base + soul * mana_level_increase;
     } else if (zox_has(stat, StatRegen)) {
         return base_regen;
+    } else if (zox_has(stat, StatSpeed)) {
+        return npc_speed_at(world, stat, soul);
+    } else if (zox_has(stat, StatIntelligence) || zox_has(stat, StatAgility)) {
+        return npc_attribute_at(soul);
     }
     return zox_getv(stat, StatValue);  // a base, i.e. physical damage, at the realm's base value
 }
@@ -246,7 +251,8 @@ void fill_character_base_stats(ecs* world, entity character, entity realm, float
     }
     for (int s = 0; s < stats.count; s++) {
         const entity stat = stats.all[s];
-        if (has_realm_stat(world, character, stat)) {
+        // a player's attributes are below (from 0, it spends points), its movement speed the realm's
+        if (has_realm_stat(world, character, stat) || (is_player && zox_has(stat, StatAttribute))) {
             continue;
         }
         if (stat == stats.health) {
@@ -254,7 +260,8 @@ void fill_character_base_stats(ecs* world, entity character, entity realm, float
             continue;
         }
         float max;
-        const float value = npc_stat_start(world, &stats, stat, soul, &max);
+        const float value = is_player && zox_has(stat, StatSpeed) ? zox_getv(stat, StatValue) :
+            npc_stat_start(world, &stats, stat, soul, &max);
         if (max > 0) {
             spawn_stat_state(world, character, stat, is_player ? (stat == stats.energy ? energy_base : mana_base) : value, max);
         } else if (stat == stats.soul) {

@@ -25,6 +25,9 @@ zox_tag(StatPoint);     // currency spent on attributes
 zox_tag(SkillPoint);    // currency spent on skills
 zox_tag(StatDamage);    // base stat added to skill damage, ie physical damage
 zox_tag(StatDefence);   // base stat that reduces damage, ie physical defence
+zox_tag(StatSpeed);     // movement speed, a base stat: how fast an npc moves and pounces, agility raises it (fun/speed.c)
+zox_tag(StatAgility);   // the agility attribute, raises movement speed (and energy)
+zox_tag(StatIntelligence); // the intelligence attribute: an npc's quickens its attacks (fun/speed.c)
 zox_tag(SpawnNameLabel);   // has a name label near players (character_name_labels_system)
 zox_tag(NameLabelLink);
 
@@ -58,5 +61,8 @@ void zox_components_stats(ecs *world) {
     zoxd_tag(StatPoint);
     zoxd_tag(SkillPoint);
     zoxd_tag(StatDamage);
+    zoxd_tag(StatSpeed);
+    zoxd_tag(StatAgility);
+    zoxd_tag(StatIntelligence);
     zoxd_tag(StatDefence);
 }

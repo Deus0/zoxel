@@ -1,6 +1,7 @@
 // an attacking npc picks its skill for its threat's distance (npc_choose_skill: punch close, shoot further) and uses
 //  it when its threat is in that skill's reach and in front of it, its beat uneven (AttackAt): a swing, a step back,
 //  a lunge in (attack_system), not a swing at the air every cooldown; its beat on its clock (ClockTime: paused it waits)
+//  - it watches its threat a while between attacks, a slow witted one longer (npc_observe_time, its intelligence)
 #define npc_attack_facing 0.5f          // its threat within 60 degrees of its facing
 #define npc_attack_beat_min 0.8         // seconds from a swing to the next, at least
 #define npc_attack_beat_max 1.6
@@ -53,7 +54,7 @@ void attack_trigger_system(iter* it) {
             continue;
         }
         trigger->value = zox_dirty_trigger;
-        attack_at->value = now->value + randf_range(npc_attack_beat_min, npc_attack_beat_max);
+        attack_at->value = now->value + randf_range(npc_attack_beat_min, npc_attack_beat_max) + npc_observe_time(world, e);
     }
     zox_sys_on_end();
 } zoxd_system(attack_trigger_system);

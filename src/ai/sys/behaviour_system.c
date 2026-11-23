@@ -1,4 +1,10 @@
 #define npc_flee_health 0.3f
+// seconds it watches its threat before its first attack and between attacks, less the smarter it is (its intelligence)
+#define npc_observe_max 1.5f
+#define npc_observe_wits 0.25f
+static inline float npc_observe_time(ecs* world, entity e) {
+    return npc_observe_max / (1 + npc_observe_wits * character_intelligence(world, e));
+}
 
 void behaviour_system(iter* it) {
     zox_sys_on_begin();
@@ -29,13 +35,17 @@ void behaviour_system(iter* it) {
             const byte is_coward = zox_has(e, Coward) || is_hurt;
             if (is_coward && behaviour->value != zox_behaviour_flee) {
                 behaviour->value = zox_behaviour_flee;
-                move_speed->value = 8;
+                move_speed->value = npc_speed_flee * character_speed(world, e);
                 if (is_debug_behaviour) {
                     zox_log("+ has started to flee [%s]", zox_get_name(e))
                 }
             } else if (!is_coward && behaviour->value != zox_behaviour_attack) {
                 behaviour->value = zox_behaviour_attack;
-                move_speed->value = 6;
+                move_speed->value = npc_speed_attack * character_speed(world, e);
+                // it watches before it strikes: its reaction
+                if (zox_has(e, AttackAt)) {
+                    zox_setv(e, AttackAt, clock_time_of(world, e) + npc_observe_time(world, e));
+                }
                 if (is_debug_behaviour) {
                     zox_log("+ has started to attack [%s]", zox_get_name(e))
                 }
@@ -44,11 +54,8 @@ void behaviour_system(iter* it) {
             if (behaviour->value != zox_behaviour_follow &&
                 behaviour->value != default_behaviour->value) {
                 behaviour->value = default_behaviour->value;
-                /*if (is_debug_behaviour) {
-                    zox_log("+ has started to [%i] [%s]", default_behaviour->value, zox_get_name(e))
-                }*/
+                move_speed->value = npc_speed_peace * character_speed(world, e);
             }
-            move_speed->value = 3;
         }
     }
     zox_sys_on_end();

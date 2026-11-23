@@ -8,7 +8,7 @@ entity spawn_prefab_character3_npc(ecs *world, entity prefab) {
     zox_set(e, DefaultBehaviour, { zox_behaviour_wander });
     zox_set(e, MoveForwards, { 0 });
     zox_set(e, RotateTowards, { 0 });
-    zox_set(e, MoveSpeed, { 4 });
+    zox_set(e, MoveSpeed, { npc_speed_peace });
     zox_set(e, MoveToBuffer, { default_npc_follow_distance }); // 0.45f
     zox_set(e, TargetPosition, { float3_zero });
     zox_set(e, AttackAt, { 0 });

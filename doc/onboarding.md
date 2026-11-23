@@ -384,6 +384,7 @@ The loop:
 - [Characters](tech/characters.md): how characters are built (vox, renderer, skeleton)
 - [Bones and Animation](tech/bones.md): joints, the walk, crouching, swings, XR's body, looking at it (gifs, `--bones`)
 - [Body and Equipment](tech/body_equips.md): body parts in slots, how a body is merged and boned, gear (hats, shirts)
+- [Stats](tech/stats.md): levels, health and regens, base stats and the attributes raising them
 - [Audio](tech/audio.md): the mixer, 3D sounds, effects, voices and music
 - [Sounds](tech/sounds.md): what things sound like hit, realm sound entities, materials, grunts
 - [Nodes](tech/nodes.md): node graphs, how dialogue and quests walk them

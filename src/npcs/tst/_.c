@@ -14,6 +14,7 @@
 
 #include "npc_attacks.c"
 #include "monsters.c"
+#include "npc_speed.c"
 
 #include "npc_glance.c"
 
@@ -102,6 +103,7 @@ void zox_tsts_npcs(ecs* world) {
     zox_tst_add("population", zox_tst_population_ready, zox_tst_population_check, 30);
     zox_tsts_npc_attacks(world);
     zox_tsts_monsters(world);
+    zox_tsts_npc_speed(world);
     zox_tsts_npc_glance(world);
     zox_tsts_npc_quests(world);
     zox_tsts_quest_marker(world);
