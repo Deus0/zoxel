@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-23
+-x Gravity cubes animated: a block vox playing its blueprint's animations (spawn_blueprint_animation: a VoxAnimation
+  whose children are its frames; the block's ModelLink off, ActiveModelLink on, 4 frames each), lights
+  chasing round its edges (leds node), a seeded rune lit on its core while it's on (rune node), swapped by
+  vode_animate_system; model_views can show one frame (zox_tst_model_variant). tst gravity_cube_model, gravity_cube_vode
 -x Gravity cubes pull any of 6 ways: the way their placer looked (BlockPointed, block_pointing in its block data), a
   right click still switches them on and off; overlapping spheres take the nearest cube's way. tst gravity_cube
 -x Beds rest you: asleep, a character regenerates 4 times faster (sleep_regen_mul), and a bed is its player's respawn

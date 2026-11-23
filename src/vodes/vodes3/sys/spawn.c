@@ -58,6 +58,10 @@ void spawned_block_vox(
         return;
     }
     link_node_VoxelNode(octree, e2);
+    // its model's frames played (vode_animate_system): a gravity cube's lights and rune
+    if (zox_has(block, ModelAnimated)) {
+        zox_add(e2, ModelAnimated);
+    }
     // non fragmenting, like the chunk's meshes, ChildOf gave every chunk's block voxes their own tables
     zox_set_parent_non_fragment(world, e2, chunk);
     // lit like the terrain around it, block_vox_lights_system keeps it updated

@@ -57,6 +57,7 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 	- a test of walking on a wall (sideways gravity, a player's controls: only a ceiling's flip is tested)
 	- dropped items, pickups and npcs with TerrainGravity (npcs have it: characters), check they cope
 	- a sound for a gravity cube switched on, and its model showing which way it pulls (an arrow, the core's side)
+	- terrain faces against a block vox that fills its block (a gravity cube) culled: drawn now, hidden inside it
 	- a test that a cube saved switched on flips gravity again once loaded (the load's VoxelNodeDirty rebuilds it)
 
 - Power (doc/tech/blocks.md, ActiveOctree): manawires, power generator blocks, a PowerOctree beside the ActiveOctree
@@ -70,6 +71,8 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 - Maths: quaternion_normalized sets w to 0 (unused, remove it)
 
 # Bugs
+- Block voxes never spawn on the test level (zox_tst_level_setup: BlocksSpawned stays off, even the player's chunk);
+  tests of them run in a game (tst doors, gravity_cube_vode)
 - stream_npcs fails on master since d8e218a3a (npc speed and wits?, 2026-11-23): "chunk stayed active but its npc
   was deleted (despawned and respawned)"
 - walk_bob fails on master (2026-11-23, e026107c0): the head bobbed 0cm over 11 steps, turned 0 times

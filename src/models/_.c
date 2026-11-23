@@ -44,6 +44,8 @@ byte zox_block_outlines = 1;
 #define zox_model_node_end 9
 #define zox_model_node_mutate 10      // the model's colours mutated by its seed (eve/mutate.c)
 #define zox_model_node_traces 11      // Count circuit traces of its voxel over the model's surface (eve/traces.c)
+#define zox_model_node_leds 12        // lights chasing along the box's 12 edges, a step a frame (eve/leds.c)
+#define zox_model_node_rune 13        // a seeded rune on its core through each face's middle, on active frames (eve/rune.c)
 
 #include "dat/_.c"
 #include "set/_.c"

@@ -240,15 +240,24 @@ void blocks_realm_spawn_system(iter* it) {
                 link_hit_sound(world, e3, e, &hit_sound_water);
             }
         }
-        // a gravity cube: a right click switches it on or off (ActiveOctree), on it flips gravity round it; its
-        //  model a blueprint seeded by the realm
+        // a gravity cube: a right click switches it on or off (ActiveOctree), on it pulls round it its way
         //  (terrain/gravity); last, the blocks before it keep their indices
+        //  - its models a blueprint seeded by the realm (models/ins/block_blueprint.c), cyberpunk: two VoxAnimations
+        //    played on each placed one (a block vox, ModelAnimated), off (lights chasing round) and on (its
+        //    ActiveModelLink, a rune lit too)
         {
             lint block_seed = seed->value + (seed_offset+=seed_shift);
             const color gravity_color = (color) { 150, 70, 220, 255 };
-            // its model a blueprint (models/ins/block_blueprint.c), cyberpunk, seeded by the realm
             const entity graph = spawn_model_nodegraph_gravity_cube(world, e);
-            entity e2 = spawn_realm_block_blueprint(world, e, graph, block_seed, "gravity cube", gravity_color, dbg_log);
+            const byte depth = block_depth_limits.y;
+            const entity2 off = spawn_blueprint_animation(world, e, graph, block_seed, "gravity cube off", depth, gravity_cube_frames,
+                gravity_cube_fps, 0);
+            const entity2 on = spawn_blueprint_animation(world, e, graph, block_seed, "gravity cube on", depth, gravity_cube_frames,
+                gravity_cube_fps, 1);
+            entity e2 = spawn_realm_block_model(world, e, block_seed, "gravity cube", gravity_color, 1, depth, off.x, off.y,
+                direction_front);
+            zox_set_link(world, e2, ActiveModelLink, on.x);
+            zox_add(e2, ModelAnimated);
             zox_add(e2, BlockGravity);
             zox_add(e2, BlockPointed);   // pulls the way its placer looked, any of 6
             link_hit_sound(world, e2, e, &hit_sound_stone);

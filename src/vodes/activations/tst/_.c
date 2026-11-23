@@ -136,6 +136,7 @@ void zox_tst_block_activate_check(ecs* world) {
 #include "door_rays.c"
 #include "gravity_cube.c"
 #include "gravity_flip.c"
+#include "gravity_cube_vode.c"
 
 void zox_tsts_activations(ecs* world) {
     zox_tst_add("block_activate", zox_tst_block_activate_ready, zox_tst_block_activate_check, 60);
@@ -144,5 +145,6 @@ void zox_tsts_activations(ecs* world) {
     zox_tst_set_setup("gravity_cube", NULL, 1);
     zox_tst_add("gravity_flip", zox_tst_gravity_flip_ready, zox_tst_gravity_flip_check, 60);
     zox_tst_set_setup("gravity_flip", NULL, 1);
+    zox_tst_add("gravity_cube_vode", zox_tst_gravity_cube_vode_ready, zox_tst_gravity_cube_vode_check, 90);
     zox_tsts_door_rays(world);
 }

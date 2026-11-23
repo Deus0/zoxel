@@ -74,6 +74,8 @@ variant. Nodes go between the first (size) and the last (end): more nodes there 
 | wfc | a new model from a source model's patches (wave function collapse), its source's colours |
 | mutate | the model's colours by its seed: one hue turn for all, greys tint, each lighter or darker (`ColorMutation`) |
 | traces | `Count` circuit traces of its voxel walked over the model's surface, seeded: straight runs turning a quarter, only where the surface stays facing the same way (eve/traces.c) |
+| leds | lights of its voxel along the box's 12 edges, every `Count`'th, a step further each frame (`ModelFrame`): with `Count` frames they go round (eve/leds.c) |
+| rune | a seeded 5 x 5 rune (a spine, arms, mirrored) of its voxel on the first solid voxel in from each face's middle, only on `ModelActive` frames (eve/rune.c) |
 | end | marks the model built |
 
 ### Blocks from blueprints
@@ -82,9 +84,26 @@ variant. Nodes go between the first (size) and the last (end): more nodes there 
 a solid block whose model is a blueprint run at `block_depth`, seeded by its realm, its 6 faces baked from it once
 it's done (`spawn_realm_block_baked_model`, its textures wait on `Generating`). The gravity cube's
 (`spawn_model_nodegraph_gravity_cube`): a dark metal box in 3 x 3 panels, neon edges, a core glowing through a
-framed window on each face, neon traces and lights, its colours from `ColorHSV` ranges, so each realm's is its own.
+framed window on each face, neon traces and lights, lights chasing round its edges and a rune lit on its core while
+it's on, its colours and rune seeded, so each realm's is its own. It's a block vox playing its two animations (below), not
+baked; `spawn_realm_block_blueprint` (baked faces) stays for the base blocks.
 Sizes in eighths of the blueprint, so they halve exactly to a 16 model. The base blocks are to move to blueprints.
 To look at it: `zox_tst_model=gravity zox_tst_seed=<seed> bash bsh/tst.sh model_views`; tst gravity_cube_model.
+
+### Animations: a VoxAnimation of frames
+
+`spawn_blueprint_animation(world, parent, graph, seed, name, depth, frames, fps, active)` (ins/models.c): one graph,
+many outputs. It makes a `VoxAnimation` (a model group, `AnimationFps`) whose children are its frames, each the graph
+run on one, all from the same seed, each with its `ModelFrame`; `active` tags them `ModelActive`. Nodes read them:
+`leds` chase round by the frame, `rune` lights on `ModelActive` frames, the rest make the same voxels on each.
+
+A block with animations (`ModelAnimated`, gam/zoxel/sys/blocks.c's gravity cube) links one a state: its `ModelLink`
+off, its `ActiveModelLink` while on in its chunk's `ActiveOctree`. It's a block vox; each placed one gets the tag
+(vodes3 spawn) and `vode_animate_system` (vodes3/sys/animate.c) swaps its model and its mesh at its depth to its
+state's animation's frame by the time (every one the same frame at once, one of each drawn at a time: the instance
+renderer holds 64 meshes). A block vox's `BlockIndex` is its block's place in the realm's list (its voxel - 1).
+To look at a frame: `zox_tst_model="gravity cube on" zox_tst_model_variant=<i> bash bsh/tst.sh model_views` (or
+`off`). tst gravity_cube_model (the animations' frames), gravity_cube_vode (a placed one playing them).
 
 ### WFC (wave function collapse)
 

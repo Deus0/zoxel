@@ -6,6 +6,7 @@
 //  - zox_tst_model=<name> picks the model whose realm entity's name holds it, i.e. zox_tst_model=sword
 //      (the realm's models are logged), else the first one
 //  - zox_tst_seed=<seed>: its realm's seed (666 else), each realm's own models
+//  - zox_tst_model_variant=<i>: its group's i-th model from the 4 sides, its full detail (an animation's frame: zox_tst_model="gravity cube on")
 //  - zox_tst_model_variants=1: a model group's first 4 variants side by side, each from the same angle (chooks)
 //  - the 4 cameras draw straight to the screen on gray, each filtered (CameraFilter) to its own copy
 //      of the model (CameraRenderer), so no sky; the menu's view is hidden (nohud and its render texture)
@@ -140,11 +141,19 @@ entity zox_tst_model_views_pick(ecs* world, entity realm, int* models_count, byt
 // each view's mesh: the model's, or with zox_tst_model_variants a variant each (the group's models, in turn)
 void zox_tst_model_views_pick_meshes(ecs* world, entity source) {
     const char* variants = getenv("zox_tst_model_variants");
-    entity models[zox_tst_model_views_count] = { 0 };
+    const char* variant = getenv("zox_tst_model_variant");
+    entity models[64] = { 0 };
     uint count = 0;
     const entity group = zox_has(source, ModelLink) ? zox_get_link(world, source, ModelLink) : source;
     if (variants && variants[0] == '1' && zox_valid(group) && zox_has(group, ModelGroup)) {
         count = zox_get_children_by_id(world, group, models, zox_tst_model_views_count, zox_id(Model));
+    } else if (variant && zox_valid(group) && zox_has(group, ModelGroup)) {
+        // one of the group's models (a VoxAnimation's frame) from all 4 sides
+        const uint all = zox_get_children_by_id(world, group, models, 64, zox_id(Model));
+        if (all) {
+            models[0] = models[atoi(variant) % all];
+            count = 1;
+        }
     }
     for (int i = 0; i < zox_tst_model_views_count; i++) {
         // its most detailed mesh, as an npc up close (get_max_model_mesh stops at block_depth, an icon's)
@@ -223,7 +232,7 @@ byte zox_tst_model_views_ready(ecs* world) {
         zox_tst_model_views_source = zox_tst_model_views_pick(world, zox_tst_model_views_realm, &count, 1);
         zox_tst_model_views_mesh = zox_tst_model_views_mesh_of(world, zox_tst_model_views_source);
         zox_tst_model_views_pick_meshes(world, zox_tst_model_views_source);
-        const byte variants = zox_tst_model_views_meshes[1] != zox_tst_model_views_mesh;
+        const byte variants = zox_tst_model_views_meshes[1] != zox_tst_model_views_meshes[0];   // variants side by side
         const float3 spot = zox_tst_model_views_spot;
         float3 centre;
         float radius;

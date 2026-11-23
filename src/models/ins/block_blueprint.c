@@ -17,6 +17,23 @@ entity spawn_node_model_traces(ecs* world, byte voxel, byte count) {
     return e;
 }
 
+// a leds node: lights of voxel chasing along the box's edges, every spacing'th, a step a frame (eve/leds.c)
+entity spawn_node_model_leds(ecs* world, byte voxel, byte spacing) {
+    entity e = spawn_node_model(world, prefab_node_model, zox_model_node_leds);
+    zox_name("node_model_leds");
+    zox_setv(e, NodeVoxel, voxel);
+    zox_setv(e, Count, spacing);
+    return e;
+}
+
+// a rune node: a seeded rune of voxel lit on each face's middle, on the frames shown while on (eve/rune.c)
+entity spawn_node_model_rune(ecs* world, byte voxel) {
+    entity e = spawn_node_model(world, prefab_node_model, zox_model_node_rune);
+    zox_name("node_model_rune");
+    zox_setv(e, NodeVoxel, voxel);
+    return e;
+}
+
 // a box of voxel from a corner, in blueprint voxels (voxel 0 cuts)
 static inline entity spawn_node_model_box(ecs* world, byte3 position, byte3 size, byte voxel) {
     return spawn_node_model_at(world, prefab_node_model, zox_model_node_box, position, size, voxel);
@@ -29,8 +46,13 @@ static inline entity node_chain(ecs* world, entity a, entity b) {
 }
 
 // a gravity cube: cyberpunk tech, a dark metal box in panels, neon edges, a glowing core through a window on each
-//  face, neon circuit traces and lights; its colours (hues, shades) and traces seeded, so each realm's differs
-//  - voxels: 1 metal, 2 seams, 3 neon, 4 traces (neon's second shade), 5 the core
+//  face, neon circuit traces and lights; its colours (hues, shades), traces and rune seeded, so each realm's differs
+//  - animated (spawn_blueprint_animation, an off one and an on one, gravity_cube_frames each): lights chase along
+//    its edges; on (ModelActive frames), a rune lights on its core through each window
+//  - voxels: 1 metal, 2 seams, 3 neon, 4 traces (neon's second shade), 5 the core, 6 the rune, 7 the chasing lights
+#define gravity_cube_frames 4    // each animation's, off and on: the lights' spacing too, so they go round once
+#define gravity_cube_fps 6
+
 entity spawn_model_nodegraph_gravity_cube(ecs* world, entity parent) {
     const byte3 size = get_scaled_size(nodegraph_max_depth, float3_one);
     const byte l = size.x;      // 32
@@ -40,6 +62,8 @@ entity spawn_model_nodegraph_gravity_cube(ecs* world, entity parent) {
     n = node_chain(world, n, spawn_node_model_colors_hsv(world, 2, (float6) { 0, 360, 5, 22, 12, 24 }));
     n = node_chain(world, n, spawn_node_model_colors_hsv(world, 2, (float6) { 0, 360, 85, 100, 88, 100 }));
     n = node_chain(world, n, spawn_node_model_colors_hsv(world, 1, (float6) { 0, 360, 60, 95, 95, 100 }));
+    n = node_chain(world, n, spawn_node_model_colors_hsv(world, 1, (float6) { 0, 360, 0, 25, 100, 100 }));
+    n = node_chain(world, n, spawn_node_model_colors_hsv(world, 1, (float6) { 0, 360, 25, 55, 100, 100 }));
     n = node_chain(world, n, spawn_node_model_box(world, byte3_zero, size, 1));
     // panel seams: slabs through it at a third and two thirds, lines across every face
     for (byte axis = 0; axis < 3; axis++) {
@@ -79,6 +103,8 @@ entity spawn_model_nodegraph_gravity_cube(ecs* world, entity parent) {
     }
     n = node_chain(world, n, spawn_node_model_traces(world, 4, 24));
     n = node_chain(world, n, spawn_node_model_sprinkle(world, zox_model_node_speckle, 3, 8, 0, byte3_zero, size));
+    n = node_chain(world, n, spawn_node_model_leds(world, 7, gravity_cube_frames));
+    n = node_chain(world, n, spawn_node_model_rune(world, 6));
     node_chain(world, n, spawn_node_model_end(world));
     zox_set_parent(world, root, parent);
     return root;

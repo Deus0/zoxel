@@ -2,6 +2,7 @@
 entity prefab_node_model;
 // entity prefab_process_model;
 entity prefab_model_group;
+entity prefab_vox_animation;
 entity prefab_block_base;
 entity prefab_block_vox;
 entity prefab_block_vox_instanced;
@@ -76,6 +77,7 @@ void spawn_prefabs_models(ecs *world) {
         prefab_static_vox_instanced);
     // models
     prefab_model_group = spawn_prefab_model_group(world);
+    prefab_vox_animation = spawn_prefab_vox_animation(world, prefab_model_group);
     prefab_node_model = spawn_prefab_node_model(world, prefab_node);
     // prefab_process_model = spawn_prefab_process_model(world, prefab_process);
 }

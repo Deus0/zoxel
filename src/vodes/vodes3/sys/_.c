@@ -7,8 +7,18 @@
 #include "can.c"
 #include "settings.c"
 #include "lights.c"
+#include "animate.c"
 
 void zox_systems_vodes3(ecs* world) {
+    zox_system(
+        vode_animate_system,
+        zoxp_update,
+        [in] blocks.VoxelLocalPosition,
+        [in] rendering.RenderDepth,
+        [in] blocks.BlockIndex,
+        [none] models.ModelAnimated,
+        [none] rendering.RendererInstance,
+    );
     // NOTE: Writes to VoxelNode
     zox_system(
         vodes_despawn_system,

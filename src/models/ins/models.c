@@ -38,3 +38,30 @@ entity2 spawn_blueprint_models(
         first_model
     };
 }
+
+// Spawns an animation: a VoxAnimation (a model group) of frames, each the nodegraph run on one, all from one seed
+//  - its children are its frames, ModelFrame 0 to frames - 1, played at fps (vodes3 animate)
+//  - active: its frames ModelActive, shown while their block is on (a rune lit, eve/rune.c), its ActiveModelLink
+//  - x: the animation, y: its first frame
+entity2 spawn_blueprint_animation(ecs *world, entity parent, entity nodegraph, lint seed, const char *name, byte depth,
+    byte frames, byte fps, byte active)
+{
+    entity first_frame = 0;
+    entity animation = zox_ins(world, prefab_vox_animation);
+    zox_set_unique_name(animation, name);
+    zox_setv(animation, AnimationFps, fps);
+    zox_set_parent(world, animation, parent);
+    for (byte i = 0; i < frames; i++) {
+        entity frame = spawn_vox_lods(world, animation, name, depth, NULL);
+        zox_setv(frame, Seed, seed);
+        zox_setv(frame, ModelFrame, i);
+        if (active) {
+            zox_add(frame, ModelActive);
+        }
+        spawn_process_model(world, nodegraph, frame);
+        if (!i) {
+            first_frame = frame;
+        }
+    }
+    return (entity2) { animation, first_frame };
+}
