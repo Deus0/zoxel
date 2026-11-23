@@ -105,6 +105,7 @@ int zox_tst_xr_play_stage = 0;
 int zox_tst_xr_play_frames = 0;
 byte zox_tst_xr_play_playing = 0;
 byte zox_tst_xr_play_load3 = 0;         // the load ui seen, a 3D one, the view dark
+byte zox_tst_xr_play_chunks = 0;        // its chunks text counted chunks loaded
 int zox_tst_xr_play_load_shot = 0;      // frames fully dark loading, the screenshot asked for at 10
 int zox_tst_xr_play_fade_in = 0;        // frames part dark, darkening
 int zox_tst_xr_play_fade_out = 0;       // frames part dark, lightening
@@ -167,6 +168,15 @@ byte zox_tst_xr_play_ready(ecs* world) {
                 const entity load_ui = zox_get_child_by_id(world, canvas, zox_id(LoadUI));
                 if (zox_valid(load_ui)) {
                     zox_tst_xr_play_load3 |= zox_has(load_ui, Canvas3) && load_dark;
+                    // its chunks text counting, in 3D as in 2D (tst load_lids)
+                    const entity chunks = zox_get_child_by_id(world, load_ui, zox_id(LoadUIChunks));
+                    if (zox_valid(chunks) && zox_has(chunks, TextData) && !zox_tst_xr_play_chunks) {
+                        char* text = get_zext_text(zox_get(chunks, TextData));
+                        uint loaded = 0, total = 0;
+                        zox_tst_xr_play_chunks = text && sscanf(text, "Chunks [%u/%u]", &loaded, &total) == 2 &&
+                            loaded > 0 && total > 0;
+                        free(text);
+                    }
                     if (zox_getv(xr_camera, CameraLids) >= 1 && ++zox_tst_xr_play_load_shot == 10) {
                         remove(zox_tst_path("xr_load.ppm"));
                         snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("xr_load.ppm"));
@@ -208,6 +218,7 @@ static inline void zox_tst_xr_dark_eye(const byte* pixels, int2 size, int eye, f
 void zox_tst_xr_play_check(ecs* world) {
     zox_tst_check(zox_tst_xr_play_playing, "never playing");
     zox_tst_check(zox_tst_xr_play_load3, "loading had no 3D load ui on a dark view");
+    zox_tst_check(zox_tst_xr_play_chunks, "the 3D load ui's chunks text never counted chunks loaded");
     zox_tst_check(!load_dark && !load_lids && zox_getv(xr_camera, CameraLids) == 0, "still dark playing [%.2f]", zox_getv(xr_camera, CameraLids));
     zox_log("[tst] xr_play: closed over [%i] frames, opened over [%i], opened off the body [%i]", zox_tst_xr_play_fade_in, zox_tst_xr_play_fade_out, zox_tst_xr_play_opened_early);
     zox_tst_check(zox_tst_xr_play_opened_early == 0, "the eyes opened before the camera was on the body [%i frames]", zox_tst_xr_play_opened_early);
