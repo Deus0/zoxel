@@ -13,8 +13,9 @@ double current_time_in_seconds() {
     return (double)now.QuadPart / (double)freq.QuadPart;
 }
 
+// was seconds / 1000: a millionth of a millisecond, every system budget (zox_sys_budget) never ran out on windows
 double get_time_ms() {
-    return current_time_in_seconds() / 1000.0;
+    return current_time_in_seconds() * 1000.0;
 }
 
 #else

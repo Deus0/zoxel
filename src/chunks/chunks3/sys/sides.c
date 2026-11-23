@@ -1,3 +1,6 @@
+// a neighbour unsettled: every face into it shows (chunk_side_depth)
+#define chunk_side_open 255
+
 // TODO: Calculate only sides needed
 
 byte zox_sides_only_target_depth = 0;
@@ -130,6 +133,10 @@ static inline byte build_voxel_sides(
         neighbor_depths,
         positioni,
         direction);
+    // a neighbour unsettled: every face into it shows (chunk_side_depth)
+    if (adjacent_depth == chunk_side_open) {
+        return 1;
+    }
     const VoxelNode* adjacent_node = get_adjacentn_VoxelNode2(
         neighbor_voxels,
         root,
@@ -344,7 +351,7 @@ static inline void zox_unlock_voxel_trees(
 }
 
 // the depth a chunk draws at: its RenderDepth, no deeper than its voxels (NodeDepth only grows, a chunk the stream
-//  left keeps its detail and draws coarser); its neighbours' faces are worked out against this
+//  left keeps its detail and draws coarser)
 static inline byte chunk_drawn_depth(ecs* world, entity chunk) {
     const byte node_depth = zox_getv(chunk, NodeDepth);
     if (!zox_has(chunk, RenderDepth)) {
@@ -354,8 +361,20 @@ static inline byte chunk_drawn_depth(ecs* world, entity chunk) {
     return render_depth && render_depth < node_depth ? render_depth : node_depth;
 }
 
-// its neighbours rebuild their faces against it: it draws at another depth now (chunk_drawn_depth), a face it hid at
-//  its old depth stayed hidden (holes where lods met as you walked about)
+// what a chunk's neighbours work out their faces against: open while it's unsettled (its lod changing, ChunkLodDirty,
+//  or generating), else the depth it draws (chunk_drawn_depth)
+//  - unsettled it'll draw something else soon (a swap, voxels generated finer, its first mesh): built against what it
+//    drew, a face it hid showed a hole when it changed first; open, faces it covers are behind its voxels, unseen, and
+//    they're rebuilt against it once it settles (chunk_mesh_transition_system) (tst chunk_mesh_flicker)
+static inline byte chunk_side_depth(ecs* world, entity chunk) {
+    if (zox_has(chunk, ChunkLodDirty) || (zox_has(chunk, GenerateChunk) && zox_getv(chunk, GenerateChunk))) {
+        return chunk_side_open;
+    }
+    return chunk_drawn_depth(world, chunk);
+}
+
+// its neighbours rebuild their faces against it (chunk_side_depth): it's unsettled now, or settled at another depth (a
+//  face it hid at its old depth stayed hidden: holes where lods met as you walked about)
 static inline void chunk_neighbors_rebuild_sides(ecs* world, entity chunk) {
     const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
     for (byte n = 0; n < chunk_neighbors_length; n++) {
@@ -422,7 +441,7 @@ void chunk_sides_system(iter* it) {
                 continue;
             }
 #endif
-            neighbor_depths[j] = chunk_drawn_depth(world, e);
+            neighbor_depths[j] = chunk_side_depth(world, e);
             neighbor_voxels[j] = zox_get(e, VoxelNode);
             neighbor_locks[j] = &(zox_mut(e, VoxelNodeLock)->value);
         }

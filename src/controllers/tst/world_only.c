@@ -1,11 +1,18 @@
 // A world for tests that need no player: a realm of its own, generated on the main menu, then a terrain in it
 //  - nothing streams until the test spawns a streamer (spawn_streamer, StreamerLevel 1) or a camera with one
 //  - its seed: zox_tst_seed, else 666
-//  - register the test with zox_tst_set_setup(name, NULL, 1) (it runs on the menus, no game started)
+//  - register the test with zox_tst_set_setup(name, NULL, 1) (it runs on the menus, no game started), or with
+//    zox_tst_world_setup for no player at all: no menu, canvas or camera, the test spawns the camera it wants
+//    (spawn_viewport_camera; prefab_add_streamer to stream and cull chunks round it, as a player's does)
 //  - tst sea_level, two_streamers
 int zox_tst_world_frames = 0;
 entity zox_tst_world_realm = 0;
 entity zox_tst_world_terrain = 0;
+
+// no player at boot: nothing but the app, its game and what the test spawns (lod_flyby)
+void zox_tst_world_setup() {
+    zox_is_players = 0;
+}
 
 // the terrain once its realm has generated, 0 until then
 entity zox_tst_world_ready(ecs* world) {

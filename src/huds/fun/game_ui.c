@@ -207,6 +207,11 @@ void on_boot_game_ui(
         zox_logv("No spawning Cameras and Canvases");
         return;
     }
+    // no players (zox_is_players, tst zox_tst_world_setup): no screen, its cameras and ui come with a player
+    if (!zox_valid(zox_players[0])) {
+        zox_logv("No player, no screen");
+        return;
+    }
     set_main_cameras(1);
     spawn_player_screen(world, app, zox_players[0], 0, 1, 1);
 }

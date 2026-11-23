@@ -128,7 +128,7 @@ void on_boot_players(ecs* world, entity app) {
         return;
     }
     if (!zox_is_players) {
-        zox_logw("Players are not present.");
+        zox_logv("+ no players (zox_is_players)");
         return;
     }
     entity game = zox_get_link(world, app, GameLink);

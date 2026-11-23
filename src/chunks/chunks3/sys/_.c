@@ -197,6 +197,14 @@ void zox_systems_chunks3(ecs *world) {
         [none] !chunks.GenerateChunk,
         [none] !chunks.BuildChunkSides,
     );
+    // held shown meshes build again once their chunk's relit (hidden ones, swapped out lods, stay held)
+    zox_system(
+        chunk_mesh_hold_system,
+        zoxp_update,
+        [none] rendering.ChunkMesh,
+        [none] core.BuildDisabled,
+        [none] !core.Disabled,
+    );
     zox_system(
         voxel_octree_optimize_system,
         zoxp_octree_write,

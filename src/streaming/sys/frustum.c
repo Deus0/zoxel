@@ -137,7 +137,7 @@ void chunk_frustum_system(iter* it) {
     }
     zox_sys_query_end();
     if (!cameras_count) {
-        zox_loge("No Cameras in [chunk_frustum_system]");
+        // none streams (a test with no player, its own camera): nothing culled
         //dispose_float6_array_d(camera_bounds);
         //dispose_plane_array_d(camera_planes);
         return;

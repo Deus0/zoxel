@@ -66,7 +66,9 @@ byte sunbeam(
 void light_beam_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
-    const uint max_beams = 256;
+    // a worker thread's time a frame (zox_light_flood_budget_ms, as the flood's): 256 beams a call left far lods unlit
+    //  for a long while at far 16, drawn dark then lit
+    zox_sys_budget(light_beam, zox_light_flood_budget_ms);
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxelNode);
@@ -125,9 +127,16 @@ void light_beam_system(iter* it) {
             zox_log("[%s] Extended Sunbeams l[%i]", zox_get_name(e), sunlight);
         }
         const BlockDatas* datas = zox_has(e, BlockDatas) ? zox_get(e, BlockDatas) : NULL;
+        const byte chunk_depth = zox_getv(e, NodeDepth);
+        if (zox_sys_budget_spent(light_beam)) {
+            break;
+        }
+        zox_sys_budget_start(light_beam);
         uint beams = 0;
-        // sunlight_queue->count &&
-        while (beams < max_beams) {
+        while (1) {
+            if ((beams & 63) == 63 && light_beam_budget_spent + get_time_ms() - light_beam_budget_start >= light_beam_budget_ms) {
+                break;
+            }
             spin_lock(&sunlight_queue->lock);
             if (!sunlight_queue->count) {
                 spin_unlock(&sunlight_queue->lock);
@@ -145,29 +154,53 @@ void light_beam_system(iter* it) {
             if (dbg_log >= 2) {
                 zox_log(" - Beaming [%ix%ix%i] l[%i] q [%i]", update.pos.x, update.pos.y, update.pos.z, update.light, sunlight_queue->count);
             }
-            if (sunbeam(
-                &lightlock->value,
-                floodlight_queue,
-                chunk_below_sunlight_queue,
-                root_lights,
-                root_vnode,
-                datas,
-                update.depth,
-                update.pos,
-                update.light,
-                darklight,
-                solidity,
-                liquids))
-            {
-                if (!dirty->value) {
-                    if (dbg_log) {
-                        zox_log("[%s] ChunkLights Updated at [%ix%ix%i] l[%i] q [%i] Depth [%i]", zox_get_name(e) , update.pos.x, update.pos.y, update.pos.z, update.light, sunlight_queue->count, update.depth);
-                    }
+            // a beam from the chunk above at its depth: cast at this chunk's own (cast at the beam's, a finer chunk's
+            //  coarse node took the light and its voxels kept theirs, dark, its floods were dropped (another depth):
+            //  its fine meshes drew dark, its coarse ones lit, lights flashed as lods swapped, tst chunk_mesh_flicker)
+            byte depth = update.depth;
+            byte light = update.light;
+            int columns = 1;
+            int3 column = { pos.x, 0, pos.z };
+            if (update.depth < chunk_depth) {
+                // a coarse column: the finer ones under it
+                const byte k = chunk_depth - update.depth;
+                columns = 1 << (k * 2);
+                column = (int3) { pos.x << k, 0, pos.z << k };
+                depth = chunk_depth;
+            } else if (update.depth > chunk_depth) {
+                // a fine column: the coarse one it's in
+                const byte k = update.depth - chunk_depth;
+                column = (int3) { pos.x >> k, 0, pos.z >> k };
+                depth = chunk_depth;
+            }
+            const byte top = octree_size(depth) - 1;
+            const int side = (int) sqrtf((float) columns);
+            for (int c = 0; c < columns; c++) {
+                // a beam from above starts at the top, one queued here (sunlight_system) where it was queued
+                const byte3 beam_pos = {
+                    column.x + c % side,
+                    depth == update.depth ? pos.y : top,
+                    column.z + c / side };
+                if (sunbeam(
+                    &lightlock->value,
+                    floodlight_queue,
+                    chunk_below_sunlight_queue,
+                    root_lights,
+                    root_vnode,
+                    datas,
+                    depth,
+                    beam_pos,
+                    light,
+                    darklight,
+                    solidity,
+                    liquids))
+                {
+                    dirty->value = zox_dirty_trigger;
                 }
-                dirty->value = zox_dirty_trigger;
             }
             beams++;
         }
+        zox_sys_budget_end(light_beam);
     }
     zox_sys_on_end();
 } zoxd_system(light_beam_system);

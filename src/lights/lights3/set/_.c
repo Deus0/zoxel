@@ -16,3 +16,8 @@ byte zox_is_log_lighting_dark = 0;
 byte zox_is_log_lighting_place = 0;
 byte zox_disable_low_res_lights = 0;
 byte zox_disable_flood_fill = 0;
+
+// a worker thread's time a frame flooding lights and casting sunbeams (light_flood_system, light_beam_system): was 256
+//  of each a call (~25us), chunks a lod swap relit held thousands queued for hundreds of frames (their shown meshes held,
+//  their swaps waiting) and far lods waited long for sunlight, drawn dark then lit (tst chunk_mesh_flicker)
+#define zox_light_flood_budget_ms 3.0

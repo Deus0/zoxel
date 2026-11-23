@@ -237,6 +237,50 @@ static inline byte3 byte3_offset_wrap(
 // NOTE: Gets voxel from neighbouring chunk if position crosses boundary
 
 // the max value of a node's leaves, an open node's own value is stale (set when it split), only its leaves count
+static inline void octree_leaf_min(const void* node, size_t stride, size_t type_offset, byte* min) {
+    const void* children = octree_children(node, type_offset);
+    if (!children) {
+        const byte value = *(const byte*)((const char*) node + octree_value_offset);
+        *min = value < *min ? value : *min;
+        return;
+    }
+    for (byte i = 0; i < octree_length; i++) {
+        octree_leaf_min(octree_child((void*) children, i, stride), stride, type_offset, min);
+    }
+}
+
+static inline void octree_leaf_sum_above(const void* node, size_t stride, size_t type_offset, byte floor, double volume,
+    double* sum, double* weight)
+{
+    const void* children = octree_children(node, type_offset);
+    if (!children) {
+        const byte value = *(const byte*)((const char*) node + octree_value_offset);
+        if (value > floor) {
+            *sum += value * volume;
+            *weight += volume;
+        }
+        return;
+    }
+    for (byte i = 0; i < octree_length; i++) {
+        octree_leaf_sum_above(octree_child((void*) children, i, stride), stride, type_offset, floor, volume / 8, sum, weight);
+    }
+}
+
+// a node's light read coarser than its leaves (a coarse lod): its brighter leaves' mean, by their size, above its
+//  darkest (the solid voxels' darklight in a light tree: the lit air it holds), its darkest if they're all that
+//  - was their max: a coarse cell took its brightest voxel's light, its lod drew far brighter than the finer ones
+//    (102 to 248 swapping to the coarsest), lights flashed as lods swapped (tst chunk_mesh_flicker)
+static inline byte octree_lit_leaf_mean(const void* node, size_t stride, size_t type_offset) {
+    if (!octree_children(node, type_offset)) {
+        return *(const byte*)((const char*) node + octree_value_offset);
+    }
+    byte min = 255;
+    octree_leaf_min(node, stride, type_offset, &min);
+    double sum = 0, weight = 0;
+    octree_leaf_sum_above(node, stride, type_offset, min, 1, &sum, &weight);
+    return weight > 0 ? (byte) (sum / weight + 0.5) : min;
+}
+
 static inline byte octree_max_leaf_value(const void* node, size_t stride, size_t type_offset) {
     const void* children = octree_children(node, type_offset);
     if (!children) {
@@ -254,7 +298,7 @@ static inline byte octree_max_leaf_value(const void* node, size_t stride, size_t
 //  read most of a tree: one walk, then plain indexing (doc/tech/octrees.md)
 //  - the tree's corner sits at origin in the grid, cells outside the grid are skipped (a neighbour's border slab)
 //  - a closed or linked node fills its whole cube, as walk_octree reads it
-//  - leaf_max: an open node at the target depth gives its leaves' max (lights), else its own value
+//  - leaf_max: an open node at the target depth gives its lit leaves' mean (lights, octree_lit_leaf_mean), else its own value
 //  - stop: no deeper than this (a neighbour drawn at a coarser lod), its nodes fill their cubes at target's scale
 static inline void octree_fill_grid_stop(
     const void* node,
@@ -285,7 +329,7 @@ static inline void octree_fill_grid_stop(
         }
         return;
     }
-    const byte value = leaf_max ? octree_max_leaf_value(node, stride, type_offset) :
+    const byte value = leaf_max ? octree_lit_leaf_mean(node, stride, type_offset) :
         *(const byte*)((const char*) node + octree_value_offset);
     const int x0 = start.x < 0 ? 0 : start.x, x1 = start.x + span > length ? length : start.x + span;
     const int y0 = start.y < 0 ? 0 : start.y, y1 = start.y + span > length ? length : start.y + span;
@@ -303,7 +347,7 @@ static inline void octree_fill_grid(const void* node, size_t stride, size_t type
 }
 
 // NOTE: Gets voxel from neighbouring chunk if position crosses boundary
-//  - leaf_max: a node above the leaves (a coarse lod reading a detailed tree) gives its leaves' max, not its own value
+//  - leaf_max: a node above the leaves (a coarse lod reading a detailed tree) gives its lit leaves' mean, not its own value
 static inline byte octree_getv_nearby_ex(
     const void** octrees,
     spinlock** locks,
@@ -348,7 +392,7 @@ static inline byte octree_getv_nearby_ex(
         type_offset
     );
     const byte value = !octree ? oob_value :
-        leaf_max ? octree_max_leaf_value(octree, stride, type_offset) :
+        leaf_max ? octree_lit_leaf_mean(octree, stride, type_offset) :
         *(const byte*)((const char*) octree + octree_value_offset);
     spin_unlock(lock);
     return value;

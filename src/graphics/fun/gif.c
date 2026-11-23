@@ -17,6 +17,9 @@ typedef struct {
     int frames;
 } zox_gif;
 zox_gif zox_gif_recorder;
+// frames only: each frame drawn kept as the held one (zox_gif_recorder.held), no file, nothing encoded (a test reading
+//  every frame: encoding one took ~100ms, its frame rate fell to 10 a second, flickers between frames unseen)
+byte zox_gif_frames_only = 0;
 
 // lzw codes packed into bytes, written in blocks of up to 255
 typedef struct {
@@ -228,6 +231,17 @@ static inline byte zox_gif_recording() {
 // takes a frame if one is due, before the buffer swap; size: the window's
 void zox_gif_capture(int2 size) {
     zox_gif* gif = &zox_gif_recorder;
+    if (zox_gif_frames_only) {
+        byte* pixels = zox_gpu_read_screen(size);
+        if (pixels) {
+            free(gif->held);
+            gif->held = pixels;
+            gif->size = size;
+            gif->last = zox_current_time;
+            gif->frames++;
+        }
+        return;
+    }
     const byte started = gif->frames || gif->held;
     if (!gif->file || (started && zox_current_time - gif->last < gif->interval)) {
         return;

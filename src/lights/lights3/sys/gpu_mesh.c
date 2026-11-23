@@ -4,8 +4,11 @@
 //  - BuildMesh (voxels changed) or BuildMeshColors (lights changed): its grids are filled on worker threads
 //      (GridVoxels, GridLights, zoxp_octree_read), then MeshDirty: uploaded and dispatched on the main thread, the
 //      grids freed; its new faces draw from that frame
-//  - its room starts as a guess (a face every two voxel columns) and stays its size; its count comes back without waiting
-//      (MeshFence): over the room it grows and meshes again, else it's MeshBuilt (a lod swap waits for that)
+//  - its faces are counted on the cpu from its grid before it's dispatched (gpu_mesh_grid_faces), its room grown to fit
+//      then: it never draws a mesh that overflowed (the faces that fit, then nothing till it was meshed again bigger)
+//  - its count comes back without waiting (MeshFence): then it's MeshBuilt (a lod swap waits for that); over its
+//      room (never, the cpu's count is the shader's rule) it grows and meshes again
+//  - its borders: a cell is air where a finer neighbour draws air along it, or one unsettled (smooth_grid_borders)
 //  - its terrain holds the compute program and the grid upload buffers (ComputeGPULink, GridGPULink), made on its first
 //      mesh, on the main thread with the other gpu uploads; no compute (ES 3.0): its meshes go back to the cpu
 //  - chunk_gpu_render_system draws them (texture, light, fog), its terrain's draw program in MaterialGPULink
@@ -80,10 +83,18 @@ static inline guint chunk_gpu_terrain(ecs* world, entity terrain, guint2* grid) 
 }
 
 // its neighbours' voxels at the depth they draw (chunk_drawn_depth): a face against voxels a coarser lod doesn't
-//  show was a hole where lods met (tst stream_gpu_sides)
+//  show was a hole where lods met (tst stream_gpu_sides); the 6 beside it its faces meet as cpu sides do
+//  (chunk_side_depth: open while unsettled, smooth_grid_borders)
 static inline void smooth_grid_drawn_depths(ecs* world, smooth_grid* grid, const entity* nearby_chunks) {
     for (byte j = 0; j < 27; j++) {
-        grid->voxel_depths[j] = j != OCTREE_INDEX(0, 0, 0) && zox_valid(nearby_chunks[j]) ? chunk_drawn_depth(world, nearby_chunks[j]) : 0;
+        const entity chunk = nearby_chunks[j];
+        if (j == OCTREE_INDEX(0, 0, 0) || !zox_valid(chunk)) {
+            grid->voxel_depths[j] = 0;
+            continue;
+        }
+        const byte3 o = { j % 3, (j / 3) % 3, j / 9 };
+        const byte beside = (o.x != 1) + (o.y != 1) + (o.z != 1) == 1;
+        grid->voxel_depths[j] = beside ? chunk_side_depth(world, chunk) : chunk_drawn_depth(world, chunk);
     }
 }
 
@@ -98,6 +109,11 @@ static inline void chunk_gpu_grid_fill(iter* it, entity tag) {
     zox_sys_out(GridLights);
     zox_sys_out(GridPresent);
     zox_sys_out(GridLightsPresent);
+    // what hides a mesh's faces, by voxel (its material's, block_material_hides), for borders with finer lods
+    entity manager_cached = 0;
+    byte material_cached = 255;
+    byte materials[256];
+    byte hides[256];
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RenderDepth, depth);
@@ -113,6 +129,12 @@ static inline void chunk_gpu_grid_fill(iter* it, entity tag) {
         if (!zox_valid(chunk) || depth->value > zox_getv(chunk, NodeDepth) || depth->value > smooth_grid_depth_max) {
             continue;
         }
+        // shown and lit, it's meshed and relit once the lights round it settle (it keeps what it draws till then): meshed
+        //  as a neighbour's lights were cleared for its finer lod, its faces there baked dark, then lit again (a dark
+        //  flash as lods got finer); hidden (a lod being made) it builds now
+        if (zox_has(e, MeshColorsBuilt) && !zox_has(e, Disabled) && zox_chunk_lights_settling(world, chunk)) {
+            continue;
+        }
         zox_sys_budget_start(chunk_gpu_grid);
         entity nearby_chunks[27];
         const LightNode* nearby_lights[27];
@@ -125,6 +147,20 @@ static inline void chunk_gpu_grid_fill(iter* it, entity tag) {
         smooth_grid grid = { 0 };
         smooth_grid_drawn_depths(world, &grid, nearby_chunks);
         if (smooth_grid_fill(&grid, nearby_lights, lights_locks, nearby_voxels, voxels_locks, depth->value)) {
+            const entity manager = zox_get_link(world, chunk, BlockManagerLink);
+            const byte block_material = zox_getv(material, BlockMaterial);
+            if (manager != manager_cached || block_material != material_cached) {
+                if (manager != manager_cached) {
+                    get_block_materials(world, manager, materials);
+                }
+                manager_cached = manager;
+                material_cached = block_material;
+                hides[0] = 0;
+                for (int v = 1; v < 256; v++) {
+                    hides[v] = block_material_hides(materials[v], block_material);
+                }
+            }
+            smooth_grid_borders(&grid, nearby_voxels, voxels_locks, depth->value, hides);
             const int cells = gpu_mesh_grid_bytes(depth->value);
             resize_GridVoxels(voxels, cells);
             resize_GridLights(lights, cells);
@@ -248,13 +284,6 @@ void chunk_gpu_mesh_system(iter* it) {
         }
         GpuMesher mesher = chunk_gpu_mesher(program, grid_buffers, mesh->value, lights->value, uvs->value, command->value, room->value, fence->value);
         gpu_mesher_set_uvs(&mesher, tilemap_uvs);
-        if (!room->value) {
-            const uint size = octree_size(depth->value);
-            // a face every two voxel columns, at least a voxel's 6 (depth 0: none was no buffers, vulkan can't bind those)
-            const uint guess = size * size / 2;
-            gpu_mesher_grow(&mesher, guess > 6 ? guess : 6);
-            room->value = mesher.max_faces;
-        }
         const entity manager = zox_get_link(world, chunk, BlockManagerLink);
         if (manager != manager_cached) {
             manager_cached = manager;
@@ -263,6 +292,13 @@ void chunk_gpu_mesh_system(iter* it) {
         update_light_solidity(world, manager, &solidity_manager, solidity);
         gpu_mesher_set_material(&mesher, materials, zox_getv(material, BlockMaterial));
         mesher.edge_faces = 0;
+        // room for its faces, counted first (it never overflows: the draws see the whole new mesh the frame it's
+        //  dispatched, a grown buffer's new memory with it), at least a voxel's 6 (vulkan can't bind empty buffers)
+        const uint faces = gpu_mesh_grid_faces(&mesher, grid_voxels->value, depth->value, present->value);
+        if (faces > room->value || room->value < 6) {
+            gpu_mesher_grow(&mesher, faces > 6 ? faces : 6);
+            room->value = mesher.max_faces;
+        }
         const GpuMeshLighting lighting = gpu_mesh_lighting(solidity);
         const byte lit = !zox_no_lights && grid_lights->value;
         gpu_mesh_grid(&mesher, grid_voxels->value, lit ? grid_lights->value : NULL, depth->value, present->value,

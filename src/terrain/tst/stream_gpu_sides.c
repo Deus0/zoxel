@@ -61,9 +61,15 @@ static void zox_tst_sgs_check(ecs* world) {
         smooth_grid grid = { 0 };
         smooth_grid_drawn_depths(world, &grid, nearby_chunks);
         for (byte j = 0; j < 27; j++) {
-            zox_tst_sgs_lods += grid.voxel_depths[j] && grid.voxel_depths[j] < depth;
+            zox_tst_sgs_lods += grid.voxel_depths[j] && grid.voxel_depths[j] != depth && grid.voxel_depths[j] != chunk_side_open;
         }
         if (smooth_grid_fill(&grid, nearby_lights, lights_locks, nearby_voxels, voxels_locks, depth)) {
+            // its borders as the mesher meets them (smooth_grid_borders)
+            byte hides[256] = { 0 };
+            for (int v = 1; v < 256; v++) {
+                hides[v] = block_material_hides(materials[v], zox_getv(material, BlockMaterial));
+            }
+            smooth_grid_borders(&grid, nearby_voxels, voxels_locks, depth, hides);
             zox_tst_sgs_meshes++;
             const uint reference = zox_tst_gpu_terrain_reference(&grid, depth, materials, zox_getv(material, BlockMaterial));
             if (reference != faces) {
@@ -122,12 +128,12 @@ byte zox_tst_stream_gpu_sides_ready(ecs* world) {
 
 void zox_tst_stream_gpu_sides_check(ecs* world) {
     (void) world;
-    zox_log("[tst] [metric] stream_gpu_sides [%i] gpu mesh checks, [%i] sides beside a coarser lod, [%i] wrong: "
+    zox_log("[tst] [metric] stream_gpu_sides [%i] gpu mesh checks, [%i] sides beside another lod, [%i] wrong: "
         "faces missing [%i], hidden ones held [%i]",
         zox_tst_sgs_meshes, zox_tst_sgs_lods, zox_tst_sgs_wrong, zox_tst_sgs_missing, zox_tst_sgs_extra);
     zox_tst_check(zox_tst_sgs_step >= zox_tst_sgs_steps, "the stream stopped at step [%i]", zox_tst_sgs_step);
     zox_tst_check(zox_tst_sgs_meshes, "no gpu chunk meshes were checked");
-    zox_tst_check(zox_tst_sgs_lods, "no mesh was beside a coarser lod, nothing was checked");
+    zox_tst_check(zox_tst_sgs_lods, "no mesh was beside another lod, nothing was checked");
     zox_tst_check(!zox_tst_sgs_missing, "[%i] faces missing where lods meet (holes)", zox_tst_sgs_missing);
     // hidden faces held: behind a neighbour's voxels, not seen (as stream_sides; 215 off in 112 meshes before the fix, 5 after)
     zox_tst_check(zox_tst_sgs_extra < 30, "[%i] faces held that a neighbour hides", zox_tst_sgs_extra);

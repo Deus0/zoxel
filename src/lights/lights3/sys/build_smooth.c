@@ -317,6 +317,10 @@ void build_smooth_lights_system(iter* it) {
             zox_remove(e, BuildMeshColors);
             continue;
         }
+        // lit already: relit once the lights round it settle (it keeps its colours till then)
+        if (zox_has(e, MeshColorsBuilt) && zox_chunk_lights_settling(world, chunk)) {
+            continue;
+        }
         // If chunk building we wait
         if (zox_has(chunk, BuildChunkSides)) {
             if (dbg_log) {

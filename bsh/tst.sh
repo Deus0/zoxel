@@ -204,7 +204,7 @@ fi
 
 # runs the game with --tst <name>, output to <log>, returns its exit code
 # tests that need more terrain than --tiny (i.e. far lods to compare), the later --medium wins
-medium_tests=(lod_chunk_lights lod_swap stream_sides stream_gpu_sides)
+medium_tests=(lod_chunk_lights lod_swap stream_sides stream_gpu_sides stream_seams chunk_mesh_flicker)
 # tests that screenshot the world, the hud hidden
 nohud_tests=(sky_clouds head_camera town_view held_item held_block held_view eat_swing)
 # tests that take the readme's screenshots: a far, tall world at 1080p, little fog (to see the mountains), no hud or labels, the same seed (zox_tst_seed
@@ -215,7 +215,8 @@ run_game() {
     local log="$2"
     local debugger=()
     local test_args=()
-    [[ " ${medium_tests[*]} " == *" ${tst} "* ]] && test_args=(--medium)
+    # a size passed (--far, --large, --tiny) wins: --medium after it set lod far 6 over a --far 16
+    [[ " ${medium_tests[*]} " == *" ${tst} "* && " ${args[*]} " != *" --far "* && " ${args[*]} " != *" --large "* ]] &&         test_args=(--medium)
     [[ " ${nohud_tests[*]} " == *" ${tst} "* ]] && test_args+=(--nohud)
     local seconds="${timeout_seconds}"
     local seed_env=()

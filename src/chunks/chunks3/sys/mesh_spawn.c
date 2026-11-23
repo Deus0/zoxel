@@ -1,18 +1,6 @@
 // Spawns a chunk's materials and their meshes (fun/materials.c)
 //  - a material for each block material in the chunk's voxels, when they change
-//  - a mesh per material at the chunk's depth, if it has none there
-
-// does the material show a mesh (one not Disabled)
-static inline byte chunk_material_shown(ecs* world, entity material) {
-    entity meshes[zox_chunk_meshes_max];
-    const uint count = zox_get_children_by_id(world, material, meshes, zox_chunk_meshes_max, zox_id(ChunkMesh));
-    for (uint i = 0; i < count; i++) {
-        if (!zox_has(meshes[i], Disabled)) {
-            return 1;
-        }
-    }
-    return 0;
-}
+//  - a mesh per material at the chunk's depth, if it has none there, shown by the lod swap once it's ready
 
 // a material's mesh at the depth, spawned if it has none: 0 if it had one
 static inline entity spawn_chunk_material_mesh(
@@ -81,7 +69,6 @@ static inline byte spawn_chunk_meshes(
         if (is_new) {
             material = spawn_chunk_material(world, e, i, tilemap);
         }
-        const byte shown = !is_new && chunk_material_shown(world, material);
         const entity mesh = is_new ?
             spawn_chunk_mesh_textured(world, material, matrix, depth, render_disabled, tilemap, i) :
             spawn_chunk_material_mesh(world, material, tilemap, i, depth, matrix, render_disabled);
@@ -89,13 +76,10 @@ static inline byte spawn_chunk_meshes(
             continue;
         }
         spawned++;
-        // a new chunk shows it as it builds; one showing another mesh swaps to it once it's ready (enabled now it
-        //  drew over the old one, dark until lit: tst lod_swap)
-        if (!shown) {
-            zox_remove(mesh, Disabled);
-        } else {
-            *swaps = 1;
-        }
+        // shown by the lod swap once it's ready (chunk_mesh_transition_system), a new chunk's first mesh too: shown as it
+        //  built, it drew before its neighbours' faces against it were built (holes beside it, tst chunk_mesh_flicker);
+        //  one showing another mesh was enabled now it drew over the old one, dark until lit (tst lod_swap)
+        *swaps = 1;
     }
     return spawned;
 }
@@ -140,6 +124,7 @@ void chunk_mesh_spawn_system(iter* it) {
         {
             timer->value = zox_current_time;
             if (swaps && !zox_has(e, ChunkLodDirty)) {
+                // its new meshes are shown by the lod swap
                 zox_setv(e, ChunkLodDirty, zox_chunk_lod_dirty_toggle);
             }
         }

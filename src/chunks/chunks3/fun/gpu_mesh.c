@@ -377,6 +377,38 @@ static inline size_t gpu_mesh_grid_bytes(byte depth) {
     return (length * length * length + 3) & ~(size_t) 3;
 }
 
+// the faces gpu_mesh_grid will write for a grid, the shader's rule (face_shows) on the cpu: a mesh's room grows to
+//  fit before it's dispatched, so it never overflows (one that did drew the faces that fit, then nothing until it was
+//  meshed again bigger: chunks flickered as they remeshed, tst chunk_mesh_flicker)
+static inline uint gpu_mesh_grid_faces(const GpuMesher* mesher, const byte* voxels, byte depth, uint present) {
+    const int size = octree_size(depth);
+    const int length = size + 2;
+    const int3 directions[6] = { { -1, 0, 0 }, { 1, 0, 0 }, { 0, -1, 0 }, { 0, 1, 0 }, { 0, 0, -1 }, { 0, 0, 1 } };
+    uint faces = 0;
+    for (int x = 0; x < size; x++)
+    for (int y = 0; y < size; y++)
+    for (int z = 0; z < size; z++) {
+        const byte voxel = voxels[((x + 1) * length + y + 1) * length + z + 1];
+        if (!voxel || !((mesher->drawn[(voxel - 1) >> 5] >> ((voxel - 1) & 31)) & 1)) {
+            continue;
+        }
+        for (byte d = 0; d < 6; d++) {
+            const int3 n = { x + directions[d].x, y + directions[d].y, z + directions[d].z };
+            if (n.x < 0 || n.y < 0 || n.z < 0 || n.x >= size || n.y >= size || n.z >= size) {
+                const int sx = n.x < 0 ? -1 : n.x >= size, sy = n.y < 0 ? -1 : n.y >= size, sz = n.z < 0 ? -1 : n.z >= size;
+                const uint chunk = (sz + 1) * 9 + (sy + 1) * 3 + (sx + 1);
+                if (!((present >> chunk) & 1)) {
+                    faces += mesher->edge_faces || d == 3;
+                    continue;
+                }
+            }
+            const byte other = voxels[((n.x + 1) * length + n.y + 1) * length + n.z + 1];
+            faces += !(other && ((mesher->hides[(other - 1) >> 5] >> ((other - 1) & 31)) & 1));
+        }
+    }
+    return faces;
+}
+
 #if (defined(zox_opengl) || defined(zox_vulkan)) && !defined(zox_disable_compute)
 
 // the textured chunk draw program, 0 without compute

@@ -141,11 +141,13 @@ static inline byte flood_light(
     return dirty;
 }
 
+
 void light_flood_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
-    const uint max_flooding = 256;
+    zox_sys_budget(light_flood, zox_light_flood_budget_ms);
     uint flooded = 0;
+    uint flooded_checked = 0;   // floods since the time was last checked
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(VoxelNode);
@@ -160,7 +162,10 @@ void light_flood_system(iter* it) {
     entity liquids_realm = 0;
     byte liquids[zox_light_solidity_length];
     memset(liquids, 0, zox_light_solidity_length);
-    for (int i = 0; i < it->count && flooded < max_flooding; i++) {
+    for (int i = 0; i < it->count; i++) {
+        if (zox_sys_budget_spent(light_flood)) {
+            break;
+        }
         zox_sys_e();
         zox_sys_i(VoxelNode, root_vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
@@ -203,7 +208,15 @@ void light_flood_system(iter* it) {
         fetch_neighbor_block_datas(world, neighbors, neighbor_datas);
         byte dirty = 0;
         byte voxel_octree_depth = zox_getv(e, NodeDepth);
-        while (flooded < max_flooding) {
+        zox_sys_budget_start(light_flood);
+        while (1) {
+            // the time checked every 256 floods (a call to the clock each was its own cost)
+            if (flooded - flooded_checked >= 256) {
+                flooded_checked = flooded;
+                if (light_flood_budget_spent + get_time_ms() - light_flood_budget_start >= light_flood_budget_ms) {
+                    break;
+                }
+            }
             spin_lock(&light_queue->lock);
             if (!light_queue->count) {
                 spin_unlock(&light_queue->lock);
@@ -279,6 +292,7 @@ void light_flood_system(iter* it) {
                 dirty = 1;
             }
         }
+        zox_sys_budget_end(light_flood);
         if (dirty) {
             light_node_dirty->value = zox_dirty_trigger;
         }

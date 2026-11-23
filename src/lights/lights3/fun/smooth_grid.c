@@ -60,3 +60,65 @@ static inline byte smooth_grid_fill(
     return 1;
 }
 
+// a mesh's borders with the 6 beside it, as cpu sides meet them (build_voxel_sides), after smooth_grid_fill (only its
+//  voxels change, lights stay):
+//  - drawn finer than the mesh (voxel_depths deeper than the grid's): a border cell holds the neighbour's node at the
+//    mesh's depth, its most common solid, so it hid the mesh's face where the neighbour draws air along the border
+//    (holes where lods met, a far chunk's wall missing beside a near one, tst stream_seams); the cell is air when any
+//    voxel the neighbour draws against it doesn't hide the mesh's faces
+//  - open (chunk_side_open, unsettled): its cells are air, every face into it shows
+//  - hides: a voxel's, 1 if it hides the mesh's faces (block_material_hides), air's 0
+static inline void smooth_grid_borders(
+    smooth_grid* grid,
+    const VoxelNode** voxels,
+    spinlock** voxels_locks,
+    byte depth,
+    const byte* hides)
+{
+    const int size = octree_size(depth);
+    const int length = grid->length;
+    for (byte direction = 0; direction < 6; direction++) {
+        const byte axis = direction / 2, positive = direction % 2;
+        const sbyte s = positive ? 1 : -1;
+        const byte j = OCTREE_INDEX(axis == 0 ? s : 0, axis == 1 ? s : 0, axis == 2 ? s : 0);
+        const byte drawn = grid->voxel_depths[j];
+        if (!grid->voxels_present[j] || drawn <= depth) {
+            continue;
+        }
+        const byte open = drawn == chunk_side_open;
+        const int k = open ? 1 : 1 << (drawn - depth);     // its voxels a cell, along each axis
+        const byte a = axis == 0 ? 1 : 0, b = axis == 2 ? 1 : 2;
+        if (!open) {
+            spin_lock(voxels_locks[j]);
+        }
+        for (int u = 0; u < size; u++) {
+            for (int v = 0; v < size; v++) {
+                int cell[3];
+                cell[axis] = positive ? size : -1;
+                cell[a] = u;
+                cell[b] = v;
+                byte* value = &grid->voxels[((cell[0] + 1) * length + cell[1] + 1) * length + cell[2] + 1];
+                if (!*value) {
+                    continue;
+                }
+                byte air = open;
+                for (int fu = 0; fu < k && !air; fu++) {
+                    for (int fv = 0; fv < k && !air; fv++) {
+                        int fine[3];
+                        fine[axis] = positive ? 0 : size * k - 1;
+                        fine[a] = u * k + fu;
+                        fine[b] = v * k + fv;
+                        air = !hides[getv_VoxelNode(voxels[j], drawn, (byte3) { fine[0], fine[1], fine[2] })];
+                    }
+                }
+                if (air) {
+                    *value = 0;
+                }
+            }
+        }
+        if (!open) {
+            spin_unlock(voxels_locks[j]);
+        }
+    }
+}
+

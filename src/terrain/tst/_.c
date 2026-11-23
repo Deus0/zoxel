@@ -23,6 +23,10 @@
 #include "stream_sides.c"
 #include "gpu_mesh.c"
 #include "stream_gpu_sides.c"
+#include "seams.c"
+#include "stream_seams.c"
+#include "chunk_mesh_flicker.c"
+#include "lod_flyby.c"
 
 void zox_tsts_terrain(ecs* world) {
     zox_tsts_tilemap(world);
@@ -53,5 +57,8 @@ void zox_tsts_terrain(ecs* world) {
     zox_tsts_stream_unload(world);
     zox_tsts_stream_sides(world);
     zox_tsts_stream_gpu_sides(world);
+    zox_tsts_stream_seams(world);
+    zox_tsts_chunk_mesh_flicker(world);
+    zox_tsts_lod_flyby(world);
     zox_tst_add("perf_idle", zox_tst_perf_idle_ready, zox_tst_perf_idle_check, 600);
 }

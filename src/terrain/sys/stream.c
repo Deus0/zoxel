@@ -170,6 +170,7 @@ static inline byte stream_tunk_distance(ecs* world, entity terrain, entity tunk,
             continue;
         }
         zox_setm(chunk, RenderDepth, new_tunk_render_depth);
+        // unsettled now: its neighbours open their faces into it till it's swapped (chunk_side_depth)
         chunk_neighbors_rebuild_sides(world, chunk);
         // NOTE: New component
         zox_setv(chunk, ChunkLodDirty, zox_chunk_lod_dirty_start);
@@ -180,13 +181,15 @@ static inline byte stream_tunk_distance(ecs* world, entity terrain, entity tunk,
                 zox_getn(chunk),
                 new_tunk_render_depth);
         }
-        // NOTE: Clears the light if depth is set to increase
+        // its voxels generate finer: its lights cleared dark, lit again as it's generated (its neighbours' light comes back
+        //  in, chunk_relight_from_neighbors, as its own emitters'), its old meshes shown till then (the lod swap waits)
+        //  - nothing lit it again under a chunk that kept its lights: its fine meshes drew dark where its coarse ones were
+        //    lit, lights flashed as lods swapped (tst chunk_mesh_flicker); kept instead, shadows the finer voxels made
+        //    stayed lit
         if (zox_no_lights) {
             continue;
         }
-        byte node_depth = zox_getv(chunk, NodeDepth);
-        if (new_tunk_render_depth > node_depth) {
-            // NOTE: Causes flicker but needed for fixing lighting in older chunks
+        if (new_tunk_render_depth > zox_getv(chunk, NodeDepth)) {
             zox_muter(chunk, LightNode, lights);
             lights->value = darklight;
             collapse_LightNode(lights);

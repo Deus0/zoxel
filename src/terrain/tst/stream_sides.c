@@ -1,7 +1,7 @@
 // tst: stream_sides, walking about leaves no faces missing where lods meet (chunks3/sys/sides.c)
 //  - a world of its own, a streamer stepping a chunk at a time along x then z, so chunks change lod as it goes
 //  - once each step settles: every chunk's faces (each material's SidesOctree) built again from its voxels and its
-//    neighbours as they are now, each at the depth it draws (chunk_drawn_depth), against the faces it holds, at the
+//    neighbours as they are now, each at the depth it draws (chunk_side_depth), against the faces it holds, at the
 //    depth it draws: one it should draw and doesn't is a hole; one it holds and shouldn't is hidden, counted apart
 //  - its neighbour links are the chunks the terrain holds beside it
 //  - was: faces worked out against a neighbour's voxels deeper than it drew, not rebuilt when its lod changed
@@ -55,9 +55,9 @@ static byte zox_tst_ss_check_chunk(ecs* world, entity chunk, byte* materials, en
     for (byte j = 0; j < 6; j++) {
         const entity n = neighbors->value[j];
         const byte valid = zox_valid(n) && zox_has(n, NodeDepth) && zox_has(n, VoxelNode);
-        neighbor_depths[j] = valid ? chunk_drawn_depth(world, n) : 0;
+        neighbor_depths[j] = valid ? chunk_side_depth(world, n) : 0;
         neighbor_voxels[j] = valid ? zox_get(n, VoxelNode) : NULL;
-        zox_tst_ss_lods += valid && neighbor_depths[j] != drawn;
+        zox_tst_ss_lods += valid && neighbor_depths[j] != drawn && neighbor_depths[j] != chunk_side_open;
         const entity mapped = int3_hashmap_get(links->value, int3_add(zox_getv(chunk, ChunkPosition), get_direction_int3(j)));
         zox_tst_ss_stale_links += mapped != n && (zox_valid(mapped) || zox_valid(n));
     }

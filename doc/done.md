@@ -1,5 +1,40 @@
 # Done
 
+## 2026-11-23
+-x A far chunk's wall missing beside a near one (vulkan, gpu meshing), standing still: a gpu mesh's grid held a finer
+  neighbour's border at the mesh's depth, its most common solid, so it hid faces where the neighbour draws air. A
+  border cell is air where any voxel the neighbour draws against it doesn't hide the mesh (smooth_grid_borders), as cpu
+  sides do (get_node_sides_all_hide). tst stream_seams: 1781 holes at its first check before, none after, gl and vulkan
+-x Chunks flickered as they remeshed (vulkan, gpu meshing): a remesh over its room drew only the faces that fit, then
+  nothing (its count reset) until meshed again bigger. A gpu mesh's faces are counted on the cpu from its grid before
+  it's dispatched, its room grown first (gpu_mesh_grid_faces). tst chunk_mesh_flicker: 366 partial and 621 blank
+  before, none after
+-x Holes flashed where lods met as you walked: neighbours' faces were built against a chunk's new depth while it still
+  showed its old meshes, a held mesh (mid lod swap) stayed stale for hundreds of frames, and a new chunk's first mesh
+  showed before its neighbours' faces were built. A chunk unsettled (ChunkLodDirty, generating) is open to its
+  neighbours, every face into it shows (chunk_side_depth, unseen behind its voxels), they're rebuilt once it settles; a
+  swap waits for its neighbours' rebuilds (chunk_neighbors_rebuilding); held meshes build again once their chunk's
+  relit and generated (chunk_mesh_hold_system); first meshes are shown by the swap. tst chunk_mesh_flicker: seams in
+  330 frames before, 15 after (todo)
+-x A dark flash as lods got finer, flying (vulkan, gpu meshing, far 16): a far chunk generated coarse, grown finer, has
+  its lights cleared till it's lit again, and its neighbours meshed then (their borders opened for its swap) baked its
+  dark lights into their faces, lit again a few frames on. A shown gpu mesh is meshed and relit once the lights round
+  it settle (zox_chunk_lights_settling), what it draws kept till then; light floods and sunbeams have a time budget a
+  frame. tst chunk_mesh_flicker at far 16 (zox_tst_flicker_speed=3 ... --far 16): faces shown dark then lit 14 and 8
+  before, 0 and 0 after; at medium every chunk's generated fine and it never happened (tst.sh put --medium over --far)
+-x Lights flashed dark as lods swapped, flying about: a chunk regenerated finer for a lod had its lights cleared and
+  nothing lit it again under a chunk that kept its lights (its fine meshes drew dark, its coarse ones lit). A generated
+  chunk takes its neighbours' light back in (lights3/fun/relight.c: sunbeams from above, floods from its sides);
+  sunbeams into a chunk are cast at its own depth (a finer chunk's coarse node took them, its voxels stayed dark, its
+  floods were dropped); a coarse lod's light is its lit air's mean (octree_lit_leaf_mean), not its brightest voxel's
+  (102 to 248 at the coarsest); a mesh already lit is relit once the lights round it settle (zox_chunk_lights_settling).
+  tst chunk_mesh_flicker reads every face's drawn light frame to frame (no flash, none shown dark then lit), and fails
+  on a lod drawn by a chunk never lit under sunlight (as the old lighting did)
+-x Lights took hundreds of frames to flood after a lod change (thousands queued a chunk, 256 voxels a call): a time
+  budget a worker a frame (light_flood_system, 3ms)
+-x Windows' get_time_ms was seconds / 1000, so every system budget (zox_sys_budget) never ran out there: * 1000
+-x tunk_lod_system, commented out, removed (src/tunks/sys/stream_lod.c)
+
 ## 2026-11-22
 -x Holes where lods met with gpu meshing (gl and vulkan), seen roaming: a gpu mesh's grid filled its neighbours'
   border voxels at its own depth, a coarser neighbour's detail hid faces it didn't draw. Each neighbour fills at the

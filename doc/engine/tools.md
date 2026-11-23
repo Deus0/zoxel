@@ -53,3 +53,4 @@ These look at the game through the test harness (they run a `*_views` test): [to
 | `bsh/compare_backends.sh`, `bsh/compare_meshing.sh` | screenshot tests on both | how alike opengl and vulkan, cpu and gpu meshing draw |
 | `bsh/sample_report.sh` | (a ZOX_SAMPLE file) | where slow frames go |
 | `bsh/code_stats.sh` | (src) | each module's size |
+| `bsh/tools/flyby.sh` | tst lod_flyby | a camera flying the terrain (`flyby.gif`), its frames' blinks and light pops, the worst as pngs; unfinished (todo), a test for now, not a tool flag |

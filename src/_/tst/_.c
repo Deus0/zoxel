@@ -52,6 +52,7 @@ byte zox_tst_player_spawn_ready(ecs* world);    // 1 once the player's character
 entity zox_tst_player_character(ecs* world);    // the player's character, 0 if none
 // a world without a player (controllers/tst/world_only.c): a realm of its own and its terrain, 0 until generated
 entity zox_tst_world_ready(ecs* world);
+void zox_tst_world_setup();
 extern entity zox_tst_world_realm;
 extern entity zox_tst_world_terrain;
 // fail fast: errors logged since the test started, over this ends it (--tst-errors <n>)

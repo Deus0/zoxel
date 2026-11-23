@@ -4,7 +4,6 @@
 #include "stream_start.c"
 #include "stream_grow.c"
 #include "stream_shrink.c"
-#include "stream_lod.c"
 // Stack
 #include "stack_link.c"
 #include "stack_trigger.c"
@@ -30,25 +29,6 @@ void zox_systems_tunks(ecs* world) {
         [none] streaming.StreamedChunk,
         [none] tunks.Tunk
     );
-    // For now leave here
-    /*zox_filter(
-        streamers_lod,
-        [in] streaming.StreamDirty2,
-        [in] streaming.StreamerLevel,
-        [in] streaming.StreamPosition2,
-        [none] streaming.Streamer
-    );
-    zox_system_ctx(
-        tunk_lod_system,
-        zoxp_update,
-        streamers_lod,
-        [in] tunks.TunkPosition,
-        [in] tunks.Chunk3Stack,
-        [out] rendering.RenderDistance,
-        [out] tunks.TunkLod,
-        [out] tunks.GenerateTunk,
-        [none] streaming.StreamedChunk
-    );*/
     // Texture
     zox_system(
         tunk_texture_system,
