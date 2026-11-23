@@ -75,7 +75,8 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
 - 2026-11-23 full run (bb446086d, 395 tests, 3 in parallel): 377 passed. Rerun alone, these 6 passed (flaky under
   load): punch_wind_up, tables_stream (a step made 237 tables, over 200), map_pixel, door_save, stream_seams,
   town_furniture. These 12 fail alone too:
-	- aesthetic_particles, aesthetic_town: stall 60s, the player's character never spawns (terrain Loading, lod far 16)
+	- aesthetic_particles, aesthetic_town pass again but their player spawns after ~80s (far 16, llvmpipe): slower since
+	  b53bd6fac (light floods and sunbeams on a time budget a frame), worth speeding up
 	- end_game_cleanup: +12 entities left after ending a game (gpu buffers and textures fewer, fine); since 2026-11-21
 	- coop_pause: "No Mouse Found on player" errors (the second player has none); since 2026-11-20
 	- chunk_mesh_flicker: 849 dark flashes (a material's light down a quarter and back), 32 seam holes in a frame

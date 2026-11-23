@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-23
+-x tst aesthetic_town, aesthetic_particles stalled: with far land every chunk streams in a minute before they're all
+  loaded (meshed, lit), and the player spawn's progress counted only chunks in and generating. It counts near chunks
+  loaded too (zox_stream_end_loaded)
 -x A segfault as chunks generated (chunk_relight_border_light): a new chunk read its neighbours' LightOctrees unlocked
   while their light passes wrote them on workers. Their borders are copied under each one's octree lock, the queues
   filled after (thread_safety.md: no octree lock while holding another)
