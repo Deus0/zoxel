@@ -250,6 +250,7 @@ void blocks_realm_spawn_system(iter* it) {
             const entity graph = spawn_model_nodegraph_gravity_cube(world, e);
             entity e2 = spawn_realm_block_blueprint(world, e, graph, block_seed, "gravity cube", gravity_color, dbg_log);
             zox_add(e2, BlockGravity);
+            zox_add(e2, BlockPointed);   // pulls the way its placer looked, any of 6
             link_hit_sound(world, e2, e, &hit_sound_stone);
         }
         zox_add(e, BlocksDirty);

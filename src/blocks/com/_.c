@@ -23,6 +23,7 @@ zoxc_byte(VoxBakeSide);
 zoxc_byte(BlockVoxOffset);
 zoxc_byte(BlockIndex);      // NOTE: This includes Air in the index
 zoxc_int3(BlockPosition);
+zox_tag(BlockPointed);     // placed pointing any of 6 ways, the way its placer looked: its block data (block_pointing)
 zoxc_int3(BlockSize);
 zoxc_int2(BlockPosition2);
 zoxc_int2(BlockSize2);
@@ -73,6 +74,7 @@ void zox_components_blocks(ecs *world) {
     zoxd_int2(BlockPosition2);
     zoxd_int2(BlockSize2);
     zoxd_int3(BlockPosition);
+    zoxd_tag(BlockPointed);
     zoxd_int3(BlockSize);
     zoxd_int3(InsideBlockPosition);
     zoxd_float(BlockScale);

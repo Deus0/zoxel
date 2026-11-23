@@ -132,9 +132,10 @@ A terrain chunk has a `GravityOctree` beside its voxels, as its `LightOctree`: w
 0 is the realm's own (`zox_default_gravity`, down), else a direction, `1 + axis * 2 + (1 along +axis)`
 (`gravity_pull`).
 
-- **A gravity cube** (`BlockGravity`, gam/zoxel/sys/blocks.c) switched on flips gravity in a sphere of
-  `gravity_radius` (4) blocks round it, to voxel centres. On is its chunk's `ActiveOctree`, as an open door's: a right click toggles it (`block_use`, `block_toggle`), and it's saved with its chunk. Where spheres
-  overlap each flips it again (two make it down).
+- **A gravity cube** (`BlockGravity`, gam/zoxel/sys/blocks.c) switched on pulls a sphere of `gravity_radius` (4)
+  blocks round it, to voxel centres, its way: any of 6, the way its placer looked when it was placed (`BlockPointed`,
+  `block_pointing`, its block data holds the field's value: 1 -x, 2 +x, 3 -y, 4 +y, 5 -z, 6 +z; none pulls up). On is its chunk's `ActiveOctree`, as an open door's: a right click toggles it (`block_use`, `block_toggle`), and it's saved with its chunk. Where spheres
+  overlap the nearest cube's way wins.
 - **Worked out from the cubes**, not stored: `gravity_rebuild` gathers the cubes switched on in a chunk and the 26
   round it (a sphere reaches one chunk at most) and flips each voxel in their spheres. Full detail chunks only.
 - **When**: an observer on `VoxelNodeDirty` (a chunk generated, loaded or edited: a cube dug out while on, in its

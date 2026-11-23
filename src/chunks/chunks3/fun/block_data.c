@@ -170,15 +170,27 @@ static inline byte block_direction_from_forward(float3 forward, int3 size) {
 }
 
 // where a placer looks: its camera's ray, else its body's facing
-static inline byte block_direction_of_placer(ecs* world, entity placer, int3 size) {
+static inline float3 block_placer_forward(ecs* world, entity placer) {
     const entity camera = zox_get_link(world, placer, CameraLink);
-    float3 forward = float3_forward;
     if (zox_valid(camera) && zox_has(camera, RaycastNormal)) {
-        forward = zox_getv(camera, RaycastNormal);
+        return zox_getv(camera, RaycastNormal);
     } else if (zox_has(placer, Rotation3D)) {
-        forward = float4_rotate_float3(zox_getv(placer, Rotation3D), float3_forward);
+        return float4_rotate_float3(zox_getv(placer, Rotation3D), float3_forward);
     }
-    return block_direction_from_forward(forward, size);
+    return float3_forward;
+}
+
+static inline byte block_direction_of_placer(ecs* world, entity placer, int3 size) {
+    return block_direction_from_forward(block_placer_forward(world, placer), size);
+}
+
+// a pointed block's data (BlockPointed: a gravity cube), any of 6 ways, the axis its placer looked along most:
+//  1 + axis * 2 + (1 along +axis), so 1 -x, 2 +x, 3 -y, 4 +y, 5 -z, 6 +z
+static inline byte block_pointing(float3 forward) {
+    const float3 a = { float_abs(forward.x), float_abs(forward.y), float_abs(forward.z) };
+    const byte axis = a.x >= a.y && a.x >= a.z ? 0 : (a.y >= a.z ? 1 : 2);
+    const float along = axis == 0 ? forward.x : (axis == 1 ? forward.y : forward.z);
+    return 1 + axis * 2 + (along > 0);
 }
 
 static inline byte block_offset_encode(int3 offset) {

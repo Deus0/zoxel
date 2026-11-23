@@ -1,11 +1,14 @@
 // tst: gravity_cube, a gravity cube switched on flips gravity round it (terrain/gravity), in an all air chunk
 //  (air_chunk.c, no game, no player)
 //  - a brick floor (y 3), cube A at (14, 6, 8), two blocks from the chunk's +x side (its sphere reaches the next
-//    chunk), cube B at (14, 6, 11), three from A (their spheres overlap); a body with TerrainGravity on the floor by A
+//    chunk), no way of its own (it pulls up), cube B at (14, 6, 11) pulling +x (its block data, as placed looking
+//    +x), three from A (their spheres overlap); a body with TerrainGravity on the floor by A
 //  - each used as a right click uses it (block_use): A on, its sphere (gravity_radius) pulls up in both chunks and
-//    nowhere else, the body's Gravity3D flips and it rises; B on, where the spheres overlap it's flipped back; B off,
+//    nowhere else, the body's Gravity3D flips and it rises; B on, its sphere pulls +x, the nearest cube's way where
+//    they overlap (as near to both: either); B off,
 //    A's sphere alone; A dug out while on (nothing else on: only its removal clears the next chunk), every field's
 //    empty, the body's pulled down again
+//  - and a cube placed looking along each of the 6 ways pulls that way (block_pointing)
 //  - run: bash bsh/tst.sh gravity_cube
 byte zox_tst_gc_stage = 0;
 int zox_tst_gc_frames = 0;
@@ -17,10 +20,16 @@ float zox_tst_gc_start_y = 0, zox_tst_gc_top_y = 0;
 int zox_tst_gc_wrong[5];
 float zox_tst_gc_pull[5];
 int zox_tst_gc_up[5];   // voxels pulling up
+#define zox_tst_gc_b_pull 2     // +x (block_pointing)
 
 static inline byte zox_tst_gc_in(int3 block, int3 cube) {
     const int3 d = int3_sub(block, cube);
     return d.x * d.x + d.y * d.y + d.z * d.z <= gravity_radius * gravity_radius;
+}
+
+static inline int zox_tst_gc_d2(int3 block, int3 cube) {
+    const int3 d = int3_sub(block, cube);
+    return d.x * d.x + d.y * d.y + d.z * d.z;
 }
 
 // voxels in the chunk at chunk_position whose field isn't what the cubes on (a, b) give
@@ -35,12 +44,21 @@ static inline int zox_tst_gc_check_chunk(ecs* world, entity terrain, int3 chunk_
     int wrong = 0;
     for (int x = 0; x < length; x++) for (int y = 0; y < length; y++) for (int z = 0; z < length; z++) {
         const int3 block = { chunk_position.x * length + x, chunk_position.y * length + y, chunk_position.z * length + z };
-        const byte flipped = (a && zox_tst_gc_in(block, zox_tst_gc_a)) ^ (b && zox_tst_gc_in(block, zox_tst_gc_b));
+        const byte in_a = a && zox_tst_gc_in(block, zox_tst_gc_a), in_b = b && zox_tst_gc_in(block, zox_tst_gc_b);
+        const int da = zox_tst_gc_d2(block, zox_tst_gc_a), db = zox_tst_gc_d2(block, zox_tst_gc_b);
         const byte value = getv_GravityOctree(field, depth, (byte3) { x, y, z });
         if (value == gravity_up) {
             (*up)++;
         }
-        if (value != (flipped ? gravity_up : gravity_default)) {
+        byte expected = gravity_default;
+        if (in_a && (!in_b || da < db)) {
+            expected = gravity_up;
+        } else if (in_b && (!in_a || db < da)) {
+            expected = zox_tst_gc_b_pull;
+        } else if (in_a && in_b) {
+            expected = value == gravity_up || value == zox_tst_gc_b_pull ? value : gravity_up;   // as near: either
+        }
+        if (value != expected) {
             wrong++;
         }
     }
@@ -74,7 +92,8 @@ byte zox_tst_gravity_cube_ready(ecs* world) {
             a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = bricks, .position = (byte3) { x, 3, z } });
         }
         a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = cube, .position = (byte3) { 14, 6, 8 } });
-        a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = cube, .position = (byte3) { 14, 6, 11 } });
+        a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = cube, .data = block_pointing((float3) { 1, 0, 0 }),
+            .position = (byte3) { 14, 6, 11 } });
         zox_tst_gc_a = (int3) { c.x * length + 14, c.y * length + 6, c.z * length + 8 };
         zox_tst_gc_b = (int3) { c.x * length + 14, c.y * length + 6, c.z * length + 11 };
         zox_tst_gc_stage = 1;
@@ -174,6 +193,14 @@ void zox_tst_gravity_cube_check(ecs* world) {
             zox_tst_gc_up[i], zox_tst_gc_wrong[i], zox_tst_gc_pull[i]);
     }
     zox_tst_check(zox_tst_gc_stage == 7, "the test stopped at stage [%i]", zox_tst_gc_stage);
+    // placed looking along each of the 6 ways, it pulls that way (block_pointing, gravity_pull)
+    const float3 ways[6] = { { -1, 0, 0 }, { 1, 0, 0 }, { 0, -1, 0 }, { 0, 1, 0 }, { 0, 0, -1 }, { 0, 0, 1 } };
+    for (byte i = 0; i < 6; i++) {
+        const float3 look = float3_add(ways[i], (float3) { 0.1f, -0.2f, 0.15f });     // a little off the axis
+        const float3 pull = float3_normalize(gravity_pull(block_pointing(look)));
+        zox_tst_check(float3_dot(pull, ways[i]) > 0.99f, "placed looking [%.0f %.0f %.0f] it pulls [%.1f %.1f %.1f]",
+            ways[i].x, ways[i].y, ways[i].z, pull.x, pull.y, pull.z);
+    }
     for (int i = 0; i < 5; i++) {
         zox_tst_check(zox_tst_gc_wrong[i] == 0, "[%s] [%i] voxels' fields aren't the cubes' spheres (-1: no +x neighbour chunk)",
             steps[i], zox_tst_gc_wrong[i]);

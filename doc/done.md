@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-23
+-x Gravity cubes pull any of 6 ways: the way their placer looked (BlockPointed, block_pointing in its block data), a
+  right click still switches them on and off; overlapping spheres take the nearest cube's way. tst gravity_cube
 -x Beds rest you: asleep, a character regenerates 4 times faster (sleep_regen_mul), and a bed is its player's respawn
   point (HomePosition, beside the bed, a toast "Respawn point set" when it moves); a respawn there if its chunk is
   loaded, else near where it died as before. A new or loaded game clears it (not saved yet). tst bed_respawn

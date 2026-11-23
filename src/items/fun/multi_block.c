@@ -145,13 +145,14 @@ static inline byte block_is_solid_at(ecs* world, entity terrain, entity realm, i
 }
 
 // places a block at base, a sized one turned to direction with its fillers; 0 if any voxel of its box isn't air
-byte multi_block_place(ecs* world, entity terrain, entity realm, int3 base, byte value, byte direction) {
+//  - a single one's block data is data (a pointed block's way, block_pointing), 0 for none
+byte multi_block_place(ecs* world, entity terrain, entity realm, int3 base, byte value, byte direction, byte data) {
     const int3 size = block_size_of(world, realm_voxel_block(world, realm, value));
     if (!block_is_multi(size)) {
         if (terrain_voxel_at(world, terrain, base) != 0) {
             return 0;
         }
-        return terrain_queue_voxel(world, terrain, base, value, 0);
+        return terrain_queue_voxel(world, terrain, base, value, data);
     }
     const byte filler = block_filler_voxel(world, realm, realm_voxel_block(world, realm, value));
     if (!filler) {

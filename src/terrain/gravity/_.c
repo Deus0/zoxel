@@ -11,7 +11,8 @@
  *  - a terrain chunk's GravityOctree: where gravity pulls, a byte a voxel (0 the realm's own, down; else a
  *    direction, fun.c), beside its voxels as its LightOctree is
  *  - a gravity cube (BlockGravity) switched on (its chunk's ActiveOctree, as an open door: a right click, block_toggle)
- *    flips gravity in a sphere round it, gravity_radius blocks; where spheres overlap each flips it again
+ *    pulls a sphere round it, gravity_radius blocks, its way (any of 6, the way its placer looked: its block data,
+ *    BlockPointed); where spheres overlap the nearest cube's way
  *  - the field is worked out from the cubes switched on near a chunk (gravity_rebuild): when a chunk's voxels change
  *    (VoxelNodeDirty: generated, loaded, edited) and when a cube is toggled (gravity_dirty_around), by an observer
  *    (GravityDirty), on the main thread

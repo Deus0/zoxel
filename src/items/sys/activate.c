@@ -67,10 +67,13 @@ void item_place(ecs* world, entity e, entity user) {
     const entity terrain = zox_get_parent(world, chunk);
     // turned to the way the placer faces
     const int3 size = zox_has(block, BlockSize) ? zox_getv(block, BlockSize) : (int3) { 1, 1, 1 };
-    const byte direction = block_direction_of_placer(world, user, size);
+    const float3 forward = block_placer_forward(world, user);
+    const byte direction = block_direction_from_forward(forward, size);
+    // a pointed block (a gravity cube) the way its placer looks, any of 6
+    const byte data = zox_has(block, BlockPointed) ? block_pointing(forward) : 0;
     // the cell aimed at its near end, it sticks out away
     const int3 base = block_base_from_target(chunk_block_position(world, chunk, positionl), size, direction);
-    if (!multi_block_place(world, terrain, zox_get_parent(world, terrain), base, block_index, direction)) {
+    if (!multi_block_place(world, terrain, zox_get_parent(world, terrain), base, block_index, direction, data)) {
         spawn_sound_effect(world, sound_effect_out_of_range, user);
         return;
     }

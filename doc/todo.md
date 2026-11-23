@@ -56,7 +56,7 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 	- npcs turning toward a target (ai rotate_towards) and the third person camera along a character's up
 	- a test of walking on a wall (sideways gravity, a player's controls: only a ceiling's flip is tested)
 	- dropped items, pickups and npcs with TerrainGravity (npcs have it: characters), check they cope
-	- a sound and a look for a gravity cube switched on (it's a plain purple stone now)
+	- a sound for a gravity cube switched on, and its model showing which way it pulls (an arrow, the core's side)
 	- a test that a cube saved switched on flips gravity again once loaded (the load's VoxelNodeDirty rebuilds it)
 
 - Power (doc/tech/blocks.md, ActiveOctree): manawires, power generator blocks, a PowerOctree beside the ActiveOctree

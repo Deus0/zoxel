@@ -1,7 +1,7 @@
 // a field's value: 0 the realm's own gravity (zox_default_gravity, down), else where it pulls, 1 + axis * 2 + (1 if
 //  it pulls along +axis): 1 -x, 2 +x, 3 -y, 4 +y, 5 -z, 6 +z
 #define gravity_default 0
-#define gravity_up 4            // a gravity cube's flip of the realm's down
+#define gravity_up 4            // where a gravity cube with no way of its own pulls (one placed before they had 6)
 #define gravity_radius 4        // blocks round a gravity cube it flips (a sphere, to voxel centres)
 #define gravity_sources_max 64  // cubes switched on that can reach one chunk
 
@@ -18,11 +18,13 @@ static inline float3 gravity_pull(byte value) {
 typedef struct {
     int count;
     int3 block[gravity_sources_max];
+    byte pull[gravity_sources_max];     // the way it pulls (its block data, block_pointing), the field's value
 } gravity_sources;
 
 typedef struct {
     ecs* world;
     const VoxelNode* voxels;
+    const BlockDatas* datas;
     const BlockLinks* blocks;
     byte depth;
     int3 origin;    // the chunk's first block
@@ -51,6 +53,8 @@ static void gravity_sources_node(const gravity_source_search* search, const Acti
         gravity_sources* sources = search->sources;
         if (voxel && voxel <= search->blocks->length && zox_has(search->blocks->value[voxel - 1], BlockGravity) &&
             sources->count < gravity_sources_max) {
+            const byte way = search->datas ? get_block_data(search->datas, local) : 0;
+            sources->pull[sources->count] = way >= 1 && way <= 6 ? way : gravity_up;
             sources->block[sources->count++] = int3_add(search->origin, byte3_to_int3(local));
         }
     }
@@ -74,13 +78,15 @@ static inline void gravity_sources_near(ecs* world, entity terrain, entity realm
         if (!active_octree_any(actives)) {
             continue;
         }
-        const gravity_source_search search = { world, zox_get(chunk, VoxelNode), zox_get(realm, BlockLinks), depth,
+        const gravity_source_search search = { world, zox_get(chunk, VoxelNode),
+            zox_has(chunk, BlockDatas) ? zox_get(chunk, BlockDatas) : NULL, zox_get(realm, BlockLinks), depth,
             int3_scale(position, length), sources };
         gravity_sources_node(&search, actives, 0, byte3_zero);
     }
 }
 
-// works out a chunk's field again from the cubes switched on near it: each one's sphere flips it (overlaps flip back)
+// works out a chunk's field again from the cubes switched on near it: each one's sphere pulls its way, the nearest
+//  cube's where they overlap (the first of those as near)
 //  - full detail chunks only: a lower lod's voxels are bigger, nothing's pulled there (no bodies that far)
 void gravity_rebuild(ecs* world, entity chunk) {
     const entity terrain = zox_get_parent(world, chunk);
@@ -103,8 +109,10 @@ void gravity_rebuild(ecs* world, entity chunk) {
     }
     const int length = octree_size(depth);
     const int r = gravity_radius;
-    byte flips[length * length * length];
-    memset(flips, 0, sizeof(flips));
+    const int count = length * length * length;
+    byte pulls[count];
+    int nearest[count];
+    memset(pulls, 0, sizeof(pulls));
     for (int s = 0; s < sources.count; s++) {
         const int3 c = {
             sources.block[s].x - chunk_position.x * length,
@@ -114,14 +122,18 @@ void gravity_rebuild(ecs* world, entity chunk) {
         for (int y = int_max(0, c.y - r); y <= int_min(length - 1, c.y + r); y++)
         for (int z = int_max(0, c.z - r); z <= int_min(length - 1, c.z + r); z++) {
             const int dx = x - c.x, dy = y - c.y, dz = z - c.z;
-            if (dx * dx + dy * dy + dz * dz <= r * r) {
-                flips[(x * length + y) * length + z] ^= 1;
+            const int d2 = dx * dx + dy * dy + dz * dz;
+            const int i = (x * length + y) * length + z;
+            if (d2 <= r * r && (!pulls[i] || d2 < nearest[i])) {
+                pulls[i] = sources.pull[s];
+                nearest[i] = d2;
             }
         }
     }
     for (int x = 0; x < length; x++) for (int y = 0; y < length; y++) for (int z = 0; z < length; z++) {
-        if (flips[(x * length + y) * length + z]) {
-            set_GravityOctree(field, depth, (byte3) { x, y, z }, gravity_up);
+        const byte pull = pulls[(x * length + y) * length + z];
+        if (pull) {
+            set_GravityOctree(field, depth, (byte3) { x, y, z }, pull);
         }
     }
     reduce_GravityOctree(field);
