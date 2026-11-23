@@ -4,6 +4,7 @@
 //  - tilemap pixels at tile i == linked texture i (generation order)
 //  - each block face's tilemap uvs point at the tile of its texture (uv order)
 //  - every face of the chunk mesh samples a used tile
+//  - zox_tst_tilemap_dump=1 writes it to tst/tilemap.ppm (the baked block faces, to look at)
 entity zox_tst_tilemap_mesh = 0;   // found by tst_tilemap_probe_system
 
 // tile index of a uv inside a map of map_size x map_size tiles
@@ -40,6 +41,19 @@ byte zox_tst_tilemap_ready(ecs* world) {
 
 // Checks a tilemap against its realm's blocks
 void zox_tst_tilemap_check_tilemap(ecs* world, entity tilemap) {
+    // zox_tst_tilemap_dump=1: the tilemap written to tst/tilemap.ppm, to look at the baked block faces
+    if (getenv("zox_tst_tilemap_dump") && zox_has(tilemap, TextureData) && zox_has(tilemap, TextureSize)) {
+        const TextureData* data = zox_get(tilemap, TextureData);
+        const int2 size = zox_getv(tilemap, TextureSize);
+        byte* rgb = malloc((size_t) size.x * size.y * 3);
+        for (int j = 0; j < size.x * size.y && j < data->length; j++) {
+            rgb[j * 3] = data->value[j].r;
+            rgb[j * 3 + 1] = data->value[j].g;
+            rgb[j * 3 + 2] = data->value[j].b;
+        }
+        zox_tst_save_ppm("tilemap.ppm", rgb, size);
+        free(rgb);
+    }
     entity realm = zox_get_link(world, tilemap, RealmLink);
     zox_tst_check(zox_valid(realm), "tilemap [%s] has no realm", zox_getn(tilemap));
     if (!zox_valid(realm)) {

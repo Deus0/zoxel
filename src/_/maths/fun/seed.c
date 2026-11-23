@@ -33,11 +33,12 @@ static inline uint position_seed2(uint base_seed, int2 position) {
     return seed_rand(seed);
 }
 
+// a seeded value from min to max (min itself when they're the same: a fixed size)
 static inline float seed_rangef(uint seed, float min, float max) {
 #ifdef zox_safety_checks
-    if (min >= max) {
+    if (min > max) {
         zox_loge("Invalid seed range [%f:%f]", min, max);
-        return 0;
+        return min;
     }
 #endif
     float t = (float) seed_rand(seed) / (float) UINT_MAX;

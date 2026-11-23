@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-23
+-x Gravity cube model: a blueprint (models/ins/block_blueprint.c), cyberpunk, seeded by its realm; blocks from
+  blueprints bake once the model's done; colors nodes in an HSV range (ColorHSV), a traces node (circuits);
+  model_views takes zox_tst_seed, tilemap can dump the atlas. tst gravity_cube_model
 -x Slimes pounced fast with no pause at level 1: a movement speed stat (StatSpeed, its icon movement_speed, a player's
   1, raised by agility; an npc's agility is its level, its speed from it: a slime 0.58) scales npcs' attack and flee speeds and the pounce (a slow one squashes longer, a tell, and leaps slower), and
   npcs get the intelligence attribute (their level): they watch their threat before their first attack and between

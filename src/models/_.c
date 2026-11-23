@@ -43,6 +43,7 @@ byte zox_block_outlines = 1;
 #define zox_model_node_wfc 8         // a new model from a source model's patches (wave function collapse, eve/wfc.c)
 #define zox_model_node_end 9
 #define zox_model_node_mutate 10      // the model's colours mutated by its seed (eve/mutate.c)
+#define zox_model_node_traces 11      // Count circuit traces of its voxel over the model's surface (eve/traces.c)
 
 #include "dat/_.c"
 #include "set/_.c"

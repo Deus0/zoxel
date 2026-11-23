@@ -18,3 +18,4 @@
 #include "slime.c"
 #include "cookie.c"
 #include "wfc.c"
+#include "block_blueprint.c"

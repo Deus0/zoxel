@@ -64,7 +64,15 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
   (worked out and not saved, as light), power spread from generators through wires, doors, lamps and gravity cubes
   switched by it; coarse lod reads a parent's max
 
+- A blocks tool (bsh/tools/blocks.sh, doc/engine/tools.md): every block's baked faces into tst/blocks/, and a scene of
+  the placed model blocks (grass, flowers, doors) several times each, to see their variations
+- Base blocks (stone, bricks, soil, sand) as blueprints (models/ins/block_blueprint.c, as the gravity cube)
+- Model nodes: one observer on Begin calling the node's function by its NodeType (a table), in place of a system or
+  observer a node type each that all check every node (sys/fill.c, colors.c, size.c, eve/mutate.c, traces.c)
+
 # Bugs
+- stream_npcs fails on master since d8e218a3a (npc speed and wits?, 2026-11-23): "chunk stayed active but its npc
+  was deleted (despawned and respawned)"
 - walk_bob fails on master (2026-11-23, e026107c0): the head bobbed 0cm over 11 steps, turned 0 times
 - physics on lower lod chunks used to bug (not sure anymore, might still glitch)
 - alt tab on windows, mouse lock stays locked

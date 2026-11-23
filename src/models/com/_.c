@@ -13,8 +13,9 @@ zoxc_byte3(EyeSize);
 zoxc_byte(PlaceType);
 zoxc_byte(NodeVoxel);
 zoxc_byte(NodeColors);
-zoxc_ushort(WfcRules);
-zoxc_float3(ColorMutation);   // a mutate node's range: hue turn (degrees), saturation added, value change (a share)        // a wfc node's rules (wfc_rule_*, fun/wfc.c)
+zoxc_ushort(WfcRules);        // a wfc node's rules (wfc_rule_*, fun/wfc.c)
+zoxc_float3(ColorMutation);   // a mutate node's range: hue turn (degrees), saturation added, value change (a share)
+zoxc_float6(ColorHSV);        // a colors node's colour seeded in this range: hue (degrees), saturation, value (0 to 100)
 // voxes
 zoxc_byte(VoxType);
 zoxc_byte(RubbleHeight);
@@ -50,6 +51,7 @@ void zox_components_models(ecs* world) {
     zoxd_byte(NodeColors);
     zoxd_ushort(WfcRules);
     zoxd_float3(ColorMutation);
+    zoxd_float6(ColorHSV);
     // TODO: Voxes
     zoxd_byte(VoxType);
     zoxd_byte(RubbleHeight);

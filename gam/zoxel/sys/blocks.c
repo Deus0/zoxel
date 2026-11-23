@@ -240,13 +240,15 @@ void blocks_realm_spawn_system(iter* it) {
                 link_hit_sound(world, e3, e, &hit_sound_water);
             }
         }
-        // a gravity cube: a right click switches it on or off (ActiveOctree), on it flips gravity round it
+        // a gravity cube: a right click switches it on or off (ActiveOctree), on it flips gravity round it; its
+        //  model a blueprint seeded by the realm
         //  (terrain/gravity); last, the blocks before it keep their indices
         {
             lint block_seed = seed->value + (seed_offset+=seed_shift);
             const color gravity_color = (color) { 150, 70, 220, 255 };
-            entity model = spawn_model_stone(world, e, block_seed, gravity_color);
-            entity e2 = spawn_realm_block_solid(world, prefab_block_baked, e, block_seed, "gravity cube", gravity_color, model, dbg_log);
+            // its model a blueprint (models/ins/block_blueprint.c), cyberpunk, seeded by the realm
+            const entity graph = spawn_model_nodegraph_gravity_cube(world, e);
+            entity e2 = spawn_realm_block_blueprint(world, e, graph, block_seed, "gravity cube", gravity_color, dbg_log);
             zox_add(e2, BlockGravity);
             link_hit_sound(world, e2, e, &hit_sound_stone);
         }

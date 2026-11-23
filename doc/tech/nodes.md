@@ -68,12 +68,23 @@ variant. Nodes go between the first (size) and the last (end): more nodes there 
 | Node | Does |
 |---|---|
 | size | the variant's box, a seeded ratio of the blueprint's length (`ModelSize` on the process) |
-| colors | adds seeded colours |
+| colors | adds seeded colours: any, a fixed `Color`, or in a hue, saturation and value range (`ColorHSV`: dark metal, neon) |
 | fill / box / paint | an ellipsoid or box of a voxel, or paints solid voxels |
 | sprinkle / speckle | seeded dots on or in the surface |
 | wfc | a new model from a source model's patches (wave function collapse), its source's colours |
 | mutate | the model's colours by its seed: one hue turn for all, greys tint, each lighter or darker (`ColorMutation`) |
+| traces | `Count` circuit traces of its voxel walked over the model's surface, seeded: straight runs turning a quarter, only where the surface stays facing the same way (eve/traces.c) |
 | end | marks the model built |
+
+### Blocks from blueprints
+
+`spawn_realm_block_blueprint(world, realm, graph, seed, name, color, dbg)` ([block_blueprint.c](../src/models/ins/block_blueprint.c)):
+a solid block whose model is a blueprint run at `block_depth`, seeded by its realm, its 6 faces baked from it once
+it's done (`spawn_realm_block_baked_model`, its textures wait on `Generating`). The gravity cube's
+(`spawn_model_nodegraph_gravity_cube`): a dark metal box in 3 x 3 panels, neon edges, a core glowing through a
+framed window on each face, neon traces and lights, its colours from `ColorHSV` ranges, so each realm's is its own.
+Sizes in eighths of the blueprint, so they halve exactly to a 16 model. The base blocks are to move to blueprints.
+To look at it: `zox_tst_model=gravity zox_tst_seed=<seed> bash bsh/tst.sh model_views`; tst gravity_cube_model.
 
 ### WFC (wave function collapse)
 

@@ -153,3 +153,8 @@ static inline int3 int3_max_each(const int3 a, const int3 b) {
 static inline int3 int3_min_each(const int3 a, const int3 b) {
     return (int3) { a.x < b.x ? a.x : b.x, a.y < b.y ? a.y : b.y, a.z < b.z ? a.z : b.z };
 }
+
+// a pointer to one axis of v: 0 x, 1 y, 2 z
+static inline int* int3_axis(int3* v, byte axis) {
+    return axis == 0 ? &v->x : (axis == 1 ? &v->y : &v->z);
+}

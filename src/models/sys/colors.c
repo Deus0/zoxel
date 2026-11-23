@@ -86,9 +86,19 @@ void colors_model_node_system(iter* it) {
                 zox_getn(model),
                 seed);
         }
-        color node_color = zox_has(node, Color) ?
-            zox_getv(node, Color) :
-            seed_color(&seed->value, inner_seed_shift);
+        // a fixed colour, a seeded one in a range (ColorHSV: dark metal, neon), or any seeded one
+        color node_color;
+        if (zox_has(node, Color)) {
+            node_color = zox_getv(node, Color);
+        } else if (zox_has(node, ColorHSV)) {
+            const float6 r = zox_getv(node, ColorHSV);
+            const uint s = seed_rand((uint) seed->value + inner_seed_shift);
+            seed->value = s;
+            node_color = hsv_to_color((float3) { zox_fmod(seed_rangef(s, r.x, r.y) + 360, 360),
+                seed_rangef(s + 1, r.z, r.w), seed_rangef(s + 2, r.u, r.v) });
+        } else {
+            node_color = seed_color(&seed->value, inner_seed_shift);
+        }
         byte color_count = zox_getv(node, NodeColors);
         process_node_model_generate_colors(
             world,

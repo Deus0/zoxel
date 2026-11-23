@@ -5,6 +5,7 @@
 //      (top left +z, top right +x, bottom left -z, bottom right above at an angle)
 //  - zox_tst_model=<name> picks the model whose realm entity's name holds it, i.e. zox_tst_model=sword
 //      (the realm's models are logged), else the first one
+//  - zox_tst_seed=<seed>: its realm's seed (666 else), each realm's own models
 //  - zox_tst_model_variants=1: a model group's first 4 variants side by side, each from the same angle (chooks)
 //  - the 4 cameras draw straight to the screen on gray, each filtered (CameraFilter) to its own copy
 //      of the model (CameraRenderer), so no sky; the menu's view is hidden (nohud and its render texture)
@@ -188,7 +189,8 @@ byte zox_tst_model_views_ready(ecs* world) {
         if (!zox_valid(local_game) || !zox_valid(main_app) || zox_tst_model_views_frames < 5) {
             return 0;
         }
-        zox_tst_model_views_realm = spawn_realm(world, local_game, 666);
+        const char* seed_text = getenv("zox_tst_seed");    // a realm's seed to look at its own (a gravity cube's)
+        zox_tst_model_views_realm = spawn_realm(world, local_game, seed_text ? strtoul(seed_text, NULL, 10) : 666);
         zox_setv(zox_tst_model_views_realm, GenerateRealm, zox_generate_realm_start);
         zox_tst_model_views_stage = 1;
         zox_tst_model_views_frames = 0;
