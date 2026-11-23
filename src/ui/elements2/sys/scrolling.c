@@ -53,7 +53,7 @@ static inline byte is_ui_within(
 }
 
 // The mouse wheel scrolls the scrollview under the pointer, one element per notch
-//  - the topmost scrollview the pointer is inside, also between its list elements
+//  - the topmost shown scrollview the pointer is inside, also between its list elements
 //  - unless the pointer is over ui unrelated to it, i.e. another window on top of it
 //      (its own elements, and the window body behind it, don't block it)
 void scrollview_wheel_system(iter* it) {
@@ -90,6 +90,10 @@ void scrollview_wheel_system(iter* it) {
                 zox_sys_i_2(Position2, position2);
                 zox_sys_i_2(LayoutSize, size2);
                 const entity e2 = it2.entities[j];
+                // a hidden one (a window's other tabs, all in the same place: the wheel took a hidden tab's)
+                if (zox_has(e2, RenderDisabled) && zox_getv(e2, RenderDisabled)) {
+                    continue;
+                }
                 if (zox_get_parent_by_id(world, e2, zox_id(Canvas)) != canvas) {
                     continue;
                 }

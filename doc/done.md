@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-23
+-x Options tabs (37b74ec2e) broke two tests: the wheel scrolled a hidden tab's list (every tab's scrollview in the same
+  place: scrollview_wheel_system skips hidden ones now, tst scroll_wheel), and at a big ui scale the window left the
+  canvas (its strip added after the lists were fit: each tab shows fewer rows to fit, tst ui_layout)
 -x tst stream_npcs failed "chunk stayed active but its npc was deleted": npcs die in fights now (villagers and slimes,
   villager_guard), a death isn't a despawn. It marks npcs seen dying each frame and logs them
 -x A first person body never crouched or bobbed (tst crouch, walk_bob failed since f8c8d1ea9, 2026-11-22): leaning

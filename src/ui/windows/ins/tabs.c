@@ -123,12 +123,23 @@ entity2 spawn_window_tabs(
     int2 list_sizes[tabs_count], scrollview_sizes[tabs_count];
     byte scrollbars[tabs_count];
     int2 size = int2_zero;
+    // the most a list may be high: the canvas less its header, the strip (at its biggest) and a margin each side; fewer
+    //  rows shown if over (its rows scroll): at a big ui scale the window left the canvas (tst ui_layout)
+    const int max_list_height = zox_getv(canvas, LayoutSize).y - 4 * (int) (4 * ui_scale) -
+        calculate_header_size(strlen(header), header_font_size, header_padding).y -
+        (list_font_size + 2 * (int) (3 * ui_scale) + 2 * (int) (4 * ui_scale));
     for (byte t = 0; t < tabs_count; t++) {
-        lists[t] = window_list_data(tab_elements[t], tab_counts[t], int_min(visible_count, int_max(1, tab_counts[t])),
-            list_font_size, padding);
+        byte visible = int_min(visible_count, int_max(1, tab_counts[t]));
         int2 tab_size;
-        window_list_fit(world, canvas, header, &header_font_size, header_padding, &lists[t], 0, scrollbar_width,
-            &list_sizes[t], &scrollview_sizes[t], &scrollbars[t], &tab_size);
+        for (;;) {
+            lists[t] = window_list_data(tab_elements[t], tab_counts[t], visible, list_font_size, padding);
+            window_list_fit(world, canvas, header, &header_font_size, header_padding, &lists[t], 0, scrollbar_width,
+                &list_sizes[t], &scrollview_sizes[t], &scrollbars[t], &tab_size);
+            if (visible <= 1 || list_sizes[t].y <= max_list_height) {
+                break;
+            }
+            visible--;
+        }
         size.x = int_max(size.x, tab_size.x);
         size.y = int_max(size.y, tab_size.y);
     }
