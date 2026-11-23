@@ -355,6 +355,13 @@ void body_combine_system(iter* it) {
         if (body_parts_generating(world, chest_slot)) {
             continue;
         }
+        // its last combine still pending (CombineVox on it, or combine_vox_system's removal of it not merged yet):
+        //  waits for it. Asked again in the frame it combined, the removal (queued in the same stage, no merge between)
+        //  could land after the add, the new list never combined: the second coop player's clothes rebuilt its bones
+        //  but not its voxels, its body drawn deformed (tst split_screen_game)
+        if (zox_has(vox, CombineVox)) {
+            continue;
+        }
         CombineList* voxes = zox_getm(vox, CombineList);
         CombinePositions* positions = zox_getm(vox, CombinePositions);
         CombineDepths* depths = zox_getm(vox, CombineDepths);

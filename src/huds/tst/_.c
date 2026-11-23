@@ -39,6 +39,8 @@ void zox_tsts_huds(ecs* world) {
     zox_tst_set_setup("realm_name_input", NULL, 1);
     zox_tst_add("split_screen", zox_tst_split_screen_ready, zox_tst_split_screen_check, 180);
     zox_tst_set_setup("split_screen", zox_tst_level_setup, 1);
+    zox_tst_add("split_screen_game", zox_tst_split_screen_ready, zox_tst_split_screen_check, 180);
+    zox_tst_set_setup("split_screen_game", zox_tst_split_screen_game_setup, 1);
     zox_tsts_coop(world);
     zox_tsts_game_log(world);
     zox_tst_add("mouse_click", zox_tst_mouse_click_ready, zox_tst_mouse_click_check, 60);

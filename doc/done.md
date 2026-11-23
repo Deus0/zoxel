@@ -1,6 +1,12 @@
 # Done
 
 ## 2026-11-23
+-x Local coop's second player drawn deformed, its camera off (a new game, joined on the main menu): its body was
+  combined with its parts (17), then its clothes put on (22), but that second combine was lost: asked for in the frame
+  its first ran, combine_vox_system's removal of CombineVox (the same stage, no merge between) landed after the add.
+  Its bones were built for 22 parts over the voxels of 17 (3 times the vertices, most on the wrong bones). A body
+  waits while its combine is pending (body_combine_system). tst split_screen_game (the whole world, a gamepad plugged
+  in on the menu, Block Res 5), split_screen: the players' bones, poses and meshes compared
 -x Gravity cubes animated: a block vox playing its blueprint's animations (spawn_blueprint_animation: a VoxAnimation
   whose children are its frames; the block's ModelLink off, ActiveModelLink on, 4 frames each), lights
   chasing round its edges (leds node), a seeded rune lit on its core while it's on (rune node), swapped by
