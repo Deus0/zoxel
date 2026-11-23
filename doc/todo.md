@@ -79,7 +79,6 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
 	- end_game_cleanup: +12 entities left after ending a game (gpu buffers and textures fewer, fine); since 2026-11-21
 	- coop_pause: "No Mouse Found on player" errors (the second player has none); since 2026-11-20
 	- chunk_mesh_flicker: 849 dark flashes (a material's light down a quarter and back), 32 seam holes in a frame
-	- vegetation_chunks: no drawn trees near the player
 	- door_rays: closed, 0 of 12 rays at a door found its neighbour; since 2026-11-21
 - making them faster: the biggest test times first, a world of their own or the void where they don't need a player
   (onboarding "Small and fast"), keep the latest times to compare

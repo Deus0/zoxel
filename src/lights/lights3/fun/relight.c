@@ -36,10 +36,21 @@ void chunk_relight_from_neighbors(ecs* world, entity chunk) {
         const LightOctree* lights = zox_get(above, LightOctree);
         const byte their_depth = zox_getv(above, NodeDepth);
         const int their_length = octree_size(their_depth);
+        // its bottom row copied under its octree lock (its light passes write it on workers: read unlocked it crashed,
+        //  tst vegetation_chunks), the queue filled after (never an octree lock while holding another)
+        byte row[their_length * their_length];
+        spinlock* lock = zox_octree_lock(world, above);
+        zox_octree_lock_begin(lock);
+        for (int x = 0; x < their_length; x++) {
+            for (int z = 0; z < their_length; z++) {
+                row[x * their_length + z] = getv_LightOctree(lights, their_depth, (byte3) { x, 0, z });
+            }
+        }
+        zox_octree_lock_end(lock);
         spin_lock(&sunlight_queue->lock);
         for (int x = 0; x < their_length; x++) {
             for (int z = 0; z < their_length; z++) {
-                const byte light = getv_LightOctree(lights, their_depth, (byte3) { x, 0, z });
+                const byte light = row[x * their_length + z];
                 if (light >= sunlight) {
                     a_SunlightQueue(sunlight_queue, (SunlightUpdate) {
                         .pos = (byte3) { x, their_length - 1, z },
@@ -63,6 +74,16 @@ void chunk_relight_from_neighbors(ecs* world, entity chunk) {
         const int3 dir = get_direction_int3(d);
         const byte axis = dir.x ? 0 : dir.y ? 1 : 2;
         const byte positive = (dir.x + dir.y + dir.z) > 0;
+        // its border copied under its octree lock, then queued
+        byte border[length * length];
+        spinlock* lock = zox_octree_lock(world, neighbor);
+        zox_octree_lock_begin(lock);
+        for (int u = 0; u < length; u++) {
+            for (int v = 0; v < length; v++) {
+                border[u * length + v] = chunk_relight_border_light(lights, their_depth, depth, axis, positive, u, v);
+            }
+        }
+        zox_octree_lock_end(lock);
         spin_lock(&light_queue->lock);
         for (int u = 0; u < length; u++) {
             for (int v = 0; v < length; v++) {
@@ -71,7 +92,7 @@ void chunk_relight_from_neighbors(ecs* world, entity chunk) {
                 mine[a] = u;
                 mine[b] = v;
                 mine[axis] = positive ? length - 1 : 0;
-                const byte light = chunk_relight_border_light(lights, their_depth, depth, axis, positive, u, v);
+                const byte light = border[u * length + v];
                 if (light <= darklight + light_air_decay) {
                     continue;
                 }

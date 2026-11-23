@@ -1,6 +1,11 @@
 # Done
 
 ## 2026-11-23
+-x A segfault as chunks generated (chunk_relight_border_light): a new chunk read its neighbours' LightOctrees unlocked
+  while their light passes wrote them on workers. Their borders are copied under each one's octree lock, the queues
+  filled after (thread_safety.md: no octree lock while holding another)
+-x tst vegetation_chunks found no trees: a new player starts in a town, it clears its trees. It waits for a drawn
+  tree (not 60 frames), moving the player out of a town after 5s, its waits counted as progress
 -x Options tabs (37b74ec2e) broke two tests: the wheel scrolled a hidden tab's list (every tab's scrollview in the same
   place: scrollview_wheel_system skips hidden ones now, tst scroll_wheel), and at a big ui scale the window left the
   canvas (its strip added after the lists were fit: each tab shows fewer rows to fit, tst ui_layout)

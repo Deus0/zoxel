@@ -3,16 +3,11 @@
 //  - near the player: each tree column of a generated tunk, the voxel above the ground is a trunk and the one
 //    above the trunk's top is leaves, read from whichever chunk holds them
 //  - counts trees crossing a chunk's top (often none: tst vegetation_across draws that case)
+//  - waits for a drawn tree, up to 30s; none in 5s (a new player starts in a town, it clears its trees): the player
+//    moved out of it, held in the air, its streaming following
 //  - run: bash bsh/tst.sh vegetation_chunks
 int zox_tst_veg_chunks_frames = 0;
-
-byte zox_tst_vegetation_chunks_ready(ecs* world) {
-    if (!zox_tst_player_spawn_ready(world)) {
-        return 0;
-    }
-    zox_tst_waiting = "vegetation to grow in nearby chunks";
-    return ++zox_tst_veg_chunks_frames > 60;
-}
+int zox_tst_veg_columns = 0, zox_tst_veg_unloaded = 0, zox_tst_veg_cleared = 0;    // tree columns seen, not loaded, cleared
 
 // a voxel at a block position, -1 if its chunk isn't there, generated, at full detail
 static inline int zox_tst_voxel_at(ecs* world, const ChunkLinks* chunks, byte terrain_depth, int3 block) {
@@ -29,7 +24,9 @@ static inline int zox_tst_voxel_at(ecs* world, const ChunkLinks* chunks, byte te
     return getv_VoxelNode(voxels, terrain_depth, local);
 }
 
-void zox_tst_vegetation_chunks_check(ecs* world) {
+// the drawn trees near the player, those crossing a chunk's top and those without leaves
+static inline int zox_tst_veg_count(ecs* world, int* crossing_out, int* no_leaves_out) {
+    zox_tst_veg_columns = zox_tst_veg_unloaded = zox_tst_veg_cleared = 0;
     const entity terrain = local_terrain;
     const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
     const byte terrain_depth = zox_getv(terrain, NodeDepth);
@@ -68,10 +65,13 @@ void zox_tst_vegetation_chunks_check(ecs* world) {
                     const int leaf = zox_tst_voxel_at(world, chunks, terrain_depth, (int3) { column.x, top + 1, column.y });
                     const int ground = zox_tst_voxel_at(world, chunks, terrain_depth, (int3) { column.x, height, column.y });
                     // only trees drawn (on land, not under water or on stone), in loaded generated chunks
+                    zox_tst_veg_columns++;
                     if (trunk < 0 || leaf < 0 || ground <= 0) {
+                        zox_tst_veg_unloaded++;
                         continue;
                     }
                     if (!trunk || trunk == water_id) {
+                        zox_tst_veg_cleared++;
                         continue;   // not drawn here (towns clear them, too low or high), not a chunk issue
                     }
                     trees++;
@@ -82,13 +82,59 @@ void zox_tst_vegetation_chunks_check(ecs* world) {
             }
         }
     }
-    zox_log("[tst] [metric] vegetation_chunks trees [%i] crossing a chunk's top [%i], without leaves [%i]",
-        trees, crossing, no_leaves);
+    *crossing_out = crossing;
+    *no_leaves_out = no_leaves;
+    (void) no_trunk;
+    return trees;
+}
+
+double zox_tst_veg_chunks_start = 0;
+byte zox_tst_veg_moved = 0;
+
+byte zox_tst_vegetation_chunks_ready(ecs* world) {
+    if (!zox_tst_player_spawn_ready(world)) {
+        return 0;
+    }
+    zox_tst_waiting = "a drawn tree in the chunks near the player";
+    if (!zox_tst_veg_chunks_start) {
+        zox_tst_veg_chunks_start = zox_current_time;
+    }
+    zox_tst_progress(zox_tst_veg_chunks_frames);    // waiting on the streaming isn't a stall
+    if (++zox_tst_veg_chunks_frames % 10) {
+        return 0;
+    }
+    int crossing, no_leaves;
+    if (zox_tst_veg_count(world, &crossing, &no_leaves) > 0) {
+        return 1;
+    }
+    // in a town: out of it, over the land
+    const entity character = zox_tst_player_character(world);
+    if (!zox_tst_veg_moved && zox_current_time - zox_tst_veg_chunks_start > 5 && zox_valid(character)) {
+        const float scale = zox_getv(local_terrain, BlockScale);
+        float3 p = zox_getv(character, Position3D);
+        p.x += 48 * scale;
+        p.y += 24 * scale;
+        zox_add(character, DisableGravity);
+        zox_add(character, DisableMovement);
+        zox_setv(character, Velocity3D, float3_zero);
+        zox_setv(character, Position3D, p);
+        zox_tst_veg_moved = 1;
+        zox_log("[tst] vegetation_chunks no trees in 5s (a town?), moved the player [48] blocks away");
+    }
+    return zox_current_time - zox_tst_veg_chunks_start > 35;
+}
+
+void zox_tst_vegetation_chunks_check(ecs* world) {
+    int crossing, no_leaves;
+    const int trees = zox_tst_veg_count(world, &crossing, &no_leaves);
+    zox_log("[tst] [metric] vegetation_chunks trees [%i] crossing a chunk's top [%i], without leaves [%i] after [%.1fs]",
+        trees, crossing, no_leaves, zox_current_time - zox_tst_veg_chunks_start);
+    zox_log("[tst] vegetation_chunks tree columns [%i]: not loaded [%i], cleared (towns, water) [%i]", zox_tst_veg_columns,
+        zox_tst_veg_unloaded, zox_tst_veg_cleared);
     zox_tst_check(trees > 0, "no drawn trees found near the player");
     // crossing trees are rare near the player (hills at a chunk's top): tst vegetation_across checks them every run
     zox_tst_check(!no_leaves, "[%i] of [%i] trees have no leaves above their trunk (a chunk didn't draw its part?)",
         no_leaves, trees);
-    (void) no_trunk;
 }
 
 void zox_tsts_vegetation_chunks(ecs* world) {
