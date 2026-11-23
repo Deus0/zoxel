@@ -64,8 +64,6 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
   (worked out and not saved, as light), power spread from generators through wires, doors, lamps and gravity cubes
   switched by it; coarse lod reads a parent's max
 
-- A blocks tool (bsh/tools/blocks.sh, doc/engine/tools.md): every block's baked faces into tst/blocks/, and a scene of
-  the placed model blocks (grass, flowers, doors) several times each, to see their variations
 - Base blocks (stone, bricks, soil, sand) as blueprints (models/ins/block_blueprint.c, as the gravity cube)
 - Model nodes: one observer on Begin calling the node's function by its NodeType (a table), in place of a system or
   observer a node type each that all check every node (sys/fill.c, colors.c, size.c, eve/mutate.c, traces.c)
@@ -253,6 +251,8 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
   gpu_mesh, compare_backends, compare_meshing, sample_report, code_stats. Those that run a `*_views` test become a
   game flag doing the job and quitting (as `--maps`, towns/dbg/maps_dump.c), the test then calls the same functions
   and checks what they make (the views a test checks stay tests, the ones only looked at become tools)
+- A blocks tool (bsh/tools/blocks.sh, doc/engine/tools.md): every block's baked faces into tst/blocks/, and a scene of
+  the placed model blocks (grass, flowers, doors) several times each, to see their variations
 
 # The mouse turns the head, the camera rides it (2026-11-22)
 - the look's pitch is the first person camera's own turn on the head: the head bone stays straight ahead, so other
