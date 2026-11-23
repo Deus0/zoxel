@@ -72,13 +72,13 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 # Test Fixes
 Failing tests from full runs, worked through slowly; making tests smaller and faster is ongoing too (onboarding
 section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what's known.
-- 2026-11-23 full run (bb446086d, 395 tests, 3 in parallel): 377 passed. Rerun alone, these 6 passed (flaky under
-  load): punch_wind_up, tables_stream (a step made 237 tables, over 200), map_pixel, door_save, stream_seams,
-  town_furniture. These 12 fail alone too:
-	- aesthetic_particles, aesthetic_town pass again but their player spawns after ~80s (far 16, llvmpipe): slower since
-	  b53bd6fac (light floods and sunbeams on a time budget a frame), worth speeding up
-	- coop_pause: "No Mouse Found on player" errors (the second player has none); since 2026-11-20
-	- chunk_mesh_flicker: 849 dark flashes (a material's light down a quarter and back), 32 seam holes in a frame
+- 2026-11-24 full runs: 391 of 395 pass (the rest pass alone, flaky under load: stream_seams, tables_stream,
+  punch_wind_up, map_pixel, door_save, town_furniture)
+- chunk_mesh_flicker, stream_seams: rare seams left, doc/plans/chunk_lods.md
+- aesthetic_town, aesthetic_particles: the player spawns after ~80s (far 16), slower since b53bd6fac's light budgets
+- coop_pause: its shared canvas only sometimes takes a low id (logged), a sure way needs flecs: ask first
+- worlds: tests on the whole game get a random world each run, so some fail only on some worlds; give a test a seed
+  (zox_tst_seed in its setup, as vegetation_chunks) where its check needs a kind of land
 - making them faster: the biggest test times first, a world of their own or the void where they don't need a player
   (onboarding "Small and fast"), keep the latest times to compare
 
@@ -101,8 +101,7 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
 - tentacles shouldnt pierce through terrain lol
 -x arm fix regressed arms, the shoulders need to rotate up, so arm reaches into the sky
 	-x the arm now is out the way, but it bends unnaturally to the side rather than feeling like a game hand
-- seams still flash where lods meet walking, rarely: tst chunk_mesh_flicker sees them in 15 of 560 frames (2026-11-23),
-	mostly a chunk's two materials (solid and one that doesn't hide it) swapping on different frames
+- seams still flash where lods meet walking, rarely: doc/plans/chunk_lods.md
 - lights at lods (2026-11-23): tst chunk_mesh_flicker logs steps as lods swap (a coarse lod's upward faces lighter
 	than a fine one's, 27 to 238 at the coarsest: one light a cell, its lit air's mean): a coarse cell's light from the
 	air over its faces' own voxels, not its whole cell's; and play test the dark flicker flying (vulkan) after the fix
