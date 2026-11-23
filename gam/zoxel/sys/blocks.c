@@ -241,6 +241,16 @@ void blocks_realm_spawn_system(iter* it) {
                 link_hit_sound(world, e3, e, &hit_sound_water);
             }
         }
+        // a gravity cube: a right click switches it on or off (block_data_active), on it flips gravity round it
+        //  (terrain/gravity); last, the blocks before it keep their indices
+        {
+            lint block_seed = seed->value + (seed_offset+=seed_shift);
+            const color gravity_color = (color) { 150, 70, 220, 255 };
+            entity model = spawn_model_stone(world, e, block_seed, gravity_color);
+            entity e2 = spawn_realm_block_solid(world, prefab_block_baked, e, block_seed, "gravity cube", gravity_color, model, dbg_log);
+            zox_add(e2, BlockGravity);
+            link_hit_sound(world, e2, e, &hit_sound_stone);
+        }
         zox_add(e, BlocksDirty);
         if (dbg_log) {
             zox_log("Realm [%s] Spawning [Blocks]", zox_get_name(e));

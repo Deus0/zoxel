@@ -53,6 +53,15 @@ profile each, systems and observers counted together):
 - dead commented systems: find and remove the rest (5 removed 2026-11-21)
 Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap, door_rays.
 
+- Gravity fields (terrain/gravity, 2026-11-23), more:
+	- particles and water flow pulled by the field too, driven top down (from the chunk's field to what's in it, not
+	  each particle looking it up) so it scales
+	- movement, auto jump, swimming and the camera along a character's up; turn its body to its up (it stands on a
+	  ceiling upright now)
+	- dropped items, pickups and npcs with TerrainGravity (npcs have it: characters), check they cope
+	- a sound and a look for a gravity cube switched on (it's a plain purple stone now)
+	- a test that a cube saved switched on flips gravity again once loaded (the load's VoxelNodeDirty rebuilds it)
+
 # Bugs
 - walk_bob fails on master (2026-11-23, e026107c0): the head bobbed 0cm over 11 steps, turned 0 times
 - physics on lower lod chunks used to bug (not sure anymore, might still glitch)

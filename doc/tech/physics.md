@@ -126,6 +126,29 @@ nothing ever sweeps from an old position to a new one. With drag, an exact step 
 not `v_end * dt`, so the collision corrects for that (exact under drag alone). Forces leave it off by at most
 `|a| dt² / 2` (5cm at 10fps, 1.4mm at 60fps), well within the push-out's reach.
 
+## Gravity fields (terrain/gravity)
+
+A terrain chunk has a `GravityOctree` beside its voxels, as its `LightOctree`: where gravity pulls, a byte a voxel.
+0 is the realm's own (`zox_default_gravity`, down), else a direction, `1 + axis * 2 + (1 along +axis)`
+(`gravity_pull`).
+
+- **A gravity cube** (`BlockGravity`, gam/zoxel/sys/blocks.c) switched on flips gravity in a sphere of
+  `gravity_radius` (4) blocks round it, to voxel centres. On is `block_data_active` in its block data, as an open
+  door's: a right click toggles it (`block_use`, `block_toggle`), and it's saved with its chunk. Where spheres
+  overlap each flips it again (two make it down).
+- **Worked out from the cubes**, not stored: `gravity_rebuild` gathers the cubes switched on in a chunk and the 26
+  round it (a sphere reaches one chunk at most) and flips each voxel in their spheres. Full detail chunks only.
+- **When**: an observer on `VoxelNodeDirty` (a chunk generated, loaded or edited: a cube dug out while on, in its
+  queue's old data, rebuilds the chunks it reached) and a toggle (`gravity_dirty_around`) add `GravityDirty`, a non
+  fragmenting event; its observer rebuilds the chunk on the main thread, between systems.
+- **Bodies**: one with the `TerrainGravity` tag (characters) takes its `Gravity3D` from the field at its centre every
+  frame (`terrain_gravity_system`, zoxp_update), so a cube toggled under it flips it without it moving. A body
+  without the tag keeps its own (particles, the physics tests').
+- A jump pushes against its gravity (`jump_force_system`, `physics3_up`).
+- **Debug**: the gizmos' Gravity button draws every node that doesn't pull down, coloured by direction, in the
+  camera's chunk and a chunk round it (as the lights' button, which reaches as far now).
+- tst gravity_cube: a sphere exactly, across a chunk's side, overlaps, dug out, a body flipped and rising.
+
 ## Setting a velocity each frame
 
 Movement that sets a velocity rather than pushing (XR walking, `player3d_move_direct`, `xr_room_walk_system`)
@@ -195,6 +218,6 @@ khadas board: about 150ns a 2D body a frame, 470ns a 3D body (2026-11-12).
 - Rolling is exact at constant speed. A rolling body slowing under friction slips a little within a frame.
 - Spin about a changing axis (alpha not along omega) is very close, not exact.
 - Bodies against each other: only sphere overlap events (`sphere_collide_system`, O(n²)), no response.
-- Movement, jumps, auto jump, swimming and the camera still take up as +y; gravity in any direction is only
-  the physics and terrain collisions so far.
+- Movement, auto jump, swimming and the camera still take up as +y, and a character isn't turned to its up (it
+  stands on a ceiling feet first, upright); jumps, the physics and terrain collisions follow gravity.
 - Tumbling: collisions never make spin, so a cube can't tip, rock or roll over its edges (in doc/todo.md, Physics).

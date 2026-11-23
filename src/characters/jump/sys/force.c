@@ -1,6 +1,6 @@
 float zox_jump_power = 6.0f;
 
-// this is having issues now due to new collision detect
+// a jump pushes against its gravity (physics3_up, any direction: a gravity cube's flip), +y without one
 void jump_force_system(iter* it) {
     zox_sys_on_begin();
     init_delta_time();
@@ -8,6 +8,7 @@ void jump_force_system(iter* it) {
     //zox_sys_in(Velocity3D);
     zox_sys_out(Acceleration3D);
     zox_sys_out(Jump)
+    zox_sys_in(Gravity3D);
     for (int i = 0; i < it->count; i++) {
         // zox_sys_i(Velocity3D, vel);
         zox_sys_o(Acceleration3D, acc);
@@ -19,7 +20,8 @@ void jump_force_system(iter* it) {
         if (dt > jump->value) {
             dt = jump->value;
         }
-        acc->value.y += (zox_jump_power / zox_jump_time) * (dt / delta_time);
+        const float3 up = physics3_up(Gravity3D_ ? Gravity3D_[i].value : float3_zero);
+        acc->value = float3_add(acc->value, float3_scale(up, (zox_jump_power / zox_jump_time) * (dt / delta_time)));
         jump->value -= dt;
         //acc->value.y += zox_jump_power / zox_jump_time;
         // jump->value -= delta_time;

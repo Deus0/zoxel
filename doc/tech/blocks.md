@@ -64,7 +64,8 @@ What the one byte holds today (`get_block_data` / `set_block_data`):
 
 `block_activate_system` (src/vodes/activations, multithreaded): an entity with `TriggerActionB`, `RaycastVoxelData`
 and `RaycastRange`, the frame its right click is active, its ray on a block in reach: the block's kind picks what
-happens, a door `door_toggle`, a bed `character_sleep` (vodes/beds). tst block_activate.
+happens (`block_use`), a door `door_toggle`, a bed `character_sleep` (vodes/beds), a gravity cube `block_toggle`
+(its field round it again, terrain/gravity, doc/tech/physics.md). tst block_activate, gravity_cube.
 
 ## Doors now
 
@@ -78,6 +79,7 @@ happens, a door `door_toggle`, a bed `character_sleep` (vodes/beds). tst block_a
 
 Activated states (a door open, later redstone power) in an octree of their own a chunk, not in `BlockDatas`;
 `BlockDatas` stays for a block's data that doesn't change (directions, filler offsets, later a sign's text).
+For now (the user, 2026-11-23) a gravity cube keeps its state as a door does, `block_data_active` in `BlockDatas`.
 
 | | array (`BlockDatas` now) | activation octree |
 |---|---|---|

@@ -46,6 +46,10 @@ void zox_dbg_ui_gizmos(ecs* world, int32_t keycode) {
         .on_click = { &zox_dbg_cycle_light_debug },
     };
     elements[elements_count++] = (SpawnListElement) {
+        .text = "Gravity Gizmos",
+        .on_click = { &zox_dbg_toggle_gravity_debug },
+    };
+    elements[elements_count++] = (SpawnListElement) {
         .text = "Bones",
         .on_click = { &bones_debug_toggle },
     };

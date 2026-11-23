@@ -134,9 +134,12 @@ void zox_tst_block_activate_check(ecs* world) {
 }
 
 #include "door_rays.c"
+#include "gravity_cube.c"
 
 void zox_tsts_activations(ecs* world) {
     zox_tst_add("block_activate", zox_tst_block_activate_ready, zox_tst_block_activate_check, 60);
     zox_tst_set_setup("block_activate", NULL, 1);
+    zox_tst_add("gravity_cube", zox_tst_gravity_cube_ready, zox_tst_gravity_cube_check, 60);
+    zox_tst_set_setup("gravity_cube", NULL, 1);
     zox_tsts_door_rays(world);
 }

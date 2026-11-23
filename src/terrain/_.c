@@ -32,6 +32,7 @@ int stream_slots_lod = 0, stream_slots_distance = 0, stream_slots_spawn = 0;
 #include "dbg/_.c"
 #include "sys/_.c"
 #include "collisions/_.c"
+#include "gravity/_.c"
 #ifdef zox_tests
 #include "tst/_.c"
 #endif
@@ -57,6 +58,7 @@ void import_terrains(ecs* world) {
     add_hook_spawn_prefabs(spawn_prefabs_terrain);
     add_hook_spawn_prefabs(zox_events_terrain);
     zox_add_module(terrain_collisions);
+    zox_add_module(gravities);
 #ifdef zox_tests
     zox_tst_add_level(zox_tst_level_terrain);
 #endif

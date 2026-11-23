@@ -14,6 +14,7 @@ zox_tag(BlockDoor);        // 1 x 2 x 1 blocks
 zox_tag(BlockLamp);        // a street lamp, 1 x 3 x 1 blocks, its head lights (towns/sys/walls.c)
 zox_tag(BlockFiller);      // the rest of a bed or door: solid, drawn by the base (items/fun/multi_block.c)
 zox_tag(BlockGlowStone);   // glows (BlockLight), on homes' roofs (towns/sys/walls.c)
+zox_tag(BlockGravity);     // a gravity cube: switched on, it flips gravity round it (terrain/gravity)
 zox_tag(BlockSoil);
 zox_tag(BlockSoilGrass);
 zox_tag(BlockGrass);
@@ -58,6 +59,7 @@ void zox_components_terrain(ecs *world) {
     zoxd_tag(BlockLamp);
     zoxd_tag(BlockFiller);
     zoxd_tag(BlockGlowStone);
+    zoxd_tag(BlockGravity);
     zoxd_tag(BlockSoil);
     zoxd_tag(BlockSoilGrass);
     zoxd_tag(BlockGrass);

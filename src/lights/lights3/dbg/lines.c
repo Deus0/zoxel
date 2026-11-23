@@ -119,8 +119,8 @@ void light_octree_debug_system(iter* it) {
         zox_sys_i(VoxelNode, vnode);
         zox_sys_i(LightOctree, lights);
         zox_sys_i(RenderDepth, depth);
-        // NOTE: Only debugs inside of chunk
-        if (distance->value > 0 || !(positionc->value.y >= 0 && positionc->value.y <= 4)) {
+        // NOTE: the camera's chunk and a chunk round it
+        if (distance->value > 1 || !(positionc->value.y >= 0 && positionc->value.y <= 4)) {
             continue;
         }
         // TODO: Limit to distance from camera

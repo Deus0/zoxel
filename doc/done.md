@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-23
+-x Gravity cubes: a terrain chunk's GravityOctree (terrain/gravity), a gravity cube switched on (a right click,
+  block_data_active as a door) flips gravity in a sphere of 4 blocks round it, bodies with TerrainGravity
+  (characters) pulled by it, jumps along their up, a Gravity gizmos button. tst gravity_cube
 -x Couldn't jump up a block into a door (a house's floor a block up): a body 1.969 blocks tall has 0.03 blocks of room
   in a gap 2 tall, and pressed against the wall over the step, the push-out sent it back off the step's top every
   frame it fell past it. A body pushed back sideways off a block it's moving into is lifted onto it (half a block at
