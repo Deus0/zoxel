@@ -22,6 +22,10 @@ entity spawn_realm(
     zox_instance(prefab_realm);
     zox_name("realm");
     zox_setv(e, Seed, seed);
+#ifdef zox_tests
+    // a test on a random world that fails runs again on it: zox_tst_seed=<seed> bash bsh/tst.sh <name>
+    zox_log("[tst] world seed [%lld]", (long long) seed);
+#endif
     // global math function, bad
     set_noise_seed(seed);
     // zox_set_parent(world, e, game);

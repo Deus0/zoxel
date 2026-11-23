@@ -83,8 +83,7 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
 	- chunk_mesh_flicker passes (2026-11-24): its material light dips are logged, not failed (they move with the faces,
 	  no flash in play, the user checked), seams fail past 1 frame in 20. Last: fix the rare seams (2 to 5 frames of
 	  ~280 walking, often where lods meet), then fail on any again
-- 2026-11-24 second full run: 391 of 395 passed, the 4 passed alone. town_homes once: "[1] homes' doors have no
-  road" (a random world: a rare generation case, find its seed); stream_seams once: a hole (the seams, last)
+- 2026-11-24 second full run: 391 of 395 passed, the 4 passed alone. town_homes once (fixed, below); stream_seams once: a hole (the seams, last)
 - worlds: tests on the whole game get a random world each run, so some fail only on some worlds; give a test a seed
   (zox_tst_seed in its setup, as vegetation_chunks) where its check needs a kind of land
 - making them faster: the biggest test times first, a world of their own or the void where they don't need a player

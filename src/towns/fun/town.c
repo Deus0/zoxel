@@ -173,6 +173,17 @@ void town_roads_build(uint seed, const TownShape* shape, const TownHome* homes, 
         const int2 door = int2_add(homes[i].center, build_turn(homes[i].facing, 0, home_half_local(&homes[i]).y + 1));
         points[count++] = (float2) { door.x, door.y };
     }
+    // beside each door, along its front a block past its sides: a door with a home close in front of it saw no other
+    //  waypoint clearly (its corners' ones in the other's margin) and got no road (tst town_homes, 1 world in 5)
+    for (byte i = 0; i < homes_count; i++) {
+        const int out = home_half_local(&homes[i]).y + 1, across = home_half_local(&homes[i]).x + 1;
+        for (int side = -1; side <= 1 && count < town_waypoints_max; side += 2) {
+            const int2 p = int2_add(homes[i].center, build_turn(homes[i].facing, side * across, out));
+            if (town_inside(shape, p, 1) && !town_in_home(homes, homes_count, p, 0)) {
+                points[count++] = (float2) { p.x, p.y };
+            }
+        }
+    }
     // each home's corners, round it
     for (byte i = 0; i < homes_count; i++) {
         for (byte c = 0; c < 4 && count < town_waypoints_max; c++) {

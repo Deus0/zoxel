@@ -301,8 +301,13 @@ void zox_tst_town_homes_check(ecs* world) {
             // off the square, a road from its door
             on_square += abs(c.x - tc.x) <= s.x / 2 + town_square_half && abs(c.y - tc.y) <= s.y / 2 + town_square_half;
             const TownHome h = town_home(world, homes[a]);
-            doors_off_road += !road_segments_at(roads, int2_add(h.center, build_turn(h.facing, 0, home_half_local(&h).y + 1)),
-                town_road_half + 0.5f, NULL);
+            const int2 door = int2_add(h.center, build_turn(h.facing, 0, home_half_local(&h).y + 1));
+            const byte off_road = !road_segments_at(roads, door, town_road_half + 0.5f, NULL);
+            doors_off_road += off_road;
+            if (off_road) {
+                zox_log("[tst] town_homes a door off road: home [%ix%i] half [%ix%i] facing [%i], its door [%ix%i], the town at [%ix%i] size [%ix%i]",
+                    h.center.x, h.center.y, h.half.x, h.half.y, h.facing, door.x, door.y, tc.x, tc.y, s.x, s.y);
+            }
             // along each road's middle a block at a time, not inside this home (its own door's road starts in its margin)
             for (int r = 0; r + 1 < roads->length; r += 2) {
                 const int3 p = roads->value[r], q = roads->value[r + 1];

@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-23
+-x A home's door had no road in 1 world of 5 (tst town_homes, seeds 3411554955, 2887558293): with a home close in front
+  of it, every line from its door crossed a home (its corners' waypoints in the other's margin), the roads' search
+  never reached it. Each door has a waypoint beside it each side now, along its front. Tests log their world's seed
+  ([tst] world seed, zox_tst_seed=<seed> runs one again)
 -x Second full run (391 of 395, the rest pass alone): tst vegetation_chunks runs on one world (zox_tst_seed 666, a
   random one sometimes had no tree round its spawn for a minute); block_vox_hits looks for room in the columns beside
   the player's too (a town or hills round it: 100s searching)
