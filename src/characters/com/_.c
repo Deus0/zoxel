@@ -6,7 +6,7 @@ zox_tag(CharacterLink);
 zox_tag(CharacterLinks);   // links to many character metas, i.e. from a realm
 zox_tag(CharacterSlime);   // a slime character meta
 zox_tag(Villager);         // a character meta living in towns, spawns most there (npcs/fun/population.c)
-zox_tag(Monster);          // a character meta of the wild, spawns little in towns (npcs/fun/population.c)
+zox_tag(Monster);          // a character meta of the wild, none spawn in towns, villagers fight them (npcs/fun/population.c)
 zox_tag(Critter);          // a character meta of animals (chickens, penguins), spawns the same anywhere
 // who a character is (its id window, stats/ui/ins/id.c), each links to its data (races, classes, jobs, clans modules),
 //  none until they're made

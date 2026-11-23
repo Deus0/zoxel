@@ -39,8 +39,7 @@ void zox_systems_npcs(ecs *world) {
         zoxp_update,
         [in] core.Target,
         [in] combat.CombatState,
-        [none] ai.Npc,
-        [none] characters.Monster
+        [none] ai.Npc
     );
     zox_system(
         behaviour_system,

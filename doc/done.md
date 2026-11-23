@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-23
+-x Monsters spawned in towns (a tenth of their weight inside the walls): none inside now, fading in over the falloff
+  past the walls (npc_spawn_weight). tst population
+-x Villagers fight monsters: their sight sees monsters before players (npc_sight_system), and a villager that sees one
+  goes into battle with it (monster_aggro_system), guarding their town's gates. tst villager_guard
 -x ActiveOctree: what's switched on (a door open, a gravity cube on) in its own octree a chunk, saved as a section,
   out of BlockDatas (block_data_active gone); the lights' old filler rule (old saves' doors) and tst door_old_filler
   removed (no back compat)

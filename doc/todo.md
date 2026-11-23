@@ -14,7 +14,6 @@
 	- curve difficulty by stats, which should be scaled by level too
 	- tentacle can go through walls and through enemies, it should be detected when particle hits you atm and stop when it hits other stuff
 - Humanoids in town
-	- make attack monsters when they see them
 	- give them clothes too
 - Add a female humanoid
 - rework color picking, centralize in realm, give themes, color entities

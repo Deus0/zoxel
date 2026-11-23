@@ -77,7 +77,7 @@ void zox_tst_population_check(ecs* world) {
         100 * wild[1] / wild_total);
     zox_tst_check(wild[0] == 2 && wild[1] == 75 && wild[2] == 20, "the wild doesn't roll as the spawn chances");
     zox_tst_check(town[0] / town_total > 0.3f, "towns spawn [%.0f%%] villagers, a good share should be", 100 * town[0] / town_total);
-    zox_tst_check(town[1] / town_total < 0.1f, "towns spawn [%.0f%%] monsters, few should be", 100 * town[1] / town_total);
+    zox_tst_check(town[1] == 0, "towns spawn [%.0f%%] monsters, none should", 100 * town[1] / town_total);
     zox_tst_check(town[2] > wild[2] && town[2] / town_total > 0.3f, "towns spawn [%.0f%%] animals, a good share should be",
         100 * town[2] / town_total);
     // the wild still spawns some: a chunk at the base population, over many seeds, rolls about rate * base / 255 npcs

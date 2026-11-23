@@ -12,7 +12,11 @@
 //  - tst/slime_tentacle/out.ppm and back.ppm, the tentacle at full stretch and drawn back: out.ppm has its green
 //    between the slime and the player (its particles drawn, not only spawned)
 //  - run: bash bsh/tst.sh slime_tentacle
+// tst: villager_guard, villagers fight monsters that come to their town (ai/sys/sight.c)
+//  - a villager facing a slime 3 away (the slime facing away, idle): the villager goes into battle, the slime its attacker
+//  - run: bash bsh/tst.sh villager_guard
 entity zox_tst_monsters[2];
+entity zox_tst_guard = 0;
 int zox_tst_tentacle_bits = 0;          // the most particles seen out
 float zox_tst_tentacle_before = -1;     // the player's health as it started
 float zox_tst_tentacle_after = -1;      // as it ended
@@ -261,7 +265,55 @@ void zox_tst_slime_tentacle_check(ecs* world) {
     zox_tst_check(green >= 2, "its tentacle wasn't drawn: [%i%%] green between the slime and the player", green);
 }
 
+byte zox_tst_villager_guard_ready(ecs* world) {
+    if (!zox_tst_player_spawn_ready(world)) {
+        return 0;
+    }
+    const float3 offsets[1] = { { 3, 0, 4 } };
+    const float3 facings[1] = { { 1, 0, 0 } };      // away from the villager
+    if (zox_tst_monsters_stage == 9) {
+        return 1;
+    }
+    if (zox_tst_monsters_stage < 2) {
+        if (zox_tst_monsters_spawn(world, 1, offsets, facings) && zox_tst_monsters_stage == 1) {
+            const entity character = zox_tst_player_character(world);
+            const entity realm = zox_get_link(world, character, RealmLink);
+            const entity villager = zox_tst_realm_humanoid(world, realm);
+            if (!zox_valid(villager)) {
+                zox_tst_check(0, "the realm has no villager character prefab");
+                zox_tst_monsters_stage = 9;
+                return 1;
+            }
+            const float3 p = float3_add(zox_getv(character, Position3D), (float3) { 0, 0, 4 });
+            zox_tst_guard = spawn_character3_npc(world, villager, realm, zox_get_link(world, character, TerrainLink),
+                31, 0, 0, p, zox_tst_facing((float3) { 1, 0, 0 }), NULL);
+            zox_remove(zox_tst_guard, Coward);
+            zox_setv(zox_tst_guard, DefaultBehaviour, zox_behaviour_idle);
+            zox_tst_monsters_time = zox_current_time;
+            zox_tst_monsters_stage = 2;
+        }
+        return 0;
+    }
+    zox_tst_waiting = "the villager to fight the slime";
+    const entity e = zox_tst_guard;
+    return (zox_valid(e) && zox_getv(e, CombatState) == zox_combat_battle) || zox_current_time - zox_tst_monsters_time > 8;
+}
+
+void zox_tst_villager_guard_check(ecs* world) {
+    const entity guard = zox_tst_guard, slime = zox_tst_monsters[0];
+    zox_tst_check(zox_valid(guard) && zox_valid(slime), "the villager or the slime is gone");
+    if (!zox_valid(guard) || !zox_valid(slime)) {
+        return;
+    }
+    zox_log("[tst] villager_guard combat [%i] sees the slime [%i] its attacker [%i]", zox_getv(guard, CombatState),
+        zox_getv(guard, Target) == slime, zox_get_link(world, guard, AttackerLink) == slime);
+    zox_tst_check(zox_getv(guard, CombatState) == zox_combat_battle, "the villager didn't fight the slime, [%i]", zox_getv(guard, CombatState));
+    zox_tst_check(zox_get_link(world, guard, AttackerLink) == slime, "the villager's attacker isn't the slime");
+}
+
 void zox_tsts_monsters(ecs* world) {
+    zox_tst_add("villager_guard", zox_tst_villager_guard_ready, zox_tst_villager_guard_check, 120);
+    zox_tst_set_setup("villager_guard", zox_tst_level_setup, 0);
     zox_tst_add("slime_tentacle", zox_tst_slime_tentacle_ready, zox_tst_slime_tentacle_check, 120);
     zox_tst_set_setup("slime_tentacle", zox_tst_level_setup, 0);
     zox_tst_add("monster_sight", zox_tst_monster_sight_ready, zox_tst_monster_sight_check, 120);
