@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-23
+-x ~100mb leaked a game (AddressSanitizer: 187mb over 2 games): chunk_textured_build_system set a mesh's arrays over
+  its last build's without freeing them, every rebuild (lods, lights). It frees them first now (as build_colored's
+  clear_mesh); the heap grows ~6mb a game. tst end_game_cleanup leaves the menu's music notes out of its count (they
+  grow as it plays, +4 read as a leak) and fewer buffers, textures or entities left aren't a leak
 -x tst door_rays measured the closed door's rays the frame its block vox spawned, before they'd hit (12 misses). It
   waits for every ray's hit (300 frames at most, a real miss still fails)
 -x tst aesthetic_town, aesthetic_particles stalled: with far land every chunk streams in a minute before they're all

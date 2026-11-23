@@ -354,7 +354,12 @@ void chunk_textured_build_system(iter* it) {
             depth->value,
             0,
             dbg_log);
-        // Set Entity data from Dynamic Arrays
+        // Set Entity data from Dynamic Arrays, the last build's freed first (they leaked ~100mb a game, chunks rebuild
+        //  as their lods and lights change: tst end_game_cleanup's heap)
+        dispose_MeshIndicies(indicies);
+        dispose_MeshVertices(verts);
+        dispose_MeshUVs(uvs);
+        dispose_MeshColorRGBs(colors);
         indicies->length = mesh_data.indicies->size;
         verts->length = mesh_data.vertices->size;
         uvs->length = mesh_data.uvs->size;

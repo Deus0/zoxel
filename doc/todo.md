@@ -77,7 +77,6 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
   town_furniture. These 12 fail alone too:
 	- aesthetic_particles, aesthetic_town pass again but their player spawns after ~80s (far 16, llvmpipe): slower since
 	  b53bd6fac (light floods and sunbeams on a time budget a frame), worth speeding up
-	- end_game_cleanup: +12 entities left after ending a game (gpu buffers and textures fewer, fine); since 2026-11-21
 	- coop_pause: "No Mouse Found on player" errors (the second player has none); since 2026-11-20
 	- chunk_mesh_flicker: 849 dark flashes (a material's light down a quarter and back), 32 seam holes in a frame
 - making them faster: the biggest test times first, a world of their own or the void where they don't need a player
