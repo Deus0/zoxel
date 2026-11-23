@@ -337,12 +337,14 @@ The loop:
   build errors`). Several people commit here: check `git status` and `git log` first, and only commit your own
   files, by path.
 - **Commit messages:**
-  - The header (first line) is brief: 140 characters at most, lower case, what changed.
+  - The header (first line) is one contained idea or task, not a list: usually under 5 words, lower case
+    (`jumping into doors`, `gravity any direction`). No commas or "and" joining several changes: those go in the
+    dot points, or in commits of their own.
   - Keep it to the change itself: nothing about how it was made, and no trailers at the end.
   - Details go after a blank line, as dot points:
 
   ```text
-  windows crashes logged with their module and offset
+  windows crash logs
 
   - the crash handler writes the faulting module and its offset
   - test logs are unbuffered, so a crash keeps its last lines
