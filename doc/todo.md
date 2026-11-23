@@ -1,12 +1,61 @@
 # Todo
 
-## Notes
+# Notes
 - Bugs first, then by module (play test notes first in each). Done items move to [done.md](done.md).
 - Refactors are a section here (# Refactors). Also see:
   [Optimizations](#optimizations) (performance), [New](#new) (new modules and features), [Delayed](#delayed), [Whimsy](#whimsy), [Future](#future) (bigger
   ideas), [gdd/caves.md](gdd/caves.md) (caves design)
+  
+# Dropbox (Sort These)
+- Make level 1 slimes weaker
+	- make movement by their movement speed stat
+	- theyre hard to hit atm
+	- when they are readying a hit, make slower
+	- curve difficulty by stats, which should be scaled by level too
+	- tentacle can go through walls and through enemies, it should be detected when particle hits you atm and stop when it hits other stuff
+- Humanoids in town
+	- make attack monsters when they see them
+	- give them clothes too
+- Add a female humanoid
+- rework color picking, centralize in realm, give themes, color entities
+	- pick themes per realm
+	- color entities
+	- assign colors to blocks
+- Fade in terrain chunks
+- Fade between chunk meshes
+- Light up character models like block voxes
+- Outline Rendering on Vox Models, dark outline
+- Day Night Cycle
+- New game for local coop - second player camera is off
+- Cant jump into doors, if im next to a block, and door is open above it, cant jump through
+- we should lower houses anyway so theyre on ground, but still be good to fix this
+- Navigator cant click on wake button - just make sure its selectable - with navigation - and auto selected on opened
+- Use waveform collapse on the slime model, like pengus and chooks, slems
+- Add loading screen info, underneat 'Loading\n[1/299] Nearby Tunks Loaded'
+- npcs outside nnear distance appear as lod 0, giant blocks, we should probably hide them instead
+- optimize and reduce tests times
+	- use void space / min entities
+	- tackle the bigges test times first
+	- keep the records of latest test results up in doc/results.md to compare
+- instead of extending cameras, just spawn a child stream point and attach to them
+States, events and tags, by doc/tech/states.md (nf tags and observers for events, systems for heavy work, fewer tags;
+profile each, systems and observers counted together):
+- texts' dirty: keep the core Dirty / Update (doc/plans/core_dirty.md option 1) until texts show in a profile's
+  "moved most", then their own pair and a non fragmenting core Dirty (option 2)
+- the game and player states together (GameStateDirty, PlayerStateDirty: a 3 frame machine, tags made the game clean
+  up before the players saw the end): tag states (Paused, Playing..) with observers, the guard as its own step
+- the action timers (ActivateBegin, WarmupState, Activate, CooldownState, TriggerActionA/B/E, ActiveActionDirty):
+  are they steps, or tags with times
+- Select's pair (tooltip_select_system needs a system tag) and Begin / End / Exit (model node systems, heavy): keep,
+  or one fragmenting tag removed by a phase end system
+- a grid laid out again when its elements change (only at spawn now)
+- the bulk byte states (StreamDirty, StreamDirty2, NpcSpawnZoneDirty, LightNodeDirty, RenderDepthDirty,
+  RenderDistanceDirty): leave, unless a profile shows their increment systems
+- dead commented systems: find and remove the rest (5 removed 2026-11-21)
+Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap, door_rays.
 
-## Bugs
+# Bugs
+- physics on lower lod chunks used to bug (not sure anymore, might still glitch)
 - alt tab on windows, mouse lock stays locked
 - mouse now doesnt go over hte shared player canvas, make mouse on a seperate canvas over others
 - a home's room keeps some light after its glow stone goes, 1 run in 2 (tst home_dark: 28 to 134 in a few rooms,
@@ -22,8 +71,16 @@
 - tentacles shouldnt pierce through terrain lol
 -x arm fix regressed arms, the shoulders need to rotate up, so arm reaches into the sky
 	-x the arm now is out the way, but it bends unnaturally to the side rather than feeling like a game hand
-- lod mesh seems - seem to have come back - moving around chunks, i see holes in the wall meshes, big ones arnt drawing faces next to small ones
-	- tested on vulkan
+- seams still flash where lods meet walking, rarely: tst chunk_mesh_flicker sees them in 15 of 560 frames (2026-11-23),
+	mostly a chunk's two materials (solid and one that doesn't hide it) swapping on different frames
+- lights at lods (2026-11-23): tst chunk_mesh_flicker logs steps as lods swap (a coarse lod's upward faces lighter
+	than a fine one's, 27 to 238 at the coarsest: one light a cell, its lit air's mean): a coarse cell's light from the
+	air over its faces' own voxels, not its whole cell's; and play test the dark flicker flying (vulkan) after the fix
+- before committing 2026-11-23's lod work: tst all had 21 fail (other tests ran beside it); alone gpu_restore,
+	gpu_restore_game (the picture's colour changed after a restore) and camera_filter (cubes not drawn) fail, sky_clouds and
+	vegetation_chunks pass; highways, coop_skybox, scroll_wheel, navigator, place_hit, crouch, walk_bob, resume_no_punch,
+	xr_play, xr_body, xr_lean not rerun. Suspect windows' get_time_ms fix (budgets now spent) or first meshes waiting
+	for the lod swap; lint_systems: chunk3_save_dirty_system and maps_dump_system lack zox_sys_on_begin/end (older)
 -x The mirror no longer updating when the player mesh does, will need a test for that and a fix (when i update hat it stays the same as old hat), mirror ui
 - release builds have a ton of debug uis in them
 	- just finish the terminal ui
@@ -172,13 +229,13 @@
 # Refactors
 Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [done.md](done.md).
 
-## Tools out of the test harness (2026-11-22)
+# Tools out of the test harness (2026-11-22)
 - Move the looking tools into bsh/tools (doc/engine/tools.md): body, poses, ik_poses, walk, punch, model, gpu_lights,
   gpu_mesh, compare_backends, compare_meshing, sample_report, code_stats. Those that run a `*_views` test become a
   game flag doing the job and quitting (as `--maps`, towns/dbg/maps_dump.c), the test then calls the same functions
   and checks what they make (the views a test checks stay tests, the ones only looked at become tools)
 
-## The mouse turns the head, the camera rides it (2026-11-22)
+# The mouse turns the head, the camera rides it (2026-11-22)
 - the look's pitch is the first person camera's own turn on the head: the head bone stays straight ahead, so other
   players see every player's head looking straight ahead (multiplayer), and what reads the look (the guard's swing,
   the body's lean, the dialogue aim) finds the camera first
@@ -188,11 +245,11 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 - check: the camera's height and looking down into the body (head_camera_offset turns with the head about the
   neck), tests pitching the camera (guard_pitch, free_roam_pose, dialogue_aim) pitch the head
 
-## RenderDisabled to tags (2026-11-22)
+# RenderDisabled to tags (2026-11-22)
 - RenderDisabled a tag (Invisible), and one for not raycast or navigated to (DisableInteraction): it's a byte each
   draw reads; a window's tabs (ui/windows/ins/tabs.c) hide theirs with it for now
 
-## Tests in their own place (2026-11-22)
+# Tests in their own place (2026-11-22)
 - tests that span modules sit where the build order lets them, not with what they test: find them a module after
   the ones they use (a tst module last in the build)
   - actions/tst/mirror_hat.c: the mirror (huds) following the body (equipment), huds builds before equipment
@@ -200,24 +257,13 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
   - door_light, door_sky and glow_relight to an air chunk (terrain/tst/air_chunk.c, as door_load): no player, a
     few seconds less each
   - items/tst/all.c, the all items cheat, lives in tests: a debug tool, tools out of the test harness
-
-## Next (2026-11-21)
-States, events and tags, by doc/tech/states.md (nf tags and observers for events, systems for heavy work, fewer tags;
-profile each, systems and observers counted together):
-- texts' dirty: keep the core Dirty / Update (doc/plans/core_dirty.md option 1) until texts show in a profile's
-  "moved most", then their own pair and a non fragmenting core Dirty (option 2)
-- the game and player states together (GameStateDirty, PlayerStateDirty: a 3 frame machine, tags made the game clean
-  up before the players saw the end): tag states (Paused, Playing..) with observers, the guard as its own step
-- the action timers (ActivateBegin, WarmupState, Activate, CooldownState, TriggerActionA/B/E, ActiveActionDirty):
-  are they steps, or tags with times
-- Select's pair (tooltip_select_system needs a system tag) and Begin / End / Exit (model node systems, heavy): keep,
-  or one fragmenting tag removed by a phase end system
-- a grid laid out again when its elements change (only at spawn now)
-- the bulk byte states (StreamDirty, StreamDirty2, NpcSpawnZoneDirty, LightNodeDirty, RenderDepthDirty,
-  RenderDistanceDirty): leave, unless a profile shows their increment systems
-- dead commented systems: find and remove the rest (5 removed 2026-11-21)
-
-Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap, door_rays.
+- lod_flyby (terrain/tst/lod_flyby.c, bash bsh/tools/flyby.sh), unfinished (2026-11-23): a camera flying the terrain,
+  recorded (flyby.gif), each frame's blinks and light pops against the 2 before, its worst frames as pngs
+  - works: no player or menu (zox_tst_world_setup), its own camera a streamer (only a streaming camera culls chunks),
+    its local transform set too (set alone, Position3D stayed at the origin), the game's --far 16
+  - to do: its height over the land (zox_tst_flyby_ground) looked under it, check a frame; ~0.5 fps on lavapipe (the
+    pixel checks a frame and the gif): try --gpu, fewer checks; then thresholds for its blinks and pops, a check on them
+  - perf_terrain has the same culling problem: its viewport camera isn't a streamer, so the menu's camera culls chunks
 
 ## Older
 - Move blocks from biome spawning back to realm
@@ -834,15 +880,15 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 	- additive layers: a breathing, a flinch, an aim on top of the walk, so they mix instead of fighting
 - taller characters too <= 3 blocks, 2 wide, etc with bigger doors later for other races
 - limbs in general need polish on the organic shape (shoulders poking clothes fixed: tst chest_weights)
-- IK on arms and legs, for more bending (a doc/tec doc first)
+-x IK on arms and legs, for more bending (a doc/tec doc first)
 - shoulders poking out of shirt, maybe go over limbs again and give it a art pass
 - Make equipment and body uis placed based on the body itself
     - dynamically place the slot uis
     - base on skeleton form
     - remember you could be a dog or a 8 armed being, just keep it dynamic
-- Improve head shape, needs to be more humanoid like
-	- it needs a neck part at bottom too
-- Improve chests too, it doesnt really connect the two parts
+-x Improve head shape, needs to be more humanoid like
+	-x it needs a neck part at bottom too
+-x Improve chests too, it doesnt really connect the two parts
 - Go over parts and slots
     - slots should be on the item itself, like chest can have a shirt slot, a backpack slot etc
     - when we remove foot, it should remove the shoe slot, and be removed from the ui
@@ -1030,7 +1076,6 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 	- Dialogue Nodes: QuestDoneLink - QuestActiveLink
 
 # UI and Huds
-- add tab options, sort by general, input, graphics, advanced
 - click slider in between to move it there
     - like a normal slider ui
     - same with scrollbars
@@ -1041,20 +1086,18 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 - add options in the pause ui (return, exit game, make it seccond)
     - add options tests, they can regress, test in game too
 - Textures from blueprints (like models): frames, icons and others written as nodes, for reuse
-- Windows and headers: revamped texture generation, better frames, a bit more style
 - set the slider text block depth [5] when sliding
 - Slider UI to snap on integer points - when integer - on release
 - for ui we should keep a Size2 property - real float - this is for the mesh resizing
-- Add ui scale to settings
 - Refactor ListPositionDirty and ListSizeDirty into tags
-- Refactor Layouts by using LocalPosition2 instead of CanvasLayout
 - Make layout positions recursive too - so it updates in a single frame
 - Make all ui shaders use transforms like render texture does
-- Refactor the taskbar button to window using links
-	- Fix taskbars again properly linking to windows
+-x Refactor the taskbar button to window using links
+	-x Fix taskbars again properly linking to windows
 - Add Stats panel to the taskbar and give header / window
-- Seperate Pause UI from other Game UIs (Taskbar etc)
 - Pause UI to use blacked out screen, game ui to just use blur
+	- block clicking on other uis
+	- close game uis when opened
 - Give game uis the realm colors so feels different to the main menu
 - Use realm colors for UI
 - Set UI hightlight color of buttons, and highlight outline colors
@@ -1063,52 +1106,55 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 - Make close button smaller square with a circle pattern
 	- the X is ugly there need icon
 - Add Glyphs for Key/Buttons on UI
-- UI: Toast UI when you enter Town
-- add a simple log, with the entry line fade out
-	- log at bottom left
-	- when level up add a line about it
-- Add Logs UI at bottom left
-- Add Character Render Texture UI to show your character - mirror taskbar icon too
-- Status UI
-	- Test button first
-	- Spawn render texture
-	- Spawn render camera facing this
-	- Spawn characters mesh object (mesh clone)
-- Spawn Status UI + player model through the UI
-- Add mirror UI for viewing player model
-- Add quantity label as child of icon - for mouse pickup too
-- Add Tooltips to Empty Slot Frames
-- Update frame texture outline when icon is selected!
-- Selected Text option - update the Glyph Colors
-- Add fancier frames to the uis
-- Make the bars dissapear when not used
-- Add Version of build date to main menu bottom right
-- Spawn load text / ui during fade out / game event
-	- just show loading for now
-- Add loading screen
+- Loading screen polish
 	- with cancel button
 	- show loading chunks count
-- Redo Realm Select UI
-	- add date in tooltip
-	- Sort latest to top
-	- Add Realm Names as labels instead of seed
-	- Shows play time on Load Game
-	- delete option Confirm Screen
-- sort load games by latest played
-- Add Statistics Overlay
-	- Show counts for many things
+- delete realm Confirm Screen
 - rename data_grid stuff to ui_grid if its there
+- Add Logs UI at bottom left
+	- add a simple log, with the entry line fade out
+	- log at bottom left
+	- when level up add a line about it
+- Add quantity label as child of icon - for mouse pickup too
+- Add Tooltips to Empty Part Slot Frames
+- Update frame texture outline when icon is selected!
+- Selected Text option - update the Glyph Colors
+- Add Version of build date to main menu bottom right
+-x sort load games by latest played
+-x Windows and headers: revamped texture generation, better frames, a bit more style
+-x add tab options, sort by general, input, graphics, advanced
+-x Add ui scale to settings
+-x Refactor Layouts by using LocalPosition2 instead of CanvasLayout
+-x Seperate Pause UI from other Game UIs (Taskbar etc)
+-x UI: Toast UI when you enter Town
+-x Add Character Render Texture UI to show your character - mirror taskbar icon too
+-x Status UI
+	-x Test button first
+	-x Spawn render texture
+	-x Spawn render camera facing this
+	-x Spawn characters mesh object (mesh clone)
+-x Spawn Status UI + player model through the UI
+-x Add mirror UI for viewing player model
+-x Add fancier frames to the uis
+-x Make the bars dissapear when not used
+-x Spawn load text / ui during fade out / game event
+	-x just show loading for now
+-x Redo Realm Select UI
+	-x add date in tooltip
+	-x Sort latest to top
+	-x Add Realm Names as labels instead of seed
+	-x Shows play time on Load Game
 
 # 3D UI
-- Make 3D ui use layouts
-	- test the canvas
-	- layout to local position
-	- Position2 on prefab stack gets shifted to Position3
-	- TextSpawnSystem just uses a ZigelPrefabLink instead, handling both types
-- Refactor 3D UI to use layouts
-- Refactor Statbar3D to use Element2D data, merge the ui code
-	- we simply translate the layout2D information into the 3D transform space
-- I really should just link player to a canvas 3D - then i can spawn/remove from that normally
+-x Make 3D ui use layouts
+	-x test the canvas
+	-x layout to local position
+	-x Position2 on prefab stack gets shifted to Position3
+	-x TextSpawnSystem just uses a ZigelPrefabLink instead, handling both types
+-x Refactor 3D UI to use layouts
+-x Refactor Statbar3D to use Element2D data, merge the ui code
+	-x we simply translate the layout2D information into the 3D transform space
+-x I really should just link player to a canvas 3D - then i can spawn/remove from that normally
 
 # Map
 - markers on the minimap (npcs, quest givers, as above)
@@ -1125,7 +1171,7 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 	- ! hand in quest
 - Maps
 	- Make maps use GridDirty instead of manually positioning
-	- Move pieces pixel by pixel around player - set centre position of map
+	-x Move pieces pixel by pixel around player - set centre position of map
 	- add a mask around map
 	- update ony pieces and not entire map
 	- zoom + - buttons on header
@@ -1135,10 +1181,10 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 		- child of tunk
 		- disable when ui closes / dies
 		- updates when enabled / chunk changes
-- Move map UI as player moves
+-x Move map UI as player moves
 	- mask the map ui
 	- or just disable when goes over edge for now
-- Make map move around player position
+-x Make map move around player position
 - Make Camera Z + and remove maps ui FLIP hacks code
 - Zoom in / out buttons / scroll wheel
 - Keep track of chunks player has explored - fog of war
@@ -1196,11 +1242,11 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 	- tst: a portal pair, the view through the entry matches a camera at the exit; a character walked through comes
 	  out the exit facing the same way relative to it
 - Cube lines (cube_line_render_system) and quad lines still draw an entity at a time: instance them too (gizmos)
-- Gpu meshing (doc/plans/gpu_meshing.md): terrain meshes on the gpu, vulkan's default (2026-11-20)
-	- opengl: off by default, it's slower there (perf_terrain far 32: idle -10% fps, far 8 streaming -16% fps,
+-x Gpu meshing (doc/plans/gpu_meshing.md): terrain meshes on the gpu, vulkan's default (2026-11-20)
+	-x opengl: off by default, it's slower there (perf_terrain far 32: idle -10% fps, far 8 streaming -16% fps,
 	  doc/engine/metrics.md); its draw is every chunk's indirect draw from the main thread: fewer triangles (merging
 	  faces), or one multi draw indirect per terrain, then default it on (--gpu_meshing to try it)
-	- after: a lost gpu context (android gl) remakes gpu meshes, water on the gpu, vox models and skeletons
+	-x after: a lost gpu context (android gl) remakes gpu meshes, water on the gpu, vox models and skeletons
 - Light character models from the environment (like minivoxes)
 	- sample the LightNode at the character's voxel position (get_block_vox_light in vodes3/fun/lights.c), set Brightness
 	- update when the character moves to a new voxel, or its chunk's LightNodeDirty goes active
@@ -1235,8 +1281,6 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 	- keep all rendering stuff there
 - Redo all my destruction hooks like MeshGPULink - remove DTOR for OBSR
 - Finish converting icons to bmp
-- Spawn 2 XR Eye entities that are cameras
-	- XRRender Systems for them
 - We can even raycast check against chunks to further reduce whats rendered...?
     - test out better chunk culling using raycasts against the terrain
     - Can we hide behind mountains to improve culling?
@@ -1293,6 +1337,8 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 - Click TextureData label to open a texture window
 - Click MeshIndicies or MeshVertices label to open a Mesh Window
 - Shrink Game Viewport and put Editor Buttons as icon buttons around side, like gizmos - docked
+- Add Statistics Overlay
+	- Show counts for many things
 
 # Inputs
 - We need a target window for player, whichis the last selected one
@@ -1401,6 +1447,8 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 	- We should wrap all other sdl functions properly for glut
 
 # XR
+- Spawn 2 XR Eye entities that are cameras
+	- XRRender Systems for them
 - XR on vulkan: openxr has it (XR_KHR_vulkan_enable2), our xr code is gl es (egl context, gl swapchain images,
   src/xr/openxr): a vulkan session and its swapchain images as the vulkan module's render targets; android.sh
   --xr --vulkan errors until then
@@ -1428,7 +1476,6 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 	world feels bigger), or the hands' offsets from the head by its arm length, or the character to the player
 - XR turning option in settings: smooth (the default, the right stick turns the body left and right) or snap turns
 	(smooth turns sicken some players)
-
 - Punch in VR as a motion (inspired by Sword Art Online): the player's hands always drive the body's arms (xr/fun/hands.c,
 	the body has to match the real hands or it disorientates), the punch skill only shows the movement (a ghost of the
 	arm's ik path, bones/ik/sys/swing.c, dat/swings.c) and scores the real hand's path against it over its swing time: a close match
@@ -1514,12 +1561,10 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 
 # Optimizations
 - Part of the [todo](todo.md), done items go in [done.md](done.md)
-
 - Beds and doors (two blocks a side, 64 voxels, a depth more than a block): their first mesh build made frames a
   second long in a debug software test (tst block_vox_hits, 2026-11-16, npcs held 8 physics frames took 8s). Measure
   in release on the gpu (perf_fly near placed beds); if it spikes there, build their lods off the main thread or
   once a realm, as blocks' models are shared
-
 - Frame spikes, what's left after the chunk crossing lag (48 to 145ms, now ~20ms release on gpu, done.md):
 	- spawn bursts are the worst frames (merges 46ms, observers 47ms, debug): names (435 a frame, flecs indexes
 	  (Identifier,Name)), PreInitialize and Initialize (each new entity moves 4 times), 3D label layout dirties
@@ -1545,14 +1590,12 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 	- next: systems that mostly idle on fewer workers, the vox lod meshes and bake textures still ChildOf (33 and 42 tables in slow frames), quests and
 	  dialogue pairs a npc
 - greedy meshing for vox models, then terrain: the plan, AO and the steps in [tech/chunks3.md](tech/chunks3.md)
-
 -x 2300 tables again, try reduce fragmentation
-
 -x Streaming has a spike, make sure to display the biggest system spike per graph
 	-x write a test for streaming spikes: perf_stream, perf_fly (flying, --maxnpcs), --profile, ZOX_SAMPLE
 	  (doc/engine/commands.md)
 
-## Ideas
+# Ideas
 - Can we hide behind mountains to improve culling?
 - 3D uis: canvas3_render_system gathers and sorts each canvas's elements every frame; keep the order on the canvas,
   rebuilt when its children or layers change (doc/tech/uis.md)
@@ -1561,14 +1604,14 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 - Part of the [todo](todo.md), done items go in [done.md](done.md)
 - New modules and features
 
-### Quadpeds
+# Quadpeds
 - add a second skeleton type, thats a four walker, and a wolf npc, so itd need new body parts etc
 	- this is an expansion of current body parts and animations
 	- we will need a head generated differently to current humanoid ones
 	- we should polish the blueprint system too that body parts use
 	- it also needs a tail, later we can add more bones per part, but for now itll still use the same simple methods
 
-### Turrets
+# Turrets
 - Turrets are items
 - Can place like a minivox
 - They have seperate parts, so different entity
@@ -1578,12 +1621,12 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 - instanced rendering
 - uses projectiles to hit nearby targets
 
-### Crafting
+# Crafting
 - Fix Crafting and use Slots for them
 - Output Craft Slot, pickup only
 - Pickup item to change after any of the other slots change, using recipe data to match
 
-### Pets
+# Pets
 - Spawn mr penguin on screen
 - Give the ability to change his hat
 - Make a penguin module
@@ -1598,7 +1641,7 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 - Resize window grabber at corner
 - move sand/wood/stone into biome blocks
 
-### genetics
+# Genetics
 - Add dna, array of bytes, per npc
 - only for unique npcs
 - dna linked in their body parts too
@@ -1606,32 +1649,33 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 - population is at a region level, it has data for the entire coutn
 - npcs can breed and cross dna for their kids
 
-### affection
+# Affection
 - npcs can have affection or hostility for others
 - this can effect clan alignment
 - it will also increase chance for breeding
 
-### towns
+# Towns
 - villager tags for npcs in towns
 - they can have roles, like mayor, 'jobs' module
 
-### Doors
-- add door model, two blocks tall
-- when right click, swing open
+# Doors
+-x add door model, two blocks tall
+-x when right click, swing open
 - collider to use mini voxels when rotating too there
 - door open close sound
 - save load open state
-
-# Delayed
-## Until Zoxel 2030
 	
-## 3D UI Refactor
-- Create a simple Canvas with Elements in each corner
-- Use same data but pass through layout3Ds, that use 3D rendering and transform data
-- Test will render the canvas in front of camera at different distances and rotations
+# 3D UI Refactor
+-x Create a simple Canvas with Elements in each corner
+-x Use same data but pass through layout3Ds, that use 3D rendering and transform data
+-x Test will render the canvas in front of camera at different distances and rotations
 
-## Low Priority
-- Make MeshColorsDirty do similar check to MeshReady - MeshColorsReady
+# Settings
+- Fix No post processing mode / Rawdog Camera Mode
+	- add to settings
+
+# Low Priority
+-x Make MeshColorsDirty do similar check to MeshReady - MeshColorsReady
     - fix it up in light3_build_system
 - Player Respawn Point Gizmos
 - Stream Level - Region only for initial game town spawning!
@@ -1648,13 +1692,9 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 - Add instancing to lines so we can test it easier t he lights
 - Debug Town Gizmo
 - Debug House Gizmo
-
-
 - Make Glut Build work
 	- Glut should spawn a window
 	- We should wrap all other sdl functions properly for glut
-- Fix No post processing mode / Rawdog Camera Mode
-	- add to settings
 - tools (this will help fix bugs)
   - press 'f' while raycasting chunk to select it as debug target
     - this will show the 'chunk ui' which shows all chunk info
@@ -1663,12 +1703,12 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
       - Verts
       - States?
       - Idk
+      
 ## Rendering
-- push voxel data and generate mesh on gpu
+-x push voxel data and generate mesh on gpu
 
 # Whimsy
-- everyone needs more
-
+-x everyone needs more
 - An npc should shift resolutions, when they have a debuff called unknown
 - An npc thats from the void dimension
 	- when its dying, its death animation is lowering its resolution
@@ -1702,7 +1742,6 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 	- bones / skeleton meshes per chunk, lods per chunk
 
 # Zixel
-
 - Add tilemap
 	- create mesh based on solids
 	- apply textures

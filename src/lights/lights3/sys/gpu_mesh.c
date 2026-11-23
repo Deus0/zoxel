@@ -15,6 +15,9 @@
 //  - tst terrain_gpu_mesh
 
 uint zox_chunk_gpu_meshes_grown = 0;   // meshes that didn't fit their room, meshed again (tests)
+// shown meshes, already lit, whose lights were baked while the lights round them settled (cleared for a finer lod,
+//  flooding): drawn dark, then lit (a dark flash as lods got finer); none while they wait (tst lod_light_flash)
+uint zox_chunk_gpu_meshes_baked_dark = 0;
 #define zox_chunk_gpu_mesh_budget_ms 2.0     // main thread, uploads and dispatches
 #define zox_chunk_gpu_grid_budget_ms 3.0     // a worker thread's, filling grids (as chunk sides)
 #define zox_chunk_gpu_grid_bytes ((octree_size(smooth_grid_depth_max) + 2) * (octree_size(smooth_grid_depth_max) + 2) * \
@@ -144,6 +147,9 @@ static inline void chunk_gpu_grid_fill(iter* it, entity tag) {
         fetch_nearby_chunks(world, chunk, zox_get(chunk, ChunkNeighbors)->value, nearby_chunks);
         fetch_nearby_lights(world, nearby_chunks, nearby_lights, lights_locks);
         fetch_nearby_voxels(world, nearby_chunks, nearby_voxels, voxels_locks);
+        if (zox_has(e, MeshColorsBuilt) && !zox_has(e, Disabled) && zox_chunk_lights_settling(world, chunk)) {
+            __atomic_add_fetch(&zox_chunk_gpu_meshes_baked_dark, 1, __ATOMIC_RELAXED);
+        }
         smooth_grid grid = { 0 };
         smooth_grid_drawn_depths(world, &grid, nearby_chunks);
         if (smooth_grid_fill(&grid, nearby_lights, lights_locks, nearby_voxels, voxels_locks, depth->value)) {

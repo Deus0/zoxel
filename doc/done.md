@@ -22,6 +22,9 @@
   it settle (zox_chunk_lights_settling), what it draws kept till then; light floods and sunbeams have a time budget a
   frame. tst chunk_mesh_flicker at far 16 (zox_tst_flicker_speed=3 ... --far 16): faces shown dark then lit 14 and 8
   before, 0 and 0 after; at medium every chunk's generated fine and it never happened (tst.sh put --medium over --far)
+  - tst lod_light_flash guards it in tst all: far 16 (tst.sh far_tests), gpu meshing, fails on a shown mesh baking its
+    lights while the lights round it settle (zox_chunk_gpu_meshes_baked_dark, 17906 before, 0 after, gl and vulkan);
+    the faces' drawn light moved with timing (light arriving later counted too), logged, not checked
 -x Lights flashed dark as lods swapped, flying about: a chunk regenerated finer for a lod had its lights cleared and
   nothing lit it again under a chunk that kept its lights (its fine meshes drew dark, its coarse ones lit). A generated
   chunk takes its neighbours' light back in (lights3/fun/relight.c: sunbeams from above, floods from its sides);

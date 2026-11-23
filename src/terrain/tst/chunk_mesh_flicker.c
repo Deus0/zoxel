@@ -21,6 +21,7 @@
 //    generated fine from the start and that never happens (its dark flashes weren't seen there)
 #define zox_tst_cmf_slots 32768     // a power of two, chunks and their materials
 float zox_tst_cmf_speed = 1.5f;     // chunks a second (zox_tst_flicker_speed)
+byte zox_tst_cmf_lights_only = 0;   // lod_light_flash: its lights alone, no seam checks (they're slow, and fail apart)
 #define zox_tst_cmf_logs 40
 
 typedef struct {
@@ -118,9 +119,14 @@ static inline void zox_tst_cmf_face_light(entity mesh, entity chunk, float4 corn
             } else if (light + zox_tst_cmf_face_change < face->light) {
                 face->dropped_from = face->light;
                 face->frame = zox_tst_cmf_frames;
-            } else if (light > face->light + zox_tst_cmf_face_change) {
-                // drawn darker than it is, however long it took to light (far lods waiting their sunlight)
+            } else if (light > face->light + zox_tst_cmf_face_change && since <= zox_tst_cmf_face_frames) {
+                // drawn dark and lit within frames: a flash (light arriving later, a slow rise, isn't one)
                 zox_tst_cmf_face_late++;
+                static int logged_late = 0;
+                if (logged_late++ < 10) {
+                    zox_log("[tst]  face dark then lit: mesh [%lu] dir [%i] at [%.0f %.0f %.0f] light [%i] to [%i], [%i] frames after it first showed",
+                        (ulong) mesh, direction, corner.x, corner.y, corner.z, face->light, light, since);
+                }
                 if (zox_tst_cmf_flash_chunks_count < 8) {
                     zox_tst_cmf_flash_chunks[zox_tst_cmf_flash_chunks_count++] = chunk;
                 }
@@ -526,7 +532,7 @@ static inline void zox_tst_cmf_frame(ecs* world, entity terrain) {
         }
     }
     zox_tst_cmf_changed += candidates;
-    if (candidates) {
+    if (candidates && !zox_tst_cmf_lights_only) {
         zox_tst_seam_result frame = { 0 };
         const int logged = zox_tst_seam_logged;
         zox_tst_seam_check(world, terrain, 1, &frame);
@@ -668,7 +674,49 @@ void zox_tst_chunk_mesh_flicker_check(ecs* world) {
         zox_tst_cmf_seam_frames, s->missing_lod);
 }
 
+// tst: lod_light_flash, chunk_mesh_flicker's walk for its lights alone, as a player flies (far 16, tst.sh, at 3 chunks
+//  a second, gpu meshing): far chunks generated coarse grow finer as it comes (their voxels again, their lights cleared)
+//  - fails on its cause: a shown mesh, lit, baking its lights while the lights round it settle (its neighbour's cleared
+//    for a finer lod: its faces there drawn dark, lit a few frames on; zox_chunk_gpu_meshes_baked_dark), and a lod drawn
+//    by a chunk never lit under sunlight; its faces' light as drawn is logged (shown dark then lit, flashes), not
+//    checked: it moved with timing (light arriving later counted too), 14 and 8 before the fix, 0 and 0 after, then 6
+//    and 14 in runs reading more often
+//  - gpu meshing on (its setup), any backend: the count is the mesher's own (the flash was seen on vulkan)
+//  - at medium it never happens (every chunk's generated fine from the start): it's far 16 or nothing
+void zox_tst_lod_light_flash_setup() {
+    zox_tst_cmf_lights_only = 1;
+    zox_tst_cmf_speed = 3;
+    zox_chunks3_gpu_meshing = 1;
+}
+
+void zox_tst_lod_light_flash_check(ecs* world) {
+    (void) world;
+    zox_log("[tst] [metric] lod_light_flash frames [%i] moving [%i], lod swaps seen [%i], faces [%i]: [%i] shown dark then lit, [%i] flashed dark and back, dips [%i], lods never lit [%i]",
+        zox_tst_cmf_frames, zox_tst_cmf_moving_frames, zox_tst_cmf_swaps, zox_tst_cmf_faces_seen, zox_tst_cmf_face_late,
+        zox_tst_cmf_face_flashes, zox_tst_cmf_dips, zox_tst_cmf_dark_steps);
+    const float3 at = zox_valid(zox_tst_cmf_streamer) ? zox_getv(zox_tst_cmf_streamer, Position3D) : float3_zero;
+    for (int i = 0; i < zox_tst_cmf_flash_chunks_count; i++) {
+        const entity c = zox_tst_cmf_flash_chunks[i];
+        if (zox_valid(c)) {
+            const int3 p = zox_getv(c, ChunkPosition);
+            zox_log("[tst]  a face drawn dark then lit in chunk [%ix%ix%i] depth [%i] node depth [%i], the walk's end at [%.0f %.0f]",
+                p.x, p.y, p.z, zox_getv(c, RenderDepth), zox_getv(c, NodeDepth), at.x, at.z);
+        }
+    }
+    zox_tst_check(zox_tst_cmf_leg >= zox_tst_cmf_legs, "the walk stopped at leg [%i]", zox_tst_cmf_leg);
+    zox_tst_check(zox_tst_cmf_swaps > 0, "no lod changes seen, nothing tested");
+    zox_tst_check(zox_tst_cmf_faces_seen > 10000, "only [%i] faces read, too few to tell", zox_tst_cmf_faces_seen);
+    // its cause, not its look: a shown mesh's lights baked while the lights round it settled (deterministic: the faces'
+    //  light as drawn, logged above, moved with timing, light arriving later counted with the flashes)
+    zox_log("[tst] [metric] lod_light_flash shown meshes baked as the lights round them settled [%u]", zox_chunk_gpu_meshes_baked_dark);
+    zox_tst_check(!zox_chunk_gpu_meshes_baked_dark, "[%u] shown meshes baked their lights while the lights round them settled (drawn dark, then lit)",
+        zox_chunk_gpu_meshes_baked_dark);
+    zox_tst_check(!zox_tst_cmf_dark_steps, "[%i] lod swaps to or from a lod never lit under sunlight", zox_tst_cmf_dark_steps);
+}
+
 void zox_tsts_chunk_mesh_flicker(ecs* world) {
+    zox_tst_add("lod_light_flash", zox_tst_chunk_mesh_flicker_ready, zox_tst_lod_light_flash_check, 600);
+    zox_tst_set_setup("lod_light_flash", zox_tst_lod_light_flash_setup, 1);
     (void) world;
     zox_tst_add("chunk_mesh_flicker", zox_tst_chunk_mesh_flicker_ready, zox_tst_chunk_mesh_flicker_check, 240);
     zox_tst_set_setup("chunk_mesh_flicker", NULL, 1);
