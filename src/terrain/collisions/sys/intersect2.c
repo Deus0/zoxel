@@ -73,7 +73,7 @@ typedef struct {
     int3 position;
     entity chunk;
     const VoxelNode* octree;
-    const BlockDatas* datas;    // its block datas, NULL if it has none (most chunks)
+    const ActiveOctree* actives;    // what's switched on in it, NULL if nothing is (most chunks)
 } collision_chunk_cache;
 
 // Returns 1 if there is a chunk with voxels at chunk_position (and fills the cache), else 0.
@@ -90,9 +90,9 @@ static inline byte collision_chunk_select(ecs* world, collision_chunk_cache* cac
     if (cache->found) {
         cache->octree = zox_get(chunk, VoxelNode);
         cache->depth = zox_getv(chunk, NodeDepth);
-        cache->datas = zox_has(chunk, BlockDatas) ? zox_get(chunk, BlockDatas) : NULL;
-        if (cache->datas && !cache->datas->length) {
-            cache->datas = NULL;
+        cache->actives = zox_has(chunk, ActiveOctree) ? zox_get(chunk, ActiveOctree) : NULL;
+        if (!active_octree_any(cache->actives)) {
+            cache->actives = NULL;
         }
     }
     return cache->found;
@@ -180,8 +180,8 @@ static inline byte collision_block_solid(const collision_terrain* terrain, colli
     if (collider == zox_block_air) {
         return 0;
     }
-    // an open door's part (zox_block_open, switched on: block_data_active) is walked through
-    return collider != zox_block_open || !cache->datas || !(get_block_data(cache->datas, local_position) & block_data_active);
+    // an open door's part (zox_block_open, switched on in its ActiveOctree) is walked through
+    return collider != zox_block_open || !cache->actives || !getv_ActiveOctree(cache->actives, cache->depth, local_position);
 }
 
 // Is the block containing this point solid?

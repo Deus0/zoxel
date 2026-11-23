@@ -56,9 +56,9 @@ void voxel_light_system(iter* it) {
         const VoxelNode* nnodesv[6];
         fetch_neightbor_voxel_nodes(world, neighbors, nnodesv);
         const VoxelNode* root_vnode = zox_get(e, VoxelNode);
-        const BlockDatas* datas = zox_has(e, BlockDatas) ? zox_get(e, BlockDatas) : NULL;
-        const BlockDatas* ndatas[6];
-        fetch_neighbor_block_datas(world, neighbors, ndatas);
+        const ActiveOctree* actives = zox_has(e, ActiveOctree) ? zox_get(e, ActiveOctree) : NULL;
+        const ActiveOctree* nactives[6];
+        fetch_neighbor_actives(world, neighbors, nactives);
         const int length = octree_size(depth->value);
         // its sides' chunks, for an emitter's light past its edge (a lamp's head in the chunk over it)
         LightQueue* side_light_queues[6];
@@ -90,7 +90,7 @@ void voxel_light_system(iter* it) {
                 const LightOctree* above = get_neighbor_LightOctree(root_lnode, nnodesl, direction_up, update.position, depth->value);
                 byte light_above = above ? above->value : 0;
                 const byte beam = light_beam_above(root_vnode, root_lnode, nnodesv[direction_up], nnodesl[direction_up],
-                    datas, ndatas[direction_up], depth->value, update.position, darklight, solidity, liquids);
+                    actives, nactives[direction_up], depth->value, update.position, darklight, solidity, liquids);
                 if (beam) {
                     // the beam comes down through it (a dug block, or drained water: brighter now)
                     a_SunlightQueue(sun_queue, (SunlightUpdate) {
@@ -156,7 +156,7 @@ void voxel_light_system(iter* it) {
                         update.data, length, depth->value, emission[update.value - 1]);
                 }
                 const byte beam = light_beam_above(root_vnode, root_lnode, nnodesv[direction_up], nnodesl[direction_up],
-                    datas, ndatas[direction_up], depth->value, update.position, darklight, solidity, liquids);
+                    actives, nactives[direction_up], depth->value, update.position, darklight, solidity, liquids);
                 if (liquids[update.value - 1]) {
                     // water placed in a beam: the beam from it down is a liquid dimmer
                     if (beam && getv_LightOctree(root_lnode, depth->value, update.position) == beam) {
@@ -169,7 +169,7 @@ void voxel_light_system(iter* it) {
                     }
                     continue;
                 }
-                if (!light_stops(solidity, datas, root_vnode, depth->value, update.value, update.position)) {
+                if (!light_stops(solidity, actives, depth->value, update.value, update.position)) {
                     continue;
                 }
                 // TODO: We can add a dark beam here instead

@@ -4,8 +4,9 @@
 //    for most chunks (no memory), no pointers inside (moves and copies are a memcpy)
 //  - written with the voxel (VoxelNodeUpdate's data, voxel_update_queue_system), under the chunk's octree lock
 //  - saved after the octree as a section (save_block_datas): an id byte, a 2 byte size, the buffer; a chunk with none
-//    writes nothing; more section ids can follow later
+//    writes nothing; then its ActiveOctree's section (fun/active.c)
 #define block_datas_section 1
+#define active_octree_section 2
 #define block_data_header 4
 
 // a voxel's entry's offset in the buffer, -1 if it has none
@@ -78,12 +79,24 @@ byte save_block_datas(FILE* out, const BlockDatas* datas) {
         fwrite(datas->value, 1, size, out) == size;
 }
 
-// reads the sections after a chunk's octree: its block datas, none if the file ends there
-byte load_block_datas(FILE* in, BlockDatas* datas) {
+byte load_active_octree(FILE* in, ActiveOctree* node);
+
+// reads the sections after a chunk's octree: its block datas and what's switched on (fun/active.c), none if the file
+//  ends there; NULLs skip them
+byte load_chunk_sections(FILE* in, BlockDatas* datas, ActiveOctree* actives) {
     byte section;
     while (fread(&section, 1, 1, in) == 1) {
+        if (section == active_octree_section) {
+            ActiveOctree skipped = { 0 };
+            const byte loaded = load_active_octree(in, actives ? actives : &skipped);
+            collapse_ActiveOctree(&skipped);
+            if (!loaded) {
+                return 0;
+            }
+            continue;
+        }
         if (section != block_datas_section) {
-            zox_logw("[load_block_datas] unknown chunk section [%i]", section);
+            zox_logw("[load_chunk_sections] unknown chunk section [%i]", section);
             return 0;
         }
         ushort size = 0;
@@ -105,15 +118,12 @@ byte load_block_datas(FILE* in, BlockDatas* datas) {
 
 // a placed bed's or door's turn, its base's block data: 1 + its direction (quarter turns about up, 0 to 3)
 //  - its fillers' data: 1 + their offset back to their base (block_offset_encode), so each finds its base exactly
-//  - block_data_active: a block switched on (an open door, a gravity cube flipping gravity), on its base and its
-//    fillers, toggled by a right click (items/fun/multi_block.c block_toggle); a block whose collider is zox_block_open
-//    (a door) is walked through while it's set
+//  - a block switched on (a door open) isn't here: its chunk's ActiveOctree (fun/active.c)
 #define block_offset_range 2    // fillers within 2 blocks of their base each way (blocks up to 3 a side)
-#define block_data_active 128   // above both: offsets go to 125, directions to 4
 
 // a base's direction, from its block data (0 if none)
 static inline byte block_data_direction(byte data) {
-    return data & ~block_data_active ? ((data & ~block_data_active) - 1) & 3 : 0;
+    return data ? (data - 1) & 3 : 0;
 }
 
 // a direction's turn about up
@@ -178,6 +188,6 @@ static inline byte block_offset_encode(int3 offset) {
 
 static inline int3 block_offset_decode(byte data) {
     const int r = block_offset_range, w = r * 2 + 1;
-    const int i = (data & ~block_data_active) - 1;
+    const int i = data - 1;
     return (int3) { i % w - r, (i / w) % w - r, i / (w * w) - r };
 }

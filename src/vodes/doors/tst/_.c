@@ -1,6 +1,5 @@
 #include "door_light.c"
 #include "door_sky.c"
-#include "door_old_filler.c"
 #include "door_save.c"
 #include "door_glow.c"
 // tst: doors, a door opens and closes (vodes/doors), in a game near its player (block voxes spawn only while it plays)
@@ -33,9 +32,8 @@ static inline int3 zox_tst_doors_top() {
 static inline void zox_tst_doors_check_parts(ecs* world, entity terrain, entity realm, byte open) {
     const int3 parts[2] = { zox_tst_doors_base, zox_tst_doors_top() };
     for (byte i = 0; i < 2; i++) {
-        const byte data = terrain_block_data_at(world, terrain, parts[i]);
-        zox_tst_check(((data & block_data_active) != 0) == open, "the door's %s has block data [%i], not %s", i ? "top" : "base", data,
-            open ? "open" : "closed");
+        const byte on = terrain_active_at(world, terrain, parts[i]);
+        zox_tst_check((on != 0) == open, "the door's %s is on [%i], not %s", i ? "top" : "base", on, open ? "open" : "closed");
         zox_tst_check(zox_tst_doors_solid(world, terrain, realm, parts[i]) == !open, "the door's %s is %s to collisions",
             i ? "top" : "base", open ? "solid" : "passable");
     }
@@ -121,19 +119,22 @@ byte zox_tst_doors_ready(ecs* world) {
             zox_current_time - zox_tst_doors_time);
         zox_tst_doors_check_swing(world, zox_tst_doors_vode, block, 1);
         zox_tst_check(!zox_has(zox_tst_doors_vode, DoorSound), "its sound wasn't played (DoorSound still on it)");
-        // its chunk's block datas through a file: the open state kept
+        // its chunk's sections through a file: the open state kept, its block datas too
         byte3 local;
         const entity chunk = terrain_chunk_local(world, terrain, zox_tst_doors_base, &local);
         FILE* file = tmpfile();
-        zox_tst_check(file && save_block_datas(file, zox_get(chunk, BlockDatas)), "its block datas didn't save");
+        zox_tst_check(file && save_chunk_sections(file, zox_get(chunk, BlockDatas), zox_get(chunk, ActiveOctree)),
+            "its block datas and ActiveOctree didn't save");
         if (file) {
             rewind(file);
             BlockDatas loaded = { 0 };
-            zox_tst_check(load_block_datas(file, &loaded), "its block datas didn't load");
-            zox_tst_check(get_block_data(&loaded, local) & block_data_active, "the open state wasn't saved, loaded [%i]", get_block_data(&loaded, local));
+            ActiveOctree loaded_actives = { 0 };
+            zox_tst_check(load_chunk_sections(file, &loaded, &loaded_actives), "its sections didn't load");
+            zox_tst_check(getv_ActiveOctree(&loaded_actives, zox_getv(chunk, NodeDepth), local), "the open state wasn't saved");
             zox_tst_check(loaded.length == zox_get(chunk, BlockDatas)->length, "loaded [%i] bytes of block data, saved [%i]",
                 loaded.length, zox_get(chunk, BlockDatas)->length);
             resize_BlockDatas(&loaded, 0);
+            collapse_ActiveOctree(&loaded_actives);
             fclose(file);
         }
         // its block vox spawned again (as a chunk loading does): open from the start
@@ -179,8 +180,6 @@ void zox_tst_doors_check(ecs* world) {
 void zox_tsts_doors(ecs* world) {
     zox_tst_add("doors", zox_tst_doors_ready, zox_tst_doors_check, 120);
     zox_tst_add("door_light", zox_tst_door_light_ready, zox_tst_door_light_check, 120);
-    zox_tst_add("door_old_filler", zox_tst_door_old_filler_ready, zox_tst_door_old_filler_check, 120);
-    zox_tst_set_setup("door_old_filler", NULL, 1);
     zox_tst_add("door_save", zox_tst_door_save_ready, zox_tst_door_save_check, 120);
     zox_tst_set_setup("door_save", NULL, 1);
     zox_tst_add("door_glow", zox_tst_door_glow_ready, zox_tst_door_glow_check, 120);

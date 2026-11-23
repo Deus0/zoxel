@@ -140,8 +140,7 @@ void blocks_realm_spawn_system(iter* it) {
                 .color = color_white,
             };
             entity e2 = spawn_block_vox_meta(world, filler_data);
-            // as its base passes light: a door's in an old save (before the door filler) stops it while shut
-            zox_setv(e2, BlockLightPass, block_light_pass_base);
+            zox_setv(e2, BlockLightPass, 1);   // a bed's: light passes (a door has its own filler)
             zox_set_parent(world, e2, e);
             link_hit_sound(world, e2, e, &hit_sound_wood);
         }
@@ -241,7 +240,7 @@ void blocks_realm_spawn_system(iter* it) {
                 link_hit_sound(world, e3, e, &hit_sound_water);
             }
         }
-        // a gravity cube: a right click switches it on or off (block_data_active), on it flips gravity round it
+        // a gravity cube: a right click switches it on or off (ActiveOctree), on it flips gravity round it
         //  (terrain/gravity); last, the blocks before it keep their indices
         {
             lint block_seed = seed->value + (seed_offset+=seed_shift);

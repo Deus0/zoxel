@@ -34,6 +34,7 @@ Code: [src/_/octrees](../../src/_/octrees) (the generic functions, no world need
 | `LightOctree` | basic | light levels | `darklight` |
 | `SidesOctree` | basic | which faces of a voxel show | 0 |
 | `BoneNode` | basic | which body part a voxel came from (doc/done/skeletons.md) | 0 |
+| `ActiveOctree` | basic | what's switched on (a door open, a gravity cube on), saved, doc/tech/blocks.md | 0 (off) |
 | `GravityOctree` | basic | where gravity pulls (terrain/gravity, doc/tech/physics.md) | 0 (the realm's) |
 
 `zoxc_octree_basic(T, byte, default)` or `zoxc_octree_linked(...)` ([components.c](../../src/_/octrees/components.c))

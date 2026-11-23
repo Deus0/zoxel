@@ -49,21 +49,24 @@ Binary (src/chunks/chunks3/io): the octree, then sections.
 ```
 octree    each node, depth first: value (1 byte), has children (1 byte), then its 8 children if it has
 sections  zero or more, until the file ends:
-          id (1 byte), size (2 bytes), then size bytes
+          1: id (1 byte), size (2 bytes), then size bytes
+          2: id (1 byte), then an octree as above
 ```
 
 - Section 1, block data: the chunk's `BlockDatas` buffer as it is in memory: entries of position (3 bytes), length
   (1 byte), data (1 to 255 bytes). For the few voxels that need data: a bed's or door's direction (its base), a
   filler's offset back to its base, later a door's state or a sign's text. A larger thing (a chest's items) would
   keep an id here and its own file.
-- A chunk with no block data writes no section: its file is its octree only.
+- Section 2, what's switched on: the chunk's `ActiveOctree` (a door open, a gravity cube on), as the voxels' octree.
+- A chunk with no block data, or nothing on, writes no section for it: its file is its octree only.
 - An unknown section id stops the read (a warning), so new sections can follow.
 - Only edited chunks save (`Edited`, chunk3_save_system); unedited ones regenerate from the realm's seed.
 - An edited chunk is written when a voxel changes (`ChunkUpdate`), or when only its block data changes (a door
   toggled: `SaveDirty`, chunk3_save_dirty_system, written once).
 - Block data is written with its voxel (`VoxelNodeUpdate.data`, voxel_update_queue_system), under the chunk's
   octree lock, and cleared when the voxel changes.
-- tst: chunk_io (octrees), block_datas_io (sections, sizes), block_data_queue (in game: set, saved, loaded, cleared).
+- tst: chunk_io (octrees), block_datas_io (sections, sizes), block_data_queue (in game: set, saved, loaded, cleared),
+  doors and door_save (what's on, through a file).
 
 ### player.dat
 

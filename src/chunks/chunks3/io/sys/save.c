@@ -36,12 +36,14 @@ void chunk3_save_system(iter* it) {
     zox_sys_in(ChunkPosition);
     zox_sys_out(VoxelNodeLock);
     zox_sys_in(BlockDatas);
+    zox_sys_in(ActiveOctree);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(VoxelNode, node);
         zox_sys_i(ChunkPosition, position);
         zox_sys_o(VoxelNodeLock, lock);
         zox_sys_i(BlockDatas, datas);
+        zox_sys_i(ActiveOctree, actives);
         // later add id/int3 there
         entity terrain = zox_get_parent(world, e);
 #ifdef zox_safety_checks
@@ -73,7 +75,7 @@ void chunk3_save_system(iter* it) {
         }
         spin_lock(&lock->value);
         save_voxel_node(file, node);
-        save_block_datas(file, datas);
+        save_chunk_sections(file, datas, actives);
         spin_unlock(&lock->value);
         if (fclose(file) != 0) {
             zox_loge("Failed to close file: %s", path);
@@ -83,7 +85,7 @@ void chunk3_save_system(iter* it) {
     zox_sys_on_end();
 } zoxd_system(chunk3_save_system);
 
-// a chunk whose block data changed without a voxel's (a door toggled, terrain_set_block_data): saved once, SaveDirty
+// a chunk whose block data changed without a voxel's (a door toggled, terrain_set_active): saved once, SaveDirty
 //  taken off (chunk3_save_system saves only with ChunkUpdate, which rebuilds its mesh and block voxes)
 void chunk3_save_dirty_system(iter* it) {
     chunk3_save_system(it);

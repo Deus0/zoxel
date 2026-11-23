@@ -4,7 +4,7 @@
 //  - built: inside dark; opened and shut (door_toggle); saved (Edited, chunk3_save_system to its realm's folder), its block data and light wiped,
 //    loaded from the file as chunk3_load_system does (Loaded, its light from the sunlight step): inside dark, the door
 //    shut in its block data, outside sunlit
-//  - each toggle alone saved (a block data change, no voxel's: terrain_set_block_data's SaveDirty), the file read
+//  - each toggle alone saved (no voxel's change: terrain_set_active's SaveDirty), the file read
 //    back after each: open, then shut (it saved only on a voxel's edit, the door loaded as it was then)
 //  - run: bash bsh/tst.sh door_save
 #define zox_tst_dsave_door_x 4
@@ -36,24 +36,26 @@ static inline void zox_tst_dsave_read(ecs* world, entity chunk, byte s) {
         }
     }
     zox_tst_dsave_outside[s] = getv_LightOctree(lights, depth, (byte3) { zox_tst_dsave_door_x, 4, 10 });
-    const BlockDatas* datas = zox_get(chunk, BlockDatas);
-    zox_tst_dsave_data[s][0] = get_block_data(datas, (byte3) { zox_tst_dsave_door_x, 4, 9 });
-    zox_tst_dsave_data[s][1] = get_block_data(datas, (byte3) { zox_tst_dsave_door_x, 5, 9 });
+    const ActiveOctree* actives = zox_get(chunk, ActiveOctree);
+    zox_tst_dsave_data[s][0] = getv_ActiveOctree(actives, depth, (byte3) { zox_tst_dsave_door_x, 4, 9 });
+    zox_tst_dsave_data[s][1] = getv_ActiveOctree(actives, depth, (byte3) { zox_tst_dsave_door_x, 5, 9 });
 }
 
 byte zox_tst_dsave_file_open = 0;   // the file had the door open after it was opened
 int3 zox_tst_dsave_base;
 
-// the door's base block data in the chunk's file, 255 without one
+// the door's base on (1) or off (0) in the chunk's file, 255 without one
 static inline byte zox_tst_dsave_file_data(ecs* world, entity chunk) {
     VoxelNode voxels;
     memset(&voxels, 0, sizeof(VoxelNode));
     BlockDatas datas;
     memset(&datas, 0, sizeof(BlockDatas));
+    ActiveOctree actives = { 0 };
     byte data = 255;
-    if (load_chunk(world, zox_tst_world_realm, zox_getv(chunk, ChunkPosition), &voxels, &datas) && datas.value) {
-        data = get_block_data(&datas, (byte3) { zox_tst_dsave_door_x, 4, 9 });
+    if (load_chunk(world, zox_tst_world_realm, zox_getv(chunk, ChunkPosition), &voxels, &datas, &actives) && datas.value) {
+        data = getv_ActiveOctree(&actives, zox_getv(chunk, NodeDepth), (byte3) { zox_tst_dsave_door_x, 4, 9 }) != 0;
     }
+    collapse_ActiveOctree(&actives);
     close_VoxelNode(&voxels);
     if (datas.value) {
         free(datas.value);
@@ -110,7 +112,7 @@ byte zox_tst_door_save_ready(ecs* world) {
         // the built room saved (its voxels' edits), then opened alone (door_toggle, as a player does)
         zox_tst_waiting = "the built room saved";
         const byte data = zox_tst_dsave_file_data(world, chunk);
-        if (data == 255 || (data & block_data_active)) {
+        if (data == 255 || data) {
             return zox_tst_dsave_frames > 600;
         }
         zox_tst_dsave_read(world, chunk, 0);
@@ -126,7 +128,7 @@ byte zox_tst_door_save_ready(ecs* world) {
         // its file has it open, then shut alone
         zox_tst_waiting = "the door's opening saved";
         const byte data = zox_tst_dsave_file_data(world, chunk);
-        if (data == 255 || !(data & block_data_active)) {
+        if (data == 255 || !data) {
             if (zox_tst_dsave_frames > 300) {
                 zox_tst_check(0, "opening the door wasn't saved, the file's data [%i]", data);
                 return 1;
@@ -142,7 +144,7 @@ byte zox_tst_door_save_ready(ecs* world) {
     if (zox_tst_dsave_stage == 6) {
         zox_tst_waiting = "the door's shutting saved";
         const byte data = zox_tst_dsave_file_data(world, chunk);
-        if (data == 255 || (data & block_data_active)) {
+        if (data == 255 || data) {
             if (zox_tst_dsave_frames > 300) {
                 zox_tst_check(0, "shutting the door wasn't saved, the file's data [%i]", data);
                 return 1;
@@ -169,7 +171,10 @@ byte zox_tst_door_save_ready(ecs* world) {
         for (int i = 0; i < datas->length; i++) {
             datas->value[i] = 255;
         }
-        const byte loaded = load_chunk(world, realm, zox_getv(chunk, ChunkPosition), zox_getm(chunk, VoxelNode), datas);
+        ActiveOctree* actives = zox_getm(chunk, ActiveOctree);
+        collapse_ActiveOctree(actives);
+        actives->value = 1;     // all on: the load has to put it back
+        const byte loaded = load_chunk(world, realm, zox_getv(chunk, ChunkPosition), zox_getm(chunk, VoxelNode), datas, actives);
         zox_octree_lock_end(lock);
         zox_tst_check(loaded, "the chunk didn't load from its file");
         spinlock* light_lock = &zox_getm(chunk, LightLock)->value;
@@ -197,11 +202,11 @@ void zox_tst_door_save_check(ecs* world) {
     const char* names[2] = { "built", "loaded" };
     for (byte s = 0; s < 2; s++) {
         const byte3 a = zox_tst_dsave_at[s];
-        zox_log("[tst] %s: inside brightest [%i] at [%ix%ix%i], outside [%i], door data base [%i] filler [%i]", names[s],
+        zox_log("[tst] %s: inside brightest [%i] at [%ix%ix%i], outside [%i], door on base [%i] filler [%i]", names[s],
             zox_tst_dsave_inside[s], a.x, a.y, a.z, zox_tst_dsave_outside[s], zox_tst_dsave_data[s][0], zox_tst_dsave_data[s][1]);
         zox_tst_check(zox_tst_dsave_outside[s] > darklight + 100, "%s: outside the door isn't lit [%i]", names[s], zox_tst_dsave_outside[s]);
-        zox_tst_check(!(zox_tst_dsave_data[s][0] & block_data_active) && !(zox_tst_dsave_data[s][1] & block_data_active),
-            "%s: the door's open, data base [%i] filler [%i]", names[s], zox_tst_dsave_data[s][0], zox_tst_dsave_data[s][1]);
+        zox_tst_check(!zox_tst_dsave_data[s][0] && !zox_tst_dsave_data[s][1],
+            "%s: the door's open, on base [%i] filler [%i]", names[s], zox_tst_dsave_data[s][0], zox_tst_dsave_data[s][1]);
         zox_tst_check(zox_tst_dsave_inside[s] <= darklight, "%s: light inside the shut room [%i]", names[s], zox_tst_dsave_inside[s]);
     }
 }

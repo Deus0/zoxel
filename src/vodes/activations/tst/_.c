@@ -3,7 +3,7 @@
 //  - a door placed with ground under it; a clicker in front of its top (TriggerActionB, RaycastRange, a terrain link,
 //    no camera: chunk3_raycast_system casts from its own position along its facing)
 //  - out of reach (its range under the distance) a click does nothing; in reach it opens the door (both parts'
-//    block_data_active); turned away onto a bed behind it: it sleeps there (Sleeping, SleepBlock the bed's base), the
+//    on in its ActiveOctree); turned away onto a bed behind it: it sleeps there (Sleeping, SleepBlock the bed's base), the
 //    door left open; woken and put back, facing the door again it closes
 //  - run: bash bsh/tst.sh block_activate
 byte zox_tst_bact_stage = 0;
@@ -14,7 +14,7 @@ entity zox_tst_bact_clicker = 0;
 
 static inline byte zox_tst_bact_open(ecs* world, entity terrain, int y) {
     const int3 p = { zox_tst_bact_base.x, zox_tst_bact_base.y + y, zox_tst_bact_base.z };
-    return (terrain_block_data_at(world, terrain, p) & block_data_active) != 0;
+    return terrain_active_at(world, terrain, p) != 0;
 }
 
 // a turn about up whose facing (as the raycast reads it) is along z, +1 or -1

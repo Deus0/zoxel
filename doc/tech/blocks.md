@@ -36,7 +36,6 @@ What the one byte holds today (`get_block_data` / `set_block_data`):
 |---|---|
 | a bed's or door's base | 1 + its direction (quarter turns about up, 0 to 3): 1 to 4 |
 | a filler (the rest of a bed or door) | 1 + its offset back to its base (`block_offset_encode`, 2 blocks each way): 1 to 125 |
-| a block switched on: an open door's base and fillers, a gravity cube on | the above (0 for a plain block) + `block_data_active` (128) |
 
 `block_data_direction` and `block_offset_decode` mask out bit 128.
 
@@ -57,8 +56,9 @@ What the one byte holds today (`get_block_data` / `set_block_data`):
 - `chunk3_raycast`: a filler's offset to its base, the ray goes into the base's model.
 - `multi_block_removed`: a removed part's fillers or base.
 - terrain collisions (`collision_block_solid`, intersect2.c): a block whose `BlockCollider` is `zox_block_open` (a
-  door, its filler) with `block_data_active` is passed through; other blocks switched on stay solid. Only looked up in chunks that have block data; read without a lock, like the octree there (collisions and
-  octree writes run in different phases).
+  door, its filler) on in its chunk's `ActiveOctree` is passed through; other blocks switched on stay solid. Only
+  looked up in chunks with something on; read without a lock, like the octree there (collisions and octree writes
+  run in different phases).
 
 ## Using a block (activations)
 
@@ -69,29 +69,22 @@ happens (`block_use`), a door `door_toggle`, a bed `character_sleep` (vodes/beds
 
 ## Doors now
 
-- Open state: `block_data_active` on every part (the base's and fillers' bytes), so it's saved and collisions see it
-  without the entity.
+- Open state: on in its chunk's `ActiveOctree` at every part, so it's saved and collisions see it without the entity.
 - The swing: on the world block entity (`DoorOpen`, `DoorSwing`, `DoorRestPosition`, `DoorRestRotation`,
   `DoorHinge`), set from the block data when it spawns, eased by `door_swing_system`.
-- So the state is in two places (the bit, the entity's `DoorOpen`), kept in step by `door_toggle`.
+- So the state is in two places (the `ActiveOctree`, the entity's `DoorOpen`), kept in step by `door_toggle`.
 
-## Planned: an activation octree (the user, 2026-11-19)
+## What's switched on: ActiveOctree (2026-11-23)
 
-Activated states (a door open, later redstone power) in an octree of their own a chunk, not in `BlockDatas`;
-`BlockDatas` stays for a block's data that doesn't change (directions, filler offsets, later a sign's text).
-For now (the user, 2026-11-23) a gravity cube keeps its state as a door does, `block_data_active` in `BlockDatas`.
+A terrain chunk's `ActiveOctree` (chunks3/com, fun/active.c): a byte a voxel, 0 off, on otherwise (a door open, a
+gravity cube on; later a manawire's power level). `BlockDatas` keeps what doesn't change (directions, filler offsets).
 
-| | array (`BlockDatas` now) | activation octree |
-|---|---|---|
-| chunk with none | nothing stored | one empty root node |
-| a few doors a chunk | a few bytes each | a path of nodes each: 8 children a level (16 bytes a node), 5 levels for a 32 chunk, about 640 bytes for a lone door |
-| lookup | linear over the chunk's entries | fixed, a step a level |
-| many states (redstone wire across a chunk) | hundreds of entries, every lookup and removal slows | the same cost |
-| neighbours (signals spreading) | a linear search each | a get each |
-| saving | one memcpy (exists) | flattened (`octree_flatten` exists), a new section |
-| code | its own get / set | the voxel octree's get / set |
-| lower detail | none | can merge or skip like voxels |
-
-Doors alone are fine on the array (rare, free in chunks without them); redstone (dense, changing, neighbour heavy)
-needs the octree. To consolidate: doors' open bit moves to the activation octree, collisions and the door hook read
-it there, and who writes it (a queue like voxels, or direct under the chunk's lock) is decided with it.
+- Nothing on: its root, one node at 0, so "is anything on here" is its root (`active_octree_any`).
+- Set with its voxel (`VoxelNodeUpdate.active`, a door placed open), cleared when its voxel changes (`old_active`
+  remembers it: a gravity cube dug out while on); switched straight in the chunk under its lock by `block_toggle`
+  (`terrain_set_active`, the chunk `SaveDirty`).
+- Read by collisions (doors walked through), lights (`light_stops`), the door hook (spawns open), gravity (the
+  cubes on, terrain/gravity).
+- Saved as section 2 after the block data, only when something's on (doc/tech/saves.md).
+- Planned (doc/todo.md): a `PowerOctree` beside it, worked out and not saved (as light), power spread from generator
+  blocks through manawires; a parent's value the max of its children for coarse lod checks.

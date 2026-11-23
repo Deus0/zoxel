@@ -86,19 +86,33 @@ static inline entity multi_block_base_at(ecs* world, entity terrain, entity real
     return zox_valid(b) ? b : 0;
 }
 
-// a voxel's block data written straight to its chunk (not its queue: its voxel stays), the chunk saved as edited
-//  - SaveDirty saves it (chunk3_save_dirty_system): the chunk saves only on a voxel's change (ChunkUpdate) otherwise, a
-//    door toggled kept the state it had at its chunk's last edit (it loaded open, shut after)
-static inline byte terrain_set_block_data(ecs* world, entity terrain, int3 block, byte data) {
+// is a voxel on (its chunk's ActiveOctree: a door open, a gravity cube on), 0 if not or its chunk isn't loaded
+static inline byte terrain_active_at(ecs* world, entity terrain, int3 block) {
     byte3 local;
     const entity chunk = terrain_chunk_local(world, terrain, block, &local);
-    if (!chunk || !zox_has(chunk, BlockDatas)) {
+    if (!chunk || !zox_has(chunk, ActiveOctree)) {
         return 0;
     }
     spinlock* lock = zox_octree_lock(world, chunk);
     zox_octree_lock_begin(lock);
-    zox_muter(chunk, BlockDatas, datas);
-    set_block_data(datas, local, data);
+    const byte value = getv_ActiveOctree(zox_get(chunk, ActiveOctree), zox_getv(chunk, NodeDepth), local);
+    zox_octree_lock_end(lock);
+    return value;
+}
+
+// switches a voxel on or off straight in its chunk (its voxel stays), the chunk saved as edited
+//  - SaveDirty saves it (chunk3_save_dirty_system): the chunk saves only on a voxel's change (ChunkUpdate) otherwise, a
+//    door toggled kept the state it had at its chunk's last edit (it loaded open, shut after)
+static inline byte terrain_set_active(ecs* world, entity terrain, int3 block, byte value) {
+    byte3 local;
+    const entity chunk = terrain_chunk_local(world, terrain, block, &local);
+    if (!chunk || !zox_has(chunk, ActiveOctree)) {
+        return 0;
+    }
+    spinlock* lock = zox_octree_lock(world, chunk);
+    zox_octree_lock_begin(lock);
+    zox_muter(chunk, ActiveOctree, actives);
+    set_ActiveOctree(actives, zox_getv(chunk, NodeDepth), local, value);
     zox_octree_lock_end(lock);
     if (!zox_has(chunk, Edited)) {
         zox_add(chunk, Edited);
@@ -109,22 +123,17 @@ static inline byte terrain_set_block_data(ecs* world, entity terrain, int3 block
     return 1;
 }
 
-// switches a block on or off (block_data_active, a door open, a gravity cube on): every part's block data, its
-//  direction and offsets kept; returns 1 if it's on now
-//  - from a worker too (block_activate_system): each part's data under its chunk's lock
+// switches a block on or off (a door open, a gravity cube on): every part of it in its chunk's ActiveOctree; returns
+//  1 if it's on now
+//  - from a worker too (block_activate_system): each part under its chunk's lock
 byte block_toggle(ecs* world, entity terrain, entity realm, int3 base) {
-    const byte data = terrain_block_data_at(world, terrain, base);
-    const byte on = !(data & block_data_active);
-    const byte direction = block_data_direction(data);
+    const byte on = !terrain_active_at(world, terrain, base);
+    const byte direction = block_data_direction(terrain_block_data_at(world, terrain, base));
     const int3 size = block_size_of(world, realm_voxel_block(world, realm, terrain_voxel_at(world, terrain, base)));
-    const byte flag = on ? block_data_active : 0;
     for (int x = 0; x < size.x; x++)
     for (int y = 0; y < size.y; y++)
     for (int z = 0; z < size.z; z++) {
-        const int3 o = block_direction_offset(direction, (int3) { x, y, z });
-        // a plain block's own data is only its flag (a 1 x 1 x 1 block has no direction)
-        const byte part = !x && !y && !z ? (block_is_multi(size) ? 1 + direction : 0) : block_offset_encode(int3_scale(o, -1));
-        terrain_set_block_data(world, terrain, int3_add(base, o), part | flag);
+        terrain_set_active(world, terrain, int3_add(base, block_direction_offset(direction, (int3) { x, y, z })), on);
     }
     return on;
 }

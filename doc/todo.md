@@ -62,6 +62,10 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 	- a sound and a look for a gravity cube switched on (it's a plain purple stone now)
 	- a test that a cube saved switched on flips gravity again once loaded (the load's VoxelNodeDirty rebuilds it)
 
+- Power (doc/tech/blocks.md, ActiveOctree): manawires, power generator blocks, a PowerOctree beside the ActiveOctree
+  (worked out and not saved, as light), power spread from generators through wires, doors, lamps and gravity cubes
+  switched by it; coarse lod reads a parent's max
+
 # Bugs
 - walk_bob fails on master (2026-11-23, e026107c0): the head bobbed 0cm over 11 steps, turned 0 times
 - physics on lower lod chunks used to bug (not sure anymore, might still glitch)

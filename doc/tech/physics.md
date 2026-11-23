@@ -133,8 +133,7 @@ A terrain chunk has a `GravityOctree` beside its voxels, as its `LightOctree`: w
 (`gravity_pull`).
 
 - **A gravity cube** (`BlockGravity`, gam/zoxel/sys/blocks.c) switched on flips gravity in a sphere of
-  `gravity_radius` (4) blocks round it, to voxel centres. On is `block_data_active` in its block data, as an open
-  door's: a right click toggles it (`block_use`, `block_toggle`), and it's saved with its chunk. Where spheres
+  `gravity_radius` (4) blocks round it, to voxel centres. On is its chunk's `ActiveOctree`, as an open door's: a right click toggles it (`block_use`, `block_toggle`), and it's saved with its chunk. Where spheres
   overlap each flips it again (two make it down).
 - **Worked out from the cubes**, not stored: `gravity_rebuild` gathers the cubes switched on in a chunk and the 26
   round it (a sphere reaches one chunk at most) and flips each voxel in their spheres. Full detail chunks only.

@@ -1,6 +1,5 @@
 #define zox_light_solidity_length 255
-#define light_solidity_open 2   // stops light unless its block data is open (block_light_pass_open: a door's parts)
-#define light_solidity_base 3   // passes light as its base does (block_light_pass_base: the plain filler, a door's in old saves)
+#define light_solidity_open 2   // stops light unless it's on (its ActiveOctree, block_light_pass_open: a door's parts)
 
 // Caches if each block stops light, indexed by voxel - 1: 0 passes, 1 stops, light_solidity_open stops while shut
 // NOTE: Only rebuilds when the chunks block manager (realm) changes
@@ -26,39 +25,17 @@ static inline void update_light_solidity(
     for (int j = 0; j < length; j++) {
         entity block = blocks->value[j];
         const byte pass = zox_valid(block) && zox_has(block, BlockLightPass) ? zox_getv(block, BlockLightPass) : 0;
-        solidity[j] = pass == block_light_pass_open ? light_solidity_open : pass == block_light_pass_base ? light_solidity_base : !pass;
+        solidity[j] = pass == block_light_pass_open ? light_solidity_open : !pass;
     }
 }
 
-// does the voxel at position stop light: solid, or a door's part shut (block_data_active, vodes/doors)
-//  - datas: its chunk's BlockDatas, NULL reads a door as shut
-//  - voxels: its chunk's, for a filler passing light as its base does (light_solidity_base): a plain filler over a shut
-//    door stops it (saves from before the door filler kept the plain one there, the door's top half let the sun in),
-//    over anything else it passes; its base in another chunk, it passes
-static inline byte light_stops(const byte* solidity, const BlockDatas* datas, const VoxelNode* voxels, byte depth,
-    byte voxel, byte3 position)
-{
+// does the voxel at position stop light: solid, or a door's part shut (not on in its chunk's ActiveOctree, vodes/doors)
+//  - actives: its chunk's ActiveOctree, NULL reads a door as shut
+static inline byte light_stops(const byte* solidity, const ActiveOctree* actives, byte depth, byte voxel, byte3 position) {
     if (!voxel || !solidity[voxel - 1]) {
         return 0;
     }
-    const byte kind = solidity[voxel - 1];
-    if (kind == light_solidity_base) {
-        const byte data = datas ? get_block_data(datas, position) : 0;
-        if (!data || (data & block_data_active) || !voxels) {
-            return 0;
-        }
-        const int3 base = int3_add(byte3_to_int3(position), block_offset_decode(data));
-        const int length = octree_size(depth);
-        if (base.x < 0 || base.y < 0 || base.z < 0 || base.x >= length || base.y >= length || base.z >= length) {
-            return 0;
-        }
-        const byte base_voxel = getv_VoxelNode(voxels, depth, int3_to_byte3(base));
-        return base_voxel && solidity[base_voxel - 1] == light_solidity_open;
-    }
-    if (kind != light_solidity_open) {
-        return 1;
-    }
-    return !datas || !(get_block_data(datas, position) & block_data_active);
+    return solidity[voxel - 1] != light_solidity_open || !actives || !getv_ActiveOctree(actives, depth, position);
 }
 
 // Caches the light each block gives off (BlockLight, 0 none), indexed by voxel - 1, like solidity
@@ -131,8 +108,8 @@ static inline byte light_beam_above(
     const LightOctree* lnode,
     const VoxelNode* up_vnode,
     const LightOctree* up_lnode,
-    const BlockDatas* datas,
-    const BlockDatas* up_datas,
+    const ActiveOctree* actives,
+    const ActiveOctree* up_actives,
     byte depth,
     byte3 pos,
     byte min_light,
@@ -152,7 +129,7 @@ static inline byte light_beam_above(
         }
         const byte3 p = { pos.x, up ? y - length : y, pos.z };
         const byte voxel = v ? getv_VoxelNode(v, depth, p) : 0;
-        if (light_stops(solidity, up ? up_datas : datas, v, depth, voxel, p)) {
+        if (light_stops(solidity, up ? up_actives : actives, depth, voxel, p)) {
             return 0;
         }
         const byte light = getv_LightOctree(l, depth, p);

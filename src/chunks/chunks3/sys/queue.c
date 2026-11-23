@@ -10,6 +10,7 @@ void voxel_update_queue_system(iter* it) {
     zox_sys_out(VoxelNode);
     zox_sys_out(VoxelNodeLock);
     zox_sys_out(BlockDatas);
+    zox_sys_out(ActiveOctree);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(NodeDepth, depth);
@@ -18,6 +19,7 @@ void voxel_update_queue_system(iter* it) {
         zox_sys_o(VoxelNodeLock, lock);
         // optional: only terrain chunks have block datas (vox models don't)
         BlockDatas* datas = BlockDatas_ ? &BlockDatas_[i] : NULL;
+        ActiveOctree* actives = ActiveOctree_ ? &ActiveOctree_[i] : NULL;
         byte updated = 0;
         for (int j = queue->count - 1; j >= 0; j--) {
             VoxelNodeUpdate* update = &queue->ptr[j];
@@ -46,6 +48,13 @@ void voxel_update_queue_system(iter* it) {
                 if (datas) {
                     update->old_data = get_block_data(datas, update->position);
                     set_block_data(datas, update->position, update->data);
+                }
+                // on as the update says (a block replaced or removed is off: a gravity cube dug out while on, old_active)
+                if (actives) {
+                    update->old_active = getv_ActiveOctree(actives, depth->value, update->position);
+                    if (update->old_active != update->active) {
+                        set_ActiveOctree(actives, depth->value, update->position, update->active);
+                    }
                 }
                 /*if (old_value) {
                     a_VoxelDropQueue(drops, (VoxelDropElement) { .value = old_value, .pos = update.pos });

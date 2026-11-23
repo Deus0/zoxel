@@ -1,5 +1,5 @@
 // A voxel that starts or stops passing light without an edit: its voxel stays, its block data changes (a door's
-//  parts opened or shut, block_data_active, vodes/doors door_toggle). Its block data is set first, then these run
+//  parts opened or shut in its ActiveOctree, vodes/doors door_toggle). Its state is set first, then these run
 //  - from a worker too: each queue and the light read are locked
 
 // opened: its sides' light floods into it, and on through it (a queued flood starts at a voxel's own light)

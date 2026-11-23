@@ -1,7 +1,7 @@
 #define zox_block_air 0
 #define zox_block_solid 1
 #define zox_block_vox 2
-#define zox_block_open 3     // a collider: solid unless its block data is block_data_active (a door, its filler)
+#define zox_block_open 3     // a collider: solid unless it's on (its chunk's ActiveOctree: a door, its filler)
 
 // block materials: a chunk's cube faces are built and meshed per material (chunks3 ChunkMaterial)
 //  - a face draws against air, a block with no material, or a see through material that isn't its own

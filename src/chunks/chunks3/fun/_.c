@@ -9,6 +9,7 @@
 #include "locks.c"
 #include "voxel_at.c"
 #include "block_data.c"
+#include "active.c"
 #include "flatten.c"
 #include "gpu_mesh.c"
 #include "materials.c"

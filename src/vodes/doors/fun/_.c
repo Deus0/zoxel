@@ -31,7 +31,8 @@ void door_on_spawned(ecs* world, spawned_block_data* data) {
     }
     const entity e = get_entity_VoxelNode(data->octree);
     const byte block_data = zox_has(data->chunk, BlockDatas) ? get_block_data(zox_get(data->chunk, BlockDatas), data->positionl) : 0;
-    const byte open = (block_data & block_data_active) != 0;
+    const byte open = zox_has(data->chunk, ActiveOctree) &&
+        getv_ActiveOctree(zox_get(data->chunk, ActiveOctree), zox_getv(data->chunk, NodeDepth), data->positionl);
     const float4 rest_rotation = block_direction_rotation(block_data_direction(block_data));
     const float3 hinge = { -data->scale, 0, (door_hinge_z - 1) * data->scale };
     zox_setv(e, DoorOpen, open);

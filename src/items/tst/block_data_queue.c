@@ -61,7 +61,7 @@ byte zox_tst_block_data_queue_ready(ecs* world) {
         create_VoxelNode(&node);
         BlockDatas datas = { 0 };
         spinlock_init(&datas.lock);
-        if (load_chunk(world, realm, zox_getv(chunk, ChunkPosition), &node, &datas)) {
+        if (load_chunk(world, realm, zox_getv(chunk, ChunkPosition), &node, &datas, NULL)) {
             zox_tst_bdq_loaded = get_block_data(&datas, zox_tst_bdq_at);
         }
         dispose_BlockDatas(&datas);

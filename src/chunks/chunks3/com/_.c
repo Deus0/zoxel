@@ -47,9 +47,19 @@ zox_tag(CombineVox);
 zoxc_entitiesw(CombineList);
 zoxc_arrayd(CombinePositions, byte3);
 zoxc_arrayd(CombineDepths, byte);   // depth to sample each CombineList vox at
-// blocks' own data in their chunk, for the few that have it (a bed's direction, a door's state), fun/block_data.c:
+// blocks' own data in their chunk, for the few that have it (a bed's direction, a filler's offset), fun/block_data.c:
 //  entries packed in one buffer, each its position (3 bytes), length (1) and data (length bytes)
 zoxc_arrayd(BlockDatas, byte);
+// blocks switched on in their chunk (a door open, a gravity cube on), a byte a voxel, 0 off (fun/active.c): saved with
+//  it; later a wire's power level. Nothing on: one node, 0
+typedef struct {
+    void* ptr;
+    byte value;
+} ActiveOctree;
+zoxc_octree_basic(ActiveOctree, byte, 0);
+create_octree_setters(ActiveOctree);
+create_octree_accessors(ActiveOctree);
+create_octree_reducer(ActiveOctree);
 
 // ChunkLodDirty
 // - chunk_lod_system
@@ -117,4 +127,5 @@ void zox_components_chunks3(ecs* world) {
     zoxd_arrayd(CombinePositions);
     zoxd_arrayd(CombineDepths);
     zoxd_arrayd(BlockDatas);
+    zoxd_octree(ActiveOctree);
 }

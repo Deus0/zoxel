@@ -5,8 +5,10 @@ typedef struct {
     byte3 position;
     byte value;
     byte data;          // the voxel's block data (BlockDatas), 0 for none
+    byte active;        // the voxel switched on (ActiveOctree: a door placed open), 0 for off
     byte old_value;
     byte old_data;      // its block data before, read after (a filler's offset to its base, multi_block_removed)
+    byte old_active;    // if it was on before (its ActiveOctree), read after (a gravity cube dug out while on)
     byte state;
     byte flowed;        // set by flowing water (terrain/sys/water_flow.c): it doesn't start a flow of its own
 } VoxelNodeUpdate;

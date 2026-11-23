@@ -49,11 +49,13 @@ byte zox_tst_door_sky_ready(ecs* world) {
         // the shaft to the sky over its start
         zox_tst_room_set(world, c, (byte3) { at.x, at.y + 1, at.z }, 0, 0);
         zox_tst_room_set(world, c, (byte3) { at.x, at.y + 2, at.z }, 0, 0);
-        // the door, open: its base's block data 1 + direction, open; its filler over it
+        // the door, open: its base's block data 1 + direction, on; its filler over it
         const entity door = zox_get_child_by_id(world, realm, zox_id(BlockDoor));
-        zox_tst_room_set(world, c, (byte3) { at.x + 2, at.y - 1, at.z }, zox_getv(door, BlockIndex), 1 | block_data_active);
-        zox_tst_room_set(world, c, (byte3) { at.x + 2, at.y, at.z }, block_filler_voxel(world, realm, door),
-            block_offset_encode((int3) { 0, -1, 0 }) | block_data_active);
+        VoxelNodeQueue* queue = zox_getm(c, VoxelNodeQueue);
+        a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = zox_getv(door, BlockIndex), .data = 1, .active = 1,
+            .position = (byte3) { at.x + 2, at.y - 1, at.z } });
+        a_VoxelNodeQueue(queue, (VoxelNodeUpdate) { .value = block_filler_voxel(world, realm, door),
+            .data = block_offset_encode((int3) { 0, -1, 0 }), .active = 1, .position = (byte3) { at.x + 2, at.y, at.z } });
         zox_tst_dsky_stage = 1;
         return 0;
     }

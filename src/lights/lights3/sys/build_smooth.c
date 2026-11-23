@@ -44,12 +44,12 @@ static inline byte smooth_is_solid(
     sbyte3 offset)
 {
     const byte voxel = getv_nearby_VoxelNode(voxels, voxels_locks, position, depth, offset, 0);
-    return voxel && solidity[voxel - 1] && solidity[voxel - 1] != light_solidity_base;
+    return voxel && solidity[voxel - 1];
 }
 
-// a door's part: stops light only while shut (or over a shut door), drawn as a block vox, not a cube
+// a door's part: stops light only while shut, drawn as a block vox, not a cube
 static inline byte smooth_is_seal(const byte* solidity, byte voxel) {
-    return voxel && (solidity[voxel - 1] == light_solidity_open || solidity[voxel - 1] == light_solidity_base);
+    return voxel && solidity[voxel - 1] == light_solidity_open;
 }
 
 // a face into a door's part: the darkest of the open air in the 3 x 3 across it (not solid, not a door's part), else
@@ -139,7 +139,7 @@ static inline byte smooth_grid_voxel(const smooth_grid* grid, byte3 position, sb
 
 static inline byte smooth_grid_solid(const smooth_grid* grid, const byte* solidity, byte3 position, sbyte3 offset) {
     const byte voxel = smooth_grid_voxel(grid, position, offset);
-    return voxel && solidity[voxel - 1] && solidity[voxel - 1] != light_solidity_base;
+    return voxel && solidity[voxel - 1];
 }
 
 // smooth_face_lights from the grid, the same lights (tst smooth_lights compares them)

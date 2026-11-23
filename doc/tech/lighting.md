@@ -25,12 +25,11 @@ A block's `BlockLightPass` sets whether light goes through it. It is cached a re
 |---|---|---|
 | 0 (none) | 1 | stops it (stone, a glow stone too) |
 | 1 | 0 | passes (air, water, minivoxes) |
-| `block_light_pass_open` 2 | `light_solidity_open` | stops it unless its block data is `block_data_active` (a door and the door's filler) |
-| `block_light_pass_base` 3 | `light_solidity_base` | passes as its base does: the plain filler over a shut door stops it (doors from old saves), over anything else it passes |
+| `block_light_pass_open` 2 | `light_solidity_open` | stops it unless it's on in its chunk's `ActiveOctree` (a door and the door's filler) |
 
-`light_stops(solidity, datas, voxels, depth, voxel, position)` is the one rule every pass uses: flood, dark, sunbeams,
-edits and block voxes. Smooth lighting and gpu meshing count `light_solidity_base` as air (it has no block of its own
-to shade).
+`light_stops(solidity, actives, depth, voxel, position)` is the one rule every pass uses: flood, dark, sunbeams,
+edits and block voxes; `actives` is the chunk's `ActiveOctree` (what's switched on), its neighbours' read across an
+edge (`fetch_neighbor_actives`).
 
 ## Passes
 
@@ -94,7 +93,7 @@ its chunk's or a neighbour's lights change (`block_vox_lights_system`):
 | Test | Checks |
 |---|---|
 | `door_light` | light through a door only while it's open; the shut door's brightness is its dark side's |
-| `door_sky`, `door_old_filler`, `door_save` | sunlight and doors, old saves' plain fillers, a door saved shut |
+| `door_sky`, `door_save` | sunlight and doors, a door saved shut |
 | `smooth_lights` | the corner leak; a wall's face into a shut door takes the room's light, not the outside's |
 | `gpu_mesh_lights` | the gpu's corner lights against the cpu's |
 | `block_vox_light_sampling`, `block_vox_lights` | block vox brightness from its sides; brightness matches the lights round it |

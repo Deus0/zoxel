@@ -4,14 +4,14 @@
 //  - minivox blocks pass light (BlockLightPass), so their own voxel is lit; the sides cover blocks that don't
 //  - brightness is light / 255, the same as terrain vertex colors (build_smooth_lights_system)
 
-// a chunk's lights, voxels and block datas, its neighbors' and the realm's solidity, read once for its block voxes
+// a chunk's lights, voxels and block actives, its neighbors' and the realm's solidity, read once for its block voxes
 typedef struct {
     const LightOctree* lights;
     const LightOctree* neighbor_lights[6];
     const VoxelNode* voxels;
     const VoxelNode* neighbor_voxels[6];
-    const BlockDatas* datas;
-    const BlockDatas* neighbor_datas[6];
+    const ActiveOctree* actives;
+    const ActiveOctree* neighbor_actives[6];
     byte solidity[zox_light_solidity_length];
     byte depth;
 } block_vox_lighting;
@@ -24,12 +24,12 @@ static inline byte block_vox_lighting_begin(ecs* world, entity chunk, block_vox_
     l->lights = zox_get(chunk, LightOctree);
     l->depth = zox_getv(chunk, NodeDepth);
     l->voxels = zox_has(chunk, VoxelNode) ? zox_get(chunk, VoxelNode) : NULL;
-    l->datas = zox_has(chunk, BlockDatas) ? zox_get(chunk, BlockDatas) : NULL;
+    l->actives = zox_has(chunk, ActiveOctree) ? zox_get(chunk, ActiveOctree) : NULL;
     if (zox_has(chunk, ChunkNeighbors)) {
         const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
         fetch_neightbor_light_nodes(world, neighbors, l->neighbor_lights);
         fetch_neightbor_voxel_nodes(world, neighbors, l->neighbor_voxels);
-        fetch_neighbor_block_datas(world, neighbors, l->neighbor_datas);
+        fetch_neighbor_actives(world, neighbors, l->neighbor_actives);
     }
     entity cached = 0;
     update_light_solidity(world, zox_get_link(world, chunk, BlockManagerLink), &cached, l->solidity);
@@ -37,17 +37,17 @@ static inline byte block_vox_lighting_begin(ecs* world, entity chunk, block_vox_
 }
 
 // does the voxel at position in a tree stop light (a shut door, its filler), no voxels: it passes
-static inline byte block_vox_stops(const block_vox_lighting* l, const VoxelNode* voxels, const BlockDatas* datas,
+static inline byte block_vox_stops(const block_vox_lighting* l, const VoxelNode* voxels, const ActiveOctree* actives,
     byte3 position)
 {
-    return voxels && light_stops(l->solidity, datas, voxels, l->depth, getv_VoxelNode(voxels, l->depth, position), position);
+    return voxels && light_stops(l->solidity, actives, l->depth, getv_VoxelNode(voxels, l->depth, position), position);
 }
 
 // a block vox's light: the brightest of its own voxel and its 6 sides; one that stops light (a shut door, the filler
 //  over it) holds none of its own, so the darkest of its sides light passes through (a door between a sunlit outside
 //  and a dark room lit as the room: lit by the brightest it glowed inside); sides past the chunk edge from its neighbor
 static inline byte get_block_vox_light(const block_vox_lighting* l, byte3 position) {
-    const byte shut = block_vox_stops(l, l->voxels, l->datas, position);
+    const byte shut = block_vox_stops(l, l->voxels, l->actives, position);
     byte light = shut ? 255 : getv_LightOctree(l->lights, l->depth, position);
     byte found = !shut;
     const short length = octree_size(l->depth);
@@ -55,11 +55,11 @@ static inline byte get_block_vox_light(const block_vox_lighting* l, byte3 positi
         int3 p = move_position(byte3_to_int3(position), d);
         const LightOctree* tree = l->lights;
         const VoxelNode* voxels = l->voxels;
-        const BlockDatas* datas = l->datas;
+        const ActiveOctree* actives = l->actives;
         if (p.x < 0 || p.x >= length || p.y < 0 || p.y >= length || p.z < 0 || p.z >= length) {
             tree = l->neighbor_lights[d];
             voxels = l->neighbor_voxels[d];
-            datas = l->neighbor_datas[d];
+            actives = l->neighbor_actives[d];
             if (!tree) {
                 continue;
             }
@@ -71,7 +71,7 @@ static inline byte get_block_vox_light(const block_vox_lighting* l, byte3 positi
             if (side_light > light) {
                 light = side_light;
             }
-        } else if (!block_vox_stops(l, voxels, datas, side)) {
+        } else if (!block_vox_stops(l, voxels, actives, side)) {
             // a solid side (the wall round a door) holds darklight: only the open ones
             if (side_light < light) {
                 light = side_light;

@@ -8,10 +8,10 @@
 static inline GpuMeshLighting gpu_mesh_lighting(const byte* solidity) {
     GpuMeshLighting lighting = { .darklight = darklight, .sunlight = sunlight };
     for (int i = 0; i < zox_light_solidity_length; i++) {
-        if (solidity[i] && solidity[i] != light_solidity_base) {   // a filler stops light only over a shut door
+        if (solidity[i]) {
             lighting.solid[i >> 5] |= 1u << (i & 31);
         }
-        if (solidity[i] == light_solidity_open || solidity[i] == light_solidity_base) {   // a door's parts (smooth_is_seal)
+        if (solidity[i] == light_solidity_open) {   // a door's parts (smooth_is_seal)
             lighting.seals[i >> 5] |= 1u << (i & 31);
         }
     }

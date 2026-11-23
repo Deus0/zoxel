@@ -8,7 +8,7 @@ byte sunbeam(
     SunlightQueue* chunk_below_queue,
     LightOctree* root_lights,
     const VoxelNode* root_vnode,
-    const BlockDatas* datas,
+    const ActiveOctree* actives,
     byte depth, byte3 pos,
     byte light,
     byte min_light,
@@ -25,7 +25,7 @@ byte sunbeam(
     for (int y = pos.y; y >= 0; y--) {
         pos.y = y;
         const byte voxel = getv_VoxelNode(root_vnode, depth, pos);
-        if (light_stops(solidity, datas, root_vnode, depth, voxel, pos)) {
+        if (light_stops(solidity, actives, depth, voxel, pos)) {
             beam_stopped = 1;
             break;
         }
@@ -126,7 +126,7 @@ void light_beam_system(iter* it) {
         if (dbg_log) {
             zox_log("[%s] Extended Sunbeams l[%i]", zox_get_name(e), sunlight);
         }
-        const BlockDatas* datas = zox_has(e, BlockDatas) ? zox_get(e, BlockDatas) : NULL;
+        const ActiveOctree* actives = zox_has(e, ActiveOctree) ? zox_get(e, ActiveOctree) : NULL;
         const byte chunk_depth = zox_getv(e, NodeDepth);
         if (zox_sys_budget_spent(light_beam)) {
             break;
@@ -187,7 +187,7 @@ void light_beam_system(iter* it) {
                     chunk_below_sunlight_queue,
                     root_lights,
                     root_vnode,
-                    datas,
+                    actives,
                     depth,
                     beam_pos,
                     light,

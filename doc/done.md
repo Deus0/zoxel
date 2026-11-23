@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-23
+-x ActiveOctree: what's switched on (a door open, a gravity cube on) in its own octree a chunk, saved as a section,
+  out of BlockDatas (block_data_active gone); the lights' old filler rule (old saves' doors) and tst door_old_filler
+  removed (no back compat)
 -x Gravity cubes: a terrain chunk's GravityOctree (terrain/gravity), a gravity cube switched on (a right click,
   block_data_active as a door) flips gravity in a sphere of 4 blocks round it, bodies with TerrainGravity
   (characters) pulled by it, jumps along their up, a Gravity gizmos button. tst gravity_cube

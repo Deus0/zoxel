@@ -20,38 +20,63 @@ typedef struct {
     int3 block[gravity_sources_max];
 } gravity_sources;
 
+typedef struct {
+    ecs* world;
+    const VoxelNode* voxels;
+    const BlockLinks* blocks;
+    byte depth;
+    int3 origin;    // the chunk's first block
+    gravity_sources* sources;
+} gravity_source_search;
+
+// the voxels on under a node (at node_depth, position in its units) that are gravity cubes
+static void gravity_sources_node(const gravity_source_search* search, const ActiveOctree* node, byte node_depth, byte3 position) {
+    ecs* world = search->world;
+    const ActiveOctree* kids = get_children_ActiveOctree(node);
+    if (kids) {
+        for (byte i = 0; i < octree_length; i++) {
+            const byte3 o = octree_positions[i];
+            gravity_sources_node(search, &kids[i], node_depth + 1,
+                (byte3) { position.x * 2 + o.x, position.y * 2 + o.y, position.z * 2 + o.z });
+        }
+        return;
+    }
+    if (!node->value) {
+        return;
+    }
+    const byte span = 1 << (search->depth - node_depth);
+    for (byte x = 0; x < span; x++) for (byte y = 0; y < span; y++) for (byte z = 0; z < span; z++) {
+        const byte3 local = { position.x * span + x, position.y * span + y, position.z * span + z };
+        const byte voxel = getv_VoxelNode(search->voxels, search->depth, local);
+        gravity_sources* sources = search->sources;
+        if (voxel && voxel <= search->blocks->length && zox_has(search->blocks->value[voxel - 1], BlockGravity) &&
+            sources->count < gravity_sources_max) {
+            sources->block[sources->count++] = int3_add(search->origin, byte3_to_int3(local));
+        }
+    }
+}
+
 // the gravity cubes switched on in a chunk and the 26 round it (they reach one chunk at most, gravity_radius is less
-//  than a chunk), from their block datas: on is block_data_active, as a door's open
+//  than a chunk), from their ActiveOctrees: a chunk with nothing on is its root, 0, skipped
 static inline void gravity_sources_near(ecs* world, entity terrain, entity realm, int3 chunk_position, gravity_sources* sources) {
     sources->count = 0;
     const ChunkLinks* chunks = zox_get(terrain, ChunkLinks);
-    const BlockLinks* blocks = zox_get(realm, BlockLinks);
     const byte depth = zox_getv(terrain, NodeDepth);
     const int length = octree_size(depth);
     int3 o;
     for (o.x = -1; o.x <= 1; o.x++) for (o.y = -1; o.y <= 1; o.y++) for (o.z = -1; o.z <= 1; o.z++) {
         const int3 position = int3_add(chunk_position, o);
         const entity chunk = int3_hashmap_get(chunks->value, position);
-        if (!zox_valid(chunk) || !zox_has(chunk, BlockDatas) || zox_getv(chunk, NodeDepth) != depth) {
+        if (!zox_valid(chunk) || !zox_has(chunk, ActiveOctree) || zox_getv(chunk, NodeDepth) != depth) {
             continue;
         }
-        const BlockDatas* datas = zox_get(chunk, BlockDatas);
-        const VoxelNode* voxels = zox_get(chunk, VoxelNode);
-        for (int i = 0; i + block_data_header <= datas->length; i += block_data_header + datas->value[i + 3]) {
-            const byte* entry = &datas->value[i];
-            if (!entry[3] || !(entry[block_data_header] & block_data_active)) {
-                continue;
-            }
-            const byte3 local = { entry[0], entry[1], entry[2] };
-            const byte voxel = getv_VoxelNode(voxels, depth, local);
-            if (!voxel || voxel > blocks->length || !zox_has(blocks->value[voxel - 1], BlockGravity)) {
-                continue;
-            }
-            if (sources->count < gravity_sources_max) {
-                sources->block[sources->count++] = (int3) { position.x * length + local.x, position.y * length + local.y,
-                    position.z * length + local.z };
-            }
+        const ActiveOctree* actives = zox_get(chunk, ActiveOctree);
+        if (!active_octree_any(actives)) {
+            continue;
         }
+        const gravity_source_search search = { world, zox_get(chunk, VoxelNode), zox_get(realm, BlockLinks), depth,
+            int3_scale(position, length), sources };
+        gravity_sources_node(&search, actives, 0, byte3_zero);
     }
 }
 
@@ -126,7 +151,7 @@ void gravity_dirty_around(ecs* world, entity terrain, int3 block) {
 }
 
 // a chunk's voxels changed (VoxelNodeDirty: generated, loaded, edited), on the main thread
-//  - a gravity cube switched on and removed or replaced (in its queue's edits, with their old voxel and data): the
+//  - a gravity cube switched on and removed or replaced (in its queue's edits, their old voxel and old_active): the
 //    chunks round it again
 //  - cubes switched on in it or round it (loaded with it, or near where it came in): it again, and if they're in it,
 //    the chunks they reach (a chunk loaded with one)
@@ -148,7 +173,7 @@ void on_gravity_voxels(iter* it) {
             for (int j = 0; j < queue->count; j++) {
                 const VoxelNodeUpdate* update = &queue->ptr[j];
                 const byte old = update->old_value;
-                if (update->state != zox_voxel_queue_post || !(update->old_data & block_data_active) || !old ||
+                if (update->state != zox_voxel_queue_post || !update->old_active || !old ||
                     old > blocks->length || !zox_has(blocks->value[old - 1], BlockGravity)) {
                     continue;
                 }

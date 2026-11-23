@@ -18,10 +18,10 @@ static inline void dark_relight_emitter(LightQueue* light_queue, const byte* glo
 static inline byte dark_flood_light(
     spinlock* lightlock,
     const VoxelNode* root_vnode,          // (READ)
-    const BlockDatas* datas,
+    const ActiveOctree* actives,
     LightOctree* root_lnode,                // (WRITE)
     const VoxelNode* n_root_vnodes[6],    // (READ-ONLY)
-    const BlockDatas* n_datas[6],
+    const ActiveOctree* n_actives[6],
     const LightOctree* n_root_lnodes[6],    // (READ-ONLY)
     LightQueue* n_light_queues[6],
     LightQueue* light_queue,
@@ -63,7 +63,7 @@ static inline byte dark_flood_light(
             }
             if (n_root_vnode) {
                 byte voxel = getv_VoxelNode(n_root_vnode, depth, pos);
-                if (light_stops(solidity, n_datas[dir], n_root_vnode, depth, voxel, pos)) {
+                if (light_stops(solidity, n_actives[dir], depth, voxel, pos)) {
                     dark_relight_emitter(light_queue, glows, voxel, positionl, depth);
                     continue; // solid wall
                 }
@@ -106,7 +106,7 @@ static inline byte dark_flood_light(
         }
         // --- in-chunk ---
         byte voxel = getv_VoxelNode(root_vnode, depth, pos);
-        if (light_stops(solidity, datas, root_vnode, depth, voxel, pos)) {
+        if (light_stops(solidity, actives, depth, voxel, pos)) {
             dark_relight_emitter(light_queue, glows, voxel, positionl, depth);
             continue; // solid → stop (light passes water, so does its dark)
         }
@@ -133,10 +133,10 @@ static inline byte dark_flood_light(
             dark_flood_light(
                 lightlock,
                 root_vnode,
-                datas,
+                actives,
                 root_lnode,
                 n_root_vnodes,
-                n_datas,
+                n_actives,
                 n_root_lnodes,
                 n_light_queues,
                 light_queue,
@@ -193,10 +193,10 @@ byte dark_sunbeam(
     spinlock* lightlock,
     DarkQueue* queued,
     const VoxelNode* root_vnode,
-    const BlockDatas* datas,
+    const ActiveOctree* actives,
     LightOctree* root_lnode,
     const VoxelNode* n_root_vnodes[6],
-    const BlockDatas* n_datas[6],
+    const ActiveOctree* n_actives[6],
     const LightOctree* n_root_lnodes[6],
     LightQueue* n_light_queues[6],
     LightQueue* light_queue,
@@ -228,7 +228,7 @@ byte dark_sunbeam(
         pos.y = y;
         if (!started || y != top) {
             const byte voxel = getv_VoxelNode(root_vnode, depth, pos);
-            if (light_stops(solidity, datas, root_vnode, depth, voxel, pos)) {
+            if (light_stops(solidity, actives, depth, voxel, pos)) {
                 beam_stopped = 1;
                 break;
             }
@@ -265,10 +265,10 @@ byte dark_sunbeam(
         if (dark_flood_light(
             lightlock,
             root_vnode,
-            datas,
+            actives,
             root_lnode,
             n_root_vnodes,
-            n_datas,
+            n_actives,
             n_root_lnodes,
             n_light_queues,
             light_queue,
@@ -374,9 +374,9 @@ void dark_light_system(iter* it) {
         }
         const VoxelNode* nnodesv[6];
         fetch_neightbor_voxel_nodes(world, neighbors, nnodesv);
-        const BlockDatas* datas = zox_has(e, BlockDatas) ? zox_get(e, BlockDatas) : NULL;
-        const BlockDatas* ndatas[6];
-        fetch_neighbor_block_datas(world, neighbors, ndatas);
+        const ActiveOctree* actives = zox_has(e, ActiveOctree) ? zox_get(e, ActiveOctree) : NULL;
+        const ActiveOctree* nactives[6];
+        fetch_neighbor_actives(world, neighbors, nactives);
         const LightOctree* nnodesl[6];
         fetch_neightbor_light_nodes(world, neighbors, nnodesl);
         LightQueue* n_light_queues[6];
@@ -417,10 +417,10 @@ void dark_light_system(iter* it) {
                 if (dark_flood_light(
                     &lightlock->value,
                     root_vnode,
-                    datas,
+                    actives,
                     root_lnode,
                     nnodesv,
-                    ndatas,
+                    nactives,
                     nnodesl,
                     n_light_queues,
                     light_queue,
@@ -451,10 +451,10 @@ void dark_light_system(iter* it) {
                     &lightlock->value,
                     dark_queued,
                     root_vnode,
-                    datas,
+                    actives,
                     root_lnode,
                     nnodesv,
-                    ndatas,
+                    nactives,
                     nnodesl,
                     n_light_queues,
                     light_queue,

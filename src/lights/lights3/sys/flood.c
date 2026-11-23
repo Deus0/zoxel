@@ -11,10 +11,10 @@ static inline byte flood_light(
     spinlock* lightlock,
     spinlock** neighbor_locks,
     const VoxelNode* voxels,
-    const BlockDatas* datas,
+    const ActiveOctree* actives,
     LightOctree* lights,
     const VoxelNode* neighbor_voxels[6],
-    const BlockDatas* neighbor_datas[6],
+    const ActiveOctree* neighbor_actives[6],
     const LightOctree* neighbor_lights[6],
     LightQueue* n_queues[6],
     byte depth,
@@ -63,7 +63,7 @@ static inline byte flood_light(
                 neighbor_voxels2,
                 depth,
                 pos);
-            if (light_stops(solidity, neighbor_datas[dir], neighbor_voxels2, depth, neighbor_voxel, pos)) {
+            if (light_stops(solidity, neighbor_actives[dir], depth, neighbor_voxel, pos)) {
                 continue; // solid: hard stop
             }
             // air decay, more into water
@@ -95,7 +95,7 @@ static inline byte flood_light(
         }
         // --- In-chunk: READ voxel, WRITE light in our own chunk only. ---
         byte voxel = getv_VoxelNode(voxels, depth, pos);
-        if (light_stops(solidity, datas, voxels, depth, voxel, pos)) {
+        if (light_stops(solidity, actives, depth, voxel, pos)) {
             continue;
         }
         byte decayed_light = light_flood_decay(light, voxel, liquids, air_decay, min_light);
@@ -122,10 +122,10 @@ static inline byte flood_light(
             lightlock,
             neighbor_locks,
             voxels,
-            datas,
+            actives,
             lights,
             neighbor_voxels,
-            neighbor_datas,
+            neighbor_actives,
             neighbor_lights,
             n_queues,
             depth,
@@ -203,9 +203,9 @@ void light_flood_system(iter* it) {
             neighbor_locks);
         LightQueue* n_light_queues[6];
         fetch_neightbor_propogation_queues(world, neighbors, n_light_queues);
-        const BlockDatas* datas = zox_has(e, BlockDatas) ? zox_get(e, BlockDatas) : NULL;
-        const BlockDatas* neighbor_datas[6];
-        fetch_neighbor_block_datas(world, neighbors, neighbor_datas);
+        const ActiveOctree* actives = zox_has(e, ActiveOctree) ? zox_get(e, ActiveOctree) : NULL;
+        const ActiveOctree* neighbor_actives[6];
+        fetch_neighbor_actives(world, neighbors, neighbor_actives);
         byte dirty = 0;
         byte voxel_octree_depth = zox_getv(e, NodeDepth);
         zox_sys_budget_start(light_flood);
@@ -238,7 +238,7 @@ void light_flood_system(iter* it) {
                 continue;
             }
             byte voxel = getv_VoxelNode(root_vnode, update.depth, update.pos);
-            if (light_stops(solidity, datas, root_vnode, update.depth, voxel, update.pos)) {
+            if (light_stops(solidity, actives, update.depth, voxel, update.pos)) {
                 if (dbg_log) {
                     zox_log("[%s]: Light Flood Canceled at [%ix%ix%i] l[%i] flooded [%i]",
                         zox_get_name(e),
@@ -273,10 +273,10 @@ void light_flood_system(iter* it) {
                 &lightlock->value,
                 neighbor_locks,
                 root_vnode,
-                datas,
+                actives,
                 root_lnode,
                 neighbor_voxels,
-                neighbor_datas,
+                neighbor_actives,
                 neighbor_lights,
                 n_light_queues,
                 update.depth,
