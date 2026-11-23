@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-23
+-x Second full run (391 of 395, the rest pass alone): tst vegetation_chunks runs on one world (zox_tst_seed 666, a
+  random one sometimes had no tree round its spawn for a minute); block_vox_hits looks for room in the columns beside
+  the player's too (a town or hills round it: 100s searching)
 -x tst coop_pause failed its own setup since 2026-11-20: low ids freed for the shared canvas were taken by entities
   deleted since (deferred frees, LIFO reuse). Logged when it doesn't take; the players' first canvas link is checked
 -x tst chunk_mesh_flicker failed every run since it was written: a material's mean light dips as its faces change

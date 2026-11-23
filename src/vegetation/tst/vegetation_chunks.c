@@ -3,8 +3,8 @@
 //  - near the player: each tree column of a generated tunk, the voxel above the ground is a trunk and the one
 //    above the trunk's top is leaves, read from whichever chunk holds them
 //  - counts trees crossing a chunk's top (often none: tst vegetation_across draws that case)
-//  - waits for a drawn tree, up to 30s; none in 5s (a new player starts in a town, it clears its trees): the player
-//    moved out of it, held in the air, its streaming following
+//  - waits for a drawn tree, up to 60s; none (a new player starts in a town, it clears its trees, or water): the
+//    player moved on every 10s, held in the air, its streaming following
 //  - run: bash bsh/tst.sh vegetation_chunks
 int zox_tst_veg_chunks_frames = 0;
 int zox_tst_veg_columns = 0, zox_tst_veg_unloaded = 0, zox_tst_veg_cleared = 0;    // tree columns seen, not loaded, cleared
@@ -107,21 +107,25 @@ byte zox_tst_vegetation_chunks_ready(ecs* world) {
     if (zox_tst_veg_count(world, &crossing, &no_leaves) > 0) {
         return 1;
     }
-    // in a town: out of it, over the land
+    // in a town, or by water: moved on every 10s, 64 blocks a new way (one 48 block move ended by water or still in
+    //  the town), held in the air
     const entity character = zox_tst_player_character(world);
-    if (!zox_tst_veg_moved && zox_current_time - zox_tst_veg_chunks_start > 5 && zox_valid(character)) {
+    const int moves = (int) ((zox_current_time - zox_tst_veg_chunks_start) / 10);
+    if (zox_tst_veg_moved < moves && moves <= 4 && zox_valid(character)) {
         const float scale = zox_getv(local_terrain, BlockScale);
-        float3 p = zox_getv(character, Position3D);
-        p.x += 48 * scale;
-        p.y += 24 * scale;
+        const float3 ways[4] = { { 64, 0, 0 }, { 0, 0, 64 }, { -64, 0, 64 }, { -64, 0, -64 } };
+        float3 p = float3_add(zox_getv(character, Position3D), float3_scale(ways[moves - 1], scale));
+        if (!zox_tst_veg_moved) {
+            p.y += 24 * scale;
+        }
         zox_add(character, DisableGravity);
         zox_add(character, DisableMovement);
         zox_setv(character, Velocity3D, float3_zero);
         zox_setv(character, Position3D, p);
-        zox_tst_veg_moved = 1;
-        zox_log("[tst] vegetation_chunks no trees in 5s (a town?), moved the player [48] blocks away");
+        zox_tst_veg_moved = moves;
+        zox_log("[tst] vegetation_chunks no trees yet (a town, water?), moved the player on [%i]", moves);
     }
-    return zox_current_time - zox_tst_veg_chunks_start > 35;
+    return zox_current_time - zox_tst_veg_chunks_start > 60;    // streaming there is slow under load (35s, a full run)
 }
 
 void zox_tst_vegetation_chunks_check(ecs* world) {
@@ -137,6 +141,13 @@ void zox_tst_vegetation_chunks_check(ecs* world) {
         no_leaves, trees);
 }
 
+// one world every run (zox_tst_seed, else 666): a random one sometimes had no tree for a minute around its spawn (a
+//  town, a lake)
+void zox_tst_vegetation_chunks_setup() {
+    setenv("zox_tst_seed", "666", 0);
+}
+
 void zox_tsts_vegetation_chunks(ecs* world) {
     zox_tst_add("vegetation_chunks", zox_tst_vegetation_chunks_ready, zox_tst_vegetation_chunks_check, 120);
+    zox_tst_set_setup("vegetation_chunks", zox_tst_vegetation_chunks_setup, 0);
 }

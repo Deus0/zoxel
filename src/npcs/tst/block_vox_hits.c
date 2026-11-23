@@ -57,8 +57,10 @@ byte zox_tst_block_vox_hits_ready(ecs* world) {
         const byte depth = zox_getv(terrain, NodeDepth);
         const int length = octree_size(depth);
         const int3 chunk = real_position_to_chunk_position(zox_getv(character, Position3D), length, scale);
-        const int3 origin = { chunk.x * length, chunk.y * length, chunk.z * length };
-        // in the player's chunk or the one above
+        // in the player's chunk or the one above, else a column beside it (a town or hills round the player had no
+        //  room: it searched 100s, the world's different each run)
+        const int column = zox_tst_bvhits_frames % 9;
+        const int3 origin = { (chunk.x + column % 3 - 1) * length, chunk.y * length, (chunk.z + column / 3 - 1) * length };
         for (int y = 0; y < length * 2 - 8; y++) {
             const int3 bed = { origin.x + 3, origin.y + y, origin.z + 8 };
             const int3 door = { origin.x + 9, origin.y + y, origin.z + 8 };
