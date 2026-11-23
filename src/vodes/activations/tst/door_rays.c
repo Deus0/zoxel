@@ -103,6 +103,15 @@ byte zox_tst_door_rays_ready(ecs* world) {
         return zox_tst_dr_frames > 600;
     }
     if (zox_tst_dr_stage == 1) {
+        // every ray cast and hitting something first (a few frames after the block vox: it measured 12 misses), or 300
+        //  frames on (a real miss)
+        byte hit = 1;
+        for (int i = 0; i < zox_tst_dr_rays; i++) {
+            hit &= zox_get(zox_tst_dr_clickers[i], RaycastVoxelData)->result != 0;
+        }
+        if (!hit && zox_tst_dr_frames < 300) {
+            return 0;
+        }
         zox_tst_dr_measure(world, terrain, realm, 0);
         door_toggle(world, terrain, realm, zox_tst_dr_base);
         // open, it lies along its block's x 0 side (about its hinge, a block deep): the rays onto that line

@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-23
+-x tst door_rays measured the closed door's rays the frame its block vox spawned, before they'd hit (12 misses). It
+  waits for every ray's hit (300 frames at most, a real miss still fails)
 -x tst aesthetic_town, aesthetic_particles stalled: with far land every chunk streams in a minute before they're all
   loaded (meshed, lit), and the player spawn's progress counted only chunks in and generating. It counts near chunks
   loaded too (zox_stream_end_loaded)
