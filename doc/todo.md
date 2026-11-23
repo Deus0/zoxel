@@ -48,7 +48,7 @@ profile each, systems and observers counted together):
 - Select's pair (tooltip_select_system needs a system tag) and Begin / End / Exit (model node systems, heavy): keep,
   or one fragmenting tag removed by a phase end system
 - a grid laid out again when its elements change (only at spawn now)
-- the bulk byte states (StreamDirty, StreamDirty2, NpcSpawnZoneDirty, LightNodeDirty, RenderDepthDirty,
+- the bulk byte states (StreamDirty, StreamDirty2, NpcSpawnZoneDirty, LightOctreeDirty, RenderDepthDirty,
   RenderDistanceDirty): leave, unless a profile shows their increment systems
 - dead commented systems: find and remove the rest (5 removed 2026-11-21)
 Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap, door_rays.
@@ -219,7 +219,7 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 	  systems and a ~2.5 to 3ms merge (that frame's table changes), no one system spiking (the stream sweep was 6.6ms,
 	  spread over frames now)
 	- consolidate chunk dirty states into a DirtyState (byte bitmask, core): RenderDepthDirty, RenderDistanceDirty,
-	  LightNodeDirty, NpcSpawnZoneDirty, 2 bits each (trigger, active, end); present only while a bit's on, so their
+	  LightOctreeDirty, NpcSpawnZoneDirty, 2 bits each (trigger, active, end); present only while a bit's on, so their
 	  increment systems (~0.4ms a frame over every chunk) and readers only see dirty chunks, removed when all are off;
 	  more than 8 bits: a 16 bit DirtyState2. Setters from worker threads add a non fragmenting event tag, an observer
 	  ORs it in at the merge (two threads setting different bits in one byte lose one). Profile before and after
@@ -1248,8 +1248,8 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 	  faces), or one multi draw indirect per terrain, then default it on (--gpu_meshing to try it)
 	-x after: a lost gpu context (android gl) remakes gpu meshes, water on the gpu, vox models and skeletons
 - Light character models from the environment (like minivoxes)
-	- sample the LightNode at the character's voxel position (get_block_vox_light in vodes3/fun/lights.c), set Brightness
-	- update when the character moves to a new voxel, or its chunk's LightNodeDirty goes active
+	- sample the LightOctree at the character's voxel position (get_block_vox_light in vodes3/fun/lights.c), set Brightness
+	- update when the character moves to a new voxel, or its chunk's LightOctreeDirty goes active
 	- pass Brightness to the skeleton/character shaders (uniform, like vox_render)
 	- tst: character walks from sunlight into a dark area and gets darker
 - Lights: Add smooth lights for terrain faces, so the corners are darkened

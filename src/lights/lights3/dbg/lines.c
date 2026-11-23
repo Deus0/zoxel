@@ -1,6 +1,6 @@
 static void debug_octree_node_compare(
     ecs* world,
-    const LightNode* node,
+    const LightOctree* node,
     const VoxelNode* compare_node,
     byte depth,
     byte target_depth,
@@ -12,7 +12,7 @@ static void debug_octree_node_compare(
         zox_loge("invalid node in debug_octree_node");
         return;
     }
-    const LightNode** kids_ptr = (const LightNode**) node;
+    const LightOctree** kids_ptr = (const LightOctree**) node;
     const VoxelNode** compare_kids =
         debugger_is_ignore_voxel && compare_node
             ? (const VoxelNode**) compare_node
@@ -37,8 +37,8 @@ static void debug_octree_node_compare(
     float child_scale = scale * 0.5f;
 
     for (byte i = 0; i < 8; i++) {
-        const LightNode* child =
-            (const LightNode*)((const char*)(*kids_ptr) + i * sizeof(LightNode));
+        const LightOctree* child =
+            (const LightOctree*)((const char*)(*kids_ptr) + i * sizeof(LightOctree));
 
         if (!child) {
             zox_loge("invalid child on octree");
@@ -76,7 +76,7 @@ static void debug_octree_node_compare(
 
 static inline void debug_octree_compare(
     ecs* world,
-    const LightNode* root,
+    const LightOctree* root,
     const VoxelNode* compare_root,
     byte target_depth,
     float3 root_position,
@@ -96,7 +96,7 @@ static inline void debug_octree_compare(
 }
 
 // NOTE: This compares voxel nodes to make sure it only renders cubes for air blocks
-void light_node_debug_system(iter* it) {
+void light_octree_debug_system(iter* it) {
     zox_sys_on_begin();
     /*if (!zox_debug_lights) {
         return;
@@ -109,7 +109,7 @@ void light_node_debug_system(iter* it) {
     zox_sys_in(RenderDistance);
     zox_sys_in(ChunkPosition);
     zox_sys_in(VoxelNode);
-    zox_sys_in(LightNode);
+    zox_sys_in(LightOctree);
     zox_sys_in(RenderDepth);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Position3D, position);
@@ -117,7 +117,7 @@ void light_node_debug_system(iter* it) {
         zox_sys_i(RenderDistance, distance);
         zox_sys_i(ChunkPosition, positionc);
         zox_sys_i(VoxelNode, vnode);
-        zox_sys_i(LightNode, lights);
+        zox_sys_i(LightOctree, lights);
         zox_sys_i(RenderDepth, depth);
         // NOTE: Only debugs inside of chunk
         if (distance->value > 0 || !(positionc->value.y >= 0 && positionc->value.y <= 4)) {
@@ -126,11 +126,11 @@ void light_node_debug_system(iter* it) {
         // TODO: Limit to distance from camera
         float chunk_scale = scale->value * powers_of_two[depth->value];
         // zox_log("debugin chunk at scale [%f]", chunk_scale);
-        // debug_octree_compare_LightNode(world, lights, vnode, debug_depth, position->value, chunk_scale, sunlight);
+        // debug_octree_compare_LightOctree(world, lights, vnode, debug_depth, position->value, chunk_scale, sunlight);
         debug_octree_compare(world, lights, vnode, debug_depth, position->value, chunk_scale, sunlight);
         /*if (!lights->value && !lights->ptr) {
             zox_loge("Lights Dark [%s]", zox_sys_e_name);
         }*/
     }
     zox_sys_on_end();
-} zoxd_system(light_node_debug_system);
+} zoxd_system(light_octree_debug_system);

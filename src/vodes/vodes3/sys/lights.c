@@ -4,11 +4,11 @@ void block_vox_lights_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(LightNodeDirty);
+    zox_sys_in(LightOctreeDirty);
     zox_sys_in(ChunkNeighbors);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(LightNodeDirty, dirty);
+        zox_sys_i(LightOctreeDirty, dirty);
         zox_sys_i(ChunkNeighbors, neighbors);
         if (dirty->value != zox_dirty_active) {
             continue;

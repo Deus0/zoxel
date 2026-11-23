@@ -31,7 +31,7 @@ Code: [src/_/octrees](../../src/_/octrees) (the generic functions, no world need
 | Type | Kind | Holds | Default |
 |---|---|---|---|
 | `VoxelNode` | linked | a chunk's or model's block ids | 0 (air) |
-| `LightNode` | basic | light levels | `darklight` |
+| `LightOctree` | basic | light levels | `darklight` |
 | `SidesOctree` | basic | which faces of a voxel show | 0 |
 | `BoneNode` | basic | which body part a voxel came from (doc/done/skeletons.md) | 0 |
 

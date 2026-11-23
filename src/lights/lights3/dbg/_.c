@@ -5,7 +5,7 @@
 
 void set_light_debug_systems(ecs* world, byte enabled) {
     zox_debug_lights = enabled;
-    zox_set_enabled(light_node_debug_system, enabled);
+    zox_set_enabled(light_octree_debug_system, enabled);
 }
 
 void zox_dbg_cycle_light_debug(ecs *world, ClickEventData data) {
@@ -29,14 +29,14 @@ void zox_dbg_cycle_light_debug(ecs *world, ClickEventData data) {
 
 void zoxd_systems_light3_debug(ecs* world) {
     zox_system_1(
-        light_node_debug_system,
+        light_octree_debug_system,
         zoxp_spawn,
         [in] transforms3.Position3D,
         [in] blocks.BlockScale,
         [in] rendering.RenderDistance,
         [in] chunks3.ChunkPosition,
         [in] chunks3.VoxelNode,
-        [in] lights3.LightNode,
+        [in] lights3.LightOctree,
         [in] rendering.RenderDepth,
         [none] chunks.Chunk,
     );

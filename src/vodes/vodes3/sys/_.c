@@ -73,7 +73,7 @@ void zox_systems_vodes3(ecs* world) {
     zox_system(
         block_vox_lights_system,
         zoxp_update,
-        [in] lights3.LightNodeDirty,
+        [in] lights3.LightOctreeDirty,
         [in] chunks3.ChunkNeighbors,
         [none] terrains.TerrainChunk,
     );

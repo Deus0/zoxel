@@ -5,7 +5,7 @@
 //  - linked nodes are leaves with their value (octree_children skips links)
 //  - a node without children is its value for its whole cube, as walk_octree reads it
 //  - max_values: an open node holds the max of its leaves, not its own value (light trees: a coarse read is the
-//      brightest light under it, as getv_nearby_max_LightNode; an open light node's own value is stale)
+//      brightest light under it, as getv_nearby_max_LightOctree; an open light node's own value is stale)
 //  - tst octree_flatten (voxels), gpu_mesh_lights (lights)
 
 #define zox_flat_node_children_max 0xFFFFFF   // 24 bits of child index

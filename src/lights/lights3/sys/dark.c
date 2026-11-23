@@ -19,10 +19,10 @@ static inline byte dark_flood_light(
     spinlock* lightlock,
     const VoxelNode* root_vnode,          // (READ)
     const BlockDatas* datas,
-    LightNode* root_lnode,                // (WRITE)
+    LightOctree* root_lnode,                // (WRITE)
     const VoxelNode* n_root_vnodes[6],    // (READ-ONLY)
     const BlockDatas* n_datas[6],
-    const LightNode* n_root_lnodes[6],    // (READ-ONLY)
+    const LightOctree* n_root_lnodes[6],    // (READ-ONLY)
     LightQueue* n_light_queues[6],
     LightQueue* light_queue,
     DarkQueue* n_dark_queues[6],
@@ -57,7 +57,7 @@ static inline byte dark_flood_light(
         if (oob) {
             // --- neighbor chunk ---
             const VoxelNode* n_root_vnode   = n_root_vnodes[dir];
-            const LightNode* n_root_lnode = n_root_lnodes[dir];
+            const LightOctree* n_root_lnode = n_root_lnodes[dir];
             if (!n_root_lnode) {
                 continue;
             }
@@ -68,7 +68,7 @@ static inline byte dark_flood_light(
                     continue; // solid wall
                 }
             }
-            byte ncurrent_light = getv_LightNode(n_root_lnode, depth, pos);
+            byte ncurrent_light = getv_LightOctree(n_root_lnode, depth, pos);
             if (ncurrent_light <= min_light) {
                 continue;   // omg this wasn't here
             }
@@ -110,7 +110,7 @@ static inline byte dark_flood_light(
             dark_relight_emitter(light_queue, glows, voxel, positionl, depth);
             continue; // solid → stop (light passes water, so does its dark)
         }
-        byte current_light = getv_LightNode(root_lnode, depth, pos);
+        byte current_light = getv_LightOctree(root_lnode, depth, pos);
         if (current_light <= min_light) {
             continue;   // omg this wasn't here
         }
@@ -123,7 +123,7 @@ static inline byte dark_flood_light(
                 distance);
             // extinguish here and continue removing
             spin_lock(lightlock);
-            set_LightNode(
+            set_LightOctree(
                 root_lnode,
                 depth,
                 pos,
@@ -194,10 +194,10 @@ byte dark_sunbeam(
     DarkQueue* queued,
     const VoxelNode* root_vnode,
     const BlockDatas* datas,
-    LightNode* root_lnode,
+    LightOctree* root_lnode,
     const VoxelNode* n_root_vnodes[6],
     const BlockDatas* n_datas[6],
-    const LightNode* n_root_lnodes[6],
+    const LightOctree* n_root_lnodes[6],
     LightQueue* n_light_queues[6],
     LightQueue* light_queue,
     DarkQueue* n_dark_queues[6],
@@ -241,12 +241,12 @@ byte dark_sunbeam(
             continue;
         }
         // stops where it doesn't see the beam (another light, or relit already)
-        if (expected <= min_light || getv_LightNode(root_lnode, depth, pos) != expected) {
+        if (expected <= min_light || getv_LightOctree(root_lnode, depth, pos) != expected) {
             beam_stopped = 1;
             break;
         }
         spin_lock(lightlock);
-        set_LightNode(root_lnode, depth, pos, min_light);
+        set_LightOctree(root_lnode, depth, pos, min_light);
         spin_unlock(lightlock);
         removed[y] = expected;
         dirty = 1;
@@ -330,11 +330,11 @@ void dark_light_system(iter* it) {
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxelNode);
     zox_sys_out(LightLock);
-    zox_sys_out(LightNodeDepth);
-    zox_sys_out(LightNode);
+    zox_sys_out(LightOctreeDepth);
+    zox_sys_out(LightOctree);
     zox_sys_out(DarkQueue);
     zox_sys_out(LightQueue);
-    zox_sys_out(LightNodeDirty);
+    zox_sys_out(LightOctreeDirty);
     entity realm = 0;
     byte solidity[zox_light_solidity_length];
     memset(solidity, 1, zox_light_solidity_length);
@@ -352,11 +352,11 @@ void dark_light_system(iter* it) {
         zox_sys_i(VoxelNode, root_vnode);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_o(LightLock, lightlock);
-        zox_sys_o(LightNodeDepth, depthl);
-        zox_sys_o(LightNode, root_lnode);
+        zox_sys_o(LightOctreeDepth, depthl);
+        zox_sys_o(LightOctree, root_lnode);
         zox_sys_o(DarkQueue, dark_queue);
         zox_sys_o(LightQueue, light_queue);
-        zox_sys_o(LightNodeDirty, light_node_dirty);
+        zox_sys_o(LightOctreeDirty, light_node_dirty);
         if (!dark_queue->count) {
             continue;
         }
@@ -377,7 +377,7 @@ void dark_light_system(iter* it) {
         const BlockDatas* datas = zox_has(e, BlockDatas) ? zox_get(e, BlockDatas) : NULL;
         const BlockDatas* ndatas[6];
         fetch_neighbor_block_datas(world, neighbors, ndatas);
-        const LightNode* nnodesl[6];
+        const LightOctree* nnodesl[6];
         fetch_neightbor_light_nodes(world, neighbors, nnodesl);
         LightQueue* n_light_queues[6];
         fetch_neightbor_propogation_queues(world, neighbors, n_light_queues);
@@ -403,10 +403,10 @@ void dark_light_system(iter* it) {
                         update.distance,
                         dark_queue->count);
                 }
-                byte current_light = getv_LightNode(root_lnode, depthl->value, update.pos);
+                byte current_light = getv_LightOctree(root_lnode, depthl->value, update.pos);
                 if (current_light > darklight) {
                     spin_lock(&lightlock->value);
-                    set_LightNode(
+                    set_LightOctree(
                         root_lnode,
                         depthl->value,
                         update.pos,

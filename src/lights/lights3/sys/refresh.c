@@ -1,5 +1,5 @@
 // NOTE: When light resolution increases, we need to reflood lights from nearby chunks
-/*byte try_flood_light(const byte* solidity, const VoxelNode* voxels, LightNode* lights, byte depth, byte3 position, const VoxelNode* neighbor_voxels, const LightNode* neighbor_lights, byte3 neighbor_position, const VoxelNode** nvoxels, const LightNode** nlights, LightQueue** nqueues) {
+/*byte try_flood_light(const byte* solidity, const VoxelNode* voxels, LightOctree* lights, byte depth, byte3 position, const VoxelNode* neighbor_voxels, const LightOctree* neighbor_lights, byte3 neighbor_position, const VoxelNode** nvoxels, const LightOctree** nlights, LightQueue** nqueues) {
     // first check this chunks voxel
     byte voxel = getv_VoxelNode(voxels, depth, position);
     if (voxel && solidity[voxel - 1]) {
@@ -9,7 +9,7 @@
     if (neighbor_voxel && solidity[neighbor_voxel - 1]) {
         return 0;
     }
-    byte neighbor_light = getv_LightNode(neighbor_lights, depth, neighbor_position);
+    byte neighbor_light = getv_LightOctree(neighbor_lights, depth, neighbor_position);
     neighbor_light -= light_air_decay;
     return flood_light(voxels, lights, nvoxels, nlights, nqueues, depth, position, neighbor_light, light_propogation_distance, darklight, light_air_decay, solidity);
 }
@@ -22,8 +22,8 @@ void refresh_lights_system(iter* it) {
     zox_sys_in(VoxelNode);
     zox_sys_in(ChunkNeighbors);
     zox_sys_out(RefreshLights);
-    zox_sys_out(LightNode);
-    zox_sys_out(LightNodeDirty);
+    zox_sys_out(LightOctree);
+    zox_sys_out(LightOctreeDirty);
     entity realm = 0;
     byte solidity[zox_light_solidity_length];
     memset(solidity, 1, zox_light_solidity_length);
@@ -35,8 +35,8 @@ void refresh_lights_system(iter* it) {
         zox_sys_i(VoxelNode, voxels);
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_o(RefreshLights, refresh);
-        zox_sys_o(LightNode, lights);
-        zox_sys_o(LightNodeDirty, light_node_dirty);
+        zox_sys_o(LightOctree, lights);
+        zox_sys_o(LightOctreeDirty, light_node_dirty);
         if (refresh->value != zox_refresh_lights) {
             continue;
         }
@@ -51,7 +51,7 @@ void refresh_lights_system(iter* it) {
             solidity);
         const VoxelNode* nvoxels[6];
         fetch_neightbor_voxel_nodes(world, neighbors, nvoxels);
-        const LightNode* nlights[6];
+        const LightOctree* nlights[6];
         fetch_neightbor_light_nodes(world, neighbors, nlights);
         LightQueue* nqueues[6];
         fetch_neightbor_propogation_queues(world, neighbors, nqueues);
@@ -62,7 +62,7 @@ void refresh_lights_system(iter* it) {
         entity neighbor = neighbors->value[direction_back];
         if (zox_valid(neighbor) && zox_getv(neighbor, NodeDepth) == depth) {
             const VoxelNode* neighbor_voxels = nvoxels[direction_back];
-            const LightNode* neighbor_lights = nlights[direction_back];
+            const LightOctree* neighbor_lights = nlights[direction_back];
             byte3 position;
             byte3 neighbor_position;
             neighbor_position.z = length - 1;
@@ -80,7 +80,7 @@ void refresh_lights_system(iter* it) {
         neighbor = neighbors->value[direction_front];
         if (zox_valid(neighbor) && zox_getv(neighbor, NodeDepth) == depth) {
             const VoxelNode* neighbor_voxels = nvoxels[direction_front];
-            const LightNode* neighbor_lights = nlights[direction_front];
+            const LightOctree* neighbor_lights = nlights[direction_front];
             byte3 position;
             byte3 neighbor_position;
             neighbor_position.z = 0;
@@ -98,7 +98,7 @@ void refresh_lights_system(iter* it) {
         neighbor = neighbors->value[direction_left];
         if (zox_valid(neighbor) && zox_getv(neighbor, NodeDepth) == depth) {
             const VoxelNode* neighbor_voxels = nvoxels[direction_left];
-            const LightNode* neighbor_lights = nlights[direction_left];
+            const LightOctree* neighbor_lights = nlights[direction_left];
             byte3 position;
             byte3 neighbor_position;
             neighbor_position.x = length - 1;
@@ -116,7 +116,7 @@ void refresh_lights_system(iter* it) {
         neighbor = neighbors->value[direction_right];
         if (zox_valid(neighbor) && zox_getv(neighbor, NodeDepth) == depth) {
             const VoxelNode* neighbor_voxels = nvoxels[direction_right];
-            const LightNode* neighbor_lights = nlights[direction_right];
+            const LightOctree* neighbor_lights = nlights[direction_right];
             byte3 position;
             byte3 neighbor_position;
             neighbor_position.x = 0;

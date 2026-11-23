@@ -23,7 +23,7 @@ static inline byte zox_tst_dig_find(ecs* world, entity chunk, byte3* at) {
     const byte depth = zox_getv(chunk, NodeDepth);
     const int length = octree_size(depth);
     const VoxelNode* voxels = zox_get(chunk, VoxelNode);
-    const LightNode* lights = zox_get(chunk, LightNode);
+    const LightOctree* lights = zox_get(chunk, LightOctree);
     // zox_tst_dig_edge: on the chunk's edge (x 0), its neighbour's faces and light rebuild too
     const byte edge = getenv("zox_tst_dig_edge") != NULL;
     for (int x = edge ? 0 : 2; x < (edge ? 1 : length - 2); x++) for (int z = 2; z < length - 2; z++) for (int y = length - 3; y >= 2; y--) {
@@ -32,7 +32,7 @@ static inline byte zox_tst_dig_find(ecs* world, entity chunk, byte3* at) {
             continue;
         }
         if (zox_tst_dig_v(1, 0, 0) && (edge || zox_tst_dig_v(-1, 0, 0)) && zox_tst_dig_v(0, 0, 1) && zox_tst_dig_v(0, 0, -1) &&
-            zox_tst_dig_v(0, -1, 0) && getv_LightNode(lights, depth, (byte3) { x, y + 1, z }) == sunlight)
+            zox_tst_dig_v(0, -1, 0) && getv_LightOctree(lights, depth, (byte3) { x, y + 1, z }) == sunlight)
         {
             *at = (byte3) { x, y, z };
             return 1;
@@ -120,7 +120,7 @@ byte zox_tst_dig_light_ready(ecs* world) {
         for (int d = 0; d < 27 && !zox_tst_dig_chunk; d++) {
             const int3 o = { d % 3 - 1, (d / 3) % 3 - 1, d / 9 - 1 };
             const entity chunk = int3_hashmap_get(zox_get(terrain, ChunkLinks)->value, int3_add(c, o));
-            if (zox_valid(chunk) && zox_has(chunk, LightNode) && zox_getv(chunk, NodeDepth) == depth &&
+            if (zox_valid(chunk) && zox_has(chunk, LightOctree) && zox_getv(chunk, NodeDepth) == depth &&
                 zox_tst_dig_find(world, chunk, &zox_tst_dig_at))
             {
                 zox_tst_dig_chunk = chunk;

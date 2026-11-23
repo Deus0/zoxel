@@ -1,6 +1,6 @@
 // Lights for gpu meshing (chunks3/fun/gpu_mesh.c, doc/plans/gpu_meshing.md)
 //  - the shader reads smooth lighting's grid (fun/smooth_grid.c): a chunk's voxels and lights with a voxel of border
-//      from its 26 neighbours, a coarse light its leaves' brightest, as getv_nearby_max_LightNode
+//      from its 26 neighbours, a coarse light its leaves' brightest, as getv_nearby_max_LightOctree
 //  - tst gpu_mesh_lights checks the gpu's corner lights against smooth_face_lights
 
 // gpu meshing's lighting from smooth lighting's: darklight, sunlight and which voxels stop light

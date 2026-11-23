@@ -49,7 +49,7 @@ static inline void zox_tst_gpu_scene_voxels(VoxelNode* voxels, byte depth, float
 
 // a chunk's lights: sky light down each open column, torches, spreading through air losing light_air_decay a step
 //  (as flood fills do, simpler), solids darklight
-static inline void zox_tst_gpu_scene_lights(LightNode* lights, byte depth, const byte* solid, byte sky, const int3* torches, int torches_count, byte torch_light) {
+static inline void zox_tst_gpu_scene_lights(LightOctree* lights, byte depth, const byte* solid, byte sky, const int3* torches, int torches_count, byte torch_light) {
     const int length = octree_size(depth);
     const int cells = length * length * length;
     byte* light = malloc(cells);
@@ -93,21 +93,21 @@ static inline void zox_tst_gpu_scene_lights(LightNode* lights, byte depth, const
             }
         }
     }
-    octree_create(lights, sizeof(LightNode), darklight);
+    octree_create(lights, sizeof(LightOctree), darklight);
     for (int x = 0; x < length; x++) for (int y = 0; y < length; y++) for (int z = 0; z < length; z++) {
         const byte l = light[zox_tst_gpu_cell(x, y, z)];
         if (l != darklight) {
-            set_LightNode(lights, depth, (byte3) { x, y, z }, l);
+            set_LightOctree(lights, depth, (byte3) { x, y, z }, l);
         }
     }
-    reduce_LightNode(lights);
+    reduce_LightOctree(lights);
     #undef zox_tst_gpu_cell
     free(light);
     free(queue);
 }
 
 // the static terrain chunk: hills in sunlight, a torch in the cave
-static inline void zox_tst_gpu_light_scene(VoxelNode* voxels, LightNode* lights, byte depth) {
+static inline void zox_tst_gpu_light_scene(VoxelNode* voxels, LightOctree* lights, byte depth) {
     const int length = octree_size(depth);
     byte* solid = malloc(length * length * length);
     zox_tst_gpu_scene_voxels(voxels, depth, 0, solid);
@@ -117,18 +117,18 @@ static inline void zox_tst_gpu_light_scene(VoxelNode* voxels, LightNode* lights,
 }
 
 // smooth_lights' corner case, on a depth 2 chunk: a floor voxel, two solid edges, a bright corner between them
-static inline void zox_tst_gpu_light_corner(VoxelNode* voxels, LightNode* lights) {
+static inline void zox_tst_gpu_light_corner(VoxelNode* voxels, LightOctree* lights) {
     const byte depth = 2;
     octree_create(voxels, sizeof(VoxelNode), 0);
-    octree_create(lights, sizeof(LightNode), darklight);
+    octree_create(lights, sizeof(LightOctree), darklight);
     set_VoxelNode(voxels, depth, (byte3) { 1, 1, 1 }, 1);
     set_VoxelNode(voxels, depth, (byte3) { 0, 2, 1 }, 1);
     set_VoxelNode(voxels, depth, (byte3) { 1, 2, 0 }, 1);
     const byte3 lit[] = { { 1, 2, 1 }, { 2, 2, 1 }, { 1, 2, 2 }, { 2, 2, 2 }, { 2, 2, 0 }, { 0, 2, 2 } };
     for (byte i = 0; i < sizeof(lit) / sizeof(lit[0]); i++) {
-        set_LightNode(lights, depth, lit[i], 100);
+        set_LightOctree(lights, depth, lit[i], 100);
     }
-    set_LightNode(lights, depth, (byte3) { 0, 2, 0 }, 255);
+    set_LightOctree(lights, depth, (byte3) { 0, 2, 0 }, 255);
 }
 
 // the cpu's vertex order on a face (smooth_vertex_signs: --, -+, ++, +-) for a gpu corner side (bit 0 +a, bit 1 +b)
@@ -145,7 +145,7 @@ static inline void zox_tst_gpu_locks27(spinlock* lock_values, spinlock** voxels_
 }
 
 // the middle of 27 chunks (NULL ones missing) as a smooth grid at depth, what the gpu meshes (free grid->lights)
-static inline void zox_tst_gpu_grid27(smooth_grid* grid, const VoxelNode** voxels27, const LightNode** lights27, byte depth) {
+static inline void zox_tst_gpu_grid27(smooth_grid* grid, const VoxelNode** voxels27, const LightOctree** lights27, byte depth) {
     spinlock lock_values[54];
     spinlock* voxels_locks[27];
     spinlock* lights_locks[27];
@@ -155,7 +155,7 @@ static inline void zox_tst_gpu_grid27(smooth_grid* grid, const VoxelNode** voxel
 }
 
 // one chunk alone as 27 (its neighbours missing)
-static inline void zox_tst_gpu_alone27(const VoxelNode* voxels, const LightNode* lights, const VoxelNode** voxels27, const LightNode** lights27) {
+static inline void zox_tst_gpu_alone27(const VoxelNode* voxels, const LightOctree* lights, const VoxelNode** voxels27, const LightOctree** lights27) {
     for (byte i = 0; i < 27; i++) {
         voxels27[i] = NULL;
         lights27[i] = NULL;
@@ -166,7 +166,7 @@ static inline void zox_tst_gpu_alone27(const VoxelNode* voxels, const LightNode*
 
 // meshes the middle of 27 chunks (NULL ones missing) lit on the gpu at depth, checks every corner light against
 //  smooth_face_lights, the mesher keeps the mesh
-static inline void zox_tst_gpu_light_compare(GpuMesher* mesher, const VoxelNode** voxels27, const LightNode** lights27, const byte* solidity, byte depth, const char* name) {
+static inline void zox_tst_gpu_light_compare(GpuMesher* mesher, const VoxelNode** voxels27, const LightOctree** lights27, const byte* solidity, byte depth, const char* name) {
     const GpuMeshLighting lighting = gpu_mesh_lighting(solidity);
     smooth_grid grid;
     zox_tst_gpu_grid27(&grid, voxels27, lights27, depth);
@@ -253,14 +253,14 @@ void zox_tst_gpu_mesh_lights_check(ecs* world) {
     memset(solidity, 0, zox_light_solidity_length);
     solidity[0] = solidity[1] = solidity[2] = 1;
     VoxelNode voxels;
-    LightNode lights;
+    LightOctree lights;
     const VoxelNode* voxels27[27];
-    const LightNode* lights27[27];
+    const LightOctree* lights27[27];
     zox_tst_gpu_alone27(&voxels, &lights, voxels27, lights27);
     zox_tst_gpu_light_corner(&voxels, &lights);
     zox_tst_gpu_light_compare(&mesher, voxels27, lights27, solidity, 2, "corner");
     close_VoxelNode(&voxels);
-    close_LightNode(&lights);
+    close_LightOctree(&lights);
     zox_tst_gpu_light_scene(&voxels, &lights, depth);
     for (int d = depth; d >= depth - 2; d--) {
         zox_tst_gpu_light_compare(&mesher, voxels27, lights27, solidity, d, "terrain");
@@ -285,7 +285,7 @@ void zox_tst_gpu_mesh_lights_check(ecs* world) {
     const double lit_ms = (get_time_ms() - start) / runs;
     zox_log("[tst] [metric] gpu_mesh_lights terrain depth [%i]: gpu unlit [%.3fms], lit [%.3fms] (both with the grid's fill)", depth, unlit_ms, lit_ms);
     close_VoxelNode(&voxels);
-    close_LightNode(&lights);
+    close_LightOctree(&lights);
     gpu_mesher_dispose(&mesher);
 }
 
@@ -326,10 +326,10 @@ byte zox_tst_gpu_light_views_ready(ecs* world) {
         memset(solidity, 0, zox_light_solidity_length);
         solidity[0] = solidity[1] = solidity[2] = 1;
         VoxelNode voxels;
-        LightNode lights;
+        LightOctree lights;
         zox_tst_gpu_light_scene(&voxels, &lights, depth);
         const VoxelNode* voxels27[27];
-        const LightNode* lights27[27];
+        const LightOctree* lights27[27];
         zox_tst_gpu_alone27(&voxels, &lights, voxels27, lights27);
         smooth_grid grid;
         zox_tst_gpu_grid27(&grid, voxels27, lights27, depth);
@@ -338,7 +338,7 @@ byte zox_tst_gpu_light_views_ready(ecs* world) {
         gpu_mesh_smooth_grid(&zox_tst_gpu_light_mesher, &grid, depth, &lighting);
         free(grid.lights);
         close_VoxelNode(&voxels);
-        close_LightNode(&lights);
+        close_LightOctree(&lights);
         // the same close up into each copy's cave mouth (the chunk is 2 units, the mouth at its front, low)
         for (int i = 0; i < 4; i++) {
             const float3 mouth = float3_add(zox_tst_gpu_light_position(i), (float3) { 1, 0.6f, 2 });
@@ -457,7 +457,7 @@ byte zox_tst_gpu_stress_solidity[zox_light_solidity_length];
 byte* zox_tst_gpu_stress_solid[zox_tst_gpu_stress_max];         // each chunk's solid cells, for its light flood
 VoxelNode zox_tst_gpu_stress_trees[zox_tst_gpu_stress_max];   // each chunk's voxels (kept when they don't change)
 byte zox_tst_gpu_stress_has_tree[zox_tst_gpu_stress_max];
-LightNode zox_tst_gpu_stress_last_lights;   // chunk 0's last frame, checked at the end (its voxels its tree)
+LightOctree zox_tst_gpu_stress_last_lights;   // chunk 0's last frame, checked at the end (its voxels its tree)
 byte zox_tst_gpu_stress_has_last = 0;
 double zox_tst_gpu_stress_start = 0;
 double zox_tst_gpu_stress_seconds = 6;
@@ -509,12 +509,12 @@ static inline void zox_tst_gpu_stress_update(ecs* world) {
         start = get_time_ms();
         int3 torches[2];
         zox_tst_gpu_stress_torches(i, time, depth, zox_tst_gpu_stress_solid[i], torches);
-        LightNode lights;
+        LightOctree lights;
         zox_tst_gpu_scene_lights(&lights, depth, zox_tst_gpu_stress_solid[i], zox_tst_gpu_stress_sky, torches, 2, zox_tst_gpu_stress_torch);
         zox_tst_gpu_stress_ms_lights += get_time_ms() - start;
         start = get_time_ms();
         const VoxelNode* voxels27[27];
-        const LightNode* lights27[27];
+        const LightOctree* lights27[27];
         zox_tst_gpu_alone27(voxels, &lights, voxels27, lights27);
         smooth_grid grid;
         zox_tst_gpu_grid27(&grid, voxels27, lights27, depth);
@@ -532,12 +532,12 @@ static inline void zox_tst_gpu_stress_update(ecs* world) {
         // chunk 0's lights kept for the check
         if (i == 0) {
             if (zox_tst_gpu_stress_has_last) {
-                close_LightNode(&zox_tst_gpu_stress_last_lights);
+                close_LightOctree(&zox_tst_gpu_stress_last_lights);
             }
             zox_tst_gpu_stress_last_lights = lights;
             zox_tst_gpu_stress_has_last = 1;
         } else {
-            close_LightNode(&lights);
+            close_LightOctree(&lights);
         }
         zox_tst_gpu_stress_second_updates++;
     }
@@ -631,10 +631,10 @@ void zox_tst_gpu_light_stress_check(ecs* world) {
         GpuMesher* mesher = &zox_tst_gpu_stress_meshers[0];
         mesher->edge_faces = 1;
         const VoxelNode* voxels27[27];
-        const LightNode* lights27[27];
+        const LightOctree* lights27[27];
         zox_tst_gpu_alone27(&zox_tst_gpu_stress_trees[0], &zox_tst_gpu_stress_last_lights, voxels27, lights27);
         zox_tst_gpu_light_compare(mesher, voxels27, lights27, zox_tst_gpu_stress_solidity, zox_tst_gpu_light_depth, "stress last frame");
-        close_LightNode(&zox_tst_gpu_stress_last_lights);
+        close_LightOctree(&zox_tst_gpu_stress_last_lights);
     }
     for (int i = 0; i < zox_tst_gpu_stress_count; i++) {
         gpu_mesher_dispose(&zox_tst_gpu_stress_meshers[i]);

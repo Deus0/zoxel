@@ -12,13 +12,13 @@ void fetch_neightbor_voxel_nodes(
 void fetch_neightbor_light_nodes(
     ecs* world,
     const ChunkNeighbors* neighbors,
-    const LightNode** nodes
+    const LightOctree** nodes
 ) {
     for (int i = 0; i < 6; i++) {
         entity e = neighbors->value[i];
         nodes[i] = zox_valid(e) &&
-            zox_has(e, LightNode) ?
-                zox_get(e, LightNode) :
+            zox_has(e, LightOctree) ?
+                zox_get(e, LightOctree) :
                 NULL;
     }
 }

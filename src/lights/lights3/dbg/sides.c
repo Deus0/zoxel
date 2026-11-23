@@ -47,17 +47,17 @@ void light3_build_system(iter* it) {
     zox_sys_begin();
     zox_sys_in(ChunkNeighbors);
     zox_sys_in(VoxelNode);
-    zox_sys_in(LightNode);
+    zox_sys_in(LightOctree);
     zox_sys_in(RenderDepth);
     zox_sys_in(MeshColorRGBs);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_i(VoxelNode, nodev);
-        zox_sys_i(LightNode, nodel);
+        zox_sys_i(LightOctree, nodel);
         zox_sys_i(RenderDepth, depth);
         zox_sys_i(MeshColorRGBs, colors);
         entity terrain = zox_get_parent(world, e);
-        const LightNode *nnodesl[6];
+        const LightOctree *nnodesl[6];
         fetch_neightbor_light_nodes(world, neighbors, nnodesl);
         entity realm = zox_get_link(world, vox_link->value, RealmLink);
         const BlockLinks* blocks = zox_get(realm, BlockLinks);

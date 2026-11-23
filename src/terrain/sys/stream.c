@@ -190,9 +190,9 @@ static inline byte stream_tunk_distance(ecs* world, entity terrain, entity tunk,
             continue;
         }
         if (new_tunk_render_depth > zox_getv(chunk, NodeDepth)) {
-            zox_muter(chunk, LightNode, lights);
+            zox_muter(chunk, LightOctree, lights);
             lights->value = darklight;
-            collapse_LightNode(lights);
+            collapse_LightOctree(lights);
             if (y == render_distance_y) {
                 zox_add(terrain, GenerateSunlight);
             }

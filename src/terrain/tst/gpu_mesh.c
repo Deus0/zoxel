@@ -104,7 +104,7 @@ void zox_tst_gpu_terrain_check(ecs* world) {
             get_block_materials(world, manager, materials);
         }
         entity nearby_chunks[27];
-        const LightNode* nearby_lights[27];
+        const LightOctree* nearby_lights[27];
         const VoxelNode* nearby_voxels[27];
         spinlock* lights_locks[27];
         spinlock* voxels_locks[27];

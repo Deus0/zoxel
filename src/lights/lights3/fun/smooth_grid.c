@@ -15,7 +15,7 @@ typedef struct {
 
 static inline byte smooth_grid_fill(
     smooth_grid* grid,
-    const LightNode** lights,
+    const LightOctree** lights,
     spinlock** lights_locks,
     const VoxelNode** voxels,
     spinlock** voxels_locks,
@@ -44,7 +44,7 @@ static inline byte smooth_grid_fill(
         grid->present[i] = lights[i] && lights_locks[i];
         if (grid->present[i]) {
             spin_lock(lights_locks[i]);
-            octree_fill_grid(lights[i], sizeof(LightNode), octree_type_offset_LightNode, 0, depth, int3_zero, origin,
+            octree_fill_grid(lights[i], sizeof(LightOctree), octree_type_offset_LightOctree, 0, depth, int3_zero, origin,
                 grid->lights, grid->length, 1);
             spin_unlock(lights_locks[i]);
         }

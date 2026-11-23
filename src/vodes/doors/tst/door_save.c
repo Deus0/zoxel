@@ -26,16 +26,16 @@ static inline byte zox_tst_dsave_interior(int x, int y, int z) {
 
 static inline void zox_tst_dsave_read(ecs* world, entity chunk, byte s) {
     const byte depth = zox_getv(chunk, NodeDepth);
-    const LightNode* lights = zox_get(chunk, LightNode);
+    const LightOctree* lights = zox_get(chunk, LightOctree);
     zox_tst_dsave_inside[s] = 0;
     for (byte x = 2; x <= 7; x++) for (byte y = 4; y <= 6; y++) for (byte z = 6; z <= 8; z++) {
-        const byte l = getv_LightNode(lights, depth, (byte3) { x, y, z });
+        const byte l = getv_LightOctree(lights, depth, (byte3) { x, y, z });
         if (l > zox_tst_dsave_inside[s]) {
             zox_tst_dsave_inside[s] = l;
             zox_tst_dsave_at[s] = (byte3) { x, y, z };
         }
     }
-    zox_tst_dsave_outside[s] = getv_LightNode(lights, depth, (byte3) { zox_tst_dsave_door_x, 4, 10 });
+    zox_tst_dsave_outside[s] = getv_LightOctree(lights, depth, (byte3) { zox_tst_dsave_door_x, 4, 10 });
     const BlockDatas* datas = zox_get(chunk, BlockDatas);
     zox_tst_dsave_data[s][0] = get_block_data(datas, (byte3) { zox_tst_dsave_door_x, 4, 9 });
     zox_tst_dsave_data[s][1] = get_block_data(datas, (byte3) { zox_tst_dsave_door_x, 5, 9 });
@@ -174,8 +174,8 @@ byte zox_tst_door_save_ready(ecs* world) {
         zox_tst_check(loaded, "the chunk didn't load from its file");
         spinlock* light_lock = &zox_getm(chunk, LightLock)->value;
         spin_lock(light_lock);
-        LightNode* lights = zox_getm(chunk, LightNode);
-        collapse_LightNode(lights);
+        LightOctree* lights = zox_getm(chunk, LightOctree);
+        collapse_LightOctree(lights);
         lights->value = darklight;
         spin_unlock(light_lock);
         zox_add(chunk, Loaded);

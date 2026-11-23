@@ -15,9 +15,9 @@ static inline void zox_tst_dof_relight(ecs* world, entity chunk) {
     const byte depth = zox_getv(chunk, NodeDepth);
     spinlock* lock = &zox_getm(chunk, LightLock)->value;
     spin_lock(lock);
-    LightNode* lights = zox_getm(chunk, LightNode);
+    LightOctree* lights = zox_getm(chunk, LightOctree);
     for (byte x = 2; x <= 6; x++) for (byte y = 4; y <= 5; y++) {
-        set_LightNode(lights, depth, (byte3) { x, y, 7 }, darklight);
+        set_LightOctree(lights, depth, (byte3) { x, y, 7 }, darklight);
     }
     spin_unlock(lock);
     zox_add(chunk, GenerateEmitterLight);

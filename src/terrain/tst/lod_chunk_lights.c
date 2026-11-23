@@ -1,7 +1,7 @@
 // tst: lod_chunk_lights, far (coarse lod) chunks are lit like near ones, not dark in the distance
 //  - waits for the player, then for the terrain's meshes and lights to settle
 //  - groups terrain meshes by their RenderDepth, a coarse group's average light is near the detailed one's
-//    (coarse meshes read stale open light nodes, darklight, before getv_nearby_max_LightNode)
+//    (coarse meshes read stale open light nodes, darklight, before getv_nearby_max_LightOctree)
 //  - a chunk beside a different lod one isn't dark (lighting between lods)
 //  - coarse lods aren't dark (under 1.5%, dark home interiors are real), runs on --medium terrain
 //  - run: bash bsh/tst.sh lod_chunk_lights

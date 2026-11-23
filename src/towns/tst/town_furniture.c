@@ -141,10 +141,10 @@ static inline int zox_tst_ll_light(ecs* world, entity terrain, int3 block) {
     const int length = octree_size(depth);
     const int3 c = block_position_to_chunk_position(block, depth);
     const entity chunk = int3_hashmap_get(zox_get(terrain, ChunkLinks)->value, c);
-    if (!zox_valid(chunk) || !zox_has(chunk, LightNode)) {
+    if (!zox_valid(chunk) || !zox_has(chunk, LightOctree)) {
         return -1;
     }
-    return getv_LightNode(zox_get(chunk, LightNode), depth, (byte3) { block.x - c.x * length, block.y - c.y * length, block.z - c.z * length });
+    return getv_LightOctree(zox_get(chunk, LightOctree), depth, (byte3) { block.x - c.x * length, block.y - c.y * length, block.z - c.z * length });
 }
 
 static inline byte zox_tst_ll_set(ecs* world, entity terrain, int3 block, byte value, byte data) {

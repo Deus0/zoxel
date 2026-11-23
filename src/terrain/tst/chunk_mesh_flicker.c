@@ -231,15 +231,15 @@ static inline uint zox_tst_cmf_mesh_faces(ecs* world, entity mesh, byte* partial
 // a chunk whose lights are all dark with sunlight right above air in it (sunlit air on the bottom of the chunk above,
 //  over air at its top): its lights cleared and never lit again
 static inline byte zox_tst_cmf_unlit_under_sun(ecs* world, entity chunk) {
-    const LightNode* lights = zox_get(chunk, LightNode);
-    if (has_children_LightNode(lights) || lights->value > darklight) {
+    const LightOctree* lights = zox_get(chunk, LightOctree);
+    if (has_children_LightOctree(lights) || lights->value > darklight) {
         return 0;
     }
     const entity above = zox_get(chunk, ChunkNeighbors)->value[direction_up];
-    if (!zox_valid(above) || !zox_has(above, LightNode)) {
+    if (!zox_valid(above) || !zox_has(above, LightOctree)) {
         return 0;
     }
-    const LightNode* above_lights = zox_get(above, LightNode);
+    const LightOctree* above_lights = zox_get(above, LightOctree);
     const VoxelNode* above_voxels = zox_get(above, VoxelNode);
     const byte depth = zox_getv(above, NodeDepth);
     const int size = octree_size(depth);
@@ -250,7 +250,7 @@ static inline byte zox_tst_cmf_unlit_under_sun(ecs* world, entity chunk) {
     for (int x = 0; x < size; x++) {
         for (int z = 0; z < size; z++) {
             const byte3 at = { x, 0, z };
-            if (getv_VoxelNode(above_voxels, depth, at) || getv_LightNode(above_lights, depth, at) < sunlight) {
+            if (getv_VoxelNode(above_voxels, depth, at) || getv_LightOctree(above_lights, depth, at) < sunlight) {
                 continue;
             }
             const int mx = my_depth >= depth ? x << (my_depth - depth) : x >> (depth - my_depth);
@@ -268,7 +268,7 @@ static inline void zox_tst_cmf_light_probe(ecs* world, entity chunk, char* text,
     const byte depth = zox_getv(chunk, NodeDepth);
     const int size = octree_size(depth);
     const VoxelNode* voxels = zox_get(chunk, VoxelNode);
-    const LightNode* lights = zox_get(chunk, LightNode);
+    const LightOctree* lights = zox_get(chunk, LightOctree);
     const int x = size / 2, z = size / 2;
     int ground = -1;
     for (int y = size - 1; y >= 0 && ground < 0; y--) {
@@ -277,10 +277,10 @@ static inline void zox_tst_cmf_light_probe(ecs* world, entity chunk, char* text,
         }
     }
     int n = snprintf(text, length, "light tree root [%i] open [%i], ground at [%i], over it by depth:", lights->value,
-        has_children_LightNode(lights), ground);
+        has_children_LightOctree(lights), ground);
     const entity above = zox_get(chunk, ChunkNeighbors)->value[direction_up];
-    if (zox_valid(above) && zox_has(above, LightNode)) {
-        const LightNode* above_lights = zox_get(above, LightNode);
+    if (zox_valid(above) && zox_has(above, LightOctree)) {
+        const LightOctree* above_lights = zox_get(above, LightOctree);
         const byte above_depth = zox_getv(above, NodeDepth);
         const int above_size = octree_size(above_depth);
         int solid = 0, sunlit = 0, dark_air = 0;
@@ -290,18 +290,18 @@ static inline void zox_tst_cmf_light_probe(ecs* world, entity chunk, char* text,
                 const byte3 at = { ax, 0, az };
                 if (getv_VoxelNode(above_voxels, above_depth, at)) {
                     solid++;
-                } else if (getv_LightNode(above_lights, above_depth, at) >= sunlight) {
+                } else if (getv_LightOctree(above_lights, above_depth, at) >= sunlight) {
                     sunlit++;
                 } else {
-                    dark_air += getv_LightNode(above_lights, above_depth, at) <= darklight;
+                    dark_air += getv_LightOctree(above_lights, above_depth, at) <= darklight;
                 }
             }
         }
         n += snprintf(text + n, length - n, " above's bottom row: solid [%i] sunlit [%i] dark air [%i] of [%i];",
             solid, sunlit, dark_air, above_size * above_size);
         n += snprintf(text + n, length - n, " above: depth [%i] root [%i] open [%i] its bottom middle [%i] generate [%i] lod dirty [%i];",
-            above_depth, above_lights->value, has_children_LightNode(above_lights),
-            getv_LightNode(above_lights, above_depth, (byte3) { above_size / 2, 0, above_size / 2 }),
+            above_depth, above_lights->value, has_children_LightOctree(above_lights),
+            getv_LightOctree(above_lights, above_depth, (byte3) { above_size / 2, 0, above_size / 2 }),
             zox_has(above, GenerateChunk) ? zox_getv(above, GenerateChunk) : -1,
             zox_has(above, ChunkLodDirty) ? zox_getv(above, ChunkLodDirty) : -1);
     }
@@ -310,7 +310,7 @@ static inline void zox_tst_cmf_light_probe(ecs* world, entity chunk, char* text,
     }
     for (int d = depth; d >= 0 && n < length - 16; d--) {
         const int shift = depth - d;
-        n += snprintf(text + n, length - n, " d%i [%i]", d, getv_LightNode(lights, d,
+        n += snprintf(text + n, length - n, " d%i [%i]", d, getv_LightOctree(lights, d,
             (byte3) { x >> shift, (ground + 1) >> shift, z >> shift }));
     }
 }
@@ -566,7 +566,7 @@ static inline int zox_tst_cmf_chunk_text(ecs* world, entity chunk, char* text, i
         zox_tst_cmf_frames - (int) zox_tst_cmf_find(zox_tst_cmf_changed_at, chunk)->value,
         zox_has(chunk, ChunkLodDirty) ? zox_getv(chunk, ChunkLodDirty) : -1,
         zox_has(chunk, GenerateChunk) ? zox_getv(chunk, GenerateChunk) : -1, zox_chunk_lighting_busy(world, chunk),
-        zox_has(chunk, LightNodeDirty) ? zox_getv(chunk, LightNodeDirty) : -1, (int) zox_get(chunk, SunlightQueue)->count,
+        zox_has(chunk, LightOctreeDirty) ? zox_getv(chunk, LightOctreeDirty) : -1, (int) zox_get(chunk, SunlightQueue)->count,
         (int) zox_get(chunk, LightQueue)->count, (int) zox_get(chunk, DarkQueue)->count,
         zox_has(chunk, BuildChunkSides), zox_getv(chunk, NodeDepth));
     entity meshes[zox_chunk_meshes_max];

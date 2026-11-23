@@ -9,14 +9,14 @@
 
 #define zox_tst_gpu_neighbour_depth 4
 
-static inline void zox_tst_gpu_neighbour_chunks(VoxelNode* voxels27, LightNode* lights27, byte depth) {
+static inline void zox_tst_gpu_neighbour_chunks(VoxelNode* voxels27, LightOctree* lights27, byte depth) {
     const int length = octree_size(depth);
     for (int cx = -1; cx <= 1; cx++) {
         for (int cy = -1; cy <= 1; cy++) {
             for (int cz = -1; cz <= 1; cz++) {
                 int i = OCTREE_INDEX(cx, cy, cz);
                 octree_create(&voxels27[i], sizeof(VoxelNode), 0);
-                octree_create(&lights27[i], sizeof(LightNode), darklight);
+                octree_create(&lights27[i], sizeof(LightOctree), darklight);
                 for (int x = 0; x < length; x++) {
                     for (int y = 0; y < length; y++) {
                         for (int z = 0; z < length; z++) {
@@ -27,7 +27,7 @@ static inline void zox_tst_gpu_neighbour_chunks(VoxelNode* voxels27, LightNode* 
                             if (gy < height) {
                                 set_VoxelNode(&voxels27[i], depth, (byte3) { x, y, z }, gy < height - 2 ? 2 : 1);
                             } else {
-                                set_LightNode(&lights27[i], depth, (byte3) { x, y, z }, (byte) (60 + ((gx * 7 + gz * 13 + gy * 3) & 127)));
+                                set_LightOctree(&lights27[i], depth, (byte3) { x, y, z }, (byte) (60 + ((gx * 7 + gz * 13 + gy * 3) & 127)));
                             }
                         }
                     }
@@ -142,10 +142,10 @@ void zox_tst_gpu_neighbours_check(ecs* world) {
     memset(solidity, 0, sizeof(solidity));
     solidity[0] = solidity[1] = 1;
     VoxelNode voxels[27];
-    LightNode lights[27];
+    LightOctree lights[27];
     zox_tst_gpu_neighbour_chunks(voxels, lights, depth);
     const VoxelNode* voxels27[27];
-    const LightNode* lights27[27];
+    const LightOctree* lights27[27];
     for (int i = 0; i < 27; i++) {
         voxels27[i] = &voxels[i];
         lights27[i] = &lights[i];
@@ -164,7 +164,7 @@ void zox_tst_gpu_neighbours_check(ecs* world) {
     zox_tst_gpu_neighbour_faces(&mesher, voxels27, depth, "missing");
     for (int i = 0; i < 27; i++) {
         close_VoxelNode(&voxels[i]);
-        close_LightNode(&lights[i]);
+        close_LightOctree(&lights[i]);
     }
     gpu_mesher_dispose(&mesher);
 }

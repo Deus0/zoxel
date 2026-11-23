@@ -19,7 +19,7 @@ Tests: [src/chunks/chunks3/tst/gpu_mesh.c](../../src/chunks/chunks3/tst/gpu_mesh
 1. **Grid** (`smooth_grid_fill`, the same one cpu smooth lighting fills): the chunk's voxels and lights at the meshed
    depth as bytes, `(2^depth + 2)³` of them, a voxel of border read from its 26 neighbours (`octree_fill_grid`). A
    node above the depth is its value for its whole cube, as `walk_octree` reads it, so meshing at a lower depth is a
-   LOD; lights take an open node's brightest leaf (`getv_nearby_max_LightNode`). Which neighbours have voxels and
+   LOD; lights take an open node's brightest leaf (`getv_nearby_max_LightOctree`). Which neighbours have voxels and
    lights goes in two 27 bit masks (`present`, `lights_present`). A 16³ chunk's grid is 5.8KB a tree, a 32³'s 39KB.
    (It replaced flattened octrees, `flatten_octree`, which needed a tree walk a read and had no neighbours: the gpu
    part got several times faster, Measurements.)

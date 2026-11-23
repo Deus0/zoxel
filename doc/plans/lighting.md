@@ -4,7 +4,7 @@ A technical plan, for review before code. It changes the light octrees, the floo
 
 ## Why
 
-- Light is one value per voxel (`LightNode`, 16 darklight to 255 sunlight). The sun is baked into it.
+- Light is one value per voxel (`LightOctree`, 16 darklight to 255 sunlight). The sun is baked into it.
 - A day and night cycle on one value relights every chunk as the sun moves: the fps drop at sunset.
 - Glow stones and torches would dim with the night too.
 - Alien worlds want more than one sun.
@@ -39,7 +39,7 @@ The buffers, their memory and their uploads stay the same. Each frame, one unifo
 
 ## What changes
 
-1. **Light octrees:** `LightNode` becomes `SkyLightNode` and `BlockLightNode` (a byte a voxel, rgb later).
+1. **Light octrees:** `LightOctree` becomes `SkyLightOctree` and `BlockLightOctree` (a byte a voxel, rgb later).
    - It could be one octree of byte pairs instead. Two octrees keep every octree function as it is.
 2. **Flooding:** the sunlight pass (`sunlight.c`) writes sky light only.
    - The flood, dark and edit passes (`flood.c`, `dark.c`, `editing.c`) run for each value.
@@ -58,8 +58,8 @@ The buffers, their memory and their uploads stay the same. Each frame, one unifo
 
 ## Order, each step working and tested
 
-1. Glow stone on the current single value (block light floods into `LightNode`), to prove emissive sources.
-2. Split `LightNode` into sky and block octrees. All tests pass with the sky tint fixed at 1 (looks the same).
+1. Glow stone on the current single value (block light floods into `LightOctree`), to prove emissive sources.
+2. Split `LightOctree` into sky and block octrees. All tests pass with the sky tint fixed at 1 (looks the same).
 3. Mesh colours: r and g, and the shader max.
 4. Suns and the time of day: the tint moves. Sunset costs nothing.
 5. Coloured suns, more than one sun, moons, face shading by sun direction.

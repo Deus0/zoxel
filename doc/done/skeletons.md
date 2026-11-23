@@ -106,7 +106,7 @@ Also [character.md](../tech/characters.md), [body_equips.md](../tech/body_equips
 
 ### Data
 
-- A `BoneNode` octree on the combined vox: `zoxc_octree_basic(BoneNode, byte, 0)`, like `LightNode` and `SidesOctree`
+- A `BoneNode` octree on the combined vox: `zoxc_octree_basic(BoneNode, byte, 0)`, like `LightOctree` and `SidesOctree`
   sit beside `VoxelNode`. A voxel's value is its bone's index + 1 (0 = none / air). Same depth as `VoxelNode`.
 - Locked with the vox's octree lock (`zox_octree_lock`): written and read together with `VoxelNode` (thread_safety.md).
 - Lods: a parent's value is the most common of its children, air skipped (`octree_children_mode`, what

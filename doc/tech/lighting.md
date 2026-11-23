@@ -1,6 +1,6 @@
 # Lighting
 
-Voxel light: each chunk has a light octree (`LightNode`) beside its voxels. The light is worked out on the cpu, and
+Voxel light: each chunk has a light octree (`LightOctree`) beside its voxels. The light is worked out on the cpu, and
 meshes and block voxes are colored by it. The code is in [src/lights/lights3](../../src/lights/lights3). Water's
 part is in [Water](water.md) (Light).
 
@@ -54,7 +54,7 @@ to shade).
 - **Openings** (fun/openings.c): a voxel that starts or stops passing light while its voxel stays the same, because
   its block data changed (a door opened or shut, `door_toggle`). Opened, its sides flood into it and on through it.
   Shut, dark floods out from it and anything lit another way fills back in.
-- **Trigger** (sys/trigger.c, trigger_mesh.c): once a chunk's queues are empty and its `LightNodeDirty` is set, its
+- **Trigger** (sys/trigger.c, trigger_mesh.c): once a chunk's queues are empty and its `LightOctreeDirty` is set, its
   mesh colors are rebuilt (`BuildMeshColors`), and so are its neighbours' (their edges read its lights).
 
 ## Meshes: smooth lighting

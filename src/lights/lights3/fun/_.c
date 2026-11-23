@@ -22,7 +22,7 @@ byte zox_chunk_lighting_busy(ecs* world, entity e) {
         return 0;
     }
     return
-        (zox_has(e, LightNodeDirty) && zox_getv(e, LightNodeDirty)) ||
+        (zox_has(e, LightOctreeDirty) && zox_getv(e, LightOctreeDirty)) ||
         zox_get(e, SunlightQueue)->count ||
         zox_get(e, LightQueue)->count ||
         zox_get(e, DarkQueue)->count;
@@ -43,7 +43,7 @@ byte zox_chunk_lights_settling(ecs* world, entity chunk) {
     }
     for (byte j = 0; j < 1 + chunk_neighbors_length; j++) {
         const entity c = chunks[j];
-        if (!zox_valid(c) || !zox_has(c, LightNode)) {
+        if (!zox_valid(c) || !zox_has(c, LightOctree)) {
             continue;
         }
         if (zox_chunk_lighting_busy(world, c) || (zox_has(c, GenerateChunk) && zox_getv(c, GenerateChunk)) ||

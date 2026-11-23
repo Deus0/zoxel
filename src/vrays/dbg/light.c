@@ -19,14 +19,14 @@ uint debug_ui_raycasted_light(ecs *world, entity player, char *buffer, uint size
     entity chunk_last = data->chunk_last;
     if (zox_valid(chunk_last)) {
         byte depth_last = zox_getv(chunk_last, RenderDepth);
-        const LightNode* light_node_last = zox_get(chunk_last, LightNode);
-        byte light_last = getv_LightNode(light_node_last, depth_last, data->positionl_last);
+        const LightOctree* light_node_last = zox_get(chunk_last, LightOctree);
+        byte light_last = getv_LightOctree(light_node_last, depth_last, data->positionl_last);
         index += snprintf(buffer + index, size - index, "Last Chunk [%s]\n", zox_get_name(chunk_last));
         index += snprintf(buffer + index, size - index, " - Depth [%i]\n", depth_last);
         index += snprintf(buffer + index, size - index, " - Position [%ix%ix%i]\n", data->positionl_last.x, data->positionl_last.y, data->positionl_last.z);
         index += snprintf(buffer + index, size - index, " - Light Air [%i]\n", light_last);
         /*if (depth_last) {
-            byte light_air_upper = getv_LightNode(light_node_last, depth_last - 1, data->positionl_last);
+            byte light_air_upper = getv_LightOctree(light_node_last, depth_last - 1, data->positionl_last);
             index += snprintf(buffer + index, size - index, " - Light Air (+1 depth) [%i]\n", light_air_upper);
         }*/
     } else {
@@ -36,11 +36,11 @@ uint debug_ui_raycasted_light(ecs *world, entity player, char *buffer, uint size
     // data->chunk now chunk_last
     // NOTE: This gets adjacent data from hit voxel!
     if (zox_valid(data->chunk) && zox_has(data->chunk, ChunkNeighbors)) {
-        const LightNode* hit_light_octree = zox_get(data->chunk, LightNode);
+        const LightOctree* hit_light_octree = zox_get(data->chunk, LightOctree);
         byte depth_hit = zox_getv(data->chunk, RenderDepth);
         byte face = normal_to_direction(data->normal);
         const ChunkNeighbors* neighbors = zox_get(data->chunk, ChunkNeighbors);
-        const LightNode* neighbor_light_octrees[6];
+        const LightOctree* neighbor_light_octrees[6];
         fetch_neightbor_light_nodes(world, neighbors, neighbor_light_octrees);
         if (!neighbor_light_octrees[0]) {
             entity n = neighbors->value[0];
@@ -48,9 +48,9 @@ uint debug_ui_raycasted_light(ecs *world, entity player, char *buffer, uint size
             return index;
         }
         // later we can get all lights nearby
-        const LightNode* adjacent_light = get_neighbor_LightNode(hit_light_octree, neighbor_light_octrees, face, data->positionl, depth_hit);
+        const LightOctree* adjacent_light = get_neighbor_LightOctree(hit_light_octree, neighbor_light_octrees, face, data->positionl, depth_hit);
         byte adjacent_light_value = adjacent_light ? adjacent_light->value : 0;
-        // const LightNode* adjacent_max_light = get_max_light_on_face_start(hit_light_octree, neighbor_light_octrees, data->positionl, depth_hit, face);
+        // const LightOctree* adjacent_max_light = get_max_light_on_face_start(hit_light_octree, neighbor_light_octrees, data->positionl, depth_hit, face);
         // byte max_light = adjacent_max_light ? adjacent_max_light->value : 0;
         // Now print
         index += snprintf(buffer + index, size - index, "Hit Chunk [%s]\n", zox_get_name(data->chunk));
@@ -61,17 +61,17 @@ uint debug_ui_raycasted_light(ecs *world, entity player, char *buffer, uint size
         // index += snprintf(buffer + index, size - index, " - Max Light [%i]\n", max_light);
         if (adjacent_light) {
             // print children
-            if (has_children_LightNode(adjacent_light)) {
-                const LightNode* adjacent_light_children = get_children_LightNode(adjacent_light);
+            if (has_children_LightOctree(adjacent_light)) {
+                const LightOctree* adjacent_light_children = get_children_LightOctree(adjacent_light);
                 index += snprintf(buffer + index, size - index, " - Adjacent All\n");
                 for (byte i = 0; i < 8; i++) {
-                    const LightNode* kid = &adjacent_light_children[i];
+                    const LightOctree* kid = &adjacent_light_children[i];
                     index += snprintf(buffer + index, size - index, "  - Kid Light [%i] [%i]\n", i, kid->value);
                 }
                 index += snprintf(buffer + index, size - index, " - Adjacent Only\n");
                 /*const byte* indexes = octree_face_children[face];
                 for (byte i = 0; i < 4; i++) {
-                    const LightNode* kid = &adjacent_light_children[indexes[i]];
+                    const LightOctree* kid = &adjacent_light_children[indexes[i]];
                     index += snprintf(buffer + index, size - index, "  - Kid Light [%i] [%i]\n", indexes[i], kid->value);
                 }*/
             }
@@ -79,11 +79,11 @@ uint debug_ui_raycasted_light(ecs *world, entity player, char *buffer, uint size
     }
     /*entity chunk_hit = data->chunk;
     byte depth_hit = zox_getv(chunk_hit, RenderDepth);
-    const LightNode* light_node_hit = zox_get(chunk_hit, LightNode);
-    byte light_hit = getv_LightNode(light_node_hit, depth_hit, data->positionl);
+    const LightOctree* light_node_hit = zox_get(chunk_hit, LightOctree);
+    byte light_hit = getv_LightOctree(light_node_hit, depth_hit, data->positionl);
     index += snprintf(buffer + index, size - index, "   + Light Inside [%i]\n", light_hit);
     if (depth_hit) {
-        byte light_hit_upper = getv_LightNode(light_node_hit, depth_hit - 1, data->positionl);
+        byte light_hit_upper = getv_LightOctree(light_node_hit, depth_hit - 1, data->positionl);
         index += snprintf(buffer + index, size - index, "   + Light Inside (+1 depth) [%i]\n", light_hit_upper);
     }
     index += snprintf(buffer + index, size - index, "   + positionl[L] [%ix%ix%i]\n",
@@ -105,7 +105,7 @@ uint debug_ui_raycasted_light(ecs *world, entity player, char *buffer, uint size
         }
     }
     index += snprintf(buffer + index, size - index, "]\n");
-    byte light = getv_LightNode(light_node_hit, depth_hit, data->positionl);
+    byte light = getv_LightOctree(light_node_hit, depth_hit, data->positionl);
     index += snprintf(buffer + index, size - index, "   + inside light [%i]\n", light);*/
     return index;
 }

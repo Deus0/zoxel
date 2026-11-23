@@ -166,7 +166,7 @@ Entities with 20 components:
   - machines: `PlayerStateDirty`, `GameStateDirty`, `Generate`, `GenerateCharacter`, `PickedUp`
   - action timers: `ActivateBegin`, `WarmupState`, `Activate`, `CooldownState`, `TriggerActionA/B/E`,
     `ActiveActionDirty`
-  - pending reads: `StreamDirty`, `StreamDirty2`, `NpcSpawnZoneDirty`, `LightNodeDirty`
+  - pending reads: `StreamDirty`, `StreamDirty2`, `NpcSpawnZoneDirty`, `LightOctreeDirty`
   - render events: `RenderDepthDirty`, `RenderDistanceDirty` (many writers and readers in lod streaming: a pair
     would cost 2 systems more each, for no fewer components)
 - Gone: `ItemDirty`, `Bounds3Dirty` (and `bounds3_enable_system`), `SettingDirty`

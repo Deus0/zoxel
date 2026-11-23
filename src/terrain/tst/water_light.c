@@ -16,7 +16,7 @@ byte zox_tst_wlight_covered[4];  // a brick over it at y 7
 static inline void zox_tst_wlight_read(ecs* world, byte* lights) {
     const byte depth = zox_getv(zox_tst_wlight_chunk, NodeDepth);
     for (byte i = 0; i < 4; i++) {
-        lights[i] = getv_LightNode(zox_get(zox_tst_wlight_chunk, LightNode), depth, (byte3) { 7, 7 - i, 7 });
+        lights[i] = getv_LightOctree(zox_get(zox_tst_wlight_chunk, LightOctree), depth, (byte3) { 7, 7 - i, 7 });
     }
 }
 

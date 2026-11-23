@@ -128,9 +128,9 @@ static inline byte light_flood_decay(byte light, byte voxel, const byte* liquids
 //    column (into the chunk above too) while each voxel's light is what the beam would give it, until full sunlight
 static inline byte light_beam_above(
     const VoxelNode* vnode,
-    const LightNode* lnode,
+    const LightOctree* lnode,
     const VoxelNode* up_vnode,
-    const LightNode* up_lnode,
+    const LightOctree* up_lnode,
     const BlockDatas* datas,
     const BlockDatas* up_datas,
     byte depth,
@@ -146,7 +146,7 @@ static inline byte light_beam_above(
     for (int y = pos.y + 1; y < 2 * length; y++) {
         const byte up = y >= length;
         const VoxelNode* v = up ? up_vnode : vnode;
-        const LightNode* l = up ? up_lnode : lnode;
+        const LightOctree* l = up ? up_lnode : lnode;
         if (!l) {
             return 0;
         }
@@ -155,7 +155,7 @@ static inline byte light_beam_above(
         if (light_stops(solidity, up ? up_datas : datas, v, depth, voxel, p)) {
             return 0;
         }
-        const byte light = getv_LightNode(l, depth, p);
+        const byte light = getv_LightOctree(l, depth, p);
         if (!first) {
             if (light <= min_light) {
                 return 0;

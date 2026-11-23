@@ -6,8 +6,8 @@
 
 // a chunk's lights, voxels and block datas, its neighbors' and the realm's solidity, read once for its block voxes
 typedef struct {
-    const LightNode* lights;
-    const LightNode* neighbor_lights[6];
+    const LightOctree* lights;
+    const LightOctree* neighbor_lights[6];
     const VoxelNode* voxels;
     const VoxelNode* neighbor_voxels[6];
     const BlockDatas* datas;
@@ -17,11 +17,11 @@ typedef struct {
 } block_vox_lighting;
 
 static inline byte block_vox_lighting_begin(ecs* world, entity chunk, block_vox_lighting* l) {
-    if (zox_no_lights || !zox_valid(chunk) || !zox_has(chunk, LightNode) || !zox_has(chunk, NodeDepth)) {
+    if (zox_no_lights || !zox_valid(chunk) || !zox_has(chunk, LightOctree) || !zox_has(chunk, NodeDepth)) {
         return 0;
     }
     memset(l, 0, sizeof(block_vox_lighting));
-    l->lights = zox_get(chunk, LightNode);
+    l->lights = zox_get(chunk, LightOctree);
     l->depth = zox_getv(chunk, NodeDepth);
     l->voxels = zox_has(chunk, VoxelNode) ? zox_get(chunk, VoxelNode) : NULL;
     l->datas = zox_has(chunk, BlockDatas) ? zox_get(chunk, BlockDatas) : NULL;
@@ -48,12 +48,12 @@ static inline byte block_vox_stops(const block_vox_lighting* l, const VoxelNode*
 //  and a dark room lit as the room: lit by the brightest it glowed inside); sides past the chunk edge from its neighbor
 static inline byte get_block_vox_light(const block_vox_lighting* l, byte3 position) {
     const byte shut = block_vox_stops(l, l->voxels, l->datas, position);
-    byte light = shut ? 255 : getv_LightNode(l->lights, l->depth, position);
+    byte light = shut ? 255 : getv_LightOctree(l->lights, l->depth, position);
     byte found = !shut;
     const short length = octree_size(l->depth);
     for (byte d = 0; d < 6; d++) {
         int3 p = move_position(byte3_to_int3(position), d);
-        const LightNode* tree = l->lights;
+        const LightOctree* tree = l->lights;
         const VoxelNode* voxels = l->voxels;
         const BlockDatas* datas = l->datas;
         if (p.x < 0 || p.x >= length || p.y < 0 || p.y >= length || p.z < 0 || p.z >= length) {
@@ -66,7 +66,7 @@ static inline byte get_block_vox_light(const block_vox_lighting* l, byte3 positi
             p = reverse_position(p, d, length);
         }
         const byte3 side = int3_to_byte3(p);
-        const byte side_light = getv_LightNode(tree, l->depth, side);
+        const byte side_light = getv_LightOctree(tree, l->depth, side);
         if (!shut) {
             if (side_light > light) {
                 light = side_light;

@@ -937,7 +937,7 @@
 -x Npcs attack the player again: their skill's resource (energy) wasn't found, their stats are copies of their
   kind's (a step from the realm's), stat lookups walk the prefab chain now (is_realm_stat_of), tst npc_attacks
 -x Lighting between chunk lods: coarse lod meshes read stale open light nodes (darklight), dark faces in the
-  distance, they read their leaves' max now (getv_nearby_max_LightNode), tst lod_lights, lod_chunk_lights
+  distance, they read their leaves' max now (getv_nearby_max_LightOctree), tst lod_lights, lod_chunk_lights
 -x Smooth lighting: no light leaking round corners (a corner behind two solid edges is dark), faces lit from a table
   of their axes, tst smooth_lights; tests run on x86 again (egl device by machine), npcs link their hit sounds
 -x Shirts with shapes: a boxy sleeved shirt (worn) and a tight sleeveless vest (inventory), box nodes in blueprints,
@@ -2172,7 +2172,7 @@ Disabling Lods means:
 -x Minivoxes (block voxes) are lit like the terrain around them, and relit when lights change
 	- Brightness from the brightest of its voxel + 6 sides (minivox voxels stop light, so never get any), light / 255
 	- instanced: model matrices now, the unused bottom row x carries brightness, shaders apply the camera
-	- block_vox_lights_system relights a chunk's (and its neighbors') minivoxes on LightNodeDirty
+	- block_vox_lights_system relights a chunk's (and its neighbors') minivoxes on LightOctreeDirty
 	- fixed chunk_colors_trigger_system being inverted: a chunk's own light changes didn't recolor its own meshes
 	- tests: block_vox_lights (game), block_vox_light_sampling (logic)
 - Water splash (doc/tech/water_extras.md task 1)

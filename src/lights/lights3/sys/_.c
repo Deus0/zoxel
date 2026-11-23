@@ -23,7 +23,7 @@ void set_light_systems(ecs* world, byte is_lights) {
     zox_set_enabled(chunk_colors_trigger_system, is_lights);
     zox_set_enabled(chunk_neighbor_light_trigger_system, is_lights);
     zox_set_enabled(build_smooth_lights_system, is_lights);
-    zox_set_enabled(LightNodeDirtyIncrementSystem, is_lights);
+    zox_set_enabled(LightOctreeDirtyIncrementSystem, is_lights);
     zox_set_enabled(light_node_reduce_system, is_lights);
 }
 
@@ -57,8 +57,8 @@ void zox_systems_lights3(ecs* world) {
         [out] lights.LightLock,
         [out] lights3.SunlightQueue,
         [out] lights3.LightQueue,
-        [out] lights3.LightNode,
-        [out] lights3.LightNodeDirty,
+        [out] lights3.LightOctree,
+        [out] lights3.LightOctreeDirty,
         [none] chunks3.Chunk3,
         // [none] !chunks.GenerateChunk,
     );
@@ -69,8 +69,8 @@ void zox_systems_lights3(ecs* world) {
         [in] chunks3.ChunkNeighbors,
         [out] lights.LightLock,
         [out] lights3.LightQueue,
-        [out] lights3.LightNode,
-        [out] lights3.LightNodeDirty,
+        [out] lights3.LightOctree,
+        [out] lights3.LightOctreeDirty,
         [none] chunks3.Chunk3,
         // [none] !chunks.GenerateChunk,
     );
@@ -80,11 +80,11 @@ void zox_systems_lights3(ecs* world) {
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
         [out] lights.LightLock,
-        [out] lights3.LightNodeDepth,
-        [out] lights3.LightNode,
+        [out] lights3.LightOctreeDepth,
+        [out] lights3.LightOctree,
         [out] lights3.DarkQueue,
         [out] lights3.LightQueue,
-        [out] lights3.LightNodeDirty,
+        [out] lights3.LightOctreeDirty,
         [none] chunks3.Chunk3,
         // [none] !chunks.GenerateChunk,
     );
@@ -99,8 +99,8 @@ void zox_systems_lights3(ecs* world) {
         [out] lights3.SunlightQueue,
         [out] lights3.LightQueue,
         [out] lights3.DarkQueue,
-        [out] lights3.LightNode,
-        [out] lights3.LightNodeDirty,
+        [out] lights3.LightOctree,
+        [out] lights3.LightOctreeDirty,
         [none] chunks3.Chunk3,
         // [none] !chunks.GenerateChunk,
     );
@@ -108,21 +108,21 @@ void zox_systems_lights3(ecs* world) {
     zox_system(
         light_node_reduce_system,
         zoxp_octree_write,
-        [in] lights3.LightNodeDirty,
+        [in] lights3.LightOctreeDirty,
         [out] lights.LightLock,
-        [out] lights3.LightNode,
+        [out] lights3.LightOctree,
         [none] chunks3.Chunk3,
     );
     zox_system(
         chunk_colors_trigger_system,
         zoxp_update,
-        [in] lights3.LightNodeDirty,
+        [in] lights3.LightOctreeDirty,
         [none] chunks3.Chunk3,
     );
     zox_system(
         chunk_neighbor_light_trigger_system,
         zoxp_update,
-        [in] lights3.LightNodeDirty,
+        [in] lights3.LightOctreeDirty,
         [in] chunks3.ChunkNeighbors,
         [none] chunks3.Chunk3,
     );
@@ -215,7 +215,7 @@ void zox_systems_lights3(ecs* world) {
         [in] chunks3.ChunkNeighbors,
         [in] chunks3.VoxelNode,
         [in] chunks3.SidesOctree,
-        [in] lights3.LightNode,
+        [in] lights3.LightOctree,
         [in] rendering.RenderDepth,
         [in] rendering.MeshColorRGBs,
         [out] rendering.MeshReady,
@@ -232,7 +232,7 @@ void zox_systems_lights3(ecs* world) {
     [in] chunks3.VoxelNode,
     [in] chunks3.ChunkNeighbors,
     [out] lights3.RefreshLights,
-    [out] lights3.LightNode,
-    [out] lights3.LightNodeDirty,
+    [out] lights3.LightOctree,
+    [out] lights3.LightOctreeDirty,
     [none] chunks.Chunk,
 );*/

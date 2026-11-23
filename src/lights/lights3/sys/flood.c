@@ -12,10 +12,10 @@ static inline byte flood_light(
     spinlock** neighbor_locks,
     const VoxelNode* voxels,
     const BlockDatas* datas,
-    LightNode* lights,
+    LightOctree* lights,
     const VoxelNode* neighbor_voxels[6],
     const BlockDatas* neighbor_datas[6],
-    const LightNode* neighbor_lights[6],
+    const LightOctree* neighbor_lights[6],
     LightQueue* n_queues[6],
     byte depth,
     byte3 positionl,
@@ -48,7 +48,7 @@ static inline byte flood_light(
         if (oob) {
             // Cross Chunk: READ neighbor if present, never write it
             const VoxelNode* neighbor_voxels2 = neighbor_voxels[dir];
-            const LightNode* neighbor_lights2 = neighbor_lights[dir];
+            const LightOctree* neighbor_lights2 = neighbor_lights[dir];
             spinlock* neighbor_lock = neighbor_locks[dir];
             LightQueue* nqueue = n_queues[dir];
             if (!neighbor_voxels2 ||
@@ -73,7 +73,7 @@ static inline byte flood_light(
             }
             // only queue if it improves neighbor
             spin_lock(neighbor_lock);
-            byte current_light = getv_LightNode(
+            byte current_light = getv_LightOctree(
                 neighbor_lights2,
                 depth,
                 pos);
@@ -100,7 +100,7 @@ static inline byte flood_light(
         }
         byte decayed_light = light_flood_decay(light, voxel, liquids, air_decay, min_light);
         spin_lock(lightlock);
-        byte current_light = getv_LightNode(
+        byte current_light = getv_LightOctree(
             lights,
             depth,
             pos);
@@ -115,7 +115,7 @@ static inline byte flood_light(
             decayed_light,
             distance);
         spin_lock(lightlock);
-        set_LightNode(lights, depth, pos, decayed_light);
+        set_LightOctree(lights, depth, pos, decayed_light);
         spin_unlock(lightlock);
         dirty = 1;
         flood_light(
@@ -154,8 +154,8 @@ void light_flood_system(iter* it) {
     zox_sys_in(ChunkNeighbors);
     zox_sys_out(LightLock);
     zox_sys_out(LightQueue);
-    zox_sys_out(LightNode);
-    zox_sys_out(LightNodeDirty);
+    zox_sys_out(LightOctree);
+    zox_sys_out(LightOctreeDirty);
     entity realm = 0;
     byte solidity[zox_light_solidity_length];
     memset(solidity, 1, zox_light_solidity_length);
@@ -171,8 +171,8 @@ void light_flood_system(iter* it) {
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_o(LightLock, lightlock);
         zox_sys_o(LightQueue, light_queue);
-        zox_sys_o(LightNode, root_lnode);
-        zox_sys_o(LightNodeDirty, light_node_dirty);
+        zox_sys_o(LightOctree, root_lnode);
+        zox_sys_o(LightOctreeDirty, light_node_dirty);
         spin_lock(&light_queue->lock);
         byte has_light = light_queue->count != 0;
         spin_unlock(&light_queue->lock);
@@ -187,7 +187,7 @@ void light_flood_system(iter* it) {
             solidity);
         update_light_liquids(world, zox_get_link(world, e, BlockManagerLink), &liquids_realm, liquids);
         const VoxelNode* neighbor_voxels[6];
-        const LightNode* neighbor_lights[6];
+        const LightOctree* neighbor_lights[6];
         spinlock* neighbor_locks[6];
         fetch_neightbor_voxel_nodes(
             world,
@@ -250,7 +250,7 @@ void light_flood_system(iter* it) {
                 }
                 continue;
             }
-            byte current_light = getv_LightNode(root_lnode, update.depth, update.pos);
+            byte current_light = getv_LightOctree(root_lnode, update.depth, update.pos);
             byte spread_light = update.light;
             if (dbg_log) {
                 zox_log("[%s]: [%s] ^ Light Flooding at [%ix%ix%i] l[%i] spread [%i] flooded [%i]",
@@ -266,7 +266,7 @@ void light_flood_system(iter* it) {
             if (current_light > spread_light) {
                 spread_light = current_light;
             } else if (current_light < spread_light) {
-                set_LightNode(root_lnode, update.depth, update.pos, spread_light);
+                set_LightOctree(root_lnode, update.depth, update.pos, spread_light);
                 dirty = 1;
             }
             if (flood_light(

@@ -76,7 +76,7 @@ static inline sbyte3 smooth_offset(sbyte3 face, sbyte3 a, sbyte sign_a, sbyte3 b
 
 // a face's four vertex lights, in the mesh's vertex order, for the voxel at position (27 nearby chunks)
 void smooth_face_lights(
-    const LightNode** lights,
+    const LightOctree** lights,
     spinlock** lights_locks,
     const VoxelNode** voxels,
     spinlock** voxels_locks,
@@ -96,7 +96,7 @@ void smooth_face_lights(
     byte light[3][3], solid_a[2], solid_b[2];
     for (sbyte sa = -1; sa <= 1; sa++)
     for (sbyte sb = -1; sb <= 1; sb++) {
-        light[sa + 1][sb + 1] = getv_nearby_max_LightNode(lights, lights_locks, position, depth, smooth_offset(face, a, sa, b, sb), oob);
+        light[sa + 1][sb + 1] = getv_nearby_max_LightOctree(lights, lights_locks, position, depth, smooth_offset(face, a, sa, b, sb), oob);
     }
     if (smooth_is_seal(solidity, getv_nearby_VoxelNode(voxels, voxels_locks, position, depth, face, 0))) {
         byte open[3][3];
@@ -188,7 +188,7 @@ static inline void zox_apply_smooth_lights(
     const smooth_grid* grid,
     spinlock** lights_locks,
     spinlock** voxels_locks,
-    const LightNode** lights,
+    const LightOctree** lights,
     const VoxelNode** voxels,
     const byte* solidity,
     const VoxelNode* node,
@@ -334,7 +334,7 @@ void build_smooth_lights_system(iter* it) {
         const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
         // const VoxelNode* root_voxels = zox_get(chunk, VoxelNode);
         entity nearby_chunks[27];
-        const LightNode* lights[27];
+        const LightOctree* lights[27];
         const VoxelNode* voxels[27];
         spinlock* lights_locks[27];
         spinlock* voxels_locks[27];

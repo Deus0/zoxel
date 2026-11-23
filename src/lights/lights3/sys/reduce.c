@@ -63,21 +63,21 @@ static inline byte reduce_max_octree_node(
 void light_node_reduce_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_begin();
-    zox_sys_in(LightNodeDirty);
+    zox_sys_in(LightOctreeDirty);
     zox_sys_out(LightLock);
-    zox_sys_out(LightNode);
+    zox_sys_out(LightOctree);
     for (int i = 0; i < it->count; i++) {
-        zox_sys_i(LightNodeDirty, dirty);
+        zox_sys_i(LightOctreeDirty, dirty);
         zox_sys_o(LightLock, lightlock);
-        zox_sys_o(LightNode, lights);
+        zox_sys_o(LightOctree, lights);
         if (dirty->value == zox_dirty_active) {
             if (locks_enabled) {
                 spin_lock(&lightlock->value);
             }
             reduce_max_octree_node(
                 lights,
-                sizeof(LightNode),
-                offsetof(LightNode, value));
+                sizeof(LightOctree),
+                offsetof(LightOctree, value));
             if (locks_enabled) {
                 spin_unlock(&lightlock->value);
             }

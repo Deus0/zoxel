@@ -23,7 +23,7 @@ static inline byte zox_tst_room_find(ecs* world, entity chunk, int width, int he
     const byte depth = zox_getv(chunk, NodeDepth);
     const int length = octree_size(depth);
     const VoxelNode* voxels = zox_get(chunk, VoxelNode);
-    const LightNode* lights = zox_get(chunk, LightNode);
+    const LightOctree* lights = zox_get(chunk, LightOctree);
     for (int x = 1; x + width + 1 < length; x++) for (int z = 1; z < length - 1; z++) {
         for (int y = length - 2; y >= height + 2; y--) {
             if (!getv_VoxelNode(voxels, depth, (byte3) { x, y, z })) {
@@ -31,7 +31,7 @@ static inline byte zox_tst_room_find(ecs* world, entity chunk, int width, int he
             }
             // the column's surface: sunlit over it
             if (sunlit && (getv_VoxelNode(voxels, depth, (byte3) { x, y + 1, z }) ||
-                getv_LightNode(lights, depth, (byte3) { x, y + 1, z }) != sunlight))
+                getv_LightOctree(lights, depth, (byte3) { x, y + 1, z }) != sunlight))
             {
                 break;
             }
@@ -62,7 +62,7 @@ static inline entity zox_tst_room_chunk(ecs* world, int width, int height, byte 
     for (int d = 0; d < 125; d++) {
         const int3 o = { d % 5 - 2, (d / 5) % 5 - 2, d / 25 - 2 };
         const entity chunk = int3_hashmap_get(zox_get(terrain, ChunkLinks)->value, int3_add(c, o));
-        if (zox_valid(chunk) && zox_has(chunk, LightNode) && zox_has(chunk, VoxelNodeQueue) &&
+        if (zox_valid(chunk) && zox_has(chunk, LightOctree) && zox_has(chunk, VoxelNodeQueue) &&
             zox_getv(chunk, NodeDepth) == depth && !zox_chunk_lighting_busy(world, chunk) &&
             zox_tst_room_find(world, chunk, width, height, sunlit, at))
         {
@@ -89,7 +89,7 @@ static inline byte zox_tst_room_settled(ecs* world, entity chunk, int* frames) {
 }
 
 static inline byte zox_tst_room_light(ecs* world, entity chunk, byte3 position) {
-    return getv_LightNode(zox_get(chunk, LightNode), zox_getv(chunk, NodeDepth), position);
+    return getv_LightOctree(zox_get(chunk, LightOctree), zox_getv(chunk, NodeDepth), position);
 }
 
 static inline void zox_tst_relight_read(ecs* world, byte* lights) {
@@ -157,11 +157,11 @@ byte zox_tst_glow_relight_ready(ecs* world) {
         // loaded: a loaded chunk's light starts dark, its emitters light it (the tunnel and the hole's shaft)
         spinlock* lock = &zox_getm(chunk, LightLock)->value;
         spin_lock(lock);
-        LightNode* lights = zox_getm(chunk, LightNode);
+        LightOctree* lights = zox_getm(chunk, LightOctree);
         for (byte i = 0; i < zox_tst_room_tunnel; i++) {
-            set_LightNode(lights, zox_getv(chunk, NodeDepth), (byte3) { at.x + i, at.y, at.z }, darklight);
+            set_LightOctree(lights, zox_getv(chunk, NodeDepth), (byte3) { at.x + i, at.y, at.z }, darklight);
         }
-        set_LightNode(lights, zox_getv(chunk, NodeDepth), (byte3) { at.x, at.y + 1, at.z }, darklight);
+        set_LightOctree(lights, zox_getv(chunk, NodeDepth), (byte3) { at.x, at.y + 1, at.z }, darklight);
         spin_unlock(lock);
         zox_add(chunk, GenerateEmitterLight);
         zox_tst_relight_settled = 0;

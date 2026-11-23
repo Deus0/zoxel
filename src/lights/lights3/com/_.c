@@ -1,19 +1,19 @@
 zox_tag(SunnyChunk);
 zox_tag(BottomChunk);
-zoxc_octree_basic(LightNode, byte, darklight);
+zoxc_octree_basic(LightOctree, byte, darklight);
 
-create_octree_setters(LightNode);
-create_octree_accessors(LightNode);
-create_octree_get_nearby(LightNode);
-create_octree_get_nearby_max(LightNode);
-create_octree_reducer(LightNode);
-create_octree_optimizer(LightNode, 0);
-create_optimize_by_max(LightNode);
-create_node_neighbor(LightNode);
-create_octree_line_debugger(LightNode);
-create_octree_line_debugger_compare(LightNode, VoxelNode);
-zoxc_byte(LightNodeDepth);
-zoxc_state(LightNodeDirty);
+create_octree_setters(LightOctree);
+create_octree_accessors(LightOctree);
+create_octree_get_nearby(LightOctree);
+create_octree_get_nearby_max(LightOctree);
+create_octree_reducer(LightOctree);
+create_octree_optimizer(LightOctree, 0);
+create_optimize_by_max(LightOctree);
+create_node_neighbor(LightOctree);
+create_octree_line_debugger(LightOctree);
+create_octree_line_debugger_compare(LightOctree, VoxelNode);
+zoxc_byte(LightOctreeDepth);
+zoxc_state(LightOctreeDirty);
 
 zoxc_queue(SunlightQueue, SunlightUpdate, 1);
 zoxc_queue(LightQueue, LightUpdate, 1);
@@ -27,9 +27,9 @@ void zox_components_lights3(ecs *world) {
     zoxd_tag(SunnyChunk);
     // Property
     zoxd_nf_tag(BottomChunk);
-    zoxd_octree(LightNode); // zoxd_node
-    zoxd_byte(LightNodeDepth);
-    zoxd_state(LightNodeDirty);
+    zoxd_octree(LightOctree); // zoxd_node
+    zoxd_byte(LightOctreeDepth);
+    zoxd_state(LightOctreeDirty);
     zoxd_queue(SunlightQueue);
     zoxd_queue(LightQueue);
     zoxd_queue(DarkQueue);

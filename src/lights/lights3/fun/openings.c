@@ -21,13 +21,13 @@ void light_voxel_opened(ecs* world, entity chunk, byte3 position) {
 
 // shut: its light goes, and the light that came through it (dark floods out from it, what's lit another way refills)
 void light_voxel_shut(ecs* world, entity chunk, byte3 position) {
-    if (zox_no_lights || !zox_valid(chunk) || !zox_has(chunk, DarkQueue) || !zox_has(chunk, LightNode)) {
+    if (zox_no_lights || !zox_valid(chunk) || !zox_has(chunk, DarkQueue) || !zox_has(chunk, LightOctree)) {
         return;
     }
     const byte depth = zox_getv(chunk, NodeDepth);
     spinlock* lock = &zox_getm(chunk, LightLock)->value;
     spin_lock(lock);
-    const byte light = getv_LightNode(zox_get(chunk, LightNode), depth, position);
+    const byte light = getv_LightOctree(zox_get(chunk, LightOctree), depth, position);
     spin_unlock(lock);
     if (light <= darklight) {
         return;

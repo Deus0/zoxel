@@ -7,7 +7,7 @@
 typedef struct {
     void* ptr;
     byte value;
-} LightNode;
+} LightOctree;
 
 // beams queued
 typedef struct {

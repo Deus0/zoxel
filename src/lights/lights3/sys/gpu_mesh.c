@@ -140,7 +140,7 @@ static inline void chunk_gpu_grid_fill(iter* it, entity tag) {
         }
         zox_sys_budget_start(chunk_gpu_grid);
         entity nearby_chunks[27];
-        const LightNode* nearby_lights[27];
+        const LightOctree* nearby_lights[27];
         const VoxelNode* nearby_voxels[27];
         spinlock* lights_locks[27];
         spinlock* voxels_locks[27];

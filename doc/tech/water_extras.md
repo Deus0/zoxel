@@ -248,8 +248,8 @@ darker than the beach.
 
 **Test:** src/lights/tst (look at src/lights/tst/_.c: tests there build octrees by hand, no world), or in a world
 with the `lakes` setup. The simplest: extend tst `lakes` (src/controllers/tst/water.c `zox_tst_lakes_check`):
-- read the light at the lake's middle just under its surface and at its floor (`getv_LightNode` on the chunk's
-  `LightNode`, as the glow tests in src/controllers/tst/town_maps.c do);
+- read the light at the lake's middle just under its surface and at its floor (`getv_LightOctree` on the chunk's
+  `LightOctree`, as the glow tests in src/controllers/tst/town_maps.c do);
 - check the floor's light is lower than the surface's, and the surface's is lower than the light just over the
   water (in the air). Log all three.
 

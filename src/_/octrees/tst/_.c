@@ -11,7 +11,7 @@ typedef struct {
     byte type;
 } TstNode;
 
-// same layout as LightNode / SidesOctree: no type
+// same layout as LightOctree / SidesOctree: no type
 typedef struct {
     void* ptr;
     byte value;

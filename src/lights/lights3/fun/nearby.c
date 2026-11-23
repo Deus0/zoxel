@@ -63,7 +63,7 @@ static inline void fetch_nearby_voxels(
 static inline void fetch_nearby_lights(
     ecs* world,
     const entity* chunks,
-    const LightNode** lights,
+    const LightOctree** lights,
     spinlock** locks)
 {
     for (byte i = 0; i < 27; i++) {
@@ -73,7 +73,7 @@ static inline void fetch_nearby_lights(
             locks[i] = NULL;
             continue;
         }
-        lights[i] = zox_get(chunk, LightNode);
+        lights[i] = zox_get(chunk, LightOctree);
         LightLock* lock = zox_mut(chunk, LightLock);
         locks[i] = &(lock->value);
     }
@@ -82,9 +82,9 @@ static inline void fetch_nearby_lights(
 // NOTE: Grabs neighbors and corners
 /*void fetch_neightbor_lights(
     ecs* world,
-    const LightNode* root,
+    const LightOctree* root,
     const entity* neighbors,
-    const LightNode** lights)
+    const LightOctree** lights)
 {
     lights[OCTREE_INDEX(0, 0, 0)] = root;
     for (byte i = 0; i < 6; i++) {
@@ -92,9 +92,9 @@ static inline void fetch_nearby_lights(
         if (!zox_valid(adjacent) || !zox_has(adjacent, ChunkNeighbors)) {
             continue;
         }
-        const LightNode* nlights =
+        const LightOctree* nlights =
             zox_valid(adjacent) ?
-                zox_get(adjacent, LightNode) :
+                zox_get(adjacent, LightOctree) :
                 NULL;
         sbyte3 position1 = neighbor_offsets[i];
         byte index = OCTREE_INDEX3(position1);
@@ -118,9 +118,9 @@ static inline void fetch_nearby_lights(
             if (lights[index2]) {
                 continue;
             }
-            const LightNode* nlights =
-                zox_valid(neighbor) && zox_has(neighbor, LightNode)
-                ? zox_get(neighbor, LightNode)
+            const LightOctree* nlights =
+                zox_valid(neighbor) && zox_has(neighbor, LightOctree)
+                ? zox_get(neighbor, LightOctree)
                 : NULL;
             lights[index2] = nlights;
         }

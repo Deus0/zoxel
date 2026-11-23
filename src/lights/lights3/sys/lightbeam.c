@@ -6,7 +6,7 @@ byte sunbeam(
     spinlock* lightlock,
     LightQueue* floodlight_queue,
     SunlightQueue* chunk_below_queue,
-    LightNode* root_lights,
+    LightOctree* root_lights,
     const VoxelNode* root_vnode,
     const BlockDatas* datas,
     byte depth, byte3 pos,
@@ -33,7 +33,7 @@ byte sunbeam(
             light = light_dim(light, min_light);
         }
         spin_lock(lightlock);
-        set_LightNode(root_lights, depth, pos, light);
+        set_LightOctree(root_lights, depth, pos, light);
         spin_unlock(lightlock);
         dirty = 1;
         zox_logv("+ SunLight [%i] Set at [%ix%ix%i]", light, pos.x, pos.y, pos.z);
@@ -76,8 +76,8 @@ void light_beam_system(iter* it) {
     zox_sys_out(LightLock);
     zox_sys_out(SunlightQueue);
     zox_sys_out(LightQueue);
-    zox_sys_out(LightNode);
-    zox_sys_out(LightNodeDirty);
+    zox_sys_out(LightOctree);
+    zox_sys_out(LightOctreeDirty);
     entity realm = 0;
     byte solidity[zox_light_solidity_length];
     memset(solidity, 1, zox_light_solidity_length);
@@ -91,8 +91,8 @@ void light_beam_system(iter* it) {
         zox_sys_o(LightLock, lightlock);
         zox_sys_o(SunlightQueue, sunlight_queue);
         zox_sys_o(LightQueue, floodlight_queue);
-        zox_sys_o(LightNode, root_lights);
-        zox_sys_o(LightNodeDirty, dirty);
+        zox_sys_o(LightOctree, root_lights);
+        zox_sys_o(LightOctreeDirty, dirty);
         if (!sunlight_queue->count) {
             continue;
         }
