@@ -4,7 +4,7 @@
 //      the one beside it opens, wrapping round; none open, RB opens the first, LB the last
 //  - others stay open (a hud, i.e. the action bar, is a taskbar ui too); one beside it already open is moved into
 //  - each through the taskbar's own toggle (taskbar_frame_toggle), so its frames light as a click lights them
-//  - the new ui is the NavigationWindow and the navigators' selections are cleared: they select its first element
+//  - the navigators' selections are cleared: they select the new ui's first element (the top window, ui/navigation)
 //      (element_navigation_begin_system), so a gamepad reaches every ui, not only the one it began in
 //  - 2D and 3D taskbars alike (spawn_taskbar: spawn_window, 3D on 3D huds)
 #define navigator_frames_max 32
@@ -94,9 +94,6 @@ entity navigator_shift(ecs* world, entity player, int direction) {
     } else {
         window = taskbar_frame_toggle(world, frames[next], player);
     }
-    if (zox_valid(window)) {
-        zox_add(window, NavigationWindow);
-    }
     navigator_opened = window;
     // the navigators select within the new ui
     for (uint i = 0; i < length; i++) {
@@ -116,9 +113,6 @@ entity navigator_open_first(ecs* world, entity player) {
     entity window = zox_getv(frames[0], ActiveState) ?
         zox_get_child_by_id(world, canvas, zox_getv(frames[0], TaskbarWindowID)) : taskbar_frame_toggle(world, frames[0], player);
     navigator_opened_kept = zox_getv(frames[0], ActiveState);
-    if (zox_valid(window)) {
-        zox_add(window, NavigationWindow);
-    }
     navigator_opened = window;
     entity devices[zox_children_capacity];
     const uint length = zox_get_children_by_id(world, player, devices, zox_children_capacity, zox_id(DeviceNavigator));

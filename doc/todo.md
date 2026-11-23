@@ -26,7 +26,6 @@
 - Day Night Cycle
 - New game for local coop - second player camera is off
 - we should lower houses anyway so theyre on ground, but still be good to fix this
-- Navigator cant click on wake button - just make sure its selectable - with navigation - and auto selected on opened
 - Use waveform collapse on the slime model, like pengus and chooks, slems
 - Add loading screen info, underneat 'Loading\n[1/299] Nearby Tunks Loaded'
 - npcs outside nnear distance appear as lod 0, giant blocks, we should probably hide them instead

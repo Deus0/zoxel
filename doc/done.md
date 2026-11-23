@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-23
+-x A gamepad was stuck in bed, nothing selected: only windows tagged NavigationWindow were navigated. Every window is
+  now (the tag gone), never while playing (it selected the action bar in game); asleep is a player state
+  (zox_player_state_sleeping, its controls off), so "Wake" is selected and A wakes it. Dying asleep wakes it, its
+  respawn as any death's. tst bed_wake_pad
 -x Characters stand on their gravity: turned to its up (gravity_upright_system, a ceiling's flip rolls them over
   keeping their heading), the player turns about its own up, walks flat against it, auto jumps, swims and its lower
   body along it. tst gravity_flip

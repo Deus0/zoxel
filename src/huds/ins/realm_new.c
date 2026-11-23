@@ -186,7 +186,6 @@ entity spawn_menu_new_realm(
         elements_count,
         elements_count).x;
     zox_add(e, MenuNewRealm);
-    zox_add(e, NavigationWindow);
     return e;
 }
 

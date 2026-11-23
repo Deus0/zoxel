@@ -182,6 +182,65 @@ void zox_tst_bed_sleep_check(ecs* world) {
     zox_tst_check(zox_tst_bsleep_stage == 6, "it stopped at stage [%i]", zox_tst_bsleep_stage);
 }
 
+// tst: bed_wake_pad, on a gamepad: asleep, its navigator selects "Wake" and A wakes it (it was stuck, nothing selected)
+//  - a gamepad given to the player (zox_tst_spawn_pad), its mode gamepad; character_sleep where it stands
+//  - the sleep window up: the gamepad's selection (its Target) in it; A pressed: awake (Sleeping gone)
+//  - run: bash bsh/tst.sh bed_wake_pad
+byte zox_tst_bwake_stage = 0;
+int zox_tst_bwake_frames = 0;
+byte zox_tst_bwake_selected = 0;
+
+byte zox_tst_bed_wake_pad_ready(ecs* world) {
+    if (!zox_tst_player_spawn_ready(world)) {
+        return 0;
+    }
+    const entity character = zox_tst_player_character(world);
+    const entity player = zox_get_link(world, character, PlayerLink);
+    const int f = ++zox_tst_bwake_frames;
+    zox_tst_progress(zox_tst_bwake_stage * 1000 + f);
+    memset(zox_tst_pad_held, 0, sizeof(zox_tst_pad_held));
+    zox_tst_pad_stick = float2_zero;
+    if (zox_tst_bwake_stage == 0) {
+        zox_tst_waiting = "the gamepad's mode";
+        if (!zox_valid(zox_tst_pad)) {
+            zox_tst_pad = zox_tst_spawn_pad(world, player);
+        }
+        zox_tst_pad_stick = (float2) { 0, (f % 20) < 4 ? 0.5f : 0 };
+        if (zox_getv(player, DeviceMode) == zox_device_mode_gamepad) {
+            zox_tst_pad_stick = float2_zero;
+            const entity terrain = zox_get_link(world, character, TerrainLink);
+            character_sleep(world, character, real_position_to_block_position(zox_getv(character, Position3D), zox_getv(terrain, BlockScale)));
+            zox_tst_bwake_stage = 1;
+            zox_tst_bwake_frames = 0;
+        }
+        return f > 600;
+    }
+    if (zox_tst_bwake_stage == 1) {
+        zox_tst_waiting = "the sleep window, its Wake selected";
+        const entity ui = zox_tst_bsleep_ui(world, player);
+        const entity target = zox_getv(zox_tst_pad, Target);
+        if (zox_valid(ui) && zox_valid(target) && zox_get_parent_by_id(world, target, zox_id(SleepUI)) == ui) {
+            zox_tst_bwake_selected = 1;
+            zox_tst_bwake_stage = 2;
+            zox_tst_bwake_frames = 0;
+        }
+        return f > 300;
+    }
+    zox_tst_waiting = "A to wake it";
+    zox_tst_pad_held[zox_btn_a] = f >= 10 && f < 14;
+    return (f > 14 && !zox_has(character, Sleeping)) || f > 300;
+}
+
+void zox_tst_bed_wake_pad_check(ecs* world) {
+    const entity character = zox_tst_player_character(world);
+    zox_log("[tst] bed_wake_pad stage [%i] wake selected [%i] asleep [%i]", zox_tst_bwake_stage, zox_tst_bwake_selected,
+        zox_has(character, Sleeping));
+    zox_tst_check(zox_tst_bwake_selected, "asleep, the gamepad didn't select Wake (stage [%i])", zox_tst_bwake_stage);
+    zox_tst_check(zox_tst_bwake_stage == 2 && !zox_has(character, Sleeping), "A didn't wake it");
+}
+
 void zox_tsts_beds(ecs* world) {
+    zox_tst_add("bed_wake_pad", zox_tst_bed_wake_pad_ready, zox_tst_bed_wake_pad_check, 120);
+    zox_tst_set_setup("bed_wake_pad", zox_tst_level_setup, 0);
     zox_tst_add("bed_sleep", zox_tst_bed_sleep_ready, zox_tst_bed_sleep_check, 120);
 }

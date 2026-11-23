@@ -15,7 +15,8 @@ void player3_respawn_system(iter* it) {
         zox_sys_o(PlayerState, state);
         // Playing happily!
         entity character = zox_get_link(world, e, CharacterLink);
-        if (state->value == zox_player_state_playing || state->value == zox_player_state_paused) {
+        if (state->value == zox_player_state_playing || state->value == zox_player_state_paused ||
+            state->value == zox_player_state_sleeping) {
             byte is_character_dead =
                 zox_valid(character) &&
                 zox_has(character, Dead);

@@ -43,7 +43,6 @@ entity spawn_menu_paused(ecs *world, entity canvas) {
         elements_count).x;
     zox_name("menu_paused");
     zox_add(e, MenuPaused);
-    zox_add(e, NavigationWindow);
     zox_add(e, PreInitialize);
     return e;
 }

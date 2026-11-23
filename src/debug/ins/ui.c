@@ -112,6 +112,5 @@ void zox_dbg_test_window_uis(ecs* world, int32_t keycode) {
         elements_count,
         visible_count);
     zox_set_unique_name(e3.x, "dbg_test_window_uis");
-    zox_add(e3.x, NavigationWindow);
     dbg_test_window_uis = e3.x;
 }

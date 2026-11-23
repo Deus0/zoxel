@@ -57,7 +57,8 @@ void element_navigation_begin_system(iter* it) {
         if (keyboard_navigation_mode && device_mode == zox_device_mode_keyboardmouse) {
             device_mode = zox_device_mode_gamepad;
         }
-        if (device_mode != zox_device_mode_gamepad) {
+        // not while playing: in game nothing's selected (the action bar was), its menus, a dialogue or a bed's window are
+        if (device_mode != zox_device_mode_gamepad || zox_getv(player, PlayerState) == zox_player_state_playing) {
             continue;
         }
         // its canvases (CanvasLink, many): one it shares with every player first (not its own: its PlayerLink isn't the
@@ -76,7 +77,8 @@ void element_navigation_begin_system(iter* it) {
                 while (zox_children_next(it2)) {
                     for (int j = 0; j < it2.count; j++) {
                         const entity e2 = it2.entities[j];
-                        if (zox_has(e2, NavigationWindow) && !zox_has(e2, UIClosing)) {
+                        if (zox_has(e2, Window) && !zox_has(e2, UIClosing) &&
+                            zox_get_child_by_id_recursive(world, e2, zox_id(NavigationElement))) {
                             window = e2;
                         }
                     }

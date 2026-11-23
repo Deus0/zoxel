@@ -60,6 +60,5 @@ entity spawn_menu_realm(
         visible_count).x;
     zox_name("menu_realm");
     zox_add(e, MenuRealm);
-    zox_add(e, NavigationWindow);
     return e;
 }

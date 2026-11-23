@@ -107,6 +107,5 @@ void zox_dbg_ui_manual_tests(
         elements_count,
         visible_count);
     zox_set_unique_name(e3.x, "dbg_ui_tests");
-    zox_add(e3.x, NavigationWindow);
     dbg_ui_tests = e3.x;
 }

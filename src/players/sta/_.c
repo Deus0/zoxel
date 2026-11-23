@@ -21,3 +21,5 @@
 #define zox_player_state_dialogue_begin 21
 #define zox_player_state_dialogue_active 22
 #define zox_player_state_dialogue_end 23
+// Sleeping: in a bed (vodes/beds), its controls off, its "Wake" window navigated
+#define zox_player_state_sleeping 24

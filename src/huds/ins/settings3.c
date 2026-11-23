@@ -123,7 +123,6 @@ entity spawn_menu_options3(ecs* world, entity player) {
     }
     zox_set_unique_name(e, "menu_options");
     zox_add(e, MenuOptions);
-    zox_add(e, NavigationWindow);
     return e;
 }
 

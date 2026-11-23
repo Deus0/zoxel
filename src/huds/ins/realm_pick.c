@@ -163,7 +163,6 @@ entity spawn_menu_load(ecs *world, entity player) {
         visible_count).x;
     zox_name("menu_load");
     zox_add(e, MenuLoad);
-    zox_add(e, NavigationWindow);
     // button labels copy their text
     for (int i = 0; i < elements_count; i++) {
         free((char*) elements[i].text);

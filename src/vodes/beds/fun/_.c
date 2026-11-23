@@ -153,6 +153,9 @@ void on_sleeping(iter* it) {
         }
         sleep_mouse_lock(world, player, 0);
         spawn_sleep_ui(world, player);
+        if (zox_getv(player, PlayerState) == zox_player_state_playing) {
+            zox_setv(player, PlayerState, zox_player_state_sleeping);   // its ui navigated, its controls off
+        }
     }
 }
 
@@ -193,11 +196,24 @@ void on_waking(iter* it) {
             zox_lerp_float(camera, CameraLids, 0, sleep_lids_open);
         }
         sleep_mouse_lock(world, player, 1);
+        if (zox_getv(player, PlayerState) == zox_player_state_sleeping) {
+            zox_setv(player, PlayerState, zox_player_state_play_trigger);   // as a dialogue ends
+            zox_setv(player, PlayerStateDirty, zox_dirty_trigger);
+        }
         const entity canvas = zox_get_link(world, player, CanvasLink);
         const entity ui = zox_valid(canvas) ? zox_get_child_by_id(world, canvas, zox_id(SleepUI)) : 0;
         if (zox_valid(ui)) {
             zox_delete(ui);
         }
+    }
+}
+
+// died asleep: it wakes (its window gone, its player state back to play), its respawn as any death's
+void on_sleeper_died(iter* it) {
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        character_wake(world, e);
     }
 }
 

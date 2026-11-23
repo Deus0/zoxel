@@ -143,7 +143,6 @@ void zox_dbg_ui_cheats(ecs* world, int32_t keycode) {
         visible_count);
     zox_set_unique_name(e3.x, "dbg_ui_cheats");
     // zox_add(e3.x, MenuTest);
-    zox_add(e3.x, NavigationWindow);
     // zox_set(e3.z, TooltipEvent, { &tooltip_event_zoxel_header });
     // zox_set(spawned[0], TooltipEvent, { &tooltip_event_main_menu });
     dbg_ui_cheats = e3.x;

@@ -49,7 +49,6 @@ entity spawn_dialogue_ui(
     entity e = e3.x;
     entity body = e3.z;
     zox_add(e, DialogueUI);
-    zox_add(e, NavigationWindow);
     // Speech Text
     {
         entity parent = body;

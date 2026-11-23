@@ -105,15 +105,17 @@ follows (list3's own) is history, kept for its learnings: the list systems, scro
 
 - huds/sys/navigator.c: paused, LB and RB (a headset's grips are LB and RB) step through the taskbar's uis one at a
   time, wrapping round: the one it's in closes, the next opens (through the taskbar's own toggle,
-  `taskbar_frame_toggle`, so frames light as a click lights them), it becomes the `NavigationWindow`, and the
-  navigators' selections are cleared so `element_navigation_begin_system` selects in it.
+  `taskbar_frame_toggle`, so frames light as a click lights them), and the navigators' selections are cleared so
+  `element_navigation_begin_system` selects in it.
 - Every navigator alike: it reads LB and RB from all the player's devices; XR controllers are gamepad devices.
 - "The one it's in": the one it last opened, else the selection's window, else the first open. A ui it moved into
   because it was already open (a hud: the action bar) stays open when it moves on (it closed the action bar).
 - On 3D huds the taskbar is a 3D row above the menus (`spawn_taskbar3`): the same frames (`taskbar_spawn_frames`),
   its panel the `WindowBody` so `link_window_to_taskbar` and `taskbar_begin_system` find frames the same way.
-- `element_navigation_begin_system` starts in the open `NavigationWindow`, not one closing (`UIClosing`), and a
-  window with nothing to select isn't an error (it logged every frame).
+- `element_navigation_begin_system`: a gamepad with nothing selected starts in an open window with something to
+  select (a `NavigationElement`), not one closing (`UIClosing`): any `Window`, no tag needed. Never while its player
+  is playing (`zox_player_state_playing`: in game it selected the action bar); its menus (paused), a dialogue and a
+  bed (`zox_player_state_sleeping`, its "Wake") are other player states, so their windows are navigated.
 
 # Grids
 

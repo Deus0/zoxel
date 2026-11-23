@@ -294,7 +294,6 @@ static entity zox_tst_nav2_grid_spawn(ecs* world, entity canvas) {
     zox_setv(e3.z, GridSize, cells);
     zox_setv(e3.z, GridPadding, byte2_single(2));
     zox_setv(e3.z, GridMargins, byte2_single(4));
-    zox_add(e3.x, NavigationWindow);
     entity first = 0;
     for (int i = 0; i < cells.x * cells.y; i++) {
         const entity3 spawn = spawn_frame(world, prefab_frame, prefab_icon, 0, e3.z, int2_zero, int2_single(frame),

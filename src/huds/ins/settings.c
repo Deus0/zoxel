@@ -210,7 +210,6 @@ entity spawn_menu_options(
     }
     zox_name("menu_options");
     zox_add(e, MenuOptions);
-    zox_add(e, NavigationWindow);
     for (byte t = 0; t < menu_options_tabs_count; t++) {
         for (byte k = 0; k < counts[t]; k++) {
             zox_set(spawned[t][k], SettingLink, { options[t][k] });

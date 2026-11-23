@@ -100,7 +100,6 @@ entity spawn_main_menu(
     }
     zox_set_unique_name(e, "main_menu");
     zox_add(e, MenuMain);
-    zox_add(e, NavigationWindow);
     if (header) {
         zox_add_tooltip_text(world, header, "v0.0.1");
     }

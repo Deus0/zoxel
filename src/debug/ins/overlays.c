@@ -113,6 +113,5 @@ void zox_dbg_ui_overlays(ecs* world, int32_t keycode) {
         elements_count,
         visible_count);
     zox_set_unique_name(e3.x, "dbg_ui_overlays");
-    zox_add(e3.x, NavigationWindow);
     dbg_ui_overlays = e3.x;
 }

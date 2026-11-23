@@ -11,7 +11,8 @@
  *  - a right click on a bed (BlockBed, activations) puts its character to sleep: character_sleep, Sleeping
  *  - asleep (on_sleeping): lying on the bed, its head on the pillow, still (DisableMovement, DisableGravity, NoClip);
  *    a player's eyes close (its camera's CameraLids), its mouse is let go and a window with "Wake" shows
- *  - "Wake" (or character_wake, npcs later) adds Waking: on_waking stands it beside the bed, opens the eyes
+ *  - a player asleep is in its sleeping state (zox_player_state_sleeping): its controls off, its window navigated
+ *  - "Wake" (or character_wake, npcs later, or dying) adds Waking: on_waking stands it beside the bed, opens the eyes
  *  - getting on and off is a climb (SleepMotion, sleep_motion_system): up onto the mattress, then down onto its back
  *  - later: skipping the night (day and night), the respawn point, healing while asleep
  */
@@ -26,6 +27,7 @@ void import_beds(ecs* world) {
     zox_components_beds(world);
     zox_on_add(on_sleeping, [none] beds.Sleeping);
     zox_on_add(on_waking, [none] beds.Waking);
+    zox_on_add(on_sleeper_died, [none] core.Dead, [none] beds.Sleeping);
     zox_system(
         sleep_motion_system,
         zoxp_physics,

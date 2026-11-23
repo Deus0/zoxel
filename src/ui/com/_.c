@@ -11,7 +11,6 @@ zoxc_color(ElementOutlineColor);
 // Canvas
 zox_tag(CanvasOverlay);
 // Navigating
-zox_tag(NavigationWindow);
 zox_tag(NavigationElement);
 zoxc_byte(NavigatorState);
 zoxc_double(NavigatorTimer);
@@ -47,7 +46,6 @@ void zox_components_elements(ecs *world) {
     zoxd_color(ElementFillColor);
     zoxd_color(ElementOutlineColor);
     // Navigation
-    zoxd_tag(NavigationWindow);
     zoxd_tag(NavigationElement);
     zoxd_double(NavigatorTimer);
     zoxd_byte(NavigatorState);
