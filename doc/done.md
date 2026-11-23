@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-23
+-x A first person body never crouched or bobbed (tst crouch, walk_bob failed since f8c8d1ea9, 2026-11-22): leaning
+  with its look, its chest's place is spine_lean_system's (from its rest place and HipsShift), and arm_control_system
+  skipped lowering a root it doesn't own. A first person (LookLean) body's drop goes into its HipsShift now; ik's
+  components are included before the bones' systems
 -x Local coop's second player drawn deformed, its camera off (a new game, joined on the main menu): its body was
   combined with its parts (17), then its clothes put on (22), but that second combine was lost: asked for in the frame
   its first ran, combine_vox_system's removal of CombineVox (the same stage, no merge between) landed after the add.

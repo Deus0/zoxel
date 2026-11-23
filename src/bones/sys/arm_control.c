@@ -93,8 +93,12 @@ void arm_control_system(iter* it) {
         // the body over its stance foot: down by what the longer leg (its foot the lower) lost of its height, its
         //  thigh and knee as walk_limb put them this frame (arm_swing.c)
         const entity root = zox_get_child_by_id(world, e, zox_id(Bone));
-        // (not a leaning body's: XR's, sys/spine.c keeps the root's rest place, RestPosition3D, and places it)
-        if (leg > 0 && zox_valid(root) && !zox_has(root, RestPosition3D)) {
+        // a leaning body (sys/spine.c keeps the root's rest place, RestPosition3D, and places it): a first person one's
+        //  drop goes into its HipsShift (spine_lean_system lowers the chest by it), XR's own body sets its HipsShift
+        //  (lost when first person bodies leant, 2026-11-22: they never crouched or bobbed, tst crouch, walk_bob)
+        const byte leaning = zox_valid(root) && zox_has(root, RestPosition3D);
+        const byte shifts = leaning && zox_has(e, LookLean) && zox_has(e, HipsShift);
+        if (leg > 0 && zox_valid(root) && (!leaning || shifts)) {
             float reach = 0;
             for (uint j = 0; j < length; j++) {
                 float upper, lower, thigh, knee;
@@ -105,8 +109,13 @@ void arm_control_system(iter* it) {
                 }
             }
             //  written in place, not deferred (zox_setv): a frame behind the legs it was most of a step at 10 fps
+            const float drop = leg - (reach > 0 ? reach : leg);
+            if (shifts) {
+                zox_getm(e, HipsShift)->value = (float3) { 0, -drop, 0 };
+                continue;
+            }
             float3 local = zox_getv(root, BonePosition);
-            local.y -= leg - (reach > 0 ? reach : leg);
+            local.y -= drop;
             zox_getm(root, LocalPosition3D)->value = local;
         }
     }

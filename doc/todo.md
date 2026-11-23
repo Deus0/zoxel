@@ -3,7 +3,7 @@
 # Notes
 - Bugs first, then by module (play test notes first in each). Done items move to [done.md](done.md).
 - Refactors are a section here (# Refactors). Also see:
-  [Optimizations](#optimizations) (performance), [New](#new) (new modules and features), [Delayed](#delayed), [Whimsy](#whimsy), [Future](#future) (bigger
+  [Test Fixes](#test-fixes) (failing tests), [Optimizations](#optimizations) (performance), [New](#new) (new modules and features), [Delayed](#delayed), [Whimsy](#whimsy), [Future](#future) (bigger
   ideas), [gdd/caves.md](gdd/caves.md) (caves design)
   
 # Dropbox (Sort These)
@@ -69,12 +69,30 @@ Bugs from the full test run 2026-11-21 (Bugs above): end_game_cleanup, lod_swap,
 
 - Maths: quaternion_normalized sets w to 0 (unused, remove it)
 
+# Test Fixes
+Failing tests from full runs, worked through slowly; making tests smaller and faster is ongoing too (onboarding
+section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what's known.
+- 2026-11-23 full run (bb446086d, 395 tests, 3 in parallel): 377 passed. Rerun alone, these 6 passed (flaky under
+  load): punch_wind_up, tables_stream (a step made 237 tables, over 200), map_pixel, door_save, stream_seams,
+  town_furniture. These 12 fail alone too:
+	- aesthetic_particles, aesthetic_town: stall 60s, the player's character never spawns (terrain Loading, lod far 16)
+	- end_game_cleanup: +12 entities left after ending a game (gpu buffers and textures fewer, fine); since 2026-11-21
+	- coop_pause: "No Mouse Found on player" errors (the second player has none); since 2026-11-20
+	- chunk_mesh_flicker: 849 dark flashes (a material's light down a quarter and back), 32 seam holes in a frame
+	- ui_layout: at ui scale 3 the options' 5 elements leave the canvas
+	- vegetation_chunks: no drawn trees near the player
+	- scroll_wheel: a notch down doesn't scroll (start stays 0)
+	- door_rays: closed, 0 of 12 rays at a door found its neighbour; since 2026-11-21
+	- stream_npcs: a chunk stayed active but its npc was deleted (steps 1, 7, 12), passed earlier today: villagers
+	  killing slimes now (villager_guard)? a death isn't a despawn
+- making them faster: the biggest test times first, a world of their own or the void where they don't need a player
+  (onboarding "Small and fast"), keep the latest times to compare
+
 # Bugs
 - Block voxes never spawn on the test level (zox_tst_level_setup: BlocksSpawned stays off, even the player's chunk);
   tests of them run in a game (tst doors, gravity_cube_vode)
 - stream_npcs fails on master since d8e218a3a (npc speed and wits?, 2026-11-23): "chunk stayed active but its npc
   was deleted (despawned and respawned)"
-- walk_bob fails on master (2026-11-23, e026107c0): the head bobbed 0cm over 11 steps, turned 0 times
 - physics on lower lod chunks used to bug (not sure anymore, might still glitch)
 - alt tab on windows, mouse lock stays locked
 - mouse now doesnt go over hte shared player canvas, make mouse on a seperate canvas over others

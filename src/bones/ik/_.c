@@ -15,7 +15,7 @@
  *  - legs too (sys/leg_ik.c, a thigh's IKTarget its foot): planted feet (sys/feet.c, PlantFeet on a skeleton, XR's
  *    body) hold as the body shifts over them, stepping back under it when it's too far
  */
-#include "com/_.c"
+// its components are included with the bones' (bones/_.c), its systems read by theirs (arm_control.c: HipsShift)
 #include "fun/_.c"
 #include "sys/_.c"
 #ifdef zox_tests
