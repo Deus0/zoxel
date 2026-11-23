@@ -12,6 +12,9 @@
 //  - tst/slime_tentacle/out.ppm and back.ppm, the tentacle at full stretch and drawn back: out.ppm has its green
 //    between the slime and the player (its particles drawn, not only spawned)
 //  - run: bash bsh/tst.sh slime_tentacle
+// tst: slime_tentacle_wall, a slime's tentacle stops at a wall (it hit through them)
+//  - a slime 3 away in battle, a wall of blocks between it and the player: it whips its tentacle, the player unhurt
+//  - run: bash bsh/tst.sh slime_tentacle_wall
 // tst: villager_guard, villagers fight monsters that come to their town (ai/sys/sight.c)
 //  - a villager facing a slime 3 away (the slime facing away, idle): the villager goes into battle, the slime its attacker
 //  - run: bash bsh/tst.sh villager_guard
@@ -265,6 +268,83 @@ void zox_tst_slime_tentacle_check(ecs* world) {
     zox_tst_check(green >= 2, "its tentacle wasn't drawn: [%i%%] green between the slime and the player", green);
 }
 
+// a wall across x = the player's + 1.5, 7 wide, from under its feet to over its head
+static inline byte zox_tst_tentacle_wall(ecs* world, byte build) {
+    const entity character = zox_tst_player_character(world);
+    const entity terrain = zox_get_link(world, character, TerrainLink);
+    const float scale = zox_getv(terrain, BlockScale);
+    const float3 p = zox_getv(character, Position3D);
+    const int3 base = real_position_to_block_position(float3_add(p, (float3) { 1.5f, 0, 0 }), scale);
+    const int3 below = real_position_to_block_position(float3_add(p, (float3) { 0, -zox_getv(character, Bounds3D).y, 0 }), scale);
+    const int ground = terrain_voxel_at(world, terrain, (int3) { below.x, below.y - 1, below.z });
+    byte built = 1;
+    for (int y = below.y; y <= base.y + 4; y++) {
+        for (int z = base.z - 3; z <= base.z + 3; z++) {
+            const int3 block = { base.x, y, z };
+            if (build) {
+                terrain_queue_voxel(world, terrain, block, ground > 0 ? ground : 1, 0);
+            } else {
+                built &= terrain_voxel_at(world, terrain, block) > 0;
+            }
+        }
+    }
+    return built;
+}
+
+byte zox_tst_slime_tentacle_wall_ready(ecs* world) {
+    if (!zox_tst_player_spawn_ready(world)) {
+        return 0;
+    }
+    const float3 offsets[1] = { { 3, 0, 0 } };
+    const float3 facings[1] = { { -1, 0, 0 } };
+    if (zox_tst_monsters_stage == 9) {
+        return 1;
+    }
+    if (zox_tst_monsters_stage == 0) {
+        zox_tst_tentacle_wall(world, 1);
+    }
+    if (zox_tst_monsters_stage < 2) {
+        if (zox_tst_monsters_spawn(world, 1, offsets, facings) && zox_tst_monsters_stage == 1) {
+            zox_tst_monsters_stage = 2;
+            zox_tst_monsters_time = zox_current_time;
+        }
+        return 0;
+    }
+    if (zox_tst_monsters_stage == 2) {
+        zox_tst_waiting = "the wall to be built";
+        if (!zox_tst_tentacle_wall(world, 0)) {
+            if (zox_current_time - zox_tst_monsters_time > 10) {
+                zox_tst_check(0, "the wall wasn't built");
+                return 1;
+            }
+            return 0;
+        }
+        combat_on_hit(world, zox_tst_monsters[0], zox_tst_player_character(world));
+        zox_tst_monsters_time = zox_current_time;
+        zox_tst_monsters_stage = 3;
+        return 0;
+    }
+    zox_tst_waiting = "the slime to whip its tentacle at the wall";
+    const entity e = zox_tst_monsters[0];
+    if (!zox_valid(e)) {
+        return 1;
+    }
+    const byte out = zox_has(e, SkillUsing) && zox_has(zox_getv(e, SkillUsing), Tentacle);
+    if (out && zox_tst_tentacle_before < 0) {
+        zox_tst_tentacle_before = zox_tst_monsters_player_health(world);
+    } else if (!out && zox_tst_tentacle_before >= 0) {
+        zox_tst_tentacle_after = zox_tst_monsters_player_health(world);
+        return 1;
+    }
+    return zox_current_time - zox_tst_monsters_time > 15;
+}
+
+void zox_tst_slime_tentacle_wall_check(ecs* world) {
+    zox_log("[tst] slime_tentacle_wall player health [%.1f] to [%.1f]", zox_tst_tentacle_before, zox_tst_tentacle_after);
+    zox_tst_check(zox_tst_tentacle_before >= 0 && zox_tst_tentacle_after >= 0, "the slime didn't whip its tentacle in 15s");
+    zox_tst_check(zox_tst_tentacle_after == zox_tst_tentacle_before, "its tentacle hurt the player through the wall");
+}
+
 byte zox_tst_villager_guard_ready(ecs* world) {
     if (!zox_tst_player_spawn_ready(world)) {
         return 0;
@@ -312,6 +392,8 @@ void zox_tst_villager_guard_check(ecs* world) {
 }
 
 void zox_tsts_monsters(ecs* world) {
+    zox_tst_add("slime_tentacle_wall", zox_tst_slime_tentacle_wall_ready, zox_tst_slime_tentacle_wall_check, 120);
+    zox_tst_set_setup("slime_tentacle_wall", zox_tst_level_setup, 0);
     zox_tst_add("villager_guard", zox_tst_villager_guard_ready, zox_tst_villager_guard_check, 120);
     zox_tst_set_setup("villager_guard", zox_tst_level_setup, 0);
     zox_tst_add("slime_tentacle", zox_tst_slime_tentacle_ready, zox_tst_slime_tentacle_check, 120);

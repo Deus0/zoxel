@@ -12,7 +12,7 @@
 	- theyre hard to hit atm
 	- when they are readying a hit, make slower
 	- curve difficulty by stats, which should be scaled by level too
-	- tentacle can go through walls and through enemies, it should be detected when particle hits you atm and stop when it hits other stuff
+	- tentacle: stop at other characters on its way too (blocks stop it now)
 - Humanoids in town
 	- give them clothes too
 - Add a female humanoid

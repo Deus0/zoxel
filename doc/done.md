@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-23
+-x A slime's tentacle hit through walls: it hit if its attacker's centre was near its line. It stops short of the first
+  block on its way now (tentacle_clear_length), and hits when one of its particles touches its attacker's bounds
+  (tentacle_touches). tst slime_tentacle_wall (hurt through a wall before), slime_tentacle
 -x A dying character dropped every body part (17 of a villager's 18 items): one drops 6 deaths in 100, two 2 in 100
   (body_parts_dropped), its gear and inventory all as before. tst body_drops
 -x Monsters spawned in towns (a tenth of their weight inside the walls): none inside now, fading in over the falloff
