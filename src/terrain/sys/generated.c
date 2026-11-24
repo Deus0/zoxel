@@ -8,7 +8,7 @@ void sunny_chunk_generated_system(iter* it) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_o(GenerateChunk, generate);
-        if (zox_no_lights) {
+        if (zox_no_lights && generate->value == zox_generate_terrain_sunlight) {
             zox_remove(e, GenerateChunk);
             zox_add(e, VoxelNodeDirty);
         } else if (generate->value == zox_generate_terrain_sunlight) {

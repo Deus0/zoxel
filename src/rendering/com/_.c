@@ -156,6 +156,7 @@ void zox_components_rendering(ecs *world) {
     zoxd_dest(MeshFence);
     zoxd_arrayd(GridVoxels);
     zoxd_arrayd(GridLights);
+    zoxd_arrayd(GridBorderSamples);
     zoxd_uint(GridPresent);
     zoxd_uint(GridLightsPresent);
     zoxd_guint_dest(ComputeGPULink);

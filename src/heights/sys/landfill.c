@@ -25,14 +25,14 @@ void landfill_chunk_system(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ChunkPosition);
-    zox_sys_in(NodeDepth);
+    zox_sys_out(NodeDepth);
     zox_sys_out(GenerateChunk);
     zox_sys_out(VoxelNode);
     zox_sys_out(VoxelNodeLock);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ChunkPosition, chunk_position);
-        zox_sys_i(NodeDepth, depth);
+        zox_sys_o(NodeDepth, depth);
         zox_sys_o(GenerateChunk, generate);
         zox_sys_o(VoxelNode, voctree);
         zox_sys_o(VoxelNodeLock, lock);
@@ -76,18 +76,22 @@ void landfill_chunk_system(iter* it) {
         if (zox_getv(tunk, GenerateTunk)) {
             continue;
         }
-        byte tunk_lod = zox_getv(tunk, TunkLod);
-        byte build_depth = depth->value;
-        if (depth->value != tunk_lod) {
-            build_depth = tunk_lod;
-            // NOTE: This fixes it, but we need to find the cause!
-            zox_setm(e, NodeDepth, tunk_lod);
+        const byte build_depth = zox_getv(tunk, TunkLod);
+        if (depth->value != build_depth) {
             if (dbg_log_errors) {
-                zox_logw("[Landfill] Depth Invalid: Chunk [%i] - Tunk [%i]",
+                zox_logw("[Landfill] Depth Invalid: Chunk [%s] pos [%ix%ix%i] depth [%i] render [%i] dirty [%i] init [%i] generate [%i] - Tunk [%i]",
+                    zox_getn(e),
+                    chunk_position->value.x,
+                    chunk_position->value.y,
+                    chunk_position->value.z,
                     depth->value,
-                    tunk_lod);
+                    zox_has(e, RenderDepth) ? zox_getv(e, RenderDepth) : -1,
+                    zox_has(e, ChunkLodDirty) ? zox_getv(e, ChunkLodDirty) : -1,
+                    zox_has(e, Initialize),
+                    zox_has(e, GenerateChunk) ? zox_getv(e, GenerateChunk) : -1,
+                    build_depth);
             }
-            // continue;
+            depth->value = build_depth;
         }
         const BiomeMap* biome_map = zox_get(tunk, BiomeMap);
 #ifdef zox_safety_checks

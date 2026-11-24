@@ -5,6 +5,9 @@
   passed 5/5 and `glow_relight` (covered sunlight) passed 3/3. `glow_light` (emitter removal) passed 4/5; the fifth
   run hit the logged-error limit on missing `player.dat`, then passed all lighting checks when replayed with
   `--tst-errors 200`. No new lighting fix needed; likely covered by the dark-pass fix below (2026-11-22).
+- `[Landfill] Depth Invalid` was not reproduced in a far 16 `perf_stream` run. Terrain chunks now receive their target
+  `NodeDepth` when spawned, and new chunks still start generation after initialization even when the depth already
+  matches `RenderDepth`; landfill keeps detailed mismatch diagnostics in case it recurs.
 -x UI consolidation, 3D-only copies gone: the options window, start label and load ui spawn with their 2D code in XR
   (twins for sliders, close buttons, textured labels; huds3_spawn_root), settings3.c removed. A gamepad selects and
   steps sliders (navigation_slider_system), LB and RB switch tabs (navigation_tabs_system), B closes 3D windows; XR

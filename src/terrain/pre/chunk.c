@@ -15,6 +15,7 @@ entity spawn_prefab_chunk_terrain(
     // Events
     zox_setv(e, RenderDistanceDirty, zox_dirty_trigger);
     zox_setv(e, ChunkLodDirty, zox_chunk_lod_dirty_start);
+    zox_setv(e, GenerateChunk, zox_generate_terrain_start);
     // Debug
 /*#ifdef zox_debug
     zox_add(e, ChunkDebugger);

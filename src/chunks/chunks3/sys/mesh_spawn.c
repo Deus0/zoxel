@@ -105,6 +105,10 @@ void chunk_mesh_spawn_system(iter* it) {
         zox_sys_i(VoxelNode, voxels);
         zox_sys_o(VoxelNodeLock, lock);
         zox_sys_o(ChunkMeshTimer, timer);
+        if (depth->value > zox_getv(e, NodeDepth)) {
+            // Refinement waits for the adjacent borders; the LOD spawn pass retries after generation.
+            continue;
+        }
         const entity chunk_manager = zox_get_link(world, e, BlockManagerLink);
         if (!manager || manager != chunk_manager) {
             manager = chunk_manager;

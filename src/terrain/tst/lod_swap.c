@@ -149,6 +149,61 @@ void zox_tst_lod_swap_check(ecs* world) {
     zox_tst_check(!zox_tst_ls_dark, "[%i] swaps drew a mesh with its light colours unbuilt (dark)", zox_tst_ls_dark);
 }
 
+// A procedural chunk that already has finer voxels only changes mesh. Regenerating it can overwrite edits.
+static entity zox_tst_coarsened_chunk;
+
+static byte zox_tst_lod_coarsen_ready(ecs* world) {
+    if (!zox_tst_coarsened_chunk) {
+        zox_tst_coarsened_chunk = zox_new();
+        zox_add(zox_tst_coarsened_chunk, TerrainChunk);
+        zox_setv(zox_tst_coarsened_chunk, NodeDepth, 4);
+        zox_setv(zox_tst_coarsened_chunk, RenderDepth, 1);
+        zox_setv(zox_tst_coarsened_chunk, ChunkLodDirty, zox_chunk_lod_dirty_start);
+        return 0;
+    }
+    return zox_getv(zox_tst_coarsened_chunk, ChunkLodDirty) != zox_chunk_lod_dirty_start;
+}
+
+static void zox_tst_lod_coarsen_check(ecs* world) {
+    zox_tst_check(!zox_has(zox_tst_coarsened_chunk, GenerateChunk), "coarsening restarted voxel generation");
+    zox_tst_check(zox_getv(zox_tst_coarsened_chunk, NodeDepth) == 4, "coarsening discarded the generated depth");
+}
+
+// Hold a neighbour's side build across an update, then let it finish. A refinement that starts
+// during that update replaces the voxels while the displayed neighbour still hides its border.
+static entity zox_tst_refining_chunk, zox_tst_border_neighbor;
+static int zox_tst_refine_frames;
+
+static byte zox_tst_lod_refine_border_ready(ecs* world) {
+    if (!zox_tst_refining_chunk) {
+        zox_chunks3_gpu_meshing = 0;
+        zox_tst_border_neighbor = zox_new();
+        zox_add(zox_tst_border_neighbor, Chunk3);
+        zox_add(zox_tst_border_neighbor, BuildChunkSides);
+        zox_tst_refining_chunk = zox_new();
+        zox_add(zox_tst_refining_chunk, TerrainChunk);
+        zox_set(zox_tst_refining_chunk, ChunkNeighbors, { { zox_tst_border_neighbor } });
+        zox_setv(zox_tst_refining_chunk, NodeDepth, 1);
+        zox_setv(zox_tst_refining_chunk, RenderDepth, 2);
+        zox_set(zox_tst_refining_chunk, LightOctree, { .value = darklight });
+        zox_setv(zox_tst_refining_chunk, LightLock, 0);
+        zox_setv(zox_tst_refining_chunk, ChunkLodDirty, zox_chunk_lod_dirty_start);
+        return 0;
+    }
+    if (++zox_tst_refine_frames == 2) {
+        zox_tst_check(zox_getv(zox_tst_refining_chunk, NodeDepth) == 1 && !zox_has(zox_tst_refining_chunk, GenerateChunk),
+            "replaced the displayed terrain before its neighbour could open the border");
+        zox_remove(zox_tst_border_neighbor, BuildChunkSides);
+    }
+    return zox_tst_refine_frames > 2 && zox_getv(zox_tst_refining_chunk, NodeDepth) == 2;
+}
+
+static void zox_tst_lod_refine_border_check(ecs* world) {
+    zox_tst_check(zox_has(zox_tst_refining_chunk, GenerateChunk), "refinement failed to resume after the border opened");
+}
+
 void zox_tsts_lod_swap(ecs* world) {
+    zox_tst_add("lod_refine_border", zox_tst_lod_refine_border_ready, zox_tst_lod_refine_border_check, 10);
+    zox_tst_add("lod_coarsen", zox_tst_lod_coarsen_ready, zox_tst_lod_coarsen_check, 10);
     zox_tst_add("lod_swap", zox_tst_lod_swap_ready, zox_tst_lod_swap_check, 120);
 }

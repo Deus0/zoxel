@@ -1,3 +1,7 @@
+#ifdef zox_tests
+zoxc_arrayd(TestMeshBorder, byte);
+byte zox_test_capture_mesh_border = 0;
+#endif
 zox_tag(Chunk3);
 zox_tag(ChunkMaterial);    // a chunk's child for one block material: its sides and lod meshes (fun/materials.c)
 zox_tag(NoiseChunk);
@@ -80,6 +84,9 @@ void zox_components_chunks3(ecs* world) {
 
     // zoxd_nf_tag
     // Types
+#ifdef zox_tests
+    zoxd_arrayd(TestMeshBorder);
+#endif
     zoxd_tag(Chunk3);
     zoxd_tag(ChunkMaterial);
     zoxd_tag(ColorChunk);

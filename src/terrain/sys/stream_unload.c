@@ -29,6 +29,19 @@ void tunk_unload_system(iter* it) {
             if (!zox_valid(chunk)) {
                 continue;
             }
+            // The next column now borders the edge of the world. Drop its old faces against this one.
+            const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
+            for (byte d = 0; d < chunk_neighbors_length; d++) {
+                const entity neighbor = neighbors->value[d];
+                if (d == direction_up || d == direction_down || !zox_valid(neighbor)) {
+                    continue;
+                }
+                zox_muter(neighbor, ChunkNeighbors, back);
+                if (back->value[reverse_direction(d)] == chunk) {
+                    back->value[reverse_direction(d)] = 0;
+                    zox_add(neighbor, BuildChunkSides);
+                }
+            }
             int3_hashmap_remove(chunks->value, (int3) { position->value.x, k - stack->length / 2, position->value.y });
             zox_delete(chunk);
             deleted++;

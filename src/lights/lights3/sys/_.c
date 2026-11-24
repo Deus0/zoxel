@@ -140,28 +140,30 @@ void zox_systems_lights3(ecs* world) {
         [none] !rendering.BuildMesh,
         [none] !rendering.GpuMesh,
     );
-    // gpu meshes (sys/gpu_mesh.c): grids filled on worker threads beside the cpu build and smooth lights, meshed on
-    //  the main thread with the gpu uploads
+    // Read the light queues and voxel depths after the physics barrier. In octree_read another worker
+    // could start a flood between the settled check and the grid copy (lod_light_flash).
     zox_system(
         chunk_gpu_grid_system,
-        zoxp_octree_read,
+        zoxp_trails,
         [in] rendering.RenderDepth,
         [out] rendering.GridVoxels,
         [out] rendering.GridLights,
         [out] rendering.GridPresent,
-        [out] rendering.GridLightsPresent,
+        [inout] rendering.GridLightsPresent,
+        [inout] rendering.GridBorderSamples,
         [none] rendering.GpuMesh,
         [none] rendering.BuildMesh,
         [none] !core.BuildDisabled,
     );
     zox_system(
         chunk_gpu_relight_system,
-        zoxp_octree_read,
+        zoxp_trails,
         [in] rendering.RenderDepth,
         [out] rendering.GridVoxels,
         [out] rendering.GridLights,
         [out] rendering.GridPresent,
-        [out] rendering.GridLightsPresent,
+        [inout] rendering.GridLightsPresent,
+        [inout] rendering.GridBorderSamples,
         [none] rendering.GpuMesh,
         [none] rendering.BuildMeshColors,
         [none] !rendering.BuildMesh,

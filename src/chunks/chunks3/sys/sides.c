@@ -358,7 +358,7 @@ static inline byte chunk_drawn_depth(ecs* world, entity chunk) {
         return node_depth;
     }
     const byte render_depth = zox_getv(chunk, RenderDepth);
-    return render_depth && render_depth < node_depth ? render_depth : node_depth;
+    return render_depth < node_depth ? render_depth : node_depth;
 }
 
 // what a chunk's neighbours work out their faces against: open while it's unsettled (its lod changing, ChunkLodDirty,

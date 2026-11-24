@@ -187,10 +187,10 @@ void zox_systems_chunks3(ecs *world) {
         [out] chunks.ChunkMeshTimer,
         [none] chunks.ChunkTextured,
     );
-    // hmmmm
+    // After the side builds and GPU grid fills have merged, the swap sees the meshes each neighbour still owes.
     zox_system(
         chunk_mesh_transition_system,
-        zoxp_update,
+        zoxp_layouts,
         [in] chunks3.ChunkLodDirty,
         [in] rendering.RenderDepth,
         [none] chunks.ChunkTextured,
@@ -200,7 +200,7 @@ void zox_systems_chunks3(ecs *world) {
     // held shown meshes build again once their chunk's relit (hidden ones, swapped out lods, stay held)
     zox_system(
         chunk_mesh_hold_system,
-        zoxp_update,
+        zoxp_layouts,
         [none] rendering.ChunkMesh,
         [none] core.BuildDisabled,
         [none] !core.Disabled,

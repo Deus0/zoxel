@@ -61,7 +61,8 @@ static void zox_tst_sgs_check(ecs* world) {
         smooth_grid grid = { 0 };
         smooth_grid_drawn_depths(world, &grid, nearby_chunks);
         for (byte j = 0; j < 27; j++) {
-            zox_tst_sgs_lods += grid.voxel_depths[j] && grid.voxel_depths[j] != depth && grid.voxel_depths[j] != chunk_side_open;
+            zox_tst_sgs_lods += j != OCTREE_INDEX(0, 0, 0) && zox_valid(nearby_chunks[j]) &&
+                grid.voxel_depths[j] != depth && grid.voxel_depths[j] != chunk_side_open;
         }
         if (smooth_grid_fill(&grid, nearby_lights, lights_locks, nearby_voxels, voxels_locks, depth)) {
             // its borders as the mesher meets them (smooth_grid_borders)

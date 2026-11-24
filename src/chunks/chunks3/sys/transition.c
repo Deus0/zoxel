@@ -6,7 +6,7 @@ extern byte zox_chunk_mesh_lighting_busy(ecs*, entity);
 //  showed what wasn't there
 static inline byte chunk_mesh_held(ecs* world, entity chunk) {
     return zox_chunk_lighting_busy(world, chunk) || (zox_has(chunk, GenerateChunk) && zox_getv(chunk, GenerateChunk)) ||
-        (zox_has(chunk, ChunkLodDirty) && zox_getv(chunk, ChunkLodDirty) < zox_chunk_lod_dirty_spawn);
+        (zox_has(chunk, ChunkLodDirty) && zox_getv(chunk, ChunkLodDirty) == zox_chunk_lod_dirty_generating);
 }
 
 // built, on the gpu, lit and its colours on the gpu too (an unlit one drew dark for a frame)

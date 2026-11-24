@@ -11,6 +11,7 @@ zoxc_ulong(MeshFence);
 // its chunk's grids to mesh (lights3/fun/smooth_grid.c's layout), filled on worker threads, freed once dispatched
 zoxc_arrayd(GridVoxels, byte);
 zoxc_arrayd(GridLights, byte);
+zoxc_arrayd(GridBorderSamples, ushort);
 zoxc_uint(GridPresent);         // nearby chunks with voxels, bit OCTREE_INDEX
 zoxc_uint(GridLightsPresent);   // nearby chunks with lights
 

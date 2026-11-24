@@ -32,10 +32,11 @@ static void zox_tst_ss_compare(const SidesOctree* fresh, const SidesOctree* held
     }
     const byte f = fresh ? fresh->value : 0, h = held ? held->value : 0;
     for (byte d = 0; d < 6; d++) {
-        const byte lost = (f & (1 << d)) && !(h & (1 << d));
+        const byte mask = 1 << (d + 1);
+        const byte lost = (f & mask) && !(h & mask);
         *missing += lost;
         missing_directions[d] += lost;
-        *extra += !(f & (1 << d)) && (h & (1 << d));
+        *extra += !(f & mask) && (h & mask);
     }
 }
 

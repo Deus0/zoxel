@@ -73,6 +73,23 @@ static inline byte zox_tst_seam_voxel(const VoxelNode* node, byte resolution, by
     return node->value;
 }
 
+// Use the meshed generation when checking a CPU mesh during a swap.
+static inline byte zox_tst_mesh_border_voxel(ecs* world, entity mesh, const VoxelNode* current,
+    byte resolution, byte depth, int3 p, byte direction) {
+    if (!zox_test_capture_mesh_border || zox_has(mesh, GpuMesh)) {
+        return zox_tst_seam_voxel(current, resolution, depth, p);
+    }
+    const TestMeshBorder* border = zox_get(mesh, TestMeshBorder);
+    const int side = 1 << depth, shift = resolution - depth, axis = direction / 2;
+    if (!border || border->length != 6 * side * side) {
+        zox_tst_check(0, "missing CPU mesh border snapshot for mesh [%lu]", (ulong) mesh);
+        return zox_tst_seam_voxel(current, resolution, depth, p);
+    }
+    const int u = (axis == 0 ? p.y : p.x) >> shift;
+    const int v = (axis == 2 ? p.y : p.z) >> shift;
+    return border->value[(direction * side + u) * side + v];
+}
+
 // a face's 4 corners, in border cells: on a border (axis at 0 or side), its cells marked in cover; 1 if it's on one
 static inline byte zox_tst_seam_cover(byte* cover, const float3* corners, int side) {
     const float c[4][3] = {
@@ -162,11 +179,33 @@ static inline int zox_tst_seam_mesh_faces(ecs* world, entity mesh, byte resoluti
     }
     const MeshVertices* vertices = zox_get(mesh, MeshVertices);
     const int faces = vertices->value ? vertices->length / 4 : 0;
+    const entity material = zox_get_parent(world, mesh);
+    const entity chunk = zox_get_parent(world, material);
+    const byte liquid = block_material_liquid(zox_getv(material, BlockMaterial));
+    const int cell_size = 1 << (resolution - depth);
     for (int f = 0; f < faces; f++) {
         float3 corners[4];
         for (byte k = 0; k < 4; k++) {
             const float3 v = vertices->value[f * 4 + k];
             corners[k] = (float3) { v.x / block_scale, v.y / block_scale, v.z / block_scale };
+        }
+        // A flowing block in the top layer has its exposed surface below the chunk boundary. Count the
+        // quad only if it covers this cell at the height specified by the block's water level.
+        const float y = corners[0].y;
+        if (liquid && y > side - cell_size && y < side && corners[1].y == y && corners[2].y == y && corners[3].y == y) {
+            const int3 p = { (int) ((corners[0].x + corners[2].x) * 0.5f), side - 1,
+                (int) ((corners[0].z + corners[2].z) * 0.5f) };
+            const byte voxel = zox_tst_mesh_border_voxel(world, mesh, zox_get(chunk, VoxelNode), resolution, depth, p, direction_up);
+            const BlockLinks* blocks = zox_get(zox_get_link(world, chunk, BlockManagerLink), BlockLinks);
+            const entity block = blocks && voxel && voxel <= blocks->length ? blocks->value[voxel - 1] : 0;
+            if (zox_valid(block) && zox_has(block, BlockWaterLevel)) {
+                const float height = side - cell_size + cell_size * zox_getv(block, BlockWaterLevel) / (float) zox_water_level_source;
+                if (fabsf(height - y) < 0.01f) {
+                    for (byte k = 0; k < 4; k++) {
+                        corners[k].y = side;
+                    }
+                }
+            }
         }
         on_border += zox_tst_seam_cover(cover, corners, side);
     }
@@ -255,13 +294,13 @@ static inline void zox_tst_seam_side(ecs* world, entity cx, entity cy, const zox
             px[b] = py[b] = v;
             const int3 pxi = { px[0], px[1], px[2] }, pyi = { py[0], py[1], py[2] };
             for (byte i = 0; i < x->count; i++) {
-                const byte voxel = zox_tst_seam_voxel(vx, resolution, x->depth[i], pxi);
+                const byte voxel = zox_tst_mesh_border_voxel(world, x->mesh[i], vx, resolution, x->depth[i], pxi, direction);
                 if (!voxel || materials[voxel] != x->material[i]) {
                     continue;
                 }
                 byte hidden = 0;
                 for (byte j = 0; j < y->count && !hidden; j++) {
-                    const byte other = zox_tst_seam_voxel(vy, resolution, y->depth[j], pyi);
+                    const byte other = zox_tst_mesh_border_voxel(world, y->mesh[j], vy, resolution, y->depth[j], pyi, direction ^ 1);
                     hidden = other && materials[other] == y->material[j] && block_material_hides(materials[other], x->material[i]);
                 }
                 const byte covered = x->cover[i][direction * side * side + u * side + v];
@@ -280,7 +319,7 @@ static inline void zox_tst_seam_side(ecs* world, entity cx, entity cy, const zox
                         int n = 0;
                         for (byte j = 0; j < y->count && n < 56; j++) {
                             n += snprintf(depths + n, sizeof(depths) - n, " m%i:d%i:v%i", y->material[j], y->depth[j],
-                                zox_tst_seam_voxel(vy, resolution, y->depth[j], pyi));
+                                zox_tst_mesh_border_voxel(world, y->mesh[j], vy, resolution, y->depth[j], pyi, direction ^ 1));
                         }
                         const entity m = x->mesh[i];
                         zox_log("[tst]  seam: chunk [%ix%ix%i] material [%i] depth [%i] voxel [%i] has no face %s%c at cell [%i %i] "

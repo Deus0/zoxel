@@ -50,6 +50,7 @@ entity spawn_chunk3_textured(
     zox_setv(e, Seed, seed);
     zox_setv(e, ChunkPosition, position);
     zox_setv(e, ChunkSize, size);
+    zox_setv(e, NodeDepth, render_depth);
     zox_setv(e, BlockScale, chunk_scalev);    // set from parent
     zox_setv(e, Position3D, positionf);
     zox_setv(e, TransformMatrix, float4x4_position(positionf));

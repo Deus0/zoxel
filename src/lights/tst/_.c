@@ -126,7 +126,46 @@ void zox_tst_smooth_lights_check(ecs* world) {
 //  - in a chunk, and across into a neighbor chunk, and smooth lighting at a coarse depth isn't dark
 //  - run: bash bsh/tst.sh lod_lights
 void zox_tst_lod_lights_check(ecs* world) {
-    (void) world;
+    // A corner light sample follows three orthogonal links, even when this is its only loaded path.
+    entity path[4];
+    for (int i = 0; i < 4; i++) {
+        path[i] = zox_new();
+        zox_set(path[i], ChunkNeighbors, { 0 });
+    }
+    const byte directions[] = { direction_right, direction_up, direction_front };
+    sbyte3 offset = sbyte3_zero;
+    for (int i = 0; i < 3; i++) {
+        zox_get_mut(path[i], ChunkNeighbors)->value[directions[i]] = path[i + 1];
+        offset = sbyte3_add(offset, neighbor_offsets[directions[i]]);
+    }
+    entity nearby[27];
+    fetch_nearby_chunks(world, path[0], zox_getv(path[0], ChunkNeighbors), nearby);
+    zox_tst_check(nearby[OCTREE_INDEX3(offset)] == path[3], "the diagonal chunk's light is missing from the grid");
+    for (int i = 0; i < 4; i++) {
+        zox_delete(path[i]);
+    }
+    // A shaded neighbour unloads and later returns with a different light.
+    byte levels[27] = { 0 }, blocks[27] = { 0 };
+    smooth_grid edge = { .length = 3, .lights = levels, .voxels = blocks };
+    GridBorderSamples border = { 0 };
+    const byte left = OCTREE_INDEX(-1, 0, 0);
+    edge.present[left] = edge.voxels_present[left] = 1;
+    levels[4] = 75;
+    blocks[4] = 3;
+    smooth_grid_keep_border(&edge, &border, 0);
+    edge.present[left] = edge.voxels_present[left] = 0;
+    levels[4] = blocks[4] = 0;
+    smooth_grid_keep_border(&edge, &border, 1u << left);
+    zox_tst_check(edge.present[left] && levels[4] == 75 && blocks[4] == 3 && !edge.voxels_present[left],
+        "unloaded border changed its shade or remained present for face culling");
+    edge.voxels_present[left] = 1;
+    levels[4] = 190;
+    smooth_grid_keep_border(&edge, &border, 1u << left);
+    edge.present[left] = edge.voxels_present[left] = 0;
+    levels[4] = 0;
+    smooth_grid_keep_border(&edge, &border, 1u << left);
+    zox_tst_check(levels[4] == 190, "the returning neighbour did not refresh its border light");
+    resize_GridBorderSamples(&border, 0);
     const byte detail = 2, coarse = 1;
     VoxelNode voxel_trees[27];
     LightOctree light_trees[27];
@@ -183,6 +222,17 @@ void zox_tst_lod_lights_check(ecs* world) {
     const int detail_mismatches = zox_tst_smooth_grid_mismatches(lights, lights_locks, voxels, voxels_locks, solidity, detail);
     zox_tst_check(!coarse_mismatches && !detail_mismatches, "the grid lights [%i] coarse and [%i] detailed faces differently from the trees",
         coarse_mismatches, detail_mismatches);
+    // A settled neighbour drawing its root can retain finer voxels. The GPU border must sample the drawn root.
+    set_VoxelNode(&voxel_trees[right], detail, byte3_zero, 1);
+    voxel_trees[right].value = 2;
+    smooth_grid grid = { .use_neighbor_depths = 1 };
+    if (smooth_grid_fill(&grid, lights, lights_locks, voxels, voxels_locks, detail)) {
+        const byte across_root = smooth_grid_voxel(&grid, (byte3) { 3, 0, 0 }, (sbyte3) { 1, 0, 0 });
+        zox_tst_check(across_root == 2, "depth-zero border read voxel [%i], expected the root [2]", across_root);
+        free(grid.lights);
+    } else {
+        zox_tst_check(0, "could not build the depth-zero border grid");
+    }
     for (byte c = 0; c < 2; c++) {
         close_VoxelNode(&voxel_trees[chunks[c]]);
         close_LightOctree(&light_trees[chunks[c]]);

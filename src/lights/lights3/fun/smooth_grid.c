@@ -8,7 +8,8 @@ typedef struct {
     int length;         // the chunk's voxels a side at depth, + 2
     byte present[27];   // which of the 27 chunks have lights, a missing one reads as past the world
     byte voxels_present[27];    // which have voxels, a missing one is air (gpu meshing culls faces into it)
-    byte voxel_depths[27];      // set before a fill: the depth each draws at, its voxels no deeper (0: the grid's)
+    byte use_neighbor_depths;
+    byte voxel_depths[27];      // a neighbour can draw just its root (depth 0)
 } smooth_grid;
 
 #define smooth_grid_depth_max 5
@@ -51,13 +52,54 @@ static inline byte smooth_grid_fill(
         grid->voxels_present[i] = voxels[i] && voxels_locks[i];
         if (grid->voxels_present[i]) {
             spin_lock(voxels_locks[i]);
-            const byte stop = grid->voxel_depths[i] && grid->voxel_depths[i] < depth ? grid->voxel_depths[i] : depth;
+            const byte stop = grid->use_neighbor_depths && i != OCTREE_INDEX(0, 0, 0) && grid->voxel_depths[i] < depth ?
+                grid->voxel_depths[i] : depth;
             octree_fill_grid_stop(voxels[i], sizeof(VoxelNode), octree_type_offset_VoxelNode, 0, depth, int3_zero, origin,
                 grid->voxels, grid->length, 0, stop);
             spin_unlock(voxels_locks[i]);
         }
     }
     return 1;
+}
+
+// Unloading a neighbour removes its geometry from the stream, but does not remove the terrain that
+// shaded this face. Keep the one-cell lighting halo until the neighbour supplies fresh samples.
+static inline void smooth_grid_keep_border(smooth_grid* grid, GridBorderSamples* cache, uint previous) {
+    const int n = grid->length;
+    const int size = n - 2;
+    const int samples = n * n * n - size * size * size;
+    if (cache->length != samples) {
+        resize_GridBorderSamples(cache, samples);
+        previous = 0;
+    }
+    if (!cache->value || cache->length != samples) {
+        return;
+    }
+    int slot = 0;
+    uint restored = 0;
+    for (int x = 0; x < n; x++)
+    for (int y = 0; y < n; y++) {
+        const int dx = (x == n - 1) - (x == 0);
+        const int dy = (y == n - 1) - (y == 0);
+        // An interior column contributes only its two ends.
+        const int stride = dx || dy ? 1 : n - 1;
+        for (int z = 0; z < n; z += stride) {
+            const int dz = (z == n - 1) - (z == 0);
+            const byte j = OCTREE_INDEX(dx, dy, dz);
+            const int i = (x * n + y) * n + z;
+            if (!grid->present[j] && (previous & (1u << j))) {
+                grid->lights[i] = (byte) cache->value[slot];
+                grid->voxels[i] = cache->value[slot] >> 8;
+                restored |= 1u << j;
+            } else {
+                cache->value[slot] = grid->lights[i] | ((ushort) grid->voxels[i] << 8);
+            }
+            slot++;
+        }
+    }
+    for (byte j = 0; j < 27; j++) {
+        grid->present[j] |= (restored >> j) & 1;
+    }
 }
 
 // a mesh's borders with the 6 beside it, as cpu sides meet them (build_voxel_sides), after smooth_grid_fill (only its

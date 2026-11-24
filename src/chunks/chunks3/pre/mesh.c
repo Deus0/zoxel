@@ -6,6 +6,9 @@ entity spawn_prefab_chunk_mesh(
     entity e = zox_prefab_from_parent(world, prefab);
     zox_set_unique_name(e, "chunk_mesh");
     zox_add(e, ChunkMesh);
+#ifdef zox_tests
+    zox_add(e, TestMeshBorder);
+#endif
     zox_setv(e, RenderDepth, 0);
     // NOTE: Start Building and Disabled
     zox_add(e, Disabled);
@@ -36,6 +39,7 @@ entity spawn_prefab_chunk_mesh_gpu(ecs* world, entity prefab) {
     zox_setv(e, VaoGPULink, 0);
     zox_add(e, GridVoxels);
     zox_add(e, GridLights);
+    zox_add(e, GridBorderSamples);
     zox_setv(e, GridPresent, 0);
     zox_setv(e, GridLightsPresent, 0);
     return e;

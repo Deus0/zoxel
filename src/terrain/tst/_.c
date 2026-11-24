@@ -12,10 +12,9 @@
 
 #include "streamers.c"
 
-#include "lod_chunk_lights.c"
-
 #include "frames.c"
 #include "perf.c"
+#include "lod_chunk_lights.c"
 #include "lod_swap.c"
 #include "perf_idle.c"
 #include "perf_terrain.c"

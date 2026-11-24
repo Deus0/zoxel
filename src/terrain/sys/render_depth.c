@@ -27,23 +27,27 @@ void chunk_lod_system(iter* it) {
         if (dirty->value != zox_chunk_lod_dirty_generate) {
             continue;
         }
-        // NOTE: This just updates the mesh
-        // TODO: This is where we should set the chunk render LOD mesh
+        // Coarser meshes reuse the voxels already generated at the finer depth.
         if (render_depth->value > octree_depth->value) {
-            // Set New Depth
+            // Keep the old voxels until adjacent CPU meshes have uploaded their open borders.
+            // GPU grids wait on generation for lighting, so they cannot be a prerequisite here.
+            if (!zox_chunks3_gpu_meshing && chunk_neighbors_rebuilding(world, e)) {
+                continue;
+            }
+            chunk_meshes_stop_building(world, e);
+            if (!zox_no_lights) {
+                zox_muter(e, LightOctree, lights);
+                zox_muter(e, LightLock, lock);
+                spin_lock(&lock->value);
+                lights->value = darklight;
+                collapse_LightOctree(lights);
+                spin_unlock(&lock->value);
+                if (zox_has(e, SunnyChunk)) {
+                    zox_add(zox_get_parent(world, e), GenerateSunlight);
+                }
+            }
             octree_depth->value = render_depth->value;
-            if (dbg_log) {
-                zox_log("Chunk [%s] Depth Increased -> %i",
-                    zox_get_name(e),
-                    render_depth->value);
-            }
-            // Set to Generate as Depth Increased
-            if (!zox_has(e, Loaded)) {
-                zox_setv(e, GenerateChunk, zox_generate_terrain_start);
-            } else {
-                // Skips Generation
-                zox_setv(e, GenerateChunk, zox_generate_terrain_sunlight);
-            }
+            zox_setv(e, GenerateChunk, zox_has(e, Loaded) ? zox_generate_terrain_sunlight : zox_generate_terrain_start);
         }
         dirty->value = zox_chunk_lod_dirty_generating;
         if (dbg_log) {

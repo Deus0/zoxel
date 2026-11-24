@@ -127,6 +127,9 @@ void terrain_stream_system(iter* it) {
 //  returns 0 if the distance is the same, 1 for only the distance, 2 if its lod changed
 static inline byte stream_tunk_distance(ecs* world, entity terrain, entity tunk, const Chunk3Stack* stack, byte new_distance) {
     byte dbg_log = 0;
+    if (zox_has(tunk, TunkUnloading)) {
+        zox_remove(tunk, TunkUnloading);
+    }
     RenderDistance* tunk_distance = zox_mut(tunk, RenderDistance);
     if (tunk_distance->value == new_distance) {
         return 0;
@@ -174,29 +177,12 @@ static inline byte stream_tunk_distance(ecs* world, entity terrain, entity tunk,
         chunk_neighbors_rebuild_sides(world, chunk);
         // NOTE: New component
         zox_setv(chunk, ChunkLodDirty, zox_chunk_lod_dirty_start);
-        // Stop the active building
-        chunk_meshes_stop_building(world, chunk);
         if (dbg_log >= 2) {
             zox_log("   + Chunk [%s] Depth[%i]",
                 zox_getn(chunk),
                 new_tunk_render_depth);
         }
-        // its voxels generate finer: its lights cleared dark, lit again as it's generated (its neighbours' light comes back
-        //  in, chunk_relight_from_neighbors, as its own emitters'), its old meshes shown till then (the lod swap waits)
-        //  - nothing lit it again under a chunk that kept its lights: its fine meshes drew dark where its coarse ones were
-        //    lit, lights flashed as lods swapped (tst chunk_mesh_flicker); kept instead, shadows the finer voxels made
-        //    stayed lit
-        if (zox_no_lights) {
-            continue;
-        }
-        if (new_tunk_render_depth > zox_getv(chunk, NodeDepth)) {
-            zox_muter(chunk, LightOctree, lights);
-            lights->value = darklight;
-            collapse_LightOctree(lights);
-            if (y == render_distance_y) {
-                zox_add(terrain, GenerateSunlight);
-            }
-        }
+
     }
     return tunk_render_depth_dirty ? 2 : 1;
 }
@@ -303,9 +289,6 @@ void terrain_stream_queue_system(iter* it) {
                         zox_add(tunk, TunkUnloading);
                     }
                     continue;
-                }
-                if (zox_has(tunk, TunkUnloading)) {
-                    zox_remove(tunk, TunkUnloading);
                 }
                 const byte changed = stream_tunk_distance(world, e, tunk, stack, new_distance);
                 if (!changed) {

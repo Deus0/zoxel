@@ -172,7 +172,6 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
 	- actually it did end up working
 	- also deleting while its spawning, causes crash
 	- I think we can just add a destroy tag, and then move destroy to another phase initialization issue
-- "[Landfill] Depth Invalid:" bug
 - Flying in disabled chunk - disabled due to no voxels - causes player to be disabled
 - Top of world bugs
 	- blocks placed on top of world cause no face to show

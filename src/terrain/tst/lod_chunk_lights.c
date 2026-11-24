@@ -5,19 +5,16 @@
 //  - a chunk beside a different lod one isn't dark (lighting between lods)
 //  - coarse lods aren't dark (under 1.5%, dark home interiors are real), runs on --medium terrain
 //  - run: bash bsh/tst.sh lod_chunk_lights
-double zox_tst_lod_lights_start = 0;
-#define zox_tst_lod_lights_settle 6.0
 #define zox_tst_lod_depths 8
 
 byte zox_tst_lod_chunk_lights_ready(ecs* world) {
     if (!zox_tst_player_spawn_ready(world)) {
         return 0;
     }
-    if (!zox_tst_lod_lights_start) {
-        zox_tst_lod_lights_start = zox_current_time;
-    }
     zox_tst_waiting = "the terrain's lights and meshes to settle";
-    return zox_current_time - zox_tst_lod_lights_start >= zox_tst_lod_lights_settle;
+    const int busy = zox_tst_terrain_busy(world, local_terrain);
+    zox_tst_progress(busy);
+    return !busy;
 }
 
 // a terrain chunk's mesh average light and render depth
@@ -28,7 +25,7 @@ static inline byte zox_tst_lod_mesh(ecs* world, entity chunk, float* average, by
     const uint it2_count = get_chunk_meshes(world, chunk, it2_meshes);
     for (uint j = 0; j < it2_count; j++) {
         const entity mesh = it2_meshes[j];
-        if (!zox_has(mesh, ChunkMesh) || !zox_has(mesh, MeshColorRGBs) || !zox_has(mesh, RenderDepth)) {
+        if (zox_has(mesh, Disabled) || !zox_has(mesh, ChunkMesh) || !zox_has(mesh, MeshColorRGBs) || !zox_has(mesh, RenderDepth)) {
             continue;
         }
         const MeshColorRGBs* colors = zox_get(mesh, MeshColorRGBs);
@@ -38,7 +35,9 @@ static inline byte zox_tst_lod_mesh(ecs* world, entity chunk, float* average, by
         }
         count += colors->length;
         *vertices += colors->length;
-        *depth = zox_getv(mesh, RenderDepth);
+        if (colors->length) {
+            *depth = zox_getv(mesh, RenderDepth);
+        }
     }
     *average = count ? (float) (total / count) : 0;
     return count > 0;
@@ -72,6 +71,11 @@ void zox_tst_lod_chunk_lights_check(ecs* world) {
                     neighbor_depth != depth) {
                     borders++;
                     dark_borders += average <= darklight + 1;
+                    if (average <= darklight + 1 && dark_borders <= 5) {
+                        const int3 p = zox_getv(chunk, ChunkPosition);
+                        zox_log("[tst] dark border chunk [%ix%ix%i] depth [%i] beside depth [%i], [%i] vertices",
+                            p.x, p.y, p.z, depth, neighbor_depth, verts);
+                    }
                     break;
                 }
             }

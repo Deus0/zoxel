@@ -2,7 +2,7 @@
 //  by a compute shader from its chunk's smooth grid (fun/smooth_grid.c), lit, its material's blocks only; the cpu's
 //  mesh build and smooth lights skip it
 //  - BuildMesh (voxels changed) or BuildMeshColors (lights changed): its grids are filled on worker threads
-//      (GridVoxels, GridLights, zoxp_octree_read), then MeshDirty: uploaded and dispatched on the main thread, the
+//      (GridVoxels, GridLights, after the light writers), then MeshDirty: uploaded and dispatched on the main thread, the
 //      grids freed; its new faces draw from that frame
 //  - its faces are counted on the cpu from its grid before it's dispatched (gpu_mesh_grid_faces), its room grown to fit
 //      then: it never draws a mesh that overflowed (the faces that fit, then nothing till it was meshed again bigger)
@@ -89,6 +89,7 @@ static inline guint chunk_gpu_terrain(ecs* world, entity terrain, guint2* grid) 
 //  show was a hole where lods met (tst stream_gpu_sides); the 6 beside it its faces meet as cpu sides do
 //  (chunk_side_depth: open while unsettled, smooth_grid_borders)
 static inline void smooth_grid_drawn_depths(ecs* world, smooth_grid* grid, const entity* nearby_chunks) {
+    grid->use_neighbor_depths = 1;
     for (byte j = 0; j < 27; j++) {
         const entity chunk = nearby_chunks[j];
         if (j == OCTREE_INDEX(0, 0, 0) || !zox_valid(chunk)) {
@@ -112,6 +113,7 @@ static inline void chunk_gpu_grid_fill(iter* it, entity tag) {
     zox_sys_out(GridLights);
     zox_sys_out(GridPresent);
     zox_sys_out(GridLightsPresent);
+    zox_sys_out(GridBorderSamples);
     // what hides a mesh's faces, by voxel (its material's, block_material_hides), for borders with finer lods
     entity manager_cached = 0;
     byte material_cached = 255;
@@ -124,6 +126,7 @@ static inline void chunk_gpu_grid_fill(iter* it, entity tag) {
         zox_sys_o(GridLights, lights);
         zox_sys_o(GridPresent, present);
         zox_sys_o(GridLightsPresent, lights_present);
+        zox_sys_o(GridBorderSamples, border_samples);
         if (zox_sys_budget_spent(chunk_gpu_grid)) {
             break;
         }
@@ -132,22 +135,20 @@ static inline void chunk_gpu_grid_fill(iter* it, entity tag) {
         if (!zox_valid(chunk) || depth->value > zox_getv(chunk, NodeDepth) || depth->value > smooth_grid_depth_max) {
             continue;
         }
-        // shown and lit, it's meshed and relit once the lights round it settle (it keeps what it draws till then): meshed
-        //  as a neighbour's lights were cleared for its finer lod, its faces there baked dark, then lit again (a dark
-        //  flash as lods got finer); hidden (a lod being made) it builds now
-        if (zox_has(e, MeshColorsBuilt) && !zox_has(e, Disabled) && zox_chunk_lights_settling(world, chunk)) {
+        entity nearby_chunks[27];
+        fetch_nearby_chunks(world, chunk, zox_get(chunk, ChunkNeighbors)->value, nearby_chunks);
+        // A hidden replacement and a first mesh sample the same light grid as a relight.
+        if (chunk_grid_lights_settling(world, nearby_chunks)) {
             continue;
         }
         zox_sys_budget_start(chunk_gpu_grid);
-        entity nearby_chunks[27];
         const LightOctree* nearby_lights[27];
         const VoxelNode* nearby_voxels[27];
         spinlock* lights_locks[27];
         spinlock* voxels_locks[27];
-        fetch_nearby_chunks(world, chunk, zox_get(chunk, ChunkNeighbors)->value, nearby_chunks);
         fetch_nearby_lights(world, nearby_chunks, nearby_lights, lights_locks);
         fetch_nearby_voxels(world, nearby_chunks, nearby_voxels, voxels_locks);
-        if (zox_has(e, MeshColorsBuilt) && !zox_has(e, Disabled) && zox_chunk_lights_settling(world, chunk)) {
+        if (chunk_grid_lights_settling(world, nearby_chunks)) {
             __atomic_add_fetch(&zox_chunk_gpu_meshes_baked_dark, 1, __ATOMIC_RELAXED);
         }
         smooth_grid grid = { 0 };
@@ -167,6 +168,7 @@ static inline void chunk_gpu_grid_fill(iter* it, entity tag) {
                 }
             }
             smooth_grid_borders(&grid, nearby_voxels, voxels_locks, depth->value, hides);
+            smooth_grid_keep_border(&grid, border_samples, lights_present->value);
             const int cells = gpu_mesh_grid_bytes(depth->value);
             resize_GridVoxels(voxels, cells);
             resize_GridLights(lights, cells);

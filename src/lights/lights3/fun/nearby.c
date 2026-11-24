@@ -37,6 +37,18 @@ static inline void fetch_nearby_chunks(
                 continue;
             }
             chunks[neighbor_index] = neighbor;
+            // A face corner can cross all three chunk boundaries.
+            for (byte k = 0; k < 6; k++) {
+                const sbyte3 corner = sbyte3_add(neighbor_position, neighbor_offsets[k]);
+                if (!corner.x || !corner.y || !corner.z) {
+                    continue;
+                }
+                const byte index = OCTREE_INDEX3(corner);
+                const entity diagonal = zox_getv(neighbor, ChunkNeighbors)[k];
+                if (!chunks[index] && zox_valid(diagonal) && zox_has(diagonal, ChunkNeighbors)) {
+                    chunks[index] = diagonal;
+                }
+            }
         }
     }
 }

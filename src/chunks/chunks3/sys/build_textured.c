@@ -3,6 +3,32 @@
 // todo: keep this in hashmap for processed Voxes - atm its gonna check 10k chunks * voxels length which is bad
 // todo: support for multiple terrains using hashmap
 
+#ifdef zox_tests
+static void capture_test_mesh_border(ecs* world, entity e, const VoxelNode* voxels, VoxelNodeLock* voxels_lock, byte depth) {
+    // Store the voxels used by this build. The live tree may change while its old mesh still draws.
+    TestMeshBorder* border = zox_get_mut(e, TestMeshBorder);
+    const int length = 1 << depth;
+    resize_TestMeshBorder(border, 6 * length * length);
+    if (border->length != 6 * length * length) {
+        return;
+    }
+    spin_lock(&voxels_lock->value);
+    for (int d = 0; d < 6; d++) {
+        const int axis = d / 2, a = axis == 0 ? 1 : 0, b = axis == 2 ? 1 : 2;
+        int p[3];
+        p[axis] = d % 2 ? length - 1 : 0;
+        for (int u = 0; u < length; u++)
+        for (int v = 0; v < length; v++) {
+            p[a] = u;
+            p[b] = v;
+            border->value[(d * length + u) * length + v] =
+                getv_VoxelNode(voxels, depth, (byte3) { p[0], p[1], p[2] });
+        }
+    }
+    spin_unlock(&voxels_lock->value);
+}
+#endif
+
 byte zox_disable_node_face_subdivision = 1;
 extern byte zox_no_lights;
 // remember: vertex position is just node position / voxel position
@@ -354,6 +380,11 @@ void chunk_textured_build_system(iter* it) {
             depth->value,
             0,
             dbg_log);
+#ifdef zox_tests
+        if (zox_test_capture_mesh_border && zox_has(e, TestMeshBorder)) {
+            capture_test_mesh_border(world, e, voxels, voxels_lock, depth->value);
+        }
+#endif
         // Set Entity data from Dynamic Arrays, the last build's freed first (they leaked ~100mb a game, chunks rebuild
         //  as their lods and lights change: tst end_game_cleanup's heap)
         dispose_MeshIndicies(indicies);
