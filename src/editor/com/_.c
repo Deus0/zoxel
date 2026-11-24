@@ -6,6 +6,7 @@ zox_tag(HierarchyUI);
 zox_tag(HierarchyUIDirty);
 zox_tag(MaxSystemTimeLabel);
 zox_tag(FPSDisplay);
+zox_tag(SettingFPSDisplay);     // the "FPS" setting (Video): the fps display top right, in every build
 zox_tag(GameDebugLabel);
 zox_tag(Profiler);
 zoxc_double(FPSDisplayTicker);
@@ -20,6 +21,7 @@ void zox_components_editor(ecs* world) {
     zoxd_nf_tag(InspectorDirty);
     zoxd_tag(MaxSystemTimeLabel);
     zoxd_tag(FPSDisplay);
+    zoxd_tag(SettingFPSDisplay);
     zoxd_tag(GameDebugLabel);
     zoxd_tag(Profiler);
     zoxd_double(FPSDisplayTicker);

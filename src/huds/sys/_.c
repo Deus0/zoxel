@@ -37,12 +37,15 @@ void zox_systems_game_ui(ecs *world) {
         [in] players.PlayerState,
         [none] players.Player
     );
+    // the terminal (`): debug builds only
+#ifdef zox_debug
     zox_system_1(
         player_terminal_system,
         zoxp_spawn,
         [in] inputs.DeviceMode,
         [none] players.Player
     );
+#endif
     // main thread ones go in zoxp_spawn, with the rest: one in pre_physics split its workers (2 merges, tst pipeline_syncs)
     // main thread: it writes every player's camera
     zox_system_1(load_lids_system, zoxp_spawn, 0);

@@ -7,7 +7,7 @@
   ideas), [gdd/caves.md](gdd/caves.md) (caves design)
   
 # Dropbox (Sort These)
-- Make level 1 slimes weaker
+-x Make level 1 slimes weaker
 	- theyre hard to hit atm
 	- curve difficulty by stats, which should be scaled by level too (speed and intelligence are, 2026-11-23)
 	- npcs wander at the prefab's speed till their first battle (their speed stat is read as their behaviour changes)

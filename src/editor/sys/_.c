@@ -44,11 +44,20 @@ void zox_systems_editor(ecs *world) {
         [in] ui.FontSize,
         [none] editor.InspectorDirty
     );
+    // main thread: it spawns uis
+    zox_system_1(
+        fps_display_show_system,
+        zoxp_spawn,
+        [none] players.Player
+    );
+#ifdef zox_debug
+    // the profiler (x) and debug label (c): debug builds only
     zox_system_1(
         editor_input_system,
         zoxp_spawn,
         [none] players.Player
     );
+#endif
 #ifdef zox_time_systems
     zox_system(
         max_system_time_label_system,

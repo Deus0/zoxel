@@ -34,13 +34,21 @@ entity spawn_fps_display(
     return e;
 }
 
-// z: toggles the fps display
+// z: flips the "FPS" setting (saved), fps_display_show_system shows or hides the display
 void toggle_fps_viewer(ecs *world, int32_t keycode) {
-    if (keycode != zox_key_z) {
+    if (keycode != zox_key_z || !zox_valid(main_app)) {
         return;
     }
-    const entity canvas = get_editor_canvas(world);
-    if (canvas) {
-        canvas_toggle_ui(world, canvas, zox_get_child_by_id(world, canvas, zox_id(FPSDisplay)), spawn_fps_display);
+    iter it = zox_children(world, main_app);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count; i++) {
+            const entity e = it.entities[i];
+            if (zox_has(e, SettingFPSDisplay)) {
+                zox_set(e, SettingByte, { !zox_fps_display });
+                zox_add(e, Dirty);
+                zox_add(e, Refresh);   // the save
+            }
+        }
     }
+    zox_fps_display = !zox_fps_display;
 }
