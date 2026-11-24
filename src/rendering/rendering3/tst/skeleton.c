@@ -1,6 +1,7 @@
 // tst: skeleton_render
 //  - skeleton meshes are drawn by skeleton3_render_system
 //  - every visible skeleton has one enabled, drawable ActiveMesh with valid bone data
+//  - in the void: the player's character alone, its skeleton seen in first person (no game's npcs to wait for)
 #define zox_tst_skeleton_meshes_max 512
 zox_tst_draws zox_tst_skeleton_draws;
 // the probe collects every skeleton mesh each frame, ready swaps to the finished frame
@@ -11,6 +12,9 @@ int zox_tst_skeleton_meshes_counting_count = 0;
 char zox_tst_skeleton_waiting[256];
 
 byte zox_tst_skeleton_ready(ecs* world) {
+    if (!zox_tst_player_spawn_ready(world)) {
+        return 0;
+    }
     memcpy(zox_tst_skeleton_meshes, zox_tst_skeleton_meshes_counting, sizeof(entity) * zox_tst_skeleton_meshes_counting_count);
     zox_tst_skeleton_meshes_count = zox_tst_skeleton_meshes_counting_count;
     zox_tst_skeleton_meshes_counting_count = 0;
@@ -208,6 +212,7 @@ void tst_skeleton_probe_system(iter* it) {
 
 void zox_tsts_skeleton_render(ecs* world) {
     zox_tst_add("skeleton_render", zox_tst_skeleton_ready, zox_tst_skeleton_check, 90);
+    zox_tst_set_setup("skeleton_render", zox_tst_void_setup, 1);
     // main thread, in zoxp_render with the other main thread systems: no merges of its own (tst pipeline_syncs)
     zox_system_1(
         tst_skeleton_probe_system,

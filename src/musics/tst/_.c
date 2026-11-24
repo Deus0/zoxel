@@ -185,20 +185,45 @@ void zox_tst_music_timing_check(ecs* world) {
 //      varied lengths, some seeds swing, grace notes
 //  - renders a song to tst/song.wav, to listen to
 //  - run: bash bsh/tst.sh music_compose
+#define zox_tst_notes_max 512
+#define zox_tst_notes_samples (32 * 1024 * 1024)   // 128MB at most, notes are ~1s each
+
 // mixes a song's notes (its performed events) as the music system plays them, each scaled by gain (the music volume)
+//  - a note repeated is synthesized once (its noise repeats with it, its loudness doesn't change)
 float* zox_tst_mix_song(const Song* song, float gain, uint* out_length) {
     const uint length = (uint) ((song->seconds + 3) * sound_sample_rate);
     float* mix = calloc(length, sizeof(float));
     float* note = malloc(MAX_SOUND_DATA * sizeof(float));
+    float* cache = malloc(zox_tst_notes_samples * sizeof(float));
+    SongEvent keys[zox_tst_notes_max];
+    uint offsets[zox_tst_notes_max];
+    uint cached = 0, used = 0;
     for (uint i = 0; i < song->events_count; i++) {
         const SongEvent event = song->events[i];
         const uint note_length = (uint) (event.seconds * sound_sample_rate);
-        generate_instrument_samples(event.instrument, note_frequencies[event.note], event.seconds, event.volume * gain, 0, note, note_length);
+        const float* samples = NULL;
+        for (uint k = 0; k < cached && !samples; k++) {
+            if (keys[k].instrument == event.instrument && keys[k].note == event.note &&
+                keys[k].seconds == event.seconds && keys[k].volume == event.volume) {
+                samples = cache + offsets[k];
+            }
+        }
+        if (!samples) {
+            generate_instrument_samples(event.instrument, note_frequencies[event.note], event.seconds, event.volume * gain, 0, note, note_length);
+            samples = note;
+            if (cached < zox_tst_notes_max && used + note_length <= zox_tst_notes_samples) {
+                memcpy(cache + used, note, note_length * sizeof(float));
+                keys[cached] = event;
+                offsets[cached++] = used;
+                used += note_length;
+            }
+        }
         const uint start = (uint) (event.start * sound_sample_rate);
         for (uint j = 0; j < note_length && start + j < length; j++) {
-            mix[start + j] += note[j];
+            mix[start + j] += samples[j];
         }
     }
+    free(cache);
     free(note);
     *out_length = length;
     return mix;
