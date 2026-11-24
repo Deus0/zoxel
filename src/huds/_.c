@@ -53,6 +53,8 @@ void import_huds(ecs* world) {
 #endif
     spawn_taskbar_manager(world);
     // the pause menu isn't a game menu: Start or Escape pauses the game (huds/eve/pause.c), Y or R opens the game menus
+    // the mirror (a test render texture of the character): debug builds only
+#ifdef zox_debug
     add_taskbar_button(world, (TaskbarData) {
         .index = 10,
         .spawn = &zox_tst_render_texture_character,
@@ -60,4 +62,5 @@ void import_huds(ecs* world) {
         .texture_name = "taskbar_mirror",
         .tooltip_text = "Mirror"
     });
+#endif
 }

@@ -62,18 +62,24 @@ void zox_systems_controllers3(ecs *world) {
         [in] players.PlayerState,
         [none] players.Player
     );
+    // third person (F2, the right stick pushed): off till it's fixed (doc/todo.md)
+#ifdef zox_third_person_toggle
     zox_system_1(
         player_toggle_camera_system,
         zoxp_spawn,
         [in] players.PlayerState,
         [none] players.Player
     );
+#endif
+    // flying (free roam, F1): debug builds only
+#ifdef zox_debug
     zox_system_1(
         free_roam_toggle_system,
         zoxp_spawn,
         [in] players.PlayerState,
         [none] players.Player
     );
+#endif
     zox_system(
         place_camera_head_system,
         zoxp_update,

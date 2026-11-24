@@ -3,7 +3,6 @@
 #include "realm.c"
 #include "realm_new.c"
 #include "realm_pick.c"
-#include "settings3.c"
 #include "settings.c"
 #include "main.c"
 // Game

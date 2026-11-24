@@ -36,7 +36,8 @@
 	- play it: serve bin/zoxel_web (python -m http.server 8080 in it), open http://127.0.0.1:8080
 	- tests in a headless browser: bash bsh/web_tst.sh (a default set, pure logic up to a player respawning) or
 	  bash bsh/web_tst.sh <names>; builds web.sh --tests (bin/zoxel_web_tst), playwright's chromium in web/, logs in
-	  tst/web_<name>.log. CI runs the default set in the web job
+	  tst/web_<name>.log. CI runs the default set in the web job. zox_web_tst_cpu=<n> slows its cpu n times, as ci's
+	  (doc/engine/tests.md)
 	- one thread (no -pthread), saves in the browser's IndexedDB (src/_/platforms/web/pre.js), the canvas fills the
 	  page (SDL_WINDOW_FILL_DOCUMENT), a click locks the mouse again after alt tab
 - docker.sh builds in ubuntu 24.04, older system libs so the build runs on more distros

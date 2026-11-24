@@ -24,7 +24,7 @@ void model_leds_node_event(iter* it) {
             const byte voxel = zox_getv(node, NodeVoxel);
             const int spacing = int_max(1, zox_getv(node, Count));
             const int frame = zox_has(model, ModelFrame) ? zox_getv(model, ModelFrame) : 0;
-            const byte far = (byte) (length - 1);
+            const byte last = (byte) (length - 1);
             spinlock* lock = zox_octree_lock(world, model);
             zox_octree_lock_begin(lock);
             VoxelNode* voxels = zox_getm(model, VoxelNode);
@@ -34,7 +34,7 @@ void model_leds_node_event(iter* it) {
                 }
                 const byte b = (byte) k;
                 for (byte corner = 0; corner < 4; corner++) {
-                    const byte u = corner & 1 ? far : 0, v = corner & 2 ? far : 0;
+                    const byte u = corner & 1 ? last : 0, v = corner & 2 ? last : 0;
                     leds_paint(voxels, depth, (byte3) { b, u, v }, voxel);
                     leds_paint(voxels, depth, (byte3) { u, b, v }, voxel);
                     leds_paint(voxels, depth, (byte3) { u, v, b }, voxel);

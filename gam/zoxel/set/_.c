@@ -99,12 +99,12 @@ void initialize_zoxel_settings(ecs* world) {
     }
     zoxel_settings_uis();
     add_hook_key_down(toggle_fps_viewer);
+#ifdef zox_debug
     add_hook_key_down(toggle_flymode);
-    add_hook_key_down(toggle_inspector);
-    add_hook_key_down(toggle_hierarchy);
-    add_hook_key_down(key_down_toggle_streaming);
-    add_hook_key_down(key_down_toggle_npc_movement);
-    add_hook_key_down(key_down_toggle_keyboard_navigation);
+    // add_hook_key_down(key_down_toggle_keyboard_navigation);
+    // add_hook_key_down(key_down_toggle_streaming);
+    // add_hook_key_down(key_down_toggle_npc_movement);
+#endif
     // Gameplay
     // hit_terrain_color = (color) { 2, 2, 2, 255 };
     hit_character_color = (color) { 155, 45, 45, 255 };

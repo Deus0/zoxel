@@ -28,14 +28,17 @@ entity spawn_button_old(ecs *world, LayoutParentData canvas_data, LayoutParentDa
         size.x + zext_data.margins.x * 2,
         size.y + zext_data.margins.y * 2
     };
-    zox_instance(element_data.prefab);
+    zox_instance(ui_prefab_for(world, element_data.prefab, parent.e));     // its 3D twin under a 3D parent
     zox_name("button");
     zox_set(e, FillColor, { button_data.fill });
     zox_set(e, ElementFillColor, { button_data.fill });
     zox_set(e, OutlineColor, { button_data.outline });
     zox_set(e, ElementOutlineColor, { button_data.outline });
     set_element_spawn_data(world, e, canvas_data, parent, element_data);
+    ui_layer3_set(world, e, parent.e);
     entity text = spawn_text(world, button_data.prefab_text, e, int2_zero, float2_half, zext_data.font_size, zext_data.alignment, zext_data.margins, zext_data.text, zext_data.font_fill_color, zext_data.font_outline_color);
-    zox_set(text, Layer, { element_data.layer + 1 });
+    if (!ui_is3D(world, e)) {
+        zox_set(text, Layer, { element_data.layer + 1 });  // a 3D one's is its parent's + 1 (spawn_text)
+    }
     return e;
 }

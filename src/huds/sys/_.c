@@ -3,6 +3,7 @@
 #include "menu_game.c"
 #include "crosshair.c"
 #include "load3.c"
+#include "load_chunks.c"
 #include "navigator.c"
 #include "player_join.c"
 #include "data_mouse.c"
@@ -36,12 +37,15 @@ void zox_systems_game_ui(ecs *world) {
         [in] players.PlayerState,
         [none] players.Player
     );
+    // the terminal (`): debug builds only
+#ifdef zox_debug
     zox_system_1(
         player_terminal_system,
         zoxp_spawn,
         [in] inputs.DeviceMode,
         [none] players.Player
     );
+#endif
     // main thread ones go in zoxp_spawn, with the rest: one in pre_physics split its workers (2 merges, tst pipeline_syncs)
     // main thread: it writes every player's camera
     zox_system_1(load_lids_system, zoxp_spawn, 0);
@@ -61,12 +65,11 @@ void zox_systems_game_ui(ecs *world) {
         [out] layouts.LayoutPosition,
         [none] ui_containers.DataMouse
     );
-    // main thread: it sets settings and texts
+    // main thread: it sets texts
     zox_system_1(
-        huds3_options_stick_system,
+        load_ui_chunks_system,
         zoxp_spawn,
-        [in] core.Target,
-        [none] ui.NavigatorState
+        [none] huds.LoadUIChunks
     );
     // main thread: it reads the camera
     zox_system_1(

@@ -61,6 +61,8 @@ byte zox_tst_xr_continue_ready(ecs* world) {
             return 0;
         case 3:
             zox_tst_waiting = "playing the save";
+            // the realm menu, 3D: Enter
+            zox_tst_xr_realm_enter(world, canvas, f);
             if (game_state == zox_game_state_playing) {
                 const entity realm = zox_get_link(world, game, RealmLink);
                 if (zox_valid(realm) && zox_has(realm, FolderPath)) {

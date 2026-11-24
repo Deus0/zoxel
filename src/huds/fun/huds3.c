@@ -14,6 +14,19 @@ void huds3_pose(ecs* world, entity player, float distance, float3* position, flo
     *position = move_along_direction(*position, *rotation, -distance);
 }
 
+// a 3D hud's root ahead of the player's head, the canvas's child (found and deleted as a 2D one), what's in it spawned
+//  by the same code as in 2D (the 3D twins, ui_prefab_for): a canvas3 of size pixels, height metres tall
+entity huds3_spawn_root(ecs* world, entity player, entity canvas, int2 size, float height) {
+    float3 position;
+    float4 rotation;
+    huds3_pose(world, player, huds3_distance, &position, &rotation);
+    const entity e = spawn_canvas3(world, prefab_canvas3, position, height, size);
+    zox_setv(e, Rotation3D, rotation);
+    zox_set_parent(world, e, canvas);
+    zox_link(world, e, PlayerLink, player);
+    return e;
+}
+
 // a 3D window ahead of its canvas's player (spawn_window on 3D huds: ui_window3_pose)
 void huds3_window_pose(ecs* world, entity canvas, float3* position, float4* rotation) {
     huds3_pose(world, zox_get_link(world, canvas, PlayerLink), huds3_distance, position, rotation);

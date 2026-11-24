@@ -21,6 +21,7 @@ static float3 xr_sim_head_euler = { 0, 0, 0 };
 byte xr_sim_script_a = 0;
 byte xr_sim_script_start = 0;    // the left hand's menu button
 byte xr_sim_script_y = 0;        // the left hand's Y (the game menus)
+byte xr_sim_script_b = 0;        // the right hand's B (closes a window)
 byte xr_sim_script_lb = 0;       // the left grip (LB)
 byte xr_sim_script_rb = 0;       // the right grip (RB)
 byte xr_sim_script_rt = 0;       // the right trigger (RT: the action)
@@ -134,7 +135,7 @@ static byte xr_sim_button(ecs* world, byte hand, byte type) {
     const Keyboard* keyboard = xr_sim_keyboard(world);
     switch (type) {
         case zox_btn_a: return xr_sim_script_a || keyboard->space.is_pressed || keyboard->enter.is_pressed;
-        case zox_btn_b: return keyboard->backspace.is_pressed;
+        case zox_btn_b: return xr_sim_script_b || keyboard->backspace.is_pressed;
         case zox_btn_start: return xr_sim_script_start || keyboard->escape.is_pressed;
         case zox_btn_y: return xr_sim_script_y || keyboard->r.is_pressed;
         case zox_btn_lb: return xr_sim_script_lb;

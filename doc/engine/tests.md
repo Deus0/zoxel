@@ -26,6 +26,10 @@ bash bsh/tst.sh vulkan_clear --vulkan    # the vulkan build (bin/tst_vulkan), on
 - Tests use their own settings (defaults, i.e. Block Res 4). To run like real play, copy real ones in:
   `zox_tst_settings=$HOME/.config/zoxel/settings.cfg bash bsh/tst.sh clothes` (a finer Block Res doubles every model).
   Load tests also take `zox_tst_save=<realm folder>`, a copy of a real save.
+- Web tests (`bash bsh/web_tst.sh [names]`, [DevOps](devops.md)) run in headless chromium, swiftshader's webgl, with
+  `--tst-timescale 2`. `zox_web_tst_cpu=<n>` slows the page's cpu n times, as ci or a slow machine:
+  `zox_web_tst_cpu=8 bash bsh/web_tst.sh --nobuild player_spawn` (8 is slower than ci). `zox_web_tst_args` and
+  `zox_web_tst_timeout` (180s) change the game's args and the browser's limit.
 - `make run` is the release build, tests the dev one: a release-only bug needs the release binary (`make prerelease`).
 - The harness is [src/_/tst/_.c](../src/_/tst/_.c), the runner [bsh/tst.sh](../bsh/tst.sh).
 

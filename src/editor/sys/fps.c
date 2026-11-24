@@ -56,3 +56,23 @@ void fps_display_system(iter* it) {
     }
     zox_sys_on_end();
 } zoxd_system(fps_display_system);
+
+// each player's fps display, up while the "FPS" setting is on (zox_fps_display): on its 2D canvas, top right
+void fps_display_show_system(iter* it) {
+    zox_sys_on_begin();
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        const entity canvas = zox_get_link(world, e, CanvasLink);
+        if (!zox_valid(canvas) || !zox_has(canvas, Canvas)) {
+            continue;
+        }
+        const entity display = zox_get_child_by_id(world, canvas, zox_id(FPSDisplay));
+        if (zox_fps_display && !zox_valid(display)) {
+            spawn_fps_display(world, canvas);
+        } else if (!zox_fps_display && zox_valid(display)) {
+            zox_delete(display);
+        }
+    }
+    zox_sys_on_end();
+} zoxd_system(fps_display_show_system);

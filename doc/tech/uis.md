@@ -63,14 +63,19 @@ the same spawn functions as 2D ones, so a window's code is written once (2026-11
 - `spawn_window` (windows/ins/window.c) on 3D huds builds a canvas3 root (placed by `ui_window3_pose`, set by huds:
   `huds3_pose`), a child of the player's 2D canvas, so taskbars, toggles, the navigator and closing find it as they
   find a 2D window. It gets `Window` and `PreInitialize` (window spawn systems run on `Initialize`: a map's, a
-  taskbar's link). No close button (nothing points at it yet), no pop in (`LocalScale1` takes a root out of the 3D
+  taskbar's link). Its close button as a 2D one's (a twin): a gamepad's B clicks it (cancel_menu_system), no pop in (`LocalScale1` takes a root out of the 3D
   transform hierarchy).
 - Prefab twins (src/ui/fun/prefab3.c, windows/pre/twins.c): a 2D prefab's `Prefab3` is its 3D twin, made by the 2D
   prefab's own function on a 3D base (`spawn_prefab_icon(world, element3)`, `spawn_prefab_grid(world, body3)`, ...).
   `spawn_ui`, `spawn_text`, `spawn_header` swap a prefab for its twin when the parent is 3D (`ui_prefab_for`), and
   put it a layer above its parent (`ui_layer3_set`). Twins are Elements too (selection, clicks, active states are
   every element's). Later modules add theirs on the exposed bases (`prefab_element3_twin`, `prefab_frame3_twin`):
-  render textures, tooltips.
+  render textures, tooltips. Twinned: elements, frames, texts, labels (`prefab_label2t` too), icons, buttons,
+  headers, bodies, grids, lists, scrollbars, handles, sliders, close buttons. `spawn_button_old` (toggles) and
+  `spawn_slider` swap too.
+- huds' 3D roots: `huds3_spawn_root` (huds/fun/huds3.c), a canvas3 ahead of the head, the canvas's child; the start
+  label and the load ui spawn into it with their 2D code (no 3D-only copies left in huds: the options window, the realm
+  menus are 3D windows; the new realm menu's fields can't be typed in XR yet, Randomise works)
 - Data systems don't care: grids lay out by `LayoutPosition` (layout3 reads it as layout2 does), icons get textures
   through `TextureData`, items, stats, quests, the map all fill their 3D twins unchanged.
 - Per parent, so a normal game's 2D windows stay 2D beside its 3D labels; a window spawned into a 3D parent without
@@ -123,7 +128,11 @@ follows (list3's own) is history, kept for its learnings: the list systems, scro
   crafting, gear.
 - Tested by `navigator_grid`: a window of its own with a grid of frames (minimal: not the game's windows).
 - `element_navigation_system`: in a grid (the selection's parent within 3 levels has `GridSize`) the stick's x steps
-  one along and y steps a row (its columns); elsewhere x is the selection's own (an options slider's).
+  one along and y steps a row (its columns); elsewhere x is the selection's own: a selected slider steps a twentieth
+  (a byte one 1) a push, again every 0.25s held (`navigation_slider_system`, ui/navigation/sys/gamepad_ui.c).
+- Tab windows: LB and RB show the tab before and after (`navigation_tabs_system`), the selection on its button; down
+  from a tab is its list, up from the list's top its tab; a hidden tab's elements aren't stepped to, and `ChildIndex`
+  neighbours are siblings only (tabs and lists share indexes). tst xr_options, options_tabs
 - A stick's x is stored as SDL has it: right is -x (XR's controllers flip OpenXR's to match).
 - Steps are by place in the window's NavigationElements; a grid's icons are spawned row by row, so one along is +1
   and a row is +columns.

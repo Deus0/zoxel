@@ -134,13 +134,27 @@ byte zox_tst_player_spawn_ready(ecs* world) {
                 zox_tst_spawn_dump_column(world, local_terrain, camera_chunk);
             }
         }
+<<<<<<< HEAD
         // progress: chunks streamed in, chunks finishing generation, and near chunks loaded (meshed, lit: with far
         //  land every chunk is in a minute before they're all loaded, it read as a stall, tst aesthetic_town)
+=======
+        // progress: chunks streamed in, chunks finishing generation, and the most near chunks loaded yet (their sides
+        //  and meshes build long after generating on a slow cpu, web in ci; the most, as neighbours' rebuilds dip it,
+        //  so a loop going up and down still stalls)
+>>>>>>> origin/master
         if (zox_valid(local_terrain) && zox_has(local_terrain, ChunkLinks)) {
+            static uint loaded_most = 0;
+            if (zox_stream_end_loaded > loaded_most) {
+                loaded_most = zox_stream_end_loaded;
+            }
             const ChunkLinks* chunks = zox_get(local_terrain, ChunkLinks);
             const int count = count_int3_hashmap(chunks->value);
             const int generating = zox_count_types(GenerateChunk);
+<<<<<<< HEAD
             zox_tst_progress(count * 100000.0 + generating * 1000.0 + zox_stream_end_loaded);
+=======
+            zox_tst_progress(count * 100000000.0 + loaded_most * 10000.0 + generating);
+>>>>>>> origin/master
         }
         return 0;
     }

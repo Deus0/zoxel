@@ -12,6 +12,8 @@ void import_debug(ecs* world) {
     zox_module(debug);
     initialize_amd();
     zox_module_dispose(dispose_debug);
+    // debug uis: debug builds only (release builds have none but the fps display)
+#ifdef zox_debug
     add_hook_key_down(zox_dbg_test_window_world);
     add_hook_key_down(zox_dbg_test_window_uis);
     add_hook_key_down(zox_dbg_test_window_uis3);
@@ -19,4 +21,5 @@ void import_debug(ecs* world) {
     add_hook_key_down(zox_dbg_ui_manual_tests);
     add_hook_key_down(zox_dbg_ui_gizmos);
     add_hook_key_down(zox_dbg_ui_overlays);
+#endif
 }

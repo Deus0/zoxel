@@ -63,6 +63,27 @@ static entity navigation_step_window(ecs* world, entity current, entity window, 
     return best;
 }
 
+// an element inside a hidden part of its window (a tab not shown: its scrollview RenderDisabled), not navigated to;
+//  its own RenderDisabled (scrolled out of its list) isn't, the list scrolls to it (scroll_list_to_child)
+static inline byte navigation_in_hidden(ecs* world, entity e, entity window) {
+    for (entity p = zox_get_parent(world, e); zox_valid(p) && p != window; p = zox_get_parent(world, p)) {
+        if (zox_has(p, RenderDisabled) && zox_getv(p, RenderDisabled)) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// the shown tab's button among a window's navigation elements, 0 if it has no tabs
+static inline entity navigation_active_tab(ecs* world, const entity* children, uint count) {
+    for (uint k = 0; k < count; k++) {
+        if (zox_has(children[k], TabButton) && zox_getv(children[k], ActiveState)) {
+            return children[k];
+        }
+    }
+    return 0;
+}
+
 // the stick steps the selection through its window's NavigationElements: up and down one, in a grid (a datagrid's
 //  icons) left and right one and up and down a row (its columns); a stick's x as SDL has it, right is -x
 // todo: fix this, Target moved to zevices
@@ -199,6 +220,14 @@ void element_navigation_system(iter* it) {
             children,
             zox_children_capacity,
             zox_id(NavigationElement), 0);
+        // a hidden tab's elements aren't there to step to
+        uint shown_length = 0;
+        for (uint k = 0; k < children_length; k++) {
+            if (children[k] == current->value || !navigation_in_hidden(world, children[k], window)) {
+                children[shown_length++] = children[k];
+            }
+        }
+        children_length = shown_length;
         for (byte k = 0; k < children_length; k++) {
             entity child = children[k];
             if (child == current->value) {
@@ -227,29 +256,53 @@ void element_navigation_system(iter* it) {
         // TODO: Get closest uis and their directions for directional navigation
         // This is just a quick fix
         const int next_index = (int) selected_index + direction;
-        // past its window's ends: into the next window that way
-        if (next_index < 0 || next_index >= (int) children_length) {
+        const entity current_parent = zox_get_parent(world, current->value);
+        // a tab strip is a row (LB and RB step it: navigation_tabs_system): down from a tab, its list's first, up from
+        //  there, the shown tab
+        if (zox_has(current->value, TabButton) && !sideways) {
+            if (direction > 0) {
+                for (uint j = 0; j < children_length && !target; j++) {
+                    if (!zox_has(children[j], TabButton)) {
+                        target = children[j];
+                    }
+                }
+            } else {
+                target = navigation_step_window(world, current->value, window, (float2) { 0, 1 });
+            }
+        } else if (next_index < 0 || next_index >= (int) children_length) {
+            // past its window's ends: into the next window that way
             const float2 dir = sideways ? (float2) { direction, 0 } : (float2) { 0, direction < 0 ? 1 : -1 };
             target = navigation_step_window(world, current->value, window, dir);
         } else if (zox_has(current->value, ChildIndex)) {
-            selected_index = (sbyte) next_index;
-            // NOTE: Gets neighbor if indexes are set like a list, very rigid
-            for (int j = 0; j < children_length; j++) {
-                entity e2 = children[j];
-                if (e2 == current->value) {
-                    continue;
-                }
-                if (!zox_has(e2, ChildIndex)) {
-                    continue;
-                }
-                byte index = zox_getv(e2, ChildIndex);
-                if (index == selected_index) {
+            // a list's (or grid's) neighbour by its index, among its siblings (its parent's: another list's, or the
+            //  tab strip's, share the indexes)
+            const int index = (int) zox_getv(current->value, ChildIndex) + direction;
+            byte found = 0;
+            for (uint j = 0; j < children_length; j++) {
+                const entity e2 = children[j];
+                if (e2 != current->value && zox_has(e2, ChildIndex) && zox_get_parent(world, e2) == current_parent &&
+                    (int) zox_getv(e2, ChildIndex) == index) {
                     target = e2;
+                    found = 1;
                     break;
                 }
             }
+            // its list's end: the window's next element that way, not a sibling (up into the tabs: the shown one)
+            for (int j = next_index; !found && j >= 0 && j < (int) children_length; j += direction) {
+                if (zox_get_parent(world, children[j]) == current_parent) {
+                    continue;
+                }
+                found = 1;
+                target = zox_has(children[j], TabButton) ? navigation_active_tab(world, children, children_length) :
+                    children[j];
+            }
+            if (!found) {
+                const float2 dir = sideways ? (float2) { direction, 0 } : (float2) { 0, direction < 0 ? 1 : -1 };
+                target = navigation_step_window(world, current->value, window, dir);
+            }
         } else {
-            target = children[next_index];
+            target = zox_has(children[next_index], TabButton) && direction < 0 ?
+                navigation_active_tab(world, children, children_length) : children[next_index];
         }
         if (target && target != current->value) {
             raycaster_select_element(

@@ -1,5 +1,14 @@
 # Done
 
+## 2026-11-24
+-x UI consolidation, 3D-only copies gone: the options window, start label and load ui spawn with their 2D code in XR
+  (twins for sliders, close buttons, textured labels; huds3_spawn_root), settings3.c removed. A gamepad selects and
+  steps sliders (navigation_slider_system), LB and RB switch tabs (navigation_tabs_system), B closes 3D windows; XR
+  shows the realm and new realm menus. tst xr_options, xr_menu (xr_start.ppm), xr_play's realm Enter
+-x The loading screen counts chunks: Chunks [loaded/near] under Loading, in 2D and XR. tst load_lids, xr_play
+-x CI: windows built again (far is a windows macro), web's player_spawn waits on loading on a slow cpu
+  (zox_web_tst_cpu throttles web tests)
+
 ## 2026-11-23
 -x A home's door had no road in 1 world of 5 (tst town_homes, seeds 3411554955, 2887558293): with a home close in front
   of it, every line from its door crossed a home (its corners' waypoints in the other's margin), the roads' search
