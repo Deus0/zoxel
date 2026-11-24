@@ -196,6 +196,7 @@ void maps_dump_write(ecs* world, entity terrain) {
 }
 
 void maps_dump_system(iter* it) {
+    zox_sys_on_begin();
     zox_sys_world();
     const double now = get_time_ms() / 1000.0;
     maps_dump_frames++;
@@ -248,6 +249,7 @@ void maps_dump_system(iter* it) {
     }
     maps_dump_write(world, terrain);
     engine_end();
+    zox_sys_on_end();
 } zoxd_system(maps_dump_system);
 
 void process_arguments_maps_dump(ecs* world, char* args[], int count) {
