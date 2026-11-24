@@ -7,13 +7,14 @@
   ideas), [gdd/caves.md](gdd/caves.md) (caves design)
   
 # Dropbox (Sort These)
+- A block didnt get removed when i destroyed it - rare bug
+- cant see the block damage overlay atm
 -x Make level 1 slimes weaker
 	- theyre hard to hit atm
 	- curve difficulty by stats, which should be scaled by level too (speed and intelligence are, 2026-11-23)
 	- npcs wander at the prefab's speed till their first battle (their speed stat is read as their behaviour changes)
 	- tentacle: stop at other characters on its way too (blocks stop it now)
-- Humanoids in town
-	- give them clothes too
+- Give Humanoids in town clothes
 - Add a female humanoid
 - rework color picking, centralize in realm, give themes, color entities
 	- pick themes per realm

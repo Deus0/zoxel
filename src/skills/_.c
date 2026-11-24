@@ -31,5 +31,7 @@ void import_skills(ecs* world) {
 #ifdef zox_tests
     zox_tsts_aura_particles(world);
     zox_tsts_punch_wind_up(world);
+    zox_tst_add("block_break", block_break_ready, block_break_check, 180);
+    zox_tst_set_setup("block_break", NULL, 1);
 #endif
 }
