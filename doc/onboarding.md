@@ -131,7 +131,7 @@ The usual folders inside a module:
 [_.c](../src/npcs/_.c), then [sys/_.c](../src/npcs/sys/_.c), then
 [sys/can_spawn.c](../src/npcs/sys/can_spawn.c).
 
-[Coding Standards](engine/coding_standards.md) has the full rules for folders, naming and layout.
+[Coding Standards](coding_standards.md) has the full rules for folders, naming and layout.
 
 ## 4. Reading a System
 
@@ -173,7 +173,7 @@ void characters_can_spawn_system(iter* it) {
 ```
 
 Newer systems are written as plain functions, `void npc_spawn_system(iter* it) { ... } zoxd_system(npc_spawn_system);`,
-with the same `zox_sys_*` macros inside. [Coding Standards](engine/coding_standards.md) shows that style.
+with the same `zox_sys_*` macros inside. [Coding Standards](coding_standards.md) shows that style.
 
 The fields are **positional**: `zox_sys_in` / `zox_sys_out` must match the order in
 `zox_system`, and `[none]` terms go last.
@@ -221,7 +221,7 @@ These matter more than they first look:
   never pack several into a struct or a vector of different meanings. Organise with generic components and tags: a
   burn is a debuff tagged `Burn` with `Damage`, `Rate` and `DamageTime`, not a `BurnRate`; the realm spawns it once
   and skills link it. Prefer tags to byte states (`SkillHit`, not a
-  stage of 2): systems filter on tags. More in [Coding Standards](engine/coding_standards.md) (Generic Components and Tags). Spot old code that could share or drop components? Suggest it, but ask first:
+  stage of 2): systems filter on tags. More in [Coding Standards](coding_standards.md) (Generic Components and Tags). Spot old code that could share or drop components? Suggest it, but ask first:
   it changes the design.
 - **Links, not raw entity fields.** To point one entity at another, use `zox_link`, see [Links](engine/links.md).
   For parents and children, see [Children](tech/hierarchy.md).
@@ -252,7 +252,7 @@ ten lines.
 - Release builds drop every log (their arguments are never run). Debug builds with `--logs` show them, `--verbose`
   adds the details.
 - Tests log with a `[tst]` prefix; tst.sh reads those lines, so keep that prefix for test output.
-- More in [Coding Standards](engine/coding_standards.md) (Logs).
+- More in [Coding Standards](coding_standards.md) (Logs).
 
 ## 7. Tests
 
@@ -307,7 +307,7 @@ What a test starts with, cheapest first (times measured 2026-11-20, debug build)
   costs every run: put those behind a flag (like `--readme`).
 - **Measure it.** `tst/<name>.log` has timestamps: from `[tst] running` to `PASSED` is the test's own time.
 
-[Coding Standards](engine/coding_standards.md) (Test Placement) has where a test goes and the lowest module it can live in.
+[Coding Standards](coding_standards.md) (Test Placement) has where a test goes and the lowest module it can live in.
 
 ## 8. Doing a Task
 
@@ -378,7 +378,7 @@ The loop:
 ## 10. Where Next
 
 - [Architecture](engine/architecture.md): events vs systems
-- [Coding Standards](engine/coding_standards.md): folders, naming, components and systems in depth
+- [Coding Standards](coding_standards.md): folders, naming, components and systems in depth
 - [Links](engine/links.md): `zox_link`, single and many links, unlink callbacks
 - [Children](tech/hierarchy.md): parenting and child entities
 - [Characters](tech/characters.md): how characters are built (vox, renderer, skeleton)

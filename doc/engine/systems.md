@@ -38,7 +38,7 @@ The aliases (`zoxp_update` is `zoxp_pre_physics` and so on) are names for what a
 
 ## Kinds of systems
 
-Registered in a module's `sys/_.c` with a query (see [coding_standards.md](coding_standards.md#system-files)):
+Registered in a module's `sys/_.c` with a query (see [coding_standards.md](../coding_standards.md#system-files)):
 
 | Macro | Runs | Use for |
 |---|---|---|

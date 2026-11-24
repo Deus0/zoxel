@@ -108,4 +108,4 @@ Most components are plain values. A few hold memory, and free it when they're re
 - **Node trees** (`VoxelNode`): voxel octrees, see the `octree_*` tests
 - **Hashmaps**: lookups by id or name, i.e. files by name
 
-See [coding_standards.md](coding_standards.md#components) for declaring them.
+See [coding_standards.md](../coding_standards.md#components) for declaring them.

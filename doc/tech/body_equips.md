@@ -157,7 +157,7 @@ Logged in [todo.md](../todo.md) (Refactors). Fixed: the second hat never reached
 `slot_names` was out of order, and calves had the thighs' slot types.
 
 - Realm parts are found by `SlotType` ids (`find_slot_type`), against
-  [Entities, Not Ids](../engine/coding_standards.md#entities-not-ids).
+  [Entities, Not Ids](../coding_standards.md#entities-not-ids).
   - Gear is found by tag now (`Hat`, `Shirt`).
   - Parts could be too, or the realm could link each part kind.
 - `character_body_spawn_system` is one long nested function. The slot tree could be data: a table of parent,
