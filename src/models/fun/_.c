@@ -80,7 +80,15 @@ static inline void shift_node_transform(byte model_depth, byte3* position, byte3
 #include "sphere.c"
 #include "ellipsoid.c"
 #include "cylinder.c"
+// wfc's loops run seconds at -O0 (debug builds, tests: the chooks and pengus of every realm), optimised always
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC push_options
+#pragma GCC optimize ("O2")
+#endif
 #include "wfc.c"
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC pop_options
+#endif
 #include "mutate.c"
 
 
