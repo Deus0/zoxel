@@ -2,7 +2,7 @@
 //  - the start menu is a 3D label; A on the right controller (scripted) switches the device mode to the
 //      controllers (gamepad) and opens the main menu, a 3D list (Canvas3) among the canvas's children
 //  - navigation selects its first button; the right stick down (the navigating hand) moves it to the next
-//  - screenshots it (tst/xr_menu.ppm): the panel ahead in both eyes
+//  - screenshots it (tst/xr_menu.ppm): the panel ahead in both eyes, and the start label before (tst/xr_start.ppm)
 //  - run: bash bsh/tst.sh xr_menu
 int zox_tst_xr_menu_stage = 0;
 int zox_tst_xr_menu_frames = 0;
@@ -31,6 +31,11 @@ byte zox_tst_xr_menu_ready(ecs* world) {
     switch (zox_tst_xr_menu_stage) {
         case 0:
             zox_tst_waiting = "the start menu";
+            // its shot (tst/xr_start.ppm), the start label as the 2D one, a 3D twin
+            if (zox_tst_xr_menu_frames == 25 && zox_valid(zox_get_link(world, player, MenuStart))) {
+                remove(zox_tst_path("xr_start.ppm"));
+                snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("xr_start.ppm"));
+            }
             if (zox_valid(zox_get_link(world, player, MenuStart)) && zox_tst_xr_menu_frames > 30) {
                 xr_sim_head_euler = float3_zero;
                 xr_sim_script_a = 1;
@@ -118,6 +123,32 @@ static inline void zox_tst_xr_play_next() {
     zox_tst_xr_play_frames = 0;
 }
 
+// a realm menu up (a new realm's: its name and seed, or a loaded one's: its seed), 3D on 3D huds: the stick down to
+//  Enter, then A. 1 while it's up (A and the stick scripted), 0 if none
+byte zox_tst_xr_realm_enter(ecs* world, entity canvas, int f) {
+    entity menu = zox_get_child_by_id(world, canvas, zox_id(MenuNewRealm));
+    if (!zox_valid(menu)) {
+        menu = zox_get_child_by_id(world, canvas, zox_id(MenuRealm));
+    }
+    if (!zox_valid(menu)) {
+        return 0;
+    }
+    const entity right = xr_controllers[xr_hand_right];
+    const entity target = zox_valid(right) ? zox_getv(right, Target) : 0;
+    const byte on_enter = zox_valid(target) && zox_has(target, ClickEvent) &&
+        (zox_getv(target, ClickEvent) == &on_confirmed_new_realm ||
+        zox_getv(target, ClickEvent) == &button_event_menu_realm_confirm);
+    xr_sim_script_stick = on_enter || f % 16 >= 3 ? float2_zero : (float2) { 0, -1 };
+    xr_sim_script_a = on_enter && f % 30 >= 20 && f % 30 < 24;
+    // a shot of it, Enter selected (tst/xr_realm.ppm)
+    static byte shot = 0;
+    if (on_enter && !shot && !zox_screenshot_request[0]) {
+        shot = 1;
+        snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("xr_realm.ppm"));
+    }
+    return 1;
+}
+
 byte zox_tst_xr_play_ready(ecs* world) {
     const entity player = zox_players[0];
     if (!zox_valid(xr_camera) || !zox_valid(player)) {
@@ -164,6 +195,10 @@ byte zox_tst_xr_play_ready(ecs* world) {
             return 0;
         case 2:
             zox_tst_waiting = "playing";
+            // the new realm menu, 3D: Enter
+            if (zox_tst_xr_realm_enter(world, canvas, zox_tst_xr_play_frames)) {
+                return 0;
+            }
             {
                 const entity load_ui = zox_get_child_by_id(world, canvas, zox_id(LoadUI));
                 if (zox_valid(load_ui)) {

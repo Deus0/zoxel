@@ -1486,8 +1486,6 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 	- last: a 3D mouse option, switching to it when the stick moves it
 - UI consolidation (2D and 3D from the same code, doc/tech/uis.md), each removing a 3D-only copy:
 	3. one "under the selected ui" tooltip rule: tooltip3_follow_system (3D) and tooltip_navigated_system (2D)
-	4. the 3D options (huds/ins/settings3.c): the 2D options window in 3D, once sliders and toggles have 3D twins
-		(the stick's left and right stepping a slider, as the 3D rows do now)
 	- check the size after each: bash bsh/tst.sh code_stats (baseline doc/data/code_stats.txt)
 - 3D raycasting uis: rays from the hands (the controllers' aim poses, their pointer zevices) at 3D uis (canvas3
 	panels, the 3D windows), hovered, clicked and dragged as a mouse's are, a ray drawn from each hand; tooltips on

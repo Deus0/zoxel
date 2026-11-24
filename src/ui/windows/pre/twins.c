@@ -7,6 +7,7 @@ entity prefab_frame3_twin;       // and their base frame (tooltips)
 extern entity prefab_header;
 extern entity prefab_body;
 extern entity prefab_grid;
+extern entity prefab_close_button;
 
 static inline void prefab3_twin(ecs* world, entity prefab, entity twin) {
     if (zox_valid(prefab) && zox_valid(twin)) {
@@ -29,6 +30,8 @@ void spawn_prefabs_twins3(ecs* world) {
     prefab3_twin(world, prefab_element_frame, frame3);
     prefab3_twin(world, prefab_text, prefab_text3);
     prefab3_twin(world, prefab_label2, spawn_prefab_label(world, prefab_text3));
+    // a textured label (a frame behind its text): a 3D text on a frame
+    prefab3_twin(world, prefab_label2t, spawn_prefab_label(world, spawn_prefab_text(world, frame3, prefab_zigel3)));
     prefab3_twin(world, prefab_icon, spawn_prefab_icon(world, element3));
     const entity frame = spawn_prefab_frame(world, frame3);
     prefab3_twin(world, prefab_frame, frame);
@@ -47,5 +50,7 @@ void spawn_prefabs_twins3(ecs* world) {
     // scrollviews: an invisible panel, its scrollbar and handle
     prefab3_twin(world, prefab_layout2, prefab_layout3_child);
     prefab3_twin(world, prefab_scrollbar, spawn_prefab_scrollbar(world, frame3));
+    prefab3_twin(world, prefab_slider, spawn_prefab_slider(world, frame3));
+    prefab3_twin(world, prefab_close_button, spawn_prefab_button_close(world, clickable));
     prefab3_twin(world, prefab_handle, spawn_prefab_handle(world, clickable));
 }

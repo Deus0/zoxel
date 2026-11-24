@@ -168,9 +168,6 @@ entity spawn_menu_options(
     int2 position,
     float2 anchor)
 {
-    if (zox_huds3D) {
-        return spawn_menu_options3(world, player);     // a 3D list (XR)
-    }
     const byte header_font_size = zox_huds_header_font_size * ui_scale;
     const byte list_font_size = zox_huds_element_font_size * ui_scale;
     const byte2 list_padding = byte2_single(zox_huds_list_padding * ui_scale);

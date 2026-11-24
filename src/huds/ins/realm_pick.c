@@ -20,14 +20,6 @@ void delay_spawn_menu_realm(ecs* world, entity player) {
     spawn_menu_realm(world, player);
 }
 
-// 3D huds (XR) skip the realm menu (its seed, forget, enter): straight in
-void delay_enter_loaded_realm(ecs* world, entity player) {
-    const entity game = zox_get_link(world, player, GameLink);
-    if (zox_valid(game)) {
-        zox_set(game, GameStateTarget, { zox_game_load_start });
-    }
-}
-
 void button_event_load_confirm(
     ecs *world,
     ClickEventData event)
@@ -57,11 +49,7 @@ void button_event_load_confirm(
         game,
         info.seed);
     zox_set_ptr(realm, FolderPath, path_copy);
-    delay_event(
-        world,
-        zox_huds3D ? &delay_enter_loaded_realm : &delay_spawn_menu_realm,
-        player,
-        0.01);
+    delay_event(world, &delay_spawn_menu_realm, player, 0.01);     // 3D on 3D huds (spawn_window_list)
 }
 
 // last played first (realm.txt, else its folder's time), so a capped list keeps the latest

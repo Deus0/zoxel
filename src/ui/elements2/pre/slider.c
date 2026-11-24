@@ -8,6 +8,7 @@ entity spawn_prefab_slider(
     zox_prefab_name("slider");
     zox_add(e, SliderLabel);
     zox_add(e, FixToLayout);
+    zox_add(e, NavigationElement);  // a gamepad selects it, its stick's left and right step it (navigation_slider_system)
     zox_setv(e, FrameCorner, default_button_corner);
     zox_setv(e, OutlineThickness, default_button_frame_thickness);
     zox_setv(e, FillColor, default_fill_color);

@@ -20,45 +20,33 @@ entity spawn_menu_start(
     color outline = button_outline;
     color font_fill = button_font_fill;
     color font_outline = button_font_outline;
-    entity e;
+    // 3D huds: the same label on a root ahead of the head (huds3_spawn_root), its 3D twin, a canvas3 its size
+    entity parent = canvas;
     if (zox_huds3D) {
-        float3 spawn_position;
-        float4 rotation;
-        huds3_pose(world, player, huds3_distance, &spawn_position, &rotation);
-        e = spawn_label3(
-            world,
-            text,
-            font_size,
-            fill,
-            outline,
-            font_fill,
-            font_outline,
-            zox_ui_scale3,
-            0,
-            0).x;
-        zox_setv(e, Position3D, spawn_position);
-        zox_setv(e, Rotation3D, rotation);
-        zox_setv(e, Scale1, huds3_label_height);
-    } else {
-       e = spawn_label(
-           world,
-           prefab_label2t,
-           canvas,
-           int2_zero,
-           float2_half,
-           padding,
-           text,
-           font_size,
-           zox_alignment_centre,
-           layer,
-           fill,
-           outline,
-           font_fill,
-           font_outline);
+        const int2 size = { (int) strlen(text) * font_size + padding.x * 2, font_size + padding.y * 2 };
+        parent = huds3_spawn_root(world, player, canvas, size, huds3_label_height);
     }
+    const entity label = spawn_label(
+        world,
+        prefab_label2t,
+        parent,
+        int2_zero,
+        float2_half,
+        padding,
+        text,
+        font_size,
+        zox_alignment_centre,
+        layer,
+        fill,
+        outline,
+        font_fill,
+        font_outline);
+    const entity e = zox_huds3D ? parent : label;
     zox_set_unique_name(e, "menu_start_label");
     zox_add(e, MenuStart);
-    zox_link(world, e, PlayerLink, player);
+    if (!zox_huds3D) {
+        zox_link(world, e, PlayerLink, player);     // a 3D root's linked already
+    }
     zox_link(world, player, MenuStart, e);
     {
         // entity e2 = spawn_test_vox(world, player);

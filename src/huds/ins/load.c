@@ -33,14 +33,8 @@ entity spawn_load_ui(
     const int2 size = { font_size * 8, font_size * 2 + chunks_font_size * 2 };
     entity e;
     if (zox_huds3D) {
-        float3 position;
-        float4 rotation;
-        huds3_pose(world, player, huds3_distance, &position, &rotation);
-        // Scale1 is its height in metres: "Loading" about 7cm tall at huds3_distance, alone on black, read at a glance
-        e = spawn_canvas3(world, prefab_canvas3, position, huds3_label_height * 1.2f * size.y / font_size, size);
-        zox_setv(e, Rotation3D, rotation);
-        zox_set_parent(world, e, canvas);
-        zox_link(world, e, PlayerLink, player);
+        // "Loading" about 7cm tall at huds3_distance, alone on black, read at a glance
+        e = huds3_spawn_root(world, player, canvas, size, huds3_label_height * 1.2f * size.y / font_size);
     } else {
         e = spawn_layout2(world, prefab_layout2, canvas, int2_zero, size, float2_half, get_game_overlay_layer());
     }

@@ -33,8 +33,7 @@ entity3 spawn_window_footer(
         zox_setv(e, Rotation3D, rotation3);
         zox_add(e, Window);
         zox_add(e, PreInitialize);  // as a 2D window's: its spawn systems run (Initialize next: a map's, a taskbar's link)
-        zox_set_parent(world, e, parent);
-        on_closed = NULL;   // no close button: nothing points at it (a gamepad's B closes it)
+        zox_set_parent(world, e, parent);   // its close button as a 2D one's: a gamepad's B clicks it (cancel_menu_system)
     } else {
         e = zox_ins(world, prefab);    // zox_instance would declare its own e
         zox_set_parent_non_fragment(world, e, parent);

@@ -27,12 +27,9 @@ void button_event_new_game(ecs *world, ClickEventData event) {
         zox_delete(main_menu);
     }
     spawn_new_realm(world, player);
-    // 3D huds (XR) have no text input for the new realm menu's name and seed: in with the defaults
-    delay_event(
-        world,
-        zox_huds3D ? &delay_enter_new_realm : &delay_spawn_menu_new_realm,
-        player,
-        0.01);
+    // the new realm menu, 3D on 3D huds (spawn_window_list): its name and seed typed (todo: XR has no keyboard yet,
+    //  Randomise and Enter work), or randomised
+    delay_event(world, &delay_spawn_menu_new_realm, player, 0.01);
 }
 
 void delay_enter_new_realm(ecs *world, entity player) {

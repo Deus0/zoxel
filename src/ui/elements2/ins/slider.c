@@ -13,10 +13,11 @@ entity2 spawn_slider(
     byte handle_width = slider_data.handle_width; // 8 * ui_scale;
     // byte font_thickness = ui_scale;
     // spawn back part
-    zox_instance(element_data.prefab);
+    zox_instance(ui_prefab_for(world, element_data.prefab, parent_data.e));     // its 3D twin under a 3D parent
     zox_name("slider");
     zox_set(e, SliderLabel, { slider_data.name });
     zox_set_parent_non_fragment(world, e, parent_data.e);
+    ui_layer3_set(world, e, parent_data.e);
     zox_set(e, LayoutPosition, { element_data.position });
     zox_set(e, LayoutSize, { element_data.size });
     zox_set(e, Anchor, { element_data.anchor });

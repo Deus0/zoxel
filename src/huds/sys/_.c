@@ -62,13 +62,6 @@ void zox_systems_game_ui(ecs *world) {
         [out] layouts.LayoutPosition,
         [none] ui_containers.DataMouse
     );
-    // main thread: it sets settings and texts
-    zox_system_1(
-        huds3_options_stick_system,
-        zoxp_spawn,
-        [in] core.Target,
-        [none] ui.NavigatorState
-    );
     // main thread: it sets texts
     zox_system_1(
         load_ui_chunks_system,
