@@ -236,20 +236,17 @@ static ecs_entity_t zox_tst_es_system(ecs_world_t* w, ecs_entity_t phase, ecs_id
 static double zox_tst_es_run(int way, int n) {
     ecs_entity_t target = 0;
     ecs_world_t* w = zox_tst_ec_world(&target);
-    ecs_entity_t components[zox_tst_es_heavy];
+    ecs_bulk_desc_t bulk = { .count = n };
     for (int c = 0; c < zox_tst_es_components; c++) {
         ecs_component_desc_t desc = { 0 };
         desc.entity = ecs_new(w);
         desc.type.size = zox_tst_es_heavy_size;
         desc.type.alignment = 8;
-        components[c] = ecs_component_init(w, &desc);
+        bulk.ids[c] = ecs_component_init(w, &desc);
     }
-    for (int i = 0; i < n; i++) {
-        zox_tst_es_entities[i] = ecs_new(w);
-        for (int c = 0; c < zox_tst_es_components; c++) {
-            ecs_add_id(w, zox_tst_es_entities[i], components[c]);
-        }
-    }
+    // straight into their table (with no components, bare entities)
+    const ecs_entity_t* spawned = ecs_bulk_init(w, &bulk);
+    memcpy(zox_tst_es_entities, spawned, n * sizeof(ecs_entity_t));
     zox_tst_es_n = n;
     zox_tst_es_system(w, EcsOnLoad, 0, zox_tst_es_fire, 0, 0);
     if (way == 0 || way == 4) {
@@ -268,7 +265,8 @@ static double zox_tst_es_run(int way, int n) {
         zox_tst_es_system(w, EcsOnUpdate, zox_tst_ec_dirty, zox_tst_ec_pair_dirty, 0, 0);
         zox_tst_es_system(w, EcsOnUpdate, zox_tst_ec_update, zox_tst_ec_pair_update, zox_tst_ec_dirty, 0);
     }
-    const int frames = n >= 1000 ? 40 : 2000 / n + 40;
+    // 10000's frames are 8 to 37ms each, a few are steady enough
+    const int frames = n >= 10000 ? 8 : n >= 1000 ? 40 : 2000 / n + 40;
     for (int f = 0; f < 5; f++) {
         ecs_progress(w, 0);
     }
