@@ -24,5 +24,7 @@
 # app settings
 /.build_settings
 /.game
+# files
 *.kate-swp
 *.bak
+*.out
