@@ -80,7 +80,10 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
 - worlds: tests on the whole game get a random world each run, so some fail only on some worlds; give a test a seed
   (zox_tst_seed in its setup, as vegetation_chunks) where its check needs a kind of land
 - making them faster: the biggest test times first, a world of their own or the void where they don't need a player
-  (onboarding "Small and fast"), keep the latest times to compare
+  (onboarding "Small and fast"), keep the latest times to compare (doc/results.md, by module: done to ui)
+- every realm's wave function collapse (4 chooks, 4 pengus) takes ~2.6s of a debug realm's ~3.5s, in an observer on
+  the main thread (models/eve/wfc.c): every test with a game or the void waits on it. On worker threads (a system, or
+  the 8 models in parallel) it'd be a fraction: ask first, it changes how model nodes run
 
 # Bugs
 - Block voxes never spawn on the test level (zox_tst_level_setup: BlocksSpawned stays off, even the player's chunk);
