@@ -91,9 +91,6 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
 - physics on lower lod chunks used to bug (not sure anymore, might still glitch)
 - alt tab on windows, mouse lock stays locked
 - mouse now doesnt go over hte shared player canvas, make mouse on a seperate canvas over others
-- a home's room keeps some light after its glow stone goes, 1 run in 2 (tst home_dark: 28 to 134 in a few rooms,
-  fading from where it was, under it dark): the dark pass stops part way; a box built round sunlit air keeps the sun
-  too (tst door_load, 223 inside before it clears the tunnel)
 - alt tabbing enough, input stops working when you get back
 	- particularly mouse raycasting
 - houses: add holes as windows (for now)

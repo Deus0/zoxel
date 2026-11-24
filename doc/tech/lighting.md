@@ -97,4 +97,4 @@ its chunk's or a neighbour's lights change (`block_vox_lights_system`):
 | `smooth_lights` | the corner leak; a wall's face into a shut door takes the room's light, not the outside's |
 | `gpu_mesh_lights` | the gpu's corner lights against the cpu's |
 | `block_vox_light_sampling`, `block_vox_lights` | block vox brightness from its sides; brightness matches the lights round it |
-| `glow_relight`, `dig_light`, `water_light` | emitters lit again after the dark, digging, water dimming beams |
+| `glow_relight`, `glow_light`, `dig_light`, `water_light` | emitters relit after darkness, glow removal darkens a tunnel, digging and water dimming beams |
