@@ -1,79 +1,50 @@
-```text
-    +--------+
-   /        /|
-  +--------+ |
-  |  ZOXEL | +
-  |        |/
-  +--------+/
+# ZOXEL
 
-                 ~ the world is waiting ~
-```
-# Zoxel
+**A procedural voxel RPG about exploration, discovery, and the strange things beyond the known world.**
 
-A procedural voxel RPG about exploration, discovery, and the strange things
-that exist beyond the edge of the known world.
+[![Play on itch.io](https://img.shields.io/badge/Play_on-itch.io-FA5C5C?style=flat-square&logo=itchdotio&logoColor=white)](https://deus0.itch.io/zoxel)
+![Language: C](https://img.shields.io/badge/Language-C-555555?style=flat-square&logo=c&logoColor=white)
+[![ECS: Flecs](https://img.shields.io/badge/ECS-Flecs-168AAD?style=flat-square)](https://github.com/SanderMertens/flecs)
+![Platform library: SDL](https://img.shields.io/badge/Platform-SDL-345995?style=flat-square)
+![License: GPL](https://img.shields.io/badge/License-GPL-6A994E?style=flat-square)
 
-![On a town wall: the town to one side, flowers and wilds to the other](doc/screenshot/wall.jpg)
+[**Play**](#play) · [Explore](#the-world) · [Features](#features) · [Build](#build-from-source) · [Documentation](#documentation) · [Development](#development)
 
-The land is vast. Mountains rise from forests, villages appear in the
-wilderness, dungeons lie beneath the earth, and creatures wander through the
-night.
+![A view from a town wall overlooking the town, flowers, and surrounding wilderness](doc/screenshot/wall.jpg)
 
-You begin with very little. Go see what is out there.
+*The world is waiting.*
 
+## The World
 
-## Explore
+Mountains rise from ancient forests. Roads lead to walled towns. Dungeons lie beneath the earth, and strange creatures wander through the night.
 
-Zoxel is built around one idea: **give the player a world worth getting lost in.**
+You begin with very little. Beyond the horizon lies a procedurally generated world waiting to be explored, altered, and understood.
 
-Explore forests, mountains, caves, towns, ruins, and the wilderness between
-them. Follow roads into unfamiliar territory, climb over mountains, descend
-into the dark, and find something that was never marked on a map.
+**The world is not a collection of levels. It is a place.**
 
-The world is generated procedurally, so there is always somewhere else to go.
+### Features
 
-
-## A World of Voxels
-
-Everything begins with the world. Terrain is built from voxels, a landscape
-that stretches far beyond what you can see, and you can change all of it.
-
-Build. Explore. Fight. Gather. Travel.
-
-The world is not a collection of levels. It is a place.
-
-
-## Become Part of It
-
-As you explore, your character grows. Find equipment, develop skills, improve
-your stats, take on quests, meet strange characters, fight creatures, and
-discover what the world has hidden away.
-
-Your journey is yours to shape.
-
-
-## What's Inside
-
-- 🌲 Procedural voxel worlds
-- 🏘️ Walled towns, homes, and roads
-- ⛰️ Mountains, forests, lakes, caves, and wilderness
-- ⚔️ Combat
-- 🎒 Items and equipment
-- 📈 Character stats and ✨ skills
-- 📜 Quests, 🧙 characters, and dialogue
-- 🎮 Split screen local co-op
-
+| | |
+| :--- | :--- |
+| 🌍 **Procedural worlds** | Explore mountains, forests, lakes, caves, ruins, and vast wilderness. |
+| 🧱 **Voxel terrain** | Shape the world around you. Gather resources and build something of your own. |
+| 🏘️ **Towns & settlements** | Discover walled towns, homes, roads, and the characters who inhabit them. |
+| ⚔️ **Combat & equipment** | Fight creatures, discover items, and equip your character. |
+| ✨ **Character progression** | Develop skills, improve your stats, and shape your journey. |
+| 📜 **Quests & dialogue** | Meet strange characters, take on quests, and discover what the world has hidden away. |
+| 🎮 **Local co-op** | Explore together with split-screen multiplayer. |
 
 ## Play
 
-The latest builds are on itch.io: https://deus0.itch.io/zoxel
+Download the latest playable builds on itch.io.
 
+[![Download Zoxel](https://img.shields.io/badge/Download_Zoxel-itch.io-FA5C5C?style=for-the-badge&logo=itchdotio&logoColor=white)](https://deus0.itch.io/zoxel)
 
-## Build From Source
+Zoxel is in active development. The world is still growing.
 
-Zoxel is free and open source, released under the GPL. It's written in C with
-[flecs](https://github.com/SanderMertens/flecs) (an ECS) and SDL, and is being
-actively developed: the world is still growing.
+## Build from Source
+
+Zoxel is free and open source software, released under the GPL and written in **C**, using the [Flecs](https://github.com/SanderMertens/flecs) Entity Component System and SDL.
 
 ```bash
 git clone https://codeberg.org/deus/zoxel
@@ -82,34 +53,29 @@ cd zoxel
 ./bsh/build.sh
 ```
 
-Source: https://codeberg.org/deus/zoxel
+New to the project? Read the [onboarding guide](doc/onboarding.md) for build instructions, module structure, systems, tests, and picking up a development task.
 
+## Documentation
 
-## Docs
+The [documentation](doc) is a living reference for Zoxel's engine, modules, architecture, and development workflow.
 
-Notes on how the code fits together live in [doc](doc). They're a work in
-progress and will be reorganised over time.
+| Guide | Contents |
+| :--- | :--- |
+| [**Onboarding**](doc/onboarding.md) | Start here. Project overview, building, module layout, systems, and tests. |
+| [Engine](doc/engine/_.md) | Architecture, systems, spawning, commands, and tools. |
+| [Technical documentation](doc/tech/_.md) | Characters, children, blocks, water, UIs, and other modules. |
+| [Entity links](doc/engine/links.md) | `zox_link`, single and many links, and reacting to unlinks. |
+| [Coding standards](doc/engine/coding_standards.md) | Code style and conventions. |
+| [Tests](doc/engine/tests.md) | Writing and running tests. |
 
-New to the code? Start with **[Onboarding](doc/onboarding.md)**: the big
-picture, building, the module layout, reading systems, tests, and how to pick
-up a task.
+## Development
 
-- [Links](doc/engine/links.md): pointing entities at each other with `zox_link`,
-  single and many links, and reacting to unlinks
-- [Tech](doc/tech/_.md): module technical docs (characters, children, blocks, water, uis and more)
-- [Engine](doc/engine/_.md): architecture, systems, spawning, commands, tools and more
-- [Coding Standards](doc/engine/coding_standards.md): code style and conventions
-- [Tests](doc/engine/tests.md): writing and running tests
+Follow the development of Zoxel, explore the source, and see how the world evolves.
 
-
-## Follow Development
-
-- Mastodon: https://mastodon.gamedev.place/@deus
-- Twitter: https://x.com/deusxyz
+[Codeberg](https://codeberg.org/deus/zoxel) · [Mastodon](https://mastodon.gamedev.place/@deus) · [Twitter / X](https://x.com/deusxyz) · [itch.io](https://deus0.itch.io/zoxel)
 
 ---
 
-The world is larger than the horizon.
+*The world is larger than the horizon.*
 
-Go find out what is beyond it.
-
+**Go find out what is beyond it.**
