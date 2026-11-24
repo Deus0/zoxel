@@ -6,7 +6,8 @@
 //  - windows: the os agrees (IsWindowVisible, not IsIconic, WS_CAPTION), sdl's flags can say one thing and win32 another
 //  - run: bash bsh/tst.sh sdl_window_mode --visible
 #define zox_tst_wm_toggles 4     // fullscreen, windowed, fullscreen, windowed
-#define zox_tst_wm_frames 30     // a mode change is asynchronous, the os takes a few frames
+#define zox_tst_wm_frames 30     // a mode change is asynchronous, the os takes a few frames: at most these
+#define zox_tst_wm_settle 4      // frames after the window is in its mode, before checking or the next toggle
 int zox_tst_wm_stage = 0;
 int zox_tst_wm_frames_in = 0;
 int zox_tst_wm_fails_at = -1;   // the first windowed stage that failed, logged
@@ -84,7 +85,11 @@ byte zox_tst_sdl_window_mode_ready(ecs* world) {
     zox_tst_progress(zox_tst_wm_stage * 1000 + zox_tst_wm_frames_in);
     zox_tst_waiting = "the window to change mode";
     SDL_Window* window = zox_getv(main_app, SDLWindow);
-    if (zox_tst_wm_frames_in++ < zox_tst_wm_frames) {
+    // until the window is in the mode asked for (fullscreen or not), then a few frames to settle
+    SDL_SyncWindow(window);
+    const byte wanted = zox_tst_wm_stage % 2;
+    const byte in_mode = ((SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN) != 0) == wanted;
+    if (zox_tst_wm_frames_in++ < (in_mode ? zox_tst_wm_settle : zox_tst_wm_frames)) {
         return 0;
     }
     // a windowed stage done: check it before the next toggle
