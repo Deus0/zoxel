@@ -1,12 +1,7 @@
 // why terrain is still Loading, for tests/debugging
 char zox_stream_end_status[160] = "";
-<<<<<<< HEAD
 uint zox_stream_end_loaded = 0;   // near chunks loaded (meshed, lit), last count: a test's progress while it waits
-=======
-// near chunks loaded, the last check's count (tests read it as progress: sides and meshes building after generation)
-uint zox_stream_end_loaded = 0;
 uint zox_stream_end_near = 0;       // of these near chunks (the load ui's Chunks [loaded/near])
->>>>>>> origin/master
 
 // chunks streaming keeps within terrain_lod_near, a circle of columns (int2_distance, like terrain_stream_system)
 //  - used to be the full square, its 4 corners never spawn, so Loading never ended for some positions
