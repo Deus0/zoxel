@@ -144,7 +144,13 @@ void zox_tst_vegetation_chunks_check(ecs* world) {
 // one world every run (zox_tst_seed, else 666): a random one sometimes had no tree for a minute around its spawn (a
 //  town, a lake)
 void zox_tst_vegetation_chunks_setup() {
+#ifdef zox_windows
+    if (!getenv("zox_tst_seed")) {
+        _putenv("zox_tst_seed=666");
+    }
+#else
     setenv("zox_tst_seed", "666", 0);
+#endif
 }
 
 void zox_tsts_vegetation_chunks(ecs* world) {
