@@ -6,6 +6,7 @@
 #include "sides.c"
 #include "vox_mesh_grid.c"
 #include "perf_meshing.c"
+#include "vox_materials.c"
 #include "icon_bake.c"
 #include "gpu_mesh.c"
 #include "debug_octree.c"

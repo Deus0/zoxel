@@ -274,7 +274,22 @@ Phase 1:
   way. A model with no neighbour chunks takes the pyramid's own face step (through the lookup it was 10% slower).
   Release, 32³: the pyramid 0.90ms (as before), the walk 4.07ms (4.35 before).
 
-Then Phase 3 (vox models shaped as terrain chunks).
+Phase 3 (vox models shaped as terrain chunks), decided 2026-11-25: reuse what exists. A model's meshes go under a
+`ChunkMaterial` child a kind (solid, see through), as terrain's; each links `MaterialLink` (the existing link) to its
+material entity; a kind is a tag on it, not a byte (solid none, see through one tag); colours stay per voxel. Steps:
+- 1 done: the colored mesher draws one kind (build_voxel_mesh_material, materials table and the kind), hidden as
+  terrain's (a solid core shows through a see through shell, a shell face only against air). tst vox_materials: a
+  16³ ball in a shell a voxel thick, both lookups, faces counted against the rule voxel by voxel (360 solid, 528 see
+  through). For slimes later.
+- 2: the material entities and their tag; a model's kinds table from its voxels' materials (the palette: a byte
+  array, a voxel value to its material), replacing ColorRGBs' role as a model's only data
+- 3: a model's meshes under ChunkMaterial children a kind (VoxLodMesh children today), the see through one drawn
+  blended (TransparentMesh); its colours need alpha in the colored shader (color_rgb has none)
+- 4: a test model in the game: the solid core and see through shell, both meshes shown, screenshot to look at
+- 5: colored chunk3 parents (models bigger than a chunk), chunk3_single and chunk3_single_colored prefabs
+- 6: each user of vox models checked as it moves (characters, items, minivoxes, critters, block voxes)
+
+
 
 ## Results
 

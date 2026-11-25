@@ -17,8 +17,11 @@ void add_voxel_face(
     mesh_add_face(mesh->indicies, mesh->vertices, face_indicies, face_verts, origin, scale);
 }
 
+// the voxel beside a position hides its face: materials (a voxel value's kind, zox_block_material_*, NULL all solid)
+//  and material (the mesh's) by block_material_hides; past the tree, its neighbours', none: edge
 byte is_adjacent_all_solid(
-    const byte* solidity,
+    const byte* materials,
+    byte material,
     byte edge,
     const VoxelNode **neighbors,
     const VoxelNode *node,
@@ -41,8 +44,8 @@ byte is_adjacent_all_solid(
     // zox_log("axis [%i] side [%i] from direction [%i]", axis, side, reversed);
     // we need full distance here
     return get_node_sides_all_hide(
-        NULL,
-        zox_block_material_solid,
+        materials,
+        material,
         adjacent_node,
         axis,
         side,
@@ -109,6 +112,8 @@ typedef struct {
     const VoxelNode* root;
     const VoxelNode** noctrees;
     byte neighbors;                 // any neighbour chunk: the pyramid's border (air) is read through them
+    const byte* materials;          // a voxel value's kind (zox_block_material_*), NULL: all solid, one mesh
+    byte material;                  // the kind this mesh draws (solid, or a see through one)
 } vox_lookup;
 
 static inline byte vox_lookup_inside(byte depth, int3 p) {
@@ -120,28 +125,29 @@ static inline byte vox_lookup_inside(byte depth, int3 p) {
 //  border is air, so past it a neighbour chunk is read from its tree
 static inline byte vox_lookup_adjacent_solid(const vox_lookup* lookup, byte depth, int3 p, byte direction) {
     if (!lookup->pyramid) {
-        return is_adjacent_all_solid(NULL, 0, lookup->noctrees, lookup->root, p, direction, depth);
+        return is_adjacent_all_solid(lookup->materials, lookup->material, 0, lookup->noctrees, lookup->root, p, direction, depth);
     }
     const int3 adjacent = move_position(p, direction);
     if (lookup->neighbors && !vox_lookup_inside(depth, adjacent)) {
-        return is_adjacent_all_solid(NULL, 0, lookup->noctrees, lookup->root, p, direction, depth);
+        return is_adjacent_all_solid(lookup->materials, lookup->material, 0, lookup->noctrees, lookup->root, p, direction, depth);
     }
     const VoxelNode* node = vox_pyramid_get(lookup->pyramid, depth, adjacent.x, adjacent.y, adjacent.z);
     if (!node) {
         return 0;
     }
     const byte reversed = reverse_direction(direction);
-    return get_node_sides_all_hide(NULL, zox_block_material_solid, node, reversed >> 1, reversed & 1, 8);
+    return get_node_sides_all_hide(lookup->materials, lookup->material, node, reversed >> 1, reversed & 1, 8);
 }
 
-// a voxel at p is solid, for ambient occlusion: past the chunk's border it's air
+// a voxel at p is solid, for ambient occlusion: past the chunk's border it's air, see through ones don't count
 static inline byte vox_lookup_solid(const vox_lookup* lookup, byte depth, int3 p) {
     if (!vox_lookup_inside(depth, p)) {
         return 0;
     }
     const VoxelNode* node = lookup->pyramid ? vox_pyramid_get(lookup->pyramid, depth, p.x, p.y, p.z) :
         get_VoxelNode(lookup->root, depth, int3_to_byte3(p));
-    return node && node->value > 0;
+    // see through voxels don't darken corners
+    return node && node->value > 0 && (!lookup->materials || lookup->materials[node->value] == zox_block_material_solid);
 }
 
 // a voxel's faces from the pyramid alone (a model with no neighbour chunks, most of them): its border is air, every
@@ -188,7 +194,7 @@ static void build_voxel_faces_colored(const vox_lookup* lookup, mesh_colored_bui
     float scale, float3 bounds_offset, byte depth, byte3 position)
 {
 #ifdef zox_ambient_occlusion27
-    if (lookup->pyramid && !lookup->neighbors) {
+    if (lookup->pyramid && !lookup->neighbors && !lookup->materials) {
         build_voxel_faces_pyramid(lookup->pyramid, mesh, voxel_color, scale, bounds_offset, depth, position);
         return;
     }
@@ -213,7 +219,7 @@ static void build_voxel_faces_colored(const vox_lookup* lookup, mesh_colored_bui
 #else
     byte naos[6];
     for (byte direction = 0; direction < 6; direction++) {
-        const byte asolid = is_adjacent_all_solid(NULL, 255, lookup->noctrees, lookup->root, p, direction, depth);
+        const byte asolid = is_adjacent_all_solid(lookup->materials, lookup->material, 255, lookup->noctrees, lookup->root, p, direction, depth);
         naos[direction] = asolid > 0 && asolid < 255;
     }
 #endif
@@ -276,6 +282,9 @@ static void build_voxel_mesh_dig(
     if (!voxels->value) {
         return;
     }
+    if (lookup->materials && lookup->materials[voxels->value] != lookup->material) {
+        return;     // another mesh's (another kind)
+    }
     const byte voxel = voxels->value - 1;
     if (voxel >= vcolors->length) {
         zox_logw("Voxel Index OOB: %i >= %i", voxel, vcolors->length);
@@ -284,9 +293,11 @@ static void build_voxel_mesh_dig(
     build_voxel_faces_colored(lookup, mesh, vcolors->value[voxel], scale, bounds_offset, depth, position);
 }
 
-// a colored mesh of root at target_depth: from the pyramid when pyramid is set and the model fits it (an array read a
-//  neighbour), else the octree; noctrees its neighbour chunks (NULL entries for none, or NULL)
-void build_voxel_mesh(
+// one kind's colored mesh of root at target_depth (materials: a voxel value's kind, zox_block_material_*, NULL all
+//  solid; material: the kind it draws): its voxels' faces, hidden as terrain's are (block_material_hides: a solid hides
+//  any face, a see through voxel only its own kind's), so a solid core shows through a see through shell (a slime's).
+//  From the pyramid when pyramid is set and the model fits it, else the octree; noctrees its neighbour chunks
+void build_voxel_mesh_material(
     const VoxelNode* root,
     const VoxelNode** noctrees,
     const ColorRGBs* vcolors,
@@ -296,13 +307,16 @@ void build_voxel_mesh(
     float3 bounds_offset,
     float scale,
     byte is_split,
-    byte pyramid)
+    byte pyramid,
+    const byte* materials,
+    byte material)
 {
     if (!root) {
         return;
     }
     const VoxelNode* no_neighbors[6] = { 0 };
-    vox_lookup lookup = { .root = root, .noctrees = noctrees ? noctrees : no_neighbors };
+    vox_lookup lookup = { .root = root, .noctrees = noctrees ? noctrees : no_neighbors, .materials = materials,
+        .material = material };
     for (byte j = 0; j < 6; j++) {
         lookup.neighbors |= lookup.noctrees[j] != NULL;
     }
@@ -325,6 +339,23 @@ void build_voxel_mesh(
             free((void*) grid.levels[depth]);
         }
     }
+}
+
+// a colored mesh of root at target_depth, every voxel solid
+void build_voxel_mesh(
+    const VoxelNode* root,
+    const VoxelNode** noctrees,
+    const ColorRGBs* vcolors,
+    mesh_colored_build_data* mesh,
+    byte node_depth,
+    byte target_depth,
+    float3 bounds_offset,
+    float scale,
+    byte is_split,
+    byte pyramid)
+{
+    build_voxel_mesh_material(root, noctrees, vcolors, mesh, node_depth, target_depth, bounds_offset, scale, is_split,
+        pyramid, NULL, zox_block_material_solid);
 }
 
 // Builds Colored Vox Meshes
