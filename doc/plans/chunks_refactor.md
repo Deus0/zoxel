@@ -292,7 +292,13 @@ material entity; a kind is a tag on it, not a byte (solid none, see through one 
     material entity, a tag for see through), built with build_voxel_mesh_material(.., zox_block_material_liquid)
   - ModelLods gone (2026-11-25): a model's lod mesh is found among its children (get_model_lod_mesh, when an
     instance's lod changes); ModelLods stays only as the plain struct a spawn function returns its meshes in (they
-    aren't children yet in a system). The instance renderer to draw see through ones after the solid ones, blended
+    aren't children yet in a system).
+  - done: a model's see through mesh a lod (set_vox_lods_materials, models/ins/vox_lods.c: MaterialIDs set, a
+    TransparentMesh VoxLodMesh sibling spawned a lod), built from its see through voxels (build_vox_mesh_at_depth's
+    kind); tst vox_see_through: a real model, 360 solid faces, 528 see through
+  - next: the instance renderer (rendering3/sys/vox_instance_render_system.c, a command a mesh) to find a solid
+    mesh's see through sibling when it makes its command, and draw those after every solid one, blended; the colored
+    shader an alpha
     (TransparentMesh, as terrain's water), the colored shader an alpha (the material's, color_rgb has none)
   - check: tst vox_materials at the mesher (done), then an instanced model in the game (4)
 - 4: a test model in the game: the solid core and see through shell, both meshes shown, screenshot to look at

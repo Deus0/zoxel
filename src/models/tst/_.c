@@ -7,6 +7,7 @@
 #include "grass_tufts.c"
 #include "wfc.c"
 #include "gravity_cube_model.c"
+#include "vox_see_through.c"
 
 void zox_tsts_models() {
     zox_tst_add("model_shapes", zox_tst_model_shapes_ready, zox_tst_model_shapes_check, 60);
@@ -25,5 +26,6 @@ void zox_tsts_models() {
     zox_tst_set_setup("vox_import", NULL, 1);
     zox_tst_add("grass_tufts", zox_tst_grass_tufts_ready, zox_tst_grass_tufts_check, 30);
     zox_tst_add("wfc", zox_tst_wfc_ready, zox_tst_wfc_check, 30);
+    zox_tst_add("vox_see_through", zox_tst_vox_see_through_ready, zox_tst_vox_see_through_check, 30);
     zox_tst_set_setup("wfc", NULL, 1);
 }

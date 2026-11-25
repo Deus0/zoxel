@@ -242,6 +242,7 @@ void skeleton_mesh_build_system(iter* it) {
             world,
             vox,
             rdepth->value,
+            zox_block_material_solid,
             indicies,
             vertices,
             colors);

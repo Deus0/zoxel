@@ -33,10 +33,12 @@ void vox_lods_mesh_trigger_system(iter* it) {
 
 // Builds a colored mesh from a vox's max depth voxels, at a target depth
 //  - used by meshes that are children of their vox (VoxLodMesh, SkeletonMesh)
+// a model's mesh at a lod of one kind (zox_block_material_solid, or a see through one: its TransparentMesh sibling)
 byte build_vox_mesh_at_depth(
     ecs* world,
     entity vox,
     byte depth,
+    byte kind,
     MeshIndicies* indicies,
     MeshVertices* vertices,
     MeshColorRGBs* colors)
@@ -79,11 +81,14 @@ byte build_vox_mesh_at_depth(
     // the vox's octree locked while walked, its writers can run alongside (thread_safety.md)
     spinlock* vlock = zox_octree_lock(world, vox);
     zox_octree_lock_begin(vlock);
-    // its solid voxels (all of them without MaterialIDs); see through ones are their own mesh (chunks_refactor.md phase 3)
+    // its voxels of the kind (all of them solid without MaterialIDs); see through ones are their own mesh, a
+    //  TransparentMesh sibling (set_vox_lods_materials, chunks_refactor.md phase 3)
     byte materials[256];
     const byte other = vox_material_table(zox_has(vox, MaterialIDs) ? zox_get(vox, MaterialIDs) : NULL, materials);
-    build_voxel_mesh_material(voxels, noctrees, vcolors, &mesh, node_depth, target_depth, position, cscale, is_split, 1,
-        other ? materials : NULL, zox_block_material_solid);
+    if (other || kind == zox_block_material_solid) {
+        build_voxel_mesh_material(voxels, noctrees, vcolors, &mesh, node_depth, target_depth, position, cscale, is_split, 1,
+            other ? materials : NULL, kind);
+    }
     zox_octree_lock_end(vlock);
     indicies->length = mesh.indicies->size;
     vertices->length = mesh.vertices->size;
@@ -123,6 +128,7 @@ void vox_lod_mesh_build_system(iter* it) {
             world,
             vox,
             rdepth->value,
+            zox_has(e, TransparentMesh) ? zox_block_material_liquid : zox_block_material_solid,
             indicies,
             vertices,
             colors);

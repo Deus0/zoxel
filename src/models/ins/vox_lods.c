@@ -62,3 +62,47 @@ void set_vox_lods_sway(
         zox_setv(mesh, SwayBounds, sway_bounds);
     }
 }
+
+// gives a vox_lods model its material ids (MaterialIDs, a material a palette entry, as MagicaVoxel's) and a see
+//  through mesh beside each lod (TransparentMesh, the same RenderDepth) for its see through voxels; its solid meshes
+//  rebuild without them. Only for models with more than solid (others need no ids, no second meshes)
+void set_vox_lods_materials(ecs* world, entity vox, const byte* ids, int count) {
+    MaterialIDs material_ids = { 0 };
+    resize_MaterialIDs(&material_ids, count);
+    memcpy(material_ids.value, ids, count);
+    zox_set_ptr(vox, MaterialIDs, material_ids);    // copied in
+    dispose_MaterialIDs(&material_ids);
+    const byte max_depth = zox_getv(vox, NodeDepth);
+    entity meshes[model_lods_max_length] = { 0 };
+    byte found[model_lods_max_length] = { 0 };
+    iter it = zox_children(world, vox);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count; i++) {
+            const entity child = it.entities[i];
+            if (!zox_has(child, VoxLodMesh)) {
+                continue;
+            }
+            const byte depth = zox_getv(child, RenderDepth);
+            if (depth < model_lods_max_length) {
+                found[depth] |= zox_has(child, TransparentMesh);
+                if (!zox_has(child, TransparentMesh)) {
+                    meshes[depth] = child;
+                }
+            }
+        }
+    }
+    for (byte depth = 0; depth <= max_depth && depth < model_lods_max_length; depth++) {
+        if (meshes[depth]) {
+            zox_add(meshes[depth], BuildMesh);
+        }
+        if (found[depth]) {
+            continue;
+        }
+        const entity mesh = zox_ins(world, prefab_vox_mesh);
+        zox_set_unique_name(mesh, "vox_mesh_see_through");
+        zox_add(mesh, TransparentMesh);
+        zox_add(mesh, BuildMesh);
+        zox_setv(mesh, RenderDepth, depth);
+        zox_set_parent(world, mesh, vox);
+    }
+}

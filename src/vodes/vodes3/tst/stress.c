@@ -34,12 +34,11 @@ static inline entity zox_tst_stress_find_mesh(ecs* world, entity realm) {
     if (!count || !zox_has(models[0], VoxLods)) {
         return 0;
     }
-    const ModelLods* lods = zox_get(models[0], ModelLods);
     // software rendering (tests without --gpu): its least detailed, the most detailed took seconds a frame there
     const byte software = getenv("LIBGL_ALWAYS_SOFTWARE") != NULL;
     for (int k = 0; k < model_lods_max_length; k++) {
         const int d = software ? k : model_lods_max_length - 1 - k;
-        const entity mesh = lods->value[d];
+        const entity mesh = get_model_lod_mesh(world, models[0], d);
         if (zox_valid(mesh) && zox_has(mesh, MeshGPULink) && zox_getv(mesh, MeshGPULink).x &&
             zox_has(mesh, MeshIndicies) && zox_get(mesh, MeshIndicies)->length)
         {
