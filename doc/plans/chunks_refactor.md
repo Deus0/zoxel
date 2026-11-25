@@ -322,8 +322,8 @@ Phase 4 (gpu meshing for vox models):
 - 1 done: colored per vertex in the compute shader (gpu_mesher_set_colors, fun/gpu_mesh.c): a voxel's palette colour
   darkened by ambient occlusion as fun/ao27.c (its face's two edge voxels and the corner past them, solid ones only),
   into vertex_colors (binding 9). tst gpu_vox_colors: vox_materials' slime, each kind's faces and every corner's colour
-  the cpu's (360 solid faces, 528 see through), gl and vulkan. Only with ao on (the "No AO" setting's plain shades not
-  yet).
+  the cpu's (360 solid faces, 528 see through), gl and vulkan. Without ao (the "No AO" setting) each direction a shade
+  as add_voxel_face_colors, checked too.
 - 2 done: materials: a lod's kind (solid, see through) by the drawn and hides masks; at a lod a face hides as the cpu's
   walk hides it (its neighbour's side all hiding at full detail, a sides grid, `sided`). gpu_vox_colors checks both
   kinds at lods 16³, 8³, 4³: every face, its winding, corner and colour the cpu's.
@@ -336,8 +336,8 @@ Phase 4 (gpu meshing for vox models):
   as a cpu mesh once its indices are); drawn by the existing renderers, strided (vox_instance_render,
   skeleton3_render). Clones read it back once. On with vulkan (`zox_vox_gpu_meshing`, --vox_gpu_meshing,
   --vox_cpu_meshing). Phase 4 done (2026-11-26); doc/tech/chunks3.md.
-- Left: a no split model's uniform nodes as one big face (the cpu merges them, the gpu draws a face a voxel); the
-  "No AO" setting on the gpu; colored chunk3 parents (spawn_chunk3_parent_colored) are still cpu meshed.
+- Left: a no split model's uniform nodes as one big face (the cpu merges them, the gpu draws a face a voxel); colored
+  chunk3 parents (spawn_chunk3_parent_colored) are still cpu meshed.
 
 
 

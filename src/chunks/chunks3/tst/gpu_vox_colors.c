@@ -133,8 +133,12 @@ void zox_tst_gpu_vox_colors_check(ecs* world) {
     vox_material_table(&ids, materials);
     const byte kinds[2] = { zox_block_material_solid, zox_block_material_liquid };
     const char* names[2] = { "solid", "see through" };
+    // with ambient occlusion, then without (the "No AO" setting: each direction a shade)
+    const byte ambient = zox_ambient_occlusion;
+    for (byte ao = 1; ao <= 1; ao--)
     for (zox_tst_gvc_lod = zox_tst_vm_depth; zox_tst_gvc_lod >= 2; zox_tst_gvc_lod--)
     for (byte k = 0; k < 2; k++) {
+        zox_ambient_occlusion = ao;
         zox_tst_gvc_corner* cpu;
         zox_tst_gvc_corner* gpu;
         const int cpu_faces = zox_tst_gvc_cpu(&model, &colors, materials, kinds[k], &cpu);
@@ -166,13 +170,14 @@ void zox_tst_gpu_vox_colors_check(ecs* world) {
                 darkened += !zox_tst_gvc_close(cpu[i].color, open);
             }
         }
-        zox_log("[tst] [metric] gpu_vox_colors depth %i %s: [%i] faces, [%i] corners darkened", zox_tst_gvc_lod, names[k], cpu_faces, darkened);
+        zox_log("[tst] [metric] gpu_vox_colors ao %i depth %i %s: [%i] faces, [%i] corners darkened", ao, zox_tst_gvc_lod, names[k], cpu_faces, darkened);
         zox_tst_check(!moved, "%s: [%i] corners weren't where the cpu's are", names[k], moved);
         zox_tst_check(!recoloured, "%s: [%i] corners weren't the cpu's colour", names[k], recoloured);
-        zox_tst_check(darkened > 0, "%s: no corner was darkened by ambient occlusion", names[k]);
+        zox_tst_check(!ao || darkened > 0, "%s: no corner was darkened by ambient occlusion", names[k]);
         free(cpu);
         free(gpu);
     }
+    zox_ambient_occlusion = ambient;
     collapse_VoxelNode(&model);
     gpu_mesher_dispose(&mesher);
 }

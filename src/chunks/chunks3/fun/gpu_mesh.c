@@ -42,6 +42,7 @@ typedef struct {
     uint vertex_colors; // a uint a vertex, rgb a byte each, written when colored (binding 9)
     byte colored;       // palette given (gpu_mesher_set_colors)
     uint palette[256];  // voxel v's colour, rgb a byte each
+    byte ambient;       // ambient occlusion (zox_ambient_occlusion), else each direction a shade (add_voxel_face_colors)
     uint occludes[8];   // voxels that darken corners, bit v - 1 (solid ones)
     byte sided;         // a model's lod: the lights grid holds each cell's sides that hide (bit d: its side facing d
                         //  all hides at full detail, get_node_sides_all_hide), a face hides by its neighbour's side
@@ -118,6 +119,7 @@ static const char* zox_gpu_mesh_source =
 "uniform uint palette[256];\n"
 "uniform uint occludes[8];\n"
 "uniform vec4 place;\n"
+"uniform int ambient;\n"
 "uniform int sided;\n"
 "uniform int skinned;\n"
 "uniform uint bones_count;\n"
@@ -251,7 +253,17 @@ static const char* zox_gpu_mesh_source =
 "}\n"
 "\n"
 "// a corner's colour, as the cpu's (add_voxel_face_colors_ao_27): its two edge voxels and the corner voxel past the face\n"
+"// without ambient occlusion each direction a shade (add_voxel_face_colors): left right down up back front\n"
+"const float unlit_shades[6] = float[6](0.55, 0.76, 0.33, 1.0, 0.66, 0.44);\n"
+"\n"
 "uint corner_color(uint color, ivec3 p, int d, int s) {\n"
+"    if (ambient == 0) {\n"
+"        uint shaded = 0u;\n"
+"        for (int k = 0; k < 3; k++) {\n"
+"            shaded |= min(uint(float((color >> (8 * k)) & 255u) * unlit_shades[d]), 255u) << (8 * k);\n"
+"        }\n"
+"        return shaded;\n"
+"    }\n"
 "    ivec3 f = p + directions[d];\n"
 "    ivec3 edge_a = f + unit(axis_a[d]) * ((s & 1) != 0 ? 1 : -1);\n"
 "    ivec3 edge_b = f + unit(axis_b[d]) * ((s & 2) != 0 ? 1 : -1);\n"
@@ -657,6 +669,7 @@ static inline void gpu_mesher_set_colors(GpuMesher* mesher, const color_rgb* col
         }
     }
     mesher->colored = 1;
+    mesher->ambient = zox_ambient_occlusion;
 }
 
 // the cpu's face corners (voxel_face_vertices_n, blocks/dat/mesh.c), bit 0 x, 1 y, 2 z: a corner's uv is the
@@ -716,6 +729,7 @@ void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, by
         zox_gpu_compute_uniform_uint_array(mesher->program, "palette", mesher->palette, 256);
         zox_gpu_compute_uniform_uint_array(mesher->program, "occludes", mesher->occludes, 8);
         zox_gpu_program_float4(mesher->program, "place", mesher->place);
+        zox_gpu_compute_uniform_int(mesher->program, "ambient", mesher->ambient);
     }
     if (mesher->textured) {
         zox_gpu_compute_uniform_uint_array(mesher->program, "face_corners", zox_gpu_mesh_face_corners, 24);
