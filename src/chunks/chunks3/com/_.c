@@ -80,9 +80,11 @@ create_octree_reducer(ActiveOctree);
 
 // its settings, each its own tag (a setting's observer finds it by it, not its name)
 zox_tag(SettingGpuMeshing);
+zox_tag(SettingGreedyMeshing);
 
 void zox_components_chunks3(ecs* world) {
     zoxd_tag(SettingGpuMeshing);
+    zoxd_tag(SettingGreedyMeshing);
 
     // zoxd_nf_tag
     // Types

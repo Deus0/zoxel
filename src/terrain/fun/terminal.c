@@ -26,6 +26,10 @@ void process_arguments_terrain(ecs *world, char* args[], int count) {
             zox_chunks3_gpu_meshing = 1;
             zox_settings_set_by_args("GPU Meshing");
             zox_logv("+ [gpu meshing] chunks meshed on the gpu")
+        } else if (strcmp(args[i], "--greedy_meshing") == 0 || strcmp(args[i], "--no_greedy_meshing") == 0) {
+            // vox models' faces merged where they draw the same (chunks3/fun/greedy.c), on by default
+            zox_greedy_mesh = args[i][2] == 'g';
+            zox_settings_set_by_args("Greedy Meshing");
         } else if (strcmp(args[i], "--vox_gpu_meshing") == 0) {
             zox_vox_gpu_meshing = 1;
         } else if (strcmp(args[i], "--vox_cpu_meshing") == 0) {

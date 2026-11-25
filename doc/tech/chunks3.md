@@ -152,7 +152,8 @@ Done for vox models, characters and colored chunks, cpu and gpu (2026-11-26, doc
 [fun/greedy.c](../../src/chunks/chunks3/fun/greedy.c) (`mesh_greedy`, `zox_greedy_mesh` on) and the gpu mesher's
 `greedy` dispatches. It differs from the process below in one way: rows are merged on their own (a row's longest runs,
 a run starts a quad unless the row before has the same one, it grows down the rows that do), so the gpu merges every
-row at once. Terrain is still to do (steps 5).
+row at once. Terrain is still to do (steps 5). A Video setting, "Greedy Meshing" (`--greedy_meshing`,
+`--no_greedy_meshing`), switches it, meshes built after take it.
 
 Merge neighbouring faces that look identical into one bigger quad. A flat floor of one block becomes one quad a
 slice instead of one a voxel. It has to keep the look exactly: **AO, light, colour, texture and (skeletons) bones

@@ -77,6 +77,8 @@ void zox_tst_vox_see_through_check(ecs* world) {
     const int see_through_faces = mesh3_voxel_faces(world, see_through, voxel);
     zox_log("[tst] [metric] vox_see_through: solid mesh [%i] faces, see through [%i] (TransparentMesh [%i])", solid_faces,
         see_through_faces, zox_has(see_through, TransparentMesh));
+    zox_log("[tst] [metric] vox_see_through: drawn as [%i] and [%i] quads (greedy meshing [%i])",
+        mesh_index_count(world, solid) / 6, mesh_index_count(world, see_through) / 6, zox_greedy_mesh);
     zox_tst_check(solid_faces == 360, "the solid mesh has [%i] faces, not [360]", solid_faces);
     zox_tst_check(see_through_faces == 528, "the see through mesh has [%i] faces, not [528]", see_through_faces);
     zox_tst_check(zox_get_link(world, see_through, MaterialLink) == zox_tst_vst_material,
