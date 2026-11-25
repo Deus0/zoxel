@@ -3,34 +3,6 @@
 #define get_voxel_indicies_1 &voxel_face_indicies_p[0]
 #define get_voxel_indicies_0 &voxel_face_indicies_p[6]
 
-// back
-static const float3 voxel_face_vertices_4_v2[] = {
-    // before
-    { 0, 0, 0 },
-    { 0, 1, 0 },
-    { 1, 1, 0 },
-    { 1, 0, 0 }
-};
-
-// front
-static const float3 voxel_face_vertices_5_v2[] = {
-    // before
-    { 0, 0, 1 },
-    { 0, 1, 1 },
-    { 1, 1, 1 },
-    { 1, 0, 1 }
-};
-
-// TODO: Fix verts for lighting in colored chunks!
-static const float3* voxel_face_vertices_v2[] = {
-    voxel_face_vertices_0,
-    voxel_face_vertices_1,
-    voxel_face_vertices_2,
-    voxel_face_vertices_3,
-    voxel_face_vertices_4_v2,
-    voxel_face_vertices_5_v2
-};
-
 const int voxel_face_indicies_p[] = {
     2, 1, 0, 0, 3, 2,   // reversed
     0, 1, 2, 2, 3, 0    // normal

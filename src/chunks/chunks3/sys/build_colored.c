@@ -119,7 +119,7 @@ void build_voxel_faces_colored(
             continue;
         }
         const int* indiciesf = voxel_face_indicies_n + direction * voxel_face_indicies_length;
-        const float3* verticesf = voxel_face_vertices_v2[direction];
+        const float3* verticesf = voxel_face_vertices_n[direction];
         add_voxel_face(mesh, positionf, bounds_offset, scale, indiciesf, verticesf);
         if (zox_ambient_occlusion) {
 #ifdef zox_ambient_occlusion27
@@ -320,7 +320,7 @@ static void build_voxel_faces_pyramid(
             continue;
         }
         const int* indiciesf = voxel_face_indicies_n + direction * voxel_face_indicies_length;
-        const float3* verticesf = voxel_face_vertices_v2[direction];
+        const float3* verticesf = voxel_face_vertices_n[direction];
         add_voxel_face(mesh, positionf, bounds_offset, scale, indiciesf, verticesf);
 #ifdef zox_ambient_occlusion27
         if (zox_ambient_occlusion) {
