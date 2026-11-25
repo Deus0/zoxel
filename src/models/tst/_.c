@@ -8,6 +8,7 @@
 #include "wfc.c"
 #include "gravity_cube_model.c"
 #include "vox_see_through.c"
+#include "colored_parent.c"
 
 void zox_tsts_models() {
     zox_tst_add("model_shapes", zox_tst_model_shapes_ready, zox_tst_model_shapes_check, 60);
@@ -29,5 +30,6 @@ void zox_tsts_models() {
     zox_tst_add("vox_see_through", zox_tst_vox_see_through_ready, zox_tst_vox_see_through_check, 30);
     zox_tst_add("slime_view", zox_tst_slime_view_ready, zox_tst_model_views_check, 60);
     zox_tst_set_setup("slime_view", NULL, 1);
+    zox_tst_add("colored_parent", zox_tst_colored_parent_ready, zox_tst_colored_parent_check, 30);
     zox_tst_set_setup("wfc", NULL, 1);
 }

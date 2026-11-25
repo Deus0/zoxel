@@ -391,7 +391,11 @@ void chunk_colors_build_system(iter* it) {
         if (max_process && process_count > max_process) {
             break;
         }
-        if (!vcolors->length) {
+        // a chunk of a colored chunk3 parent takes its parent's palette and material ids (spawn_chunk3_parent_colored)
+        const entity owner = vcolors->length ? e : zox_get_parent(world, e);
+        const ColorRGBs* palette = vcolors->length ? vcolors :
+            (zox_valid(owner) && zox_has(owner, ColorRGBs) ? zox_get(owner, ColorRGBs) : vcolors);
+        if (!palette->length) {
             continue;
         }
         clear_mesh(indicies, vertices, colors);
@@ -428,7 +432,11 @@ void chunk_colors_build_system(iter* it) {
         zox_octree_neighbor_locks(world, neighbors, neighbor_locks);
         spinlock* locked[7];
         const byte locked_count = zox_lock_voxel_trees(zox_octree_lock(world, e), neighbor_locks, locked);
-        build_voxel_mesh(voxels, noctrees, vcolors, &mesh, ndepth->value, rdepth->value, position, cscale, is_split, 1);
+        // its solid voxels (all of them without MaterialIDs)
+        byte materials[256];
+        const byte other = vox_material_table(zox_has(owner, MaterialIDs) ? zox_get(owner, MaterialIDs) : NULL, materials);
+        build_voxel_mesh_material(voxels, noctrees, palette, &mesh, ndepth->value, rdepth->value, position, cscale,
+            is_split, 1, other ? materials : NULL, zox_block_material_solid);
         zox_unlock_voxel_trees(locked, locked_count);
         indicies->length = mesh.indicies->size;
         vertices->length = mesh.vertices->size;

@@ -306,7 +306,11 @@ material entity; a kind is a tag on it, not a byte (solid none, see through one 
     (TransparentMesh, as terrain's water), the colored shader an alpha (the material's, color_rgb has none)
   - check: tst vox_materials at the mesher (done), then an instanced model in the game (4)
 - 4 done: tst slime_view (above)
-- 5: colored chunk3 parents (models bigger than a chunk), chunk3_single and chunk3_single_colored prefabs
+- 5 done (colored parents): spawn_chunk3_parent_colored (its palette on it, MaterialIDs after if any) and
+  spawn_chunk3_parent_colored_chunk (a vox prefab's chunk, its neighbours linked both ways at once, placed by its
+  centre); chunk_colors_build_system takes a chunk's parent's palette and material ids when it has none. tst
+  colored_parent: a ball across 2 x 2 x 2 chunks, 2904 faces, the ball's as one model. Left: a parented chunk's see
+  through mesh (its solid voxels only now), the chunk3_single prefabs (single models are vox prefabs today)
 - 6: each user of vox models checked as it moves (characters, items, minivoxes, critters, block voxes)
 
 

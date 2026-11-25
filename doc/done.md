@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-25
+-x Colored chunk3 parents, vox models bigger than a chunk (bosses): a parent with the palette, chunks that take it,
+  meshed with their neighbours, no faces where they meet (tst colored_parent). A see through pass draws without depth
+  writes: a shell's far faces aren't hidden by its near ones
 -x Vox models with see through parts (phase 3 of doc/plans/chunks_refactor.md): MaterialIDs a palette entry (as
   MagicaVoxel's), a see through mesh beside each lod (TransparentMesh), linking its material (MaterialLink to a
   TransparentMaterial with Alpha), drawn after the solid ones, blended. ModelLods isn't a component: a model's lod
