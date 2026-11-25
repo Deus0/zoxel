@@ -1,6 +1,7 @@
 // Spawns a single max detail vox, with a lod mesh per render depth
 //  - voxels are only generated / set at max_depth
-//  - ModelLods links each depth to its mesh, used for instancing
+//  - its meshes are its children (get_model_lod_mesh finds one by depth, for instancing); out_lods returns them now,
+//    as children spawned in a system aren't found till the merge
 entity spawn_vox_lods(
     ecs *world,
     entity parent,
@@ -39,7 +40,6 @@ entity spawn_vox_lods(
         zox_set_parent(world, mesh, e);
         lods.value[depth] = mesh;
     }
-    zox_set_ptr(e, ModelLods, lods);
     if (out_lods) {
         *out_lods = lods;
     }

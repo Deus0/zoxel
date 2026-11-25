@@ -40,7 +40,7 @@ const color zox_tst_model_views_background = { 96, 96, 96, 255 };
 entity zox_tst_model_views_mesh_of(ecs* world, entity e) {
     const entity model = zox_has(e, ModelLink) ? zox_get_link(world, e, ModelLink) : e;
     const entity first = get_model_first(world, model);
-    if (!zox_valid(first) || !zox_has(first, MaxRenderDepth) || !zox_has(first, ModelLods)) {
+    if (!zox_valid(first) || !zox_has(first, MaxRenderDepth) || !zox_has(first, VoxLods)) {
         return 0;
     }
     const entity mesh = get_max_model_mesh(world, model);

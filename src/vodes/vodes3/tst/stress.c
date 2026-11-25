@@ -31,7 +31,7 @@ static inline entity zox_tst_stress_find_mesh(ecs* world, entity realm) {
     const entity group = zox_valid(block) ? zox_get_link(world, block, ModelLink) : 0;
     entity models[8];
     const uint count = zox_valid(group) ? zox_get_children(world, group, models, 8) : 0;
-    if (!count || !zox_has(models[0], ModelLods)) {
+    if (!count || !zox_has(models[0], VoxLods)) {
         return 0;
     }
     const ModelLods* lods = zox_get(models[0], ModelLods);

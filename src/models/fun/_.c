@@ -117,8 +117,7 @@ entity get_lodded_model(
     if (!zox_valid(e)) {
         return 0;
     }
-    if (!zox_has(e, ModelLods) ||
-        !zox_has(e, MaxRenderDepth))
+    if (!zox_has(e, MaxRenderDepth))
     {
         zox_loge("Item has Invalid Model [%s]", zox_get_name(e));
         return 0;
@@ -127,8 +126,7 @@ entity get_lodded_model(
     if (depth > mdepth) {
         depth = mdepth;
     }
-    const ModelLods* mlods = zox_get(e, ModelLods);
-    return mlods->value[depth];
+    return get_model_lod_mesh(world, e, depth);
 }
 
 // Gets a models block scale and physics bounds, returns 0 if not a vox model

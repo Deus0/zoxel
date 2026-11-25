@@ -11,14 +11,13 @@ entity get_owner_lod_mesh(
         return 0;
     }
     entity source = zox_get_link(world, e, VoxLink);
-    if (!zox_valid(source) || !zox_has(source, ModelLods)) {
+    if (!zox_valid(source) || !zox_has(source, VoxLods)) {
         source = zox_get_link(world, e, ModelLink);
     }
-    if (!zox_valid(source) || !zox_has(source, ModelLods)) {
+    if (!zox_valid(source) || !zox_has(source, VoxLods)) {
         return 0;
     }
-    const ModelLods* lods = zox_get(source, ModelLods);
-    return lods->value[depth];
+    return get_model_lod_mesh(world, source, depth);
 }
 
 // Spawns a child vox to combine voxes into

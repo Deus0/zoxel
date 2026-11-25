@@ -56,8 +56,8 @@ void vode_animate_system(iter* it) {
             continue;
         }
         zox_set_link(world, e, ModelLink, next);
-        if (depth->value != render_depth_uninitialized && zox_has(next, ModelLods)) {
-            zox_set_link(world, e, InstanceLink, zox_get(next, ModelLods)->value[depth->value]);
+        if (depth->value != render_depth_uninitialized && zox_has(next, VoxLods)) {
+            zox_set_link(world, e, InstanceLink, get_model_lod_mesh(world, next, depth->value));
         }
     }
     zox_sys_on_end();

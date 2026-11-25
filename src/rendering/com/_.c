@@ -43,7 +43,11 @@ zox_tag(RendererLink);     // links to a child renderer, i.e. a characters insta
 // Models
 zox_tag(ModelLink);          // links to a model, or a model group
 #define model_lods_max_length 8
-zoxc_array(ModelLods, entity, model_lods_max_length);
+// a model's lod meshes by depth, as a spawn function returns them (its children are deferred in a system, not found
+//  yet); a model's meshes are its children, found by get_model_lod_mesh, no component
+typedef struct {
+    entity value[model_lods_max_length];
+} ModelLods;
 // Render Data
 zoxc_uint(MeshRenderCount);
 zoxc_arrayd(MeshIndicies, int);
@@ -132,7 +136,6 @@ void zox_components_rendering(ecs *world) {
     zoxd_nf_link(RendererLink);
     zoxd_nf_link(ShaderLink);
     zoxd_nf_link(ModelLink);
-    zox_define_component_array(ModelLods);
     // Render Data
     zoxd_uint(MeshRenderCount);
     zoxd_arrayd(MeshIndicies);

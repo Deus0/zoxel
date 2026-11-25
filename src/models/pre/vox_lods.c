@@ -1,6 +1,6 @@
 // A single max detail vox model, data only
 //  - spawns a VoxLodMesh child per render depth
-//  - ModelLods links to those meshes, for instancing
+//  - its meshes are found among its children by depth (get_model_lod_mesh), for instancing
 entity spawn_prefab_vox_lods(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("vox_lods");
@@ -11,7 +11,6 @@ entity spawn_prefab_vox_lods(ecs *world, entity prefab) {
     zox_setv(e, Color, color_white);
     zox_setv(e, VoxType, 0);
     zox_setv(e, GenerateModel, 0);
-    zox_add(e, ModelLods);
     return e;
 }
 
