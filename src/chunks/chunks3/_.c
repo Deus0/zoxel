@@ -45,6 +45,7 @@ void import_chunks3(ecs* world) {
     zox_tsts_chunks3_vox_materials();
     zox_tsts_icon_bake(world);
     zox_tsts_chunks3_gpu_mesh();
+    zox_tsts_chunks3_gpu_vox_colors();
     zox_tsts_chunks3_debug_octree();
 #endif
 }

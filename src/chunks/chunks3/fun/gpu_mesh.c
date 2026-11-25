@@ -23,6 +23,8 @@
 //  - a chunk material's mesh (gpu_mesher_set_material): only its block material's voxels, faces hidden as cpu sides
 //      hide them (block_material_hides), by two 256 bit masks
 //  - textured (gpu_mesher_set_uvs): each vertex its tilemap uv, the cpu's for that block, direction and corner
+//  - colored (gpu_mesher_set_colors, vox models): each vertex its palette colour darkened by ambient occlusion as the
+//      cpu's (fun/ao27.c): the face's two edge voxels and its corner voxel past it, see through voxels don't darken
 //  - no merging of faces yet
 //  - needs compute (OpenGL ES 3.1+, OpenGL 4.3+): gpu_mesher_create returns 0 without it, cpu meshing stays
 
@@ -37,6 +39,10 @@ typedef struct {
     uint vertex_lights; // a uint a vertex: its face's 4 corner lights (binding 5)
     uint uvs;           // the tilemap's uvs, 24 a block: its 6 directions' 4 corners as the cpu's (binding 6), not its own
     uint vertex_uvs;    // a vec2 a vertex, written when uvs are given (binding 7)
+    uint vertex_colors; // a uint a vertex, rgb a byte each, written when colored (binding 9)
+    byte colored;       // palette given (gpu_mesher_set_colors)
+    uint palette[256];  // voxel v's colour, rgb a byte each
+    uint occludes[8];   // voxels that darken corners, bit v - 1 (solid ones)
     byte textured;      // uvs given (gpu_mesher_set_uvs)
     uint max_faces;     // room in the vertex, light and index buffers
     ulong fence;        // after the last mesh, 0 once its count was read (gpu_mesher_counted)
@@ -85,6 +91,7 @@ static const char* zox_gpu_mesh_source =
 "layout(std430, binding = 5) writeonly buffer VertexLights { uint vertex_lights[]; };\n"
 "layout(std430, binding = 6) readonly buffer Uvs { vec2 uvs[]; };\n"
 "layout(std430, binding = 7) writeonly buffer VertexUvs { vec2 vertex_uvs[]; };\n"
+"layout(std430, binding = 9) writeonly buffer VertexColors { uint vertex_colors[]; };\n"
 "uniform int depth;\n"
 "uniform uint max_faces;\n"
 "uniform int lit;\n"
@@ -100,6 +107,9 @@ static const char* zox_gpu_mesh_source =
 "uniform uint hides[8];\n"
 "uniform int textured;\n"
 "uniform uint face_corners[24];\n"
+"uniform int colored;\n"
+"uniform uint palette[256];\n"
+"uniform uint occludes[8];\n"
 "\n"
 "// does this mesh draw voxel v (its block material's), bit v - 1\n"
 "bool is_drawn(uint v) {\n"
@@ -221,6 +231,31 @@ static const char* zox_gpu_mesh_source =
 "    return corners_light;\n"
 "}\n"
 "\n"
+"// darkens a corner (ambient occlusion): a voxel that occludes, bit v - 1\n"
+"uint occludes_at(ivec3 p) {\n"
+"    uint v = voxel_at(p);\n"
+"    uint i = v - 1u;\n"
+"    return v != 0u && ((occludes[i >> 5] >> (i & 31u)) & 1u) != 0u ? 1u : 0u;\n"
+"}\n"
+"\n"
+"// a corner's colour, as the cpu's (add_voxel_face_colors_ao_27): its two edge voxels and the corner voxel past the face\n"
+"uint corner_color(uint color, ivec3 p, int d, int s) {\n"
+"    ivec3 f = p + directions[d];\n"
+"    ivec3 edge_a = f + unit(axis_a[d]) * ((s & 1) != 0 ? 1 : -1);\n"
+"    ivec3 edge_b = f + unit(axis_b[d]) * ((s & 2) != 0 ? 1 : -1);\n"
+"    uint n1 = occludes_at(edge_a);\n"
+"    uint n2 = occludes_at(edge_b);\n"
+"    uint n3 = occludes_at(edge_a + edge_b - f);\n"
+"    uint count = n1 + n2 + n3;\n"
+"    float ao = (n1 + n2 == 2u || count == 3u) ? 0.25 : (count == 2u ? 0.6 : (count == 1u ? 0.8 : 1.0));\n"
+"    uint result = 0u;\n"
+"    for (int k = 0; k < 3; k++) {\n"
+"        float c = float((color >> (8 * k)) & 255u) * ao * 1.4;\n"
+"        result |= min(uint(c), 255u) << (8 * k);\n"
+"    }\n"
+"    return result;\n"
+"}\n"
+"\n"
 "// does a voxel's face that way show: into a missing chunk as edge_faces says (the top always), else unless hidden\n"
 "bool face_shows(ivec3 p, int d) {\n"
 "    ivec3 n = p + directions[d];\n"
@@ -274,6 +309,9 @@ static const char* zox_gpu_mesh_source =
 "            float w = float(voxel) + float(d) * 256.0 + float(light) * 2048.0 + float(s) * 524288.0;\n"
 "            vertices[v + uint(c)] = vec4(vec3(p) + corner, w);\n"
 "            vertex_lights[v + uint(c)] = face_light4;\n"
+"            if (colored != 0) {\n"
+"                vertex_colors[v + uint(c)] = corner_color(palette[voxel], p, d, s);\n"
+"            }\n"
 "        }\n"
 "        uint i = face * 6u;\n"
 "        indices[i] = v;\n"
@@ -442,6 +480,7 @@ byte gpu_mesher_create(GpuMesher* mesher, uint max_faces) {
     mesher->vertex_lights = zox_gpu_storage_buffer((size_t) max_faces * 4 * sizeof(uint), NULL);
     mesher->indices = zox_gpu_storage_buffer((size_t) max_faces * 6 * sizeof(uint), NULL);
     mesher->vertex_uvs = zox_gpu_storage_buffer((size_t) max_faces * 4 * sizeof(float2), NULL);
+    mesher->vertex_colors = zox_gpu_storage_buffer((size_t) max_faces * 4 * sizeof(uint), NULL);
     return 1;
 }
 
@@ -459,6 +498,7 @@ void gpu_mesher_dispose(GpuMesher* mesher) {
         zox_gpu_dispose_buffer(mesher->vertex_lights);
         zox_gpu_dispose_buffer(mesher->indices);
         zox_gpu_dispose_buffer(mesher->vertex_uvs);
+        zox_gpu_dispose_buffer(mesher->vertex_colors);
         zox_gpu_fence_dispose(mesher->fence);
     }
     memset(mesher, 0, sizeof(GpuMesher));
@@ -486,6 +526,23 @@ static inline void gpu_mesher_set_material(GpuMesher* mesher, const byte* materi
             mesher->hides[(v - 1) >> 5] |= bit;
         }
     }
+}
+
+// colored (a vox model): voxel v's colour colors[v - 1] (as ColorRGBs), materials (vox_material_table, NULL all solid):
+//  only solid voxels darken corners (vox_lookup_solid)
+static inline void gpu_mesher_set_colors(GpuMesher* mesher, const color_rgb* colors, int count, const byte* materials) {
+    memset(mesher->palette, 0, sizeof(mesher->palette));
+    memset(mesher->occludes, 0, sizeof(mesher->occludes));
+    for (int v = 1; v < 256 && v <= count; v++) {
+        const color_rgb c = colors[v - 1];
+        mesher->palette[v] = c.r | (c.g << 8) | (c.b << 16);
+    }
+    for (int v = 1; v < 256; v++) {
+        if (!materials || materials[v] == zox_block_material_solid) {
+            mesher->occludes[(v - 1) >> 5] |= 1u << ((v - 1) & 31);
+        }
+    }
+    mesher->colored = 1;
 }
 
 // the cpu's face corners (voxel_face_vertices_n, blocks/dat/mesh.c), bit 0 x, 1 y, 2 z: a corner's uv is the
@@ -533,6 +590,11 @@ void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, by
     zox_gpu_compute_uniform_uint_array(mesher->program, "drawn", mesher->drawn, 8);
     zox_gpu_compute_uniform_uint_array(mesher->program, "hides", mesher->hides, 8);
     zox_gpu_compute_uniform_int(mesher->program, "textured", mesher->textured);
+    zox_gpu_compute_uniform_int(mesher->program, "colored", mesher->colored);
+    if (mesher->colored) {
+        zox_gpu_compute_uniform_uint_array(mesher->program, "palette", mesher->palette, 256);
+        zox_gpu_compute_uniform_uint_array(mesher->program, "occludes", mesher->occludes, 8);
+    }
     if (mesher->textured) {
         zox_gpu_compute_uniform_uint_array(mesher->program, "face_corners", zox_gpu_mesh_face_corners, 24);
     }
@@ -551,6 +613,7 @@ void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, by
     zox_gpu_storage_bind(5, mesher->vertex_lights);
     zox_gpu_storage_bind(6, mesher->uvs ? mesher->uvs : mesher->vertex_uvs);    // untextured: any buffer, unread
     zox_gpu_storage_bind(7, mesher->vertex_uvs);
+    zox_gpu_storage_bind(9, mesher->vertex_colors ? mesher->vertex_colors : mesher->vertex_uvs);   // terrain's: unwritten
     const uint groups = (octree_size(depth) + zox_gpu_mesh_group_size - 1) / zox_gpu_mesh_group_size;
     zox_gpu_compute_dispatch(groups, groups, groups);
     zox_gpu_compute_use(0);
@@ -595,6 +658,9 @@ byte gpu_mesher_grow(GpuMesher* mesher, uint faces) {
     zox_gpu_storage_upload(mesher->vertex_lights, (size_t) mesher->max_faces * 4 * sizeof(uint), NULL);
     zox_gpu_storage_upload(mesher->indices, (size_t) mesher->max_faces * 6 * sizeof(uint), NULL);
     zox_gpu_storage_upload(mesher->vertex_uvs, (size_t) mesher->max_faces * 4 * sizeof(float2), NULL);
+    if (mesher->vertex_colors) {
+        zox_gpu_storage_upload(mesher->vertex_colors, (size_t) mesher->max_faces * 4 * sizeof(uint), NULL);
+    }
     zox_gpu_storage_write(mesher->command, 0, sizeof(zox_gpu_mesh_command_reset), zox_gpu_mesh_command_reset);
     return 1;
 }
@@ -653,6 +719,7 @@ void gpu_mesher_dispose(GpuMesher* mesher) { memset(mesher, 0, sizeof(GpuMesher)
 static inline void gpu_mesher_set_heights(GpuMesher* mesher, const byte* heights) { }
 static inline void gpu_mesher_set_material(GpuMesher* mesher, const byte* materials, byte material) { }
 static inline void gpu_mesher_set_uvs(GpuMesher* mesher, uint uvs) { }
+static inline void gpu_mesher_set_colors(GpuMesher* mesher, const color_rgb* colors, int count, const byte* materials) { }
 void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, byte depth, uint present, uint lights_present, const GpuMeshLighting* lighting) { }
 byte gpu_mesh_VoxelNode(GpuMesher* mesher, const VoxelNode* voxels, byte depth) { return 0; }
 uint gpu_mesher_read_faces(GpuMesher* mesher) { return 0; }

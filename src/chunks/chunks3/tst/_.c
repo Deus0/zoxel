@@ -9,6 +9,7 @@
 #include "vox_materials.c"
 #include "icon_bake.c"
 #include "gpu_mesh.c"
+#include "gpu_vox_colors.c"
 #include "debug_octree.c"
 
 void zox_tests_chunks3(ecs* world) {

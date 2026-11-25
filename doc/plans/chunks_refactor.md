@@ -318,6 +318,13 @@ material entity; a kind is a tag on it, not a byte (solid none, see through one 
   block_vox_hits, vox_instance_render, vox_instances_stress), grass (grass_tufts), critters (wfc, npc_skeletons),
   furniture, imported models (vox_import). Phase 3 done (2026-11-25); doc/tech/chunks3.md lists what's supported.
 
+Phase 4 (gpu meshing for vox models):
+- 1 done: colored per vertex in the compute shader (gpu_mesher_set_colors, fun/gpu_mesh.c): a voxel's palette colour
+  darkened by ambient occlusion as fun/ao27.c (its face's two edge voxels and the corner past them, solid ones only),
+  into vertex_colors (binding 9). tst gpu_vox_colors: vox_materials' slime, each kind's faces and every corner's colour
+  the cpu's (360 solid faces, 528 see through), gl and vulkan. Only with ao on (the "No AO" setting's plain shades not
+  yet); nothing draws vertex_colors yet.
+
 
 
 ## Results
