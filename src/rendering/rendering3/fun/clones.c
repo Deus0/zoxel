@@ -183,3 +183,24 @@ void mesh_clones_sync_gpu(ecs* world, entity source) {
     const int count = mesh_clones_of(world, source, clones, 64);
     mesh_clones_fill(world, source, clones, count);
 }
+
+// a colored mesh's faces as voxel faces of a size: its quads' area over a voxel face's, the same however its faces are
+//  merged (greedy meshing, chunks3/fun/greedy.c); a gpu mesh read back (tests)
+int mesh3_voxel_faces(ecs* world, entity mesh, float voxel) {
+    MeshIndicies gpu_indicies = { 0 };
+    MeshVertices gpu_vertices = { 0 };
+    MeshColorRGBs gpu_colors = { 0 };
+    const byte gpu = zox_has(mesh, GpuMesh) && mesh3_read_gpu(world, mesh, &gpu_indicies, &gpu_vertices, &gpu_colors);
+    const MeshVertices* vertices = gpu ? &gpu_vertices : zox_get(mesh, MeshVertices);
+    double area = 0;
+    for (int i = 0; vertices && i + 3 < vertices->length; i += 4) {
+        const float3* v = &vertices->value[i];
+        area += float3_length(float3_cross(float3_subtract(v[1], v[0]), float3_subtract(v[3], v[0])));
+    }
+    if (gpu) {
+        dispose_MeshIndicies(&gpu_indicies);
+        dispose_MeshVertices(&gpu_vertices);
+        dispose_MeshColorRGBs(&gpu_colors);
+    }
+    return (int) lround(area / ((double) voxel * voxel));
+}

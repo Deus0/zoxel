@@ -83,8 +83,10 @@ void zox_systems_bones(ecs *world) {
     zox_system(
         bone_index_generate_system2,
         zoxp_update,
-        [in] rendering.MeshVertices,
+        [out] rendering.MeshVertices,
         [out] rendering3.BoneIndexes,
+        [out] rendering.MeshIndicies,
+        [out] rendering.MeshColorRGBs,
         [none] rendering3.SkeletonMesh,
         [none] rendering.BuildMeshWeights,
         [none] !rendering.GpuMesh,

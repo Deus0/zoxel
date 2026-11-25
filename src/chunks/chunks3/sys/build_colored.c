@@ -399,7 +399,8 @@ void chunk_colors_build_system(iter* it) {
             continue;
         }
         clear_mesh(indicies, vertices, colors);
-        byte is_split = !zox_has(e, NoSplitChunk);
+        byte is_split = !zox_has(e, NoSplitChunk) || zox_greedy_mesh;
+        const float voxel_size = scale->value * octree_size(ndepth->value) / octree_size(rdepth->value);
         // its neighbours' trees, faces into them hidden where they're solid
         const VoxelNode* noctrees[6];
         for (byte j = 0; j < 6; j++) {
@@ -464,6 +465,9 @@ void chunk_colors_build_system(iter* it) {
                 shell_indicies->value = finalize_arrayd_int(shell_mesh.indicies);
                 shell_vertices->value = finalize_arrayd_float3(shell_mesh.vertices);
                 shell_colors->value = finalize_arrayd_color_rgb(shell_mesh.colors);
+                if (zox_greedy_mesh) {
+                    mesh_greedy(shell_indicies, shell_vertices, shell_colors, NULL, position, voxel_size);
+                }
                 zox_add(shell, MeshDirty);
             }
         }
@@ -474,6 +478,9 @@ void chunk_colors_build_system(iter* it) {
         indicies->value = finalize_arrayd_int(mesh.indicies);
         vertices->value = finalize_arrayd_float3(mesh.vertices);
         colors->value = finalize_arrayd_color_rgb(mesh.colors);
+        if (zox_greedy_mesh) {
+            mesh_greedy(indicies, vertices, colors, NULL, position, voxel_size);
+        }
         zox_remove(e, BuildMesh);
         zox_add(e, MeshDirty);
         if (dbg_log) {

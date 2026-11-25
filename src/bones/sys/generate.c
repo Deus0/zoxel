@@ -273,12 +273,16 @@ void bone_index_generate_system2(iter* it) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(MeshVertices);
+    zox_sys_out(MeshVertices);
     zox_sys_out(BoneIndexes);
+    zox_sys_out(MeshIndicies);
+    zox_sys_out(MeshColorRGBs);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(MeshVertices, verts);
+        zox_sys_o(MeshVertices, verts);
         zox_sys_o(BoneIndexes, weights);
+        zox_sys_o(MeshIndicies, indicies);
+        zox_sys_o(MeshColorRGBs, colors);
         zox_remove(e, BuildMeshWeights);
         entity skeleton = zox_get_parent(world, e);
         if (!zox_valid(skeleton) || !zox_has(skeleton, BoneLinks)) {
@@ -298,6 +302,14 @@ void bone_index_generate_system2(iter* it) {
         }
         const BoneLinks* bones = zox_get(skeleton, BoneLinks);
         generate_weights(world, e, vox, zox_getv(e, RenderDepth), verts, bones, weights);
+        // faces merged where they draw and move the same: one colour and one weight at all corners (fun/greedy.c)
+        if (zox_greedy_mesh && weights->length == verts->length) {
+            const byte depth = int_min(zox_getv(e, RenderDepth), zox_getv(vox, NodeDepth));
+            const float scale = zox_getv(vox, BlockScale);
+            mesh_greedy(indicies, verts, colors, weights,
+                float3_scale(calculate_vox_bounds(zox_getv(vox, ChunkSize), scale), -1),
+                scale * octree_size(zox_getv(vox, NodeDepth)) / octree_size(depth));
+        }
         if (dbg_log) {
             zox_log("Weights Updated [%s] Bones [%i]",
                 zox_sys_e_name,

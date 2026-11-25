@@ -47,7 +47,7 @@ byte zox_tst_colored_parent_ready(ecs* world) {
 void zox_tst_colored_parent_check(ecs* world) {
     int faces = 0;
     for (int i = 0; i < 8; i++) {
-        faces += mesh_index_count(world, zox_tst_cpar_chunks[i]) / 6;
+        faces += mesh3_voxel_faces(world, zox_tst_cpar_chunks[i], 1.0f);  // as voxel faces: however they merge
         zox_tst_check(!zox_get(zox_tst_cpar_chunks[i], ColorRGBs)->length, "chunk [%i] has its own palette", i);
     }
     int expected = 0;
@@ -130,8 +130,8 @@ void zox_tst_colored_parent_shell_check(ecs* world) {
     for (int i = 0; i < 8; i++) {
         const entity chunk = zox_tst_cpar_chunks[i];
         const entity child = zox_tst_cpar_shell_of(world, chunk);
-        solid += mesh_index_count(world, chunk) / 6;
-        shell += mesh_index_count(world, child) / 6;
+        solid += mesh3_voxel_faces(world, chunk, 1.0f);
+        shell += mesh3_voxel_faces(world, child, 1.0f);
         const float4x4 a = zox_getv(chunk, TransformMatrix), b = zox_getv(child, TransformMatrix);
         misplaced += memcmp(&a, &b, sizeof(float4x4)) != 0;
     }

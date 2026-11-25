@@ -339,7 +339,7 @@ Phase 4 (gpu meshing for vox models):
 - 5 done: colored chunk3 parents' chunks on the gpu (chunk_colors_gpu_system, sys/vox_gpu.c): its neighbours' sides on
   the grid's border hide faces where chunks meet, its voxels there air (ambient occlusion stops at the chunk, as the
   cpu's); its see through child meshed with it. tst colored_parent(_shell): 2904 faces, none where chunks meet.
-- Left: a no split model's uniform nodes as one big face (the cpu merges them, the gpu draws a face a voxel): faces
+- Left: (done in phase 5) a no split model's uniform nodes as one big face (the cpu merges them, the gpu draws a face a voxel): faces
   merged is its own step after this refactor (Open questions, greedy meshing).
 
 
@@ -352,3 +352,16 @@ Phase 4 (gpu meshing for vox models):
 
 - Baseline (2026-11-25): doc/results.md, Meshing speed. A textured chunk's sides are ~85% of its cpu cost; the
   colored pyramid grid is 4 to 5 times the octree walk at full detail.
+
+## Phase 5: greedy meshing (2026-11-26)
+
+Faces merged where they draw the same (doc/tech/chunks3.md, Greedy meshing): a face merges only if its 4 corners are
+one colour (palette and ambient occlusion, or its direction's shade without) and, skinned, one weight, so the picture
+doesn't change; a direction and a plane at a time, row by row, a face grown along its first axis then down rows. Vox
+models and characters, cpu and gpu; terrain (tiles repeating, lights) after.
+- 1 done: the cpu's, a pass over a built mesh (fun/greedy.c, `mesh_greedy`, `zox_greedy_mesh` on): lod meshes, colored
+  chunks and their see through children, skeleton meshes after their weights (bones/sys/generate.c). With it a no split
+  model splits to voxels first (they merge better than whole nodes). Tests count faces as voxel faces
+  (`mesh3_voxel_faces`: its area) and body_poses cuts a merged quad's sides into voxel long pieces. The slime 360 to
+  246 solid faces, 528 to 210 see through; a humanoid 19896 to 15820 vertices, no cracks at joints.
+

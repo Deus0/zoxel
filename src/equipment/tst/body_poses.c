@@ -234,17 +234,15 @@ static inline void zox_tst_poses_open_edges(ecs* world, entity skeleton, entity 
         .bounds = calculate_vox_bounds(zox_getv(vox, ChunkSize), block_scale), .parents = parents, .bones = bones->length };
     const float grid_size = block_scale * 0.5f;
     const int faces = vertices->length / 4;
-    zox_tst_poses_edge* edges = malloc(sizeof(zox_tst_poses_edge) * faces * 4);
+    // a merged quad's sides (greedy meshing, chunks3/fun/greedy.c) are several voxels long: each side cut into its
+    //  voxel long pieces, so they meet the pieces of the faces beside it
+    int edges_count = 0, edges_room = faces * 4;
+    zox_tst_poses_edge* edges = malloc(sizeof(zox_tst_poses_edge) * edges_room);
     for (int f = 0; f < faces; f++) {
         const float3* v = &vertices->value[f * 4];
         const int* face = &zox_get(mesh, MeshIndicies)->value[f * 6];
         const int tri[3] = { face[0] - f * 4, face[1] - f * 4, face[2] - f * 4 };
         const byte bone = bone_parts_face(&b, v, tri);
-        long long keys[4];
-        for (int k = 0; k < 4; k++) {
-            keys[k] = (((long long) lroundf(v[k].x / grid_size) + 4096) << 40) |
-                (((long long) lroundf(v[k].y / grid_size) + 4096) << 20) | ((long long) lroundf(v[k].z / grid_size) + 4096);
-        }
         // a quad's 4 sides: of its 6 corner pairs, the 2 longest are its diagonals
         const int pairs[6][2] = { { 0, 1 }, { 0, 2 }, { 0, 3 }, { 1, 2 }, { 1, 3 }, { 2, 3 } };
         float lengths[6];
@@ -262,27 +260,38 @@ static inline void zox_tst_poses_open_edges(ecs* world, entity skeleton, entity 
                 diagonal_b = k;
             }
         }
-        int side = 0;
         for (int k = 0; k < 6; k++) {
             if (k == diagonal_a || k == diagonal_b) {
                 continue;
             }
-            const long long x = keys[pairs[k][0]], y = keys[pairs[k][1]];
-            const float3 along = float3_sub(v[pairs[k][0]], v[pairs[k][1]]);
+            const float3 from = v[pairs[k][0]], to = v[pairs[k][1]];
+            const float3 along = float3_sub(from, to);
             const byte axis = fabsf(along.x) > fabsf(along.y) ? (fabsf(along.x) > fabsf(along.z) ? 0 : 2) :
                 (fabsf(along.y) > fabsf(along.z) ? 1 : 2);
-            edges[f * 4 + side++] = (zox_tst_poses_edge) { x < y ? x : y, x < y ? y : x, bone, .axis = axis,
-                .p = 
-                float3_scale(float3_add(v[pairs[k][0]], v[pairs[k][1]]), 0.5f),
-                .n = float3_normalize(float3_cross(float3_sub(v[tri[1]], v[tri[0]]), float3_sub(v[tri[2]], v[tri[0]]))) };
+            const int pieces = int_max(1, (int) lroundf(float3_length(along) / b.size));
+            for (int piece = 0; piece < pieces; piece++) {
+                const float3 p0 = float3_add(to, float3_scale(along, (float) piece / pieces));
+                const float3 p1 = float3_add(to, float3_scale(along, (float) (piece + 1) / pieces));
+                const long long x = (((long long) lroundf(p0.x / grid_size) + 4096) << 40) |
+                    (((long long) lroundf(p0.y / grid_size) + 4096) << 20) | ((long long) lroundf(p0.z / grid_size) + 4096);
+                const long long y = (((long long) lroundf(p1.x / grid_size) + 4096) << 40) |
+                    (((long long) lroundf(p1.y / grid_size) + 4096) << 20) | ((long long) lroundf(p1.z / grid_size) + 4096);
+                if (edges_count == edges_room) {
+                    edges_room *= 2;
+                    edges = realloc(edges, sizeof(zox_tst_poses_edge) * edges_room);
+                }
+                edges[edges_count++] = (zox_tst_poses_edge) { x < y ? x : y, x < y ? y : x, bone, .axis = axis,
+                    .p = float3_scale(float3_add(p0, p1), 0.5f),
+                    .n = float3_normalize(float3_cross(float3_sub(v[tri[1]], v[tri[0]]), float3_sub(v[tri[2]], v[tri[0]]))) };
+            }
         }
     }
-    qsort(edges, faces * 4, sizeof(zox_tst_poses_edge), zox_tst_poses_edge_compare);
+    qsort(edges, edges_count, sizeof(zox_tst_poses_edge), zox_tst_poses_edge_compare);
     int open = 0, logged = 0;
-    for (int i = 0; i < faces * 4;) {
+    for (int i = 0; i < edges_count;) {
         int j = i;
         int counts[256] = { 0 };
-        while (j < faces * 4 && edges[j].a == edges[i].a && edges[j].b == edges[i].b) {
+        while (j < edges_count && edges[j].a == edges[i].a && edges[j].b == edges[i].b) {
             counts[edges[j].bone]++;
             j++;
         }

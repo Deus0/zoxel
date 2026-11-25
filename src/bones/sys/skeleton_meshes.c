@@ -246,7 +246,8 @@ void skeleton_mesh_build_system(iter* it) {
             zox_block_material_solid,
             indicies,
             vertices,
-            colors);
+            colors,
+            0);     // merged after its weights (generate.c)
         zox_remove(e, BuildMesh);
         if (result == zox_vox_mesh_invalid) {
             zox_loge("SkeletonMesh [%s] has invalid skeleton owner vox", zox_sys_e_name);

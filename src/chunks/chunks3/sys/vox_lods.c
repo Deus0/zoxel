@@ -33,7 +33,8 @@ void vox_lods_mesh_trigger_system(iter* it) {
 
 // Builds a colored mesh from a vox's max depth voxels, at a target depth
 //  - used by meshes that are children of their vox (VoxLodMesh, SkeletonMesh)
-// a model's mesh at a lod of one kind (zox_block_material_solid, or a see through one: its TransparentMesh sibling)
+// a model's mesh at a lod of one kind (zox_block_material_solid, or a see through one: its TransparentMesh sibling),
+//  its faces merged (greedy, fun/greedy.c)
 byte build_vox_mesh_at_depth(
     ecs* world,
     entity vox,
@@ -41,7 +42,8 @@ byte build_vox_mesh_at_depth(
     byte kind,
     MeshIndicies* indicies,
     MeshVertices* vertices,
-    MeshColorRGBs* colors)
+    MeshColorRGBs* colors,
+    byte greedy)
 {
     if (!zox_valid(vox) ||
         !zox_has(vox, VoxelNode) ||
@@ -65,7 +67,8 @@ byte build_vox_mesh_at_depth(
     if (target_depth > node_depth) {
         target_depth = node_depth;
     }
-    byte is_split = !zox_has(vox, NoSplitChunk);
+    // greedy meshing merges faces better than whole nodes: every voxel its own face first (fun/greedy.c)
+    byte is_split = !zox_has(vox, NoSplitChunk) || zox_greedy_mesh;
     const VoxelNode* noctrees[6] = { 0 };
     // NOTE: Same space for all lods, positions are based on the max depth vox
     ushort vlength = octree_size(node_depth);
@@ -96,6 +99,10 @@ byte build_vox_mesh_at_depth(
     indicies->value = finalize_arrayd_int(mesh.indicies);
     vertices->value = finalize_arrayd_float3(mesh.vertices);
     colors->value = finalize_arrayd_color_rgb(mesh.colors);
+    // merged now (greedy), a skeleton mesh after its weights (bones/sys/generate.c)
+    if (greedy) {
+        mesh_greedy(indicies, vertices, colors, NULL, position, cscale / octree_size(target_depth));
+    }
     return zox_vox_mesh_built;
 }
 
@@ -131,7 +138,8 @@ void vox_lod_mesh_build_system(iter* it) {
             zox_has(e, TransparentMesh) ? zox_block_material_liquid : zox_block_material_solid,
             indicies,
             vertices,
-            colors);
+            colors,
+            zox_greedy_mesh);
         zox_sys_budget_end(vox_mesh);
         zox_remove(e, BuildMesh);
         if (result == zox_vox_mesh_invalid) {
