@@ -150,13 +150,6 @@ void zox_systems_chunks3(ecs *world) {
         [none] chunks3.ChunkUpdate,
         [none] chunks.ChunkTextured
     );
-    // a chunk's meshes rebuild once its voxels or a neighbour changed (BuildChunkSides)
-    zox_system(
-        chunk_sides_system,
-        zoxp_octree_read,
-        [none] chunks.ChunkTextured,
-        [none] chunks.BuildChunkSides,
-    );
     // Spawn mesh when voxel updates
     zox_system_1(
         chunk_mesh_spawn_system,
@@ -182,7 +175,7 @@ void zox_systems_chunks3(ecs *world) {
         [out] chunks.ChunkMeshTimer,
         [none] chunks.ChunkTextured,
     );
-    // After the side builds and GPU grid fills have merged, the swap sees the meshes each neighbour still owes.
+    // After the gpu grid fills have merged, the swap sees the meshes each neighbour still owes.
     zox_system(
         chunk_mesh_transition_system,
         zoxp_layouts,
@@ -190,7 +183,6 @@ void zox_systems_chunks3(ecs *world) {
         [in] rendering.RenderDepth,
         [none] chunks.ChunkTextured,
         [none] !chunks.GenerateChunk,
-        [none] !chunks.BuildChunkSides,
     );
     // held shown meshes build again once their chunk's relit (hidden ones, swapped out lods, stay held)
     zox_system(

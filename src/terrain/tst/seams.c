@@ -323,11 +323,11 @@ static inline void zox_tst_seam_side(ecs* world, entity cx, entity cy, const zox
                         }
                         const entity m = x->mesh[i];
                         zox_log("[tst]  seam: chunk [%ix%ix%i] material [%i] depth [%i] voxel [%i] has no face %s%c at cell [%i %i] "
-                            "(%s, mesh %s%s%s, swapping [%i] to [%i], its sides building [%i]), its neighbour (swapping [%i] to [%i]) draws:%s",
+                            "(%s, mesh %s%s%s, swapping [%i] to [%i]), its neighbour (swapping [%i] to [%i]) draws:%s",
                             p.x, p.y, p.z, x->material[i], x->depth[i], voxel, positive ? "+" : "-", "xyz"[axis], u, v,
                             zox_has(m, GpuMesh) ? "gpu" : "cpu", zox_has(m, BuildDisabled) ? "X" : "", zox_has(m, BuildMesh) ? "B" : "",
                             zox_has(m, MeshDirty) ? "M" : "", zox_has(cx, ChunkLodDirty), zox_getv(cx, RenderDepth),
-                            zox_has(cx, BuildChunkSides), zox_has(cy, ChunkLodDirty), zox_getv(cy, RenderDepth),
+                            zox_has(cy, ChunkLodDirty), zox_getv(cy, RenderDepth),
                             y->count ? depths : " nothing");
                         if (zox_tst_seam_log_more) {
                             char more[512] = { 0 };

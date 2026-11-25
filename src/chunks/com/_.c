@@ -1,7 +1,6 @@
 zox_tag(Chunk);
 // zox_tag(ChunkMesh);
 zox_tag(NoSplitChunk);
-zox_tag(BuildChunkSides);
 zox_tag(ChunkTextured);
 zox_tag(FindNeighbors);
 zoxc_byte(GenerateChunk);
@@ -15,7 +14,6 @@ void zox_components_chunks(ecs* world) {
     // zoxd_tag(ChunkMesh);
     zoxd_tag(ChunkTextured);
     // Events
-    zoxd_tag_event(BuildChunkSides);
     zoxd_tag_event(FindNeighbors);
     // Properties
     zoxd_nf_tag(NoSplitChunk);

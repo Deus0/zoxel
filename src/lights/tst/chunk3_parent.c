@@ -37,7 +37,6 @@ static inline int zox_tst_chunks_busy(ecs* world, entity parent) {
                 continue;
             }
             zox_tst_perf_generating += zox_has(chunk, GenerateChunk) && zox_getv(chunk, GenerateChunk);
-            zox_tst_perf_siding += zox_has(chunk, BuildChunkSides);
             zox_tst_perf_swapping += zox_has(chunk, ChunkLodDirty);
             zox_tst_perf_lighting += zox_chunk_lighting_busy(world, chunk);
             zox_tst_perf_editing += (zox_has(chunk, VoxelNodeQueue) && zox_get(chunk, VoxelNodeQueue)->count) ||

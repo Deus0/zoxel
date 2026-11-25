@@ -190,7 +190,6 @@ uint zox_dbg_label_inside_chunk(
         zox_getv(chunk, ChunkLodDirty) :
         0;
     byte voxels_dirty = zox_has(chunk, VoxelNodeDirty);
-    byte build = zox_has(chunk, BuildChunkSides);
     index += snprintf(buffer + index, size - index,
         " - At [%ix%ix%i]\n",
             position.x,
@@ -217,11 +216,6 @@ uint zox_dbg_label_inside_chunk(
         index += snprintf(buffer + index, size - index,
             " - Voxels Dirty [%i]\n",
                 voxels_dirty);
-    }
-    if (build) {
-        index += snprintf(buffer + index, size - index,
-            " - Build Sides [%i]\n",
-                build);
     }
     const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
     index += snprintf(buffer + index, size - index,

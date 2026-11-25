@@ -19,7 +19,7 @@ static inline byte chunk_mesh_ready(ecs* world, entity chunk, entity mesh) {
         !zox_chunk_lighting_busy(world, chunk);
 }
 
-// a neighbour's faces against this chunk still to build: its sides, or a shown mesh's mesh, one held mid swap of its
+// a neighbour's faces against this chunk still to build: a shown mesh's mesh, one held mid swap of its
 //  own too (BuildDisabled builds once its chunk's relit, that never waits on a swap: two side by side don't lock)
 static inline byte chunk_neighbors_rebuilding(ecs* world, entity chunk) {
     const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
@@ -27,9 +27,6 @@ static inline byte chunk_neighbors_rebuilding(ecs* world, entity chunk) {
         const entity neighbor = neighbors->value[n];
         if (!zox_valid(neighbor) || !zox_has(neighbor, Chunk3)) {
             continue;
-        }
-        if (zox_has(neighbor, BuildChunkSides)) {
-            return 1;
         }
         entity meshes[zox_chunk_meshes_max];
         const uint count = get_chunk_meshes(world, neighbor, meshes);

@@ -238,14 +238,6 @@ void build_smooth_lights_system(iter* it) {
         if (zox_has(e, MeshColorsBuilt) && zox_chunk_lights_settling(world, chunk)) {
             continue;
         }
-        // If chunk building we wait
-        if (zox_has(chunk, BuildChunkSides)) {
-            if (dbg_log) {
-                zox_log("Chunk [%s] is still Building Sides",
-                    zox_getn(chunk));
-            }
-            continue;
-        }
         const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
         // const VoxelNode* root_voxels = zox_get(chunk, VoxelNode);
         entity nearby_chunks[27];

@@ -134,6 +134,18 @@ static inline byte chunk_side_depth(ecs* world, entity chunk) {
     return chunk_drawn_depth(world, chunk);
 }
 
+// a chunk's meshes rebuild (BuildMesh), against its voxels and its neighbours' as they are then: its voxels or a
+//  neighbour changed. Added even when one seems built already: a mesh building this frame had its BuildMesh's removal
+//  deferred, has() still saw it, and it kept the faces from before (holes as lods changed). A mesh not spawned yet
+//  starts building anyway (pre/mesh.c)
+static inline void chunk_meshes_rebuild(ecs* world, entity chunk) {
+    entity meshes[zox_chunk_meshes_max];
+    const uint count = get_chunk_meshes(world, chunk, meshes);
+    for (uint i = 0; i < count; i++) {
+        zox_add(meshes[i], BuildMesh);
+    }
+}
+
 // its neighbours rebuild their faces against it (chunk_side_depth): it's unsettled now, or settled at another depth (a
 //  face it hid at its old depth stayed hidden: holes where lods met as you walked about)
 static inline void chunk_neighbors_rebuild_sides(ecs* world, entity chunk) {
@@ -141,27 +153,7 @@ static inline void chunk_neighbors_rebuild_sides(ecs* world, entity chunk) {
     for (byte n = 0; n < chunk_neighbors_length; n++) {
         const entity neighbor = neighbors->value[n];
         if (zox_valid(neighbor) && zox_has(neighbor, Chunk3)) {
-            zox_add(neighbor, BuildChunkSides);
+            chunk_meshes_rebuild(world, neighbor);
         }
     }
 }
-
-// a chunk's meshes rebuild (BuildMesh): its voxels or a neighbour changed (BuildChunkSides, from the triggers and
-//  chunk_neighbors_rebuild_sides); their faces come from the voxels then (sys/build_grid.c)
-//  - added even when it seems built already: a mesh building this frame had its BuildMesh's removal deferred, has()
-//    still saw it, and it kept the faces from before (holes as lods changed)
-void chunk_sides_system(iter* it) {
-    zox_sys_on_begin();
-    zox_sys_world();
-    for (int i = 0; i < it->count; i++) {
-        zox_sys_e();
-        entity meshes[zox_chunk_meshes_max];
-        const uint meshes_count = get_chunk_meshes(world, e, meshes);
-        for (uint j = 0; j < meshes_count; j++) {
-            zox_add(meshes[j], BuildMesh);
-        }
-        zox_remove(e, BuildChunkSides);
-        zox_sys_increment();
-    }
-    zox_sys_on_end();
-} zoxd_system(chunk_sides_system);

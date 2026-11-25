@@ -62,9 +62,7 @@ void stream_end_system(iter* it) {
                     chunks_generating++;
                     continue;
                 }
-                if (zox_has(e2, BuildChunkSides) ||
-                    // zox_has(e2, VoxelNodeDirty) ||
-                    zox_has(e2, Initialize))
+                if (zox_has(e2, Initialize))
                 {
                     chunks_loading++;
                     chunks_busy++;

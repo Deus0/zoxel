@@ -84,7 +84,7 @@ static inline int zox_tst_near_pending(ecs* world, int2 stream) {
                     zox_tst_near_mesh += zox_has(mesh, BuildMesh) || zox_has(mesh, MeshDirty) || !zox_has(mesh, MeshBuilt);
                     zox_tst_near_lights += zox_chunk_lighting_busy(world, chunk);
                     zox_tst_near_mesh_lights += zox_chunk_mesh_lighting_busy(world, mesh);
-                    zox_tst_near_blocked += zox_has(chunk, GenerateChunk) || zox_has(chunk, BuildChunkSides);
+                    zox_tst_near_blocked += zox_has(chunk, GenerateChunk);
                 }
                 break;
             }

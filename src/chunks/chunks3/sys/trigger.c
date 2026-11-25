@@ -5,7 +5,7 @@ void chunk_sides_trigger_system(iter* it) {
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_add(e, BuildChunkSides);
+        chunk_meshes_rebuild(world, e);
         if (dbg_log) {
             zox_log("Chunk Triggered Build Sides + Mesh [%s]", zox_getn(e));
         }
@@ -32,7 +32,7 @@ void chunk_neighbors_sides_trigger_system(iter* it) {
                 }
                 continue;
             }
-            zox_add(neighbor, BuildChunkSides);
+            chunk_meshes_rebuild(world, neighbor);
             if (dbg_log) {
                 zox_log("Chunk [%s] Triggered Neighbors Build Sides + Mesh [%s]", zox_getn(e), zox_getn(neighbor));
             }

@@ -383,9 +383,9 @@ zox_tst_cmf_slot zox_tst_cmf_states[zox_tst_cmf_slots];    // a chunk's last sta
 // a chunk's state: lod dirty, render depth, generating, sides building; each material's shown meshes: depth and
 //  flags (B building, M uploading, X held, + built)
 static inline void zox_tst_cmf_state(ecs* world, entity chunk, char* text, int length) {
-    int n = snprintf(text, length, "lod %i rd %i gen %i sides %i |",
+    int n = snprintf(text, length, "lod %i rd %i gen %i |",
         zox_has(chunk, ChunkLodDirty) ? zox_getv(chunk, ChunkLodDirty) : -1, zox_getv(chunk, RenderDepth),
-        zox_has(chunk, GenerateChunk) ? zox_getv(chunk, GenerateChunk) : 0, zox_has(chunk, BuildChunkSides));
+        zox_has(chunk, GenerateChunk) ? zox_getv(chunk, GenerateChunk) : 0);
     entity materials[zox_block_materials];
     const uint materials_count = get_chunk_materials(world, chunk, materials);
     for (uint j = 0; j < materials_count && n < length - 16; j++) {
@@ -633,13 +633,13 @@ static inline void zox_tst_cmf_frame(ecs* world, entity terrain) {
 
 // a chunk's state, its meshes: d depth, D disabled, X build disabled, B building, M uploading, + built
 static inline int zox_tst_cmf_chunk_text(ecs* world, entity chunk, char* text, int length) {
-    int n = snprintf(text, length, "changed [%i frames ago] lod dirty [%i] generate [%i] lighting [%i: dirty %i sun %i light %i dark %i] sides [%i] node depth [%i] meshes",
+    int n = snprintf(text, length, "changed [%i frames ago] lod dirty [%i] generate [%i] lighting [%i: dirty %i sun %i light %i dark %i] node depth [%i] meshes",
         zox_tst_cmf_frames - (int) zox_tst_cmf_find(zox_tst_cmf_changed_at, chunk)->value,
         zox_has(chunk, ChunkLodDirty) ? zox_getv(chunk, ChunkLodDirty) : -1,
         zox_has(chunk, GenerateChunk) ? zox_getv(chunk, GenerateChunk) : -1, zox_chunk_lighting_busy(world, chunk),
         zox_has(chunk, LightOctreeDirty) ? zox_getv(chunk, LightOctreeDirty) : -1, (int) zox_get(chunk, SunlightQueue)->count,
         (int) zox_get(chunk, LightQueue)->count, (int) zox_get(chunk, DarkQueue)->count,
-        zox_has(chunk, BuildChunkSides), zox_getv(chunk, NodeDepth));
+        zox_getv(chunk, NodeDepth));
     entity meshes[zox_chunk_meshes_max];
     const uint count = get_chunk_meshes(world, chunk, meshes);
     for (uint j = 0; j < count && n < length - 24; j++) {

@@ -30,7 +30,10 @@ perf_terrain, release, far 8, seed 666, 4 runs each alternated, unprofiled, cpu 
 | a step settles | 1.79 to 1.81s | 1.46 to 1.50s |
 | load | 0.80 to 0.82s | 0.62 to 0.65s |
 
-The 1% low is still ~48 fps: under the 90 fps VR needs, below.
+Then the BuildChunkSides wait gone (2 runs): frames over 11ms 81 and 80, 1% low 49.6 and 50.0, average 131 fps,
+steps 1.36s, load 0.61s.
+
+The 1% low is still ~50 fps: under the 90 fps VR needs, below.
 
 ### Stream steps settle 3x slower since b53bd6fac (2026-11-23)
 

@@ -3,7 +3,7 @@
 //      had been a deleted entity's it came back alive with the instance's generation, not a newer one: the deleted
 //      entity's old handle could be alive again, as the new child
 //  - in game: a deleted chunk's id became an npc's stat, its neighbours' links to it read alive (a segfault in
-//      chunk_sides_system, the lights before it), doc/todo.md (Bugs), doc/flecs_patches.md (instance child ids)
+//      the chunk meshes, the lights before them), doc/todo.md (Bugs), doc/flecs_patches.md (instance child ids)
 //  - run: bash bsh/tst.sh instance_id_reuse
 byte zox_tst_instance_id_reuse_ready(ecs* world) {
     (void) world;

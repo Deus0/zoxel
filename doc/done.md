@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-25
+-x A chunk's meshes rebuild directly (chunk_meshes_rebuild: BuildMesh on its meshes), not through BuildChunkSides and
+  chunk_sides_system a frame later; the tag, the system and the mesher's and lights' waits on it gone. perf_terrain
+  release far 8: frames over 11ms ~98 to ~80 a stream, steps 1.47s to 1.36s, 131 fps; seams and flashes still none
 -x SidesOctree removed: terrain's faces come from the voxel grid only (sys/build_grid.c), the component, its lock,
   build_sides_dig and the sides walks in the mesher and lights gone, chunk_sides_system only asks meshes to rebuild.
   tst chunk_sides ported to the grid (its lod border cases), stream_sides and stream_gpu_sides gone (stream_seams

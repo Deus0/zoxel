@@ -39,7 +39,7 @@ void tunk_unload_system(iter* it) {
                 zox_muter(neighbor, ChunkNeighbors, back);
                 if (back->value[reverse_direction(d)] == chunk) {
                     back->value[reverse_direction(d)] = 0;
-                    zox_add(neighbor, BuildChunkSides);
+                    chunk_meshes_rebuild(world, neighbor);
                 }
             }
             int3_hashmap_remove(chunks->value, (int3) { position->value.x, k - stack->length / 2, position->value.y });

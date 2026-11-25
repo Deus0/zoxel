@@ -173,13 +173,21 @@ static void zox_tst_lod_coarsen_check(ecs* world) {
 // during that update replaces the voxels while the displayed neighbour still hides its border.
 static entity zox_tst_refining_chunk, zox_tst_border_neighbor;
 static int zox_tst_refine_frames;
+static entity zox_tst_border_mesh;
 
 static byte zox_tst_lod_refine_border_ready(ecs* world) {
     if (!zox_tst_refining_chunk) {
         zox_chunks3_gpu_meshing = 0;
+        // a neighbour whose mesh still rebuilds (BuildMesh): what the swap waits on (chunk_neighbors_rebuilding)
         zox_tst_border_neighbor = zox_new();
         zox_add(zox_tst_border_neighbor, Chunk3);
-        zox_add(zox_tst_border_neighbor, BuildChunkSides);
+        const entity material = zox_new();
+        zox_add(material, ChunkMaterial);
+        zox_set_parent(world, material, zox_tst_border_neighbor);
+        zox_tst_border_mesh = zox_new();
+        zox_add(zox_tst_border_mesh, ChunkMesh);
+        zox_add(zox_tst_border_mesh, BuildMesh);
+        zox_set_parent(world, zox_tst_border_mesh, material);
         zox_tst_refining_chunk = zox_new();
         zox_add(zox_tst_refining_chunk, TerrainChunk);
         zox_set(zox_tst_refining_chunk, ChunkNeighbors, { { zox_tst_border_neighbor } });
@@ -193,7 +201,7 @@ static byte zox_tst_lod_refine_border_ready(ecs* world) {
     if (++zox_tst_refine_frames == 2) {
         zox_tst_check(zox_getv(zox_tst_refining_chunk, NodeDepth) == 1 && !zox_has(zox_tst_refining_chunk, GenerateChunk),
             "replaced the displayed terrain before its neighbour could open the border");
-        zox_remove(zox_tst_border_neighbor, BuildChunkSides);
+        zox_remove(zox_tst_border_mesh, BuildMesh);
     }
     return zox_tst_refine_frames > 2 && zox_getv(zox_tst_refining_chunk, NodeDepth) == 2;
 }

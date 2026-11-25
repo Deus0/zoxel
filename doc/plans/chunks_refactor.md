@@ -160,6 +160,106 @@ Phase 2 done, committed:
   children table (get_node_sides_all_hide, colored meshes) is filled at import: perf_meshing's face counts caught
   colored models at lower lods drawing half their faces without it (vox_mesh_grid and model_views didn't).
 
+- A chunk's meshes rebuild directly (chunk_meshes_rebuild), BuildChunkSides, chunk_sides_system and the waits on
+  them gone: perf_terrain release far 8, frames over 11ms ~98 to ~80 a stream, steps 1.47s to 1.36s.
+
+Phase 1: shared parts, nothing drawn changes
+
+1. **One face table:** remove `voxel_face_vertices_v2`, colored uses `voxel_face_vertices_n`. Check: tst
+   `vox_mesh_grid`, `model_views`, `chunk_uvs`.
+2. **One face writer:** `mesh_add_face(indices, vertices, direction, position, scale)` writes a face's 6 indices and
+   4 vertices; both meshers call it, then add their own per vertex data. Keep each face's 4 vertices in order:
+   skeleton weights read meshes as 4 vertices a face with the voxel behind it (bones/sys/generate.c).
+3. **One octree walk:** one dig to the target depth calling a per voxel step; the three digs go. Check: the same
+   tests, and a new tst `mesher_walk`: a small octree with nodes above the target depth (closed and open), each
+   walker's faces before against after.
+
+## Phase 2: one face rule, no SidesOctree
+
+1. **A cpu textured mesher from the grid:** fill the smooth grid as the gpu does (`smooth_grid_fill`,
+   `smooth_grid_borders` for neighbours drawn at other depths), its faces by the shader's rule
+   (`gpu_mesh_grid_faces` is that rule on the cpu, its face count). Behind a setting at first.
+2. **Prove it:** tst `grid_sides`: every chunk of a streamed walk (stream_seams' path) meshed both ways, the same
+   faces (position, direction, material). Then the grid mesher is the default.
+3. **CPU lights** walk faces from the grid (or the mesh's own faces) instead of `SidesOctree`
+   (`lights3/sys/build.c`, `build_smooth.c`).
+4. **Remove** `SidesOctree`, `SidesOctreeLock`, `chunk_sides_system`, its triggers and the `BuildChunkSides` waits.
+   Check: stream_seams, chunk_mesh_flicker, lod_swap, lod_light_flash, chunk_uvs, terrain_gpu_mesh, perf_terrain.
+5. **Colored from the same grid:** fill it with no neighbours (a model alone) instead of the pyramid. Models deeper
+   than the grid allows (depth 8 is a 258³ grid, 17MB) keep a walk, or mesh a grid per sub cube later.
+
+## Phase 3: vox models shaped like terrain chunks
+
+1. **Materials for colored voxels:** material entities linked from the colored parent (as a textured one links its
+   blocks), each its colour and `BlockMaterial`; the palette a byte array component, a voxel value to a linked
+   material, replacing `ColorRGBs`. A model made from a .vox gets one material entity a colour, all solid; materials
+   are shared between models where they're the same (as blocks are by realm). Agree the link's and the palette's
+   names before this step.
+2. **Vox meshes under materials:** a vox's `VoxLodMesh` children become `ChunkMaterial` > `ChunkMesh` per lod, as
+   terrain's (`fun/materials.c`, `sys/mesh_spawn.c`, `sys/transition.c` for swaps). A see through material draws
+   blended (`TransparentMesh`) after the solid ones.
+3. **Colored chunk3 parents:** `spawn_chunk3_parent_colored(world, prefab, realm, materials, depth, scale)` beside
+   the textured one; its chunks by position, their neighbours linked, faces between them hidden, for models bigger
+   than a chunk (bosses).
+4. **Single chunks stay single:** a model that fits one chunk is a chunk3 with no parent, as vox models are now, cheap
+   for the thousands of minivoxes, items and grass tufts: `chunk3_single` (textured) and `chunk3_single_colored`
+   prefabs, meshed and lit by the same parts, no neighbours (the grid's border is air). It links its own materials
+   and palette, as a parent would.
+5. **What uses vox models:** characters (combined from parts, `sys/combine.c`, then boned: weights per vertex),
+   items, minivoxes, critters, block voxes. Each checked by its tests as its meshes move under materials.
+
+## Phase 4: GPU meshing for vox models
+
+1. The shader's per vertex step for colored: its material's colour (a buffer of the palette's colours) and ambient occlusion by
+   `fun/ao27.c`'s rule (the grid has the 27 neighbours).
+2. Materials as terrain's: `gpu_mesher_set_material` already draws one material's voxels.
+3. Skinned meshes (characters), decided 2026-11-25: skinned in the shader, the bone octree uploaded too: the shader
+   writes each vertex's voxel (it already packs it in `w`) and its bones come from the bone octree by voxel, as
+   bones/sys/generate.c does on the cpu.
+4. Lods and swaps as gpu terrain chunks have them.
+
+## Tests when it's done
+
+Each part is checked once, at the lowest level that has it; the big walks only check that the parts meet:
+
+| Part | Test |
+|---|---|
+| The face rule (which faces show), lods mixed, borders | one test on given grids: the cpu mesher and the gpu mesher the same faces; neighbours at other depths |
+| The walk and face writer | `mesher_walk` (Phase 1) |
+| Meshing speed, both kinds | `perf_meshing` (its gpu meshing too from phase 4) |
+| Textured per vertex | `chunk_uvs`: every regular block's faces their tile for their direction, liquids their own texture |
+| Colored per vertex | a colour and ambient occlusion test: a small model, each corner's colour by the rule |
+| Lights per vertex | `smooth_lights`, `lod_lights`, `water_light` |
+| Materials | a chunk with each material: its own mesh, see through ones blended (terrain and vox alike) |
+| Many chunks | a colored chunk3 parent of 2 x 2 x 2: no faces between its chunks, faces at its outside |
+| Streaming, lod swaps, seams in play | `stream_seams`, `chunk_mesh_flicker`, `lod_light_flash`, `perf_terrain` |
+
+Retired as they're covered: `chunk_sides` (by the face rule test), `stream_sides` and `stream_gpu_sides` (each
+rebuilt its own reference of a rule: by stream_seams and the cpu against gpu test), `terrain_gpu_mesh`'s reference,
+`vox_mesh_grid` (one walker left).
+
+## Open questions
+
+- Decided (2026-11-25): vox materials are linked entities like blocks, the palette (a byte array) the one component.
+- Decided (2026-11-25): a single vox model is a chunk3 with no parent (`chunk3_single`, `chunk3_single_colored`), no
+  refactor to parents for it.
+- Decided (2026-11-25): colored models are lit as block voxes are now, their ambient occlusion colours times one
+  `Brightness` from the world's light where they are (vodes3/fun/lights.c, `get_block_vox_brightness`). Better model
+  lighting (smooth lights across a model) is a prototype after this refactor.
+- Faces merged (greedy meshing, doc/tech/chunks3.md) after this, in the one mesher.
+
+## Progress (2026-11-25)
+
+Phase 2 done, committed:
+- The game meshes and lights cpu terrain from the grid (fd2b0145e). perf_terrain release far 8, 4 runs each
+  alternated: frames over 11ms ~350 to ~100 a stream, 1% low 45 to 48 fps, steps 1.8s to 1.5s
+  (doc/tech/fps_optimization.md). tst perf_meshing checked the grid's faces against sides' first (24ebd58c1).
+- The raycast gizmo's faces from the voxels (f5628ccbc, tst block_sides): it outlined nothing with gpu meshing.
+- SidesOctree removed (f2084a0db): its component, lock, build_sides_dig and the sides walks; chunk_sides_system only
+  adds BuildMesh to a chunk's meshes; chunk_sides ported to the grid; stream_sides, stream_gpu_sides gone. The side
+  children table (get_node_sides_all_hide, colored meshes) is filled at import: perf_meshing's face counts caught
+  colored models at lower lods drawing half their faces without it (vox_mesh_grid and model_views didn't).
+
 Left of phase 2:
 - The `BuildChunkSides` waits: the mesher and lights skip a chunk with it, a frame later chunk_sides_system turns it
   into BuildMesh. A rebuild could be asked for directly (BuildMesh on the meshes), the tag and system gone; measure

@@ -3,7 +3,7 @@
 //      and at lower ones (lods), cpu only
 //  - gpu_mesh: the compute shader's mesh has exactly the faces a voxel by voxel reference has (a solid voxel's face
 //      next to air or the chunk's edge), each once, with the right corners, at its depth and every lower one to 0
-//  - gpu_mesh logs [tst] [metric] lines: gpu mesh time vs the cpu's sides (chunk_sides_system's part of meshing)
+//  - gpu_mesh logs [tst] [metric] lines: gpu mesh time vs the cpu's faces found (its voxel grid filled, the faces shown)
 //  - run: bash bsh/tst.sh octree_flatten, bash bsh/tst.sh gpu_mesh
 
 #define zox_tst_gpu_cases 7
@@ -197,7 +197,7 @@ static inline void zox_tst_gpu_compare(GpuMesher* mesher, const VoxelNode* voxel
     free(expected);
 }
 
-// times the gpu (the grid's fill, upload, mesh, wait) and the cpu's sides (chunk_sides_system's part of meshing) for one chunk
+// times the gpu (the grid's fill, upload, mesh, wait) and the cpu's faces found (its voxel grid's part of meshing) for one chunk
 static inline void zox_tst_gpu_time(GpuMesher* mesher, const VoxelNode* voxels, byte depth, const char* name) {
     const int runs = 20;
     double start = get_time_ms();
