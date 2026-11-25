@@ -1,25 +1,67 @@
 # Chunks3: Voxel Meshes
 
-How voxel octrees (terrain chunks, vox models, characters) become meshes, and the plan for greedy meshing. Code in
+How voxel octrees (terrain chunks, vox models, characters) become meshes, what's supported, and the plan for greedy
+meshing. Code in
 [src/chunks/chunks3](../../src/chunks/chunks3), lighting in [src/lights/lights3](../../src/lights/lights3).
+
+## What's supported (2026-11-25)
+
+| | Textured (terrain, blocks) | Colored (vox models) |
+|---|---|---|
+| A single chunk | `chunk3_single`: a textured chunk on its own (`prefab_chunk_textured`) | `chunk3_single_colored`: a vox (`prefab_vox`), a model with lods (`prefab_vox_lods`) |
+| Many chunks under a parent | `spawn_chunk3_parent_textured` (terrain is one, streamed) | `spawn_chunk3_parent_colored` (models bigger than a chunk: bosses) |
+| What a voxel is | a block: the parent links its blocks (`BlockManagerLink`) and `Tilemap` | a palette entry: `ColorRGBs` on the model or parent |
+| Materials | a block's `BlockMaterial` (solid, liquid, oil) | `MaterialIDs` a palette entry (as MagicaVoxel's), only on a model with more than solid |
+| See through | water and oil: a mesh of their own, drawn after, blended (`TransparentMesh`) | a see through mesh beside the solid one (`TransparentMesh`), its `MaterialLink` to a `TransparentMaterial` with `Alpha` |
+| Faces between chunks | hidden by the neighbours' voxels, any lods side by side | hidden by the neighbours' voxels |
+| Lods | a mesh a lod a material, swapped as a chunk's lod changes (`sys/transition.c`) | a mesh a lod, children of the model, found by `RenderDepth` (`get_model_lod_mesh`) |
+| Per vertex | tilemap uvs, smooth lights (terrain's ambient occlusion) | palette colour darkened by ambient occlusion, times a brightness from the world's light (block voxes) |
+| Drawn | `chunk3_textured_render_system`, water `chunk3_transparent_render_system` | instanced (`vox_instance_render_system`) or as they are (`vox_render_system`); see through after, blended, no depth writes |
+| CPU meshing | the voxel grid (`sys/build_grid.c`) | one walk (`build_voxel_mesh`, `build_voxel_mesh_material`) |
+| GPU meshing | solid materials (`lights3/sys/gpu_mesh.c`), textured, lit, with neighbours | not yet (doc/plans/chunks_refactor.md phase 4) |
+
+Both write faces through one writer (`mesh_add_face`, [fun/faces.c](../../src/chunks/chunks3/fun/faces.c)) and use one
+hiding rule (`block_material_hides`): a solid voxel hides any face against it, a see through one only its own kind's.
+So a solid core shows through a see through shell, and the shell draws only its faces against air.
+
+Tests: `chunk_sides` (borders and lods), `chunk_uvs` (every block's uvs), `block_sides` (a voxel's showing faces),
+`vox_materials` (a core in a shell at the mesher), `vox_see_through` (a model's two meshes), `slime_view` (drawn, a
+screenshot), `colored_parent` and `colored_parent_shell` (models across chunks), `perf_meshing` (speed and face counts),
+`stream_seams` and `chunk_mesh_flicker` (terrain as it streams).
 
 ## Chunk3 parents
 
-A chunk3 parent is a vox whose children are chunks, found by position (`ChunkLinks`), meshed and lit together
-([pre/chunk3_parent.c](../../src/chunks/chunks3/pre/chunk3_parent.c), [ins/chunk3_parent.c](../../src/chunks/chunks3/ins/chunk3_parent.c)):
+A chunk3 parent is a vox whose children are chunks, found by position (`ChunkLinks`), meshed together
+([pre/chunk3_parent.c](../../src/chunks/chunks3/pre/chunk3_parent.c), [ins/chunk3_parent.c](../../src/chunks/chunks3/ins/chunk3_parent.c)).
+What its voxels are lives on it, its chunks take it from it.
 
-- `spawn_chunk3_parent_textured(world, prefab, realm, blocks, tilemap, depth, scale)`, then
-  `spawn_chunk3_parent_chunk(world, prefab, parent, position, render_depth)` for each chunk. Chunks with lights are
-  `prefab_chunk_lit` (lights3/fun/prefab.c).
-- What its voxels are is linked on it: its blocks (`BlockManagerLink`, a realm's `BlockLinks`) and their tiles
-  (`Tilemap`); its chunks take both from it. A colored parent (vox models) would link its palette the same way.
-- Chunks side by side at different lods are its job: the faces between them (sys/sides.c), the light across them
-  (lights3), the mesh swapped as a chunk's lod changes (sys/transition.c).
-- A chunk's voxels done (`GenerateChunk` at `zox_generate_terrain_sunlight`): it's lit, then meshed
-  (lights3/sys/generated.c). `SunnyChunk` on the top layer takes the sky's light, `BottomChunk` on the bottom ends beams.
-- Terrain is a chunk3 parent that streams its chunks round its streamers, generates them and picks their lods
-  (`prefab_terrain`, `prefab_chunk_terrain`).
-- tst: `zox_tst_chunk3_parent_ready` (lights/tst/chunk3_parent.c), a realm and 3 x 3 x 3 lit chunks (tst water_light).
+- Textured: `spawn_chunk3_parent_textured(world, prefab, realm, blocks, tilemap, depth, scale)`, then
+  `spawn_chunk3_parent_chunk(world, prefab, parent, position, render_depth)` for each chunk. It links its blocks
+  (`BlockManagerLink`, a realm's `BlockLinks`) and their tiles (`Tilemap`). Chunks with lights are `prefab_chunk_lit`
+  (lights3/fun/prefab.c).
+  - Chunks side by side at different lods are its job: the faces between them, the light across them (lights3), the
+    mesh swapped as a chunk's lod changes (sys/transition.c).
+  - A chunk's voxels done (`GenerateChunk` at `zox_generate_terrain_sunlight`): it's lit, then meshed
+    (lights3/sys/generated.c). `SunnyChunk` on the top layer takes the sky's light, `BottomChunk` on the bottom ends
+    beams. A chunk's voxels or a neighbour changed: its meshes rebuild (`chunk_meshes_rebuild`, `BuildMesh`).
+  - Terrain is one that streams its chunks round its streamers, generates them and picks their lods (`prefab_terrain`,
+    `prefab_chunk_terrain`).
+  - tst fixture `zox_tst_chunk3_parent_ready` (lights/tst/chunk3_parent.c): a realm and 3 x 3 x 3 lit chunks.
+- Colored: `spawn_chunk3_parent_colored(world, prefab, palette, depth, scale)` holds the palette (`ColorRGBs`), then
+  `spawn_chunk3_parent_colored_chunk(world, prefab_vox, parent, position)` for each chunk: no palette of its own (it
+  draws its parent's), linked both ways to its neighbours as it spawns (its first mesh hides the faces between them),
+  placed by its centre. `set_chunk3_parent_colored_materials(world, parent, ids, count, material)` adds `MaterialIDs`
+  and a see through child to each chunk, filled with its see through voxels as the chunk builds.
+
+## Models with see through parts
+
+A model (`prefab_vox_lods`) is solid unless it has `MaterialIDs`: a material id a palette entry, as MagicaVoxel's,
+`zox_block_material_solid` or `zox_block_material_liquid` (see through). `set_vox_lods_materials(world, model, ids,
+count, material)` sets them and spawns a see through mesh beside each lod (`TransparentMesh`, the same `RenderDepth`),
+its `MaterialLink` to the material: `spawn_vox_material_see_through(world, alpha)`, a `TransparentMaterial` with
+`Alpha`. Each lod's solid mesh then holds only its solid voxels, the see through one the rest (its faces against air).
+Instances draw the solid mesh in the solid pass and its see through sibling after every solid one, blended at the
+material's alpha, testing depth without writing it. Models without see through parts get no second meshes.
 
 ## How meshes are built now
 
@@ -29,17 +71,19 @@ Every mesh is one quad (4 vertices, 6 indices) per visible voxel face. Nothing i
 ### Vox models (colored meshes)
 
 [sys/build_colored.c](../../src/chunks/chunks3/sys/build_colored.c), entry [sys/vox_lods.c](../../src/chunks/chunks3/sys/vox_lods.c)
-(`build_vox_mesh_at_depth`): minivoxes, grass, items, characters' bodies (skeleton meshes), each a mesh a lod.
+(`build_vox_mesh_at_depth`): minivoxes, grass, items, characters' bodies (skeleton meshes), each a mesh a lod (a kind).
 
-- Two walkers, the same output (tst `vox_mesh_grid` checks they match face for face, in order):
-  - `build_voxel_mesh_grid`: the octree flattened into a padded grid of node pointers a depth (a pyramid), so a
-    neighbour is an array read; used up to `zox_vox_grid_max_depth` (7)
-  - `build_voxel_mesh_c`: the octree walk, for deeper voxes and chunks with neighbours
-- A voxel's face shows if its neighbour that way isn't solid (`is_adjacent_all_solid`).
+- One walk (`build_voxel_mesh_dig`) reading a voxel's neighbours through one lookup: the pyramid (the octree flattened
+  into a padded grid of node pointers a depth, an array read, models up to `zox_vox_grid_max_depth` 7) or the octree
+  (deeper ones); a neighbour chunk's tree past the border either way. tst `vox_mesh_grid` checks both lookups make the
+  same mesh, face for face, in order. A model with no neighbour chunks and no materials takes the pyramid's own face
+  step (the fast path).
+- A voxel's face shows if its neighbour that way doesn't hide it (`is_adjacent_all_solid`, the hiding rule above).
 - Colour is baked a vertex: the voxel's palette colour darkened by **ambient occlusion**:
   - `zox_ambient_occlusion27` (on): each face corner looks at 3 of the voxel's 27 neighbours, its two side
     neighbours and the corner between them ([fun/ao27.c](../../src/chunks/chunks3/fun/ao27.c), `neighbor_indices_27`,
-    `compute_ao_factor_27`: both sides solid is full corner darkness, else darker the more are solid)
+    `compute_ao_factor_27`: both sides solid is full corner darkness, else darker the more are solid); see through
+    voxels don't darken corners
   - else [fun/ao6.c](../../src/chunks/chunks3/fun/ao6.c): the 6 face neighbours only
   - so one voxel's face can have 4 different corner colours; that's the shading in creases
 - Skeleton meshes: each vertex gets bones by the voxel behind its face (`generate_weights_parts`,
@@ -51,12 +95,15 @@ Every mesh is one quad (4 vertices, 6 indices) per visible voxel face. Nothing i
 [sys/build_textured.c](../../src/chunks/chunks3/sys/build_textured.c) (`chunk_textured_build_system`), from
 [sys/build_grid.c](../../src/chunks/chunks3/sys/build_grid.c), a mesh per chunk material (solid, water: [fun/materials.c](../../src/chunks/chunks3/fun/materials.c)).
 
-- Which faces show comes from a voxel grid: the chunk's voxels at the mesh's depth as bytes, with a voxel of border
-  from its 6 neighbours, each at the depth it draws (`chunk_voxel_grid`, `voxel_grid_fill`), and the gpu mesher's
-  rule (`voxel_grid_shows`): a face beside a voxel that doesn't hide it, into a missing chunk only its top. Across
-  chunk borders and lods (tst `chunk_sides`); the raycast gizmo asks the same rule (`get_chunk_sides`, tst
+- Which faces show comes from a voxel grid, filled from the octrees as a mesh builds (not kept: the octrees are what's
+  real): the chunk's voxels at the mesh's depth as bytes, with a voxel of border from its 6 neighbours, each at the
+  depth it draws (`chunk_voxel_grid`, `voxel_grid_fill`), and the gpu mesher's rule (`voxel_grid_shows`): a face
+  beside a voxel that doesn't hide it, into a missing chunk only its top. Borders: a neighbour drawn coarser gives its
+  big voxel; drawn finer, a cell is solid only if all its voxels along the face hide ours; unsettled (its lod
+  changing, generating), air till it settles; not loaded, only top faces. Across chunk borders and lods (tst
+  `chunk_sides`); the raycast gizmo asks the same rule from the octrees directly (`get_chunk_sides`, tst
   `block_sides`). It replaced `SidesOctree`, a second tree a chunk built first (2026-11-25, 2.5x a world's meshing,
-  doc/plans/chunks_refactor.md). `chunk_sides_system` only asks a chunk's meshes to rebuild now (`BuildChunkSides`).
+  doc/plans/chunks_refactor.md).
 - UVs: each face gets its block's tile in the tilemap atlas (`tilemap_uvs`, 4 corners a face), liquids their own
   whole texture.
 - Light is baked a vertex **after** the mesh, by `build_smooth_lights_system`
@@ -66,10 +113,12 @@ Every mesh is one quad (4 vertices, 6 indices) per visible voxel face. Nothing i
   a face, so its colours line up with the mesh's vertices by position in the arrays. The upload waits for it
   (`BuildMeshColors`), else a new mesh shows a frame white.
 
-### GPU meshing (proof of concept)
+### GPU meshing
 
-[fun/gpu_mesh.c](../../src/chunks/chunks3/fun/gpu_mesh.c), doc/plans/gpu_meshing.md: a compute shader does the same
-(a quad a face, smooth light corners), no textures or neighbours yet, no merging.
+[fun/gpu_mesh.c](../../src/chunks/chunks3/fun/gpu_mesh.c), [lights3/sys/gpu_mesh.c](../../src/lights/lights3/sys/gpu_mesh.c),
+doc/plans/gpu_meshing.md: a compute shader meshes terrain's solid materials from the same kind of grid, by the same
+rule, textured and smooth lit, with its neighbours and their lods (`zox_chunks3_gpu_meshing`: on with vulkan,
+`--gpu_meshing`, `--cpu_meshing`). Models aren't gpu meshed yet (doc/plans/chunks_refactor.md phase 4).
 
 ### What it costs
 

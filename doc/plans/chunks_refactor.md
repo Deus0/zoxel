@@ -309,9 +309,14 @@ material entity; a kind is a tag on it, not a byte (solid none, see through one 
 - 5 done (colored parents): spawn_chunk3_parent_colored (its palette on it, MaterialIDs after if any) and
   spawn_chunk3_parent_colored_chunk (a vox prefab's chunk, its neighbours linked both ways at once, placed by its
   centre); chunk_colors_build_system takes a chunk's parent's palette and material ids when it has none. tst
-  colored_parent: a ball across 2 x 2 x 2 chunks, 2904 faces, the ball's as one model. Left: a parented chunk's see
-  through mesh (its solid voxels only now), the chunk3_single prefabs (single models are vox prefabs today)
-- 6: each user of vox models checked as it moves (characters, items, minivoxes, critters, block voxes)
+  colored_parent: a ball across 2 x 2 x 2 chunks, 2904 faces, the ball's as one model. A parent's see through parts:
+  set_chunk3_parent_colored_materials, a see through child a chunk filled as it builds, drawn by
+  vox_transparent_render_system (tst colored_parent_shell). chunk3_single / chunk3_single_colored are the names for a
+  textured chunk on its own and a vox model (doc/tech/chunks3.md), not new prefabs
+- 6 done: every user of vox models checked on the new shapes (model lods as children, materials): characters
+  (skeleton_render, body_poses, crouch, npc_*), items (held_item, item_sizes), minivoxes and block voxes (doors,
+  block_vox_hits, vox_instance_render, vox_instances_stress), grass (grass_tufts), critters (wfc, npc_skeletons),
+  furniture, imported models (vox_import). Phase 3 done (2026-11-25); doc/tech/chunks3.md lists what's supported.
 
 
 
