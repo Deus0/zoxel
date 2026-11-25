@@ -100,6 +100,29 @@ void zox_systems_chunks3(ecs *world) {
         [out] rendering.MeshColorRGBs,
         [none] chunks3.ColorChunk,
         [none] rendering.BuildMesh,
+        [none] !rendering.GpuMesh,
+    );
+    // colored chunks of a chunk3 parent on the gpu (sys/vox_gpu.c)
+    zox_system_1(
+        chunk_colors_gpu_system,
+        zoxp_gpu_upload,
+        [in] chunks3.VoxelNode,
+        [in] chunks.NodeDepth,
+        [in] rendering.RenderDepth,
+        [in] chunks3.ChunkNeighbors,
+        [in] colorz.ColorRGBs,
+        [in] chunks3.ChunkSize,
+        [in] blocks.BlockScale,
+        [in] rendering.MeshGPULink,
+        [in] rendering.ColorsGPULink,
+        [out] rendering.MeshFaceRoom,
+        [out] rendering.MeshRenderCount,
+        [out] rendering.MeshVertices,
+        [none] chunks3.ColorChunk,
+        [none] rendering.GpuMesh,
+        [none] rendering.BuildMesh,
+        [none] !core.PreInitialize,
+        [none] !core.Initialize,
     );
     // Builds lod meshes from their parent VoxLods
     zox_system(

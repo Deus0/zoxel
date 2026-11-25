@@ -37,7 +37,7 @@ byte zox_tst_colored_parent_ready(ecs* world) {
     }
     zox_tst_waiting = "its chunks' meshes";
     for (int i = 0; i < 8; i++) {
-        if (zox_has(zox_tst_cpar_chunks[i], BuildMesh) || !zox_get(zox_tst_cpar_chunks[i], MeshVertices)->length) {
+        if (zox_has(zox_tst_cpar_chunks[i], BuildMesh) || !mesh_index_count(world, zox_tst_cpar_chunks[i])) {
             return 0;
         }
     }
@@ -47,7 +47,7 @@ byte zox_tst_colored_parent_ready(ecs* world) {
 void zox_tst_colored_parent_check(ecs* world) {
     int faces = 0;
     for (int i = 0; i < 8; i++) {
-        faces += zox_get(zox_tst_cpar_chunks[i], MeshVertices)->length / 4;
+        faces += mesh_index_count(world, zox_tst_cpar_chunks[i]) / 6;
         zox_tst_check(!zox_get(zox_tst_cpar_chunks[i], ColorRGBs)->length, "chunk [%i] has its own palette", i);
     }
     int expected = 0;
@@ -61,7 +61,8 @@ void zox_tst_colored_parent_check(ecs* world) {
             expected += !(inside && zox_tst_cpar_value(n.x, n.y, n.z));
         }
     }
-    zox_log("[tst] [metric] colored_parent: [8] chunks, [%i] faces, the ball as one model [%i]", faces, expected);
+    zox_log("[tst] [metric] colored_parent: [8] chunks, [%i] faces, the ball as one model [%i], meshed on the [%s]", faces, expected,
+        zox_has(zox_tst_cpar_chunks[0], GpuMesh) ? "gpu" : "cpu");
     zox_tst_check(faces == expected, "its chunks have [%i] faces, the ball as one model [%i] (faces where chunks meet?)",
         faces, expected);
 }
@@ -129,8 +130,8 @@ void zox_tst_colored_parent_shell_check(ecs* world) {
     for (int i = 0; i < 8; i++) {
         const entity chunk = zox_tst_cpar_chunks[i];
         const entity child = zox_tst_cpar_shell_of(world, chunk);
-        solid += zox_get(chunk, MeshVertices)->length / 4;
-        shell += zox_get(child, MeshVertices)->length / 4;
+        solid += mesh_index_count(world, chunk) / 6;
+        shell += mesh_index_count(world, child) / 6;
         const float4x4 a = zox_getv(chunk, TransformMatrix), b = zox_getv(child, TransformMatrix);
         misplaced += memcmp(&a, &b, sizeof(float4x4)) != 0;
     }

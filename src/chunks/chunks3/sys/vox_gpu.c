@@ -89,13 +89,33 @@ static uint vox_gpu_faces(const GpuMesher* mesher, const byte* voxels, const byt
     return faces;
 }
 
+// a neighbour chunk's side against this one into the grid's border: each border cell its sides that hide (faces into it
+//  hide as the cpu's, is_adjacent_all_solid), its voxel left air (ambient occlusion stops at the chunk, vox_lookup_solid)
+static void vox_gpu_fill_neighbor(const VoxelNode* neighbor, const byte* materials, byte kind, byte depth, byte d,
+    byte* sides, int length)
+{
+    const int size = octree_size(depth);
+    const int axis = d >> 1;
+    const int edge = d & 1 ? size : -1;         // the border cells' coordinate on its axis
+    const int inside = d & 1 ? 0 : size - 1;    // the same cells in the neighbour
+    for (int a = 0; a < size; a++)
+    for (int b = 0; b < size; b++) {
+        int3 cell = axis == 0 ? (int3) { edge, a, b } : axis == 1 ? (int3) { a, edge, b } : (int3) { a, b, edge };
+        int3 there = cell;
+        if (axis == 0) there.x = inside; else if (axis == 1) there.y = inside; else there.z = inside;
+        const VoxelNode* node = get_VoxelNode(neighbor, depth, int3_to_byte3(there));
+        sides[((cell.x + 1) * length + cell.y + 1) * length + cell.z + 1] = node ? vox_gpu_sides(materials, kind, node) : 0;
+    }
+}
+
 // a model's lod into a mesher (its buffers sized for faces before, place set), faces returned; 0: nothing dispatched
 //  - materials: vox_material_table's, kind the mesh's
+//  - neighbors: a chunk's 6 neighbour chunks' trees at depth (a colored chunk3 parent's), NULL a model alone
 //  - bones: its cells' bones (gpu_mesh_grid's layout, 255 air and round it) to skin it (mesher's skinned, parents set),
 //      NULL unskinned
 static uint vox_gpu_mesh_grid(GpuMesher* mesher, const VoxelNode* root, byte depth, const byte* materials, byte kind,
     const ColorRGBs* palette, uint (*room)(GpuMesher* mesher, uint faces, void* data), void* data, int3* extent,
-    const byte* bones)
+    const byte* bones, const VoxelNode** neighbors)
 {
     const int length = octree_size(depth) + 2;
     const size_t cells = gpu_mesh_grid_bytes(depth);
@@ -106,13 +126,22 @@ static uint vox_gpu_mesh_grid(GpuMesher* mesher, const VoxelNode* root, byte dep
     }
     mesher->skinned = bones != NULL;
     vox_gpu_fill(root, materials, kind, 0, depth, int3_zero, grid, sides, length);
+    // the nearby chunks there (OCTREE_INDEX's order), faces into the rest show
+    uint present = 1u << 13;
+    for (byte d = 0; neighbors && d < 6; d++) {
+        if (neighbors[d]) {
+            vox_gpu_fill_neighbor(neighbors[d], materials, kind, depth, d, sides, length);
+            const int s = d & 1 ? 1 : -1;
+            present |= 1u << (13 + (d >> 1 == 0 ? s : d >> 1 == 1 ? s * 3 : s * 9));
+        }
+    }
     gpu_mesher_set_material(mesher, materials, kind);
     gpu_mesher_set_colors(mesher, palette->value, palette->length, materials);
     mesher->sided = 1;
     mesher->edge_faces = 1;
     const uint faces = vox_gpu_faces(mesher, grid, sides, depth, extent);
     if (faces && room(mesher, faces, data)) {
-        gpu_mesh_grid(mesher, grid, sides, depth, 1u << OCTREE_INDEX(0, 0, 0), 0, NULL);
+        gpu_mesh_grid(mesher, grid, sides, depth, present, 0, NULL);
     }
     free(grid);
     free(sides);
@@ -160,6 +189,45 @@ typedef struct {
     const void* data;
 } vox_gpu_skin;
 
+// meshes a tree at a depth into a mesh's buffers (mesh: indices x, vertices y; colors), its faces returned; its trees
+//  locked by the caller
+//  - size, scale: its ChunkSize and BlockScale (its space centred, as the cpu's); bounds_out its drawn voxels' corners
+//  - bones: a skeleton mesh's bones grid (skin's weights, parents), NULL none
+static uint vox_gpu_mesh_tree(const VoxelNode* root, const VoxelNode** neighbors, const ColorRGBs* palette,
+    const byte* materials, byte node_depth, byte depth, byte kind, int3 size, float scale, guint2 mesh, guint colors,
+    uint* room, float3* bounds_out, const vox_gpu_skin* skin, const byte* bones)
+{
+    GpuMesher* shared = vox_gpu_mesher();
+    if (!shared || !palette->length) {
+        return 0;
+    }
+    // the shared mesher, writing into this mesh's buffers
+    GpuMesher mesher = *shared;
+    mesher.indices = mesh.x;
+    mesher.vertices = mesh.y;
+    mesher.vertex_colors = colors;
+    mesher.fence = 0;
+    const float3 bounds = calculate_vox_bounds(size, scale);
+    const float voxel = scale * octree_size(node_depth) / octree_size(depth);
+    mesher.place = (float4) { -bounds.x, -bounds.y, -bounds.z, voxel };
+    if (skin) {
+        mesher.vertex_lights = skin->weights;
+        mesher.bones_count = skin->bones_count;
+        memcpy(mesher.parents, skin->parents, sizeof(mesher.parents));
+    }
+    vox_gpu_room_data data = { mesh, colors, skin ? skin->weights : 0, room };
+    int3 extent[2];
+    const uint faces = vox_gpu_mesh_grid(&mesher, root, depth, materials, kind, palette, vox_gpu_room, &data, extent,
+        bones, neighbors);
+    if (faces) {
+        for (byte b = 0; b < 2; b++) {
+            bounds_out[b] = float3_add(float3_scale(float3_from_int3(extent[b]), voxel), float3_scale(bounds, -1));
+        }
+        zox_gpu_fence_dispose(mesher.fence);
+    }
+    return faces;
+}
+
 // meshes one lod of a model into its buffers (mesh: indices x, vertices y; colors), its faces returned
 //  - bounds: its drawn voxels' lower and upper corners in its space
 //  - skin: a skeleton mesh's (bones/sys/skeleton_gpu.c), its weights buffer, its bones grid made at depth, NULL none
@@ -169,11 +237,7 @@ uint vox_gpu_mesh(ecs* world, entity vox, byte depth, byte kind, guint2 mesh, gu
     if (!zox_valid(vox) || !zox_has(vox, VoxelNode) || !zox_has(vox, ColorRGBs) || !zox_has(vox, ChunkSize)) {
         return 0;
     }
-    GpuMesher* shared = vox_gpu_mesher();
     const ColorRGBs* palette = zox_get(vox, ColorRGBs);
-    if (!shared || !palette->length) {
-        return 0;
-    }
     const byte node_depth = zox_getv(vox, NodeDepth);
     if (depth > node_depth) {
         depth = node_depth;
@@ -183,36 +247,13 @@ uint vox_gpu_mesh(ecs* world, entity vox, byte depth, byte kind, guint2 mesh, gu
     if (!other && kind != zox_block_material_solid) {
         return 0;   // no see through voxels
     }
-    // the shared mesher, writing into this mesh's buffers
-    GpuMesher mesher = *shared;
-    mesher.indices = mesh.x;
-    mesher.vertices = mesh.y;
-    mesher.vertex_colors = colors;
-    mesher.fence = 0;
-    const float3 bounds = calculate_vox_bounds(zox_getv(vox, ChunkSize), zox_getv(vox, BlockScale));
-    const float voxel = zox_getv(vox, BlockScale) * octree_size(node_depth) / octree_size(depth);
-    mesher.place = (float4) { -bounds.x, -bounds.y, -bounds.z, voxel };
-    vox_gpu_room_data data = { mesh, colors, skin ? skin->weights : 0, room };
-    int3 extent[2];
-    byte* bones = NULL;
     spinlock* lock = zox_octree_lock(world, vox);
     zox_octree_lock_begin(lock);
-    if (skin) {
-        bones = skin->grid(world, vox, depth, skin->data);
-        mesher.vertex_lights = skin->weights;
-        mesher.bones_count = skin->bones_count;
-        memcpy(mesher.parents, skin->parents, sizeof(mesher.parents));
-    }
-    const uint faces = vox_gpu_mesh_grid(&mesher, zox_get(vox, VoxelNode), depth, materials, kind, palette,
-        vox_gpu_room, &data, extent, bones);
+    byte* bones = skin ? skin->grid(world, vox, depth, skin->data) : NULL;
+    const uint faces = vox_gpu_mesh_tree(zox_get(vox, VoxelNode), NULL, palette, materials, node_depth, depth, kind,
+        zox_getv(vox, ChunkSize), zox_getv(vox, BlockScale), mesh, colors, room, bounds_out, skin, bones);
     zox_octree_lock_end(lock);
     free(bones);
-    if (faces) {
-        for (byte b = 0; b < 2; b++) {
-            bounds_out[b] = float3_add(float3_scale(float3_from_int3(extent[b]), voxel), float3_scale(bounds, -1));
-        }
-        zox_gpu_fence_dispose(mesher.fence);
-    }
     return faces;
 }
 
@@ -282,7 +323,7 @@ void gpu_restore_vox_gpu(ecs* world) {
     zox_vox_gpu_rush = 1;
     zox_each_begin(MeshFaceRoom);
         zox_each_o(MeshFaceRoom, room);
-        if (zox_has(e, VoxLodMesh) || zox_has(e, SkeletonMesh)) {
+        if (zox_has(e, VoxLodMesh) || zox_has(e, SkeletonMesh) || zox_has(e, ColorChunk)) {
             room->value = 0;
             zox_setv(e, MeshRenderCount, 0);
             zox_remove(e, MeshDirty);
@@ -291,3 +332,105 @@ void gpu_restore_vox_gpu(ecs* world) {
         }
     zox_each_end();
 }
+
+// a colored chunk's see through child (set_chunk3_parent_colored_materials), 0 if it has none
+static inline entity vox_gpu_shell_of(ecs* world, entity chunk) {
+    iter it = zox_children(world, chunk);
+    while (zox_children_next(it)) {
+        for (int j = 0; j < it.count; j++) {
+            if (zox_has(it.entities[j], TransparentMesh)) {
+                const entity shell = it.entities[j];
+                zox_children_end(it);
+                return shell;
+            }
+        }
+    }
+    return 0;
+}
+
+// a gpu mesh's drawn count and its corners (MeshVertices: culling)
+static inline void vox_gpu_set_drawn(MeshRenderCount* count, MeshVertices* vertices, uint faces, const float3* bounds) {
+    count->value = faces * 6;
+    resize_MeshVertices(vertices, faces ? 2 : 0);
+    if (faces) {
+        vertices->value[0] = bounds[0];
+        vertices->value[1] = bounds[1];
+    }
+}
+
+// a colored chunk3 parent's chunk (a model bigger than a chunk, spawn_chunk3_parent_colored_chunk) on the gpu: its solid
+//  voxels into its own mesh, its see through ones into its see through child, faces into its neighbours hidden as the
+//  cpu's (chunk_colors_build_system); its parent's palette and material ids
+void chunk_colors_gpu_system(iter* it) {
+    zox_sys_on_begin();
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(VoxelNode);
+    zox_sys_in(NodeDepth);
+    zox_sys_in(RenderDepth);
+    zox_sys_in(ChunkNeighbors);
+    zox_sys_in(ColorRGBs);
+    zox_sys_in(ChunkSize);
+    zox_sys_in(BlockScale);
+    zox_sys_in(MeshGPULink);
+    zox_sys_in(ColorsGPULink);
+    zox_sys_out(MeshFaceRoom);
+    zox_sys_out(MeshRenderCount);
+    zox_sys_out(MeshVertices);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(VoxelNode, voxels);
+        zox_sys_i(NodeDepth, ndepth);
+        zox_sys_i(RenderDepth, rdepth);
+        zox_sys_i(ChunkNeighbors, neighbors);
+        zox_sys_i(ColorRGBs, vcolors);
+        zox_sys_i(ChunkSize, csize);
+        zox_sys_i(BlockScale, scale);
+        zox_sys_i(MeshGPULink, mesh);
+        zox_sys_i(ColorsGPULink, colors);
+        zox_sys_o(MeshFaceRoom, room);
+        zox_sys_o(MeshRenderCount, count);
+        zox_sys_o(MeshVertices, vertices);
+        if (!mesh->value.x || !mesh->value.y || !colors->value || vox_gpu_budget_spent()) {
+            continue;
+        }
+        const entity owner = vcolors->length ? e : zox_get_parent(world, e);
+        const ColorRGBs* palette = vcolors->length ? vcolors :
+            (zox_valid(owner) && zox_has(owner, ColorRGBs) ? zox_get(owner, ColorRGBs) : vcolors);
+        if (!palette->length) {
+            continue;
+        }
+        const double begin = get_time_ms();
+        const VoxelNode* noctrees[6];
+        for (byte j = 0; j < 6; j++) {
+            noctrees[j] = neighbors->value[j] ? zox_get(neighbors->value[j], VoxelNode) : NULL;
+        }
+        byte materials[256];
+        const byte other = vox_material_table(zox_has(owner, MaterialIDs) ? zox_get(owner, MaterialIDs) : NULL, materials);
+        const byte depth = rdepth->value < ndepth->value ? rdepth->value : ndepth->value;
+        spinlock* neighbor_locks[6];
+        zox_octree_neighbor_locks(world, neighbors, neighbor_locks);
+        spinlock* locked[7];
+        const byte locked_count = zox_lock_voxel_trees(zox_octree_lock(world, e), neighbor_locks, locked);
+        float3 bounds[2];
+        uint faces = vox_gpu_mesh_tree(voxels, noctrees, palette, materials, ndepth->value, depth,
+            zox_block_material_solid, csize->value, scale->value, mesh->value, colors->value, &room->value, bounds,
+            NULL, NULL);
+        vox_gpu_set_drawn(count, vertices, faces, bounds);
+        const entity shell = other ? vox_gpu_shell_of(world, e) : 0;
+        if (zox_valid(shell) && zox_has(shell, GpuMesh)) {
+            const guint2 shell_mesh = zox_getv(shell, MeshGPULink);
+            const guint shell_colors = zox_getv(shell, ColorsGPULink);
+            if (shell_mesh.x && shell_mesh.y && shell_colors) {
+                faces = vox_gpu_mesh_tree(voxels, noctrees, palette, materials, ndepth->value, depth,
+                    zox_block_material_liquid, csize->value, scale->value, shell_mesh, shell_colors,
+                    &zox_get_mut(shell, MeshFaceRoom)->value, bounds, NULL, NULL);
+                vox_gpu_set_drawn(zox_get_mut(shell, MeshRenderCount), zox_get_mut(shell, MeshVertices), faces, bounds);
+            }
+        }
+        zox_unlock_voxel_trees(locked, locked_count);
+        zox_remove(e, BuildMesh);
+        zox_vox_gpu_budget_used += get_time_ms() - begin;
+    }
+    zox_sys_on_end();
+} zoxd_system(chunk_colors_gpu_system);

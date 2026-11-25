@@ -18,7 +18,7 @@ meshing. Code in
 | Per vertex | tilemap uvs, smooth lights (terrain's ambient occlusion) | palette colour darkened by ambient occlusion, times a brightness from the world's light (block voxes) |
 | Drawn | `chunk3_textured_render_system`, water `chunk3_transparent_render_system` | instanced (`vox_instance_render_system`) or as they are (`vox_render_system`); see through after, blended, no depth writes |
 | CPU meshing | the voxel grid (`sys/build_grid.c`) | one walk (`build_voxel_mesh`, `build_voxel_mesh_material`) |
-| GPU meshing | solid materials (`lights3/sys/gpu_mesh.c`), textured, lit, with neighbours | lod meshes and skeleton meshes (`sys/vox_gpu.c`, `bones/sys/skeleton_gpu.c`): coloured, ambient occlusion, see through kinds, skinned |
+| GPU meshing | solid materials (`lights3/sys/gpu_mesh.c`), textured, lit, with neighbours | lod meshes, skeleton meshes and colored chunk3 parents' chunks (`sys/vox_gpu.c`, `bones/sys/skeleton_gpu.c`): coloured, ambient occlusion, see through kinds, skinned, with neighbours |
 
 Both write faces through one writer (`mesh_add_face`, [fun/faces.c](../../src/chunks/chunks3/fun/faces.c)) and use one
 hiding rule (`block_material_hides`): a solid voxel hides any face against it, a see through one only its own kind's.
@@ -135,6 +135,9 @@ meshed on the main thread (a 2ms budget a frame) straight into their own buffers
 - clones (items, mug shots, mirrors) read a gpu mesh back once (`mesh3_read_gpu`)
 - its `MeshVertices` hold only its drawn voxels' two far corners, for culling and framing
 - a gpu restore makes the mesher again and remeshes them all the next frame
+- a colored chunk3 parent's chunks (`chunk_colors_gpu_system`): its neighbours' sides on the grid's border hide the
+  faces where chunks meet; its see through child is meshed with it
+- without ambient occlusion (the "No AO" setting) each direction a shade, as the cpu's
 
 ### What it costs
 

@@ -213,7 +213,7 @@ static int zox_tst_pm_gpu(GpuMesher* mesher, const VoxelNode* model, const Color
         double begin = get_time_ms();
         for (int b = 0; b < 5; b++) {
             faces = vox_gpu_mesh_grid(mesher, model, target, materials, zox_block_material_solid, colors, zox_tst_pm_gpu_room,
-                &dispatch, extent, NULL);
+                &dispatch, extent, NULL, NULL);
         }
         const double prepare = (get_time_ms() - begin) / 5;
         dispatch = 1;
@@ -221,7 +221,7 @@ static int zox_tst_pm_gpu(GpuMesher* mesher, const VoxelNode* model, const Color
         begin = get_time_ms();
         for (int b = 0; b < 5; b++) {
             vox_gpu_mesh_grid(mesher, model, target, materials, zox_block_material_solid, colors, zox_tst_pm_gpu_room,
-                &dispatch, extent, NULL);
+                &dispatch, extent, NULL, NULL);
             zox_gpu_finish();
         }
         const double total = (get_time_ms() - begin) / 5;

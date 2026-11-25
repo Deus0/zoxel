@@ -141,7 +141,8 @@ void set_chunk3_parent_colored_materials(ecs* world, entity parent, const byte* 
             if (!zox_has(chunk, Chunk3)) {
                 continue;
             }
-            const entity mesh = zox_ins(world, prefab_vox_mesh);
+            // a gpu chunk's on the gpu too, filled as it meshes (chunk_colors_gpu_system)
+            const entity mesh = zox_ins(world, zox_has(chunk, GpuMesh) ? prefab_vox_mesh_gpu : prefab_vox_mesh);
             zox_set_unique_name(mesh, "chunk_see_through");
             zox_remove(mesh, VoxLodMesh);   // filled by its chunk's build, not a lod's
             zox_add(mesh, VoxMesh);

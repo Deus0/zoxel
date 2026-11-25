@@ -64,6 +64,10 @@ entity spawn_chunk3_parent_colored_chunk(ecs* world, entity prefab, entity paren
     zox_setv(e, BlockScale, scale);
     zox_setv(e, ChunkPosition, position);
     zox_add(e, VoxMesh);    // drawn by vox_render_system, its see through child by vox_transparent_render_system
+    if (zox_vox_gpu_meshing && zox_gpu_compute_supported()) {
+        zox_add(e, GpuMesh);    // meshed on the gpu (sys/vox_gpu.c chunk_colors_gpu_system)
+        zox_setv(e, MeshFaceRoom, 0);
+    }
     zox_setv(e, LocalPosition3D, ((float3) { (position.x + 0.5f) * length * scale, (position.y + 0.5f) * length * scale,
         (position.z + 0.5f) * length * scale }));
     initialize_voxel_lock(world, e);

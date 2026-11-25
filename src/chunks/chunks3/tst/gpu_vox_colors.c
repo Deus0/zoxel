@@ -80,7 +80,7 @@ static inline int zox_tst_gvc_gpu(GpuMesher* mesher, const VoxelNode* model, con
     int3 extent[2];
     // as the game's lods (sys/vox_gpu.c): its node values and sides at the lod, the mesher already big enough
     const uint wanted = vox_gpu_mesh_grid(mesher, model, zox_tst_gvc_lod, materials, material, colors,
-        zox_tst_gvc_room, NULL, extent, NULL);
+        zox_tst_gvc_room, NULL, extent, NULL, NULL);
     const int faces = wanted ? gpu_mesher_read_faces(mesher) : 0;
     *out = malloc(sizeof(zox_tst_gvc_corner) * 4 * (faces ? faces : 1));
     float4* vertices = malloc(sizeof(float4) * 4 * (faces ? faces : 1));

@@ -37,8 +37,11 @@ static inline void vox_render_meshes(iter* it, byte see_through) {
         zox_sys_i(MeshGPULink, mesh);
         zox_sys_i(ColorsGPULink, colors);
         zox_sys_i(TransformMatrix, matrix);
+        // a gpu mesh (chunks3/sys/vox_gpu.c) has its count, its cpu arrays empty
+        const byte gpu = zox_has(e, GpuMesh);
+        const int count = gpu ? mesh_index_count(world, e) : indicies->length;
         if (disabled->value ||
-            !indicies->length ||
+            !count ||
             !mesh->value.x ||
             !mesh->value.y ||
             !colors->value)
@@ -80,13 +83,15 @@ static inline void vox_render_meshes(iter* it, byte see_through) {
             material_attributes->mvp_matrix,
             mvp_matrix);
         zox_gpu_bind_buffer_element(mesh->value.x);
-        opengl_enable_vertex_buffer(
-            material_attributes->vertex_position,
-            mesh->value.y);
-        opengl_enable_color_buffer(
-            material_attributes->vertex_color,
-            colors->value);
-        zox_gpu_render3(indicies->length);
+        if (gpu) {
+            // the compute shader's: vec4 vertices, rgba8 colours
+            zox_gpu_array_buffer_float3_stride(material_attributes->vertex_position, mesh->value.y, sizeof(float4));
+            zox_gpu_array_buffer_byte4(material_attributes->vertex_color, colors->value);
+        } else {
+            opengl_enable_vertex_buffer(material_attributes->vertex_position, mesh->value.y);
+            opengl_enable_color_buffer(material_attributes->vertex_color, colors->value);
+        }
+        zox_gpu_render3(count);
         if (dbg_log) {
             zox_log("Rendering Vox Mesh [%s] - Tris [%i]",
                 zox_sys_e_name,

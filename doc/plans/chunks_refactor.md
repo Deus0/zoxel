@@ -336,8 +336,11 @@ Phase 4 (gpu meshing for vox models):
   as a cpu mesh once its indices are); drawn by the existing renderers, strided (vox_instance_render,
   skeleton3_render). Clones read it back once. On with vulkan (`zox_vox_gpu_meshing`, --vox_gpu_meshing,
   --vox_cpu_meshing). Phase 4 done (2026-11-26); doc/tech/chunks3.md.
-- Left: a no split model's uniform nodes as one big face (the cpu merges them, the gpu draws a face a voxel); colored
-  chunk3 parents (spawn_chunk3_parent_colored) are still cpu meshed.
+- 5 done: colored chunk3 parents' chunks on the gpu (chunk_colors_gpu_system, sys/vox_gpu.c): its neighbours' sides on
+  the grid's border hide faces where chunks meet, its voxels there air (ambient occlusion stops at the chunk, as the
+  cpu's); its see through child meshed with it. tst colored_parent(_shell): 2904 faces, none where chunks meet.
+- Left: a no split model's uniform nodes as one big face (the cpu merges them, the gpu draws a face a voxel): faces
+  merged is its own step after this refactor (Open questions, greedy meshing).
 
 
 
