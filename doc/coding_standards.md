@@ -598,7 +598,7 @@ Flecs is used through the `zox_` macros in `src/_/flecs/mcr/`, raw flecs stays i
   change, and what each costs: [tech/states.md](tech/states.md).
 - Don't move systems around to make a side effect work: no `zox_system` to `zox_system_1` (main thread), new sync
   points or phase changes for it. Use an observer, or ask; `tst pipeline_syncs` counts the merges.
-- flecs.c itself is patched by `bsh/flecs_fix.sh`, each patch in [flecs_patches.md](flecs_patches.md).
+- flecs.c itself is patched by `bsh/flecs_fix.sh`, each patch in [flecs_patches.md](engine/flecs_patches.md).
 
 ## Logs
 

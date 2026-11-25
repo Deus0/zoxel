@@ -65,7 +65,7 @@ The [documentation](doc) is a living reference for Zoxel's engine, modules, arch
 | [Engine](doc/engine/_.md) | Architecture, systems, spawning, commands, and tools. |
 | [Technical documentation](doc/tech/_.md) | Characters, children, blocks, water, UIs, and other modules. |
 | [Entity links](doc/engine/links.md) | `zox_link`, single and many links, and reacting to unlinks. |
-| [Coding standards](doc/engine/coding_standards.md) | Code style and conventions. |
+| [Coding standards](doc/coding_standards.md) | Code style and conventions. |
 | [Tests](doc/engine/tests.md) | Writing and running tests. |
 
 ## Development
