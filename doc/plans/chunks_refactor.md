@@ -58,8 +58,10 @@ the `BuildChunkSides` waits (behind several lod seam races), for cpu textured me
 - A commit per step; each builds on every platform and passes its tests. Steps 1 to 3 change nothing drawn: a test
   compares the old output with the new, face for face, before the old code goes.
 - Every structural change (new components, a new link, tags) is agreed before its step starts.
-- Measure before and after each phase: `perf_terrain` (cpu and gpu meshing), a model's mesh time (add a
-  `[metric]` line to tst `vox_mesh_grid`, it builds a model with each walker), and the tests' own times (doc/results.md).
+- Measure before and after each step: tst `perf_meshing` (both cpu meshers on the same voxels, ms a mesh and its
+  faces, debug and `--release`; the baseline is in doc/results.md, Meshing speed), and `perf_terrain` (cpu and gpu
+  meshing) for a phase. No step may be slower than the baseline; its face counts are checked, so a step that draws
+  other faces fails it until the counts are agreed and updated.
 
 ## Phase 1: shared parts, nothing drawn changes
 
@@ -124,6 +126,7 @@ Each part is checked once, at the lowest level that has it; the big walks only c
 |---|---|
 | The face rule (which faces show), lods mixed, borders | one test on given grids: the cpu mesher and the gpu mesher the same faces; neighbours at other depths |
 | The walk and face writer | `mesher_walk` (Phase 1) |
+| Meshing speed, both kinds | `perf_meshing` (its gpu meshing too from phase 4) |
 | Textured per vertex | `chunk_uvs`: every regular block's faces their tile for their direction, liquids their own texture |
 | Colored per vertex | a colour and ambient occlusion test: a small model, each corner's colour by the rule |
 | Lights per vertex | `smooth_lights`, `lod_lights`, `water_light` |
@@ -147,4 +150,5 @@ rebuilt its own reference of a rule: by stream_seams and the cpu against gpu tes
 
 ## Results
 
-(each phase's measurements: perf_terrain cpu and gpu, model mesh times, the tests' own times)
+- Baseline (2026-11-25): doc/results.md, Meshing speed. A textured chunk's sides are ~85% of its cpu cost; the
+  colored pyramid grid is 4 to 5 times the octree walk at full detail.

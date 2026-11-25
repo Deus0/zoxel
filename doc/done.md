@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-25
+-x tst perf_meshing: both cpu meshers timed on the same voxels every run (a 16³ terrain chunk with neighbours, sides
+  and mesh apart; a 32³ model, both walkers), each lod, its faces checked; baseline in doc/results.md. Sides are ~85%
+  of a textured chunk's cpu cost
 -x Chunk3 parents: a vox of chunks found by position, meshed and lit, chunks at different lods side by side
   (chunks3/pre/chunk3_parent.c, doc/tech/chunks3.md). Terrain is one that streams (prefab_terrain from
   prefab_chunk3_parent, its chunks from lights3's prefab_chunk_lit); a textured parent links its blocks and tilemap,
