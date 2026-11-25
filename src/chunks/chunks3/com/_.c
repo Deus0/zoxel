@@ -50,6 +50,9 @@ zox_tag(CombineVox);
 zoxc_entitiesw(CombineList);
 zoxc_arrayd(CombinePositions, byte3);
 zoxc_arrayd(CombineDepths, byte);   // depth to sample each CombineList vox at
+// a colored model's material id a palette entry (ColorRGBs' index), as MagicaVoxel's: zox_block_material_* (solid,
+//  liquid: see through); only on a model with more than solid (none: all solid, vox_material_table)
+zoxc_arrayd(MaterialIDs, byte);
 // blocks' own data in their chunk, for the few that have it (a bed's direction, a filler's offset), fun/block_data.c:
 //  entries packed in one buffer, each its position (3 bytes), length (1) and data (length bytes)
 zoxc_arrayd(BlockDatas, byte);
@@ -130,6 +133,7 @@ void zox_components_chunks3(ecs* world) {
     zoxd_entitiesw(CombineList);
     zoxd_arrayd(CombinePositions);
     zoxd_arrayd(CombineDepths);
+    zoxd_arrayd(MaterialIDs);
     zoxd_arrayd(BlockDatas);
     zoxd_octree(ActiveOctree);
 }

@@ -15,3 +15,16 @@ static inline void mesh_add_face(int_array_d* indices, float3_array_d* vertices,
             origin.z + corners[i].z * scale });
     }
 }
+
+// a colored model's kinds table for build_voxel_mesh_material: a voxel value's (its palette entry + 1) material, from
+//  its MaterialIDs (NULL: every voxel solid); returns 1 if any voxel is see through (another mesh to build)
+static inline byte vox_material_table(const MaterialIDs* ids, byte* table) {
+    memset(table, zox_block_material_solid, 256);
+    table[0] = zox_block_material_none;
+    byte other = 0;
+    for (int i = 0; ids && i < ids->length && i < 255; i++) {
+        table[i + 1] = ids->value[i];
+        other |= ids->value[i] != zox_block_material_solid;
+    }
+    return other;
+}

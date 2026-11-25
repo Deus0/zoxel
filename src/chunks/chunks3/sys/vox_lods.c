@@ -79,7 +79,11 @@ byte build_vox_mesh_at_depth(
     // the vox's octree locked while walked, its writers can run alongside (thread_safety.md)
     spinlock* vlock = zox_octree_lock(world, vox);
     zox_octree_lock_begin(vlock);
-    build_voxel_mesh(voxels, noctrees, vcolors, &mesh, node_depth, target_depth, position, cscale, is_split, 1);
+    // its solid voxels (all of them without MaterialIDs); see through ones are their own mesh (chunks_refactor.md phase 3)
+    byte materials[256];
+    const byte other = vox_material_table(zox_has(vox, MaterialIDs) ? zox_get(vox, MaterialIDs) : NULL, materials);
+    build_voxel_mesh_material(voxels, noctrees, vcolors, &mesh, node_depth, target_depth, position, cscale, is_split, 1,
+        other ? materials : NULL, zox_block_material_solid);
     zox_octree_lock_end(vlock);
     indicies->length = mesh.indicies->size;
     vertices->length = mesh.vertices->size;

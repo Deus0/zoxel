@@ -3,6 +3,7 @@
 //  - a 16³ model: a solid ball (value 1) wrapped in a shell a voxel thick (value 2, see through: zox_block_material_liquid)
 //  - the solid mesh: every face of the core, under the shell too (a see through voxel hides only its own kind's faces)
 //  - the see through mesh: the shell's faces against air only (the core hides them, shell beside shell hides them)
+//  - its kinds from its MaterialIDs (a material id a palette entry, as MagicaVoxel's: vox_material_table)
 //  - both counted against a count of the same rule here, voxel by voxel (block_material_hides), both lookups
 //    (pyramid and octree) the same
 //  - run: bash bsh/tst.sh vox_materials
@@ -65,10 +66,12 @@ void zox_tst_vox_materials_check(ecs* world) {
     optimize_reduce_VoxelNode(&model);
     color_rgb palette[2] = { { 60, 180, 60 }, { 120, 220, 120 } };
     const ColorRGBs colors = { .value = palette, .length = 2 };
+    // as a model has it, MagicaVoxel's way: a material id its palette entry, the second see through
+    byte ids_value[2] = { zox_block_material_solid, zox_block_material_liquid };
+    const MaterialIDs ids = { .value = ids_value, .length = 2 };
     byte materials[256];
-    memset(materials, zox_block_material_solid, sizeof(materials));
-    materials[0] = zox_block_material_none;
-    materials[2] = zox_block_material_liquid;
+    const byte other = vox_material_table(&ids, materials);
+    zox_tst_check(other, "the kinds table found no see through material");
     const int solid_expected = zox_tst_vm_expected(materials, zox_block_material_solid, length);
     const int shell_expected = zox_tst_vm_expected(materials, zox_block_material_liquid, length);
     for (byte pyramid = 0; pyramid <= 1; pyramid++) {

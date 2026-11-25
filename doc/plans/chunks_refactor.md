@@ -281,10 +281,18 @@ material entity; a kind is a tag on it, not a byte (solid none, see through one 
   terrain's (a solid core shows through a see through shell, a shell face only against air). tst vox_materials: a
   16³ ball in a shell a voxel thick, both lookups, faces counted against the rule voxel by voxel (360 solid, 528 see
   through). For slimes later.
-- 2: the material entities and their tag; a model's kinds table from its voxels' materials (the palette: a byte
-  array, a voxel value to its material), replacing ColorRGBs' role as a model's only data
-- 3: a model's meshes under ChunkMaterial children a kind (VoxLodMesh children today), the see through one drawn
-  blended (TransparentMesh); its colours need alpha in the colored shader (color_rgb has none)
+- 2 done: MaterialIDs (com/_.c), as MagicaVoxel's: a material id a palette entry beside ColorRGBs, only on a model
+  with more than solid; vox_material_table turns it into the mesher's kinds table. A model's lod mesh holds only its
+  solid voxels when it has one (vox_lods.c). Still to add: the material entities (MaterialLink to them, a tag for see
+  through) once meshes sit under a ChunkMaterial a kind (3)
+- 3 next: a model's see through mesh. Today a model (models/pre/vox_lods.c) has a VoxLodMesh child a lod, built by
+  vox_lod_mesh_build_system (chunks3/sys/vox_lods.c, build_vox_mesh_at_depth: its solid voxels now), and ModelLods
+  links them for instancing (the instance renderer draws every copy of the model from those meshes). To add:
+  - a lod's see through mesh beside its solid one, under a ChunkMaterial a kind as terrain's (MaterialLink to the
+    material entity, a tag for see through), built with build_voxel_mesh_material(.., zox_block_material_liquid)
+  - ModelLods to link both, the instance renderer drawing see through ones after the solid ones, blended
+    (TransparentMesh, as terrain's water), the colored shader an alpha (the material's, color_rgb has none)
+  - check: tst vox_materials at the mesher (done), then an instanced model in the game (4)
 - 4: a test model in the game: the solid core and see through shell, both meshes shown, screenshot to look at
 - 5: colored chunk3 parents (models bigger than a chunk), chunk3_single and chunk3_single_colored prefabs
 - 6: each user of vox models checked as it moves (characters, items, minivoxes, critters, block voxes)
