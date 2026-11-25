@@ -20,6 +20,7 @@
 #include "vox_lods.c"
 // textured
 #include "build_textured.c"
+#include "build_grid.c"
 #include "wait.c"
 #include "mesh_spawn.c"
 #include "trigger.c"

@@ -42,20 +42,31 @@ pays it. wfc.c is built -O2 in debug builds too now (3.2s to 2.6s); on threads i
 ## Meshing speed, perf_meshing (2026-11-25)
 The cpu meshers on the same voxels every run (src/chunks/chunks3/tst/perf_meshing.c): ms a mesh, the fastest of 5
 rounds, runs within 1% of each other. The baseline for doc/plans/chunks_refactor.md: each step's run compared to this.
-Textured is a 16³ terrain chunk and its 6 neighbours (sides + mesh), colored a 32³ model (both walkers).
+Terrain is a chunk and its 6 neighbours at its lod, two ways: sides (SidesOctree then the mesh, the game's now) and
+grid (sys/build_grid.c, faces by the gpu mesher's rule, the same faces checked). * its neighbours at full detail, a
+lod border on every side (the worst case). Models are a 32³ ball, both walkers.
 
-| Mesh (lod depth) | Faces | Debug ms | Release ms |
-|---|---|---|---|
-| textured 4 | 1206 | 1.95 (sides 1.75, mesh 0.20) | 0.274 (sides 0.228, mesh 0.046) |
-| textured 3 | 202 | 0.266 (sides 0.234) | 0.036 (sides 0.028) |
-| textured 2 | 81 | 0.047 | 0.0067 |
-| colored grid 5 | 10022 | 6.10 | 0.900 |
-| colored grid 4 | 5566 | 2.06 | 0.273 |
-| colored grid 3 | 1798 | 0.49 | 0.068 |
-| colored walk 5 | 10022 | 24.1 | 4.35 |
-| colored walk 4 | 5566 | 5.21 | 0.898 |
-| colored walk 3 | 1798 | 0.89 | 0.160 |
+| Mesh | Faces | Debug sides | Debug grid | Release sides | Release grid |
+|---|---|---|---|---|---|
+| terrain 16³ | 1206 | 1.948 | 0.255 (7.7x) | 0.281 | 0.091 (3.1x) |
+| terrain 8³ | 137 | 0.253 | 0.041 (6.1x) | 0.034 | 0.017 (1.9x) |
+| terrain 4³ | 31 | 0.035 | 0.009 (3.9x) | 0.0047 | 0.0027 (1.7x) |
+| terrain 2³ | 4 | 0.0045 | 0.0016 (2.9x) | 0.0006 | 0.0004 (1.5x) |
+| terrain 1³ | 1 | 0.0005 | 0.0003 (1.5x) | 0.0001 | 0.0001 (1.1x) |
+| terrain 8³ * | 202 | 0.267 | 0.096 (2.8x) | 0.036 | 0.025 (1.4x) |
+| terrain 4³ * | 81 | 0.047 | 0.052 (0.9x) | 0.0070 | 0.0086 (0.8x) |
 
-- A textured chunk's sides (`build_sides_dig`) are ~85% of its cpu cost, debug and release: what the plan's phase 2
-  (faces from the voxel grid, no SidesOctree) replaces
-- The pyramid grid is 4 to 5 times the octree walk at full detail: the walk to keep for colored is the grid's
+| A world, far 16 (6223 chunks: 16³ 315, 8³ 1036, 4³ 1708, 2³ 2492, 1³ 672) | Sides | Grid |
+|---|---|---|
+| meshed once, debug | 947.5ms | 142.7ms (6.6x) |
+| meshed once, release | 132.8ms | 52.4ms (2.5x) |
+
+| Model | Faces | Debug pyramid | Debug walk | Release pyramid | Release walk |
+|---|---|---|---|---|---|
+| 32³ | 10022 | 6.10 | 24.1 | 0.900 | 4.35 |
+| 16³ | 5566 | 2.06 | 5.21 | 0.272 | 0.898 |
+| 8³ | 1798 | 0.49 | 0.89 | 0.068 | 0.160 |
+
+- A textured chunk's sides (`build_sides_dig`) are 80 to 90% of its cpu cost: the grid replaces them (plan phase 2)
+- 78% of a far 16 world's chunks are 4³ or smaller: the lower lods are most of the meshing
+- The colored pyramid grid is 4 to 5 times the octree walk at full detail: the walk to keep is the grid's
