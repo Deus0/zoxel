@@ -106,11 +106,33 @@ void zox_tst_input_field_check(ecs* world) {
         zox_tst_input_after);
 }
 
+static entity zox_tst_ui_color_button(ecs* world, entity parent, int2 position, float2 anchor,
+    color fill, void (*clicked)(ecs*, ClickEventData))
+{
+    const int2 size = { 48, 32 };
+    const entity button = spawn_uic(world, prefab_button, parent, anchor, position, size, size, fill, fill);
+    zox_setv(button, ElementFillColor, fill);
+    zox_setv(button, ElementOutlineColor, fill);
+    zox_setv(button, SelectedFillColor, fill);
+    zox_setv(button, SelectedOutlineColor, fill);
+    zox_setv(button, ClickEvent, clicked);
+    return button;
+}
+
+#include "focus_lifecycle.c"
+#include "input_boundaries.c"
+#include "slider_drag.c"
 #ifdef zox_sdl3
     #include "sdl_text.c"
 #endif
 
 void zox_tsts_elements2() {
+    zox_tst_add("slider_drag", zox_tst_slider_drag_ready, zox_tst_ui_fixture_check, 30);
+    zox_tst_set_setup("slider_drag", NULL, 1);
+    zox_tst_add("input_field_boundaries", zox_tst_input_boundaries_ready, zox_tst_ui_fixture_check, 30);
+    zox_tst_set_setup("input_field_boundaries", NULL, 1);
+    zox_tst_add("input_focus_lifecycle", zox_tst_input_focus_ready, zox_tst_ui_fixture_check, 30);
+    zox_tst_set_setup("input_focus_lifecycle", NULL, 1);
     zox_tst_add("input_field", zox_tst_input_field_ready, zox_tst_input_field_check, 60);
     zox_tst_set_setup("input_field", NULL, 1);
 #ifdef zox_sdl3

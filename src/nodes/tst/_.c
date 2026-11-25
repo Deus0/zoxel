@@ -13,7 +13,6 @@ int zox_tst_nodes_frames = 0;
 entity zox_tst_nodes[5];
 entity zox_tst_nodes_process = 0;
 entity zox_tst_nodes_process2 = 0;
-entity zox_tst_nodes_observer = 0;
 entity zox_tst_nodes_begun[zox_tst_nodes_max];
 int zox_tst_nodes_begun_count = 0;
 
@@ -37,6 +36,10 @@ static inline entity zox_tst_nodes_current(ecs* world, entity process) {
     return zox_valid(process) ? zox_get_link(world, process, CurrentNodeLink) : 0;
 }
 
+static byte zox_tst_node_prefabs_ready(ecs* world) {
+    return zox_valid(prefab_node) && zox_valid(prefab_process);
+}
+
 // a stage gives up after 60 frames
 #define zox_tst_nodes_timeout(message) {\
     if (zox_tst_nodes_frames > 60) {\
@@ -57,6 +60,9 @@ byte zox_tst_node_graphs_ready(ecs* world) {
     entity* n = zox_tst_nodes;
     switch (zox_tst_nodes_stage) {
         case 0: {
+            if (!zox_tst_node_prefabs_ready(world)) {
+                return 0;
+            }
             for (int i = 0; i < 5; i++) {
                 n[i] = spawn_node_leaf(world, prefab_node);
             }
@@ -66,12 +72,6 @@ byte zox_tst_node_graphs_ready(ecs* world) {
             zox_link(world, n[1], NodeLink, n[2]);
             zox_link(world, n[1], NodeLink, n[3]);
             zox_link(world, n[3], NodeLink, n[4]);
-            ecs_observer_desc_t desc = {
-                .query = { .expr = "[none] nodes.NodeRun, [none] core.Begin" },
-                .callback = zox_tst_nodes_on_begin,
-                .events = { EcsOnAdd },
-            };
-            zox_tst_nodes_observer = ecs_observer_init(world, &desc);
             zox_tst_nodes_process = zox_tst_nodes_spawn_process(world, n[0]);
             break;
         }
@@ -142,9 +142,6 @@ void zox_tst_node_graphs_check(ecs* world) {
         zox_tst_check(zox_tst_nodes_begun[i] == expected[i], "Begin [%i] had node [%s] current", i,
             zox_tst_nodes_begun[i] ? zox_getn(zox_tst_nodes_begun[i]) : "nothing");
     }
-    if (zox_tst_nodes_observer) {
-        zox_delete(zox_tst_nodes_observer);
-    }
     if (zox_valid(zox_tst_nodes_process2)) {
         zox_delete(zox_tst_nodes_process2);
     }
@@ -153,7 +150,22 @@ void zox_tst_node_graphs_check(ecs* world) {
     }
 }
 
-void zox_tsts_nodes() {
+#include "parallel.c"
+#include "reentry.c"
+#include "cleanup.c"
+#include "removed_choice.c"
+
+void zox_tsts_nodes(ecs* world) {
+    zox_on_add(zox_tst_nodes_on_begin, [none] nodes.NodeRun, [none] core.Begin);
+    zox_on_add(zox_tst_node_reentry_begin, [none] nodes.NodeRun, [none] core.Begin);
     zox_tst_add("node_graphs", zox_tst_node_graphs_ready, zox_tst_node_graphs_check, 30);
     zox_tst_set_setup("node_graphs", NULL, 1);
+    zox_tst_add("node_parallel", zox_tst_node_parallel_ready, zox_tst_node_parallel_check, 30);
+    zox_tst_set_setup("node_parallel", NULL, 1);
+    zox_tst_add("node_reentry", zox_tst_node_reentry_ready, zox_tst_node_reentry_check, 30);
+    zox_tst_set_setup("node_reentry", NULL, 1);
+    zox_tst_add("node_graph_cleanup", zox_tst_node_prefabs_ready, zox_tst_node_graph_cleanup_check, 30);
+    zox_tst_set_setup("node_graph_cleanup", NULL, 1);
+    zox_tst_add("node_removed_choice", zox_tst_node_removed_choice_ready, zox_tst_node_removed_choice_check, 30);
+    zox_tst_set_setup("node_removed_choice", NULL, 1);
 }

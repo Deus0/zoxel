@@ -433,6 +433,11 @@ void zox_tst_jingles_check(ecs* world) {
 
 #include "hits.c"
 #include "trigger.c"
+#include "file_processing.c"
+#include "voice_lifecycle.c"
+#ifdef zox_sdl
+#include "wav_decode.c"
+#endif
 
 void zox_tsts_sounds() {
     zox_tst_add("jingles", zox_tst_jingles_ready, zox_tst_jingles_check, 30);
@@ -445,4 +450,12 @@ void zox_tsts_sounds() {
     zox_tst_set_setup("sound_instruments", NULL, 1);
     zox_tsts_hits();
     zox_tsts_sound_trigger();
+    zox_tst_add("sound_file_processing", zox_tst_sound_file_ready, zox_tst_sound_file_processing_check, 30);
+    zox_tst_set_setup("sound_file_processing", NULL, 1);
+    zox_tst_add("sound_voice_lifecycle", zox_tst_sound_mixer_ready, zox_tst_sound_voice_lifecycle_check, 30);
+    zox_tst_set_setup("sound_voice_lifecycle", NULL, 1);
+#ifdef zox_sdl
+    zox_tst_add("sound_wav_decode", zox_tst_sound_mixer_ready, zox_tst_sound_wav_decode_check, 30);
+    zox_tst_set_setup("sound_wav_decode", NULL, 1);
+#endif
 }

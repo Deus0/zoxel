@@ -10,10 +10,16 @@ float zox_popup_scale = 0.05f;
 #include "ins/_.c"
 #include "sys/_.c"
 #include "dbg/_.c"
+#ifdef zox_tests
+#include "tst/_.c"
+#endif
 
 void import_elements3(ecs* world) {
     zox_module(elements3);
     zoxd_components_elemments3(world);
     zox_systems_elements3D(world);
     add_hook_spawn_prefabs(spawn_prefabs_elements3D);
+#ifdef zox_tests
+    zox_tsts_elements3();
+#endif
 }

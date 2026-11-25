@@ -20,6 +20,10 @@ byte is_log_dragging = 0;
 #include "glyphs/_.c"
 #include "texts/_.c"
 #include "tooltips/_.c"
+#include "tst/helpers.c"
+#ifdef zox_tests
+#include "tst/fixtures.c"
+#endif
 #include "elements2/_.c"
 #include "elements3/_.c"
 #include "windows/_.c"

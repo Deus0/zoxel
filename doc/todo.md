@@ -491,6 +491,10 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 - Color node should set a reference name
     - fill can use this instead of hard values
 
+### transforms2
+- Add a matrix path for entities with `Position2`, `Rotation2`, and `Scale2`. Keep `DisableTransform` filtering and let `Scale2` take precedence when both scale components are present.
+- Extend `transform2_matrices` with a rotated, nonuniformly scaled entity and verify its matrix against a known point.
+
 ### Ui
 - Refactor taskbar as entities and add the Mirror UI there
     - so its easier to add the new mirror button

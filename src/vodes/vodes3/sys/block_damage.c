@@ -131,6 +131,9 @@ void block_damage_queue_system(iter* it) {
                     world_block = zox_ins(world, prefab_block_health);
                     zox_setv(world_block, StatValue, block_health);
                     zox_setv(world_block, StatValueMax, start_health);
+                    // under the chunk (not fragmenting, like its block voxes): ending the game deletes the chunk and
+                    //  takes the health and its overlay with it, instead of leaking them (tst end_game_cleanup)
+                    zox_set_parent_non_fragment(world, world_block, chunk);
                     // world_block = zox_new();
                     // zox_set_unique_name(world_block, "block_health");
                     entity overlay = spawn_cube_with_shader(

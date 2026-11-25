@@ -27,6 +27,6 @@ void import_nodes(ecs* world) {
     zox_systems_nodes(world);
     add_hook_spawn_prefabs(spawn_prefabs_nodes);
 #ifdef zox_tests
-    zox_tsts_nodes();
+    zox_tsts_nodes(world);
 #endif
 }

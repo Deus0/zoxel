@@ -1,3 +1,7 @@
+#if defined(zox_tests) && defined(zox_opengl) && defined(zox_windows)
+static void (*test_camera_depth)(entity, const char*, float4x4, float3, float2, float2);
+#endif
+
 // NOTE: NO need to time as it runs systems inside it
 void camera_render3_system(iter* it) {
     zox_sys_on_begin();
@@ -51,6 +55,11 @@ void camera_render3_system(iter* it) {
         zox_gpu_set_clear_color(color_to_float4(clear_color));
         // only its viewport, cameras sharing the screen keep what the others drew
         zox_gpu_clear_rect(viewport_position, viewport_size);
+#if defined(zox_tests) && defined(zox_opengl) && defined(zox_windows)
+        if (test_camera_depth) {
+            test_camera_depth(e, NULL, matrix->value, position->value, viewport_position, viewport_size);
+        }
+#endif
         if (dbg_log) {
             // zox_log("Camera [%s] Viewport Color is [%ix%ix%ix%i]", zox_getn(e), clear_color.r, clear_color.g, clear_color.b, clear_color.a);
             zox_log("Rendering 3D [%s]: [%ix%i] Buffer? [%i]",
@@ -79,6 +88,11 @@ void camera_render3_system(iter* it) {
                             j);
                     }
                     zox_gpu_run_system(world, system, zox_has(system, RenderParallel));
+#if defined(zox_tests) && defined(zox_opengl) && defined(zox_windows)
+                    if (test_camera_depth) {
+                        test_camera_depth(e, zox_getn(system), matrix->value, position->value, viewport_position, viewport_size);
+                    }
+#endif
                 }
             }
         }

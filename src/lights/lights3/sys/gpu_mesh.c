@@ -206,6 +206,13 @@ void chunk_gpu_relight_system(iter* it) {
     zox_sys_on_end();
 } zoxd_system(chunk_gpu_relight_system);
 
+#ifdef zox_tests
+static void (*test_gpu_chunk_dispatched)(ecs*, entity, entity, byte, const byte*);
+#if defined(zox_opengl) && defined(zox_windows)
+static void (*test_chunk_draw)(entity, entity, entity, byte, float);
+#endif
+#endif
+
 // NOTE: Meshes a gpu chunk mesh from its grids (MeshDirty: filled), uploads and dispatches them, then frees them;
 //  main thread, with the other gpu uploads, within a budget a frame
 void chunk_gpu_mesh_system(iter* it) {
@@ -312,6 +319,11 @@ void chunk_gpu_mesh_system(iter* it) {
         gpu_mesh_grid(&mesher, grid_voxels->value, lit ? grid_lights->value : NULL, depth->value, present->value,
             lights_present->value, lit ? &lighting : NULL);
         fence->value = mesher.fence;
+#ifdef zox_tests
+        if (test_gpu_chunk_dispatched) {
+            test_gpu_chunk_dispatched(world, chunk, e, depth->value, grid_voxels->value);
+        }
+#endif
         resize_GridVoxels(grid_voxels, 0);
         resize_GridLights(grid_lights, 0);
         zox_remove(e, MeshDirty);
@@ -437,6 +449,11 @@ void chunk_gpu_render_system(iter* it) {
         zox_gpu_program_float4x4(program, "mvp_matrix", float4x4_multiply(matrix->value, render_camera_matrix));
         zox_gpu_program_float4(program, "transform", (float4) { 0, 0, 0, scale });
         zox_gpu_draw_indirect(vao->value, command->value.x);
+#if defined(zox_tests) && defined(zox_opengl) && defined(zox_windows)
+        if (test_chunk_draw) {
+            test_chunk_draw(renderer_camera, chunk, e, depth->value, scale);
+        }
+#endif
         __atomic_add_fetch(&zox_drawn_chunks, 1, __ATOMIC_RELAXED);
     }
     if (program) {

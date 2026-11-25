@@ -22,6 +22,7 @@
 
 #include "ui3_overlap.c"
 #include "navigator.c"
+#include "taskbar.c"
 #include "split_screen.c"
 #include "coop.c"
 #include "realm_name.c"
@@ -29,6 +30,8 @@
 #include "game_log.c"
 
 void zox_tsts_huds(ecs* world) {
+    zox_tst_add("taskbar_lifecycle", zox_tst_taskbar_ready, zox_tst_ui_fixture_check, 30);
+    zox_tst_set_setup("taskbar_lifecycle", NULL, 1);
     zox_tsts_huds_load();
     zox_tsts_huds_load_lids();
     zox_tst_add("menu_flow", zox_tst_menu_flow_ready, zox_tst_menu_flow_check, 120);
