@@ -44,29 +44,29 @@ static void zox_tst_vox_mesh_dispose(mesh_colored_build_data* mesh) {
     dispose_color_rgb_array_d(mesh->colors);
 }
 
-static void zox_tst_vox_mesh_grid_compare(const VoxelNode* vox, const ColorRGBs* colors, byte node_depth, byte depth, byte is_split) {
+static void zox_tst_vox_mesh_grid_compare(const VoxelNode* vox, const ColorRGBs* colors, byte node_depth, byte depth) {
     const float scale = 2.0f;
     const float3 offset = (float3) { -1, -1, -1 };
     mesh_colored_build_data octree_mesh = zox_tst_vox_mesh_new();
-    build_voxel_mesh(vox, NULL, colors, &octree_mesh, node_depth, depth, offset, scale, is_split, 0);
+    build_voxel_mesh(vox, NULL, colors, &octree_mesh, node_depth, depth, offset, scale, 0);
     mesh_colored_build_data grid_mesh = zox_tst_vox_mesh_new();
-    build_voxel_mesh(vox, NULL, colors, &grid_mesh, node_depth, depth, offset, scale, is_split, 1);
+    build_voxel_mesh(vox, NULL, colors, &grid_mesh, node_depth, depth, offset, scale, 1);
     int octree_count, grid_count;
     zox_tst_vox_face* octree_faces = zox_tst_vox_faces(&octree_mesh, &octree_count);
     zox_tst_vox_face* grid_faces = zox_tst_vox_faces(&grid_mesh, &grid_count);
-    zox_tst_check(octree_count > 0, "depth [%i] split [%i]: the octree built no faces", depth, is_split);
-    zox_tst_check(octree_count == grid_count, "depth [%i] split [%i]: faces octree [%i] grid [%i]", depth, is_split, octree_count, grid_count);
+    zox_tst_check(octree_count > 0, "depth [%i]: the octree built no faces", depth);
+    zox_tst_check(octree_count == grid_count, "depth [%i]: faces octree [%i] grid [%i]", depth, octree_count, grid_count);
     if (octree_count == grid_count) {
         int different = 0;
         for (int i = 0; i < octree_count; i++) {
             different += zox_tst_vox_face_compare(&octree_faces[i], &grid_faces[i]) != 0;
         }
-        zox_tst_check(!different, "depth [%i] split [%i]: [%i] of [%i] faces differ (positions or ao colors)",
-            depth, is_split, different, octree_count);
+        zox_tst_check(!different, "depth [%i]: [%i] of [%i] faces differ (positions or ao colors)",
+            depth, different, octree_count);
         // the same walk, so the same order too
         const byte same_order = !memcmp(octree_mesh.vertices->data, grid_mesh.vertices->data,
             octree_mesh.vertices->size * sizeof(float3));
-        zox_tst_check(same_order, "depth [%i] split [%i]: vertices in another order", depth, is_split);
+        zox_tst_check(same_order, "depth [%i]: vertices in another order", depth);
     }
     free(octree_faces);
     free(grid_faces);
@@ -98,10 +98,8 @@ void zox_tst_vox_mesh_grid_check(ecs* world) {
     optimize_reduce_VoxelNode(&vox); // like the game: parents get values, the lower lods
     color_rgb palette[3] = { { 200, 40, 40 }, { 40, 200, 40 }, { 40, 40, 200 } };
     const ColorRGBs colors = { .value = palette, .length = 3 };
-    for (byte is_split = 0; is_split <= 1; is_split++) {
-        for (int target = depth; target >= 1; target--) {
-            zox_tst_vox_mesh_grid_compare(&vox, &colors, depth, target, is_split);
-        }
+    for (int target = depth; target >= 1; target--) {
+        zox_tst_vox_mesh_grid_compare(&vox, &colors, depth, target);
     }
     collapse_VoxelNode(&vox);
 }

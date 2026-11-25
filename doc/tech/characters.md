@@ -91,7 +91,7 @@ Module order matters: `chunks → physics → models → bones → characters �
 - **Render children get their transform from the hierarchy.** Give them `Position3D`, `Rotation3D` and `LocalPosition3D` / `LocalRotation3D` at zero. Entities without `Position3D` (vox children) stop the recursion, so don't put renderable things under them.
 - **`RenderDisabled`:** use `set_entity_render_disabled()` (streaming) so children follow. Spawned children should copy their owner's value at spawn.
 - **Reaching the skeleton:** use `get_skeleton(world, character)` for anything on the skeleton: hand/head/shoulder bones, `RaiseShoulder`, `SwingStart`, `WalkState`, `SkeletonDirty`.
-- **Mesh build settings live on the vox.** Tags like `NoSplitChunk` must be on the vox child. `spawn_vox_combined_child()` copies it from the owner.
+- **Mesh build settings live on the vox**, not the character: mesh building reads its vox child (`VoxLink`).
 - **Waiting on children:** systems that need a child (`body_combine_system`, `character_bone_spawn_system`) skip the entity until the link is valid, rather than consuming their dirty state.
 - **Writing to a child from a multithreaded system** with `zox_getm` is fine when each child belongs to one owner. Structural changes still go through deferred commands.
 - **Vox data `RenderDepth` is always max depth** (raycasts read it). The owner's `RenderDepth` picks which mesh to show.

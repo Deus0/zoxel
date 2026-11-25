@@ -332,8 +332,10 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 	- merged mesh face building
 	- uv pass in a seperate system
 	- ao in a seperate system
-- add greedy mesh for vox models (plan: [tech/chunks3.md](tech/chunks3.md), Greedy meshing)
-	- needs to have smaller quads around corners to maintain ao visuals
+- greedy meshing for terrain (vox models done 2026-11-26, doc/plans/chunks_refactor.md phase 5): a big task, steps 5
+  in [tech/chunks3.md](tech/chunks3.md) (Greedy meshing): textures repeating inside a merged quad (a tile's uv by
+  fract, or a texture array), then lights (bake a face's 4 corner lights into its key, or relight by position), both
+  meshers (cpu grid, gpu); measure perf_terrain, dig_light, lod_light_flash
 - Refactor character vox into sub entity
 - Single Vox for Grass
 	- split into sub chunks
@@ -1625,7 +1627,7 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 	  distances; the gpu swap goes down with vulkan
 	- next: systems that mostly idle on fewer workers, the vox lod meshes and bake textures still ChildOf (33 and 42 tables in slow frames), quests and
 	  dialogue pairs a npc
-- greedy meshing for vox models, then terrain: the plan, AO and the steps in [tech/chunks3.md](tech/chunks3.md)
+- greedy meshing for terrain: see Refactors (vox models done)
 -x 2300 tables again, try reduce fragmentation
 -x Streaming has a spike, make sure to display the biggest system spike per graph
 	-x write a test for streaming spikes: perf_stream, perf_fly (flying, --maxnpcs), --profile, ZOX_SAMPLE

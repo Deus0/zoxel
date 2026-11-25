@@ -67,8 +67,6 @@ byte build_vox_mesh_at_depth(
     if (target_depth > node_depth) {
         target_depth = node_depth;
     }
-    // greedy meshing merges faces better than whole nodes: every voxel its own face first (fun/greedy.c)
-    byte is_split = !zox_has(vox, NoSplitChunk) || zox_greedy_mesh;
     const VoxelNode* noctrees[6] = { 0 };
     // NOTE: Same space for all lods, positions are based on the max depth vox
     ushort vlength = octree_size(node_depth);
@@ -89,7 +87,7 @@ byte build_vox_mesh_at_depth(
     byte materials[256];
     const byte other = vox_material_table(zox_has(vox, MaterialIDs) ? zox_get(vox, MaterialIDs) : NULL, materials);
     if (other || kind == zox_block_material_solid) {
-        build_voxel_mesh_material(voxels, noctrees, vcolors, &mesh, node_depth, target_depth, position, cscale, is_split, 1,
+        build_voxel_mesh_material(voxels, noctrees, vcolors, &mesh, node_depth, target_depth, position, cscale, 1,
             other ? materials : NULL, kind);
     }
     zox_octree_lock_end(vlock);

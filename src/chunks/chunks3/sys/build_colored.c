@@ -242,8 +242,8 @@ static void build_voxel_faces_colored(const vox_lookup* lookup, mesh_colored_bui
     }
 }
 
-// the one colored walk: down the octree to the target depth, each voxel's faces (is_split: a uniform node is cut into
-//  its voxels at the target depth, as models are; npc skeletons keep it one big voxel)
+// the one colored walk: down the octree to the target depth, each voxel's faces (a uniform node cut into its voxels at
+//  the target depth; greedy meshing merges them after, fun/greedy.c)
 static void build_voxel_mesh_dig(
     const vox_lookup* lookup,
     const VoxelNode* voxels,
@@ -253,8 +253,7 @@ static void build_voxel_mesh_dig(
     byte depth,
     byte3 position,
     float3 bounds_offset,
-    float scale,
-    byte is_split)
+    float scale)
 {
     if (!voxels) {
         return;
@@ -264,18 +263,14 @@ static void build_voxel_mesh_dig(
     if (!has_vkids && !voxels->value) {
         return;
     }
-    byte is_dig = depth < target_depth;
-    if (!is_split) {
-        is_dig &= has_vkids;
-    }
-    if (is_dig) {
+    if (depth < target_depth) {
         depth++;
         scale *= 0.5f;
         byte3_multiply_byte(&position, 2);
         for (byte i = 0; i < octree_length; i++) {
             const VoxelNode* child_voxels = has_vkids ? &vkids[i] : voxels;
             build_voxel_mesh_dig(lookup, child_voxels, vcolors, mesh, target_depth, depth,
-                byte3_add(position, octree_positions[i]), bounds_offset, scale, is_split);
+                byte3_add(position, octree_positions[i]), bounds_offset, scale);
         }
         return;
     }
@@ -306,7 +301,6 @@ void build_voxel_mesh_material(
     byte target_depth,
     float3 bounds_offset,
     float scale,
-    byte is_split,
     byte pyramid,
     const byte* materials,
     byte material)
@@ -333,7 +327,7 @@ void build_voxel_mesh_material(
         fill_vox_pyramid(&grid, root, 0, int3_zero);
         lookup.pyramid = &grid;
     }
-    build_voxel_mesh_dig(&lookup, root, vcolors, mesh, target_depth, 0, byte3_zero, bounds_offset, scale, is_split);
+    build_voxel_mesh_dig(&lookup, root, vcolors, mesh, target_depth, 0, byte3_zero, bounds_offset, scale);
     if (pyramid) {
         for (byte depth = 0; depth <= target_depth; depth++) {
             free((void*) grid.levels[depth]);
@@ -351,11 +345,10 @@ void build_voxel_mesh(
     byte target_depth,
     float3 bounds_offset,
     float scale,
-    byte is_split,
     byte pyramid)
 {
-    build_voxel_mesh_material(root, noctrees, vcolors, mesh, node_depth, target_depth, bounds_offset, scale, is_split,
-        pyramid, NULL, zox_block_material_solid);
+    build_voxel_mesh_material(root, noctrees, vcolors, mesh, node_depth, target_depth, bounds_offset, scale, pyramid,
+        NULL, zox_block_material_solid);
 }
 
 // Builds Colored Vox Meshes
@@ -399,7 +392,6 @@ void chunk_colors_build_system(iter* it) {
             continue;
         }
         clear_mesh(indicies, vertices, colors);
-        byte is_split = !zox_has(e, NoSplitChunk) || zox_greedy_mesh;
         const float voxel_size = scale->value * octree_size(ndepth->value) / octree_size(rdepth->value);
         // its neighbours' trees, faces into them hidden where they're solid
         const VoxelNode* noctrees[6];
@@ -436,8 +428,7 @@ void chunk_colors_build_system(iter* it) {
         // its solid voxels (all of them without MaterialIDs)
         byte materials[256];
         const byte other = vox_material_table(zox_has(owner, MaterialIDs) ? zox_get(owner, MaterialIDs) : NULL, materials);
-        build_voxel_mesh_material(voxels, noctrees, palette, &mesh, ndepth->value, rdepth->value, position, cscale,
-            is_split, 1, other ? materials : NULL, zox_block_material_solid);
+        build_voxel_mesh_material(voxels, noctrees, palette, &mesh, ndepth->value, rdepth->value, position, cscale, 1, other ? materials : NULL, zox_block_material_solid);
         // its see through voxels into its see through child (set_chunk3_parent_colored_materials), with its neighbours
         if (other) {
             entity shell = 0;
@@ -454,7 +445,7 @@ void chunk_colors_build_system(iter* it) {
                     .colors = create_color_rgb_array_d(initial_dynamic_array_size)
                 };
                 build_voxel_mesh_material(voxels, noctrees, palette, &shell_mesh, ndepth->value, rdepth->value, position,
-                    cscale, is_split, 1, materials, zox_block_material_liquid);
+                    cscale, 1, materials, zox_block_material_liquid);
                 MeshIndicies* shell_indicies = zox_get_mut(shell, MeshIndicies);
                 MeshVertices* shell_vertices = zox_get_mut(shell, MeshVertices);
                 MeshColorRGBs* shell_colors = zox_get_mut(shell, MeshColorRGBs);

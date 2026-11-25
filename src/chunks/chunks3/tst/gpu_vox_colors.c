@@ -44,7 +44,7 @@ static inline int zox_tst_gvc_cpu(const VoxelNode* model, const ColorRGBs* color
         .vertices = create_float3_array_d(initial_dynamic_array_size),
         .colors = create_color_rgb_array_d(initial_dynamic_array_size)
     };
-    build_voxel_mesh_material(model, NULL, colors, &mesh, zox_tst_vm_depth, zox_tst_gvc_lod, float3_zero, 1.0f, 1, 1,
+    build_voxel_mesh_material(model, NULL, colors, &mesh, zox_tst_vm_depth, zox_tst_gvc_lod, float3_zero, 1.0f, 1,
         materials, material);
     if (zox_tst_gvc_greedy) {
         // merged as the game's are (mesh_greedy), back into the build arrays

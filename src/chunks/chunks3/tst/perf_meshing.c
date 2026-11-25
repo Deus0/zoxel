@@ -248,7 +248,7 @@ static int zox_tst_pm_greedy(const VoxelNode* model, const ColorRGBs* colors, by
                 .vertices = create_float3_array_d(initial_dynamic_array_size),
                 .colors = create_color_rgb_array_d(initial_dynamic_array_size)
             };
-            build_voxel_mesh(model, NULL, colors, &mesh, depth, target, float3_zero, 1.0f, 1, 1);
+            build_voxel_mesh(model, NULL, colors, &mesh, depth, target, float3_zero, 1.0f, 1);
             MeshIndicies i = { .length = mesh.indicies->size, .value = finalize_arrayd_int(mesh.indicies) };
             MeshVertices v = { .length = mesh.vertices->size, .value = finalize_arrayd_float3(mesh.vertices) };
             MeshColorRGBs c = { .length = mesh.colors->size, .value = finalize_arrayd_color_rgb(mesh.colors) };
@@ -281,7 +281,7 @@ static int zox_tst_pm_colored(const VoxelNode* model, const ColorRGBs* colors, b
                 .colors = create_color_rgb_array_d(initial_dynamic_array_size)
             };
             const double begin = get_time_ms();
-            build_voxel_mesh(model, NULL, colors, &mesh, depth, target, float3_zero, 1.0f, 1, pyramid);
+            build_voxel_mesh(model, NULL, colors, &mesh, depth, target, float3_zero, 1.0f, pyramid);
             total += get_time_ms() - begin;
             faces = mesh.vertices->size / 4;
             dispose_int_array_d(mesh.indicies);

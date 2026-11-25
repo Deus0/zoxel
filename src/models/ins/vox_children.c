@@ -28,10 +28,6 @@ entity spawn_vox_combined_child(
     entity e = zox_ins(world, prefab_vox_combined);
     zox_set_unique_name(e, "vox_combined");
     initialize_voxel_lock(world, e);
-    // NOTE: Mesh building reads this from the vox
-    if (zox_has(parent, NoSplitChunk)) {
-        zox_add(e, NoSplitChunk);
-    }
     // non fragmenting: a ChildOf child made ~14 tables a character as it built (tst tables_stream)
     zox_set_parent_non_fragment(world, e, parent);
     zox_set_link(world, parent, VoxLink, e);

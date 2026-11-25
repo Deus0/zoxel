@@ -377,3 +377,5 @@ models and characters, cpu and gpu; terrain (tiles repeating, lights) after.
   apart (15848 vertices to gl's 15820), fewer faces merge there.
 - Next: terrain (tiles repeating in a quad, then the light rule), doc/tech/chunks3.md steps 5.
 
+- NoSplitChunk removed (2026-11-26): a hack that kept npcs' uniform nodes one big face for speed; greedy meshing
+  merges better, and the walk always cuts to voxels now (its is_split gone).

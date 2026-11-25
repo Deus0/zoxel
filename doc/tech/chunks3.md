@@ -130,8 +130,7 @@ meshed on the main thread (a 2ms budget a frame) straight into their own buffers
   colours rgba8 (the instance and bone renderers read them strided)
 - skinned: each vertex's two bones and weight by `bones/sys/generate.c`'s rule from the bones grid, into
   `BoneIndexGPULink`, in the same dispatch (a drawn mesh is remeshed in one go, never half updated)
-- the same faces, corners and colours as the cpu's at every lod (tst `gpu_vox_colors`), one difference: a no split
-  model's uniform nodes are a face a voxel, not one big face (a humanoid ~12% more faces)
+- the same faces, corners and colours as the cpu's at every lod (tst `gpu_vox_colors`)
 - clones (items, mug shots, mirrors) read a gpu mesh back once (`mesh3_read_gpu`)
 - its `MeshVertices` hold only its drawn voxels' two far corners, for culling and framing
 - a gpu restore makes the mesher again and remeshes them all the next frame
