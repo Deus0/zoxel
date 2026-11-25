@@ -481,6 +481,8 @@ coffee/
 
 Always use the lowest module possible. A test never goes higher just because it needs a world to run in:
 
+- no terrain needed: lights, meshes and edits in and between chunks use a chunk3 parent of their own
+  (`zox_tst_chunk3_parent_ready`, lights/tst), not streamed terrain
 - no player needed: most tests only need terrain streamed, so use a world of its own and a streamer or camera
   (`zox_tst_world_ready`, `spawn_streamer`), and a bare body (Position3D, Bounds3D, Velocity3D) for physics
 - a player needed: `zox_tst_player_spawn_ready` and `zox_tst_player_character` are declared in `src/_/tst`, so a
@@ -493,6 +495,7 @@ Keep a test as small as it can be: use only what it checks, so the whole suite s
 
 - pure logic first: no world, no gpu, ready on the first frame (maths, collections, octrees)
 - then bare entities: spawn just the components the system reads (transform_hierarchy, terrain_collisions)
+- then a realm and a chunk3 parent of its own (lights/tst/chunk3_parent.c), for what happens in chunks
 - then a world of its own and a streamer (air_chunk.c), not a new game with a player, npcs and towns
 - a whole game and the player only when the test is about them
 - wait on a condition, not a fixed time; a few frames, not seconds

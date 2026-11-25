@@ -181,6 +181,11 @@ The full list with descriptions: the comment at the top of each test, or `bash b
 - An animated block (water): `bash bsh/tst.sh block_frames` -> tst/blocks/<block>_frames.ppm, its frames in a row,
   its first tiled 2 x 2 (seams) and its last then first (the loop); checks they change, loop and tile
 - Water in the world: `bash bsh/tst.sh sea_level` -> tst/sea.ppm and sea_later.ppm, looking down at open water
+- Chunks without terrain: zox_tst_chunk3_parent_ready (src/lights/tst/chunk3_parent.c) makes a realm, then a chunk
+  parent of its own with 3 x 3 x 3 all air chunks, lit (the top layer under the sky); edit them with their
+  VoxelNodeQueue, find blocks by what they are (zox_tst_chunks_block: material, light). For lights, meshes and edits
+  in and between chunks: no streaming to wait on (tst water_light, chunk_uvs). It returns 0 again while an edit
+  meshes and lights, so a test edits then waits on it, not on a time
 - The world without a player: zox_tst_world_ready (src/controllers/tst/world_only.c) makes a realm and terrain on
   the main menu (register the test with zox_tst_set_setup(name, NULL, 1)); nothing streams until the test adds a
   streamer: spawn_streamer, or a camera (spawn_viewport_camera, prefab_add_streamer, StreamLink to the terrain),

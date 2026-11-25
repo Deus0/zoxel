@@ -23,59 +23,16 @@ int zox_tst_perf_tables_total = 0;
 uintptr_t* zox_tst_perf_tables_before = NULL;  // tables when the step began
 int zox_tst_perf_tables_before_count = 0;
 
-// the terrain's chunks still generating or building sides, and their meshes still building
-//  (counting the tags world wide also counts prefabs and other voxel chunks, i.e. characters)
-int zox_tst_perf_generating = 0;
-int zox_tst_perf_siding = 0;
-int zox_tst_perf_meshing = 0;
-int zox_tst_perf_swapping = 0;     // chunks changing lod (ChunkLodDirty)
 int zox_tst_perf_queued = 0;       // tunk updates waiting in the stream queue
 
 static inline int zox_tst_stream_queued(ecs* world) {
     return zox_valid(local_terrain) ? (int) zox_get(local_terrain, TerrainSpawnQueue)->count : 0;
 }
 
-int zox_tst_perf_lighting = 0;     // chunks whose lights are flooding
-
-// a terrain's chunks still busy: generating, building sides, swapping lods, lights flooding, or a mesh not yet built
-//  and lit (cpu: BuildMesh, its lights BuildMeshColors, upload MeshDirty; gpu: those, and its count not back)
+// a terrain still busy: its stream queue, or its chunks (zox_tst_chunks_busy, lights/tst/chunk3_parent.c)
 static inline int zox_tst_terrain_busy(ecs* world, entity terrain) {
-    zox_tst_perf_generating = 0;
-    zox_tst_perf_swapping = 0;
     zox_tst_perf_queued = zox_valid(terrain) ? (int) zox_get(terrain, TerrainSpawnQueue)->count : 0;
-    zox_tst_perf_siding = 0;
-    zox_tst_perf_meshing = 0;
-    zox_tst_perf_lighting = 0;
-    if (!zox_valid(terrain)) {
-        return 0;
-    }
-    iter it2 = zox_children(world, terrain);
-    while (zox_children_next(it2)) {
-        for (int j = 0; j < it2.count; j++) {
-            const entity chunk = it2.entities[j];
-            if (!zox_has(chunk, Chunk3)) {
-                continue;
-            }
-            zox_tst_perf_generating += zox_has(chunk, GenerateChunk) && zox_getv(chunk, GenerateChunk);
-            zox_tst_perf_siding += zox_has(chunk, BuildChunkSides);
-            zox_tst_perf_swapping += zox_has(chunk, ChunkLodDirty);
-            zox_tst_perf_lighting += zox_chunk_lighting_busy(world, chunk);
-            entity it3_meshes[zox_chunk_meshes_max];
-            const uint it3_count = get_chunk_meshes(world, chunk, it3_meshes);
-            for (uint k = 0; k < it3_count; k++) {
-                const entity mesh = it3_meshes[k];
-                // old meshes (BuildDisabled, a swapped out lod) never build, they don't hold up streaming
-                if (!zox_has(mesh, ChunkMesh) || zox_has(mesh, BuildDisabled)) {
-                    continue;
-                }
-                zox_tst_perf_meshing += zox_has(mesh, BuildMesh) || zox_has(mesh, MeshDirty) ||
-                    zox_has(mesh, BuildMeshColors) || zox_has(mesh, MeshColorsDirty) ||
-                    (zox_has(mesh, GpuMesh) && zox_getv(mesh, MeshFence));
-            }
-        }
-    }
-    return zox_tst_perf_generating + zox_tst_perf_siding + zox_tst_perf_meshing + zox_tst_perf_swapping +
-        zox_tst_perf_queued + zox_tst_perf_lighting;
+    return zox_tst_perf_queued + zox_tst_chunks_busy(world, terrain);
 }
 
 // the game's terrain busy (perf_stream, perf_idle)

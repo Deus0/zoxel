@@ -1,5 +1,7 @@
 // tst: water_light, sunlight dims through water, light_water_decay a block (lights3: sunbeam, dark_sunbeam, editing)
-//  - no player: in an all air chunk (air_chunk.c) under the sky, a brick pool 3 x 3 inside, 3 deep (local y 4 to 6)
+//  - no terrain or player: in a chunk3 parent's top middle chunk (chunk3_parent.c), all air under the sky, a brick pool
+//    3 x 3 inside, 3 deep (local y 4 to 6)
+//  - each step waits for its chunks to settle (lit, meshed), not a time
 //  - filled a layer at a time from the bottom (each placed water dims the beam under it): its middle column is one
 //      light_dim less each block down, the air over it full sunlight
 //  - its top layer taken out (drained): the two left are lit a block brighter
@@ -7,7 +9,6 @@
 //      water light_water_decay more than air)
 //  - run: bash bsh/tst.sh water_light
 byte zox_tst_wlight_stage = 0;
-double zox_tst_wlight_time = 0;
 entity zox_tst_wlight_chunk = 0;
 byte zox_tst_wlight_full[4];     // the middle column, local y 7 (air) down to 4, the pool full
 byte zox_tst_wlight_drained[4];  // its top layer taken out
@@ -29,20 +30,15 @@ static inline void zox_tst_wlight_layer(ecs* world, byte y, byte value) {
 }
 
 byte zox_tst_water_light_ready(ecs* world) {
-    zox_tst_world_ready(world);
-    if (!zox_tst_world_terrain) {
+    if (!zox_tst_chunk3_parent_ready(world)) {
         return 0;
     }
-    zox_tst_progress(zox_tst_wlight_stage * 100 + (int) (zox_current_time - zox_tst_wlight_time));
-    const double since = zox_current_time - zox_tst_wlight_time;
-    const byte water = zox_getv(zox_tst_air_block(world, zox_id(BlockWater)), BlockIndex);
-    const byte bricks = zox_getv(zox_tst_air_block(world, zox_id(BlockBricks)), BlockIndex);
+    zox_tst_progress(zox_tst_wlight_stage);
+    const byte water = zox_tst_chunks_block(world, zox_block_material_liquid, 0);
+    const byte bricks = zox_tst_chunks_block(world, zox_block_material_solid, 0);
     switch (zox_tst_wlight_stage) {
         case 0: {
-            zox_tst_wlight_chunk = zox_tst_streamed_air_chunk(world);
-            if (!zox_tst_wlight_chunk) {
-                return 0;
-            }
+            zox_tst_wlight_chunk = zox_tst_chunk_at(world, (int3) { 0, 1, 0 });
             // the floor (y 3) and walls (y 4 to 6) round the inside, 6 to 8
             VoxelNodeQueue* queue = zox_getm(zox_tst_wlight_chunk, VoxelNodeQueue);
             for (byte x = 5; x <= 9; x++) for (byte z = 5; z <= 9; z++) for (byte y = 3; y <= 6; y++) {
@@ -54,45 +50,28 @@ byte zox_tst_water_light_ready(ecs* world) {
             break;
         }
         case 1: case 2: case 3:
-            zox_tst_waiting = "the pool to fill a layer at a time";
-            if (since < 1) {
-                return 0;
-            }
             zox_tst_wlight_layer(world, 3 + zox_tst_wlight_stage, water);
             break;
         case 4:
-            zox_tst_waiting = "the full pool's light";
-            if (since < 2) {
-                return 0;
-            }
             zox_tst_wlight_read(world, zox_tst_wlight_full);
             zox_tst_wlight_layer(world, 6, 0);
             break;
         case 5:
-            zox_tst_waiting = "the drained pool's light";
-            if (since < 2) {
-                return 0;
-            }
             zox_tst_wlight_read(world, zox_tst_wlight_drained);
             a_VoxelNodeQueue(zox_getm(zox_tst_wlight_chunk, VoxelNodeQueue), (VoxelNodeUpdate) { .value = bricks, .position = (byte3) { 7, 7, 7 } });
             break;
         case 6:
-            zox_tst_waiting = "the covered pool's light";
-            if (since < 2) {
-                return 0;
-            }
             zox_tst_wlight_read(world, zox_tst_wlight_covered);
             break;
         default:
             return 1;
     }
     zox_tst_wlight_stage++;
-    zox_tst_wlight_time = zox_current_time;
     return 0;
 }
 
 void zox_tst_water_light_check(ecs* world) {
-    zox_tst_check(zox_tst_wlight_stage == 7, "no all air chunk at full detail was found");
+    zox_tst_check(zox_tst_wlight_stage == 7, "the chunk3 parent never got lit");
     if (zox_tst_wlight_stage != 7) {
         return;
     }

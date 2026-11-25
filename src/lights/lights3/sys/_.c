@@ -1,4 +1,5 @@
 #include "editing.c"
+#include "generated.c"
 #include "sunlight.c"
 #include "emitters.c"
 #include "lightbeam.c"
@@ -30,6 +31,23 @@ void set_light_systems(ecs* world, byte is_lights) {
 // TODO: Rename NodeDepth to OctreeDepth
 
 void zox_systems_lights3(ecs* world) {
+    // a chunk's voxels done (GenerateChunk at zox_generate_terrain_sunlight): lit, then meshed (generated.c), any chunk
+    //  with lights, a chunk3 parent's or terrain's
+    zox_system(
+        sunny_chunk_generated_system,
+        zoxp_update,
+        [out] chunks.GenerateChunk,
+        [none] lights3.LightOctree,
+        [none] lights3.SunnyChunk,
+        [none] !lights.GenerateSunlight
+    );
+    zox_system(
+        chunk_generated_system,
+        zoxp_update,
+        [out] chunks.GenerateChunk,
+        [none] lights3.LightOctree,
+        [none] !lights3.SunnyChunk
+    );
     zox_system(
         sunlight_system,
         zoxp_update,

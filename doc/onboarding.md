@@ -289,6 +289,7 @@ What a test starts with, cheapest first (times measured 2026-11-20, debug build)
 | nothing: pure logic | the first frame (the game's boot, ~0.5s) | maths, octrees, hashmaps |
 | bare entities, the components a system reads | a few frames | transform_hierarchy, mass_spawn |
 | the menus (`zox_tst_set_setup(name, NULL, 1)`): a camera, ui, sounds, no realm | under a second | gpu_restore, music_timing |
+| a realm and a chunk3 parent of its own: lit chunks, no terrain (`zox_tst_chunk3_parent_ready`) | a few seconds | water_light |
 | a world of its own and a streamer | a few seconds | air_chunk |
 | a player on the test level (`zox_tst_level_setup`) | ~6s | held_item |
 | a player in the whole game | ~6s, then the game streams | stream_npcs |

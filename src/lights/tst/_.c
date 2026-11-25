@@ -1,3 +1,6 @@
+#include "chunk3_parent.c"
+#include "water_light.c"
+#include "chunk_uvs.c"
 #include "gpu.c"
 #include "gpu_neighbours.c"
 // tst: smooth_lights, a face's vertices are lit by the air around them (lights3/sys/build_smooth.c)
@@ -240,6 +243,10 @@ void zox_tst_lod_lights_check(ecs* world) {
 }
 
 void zox_tsts_lights() {
+    zox_tst_add("water_light", zox_tst_water_light_ready, zox_tst_water_light_check, 60);
+    zox_tst_set_setup("water_light", NULL, 1);
+    zox_tst_add("chunk_uvs", zox_tst_chunk_uvs_ready, zox_tst_chunk_uvs_check, 60);
+    zox_tst_set_setup("chunk_uvs", zox_tst_chunk_uvs_setup, 1);
     zox_tst_add("lod_lights", zox_tst_smooth_lights_ready, zox_tst_lod_lights_check, 30);
     zox_tst_add("smooth_lights", zox_tst_smooth_lights_ready, zox_tst_smooth_lights_check, 30);
 }

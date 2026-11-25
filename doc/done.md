@@ -1,5 +1,22 @@
 # Done
 
+## 2026-11-25
+-x Chunk3 parents: a vox of chunks found by position, meshed and lit, chunks at different lods side by side
+  (chunks3/pre/chunk3_parent.c, doc/tech/chunks3.md). Terrain is one that streams (prefab_terrain from
+  prefab_chunk3_parent, its chunks from lights3's prefab_chunk_lit); a textured parent links its blocks and tilemap,
+  its chunks take them from it. Lighting a chunk once its voxels are done moved from terrain to lights3
+  (lights3/sys/generated.c), any chunk with lights
+-x tst fixture zox_tst_chunk3_parent_ready (lights/tst): a realm and 3 x 3 x 3 lit chunks, no streaming; tests find
+  blocks by what they are (zox_tst_chunks_block). zox_tst_chunks_busy counts edits too, terrain's busy check is its
+  queue plus it
+-x tst water_light moved from terrain onto it, its steps waiting on settled chunks not seconds: 13.4s to 3.5s, and
+  3 of 3 passes (on streamed terrain it failed 2 in 3: light from a neighbour still coming in)
+-x tst chunk_uvs: one chunk, every regular block of the realm (26, drawn as cubes) and a brick cup of water and one of
+  oil. Each solid face, its voxel and direction worked out from its vertices, has exactly its block's tilemap uvs for
+  that direction (grass's top isn't its side: a mesher giving each face the next direction's uvs fails 208 of 216);
+  the liquids their own see through mesh and texture, uvs inside it (3.1s). tst oil_flow failed every run: it looked
+  at the oil's mesh at a fixed 5s, as it rebuilt from the spreading; it checks the flow only now, chunk_uvs the mesh
+
 ## 2026-11-24
 -x House lighting leak not reproduced on repeat: `home_dark` isn't registered here; `home_glow` (generated rooms)
   passed 5/5 and `glow_relight` (covered sunlight) passed 3/3. `glow_light` (emitter removal) passed 4/5; the fifth

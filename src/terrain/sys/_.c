@@ -4,7 +4,6 @@
 #include "debug_bounds.c"
 #include "linking.c"
 // Lights (Move to lights)
-#include "generated.c"
 // generation
 #include "render_depth.c"
 // Streaming
@@ -58,22 +57,6 @@ void zox_systems_terrain(ecs *world) {
         [out] chunks.NodeDepth,
         [none] terrains.TerrainChunk,
         [none] !core.Initialize,
-    );
-    // Lighting
-    zox_system(
-        sunny_chunk_generated_system,
-        zoxp_update,
-        [out] chunks.GenerateChunk,
-        [none] terrains.TerrainChunk,
-        [none] lights3.SunnyChunk,
-        [none] !lights.GenerateSunlight
-    );
-    zox_system(
-        chunk_generated_system,
-        zoxp_update,
-        [out] chunks.GenerateChunk,
-        [none] terrains.TerrainChunk,
-        [none] !lights3.SunnyChunk
     );
     // NOTE: Dies when out of range
     // Streaming Terrain Chunks

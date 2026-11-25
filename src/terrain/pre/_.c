@@ -7,8 +7,8 @@ entity prefab_chunk_terrain;
 void spawn_prefabs_terrain(ecs *world) {
     prefab_chunk_terrain = spawn_prefab_chunk_terrain(
         world,
-        prefab_chunk_textured);
-    prefab_terrain = spawn_prefab_terrain(world);
+        prefab_chunk_lit);
+    prefab_terrain = spawn_prefab_terrain(world, prefab_chunk3_parent);
     if (prefab_realm) {
         zox_setv(prefab_realm, BlockLinks, 0);
     }

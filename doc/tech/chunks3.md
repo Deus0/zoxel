@@ -3,6 +3,24 @@
 How voxel octrees (terrain chunks, vox models, characters) become meshes, and the plan for greedy meshing. Code in
 [src/chunks/chunks3](../../src/chunks/chunks3), lighting in [src/lights/lights3](../../src/lights/lights3).
 
+## Chunk3 parents
+
+A chunk3 parent is a vox whose children are chunks, found by position (`ChunkLinks`), meshed and lit together
+([pre/chunk3_parent.c](../../src/chunks/chunks3/pre/chunk3_parent.c), [ins/chunk3_parent.c](../../src/chunks/chunks3/ins/chunk3_parent.c)):
+
+- `spawn_chunk3_parent_textured(world, prefab, realm, blocks, tilemap, depth, scale)`, then
+  `spawn_chunk3_parent_chunk(world, prefab, parent, position, render_depth)` for each chunk. Chunks with lights are
+  `prefab_chunk_lit` (lights3/fun/prefab.c).
+- What its voxels are is linked on it: its blocks (`BlockManagerLink`, a realm's `BlockLinks`) and their tiles
+  (`Tilemap`); its chunks take both from it. A colored parent (vox models) would link its palette the same way.
+- Chunks side by side at different lods are its job: the faces between them (sys/sides.c), the light across them
+  (lights3), the mesh swapped as a chunk's lod changes (sys/transition.c).
+- A chunk's voxels done (`GenerateChunk` at `zox_generate_terrain_sunlight`): it's lit, then meshed
+  (lights3/sys/generated.c). `SunnyChunk` on the top layer takes the sky's light, `BottomChunk` on the bottom ends beams.
+- Terrain is a chunk3 parent that streams its chunks round its streamers, generates them and picks their lods
+  (`prefab_terrain`, `prefab_chunk_terrain`).
+- tst: `zox_tst_chunk3_parent_ready` (lights/tst/chunk3_parent.c), a realm and 3 x 3 x 3 lit chunks (tst water_light).
+
 ## How meshes are built now
 
 Every mesh is one quad (4 vertices, 6 indices) per visible voxel face. Nothing is merged: a flat 16 x 16 floor is
