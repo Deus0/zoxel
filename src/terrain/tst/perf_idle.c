@@ -39,6 +39,7 @@ byte zox_tst_perf_idle_ready(ecs* world) {
 }
 
 void zox_tst_perf_idle_check(ecs* world) {
+    zox_tst_perf_scale("perf_idle");
     (void) world;
     const int frames = zox_tst_perf_idle_frames.count;
     zox_tst_frames_log(&zox_tst_perf_idle_frames, "perf_idle");

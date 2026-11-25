@@ -12,6 +12,7 @@
 #     mali faults in a test run once crashed gnome-shell and logged the user out (2026-11-11)
 #     still opengl es 3.0 (--gles), the same render path the game takes on mali
 #   --stress: full terrain stream distance, tests default to --tiny terrain
+#   perf tests (perf_tests below) run alone at far 8 (their measuring scale), in a full run tiny (a smoke run)
 #   --release: an optimised build with the tests in it (bin/tst_release), for performance numbers (perf_fly,
 #     vox_instances_stress): debug builds are -O0, their cpu times are many times a player's
 #   --readme: the aesthetic tests (aesthetic_town) update the readme's screenshots in doc/screenshot/, without it
@@ -44,6 +45,7 @@ repeat=1
 readme=0
 vulkan=0
 args=()
+user_size=0
 next_is_repeat=0
 for arg in "$@"; do
     if [[ ${next_is_repeat} == "1" ]]; then
@@ -72,6 +74,8 @@ for arg in "$@"; do
         vulkan=1
     else
         args+=("${arg}")
+        # a size of terrain asked for: it wins over a perf test's own scale
+        [[ "${arg}" == "--tiny" || "${arg}" == "--medium" || "${arg}" == "--large" || "${arg}" == "--far" ]] && user_size=1
     fi
 done
 
@@ -207,6 +211,10 @@ fi
 medium_tests=(lod_chunk_lights lod_swap stream_sides stream_gpu_sides stream_seams chunk_mesh_flicker)
 # tests that need the game's far lods (far chunks generated coarse, grown finer as the stream comes: lights cleared)
 far_tests=(lod_light_flash)
+# performance tests: alone they run at far 8 (their measuring scale: not --tiny, whose numbers aren't the game's, the
+#   far lods are most of the terrain; far 16 is too slow for a debug build's step limits, pass it with --release), in a
+#   full run (all) a quick smoke run at tiny; a size passed (--far 16) wins
+perf_tests=(perf_terrain perf_stream perf_fly tables_stream perf_idle)
 # tests that screenshot the world, the hud hidden
 nohud_tests=(sky_clouds head_camera town_view held_item held_block held_view eat_swing)
 # tests that take the readme's screenshots: a far, tall world at 1080p, little fog (to see the mountains), no hud or labels, the same seed (zox_tst_seed
@@ -220,10 +228,13 @@ run_game() {
     # a size passed (--far, --large, --tiny) wins: --medium after it set lod far 6 over a --far 16
     [[ " ${medium_tests[*]} " == *" ${tst} "* && " ${args[*]} " != *" --far "* && " ${args[*]} " != *" --large "* ]] &&         test_args=(--medium)
     [[ " ${far_tests[*]} " == *" ${tst} "* && " ${args[*]} " != *" --far "* ]] && test_args+=(--far 16)
+    local perf_scale=0
+    [[ " ${perf_tests[*]} " == *" ${tst} "* && "${name}" != "all" && ${user_size} == "0" ]] && perf_scale=1
+    [[ ${perf_scale} == "1" ]] && test_args+=(--far 8)
     [[ " ${nohud_tests[*]} " == *" ${tst} "* ]] && test_args+=(--nohud)
     local seconds="${timeout_seconds}"
     # far lods load and stream a while: room for them
-    [[ " ${far_tests[*]} " == *" ${tst} "* ]] && seconds=$(( timeout_seconds > 600 ? timeout_seconds : 600 ))
+    [[ " ${far_tests[*]} " == *" ${tst} "* || ${perf_scale} == "1" ]] && seconds=$(( timeout_seconds > 600 ? timeout_seconds : 600 ))
     local seed_env=()
     if [[ " ${aesthetic_tests[*]} " == *" ${tst} "* ]]; then
         test_args+=(--far 16 --vertical 8 --fog 0.025 --1080p --nohud --nouis --tst-timescale 3)

@@ -44,11 +44,25 @@ static int zox_tst_frames_compare(const void* a, const void* b) {
     return x < y ? -1 : x > y;
 }
 
-// what's being measured, i.e. "[vulkan] far [32] meshing [gpu]"
+// what's being measured, i.e. "[vulkan] far [32] vertical [3] meshing [gpu] build [release]"
 static inline void zox_tst_frames_label(char* label, int size) {
-    snprintf(label, size, "[%s] far [%i] vertical [%i] meshing [%s]",
+#ifdef zox_debug
+    const char* build = "debug";
+#else
+    const char* build = "release";
+#endif
+    snprintf(label, size, "[%s] far [%i] vertical [%i] meshing [%s] build [%s]",
         render_backend == zox_render_backend_vulkan ? "vulkan" : "opengl", terrain_lod_far, render_distance_y,
-        zox_chunks3_gpu_meshing ? "gpu" : "cpu");
+        zox_chunks3_gpu_meshing ? "gpu" : "cpu", build);
+}
+
+// a perf test's scale, its results' first line: a tiny world (tst.sh's default in a full run) is a smoke run, its
+//  numbers aren't the game's (its far lods, most of the terrain, are missing); alone a perf test runs at far 8
+static inline void zox_tst_perf_scale(const char* name) {
+    char label[128];
+    zox_tst_frames_label(label, sizeof(label));
+    zox_log("[tst] [metric] %s scale %s%s", name, label,
+        terrain_lod_far < 8 ? ": small, a smoke run, not the game's scale (run it alone, at far 8)" : "");
 }
 
 static inline void zox_tst_frames_log(zox_tst_frames* frames, const char* name) {

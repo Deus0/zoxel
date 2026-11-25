@@ -160,6 +160,7 @@ byte zox_tst_perf_terrain_ready(ecs* world) {
 }
 
 void zox_tst_perf_terrain_check(ecs* world) {
+    zox_tst_perf_scale("perf_terrain");
     int meshes = 0, gpu_meshes = 0;
     zox_each_begin(MeshRenderCount);
         if (!zox_has(e, ChunkMesh) || zox_has(e, Disabled)) {

@@ -226,6 +226,7 @@ static inline void zox_tst_log_child_tables(ecs* world, const char* name) {
 }
 
 void zox_tst_perf_stream_check(ecs* world) {
+    zox_tst_perf_scale("perf_stream");
     zox_tst_log_child_tables(world, "perf_stream");
 }
 
@@ -242,6 +243,7 @@ void zox_tst_perf_stream_check(ecs* world) {
 #define zox_tst_tables_per_step_max 200
 
 void zox_tst_tables_stream_check(ecs* world) {
+    zox_tst_perf_scale("tables_stream");
     zox_tst_log_child_tables(world, "tables_stream");
     zox_log("[tst] [metric] tables_stream steps [%i] tables made [%i], most in a step [%i]",
         zox_tst_perf_steps, zox_tst_perf_tables_total, zox_tst_perf_tables_most);
@@ -359,6 +361,7 @@ byte zox_tst_perf_fly_ready(ecs* world) {
 }
 
 void zox_tst_perf_fly_check(ecs* world) {
+    zox_tst_perf_scale("perf_fly");
     // the number to lower: how long the land round the player lags behind a crossing
     zox_log("[tst] [metric] perf_fly near lod latency: crossings [%i] caught up [%i] average [%.2fs] most [%.2fs] behind at the end [%.2fs]",
         zox_tst_fly_crossings, zox_tst_fly_caught, zox_tst_fly_caught ? zox_tst_fly_latency_total / zox_tst_fly_caught : 0,

@@ -140,6 +140,12 @@ slots by kind and the near lod latency (doc/done/streaming.md).
 
 ### Reading the perf numbers (perf_idle, perf_stream)
 
+Scale changes the numbers: a tiny world has none of the far lods that are most of the terrain. Run alone, the
+streaming perf tests (tst.sh's `perf_tests`) run at far 8; in a full run (`all`) they're tiny, a smoke run. Each logs
+its scale first (`<test> scale [opengl] far [8] vertical [3] meshing [cpu] build [debug]`), marked when it's small;
+compare numbers of the same scale and build only. For the game's full distance: `--far 16 --release`. `perf_meshing`
+doesn't stream: its numbers are the same at any scale (doc/results.md, Meshing speed).
+
 `perf_terrain` logs the same block three times, `perf_terrain load`, `perf_terrain idle` and `perf_terrain stream`,
 with the load's settle time and the steps' (a world with only terrain in it: use it for terrain and meshing numbers,
 the others for the whole game). Both others log one block from `src/terrain/tst/frames.c`, labelled with what was measured (backend, far, vertical, cpu or
