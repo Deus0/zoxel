@@ -2,7 +2,7 @@
 # runs the terrain tests codex astra was running, one by one, prints a summary line each
 cd "$(dirname "$0")/../.." || exit 1
 export zox_tst_timeout=300   # headroom over the 240s in-game timeouts; far tests take 600 automatically
-tests=(lod_refine_border stream_seams chunk_mesh_flicker lod_swap lod_chunk_lights stream_sides stream_gpu_sides vegetation_chunks lod_light_flash)
+tests=(lod_refine_border stream_seams chunk_mesh_flicker lod_swap lod_chunk_lights  vegetation_chunks lod_light_flash)
 summary="tst/terrain_summary.txt"
 mkdir -p tst || exit 1
 : > "${summary}" || exit 1

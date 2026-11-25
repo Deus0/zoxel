@@ -150,15 +150,10 @@ void zox_systems_chunks3(ecs *world) {
         [none] chunks3.ChunkUpdate,
         [none] chunks.ChunkTextured
     );
-    // Builds our Terrain Chunk Mesh
-    // NOTE: Requires reading voxel data
+    // a chunk's meshes rebuild once its voxels or a neighbour changed (BuildChunkSides)
     zox_system(
         chunk_sides_system,
         zoxp_octree_read,
-        [in] chunks.NodeDepth,
-        [in] chunks3.ChunkNeighbors,
-        [in] chunks3.VoxelNode,
-        [out] chunks3.VoxelNodeLock,
         [none] chunks.ChunkTextured,
         [none] chunks.BuildChunkSides,
     );

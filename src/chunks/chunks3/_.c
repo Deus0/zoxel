@@ -26,6 +26,9 @@
 
 void import_chunks3(ecs* world) {
     zox_module(chunks3);
+    // the children on each side of a node, which faces hide reads (get_node_sides_all_hide: colored meshes, borders):
+    //  filled once here (the sides system filled it each run, before SidesOctree went)
+    init_side_child_indices();
     zox_components_chunks3(world);
     zox_systems_chunks3(world);
     zox_systems_chunksio(world);

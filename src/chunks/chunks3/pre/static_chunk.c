@@ -20,7 +20,6 @@ entity spawn_prefab_static_chunk(ecs *world) {
     zox_setv(e, RenderDepth, 0);
     zox_setv(e, NodeDepth, 0);
     zox_setv(e, VoxelNode, 0);
-    zox_setv(e, SidesOctree, 0);
     zox_setv(e, BlockScale, default_vox_scale);
     return e;
 }

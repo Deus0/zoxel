@@ -6,7 +6,6 @@
 #include "flood.c"
 #include "dark.c"
 #include "reduce.c"
-#include "build.c"
 #include "build_smooth.c"
 #include "trigger.c"
 #include "trigger_mesh.c"
@@ -229,21 +228,6 @@ void zox_systems_lights3(ecs* world) {
         [none] rendering.GpuMesh,
         [none] !core.Disabled,
     );
-    /*zox_system(
-        basic_lights_build_system,
-        zoxp_voxels_lights,
-        [in] chunks3.ChunkNeighbors,
-        [in] chunks3.VoxelNode,
-        [in] chunks3.SidesOctree,
-        [in] lights3.LightOctree,
-        [in] rendering.RenderDepth,
-        [in] rendering.MeshColorRGBs,
-        [out] rendering.MeshReady,
-        [none] rendering.BuildMeshColors,
-        [none] chunks.Chunk,
-        [none] !rendering.BuildMesh,
-        [none] !core.BuildDisabled,
-    );*/
 }
 
 /*zox_system(

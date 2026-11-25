@@ -19,7 +19,6 @@ entity spawn_prefab_vox(
     zox_setv(e, NodeDepth, 0);
     zox_setv(e, VoxelNode, 0);
     zox_setv(e, VoxelNodeLock, 0);
-    zox_setv(e, SidesOctree, 0);
     // Dirty State
     // Transforms
     zox_setv(e, Position3D, float3_zero);

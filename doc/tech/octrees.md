@@ -32,7 +32,6 @@ Code: [src/_/octrees](../../src/_/octrees) (the generic functions, no world need
 |---|---|---|---|
 | `VoxelNode` | linked | a chunk's or model's block ids | 0 (air) |
 | `LightOctree` | basic | light levels | `darklight` |
-| `SidesOctree` | basic | which faces of a voxel show | 0 |
 | `BoneNode` | basic | which body part a voxel came from (doc/done/skeletons.md) | 0 |
 | `ActiveOctree` | basic | what's switched on (a door open, a gravity cube on), saved, doc/tech/blocks.md | 0 (off) |
 | `GravityOctree` | basic | where gravity pulls (terrain/gravity, doc/tech/physics.md) | 0 (the realm's) |
@@ -110,8 +109,8 @@ so they're research notes, not plans; each would need its own doc/plans doc and 
 3. **8 byte nodes.** A 32 bit child index into a per tree array instead of a pointer halves the memory and makes a
    tree one allocation (free is one call, a copy is a memcpy, the gpu layout for free: flatten.c is nearly this).
    A big change: every `ptr` use goes through `octree_children`, which helps, but links and the locks need care.
-4. **Sides without a tree.** `SidesOctree` is a second tree a chunk; check what its shape adds over the voxel
-   tree's (not read for this doc), a bitmask per leaf block might replace it.
+4. **Sides without a tree.** Done (2026-11-25): `SidesOctree` is gone, faces come from a voxel grid
+   (chunks3/sys/build_grid.c).
 
 For the user's larger draw distances the count of chunks matters more than a chunk's tree: see todo.md
 "Engine" for the 100k chunk stress test (event tags against a byte state).

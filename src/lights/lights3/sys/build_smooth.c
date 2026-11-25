@@ -2,14 +2,14 @@
 //  - a vertex averages four lights: the face's (the voxel it looks into), its two edges' and its corner's
 //  - a corner behind two solid edges is hidden, its light would leak round the corner, it counts as darklight
 //  - solids hold darklight, so vertices in creases darken (ambient occlusion)
-//  - walks the voxels (node) with the sides like the mesh builder (zox_terrain_building_dig), so both skip the
-//    same faces (sides set on air), and colors line up with the mesh's vertices
+//  - its faces from the voxel grid the mesh was built from (chunks3/sys/build_grid.c), in the mesh's order: colors
+//    line up with its vertices
 //  - a face into a door's part (light_solidity_open or _base: it stops light while shut, it's no cube) is lit flat by
 //    the darkest open air round it (smooth_seal_light): its 3 x 3 reached past the door's plane, a wall's side by a shut
 //    door took the sunlit outside's light at its edge while the room was dark (as block voxes, vodes3/fun/lights.c)
 //  - tst smooth_lights (the corner leak), terrain_render, door_light (the wall beside a shut door)
 
-// meshes found older than their chunk's sides (more faces to light than vertices), rebuilt: the sides changed after it
+// meshes found older than their chunk's voxels (more faces to light than vertices), rebuilt: the voxels changed after it
 //  was built, its BuildMesh not merged yet (it logged Colors Past Limits as an error), counted for tests
 uint zox_smooth_lights_stale = 0;
 
@@ -184,96 +184,6 @@ static inline void smooth_face_lights_grid(
     }
 }
 
-static inline void zox_apply_smooth_lights(
-    const smooth_grid* grid,
-    spinlock** lights_locks,
-    spinlock** voxels_locks,
-    const LightOctree** lights,
-    const VoxelNode** voxels,
-    const byte* solidity,
-    const VoxelNode* node,
-    const SidesOctree* sides,
-    const MeshColorRGBs* colors,
-    byte3 position,
-    uint* ccount,
-    byte target_depth,
-    byte depth)
-{
-    const SidesOctree* sides_kids =
-        get_children_SidesOctree(sides);
-    byte has_sides_kids = sides_kids != NULL;
-    spinlock* node_lock = voxels_locks[OCTREE_INDEX(0, 0, 0)];
-    // Dig Deeper
-    if (depth < target_depth && has_sides_kids) {
-        spin_lock(node_lock);
-        const VoxelNode* node_kids = has_children_VoxelNode(node) ?
-            get_children_VoxelNode(node) :
-            NULL;
-        spin_unlock(node_lock);
-        byte3_multiply_byte(&position, 2);
-        depth++;
-        for (byte i = 0; i < 8; i++) {
-            byte3 child_position = byte3_add(
-                position,
-                octree_positions[i]);
-            zox_apply_smooth_lights(
-                grid,
-                lights_locks,
-                voxels_locks,
-                lights,
-                voxels,
-                solidity,
-                node_kids ? &node_kids[i] : node,
-                &sides_kids[i],
-                colors,
-                child_position,
-                ccount,
-                target_depth,
-                depth);
-//#ifdef zox_safety_checks
-            if (*ccount + voxel_face_vertices_length > colors->length) {
-                break;
-            }
-// #endif
-        }
-        return;
-    }
-    // NOTE: If no sides were rendered
-    byte sides_visible = sides->value;
-    if (!sides_visible) {
-        return;
-    }
-    // the mesh builder skips air with sides (stale sides), so we do too
-    spin_lock(node_lock);
-    const byte is_air = !node->value;
-    spin_unlock(node_lock);
-    if (is_air) {
-        return;
-    }
-    // each face the sides say is visible
-    for (byte direction = 0; direction < 6; direction++) {
-        if (!(sides->value & (1 << (direction + 1)))) {
-            continue;
-        }
-        if (*ccount + voxel_face_vertices_length > colors->length) {
-            // more faces than the mesh has: it's older than the sides (build_smooth_lights_system rebuilds it)
-            *ccount = colors->length + 1;
-            return;
-        }
-        byte vertex_lights[4];
-        // a face above the mesh's depth (a closed node) reads the trees: the grid is at the mesh's depth
-        if (grid && depth == target_depth) {
-            smooth_face_lights_grid(grid, solidity, position, direction, vertex_lights);
-        } else {
-            smooth_face_lights(lights, lights_locks, voxels, voxels_locks, solidity, position, depth, direction, vertex_lights);
-        }
-        for (byte v = 0; v < voxel_face_vertices_length; v++) {
-            colors->value[(*ccount)++] = (color_rgb) { vertex_lights[v], vertex_lights[v], vertex_lights[v] };
-        }
-    }
-}
-
-// TODO: Add spinlock for SidesOctreeLock
 // NOTE: Rebuilds Lights only when BuildMeshColors is dirty
 void build_smooth_lights_system(iter* it) {
     byte dbg_log = 0;
@@ -305,7 +215,7 @@ void build_smooth_lights_system(iter* it) {
         if (max_process && process_count > max_process) {
             break;
         }
-        // Get chunk data: the mesh's material holds its sides
+        // Get chunk data: the mesh's material, its chunk
         entity material = zox_get_parent(world, e);
         entity chunk = zox_valid(material) ? zox_get_parent(world, material) : 0;
 #ifdef zox_safety_checks
@@ -336,8 +246,6 @@ void build_smooth_lights_system(iter* it) {
             }
             continue;
         }
-        const SidesOctree* sides = zox_get(material, SidesOctree);
-        SidesOctreeLock* sides_lock = zox_mut(material, SidesOctreeLock);
         const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
         // const VoxelNode* root_voxels = zox_get(chunk, VoxelNode);
         entity nearby_chunks[27];
@@ -364,73 +272,54 @@ void build_smooth_lights_system(iter* it) {
         uint ccount = 0;
         smooth_grid grid = { 0 };
         const byte has_grid = smooth_grid_fill(&grid, lights, lights_locks, voxels, voxels_locks, depth->value);
-        if (zox_chunks3_grid_meshing) {
-            const entity manager = zox_get_link(world, chunk, BlockManagerLink);
-            const byte block_material = zox_has(material, BlockMaterial) ? zox_getv(material, BlockMaterial) : zox_block_material_solid;
-            if (grid_manager != manager || grid_material != block_material) {
-                if (grid_manager != manager) {
-                    get_block_materials(world, manager, block_materials);
-                }
-                grid_manager = manager;
-                grid_material = block_material;
-                voxel_grid_material(block_materials, block_material, grid_drawn, grid_hides);
+        const entity manager = zox_get_link(world, chunk, BlockManagerLink);
+        const byte block_material = zox_has(material, BlockMaterial) ? zox_getv(material, BlockMaterial) : zox_block_material_solid;
+        if (grid_manager != manager || grid_material != block_material) {
+            if (grid_manager != manager) {
+                get_block_materials(world, manager, block_materials);
             }
-            grid_buffer = voxel_grid_buffer(grid_buffer, &grid_buffer_size, depth->value);
-            if (grid_buffer) {
-                voxel_grid faces;
-                chunk_voxel_grid(world, chunk, depth->value, grid_hides, grid_buffer, &faces);
-                const int size = octree_size(depth->value);
-                for (int x = 0; x < size && ccount <= colors->length; x++) for (int y = 0; y < size; y++) {
-                    int c = voxel_grid_index(faces.length, x, y, 0);
-                    for (int z = 0; z < size; z++, c++) {
-                        const byte shows = voxel_grid_shows(&faces, size, c, x, y, z, grid_drawn, grid_hides);
-                        for (byte d = 0; d < 6 && shows; d++) {
-                            if (!((shows >> d) & 1)) {
-                                continue;
-                            }
-                            if (ccount + voxel_face_vertices_length > colors->length) {
-                                // more faces than the mesh has: it's older than the voxels (rebuilt below)
-                                ccount = colors->length + 1;
-                                break;
-                            }
-                            const byte3 position = (byte3) { x, y, z };
-                            byte vertex_lights[4];
-                            if (has_grid) {
-                                smooth_face_lights_grid(&grid, solidity, position, d, vertex_lights);
-                            } else {
-                                smooth_face_lights(lights, lights_locks, voxels, voxels_locks, solidity, position, depth->value, d, vertex_lights);
-                            }
-                            for (byte v = 0; v < voxel_face_vertices_length; v++) {
-                                colors->value[ccount++] = (color_rgb) { vertex_lights[v], vertex_lights[v], vertex_lights[v] };
-                            }
+            grid_manager = manager;
+            grid_material = block_material;
+            voxel_grid_material(block_materials, block_material, grid_drawn, grid_hides);
+        }
+        grid_buffer = voxel_grid_buffer(grid_buffer, &grid_buffer_size, depth->value);
+        if (grid_buffer) {
+            voxel_grid faces;
+            chunk_voxel_grid(world, chunk, depth->value, grid_hides, grid_buffer, &faces);
+            const int size = octree_size(depth->value);
+            for (int x = 0; x < size && ccount <= colors->length; x++) for (int y = 0; y < size; y++) {
+                int c = voxel_grid_index(faces.length, x, y, 0);
+                for (int z = 0; z < size; z++, c++) {
+                    const byte shows = voxel_grid_shows(&faces, size, c, x, y, z, grid_drawn, grid_hides);
+                    for (byte d = 0; d < 6 && shows; d++) {
+                        if (!((shows >> d) & 1)) {
+                            continue;
+                        }
+                        if (ccount + voxel_face_vertices_length > colors->length) {
+                            // more faces than the mesh has: it's older than the voxels (rebuilt below)
+                            ccount = colors->length + 1;
+                            break;
+                        }
+                        const byte3 position = (byte3) { x, y, z };
+                        byte vertex_lights[4];
+                        if (has_grid) {
+                            smooth_face_lights_grid(&grid, solidity, position, d, vertex_lights);
+                        } else {
+                            smooth_face_lights(lights, lights_locks, voxels, voxels_locks, solidity, position, depth->value, d, vertex_lights);
+                        }
+                        for (byte v = 0; v < voxel_face_vertices_length; v++) {
+                            colors->value[ccount++] = (color_rgb) { vertex_lights[v], vertex_lights[v], vertex_lights[v] };
                         }
                     }
                 }
             }
-        } else {
-            spin_lock(&sides_lock->value);
-            zox_apply_smooth_lights(
-                has_grid ? &grid : NULL,
-                lights_locks,
-                voxels_locks,
-                lights,
-                voxels,
-                solidity,
-                voxels[OCTREE_INDEX(0, 0, 0)],
-                sides,
-                colors,
-                byte3_zero,
-                &ccount,
-                depth->value,
-                0);
-            spin_unlock(&sides_lock->value);
         }
         free(grid.lights);
         zox_remove(e, BuildMeshColors);
         if (ccount > colors->length) {
-            // stale: rebuilt (it lights again after), the sides changed since
+            // stale: rebuilt (it lights again after), the voxels changed since
             zox_smooth_lights_stale++;
-            zox_logw("[smooth lights] mesh [%s] older than its chunk's sides, rebuilding it", zox_getn(e));
+            zox_logw("[smooth lights] mesh [%s] older than its chunk's voxels, rebuilding it", zox_getn(e));
             zox_add(e, BuildMesh);
             continue;
         }

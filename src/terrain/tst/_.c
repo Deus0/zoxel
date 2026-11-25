@@ -18,9 +18,7 @@
 #include "perf_idle.c"
 #include "perf_terrain.c"
 #include "stream_unload.c"
-#include "stream_sides.c"
 #include "gpu_mesh.c"
-#include "stream_gpu_sides.c"
 #include "seams.c"
 #include "stream_seams.c"
 #include "chunk_mesh_flicker.c"
@@ -51,8 +49,6 @@ void zox_tsts_terrain(ecs* world) {
     zox_tsts_terrain_gpu_mesh(world);
     zox_tsts_perf_terrain(world);
     zox_tsts_stream_unload(world);
-    zox_tsts_stream_sides(world);
-    zox_tsts_stream_gpu_sides(world);
     zox_tsts_stream_seams(world);
     zox_tsts_chunk_mesh_flicker(world);
     zox_tsts_lod_flyby(world);

@@ -3,7 +3,7 @@ zoxc_arrayd(TestMeshBorder, byte);
 byte zox_test_capture_mesh_border = 0;
 #endif
 zox_tag(Chunk3);
-zox_tag(ChunkMaterial);    // a chunk's child for one block material: its sides and lod meshes (fun/materials.c)
+zox_tag(ChunkMaterial);    // a chunk's child for one block material: its lod meshes (fun/materials.c)
 zox_tag(NoiseChunk);
 zox_tag(ChunkDebugger);
 zox_tag(ColorChunk);
@@ -32,7 +32,6 @@ void on_unlink_ChunkLink(ecs* world, entity e, entity chunk) {
 zoxc_array(ChunkNeighbors, entity, chunk_neighbors_length);
 zoxc_float(RaycastRange);
 #include "voxels.c"
-#include "sides.c"
 #include "bones.c"
 #include "queue.c"
 #include "damage.c"
@@ -110,13 +109,11 @@ void zox_components_chunks3(ecs* world) {
     // Pointers
     zoxd_octree(VoxelNode);
     zoxd(VoxelNodeLock);
-    zoxd_octree(SidesOctree);
     zoxd_octree(BoneNode);
     zoxd_arrayd(CombineOver);
     zoxd_arrayd(CombineBones);
     zoxd_arrayd(CombineParents);
     zoxd_int3(FleshSize);
-    zoxd(SidesOctreeLock);
     zoxd_entitiesw(ChunkEntities);
     zoxd_nf_link(ChunkLink);
     zox_on_unlink(on_unlink_ChunkLink, ChunkLink);

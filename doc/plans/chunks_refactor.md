@@ -148,6 +148,26 @@ rebuilt its own reference of a rule: by stream_seams and the cpu against gpu tes
   lighting (smooth lights across a model) is a prototype after this refactor.
 - Faces merged (greedy meshing, doc/tech/chunks3.md) after this, in the one mesher.
 
+## Progress (2026-11-25)
+
+Phase 2 done, committed:
+- The game meshes and lights cpu terrain from the grid (fd2b0145e). perf_terrain release far 8, 4 runs each
+  alternated: frames over 11ms ~350 to ~100 a stream, 1% low 45 to 48 fps, steps 1.8s to 1.5s
+  (doc/tech/fps_optimization.md). tst perf_meshing checked the grid's faces against sides' first (24ebd58c1).
+- The raycast gizmo's faces from the voxels (f5628ccbc, tst block_sides): it outlined nothing with gpu meshing.
+- SidesOctree removed (f2084a0db): its component, lock, build_sides_dig and the sides walks; chunk_sides_system only
+  adds BuildMesh to a chunk's meshes; chunk_sides ported to the grid; stream_sides, stream_gpu_sides gone. The side
+  children table (get_node_sides_all_hide, colored meshes) is filled at import: perf_meshing's face counts caught
+  colored models at lower lods drawing half their faces without it (vox_mesh_grid and model_views didn't).
+
+Left of phase 2:
+- The `BuildChunkSides` waits: the mesher and lights skip a chunk with it, a frame later chunk_sides_system turns it
+  into BuildMesh. A rebuild could be asked for directly (BuildMesh on the meshes), the tag and system gone; measure
+  perf_terrain before and after (the waits held seams back, chunk_mesh_flicker and stream_seams must stay clean).
+- The tag's name: it means "rebuild against the neighbours" now.
+
+Next: Phase 1 (one face table, writer, walk; tst mesher_walk), then Phase 3 (vox models shaped as terrain chunks).
+
 ## Results
 
 - Phase 2, 1 to 3 (2026-11-25): the game meshes and lights cpu terrain from the grid (zox_chunks3_grid_meshing,

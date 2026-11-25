@@ -1,6 +1,11 @@
 # Done
 
 ## 2026-11-25
+-x SidesOctree removed: terrain's faces come from the voxel grid only (sys/build_grid.c), the component, its lock,
+  build_sides_dig and the sides walks in the mesher and lights gone, chunk_sides_system only asks meshes to rebuild.
+  tst chunk_sides ported to the grid (its lod border cases), stream_sides and stream_gpu_sides gone (stream_seams
+  covers them), perf_meshing and gpu_mesh time the grid. A finer neighbour's border reads its voxels, not an open
+  node's own value
 -x The raycast gizmo (the outline of the block looked at) outlined nothing with gpu meshing (Windows OpenGL play
   test): its faces came from SidesOctree, never built for gpu meshed chunks (nor with grid meshing now). They're worked
   out from the voxels by the meshes' rule (get_chunk_sides). tst block_sides, cpu and gpu meshing

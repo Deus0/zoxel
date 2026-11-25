@@ -51,7 +51,5 @@ entity spawn_prefab_chunk_material(ecs* world) {
     zox_prefab_name("chunk_material");
     zox_add(e, ChunkMaterial);
     zox_setv(e, BlockMaterial, zox_block_material_solid);
-    zox_setv(e, SidesOctree, 0);
-    zox_setv(e, SidesOctreeLock, 0);
     return e;
 }

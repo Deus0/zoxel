@@ -3,7 +3,7 @@
 //    each step as it walks out and back, a chunk at a time and in jumps, so chunks change lod both ways
 //  - each check: every border between two ready chunks, each side's faces read from its meshes (cpu arrays, gpu
 //    buffers read back) against what the other side draws (seams.c): no code shared with the meshers, so a wrong rule
-//    in them fails here (stream_sides and stream_gpu_sides build their reference with the meshers' own rules)
+//    in them fails here (it replaced stream_sides and stream_gpu_sides, which used the meshers' own rules)
 //  - gpu or cpu meshing as the build has it (vulkan: gpu), --gpu_meshing / --cpu_meshing for the other
 //  - run: bash bsh/tst.sh stream_seams --vulkan (medium terrain, tst.sh; zox_tst_seed=666 for the same land)
 static const int3 zox_tst_seams_steps[] = {

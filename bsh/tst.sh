@@ -208,7 +208,7 @@ fi
 
 # runs the game with --tst <name>, output to <log>, returns its exit code
 # tests that need more terrain than --tiny (i.e. far lods to compare), the later --medium wins
-medium_tests=(lod_chunk_lights lod_swap stream_sides stream_gpu_sides stream_seams chunk_mesh_flicker)
+medium_tests=(lod_chunk_lights lod_swap stream_seams chunk_mesh_flicker)
 # tests that need the game's far lods (far chunks generated coarse, grown finer as the stream comes: lights cleared)
 far_tests=(lod_light_flash)
 # performance tests: alone they run at far 8 (their measuring scale: not --tiny, whose numbers aren't the game's, the

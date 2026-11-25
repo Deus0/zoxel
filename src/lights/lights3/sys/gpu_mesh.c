@@ -86,7 +86,7 @@ static inline guint chunk_gpu_terrain(ecs* world, entity terrain, guint2* grid) 
 }
 
 // its neighbours' voxels at the depth they draw (chunk_drawn_depth): a face against voxels a coarser lod doesn't
-//  show was a hole where lods met (tst stream_gpu_sides); the 6 beside it its faces meet as cpu sides do
+//  show was a hole where lods met (tst stream_seams); the 6 beside it its faces meet as cpu sides do
 //  (chunk_side_depth: open while unsettled, smooth_grid_borders)
 static inline void smooth_grid_drawn_depths(ecs* world, smooth_grid* grid, const entity* nearby_chunks) {
     grid->use_neighbor_depths = 1;

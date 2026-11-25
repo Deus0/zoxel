@@ -39,15 +39,6 @@ static inline void initialize_voxel_lock(
     zox_setv(e, VoxelNodeLock, vlock);
 }
 
-static inline void initialize_sides_lock(
-    ecs* world,
-    entity e)
-{
-    spinlock lock;
-    spinlock_init(&lock);
-    zox_setv(e, SidesOctreeLock, lock);
-}
-
 entity spawn_texture_from_vox(
     ecs* world,
     entity vox,

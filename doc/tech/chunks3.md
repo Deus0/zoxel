@@ -48,17 +48,21 @@ Every mesh is one quad (4 vertices, 6 indices) per visible voxel face. Nothing i
 
 ### Terrain chunks (textured meshes)
 
-[sys/build_textured.c](../../src/chunks/chunks3/sys/build_textured.c) (`chunk_textured_build_system`,
-`zox_terrain_building_dig`), a mesh per chunk material (solid, water: [fun/materials.c](../../src/chunks/chunks3/fun/materials.c)).
+[sys/build_textured.c](../../src/chunks/chunks3/sys/build_textured.c) (`chunk_textured_build_system`), from
+[sys/build_grid.c](../../src/chunks/chunks3/sys/build_grid.c), a mesh per chunk material (solid, water: [fun/materials.c](../../src/chunks/chunks3/fun/materials.c)).
 
-- Which faces show is worked out first, into a `SidesOctree` ([sys/sides.c](../../src/chunks/chunks3/sys/sides.c)),
-  across chunk borders and lods (tst `chunk_sides`).
+- Which faces show comes from a voxel grid: the chunk's voxels at the mesh's depth as bytes, with a voxel of border
+  from its 6 neighbours, each at the depth it draws (`chunk_voxel_grid`, `voxel_grid_fill`), and the gpu mesher's
+  rule (`voxel_grid_shows`): a face beside a voxel that doesn't hide it, into a missing chunk only its top. Across
+  chunk borders and lods (tst `chunk_sides`); the raycast gizmo asks the same rule (`get_chunk_sides`, tst
+  `block_sides`). It replaced `SidesOctree`, a second tree a chunk built first (2026-11-25, 2.5x a world's meshing,
+  doc/plans/chunks_refactor.md). `chunk_sides_system` only asks a chunk's meshes to rebuild now (`BuildChunkSides`).
 - UVs: each face gets its block's tile in the tilemap atlas (`tilemap_uvs`, 4 corners a face), liquids their own
   whole texture.
 - Light is baked a vertex **after** the mesh, by `build_smooth_lights_system`
   ([lights3/sys/build_smooth.c](../../src/lights/lights3/sys/build_smooth.c)): a vertex averages the light of the
   face's air voxel, its two edges' and its corner's, a corner behind two solid edges counts as dark. That is the
-  terrain's ambient occlusion. It walks the voxels and sides **in the same order as the mesher** and writes 4 colours
+  terrain's ambient occlusion. It walks the same voxel grid **in the same order as the mesher** and writes 4 colours
   a face, so its colours line up with the mesh's vertices by position in the arrays. The upload waits for it
   (`BuildMeshColors`), else a new mesh shows a frame white.
 

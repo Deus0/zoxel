@@ -40,11 +40,6 @@ typedef struct {
     color_rgb_array_d* color_rgbs;
 } mesh_uvs_build_data;
 
-typedef struct {
-    const int* indicies;
-    const float3 *vertices;
-    const float2 *uvs;
-} octree_face_data;
 
 // static data
 typedef struct {
@@ -91,107 +86,6 @@ static inline void zox_build_voxel_face(
     }
 }
 
-
-// NOTE: A special case here if neighbor is lesser / higher
-// NOTE: For some reason I had to add 1 here, but is fine in other system, the main diff is the dig depth vs render depth
-// What we really need is adjacent node depth vs dig depth, not render depth differences
-// actually this makes sense: we are just checking what neighbor is rendering at verse what we are
-static inline void zox_terrain_building_dig(
-    terrain_build_data data,
-    VoxelNodeLock* voxels_lock,
-    const SidesOctree* sides,
-    const VoxelNode* voxels,
-    byte3 position,
-    float scale,
-    byte target_depth,
-    byte depth,
-    byte dbg_log)
-{
-    // Dig Deeper
-    if (depth < target_depth && has_children_SidesOctree(sides)) {
-        depth++;
-        scale *= 0.5f;
-        position = byte3_mul1(position, 2);
-        const SidesOctree* sides_kids = get_children_SidesOctree(sides);
-        spin_lock(&voxels_lock->value);
-        byte has_vkids = has_children_VoxelNode(voxels);
-        const VoxelNode* vkids = has_vkids ?
-            get_children_VoxelNode(voxels):
-            NULL;
-        spin_unlock(&voxels_lock->value);
-        for (byte i = 0; i < 8; i++) {
-            const SidesOctree* child_sides = &sides_kids[i];
-            const VoxelNode* child_voxels =
-                has_vkids ?
-                    &vkids[i] :
-                    voxels;
-            byte3 child_position = byte3_add(position, octree_positions[i]);
-            zox_terrain_building_dig(
-                data,
-                voxels_lock,
-                child_sides,
-                child_voxels,
-                child_position,
-                scale,
-                target_depth,
-                depth,
-                dbg_log);
-        }
-        return;
-    }
-    // NOTE: Skips if no faces to draw
-    if (!sides->value) {
-        return;
-    }
-    // NOTE: Maybe this is because it didnt build sides before mesh?
-    spin_lock(&voxels_lock->value);
-    byte block_index = voxels->value;
-    spin_unlock(&voxels_lock->value);
-    if (!block_index) {
-        // zox_loge("Terrain Chunk Mesh Builder: Sides is true with Air");
-        return;
-    }
-    block_index--;
-    if (dbg_log >= 2) {
-        zox_log("Adding Chunk Textured Faces at [%ix%ix%i]", position.x, position.y, position.z);
-    }
-    float3 positionf = byte3_to_float3(position);
-    float3_scale_p(&positionf, scale);
-    // NOTE: UVIndex is calculated by block index * 6 for faces
-    uint block_uv_index = block_index * 6 * 4;
-    // a lower block (flowing water): its top, and its sides' tops, at its height, unless water's over it (no top face)
-    const byte eighths = data.heights[block_index];
-    const byte lowered = eighths && (sides->value & (1 << (direction_up + 1)));
-    float3 lowered_vertices[4];
-    for (byte direction = 0; direction < 6; direction++) {
-        if (!(sides->value & (1 << (direction + 1)))) {
-            continue;
-        }
-        uint face_uv_index = block_uv_index + direction * 4;
-        const float3* vertices = voxel_face_vertices_n[direction];
-        if (lowered) {
-            for (byte k = 0; k < 4; k++) {
-                lowered_vertices[k] = vertices[k];
-                if (lowered_vertices[k].y > 0) {
-                    lowered_vertices[k].y = eighths / (float) zox_water_level_source;
-                }
-            }
-            vertices = lowered_vertices;
-        }
-        octree_face_data face = {
-            .indicies = voxel_face_indicies_n + direction * voxel_face_indicies_length,
-            .vertices = vertices,
-            .uvs = data.whole_texture ? voxel_face_uvs[direction] : &data.tilemap_uvs->value[face_uv_index],
-        };
-        zox_build_voxel_face(
-            data.mesh_data,
-            face.indicies,
-            face.vertices,
-            face.uvs,
-            positionf,
-            float3_single(scale));
-    }
-}
 
 #include "build_grid.c"
 
@@ -243,7 +137,6 @@ void chunk_textured_build_system(iter* it) {
         }
         if (!zox_has(chunk, NodeDepth) ||
             !zox_has(chunk, VoxelNode) ||
-            !zox_has(material, SidesOctree) ||
             !zox_has(chunk, VoxelNodeLock)
         ) {
             zox_loge("[build_textured] Chunk Components Invalid [%s]", zox_sys_e_name);
@@ -358,7 +251,6 @@ void chunk_textured_build_system(iter* it) {
         }
         const VoxelNode* voxels = zox_get(chunk, VoxelNode);
         VoxelNodeLock* voxels_lock = zox_mut(chunk, VoxelNodeLock);
-        const SidesOctree* sides = zox_get(material, SidesOctree);
         float block_scale = get_chunk_scale(
             depth->value,
             terrain_depth,
@@ -379,33 +271,20 @@ void chunk_textured_build_system(iter* it) {
             .heights = heights,
             .mesh_data = &mesh_data,
         };
-        if (zox_chunks3_grid_meshing) {
-            const byte block_material = zox_has(material, BlockMaterial) ? zox_getv(material, BlockMaterial) : zox_block_material_solid;
-            if (grid_manager != blocks_parent || grid_material != block_material) {
-                if (grid_manager != blocks_parent) {
-                    get_block_materials(world, blocks_parent, block_materials);
-                }
-                grid_manager = blocks_parent;
-                grid_material = block_material;
-                voxel_grid_material(block_materials, block_material, grid_drawn, grid_hides);
+        const byte block_material = zox_has(material, BlockMaterial) ? zox_getv(material, BlockMaterial) : zox_block_material_solid;
+        if (grid_manager != blocks_parent || grid_material != block_material) {
+            if (grid_manager != blocks_parent) {
+                get_block_materials(world, blocks_parent, block_materials);
             }
-            grid_buffer = voxel_grid_buffer(grid_buffer, &grid_buffer_size, depth->value);
-            if (grid_buffer) {
-                voxel_grid grid;
-                chunk_voxel_grid(world, chunk, depth->value, grid_hides, grid_buffer, &grid);
-                build_textured_grid(&grid, data, depth->value, chunk_scale, grid_drawn, grid_hides);
-            }
-        } else {
-            zox_terrain_building_dig(
-                data,
-                voxels_lock,
-                sides,
-                voxels,
-                byte3_zero,
-                chunk_scale,
-                depth->value,
-                0,
-                dbg_log);
+            grid_manager = blocks_parent;
+            grid_material = block_material;
+            voxel_grid_material(block_materials, block_material, grid_drawn, grid_hides);
+        }
+        grid_buffer = voxel_grid_buffer(grid_buffer, &grid_buffer_size, depth->value);
+        if (grid_buffer) {
+            voxel_grid grid;
+            chunk_voxel_grid(world, chunk, depth->value, grid_hides, grid_buffer, &grid);
+            build_textured_grid(&grid, data, depth->value, chunk_scale, grid_drawn, grid_hides);
         }
 #ifdef zox_tests
         if (zox_test_capture_mesh_border && zox_has(e, TestMeshBorder)) {

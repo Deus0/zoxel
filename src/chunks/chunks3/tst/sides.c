@@ -1,5 +1,6 @@
 // tst: chunk_sides, faces between chunks are culled when the neighbor chunk is solid there
-//  - builds a chunk's SidesOctree like chunk_sides_system (build_sides_dig), no window or rendering
+//  - a chunk's voxel grid at each render depth (sys/build_grid.c, as the meshes are built), its faces by its rule
+//    (voxel_grid_shows), no window or rendering
 //  - a neighbor chunk on each of the 6 sides, faces on the border are checked at every render depth,
 //    as lod chunks draw their sides at a lower depth than their voxels
 //  - the neighbor's face that touches the chunk decides it, never its far face
@@ -54,50 +55,50 @@ static inline void zox_tst_sides_fill(VoxelNode* node, byte depth, byte shape, b
     reduce_VoxelNode(node);
 }
 
-// sides of chunk, with neighbors[6] (NULL for none), like chunk_sides_system, all blocks solid
-static inline void zox_tst_sides_build(
-    SidesOctree* sides,
-    const VoxelNode* chunk,
-    byte chunk_depth,
-    const VoxelNode** neighbors,
+// the faces showing in a chunk at render depth, with neighbors[6] (NULL for none) drawn at their depths, all blocks
+//  solid: a bit a direction for each voxel, x y z, into faces (octree_size(depth)^3 of them)
+static inline void zox_tst_sides_faces(byte* faces, const VoxelNode* chunk, byte depth, const VoxelNode** neighbors,
     const byte* neighbor_depths)
 {
-    init_side_child_indices();
-    create_SidesOctree(sides);
-    build_sides_dig(NULL, zox_block_material_solid, chunk, neighbors, neighbor_depths, chunk, sides, chunk_depth, 0, byte3_zero, 0);
+    byte drawn[256], hides[256];
+    memset(drawn, 1, sizeof(drawn));
+    memset(hides, 1, sizeof(hides));
+    drawn[0] = hides[0] = 0;
+    byte* buffer = malloc(voxel_grid_cells(depth));
+    voxel_grid grid;
+    voxel_grid_fill(&grid, buffer, chunk, neighbors, neighbor_depths, depth, hides);
+    const int length = octree_size(depth);
+    for (int x = 0; x < length; x++) for (int y = 0; y < length; y++) for (int z = 0; z < length; z++) {
+        faces[(x * length + y) * length + z] = voxel_grid_shows(&grid, length, voxel_grid_index(grid.length, x, y, z),
+            x, y, z, drawn, hides);
+    }
+    free(buffer);
 }
 
 // faces pointing in direction, on the chunk's border in that direction, at render depth
-static inline int zox_tst_sides_border_faces(const SidesOctree* sides, byte depth, byte direction) {
+static inline int zox_tst_sides_border_faces(const byte* faces, byte depth, byte direction) {
     const int length = octree_size(depth);
     const byte axis = direction >> 1;
     const int edge = (direction & 1) ? length - 1 : 0;
-    int faces = 0;
+    int count = 0;
     for (int a = 0; a < length; a++) for (int b = 0; b < length; b++) {
-        byte3 p;
-        if (axis == 0) p = (byte3) { edge, a, b };
-        else if (axis == 1) p = (byte3) { a, edge, b };
-        else p = (byte3) { a, b, edge };
-        const SidesOctree* node = get_SidesOctree(sides, depth, p);
-        faces += node && (node->value & (1 << (direction + 1)));
+        int p[3];
+        p[axis] = edge;
+        p[axis == 0 ? 1 : 0] = a;
+        p[axis == 2 ? 1 : 2] = b;
+        count += (faces[(p[0] * length + p[1]) * length + p[2]] >> direction) & 1;
     }
-    return faces;
+    return count;
 }
 
 // all faces in the chunk, any direction, at render depth
-static inline int zox_tst_sides_all_faces(const SidesOctree* sides, byte depth) {
+static inline int zox_tst_sides_all_faces(const byte* faces, byte depth) {
     const int length = octree_size(depth);
-    int faces = 0;
-    for (int x = 0; x < length; x++) for (int y = 0; y < length; y++) for (int z = 0; z < length; z++) {
-        const SidesOctree* node = get_SidesOctree(sides, depth, (byte3) { x, y, z });
-        if (!node) {
-            continue;
-        }
-        for (byte d = 0; d < 6; d++) {
-            faces += (node->value >> (d + 1)) & 1;
-        }
+    int count = 0;
+    for (int i = 0; i < length * length * length; i++) {
+        count += __builtin_popcount(faces[i]);
     }
-    return faces;
+    return count;
 }
 
 static const char* zox_tst_sides_direction_names[6] = { "left", "right", "down", "up", "back", "front" };
@@ -120,19 +121,19 @@ static inline void zox_tst_sides_case(
         byte neighbor_depths[6] = { 0 };
         neighbors[direction] = &neighbor;
         neighbor_depths[direction] = neighbor_depth;
-        SidesOctree sides;
-        zox_tst_sides_build(&sides, &chunk, chunk_depth, neighbors, neighbor_depths);
         for (byte depth = 0; depth <= chunk_depth; depth++) {
             const int length = octree_size(depth);
             int expected = expected_faces < 0 ? length * length : expected_faces;
+            byte* all = malloc(length * length * length);
+            zox_tst_sides_faces(all, &chunk, depth, neighbors, neighbor_depths);
             // a hole smaller than the chunk's node faces the whole node, so still one face
-            const int faces = zox_tst_sides_border_faces(&sides, depth, direction);
+            const int faces = zox_tst_sides_border_faces(all, depth, direction);
+            free(all);
             zox_tst_check(faces == expected,
                 "[%s] neighbor [%s] chunk depth [%i] neighbor depth [%i] render depth [%i]: [%i] border faces, expected [%i]",
                 zox_tst_sides_direction_names[direction], zox_tst_sides_shape_names[shape],
                 chunk_depth, neighbor_depth, depth, faces, expected);
         }
-        collapse_SidesOctree(&sides);
         collapse_VoxelNode(&neighbor);
         collapse_VoxelNode(&chunk);
     }
@@ -153,11 +154,12 @@ static inline void zox_tst_sides_inside() {
         neighbors[d] = &solid;
         neighbor_depths[d] = depth;
     }
-    SidesOctree sides;
-    zox_tst_sides_build(&sides, &chunk, depth, neighbors, neighbor_depths);
-    const int faces = zox_tst_sides_all_faces(&sides, depth);
+    const int length = octree_size(depth);
+    byte* all = malloc(length * length * length);
+    zox_tst_sides_faces(all, &chunk, depth, neighbors, neighbor_depths);
+    const int faces = zox_tst_sides_all_faces(all, depth);
+    free(all);
     zox_tst_check(faces == 6, "inside: [%i] faces around one air voxel in a walled chunk, expected [6]", faces);
-    collapse_SidesOctree(&sides);
     collapse_VoxelNode(&solid);
     collapse_VoxelNode(&chunk);
 }

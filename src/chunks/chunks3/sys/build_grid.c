@@ -1,5 +1,5 @@
-// A textured chunk mesh from a voxel grid, no SidesOctree (doc/plans/chunks_refactor.md, phase 2): the game's cpu
-//  meshing (zox_chunks3_grid_meshing, --sides_meshing for the old way), measured against sides (tst perf_meshing)
+// A textured chunk mesh from a voxel grid (doc/plans/chunks_refactor.md, phase 2): the game's cpu meshing, and its
+//  smooth lights' faces (lights3/sys/build_smooth.c), in the same order
 //  - the grid: the chunk's voxels at the mesh's depth as bytes, a voxel of border from its 6 neighbours, each at the
 //    depth it draws (as sides read them: chunk_side_depth)
 //  - which faces show is the gpu mesher's rule (fun/gpu_mesh.c face_shows, gpu_mesh_grid_faces): a voxel of the mesh's
@@ -59,32 +59,32 @@ static inline void voxel_grid_fill(voxel_grid* grid, byte* buffer, const VoxelNo
             cell[a] = u;
             cell[b] = v;
             byte* value = &grid->voxels[voxel_grid_index(grid->length, cell[0], cell[1], cell[2])];
-            if (!*value) {
+            if (open) {
+                *value = 0;
                 continue;
             }
-            byte air = open;
-            if (!open) {
-                // a closed node there is one value along the whole face: the fill already has it
-                int coarse[3];
-                coarse[axis] = positive ? 0 : size - 1;
-                coarse[a] = u;
-                coarse[b] = v;
-                const VoxelNode* node = get_VoxelNode(neighbors[d], depth, (byte3) { coarse[0], coarse[1], coarse[2] });
-                if (node && !has_children_VoxelNode(node)) {
-                    *value = hides[node->value] ? *value : 0;
-                    continue;
-                }
+            // a closed node there is one value along the whole face: the fill already has it
+            int coarse[3];
+            coarse[axis] = positive ? 0 : size - 1;
+            coarse[a] = u;
+            coarse[b] = v;
+            const VoxelNode* node = get_VoxelNode(neighbors[d], depth, (byte3) { coarse[0], coarse[1], coarse[2] });
+            if (node && !has_children_VoxelNode(node)) {
+                *value = hides[node->value] ? node->value : 0;
+                continue;
             }
+            // open: every voxel it draws along the border hides the face, or it's air (an open node's own value isn't
+            //  needed, as sides' get_node_sides_all_hide)
+            byte air = 0, hider = 0;
             for (int fu = 0; fu < k && !air; fu++) for (int fv = 0; fv < k && !air; fv++) {
                 int fine[3];
                 fine[axis] = positive ? 0 : size * k - 1;
                 fine[a] = u * k + fu;
                 fine[b] = v * k + fv;
-                air = !hides[getv_VoxelNode(neighbors[d], drawn, (byte3) { fine[0], fine[1], fine[2] })];
+                hider = getv_VoxelNode(neighbors[d], drawn, (byte3) { fine[0], fine[1], fine[2] });
+                air = !hides[hider];
             }
-            if (air) {
-                *value = 0;
-            }
+            *value = air ? 0 : hider;
         }
     }
 }

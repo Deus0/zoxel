@@ -1,5 +1,5 @@
 // chunk materials: a terrain chunk's faces are built and meshed per block material (blocks/dat/model_types.c)
-//  - chunk > a ChunkMaterial child per material its voxels have (its BlockMaterial, SidesOctree, ActiveMesh)
+//  - chunk > a ChunkMaterial child per material its voxels have (its BlockMaterial, ActiveMesh)
 //    > a ChunkMesh child per lod
 //  - spawned when the chunk's voxels change (chunk_mesh_spawn_system), kept while the chunk lives
 #define zox_chunk_meshes_max 32     // a chunk's lod meshes, over all its materials

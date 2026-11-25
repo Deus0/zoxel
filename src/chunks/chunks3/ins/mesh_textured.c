@@ -1,4 +1,4 @@
-// a chunk's material: the sides and meshes of its blocks of one block material, drawn with a gpu material
+// a chunk's material: the meshes of its blocks of one block material, drawn with a gpu material
 entity spawn_chunk_material(
     ecs* world,
     entity chunk,
@@ -9,7 +9,6 @@ entity spawn_chunk_material(
     zox_set_unique_name(e, "chunk_material");
     zox_setv(e, BlockMaterial, block_material);
     zox_link(world, e, MaterialLink, material);
-    initialize_sides_lock(world, e);
     zox_set_parent_non_fragment(world, e, chunk);
     return e;
 }

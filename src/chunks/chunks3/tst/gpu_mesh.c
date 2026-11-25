@@ -219,17 +219,29 @@ static inline void zox_tst_gpu_time(GpuMesher* mesher, const VoxelNode* voxels, 
     free(grid);
     const VoxelNode* neighbors[6] = { NULL };
     const byte neighbor_depths[6] = { depth, depth, depth, depth, depth, depth };
-    init_side_child_indices();
+    // the cpu's faces: its voxel grid filled, each voxel's showing faces (sys/build_grid.c), what the cpu mesher does
+    //  before writing them
+    byte drawn[256], hides[256];
+    memset(drawn, 1, sizeof(drawn));
+    memset(hides, 1, sizeof(hides));
+    drawn[0] = hides[0] = 0;
+    byte* buffer = malloc(voxel_grid_cells(depth));
+    const int size = octree_size(depth);
+    uint cpu_faces = 0;
     start = get_time_ms();
     for (int r = 0; r < runs; r++) {
-        SidesOctree sides;
-        create_SidesOctree(&sides);
-        build_sides_dig(NULL, zox_block_material_solid, voxels, neighbors, neighbor_depths, voxels, &sides, depth, 0, byte3_zero, 0);
-        collapse_SidesOctree(&sides);
+        voxel_grid cpu_grid;
+        voxel_grid_fill(&cpu_grid, buffer, voxels, neighbors, neighbor_depths, depth, hides);
+        cpu_faces = 0;
+        for (int x = 0; x < size; x++) for (int y = 0; y < size; y++) for (int z = 0; z < size; z++) {
+            const byte shows = voxel_grid_shows(&cpu_grid, size, voxel_grid_index(cpu_grid.length, x, y, z), x, y, z, drawn, hides);
+            cpu_faces += __builtin_popcount(shows);
+        }
     }
-    const double cpu_sides_ms = (get_time_ms() - start) / runs;
-    zox_log("[tst] [metric] gpu_mesh [%s] depth [%i]: gpu [%.3fms] (without the grid's fill [%.3fms]), cpu sides only [%.3fms]",
-        name, depth, gpu_ms, gpu_only_ms, cpu_sides_ms);
+    const double cpu_faces_ms = (get_time_ms() - start) / runs;
+    free(buffer);
+    zox_log("[tst] [metric] gpu_mesh [%s] depth [%i]: gpu [%.3fms] (without the grid's fill [%.3fms]), cpu faces found [%.3fms] ([%u])",
+        name, depth, gpu_ms, gpu_only_ms, cpu_faces_ms, cpu_faces);
 }
 
 byte zox_tst_gpu_mesh_ready(ecs* world) {
