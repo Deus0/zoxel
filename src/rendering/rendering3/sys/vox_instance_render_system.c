@@ -25,16 +25,6 @@ static inline float instance_mesh_radius(ecs* world, entity mesh) {
     return sqrtf(most) + 0.1f;  // and the sway (grass tips move zox_grass_sway_strength)
 }
 
-// a see through mesh's alpha without a material (its voxels' colours, blended over what's behind)
-#define zox_see_through_alpha 0.55f
-
-// a see through mesh's alpha: its material's (MaterialLink to a TransparentMaterial, its Alpha), else the default
-static inline float instance_see_through_alpha(ecs* world, entity mesh) {
-    const entity material = zox_get_link(world, mesh, MaterialLink);
-    return zox_valid(material) && zox_has(material, TransparentMaterial) && zox_has(material, Alpha) ?
-        zox_getv(material, Alpha) : zox_see_through_alpha;
-}
-
 // a model mesh's see through sibling at its lod (TransparentMesh, set_vox_lods_materials), 0 if its model has none
 static inline entity instance_see_through_of(ecs* world, entity mesh) {
     const entity model = zox_get_parent(world, mesh);

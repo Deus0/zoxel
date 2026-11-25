@@ -31,5 +31,6 @@ void zox_tsts_models() {
     zox_tst_add("slime_view", zox_tst_slime_view_ready, zox_tst_model_views_check, 60);
     zox_tst_set_setup("slime_view", NULL, 1);
     zox_tst_add("colored_parent", zox_tst_colored_parent_ready, zox_tst_colored_parent_check, 30);
+    zox_tst_add("colored_parent_shell", zox_tst_colored_parent_shell_ready, zox_tst_colored_parent_shell_check, 30);
     zox_tst_set_setup("wfc", NULL, 1);
 }

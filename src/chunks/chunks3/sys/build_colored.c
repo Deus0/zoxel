@@ -437,6 +437,36 @@ void chunk_colors_build_system(iter* it) {
         const byte other = vox_material_table(zox_has(owner, MaterialIDs) ? zox_get(owner, MaterialIDs) : NULL, materials);
         build_voxel_mesh_material(voxels, noctrees, palette, &mesh, ndepth->value, rdepth->value, position, cscale,
             is_split, 1, other ? materials : NULL, zox_block_material_solid);
+        // its see through voxels into its see through child (set_chunk3_parent_colored_materials), with its neighbours
+        if (other) {
+            entity shell = 0;
+            iter it2 = zox_children(world, e);
+            while (zox_children_next(it2)) {
+                for (int j = 0; j < it2.count && !shell; j++) {
+                    shell = zox_has(it2.entities[j], TransparentMesh) ? it2.entities[j] : 0;
+                }
+            }
+            if (zox_valid(shell)) {
+                mesh_colored_build_data shell_mesh = {
+                    .indicies = create_int_array_d(initial_dynamic_array_size),
+                    .vertices = create_float3_array_d(initial_dynamic_array_size),
+                    .colors = create_color_rgb_array_d(initial_dynamic_array_size)
+                };
+                build_voxel_mesh_material(voxels, noctrees, palette, &shell_mesh, ndepth->value, rdepth->value, position,
+                    cscale, is_split, 1, materials, zox_block_material_liquid);
+                MeshIndicies* shell_indicies = zox_get_mut(shell, MeshIndicies);
+                MeshVertices* shell_vertices = zox_get_mut(shell, MeshVertices);
+                MeshColorRGBs* shell_colors = zox_get_mut(shell, MeshColorRGBs);
+                clear_mesh(shell_indicies, shell_vertices, shell_colors);
+                shell_indicies->length = shell_mesh.indicies->size;
+                shell_vertices->length = shell_mesh.vertices->size;
+                shell_colors->length = shell_mesh.colors->size;
+                shell_indicies->value = finalize_arrayd_int(shell_mesh.indicies);
+                shell_vertices->value = finalize_arrayd_float3(shell_mesh.vertices);
+                shell_colors->value = finalize_arrayd_color_rgb(shell_mesh.colors);
+                zox_add(shell, MeshDirty);
+            }
+        }
         zox_unlock_voxel_trees(locked, locked_count);
         indicies->length = mesh.indicies->size;
         vertices->length = mesh.vertices->size;

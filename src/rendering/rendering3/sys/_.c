@@ -70,7 +70,21 @@ void zox_systems_basics3(ecs* world) {
         [in] transforms.TransformMatrix,
         [in] rendering.RenderDisabled,
         [none] rendering.VoxMesh,
+        [none] !rendering.TransparentMesh,
         [none] !rendering3.SkeletonMesh,
+        [none] !core.Initialize,
+    );
+    // see through colored meshes (a multi chunk model's shell): after the solid things, blended
+    zox_render3_system(
+        2,
+        vox_transparent_render_system,
+        [in] rendering.MeshIndicies,
+        [in] rendering.MeshGPULink,
+        [in] rendering.ColorsGPULink,
+        [in] transforms.TransformMatrix,
+        [in] rendering.RenderDisabled,
+        [none] rendering.VoxMesh,
+        [none] rendering.TransparentMesh,
         [none] !core.Initialize,
     );
     // generating bone indexes here

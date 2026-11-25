@@ -119,3 +119,36 @@ void set_vox_lods_materials(ecs* world, entity vox, const byte* ids, int count, 
         }
     }
 }
+
+// gives a colored chunk3 parent (a model bigger than a chunk) its material ids (MaterialIDs, on the parent, its chunks
+//  read them) and each chunk a see through mesh child (VoxMesh, TransparentMesh: drawn after, blended, at its material's
+//  alpha, MaterialLink), filled with the chunk's see through voxels as its solid mesh builds (chunk_colors_build_system)
+void set_chunk3_parent_colored_materials(ecs* world, entity parent, const byte* ids, int count, entity see_through_material) {
+    MaterialIDs material_ids = { 0 };
+    resize_MaterialIDs(&material_ids, count);
+    memcpy(material_ids.value, ids, count);
+    zox_set_ptr(parent, MaterialIDs, material_ids);     // copied in
+    dispose_MaterialIDs(&material_ids);
+    iter it = zox_children(world, parent);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count; i++) {
+            const entity chunk = it.entities[i];
+            if (!zox_has(chunk, Chunk3)) {
+                continue;
+            }
+            const entity mesh = zox_ins(world, prefab_vox_mesh);
+            zox_set_unique_name(mesh, "chunk_see_through");
+            zox_remove(mesh, VoxLodMesh);   // filled by its chunk's build, not a lod's
+            zox_add(mesh, VoxMesh);
+            zox_add(mesh, TransparentMesh);
+            zox_setv(mesh, Position3D, float3_zero);
+            zox_setv(mesh, Rotation3D, float4_identity);
+            zox_setv(mesh, LocalPosition3D, float3_zero);
+            zox_set_parent(world, mesh, chunk);
+            if (zox_valid(see_through_material)) {
+                zox_link(world, mesh, MaterialLink, see_through_material);
+            }
+            zox_add(chunk, BuildMesh);
+        }
+    }
+}
