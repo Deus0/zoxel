@@ -37,6 +37,7 @@ is_profiler="0"         # https://www.flecs.dev/explorer/?host=localhost
 is_fast_dev="0"         # -O3
 is_dev_memory="0"
 is_dev_syntax="0"
+is_build_check="0"      # compile and link without optimization or staging
 is_fonts="0"             # --fonts: freetype font converter (bsh/convert.sh --fonts), not for game builds
 is_run="0"
 logs="0"
@@ -103,6 +104,7 @@ os="${host_os}"
 [[ " $* " == *" --fast_dev "* ]] && is_fast_dev="1"
 [[ " $* " == *" --memory "* ]] && is_dev_memory="1"
 [[ " $* " == *" --syntax "* ]] && is_dev_syntax="1"
+[[ " $* " == *" --check "* ]] && is_build_check="1"
 [[ " $* " == *" --fonts "* ]] && is_fonts="1"
 [[ " $* " == *" --release "* ]] && debug="0"
 [[ " $* " == *" --run "* ]] && is_run="1"
@@ -145,6 +147,8 @@ done
 if [[ -n "${out_name}" ]]; then
     bin_folder="${output_folder}/${out_name}"
     bin_filename="${out_name}"
+elif [[ ${is_build_check} == "1" ]]; then
+    bin_folder="${bin_folder}_check"
 fi
 bin_path="${bin_folder}/${bin_filename}.${output_extension}"
 
@@ -213,8 +217,12 @@ if [[ ${debug} == "1" ]]; then
         cflags+=" -Wall -ggdb3"
     fi
 else
-    # Release Builds
-    cflags+=" -O3 -flto=auto -DNDEBUG"
+    cflags+=" -DNDEBUG"
+    if [[ ${is_build_check} == "1" ]]; then
+        cflags+=" -O0"
+    else
+        cflags+=" -O3 -flto=auto"
+    fi
 fi
 
 if [[ ${native} == "1" ]]; then
@@ -411,6 +419,14 @@ echo "  Compiler : ${compiler}"
 echo "============================================================"
 echo ""
 
+# Build checks need only the executable to verify linking.
+if [[ ${is_build_check} == "1" ]]; then
+    mkdir -p "${bin_folder}"
+    ${compiler} ${cflags} ${sources} -o "${bin_path}" ${includes} ${dflags} ${zox_extra_dflags-} ${libs}
+    echo "+ Completed Build [${bin_path}]"
+    exit 0
+fi
+
 # Setup our build folder
 rm -rf "${bin_folder}"
 mkdir -p "${bin_folder}"
@@ -434,7 +450,7 @@ if [[ ${is_fonts} == "1" ]]; then
     libs+=" $(pkg-config --libs freetype2)"
 fi
 
-# extra defines from the environment, i.e. zox_extra_dflags="-Dnear= -Dfar=" (bsh/lint_builds.sh: windows' macros)
+# extra defines from the environment
 dflags+=" ${zox_extra_dflags-}"
 ${compiler} ${cflags} ${sources} -o "${bin_path}" ${includes} ${dflags} ${libs}
 echo "+ Completed Build [${bin_path}]"

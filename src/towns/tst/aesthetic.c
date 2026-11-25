@@ -3,8 +3,8 @@
 //      wall: along the wall top, the player standing on it, the town to one side, the wild to the other
 //      inside: from the wall's inner edge, over the town and on to the far wall
 //      outside: from its outer edge, out over the land
-//  - each to tst/aesthetic/<shot>.ppm; with --readme bsh/tst.sh converts them to doc/screenshot/<shot>.jpg
-//  - run: bash bsh/tst.sh aesthetic_town --readme (tst.sh adds a far, tall world, 1080p, little fog, no hud or labels, seed 375758414: bright, little water)
+//  - each to tst/town/aesthetic/<shot>.ppm; with --readme bsh/tst.sh converts them to doc/screenshot/<shot>.jpg
+//  - run: bash bsh/tools/view_town.sh --readme (far, tall terrain, 1080p, little fog, no hud or labels, seed 375758414)
 #define zox_tst_aesthetic_shots 3
 const char* zox_tst_aesthetic_names[zox_tst_aesthetic_shots] = { "wall", "inside", "outside" };
 byte zox_tst_aesthetic_stage = 0;
@@ -97,16 +97,17 @@ static inline void zox_tst_aesthetic_wall(ecs* world, int2* middle, int2* out, i
 }
 
 // the camera freed from the player (as free roam does), at eye looking at target
-static inline void zox_tst_aesthetic_camera(ecs* world, float3 eye, float3 target) {
+static inline entity zox_tst_aesthetic_camera(ecs* world, float3 eye, float3 target) {
     const entity camera = zox_get_link(world, dbg_player, CameraLink);
     if (!zox_valid(camera)) {
-        return;
+        return 0;
     }
     if (zox_get_parent(world, camera)) {
         zox_set_parent(world, camera, 0);
     }
     zox_setv(camera, Position3D, eye);
     zox_setv(camera, Rotation3D, camera_look_at(eye, target));
+    return camera;
 }
 
 byte zox_tst_aesthetic_town_ready(ecs* world) {
@@ -167,14 +168,15 @@ void zox_tst_aesthetic_town_check(ecs* world) {
 
 // tst: aesthetic_particles, the readme's particles gif: bursts of colour rising out of the player, see
 //  through, fading (particles3 sys/fade.c), the camera freed in front of the player looking back at them
-//  - after the spawn the land loads a while, then tst/aesthetic/particles.gif (3s at 12 fps); with --readme
+//  - after the spawn the land loads a while, then particles.gif (3s at 12 fps) in the test output; with --readme
 //    bsh/tst.sh shrinks it to doc/gifs/particles.gif
 //  - close: a particle is a vox voxel, a few pixels at more than a couple of metres
-//  - run: bash bsh/tst.sh aesthetic_particles --readme (tst.sh's aesthetic args: 1080p, no hud, the bright seed)
+//  - run: bash bsh/tools/view_particles.sh --readme (1080p, no hud, the bright seed)
 #define zox_tst_aesthetic_particles_seconds 3.0
 #define zox_tst_aesthetic_particles_every 0.5     // seconds between bursts
 int zox_tst_aesthetic_particles_frames = 0;
 int zox_tst_aesthetic_particles_bursts = 0;
+static int zox_tst_aesthetic_particles_settled_frames = 0;
 const color zox_tst_aesthetic_particles_colors[4] = { { 255, 200, 60, 255 }, { 255, 80, 200, 255 }, { 80, 220, 255, 255 },
     { 140, 255, 120, 255 } };
 
@@ -188,20 +190,6 @@ byte zox_tst_aesthetic_particles_ready(ecs* world) {
     }
     zox_tst_waiting = "the aesthetic particles";
     zox_tst_progress(zox_tst_aesthetic_stage * 100 + (int) (zox_current_time - zox_tst_aesthetic_time));
-    // the land around loaded first
-    if (zox_tst_aesthetic_stage == 1) {
-        if (zox_current_time - zox_tst_aesthetic_time < 40) {
-            return 0;
-        }
-        zox_gif_record(zox_tst_path("aesthetic/particles.gif"), 12);
-        zox_tst_aesthetic_stage = 2;
-        zox_tst_aesthetic_time = zox_current_time;
-    }
-    const double t = zox_current_time - zox_tst_aesthetic_time;
-    if (t >= zox_tst_aesthetic_particles_seconds) {
-        zox_tst_aesthetic_particles_frames = zox_gif_stop();
-        return 1;
-    }
     // the camera freed, out in front of the player a little above, looking back at its chest
     const entity character = zox_tst_player_character(world);
     if (!zox_valid(character)) {
@@ -216,7 +204,27 @@ byte zox_tst_aesthetic_particles_ready(ecs* world) {
     const float3 side = float3_normalize((float3) { -forward.z, 0, forward.x });
     const float3 chest = float3_add(body, (float3) { 0, 0.25f, 0 });
     const float3 eye = float3_add(chest, float3_add(float3_scale(forward, 1.5f), float3_add(float3_scale(side, 0.6f), (float3) { 0, 2.0f, 0 })));
-    zox_tst_aesthetic_camera(world, eye, chest);
+    const entity camera = zox_tst_aesthetic_camera(world, eye, chest);
+    if (zox_tst_aesthetic_stage == 1) {
+        zox_tst_waiting = "the particle capture terrain to settle";
+        // Reframing changes the camera's stream point and frustum on subsequent frames.
+        if (!camera || zox_getv(camera, StreamDirty) || zox_getv(camera, StreamDirty2) ||
+            zox_tst_terrain_busy(world, local_terrain)) {
+            zox_tst_aesthetic_particles_settled_frames = 0;
+            return 0;
+        }
+        if (++zox_tst_aesthetic_particles_settled_frames < 5) {
+            return 0;
+        }
+        zox_gif_record(zox_tst_path("./particles.gif"), 12);
+        zox_tst_aesthetic_stage = 2;
+        zox_tst_aesthetic_time = zox_current_time;
+    }
+    const double t = zox_current_time - zox_tst_aesthetic_time;
+    if (t >= zox_tst_aesthetic_particles_seconds) {
+        zox_tst_aesthetic_particles_frames = zox_gif_stop();
+        return 1;
+    }
     // a burst each half second, a colour each, up out of the player's shoulders and falling back
     if (t >= zox_tst_aesthetic_particles_bursts * zox_tst_aesthetic_particles_every) {
         const float offset = ((zox_tst_aesthetic_particles_bursts % 3) - 1) * 0.25f;

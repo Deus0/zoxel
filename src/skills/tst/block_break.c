@@ -89,8 +89,6 @@ static void check_first_break_dispatch(ecs* world, entity chunk, entity mesh, by
         "first dispatch after break [%i] uploaded voxel [%i], displayed faces [%i], local [%i %i %i]",
         break_trial, grid[cell], faces, break_pos.x, break_pos.y, break_pos.z);
 }
-static double break_hit_time;
-
 static void moving_break_setup(void) {
     moving_break_test = 1;
     test_gpu_chunk_dispatched = check_first_break_dispatch;
@@ -156,7 +154,6 @@ static byte block_break_ready(ecs* world) {
             return 1;
         }
         awaiting_first_dispatch = moving_break_test;
-        break_hit_time = zox_current_time;
         damage_terrain_block(world, break_chunk, break_pos, zox_getv(health, StatValue));
         if (moving_break_test) {
             const float width = side * zox_getv(terrain, BlockScale);
@@ -172,10 +169,7 @@ static byte block_break_ready(ecs* world) {
             break_trial, break_trial % 2, break_pos.x, break_pos.y, break_pos.z);
         return 1;
     }
-    // Leave the renderer running normally through the edit and its one-second crack fade.
-    if (moving_break_test && zox_current_time - break_hit_time < 1.25) return 0;
-    // DestroyInTime caps each countdown step at 100 ms. Under load a fading overlay can
-    // outlive one wall-clock second. Inspect the geometry independently of its lifetime.
+    // Inspect the terrain meshes while the separate crack overlay fades.
     const int expected = !(break_trial % 2);
     const int drawn = right_face_drawn(world, right, break_pos, zox_getv(terrain, BlockScale));
     const int remaining = zox_chunks3_gpu_meshing ? punched_faces(world, break_chunk, break_pos) : 0;

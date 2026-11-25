@@ -17,10 +17,17 @@ bash bsh/tst.sh vulkan_clear --vulkan    # the vulkan build (bin/tst_vulkan), on
   rebuilding each other's binary.
 
 - Exit code 0 is a pass. A failed run's log is kept: `tst/<name>_failed_*.log`.
+- `bash bsh/tst.sh lint_builds` checks compilation and linking. On Windows it checks OpenGL and Vulkan.
+  On Linux it checks headless, OpenGL, and Vulkan for each available Linux architecture, plus Windows
+  through MinGW when installed. The Linux runner reports when Vulkan headers are missing.
+- `bash bsh/build.sh zoxel --check --vulkan --out lint_local` uses the release defines with optimization
+  and link-time optimization disabled. It links an executable without staging runtime files.
 - Tests run hidden (`--background`), silent, with software rendering, capped memory and a timeout.
 - tst.sh builds `--debug --logs`. Testing a `--profiler` build with `--nobuild` adds merges (pipeline_syncs fails on it)
 - Tests run on `--tiny` terrain, ones in `medium_tests` (bsh/tst.sh) on `--medium` (far lods to compare), ones in
-  `aesthetic_tests` (the readme's screenshots, to doc/screenshot/ only with --readme, else tst/aesthetic/) far and tall (--vertical 8), little fog, 1080p, seed 375758414 (bright, little water).
+  The on-demand [town screenshots](tools.md#town-screenshots) use far and tall terrain (--vertical 8),
+  little fog, 1080p, and seed 375758414. The [particle GIF](tools.md#particle-gif) shares the
+  capture settings and defaults to tiny terrain. Both captures are excluded from `tst.sh all`.
 - Tests render in software (mesa llvmpipe, offscreen). The egl device is picked by machine: 0 on x86, 2 on the
   arm board. Override it with `zox_tst_egl_device=<n>` ("Invalid EGL device is requested" means a wrong one).
 - Tests use their own settings (defaults, i.e. Block Res 4). To run like real play, copy real ones in:

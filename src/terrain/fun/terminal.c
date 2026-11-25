@@ -39,6 +39,9 @@ void process_arguments_terrain(ecs *world, char* args[], int count) {
             zox_chunks3_gpu_meshing = 0;
             zox_settings_set_by_args("GPU Meshing");
             zox_logv("+ [cpu meshing] chunks meshed on the cpu")
+        } else if (strcmp(args[i], "--flatlands") == 0) {
+            zox_flatlands = 1;
+            zox_log("+ [flatlands] flat terrain")
         } else if (strcmp(args[i], "--tiny") == 0) {
             terrain_lod_far = 3;
             render_distance_y = 3;

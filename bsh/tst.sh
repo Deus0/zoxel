@@ -15,8 +15,7 @@
 #   perf tests (perf_tests below) run alone at far 8 (their measuring scale), in a full run tiny (a smoke run)
 #   --release: an optimised build with the tests in it (bin/tst_release), for performance numbers (perf_fly,
 #     vox_instances_stress): debug builds are -O0, their cpu times are many times a player's
-#   --readme: the aesthetic tests (aesthetic_town) update the readme's screenshots in doc/screenshot/, without it
-#     they stay in tst/aesthetic/ (every full run rewrote them, the same shots a few pixels apart)
+#   --readme: publish aesthetic captures to doc/screenshot/ or doc/gifs/
 #   --keepsaves: saves to the real save folder, tests default to --nosaves (a /tmp folder, deleted after)
 #   --vulkan: the vulkan build (bin/tst_vulkan), on lavapipe (mesa's software vulkan) unless --gpu
 # Tests are added with zox_tst_add in a module's tst folder (see src/_/tst/_.c)
@@ -101,7 +100,7 @@ log_max="${zox_tst_log_max:-20000000}"  # 20MB, a healthy test logs a few KB
 # kill the run when the whole machine's MemAvailable drops below this (in KB)
 mem_floor_kb="${zox_tst_mem_floor:-1000000}"
 # small terrain unless stress testing it, streaming is the heaviest part of a run
-if [[ ${stress} == "0" ]]; then
+if [[ ${stress} == "0" && ( "${name}" != "aesthetic_particles" || ${user_size} == "0" ) ]]; then
     args+=("--tiny")
 fi
 # saves go to /tmp/zoxel_nosaves_<pid> (on windows %TEMP%, the same folder), so test runs don't fill the real save folder
@@ -217,8 +216,7 @@ far_tests=(lod_light_flash)
 perf_tests=(perf_terrain perf_stream perf_fly tables_stream perf_idle)
 # tests that screenshot the world, the hud hidden
 nohud_tests=(sky_clouds head_camera town_view held_item held_block held_view eat_swing)
-# tests that take the readme's screenshots: a far, tall world at 1080p, little fog (to see the mountains), no hud or labels, the same seed (zox_tst_seed
-#   overrides it), more time to stream, their shots converted to doc/screenshot/ after with --readme
+# README captures share framing settings and a seed. The town panorama needs far, tall terrain.
 aesthetic_tests=(aesthetic_town aesthetic_particles)
 # tests that compare pictures across a change: the same world every run (seed 666, zox_tst_seed overrides it), a
 #   random one gave them other weather and effects to differ by
@@ -241,7 +239,10 @@ run_game() {
     local seed_env=()
     [[ " ${seeded_tests[*]} " == *" ${tst} "* ]] && seed_env=(env "zox_tst_seed=${zox_tst_seed:-666}")
     if [[ " ${aesthetic_tests[*]} " == *" ${tst} "* ]]; then
-        test_args+=(--far 16 --vertical 8 --fog 0.025 --1080p --nohud --nouis --tst-timescale 3)
+        test_args+=(--fog 0.025 --1080p --nohud --nouis --tst-timescale 3)
+        if [[ "${tst}" == "aesthetic_town" ]]; then
+            test_args+=(--far 16 --vertical 8)
+        fi
         seed_env=(env "zox_tst_seed=${zox_tst_seed:-375758414}")
         seconds=$(( timeout_seconds > 300 ? timeout_seconds : 300 ))
     fi
@@ -363,7 +364,13 @@ run_game() {
 # the aesthetic tests' shots (tst/aesthetic/*.ppm) to doc/screenshot/*.jpg, half size
 aesthetic_convert() {
     if ! command -v magick > /dev/null; then
-        echo "    !! no magick (imagemagick), the shots stay in tst/aesthetic/"
+        echo "    !! no magick (imagemagick), captures stay in ${log_dir}/"
+        return
+    fi
+    if [[ "$1" == "aesthetic_particles" ]]; then
+        mkdir -p "${root}/doc/gifs"
+        magick "${log_dir}/particles.gif" -coalesce -resize 640x -layers Optimize "${root}/doc/gifs/particles.gif" &&
+            echo "    + doc/gifs/particles.gif"
         return
     fi
     mkdir -p "${root}/doc/screenshot"
@@ -372,14 +379,6 @@ aesthetic_convert() {
         [[ -f "${ppm}" ]] || continue
         local jpg="${root}/doc/screenshot/$(basename "${ppm}" .ppm).jpg"
         magick "${ppm}" -resize 50% -quality 88 "${jpg}" && echo "    + ${jpg#${root}/}"
-    done
-    # gifs (aesthetic_particles) to doc/gifs/, 640 wide, their frames optimised: a readme sized file
-    local gif
-    for gif in "${log_dir}"/aesthetic/*.gif; do
-        [[ -f "${gif}" ]] || continue
-        mkdir -p "${root}/doc/gifs"
-        local out="${root}/doc/gifs/$(basename "${gif}")"
-        magick "${gif}" -coalesce -resize 640x -layers Optimize "${out}" && echo "    + ${out#${root}/}"
     done
 }
 
@@ -411,7 +410,7 @@ run_tst() {
             xargs -r addr2line -f -C -e "${bin}" | paste - - | sed 's/^/    /'
     fi
     if [[ ${code} == "0" && ${readme} == "1" && " ${aesthetic_tests[*]} " == *" ${tst} "* ]]; then
-        aesthetic_convert
+        aesthetic_convert "${tst}"
     fi
     if [[ ${code} == "125" ]]; then
         echo "    !! killed, log passed ${log_max} bytes (log spam)"
@@ -457,7 +456,8 @@ if [[ "${name}" != "all" ]]; then
     fi
     tsts=("${name}")
 else
-    tsts=("${lints[@]}" $(list_tsts))
+    # README captures are run on demand through bsh/tools/view_town.sh and view_particles.sh.
+    tsts=("${lints[@]}" $(list_tsts | grep -vxF -e aesthetic_town -e aesthetic_particles))
 fi
 if [[ ${#tsts[@]} == 0 ]]; then
     echo "!! no tests found, see [tst/list.log]"

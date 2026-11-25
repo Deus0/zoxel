@@ -1,19 +1,14 @@
 #!/usr/bin/env bash
-# Lint: the game compiles in the builds the makefile makes, not just the debug one tests use
-#  - timings (make prerelease, make profiler): timed systems, zox_sys_on_begin uses core's get_time_ms
-#  - release without logs (make build, packages): no names, no log only code
-#  - windows names: windows' headers define near and far as empty macros (minwindef.h), a variable named either
-#    breaks the windows build; a syntax only build with them defined (and the tests) catches one here
-#  - vulkan (build.sh --vulkan): gl calls outside the opengl module don't link there
-#  - each builds into its own bin/lint_<name> (build.sh --out), so it doesn't touch the tests' binary
-#  - run by bash bsh/tst.sh lint_builds (and all), takes a few minutes
+# Compile and link each supported desktop target with the available toolchains.
 cd "$(dirname "$0")/.." || exit 2
+source bsh/host.sh
+source bsh/get-compiler.sh
 failed=0
 builds=0
 check() {
     local name="$1"; shift
     builds=$((builds + 1))
-    if bash bsh/build.sh zoxel "$@" --out "lint_${name}" > "tst/lint_build_${name}.log" 2>&1; then
+    if bash bsh/build.sh zoxel --release --check "$@" --out "lint_${name}" > "tst/lint_build_${name}.log" 2>&1; then
         echo "+ [${name}] builds ($*)"
     else
         failed=$((failed + 1))
@@ -22,16 +17,44 @@ check() {
     fi
 }
 mkdir -p tst
-check prerelease --logs --timings --release
-check release --release
-zox_extra_dflags="-Dnear= -Dfar= -Dzox_tests" check windows_names --syntax
-# vulkan: raw gl outside src/graphics/opengl breaks it (its link has no gl), where the headers are (vulkan-headers)
-if [[ -f /usr/include/vulkan/vulkan.h ]]; then
-    check vulkan --vulkan --release
+if [[ ${host_os} == "windows" ]]; then
+    check windows_opengl --windows --opengl
+    check windows_vulkan --windows --vulkan
+else
+    case "$(uname -m)" in
+        x86_64) host_arch=x64 ;;
+        aarch64) host_arch=arm ;;
+        *) echo "!! unsupported architecture: $(uname -m)"; exit 2 ;;
+    esac
+    for arch in x64 arm; do
+        compiler=$(get_compiler "${host_arch}" "${arch}" linux)
+        if ! command -v "${compiler}" > /dev/null 2>&1; then
+            echo "- [linux_${arch}] skipped, missing ${compiler}"
+            continue
+        fi
+        check "linux_${arch}_headless" --linux "--${arch}" --headless
+        check "linux_${arch}_opengl" --linux "--${arch}" --opengl
+        if printf '#include <vulkan/vulkan.h>\n#include <shaderc/shaderc.h>\n' | "${compiler}" -E -x c - > /dev/null 2>&1; then
+            check "linux_${arch}_vulkan" --linux "--${arch}" --vulkan
+        else
+            echo "- [linux_${arch}_vulkan] skipped, missing Vulkan or shaderc headers"
+        fi
+    done
+    if command -v x86_64-w64-mingw32-gcc > /dev/null 2>&1 &&
+       command -v x86_64-w64-mingw32-g++ > /dev/null 2>&1; then
+        check windows_opengl --windows --x64 --opengl
+        if [[ -f ext/vulkan_windows/mingw64/include/vulkan/vulkan.h ]]; then
+            check windows_vulkan --windows --x64 --vulkan
+        else
+            echo "- [windows_vulkan] skipped, missing Windows Vulkan SDK files"
+        fi
+    else
+        echo "- [windows] skipped, missing MinGW x64 toolchain"
+    fi
 fi
-# the windows build itself, where its cross compiler is installed (mingw)
-if command -v x86_64-w64-mingw32-gcc > /dev/null 2>&1; then
-    check windows --windows --release
+if [[ ${builds} == 0 ]]; then
+    echo "[tst] [lint_builds] FAILED, no supported build toolchains found"
+    exit 1
 fi
 echo "[tst] [lint_builds] $([[ ${failed} == 0 ]] && echo PASSED || echo FAILED) [${builds}] builds, [${failed}] failed"
 [[ ${failed} == 0 ]]

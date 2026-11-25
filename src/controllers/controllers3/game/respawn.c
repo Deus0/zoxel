@@ -94,7 +94,7 @@ void player3_respawn_system(iter* it) {
                     },
                     0.2f,
                     6,
-                    15);
+                    8);
                 if (dbg_log) {
                     zox_log("Player Respawned at [%fx%fx%f]",
                         spawned.x,

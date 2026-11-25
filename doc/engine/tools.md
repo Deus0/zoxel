@@ -39,6 +39,20 @@ right and z down from the regions' low corner, in `tst/maps/`:
 - Game flags: `--maps`, `--maps-chunks`, `--maps-seed <n>`, `--maps-out <folder>` ([commands.md](commands.md)).
 - Code: [towns/dbg/maps_dump.c](../src/towns/dbg/maps_dump.c).
 
+## Town screenshots
+
+`bash bsh/tools/view_town.sh` captures the wall, the town interior, and the surrounding
+landscape in `tst/town/aesthetic/`. Pass `--readme` to publish resized screenshots to
+`doc/screenshot/` with ImageMagick.
+
+## Particle GIF
+
+`bash bsh/tools/view_particles.sh` records the colored bursts over the player and saves
+`tst/particles/particles.gif`. The capture uses tiny, flat terrain with UI and NPCs disabled.
+Pass `--readme` to resize and publish it to
+`doc/gifs/particles.gif` with ImageMagick. The capture uses its own build and logs through the
+test runner. `tst.sh all` runs `spawn_particles` for particle behavior coverage.
+
 ## Still in bsh, to move here
 
 These look at the game through the test harness (they run a `*_views` test): [todo.md](../todo.md) has moving them.
