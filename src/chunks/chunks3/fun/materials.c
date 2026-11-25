@@ -75,13 +75,42 @@ static inline void chunk_meshes_stop_building(ecs* world, entity chunk) {
     }
 }
 
-// the faces drawn at a voxel, of any of the chunk's materials (a bit per direction, as SidesOctree)
+// the faces showing at a voxel of a chunk at depth, a bit per direction (1 << (direction + 1)), by the meshes' rule
+//  (sys/build_grid.c): beside a voxel that doesn't hide it (block_material_hides), across into its neighbour chunks,
+//  into a missing one only its top; 0 for air. Worked out from the voxels, so it holds with gpu meshing too (the raycast
+//  gizmo outlined nothing there: no SidesOctree was built for gpu meshed chunks)
 static inline byte get_chunk_sides(ecs* world, entity chunk, byte depth, byte3 position) {
-    entity materials[zox_block_materials];
-    const uint count = get_chunk_materials(world, chunk, materials);
+    if (!zox_valid(chunk) || !zox_has(chunk, VoxelNode)) {
+        return 0;
+    }
+    byte materials[256];
+    get_block_materials(world, zox_get_link(world, chunk, BlockManagerLink), materials);
+    spinlock* lock = &(zox_mut(chunk, VoxelNodeLock)->value);
+    spin_lock(lock);
+    const byte voxel = getv_VoxelNode(zox_get(chunk, VoxelNode), depth, position);
+    spin_unlock(lock);
+    if (!voxel || materials[voxel] == zox_block_material_none) {
+        return 0;
+    }
+    const int length = octree_size(depth);
+    const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
     byte sides = 0;
-    for (uint i = 0; i < count; i++) {
-        sides |= getv_SidesOctree(zox_get(materials[i], SidesOctree), depth, position);
+    for (byte d = 0; d < 6; d++) {
+        int3 n = move_position(byte3_to_int3(position), d);
+        entity holder = chunk;
+        if (n.x < 0 || n.y < 0 || n.z < 0 || n.x >= length || n.y >= length || n.z >= length) {
+            holder = neighbors->value[d];
+            if (!zox_valid(holder) || !zox_has(holder, VoxelNode)) {
+                sides |= (d == direction_up) << (d + 1);
+                continue;
+            }
+            n = (int3) { (n.x + length) % length, (n.y + length) % length, (n.z + length) % length };
+        }
+        spinlock* holder_lock = &(zox_mut(holder, VoxelNodeLock)->value);
+        spin_lock(holder_lock);
+        const byte other = getv_VoxelNode(zox_get(holder, VoxelNode), depth, (byte3) { n.x, n.y, n.z });
+        spin_unlock(holder_lock);
+        sides |= !(other && block_material_hides(materials[other], materials[voxel])) << (d + 1);
     }
     return sides;
 }

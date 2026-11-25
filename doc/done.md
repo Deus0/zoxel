@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-25
+-x The raycast gizmo (the outline of the block looked at) outlined nothing with gpu meshing (Windows OpenGL play
+  test): its faces came from SidesOctree, never built for gpu meshed chunks (nor with grid meshing now). They're worked
+  out from the voxels by the meshes' rule (get_chunk_sides). tst block_sides, cpu and gpu meshing
 -x CPU terrain meshing from a voxel grid, no SidesOctree built (zox_chunks3_grid_meshing, --sides_meshing the old
   way): the mesh and its smooth lights read one grid (the chunk and its neighbours' borders at the depths they draw,
   sys/build_grid.c), faces by the gpu mesher's rule, in one order. perf_terrain far 8 debug: load 11.1s to 6.8s, stream
