@@ -1,5 +1,5 @@
-// tst: vox_mesh_grid, a vox's mesh from its pyramid (build_voxel_mesh_grid) is the same mesh as from its octree
-//  (build_voxel_mesh_c): the same faces, positions and ao colors, in the same order
+// tst: vox_mesh_grid, a vox's mesh read from its pyramid is the same mesh as read from its octree (build_voxel_mesh's
+//  two lookups, one walk): the same faces, positions and ao colors, in the same order
 //  - a ball of voxels in 3 colors with holes in it, reduced so solid areas are big nodes
 //  - every lod: lower lods have nodes with children at their depth, solid on a side only if all children are
 //  - split (models) and not split (npc skeletons: uniform nodes are one big voxel)
@@ -47,14 +47,10 @@ static void zox_tst_vox_mesh_dispose(mesh_colored_build_data* mesh) {
 static void zox_tst_vox_mesh_grid_compare(const VoxelNode* vox, const ColorRGBs* colors, byte node_depth, byte depth, byte is_split) {
     const float scale = 2.0f;
     const float3 offset = (float3) { -1, -1, -1 };
-    const VoxelNode* noctrees[6] = { 0 };
-    const byte nrdepths[6] = { 0 };
     mesh_colored_build_data octree_mesh = zox_tst_vox_mesh_new();
-    build_voxel_mesh_c(vox, vox, noctrees, nrdepths, colors, &octree_mesh,
-        depth, 0, byte3_zero, offset, scale, is_split);
+    build_voxel_mesh(vox, NULL, colors, &octree_mesh, node_depth, depth, offset, scale, is_split, 0);
     mesh_colored_build_data grid_mesh = zox_tst_vox_mesh_new();
-    const byte built = build_voxel_mesh_grid(vox, colors, &grid_mesh, node_depth, depth, offset, scale, is_split);
-    zox_tst_check(built, "depth [%i] split [%i]: the grid didn't build", depth, is_split);
+    build_voxel_mesh(vox, NULL, colors, &grid_mesh, node_depth, depth, offset, scale, is_split, 1);
     int octree_count, grid_count;
     zox_tst_vox_face* octree_faces = zox_tst_vox_faces(&octree_mesh, &octree_count);
     zox_tst_vox_face* grid_faces = zox_tst_vox_faces(&grid_mesh, &grid_count);

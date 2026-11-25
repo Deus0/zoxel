@@ -166,7 +166,15 @@ Left of phase 2:
   perf_terrain before and after (the waits held seams back, chunk_mesh_flicker and stream_seams must stay clean).
 - The tag's name: it means "rebuild against the neighbours" now.
 
-Next: Phase 1 (one face table, writer, walk; tst mesher_walk), then Phase 3 (vox models shaped as terrain chunks).
+Phase 1:
+- 1 done (eb5d10b5d): one face table, voxel_face_vertices_v2 gone.
+- 2 done (1ecb7afc8): one face writer, mesh_add_face (fun/faces.c), both meshers add their uvs or colours after.
+- 3 done: one colored walk, build_voxel_mesh (sys/build_colored.c): one dig, its neighbours read through one lookup,
+  the pyramid (models up to 128³, an array read) or the octree (deeper), neighbour chunks' trees past the border either
+  way. A model with no neighbour chunks takes the pyramid's own face step (through the lookup it was 10% slower).
+  Release, 32³: the pyramid 0.90ms (as before), the walk 4.07ms (4.35 before).
+
+Then Phase 3 (vox models shaped as terrain chunks).
 
 ## Results
 

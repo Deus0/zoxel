@@ -3,8 +3,8 @@
 //  - terrain: a chunk (terrain_depth, 16³) of hills, three blocks and caves, with its 6 neighbours, meshed at each lod
 //      (16³ down to 1³ voxels) from its voxel grid (sys/build_grid.c): the grid filled (prepare), its faces written;
 //      it replaced SidesOctree (2026-11-25: the same faces, 2.5x a world's speed, doc/results.md)
-//  - models: a ball (32³) of 3 colours with holes, at each lod, both colored walkers: the pyramid grid
-//      (build_voxel_mesh_grid) and the octree walk (build_voxel_mesh_c)
+//  - models: a ball (32³) of 3 colours with holes, at each lod, the colored walk (build_voxel_mesh) reading its
+//      neighbours from the pyramid (models up to 128³) and from the octree (deeper ones)
 //  - each the fastest of 5 rounds of a few builds (the least disturbed by the rest of the machine), in ms a mesh;
 //    repeat runs agree within 1%. Face counts are checked: a mesher change drawing other faces fails until updated
 //  - a world: a stream's chunks at each lod (the default far 16's circle), each lod's time by its count: what meshing
@@ -194,8 +194,6 @@ static int zox_tst_pm_textured(zox_tst_pm_terrain_world* w, const VoxelNode* chu
 
 // colored at one lod, one walker: ms a mesh (the fastest round), its faces
 static int zox_tst_pm_colored(const VoxelNode* model, const ColorRGBs* colors, byte depth, byte target, byte pyramid, double* ms) {
-    const VoxelNode* noctrees[6] = { 0 };
-    const byte nrdepths[6] = { 0 };
     const int builds = target >= 5 ? 5 : 20;
     int faces = 0;
     *ms = -1;
@@ -208,11 +206,7 @@ static int zox_tst_pm_colored(const VoxelNode* model, const ColorRGBs* colors, b
                 .colors = create_color_rgb_array_d(initial_dynamic_array_size)
             };
             const double begin = get_time_ms();
-            if (pyramid) {
-                build_voxel_mesh_grid(model, colors, &mesh, depth, target, float3_zero, 1.0f, 1);
-            } else {
-                build_voxel_mesh_c(model, model, noctrees, nrdepths, colors, &mesh, target, 0, byte3_zero, float3_zero, 1.0f, 1);
-            }
+            build_voxel_mesh(model, NULL, colors, &mesh, depth, target, float3_zero, 1.0f, 1, pyramid);
             total += get_time_ms() - begin;
             faces = mesh.vertices->size / 4;
             dispose_int_array_d(mesh.indicies);

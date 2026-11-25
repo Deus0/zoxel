@@ -65,7 +65,6 @@ byte build_vox_mesh_at_depth(
     }
     byte is_split = !zox_has(vox, NoSplitChunk);
     const VoxelNode* noctrees[6] = { 0 };
-    const byte nrdepths[6] = { 0 };
     // NOTE: Same space for all lods, positions are based on the max depth vox
     ushort vlength = octree_size(node_depth);
     float3 bounds = calculate_vox_bounds(chunk_size, block_scale);
@@ -80,28 +79,7 @@ byte build_vox_mesh_at_depth(
     // the vox's octree locked while walked, its writers can run alongside (thread_safety.md)
     spinlock* vlock = zox_octree_lock(world, vox);
     zox_octree_lock_begin(vlock);
-    if (!build_voxel_mesh_grid(
-        voxels,
-        vcolors,
-        &mesh,
-        node_depth,
-        target_depth,
-        position,
-        cscale,
-        is_split))
-    build_voxel_mesh_c(
-        voxels,
-        voxels,
-        noctrees,
-        nrdepths,
-        vcolors,
-        &mesh,
-        target_depth,
-        0,
-        byte3_zero,
-        position,
-        cscale,
-        is_split);
+    build_voxel_mesh(voxels, noctrees, vcolors, &mesh, node_depth, target_depth, position, cscale, is_split, 1);
     zox_octree_lock_end(vlock);
     indicies->length = mesh.indicies->size;
     vertices->length = mesh.vertices->size;
