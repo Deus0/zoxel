@@ -26,6 +26,10 @@ void process_arguments_terrain(ecs *world, char* args[], int count) {
             zox_chunks3_gpu_meshing = 1;
             zox_settings_set_by_args("GPU Meshing");
             zox_logv("+ [gpu meshing] chunks meshed on the gpu")
+        } else if (strcmp(args[i], "--sides_meshing") == 0) {
+            // cpu meshing the old way: SidesOctree built first, not the voxel grid (to compare, chunks_refactor.md)
+            zox_chunks3_grid_meshing = 0;
+            zox_logv("+ [sides meshing] cpu meshes from SidesOctree")
         } else if (strcmp(args[i], "--cpu_meshing") == 0) {
             // chunk meshes built on the cpu (vulkan meshes on the gpu by default)
             zox_chunks3_gpu_meshing = 0;

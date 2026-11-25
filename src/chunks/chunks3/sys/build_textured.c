@@ -193,6 +193,8 @@ static inline void zox_terrain_building_dig(
     }
 }
 
+#include "build_grid.c"
+
 // TODO: Cache Multiple Voxel Managers, not just single
 // NOTE: Rebuilds Chunk when BuildChunkMesh is dirty
 void chunk_textured_build_system(iter* it) {
@@ -205,6 +207,13 @@ void chunk_textured_build_system(iter* it) {
     memset(heights, 0, 255);
     entity tilemap_cache = 0;
     const TilemapUVs* tilemap_uvs = NULL;
+    // grid meshing: the block materials table, a material's drawn and hiding voxels, the grid's buffer, this run's
+    byte block_materials[256];
+    byte grid_drawn[256], grid_hides[256];
+    entity grid_manager = 0;
+    byte grid_material = 255;
+    byte* grid_buffer = NULL;
+    size_t grid_buffer_size = 0;
     zox_sys_on_begin();
     zox_sys_world();
     zox_sys_begin();
@@ -370,16 +379,34 @@ void chunk_textured_build_system(iter* it) {
             .heights = heights,
             .mesh_data = &mesh_data,
         };
-        zox_terrain_building_dig(
-            data,
-            voxels_lock,
-            sides,
-            voxels,
-            byte3_zero,
-            chunk_scale,
-            depth->value,
-            0,
-            dbg_log);
+        if (zox_chunks3_grid_meshing) {
+            const byte block_material = zox_has(material, BlockMaterial) ? zox_getv(material, BlockMaterial) : zox_block_material_solid;
+            if (grid_manager != blocks_parent || grid_material != block_material) {
+                if (grid_manager != blocks_parent) {
+                    get_block_materials(world, blocks_parent, block_materials);
+                }
+                grid_manager = blocks_parent;
+                grid_material = block_material;
+                voxel_grid_material(block_materials, block_material, grid_drawn, grid_hides);
+            }
+            grid_buffer = voxel_grid_buffer(grid_buffer, &grid_buffer_size, depth->value);
+            if (grid_buffer) {
+                voxel_grid grid;
+                chunk_voxel_grid(world, chunk, depth->value, grid_hides, grid_buffer, &grid);
+                build_textured_grid(&grid, data, depth->value, chunk_scale, grid_drawn, grid_hides);
+            }
+        } else {
+            zox_terrain_building_dig(
+                data,
+                voxels_lock,
+                sides,
+                voxels,
+                byte3_zero,
+                chunk_scale,
+                depth->value,
+                0,
+                dbg_log);
+        }
 #ifdef zox_tests
         if (zox_test_capture_mesh_border && zox_has(e, TestMeshBorder)) {
             capture_test_mesh_border(world, e, voxels, voxels_lock, depth->value);
@@ -417,5 +444,6 @@ void chunk_textured_build_system(iter* it) {
         }
         zox_sys_increment();
     }
+    free(grid_buffer);
     zox_sys_on_end();
 } zoxd_system(chunk_textured_build_system);

@@ -22,6 +22,11 @@ byte zox_chunks3_gpu_meshing = 1;
 byte zox_chunks3_gpu_meshing = 0;
 #endif
 
+// cpu meshing from a voxel grid of the chunk and its neighbours' borders (sys/build_grid.c), faces by the gpu mesher's
+//  rule: 2.5x a world's meshing in release; 0 builds SidesOctree first (the old way, --sides_meshing), lights the same
+//  way (doc/plans/chunks_refactor.md phase 2)
+byte zox_chunks3_grid_meshing = 1;
+
 // is a chunk material's mesh meshed on the gpu: its solid blocks, with gpu meshing on (water stays on the cpu)
 static inline byte chunk_material_gpu(byte block_material) {
     return zox_chunks3_gpu_meshing && block_material == zox_block_material_solid;

@@ -70,3 +70,18 @@ lod border on every side (the worst case). Models are a 32³ ball, both walkers.
 - A textured chunk's sides (`build_sides_dig`) are 80 to 90% of its cpu cost: the grid replaces them (plan phase 2)
 - 78% of a far 16 world's chunks are 4³ or smaller: the lower lods are most of the meshing
 - The colored pyramid grid is 4 to 5 times the octree walk at full detail: the walk to keep is the grid's
+
+## Grid meshing in the game, perf_terrain (2026-11-25)
+`bash bsh/tst.sh perf_terrain --gpu` (far 8, debug, cpu meshing, the 780M), the grid (now) against `--sides_meshing`:
+
+| | Sides | Grid |
+|---|---|---|
+| load settles | 11.12s | 6.82s |
+| load fps average (1% low) | 23.1 (9.5) | 27.5 (9.6) |
+| stream steps settle, average (slowest) | 8.60s (9.99s) | 7.01s (7.78s) |
+| stream fps average (1% low) | 24.8 (13.8) | 33.0 (13.1) |
+| stream frames under 30 fps | 683 of 936 | 311 of 921 |
+| idle fps average (1% low) | 117.5 (102.3) | 119.8 (96.9) |
+
+stream_seams (36910 borders, 7022 between lods), chunk_mesh_flicker, lod_light_flash: no seams, blanks or flashes
+either way.

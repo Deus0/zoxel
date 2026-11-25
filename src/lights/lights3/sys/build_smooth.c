@@ -288,6 +288,13 @@ void build_smooth_lights_system(iter* it) {
     byte solidity[zox_light_solidity_length];
     memset(solidity, 1, zox_light_solidity_length);
     entity realm = 0;
+    // grid meshing: the faces from the voxel grid the mesh was built from (build_grid.c), in its order
+    byte block_materials[256];
+    byte grid_drawn[256], grid_hides[256];
+    entity grid_manager = 0;
+    byte grid_material = 255;
+    byte* grid_buffer = NULL;
+    size_t grid_buffer_size = 0;
     zox_sys_in(RenderDepth);
     zox_sys_in(MeshColorRGBs);
     for (int i = 0; i < it->count; i++) {
@@ -357,22 +364,67 @@ void build_smooth_lights_system(iter* it) {
         uint ccount = 0;
         smooth_grid grid = { 0 };
         const byte has_grid = smooth_grid_fill(&grid, lights, lights_locks, voxels, voxels_locks, depth->value);
-        spin_lock(&sides_lock->value);
-        zox_apply_smooth_lights(
-            has_grid ? &grid : NULL,
-            lights_locks,
-            voxels_locks,
-            lights,
-            voxels,
-            solidity,
-            voxels[OCTREE_INDEX(0, 0, 0)],
-            sides,
-            colors,
-            byte3_zero,
-            &ccount,
-            depth->value,
-            0);
-        spin_unlock(&sides_lock->value);
+        if (zox_chunks3_grid_meshing) {
+            const entity manager = zox_get_link(world, chunk, BlockManagerLink);
+            const byte block_material = zox_has(material, BlockMaterial) ? zox_getv(material, BlockMaterial) : zox_block_material_solid;
+            if (grid_manager != manager || grid_material != block_material) {
+                if (grid_manager != manager) {
+                    get_block_materials(world, manager, block_materials);
+                }
+                grid_manager = manager;
+                grid_material = block_material;
+                voxel_grid_material(block_materials, block_material, grid_drawn, grid_hides);
+            }
+            grid_buffer = voxel_grid_buffer(grid_buffer, &grid_buffer_size, depth->value);
+            if (grid_buffer) {
+                voxel_grid faces;
+                chunk_voxel_grid(world, chunk, depth->value, grid_hides, grid_buffer, &faces);
+                const int size = octree_size(depth->value);
+                for (int x = 0; x < size && ccount <= colors->length; x++) for (int y = 0; y < size; y++) {
+                    int c = voxel_grid_index(faces.length, x, y, 0);
+                    for (int z = 0; z < size; z++, c++) {
+                        const byte shows = voxel_grid_shows(&faces, size, c, x, y, z, grid_drawn, grid_hides);
+                        for (byte d = 0; d < 6 && shows; d++) {
+                            if (!((shows >> d) & 1)) {
+                                continue;
+                            }
+                            if (ccount + voxel_face_vertices_length > colors->length) {
+                                // more faces than the mesh has: it's older than the voxels (rebuilt below)
+                                ccount = colors->length + 1;
+                                break;
+                            }
+                            const byte3 position = (byte3) { x, y, z };
+                            byte vertex_lights[4];
+                            if (has_grid) {
+                                smooth_face_lights_grid(&grid, solidity, position, d, vertex_lights);
+                            } else {
+                                smooth_face_lights(lights, lights_locks, voxels, voxels_locks, solidity, position, depth->value, d, vertex_lights);
+                            }
+                            for (byte v = 0; v < voxel_face_vertices_length; v++) {
+                                colors->value[ccount++] = (color_rgb) { vertex_lights[v], vertex_lights[v], vertex_lights[v] };
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            spin_lock(&sides_lock->value);
+            zox_apply_smooth_lights(
+                has_grid ? &grid : NULL,
+                lights_locks,
+                voxels_locks,
+                lights,
+                voxels,
+                solidity,
+                voxels[OCTREE_INDEX(0, 0, 0)],
+                sides,
+                colors,
+                byte3_zero,
+                &ccount,
+                depth->value,
+                0);
+            spin_unlock(&sides_lock->value);
+        }
         free(grid.lights);
         zox_remove(e, BuildMeshColors);
         if (ccount > colors->length) {
@@ -388,5 +440,6 @@ void build_smooth_lights_system(iter* it) {
         }*/
         zox_sys_increment();
     }
+    free(grid_buffer);
     zox_sys_on_end();
 } zoxd_system(build_smooth_lights_system);

@@ -1,5 +1,5 @@
-// A textured chunk mesh from a voxel grid, no SidesOctree (doc/plans/chunks_refactor.md, phase 2): being measured
-//  against the sides mesher (tst perf_meshing), not used by the game yet
+// A textured chunk mesh from a voxel grid, no SidesOctree (doc/plans/chunks_refactor.md, phase 2): the game's cpu
+//  meshing (zox_chunks3_grid_meshing, --sides_meshing for the old way), measured against sides (tst perf_meshing)
 //  - the grid: the chunk's voxels at the mesh's depth as bytes, a voxel of border from its 6 neighbours, each at the
 //    depth it draws (as sides read them: chunk_side_depth)
 //  - which faces show is the gpu mesher's rule (fun/gpu_mesh.c face_shows, gpu_mesh_grid_faces): a voxel of the mesh's
@@ -89,6 +89,80 @@ static inline void voxel_grid_fill(voxel_grid* grid, byte* buffer, const VoxelNo
     }
 }
 
+// which voxels a material's mesh draws and which hide its faces (block_material_hides), by voxel value, from a block
+//  materials table (get_block_materials)
+static inline void voxel_grid_material(const byte* materials, byte material, byte* drawn, byte* hides) {
+    for (int v = 0; v < 256; v++) {
+        drawn[v] = v && materials[v] == material;
+        hides[v] = v && block_material_hides(materials[v], material);
+    }
+}
+
+// the faces a grid voxel shows, a bit a direction, 0 if its mesh doesn't draw it: beside a voxel that doesn't hide
+//  it, into a missing chunk only its top; i its cell (voxel_grid_index)
+static inline byte voxel_grid_shows(const voxel_grid* grid, int size, int i, int x, int y, int z, const byte* drawn,
+    const byte* hides)
+{
+    const byte* voxels = grid->voxels;
+    const byte voxel = voxels[i];
+    if (!voxel || !drawn[voxel]) {
+        return 0;
+    }
+    // a neighbour's cell from a voxel's, by direction (left, right, down, up, back, front)
+    const int length = grid->length;
+    const int step[6] = { -length * length, length * length, -length, length, -1, 1 };
+    byte shows = 0;
+    for (byte d = 0; d < 6; d++) {
+        shows |= !hides[voxels[i + step[d]]] << d;
+    }
+    if (x == 0 || y == 0 || z == 0 || x == size - 1 || y == size - 1 || z == size - 1) {
+        const byte edge[6] = { x == 0, x == size - 1, y == 0, y == size - 1, z == 0, z == size - 1 };
+        for (byte d = 0; d < 6; d++) {
+            if (edge[d] && !grid->present[d]) {
+                shows = (shows & ~(1 << d)) | ((d == direction_up) << d);
+            }
+        }
+    }
+    return shows;
+}
+
+// a chunk's grid at depth for a material's mesh (hides: voxel_grid_material): its 6 neighbours at the depths they draw
+//  (chunk_side_depth, open while unsettled), every tree locked while it's read (zox_lock_voxel_trees); buffer is the
+//  system's, voxel_grid_cells(depth) big
+static inline void chunk_voxel_grid(ecs* world, entity chunk, byte depth, const byte* hides, byte* buffer, voxel_grid* grid) {
+    const ChunkNeighbors* neighbors = zox_get(chunk, ChunkNeighbors);
+    const VoxelNode* neighbor_voxels[6];
+    spinlock* neighbor_locks[6];
+    byte neighbor_depths[6];
+    for (byte j = 0; j < 6; j++) {
+        const entity neighbor = neighbors->value[j];
+        neighbor_voxels[j] = NULL;
+        neighbor_locks[j] = NULL;
+        neighbor_depths[j] = 0;
+        if (!zox_valid(neighbor) || !zox_has(neighbor, VoxelNode) || !zox_has(neighbor, NodeDepth)) {
+            continue;
+        }
+        neighbor_depths[j] = chunk_side_depth(world, neighbor);
+        neighbor_voxels[j] = zox_get(neighbor, VoxelNode);
+        neighbor_locks[j] = &(zox_mut(neighbor, VoxelNodeLock)->value);
+    }
+    spinlock* locked[7];
+    const byte locked_count = zox_lock_voxel_trees(&(zox_mut(chunk, VoxelNodeLock)->value), neighbor_locks, locked);
+    voxel_grid_fill(grid, buffer, zox_get(chunk, VoxelNode), neighbor_voxels, neighbor_depths, depth, hides);
+    zox_unlock_voxel_trees(locked, locked_count);
+}
+
+// a system's grid buffer grown to fit depth (it keeps one for its run, freed at its end)
+static inline byte* voxel_grid_buffer(byte* buffer, size_t* size, byte depth) {
+    const size_t cells = voxel_grid_cells(depth);
+    if (*size < cells) {
+        free(buffer);
+        buffer = malloc(cells);
+        *size = buffer ? cells : 0;
+    }
+    return buffer;
+}
+
 // the faces of a material from a filled grid, into data's mesh: drawn[v] is 1 for the material's voxels, hides[v] for
 //  the voxels hiding its faces (0 air); scale is the chunk's size, as build_textured.c's chunk_scale
 static inline void build_textured_grid(const voxel_grid* grid, terrain_build_data data, byte depth, float scale,
@@ -97,33 +171,14 @@ static inline void build_textured_grid(const voxel_grid* grid, terrain_build_dat
     const int size = octree_size(depth);
     const int length = grid->length;
     const float voxel_scale = scale / size;
-    // a neighbour's cell from a voxel's, by direction (left, right, down, up, back, front)
-    const int step[6] = { -length * length, length * length, -length, length, -1, 1 };
-    const byte* voxels = grid->voxels;
     for (int x = 0; x < size; x++) for (int y = 0; y < size; y++) {
         int i = voxel_grid_index(length, x, y, 0);
         for (int z = 0; z < size; z++, i++) {
-            const byte voxel = voxels[i];
-            if (!voxel || !drawn[voxel]) {
-                continue;
-            }
-            byte shows = 0;
-            for (byte d = 0; d < 6; d++) {
-                shows |= !hides[voxels[i + step[d]]] << d;
-            }
-            // into a missing chunk only its top, as sides
-            if (x == 0 || y == 0 || z == 0 || x == size - 1 || y == size - 1 || z == size - 1) {
-                const byte edge[6] = { x == 0, x == size - 1, y == 0, y == size - 1, z == 0, z == size - 1 };
-                for (byte d = 0; d < 6; d++) {
-                    if (edge[d] && !grid->present[d]) {
-                        shows = (shows & ~(1 << d)) | ((d == direction_up) << d);
-                    }
-                }
-            }
+            const byte shows = voxel_grid_shows(grid, size, i, x, y, z, drawn, hides);
             if (!shows) {
                 continue;
             }
-            const byte block = voxel - 1;
+            const byte block = grid->voxels[i] - 1;
             const float3 positionf = (float3) { x * voxel_scale, y * voxel_scale, z * voxel_scale };
             const byte eighths = data.heights[block];
             const byte lowered = eighths && ((shows >> direction_up) & 1);

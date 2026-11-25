@@ -150,5 +150,9 @@ rebuilt its own reference of a rule: by stream_seams and the cpu against gpu tes
 
 ## Results
 
+- Phase 2, 1 to 3 (2026-11-25): the game meshes and lights cpu terrain from the grid (zox_chunks3_grid_meshing,
+  `--sides_meshing` the old way); sides aren't built, chunk_sides_system only triggers rebuilds. perf_terrain far 8
+  debug: load 11.1s to 6.8s, stream steps 8.6s to 7.0s (doc/results.md). Next: remove SidesOctree and its system.
+
 - Baseline (2026-11-25): doc/results.md, Meshing speed. A textured chunk's sides are ~85% of its cpu cost; the
   colored pyramid grid is 4 to 5 times the octree walk at full detail.

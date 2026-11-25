@@ -1,6 +1,11 @@
 # Done
 
 ## 2026-11-25
+-x CPU terrain meshing from a voxel grid, no SidesOctree built (zox_chunks3_grid_meshing, --sides_meshing the old
+  way): the mesh and its smooth lights read one grid (the chunk and its neighbours' borders at the depths they draw,
+  sys/build_grid.c), faces by the gpu mesher's rule, in one order. perf_terrain far 8 debug: load 11.1s to 6.8s, stream
+  steps 8.6s to 7.0s, streaming fps 24.8 to 33.0. stream_seams, chunk_mesh_flicker, lod_light_flash: no seams or
+  flashes either way
 -x tst perf_meshing: both cpu meshers timed on the same voxels every run (a 16³ terrain chunk with neighbours, sides
   and mesh apart; a 32³ model, both walkers), each lod, its faces checked; baseline in doc/results.md. Sides are ~85%
   of a textured chunk's cpu cost
