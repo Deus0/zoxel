@@ -10,7 +10,7 @@ entity spawn_prefab_particle2(ecs* world) {
     zox_set(e, Acceleration2D, {{ 0, 0 }});
     zox_set(e, Torque2D, { 0 });
     zox_set(e, Bounds2D, { { 0, 0 } });
-    zox_add(e, Brightness);
-    zox_add(e, DestroyInTime);
+    zox_set(e, Brightness, { 1 });
+    zox_set(e, DestroyInTime, { 0 });
     return e;
 }
