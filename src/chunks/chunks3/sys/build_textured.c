@@ -50,8 +50,7 @@ typedef struct {
     byte whole_texture;     // a liquid's mesh: each face its own texture's whole, not a tilemap tile
 } terrain_build_data;
 
-// this takes 14ms on a 24core cpu, 6ms though during streaming
-// scales vertex, offsets vertex by voxel position in chunk, adds total mesh offset
+// a face with its uvs (a tilemap tile's 4, or a texture's whole), white till smooth lights colour it
 static inline void zox_build_voxel_face(
     const mesh_uvs_build_data* mesh,
     const int* face_indicies,
@@ -60,29 +59,10 @@ static inline void zox_build_voxel_face(
     float3 position,
     float3 scale)
 {
-#ifdef zox_safety_checks
-    if (!face_uvs) { // TODO: If we dont generate realm blocks  it goes out of index, we should account for this
-        zox_loge("face_uvs is null in zox_build_voxel_face");
-        return;
-    }
-#endif
-    // NOTE: Add our triangle indices
-    for (byte i = 0; i < 6; i++) {
-        int index = mesh->vertices->size + face_indicies[i];
-        int_array_d_add(mesh->indicies, index);
-    }
-    // NOTE: Add our face vertex data
+    mesh_add_face(mesh->indicies, mesh->vertices, face_indicies, face_verts, position, scale.x);
     for (byte i = 0; i < 4; i++) {
-        float3 vert = face_verts[i];
-        float3_scale3p(&vert, scale);
-        float3_add_float3_p(&vert, position);
-        float3_array_d_add(mesh->vertices, vert);
-        float2_array_d_add(
-            mesh->uvs,
-            face_uvs[i]);
-        color_rgb_array_d_add(
-            mesh->color_rgbs,
-            color_rgb_white);
+        float2_array_d_add(mesh->uvs, face_uvs[i]);
+        color_rgb_array_d_add(mesh->color_rgbs, color_rgb_white);
     }
 }
 

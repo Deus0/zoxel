@@ -4,7 +4,7 @@ typedef struct {
     color_rgb_array_d* colors;
 } mesh_colored_build_data;
 
-// NOTE: Scales vertex, offsets vertex by voxel position in chunk, adds total mesh offset
+// a face at a voxel position (in voxels) of a mesh scale big, moved by offset (its bounds): its colours added after
 void add_voxel_face(
     mesh_colored_build_data* mesh,
     float3 position,
@@ -13,18 +13,8 @@ void add_voxel_face(
     const int* face_indicies,
     const float3* face_verts)
 {
-    for (byte i = 0; i < 6; i++) {
-        int index = mesh->vertices->size + face_indicies[i];
-        int_array_d_add(mesh->indicies, index);
-    }
-    for (byte i = 0; i < 4; i++) {
-        float3 vertex = face_verts[i];
-        float3_add_float3_p(&vertex, position);
-        float3_scale_p(&vertex, scale);
-        float3_add_float3_p(&vertex, offset);
-        float3_array_d_add(mesh->vertices, vertex);
-        // color_rgb_array_d_add(mesh->colors, color_rgb_white);
-    }
+    const float3 origin = { position.x * scale + offset.x, position.y * scale + offset.y, position.z * scale + offset.z };
+    mesh_add_face(mesh->indicies, mesh->vertices, face_indicies, face_verts, origin, scale);
 }
 
 byte is_adjacent_all_solid(
