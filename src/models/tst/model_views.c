@@ -27,6 +27,7 @@ byte zox_tst_model_views_stage = 0;
 int zox_tst_model_views_frames = 0;
 entity zox_tst_model_views_cameras[zox_tst_model_views_count];
 entity zox_tst_model_views_source = 0;     // the realm entity holding the model
+entity zox_tst_model_views_model = 0;      // a model a test gives (slime_view), looked at instead of the realm's
 entity zox_tst_model_views_mesh = 0;       // its model's mesh
 entity zox_tst_model_views_meshes[zox_tst_model_views_count];  // each view's mesh (variants: a variant each)
 entity zox_tst_model_views_clones[zox_tst_model_views_count];  // a copy of it for each view
@@ -213,23 +214,32 @@ byte zox_tst_model_views_ready(ecs* world) {
             return 0;
         }
         int count = 0;
-        zox_tst_model_views_pick(world, zox_tst_model_views_realm, &count, 0);
-        if (count != zox_tst_model_views_models) {
-            zox_tst_model_views_models = count;
-            zox_tst_model_views_settled = 0;
-            return 0;
+        if (zox_tst_model_views_model) {
+            // a test's own model: once its mesh is built
+            zox_tst_waiting = "the test's model's mesh";
+            if (!zox_tst_model_views_mesh_of(world, zox_tst_model_views_model)) {
+                return 0;
+            }
+        } else {
+            zox_tst_model_views_pick(world, zox_tst_model_views_realm, &count, 0);
+            if (count != zox_tst_model_views_models) {
+                zox_tst_model_views_models = count;
+                zox_tst_model_views_settled = 0;
+                return 0;
+            }
+            if (!count || ++zox_tst_model_views_settled < 30) {
+                return 0;
+            }
+            // a model asked for by name may finish later than the rest (clothes), wait for it a while
+            const char* wanted = getenv("zox_tst_model");
+            if (wanted && wanted[0] && !zox_tst_model_views_has(world, zox_tst_model_views_realm, wanted) &&
+                zox_tst_model_views_settled < 600) {
+                zox_tst_waiting = "the model asked for by zox_tst_model";
+                return 0;
+            }
         }
-        if (!count || ++zox_tst_model_views_settled < 30) {
-            return 0;
-        }
-        // a model asked for by name may finish later than the rest (clothes), wait for it a while
-        const char* wanted = getenv("zox_tst_model");
-        if (wanted && wanted[0] && !zox_tst_model_views_has(world, zox_tst_model_views_realm, wanted) &&
-            zox_tst_model_views_settled < 600) {
-            zox_tst_waiting = "the model asked for by zox_tst_model";
-            return 0;
-        }
-        zox_tst_model_views_source = zox_tst_model_views_pick(world, zox_tst_model_views_realm, &count, 1);
+        zox_tst_model_views_source = zox_tst_model_views_model ? zox_tst_model_views_model :
+            zox_tst_model_views_pick(world, zox_tst_model_views_realm, &count, 1);
         zox_tst_model_views_mesh = zox_tst_model_views_mesh_of(world, zox_tst_model_views_source);
         zox_tst_model_views_pick_meshes(world, zox_tst_model_views_source);
         const byte variants = zox_tst_model_views_meshes[1] != zox_tst_model_views_meshes[0];   // variants side by side

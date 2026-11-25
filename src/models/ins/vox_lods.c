@@ -63,10 +63,20 @@ void set_vox_lods_sway(
     }
 }
 
+// a see through material (TransparentMaterial): the meshes linking it drawn blended at its alpha (a slime's gel)
+entity spawn_vox_material_see_through(ecs* world, float alpha) {
+    const entity e = zox_new();
+    zox_set_unique_name(e, "material_see_through");
+    zox_add(e, TransparentMaterial);
+    zox_setv(e, Alpha, alpha);
+    return e;
+}
+
 // gives a vox_lods model its material ids (MaterialIDs, a material a palette entry, as MagicaVoxel's) and a see
 //  through mesh beside each lod (TransparentMesh, the same RenderDepth) for its see through voxels; its solid meshes
-//  rebuild without them. Only for models with more than solid (others need no ids, no second meshes)
-void set_vox_lods_materials(ecs* world, entity vox, const byte* ids, int count) {
+//  rebuild without them; the see through ones link their material (MaterialLink: TransparentMaterial, its Alpha). Only
+//  for models with more than solid (others need no ids, no second meshes)
+void set_vox_lods_materials(ecs* world, entity vox, const byte* ids, int count, entity see_through_material) {
     MaterialIDs material_ids = { 0 };
     resize_MaterialIDs(&material_ids, count);
     memcpy(material_ids.value, ids, count);
@@ -104,5 +114,8 @@ void set_vox_lods_materials(ecs* world, entity vox, const byte* ids, int count) 
         zox_add(mesh, BuildMesh);
         zox_setv(mesh, RenderDepth, depth);
         zox_set_parent(world, mesh, vox);
+        if (zox_valid(see_through_material)) {
+            zox_link(world, mesh, MaterialLink, see_through_material);
+        }
     }
 }

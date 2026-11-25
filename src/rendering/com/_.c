@@ -9,7 +9,8 @@ zox_tag(SingleMaterial);
 zox_tag(RendererInstance);
 zox_tag(VoxMesh);
 zox_tag(ChunkMesh);
-zox_tag(TransparentMesh);   // drawn blended, after the solid ones (a water chunk mesh)
+zox_tag(TransparentMesh);
+zox_tag(TransparentMaterial);   // a see through material: the meshes linking it (MaterialLink) drawn blended at its Alpha   // drawn blended, after the solid ones (a water chunk mesh)
 zox_tag(MeshTextureLink);   // a mesh's own texture, bound instead of its material's (a liquid's chunk mesh)
 zox_tag(RenderAtCamera);    // drawn round each camera that renders it, its position the camera's (the skybox)
 // Events
@@ -95,6 +96,7 @@ void zox_components_rendering(ecs *world) {
     zoxd_tag(VoxMesh);
     zoxd_tag(ChunkMesh);
     zoxd_tag(TransparentMesh);
+    zoxd_tag(TransparentMaterial);
     zoxd_tag(RenderAtCamera);
     zoxd_nf_link(MeshTextureLink);
     // Properties

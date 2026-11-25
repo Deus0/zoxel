@@ -1,6 +1,11 @@
 # Done
 
 ## 2026-11-25
+-x Vox models with see through parts (phase 3 of doc/plans/chunks_refactor.md): MaterialIDs a palette entry (as
+  MagicaVoxel's), a see through mesh beside each lod (TransparentMesh), linking its material (MaterialLink to a
+  TransparentMaterial with Alpha), drawn after the solid ones, blended. ModelLods isn't a component: a model's lod
+  meshes are its children. tst vox_materials (the mesher), vox_see_through (a model), slime_view (a slime shaped
+  model's red core through its green shell, gl and vulkan)
 -x A chunk's meshes rebuild directly (chunk_meshes_rebuild: BuildMesh on its meshes), not through BuildChunkSides and
   chunk_sides_system a frame later; the tag, the system and the mesher's and lights' waits on it gone. perf_terrain
   release far 8: frames over 11ms ~98 to ~80 a stream, steps 1.47s to 1.36s, 131 fps; seams and flashes still none
