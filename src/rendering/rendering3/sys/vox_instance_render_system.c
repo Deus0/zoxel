@@ -25,6 +25,31 @@ static inline float instance_mesh_radius(ecs* world, entity mesh) {
     return sqrtf(most) + 0.1f;  // and the sway (grass tips move zox_grass_sway_strength)
 }
 
+// a see through mesh's alpha (its voxels' colours, blended over what's behind): a slime's shell
+#define zox_see_through_alpha 0.55f
+
+// a model mesh's see through sibling at its lod (TransparentMesh, set_vox_lods_materials), 0 if its model has none
+static inline entity instance_see_through_of(ecs* world, entity mesh) {
+    const entity model = zox_get_parent(world, mesh);
+    if (!zox_valid(model) || !zox_has(mesh, RenderDepth)) {
+        return 0;
+    }
+    const byte depth = zox_getv(mesh, RenderDepth);
+    entity found = 0;
+    iter it = zox_children(world, model);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count && !found; i++) {
+            const entity child = it.entities[i];
+            if (child != mesh && zox_has(child, TransparentMesh) && zox_has(child, RenderDepth) &&
+                zox_getv(child, RenderDepth) == depth)
+            {
+                found = child;
+            }
+        }
+    }
+    return found;
+}
+
 // the command for a mesh this frame, a new one if it has none (-1 when full)
 static inline int instance_command_of(ecs* world, entity mesh, byte sway) {
     for (int i = 0; i < zox_instance_commands_count; i++) {
@@ -43,6 +68,7 @@ static inline int instance_command_of(ecs* world, entity mesh, byte sway) {
     command->transforms->size = 0;
     command->mesh = mesh;
     command->sway = sway;
+    command->see_through = instance_see_through_of(world, mesh);
     zox_instance_radius[i] = instance_mesh_radius(world, mesh);
     return i;
 }
@@ -172,10 +198,13 @@ void vox_instance_render_system(iter* it) {
     zox_gpu_material(material_link);
     zox_gpu_float4(material_attributes->fog_data, get_fog_value());
     zox_gpu_float(material_attributes->brightness, 1);
+    zox_gpu_float(material_attributes->alpha, 1);
     zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
     byte has_sway = 0;
+    byte has_see_through = 0;
     for (int i = 0; i < zox_instance_commands_count; i++) {
         InstanceRenderCommand command = zox_instance_commands[i];
+        has_see_through |= command.see_through != 0;
         if (command.sway) {
             has_sway = 1;
             continue;
@@ -198,6 +227,7 @@ void vox_instance_render_system(iter* it) {
         zox_gpu_material(sway_material_link);
         zox_gpu_float4(sway_attributes->fog_data, get_fog_value());
         zox_gpu_float(sway_attributes->brightness, 1);
+        zox_gpu_float(sway_attributes->alpha, 1);
         zox_gpu_float4x4(sway_attributes->camera_matrix, render_camera_matrix);
         for (int i = 0; i < zox_instance_commands_count; i++) {
             InstanceRenderCommand command = zox_instance_commands[i];
@@ -220,6 +250,25 @@ void vox_instance_render_system(iter* it) {
                 sway_attributes->vertex_color,
                 ubo->value);
         }
+    }
+    // see through meshes (a slime's shell): after every solid one, the same instances, blended
+    if (has_see_through) {
+        zox_gpu_material(material_link);
+        zox_gpu_float4(material_attributes->fog_data, get_fog_value());
+        zox_gpu_float(material_attributes->brightness, 1);
+        zox_gpu_float(material_attributes->alpha, zox_see_through_alpha);
+        zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
+        zox_gpu_enable_blend();
+        for (int i = 0; i < zox_instance_commands_count; i++) {
+            InstanceRenderCommand command = zox_instance_commands[i];
+            if (!command.see_through) {
+                continue;
+            }
+            command.mesh = command.see_through;
+            render_vox_instance_command(world, command, material_attributes->vertex_position,
+                material_attributes->vertex_color, ubo->value);
+        }
+        zox_gpu_disable_blend();
     }
     zox_disable_material();
     catch_basic3D_errors("vox_instance_render_system");

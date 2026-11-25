@@ -296,9 +296,11 @@ material entity; a kind is a tag on it, not a byte (solid none, see through one 
   - done: a model's see through mesh a lod (set_vox_lods_materials, models/ins/vox_lods.c: MaterialIDs set, a
     TransparentMesh VoxLodMesh sibling spawned a lod), built from its see through voxels (build_vox_mesh_at_depth's
     kind); tst vox_see_through: a real model, 360 solid faces, 528 see through
-  - next: the instance renderer (rendering3/sys/vox_instance_render_system.c, a command a mesh) to find a solid
-    mesh's see through sibling when it makes its command, and draw those after every solid one, blended; the colored
-    shader an alpha
+  - done: the instance renderer finds a command's see through sibling when it makes it (instance_see_through_of)
+    and draws those after every solid and swaying one, the same instances, blended (zox_see_through_alpha 0.55, the
+    vox_instance shader's alpha, 1 for the solid passes); gl and vulkan pass vox_instance_render, vulkan_shaders
+  - left: the alpha from the material entity (a tag for see through, MaterialLink) once there are material entities;
+    a slime in the game with a screenshot to look at (4)
     (TransparentMesh, as terrain's water), the colored shader an alpha (the material's, color_rgb has none)
   - check: tst vox_materials at the mesher (done), then an instanced model in the game (4)
 - 4: a test model in the game: the solid core and see through shell, both meshes shown, screenshot to look at

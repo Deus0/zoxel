@@ -1,6 +1,7 @@
 typedef struct {
     entity mesh;
     byte sway;      // uses sway material, transforms are model matrices not mvp
+    entity see_through; // its model's see through mesh at the same lod (TransparentMesh), drawn after, blended; 0 none
     float4x4_array_d* transforms;
 } InstanceRenderCommand;
 zoxel_dynamic_array(InstanceRenderCommand)

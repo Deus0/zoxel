@@ -10,6 +10,7 @@ typedef struct {
     guint fog_data;
     guint camera_matrix;
     guint sway_data;
+    guint alpha;
 } MaterialVoxInstanceSway;
 zoxc_custom(MaterialVoxInstanceSway);
 
@@ -25,7 +26,8 @@ MaterialVoxInstanceSway create_MaterialVoxInstanceSway(const uint material) {
         zox_gpu_get_material_property(material, "brightness"),
         zox_gpu_get_material_property(material, "fog_data"),
         zox_gpu_get_material_property(material, "camera_matrix"),
-        zox_gpu_get_material_property(material, "sway_data")
+        zox_gpu_get_material_property(material, "sway_data"),
+        zox_gpu_get_material_property(material, "alpha")
     };
 }
 

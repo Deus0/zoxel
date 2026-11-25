@@ -20,6 +20,7 @@ typedef struct {
     guint brightness;
     guint fog_data;
     guint camera_matrix;
+    guint alpha;
 } MaterialVoxInstance;
 zoxc_custom(MaterialVoxInstance);
 
@@ -34,7 +35,8 @@ MaterialVoxInstance create_MaterialVoxInstance(const uint material) {
 #endif
         zox_gpu_get_material_property(material, "brightness"),
         zox_gpu_get_material_property(material, "fog_data"),
-        zox_gpu_get_material_property(material, "camera_matrix")
+        zox_gpu_get_material_property(material, "camera_matrix"),
+        zox_gpu_get_material_property(material, "alpha")
     };
 }
 
