@@ -139,6 +139,7 @@ guint zox_gpu_storage_buffer(size_t size, const void* data) {
 #ifndef zox_disable_compute
     guint buffer = 0;
     glGenBuffers(1, &buffer);
+    zox_gpu_buffers_live++;     // as zox_gpu_create_buffer's: zox_gpu_dispose_buffer counts it gone
 #ifdef zox_logs
     zox_gl_buffer_made(buffer);
 #endif
@@ -158,6 +159,7 @@ guint zox_gpu_storage_buffer_read(size_t size, const void* data) {
 #ifndef zox_disable_compute
     guint buffer = 0;
     glGenBuffers(1, &buffer);
+    zox_gpu_buffers_live++;
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffer);
     glBufferData(GL_SHADER_STORAGE_BUFFER, size, data, GL_STREAM_READ);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);

@@ -18,6 +18,7 @@
 // colored
 #include "build_colored.c"
 #include "vox_lods.c"
+#include "vox_gpu.c"
 // textured
 #include "build_textured.c"
 #include "wait.c"
@@ -110,6 +111,23 @@ void zox_systems_chunks3(ecs *world) {
         [out] rendering.MeshColorRGBs,
         [none] chunks3.VoxLodMesh,
         [none] rendering.BuildMesh,
+        [none] !rendering.GpuMesh,
+    );
+    // Meshes gpu lod meshes on the gpu (sys/vox_gpu.c)
+    zox_system_1(
+        vox_lod_gpu_mesh_system,
+        zoxp_gpu_upload,
+        [in] rendering.RenderDepth,
+        [in] rendering.MeshGPULink,
+        [in] rendering.ColorsGPULink,
+        [out] rendering.MeshFaceRoom,
+        [out] rendering.MeshRenderCount,
+        [out] rendering.MeshVertices,
+        [none] chunks3.VoxLodMesh,
+        [none] rendering.GpuMesh,
+        [none] rendering.BuildMesh,
+        [none] !core.PreInitialize,
+        [none] !core.Initialize,
     );
     zox_system(
         chunk_neighbors_system,

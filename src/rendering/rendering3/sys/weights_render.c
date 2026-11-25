@@ -25,7 +25,10 @@ void skeleton3_render_system(iter* it) {
         zox_sys_i(BoneIndexGPULink, bone_indicies);
         zox_sys_i(TransformMatrix, matrix);
         zox_sys_i(RenderDisabled, disabled);
-        if (disabled->value || !indicies->length) {
+        // a gpu mesh (bones/sys/skeleton_gpu.c) has its count, its cpu arrays empty
+        const byte gpu = zox_has(e, GpuMesh);
+        const int count = gpu ? mesh_index_count(world, e) : indicies->length;
+        if (disabled->value || !count) {
             continue;
         }
         // NOTE: Skeleton meshes use their parent characters bones
@@ -94,10 +97,16 @@ void skeleton3_render_system(iter* it) {
         zox_gpu_float3_array(material_attributes->bone_positions, bone_positions, bones->length);
         zox_gpu_array_buffer_byte4(material_attributes->bone_index, bone_indicies->value);
         zox_gpu_bind_buffer_element(mesh->value.x);
-        opengl_enable_vertex_buffer(material_attributes->vertex_position, mesh->value.y);
-        opengl_enable_color_buffer(material_attributes->vertex_color, colors->value);
+        if (gpu) {
+            // the compute shader's: vec4 vertices, rgba8 colours
+            zox_gpu_array_buffer_float3_stride(material_attributes->vertex_position, mesh->value.y, sizeof(float4));
+            zox_gpu_array_buffer_byte4(material_attributes->vertex_color, colors->value);
+        } else {
+            opengl_enable_vertex_buffer(material_attributes->vertex_position, mesh->value.y);
+            opengl_enable_color_buffer(material_attributes->vertex_color, colors->value);
+        }
         // zox_gpu_float4x4(material_attributes->transform_matrix, matrix->value);
-        zox_gpu_render3(indicies->length);
+        zox_gpu_render3(count);
         zox_drawn_skeleton_meshes++;
     }
     if (has_set_material) {

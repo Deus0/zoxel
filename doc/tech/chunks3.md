@@ -18,7 +18,7 @@ meshing. Code in
 | Per vertex | tilemap uvs, smooth lights (terrain's ambient occlusion) | palette colour darkened by ambient occlusion, times a brightness from the world's light (block voxes) |
 | Drawn | `chunk3_textured_render_system`, water `chunk3_transparent_render_system` | instanced (`vox_instance_render_system`) or as they are (`vox_render_system`); see through after, blended, no depth writes |
 | CPU meshing | the voxel grid (`sys/build_grid.c`) | one walk (`build_voxel_mesh`, `build_voxel_mesh_material`) |
-| GPU meshing | solid materials (`lights3/sys/gpu_mesh.c`), textured, lit, with neighbours | not yet (doc/plans/chunks_refactor.md phase 4) |
+| GPU meshing | solid materials (`lights3/sys/gpu_mesh.c`), textured, lit, with neighbours | lod meshes and skeleton meshes (`sys/vox_gpu.c`, `bones/sys/skeleton_gpu.c`): coloured, ambient occlusion, see through kinds, skinned |
 
 Both write faces through one writer (`mesh_add_face`, [fun/faces.c](../../src/chunks/chunks3/fun/faces.c)) and use one
 hiding rule (`block_material_hides`): a solid voxel hides any face against it, a see through one only its own kind's.
@@ -118,7 +118,23 @@ Every mesh is one quad (4 vertices, 6 indices) per visible voxel face. Nothing i
 [fun/gpu_mesh.c](../../src/chunks/chunks3/fun/gpu_mesh.c), [lights3/sys/gpu_mesh.c](../../src/lights/lights3/sys/gpu_mesh.c),
 doc/plans/gpu_meshing.md: a compute shader meshes terrain's solid materials from the same kind of grid, by the same
 rule, textured and smooth lit, with its neighbours and their lods (`zox_chunks3_gpu_meshing`: on with vulkan,
-`--gpu_meshing`, `--cpu_meshing`). Models aren't gpu meshed yet (doc/plans/chunks_refactor.md phase 4).
+`--gpu_meshing`, `--cpu_meshing`).
+
+Vox models too ([sys/vox_gpu.c](../../src/chunks/chunks3/sys/vox_gpu.c), `zox_vox_gpu_meshing`: on with vulkan,
+`--vox_gpu_meshing`, `--vox_cpu_meshing`): a model's lod meshes (`prefab_vox_mesh_gpu`) and a character's skeleton
+meshes (`prefab_skeleton_mesh_gpu`, [bones/sys/skeleton_gpu.c](../../src/bones/sys/skeleton_gpu.c)) are `GpuMesh`es,
+meshed on the main thread (a 2ms budget a frame) straight into their own buffers:
+- its node values and each cell's sides that hide (`get_node_sides_all_hide`, the cpu walk's rule at a lod) as grids,
+  its faces counted on the cpu first: buffers sized before the dispatch, its count known (`MeshRenderCount`), no read back
+- each corner its palette colour darkened by ambient occlusion as `fun/ao27.c`; vertices vec4s in the model's space,
+  colours rgba8 (the instance and bone renderers read them strided)
+- skinned: each vertex's two bones and weight by `bones/sys/generate.c`'s rule from the bones grid, into
+  `BoneIndexGPULink`, in the same dispatch (a drawn mesh is remeshed in one go, never half updated)
+- the same faces, corners and colours as the cpu's at every lod (tst `gpu_vox_colors`), one difference: a no split
+  model's uniform nodes are a face a voxel, not one big face (a humanoid ~12% more faces)
+- clones (items, mug shots, mirrors) read a gpu mesh back once (`mesh3_read_gpu`)
+- its `MeshVertices` hold only its drawn voxels' two far corners, for culling and framing
+- a gpu restore makes the mesher again and remeshes them all the next frame
 
 ### What it costs
 

@@ -22,6 +22,14 @@ byte zox_chunks3_gpu_meshing = 1;
 byte zox_chunks3_gpu_meshing = 0;
 #endif
 
+// vox models' lod meshes meshed by a compute shader (sys/vox_gpu.c, phase 4 of doc/plans/chunks_refactor.md), as
+//  chunks: --vox_gpu_meshing and --vox_cpu_meshing choose
+#ifdef zox_vulkan
+byte zox_vox_gpu_meshing = 1;
+#else
+byte zox_vox_gpu_meshing = 0;
+#endif
+
 // is a chunk material's mesh meshed on the gpu: its solid blocks, with gpu meshing on (water stays on the cpu)
 static inline byte chunk_material_gpu(byte block_material) {
     return zox_chunks3_gpu_meshing && block_material == zox_block_material_solid;

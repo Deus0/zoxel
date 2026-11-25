@@ -35,6 +35,8 @@ void import_chunks3(ecs* world) {
     zox_systems_chunks3_debug(world);
     add_hook_spawn_prefabs(spawn_prefabs_chunks);
     add_hook_spawn_prefabs(chunks3_settings_events);
+    add_hook_gpu_dispose(gpu_dispose_vox_gpu);
+    add_hook_gpu_restore(gpu_restore_vox_gpu);      // after rendering's (its MeshDirty taken off gpu meshes)
 #ifdef zox_tests
     add_hook_files_load(zox_tests_chunks3);
     zox_tsts_chunks3_positions();

@@ -1,3 +1,8 @@
+// a lod mesh's prefab: meshed on the gpu with vox gpu meshing on and compute there
+static inline entity vox_lod_mesh_prefab() {
+    return zox_vox_gpu_meshing && zox_gpu_compute_supported() ? prefab_vox_mesh_gpu : prefab_vox_mesh;
+}
+
 // Spawns a single max detail vox, with a lod mesh per render depth
 //  - voxels are only generated / set at max_depth
 //  - its meshes are its children (get_model_lod_mesh finds one by depth, for instancing); out_lods returns them now,
@@ -34,7 +39,7 @@ entity spawn_vox_lods(
     }
     ModelLods lods = { 0 };
     for (byte depth = 0; depth <= max_depth; depth++) {
-        entity mesh = zox_ins(world, prefab_vox_mesh);
+        entity mesh = zox_ins(world, vox_lod_mesh_prefab());
         zox_set_unique_name(mesh, "vox_mesh");
         zox_setv(mesh, RenderDepth, depth);
         zox_set_parent(world, mesh, e);
@@ -108,7 +113,7 @@ void set_vox_lods_materials(ecs* world, entity vox, const byte* ids, int count, 
         if (found[depth]) {
             continue;
         }
-        const entity mesh = zox_ins(world, prefab_vox_mesh);
+        const entity mesh = zox_ins(world, vox_lod_mesh_prefab());
         zox_set_unique_name(mesh, "vox_mesh_see_through");
         zox_add(mesh, TransparentMesh);
         zox_add(mesh, BuildMesh);

@@ -86,9 +86,10 @@ static inline void render_vox_instance_command(
         zox_loge("Invalid Instance Mesh [%s]: No MeshIndicies", zox_get_name(mesh));
         return;
     }
-    // Ignore if no indicies
-    const MeshIndicies* meshIndicies = zox_get(mesh, MeshIndicies);
-    if (!meshIndicies->length) {
+    // Ignore if no indicies; a gpu mesh (chunks3/sys/vox_gpu.c) has its count, its cpu arrays empty
+    const byte gpu = zox_has(mesh, GpuMesh);
+    const int indices = mesh_index_count(world, mesh);
+    if (!indices) {
         return;
     }
     if (!zox_has(mesh, MeshGPULink)) {
@@ -106,15 +107,21 @@ static inline void render_vox_instance_command(
         return;
     }
     zox_gpu_bind_buffer_element(gpumesh->value.x);
-    opengl_enable_vertex_buffer(vertex_position, gpumesh->value.y);
-    opengl_enable_color_buffer(vertex_color, gpucolors->value);
+    if (gpu) {
+        // the compute shader's: vec4 vertices, rgba8 colours
+        zox_gpu_array_buffer_float3_stride(vertex_position, gpumesh->value.y, sizeof(float4));
+        zox_gpu_array_buffer_byte4(vertex_color, gpucolors->value);
+    } else {
+        opengl_enable_vertex_buffer(vertex_position, gpumesh->value.y);
+        opengl_enable_color_buffer(vertex_color, gpucolors->value);
+    }
     // a uniform buffer's worth a draw
     const int count = command.transforms->size;
     const int batch = zox_instance_ubo_max > 0 ? zox_instance_ubo_max : count;
     for (int start = 0; start < count; start += batch) {
         const int render_count = count - start < batch ? count - start : batch;
         zox_gpu_ubo_stream_matricies(ubo, render_count, batch, command.transforms->data + start);
-        zox_gpu_render_triangles_instanced(meshIndicies->length, render_count);
+        zox_gpu_render_triangles_instanced(indices, render_count);
     }
     zox_drawn_vox_instances += count;
     zox_gpu_ubo_reset();

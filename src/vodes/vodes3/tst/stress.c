@@ -40,7 +40,7 @@ static inline entity zox_tst_stress_find_mesh(ecs* world, entity realm) {
         const int d = software ? k : model_lods_max_length - 1 - k;
         const entity mesh = get_model_lod_mesh(world, models[0], d);
         if (zox_valid(mesh) && zox_has(mesh, MeshGPULink) && zox_getv(mesh, MeshGPULink).x &&
-            zox_has(mesh, MeshIndicies) && zox_get(mesh, MeshIndicies)->length)
+            mesh_index_count(world, mesh))
         {
             return mesh;
         }
@@ -117,7 +117,7 @@ byte zox_tst_vox_instances_stress_ready(ecs* world) {
             zox_setv(game_view, RenderDisabled, 1);
         }
         zox_log("[tst] vox_instances_stress: a draw call holds [%i] instances (the uniform buffer), the mesh has [%i] triangles",
-            zox_get_safe_ubo_size(), zox_get(zox_tst_stress_mesh, MeshIndicies)->length / 3);
+            zox_get_safe_ubo_size(), mesh_index_count(world, zox_tst_stress_mesh) / 3);
         zox_tst_stress_stage = 1;
         return 0;
     }

@@ -35,7 +35,7 @@ byte zox_tst_mirror_hat_ready(ecs* world) {
     zox_tst_progress(zox_tst_mhat_stage * 1000 + zox_tst_mhat_frames);
     if (zox_tst_mhat_stage == 0) {
         zox_tst_waiting = "the player's skeleton mesh";
-        if (!zox_valid(active) || !zox_get(active, MeshIndicies)->length || zox_tst_mhat_frames < 30) {
+        if (!zox_valid(active) || !mesh_index_count(world, active) || zox_tst_mhat_frames < 30) {
             return 0;
         }
         zox_tst_render_texture_character(world, dbg_player);
@@ -70,10 +70,10 @@ byte zox_tst_mirror_hat_ready(ecs* world) {
     }
     const entity clone = zox_tst_mhat_clone;
     zox_tst_mhat_linked = zox_valid(clone) && zox_is_linked(world, clone, MeshCloneLink, active);
-    zox_tst_mhat_same = zox_valid(clone) && zox_get(clone, MeshVertices)->length == zox_get(active, MeshVertices)->length &&
-        zox_get(clone, MeshIndicies)->length == zox_get(active, MeshIndicies)->length;
-    zox_log("[tst] mirror_hat: copy verts [%i] the mesh's [%i]", zox_valid(clone) ? zox_get(clone, MeshVertices)->length : -1,
-        zox_get(active, MeshVertices)->length);
+    // as many indices (a gpu mesh's are its count, chunks3/sys/vox_gpu.c)
+    zox_tst_mhat_same = zox_valid(clone) && mesh_index_count(world, clone) == mesh_index_count(world, active);
+    zox_log("[tst] mirror_hat: copy indices [%i] the mesh's [%i]", zox_valid(clone) ? mesh_index_count(world, clone) : -1,
+        mesh_index_count(world, active));
     zox_tst_mhat_stage = 3;
     return 1;
 }

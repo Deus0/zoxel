@@ -45,10 +45,7 @@ entity zox_tst_model_views_mesh_of(ecs* world, entity e) {
         return 0;
     }
     const entity mesh = get_max_model_mesh(world, model);
-    if (!zox_valid(mesh) || !zox_has(mesh, Mesh) || !zox_has(mesh, MeshIndicies)) {
-        return 0;
-    }
-    if (!zox_get(mesh, MeshIndicies)->length || !zox_get(mesh, MeshVertices)->length) {
+    if (!zox_valid(mesh) || !zox_has(mesh, Mesh) || !mesh_index_count(world, mesh)) {
         return 0;
     }
     return mesh;
@@ -160,7 +157,7 @@ void zox_tst_model_views_pick_meshes(ecs* world, entity source) {
         // its most detailed mesh, as an npc up close (get_max_model_mesh stops at block_depth, an icon's)
         const entity model = count ? models[i % count] : 0;
         const entity mesh = model ? get_lodded_model(world, model, zox_getv(model, MaxRenderDepth)) : 0;
-        const byte built = zox_valid(mesh) && zox_has(mesh, MeshIndicies) && zox_get(mesh, MeshIndicies)->length;
+        const byte built = mesh_index_count(world, mesh) > 0;
         zox_tst_model_views_meshes[i] = built ? mesh : zox_tst_model_views_mesh;
     }
     if (count) {

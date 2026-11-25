@@ -1,3 +1,32 @@
+// a gpu mesh's (GpuMesh: meshed by a compute shader, chunks3/sys/vox_gpu.c) data read back into cpu arrays, for a clone
+//  (an item, a mug shot, a mirror: drawn as a plain colored mesh); it waits for the gpu, clones are rare
+//  - its vertices vec4s, its colours rgba8, its indices its count's
+static inline byte mesh3_read_gpu(ecs* world, entity mesh, MeshIndicies* indicies, MeshVertices* verts, MeshColorRGBs* colors) {
+    const int count = mesh_index_count(world, mesh);
+    const guint2 buffers = zox_getv(mesh, MeshGPULink);
+    const guint colors_buffer = zox_getv(mesh, ColorsGPULink);
+    if (!count || !buffers.x || !buffers.y || !colors_buffer) {
+        return 0;
+    }
+    const int vertices = count / 6 * 4;
+    float4* vertex4s = malloc(sizeof(float4) * vertices);
+    uint* rgbas = malloc(sizeof(uint) * vertices);
+    initialize_MeshIndicies(indicies, count);
+    initialize_MeshVertices(verts, vertices);
+    initialize_MeshColorRGBs(colors, vertices);
+    zox_gpu_finish();
+    zox_gpu_storage_read(buffers.x, 0, sizeof(int) * count, indicies->value);
+    zox_gpu_storage_read(buffers.y, 0, sizeof(float4) * vertices, vertex4s);
+    zox_gpu_storage_read(colors_buffer, 0, sizeof(uint) * vertices, rgbas);
+    for (int i = 0; i < vertices; i++) {
+        verts->value[i] = (float3) { vertex4s[i].x, vertex4s[i].y, vertex4s[i].z };
+        colors->value[i] = (color_rgb) { rgbas[i] & 255, (rgbas[i] >> 8) & 255, (rgbas[i] >> 16) & 255 };
+    }
+    free(vertex4s);
+    free(rgbas);
+    return 1;
+}
+
 entity spawn_mesh3_clone(
     ecs* world,
     entity clonee)
@@ -7,6 +36,24 @@ entity spawn_mesh3_clone(
         zox_loge("[spawn_mesh3_clone] Invalid clonee [%s]",
             zox_getn(clonee));
         return 0;
+    }
+    if (zox_has(clonee, GpuMesh)) {
+        MeshIndicies indicies = { 0 };
+        MeshVertices verts = { 0 };
+        MeshColorRGBs colors = { 0 };
+        if (!mesh3_read_gpu(world, clonee, &indicies, &verts, &colors)) {
+            zox_loge("Mesh3 gpu source not meshed [%s]", zox_getn(clonee));
+            return 0;
+        }
+        entity e = zox_ins(world, prefab_mesh3);
+        zox_setv(e, MeshRenderCount, indicies.length);
+        zox_set_ptr(e, MeshIndicies, indicies);
+        zox_set_ptr(e, MeshVertices, verts);
+        zox_set_ptr(e, MeshColorRGBs, colors);
+        zox_add(e, MeshDirty);
+        zox_link(world, e, MeshCloneLink, clonee);
+        zox_add(clonee, MeshCloned);
+        return e;
     }
     // get mesh data
     const MeshIndicies* source_indicies = zox_get(clonee, MeshIndicies);
@@ -79,6 +126,33 @@ static inline int mesh_clones_of(ecs* world, entity source, entity* clones, int 
     return count;
 }
 
+// source's data into its clones (a gpu mesh's read back once)
+static inline void mesh_clones_fill(ecs* world, entity source, const entity* clones, int count) {
+    MeshIndicies gpu_indicies = { 0 };
+    MeshVertices gpu_verts = { 0 };
+    MeshColorRGBs gpu_colors = { 0 };
+    const byte gpu = zox_has(source, GpuMesh) && mesh3_read_gpu(world, source, &gpu_indicies, &gpu_verts, &gpu_colors);
+    const MeshIndicies* indicies = gpu ? &gpu_indicies : zox_get(source, MeshIndicies);
+    const MeshVertices* verts = gpu ? &gpu_verts : zox_get(source, MeshVertices);
+    const MeshColorRGBs* colors = gpu ? &gpu_colors : zox_get(source, MeshColorRGBs);
+    for (int j = 0; j < count; j++) {
+        const entity clone = clones[j];
+        if (!zox_valid(clone) || !zox_has(clone, MeshIndicies) || !indicies->value || !verts->value || !colors->value) {
+            continue;
+        }
+        clone_MeshIndicies(zox_get_mut(clone, MeshIndicies), indicies);
+        clone_MeshVertices(zox_get_mut(clone, MeshVertices), verts);
+        clone_MeshColorRGBs(zox_get_mut(clone, MeshColorRGBs), colors);
+        zox_setv(clone, MeshRenderCount, indicies->length);
+        zox_add(clone, MeshDirty);
+    }
+    if (gpu) {
+        dispose_MeshIndicies(&gpu_indicies);
+        dispose_MeshVertices(&gpu_verts);
+        dispose_MeshColorRGBs(&gpu_colors);
+    }
+}
+
 // a mesh swapped for another (a skeleton's rebuilt mesh, skeleton_meshes.c): its clones follow the new one, given its
 //  data now (a mirror, a mug shot kept the old mesh: the old hat, tst mirror_hat)
 void mesh_clones_move(ecs* world, entity from, entity to) {
@@ -90,23 +164,22 @@ void mesh_clones_move(ecs* world, entity from, entity to) {
     if (!count) {
         return;
     }
-    const MeshIndicies* indicies = zox_get(to, MeshIndicies);
-    const MeshVertices* verts = zox_get(to, MeshVertices);
-    const MeshColorRGBs* colors = zox_get(to, MeshColorRGBs);
     for (int j = 0; j < count; j++) {
-        const entity clone = clones[j];
-        if (!zox_valid(clone) || !zox_has(clone, MeshIndicies)) {
-            continue;
-        }
-        zox_unlink(world, clone, MeshCloneLink, from);
-        zox_link(world, clone, MeshCloneLink, to);
-        if (indicies->value && verts->value && colors->value) {
-            clone_MeshIndicies(zox_get_mut(clone, MeshIndicies), indicies);
-            clone_MeshVertices(zox_get_mut(clone, MeshVertices), verts);
-            clone_MeshColorRGBs(zox_get_mut(clone, MeshColorRGBs), colors);
-            zox_setv(clone, MeshRenderCount, zox_getv(to, MeshRenderCount));
-            zox_add(clone, MeshDirty);
+        if (zox_valid(clones[j])) {
+            zox_unlink(world, clones[j], MeshCloneLink, from);
+            zox_link(world, clones[j], MeshCloneLink, to);
         }
     }
+    mesh_clones_fill(world, to, clones, count);
     zox_add(to, MeshCloned);
+}
+
+// a gpu mesh meshed again: its clones copy it (a cpu mesh's do on MeshDirty, mesh_clone_sync_event)
+void mesh_clones_sync_gpu(ecs* world, entity source) {
+    if (!zox_has(source, MeshCloned)) {
+        return;
+    }
+    entity clones[64];
+    const int count = mesh_clones_of(world, source, clones, 64);
+    mesh_clones_fill(world, source, clones, count);
 }

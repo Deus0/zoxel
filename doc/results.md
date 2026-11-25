@@ -67,6 +67,20 @@ lod border on every side (the worst case). Models are a 32³ ball, both walkers.
 | 16³ | 5566 | 2.06 | 5.21 | 0.272 | 0.898 |
 | 8³ | 1798 | 0.49 | 0.89 | 0.068 | 0.160 |
 
+Models on the gpu (2026-11-26, release, `perf_meshing --release --gpu`, the 780M): prepare is the main thread's part
+(grids, the count), write the dispatch waited for; the same faces as the cpu walk. Release cpu the same run: pyramid
+0.912, 0.253, 0.060.
+
+| Model | Faces | Prepare | Write | Total |
+|---|---|---|---|---|
+| 32³ | 10022 | 0.295 | 0.301 | 0.597 |
+| 16³ | 5566 | 0.083 | 0.161 | 0.244 |
+| 8³ | 1798 | 0.018 | 0.117 | 0.135 |
+
+- small models are latency bound when waited for (the game doesn't wait); software rendering's write is 2.5x slower
+- a function used by both meshers changes how gcc compiles the cpu walk: `move_position` called from the gpu's face
+  count made the pyramid 65% slower (0.91 to 1.51ms, release); the gpu's count has its own directions
+
 - A textured chunk's sides (`build_sides_dig`) are 80 to 90% of its cpu cost: the grid replaces them (plan phase 2)
 - 78% of a far 16 world's chunks are 4³ or smaller: the lower lods are most of the meshing
 - The colored pyramid grid is 4 to 5 times the octree walk at full detail: the walk to keep is the grid's

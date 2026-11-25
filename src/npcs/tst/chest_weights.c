@@ -47,6 +47,19 @@ void zox_tst_chest_weights_check(ecs* world) {
     const BoneLinks* bones = zox_get(skeleton, BoneLinks);
     const MeshVertices* vertices = zox_get(mesh, MeshVertices);
     const BoneIndexes* weights = zox_get(mesh, BoneIndexes);
+    // meshed and weighted on the gpu (bones/sys/skeleton_gpu.c): its vertices and weights read back
+    MeshIndicies gpu_indicies = { 0 };
+    MeshVertices gpu_vertices = { 0 };
+    MeshColorRGBs gpu_colors = { 0 };
+    BoneIndexes gpu_weights = { 0 };
+    const byte gpu = zox_has(mesh, GpuMesh) && mesh3_read_gpu(world, mesh, &gpu_indicies, &gpu_vertices, &gpu_colors);
+    if (gpu) {
+        resize_BoneIndexes(&gpu_weights, gpu_vertices.length);
+        zox_gpu_storage_read(zox_getv(mesh, BoneIndexGPULink), 0, sizeof(byte4) * gpu_vertices.length, gpu_weights.value);
+        vertices = &gpu_vertices;
+        weights = &gpu_weights;
+    }
+    zox_log("[tst] chest_weights: [%i] vertices, meshed on the [%s]", vertices->length, gpu ? "gpu" : "cpu");
     const entity vox = get_skeleton_vox(world, skeleton);
     zox_tst_check(zox_valid(vox) && zox_has(vox, BoneNode), "the humanoid's vox has no BoneNode");
     if (!zox_valid(vox) || !zox_has(vox, BoneNode)) {
@@ -136,6 +149,12 @@ void zox_tst_chest_weights_check(ecs* world) {
     zox_tst_check(blended, "no joints blend");
     zox_tst_check(!unjoined, "[%i] vertices blend between bones that aren't joined", unjoined);
     zox_tst_check(beside > 0 && !beside_chest, "[%i] of [%i] vertices beside the chest move with it", beside_chest, beside);
+    if (gpu) {
+        dispose_MeshIndicies(&gpu_indicies);
+        dispose_MeshVertices(&gpu_vertices);
+        dispose_MeshColorRGBs(&gpu_colors);
+        dispose_BoneIndexes(&gpu_weights);
+    }
 }
 
 void zox_tsts_chest_weights(ecs* world) {

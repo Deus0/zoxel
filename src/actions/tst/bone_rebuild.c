@@ -151,13 +151,14 @@ byte zox_tst_rebuild_ready(ecs* world) {
             if (!zox_has(mesh, SkeletonMesh)) {
                 continue;
             }
-            const byte can = !zox_getv(mesh, RenderDisabled) && zox_get(mesh, MeshIndicies)->length &&
+            const byte can = !zox_getv(mesh, RenderDisabled) && mesh_index_count(world, mesh) &&
                 zox_getv(mesh, MeshGPULink).x && zox_getv(mesh, BoneIndexGPULink) && !zox_has(mesh, Disabled);
             drawn += can;
             // the drawn mesh is never rebuilt in place (its index count over old gpu buffers), and an old one is
-            //  never given weights from the new voxels
-            const int indicies = zox_get(mesh, MeshIndicies)->length;
-            if (can && (zox_has(mesh, BuildMesh) ||
+            //  never given weights from the new voxels; a gpu mesh is (meshed and weighted in one dispatch before it's
+            //  drawn, bones/sys/skeleton_gpu.c), with the same voxels
+            const int indicies = mesh_index_count(world, mesh);
+            if (can && ((zox_has(mesh, BuildMesh) && !zox_has(mesh, GpuMesh)) ||
                 (zox_has(mesh, SkeletonMeshStale) && zox_has(mesh, SkeletonMeshDirty)) ||
                 (mesh == zox_tst_rebuild_drawn_mesh && indicies != zox_tst_rebuild_drawn_length)))
             {

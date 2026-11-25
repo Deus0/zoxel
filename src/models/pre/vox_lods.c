@@ -35,3 +35,12 @@ entity spawn_prefab_vox_mesh(ecs *world) {
     zox_add(e, PreInitialize);
     return e;
 }
+
+// a lod mesh meshed on the gpu (zox_vox_gpu_meshing, chunks3/sys/vox_gpu.c): its cpu arrays stay empty
+entity spawn_prefab_vox_mesh_gpu(ecs *world, entity prefab) {
+    entity e = zox_prefab_from_parent(world, prefab);
+    zox_set_unique_name(e, "vox_mesh_gpu");
+    zox_add(e, GpuMesh);
+    zox_setv(e, MeshFaceRoom, 0);
+    return e;
+}

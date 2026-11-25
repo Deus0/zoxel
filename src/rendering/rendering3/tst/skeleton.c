@@ -29,11 +29,11 @@ byte zox_tst_skeleton_ready(ecs* world) {
         }
         const byte is_render_disabled = zox_getv(e, RenderDisabled) != 0;
         const byte is_disabled = zox_has(e, Disabled);
-        const MeshIndicies* indicies = zox_get(e, MeshIndicies);
+        const int indicies = mesh_index_count(world, e);
         render_disabled += is_render_disabled;
         disabled += is_disabled;
-        no_indicies += !indicies->length;
-        visible += !is_render_disabled && !is_disabled && indicies->length;
+        no_indicies += !indicies;
+        visible += !is_render_disabled && !is_disabled && indicies;
     }
     snprintf(zox_tst_skeleton_waiting, sizeof(zox_tst_skeleton_waiting),
         "a visible SkeletonMesh with indicies, last frame: [%i] skeleton meshes, "
@@ -60,10 +60,27 @@ void zox_tst_skeleton_check_mesh(ecs* world, entity skeleton, entity e) {
     zox_tst_check(zox_getv(e, ColorsGPULink), "[%s] has no ColorsGPULink", zox_getn(e));
     zox_tst_check(zox_getv(e, BoneIndexGPULink), "[%s] has no BoneIndexGPULink", zox_getn(e));
     zox_tst_check_camera_filter(world, e);
+    const BoneLinks* bones = zox_get(skeleton, BoneLinks);
+    if (zox_has(e, GpuMesh)) {
+        // meshed and weighted on the gpu (bones/sys/skeleton_gpu.c): its weights read back
+        const int faces = mesh_index_count(world, e) / 6;
+        zox_tst_check(faces, "[%s] has 0 faces", zox_getn(e));
+        byte4* weights = malloc(sizeof(byte4) * 4 * (faces ? faces : 1));
+        zox_gpu_finish();
+        zox_gpu_storage_read(zox_getv(e, BoneIndexGPULink), 0, sizeof(byte4) * 4 * faces, weights);
+        int bad_bones = 0, blended = 0;
+        for (int i = 0; i < faces * 4; i++) {
+            bad_bones += weights[i].x >= bones->length || weights[i].y >= bones->length;
+            blended += weights[i].x != weights[i].y;
+        }
+        free(weights);
+        zox_tst_check(!bad_bones, "[%s] has [%i] vertices weighted past [%i] bones", zox_getn(e), bad_bones, bones->length);
+        zox_tst_check(bones->length < 2 || blended, "[%s] has no vertex between two bones", zox_getn(e));
+        return;
+    }
     const MeshIndicies* indicies = zox_get(e, MeshIndicies);
     const MeshVertices* vertices = zox_get(e, MeshVertices);
     const BoneIndexes* bone_indexes = zox_get(e, BoneIndexes);
-    const BoneLinks* bones = zox_get(skeleton, BoneLinks);
     zox_tst_check(indicies->length, "[%s] has 0 indicies", zox_getn(e));
     int bad_indicies = 0;
     for (int i = 0; i < indicies->length; i++) {
@@ -200,7 +217,7 @@ void tst_skeleton_probe_system(iter* it) {
             zox_tst_skeleton_meshes_counting[zox_tst_skeleton_meshes_counting_count++] = e;
         }
         if (!disabled->value &&
-            indicies->length &&
+            (indicies->length || mesh_index_count(world, e)) &&
             !zox_has(e, Disabled) &&
             !zox_valid(zox_tst_skeleton_draws.candidate))
         {

@@ -270,6 +270,11 @@ static inline void zox_gpu_array_buffer_byte(guint shader_index, guint buffer) {
     vulkan_buffer_attribute(shader_index, buffer, VK_FORMAT_R8_UNORM, 0);
 }
 
+// float3s each stride bytes apart (a compute shader's vec4s)
+static inline void zox_gpu_array_buffer_float3_stride(guint shader_index, guint buffer, int stride) {
+    vulkan_buffer_attribute(shader_index, buffer, VK_FORMAT_R32G32B32_SFLOAT, stride);
+}
+
 static inline void zox_gpu_array_buffer_byte4(guint shader_index, guint buffer) {
     vulkan_buffer_attribute(shader_index, buffer, VK_FORMAT_R8G8B8A8_UNORM, 0);
 }

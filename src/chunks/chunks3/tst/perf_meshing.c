@@ -9,6 +9,8 @@
 //    repeat runs agree within 1%. Face counts are checked: a mesher change drawing other faces fails until updated
 //  - a world: a stream's chunks at each lod (the default far 16's circle), each lod's time by its count: what meshing
 //    a whole world once costs
+//  - models on the gpu (chunks3/sys/vox_gpu.c): prepare its grids and count on the cpu (the main thread's part), write
+//      the dispatch waited for (the gpu's); its faces are the cpu walk's, a voxel's faces apart (no merged nodes)
 //  - prints a table (the [tst] lines); baseline in doc/results.md (Meshing speed)
 //  - run: bash bsh/tst.sh perf_meshing (debug), bash bsh/tst.sh perf_meshing --release (the speed that ships)
 #define zox_tst_pm_rounds 5
@@ -87,6 +89,7 @@ static const zox_tst_pm_count zox_tst_pm_expected[] = {
     { "terrain", "grid*", 8, 202 }, { "terrain", "grid*", 4, 81 },
     { "model", "pyramid", 32, 10022 }, { "model", "pyramid", 16, 5566 }, { "model", "pyramid", 8, 1798 },
     { "model", "walk", 32, 10022 }, { "model", "walk", 16, 5566 }, { "model", "walk", 8, 1798 },
+    { "model", "gpu", 32, 10022 }, { "model", "gpu", 16, 5566 }, { "model", "gpu", 8, 1798 },
 };
 
 static inline void zox_tst_pm_add(const char* what, int lod, const char* how, int faces, double prepare_ms, double mesh_ms,
@@ -187,6 +190,44 @@ static int zox_tst_pm_textured(zox_tst_pm_terrain_world* w, const VoxelNode* chu
             best = prepare + mesh;
             *prepare_ms = prepare / builds;
             *mesh_ms = mesh / builds;
+        }
+    }
+    return faces;
+}
+
+static uint zox_tst_pm_gpu_room(GpuMesher* mesher, uint faces, void* data) {
+    return *(byte*) data && faces <= mesher->max_faces;
+}
+
+// a model on the gpu at one lod: ms a mesh for its cpu part (grids, count) and the gpu's (waited for), its faces
+static int zox_tst_pm_gpu(GpuMesher* mesher, const VoxelNode* model, const ColorRGBs* colors, byte target, double* prepare_ms,
+    double* mesh_ms)
+{
+    byte materials[256];
+    vox_material_table(NULL, materials);
+    int3 extent[2];
+    int faces = 0;
+    *prepare_ms = *mesh_ms = -1;
+    for (byte r = 0; r < zox_tst_pm_rounds; r++) {
+        byte dispatch = 0;
+        double begin = get_time_ms();
+        for (int b = 0; b < 5; b++) {
+            faces = vox_gpu_mesh_grid(mesher, model, target, materials, zox_block_material_solid, colors, zox_tst_pm_gpu_room,
+                &dispatch, extent, NULL);
+        }
+        const double prepare = (get_time_ms() - begin) / 5;
+        dispatch = 1;
+        zox_gpu_finish();
+        begin = get_time_ms();
+        for (int b = 0; b < 5; b++) {
+            vox_gpu_mesh_grid(mesher, model, target, materials, zox_block_material_solid, colors, zox_tst_pm_gpu_room,
+                &dispatch, extent, NULL);
+            zox_gpu_finish();
+        }
+        const double total = (get_time_ms() - begin) / 5;
+        if (*prepare_ms < 0 || total < *prepare_ms + *mesh_ms) {
+            *prepare_ms = prepare;
+            *mesh_ms = total - prepare;
         }
     }
     return faces;
@@ -322,6 +363,18 @@ void zox_tst_perf_meshing_check(ecs* world) {
             zox_tst_pm_add("model", octree_size(target), pyramid ? "pyramid" : "walk", faces, 0, ms,
                 pyramid ? "the game's for models up to 128^3" : "the game's for deeper models");
         }
+    }
+    GpuMesher mesher;
+    if (gpu_mesher_create(&mesher, octree_size(zox_tst_pm_model_depth) * octree_size(zox_tst_pm_model_depth) *
+        octree_size(zox_tst_pm_model_depth) * 3))
+    {
+        for (int target = zox_tst_pm_model_depth; target >= zox_tst_pm_model_depth - 2; target--) {
+            double prepare, mesh;
+            const int faces = zox_tst_pm_gpu(&mesher, &model, &colors, target, &prepare, &mesh);
+            zox_tst_pm_add("model", octree_size(target), "gpu", faces, prepare, mesh,
+                "prepare on the main thread, write the gpu's");
+        }
+        gpu_mesher_dispose(&mesher);
     }
     collapse_VoxelNode(&model);
     zox_tst_pm_print();

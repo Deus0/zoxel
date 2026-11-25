@@ -9,6 +9,7 @@
 #include "arm_control.c"
 #include "arm_raise.c"
 #include "skeleton_meshes.c"
+#include "skeleton_gpu.c"
 zoxc_system_dirty(Skeleton);
 
 void zox_systems_bones(ecs *world) {
@@ -29,6 +30,24 @@ void zox_systems_bones(ecs *world) {
         [out] rendering.MeshColorRGBs,
         [none] rendering3.SkeletonMesh,
         [none] rendering.BuildMesh,
+        [none] !rendering.GpuMesh,
+    );
+    // meshes and weights gpu skeleton meshes on the gpu (sys/skeleton_gpu.c)
+    zox_system_1(
+        skeleton_mesh_gpu_system,
+        zoxp_gpu_upload,
+        [in] rendering.RenderDepth,
+        [in] rendering.MeshGPULink,
+        [in] rendering.ColorsGPULink,
+        [in] rendering3.BoneIndexGPULink,
+        [out] rendering.MeshFaceRoom,
+        [out] rendering.MeshRenderCount,
+        [out] rendering.MeshVertices,
+        [none] rendering3.SkeletonMesh,
+        [none] rendering.GpuMesh,
+        [none] rendering.BuildMesh,
+        [none] !core.PreInitialize,
+        [none] !core.Initialize,
     );
     // a swing passing its marks sets SwingMark (main thread: observers react, spawning sounds and particles); in the
     //  spawn phase with the other main thread ones (in update its sync point split the threaded ones, tst bone_rebuild)
@@ -68,6 +87,7 @@ void zox_systems_bones(ecs *world) {
         [out] rendering3.BoneIndexes,
         [none] rendering3.SkeletonMesh,
         [none] rendering.BuildMeshWeights,
+        [none] !rendering.GpuMesh,
     );
     zox_system(
         arm_control_system,

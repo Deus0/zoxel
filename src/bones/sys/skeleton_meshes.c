@@ -45,7 +45,8 @@ entity spawn_skeleton_mesh(
     byte depth,
     byte render_disabled)
 {
-    entity mesh = zox_ins(world, prefab_skeleton_mesh);
+    entity mesh = zox_ins(world, zox_vox_gpu_meshing && zox_gpu_compute_supported() ? prefab_skeleton_mesh_gpu :
+        prefab_skeleton_mesh);
     zox_set_unique_name(mesh, "skeleton_mesh");
     zox_setv(mesh, RenderDepth, depth);
     zox_setv(mesh, RenderDisabled, render_disabled);

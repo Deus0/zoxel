@@ -34,3 +34,12 @@ entity spawn_prefab_skeleton_mesh(ecs *world) {
     zox_add(e, PreInitialize);
     return e;
 }
+
+// a skinned mesh meshed and weighted on the gpu (zox_vox_gpu_meshing, sys/skeleton_gpu.c): its cpu arrays stay empty
+entity spawn_prefab_skeleton_mesh_gpu(ecs *world, entity prefab) {
+    entity e = zox_prefab_from_parent(world, prefab);
+    zox_set_unique_name(e, "skeleton_mesh_gpu");
+    zox_add(e, GpuMesh);
+    zox_setv(e, MeshFaceRoom, 0);
+    return e;
+}

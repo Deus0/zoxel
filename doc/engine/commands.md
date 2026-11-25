@@ -58,6 +58,8 @@ On boards without desktop GL (i.e. the Mali boards), the game falls back to ES b
 | `--large` | terrain stream distance 12, height 4 | terrain |
 | `--gpu_meshing` | solid chunk meshes meshed by a compute shader (cpu meshing without compute), [plans/gpu_meshing.md](../plans/gpu_meshing.md); vulkan's default | terrain |
 | `--cpu_meshing` | chunk meshes built on the cpu; opengl's default | terrain |
+| `--vox_gpu_meshing` | vox models' lod and skeleton meshes meshed, coloured and skinned by a compute shader, [tech/chunks3.md](../tech/chunks3.md); vulkan's default | terrain |
+| `--vox_cpu_meshing` | vox models meshed on the cpu; opengl's default | terrain |
 | `--far <n>` | terrain stream distance n (height as set) | terrain |
 | `--vertical <n>` | terrain stream height n: the land scales with it (n / 4: taller, hills and lakes wider, the sea with them), heights are bytes (255 at most) | terrain |
 | `--freeroam` | free camera, not attached to the player character | [games](../src/games/dat/rules.c) |

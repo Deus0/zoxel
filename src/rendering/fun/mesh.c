@@ -99,3 +99,15 @@ void prefab_set_mesh_uvs_float2(ecs *world, entity e, const float2* uvs, int len
     }
     zox_set(e, MeshUVs, { mesh_uvs->length, mesh_uvs->value });
 }
+
+// a mesh's indices to draw: a gpu mesh's (GpuMesh, meshed by a compute shader, its cpu arrays empty) its count, else
+//  its cpu array's, 0 while unbuilt
+static inline int mesh_index_count(ecs* world, entity mesh) {
+    if (!zox_valid(mesh)) {
+        return 0;
+    }
+    if (zox_has(mesh, GpuMesh)) {
+        return zox_has(mesh, MeshRenderCount) ? (int) zox_getv(mesh, MeshRenderCount) : 0;
+    }
+    return zox_has(mesh, MeshIndicies) ? zox_get(mesh, MeshIndicies)->length : 0;
+}

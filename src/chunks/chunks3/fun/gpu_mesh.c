@@ -43,6 +43,13 @@ typedef struct {
     byte colored;       // palette given (gpu_mesher_set_colors)
     uint palette[256];  // voxel v's colour, rgb a byte each
     uint occludes[8];   // voxels that darken corners, bit v - 1 (solid ones)
+    byte sided;         // a model's lod: the lights grid holds each cell's sides that hide (bit d: its side facing d
+                        //  all hides at full detail, get_node_sides_all_hide), a face hides by its neighbour's side
+    byte skinned;       // a sided model's bones too: the lights grid's second half each cell's bone (255 air), each
+                        //  vertex's two bones and weight into vertex_lights, as the cpu's (bones/sys/generate.c)
+    uint bones_count;
+    uint parents[64];   // each bone's parent's index, a byte each (255 none)
+    float4 place;       // colored: its vertices at xyz + voxel * w (a model's space), not lit (no face lights)
     byte textured;      // uvs given (gpu_mesher_set_uvs)
     uint max_faces;     // room in the vertex, light and index buffers
     ulong fence;        // after the last mesh, 0 once its count was read (gpu_mesher_counted)
@@ -110,6 +117,11 @@ static const char* zox_gpu_mesh_source =
 "uniform int colored;\n"
 "uniform uint palette[256];\n"
 "uniform uint occludes[8];\n"
+"uniform vec4 place;\n"
+"uniform int sided;\n"
+"uniform int skinned;\n"
+"uniform uint bones_count;\n"
+"uniform uint parents[64];\n"
 "\n"
 "// does this mesh draw voxel v (its block material's), bit v - 1\n"
 "bool is_drawn(uint v) {\n"
@@ -256,11 +268,101 @@ static const char* zox_gpu_mesh_source =
 "    return result;\n"
 "}\n"
 "\n"
+"// a cell's bone (255 air), the lights grid's second half (skinned)\n"
+"uint bone_at(ivec3 p) {\n"
+"    int length = (1 << depth) + 2;\n"
+"    uint i = cell(p) + uint((length * length * length + 3) & ~3);\n"
+"    return (lights[i >> 2] >> ((i & 3u) * 8u)) & 255u;\n"
+"}\n"
+"\n"
+"uint parent_of(uint b) {\n"
+"    return (parents[b >> 2] >> ((b & 3u) * 8u)) & 255u;\n"
+"}\n"
+"\n"
+"bool bones_joined(uint x, uint y) {\n"
+"    return x < bones_count && y < bones_count && (parent_of(x) == y || parent_of(y) == x);\n"
+"}\n"
+"\n"
+"// a vertex's bones (bone_parts_vertex): of its corner's 8 cells' bones joined to its face's (through each other too),\n"
+"//  the two most of them are, weighted by their counts: { bone, other bone, its weight, 0 }\n"
+"uint corner_bones(ivec3 k, uint bone) {\n"
+"    uint kinds[8];\n"
+"    uint counts[8];\n"
+"    bool joined[8];\n"
+"    int count = 0;\n"
+"    for (int i = 0; i < 8; i++) {\n"
+"        uint at = bone_at(k + ivec3(-1 + (i & 1), -1 + ((i >> 1) & 1), -1 + ((i >> 2) & 1)));\n"
+"        if (at == 255u) {\n"
+"            continue;\n"
+"        }\n"
+"        int j = 0;\n"
+"        while (j < count && kinds[j] != at) {\n"
+"            j++;\n"
+"        }\n"
+"        if (j == count) {\n"
+"            kinds[count] = at;\n"
+"            counts[count] = 0u;\n"
+"            joined[count] = at == bone;\n"
+"            count++;\n"
+"        }\n"
+"        counts[j]++;\n"
+"    }\n"
+"    bool found = false;\n"
+"    for (int i = 0; i < count; i++) {\n"
+"        found = found || joined[i];\n"
+"    }\n"
+"    for (int i = 0; i < count && !found; i++) {\n"
+"        joined[i] = true;\n"
+"    }\n"
+"    for (bool grew = true; grew;) {\n"
+"        grew = false;\n"
+"        for (int i = 0; i < count; i++) {\n"
+"            for (int j = 0; j < count && !joined[i]; j++) {\n"
+"                if (joined[j] && bones_joined(kinds[i], kinds[j])) {\n"
+"                    joined[i] = true;\n"
+"                    grew = true;\n"
+"                }\n"
+"            }\n"
+"        }\n"
+"    }\n"
+"    int first = -1;\n"
+"    int second = -1;\n"
+"    for (int i = 0; i < count; i++) {\n"
+"        if (!joined[i]) {\n"
+"            continue;\n"
+"        }\n"
+"        if (first < 0 || counts[i] > counts[first] || (counts[i] == counts[first] && kinds[i] < kinds[first])) {\n"
+"            second = first;\n"
+"            first = i;\n"
+"        } else if (second < 0 || counts[i] > counts[second] || (counts[i] == counts[second] && kinds[i] < kinds[second])) {\n"
+"            second = i;\n"
+"        }\n"
+"    }\n"
+"    if (first < 0) {\n"
+"        return bone | (bone << 8);\n"
+"    }\n"
+"    if (second < 0) {\n"
+"        return kinds[first] | (kinds[first] << 8);\n"
+"    }\n"
+"    int low = kinds[first] < kinds[second] ? first : second;\n"
+"    uint total = counts[first] + counts[second];\n"
+"    uint low_weight = (255u * counts[low] + total / 2u) / total;\n"
+"    int lead = kinds[second] == bone ? second : first;\n"
+"    int other = lead == first ? second : first;\n"
+"    uint weight = other == low ? low_weight : 255u - low_weight;\n"
+"    return kinds[lead] | (kinds[other] << 8) | (weight << 16);\n"
+"}\n"
+"\n"
 "// does a voxel's face that way show: into a missing chunk as edge_faces says (the top always), else unless hidden\n"
 "bool face_shows(ivec3 p, int d) {\n"
 "    ivec3 n = p + directions[d];\n"
 "    if (outside(n) && missing(n)) {\n"
 "        return edge_faces != 0 || d == 3;\n"
+"    }\n"
+"    if (sided != 0) {\n"
+"        uint i = cell(n);\n"
+"        uint sides = (lights[i >> 2] >> ((i & 3u) * 8u)) & 255u;\n"
+"        return ((sides >> uint(d ^ 1)) & 1u) == 0u;\n"
 "    }\n"
 "    return !hides_face(voxel_at(n));\n"
 "}\n"
@@ -286,7 +388,13 @@ static const char* zox_gpu_mesh_source =
 "            continue;\n"
 "        }\n"
 "        atomicAdd(index_count, 6u);\n"
-"        uint face_light4 = lit != 0 ? face_lights(p, d) : 0xFFFFFFFFu;\n"
+"        uint face_light4 = lit != 0 ? face_lights(p, d) : 0xFFFFFFFFu;\n""        // its bone (bone_parts_face): its voxel's, or the one in front if its part's air, else the first\n"
+"        uint face_bone = 0u;\n"
+"        if (skinned != 0) {\n"
+"            face_bone = bone_at(p);\n"
+"            face_bone = face_bone != 255u ? face_bone : bone_at(p + directions[d]);\n"
+"            face_bone = face_bone != 255u ? face_bone : 0u;\n"
+"        }\n"
 "        uint v = face * 4u;\n"
 "        for (int c = 0; c < 4; c++) {\n"
 "            vec3 corner = corners[d * 4 + c];\n"
@@ -307,10 +415,15 @@ static const char* zox_gpu_mesh_source =
 "            int s = (corner[axis_a[d]] > 0.5 ? 1 : 0) | (corner[axis_b[d]] > 0.5 ? 2 : 0);\n"
 "            uint light = (face_light4 >> (8 * s)) & 255u;\n"
 "            float w = float(voxel) + float(d) * 256.0 + float(light) * 2048.0 + float(s) * 524288.0;\n"
-"            vertices[v + uint(c)] = vec4(vec3(p) + corner, w);\n"
-"            vertex_lights[v + uint(c)] = face_light4;\n"
 "            if (colored != 0) {\n"
+"                vertices[v + uint(c)] = vec4(place.xyz + (vec3(p) + corner) * place.w, w);\n"
 "                vertex_colors[v + uint(c)] = corner_color(palette[voxel], p, d, s);\n"
+"                if (skinned != 0) {\n"
+"                    vertex_lights[v + uint(c)] = corner_bones(p + ivec3(corner), face_bone);\n"
+"                }\n"
+"            } else {\n"
+"                vertices[v + uint(c)] = vec4(vec3(p) + corner, w);\n"
+"                vertex_lights[v + uint(c)] = face_light4;\n"
 "            }\n"
 "        }\n"
 "        uint i = face * 6u;\n"
@@ -470,6 +583,7 @@ byte gpu_mesher_create(GpuMesher* mesher, uint max_faces) {
     const uint zero = 0;
     mesher->max_faces = max_faces;
     mesher->edge_faces = 1;
+    mesher->place = (float4) { 0, 0, 0, 1 };
     memset(mesher->drawn, 255, sizeof(mesher->drawn));
     memset(mesher->hides, 255, sizeof(mesher->hides));
     mesher->voxels = zox_gpu_storage_buffer(sizeof(uint), &zero);
@@ -576,8 +690,9 @@ void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, by
     //  old bytes to new memory first (~0.18ms a mesh, two 39KB grids), only to overwrite them
     zox_gpu_storage_upload(mesher->voxels, cells, voxels);
     const byte lit = lights && lighting;
-    if (lit) {
-        zox_gpu_storage_upload(mesher->lights, cells, lights);
+    if (lit || (mesher->sided && lights)) {
+        // or a model's sides (sided), and its bones after them (skinned)
+        zox_gpu_storage_upload(mesher->lights, mesher->skinned ? cells * 2 : cells, lights);
     }
     zox_gpu_compute_use(mesher->program);
     zox_gpu_compute_uniform_int(mesher->program, "depth", depth);
@@ -591,9 +706,16 @@ void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, by
     zox_gpu_compute_uniform_uint_array(mesher->program, "hides", mesher->hides, 8);
     zox_gpu_compute_uniform_int(mesher->program, "textured", mesher->textured);
     zox_gpu_compute_uniform_int(mesher->program, "colored", mesher->colored);
+    zox_gpu_compute_uniform_int(mesher->program, "sided", mesher->sided);
+    zox_gpu_compute_uniform_int(mesher->program, "skinned", mesher->skinned);
+    if (mesher->skinned) {
+        zox_gpu_compute_uniform_uint(mesher->program, "bones_count", mesher->bones_count);
+        zox_gpu_compute_uniform_uint_array(mesher->program, "parents", mesher->parents, 64);
+    }
     if (mesher->colored) {
         zox_gpu_compute_uniform_uint_array(mesher->program, "palette", mesher->palette, 256);
         zox_gpu_compute_uniform_uint_array(mesher->program, "occludes", mesher->occludes, 8);
+        zox_gpu_program_float4(mesher->program, "place", mesher->place);
     }
     if (mesher->textured) {
         zox_gpu_compute_uniform_uint_array(mesher->program, "face_corners", zox_gpu_mesh_face_corners, 24);

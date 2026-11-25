@@ -256,7 +256,8 @@ void bone_index_generate_system(iter* it) {
                 {
                     continue;
                 }
-                zox_add(mesh, BuildMeshWeights);
+                // a gpu mesh is weighted as it's meshed (sys/skeleton_gpu.c)
+                zox_add_id(mesh, zox_has(mesh, GpuMesh) ? zox_id(BuildMesh) : zox_id(BuildMeshWeights));
             }
         }
         if (dbg_log) {

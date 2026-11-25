@@ -4,9 +4,11 @@
 entity prefab_bone;
 entity prefab_skeleton;
 entity prefab_skeleton_mesh;
+entity prefab_skeleton_mesh_gpu;
 
 void spawn_prefabs_bones(ecs* world) {
     prefab_bone = spawn_prefab_bone(world);
     prefab_skeleton = spawn_prefab_skeleton(world);
     prefab_skeleton_mesh = spawn_prefab_skeleton_mesh(world);
+    prefab_skeleton_mesh_gpu = spawn_prefab_skeleton_mesh_gpu(world, prefab_skeleton_mesh);
 }
