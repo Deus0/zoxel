@@ -364,4 +364,16 @@ models and characters, cpu and gpu; terrain (tiles repeating, lights) after.
   model splits to voxels first (they merge better than whole nodes). Tests count faces as voxel faces
   (`mesh3_voxel_faces`: its area) and body_poses cuts a merged quad's sides into voxel long pieces. The slime 360 to
   246 solid faces, 528 to 210 see through; a humanoid 19896 to 15820 vertices, no cracks at joints.
+- 2 done: the gpu's, the same quads (sys/vox_gpu.c, fun/gpu_mesh.c `greedy`): three dispatches, each face's key (its
+  colour and bones if its corners are alike, else uneven), each row's runs, then each row's quads; its count read back
+  once the gpu's done (vox_gpu_count_system: MeshCommandGPULink, MeshFence as terrain's; a skeleton mesh MeshBuilt
+  then). The rule became row parallel on both: a row's longest runs of matching faces, a run starting a quad unless the
+  row before has the same one (start, width, faces), growing down the rows that do (the same counts as growing each
+  quad, here). Up to 64³ (its scratch a key a face), deeper models as they are. tst gpu_vox_colors: the cpu's and the
+  gpu's merged quads the same, corner for corner, at 3 lods, ao on and off. Release 32³ on the 780M: the gpu's merge
+  0.65ms of gpu time (one invocation a slice was 4.3), the cpu's pass 1.0ms on a worker.
+- 3 done with 1 and 2: skeleton meshes, their weights in the key (a face merges only with its corners on one weight):
+  body_poses on cpu and gpu 4058 faces, no open edges, no cracks in 12 poses. Vulkan's driver rounds a few colours
+  apart (15848 vertices to gl's 15820), fewer faces merge there.
+- Next: terrain (tiles repeating in a quad, then the light rule), doc/tech/chunks3.md steps 5.
 

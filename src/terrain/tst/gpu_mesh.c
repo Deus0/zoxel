@@ -19,8 +19,8 @@ static inline int zox_tst_gpu_terrain_count(ecs* world, int* settled) {
     *settled = 0;
     zox_each_begin(MeshFence);
         zox_each_o(MeshFence, fence);
-        if (!zox_has(e, GpuMesh)) {
-            continue;
+        if (!zox_has(e, GpuMesh) || !zox_has(e, ChunkMesh)) {
+            continue;   // a vox model's gpu mesh has one too (chunks3/sys/vox_gpu.c)
         }
         count++;
         *settled += !fence->value && zox_has(e, MeshBuilt) && !zox_has(e, BuildMesh) && !zox_has(e, BuildMeshColors) &&
@@ -82,8 +82,8 @@ void zox_tst_gpu_terrain_check(ecs* world) {
     byte materials[256];
     entity manager_cached = 0;
     zox_each_begin(MeshFence);
-        if (!zox_has(e, GpuMesh)) {
-            continue;
+        if (!zox_has(e, GpuMesh) || !zox_has(e, ChunkMesh)) {
+            continue;   // terrain's, not a vox model's
         }
         const entity material = zox_get_parent(world, e);
         const entity chunk = zox_valid(material) ? zox_get_parent(world, material) : 0;

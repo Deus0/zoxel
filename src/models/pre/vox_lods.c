@@ -42,5 +42,7 @@ entity spawn_prefab_vox_mesh_gpu(ecs *world, entity prefab) {
     zox_set_unique_name(e, "vox_mesh_gpu");
     zox_add(e, GpuMesh);
     zox_setv(e, MeshFaceRoom, 0);
+    zox_setv(e, MeshCommandGPULink, guint2_zero);  // greedy: its merged count comes back (chunks3/sys/vox_gpu.c)
+    zox_setv(e, MeshFence, 0);
     return e;
 }

@@ -50,6 +50,10 @@ typedef struct {
                         //  vertex's two bones and weight into vertex_lights, as the cpu's (bones/sys/generate.c)
     uint bones_count;
     uint parents[64];   // each bone's parent's index, a byte each (255 none)
+    byte greedy;        // a colored mesh's faces merged (fun/greedy.c's rule and order): its faces' keys, each row's runs,
+                        //  then quads, three dispatches; its count read back after
+    uint scratch;       // greedy: each face's key, bones and run (binding 10)
+    size_t scratch_bytes;
     float4 place;       // colored: its vertices at xyz + voxel * w (a model's space), not lit (no face lights)
     byte textured;      // uvs given (gpu_mesher_set_uvs)
     uint max_faces;     // room in the vertex, light and index buffers
@@ -100,6 +104,7 @@ static const char* zox_gpu_mesh_source =
 "layout(std430, binding = 6) readonly buffer Uvs { vec2 uvs[]; };\n"
 "layout(std430, binding = 7) writeonly buffer VertexUvs { vec2 vertex_uvs[]; };\n"
 "layout(std430, binding = 9) writeonly buffer VertexColors { uint vertex_colors[]; };\n"
+"layout(std430, binding = 10) buffer Scratch { uint scratch[]; };\n"
 "uniform int depth;\n"
 "uniform uint max_faces;\n"
 "uniform int lit;\n"
@@ -121,6 +126,7 @@ static const char* zox_gpu_mesh_source =
 "uniform vec4 place;\n"
 "uniform int ambient;\n"
 "uniform int sided;\n"
+"uniform int greedy;\n"
 "uniform int skinned;\n"
 "uniform uint bones_count;\n"
 "uniform uint parents[64];\n"
@@ -378,7 +384,192 @@ static const char* zox_gpu_mesh_source =
 "    }\n"
 "    return !hides_face(voxel_at(n));\n"
 "}\n"
+"// greedy (colored): a face's corners, its colours and bones; false if it doesn't show\n"
+"bool greedy_face(ivec3 p, int d, out uint colours[4], out uint bones[4]) {\n"
+"    uint voxel = voxel_at(p);\n"
+"    if (outside(p) || !is_drawn(voxel) || !face_shows(p, d)) {\n"
+"        return false;\n"
+"    }\n"
+"    uint face_bone = 0u;\n"
+"    if (skinned != 0) {\n"
+"        face_bone = bone_at(p);\n"
+"        face_bone = face_bone != 255u ? face_bone : bone_at(p + directions[d]);\n"
+"        face_bone = face_bone != 255u ? face_bone : 0u;\n"
+"    }\n"
+"    for (int c = 0; c < 4; c++) {\n"
+"        vec3 corner = corners[d * 4 + c];\n"
+"        int s = (corner[axis_a[d]] > 0.5 ? 1 : 0) | (corner[axis_b[d]] > 0.5 ? 2 : 0);\n"
+"        colours[c] = corner_color(palette[voxel], p, d, s);\n"
+"        bones[c] = skinned != 0 ? corner_bones(p + ivec3(corner), face_bone) : 0u;\n"
+"    }\n"
+"    return true;\n"
+"}\n"
+"\n"
+"bool greedy_uniform(uint colours[4], uint bones[4]) {\n"
+"    return colours[1] == colours[0] && colours[2] == colours[0] && colours[3] == colours[0] &&\n"
+"        bones[1] == bones[0] && bones[2] == bones[0] && bones[3] == bones[0];\n"
+"}\n"
+"\n"
+"// a slice's cell: slice along its normal, u and v along its face's axes\n"
+"ivec3 greedy_cell(int d, int slice, int u, int v) {\n"
+"    ivec3 p = ivec3(0);\n"
+"    p[d >> 1] = slice;\n"
+"    p[axis_a[d]] = u;\n"
+"    p[axis_b[d]] = v;\n"
+"    return p;\n"
+"}\n"
+"\n"
+"// a quad w by h from p's face, its corners' values\n"
+"void greedy_emit(ivec3 p, int d, int w, int h, uint colours[4], uint bones[4]) {\n"
+"    uint face = atomicAdd(faces_wanted, 1u);\n"
+"    if (face >= max_faces) {\n"
+"        return;\n"
+"    }\n"
+"    atomicAdd(index_count, 6u);\n"
+"    uint v = face * 4u;\n"
+"    for (int c = 0; c < 4; c++) {\n"
+"        vec3 corner = corners[d * 4 + c];\n"
+"        if (corner[axis_a[d]] > 0.5) {\n"
+"            corner[axis_a[d]] = float(w);\n"
+"        }\n"
+"        if (corner[axis_b[d]] > 0.5) {\n"
+"            corner[axis_b[d]] = float(h);\n"
+"        }\n"
+"        vertices[v + uint(c)] = vec4(place.xyz + (vec3(p) + corner) * place.w, float(d) * 256.0);\n"
+"        vertex_colors[v + uint(c)] = colours[c];\n"
+"        if (skinned != 0) {\n"
+"            vertex_lights[v + uint(c)] = bones[c];\n"
+"        }\n"
+"    }\n"
+"    uint i = face * 6u;\n"
+"    indices[i] = v;\n"
+"    indices[i + 1u] = v + 1u;\n"
+"    indices[i + 2u] = v + 2u;\n"
+"    indices[i + 3u] = v;\n"
+"    indices[i + 4u] = v + 2u;\n"
+"    indices[i + 5u] = v + 3u;\n"
+"}\n"
+"\n"
+"// greedy's keys (pass 1, a voxel an invocation): each face's 3 uints in scratch: its key (0 none, else its colour with\n"
+"//  bit 24: its corners alike, or bit 25: uneven, its own quad), its bones, and its run's width (pass 2) if it starts one\n"
+"uint greedy_key_index(ivec3 p, int d) {\n"
+"    int size = 1 << depth;\n"
+"    return uint(((d * size + p.x) * size + p.y) * size + p.z) * 3u;\n"
+"}\n"
+"\n"
+"void greedy_keys() {\n"
+"    ivec3 p = ivec3(gl_GlobalInvocationID);\n"
+"    if (outside(p)) {\n"
+"        return;\n"
+"    }\n"
+"    uint colours[4];\n"
+"    uint bones[4];\n"
+"    for (int d = 0; d < 6; d++) {\n"
+"        uint k = greedy_key_index(p, d);\n"
+"        scratch[k + 2u] = 0u;\n"
+"        if (!greedy_face(p, d, colours, bones)) {\n"
+"            scratch[k] = 0u;\n"
+"        } else if (greedy_uniform(colours, bones)) {\n"
+"            scratch[k] = colours[0] | (1u << 24);\n"
+"            scratch[k + 1u] = bones[0];\n"
+"        } else {\n"
+"            scratch[k] = 1u << 25;\n"
+"        }\n"
+"    }\n"
+"}\n"
+"\n"
+"// faces at k and l merge: both uniform, the same colour and bones\n"
+"bool greedy_matches(uint k, uint l) {\n"
+"    return (scratch[k] & (1u << 24)) != 0u && scratch[k] == scratch[l] && scratch[k + 1u] == scratch[l + 1u];\n"
+"}\n"
+"\n"
+"// a row's invocation: x its row (v), y its slice, z its direction; false past the grid\n"
+"bool greedy_row(out int v, out int slice, out int d) {\n"
+"    v = int(gl_GlobalInvocationID.x);\n"
+"    slice = int(gl_GlobalInvocationID.y);\n"
+"    d = int(gl_GlobalInvocationID.z);\n"
+"    int size = 1 << depth;\n"
+"    return d < 6 && v < size && slice < size;\n"
+"}\n"
+"\n"
+"// pass 2, a row each: its runs, the longest strips of matching faces, each's width at its first face (fun/greedy.c)\n"
+"void greedy_runs() {\n"
+"    int v, slice, d;\n"
+"    if (!greedy_row(v, slice, d)) {\n"
+"        return;\n"
+"    }\n"
+"    int size = 1 << depth;\n"
+"    for (int u = 0; u < size;) {\n"
+"        uint k = greedy_key_index(greedy_cell(d, slice, u, v), d);\n"
+"        if ((scratch[k] & (1u << 24)) == 0u) {\n"
+"            u++;\n"
+"            continue;\n"
+"        }\n"
+"        int w = 1;\n"
+"        while (u + w < size && greedy_matches(k, greedy_key_index(greedy_cell(d, slice, u + w, v), d))) {\n"
+"            w++;\n"
+"        }\n"
+"        scratch[k + 2u] = uint(w);\n"
+"        u += w;\n"
+"    }\n"
+"}\n"
+"\n"
+"// pass 3, a row each: a run starts a quad unless the row before has the same one, growing down rows that do; an\n"
+"//  uneven face is its own quad\n"
+"void greedy_quads() {\n"
+"    int v, slice, d;\n"
+"    if (!greedy_row(v, slice, d)) {\n"
+"        return;\n"
+"    }\n"
+"    int size = 1 << depth;\n"
+"    uint colours[4];\n"
+"    uint bones[4];\n"
+"    for (int u = 0; u < size; u++) {\n"
+"        ivec3 p = greedy_cell(d, slice, u, v);\n"
+"        uint k = greedy_key_index(p, d);\n"
+"        if ((scratch[k] & (1u << 25)) != 0u) {\n"
+"            greedy_face(p, d, colours, bones);\n"
+"            greedy_emit(p, d, 1, 1, colours, bones);\n"
+"            continue;\n"
+"        }\n"
+"        uint w = scratch[k + 2u];\n"
+"        if (w == 0u) {\n"
+"            continue;\n"
+"        }\n"
+"        if (v > 0) {\n"
+"            uint above = greedy_key_index(greedy_cell(d, slice, u, v - 1), d);\n"
+"            if (scratch[above + 2u] == w && greedy_matches(k, above)) {\n"
+"                continue;\n"
+"            }\n"
+"        }\n"
+"        int h = 1;\n"
+"        while (v + h < size) {\n"
+"            uint below = greedy_key_index(greedy_cell(d, slice, u, v + h), d);\n"
+"            if (scratch[below + 2u] != w || !greedy_matches(k, below)) {\n"
+"                break;\n"
+"            }\n"
+"            h++;\n"
+"        }\n"
+"        uint c = scratch[k] & 0xFFFFFFu;\n"
+"        uint b = scratch[k + 1u];\n"
+"        colours = uint[4](c, c, c, c);\n"
+"        bones = uint[4](b, b, b, b);\n"
+"        greedy_emit(p, d, int(w), h, colours, bones);\n"
+"    }\n"
+"}\n"
 "\n""void main() {\n"
+"    if (greedy == 1) {\n"
+"        greedy_keys();\n"
+"        return;\n"
+"    }\n"
+"    if (greedy == 2) {\n"
+"        greedy_runs();\n"
+"        return;\n"
+"    }\n"
+"    if (greedy == 3) {\n"
+"        greedy_quads();\n"
+"        return;\n"
+"    }\n"
 "    ivec3 p = ivec3(gl_GlobalInvocationID);\n"
 "    if (outside(p)) {\n"
 "        return;\n"
@@ -540,6 +731,12 @@ static inline size_t gpu_mesh_grid_bytes(byte depth) {
     return (length * length * length + 3) & ~(size_t) 3;
 }
 
+// greedy's scratch for a grid at depth: each face's key, bones and run (3 uints, 6 faces a voxel)
+static inline size_t gpu_mesh_greedy_bytes(byte depth) {
+    const size_t size = octree_size(depth);
+    return 6 * size * size * size * 3 * sizeof(uint);
+}
+
 // the faces gpu_mesh_grid will write for a grid, the shader's rule (face_shows) on the cpu: a mesh's room grows to
 //  fit before it's dispatched, so it never overflows (one that did drew the faces that fit, then nothing until it was
 //  meshed again bigger: chunks flickered as they remeshed, tst chunk_mesh_flicker)
@@ -625,6 +822,7 @@ void gpu_mesher_dispose(GpuMesher* mesher) {
         zox_gpu_dispose_buffer(mesher->indices);
         zox_gpu_dispose_buffer(mesher->vertex_uvs);
         zox_gpu_dispose_buffer(mesher->vertex_colors);
+        zox_gpu_dispose_buffer(mesher->scratch);
         zox_gpu_fence_dispose(mesher->fence);
     }
     memset(mesher, 0, sizeof(GpuMesher));
@@ -720,6 +918,7 @@ void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, by
     zox_gpu_compute_uniform_int(mesher->program, "textured", mesher->textured);
     zox_gpu_compute_uniform_int(mesher->program, "colored", mesher->colored);
     zox_gpu_compute_uniform_int(mesher->program, "sided", mesher->sided);
+    zox_gpu_compute_uniform_int(mesher->program, "greedy", mesher->greedy ? 1 : 0);
     zox_gpu_compute_uniform_int(mesher->program, "skinned", mesher->skinned);
     if (mesher->skinned) {
         zox_gpu_compute_uniform_uint(mesher->program, "bones_count", mesher->bones_count);
@@ -751,7 +950,26 @@ void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, by
     zox_gpu_storage_bind(7, mesher->vertex_uvs);
     zox_gpu_storage_bind(9, mesher->vertex_colors ? mesher->vertex_colors : mesher->vertex_uvs);   // terrain's: unwritten
     const uint groups = (octree_size(depth) + zox_gpu_mesh_group_size - 1) / zox_gpu_mesh_group_size;
-    zox_gpu_compute_dispatch(groups, groups, groups);
+    if (mesher->greedy) {
+        // each face's key (2 uints), then a bit a cell for each direction's slices
+        const size_t bytes = gpu_mesh_greedy_bytes(depth);
+        if (!mesher->scratch) {
+            mesher->scratch = zox_gpu_storage_buffer(bytes, NULL);
+            mesher->scratch_bytes = bytes;
+        } else if (mesher->scratch_bytes < bytes) {
+            zox_gpu_storage_upload(mesher->scratch, bytes, NULL);     // the same buffer, bigger
+            mesher->scratch_bytes = bytes;
+        }
+        zox_gpu_storage_bind(10, mesher->scratch);
+        zox_gpu_compute_dispatch(groups, groups, groups);   // its faces' keys, a voxel an invocation
+        zox_gpu_compute_uniform_int(mesher->program, "greedy", 2);
+        zox_gpu_compute_dispatch(groups, groups, 2);        // each row's runs: a row x, a slice y, a direction z
+        zox_gpu_compute_uniform_int(mesher->program, "greedy", 3);
+        zox_gpu_compute_dispatch(groups, groups, 2);        // each row's quads
+    } else {
+        zox_gpu_storage_bind(10, mesher->scratch ? mesher->scratch : mesher->vertex_uvs);  // unread
+        zox_gpu_compute_dispatch(groups, groups, groups);
+    }
     zox_gpu_compute_use(0);
     zox_gpu_fence_dispose(mesher->fence);
     mesher->fence = zox_gpu_fence();

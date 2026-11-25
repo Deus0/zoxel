@@ -205,9 +205,32 @@ static int zox_tst_poses_edge_compare(const void* x, const void* y) {
     return e->a != f->a ? (e->a < f->a ? -1 : 1) : e->b != f->b ? (e->b < f->b ? -1 : 1) : 0;
 }
 
+// a skeleton mesh's indices, vertices and weights: a gpu mesh's read back (bones/sys/skeleton_gpu.c), else its own
+//  (copied), dispose them after
+static inline void zox_tst_poses_mesh(ecs* world, entity mesh, MeshIndicies* indicies, MeshVertices* vertices,
+    BoneIndexes* weights)
+{
+    if (zox_has(mesh, GpuMesh)) {
+        MeshColorRGBs colors = { 0 };
+        if (mesh3_read_gpu(world, mesh, indicies, vertices, &colors)) {
+            resize_BoneIndexes(weights, vertices->length);
+            zox_gpu_storage_read(zox_getv(mesh, BoneIndexGPULink), 0, sizeof(byte4) * vertices->length, weights->value);
+        }
+        dispose_MeshColorRGBs(&colors);
+        return;
+    }
+    clone_MeshIndicies(indicies, zox_get(mesh, MeshIndicies));
+    clone_MeshVertices(vertices, zox_get(mesh, MeshVertices));
+    clone_BoneIndexes(weights, zox_get(mesh, BoneIndexes));
+}
+
 static inline void zox_tst_poses_open_edges(ecs* world, entity skeleton, entity mesh) {
     const BoneLinks* bones = zox_get(skeleton, BoneLinks);
-    const MeshVertices* vertices = zox_get(mesh, MeshVertices);
+    MeshIndicies mesh_indicies = { 0 };
+    MeshVertices mesh_vertices = { 0 };
+    BoneIndexes mesh_weights = { 0 };
+    zox_tst_poses_mesh(world, mesh, &mesh_indicies, &mesh_vertices, &mesh_weights);
+    const MeshVertices* vertices = &mesh_vertices;
     const entity vox = get_skeleton_vox(world, skeleton);
     const byte depth = zox_getv(mesh, RenderDepth);
     int length = 0;
@@ -240,7 +263,7 @@ static inline void zox_tst_poses_open_edges(ecs* world, entity skeleton, entity 
     zox_tst_poses_edge* edges = malloc(sizeof(zox_tst_poses_edge) * edges_room);
     for (int f = 0; f < faces; f++) {
         const float3* v = &vertices->value[f * 4];
-        const int* face = &zox_get(mesh, MeshIndicies)->value[f * 6];
+        const int* face = &mesh_indicies.value[f * 6];
         const int tri[3] = { face[0] - f * 4, face[1] - f * 4, face[2] - f * 4 };
         const byte bone = bone_parts_face(&b, v, tri);
         // a quad's 4 sides: of its 6 corner pairs, the 2 longest are its diagonals
@@ -365,6 +388,9 @@ static inline void zox_tst_poses_open_edges(ecs* world, entity skeleton, entity 
     }
     free(edges);
     free(grid);
+    dispose_MeshIndicies(&mesh_indicies);
+    dispose_MeshVertices(&mesh_vertices);
+    dispose_BoneIndexes(&mesh_weights);
     zox_tst_poses_open = open;
     zox_log("[tst] the skin at rest: [%i] faces, [%i] open edges", faces, open);
 }
@@ -379,8 +405,12 @@ static inline void zox_tst_poses_measure(ecs* world, entity skeleton, int pose) 
         zox_tst_poses_open_edges(world, skeleton, mesh);
     }
     const BoneLinks* bones = zox_get(skeleton, BoneLinks);
-    const MeshVertices* vertices = zox_get(mesh, MeshVertices);
-    const BoneIndexes* weights = zox_get(mesh, BoneIndexes);
+    MeshIndicies mesh_indicies = { 0 };
+    MeshVertices mesh_vertices = { 0 };
+    BoneIndexes mesh_weights = { 0 };
+    zox_tst_poses_mesh(world, mesh, &mesh_indicies, &mesh_vertices, &mesh_weights);
+    const MeshVertices* vertices = &mesh_vertices;
+    const BoneIndexes* weights = &mesh_weights;
     const int length = vertices->length < weights->length ? vertices->length : weights->length;
     float4x4 matrices[zox_bones_max];
     float3 positions[zox_bones_max];
@@ -450,6 +480,9 @@ static inline void zox_tst_poses_measure(ecs* world, entity skeleton, int pose) 
         i = j;
     }
     free(corners);
+    dispose_MeshIndicies(&mesh_indicies);
+    dispose_MeshVertices(&mesh_vertices);
+    dispose_BoneIndexes(&mesh_weights);
     zox_tst_poses_cracks[pose] = cracks;
     zox_tst_poses_gaps[pose] = widest / voxel;
     zox_log("[tst] pose [%s] joint cracks [%i], parts apart widest [%.1f] voxels", zox_tst_poses[pose].name, cracks, widest / voxel);

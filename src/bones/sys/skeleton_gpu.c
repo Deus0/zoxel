@@ -3,7 +3,7 @@
 //  and weight by generate.c's rule (bone_parts_vertex) from its vox's bones grid, into its BoneIndexGPULink
 //  - BuildMesh: voxels changed, or its skeleton did (bone_index_generate_system asks for it instead of the weights)
 //  - it waits while its vox's voxels are changing (its parts table may be newer than them, generate.c)
-//  - then MeshBuilt: skeleton_meshes_system swaps it in
+//  - then MeshBuilt (greedy: once its merged count is back): skeleton_meshes_system swaps it in
 
 // its vox's bones at depth in gpu_mesh_grid's layout: each cell's bone (bone_parts_most), 255 air and round it
 static byte* skeleton_gpu_bones_grid(ecs* world, entity vox, byte depth, const void* data) {
@@ -90,17 +90,15 @@ void skeleton_mesh_gpu_system(iter* it) {
             memset(skin.parents, 255, sizeof(skin.parents));
         }
         float3 bounds[2];
-        count->value = vox_gpu_mesh(world, vox, depth->value, zox_block_material_solid, mesh->value, colors->value,
-            &room->value, bounds, &skin) * 6;
+        const uint faces = vox_gpu_mesh(world, vox, depth->value, zox_block_material_solid, mesh->value, colors->value,
+            &room->value, bounds, &skin, vox_gpu_command_of(world, e), vox_gpu_fence_of(world, e));
         zox_vox_gpu_budget_used += get_time_ms() - begin;
-        resize_MeshVertices(vertices, count->value ? 2 : 0);
-        if (count->value) {
-            vertices->value[0] = bounds[0];
-            vertices->value[1] = bounds[1];
-        }
+        vox_gpu_meshed(world, e, faces, bounds, count, vertices);
         zox_remove(e, BuildMesh);
-        zox_add(e, MeshBuilt);
-        mesh_clones_sync_gpu(world, e);
+        // built now, or once its merged count is back (greedy, vox_gpu_count_system)
+        if (!vox_gpu_pending(world, e)) {
+            zox_add(e, MeshBuilt);
+        }
     }
     zox_sys_on_end();
 } zoxd_system(skeleton_mesh_gpu_system);

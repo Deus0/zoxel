@@ -3,11 +3,13 @@
 //  - only uniform faces merge: their 4 corners one colour (palette and ambient occlusion, or the direction's shade)
 //      and, skinned, one bone weight; each merged face had its corners' values, so the gpu interpolates the same and
 //      the picture doesn't change (a face in a crease or at a joint stays its own)
-//  - a direction and a plane at a time, row by row: a face grows along its first axis (gpu_mesh.c's axis_a), then
-//      down rows (axis_b) while the whole width matches; the gpu mesher merges in the same order (the same quads)
+//  - a direction and a plane at a time: each row (along gpu_mesh.c's axis_a) split into its longest runs of matching
+//      faces, then a run starts a quad unless the row before has the same run (start, width, faces), the quad growing
+//      down the rows (axis_b) that do; each row on its own, so the gpu merges its rows in parallel (the same quads)
 //  - a merged quad keeps its first face's corner order and winding, its corners moved out to its width and height
 //  - a pass over the mesh after it's built: the walkers stay as they are
 byte zox_greedy_mesh = 1;
+#define zox_greedy_depth_max 6     // models up to 64³ merge (the gpu's scratch a key a face), deeper ones as they are
 
 static const byte greedy_axis_u[6] = { 1, 1, 0, 0, 0, 0 };
 static const byte greedy_axis_v[6] = { 2, 2, 2, 2, 1, 1 };
@@ -17,15 +19,6 @@ typedef struct {
     int plane, u, v;
     int face;
 } greedy_face;
-
-static int greedy_face_compare(const void* x, const void* y) {
-    const greedy_face* a = x;
-    const greedy_face* b = y;
-    if (a->d != b->d) return a->d - b->d;
-    if (a->plane != b->plane) return a->plane < b->plane ? -1 : 1;
-    if (a->v != b->v) return a->v < b->v ? -1 : 1;
-    return a->u < b->u ? -1 : a->u > b->u;
-}
 
 static inline float greedy_axis(float3 p, byte axis) {
     return axis == 0 ? p.x : axis == 1 ? p.y : p.z;
@@ -100,14 +93,36 @@ void mesh_greedy(MeshIndicies* indicies, MeshVertices* vertices, MeshColorRGBs* 
         const greedy_face g = { d, (int) lroundf((greedy_axis(lower, axis) - greedy_axis(origin, axis)) / voxel),
             (int) lroundf((greedy_axis(lower, u_axis) - greedy_axis(origin, u_axis)) / voxel),
             (int) lroundf((greedy_axis(lower, v_axis) - greedy_axis(origin, v_axis)) / voxel), f };
-        if (g.u < 0 || g.v < 0) {
+        if (g.u < 0 || g.v < 0 || g.plane < 0) {
             kept[f] = 1;
             continue;
         }
-        span = int_max(span, int_max(g.u, g.v) + 1);
+        span = int_max(span, int_max(int_max(g.u, g.v), g.plane) + 1);
         list[listed++] = g;
     }
-    qsort(list, listed, sizeof(greedy_face), greedy_face_compare);
+    // deeper than the gpu merges (zox_greedy_depth_max): as it is
+    if (span > octree_size(zox_greedy_depth_max) + 1) {
+        zox_free(list);
+        zox_free(kept);
+        return;
+    }
+    // grouped by direction and plane (a counting sort: qsort was most of the pass)
+    const int buckets = 6 * span;
+    int* starts = zox_malloc(sizeof(int) * (buckets + 1));
+    memset(starts, 0, sizeof(int) * (buckets + 1));
+    for (int i = 0; i < listed; i++) {
+        starts[list[i].d * span + list[i].plane + 1]++;
+    }
+    for (int i = 0; i < buckets; i++) {
+        starts[i + 1] += starts[i];
+    }
+    greedy_face* sorted = zox_malloc(sizeof(greedy_face) * (listed ? listed : 1));
+    for (int i = 0; i < listed; i++) {
+        sorted[starts[list[i].d * span + list[i].plane]++] = list[i];
+    }
+    zox_free(starts);
+    zox_free(list);
+    list = sorted;
     // out: the kept faces, then each merged quad
     int* out_indicies = zox_malloc(sizeof(int) * faces * 6);
     float3* out_vertices = zox_malloc(sizeof(float3) * faces * 4);
@@ -129,6 +144,7 @@ void mesh_greedy(MeshIndicies* indicies, MeshVertices* vertices, MeshColorRGBs* 
         out++;
     }
     int* mask = zox_malloc(sizeof(int) * span * span);
+    int* runs = zox_malloc(sizeof(int) * span * span);     // a run's width at its first cell, 0 elsewhere
     for (int start = 0; start < listed;) {
         int end = start;
         while (end < listed && list[end].d == list[start].d && list[end].plane == list[start].plane) {
@@ -138,31 +154,37 @@ void mesh_greedy(MeshIndicies* indicies, MeshVertices* vertices, MeshColorRGBs* 
         const byte u_axis = greedy_axis_u[d], v_axis = greedy_axis_v[d];
         for (int i = 0; i < span * span; i++) {
             mask[i] = -1;
+            runs[i] = 0;
         }
         for (int i = start; i < end; i++) {
             mask[list[i].v * span + list[i].u] = list[i].face;
         }
+        // each row's runs: its longest strips of matching faces
         for (int v = 0; v < span; v++)
-        for (int u = 0; u < span; u++) {
+        for (int u = 0; u < span;) {
             const int f = mask[v * span + u];
             if (f < 0) {
+                u++;
                 continue;
             }
             int w = 1;
             while (u + w < span && mask[v * span + u + w] >= 0 && greedy_same(colors, bones, f, mask[v * span + u + w])) {
                 w++;
             }
-            int h = 1;
-            for (byte grows = 1; grows && v + h < span; ) {
-                for (int i = 0; i < w && grows; i++) {
-                    const int g = mask[(v + h) * span + u + i];
-                    grows = g >= 0 && greedy_same(colors, bones, f, g);
-                }
-                h += grows;
+            runs[v * span + u] = w;
+            u += w;
+        }
+        // a run starts a quad unless the row before has the same one (start, width, faces), and grows down rows that do
+        for (int v = 0; v < span; v++)
+        for (int u = 0; u < span; u++) {
+            const int w = runs[v * span + u];
+            const int f = mask[v * span + u];
+            if (!w || (v > 0 && runs[(v - 1) * span + u] == w && greedy_same(colors, bones, f, mask[(v - 1) * span + u]))) {
+                continue;
             }
-            for (int j = 0; j < h; j++)
-            for (int i = 0; i < w; i++) {
-                mask[(v + j) * span + u + i] = -1;
+            int h = 1;
+            while (v + h < span && runs[(v + h) * span + u] == w && greedy_same(colors, bones, f, mask[(v + h) * span + u])) {
+                h++;
             }
             // the first face's corners moved out to the quad's far sides
             const float3* corners = &vertices->value[f * 4];
@@ -188,6 +210,7 @@ void mesh_greedy(MeshIndicies* indicies, MeshVertices* vertices, MeshColorRGBs* 
         }
         start = end;
     }
+    zox_free(runs);
     zox_free(mask);
     zox_free(list);
     zox_free(kept);

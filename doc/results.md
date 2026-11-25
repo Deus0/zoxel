@@ -77,6 +77,8 @@ Models on the gpu (2026-11-26, release, `perf_meshing --release --gpu`, the 780M
 | 16³ | 5566 | 0.083 | 0.161 | 0.244 |
 | 8³ | 1798 | 0.018 | 0.117 | 0.135 |
 
+- merged (greedy, the same run): the cpu's pass alone 1.03, 0.44, 0.12 (9540, 4866, 1210 faces: the test ball's holes
+  and 3 colours merge little, a humanoid 20% fewer); on the gpu 0.98 total, 0.65 of it the gpu's (0.33 unmerged)
 - small models are latency bound when waited for (the game doesn't wait); software rendering's write is 2.5x slower
 - a function used by both meshers changes how gcc compiles the cpu walk: `move_position` called from the gpu's face
   count made the pyramid 65% slower (0.91 to 1.51ms, release); the gpu's count has its own directions

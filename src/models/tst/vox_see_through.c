@@ -59,7 +59,9 @@ byte zox_tst_vox_see_through_ready(ecs* world) {
     zox_tst_waiting = "the model's solid and see through meshes built";
     const entity solid = zox_tst_vst_mesh(world, 0);
     const entity see_through = zox_tst_vst_mesh(world, 1);
-    return zox_tst_vst_frames > 3 && solid && see_through && !zox_has(solid, BuildMesh) && !zox_has(see_through, BuildMesh);
+    // built, and a gpu mesh's merged count back (greedy)
+    return zox_tst_vst_frames > 3 && solid && see_through && !zox_has(solid, BuildMesh) && !zox_has(see_through, BuildMesh) &&
+        !vox_gpu_pending(world, solid) && !vox_gpu_pending(world, see_through);
 }
 
 void zox_tst_vox_see_through_check(ecs* world) {

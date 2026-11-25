@@ -150,8 +150,13 @@ static uint vox_gpu_mesh_grid(GpuMesher* mesher, const VoxelNode* root, byte dep
 
 // the shared mesher, 0 without compute (the mesh goes back to the cpu)
 static inline GpuMesher* vox_gpu_mesher() {
-    if (!zox_vox_gpu_mesher.program && !gpu_mesher_create(&zox_vox_gpu_mesher, 6)) {
-        return NULL;
+    if (!zox_vox_gpu_mesher.program) {
+        if (!gpu_mesher_create(&zox_vox_gpu_mesher, 6)) {
+            return NULL;
+        }
+        // greedy's scratch made with it (a gpu restore counts it back at once), for 32³ models, grown in place
+        zox_vox_gpu_mesher.scratch_bytes = gpu_mesh_greedy_bytes(5);
+        zox_vox_gpu_mesher.scratch = zox_gpu_storage_buffer(zox_vox_gpu_mesher.scratch_bytes, NULL);
     }
     return &zox_vox_gpu_mesher;
 }
@@ -193,9 +198,11 @@ typedef struct {
 //  locked by the caller
 //  - size, scale: its ChunkSize and BlockScale (its space centred, as the cpu's); bounds_out its drawn voxels' corners
 //  - bones: a skeleton mesh's bones grid (skin's weights, parents), NULL none
+//  - command, fence: its own count buffers (MeshCommandGPULink, made here) and MeshFence: with greedy meshing on its
+//      faces merge and their count comes back later (vox_gpu_count_system); NULL: every face, its count returned
 static uint vox_gpu_mesh_tree(const VoxelNode* root, const VoxelNode** neighbors, const ColorRGBs* palette,
     const byte* materials, byte node_depth, byte depth, byte kind, int3 size, float scale, guint2 mesh, guint colors,
-    uint* room, float3* bounds_out, const vox_gpu_skin* skin, const byte* bones)
+    uint* room, float3* bounds_out, const vox_gpu_skin* skin, const byte* bones, guint2* command, ulong* fence)
 {
     GpuMesher* shared = vox_gpu_mesher();
     if (!shared || !palette->length) {
@@ -215,15 +222,34 @@ static uint vox_gpu_mesh_tree(const VoxelNode* root, const VoxelNode** neighbors
         mesher.bones_count = skin->bones_count;
         memcpy(mesher.parents, skin->parents, sizeof(mesher.parents));
     }
+    // merged on the gpu up to 64³ (its scratch, a key a face: 12MB there, 100MB at 128³)
+    const byte greedy = zox_greedy_mesh && command && fence && depth <= zox_greedy_depth_max;
+    // its count buffers made with its first mesh, merged or not (terrain's gpu restore makes them again by its room)
+    if (command && !command->x) {
+        *command = (guint2) { zox_gpu_storage_buffer(sizeof(zox_gpu_mesh_command_reset), zox_gpu_mesh_command_reset),
+            zox_gpu_storage_buffer_read(sizeof(uint), &zox_gpu_mesh_count_reset) };
+    }
+    if (greedy) {
+        mesher.command = command->x;
+        mesher.count = command->y;
+        mesher.greedy = 1;
+    }
     vox_gpu_room_data data = { mesh, colors, skin ? skin->weights : 0, room };
     int3 extent[2];
+    // its unmerged faces: room for the most it writes merged
     const uint faces = vox_gpu_mesh_grid(&mesher, root, depth, materials, kind, palette, vox_gpu_room, &data, extent,
         bones, neighbors);
+    shared->scratch_bytes = mesher.scratch_bytes;   // grown in place
     if (faces) {
         for (byte b = 0; b < 2; b++) {
             bounds_out[b] = float3_add(float3_scale(float3_from_int3(extent[b]), voxel), float3_scale(bounds, -1));
         }
-        zox_gpu_fence_dispose(mesher.fence);
+        if (greedy) {
+            zox_gpu_fence_dispose(*fence);
+            *fence = mesher.fence;
+        } else {
+            zox_gpu_fence_dispose(mesher.fence);
+        }
     }
     return faces;
 }
@@ -232,7 +258,7 @@ static uint vox_gpu_mesh_tree(const VoxelNode* root, const VoxelNode** neighbors
 //  - bounds: its drawn voxels' lower and upper corners in its space
 //  - skin: a skeleton mesh's (bones/sys/skeleton_gpu.c), its weights buffer, its bones grid made at depth, NULL none
 uint vox_gpu_mesh(ecs* world, entity vox, byte depth, byte kind, guint2 mesh, guint colors, uint* room, float3* bounds_out,
-    const vox_gpu_skin* skin)
+    const vox_gpu_skin* skin, guint2* command, ulong* fence)
 {
     if (!zox_valid(vox) || !zox_has(vox, VoxelNode) || !zox_has(vox, ColorRGBs) || !zox_has(vox, ChunkSize)) {
         return 0;
@@ -251,10 +277,39 @@ uint vox_gpu_mesh(ecs* world, entity vox, byte depth, byte kind, guint2 mesh, gu
     zox_octree_lock_begin(lock);
     byte* bones = skin ? skin->grid(world, vox, depth, skin->data) : NULL;
     const uint faces = vox_gpu_mesh_tree(zox_get(vox, VoxelNode), NULL, palette, materials, node_depth, depth, kind,
-        zox_getv(vox, ChunkSize), zox_getv(vox, BlockScale), mesh, colors, room, bounds_out, skin, bones);
+        zox_getv(vox, ChunkSize), zox_getv(vox, BlockScale), mesh, colors, room, bounds_out, skin, bones, command, fence);
     zox_octree_lock_end(lock);
     free(bones);
     return faces;
+}
+
+// a gpu mesh's count buffers and fence (MeshCommandGPULink, MeshFence) for greedy meshing, NULL without them
+static inline guint2* vox_gpu_command_of(ecs* world, entity e) {
+    return zox_has(e, MeshCommandGPULink) ? &zox_get_mut(e, MeshCommandGPULink)->value : NULL;
+}
+
+static inline ulong* vox_gpu_fence_of(ecs* world, entity e) {
+    return zox_has(e, MeshFence) ? &zox_get_mut(e, MeshFence)->value : NULL;
+}
+
+// is a mesh's count coming back (greedy: its faces merged, vox_gpu_count_system reads it)
+static inline byte vox_gpu_pending(ecs* world, entity e) {
+    return zox_has(e, MeshFence) && zox_getv(e, MeshFence);
+}
+
+// a mesh just meshed: its corners (MeshVertices, culling), and its count now unless it comes back later (greedy)
+static inline void vox_gpu_meshed(ecs* world, entity e, uint faces, const float3* bounds, MeshRenderCount* count,
+    MeshVertices* vertices)
+{
+    resize_MeshVertices(vertices, faces ? 2 : 0);
+    if (faces) {
+        vertices->value[0] = bounds[0];
+        vertices->value[1] = bounds[1];
+    }
+    if (!faces || !vox_gpu_pending(world, e)) {
+        count->value = faces * 6;
+        mesh_clones_sync_gpu(world, e);
+    }
 }
 
 void vox_lod_gpu_mesh_system(iter* it) {
@@ -288,16 +343,11 @@ void vox_lod_gpu_mesh_system(iter* it) {
         const double begin = get_time_ms();
         const byte kind = zox_has(e, TransparentMesh) ? zox_block_material_liquid : zox_block_material_solid;
         float3 bounds[2];
-        count->value = vox_gpu_mesh(world, vox, depth->value, kind, mesh->value, colors->value, &room->value, bounds,
-            NULL) * 6;
+        const uint faces = vox_gpu_mesh(world, vox, depth->value, kind, mesh->value, colors->value, &room->value, bounds,
+            NULL, vox_gpu_command_of(world, e), vox_gpu_fence_of(world, e));
         zox_vox_gpu_budget_used += get_time_ms() - begin;
-        resize_MeshVertices(vertices, count->value ? 2 : 0);
-        if (count->value) {
-            vertices->value[0] = bounds[0];
-            vertices->value[1] = bounds[1];
-        }
+        vox_gpu_meshed(world, e, faces, bounds, count, vertices);
         zox_remove(e, BuildMesh);
-        mesh_clones_sync_gpu(world, e);
     }
     zox_sys_on_end();
 } zoxd_system(vox_lod_gpu_mesh_system);
@@ -324,7 +374,10 @@ void gpu_restore_vox_gpu(ecs* world) {
     zox_each_begin(MeshFaceRoom);
         zox_each_o(MeshFaceRoom, room);
         if (zox_has(e, VoxLodMesh) || zox_has(e, SkeletonMesh) || zox_has(e, ColorChunk)) {
-            room->value = 0;
+            // one with count buffers: terrain's restore makes them again by its room, and zeroes it (gpu_restore.c)
+            if (!zox_has(e, MeshCommandGPULink)) {
+                room->value = 0;
+            }
             zox_setv(e, MeshRenderCount, 0);
             zox_remove(e, MeshDirty);
             zox_remove(e, SkeletonMeshDirty);
@@ -346,16 +399,6 @@ static inline entity vox_gpu_shell_of(ecs* world, entity chunk) {
         }
     }
     return 0;
-}
-
-// a gpu mesh's drawn count and its corners (MeshVertices: culling)
-static inline void vox_gpu_set_drawn(MeshRenderCount* count, MeshVertices* vertices, uint faces, const float3* bounds) {
-    count->value = faces * 6;
-    resize_MeshVertices(vertices, faces ? 2 : 0);
-    if (faces) {
-        vertices->value[0] = bounds[0];
-        vertices->value[1] = bounds[1];
-    }
 }
 
 // a colored chunk3 parent's chunk (a model bigger than a chunk, spawn_chunk3_parent_colored_chunk) on the gpu: its solid
@@ -415,8 +458,8 @@ void chunk_colors_gpu_system(iter* it) {
         float3 bounds[2];
         uint faces = vox_gpu_mesh_tree(voxels, noctrees, palette, materials, ndepth->value, depth,
             zox_block_material_solid, csize->value, scale->value, mesh->value, colors->value, &room->value, bounds,
-            NULL, NULL);
-        vox_gpu_set_drawn(count, vertices, faces, bounds);
+            NULL, NULL, vox_gpu_command_of(world, e), vox_gpu_fence_of(world, e));
+        vox_gpu_meshed(world, e, faces, bounds, count, vertices);
         const entity shell = other ? vox_gpu_shell_of(world, e) : 0;
         if (zox_valid(shell) && zox_has(shell, GpuMesh)) {
             const guint2 shell_mesh = zox_getv(shell, MeshGPULink);
@@ -424,8 +467,10 @@ void chunk_colors_gpu_system(iter* it) {
             if (shell_mesh.x && shell_mesh.y && shell_colors) {
                 faces = vox_gpu_mesh_tree(voxels, noctrees, palette, materials, ndepth->value, depth,
                     zox_block_material_liquid, csize->value, scale->value, shell_mesh, shell_colors,
-                    &zox_get_mut(shell, MeshFaceRoom)->value, bounds, NULL, NULL);
-                vox_gpu_set_drawn(zox_get_mut(shell, MeshRenderCount), zox_get_mut(shell, MeshVertices), faces, bounds);
+                    &zox_get_mut(shell, MeshFaceRoom)->value, bounds, NULL, NULL, vox_gpu_command_of(world, shell),
+                    vox_gpu_fence_of(world, shell));
+                vox_gpu_meshed(world, shell, faces, bounds, zox_get_mut(shell, MeshRenderCount),
+                    zox_get_mut(shell, MeshVertices));
             }
         }
         zox_unlock_voxel_trees(locked, locked_count);
@@ -434,3 +479,34 @@ void chunk_colors_gpu_system(iter* it) {
     }
     zox_sys_on_end();
 } zoxd_system(chunk_colors_gpu_system);
+
+// a greedy gpu mesh's merged count, read once the gpu's done (it never waits): then drawn (a skeleton mesh built, its
+//  swap can go), its clones copy it
+void vox_gpu_count_system(iter* it) {
+    zox_sys_on_begin();
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(MeshCommandGPULink);
+    zox_sys_out(MeshFence);
+    zox_sys_out(MeshRenderCount);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(MeshCommandGPULink, command);
+        zox_sys_o(MeshFence, fence);
+        zox_sys_o(MeshRenderCount, count);
+        if (!fence->value || !command->value.y || !zox_gpu_fence_done(fence->value)) {
+            continue;
+        }
+        zox_gpu_fence_dispose(fence->value);
+        fence->value = 0;
+        uint faces = 0;
+        zox_gpu_storage_read(command->value.y, 0, sizeof(uint), &faces);
+        const uint room = zox_has(e, MeshFaceRoom) ? zox_getv(e, MeshFaceRoom) : 0;
+        count->value = (faces < room ? faces : room) * 6;
+        if (zox_has(e, SkeletonMesh)) {
+            zox_add(e, MeshBuilt);
+        }
+        mesh_clones_sync_gpu(world, e);
+    }
+    zox_sys_on_end();
+} zoxd_system(vox_gpu_count_system);

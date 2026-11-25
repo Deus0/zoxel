@@ -64,7 +64,7 @@ typedef struct {
     const char* note;
 } zox_tst_pm_row;
 
-zox_tst_pm_row zox_tst_pm_rows[20];
+zox_tst_pm_row zox_tst_pm_rows[28];
 
 // a streamed world at terrain_lod_far meshed once
 typedef struct {
@@ -90,6 +90,8 @@ static const zox_tst_pm_count zox_tst_pm_expected[] = {
     { "model", "pyramid", 32, 10022 }, { "model", "pyramid", 16, 5566 }, { "model", "pyramid", 8, 1798 },
     { "model", "walk", 32, 10022 }, { "model", "walk", 16, 5566 }, { "model", "walk", 8, 1798 },
     { "model", "gpu", 32, 10022 }, { "model", "gpu", 16, 5566 }, { "model", "gpu", 8, 1798 },
+    { "model", "greedy", 32, 9540 }, { "model", "greedy", 16, 4866 }, { "model", "greedy", 8, 1210 },
+    { "model", "gpu+gr", 32, 9540 }, { "model", "gpu+gr", 16, 4866 }, { "model", "gpu+gr", 8, 1210 },
 };
 
 static inline void zox_tst_pm_add(const char* what, int lod, const char* how, int faces, double prepare_ms, double mesh_ms,
@@ -103,7 +105,7 @@ static inline void zox_tst_pm_add(const char* what, int lod, const char* how, in
         }
     }
     zox_tst_check(faces > 0, "%s %i³ %s made no faces", what, lod, how);
-    if (zox_tst_pm_row_count < 20) {
+    if (zox_tst_pm_row_count < 28) {
         zox_tst_pm_rows[zox_tst_pm_row_count++] = (zox_tst_pm_row) { what, lod, how, faces, prepare_ms, mesh_ms, note };
     }
 }
@@ -228,6 +230,38 @@ static int zox_tst_pm_gpu(GpuMesher* mesher, const VoxelNode* model, const Color
         if (*prepare_ms < 0 || total < *prepare_ms + *mesh_ms) {
             *prepare_ms = prepare;
             *mesh_ms = total - prepare;
+        }
+    }
+    // merged (greedy), its faces are what it wrote
+    return mesher->greedy ? (int) gpu_mesher_read_faces(mesher) : faces;
+}
+
+// a model's pyramid mesh merged on the cpu (mesh_greedy): ms for the merge alone, its faces
+static int zox_tst_pm_greedy(const VoxelNode* model, const ColorRGBs* colors, byte depth, byte target, double* ms) {
+    int faces = 0;
+    *ms = -1;
+    for (byte r = 0; r < zox_tst_pm_rounds; r++) {
+        double total = 0;
+        for (int b = 0; b < 5; b++) {
+            mesh_colored_build_data mesh = {
+                .indicies = create_int_array_d(initial_dynamic_array_size),
+                .vertices = create_float3_array_d(initial_dynamic_array_size),
+                .colors = create_color_rgb_array_d(initial_dynamic_array_size)
+            };
+            build_voxel_mesh(model, NULL, colors, &mesh, depth, target, float3_zero, 1.0f, 1, 1);
+            MeshIndicies i = { .length = mesh.indicies->size, .value = finalize_arrayd_int(mesh.indicies) };
+            MeshVertices v = { .length = mesh.vertices->size, .value = finalize_arrayd_float3(mesh.vertices) };
+            MeshColorRGBs c = { .length = mesh.colors->size, .value = finalize_arrayd_color_rgb(mesh.colors) };
+            const double begin = get_time_ms();
+            mesh_greedy(&i, &v, &c, NULL, float3_zero, 1.0f / octree_size(target));
+            total += get_time_ms() - begin;
+            faces = v.length / 4;
+            dispose_MeshIndicies(&i);
+            dispose_MeshVertices(&v);
+            dispose_MeshColorRGBs(&c);
+        }
+        if (*ms < 0 || total / 5 < *ms) {
+            *ms = total / 5;
         }
     }
     return faces;
@@ -364,6 +398,11 @@ void zox_tst_perf_meshing_check(ecs* world) {
                 pyramid ? "the game's for models up to 128^3" : "the game's for deeper models");
         }
     }
+    for (int target = zox_tst_pm_model_depth; target >= zox_tst_pm_model_depth - 2; target--) {
+        double ms;
+        const int faces = zox_tst_pm_greedy(&model, &colors, zox_tst_pm_model_depth, target, &ms);
+        zox_tst_pm_add("model", octree_size(target), "greedy", faces, 0, ms, "the pyramid's mesh merged, the merge alone");
+    }
     GpuMesher mesher;
     if (gpu_mesher_create(&mesher, octree_size(zox_tst_pm_model_depth) * octree_size(zox_tst_pm_model_depth) *
         octree_size(zox_tst_pm_model_depth) * 3))
@@ -373,6 +412,12 @@ void zox_tst_perf_meshing_check(ecs* world) {
             const int faces = zox_tst_pm_gpu(&mesher, &model, &colors, target, &prepare, &mesh);
             zox_tst_pm_add("model", octree_size(target), "gpu", faces, prepare, mesh,
                 "prepare on the main thread, write the gpu's");
+        }
+        mesher.greedy = 1;
+        for (int target = zox_tst_pm_model_depth; target >= zox_tst_pm_model_depth - 2; target--) {
+            double prepare, mesh;
+            const int faces = zox_tst_pm_gpu(&mesher, &model, &colors, target, &prepare, &mesh);
+            zox_tst_pm_add("model", octree_size(target), "gpu+gr", faces, prepare, mesh, "merged on the gpu (greedy)");
         }
         gpu_mesher_dispose(&mesher);
     }

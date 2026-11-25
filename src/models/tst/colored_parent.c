@@ -37,7 +37,8 @@ byte zox_tst_colored_parent_ready(ecs* world) {
     }
     zox_tst_waiting = "its chunks' meshes";
     for (int i = 0; i < 8; i++) {
-        if (zox_has(zox_tst_cpar_chunks[i], BuildMesh) || !mesh_index_count(world, zox_tst_cpar_chunks[i])) {
+        if (zox_has(zox_tst_cpar_chunks[i], BuildMesh) || !mesh_index_count(world, zox_tst_cpar_chunks[i]) ||
+            vox_gpu_pending(world, zox_tst_cpar_chunks[i])) {
             return 0;
         }
     }
@@ -118,7 +119,8 @@ byte zox_tst_colored_parent_shell_ready(ecs* world) {
     zox_tst_waiting = "its chunks' solid and see through meshes";
     for (int i = 0; i < 8; i++) {
         const entity shell = zox_tst_cpar_shell_of(world, zox_tst_cpar_chunks[i]);
-        if (zox_has(zox_tst_cpar_chunks[i], BuildMesh) || !shell || zox_has(shell, MeshDirty)) {
+        if (zox_has(zox_tst_cpar_chunks[i], BuildMesh) || !shell || zox_has(shell, MeshDirty) ||
+            vox_gpu_pending(world, zox_tst_cpar_chunks[i]) || vox_gpu_pending(world, shell)) {
             return 0;
         }
     }

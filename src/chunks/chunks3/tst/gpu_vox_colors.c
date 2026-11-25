@@ -7,6 +7,7 @@
 //      compared one to one, a colour within 1 of the cpu's (float rounding)
 //  - run: bash bsh/tst.sh gpu_vox_colors
 byte zox_tst_gvc_lod = zox_tst_vm_depth;    // the depth meshed (lower: a lod)
+byte zox_tst_gvc_greedy = 0;                // faces merged (greedy meshing, fun/greedy.c and the shader's)
 
 typedef struct {
     int key[7];     // the face's centre doubled, its facing (its normal, 0 to 5), the corner
@@ -45,6 +46,23 @@ static inline int zox_tst_gvc_cpu(const VoxelNode* model, const ColorRGBs* color
     };
     build_voxel_mesh_material(model, NULL, colors, &mesh, zox_tst_vm_depth, zox_tst_gvc_lod, float3_zero, 1.0f, 1, 1,
         materials, material);
+    if (zox_tst_gvc_greedy) {
+        // merged as the game's are (mesh_greedy), back into the build arrays
+        MeshIndicies i = { .length = mesh.indicies->size, .value = zox_malloc(sizeof(int) * (mesh.indicies->size + 1)) };
+        MeshVertices v = { .length = mesh.vertices->size, .value = zox_malloc(sizeof(float3) * (mesh.vertices->size + 1)) };
+        MeshColorRGBs c = { .length = mesh.colors->size, .value = zox_malloc(sizeof(color_rgb) * (mesh.colors->size + 1)) };
+        memcpy(i.value, mesh.indicies->data, sizeof(int) * i.length);
+        memcpy(v.value, mesh.vertices->data, sizeof(float3) * v.length);
+        memcpy(c.value, mesh.colors->data, sizeof(color_rgb) * c.length);
+        mesh_greedy(&i, &v, &c, NULL, float3_zero, 1.0f / octree_size(zox_tst_gvc_lod));
+        mesh.indicies->size = mesh.vertices->size = mesh.colors->size = 0;
+        for (int k = 0; k < i.length; k++) int_array_d_add(mesh.indicies, i.value[k]);
+        for (int k = 0; k < v.length; k++) float3_array_d_add(mesh.vertices, v.value[k]);
+        for (int k = 0; k < c.length; k++) color_rgb_array_d_add(mesh.colors, c.value[k]);
+        zox_free(i.value);
+        zox_free(v.value);
+        zox_free(c.value);
+    }
     const int faces = mesh.vertices->size / 4;
     *out = malloc(sizeof(zox_tst_gvc_corner) * 4 * (faces ? faces : 1));
     for (int f = 0; f < faces; f++) {
@@ -78,6 +96,7 @@ static inline int zox_tst_gvc_gpu(GpuMesher* mesher, const VoxelNode* model, con
     byte material, zox_tst_gvc_corner** out)
 {
     int3 extent[2];
+    mesher->greedy = zox_tst_gvc_greedy;
     // as the game's lods (sys/vox_gpu.c): its node values and sides at the lod, the mesher already big enough
     const uint wanted = vox_gpu_mesh_grid(mesher, model, zox_tst_gvc_lod, materials, material, colors,
         zox_tst_gvc_room, NULL, extent, NULL, NULL);
@@ -135,6 +154,7 @@ void zox_tst_gpu_vox_colors_check(ecs* world) {
     const char* names[2] = { "solid", "see through" };
     // with ambient occlusion, then without (the "No AO" setting: each direction a shade)
     const byte ambient = zox_ambient_occlusion;
+    for (zox_tst_gvc_greedy = 0; zox_tst_gvc_greedy <= 1; zox_tst_gvc_greedy++)
     for (byte ao = 1; ao <= 1; ao--)
     for (zox_tst_gvc_lod = zox_tst_vm_depth; zox_tst_gvc_lod >= 2; zox_tst_gvc_lod--)
     for (byte k = 0; k < 2; k++) {
@@ -170,7 +190,7 @@ void zox_tst_gpu_vox_colors_check(ecs* world) {
                 darkened += !zox_tst_gvc_close(cpu[i].color, open);
             }
         }
-        zox_log("[tst] [metric] gpu_vox_colors ao %i depth %i %s: [%i] faces, [%i] corners darkened", ao, zox_tst_gvc_lod, names[k], cpu_faces, darkened);
+        zox_log("[tst] [metric] gpu_vox_colors greedy %i ao %i depth %i %s: [%i] faces, [%i] corners darkened", zox_tst_gvc_greedy, ao, zox_tst_gvc_lod, names[k], cpu_faces, darkened);
         zox_tst_check(!moved, "%s: [%i] corners weren't where the cpu's are", names[k], moved);
         zox_tst_check(!recoloured, "%s: [%i] corners weren't the cpu's colour", names[k], recoloured);
         zox_tst_check(!ao || darkened > 0, "%s: no corner was darkened by ambient occlusion", names[k]);

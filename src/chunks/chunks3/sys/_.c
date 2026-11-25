@@ -102,6 +102,16 @@ void zox_systems_chunks3(ecs *world) {
         [none] rendering.BuildMesh,
         [none] !rendering.GpuMesh,
     );
+    // greedy gpu meshes' merged counts, once back (sys/vox_gpu.c)
+    zox_system_1(
+        vox_gpu_count_system,
+        zoxp_gpu_upload,
+        [in] rendering.MeshCommandGPULink,
+        [out] rendering.MeshFence,
+        [out] rendering.MeshRenderCount,
+        [none] rendering.GpuMesh,
+        [none] !rendering.UvsGPULink,
+    );
     // colored chunks of a chunk3 parent on the gpu (sys/vox_gpu.c)
     zox_system_1(
         chunk_colors_gpu_system,

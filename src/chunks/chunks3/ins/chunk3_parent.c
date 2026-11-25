@@ -67,6 +67,8 @@ entity spawn_chunk3_parent_colored_chunk(ecs* world, entity prefab, entity paren
     if (zox_vox_gpu_meshing && zox_gpu_compute_supported()) {
         zox_add(e, GpuMesh);    // meshed on the gpu (sys/vox_gpu.c chunk_colors_gpu_system)
         zox_setv(e, MeshFaceRoom, 0);
+        zox_setv(e, MeshCommandGPULink, guint2_zero);
+        zox_setv(e, MeshFence, 0);
     }
     zox_setv(e, LocalPosition3D, ((float3) { (position.x + 0.5f) * length * scale, (position.y + 0.5f) * length * scale,
         (position.z + 0.5f) * length * scale }));
