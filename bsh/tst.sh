@@ -220,6 +220,9 @@ nohud_tests=(sky_clouds head_camera town_view held_item held_block held_view eat
 # tests that take the readme's screenshots: a far, tall world at 1080p, little fog (to see the mountains), no hud or labels, the same seed (zox_tst_seed
 #   overrides it), more time to stream, their shots converted to doc/screenshot/ after with --readme
 aesthetic_tests=(aesthetic_town aesthetic_particles)
+# tests that compare pictures across a change: the same world every run (seed 666, zox_tst_seed overrides it), a
+#   random one gave them other weather and effects to differ by
+seeded_tests=(gpu_restore_game)
 run_game() {
     local tst="$1"
     local log="$2"
@@ -236,6 +239,7 @@ run_game() {
     # far lods load and stream a while: room for them
     [[ " ${far_tests[*]} " == *" ${tst} "* || ${perf_scale} == "1" ]] && seconds=$(( timeout_seconds > 600 ? timeout_seconds : 600 ))
     local seed_env=()
+    [[ " ${seeded_tests[*]} " == *" ${tst} "* ]] && seed_env=(env "zox_tst_seed=${zox_tst_seed:-666}")
     if [[ " ${aesthetic_tests[*]} " == *" ${tst} "* ]]; then
         test_args+=(--far 16 --vertical 8 --fog 0.025 --1080p --nohud --nouis --tst-timescale 3)
         seed_env=(env "zox_tst_seed=${zox_tst_seed:-375758414}")

@@ -88,8 +88,6 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
 
 # Bugs
 - tst gpu_restore fails on master (2026-11-26, gl): the picture's average colour changes after the restore (36 to 40)
-- tst gpu_restore_game is seed dependent: some worlds fail its colour check (seeds 4124841710, 1071913453 on gl,
-  cpu or gpu meshing alike: the health bar gone, the sky's rain changed after); vulkan failed on master too (7.7)
 - tst block_vox_hits failed once on vulkan (15 of 72 rays at doors' tops), then passed 4 times; once on gl (6 of 72)
 - tst lod_light_flash flakes on vulkan (4 faces dark then lit), gpu or cpu vox meshing alike, 1 in 2 or 3
 - Block voxes never spawn on the test level (zox_tst_level_setup: BlocksSpawned stays off, even the player's chunk);

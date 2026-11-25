@@ -29,6 +29,16 @@ int zox_tst_grg_drawing(ecs* world) {
     return count;
 }
 
+// things alive for a while (DestroyInTime running: particles, effects), which come and go between the two shots
+int zox_tst_grg_particles(ecs* world) {
+    int count = 0;
+    zox_each_begin(DestroyInTime);
+        zox_each_o(DestroyInTime, life);
+        count += life->value > 0;
+    zox_each_end();
+    return count;
+}
+
 byte zox_tst_gpu_restore_game_ready(ecs* world) {
     zox_tst_progress(zox_tst_grg_stage * 1000 + zox_tst_grg_frames);
     if (zox_tst_grg_stage == 0) {
@@ -39,6 +49,11 @@ byte zox_tst_gpu_restore_game_ready(ecs* world) {
         zox_tst_waiting = "the game to settle";
         zox_tst_grg_errors_before |= zox_gpu_error_bits();
         if (++zox_tst_grg_frames < zox_tst_grg_stage_frames) {
+            return 0;
+        }
+        // its effects gone first (a burst of particles in shot a, gone by b, was the picture changing), at most 10s
+        zox_tst_waiting = "the game to settle, no effects (DestroyInTime) alive";
+        if (!zox_tst_grg_shot && zox_tst_grg_particles(world) && zox_tst_grg_frames < zox_tst_grg_stage_frames + 600) {
             return 0;
         }
         if (!zox_tst_grg_shot) {
