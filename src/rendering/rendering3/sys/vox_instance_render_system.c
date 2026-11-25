@@ -258,13 +258,15 @@ void vox_instance_render_system(iter* it) {
                 ubo->value);
         }
     }
-    // see through meshes (a slime's shell): after every solid one, the same instances, blended
+    // see through meshes (a slime's shell): after every solid one, the same instances, blended; tested against depth
+    //  but not writing it, so a shell's far faces aren't hidden by its near ones drawn first (thin lines through it)
     if (has_see_through) {
         zox_gpu_material(material_link);
         zox_gpu_float4(material_attributes->fog_data, get_fog_value());
         zox_gpu_float(material_attributes->brightness, 1);
         zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
         zox_gpu_enable_blend();
+        zox_gpu_set_depth_mask(0);
         for (int i = 0; i < zox_instance_commands_count; i++) {
             InstanceRenderCommand command = zox_instance_commands[i];
             if (!command.see_through) {
@@ -275,6 +277,7 @@ void vox_instance_render_system(iter* it) {
             render_vox_instance_command(world, command, material_attributes->vertex_position,
                 material_attributes->vertex_color, ubo->value);
         }
+        zox_gpu_set_depth_mask(1);
         zox_gpu_disable_blend();
     }
     zox_disable_material();
