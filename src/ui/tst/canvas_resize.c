@@ -11,7 +11,8 @@ static byte zox_tst_canvas_resize_ready(ecs* world) {
     static entity canvas, button, app;
     static int step, click_step, shape, clicks_before;
     static int2 point, old_point;
-    static const int2 sizes[] = { { 800, 480 }, { 640, 640 }, { 800, 480 } };
+    // within the test window's 460x460: a hidden window's gl surface never grows, past it reads garbage
+    static const int2 sizes[] = { { 440, 300 }, { 300, 440 }, { 440, 300 } };
     static const char* const shots[] = { "wide.ppm", "tall.ppm", "wide_again.ppm" };
     const int2 inset = { 180, 190 };
     zox_tst_progress(shape * 10 + step);
