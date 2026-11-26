@@ -94,8 +94,13 @@ kept current as each step lands, not a step of their own).
    - build and run: `bash bsh/build.sh zeland --run`; test: `zox_tst_game=zeland bash bsh/tst.sh zeland_boot`
 2. [x] **folders:** `src/terrain` to `src/terrains/voxel`, the module renamed `voxel_terrains` and its query strings,
    the docs' links. The terrain tests pass as before.
-3. **heights:** `src/terrains/poly`, `PolyTerrain`, `PolyHeights`, `poly_height_generate`, `poly_height_at`,
+3. [x] **heights:** `src/terrains/poly`, `PolyTerrain`, `PolyHeights`, `poly_height_generate`, `poly_height_at`,
    `poly_normal_at`. Test `poly_heights`: pure, heights at grid points and mid triangle, a slope's normal.
+   - `PolyCells` (int2, the grid's resolution) and core `Size2` (metres) beside the heights, settings in
+     terrains/poly/set (128 cells over 128 metres, hills to 24, the sea at 2)
+   - an island: stretched perlin hills, a mountain rising to the middle, a round falloff under the sea
+   - `poly_color_at` (sand, grass, rock, snow) for the mesh; `bash bsh/tools/poly_terrain.sh` draws the heights
+     from above (doc/engine/tools.md)
 4. **terrain mesh:** prefab, spawn, the mesh observer, colours; zeland spawns it on play. Until lit meshes (step 7)
    a light direction is baked into the vertex colours, so the flat faces show. Test `poly_mesh`: vertex and index
    counts, every vertex on `poly_height_at`, a screenshot.

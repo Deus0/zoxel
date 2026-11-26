@@ -39,6 +39,22 @@ right and z down from the regions' low corner, in `tst/maps/`:
 - Game flags: `--maps`, `--maps-chunks`, `--maps-seed <n>`, `--maps-out <folder>` ([commands.md](commands.md)).
 - Code: [towns/dbg/maps_dump.c](../src/towns/dbg/maps_dump.c).
 
+## poly_terrain: a poly terrain's heights as an image
+
+```bash
+bash bsh/tools/poly_terrain.sh             # seed 666 (~2s after the build)
+bash bsh/tools/poly_terrain.sh --seed 42   # another island
+bash bsh/tools/poly_terrain.sh --nobuild   # the last zeland build
+```
+
+`tst/poly/heights.png`: the island seen from above, 4 pixels a cell, x right and z down, coloured as the mesh will be
+(sand, grass, rock on steep faces, snow on top, `poly_color_at`), lit from the north west, the sea blue over it.
+
+- No world: the heights are pure (`poly_height_generate`), written at boot and the game quits.
+- The same seed draws the same image: compare a change to the generator before and after.
+- Game flags: `--poly-map`, `--poly-seed <n>`, `--poly-out <folder>` ([commands.md](commands.md)).
+- Code: [terrains/poly/dbg](../../src/terrains/poly/dbg/_.c), the plan: [poly terrains](../plans/poly_terrains.md).
+
 ## Town screenshots
 
 `bash bsh/tools/view_town.sh` captures the wall, the town interior, and the surrounding
