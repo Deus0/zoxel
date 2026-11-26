@@ -75,6 +75,7 @@ void layout_player_screens(
         }
         if (zox_valid(canvas)) {
             zox_setv(canvas, ScreenToCanvas, cell);
+            zox_add(canvas, Dirty);
         }
         // a screen spawned this frame set its own (its links are deferred)
         if (zox_valid(camera)) {

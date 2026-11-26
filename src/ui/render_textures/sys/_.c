@@ -4,6 +4,9 @@
 #include "camera_blur.c"
 
 void zox_systems_render_textures(ecs* world) {
+    zox_observer(screen_render_texture_camera_event, EcsOnSet,
+        [in] cameras.ScreenToCanvas, [none] cameras.Camera);
+    zox_on_add(screen_render_texture_canvas_event, [none] layouts.Canvas, [none] core.Dirty);
     zox_system(
         screen_render_texture_system,
         zoxp_update,

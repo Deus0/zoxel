@@ -3,6 +3,7 @@ zox_tag(Label);
 zox_tag(Button);
 zox_tag(Elementbar);
 zox_tag(BarFront);
+zox_tag(DragResizes);
 // Slider
 zoxc_float2(SlideBounds);
 zoxc(SliderLabel, const char*);
@@ -37,6 +38,7 @@ void zox_components_elements2(ecs *world) {
     zoxd_tag(IconOverlay);
     zoxd_tag(Elementbar);
     zoxd_tag(BarFront);
+    zoxd_tag(DragResizes);
     zoxd_byte(IconType);
     zoxd_byte(IconIndex);
     zoxd_nf_link(LabelPrefabLink);

@@ -3,3 +3,4 @@
 #include "window.c"
 #include "list.c"
 #include "tabs.c"
+#include "docks.c"

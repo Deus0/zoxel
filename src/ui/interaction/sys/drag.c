@@ -15,6 +15,7 @@ void dragger_end_system(iter* it) {
         if (!dragger) {
             continue;
         }
+        const entity pointer = zox_get_link(world, e, ZeviceLink);
         byte did_drag_end = 0;
         entity devices[zox_children_capacity];
         uint length = zox_get_children_by_id(
@@ -34,7 +35,8 @@ void dragger_end_system(iter* it) {
             while (zox_children_next(it2)) {
                 for (int k = 0; k < it2.count; k++) {
                     entity e3 = it2.entities[k];
-                    if (!zox_valid(e3) ||
+                    if ((pointer && e3 != pointer) ||
+                        !zox_valid(e3) ||
                         !zox_has(e3, ZevicePointer))
                     {
                         continue;
@@ -56,6 +58,10 @@ void dragger_end_system(iter* it) {
             if (is_log_dragging) {
                 zox_log("Dragging Ended!");
             }
+        }
+        // Notify observers after updating the drag state, including on release.
+        if (pointer) {
+            zox_add(e, Dirty);
         }
     }
     zox_sys_on_end();

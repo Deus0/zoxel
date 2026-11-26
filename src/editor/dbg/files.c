@@ -9,7 +9,7 @@ void toggle_files(ecs* world, int32_t keycode) {
     }
     const entity window = zox_get_child_by_id(world, canvas, zox_id(FileWindowUI));
     if (zox_valid(window)) {
-        zox_delete(window);
+        window_dock_close(world, canvas, window);
         play_editor_toggle_sound(world, 0);
     } else {
         spawn_window_files(world, canvas, dbg_player, NULL);

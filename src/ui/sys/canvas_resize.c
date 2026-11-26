@@ -64,6 +64,7 @@ void canvas_resize_system(iter* it) {
                     e2);
             }
         }
+        zox_add(e, Dirty);
         // zox_log("Canvas resized [%ix%i] screen [%ix%i]", size->value.x, size->value.y, screen_size.x, screen_size.y);
     }
     zox_sys_on_end();

@@ -11,6 +11,7 @@ void game_state_zedit(iter* it) {
             if (zox_valid(canvas)) {
                 spawn_inspector(world, canvas, player, canvas);
                 spawn_window_hierarchy(world, canvas, player, zox_get_parent_root(world, canvas));
+                spawn_window_files(world, canvas, player, NULL);
             }
         }
     }

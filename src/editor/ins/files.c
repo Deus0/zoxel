@@ -1,8 +1,10 @@
 // An empty folder displays the two roots. The list's path holds the selected file.
 entity spawn_window_files(ecs* world, entity canvas, entity player, const char* folder) {
     (void) player;
+    const int2 canvas_size = zox_getv(canvas, LayoutSize);
     const byte font_size = 12;
-    const entity4 ui = spawn_editor_window(world, prefab_files, canvas, "Files", 0, font_size);
+    const entity4 ui = spawn_editor_window(world, prefab_files, canvas, "Files", window_dock_bottom,
+        (int2) { canvas_size.x, canvas_size.y / 4 }, font_size);
     zox_set_name_spawned(world, ui.x, "files");
     zox_add(ui.x, FileWindowUI);
     zox_setv(ui.x, ElementFontSize, font_size);

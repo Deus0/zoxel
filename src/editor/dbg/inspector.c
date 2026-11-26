@@ -9,7 +9,7 @@ void toggle_inspector(ecs *world, int32_t keycode) {
     }
     const entity inspector = get_canvas_inspector(world, canvas);
     if (inspector) {
-        zox_delete(inspector);
+        window_dock_close(world, canvas, inspector);
         play_editor_toggle_sound(world, 0);
     } else {
         spawn_inspector(world, canvas, dbg_player, canvas);
@@ -38,7 +38,7 @@ void toggle_inspector_target(
         }
     }
     if (inspector) {
-        zox_delete(inspector);
+        window_dock_close(world, canvas, inspector);
         play_editor_toggle_sound(world, 0);
     } else {
         spawn_inspector(world, canvas, player, target);

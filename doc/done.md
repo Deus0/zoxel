@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-26
+-x Docked windows (ui/windows): a Docked tag, side from the anchor, the game view shrinks between docks, resize
+  handles (DragResizes), close and undock buttons, drag to an edge to dock (swaps a taken side); the editor's
+  hierarchy, inspector and files start docked (tst window_docks)
 -x Editor file window (n): browses resources and saves one folder at a time, folders then files, a file's name,
   size and extension (tst file_window)
 -x Fold arrows (ui/elements2): Unfolded on a list, unfold_toggle adds the core Dirty, fold arrow icon buttons;

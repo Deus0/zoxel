@@ -9,6 +9,7 @@ byte close_button_outline_size = 0;
 
 #include "dat/_.c"
 #include "com/_.c"
+static void button_event_close_window(ecs* world, ClickEventData event);
 #include "pre/_.c"
 #include "fun/_.c"
 #include "ins/_.c"

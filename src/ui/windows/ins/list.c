@@ -137,6 +137,7 @@ static inline entity2 spawn_window_list_view(ecs* world, entity canvas, entity b
     };
     const entity list = spawn_list(world, (LayoutParentData) { .e = canvas }, (LayoutParentData) { .e = scrollview },
         list_element_data, list_data, alignment, elements2);
+    zox_setv(list, ElementFontSize, list_data.font_size);
     zox_set_link(world, list, ScrollviewLink, scrollview);
     zox_set_link(world, scrollview, ListUILink, list);
     if (scrollbar_visible) {
@@ -280,6 +281,7 @@ entity4 spawn_window_list_at(
         alignment,
         NULL);
     // make sure to link them together
+    zox_setv(list, ElementFontSize, list_data.font_size);
     zox_set_link(world, list, ScrollviewLink, scrollview);
     zox_set_link(world, scrollview, ListUILink, list);
     // NOTE: Returns Window, List, Header

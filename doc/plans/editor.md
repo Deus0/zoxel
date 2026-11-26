@@ -19,7 +19,7 @@ Order: inspection flows first, perfect them, then editing, then the engine wide 
 
 ### 2. Windows and docks
 - [ ] Resizable windows (corner drag)
-- [ ] UI docks: hierarchy left, inspector right, the game viewport shrinks between them
+- [x] UI docks: hierarchy left, inspector right, files along the bottom, and the game viewport in the remaining space
 - [ ] Detachable windows: a window dragged out becomes its own SDL window
 
 ### 3. Editing
@@ -68,6 +68,21 @@ two-to-four-to-two row sequence through the arrow click handlers. It also checks
 Later: the same fold arrow for the inspector's component list, and for the file window's folders, so it should be
 a ui element (ui/elements2), not hierarchy code.
 
-### Docked windows and the game view (after the hierarchy)
-- Hierarchy docked left, inspector right; the game's viewport shrinks to the space between (its camera's screen size,
-  not the window's), and grows back when they close.
+### Docked windows
+The hierarchy and inspector span the canvas height at the left and right. Files docks along the bottom between
+them. The game view fills the remaining rectangle for a single player, and closing the docks restores the full view.
+The UI stays full screen, and local co-op retains its split-screen camera layout.
+
+Each dock has a resize handle on its inner edge. Drag it to change the dock's width or, for Files, its height.
+Resizing leaves at least a third of the canvas for the game view along each axis. A dock starts at its default
+size each time it opens. Zedit opens all three docks at boot.
+
+Windows with the `Docked` tag use their anchor to select a side. The header has buttons to close or undock
+the window. Drag a floating header to within 32 pixels of a dock edge to preview the dock. Releasing there
+docks the window and moves any previous occupant to the floating window's drop position.
+
+The code and its test (`window_docks`) are in `src/ui/windows`; the editor only spawns its windows docked.
+Later: stacking several windows on one side, then an editor option for a drop on a taken side (swap, the
+default now, or stack); tabs; saving the layout.
+
+Later work includes tabs, stacking several windows on one side, and saving the layout.

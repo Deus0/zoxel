@@ -22,6 +22,24 @@ void element_drag_system(iter* it) {
             continue;
         }
         entity dragged = zox_get_link(world, e, DraggedLink);
+        if (zox_has(e, DragResizes)) {
+            if (!zox_valid(dragged) || !zox_has(dragged, LayoutSize)) {
+                continue;
+            }
+            const float2 anchor = zox_getv(e, Anchor);
+            const int2 before = zox_getv(dragged, LayoutSize);
+            int2 size = before;
+            if (anchor.x == 0 || anchor.x == 1) {
+                size.x += anchor.x == 0 ? -delta->value.x : delta->value.x;
+            } else if (anchor.y == 0 || anchor.y == 1) {
+                size.y += anchor.y == 0 ? -delta->value.y : delta->value.y;
+            }
+            if (!int2_equals(size, before)) {
+                zox_setv(dragged, LayoutSize, size);
+                zox_add(dragged, Dirty);
+            }
+            continue;
+        }
         entity e2 = !dragged ? e : dragged;
         // TODO: We should check new position equals before setting
         zox_muter(e2, LayoutPosition, position);

@@ -65,6 +65,9 @@ void zevice_click_system(iter* it) {
                 } else if (device_mode == zox_device_mode_touchscreen) {
                     drag_mode = zox_drag_mode_finger;
                 }
+                if (drag_mode && zox_has(e, ZevicePointer) && !zox_getv(target->value, DraggableState)) {
+                    zox_set_link(world, target->value, ZeviceLink, e);
+                }
                 set_element_dragged(world, player, target->value, drag_mode);
                 if (dbg_log) {
                     zox_log("Zevice Dragging UI [%s] Mode [%i]", zox_getn(target->value), drag_mode);

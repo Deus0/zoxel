@@ -1,9 +1,3 @@
-void button_event_close_window(ecs *world, ClickEventData event) {
-    entity parent = zox_get_parent(world, event.clicked);
-    entity window = zox_get_parent(world, parent);
-    zox_delete(window);
-}
-
 entity spawn_prefab_button_close(ecs *world, entity prefab) {
     zox_prefab_child(prefab);
     zox_prefab_name("button_close");
