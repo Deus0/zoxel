@@ -160,10 +160,10 @@ void main() {
     float vignette_mask = smoothstep(1.0 - vignette_smoothness, 1.0, length(uv - vec2(0.5, 0.5)));
     color *= 1.0 - vignette_mask * (vignette);
 
-    // Eyelids: dark from the top (0.6 of the way) and the bottom (0.4), the middle first (as xr/fun/eye_render.c)
+    // Eyelids: dark from the top (0.6 of the way) and the bottom (0.4), the corners first, an eye's shape (as xr/fun/eye_render.c)
     if (lids > 0.0) {
         float u = uv.x * 2.0 - 1.0;
-        float bulge = 1.0 + 0.35 * (1.0 - u * u);
+        float bulge = 1.0 + 0.8 * u * u;  // the corners further in: an eye's almond opening
         float top = min(1.0, 0.6 * lids * bulge);
         float bottom = min(1.0, 0.4 * lids * bulge);
         float edge = 0.015;

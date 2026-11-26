@@ -80,6 +80,8 @@ Failing tests from full runs, worked through slowly; making tests smaller and fa
 section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what's known.
 - 2026-11-24 full runs: 391 of 395 pass (the rest pass alone, flaky under load: stream_seams, tables_stream,
   punch_wind_up, map_pixel, door_save, town_furniture)
+- bed_sleep (2026-11-27, solo, 1 run in 5): "asleep it isn't still: DisableMovement [0]" on climbing on, then
+  "getting off it can already move"; the next 3 runs passed
 - editor (2026-11-26, zoxel and zedit): fails at step 9, "fps display didn't open" after toggle_fps_viewer (z), then
   times out waiting for every editor tool to close. The FPS setting is spawned (editor/eve app_initialize_editor)
 - chunk_mesh_flicker, stream_seams: rare seams left, doc/plans/chunk_lods.md

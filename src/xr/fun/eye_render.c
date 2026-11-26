@@ -9,16 +9,16 @@
 #define xr_far_distance 800.0f
 const color xr_clear_color = (color) { 33, 38, 38, 255 };
 // - the eyes closing (its camera's CameraLids: loading, sleeping): dark lids from the top and the bottom over the world, their edges
-//   curved (the middle shuts first: xr_eye_lids); shut, only the 3D uis are drawn (the "Loading" label, fading in:
+//   curved (the corners shut first, an eye's almond opening: xr_eye_lids); shut, only the 3D uis are drawn (the "Loading" label, fading in:
 //   huds3_label_fade), not the world as it loads; the 3D uis drawn over the lids
 //   - the fog fading the world to black didn't blacken a headset's view (play test)
 #define xr_lid_columns 96               // the lids' edges, in this many steps across an eye
 #define xr_lid_top 0.6f                 // of the eye's height, the top lid's share closing (the bottom's the rest)
-#define xr_lid_curve 0.35f              // the lids' edges curved: the middle this much further in
+#define xr_lid_curve 0.8f               // the lids' edges curved: the corners this much further in
 
 // how far a lid comes in at u (-1 to 1 across the eye), of the eye's height, closed by closure (0 to 1)
 static inline float xr_lid_depth(float share, float closure, float u) {
-    return float_min(1, share * closure * (1 + xr_lid_curve * (1 - u * u)));
+    return float_min(1, share * closure * (1 + xr_lid_curve * u * u));
 }
 
 // the eye's lids, black, closed by closure: columns cleared from each edge in to the lid's curve

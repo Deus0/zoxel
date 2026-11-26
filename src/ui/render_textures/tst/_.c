@@ -2,8 +2,9 @@
 //  - on the menus, no realm or player: the menu's camera (every 3D camera has lids) in a void, the skybox disabled,
 //    a light grey clear, no vignette or blur, so its whole view is evenly lit (the menu's cube stays, lit too)
 //  - its view saved three times: lids open (0), part shut (0.7), shut (1)
-//  - part shut: the lids reach further in the middle than at the sides (their curve): a spot dark in the middle,
-//    the same as open at the side, at the bottom lid (the top lid's curve is under the menu's title, ui isn't lidded)
+//  - part shut: an eye's shape, the lids reach further at the sides than in the middle (their curve): a spot
+//    between the lids in the middle is as open, the same height at the side is shut; above and below the middle's
+//    opening dark (the menu's title band, 0.44 to 0.56, isn't lidded: spots clear of it)
 //  - shut: dark everywhere the view shows (spots clear of the title band, 0.44 to 0.56 from the top)
 //  - run: bash bsh/tst.sh eyelids
 extern char zox_screenshot_request[256];
@@ -106,21 +107,21 @@ void zox_tst_eyelids_check(ecs* world) {
         const int2 size = sizes[0];
         const int dark = 30;
         // part shut (0.7), the shader's lids from the top 0.6 * 0.7 and the bottom 0.4 * 0.7 of the height, times
-        //  1 + 0.35 (1 - u * u) (u -1 to 1 across), from the top of the image:
-        //  - x 0.4: the top lid to 0.56, the bottom from 0.63; x 0.05 (the side): the top to 0.45, the bottom from 0.70
-        //  - y 0.665 is under the bottom lid in the middle, clear of it at the side: the curve
-        //  - y 0.40 is under the top lid at both (its curve, 0.45 to 0.56, is under the title)
-        const int mid_top = zox_tst_lids_at(half, size, 0.4f, 0.4f), mid_bottom = zox_tst_lids_at(half, size, 0.4f, 0.665f);
-        const int side_bottom = zox_tst_lids_at(half, size, 0.05f, 0.665f);
-        const int side_bottom_open = zox_tst_lids_at(open, size, 0.05f, 0.665f);
-        const int mid_open = zox_tst_lids_at(open, size, 0.4f, 0.665f);
-        zox_log("[tst] part shut: middle [%i %i] (open [%i]) side [%i] (open [%i])", mid_top, mid_bottom, mid_open,
-            side_bottom, side_bottom_open);
-        zox_tst_check(mid_open >= dark && side_bottom_open >= dark, "the open view is dark [%i %i], nothing to compare",
-            mid_open, side_bottom_open);
+        //  1 + 0.8 u * u (u -1 to 1 across), from the top of the image:
+        //  - x 0.4: the top lid to 0.43, the bottom from 0.71: open between; x 0.05 (the side): the top to 0.69, the
+        //    bottom from 0.54, they meet: shut
+        //  - y 0.62 is open in the middle, shut at the side: the curve; y 0.40 and 0.75 are under the middle's lids
+        const int mid_top = zox_tst_lids_at(half, size, 0.4f, 0.40f), mid_bottom = zox_tst_lids_at(half, size, 0.4f, 0.75f);
+        const int mid_gap = zox_tst_lids_at(half, size, 0.4f, 0.62f), mid_gap_open = zox_tst_lids_at(open, size, 0.4f, 0.62f);
+        const int side = zox_tst_lids_at(half, size, 0.05f, 0.62f), side_open = zox_tst_lids_at(open, size, 0.05f, 0.62f);
+        zox_log("[tst] part shut: middle [%i %i %i] (open [%i]) side [%i] (open [%i])", mid_top, mid_gap, mid_bottom,
+            mid_gap_open, side, side_open);
+        zox_tst_check(mid_gap_open >= dark && side_open >= dark, "the open view is dark [%i %i], nothing to compare",
+            mid_gap_open, side_open);
         zox_tst_check(mid_top < dark && mid_bottom < dark, "part shut, the middle isn't under the lids [%i %i]", mid_top, mid_bottom);
-        zox_tst_check(abs(side_bottom - side_bottom_open) < 40,
-            "part shut, the side changed [%i] from open [%i]: the lids aren't curved", side_bottom, side_bottom_open);
+        zox_tst_check(abs(mid_gap - mid_gap_open) < 40,
+            "part shut, the middle's opening changed [%i] from open [%i]", mid_gap, mid_gap_open);
+        zox_tst_check(side < dark, "part shut, the side is open [%i]: the lids aren't an eye's shape", side);
         // shut: all dark, where open was lit
         const float2 spots[5] = { { 0.15f, 0.3f }, { 0.8f, 0.3f }, { 0.1f, 0.68f }, { 0.6f, 0.7f }, { 0.3f, 0.2f } };
         for (byte i = 0; i < 5; i++) {
