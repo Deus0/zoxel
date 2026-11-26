@@ -1,22 +1,15 @@
-// When player state changes, for player
-void controller_player_state_system(iter* it) {
-    zox_sys_on_begin();
+// the player's state changed (its core Dirty): pausing frees the mouse, playing locks it
+void controller_player_state_event(iter* it) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(PlayerStateDirty);
     zox_sys_in(PlayerState);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(PlayerStateDirty, dirty);
         zox_sys_i(PlayerState, state);
         byte action_type = 0;
-        if (dirty->value == zox_dirty_active &&
-            state->value == zox_player_state_pause_begin)
-        {
+        if (state->value == zox_player_state_pause_begin) {
             action_type = 1;
-        } else if (dirty->value == zox_dirty_active &&
-            state->value == zox_player_state_play_begin)
-        {
+        } else if (state->value == zox_player_state_play_begin) {
             action_type = 2;
         }
         if (action_type) {
@@ -50,5 +43,4 @@ void controller_player_state_system(iter* it) {
             }*/
         }
     }
-    zox_sys_on_end();
-} zoxd_system(controller_player_state_system);
+}

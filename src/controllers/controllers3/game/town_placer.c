@@ -141,6 +141,7 @@ void player_town_finder_system(iter* it) {
         // NOTE: Make sure it updates even if position the same
         state->value = zox_player_state_starting;
         dirty->value = zox_dirty_trigger;
+        zox_add(e, Dirty);
         zox_setv(camera, Position3D, spawn_position);
         zox_setv(camera, StreamDirty, zox_dirty_trigger);
         zox_setv(camera, StreamerLevel, 1);

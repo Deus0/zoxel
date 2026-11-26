@@ -12,11 +12,20 @@ void player_state_system(iter* it) {
     zox_sys_out(PlayerState);
     zox_sys_out(PlayerStateDirty);
     zox_sys_out(PlayerStateTimer);
+    zox_sys_in(PlayerStateTarget);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_o(PlayerState, state);
         zox_sys_o(PlayerStateDirty, dirty);
         zox_sys_o(PlayerStateTimer, timer);
+        if (PlayerStateTarget_) {
+            state->value = PlayerStateTarget_[i].value;
+            zox_remove(e, PlayerStateTarget);
+            timer->value = 0;
+            dirty->value = zox_dirty_trigger;
+            zox_add(e, Dirty);
+            continue;
+        }
         if (timer->value) {
             double time_passed = zox_current_time - timer->value;
             if (state->value == zox_player_state_pause_begin) {
@@ -24,6 +33,7 @@ void player_state_system(iter* it) {
                     timer->value = 0;
                     state->value = zox_player_state_paused;
                     dirty->value = zox_dirty_trigger;
+                    zox_add(e, Dirty);
                     if (dbg_log) {
                         zox_log("Player is now [Paused]");
                     }
@@ -33,6 +43,7 @@ void player_state_system(iter* it) {
                     timer->value = 0;
                     state->value = zox_player_state_play_trigger; // zox_player_state_play_begin;
                     dirty->value = zox_dirty_trigger;
+                    zox_add(e, Dirty);
                     if (dbg_log) {
                         zox_log("Player is now [Play Begin]");
                     }
@@ -42,6 +53,7 @@ void player_state_system(iter* it) {
                     timer->value = 0;
                     state->value = zox_player_state_respawn;
                     dirty->value = zox_dirty_trigger;
+                    zox_add(e, Dirty);
                     if (dbg_log) {
                         zox_log("Player is now [Respawn] from [Respawning]");
                     }
@@ -60,6 +72,7 @@ void player_state_system(iter* it) {
         if (state->value == zox_player_state_loading) {
             state->value = zox_player_state_starting;
             dirty->value = zox_dirty_trigger;
+            zox_add(e, Dirty);
             if (dbg_log) {
                 zox_log("Player is now starting from load.");
             }
@@ -67,21 +80,29 @@ void player_state_system(iter* it) {
             // Enter state for between spawning character, use for UI Spawning delay
             state->value = zox_player_state_play_begin;
             dirty->value = zox_dirty_trigger;
+            zox_add(e, Dirty);
         } else if (state->value == zox_player_state_the_end) {
             state->value = zox_player_state_main_menu_begin; // zox_player_state_play_begin;
             dirty->value = zox_dirty_trigger;
+            zox_add(e, Dirty);
             if (dbg_log) {
                 zox_log("Player is now [Ending] from [Paused]")
             }
+        } else if (state->value == zox_player_state_main_menu_begin) {
+            state->value = zox_player_state_main_menu;
+            dirty->value = zox_dirty_trigger;
+            zox_add(e, Dirty);
         } else if (state->value == zox_player_state_play_begin) {
             state->value = zox_player_state_playing;
             dirty->value = zox_dirty_trigger;
+            zox_add(e, Dirty);
             if (dbg_log) {
                 zox_log("Player is now [Playing] from [PlayBegin]")
             }
         } else if (state->value == zox_player_state_respawn_begin) {
             state->value = zox_player_state_respawning;
             dirty->value = zox_dirty_trigger;
+            zox_add(e, Dirty);
             entity game = zox_get_parent(world, e);
             byte game_state = zox_getv(game, GameState);
             if (game_state == zox_game_state_paused) {
@@ -93,6 +114,7 @@ void player_state_system(iter* it) {
         } else if (state->value == zox_player_state_respawn) {
             state->value = zox_player_state_play_trigger; // zox_player_state_play_begin;
             dirty->value = zox_dirty_trigger;
+            zox_add(e, Dirty);
             if (dbg_log) {
                 zox_log("Player is now [PlayBegin] from [Respawn]");
             }

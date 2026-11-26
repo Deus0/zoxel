@@ -1,14 +1,12 @@
-void player_game2_end_system(iter* it) {
-    zox_sys_on_begin();
+// the 2D player's state changed (its core Dirty)
+void player_game2_end_event(iter* it) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(PlayerStateDirty);
     zox_sys_in(PlayerState);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(PlayerStateDirty, dirty);
         zox_sys_i(PlayerState, state);
-        if (!(dirty->value == zox_dirty_active && state->value == zox_player_state_main_menu)) {
+        if (!(state->value == zox_player_state_main_menu)) {
             continue;
         }
         // TODO: Do this in game not in player system
@@ -21,5 +19,4 @@ void player_game2_end_system(iter* it) {
         // camera->value = 0;
         // spawn_main_menu(world, e, game_name);
     }
-    zox_sys_on_end();
-} zoxd_system(player_game2_end_system);
+}

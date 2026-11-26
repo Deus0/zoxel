@@ -4,6 +4,7 @@ void player_start_game2D_delayed(ecs *world, entity player) {
     zox_log("Player2D Starting now");
     zox_set(player, PlayerState, { zox_player_state_starting });
     zox_set(player, PlayerStateDirty, { zox_dirty_trigger });
+    zox_add(player, Dirty);
     // spawn character
     entity character = spawn_character2_player(
         world,
@@ -28,19 +29,16 @@ void player_start_game2D_delayed(ecs *world, entity player) {
     zox_set_link(world, camera, Character2DLink, character);
 }
 
-void player_game2_start_system(iter* it) {
-    zox_sys_on_begin();
+// the 2D player's state changed (its core Dirty)
+void player_game2_start_event(iter* it) {
     double game_load_player_delay = 0.2; // 1.1;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(PlayerStateDirty);
     zox_sys_in(PlayerState);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(PlayerStateDirty, dirty);
         zox_sys_i(PlayerState, state);
-        if (!(dirty->value == zox_dirty_active &&
-            state->value == zox_player_state_loading))
+        if (!(state->value == zox_player_state_loading))
         {
             continue;
         }
@@ -51,5 +49,4 @@ void player_game2_start_system(iter* it) {
             e,
             delay);
     }
-    zox_sys_on_end();
-} zoxd_system(player_game2_start_system);
+}

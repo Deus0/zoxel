@@ -55,8 +55,7 @@ void player_state_game_begin(
         position = (float3) { 8, 8.5f, 8 };
         spawn_euler = float3_zero;
         spawn_rotation = quaternion_identity;
-        zox_setv(player, PlayerState, zox_player_state_new);
-        zox_setv(player, PlayerStateDirty, zox_dirty_trigger);
+        zox_setv(player, PlayerStateTarget, zox_player_state_new);   // in its Dirty observer: applied next frame
         // Regions / Towns only
         zox_set(camera, StreamerLevel, { 0 });
     } else {

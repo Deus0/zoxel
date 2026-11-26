@@ -1,11 +1,5 @@
 #include "game.c"
 
 void zox_systems_controllers(ecs *world) {
-    zox_system(
-        controller_player_state_system,
-        zoxp_update,
-        [in] players.PlayerStateDirty,
-        [in] players.PlayerState,
-        [none] players.Player
-    );
+    zox_on_add(controller_player_state_event, [in] players.PlayerState, [none] players.Player, [none] core.Dirty);
 }

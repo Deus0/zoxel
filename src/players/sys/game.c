@@ -24,12 +24,12 @@ void player_game_state_event(iter* it) {
                 if (dbg_log) {
                     zox_log("Game Setting player [%s] to [The End]", zox_getn(e2));
                 }
-                zox_setv(e2, PlayerState, zox_player_state_the_end);
+                zox_setv(e2, PlayerStateTarget, zox_player_state_the_end);
             } else if (state->value == zox_game_terrain_spawn) {
                 if (dbg_log) {
                     zox_log("Game Setting player [%s] to Loading", zox_get_name(e2));
                 }
-                zox_setv(e2, PlayerState, zox_player_state_loading);
+                zox_setv(e2, PlayerStateTarget, zox_player_state_loading);
             } else if (state->value == zox_game_none && last->value != zox_game_boot) {
                 // the_end already sends players to the main menu, this catches any that weren't
                 const byte player_state = zox_getv(e2, PlayerState);
@@ -39,7 +39,7 @@ void player_game_state_event(iter* it) {
                 {
                     continue;
                 }
-                zox_setv(e2, PlayerState, zox_player_state_main_menu_begin);
+                zox_setv(e2, PlayerStateTarget, zox_player_state_main_menu_begin);
                 if (dbg_log) {
                     zox_log("Game Setting player [%s] to [MainMenu]", zox_get_name(e2));
                 }
@@ -47,16 +47,15 @@ void player_game_state_event(iter* it) {
                 if (dbg_log) {
                     zox_log("Game Setting player [%s] to Paused", zox_get_name(e2));
                 }
-                zox_setv(e2, PlayerState, zox_player_state_pause_begin);
+                zox_setv(e2, PlayerStateTarget, zox_player_state_pause_begin);
             } else if (last->value == zox_game_state_paused && state->value == zox_game_state_playing) {
                 if (dbg_log) {
                     zox_log("Game Setting player [%s] to Resume", zox_get_name(e2));
                 }
-                zox_setv(e2, PlayerState, zox_player_state_resume_begin);
+                zox_setv(e2, PlayerStateTarget, zox_player_state_resume_begin);
             } else {
                 continue;
             }
-            zox_setv(e2, PlayerStateDirty, zox_dirty_trigger);
         }
     }
 }

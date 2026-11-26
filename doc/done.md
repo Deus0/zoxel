@@ -1,5 +1,10 @@
 # Done
 
+## 2026-11-26
+-x Game and player states as observers on the core Dirty: the GameStateEvent and PlayerStateEvent lists gone,
+  each module observes the state it reacts to (player uis scaled to their split screen by player_state_each, huds),
+  games open their own boot ui (tst game_states, boot_menu, zedit_boot)
+
 ## 2026-11-25
 -x Colored chunk3 parents, vox models bigger than a chunk (bosses): a parent with the palette, chunks that take it,
   meshed with their neighbours, no faces where they meet (tst colored_parent). A see through pass draws without depth

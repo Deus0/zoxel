@@ -41,6 +41,20 @@ void player_ui_scale_end(ecs* world, entity player) {
     ui_scale = player_ui_scale_saved;
 }
 
+// for a player state observer (core Dirty): calls fun on each player, its uis scaled to its split screen
+void player_state_each(iter* it, void (*fun)(ecs*, entity, byte)) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(PlayerState);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(PlayerState, state);
+        player_ui_scale_begin(world, e);
+        fun(world, e, state->value);
+        player_ui_scale_end(world, e);
+    }
+}
+
 // places each player's cameras and canvas in their cell of the window
 void layout_player_screens(
     ecs* world,

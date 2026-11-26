@@ -1,6 +1,11 @@
 #include "icon.c"
 #include "panel.c"
 
+// the player state changed (its core Dirty)
+void player_state_stats_event(iter* it) {
+    player_state_each(it, player_state_stats_ui);
+}
+
 void zox_events_stats_ui(ecs* world) {
     zox_on_add(
         stat_icon_label_event,
@@ -24,6 +29,5 @@ void zox_events_stats_ui(ecs* world) {
         .expr = "[inout] texts.TextData, [none] texts.Text, [none] elements2.Label, [none] ui_containers.DataUI",
         .cache_kind = EcsQueryCacheAuto
     });
-    zox_muter(prefab_player, PlayerStateEvent, player_event);
-    add_to_PlayerStateEvent(player_event, player_state_stats_ui);
+    zox_on_add(player_state_stats_event, [in] players.PlayerState, [none] players.Player, [none] core.Dirty);
 }

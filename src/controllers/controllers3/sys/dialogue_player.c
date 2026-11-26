@@ -36,7 +36,8 @@ void player_dialogue_system(iter* it) {
             zox_add(character, DisableMovement);
         } else if (state->value == zox_player_state_dialogue_end) {
             state->value = zox_player_state_play_trigger; // zox_player_state_playing;
-            zox_setv(e, PlayerStateDirty, 1);
+            zox_setv(e, PlayerStateDirty, zox_dirty_trigger);
+            zox_add(e, Dirty);
             // lerp our component value over time to new value
             // trigger_canvas_half_fade(world, canvas->value, pause_fade_time, pause_fade_alpha, 0);
             entity mouse = zox_get_child_by_id(world, e, zox_id(Mouse));
@@ -49,20 +50,14 @@ void player_dialogue_system(iter* it) {
     zox_sys_on_end();
 } zoxd_system(player_dialogue_system);
 
-// NOTE: This handles player dialogue state changes
-void camera_player_state_system(iter* it) {
-    zox_sys_on_begin();
+// the player's state changed (its core Dirty): its camera's blur and vignette lerp to the state's
+void camera_player_state_event(iter* it) {
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(PlayerStateDirty);
-    zox_sys_out(PlayerState);
+    zox_sys_in(PlayerState);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(PlayerStateDirty, dirty);
-        zox_sys_o(PlayerState, state);
-        if (dirty->value != zox_dirty_active) {
-            continue;
-        }
+        zox_sys_i(PlayerState, state);
         entity camera = zox_get_link(world, e, CameraLink);
         if (!zox_valid(camera)) {
             zox_loge("Player's camera is invalid [%s]", zox_sys_e_name);
@@ -71,9 +66,6 @@ void camera_player_state_system(iter* it) {
         // cameras without post processing (XR's) have no blur or vignette
         const byte post_processed = zox_has(camera, CameraBlur) && zox_has(camera, CameraVignette);
         const byte main_menu_begin = state->value == zox_player_state_main_menu_begin;
-        if (main_menu_begin) {
-            state->value = zox_player_state_main_menu;
-        }
         if (!post_processed) {
             continue;
         }
@@ -87,6 +79,5 @@ void camera_player_state_system(iter* it) {
             zox_lerp_float(camera, CameraBlur, game_blur, 2.5f);
         }
     }
-    zox_sys_on_end();
-} zoxd_system(camera_player_state_system);
+}
 

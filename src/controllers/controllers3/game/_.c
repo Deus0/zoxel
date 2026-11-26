@@ -25,12 +25,13 @@ void zox_systems_controllers3_game(ecs *world) {
         [out] players.PlayerStateDirty,
         [none] players.Player3
     );
-    zox_system_1(
+    zox_system(
         player3_respawn_system,
-        zoxp_spawn,
+        zoxp_update,
         [out] players.PlayerStateDirty,
         [out] players.PlayerState,
         [none] players.Player
     );
+    zox_on_add(player3_respawn_event, [in] players.PlayerState, [none] players.Player, [none] core.Dirty);
 }
 

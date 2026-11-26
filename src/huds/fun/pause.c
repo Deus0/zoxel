@@ -26,6 +26,7 @@ void toggle_game_menus(ecs* world, entity player) {
     }
     zox_setv(player, PlayerState, state == zox_player_state_paused ? zox_player_state_resume_begin : zox_player_state_pause_begin);
     zox_setv(player, PlayerStateDirty, zox_dirty_trigger);
+    zox_add(player, Dirty);
 }
 
 void button_event_game_menus(ecs* world, const ClickEventData event) {

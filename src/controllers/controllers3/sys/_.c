@@ -105,13 +105,7 @@ void zox_systems_controllers3(ecs *world) {
         zoxp_spawn, // zoxp_update,
         [out] players.PlayerState
     );
-    // NOTE: Spawns animation events
-    zox_system_1(
-        camera_player_state_system,
-        zoxp_spawn, // zoxp_update,
-        [in] players.PlayerStateDirty,
-        [out] players.PlayerState
-    );
+    zox_on_add(camera_player_state_event, [in] players.PlayerState, [none] players.Player, [none] core.Dirty);
     zox_system(
         dialogue_face_system,
         zoxp_update,

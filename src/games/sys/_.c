@@ -1,7 +1,7 @@
 #include "state.c"
 
 void zox_systems_games(ecs* world) {
-    // main thread: a change adds the core Dirty, observers react (gam/*/eve, huds, terrain, weathers, players)
+    // main thread: the clean deletes the realm; a change adds the core Dirty, observers react (gam/*/eve, huds, ...)
     zox_system_1(
         game_state_system,
         zoxp_spawn,

@@ -243,15 +243,14 @@ void player_begin_system(iter* it) {
                 zox_log("Terrain is still Loading [%s]",
                     zox_getn(terrain));
             }
-            // Keep active
-            dirty->value = zox_dirty_trigger;
-            continue;
+            continue;   // checked each frame while starting, no dirty: that re-ran every player state observer
         }
         entity old_character = zox_get_link(world, e, CharacterLink);
         if (zox_valid(old_character)) {
             zox_loge("Trying to load character twice [zox_player_state_starting]");
             state->value = zox_player_state_play_trigger; // zox_player_state_play_begin;
             dirty->value = zox_dirty_trigger;
+            zox_add(e, Dirty);
             continue;
         }
         // actually we need to do this on loaded player model for bounds
@@ -326,6 +325,7 @@ void player_begin_system(iter* it) {
         }
         state->value = zox_player_state_play_trigger;
         dirty->value = zox_dirty_trigger;
+        zox_add(e, Dirty);
     }
     zox_sys_on_end();
 } zoxd_system(player_begin_system);

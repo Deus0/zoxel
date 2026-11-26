@@ -26,13 +26,15 @@ void game_state_huds_event(iter* it) {
     }
 }
 
+// the player state changed (its core Dirty)
+void player_state_huds_event(iter* it) {
+    player_state_each(it, player_state_pause_ui);
+    player_state_each(it, player_state_respawn_ui);
+}
+
 void zox_events_huds(ecs* world) {
     zox_on_add(game_state_huds_event, [in] games.GameState, [none] games.Game, [none] core.Dirty);
-    player_state_event_begin = player_ui_scale_begin;
-    player_state_event_end = player_ui_scale_end;
-    zox_muter(prefab_player, PlayerStateEvent, player_event);
-    add_to_PlayerStateEvent(player_event, player_state_pause_ui);
-    add_to_PlayerStateEvent(player_event, player_state_respawn_ui);
+    zox_on_add(player_state_huds_event, [in] players.PlayerState, [none] players.Player, [none] core.Dirty);
     zox_on_add(town_entered_toast, [none] towns.InTown, [none] players.PlayerCharacter);
     zox_on_add(disconnect_screen_show, [none] inputs.DeviceLost, [none] players.Player);
     zox_observer(disconnect_screen_hide, EcsOnRemove, [none] inputs.DeviceLost, [none] players.Player);

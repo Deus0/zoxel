@@ -94,6 +94,10 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
   the 8 models in parallel) it'd be a fraction: ask first, it changes how model nodes run
 
 # Bugs
+- tst.sh removes /tmp/zoxel_nosaves_<pid> folders whose pid isn't alive: from a sandbox with its own pid namespace
+  (codex exec) every other running test's pid looks dead, so a parallel test lost its save folder mid run
+  (coop_respawn_navigator, 100 save errors, 2026-11-26)
+- tst resume_no_punch times out waiting for the pause menu (on 4e9f9fd3c too, 2026-11-26)
 - tst outline_views --vulkan fails on lavapipe (software vulkan): gpu meshed skeleton meshes drawn with the outline
   mask pipeline (a second, integer colour attachment written) don't show at all; cpu meshed ones do
   (--vox_cpu_meshing passes), and on radv (--gpu) all of it draws and passes. Not found yet: a lavapipe bug, or
@@ -366,8 +370,6 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 ### Modules
 
 ### Events
-- Refactor ([in] players.PlayerState) with new PlayerStateEvent listener
-- Refactor games.GameState systems into listener events GameStateEvent
 
 ### Unsorted
 - Make MeshDirty + and other bytes tags

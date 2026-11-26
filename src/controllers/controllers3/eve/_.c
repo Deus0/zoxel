@@ -6,13 +6,17 @@
 #include "game_end.c"
 #include "dialogue_closed.c"
 
+// the player state changed (its core Dirty)
+void player_state_controllers_event(iter* it) {
+    player_state_each(it, player_state_crosshair);
+    player_state_each(it, player_state_actionbar);
+    player_state_each(it, player_state_touch_ui);
+    player_state_each(it, player_state_game_begin);
+    player_state_each(it, player_state_game_end);
+}
+
 void zox_events_controllers(ecs* world) {
-    zox_muter(prefab_player, PlayerStateEvent, player_event);
-    add_to_PlayerStateEvent(player_event, player_state_crosshair);
-    add_to_PlayerStateEvent(player_event, player_state_actionbar);
-    add_to_PlayerStateEvent(player_event, player_state_touch_ui);
-    add_to_PlayerStateEvent(player_event, player_state_game_begin);
-    add_to_PlayerStateEvent(player_event, player_state_game_end);
+    zox_on_add(player_state_controllers_event, [in] players.PlayerState, [none] players.Player, [none] core.Dirty);
     zox_muter(prefab_app, InitializeEvent, app_event);
     add_to_InitializeEvent(app_event, auto_jump_settings);
     zox_on_add(

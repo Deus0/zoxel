@@ -3,6 +3,11 @@
 
 // event on quest icon clicked?
 
+// the player state changed (its core Dirty)
+void player_state_quests_event(iter* it) {
+    player_state_each(it, player_state_quest_tracker);
+}
+
 void zox_events_quests_ui(ecs* world) {
     zox_on_add(
         quest_icon_label_event,
@@ -39,6 +44,5 @@ void zox_events_quests_ui(ecs* world) {
         [none] core.Dirty,
     );
     // for now...
-    zox_muter(prefab_player, PlayerStateEvent, player_event);
-    add_to_PlayerStateEvent(player_event, player_state_quest_tracker);
+    zox_on_add(player_state_quests_event, [in] players.PlayerState, [none] players.Player, [none] core.Dirty);
 }

@@ -8,18 +8,6 @@ void zox_systems_controllers2(ecs *world) {
         zoxp_update,
         [none] players.Player
     );
-    zox_system_1(
-        player_game2_start_system,
-        zoxp_spawn,
-        [in] players.PlayerStateDirty,
-        [in] players.PlayerState,
-        [none] players.Player2
-    );
-    zox_system_1(
-        player_game2_end_system,
-        zoxp_spawn,
-        [in] players.PlayerStateDirty,
-        [in] players.PlayerState,
-        [none] players.Player2
-    );
+    zox_on_add(player_game2_start_event, [in] players.PlayerState, [none] players.Player2, [none] core.Dirty);
+    zox_on_add(player_game2_end_event, [in] players.PlayerState, [none] players.Player2, [none] core.Dirty);
 }

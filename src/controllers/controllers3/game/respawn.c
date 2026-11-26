@@ -25,6 +25,7 @@ void player3_respawn_system(iter* it) {
                 //  + active red overlay
                 state->value = zox_player_state_respawn_begin;
                 dirty->value = zox_dirty_trigger;
+                zox_add(e, Dirty);
                 if (dbg_log) {
                     zox_log("Respawn [begin] (character dead)");
                 }
@@ -40,69 +41,77 @@ void player3_respawn_system(iter* it) {
                     zox_getn(character));
                 state->value = zox_player_state_play_trigger;
                 dirty->value = zox_dirty_trigger;
-            }
-        }
-        // what happened HHere...? NANI?
-        if (dirty->value != zox_dirty_active) {
-            continue;
-        }
-        // Only respawnn if playing state
-        // What happens after death??
-        if (state->value == zox_player_state_respawn) {
-            byte is_character_dead_or_gone =
-                !zox_valid(character) ||
-                zox_has(character, Dead);
-            if (is_character_dead_or_gone) {
-                state->value = zox_player_state_play_trigger;
-                dirty->value = zox_dirty_trigger;
-                entity game = zox_get_parent(world, e);
-                entity realm = zox_get_link(world, game, RealmLink);
-                entity terrain = zox_get_child_by_id(
-                    world,
-                    realm,
-                    zox_id(Terrain));
-                entity camera = zox_get_link(
-                    world,
-                    e,
-                    CameraLink);
-                if (!zox_valid(camera)) {
-                    zox_loge("player3_respawn_system - Player has no camera linked");
-                    continue;
-                }
-                float3 spawned;
-                character = game_start_player_new(
-                    world,
-                    e,
-                    realm,
-                    terrain,
-                    camera,
-                    &spawned,
-                    1,      // at its bed, if it slept in one
-                    dbg_log);
-                if (!zox_valid(character)) {
-                    zox_loge("Respawn character failed");
-                    continue;
-                }
-                zox_link(world, e, CharacterLink, character);
-                spawn_arrow3D(
-                    world,
-                    spawned,
-                    (float3) {
-                        0,
-                        1,
-                        0
-                    },
-                    0.2f,
-                    6,
-                    8);
-                if (dbg_log) {
-                    zox_log("Player Respawned at [%fx%fx%f]",
-                        spawned.x,
-                        spawned.y,
-                        spawned.z);
-                }
+                zox_add(e, Dirty);
             }
         }
     }
     zox_sys_on_end();
 } zoxd_system(player3_respawn_system);
+
+// the player's state changed (its core Dirty): at respawn, a new character spawns (at its bed, if it slept in one)
+void player3_respawn_event(iter* it) {
+    byte dbg_log = 0;
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(PlayerState);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(PlayerState, state);
+        if (state->value != zox_player_state_respawn) {
+            continue;
+        }
+        entity character = zox_get_link(world, e, CharacterLink);
+        byte is_character_dead_or_gone =
+            !zox_valid(character) ||
+            zox_has(character, Dead);
+        if (is_character_dead_or_gone) {
+            zox_setv(e, PlayerStateTarget, zox_player_state_play_trigger);  // in its Dirty observer: applied next frame
+            entity game = zox_get_parent(world, e);
+            entity realm = zox_get_link(world, game, RealmLink);
+            entity terrain = zox_get_child_by_id(
+                world,
+                realm,
+                zox_id(Terrain));
+            entity camera = zox_get_link(
+                world,
+                e,
+                CameraLink);
+            if (!zox_valid(camera)) {
+                zox_loge("player3_respawn_event - Player has no camera linked");
+                continue;
+            }
+            float3 spawned;
+            character = game_start_player_new(
+                world,
+                e,
+                realm,
+                terrain,
+                camera,
+                &spawned,
+                1,      // at its bed, if it slept in one
+                dbg_log);
+            if (!zox_valid(character)) {
+                zox_loge("Respawn character failed");
+                continue;
+            }
+            zox_link(world, e, CharacterLink, character);
+            spawn_arrow3D(
+                world,
+                spawned,
+                (float3) {
+                    0,
+                    1,
+                    0
+                },
+                0.2f,
+                6,
+                8);
+            if (dbg_log) {
+                zox_log("Player Respawned at [%fx%fx%f]",
+                    spawned.x,
+                    spawned.y,
+                    spawned.z);
+            }
+        }
+    }
+}

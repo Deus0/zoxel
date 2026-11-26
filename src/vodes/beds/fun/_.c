@@ -208,6 +208,7 @@ void on_waking(iter* it) {
         if (zox_getv(player, PlayerState) == zox_player_state_sleeping) {
             zox_setv(player, PlayerState, zox_player_state_play_trigger);   // as a dialogue ends
             zox_setv(player, PlayerStateDirty, zox_dirty_trigger);
+            zox_add(player, Dirty);
         }
         const entity canvas = zox_get_link(world, player, CanvasLink);
         const entity ui = zox_valid(canvas) ? zox_get_child_by_id(world, canvas, zox_id(SleepUI)) : 0;
