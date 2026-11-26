@@ -68,6 +68,28 @@ vec3 outline(vec3 color) {
 }
 #endif
 
+uniform float tonemap;  // colours past 1 (a camera's half float target) back to the screen's: 0 clamp, 1 soft shoulder
+                        //  past 0.8, 2 filmic (doc/plans/hdr.md)
+const float TONEMAP_KNEE = 0.8;
+
+vec3 tone(vec3 c) {
+    c = max(c, vec3(0.0));
+    if (tonemap < 0.5) {
+        return min(c, vec3(1.0));
+    }
+    if (tonemap < 1.5) {
+        // on the brightest channel, so a hue keeps its ratios as it nears white
+        float m = max(c.r, max(c.g, c.b));
+        if (m <= TONEMAP_KNEE) {
+            return c;
+        }
+        float t = TONEMAP_KNEE + (1.0 - TONEMAP_KNEE) * (1.0 - exp(-(m - TONEMAP_KNEE) / (1.0 - TONEMAP_KNEE)));
+        return c * (t / m);
+    }
+    // the aces fit (Narkowicz 2015)
+    return clamp((c * (2.51 * c + 0.03)) / (c * (2.43 * c + 0.59) + 0.14), 0.0, 1.0);
+}
+
 // === constants ===
 const float BLUR_RADIUS = 3.0;
 const float BLUR_SCALE = 512.0;
@@ -121,6 +143,7 @@ void main() {
     } else {
         color = base;
     }
+    color = tone(color);
 
     // Noise
     float noise = random(uv);

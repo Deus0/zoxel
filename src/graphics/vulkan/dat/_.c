@@ -25,6 +25,7 @@ typedef struct {
     VkImageView view;
     int2 size;
     ulong used;
+    byte hdr;                   // a camera's half float colour target (vk_hdr_format), no pixels uploaded
     byte live;
 } vk_texture;
 
@@ -86,7 +87,7 @@ typedef struct {
 // the state a pipeline's made of; zeroed before it's filled, compared with memcmp
 typedef struct {
     byte topology;              // 0 triangles, 1 lines, 2 points
-    byte target;                // 1 a render texture's pass (its format)
+    byte target;                // a render texture's pass (its format): 1 bytes, 2 half floats (vk_target_texture)
     byte blend;
     byte depth_test;
     byte depth_write;

@@ -10,6 +10,9 @@ byte zox_xr_active = 0;
 byte zox_disable_post_processing = 0;
 // setting "Camera Outlines", --outlines / --nooutlines: outlined models on render cameras (doc/plans/outlines.md)
 byte zox_camera_outlines = 1;
+// setting "Tonemap", --tonemap <n>: how a render camera's colours past 1 come back to the screen's, 0 clamp (as
+//  before hdr), 1 soft shoulder, 2 filmic (doc/plans/hdr.md, res/shaders/render_texture_rgb.frag tone())
+byte zox_tonemap = 0;
 // the camera drawing now writes the outline mask (its fbo has one, outlines on and supported), set per camera
 byte render_outlines = 0;
 

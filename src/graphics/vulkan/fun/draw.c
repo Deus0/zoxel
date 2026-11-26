@@ -96,7 +96,7 @@ VkPipeline vulkan_create_pipeline(const vk_program* program, const vk_pipeline_k
         .pColorBlendState = &blend,
         .pDynamicState = &dynamic,
         .layout = program->layout,
-        .renderPass = key->target ? vk_pass_texture_begin : vk_pass_clear,
+        .renderPass = key->target ? vk_pass_texture_begin[key->target - 1] : vk_pass_clear,
     };
     VkPipeline pipeline = VK_NULL_HANDLE;
     vulkan_check(vkCreateGraphicsPipelines(vk_device, VK_NULL_HANDLE, 1, &info, NULL, &pipeline),

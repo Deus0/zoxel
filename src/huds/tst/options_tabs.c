@@ -133,22 +133,28 @@ byte zox_tst_otabs_mismatched = 0;
 int zox_tst_otabs_out = 0;
 static void zox_tst_otabs_mismatch(ecs* world, entity app) {
     zox_tst_otabs_mismatched = 1;
+    // gathered first: setting one can make a table (a setting's first Dirty), which ends an iteration over them
+    entity settings[256];
+    int count = 0;
     iter it = zox_children(world, app);
     while (zox_children_next(it)) {
-        for (int i = 0; i < it.count; i++) {
-            const entity e = it.entities[i];
-            if (!zox_has(e, Setting) || !zox_has(e, ZoxName)) {
-                continue;
-            }
-            const char* name = zox_get(e, ZoxName)->value;
-            // not those the window or the world would act on badly (a resolution of 255, a scale of 1e6)
-            if (zox_has(e, SettingByteSlider)) {
-                set_app_setting_byte(world, app, name, 255);
-                zox_tst_otabs_out++;
-            } else if (zox_has(e, SettingFloat)) {
-                set_app_setting_float(world, app, name, 1000);    // its most: a ui scale of 4
-                zox_tst_otabs_out++;
-            }
+        for (int i = 0; i < it.count && count < 256; i++) {
+            settings[count++] = it.entities[i];
+        }
+    }
+    for (int i = 0; i < count; i++) {
+        const entity e = settings[i];
+        if (!zox_has(e, Setting) || !zox_has(e, ZoxName)) {
+            continue;
+        }
+        const char* name = zox_get(e, ZoxName)->value;
+        // not those the window or the world would act on badly (a resolution of 255, a scale of 1e6)
+        if (zox_has(e, SettingByteSlider)) {
+            set_app_setting_byte(world, app, name, 255);
+            zox_tst_otabs_out++;
+        } else if (zox_has(e, SettingFloat)) {
+            set_app_setting_float(world, app, name, 1000);    // its most: a ui scale of 4
+            zox_tst_otabs_out++;
         }
     }
     zox_log("[tst] options_tabs: [%i] settings loaded out of their bounds", zox_tst_otabs_out);

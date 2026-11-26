@@ -78,7 +78,7 @@ void vulkan_target_frame(VkRenderPass pass);
 // the pass carrying on the bound target's drawing (after secondaries, a compute dispatch): the frame's, a render
 //  texture's, or an external target's (its image kept in the layout its owner takes back)
 static inline VkRenderPass vulkan_target_load_pass() {
-    return vk_target_external ? vk_pass_external_load : vk_target_texture ? vk_pass_texture_load : vk_pass_load;
+    return vk_target_external ? vk_pass_external_load : vk_target_texture ? vk_pass_texture_load[vk_target_texture - 1] : vk_pass_load;
 }
 
 // a render texture left bound: its pass ended, the frame's image the target again

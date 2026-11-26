@@ -54,8 +54,9 @@ void vulkan_texture_data(guint id, int2 size, const byte* rgba) {
     if (!texture || size.x <= 0 || size.y <= 0) {
         return;
     }
-    if (!texture->image || vk_busy(texture->used) || !int2_equals(texture->size, size)) {
+    if (!texture->image || texture->hdr || vk_busy(texture->used) || !int2_equals(texture->size, size)) {
         vulkan_texture_release(texture);
+        texture->hdr = 0;
         const VkExtent2D extent = { size.x, size.y };
         if (!vulkan_create_image(extent, VK_FORMAT_R8G8B8A8_UNORM,
             VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
@@ -93,6 +94,43 @@ void vulkan_texture_data(guint id, int2 size, const byte* rgba) {
     // the image and staging buffer are read by the submission that copies them
     texture->used = vk_serial_recording();
     vulkan_garbage_add((vk_garbage_item) { .allocation = staging.handle, .serial = vk_serial_recording() });
+}
+
+// a camera's colour target can hold colours past 1 (doc/plans/hdr.md), while a tonemap is on: half floats are a
+//  colour attachment, blended and sampled on every vulkan gpu
+#define vk_hdr_format VK_FORMAT_R16G16B16A16_SFLOAT
+
+static inline byte zox_gpu_hdr_supported() {
+    return 1;
+}
+
+// a camera's colour target in half floats, cleared to zero, left shader readable as render textures' passes expect
+static inline void zox_gpu_set_texture_color_hdr(guint id, int2 size) {
+    vk_texture* texture = vk_texture_of(id);
+    if (!texture || size.x <= 0 || size.y <= 0) {
+        return;
+    }
+    vulkan_texture_release(texture);
+    const VkExtent2D extent = { size.x, size.y };
+    if (!vulkan_create_image(extent, vk_hdr_format,
+        VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+        &texture->image, &texture->memory))
+    {
+        return;
+    }
+    texture->view = vulkan_create_view(texture->image, vk_hdr_format, VK_IMAGE_ASPECT_COLOR_BIT);
+    texture->size = size;
+    texture->hdr = 1;
+    const VkCommandBuffer commands = vulkan_upload_commands();
+    vulkan_image_barrier(commands, texture->image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+        0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
+    const VkClearColorValue zero = { .float32 = { 0, 0, 0, 0 } };
+    const VkImageSubresourceRange range = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+    vkCmdClearColorImage(commands, texture->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, &zero, 1, &range);
+    vulkan_image_barrier(commands, texture->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+        VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
+        VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+    texture->used = vk_serial_recording();
 }
 
 static inline void zox_gpu_set_texture_color_rgba(guint id, int2 size, const void* ptr) {

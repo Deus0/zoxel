@@ -33,8 +33,8 @@ VkDeviceMemory vk_depth_memory;
 VkImageView vk_depth_view;
 VkRenderPass vk_pass_clear;     // opens a frame, clearing it
 VkRenderPass vk_pass_load;      // carries on a frame after a read back
-VkRenderPass vk_pass_texture_begin;     // a render texture's (fun/targets.c)
-VkRenderPass vk_pass_texture_load;
+VkRenderPass vk_pass_texture_begin[2]; // a render texture's (fun/targets.c): [0] bytes, [1] half floats (hdr)
+VkRenderPass vk_pass_texture_load[2];
 
 // what's drawn to now: the frame's image, or a render texture (an fbo bound, its passes and pipelines its own)
 uint vk_fbo_bound;

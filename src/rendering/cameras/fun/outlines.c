@@ -35,3 +35,11 @@ byte render_texture_outlines(ecs* world, entity render_texture, guint material) 
     zox_gpu_float4(data, (float4) { 1, plane_near, plane_far, zox_outline_width * focal });
     return 1;
 }
+
+// a render texture's tonemap (doc/plans/hdr.md): the setting, set on its pass' material each draw
+void render_texture_tonemap(guint material) {
+    const gint tonemap = zox_gpu_get_material_property(material, "tonemap");
+    if (tonemap >= 0) {
+        zox_gpu_float(tonemap, zox_tonemap);
+    }
+}

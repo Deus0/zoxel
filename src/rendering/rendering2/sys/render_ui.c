@@ -64,6 +64,7 @@ entity spawn_material_matrixui(ecs* world) {
 
 // a render texture's outline pass (rendering/cameras/fun/outlines.c, included after)
 byte render_texture_outlines(ecs* world, entity render_texture, guint material);
+void render_texture_tonemap(guint material);
 
 static inline const int4* get_ui_clip(ecs* world, entity e);
 static inline int4 intersect_layout_clips(int4 a, int4 b);
@@ -170,7 +171,11 @@ void render_uis(ecs* world, ui_render_queue* uis, int2 viewport_position, int2 v
             zox_gpu_float4x4(attributes->matrix, matrix2);
             zox_gpu_float(attributes->brightness, data.brightness);
             zox_gpu_float(attributes->alpha, data.alpha);
-            const byte outlines = zox_has(data.e, RenderTexture) &&
+            const byte is_render_texture = zox_has(data.e, RenderTexture);
+            if (is_render_texture) {
+                render_texture_tonemap(zox_getv(material, MaterialGPULink));
+            }
+            const byte outlines = is_render_texture &&
                 render_texture_outlines(world, data.e, zox_getv(material, MaterialGPULink));
             zox_gpu_render(6);
             if (outlines) {

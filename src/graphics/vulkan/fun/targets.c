@@ -46,10 +46,11 @@ static inline vk_rbo* vk_rbo_of(uint id) {
 
 #define vk_mask_format VK_FORMAT_R32G32_UINT
 
-VkRenderPass vulkan_create_texture_pass(byte begin) {
+// its colour bytes, or half floats for an hdr camera (doc/plans/hdr.md)
+VkRenderPass vulkan_create_texture_pass(byte begin, byte hdr) {
     const VkAttachmentDescription attachments[3] = {
         {
-            .format = VK_FORMAT_R8G8B8A8_UNORM,
+            .format = hdr ? vk_hdr_format : VK_FORMAT_R8G8B8A8_UNORM,
             .samples = VK_SAMPLE_COUNT_1_BIT,
             .loadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
             .storeOp = VK_ATTACHMENT_STORE_OP_STORE,
@@ -240,9 +241,10 @@ static inline void zox_gpu_bind_fbo(guint id) {
     {
         return;
     }
-    if (!vk_pass_texture_begin) {
-        vk_pass_texture_begin = vulkan_create_texture_pass(1);
-        vk_pass_texture_load = vulkan_create_texture_pass(0);
+    const byte hdr = texture->hdr;
+    if (!vk_pass_texture_begin[hdr]) {
+        vk_pass_texture_begin[hdr] = vulkan_create_texture_pass(1, hdr);
+        vk_pass_texture_load[hdr] = vulkan_create_texture_pass(0, hdr);
     }
     const ulong serial = vk_serial_recording();
     const VkExtent2D extent = { int_min(texture->size.x, rbo->size.x), int_min(texture->size.y, rbo->size.y) };
@@ -253,7 +255,7 @@ static inline void zox_gpu_bind_fbo(guint id) {
         const VkImageView attachments[3] = { texture->view, rbo->view, rbo->mask_view };
         const VkFramebufferCreateInfo info = {
             .sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
-            .renderPass = vk_pass_texture_begin,
+            .renderPass = vk_pass_texture_begin[hdr],
             .attachmentCount = vk_outlines ? 3 : 2,
             .pAttachments = attachments,
             .width = extent.width,
@@ -272,11 +274,11 @@ static inline void zox_gpu_bind_fbo(guint id) {
     rbo->used = serial;
     vkCmdEndRenderPass(vk_contexts[0].commands);
     vk_fbo_bound = id;
-    vk_target_texture = 1;
+    vk_target_texture = 1 + hdr;
     vk_target_external = 0;
     vk_target_framebuffer = fbo->framebuffer;
     vk_target_extent = fbo->extent;
-    vulkan_pass_begin(vk_contexts[0].commands, vk_pass_texture_begin, VK_SUBPASS_CONTENTS_INLINE);
+    vulkan_pass_begin(vk_contexts[0].commands, vk_pass_texture_begin[hdr], VK_SUBPASS_CONTENTS_INLINE);
     vk_contexts[0].pipeline_bound = VK_NULL_HANDLE;
     vk_contexts[0].dynamic_dirty = 1;
 }
@@ -298,8 +300,11 @@ void vulkan_dispose_targets() {
     }
     vk_table_dispose(&vk_fbos);
     vk_table_dispose(&vk_rbos);
-    vkDestroyRenderPass(vk_device, vk_pass_texture_begin, NULL);
-    vkDestroyRenderPass(vk_device, vk_pass_texture_load, NULL);
+    for (byte i = 0; i < 2; i++) {
+        vkDestroyRenderPass(vk_device, vk_pass_texture_begin[i], NULL);
+        vkDestroyRenderPass(vk_device, vk_pass_texture_load[i], NULL);
+        vk_pass_texture_begin[i] = vk_pass_texture_load[i] = VK_NULL_HANDLE;
+    }
 }
 
 // outlines (doc/plans/outlines.md): the mask cleared as a render texture's pass begins, drawn to by outlined models
