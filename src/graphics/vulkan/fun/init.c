@@ -62,6 +62,7 @@ void vulkan_dispose() {
         vulkan_dispose_rings();
         vulkan_dispose_slabs();
         vkDestroySampler(vk_device, vk_sampler, NULL);
+        vkDestroySampler(vk_device, vk_sampler_mips, NULL);
         vkDestroyBuffer(vk_device, vk_zeros, NULL);
         vkFreeMemory(vk_device, vk_zeros_memory, NULL);
         vulkan_dispose_framebuffers();

@@ -103,6 +103,9 @@ void camera_render3_system(iter* it) {
         }
         if (fbo) {
             zox_gpu_reset_fbo();
+            if (zox_camera_bloom()) {
+                zox_gpu_fbo_mips(fbo);  // its view's mips for bloom (vulkan made them as its pass ended)
+            }
         }
     }
     render_underwater = 0;

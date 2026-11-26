@@ -88,11 +88,21 @@ The source of values past 1, in order:
 
 ### A4. Bloom (what makes it show on an SDR screen)
 
-- Bright pass (past 1, soft knee) into a half size target, a 4 to 5 level downsample and upsample chain (the
-  dual filter / COD style: 13 tap down, 9 tap tent up), added before the tonemap.
-- Budget: under 0.5ms at 1080p on the 780M (frame target 8.3ms). A `Bloom` setting, its own off switch.
-- Its targets belong to the render camera, made, sized, disposed and restored with its fbo
-  (rendering/cameras/fun/gpu.c), as the outline mask is.
+**Built, v1 (2026-11-27): the view's mips.** No new targets or passes:
+
+- Bloom on, the camera's half float target has mips, made after each draw: gl `glGenerateMipmap`
+  (`zox_gpu_fbo_mips`, render3 after the camera's draw), vulkan blits as its pass ends (`vulkan_texture_mips` in
+  `zox_gpu_reset_fbo`, outside a render pass). Vulkan: a view of every level to sample, the first's to draw to
+  (`target_view`), a sampler linear between mips and nearest up close (`vk_sampler_mips`, a downscaled view stays
+  pixelated); unsupported without blits and linear filtering on RGBA16F (`zox_gpu_bloom_supported`).
+- The pass (`bloom_light()`): mips 2 to 7 (4 to 128 pixels), 4 taps a level, mixed in by `zox_bloom_strength` (0.08)
+  before the tonemap. No threshold: a mip averages a small bright thing below any threshold, so everything blurs a
+  little and colours past 1 glow the most (the energy conserving style). It hazes the view a little: off by default.
+- Setting `Bloom` (video tab, `--bloom` / `--nobloom`); turning it on or off remakes the render textures.
+- tst hdr_bloom: a cube at brightness 1 then 3 on a dark background, read just below it: off unchanged, on brighter.
+- Not measured on the 780M yet (llvmpipe's times say nothing): the budget is 0.5ms at 1080p.
+- Limits: box filtered mips can look blocky and shimmer as the camera moves. The fix, if it shows: a chain of
+  targets, the dual filter / COD style (13 tap down, 9 tap tent up), a bright pass with a soft knee.
 
 ### A5. Later, as outlines did
 
@@ -124,10 +134,21 @@ Viewport cameras (split screen, model_views), xr (two eyes), web's `viewport_dow
 - The existing gl/vulkan screenshot match, with HDR on and off: identical below the knee.
 - B: a pure test of the encode maths (scRGB and PQ at given values) and a log of the picked swapchain format.
 
+## Later: vox colours past 1 and a wider range
+
+After realm colour generation is redone (the user, 2026-11-27):
+
+- **Glow per palette colour**: a vox palette entry gets an intensity (a byte, 0 to 8 times), not float colours: a
+  vox stays bytes, its mesh vertices carry it (rgb bytes + a glow byte, or the alpha), the shader multiplies. Eyes,
+  crystals, lava blocks, magic items glow past 1 and bloom.
+- **Wider range**: palettes generated in a wide gamut (Display P3 / Rec 2020 primaries) for HDR screens, mapped to
+  sRGB for SDR ones in the output pass (stage B). More saturated reds and greens than sRGB can show.
+- **Precision**: 10 bits a channel only if banding shows in dark caves; bytes first.
+
 ## Order, each step working and tested
 
 1. A1 + A2: float target and the tonemap setting, gl then vulkan. Nothing looks different at clamp (built).
-2. A3.1: emissive brightness past 1 on glow stones; A4 bloom. The first visible change.
+2. A4 bloom (built, v1), then A3.1: emissive brightness past 1 on glow stones. The first visible change.
 3. A3.2 to A3.4 as lighting and sky work land.
 4. B0 check, then B on vulkan if the driver offers it.
 5. A5: viewport cameras, xr.

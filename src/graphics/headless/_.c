@@ -20,6 +20,7 @@ static inline void zox_gpu_bind_fbo(guint id) { }
 static inline void zox_gpu_fbo_to_texture(guint fbo, guint texture) { }
 static inline void zox_gpu_link_fbo_rbo(guint fbo, guint rbo) { }
 static inline void zox_gpu_dispose_fbo(guint fbo) { }
+static inline void zox_gpu_fbo_mips(guint fbo) { }
 
 // RBOs
 

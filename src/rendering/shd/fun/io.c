@@ -13,9 +13,10 @@ static inline entity spawn_file_shader_at_path(ecs *world, entity prefab, const 
         zox_loge("[sourcep] is invalid");
         return 0;
     }
-    // outlines' mask output (a second colour output, doc/plans/outlines.md): glsl 300 and up (not gles2)
+    // glsl 300 and up (not gles2): outlines' mask output (a second colour output, doc/plans/outlines.md), bloom's
+    //  textureLod (doc/plans/hdr.md)
     if (shader_opengl_version >= 300) {
-        const char* define = "#define zox_outlines\n";
+        const char* define = "#define zox_glsl300\n#define zox_outlines\n";
         char* defined = malloc(strlen(define) + strlen(source_precision) + 1);
         strcpy(defined, define);
         strcat(defined, source_precision);

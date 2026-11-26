@@ -26,6 +26,8 @@ typedef struct {
     int2 size;
     ulong used;
     byte hdr;                   // a camera's half float colour target (vk_hdr_format), no pixels uploaded
+    byte mips;                  // its levels, past 1 for bloom: made as its camera's pass ends (vulkan_texture_mips)
+    VkImageView target_view;    // with mips, its first level's, what its framebuffer draws to (view samples them all)
     byte live;
 } vk_texture;
 

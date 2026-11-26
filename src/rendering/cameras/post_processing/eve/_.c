@@ -12,6 +12,11 @@ void app_initialize_post_processing(ecs* world, entity app) {
     if (!zox_gpu_hdr_supported() || zox_xr_active) {
         zox_add(tonemap, SettingUnsupported);
     }
+    const entity bloom = spawn_setting_byte(world, app, "Bloom", zox_bloom);
+    setting_tags(world, bloom, zox_id(SettingTabVideo), zox_id(SettingBloom));
+    if (!zox_gpu_hdr_supported() || !zox_gpu_bloom_supported() || zox_xr_active) {
+        zox_add(bloom, SettingUnsupported);
+    }
 }
 
 void post_processing_settings_on_dirty(iter* it) {
@@ -27,6 +32,8 @@ void post_processing_settings_on_dirty(iter* it) {
             zox_camera_outlines = value;
         } else if (zox_has(e, SettingTonemap)) {
             zox_set_tonemap(world, value);
+        } else if (zox_has(e, SettingBloom)) {
+            zox_set_bloom(world, value);
         }
     }
 }

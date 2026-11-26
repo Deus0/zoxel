@@ -248,11 +248,13 @@ static inline void zox_gpu_bind_fbo(guint id) {
     }
     const ulong serial = vk_serial_recording();
     const VkExtent2D extent = { int_min(texture->size.x, rbo->size.x), int_min(texture->size.y, rbo->size.y) };
-    if (!fbo->framebuffer || fbo->view != texture->view || fbo->depth_view != rbo->view) {
+    // with mips (bloom) it draws to the first level
+    const VkImageView color_view = texture->target_view ? texture->target_view : texture->view;
+    if (!fbo->framebuffer || fbo->view != color_view || fbo->depth_view != rbo->view) {
         if (fbo->framebuffer) {
             vulkan_garbage_add((vk_garbage_item) { .framebuffer = fbo->framebuffer, .serial = serial });
         }
-        const VkImageView attachments[3] = { texture->view, rbo->view, rbo->mask_view };
+        const VkImageView attachments[3] = { color_view, rbo->view, rbo->mask_view };
         const VkFramebufferCreateInfo info = {
             .sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
             .renderPass = vk_pass_texture_begin[hdr],
@@ -266,7 +268,7 @@ static inline void zox_gpu_bind_fbo(guint id) {
         if (!vulkan_check(vkCreateFramebuffer(vk_device, &info, NULL, &fbo->framebuffer), "vkCreateFramebuffer")) {
             return;
         }
-        fbo->view = texture->view;
+        fbo->view = color_view;
         fbo->depth_view = rbo->view;
         fbo->extent = extent;
     }
@@ -288,6 +290,12 @@ static inline void zox_gpu_reset_fbo() {
         return;
     }
     vkCmdEndRenderPass(vk_contexts[0].commands);
+    // bloom's mips, between the passes
+    const vk_fbo* fbo = vk_fbo_of(vk_fbo_bound);
+    vk_texture* texture = fbo ? vk_texture_of(fbo->texture) : NULL;
+    if (texture && texture->image && texture->mips > 1) {
+        vulkan_texture_mips(vk_contexts[0].commands, texture);
+    }
     vulkan_target_frame(vk_pass_load);
 }
 
@@ -349,5 +357,6 @@ VkDescriptorImageInfo vulkan_unit_image(byte unit) {
         texture = vk_texture_of(vk_texture_black);
     }
     texture->used = serial;
-    return (VkDescriptorImageInfo) { vk_sampler, texture->view, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL };
+    return (VkDescriptorImageInfo) { texture->mips > 1 ? vk_sampler_mips : vk_sampler, texture->view,
+        VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL };
 }

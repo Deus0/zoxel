@@ -72,11 +72,25 @@ static inline byte zox_gpu_hdr_supported() {
 #endif
 }
 
+// bloom's mips of a half float target: made and filtered wherever it can draw to one
+static inline byte zox_gpu_bloom_supported() {
+    return zox_gpu_hdr_supported();
+}
+
 // a camera's colour target, half floats: colours past 1 kept for the post pass' tonemap (doc/plans/hdr.md)
-static inline void zox_gpu_set_texture_color_hdr(guint id, int2 size) {
+//  - mips (bloom): made after each draw (zox_gpu_fbo_mips), linear between them, nearest up close (a downscaled
+//    view stays pixelated); without, nearest only (a mip filter with no mips made samples black)
+static inline void zox_gpu_set_texture_color_hdr(guint id, int2 size, byte mips) {
 #ifndef zox_gles2
     zox_gpu_bind_texture(id);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, size.x, size.y, 0, GL_RGBA, GL_HALF_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mips ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, mips ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, mips ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+    if (mips) {
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
     zox_gpu_bind_texture(0);
 #endif
 }

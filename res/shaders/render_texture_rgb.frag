@@ -68,6 +68,26 @@ vec3 outline(vec3 color) {
 }
 #endif
 
+#ifdef zox_glsl300
+uniform float bloom;    // 0 off, else its strength: the view's mips (blurred, colours past 1 glow) mixed in
+                        //  (doc/plans/hdr.md)
+
+// the view blurred: its mips 2 to 7 (4 to 128 pixels), 4 taps a level a texel apart, so the blocks of a level's
+//  pixels don't show
+vec3 bloom_light(vec2 at) {
+    vec3 sum = vec3(0.0);
+    for (int level = 2; level <= 7; level++) {
+        vec2 texel = 1.0 / vec2(textureSize(zexture, level));
+        float lod = float(level);
+        sum += textureLod(zexture, at + vec2(-texel.x, -texel.y), lod).rgb;
+        sum += textureLod(zexture, at + vec2(texel.x, -texel.y), lod).rgb;
+        sum += textureLod(zexture, at + vec2(-texel.x, texel.y), lod).rgb;
+        sum += textureLod(zexture, at + vec2(texel.x, texel.y), lod).rgb;
+    }
+    return sum / 24.0;
+}
+#endif
+
 uniform float tonemap;  // colours past 1 (a camera's half float target) back to the screen's: 0 clamp, 1 soft shoulder
                         //  past 0.8, 2 filmic (doc/plans/hdr.md)
 const float TONEMAP_KNEE = 0.8;
@@ -143,6 +163,11 @@ void main() {
     } else {
         color = base;
     }
+#ifdef zox_glsl300
+    if (bloom > 0.0) {
+        color = mix(color, bloom_light(uv), bloom);
+    }
+#endif
     color = tone(color);
 
     // Noise

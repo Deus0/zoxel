@@ -1,10 +1,10 @@
 /*
  *  Post Processing: a render camera's view drawn on its canvas through one pass (res/shaders/render_texture_rgb.frag)
  *
- *      - effects: blur, vignette, under water tint, eyelids (a camera's values, com), outlines, the tonemap; the
+ *      - effects: blur, vignette, under water tint, eyelids (a camera's values, com), outlines, the tonemap, bloom; the
  *        pass reads them from its render texture's camera as it draws (fun/pass.c)
  *      - its colour target: half floats while a tonemap is on (doc/plans/hdr.md), else bytes
- *      - settings Camera Outlines and Tonemap (--outlines / --nooutlines, --tonemap <n>)
+ *      - settings Camera Outlines, Tonemap and Bloom (--outlines / --nooutlines, --tonemap <n>, --bloom / --nobloom)
  *      - its material: rendering2/mat/render_texture.c; tests: ui/render_textures/tst (eyelids, hdr_target)
  *
  * */

@@ -107,6 +107,7 @@ VkBuffer vk_zeros;
 VkDeviceMemory vk_zeros_memory;
 uint vk_texture_black;
 VkSampler vk_sampler;
+VkSampler vk_sampler_mips;     // a texture with mips (bloom's): linear between them, nearest up close
 byte vk_wide_lines;
 byte vk_outlines;       // independentBlend: render textures get an outline mask (an integer target beside the blended)
 byte vk_meshes_staged;          // meshes in gpu only memory, written by copies (vulkan_pick_meshes_staged)

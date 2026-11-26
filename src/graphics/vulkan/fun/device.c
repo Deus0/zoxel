@@ -129,11 +129,12 @@ int vulkan_host_memory_type(uint allowed) {
     return local >= 0 ? local : vulkan_memory_type(allowed, host);
 }
 
-// an image with its own memory, 0 if it couldn't
-byte vulkan_create_image(
+// an image of levels mips with its own memory, 0 if it couldn't
+byte vulkan_create_image_levels(
     VkExtent2D extent,
     VkFormat format,
     VkImageUsageFlags usage,
+    uint levels,
     VkImage* image,
     VkDeviceMemory* memory)
 {
@@ -142,7 +143,7 @@ byte vulkan_create_image(
         .imageType = VK_IMAGE_TYPE_2D,
         .format = format,
         .extent = { extent.width, extent.height, 1 },
-        .mipLevels = 1,
+        .mipLevels = levels,
         .arrayLayers = 1,
         .samples = VK_SAMPLE_COUNT_1_BIT,
         .tiling = VK_IMAGE_TILING_OPTIMAL,
@@ -166,17 +167,29 @@ byte vulkan_create_image(
     return 1;
 }
 
-VkImageView vulkan_create_view(VkImage image, VkFormat format, VkImageAspectFlags aspect) {
+// an image with its own memory, 0 if it couldn't
+byte vulkan_create_image(VkExtent2D extent, VkFormat format, VkImageUsageFlags usage, VkImage* image,
+    VkDeviceMemory* memory)
+{
+    return vulkan_create_image_levels(extent, format, usage, 1, image, memory);
+}
+
+// a view of its first levels mips
+VkImageView vulkan_create_view_levels(VkImage image, VkFormat format, VkImageAspectFlags aspect, uint levels) {
     const VkImageViewCreateInfo info = {
         .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
         .image = image,
         .viewType = VK_IMAGE_VIEW_TYPE_2D,
         .format = format,
-        .subresourceRange = { aspect, 0, 1, 0, 1 },
+        .subresourceRange = { aspect, 0, levels, 0, 1 },
     };
     VkImageView view = VK_NULL_HANDLE;
     vulkan_check(vkCreateImageView(vk_device, &info, NULL, &view), "vkCreateImageView");
     return view;
+}
+
+VkImageView vulkan_create_view(VkImage image, VkFormat format, VkImageAspectFlags aspect) {
+    return vulkan_create_view_levels(image, format, aspect, 1);
 }
 
 // a host visible buffer (read backs, uploads), 0 if it couldn't

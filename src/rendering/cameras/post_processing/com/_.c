@@ -6,6 +6,7 @@ zoxc_float(CameraLids);     // the eyes closing, 0 open to 1 shut: lids from the
 // its settings, each its own tag (a setting's observer finds it by it, not its name)
 zox_tag(SettingCameraOutlines);
 zox_tag(SettingTonemap);
+zox_tag(SettingBloom);
 
 void zox_components_post_processing(ecs* world) {
     zoxd_float(CameraBlur);
@@ -14,4 +15,5 @@ void zox_components_post_processing(ecs* world) {
     zoxd_float(CameraLids);
     zoxd_tag(SettingCameraOutlines);
     zoxd_tag(SettingTonemap);
+    zoxd_tag(SettingBloom);
 }
