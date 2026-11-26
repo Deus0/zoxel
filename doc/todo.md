@@ -1378,6 +1378,10 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 - Add Terrain Depth to options - debug options
 
 # Editor
+- Shared ui textures: spawn_image clones its texture per image (clone_texture_data), so every fold arrow, icon and
+  item image uploads its own copy. Let images link one texture instead (MeshTextureLink to a source with the
+  TextureGPULink), without a per element lookup every frame in element_render_system. Measure gpu buffers and
+  frame time before and after, test it (icons, items, fold arrows)
 - editor uis need close buttons
 - Add a Toggle when entity has children in hierarchy, toggle will remove/add their children uis
 - Arrows to fold/unfold children in hierarchy
