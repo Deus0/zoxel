@@ -84,8 +84,14 @@ Later, not now: capsule against capsule (npcs), against boxes, voxel terrains wi
 Each is one task: code, its tests, and its docs (doc/tech/poly_terrains.md, zeland in doc/gdd and the games list,
 kept current as each step lands, not a step of their own).
 
-1. **zeland:** `gam/zeland` like `gam/zixel`: `game_name`, sky colours, boots into its menu, a play that starts a
-   game with no voxel terrain (spawns nothing yet). Test `zeland_boot`: boots and plays with no errors.
+1. [x] **zeland:** `gam/zeland` like `gam/zixel`: `game_name`, sky colours, boots into its menu, a play that starts
+   a game with no voxel terrain (spawns nothing yet). Test `zeland_boot`: boots and plays with no errors.
+   - `zox_game_mode_poly`: no voxel terrain spawns, the game doesn't wait on one
+   - its players aren't `Player3`, so the voxel start (controllers3 game_start, game_end) skips them; zeland's own
+     observer puts the camera free over the origin (right click toggles roaming) and plays
+   - the game's ui skips what a player lacks: no character, no actionbar, stats or quest tracker; no voxel terrain,
+     no minimap
+   - build and run: `bash bsh/build.sh zeland --run`; test: `zox_tst_game=zeland bash bsh/tst.sh zeland_boot`
 2. **folders:** `src/terrain` to `src/terrains/voxel`, the module renamed `voxel_terrains` and its query strings,
    the docs' links. The terrain tests pass as before.
 3. **heights:** `src/terrains/poly`, `PolyTerrain`, `PolyHeights`, `poly_height_generate`, `poly_height_at`,

@@ -34,6 +34,10 @@ void player_state_minimaps(
             return;
         }
         entity terrain = zox_get_link(world, realm, TerrainLink);
+        // the map draws a voxel terrain's tunks: none to draw without one (a poly game, zeland)
+        if (!zox_valid(terrain)) {
+            return;
+        }
         spawn_minimap(
             world,
             canvas,

@@ -34,7 +34,8 @@ void player_state_game_end(
     if (zox_valid(character)) {
         zox_delete(character);
         // zox_setv(player, CharacterLink, 0);
-    } else {
+    } else if (zox_has(player, Player3)) {
+        // voxel players always have one; a poly game's (zeland) has none yet
         zox_loge("[zox_player_state_the_end] Invalid [character]");
     }
 }

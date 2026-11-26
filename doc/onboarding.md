@@ -92,7 +92,7 @@ src/
     _/              the foundation: flecs wrapper, maths, collections, octrees, logs, memory
     core/           core engine modules (timing, settings, the test harness)
     <module>/       one folder per subsystem: npcs, terrain, chunks, ui, skills, combat...
-gam/                the games (zoxel, zixel, zedit...) built on the engine
+gam/                the games (zoxel, zixel, zedit, zeland...) built on the engine
 bsh/                build, package and test scripts
 doc/                these docs: engine/ (how the engine works), tech/ (each module), gdd/ (game design),
                     plans/, todo.md and done.md
@@ -399,6 +399,7 @@ The loop:
 - [Engine](engine/_.md) and [Tech](tech/_.md): the indexes of every engine and module doc
 - [Vulkan](tech/vulkan.md): the vulkan backend, how it works and how to test it
 - [Android](engine/android.md): building, installing and debugging the apks
+- [New Game](howto/newgame.md): making a game in `gam/`, its modes, states and tests
 - [Game Design](gdd.md): the blend, the pillars, what's playable and planned
 - [Settings](tech/settings.md): a module's settings, how a change applies, save and load
 - [States](tech/states.md): change events, tags over byte states, which form to use, timing

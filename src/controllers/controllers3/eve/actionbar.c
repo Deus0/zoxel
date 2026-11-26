@@ -17,7 +17,8 @@ void player_state_actionbar(
         world,
         canvas,
         zox_id(MenuActions));
-    if (is_spawn && !zox_valid(ui)) {
+    // a player without a character (a poly game's, zeland) has no actions
+    if (is_spawn && !zox_valid(ui) && zox_valid(zox_get_link(world, player, CharacterLink))) {
         spawn_menu_actions(world, player);
         if (dbg_log) {
             zox_log("Spawned [MenuActions] for [%s]",

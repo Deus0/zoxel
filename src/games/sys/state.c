@@ -52,9 +52,12 @@ void game_state_system(iter* it) {
                 realm,
                 get_terrain_id());
             if (!zox_valid(terrain)) {
-                zox_loge("Terrain not found in Realm [%s]:[%s]",
-                    zox_getn(realm),
-                    zox_getn(get_terrain_id()));
+                // only the voxel mode streams one in to wait on
+                if (zox_game_type == zox_game_mode_3D) {
+                    zox_loge("Terrain not found in Realm [%s]:[%s]",
+                        zox_getn(realm),
+                        zox_getn(get_terrain_id()));
+                }
                 is_update = 1;
             } else if (!zox_has(terrain, Loading)) {
                 is_update = 1;

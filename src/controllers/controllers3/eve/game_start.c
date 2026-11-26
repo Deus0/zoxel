@@ -4,7 +4,8 @@ void player_state_game_begin(
     byte state)
 {
     byte dbg_log = 0;
-    if (state != zox_player_state_loading) {
+    // the voxel terrain's start: its players only (Player3)
+    if (state != zox_player_state_loading || !zox_has(player, Player3)) {
         return;
     }
     entity camera = zox_get_link(world, player, CameraLink);

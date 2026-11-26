@@ -20,7 +20,8 @@ void player_state_quest_tracker(
         world,
         canvas,
         zox_id(QuestTracker));
-    if (is_spawn && !zox_valid(tracker)) {
+    // a player without a character (a poly game's, zeland) tracks no quests
+    if (is_spawn && !zox_valid(tracker) && zox_valid(zox_get_link(world, player, CharacterLink))) {
         spawn_quest_tracker(
             world,
             canvas,

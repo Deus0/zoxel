@@ -161,7 +161,8 @@ void player_state_stats_ui(
         world,
         canvas,
         zox_id(StatBars));
-    if (is_spawn && !zox_valid(statbars)) {
+    // a player without a character (a poly game's, zeland) has no stats to show
+    if (is_spawn && !zox_valid(statbars) && zox_valid(character)) {
         const byte mode = zox_getv(player, DeviceMode);
         const byte touch = mode == zox_device_mode_touchscreen || zox_dbg_touch_with_mouse;
         spawn_stats_panel(
