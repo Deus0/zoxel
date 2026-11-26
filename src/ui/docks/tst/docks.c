@@ -15,20 +15,21 @@ static void zox_tst_dock_view(ecs* world, entity camera, int2 size, int2 origin,
         "game camera did not apply the viewport");
 }
 
-static void zox_tst_dock_geometry(ecs* world, entity canvas, entity camera, entity3 docks) {
+static void zox_tst_dock_geometry(ecs* world, entity canvas, entity camera, entity4 docks) {
     const int2 size = zox_getv(canvas, LayoutSize);
     const int2 left = zox_getv(docks.x, LayoutSize);
     const int2 right = zox_getv(docks.y, LayoutSize);
     const int2 bottom = zox_getv(docks.z, LayoutSize);
-    zox_tst_check(int2_equals(zox_tst_dock_origin(world, docks.x, size), int2_zero) && left.y == size.y,
+    const int below = size.y - (docks.w ? 24 : 0);
+    zox_tst_check(int2_equals(zox_tst_dock_origin(world, docks.x, size), int2_zero) && left.y == below,
         "left dock does not fill the left edge");
     zox_tst_check(int2_equals(zox_tst_dock_origin(world, docks.y, size), ((int2) { size.x - right.x, 0 })) &&
-        right.y == size.y, "right dock does not fill the right edge");
+        right.y == below, "right dock does not fill the right edge");
     zox_tst_check(int2_equals(zox_tst_dock_origin(world, docks.z, size), ((int2) { left.x, 0 })),
         "bottom dock does not start at the inner edge of the left dock");
     zox_tst_check(bottom.x > 0 && left.x + bottom.x + right.x == size.x &&
         bottom.y > 0 && bottom.y < size.y, "docks overlap or leave a gap");
-    zox_tst_dock_view(world, camera, size, (int2) { left.x, bottom.y }, (int2) { bottom.x, size.y - bottom.y });
+    zox_tst_dock_view(world, camera, size, (int2) { left.x, bottom.y }, (int2) { bottom.x, below - bottom.y });
     const entity ui_camera = zox_get_link(world, canvas, CameraLink);
     zox_tst_check(float4_equals(zox_getv(ui_camera, ScreenToCanvas), single_screen_to_canvas) &&
         float4_equals(zox_getv(canvas, ScreenToCanvas), single_screen_to_canvas), "UI no longer fills the screen");
@@ -39,11 +40,11 @@ static entity zox_tst_spawn_dock_window(ecs* world, entity canvas, const char* t
         anchor, title, 18, 12, byte2_single(2), 6, 1, (ClickEvent) { button_event_close_window }).x;
 }
 
-static byte zox_tst_window_docks_ready(ecs* world) {
+static byte zox_tst_docks_ready(ecs* world) {
     static int step, original_left;
     static int2 resized, floating_position, floating_size, start, drop, swap_position;
     static float2 swap_anchor;
-    static entity canvas, floating, handle, header;
+    static entity canvas, floating, handle, header, top;
     static entity3 windows;
     zox_tst_progress(step);
     if (!canvas) {
@@ -54,11 +55,11 @@ static byte zox_tst_window_docks_ready(ecs* world) {
         return 0;
     }
     const int2 size = zox_getv(canvas, LayoutSize);
-    const entity3 docks = docked_windows_find(world, canvas);
+    const entity4 docks = docks_find(world, canvas);
     switch (step) {
         case 0:
             floating_size = (int2) { 180, 100 };
-            floating = zox_tst_spawn_dock_window(world, canvas, "Floating", window_dock_left, floating_size);
+            floating = zox_tst_spawn_dock_window(world, canvas, "Floating", dock_left, floating_size);
             floating_position = zox_getv(floating, LayoutPosition);
             zox_add(canvas, Dirty);
             break;
@@ -68,21 +69,21 @@ static byte zox_tst_window_docks_ready(ecs* world) {
             zox_tst_dock_view(world, camera, size, int2_zero, size);
             zox_delete(floating);
             zox_defer_begin();
-            windows.x = zox_tst_spawn_dock_window(world, canvas, "Left", window_dock_left,
-                window_dock_default_size(size, window_dock_left));
-            windows.y = zox_tst_spawn_dock_window(world, canvas, "Right", window_dock_right,
-                window_dock_default_size(size, window_dock_right));
-            windows.z = zox_tst_spawn_dock_window(world, canvas, "Bottom", window_dock_bottom,
-                window_dock_default_size(size, window_dock_bottom));
+            windows.x = zox_tst_spawn_dock_window(world, canvas, "Left", dock_left,
+                dock_default_size(size, dock_left));
+            windows.y = zox_tst_spawn_dock_window(world, canvas, "Right", dock_right,
+                dock_default_size(size, dock_right));
+            windows.z = zox_tst_spawn_dock_window(world, canvas, "Bottom", dock_bottom,
+                dock_default_size(size, dock_bottom));
             zox_add(windows.x, Docked);
             zox_add(windows.y, Docked);
             zox_add(windows.z, Docked);
             zox_defer_end();
             break;
-        case 2:
+        case 2: {
             zox_tst_waiting = "the deferred docks to lay out";
             if (!docks.x || !docks.y || !docks.z ||
-                !zox_has(canvas, DockedWindowsViewport)) {
+                !zox_has(canvas, DockViewport)) {
                 return 0;
             }
             zox_tst_dock_geometry(world, canvas, camera, docks);
@@ -94,10 +95,27 @@ static byte zox_tst_window_docks_ready(ecs* world) {
             if (!handle) {
                 return 1;
             }
+            zox_defer_begin();
+            top = spawn_uic(world, prefab_element_frame, canvas, dock_top, int2_zero,
+                (int2) { 48, 24 }, (int2) { 48, 24 }, color_white, color_white);
+            zox_add(top, Docked);
+            zox_defer_end();
+            break;
+        }
+        case 3:
+            zox_tst_waiting = "the plain top dock to lay out";
+            if (docks.w != top) {
+                return 0;
+            }
+            zox_tst_check(!zox_has(top, Window) && int2_equals(zox_getv(top, LayoutSize), ((int2) { size.x, 24 })) &&
+                int2_equals(zox_tst_dock_origin(world, top, size), ((int2) { 0, size.y - 24 })) &&
+                !zox_get_child_by_id(world, top, zox_id(DragResizes)), "plain top dock does not fill the top edge");
+            zox_tst_dock_geometry(world, canvas, camera, docks);
+            zox_delete(top);
             zox_setv(handle, DraggingDelta, ((int2) { 40, 0 }));
             zox_setv(handle, DraggableState, 1);
             break;
-        case 3:
+        case 4:
             zox_tst_waiting = "the resize handle drag";
             if (zox_getv(docks.x, LayoutSize).x == original_left) {
                 return 0;
@@ -111,7 +129,7 @@ static byte zox_tst_window_docks_ready(ecs* world) {
             zox_sdl_window_size(zox_getv(app, SDLWindow), resized);
             on_window_resized(world, app, resized, 0);
             break;
-        case 4:
+        case 5:
             zox_tst_waiting = "the canvas to resize and the left window to finish opening";
             if (!int2_equals(size, resized) || zox_getv(windows.x, LocalScale1) != 1) {
                 return 0;
@@ -120,9 +138,9 @@ static byte zox_tst_window_docks_ready(ecs* world) {
             header = zox_get_child_by_id(world, docks.x, zox_id(Header));
             floating_size = zox_getv(docks.x, LayoutSize);
             floating_position = zox_getv(docks.x, LayoutPosition);
-            zox_tst_click(world, dbg_player, zox_get_child_by_id(world, header, zox_id(WindowDockButton)));
+            zox_tst_click(world, dbg_player, zox_get_child_by_id(world, header, zox_id(UndockButton)));
             break;
-        case 5: {
+        case 6: {
             zox_tst_waiting = "the undocked window and camera";
             CanvasViewport viewport;
             if (!zox_tst_ui_pointer_position(world, canvas, header, &start) ||
@@ -140,34 +158,34 @@ static byte zox_tst_window_docks_ready(ecs* world) {
             zox_tst_mouse(start, 0);
             break;
         }
-        case 6:
+        case 7:
             zox_tst_waiting = "the pointer to hover the floating header";
             if (zox_tst_mouse_target(world, dbg_player) != header) {
                 return 0;
             }
             zox_tst_mouse(start, 1);
             break;
-        case 7:
+        case 8:
             zox_tst_waiting = "the floating header to start dragging";
             if (!zox_getv(header, DraggableState)) {
                 return 0;
             }
             zox_tst_mouse(drop, 1);
             break;
-        case 8: {
+        case 9: {
             zox_tst_waiting = "the right dock preview";
-            const entity preview = zox_get_child_by_id(world, canvas, zox_id(WindowDockPreview));
+            const entity preview = zox_get_child_by_id(world, canvas, zox_id(DockPreview));
             if (!preview || zox_getv(preview, RenderDisabled)) {
                 return 0;
             }
-            zox_tst_check(float2_equals(zox_getv(preview, Anchor), window_dock_right) &&
+            zox_tst_check(float2_equals(zox_getv(preview, Anchor), dock_right) &&
                 int2_equals(zox_getv(preview, LayoutSize), zox_getv(windows.y, LayoutSize)), "wrong dock preview rectangle");
             swap_anchor = zox_getv(windows.x, Anchor);
             swap_position = zox_getv(windows.x, LayoutPosition);
             zox_tst_mouse(drop, 0);
             break;
         }
-        case 9: {
+        case 10: {
             zox_tst_waiting = "the mouse release to swap the right dock";
             if (docks.y != windows.x || zox_has(header, Dragable)) {
                 return 0;
@@ -175,7 +193,7 @@ static byte zox_tst_window_docks_ready(ecs* world) {
             zox_tst_check(!zox_has(windows.y, Docked) &&
                 float2_equals(zox_getv(windows.y, Anchor), swap_anchor) &&
                 int2_equals(zox_getv(windows.y, LayoutPosition), swap_position), "occupied dock did not float at the drop position");
-            const entity preview = zox_get_child_by_id(world, canvas, zox_id(WindowDockPreview));
+            const entity preview = zox_get_child_by_id(world, canvas, zox_id(DockPreview));
             zox_tst_check(zox_getv(preview, RenderDisabled), "preview is still visible after release");
             const int bottom = zox_getv(docks.z, LayoutSize).y;
             zox_tst_dock_view(world, camera, size, (int2) { 0, bottom },
@@ -199,7 +217,7 @@ static byte zox_tst_window_docks_ready(ecs* world) {
     return 0;
 }
 
-static void zox_tst_window_docks_check(ecs* world) {
+static void zox_tst_docks_check(ecs* world) {
     zox_tst_ui_fixture_check(world);
     zox_tst_check(zox_log_errors_count == 0, "[%u] errors logged", zox_log_errors_count);
 }

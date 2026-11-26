@@ -9,7 +9,7 @@ void toggle_hierarchy(ecs *world, int32_t keycode) {
     }
     const entity hierarchy = zox_get_child_by_id(world, canvas, zox_id(HierarchyUI));
     if (zox_valid(hierarchy)) {
-        window_dock_close(world, canvas, hierarchy);
+        dock_close(world, canvas, hierarchy);
         play_editor_toggle_sound(world, 0);
         return;
     }

@@ -29,6 +29,7 @@ entity spawn_header(
     zox_setv(e, LayoutSize, size);
     zox_setv(e, Anchor, anchor);
     zox_link(world, e, DraggedLink, parent);
+    zox_link(world, parent, DockDragLink, e);
     {
         spawn_text(
             world,
@@ -79,6 +80,7 @@ entity spawn_header_old(
         element_data);
     zox_set(e, RenderDisabled, { element_data.render_disabled });
     zox_link(world, e, DraggedLink, parent.e);
+    zox_link(world, parent.e, DockDragLink, e);
     // # Header Text # - Left Aligned
     int string_length = strlen(zext.text);
     int2 zext_position = (int2) {

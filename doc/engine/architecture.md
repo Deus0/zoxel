@@ -58,7 +58,7 @@ was. In practice:
 
 ### Code goes where it belongs
 
-- **A feature lives in the module that owns that kind of thing, with its tests there**: docking and the search bar
+- **A feature lives in the module that owns that kind of thing, with its tests there**: docking in `src/ui/docks`, the search bar
   in `src/ui/windows`, masks in `src/ui/masks`, the dropdown and virtual list in `src/ui/elements2`; the editor only
   uses them. Don't add code to whichever module happens to need it first.
 - **Load order is the module order** (`src/modules.c`, each `_.c`): don't reach into another module's includes to

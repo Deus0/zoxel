@@ -30,7 +30,11 @@ byte is_log_dragging = 0;
 #include "masks/tst/_.c"
 #endif
 #include "elements3/_.c"
+#include "docks/_.c"
 #include "windows/_.c"
+#ifdef zox_tests
+#include "docks/tst/_.c"
+#endif
 #include "navigation/_.c"
 #include "touch/_.c"
 #include "render_textures/_.c"
@@ -52,6 +56,7 @@ void import_ui(ecs* world) {
     zox_add_module(tooltips);
     zox_add_module(elements2);
     zox_add_module(elements3);
+    zox_add_module(docks);
     zox_add_module(windows);
     zox_add_module(navigation);
     zox_add_module(touch);
@@ -59,6 +64,7 @@ void import_ui(ecs* world) {
     zox_add_module(ui_containers);
 #ifdef zox_tests
     zox_tsts_masks();
+    zox_tsts_docks();
     zox_tsts_ui(world);
 #endif
 }

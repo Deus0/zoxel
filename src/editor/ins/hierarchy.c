@@ -8,7 +8,7 @@ entity spawn_window_hierarchy(
     (void) player;
     const int2 canvas_size = zox_getv(canvas, LayoutSize);
     const int font_size = 12;
-    const entity4 e4 = spawn_editor_window(world, prefab_hierarchy, canvas, "Hierarchy", window_dock_left,
+    const entity4 e4 = spawn_editor_window(world, prefab_hierarchy, canvas, "Hierarchy", dock_left,
         (int2) { canvas_size.x / 5, canvas_size.y }, font_size);
     const entity window = e4.x;
     const entity list = e4.w;

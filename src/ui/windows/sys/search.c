@@ -75,7 +75,7 @@ static void window_search_bar_event(iter* it) {
     for (int i = 0; i < it->count; i++) {
         const entity window = zox_get_parent(world, it->entities[i]);
         if (zox_valid(window)) {
-            window_dock_layout(world, window, zox_getv(window, LayoutPosition), zox_getv(window, LayoutSize));
+            zox_add(window, Dirty);
             window_search_changed(world, window);
         }
     }

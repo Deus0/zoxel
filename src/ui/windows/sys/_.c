@@ -3,28 +3,10 @@
 #include "clicked.c"
 #include "cancel.c"
 #include "constraints.c"
-#include "docks.c"
+#include "layout.c"
 #include "search.c"
 
 void zox_systems_windows(ecs* world) {
-    zox_on_add(window_dock_added_event, [in] windows.Docked, [none] windows.Window);
-    zox_on_add(
-        window_dock_resize_event,
-        [none] windows.Docked,
-        [none] windows.Window,
-        [none] core.Dirty
-    );
-    zox_on_add(
-        window_dock_drag_event,
-        [none] windows.Header,
-        [none] interactions.Dragable,
-        [none] core.Dirty
-    );
-    zox_on_add(docked_windows_layout_event, [none] layouts.Canvas, [none] core.Dirty);
-    zox_on_add(window_search_bar_event, [none] windows.WindowSearchBar, [none] core.Dirty);
-    zox_on_add(window_search_input_event, [none] texts.TextInput, [none] core.Dirty);
-    zox_on_add(window_search_input_event, [none] elements2.DropdownIndex, [none] core.Dirty);
-
     zox_system(
         canvas_stack_system,
         zoxp_update,
@@ -70,7 +52,7 @@ void zox_systems_windows(ecs* world) {
         [in] layouts.Anchor,
         [in] layouts.LayoutConstraints,
         [none] windows.Window,
-        [none] !windows.Docked,
+        [none] !docks.Docked,
         [none] core.Initialize,
     );
 }

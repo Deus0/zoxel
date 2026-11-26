@@ -25,7 +25,7 @@ byte zox_tst_zedit_boot_ready(ecs* world) {
 void zox_tst_zedit_boot_check(ecs* world) {
     const entity player = zox_players[0];
     const entity canvas = zox_get_link(world, player, CanvasLink);
-    const entity3 docks = docked_windows_find(world, canvas);
+    const entity4 docks = docks_find(world, canvas);
     zox_tst_check(docks.x && docks.x == zox_get_child_by_id(world, canvas, zox_id(HierarchyUI)) &&
         docks.y && docks.y == get_canvas_inspector(world, canvas) &&
         docks.z && docks.z == zox_get_child_by_id(world, canvas, zox_id(FileWindowUI)), "editor windows did not boot docked");

@@ -31,4 +31,8 @@ void raycaster_select_window_children(ecs *world, entity e, entity window) {
     }
 }
 
-#include "docks.c"
+static void button_event_close_window(ecs* world, ClickEventData event) {
+    const entity header = zox_get_parent(world, event.clicked);
+    const entity window = zox_get_parent(world, header);
+    dock_close(world, zox_get_parent(world, window), window);
+}

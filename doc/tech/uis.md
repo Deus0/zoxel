@@ -211,8 +211,8 @@ intersect pointer bounds with the same rectangle.
 ## Scroll areas
 The list is the scroll view's viewport (like Unity's): it has the `Mask`, sized to the area between the scroll
 bars that show (`scrollview_fit_list`, `src/ui/elements2/fun/scroll.c`), so rows never draw or take the pointer under
-a scrollbar. Spawns pass their sizes (`scrollview_fit_list_size`, a deferred spawn can't read them yet); the docks
-relayout and the horizontal bar showing or hiding refit it.
+a scrollbar. Spawns pass their sizes (`scrollview_fit_list_size`, a deferred spawn can't read them yet). Window resizing and the
+horizontal bar showing or hiding refit it.
 
 
 Scrollviews add `Mask`. Lists still disable rows outside their visible index
@@ -245,8 +245,16 @@ adds the core `Dirty` to the dropdown. A click anywhere else closes it (`dropdow
 
 Any window can have a search: `spawn_window_search_button` (`src/ui/windows/ins/search.c`) puts a button in its
 header that shows a bar under it (`WindowSearchBar`): an input field and a name / tag dropdown. The body shrinks to
-fit (`window_dock_layout`); closing hides the bar and clears it. Nothing is stored: `window_search_get` reads the
+fit (the window's `Dirty` observer); closing hides the bar and clears it. Nothing is stored: `window_search_get` reads the
 text (lower case) and type from the bar while it's open, `window_search_match` compares ignoring case. Typing or
 changing the type adds the core `Dirty` to the window's list, so its rows update. The editor's hierarchy (flat
 matches, by label or an id's name), files (by name or extension) and inspector (by row text or component name) use
 it. Tests: `window_search`, `hierarchy_search`, `files_search`, `inspector_search`.
+
+## Docks
+
+`src/ui/docks` arranges canvas children with `Docked` and `LayoutSize`. The top anchor
+`{0.5, 1}` makes a full-width strip with the element's height and no resize handle.
+The left and right docks run below the strip, with the bottom dock between them.
+The game view fills the remaining rectangle in single-player. Windows fit their own
+contents on `Dirty` after their dock size changes. Test: `window_docks`.

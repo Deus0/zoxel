@@ -83,7 +83,7 @@ Windows with the `Docked` tag use their anchor to select a side. The header has 
 the window. Drag a floating header to within 32 pixels of a dock edge to preview the dock. Releasing there
 docks the window and moves any previous occupant to the floating window's drop position.
 
-The code and its test (`window_docks`) are in `src/ui/windows`; the editor only spawns its windows docked.
+The code and its test (`window_docks`) are in `src/ui/docks`; the editor only spawns its windows docked.
 Later: stacking several windows on one side, then an editor option for a drop on a taken side (swap, the
 default now, or stack); tabs; saving the layout.
 

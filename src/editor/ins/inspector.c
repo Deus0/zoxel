@@ -16,7 +16,7 @@ entity spawn_inspector(
     (void) player;
     const int2 canvas_size = zox_getv(canvas, LayoutSize);
     const int font_size = 12;
-    const entity window = spawn_editor_window(world, prefab_inspector, canvas, "Inspector", window_dock_right,
+    const entity window = spawn_editor_window(world, prefab_inspector, canvas, "Inspector", dock_right,
         (int2) { canvas_size.x / 5, canvas_size.y }, font_size).x;
     zox_set_name_spawned(world, window, "inspector");
     zox_add(window, InspectorUI);

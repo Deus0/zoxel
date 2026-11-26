@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-26
+-x Docks are their own ui module (src/ui/docks, before windows): any Docked element by its anchor, a top side,
+  windows lay out their own insides on their Dirty (tst window_docks)
 -x Virtual lists (elements2): only the rows that fit are entities (slots, ordered children), each links the entity it
   shows (RowTargetLink), the first shown row is a link (ListStartLink), the count comes from a walk; the hierarchy
   walks the real tree into them: no row limit, 3001 rows refresh in ~2.4ms (tsts virtual_list, hierarchy_big)
