@@ -8,8 +8,10 @@ typedef struct {
     byte children;  // it has rows under it, shown or folded
 } HierarchyRow;
 
+// rows for the scene, not the editor: no glyphs, no editor ui (EditorElement and under it, so a fold's respawned
+//  rows aren't in the tree they show)
 static inline byte hierarchy_row_entity(ecs* world, entity e) {
-    return zox_valid(e) && !zox_has(e, Glyph);
+    return zox_valid(e) && !zox_has(e, Glyph) && !zox_has(e, EditorElement);
 }
 
 void button_event_clicked_hierarchy(
@@ -40,7 +42,7 @@ void get_hierarchy_rows(
     }
     HierarchyRow* row = &rows[(*count)++];
     *row = (HierarchyRow) { .target = e, .depth = depth };
-    const byte open = depth == 0 || unfolded_has(unfolded, e);   // the root is always open
+    const byte open = unfolded_has(unfolded, e);   // every row folds, the root too
     iter it2 = zox_children(world, e);
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
@@ -102,7 +104,13 @@ void hierarchy_spawn_event(iter* it) {
         if (!window) {
             continue;
         }
+        // its tree (its Target), or with none every root entity: the scene's, not one app's
         const entity target = zox_getv(window, Target);
+        entity roots[hierarchy_max_elements];
+        const uint roots_count = target ? 1 : zox_get_roots(world, roots, hierarchy_max_elements);
+        if (target) {
+            roots[0] = target;
+        }
         const byte font_size = zox_getv(window, ElementFontSize);
         clear_editor_list(world, list);
         HierarchyRow rows[hierarchy_max_elements];
@@ -110,12 +118,16 @@ void hierarchy_spawn_event(iter* it) {
         char search[input_field_max_length + 2];
         byte search_type;
         if (window_search_get(world, window, search, sizeof(search), &search_type) && search[0]) {
-            get_hierarchy_search_rows(world, target, search, search_type, rows, &count);
+            for (uint r = 0; r < roots_count; r++) {
+                get_hierarchy_search_rows(world, roots[r], search, search_type, rows, &count);
+            }
         } else {
-            get_hierarchy_rows(world, target, 0, unfolded, rows, &count);
+            for (uint r = 0; r < roots_count; r++) {
+                get_hierarchy_rows(world, roots[r], 0, unfolded, rows, &count);
+            }
         }
         if (count >= hierarchy_max_elements) {
-            zox_logw("Hierarchy of [%s] cut off at [%i] entities", zox_getn(target), hierarchy_max_elements);
+            zox_logw("Hierarchy of [%s] cut off at [%i] entities", (target ? zox_getn(target) : "roots"), hierarchy_max_elements);
         }
         const int visible = zox_getv(list, ListVisible);
         const int max_start = count > visible ? count - visible : 0;
@@ -140,11 +152,11 @@ void hierarchy_spawn_event(iter* it) {
             zox_setv(button, Target, rows[j].target);
             zox_setv(button, ListIndent, rows[j].depth);
             if (rows[j].children) {
-                const byte open = rows[j].depth == 0 || unfolded_has(unfolded, rows[j].target);
+                const byte open = unfolded_has(unfolded, rows[j].target);
                 spawn_fold_arrow(world, canvas, button, list, rows[j].target, open, font_size, arrow_layer);
             }
         }
         refresh_editor_list(world, list);
-        zox_logv("Hierarchy [%s] refreshed with [%i] rows", zox_getn(target), count);
+        zox_logv("Hierarchy [%s] refreshed with [%i] rows", (target ? zox_getn(target) : "roots"), count);
     }
 }

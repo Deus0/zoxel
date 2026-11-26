@@ -2,6 +2,7 @@
 //  - run: bash bsh/tst.sh hierarchy_fold
 int zox_tst_hierarchy_fold_stage = 0;
 entity zox_tst_hierarchy_fold_window = 0;
+byte zox_tst_hierarchy_root_opened = 0;
 entity zox_tst_hierarchy_fold_root = 0;
 entity zox_tst_hierarchy_fold_parent = 0;
 
@@ -67,6 +68,12 @@ byte zox_tst_hierarchy_fold_ready(ecs* world) {
         }
         case 1: {
             zox_tst_waiting = "the root and its folded parent";
+            if (rows == 1 && !zox_tst_hierarchy_root_opened) {
+                // the root starts folded, one row: unfold it
+                zox_tst_hierarchy_root_opened = 1;
+                unfold_toggle(world, zox_tst_editor_list(world, zox_tst_hierarchy_fold_window), zox_tst_hierarchy_fold_root);
+                return 0;
+            }
             if (rows != 2) {
                 return 0;
             }
@@ -110,6 +117,55 @@ byte zox_tst_hierarchy_fold_ready(ecs* world) {
 void zox_tst_hierarchy_fold_check(ecs* world) {
     const entity list = zox_tst_editor_list(world, zox_tst_hierarchy_fold_window);
     const Unfolded* unfolded = zox_get(list, Unfolded);
-    zox_tst_check(unfolded->length == 0, "[%i] entities left unfolded after folding", unfolded->length);
+    zox_tst_check(unfolded->length == 1, "[%i] entities left unfolded after folding, not the root only", unfolded->length);
+    zox_tst_check(zox_tst_hierarchy_root_opened, "the root never started folded");
     zox_tst_check(zox_log_errors_count == 0, "[%u] errors logged", zox_log_errors_count);
+}
+
+// tst: hierarchy_roots, a hierarchy with no root target lists every root entity, and nothing of the editor's ui
+byte zox_tst_hierarchy_roots_ready(ecs* world) {
+    static int step;
+    static entity window, root_a, root_b;
+    const entity canvas = get_editor_canvas(world);
+    if (!zox_valid(canvas)) {
+        zox_tst_waiting = "the editor canvas";
+        return 0;
+    }
+    const entity list = window ? zox_tst_editor_list(world, window) : 0;
+    if (step == 0) {
+        root_a = zox_new();
+        zox_set_name(root_a, "scene_root_a");
+        root_b = zox_new();
+        zox_set_name(root_b, "scene_root_b");
+        zox_defer_begin();
+        window = spawn_window_hierarchy(world, canvas, 0, 0);
+        zox_defer_end();
+        step = 1;
+        return 0;
+    }
+    zox_tst_waiting = "both roots as rows";
+    if (!list || zox_has(list, Dirty)) {
+        return 0;
+    }
+    byte found_a = 0, found_b = 0;
+    int editor_rows = 0, rows = 0;
+    iter it2 = zox_children(world, list);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            if (!zox_has(it2.entities[j], Target)) {
+                continue;
+            }
+            const entity target = zox_getv(it2.entities[j], Target);
+            rows++;
+            found_a |= target == root_a;
+            found_b |= target == root_b;
+            editor_rows += zox_has(target, EditorElement) || zox_get_parent_by_id(world, target, zox_id(EditorElement));
+        }
+    }
+    if (!found_a || !found_b) {
+        return 0;
+    }
+    zox_log("[tst] hierarchy_roots: [%i] root rows", rows);
+    zox_tst_check(editor_rows == 0, "[%i] rows of the editor's own ui", editor_rows);
+    return 1;
 }

@@ -1,4 +1,4 @@
-// y: toggles the hierarchy, of the realm's tree (or the canvas's, in the menus)
+// y: toggles the hierarchy, of every root entity (the scene, not the editor's ui)
 void toggle_hierarchy(ecs *world, int32_t keycode) {
     if (keycode != zox_key_y) {
         return;
@@ -13,8 +13,6 @@ void toggle_hierarchy(ecs *world, int32_t keycode) {
         play_editor_toggle_sound(world, 0);
         return;
     }
-    const entity root = zox_get_parent_root(world, zox_valid(local_realm) ? local_realm : canvas);
-    zox_logv("Spawning Editor Hierarchy -> [%s]", zox_getn(root));
-    spawn_window_hierarchy(world, canvas, dbg_player, root);
+    spawn_window_hierarchy(world, canvas, dbg_player, 0);   // every root
     play_editor_toggle_sound(world, 1);
 }

@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-26
+-x Hierarchy shows the scene: every root entity (zox_get_roots: no parent, not modules, queries, phases), every
+  row folds (roots too), the editor's own ui (EditorElement) has no rows, so a fold no longer rewrites the tree it
+  shows (tst hierarchy_roots, hierarchy_fold)
 -x Window search: a dropdown element (elements2), a search bar any window can show from its header (ui/windows:
   text and a name / tag filter), the editor's hierarchy, files and inspector filter by it (tsts dropdown,
   window_search, hierarchy_search, files_search, inspector_search)

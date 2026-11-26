@@ -37,7 +37,8 @@ static int zox_tst_search_rows(ecs* world, entity window, entity* first) {
 
 byte zox_tst_hierarchy_search_ready(ecs* world) {
     static int step;
-    static entity window, parent, tagged;
+    static entity window, parent, tagged, root;
+    static byte root_opened;
     const entity canvas = get_editor_canvas(world);
     if (!zox_valid(canvas)) {
         zox_tst_waiting = "the editor canvas";
@@ -49,7 +50,7 @@ byte zox_tst_hierarchy_search_ready(ecs* world) {
     switch (step) {
         case 0: {
             // root > parent > two children, one of them tagged
-            const entity root = zox_new();
+            root = zox_new();
             zox_set_name(root, "search_root");
             parent = zox_new();
             zox_set_name(parent, "search_parent");
@@ -59,7 +60,7 @@ byte zox_tst_hierarchy_search_ready(ecs* world) {
                 zox_set_parent(world, child, parent);
                 tagged = child;
             }
-            zox_add(tagged, EditorElement);
+            zox_add(tagged, DebugEntity);   // a tag to search for (EditorElement rows are skipped)
             zox_defer_begin();
             window = spawn_window_hierarchy(world, canvas, 0, root);
             zox_defer_end();
@@ -67,6 +68,11 @@ byte zox_tst_hierarchy_search_ready(ecs* world) {
         }
         case 1:
             zox_tst_waiting = "the root and its folded parent";
+            if (rows == 1 && !root_opened) {
+                root_opened = 1;    // the root starts folded: unfold it
+                unfold_toggle(world, zox_tst_editor_list(world, window), root);
+                return 0;
+            }
             if (rows != 2) {
                 return 0;
             }
@@ -84,7 +90,7 @@ byte zox_tst_hierarchy_search_ready(ecs* world) {
             if (rows != 1 || first != parent) {
                 return 0;
             }
-            zox_tst_search_set(world, window, "editorelem", window_search_tag);
+            zox_tst_search_set(world, window, "debugent", window_search_tag);
             break;
         case 4:
             zox_tst_waiting = "only the tagged child, by tag";

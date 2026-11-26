@@ -94,7 +94,6 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
   the 8 models in parallel) it'd be a fraction: ask first, it changes how model nodes run
 
 # Bugs
-- zedit: clicking a hierarchy fold arrow resets the entire ui tree (seen 2026-11-26, not looked at yet)
 - tst input_focus_lifecycle fails: "first click did not activate text input" (on master too, 2026-11-26)
 - tst.sh removes /tmp/zoxel_nosaves_<pid> folders whose pid isn't alive: from a sandbox with its own pid namespace
   (codex exec) every other running test's pid looks dead, so a parallel test lost its save folder mid run
@@ -1380,6 +1379,8 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 - Add Terrain Depth to options - debug options
 
 # Editor
+- Hierarchy roots: ~154 root entities (resources: shaders, materials, stat and skill metas, icons, model files)
+  pass its 128 row limit; group them (a Resources row) or raise the limit
 - File window grid view: folders and files as icon tiles in a grid (like most file viewers), a toggle with the list
   view it has now
 - Game level build defaults: a game sets its own (zedit keeps logs in release), then bsh/zedit.sh goes; zedit

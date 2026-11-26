@@ -10,7 +10,7 @@ void game_state_zedit(iter* it) {
             const entity canvas = zox_get_link(world, player, CanvasLink);
             if (zox_valid(canvas)) {
                 spawn_inspector(world, canvas, player, canvas);
-                spawn_window_hierarchy(world, canvas, player, zox_get_parent_root(world, canvas));
+                spawn_window_hierarchy(world, canvas, player, 0);   // every root
                 spawn_window_files(world, canvas, player, NULL);
             }
         }
