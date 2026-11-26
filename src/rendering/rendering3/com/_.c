@@ -32,6 +32,7 @@ void zox_components_rendering3(ecs* world) {
     zoxd_float2(SwayBounds);
     zoxd(MaterialTextured3D);
     zoxd(MaterialColored3D);
+    zoxd(MaterialColoredLit3D);
     zoxd(MaterialVoxInstance);
     zoxd(MaterialVoxInstanceSway);
     zoxd(MaterialBasic3D);

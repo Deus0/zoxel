@@ -76,8 +76,9 @@ How it runs:
 Later: movement inputs apart from the move system. Players' devices and npc ai both write one move input
 (a direction, run, jump) on the character, and one system moves every character from it, so players and npcs move
 by the same rules. Tests don't read real devices (SDL's keyboard, mouse, pads): they're automated, so they set the
-move input themselves, and a test like `zeland_walk` holds W through it, not by pushing the velocity. To discuss
-before starting.
+move input themselves, and a test like `zeland_walk` holds W through it, not by pushing the velocity. After step 7,
+in a plan of its own: it changes how zoxel feels, so first tests record today's movement (top speeds, how fast it
+gets there, turning, running, jumps), then the new system is tuned until they match, then play tested.
 
 Later, not now: capsule against capsule (npcs), against boxes, voxel terrains with capsules.
 
@@ -146,8 +147,9 @@ kept current as each step lands, not a step of their own).
      fly mode, towns only on voxel terrains
    - tests: `zeland_boot` (a character with a capsule, the camera orbiting it), `zeland_walk` (walks away from the
      camera, faces that way, on the ground, followed, its mesh drawn, a screenshot); regression, the 20 zoxel tests
-7. **lit meshes:** flat shaded meshes lit by a sun, gl and vulkan from one shader; the baked light goes.
-   - first: step 6 rebased on master, its capsule on `MeshColors` (rgba, the alpha its glow, doc/plans/hdr.md)
+7. [x] **lit meshes:** flat shaded meshes lit by a sun, gl and vulkan from one shader; the baked light goes
+   (doc/tech/rendering.md, Lit meshes). A `lit_mesh` prefab and `spawn_lit_mesh` (rendering3);
+   the capsule mesh is a geometry submodule (`geometry/capsules`), its shape data, an observer on `Dirty` building it.
    - normals from the screen (`dFdx`/`dFdy` of the world position, as `cloud.frag` does): flat shaded meshes are a
      face per triangle, so they need no `MeshNormals`, no normal buffers, no upload change. The normal is turned to
      face the camera, so vulkan's flipped y doesn't flip it. `MeshNormals` waits for smooth meshes (skinned
@@ -168,7 +170,13 @@ kept current as each step lands, not a step of their own).
      day; zeland sets its own
    - zeland: the poly terrain and the capsule link `material_colored3D_lit`, `poly_light_at` dropped from their meshes (kept in
      the heights map tool, it's 2D), the capsule's darker front a colour of its own
-   - tests: `lit_mesh` (menus' camera in a void, a lit cube: the face to the sun brighter than the side, the side
-     brighter than ambient, on gl and `--vulkan`, the two screenshots alike), `poly_views` redrawn and looked at,
+   - tests: `lit_mesh` (menus' camera in a void, two quads at different angles: the face to the sun brighter than
+     the turned one, both brighter than ambient; gl and `--vulkan` give the same numbers), `poly_views` redrawn and looked at,
      zeland's tests; regression: vox and chunk render tests (`vox_instance_render`, `water_light`, the outline and
      glow tests), and a perf check (seed 666, release, 2 runs) since every vox draw goes through `colored3D`
+8. **shadows (later, iterated on):** the mountain's shadow on the valleys, the character's on the ground. Step 7 only shades a face by its
+   angle to the sun; nothing casts. Two ways, to choose when we get there:
+   - a shadow map: the lit meshes drawn from the sun into a depth texture (a render target, as post processing has),
+     the lit material samples it. Casts from everything, moves with the sun and the character, both backends
+   - first and cheap: the terrain's own shadow baked once at its mesh build, marching `poly_height_at` towards the
+     sun from each triangle. It's static, so only for a fixed sun, and the character casts nothing

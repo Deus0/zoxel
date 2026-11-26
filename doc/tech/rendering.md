@@ -42,6 +42,30 @@ How a vertex's colour reaches the shaders, per mesh path (2026-11-27, block glow
 - Tests: lights/tst glow_view (cpu meshes on gl, gpu on vulkan), terrains/voxel/tst glow_views (a street lamp's glass,
   `bsh/tools/view_glow.sh`).
 
+## Lit meshes
+
+Flat shaded colored meshes lit by a sun (2026-11-27, doc/plans/poly_terrains.md step 7): the poly terrain, zeland's
+capsule.
+
+- How a mesh draws is its `MaterialLink`. A mesh linking `material_colored3D_lit`
+  ([colored_lit.c](../../src/rendering/rendering3/mat/colored_lit.c)) is lit; every other colored mesh draws with
+  `colored3D` as before (no link, or a data material like a slime gel's `TransparentMaterial`), its light baked.
+- One query, one system ([vox_render.c](../../src/rendering/rendering3/sys/vox_render.c)): `vox_render_meshes` reads
+  the same mesh data for both, groups a table's meshes by material, then draws each group with its material bound once.
+  Tags pick render systems, links pick materials: no tag marks a lit mesh, so tables stay big.
+- No normals stored: a face is a triangle with its own 3 vertices, and the shader takes its normal from the screen
+  (`dFdx`/`dFdy` of the world position), turned to face the camera so vulkan's flipped y can't flip it. Smooth meshes
+  would need `MeshNormals`.
+- Light: `ambient + sun * max(0, n . sun)`, times the colour; glow (the alpha) is added unlit. The sun is three
+  settings ([light.c](../../src/rendering/set/light.c)): `render_sun_direction`, `render_sun_light`,
+  `render_ambient_light`.
+- Spawning one: `spawn_lit_mesh(world, parent, position, vertices, indices, colors)` (prefab `lit_mesh`), or a
+  variant of the prefab with an observer building its mesh, as [capsules](../../src/geometry/capsules/_.c) does:
+  `spawn_capsule_mesh(world, parent, radius, height, color)`, its shape `RadiusFloat`, `HeightFloat`, `ColorRGB`,
+  built again when it's given `Dirty`.
+- Tests: ui/render_textures/tst lit_mesh (gl and `--vulkan`, the same numbers), capsule_mesh, capsule_rebuild, zeland_walk,
+  poly_views.
+
 ## Notes
 
 - The 3D particle renderer caps each draw batch at 100,000 instances. Color and size uploads use that clamped count, while the position upload uses the full ECS batch count. A batch above the cap can request a position upload larger than its GPU buffer. Use the same clamped count for every attribute upload and the draw. [Renderer](../../src/particles/particles3/sys/render.c) · [Buffer allocation](../../src/particles/particles3/sha/particle.c)

@@ -12,41 +12,6 @@ void game_state_zeland(iter* it) {
     }
 }
 
-// the character's look: a capsule mesh child, lit, its front darker (geometry/fun/capsule.c)
-static inline entity zeland_spawn_capsule_mesh(ecs* world, entity character, float radius, float height) {
-    MeshVertices vertices = { 0 };
-    MeshIndicies indices = { 0 };
-    MeshColors colors = { 0 };
-    spinlock_init(&vertices.lock);
-    spinlock_init(&indices.lock);
-    spinlock_init(&colors.lock);
-    build_capsule_mesh(&vertices, &indices, &colors, radius, height, 16, (color_rgb) { 230, 120, 60 });
-    const entity e = zox_new();
-    zox_add(e, Mesh);
-    zox_add(e, VoxMesh);
-    zox_setv(e, Position3D, float3_zero);
-    zox_setv(e, Rotation3D, quaternion_identity);
-    zox_setv(e, Scale1, 1);
-    zox_setv(e, LocalPosition3D, float3_zero);
-    zox_setv(e, LocalRotation3D, quaternion_identity);
-    zox_setv(e, TransformMatrix, float4x4_identity);
-    zox_setv(e, RenderDisabled, 0);
-    zox_setv(e, Brightness, 1);
-    zox_setv(e, MeshGPULink, guint2_zero);
-    zox_setv(e, ColorsGPULink, 0);
-    zox_setv(e, MeshRenderCount, 0);
-    zox_set_ptr(e, MeshVertices, vertices);
-    zox_set_ptr(e, MeshIndicies, indices);
-    zox_set_ptr(e, MeshColors, colors);
-    dispose_MeshVertices(&vertices);
-    dispose_MeshIndicies(&indices);
-    dispose_MeshColors(&colors);
-    zox_add(e, MeshDirty);
-    zox_add(e, PreInitialize);  // its gpu buffers made, then uploaded
-    zox_set_parent(world, e, character);
-    return e;
-}
-
 // once playing, its camera orbits its character (third person): spawning attached it first person to it, undone here
 static inline void zeland_orbit_camera(ecs* world, entity e) {
     const entity camera = zox_get_link(world, e, CameraLink);
@@ -113,7 +78,7 @@ void player_state_zeland(iter* it) {
         zox_setv(character, Euler, float3_zero);
         zox_setv(character, FlyMode, 0);
         spawn_capsule_collider(world, character, radius, height, float3_zero);
-        zeland_spawn_capsule_mesh(world, character, radius, height);
+        spawn_capsule_mesh(world, character, radius, height, (color_rgb) { 230, 120, 60 });
         zox_setv(e, PlayerStateTarget, zox_player_state_play_trigger);
     }
 }

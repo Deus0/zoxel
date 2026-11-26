@@ -1,8 +1,7 @@
-static color_rgb poly_face_color(float3 a, float3 b, float3 c, float3 light) {
+// its ground colour, unlit: the lit material (colored3D_lit) lights the face
+static color_rgb poly_face_color(float3 a, float3 b, float3 c) {
     const float3 normal = float3_normalize(float3_cross(float3_sub(b, a), float3_sub(c, a)));
-    const color_rgb ground = poly_color_at((a.y + b.y + c.y) / 3, normal);
-    const float shade = poly_light_at(normal, light);
-    return (color_rgb) { shade * ground.r, shade * ground.g, shade * ground.b };
+    return poly_color_at((a.y + b.y + c.y) / 3, normal);
 }
 
 static void poly_mesh_write_triangle(float3* vertices, color* colors, float3 a, float3 b, float3 c, color_rgb color) {
@@ -13,7 +12,6 @@ static void poly_mesh_write_triangle(float3* vertices, color* colors, float3 a, 
 }
 
 static void poly_mesh_write_ground(float3* vertices, color* colors, const float* heights, int2 cells, float2 size) {
-    const float3 light = poly_light_direction();
     for (int z = 0; z < cells.y; z++) {
         const float z0 = size.y * ((float) z / cells.y);
         const float z1 = size.y * ((float) (z + 1) / cells.y);
@@ -25,8 +23,8 @@ static void poly_mesh_write_ground(float3* vertices, color* colors, const float*
             const float3 c = { x1, poly_height_index(heights, cells, x + 1, z + 1), z1 };
             const float3 d = { x0, poly_height_index(heights, cells, x, z + 1), z1 };
             // Same diagonal as poly_height_at, counterclockwise from above.
-            poly_mesh_write_triangle(vertices, colors, a, c, b, poly_face_color(a, c, b, light));
-            poly_mesh_write_triangle(vertices + 3, colors + 3, a, d, c, poly_face_color(a, d, c, light));
+            poly_mesh_write_triangle(vertices, colors, a, c, b, poly_face_color(a, c, b));
+            poly_mesh_write_triangle(vertices + 3, colors + 3, a, d, c, poly_face_color(a, d, c));
             vertices += 6;
             colors += 6;
         }

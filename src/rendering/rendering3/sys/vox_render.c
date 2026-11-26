@@ -8,27 +8,70 @@ static inline float instance_see_through_alpha(ecs* world, entity mesh) {
         zox_getv(material, Alpha) : zox_see_through_alpha;
 }
 
+#define vox_render_materials_max 4
+
+// the material a mesh draws with: its MaterialLink's when that's a lit one (colored3D_lit), else colored3D (also when it
+//  links a data material, a slime's gel's TransparentMaterial)
+static inline entity vox_render_material(ecs* world, entity e) {
+    const entity link = zox_get_link(world, e, MaterialLink);
+    return zox_valid(link) && zox_has(link, MaterialColoredLit3D) ? link : material_colored3D;
+}
+
+// binds a material for a group of meshes: its colored3D uniforms, the lit ones if it has them; 0 if it can't draw
+static inline const MaterialColored3D* vox_render_bind(ecs* world, entity material, byte see_through) {
+    const guint gpu = zox_valid(material) ? zox_getv(material, MaterialGPULink) : 0;
+    if (!gpu) {
+        return NULL;
+    }
+    const MaterialColoredLit3D* lit = zox_has(material, MaterialColoredLit3D) ? zox_get(material, MaterialColoredLit3D) : NULL;
+    const MaterialColored3D* attributes = lit ? &lit->colored : zox_get(material, MaterialColored3D);
+    zox_gpu_material(gpu);
+    zox_gpu_float4(attributes->fog_data, get_fog_value());
+    zox_gpu_float(attributes->alpha, 1);
+    if (lit) {
+        zox_gpu_float3(lit->camera_position, render_camera_position);
+        zox_gpu_float3(lit->sun_direction, float3_normalize(render_sun_direction));
+        zox_gpu_float3(lit->sun_light, render_sun_light);
+        zox_gpu_float3(lit->ambient_light, render_ambient_light);
+    }
+    outline_mask_begin(attributes->outline);
+    if (see_through) {
+        zox_gpu_enable_blend();
+        zox_gpu_set_depth_mask(0);
+    }
+    return attributes;
+}
+
+static inline void vox_render_unbind(const MaterialColored3D* attributes, byte see_through) {
+    zox_gpu_disable_attribute(attributes->vertex_color);
+    zox_gpu_disable_attribute(attributes->vertex_position);
+    zox_gpu_reset_mesh();
+    outline_mask_end();
+    if (see_through) {
+        zox_gpu_set_depth_mask(1);
+        zox_gpu_disable_blend();
+    }
+    zox_disable_material();
+}
+
 // draws colored meshes (VoxMesh: a vox's own mesh, a colored chunk's), solid ones, or see through ones (TransparentMesh:
 //  after, blended at their material's alpha, testing depth without writing it)
+//  - grouped by the material they draw with (vox_render_material), then each group drawn with its material bound once
 static inline void vox_render_meshes(iter* it, byte see_through) {
-    byte dbg_log = 0;
     zox_sys_world();
     if (!zox_valid(material_colored3D)) {
         return;
     }
-    guint material_link = zox_getv(material_colored3D, MaterialGPULink);
-    if (!material_link) {
-        return;
-    }
-    const MaterialColored3D* material_attributes = zox_get(material_colored3D, MaterialColored3D);
-    byte has_set_material = 0;
-    float last_brightness = -1;
     zox_sys_begin();
     zox_sys_in(MeshIndicies);
     zox_sys_in(MeshGPULink);
     zox_sys_in(ColorsGPULink);
     zox_sys_in(TransformMatrix);
     zox_sys_in(RenderDisabled);
+    entity materials[vox_render_materials_max];
+    byte materials_count = 0;
+    byte groups[it->count];     // each row's material, or 255 not drawn
+    int counts[it->count];
     camera_filtering_begin();
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
@@ -36,83 +79,66 @@ static inline void vox_render_meshes(iter* it, byte see_through) {
         zox_sys_i(MeshIndicies, indicies);
         zox_sys_i(MeshGPULink, mesh);
         zox_sys_i(ColorsGPULink, colors);
-        zox_sys_i(TransformMatrix, matrix);
+        groups[i] = 255;
         // a gpu mesh (chunks3/sys/vox_gpu.c) has its count, its cpu arrays empty
-        const byte gpu = zox_has(e, GpuMesh);
-        const int count = gpu ? mesh_index_count(world, e) : indicies->length;
-        if (disabled->value ||
-            !count ||
-            !mesh->value.x ||
-            !mesh->value.y ||
-            !colors->value)
-        {
+        counts[i] = zox_has(e, GpuMesh) ? mesh_index_count(world, e) : indicies->length;
+        if (disabled->value || !counts[i] || !mesh->value.x || !mesh->value.y || !colors->value) {
             continue;
         }
         camera_filtering_check();
-        if (!has_set_material) {
-            has_set_material = 1;
-/*#ifdef zox_transparent_voxes
-            zox_gpu_enable_blend();
-            zox_gpu_disable_culling();
-#endif*/
-            zox_gpu_material(material_link);
-            zox_gpu_float4(
-                material_attributes->fog_data,
-                get_fog_value());
-            zox_gpu_float(material_attributes->alpha, 1);
-            outline_mask_begin(material_attributes->outline);
-            if (see_through) {
-                zox_gpu_enable_blend();
-                zox_gpu_set_depth_mask(0);
+        const entity material = vox_render_material(world, e);
+        byte g = 0;
+        while (g < materials_count && materials[g] != material) {
+            g++;
+        }
+        if (g == materials_count) {
+            if (materials_count == vox_render_materials_max) {
+                continue;
             }
+            materials[materials_count++] = material;
         }
-        if (see_through) {
-            zox_gpu_float(material_attributes->alpha, instance_see_through_alpha(world, e));
-        }
-        // i.e. a block vox lit by its chunk, not every VoxMesh has one
-        const float brightness = zox_has(e, Brightness) ?
-            zox_getv(e, Brightness) :
-            1;
-        if (brightness != last_brightness) {
-            last_brightness = brightness;
-            zox_gpu_float(material_attributes->brightness, brightness);
-        }
-        float4x4 mvp_matrix = float4x4_multiply(
-            matrix->value,
-            render_camera_matrix);
-        zox_gpu_float4x4(
-            material_attributes->mvp_matrix,
-            mvp_matrix);
-        zox_gpu_bind_buffer_element(mesh->value.x);
-        if (gpu) {
-            // the compute shader's: vec4 vertices, rgba8 colours
-            zox_gpu_array_buffer_float3_stride(material_attributes->vertex_position, mesh->value.y, sizeof(float4));
-            zox_gpu_array_buffer_byte4(material_attributes->vertex_color, colors->value);
-        } else {
-            opengl_enable_vertex_buffer(material_attributes->vertex_position, mesh->value.y);
-            opengl_enable_color_buffer(material_attributes->vertex_color, colors->value);
-        }
-        zox_gpu_render3(count);
-        if (dbg_log) {
-            zox_log("Rendering Vox Mesh [%s] - Tris [%i]",
-                zox_sys_e_name,
-                indicies->length / 3);
-        }
+        groups[i] = g;
     }
-    if (has_set_material) {
-        zox_gpu_disable_attribute(material_attributes->vertex_color);
-        zox_gpu_disable_attribute(material_attributes->vertex_position);
-        zox_gpu_reset_mesh();
-        outline_mask_end();
-        if (see_through) {
-            zox_gpu_set_depth_mask(1);
-            zox_gpu_disable_blend();
+    for (byte g = 0; g < materials_count; g++) {
+        const MaterialColored3D* attributes = vox_render_bind(world, materials[g], see_through);
+        if (!attributes) {
+            continue;
         }
-        zox_disable_material();
-/*#ifdef zox_transparent_voxes
-        zox_gpu_disable_blend();
-        zox_gpu_enable_culling();
-#endif*/
+        const MaterialColoredLit3D* lit = zox_has(materials[g], MaterialColoredLit3D) ? zox_get(materials[g], MaterialColoredLit3D) : NULL;
+        float last_brightness = -1;
+        for (int i = 0; i < it->count; i++) {
+            if (groups[i] != g) {
+                continue;
+            }
+            zox_sys_e();
+            zox_sys_i(MeshGPULink, mesh);
+            zox_sys_i(ColorsGPULink, colors);
+            zox_sys_i(TransformMatrix, matrix);
+            if (see_through) {
+                zox_gpu_float(attributes->alpha, instance_see_through_alpha(world, e));
+            }
+            // i.e. a block vox lit by its chunk, not every VoxMesh has one
+            const float brightness = zox_has(e, Brightness) ? zox_getv(e, Brightness) : 1;
+            if (brightness != last_brightness) {
+                last_brightness = brightness;
+                zox_gpu_float(attributes->brightness, brightness);
+            }
+            zox_gpu_float4x4(attributes->mvp_matrix, float4x4_multiply(matrix->value, render_camera_matrix));
+            if (lit) {
+                zox_gpu_float4x4(lit->model_matrix, matrix->value);
+            }
+            zox_gpu_bind_buffer_element(mesh->value.x);
+            if (zox_has(e, GpuMesh)) {
+                // the compute shader's: vec4 vertices, rgba8 colours
+                zox_gpu_array_buffer_float3_stride(attributes->vertex_position, mesh->value.y, sizeof(float4));
+                zox_gpu_array_buffer_byte4(attributes->vertex_color, colors->value);
+            } else {
+                opengl_enable_vertex_buffer(attributes->vertex_position, mesh->value.y);
+                opengl_enable_color_buffer(attributes->vertex_color, colors->value);
+            }
+            zox_gpu_render3(counts[i]);
+        }
+        vox_render_unbind(attributes, see_through);
     }
 }
 

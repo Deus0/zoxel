@@ -25,6 +25,7 @@ void gpu_restore_rendering3(ecs* world) {
     // the materials relinked (gpu_restore_rendering): their locations again, the instance blocks bound again
     zox_gpu_relocate(MaterialBasic3D);
     zox_gpu_relocate(MaterialColored3D);
+    zox_gpu_relocate(MaterialColoredLit3D);
     zox_gpu_relocate(MaterialTextured3D);
     zox_gpu_relocate(MaterialBone);
 #ifndef zox_disable_rendering_instances

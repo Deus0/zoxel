@@ -21,6 +21,9 @@ entity spawn_poly_terrain(ecs* world, entity parent, lint seed) {
             zox_link(world, e, ClockLink, parent);
         }
     }
+    if (zox_valid(material_colored3D_lit)) {
+        zox_link(world, e, MaterialLink, material_colored3D_lit);   // lit by the sun, its faces flat shaded
+    }
     zox_add(e, Dirty);
     return e;
 }

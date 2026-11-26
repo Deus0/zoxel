@@ -22,6 +22,7 @@ void spawn_shaders_basics3D(ecs *world) {
     material_basic3D = spawn_material_basic3D(world, shader_basic3);
     shader_basic3_overlay = spawn_shader_basic3_overlay(world);
     spawn_material_colored3D(world);
+    spawn_material_colored3D_lit(world);
     spawn_material_textured3D(world);
 #ifndef zox_disable_rendering_instances
     spawn_material_vox_instance(world);

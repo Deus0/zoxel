@@ -137,9 +137,11 @@ void zox_tst_eyelids_check(ecs* world) {
 }
 
 #include "hdr.c"
+#include "lit.c"
 
 void zox_tsts_render_textures(ecs* world) {
     zox_tst_add("eyelids", zox_tst_eyelids_ready, zox_tst_eyelids_check, 30);
     zox_tst_set_setup("eyelids", NULL, 1);
     zox_tsts_render_textures_hdr(world);
+    zox_tsts_lit_mesh(world);
 }

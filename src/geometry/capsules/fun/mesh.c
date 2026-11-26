@@ -10,7 +10,7 @@ static inline float3 capsule_point(float radius, float half_axis, int segments, 
 }
 
 // a capsule mesh (a cylinder with half spheres on its ends), its centre at 0, along y: total height, radius, flat
-//  shaded (each triangle its own 3 vertices), lit from above, its front (+z) darker so it shows its facing
+//  shaded (each triangle its own 3 vertices) for a lit material, its front (+z) darker so it shows its facing
 void build_capsule_mesh(MeshVertices* vertices, MeshIndicies* indices, MeshColors* colors, float radius,
     float height, int segments, color_rgb tint) {
     const int rings = int_max(segments / 4, 1);
@@ -30,12 +30,9 @@ void build_capsule_mesh(MeshVertices* vertices, MeshIndicies* indices, MeshColor
             const float3 d = capsule_point(radius, half_axis, segments, rings, around, up + 1, &n);
             const float3 quad[6] = { a, c, b, a, d, c };
             for (int k = 0; k < 6; k += 3) {
-                float3 normal = float3_normalize(float3_cross(float3_sub(quad[k + 1], quad[k]), float3_sub(quad[k + 2], quad[k])));
+                const float3 normal = float3_normalize(float3_cross(float3_sub(quad[k + 1], quad[k]), float3_sub(quad[k + 2], quad[k])));
                 const float3 middle = float3_scale(float3_add(float3_add(quad[k], quad[k + 1]), quad[k + 2]), 1.0f / 3);
-                float light = 0.45f + 0.55f * fmaxf(0, normal.y * 0.8f + normal.z * 0.2f);
-                if (normal.z > 0.7f && middle.y > 0) {
-                    light *= 0.55f;
-                }
+                const float light = normal.z > 0.7f && middle.y > 0 ? capsule_front_shade : 1;
                 const color shaded = color_glow((color_rgb) { tint.r * light, tint.g * light, tint.b * light }, 0);
                 for (int j = 0; j < 3; j++) {
                     vertices->value[v] = quad[k + j];

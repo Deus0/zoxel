@@ -12,6 +12,7 @@ double zox_vox_instance_render_ms = 0;    // vox_instance_render_system's time, 
 #include "mat/_.c"
 #include "com/_.c"
 #include "pre/_.c"
+#include "ins/_.c"
 #include "fun/_.c"
 #include "sys/_.c"
 #include "eve/_.c"
