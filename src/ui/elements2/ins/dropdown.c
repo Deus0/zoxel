@@ -19,7 +19,7 @@ entity spawn_dropdown(ecs* world, entity parent, entity canvas, int2 position, i
     count = int_min(count, int_min(layouts2_children_capacity, 255));
     selected = selected < count ? selected : 0;
     const entity button = spawn_item_list_button(world, prefab_dropdown, parent, count ? options[selected] : "",
-        position, size, anchor, font_size, layer).x;
+        position, size, anchor, font_size, layer, zox_alignment_centre).x;
     zox_setv(button, ClickEvent, item_list_toggle);
     zox_set_link(world, button, ItemListCanvas, canvas);
     const entity arrow = spawn_text(world, prefab_text, button, (int2) { -font_size / 2 - 2, 0 },

@@ -34,6 +34,11 @@ entity4 spawn_editor_window(
     zox_setv(header, ElementFillColor, editor_header_fill);
     zox_setv(header, ElementOutlineColor, editor_header_outline);
     zox_add(e4.x, Docked);
-    spawn_window_search_button(world, e4.x);
+    // tighter rows than a game menu's: more fit in the editor's windows
+    const entity list = e4.w;
+    zox_setv(list, TextPadding, ((byte2) { 3 * ui_scale, 1 * ui_scale }));
+    zox_setv(list, ListMargins, ((byte2) { 4 * ui_scale, 2 * ui_scale }));
+    zox_setv(list, ListPadding, ((byte2) { 0, 1 * ui_scale }));
+    spawn_window_search_button(world, e4.x, e4.y);
     return e4;
 }

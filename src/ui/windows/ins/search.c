@@ -13,14 +13,13 @@ static entity window_search_bar_shown(ecs* world, entity window) {
     return bar && !zox_getv(bar, RenderDisabled) ? bar : 0;
 }
 
-// the search button, in a window's header left of its dock and close buttons
-entity spawn_window_search_button(ecs* world, entity window) {
-    const entity header = zox_get_child_by_id(world, window, zox_id(Header));
+// header: the window's header (pass it from the spawn: in the frame a window spawns its header can't be looked up)
+entity spawn_window_search_button(ecs* world, entity window, entity header) {
     if (!header) {
         return 0;
     }
     const entity button = spawn_button(world, prefab_clickable, header, "s",
-        (int2) { -60, 0 }, (int2) { 20, 20 }, (float2) { 1, 0.5f }, zox_alignment_centre,
+        (int2) { -68, 0 }, (int2) { 20, 20 }, (float2) { 1, 0.5f }, zox_alignment_centre,
         12, byte2_single(0), header_fill, header_outline, header_font_fill, header_font_outline).x;
     zox_setv(button, ClickEvent, window_search_toggle);
     zox_add(button, WindowSearchButton);

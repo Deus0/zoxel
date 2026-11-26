@@ -21,17 +21,22 @@ static void dock_float(ecs* world, entity element, float2 anchor, int2 position)
     }
 }
 
+// a regular floating window: a quarter of the canvas wide, half high, toward the side it was docked on
 static void dock_undock(ecs* world, entity element) {
     const float2 anchor = zox_getv(element, Anchor);
-    int2 position = zox_getv(element, LayoutPosition);
+    const entity canvas = zox_get_parent(world, element);
+    const int2 canvas_size = zox_valid(canvas) ? zox_getv(canvas, LayoutSize) : zox_getv(element, LayoutSize);
+    const int2 size = { int_max(120, canvas_size.x / 4), int_max(120, canvas_size.y / 2) };
+    int2 position = int2_zero;
     if (anchor.y == 0) {
-        position.y += 40;
+        position.y = -canvas_size.y / 4;
     } else if (anchor.y == 1) {
-        position.y -= 40;
+        position.y = canvas_size.y / 4;
     } else {
-        position.x += anchor.x == 0 ? 40 : -40;
+        position.x = anchor.x == 0 ? -canvas_size.x / 4 : canvas_size.x / 4;
     }
-    dock_float(world, element, anchor, position);
+    zox_setv(element, LayoutSize, size);
+    dock_float(world, element, float2_half, position);
 }
 
 static void dock_resize_handle(ecs* world, entity element, float2 anchor, int2 size) {

@@ -136,8 +136,6 @@ static byte zox_tst_docks_ready(ecs* world) {
             }
             zox_tst_dock_geometry(world, canvas, camera, docks);
             header = zox_get_child_by_id(world, docks.x, zox_id(Header));
-            floating_size = zox_getv(docks.x, LayoutSize);
-            floating_position = zox_getv(docks.x, LayoutPosition);
             zox_tst_click(world, dbg_player, zox_get_child_by_id(world, header, zox_id(UndockButton)));
             break;
         case 6: {
@@ -148,9 +146,9 @@ static byte zox_tst_docks_ready(ecs* world) {
                 return 0;
             }
             zox_tst_check(!docks.x && zox_has(header, Dragable) &&
-                int2_equals(floating_size, zox_getv(windows.x, LayoutSize)) &&
-                int2_equals(int2_add(floating_position, (int2) { 40, 0 }), zox_getv(windows.x, LayoutPosition)),
-                "undock did not preserve size, move inwards and restore dragging");
+                int2_equals(zox_getv(windows.x, LayoutSize), ((int2) { int_max(120, size.x / 4), int_max(120, size.y / 2) })) &&
+                int2_equals(zox_getv(windows.x, LayoutPosition), ((int2) { -size.x / 4, 0 })),
+                "undock did not make a regular floating window and restore dragging");
             const int bottom = zox_getv(docks.z, LayoutSize).y;
             zox_tst_dock_view(world, camera, size, (int2) { 0, bottom },
                 (int2) { size.x - zox_getv(docks.y, LayoutSize).x, size.y - bottom });

@@ -1,6 +1,6 @@
 entity spawn_menu(ecs* world, entity canvas, entity parent, const char* name, int2 position, int2 size, float2 anchor)
 {
-    const entity menu = spawn_item_list_button(world, prefab_button, parent, name, position, size, anchor, 12, 33).x;
+    const entity menu = spawn_item_list_button(world, prefab_button, parent, name, position, size, anchor, 12, 33, zox_alignment_centre).x;
     zox_add(menu, Menu);
     zox_setv(menu, ClickEvent, item_list_toggle);
     zox_set_link(world, menu, ItemListCanvas, canvas);

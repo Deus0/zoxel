@@ -14,7 +14,7 @@ static void window_undock_button(ecs* world, entity window, entity header) {
     }
     if (docked && !button) {
         button = spawn_button(world, prefab_clickable, header, "<",
-            (int2) { -36, 0 }, (int2) { 20, 20 }, dock_right, zox_alignment_centre,
+            (int2) { -44, 0 }, (int2) { 20, 20 }, dock_right, zox_alignment_centre,
             12, byte2_single(0), header_fill, header_outline, header_font_fill, header_font_outline).x;
         zox_setv(button, ClickEvent, window_undock_click);
         zox_add(button, UndockButton);

@@ -62,8 +62,9 @@ static void item_list_toggle(ecs* world, ClickEventData event) {
 }
 
 static entity spawn_item_list_popup(ecs* world, entity list, int2 size) {
-    const entity popup = spawn_ui(world, prefab_layout2, list, (float2) { 0.5f, 0 },
-        (int2) { 0, -size.y / 2 }, size, size);
+    // under its button, left edges lined up (desktop menus): anchored at the button's bottom left
+    const entity popup = spawn_ui(world, prefab_layout2, list, (float2) { 0, 0 },
+        (int2) { size.x / 2, -size.y / 2 }, size, size);
     zox_add(popup, ItemListPopup);
     zox_setv(popup, RenderDisabled, 1);
     if (!ui_is3D(world, list)) {
@@ -73,10 +74,10 @@ static entity spawn_item_list_popup(ecs* world, entity list, int2 size) {
 }
 
 static entity2 spawn_item_list_button(ecs* world, entity prefab, entity parent, const char* label,
-    int2 position, int2 size, float2 anchor, byte font, byte layer)
+    int2 position, int2 size, float2 anchor, byte font, byte layer, byte alignment)
 {
     const entity2 button = spawn_button(world, prefab, parent, label, position, size, anchor,
-        zox_alignment_centre, font, byte2_single(0), button_fill, button_outline, button_font_fill, button_font_outline);
+        alignment, font, byte2_single(alignment == zox_alignment_left ? 4 : 0), button_fill, button_outline, button_font_fill, button_font_outline);
     zox_add(button.y, TextLabel);
     if (!ui_is3D(world, parent)) {
         zox_setv(button.x, Layer, layer);
@@ -89,7 +90,7 @@ static entity spawn_item_list_item(ecs* world, entity parent, const char* label,
     uint index, byte font, ClickEvent click)
 {
     const entity2 button = spawn_item_list_button(world, prefab_clickable, parent, label,
-        (int2) { 0, -(int) index * size.y - size.y / 2 }, size, (float2) { 0.5f, 1 }, font, 241);
+        (int2) { 0, -(int) index * size.y - size.y / 2 }, size, (float2) { 0.5f, 1 }, font, 241, zox_alignment_left);
     zox_add(button.x, ItemListItem);
     zox_setv(button.x, ChildIndex, index);
     zox_setv(button.x, ClickEvent, click.value);

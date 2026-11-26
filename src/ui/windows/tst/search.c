@@ -21,7 +21,7 @@ static byte zox_tst_window_search_ready(ecs* world) {
             window = spawn_window_list_at(world, prefab_window, canvas, int2_zero, (int2) { 220, 160 },
                 zox_alignment_left, float2_half, "Search", 18, 12, byte2_single(2), 6, 1,
                 (ClickEvent) { button_event_close_window }).x;
-            button = spawn_window_search_button(world, window);
+            button = spawn_window_search_button(world, window, zox_get_child_by_id(world, window, zox_id(Header)));
             step++;
             return 0;
         case 1:
