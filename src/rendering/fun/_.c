@@ -1,6 +1,5 @@
 #include "mesh_indicies.c"
 #include "resource_management.c"
-#include "hdr.c"
 #include "gpu_links.c"
 #include "mesh.c"
 #include "mesh_indicies2.c"

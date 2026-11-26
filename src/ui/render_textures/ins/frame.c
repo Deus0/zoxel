@@ -59,7 +59,6 @@ entity spawn_render_frame(
     // Links
     zox_set_parent(world, material, ui);
     zox_link(world, ui, MaterialLink, material);
-    zox_link(world, camera, MaterialLink, material);
     zox_set_parent(world, camera, ui);
     // in a 3D window the camera and what it films are in its 3D tree: kept where they are (the hierarchy placed them
     //  on the window: the mesh away from its camera, blank, the camera on the window, every 3D ui vanished)

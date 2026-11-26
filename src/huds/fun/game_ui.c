@@ -155,8 +155,8 @@ void spawn_player_screen(
         // the boot's menu is the game's: on zox_game_boot (gam/*/eve, spawn_boot_menu)
         // spawns a render texture ui and links to camera
         if (!zox_xr_active && !zox_disable_post_processing) {
-            // each screen its own material: the camera's vignette, blur, tint and lids are uniforms on it (one shared,
-            //  a player in dialogue or asleep darkened every screen); the first's lives on, the others' go with it
+            // each screen its own material (its pass sets its camera's effects as it draws); the first's lives on, the
+            //  others' go with it
             entity material = zox_game_render_texture_alpha ?
                 material_render_texture_rgba :
                 material_render_texture_rgb;
@@ -164,7 +164,6 @@ void spawn_player_screen(
                 const entity shader = zox_get_link(world, material, ShaderLink);
                 material = spawn_material_render_texture_from(world, shader, zox_getv(shader, ShaderGPULink));
             }
-            zox_link(world, game_camera, MaterialLink, material);
             entity texture = spawn_render_texture(
                 world,
                 prefab_render_texture_screen,

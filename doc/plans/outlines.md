@@ -22,7 +22,7 @@ the Camera Outlines setting (unsupported, greyed: gles2, a vulkan gpu without in
   in world units (`zox_outline_width`, 0.5 / 16), as the outlines baked into block textures, over depth, 1 to 5
   pixels, x0.6 to 1 by the gap, x0.8 to 1.2 by the light's side; alpha 0.5 to 1 by the gap; colour a 0.12 shade of
   the model's own pixel, near black as the blocks' (the user: match the blocks' style, 2026-11-26). Near and far come from the
-  camera's projection matrix (rendering/cameras/fun/outlines.c), the depth and mask on texture units 1 and 2.
+  camera's projection matrix (rendering/cameras/post_processing/fun/outlines.c), the depth and mask on texture units 1 and 2.
 - **Game view rgb**: it used rgba because the rgb shader's `vec3` output left alpha undefined, the blended view drew
   black on gl; the rgb shader writes alpha 1 now and the game view is rgb (`zox_game_render_texture_alpha`).
 - **Found on the way**: basic3_render_system (skybox) had no `!core.Disabled`, a Disabled skybox still drew; tst

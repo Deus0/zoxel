@@ -15,6 +15,8 @@ A technical plan, for review before code. todo: "hdr support", extra colours in 
   before noise, under water, vignette and lids. Greyed where there's no float target.
 - **tst hdr_target** (gl and vulkan): a cube at brightness 1.5 and 3 tonemaps differently (it fails on a byte
   target: both clamp at 1), soft leaves colours under its knee as clamp does.
+- **Where**: src/rendering/cameras/post_processing (settings, flags, outlines, tonemap, the target's format), the
+  pass' material in rendering2 (doc/tech/rendering.md, Post processing). Bloom goes there too.
 - Found on the way: tst options_tabs set settings while iterating the app's children; a new setting's first Dirty
   made a table and ended the iteration (a segfault). It gathers them first now.
 

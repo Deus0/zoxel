@@ -280,6 +280,9 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
   through an `extern` means the code is in the wrong module or the wrong order. Move each function to the module
   that owns it (or the call to a later module, an observer there), so the include order (src/modules.c, each _.c)
   is enough and no `extern` is needed
+- Prefab events to observers (the user, 2026-11-27): `InitializeEvent` (a listener list of function pointers on
+  prefab_app, `zoxc_listener`, src/_/com) has 17 users, mostly settings spawning (`add_to_InitializeEvent`). Each
+  becomes an observer in its module (on the app's Initialize), and the listener component goes
 - Clean up the module organization: features in the module that owns them (doc/engine/architecture.md "Code goes
   where it belongs"), folders as the coding standards lay out (com, pre, ins, fun, eve, sys, tst), no reaching into
   another module's includes for load order

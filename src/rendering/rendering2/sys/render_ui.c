@@ -62,9 +62,9 @@ entity spawn_material_matrixui(ecs* world) {
     return e;
 }
 
-// a render texture's outline pass (rendering/cameras/fun/outlines.c, included after)
-byte render_texture_outlines(ecs* world, entity render_texture, guint material);
-void render_texture_tonemap(guint material);
+// a render texture's pass: its camera's effects, the tonemap, outlines (rendering/cameras/post_processing/fun/pass.c,
+//  included after)
+byte render_texture_post(ecs* world, entity render_texture, entity material);
 
 static inline const int4* get_ui_clip(ecs* world, entity e);
 static inline int4 intersect_layout_clips(int4 a, int4 b);
@@ -109,28 +109,6 @@ void render_uis(ecs* world, ui_render_queue* uis, int2 viewport_position, int2 v
                 guint material_id = zox_getv(material, MaterialGPULink);
                 zox_gpu_material(material_id);
                 zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
-                if (zox_has(material, MaterialBlur) && zox_has(material, CameraBlur)) {
-                    guint property_id = zox_getv(material, MaterialBlur);
-                    float property_value = zox_getv(material, CameraBlur);
-                    zox_gpu_float(property_id, property_value);
-                    if (dbg_log >= 2) {
-                        zox_log("- Set Material Blur [%i] to [%f]", property_id, property_value);
-                    }
-                }
-                if (zox_has(material, MaterialVignette) && zox_has(material, CameraVignette)) {
-                    guint property_id = zox_getv(material, MaterialVignette);
-                    float property_value = zox_getv(material, CameraVignette);
-                    zox_gpu_float(property_id, property_value);
-                    if (dbg_log >= 2) {
-                        zox_log("- Set Material Vignette [%i] to [%f]", property_id, property_value);
-                    }
-                }
-                if (zox_has(material, MaterialTint) && zox_has(material, CameraTint)) {
-                    zox_gpu_float(zox_getv(material, MaterialTint), zox_getv(material, CameraTint));
-                }
-                if (zox_has(material, MaterialLids) && zox_has(material, CameraLids)) {
-                    zox_gpu_float(zox_getv(material, MaterialLids), zox_getv(material, CameraLids));
-                }
                 zox_gpu_enable_blend();
                 zox_gpu_enable_depth_test();
                 zox_gpu_set_depth_mask(0);
@@ -171,12 +149,7 @@ void render_uis(ecs* world, ui_render_queue* uis, int2 viewport_position, int2 v
             zox_gpu_float4x4(attributes->matrix, matrix2);
             zox_gpu_float(attributes->brightness, data.brightness);
             zox_gpu_float(attributes->alpha, data.alpha);
-            const byte is_render_texture = zox_has(data.e, RenderTexture);
-            if (is_render_texture) {
-                render_texture_tonemap(zox_getv(material, MaterialGPULink));
-            }
-            const byte outlines = is_render_texture &&
-                render_texture_outlines(world, data.e, zox_getv(material, MaterialGPULink));
+            const byte outlines = zox_has(data.e, RenderTexture) && render_texture_post(world, data.e, material);
             zox_gpu_render(6);
             if (outlines) {
                 // let go of the camera's depth and mask: its next draw writes them

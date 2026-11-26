@@ -19,3 +19,15 @@ void zox_set_tonemap(ecs* world, byte value) {
         zox_add(e, RenderTextureDirty);
     zox_disposed_end(render_textures);
 }
+
+// a camera's colour target: half floats while a tonemap is on (colours past 1, the post pass tonemaps them,
+//  doc/plans/hdr.md), else bytes
+static inline void set_render_texture_gpu(guint index, int2 size, byte has_alpha) {
+    if (zox_camera_hdr()) {
+        zox_gpu_set_texture_color_hdr(index, size);
+    } else if (has_alpha) {
+        zox_gpu_set_texture_color_rgba(index, size, NULL);
+    } else {
+        zox_gpu_set_texture_color_rgb(index, size, NULL);
+    }
+}

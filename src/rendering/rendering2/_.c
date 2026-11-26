@@ -16,6 +16,7 @@ void import_rendering2(ecs* world) {
     zox_systems_basics2D(world);
     add_hook_load_shader(&spawn_shaders_basics2D);
     add_hook_load_shader(&spawn_materials_elements);
+    add_hook_load_shader(&spawn_materials_render_textures);
     add_hook_gpu_dispose(gpu_dispose_rendering2);
     add_hook_gpu_restore(gpu_restore_rendering2);
 }

@@ -1,8 +1,8 @@
 entity material_render_texture_rgb;
 entity material_render_texture_rgba;
 
-// a render texture's material from its shader: a material each, as its uniforms are its camera's (vignette, blur,
-//  tint, lids), so split screens share the shader, not the material; ids passed in, a new shader spawned in a
+// a render texture's material from its shader: a material each (split screens share the shader), its uniforms its
+//  camera's effects, set as it draws (post_processing/fun/pass.c); ids passed in, a new shader spawned in a
 //  system (deferred) has no ShaderGPULink to read yet
 entity spawn_material_render_texture_from(ecs* world, entity shader, guint2 shader_ids) {
     guint material_id;
@@ -12,9 +12,6 @@ entity spawn_material_render_texture_from(ecs* world, entity shader, guint2 shad
         return 0;
     }
     zox_set_unique_name(e, "material_render_texture");
-    zox_setv(e, CameraBlur, 0);
-    zox_setv(e, CameraTint, 0);
-    zox_setv(e, CameraLids, 0);
     attributes_matrixui base_attributes = create_attributes_matrixui(material_id);
     zox_set_data(e, attributes_matrixui, base_attributes);
     zox_setv(e, MaterialBlur, zox_gpu_get_material_property(material_id, "blur"));

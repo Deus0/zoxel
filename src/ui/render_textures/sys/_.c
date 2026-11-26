@@ -1,7 +1,6 @@
 #include "initialize.c"
 #include "resize.c"
 #include "screen.c"
-#include "camera_blur.c"
 
 void zox_systems_render_textures(ecs* world) {
     zox_observer(screen_render_texture_camera_event, EcsOnSet,
@@ -33,12 +32,5 @@ void zox_systems_render_textures(ecs* world) {
         [none] rendering.RenderTextureDirty,
         [none] !core.Initialize,
         [none] !core.PreInitialize,     // its texture is made the frame after (Initialize)
-    );
-    zox_system_1(
-        camera_material_system,
-        zoxp_gpu_upload,
-        [in] cameras.CameraBlur,
-        [in] cameras.CameraVignette,
-        [none] cameras.Camera
     );
 }
