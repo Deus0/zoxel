@@ -1,4 +1,5 @@
 #include "hierarchy.c"
+#include "files.c"
 #include "inspector.c"
 #include "input.c"
 #include "inspector_label.c"
@@ -31,6 +32,11 @@ void zox_systems_editor(ecs *world) {
         [in] core.Target,
         [in] core.ComponentTarget,
         [none] editor.InspectorLabel
+    );
+    zox_on_add(
+        file_window_spawn_event,
+        [in] saves.FolderPath,
+        [none] core.Dirty
     );
     zox_on_add(
         hierarchy_spawn_event,

@@ -1,6 +1,7 @@
 #include "window.c"
 #include "inspector.c"
 #include "hierarchy.c"
+#include "files.c"
 #include "profiler.c"
 #include "label.c"
 #include "fps.c"

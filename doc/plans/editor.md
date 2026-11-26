@@ -9,7 +9,7 @@ Order: inspection flows first, perfect them, then editing, then the engine wide 
 ## Checklist
 
 ### 1. Inspection (first)
-- [ ] File window: browse `res/` and the save folders, a list of folders and files, open a file to inspect it
+- [x] File window: browse `res/` and the save folders and inspect file metadata
 - [x] Foldable hierarchy: arrows to fold and unfold children, indented rows instead of "-"
 - [ ] Hierarchy scrollbar fixed, scroll area masks rows that overflow
 - [ ] Tag filter on the hierarchy (blocks, items, stats..)
@@ -41,7 +41,13 @@ Order: inspection flows first, perfect them, then editing, then the engine wide 
 Detailed notes per item go here as each starts.
 
 ### File window
-(todo)
+Press `n` to toggle Files on the debug player’s canvas. The window opens on the resources and game save roots.
+It lists one folder at a time, with `..` first, then folders and files sorted by name within each group.
+Click a file to add an info row with its name, byte size and extension. File viewers are a later task.
+Folders that exceed the shared list capacity show a `More entries...` row.
+
+The list rebuilds on core `Dirty` after a deferred spawn or a click. The `file_window` test checks deferred
+spawning, row order, folder navigation and file metadata using a temporary folder.
 
 ### Foldable hierarchy (first)
 Other tools call it a tree view: godot's Tree (a TreeItem is collapsed or not), unity's foldout, imgui's TreeNode,

@@ -37,6 +37,7 @@ entity canvas_toggle_ui(
 }
 
 #include "list.c"
+#include "files.c"
 #include "tooltip.c"
 #include "component.c"
 #include "inspector.c"

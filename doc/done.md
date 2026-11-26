@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-26
+-x Editor file window (n): browses resources and saves one folder at a time, folders then files, a file's name,
+  size and extension (tst file_window)
 -x Fold arrows (ui/elements2): Unfolded on a list, unfold_toggle adds the core Dirty, fold arrow icon buttons;
   the hierarchy uses them, its rows keep their scroll on a fold (tst hierarchy_fold)
 -x Game and player states as observers on the core Dirty: the GameStateEvent and PlayerStateEvent lists gone,

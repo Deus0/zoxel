@@ -8,6 +8,7 @@
  *
  *  Keys (debug player):
  *  - y: hierarchy, the entity tree, click a row to inspect it
+ *  - n: files, browse resources and saves and inspect file metadata
  *  - u: inspector, an entity's components, click an entity component to follow it
  *  - z: fps display (the "FPS" setting, in release builds too: the only editor ui there)
  *  - x: profiler (frame times)
@@ -41,6 +42,7 @@ void import_editor(ecs* world) {
     add_hook_key_down(toggle_fps_viewer);
     add_hook_key_down(toggle_inspector);
     add_hook_key_down(toggle_hierarchy);
+    add_hook_key_down(toggle_files);
 #endif
 #ifdef zox_tests
     zox_tsts_editor();

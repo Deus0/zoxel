@@ -5,6 +5,7 @@
 #include "directory.c"
 #include "dir.c"
 #include "dirs.c"
+#include "entries.c"
 #include "save_dir.c"
 #include "saves.c"
 #include "io_macros.c"
