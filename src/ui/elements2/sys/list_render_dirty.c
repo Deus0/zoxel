@@ -56,6 +56,9 @@ static void update_horizontal_scrollbar(ecs* world, entity scrollview, entity li
     zox_setv(handle, SlideBounds, ((float2) { low, high }));
     const int length = range && width > 1 ? int_max(1, (int) ((float) width * width / (width + range))) : width;
     layout_scrollbar_handle(world, handle, bar_size, length, range ? (offset - low) / (float) range : 0, 1);
+    // the bar shows or hides: the viewport follows (its RenderDisabled set above is deferred: use disabled)
+    scrollview_fit_list_bars(world, scrollview, list, scrollview_bar_size(world, scrollview, 0),
+        disabled ? 0 : bar_size.y);
 }
 
 // if outside list visible indexes, hide, otherwise show (all hidden while its scrollview is)

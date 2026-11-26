@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-26
+-x A scroll view's list is its viewport: the Mask on it, sized between the scrollbars that show, so rows no longer
+  draw under them (scrollview_fit_list, tst scroll_mask)
 -x Hierarchy shows the scene: every root entity (zox_get_roots: no parent, not modules, queries, phases), every
   row folds (roots too), the editor's own ui (EditorElement) has no rows, so a fold no longer rewrites the tree it
   shows (tst hierarchy_roots, hierarchy_fold)

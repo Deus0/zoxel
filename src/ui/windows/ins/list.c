@@ -140,9 +140,7 @@ static inline entity2 spawn_window_list_view(ecs* world, entity canvas, entity b
     zox_setv(list, ElementFontSize, list_data.font_size);
     zox_set_link(world, list, ScrollviewLink, scrollview);
     zox_set_link(world, scrollview, ListUILink, list);
-    if (scrollbar_visible) {
-        zox_setv(list, LayoutPosition, ((int2) { -scrollbar_width, 0 }));
-    }
+    scrollview_fit_list_size(world, list, scrollview_size, scrollbar_visible ? scrollbar_width * ui_scale : 0, 0);
     return (entity2) { scrollview, list };
 }
 
@@ -284,6 +282,7 @@ entity4 spawn_window_list_at(
     zox_setv(list, ElementFontSize, list_data.font_size);
     zox_set_link(world, list, ScrollviewLink, scrollview);
     zox_set_link(world, scrollview, ListUILink, list);
+    scrollview_fit_list_size(world, list, list_size, scrollbar_visible ? scrollbar_width * ui_scale : 0, 0);
     // NOTE: Returns Window, List, Header
     return (entity4) { e, e2.y, body, list };
 }

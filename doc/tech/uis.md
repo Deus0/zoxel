@@ -209,6 +209,11 @@ the bottom left. OpenGL and Vulkan use it as a scissor rectangle. UI raycasts
 intersect pointer bounds with the same rectangle.
 
 ## Scroll areas
+The list is the scroll view's viewport (like Unity's): it has the `Mask`, sized to the area between the scroll
+bars that show (`scrollview_fit_list`, `src/ui/elements2/fun/scroll.c`), so rows never draw or take the pointer under
+a scrollbar. Spawns pass their sizes (`scrollview_fit_list_size`, a deferred spawn can't read them yet); the docks
+relayout and the horizontal bar showing or hiding refit it.
+
 
 Scrollviews add `Mask`. Lists still disable rows outside their visible index
 range. When rows extend past the viewport width, the bottom scrollbar sizes

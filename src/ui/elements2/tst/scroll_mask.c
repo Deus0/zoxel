@@ -10,6 +10,7 @@ static entity zox_tst_scroll_mask_list(ecs* world, entity canvas, int y, const c
         zox_alignment_left, rows);
     zox_set_link(world, list, ScrollviewLink, view);
     zox_set_link(world, view, ListUILink, list);
+    scrollview_fit_list_size(world, list, size, 0, 0);     // the list is the viewport, its Mask
     return view;
 }
 
@@ -45,6 +46,14 @@ static byte zox_tst_scroll_mask_ready(ecs* world) {
             zox_tst_check(!zox_getv(bar, RenderDisabled) && zox_getv(handle, LayoutSize).x < zox_getv(bar, LayoutSize).x,
                 "wide list did not show a proportional scrollbar");
             zox_tst_check(zox_valid(fit_bar) && zox_getv(fit_bar, RenderDisabled), "fitting list showed a horizontal scrollbar");
+            // the viewport: the list masks, not the scroll view, and it stops above the shown horizontal bar
+            const entity list = zox_get_link(world, view, ListUILink);
+            zox_tst_check(zox_has(list, Mask) && !zox_has(view, Mask), "the list isn't the scroll view's mask");
+            zox_tst_check(zox_getv(list, LayoutSize).y == zox_getv(view, LayoutSize).y - zox_getv(bar, LayoutSize).y,
+                "the list is [%i] high, it overlaps the horizontal bar", zox_getv(list, LayoutSize).y);
+            const entity fit_list = zox_get_link(world, fit, ListUILink);
+            zox_tst_check(zox_getv(fit_list, LayoutSize).y == zox_getv(fit, LayoutSize).y,
+                "a list with no bars showing isn't the scroll view's size");
             zox_setv(handle, Layer, 32);
             row_x = zox_getv(row, Position2).x;
             zox_tst_mouse(handle_point, 0);

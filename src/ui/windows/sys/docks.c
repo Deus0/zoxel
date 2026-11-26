@@ -54,12 +54,12 @@ static void window_dock_layout(ecs* world, entity window, int2 position, int2 si
         zox_setv(scrollbar, LayoutSize, ((int2) { zox_getv(scrollbar, LayoutSize).x, body_size.y }));
     }
     if (zox_valid(list)) {
+        scrollview_fit_list(world, scrollview, list);   // the viewport between its scrollbars
         const byte2 padding = zox_getv(list, TextPadding);
         const byte2 margins = zox_getv(list, ListMargins);
         const int row = int_max(1, zox_getv(list, ElementFontSize) + 2 * padding.y + zox_getv(list, ListPadding).y);
         const int visible = int_clamp((body_size.y - 2 * margins.y) / row, 1, 255);
         const int max_start = int_max(0, (int) zox_get_children_count(world, list) - visible);
-        zox_setv(list, LayoutSize, body_size);
         zox_setv(list, ListVisible, visible);
         zox_setv(list, ListStart, int_min(zox_getv(list, ListStart), max_start));
         zox_add(list, ListDirty);

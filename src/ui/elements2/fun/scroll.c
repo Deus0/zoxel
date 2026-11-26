@@ -128,3 +128,47 @@ byte scroll_list_to_child(
     }
     return set_list_start(world, list, new_start);
 }
+
+// a scroll view's list is its viewport (like Unity's): the area between its scrollbars, its Mask there
+//  - size: the scroll view's; right: the vertical bar's width while it shows, bottom: the horizontal bar's height
+static inline void scrollview_fit_list_size(ecs* world, entity list, int2 size, int right, int bottom) {
+    zox_add(list, Mask);
+    zox_setv(list, LayoutSize, ((int2) { int_max(1, size.x - right), int_max(1, size.y - bottom) }));
+    zox_setv(list, LayoutPosition, ((int2) { -right / 2, bottom / 2 }));
+    zox_add(list, LayoutSizeDirty);
+}
+
+// fits it unless it already fits (no relayout then)
+static inline void scrollview_fit_list_bars(ecs* world, entity scrollview, entity list, int right, int bottom) {
+    const int2 size = zox_getv(scrollview, LayoutSize);
+    const int2 list_size = { int_max(1, size.x - right), int_max(1, size.y - bottom) };
+    if (zox_has(list, Mask) && int2_equals(zox_getv(list, LayoutSize), list_size) &&
+        int2_equals(zox_getv(list, LayoutPosition), ((int2) { -right / 2, bottom / 2 }))) {
+        return;
+    }
+    scrollview_fit_list_size(world, list, size, right, bottom);
+}
+
+// a shown bar's thickness: the vertical one's width, the horizontal one's height (0 while hidden or none)
+static inline int scrollview_bar_size(ecs* world, entity scrollview, byte horizontal) {
+    iter it2 = zox_children(world, scrollview);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            const entity bar = it2.entities[j];
+            if (zox_has(bar, Scrollbar) && zox_has(bar, HorizontalScrollbar) == horizontal &&
+                !zox_getv(bar, RenderDisabled)) {
+                return horizontal ? zox_getv(bar, LayoutSize).y : zox_getv(bar, LayoutSize).x;
+            }
+        }
+    }
+    return 0;
+}
+
+// the same from a laid out scroll view: its size and which of its bars show (not in a deferred spawn: the spawn
+//  passes its sizes to scrollview_fit_list_size)
+void scrollview_fit_list(ecs* world, entity scrollview, entity list) {
+    if (zox_valid(scrollview) && zox_valid(list) && zox_has(scrollview, LayoutSize)) {
+        scrollview_fit_list_bars(world, scrollview, list, scrollview_bar_size(world, scrollview, 0),
+            scrollview_bar_size(world, scrollview, 1));
+    }
+}
