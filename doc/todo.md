@@ -276,6 +276,13 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
 
 # Refactors
 Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [done.md](done.md).
+- Remove the `extern` uses (~200 `extern` declarations in src and gam): a module calling a later module's function
+  through an `extern` means the code is in the wrong module or the wrong order. Move each function to the module
+  that owns it (or the call to a later module, an observer there), so the include order (src/modules.c, each _.c)
+  is enough and no `extern` is needed
+- Clean up the module organization: features in the module that owns them (doc/engine/architecture.md "Code goes
+  where it belongs"), folders as the coding standards lay out (com, pre, ins, fun, eve, sys, tst), no reaching into
+  another module's includes for load order
 
 # Tools out of the test harness (2026-11-22)
 - Move the looking tools into bsh/tools (doc/engine/tools.md): body, poses, ik_poses, walk, punch, model, gpu_lights,

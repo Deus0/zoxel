@@ -212,6 +212,10 @@ Entities form trees with parents and children ([Children](tech/hierarchy.md) has
 
 These matter more than they first look:
 
+- **Read [Architecture](engine/architecture.md) "Patterns we stick to" first.** Reactions are observers on event tags
+  (the core `Dirty` most often), entities point at each other with links, data lives in entities, and each feature sits in the module that
+  owns it, with its tests. New code follows them; reviews check for them.
+
 - **Use the `zox_` wrappers, never Flecs directly.** `ecs_*` / `Ecs*` belong only in [src/_/flecs](../src/_/flecs).
   If a wrapper is missing, add one there.
 - **Few components, each one value.** Reduction is a key part of the design: reuse what exists before making a new
@@ -378,7 +382,8 @@ The loop:
 
 ## 10. Where Next
 
-- [Architecture](engine/architecture.md): events vs systems
+- [Architecture](engine/architecture.md): the patterns we stick to (observers on event tags, links, data in
+  entities, deferred spawns, code in its module), events vs systems
 - [Coding Standards](coding_standards.md): folders, naming, components and systems in depth
 - [Links](engine/links.md): `zox_link`, single and many links, unlink callbacks
 - [Children](tech/hierarchy.md): parenting and child entities

@@ -1,5 +1,70 @@
 # Architecture
 
+## Patterns we stick to
+
+These keep the codebase small and the same everywhere. Follow them in new code, and move old code to them when you
+touch it.
+
+### Reactions are observers on event tags
+
+- **A reaction is an observer on an event tag**: whatever makes the change adds the tag, and each module that
+  reacts observes it, filtered by what it cares about. Any event tag works (`Dead`, `DeathDirty`, `InTown`,
+  `DeviceLost`, `HierarchyUIDirty`, `ListDirty`...), declared as one (`zoxd_tag_event`, or a non fragmenting
+  `zoxd_nf_tag` an observer removes; costs below in "Which kind of event").
+- **The core `Dirty` is the most common one** (`src/_/com`, non fragmenting, `dirty_cleanup_event` removes it): use
+  it for "this entity changed" when no more specific tag says what changed:
+  `zox_on_add(fn, [in] players.PlayerState, [none] players.Player, [none] core.Dirty)`.
+- **No listener lists** (the old `*Event` components a module added function pointers to, i.e. `GameStateEvent`,
+  `PlayerStateEvent`), **no global function pointer hooks**, **no system that scans for a change** ("is it dirty
+  this frame?"). A system that only reacts is an observer.
+- **Register observers in the module's `eve/_.c`** (its `zox_events_*` function), next to the reactions they call.
+- **A change made inside an observer can't add the same event tag again**: the entity still has it, so nothing fires.
+  Set a target instead, a component that's only there while a change waits (`PlayerStateTarget`), and let the
+  owner's system apply it next frame and **remove it once used**. Don't keep it with a "none" value to manage.
+- **Main thread systems (`zox_system_1`) only for spawning or gpu uploads.** Everything else is a normal, threaded
+  system; deletions and spawns count as spawning (`game_state_system` deletes the realm).
+
+### Links, not entity fields
+
+- **Point one entity at another with a link**: `zox_link`, declared with `zoxd_nf_link` (one target, linking again
+  replaces it) or `zoxd_nf_links` (many). Not a raw `entity` in a component or a `Target` you manage by hand.
+  Links clean up better: they're flecs's own relationships, so a deleted target unlinks itself, nothing points at a
+  dead entity, and any extra cleanup goes in `zox_on_unlink`. See [Links](links.md).
+- **Links have no order.** When order matters (a list's rows), use ordered children (`ChildIndex`), and links for
+  what each one points at (a virtual list's slots: `RowTargetLink` to the entity a slot shows, `ListStartLink` to
+  the first shown row).
+
+### Data lives in entities
+
+- **Rely on flecs: keep data in entities and walk them** (queries, children, links). Don't copy rows into an array
+  or malloc per refresh. A list of thousands of entities spawns only the rows that show and walks the tree to fill
+  them, it doesn't mirror the tree.
+- **Derive what you can** (a count from a walk, a search from its bar's text field) instead of storing a copy that
+  can go stale.
+- **Few components, one value each**, generic ones reused (onboarding, House Rules).
+
+### Spawns take a frame
+
+A spawn (or a set, an add, a delete) made inside a system, an observer or a click doesn't happen straight away: flecs
+queues it and applies it at the end of that step (its merge), so the rest of that code still sees the world as it
+was. In practice:
+
+- **A just spawned entity's values can't be read yet** (`zox_getv` on it gives nothing). Pass the values you already
+  have (`scrollview_fit_list_size(world, list, size, ...)`), or react in an observer once it's there.
+- **Put the event tag on the entity set up last**: the queued changes land entity by entity, so a window's `Dirty`
+  fires before its list has its components, the list's after (the hierarchy, the files window, the search bar).
+- **A just deleted entity still looks alive in the same code**: hide an element and reuse it (the search bar) rather
+  than delete and relayout around it at once.
+
+### Code goes where it belongs
+
+- **A feature lives in the module that owns that kind of thing, with its tests there**: docking and the search bar
+  in `src/ui/windows`, masks in `src/ui/masks`, the dropdown and virtual list in `src/ui/elements2`; the editor only
+  uses them. Don't add code to whichever module happens to need it first.
+- **Load order is the module order** (`src/modules.c`, each `_.c`): don't reach into another module's includes to
+  get at something early. Move the code to the module that owns it.
+- **`zox_` wrappers, not `ecs_*`**, outside `src/_/flecs`. Add a wrapper there when one is missing (`zox_get_roots`).
+
 ## Events vs Systems
 
 Use an **event** when something happens once because of a specific change or interactions.
