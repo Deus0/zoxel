@@ -1,5 +1,7 @@
 zox_tag(Window);
 zox_tag(Docked);
+zox_tag(WindowSearchBar);       // a strip under a window header: its search (ins/search.c)
+zox_tag(WindowSearchButton);
 zox_tag(WindowDockButton);
 zox_tag(WindowDockPreview);
 zox_tag(DockedWindowsViewport);
@@ -19,6 +21,8 @@ zoxc_byte(WindowsCount);
 void zox_components_windows(ecs* world) {
     zoxd_tag(Window);
     zoxd_tag(Docked);
+    zoxd_tag(WindowSearchBar);
+    zoxd_tag(WindowSearchButton);
     zoxd_tag(WindowDockButton);
     zoxd_tag(WindowDockPreview);
     zoxd_tag(DockedWindowsViewport);

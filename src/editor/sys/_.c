@@ -43,6 +43,7 @@ void zox_systems_editor(ecs *world) {
         [in] elements2.Unfolded,
         [none] core.Dirty
     );
+    zox_on_add(inspector_search_event, [none] containers.ListVisible, [none] core.Dirty);
     zox_on_add(
         inspector_spawn_event,
         [in] core.Target,

@@ -1,5 +1,6 @@
 #include "label.c"
 #include "button.c"
+#include "dropdown.c"
 #include "icon.c"
 #include "frame.c"
 #include "handle.c"
@@ -37,6 +38,7 @@ void spawn_prefabs_elements2(ecs *world) {
     prefab_clickable = spawn_prefab_button(world, prefab_element_frame);
     prefab_button = spawn_prefab_button(world, prefab_element_frame);
     zox_add(prefab_button, NavigationElement);
+    prefab_dropdown = spawn_prefab_dropdown(world, prefab_button);
     // bars
     {
         prefab_bar2 = spawn_prefab_bar2(world, prefab_element_frame);

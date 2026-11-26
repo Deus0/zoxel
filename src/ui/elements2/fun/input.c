@@ -31,7 +31,9 @@ void input_field_set_value(ecs* world, entity field, const char* value) {
     }
     char text[input_field_max_length + 2];
     snprintf(text, sizeof(text), "%.*s%s", input_field_max_length, value, field == input_field_focus ? "_" : "");
-    set_entity_text(world, label, text);
+    if (set_entity_text(world, label, text)) {
+        zox_add(field, Dirty);
+    }
 }
 
 // re-sets its text, with or without the '_'

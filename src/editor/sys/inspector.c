@@ -107,6 +107,25 @@ void button_event_clicked_inspector(ecs *world, ClickEventData event) {
     inspector_select_target(world, event.clicker, link->value);
 }
 
+// a search: the row's text (name), or a component row's component name (tag)
+static byte inspector_search_match(ecs* world, InspectorRow row, const char* search, byte type) {
+    if (type == window_search_tag) {
+        return row.component && window_search_match(zox_get_name(row.component), search);
+    }
+    return window_search_match(row.text, search);
+}
+
+// its search changed (the core Dirty on its list, src/ui/windows/sys/search.c): its rows respawn
+void inspector_search_event(iter* it) {
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        const entity window = zox_get_parent_by_id(world, it->entities[i], zox_id(InspectorUI));
+        if (window) {
+            zox_add(window, InspectorDirty);
+        }
+    }
+}
+
 // an observer on InspectorDirty (non fragmenting, removed after)
 void inspector_spawn_event(iter* it) {
     const ClickEvent on_click = (ClickEvent) { &button_event_clicked_inspector };
@@ -128,8 +147,16 @@ void inspector_spawn_event(iter* it) {
         const int max = 3 + zox_get_ids_count(world, target->value);
         InspectorRow* rows = malloc(sizeof(InspectorRow) * max);
         const int count = get_inspector_rows(world, target->value, rows, max);
+        char search[input_field_max_length + 2];
+        byte search_type;
+        const byte searching = window_search_get(world, e, search, sizeof(search), &search_type) && search[0];
+        int shown = 0;
         for (int j = 0; j < count; j++) {
             const InspectorRow row = rows[j];
+            if (searching && !inspector_search_match(world, row, search, search_type)) {
+                free(row.text);
+                continue;
+            }
             const entity button = spawn_editor_list_row(
                 world,
                 list,
@@ -137,7 +164,7 @@ void inspector_spawn_event(iter* it) {
                 row.text,
                 font_size->value,
                 get_inspector_row_outline(row.type),
-                j, 0);
+                shown++, 0);
             set_TooltipText(world, button, row.text);
             zox_setv(button, TooltipEvent, &inspector_label_tooltip);
             zox_add(button, InspectorLabel);

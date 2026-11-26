@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-26
+-x Window search: a dropdown element (elements2), a search bar any window can show from its header (ui/windows:
+  text and a name / tag filter), the editor's hierarchy, files and inspector filter by it (tsts dropdown,
+  window_search, hierarchy_search, files_search, inspector_search)
 -x UI masks (src/ui/masks): a Mask tag clips its descendants to its rectangle, nested masks intersect, the clip
   (LayoutClip) read by both renderers and the pointer hit test; scroll views add a Mask and a horizontal scrollbar
   when rows are wider (tst ui_mask on gl and vulkan, scroll_mask)

@@ -94,6 +94,7 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
   the 8 models in parallel) it'd be a fraction: ask first, it changes how model nodes run
 
 # Bugs
+- tst input_focus_lifecycle fails: "first click did not activate text input" (on master too, 2026-11-26)
 - tst.sh removes /tmp/zoxel_nosaves_<pid> folders whose pid isn't alive: from a sandbox with its own pid namespace
   (codex exec) every other running test's pid looks dead, so a parallel test lost its save folder mid run
   (coop_respawn_navigator, 100 save errors, 2026-11-26)

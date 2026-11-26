@@ -4,3 +4,4 @@
 #include "list.c"
 #include "tabs.c"
 #include "docks.c"
+#include "search.c"

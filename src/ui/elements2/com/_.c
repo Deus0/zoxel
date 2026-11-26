@@ -31,7 +31,18 @@ zox_tag(FoldOwnerLink);
 zoxc_arrayd_with_remove(Unfolded, entity)
 zoxc(OptionLabel, const char*);
 
+zoxc_byte(DropdownIndex);
+zoxc_arrayd(DropdownOptions, char)
+zox_tag(DropdownCanvas);
+zox_tag(OpenDropdown);
+zox_tag(DropdownPopup);
+
 void zox_components_elements2(ecs *world) {
+    zoxd_byte(DropdownIndex);
+    zoxd_arrayd(DropdownOptions);
+    zoxd_nf_link(DropdownCanvas);
+    zoxd_nf_link(OpenDropdown);
+    zoxd_tag(DropdownPopup);
     zoxd_tag(Label);
     zoxd_tag(Button);
     zoxd_tag(Icon);

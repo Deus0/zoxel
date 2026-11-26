@@ -13,7 +13,7 @@ Order: inspection flows first, perfect them, then editing, then the engine wide 
 - [x] Foldable hierarchy: arrows to fold and unfold children, indented rows instead of "-"
 - [x] Scroll areas mask rows that overflow (src/ui/masks: a Mask tag, any element), a horizontal scrollbar when
   rows are wider than the area
-- [ ] Search in every editor window: a search icon button in the header adds a search bar under it, with a filter
+- [x] Search in every editor window: a search icon button in the header adds a search bar under it, with a filter
   type, name or tag (a ui dropdown element for the type); the hierarchy, inspector and files filter their rows
 - [ ] Inspector: data components readable (TextureData, mesh data open their own window)
 - [x] Close buttons on every editor window (with the docks)

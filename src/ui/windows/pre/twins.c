@@ -42,6 +42,7 @@ void spawn_prefabs_twins3(ecs* world) {
     const entity button = spawn_prefab_button(world, frame3);
     zox_add(button, NavigationElement);
     prefab3_twin(world, prefab_button, button);
+    prefab3_twin(world, prefab_dropdown, spawn_prefab_dropdown(world, button));
     prefab3_twin(world, prefab_header, spawn_prefab_header(world, clickable));
     const entity body = spawn_prefab_body(world, frame3);
     prefab3_twin(world, prefab_body, body);

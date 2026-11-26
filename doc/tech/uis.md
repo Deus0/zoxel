@@ -214,3 +214,20 @@ Scrollviews add `Mask`. Lists still disable rows outside their visible index
 range. When rows extend past the viewport width, the bottom scrollbar sizes
 its handle to the visible fraction of the content. Dragging the handle changes
 `ListScrollX`, which offsets the rows during layout.
+
+## Dropdowns
+
+`spawn_dropdown` (`src/ui/elements2/ins/dropdown.c`) is a button that shows its selected option. Clicking it opens
+its options in a list under it (`DropdownPopup`, on top); clicking one sets `DropdownIndex`, closes the list and
+adds the core `Dirty` to the dropdown. A click anywhere else closes it (`dropdown_pointer_event`, on the pointer's
+`Dirty`). Test: `dropdown`.
+
+## Window search
+
+Any window can have a search: `spawn_window_search_button` (`src/ui/windows/ins/search.c`) puts a button in its
+header that shows a bar under it (`WindowSearchBar`): an input field and a name / tag dropdown. The body shrinks to
+fit (`window_dock_layout`); closing hides the bar and clears it. Nothing is stored: `window_search_get` reads the
+text (lower case) and type from the bar while it's open, `window_search_match` compares ignoring case. Typing or
+changing the type adds the core `Dirty` to the window's list, so its rows respawn. The editor's hierarchy (flat
+matches, by label or an id's name), files (by name or extension) and inspector (by row text or component name) use
+it. Tests: `window_search`, `hierarchy_search`, `files_search`, `inspector_search`.

@@ -235,6 +235,7 @@ void zox_tst_editor_check(ecs* world) {
 
 #include "hierarchy_fold.c"
 #include "file_window.c"
+#include "search.c"
 
 void zox_tsts_editor() {
     zox_tst_add("editor", zox_tst_editor_ready, zox_tst_editor_check, 60);
@@ -243,4 +244,10 @@ void zox_tsts_editor() {
     zox_tst_set_setup("hierarchy_fold", NULL, 1);
     zox_tst_add("file_window", zox_tst_file_window_ready, zox_tst_file_window_check, 20);
     zox_tst_set_setup("file_window", NULL, 1);
+    zox_tst_add("hierarchy_search", zox_tst_hierarchy_search_ready, zox_tst_hierarchy_search_check, 20);
+    zox_tst_set_setup("hierarchy_search", NULL, 1);
+    zox_tst_add("files_search", zox_tst_files_search_ready, zox_tst_files_search_check, 20);
+    zox_tst_set_setup("files_search", NULL, 1);
+    zox_tst_add("inspector_search", zox_tst_inspector_search_ready, zox_tst_hierarchy_search_check, 20);
+    zox_tst_set_setup("inspector_search", NULL, 1);
 }

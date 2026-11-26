@@ -33,5 +33,6 @@ entity4 spawn_editor_window(
     zox_setv(header, ElementFillColor, editor_header_fill);
     zox_setv(header, ElementOutlineColor, editor_header_outline);
     zox_add(e4.x, Docked);
+    spawn_window_search_button(world, e4.x);
     return e4;
 }

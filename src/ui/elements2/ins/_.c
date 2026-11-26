@@ -13,4 +13,5 @@
 #include "scrollbar.c"
 #include "scrollview.c"
 #include "list.c"
+#include "dropdown.c"
 #include "overlay.c"

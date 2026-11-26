@@ -36,6 +36,16 @@ static void spawn_file_window_row(
     }
 }
 
+// a search: the entry's name (name), or a file's extension (tag)
+static byte file_window_search_match(DirectoryEntry entry, const char* search, byte type) {
+    const char* name = file_window_basename(entry.path);
+    if (type != window_search_tag) {
+        return window_search_match(name, search);
+    }
+    const char* dot = strrchr(name, '.');
+    return !entry.directory && dot && dot != name && window_search_match(dot + 1, search);
+}
+
 static void spawn_file_window_entries(ecs* world, entity list, byte font_size, FolderPath folder) {
     const ClickEvent open_folder = { click_file_window_folder };
     if (!folder.value[0]) {
@@ -54,8 +64,17 @@ static void spawn_file_window_entries(ecs* world, entity list, byte font_size, F
     const uint entry_limit = layouts2_children_capacity - (count > layouts2_children_capacity - 2 ? 2 : 1);
     uint index = 1;
     byte omitted = 0;
+    char search[input_field_max_length + 2];
+    byte search_type;
+    const entity window = zox_get_parent_by_id(world, list, zox_id(FileWindowUI));
+    const byte searching = window && window_search_get(world, window, search, sizeof(search), &search_type) &&
+        search[0];
     for (size_t j = 0; j < count; j++) {
         const DirectoryEntry entry = entries[j];
+        if (searching && !file_window_search_match(entry, search, search_type)) {
+            free(entry.path);
+            continue;
+        }
         if (index < entry_limit && strlen(entry.path) < sizeof(folder.value)) {
             char label[sizeof(folder.value) + 1];
             snprintf(label, sizeof(label), "%s%s", file_window_basename(entry.path), entry.directory ? "/" : "");

@@ -56,6 +56,9 @@ void zevice_click_system(iter* it) {
         }
         if (click_type == 1) {
             clicked->value = zox_valid(target->value) ? target->value : 0;
+            if (zox_has(e, ZevicePointer)) {
+                zox_add(e, Dirty);
+            }
             on_element_pressed(world, player, clicked->value);
             // Drag
             if (zox_valid(target->value) && zox_has(target->value, Dragable)) {

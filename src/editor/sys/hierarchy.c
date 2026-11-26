@@ -55,7 +55,41 @@ void get_hierarchy_rows(
     }
 }
 
-// Rebuilds the dirty list after spawn or a fold change, keeping the scroll position.
+// does e match a search: its label (name), or one of its ids' names (tag)
+static byte hierarchy_search_match(ecs* world, entity e, const char* search, byte type) {
+    if (type == window_search_tag) {
+        const int ids = zox_get_ids_count(world, e);
+        for (int i = 0; i < ids; i++) {
+            if (window_search_match(zox_get_name(zox_get_id_at(world, e, i)), search)) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+    char label[hierarchy_max_line_characters];
+    get_editor_entity_label(world, e, label, sizeof(label));
+    return window_search_match(label, search);
+}
+
+// a search lists every matching entity under e (folds ignored), flat, up to hierarchy_max_elements
+static void get_hierarchy_search_rows(ecs* world, entity e, const char* search, byte type,
+    HierarchyRow* rows, int* count)
+{
+    if (*count >= hierarchy_max_elements || !hierarchy_row_entity(world, e)) {
+        return;
+    }
+    if (hierarchy_search_match(world, e, search, type)) {
+        rows[(*count)++] = (HierarchyRow) { .target = e };
+    }
+    iter it2 = zox_children(world, e);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            get_hierarchy_search_rows(world, it2.entities[j], search, type, rows, count);
+        }
+    }
+}
+
+// Rebuilds the dirty list after spawn, a fold change or a search, keeping the scroll position.
 void hierarchy_spawn_event(iter* it) {
     const ClickEvent on_click = (ClickEvent) { &button_event_clicked_hierarchy };
     zox_sys_world();
@@ -73,7 +107,13 @@ void hierarchy_spawn_event(iter* it) {
         clear_editor_list(world, list);
         HierarchyRow rows[hierarchy_max_elements];
         int count = 0;
-        get_hierarchy_rows(world, target, 0, unfolded, rows, &count);
+        char search[input_field_max_length + 2];
+        byte search_type;
+        if (window_search_get(world, window, search, sizeof(search), &search_type) && search[0]) {
+            get_hierarchy_search_rows(world, target, search, search_type, rows, &count);
+        } else {
+            get_hierarchy_rows(world, target, 0, unfolded, rows, &count);
+        }
         if (count >= hierarchy_max_elements) {
             zox_logw("Hierarchy of [%s] cut off at [%i] entities", zox_getn(target), hierarchy_max_elements);
         }

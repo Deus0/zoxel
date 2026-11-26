@@ -9,7 +9,9 @@ static void window_dock_layout(ecs* world, entity window, int2 position, int2 si
     const int2 header_size = { size.x, zox_getv(header, LayoutSize).y };
     const entity footer = zox_get_child_by_id(world, window, zox_id(WindowFooter));
     const int footer_height = footer ? zox_getv(footer, LayoutSize).y : 0;
-    const int2 body_size = { size.x, int_max(1, size.y - header_size.y - footer_height) };
+    const entity search = window_search_bar_shown(world, window);
+    const int search_height = search ? zox_getv(search, LayoutSize).y : 0;
+    const int2 body_size = { size.x, int_max(1, size.y - header_size.y - footer_height - search_height) };
     if (!int2_equals(zox_getv(window, LayoutPosition), position)) {
         zox_setv(window, LayoutPosition, position);
     }
@@ -28,6 +30,11 @@ static void window_dock_layout(ecs* world, entity window, int2 position, int2 si
         return;
     }
     zox_setv(header, LayoutSize, header_size);
+    if (search) {
+        zox_setv(search, LayoutSize, ((int2) { size.x, search_height }));
+        zox_setv(search, LayoutPosition, ((int2) { 0, -header_size.y - search_height / 2 }));
+        zox_add(search, LayoutSizeDirty);
+    }
     zox_setv(body, LayoutSize, body_size);
     zox_setv(body, LayoutPosition, ((int2) { 0, footer_height + body_size.y / 2 }));
     zox_add(window, LayoutSizeDirty);
