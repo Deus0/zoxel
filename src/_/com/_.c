@@ -46,6 +46,8 @@ zoxc_byte(ComponentType);
 // Measurements
 zoxc_byte(Radius);
 zoxc_byte(Height);
+zoxc_float(RadiusFloat);
+zoxc_float(HeightFloat);
 zoxc_float2(Size2);
 zoxc_float3(Size3);
 zoxc_int2(PixelSize);
@@ -111,6 +113,8 @@ void zox_components_core(ecs* world) {
     // Measurements
     zoxd_byte(Radius);
     zoxd_byte(Height);
+    zoxd_float(RadiusFloat);
+    zoxd_float(HeightFloat);
     zoxd_float2(Size2);
     zoxd_float3(Size3);
     zoxd_int2(PixelSize);

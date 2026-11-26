@@ -25,16 +25,8 @@ entity spawn_prefab_character3(ecs *world) {
     // name
     zox_setv(e, ZoxName, 0);
     // zox_setv(e, GenerateName, 1);
-    // In Terrain
-    zox_add(e, LinkChunk);
-    zox_setv(e, ChunkPosition, int3_chaos);
-    zox_setv(e, BlockPosition, int3_zero);
+    // its voxel terrain parts are added by game code (prefab_characters3_add_voxels)
     zox_setv(e, Position3DBounds, float6_zero);
-    // Block Inside
-    zox_setv(e, InsideBlock, 0);
-    zox_setv(e, InsideBlockPosition, int3_zero);
-    zox_setv(e, InsideBlockTime, 0);
-    zox_setv(e, InsideBlockLast, 0);
     // Vox Mesh
     zox_setv(e, BlockScale, 1);
     // animation
@@ -51,7 +43,6 @@ entity spawn_prefab_character3(ecs *world) {
     zox_setv(e, Omega3D, float3_zero);
     zox_setv(e, Alpha3D, float3_zero);
     zox_setv(e, Gravity3D, zox_default_gravity);
-    zox_add(e, TerrainGravity);     // pulled by the terrain's gravity field (src/terrains/voxel/gravity)
     // Bounds
     zox_setv(e, Bounds3D, float3_single(0.5f));
     // zox_setv(e, DisableMovement, 0);
@@ -64,9 +55,6 @@ entity spawn_prefab_character3(ecs *world) {
     zox_setv(e, LandState, 0);
     zox_setv(e, Jump, 0);
     // Triggers
-    zox_setv(e, RaycastVoxelData, 0);
-    zox_setv(e, RaycastType, zox_raycast_type_select);
-    zox_setv(e, RaycastRange, 1.5f);
     zox_setv(e, TriggerActionA, 0);
     // Debug
     // prefab_add_cube_lines(world, e, color_white, 0);

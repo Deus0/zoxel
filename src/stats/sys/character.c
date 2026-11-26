@@ -17,6 +17,10 @@ void log_realm_invalid_stats(ecs* world, entity realm) {
             states += zox_has(stat, StatState) ? 1 : 0;
         }
     }
+    // a generated realm without any stats: its game gives none (zeland), its characters go without
+    if (!stats && !(zox_has(realm, GenerateRealm) && zox_getv(realm, GenerateRealm))) {
+        return;
+    }
     zox_loge("the realm [%s] has invalid stats: [%i] children, [%i] stats, soul [%i] health [%i] states [%i] "
         "(wants a soul, a health and two more states), generating [%i]", zox_get_name(realm), children, stats, soul,
         health, states, zox_has(realm, GenerateRealm) ? zox_getv(realm, GenerateRealm) : -1);

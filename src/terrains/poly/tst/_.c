@@ -71,8 +71,22 @@ static void zox_tst_poly_heights_check(ecs* world) {
 
 #include "mesh.c"
 #include "views.c"
+#include "capsule_maths.c"
+#include "capsule_motion.c"
 
 void zox_tsts_poly_terrains(void) {
+    zox_tst_add("capsule_maths", zox_tst_poly_heights_ready, zox_tst_capsule_maths_check, 30);
+    zox_tst_set_setup("capsule_maths", NULL, 1);
+    zox_tst_add_physics("poly_land", zox_tst_poly_land_ready, zox_tst_poly_land_check, 30);
+    zox_tst_set_setup("poly_land", NULL, 1);
+    zox_tst_set_setup("poly_land_10fps", zox_tst_physics_10fps, 1);
+    zox_tst_set_setup("poly_land_30fps", zox_tst_physics_30fps, 1);
+    zox_tst_add("poly_slope", zox_tst_poly_slope_ready, zox_tst_poly_slope_check, 30);
+    zox_tst_set_setup("poly_slope", NULL, 1);
+    zox_tst_add_physics("poly_walk", zox_tst_poly_walk_ready, zox_tst_poly_walk_check, 30);
+    zox_tst_set_setup("poly_walk", NULL, 1);
+    zox_tst_set_setup("poly_walk_10fps", zox_tst_physics_10fps, 1);
+    zox_tst_set_setup("poly_walk_30fps", zox_tst_physics_30fps, 1);
     zox_tst_add("poly_heights", zox_tst_poly_heights_ready, zox_tst_poly_heights_check, 30);
     zox_tst_set_setup("poly_heights", NULL, 1);
     zox_tst_add("poly_mesh", zox_tst_poly_mesh_ready, zox_tst_poly_mesh_check, 30);

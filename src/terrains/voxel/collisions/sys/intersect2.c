@@ -496,9 +496,12 @@ void terrain_collision_system(iter* it) {
         zox_sys_o(Velocity3D, velocity);
         zox_sys_o(Grounded, grounded);
         entity terrain = zox_get_link(world, e, TerrainLink);
-        if (!zox_valid(terrain) || !zox_has(terrain, ChunkLinks) || !zox_has(terrain, BlockScale)) {
+        if (!zox_valid(terrain)) {
             zox_logw("Terrain Invalid");
-            continue; // these shouldn't be here
+            continue;
+        }
+        if (!zox_has(terrain, ChunkLinks) || !zox_has(terrain, BlockScale)) {
+            continue;
         }
         entity realm = zox_get_link(world, terrain, RealmLink);
         if (!zox_valid(realm) || !zox_has(realm, BlockLinks)) {

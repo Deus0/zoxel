@@ -23,7 +23,10 @@ void character_dialogue_system(iter* it) {
         const uint length = zox_get_children_by_id(world, realm, trees, capacity,
             is_give_quest ? zox_id(QuestDialogue) : zox_id(Greetings));
         if (!length) {
-            zox_loge("No dialogue found on realm [%s]", zox_getn(realm));
+            // a realm without any dialogues: its game gives none (zeland), its characters go without
+            if (zox_get_child_by_id(world, realm, zox_id(Greetings)) || zox_get_child_by_id(world, realm, zox_id(QuestDialogue))) {
+                zox_loge("No dialogue found on realm [%s]", zox_getn(realm));
+            }
             continue;
         }
         const entity tree = trees[(uint64_t) zox_getv(e, Seed) % length];

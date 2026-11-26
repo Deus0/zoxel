@@ -17,6 +17,9 @@ entity spawn_poly_terrain(ecs* world, entity parent, lint seed) {
     dispose_PolyHeights(&heights);
     if (parent) {
         zox_set_parent(world, e, parent);
+        if (zox_has(parent, ClockTime)) {
+            zox_link(world, e, ClockLink, parent);
+        }
     }
     zox_add(e, Dirty);
     return e;

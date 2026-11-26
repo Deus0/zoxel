@@ -75,6 +75,11 @@ How it runs:
 
 Later, not now: capsule against capsule (npcs), against boxes, voxel terrains with capsules.
 
+Later: a voxel terrain collider entity, a child of the body like the capsule, holding its voxel parts (chunk
+position, the block it's in, voxel raycasts, the gravity field) instead of the character prefab and
+`prefab_characters3_add_voxels`. Bodies stay generic and gain a terrain's parts by the collider spawned on them; tests
+spawn the collider they need, self contained, not relying on game code having added parts to every character.
+
 ### Zeland
 - `gam/zeland`, like `gam/zixel`: its `_.c` sets `game_name`, sky colours, its events in `eve/`.
 - A game mode, `zox_game_mode_poly`: `game_state_terrain` spawns a poly terrain for it, not the voxel one, and the
@@ -112,15 +117,20 @@ kept current as each step lands, not a step of their own).
    - the game's `GameState` observer spawns it in the realm at `zox_game_terrain_spawn` (poly games only)
    - tst `poly_views`: 4 screenshots round the island; `bash bsh/tools/poly_terrain.sh` joins them in
      tst/poly/views.png
-5. **poly terrain physics:**
-   - `Capsule`, `RadiusFloat`, `HeightFloat`, the closest point functions in `terrains/poly/collisions`
-   - `ColliderLink`, the body system dispatching by its terrain link, voxel collisions skipping other kinds
-   - the character off voxels: the voxel components above move out of `spawn_prefab_character3` into
-     `prefab_characters3_add_voxels`, called by gam/zoxel; gam/zeland gives its characters the capsule child instead
-     of the AABB; to check as it starts: what the body's generation still needs from the realm (parts, colours)
-   - tests: `capsule_maths` (pure), `poly_land` (a capsule dropped rests at height + radius, `Grounded`),
-     `poly_slope` (slides on a steep face, stands on a gentle one), `poly_walk` (pushed across hills, never under
-     the surface, no tunneling at speed); zoxel's character, terrain and collision tests pass as before
+5. [x] **poly terrain physics:**
+   - `Capsule` (collisions3), core `RadiusFloat` / `HeightFloat`, `ColliderLink` (a body to its capsule child);
+     `spawn_capsule_collider(world, body, radius, height, offset)` makes the child and the link
+   - `terrains/poly/collisions`: closest points (segment, triangle), `poly_capsule_push` over the cells under the
+     capsule; `poly_capsule_collision_system` (zoxp_physics) on bodies whose `TerrainLink` is a `PolyTerrain`:
+     3 push outs, the velocity into the face dropped, `Grounded` on slopes up to 45 degrees (static friction there,
+     steeper slides), swept in radius steps when a frame moves further, never under the surface
+   - the voxel `terrain_collision_system` skips bodies on another kind of terrain quietly (warns on an invalid one)
+   - the character off voxels: its voxel parts moved into `prefab_characters3_add_voxels` (characters3/pre), called
+     by gam/zoxel; the poly terrain is a clock (its realm's), so characters on it move by it
+   - a realm its game gives no stats or dialogues (zeland's) leaves its characters without them, quietly
+   - tests: `capsule_maths`, `poly_land` (and _10fps, _30fps), `poly_slope`, `poly_walk` (and _10fps, _30fps),
+     `poly_character` (a character3 lands on the island, no voxel parts, its clock the terrain's)
+   - regression, 20 zoxel tests round characters and collisions, before and after (see doc/tests.md for times)
 6. **third person camera:** the poly game mode, zeland's character on the terrain, a camera behind it. Test
    `zeland_walk`: plays, the character spawns on the ground and walks, the camera follows.
 7. **lit meshes:** `MeshNormals`, the lit material, gl and vulkan; the terrain moves to it (the baked light goes),

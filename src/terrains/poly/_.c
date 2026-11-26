@@ -17,6 +17,7 @@
 #include "pre/_.c"
 #include "ins/_.c"
 #include "eve/_.c"
+#include "collisions/_.c"
 #include "dbg/_.c"
 #ifdef zox_tests
 #include "tst/_.c"
@@ -25,6 +26,7 @@
 void import_poly_terrains(ecs* world) {
     zox_module(poly_terrains);
     zox_components_poly_terrains(world);
+    zox_systems_poly_collisions(world);
     add_hook_spawn_prefabs(spawn_prefabs_poly_terrains);
     add_hook_spawn_prefabs(zox_events_poly_terrains);
     add_hook_terminal_command(process_arguments_poly_terrains);

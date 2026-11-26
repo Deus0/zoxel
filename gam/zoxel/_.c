@@ -17,6 +17,7 @@ void import_zoxgame(ecs* world) {
     // Initial Zoxel Settings
     initialize_zoxel_settings(world);
     add_hook_spawn_prefabs(zox_events_zoxel);
+    add_hook_spawn_prefabs(prefab_characters3_add_voxels);  // its characters walk voxel terrain
 #ifdef zox_tests
     zox_tsts_zoxel(world);
 #endif

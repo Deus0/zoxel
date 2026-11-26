@@ -1,3 +1,5 @@
+zox_tag(Capsule);
+zox_tag(ColliderLink);
 zox_tag(SphereCollider);
 zoxc_byte(Collision);       // a flag for sides collided with
 zoxc_float3(CollisionDistance);
@@ -6,6 +8,8 @@ zoxc_float(SphereRadius);
 zoxc_function(OverlapEvent, byte, ecs*, entity, entity);
 
 void zox_components_collisions3(ecs* world) {
+    zoxd_tag(Capsule);
+    zoxd_nf_link(ColliderLink);
     zoxd_tag(SphereCollider);
     zoxd_byte(Collision);
     zoxd_float(BasicCollider);
