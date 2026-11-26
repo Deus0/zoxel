@@ -11,6 +11,18 @@ static int zox_tst_hierarchy_count(ecs* world, entity window) {
     if (!list || zox_has(list, Dirty)) {
         return 0;
     }
+    // the slots fill in observers after the walk, and respawned ones show a frame before they're bound: wait until
+    //  every shown slot has its entity
+    iter slots = zox_children(world, list);
+    while (zox_children_next(slots)) {
+        for (int i = 0; i < slots.count; i++) {
+            const entity slot = slots.entities[i];
+            if (zox_has(slot, Dirty) || (!zox_getv(slot, RenderDisabled) && !zox_get_link(world, slot, RowTargetLink))) {
+                zox_children_end(slots);
+                return 0;
+            }
+        }
+    }
     HierarchyWalk walk = hierarchy_walk_begin(world, window, list);
     hierarchy_walk(world, &walk);
     return walk.index;
@@ -28,7 +40,9 @@ static entity zox_tst_hierarchy_fold_arrows(ecs* world) {
             const entity arrow = zox_get_child_by_id(world, row, zox_id(FoldArrow));
             const byte has_children = target == zox_tst_hierarchy_fold_root || target == zox_tst_hierarchy_fold_parent;
             zox_tst_check(arrow && zox_getv(arrow, RenderDisabled) == !has_children,
-                "wrong arrow visibility on [%s]", zox_getn(target));
+                "wrong arrow visibility on [%s] slot [%u] slot hidden [%i] arrow hidden [%i] stage [%i]", zox_getn(target),
+                zox_getv(row, ChildIndex), zox_getv(row, RenderDisabled), arrow ? zox_getv(arrow, RenderDisabled) : -1,
+                zox_tst_hierarchy_fold_stage);
             zox_tst_check(zox_getv(row, ClickEvent) == button_event_clicked_hierarchy,
                 "row [%s] lost its inspect callback", zox_getn(target));
             if (arrow) {

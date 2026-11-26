@@ -26,8 +26,8 @@ double time_update_debug_label_system_rate = 5;
 #include "fun/_.c"
 #include "ins/_.c"
 #include "sys/_.c"
-#include "eve/_.c"
 #include "dbg/_.c"
+#include "eve/_.c"
 #ifdef zox_tests
 #include "tst/_.c"
 #endif

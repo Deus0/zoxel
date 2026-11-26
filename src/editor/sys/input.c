@@ -16,8 +16,7 @@ void editor_input_system(iter* it) {
         }
         const Keyboard* keyboard = zox_get(keyboard_device, Keyboard);
         if (keyboard->x.pressed_this_frame) {
-            const entity profiler = zox_get_child_by_id(world, canvas, zox_id(Profiler));
-            canvas_toggle_ui(world, canvas, profiler, spawn_profiler_canvas);
+            toggle_profiler(world, canvas);
         } else if (keyboard->c.pressed_this_frame) {
             const entity label = zox_get_child_by_id(world, canvas, zox_id(GameDebugLabel));
             canvas_toggle_ui(world, canvas, label, spawn_game_debug_label);

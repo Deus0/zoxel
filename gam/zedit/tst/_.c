@@ -1,11 +1,12 @@
-// tst: zedit_boot, zedit boots into the editor's hierarchy, inspector and files (eve/, on zox_game_boot), no main menu
+// tst: zedit_boot, zedit boots into the editor's menubar, hierarchy, inspector and files (eve/, on zox_game_boot), no main menu
 //  - run: zox_tst_game=zedit bash bsh/tst.sh zedit_boot
 double zox_tst_zb_time = 0;
 
 byte zox_tst_zedit_boot_ready(ecs* world) {
-    zox_tst_waiting = "the hierarchy, inspector and files";
+    zox_tst_waiting = "the menubar, hierarchy, inspector and files";
     const entity canvas = zox_get_link(world, zox_players[0], CanvasLink);
     if (!zox_valid(canvas) ||
+        !zox_get_child_by_id(world, canvas, zox_id(Menubar)) ||
         !zox_valid(zox_get_child_by_id(world, canvas, zox_id(HierarchyUI))) ||
         !get_canvas_inspector(world, canvas) ||
         !zox_get_child_by_id(world, canvas, zox_id(FileWindowUI)))
@@ -26,6 +27,7 @@ void zox_tst_zedit_boot_check(ecs* world) {
     const entity player = zox_players[0];
     const entity canvas = zox_get_link(world, player, CanvasLink);
     const entity4 docks = docks_find(world, canvas);
+    zox_tst_check(docks.w && zox_has(docks.w, Menubar), "the menubar did not boot docked");
     zox_tst_check(docks.x && docks.x == zox_get_child_by_id(world, canvas, zox_id(HierarchyUI)) &&
         docks.y && docks.y == get_canvas_inspector(world, canvas) &&
         docks.z && docks.z == zox_get_child_by_id(world, canvas, zox_id(FileWindowUI)), "editor windows did not boot docked");
@@ -34,7 +36,7 @@ void zox_tst_zedit_boot_check(ecs* world) {
         const int2 canvas_size = zox_getv(canvas, LayoutSize);
         const int2 origin = { zox_getv(docks.x, LayoutSize).x, zox_getv(docks.z, LayoutSize).y };
         const int2 size = { canvas_size.x - origin.x - zox_getv(docks.y, LayoutSize).x,
-                            canvas_size.y - origin.y };
+                            canvas_size.y - origin.y - zox_getv(docks.w, LayoutSize).y };
         const int2 position = int2_sub(int2_add(origin, int2_half(size)), int2_half(canvas_size));
         zox_tst_check(texture && int2_equals(zox_getv(texture, LayoutSize), size) &&
             int2_equals(zox_getv(texture, LayoutPosition), position), "game texture did not fill the docked viewport");

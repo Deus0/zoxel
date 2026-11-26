@@ -16,6 +16,7 @@ entity spawn_profiler(
         zox_loge("Invalid Canvas");
         return 0;
     }
+    ensure_editor_menubar(world, canvas);
     // NOTE: Uses PlotMin and PlotMax
     entity curve = frame_times_samples;
     // entity curve = fps_curve; // frame_times_samples;
@@ -36,7 +37,7 @@ entity spawn_profiler(
         anchor,
         header_font_size,
         header_padding,
-        NULL);
+        button_event_close_window);
     entity e = e2.x;
     entity header = e2.y;
     entity body = e2.z;
@@ -101,4 +102,16 @@ entity spawn_profiler_canvas(ecs* world, entity canvas) {
         position,
         size,
         anchor);
+}
+
+static void toggle_profiler(ecs* world, entity canvas) {
+    if (!zox_valid(canvas)) {
+        return;
+    }
+    const entity profiler = zox_get_child_by_id(world, canvas, zox_id(Profiler));
+    if (profiler) {
+        zox_delete(profiler);
+    } else {
+        spawn_profiler_canvas(world, canvas);
+    }
 }

@@ -90,7 +90,9 @@ static void virtual_list_slot_event(iter* it) {
     for (int i = 0; i < it->count; i++) {
         const entity slot = it->entities[i];
         const byte hidden = !zox_get_link(world, slot, RowTargetLink);
-        if (hidden != zox_getv(slot, RenderDisabled)) {
+        // an empty slot hides all of it, children spawned since included (a respawned slot's fold arrow); a shown
+        //  slot only when it was hidden (its owner shows or hides its own children after, i.e. the fold arrow)
+        if (hidden || zox_getv(slot, RenderDisabled)) {
             set_children_render_disabled(world, slot, hidden);
         }
     }

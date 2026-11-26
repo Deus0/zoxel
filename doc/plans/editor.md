@@ -22,6 +22,7 @@ Order: inspection flows first, perfect them, then editing, then the engine wide 
 ### 2. Windows and docks
 - [ ] Resizable windows (corner drag)
 - [x] UI docks: hierarchy left, inspector right, files along the bottom, and the game viewport in the remaining space
+- [x] Menubar: File, Edit, Window and Realm menus docked above the editor
 - [ ] Detachable windows: a window dragged out becomes its own SDL window
 
 ### 3. Editing

@@ -34,7 +34,7 @@ static void click_fold_arrow(ecs* world, ClickEventData event) {
 entity spawn_fold_arrow(ecs* world, entity canvas, entity row, entity owner, entity target, byte unfolded, byte size, byte layer) {
     const entity arrow = spawn_button_icon(world, prefab_clickable, fold_arrow_textures[!!unfolded], canvas, row,
         (int2) { size / 2 + 2, 0 }, int2_single(size), (float2) { 0, 0.5f }, layer,
-        empty_color, empty_color, 0, (ClickEvent) { click_fold_arrow }, 4);
+        empty_color, empty_color, !target, (ClickEvent) { click_fold_arrow }, 4);  // nothing to fold: hidden
     zox_add(arrow, FoldArrow);
     zox_set_link(world, arrow, RowTargetLink, target);
     zox_set_link(world, arrow, FoldOwnerLink, owner);

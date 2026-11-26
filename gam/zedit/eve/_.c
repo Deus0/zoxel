@@ -9,6 +9,7 @@ void game_state_zedit(iter* it) {
             const entity player = zox_players[0];
             const entity canvas = zox_get_link(world, player, CanvasLink);
             if (zox_valid(canvas)) {
+                ensure_editor_menubar(world, canvas);
                 spawn_inspector(world, canvas, player, canvas);
                 spawn_window_hierarchy(world, canvas, player, 0);   // every root
                 spawn_window_files(world, canvas, player, NULL);

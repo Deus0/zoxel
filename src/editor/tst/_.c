@@ -6,7 +6,7 @@
 //  - inspect_entity retargets it: the old rows are replaced by the new entity's rows
 //  - closing the inspector, then inspect_entity, doesn't touch the deleted window (no errors)
 //  - fps display (z) and debug label toggle on and off
-//  - with every tool closed, the canvas is back to the entities it started with (no leaks)
+//  - with every tool closed, only the persistent menubar remains from the editor
 //  - run: bash bsh/tst.sh editor
 #define zox_tst_editor_settle_frames 10
 int zox_tst_editor_stage = 0;
@@ -186,7 +186,8 @@ byte zox_tst_editor_ready(ecs* world) {
             {
                 return 0;
             }
-            const int entities = zox_tst_count_descendants(world, canvas);
+            const entity bar = zox_get_child_by_id(world, canvas, zox_id(Menubar));
+            const int entities = zox_tst_count_descendants(world, canvas) - 1 - zox_tst_count_descendants(world, bar);
             zox_tst_check(entities == zox_tst_editor_baseline,
                 "with the editor closed the canvas has [%i] entities, it started with [%i]", entities, zox_tst_editor_baseline);
             return 1;
@@ -205,8 +206,14 @@ void zox_tst_editor_check(ecs* world) {
 #include "search.c"
 
 #include "hierarchy_big.c"
+#include "menubar.c"
+#include "realm.c"
 
 void zox_tsts_editor() {
+    zox_tst_add("editor_menubar", zox_tst_editor_menubar_ready, zox_tst_ui_fixture_check, 20);
+    zox_tst_set_setup("editor_menubar", NULL, 1);
+    zox_tst_add("editor_realm", zox_tst_editor_realm_ready, zox_tst_ui_fixture_check, 60);
+    zox_tst_set_setup("editor_realm", NULL, 1);
     zox_tst_add("hierarchy_big", zox_tst_hierarchy_big_ready, zox_tst_hierarchy_search_check, 20);
     zox_tst_set_setup("hierarchy_big", NULL, 1);
     zox_tst_add("editor", zox_tst_editor_ready, zox_tst_editor_check, 60);

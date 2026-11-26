@@ -1,3 +1,4 @@
+#include "menubar.c"
 #include "window.c"
 #include "inspector.c"
 #include "hierarchy.c"

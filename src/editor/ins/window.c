@@ -7,6 +7,7 @@ entity4 spawn_editor_window(
     int2 size,
     int font_size)
 {
+    ensure_editor_menubar(world, canvas);
     const int header_font_size = 18;
     const byte scrollbar_width = 6;
     entity4 e4 = spawn_window_list_at(

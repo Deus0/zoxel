@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-26
+-x Editor menubar, docked on top: File (Open, Quit), Edit (disabled for now), Window (the windows, ticked when
+  open), Realm (spawn and dispose the realm, the hierarchy shows it; Play, Pause, Stop disabled) (tsts
+  editor_menubar, editor_realm); fold arrows spawn hidden with nothing to fold
 -x Item lists (elements2): a button with a list of item entities, spawned once; the dropdown selects one
   (DropdownSelectedLink, no option array), a menu runs one, disabled items and ticks; a menubar of menus (tsts
   dropdown, menu, menubar)
