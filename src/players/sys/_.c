@@ -3,13 +3,12 @@
 #include "event.c"
 
 void zox_systems_players(ecs* world) {
-    zox_system(
-        player_game_state_system,
-        zoxp_update,
-        [in] games.GameStateDirty,
+    zox_on_add(
+        player_game_state_event,
         [in] games.GameState,
         [in] games.LastGameState,
-        [none] games.Game
+        [none] games.Game,
+        [none] core.Dirty
     );
     zox_system(
         player_state_system,

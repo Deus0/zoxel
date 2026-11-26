@@ -6,28 +6,28 @@ void game_state_system(iter* it) {
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
-    zox_sys_in(GameStateEvent);
     zox_sys_out(GameState);
     zox_sys_out(GameStateTarget);
     zox_sys_out(LastGameState);
-    zox_sys_out(GameStateDirty);
+    zox_sys_out(GameStateWait);
     zox_sys_out(GameStateTime);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
-        zox_sys_i(GameStateEvent, event);
         zox_sys_o(GameState, state);
         zox_sys_o(GameStateTarget, target);
         zox_sys_o(LastGameState, last);
-        zox_sys_o(GameStateDirty, dirty);
+        zox_sys_o(GameStateWait, wait);
         zox_sys_o(GameStateTime, time);
-        if (dirty->value || // != zox_dirty_active ||
-            target->value == state->value
-        ) {
+        if (wait->value) {
+            wait->value--;
+            continue;
+        }
+        if (target->value == state->value) {
             continue;
         }
         entity realm = zox_get_link(world, e, RealmLink);
         // the_clean deletes the realm, so returning to none (the main menu) doesn't need one
-        if (!zox_valid(realm) && target->value != zox_game_none) {
+        if (!zox_valid(realm) && target->value != zox_game_none && target->value != zox_game_boot) {
             zox_loge("[game_state_system] Invalid [realm]");
             continue;
         }
@@ -74,22 +74,13 @@ void game_state_system(iter* it) {
         byte new_state = target->value;
         last->value = state->value;
         state->value = new_state;
-        dirty->value = zox_dirty_trigger;
+        wait->value = zox_game_state_wait;
         time->value = zox_current_time;
-        for (int j = 0; j < event->count; j++) {
-            if (event->value[j].fun == NULL) {
-                zox_loge("Game [%s] StateEvent Null [%i]",
-                    zox_sys_e_name,
-                    j);
-                continue;
-            }
-            event->value[j].fun(
-                world,
-                e,
-                state->value);
-        }
+        zox_add(e, Dirty);    // observers react to the new state
         // Start Loading Realm after faded
-        if (state->value == zox_game_load_start) {
+        if (state->value == zox_game_boot) {
+            target->value = zox_game_none;
+        } else if (state->value == zox_game_load_start) {
             target->value = zox_game_load_fading;
         } else if (state->value == zox_game_load_fading) {
             target->value = zox_game_load_faded;

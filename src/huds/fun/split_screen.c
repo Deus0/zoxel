@@ -121,7 +121,7 @@ void game_state_split_screen(
     }
     for (int i = 1; i < players_playing; i++) {
         if (!zox_valid(zox_get_link(world, zox_players[i], CanvasLink))) {
-            spawn_player_screen(world, app, zox_players[i], i, players_playing, 0);
+            spawn_player_screen(world, app, zox_players[i], i, players_playing);
         }
     }
     layout_player_screens(world, app, players_playing);

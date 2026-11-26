@@ -3,10 +3,8 @@ zox_tag(GameLink);
 zoxc_byte(GameState);
 zoxc_byte(LastGameState);
 zoxc_byte(GameStateTarget);
-zoxc_state(GameStateDirty);
+zoxc_byte(GameStateWait);   // frames left before the next transition (game_state_system)
 zoxc_double(GameStateTime);
-// Passes out game + state
-zoxc_listener(GameStateEvent, 16, ecs*, entity, byte);
 
 entity get_linked_game(ecs* world, entity e) {
     return zox_get_link(world, e, GameLink);
@@ -22,7 +20,6 @@ void zox_components_games(ecs* world) {
     zoxd_byte(GameState);
     zoxd_byte(LastGameState);
     zoxd_byte(GameStateTarget);
-    zoxd_state(GameStateDirty);
+    zoxd_byte(GameStateWait);
     zoxd_double(GameStateTime);
-    zoxd(GameStateEvent);
 }

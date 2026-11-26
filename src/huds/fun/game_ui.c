@@ -4,14 +4,14 @@ extern void autostart_new_realm(ecs*, entity);
 
 // spawns a player's screen: its game and ui cameras, canvas, mouse, fader and render texture
 //  - index of count players, side by side
-//  - the first player's at boot (with the start menu), the others' as a game starts (split screen, game_state_split_screen)
+//  - the first player's at boot (its menu is the game's, zox_game_boot), the others' as a game starts (split screen,
+//    game_state_split_screen)
 void spawn_player_screen(
     ecs *world,
     entity app,
     entity player,
     int i,
-    int count,
-    byte is_boot)
+    int count)
 {
     byte dbg_log = 0;
     float3 camera_position = main_menu_camera_position;
@@ -152,18 +152,7 @@ void spawn_player_screen(
                 canvas,
                 vp_size);
         }
-        // main menu ui
-        // NOTE: tests that check the menus (zox_tst_menus) ignore --autostart
-        if (!is_boot) {
-            // in game: its game ui spawns with its player state
-        } else if (zox_autostart && !zox_tst_menus) {
-            autostart_new_realm(world, player);
-        } else {
-            spawn_menu_start(
-                world,
-                player,
-                canvas);
-        }
+        // the boot's menu is the game's: on zox_game_boot (gam/*/eve, spawn_boot_menu)
         // spawns a render texture ui and links to camera
         if (!zox_xr_active && !zox_disable_post_processing) {
             // each screen its own material: the camera's vignette, blur, tint and lids are uniforms on it (one shared,
@@ -213,5 +202,24 @@ void on_boot_game_ui(
         return;
     }
     set_main_cameras(1);
-    spawn_player_screen(world, app, zox_players[0], 0, 1, 1);
+    spawn_player_screen(world, app, zox_players[0], 0, 1);
+    // the screen is up: games spawn their boot uis on this state (gam/*/eve)
+    if (zox_valid(local_game)) {
+        zox_setv(local_game, GameStateTarget, zox_game_boot);
+    }
+}
+
+// premade for games, on zox_game_boot: the first player's start menu, or a new realm with --autostart
+//  - tests that check the menus (zox_tst_menus) ignore --autostart
+void spawn_boot_menu(ecs* world) {
+    const entity player = zox_players[0];
+    const entity canvas = zox_get_link(world, player, CanvasLink);
+    if (!zox_valid(canvas)) {
+        return;
+    }
+    if (zox_autostart && !zox_tst_menus) {
+        autostart_new_realm(world, player);
+    } else {
+        spawn_menu_start(world, player, canvas);
+    }
 }

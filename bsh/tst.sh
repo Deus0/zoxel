@@ -21,6 +21,7 @@
 # Tests are added with zox_tst_add in a module's tst folder (see src/_/tst/_.c)
 # Safety: low priority, memory capped and killed on timeout, so a bad run can't freeze the pc
 #   override with zox_tst_timeout=<seconds> zox_tst_memory=<size> zox_tst_log_max=<bytes>
+#   zox_tst_game=<game> builds and tests that game of gam/ (default zoxel), i.e. zox_tst_game=zedit
 #   also killed if the machine's MemAvailable drops below zox_tst_mem_floor (KB, default 1GB of the 8GB board),
 #   since gpu driver memory isn't under the cgroup cap; trace in tst/<name>.mem
 # Fail fast: killed once its log passes zox_tst_log_max (log spam), and the game itself
@@ -174,7 +175,7 @@ release_args=()
 [[ ${vulkan} == "1" ]] && release_name="tst_release_vulkan" && release_args=(--vulkan)
 if [[ ${build} == "1" && ${release} == "1" ]]; then
     echo "> building release, with the tests"
-    if ! (ulimit -v 4500000; zox_extra_dflags="-Dzox_tests" nice -n 19 bash bsh/build.sh zoxel --release --logs \
+    if ! (ulimit -v 4500000; zox_extra_dflags="-Dzox_tests" nice -n 19 bash bsh/build.sh "${zox_tst_game:-zoxel}" --release --logs \
         --out "${release_name}" "${release_args[@]}" > "${log_dir}/build.log" 2>&1); then
         grep -m 20 "error" "${log_dir}/build.log"
         echo "!! build failed, see [${log_dir#${root}/}/build.log]"
@@ -183,7 +184,7 @@ if [[ ${build} == "1" && ${release} == "1" ]]; then
 elif [[ ${build} == "1" ]]; then
     echo "> building debug"
     # cap the compiler too, it's a single big translation unit
-    if ! (ulimit -v 4500000; nice -n 19 bash bsh/build.sh zoxel --debug --logs "${out_args[@]}" > "${log_dir}/build.log" 2>&1); then
+    if ! (ulimit -v 4500000; nice -n 19 bash bsh/build.sh "${zox_tst_game:-zoxel}" --debug --logs "${out_args[@]}" > "${log_dir}/build.log" 2>&1); then
         grep -m 20 "error" "${log_dir}/build.log"
         echo "!! build failed, see [${log_dir#${root}/}/build.log]"
         exit 2

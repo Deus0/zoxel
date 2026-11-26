@@ -1,7 +1,9 @@
+#include "eve/_.c"
 
 void import_zoxgame(ecs* world) {
     zox_module(zoxgame);
     game_name = "zixel";
+    zox_events_zixel(world);
     zox_game_type = zox_game_mode_2D;
     zox_game_camera_mode = zox_camera_state_2D;
     menu_sky_color = (color_rgb) { 33, 33, 166 };

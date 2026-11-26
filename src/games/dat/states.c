@@ -1,4 +1,6 @@
 #define zox_game_none 0             // no game, in the main menu (at boot, and after the_clean)
+#define zox_game_boot 1             // once at boot, the first screen up: games spawn their menus (gam/*/eve), then none
+#define zox_game_state_wait 3       // frames between transitions: the players' state machines see each state
 #define zox_game_load_start 2
 #define zox_game_load_fading 3
 #define zox_game_load_faded 4

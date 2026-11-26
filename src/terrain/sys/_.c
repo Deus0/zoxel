@@ -110,8 +110,19 @@ void zox_systems_terrain(ecs *world) {
 #endif
 }
 
+// the game's state changed (its core Dirty): terrain spawns
+void game_state_terrain_event(iter* it) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(GameState);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(GameState, state);
+        game_state_terrain(world, e, state->value);
+    }
+}
+
 void zox_events_terrain(ecs *world) {
-    zox_muter(prefab_game, GameStateEvent, game_event);
-    add_to_GameStateEvent(game_event, game_state_terrain);
+    zox_on_add(game_state_terrain_event, [in] games.GameState, [none] games.Game, [none] core.Dirty);
 }
 

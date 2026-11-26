@@ -4,6 +4,9 @@ byte mrpenguin_mode = 0;
 #include "set/_.c"
 #include "sys/_.c"
 #include "eve/_.c"
+#ifdef zox_tests
+#include "tst/_.c"
+#endif
 
 void import_zoxgame(ecs* world) {
     zox_module(zoxgame);
@@ -14,4 +17,7 @@ void import_zoxgame(ecs* world) {
     // Initial Zoxel Settings
     initialize_zoxel_settings(world);
     add_hook_spawn_prefabs(zox_events_zoxel);
+#ifdef zox_tests
+    zox_tsts_zoxel(world);
+#endif
 }

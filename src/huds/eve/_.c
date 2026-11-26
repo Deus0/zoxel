@@ -11,12 +11,23 @@
 #include "new_game.c"
 #include "realm_load.c"
 
+// the game's state changed (its core Dirty): the end, load, split screen and pause uis
+void game_state_huds_event(iter* it) {
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(GameState);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(GameState, state);
+        game_state_end_huds(world, e, state->value);
+        game_state_load(world, e, state->value);
+        game_state_split_screen(world, e, state->value);
+        game_state_pause_menu(world, e, state->value);
+    }
+}
+
 void zox_events_huds(ecs* world) {
-    zox_muter(prefab_game, GameStateEvent, game_event);
-    add_to_GameStateEvent(game_event, game_state_end_huds);
-    add_to_GameStateEvent(game_event, game_state_load);
-    add_to_GameStateEvent(game_event, game_state_split_screen);
-    add_to_GameStateEvent(game_event, game_state_pause_menu);
+    zox_on_add(game_state_huds_event, [in] games.GameState, [none] games.Game, [none] core.Dirty);
     player_state_event_begin = player_ui_scale_begin;
     player_state_event_end = player_ui_scale_end;
     zox_muter(prefab_player, PlayerStateEvent, player_event);
