@@ -1378,6 +1378,7 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 - Add Terrain Depth to options - debug options
 
 # Editor
+- Editor play controls (doc/plans/editor.md): a play / pause toggle and a stop button
 - Shared ui textures: spawn_image clones its texture per image (clone_texture_data), so every fold arrow, icon and
   item image uploads its own copy. Let images link one texture instead (MeshTextureLink to a source with the
   TextureGPULink), without a per element lookup every frame in element_render_system. Measure gpu buffers and

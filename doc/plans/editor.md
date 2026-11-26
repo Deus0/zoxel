@@ -26,7 +26,8 @@ Order: inspection flows first, perfect them, then editing, then the engine wide 
 - [ ] Edit component values in the inspector (numbers, colours, bools)
 - [ ] Gizmos: selection outline, move and rotate handles, picking with raycasts
 - [ ] Scenes: how they work with procedural generation is open (save the seed and generators' settings, plus edits?)
-- [ ] Play and stop in `gam/zedit`
+- [ ] Play controls in `gam/zedit`: a play / pause toggle button (pauses the realm's clock, like the game's pause)
+  and a stop button (ends the play, back to the editor's scene), icon buttons at the top of the viewport
 
 ### 4. Engine
 - [ ] Better io: loading and saving resources and data, tested (doc/tech/saves.md)
