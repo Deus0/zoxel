@@ -1,4 +1,5 @@
 byte zox_game_camera_mode = 0;
+float orbit_distance = 6;          // how far an orbit camera starts from its target (its OrbitDistance), metres
 #ifdef zox_web
 byte viewport_downscale = 4;
 #else

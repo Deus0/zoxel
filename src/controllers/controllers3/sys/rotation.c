@@ -37,9 +37,8 @@ void player3_rotate_system(iter* it) {
         byte camera_mode = zox_valid(camera) ?
             zox_getv(camera, CameraState) :
             zox_camera_state_first_person;
-        if (camera_mode != zox_camera_state_first_person &&
-            camera_mode != zox_camera_state_third_person)
-        {
+        // third person's orbit camera turns by the mouse itself (orbit.c), the character faces where it walks
+        if (camera_mode != zox_camera_state_first_person) {
             continue;
         }
         float2 right_stick = float2_zero;

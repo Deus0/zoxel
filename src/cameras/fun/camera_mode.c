@@ -64,6 +64,8 @@ void set_camera_mode(ecs *world, entity e, byte mode) {
     entity target = 0;
     if (old_camera_follow_mode == zox_camera_follow_mode_attach) {
         target = zox_get_parent(world, e); // zox_getv(e, ParentLink);
+    } else if (old_camera_follow_mode == zox_camera_follow_mode_orbit) {
+        target = zox_get_link(world, e, CameraTarget);
     } else {
         target = zox_get_link(world, e, CameraFollowLink);
     }
@@ -72,6 +74,8 @@ void set_camera_mode(ecs *world, entity e, byte mode) {
         if (old_camera_follow_mode == zox_camera_follow_mode_attach) {
             // zox_set(e, ParentLink, { 0 });
             zox_set_parent(world, e, 0);
+        } else if (old_camera_follow_mode == zox_camera_follow_mode_orbit) {
+            zox_set_link(world, e, CameraTarget, 0);
         } else {
             zox_set_link(world, e, CameraFollowLink, 0);
         }
@@ -81,6 +85,9 @@ void set_camera_mode(ecs *world, entity e, byte mode) {
 
         } else if (camera_follow_mode == zox_camera_follow_mode_follow_xz) {
             zox_set_link(world, e, CameraFollowLink, target);
+        } else if (camera_follow_mode == zox_camera_follow_mode_orbit) {
+            zox_set_link(world, e, CameraTarget, target);
+            zox_setv(e, OrbitDistance, orbit_distance);
         }
     }
     // set up local positions and rotations

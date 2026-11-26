@@ -15,6 +15,7 @@ zox_tag(Cylinder);
 #include "dat/_.c"
 #include "pre/_.c"
 #include "ins/_.c"
+#include "fun/capsule.c"
 #include "dbg/_.c"
 #include "lines/_.c"
 #ifdef zox_tests

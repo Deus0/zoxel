@@ -1,6 +1,7 @@
 // controller
 #include "movement.c"
 #include "rotation.c"
+#include "orbit.c"
 #include "jump.c"
 #include "auto_jump.c"
 #include "trigger.c"
@@ -29,6 +30,12 @@ void zox_systems_controllers3(ecs *world) {
         zoxp_update,
         [in] players.PlayerState,
         [in] inputs.DeviceMode,
+        [none] players.Player
+    );
+    zox_system(
+        orbit_camera_system,
+        zoxp_update,
+        [in] players.PlayerState,
         [none] players.Player
     );
     zox_system(

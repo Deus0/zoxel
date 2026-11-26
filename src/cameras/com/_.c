@@ -31,6 +31,7 @@ zox_tag(ViewportCamera);
 zox_tag(RenderCamera);
 zox_tag(RenderTexture);
 zox_tag(RenderTextureLink);    // camera -> the render texture it draws to
+zoxc_float(OrbitDistance);  // an orbit camera's distance from its CameraTarget, metres (controllers3/sys/orbit.c)
 // Properties
 zox_tag(CanRoam);
 zox_tag(Roaming);
@@ -67,6 +68,7 @@ void zox_components_cameras(ecs *world) {
     zoxd_tag(RenderCamera);
     zoxd_tag(RenderTexture);
     zoxd_nf_link(RenderTextureLink);
+    zoxd_float(OrbitDistance);
     // Filters
     zoxd_tag(CameraFilter);
     zoxd_nf_link(CameraRenderer);

@@ -16,7 +16,7 @@ void player_fly_system(iter* it) {
         if (!zox_valid(character) || !zox_has(character, Character3)) {
             continue;
         }
-        if (zox_has(character, DisableMovement)) {
+        if (zox_has(character, DisableMovement) || !zox_has(character, FlyMode)) {
             continue;
         }
         byte flying = zox_getv(character, FlyMode);

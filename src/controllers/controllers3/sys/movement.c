@@ -186,8 +186,10 @@ void player3d_move_system(iter* it) {
         float4 character_rotation = zox_getv(character, Rotation3D);
         const Velocity3D* velocity3D = zox_get(character, Velocity3D);
         zox_muter(character, Acceleration3D, acceleration);
+        // moves along the camera's facing, the character turned to it (the orbit camera is third person's)
         if (camera_mode == zox_camera_state_topdown ||
-            camera_mode == zox_camera_state_ortho)
+            camera_mode == zox_camera_state_ortho ||
+            camera_mode == zox_camera_state_third_person)
         {
             if (zox_valid(camera)) {
                 float4 camera_rotation = zox_getv(camera, Rotation3D);

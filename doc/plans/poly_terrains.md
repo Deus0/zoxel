@@ -73,6 +73,12 @@ How it runs:
 - the maths (closest points, segment to triangle, capsule against heights) as pure functions in
   `terrains/poly/collisions/fun`, with their own tests
 
+Later: movement inputs apart from the move system. Players' devices and npc ai both write one move input
+(a direction, run, jump) on the character, and one system moves every character from it, so players and npcs move
+by the same rules. Tests don't read real devices (SDL's keyboard, mouse, pads): they're automated, so they set the
+move input themselves, and a test like `zeland_walk` holds W through it, not by pushing the velocity. To discuss
+before starting.
+
 Later, not now: capsule against capsule (npcs), against boxes, voxel terrains with capsules.
 
 Later: a voxel terrain collider entity, a child of the body like the capsule, holding its voxel parts (chunk
@@ -131,7 +137,38 @@ kept current as each step lands, not a step of their own).
    - tests: `capsule_maths`, `poly_land` (and _10fps, _30fps), `poly_slope`, `poly_walk` (and _10fps, _30fps),
      `poly_character` (a character3 lands on the island, no voxel parts, its clock the terrain's)
    - regression, 20 zoxel tests round characters and collisions, before and after (see doc/tests.md for times)
-6. **third person camera:** the poly game mode, zeland's character on the terrain, a camera behind it. Test
-   `zeland_walk`: plays, the character spawns on the ground and walks, the camera follows.
-7. **lit meshes:** `MeshNormals`, the lit material, gl and vulkan; the terrain moves to it (the baked light goes),
-   then mesh characters. Test: a lit mesh drawn in the menus' camera, the two backends' screenshots alike.
+6. [x] **third person camera:** zeland's character (a capsule collider and a capsule mesh child,
+   `geometry/fun/capsule.c`) spawns south of the peak facing it, the camera orbits it.
+   - the orbit camera (`controllers3/sys/orbit.c`, `zox_camera_follow_mode_orbit`): not a child, it orbits its
+     `CameraTarget`; mouse or right stick turn it, the wheel zooms, it stays over a poly terrain's ground.
+     Zoxel's third person uses it too: the character walks along the camera's facing, the mouse no longer turns it
+   - character systems skip what a capsule character lacks: no body to dress, no realm blocks, no actionbar, no
+     fly mode, towns only on voxel terrains
+   - tests: `zeland_boot` (a character with a capsule, the camera orbiting it), `zeland_walk` (walks away from the
+     camera, faces that way, on the ground, followed, its mesh drawn, a screenshot); regression, the 20 zoxel tests
+7. **lit meshes:** flat shaded meshes lit by a sun, gl and vulkan from one shader; the baked light goes.
+   - first: step 6 rebased on master, its capsule on `MeshColors` (rgba, the alpha its glow, doc/plans/hdr.md)
+   - normals from the screen (`dFdx`/`dFdy` of the world position, as `cloud.frag` does): flat shaded meshes are a
+     face per triangle, so they need no `MeshNormals`, no normal buffers, no upload change. The normal is turned to
+     face the camera, so vulkan's flipped y doesn't flip it. `MeshNormals` waits for smooth meshes (skinned
+     characters), if they want it
+   - its own material, `colored3D_lit` (`rendering3/mat/colored_lit.c`, `colored3D_lit.vert/frag`), the same mesh
+     data as `colored3D` (vertices, indices, `MeshColors`, its gpu links, `TransformMatrix`), plus uniforms: the model
+     matrix, the sun, the ambient, the camera's position. `colored3D` doesn't change, chunks and block voxes keep their
+     baked light
+   - how a mesh draws is its `MaterialLink` (non fragmenting, tables stay big); tags pick the render system only.
+     Lit meshes link `material_colored3D_lit`, nothing else marks them
+   - one query, one render system for both (queries cost too): `vox_render_meshes` reads the same data for every
+     mesh and groups them by material as it goes: a linked material with its own gpu program (`MaterialGPULink`) draws
+     with it, the rest (no link, or a data material like a slime's gel, `TransparentMaterial`) with `colored3D` as
+     now. After the loop each group draws with its material bound once, the lit uniforms set only for the lit one
+   - the groups: a small fixed list of materials, each a list of the call's row indices (a call is a table)
+   - light: `light = ambient + sun * max(0, n . sun_direction)`, times the colour, before the glow and the fog
+   - the sun: render settings for now (`sun_direction`, `sun_color`, `ambient_color`), a sun entity once there's a
+     day; zeland sets its own
+   - zeland: the poly terrain and the capsule link `material_colored3D_lit`, `poly_light_at` dropped from their meshes (kept in
+     the heights map tool, it's 2D), the capsule's darker front a colour of its own
+   - tests: `lit_mesh` (menus' camera in a void, a lit cube: the face to the sun brighter than the side, the side
+     brighter than ambient, on gl and `--vulkan`, the two screenshots alike), `poly_views` redrawn and looked at,
+     zeland's tests; regression: vox and chunk render tests (`vox_instance_render`, `water_light`, the outline and
+     glow tests), and a perf check (seed 666, release, 2 runs) since every vox draw goes through `colored3D`

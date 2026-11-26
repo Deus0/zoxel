@@ -10,7 +10,7 @@ void in_town_system(iter* it) {
         zox_sys_e();
         zox_sys_i(Position3D, position);
         const entity terrain = zox_get_link(world, e, TerrainLink);
-        if (!zox_valid(terrain)) {
+        if (!zox_valid(terrain) || !zox_has(terrain, BlockScale)) {    // towns are on voxel terrains only
             continue;
         }
         const float scale = zox_getv(terrain, BlockScale);

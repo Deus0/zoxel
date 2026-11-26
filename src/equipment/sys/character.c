@@ -76,6 +76,9 @@ void character_player_equips_system(iter* it) {
             world,
             e,
             zox_id(Body));
+        if (!zox_valid(chest_slot)) {       // no body to dress (a capsule, zeland)
+            continue;
+        }
         body_updated |= equip_realm_item(world, e, realm, chest_slot, zox_id(HatSlot), zox_id(Hat));
         body_updated |= equip_realm_item(world, e, realm, chest_slot, zox_id(ShirtSlot), zox_id(Shirt));
         body_updated |= equip_realm_item(world, e, realm, chest_slot, zox_id(ShortsSlot), zox_id(Shorts));

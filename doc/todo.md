@@ -295,6 +295,9 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 - Clean up the module organization: features in the module that owns them (doc/engine/architecture.md "Code goes
   where it belongs"), folders as the coding standards lay out (com, pre, ins, fun, eve, sys, tst), no reaching into
   another module's includes for load order
+- Movement inputs apart from the move system: players' devices and npc ai write one move input on a character, one
+  system moves them all by the same rules; tests read no real devices and set that input. Discuss first
+  (doc/plans/poly_terrains.md, Later)
 
 # Tools out of the test harness (2026-11-22)
 - Move the looking tools into bsh/tools (doc/engine/tools.md): body, poses, ik_poses, walk, punch, model, gpu_lights,
