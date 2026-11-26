@@ -11,10 +11,11 @@ Order: inspection flows first, perfect them, then editing, then the engine wide 
 ### 1. Inspection (first)
 - [x] File window: browse `res/` and the save folders and inspect file metadata
 - [x] Foldable hierarchy: arrows to fold and unfold children, indented rows instead of "-"
-- [ ] Hierarchy scrollbar fixed, scroll area masks rows that overflow
-- [ ] Tag filter on the hierarchy (blocks, items, stats..)
+- [ ] Scroll areas mask rows that overflow, a horizontal scrollbar when rows are wider than the area
+- [ ] Search in every editor window: a search icon button in the header adds a search bar under it, with a filter
+  type, name or tag (a ui dropdown element for the type); the hierarchy, inspector and files filter their rows
 - [ ] Inspector: data components readable (TextureData, mesh data open their own window)
-- [ ] Close buttons on every editor window
+- [x] Close buttons on every editor window (with the docks)
 - [ ] Editor style: high contrast text, one style function for colours and font sizes
 
 ### 2. Windows and docks
