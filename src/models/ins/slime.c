@@ -1,5 +1,12 @@
 
 
+// a slime: a see through shell (palette 3, its own seeded colour) round a smaller solid core (1), its eyes (2)
+//  painted solid on the shell's front so they show; its models' materials by slime_material_ids
+//  (set_model_group_materials)
+#define slime_core_scale 0.65f
+#define slime_gel_alpha 0.35f     // the shell's: clearly see through, the core and eyes show
+const byte slime_material_ids[3] = { zox_block_material_solid, zox_block_material_solid, zox_block_material_liquid };
+
 entity spawn_model_nodegraph_slime(
     ecs* world,
     entity parent)
@@ -9,6 +16,7 @@ entity spawn_model_nodegraph_slime(
     float eye_spacing = 5.6f;
     float eye_height = 2.2f;
     byte3 core_position = byte3_half(size);
+    byte3 core_size = { size.x * slime_core_scale, size.y * slime_core_scale, size.z * slime_core_scale };
     byte eye_ridge = byte_div(size.x, eye_spacing);
     byte3 eye_size = byte3_single(byte_div(size.x, eye_spacing));
     byte eye_y = byte_div(size.y, eye_height);
@@ -25,8 +33,12 @@ entity spawn_model_nodegraph_slime(
     new_link_single_node(world, root_node, colors_node1);
     entity colors_node2 = spawn_node_model_colors_seed(world, 1);
     new_link_single_node(world, colors_node1, colors_node2);
-    entity fill_node = spawn_node_model_at(world, prefab, zox_model_node_fill, core_position, size, 1);
-    new_link_single_node(world, colors_node2, fill_node);
+    entity colors_node3 = spawn_node_model_colors_seed(world, 1);
+    new_link_single_node(world, colors_node2, colors_node3);
+    entity shell_node = spawn_node_model_at(world, prefab, zox_model_node_fill, core_position, size, 3);
+    new_link_single_node(world, colors_node3, shell_node);
+    entity fill_node = spawn_node_model_at(world, prefab, zox_model_node_fill, core_position, core_size, 1);
+    new_link_single_node(world, shell_node, fill_node);
     entity left_eye_node = spawn_node_model_at(world, prefab, zox_model_node_paint, leye_position, eye_size, 2);
     new_link_single_node(world, fill_node, left_eye_node);
     entity right_eye_node = spawn_node_model_at(world, prefab, zox_model_node_paint, reye_position, eye_size, 2);

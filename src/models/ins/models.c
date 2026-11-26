@@ -1,14 +1,23 @@
 // Spawns a model group, of variants generated with the nodegraph blueprint
 //  - x: model group
 //  - y: first model variant
-entity2 spawn_blueprint_models(
+// models' materials (set_vox_lods_materials): a material id a palette entry, the see through one's material
+typedef struct {
+    const byte* ids;
+    int count;
+    entity see_through;
+} model_materials;
+
+// a model group of variants made from a node graph; materials (NULL: all solid) for ones with see through voxels
+entity2 spawn_blueprint_models_materials(
     ecs *world,
     entity parent,
     entity nodegraph,
     lint seed,
     const char *name,
     byte depth,
-    byte variants_count)
+    byte variants_count,
+    const model_materials* materials)
 {
     lint variant_seed_step = 1209;
     entity first_model = 0;
@@ -24,6 +33,9 @@ entity2 spawn_blueprint_models(
             depth,
             NULL);
         zox_setv(model, Seed, variant_seed);
+        if (materials) {
+            set_new_vox_lods_materials(world, model, depth, materials->ids, materials->count, materials->see_through);
+        }
         // NOTE: Kicks off model generaiton using the blueprint
         spawn_process_model(
             world,
@@ -37,6 +49,12 @@ entity2 spawn_blueprint_models(
         model_group,
         first_model
     };
+}
+
+entity2 spawn_blueprint_models(ecs *world, entity parent, entity nodegraph, lint seed, const char *name, byte depth,
+    byte variants_count)
+{
+    return spawn_blueprint_models_materials(world, parent, nodegraph, seed, name, depth, variants_count, NULL);
 }
 
 // Spawns an animation: a VoxAnimation (a model group) of frames, each the nodegraph run on one, all from one seed

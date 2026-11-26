@@ -96,14 +96,21 @@ void character3_realm_spawn_system(iter* it) {
             } else {
                 nodegraph = slime_nodegraph;
             }*/
-            entity model = spawn_blueprint_models(
+            // a see through shell round a solid core (models/ins/slime.c), its gel kept with the models
+            const entity gel = spawn_vox_material_see_through(world, slime_gel_alpha);
+            const model_materials materials = { slime_material_ids, 3, gel };
+            entity model = spawn_blueprint_models_materials(
                 world,
                 e,
                 nodegraph,
                 character_seed,
                 "slem",
                 character_depth,
-                variants).x;
+                variants,
+                &materials).x;
+            if (zox_valid(model)) {
+                zox_set_parent(world, gel, model);
+            }
             if (!zox_valid(model)) {
                 zox_loge("realm has invalid model [%i]",
                     j);

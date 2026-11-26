@@ -81,12 +81,40 @@ entity spawn_vox_material_see_through(ecs* world, float alpha) {
 //  through mesh beside each lod (TransparentMesh, the same RenderDepth) for its see through voxels; its solid meshes
 //  rebuild without them; the see through ones link their material (MaterialLink: TransparentMaterial, its Alpha). Only
 //  for models with more than solid (others need no ids, no second meshes)
-void set_vox_lods_materials(ecs* world, entity vox, const byte* ids, int count, entity see_through_material) {
+// a see through lod mesh of a vox at depth, linking its material
+static inline void spawn_vox_lod_see_through(ecs* world, entity vox, byte depth, entity see_through_material) {
+    const entity mesh = zox_ins(world, vox_lod_mesh_prefab());
+    zox_set_unique_name(mesh, "vox_mesh_see_through");
+    zox_add(mesh, TransparentMesh);
+    zox_add(mesh, BuildMesh);
+    zox_setv(mesh, RenderDepth, depth);
+    zox_set_parent(world, mesh, vox);
+    if (zox_valid(see_through_material)) {
+        zox_link(world, mesh, MaterialLink, see_through_material);
+    }
+}
+
+static inline void set_vox_material_ids(ecs* world, entity vox, const byte* ids, int count) {
     MaterialIDs material_ids = { 0 };
     resize_MaterialIDs(&material_ids, count);
     memcpy(material_ids.value, ids, count);
     zox_set_ptr(vox, MaterialIDs, material_ids);    // copied in
     dispose_MaterialIDs(&material_ids);
+}
+
+// a model just spawned (in a system: none of its components readable yet), depth its NodeDepth: its ids and a see
+//  through mesh a lod, before any are built
+void set_new_vox_lods_materials(ecs* world, entity vox, byte max_depth, const byte* ids, int count,
+    entity see_through_material)
+{
+    set_vox_material_ids(world, vox, ids, count);
+    for (byte depth = 0; depth <= max_depth && depth < model_lods_max_length; depth++) {
+        spawn_vox_lod_see_through(world, vox, depth, see_through_material);
+    }
+}
+
+void set_vox_lods_materials(ecs* world, entity vox, const byte* ids, int count, entity see_through_material) {
+    set_vox_material_ids(world, vox, ids, count);
     const byte max_depth = zox_getv(vox, NodeDepth);
     entity meshes[model_lods_max_length] = { 0 };
     byte found[model_lods_max_length] = { 0 };
@@ -110,17 +138,8 @@ void set_vox_lods_materials(ecs* world, entity vox, const byte* ids, int count, 
         if (meshes[depth]) {
             zox_add(meshes[depth], BuildMesh);
         }
-        if (found[depth]) {
-            continue;
-        }
-        const entity mesh = zox_ins(world, vox_lod_mesh_prefab());
-        zox_set_unique_name(mesh, "vox_mesh_see_through");
-        zox_add(mesh, TransparentMesh);
-        zox_add(mesh, BuildMesh);
-        zox_setv(mesh, RenderDepth, depth);
-        zox_set_parent(world, mesh, vox);
-        if (zox_valid(see_through_material)) {
-            zox_link(world, mesh, MaterialLink, see_through_material);
+        if (!found[depth]) {
+            spawn_vox_lod_see_through(world, vox, depth, see_through_material);
         }
     }
 }
@@ -158,3 +177,4 @@ void set_chunk3_parent_colored_materials(ecs* world, entity parent, const byte* 
         }
     }
 }
+
