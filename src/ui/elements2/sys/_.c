@@ -55,6 +55,7 @@ void zox_systems_elements2(ecs *world) {
         [in] containers.ListVisible,
         [none] containers.ListPositionUpdate,
     );
+    zox_on_add(virtual_list_slot_event, [none] elements2.ListSlot, [none] core.Dirty);
     // resize handle when list dirty
     zox_on_add(
         scrollbar_handle_event,

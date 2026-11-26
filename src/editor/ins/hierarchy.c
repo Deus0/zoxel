@@ -18,7 +18,7 @@ entity spawn_window_hierarchy(
     zox_setv(window, Target, root);
     // one row is active (highlighted) at a time
     zox_add(list, ActiveSingle);
-    zox_add(list, Unfolded);
+    zox_add(list, VirtualList);
     // Use the list's event so its components are ready when a deferred spawn flushes.
     zox_add(list, Dirty);
     return window;

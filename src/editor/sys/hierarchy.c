@@ -1,63 +1,22 @@
-// The hierarchy lists an entity tree as buttons, indented by depth, clicking one inspects it
-const int hierarchy_max_line_characters = 64;
-const ushort hierarchy_max_elements = 128;
+enum { hierarchy_max_line_characters = 64 };
 
 typedef struct {
-    entity target;
-    byte depth;
-    byte children;  // it has rows under it, shown or folded
-} HierarchyRow;
+    entity list;
+    entity root;
+    entity anchor;
+    char search[input_field_max_length + 2];
+    byte search_type;
+    int index;
+    int anchor_index;
+    int start;
+    entity first;
+    VirtualListPage* page;
+} HierarchyWalk;
 
-// rows for the scene, not the editor: no glyphs, no editor ui (EditorElement and under it, so a fold's respawned
-//  rows aren't in the tree they show)
-static inline byte hierarchy_row_entity(ecs* world, entity e) {
+static byte hierarchy_row_entity(ecs* world, entity e) {
     return zox_valid(e) && !zox_has(e, Glyph) && !zox_has(e, EditorElement);
 }
 
-void button_event_clicked_hierarchy(
-    ecs* world,
-    ClickEventData event)
-{
-    const entity clicked = event.clicked;
-    if (!zox_has(clicked, Target)) {
-        zox_loge("Clicked [%s] is not a hierarchy row", zox_get_name(clicked));
-        return;
-    }
-    inspector_select_target(world, event.clicker, zox_getv(clicked, Target));
-    zox_setv(clicked, ActiveState, 1);
-    zox_add(clicked, ActiveStateDirty);
-}
-
-// Adds a row and walks its unfolded children depth first, skipping glyphs.
-void get_hierarchy_rows(
-    ecs *world,
-    entity e,
-    byte depth,
-    const Unfolded* unfolded,
-    HierarchyRow* rows,
-    int* count)
-{
-    if (*count >= hierarchy_max_elements || !hierarchy_row_entity(world, e)) {
-        return;
-    }
-    HierarchyRow* row = &rows[(*count)++];
-    *row = (HierarchyRow) { .target = e, .depth = depth };
-    const byte open = unfolded_has(unfolded, e);   // every row folds, the root too
-    iter it2 = zox_children(world, e);
-    while (zox_children_next(it2)) {
-        for (int j = 0; j < it2.count; j++) {
-            if (!hierarchy_row_entity(world, it2.entities[j])) {
-                continue;
-            }
-            row->children = 1;
-            if (open) {
-                get_hierarchy_rows(world, it2.entities[j], depth + 1, unfolded, rows, count);
-            }
-        }
-    }
-}
-
-// does e match a search: its label (name), or one of its ids' names (tag)
 static byte hierarchy_search_match(ecs* world, entity e, const char* search, byte type) {
     if (type == window_search_tag) {
         const int ids = zox_get_ids_count(world, e);
@@ -73,90 +32,168 @@ static byte hierarchy_search_match(ecs* world, entity e, const char* search, byt
     return window_search_match(label, search);
 }
 
-// a search lists every matching entity under e (folds ignored), flat, up to hierarchy_max_elements
-static void get_hierarchy_search_rows(ecs* world, entity e, const char* search, byte type,
-    HierarchyRow* rows, int* count)
-{
-    if (*count >= hierarchy_max_elements || !hierarchy_row_entity(world, e)) {
+// The same depth-first order supplies the count and the page. Search descends through folds.
+static byte hierarchy_walk_tree(ecs* world, HierarchyWalk* walk, entity e, int depth) {
+    if (!hierarchy_row_entity(world, e)) {
+        return 0;
+    }
+    const byte searching = walk->search[0] != 0;
+    if (!searching || hierarchy_search_match(world, e, walk->search, walk->search_type)) {
+        const int index = walk->index++;
+        if (e == walk->anchor) {
+            walk->anchor_index = index;
+        }
+        if (walk->page && index >= walk->start) {
+            if (!walk->first) {
+                walk->first = e;
+            }
+            const entity row = walk->page->slots[walk->page->filled];
+            if (zox_has(row, ActiveState) && zox_getv(row, ActiveState) && e != zox_get_link(world, row, RowTargetLink)) {
+                zox_setv(row, ActiveState, 0);
+                zox_add(row, ActiveStateDirty);
+            }
+            zox_setv(row, ListIndent, searching ? 0 : int_min(depth, UINT8_MAX));
+            virtual_list_bind(world, walk->page, e);
+            if (walk->page->filled == walk->page->capacity) {
+                return 1;
+            }
+        }
+    }
+    if (searching || zox_is_linked(world, walk->list, Unfolded, e)) {
+        iter children = zox_children(world, e);
+        while (zox_children_next(children)) {
+            for (int i = 0; i < children.count; i++) {
+                if (hierarchy_walk_tree(world, walk, children.entities[i], depth + 1)) {
+                    zox_children_end(children);
+                    return 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+static void hierarchy_walk(ecs* world, HierarchyWalk* walk) {
+    walk->index = 0;
+    if (walk->root) {
+        hierarchy_walk_tree(world, walk, walk->root, 0);
         return;
     }
-    if (hierarchy_search_match(world, e, search, type)) {
-        rows[(*count)++] = (HierarchyRow) { .target = e };
-    }
-    iter it2 = zox_children(world, e);
-    while (zox_children_next(it2)) {
-        for (int j = 0; j < it2.count; j++) {
-            get_hierarchy_search_rows(world, it2.entities[j], search, type, rows, count);
+    iter roots = zox_children(world, 0);
+    while (zox_children_next(roots)) {
+        for (int i = 0; i < roots.count; i++) {
+            const entity root = roots.entities[i];
+            if (zox_is_scene_root(world, root) && hierarchy_walk_tree(world, walk, root, 0)) {
+                zox_children_end(roots);
+                return;
+            }
         }
     }
 }
 
-// Rebuilds the dirty list after spawn, a fold change or a search, keeping the scroll position.
-void hierarchy_spawn_event(iter* it) {
-    const ClickEvent on_click = (ClickEvent) { &button_event_clicked_hierarchy };
+static HierarchyWalk hierarchy_walk_begin(ecs* world, entity window, entity list) {
+    HierarchyWalk walk = {
+        .list = list,
+        .root = zox_getv(window, Target),
+        .anchor = zox_get_link(world, list, ListStartLink),
+        .anchor_index = -1,
+    };
+    window_search_get(world, window, walk.search, sizeof(walk.search), &walk.search_type);
+    return walk;
+}
+
+void button_event_clicked_hierarchy(ecs* world, ClickEventData event) {
+    const entity target = zox_get_link(world, event.clicked, RowTargetLink);
+    if (target) {
+        inspector_select_target(world, event.clicker, target);
+        zox_setv(event.clicked, ActiveState, 1);
+        zox_add(event.clicked, ActiveStateDirty);
+    }
+}
+
+static void hierarchy_slots(ecs* world, entity window, entity list, VirtualListPage* page) {
+    if (!virtual_list_prepare_slots(world, list, page)) {
+        return;
+    }
+    const byte font = zox_getv(window, ElementFontSize);
+    const entity canvas = zox_get_parent_by_id(world, window, zox_id(Canvas));
+    const byte layer = zox_getv(list, Layer) + 2;
+    for (int i = 0; i < page->capacity; i++) {
+        const entity row = spawn_editor_list_row(world, list, prefab_button_hierarchy, "", font, editor_button_outline, i, font);
+        page->slots[i] = row;
+        zox_add(row, HierarchySlot);
+        zox_add(row, ListSlot);
+        zox_setv(row, ClickEvent, button_event_clicked_hierarchy);
+        spawn_fold_arrow(world, canvas, row, list, 0, 0, font, layer);
+    }
+}
+
+static void hierarchy_slot_event(iter* it) {
     zox_sys_world();
-    zox_sys_begin();
-    zox_sys_in(Unfolded);
+    for (int i = 0; i < it->count; i++) {
+        const entity row = it->entities[i];
+        const entity target = zox_get_link(world, row, RowTargetLink);
+        const entity list = zox_get_parent(world, row);
+        const entity label = zox_get_child_by_id(world, row, zox_id(TextData));
+        const entity fold = zox_get_child_by_id(world, row, zox_id(FoldArrow));
+        zox_muter(label, TextData, data);
+        if (!data->value) {
+            // Reserve the label buffer when the slot is created, including initially empty slots.
+            initialize_TextData(data, hierarchy_max_line_characters);
+            data->length = 0;
+        }
+        if (!target || !data->value) {
+            set_fold_arrow(world, fold, 0, 0, 1);
+            continue;
+        }
+        char text[hierarchy_max_line_characters];
+        get_editor_entity_label(world, target, text, sizeof(text));
+        if (!is_zext(data, text)) {
+            data->length = strlen(text);
+            for (int j = 0; j < data->length; j++) {
+                data->value[j] = convert_ascii(text[j]);
+            }
+            zox_add(label, Refresh);
+        }
+        const int font = zox_getv(label, TextFontSize);
+        const byte2 padding = zox_getv(list, TextPadding);
+        const int2 size = { font * (strlen(text) + 1) + 2 * padding.x, font + 2 * padding.y };
+        if (!int2_equals(size, zox_getv(row, LayoutSize))) {
+            zox_setv(row, LayoutSize, size);
+            zox_add(row, LayoutSizeDirty);
+        }
+        byte has_children = 0;
+        iter children = zox_children(world, target);
+        while (zox_children_next(children)) {
+            for (int j = 0; j < children.count && !has_children; j++) {
+                has_children = hierarchy_row_entity(world, children.entities[j]);
+            }
+            if (has_children) {
+                zox_children_end(children);
+                break;
+            }
+        }
+        set_fold_arrow(world, fold, has_children ? target : 0,
+            zox_is_linked(world, list, Unfolded, target), !has_children);
+    }
+}
+
+static void hierarchy_spawn_event(iter* it) {
+    zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         const entity list = it->entities[i];
-        zox_sys_i(Unfolded, unfolded);
         const entity window = zox_get_parent_by_id(world, list, zox_id(HierarchyUI));
         if (!window) {
             continue;
         }
-        // its tree (its Target), or with none every root entity: the scene's, not one app's
-        const entity target = zox_getv(window, Target);
-        entity roots[hierarchy_max_elements];
-        const uint roots_count = target ? 1 : zox_get_roots(world, roots, hierarchy_max_elements);
-        if (target) {
-            roots[0] = target;
-        }
-        const byte font_size = zox_getv(window, ElementFontSize);
-        clear_editor_list(world, list);
-        HierarchyRow rows[hierarchy_max_elements];
-        int count = 0;
-        char search[input_field_max_length + 2];
-        byte search_type;
-        if (window_search_get(world, window, search, sizeof(search), &search_type) && search[0]) {
-            for (uint r = 0; r < roots_count; r++) {
-                get_hierarchy_search_rows(world, roots[r], search, search_type, rows, &count);
-            }
-        } else {
-            for (uint r = 0; r < roots_count; r++) {
-                get_hierarchy_rows(world, roots[r], 0, unfolded, rows, &count);
-            }
-        }
-        if (count >= hierarchy_max_elements) {
-            zox_logw("Hierarchy of [%s] cut off at [%i] entities", (target ? zox_getn(target) : "roots"), hierarchy_max_elements);
-        }
-        const int visible = zox_getv(list, ListVisible);
-        const int max_start = count > visible ? count - visible : 0;
-        const int start = zox_getv(list, ListStart);
-        if (start > max_start) {
-            zox_setv(list, ListStart, max_start);
-        }
-        const entity canvas = zox_get_parent_by_id(world, window, zox_id(Canvas));
-        const byte arrow_layer = zox_getv(list, Layer) + 2;
-        char text[hierarchy_max_line_characters];
-        for (int j = 0; j < count; j++) {
-            get_editor_entity_label(world, rows[j].target, text, hierarchy_max_line_characters);
-            const entity button = spawn_editor_list_row(
-                world,
-                list,
-                prefab_button_hierarchy,
-                text,
-                font_size,
-                editor_button_outline,
-                j, font_size);
-            zox_setv(button, ClickEvent, on_click.value);
-            zox_setv(button, Target, rows[j].target);
-            zox_setv(button, ListIndent, rows[j].depth);
-            if (rows[j].children) {
-                const byte open = unfolded_has(unfolded, rows[j].target);
-                spawn_fold_arrow(world, canvas, button, list, rows[j].target, open, font_size, arrow_layer);
-            }
-        }
-        refresh_editor_list(world, list);
-        zox_logv("Hierarchy [%s] refreshed with [%i] rows", (target ? zox_getn(target) : "roots"), count);
+        HierarchyWalk walk = hierarchy_walk_begin(world, window, list);
+        hierarchy_walk(world, &walk);
+        const int count = walk.index;
+        walk.start = virtual_list_start(world, list, count, walk.anchor_index);
+        VirtualListPage page = { 0 };
+        hierarchy_slots(world, window, list, &page);
+        walk.page = &page;
+        hierarchy_walk(world, &walk);
+        virtual_list_finish(world, list, &page, walk.first, count, walk.start);
     }
 }

@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-26
+-x Virtual lists (elements2): only the rows that fit are entities (slots, ordered children), each links the entity it
+  shows (RowTargetLink), the first shown row is a link (ListStartLink), the count comes from a walk; the hierarchy
+  walks the real tree into them: no row limit, 3001 rows refresh in ~2.4ms (tsts virtual_list, hierarchy_big)
 -x A scroll view's list is its viewport: the Mask on it, sized between the scrollbars that show, so rows no longer
   draw under them (scrollview_fit_list, tst scroll_mask)
 -x Hierarchy shows the scene: every root entity (zox_get_roots: no parent, not modules, queries, phases), every

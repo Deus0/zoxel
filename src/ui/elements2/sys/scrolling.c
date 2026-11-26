@@ -37,6 +37,13 @@ void scrollbar_system(iter* it) {
             }
             continue;
         }
+        if (zox_has(list, VirtualList)) {
+            const int4 limits = zox_getv(e, LayoutConstraints);
+            if (limits.w > limits.z) {
+                scroll_virtual_list_fraction(world, list, (limits.w - position->value.y) / (float) (limits.w - limits.z));
+            }
+            continue;
+        }
         // travel: how far the handle can move, none if the list fits
         const int travel = zox_getv(scrollbar, LayoutSize).y - size->value.y;
         if (travel <= 0) {
@@ -134,6 +141,10 @@ void scrollview_wheel_system(iter* it) {
         }
         const entity list = zox_get_link(world, scrollview, ListUILink);
         if (!zox_valid(list)) {
+            continue;
+        }
+        if (zox_has(list, VirtualList)) {
+            scroll_virtual_list_rows(world, list, -wheel->value.y);
             continue;
         }
         // wheel up (positive) scrolls back to the top

@@ -76,10 +76,14 @@ void list_render_dirty_system(iter* it) {
         // a hidden scrollview hides its list (a window's tab not shown, ui/windows/ins/tabs.c)
         const entity scrollview = zox_get_link(world, e, ScrollviewLink);
         const byte hidden = zox_valid(scrollview) && zox_has(scrollview, RenderDisabled) && zox_getv(scrollview, RenderDisabled);
-        entity children[layouts2_children_capacity];
-        const uint children_count = get_list_children_ordered(world, e, children, layouts2_children_capacity);
+        const byte virtual = zox_has(e, VirtualList);
+        entity children[layouts2_children_capacity + 1];
+        const uint children_count = get_list_children_ordered(world, e, children, layouts2_children_capacity + virtual);
         if (zox_valid(scrollview)) {
             update_horizontal_scrollbar(world, scrollview, e, children, children_count, hidden);
+        }
+        if (virtual) {
+            continue;
         }
         for (uint k = 0; k < children_count; k++) {
             const byte is_visible = !hidden && k >= start->value && k < start->value + visible->value;

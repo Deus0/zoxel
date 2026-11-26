@@ -129,7 +129,11 @@ static entity zox_tst_ui_color_button(ecs* world, entity parent, int2 position, 
     #include "sdl_text.c"
 #endif
 
+#include "virtual_list.c"
+
 void zox_tsts_elements2() {
+    zox_tst_add("virtual_list", zox_tst_virtual_list_ready, zox_tst_ui_fixture_check, 20);
+    zox_tst_set_setup("virtual_list", NULL, 1);
     zox_tst_add("slider_drag", zox_tst_slider_drag_ready, zox_tst_ui_fixture_check, 30);
     zox_tst_set_setup("slider_drag", NULL, 1);
     zox_tst_add("scroll_mask", zox_tst_scroll_mask_ready, zox_tst_ui_fixture_check, 20);

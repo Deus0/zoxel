@@ -6,12 +6,14 @@ byte zox_tst_hierarchy_root_opened = 0;
 entity zox_tst_hierarchy_fold_root = 0;
 entity zox_tst_hierarchy_fold_parent = 0;
 
-// rows in the window's list, 0 while it's waiting on its refresh
-int zox_tst_hierarchy_fold_rows(ecs* world) {
-    const entity list = zox_tst_editor_list(world, zox_tst_hierarchy_fold_window);
-    int wrong;
-    return zox_valid(list) && !zox_has(list, Dirty) ?
-        zox_tst_editor_rows(world, list, 0, &wrong) : 0;
+static int zox_tst_hierarchy_count(ecs* world, entity window) {
+    const entity list = zox_tst_editor_list(world, window);
+    if (!list || zox_has(list, Dirty)) {
+        return 0;
+    }
+    HierarchyWalk walk = hierarchy_walk_begin(world, window, list);
+    hierarchy_walk(world, &walk);
+    return walk.index;
 }
 
 // Check every row and return the parent's arrow.
@@ -22,10 +24,11 @@ static entity zox_tst_hierarchy_fold_arrows(ecs* world) {
     while (zox_children_next(children)) {
         for (int i = 0; i < children.count; i++) {
             const entity row = children.entities[i];
-            const entity target = zox_getv(row, Target);
-            const entity arrow = zox_get_child_by_id(world, row, zox_id(Button));
+            const entity target = zox_get_link(world, row, RowTargetLink);
+            const entity arrow = zox_get_child_by_id(world, row, zox_id(FoldArrow));
             const byte has_children = target == zox_tst_hierarchy_fold_root || target == zox_tst_hierarchy_fold_parent;
-            zox_tst_check(!!arrow == has_children, "wrong arrow presence on [%s]", zox_getn(target));
+            zox_tst_check(arrow && zox_getv(arrow, RenderDisabled) == !has_children,
+                "wrong arrow visibility on [%s]", zox_getn(target));
             zox_tst_check(zox_getv(row, ClickEvent) == button_event_clicked_hierarchy,
                 "row [%s] lost its inspect callback", zox_getn(target));
             if (arrow) {
@@ -46,7 +49,7 @@ byte zox_tst_hierarchy_fold_ready(ecs* world) {
         zox_tst_waiting = "the editor canvas";
         return 0;
     }
-    const int rows = zox_tst_hierarchy_fold_window ? zox_tst_hierarchy_fold_rows(world) : 0;
+    const int rows = zox_tst_hierarchy_fold_window ? zox_tst_hierarchy_count(world, zox_tst_hierarchy_fold_window) : 0;
     switch (zox_tst_hierarchy_fold_stage) {
         case 0: {
             // root > parent > two children
@@ -79,7 +82,7 @@ byte zox_tst_hierarchy_fold_ready(ecs* world) {
             }
             const entity list = zox_tst_editor_list(world, zox_tst_hierarchy_fold_window);
             zox_setv(list, ListVisible, 1);
-            set_list_start(world, list, 1);
+            scroll_virtual_list_rows(world, list, 1);
             const entity arrow = zox_tst_hierarchy_fold_arrows(world);
             if (arrow) {
                 zox_getv(arrow, ClickEvent)(world, (ClickEventData) { .clicked = arrow });
@@ -92,7 +95,7 @@ byte zox_tst_hierarchy_fold_ready(ecs* world) {
                 return 0;
             }
             const entity list = zox_tst_editor_list(world, zox_tst_hierarchy_fold_window);
-            zox_tst_check(zox_getv(list, ListStart) == 1, "unfold reset the scroll position");
+            zox_tst_check(zox_get_link(world, list, ListStartLink) == zox_tst_hierarchy_fold_parent, "unfold reset the scroll position");
             const entity arrow = zox_tst_hierarchy_fold_arrows(world);
             if (arrow) {
                 zox_getv(arrow, ClickEvent)(world, (ClickEventData) { .clicked = arrow });
@@ -105,7 +108,7 @@ byte zox_tst_hierarchy_fold_ready(ecs* world) {
                 return 0;
             }
             const entity list = zox_tst_editor_list(world, zox_tst_hierarchy_fold_window);
-            zox_tst_check(zox_getv(list, ListStart) == 1, "fold reset the scroll position");
+            zox_tst_check(zox_get_link(world, list, ListStartLink) == zox_tst_hierarchy_fold_parent, "fold reset the scroll position");
             zox_tst_hierarchy_fold_arrows(world);
             return 1;
         }
@@ -116,8 +119,7 @@ byte zox_tst_hierarchy_fold_ready(ecs* world) {
 
 void zox_tst_hierarchy_fold_check(ecs* world) {
     const entity list = zox_tst_editor_list(world, zox_tst_hierarchy_fold_window);
-    const Unfolded* unfolded = zox_get(list, Unfolded);
-    zox_tst_check(unfolded->length == 1, "[%i] entities left unfolded after folding, not the root only", unfolded->length);
+    zox_tst_check(zox_get_links_count(world, list, Unfolded) == 1, "expected only the root to remain unfolded");
     zox_tst_check(zox_tst_hierarchy_root_opened, "the root never started folded");
     zox_tst_check(zox_log_errors_count == 0, "[%u] errors logged", zox_log_errors_count);
 }
@@ -126,6 +128,8 @@ void zox_tst_hierarchy_fold_check(ecs* world) {
 byte zox_tst_hierarchy_roots_ready(ecs* world) {
     static int step;
     static entity window, root_a, root_b;
+    static byte found_a, found_b;
+    static int scanned;
     const entity canvas = get_editor_canvas(world);
     if (!zox_valid(canvas)) {
         zox_tst_waiting = "the editor canvas";
@@ -147,25 +151,29 @@ byte zox_tst_hierarchy_roots_ready(ecs* world) {
     if (!list || zox_has(list, Dirty)) {
         return 0;
     }
-    byte found_a = 0, found_b = 0;
     int editor_rows = 0, rows = 0;
     iter it2 = zox_children(world, list);
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
-            if (!zox_has(it2.entities[j], Target)) {
+            const entity target = zox_get_link(world, it2.entities[j], RowTargetLink);
+            if (!target) {
                 continue;
             }
-            const entity target = zox_getv(it2.entities[j], Target);
             rows++;
             found_a |= target == root_a;
             found_b |= target == root_b;
             editor_rows += zox_has(target, EditorElement) || zox_get_parent_by_id(world, target, zox_id(EditorElement));
         }
     }
-    if (!found_a || !found_b) {
+    const int count = zox_tst_hierarchy_count(world, window);
+    zox_tst_check(editor_rows == 0, "[%i] rows of the editor's own ui", editor_rows);
+    if (scanned + rows < count) {
+        const int advance = zox_getv(list, ListVisible);
+        scanned += advance;
+        scroll_virtual_list_rows(world, list, advance);
         return 0;
     }
-    zox_log("[tst] hierarchy_roots: [%i] root rows", rows);
-    zox_tst_check(editor_rows == 0, "[%i] rows of the editor's own ui", editor_rows);
+    zox_log("[tst] hierarchy_roots: [%i] root rows", count);
+    zox_tst_check(found_a && found_b, "expected both fixture roots in the walk");
     return 1;
 }

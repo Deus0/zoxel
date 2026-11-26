@@ -71,30 +71,15 @@ static inline entity zox_get_parent(
     return ecs_get_parent(world, child);
 }
 
-// root entities: no parent (ChildOf or the non fragmenting one), not modules or flecs's own (queries, systems,
-//  observers: a poly), not pipeline phases or prefabs; up to capacity, returns how many
-static inline uint zox_get_roots(ecs* world, entity* out, uint capacity) {
-    ecs_query_t* query = ecs_query(world, {
-        .terms = {
-            { ecs_pair(EcsChildOf, EcsWildcard), .oper = EcsNot },
-            { ecs_id(EcsParent), .oper = EcsNot },
-            { EcsModule, .oper = EcsNot },
-            { ecs_pair(ecs_id(EcsPoly), EcsWildcard), .oper = EcsNot },
-            { ecs_id(EcsComponent), .oper = EcsNot },
-            { EcsPhase, .oper = EcsNot },
-        }
-    });
-    uint count = 0;
-    ecs_iter_t it = ecs_query_iter(world, query);
-    while (ecs_query_next(&it)) {
-        for (int i = 0; i < it.count && count < capacity; i++) {
-            if (it.entities[i] != EcsFlecs) {
-                out[count++] = it.entities[i];
-            }
-        }
-    }
-    ecs_query_fini(query);
-    return count;
+// Filter the parent-zero iterator to the scene roots (including unnamed entities).
+static inline byte zox_is_scene_root(ecs* world, entity e) {
+    return e != EcsFlecs && !ecs_get_parent(world, e) &&
+        !ecs_has_id(world, e, EcsModule) &&
+        !ecs_has_pair(world, e, ecs_id(EcsPoly), EcsWildcard) &&
+        !ecs_has_id(world, e, ecs_id(EcsComponent)) &&
+        !ecs_has_id(world, e, EcsPhase) &&
+        !ecs_has_id(world, e, EcsPrefab) &&
+        !ecs_has_id(world, e, EcsDisabled);
 }
 
 static inline byte zox_is_parent(

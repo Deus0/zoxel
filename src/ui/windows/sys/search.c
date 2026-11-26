@@ -6,12 +6,17 @@ byte window_search_get(ecs* world, entity window, char* text, int size, byte* ty
     if (!bar) {
         return 0;
     }
-    char* value = input_field_value(world, zox_get_child_by_id(world, bar, zox_id(TextInput)));
-    snprintf(text, size, "%s", value);
-    free(value);
-    for (char* c = text; *c; c++) {
-        *c = tolower(*c);
+    const entity field = zox_get_child_by_id(world, bar, zox_id(TextInput));
+    const entity label = input_field_label(world, field);
+    const TextData* data = label ? zox_get(label, TextData) : NULL;
+    int length = data ? int_min(data->length, size - 1) : 0;
+    for (int i = 0; i < length; i++) {
+        text[i] = tolower((unsigned char) convert_to_ascii(data->value[i]));
     }
+    if (field == input_field_focus && length && length == data->length && text[length - 1] == '_') {
+        length--;
+    }
+    text[length] = 0;
     const entity dropdown = zox_get_child_by_id(world, bar, zox_id(DropdownIndex));
     *type = dropdown ? zox_getv(dropdown, DropdownIndex) : window_search_name;
     return 1;

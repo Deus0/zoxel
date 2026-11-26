@@ -1,3 +1,4 @@
+#include "virtual_list.c"
 // Most
 zox_tag(Label);
 zox_tag(Button);
@@ -28,7 +29,8 @@ zox_tag(ScrollbarHandle);
 zox_tag(ScrollviewLink);
 zox_tag(ListUILink);
 zox_tag(FoldOwnerLink);
-zoxc_arrayd_with_remove(Unfolded, entity)
+zox_tag(FoldArrow);
+zox_tag(Unfolded);
 zoxc(OptionLabel, const char*);
 
 zoxc_byte(DropdownIndex);
@@ -38,6 +40,7 @@ zox_tag(OpenDropdown);
 zox_tag(DropdownPopup);
 
 void zox_components_elements2(ecs *world) {
+    zox_components_virtual_list(world);
     zoxd_byte(DropdownIndex);
     zoxd_arrayd(DropdownOptions);
     zoxd_nf_link(DropdownCanvas);
@@ -68,6 +71,7 @@ void zox_components_elements2(ecs *world) {
     //zoxd_byte(ToggleState);
     //zoxd_state(ToggleStateDirty);
     zoxd_nf_link(FoldOwnerLink);
-    zoxd_arrayd(Unfolded);
+    zoxd_tag(FoldArrow);
+    zoxd_nf_links(Unfolded);
     zoxd(OptionLabel);
 }

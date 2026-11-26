@@ -40,9 +40,10 @@ void zox_systems_editor(ecs *world) {
     );
     zox_on_add(
         hierarchy_spawn_event,
-        [in] elements2.Unfolded,
+        [none] elements2.VirtualList,
         [none] core.Dirty
     );
+    zox_on_add(hierarchy_slot_event, [none] editor.HierarchySlot, [none] core.Dirty);
     zox_on_add(inspector_search_event, [none] containers.ListVisible, [none] core.Dirty);
     zox_on_add(
         inspector_spawn_event,

@@ -59,10 +59,14 @@ static void window_dock_layout(ecs* world, entity window, int2 position, int2 si
         const byte2 margins = zox_getv(list, ListMargins);
         const int row = int_max(1, zox_getv(list, ElementFontSize) + 2 * padding.y + zox_getv(list, ListPadding).y);
         const int visible = int_clamp((body_size.y - 2 * margins.y) / row, 1, 255);
-        const int max_start = int_max(0, (int) zox_get_children_count(world, list) - visible);
         zox_setv(list, ListVisible, visible);
-        zox_setv(list, ListStart, int_min(zox_getv(list, ListStart), max_start));
-        zox_add(list, ListDirty);
+        if (zox_has(list, VirtualList)) {
+            zox_add(list, Dirty);
+        } else {
+            const int max_start = int_max(0, (int) zox_get_children_count(world, list) - visible);
+            zox_setv(list, ListStart, int_min(zox_getv(list, ListStart), max_start));
+            zox_add(list, ListDirty);
+        }
         zox_add(list, ListPositionDirty);
         zox_add(list, ListPositionUpdate);
     }

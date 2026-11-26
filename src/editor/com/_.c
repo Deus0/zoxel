@@ -1,3 +1,4 @@
+zox_tag(HierarchySlot);
 zox_tag(EditorElement);
 zox_tag(InspectorUI);
 zox_tag(InspectorLabel);
@@ -17,6 +18,7 @@ void zox_components_editor(ecs* world) {
     zoxd_tag(InspectorLabel);
     zoxd_tag(InspectorUI);
     zoxd_tag(HierarchyUI);
+    zoxd_tag(HierarchySlot);
     zoxd_tag(FileWindowUI);
     zoxd_nf_tag(InspectorDirty);
     zoxd_tag(MaxSystemTimeLabel);

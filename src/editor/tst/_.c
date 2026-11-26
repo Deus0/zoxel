@@ -1,6 +1,5 @@
 // tst: editor, opens and uses the editor tools from the main menu (no realm, so it's quick)
-//  - hierarchy (y): lists the entity tree from the root, one button per entity, at most
-//      hierarchy_max_elements, each targeting a unique, valid entity
+//  - hierarchy (y): lists scene roots in slots, each targeting a unique, valid entity
 //  - clicking a hierarchy row opens the inspector on its entity
 //  - inspector: a row for the name, parent, children, then one per id (component, tag, pair),
 //      every row targeting the inspected entity, shown component rows show their live label
@@ -76,57 +75,25 @@ byte zox_tst_editor_ready(ecs* world) {
         case 2: {
             zox_tst_waiting = "the hierarchy's rows";
             const entity list = zox_tst_editor_list(world, hierarchy);
-            int wrong;
-            const int rows = zox_valid(list) ? zox_tst_editor_rows(world, list, 0, &wrong) : 0;
-            if (!rows) {
+            if (!list) {
                 return 0;
             }
-            zox_tst_check(rows <= hierarchy_max_elements, "hierarchy has [%i] rows, over the [%i] limit", rows, hierarchy_max_elements);
-            // every row targets a unique, valid entity, the first one is the root
-            const entity root = zox_getv(hierarchy, Target);
-            int invalid = 0;
-            int duplicates = 0;
-            byte has_root = 0;
-            entity seen[hierarchy_max_elements];
-            int seen_count = 0;
-            entity clickable = 0;
-            iter it2 = zox_children(world, list);
-            while (zox_children_next(it2)) {
-                for (int j = 0; j < it2.count; j++) {
-                    const entity row = it2.entities[j];
-                    if (!zox_has(row, Target)) {
-                        continue;
-                    }
-                    const entity target = zox_getv(row, Target);
-                    if (!zox_valid(target)) {
-                        invalid++;
-                        continue;
-                    }
-                    for (int k = 0; k < seen_count; k++) {
-                        if (seen[k] == target) {
-                            duplicates++;
-                            break;
-                        }
-                    }
-                    if (seen_count < hierarchy_max_elements) {
-                        seen[seen_count++] = target;
-                    }
-                    if (target == root) {
-                        has_root = 1;
-                    } else if (!clickable && !zox_has(target, EditorElement)) {
-                        clickable = row;
-                    }
+            entity slots[UINT8_MAX + 1];
+            const int count = get_list_children_ordered(world, list, slots, UINT8_MAX + 1);
+            if (!count || !zox_get_link(world, slots[0], RowTargetLink)) {
+                return 0;
+            }
+            zox_tst_check(count == zox_getv(list, ListVisible) + 1, "wrong hierarchy slot count");
+            for (int i = 0; i < count; i++) {
+                const entity target = zox_get_link(world, slots[i], RowTargetLink);
+                for (int j = 0; target && j < i; j++) {
+                    zox_tst_check(target != zox_get_link(world, slots[j], RowTargetLink), "duplicate hierarchy target");
                 }
             }
-            zox_log("[tst] hierarchy of [%s] has [%i] rows", zox_getn(root), rows);
-            zox_tst_check(invalid == 0, "hierarchy has [%i] rows targeting invalid entities", invalid);
-            zox_tst_check(duplicates == 0, "hierarchy has [%i] duplicate rows", duplicates);
-            zox_tst_check(has_root, "hierarchy has no row for its root [%s]", zox_getn(root));
-            zox_tst_check(clickable, "hierarchy has no row to click");
-            if (!clickable) {
-                return 1;
-            }
-            zox_tst_editor_target = zox_getv(clickable, Target);
+            const entity clickable = slots[0];
+            zox_tst_check(zox_getv(clickable, ChildIndex) == 0 && !zox_getv(clickable, RenderDisabled),
+                "first hierarchy slot is unavailable");
+            zox_tst_editor_target = zox_get_link(world, clickable, RowTargetLink);
             zox_log("[tst] clicking hierarchy row [%s]", zox_getn(zox_tst_editor_target));
             zox_tst_click(world, player, clickable);
             break;
@@ -237,7 +204,11 @@ void zox_tst_editor_check(ecs* world) {
 #include "file_window.c"
 #include "search.c"
 
+#include "hierarchy_big.c"
+
 void zox_tsts_editor() {
+    zox_tst_add("hierarchy_big", zox_tst_hierarchy_big_ready, zox_tst_hierarchy_search_check, 20);
+    zox_tst_set_setup("hierarchy_big", NULL, 1);
     zox_tst_add("editor", zox_tst_editor_ready, zox_tst_editor_check, 60);
     zox_tst_set_setup("editor", NULL, 1);
     zox_tst_add("hierarchy_fold", zox_tst_hierarchy_fold_ready, zox_tst_hierarchy_fold_check, 20);

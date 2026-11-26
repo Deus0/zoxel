@@ -1,3 +1,21 @@
+static void scroll_virtual_list_rows(ecs* world, entity list, int rows);
+
+// Fit either axis's handle to the visible fraction and place it at the current scroll offset.
+static void layout_scrollbar_handle(ecs* world, entity handle, int2 size, int length, float fraction, byte horizontal) {
+    const int travel = (horizontal ? size.x : size.y) - length;
+    const int first = -travel / 2, last = first + travel;
+    const int offset = (int) roundf(fraction * travel);
+    const int2 handle_size = horizontal ? (int2) { length, size.y } : (int2) { size.x, length };
+    const int2 position = horizontal ? (int2) { first + offset, 0 } : (int2) { 0, last - offset };
+    const int4 constraints = horizontal ? (int4) { first, last, 0, 0 } : (int4) { 0, 0, first, last };
+    if (!int2_equals(zox_getv(handle, LayoutSize), handle_size)) {
+        zox_setv(handle, LayoutSize, handle_size);
+        zox_add(handle, LayoutSizeDirty);
+    }
+    zox_setv(handle, LayoutPosition, position);
+    zox_setv(handle, LayoutConstraints, constraints);
+}
+
 // Scrollviews: a Scrollview has a Scrollbar child (with a ScrollbarHandle) and a list (ListUILink)
 //  - ListStart is the list's first shown element, ListVisible how many show at once
 //  - dragging the handle (scrollbar_system) and the mouse wheel (scrollview_wheel_system) set the start
@@ -54,6 +72,7 @@ byte set_list_start(
     int start)
 {
     if (!zox_valid(list) ||
+        zox_has(list, VirtualList) ||
         !zox_has(list, ListStart) ||
         !zox_has(list, ListVisible))
     {
@@ -111,6 +130,13 @@ byte scroll_list_to_child(
     const int start = zox_getv(list, ListStart);
     const int visible = zox_getv(list, ListVisible);
     if (visible <= 0) {
+        return 0;
+    }
+    if (zox_has(list, VirtualList)) {
+        if (index >= visible) {
+            scroll_virtual_list_rows(world, list, index - visible + 1);
+            return 1;
+        }
         return 0;
     }
     int new_start = start;

@@ -41,8 +41,8 @@ void list_system(iter* it) {
         zox_sys_i(ListMargins, margins);
         zox_sys_i(ListStart, start);
         zox_sys_i(ListAlignment, alignment);
-        entity children[layouts2_children_capacity];
-        const uint children_count = get_list_children_ordered(world, e, children, layouts2_children_capacity);
+        entity children[layouts2_children_capacity + 1];
+        const uint children_count = get_list_children_ordered(world, e, children, layouts2_children_capacity + 1);
         if (zox_has(e, ListFit)) {
             const int2 pad = { padding->value.x, padding->value.y }, margin = { margins->value.x, margins->value.y };
             const int delta = list_fit_height(world, children, children_count, start->value, pad, margin) - size->value.y;

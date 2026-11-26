@@ -1,19 +1,3 @@
-// Fit either axis's handle to the visible fraction and place it at the current scroll offset.
-static void layout_scrollbar_handle(ecs* world, entity handle, int2 size, int length, float fraction, byte horizontal) {
-    const int travel = (horizontal ? size.x : size.y) - length;
-    const int first = -travel / 2, last = first + travel;
-    const int offset = (int) roundf(fraction * travel);
-    const int2 handle_size = horizontal ? (int2) { length, size.y } : (int2) { size.x, length };
-    const int2 position = horizontal ? (int2) { first + offset, 0 } : (int2) { 0, last - offset };
-    const int4 constraints = horizontal ? (int4) { first, last, 0, 0 } : (int4) { 0, 0, first, last };
-    if (!int2_equals(zox_getv(handle, LayoutSize), handle_size)) {
-        zox_setv(handle, LayoutSize, handle_size);
-        zox_add(handle, LayoutSizeDirty);
-    }
-    zox_setv(handle, LayoutPosition, position);
-    zox_setv(handle, LayoutConstraints, constraints);
-}
-
 // Resizes the scrollbar handle upon list updates
 // TODO: shouldn't this be on scrollarea resizes??
 // an observer on ListDirty (a one-off event, removed here)
@@ -24,6 +8,9 @@ void scrollbar_handle_event(iter* it) {
     zox_sys_in(ListStart);
     for (int i = 0; i < it->count; i++) {
         zox_remove(it->entities[i], ListDirty);
+        if (zox_has(it->entities[i], VirtualList)) {
+            continue;
+        }
         zox_sys_i(ListVisible, visible);
         zox_sys_i(ListStart, start);
         entity scrollview = zox_get_link(world, it->entities[i], ScrollviewLink);

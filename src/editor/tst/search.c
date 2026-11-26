@@ -20,19 +20,10 @@ static void zox_tst_search_set(ecs* world, entity window, const char* text, byte
 // the hierarchy's rows: their count, and the first row's target
 static int zox_tst_search_rows(ecs* world, entity window, entity* first) {
     const entity list = zox_tst_editor_list(world, window);
-    int count = 0;
-    *first = 0;
-    iter it2 = zox_children(world, list);
-    while (zox_children_next(it2)) {
-        for (int j = 0; j < it2.count; j++) {
-            if (zox_has(it2.entities[j], Target)) {
-                if (!count++ || zox_getv(it2.entities[j], ChildIndex) == 0) {
-                    *first = zox_getv(it2.entities[j], Target);
-                }
-            }
-        }
-    }
-    return count;
+    entity slots[UINT8_MAX + 1];
+    *first = get_list_children_ordered(world, list, slots, UINT8_MAX + 1)
+        ? zox_get_link(world, slots[0], RowTargetLink) : 0;
+    return zox_tst_hierarchy_count(world, window);
 }
 
 byte zox_tst_hierarchy_search_ready(ecs* world) {

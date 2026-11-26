@@ -1386,11 +1386,10 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 - Add Terrain Depth to options - debug options
 
 # Editor
+- Virtual list scrollbar drag: one walk (it counts the rows in one pass, then walks to the page)
 - Editor realm button: an "R" overlay button on the game viewport (top corner) spawns the realm when clicked and turns
   to "E"; clicking "E" disposes the realm (back to "R"). The hierarchy shows the realm once it's spawned (it's a root),
   to debug the game's data: inspect its blueprints, models, items, stats; the hierarchy refreshes on spawn and dispose
-- Hierarchy roots: ~154 root entities (resources: shaders, materials, stat and skill metas, icons, model files)
-  pass its 128 row limit; group them (a Resources row) or raise the limit
 - File window grid view: folders and files as icon tiles in a grid (like most file viewers), a toggle with the list
   view it has now
 - Game level build defaults: a game sets its own (zedit keeps logs in release), then bsh/zedit.sh goes; zedit
