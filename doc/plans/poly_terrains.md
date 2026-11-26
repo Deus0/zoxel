@@ -15,8 +15,11 @@ by what they link to.
 - **The character:** zeland uses zoxel's own character (character3), with no stats for now (early stages; stats
   are added by game code, through `zox_prefab_character_set`, never by the prefab). What ties the prefab to voxels
   comes out of it: `LinkChunk`, `ChunkPosition` / `BlockPosition`, the `InsideBlock*` components, `BlockScale`,
-  `RaycastVoxelData`, `TerrainGravity` and the AABB `Bounds3D`. The voxel terrain adds those to characters itself,
-  the same way. Kept modular.
+  `RaycastVoxelData`, `TerrainGravity` and the AABB `Bounds3D`. Game code adds those, like stats: a helper in the
+  characters module, `prefab_characters3_add_voxels(world)`, adds them to every character prefab
+  (`zox_prefab_character_set`), and zoxel's game code calls it; zeland's calls a capsule helper instead. (The voxel
+  terrain can't add them itself: it's imported before characters, and biomes, heights and towns need it there.)
+  Kept modular.
 - **Heights:** `PolyHeights`, a float array on the `PolyTerrain` entity, for now.
 - **The capsule:** a `Capsule` tag with new core float variants `RadiusFloat` and `HeightFloat`. The engine is
   mostly bytes, so `Radius` and `Height` stay bytes (mountains, regions and towns use them as whole blocks).
@@ -112,9 +115,9 @@ kept current as each step lands, not a step of their own).
 5. **poly terrain physics:**
    - `Capsule`, `RadiusFloat`, `HeightFloat`, the closest point functions in `terrains/poly/collisions`
    - `ColliderLink`, the body system dispatching by its terrain link, voxel collisions skipping other kinds
-   - the character off voxels: the voxel components above move out of `spawn_prefab_character3` into the voxel
-     terrain's prefab hook (`zox_prefab_character_set`), the capsule child goes on instead of the AABB; to check as
-     it starts: what the body's generation still needs from the realm (its parts and colours)
+   - the character off voxels: the voxel components above move out of `spawn_prefab_character3` into
+     `prefab_characters3_add_voxels`, called by gam/zoxel; gam/zeland gives its characters the capsule child instead
+     of the AABB; to check as it starts: what the body's generation still needs from the realm (parts, colours)
    - tests: `capsule_maths` (pure), `poly_land` (a capsule dropped rests at height + radius, `Grounded`),
      `poly_slope` (slides on a steep face, stands on a gentle one), `poly_walk` (pushed across hills, never under
      the surface, no tunneling at speed); zoxel's character, terrain and collision tests pass as before
