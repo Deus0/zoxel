@@ -7,12 +7,12 @@ void mesh_clone_sync_event(iter* it) {
     zox_sys_begin();
     zox_sys_in(MeshIndicies);
     zox_sys_in(MeshVertices);
-    zox_sys_in(MeshColorRGBs);
+    zox_sys_in(MeshColors);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(MeshIndicies, indicies);
         zox_sys_i(MeshVertices, verts);
-        zox_sys_i(MeshColorRGBs, colors);
+        zox_sys_i(MeshColors, colors);
         if (!indicies->value ||
             !verts->value ||
             !colors->value)
@@ -38,13 +38,13 @@ void mesh_clone_sync_event(iter* it) {
                 clone == e ||
                 !zox_has(clone, MeshIndicies) ||
                 !zox_has(clone, MeshVertices) ||
-                !zox_has(clone, MeshColorRGBs))
+                !zox_has(clone, MeshColors))
             {
                 continue;
             }
             clone_MeshIndicies(zox_get_mut(clone, MeshIndicies), indicies);
             clone_MeshVertices(zox_get_mut(clone, MeshVertices), verts);
-            clone_MeshColorRGBs(zox_get_mut(clone, MeshColorRGBs), colors);
+            clone_MeshColors(zox_get_mut(clone, MeshColors), colors);
             zox_add(clone, MeshDirty);
             if (dbg_log) {
                 zox_log("Synced Mesh Clone [%s] from [%s] [%i]",

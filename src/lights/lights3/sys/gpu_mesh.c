@@ -403,6 +403,7 @@ void chunk_gpu_render_system(iter* it) {
     zox_sys_in(VaoGPULink);
     entity terrain_cached = 0;
     entity tilemap_cached = 0;
+    entity manager_cached = 0;
     guint program = 0;
     byte terrain_depth = 0;
     float terrain_scale = 1;
@@ -427,6 +428,7 @@ void chunk_gpu_render_system(iter* it) {
         }
         if (terrain != terrain_cached) {
             terrain_cached = terrain;
+            manager_cached = 0;     // its program's glows set again
             program = zox_has(terrain, MaterialGPULink) ? zox_getv(terrain, MaterialGPULink) : 0;
             terrain_depth = zox_getv(terrain, NodeDepth);
             terrain_scale = zox_getv(terrain, BlockScale);
@@ -438,6 +440,19 @@ void chunk_gpu_render_system(iter* it) {
         }
         if (!program) {
             continue;
+        }
+        // each voxel value's glow (BlockGlow), the shader's glows
+        const entity manager = zox_get_link(world, chunk, BlockManagerLink);
+        if (manager != manager_cached) {
+            manager_cached = manager;
+            byte table[256];
+            get_block_glows(world, manager, table);
+            float4 glows[64];
+            for (int g = 0; g < 64; g++) {
+                glows[g] = (float4) { table[g * 4] / 255.0f, table[g * 4 + 1] / 255.0f, table[g * 4 + 2] / 255.0f,
+                    table[g * 4 + 3] / 255.0f };
+            }
+            zox_gpu_program_float4_array(program, "glows", glows, 64);
         }
         const entity tilemap = zox_get_link(world, e, MaterialLink);
         if (tilemap != tilemap_cached) {

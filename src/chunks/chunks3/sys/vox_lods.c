@@ -42,7 +42,7 @@ byte build_vox_mesh_at_depth(
     byte kind,
     MeshIndicies* indicies,
     MeshVertices* vertices,
-    MeshColorRGBs* colors,
+    MeshColors* colors,
     byte greedy)
 {
     if (!zox_valid(vox) ||
@@ -77,7 +77,7 @@ byte build_vox_mesh_at_depth(
     mesh_colored_build_data mesh = {
         .indicies = create_int_array_d(initial_dynamic_array_size),
         .vertices = create_float3_array_d(initial_dynamic_array_size),
-        .colors = create_color_rgb_array_d(initial_dynamic_array_size)
+        .colors = create_color_array_d(initial_dynamic_array_size)
     };
     // the vox's octree locked while walked, its writers can run alongside (thread_safety.md)
     spinlock* vlock = zox_octree_lock(world, vox);
@@ -96,7 +96,7 @@ byte build_vox_mesh_at_depth(
     colors->length = mesh.colors->size;
     indicies->value = finalize_arrayd_int(mesh.indicies);
     vertices->value = finalize_arrayd_float3(mesh.vertices);
-    colors->value = finalize_arrayd_color_rgb(mesh.colors);
+    colors->value = finalize_arrayd_color(mesh.colors);
     // merged now (greedy), a skeleton mesh after its weights (bones/sys/generate.c)
     if (greedy) {
         mesh_greedy(indicies, vertices, colors, NULL, position, cscale / octree_size(target_depth));
@@ -117,13 +117,13 @@ void vox_lod_mesh_build_system(iter* it) {
     zox_sys_in(RenderDepth);
     zox_sys_out(MeshIndicies);
     zox_sys_out(MeshVertices);
-    zox_sys_out(MeshColorRGBs);
+    zox_sys_out(MeshColors);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RenderDepth, rdepth);
         zox_sys_o(MeshIndicies, indicies);
         zox_sys_o(MeshVertices, vertices);
-        zox_sys_o(MeshColorRGBs, colors);
+        zox_sys_o(MeshColors, colors);
         if (zox_sys_budget_spent(vox_mesh)) {
             continue;
         }

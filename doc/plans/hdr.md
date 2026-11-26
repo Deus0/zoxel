@@ -104,6 +104,22 @@ The source of values past 1, in order:
 - Limits: box filtered mips can look blocky and shimmer as the camera moves. The fix, if it shows: a chain of
   targets, the dual filter / COD style (13 tap down, 9 tap tent up), a bright pass with a soft knee.
 
+### A3.1 Glow (built, 2026-11-27)
+
+The user's design: a value carried with the data, not a material of its own (a glow material with its own mesh was
+tried and dropped: one brightness for all, no glowing liquids, a mesh and a system a kind).
+
+- **Mesh colours are rgba** (`MeshColors`, was `MeshColorRGBs`): rgb as before, the alpha a vertex's glow (0 none).
+  Every cpu mesher writes it (terrain, vox models, skeletons, poly terrain); uploads 4 bytes a vertex; vulkan's rgb8
+  fallback is gone. Not see through: a slime's shell is its own mesh with an `alpha` uniform.
+- **Shaders**: `GLOW` 3: terrain (textured3D) `max(light, glow) * (1 + glow * 3)`, a glowing face lit at night too;
+  vox models, instances and bones `colour * (1 + glow * 3)`.
+- **Blocks**: a `BlockGlow` tag (glow stones). The cpu's smooth lights write 255 into its faces' alpha
+  (`get_block_glows`, a voxel value's table); the gpu's textured draw looks its voxel (in the vertex's w) up in a
+  `glows` uniform set from the same table, so the compute mesher is unchanged.
+- tst glow_view (gl: cpu meshes, vulkan: gpu meshes): a glow stone's middle clipped white; without the tag ~150 blue.
+- Next: a glow byte per vox palette colour (the street lamp's bulb, gravity cores), particles' glow.
+
 ### A5. Later, as outlines did
 
 Viewport cameras (split screen, model_views), xr (two eyes), web's `viewport_downscale`.
@@ -148,7 +164,7 @@ After realm colour generation is redone (the user, 2026-11-27):
 ## Order, each step working and tested
 
 1. A1 + A2: float target and the tonemap setting, gl then vulkan. Nothing looks different at clamp (built).
-2. A4 bloom (built, v1), then A3.1: emissive brightness past 1 on glow stones. The first visible change.
+2. A4 bloom (built, v1), then A3.1: glow stones past 1 (built), vox palette glow, particles' glow.
 3. A3.2 to A3.4 as lighting and sky work land.
 4. B0 check, then B on vulkan if the driver offers it.
 5. A5: viewport cameras, xr.

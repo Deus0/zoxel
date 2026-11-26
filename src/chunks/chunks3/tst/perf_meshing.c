@@ -115,7 +115,7 @@ static inline mesh_uvs_build_data zox_tst_pm_uvs_mesh() {
         .indicies = create_int_array_d(initial_dynamic_array_size),
         .vertices = create_float3_array_d(initial_dynamic_array_size),
         .uvs = create_float2_array_d(initial_dynamic_array_size),
-        .color_rgbs = create_color_rgb_array_d(initial_dynamic_array_size)
+        .color_rgbs = create_color_array_d(initial_dynamic_array_size)
     };
 }
 
@@ -123,7 +123,7 @@ static inline void zox_tst_pm_uvs_mesh_dispose(mesh_uvs_build_data* mesh) {
     dispose_int_array_d(mesh->indicies);
     dispose_float3_array_d(mesh->vertices);
     dispose_float2_array_d(mesh->uvs);
-    dispose_color_rgb_array_d(mesh->color_rgbs);
+    dispose_color_array_d(mesh->color_rgbs);
 }
 
 // the terrain chunk's world for a mesher: tilemap uvs for 3 blocks (each face its own tile), all solid, full height
@@ -246,19 +246,19 @@ static int zox_tst_pm_greedy(const VoxelNode* model, const ColorRGBs* colors, by
             mesh_colored_build_data mesh = {
                 .indicies = create_int_array_d(initial_dynamic_array_size),
                 .vertices = create_float3_array_d(initial_dynamic_array_size),
-                .colors = create_color_rgb_array_d(initial_dynamic_array_size)
+                .colors = create_color_array_d(initial_dynamic_array_size)
             };
             build_voxel_mesh(model, NULL, colors, &mesh, depth, target, float3_zero, 1.0f, 1);
             MeshIndicies i = { .length = mesh.indicies->size, .value = finalize_arrayd_int(mesh.indicies) };
             MeshVertices v = { .length = mesh.vertices->size, .value = finalize_arrayd_float3(mesh.vertices) };
-            MeshColorRGBs c = { .length = mesh.colors->size, .value = finalize_arrayd_color_rgb(mesh.colors) };
+            MeshColors c = { .length = mesh.colors->size, .value = finalize_arrayd_color(mesh.colors) };
             const double begin = get_time_ms();
             mesh_greedy(&i, &v, &c, NULL, float3_zero, 1.0f / octree_size(target));
             total += get_time_ms() - begin;
             faces = v.length / 4;
             dispose_MeshIndicies(&i);
             dispose_MeshVertices(&v);
-            dispose_MeshColorRGBs(&c);
+            dispose_MeshColors(&c);
         }
         if (*ms < 0 || total / 5 < *ms) {
             *ms = total / 5;
@@ -278,7 +278,7 @@ static int zox_tst_pm_colored(const VoxelNode* model, const ColorRGBs* colors, b
             mesh_colored_build_data mesh = {
                 .indicies = create_int_array_d(initial_dynamic_array_size),
                 .vertices = create_float3_array_d(initial_dynamic_array_size),
-                .colors = create_color_rgb_array_d(initial_dynamic_array_size)
+                .colors = create_color_array_d(initial_dynamic_array_size)
             };
             const double begin = get_time_ms();
             build_voxel_mesh(model, NULL, colors, &mesh, depth, target, float3_zero, 1.0f, pyramid);
@@ -286,7 +286,7 @@ static int zox_tst_pm_colored(const VoxelNode* model, const ColorRGBs* colors, b
             faces = mesh.vertices->size / 4;
             dispose_int_array_d(mesh.indicies);
             dispose_float3_array_d(mesh.vertices);
-            dispose_color_rgb_array_d(mesh.colors);
+            dispose_color_array_d(mesh.colors);
         }
         if (*ms < 0 || total / builds < *ms) {
             *ms = total / builds;

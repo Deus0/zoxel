@@ -2,7 +2,7 @@
 
 void zox_apply_debug_colors(const byte* solidity,
     const VoxelNode* node,
-    const MeshColorRGBs* colors,
+    const MeshColors* colors,
     int* color_index,
     byte target,
     byte depth
@@ -49,13 +49,13 @@ void light3_build_system(iter* it) {
     zox_sys_in(VoxelNode);
     zox_sys_in(LightOctree);
     zox_sys_in(RenderDepth);
-    zox_sys_in(MeshColorRGBs);
+    zox_sys_in(MeshColors);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_i(VoxelNode, nodev);
         zox_sys_i(LightOctree, nodel);
         zox_sys_i(RenderDepth, depth);
-        zox_sys_i(MeshColorRGBs, colors);
+        zox_sys_i(MeshColors, colors);
         entity terrain = zox_get_parent(world, e);
         const LightOctree *nnodesl[6];
         fetch_neightbor_light_nodes(world, neighbors, nnodesl);

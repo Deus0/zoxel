@@ -37,7 +37,7 @@ typedef struct {
     int_array_d *indicies;
     float3_array_d* vertices;
     float2_array_d* uvs;
-    color_rgb_array_d* color_rgbs;
+    color_array_d* color_rgbs;
 } mesh_uvs_build_data;
 
 
@@ -62,7 +62,7 @@ static inline void zox_build_voxel_face(
     mesh_add_face(mesh->indicies, mesh->vertices, face_indicies, face_verts, position, scale.x);
     for (byte i = 0; i < 4; i++) {
         float2_array_d_add(mesh->uvs, face_uvs[i]);
-        color_rgb_array_d_add(mesh->color_rgbs, color_rgb_white);
+        color_array_d_add(mesh->color_rgbs, color_glow(color_rgb_white, 0));
     }
 }
 
@@ -95,13 +95,13 @@ void chunk_textured_build_system(iter* it) {
     zox_sys_out(MeshIndicies);
     zox_sys_out(MeshVertices);
     zox_sys_out(MeshUVs);
-    zox_sys_out(MeshColorRGBs);
+    zox_sys_out(MeshColors);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RenderDepth, depth);
         zox_sys_o(MeshIndicies, indicies);
         zox_sys_o(MeshVertices, verts);
-        zox_sys_o(MeshColorRGBs, colors);
+        zox_sys_o(MeshColors, colors);
         zox_sys_o(MeshUVs, uvs);
         // NOTE: Delay if past limit [max_process]
         if (max_process && process_count > max_process) {
@@ -235,7 +235,7 @@ void chunk_textured_build_system(iter* it) {
             .indicies = create_int_array_d(initial_dynamic_array_size),
             .vertices = create_float3_array_d(initial_dynamic_array_size),
             .uvs = create_float2_array_d(initial_dynamic_array_size),
-            .color_rgbs = create_color_rgb_array_d(initial_dynamic_array_size)
+            .color_rgbs = create_color_array_d(initial_dynamic_array_size)
         };
         // build out mesh data
         terrain_build_data data = {
@@ -270,14 +270,14 @@ void chunk_textured_build_system(iter* it) {
         dispose_MeshIndicies(indicies);
         dispose_MeshVertices(verts);
         dispose_MeshUVs(uvs);
-        dispose_MeshColorRGBs(colors);
+        dispose_MeshColors(colors);
         indicies->length = mesh_data.indicies->size;
         verts->length = mesh_data.vertices->size;
         uvs->length = mesh_data.uvs->size;
         colors->length = mesh_data.color_rgbs->size;
         indicies->value = finalize_arrayd_int(mesh_data.indicies);
         verts->value = finalize_arrayd_float3(mesh_data.vertices);
-        colors->value = finalize_arrayd_color_rgb(mesh_data.color_rgbs);
+        colors->value = finalize_arrayd_color(mesh_data.color_rgbs);
         uvs->value = finalize_arrayd_float2(mesh_data.uvs);
         // dirty
         zox_remove(e, BuildMesh);

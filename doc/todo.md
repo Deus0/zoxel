@@ -80,6 +80,9 @@ Failing tests from full runs, worked through slowly; making tests smaller and fa
 section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what's known.
 - 2026-11-24 full runs: 391 of 395 pass (the rest pass alone, flaky under load: stream_seams, tables_stream,
   punch_wind_up, map_pixel, door_save, town_furniture)
+- door_glow (2026-11-27, solo, every run, master too): "open: no light came in by the door [255], shut it was [255]",
+  the light by the door is full both ways
+- dig_light on vulkan (2026-11-27, every run, master too): "the hole's faces never showed (0 of 5)"; gl passes
 - bed_sleep (2026-11-27, solo, 1 run in 5): "asleep it isn't still: DisableMovement [0]" on climbing on, then
   "getting off it can already move"; the next 3 runs passed
 - editor (2026-11-26, zoxel and zedit): fails at step 9, "fps display didn't open" after toggle_fps_viewer (z), then

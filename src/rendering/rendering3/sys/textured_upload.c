@@ -15,7 +15,7 @@ void textured_mesh_update_system(iter* it) {
     zox_sys_out(MeshIndicies);
     zox_sys_out(MeshVertices);
     zox_sys_out(MeshUVs);
-    zox_sys_in(MeshColorRGBs);
+    zox_sys_in(MeshColors);
     zox_sys_out(MeshRenderCount);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
@@ -25,7 +25,7 @@ void textured_mesh_update_system(iter* it) {
         zox_sys_o(MeshIndicies, indicies);
         zox_sys_o(MeshVertices, verts);
         zox_sys_o(MeshUVs, uvs);
-        zox_sys_i(MeshColorRGBs, colors);
+        zox_sys_i(MeshColors, colors);
         zox_sys_o(MeshRenderCount, count);
         // lights still building colors, keep old mesh until ready
         if (!zox_no_lights &&
@@ -69,7 +69,7 @@ void textured_mesh_update_system(iter* it) {
         zox_gpu_array_buffer(
             gpu_colors->value,
             verts->length,
-            sizeof(color_rgb),
+            sizeof(color),
             colors->value);
         count->value = indicies->length;
         zox_remove(e, MeshDirty);

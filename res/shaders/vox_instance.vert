@@ -3,7 +3,9 @@
 // NOTE: a model matrix's bottom row is unused (0 0 0 1), [0][3] carries the instance brightness
 //  - set by vox_instance_render_system from the entity's Brightness (i.e. the light at a minivox)
 layout(location=0) in vec3 vertex_position;
-layout(location=1) in vec3 vertex_color;
+layout(location=1) in vec4 vertex_color;     // its colour, its alpha its glow
+const float GLOW = 3.0;   // a vertex's glow (its colour's alpha, doc/plans/hdr.md): up to this much past white
+
 uniform InstanceMatrices {
     mat4 matrices[zox_ubo_max];
 };
@@ -17,7 +19,7 @@ void main() {
     float instance_brightness = model_matrix[0][3];
     model_matrix[0][3] = 0.0;
     gl_Position = camera_matrix * (model_matrix * vec4(vertex_position, 1.0));
-    vertex_color_frag = vertex_color * instance_brightness;
+    vertex_color_frag = vertex_color.rgb * instance_brightness * (1.0 + vertex_color.a * GLOW);
     float fog_level = gl_Position.z * gl_Position.z;
     fog_blend = min(1.0, 1.1 - exp2(-fog_data.w * fog_level));
 }

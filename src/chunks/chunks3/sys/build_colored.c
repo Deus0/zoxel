@@ -1,7 +1,7 @@
 typedef struct {
     int_array_d* indicies;
     float3_array_d* vertices;
-    color_rgb_array_d* colors;
+    color_array_d* colors;
 } mesh_colored_build_data;
 
 // a face at a voxel position (in voxels) of a mesh scale big, moved by offset (its bounds): its colours added after
@@ -367,7 +367,7 @@ void chunk_colors_build_system(iter* it) {
     zox_sys_in(BlockScale);
     zox_sys_out(MeshIndicies);
     zox_sys_out(MeshVertices);
-    zox_sys_out(MeshColorRGBs);
+    zox_sys_out(MeshColors);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(VoxelNode, voxels);
@@ -379,7 +379,7 @@ void chunk_colors_build_system(iter* it) {
         zox_sys_i(BlockScale, scale);
         zox_sys_o(MeshIndicies, indicies);
         zox_sys_o(MeshVertices, vertices);
-        zox_sys_o(MeshColorRGBs, colors);
+        zox_sys_o(MeshColors, colors);
         // NOTE: Delay if past limit [max_process]
         if (max_process && process_count > max_process) {
             break;
@@ -418,7 +418,7 @@ void chunk_colors_build_system(iter* it) {
         mesh_colored_build_data mesh = {
             .indicies = create_int_array_d(initial_dynamic_array_size),
             .vertices = create_float3_array_d(initial_dynamic_array_size),
-            .colors = create_color_rgb_array_d(initial_dynamic_array_size)
+            .colors = create_color_array_d(initial_dynamic_array_size)
         };
         // its octree and neighbors' locked while walked (thread_safety.md)
         spinlock* neighbor_locks[6];
@@ -442,20 +442,20 @@ void chunk_colors_build_system(iter* it) {
                 mesh_colored_build_data shell_mesh = {
                     .indicies = create_int_array_d(initial_dynamic_array_size),
                     .vertices = create_float3_array_d(initial_dynamic_array_size),
-                    .colors = create_color_rgb_array_d(initial_dynamic_array_size)
+                    .colors = create_color_array_d(initial_dynamic_array_size)
                 };
                 build_voxel_mesh_material(voxels, noctrees, palette, &shell_mesh, ndepth->value, rdepth->value, position,
                     cscale, 1, materials, zox_block_material_liquid);
                 MeshIndicies* shell_indicies = zox_get_mut(shell, MeshIndicies);
                 MeshVertices* shell_vertices = zox_get_mut(shell, MeshVertices);
-                MeshColorRGBs* shell_colors = zox_get_mut(shell, MeshColorRGBs);
+                MeshColors* shell_colors = zox_get_mut(shell, MeshColors);
                 clear_mesh(shell_indicies, shell_vertices, shell_colors);
                 shell_indicies->length = shell_mesh.indicies->size;
                 shell_vertices->length = shell_mesh.vertices->size;
                 shell_colors->length = shell_mesh.colors->size;
                 shell_indicies->value = finalize_arrayd_int(shell_mesh.indicies);
                 shell_vertices->value = finalize_arrayd_float3(shell_mesh.vertices);
-                shell_colors->value = finalize_arrayd_color_rgb(shell_mesh.colors);
+                shell_colors->value = finalize_arrayd_color(shell_mesh.colors);
                 if (zox_greedy_mesh) {
                     mesh_greedy(shell_indicies, shell_vertices, shell_colors, NULL, position, voxel_size);
                 }
@@ -468,7 +468,7 @@ void chunk_colors_build_system(iter* it) {
         colors->length = mesh.colors->size;
         indicies->value = finalize_arrayd_int(mesh.indicies);
         vertices->value = finalize_arrayd_float3(mesh.vertices);
-        colors->value = finalize_arrayd_color_rgb(mesh.colors);
+        colors->value = finalize_arrayd_color(mesh.colors);
         if (zox_greedy_mesh) {
             mesh_greedy(indicies, vertices, colors, NULL, position, voxel_size);
         }

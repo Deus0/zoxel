@@ -9,7 +9,7 @@
 
 typedef struct {
     float3 vertices[4];
-    color_rgb colors[4];
+    color colors[4];
 } zox_tst_vox_face;
 
 static int zox_tst_vox_face_compare(const void* a, const void* b) {
@@ -34,14 +34,14 @@ static mesh_colored_build_data zox_tst_vox_mesh_new() {
     return (mesh_colored_build_data) {
         .indicies = create_int_array_d(initial_dynamic_array_size),
         .vertices = create_float3_array_d(initial_dynamic_array_size),
-        .colors = create_color_rgb_array_d(initial_dynamic_array_size)
+        .colors = create_color_array_d(initial_dynamic_array_size)
     };
 }
 
 static void zox_tst_vox_mesh_dispose(mesh_colored_build_data* mesh) {
     dispose_int_array_d(mesh->indicies);
     dispose_float3_array_d(mesh->vertices);
-    dispose_color_rgb_array_d(mesh->colors);
+    dispose_color_array_d(mesh->colors);
 }
 
 static void zox_tst_vox_mesh_grid_compare(const VoxelNode* vox, const ColorRGBs* colors, byte node_depth, byte depth) {

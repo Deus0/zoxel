@@ -15,7 +15,7 @@ entity spawn_prefab_cube_textured(
     zox_setv(e, TextureSize, texture_size);
     zox_setv(e, TextureGPULink, 0);
     // Colors
-    zox_add(e, MeshColorRGBs);
+    zox_add(e, MeshColors);
     zox_setv(e, ColorsGPULink, 0);
     prefab_set_mesh_colors_rgb(
         world,

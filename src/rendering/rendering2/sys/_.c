@@ -12,7 +12,7 @@ void zox_systems_basics2D(ecs *world) {
         [in] rendering.MeshGPULink,
         [none] rendering.MeshDirty,
         [none] !rendering.MeshUVs,
-        [none] !rendering.MeshColorRGBs,
+        [none] !rendering.MeshColors,
         [none] !core.Initialize,
     );
     zox_system_1(

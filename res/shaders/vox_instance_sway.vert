@@ -2,7 +2,9 @@
 // NOTE: matrices are model matrices here, camera_matrix is applied after sway
 // NOTE: [0][3] of a model matrix carries the instance brightness, like vox_instance.vert
 layout(location=0) in vec3 vertex_position;
-layout(location=1) in vec3 vertex_color;
+layout(location=1) in vec4 vertex_color;     // its colour, its alpha its glow
+const float GLOW = 3.0;   // a vertex's glow (its colour's alpha, doc/plans/hdr.md): up to this much past white
+
 uniform InstanceMatrices {
     mat4 matrices[zox_ubo_max];
 };
@@ -43,7 +45,7 @@ void main() {
         sway_noise(wind + vec2(17.3, 5.1))) * 2.0 - 1.0;
     world_position.xz += sway * sway_data.y * top;
     gl_Position = camera_matrix * world_position;
-    vertex_color_frag = vertex_color * instance_brightness;
+    vertex_color_frag = vertex_color.rgb * instance_brightness * (1.0 + vertex_color.a * GLOW);
     float fog_level = gl_Position.z * gl_Position.z;
     fog_blend = min(1.0, 1.1 - exp2(-fog_data.w * fog_level));
 }

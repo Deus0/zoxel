@@ -42,7 +42,7 @@ static inline int zox_tst_gvc_cpu(const VoxelNode* model, const ColorRGBs* color
     mesh_colored_build_data mesh = {
         .indicies = create_int_array_d(initial_dynamic_array_size),
         .vertices = create_float3_array_d(initial_dynamic_array_size),
-        .colors = create_color_rgb_array_d(initial_dynamic_array_size)
+        .colors = create_color_array_d(initial_dynamic_array_size)
     };
     build_voxel_mesh_material(model, NULL, colors, &mesh, zox_tst_vm_depth, zox_tst_gvc_lod, float3_zero, 1.0f, 1,
         materials, material);
@@ -50,15 +50,15 @@ static inline int zox_tst_gvc_cpu(const VoxelNode* model, const ColorRGBs* color
         // merged as the game's are (mesh_greedy), back into the build arrays
         MeshIndicies i = { .length = mesh.indicies->size, .value = zox_malloc(sizeof(int) * (mesh.indicies->size + 1)) };
         MeshVertices v = { .length = mesh.vertices->size, .value = zox_malloc(sizeof(float3) * (mesh.vertices->size + 1)) };
-        MeshColorRGBs c = { .length = mesh.colors->size, .value = zox_malloc(sizeof(color_rgb) * (mesh.colors->size + 1)) };
+        MeshColors c = { .length = mesh.colors->size, .value = zox_malloc(sizeof(color) * (mesh.colors->size + 1)) };
         memcpy(i.value, mesh.indicies->data, sizeof(int) * i.length);
         memcpy(v.value, mesh.vertices->data, sizeof(float3) * v.length);
-        memcpy(c.value, mesh.colors->data, sizeof(color_rgb) * c.length);
+        memcpy(c.value, mesh.colors->data, sizeof(color) * c.length);
         mesh_greedy(&i, &v, &c, NULL, float3_zero, 1.0f / octree_size(zox_tst_gvc_lod));
         mesh.indicies->size = mesh.vertices->size = mesh.colors->size = 0;
         for (int k = 0; k < i.length; k++) int_array_d_add(mesh.indicies, i.value[k]);
         for (int k = 0; k < v.length; k++) float3_array_d_add(mesh.vertices, v.value[k]);
-        for (int k = 0; k < c.length; k++) color_rgb_array_d_add(mesh.colors, c.value[k]);
+        for (int k = 0; k < c.length; k++) color_array_d_add(mesh.colors, c.value[k]);
         zox_free(i.value);
         zox_free(v.value);
         zox_free(c.value);
@@ -68,7 +68,7 @@ static inline int zox_tst_gvc_cpu(const VoxelNode* model, const ColorRGBs* color
     for (int f = 0; f < faces; f++) {
         uint face_colors[4];
         for (int c = 0; c < 4; c++) {
-            const color_rgb rgb = mesh.colors->data[f * 4 + c];
+            const color rgb = mesh.colors->data[f * 4 + c];
             face_colors[c] = rgb.r | (rgb.g << 8) | (rgb.b << 16);
         }
         // the cpu's mesh is the model's size (1), in voxels it's the grid's
@@ -82,7 +82,7 @@ static inline int zox_tst_gvc_cpu(const VoxelNode* model, const ColorRGBs* color
     }
     dispose_int_array_d(mesh.indicies);
     dispose_float3_array_d(mesh.vertices);
-    dispose_color_rgb_array_d(mesh.colors);
+    dispose_color_array_d(mesh.colors);
     return faces;
 }
 

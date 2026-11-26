@@ -13,6 +13,6 @@ entity spawn_prefab_vox_file(ecs *world, entity prefab) {
     zox_add(e, Mesh);
     zox_set(e, MeshIndicies, { 0 });
     zox_set(e, MeshVertices, { 0 });
-    zox_set(e, MeshColorRGBs, { 0 });
+    zox_set(e, MeshColors, { 0 });
     return e;
 }

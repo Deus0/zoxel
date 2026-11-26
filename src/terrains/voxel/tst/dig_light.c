@@ -62,11 +62,11 @@ static inline int zox_tst_dig_measure(ecs* world, entity chunk, byte3 at, float*
     const float3 middle_at = float3_scale(float3_add(low, high), 0.5f);
     for (uint c = 0; c < count; c++) {
         const entity mesh = children[c];
-        if (!zox_has(mesh, MeshVertices) || !zox_has(mesh, MeshColorRGBs)) {
+        if (!zox_has(mesh, MeshVertices) || !zox_has(mesh, MeshColors)) {
             continue;
         }
         const MeshVertices* vertices = zox_get(mesh, MeshVertices);
-        const MeshColorRGBs* colors = zox_get(mesh, MeshColorRGBs);
+        const MeshColors* colors = zox_get(mesh, MeshColors);
         if (colors->length != vertices->length) {
             continue;
         }
@@ -83,7 +83,7 @@ static inline int zox_tst_dig_measure(ecs* world, entity chunk, byte3 at, float*
             if (float3_distance(middle, middle_at) <= 4 * s) {
                 around_faces++;
                 for (int k = 0; k < 4; k++) {
-                    const color_rgb col = colors->value[i + k];
+                    const color col = colors->value[i + k];
                     around_sum += (col.r + col.g + col.b) / 3.0;
                 }
             }
@@ -94,7 +94,7 @@ static inline int zox_tst_dig_measure(ecs* world, entity chunk, byte3 at, float*
             }
             faces++;
             for (int k = 0; k < 4; k++) {
-                const color_rgb col = colors->value[i + k];
+                const color col = colors->value[i + k];
                 sum += (col.r + col.g + col.b) / 3.0;
             }
         }

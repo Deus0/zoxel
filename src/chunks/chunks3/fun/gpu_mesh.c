@@ -683,7 +683,7 @@ static const char* zox_gpu_mesh_fragment_source =
 "}\n";
 
 // drawing a textured gpu chunk mesh, as textured3D draws a cpu one: the tilemap's texel times its light (its face's 4
-//  corner lights blended across the face, no diagonal seam), brightness and fog
+//  corner lights blended across the face, no diagonal seam), its glow (its voxel's, glows: BlockGlow), brightness and fog
 //  - transform: xyz unused, w a voxel's size; shading: x brightness
 static const char* zox_gpu_mesh_textured_vertex_source =
 "layout(location = 0) in vec4 vertex;\n"
@@ -691,14 +691,18 @@ static const char* zox_gpu_mesh_textured_vertex_source =
 "layout(location = 2) in vec2 vertex_uv;\n"
 "uniform mat4 mvp_matrix;\n"
 "uniform vec4 transform;\n"
+"uniform vec4 glows[64];\n"     // each voxel value's glow, 0 or 1 (BlockGlow), 4 a vec4
 "out float fog_level;\n"
 "out vec2 uv;\n"
 "out vec2 side;\n"
 "flat out vec4 corner_lights;\n"
+"flat out float glow;\n"
 "void main() {\n"
 "    gl_Position = mvp_matrix * vec4(vertex.xyz * transform.w, 1.0);\n"
 "    fog_level = gl_Position.z * gl_Position.z;\n"
 "    uv = vertex_uv;\n"
+"    int voxel = int(vertex.w + 0.5) & 255;\n"
+"    glow = glows[voxel >> 2][voxel & 3];\n"
 "    int s = (int(vertex.w + 0.5) >> 19) & 3;\n"
 "    side = vec2(float(s & 1), float(s >> 1));\n"
 "    corner_lights = vec4(float(face_lights & 255u), float((face_lights >> 8) & 255u),\n"
@@ -712,14 +716,16 @@ static const char* zox_gpu_mesh_textured_fragment_source =
 "in vec2 uv;\n"
 "in vec2 side;\n"
 "flat in vec4 corner_lights;\n"
+"flat in float glow;\n"
 "out vec4 frag_color;\n"
+"const float GLOW = 3.0;\n"     // as textured3D's: a glowing face lit fully, up to this much past white
 "void main() {\n"
 "    vec4 texel = texture(zexture, uv);\n"
 "    if (texel.a <= 0.0) {\n"
 "        discard;\n"
 "    }\n"
 "    float light = mix(mix(corner_lights.x, corner_lights.y, side.x), mix(corner_lights.z, corner_lights.w, side.x), side.y);\n"
-"    vec3 color = texel.rgb * light * shading.x;\n"
+"    vec3 color = texel.rgb * max(light, glow) * (1.0 + glow * GLOW) * shading.x;\n"
 "    float fog_blend = min(1.0, 1.1 - exp2(-fog_data.w * fog_level));\n"
 "    frag_color = vec4(mix(color, fog_data.xyz, fog_blend), texel.a);\n"
 "}\n";

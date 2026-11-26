@@ -24,7 +24,7 @@ static void zox_tst_poly_mesh_check(ecs* world) {
     const int count = terrain_count + 6;
     zox_tst_check(vertices->length == count, "expected %i vertices, got %i", count, vertices->length);
     zox_tst_check(zox_get(e, MeshIndicies)->length == count, "expected %i mesh indices", count);
-    zox_tst_check(zox_get(e, MeshColorRGBs)->length == count, "expected %i mesh colors", count);
+    zox_tst_check(zox_get(e, MeshColors)->length == count, "expected %i mesh colors", count);
     for (int i = 0; i < terrain_count && i < vertices->length; i++) {
         const float3 p = vertices->value[i];
         const float expected = poly_height_at(heights->value, cells, size, p.x, p.z);

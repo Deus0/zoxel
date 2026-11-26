@@ -82,7 +82,7 @@ uint zox_dbg_label_chunk_mesh(
     uint indicies_count = zox_get(e, MeshIndicies)->length;
     uint verts_count = zox_get(e, MeshVertices)->length;
     uint uvs_count = zox_get(e, MeshUVs)->length;
-    uint colors_count = zox_get(e, MeshColorRGBs)->length;
+    uint colors_count = zox_get(e, MeshColors)->length;
     // GPU Links
     byte mesh_dirty = zox_has(e, MeshDirty);
     byte colors_dirty = zox_has(e, MeshColorsDirty);

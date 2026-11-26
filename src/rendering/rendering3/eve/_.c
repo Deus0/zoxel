@@ -15,7 +15,7 @@ void zox_events_rendering3(ecs* world) {
         mesh_clone_sync_event,
         [in] rendering.MeshIndicies,
         [in] rendering.MeshVertices,
-        [in] rendering.MeshColorRGBs,
+        [in] rendering.MeshColors,
         [none] rendering.MeshDirty,
         [none] rendering3.MeshCloned,
     );

@@ -63,10 +63,11 @@ static inline void opengl_enable_uv_buffer(guint shader_index, guint uv_buffer) 
     zox_gpu_bind_buffer_array(0);
 }
 
+// a mesh's colours (MeshColors): rgb and its glow, 4 bytes a vertex as a vec4 of 0-1
 static inline void opengl_enable_color_buffer(guint shader_index, guint color_buffer) {
     zox_gpu_bind_buffer_array(color_buffer);
     glEnableVertexAttribArray(shader_index);
-    glVertexAttribPointer(shader_index, 3, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
+    glVertexAttribPointer(shader_index, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
     zox_gpu_bind_buffer_array(0);
 }
 

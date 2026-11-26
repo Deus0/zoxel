@@ -175,11 +175,6 @@ static inline void zox_gpu_reset_mesh() {
 
 // Attributes: gl's glVertexAttribPointer reads the bound array buffer (or client memory when none is)
 
-// R8G8B8 vertices are optional: read as R8G8B8A8 where they're not (the buffers have room past the end)
-static inline VkFormat vulkan_rgb8_format() {
-    return vk_rgb8_vertex ? VK_FORMAT_R8G8B8_UNORM : VK_FORMAT_R8G8B8A8_UNORM;
-}
-
 void vulkan_attribute(guint location, VkFormat format, uint stride, const void* pointer) {
     if (location >= vk_slots_max) {
         return;
@@ -263,7 +258,7 @@ static inline void opengl_enable_uv_buffer(guint shader_index, guint uv_buffer) 
 }
 
 static inline void opengl_enable_color_buffer(guint shader_index, guint color_buffer) {
-    vulkan_buffer_attribute(shader_index, color_buffer, vulkan_rgb8_format(), 3);
+    vulkan_buffer_attribute(shader_index, color_buffer, VK_FORMAT_R8G8B8A8_UNORM, 4);  // rgb and its glow (MeshColors)
 }
 
 static inline void zox_gpu_array_buffer_byte(guint shader_index, guint buffer) {

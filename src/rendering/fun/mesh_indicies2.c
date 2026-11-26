@@ -1,5 +1,5 @@
-void clear_mesh(MeshIndicies *meshIndicies, MeshVertices *meshVertices, MeshColorRGBs *meshColorRGBs) {
+void clear_mesh(MeshIndicies *meshIndicies, MeshVertices *meshVertices, MeshColors *meshColors) {
     dispose_MeshIndicies(meshIndicies);
     dispose_MeshVertices(meshVertices);
-    dispose_MeshColorRGBs(meshColorRGBs);
+    dispose_MeshColors(meshColors);
 }

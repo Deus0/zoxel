@@ -10,7 +10,7 @@ entity spawn_prefab_element3(ecs *world, entity prefab) {
     zox_add(e, MeshIndicies);
     zox_add(e, MeshVertices);
     zox_add(e, MeshUVs);
-    zox_add(e, MeshColorRGBs);
+    zox_add(e, MeshColors);
     prefab_set_mesh_indicies(world, e, square_indicies, 6);
     prefab_set_mesh_uvs_float2(world, e, square_uvs, 4);
     prefab_set_mesh_colors_rgb(world, e, (color_rgb) { 255, 255, 255 }, 4);

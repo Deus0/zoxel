@@ -211,12 +211,12 @@ static inline void zox_tst_poses_mesh(ecs* world, entity mesh, MeshIndicies* ind
     BoneIndexes* weights)
 {
     if (zox_has(mesh, GpuMesh)) {
-        MeshColorRGBs colors = { 0 };
+        MeshColors colors = { 0 };
         if (mesh3_read_gpu(world, mesh, indicies, vertices, &colors)) {
             resize_BoneIndexes(weights, vertices->length);
             zox_gpu_storage_read(zox_getv(mesh, BoneIndexGPULink), 0, sizeof(byte4) * vertices->length, weights->value);
         }
-        dispose_MeshColorRGBs(&colors);
+        dispose_MeshColors(&colors);
         return;
     }
     clone_MeshIndicies(indicies, zox_get(mesh, MeshIndicies));

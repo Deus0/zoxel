@@ -1,4 +1,5 @@
 zoxel_dynamic_array(color_rgb)
+zoxel_dynamic_array(color)       // mesh colours: rgb and a glow (MeshColors)
 
 // RGB Colors (0-255), alpha assumed 255 or not needed
 static const color_rgb color_rgb_white    = { 255, 255, 255 };

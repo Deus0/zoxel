@@ -5,12 +5,12 @@ void mesh_colors_gpu_system(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ColorsGPULink);
-    zox_sys_in(MeshColorRGBs);
+    zox_sys_in(MeshColors);
     //zox_sys_in(MeshColorsDirty);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(ColorsGPULink, link);
-        zox_sys_i(MeshColorRGBs, colors);
+        zox_sys_i(MeshColors, colors);
         if (!link->value) {
             continue;
         }
@@ -25,7 +25,7 @@ void mesh_colors_gpu_system(iter* it) {
         zox_gpu_array_buffer(
             link->value,
             colors->length,
-            sizeof(color_rgb),
+            sizeof(color),
             colors->value);
         zox_add(e, MeshColorsBuilt);
         zox_remove(e, MeshColorsDirty);

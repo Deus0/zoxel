@@ -10,7 +10,7 @@ entity spawn_prefab_mesh3(ecs* world) {
     zox_add(e, Mesh);
     zox_add(e, MeshIndicies);
     zox_add(e, MeshVertices);
-    zox_add(e, MeshColorRGBs);
+    zox_add(e, MeshColors);
     // Gpu Links
     zox_setv(e, MeshGPULink, 0);
     zox_setv(e, ColorsGPULink, 0);

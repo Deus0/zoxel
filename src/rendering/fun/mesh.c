@@ -52,10 +52,10 @@ void prefab_set_mesh3D_vertices(
 }
 
 void prefab_set_mesh_colors_rgb(ecs *world, entity e, color_rgb color, int length) {
-    MeshColorRGBs *meshColorRGBs = &((MeshColorRGBs) { 0 });
-    resize_MeshColorRGBs(meshColorRGBs, length);
-    for (int i = 0; i < length; i++) meshColorRGBs->value[i] = color;
-    zox_set(e, MeshColorRGBs, { meshColorRGBs->length, meshColorRGBs->value });
+    MeshColors *meshColors = &((MeshColors) { 0 });
+    resize_MeshColors(meshColors, length);
+    for (int i = 0; i < length; i++) meshColors->value[i] = color_glow(color, 0);
+    zox_set(e, MeshColors, { meshColors->length, meshColors->value });
 }
 
 void prefab_set_mesh_vertices_float(ecs *world, entity e, const float* vertices, int length) {

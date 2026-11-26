@@ -55,8 +55,7 @@ zoxc_arrayd(MeshIndicies, int);
 zoxc_arrayd(MeshVertices, float3);
 zoxc_arrayd(MeshVertices2D, float2);
 zoxc_arrayd(MeshUVs, float2);
-zoxc_arrayd(MeshColors, color);
-zoxc_arrayd(MeshColorRGBs, color_rgb);
+zoxc_arrayd(MeshColors, color);     // a vertex's colour, its alpha its glow (0 none, doc/plans/hdr.md), not see through
 // GPU Links
 #include "material_gpu_link.c"
 #include "texture_gpu_link.c"
@@ -145,7 +144,6 @@ void zox_components_rendering(ecs *world) {
     zoxd_arrayd(MeshVertices2D);
     zoxd_arrayd(MeshUVs);
     zoxd_arrayd(MeshColors);
-    zoxd_arrayd(MeshColorRGBs);
     // GPU Links
     zoxd_guint_dest(MaterialGPULink);
     zoxd_guint_dest(TextureGPULink);

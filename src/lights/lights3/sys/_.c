@@ -150,7 +150,7 @@ void zox_systems_lights3(ecs* world) {
         build_smooth_lights_system,
         zoxp_octree_read,
         [in] rendering.RenderDepth,
-        [in] rendering.MeshColorRGBs,
+        [in] rendering.MeshColors,
         [none] rendering.ChunkMesh,
         [none] rendering.BuildMeshColors,
         [none] !core.BuildDisabled,

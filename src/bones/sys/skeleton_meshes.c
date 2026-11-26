@@ -230,13 +230,13 @@ void skeleton_mesh_build_system(iter* it) {
     zox_sys_in(RenderDepth);
     zox_sys_out(MeshIndicies);
     zox_sys_out(MeshVertices);
-    zox_sys_out(MeshColorRGBs);
+    zox_sys_out(MeshColors);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RenderDepth, rdepth);
         zox_sys_o(MeshIndicies, indicies);
         zox_sys_o(MeshVertices, vertices);
-        zox_sys_o(MeshColorRGBs, colors);
+        zox_sys_o(MeshColors, colors);
         const entity skeleton = zox_get_parent(world, e);
         entity vox = get_skeleton_vox(world, skeleton);
         byte result = build_vox_mesh_at_depth(

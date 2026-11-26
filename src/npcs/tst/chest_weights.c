@@ -50,7 +50,7 @@ void zox_tst_chest_weights_check(ecs* world) {
     // meshed and weighted on the gpu (bones/sys/skeleton_gpu.c): its vertices and weights read back
     MeshIndicies gpu_indicies = { 0 };
     MeshVertices gpu_vertices = { 0 };
-    MeshColorRGBs gpu_colors = { 0 };
+    MeshColors gpu_colors = { 0 };
     BoneIndexes gpu_weights = { 0 };
     const byte gpu = zox_has(mesh, GpuMesh) && mesh3_read_gpu(world, mesh, &gpu_indicies, &gpu_vertices, &gpu_colors);
     if (gpu) {
@@ -152,7 +152,7 @@ void zox_tst_chest_weights_check(ecs* world) {
     if (gpu) {
         dispose_MeshIndicies(&gpu_indicies);
         dispose_MeshVertices(&gpu_vertices);
-        dispose_MeshColorRGBs(&gpu_colors);
+        dispose_MeshColors(&gpu_colors);
         dispose_BoneIndexes(&gpu_weights);
     }
 }

@@ -110,6 +110,7 @@ void blocks_realm_spawn_system(iter* it) {
             entity model = spawn_model_stone(world, e, block_seed, glow_color);
             entity e2 = spawn_realm_block_solid(world, prefab_block_baked, e, block_seed, "glow stone", glow_color, model, dbg_log);
             zox_add(e2, BlockGlowStone);
+            zox_add(e2, BlockGlow);     // its faces brighter than white: they bloom
             zox_setv(e2, BlockLight, 230);
             link_hit_sound(world, e2, e, &hit_sound_stone);
         }

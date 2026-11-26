@@ -28,8 +28,8 @@ static inline void greedy_set_axis(float3* p, byte axis, float value) {
     if (axis == 0) p->x = value; else if (axis == 1) p->y = value; else p->z = value;
 }
 
-static inline byte greedy_colors_same(color_rgb a, color_rgb b) {
-    return a.r == b.r && a.g == b.g && a.b == b.b;
+static inline byte greedy_colors_same(color a, color b) {
+    return a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a;
 }
 
 static inline byte greedy_bones_same(byte4 a, byte4 b) {
@@ -37,13 +37,13 @@ static inline byte greedy_bones_same(byte4 a, byte4 b) {
 }
 
 // faces f and g draw the same where they meet: one colour (and bones) at all their corners
-static inline byte greedy_same(const MeshColorRGBs* colors, const BoneIndexes* bones, int f, int g) {
+static inline byte greedy_same(const MeshColors* colors, const BoneIndexes* bones, int f, int g) {
     return greedy_colors_same(colors->value[f * 4], colors->value[g * 4]) &&
         (!bones || greedy_bones_same(bones->value[f * 4], bones->value[g * 4]));
 }
 
 // a face's 4 corners alike: it may merge
-static inline byte greedy_uniform(const MeshColorRGBs* colors, const BoneIndexes* bones, int f) {
+static inline byte greedy_uniform(const MeshColors* colors, const BoneIndexes* bones, int f) {
     for (byte c = 1; c < 4; c++) {
         if (!greedy_colors_same(colors->value[f * 4], colors->value[f * 4 + c]) ||
             (bones && !greedy_bones_same(bones->value[f * 4], bones->value[f * 4 + c])))
@@ -57,7 +57,7 @@ static inline byte greedy_uniform(const MeshColorRGBs* colors, const BoneIndexes
 // merges a colored mesh's faces in place (4 vertices and 6 indices a face, as mesh_add_face writes them)
 //  - origin: the mesh's corner (a voxel's grid starts there), voxel: a voxel's size at the meshed depth
 //  - bones: a skeleton mesh's weights (4 a face), NULL none
-void mesh_greedy(MeshIndicies* indicies, MeshVertices* vertices, MeshColorRGBs* colors, BoneIndexes* bones,
+void mesh_greedy(MeshIndicies* indicies, MeshVertices* vertices, MeshColors* colors, BoneIndexes* bones,
     float3 origin, float voxel)
 {
     const int faces = vertices->length / 4;
@@ -126,7 +126,7 @@ void mesh_greedy(MeshIndicies* indicies, MeshVertices* vertices, MeshColorRGBs* 
     // out: the kept faces, then each merged quad
     int* out_indicies = zox_malloc(sizeof(int) * faces * 6);
     float3* out_vertices = zox_malloc(sizeof(float3) * faces * 4);
-    color_rgb* out_colors = zox_malloc(sizeof(color_rgb) * faces * 4);
+    color* out_colors = zox_malloc(sizeof(color) * faces * 4);
     byte4* out_bones = bones ? zox_malloc(sizeof(byte4) * faces * 4) : NULL;
     int out = 0;
     for (int f = 0; f < faces; f++) {
@@ -137,7 +137,7 @@ void mesh_greedy(MeshIndicies* indicies, MeshVertices* vertices, MeshColorRGBs* 
             out_indicies[out * 6 + i] = indicies->value[f * 6 + i] - f * 4 + out * 4;
         }
         memcpy(&out_vertices[out * 4], &vertices->value[f * 4], sizeof(float3) * 4);
-        memcpy(&out_colors[out * 4], &colors->value[f * 4], sizeof(color_rgb) * 4);
+        memcpy(&out_colors[out * 4], &colors->value[f * 4], sizeof(color) * 4);
         if (bones) {
             memcpy(&out_bones[out * 4], &bones->value[f * 4], sizeof(byte4) * 4);
         }

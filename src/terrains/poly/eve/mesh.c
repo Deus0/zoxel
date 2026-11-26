@@ -5,14 +5,14 @@ static color_rgb poly_face_color(float3 a, float3 b, float3 c, float3 light) {
     return (color_rgb) { shade * ground.r, shade * ground.g, shade * ground.b };
 }
 
-static void poly_mesh_write_triangle(float3* vertices, color_rgb* colors, float3 a, float3 b, float3 c, color_rgb color) {
+static void poly_mesh_write_triangle(float3* vertices, color* colors, float3 a, float3 b, float3 c, color_rgb color) {
     vertices[0] = a;
     vertices[1] = b;
     vertices[2] = c;
-    colors[0] = colors[1] = colors[2] = color;
+    colors[0] = colors[1] = colors[2] = color_glow(color, 0);
 }
 
-static void poly_mesh_write_ground(float3* vertices, color_rgb* colors, const float* heights, int2 cells, float2 size) {
+static void poly_mesh_write_ground(float3* vertices, color* colors, const float* heights, int2 cells, float2 size) {
     const float3 light = poly_light_direction();
     for (int z = 0; z < cells.y; z++) {
         const float z0 = size.y * ((float) z / cells.y);
@@ -33,7 +33,7 @@ static void poly_mesh_write_ground(float3* vertices, color_rgb* colors, const fl
     }
 }
 
-static void poly_mesh_write_sea(float3* vertices, color_rgb* colors, float2 size) {
+static void poly_mesh_write_sea(float3* vertices, color* colors, float2 size) {
     const float3 a = { -size.x / 2, poly_terrain_sea, -size.y / 2 };
     const float3 b = {  size.x * 1.5f, poly_terrain_sea, a.z };
     const float3 c = { b.x, poly_terrain_sea, size.y * 1.5f };
@@ -50,12 +50,12 @@ static void build_poly_mesh(ecs* world, entity e, const PolyHeights* heights, in
     }
     MeshVertices* vertices = zox_get_mut(e, MeshVertices);
     MeshIndicies* indices = zox_get_mut(e, MeshIndicies);
-    MeshColorRGBs* colors = zox_get_mut(e, MeshColorRGBs);
+    MeshColors* colors = zox_get_mut(e, MeshColors);
     const int ground_count = cells.x * cells.y * 6;
     const int count = ground_count + 6;
     resize_MeshVertices(vertices, count);
     resize_MeshIndicies(indices, count);
-    resize_MeshColorRGBs(colors, count);
+    resize_MeshColors(colors, count);
     if (vertices->length != count || indices->length != count || colors->length != count) {
         return;
     }

@@ -22,7 +22,7 @@ static void spawn_prefabs_poly_terrains(ecs* world) {
     zox_add(e, VoxMesh);
     zox_add(e, MeshIndicies);
     zox_add(e, MeshVertices);
-    zox_add(e, MeshColorRGBs);
+    zox_add(e, MeshColors);
     zox_setv(e, MeshGPULink, guint2_zero);
     zox_setv(e, ColorsGPULink, 0);
     zox_setv(e, MeshRenderCount, 0);

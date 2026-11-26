@@ -200,17 +200,18 @@ void build_smooth_lights_system(iter* it) {
     entity realm = 0;
     // grid meshing: the faces from the voxel grid the mesh was built from (build_grid.c), in its order
     byte block_materials[256];
+    byte block_glows[256];      // a voxel value's glow, its faces' colour alpha (BlockGlow)
     byte grid_drawn[256], grid_hides[256];
     entity grid_manager = 0;
     byte grid_material = 255;
     byte* grid_buffer = NULL;
     size_t grid_buffer_size = 0;
     zox_sys_in(RenderDepth);
-    zox_sys_in(MeshColorRGBs);
+    zox_sys_in(MeshColors);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(RenderDepth, depth);
-        zox_sys_i(MeshColorRGBs, colors);
+        zox_sys_i(MeshColors, colors);
         // NOTE: Delay if past limit [max_process]
         if (max_process && process_count > max_process) {
             break;
@@ -269,6 +270,7 @@ void build_smooth_lights_system(iter* it) {
         if (grid_manager != manager || grid_material != block_material) {
             if (grid_manager != manager) {
                 get_block_materials(world, manager, block_materials);
+                get_block_glows(world, manager, block_glows);
             }
             grid_manager = manager;
             grid_material = block_material;
@@ -299,8 +301,9 @@ void build_smooth_lights_system(iter* it) {
                         } else {
                             smooth_face_lights(lights, lights_locks, voxels, voxels_locks, solidity, position, depth->value, d, vertex_lights);
                         }
+                        const byte glow = block_glows[faces.voxels[c]];
                         for (byte v = 0; v < voxel_face_vertices_length; v++) {
-                            colors->value[ccount++] = (color_rgb) { vertex_lights[v], vertex_lights[v], vertex_lights[v] };
+                            colors->value[ccount++] = (color) { vertex_lights[v], vertex_lights[v], vertex_lights[v], glow };
                         }
                     }
                 }

@@ -276,13 +276,13 @@ void bone_index_generate_system2(iter* it) {
     zox_sys_out(MeshVertices);
     zox_sys_out(BoneIndexes);
     zox_sys_out(MeshIndicies);
-    zox_sys_out(MeshColorRGBs);
+    zox_sys_out(MeshColors);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_o(MeshVertices, verts);
         zox_sys_o(BoneIndexes, weights);
         zox_sys_o(MeshIndicies, indicies);
-        zox_sys_o(MeshColorRGBs, colors);
+        zox_sys_o(MeshColors, colors);
         zox_remove(e, BuildMeshWeights);
         entity skeleton = zox_get_parent(world, e);
         if (!zox_valid(skeleton) || !zox_has(skeleton, BoneLinks)) {

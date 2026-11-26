@@ -13,9 +13,6 @@ byte vulkan_initialize(int2 size) {
     VkPhysicalDeviceProperties properties;
     vkGetPhysicalDeviceProperties(vk_physical, &properties);
     vk_uniform_align = properties.limits.minUniformBufferOffsetAlignment;
-    VkFormatProperties rgb8;
-    vkGetPhysicalDeviceFormatProperties(vk_physical, VK_FORMAT_R8G8B8_UNORM, &rgb8);
-    vk_rgb8_vertex = (rgb8.bufferFeatures & VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT) != 0;
     if (!vulkan_create_host_buffer(64, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, &vk_zeros, &vk_zeros_memory)) {
         return 0;
     }

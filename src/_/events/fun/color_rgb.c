@@ -11,6 +11,11 @@ static inline void color_rgb_multiply_float(color_rgb *input, float multiplier) 
     input->b = (byte)(b > 255 ? 255 : (b < 0 ? 0 : b));
 }
 
+// a mesh vertex's colour (MeshColors): its rgb, its alpha its glow (0 none, doc/plans/hdr.md)
+static inline color color_glow(color_rgb c, byte glow) {
+    return (color) { c.r, c.g, c.b, glow };
+}
+
 static inline color_rgb color_rgb_grayscale(byte v) {
     return (color_rgb) { v, v, v };
 }

@@ -63,10 +63,10 @@ static inline float zox_tst_bvl_mesh_colors(ecs* world, entity chunk) {
     const uint it2_count = get_chunk_meshes(world, chunk, it2_meshes);
     for (uint j = 0; j < it2_count; j++) {
         const entity mesh = it2_meshes[j];
-        if (!zox_has(mesh, ChunkMesh) || !zox_has(mesh, MeshColorRGBs)) {
+        if (!zox_has(mesh, ChunkMesh) || !zox_has(mesh, MeshColors)) {
             continue;
         }
-        const MeshColorRGBs* colors = zox_get(mesh, MeshColorRGBs);
+        const MeshColors* colors = zox_get(mesh, MeshColors);
         for (int k = 0; k < colors->length; k++) {
             total += colors->value[k].r;
             count++;

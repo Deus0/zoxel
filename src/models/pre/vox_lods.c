@@ -29,7 +29,7 @@ entity spawn_prefab_vox_mesh(ecs *world) {
     zox_setv(e, MeshRenderCount, 0);
     zox_setv(e, MeshVertices, 0);
     zox_setv(e, MeshGPULink, guint2_zero);
-    zox_setv(e, MeshColorRGBs, 0);
+    zox_setv(e, MeshColors, 0);
     zox_setv(e, ColorsGPULink, 0);
     // Events
     zox_add(e, PreInitialize);

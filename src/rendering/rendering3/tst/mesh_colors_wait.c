@@ -18,22 +18,22 @@ static inline void zox_tst_mcw_spawn(ecs* world) {
     MeshIndicies indicies = { 0 };
     MeshVertices vertices = { 0 };
     MeshUVs uvs = { 0 };
-    MeshColorRGBs colors = { 0 };
+    MeshColors colors = { 0 };
     initialize_MeshIndicies(&indicies, 6);
     initialize_MeshVertices(&vertices, 4);
     initialize_MeshUVs(&uvs, 4);
-    initialize_MeshColorRGBs(&colors, 4);
+    initialize_MeshColors(&colors, 4);
     const int quad[6] = { 0, 1, 2, 2, 3, 0 };
     memcpy(indicies.value, quad, sizeof(quad));
     for (int i = 0; i < 4; i++) {
         vertices.value[i] = (float3) { (float) (i % 2), (float) (i / 2), 0 };
         uvs.value[i] = (float2) { (float) (i % 2), (float) (i / 2) };
-        colors.value[i] = (color_rgb) { 255, 255, 255 };
+        colors.value[i] = (color) { 255, 255, 255, 0 };
     }
     zox_set_ptr(e, MeshIndicies, indicies);
     zox_set_ptr(e, MeshVertices, vertices);
     zox_set_ptr(e, MeshUVs, uvs);
-    zox_set_ptr(e, MeshColorRGBs, colors);
+    zox_set_ptr(e, MeshColors, colors);
     zox_setv(e, MeshRenderCount, 0);
     zox_add(e, TexturedMesh3);
     zox_add(e, MeshDirty);
@@ -57,8 +57,8 @@ byte zox_tst_mesh_colors_wait_ready(ecs* world) {
             return 0;
         }
         // remeshed to nothing (the ground removed), its new colors ready, its lights still building
-        MeshColorRGBs none = { 0 };
-        zox_set_ptr(e, MeshColorRGBs, none);
+        MeshColors none = { 0 };
+        zox_set_ptr(e, MeshColors, none);
         zox_add(e, MeshDirty);
         zox_add(e, BuildMeshColors);
         zox_add(e, MeshColorsDirty);

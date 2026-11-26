@@ -68,7 +68,7 @@ static inline float compute_ao_factor_27(byte side1, byte side2, byte corner) {
 }
 
 // Add face colors using AO from the 27-byte neighbor array
-void add_voxel_face_colors_ao_27(color_rgb_array_d* color_rgbs, color_rgb voxel_color, byte direction, const byte* neighbors) {
+void add_voxel_face_colors_ao_27(color_array_d* color_rgbs, color_rgb voxel_color, byte direction, const byte* neighbors) {
     for (byte a = 0; a < 4; a++) {
         color_rgb c = voxel_color;
         byte n1 = neighbors[ neighbor_indices_27[direction][a][0] ];
@@ -82,7 +82,7 @@ void add_voxel_face_colors_ao_27(color_rgb_array_d* color_rgbs, color_rgb voxel_
         c.r = (fr > 255.0f) ? 255 : (byte)fr;
         c.g = (fg > 255.0f) ? 255 : (byte)fg;
         c.b = (fb > 255.0f) ? 255 : (byte)fb;
-        color_rgb_array_d_add(color_rgbs, c);
+        color_array_d_add(color_rgbs, color_glow(c, 0));
     }
 }
 

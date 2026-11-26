@@ -5,7 +5,7 @@ void mesh_update_characters3_system(iter* it) {
     zox_sys_begin();
     zox_sys_in(MeshIndicies);
     zox_sys_in(MeshVertices);
-    zox_sys_in(MeshColorRGBs);
+    zox_sys_in(MeshColors);
     zox_sys_out(MeshGPULink);
     zox_sys_out(ColorsGPULink);
     zox_sys_out(MeshRenderCount);
@@ -13,7 +13,7 @@ void mesh_update_characters3_system(iter* it) {
         zox_sys_e();
         zox_sys_i(MeshIndicies, indicies);
         zox_sys_i(MeshVertices, verts);
-        zox_sys_i(MeshColorRGBs, colors);
+        zox_sys_i(MeshColors, colors);
         zox_sys_o(MeshGPULink, gpu_mesh);
         zox_sys_o(ColorsGPULink, gpu_colors);
         zox_sys_o(MeshRenderCount, count);
@@ -38,7 +38,7 @@ void mesh_update_characters3_system(iter* it) {
         zox_gpu_array_buffer(
             gpu_colors->value,
             verts->length,
-            sizeof(color_rgb),
+            sizeof(color),
             colors->value);
         count->value = indicies->length;
         zox_remove(e, MeshDirty);
