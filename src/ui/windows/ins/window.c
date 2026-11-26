@@ -133,6 +133,7 @@ entity3 spawn_window_footer(
     zox_setv(e, LayoutPosition, position);
     zox_setv(e, LayoutSize, size);
     zox_setv(e, Anchor, anchor);
+    spawn_window_resize_handles(world, e, size);   // floating windows resize from their sides and corners
     // TODO: Fix WindowToTop by just checking reset WindowLayers when CanvasDirty is flagged - Flag CanvasDirty when new window Initializes
     zox_setv(parent, WindowToTop, e);
     // every window pops in (ui_pop_in), and out when closed (ui_pop_out, toggles, close buttons)

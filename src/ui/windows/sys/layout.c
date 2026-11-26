@@ -1,4 +1,27 @@
+// fits a window's 8 resize handles (ins/resize.c) to its size, hidden and not dragable while docked
+static void window_resize_handles_fit(ecs* world, entity window, int2 size) {
+    const byte docked = zox_has(window, Docked);
+    iter it2 = zox_children(world, window);
+    while (zox_children_next(it2)) {
+        for (int j = 0; j < it2.count; j++) {
+            const entity handle = it2.entities[j];
+            if (!zox_has(handle, WindowResizeHandle)) {
+                continue;
+            }
+            zox_setv(handle, LayoutSize, window_resize_handle_size(size, zox_getv(handle, Anchor)));
+            zox_setv(handle, RenderDisabled, docked);
+            if (docked) {
+                zox_remove(handle, Dragable);
+            } else {
+                zox_add(handle, Dragable);
+            }
+            zox_add(handle, LayoutSizeDirty);
+        }
+    }
+}
+
 static void window_layout(ecs* world, entity window, int2 size) {
+    window_resize_handles_fit(world, window, size);
     const entity header = zox_get_child_by_id(world, window, zox_id(Header));
     const entity body = zox_get_child_by_id(world, window, zox_id(WindowBody));
     const entity scrollview = zox_get_link(world, window, ScrollviewLink);

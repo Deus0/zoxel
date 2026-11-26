@@ -1,5 +1,6 @@
 #include "close_button.c"
 #include "header.c"
+#include "resize.c"
 #include "window.c"
 #include "list.c"
 #include "tabs.c"

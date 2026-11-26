@@ -90,7 +90,7 @@ static byte zox_tst_docks_ready(ecs* world) {
             original_left = zox_getv(docks.x, LayoutSize).x;
             zox_tst_check(original_left == size.x / 5 && zox_getv(docks.y, LayoutSize).x == size.x / 5 &&
                 zox_getv(docks.z, LayoutSize).y == size.y / 4, "default dock sizes are wrong");
-            handle = zox_get_child_by_id(world, docks.x, zox_id(DragResizes));
+            handle = zox_get_child_by_id(world, docks.x, zox_id(DockResizeHandle));
             zox_tst_check(handle, "left dock has no resize handle");
             if (!handle) {
                 return 1;
@@ -109,7 +109,7 @@ static byte zox_tst_docks_ready(ecs* world) {
             }
             zox_tst_check(!zox_has(top, Window) && int2_equals(zox_getv(top, LayoutSize), ((int2) { size.x, 24 })) &&
                 int2_equals(zox_tst_dock_origin(world, top, size), ((int2) { 0, size.y - 24 })) &&
-                !zox_get_child_by_id(world, top, zox_id(DragResizes)), "plain top dock does not fill the top edge");
+                !zox_get_child_by_id(world, top, zox_id(DockResizeHandle)), "plain top dock does not fill the top edge");
             zox_tst_dock_geometry(world, canvas, camera, docks);
             zox_delete(top);
             zox_setv(handle, DraggingDelta, ((int2) { 40, 0 }));

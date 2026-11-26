@@ -28,14 +28,22 @@ void element_drag_system(iter* it) {
             }
             const float2 anchor = zox_getv(e, Anchor);
             const int2 before = zox_getv(dragged, LayoutSize);
+            // a side changes one axis, a corner both; the opposite edge stays (the centre moves half the change)
             int2 size = before;
+            int2 position = zox_getv(dragged, LayoutPosition);
             if (anchor.x == 0 || anchor.x == 1) {
-                size.x += anchor.x == 0 ? -delta->value.x : delta->value.x;
-            } else if (anchor.y == 0 || anchor.y == 1) {
-                size.y += anchor.y == 0 ? -delta->value.y : delta->value.y;
+                const int sign = anchor.x == 0 ? -1 : 1;
+                size.x = int_max(120, before.x + sign * delta->value.x);
+                position.x += sign * (size.x - before.x) / 2;
+            }
+            if (anchor.y == 0 || anchor.y == 1) {
+                const int sign = anchor.y == 0 ? -1 : 1;
+                size.y = int_max(80, before.y + sign * delta->value.y);
+                position.y += sign * (size.y - before.y) / 2;
             }
             if (!int2_equals(size, before)) {
                 zox_setv(dragged, LayoutSize, size);
+                zox_setv(dragged, LayoutPosition, position);
                 zox_add(dragged, Dirty);
             }
             continue;

@@ -89,6 +89,8 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
   "getting off it can already move"; the next 3 runs passed
 - editor (2026-11-26, zoxel and zedit): fails at step 9, "fps display didn't open" after toggle_fps_viewer (z), then
   times out waiting for every editor tool to close. The FPS setting is spawned (editor/eve app_initialize_editor)
+- canvas_resize_input (2026-11-27, master too): at [440x300] and [300x440] the anchored button doesn't draw at its
+  anchor ([260,110], [120,250]) and gets no clicks
 - chunk_mesh_flicker, stream_seams: rare seams left, doc/plans/chunk_lods.md
 - aesthetic_town, aesthetic_particles: the player spawns after ~80s (far 16), slower since b53bd6fac's light budgets
 - coop_pause: its shared canvas only sometimes takes a low id (logged), a sure way needs flecs: ask first

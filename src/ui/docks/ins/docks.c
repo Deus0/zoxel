@@ -6,7 +6,7 @@ static void dock_attach(ecs* world, entity element, float2 anchor, int2 size) {
 
 static void dock_float(ecs* world, entity element, float2 anchor, int2 position) {
     const entity drag = zox_get_link(world, element, DockDragLink);
-    const entity handle = zox_get_child_by_id(world, element, zox_id(DragResizes));
+    const entity handle = zox_get_child_by_id(world, element, zox_id(DockResizeHandle));
     zox_remove(element, Docked);
     zox_setv(element, Anchor, anchor);
     zox_setv(element, LayoutPosition, position);
@@ -40,7 +40,7 @@ static void dock_undock(ecs* world, entity element) {
 }
 
 static void dock_resize_handle(ecs* world, entity element, float2 anchor, int2 size) {
-    entity handle = zox_get_child_by_id(world, element, zox_id(DragResizes));
+    entity handle = zox_get_child_by_id(world, element, zox_id(DockResizeHandle));
     if (anchor.y == 1) {
         if (handle && zox_has(handle, Dragable)) {
             zox_remove(handle, Dragable);
@@ -57,6 +57,7 @@ static void dock_resize_handle(ecs* world, entity element, float2 anchor, int2 s
         handle = spawn_handle(world, prefab_handle, element, size, handle_position, handle_size, edge,
             fill, fill, bottom);
         zox_add(handle, DragResizes);
+        zox_add(handle, DockResizeHandle);
         zox_link(world, handle, DraggedLink, element);
         zox_setv(handle, LayoutConstraints, int4_zero);
         zox_setv(handle, BonusLayer, 6);

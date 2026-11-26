@@ -8,6 +8,7 @@ zox_tag(WindowFooter);     // a strip under a window's body, its buttons on it (
 zox_tag(CloseButton);
 zox_tag(TabButton);        // a window's tab, its Target its tab's scrollview (ins/tabs.c)
 zox_tag(WindowRaycastTarget);
+zox_tag(WindowResizeHandle);
 zoxc_byte(WindowLayer);
 zox_tag(IgnoreCanvasStack);
 zox_tag(WindowLayerDirty);
@@ -26,6 +27,7 @@ void zox_components_windows(ecs* world) {
     zoxd_tag(CloseButton);
     zoxd_tag(TabButton);
     zoxd_tag(WindowRaycastTarget);
+    zoxd_tag(WindowResizeHandle);
     zoxd_entity(WindowTarget);
     zoxd_byte(WindowLayer);
     zoxd_tag(WindowLayerDirty);

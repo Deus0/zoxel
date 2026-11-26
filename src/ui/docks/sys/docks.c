@@ -49,7 +49,7 @@ static void dock_dirty_event(iter* it) {
 }
 
 static byte dock_is_resizing(ecs* world, entity element) {
-    const entity handle = element ? zox_get_child_by_id(world, element, zox_id(DragResizes)) : 0;
+    const entity handle = element ? zox_get_child_by_id(world, element, zox_id(DockResizeHandle)) : 0;
     return handle && zox_getv(handle, DraggableState);
 }
 
