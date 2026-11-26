@@ -111,7 +111,8 @@ void zox_tsts_my_module() {
 
 ## When you fix a bug
 
-Add a test that would have caught it, then **check it does**: put the bug back, run the test, see it fail.
+Add a test that would have caught it, small: when the bug is in one function, call it on data set by hand
+([howto/tests.md](../howto/tests.md)). Then **check it does**: put the bug back, run the test, see it fail.
 (`tst node_graphs` fails with the old exclusive `NodeLink`.)
 
 ## The tests

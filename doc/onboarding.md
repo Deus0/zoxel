@@ -216,6 +216,12 @@ These matter more than they first look:
   (the core `Dirty` most often), entities point at each other with links, data lives in entities, and each feature sits in the module that
   owns it, with its tests. New code follows them; reviews check for them.
 
+- **Fix the cause, not the symptom.** Find out why something breaks before changing code, then fix it where it
+  starts, in a way that still holds as the game grows. A quick override where it shows (forcing a value at draw
+  time, a special case for one entity, a flag to skip a check) hides the bug, and it breaks later features: the sky
+  forced to no rotation in xr would have broken worlds that rotate, and the real cause was its shader's noise, per
+  screen pixel. If you can't find the cause, say so and test to narrow it down, rather than patching round it.
+
 - **Use the `zox_` wrappers, never Flecs directly.** `ecs_*` / `Ecs*` belong only in [src/_/flecs](../src/_/flecs).
   If a wrapper is missing, add one there.
 - **Few components, each one value.** Reduction is a key part of the design: reuse what exists before making a new
@@ -405,6 +411,7 @@ The loop:
 - [Vulkan](tech/vulkan.md): the vulkan backend, how it works and how to test it
 - [Android](engine/android.md): building, installing and debugging the apks
 - [New Game](howto/newgame.md): making a game in `gam/`, its modes, states and tests
+- [Fast Tests](howto/tests.md): small, fast tests for edge cases, a function on data set by hand
 - [Game Design](gdd.md): the blend, the pillars, what's playable and planned
 - [Settings](tech/settings.md): a module's settings, how a change applies, save and load
 - [States](tech/states.md): change events, tags over byte states, which form to use, timing

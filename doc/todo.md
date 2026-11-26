@@ -281,6 +281,9 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
   walks away from home, -x, passes and fails on the same commits), quest_dialogue (the first talk can take 15s+)
 
 # Optimization
+- the 780M runs zoxel at its lowest clock (800MHz) on auto power management: perf_idle 197 fps, 389 when something
+  raised it (doc/plans/outlines.md, Perf). Find why the driver doesn't clock up (the frame waits on a sync? too little
+  gpu work a frame?), it halves the frame rate and the lows
 - Steady 120 fps (8.3ms a frame), streaming too (vr): tst perf_terrain, its stream's frames over 8.3ms and profile
 	- far 32 (2026-11-21): ~75 to 80 of ~1000 stream frames over 8.3ms, 10 to 11.5ms each: ~6ms of many small
 	  systems and a ~2.5 to 3ms merge (that frame's table changes), no one system spiking (the stream sweep was 6.6ms,
@@ -1175,6 +1178,10 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 	- Dialogue Nodes: QuestDoneLink - QuestActiveLink
 
 # UI and Huds
+- disabled elements as one reusable state: ClickDisabled blocks clicks but has no look; the grey is picked only as a
+  list toggle spawns (SpawnListElement.disabled, i.e. an unsupported setting), never updated after, and sliders,
+  buttons and icons can't be disabled. An observer on ClickDisabled greying any element's fill and font (and back)
+  would make it the one switch (ask first: how elements get their colours)
 - click slider in between to move it there
     - like a normal slider ui
     - same with scrollbars
@@ -1419,6 +1426,12 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 - Add Terrain Depth to options - debug options
 
 # Editor
+- Inspector groups: labelled sections (name, parent, children, components, tags, pairs), children foldable;
+  later group components by their module
+- Docked windows undraggable: their header loses Dragable as they dock (docks_layout_event); playtest said they
+  still drag, find how (no test reproduces it yet)
+- Header titles in narrow docks shrink to unreadable (TextFit beside 3-4 buttons): cut them or hide buttons instead
+- tst.sh runs the zoxel binary even with zox_tst_game=zedit (bin= picks bin/zoxel_*), so zedit_boot can't run there
 - Virtual list scrollbar drag: one walk (it counts the rows in one pass, then walks to the page)
 - Virtual list: respawned slots (ListVisible changed, i.e. a dock resize) show empty for a frame before they are
   bound; spawn them hidden until their first fill
