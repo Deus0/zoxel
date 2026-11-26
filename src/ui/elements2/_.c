@@ -8,6 +8,7 @@ color icon_label_outline = color_gray;
 #include "fun/_.c"
 #include "ins/_.c"
 #include "sys/_.c"
+#include "eve/_.c"
 #include "dbg/_.c"
 #ifdef zox_tests
 #include "tst/_.c"
@@ -17,6 +18,7 @@ void import_elements2(ecs* world) {
     zox_module(elements2);
     zox_components_elements2(world);
     zox_systems_elements2(world);
+    zox_events_elements2(world);
     add_hook_spawn_prefabs(spawn_prefabs_elements2);
     add_hook_spawn_prefabs(spawn_fold_arrow_textures);
 #ifdef zox_tests

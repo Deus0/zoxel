@@ -4,7 +4,7 @@ void set_layers_auto(
     byte layer,
     byte dbg_log)
 {
-    if (!zox_valid(e) || zox_has(e, DropdownPopup)) {
+    if (!zox_valid(e) || zox_has(e, ItemListPopup)) {
         return;
     }
     byte new_layer = layer + 1;

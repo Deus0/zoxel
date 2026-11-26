@@ -7,10 +7,8 @@
 #include "scrollbar_handle.c"
 #include "list_render_dirty.c"
 #include "input.c"
-#include "dropdown.c"
 
 void zox_systems_elements2(ecs *world) {
-    zox_on_add(dropdown_pointer_event, [none] inputs.ZevicePointer, [none] core.Target, [none] core.Dirty);
     // main thread (with the others in zoxp_spawn): it sets texts and the app's text input
     zox_system_1(
         input_field_system,

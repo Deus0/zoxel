@@ -9,10 +9,10 @@ static entity zox_tst_search_field(ecs* world, entity window) {
 
 static void zox_tst_search_set(ecs* world, entity window, const char* text, byte type) {
     const entity bar = window_search_bar_shown(world, window);
-    const entity dropdown = bar ? zox_get_child_by_id(world, bar, zox_id(DropdownIndex)) : 0;
-    if (dropdown && zox_getv(dropdown, DropdownIndex) != type) {
-        zox_setv(dropdown, DropdownIndex, type);
-        zox_add(dropdown, Dirty);
+    const entity dropdown = bar ? zox_get_child_by_id(world, bar, zox_id(Dropdown)) : 0;
+    const entity item = dropdown ? item_list_item_at(world, dropdown, type) : 0;
+    if (item && zox_get_link(world, dropdown, DropdownSelectedLink) != item) {
+        dropdown_set_selected(world, dropdown, item);
     }
     input_field_set_value(world, zox_tst_search_field(world, window), text);
 }

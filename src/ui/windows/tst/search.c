@@ -7,7 +7,7 @@ static int zox_tst_window_body_height(ecs* world, entity window) {
 
 static byte zox_tst_window_search_ready(ecs* world) {
     static int step, body_height;
-    static entity canvas, window, button, bar;
+    static entity canvas, window, button, bar, dropdown;
     char text[32];
     byte type = 255;
     zox_tst_progress(step);
@@ -45,7 +45,8 @@ static byte zox_tst_window_search_ready(ecs* world) {
                 "body is [%i] high with the bar open, not [%i]", zox_tst_window_body_height(world, window),
                 body_height - zox_getv(bar, LayoutSize).y);
             input_field_set_value(world, zox_get_child_by_id(world, bar, zox_id(TextInput)), "Abc");
-            zox_setv(zox_get_child_by_id(world, bar, zox_id(DropdownIndex)), DropdownIndex, window_search_tag);
+            dropdown = zox_get_child_by_id(world, bar, zox_id(Dropdown));
+            dropdown_set_selected(world, dropdown, item_list_item_at(world, dropdown, window_search_tag));
             step++;
             return 0;
         case 3:
@@ -65,8 +66,8 @@ static byte zox_tst_window_search_ready(ecs* world) {
             zox_tst_check(!window_search_get(world, window, text, sizeof(text), &type), "a search after closing");
             zox_tst_check(zox_tst_window_body_height(world, window) == body_height, "body is [%i] high, not back to [%i]",
                 zox_tst_window_body_height(world, window), body_height);
-            zox_tst_check(zox_getv(zox_get_child_by_id(world, bar, zox_id(DropdownIndex)), DropdownIndex) ==
-                window_search_name, "closing didn't reset the filter type");
+            zox_tst_check(zox_get_link(world, dropdown, DropdownSelectedLink) ==
+                item_list_item_at(world, dropdown, window_search_name), "closing didn't reset the filter type");
             return 1;
     }
     return 0;

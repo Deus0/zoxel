@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-26
+-x Item lists (elements2): a button with a list of item entities, spawned once; the dropdown selects one
+  (DropdownSelectedLink, no option array), a menu runs one, disabled items and ticks; a menubar of menus (tsts
+  dropdown, menu, menubar)
 -x Docks are their own ui module (src/ui/docks, before windows): any Docked element by its anchor, a top side,
   windows lay out their own insides on their Dirty (tst window_docks)
 -x Virtual lists (elements2): only the rows that fit are entities (slots, ordered children), each links the entity it

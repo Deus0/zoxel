@@ -17,8 +17,9 @@ byte window_search_get(ecs* world, entity window, char* text, int size, byte* ty
         length--;
     }
     text[length] = 0;
-    const entity dropdown = zox_get_child_by_id(world, bar, zox_id(DropdownIndex));
-    *type = dropdown ? zox_getv(dropdown, DropdownIndex) : window_search_name;
+    const entity dropdown = zox_get_child_by_id(world, bar, zox_id(Dropdown));
+    const entity selected = dropdown ? zox_get_link(world, dropdown, DropdownSelectedLink) : 0;
+    *type = selected ? zox_getv(selected, ChildIndex) : window_search_name;
     return 1;
 }
 
@@ -53,19 +54,21 @@ void window_search_set_open(ecs* world, entity window, byte open) {
     if (!bar) {
         return;
     }
+    const entity dropdown = zox_get_child_by_id(world, bar, zox_id(Dropdown));
     if (!open) {
         const entity field = zox_get_child_by_id(world, bar, zox_id(TextInput));
         if (field == input_field_focus) {
             input_field_unfocus(world);
         }
         input_field_set_value(world, field, "");
-        const entity dropdown = zox_get_child_by_id(world, bar, zox_id(DropdownIndex));
         if (dropdown) {
-            dropdown_close(world, dropdown);
-            zox_setv(dropdown, DropdownIndex, window_search_name);
+            dropdown_set_selected(world, dropdown, item_list_item_at(world, dropdown, window_search_name));
         }
     }
     set_children_render_disabled(world, bar, !open);
+    if (dropdown) {
+        item_list_close(world, dropdown);
+    }
     zox_add(bar, Dirty);    // window_search_bar_event lays its window out once the bar is set (spawns are deferred)
 }
 

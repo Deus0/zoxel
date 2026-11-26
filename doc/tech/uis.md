@@ -234,20 +234,35 @@ each slot's label and fold arrow on `Dirty`. Search walks through folds and
 shows matching rows at depth zero. Tests cover 5,000 entities in `virtual_list`
 and 3,001 rows in `hierarchy_big`.
 
-## Dropdowns
+## Item lists, dropdowns and menus
 
-`spawn_dropdown` (`src/ui/elements2/ins/dropdown.c`) is a button that shows its selected option. Clicking it opens
-its options in a list under it (`DropdownPopup`, on top); clicking one sets `DropdownIndex`, closes the list and
-adds the core `Dirty` to the dropdown. A click anywhere else closes it (`dropdown_pointer_event`, on the pointer's
-`Dirty`). Test: `dropdown`.
+An item list owns a popup below its button. The popup owns its item buttons in `ChildIndex` order. Opening and
+closing the list changes `RenderDisabled` on the popup and its descendants. A pointer click outside closes the
+open list.
+
+`spawn_dropdown` creates the options as item entities. Picking one sets `DropdownSelectedLink`, closes the popup,
+and marks the dropdown `Dirty` so its button shows the selected item's label and observers can react.
+
+`spawn_menu` creates a standalone menu. `spawn_menu_item` adds an item with a `ClickEvent` that runs when the item
+is clicked. The menu closes on that click. Use `item_list_set_disabled` to grey out an item and disable its click.
+Use `item_list_set_checked` to make a menu item a toggle and set its initial state. Clicking flips the state, and a
+checked item shows a tick.
+
+## Menubar
+
+`spawn_menubar(world, canvas, parent, size, position, anchor)` creates a frame with the supplied width.
+`spawn_menubar_menu(world, menubar, "File")` adds a named menu button to the strip.
+`spawn_menu_item(world, menu, "Open", click)` returns the new item. One menu opens at a time. With a menu open,
+hovering another button on the same bar switches to its menu. Tests cover `dropdown`, `menu`, and `menubar`.
 
 ## Window search
 
 Any window can have a search: `spawn_window_search_button` (`src/ui/windows/ins/search.c`) puts a button in its
 header that shows a bar under it (`WindowSearchBar`): an input field and a name / tag dropdown. The body shrinks to
-fit (the window's `Dirty` observer); closing hides the bar and clears it. Nothing is stored: `window_search_get` reads the
-text (lower case) and type from the bar while it's open, `window_search_match` compares ignoring case. Typing or
-changing the type adds the core `Dirty` to the window's list, so its rows update. The editor's hierarchy (flat
+fit (the window's `Dirty` observer). Closing hides the bar, clears the text and selects the first item.
+`window_search_get` reads the lower-case text and the selected item's `ChildIndex` while the bar is open.
+`window_search_match` compares ignoring case. Typing or changing the type adds the core `Dirty` to the
+window's list so its rows update. The editor's hierarchy (flat
 matches, by label or an id's name), files (by name or extension) and inspector (by row text or component name) use
 it. Tests: `window_search`, `hierarchy_search`, `files_search`, `inspector_search`.
 

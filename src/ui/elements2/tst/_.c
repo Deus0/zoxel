@@ -125,6 +125,8 @@ static entity zox_tst_ui_color_button(ecs* world, entity parent, int2 position, 
 #include "scroll_mask.c"
 #include "fold_arrow.c"
 #include "dropdown.c"
+#include "menu.c"
+#include "menubar.c"
 #ifdef zox_sdl3
     #include "sdl_text.c"
 #endif
@@ -142,6 +144,10 @@ void zox_tsts_elements2() {
     zox_tst_set_setup("fold_arrow", NULL, 1);
     zox_tst_add("dropdown", zox_tst_dropdown_ready, zox_tst_ui_fixture_check, 20);
     zox_tst_set_setup("dropdown", NULL, 1);
+    zox_tst_add("menubar", zox_tst_menubar_ready, zox_tst_ui_fixture_check, 20);
+    zox_tst_set_setup("menubar", NULL, 1);
+    zox_tst_add("menu", zox_tst_menu_ready, zox_tst_ui_fixture_check, 20);
+    zox_tst_set_setup("menu", NULL, 1);
     zox_tst_add("input_field_boundaries", zox_tst_input_boundaries_ready, zox_tst_ui_fixture_check, 30);
     zox_tst_set_setup("input_field_boundaries", NULL, 1);
     zox_tst_add("input_focus_lifecycle", zox_tst_input_focus_ready, zox_tst_ui_fixture_check, 30);

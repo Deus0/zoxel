@@ -33,19 +33,31 @@ zox_tag(FoldArrow);
 zox_tag(Unfolded);
 zoxc(OptionLabel, const char*);
 
-zoxc_byte(DropdownIndex);
-zoxc_arrayd(DropdownOptions, char)
-zox_tag(DropdownCanvas);
-zox_tag(OpenDropdown);
-zox_tag(DropdownPopup);
+zox_tag(Dropdown);
+zox_tag(DropdownSelectedLink);
+zox_tag(ItemListCanvas);
+zox_tag(OpenItemList);
+zox_tag(ItemListPopup);
+zox_tag(ItemListItem);
+zox_tag(ItemListDisabled);
+zoxc_byte(ItemListChecked);
+zox_tag(ItemListTick);
+zox_tag(Menu);
+zox_tag(Menubar);
 
 void zox_components_elements2(ecs *world) {
     zox_components_virtual_list(world);
-    zoxd_byte(DropdownIndex);
-    zoxd_arrayd(DropdownOptions);
-    zoxd_nf_link(DropdownCanvas);
-    zoxd_nf_link(OpenDropdown);
-    zoxd_tag(DropdownPopup);
+    zoxd_tag(Dropdown);
+    zoxd_nf_link(DropdownSelectedLink);
+    zoxd_nf_link(ItemListCanvas);
+    zoxd_nf_link(OpenItemList);
+    zoxd_tag(ItemListPopup);
+    zoxd_tag(ItemListItem);
+    zoxd_tag(ItemListDisabled);
+    zoxd_byte(ItemListChecked);
+    zoxd_tag(ItemListTick);
+    zoxd_tag(Menu);
+    zoxd_tag(Menubar);
     zoxd_tag(Label);
     zoxd_tag(Button);
     zoxd_tag(Icon);
