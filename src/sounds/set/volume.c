@@ -7,7 +7,7 @@ float volume_sfx = 0.9f;    // above the music, a fuller song buried them
 float volume_music = 0.3f;
 float music_load_volume = 0.75f;
 float master_volume_increment = 0.05f;
-// a main camera under water (terrain/sys/water_view.c): sounds muffled, the music most
+// a main camera under water (src/terrains/voxel/sys/water_view.c): sounds muffled, the music most
 byte sound_underwater = 0;
 #define sound_underwater_sfx 0.6f
 #define sound_underwater_music 0.3f

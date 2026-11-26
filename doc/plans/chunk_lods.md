@@ -7,10 +7,10 @@ this is the edge case left. The current regression fails on any missing border c
 Code: [src/chunks/chunks3/sys/transition.c](../../src/chunks/chunks3/sys/transition.c) (`chunk_mesh_transition_system`,
 the swap; `chunk_mesh_hold_system`, held meshes let go), [src/chunks/chunks3/sys/sides.c](../../src/chunks/chunks3/sys/sides.c)
 (`chunk_side_depth`: an unsettled neighbour is open, `chunk_neighbors_rebuild_sides`),
-[src/terrain/sys/stream.c](../../src/terrain/sys/stream.c) (a chunk's lod change starts),
+[src/terrains/voxel/sys/stream.c](../../src/terrains/voxel/sys/stream.c) (a chunk's lod change starts),
 [src/chunks/chunks3/sys/mesh_spawn.c](../../src/chunks/chunks3/sys/mesh_spawn.c).
-Test: [src/terrain/tst/chunk_mesh_flicker.c](../../src/terrain/tst/chunk_mesh_flicker.c),
-[src/terrain/tst/seams.c](../../src/terrain/tst/seams.c).
+Test: [src/terrains/voxel/tst/chunk_mesh_flicker.c](../../src/terrains/voxel/tst/chunk_mesh_flicker.c),
+[src/terrains/voxel/tst/seams.c](../../src/terrains/voxel/tst/seams.c).
 
 ## Seeing it
 

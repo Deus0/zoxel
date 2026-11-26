@@ -2,14 +2,14 @@
 //  block_needs_ground), and drop their items as breaking them does
 //  - placed on ground (written under them), the ground under each removed: they're air a few frames after
 //  - a solid block on ground stays when its ground goes (only what stands on it falls)
-//  - in an all air chunk (terrain/tst/air_chunk.c): no game, no player
+//  - in an all air chunk (src/terrains/voxel/tst/air_chunk.c): no game, no player
 //  - run: bash bsh/tst.sh ground_removed
 byte zox_tst_ground_stage = 0;
 int zox_tst_ground_frames = 0;
 int3 zox_tst_ground_cells[3];   // grass, a flower, a solid block
 
 byte zox_tst_ground_removed_ready(ecs* world) {
-    // an all air chunk (terrain/tst/air_chunk.c): no game, no player
+    // an all air chunk (src/terrains/voxel/tst/air_chunk.c): no game, no player
     const entity air = zox_tst_streamed_air_chunk(world);
     if (!air) {
         return 0;

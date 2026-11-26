@@ -8,7 +8,7 @@ How things move, spin, fall and hit the terrain, and the traps along the way.
 | `src/physics/physics2/` | 2D: `Velocity2D`, `Acceleration2D`, `Gravity2D`, `Torque2D` (spin), `Alpha2D`, `Bounds2D` |
 | `src/physics/physics3/` | 3D: `Velocity3D`, `Acceleration3D`, `Gravity3D`, `Omega3D` (spin), `Alpha3D`, `Rolling3D`, `InitializePhysics3D` |
 | `src/physics/physics3/collisions3/` | sphere overlaps (`SphereCollider`, `OverlapEvent`), bounds growing for voxel entities |
-| `src/terrain/collisions/` | boxes against voxel terrain: push-out, tunneling sweep, `Grounded` |
+| `src/terrains/voxel/collisions/` | boxes against voxel terrain: push-out, tunneling sweep, `Grounded` |
 | `src/_/maths/` | vectors, quaternions (tested in `src/_/maths/tst`) |
 
 ## The one idea: exact steps
@@ -56,7 +56,7 @@ Everything is in `zoxp_physics`, in this order:
 3. **Linear step**: velocity and position, friction included, then `Acceleration3D` is cleared.
 4. **Spin**: `Rolling3D` sets the spin, then a spin step turns `Rotation3D` and clears `Alpha3D`.
 5. `Position3DBounds` clamps.
-6. **Terrain collision** (`src/terrain/collisions`, a later module, so it runs after).
+6. **Terrain collision** (`src/terrains/voxel/collisions`, a later module, so it runs after).
 
 2D is the same without the spawn hold or collision.
 
@@ -91,7 +91,7 @@ Everything is in `zoxp_physics`, in this order:
 
 ## Terrain collision
 
-`terrain_collision_system` (`src/terrain/collisions/sys/intersect2.c`), for boxes (`Bounds3D`, half extents,
+`terrain_collision_system` (`src/terrains/voxel/collisions/sys/intersect2.c`), for boxes (`Bounds3D`, half extents,
 turned by `Rotation3D`) linked to a terrain (`TerrainLink`), not `NoClip`:
 
 1. **Sweep** (fast movers only): when a frame's move is over `collision_step_scale` of the smallest of half

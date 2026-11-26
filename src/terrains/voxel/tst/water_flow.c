@@ -1,4 +1,4 @@
-// tst: water_flow, water falls, spreads thinner and drains (terrain/sys/water_flow.c)
+// tst: water_flow, water falls, spreads thinner and drains (src/terrains/voxel/sys/water_flow.c)
 //  - no player: in an all air chunk (air_chunk.c), a
 //      floor of bricks 13 x 13 (local y 3), then water (a source) 2 blocks over its middle
 //  - it falls to the floor (local y 4, its fall level 7) and spreads over it a level less a block: the blocks d

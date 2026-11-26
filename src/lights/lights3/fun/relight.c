@@ -1,5 +1,5 @@
 // A chunk generated (new, or again finer for a lod) takes the light its neighbours hold at its borders
-//  - its lights start dark (a lod's regeneration cleared them, terrain/sys/stream.c), and nothing else brings light
+//  - its lights start dark (a lod's regeneration cleared them, src/terrains/voxel/sys/stream.c), and nothing else brings light
 //    back in: a sunbeam comes down from the chunk above only as that one's lit, a flood stops at a chunk not there yet
 //    (flood_light) and never comes back. A ground chunk regenerated under an air chunk that wasn't stayed dark for good:
 //    its fine meshes drew dark, its coarse ones lit, lights flashed as lods swapped (tst chunk_mesh_flicker)

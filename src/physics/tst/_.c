@@ -5,7 +5,7 @@
 //      each also as _10fps and _30fps
 //  - the exact step on its own: physics_steps
 //  - performance: physics2_perf, physics3_perf
-//  - terrain collisions are tested in src/terrain/collisions/tst
+//  - terrain collisions are tested in src/terrains/voxel/collisions/tst
 //  - run: bash bsh/tst.sh <name>
 #include "common.c"
 #include "physics2.c"

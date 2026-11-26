@@ -8,7 +8,7 @@ static inline byte terrain_stream_points(ecs* world, query* query, entity terrai
     zox_sys_query_begin();
     while (zox_sys_query_loop()) {
         zox_sys_begin_2();
-        zox_sys_in_2(StreamDirty);    // the filter's fields in order (streamers, terrain/sys/_.c)
+        zox_sys_in_2(StreamDirty);    // the filter's fields in order (streamers, src/terrains/voxel/sys/_.c)
         (void) StreamDirtys_2;
         zox_sys_in_2(StreamerLevel);
         zox_sys_in_2(StreamPosition);

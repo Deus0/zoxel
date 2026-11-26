@@ -16,7 +16,7 @@ void zox_events_terrain_collisions(ecs* world) {
         [in] blocks.InsideBlock,
         [in] blocks.InsideBlockPosition,
         [in] physics3.Velocity3D,
-        [out] terrains.InsideBlockLast,
+        [out] voxel_terrains.InsideBlockLast,
         [none] blocks.InsideBlockDirty,
     );
     // last: both above see it, its removal lands after them (deferred)

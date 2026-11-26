@@ -1,4 +1,4 @@
-// shared by the physics tests (and src/terrain/collisions/tst)
+// shared by the physics tests (and src/terrains/voxel/collisions/tst)
 //  - every frame of a test runs at a fixed delta time (zox_delta_time_override), so a test
 //      knows exactly what the systems were given, and runs the same on any machine
 //  - ready runs once after every world update, so each ready call after spawning = one frame

@@ -2,7 +2,7 @@ zox_tag(Camera);
 zox_tag(CameraLink);
 zox_tag(Camera2);
 zox_tag(Camera3);
-zox_tag(Underwater);        // a 3D camera inside water (terrain/sys/water_view.c): blue fog, muffled sounds
+zox_tag(Underwater);        // a 3D camera inside water (src/terrains/voxel/sys/water_view.c): blue fog, muffled sounds
 zox_tag(CameraUI);
 zox_tag(XrCamera);          // renders per eye (xr: a headset or the simulator), not as a screen camera
 zox_tag(ElementBillboard);
@@ -33,7 +33,7 @@ zox_tag(RenderTexture);
 zox_tag(RenderTextureLink);    // camera -> the render texture it draws to
 zoxc_float(CameraBlur);
 zoxc_float(CameraVignette);
-zoxc_float(CameraTint);     // under water: the view tinted deep blue, 0 to 1 (eased, terrain/sys/water_view.c)
+zoxc_float(CameraTint);     // under water: the view tinted deep blue, 0 to 1 (eased, src/terrains/voxel/sys/water_view.c)
 zoxc_float(CameraLids);     // the eyes closing, 0 open to 1 shut: lids from the top and bottom (render_texture frag, xr eye_render.c)
 // Properties
 zox_tag(CanRoam);

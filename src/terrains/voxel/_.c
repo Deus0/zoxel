@@ -1,6 +1,6 @@
 /*
  * +------------------------------------------------------+
- * | Zox Module: Terrain                                  |
+ * | Zox Module: Voxel Terrain                            |
  * |                                                      |
  * |  Generation - Chunks - Biomes - Heightmaps - State   |
  * |                                                      |
@@ -47,8 +47,8 @@ void zox_tst_level_terrain() {
 }
 #endif
 
-void import_terrains(ecs* world) {
-    zox_module(terrains);
+void import_voxel_terrains(ecs* world) {
+    zox_module(voxel_terrains);
     zox_components_terrain(world);
     zox_systems_terrain(world);
 #ifdef zox_tests

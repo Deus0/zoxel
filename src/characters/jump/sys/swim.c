@@ -1,4 +1,4 @@
-// swimming, while InWater (terrain/collisions/eve/water_splash.c, its lower body in water)
+// swimming, while InWater (src/terrains/voxel/collisions/eve/water_splash.c, its lower body in water)
 //  - water holds it up against most of its gravity (it sinks slowly) and drags its velocity (it slows, falls in softly)
 //  - a jump in water is a stroke up (jump_state_swim, or the trigger itself: the player's jump runs after jump_system)
 //  - walking is slower (player3d_move_system: swim_speed)

@@ -1,5 +1,5 @@
 // a chunk's emitters light their sides once its voxels are in, generated or loaded (GenerateEmitterLight, added with
-//  its sunlight, terrain/sys/generated.c): a loaded chunk's glow stones were dark, only edits and towns lit them
+//  its sunlight, src/terrains/voxel/sys/generated.c): a loaded chunk's glow stones were dark, only edits and towns lit them
 void emitter_light_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();

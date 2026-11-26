@@ -25,13 +25,13 @@ void zox_systems_terrain(ecs *world) {
         [in] chunks.NodeDepth,
         [in] chunks3.VoxelNodeQueue,
         [none] chunks3.VoxelNodePostDirty,
-        [none] terrains.TerrainChunk,
+        [none] voxel_terrains.TerrainChunk,
     );
     zox_system_1(
         water_flow_system,
         zoxp_render,
-        [out] terrains.WaterFlows,
-        [none] terrains.Terrain,
+        [out] voxel_terrains.WaterFlows,
+        [none] voxel_terrains.Terrain,
     );
     // multi threaded: its tag changes are deferred, sound_underwater is set by the first main camera's alone
     zox_system(
@@ -55,7 +55,7 @@ void zox_systems_terrain(ecs *world) {
         [in] rendering.RenderDepth,
         [out] chunks3.ChunkLodDirty,
         [out] chunks.NodeDepth,
-        [none] terrains.TerrainChunk,
+        [none] voxel_terrains.TerrainChunk,
         [none] !core.Initialize,
     );
     // NOTE: Dies when out of range
@@ -75,7 +75,7 @@ void zox_systems_terrain(ecs *world) {
         streamers,
         [in] tunks.TunkLinks,
         [out] streaming.TerrainSpawnQueue,
-        [none] terrains.Terrain
+        [none] voxel_terrains.Terrain
     );
     zox_system_1(
         terrain_stream_queue_system,
@@ -87,7 +87,7 @@ void zox_systems_terrain(ecs *world) {
         [out] regions.RegionLinks,
         [out] tunks.TunkLinks,
         [out] chunks3.ChunkLinks,
-        [none] terrains.Terrain,
+        [none] voxel_terrains.Terrain,
     );
     // left land, a little a frame (sys/stream_unload.c): main thread, it edits its terrain's links
     zox_system_1(
@@ -95,7 +95,7 @@ void zox_systems_terrain(ecs *world) {
         zoxp_spawn,
         [in] tunks.TunkPosition,
         [in] tunks.Chunk3Stack,
-        [none] terrains.TunkUnloading,
+        [none] voxel_terrains.TunkUnloading,
     );
     // Debug Terrains
 #ifdef zox_debug_chunk_bounds
@@ -105,7 +105,7 @@ void zox_systems_terrain(ecs *world) {
         [in] transforms3.Position3D,
         [in] transforms3.Bounds3D,
         [in] rendering.RenderDisabled,
-        [none] terrains.TerrainChunk
+        [none] voxel_terrains.TerrainChunk
     );
 #endif
 }

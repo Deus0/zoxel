@@ -10,7 +10,7 @@
  *
  *  - a right click (TriggerActionB) on a block in reach uses it, by its kind (its tag): a door (BlockDoor) opens or
  *    closes (doors, door_toggle), a bed (BlockBed) is slept in (beds, character_sleep), a gravity cube (BlockGravity)
- *    switches on or off (block_toggle), flipping gravity round it (terrain/gravity)
+ *    switches on or off (block_toggle), flipping gravity round it (src/terrains/voxel/gravity)
  *  - any entity with TriggerActionB, RaycastVoxelData and RaycastRange: a player's character today, npcs later
  */
 #include "sys.c"

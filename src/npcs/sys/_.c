@@ -21,14 +21,14 @@ void zox_systems_characters3_terrain(ecs* world) {
         [in] rendering.RenderDistance,
         [out] npcs.NpcSpawnZone,
         [out] npcs.NpcSpawnZoneDirty,
-        [none] terrains.TerrainChunk,
+        [none] voxel_terrains.TerrainChunk,
     );
     zox_system(
         terrain_characters_despawn_system,
         zoxp_update,
         [in] npcs.NpcSpawnZoneDirty,
         [in] npcs.NpcSpawnZone,
-        [none] terrains.TerrainChunk,
+        [none] voxel_terrains.TerrainChunk,
         [none] npcs.CharactersSpawned,
     );
     zox_system(
@@ -52,7 +52,7 @@ void zox_systems_characters3_terrain(ecs* world) {
         [in] chunks3.ChunkPosition,
         [in] transforms3.Position3D,
         [in] blocks.BlockScale,
-        [none] terrains.TerrainChunk,
+        [none] voxel_terrains.TerrainChunk,
         [none] !npcs.CharactersSpawned,
     );
     // its settings: spawned on the app, applied when one changes (needs prefab_app)

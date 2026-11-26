@@ -57,7 +57,7 @@ void zox_systems_vodes3(ecs* world) {
         zoxp_update,
         [in] rendering.RenderDepth,
         [in] chunks3.ChunkLodDirty,
-        [none] terrains.TerrainChunk,
+        [none] voxel_terrains.TerrainChunk,
     );
     zox_system_1(
         vodes_spawn_system,
@@ -68,7 +68,7 @@ void zox_systems_vodes3(ecs* world) {
         [in] transforms3.Position3D,
         [in] chunks3.ChunkPosition,
         [out] chunks3.VoxelNode,
-        [none] terrains.TerrainChunk,
+        [none] voxel_terrains.TerrainChunk,
         [none] vodes.CanVodes,
     );
     zox_system_1(
@@ -85,7 +85,7 @@ void zox_systems_vodes3(ecs* world) {
         zoxp_update,
         [in] lights3.LightOctreeDirty,
         [in] chunks3.ChunkNeighbors,
-        [none] terrains.TerrainChunk,
+        [none] voxel_terrains.TerrainChunk,
     );
     // its settings: spawned on the app, applied when one changes (needs prefab_app)
     add_hook_spawn_prefabs(vodes_settings_events);

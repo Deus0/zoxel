@@ -37,10 +37,10 @@ exact files, what to add, a test with the values it must see, and when it's done
 
 ## Facts you'll need
 
-- **The water block** is the realm child with the `BlockWater` tag (src/terrain/com/_.c). Find it with
+- **The water block** is the realm child with the `BlockWater` tag (src/terrains/voxel/com/_.c). Find it with
   `zox_get_child_by_id(world, realm, zox_id(BlockWater))`. Its voxel value is `zox_getv(water, BlockIndex)`.
 - **What block a character is in:** every character has `InsideBlock` (a byte: the voxel value where its body is,
-  0 for air) and `InsideBlockPosition` (int3). `inside_block_system` (src/terrain/collisions/sys/inside.c) sets
+  0 for air) and `InsideBlockPosition` (int3). `inside_block_system` (src/terrains/voxel/collisions/sys/inside.c) sets
   them each frame and adds the tag `InsideBlockDirty` when they change. So "the character is in water" is
   `zox_getv(character, InsideBlock) == water_index`.
 - **A voxel anywhere:** `terrain_voxel_at(world, terrain, block)` (src/chunks/chunks3/fun/voxel_at.c) returns the
@@ -51,7 +51,7 @@ exact files, what to add, a test with the values it must see, and when it's done
   `CanJump`, `JumpState` (src/characters/jump). `zox_delta_time` is the frame's seconds.
 - **Particles:** `spawn_particle3D_emitter_at(world, position, emit_rate, bounds, color)`
   (src/particles/particles3/pre/emitter.c), then `zox_setv(emitter, DestroyInTime, seconds)` to end it. See
-  `terrain_callback_inside_block` in src/terrain/collisions/eve/inside_block.c for one in use.
+  `terrain_callback_inside_block` in src/terrains/voxel/collisions/eve/inside_block.c for one in use.
 - **Sound effects:** the list is in src/sounds/dat/effects.c (an enum) and src/sounds/fun/effects.c (the table:
   name, instrument, lowest and highest note, shortest and longest seconds, quietest and loudest volume). Play one
   with `spawn_sound_effect(world, sound_effect_x, source_entity)` or `spawn_sound_effect_at(world, type, position)`.
@@ -93,7 +93,7 @@ Tests live in src/controllers/tst. Copy from these:
 **Goal:** jumping or falling into water makes a splash: a burst of blue particles at the surface and a splash
 sound. Climbing out makes a small one.
 
-**Where:** a new file src/terrain/collisions/eve/water_splash.c, registered in src/terrain/collisions/eve/_.c.
+**Where:** a new file src/terrains/voxel/collisions/eve/water_splash.c, registered in src/terrains/voxel/collisions/eve/_.c.
 
 **Steps:**
 
@@ -101,10 +101,10 @@ sound. Climbing out makes a small one.
    `sound_effect_end` entry (find it at the end of the enum). In src/sounds/fun/effects.c add a line to the table:
    `[sound_effect_splash] = { "splash", instrument_squelch, 34, 38, 0.3f, 0.4f, 1.8f, 2.2f },`
 2. In water_splash.c write an observer function `water_splash_event(iter* it)` copying the shape of
-   `terrain_callback_inside_block` (src/terrain/collisions/eve/inside_block.c). For each entity:
+   `terrain_callback_inside_block` (src/terrains/voxel/collisions/eve/inside_block.c). For each entity:
    - get its terrain (`zox_get_link(world, e, TerrainLink)`), its realm (`zox_get_parent(world, terrain)`), the
      water block and its index;
-   - keep the last block it was in: add a component `zoxc_byte(InsideBlockLast);` in src/terrain/com/_.c (with
+   - keep the last block it was in: add a component `zoxc_byte(InsideBlockLast);` in src/terrains/voxel/com/_.c (with
      `zoxd_byte(InsideBlockLast);` in that file's `zox_components_terrain`), and `zox_setv(e, InsideBlockLast, 0)`
      where characters get `InsideBlock` (src/characters/characters3/pre/character.c, next to
      `zox_setv(e, InsideBlock, 0);`);
@@ -115,9 +115,9 @@ sound. Climbing out makes a small one.
    then `zox_setv(emitter, DestroyInTime, 0.3f);`, and `spawn_sound_effect_at(world, sound_effect_splash, position);`.
    Put the position at the water's surface: the block position over the character's feet, its y the top of the
    water block it entered (`InsideBlockPosition.y + 1`, times the block scale).
-4. Register it in src/terrain/collisions/eve/_.c like the one already there, with `zox_on_add` on the
+4. Register it in src/terrains/voxel/collisions/eve/_.c like the one already there, with `zox_on_add` on the
    `InsideBlockDirty` tag, reading `[in] blocks.InsideBlock`, `[in] transforms3.Position3D`, `[in] physics3.Velocity3D`,
-   `[out] terrains.InsideBlockLast`.
+   `[out] voxel_terrains.InsideBlockLast`.
 
 **Test:** src/controllers/tst/water_splash.c, test name `water_splash`.
 - Build the pool. Put the character 4 blocks over the water's middle, its velocity 0. Count emitters
@@ -136,8 +136,8 @@ pass.
 
 **Goal:** in water a character sinks slowly, floats up when it jumps (swims), and moves slower.
 
-**Where:** a new system in src/terrain/collisions/sys/water_physics.c, registered in
-src/terrain/collisions/sys/_.c after `inside_block_system`.
+**Where:** a new system in src/terrains/voxel/collisions/sys/water_physics.c, registered in
+src/terrains/voxel/collisions/sys/_.c after `inside_block_system`.
 
 **Steps:**
 
@@ -176,11 +176,11 @@ src/terrain/collisions/sys/_.c after `inside_block_system`.
 **Goal:** with the camera under water, the view turns blue and murky: thick blue fog, a little blur, a stronger
 vignette. It goes back when the camera comes out.
 
-**Where:** a new system in src/terrain/sys/underwater.c, registered in src/terrain/sys/_.c.
+**Where:** a new system in src/terrains/voxel/sys/underwater.c, registered in src/terrains/voxel/sys/_.c.
 
 **Steps:**
 
-1. Add a tag `zox_tag(CameraUnderwater);` in src/terrain/com/_.c and `zoxd_tag(CameraUnderwater);` in that file's
+1. Add a tag `zox_tag(CameraUnderwater);` in src/terrains/voxel/com/_.c and `zoxd_tag(CameraUnderwater);` in that file's
    `zox_components_terrain`.
 2. Write `camera_underwater_system`, reading `[in] transforms3.Position3D`, `[out] colorz.FogColor`,
    `[none] cameras.Camera3` (the 3D camera tag, src/cameras/com/_.c). Register it with

@@ -1,5 +1,5 @@
 // tst: stream_unload, land the stream leaves is unloaded a little a frame, and kept if it comes back first
-//  (terrain/sys/stream_unload.c)
+//  (src/terrains/voxel/sys/stream_unload.c)
 //  - a world of its own, a streamer at the origin; once loaded, unloading is paused (zox_stream_unload_chunks 0)
 //  - kept: the streamer steps a chunk along x, columns behind it are left (TunkUnloading); it steps back before they're
 //      unloaded: a left column is the same tunk again, untagged

@@ -4,9 +4,9 @@ Why terrain loads slowly and LODs lag behind when flying, what limits it, and a 
 lag: the work is throttled, not slow. Written 2026-11-14 from reading the code, a simulation of one tunk crossing, and a
 timed `perf_stream` run (numbers below).
 
-Code: [src/terrain/sys/stream.c](../../src/terrain/sys/stream.c) (the queue),
+Code: [src/terrains/voxel/sys/stream.c](../../src/terrains/voxel/sys/stream.c) (the queue),
 [src/streaming/com/queue.c](../../src/streaming/com/queue.c) (`TerrainSpawnQueue`),
-[src/terrain/sys/render_depth.c](../../src/terrain/sys/render_depth.c) (`chunk_lod_system`),
+[src/terrains/voxel/sys/render_depth.c](../../src/terrains/voxel/sys/render_depth.c) (`chunk_lod_system`),
 [src/chunks/chunks3/sys](../../src/chunks/chunks3/sys) (meshes: `mesh_spawn.c`, `sides.c`, `build_textured.c`, `transition.c`),
 [src/chunks/chunks3/fun/lods.c](../../src/chunks/chunks3/fun/lods.c) (distance to LOD),
 [src/controllers/tst/perf.c](../../src/controllers/tst/perf.c) (`perf_stream`).

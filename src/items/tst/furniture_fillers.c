@@ -50,7 +50,7 @@ static inline byte zox_tst_place_supported(ecs* world, entity terrain, entity re
 }
 
 byte zox_tst_furniture_fillers_ready(ecs* world) {
-    // an all air chunk (terrain/tst/air_chunk.c): no game, no player
+    // an all air chunk (src/terrains/voxel/tst/air_chunk.c): no game, no player
     const entity air = zox_tst_streamed_air_chunk(world);
     if (!air) {
         return 0;

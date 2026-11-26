@@ -145,7 +145,7 @@ zox_system(
     [in] rendering.RenderDistance,
     [out] npcs.NpcSpawnZone,        // written
     [out] npcs.NpcSpawnZoneDirty,
-    [none] terrains.TerrainChunk,   // must have, but not read (a filter)
+    [none] voxel_terrains.TerrainChunk,   // must have, but not read (a filter)
 );
 ```
 

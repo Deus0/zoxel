@@ -1,4 +1,4 @@
-// tst: gravity_flip, a character stands on its gravity when a gravity cube flips it (terrain/gravity
+// tst: gravity_flip, a character stands on its gravity when a gravity cube flips it (src/terrains/voxel/gravity
 //  gravity_upright_system, jumps along its up)
 //  - a character (characters/tst/character.c) in a brick room in an air chunk (air_chunk.c, no game, no player): a
 //    floor at y 3, a ceiling at y 8 (air 4 blocks tall between), a gravity cube at (8, 6, 6) by it

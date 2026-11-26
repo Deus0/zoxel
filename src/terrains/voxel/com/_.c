@@ -14,7 +14,7 @@ zox_tag(BlockDoor);        // 1 x 2 x 1 blocks
 zox_tag(BlockLamp);        // a street lamp, 1 x 3 x 1 blocks, its head lights (towns/sys/walls.c)
 zox_tag(BlockFiller);      // the rest of a bed or door: solid, drawn by the base (items/fun/multi_block.c)
 zox_tag(BlockGlowStone);   // glows (BlockLight), on homes' roofs (towns/sys/walls.c)
-zox_tag(BlockGravity);     // a gravity cube: switched on, it flips gravity round it (terrain/gravity)
+zox_tag(BlockGravity);     // a gravity cube: switched on, it flips gravity round it (src/terrains/voxel/gravity)
 zox_tag(BlockSoil);
 zox_tag(BlockSoilGrass);
 zox_tag(BlockGrass);
@@ -24,7 +24,7 @@ zox_tag(BlockObsidian);
 zox_tag(BlockBricks);
 zox_tag(BlockFlower);
 zox_tag(BlockRoad);
-zox_tag(BlockWater);       // a liquid (BlockMaterial): see through, walked through, it flows (terrain/water)
+zox_tag(BlockWater);       // a liquid (BlockMaterial): see through, walked through, it flows (src/terrains/voxel/water)
 zox_tag(BlockWaterFlowing); // a liquid spread from a source, a level of it (BlockWaterLevel 1 to 7): it drains
 zox_tag(BlockOil);          // a liquid as water is, dark (zox_block_material_oil: its own mesh and texture)
 zox_tag(LiquidLink);        // a flowing liquid's block to its source's (water's, oil's), fun/water.c

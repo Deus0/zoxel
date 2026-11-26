@@ -20,7 +20,7 @@ void zox_systems_heights(ecs* world) {
         [out] chunks.GenerateChunk,
         [out] chunks3.VoxelNode,
         [out] chunks3.VoxelNodeLock,
-        [none] terrains.TerrainChunk,
+        [none] voxel_terrains.TerrainChunk,
         [none] !core.PreInitialize,
         [none] !core.Initialize
     );

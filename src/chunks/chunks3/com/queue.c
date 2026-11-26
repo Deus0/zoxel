@@ -10,7 +10,7 @@ typedef struct {
     byte old_data;      // its block data before, read after (a filler's offset to its base, multi_block_removed)
     byte old_active;    // if it was on before (its ActiveOctree), read after (a gravity cube dug out while on)
     byte state;
-    byte flowed;        // set by flowing water (terrain/sys/water_flow.c): it doesn't start a flow of its own
+    byte flowed;        // set by flowing water (src/terrains/voxel/sys/water_flow.c): it doesn't start a flow of its own
 } VoxelNodeUpdate;
 
 zoxc_queue(VoxelNodeQueue, VoxelNodeUpdate, 1);

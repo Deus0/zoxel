@@ -92,7 +92,7 @@ kept current as each step lands, not a step of their own).
    - the game's ui skips what a player lacks: no character, no actionbar, stats or quest tracker; no voxel terrain,
      no minimap
    - build and run: `bash bsh/build.sh zeland --run`; test: `zox_tst_game=zeland bash bsh/tst.sh zeland_boot`
-2. **folders:** `src/terrain` to `src/terrains/voxel`, the module renamed `voxel_terrains` and its query strings,
+2. [x] **folders:** `src/terrain` to `src/terrains/voxel`, the module renamed `voxel_terrains` and its query strings,
    the docs' links. The terrain tests pass as before.
 3. **heights:** `src/terrains/poly`, `PolyTerrain`, `PolyHeights`, `poly_height_generate`, `poly_height_at`,
    `poly_normal_at`. Test `poly_heights`: pure, heights at grid points and mid triangle, a slope's normal.

@@ -1,6 +1,6 @@
 // A fixture: a character with a skeleton, no game, no player
 //  - a realm of its own (world_only.c, its body parts generated), the character spawned in the void far from the
-//      menu's scene, or on a terrain when given one (i.e. the air chunk's, terrain/tst/air_chunk.c)
+//      menu's scene, or on a terrain when given one (i.e. the air chunk's, src/terrains/voxel/tst/air_chunk.c)
 //  - register the test with zox_tst_set_setup(name, NULL, 1): it runs on the menus
 //  - held still by the test if it needs (no ground in the void)
 entity zox_tst_body = 0;

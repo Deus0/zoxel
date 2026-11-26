@@ -1,5 +1,5 @@
 // tst: block_data_queue, a voxel's block data goes in with it and goes with it (chunks3/fun/block_data.c)
-//  - queues a block with data 6 into an all air chunk (terrain/tst/air_chunk.c, no player): the chunk's BlockDatas has it
+//  - queues a block with data 6 into an all air chunk (src/terrains/voxel/tst/air_chunk.c, no player): the chunk's BlockDatas has it
 //  - saves the chunk as chunk3_save_system does, load_chunk reads it back with its data
 //  - queues air there: its data is gone
 //  - run: bash bsh/tst.sh block_data_queue

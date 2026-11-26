@@ -51,7 +51,7 @@ entity spawn_prefab_character3(ecs *world) {
     zox_setv(e, Omega3D, float3_zero);
     zox_setv(e, Alpha3D, float3_zero);
     zox_setv(e, Gravity3D, zox_default_gravity);
-    zox_add(e, TerrainGravity);     // pulled by the terrain's gravity field (terrain/gravity)
+    zox_add(e, TerrainGravity);     // pulled by the terrain's gravity field (src/terrains/voxel/gravity)
     // Bounds
     zox_setv(e, Bounds3D, float3_single(0.5f));
     // zox_setv(e, DisableMovement, 0);

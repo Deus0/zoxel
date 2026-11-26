@@ -75,7 +75,7 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
 - `WaterLevels` (terrain/fun/water.c): a realm's water voxels by level and levels by voxel; `voxel_is_water`.
   Swimming, the splash and the view under water take any level (`terrain_water_at`: a flowing block only up to
   its level, unless water is over it).
-- src/terrain/sys/water_flow.c: a block's water is what flows into it: from water over it 7 (it falls); else from
+- src/terrains/voxel/sys/water_flow.c: a block's water is what flows into it: from water over it 7 (it falls); else from
   the water beside it that lies on something (not air, not flowing), a level less (a source gives 7). Falling water
   doesn't spread sideways, only where it lands.
 - A chunk just edited (`VoxelNodePostDirty`) adds its edited blocks and the six round each to its terrain's
@@ -94,7 +94,7 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
 
 ## Swimming
 
-- `InWater` (a tag, src/terrain/com): added and removed with the splash (collisions/eve/water_splash.c), when the
+- `InWater` (a tag, src/terrains/voxel/com): added and removed with the splash (collisions/eve/water_splash.c), when the
   body's `InsideBlock` (its lower body, inside.c) goes into or out of water.
 - `swim_system` (src/characters/jump/sys/swim.c), in water: holds up 85% of its gravity (it sinks slowly, about 0.4m
   a second) and drags its velocity (3 a second: a fall into water slows softly); a jump is a stroke up
@@ -105,7 +105,7 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
 
 ## Under water
 
-- `camera_underwater_system` (src/terrain/sys/water_view.c): a 3D camera in a water block (`terrain_water_at`) gets
+- `camera_underwater_system` (src/terrains/voxel/sys/water_view.c): a 3D camera in a water block (`terrain_water_at`) gets
   `Underwater` (src/cameras/com). XR's eyes check their own in xr/fun/eye_render.c.
 - `camera_render3_system` sets `render_underwater` for the camera it draws: `get_fog_value` turns the fog blue and
   thick (src/rendering/dat/camera_renderer.c, fully blue about 9 blocks out); skybox.frag covers the sky with a thick

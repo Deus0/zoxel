@@ -67,7 +67,7 @@ static inline const HighwayRegion* highway_region(Highways* h, int2 block) {
     }
     const entity region = int2_hashmap_get(zox_get(h->terrain, RegionLinks)->value, position);
     if (!zox_valid(region)) {
-        // the stream spawns the regions round every region it streams (terrain/sys/stream.c): one of those is coming,
+        // the stream spawns the regions round every region it streams (src/terrains/voxel/sys/stream.c): one of those is coming,
         //  one farther may never (a town in the ring looks 2 cells past it): none of its towns then
         if (abs(position.x - h->home.x) <= 1 && abs(position.y - h->home.y) <= 1) {
             h->waiting = 1;

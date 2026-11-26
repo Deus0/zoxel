@@ -155,7 +155,7 @@ void blocks_realm_spawn_system(iter* it) {
             zox_setv(e2, BlockCollider, zox_block_air);
             zox_setv(e2, BlockLightPass, 1);
             link_hit_sound(world, e2, e, &hit_sound_water);
-            // flowing water, a block a level (7 to 1, thinner as it spreads, terrain/sys/water_flow.c), after it: no
+            // flowing water, a block a level (7 to 1, thinner as it spreads, src/terrains/voxel/sys/water_flow.c), after it: no
             //  texture of their own (liquid meshes bind the first liquid's, water's), no items
             for (byte level = zox_water_level_source - 1; level >= 1; level--) {
                 char name[16];
@@ -241,7 +241,7 @@ void blocks_realm_spawn_system(iter* it) {
             }
         }
         // a gravity cube: a right click switches it on or off (ActiveOctree), on it pulls round it its way
-        //  (terrain/gravity); last, the blocks before it keep their indices
+        //  (src/terrains/voxel/gravity); last, the blocks before it keep their indices
         //  - its models a blueprint seeded by the realm (models/ins/block_blueprint.c), cyberpunk: two VoxAnimations
         //    played on each placed one (a block vox, ModelAnimated), off (lights chasing round) and on (its
         //    ActiveModelLink, a rune lit too)

@@ -1,4 +1,4 @@
-// tst: water_splash, falling into water splashes, climbing out splashes small (terrain/collisions/eve/water_splash.c)
+// tst: water_splash, falling into water splashes, climbing out splashes small (src/terrains/voxel/collisions/eve/water_splash.c)
 //  - in an all air chunk (air_chunk.c, no player): a 3 x 3 pool of water 3 deep, a brick floor and walls round it
 //  - a bare body (physics, InsideBlock) dropped from 4 blocks over its middle: a splash going in (zox_water_splashes_in counts it)
 //  - then lifted 2 blocks over its surface: another, small, coming out

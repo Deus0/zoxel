@@ -20,7 +20,7 @@ void zox_systems_vegetation(ecs* world) {
         [in] chunks3.ChunkPosition,
         [out] chunks.GenerateChunk,
         [out] chunks3.VoxelNode,
-        [none] terrains.TerrainChunk
+        [none] voxel_terrains.TerrainChunk
     );
     add_system_process_counter(world, zox_id(vegetation_chunk3_system));
 }

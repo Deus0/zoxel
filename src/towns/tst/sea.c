@@ -56,7 +56,7 @@ byte zox_tst_sea_level_ready(ecs* world) {
         }
         // 8 blocks up and 5 back, looking down at it; drawn alone on the screen (no hud, no game view)
         // zox_tst_sea_near: 2 blocks up and 1 back, to see a block's texture close
-        // zox_tst_sea_under: 2 blocks under the surface, looking along it (the underwater fog, terrain/sys/water_view.c)
+        // zox_tst_sea_under: 2 blocks under the surface, looking along it (the underwater fog, src/terrains/voxel/sys/water_view.c)
         const byte close = getenv("zox_tst_sea_near") != NULL;
         const byte under = getenv("zox_tst_sea_under") != NULL;
         const float3 eye = float3_add(zox_tst_sea_spot, under ? (float3) { 0, -2 * scale, 0 } :

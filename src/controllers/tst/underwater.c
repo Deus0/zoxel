@@ -1,5 +1,5 @@
 // tst: underwater, the player's camera under water: blue fog, the view tinted deep blue (CameraTint, eased), and
-//  back out of it (terrain/sys/water_view.c, res/shaders/render_texture_rgb.frag)
+//  back out of it (src/terrains/voxel/sys/water_view.c, res/shaders/render_texture_rgb.frag)
 //  - the player's game; water (a source) put round its camera, 5 x 5 x 5
 //  - a second later: Underwater, its CameraTint over 0.9, tst/underwater.ppm (it should look deep blue)
 //  - the water taken out, a second later: no Underwater, its tint under 0.05

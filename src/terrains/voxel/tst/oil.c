@@ -1,4 +1,4 @@
-// tst: oil_flow, oil is a liquid as water is, its own (terrain/fun/water.c liquids, zox_block_material_oil)
+// tst: oil_flow, oil is a liquid as water is, its own (src/terrains/voxel/fun/water.c liquids, zox_block_material_oil)
 //  - the realm has oil: its own material, walked through, light passing; its flowing blocks link it (LiquidLink)
 //  - no player: in an all air chunk (air_chunk.c), a floor of bricks 13 x 13 (local y 3), an oil source 2 over it at
 //    x 3 and a water source at x 11 (z 7)

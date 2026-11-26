@@ -155,7 +155,7 @@ doesn't stream: its numbers are the same at any scale (doc/results.md, Meshing s
 
 `perf_terrain` logs the same block three times, `perf_terrain load`, `perf_terrain idle` and `perf_terrain stream`,
 with the load's settle time and the steps' (a world with only terrain in it: use it for terrain and meshing numbers,
-the others for the whole game). Both others log one block from `src/terrain/tst/frames.c`, labelled with what was measured (backend, far, vertical, cpu or
+the others for the whole game). Both others log one block from `src/terrains/voxel/tst/frames.c`, labelled with what was measured (backend, far, vertical, cpu or
 gpu meshing). `perf_idle` measures 8 seconds standing still once streaming settles (idle rendering), `perf_stream`
 every frame from its first chunk step to its last settling (stream remeshing):
 

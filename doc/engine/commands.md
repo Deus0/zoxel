@@ -54,7 +54,7 @@ On boards without desktop GL (i.e. the Mali boards), the game falls back to ES b
 | Flag | Effect | Source |
 |---|---|---|
 | `--autostart` | skips the menus, starts a new game | [huds](../src/huds/fun/terminal.c) |
-| `--tiny` | terrain stream distance 3, height 3 | [terrain](../src/terrain/fun/terminal.c) |
+| `--tiny` | terrain stream distance 3, height 3 | [terrain](../src/terrains/voxel/fun/terminal.c) |
 | `--medium` | terrain stream distance 6, height 3 | terrain |
 | `--large` | terrain stream distance 12, height 4 | terrain |
 | `--gpu_meshing` | solid chunk meshes meshed by a compute shader (cpu meshing without compute), [plans/gpu_meshing.md](../plans/gpu_meshing.md); vulkan's default | terrain |

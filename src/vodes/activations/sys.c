@@ -1,5 +1,5 @@
 // uses the block with a part at block, by its kind: a door opens or shuts, a bed is slept in, a gravity cube switches
-//  on or off (its field round it worked out again, terrain/gravity); 0 if it's none of them
+//  on or off (its field round it worked out again, src/terrains/voxel/gravity); 0 if it's none of them
 //  - from a worker too (block_activate_system): block data under its chunks' locks, the rest deferred
 byte block_use(ecs* world, entity user, entity terrain, entity realm, int3 block) {
     int3 base;

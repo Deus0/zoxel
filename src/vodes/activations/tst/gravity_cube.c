@@ -1,4 +1,4 @@
-// tst: gravity_cube, a gravity cube switched on flips gravity round it (terrain/gravity), in an all air chunk
+// tst: gravity_cube, a gravity cube switched on flips gravity round it (src/terrains/voxel/gravity), in an all air chunk
 //  (air_chunk.c, no game, no player)
 //  - a brick floor (y 3), cube A at (14, 6, 8), two blocks from the chunk's +x side (its sphere reaches the next
 //    chunk), no way of its own (it pulls up), cube B at (14, 6, 11) pulling +x (its block data, as placed looking

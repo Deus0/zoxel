@@ -56,7 +56,7 @@
 #include "regions/_.c"
 #include "particles/_.c"
 #include "tunks/_.c"
-#include "terrain/_.c"
+#include "terrains/_.c"
 #include "sky/_.c"
 #include "biomes/_.c"
 #include "heights/_.c"

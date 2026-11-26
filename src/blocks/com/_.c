@@ -9,7 +9,7 @@ zox_tag(SingleTextureBlock);
 zoxc_byte(BlockLightPass);   // 1 light passes it (water, minivoxes), 0 it stops light
 #define block_light_pass_open 2  //  passes only while it's on (its chunk's ActiveOctree: a door and its filler, vodes/doors)
 #define zox_water_level_source 8
-zoxc_byte(BlockWaterLevel); // water's depth in eighths of a block (terrain/sys/water_flow.c): a source 8, flowing 7 to 1,
+zoxc_byte(BlockWaterLevel); // water's depth in eighths of a block (src/terrains/voxel/sys/water_flow.c): a source 8, flowing 7 to 1,
                             //  a flowing block's top is drawn at its level (chunks3 build_textured.c)
 zoxc_byte(BlockLight);      // light a block gives off, 0 none (glow stone), it floods out of its sides
 zoxc_byte3(BlockLightOffset); // where from, blocks from its base (a street lamp's head), turned with it; none: its base

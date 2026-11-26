@@ -41,7 +41,7 @@ void zox_systems_jump(ecs* world) {
         [in] physics3.Velocity3D,
         [in] physics3.Gravity3D,
         [out] physics3.Acceleration3D,
-        [none] terrains.InWater,
+        [none] voxel_terrains.InWater,
         [none] !physics.DisableMovement
     );
     zox_system(
