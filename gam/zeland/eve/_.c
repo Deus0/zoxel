@@ -1,6 +1,5 @@
 // where the camera starts a game, over the origin, looking down at it
 const float3 zeland_camera_position = { 0, 24, -32 };
-const float3 zeland_camera_euler = { -30 * degreesToRadians, 0, 0 };
 
 // the game's state changed (its core Dirty): at boot, the start menu
 void game_state_zeland(iter* it) {
@@ -28,9 +27,9 @@ void player_state_zeland(iter* it) {
         }
         const entity camera = zox_get_link(world, e, CameraLink);
         if (zox_valid(camera)) {
-            const float4 rotation = quaternion_from_euler(zeland_camera_euler);
+            const float4 rotation = camera_look_at(zeland_camera_position, float3_zero);
             zox_setv(camera, Position3D, zeland_camera_position);
-            zox_setv(camera, Euler, zeland_camera_euler);
+            zox_setv(camera, Euler, quaternion_to_euler(rotation));
             zox_setv(camera, Rotation3D, rotation);
             zox_setv(camera, CameraState, zox_camera_state_free);
             zox_add(camera, CanRoam);

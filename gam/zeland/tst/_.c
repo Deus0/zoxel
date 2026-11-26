@@ -13,6 +13,8 @@ void zox_tst_zeland_boot_check(ecs* world) {
     const entity camera = zox_get_link(world, player, CameraLink);
     zox_tst_check(zox_valid(realm), "no realm");
     zox_tst_check(!zox_valid(zox_get_child_by_id(world, realm, zox_id(Terrain))), "a voxel terrain spawned");
+    const entity terrain = zox_get_child_by_id(world, realm, zox_id(PolyTerrain));
+    zox_tst_check(zox_valid(terrain) && zox_getv(terrain, MeshRenderCount) > 0, "the realm has no uploaded poly terrain");
     zox_tst_check(!zox_valid(zox_get_link(world, player, CharacterLink)), "a character spawned");
     zox_tst_check(zox_valid(camera) && zox_has(camera, Roaming), "the camera isn't flying free");
     const uint errors = zox_log_errors_count - zox_tst_errors_start;

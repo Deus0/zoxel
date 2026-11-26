@@ -1,5 +1,5 @@
 // Game Directory
-// zeland: walks a poly terrain (doc/plans/poly_terrains.md), no voxels; for now plays with a free camera in the void
+// zeland: walks a poly terrain (doc/plans/poly_terrains.md), no voxels; for now plays with a free camera over the island
 #include "eve/_.c"
 #ifdef zox_tests
 #include "tst/_.c"
@@ -9,6 +9,7 @@ void import_zoxgame(ecs* world) {
     zox_module(zoxgame);
     game_name = "zeland";
     zox_game_type = zox_game_mode_poly;
+    zox_game_camera_mode = zox_camera_state_first_person;
     menu_sky_color = (color_rgb) { 120, 170, 220 };
     menu_sky_bottom_color = (color_rgb) { 200, 220, 235 };
     game_sky_color = (color_rgb) { 110, 165, 225 };

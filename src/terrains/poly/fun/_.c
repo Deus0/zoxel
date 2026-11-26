@@ -92,3 +92,11 @@ color_rgb poly_color_at(float height, float3 normal) {
     }
     return (color_rgb) { 90, 160, 70 };
 }
+
+static float poly_light_at(float3 normal, float3 light) {
+    return 0.35f + 0.65f * fmaxf(0, float3_dot(normal, light));
+}
+
+static float3 poly_light_direction(void) {
+    return float3_normalize((float3) { -0.5f, 1, -0.3f });
+}

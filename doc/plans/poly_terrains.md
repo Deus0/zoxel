@@ -101,9 +101,14 @@ kept current as each step lands, not a step of their own).
    - an island: stretched perlin hills, a mountain rising to the middle, a round falloff under the sea
    - `poly_color_at` (sand, grass, rock, snow) for the mesh; `bash bsh/tools/poly_terrain.sh` draws the heights
      from above (doc/engine/tools.md)
-4. **terrain mesh:** prefab, spawn, the mesh observer, colours; zeland spawns it on play. Until lit meshes (step 7)
+4. [x] **terrain mesh:** prefab, spawn, the mesh observer, colours; zeland spawns it on play. Until lit meshes (step 7)
    a light direction is baked into the vertex colours, so the flat faces show. Test `poly_mesh`: vertex and index
    counts, every vertex on `poly_height_at`, a screenshot.
+   - `spawn_poly_terrain(world, parent, seed)` generates the heights and adds core `Dirty`; an observer builds the
+     mesh (6 vertices a cell, a sea square round it) and adds `MeshDirty`; drawn as a `VoxMesh` (colored3D)
+   - the game's `GameState` observer spawns it in the realm at `zox_game_terrain_spawn` (poly games only)
+   - tst `poly_views`: 4 screenshots round the island; `bash bsh/tools/poly_terrain.sh` joins them in
+     tst/poly/views.png
 5. **poly terrain physics:**
    - `Capsule`, `RadiusFloat`, `HeightFloat`, the closest point functions in `terrains/poly/collisions`
    - `ColliderLink`, the body system dispatching by its terrain link, voxel collisions skipping other kinds

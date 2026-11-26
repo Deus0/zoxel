@@ -23,7 +23,7 @@ static byte poly_map_save(const char* path, const float* heights, int2 cells, fl
     }
     const int width = cells.x * 4;
     const int depth = cells.y * 4;
-    const float3 light = float3_normalize((float3) { -0.5f, 1, -0.3f });
+    const float3 light = poly_light_direction();
     const color_rgb water = { 40, 90, 170 };
     byte ok = fprintf(file, "P6\n%i %i\n255\n", width, depth) > 0;
     for (int z = 0; ok && z < depth; z++) {
@@ -33,7 +33,7 @@ static byte poly_map_save(const char* path, const float* heights, int2 cells, fl
             const float height = poly_height_at(heights, cells, size, px, pz);
             const float3 normal = poly_normal_at(heights, cells, size, px, pz);
             const color_rgb ground = poly_color_at(height, normal);
-            const float shade = 0.35f + 0.65f * fmaxf(0, float3_dot(normal, light));
+            const float shade = poly_light_at(normal, light);
             float red = shade * ground.r;
             float green = shade * ground.g;
             float blue = shade * ground.b;

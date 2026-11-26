@@ -69,7 +69,14 @@ static void zox_tst_poly_heights_check(ecs* world) {
         "highest point [%f] should be above sea and at most [%f]", highest, poly_terrain_height);
 }
 
+#include "mesh.c"
+#include "views.c"
+
 void zox_tsts_poly_terrains(void) {
     zox_tst_add("poly_heights", zox_tst_poly_heights_ready, zox_tst_poly_heights_check, 30);
     zox_tst_set_setup("poly_heights", NULL, 1);
+    zox_tst_add("poly_mesh", zox_tst_poly_mesh_ready, zox_tst_poly_mesh_check, 30);
+    zox_tst_set_setup("poly_mesh", NULL, 1);
+    zox_tst_add("poly_views", zox_tst_poly_views_ready, zox_tst_poly_views_check, 30);
+    zox_tst_set_setup("poly_views", NULL, 1);
 }
