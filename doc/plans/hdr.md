@@ -95,11 +95,15 @@ The source of values past 1, in order:
   `zox_gpu_reset_fbo`, outside a render pass). Vulkan: a view of every level to sample, the first's to draw to
   (`target_view`), a sampler linear between mips and nearest up close (`vk_sampler_mips`, a downscaled view stays
   pixelated); unsupported without blits and linear filtering on RGBA16F (`zox_gpu_bloom_supported`).
-- The pass (`bloom_light()`): mips 2 to 7 (4 to 128 pixels), 4 taps a level, mixed in by `zox_bloom_strength` (0.08)
-  before the tonemap. No threshold: a mip averages a small bright thing below any threshold, so everything blurs a
-  little and colours past 1 glow the most (the energy conserving style). It hazes the view a little: off by default.
+- The pass (`bloom_light()`): mips 2 to 7 (4 to 128 pixels), 4 taps a level, each tap's part past 1 only, added by
+  `zox_bloom_strength` (1.0) before the tonemap. Colours under white add nothing, so no haze (v1 mixed the whole
+  blurred view in at 0.08 and hazed everything; changed 2026-11-27 with block glow). A small bright thing still
+  shows: the low mips keep it past 1 near it, the far mips lose it. Off by default.
 - Setting `Bloom` (video tab, `--bloom` / `--nobloom`); turning it on or off remakes the render textures.
-- tst hdr_bloom: a cube at brightness 1 then 3 on a dark background, read just below it: off unchanged, on brighter.
+- tst hdr_bloom: a cube at brightness 1 then 3 on a dark background, read just below it: off unchanged, on brighter
+  (at brightness 1 on equals off: no haze).
+- tst glow_views (`bash bsh/tools/view_glow.sh`): a glow stone in a dark brick room through the game camera, as
+  clamp, bloom, soft and filmic with bloom; the pngs to look at in `tst/glow/glow_views/`.
 - Not measured on the 780M yet (llvmpipe's times say nothing): the budget is 0.5ms at 1080p.
 - Limits: box filtered mips can look blocky and shimmer as the camera moves. The fix, if it shows: a chain of
   targets, the dual filter / COD style (13 tap down, 9 tap tent up), a bright pass with a soft knee.
@@ -118,7 +122,8 @@ tried and dropped: one brightness for all, no glowing liquids, a mesh and a syst
   (`get_block_glows`, a voxel value's table); the gpu's textured draw looks its voxel (in the vertex's w) up in a
   `glows` uniform set from the same table, so the compute mesher is unchanged.
 - tst glow_view (gl: cpu meshes, vulkan: gpu meshes): a glow stone's middle clipped white; without the tag ~150 blue.
-- Next: a glow byte per vox palette colour (the street lamp's bulb, gravity cores), particles' glow.
+- Next: a glow byte per vox palette colour (the street lamp's bulb, gravity cores), particles' glow, glowing eyes
+  that animate (todo.md).
 
 ### A5. Later, as outlines did
 

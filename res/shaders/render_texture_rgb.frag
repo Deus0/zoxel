@@ -69,20 +69,19 @@ vec3 outline(vec3 color) {
 #endif
 
 #ifdef zox_glsl300
-uniform float bloom;    // 0 off, else its strength: the view's mips (blurred, colours past 1 glow) mixed in
-                        //  (doc/plans/hdr.md)
+uniform float bloom;    // 0 off, else its strength: what's past white in the view's mips, added (doc/plans/hdr.md)
 
-// the view blurred: its mips 2 to 7 (4 to 128 pixels), 4 taps a level a texel apart, so the blocks of a level's
-//  pixels don't show
+// what's past white round here: its mips 2 to 7 (4 to 128 pixels), 4 taps a level a texel apart (the blocks of a
+//  level's pixels don't show), each past 1 only: colours under white add nothing, no haze
 vec3 bloom_light(vec2 at) {
     vec3 sum = vec3(0.0);
     for (int level = 2; level <= 7; level++) {
         vec2 texel = 1.0 / vec2(textureSize(zexture, level));
         float lod = float(level);
-        sum += textureLod(zexture, at + vec2(-texel.x, -texel.y), lod).rgb;
-        sum += textureLod(zexture, at + vec2(texel.x, -texel.y), lod).rgb;
-        sum += textureLod(zexture, at + vec2(-texel.x, texel.y), lod).rgb;
-        sum += textureLod(zexture, at + vec2(texel.x, texel.y), lod).rgb;
+        sum += max(textureLod(zexture, at + vec2(-texel.x, -texel.y), lod).rgb - 1.0, 0.0);
+        sum += max(textureLod(zexture, at + vec2(texel.x, -texel.y), lod).rgb - 1.0, 0.0);
+        sum += max(textureLod(zexture, at + vec2(-texel.x, texel.y), lod).rgb - 1.0, 0.0);
+        sum += max(textureLod(zexture, at + vec2(texel.x, texel.y), lod).rgb - 1.0, 0.0);
     }
     return sum / 24.0;
 }
@@ -165,7 +164,7 @@ void main() {
     }
 #ifdef zox_glsl300
     if (bloom > 0.0) {
-        color = mix(color, bloom_light(uv), bloom);
+        color += bloom_light(uv) * bloom;
     }
 #endif
     color = tone(color);

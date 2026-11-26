@@ -71,6 +71,13 @@ Pass `--readme` to resize and publish it to
 `doc/gifs/particles.gif` with ImageMagick. The capture uses its own build and logs through the
 test runner. `tst.sh all` runs `spawn_particles` for particle behavior coverage.
 
+## Glow views
+
+`bash bsh/tools/view_glow.sh` runs tst glow_views: a glow stone on the floor of a closed brick room (no sky, lit by
+the stone alone) through the game's camera, four views as pngs in `tst/glow/glow_views/`: `glow_clamp`, `glow_bloom`,
+`glow_soft_bloom`, `glow_filmic_bloom` (doc/plans/hdr.md). `--vulkan` for the vulkan backend (gpu meshed terrain),
+`--nobuild` to rerun.
+
 ## Still in bsh, to move here
 
 These look at the game through the test harness (they run a `*_views` test): [todo.md](../todo.md) has moving them.

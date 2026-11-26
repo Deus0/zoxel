@@ -23,6 +23,8 @@
 - Fade in terrain chunks
 - Fade between chunk meshes
 - Light up character models like block voxes
+- Glowing eyes that animate: eye colours glow (the vox palette glow byte, doc/plans/hdr.md A3.1) and pulse or
+  flare (anger, magic, night); after palette glow
 - Outline Rendering on Vox Models, dark outline (doc/plans/outlines.md)
 - outlines in xr: its eyes draw straight to their swapchains (xr/fun/eye_render.c), they need a render target with
   depth and mask and the pass before the swapchain; the setting shows greyed (unsupported) there till then

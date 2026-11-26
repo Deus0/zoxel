@@ -16,6 +16,26 @@ vignette and eyelids.
   texture.
 - Tests: ui/render_textures/tst (eyelids, hdr_target), they need geometry's cube.
 
+## Vertex colours and glow
+
+How a vertex's colour reaches the shaders, per mesh path (2026-11-27, block glow, doc/plans/hdr.md A3.1):
+
+| Path | Per vertex | Glow from |
+|---|---|---|
+| CPU terrain (and water) | rgba bytes (`MeshColors`): rgb its light, all three the same | alpha: 255 on a `BlockGlow` block's faces (`get_block_glows`) |
+| CPU vox models, skeletons, poly terrain | rgba bytes: the palette colour, darkened at corners | alpha (0 till palette glow) |
+| GPU meshed vox models | one 32 bit value: r, g, b and a 4th byte | the 4th byte |
+| GPU meshed terrain | the face's 4 corner lights in a 32 bit value; the position's w packs the voxel | the draw shader looks the voxel up in a `glows` uniform table, the compute mesher unchanged |
+
+- Alpha is glow, not see through: a slime's shell is its own mesh with an `alpha` uniform.
+- Shaders: terrain `max(light, glow) * (1 + glow * 3)` (a glowing face is lit at night too), vox models, instances
+  and bones `colour * (1 + glow * 3)`. Past 1 needs a render camera's half float target; bloom and the tonemap bring
+  it back to the screen.
+- Glow is a value carried with the data, not a material or mesh of its own: new glowing things set a value (a block
+  tag, a palette colour's byte, a particle's), with no new render system.
+- Uploads are 4 bytes a vertex on every backend (vulkan's rgb8 fallback is gone).
+- Tests: lights/tst glow_view (cpu meshes on gl, gpu on vulkan), glow_views (`bsh/tools/view_glow.sh`).
+
 ## Notes
 
 - The 3D particle renderer caps each draw batch at 100,000 instances. Color and size uploads use that clamped count, while the position upload uses the full ECS batch count. A batch above the cap can request a position upload larger than its GPU buffer. Use the same clamped count for every attribute upload and the draw. [Renderer](../../src/particles/particles3/sys/render.c) · [Buffer allocation](../../src/particles/particles3/sha/particle.c)
