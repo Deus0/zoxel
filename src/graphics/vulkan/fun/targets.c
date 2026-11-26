@@ -5,6 +5,8 @@
 //  - two passes: begin (its depth cleared) and load (carried on, after a split's restart); both keep the colour
 //    (cameras clear their own rect) and leave it shader readable, for the post processing's draw this frame
 //  - a texture written again (a resize) gets a new image: the fbo's framebuffer is made again for it
+//  - outlines (doc/plans/outlines.md): the rbo has an outline mask image beside its depth (rg32ui, colour attachment
+//    1, cleared as the pass begins), both left shader readable after the pass for the post processing's outline
 
 typedef struct {
     uint texture;
@@ -20,6 +22,9 @@ typedef struct {
     VkImage image;
     VkDeviceMemory memory;
     VkImageView view;
+    VkImage mask_image;
+    VkDeviceMemory mask_memory;
+    VkImageView mask_view;
     int2 size;
     ulong used;
     byte live;
@@ -39,8 +44,10 @@ static inline vk_rbo* vk_rbo_of(uint id) {
     return rbo && rbo->live ? rbo : NULL;
 }
 
+#define vk_mask_format VK_FORMAT_R32G32_UINT
+
 VkRenderPass vulkan_create_texture_pass(byte begin) {
-    const VkAttachmentDescription attachments[2] = {
+    const VkAttachmentDescription attachments[3] = {
         {
             .format = VK_FORMAT_R8G8B8A8_UNORM,
             .samples = VK_SAMPLE_COUNT_1_BIT,
@@ -58,16 +65,29 @@ VkRenderPass vulkan_create_texture_pass(byte begin) {
             .storeOp = VK_ATTACHMENT_STORE_OP_STORE,
             .stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
             .stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
-            .initialLayout = begin ? VK_IMAGE_LAYOUT_UNDEFINED : VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
-            .finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+            // read only after: the outline pass samples it
+            .initialLayout = begin ? VK_IMAGE_LAYOUT_UNDEFINED : VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL,
+            .finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL,
+        },
+        {
+            .format = vk_mask_format,
+            .samples = VK_SAMPLE_COUNT_1_BIT,
+            .loadOp = begin ? VK_ATTACHMENT_LOAD_OP_CLEAR : VK_ATTACHMENT_LOAD_OP_LOAD,
+            .storeOp = VK_ATTACHMENT_STORE_OP_STORE,
+            .stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+            .stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
+            .initialLayout = begin ? VK_IMAGE_LAYOUT_UNDEFINED : VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+            .finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
         },
     };
-    const VkAttachmentReference color = { 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
+    const VkAttachmentReference colors[2] = {
+        { 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL },
+        { 2, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL } };
     const VkAttachmentReference depth = { 1, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL };
     const VkSubpassDescription subpass = {
         .pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS,
-        .colorAttachmentCount = 1,
-        .pColorAttachments = &color,
+        .colorAttachmentCount = vk_outlines ? 2 : 1,
+        .pColorAttachments = colors,
         .pDepthStencilAttachment = &depth,
     };
     // after its last sampling (and depth use), and before the next sampling of what it drew
@@ -86,15 +106,15 @@ VkRenderPass vulkan_create_texture_pass(byte begin) {
         {
             .srcSubpass = 0,
             .dstSubpass = VK_SUBPASS_EXTERNAL,
-            .srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            .srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
             .dstStageMask = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-            .srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+            .srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
             .dstAccessMask = VK_ACCESS_SHADER_READ_BIT,
         },
     };
     const VkRenderPassCreateInfo info = {
         .sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
-        .attachmentCount = 2,
+        .attachmentCount = vk_outlines ? 3 : 2,
         .pAttachments = attachments,
         .subpassCount = 1,
         .pSubpasses = &subpass,
@@ -139,9 +159,16 @@ void vulkan_rbo_release(vk_rbo* rbo) {
         vulkan_garbage_add((vk_garbage_item) { .image = rbo->image, .view = rbo->view, .memory = rbo->memory,
             .serial = rbo->used });
     }
+    if (rbo->mask_image) {
+        vulkan_garbage_add((vk_garbage_item) { .image = rbo->mask_image, .view = rbo->mask_view,
+            .memory = rbo->mask_memory, .serial = rbo->used });
+    }
     rbo->image = VK_NULL_HANDLE;
     rbo->view = VK_NULL_HANDLE;
     rbo->memory = VK_NULL_HANDLE;
+    rbo->mask_image = VK_NULL_HANDLE;
+    rbo->mask_view = VK_NULL_HANDLE;
+    rbo->mask_memory = VK_NULL_HANDLE;
 }
 
 // the rbo's depth image at size (a new one if its size changed)
@@ -152,12 +179,17 @@ static inline void zox_gpu_set_rbo_size(guint id, int2 size) {
     }
     vulkan_rbo_release(rbo);
     const VkExtent2D extent = { size.x, size.y };
-    if (!vulkan_create_image(extent, vk_depth_format, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
-        &rbo->image, &rbo->memory))
+    if (!vulkan_create_image(extent, vk_depth_format, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT |
+        VK_IMAGE_USAGE_SAMPLED_BIT, &rbo->image, &rbo->memory) || (vk_outlines && !vulkan_create_image(extent,
+        vk_mask_format, VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, &rbo->mask_image,
+        &rbo->mask_memory)))
     {
         return;
     }
     rbo->view = vulkan_create_view(rbo->image, vk_depth_format, VK_IMAGE_ASPECT_DEPTH_BIT);
+    if (vk_outlines) {
+        rbo->mask_view = vulkan_create_view(rbo->mask_image, vk_mask_format, VK_IMAGE_ASPECT_COLOR_BIT);
+    }
     rbo->size = size;
     rbo->used = 0;
 }
@@ -203,7 +235,9 @@ static inline void zox_gpu_bind_fbo(guint id) {
     vk_fbo* fbo = vk_fbo_of(id);
     vk_texture* texture = fbo ? vk_texture_of(fbo->texture) : NULL;
     vk_rbo* rbo = fbo ? vk_rbo_of(fbo->rbo) : NULL;
-    if (!texture || !texture->image || !rbo || !rbo->image || !vulkan_frame_begin()) {
+    if (!texture || !texture->image || !rbo || !rbo->image || (vk_outlines && !rbo->mask_image) ||
+        !vulkan_frame_begin())
+    {
         return;
     }
     if (!vk_pass_texture_begin) {
@@ -216,11 +250,11 @@ static inline void zox_gpu_bind_fbo(guint id) {
         if (fbo->framebuffer) {
             vulkan_garbage_add((vk_garbage_item) { .framebuffer = fbo->framebuffer, .serial = serial });
         }
-        const VkImageView attachments[2] = { texture->view, rbo->view };
+        const VkImageView attachments[3] = { texture->view, rbo->view, rbo->mask_view };
         const VkFramebufferCreateInfo info = {
             .sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
             .renderPass = vk_pass_texture_begin,
-            .attachmentCount = 2,
+            .attachmentCount = vk_outlines ? 3 : 2,
             .pAttachments = attachments,
             .width = extent.width,
             .height = extent.height,
@@ -266,4 +300,49 @@ void vulkan_dispose_targets() {
     vk_table_dispose(&vk_rbos);
     vkDestroyRenderPass(vk_device, vk_pass_texture_begin, NULL);
     vkDestroyRenderPass(vk_device, vk_pass_texture_load, NULL);
+}
+
+// outlines (doc/plans/outlines.md): the mask cleared as a render texture's pass begins, drawn to by outlined models
+static inline byte zox_gpu_outlines_supported() {
+    return vk_outlines;
+}
+
+// an rbo's outline mask, as a unit's id (zox_gpu_bind_texture_unit)
+static inline guint zox_gpu_rbo_mask(guint rbo) {
+    return rbo ? rbo | vk_rbo_mask_bit : 0;
+}
+
+static inline void zox_gpu_outline_mask(byte on) {
+    vk_ctx->outline_mask = on;
+}
+
+// cleared by the pass' begin
+static inline void zox_gpu_clear_outline_mask() { }
+
+// units past 0 take a render camera's depth (its rbo) or outline mask (zox_gpu_rbo_mask)
+static inline void zox_gpu_bind_texture_unit(byte unit, guint id) {
+    if (unit < vk_units_max) {
+        vk_ctx->units_bound[unit] = id;
+    }
+}
+
+// a unit's image for a sampler: 0 the bound texture (black if none), past it an rbo's depth or mask (black if none)
+VkDescriptorImageInfo vulkan_unit_image(byte unit) {
+    const ulong serial = vk_serial_recording();
+    if (unit > 0 && unit < vk_units_max && vk_ctx->units_bound[unit]) {
+        const uint id = vk_ctx->units_bound[unit];
+        vk_rbo* rbo = vk_rbo_of(id & ~vk_rbo_mask_bit);
+        if (rbo && rbo->image) {
+            rbo->used = serial;
+            return id & vk_rbo_mask_bit ?
+                (VkDescriptorImageInfo) { vk_sampler, rbo->mask_view, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL } :
+                (VkDescriptorImageInfo) { vk_sampler, rbo->view, VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL };
+        }
+    }
+    vk_texture* texture = unit == 0 ? vk_texture_of(vk_ctx->texture_bound) : NULL;
+    if (!texture || !texture->image) {
+        texture = vk_texture_of(vk_texture_black);
+    }
+    texture->used = serial;
+    return (VkDescriptorImageInfo) { vk_sampler, texture->view, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL };
 }

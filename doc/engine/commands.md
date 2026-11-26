@@ -42,6 +42,7 @@ and add it to this doc and to `--help` too.
 | `--openglcore` | use desktop OpenGL core | sdl |
 | `-e` | OpenGL ES override for the renderer | [rendering](../src/rendering/fun/terminal.c) |
 | `--nopost` | no post processing: cameras draw straight to the screen, no render texture (as the vulkan build does for now) | [rendering](../src/rendering/fun/terminal.c) |
+| `--outlines` / `--nooutlines` | the Camera Outlines setting (outlined vox models, doc/plans/outlines.md), over the settings file's | [rendering](../src/rendering/fun/terminal.c) |
 | `--fog <n>` | the Fog setting (0 to 1, as in the menu), over the settings file's | [rendering](../src/rendering/fun/terminal.c) |
 | `--bones` | the bones debug view: bone gizmos (joint lines, boxes turned with their bones, in their paint) over the skeleton meshes see through and painted by bone, as the Gizmos debug ui's Bones (i.e. `bash bsh/punch.sh --bones`) | [bones](../src/bones/fun/debug.c) |
 | `--verbose` | detail logs (`zox_logv`): paths, settings, gl version and renderer, splashes; the default log keeps to warnings, errors and few lines | all |

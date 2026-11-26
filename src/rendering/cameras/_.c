@@ -2,6 +2,7 @@
 #include "com/_.c"
 #include "fun/render_camera.c"
 #include "fun/gpu.c"
+#include "fun/outlines.c"
 #include "pre/_.c"
 #include "sys/_.c"
 

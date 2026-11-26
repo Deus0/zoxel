@@ -41,6 +41,19 @@ byte zox_tst_eyelids_ready(ecs* world) {
         zox_tst_lids_make_void(world, camera);
         zox_tst_lids_void = 1;
     }
+    // the screen's fader gone first (it fades out over time: a slower frame rate took the open view under it)
+    zox_tst_waiting = "the screen fader to fade out";
+    byte fading = 0;
+    iter it = zox_each(world, CanvasOverlay);
+    while (zox_each_next(it)) {
+        for (int j = 0; j < it.count; j++) {
+            const entity overlay = it.entities[j];
+            fading |= !zox_is_prefab(overlay) && zox_has(overlay, Alpha) && zox_getv(overlay, Alpha) > 0.01f;
+        }
+    }
+    if (fading) {
+        return 0;
+    }
     zox_tst_waiting = "the lids' screenshots";
     zox_tst_lids_frames++;
     zox_tst_progress(zox_tst_lids_stage * 1000 + zox_tst_lids_frames);

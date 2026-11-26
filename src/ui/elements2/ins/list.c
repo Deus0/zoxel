@@ -124,14 +124,14 @@ entity spawn_list(
                 .font_size = list_data.font_size,
                 .margins = list_data.button_padding,
                 .font_resolution = list_data.font_size,
-                .font_fill_color = button_font_fill,
+                .font_fill_color = child_data.disabled ? button_font_fill_disabled : button_font_fill,
                 .font_outline_color = button_font_outline,
                 .font_thickness = button_font_thickness_fill,
                 .font_outline_thickness = button_font_thickness_outline,
             };
             SpawnButtonData child_button_data = {
                 .prefab_text = prefab_text,
-                .fill = button_fill,
+                .fill = child_data.disabled ? button_fill_disabled : button_fill,
                 .outline = button_outline,
             };
             entity toggle = spawn_toggle(
@@ -146,6 +146,9 @@ entity spawn_list(
                 zox_setv(toggle, ToggleEvent, child_data.on_toggle.value);
             }
             zox_setv(toggle, OptionLabel, child_data.text);
+            if (child_data.disabled) {
+                zox_setv(toggle, ClickDisabled, 1);
+            }
             child = toggle;
         }
         if (child && child_data.tooltip) {

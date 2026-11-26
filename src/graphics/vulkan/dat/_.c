@@ -72,6 +72,7 @@ typedef struct {
     char name[48];
     int offset[2];
     int stride[2];
+    int sampler;                // a sampler's index in its program's samplers (glUniform1i sets its unit), else -1
 } vk_uniform;
 
 // a named uniform block: its binding, size and the gl binding point (zox_gpu_ubo_block_binding) it reads
@@ -92,6 +93,7 @@ typedef struct {
     byte cull;
     byte color_write;
     byte depth_bias;
+    byte mask;                  // a render texture's outline mask written (colour attachment 1, doc/plans/outlines.md)
     byte inputs_count;
     struct {
         byte location;
@@ -116,6 +118,7 @@ typedef struct {
     vk_block blocks[vk_slots_max];
     int blocks_count;
     int samplers[vk_slots_max];         // their bindings
+    byte sampler_units[vk_slots_max];   // each one's texture unit (gl's glUniform1i on a sampler), 0 by default
     int samplers_count;
     vk_slot inputs[vk_slots_max];       // the vertex shader's inputs, value their location
     int inputs_count;
@@ -137,7 +140,7 @@ typedef struct {
     ulong data_epoch[2];
     VkDescriptorSet set;        // the last set made this frame, reused while it matches
     ulong set_epoch;
-    VkImageView set_view;       // a texture written again gets a new image, so its view, not its id
+    VkImageView set_views[vk_slots_max];    // each sampler's: a texture written again gets a new image, its view
     VkBuffer set_buffers[vk_slots_max];
     ulong job;                  // the job it was last synced in (a worker's copy of the main thread's values)
 } vk_program_state;
@@ -159,11 +162,16 @@ typedef struct {
 
 // what a thread records with: gl's bound state (as zox_gpu_* calls leave it), its command buffer, and per frame in
 // flight its ring, descriptor pools and secondary command buffers; the main thread's is vk_contexts[0]
+#define vk_units_max 4
+#define vk_rbo_mask_bit 0x80000000     // a unit's id: an rbo's outline mask, not its depth
+
 typedef struct {
     uint program_bound;
     uint array_bound;
     uint element_bound;
     uint texture_bound;
+    uint units_bound[vk_units_max];     // units past 0: a render camera's depth or outline mask (vk_rbo_mask_bit)
+    byte outline_mask;          // outlined models draw: their mask written (zox_gpu_outline_mask)
     vk_attribute attributes[vk_slots_max];
     byte blend;
     byte depth_test;

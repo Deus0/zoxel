@@ -52,7 +52,8 @@ char* vulkan_gather_uniforms(const char* source, char** body) {
         }
         const char* semicolon = memchr(text, ';', end - text);
         const byte loose = strncmp(text, "uniform ", 8) == 0 && semicolon && !memchr(text, '{', end - text)
-            && strncmp(text + 8, "sampler", 7) != 0;
+            && strncmp(text + 8, "sampler", 7) != 0 && strncmp(text + 8, "usampler", 8) != 0
+            && strncmp(text + 8, "isampler", 8) != 0;
         if (loose) {
             const size_t member = semicolon + 1 - (text + 8);
             memcpy(members, text + 8, member);

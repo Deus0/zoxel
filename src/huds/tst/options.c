@@ -1,5 +1,6 @@
 // tst: options_toggle, toggles a setting in the options menu with the fake mouse
-//  - opens options, finds the first visible toggle (skipping window mode ones, i.e. Fullscreen)
+//  - opens options, finds the first visible toggle (skipping window mode ones, i.e. Fullscreen, and unsupported
+//    ones, checked greyed: not clickable, a tooltip)
 //  - pressing it doesn't toggle yet (buttons click on release)
 //  - releasing it toggles once: its ActiveState and its linked setting both flip
 //  - clicking again flips both back
@@ -20,7 +21,11 @@ entity zox_tst_options_find_toggle(ecs* world, entity e) {
         !zox_getv(e, RenderDisabled))
     {
         const entity setting = zox_getv(e, SettingLink);
-        if (zox_valid(setting) && zox_has(setting, SettingByte)) {
+        // an unsupported one (Camera Outlines on vulkan): greyed, unclickable, its tooltip says why; not flipped
+        if (zox_valid(setting) && zox_has(setting, SettingUnsupported)) {
+            zox_tst_check(zox_has(e, ClickDisabled) && zox_getv(e, ClickDisabled) && zox_has(e, TooltipText),
+                "unsupported [%s] can be clicked or has no tooltip", zox_get(setting, ZoxName)->value);
+        } else if (zox_valid(setting) && zox_has(setting, SettingByte)) {
             const char* name = zox_get(setting, ZoxName)->value;
             if (strcmp(name, "Fullscreen") && strcmp(name, "VSync")) {
                 return e;

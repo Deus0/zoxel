@@ -9,6 +9,8 @@ zox_tag(SettingTabSound);
 zox_tag(SettingTabWorld);
 zox_tag(SettingTabGame);
 zox_tag(SettingTabDebug);
+// can't be used here (i.e. a backend without it): the options menu shows it greyed, not toggled, a tooltip says why
+zox_tag(SettingUnsupported);
 zoxc_byte(SettingBit);
 zoxc_byte(SettingByte);
 zoxc_byte2(SettingByteBounds);
@@ -32,6 +34,7 @@ void zox_components_settings(ecs* world) {
     zoxd_tag(SettingTabWorld);
     zoxd_tag(SettingTabGame);
     zoxd_tag(SettingTabDebug);
+    zoxd_tag(SettingUnsupported);
     zoxd_byte(SettingBit);
     zoxd_byte(SettingByte);
     zoxd_byte2(SettingByteBounds);

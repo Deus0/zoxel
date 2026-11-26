@@ -8,6 +8,10 @@ byte zox_xr_active = 0;
     byte zox_disable_post_processing = 0;
 #endif*/
 byte zox_disable_post_processing = 0;
+// setting "Camera Outlines", --outlines / --nooutlines: outlined models on render cameras (doc/plans/outlines.md)
+byte zox_camera_outlines = 1;
+// the camera drawing now writes the outline mask (its fbo has one, outlines on and supported), set per camera
+byte render_outlines = 0;
 
 #include "sta/_.c"
 #include "dat/_.c"

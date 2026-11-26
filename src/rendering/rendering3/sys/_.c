@@ -44,6 +44,7 @@ void zox_systems_basics3(ecs* world) {
         [in] rendering.MaterialGPULink,
         [in] rendering3.MaterialBasic3D,
         [none] rendering3.MeshBasic3,
+        [none] !core.Disabled,
         [none] !core.Initialize,
     );
     // water: after the solid things and the sky, blended over them
@@ -103,8 +104,10 @@ void zox_systems_basics3(ecs* world) {
     );
     // unique textured meshes - Items
     // NOTE: These are materials themselves
+    //  order 0: solid things that aren't outlined draw before the outlined vox models (order 1), nothing hides
+    //  their outline mask after (doc/plans/outlines.md)
     zox_render3_system(
-        1,
+        0,
         textured_render_system,
         [in] transforms.TransformMatrix,
         [in] rendering.MeshGPULink,

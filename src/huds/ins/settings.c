@@ -139,11 +139,15 @@ static inline byte menu_options_tab_elements(ecs* world, entity app, entity tab,
                 .value_bounds = byte2_to_float2(zox_getv(e2, SettingByteBounds))
             };
         } else if (zox_has(e2, SettingToggle)) {
+            // unsupported here: shown off and greyed, its tooltip says why
+            const byte unsupported = zox_has(e2, SettingUnsupported);
             elements[k] = (SpawnListElement) {
                 .type = list_element_type_toggle,
                 .on_toggle = { &on_new_settings_toggle_toggled },
                 .text = name->value,
-                .value = zox_getv(e2, SettingByte),
+                .value = unsupported ? 0 : zox_getv(e2, SettingByte),
+                .disabled = unsupported,
+                .tooltip = unsupported ? "Not supported on this device" : NULL,
             };
         } else {
             const float value = zox_getv(e2, SettingFloat);

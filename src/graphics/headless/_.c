@@ -25,6 +25,11 @@ static inline void zox_gpu_dispose_fbo(guint fbo) { }
 
 static inline void zox_gpu_set_rbo_size(guint id, int2 size) { }
 static inline void zox_gpu_dispose_rbo(guint id) { }
+static inline byte zox_gpu_outlines_supported() { return 0; }
+static inline guint zox_gpu_rbo_mask(guint rbo) { return 0; }
+static inline void zox_gpu_outline_mask(byte on) { }
+static inline void zox_gpu_clear_outline_mask() { }
+static inline void zox_gpu_bind_texture_unit(byte unit, guint id) { }
 
 // Shaders
 void zox_gpu_dispose_shader(guint id) { }

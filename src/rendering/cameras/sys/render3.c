@@ -55,6 +55,11 @@ void camera_render3_system(iter* it) {
         zox_gpu_set_clear_color(color_to_float4(clear_color));
         // only its viewport, cameras sharing the screen keep what the others drew
         zox_gpu_clear_rect(viewport_position, viewport_size);
+        // outlines: a render camera's mask, cleared, drawn to by outlined models (doc/plans/outlines.md)
+        render_outlines = fbo && zox_camera_outlines && zox_gpu_outlines_supported() && !zox_xr_active;
+        if (render_outlines) {
+            zox_gpu_clear_outline_mask();
+        }
 #if defined(zox_tests) && defined(zox_opengl) && defined(zox_windows)
         if (test_camera_depth) {
             test_camera_depth(e, NULL, matrix->value, position->value, viewport_position, viewport_size);
@@ -101,5 +106,6 @@ void camera_render3_system(iter* it) {
         }
     }
     render_underwater = 0;
+    render_outlines = 0;
     zox_sys_on_end();
 } zoxd_system(camera_render3_system);

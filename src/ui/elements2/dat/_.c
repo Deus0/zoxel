@@ -26,6 +26,7 @@ typedef struct {
     byte type;
     const char* text;
     const char* tooltip;     // shown hovering it
+    byte disabled;           // greyed, can't be clicked (its tooltip still shows), i.e. an unsupported setting
     char* save_path;
     // sliders
     float value;

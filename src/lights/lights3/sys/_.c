@@ -216,8 +216,9 @@ void zox_systems_lights3(ecs* world) {
         [out] rendering.VaoGPULink,
         [none] rendering.GpuMesh,
     );
+    // order 0, with the cpu chunks: before the outlined vox models (order 1, doc/plans/outlines.md)
     zox_render3_system_parallel(
-        1,
+        0,
         chunk_gpu_render_system,
         [in] rendering.RenderDisabled,
         [in] rendering.RenderDepth,

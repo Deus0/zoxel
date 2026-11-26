@@ -62,6 +62,9 @@ entity spawn_material_matrixui(ecs* world) {
     return e;
 }
 
+// a render texture's outline pass (rendering/cameras/fun/outlines.c, included after)
+byte render_texture_outlines(ecs* world, entity render_texture, guint material);
+
 void render_uis(ecs* world, ui_render_queue* uis) {
     byte dbg_log = 0;
     float depth_per_layer = 3 * zox_depth_per_layer;
@@ -144,7 +147,14 @@ void render_uis(ecs* world, ui_render_queue* uis) {
             zox_gpu_float4x4(attributes->matrix, matrix2);
             zox_gpu_float(attributes->brightness, data.brightness);
             zox_gpu_float(attributes->alpha, data.alpha);
+            const byte outlines = zox_has(data.e, RenderTexture) &&
+                render_texture_outlines(world, data.e, zox_getv(material, MaterialGPULink));
             zox_gpu_render(6);
+            if (outlines) {
+                // let go of the camera's depth and mask: its next draw writes them
+                zox_gpu_bind_texture_unit(1, 0);
+                zox_gpu_bind_texture_unit(2, 0);
+            }
             if (dbg_log) {
                 zox_log("   -- [%s] at L[%i] Depth [%f]", zox_getn(data.e), layer, matrix2.w.z);
                 if (dbg_log >= 2) {

@@ -23,7 +23,12 @@
 - Fade in terrain chunks
 - Fade between chunk meshes
 - Light up character models like block voxes
-- Outline Rendering on Vox Models, dark outline
+- Outline Rendering on Vox Models, dark outline (doc/plans/outlines.md)
+- outlines in xr: its eyes draw straight to their swapchains (xr/fun/eye_render.c), they need a render target with
+  depth and mask and the pass before the swapchain; the setting shows greyed (unsupported) there till then
+- outlines on viewport cameras (spawn_viewport_camera: model_views, some tests): no frame buffer, no pass
+- experiment: the outline pass on terrain too (blocks have outlines baked into their textures now), see if it reads
+  better or replaces them (doc/plans/outlines.md)
 - Day Night Cycle
 - we should lower houses anyway so theyre on ground, but still be good to fix this
 - Use waveform collapse on the slime model, like pengus and chooks, slems
@@ -87,6 +92,10 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
   the 8 models in parallel) it'd be a fraction: ask first, it changes how model nodes run
 
 # Bugs
+- tst outline_views --vulkan fails on lavapipe (software vulkan): gpu meshed skeleton meshes drawn with the outline
+  mask pipeline (a second, integer colour attachment written) don't show at all; cpu meshed ones do
+  (--vox_cpu_meshing passes), and on radv (--gpu) all of it draws and passes. Not found yet: a lavapipe bug, or
+  undefined behaviour lavapipe shows
 - tst gpu_restore fails on master (2026-11-26, gl): the picture's average colour changes after the restore (36 to 40)
 - tst block_vox_hits failed once on vulkan (15 of 72 rays at doors' tops), then passed 4 times; once on gl (6 of 72)
 - tst lod_light_flash flakes on vulkan (4 faces dark then lit), gpu or cpu vox meshing alike, 1 in 2 or 3

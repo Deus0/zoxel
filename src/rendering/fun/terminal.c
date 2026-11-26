@@ -10,6 +10,9 @@ void process_arguments_rendering(ecs *world, char* args[], int count) {
             // the Fog setting (0 to 1, the menu's), over the settings file's
             fog_density = atof(args[++i]) * fog_settings_mul;
             zox_settings_set_by_args("Fog");
+        } else if (strcmp(args[i], "--outlines") == 0 || strcmp(args[i], "--nooutlines") == 0) {
+            zox_camera_outlines = args[i][2] == 'o';
+            zox_settings_set_by_args("Camera Outlines");
         }
     }
 }

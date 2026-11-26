@@ -204,6 +204,7 @@ void vox_instance_render_system(iter* it) {
     zox_gpu_float(material_attributes->brightness, 1);
     zox_gpu_float(material_attributes->alpha, 1);
     zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
+    outline_mask_begin(material_attributes->outline);
     byte has_sway = 0;
     byte has_see_through = 0;
     for (int i = 0; i < zox_instance_commands_count; i++) {
@@ -220,6 +221,7 @@ void vox_instance_render_system(iter* it) {
             material_attributes->vertex_color,
             ubo->value);
     }
+    outline_mask_end();     // grass isn't outlined
     // Swaying vox instances (grass)
     guint sway_material_link = has_sway ?
         zox_getv(material_vox_instance_sway, MaterialGPULink) :
@@ -264,6 +266,7 @@ void vox_instance_render_system(iter* it) {
         zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
         zox_gpu_enable_blend();
         zox_gpu_set_depth_mask(0);
+        outline_mask_begin(material_attributes->outline);
         for (int i = 0; i < zox_instance_commands_count; i++) {
             InstanceRenderCommand command = zox_instance_commands[i];
             if (!command.see_through) {
@@ -274,6 +277,7 @@ void vox_instance_render_system(iter* it) {
             render_vox_instance_command(world, command, material_attributes->vertex_position,
                 material_attributes->vertex_color, ubo->value);
         }
+        outline_mask_end();
         zox_gpu_set_depth_mask(1);
         zox_gpu_disable_blend();
     }

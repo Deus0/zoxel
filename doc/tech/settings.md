@@ -48,6 +48,8 @@ and its systems function hooks them: `add_hook_spawn_prefabs(sounds_settings_eve
   `InitializeEvent`. No system polls for it.
 - Apply: an observer on `Dirty` added to a `Setting`. Match by its tag (`zox_has(e, SettingMusic)`), set the
   module's global.
+- Unsupported here (a backend without it): tag it `SettingUnsupported`; the options menu shows its toggle greyed,
+  off and unclickable (`ClickDisabled`), its tooltip "Not supported on this device" (i.e. Camera Outlines on vulkan).
 - Settings only in dev builds go behind `#ifdef zox_dev` (Terrain Res), debug switches (No Npcs, No Lights, No
   Humans, No Lods) behind `#ifdef zox_debug_settings` (debug builds), on the debug tab; XR's behind `#ifdef zox_xr`.
 - The options menu is a window of tabs (ui/windows/ins/tabs.c: a list each, the picked one shown, nothing

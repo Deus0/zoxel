@@ -15,9 +15,11 @@ zoxc_arrayd(BoneLinks, entity);
 
 // its settings, each its own tag (a setting's observer finds it by it, not its name)
 zox_tag(SettingGrassAnimation);
+zox_tag(SettingCameraOutlines);
 
 void zox_components_rendering3(ecs* world) {
     zoxd_tag(SettingGrassAnimation);
+    zoxd_tag(SettingCameraOutlines);
 
     // Types
     zoxd_tag(Mesh3);

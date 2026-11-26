@@ -31,6 +31,7 @@ int vulkan_uniform_add(vk_program* program, const char* name) {
     snprintf(uniform->name, 48, "%s", name);
     uniform->offset[0] = uniform->offset[1] = -1;
     uniform->stride[0] = uniform->stride[1] = 0;
+    uniform->sampler = -1;
     return i;
 }
 
@@ -88,8 +89,10 @@ byte vulkan_link(vk_program* program, const vk_shader* stages[2]) {
             if (names_count > before) {
                 bindings[bindings_count++] = (VkDescriptorSetLayoutBinding) { binding,
                     VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, VK_SHADER_STAGE_ALL_GRAPHICS, NULL };
+                const int index = vulkan_uniform_add(program, stage->samplers[t].name);
+                program->uniforms[index].sampler = program->samplers_count;
+                program->sampler_units[program->samplers_count] = 0;
                 program->samplers[program->samplers_count++] = binding;
-                vulkan_uniform_add(program, stage->samplers[t].name);
             }
         }
     }
@@ -267,8 +270,15 @@ void vulkan_uniform_write(uint id, gint index, const void* data, int bytes, int 
     if (!program || index < 0 || index >= program->uniforms_count) {
         return;
     }
-    vk_program_state* state = vulkan_program_state(id, program);
     const vk_uniform* uniform = &program->uniforms[index];
+    // a sampler's: its texture unit
+    if (uniform->sampler >= 0) {
+        if (bytes == 4 && count == 1) {
+            ((vk_program*) program)->sampler_units[uniform->sampler] = *(const int*) data;
+        }
+        return;
+    }
+    vk_program_state* state = vulkan_program_state(id, program);
     for (byte s = 0; s < 2; s++) {
         if (uniform->offset[s] < 0) {
             continue;

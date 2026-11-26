@@ -64,6 +64,9 @@ void skeleton3_render_system(iter* it) {
             zox_gpu_float4(material_attributes->fog_data, get_fog_value());
             zox_gpu_float(material_attributes->brightness, 1);
             zox_gpu_float(material_attributes->paint_weights, paint_weights);
+            if (!transparent_meshes) {  // bonet.frag writes no mask
+                outline_mask_begin(material_attributes->outline);
+            }
         }
         // get local bone matrix, local to transform
         // Cache bone data to send to GPU
@@ -113,6 +116,7 @@ void skeleton3_render_system(iter* it) {
         zox_gpu_disable_attribute(material_attributes->vertex_color);
         zox_gpu_disable_attribute(material_attributes->vertex_position);
         zox_gpu_reset_mesh();
+        outline_mask_end();
         zox_disable_material();
         if (transparent_meshes) {
             zox_gpu_disable_blend();

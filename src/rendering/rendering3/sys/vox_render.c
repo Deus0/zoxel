@@ -60,6 +60,7 @@ static inline void vox_render_meshes(iter* it, byte see_through) {
                 material_attributes->fog_data,
                 get_fog_value());
             zox_gpu_float(material_attributes->alpha, 1);
+            outline_mask_begin(material_attributes->outline);
             if (see_through) {
                 zox_gpu_enable_blend();
                 zox_gpu_set_depth_mask(0);
@@ -102,6 +103,7 @@ static inline void vox_render_meshes(iter* it, byte see_through) {
         zox_gpu_disable_attribute(material_attributes->vertex_color);
         zox_gpu_disable_attribute(material_attributes->vertex_position);
         zox_gpu_reset_mesh();
+        outline_mask_end();
         if (see_through) {
             zox_gpu_set_depth_mask(1);
             zox_gpu_disable_blend();

@@ -4,6 +4,7 @@
 #include "ik_poses.c"
 #include "punch_views.c"
 #include "walk_views.c"
+#include "outline_views.c"
 
 void zox_tsts_equipment(ecs* world) {
     zox_tsts_clothes(world);
@@ -12,4 +13,5 @@ void zox_tsts_equipment(ecs* world) {
     zox_tsts_ik_poses(world);
     zox_tsts_punch_views(world);
     zox_tsts_walk_views(world);
+    zox_tsts_outline_views(world);
 }

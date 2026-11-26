@@ -68,10 +68,13 @@ VkPipeline vulkan_create_pipeline(const vk_program* program, const vk_pipeline_k
         .alphaBlendOp = VK_BLEND_OP_ADD,
         .colorWriteMask = key->color_write ? 0xF : 0,
     };
+    // a render texture's pass has the outline mask too (integer: never blended), written by outlined models only
+    const VkPipelineColorBlendAttachmentState blend_attachments[2] = { blend_attachment, {
+        .colorWriteMask = key->mask ? VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT : 0 } };
     const VkPipelineColorBlendStateCreateInfo blend = {
         .sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
-        .attachmentCount = 1,
-        .pAttachments = &blend_attachment,
+        .attachmentCount = key->target && vk_outlines ? 2 : 1,
+        .pAttachments = blend_attachments,
     };
     const VkDynamicState dynamics[4] = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR,
         VK_DYNAMIC_STATE_LINE_WIDTH, VK_DYNAMIC_STATE_DEPTH_BIAS };
@@ -136,6 +139,9 @@ void vulkan_set_dynamic(VkCommandBuffer commands) {
     vk_ctx->dynamic_dirty = 0;
 }
 
+// a texture unit's image for a sampler (fun/targets.c)
+VkDescriptorImageInfo vulkan_unit_image(byte unit);
+
 // the program's uniforms (each stage's default block, its named blocks) and texture
 byte vulkan_bind_descriptors(uint id, vk_program* program, VkCommandBuffer commands) {
     vk_program_state* state = vulkan_program_state(id, program);
@@ -169,14 +175,15 @@ byte vulkan_bind_descriptors(uint id, vk_program* program, VkCommandBuffer comma
         sizes[count] = block->size;
         bindings[count++] = block->binding;
     }
-    vk_texture* texture = vk_texture_of(vk_ctx->texture_bound);
-    if (!texture || !texture->image) {
-        texture = vk_texture_of(vk_texture_black);
+    // each sampler's image by its unit: 0 the bound texture, past it a render camera's depth or outline mask
+    VkDescriptorImageInfo images[vk_slots_max];
+    for (int i = 0; i < program->samplers_count; i++) {
+        images[i] = vulkan_unit_image(program->sampler_units[i]);
     }
-    if (program->samplers_count) {
-        texture->used = vk_serial_recording();
+    byte reuse = state->set && state->set_epoch == vk_ring_epoch;
+    for (int i = 0; reuse && i < program->samplers_count; i++) {
+        reuse = state->set_views[i] == images[i].imageView;
     }
-    byte reuse = state->set && state->set_epoch == vk_ring_epoch && state->set_view == texture->view;
     for (int i = 0; reuse && i < count; i++) {
         reuse = state->set_buffers[i] == buffers[i];
     }
@@ -196,16 +203,15 @@ byte vulkan_bind_descriptors(uint id, vk_program* program, VkCommandBuffer comma
                 .pBufferInfo = &buffer_infos[i] };
             state->set_buffers[i] = buffers[i];
         }
-        const VkDescriptorImageInfo image = { vk_sampler, texture->view, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL };
         for (int i = 0; i < program->samplers_count; i++) {
             writes[writes_count++] = (VkWriteDescriptorSet) {
                 .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET, .dstSet = state->set,
                 .dstBinding = program->samplers[i], .descriptorCount = 1,
-                .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, .pImageInfo = &image };
+                .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, .pImageInfo = &images[i] };
+            state->set_views[i] = images[i].imageView;
         }
         vkUpdateDescriptorSets(vk_device, writes_count, writes, 0, NULL);
         state->set_epoch = vk_ring_epoch;
-        state->set_view = texture->view;
     }
     vkCmdBindDescriptorSets(commands, VK_PIPELINE_BIND_POINT_GRAPHICS, program->layout, 0, 1, &state->set,
         count, offsets);
@@ -229,6 +235,7 @@ byte vulkan_draw_begin(byte topology, uint vertices, uint instances) {
     key.depth_write = vk_ctx->depth_test && vk_ctx->depth_write;     // gl writes no depth with its test off
     key.cull = vk_ctx->cull && topology == vk_topology_triangles;
     key.color_write = vk_ctx->color_write;
+    key.mask = vk_target_texture && vk_ctx->outline_mask;
     key.depth_bias = topology == vk_topology_triangles ? vk_ctx->bias_fill : topology == vk_topology_lines ? vk_ctx->bias_lines : 0;
     key.inputs_count = program->inputs_count;
     VkBuffer buffers[vk_slots_max];

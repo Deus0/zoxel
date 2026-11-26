@@ -108,5 +108,6 @@ VkDeviceMemory vk_zeros_memory;
 uint vk_texture_black;
 VkSampler vk_sampler;
 byte vk_wide_lines;
+byte vk_outlines;       // independentBlend: render textures get an outline mask (an integer target beside the blended)
 byte vk_meshes_staged;          // meshes in gpu only memory, written by copies (vulkan_pick_meshes_staged)
 byte vk_rgb8_vertex;            // R8G8B8 vertex format supported, else it's read as R8G8B8A8

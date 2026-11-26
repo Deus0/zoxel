@@ -21,6 +21,7 @@ typedef struct {
     guint fog_data;
     guint camera_matrix;
     guint alpha;
+    gint outline;           // its outline id in the mask (doc/plans/outlines.md)
 } MaterialVoxInstance;
 zoxc_custom(MaterialVoxInstance);
 
@@ -36,7 +37,8 @@ MaterialVoxInstance create_MaterialVoxInstance(const uint material) {
         zox_gpu_get_material_property(material, "brightness"),
         zox_gpu_get_material_property(material, "fog_data"),
         zox_gpu_get_material_property(material, "camera_matrix"),
-        zox_gpu_get_material_property(material, "alpha")
+        zox_gpu_get_material_property(material, "alpha"),
+        zox_gpu_get_material_property(material, "outline")
     };
 }
 

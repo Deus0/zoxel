@@ -56,16 +56,18 @@ byte vulkan_acquire() {
 // the frame's image as a pass's target: clearing it (vk_pass_clear) or carrying it on (vk_pass_load); contents
 // inline for draws, or secondary command buffers (fun/workers.c)
 void vulkan_pass_begin(VkCommandBuffer commands, VkRenderPass render_pass, VkSubpassContents contents) {
-    const VkClearValue clears[2] = {
+    // a render texture's third: its outline mask, no models
+    const VkClearValue clears[3] = {
         { .color = { .float32 = { vk_clear_color.x, vk_clear_color.y, vk_clear_color.z, vk_clear_color.w } } },
         { .depthStencil = { 1, 0 } },
+        { .color = { .uint32 = { 0, 0, 0, 0 } } },
     };
     const VkRenderPassBeginInfo pass = {
         .sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
         .renderPass = render_pass,
         .framebuffer = vk_target_framebuffer,
         .renderArea = { { 0, 0 }, vk_target_extent },
-        .clearValueCount = 2,
+        .clearValueCount = 3,
         .pClearValues = clears,
     };
     vkCmdBeginRenderPass(commands, &pass, contents);

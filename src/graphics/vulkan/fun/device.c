@@ -84,8 +84,10 @@ byte vulkan_create_device() {
     const VkPhysicalDeviceFeatures features = {
         .wideLines = supported.wideLines,
         .largePoints = supported.largePoints,
+        .independentBlend = supported.independentBlend,
     };
     vk_wide_lines = supported.wideLines;
+    vk_outlines = supported.independentBlend;
     // without largePoints every point is 1 pixel (particles tiny): some phone gpus lack it, logged to tell
     VkPhysicalDeviceProperties limits;
     vkGetPhysicalDeviceProperties(vk_physical, &limits);

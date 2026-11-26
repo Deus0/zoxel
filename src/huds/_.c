@@ -6,8 +6,9 @@
  * |                                                          |
  * +----------------------------------------------------------+
  */
-// NOTE: For some reason non alpha breaks it
-byte zox_game_render_texture_alpha = 1;
+// the game view's render texture: rgb (no alpha to blend or keep); rgba was used while the rgb shader's vec3 output
+//  left alpha undefined and the view drew black on gl
+byte zox_game_render_texture_alpha = 0;
 const byte huds_max_list_elements = 128;
 const byte zox_huds_header_font_size = 22;
 const byte zox_huds_element_font_size = 10;
