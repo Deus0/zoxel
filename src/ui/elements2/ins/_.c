@@ -1,5 +1,6 @@
 #include "image.c"
 #include "button_icon.c"
+#include "fold_arrow.c"
 #include "label.c"
 #include "button.c"
 #include "toggle.c"

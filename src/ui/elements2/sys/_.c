@@ -57,6 +57,7 @@ void zox_systems_elements2(ecs *world) {
     zox_on_add(
         scrollbar_handle_event,
         [in] containers.ListVisible,
+        [in] containers.ListStart,
         [none] containers.ListDirty,
     );
     zox_system(

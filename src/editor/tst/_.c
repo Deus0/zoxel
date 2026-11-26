@@ -233,7 +233,11 @@ void zox_tst_editor_check(ecs* world) {
     (void) world;
 }
 
+#include "hierarchy_fold.c"
+
 void zox_tsts_editor() {
     zox_tst_add("editor", zox_tst_editor_ready, zox_tst_editor_check, 60);
     zox_tst_set_setup("editor", NULL, 1);
+    zox_tst_add("hierarchy_fold", zox_tst_hierarchy_fold_ready, zox_tst_hierarchy_fold_check, 20);
+    zox_tst_set_setup("hierarchy_fold", NULL, 1);
 }

@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-26
+-x Fold arrows (ui/elements2): Unfolded on a list, unfold_toggle adds the core Dirty, fold arrow icon buttons;
+  the hierarchy uses them, its rows keep their scroll on a fold (tst hierarchy_fold)
 -x Game and player states as observers on the core Dirty: the GameStateEvent and PlayerStateEvent lists gone,
   each module observes the state it reacts to (player uis scaled to their split screen by player_state_each, huds),
   games open their own boot ui (tst game_states, boot_menu, zedit_boot)

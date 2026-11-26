@@ -5,16 +5,18 @@ void scrollbar_handle_event(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(ListVisible);
+    zox_sys_in(ListStart);
     for (int i = 0; i < it->count; i++) {
         zox_remove(it->entities[i], ListDirty);
         zox_sys_i(ListVisible, visible);
+        zox_sys_i(ListStart, start);
         entity scrollview = zox_get_link(world, it->entities[i], ScrollviewLink);
         if (!zox_valid(scrollview)) {
             continue;
         }
         // set handle size here
         entity list = zox_get_link(world, scrollview, ListUILink);
-        uint list_children_length = zox_get_children_count(world, list);
+        const int list_children_length = zox_get_children_count(world, list);
         if (!list_children_length) {
             continue;
         }
@@ -32,7 +34,10 @@ void scrollbar_handle_event(iter* it) {
         int handle_height = list_children_length <= visible->value ? scrollbar_size.y : (int) scrollbar_size.y * (float_min(1, (float) visible->value / (float) list_children_length));
         int ybounds = (scrollbar_size.y / 2) - handle_height / 2;
         int2 handle_size = (int2) { scrollbar_size.x, handle_height };
-        int2 handle_position = (int2) { 0, (scrollbar_size.y - handle_height) / 2 };
+        const int travel = scrollbar_size.y - handle_height;
+        const int max_start = list_children_length - visible->value;
+        const int offset = max_start > 0 ? (int) round(start->value * (float) travel / max_start) : 0;
+        int2 handle_position = (int2) { 0, travel / 2 - offset };
         zox_set(handle, LayoutPosition, { handle_position });
         zox_set(handle, LayoutSize, { handle_size });
         zox_add(handle, LayoutSizeDirty);

@@ -154,7 +154,7 @@ Entities with 20 components:
 - Tags removed by their reader, a system (heavy work, on workers): `GenerateSound`, `ProcessSound`, `CombineVox`
 - Core `Dirty` / `Update`: `TriggerSound` (on sounds), every setting's change (observers on `Dirty`), texts
 - Observers on a non fragmenting tag they remove: `AttachDirty` (camera_attach_event), `WindowSizeDirty`
-  (viewport_resize_event), `ListDirty` (scrollbar_handle_event), `InspectorDirty`, `HierarchyUIDirty` (the editor's
+  (viewport_resize_event), `ListDirty` (scrollbar_handle_event), `InspectorDirty`, the core `Dirty` on a hierarchy list (the editor's
   spawns), `GlyphSpawnedDirty` (dialogue voices), `AnimateTextEnded`, `ActiveStateDirty` (element_active_event, then
   element_active_link_event removes it); the ui's `Click`, `Deselect`, `Press`, `RightClick` (a cleanup observer
   removes each); settings (on the core `Dirty`)

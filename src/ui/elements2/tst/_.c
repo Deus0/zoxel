@@ -122,6 +122,7 @@ static entity zox_tst_ui_color_button(ecs* world, entity parent, int2 position, 
 #include "focus_lifecycle.c"
 #include "input_boundaries.c"
 #include "slider_drag.c"
+#include "fold_arrow.c"
 #ifdef zox_sdl3
     #include "sdl_text.c"
 #endif
@@ -129,6 +130,8 @@ static entity zox_tst_ui_color_button(ecs* world, entity parent, int2 position, 
 void zox_tsts_elements2() {
     zox_tst_add("slider_drag", zox_tst_slider_drag_ready, zox_tst_ui_fixture_check, 30);
     zox_tst_set_setup("slider_drag", NULL, 1);
+    zox_tst_add("fold_arrow", zox_tst_fold_arrow_ready, zox_tst_ui_fixture_check, 20);
+    zox_tst_set_setup("fold_arrow", NULL, 1);
     zox_tst_add("input_field_boundaries", zox_tst_input_boundaries_ready, zox_tst_ui_fixture_check, 30);
     zox_tst_set_setup("input_field_boundaries", NULL, 1);
     zox_tst_add("input_focus_lifecycle", zox_tst_input_focus_ready, zox_tst_ui_fixture_check, 30);

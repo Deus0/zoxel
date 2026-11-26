@@ -43,21 +43,24 @@ entity spawn_editor_list_row(
     const char* text,
     byte font_size,
     color outline,
-    uint index)
+    uint index,
+    int leading)
 {
     const byte layer = zox_getv(list, Layer) + 1;
-    const byte rendered = index < zox_getv(list, ListVisible);
+    const int start = zox_getv(list, ListStart);
+    const byte rendered = index >= start && index < start + zox_getv(list, ListVisible);
+    const byte2 padding = zox_getv(list, TextPadding);
     entity2 e2 = spawn_button(
         world,
         prefab,
         list,
         text,
         int2_zero,
-        int2_zero,
+        (int2) { font_size * strlen(text) + padding.x * 2 + leading, font_size + padding.y * 2 },
         float2_half,
         zox_alignment_centre,
         font_size,
-        zox_getv(list, TextPadding),
+        padding,
         editor_button_fill,
         outline,
         editor_color_font,
@@ -65,17 +68,17 @@ entity spawn_editor_list_row(
     zox_setv(e2.x, Layer, layer);
     zox_setv(e2.x, ChildIndex, index);    // lists lay out by ChildIndex
     zox_setv(e2.y, Layer, layer + 1);
+    zox_setv(e2.y, LayoutPosition, ((int2) { leading / 2, 0 }));
     zox_setv(e2.x, RenderDisabled, !rendered);
     zox_setv(e2.y, RenderDisabled, !rendered);
     return e2.x;
 }
 
-// back to the top, then repositions and shows the new rows
+// repositions and shows the new rows
 void refresh_editor_list(
     ecs* world,
     entity list)
 {
-    zox_setv(list, ListStart, 0);
     zox_add(list, ListDirty);
     zox_add(list, ListPositionDirty);
 }

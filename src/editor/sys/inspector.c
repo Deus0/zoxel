@@ -123,6 +123,7 @@ void inspector_spawn_event(iter* it) {
         if (!list) {
             continue;
         }
+        zox_setv(list, ListStart, 0);
         clear_editor_list(world, list);
         const int max = 3 + zox_get_ids_count(world, target->value);
         InspectorRow* rows = malloc(sizeof(InspectorRow) * max);
@@ -136,7 +137,7 @@ void inspector_spawn_event(iter* it) {
                 row.text,
                 font_size->value,
                 get_inspector_row_outline(row.type),
-                j);
+                j, 0);
             set_TooltipText(world, button, row.text);
             zox_setv(button, TooltipEvent, &inspector_label_tooltip);
             zox_add(button, InspectorLabel);

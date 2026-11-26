@@ -34,9 +34,8 @@ void zox_systems_editor(ecs *world) {
     );
     zox_on_add(
         hierarchy_spawn_event,
-        [in] core.Target,
-        [in] ui.ElementFontSize,
-        [none] editor.HierarchyUIDirty
+        [in] elements2.Unfolded,
+        [none] core.Dirty
     );
     zox_on_add(
         inspector_spawn_event,

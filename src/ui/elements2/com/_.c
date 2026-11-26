@@ -25,6 +25,8 @@ zox_tag(Scrollbar);
 zox_tag(ScrollbarHandle);
 zox_tag(ScrollviewLink);
 zox_tag(ListUILink);
+zox_tag(FoldOwnerLink);
+zoxc_arrayd_with_remove(Unfolded, entity)
 zoxc(OptionLabel, const char*);
 
 void zox_components_elements2(ecs *world) {
@@ -50,5 +52,7 @@ void zox_components_elements2(ecs *world) {
     zoxd_nf_link(ToggleLink);
     //zoxd_byte(ToggleState);
     //zoxd_state(ToggleStateDirty);
+    zoxd_nf_link(FoldOwnerLink);
+    zoxd_arrayd(Unfolded);
     zoxd(OptionLabel);
 }

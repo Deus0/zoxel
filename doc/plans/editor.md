@@ -10,7 +10,7 @@ Order: inspection flows first, perfect them, then editing, then the engine wide 
 
 ### 1. Inspection (first)
 - [ ] File window: browse `res/` and the save folders, a list of folders and files, open a file to inspect it
-- [ ] Foldable hierarchy: arrows to fold and unfold children, indented rows instead of "-"
+- [x] Foldable hierarchy: arrows to fold and unfold children, indented rows instead of "-"
 - [ ] Hierarchy scrollbar fixed, scroll area masks rows that overflow
 - [ ] Tag filter on the hierarchy (blocks, items, stats..)
 - [ ] Inspector: data components readable (TextureData, mesh data open their own window)
@@ -50,19 +50,13 @@ How it looks: each row that has children starts with an arrow, right (folded) or
 children has the same space empty, so names line up. Clicking the arrow folds or unfolds; clicking the name still
 inspects it.
 
-What it needs:
-1. Fold state, per hierarchy window: the entities unfolded, a list on the window (two hierarchies can differ, and
-   game entities get no tags, no new flecs tables). The root starts unfolded, everything else folded.
-   The rows are cleared and respawned on every refresh, so the state can't live on a row.
-2. `get_hierarchy_rows` only walks an entity's children when it's unfolded, and marks which rows have children.
-   Folded by default also fixes the 128 row cut off for big trees.
-3. Two arrow textures, generated once (textures/gen, like icon.c's): a right and a down triangle, white so the
-   button's colour tints them. Shared by every row, not one per row.
-4. The arrow is an icon button (spawn_button_icon) to the left of the row's name, a child of the row, placed by its
-   ListIndent. Its ClickEvent flips its row's Target in the window's list and adds HierarchyUIDirty.
-5. Keep the scroll position on a refresh from a fold (refresh_editor_list sets ListStart back to 0 now).
-6. Test (editor module): a parent with two children, hierarchy open: one row, unfold: three rows, fold: one row,
-   the arrow only on the parent, no errors.
+The hierarchy list holds UI's `Unfolded` array and the root stays open. The hierarchy walks open branches and
+marks rows with children. Each fold arrow clones one of two triangle textures generated at startup. Arrow clicks
+toggle the row target in the list's array and add core `Dirty` to the list. The hierarchy observer rebuilds the
+rows and keeps the scroll position within the available range.
+
+The `hierarchy_fold` test checks arrows on the root and parent, leaf rows with no arrow, and the
+two-to-four-to-two row sequence through the arrow click handlers. It also checks scroll preservation and errors.
 
 Later: the same fold arrow for the inspector's component list, and for the file window's folders, so it should be
 a ui element (ui/elements2), not hierarchy code.
