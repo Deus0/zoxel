@@ -46,6 +46,9 @@ entity spawn_editor_list_row(
     uint index,
     int leading)
 {
+    if (!text) {
+        text = "";     // a release build's unnamed entities have no name
+    }
     const byte layer = zox_getv(list, Layer) + 1;
     const int start = zox_getv(list, ListStart);
     const byte rendered = index >= start && index < start + zox_getv(list, ListVisible);
@@ -92,7 +95,9 @@ void get_editor_entity_label(
 {
     if (zox_has(e, ZoxName)) {
         snprintf(buffer, size, "%s", zox_get(e, ZoxName)->value);
-    } else {
+    } else if (zox_get_name(e)) {
         snprintf(buffer, size, "%s", zox_get_name(e));
+    } else {
+        snprintf(buffer, size, "#%lu", (unsigned long) (uint) e);    // unnamed (release builds)
     }
 }

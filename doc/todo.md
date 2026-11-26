@@ -1379,6 +1379,8 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 - Add Terrain Depth to options - debug options
 
 # Editor
+- Game level build defaults: a game sets its own (zedit keeps logs in release), then bsh/zedit.sh goes; zedit
+  logs "Game has no skybox" at boot (an editor without a sky: not an error)
 - Editor play controls (doc/plans/editor.md): a play / pause toggle and a stop button
 - Editor docks: stacking several windows on one side (split it), then an editor option for what a drop on a
   taken side does: swap (the default now) or stack

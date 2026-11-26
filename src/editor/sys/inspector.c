@@ -70,10 +70,13 @@ int get_inspector_rows(
     get_editor_entity_label(world, target, name, inspector_component_size_buffer);
     rows[count++] = (InspectorRow) { .text = name, .type = zox_type_name };
     const entity parent = zox_get_parent(world, target);
-    rows[count++] = (InspectorRow) {
-        .text = zox_copy_string(zox_valid(parent) ? zox_get_name(parent) : "None"),
-        .type = zox_type_parent
-    };
+    char* parent_label = malloc(inspector_component_size_buffer);
+    if (zox_valid(parent)) {
+        get_editor_entity_label(world, parent, parent_label, inspector_component_size_buffer);
+    } else {
+        snprintf(parent_label, inspector_component_size_buffer, "None");
+    }
+    rows[count++] = (InspectorRow) { .text = parent_label, .type = zox_type_parent };
     char children_label[64];
     snprintf(children_label, sizeof(children_label), "children [%u]", zox_get_children_count(world, target));
     rows[count++] = (InspectorRow) { .text = zox_copy_string(children_label), .type = zox_type_children };
