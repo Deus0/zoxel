@@ -32,3 +32,11 @@ static inline void zox_gpu_set_viewport(float2 position, float2 size) {
     vk_ctx->viewport_set = 1;
     vk_ctx->dynamic_dirty = 1;
 }
+
+static inline void zox_gpu_scissor(const int4* rect) {
+    vk_ctx->scissor_set = rect != NULL;
+    if (rect) {
+        vk_ctx->scissor = *rect;
+    }
+    vk_ctx->dynamic_dirty = 1;
+}

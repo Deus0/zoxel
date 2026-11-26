@@ -65,7 +65,12 @@ entity spawn_material_matrixui(ecs* world) {
 // a render texture's outline pass (rendering/cameras/fun/outlines.c, included after)
 byte render_texture_outlines(ecs* world, entity render_texture, guint material);
 
-void render_uis(ecs* world, ui_render_queue* uis) {
+static inline const int4* get_ui_clip(ecs* world, entity e);
+static inline int4 intersect_layout_clips(int4 a, int4 b);
+
+void render_uis(ecs* world, ui_render_queue* uis, int2 viewport_position, int2 viewport_size) {
+    byte clipped = 0;
+    int4 previous_clip = { 0 };
     byte dbg_log = 0;
     float depth_per_layer = 3 * zox_depth_per_layer;
     float depth_begin = depth_per_layer;
@@ -133,6 +138,24 @@ void render_uis(ecs* world, ui_render_queue* uis) {
             if (!material) {
                 continue;
             }
+            const int4* clip = get_ui_clip(world, data.e);
+            if (clip) {
+                const int4 bounds = intersect_layout_clips(*clip,
+                    (int4) { 0, viewport_size.x, 0, viewport_size.y });
+                if (bounds.x >= bounds.y || bounds.z >= bounds.w) {
+                    continue;
+                }
+                if (!clipped || !int4_equals(previous_clip, bounds)) {
+                    const int4 scissor = { bounds.x + viewport_position.x, bounds.z + viewport_position.y,
+                        bounds.y - bounds.x, bounds.w - bounds.z };
+                    zox_gpu_scissor(&scissor);
+                    previous_clip = bounds;
+                    clipped = 1;
+                }
+            } else if (clipped) {
+                zox_gpu_scissor(NULL);
+                clipped = 0;
+            }
             // Set layer depth
             float4x4 matrix2 = data.matrix;
             matrix2.w.z = depth_begin + layer * depth_per_layer;
@@ -163,6 +186,9 @@ void render_uis(ecs* world, ui_render_queue* uis) {
                 }
             }
         }
+    }
+    if (clipped) {
+        zox_gpu_scissor(NULL);
     }
     if (material) {
         zox_gpu_disable_attribute(attributes->vertex_uv);

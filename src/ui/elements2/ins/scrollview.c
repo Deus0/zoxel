@@ -18,6 +18,7 @@ entity spawn_scrollview(
     zox_instance(ui_prefab_for(world, prefab_layout2, parent));    // its 3D twin under a 3D parent
     zox_name("scrollview");
     zox_add(e, Scrollview);
+    zox_add(e, Mask);
     zox_set_parent_non_fragment(world, e, parent);
     ui_layer3_set(world, e, parent);
     zox_setv(e, LayoutPosition, position);
@@ -38,7 +39,12 @@ entity spawn_scrollview(
             visible_count,
             max,
             scrollbar_visible,
-            e);
+            e,
+            0);
+        if (scrollbar_width && !ui_is3D(world, parent)) {
+            spawn_scrollbar(world, e, (int2) { 0, (scrollbar_width + 1) / 2 },
+                (int2) { size.x, scrollbar_width }, 0, 0, 0, 0, e, 1);
+        }
     }
     return e;
 }

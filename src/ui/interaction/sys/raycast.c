@@ -114,12 +114,23 @@ void element_raycast_system(iter* it) {
                 if (canvas != rcanvas && !on_shared) {
                     continue;
                 }
+                const CanvasViewport* active_viewport = on_shared ? &shared_viewport : &viewport;
                 int4 ui_bounds = get_element_pointer_bounds(
                     world,
-                    on_shared ? &shared_viewport : &viewport,
+                    active_viewport,
                     e2,
                     position2->value,
                     lsize2->value);
+                const int4* clip = get_ui_clip(world, e2);
+                if (clip) {
+                    const int2 origin = active_viewport->position;
+                    const int4 bounds = { clip->x + origin.x, clip->y + origin.x,
+                        clip->z + origin.y, clip->w + origin.y };
+                    if (position.x >= bounds.y || position.y >= bounds.w) {
+                        continue;
+                    }
+                    ui_bounds = intersect_layout_clips(ui_bounds, bounds);
+                }
                 byte was_raycasted = is_in_pointer_bounds(ui_bounds, position);
                 if (was_raycasted && on_shared) {
                     if (layer->value > shared_layer) {

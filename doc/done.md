@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-26
+-x UI masks (src/ui/masks): a Mask tag clips its descendants to its rectangle, nested masks intersect, the clip
+  (LayoutClip) read by both renderers and the pointer hit test; scroll views add a Mask and a horizontal scrollbar
+  when rows are wider (tst ui_mask on gl and vulkan, scroll_mask)
 -x Docked windows (ui/windows): a Docked tag, side from the anchor, the game view shrinks between docks, resize
   handles (DragResizes), close and undock buttons, drag to an edge to dock (swaps a taken side); the editor's
   hierarchy, inspector and files start docked (tst window_docks)

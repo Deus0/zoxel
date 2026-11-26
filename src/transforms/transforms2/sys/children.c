@@ -95,8 +95,8 @@ static inline void set_position_rotation_scale2_recursive(
             updated = 1;
         }
     }
-    if (!updated) {
-        // return;
+    if (updated) {
+        zox_modified(e, Position2);
     }
     iter it = zox_children(world, e);
     while (zox_children_next(it)) {

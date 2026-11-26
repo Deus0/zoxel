@@ -1,3 +1,19 @@
+// Fit either axis's handle to the visible fraction and place it at the current scroll offset.
+static void layout_scrollbar_handle(ecs* world, entity handle, int2 size, int length, float fraction, byte horizontal) {
+    const int travel = (horizontal ? size.x : size.y) - length;
+    const int first = -travel / 2, last = first + travel;
+    const int offset = (int) roundf(fraction * travel);
+    const int2 handle_size = horizontal ? (int2) { length, size.y } : (int2) { size.x, length };
+    const int2 position = horizontal ? (int2) { first + offset, 0 } : (int2) { 0, last - offset };
+    const int4 constraints = horizontal ? (int4) { first, last, 0, 0 } : (int4) { 0, 0, first, last };
+    if (!int2_equals(zox_getv(handle, LayoutSize), handle_size)) {
+        zox_setv(handle, LayoutSize, handle_size);
+        zox_add(handle, LayoutSizeDirty);
+    }
+    zox_setv(handle, LayoutPosition, position);
+    zox_setv(handle, LayoutConstraints, constraints);
+}
+
 // Resizes the scrollbar handle upon list updates
 // TODO: shouldn't this be on scrollarea resizes??
 // an observer on ListDirty (a one-off event, removed here)
@@ -30,20 +46,10 @@ void scrollbar_handle_event(iter* it) {
             continue;
         }
         entity handle = scrollbar_children[0];
-        int2 scrollbar_size = zox_getv(scrollbar, LayoutSize);
-        int handle_height = list_children_length <= visible->value ? scrollbar_size.y : (int) scrollbar_size.y * (float_min(1, (float) visible->value / (float) list_children_length));
-        int ybounds = (scrollbar_size.y / 2) - handle_height / 2;
-        int2 handle_size = (int2) { scrollbar_size.x, handle_height };
-        const int travel = scrollbar_size.y - handle_height;
+        const int2 size = zox_getv(scrollbar, LayoutSize);
         const int max_start = list_children_length - visible->value;
-        const int offset = max_start > 0 ? (int) round(start->value * (float) travel / max_start) : 0;
-        int2 handle_position = (int2) { 0, travel / 2 - offset };
-        zox_set(handle, LayoutPosition, { handle_position });
-        zox_set(handle, LayoutSize, { handle_size });
-        zox_add(handle, LayoutSizeDirty);
-        zox_set(handle, LayoutConstraints, { (int4) { 0, 0, -ybounds, ybounds } });
-        //zox_log("Resizing Scrollbar Handle [%s]:", zox_get_name(handle));
-        //zox_log("   + new height [%i] scrollbar height [%i]", handle_height, scrollbar_size.y );
-        //zox_log("   visible [%i] existing [%i]", visible->value, list_children_length);
+        const int length = max_start > 0 ? size.y * visible->value / list_children_length : size.y;
+        const float fraction = max_start > 0 ? start->value / (float) max_start : 0;
+        layout_scrollbar_handle(world, handle, size, length, fraction, 0);
     }
 }

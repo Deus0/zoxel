@@ -184,6 +184,8 @@ typedef struct {
     float bias_units;
     float line_width;
     float4 viewport;            // gl's: x, y from the bottom left, width, height
+    int4 scissor;
+    byte scissor_set;
     byte viewport_set;          // else the whole target
     // recording
     VkCommandBuffer commands;

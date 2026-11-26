@@ -2,10 +2,10 @@
 #include "bar.c"
 #include "scrolling.c"
 #include "slide_event.c"
-#include "list_render_dirty.c"
 #include "toggle_event.c"
 #include "toggle_state.c"
 #include "scrollbar_handle.c"
+#include "list_render_dirty.c"
 #include "input.c"
 
 void zox_systems_elements2(ecs *world) {

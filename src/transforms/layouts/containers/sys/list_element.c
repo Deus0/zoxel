@@ -16,6 +16,9 @@ void list_element_position_system(iter* it) {
             !zox_has(parent, LayoutSize)) {
             continue;
         }
+        if (zox_has(parent, ListScrollX)) {
+            zox_add(parent, ListPositionDirty);
+        }
         byte alignment = zox_getv(parent, ListAlignment);
         if (alignment == zox_alignment_centre) {
             continue;

@@ -26,3 +26,12 @@ static inline void zox_gpu_set_viewport(
 {
     glViewport(position.x, position.y, size.x, size.y);
 }
+
+static inline void zox_gpu_scissor(const int4* rect) {
+    if (rect) {
+        glEnable(GL_SCISSOR_TEST);
+        glScissor(rect->x, rect->y, rect->z, rect->w);
+    } else {
+        glDisable(GL_SCISSOR_TEST);
+    }
+}

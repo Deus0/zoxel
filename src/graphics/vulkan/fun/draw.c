@@ -131,7 +131,16 @@ void vulkan_set_dynamic(VkCommandBuffer commands) {
     // the frame's image flipped to gl's y up; a render texture not, its rows bottom first as gl's are sampled
     const VkViewport viewport = vk_target_texture ? (VkViewport) { gl.x, gl.y, gl.z, gl.w, 0, 1 } :
         (VkViewport) { gl.x, height - gl.y, gl.z, -gl.w, 0, 1 };
-    const VkRect2D scissor = { { 0, 0 }, vk_target_extent };
+    VkRect2D scissor = { { 0, 0 }, vk_target_extent };
+    if (vk_ctx->scissor_set) {
+        const int4 r = vk_ctx->scissor;
+        const int top = vk_target_texture ? r.y : (int) vk_target_extent.height - r.y - r.w;
+        const int left = int_max(0, int_min(r.x, vk_target_extent.width));
+        const int bottom = int_max(0, int_min(top + r.w, vk_target_extent.height));
+        scissor.offset = (VkOffset2D) { left, int_max(0, int_min(top, vk_target_extent.height)) };
+        scissor.extent = (VkExtent2D) { int_max(0, int_min(r.x + r.z, vk_target_extent.width) - left),
+            int_max(0, bottom - scissor.offset.y) };
+    }
     vkCmdSetViewport(commands, 0, 1, &viewport);
     vkCmdSetScissor(commands, 0, 1, &scissor);
     vkCmdSetLineWidth(commands, vk_wide_lines ? vk_ctx->line_width : 1);

@@ -16,6 +16,7 @@ byte is_log_dragging = 0;
 #include "pre/_.c"
 #include "ins/_.c"
 #include "sys/_.c"
+#include "masks/_.c"
 #include "interaction/_.c"
 #include "glyphs/_.c"
 #include "texts/_.c"
@@ -25,6 +26,9 @@ byte is_log_dragging = 0;
 #include "tst/fixtures.c"
 #endif
 #include "elements2/_.c"
+#ifdef zox_tests
+#include "masks/tst/_.c"
+#endif
 #include "elements3/_.c"
 #include "windows/_.c"
 #include "navigation/_.c"
@@ -43,6 +47,7 @@ void import_ui(ecs* world) {
     add_hook_spawn_prefabs(spawn_prefabs_elements);
     zox_add_module(glyphs);
     zox_add_module(texts);
+    zox_add_module(masks);
     zox_add_module(interactions);
     zox_add_module(tooltips);
     zox_add_module(elements2);
@@ -53,6 +58,7 @@ void import_ui(ecs* world) {
     zox_add_module(render_textures);
     zox_add_module(ui_containers);
 #ifdef zox_tests
+    zox_tsts_masks();
     zox_tsts_ui(world);
 #endif
 }

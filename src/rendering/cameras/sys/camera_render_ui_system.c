@@ -44,7 +44,7 @@ void camera_render_ui_system(iter* it) {
             entity system = render2D_systems->data[j];
             ecs_run(world, system, 0, NULL);
         }
-        render_uis(world, zox_ui_render_queue);
+        render_uis(world, zox_ui_render_queue, screen_position->value, screen_size->value);
     }
     zox_sys_on_end();
 } zoxd_system(camera_render_ui_system);

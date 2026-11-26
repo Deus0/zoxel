@@ -199,3 +199,18 @@ follows (list3's own) is history, kept for its learnings: the list systems, scro
   - Count pixels of a pure colour over the whole screenshot, not one pixel at the middle.
   - Check the bug back: the test failed on the old offset (125+ red pixels through the ground 50 blocks off), and an
     earlier version passed on both (too near, the old offset held up there).
+
+## Masks
+
+Add `Mask` to any 2D UI element to clip its descendants to its rectangle.
+The masks module observes `Dirty` after layout and transform changes and stores
+the intersection of all ancestor masks in `LayoutClip`, in canvas pixels from
+the bottom left. OpenGL and Vulkan use it as a scissor rectangle. UI raycasts
+intersect pointer bounds with the same rectangle.
+
+## Scroll areas
+
+Scrollviews add `Mask`. Lists still disable rows outside their visible index
+range. When rows extend past the viewport width, the bottom scrollbar sizes
+its handle to the visible fraction of the content. Dragging the handle changes
+`ListScrollX`, which offsets the rows during layout.

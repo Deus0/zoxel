@@ -10,7 +10,6 @@ entity spawn_prefab_scrollbar(ecs *world, entity prefab) {
     zox_set(e, Clicker, { 0 });
     zox_set(e, ClickEvent, { NULL });
     zox_set(e, ClickDisabled, { 0 });
-    zox_add(e, Scrollbar);
     zox_set(e, ElementMargins, { int2_zero });
     zox_add(e, FixToLayout);
     zox_add(e, FrameTexture);

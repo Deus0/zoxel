@@ -2,6 +2,7 @@
 zox_tag(Layout);
 zox_tag(Canvas);
 zox_tag(Canvas3);
+zoxc_int(ListScrollX);
 zox_tag(BoundToCanvas);
 zox_tag(BoundToParent);
 zox_tag(CanvasLink);
@@ -32,6 +33,7 @@ void zox_components_layouts2(ecs* world) {
     zoxd_tag(Layout);
     zoxd_tag(Canvas);
     zoxd_tag(Canvas3);
+    zoxd_int(ListScrollX);
     zoxd_tag(BoundToCanvas);
     zoxd_tag(BoundToParent);
     // many: a player's own canvas, and while paused the one it shares with every player (huds pause_canvas.c)

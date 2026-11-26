@@ -25,6 +25,7 @@ static inline void window_tab_view_show(ecs* world, entity scrollview, byte show
     if (!shown || !zox_valid(list) || !zox_has(list, ListStart) || !zox_has(list, ListVisible)) {
         return;
     }
+    zox_add(list, ListPositionDirty);
     const int start = zox_getv(list, ListStart), visible = zox_getv(list, ListVisible);
     entity children[layouts2_children_capacity];
     const uint count = get_list_children_ordered(world, list, children, layouts2_children_capacity);

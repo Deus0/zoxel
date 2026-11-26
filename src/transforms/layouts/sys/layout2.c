@@ -27,6 +27,7 @@ static inline void update_layout_recursive(
     int2 parent_size,
     float2 canvas_sizef,
     float aspect_ratio,
+    int scroll_x,
     byte dbg_log
 ) {
     if (!zox_valid(e)) {
@@ -61,6 +62,7 @@ static inline void update_layout_recursive(
         zox_has(e, LocalPosition2))
     {
         int2 layout_position = zox_getv(e, LayoutPosition);
+        layout_position.x -= scroll_x;
         float2 position_anchor = zox_getv(e, Anchor);
         zox_mut_begin(e, LocalPosition2, local_position);
         local_position->value = get_layout_local_position(
@@ -77,6 +79,7 @@ static inline void update_layout_recursive(
         return;
     }
     int2 size = zox_getv(e, LayoutSize);
+    const int child_scroll_x = zox_has(e, ListScrollX) ? zox_getv(e, ListScrollX) : 0;
     iter it = zox_children(world, e);
     while (zox_children_next(it)) {
         for (int i = 0; i < it.count; i++) {
@@ -86,6 +89,7 @@ static inline void update_layout_recursive(
                 size,
                 canvas_sizef,
                 aspect_ratio,
+                child_scroll_x,
                 dbg_log);
         }
     }
@@ -111,6 +115,7 @@ void layout_system(iter* it) {
             canvas_size->value,
             canvas_sizef,
             aspect_ratio,
+            0,
             dbg_log);
     }
     zox_sys_on_end();

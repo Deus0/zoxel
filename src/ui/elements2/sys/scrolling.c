@@ -24,6 +24,19 @@ void scrollbar_system(iter* it) {
         if (!zox_valid(list)) {
             continue;
         }
+        if (zox_has(scrollbar, HorizontalScrollbar)) {
+            const int4 constraints = zox_getv(e, LayoutConstraints);
+            const int travel = constraints.y - constraints.x;
+            if (travel > 0 && !zox_getv(e, RenderDisabled)) {
+                const float2 bounds = zox_getv(e, SlideBounds);
+                const float fraction = (position->value.x - constraints.x) / (float) travel;
+                const int offset = (int) roundf(bounds.x + fraction * (bounds.y - bounds.x));
+                if (zox_getv(list, ListScrollX) != offset) {
+                    zox_setv(list, ListScrollX, offset);
+                }
+            }
+            continue;
+        }
         // travel: how far the handle can move, none if the list fits
         const int travel = zox_getv(scrollbar, LayoutSize).y - size->value.y;
         if (travel <= 0) {
