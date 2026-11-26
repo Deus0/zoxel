@@ -41,7 +41,7 @@ static inline int zox_tst_vm_faces(const VoxelNode* model, const ColorRGBs* colo
         .vertices = create_float3_array_d(initial_dynamic_array_size),
         .colors = create_color_array_d(initial_dynamic_array_size)
     };
-    build_voxel_mesh_material(model, NULL, colors, &mesh, zox_tst_vm_depth, zox_tst_vm_depth, float3_zero, 1.0f,
+    build_voxel_mesh_material(model, NULL, colors, NULL, &mesh, zox_tst_vm_depth, zox_tst_vm_depth, float3_zero, 1.0f,
         pyramid, materials, material);
     const int faces = mesh.vertices->size / 4;
     dispose_int_array_d(mesh.indicies);

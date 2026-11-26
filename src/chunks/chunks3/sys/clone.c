@@ -46,6 +46,12 @@ void clone_vox_system(iter* it) {
         int clength = sizeof(color_rgb) * colors_source->length;
         resize_ColorRGBs(colors, clength);
         memcpy(colors->value, colors_source->value, clength);
+        if (zox_has(src, ColorGlows) && zox_has(e, ColorGlows)) {
+            const ColorGlows* glows_source = zox_get(src, ColorGlows);
+            ColorGlows* glows = zox_getm(e, ColorGlows);
+            resize_ColorGlows(glows, glows_source->length);
+            memcpy(glows->value, glows_source->value, glows_source->length);
+        }
         csize->value = source_chunk_size->value;
         state->value = 0;
         // dirty->value = zox_dirty_trigger;

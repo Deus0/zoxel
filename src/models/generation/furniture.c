@@ -35,6 +35,13 @@ void furniture_model_generation_system(iter* it) {
             add_to_ColorRGBs(colors, color_to_color_rgb(fill->value));
             add_to_ColorRGBs(colors, metal);
             add_to_ColorRGBs(colors, ((color_rgb) { 255, 226, 150 }));
+            // its glass glows (ColorGlows, a palette colour's glow)
+            if (zox_has(e, ColorGlows)) {
+                ColorGlows* glows = zox_getm(e, ColorGlows);
+                resize_ColorGlows(glows, 3);
+                glows->value[0] = glows->value[1] = 0;
+                glows->value[2] = 255;
+            }
             spinlock* lamp_lock = zox_octree_lock(world, e);
             zox_octree_lock_begin(lamp_lock);
             build_vox_lamp(node, depth->value);

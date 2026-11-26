@@ -114,7 +114,8 @@ static void vox_gpu_fill_neighbor(const VoxelNode* neighbor, const byte* materia
 //  - bones: its cells' bones (gpu_mesh_grid's layout, 255 air and round it) to skin it (mesher's skinned, parents set),
 //      NULL unskinned
 static uint vox_gpu_mesh_grid(GpuMesher* mesher, const VoxelNode* root, byte depth, const byte* materials, byte kind,
-    const ColorRGBs* palette, uint (*room)(GpuMesher* mesher, uint faces, void* data), void* data, int3* extent,
+    const ColorRGBs* palette, const ColorGlows* glows, uint (*room)(GpuMesher* mesher, uint faces, void* data), void* data,
+    int3* extent,
     const byte* bones, const VoxelNode** neighbors)
 {
     const int length = octree_size(depth) + 2;
@@ -136,7 +137,8 @@ static uint vox_gpu_mesh_grid(GpuMesher* mesher, const VoxelNode* root, byte dep
         }
     }
     gpu_mesher_set_material(mesher, materials, kind);
-    gpu_mesher_set_colors(mesher, palette->value, palette->length, materials);
+    gpu_mesher_set_colors(mesher, palette->value, palette->length, glows ? glows->value : NULL, glows ? glows->length : 0,
+        materials);
     mesher->sided = 1;
     mesher->edge_faces = 1;
     const uint faces = vox_gpu_faces(mesher, grid, sides, depth, extent);
@@ -201,7 +203,7 @@ typedef struct {
 //  - command, fence: its own count buffers (MeshCommandGPULink, made here) and MeshFence: with greedy meshing on its
 //      faces merge and their count comes back later (vox_gpu_count_system); NULL: every face, its count returned
 static uint vox_gpu_mesh_tree(const VoxelNode* root, const VoxelNode** neighbors, const ColorRGBs* palette,
-    const byte* materials, byte node_depth, byte depth, byte kind, int3 size, float scale, guint2 mesh, guint colors,
+    const ColorGlows* glows, const byte* materials, byte node_depth, byte depth, byte kind, int3 size, float scale, guint2 mesh, guint colors,
     uint* room, float3* bounds_out, const vox_gpu_skin* skin, const byte* bones, guint2* command, ulong* fence)
 {
     GpuMesher* shared = vox_gpu_mesher();
@@ -237,7 +239,7 @@ static uint vox_gpu_mesh_tree(const VoxelNode* root, const VoxelNode** neighbors
     vox_gpu_room_data data = { mesh, colors, skin ? skin->weights : 0, room };
     int3 extent[2];
     // its unmerged faces: room for the most it writes merged
-    const uint faces = vox_gpu_mesh_grid(&mesher, root, depth, materials, kind, palette, vox_gpu_room, &data, extent,
+    const uint faces = vox_gpu_mesh_grid(&mesher, root, depth, materials, kind, palette, glows, vox_gpu_room, &data, extent,
         bones, neighbors);
     shared->scratch_bytes = mesher.scratch_bytes;   // grown in place
     if (faces) {
@@ -276,7 +278,8 @@ uint vox_gpu_mesh(ecs* world, entity vox, byte depth, byte kind, guint2 mesh, gu
     spinlock* lock = zox_octree_lock(world, vox);
     zox_octree_lock_begin(lock);
     byte* bones = skin ? skin->grid(world, vox, depth, skin->data) : NULL;
-    const uint faces = vox_gpu_mesh_tree(zox_get(vox, VoxelNode), NULL, palette, materials, node_depth, depth, kind,
+    const uint faces = vox_gpu_mesh_tree(zox_get(vox, VoxelNode), NULL, palette,
+        zox_has(vox, ColorGlows) ? zox_get(vox, ColorGlows) : NULL, materials, node_depth, depth, kind,
         zox_getv(vox, ChunkSize), zox_getv(vox, BlockScale), mesh, colors, room, bounds_out, skin, bones, command, fence);
     zox_octree_lock_end(lock);
     free(bones);
@@ -443,6 +446,7 @@ void chunk_colors_gpu_system(iter* it) {
         if (!palette->length) {
             continue;
         }
+        const ColorGlows* glows = zox_valid(owner) && zox_has(owner, ColorGlows) ? zox_get(owner, ColorGlows) : NULL;
         const double begin = get_time_ms();
         const VoxelNode* noctrees[6];
         for (byte j = 0; j < 6; j++) {
@@ -456,7 +460,7 @@ void chunk_colors_gpu_system(iter* it) {
         spinlock* locked[7];
         const byte locked_count = zox_lock_voxel_trees(zox_octree_lock(world, e), neighbor_locks, locked);
         float3 bounds[2];
-        uint faces = vox_gpu_mesh_tree(voxels, noctrees, palette, materials, ndepth->value, depth,
+        uint faces = vox_gpu_mesh_tree(voxels, noctrees, palette, glows, materials, ndepth->value, depth,
             zox_block_material_solid, csize->value, scale->value, mesh->value, colors->value, &room->value, bounds,
             NULL, NULL, vox_gpu_command_of(world, e), vox_gpu_fence_of(world, e));
         vox_gpu_meshed(world, e, faces, bounds, count, vertices);
@@ -465,7 +469,7 @@ void chunk_colors_gpu_system(iter* it) {
             const guint2 shell_mesh = zox_getv(shell, MeshGPULink);
             const guint shell_colors = zox_getv(shell, ColorsGPULink);
             if (shell_mesh.x && shell_mesh.y && shell_colors) {
-                faces = vox_gpu_mesh_tree(voxels, noctrees, palette, materials, ndepth->value, depth,
+                faces = vox_gpu_mesh_tree(voxels, noctrees, palette, glows, materials, ndepth->value, depth,
                     zox_block_material_liquid, csize->value, scale->value, shell_mesh, shell_colors,
                     &zox_get_mut(shell, MeshFaceRoom)->value, bounds, NULL, NULL, vox_gpu_command_of(world, shell),
                     vox_gpu_fence_of(world, shell));

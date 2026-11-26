@@ -18,5 +18,6 @@ entity spawn_prefab_vox_data(ecs *world) {
     zox_setv(e, VoxelNode, 0);
     zox_setv(e, VoxelNodeLock, 0);
     zox_setv(e, ColorRGBs, 0);
+    zox_setv(e, ColorGlows, 0);
     return e;
 }

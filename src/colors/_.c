@@ -9,6 +9,7 @@ zoxc_color_rgb(SecondaryColorRGB);
 zoxc_color_rgb(FogColor);
 zoxc_arrayd(Colors, color)
 zoxc_arrayd(ColorRGBs, color_rgb)
+zoxc_arrayd(ColorGlows, byte)    // a palette colour's glow (ColorRGBs' index), 0 none; shorter or empty: none
 #include "fun/_.c"
 #include "dat/_.c"
 #include "sys/_.c"
@@ -30,6 +31,7 @@ void import_colorz(ecs* world) {
     zoxd_color_rgb(SecondaryColorRGB);
     zoxd_color_rgb(FogColor);
     zoxd_arrayd(ColorRGBs);
+    zoxd_arrayd(ColorGlows);
     zoxd_arrayd(Colors);
     zox_systems_colors(world);
     add_hook_spawn_prefabs(spawn_prefabs_colors);

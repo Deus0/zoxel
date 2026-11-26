@@ -87,7 +87,7 @@ byte build_vox_mesh_at_depth(
     byte materials[256];
     const byte other = vox_material_table(zox_has(vox, MaterialIDs) ? zox_get(vox, MaterialIDs) : NULL, materials);
     if (other || kind == zox_block_material_solid) {
-        build_voxel_mesh_material(voxels, noctrees, vcolors, &mesh, node_depth, target_depth, position, cscale, 1,
+        build_voxel_mesh_material(voxels, noctrees, vcolors, zox_has(vox, ColorGlows) ? zox_get(vox, ColorGlows) : NULL, &mesh, node_depth, target_depth, position, cscale, 1,
             other ? materials : NULL, kind);
     }
     zox_octree_lock_end(vlock);

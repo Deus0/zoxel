@@ -113,6 +113,7 @@ typedef struct {
     const VoxelNode** noctrees;
     byte neighbors;                 // any neighbour chunk: the pyramid's border (air) is read through them
     const byte* materials;          // a voxel value's kind (zox_block_material_*), NULL: all solid, one mesh
+    const ColorGlows* glows;        // a palette colour's glow, NULL: none
     byte material;                  // the kind this mesh draws (solid, or a see through one)
 } vox_lookup;
 
@@ -153,7 +154,7 @@ static inline byte vox_lookup_solid(const vox_lookup* lookup, byte depth, int3 p
 // a voxel's faces from the pyramid alone (a model with no neighbour chunks, most of them): its border is air, every
 //  neighbour an array read, the pointer kept local (read through the lookup each time it was 10% slower, release)
 static inline void build_voxel_faces_pyramid(const vox_pyramid* pyramid, mesh_colored_build_data* mesh,
-    color_rgb voxel_color, float scale, float3 bounds_offset, byte depth, byte3 position)
+    color_rgb voxel_color, byte glow, float scale, float3 bounds_offset, byte depth, byte3 position)
 {
     const int3 p = byte3_to_int3(position);
     byte nsolids[6];
@@ -182,20 +183,20 @@ static inline void build_voxel_faces_pyramid(const vox_pyramid* pyramid, mesh_co
         add_voxel_face(mesh, positionf, bounds_offset, scale, voxel_face_indicies_n + direction * voxel_face_indicies_length,
             voxel_face_vertices_n[direction]);
         if (zox_ambient_occlusion) {
-            add_voxel_face_colors_ao_27(mesh->colors, voxel_color, direction, naos);
+            add_voxel_face_colors_ao_27(mesh->colors, voxel_color, glow, direction, naos);
         } else {
-            add_voxel_face_colors(mesh->colors, voxel_color, direction);
+            add_voxel_face_colors(mesh->colors, voxel_color, glow, direction);
         }
     }
 }
 
 // a voxel's faces: each beside a voxel that doesn't hide it, its corners darkened by ambient occlusion
 static void build_voxel_faces_colored(const vox_lookup* lookup, mesh_colored_build_data* mesh, color_rgb voxel_color,
-    float scale, float3 bounds_offset, byte depth, byte3 position)
+    byte glow, float scale, float3 bounds_offset, byte depth, byte3 position)
 {
 #ifdef zox_ambient_occlusion27
     if (lookup->pyramid && !lookup->neighbors && !lookup->materials) {
-        build_voxel_faces_pyramid(lookup->pyramid, mesh, voxel_color, scale, bounds_offset, depth, position);
+        build_voxel_faces_pyramid(lookup->pyramid, mesh, voxel_color, glow, scale, bounds_offset, depth, position);
         return;
     }
 #endif
@@ -232,12 +233,12 @@ static void build_voxel_faces_colored(const vox_lookup* lookup, mesh_colored_bui
             voxel_face_vertices_n[direction]);
         if (zox_ambient_occlusion) {
 #ifdef zox_ambient_occlusion27
-            add_voxel_face_colors_ao_27(mesh->colors, voxel_color, direction, naos);
+            add_voxel_face_colors_ao_27(mesh->colors, voxel_color, glow, direction, naos);
 #else
-            add_voxel_face_colors_ao6(mesh->colors, voxel_color, direction, naos);
+            add_voxel_face_colors_ao6(mesh->colors, voxel_color, glow, direction, naos);
 #endif
         } else {
-            add_voxel_face_colors(mesh->colors, voxel_color, direction);
+            add_voxel_face_colors(mesh->colors, voxel_color, glow, direction);
         }
     }
 }
@@ -285,7 +286,8 @@ static void build_voxel_mesh_dig(
         zox_logw("Voxel Index OOB: %i >= %i", voxel, vcolors->length);
         return;
     }
-    build_voxel_faces_colored(lookup, mesh, vcolors->value[voxel], scale, bounds_offset, depth, position);
+    const byte glow = lookup->glows && voxel < lookup->glows->length ? lookup->glows->value[voxel] : 0;
+    build_voxel_faces_colored(lookup, mesh, vcolors->value[voxel], glow, scale, bounds_offset, depth, position);
 }
 
 // one kind's colored mesh of root at target_depth (materials: a voxel value's kind, zox_block_material_*, NULL all
@@ -296,6 +298,7 @@ void build_voxel_mesh_material(
     const VoxelNode* root,
     const VoxelNode** noctrees,
     const ColorRGBs* vcolors,
+    const ColorGlows* glows,
     mesh_colored_build_data* mesh,
     byte node_depth,
     byte target_depth,
@@ -310,7 +313,7 @@ void build_voxel_mesh_material(
     }
     const VoxelNode* no_neighbors[6] = { 0 };
     vox_lookup lookup = { .root = root, .noctrees = noctrees ? noctrees : no_neighbors, .materials = materials,
-        .material = material };
+        .material = material, .glows = glows };
     for (byte j = 0; j < 6; j++) {
         lookup.neighbors |= lookup.noctrees[j] != NULL;
     }
@@ -347,7 +350,7 @@ void build_voxel_mesh(
     float scale,
     byte pyramid)
 {
-    build_voxel_mesh_material(root, noctrees, vcolors, mesh, node_depth, target_depth, bounds_offset, scale, pyramid,
+    build_voxel_mesh_material(root, noctrees, vcolors, NULL, mesh, node_depth, target_depth, bounds_offset, scale, pyramid,
         NULL, zox_block_material_solid);
 }
 
@@ -391,6 +394,7 @@ void chunk_colors_build_system(iter* it) {
         if (!palette->length) {
             continue;
         }
+        const ColorGlows* glows = zox_valid(owner) && zox_has(owner, ColorGlows) ? zox_get(owner, ColorGlows) : NULL;
         clear_mesh(indicies, vertices, colors);
         const float voxel_size = scale->value * octree_size(ndepth->value) / octree_size(rdepth->value);
         // its neighbours' trees, faces into them hidden where they're solid
@@ -428,7 +432,7 @@ void chunk_colors_build_system(iter* it) {
         // its solid voxels (all of them without MaterialIDs)
         byte materials[256];
         const byte other = vox_material_table(zox_has(owner, MaterialIDs) ? zox_get(owner, MaterialIDs) : NULL, materials);
-        build_voxel_mesh_material(voxels, noctrees, palette, &mesh, ndepth->value, rdepth->value, position, cscale, 1, other ? materials : NULL, zox_block_material_solid);
+        build_voxel_mesh_material(voxels, noctrees, palette, glows, &mesh, ndepth->value, rdepth->value, position, cscale, 1, other ? materials : NULL, zox_block_material_solid);
         // its see through voxels into its see through child (set_chunk3_parent_colored_materials), with its neighbours
         if (other) {
             entity shell = 0;
@@ -444,7 +448,7 @@ void chunk_colors_build_system(iter* it) {
                     .vertices = create_float3_array_d(initial_dynamic_array_size),
                     .colors = create_color_array_d(initial_dynamic_array_size)
                 };
-                build_voxel_mesh_material(voxels, noctrees, palette, &shell_mesh, ndepth->value, rdepth->value, position,
+                build_voxel_mesh_material(voxels, noctrees, palette, glows, &shell_mesh, ndepth->value, rdepth->value, position,
                     cscale, 1, materials, zox_block_material_liquid);
                 MeshIndicies* shell_indicies = zox_get_mut(shell, MeshIndicies);
                 MeshVertices* shell_vertices = zox_get_mut(shell, MeshVertices);

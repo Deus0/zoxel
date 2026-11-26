@@ -1,5 +1,5 @@
 // Simple Colors
-void add_voxel_face_colors(color_array_d* colors, color_rgb voxel_color, byte direction) {
+void add_voxel_face_colors(color_array_d* colors, color_rgb voxel_color, byte glow, byte direction) {
     for (byte a = 0; a < voxel_face_vertices_length; a++) {
         color_rgb vertex_color = voxel_color;
         if (direction == direction_down) {
@@ -13,6 +13,6 @@ void add_voxel_face_colors(color_array_d* colors, color_rgb voxel_color, byte di
         } else if (direction == direction_right) {
             color_rgb_multiply_float(&vertex_color, 0.76f);
         }
-        color_array_d_add(colors, color_glow(vertex_color, 0));
+        color_array_d_add(colors, color_glow(vertex_color, glow));
     }
 }

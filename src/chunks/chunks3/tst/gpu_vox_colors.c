@@ -44,7 +44,7 @@ static inline int zox_tst_gvc_cpu(const VoxelNode* model, const ColorRGBs* color
         .vertices = create_float3_array_d(initial_dynamic_array_size),
         .colors = create_color_array_d(initial_dynamic_array_size)
     };
-    build_voxel_mesh_material(model, NULL, colors, &mesh, zox_tst_vm_depth, zox_tst_gvc_lod, float3_zero, 1.0f, 1,
+    build_voxel_mesh_material(model, NULL, colors, NULL, &mesh, zox_tst_vm_depth, zox_tst_gvc_lod, float3_zero, 1.0f, 1,
         materials, material);
     if (zox_tst_gvc_greedy) {
         // merged as the game's are (mesh_greedy), back into the build arrays
@@ -98,7 +98,7 @@ static inline int zox_tst_gvc_gpu(GpuMesher* mesher, const VoxelNode* model, con
     int3 extent[2];
     mesher->greedy = zox_tst_gvc_greedy;
     // as the game's lods (sys/vox_gpu.c): its node values and sides at the lod, the mesher already big enough
-    const uint wanted = vox_gpu_mesh_grid(mesher, model, zox_tst_gvc_lod, materials, material, colors,
+    const uint wanted = vox_gpu_mesh_grid(mesher, model, zox_tst_gvc_lod, materials, material, colors, NULL,
         zox_tst_gvc_room, NULL, extent, NULL, NULL);
     const int faces = wanted ? gpu_mesher_read_faces(mesher) : 0;
     *out = malloc(sizeof(zox_tst_gvc_corner) * 4 * (faces ? faces : 1));

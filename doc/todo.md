@@ -23,8 +23,11 @@
 - Fade in terrain chunks
 - Fade between chunk meshes
 - Light up character models like block voxes
-- Glowing eyes that animate: eye colours glow (the vox palette glow byte, doc/plans/hdr.md A3.1) and pulse or
-  flare (anger, magic, night); after palette glow
+- Glowing eyes that animate: eye colours glow (ColorGlows, doc/tech/rendering.md) and pulse or flare (anger, magic,
+  night); combine_vox_system merges palettes by colour, it needs to carry their glows (and keep a glowing and a plain
+  colour apart)
+- Gravity cores glow: a blueprint node setting a palette colour's glow (models/ins/block_blueprint.c), kept through
+  its animation frames' models
 - Outline Rendering on Vox Models, dark outline (doc/plans/outlines.md)
 - outlines in xr: its eyes draw straight to their swapchains (xr/fun/eye_render.c), they need a render target with
   depth and mask and the pass before the swapchain; the setting shows greyed (unsupported) there till then

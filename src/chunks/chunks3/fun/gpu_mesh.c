@@ -264,7 +264,7 @@ static const char* zox_gpu_mesh_source =
 "\n"
 "uint corner_color(uint color, ivec3 p, int d, int s) {\n"
 "    if (ambient == 0) {\n"
-"        uint shaded = 0u;\n"
+"        uint shaded = color & 0xFF000000u;\n"
 "        for (int k = 0; k < 3; k++) {\n"
 "            shaded |= min(uint(float((color >> (8 * k)) & 255u) * unlit_shades[d]), 255u) << (8 * k);\n"
 "        }\n"
@@ -278,7 +278,7 @@ static const char* zox_gpu_mesh_source =
 "    uint n3 = occludes_at(edge_a + edge_b - f);\n"
 "    uint count = n1 + n2 + n3;\n"
 "    float ao = (n1 + n2 == 2u || count == 3u) ? 0.25 : (count == 2u ? 0.6 : (count == 1u ? 0.8 : 1.0));\n"
-"    uint result = 0u;\n"
+"    uint result = color & 0xFF000000u;\n"
 "    for (int k = 0; k < 3; k++) {\n"
 "        float c = float((color >> (8 * k)) & 255u) * ao * 1.4;\n"
 "        result |= min(uint(c), 255u) << (8 * k);\n"
@@ -450,8 +450,9 @@ static const char* zox_gpu_mesh_source =
 "    indices[i + 5u] = v + 3u;\n"
 "}\n"
 "\n"
-"// greedy's keys (pass 1, a voxel an invocation): each face's 3 uints in scratch: its key (0 none, else its colour with\n"
-"//  bit 24: its corners alike, or bit 25: uneven, its own quad), its bones, and its run's width (pass 2) if it starts one\n"
+"// greedy's keys (pass 1, a voxel an invocation): each face's 3 uints in scratch: its colour (its glow the top byte),\n"
+"//  its bones, and its flags and run: bit 30 its corners alike, bit 31 uneven (its own quad), the low 16 its run's width\n"
+"//  (pass 2) if it starts one; 0 no face\n"
 "uint greedy_key_index(ivec3 p, int d) {\n"
 "    int size = 1 << depth;\n"
 "    return uint(((d * size + p.x) * size + p.y) * size + p.z) * 3u;\n"
@@ -466,21 +467,23 @@ static const char* zox_gpu_mesh_source =
 "    uint bones[4];\n"
 "    for (int d = 0; d < 6; d++) {\n"
 "        uint k = greedy_key_index(p, d);\n"
-"        scratch[k + 2u] = 0u;\n"
+"        scratch[k] = 0u;\n"
 "        if (!greedy_face(p, d, colours, bones)) {\n"
-"            scratch[k] = 0u;\n"
+"            scratch[k + 2u] = 0u;\n"
 "        } else if (greedy_uniform(colours, bones)) {\n"
-"            scratch[k] = colours[0] | (1u << 24);\n"
+"            scratch[k] = colours[0];\n"
 "            scratch[k + 1u] = bones[0];\n"
+"            scratch[k + 2u] = 1u << 30;\n"
 "        } else {\n"
-"            scratch[k] = 1u << 25;\n"
+"            scratch[k + 2u] = 1u << 31;\n"
 "        }\n"
 "    }\n"
 "}\n"
 "\n"
 "// faces at k and l merge: both uniform, the same colour and bones\n"
 "bool greedy_matches(uint k, uint l) {\n"
-"    return (scratch[k] & (1u << 24)) != 0u && scratch[k] == scratch[l] && scratch[k + 1u] == scratch[l + 1u];\n"
+"    return (scratch[k + 2u] & (1u << 30)) != 0u && (scratch[l + 2u] & (1u << 30)) != 0u &&\n"
+"        scratch[k] == scratch[l] && scratch[k + 1u] == scratch[l + 1u];\n"
 "}\n"
 "\n"
 "// a row's invocation: x its row (v), y its slice, z its direction; false past the grid\n"
@@ -501,7 +504,7 @@ static const char* zox_gpu_mesh_source =
 "    int size = 1 << depth;\n"
 "    for (int u = 0; u < size;) {\n"
 "        uint k = greedy_key_index(greedy_cell(d, slice, u, v), d);\n"
-"        if ((scratch[k] & (1u << 24)) == 0u) {\n"
+"        if ((scratch[k + 2u] & (1u << 30)) == 0u) {\n"
 "            u++;\n"
 "            continue;\n"
 "        }\n"
@@ -509,7 +512,7 @@ static const char* zox_gpu_mesh_source =
 "        while (u + w < size && greedy_matches(k, greedy_key_index(greedy_cell(d, slice, u + w, v), d))) {\n"
 "            w++;\n"
 "        }\n"
-"        scratch[k + 2u] = uint(w);\n"
+"        scratch[k + 2u] = (1u << 30) | uint(w);\n"
 "        u += w;\n"
 "    }\n"
 "}\n"
@@ -527,30 +530,30 @@ static const char* zox_gpu_mesh_source =
 "    for (int u = 0; u < size; u++) {\n"
 "        ivec3 p = greedy_cell(d, slice, u, v);\n"
 "        uint k = greedy_key_index(p, d);\n"
-"        if ((scratch[k] & (1u << 25)) != 0u) {\n"
+"        if ((scratch[k + 2u] & (1u << 31)) != 0u) {\n"
 "            greedy_face(p, d, colours, bones);\n"
 "            greedy_emit(p, d, 1, 1, colours, bones);\n"
 "            continue;\n"
 "        }\n"
-"        uint w = scratch[k + 2u];\n"
+"        uint w = scratch[k + 2u] & 0xFFFFu;\n"
 "        if (w == 0u) {\n"
 "            continue;\n"
 "        }\n"
 "        if (v > 0) {\n"
 "            uint above = greedy_key_index(greedy_cell(d, slice, u, v - 1), d);\n"
-"            if (scratch[above + 2u] == w && greedy_matches(k, above)) {\n"
+"            if ((scratch[above + 2u] & 0xFFFFu) == w && greedy_matches(k, above)) {\n"
 "                continue;\n"
 "            }\n"
 "        }\n"
 "        int h = 1;\n"
 "        while (v + h < size) {\n"
 "            uint below = greedy_key_index(greedy_cell(d, slice, u, v + h), d);\n"
-"            if (scratch[below + 2u] != w || !greedy_matches(k, below)) {\n"
+"            if ((scratch[below + 2u] & 0xFFFFu) != w || !greedy_matches(k, below)) {\n"
 "                break;\n"
 "            }\n"
 "            h++;\n"
 "        }\n"
-"        uint c = scratch[k] & 0xFFFFFFu;\n"
+"        uint c = scratch[k];\n"
 "        uint b = scratch[k + 1u];\n"
 "        colours = uint[4](c, c, c, c);\n"
 "        bones = uint[4](b, b, b, b);\n"
@@ -860,12 +863,15 @@ static inline void gpu_mesher_set_material(GpuMesher* mesher, const byte* materi
 
 // colored (a vox model): voxel v's colour colors[v - 1] (as ColorRGBs), materials (vox_material_table, NULL all solid):
 //  only solid voxels darken corners (vox_lookup_solid)
-static inline void gpu_mesher_set_colors(GpuMesher* mesher, const color_rgb* colors, int count, const byte* materials) {
+static inline void gpu_mesher_set_colors(GpuMesher* mesher, const color_rgb* colors, int count, const byte* glows,
+    int glows_count, const byte* materials)
+{
     memset(mesher->palette, 0, sizeof(mesher->palette));
     memset(mesher->occludes, 0, sizeof(mesher->occludes));
     for (int v = 1; v < 256 && v <= count; v++) {
         const color_rgb c = colors[v - 1];
-        mesher->palette[v] = c.r | (c.g << 8) | (c.b << 16);
+        const uint glow = v <= glows_count ? glows[v - 1] : 0;
+        mesher->palette[v] = c.r | (c.g << 8) | (c.b << 16) | (glow << 24);
     }
     for (int v = 1; v < 256; v++) {
         if (!materials || materials[v] == zox_block_material_solid) {
@@ -1079,7 +1085,8 @@ void gpu_mesher_dispose(GpuMesher* mesher) { memset(mesher, 0, sizeof(GpuMesher)
 static inline void gpu_mesher_set_heights(GpuMesher* mesher, const byte* heights) { }
 static inline void gpu_mesher_set_material(GpuMesher* mesher, const byte* materials, byte material) { }
 static inline void gpu_mesher_set_uvs(GpuMesher* mesher, uint uvs) { }
-static inline void gpu_mesher_set_colors(GpuMesher* mesher, const color_rgb* colors, int count, const byte* materials) { }
+static inline void gpu_mesher_set_colors(GpuMesher* mesher, const color_rgb* colors, int count, const byte* glows,
+    int glows_count, const byte* materials) { }
 void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, byte depth, uint present, uint lights_present, const GpuMeshLighting* lighting) { }
 byte gpu_mesh_VoxelNode(GpuMesher* mesher, const VoxelNode* voxels, byte depth) { return 0; }
 uint gpu_mesher_read_faces(GpuMesher* mesher) { return 0; }

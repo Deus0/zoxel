@@ -38,6 +38,7 @@ entity spawn_prefab_vox(
     zox_setv(e, NodeDepth, 0); // depth
     zox_add(e, ColorChunk);
     zox_setv(e, ColorRGBs, 0);
+    zox_setv(e, ColorGlows, 0);
     zox_setv(e, MeshColors, 0);
     zox_setv(e, ColorsGPULink, 0);
     // Events
@@ -53,6 +54,7 @@ entity spawn_prefab_static_vox(ecs *world, entity prefab) {
     zox_setv(e, NodeDepth, 0); // depth
     zox_add(e, ColorChunk);
     zox_setv(e, ColorRGBs, 0);
+    zox_setv(e, ColorGlows, 0);
     zox_setv(e, MeshColors, 0);
     zox_setv(e, ColorsGPULink, 0);
     return e;
