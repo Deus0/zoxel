@@ -1,8 +1,8 @@
 // tst: sky_day, the sky through a day (res/shaders/skybox.frag, doc/plans/day_night.md): the player lifted, its body
 //  hidden, the realm's time set (paused) to dawn, noon, dusk and midnight, the camera looking at the sun (up, at
 //  midnight); a screenshot each (tst/sky_day/sky_<time>.ppm) to look at
-//  - the middle of the screen (the sun) is bright in the day, the realm's sunset colour at dawn and dusk (from its
-//    seed: its strongest and weakest channels); at midnight the sky is dark
+//  - the middle of the screen (the sun) is bright in the day, its sunset colour at dawn and dusk (the realm's sun's,
+//    its strongest and weakest channels); at midnight the sky is dark
 //  - and at dusk looking at the horizon under the sun (sky_horizon.ppm): the far terrain fades into the sky's glow
 //  - run: bash bsh/tst.sh sky_day
 extern char zox_screenshot_request[256];
@@ -93,7 +93,10 @@ byte zox_tst_sky_day_ready(ecs* world) {
     const float3 sun = sun_direction_at(time_of_day);
     const float3 level = float3_normalize((float3) { sun.x, 0, sun.z });   // the horizon under it
     zox_tst_sky_day_look(world, character, i == 4 ? level : sun.y > 0 ? sun : float3_up);
-    zox_tst_sky_day_sunset = realm_sunset_color(zox_getv(realm, Seed));
+    entity suns[1];
+    if (zox_get_children_by_id(world, realm, suns, 1, zox_id(Sun))) {
+        zox_tst_sky_day_sunset = color_rgb_to_float3(zox_getv(suns[0], SecondaryColorRGB));    // its game's choice
+    }
     const int f = ++zox_tst_sky_day_frame;
     if (f == 30) {
         char name[64];

@@ -23,17 +23,9 @@ static inline float3 sun_direction_at(float time_of_day) {
     return float3_normalize((float3) { cosf(angle), height * cosf(sun_tilt), height * sinf(sun_tilt) });
 }
 
-// a realm's sunset colour, from its seed (as its biomes' colours are): most warm, some alien
-static inline float3 realm_sunset_color(lint seed) {
-    const uint s = seed_rand((uint) seed ^ (uint) (seed >> 32) ^ 0x5a7u);
-    const float hue = seed_rangef(s, 0, 1) < 0.65f ? seed_rangef(s + 1, -25, 45) : seed_rangef(s + 2, 0, 360);
-    const float3 hsv = { hue < 0 ? hue + 360 : hue, seed_rangef(s + 3, 55, 80), 100 };
-    return color_rgb_to_float3(hsv_to_color_rgb(hsv));
-}
-
 // its colour: the sunset's low down, its own high up
-static inline float3 sun_color_at(float3 direction, color_rgb color, float3 sunset) {
-    return float3_lerp(sunset, color_rgb_to_float3(color), smootherf(0, 0.35f, direction.y));
+static inline float3 sun_color_at(float3 direction, color_rgb color, color_rgb sunset) {
+    return float3_lerp(color_rgb_to_float3(sunset), color_rgb_to_float3(color), smootherf(0, 0.35f, direction.y));
 }
 
 // its light on the world: its colour, none under the horizon

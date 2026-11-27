@@ -14,8 +14,11 @@ it. Nothing is relit as time passes: the time of day is a tint the shaders take.
 
 Done (2026-11-27):
 
-- `Sun`: a light source entity (src/sky), a child of the realm prefab so every realm has one: `DayLength` (1200s),
-  `DayStart` (0.3, the morning), `ColorRGB`.
+- `Sun`: a light source entity (src/sky: its components, prefab and `spawn_sun`), a child of its realm. Realm data
+  is spawned by each game: zoxel spawns its sun in the realm's solar generation step (`zox_generate_realm_solar`,
+  gam/zoxel/sys/solar.c; later its planets and their orbits there too). `DayLength` (1200s), `DayStart` (0.3, the
+  morning), `ColorRGB` (high up), `SecondaryColorRGB` (its sunset: zoxel's from the realm's seed, most warm, some
+  alien). A game without suns has full daylight.
 - Its time of day is the realm's `ClockTime` over its day length from its start: 0 midnight, 0.5 noon. Nothing
   stores it, and it holds while the realm's paused.
 - `camera_sky_system` (src/sky/sys/camera_sky.c): each camera's realm (its streamer's terrain's) sums its suns into

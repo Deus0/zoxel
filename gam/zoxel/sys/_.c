@@ -13,6 +13,7 @@
 #include "achievements.c"
 #include "biomes.c"
 #include "biome_blocks.c"
+#include "solar.c"
 
 void zox_systems_zoxel(ecs *world) {
     zox_system_1(
@@ -56,6 +57,13 @@ void zox_systems_zoxel(ecs *world) {
         achievement_realm_spawn_system,
         zoxp_spawn,
         [in] realms.GenerateRealm,
+        [none] realms.Realm
+    );
+    zox_system_1(
+        solar_realm_spawn_system,
+        zoxp_spawn,
+        [in] realms.GenerateRealm,
+        [in] core.Seed,
         [none] realms.Realm
     );
     zox_system_1(

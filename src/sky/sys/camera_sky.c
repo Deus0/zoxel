@@ -26,13 +26,12 @@ void camera_sky_system(iter* it) {
             continue;
         }
         const double time = zox_getv(realm, ClockTime);
-        const float3 sunset = realm_sunset_color(zox_has(realm, Seed) ? zox_getv(realm, Seed) : 0);
         float3 light = float3_zero;
         float brightest = -1;
         for (uint j = 0; j < count; j++) {
             const entity sun = suns[j];
             const float3 towards = sun_direction_at(sun_time_of_day(time, zox_getv(sun, DayLength), zox_getv(sun, DayStart)));
-            const float3 color = sun_color_at(towards, zox_getv(sun, ColorRGB), sunset);
+            const float3 color = sun_color_at(towards, zox_getv(sun, ColorRGB), zox_getv(sun, SecondaryColorRGB));
             const float3 sun_light = sun_light_at(towards, color);
             light = float3_add(light, sun_light);
             const float strength = sun_light.x + sun_light.y + sun_light.z;

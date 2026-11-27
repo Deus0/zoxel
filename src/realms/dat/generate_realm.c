@@ -5,6 +5,7 @@
 
 // core stuff
 #define zox_generate_realm_biomes 3
+#define zox_generate_realm_solar 4     // its suns (a game's, i.e. gam/zoxel/sys/solar.c), later planets and orbits
 #define zox_generate_realm_models 5
 #define zox_generate_realm_stats 6
 

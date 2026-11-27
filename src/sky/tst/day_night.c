@@ -1,6 +1,7 @@
 // tst: day_night, a realm's sun lights its cameras by the realm's time (sys/camera_sky.c, doc/plans/day_night.md)
-//  - a realm comes with its sun (a child of the realm prefab)
-//  - a camera in it (its streamer's terrain's realm): noon full daylight from above, dawn warm and low in the east,
+//  - a realm with a sun (spawn_sun, its game spawns it as the realm generates: gam/zoxel/sys/solar.c)
+//  - a camera in it (its streamer's terrain's realm): noon full daylight from above, dawn dimmer, its sunset's
+//    colour, low in the east,
 //    midnight the night's light with the sun under the ground
 //  - paused (its clock's scale 0) the time of day holds
 //  - no player, no game: a realm, a terrain linking it, a camera streaming from that terrain
@@ -9,6 +10,8 @@ int zox_tst_day_night_frame = 0;
 entity zox_tst_day_night_realm = 0;
 entity zox_tst_day_night_camera = 0;
 uint zox_tst_day_night_suns = 0;
+float3 zox_tst_day_night_dawn_color;
+const color_rgb zox_tst_day_night_sunset = { 255, 60, 200 };     // pink, its sun's sunset
 float3 zox_tst_day_night_noon;
 float3 zox_tst_day_night_noon_sun;
 float3 zox_tst_day_night_dawn;
@@ -38,6 +41,7 @@ byte zox_tst_day_night_ready(ecs* world) {
         zox_setv(e, SunDirection, float3_up);
         zox_setv(e, SunColor, float3_one);
         zox_link(world, e, StreamLink, terrain);
+        spawn_sun(world, realm, zox_tst_day_night_sunset);
         zox_tst_day_night_realm = realm;
         zox_tst_day_night_camera = e;
         entity suns[4];
@@ -50,6 +54,7 @@ byte zox_tst_day_night_ready(ecs* world) {
     } else if (f == 7) {
         zox_tst_day_night_dawn = zox_getv(camera, SkyTint);
         zox_tst_day_night_dawn_sun = zox_getv(camera, SunDirection);
+        zox_tst_day_night_dawn_color = zox_getv(camera, SunColor);
         zox_tst_day_night_at(world, 0);
     } else if (f == 10) {
         zox_tst_day_night_night = zox_getv(camera, SkyTint);
@@ -69,9 +74,12 @@ void zox_tst_day_night_check(ecs* world) {
         n.x, n.y, n.z, zox_tst_day_night_noon_sun.y, d.x, d.y, d.z, zox_tst_day_night_dawn_sun.x, zox_tst_day_night_dawn_sun.y,
         m.x, m.y, m.z, zox_tst_day_night_night_sun.y);
     zox_tst_check(zox_tst_day_night_suns == 1, "the realm has [%u] suns, not its one", zox_tst_day_night_suns);
+    // dawn's sun its sunset's colour (pink): its green the least
+    const float3 c = zox_tst_day_night_dawn_color;
+    zox_tst_check(c.y < c.x && c.y < c.z, "dawn's sun [%.2f %.2f %.2f] isn't its sunset's pink", c.x, c.y, c.z);
     zox_tst_check(n.x > 0.85f && n.y > 0.85f && n.z > 0.8f, "noon isn't full daylight [%.2f %.2f %.2f]", n.x, n.y, n.z);
     zox_tst_check(zox_tst_day_night_noon_sun.y > 0.8f, "the noon sun isn't high [%.2f]", zox_tst_day_night_noon_sun.y);
-    zox_tst_check(d.x > d.z && d.x < n.x, "dawn isn't warm and dimmer than noon [%.2f %.2f %.2f]", d.x, d.y, d.z);
+    zox_tst_check(d.x + d.y + d.z < n.x + n.y + n.z, "dawn [%.2f %.2f %.2f] isn't dimmer than noon", d.x, d.y, d.z);
     zox_tst_check(zox_tst_day_night_dawn_sun.x > 0.9f && zox_tst_day_night_dawn_sun.y > 0 && zox_tst_day_night_dawn_sun.y < 0.3f,
         "the dawn sun isn't low in the east [%.2f %.2f]", zox_tst_day_night_dawn_sun.x, zox_tst_day_night_dawn_sun.y);
     zox_tst_check(fabsf(m.x - sky_night_tint.x) < 0.01f && fabsf(m.y - sky_night_tint.y) < 0.01f && fabsf(m.z - sky_night_tint.z) < 0.01f,

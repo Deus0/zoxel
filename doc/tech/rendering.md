@@ -72,7 +72,8 @@ capsule.
 The camera's view, one uniform block every 3D shader gets as it loads ([view.glsl](../../res/shaders/view.glsl),
 [Shaders](../howto/shaders.md)), uploaded once a camera (`render_view_upload`, src/rendering/dat/camera_renderer.c).
 
-- **The sky's light:** each realm has a `Sun` (src/sky), a light source child of the realm, its day the realm's clock
+- **The sky's light:** a realm's `Sun` (src/sky), a light source child of the realm its game spawns in its solar
+  generation step (zoxel: gam/zoxel/sys/solar.c, its sunset from the seed), its day the realm's clock
   (20 minutes, stopped while paused). `camera_sky_system` sets each camera's `SkyTint`, `SunDirection` and
   `SunColor` from its realm's suns (doc/plans/day_night.md). World shaders multiply their colour by
   `zox_sky_light(glow)`: glowing colours keep their own light, the 3D uis are unlit (`textured3D_unlit.vert`).
