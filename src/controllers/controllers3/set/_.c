@@ -19,8 +19,10 @@ float3 xr_stick_lead = { 0, 0, 0 };         // how far the view is ahead of the 
 float xr_stick_turn = 0;                    // the right stick's turn of the body this frame, radians about its up
                                             //  (rotation.c): xr/fun/body.c turns the view about the head by it
 float xr_stick_catch = 6;                   // the body's push toward the view: metres a second for each metre behind
-// the speed stat (StatSpeed, 1 a player's start) over 1 raises its top speed and push by this much of it
-float player_speed_stat_scale = 0.5f;
+// the speed stat (StatSpeed, 1 a player's start) to its real speed, a curve with diminishing returns: over 1 it
+//  gains up to player_speed_bonus_max more, half of that at player_speed_bonus_half over 1; under 1 it slows as is
+float player_speed_bonus_max = 1;       // at most twice as fast
+float player_speed_bonus_half = 1;      // stat 2: 1.5x, stat 4: 1.75x
 const float min_mouse_delta3 = 0.01f;
 const float min_mouse_delta2 = 24.0f;
 const float max_mouse_delta3 = 60.0f;

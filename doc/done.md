@@ -1,5 +1,10 @@
 # Done
 
+## 2026-11-27
+-x Walking 2.5x as fast in release: the player's speed stat skipped npc_stat_start, its max unset, release kept
+  mana's and spawned it as a state at mana's base (4); the move scales by it. max starts at 0. The speed stat curves
+  now (speed_stat_curve: up to 2x, stat 2 is 1.5x) rather than adding (tst move_feel checks the stat and curve)
+
 ## 2026-11-26
 -x Editor menubar, docked on top: File (Open, Quit), Edit (disabled for now), Window (the windows, ticked when
   open), Realm (spawn and dispose the realm, the hierarchy shows it; Play, Pause, Stop disabled) (tsts

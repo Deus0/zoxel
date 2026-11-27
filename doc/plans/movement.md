@@ -46,7 +46,8 @@ Who writes it, nothing else:
    - **turning by physics, the default** (a torque on its spin, a damped spring to `FaceDirection`, as npcs turn):
      `player_turn_strength` 400, `_damping` 30, `_max` 800; a 90 degree turn of the orbit camera faced in ~0.3s,
      most of it the camera easing round (tst `move_feel_turn`). `player_turn_instant` the old turn, the fallback
-   - **speed from the speed stat**: 1 + (stat - 1) * `player_speed_stat_scale` (0.5), on its top speed and push
+   - **speed from the speed stat**: curved, each point gains less (`speed_stat_curve`: 1 + max * over / (over + half),
+     over = stat - 1; up to 2x, stat 2 is 1.5x, under 1 slows as is), on its top speed and push
    - **exact at any frame rate**: each axis's push trimmed to land on its top speed, its drag counted (physics/fun's
      v' = v keep + a g), not dropped whole. The settings are now the top speeds reached, set to the old move's at
      60fps: `max_velocity3D` 0.99 side, 1.43 forward, `run_speed` 1.67; zoxel's 1.08, 1.28 (the old ones, 1.24 and

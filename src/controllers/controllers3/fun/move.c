@@ -5,9 +5,17 @@ static inline float3 character_up(ecs* world, entity character) {
     return physics3_up(zox_has(character, Gravity3D) ? zox_getv(character, Gravity3D) : float3_zero);
 }
 
-// how much the speed stat (1 a player's start) raises its top speed and push
+// the speed stat (1 a player's start) as its real speed, of its top speed and push: curved, each point gains less
+static inline float speed_stat_curve(float stat) {
+    if (stat <= 1) {
+        return stat;
+    }
+    const float over = stat - 1;
+    return 1 + player_speed_bonus_max * over / (over + player_speed_bonus_half);
+}
+
 static inline float character3_speed_scale(ecs* world, entity e) {
-    return 1 + (character_speed(world, e) - 1) * player_speed_stat_scale;
+    return speed_stat_curve(character_speed(world, e));
 }
 
 // crouching: the skeleton's CrouchState (a headset crouches by the player's own body, not this)

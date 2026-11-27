@@ -263,7 +263,7 @@ void fill_character_base_stats(ecs* world, entity character, entity realm, float
             spawn_stat_state(world, character, stat, health, health);
             continue;
         }
-        float max;
+        float max = 0;      // the player's speed skips npc_stat_start: unset, release kept mana's max and base (4)
         const float value = is_player && zox_has(stat, StatSpeed) ? zox_getv(stat, StatValue) :
             npc_stat_start(world, &stats, stat, soul, &max);
         if (max > 0) {

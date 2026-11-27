@@ -10,6 +10,7 @@
 //    push near its top speed, held back till friction stopped it)
 //  - checks: each near the old move's (zox_tst_mf_feel, 2026-11-27, before the refactor): top speed 5%, time to it
 //    0.15s and slide 0.1m, each two frames more (the keys reach the move a frame or two late, longer at 10fps)
+//  - the player's speed stat is 1 (the move scales by it, curved: speed_stat_curve)
 //  - move_feel_10fps: the same at 0.1s frames, the same numbers (the move is exact at any frame rate)
 //  - run: bash bsh/tst.sh move_feel
 #define zox_tst_mf_hold 2.5
@@ -135,7 +136,14 @@ byte zox_tst_move_feel_10fps_ready(ecs* world) {
 }
 
 void zox_tst_move_feel_check(ecs* world) {
-    (void) world;
+    // a player starts at speed 1 (release once spawned it as a state at mana's base, 4: 2.5x as fast)
+    const float stat = character_speed(world, zox_tst_player_character(world));
+    zox_tst_check(stat == 1, "the player's speed stat [%.2f], not 1", stat);
+    // the stat's curve: 1 as is, each point gains less, never past its most
+    zox_tst_check(speed_stat_curve(1) == 1 && speed_stat_curve(0.5f) == 0.5f, "speed curve under 1 changed");
+    zox_tst_check(fabsf(speed_stat_curve(2) - 1.5f) < 0.001f, "speed stat 2 is [%.3f]x, not 1.5x", speed_stat_curve(2));
+    zox_tst_check(speed_stat_curve(3) - speed_stat_curve(2) < speed_stat_curve(2) - speed_stat_curve(1) &&
+        speed_stat_curve(100) < 1 + player_speed_bonus_max, "speed curve not diminishing");
     for (int m = 0; m < zox_tst_mf_moves; m++) {
         const float top = zox_tst_mf_sum[m] / int_max(1, zox_tst_mf_samples[m]);
         zox_log("[tst] [metric] move_feel [%s]: top speed [%.3f] m/s, to 90%% in [%.3f]s, slid [%.3f]m stopping",

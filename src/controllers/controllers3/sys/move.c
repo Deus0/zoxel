@@ -3,7 +3,7 @@
 //  - turning: by physics (a torque on its spin, as npcs turn), or at once (player_turn_instant, the old turn)
 //  - the push: along its move in its own frame, each axis its power (player_movement_power), held back while that
 //    axis would pass its top speed (max_velocity3D); running, crouching, water and flying scale them; the speed stat
-//    raises both (player_speed_stat_scale)
+//    raises both, curved (fun/move.c speed_stat_curve)
 //  - each axis's push trimmed to what lands it on its top speed, its drag counted (exact at any frame rate), not dropped
 //    whole: dropped, at ~0.07s frames a push
 //    was most of the top speed, so it was held back till friction stopped it, strafing in pulses (tst move_feel_10fps)
