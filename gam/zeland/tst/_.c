@@ -99,8 +99,11 @@ void zox_tst_zeland_walk_check(ecs* world) {
     zox_tst_check(errors == 0, "[%u] errors logged", errors);
 }
 
+#include "views.c"
+
 void zox_tsts_zeland(ecs* world) {
     (void) world;
     zox_tst_add("zeland_boot", zox_tst_zeland_boot_ready, zox_tst_zeland_boot_check, 60);
     zox_tst_add("zeland_walk", zox_tst_zeland_walk_ready, zox_tst_zeland_walk_check, 60);
+    zox_tst_add("zeland_player_views", zox_tst_zeland_player_views_ready, zox_tst_zeland_player_views_check, 60);
 }

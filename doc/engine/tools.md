@@ -45,14 +45,18 @@ right and z down from the regions' low corner, in `tst/maps/`:
 bash bsh/tools/poly_terrain.sh             # seed 666 (~2s after the build)
 bash bsh/tools/poly_terrain.sh --seed 42   # another island
 bash bsh/tools/poly_terrain.sh --nobuild   # the last zeland build
+bash bsh/tools/poly_terrain.sh --player    # the game's view instead: round the character from its orbit camera
 ```
 
-`tst/poly/views.png`: the island's mesh from 4 sides (yaw 45, 135, 225, 315, 100 metres out, 55 up), from tst
+`tst/poly/views.png`: the island's mesh from 4 sides (yaw 45, 135, 225, 315, as far out as the island is wide), from tst
 `poly_views` (`poly_view_1.png` to `_4`, a test build in bin/tst_poly). `tst/poly/heights.png`: the island seen from above, 4 pixels a cell, x right and z down, coloured as the mesh will be
 (sand, grass, rock on steep faces, snow on top, `poly_color_at`), lit from the north west, the sea blue over it.
 
 - The map needs no world: the heights are pure (`poly_height_generate`), written at boot and the game quits. The
   views spawn the terrain in the menus, the ui hidden, and move the menu camera round it.
+- `--player`: `tst/poly/player_views.png`, zeland played, its character at its start and the orbit camera turned
+  0, 90, 180, 270 degrees round it, at the game's pitch, distance, fog and light, no hud (tst `zeland_player_views`,
+  gam/zeland/tst/views.c). How walking it will look, where the map only shows its shape.
 - The same seed draws the same image: compare a change to the generator before and after.
 - Game flags: `--poly-map`, `--poly-seed <n>`, `--poly-out <folder>` ([commands.md](commands.md)).
 - Code: [terrains/poly/dbg](../../src/terrains/poly/dbg/_.c), the plan: [poly terrains](../plans/poly_terrains.md).

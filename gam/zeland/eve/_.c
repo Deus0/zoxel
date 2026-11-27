@@ -61,12 +61,15 @@ void player_state_zeland(iter* it) {
         }
         const PolyHeights* heights = zox_get(terrain, PolyHeights);
         const float2 size = zox_getv(terrain, Size2);
-        // from the peak south (+z) to the first low ground (under 40% of the hills' height): it faces the mountain
+        // from the peak south (+z) to the first flat low ground (under 40% of the mountain's height, under ~18 degrees,
+        //  above the sea): it faces the mountain
+        const int2 cells = zox_getv(terrain, PolyCells);
         float z = size.y / 2;
         float ground = 0;
         for (; z < size.y; z += 1) {
-            ground = poly_height_at(heights->value, zox_getv(terrain, PolyCells), size, size.x / 2, z);
-            if (ground < poly_terrain_height * 0.4f) {
+            ground = poly_height_at(heights->value, cells, size, size.x / 2, z);
+            const float3 normal = poly_normal_at(heights->value, cells, size, size.x / 2, z);
+            if (ground < poly_terrain_height * 0.4f && ground > poly_terrain_sea + 1 && normal.y > 0.95f) {
                 break;
             }
         }
