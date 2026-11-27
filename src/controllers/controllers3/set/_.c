@@ -8,7 +8,6 @@ float2 player_movement_power = { 17, 19 };
 float2 max_velocity3D = { 0.99f, 1.43f };    // top speeds, side and forward: the old move's at 60fps (tst move_feel)
 // turning to face its move (controllers3/sys/move.c): by physics, a torque on its spin as npcs turn (a spring to the
 //  way it wants, damped), or at once (the old turn, the fallback if play tests don't like the new one)
-byte player_turn_instant = 0;
 float player_turn_strength = 400;   // the spring: angular acceleration a radian off
 float player_turn_damping = 30;     // against its spin (critically damped near 2 * sqrt(strength))
 float player_turn_max = 800;        // the most angular acceleration, radians a second squared

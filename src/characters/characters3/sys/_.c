@@ -16,7 +16,7 @@ void zox_systems_characters3(ecs *world) {
         character_save_system,
         zoxp_update,
         [in] transforms3.Position3D,
-        [in] transforms3.Euler,
+        [in] transforms3.Rotation3D,
         [out] saves.SaveHash,
         [none] saves.Saver
     );

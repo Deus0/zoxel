@@ -1,6 +1,6 @@
 // The move (doc/plans/movement.md): every player character walks by its MoveDirection and turns to its FaceDirection,
 //  written by its player's input (movement.c), later its ai: by the same rules whoever wants it
-//  - turning: by physics (a torque on its spin, as npcs turn), or at once (player_turn_instant, the old turn)
+//  - turning: by physics (a torque on its spin, as npcs turn)
 //  - the push: along its move in its own frame, each axis its power (player_movement_power), held back while that
 //    axis would pass its top speed (max_velocity3D); running, crouching, water and flying scale them; the speed stat
 //    raises both, curved (fun/move.c speed_stat_curve)
@@ -10,20 +10,10 @@
 //  - kept as it was, for the same feel (tst move_feel): running scales only the side push (movement.x and .y):
 //    forward runs on its top speed alone
 
-// the rotation that faces a direction (flat): characters face +z (is_camera_positive_z)
-static inline float4 character3_facing(float3 direction) {
-    const float yaw = is_camera_positive_z ? atan2f(direction.x, direction.z) : atan2f(-direction.x, -direction.z);
-    return quaternion_from_axis_angle(float3_up, yaw);
-}
-
-// turns it to face a direction: at once, or a torque on its spin (a spring to it, damped by its spin)
-static inline void character3_turn(float4* rotation, Alpha3D* alpha, float omega_y, float3 face) {
-    if (player_turn_instant) {
-        *rotation = character3_facing(face);
-        return;
-    }
+// turns it to face a direction by a torque on its spin (a spring to it, damped by its spin), never its rotation
+static inline void character3_turn(float4 rotation, Alpha3D* alpha, float omega_y, float3 face) {
     const float wanted = is_camera_positive_z ? atan2f(face.x, face.z) : atan2f(-face.x, -face.z);
-    const float error = remainderf(wanted - quaternion_to_euler_y2(*rotation), 2 * M_PI);
+    const float error = remainderf(wanted - quaternion_to_euler_y2(rotation), 2 * M_PI);
     if (fabsf(error) < 0.001f && fabsf(omega_y) < 0.01f) {
         return;
     }
@@ -80,7 +70,7 @@ void character3_move_system(iter* it) {
         // its speed limits measured against its facing before it turns this frame (as the old move)
         const float4 facing = rotation->value;
         if (face->value.x || face->value.z) {
-            character3_turn(&rotation->value, alpha, omega->value.y, face->value);
+            character3_turn(rotation->value, alpha, omega->value.y, face->value);
         }
         if (!move->value.x && !move->value.z && !move->value.y) {
             continue;

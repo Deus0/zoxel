@@ -40,17 +40,17 @@ void character_save_system(iter* it) {
     zox_sys_world();
     zox_sys_begin();
     zox_sys_in(Position3D);
-    zox_sys_in(Euler);
+    zox_sys_in(Rotation3D);
     zox_sys_out(SaveHash);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(Position3D, position);
-        zox_sys_i(Euler, euler);
+        zox_sys_i(Rotation3D, rotation);
         zox_sys_o(SaveHash, hash);
         // character
         SaveDataCharacter data = {
             .position = position->value,
-            .euler = euler->value,
+            .euler = { 0, quaternion_to_euler_y2(rotation->value), 0 },   // its heading as physics turned it (Euler isn't)
         };
         data.position.x = float_to_precision(data.position.x, precision_level);
         data.position.y = float_to_precision(data.position.y, precision_level);

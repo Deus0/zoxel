@@ -307,6 +307,14 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
   another module's includes for load order
 - Poly terrain chunks: the island in tiles, each its own mesh, culled and later lodded, so maps can grow past 512m;
   gpu meshing after, if building them shows in a profile (doc/plans/poly_terrains.md, Later)
+- Physics adds forces, never sets velocity or rotation (doc/tech/physics.md, the rule, 2026-11-28):
+  - knockback (skills/fun/damage.c) and the pounce's leap (skills/sys/pounce.c) as one frame's push (`dv / g`),
+    from a system that owns the body's forces, not an in place write on another body
+  - characters' `Euler` goes: it's a second copy of the rotation that drifts (torque turns never updated it, saves
+    now read `Rotation3D`). Writers: player3_rotate_system (mouse), xr_body_turn_by, dialogue (gone); readers turn
+    a quaternion about the body's up instead (`quaternion_from_axis_angle`, as rotation.c already does)
+  - XR's body following the head (`xr_body_turn_by`) by a torque, keeping the view still (`xr_body_room_turn`)
+  - mouse look by torque or not: a feel decision, discuss first
 - Movement inputs apart from the move system: players' devices and npc ai write one move input on a character, one
   system moves them all by the same rules; tests read no real devices and set that input. Discuss first
   (doc/plans/poly_terrains.md, Later)

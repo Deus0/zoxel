@@ -46,6 +46,20 @@ With `k = 0` they're `keep = 1, g = dt, h = dt² / 2`: constant acceleration.
 Spin uses the same step for `Omega3D` / `Alpha3D` / angular drag, turning by the step's rotation vector.
 That's exact when `Alpha3D` is along `Omega3D` (or zero), and very close otherwise.
 
+## The rule: add forces, never set velocity
+
+Systems **add** to `Acceleration3D` (and `Alpha3D` for spin), they never set or change `Velocity3D`, `Omega3D` or a
+body's `Rotation3D` themselves. Forces sum, so any number of systems push one body in a frame and physics steps the
+total once: a walk, gravity, a knockback and the wind all land. A system that sets a velocity throws the others'
+pushes away, and two that change it in place race (below).
+
+- Wanted motion goes through the move: `MoveDirection`, `FaceDirection` (characters3), it pushes and turns.
+- Exceptions: physics' own steps (`zoxp_physics`), collision response (the bounce, `intersect.c`; the capsule's
+  slide, `capsule.c`), a body taken out of physics (`InitializePhysics3D`'s spawn hold, laid on a bed), the first
+  person mouse look (turns `Rotation3D` at once, as aiming wants).
+- Still to move over: the pounce's leap (skills/sys/pounce.c), knockback (skills/fun/damage.c), XR's body turning
+  after the head (`xr_body_turn_by`).
+
 ## A frame
 
 Everything is in `zoxp_physics`, in this order:
@@ -74,8 +88,9 @@ Everything is in `zoxp_physics`, in this order:
 ## Making things move
 
 - **Push** (walk, swim, wind): add to `Acceleration3D` each frame you want it pushed. It's cleared every frame.
-  Add, don't set, if more than one system pushes the same body.
-- **Kick** (jump, knockback, an explosion): change `Velocity3D` once.
+- **Kick** (jump, knockback, an explosion, a leap): one frame's push, `Acceleration3D += dv / g` (the frame's step,
+  `character3_step`) changes its velocity by `dv` exactly: `v' = v keep + a g`.
+- **Turn**: a torque, `Alpha3D` (`character3_turn`, `rotate_towards_system`), or say where it wants to face.
 - **Characters walking**: don't push them yourself, say where they want to go: `MoveDirection` (and `FaceDirection`,
   `Running`), the move (`character3_move_system`, controllers3/sys/move.c) pushes each axis to land on its top speed
   with its drag counted, the same at any frame rate, and turns it by a torque (doc/plans/movement.md).
@@ -151,21 +166,18 @@ A terrain chunk has a `GravityOctree` beside its voxels, as its `LightOctree`: w
 - **Standing on it**: `gravity_upright_system` turns a `TerrainGravity` body's up toward its gravity's, the shortest
   arc at 9 radians a second (a flip in a third of a second), right over it rolls about its forward so it faces the
   way it did; not while `DisableMovement` (laid on a bed). The first person camera rides its head, so it turns too.
-- **Moving on it**: the player turns about its own up (`player3_rotate_system`, its `Euler` kept for saves), walks
+- **Moving on it**: the player turns about its own up (`player3_rotate_system`; saves keep its heading from `Rotation3D`), walks
   flat against its up (`physics3_flatten`, character3_move_system), auto jumps over blocks along its up
   (`physics3_up_block`), swims up its up, and its lower body (`InsideBlock`, water) is down its up.
 - **Debug**: the gizmos' Gravity button draws every node that doesn't pull down, coloured by direction, in the
   camera's chunk and a chunk round it (as the lights' button, which reaches as far now).
 - tst gravity_cube: a sphere exactly, across a chunk's side, overlaps, dug out, a body flipped and rising.
 
-## Setting a velocity each frame
-
-Movement that sets a velocity rather than pushing (XR walking, `player3d_move_direct`, `xr_room_walk_system`)
-scales it by `physics3_drag_compensation`: the drag the body gets this frame (ground or air, by `Grounded`) would
-otherwise trim it, by an amount that changes as `Grounded` flickers on seams (the walk bumps).
-
 ## Gotchas
 
+- **Two systems writing one body's component in place in the same op race.** Workers don't wait between systems,
+  only at merges (doc/engine/thread_safety.md): `+=` from two systems on one body loses one. Push a body from the
+  system that owns its forces (the move, by its `MoveDirection`), or from a phase after a barrier.
 - **`zox_delta_time` is a frame stale.** `iterate_time_system` runs at `zoxp_end`, so frame N's physics uses
   the time frame N-1 took. Read after a frame, `zox_delta_time` is the *next* frame's dt.
 - **Never use flecs' `it->delta_time` for physics.** It isn't clamped to `max_zox_delta_time` (0.1s) on a lag

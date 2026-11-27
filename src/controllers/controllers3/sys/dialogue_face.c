@@ -24,12 +24,9 @@ void dialogue_face_system(iter* it) {
         }
         // the body's yaw, to the speaker (+z ahead, as ai/sys/rotate_towards_system.c)
         const float3 to = float3_sub(zox_getv(target, Position3D), zox_getv(character, Position3D));
-        if (to.x * to.x + to.z * to.z > 0.0001f) {
-            zox_muter(character, Euler, euler);
-            zox_muter(character, Rotation3D, rotation);
-            const float error = remainderf(atan2f(to.x, to.z) - euler->value.y, 2.0f * M_PI);
-            euler->value.y += error * blend;
-            rotation->value = quaternion_from_euler(euler->value);
+        //  - by a torque, as the move turns it (character3_turn): it has DisableMovement, so the move skips it
+        if (to.x * to.x + to.z * to.z > 0.0001f && zox_has(character, Alpha3D) && zox_has(character, Omega3D)) {
+            character3_turn(zox_getv(character, Rotation3D), zox_getm(character, Alpha3D), zox_getv(character, Omega3D).y, to);
         }
         // the camera levels, its look left to the head
         const entity skeleton = get_skeleton(world, character);
