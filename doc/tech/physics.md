@@ -57,8 +57,8 @@ pushes away, and two that change it in place race (below).
 - Exceptions: physics' own steps (`zoxp_physics`), collision response (the bounce, `intersect.c`; the capsule's
   slide, `capsule.c`), a body taken out of physics (`InitializePhysics3D`'s spawn hold, laid on a bed), the first
   person mouse look (turns `Rotation3D` at once, as aiming wants).
-- Still to move over: the pounce's leap (skills/sys/pounce.c), knockback (skills/fun/damage.c), XR's body turning
-  after the head (`xr_body_turn_by`).
+- Kicks: `physics3_kick(world, e, dv)` (knockback, the pounce's leap). Still to move over: XR's body turning after
+  the head (`xr_body_turn_by`).
 
 ## A frame
 

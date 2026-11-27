@@ -69,3 +69,23 @@ void friction3_system(iter* it) {
     zox_physics_profile_end();
     zox_sys_on_end();
 } zoxd_system(friction3_system);
+
+// a body's step this frame, as physics3 steps it: its drag on the ground or in the air, none unfrictioned
+static inline physics_step physics3_body_step(ecs* world, entity e) {
+    const float k = !zox_has(e, Frictioned) ? 0 : zox_has(e, Grounded) && zox_getv(e, Grounded) ? ground_friction3 : air_friction3;
+    return physics_step_new(k, (float) zox_delta_time);
+}
+
+// a kick (a hit, a leap): one frame's push that changes its velocity by dv (v' = v keep + a g), added to its forces
+//  (doc/tech/physics.md: forces, never its velocity); before zoxp_physics it lands this frame, else the next
+static inline void physics3_kick(ecs* world, entity e, float3 dv) {
+    if (!zox_has(e, Acceleration3D)) {
+        return;
+    }
+    const physics_step step = physics3_body_step(world, e);
+    if (step.g <= 0) {
+        return;
+    }
+    Acceleration3D* acceleration = zox_getm(e, Acceleration3D);
+    acceleration->value = float3_add(acceleration->value, float3_scale(dv, 1 / step.g));
+}

@@ -309,9 +309,6 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 - Poly terrain chunks: the island in tiles, each its own mesh, culled and later lodded, so maps can grow past 512m;
   gpu meshing after, if building them shows in a profile (doc/plans/poly_terrains.md, Later)
 - Physics adds forces, never sets velocity or rotation (doc/tech/physics.md, the rule, 2026-11-28):
-  - knockback (skills/fun/damage.c) and the pounce's leap (skills/sys/pounce.c) as one frame's push (`dv / g`),
-    from a system that owns the body's forces, not an in place write on another body
-  - XR's body following the head (`xr_body_turn_by`) by a torque, keeping the view still (`xr_body_room_turn`)
   - mouse look by torque: the option is in (setting "Physics Turn", tst physics_turn), the user to play test it
 - Third person camera orbits more naturally (the user, 2026-11-28), as Mario Odyssey's: it swings round behind the
   character as it runs (lazily, not snapped), the stick or mouse takes over at once and keeps the view where it was
@@ -1558,6 +1555,8 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 	- We should wrap all other sdl functions properly for glut
 
 # XR
+- The body following the head (`xr_body_turn_by`) by a torque, not setting its rotation (doc/tech/physics.md), keeping
+  the view still (`xr_body_room_turn`)
 - Spawn 2 XR Eye entities that are cameras
 	- XRRender Systems for them
 - XR on vulkan: openxr has it (XR_KHR_vulkan_enable2), our xr code is gl es (egl context, gl swapchain images,

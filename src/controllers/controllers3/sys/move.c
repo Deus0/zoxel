@@ -44,8 +44,7 @@ static inline float character3_axis_push(physics_step step, float velocity, floa
 
 // its drag this frame, as physics3 steps it (its friction on the ground or in the air, none unfrictioned)
 static inline physics_step character3_step(ecs* world, entity e) {
-    const float k = !zox_has(e, Frictioned) ? 0 : zox_has(e, Grounded) && zox_getv(e, Grounded) ? ground_friction3 : air_friction3;
-    return physics_step_new(k, (float) zox_delta_time);
+    return physics3_body_step(world, e);
 }
 
 

@@ -18,7 +18,7 @@ void pounce_system(iter* it) {
     zox_sys_in(Grounded);
     zox_sys_in(RaycastVoxelData);
     zox_sys_out(Scale3);
-    zox_sys_out(Velocity3D);
+    zox_sys_in(Velocity3D);
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(SkillUsing, skill);
@@ -28,7 +28,7 @@ void pounce_system(iter* it) {
         zox_sys_i(Grounded, grounded);
         zox_sys_i(RaycastVoxelData, ray);
         zox_sys_o(Scale3, scale);
-        zox_sys_o(Velocity3D, velocity);
+        zox_sys_i(Velocity3D, velocity);
         if (!zox_valid(skill->value) || !zox_has(skill->value, Melee)) {
             continue;
         }
@@ -47,7 +47,9 @@ void pounce_system(iter* it) {
                 quaternion_to_normal(rotation->value);
             ahead.y = 0;
             ahead = float3_normalize(ahead);
-            velocity->value = (float3) { ahead.x * pounce_leap * speed, pounce_jump, ahead.z * pounce_leap * speed };
+            // a kick to the leap's velocity (what's left of its own after this frame's drag taken off)
+            const float3 leap = { ahead.x * pounce_leap * speed, pounce_jump, ahead.z * pounce_leap * speed };
+            physics3_kick(world, e, float3_sub(leap, float3_scale(velocity->value, physics3_body_step(world, e).keep)));
             zox_add(e, SkillReleased);
             continue;
         }

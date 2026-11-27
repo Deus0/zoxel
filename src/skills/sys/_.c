@@ -66,7 +66,7 @@ void zox_systems_skills(ecs *world) {
         [in] physics.Grounded,
         [in] vrays.RaycastVoxelData,
         [out] transforms3.Scale3,
-        [out] physics3.Velocity3D
+        [in] physics3.Velocity3D
     );
     zox_system_1(
         projectile_hit_system,

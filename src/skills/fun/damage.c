@@ -84,8 +84,7 @@ byte damage_character(
     float3 hit_impulse = float3_scale(
         knockback_normal,
         randf_range(skill_damage_knockback_min, skill_damage_knockback_max));
-    zox_muter(hit, Velocity3D, hit_velocity);
-    hit_velocity->value = float3_add(hit_velocity->value, hit_impulse);
+    physics3_kick(world, hit, hit_impulse);
     // damage popup
     float3 bounds3D = zox_getv(hit, Bounds3D);
     float3 hit_character_position = zox_getv(hit, Position3D);
