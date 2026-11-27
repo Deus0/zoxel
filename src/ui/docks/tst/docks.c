@@ -98,8 +98,21 @@ static byte zox_tst_docks_ready(ecs* world) {
             original_left = zox_getv(docks.x, LayoutSize).x;
             zox_tst_check(original_left == size.x / 5 && zox_getv(docks.y, LayoutSize).x == size.x / 5 &&
                 zox_getv(docks.z, LayoutSize).y == size.y / 4, "default dock sizes are wrong");
-            handle = zox_get_child_by_id(world, docks.x, zox_id(DockResizeHandle));
-            zox_tst_check(handle, "left dock has no resize handle");
+            // a docked window resizes by its own handle on its inner edge, the only one shown (no dock handle)
+            handle = 0;
+            int shown = 0;
+            iter it = zox_children(world, docks.x);
+            while (zox_children_next(it)) {
+                for (int i = 0; i < it.count; i++) {
+                    const entity e = it.entities[i];
+                    if (zox_has(e, WindowResizeHandle) && zox_has(e, Dragable)) {
+                        shown++;
+                        handle = float2_equals(zox_getv(e, Anchor), ((float2) { 1, 0.5f })) ? e : handle;
+                    }
+                }
+            }
+            zox_tst_check(handle && shown == 1 && !zox_get_child_by_id(world, docks.x, zox_id(DockResizeHandle)),
+                "left dock's window shows [%i] resize handles, not its right edge's alone", shown);
             if (!handle) {
                 return 1;
             }

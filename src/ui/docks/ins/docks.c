@@ -39,8 +39,26 @@ static void dock_undock(ecs* world, entity element) {
     dock_float(world, element, float2_half, position);
 }
 
+static byte dock_has_own_resize(ecs* world, entity element) {
+    byte own = 0;
+    iter it = zox_children(world, element);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count && !own; i++) {
+            own = zox_has(it.entities[i], DragResizes) && !zox_has(it.entities[i], DockResizeHandle);
+        }
+    }
+    return own;
+}
+
+// a docked element's edge handle, unless it brings its own (a window's resize handles, windows/sys/layout.c)
 static void dock_resize_handle(ecs* world, entity element, float2 anchor, int2 size) {
     entity handle = zox_get_child_by_id(world, element, zox_id(DockResizeHandle));
+    if (dock_has_own_resize(world, element)) {
+        if (handle) {
+            zox_delete(handle);     // made in its spawn frame, before its own handles were there
+        }
+        return;
+    }
     if (anchor.y == 1) {
         if (handle && zox_has(handle, Dragable)) {
             zox_remove(handle, Dragable);

@@ -1,6 +1,11 @@
 # Done
 
 ## 2026-11-28
+-x Docked editor windows: the inspector couldn't shrink, window_rows_fit grew a docked window to its widest row
+  (a docked window's rows are masked and scroll sideways now, tst inspector_shrink); the header buttons (close, undock,
+  search) sit right to left from the close button's real width (window_header_fit), the undock button overlapped it;
+  a docked window resizes by its own hover-only resize handle on its inner edge, not a dock bar (tst window_docks).
+  Tests could hold 512, raised to 1024 (some were dropped)
 -x Pressing a scrollbar's track jumps its handle under the pointer and drags it from there, scrolling the list
   (scrollbar_track_press_system). tst scroll_track
 -x Scroll views' horizontal and vertical bars overlapped at the corner: each spanned the whole view. The horizontal

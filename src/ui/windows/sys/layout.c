@@ -1,6 +1,18 @@
-// fits a window's 8 resize handles (ins/resize.c) to its size, hidden and not dragable while docked
+// a docked window resizes from its inner edge only, the side facing the game (none docked on top)
+static byte window_resize_handle_docked(float2 handle, float2 dock) {
+    if (dock.y == 1) {
+        return 0;
+    }
+    if (dock.y == 0) {
+        return float2_equals(handle, ((float2) { 0.5f, 1 }));
+    }
+    return float2_equals(handle, ((float2) { 1 - dock.x, 0.5f }));
+}
+
+// fits a window's 8 resize handles (ins/resize.c) to its size; docked, only its inner edge's shows and drags
 static void window_resize_handles_fit(ecs* world, entity window, int2 size) {
     const byte docked = zox_has(window, Docked);
+    const float2 dock = zox_getv(window, Anchor);
     iter it2 = zox_children(world, window);
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
@@ -8,17 +20,19 @@ static void window_resize_handles_fit(ecs* world, entity window, int2 size) {
             if (!zox_has(handle, WindowResizeHandle)) {
                 continue;
             }
-            const int2 handle_size = window_resize_handle_size(size, zox_getv(handle, Anchor));
+            const float2 anchor = zox_getv(handle, Anchor);
+            const int2 handle_size = window_resize_handle_size(size, anchor);
             if (!int2_equals(zox_getv(handle, LayoutSize), handle_size)) {
                 zox_setv(handle, LayoutSize, handle_size);
             }
             zox_add(handle, LayoutSizeDirty);   // placed on the window's new edges
-            if (docked == zox_has(handle, Dragable)) {
-                zox_setv(handle, RenderDisabled, docked);
-                if (docked) {
-                    zox_remove(handle, Dragable);
-                } else {
+            const byte shown = !docked || window_resize_handle_docked(anchor, dock);
+            if (shown != zox_has(handle, Dragable)) {
+                zox_setv(handle, RenderDisabled, !shown);
+                if (shown) {
                     zox_add(handle, Dragable);
+                } else {
+                    zox_remove(handle, Dragable);
                 }
             }
         }
@@ -101,10 +115,10 @@ static void window_grid_fit(ecs* world, entity window, entity scrollview, int2* 
 }
 
 // a list's window (a game menu's) no narrower than its widest row, its margins and its scrollbar; a virtual list's rows
-//  (the editor's names) are cut by its mask instead
+//  (the editor's names) and a docked window's (the inspector's) are cut by its mask instead, scrolled sideways
 static void window_rows_fit(ecs* world, entity window, entity scrollview, int2* size) {
     const entity list = zox_valid(scrollview) ? zox_get_link(world, scrollview, ListUILink) : 0;
-    if (!zox_valid(list) || zox_has(list, VirtualList)) {
+    if (!zox_valid(list) || zox_has(list, VirtualList) || zox_has(window, Docked)) {
         return;
     }
     int widest = 0;
@@ -121,25 +135,34 @@ static void window_rows_fit(ecs* world, entity window, entity scrollview, int2* 
     }
 }
 
-// its title fits its header beside its buttons (close, undock): a centred title keeps clear of them on both sides
+// its buttons sit right to left from its edge (close, undock, search), a gap between, and its title fits beside them:
+//  a centred title keeps clear of them on both sides
 static void window_header_fit(ecs* world, entity header, int width) {
+    const int gap = 4;
+    const entity buttons[] = {
+        zox_get_child_by_id(world, header, zox_id(CloseButton)),
+        zox_get_child_by_id(world, header, zox_id(UndockButton)),
+        zox_get_child_by_id(world, header, zox_id(WindowSearchButton)) };
+    int edge = 0;   // the buttons' width from the right edge
+    for (int i = 0; i < 3; i++) {
+        const entity button = buttons[i];
+        if (!button || (zox_has(button, RenderDisabled) && zox_getv(button, RenderDisabled))) {
+            continue;
+        }
+        const int w = zox_getv(button, LayoutSize).x;
+        // the close button aligns its right edge on its position, the others centre on it
+        const int x = i == 0 ? -edge : -(edge + w / 2);
+        if (zox_getv(button, LayoutPosition).x != x) {
+            zox_setv(button, LayoutPosition, ((int2) { x, 0 }));
+        }
+        edge += w + gap;
+    }
     const entity text = zox_get_child_by_id(world, header, zox_id(TextFit));
     if (!text) {
         return;
     }
-    int buttons = 0;
-    iter it = zox_children(world, header);
-    while (zox_children_next(it)) {
-        for (int i = 0; i < it.count; i++) {
-            const entity button = it.entities[i];
-            const byte hidden = zox_has(button, RenderDisabled) && zox_getv(button, RenderDisabled);
-            if (button != text && zox_has(button, LayoutSize) && !hidden) {
-                buttons = int_max(buttons, -zox_getv(button, LayoutPosition).x + zox_getv(button, LayoutSize).x);
-            }
-        }
-    }
     const byte centred = zox_getv(text, Anchor).x == 0.5f;
-    const int fit = int_max(1, width - buttons * (centred ? 2 : 1));
+    const int fit = int_max(1, width - edge * (centred ? 2 : 1));
     if (zox_getv(text, TextFitWidth) != fit) {
         zox_setv(text, TextFitWidth, fit);
     }

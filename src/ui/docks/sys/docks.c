@@ -48,9 +48,19 @@ static void dock_dirty_event(iter* it) {
     }
 }
 
+// a resize handle of its own (DragResizes: a dock's, or a window's inner edge) is being dragged
 static byte dock_is_resizing(ecs* world, entity element) {
-    const entity handle = element ? zox_get_child_by_id(world, element, zox_id(DockResizeHandle)) : 0;
-    return handle && zox_getv(handle, DraggableState);
+    if (!element) {
+        return 0;
+    }
+    byte resizing = 0;
+    iter it = zox_children(world, element);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count && !resizing; i++) {
+            resizing = zox_has(it.entities[i], DragResizes) && zox_getv(it.entities[i], DraggableState);
+        }
+    }
+    return resizing;
 }
 
 static void dock_viewport(ecs* world, entity canvas, byte has_docks, float4 cell) {
