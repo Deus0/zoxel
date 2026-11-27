@@ -11,8 +11,10 @@ static byte zox_tst_poly_view_positioned;
 
 static void zox_tst_poly_position_camera(ecs* world, entity camera, int view) {
     const float yaw = (45 + 90 * view) * degreesToRadians;
-    const float3 position = { 100 * sinf(yaw), 55, 100 * cosf(yaw) };
-    const float4 rotation = camera_look_at(position, (float3) { 0, 6, 0 });
+    // as far out as the island is wide, up at 45 degrees: its size, whatever the settings
+    const float out = poly_terrain_size.x * 0.78f;
+    const float3 position = { out * sinf(yaw), out * 0.55f, out * cosf(yaw) };
+    const float4 rotation = camera_look_at(position, (float3) { 0, poly_terrain_height * 0.25f, 0 });
     zox_remove(camera, Roaming);
     zox_remove(camera, EternalRotation);
     zox_remove(camera, EulerOverride);

@@ -63,14 +63,17 @@ void poly_height_generate(float* heights, int2 cells, float2 size, lint seed) {
         for (int x = 0; x <= cells.x; x++) {
             const float px = size.x * ((float) x / cells.x);
             const float dx = (px - size.x * 0.5f) / (size.x * 0.5f);
-            const float d = sqrtf(dx * dx + dz * dz);     // 0 in the middle, 1 at the edges' middles
+            const double noise = perlin_octaves(px + offset_x, pz + offset_z, poly_terrain_frequency, (uint) seed, poly_terrain_octaves);
+            // the coast moved in or out by slower noise: bays and headlands
+            const double coast = perlin_octaves(pz + offset_x, px + offset_z, poly_terrain_frequency * 0.5f, (uint) seed + 1, 2);
+            const float r = sqrtf(dx * dx + dz * dz);       // 0 in the middle, 1 at the edges' middles
+            const float d = r + ((float) coast - 0.5f) * poly_terrain_coast;
             float e = clampf((1 - d) / 0.35f, 0, 1);       // land inside 0.65, sea past 1
             e = e * e * (3 - 2 * e);
-            const double noise = perlin_octaves(px + offset_x, pz + offset_z, poly_terrain_frequency, (uint) seed, poly_terrain_octaves);
             const float hills = clampf(((float) noise - 0.25f) / 0.5f, 0, 1);
-            float peak = clampf(1 - d / 0.5f, 0, 1);          // a mountain in the middle half
+            float peak = clampf(1 - r / 0.5f, 0, 1);          // a mountain in the middle half
             peak = peak * peak * (3 - 2 * peak);
-            const float n = clampf(hills * 0.35f + peak * 0.75f, 0, 1);
+            const float n = clampf(hills * poly_terrain_hills + peak * poly_terrain_peak, 0, 1);
             const float height = poly_terrain_height * powf(n, 1.3f) * e;
             heights[x + (size_t) z * (cells.x + 1)] = float_lerp(-2, height, e);
         }

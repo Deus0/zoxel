@@ -296,6 +296,8 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 - Clean up the module organization: features in the module that owns them (doc/engine/architecture.md "Code goes
   where it belongs"), folders as the coding standards lay out (com, pre, ins, fun, eve, sys, tst), no reaching into
   another module's includes for load order
+- Poly terrain chunks: the island in tiles, each its own mesh, culled and later lodded, so maps can grow past 512m;
+  gpu meshing after, if building them shows in a profile (doc/plans/poly_terrains.md, Later)
 - Movement inputs apart from the move system: players' devices and npc ai write one move input on a character, one
   system moves them all by the same rules; tests read no real devices and set that input. Discuss first
   (doc/plans/poly_terrains.md, Later)

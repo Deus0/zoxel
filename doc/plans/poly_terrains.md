@@ -80,6 +80,11 @@ move input themselves, and a test like `zeland_walk` holds W through it, not by 
 in a plan of its own: it changes how zoxel feels, so first tests record today's movement (top speeds, how fast it
 gets there, turning, running, jumps), then the new system is tuned until they match, then play tested.
 
+Later: terrain chunks, then gpu meshing. Today the island is one mesh (512m, ~393k vertices) built once on the cpu,
+drawn whole every frame. Chunks first: the heights split into tiles (64m, say), each its own mesh, so tiles out of
+view or far away aren't drawn (and later get coarser meshes), and a bigger map streams. GPU meshing after, only if
+building the tiles shows up in a profile: a static terrain is built once, unlike voxel chunks.
+
 Later, not now: capsule against capsule (npcs), against boxes, voxel terrains with capsules.
 
 Later: a voxel terrain collider entity, a child of the body like the capsule, holding its voxel parts (chunk
@@ -112,8 +117,10 @@ kept current as each step lands, not a step of their own).
 3. [x] **heights:** `src/terrains/poly`, `PolyTerrain`, `PolyHeights`, `poly_height_generate`, `poly_height_at`,
    `poly_normal_at`. Test `poly_heights`: pure, heights at grid points and mid triangle, a slope's normal.
    - `PolyCells` (int2, the grid's resolution) and core `Size2` (metres) beside the heights, settings in
-     terrains/poly/set (128 cells over 128 metres, hills to 24, the sea at 2)
-   - an island: stretched perlin hills, a mountain rising to the middle, a round falloff under the sea
+     terrains/poly/set (256 cells over 512 metres, 2m cells, the mountain to 64, the sea at 2; it was 128 over 128
+     and felt small, 2026-11-27)
+   - an island: perlin hills (a hill every ~80m), a mountain rising to the middle, a falloff under the sea with
+     its coast moved by slower noise (bays, headlands); the hills', mountain's and coast's shares are settings
    - `poly_color_at` (sand, grass, rock, snow) for the mesh; `bash bsh/tools/poly_terrain.sh` draws the heights
      from above (doc/engine/tools.md)
 4. [x] **terrain mesh:** prefab, spawn, the mesh observer, colours; zeland spawns it on play. Until lit meshes (step 7)
