@@ -1,4 +1,5 @@
-// tst: window_resize, a floating window's side and corner handles resize it, the opposite edge stays
+// tst: window_resize, a floating window's side and corner handles resize it, the opposite edge stays; the mouse
+//  hovers one just outside the window's edge (it lights up) and drags it
 //  (ins/resize.c, sys/layout.c, elements2/sys/drag.c)
 static entity zox_tst_window_resize_handle(ecs* world, entity window, float2 anchor, int* count) {
     entity found = 0;
@@ -33,10 +34,55 @@ static const zox_tst_window_resize_drag zox_tst_window_resize_drags[] = {
     { { 1, 0.5f }, { -500, 0 }, { 120, 180 }, { -80, 10 } },   // right side, past the minimum width
 };
 
+// the mouse drags the right side handle 40 to the right: hover (it lights up), press, move, release
+//  - returns 1 when done, 0 to step on, and waits by returning 2
+static byte zox_tst_window_resize_mouse_step(ecs* world, entity canvas, entity window, entity* handle, int2* before,
+    int2* point, int phase)
+{
+    int count;
+    switch (phase) {
+        case 0:
+            *handle = zox_tst_window_resize_handle(world, window, (float2) { 1, 0.5f }, &count);
+            if (!zox_tst_ui_pointer_position(world, canvas, *handle, point)) {
+                return 2;
+            }
+            zox_tst_mouse(*point, 0);
+            return 0;
+        case 1:
+            zox_tst_waiting = "the mouse to hover the right side handle";
+            if (zox_tst_mouse_target(world, dbg_player) != *handle) {
+                return 2;
+            }
+            zox_tst_waiting = "the hovered resize handle to light up";
+            if (!color_equals(zox_getv(*handle, FillColor), zox_getv(*handle, SelectedFillColor))) {
+                return 2;
+            }
+            *before = zox_getv(window, LayoutSize);
+            zox_tst_mouse(*point, 1);
+            return 0;
+        case 2:
+            zox_tst_waiting = "the right side handle to start dragging";
+            if (!zox_getv(*handle, DraggableState)) {
+                return 2;
+            }
+            zox_tst_mouse(int2_add(*point, (int2) { 40, 0 }), 1);
+            return 0;
+        case 3:
+            zox_tst_waiting = "the mouse drag to resize the window";
+            if (zox_getv(window, LayoutSize).x == before->x) {
+                return 2;
+            }
+            zox_tst_mouse(int2_add(*point, (int2) { 40, 0 }), 0);
+            zox_tst_check(zox_getv(window, LayoutSize).x > before->x, "the mouse drag didn't widen the window");
+            return 1;
+    }
+    return 1;
+}
+
 static byte zox_tst_window_resize_ready(ecs* world) {
     static int step;
     static entity canvas, window, handle;
-    static int2 before;
+    static int2 before, point;
     const int drags = sizeof(zox_tst_window_resize_drags) / sizeof(zox_tst_window_resize_drag);
     int count;
     zox_tst_progress(step);
@@ -64,7 +110,10 @@ static byte zox_tst_window_resize_ready(ecs* world) {
     // even steps start a drag, odd ones wait for it and check
     const int drag = (step - 2) / 2;
     if (drag >= drags) {
-        return 1;
+        const byte done = zox_tst_window_resize_mouse_step(world, canvas, window, &handle, &before, &point,
+            step - 2 - drags * 2);
+        step += !done;
+        return done == 1;
     }
     const zox_tst_window_resize_drag d = zox_tst_window_resize_drags[drag];
     if (step % 2 == 0) {
